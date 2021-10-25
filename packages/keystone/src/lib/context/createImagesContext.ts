@@ -21,16 +21,15 @@ const getImageMetadataFromBuffer = async (buffer: Buffer): Promise<ImageMetadata
     throw new Error('File type not found');
   }
 
-  if (
-    fileType.ext !== 'jpg' &&
-    fileType.ext !== 'png' &&
-    fileType.ext !== 'webp' &&
-    fileType.ext !== 'gif'
-  ) {
-    throw new Error(`${fileType.ext} is not a supported image type`);
-  }
-
   const extension = fileType.ext;
+  if (
+    extension !== 'jpg' &&
+    extension !== 'png' &&
+    extension !== 'webp' &&
+    extension !== 'gif'
+  ) {
+    throw new Error(`${extension} is not a supported image type`);
+  }
 
   const { height, width } = imageSize(buffer);
 
@@ -40,6 +39,7 @@ const getImageMetadataFromBuffer = async (buffer: Buffer): Promise<ImageMetadata
   return { width, height, filesize, extension };
 };
 
+// TODO: get the cloudConfiguration into here
 export function createImagesContext(config: KeystoneConfig): ImagesContext | undefined {
   if (!config.images) {
     return;
@@ -61,7 +61,7 @@ export function createImagesContext(config: KeystoneConfig): ImagesContext | und
     getSrc: async (mode, id, extension) => {
       const filename = `${id}.${extension}`;
 
-      if (mode === 'keystone-cloud') {
+      if (mode === 'cloud') {
         return await buildKeystoneCloudImageSrc({
           apiKey,
           imagesDomain,
@@ -80,7 +80,7 @@ export function createImagesContext(config: KeystoneConfig): ImagesContext | und
 
       const { mode } = imageRef;
 
-      if (mode === 'keystone-cloud') {
+      if (mode === 'cloud') {
         const { id, extension } = imageRef;
         const filename = `${id}.${extension}`;
         const metadata = await getImageMetadataFromKeystoneCloud({
@@ -103,7 +103,7 @@ export function createImagesContext(config: KeystoneConfig): ImagesContext | und
       const { upload: mode } = images;
       const id = uuid();
 
-      if (mode === 'keystone-cloud') {
+      if (mode === 'cloud') {
         const metadata = await uploadImageToKeystoneCloud({
           apiKey,
           stream,

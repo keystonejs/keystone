@@ -95,6 +95,13 @@ export function createSystem(config: KeystoneConfig) {
           await prismaClient.$connect();
           const context = createContext({ sudo: true });
           await config.db.onConnect?.(context);
+
+          // Keystone cloud
+          const cloudConfiguration = await ksCloud.connect({
+            apiKey: config.KEYSTONE_CLOUD_API_KEY,
+            files: config.files,
+            images: config.images
+          })
         },
         async disconnect() {
           await prismaClient.$disconnect();

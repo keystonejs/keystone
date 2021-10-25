@@ -11,7 +11,7 @@ import {
   buildKeystoneCloudFileSrc,
   uploadFileToKeystoneCloud,
   getFileFromKeystoneCloud,
-} from '../keystone-cloud/assets';
+} from '../cloud/assets';
 
 const DEFAULT_BASE_URL = '/files';
 const DEFAULT_STORAGE_PATH = './public/files';
@@ -55,9 +55,7 @@ export function createFilesContext(config: KeystoneConfig): FilesContext | undef
   const { baseUrl = DEFAULT_BASE_URL, storagePath = DEFAULT_STORAGE_PATH } = files.local || {};
   const {
     apiKey = '',
-    graphqlApiEndpoint = '',
-    restApiEndpoint = '',
-  } = experimental?.keystoneCloud || {};
+  } = experimental?.cloud || {};
 
   if (files.upload === 'local') {
     fs.mkdirSync(storagePath, { recursive: true });
@@ -65,7 +63,7 @@ export function createFilesContext(config: KeystoneConfig): FilesContext | undef
 
   return {
     getSrc: async (mode, filename) => {
-      if (mode === 'keystone-cloud') {
+      if (mode === 'cloud') {
         return await buildKeystoneCloudFileSrc({ apiKey, graphqlApiEndpoint, filename });
       }
 
@@ -80,7 +78,7 @@ export function createFilesContext(config: KeystoneConfig): FilesContext | undef
 
       const { mode, filename } = fileRef;
 
-      if (mode === 'keystone-cloud') {
+      if (mode === 'cloud') {
         const { filesize } = await getFileFromKeystoneCloud({
           apiKey,
           filename,
@@ -98,7 +96,7 @@ export function createFilesContext(config: KeystoneConfig): FilesContext | undef
       const { upload: mode } = files;
       const filename = generateSafeFilename(originalFilename, files.transformFilename);
 
-      if (mode === 'keystone-cloud') {
+      if (mode === 'cloud') {
         const { filesize } = await uploadFileToKeystoneCloud({
           apiKey,
           stream,

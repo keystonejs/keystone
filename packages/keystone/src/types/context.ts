@@ -1,7 +1,13 @@
 import { IncomingMessage } from 'http';
-import { Readable } from 'stream';
 import { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql';
 import { InitialisedList } from '../lib/core/types-for-lists';
+import {
+  MetaFile as FileData,
+  MetaImage as ImageMetadata,
+  ImageData,
+  ImageExtension,
+} from '../lib/cloud';
+
 import type { BaseGeneratedListTypes, GqlNames } from './utils';
 
 export type KeystoneContext = {
@@ -153,40 +159,12 @@ export type SessionContext<T> = {
   endSession(): Promise<void>;
 };
 
-export type AssetMode = 'local' | 'keystone-cloud';
+export type AssetMode = 'local' | 'cloud';
 
-// Files API
+// Local File/Image API
+//   the assumption is we mirror the Cloud API,
+export type { FileData, };
+export type { ImageData, ImageMetadata, ImageExtension };
 
-export type FileData = {
-  mode: AssetMode;
-  filename: string;
-  filesize: number;
-};
+// Cloud File/Image API
 
-export type FilesContext = {
-  getSrc: (mode: AssetMode, filename: string) => Promise<string>;
-  getDataFromRef: (ref: string) => Promise<FileData>;
-  getDataFromStream: (stream: Readable, filename: string) => Promise<FileData>;
-};
-
-// Images API
-
-export type ImageExtension = 'jpg' | 'png' | 'webp' | 'gif';
-
-export type ImageMetadata = {
-  extension: ImageExtension;
-  filesize: number;
-  width: number;
-  height: number;
-};
-
-export type ImageData = {
-  mode: AssetMode;
-  id: string;
-} & ImageMetadata;
-
-export type ImagesContext = {
-  getSrc: (mode: AssetMode, id: string, extension: ImageExtension) => Promise<string>;
-  getDataFromRef: (ref: string) => Promise<ImageData>;
-  getDataFromStream: (stream: Readable) => Promise<ImageData>;
-};
