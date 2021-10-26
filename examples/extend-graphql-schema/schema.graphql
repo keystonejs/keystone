@@ -6,6 +6,15 @@ type Mutation {
    Publish a post
   """
   publishPost(id: ID!): Post
+
+  """
+   Create or update an auth based on email
+  """
+  upsertAuthor(
+    where: AuthorWhereUniqueInput!
+    create: AuthorCreateInput!
+    update: AuthorUpdateInput!
+  ): Author
   createPost(data: PostCreateInput!): Post
   createPosts(data: [PostCreateInput!]!): [Post]
   updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
