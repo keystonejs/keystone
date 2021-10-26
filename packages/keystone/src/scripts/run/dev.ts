@@ -48,12 +48,11 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
   // so that means if
   // - you have an error in your config on startup -> will fail to start and you have to start the process manually after fixing the problem
   // - you have an error in your config after startup -> will keep the last working version until importing the config succeeds
-  // we could make it work but meh
   // also, if you're thinking "why not always use the Next api route to get the config"?
   // this will get the GraphQL API up earlier
   const config = initConfig(requireSource(getConfigPath(cwd)).default);
 
-  const ready = () =>
+  const isReady = () =>
     expressServer !== null && (hasAddedAdminUIMiddleware || config.ui?.isDisabled === true);
 
   const initKeystone = async () => {
@@ -208,7 +207,7 @@ exports.default = function (req, res) { return res.send(x.toString()) }
 
   // Serve the dev status page for the Admin UI
   app.use('/__keystone_dev_status', (req, res) => {
-    res.json({ ready: ready() ? true : false });
+    res.json({ ready: isReady() ? true : false });
   });
   // Pass the request the express server, or serve the loading page
   app.use((req, res, next) => {

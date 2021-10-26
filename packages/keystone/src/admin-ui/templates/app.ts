@@ -37,7 +37,7 @@ export const appTemplate = (
   const allViews = adminMetaRootVal.views.map(views => {
     // during a live reload, we'll have paths from a webpack compilation which will make the paths
     // that __dirname/__filename/require.resolve return relative to the webpack's "context" option
-    // which for Next, it's set to the directory of the Next project which is projectAdminPath here
+    // which for Next, it's set to the directory of the Next project which is projectAdminPath here.
     // so to get absolute paths, we need to resolve them relative to the projectAdminPath
     // generally though, relative paths are problematic because
     // we don't know where to resolve them from so we disallow them
@@ -49,7 +49,7 @@ export const appTemplate = (
       views = Path.resolve(projectAdminPath, views);
     } else if (!Path.isAbsolute(views)) {
       throw new Error(
-        `Field views must be absolute paths, not relative but ${JSON.stringify(
+        `Field views must be absolute paths, but ${JSON.stringify(
           views
         )} was provided. Use path.join(__dirname, './relative/path') or require.resolve('./relative/path') to get an absolute path.`
       );

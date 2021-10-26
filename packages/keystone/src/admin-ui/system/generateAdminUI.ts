@@ -55,8 +55,8 @@ export const generateAdminUI = async (
   projectAdminPath: string,
   isLiveReload: boolean
 ) => {
-  // when we're not doing a live reload, we want to clear everything out except the .next directory(not the .next directory because it has caches)
-  // so that at least every so often, we'll clear out anything that the deleting we do during live reloads doesn't(should just be directories)
+  // when we're not doing a live reload, we want to clear everything out except the .next directory (not the .next directory because it has caches)
+  // so that at least every so often, we'll clear out anything that the deleting we do during live reloads doesn't (should just be directories)
   if (!isLiveReload) {
     const dir = await fs.readdir(projectAdminPath).catch(err => {
       if (err.code === 'ENOENT') {
@@ -144,7 +144,7 @@ export const generateAdminUI = async (
 
   await Promise.all(adminFiles.map(file => writeAdminFile(file, projectAdminPath)));
 
-  // Because Next will re-compile things(or at least check things and log a bunch of stuff)
+  // Because Next will re-compile things (or at least check things and log a bunch of stuff)
   // if we delete pages and then re-create them, we want to avoid that when live reloading
   // so we only delete things that shouldn't exist anymore
   // this won't clear out empty directories, this is fine since:
