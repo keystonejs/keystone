@@ -172,5 +172,66 @@ describe('Auth testing', () => {
         expect(errors).toBe(undefined);
       })
     );
+
+    test(
+      'Invalid session receives nothing',
+      runner(async ({ context, graphQLRequest }) => {
+        await seed(context, initialData);
+        const { body } = await graphQLRequest({ query: '{ users { id } }' }).set(
+          'Cookie',
+          `keystonejs-session=invalidfoo`
+        );
+
+        const { data, errors } = body;
+        expect(data).toHaveProperty('users');
+        expect(data.users).toHaveLength(0); // nothing
+        expect(errors).toBe(undefined);
+      })
+    );
+
+    test.only(
+      'Session is dropped if user is removed',
+      runner(async ({ context, graphQLRequest }) => {
+        const { User: users } = await seed(context, initialData);
+        const { sessionToken } = await login(
+          graphQLRequest,
+          initialData.User[0].email,
+          initialData.User[0].password
+        );
+
+        {
+          const { body } = await graphQLRequest({ query: '{ users { id } }' }).set(
+            'Cookie',
+            `keystonejs-session=${sessionToken}` // still valid
+          );
+
+          const { data, errors } = body;
+          expect(data).toHaveProperty('users');
+          expect(data.users).toHaveLength(2); // something
+          expect(errors).toBe(undefined);
+        }
+
+        // delete the user we authenticated for
+        await graphQLRequest({
+          query: `mutation ($id: ID!) { deleteUser(where: { id: $id }) { id } }`,
+          variables: { id: users[0]?.id },
+        }).set(
+          'Cookie',
+          `keystonejs-session=${sessionToken}`
+        );
+
+        {
+          const { body } = await graphQLRequest({ query: '{ users { id } }' }).set(
+            'Cookie',
+            `keystonejs-session=${sessionToken}` // now invalid
+          );
+
+          const { data, errors } = body;
+          expect(data).toHaveProperty('users');
+          expect(data.users).toHaveLength(0); // nothing
+          expect(errors).toBe(undefined);
+        }
+      })
+    );
   });
 });
