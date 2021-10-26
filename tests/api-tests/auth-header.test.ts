@@ -8,8 +8,8 @@ import { apiTestConfig, expectAccessDenied } from './utils';
 
 const initialData = {
   User: [
-    { name: 'Boris Bozic', email: 'boris@keystone.com', password: 'correctbattery' },
-    { name: 'Jed Watson', email: 'jed@keystone.com', password: 'horsestaple' },
+    { name: 'Boris Bozic', email: 'boris@keystonejs.com', password: 'correctbattery' },
+    { name: 'Jed Watson', email: 'jed@keystonejs.com', password: 'horsestaple' },
   ],
 };
 
@@ -88,7 +88,7 @@ describe('Auth testing', () => {
       expect(errors).toBe(undefined);
 
       const result = await context.graphql.raw({
-        query: `mutation { updateUser(where: { email: "boris@keystone.com" }, data: { password: "new_password" }) { id } }`,
+        query: `mutation { updateUser(where: { email: "boris@keystonejs.com" }, data: { password: "new_password" }) { id } }`,
       });
       expect(result.data).toEqual({ updateUser: null });
       expectAccessDenied(result.errors, [
