@@ -3,15 +3,13 @@ import { list } from '@keystone-next/keystone';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
 import { setupTestRunner, TestArgs } from '@keystone-next/keystone/testing';
-import { KeystoneContext } from '@keystone-next/keystone/types';
-import { apiTestConfig, expectInternalServerError, expectValidationError } from './utils';
+import { apiTestConfig, expectInternalServerError, expectValidationError, seed } from './utils';
 
 const initialData = {
   User: [
     { name: 'Boris Bozic', email: 'boris@keystonejs.com', password: 'correctbattery' },
     { name: 'Jed Watson', email: 'jed@keystonejs.com', password: 'horsestaple' },
     { name: 'Bad User', email: 'bad@keystonejs.com', password: 'incorrectbattery' },
-    { email: 'null@keystonejs.com', password: 'correctbattery' },
   ],
 };
 
@@ -85,18 +83,12 @@ async function authenticateWithPassword(
   });
 }
 
-async function initialiseData(context: KeystoneContext) {
-  return context.query.User.createMany({ data: initialData.User });
-}
-
 describe('Auth testing', () => {
   describe('authenticateItemWithPassword', () => {
     test(
       'Success - set token in header and return value',
       runner(async ({ context, graphQLRequest }) => {
-        // seed the db
-        const users = await initialiseData(context);
-
+        const { User: users } = await seed(context, initialData);
         const { body, res } = (await authenticateWithPassword(
           graphQLRequest,
           'boris@keystonejs.com',
@@ -120,8 +112,7 @@ describe('Auth testing', () => {
     test(
       'Failure - bad password',
       runner(async ({ context, graphQLRequest }) => {
-        // seed the db
-        await initialiseData(context);
+        await seed(context, initialData);
 
         const { body, res } = (await authenticateWithPassword(
           graphQLRequest,
@@ -143,8 +134,7 @@ describe('Auth testing', () => {
     test(
       'Failure - bad identify value',
       runner(async ({ context, graphQLRequest }) => {
-        // seed the db
-        await initialiseData(context);
+        await seed(context, initialData);
 
         const { body, res } = (await authenticateWithPassword(
           graphQLRequest,
@@ -195,8 +185,7 @@ describe('Auth testing', () => {
     test(
       'Failure - items already exist',
       runner(async ({ context, graphQLRequest }) => {
-        // seed the db
-        await initialiseData(context);
+        await seed(context, initialData);
 
         const { body, res } = (await graphQLRequest({
           query: `
@@ -256,7 +245,7 @@ describe('Auth testing', () => {
     test(
       'sendItemMagicAuthLink - Success',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
 
         const { body } = await graphQLRequest({
           query: `
@@ -295,7 +284,7 @@ describe('Auth testing', () => {
     test(
       'sendItemMagicAuthLink - Failure - missing user',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
 
         const { body } = await graphQLRequest({
           query: `
@@ -312,7 +301,7 @@ describe('Auth testing', () => {
     test(
       'sendItemMagicAuthLink - Failure - Error in sendToken',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
 
         const { body } = await graphQLRequest({
           query: `
@@ -343,7 +332,7 @@ describe('Auth testing', () => {
     test(
       'redeemItemMagicAuthToken - Success',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {
@@ -390,7 +379,7 @@ describe('Auth testing', () => {
     test(
       'redeemItemMagicAuthToken - Failure - bad token',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {
@@ -430,7 +419,7 @@ describe('Auth testing', () => {
     test(
       'redeemItemMagicAuthToken - Failure - non-existent user',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {
@@ -468,7 +457,7 @@ describe('Auth testing', () => {
     test(
       'redeemItemMagicAuthToken - Failure - already redemmed',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {
@@ -523,7 +512,7 @@ describe('Auth testing', () => {
     test(
       'redeemItemMagicAuthToken - Failure - Token expired',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {
@@ -603,7 +592,7 @@ describe('Auth testing', () => {
     test(
       'sendItemPasswordResetLink - Success',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
 
         const { body } = await graphQLRequest({
           query: `
@@ -643,7 +632,7 @@ describe('Auth testing', () => {
     test(
       'sendItemPasswordResetLink - Failure - missing user',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
 
         const { body } = await graphQLRequest({
           query: `
@@ -660,7 +649,7 @@ describe('Auth testing', () => {
     test(
       'sendItemPasswordResetLink - Failure - Error in sendToken',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
 
         const { body } = await graphQLRequest({
           query: `
@@ -691,7 +680,7 @@ describe('Auth testing', () => {
     test(
       'redeemItemPasswordToken - Success',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {
@@ -733,7 +722,7 @@ describe('Auth testing', () => {
     test(
       'redeemItemPasswordToken - Failure - bad token',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {
@@ -766,7 +755,7 @@ describe('Auth testing', () => {
     test(
       'redeemItemPasswordToken - Failure - non-existent user',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {
@@ -803,7 +792,7 @@ describe('Auth testing', () => {
     test(
       'redeemItemPasswordToken - Failure - already redemmed',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {
@@ -848,7 +837,7 @@ describe('Auth testing', () => {
     test(
       'redeemItemPasswordToken - Failure - Token expired',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {
@@ -918,7 +907,7 @@ describe('Auth testing', () => {
     test(
       'validateItemPasswordToken - Success',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {
@@ -945,7 +934,7 @@ describe('Auth testing', () => {
     test(
       'validateItemPasswordToken - Failure - bad token',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {
@@ -978,7 +967,7 @@ describe('Auth testing', () => {
     test(
       'validateItemPasswordToken - Failure - non-existent user',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {
@@ -1011,7 +1000,7 @@ describe('Auth testing', () => {
     test(
       'validateItemPasswordToken - Failure - already redemmed',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {
@@ -1056,7 +1045,7 @@ describe('Auth testing', () => {
     test(
       'validateItemPasswordToken - Failure - Token expired',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {

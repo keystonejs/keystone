@@ -1,4 +1,4 @@
-import { KeystoneConfig, DatabaseProvider } from '@keystone-next/keystone/types';
+import { KeystoneConfig, KeystoneContext, DatabaseProvider } from '@keystone-next/keystone/types';
 
 // This function injects the db configuration that we use for testing in CI.
 // This functionality is a keystone repo specific way of doing things, so we don't
@@ -245,3 +245,14 @@ export const expectSingleRelationshipError = (
       debug: [{ message, stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)) }],
     },
   ]);
+
+export async function seed <T extends Record<keyof T, Record<string, unknown>[]>>(context: KeystoneContext, initialData: T) {
+  const results: any = {};
+  for (const listKey in initialData) {
+    results[listKey as (keyof T)] = await context.sudo().query[listKey].createMany({
+      data: initialData[listKey as (keyof T)]
+    });
+  }
+
+  return results as Record<keyof T, Record<string, unknown>[]>;
+}

@@ -4,7 +4,7 @@ import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
 import type { KeystoneContext } from '@keystone-next/keystone/types';
 import { setupTestRunner, TestArgs, setupTestEnv } from '@keystone-next/keystone/testing';
-import { apiTestConfig, expectAccessDenied } from './utils';
+import { apiTestConfig, expectAccessDenied, seed } from './utils';
 
 const initialData = {
   User: [
@@ -79,10 +79,7 @@ describe('Auth testing', () => {
   test(
     'Gives access denied when not logged in',
     runner(async ({ context }) => {
-      // seed the db
-      for (const [listKey, data] of Object.entries(initialData)) {
-        await context.sudo().query[listKey].createMany({ data });
-      }
+      await seed(context, initialData);
       const { data, errors } = await context.graphql.raw({ query: '{ users { id } }' });
       expect(data).toEqual({ users: [] });
       expect(errors).toBe(undefined);
@@ -134,9 +131,7 @@ describe('Auth testing', () => {
     test(
       'Allows access with bearer token',
       runner(async ({ context, graphQLRequest }) => {
-        for (const [listKey, data] of Object.entries(initialData)) {
-          await context.sudo().query[listKey].createMany({ data });
-        }
+        await seed(context, initialData);
         const { sessionToken } = await login(
           graphQLRequest,
           initialData.User[0].email,
@@ -158,9 +153,7 @@ describe('Auth testing', () => {
     test(
       'Allows access with cookie',
       runner(async ({ context, graphQLRequest }) => {
-        for (const [listKey, data] of Object.entries(initialData)) {
-          await context.sudo().query[listKey].createMany({ data });
-        }
+        await seed(context, initialData);
         const { sessionToken } = await login(
           graphQLRequest,
           initialData.User[0].email,
