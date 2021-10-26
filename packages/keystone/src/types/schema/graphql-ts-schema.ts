@@ -143,22 +143,22 @@ export type Type = graphqlTsSchema.Type<Context>;
 export type NullableOutputType = graphqlTsSchema.NullableOutputType<Context>;
 export type OutputType = graphqlTsSchema.OutputType<Context>;
 export type Field<
-  RootVal,
+  Source,
   Args extends Record<string, graphqlTsSchema.Arg<any>>,
   TType extends OutputType,
   Key extends string
-> = graphqlTsSchema.Field<RootVal, Args, TType, Key, Context>;
+> = graphqlTsSchema.Field<Source, Args, TType, Key, Context>;
 export type FieldResolver<
-  RootVal,
+  Source,
   Args extends Record<string, graphqlTsSchema.Arg<any>>,
   TType extends OutputType
-> = graphqlTsSchema.FieldResolver<RootVal, Args, TType, Context>;
+> = graphqlTsSchema.FieldResolver<Source, Args, TType, Context>;
 export type ObjectType<RootVal> = graphqlTsSchema.ObjectType<RootVal, Context>;
 export type UnionType<RootVal> = graphqlTsSchema.UnionType<RootVal, Context>;
 export type InterfaceType<
-  RootVal,
+  Source,
   Fields extends Record<string, graphqlTsSchema.InterfaceField<any, OutputType, Context>>
-> = graphqlTsSchema.InterfaceType<RootVal, Fields, Context>;
+> = graphqlTsSchema.InterfaceType<Source, Fields, Context>;
 export type InterfaceField<
   Args extends Record<string, graphqlTsSchema.Arg<any>>,
   TType extends OutputType
