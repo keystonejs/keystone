@@ -46,11 +46,7 @@ const addApolloServer = async ({
   apolloServer.applyMiddleware({
     app: server,
     path: config.graphql?.path || '/api/graphql',
-    cors:
-      config.graphql?.cors ||
-      (process.env.NODE_ENV !== 'production'
-        ? { origin: 'https://studio.apollographql.com', credentials: true }
-        : undefined),
+    cors: false,
   });
 };
 
