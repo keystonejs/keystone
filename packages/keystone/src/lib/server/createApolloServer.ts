@@ -2,6 +2,10 @@ import type { IncomingMessage, ServerResponse } from 'http';
 import { GraphQLError, GraphQLSchema } from 'graphql';
 import { ApolloServer as ApolloServerMicro } from 'apollo-server-micro';
 import { ApolloServer as ApolloServerExpress } from 'apollo-server-express';
+import {
+  ApolloServerPluginLandingPageDisabled,
+  ApolloServerPluginLandingPageGraphQLPlayground,
+} from 'apollo-server-core';
 import type { CreateContext, GraphQLConfig, SessionStrategy } from '../../types';
 import { createSessionContext } from '../../session';
 
@@ -61,11 +65,21 @@ const _createApolloServerConfig = ({
   graphqlConfig?: GraphQLConfig;
 }) => {
   const apolloConfig = graphqlConfig?.apolloConfig;
+  const playgroundOption = graphqlConfig?.playground ?? process.env.NODE_ENV !== 'production';
 
   return {
     schema: graphQLSchema,
     debug: graphqlConfig?.debug, // If undefined, use Apollo default of NODE_ENV !== 'production'
     ...apolloConfig,
+    plugins:
+      playgroundOption === 'apollo'
+        ? apolloConfig?.plugins
+        : [
+            playgroundOption
+              ? ApolloServerPluginLandingPageGraphQLPlayground()
+              : ApolloServerPluginLandingPageDisabled(),
+            ...(apolloConfig?.plugins || []),
+          ],
     formatError: formatError(graphqlConfig),
   };
 };
