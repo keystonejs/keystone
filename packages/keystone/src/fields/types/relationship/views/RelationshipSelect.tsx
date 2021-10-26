@@ -39,12 +39,15 @@ function useFilter(search: string, list: ListMeta) {
       const trimmedSearch = search.trim();
       const isValidId = idValidators[idFieldKind](trimmedSearch);
       if (isValidId) {
-        conditions.push({ id: trimmedSearch });
+        conditions.push({ id: { equals: trimmedSearch } });
       }
       for (const field of Object.values(list.fields)) {
         if (field.search !== null) {
           conditions.push({
-            [`${field.path}_contains${field.search === 'insensitive' ? '_i' : ''}`]: trimmedSearch,
+            [field.path]: {
+              contains: trimmedSearch,
+              mode: field.search === 'insensitive' ? 'insensitive' : undefined,
+            },
           });
         }
       }
