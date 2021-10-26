@@ -76,7 +76,9 @@ const _createApolloServerConfig = ({
         ? apolloConfig?.plugins
         : [
             playgroundOption
-              ? ApolloServerPluginLandingPageGraphQLPlayground()
+              ? ApolloServerPluginLandingPageGraphQLPlayground({
+                  settings: { 'request.credentials': 'same-origin' },
+                })
               : ApolloServerPluginLandingPageDisabled(),
             ...(apolloConfig?.plugins || []),
           ],
