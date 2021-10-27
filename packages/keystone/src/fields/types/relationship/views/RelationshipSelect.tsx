@@ -215,9 +215,10 @@ export const RelationshipSelect = ({
 
   useIntersectionObserver(
     ([{ isIntersecting }]) => {
-      const skip = data!.items.length;
+      const skip = data?.items.length;
       if (
         !loading &&
+        skip &&
         isIntersecting &&
         options.length < count &&
         (lastFetchMore?.extraSelection !== extraSelection ||
