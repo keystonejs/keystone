@@ -283,10 +283,10 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
         },
       };
     }
-    let session = keystoneConfig.session;
-    if (session && sessionData) {
-      session = withItemData(session);
-    }
+
+    if (!keystoneConfig.session) throw new TypeError('Missing .session configuration');
+    const session = withItemData(keystoneConfig.session);
+
     const existingExtendGraphQLSchema = keystoneConfig.extendGraphqlSchema;
     const listConfig = keystoneConfig.lists[listKey];
     return {
