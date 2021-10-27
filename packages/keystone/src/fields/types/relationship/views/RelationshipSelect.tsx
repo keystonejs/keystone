@@ -8,7 +8,14 @@ import { jsx } from '@keystone-ui/core';
 import { MultiSelect, Select, selectComponents } from '@keystone-ui/fields';
 import { validate as validateUUID } from 'uuid';
 import { IdFieldConfig, ListMeta } from '../../../../types';
-import { gql, TypedDocumentNode, useQuery } from '../../../../admin-ui/apollo';
+import {
+  ApolloClient,
+  gql,
+  InMemoryCache,
+  TypedDocumentNode,
+  useApolloClient,
+  useQuery,
+} from '../../../../admin-ui/apollo';
 
 function useIntersectionObserver(cb: IntersectionObserverCallback, ref: RefObject<any>) {
   const cbRef = useRef(cb);
@@ -40,10 +47,10 @@ function useDebouncedValue<T>(value: T, limitMs: number): T {
 
   useEffect(() => {
     let id = setTimeout(() => {
-      setDebouncedValue(value);
+      setDebouncedValue(() => value);
     }, limitMs);
     return () => {
-      return clearTimeout(id);
+      clearTimeout(id);
     };
   }, [value, limitMs]);
   return debouncedValue;
@@ -144,9 +151,40 @@ export const RelationshipSelect = ({
   const debouncedSearch = useDebouncedValue(search, 200);
   const where = useFilter(debouncedSearch, list);
 
+  const link = useApolloClient().link;
+  // we're using a local apollo client here because writing a global implementation of the typePolicies
+  // would require making assumptions about how pagination should work which won't always be right
+  const apolloClient = useMemo(
+    () =>
+      new ApolloClient({
+        link,
+        cache: new InMemoryCache({
+          typePolicies: {
+            Query: {
+              fields: {
+                [list.gqlNames.listQueryName]: {
+                  keyArgs: ['where'],
+                  merge: (existing: readonly any[], incoming: readonly any[], { args }) => {
+                    const merged = existing ? existing.slice() : [];
+                    const { skip } = args!;
+                    for (let i = 0; i < incoming.length; ++i) {
+                      merged[skip + i] = incoming[i];
+                    }
+                    return merged;
+                  },
+                },
+              },
+            },
+          },
+        }),
+      }),
+    [link, list.gqlNames.listQueryName]
+  );
+
   const { data, error, loading, fetchMore } = useQuery(QUERY, {
     fetchPolicy: 'network-only',
     variables: { where, take: initialItemsToLoad, skip: 0 },
+    client: apolloClient,
   });
 
   const count = data?.count || 0;
@@ -166,9 +204,27 @@ export const RelationshipSelect = ({
     [count]
   );
 
+  // we want to avoid fetching more again and `loading` from Apollo
+  // doesn't seem to become true when fetching more
+  const [lastFetchMore, setLastFetchMore] = useState<{
+    where: Record<string, any>;
+    extraSelection: string;
+    list: ListMeta;
+    skip: number;
+  } | null>(null);
+
   useIntersectionObserver(
     ([{ isIntersecting }]) => {
-      if (!loading && isIntersecting && options.length < count) {
+      const skip = data!.items.length;
+      if (
+        !loading &&
+        isIntersecting &&
+        options.length < count &&
+        (lastFetchMore?.extraSelection !== extraSelection ||
+          lastFetchMore?.where !== where ||
+          lastFetchMore?.list !== list ||
+          lastFetchMore?.skip !== skip)
+      ) {
         const QUERY: TypedDocumentNode<
           { items: { [idField]: string; [labelField]: string | null }[] },
           { where: Record<string, any>; take: number; skip: number }
@@ -181,21 +237,21 @@ export const RelationshipSelect = ({
                 }
               }
             `;
+        setLastFetchMore({ extraSelection, list, skip, where });
         fetchMore({
           query: QUERY,
           variables: {
             where,
             take: subsequentItemsToLoad,
-            skip: data!.items.length,
+            skip,
           },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) return prev;
-            return {
-              ...prev,
-              items: [...prev.items, ...fetchMoreResult.items],
-            };
-          },
-        });
+        })
+          .then(() => {
+            setLastFetchMore(null);
+          })
+          .catch(() => {
+            setLastFetchMore(null);
+          });
       }
     },
     { current: loadingIndicatorElement }
