@@ -14,7 +14,7 @@ const initialData = {
 };
 
 const COOKIE_SECRET = 'qwertyuiopasdfghjlkzxcvbmnm1234567890';
-const defaultAccess = ({ context }: { context: KeystoneContext }) => !!context.session?.data;
+const defaultAccess = ({ context }: { context: KeystoneContext }) => !!context.session;
 
 const auth = createAuth({
   listKey: 'User',
@@ -189,7 +189,7 @@ describe('Auth testing', () => {
       })
     );
 
-    test.only(
+    test(
       'Session is dropped if user is removed',
       runner(async ({ context, graphQLRequest }) => {
         const { User: users } = await seed(context, initialData);
