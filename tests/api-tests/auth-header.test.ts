@@ -215,10 +215,7 @@ describe('Auth testing', () => {
         await graphQLRequest({
           query: `mutation ($id: ID!) { deleteUser(where: { id: $id }) { id } }`,
           variables: { id: users[0]?.id },
-        }).set(
-          'Cookie',
-          `keystonejs-session=${sessionToken}`
-        );
+        }).set('Cookie', `keystonejs-session=${sessionToken}`);
 
         {
           const { body } = await graphQLRequest({ query: '{ users { id } }' }).set(

@@ -246,11 +246,14 @@ export const expectSingleRelationshipError = (
     },
   ]);
 
-export async function seed <T extends Record<keyof T, Record<string, unknown>[]>>(context: KeystoneContext, initialData: T) {
+export async function seed<T extends Record<keyof T, Record<string, unknown>[]>>(
+  context: KeystoneContext,
+  initialData: T
+) {
   const results: any = {};
   for (const listKey in initialData) {
-    results[listKey as (keyof T)] = await context.sudo().query[listKey].createMany({
-      data: initialData[listKey as (keyof T)]
+    results[listKey as keyof T] = await context.sudo().query[listKey].createMany({
+      data: initialData[listKey as keyof T],
     });
   }
 

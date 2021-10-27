@@ -698,7 +698,11 @@ describe('Auth testing', () => {
               }
             }
           `,
-          variables: { email: 'boris@keystonejs.com', token: MAGIC_TOKEN, password: 'NEW PASSWORD' },
+          variables: {
+            email: 'boris@keystonejs.com',
+            token: MAGIC_TOKEN,
+            password: 'NEW PASSWORD',
+          },
         });
         // Veryify we get back a token for the expected user.
 
@@ -740,7 +744,11 @@ describe('Auth testing', () => {
               }
             }
           `,
-          variables: { email: 'boris@keystonejs.com', token: 'BAD TOKEN', password: 'NEW PASSWORD' },
+          variables: {
+            email: 'boris@keystonejs.com',
+            token: 'BAD TOKEN',
+            password: 'NEW PASSWORD',
+          },
         });
         // Generic failure message
         expect(body.errors).toBe(undefined);
@@ -810,7 +818,11 @@ describe('Auth testing', () => {
               }
             }
           `,
-          variables: { email: 'boris@keystonejs.com', token: MAGIC_TOKEN, password: 'NEW PASSWORD' },
+          variables: {
+            email: 'boris@keystonejs.com',
+            token: MAGIC_TOKEN,
+            password: 'NEW PASSWORD',
+          },
         });
         // Redeem twice
         const { body } = await graphQLRequest({
@@ -821,7 +833,11 @@ describe('Auth testing', () => {
               }
             }
           `,
-          variables: { email: 'boris@keystonejs.com', token: MAGIC_TOKEN, password: 'NEW PASSWORD' },
+          variables: {
+            email: 'boris@keystonejs.com',
+            token: MAGIC_TOKEN,
+            password: 'NEW PASSWORD',
+          },
         });
         // Generic failure message
         expect(body.errors).toBe(undefined);
@@ -861,7 +877,11 @@ describe('Auth testing', () => {
               }
             }
           `,
-          variables: { email: 'boris@keystonejs.com', token: MAGIC_TOKEN, password: 'NEW PASSWORD' },
+          variables: {
+            email: 'boris@keystonejs.com',
+            token: MAGIC_TOKEN,
+            password: 'NEW PASSWORD',
+          },
         });
 
         expect(body.errors).toBe(undefined);
@@ -891,7 +911,11 @@ describe('Auth testing', () => {
               }
             }
           `,
-          variables: { email: 'boris@keystonejs.com', token: MAGIC_TOKEN, password: 'NEW PASSWORD' },
+          variables: {
+            email: 'boris@keystonejs.com',
+            token: MAGIC_TOKEN,
+            password: 'NEW PASSWORD',
+          },
         });
 
         expect(result.body.errors).toBe(undefined);
@@ -1018,7 +1042,11 @@ describe('Auth testing', () => {
               }
             }
           `,
-          variables: { email: 'boris@keystonejs.com', token: MAGIC_TOKEN, password: 'NEW PASSWORD' },
+          variables: {
+            email: 'boris@keystonejs.com',
+            token: MAGIC_TOKEN,
+            password: 'NEW PASSWORD',
+          },
         });
         // Redeem twice
         const { body } = await graphQLRequest({
