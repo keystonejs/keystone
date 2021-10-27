@@ -2,7 +2,7 @@
 /** @jsx jsx */
 
 import 'intersection-observer';
-import { RefObject, useEffect, useMemo, useState, createContext, useContext } from 'react';
+import { RefObject, useEffect, useMemo, useState, createContext, useContext, useRef } from 'react';
 
 import { jsx } from '@keystone-ui/core';
 import { MultiSelect, Select, selectComponents } from '@keystone-ui/fields';
@@ -11,14 +11,18 @@ import { IdFieldConfig, ListMeta } from '../../../../types';
 import { gql, TypedDocumentNode, useQuery } from '../../../../admin-ui/apollo';
 
 function useIntersectionObserver(cb: IntersectionObserverCallback, ref: RefObject<any>) {
+  const cbRef = useRef(cb);
   useEffect(() => {
-    let observer = new IntersectionObserver(cb, {});
+    cbRef.current = cb;
+  });
+  useEffect(() => {
+    let observer = new IntersectionObserver((...args) => cbRef.current(...args), {});
     let node = ref.current;
     if (node !== null) {
       observer.observe(node);
       return () => observer.unobserve(node);
     }
-  });
+  }, [ref]);
 }
 
 const idValidators = {
@@ -30,6 +34,20 @@ const idValidators = {
     return /^\d+$/.test(value);
   },
 };
+
+function useDebouncedValue<T>(value: T, limitMs: number): T {
+  const [debouncedValue, setDebouncedValue] = useState(() => value);
+
+  useEffect(() => {
+    let id = setTimeout(() => {
+      setDebouncedValue(value);
+    }, limitMs);
+    return () => {
+      return clearTimeout(id);
+    };
+  }, [value, limitMs]);
+  return debouncedValue;
+}
 
 function useFilter(search: string, list: ListMeta) {
   return useMemo(() => {
@@ -123,7 +141,8 @@ export const RelationshipSelect = ({
     }
   `;
 
-  const where = useFilter(search, list);
+  const debouncedSearch = useDebouncedValue(search, 200);
+  const where = useFilter(debouncedSearch, list);
 
   const { data, error, loading, fetchMore } = useQuery(QUERY, {
     fetchPolicy: 'network-only',
