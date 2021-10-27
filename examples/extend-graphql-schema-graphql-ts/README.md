@@ -1,4 +1,4 @@
-## Feature Example - Extend GraphQL Schema GraphQL
+## Feature Example - Extend GraphQL Schema GraphQL TS
 
 This project demonstrates how to extend the GraphQL API provided by Keystone with custom queries and mutations using [graphql-ts](https://github.com/Thinkmill/graphql-ts).
 It builds on the [Blog](../blog) starter project.

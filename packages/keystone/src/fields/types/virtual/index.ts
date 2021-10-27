@@ -18,7 +18,7 @@ export type VirtualFieldConfig<TGeneratedListTypes extends BaseGeneratedListType
     field:
       | VirtualFieldGraphQLField
       | ((lists: Record<string, ListInfo>) => VirtualFieldGraphQLField);
-    unreferencedConcreteInterfaceImplementations?: graphql.ObjectType<any>[];
+    unreferencedConcreteInterfaceImplementations?: readonly graphql.ObjectType<any>[];
     ui?: {
       /**
        * Defines what the Admin UI should fetch from this field, it's interpolated into a query like this:

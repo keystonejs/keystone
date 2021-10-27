@@ -345,7 +345,10 @@ Options:
 - `queryLimits` (default: `undefined`): Allows you to limit the total number of results returned from a query to your GraphQL API.
   See also the per-list `graphql.queryLimits` option in the [Schema API](./schema).
 - `path` (default: `'/api/graphql'`): The path of the GraphQL API endpoint.
-- `cors` (default: `rocess.env.NODE_ENV !== 'production' ? { origin: 'https://studio.apollographql.com', credentials: true } : undefined`): The CORS configuration to use on the GraphQL API endpoint. The default is setup to allow access access to API from the Apollo Sandbox during development
+- `playground` (default: `process.env.NODE_ENV !== 'production'`)
+  - `true` - Add `ApolloServerPluginLandingPageGraphQLPlayground` to the Apollo Server plugins
+  - `false` - Add `ApolloServerPluginLandingPageDisabled` to the Apollo Server plugins
+  - `'apollo'` - Do not add any plugins to the Apollo config, this will use [Apollo Sandbox](https://www.apollographql.com/docs/apollo-server/testing/build-run-queries/#apollo-sandbox)
 - `apolloConfig` (default: `undefined`): Allows you to pass [extra options](https://www.apollographql.com/docs/apollo-server/api/apollo-server/#constructor) into the `ApolloServer` constructor.
 
 ```typescript

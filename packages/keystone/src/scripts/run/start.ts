@@ -28,18 +28,22 @@ export const start = async (cwd: string) => {
   await keystone.connect();
 
   console.log('✨ Creating server');
-  const server = await createExpressServer(config, graphQLSchema, keystone.createContext);
+  const { expressServer } = await createExpressServer(
+    config,
+    graphQLSchema,
+    keystone.createContext
+  );
   console.log(`✅ GraphQL API ready`);
   if (!config.ui?.isDisabled) {
     console.log('✨ Preparing Admin UI Next.js app');
-    server.use(
+    expressServer.use(
       await createAdminUIMiddleware(config, keystone.createContext, false, getAdminPath(cwd))
     );
     console.log(`✅ Admin UI ready`);
   }
 
   const port = config.server?.port || process.env.PORT || 3000;
-  server.listen(port, (err?: any) => {
+  expressServer.listen(port, (err?: any) => {
     if (err) throw err;
     console.log(`⭐️ Server Ready on http://localhost:${port}`);
   });

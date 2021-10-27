@@ -10,7 +10,7 @@ To run this project:
 
 1. Clone the Keystone repository locally
 2. Navigate to this directory `cd examples/blog`
-3. Run `yarn dev`
+3. Run `yarn install` and then `yarn dev`
 
 This will start the Admin UI at [localhost:3000](http://localhost:3000).
 You can use the Admin UI to create items in your database.

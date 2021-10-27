@@ -1,6 +1,6 @@
 import { Browser, Page } from 'playwright';
 import fetch from 'node-fetch';
-import { exampleProjectTests, initFirstItemTest } from './utils';
+import { exampleProjectTests, initFirstItemTest, loadIndex } from './utils';
 
 exampleProjectTests('../examples-staging/basic', browserType => {
   let browser: Browser = undefined as any;
@@ -8,7 +8,7 @@ exampleProjectTests('../examples-staging/basic', browserType => {
   beforeAll(async () => {
     browser = await browserType.launch();
     page = await browser.newPage();
-    await page.goto('http://localhost:3000');
+    await loadIndex(page);
   });
   initFirstItemTest(() => page);
   test('sign out and sign in', async () => {

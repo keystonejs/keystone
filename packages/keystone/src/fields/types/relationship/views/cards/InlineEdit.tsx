@@ -28,7 +28,7 @@ export function InlineEdit({
   onCancel,
   onSave,
 }: {
-  fields: string[];
+  fields: readonly string[];
   list: ListMeta;
   selectedFields: string;
   itemGetter: DataGetter<ItemData>;

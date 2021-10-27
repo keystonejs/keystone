@@ -132,7 +132,7 @@ export function useItemState({
   };
 }
 
-export function useFieldsObj(list: ListMeta, fields: string[] | undefined) {
+export function useFieldsObj(list: ListMeta, fields: readonly string[] | undefined) {
   return useMemo(() => {
     const editFields: Record<string, FieldMeta> = {};
     fields?.forEach(fieldPath => {

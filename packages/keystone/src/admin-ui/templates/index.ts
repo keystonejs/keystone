@@ -15,7 +15,8 @@ export const writeAdminFiles = (
   graphQLSchema: GraphQLSchema,
   adminMeta: AdminMetaRootVal,
   configFileExists: boolean,
-  projectAdminPath: string
+  projectAdminPath: string,
+  isLiveReload: boolean
 ): AdminFileToWrite[] => {
   if (
     config.experimental?.enableNextJsGraphqlApiEndpoint &&
@@ -38,7 +39,8 @@ export const writeAdminFiles = (
         adminMeta,
         graphQLSchema,
         { configFileExists, projectAdminPath },
-        config.graphql?.path || '/api/graphql'
+        config.graphql?.path || '/api/graphql',
+        isLiveReload
       ),
       outputPath: 'pages/_app.js',
     },
