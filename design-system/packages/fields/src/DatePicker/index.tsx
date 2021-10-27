@@ -1,9 +1,10 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 
-import React, { Fragment, useCallback } from 'react';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import FocusLock from 'react-focus-lock';
 import { jsx } from '@keystone-ui/core';
-import { PopoverDialog, usePopover } from '@keystone-ui/popover';
+import { PopoverDialog, useControlledPopover } from '@keystone-ui/popover';
 
 import { formatDMY, formatDateType } from '../utils/dateFormatters';
 import { DateType } from '../types';
@@ -15,22 +16,60 @@ export type DateInputValue = string | undefined;
 export type DatePickerProps = {
   onUpdate: (value: DateType) => void;
   onClear: () => void;
-  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
+  onBlur?: () => void;
   value: DateType;
 };
 
-export const DatePicker = ({ value, onUpdate, onClear, onBlur, ...props }: DatePickerProps) => {
-  const { isOpen, setOpen, dialog, trigger, arrow } = usePopover({
-    placement: 'bottom-start',
-    modifiers: [
-      {
-        name: 'offset',
-        options: {
-          offset: [0, 8],
-        },
-      },
-    ],
+export function useEventCallback<Func extends (...args: any) => any>(callback: Func): Func {
+  const callbackRef = useRef(callback);
+  const cb = useCallback((...args) => {
+    return callbackRef.current(...args);
+  }, []);
+  useEffect(() => {
+    callbackRef.current = callback;
   });
+  return cb as any;
+}
+
+export const DatePicker = ({
+  value,
+  onUpdate,
+  onClear,
+  onBlur: _onBlur,
+  ...props
+}: DatePickerProps) => {
+  const [isOpen, _setOpen] = useState(false);
+  const onBlur = useEventCallback(() => {
+    _onBlur?.();
+  });
+  const setOpen = useCallback(
+    (val: boolean) => {
+      _setOpen(val);
+      if (!val) {
+        onBlur?.();
+      }
+    },
+    [onBlur]
+  );
+  const { dialog, trigger, arrow } = useControlledPopover(
+    {
+      isOpen,
+      onClose: useCallback(() => {
+        setOpen(false);
+      }, [setOpen]),
+    },
+    {
+      placement: 'bottom-start',
+      modifiers: [
+        {
+          name: 'offset',
+          options: {
+            offset: [0, 8],
+          },
+        },
+      ],
+    }
+  );
 
   const handleDayClick = useCallback(
     (day: Date) => {
@@ -51,7 +90,14 @@ export const DatePicker = ({ value, onUpdate, onClear, onBlur, ...props }: DateP
       <InputButton
         aria-label={'Choose date' + (formattedDate ? `, selected date is ${formattedDate}` : '')}
         onClick={() => setOpen(true)}
-        onClear={value ? onClear : undefined}
+        onClear={
+          value
+            ? () => {
+                onClear();
+                onBlur?.();
+              }
+            : undefined
+        }
         isSelected={isOpen}
         ref={trigger.ref}
         {...props}

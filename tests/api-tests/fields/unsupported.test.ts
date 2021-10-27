@@ -1,55 +1,65 @@
-import path from 'path';
 import globby from 'globby';
-import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
-import { createSchema, list } from '@keystone-next/keystone/schema';
+import { list } from '@keystone-next/keystone';
+import { text } from '@keystone-next/keystone/fields';
+import { setupTestEnv } from '@keystone-next/keystone/testing';
+import { apiTestConfig } from '../utils';
 
-const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.{js,ts}`, {
+const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
 });
-testModules.push(path.resolve('packages-next/fields/src/tests/test-fixtures.js'));
 
-multiAdapterRunners().map(({ provider, after }) => {
-  const unsupportedModules = testModules
-    .map(require)
-    .filter(({ unSupportedAdapterList = [] }) => unSupportedAdapterList.includes(provider));
-  if (unsupportedModules.length > 0) {
-    describe(`${provider} provider`, () => {
-      unsupportedModules.forEach(mod => {
-        (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
-          const listKey = 'Test';
+const unsupportedModules = testModules
+  .map(require)
+  .filter(({ unSupportedAdapterList = [] }) =>
+    unSupportedAdapterList.includes(process.env.TEST_ADAPTER)
+  );
+if (unsupportedModules.length > 0) {
+  unsupportedModules.forEach(mod => {
+    (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
+      const listKey = 'Test';
 
-          describe(`${mod.name} - Unsupported field type`, () => {
-            beforeAll(() => {
-              if (mod.beforeAll) {
-                mod.beforeAll();
-              }
-            });
-            afterAll(async () => {
-              if (mod.afterAll) {
-                await mod.afterAll();
-              }
-              // We expect setup to fail, so disconnect can be a noop
-              await after({ disconnect: () => {} });
-            });
+      describe(`${mod.name} - Unsupported field type`, () => {
+        beforeEach(() => {
+          if (mod.beforeEach) {
+            mod.beforeEach();
+          }
+        });
+        afterEach(async () => {
+          if (mod.afterEach) {
+            await mod.afterEach();
+          }
+        });
+        beforeAll(() => {
+          if (mod.beforeAll) {
+            mod.beforeAll();
+          }
+        });
+        afterAll(async () => {
+          if (mod.afterAll) {
+            await mod.afterAll();
+          }
+        });
 
-            test('Throws', async () => {
-              await expect(async () =>
-                setupFromConfig({
-                  provider,
-                  config: testConfig({
-                    lists: createSchema({
-                      [listKey]: list({ fields: mod.getTestFields(matrixValue) }),
+        test('Throws', async () => {
+          await expect(
+            async () =>
+              await setupTestEnv({
+                config: apiTestConfig({
+                  lists: {
+                    [listKey]: list({
+                      fields: { name: text(), ...mod.getTestFields(matrixValue) },
                     }),
-                  }),
-                })
-              ).rejects.toThrow(Error);
-            });
-          });
+                  },
+                  images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
+                  files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
+                }),
+              })
+          ).rejects.toThrow(Error);
         });
       });
     });
-  } else {
-    // Appease jest, which doesn't like it when you have an empty test file.
-    test('noop', () => {});
-  }
-});
+  });
+} else {
+  // Appease jest, which doesn't like it when you have an empty test file.
+  test('noop', () => {});
+}

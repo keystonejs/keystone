@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 
 import { Children, Fragment, ReactNode, isValidElement } from 'react';
@@ -6,7 +7,7 @@ import { jsx } from '../emotion';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import { useTheme } from '../theme';
 import { Theme } from '../types';
-import { forwardRefWithAs, mapResponsiveProp } from '../utils';
+import { forwardRefWithAs, mapResponsiveProp, getChildTag } from '../utils';
 
 import { Box, BoxProps } from './Box';
 import { Divider } from './Divider';
@@ -51,6 +52,7 @@ export const Stack = forwardRefWithAs<'div', StackProps>(
 
     const orientation = across ? 'horizontal' : 'vertical';
     const { dimension, flexDirection, marginProperty } = orientationMap[orientation];
+    const ChildWrapper = getChildTag(props.as);
 
     return (
       <Box
@@ -76,7 +78,7 @@ export const Stack = forwardRefWithAs<'div', StackProps>(
                 {dividers !== 'none' && index ? <Divider orientation={orientation} /> : null}
 
                 {/* wrap the child to avoid unwanted or unexpected "stretch" on things like buttons */}
-                <div css={{ ':empty': { display: 'none' } }}>{child}</div>
+                <ChildWrapper css={{ ':empty': { display: 'none' } }}>{child}</ChildWrapper>
               </Fragment>
             );
           })}

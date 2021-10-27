@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 
 import {
@@ -64,8 +65,8 @@ export const Tooltip = ({
   });
 
   const tooltipId = useId();
-  const showTooltip = useCallback(() => setOpen(true), []);
-  const hideTooltip = useCallback(() => setOpen(false), []);
+  const showTooltip = useCallback(() => setOpen(true), [setOpen]);
+  const hideTooltip = useCallback(() => setOpen(false), [setOpen]);
   const internalRef = useRef<HTMLElement>(null);
 
   // avoid overriding the consumer's `onClick` handler
@@ -77,7 +78,7 @@ export const Tooltip = ({
 
       return () => triggerEl.removeEventListener('click', hideTooltip);
     }
-  }, [isOpen]);
+  }, [isOpen, hideOnClick, hideTooltip]);
 
   return (
     <Fragment>

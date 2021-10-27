@@ -1,15 +1,12 @@
-import { multiAdapterRunners } from '@keystone-next/test-utils-legacy';
-import { KeystoneContext } from '@keystone-next/types';
-import { arrayToObject } from '@keystone-next/utils-legacy';
+import { setupTestEnv, TestEnv } from '@keystone-next/keystone/testing';
+import { getGqlNames, KeystoneContext } from '@keystone-next/keystone/types';
 import {
-  setupKeystone,
-  getStaticListName,
-  getImperativeListName,
-  getDeclarativeListName,
-  listAccessVariations,
+  getListName,
+  listConfigVariables,
   fieldMatrix,
   getFieldName,
-} from './utils';
+  config,
+} from './schema-utils';
 
 const introspectionQuery = `{
   __schema {
@@ -35,208 +32,455 @@ const introspectionQuery = `{
   }
 }`;
 
-const staticList = getStaticListName({ create: true, read: true, update: true, delete: true });
-const imperativeList = getImperativeListName({
-  create: true,
-  read: true,
-  update: true,
-  delete: true,
+describe(`Public schema`, () => {
+  let testEnv: TestEnv, context: KeystoneContext;
+  let queries: string[],
+    mutations: string[],
+    types: string[],
+    typesByName: Record<string, any>,
+    fieldTypes: Record<
+      string,
+      { name: string; fields: Record<string, any>; inputFields: Record<string, any> }
+    >;
+  let __schema: {
+    types: { name: string; fields: { name: string }[]; inputFields: { name: string }[] }[];
+    queryType: { fields: { name: string }[] };
+    mutationType: { fields: { name: string }[] };
+  };
+  beforeAll(async () => {
+    testEnv = await setupTestEnv({ config });
+    context = testEnv.testArgs.context;
+
+    await testEnv.connect();
+
+    const data = await context.graphql.run({ query: introspectionQuery });
+    __schema = data.__schema;
+    queries = __schema.queryType.fields.map(({ name }) => name);
+    mutations = __schema.mutationType.fields.map(({ name }) => name);
+    types = __schema.types.map(({ name }) => name);
+    typesByName = Object.fromEntries(__schema.types.map(t => [t.name, t]));
+    fieldTypes = Object.fromEntries(
+      __schema.types.map(type => [
+        type.name,
+        {
+          name: type.name,
+          fields: Object.fromEntries((type.fields || []).map(x => [x.name, x])),
+          inputFields: Object.fromEntries((type.inputFields || []).map(x => [x.name, x])),
+        },
+      ])
+    );
+  });
+  afterAll(async () => {
+    await testEnv.disconnect();
+  });
+
+  describe('config', () => {
+    listConfigVariables.forEach(config => {
+      test(JSON.stringify(config), async () => {
+        const name = getListName(config);
+        const gqlNames = getGqlNames({ listKey: name, pluralGraphQLName: `${name}s` });
+        // The type is used in all the queries and mutations as a return type.
+        if (config.omit === true) {
+          expect(types).not.toContain(gqlNames.outputTypeName);
+        } else {
+          expect(types).toContain(gqlNames.outputTypeName);
+        }
+        // The whereUnique input type is used in queries and mutations, and
+        // also in the relateTo input types.
+        if (config.omit === true) {
+          expect(types).not.toContain(gqlNames.whereUniqueInputName);
+        } else {
+          expect(types).toContain(gqlNames.whereUniqueInputName);
+        }
+
+        // The relateTo types do not exist if the list has been completely disabled
+        if (config.omit === true) {
+          expect(types).not.toContain(gqlNames.relateToManyForCreateInputName);
+          expect(types).not.toContain(gqlNames.relateToOneForCreateInputName);
+          expect(types).not.toContain(gqlNames.relateToManyForUpdateInputName);
+          expect(types).not.toContain(gqlNames.relateToOneForUpdateInputName);
+        } else {
+          expect(types).toContain(gqlNames.relateToManyForCreateInputName);
+          expect(types).toContain(gqlNames.relateToOneForCreateInputName);
+          expect(types).toContain(gqlNames.relateToManyForUpdateInputName);
+          expect(types).toContain(gqlNames.relateToOneForUpdateInputName);
+
+          const createFromMany = typesByName[
+            gqlNames.relateToManyForCreateInputName
+          ].inputFields.map(({ name }: { name: string }) => name);
+          const createFromOne = typesByName[gqlNames.relateToOneForCreateInputName].inputFields.map(
+            ({ name }: { name: string }) => name
+          );
+          const updateFromMany = typesByName[
+            gqlNames.relateToManyForUpdateInputName
+          ].inputFields.map(({ name }: { name: string }) => name);
+          const updateFromOne = typesByName[gqlNames.relateToOneForUpdateInputName].inputFields.map(
+            ({ name }: { name: string }) => name
+          );
+
+          expect(createFromMany).not.toContain('unusedPlaceholder');
+
+          if (config.omit === undefined || !config.omit.includes('create')) {
+            expect(createFromMany).toContain('create');
+            expect(createFromOne).toContain('create');
+            expect(updateFromMany).toContain('create');
+            expect(updateFromOne).toContain('create');
+          } else {
+            expect(createFromMany).not.toContain('create');
+            expect(createFromOne).not.toContain('create');
+            expect(updateFromMany).not.toContain('create');
+            expect(updateFromOne).not.toContain('create');
+          }
+          // The connect/disconnect/set operations are always supported.
+          expect(createFromMany).toContain('connect');
+          expect(createFromOne).toContain('connect');
+          expect(updateFromMany).toContain('connect');
+          expect(updateFromOne).toContain('connect');
+          expect(updateFromMany).toContain('disconnect');
+          expect(updateFromOne).toContain('disconnect');
+          expect(updateFromMany).toContain('set');
+        }
+
+        expect(types).toContain(gqlNames.whereInputName);
+
+        // Queries are only accessible when reading
+        if (config.omit !== true && (config.omit === undefined || !config.omit.includes('query'))) {
+          expect(queries).toContain(gqlNames.itemQueryName);
+          expect(queries).toContain(gqlNames.listQueryName);
+          expect(queries).toContain(gqlNames.listQueryCountName);
+        } else {
+          expect(queries).not.toContain(gqlNames.itemQueryName);
+          expect(queries).not.toContain(gqlNames.listQueryName);
+          expect(queries).not.toContain(gqlNames.listQueryCountName);
+        }
+
+        if (
+          config.omit !== true &&
+          (config.omit === undefined || !config.omit.includes('create'))
+        ) {
+          expect(mutations).toContain(gqlNames.createMutationName);
+        } else {
+          expect(mutations).not.toContain(gqlNames.createMutationName);
+        }
+
+        if (
+          config.omit !== true &&
+          (config.omit === undefined || !config.omit.includes('update'))
+        ) {
+          expect(mutations).toContain(gqlNames.updateMutationName);
+        } else {
+          expect(mutations).not.toContain(gqlNames.updateMutationName);
+        }
+
+        if (
+          config.omit !== true &&
+          (config.omit === undefined || !config.omit.includes('delete'))
+        ) {
+          expect(mutations).toContain(gqlNames.deleteMutationName);
+        } else {
+          expect(mutations).not.toContain(gqlNames.deleteMutationName);
+        }
+      });
+    });
+
+    fieldMatrix.forEach(config => {
+      for (const isFilterable of [undefined, false as const]) {
+        for (const isOrderable of [undefined, false as const]) {
+          const listName = getListName({ isFilterable, isOrderable });
+          test(`schema - ${JSON.stringify(config)} on ${listName}`, () => {
+            const name = getFieldName(config);
+
+            expect(fieldTypes[listName].fields).not.toBe(null);
+            const fields = fieldTypes[listName].fields;
+            if (
+              config.omit !== true &&
+              (config.omit === undefined || !config.omit.includes('read'))
+            ) {
+              expect(fields[name]).not.toBe(undefined);
+            } else {
+              expect(fields[name]).toBe(undefined);
+            }
+
+            // Filters require both `read` and `filter` to be true for
+            expect(fieldTypes[`${listName}WhereInput`].inputFields).not.toBe(undefined);
+            if (
+              config.omit !== true && // Not excluded
+              (config.omit === undefined || !config.omit.includes('read')) && // Can read
+              isFilterable !== false &&
+              config.isFilterable !== false // Can filter
+            ) {
+              expect(fieldTypes[`${listName}WhereInput`].inputFields[name]).not.toBe(undefined);
+            } else {
+              expect(fieldTypes[`${listName}WhereInput`].inputFields[name]).toBe(undefined);
+            }
+
+            // Orderby require both `read` and `orderBy` to be true for
+            expect(fieldTypes[`${listName}OrderByInput`].inputFields).not.toBe(undefined);
+            if (
+              config.omit !== true && // Not excluded
+              (config.omit === undefined || !config.omit.includes('read')) && // Can read
+              isOrderable !== false &&
+              config.isOrderable !== false // Can orderBy
+            ) {
+              expect(fieldTypes[`${listName}OrderByInput`].inputFields[name]).not.toBe(undefined);
+            } else {
+              expect(fieldTypes[`${listName}OrderByInput`].inputFields[name]).toBe(undefined);
+            }
+
+            // Create inputs
+            expect(fieldTypes[`${listName}CreateInput`].inputFields).not.toBe(undefined);
+
+            if (
+              config.omit !== true && // Not excluded
+              (config.omit === undefined || !config.omit.includes('create')) // Can create
+            ) {
+              expect(fieldTypes[`${listName}CreateInput`].inputFields[name]).not.toBe(undefined);
+            } else {
+              expect(fieldTypes[`${listName}CreateInput`].inputFields[name]).toBe(undefined);
+            }
+
+            // Update inputs
+            expect(fieldTypes[`${listName}UpdateInput`].inputFields).not.toBe(undefined);
+            if (
+              config.omit !== true && // Not excluded
+              (config.omit === undefined || !config.omit.includes('update')) // Can update
+            ) {
+              expect(fieldTypes[`${listName}UpdateInput`].inputFields[name]).not.toBe(undefined);
+            } else {
+              expect(fieldTypes[`${listName}UpdateInput`].inputFields[name]).toBe(undefined);
+            }
+          });
+          test(`adminMeta - isFilterable and isOrderable ${JSON.stringify(
+            config
+          )} on ${listName}`, async () => {
+            const query = `
+              query q($listName: String!) {
+                keystone {
+                  adminMeta {
+                    list(key: $listName) {
+                      fields {
+                        path
+                        isFilterable
+                        isOrderable
+                      }
+                    }
+                  }
+                }
+              }`;
+            const variables = { listName };
+            const { data, errors } = await context.graphql.raw({ query, variables });
+            expect(errors).toBe(undefined);
+
+            const field = data!.keystone.adminMeta.list.fields.filter(
+              (f: any) => f.path === getFieldName(config)
+            )[0];
+            if (config.omit === true || config.omit?.includes('read')) {
+              // FIXME: This code path will go away once the Admin UI supports `omit: ['read']` properly.
+              expect(field).toBe(undefined);
+            } else {
+              // Filters require both `read` and `filter` to be true for
+              if (
+                // @ts-ignore
+                config.omit !== true && // Not excluded
+                (config.omit === undefined || !config.omit.includes('read')) && // Can read
+                isFilterable !== false &&
+                config.isFilterable !== false // Can filter
+              ) {
+                expect(field.isFilterable).toEqual(true);
+              } else {
+                expect(field.isFilterable).toEqual(false);
+              }
+
+              // Orderby require both `read` and `orderBy` to be true for
+              if (
+                // @ts-ignore
+                config.omit !== true && // Not excluded
+                (config.omit === undefined || !config.omit.includes('read')) && // Can read
+                isOrderable !== false &&
+                config.isOrderable !== false // Can orderBy
+              ) {
+                expect(field.isOrderable).toEqual(true);
+              } else {
+                expect(field.isOrderable).toEqual(false);
+              }
+            }
+          });
+
+          test(`adminMeta - not build mode ${JSON.stringify(config)} on ${listName}`, async () => {
+            const item = await context.sudo().query[listName].createOne({ data: {} });
+            const query = `
+              query q($listName: String!) {
+                keystone {
+                  adminMeta {
+                    list(key: $listName) {
+                      key
+                      fields {
+                        path
+                        createView { fieldMode }
+                        listView { fieldMode }
+                        itemView(id: "${item.id}") { fieldMode }
+                      }
+                    }
+                  }
+                }
+              }`;
+            const variables = { listName };
+
+            const { data, errors } = await context
+              .withSession({})
+              .graphql.raw({ query, variables });
+            expect(errors).toBe(undefined);
+
+            const field = data!.keystone.adminMeta.list.fields.filter(
+              (f: any) => f.path === getFieldName(config)
+            )[0];
+
+            if (config.omit === true || config.omit?.includes('read')) {
+              // FIXME: This code path will go away once the Admin UI supports `omit: ['read']` properly.
+              expect(field).toBe(undefined);
+            } else {
+              // createView - edit/hidden (hidden if omit.create)
+              // @ts-ignore
+              if (config.omit === true || config.omit?.includes('create')) {
+                expect(field.createView.fieldMode).toEqual('hidden');
+              } else {
+                expect(field.createView.fieldMode).toEqual('edit');
+              }
+
+              // listView - read/hidden (hidden if omit.read)
+              // @ts-ignore
+              if (config.omit === true || config.omit?.includes('read')) {
+                expect(field.listView.fieldMode).toEqual('hidden');
+              } else {
+                expect(field.listView.fieldMode).toEqual('read');
+              }
+
+              // itemView - edit/read/hidden (read if omit.update, hidden if omit.read)
+              // @ts-ignore
+              if (config.omit === true || config.omit?.includes('read')) {
+                expect(field.itemView.fieldMode).toEqual('hidden');
+              } else if (config.omit?.includes('update')) {
+                expect(field.itemView.fieldMode).toEqual('read');
+              } else {
+                expect(field.itemView.fieldMode).toEqual('edit');
+              }
+            }
+          });
+        }
+      }
+    });
+  });
 });
 
-multiAdapterRunners().map(({ before, after, provider }) =>
-  describe(`Provider: ${provider}`, () => {
-    let keystone: any,
-      queries: string[],
-      mutations: string[],
-      types: string[],
-      fieldTypes: Record<
-        string,
-        { name: string; fields: Record<string, any>; inputFields: Record<string, any> }
-      >,
-      context: KeystoneContext;
-    beforeAll(async () => {
-      const _before = await before(setupKeystone);
-      keystone = _before.keystone;
-      context = _before.context;
+describe(`Sudo schema`, () => {
+  let testEnv: TestEnv, context: KeystoneContext;
+  let queries: string[],
+    mutations: string[],
+    types: string[],
+    typesByName: Record<string, any>,
+    fieldTypes: Record<
+      string,
+      { name: string; fields: Record<string, any>; inputFields: Record<string, any> }
+    >;
+  let __schema: {
+    types: { name: string; fields: { name: string }[]; inputFields: { name: string }[] }[];
+    queryType: { fields: { name: string }[] };
+    mutationType: { fields: { name: string }[] };
+  };
+  beforeAll(async () => {
+    testEnv = await setupTestEnv({ config });
+    context = testEnv.testArgs.context;
 
-      const data = await context.exitSudo().graphql.run({ query: introspectionQuery });
-      const __schema: {
-        types: { name: string; fields: { name: string }[]; inputFields: { name: string }[] }[];
-        queryType: { fields: { name: string }[] };
-        mutationType: { fields: { name: string }[] };
-      } = data.__schema;
-      queries = __schema.queryType.fields.map(({ name }) => name);
-      mutations = __schema.mutationType.fields.map(({ name }) => name);
-      types = __schema.types.map(({ name }) => name);
-      fieldTypes = __schema.types.reduce(
-        (acc, type) => ({
-          ...acc,
-          [type.name]: {
-            name: type.name,
-            fields: arrayToObject(type.fields || [], 'name'),
-            inputFields: arrayToObject(type.inputFields || [], 'name'),
-          },
-        }),
-        {}
-      );
-    });
-    afterAll(async () => {
-      await after(keystone);
-    });
+    await testEnv.connect();
 
-    describe('static', () => {
-      listAccessVariations.forEach(access => {
-        test(JSON.stringify(access), async () => {
-          const name = getStaticListName(access);
-          // The type is used in all the queries and mutations as a return type
-          if (access.create || access.read || access.update || access.delete) {
-            expect(types).toContain(`${name}`);
-            // Filter types are also available for update/delete/create (thanks
-            // to nested mutations)
-            expect(types).toContain(`${name}WhereInput`);
-            expect(types).toContain(`${name}WhereUniqueInput`);
-          } else {
-            expect(types).not.toContain(`${name}`);
-            expect(types).not.toContain(`${name}WhereInput`);
-            expect(types).not.toContain(`${name}WhereUniqueInput`);
-          }
+    const data = await context.sudo().graphql.run({ query: introspectionQuery });
+    __schema = data.__schema;
+    queries = __schema.queryType.fields.map(({ name }) => name);
+    mutations = __schema.mutationType.fields.map(({ name }) => name);
+    types = __schema.types.map(({ name }) => name);
+    typesByName = Object.fromEntries(__schema.types.map(t => [t.name, t]));
+    fieldTypes = Object.fromEntries(
+      __schema.types.map(type => [
+        type.name,
+        {
+          name: type.name,
+          fields: Object.fromEntries((type.fields || []).map(x => [x.name, x])),
+          inputFields: Object.fromEntries((type.inputFields || []).map(x => [x.name, x])),
+        },
+      ])
+    );
+  });
+  afterAll(async () => {
+    await testEnv.disconnect();
+  });
 
-          // Queries are only accessible when reading
-          if (access.read) {
-            expect(queries).toContain(`${name}`);
-            expect(queries).toContain(`all${name}s`);
-            expect(queries).toContain(`_all${name}sMeta`);
-          } else {
-            expect(queries).not.toContain(`${name}`);
-            expect(queries).not.toContain(`all${name}s`);
-            expect(queries).not.toContain(`_all${name}sMeta`);
-          }
-
-          if (access.create) {
-            expect(mutations).toContain(`create${name}`);
-          } else {
-            expect(mutations).not.toContain(`create${name}`);
-          }
-
-          if (access.update) {
-            expect(mutations).toContain(`update${name}`);
-          } else {
-            expect(mutations).not.toContain(`update${name}`);
-          }
-
-          if (access.delete) {
-            expect(mutations).toContain(`delete${name}`);
-          } else {
-            expect(mutations).not.toContain(`delete${name}`);
-          }
-        });
+  describe('config', () => {
+    listConfigVariables.forEach(config => {
+      test(JSON.stringify(config), async () => {
+        const name = getListName(config);
+        const gqlNames = getGqlNames({ listKey: name, pluralGraphQLName: `${name}s` });
+        expect(types).toContain(gqlNames.outputTypeName);
+        expect(types).toContain(gqlNames.whereUniqueInputName);
+        expect(types).toContain(gqlNames.relateToManyForCreateInputName);
+        expect(types).toContain(gqlNames.relateToOneForCreateInputName);
+        expect(types).toContain(gqlNames.relateToManyForUpdateInputName);
+        expect(types).toContain(gqlNames.relateToOneForUpdateInputName);
+        const createFromMany = typesByName[gqlNames.relateToManyForCreateInputName].inputFields.map(
+          ({ name }: { name: string }) => name
+        );
+        const createFromOne = typesByName[gqlNames.relateToOneForCreateInputName].inputFields.map(
+          ({ name }: { name: string }) => name
+        );
+        const updateFromMany = typesByName[gqlNames.relateToManyForUpdateInputName].inputFields.map(
+          ({ name }: { name: string }) => name
+        );
+        const updateFromOne = typesByName[gqlNames.relateToOneForUpdateInputName].inputFields.map(
+          ({ name }: { name: string }) => name
+        );
+        expect(createFromMany).not.toContain('unusedPlaceholder');
+        expect(createFromMany).toContain('create');
+        expect(createFromOne).toContain('create');
+        expect(updateFromMany).toContain('create');
+        expect(updateFromOne).toContain('create');
+        expect(createFromMany).toContain('connect');
+        expect(createFromOne).toContain('connect');
+        expect(updateFromMany).toContain('connect');
+        expect(updateFromOne).toContain('connect');
+        expect(updateFromMany).toContain('disconnect');
+        expect(updateFromOne).toContain('disconnect');
+        expect(updateFromMany).toContain('set');
+        expect(types).toContain(gqlNames.whereInputName);
+        expect(queries).toContain(gqlNames.itemQueryName);
+        expect(queries).toContain(gqlNames.listQueryName);
+        expect(queries).toContain(gqlNames.listQueryCountName);
+        expect(mutations).toContain(gqlNames.createMutationName);
+        expect(mutations).toContain(gqlNames.updateMutationName);
+        expect(mutations).toContain(gqlNames.deleteMutationName);
       });
+    });
 
-      fieldMatrix.forEach(access => {
-        test(`${JSON.stringify(access)} on ${staticList}`, () => {
-          const name = getFieldName(access);
+    fieldMatrix.forEach(config => {
+      for (const isFilterable of [undefined, false as const]) {
+        for (const isOrderable of [undefined, false as const]) {
+          const listName = getListName({ isFilterable, isOrderable });
+          test(`${JSON.stringify(config)} on ${listName}`, () => {
+            const name = getFieldName(config);
 
-          expect(fieldTypes[staticList].fields).not.toBe(null);
+            expect(fieldTypes[listName].fields).not.toBe(null);
+            const fields = fieldTypes[listName].fields;
 
-          const fields = fieldTypes[staticList].fields;
-          if (access.read) {
             expect(fields[name]).not.toBe(undefined);
-          } else {
-            expect(fields[name]).toBe(undefined);
-          }
-
-          // Filter types are only used when reading
-          expect(fieldTypes[`${staticList}WhereInput`].inputFields).not.toBe(undefined);
-          if (access.read) {
-            expect(fieldTypes[`${staticList}WhereInput`].inputFields[name]).not.toBe(undefined);
-          } else {
-            expect(fieldTypes[`${staticList}WhereInput`].inputFields[name]).toBe(undefined);
-          }
-
-          // Create inputs
-          expect(fieldTypes[`${staticList}CreateInput`].inputFields).not.toBe(undefined);
-          if (access.create) {
-            expect(fieldTypes[`${staticList}CreateInput`].inputFields[name]).not.toBe(undefined);
-          } else {
-            expect(fieldTypes[`${staticList}CreateInput`].inputFields[name]).toBe(undefined);
-          }
-
-          // Update inputs
-          expect(fieldTypes[`${staticList}UpdateInput`].inputFields).not.toBe(undefined);
-          if (access.update) {
-            expect(fieldTypes[`${staticList}UpdateInput`].inputFields[name]).not.toBe(undefined);
-          } else {
-            expect(fieldTypes[`${staticList}UpdateInput`].inputFields[name]).toBe(undefined);
-          }
-        });
-
-        test(`${JSON.stringify(access)} on ${imperativeList}`, () => {
-          const name = getFieldName(access);
-
-          expect(fieldTypes[imperativeList].fields).not.toBe(null);
-
-          const fields = fieldTypes[imperativeList].fields;
-          expect(fields[name]).not.toBe(undefined);
-
-          // Filter types are only used when reading
-          expect(fieldTypes[`${imperativeList}WhereInput`].inputFields).not.toBe(undefined);
-          expect(fieldTypes[`${imperativeList}WhereInput`].inputFields[name]).not.toBe(undefined);
-
-          // Create inputs
-          expect(fieldTypes[`${imperativeList}CreateInput`].inputFields).not.toBe(undefined);
-          expect(fieldTypes[`${imperativeList}CreateInput`].inputFields[name]).not.toBe(undefined);
-
-          // Update inputs
-          expect(fieldTypes[`${imperativeList}UpdateInput`].inputFields).not.toBe(undefined);
-          expect(fieldTypes[`${imperativeList}UpdateInput`].inputFields[name]).not.toBe(undefined);
-        });
-      });
+            expect(fieldTypes[`${listName}WhereInput`].inputFields).not.toBe(undefined);
+            expect(fieldTypes[`${listName}WhereInput`].inputFields[name]).not.toBe(undefined);
+            expect(fieldTypes[`${listName}OrderByInput`].inputFields).not.toBe(undefined);
+            expect(fieldTypes[`${listName}OrderByInput`].inputFields[name]).not.toBe(undefined);
+            expect(fieldTypes[`${listName}CreateInput`].inputFields).not.toBe(undefined);
+            expect(fieldTypes[`${listName}CreateInput`].inputFields[name]).not.toBe(undefined);
+            expect(fieldTypes[`${listName}UpdateInput`].inputFields).not.toBe(undefined);
+            expect(fieldTypes[`${listName}UpdateInput`].inputFields[name]).not.toBe(undefined);
+          });
+        }
+      }
     });
-
-    describe('imperative', () => {
-      listAccessVariations.forEach(access => {
-        test(JSON.stringify(access), async () => {
-          const name = getImperativeListName(access);
-          // All types, etc, are included when imperative no matter the config (because
-          // it can't be resolved until runtime)
-          expect(types).toContain(`${name}`);
-          expect(types).toContain(`${name}WhereInput`);
-          expect(types).toContain(`${name}WhereUniqueInput`);
-
-          expect(queries).toContain(`${name}`);
-          expect(queries).toContain(`all${name}s`);
-          expect(queries).toContain(`_all${name}sMeta`);
-
-          expect(mutations).toContain(`create${name}`);
-          expect(mutations).toContain(`update${name}`);
-          expect(mutations).toContain(`delete${name}`);
-        });
-      });
-    });
-
-    describe('declarative', () => {
-      listAccessVariations.forEach(access => {
-        test(JSON.stringify(access), async () => {
-          const name = getDeclarativeListName(access);
-          // All types, etc, are included when declarative no matter the config (because
-          // it can't be resolved until runtime)
-          expect(types).toContain(`${name}`);
-          expect(types).toContain(`${name}WhereInput`);
-          expect(types).toContain(`${name}WhereUniqueInput`);
-
-          expect(queries).toContain(`${name}`);
-          expect(queries).toContain(`all${name}s`);
-          expect(queries).toContain(`_all${name}sMeta`);
-
-          if (access.create) {
-            expect(mutations).toContain(`create${name}`);
-          } else {
-            expect(mutations).not.toContain(`create${name}`);
-          }
-          expect(mutations).toContain(`update${name}`);
-          expect(mutations).toContain(`delete${name}`);
-        });
-      });
-    });
-  })
-);
+  });
+});

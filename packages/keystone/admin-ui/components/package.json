@@ -1,0 +1,4 @@
+{
+  "main": "dist/keystone-next-keystone-admin-ui-components.cjs.js",
+  "module": "dist/keystone-next-keystone-admin-ui-components.esm.js"
+}

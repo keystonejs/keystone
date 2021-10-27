@@ -10,13 +10,11 @@ module.exports = {
     es6: true,
     node: true,
     jest: true,
-    'cypress/globals': true,
   },
   plugins: [
     'react',
     'react-hooks',
     'jest',
-    'cypress',
     'import',
     '@typescript-eslint',
     '@preconstruct/format-js-tag',
@@ -33,6 +31,7 @@ module.exports = {
     'no-undef': 'error',
     'no-unused-expressions': 'error',
     'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'error',
     '@typescript-eslint/no-unused-vars': [
       'error',
       {

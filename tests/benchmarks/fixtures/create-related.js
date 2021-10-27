@@ -1,30 +1,28 @@
-const { text, relationship } = require('@keystone-next/fields');
-const { createSchema, list } = require('@keystone-next/keystone/schema');
-const { setupFromConfig } = require('@keystone-next/test-utils-legacy');
+const { text, relationship } = require('@keystone-next/keystone/fields');
+const { list } = require('@keystone-next/keystone');
+const { setupTestRunner } = require('@keystone-next/keystone/testing');
+const { apiTestConfig } = require('../../utils.ts');
 const { FixtureGroup, timeQuery, populate, range } = require('../lib/utils');
 
-function setupKeystone(provider) {
-  return setupFromConfig({
-    provider,
-    config: createSchema({
-      lists: {
-        User: list({
-          fields: {
-            name: text(),
-            posts: relationship({ ref: 'Post', many: true }),
-          },
-        }),
-        Post: list({
-          fields: {
-            title: text(),
-          },
-        }),
-      },
-    }),
-  });
-}
+const runner = setupTestRunner({
+  config: apiTestConfig({
+    lists: {
+      User: list({
+        fields: {
+          name: text(),
+          posts: relationship({ ref: 'Post', many: true }),
+        },
+      }),
+      Post: list({
+        fields: {
+          title: text(),
+        },
+      }),
+    },
+  }),
+});
 
-const group = new FixtureGroup(setupKeystone);
+const group = new FixtureGroup(runner);
 
 group.add({
   fn: async ({ context, provider }) => {
@@ -54,11 +52,11 @@ range(14).forEach(i => {
   group.add({
     fn: async ({ context, provider }) => {
       const query = `
-      mutation createMany($users: [UsersCreateInput]){
+      mutation createMany($users: [UserCreateInput!]!){
         createUsers(data: $users) { id }
       }`;
       const posts = { create: populate(M, i => ({ title: `post${i}` })) };
-      const variables = { users: populate(N, i => ({ data: { name: `test${i}`, posts } })) };
+      const variables = { users: populate(N, i => ({ name: `test${i}`, posts })) };
       const { time, success } = await timeQuery({ context, query, variables });
       console.log({
         provider,
@@ -77,11 +75,11 @@ range(k).forEach(i => {
   group.add({
     fn: async ({ context, provider }) => {
       const query = `
-      mutation createMany($users: [UsersCreateInput]){
+      mutation createMany($users: [UserCreateInput!]!){
         createUsers(data: $users) { id }
       }`;
       const posts = { create: populate(M, i => ({ title: `post${i}` })) };
-      const variables = { users: populate(N, i => ({ data: { name: `test${i}`, posts } })) };
+      const variables = { users: populate(N, i => ({ name: `test${i}`, posts })) };
       const { time, success } = await timeQuery({ context, query, variables });
       console.log({
         provider,

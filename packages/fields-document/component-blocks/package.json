@@ -1,0 +1,4 @@
+{
+  "main": "dist/keystone-next-fields-document-component-blocks.cjs.js",
+  "module": "dist/keystone-next-fields-document-component-blocks.esm.js"
+}

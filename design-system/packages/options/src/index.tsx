@@ -1,9 +1,15 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, useTheme } from '@keystone-ui/core';
 import { useIndicatorTokens } from '@keystone-ui/fields';
 import { CheckIcon } from '@keystone-ui/icons/icons/CheckIcon';
 import { useMemo } from 'react';
-import ReactSelect, { OptionProps, components as reactSelectComponents, Props } from 'react-select';
+import ReactSelect, {
+  OptionProps,
+  StylesConfig,
+  components as reactSelectComponents,
+  Props,
+} from 'react-select';
 
 export const CheckMark = ({
   isDisabled,
@@ -73,6 +79,7 @@ export const CheckMark = ({
 export const OptionPrimitive = <OptionType, IsMulti extends boolean>({
   children,
   isDisabled,
+  isFocused,
   innerProps,
   innerRef,
   className,
@@ -84,18 +91,27 @@ export const OptionPrimitive = <OptionType, IsMulti extends boolean>({
       className={className}
       css={{
         alignItems: 'center',
-        color: isDisabled ? theme.colors.foregroundDim : undefined,
+        color: isDisabled
+          ? theme.colors.foregroundDim
+          : isFocused
+          ? theme.colors.linkHoverColor
+          : undefined,
         cursor: 'pointer',
         display: 'flex',
         fontSize: '0.9em',
         fontWeight: 500,
         justifyContent: 'space-between',
+        background: isFocused ? theme.colors.backgroundHover : undefined,
         outline: 0,
-        padding: `${theme.spacing.small}px 0`,
+        padding: `${theme.spacing.small}px`,
         pointerEvents: isDisabled ? 'none' : undefined,
 
         '&:not(:first-of-type)': {
           borderTop: `1px solid ${theme.colors.backgroundDim}`,
+        },
+        ':hover': {
+          background: theme.colors.backgroundHover,
+          color: theme.colors.linkHoverColor,
         },
       }}
       {...innerProps}
@@ -106,24 +122,7 @@ export const OptionPrimitive = <OptionType, IsMulti extends boolean>({
 };
 
 const Control: typeof reactSelectComponents['Control'] = ({ selectProps, ...props }) => {
-  return selectProps.shouldDisplaySearchControl ? (
-    <reactSelectComponents.Control selectProps={selectProps} {...props} />
-  ) : (
-    <div
-      css={{
-        border: 0,
-        clip: 'rect(1px, 1px, 1px, 1px)',
-        height: 1,
-        overflow: 'hidden',
-        padding: 0,
-        position: 'absolute',
-        whiteSpace: 'nowrap',
-        width: 1,
-      }}
-    >
-      <reactSelectComponents.Control selectProps={selectProps} {...props} />
-    </div>
-  );
+  return <reactSelectComponents.Control selectProps={selectProps} {...props} />;
 };
 
 const defaultComponents = {
@@ -133,17 +132,7 @@ const defaultComponents = {
   IndicatorSeparator: null,
 };
 
-type KnownKeys<T> = {
-  [K in keyof T]: string extends K ? never : number extends K ? never : K;
-} extends { [_ in keyof T]: infer U }
-  ? U
-  : never;
-
-// this removes [key: string]: any from Props
-type OptionsProps = Pick<
-  Props<{ label: string; value: string; isDisabled?: boolean }, boolean>,
-  KnownKeys<Props>
->;
+type OptionsProps = Props<{ label: string; value: string; isDisabled?: boolean }, boolean>;
 
 export const Options = ({ components: propComponents, ...props }: OptionsProps) => {
   const components = useMemo(
@@ -153,33 +142,33 @@ export const Options = ({ components: propComponents, ...props }: OptionsProps) 
     }),
     [propComponents]
   );
-  const displaySearch = true;
   const theme = useTheme();
 
-  const optionRendererStyles: Props['styles'] = useMemo(
-    () => ({
-      control: provided => ({
-        ...provided,
-        background: theme.fields.inputBackground,
-        boxShadow: 'none',
-        cursor: 'text',
-        padding: 0,
-        minHeight: 34,
+  const optionRendererStyles: StylesConfig<{ label: string; value: string; isDisabled?: boolean }> =
+    useMemo(
+      () => ({
+        control: (provided: any) => ({
+          ...provided,
+          background: theme.fields.inputBackground,
+          boxShadow: 'none',
+          cursor: 'text',
+          padding: 0,
+          minHeight: 34,
+        }),
+        menu: () => ({
+          marginTop: 8,
+        }),
+        menuList: (provided: any) => ({
+          ...provided,
+          padding: 0,
+        }),
+        placeholder: (provided: any) => ({
+          ...provided,
+          color: theme.fields.inputPlaceholder,
+        }),
       }),
-      menu: () => ({
-        marginTop: 8,
-      }),
-      menuList: provided => ({
-        ...provided,
-        padding: 0,
-      }),
-      placeholder: provided => ({
-        ...provided,
-        color: theme.fields.inputPlaceholder,
-      }),
-    }),
-    [theme]
-  );
+      [theme]
+    );
 
   return (
     <ReactSelect
@@ -189,11 +178,10 @@ export const Options = ({ components: propComponents, ...props }: OptionsProps) 
       controlShouldRenderValue={false}
       hideSelectedOptions={false}
       isClearable={false}
-      isSearchable={displaySearch}
+      isSearchable
       maxMenuHeight={1000}
       menuIsOpen
       menuShouldScrollIntoView={false}
-      shouldDisplaySearchControl={displaySearch}
       styles={optionRendererStyles}
       // TODO: JW: Not a fan of this, but it doesn't seem to make a difference
       // if we take it out. react-select bug maybe?

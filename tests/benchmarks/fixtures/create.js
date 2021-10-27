@@ -1,24 +1,22 @@
-const { text } = require('@keystone-next/fields');
-const { createSchema, list } = require('@keystone-next/keystone/schema');
-const { setupFromConfig } = require('@keystone-next/test-utils-legacy');
+const { text } = require('@keystone-next/keystone/fields');
+const { list } = require('@keystone-next/keystone');
+const { setupTestRunner } = require('@keystone-next/keystone/testing');
+const { apiTestConfig } = require('../../utils.ts');
 const { FixtureGroup, timeQuery, populate, range } = require('../lib/utils');
 
-function setupKeystone(provider) {
-  return setupFromConfig({
-    provider,
-    config: createSchema({
-      lists: {
-        User: list({
-          fields: {
-            name: text(),
-          },
-        }),
-      },
-    }),
-  });
-}
+const runner = setupTestRunner({
+  config: apiTestConfig({
+    lists: {
+      User: list({
+        fields: {
+          name: text(),
+        },
+      }),
+    },
+  }),
+});
 
-const group = new FixtureGroup(setupKeystone);
+const group = new FixtureGroup(runner);
 
 group.add({
   fn: async ({ context, provider }) => {
@@ -47,10 +45,10 @@ range(15).forEach(i => {
   group.add({
     fn: async ({ context, provider }) => {
       const query = `
-      mutation createMany($users: [UsersCreateInput]){
+      mutation createMany($users: [UserCreateInput!]!){
         createUsers(data: $users) { id }
       }`;
-      const variables = { users: populate(N, i => ({ data: { name: `test${i}` } })) };
+      const variables = { users: populate(N, i => ({ name: `test${i}` })) };
       const { time, success } = await timeQuery({ context, query, variables });
       console.log({ provider, time, success, name: `Create-many, N=${N}` });
     },

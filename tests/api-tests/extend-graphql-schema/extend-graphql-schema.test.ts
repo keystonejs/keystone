@@ -1,11 +1,7 @@
-import {
-  ProviderName,
-  multiAdapterRunners,
-  setupFromConfig,
-  testConfig,
-} from '@keystone-next/test-utils-legacy';
-import { createSchema, list, graphQLSchemaExtension, gql } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
+import { list, graphQLSchemaExtension, gql } from '@keystone-next/keystone';
+import { text } from '@keystone-next/keystone/fields';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
+import { apiTestConfig, expectInternalServerError } from '../utils';
 
 const falseFn: (...args: any) => boolean = () => false;
 
@@ -25,84 +21,78 @@ const withAccessCheck = <T, Args extends unknown[]>(
   };
 };
 
-function setupKeystone(provider: ProviderName) {
-  return setupFromConfig({
-    provider,
-    config: testConfig({
-      lists: createSchema({
-        User: list({
-          fields: { name: text() },
-        }),
+const runner = setupTestRunner({
+  config: apiTestConfig({
+    lists: {
+      User: list({
+        fields: { name: text() },
       }),
-      extendGraphqlSchema: graphQLSchemaExtension({
-        typeDefs: gql`
-          type Query {
-            double(x: Int): Int
-            quads(x: Int): Int
-          }
-          type Mutation {
-            triple(x: Int): Int
-          }
-        `,
-        resolvers: {
-          Query: {
-            double: withAccessCheck(true, (_, { x }) => 2 * x),
-            quads: withAccessCheck(falseFn, (_, { x }) => 4 * x),
-          },
-          Mutation: {
-            triple: withAccessCheck(true, (_, { x }) => 3 * x),
-          },
+    },
+    extendGraphqlSchema: graphQLSchemaExtension({
+      typeDefs: gql`
+        type Query {
+          double(x: Int): Int
+          quads(x: Int): Int
+        }
+        type Mutation {
+          triple(x: Int): Int
+        }
+      `,
+      resolvers: {
+        Query: {
+          double: withAccessCheck(true, (_, { x }) => 2 * x),
+          quads: withAccessCheck(falseFn, (_, { x }) => 4 * x),
         },
-      }),
+        Mutation: {
+          triple: withAccessCheck(true, (_, { x }) => 3 * x),
+        },
+      },
     }),
-  });
-}
+  }),
+});
 
-multiAdapterRunners().map(({ runner, provider }) =>
-  describe(`Provider: ${provider}`, () => {
-    describe('extendGraphqlSchema', () => {
-      it(
-        'Executes custom queries correctly',
-        runner(setupKeystone, async ({ context }) => {
-          const data = await context.graphql.run({
-            query: `
+describe('extendGraphqlSchema', () => {
+  it(
+    'Executes custom queries correctly',
+    runner(async ({ context }) => {
+      const data = await context.graphql.run({
+        query: `
               query {
                 double(x: 10)
               }
             `,
-          });
-          expect(data.double).toEqual(20);
-        })
-      );
-      it(
-        'Denies access acording to access control',
-        runner(setupKeystone, async ({ context }) => {
-          const { data, errors } = await context.graphql.raw({
-            query: `
-              query {
-                quads(x: 10)
-              }
-            `,
-          });
-          expect(data?.quads).toBe(null);
-          expect(errors).not.toBe(undefined);
-          expect(errors).toHaveLength(1);
-        })
-      );
-      it(
-        'Executes custom mutations correctly',
-        runner(setupKeystone, async ({ context }) => {
-          const data = await context.graphql.run({
-            query: `
+      });
+      expect(data.double).toEqual(20);
+    })
+  );
+  it(
+    'Denies access acording to access control',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        query: `
+          query {
+            quads(x: 10)
+          }
+        `,
+      });
+      expect(body.data).toEqual({ quads: null });
+      expectInternalServerError(body.errors, false, [
+        { path: ['quads'], message: 'Access denied' },
+      ]);
+    })
+  );
+  it(
+    'Executes custom mutations correctly',
+    runner(async ({ context }) => {
+      const data = await context.graphql.run({
+        query: `
               mutation {
                 triple(x: 10)
               }
             `,
-          });
+      });
 
-          expect(data.triple).toEqual(30);
-        })
-      );
-    });
-  })
-);
+      expect(data.triple).toEqual(30);
+    })
+  );
+});

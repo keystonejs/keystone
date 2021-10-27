@@ -1,4 +1,0 @@
-{
-  "main": "dist/auth.cjs.js",
-  "module": "dist/auth.esm.js"
-}

@@ -1,27 +1,21 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, useTheme } from '@keystone-ui/core';
-import ReactSelect, { Props, OptionsType, mergeStyles } from 'react-select';
+import ReactSelect, { Options, mergeStyles, Props } from 'react-select';
 import { useInputTokens } from './hooks/inputs';
 import { WidthType } from './types';
 
-type KnownKeys<T> = {
-  [K in keyof T]: string extends K ? never : number extends K ? never : K;
-} extends { [_ in keyof T]: infer U }
-  ? U
-  : never;
-
 type Option = { label: string; value: string; isDisabled?: boolean };
 
-// this removes [key: string]: any from Props
-type BaseSelectProps = Pick<
+type BaseSelectProps = Omit<
   Props<Option, boolean>,
-  Exclude<KnownKeys<Props>, 'value' | 'onChange' | 'isMulti' | 'isOptionDisabled'>
+  'value' | 'onChange' | 'isMulti' | 'isOptionDisabled'
 > & { width?: WidthType };
 
 export { components as selectComponents } from 'react-select';
 
 type ControlState = {
-  isDisabled: boolean;
+  isDisabled?: boolean;
   isFocused: boolean;
 };
 
@@ -114,6 +108,7 @@ const useStyles = ({
 const portalTarget = typeof document !== 'undefined' ? document.body : undefined;
 
 export function Select({
+  id,
   onChange,
   value,
   width: widthKey = 'large',
@@ -131,6 +126,7 @@ export function Select({
 
   return (
     <ReactSelect
+      inputId={id}
       value={value}
       // css={{ width: tokens.width }}
       styles={composedStyles}
@@ -149,6 +145,7 @@ export function Select({
 }
 
 export function MultiSelect({
+  id,
   onChange,
   value,
   width: widthKey = 'large',
@@ -156,9 +153,9 @@ export function MultiSelect({
   styles,
   ...props
 }: BaseSelectProps & {
-  value: OptionsType<Option>;
+  value: Options<Option>;
   portalMenu?: true;
-  onChange(value: OptionsType<Option>): void;
+  onChange(value: Options<Option>): void;
 }) {
   const tokens = useInputTokens({ width: widthKey });
   const defaultStyles = useStyles({ tokens, multi: true });
@@ -167,6 +164,7 @@ export function MultiSelect({
   return (
     <ReactSelect
       // css={{ width: tokens.width }}
+      inputId={id}
       styles={composedStyles}
       value={value}
       onChange={value => {

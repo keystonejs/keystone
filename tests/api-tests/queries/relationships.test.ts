@@ -1,520 +1,327 @@
 import { gen, sampleOne } from 'testcheck';
 
-import { text, relationship } from '@keystone-next/fields';
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import {
-  ProviderName,
-  multiAdapterRunners,
-  setupFromConfig,
-  testConfig,
-} from '@keystone-next/test-utils-legacy';
-import { createItem, createItems } from '@keystone-next/server-side-graphql-client-legacy';
+import { text, relationship } from '@keystone-next/keystone/fields';
+import { list } from '@keystone-next/keystone';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
+import { apiTestConfig } from '../utils';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
-function setupKeystone(provider: ProviderName) {
-  return setupFromConfig({
-    provider,
-    config: testConfig({
-      lists: createSchema({
-        Post: list({
-          fields: {
-            title: text(),
-            author: relationship({ ref: 'User' }),
-          },
-        }),
-        User: list({
-          fields: {
-            name: text(),
-            feed: relationship({ ref: 'Post', many: true }),
-          },
-        }),
+const runner = setupTestRunner({
+  config: apiTestConfig({
+    lists: {
+      Post: list({
+        fields: {
+          title: text(),
+          author: relationship({ ref: 'User' }),
+        },
       }),
-    }),
+      User: list({
+        fields: {
+          name: text(),
+          feed: relationship({ ref: 'Post', many: true }),
+        },
+      }),
+    },
+  }),
+});
+
+describe('Querying with relationship filters', () => {
+  describe('to-single', () => {
+    test(
+      'with data',
+      runner(async ({ context }) => {
+        // Create an item to link against
+        const users = await context.query.User.createMany({
+          data: [{ name: 'Jess' }, { name: 'Johanna' }, { name: 'Sam' }],
+        });
+        const posts = await context.query.Post.createMany({
+          data: [
+            { author: { connect: { id: users[0].id } }, title: sampleOne(alphanumGenerator) },
+            { author: { connect: { id: users[1].id } }, title: sampleOne(alphanumGenerator) },
+            { author: { connect: { id: users[2].id } }, title: sampleOne(alphanumGenerator) },
+            { author: { connect: { id: users[0].id } }, title: sampleOne(alphanumGenerator) },
+          ],
+          query: 'id title',
+        });
+
+        // Create an item that does the linking
+        const allPosts = await context.query.Post.findMany({
+          where: { author: { name: { contains: 'J' } } },
+          query: 'id title',
+        });
+        expect(allPosts).toHaveLength(3);
+
+        // We don't know the order, so we have to check individually
+        expect(allPosts).toContainEqual({ id: posts[0].id, title: posts[0].title });
+        expect(allPosts).toContainEqual({ id: posts[1].id, title: posts[1].title });
+        expect(allPosts).toContainEqual({ id: posts[3].id, title: posts[3].title });
+      })
+    );
+
+    test(
+      'without data',
+      runner(async ({ context }) => {
+        // Create an item to link against
+        const user = await context.query.User.createOne({ data: { name: 'Jess' } });
+        const posts = await context.query.Post.createMany({
+          data: [
+            { author: { connect: { id: user.id } }, title: sampleOne(alphanumGenerator) },
+            { title: sampleOne(alphanumGenerator) },
+          ],
+          query: 'id title',
+        });
+
+        // Create an item that does the linking
+        const _posts = await context.query.Post.findMany({
+          where: { author: { name: { contains: 'J' } } },
+          query: 'id title author { id name }',
+        });
+        expect(_posts).toMatchObject([{ id: posts[0].id, title: posts[0].title }]);
+      })
+    );
   });
-}
 
-multiAdapterRunners().map(({ runner, provider }) =>
-  describe(`Provider: ${provider}`, () => {
-    describe('Querying with relationship filters', () => {
-      describe('to-single', () => {
-        test(
-          'with data',
-          runner(setupKeystone, async ({ context }) => {
-            // Create an item to link against
-            const users = await createItems({
-              context,
-              listKey: 'User',
-              items: [
-                { data: { name: 'Jess' } },
-                { data: { name: 'Johanna' } },
-                { data: { name: 'Sam' } },
-              ],
-            });
-            const posts = await createItems({
-              context,
-              listKey: 'Post',
-              items: [
-                {
-                  data: {
-                    author: { connect: { id: users[0].id } },
-                    title: sampleOne(alphanumGenerator),
-                  },
-                },
-                {
-                  data: {
-                    author: { connect: { id: users[1].id } },
-                    title: sampleOne(alphanumGenerator),
-                  },
-                },
-                {
-                  data: {
-                    author: { connect: { id: users[2].id } },
-                    title: sampleOne(alphanumGenerator),
-                  },
-                },
-                {
-                  data: {
-                    author: { connect: { id: users[0].id } },
-                    title: sampleOne(alphanumGenerator),
-                  },
-                },
-              ],
-              returnFields: 'id title',
-            });
+  describe('to-many', () => {
+    const setup = async (create: (...args: any) => Promise<any>) => {
+      const posts = await Promise.all([
+        create('Post', { title: 'Hello' }),
+        create('Post', { title: 'Just in time' }),
+        create('Post', { title: 'Bye' }),
+        create('Post', { title: 'I like Jelly' }),
+      ]);
 
-            // Create an item that does the linking
-            const data = await context.graphql.run({
-              query: `
-          query {
-            allPosts(where: {
-              author: { name_contains: "J" }
-            }) {
-              id
-              title
-            }
-          }
-      `,
-            });
+      const users = await Promise.all([
+        create('User', {
+          feed: { connect: [{ id: posts[0].id }, { id: posts[1].id }] },
+          name: sampleOne(alphanumGenerator),
+        }),
+        create('User', {
+          feed: { connect: [{ id: posts[2].id }] },
+          name: sampleOne(alphanumGenerator),
+        }),
+        create('User', {
+          feed: { connect: [{ id: posts[3].id }] },
+          name: sampleOne(alphanumGenerator),
+        }),
+      ]);
 
-            expect(data).toHaveProperty('allPosts');
-            expect(data.allPosts).toHaveLength(3);
+      return { posts, users };
+    };
 
-            const { allPosts } = data;
+    test(
+      'every condition',
+      runner(async ({ context }) => {
+        const create = async (listKey: string, data: any) =>
+          context.query[listKey].createOne({ data });
+        const { users } = await setup(create);
 
-            // We don't know the order, so we have to check individually
-            expect(allPosts).toContainEqual({ id: posts[0].id, title: posts[0].title });
-            expect(allPosts).toContainEqual({ id: posts[1].id, title: posts[1].title });
-            expect(allPosts).toContainEqual({ id: posts[3].id, title: posts[3].title });
-          })
-        );
+        // EVERY
+        const _users = await context.query.User.findMany({
+          where: { feed: { every: { title: { contains: 'J' } } } },
+          query: 'id name feed { id title }',
+        });
 
-        test(
-          'without data',
-          runner(setupKeystone, async ({ context }) => {
-            // Create an item to link against
-            const user = await createItem({ context, listKey: 'User', item: { name: 'Jess' } });
-            const posts = await createItems({
-              context,
-              listKey: 'Post',
-              items: [
-                {
-                  data: {
-                    author: { connect: { id: user.id } },
-                    title: sampleOne(alphanumGenerator),
-                  },
-                },
-                { data: { title: sampleOne(alphanumGenerator) } },
-              ],
-              returnFields: 'id title',
-            });
+        expect(_users).toMatchObject([{ id: users[2].id, feed: [{ title: 'I like Jelly' }] }]);
+      })
+    );
 
-            // Create an item that does the linking
-            const data = await context.graphql.run({
-              query: `
-          query {
-            allPosts(where: {
-              author: { name_contains: "J" }
-            }) {
-              id
-              title
-              author {
-                id
-                name
-              }
-            }
-          }
-      `,
-            });
+    test(
+      'some condition',
+      runner(async ({ context }) => {
+        const create = async (listKey: string, data: any) =>
+          context.query[listKey].createOne({ data });
+        const { users } = await setup(create);
 
-            expect(data).toMatchObject({
-              allPosts: [{ id: posts[0].id, title: posts[0].title }],
-            });
-          })
-        );
-      });
+        // SOME
+        const _users = await context.query.User.findMany({
+          where: { feed: { some: { title: { contains: 'J' } } } },
+          query: 'id feed(orderBy: { title: asc }) { title }',
+        });
 
-      describe('to-many', () => {
-        const setup = async (create: (...args: any) => Promise<any>) => {
-          const posts = await Promise.all([
-            create('Post', { title: 'Hello' }),
-            create('Post', { title: 'Just in time' }),
-            create('Post', { title: 'Bye' }),
-            create('Post', { title: 'I like Jelly' }),
-          ]);
+        expect(_users).toHaveLength(2);
+        // We don't know the order, so we have to check individually
+        expect(_users).toContainEqual({
+          id: users[0].id,
+          feed: [{ title: 'Hello' }, { title: 'Just in time' }],
+        });
+        expect(_users).toContainEqual({ id: users[2].id, feed: [{ title: 'I like Jelly' }] });
+      })
+    );
 
-          const users = await Promise.all([
-            create('User', {
-              feed: { connect: [{ id: posts[0].id }, { id: posts[1].id }] },
-              name: sampleOne(alphanumGenerator),
-            }),
-            create('User', {
-              feed: { connect: [{ id: posts[2].id }] },
-              name: sampleOne(alphanumGenerator),
-            }),
-            create('User', {
-              feed: { connect: [{ id: posts[3].id }] },
-              name: sampleOne(alphanumGenerator),
-            }),
-          ]);
+    test(
+      'none condition',
+      runner(async ({ context }) => {
+        const create = async (listKey: string, data: any) =>
+          context.query[listKey].createOne({ data });
+        const { users } = await setup(create);
 
-          return { posts, users };
-        };
+        // NONE
+        const _users = await context.query.User.findMany({
+          where: { feed: { none: { title: { contains: 'J' } } } },
+          query: 'id name feed { id title }',
+        });
 
-        test(
-          '_every condition',
-          runner(setupKeystone, async ({ context }) => {
-            const create = async (listKey: string, item: any) =>
-              createItem({ context, listKey, item });
-            const { users } = await setup(create);
+        expect(_users).toMatchObject([{ id: users[1].id, feed: [{ title: 'Bye' }] }]);
+      })
+    );
+  });
 
-            // EVERY
-            const data = await context.graphql.run({
-              query: `
-          query {
-            allUsers(where: {
-              feed_every: { title_contains: "J" }
-            }) {
-              id
-              name
-              feed {
-                id
-                title
-              }
-            }
-          }
-      `,
-            });
+  describe('to-many with empty list', () => {
+    const setup = async (create: (...args: any) => Promise<any>) => {
+      const posts = await Promise.all([
+        create('Post', { title: 'Hello' }),
+        create('Post', { title: 'I like Jelly' }),
+      ]);
 
-            expect(data).toMatchObject({
-              allUsers: [{ id: users[2].id, feed: [{ title: 'I like Jelly' }] }],
-            });
-          })
-        );
+      const users = await Promise.all([
+        create('User', {
+          feed: { connect: [{ id: posts[0].id }, { id: posts[1].id }] },
+          name: sampleOne(alphanumGenerator),
+        }),
+        create('User', {
+          feed: { connect: [{ id: posts[0].id }] },
+          name: sampleOne(alphanumGenerator),
+        }),
+        create('User', { name: sampleOne(alphanumGenerator) }),
+        create('User', { name: sampleOne(alphanumGenerator) }),
+      ]);
 
-        test(
-          '_some condition',
-          runner(setupKeystone, async ({ context }) => {
-            const create = async (listKey: string, item: any) =>
-              createItem({ context, listKey, item });
-            const { users } = await setup(create);
+      return { posts, users };
+    };
 
-            // SOME
-            const data = await context.graphql.run({
-              query: `
-          query {
-            allUsers(where: {
-              feed_some: { title_contains: "J" }
-            }) {
-              id
-              feed(sortBy: title_ASC) {
-                title
-              }
-            }
-          }
-      `,
-            });
+    test(
+      'every condition',
+      runner(async ({ context }) => {
+        const create = async (listKey: string, data: any) =>
+          context.query[listKey].createOne({ data });
+        const { users } = await setup(create);
 
-            expect(data).toHaveProperty('allUsers');
-            expect(data.allUsers).toHaveLength(2);
+        // EVERY
+        const _users = await context.query.User.findMany({
+          where: { feed: { every: { title: { contains: 'J' } } } },
+          query: 'id feed { id title }',
+        });
 
-            const { allUsers } = data;
+        expect(_users).toHaveLength(2);
+        expect(_users).toContainEqual({ id: users[2].id, feed: [] });
+        expect(_users).toContainEqual({ id: users[3].id, feed: [] });
+      })
+    );
 
-            // We don't know the order, so we have to check individually
-            expect(allUsers).toContainEqual({
-              id: users[0].id,
-              feed: [{ title: 'Hello' }, { title: 'Just in time' }],
-            });
-            expect(allUsers).toContainEqual({ id: users[2].id, feed: [{ title: 'I like Jelly' }] });
-          })
-        );
+    test(
+      'some condition',
+      runner(async ({ context }) => {
+        const create = async (listKey: string, data: any) =>
+          context.query[listKey].createOne({ data });
+        const { users } = await setup(create);
 
-        test(
-          '_none condition',
-          runner(setupKeystone, async ({ context }) => {
-            const create = async (listKey: string, item: any) =>
-              createItem({ context, listKey, item });
-            const { users } = await setup(create);
+        // SOME
+        const _users = await context.query.User.findMany({
+          where: { feed: { some: { title: { contains: 'J' } } } },
+          query: 'id name feed(orderBy: { title: asc }) { id title }',
+        });
 
-            // NONE
-            const data = await context.graphql.run({
-              query: `
-          query {
-            allUsers(where: {
-              feed_none: { title_contains: "J" }
-            }) {
-              id
-              name
-              feed {
-                id
-                title
-              }
-            }
-          }
-      `,
-            });
+        expect(_users).toMatchObject([
+          { id: users[0].id, feed: [{ title: 'Hello' }, { title: 'I like Jelly' }] },
+        ]);
+        expect(_users).toHaveLength(1);
+      })
+    );
 
-            expect(data).toMatchObject({
-              allUsers: [{ id: users[1].id, feed: [{ title: 'Bye' }] }],
-            });
-          })
-        );
-      });
+    test(
+      'none condition',
+      runner(async ({ context }) => {
+        const create = async (listKey: string, data: any) =>
+          context.query[listKey].createOne({ data });
+        const { users } = await setup(create);
 
-      describe('to-many with empty list', () => {
-        const setup = async (create: (...args: any) => Promise<any>) => {
-          const posts = await Promise.all([
-            create('Post', { title: 'Hello' }),
-            create('Post', { title: 'I like Jelly' }),
-          ]);
+        // NONE
+        const _users = await context.query.User.findMany({
+          where: { feed: { none: { title: { contains: 'J' } } } },
+          query: 'id feed { title }',
+        });
 
-          const users = await Promise.all([
-            create('User', {
-              feed: { connect: [{ id: posts[0].id }, { id: posts[1].id }] },
-              name: sampleOne(alphanumGenerator),
-            }),
-            create('User', {
-              feed: { connect: [{ id: posts[0].id }] },
-              name: sampleOne(alphanumGenerator),
-            }),
-            create('User', { name: sampleOne(alphanumGenerator) }),
-            create('User', { name: sampleOne(alphanumGenerator) }),
-          ]);
+        expect(_users).toHaveLength(3);
+        // We don't know the order, so we have to check individually
+        expect(_users).toContainEqual({ id: users[1].id, feed: [{ title: 'Hello' }] });
+        expect(_users).toContainEqual({ id: users[2].id, feed: [] });
+        expect(_users).toContainEqual({ id: users[3].id, feed: [] });
+      })
+    );
+  });
 
-          return { posts, users };
-        };
+  describe('to-many with empty related list', () => {
+    const setup = async (create: (...args: any) => Promise<any>) => {
+      const users = await Promise.all([
+        create('User', { name: sampleOne(alphanumGenerator) }),
+        create('User', { name: sampleOne(alphanumGenerator) }),
+        create('User', { name: sampleOne(alphanumGenerator) }),
+        create('User', { name: sampleOne(alphanumGenerator) }),
+      ]);
 
-        test(
-          '_every condition',
-          runner(setupKeystone, async ({ context }) => {
-            const create = async (listKey: string, item: any) =>
-              createItem({ context, listKey, item });
-            const { users } = await setup(create);
+      return { users };
+    };
 
-            // EVERY
-            const data = await context.graphql.run({
-              query: `
-          query {
-            allUsers(where: {
-              feed_every: { title_contains: "J" }
-            }) {
-              id
-              feed {
-                id
-                title
-              }
-            }
-          }
-      `,
-            });
-            expect(data.allUsers).toHaveLength(2);
-            expect(data.allUsers).toContainEqual({ id: users[2].id, feed: [] });
-            expect(data.allUsers).toContainEqual({ id: users[3].id, feed: [] });
-          })
-        );
+    test(
+      'every condition',
+      runner(async ({ context }) => {
+        const create = async (listKey: string, data: any) =>
+          context.query[listKey].createOne({ data });
+        const { users } = await setup(create);
 
-        test(
-          '_some condition',
-          runner(setupKeystone, async ({ context }) => {
-            const create = async (listKey: string, item: any) =>
-              createItem({ context, listKey, item });
-            const { users } = await setup(create);
+        // EVERY
+        const _users = await context.query.User.findMany({
+          where: { feed: { every: { title: { contains: 'J' } } } },
+          query: 'id feed { id title }',
+        });
 
-            // SOME
-            const data = await context.graphql.run({
-              query: `
-          query {
-            allUsers(where: {
-              feed_some: { title_contains: "J" }
-            }) {
-              id
-              name
-              feed(sortBy: title_ASC) {
-                id
-                title
-              }
-            }
-          }
-      `,
-            });
+        expect(_users).toHaveLength(4);
+        // We don't know the order, so we have to check individually
+        expect(_users).toContainEqual({ id: users[0].id, feed: [] });
+        expect(_users).toContainEqual({ id: users[1].id, feed: [] });
+        expect(_users).toContainEqual({ id: users[2].id, feed: [] });
+        expect(_users).toContainEqual({ id: users[3].id, feed: [] });
+      })
+    );
 
-            expect(data).toMatchObject({
-              allUsers: [
-                { id: users[0].id, feed: [{ title: 'Hello' }, { title: 'I like Jelly' }] },
-              ],
-            });
-            expect(data.allUsers).toHaveLength(1);
-          })
-        );
+    test(
+      'some condition',
+      runner(async ({ context }) => {
+        const create = async (listKey: string, data: any) =>
+          context.query[listKey].createOne({ data });
+        const { users } = await setup(create);
 
-        test(
-          '_none condition',
-          runner(setupKeystone, async ({ context }) => {
-            const create = async (listKey: string, item: any) =>
-              createItem({ context, listKey, item });
-            const { users } = await setup(create);
+        // SOME
+        const _users = await context.query.User.findMany({
+          where: { feed: { some: { author: { id: { equals: users[0].id } } } } },
+          query: 'id name feed { id title }',
+        });
+        expect(_users).toEqual([]);
+      })
+    );
 
-            // NONE
-            const data = await context.graphql.run({
-              query: `
-          query {
-            allUsers(where: {
-              feed_none: { title_contains: "J" }
-            },
-            sortBy: id_ASC) {
-              id
-              feed {
-                title
-              }
-            }
-          }
-      `,
-            });
+    test(
+      'none condition',
+      runner(async ({ context }) => {
+        const create = async (listKey: string, data: any) =>
+          context.query[listKey].createOne({ data });
+        const { users } = await setup(create);
 
-            expect(data).toHaveProperty('allUsers');
-            expect(data.allUsers).toHaveLength(3);
+        // NONE
+        const _users = await context.query.User.findMany({
+          where: { feed: { none: { title: { contains: 'J' } } } },
+          query: 'id feed { title }',
+        });
 
-            const { allUsers } = data;
+        expect(_users).toHaveLength(4);
 
-            // We don't know the order, so we have to check individually
-            expect(allUsers).toContainEqual({ id: users[1].id, feed: [{ title: 'Hello' }] });
-            expect(allUsers).toContainEqual({ id: users[2].id, feed: [] });
-            expect(allUsers).toContainEqual({ id: users[3].id, feed: [] });
-          })
-        );
-      });
-
-      describe('to-many with empty related list', () => {
-        const setup = async (create: (...args: any) => Promise<any>) => {
-          const users = await Promise.all([
-            create('User', { name: sampleOne(alphanumGenerator) }),
-            create('User', { name: sampleOne(alphanumGenerator) }),
-            create('User', { name: sampleOne(alphanumGenerator) }),
-            create('User', { name: sampleOne(alphanumGenerator) }),
-          ]);
-
-          return { users };
-        };
-
-        test(
-          '_every condition',
-          runner(setupKeystone, async ({ context }) => {
-            const create = async (listKey: string, item: any) =>
-              createItem({ context, listKey, item });
-            const { users } = await setup(create);
-
-            // EVERY
-            const data = await context.graphql.run({
-              query: `
-          query {
-            allUsers(where: {
-              feed_every: { title_contains: "J" }
-            }) {
-              id
-              feed {
-                id
-                title
-              }
-            }
-          }
-      `,
-            });
-            const { allUsers } = data;
-            expect(allUsers).toHaveLength(4);
-
-            // We don't know the order, so we have to check individually
-            expect(allUsers).toContainEqual({ id: users[0].id, feed: [] });
-            expect(allUsers).toContainEqual({ id: users[1].id, feed: [] });
-            expect(allUsers).toContainEqual({ id: users[2].id, feed: [] });
-            expect(allUsers).toContainEqual({ id: users[3].id, feed: [] });
-          })
-        );
-
-        test(
-          '_some condition',
-          runner(setupKeystone, async ({ context }) => {
-            const create = async (listKey: string, item: any) =>
-              createItem({ context, listKey, item });
-            const { users } = await setup(create);
-
-            // SOME
-            const data = await context.graphql.run({
-              query: `
-          query {
-            allUsers(where: {
-              feed_some: { author: { id: "${users[0].id}"} }
-            }) {
-              id
-              name
-              feed {
-                id
-                title
-              }
-            }
-          }
-      `,
-            });
-            expect(data).toMatchObject({ allUsers: [] });
-            expect(data.allUsers).toHaveLength(0);
-          })
-        );
-
-        test(
-          '_none condition',
-          runner(setupKeystone, async ({ context }) => {
-            const create = async (listKey: string, item: any) =>
-              createItem({ context, listKey, item });
-            const { users } = await setup(create);
-
-            // NONE
-            const data = await context.graphql.run({
-              query: `
-          query {
-            allUsers(where: {
-              feed_none: { title_contains: "J" }
-            }) {
-              id
-              feed {
-                title
-              }
-            }
-          }
-      `,
-            });
-
-            expect(data).toHaveProperty('allUsers');
-            expect(data.allUsers).toHaveLength(4);
-
-            const { allUsers } = data;
-
-            // We don't know the order, so we have to check individually
-            expect(allUsers).toContainEqual({ id: users[0].id, feed: [] });
-            expect(allUsers).toContainEqual({ id: users[1].id, feed: [] });
-            expect(allUsers).toContainEqual({ id: users[2].id, feed: [] });
-            expect(allUsers).toContainEqual({ id: users[3].id, feed: [] });
-          })
-        );
-      });
-    });
-  })
-);
+        // We don't know the order, so we have to check individually
+        expect(_users).toContainEqual({ id: users[0].id, feed: [] });
+        expect(_users).toContainEqual({ id: users[1].id, feed: [] });
+        expect(_users).toContainEqual({ id: users[2].id, feed: [] });
+        expect(_users).toContainEqual({ id: users[3].id, feed: [] });
+      })
+    );
+  });
+});

@@ -1,4 +1,0 @@
-{
-  "main": "dist/keystone.cjs.js",
-  "module": "dist/keystone.esm.js"
-}

@@ -1,0 +1,4 @@
+{
+  "main": "dist/keystone-next-keystone-testing.cjs.js",
+  "module": "dist/keystone-next-keystone-testing.esm.js"
+}

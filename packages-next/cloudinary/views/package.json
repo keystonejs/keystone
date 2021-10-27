@@ -1,4 +1,0 @@
-{
-  "main": "dist/cloudinary.cjs.js",
-  "module": "dist/cloudinary.esm.js"
-}

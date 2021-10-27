@@ -1,5 +1,29 @@
 # @keystonejs/examples-smoke-tests
 
+## 2.0.2
+
+### Patch Changes
+
+- [#6744](https://github.com/keystonejs/keystone/pull/6744) [`0ef1ee3cc`](https://github.com/keystonejs/keystone/commit/0ef1ee3ccd99f0f3e1f955f03d00b1a0f238c7cd) Thanks [@bladey](https://github.com/bladey)! - Renamed branch `master` to `main`.
+
+## 2.0.1
+
+### Patch Changes
+
+- [#6634](https://github.com/keystonejs/keystone/pull/6634) [`be039eca4`](https://github.com/keystonejs/keystone/commit/be039eca4b99a39d4016d2b38783631ad9e1a6fe) Thanks [@JedWatson](https://github.com/JedWatson)! - REST API example
+
+## 2.0.0
+
+### Major Changes
+
+- [#5746](https://github.com/keystonejs/keystone/pull/5746) [`19750d2dc`](https://github.com/keystonejs/keystone/commit/19750d2dc5801cc8d2ffae1f50d1d5ca6ab9407d) Thanks [@timleslie](https://github.com/timleslie)! - Update Node.js dependency to `^12.20 || >= 14.13`.
+
+## 1.0.0
+
+### Major Changes
+
+- [#5397](https://github.com/keystonejs/keystone/pull/5397) [`a5627304b`](https://github.com/keystonejs/keystone/commit/a5627304b7921a0f1484d6d08330115d0edbb45b) Thanks [@bladey](https://github.com/bladey)! - Updated Node engine version to 12.x due to 10.x reaching EOL on 2021-04-30.
+
 ## 0.0.1
 
 ### Patch Changes

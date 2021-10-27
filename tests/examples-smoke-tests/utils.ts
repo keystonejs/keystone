@@ -5,13 +5,27 @@ import _treeKill from 'tree-kill';
 import * as playwright from 'playwright';
 
 async function deleteAllData(projectDir: string) {
-  const { PrismaClient } = require(path.join(projectDir, 'node_modules/.prisma/client'));
+  /**
+   * As of @prisma/client@3.1.1 it appears that the prisma client runtime tries to resolve the path to the prisma schema
+   * from process.cwd(). This is not always the project directory we want to run keystone from.
+   * Here we mutate the process.cwd global with a fn that returns the project directory we expect, such that prisma
+   * can retrieve the correct schema file.
+   */
+  const prevCwd = process.cwd;
+  try {
+    process.cwd = () => {
+      return projectDir;
+    };
+    const { PrismaClient } = require(path.join(projectDir, 'node_modules/.prisma/client'));
 
-  let prisma = new PrismaClient();
+    let prisma = new PrismaClient();
 
-  await Promise.all(Object.values(prisma).map((x: any) => x?.deleteMany?.()));
+    await Promise.all(Object.values(prisma).map((x: any) => x?.deleteMany?.({})));
 
-  await prisma.$disconnect();
+    await prisma.$disconnect();
+  } finally {
+    process.cwd = prevCwd;
+  }
 }
 
 const treeKill = promisify(_treeKill);
@@ -46,7 +60,7 @@ export const exampleProjectTests = (
   exampleName: string,
   tests: (browser: playwright.BrowserType<playwright.Browser>) => void
 ) => {
-  const projectDir = path.join(__dirname, '..', '..', 'examples-next', exampleName);
+  const projectDir = path.join(__dirname, '..', '..', 'examples', exampleName);
   describe.each(['dev', 'prod'] as const)('%s', mode => {
     let cleanupKeystoneProcess = () => {};
 
@@ -65,7 +79,7 @@ export const exampleProjectTests = (
         if (process.env.VERBOSE) {
           console.log(stringified);
         }
-        if (stringified.includes('API ready')) {
+        if (stringified.includes('Admin UI ready')) {
           adminUIReady.resolve();
         }
       };
@@ -77,7 +91,7 @@ export const exampleProjectTests = (
         keystoneProcess.stderr!.off('data', listener);
         // childProcess.kill will only kill the direct child process
         // so we use tree-kill to kill the process and it's children
-        await treeKill(keystoneProcess.pid);
+        await treeKill(keystoneProcess.pid!);
       };
       await adminUIReady;
     }

@@ -1,4 +1,4 @@
 {
-  "main": "dist/icons.cjs.js",
-  "module": "dist/icons.esm.js"
+  "main": "dist/keystone-ui-icons-icons-SendIcon.cjs.js",
+  "module": "dist/keystone-ui-icons-icons-SendIcon.esm.js"
 }

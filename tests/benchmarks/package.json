@@ -2,25 +2,20 @@
   "name": "@keystone-next/benchmarks-legacy",
   "description": "A set of benchmarks for running against the KeystoneJS API.",
   "private": true,
-  "version": "5.2.5",
+  "version": "7.0.10",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
-    "node": ">=12.13.0"
+    "node": "^12.20 || >= 14.13"
   },
   "scripts": {
     "go": "node fixtures/index.js"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/tests/benchmarks",
+  "repository": "https://github.com/keystonejs/keystone/tree/main/tests/benchmarks",
   "homepage": "https://github.com/keystonejs/keystone",
   "dependencies": {
-    "@keystone-next/fields": "^6.0.0",
-    "@keystone-next/keystone": "^15.0.0",
-    "@keystone-next/keystone-legacy": "^23.0.0",
-    "@keystone-next/server-side-graphql-client-legacy": "^3.0.1",
-    "@keystone-next/test-utils-legacy": "^16.0.0",
+    "@keystone-next/keystone": "^26.1.0",
     "cookie-signature": "^1.1.0",
-    "supertest-light": "^1.0.3",
     "testcheck": "^1.0.0-rc.2"
   }
 }

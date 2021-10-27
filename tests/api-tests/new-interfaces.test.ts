@@ -1,27 +1,20 @@
-import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
-import { createSchema, list } from '@keystone-next/keystone/schema';
-import { text } from '@keystone-next/fields';
-import type { ProviderName } from '@keystone-next/test-utils-legacy';
+import { list } from '@keystone-next/keystone';
+import { text } from '@keystone-next/keystone/fields';
+import { setupTestRunner } from '@keystone-next/keystone/testing';
+import { apiTestConfig } from './utils';
 
-function setupKeystone(provider: ProviderName) {
-  return setupFromConfig({
-    provider,
-    config: testConfig({
-      lists: createSchema({
-        User: list({ fields: { name: text() } }),
-      }),
-    }),
-  });
-}
+const runner = setupTestRunner({
+  config: apiTestConfig({
+    lists: {
+      User: list({ fields: { name: text() } }),
+    },
+  }),
+});
 
-multiAdapterRunners().map(({ runner, provider }) =>
-  describe(`Provider: ${provider}`, () => {
-    test(
-      'Smoke test',
-      runner(setupKeystone, async ({ context }) => {
-        const users = await context.lists.User.findMany({ resolveFields: false });
-        expect(users).toEqual([]);
-      })
-    );
+test(
+  'Smoke test',
+  runner(async ({ context }) => {
+    const users = await context.db.User.findMany({});
+    expect(users).toEqual([]);
   })
 );

@@ -1,0 +1,100 @@
+import { Markdown, getStaticProps } from '../../components/Markdown';
+import { Emoji } from '../../components/primitives/Emoji';
+
+# Release: 29th July 2021
+
+## What's New
+
+Custom **navigation**, **pages** and **logo** in this big **Admin UI** themed release! <Emoji symbol="🎛️" alt="Control knobs" />
+
+```sh
+"@keystone-ui/tooltip": "4.0.1",
+"@keystone-next/admin-ui-utils": "5.0.5",
+"@keystone-next/auth": "30.0.0",
+"@keystone-next/cloudinary": "6.0.5",
+"@keystone-next/fields": "13.0.0",
+"@keystone-next/fields-document": "7.0.3",
+"@keystone-next/keystone": "23.0.2",
+"@keystone-next/testing": "1.1.0",
+"@keystone-next/types": "23.0.0",
+"@keystone-next/utils": "1.0.3",
+```
+
+## Custom Admin UI Navigation <Emoji symbol="🚏" alt="Traffic signs" />
+
+You can now create your own custom navigation component with custom routes to be rendered in the Admin UI.
+
+Check out our detailed [Custom Admin UI Navigation guide](https://keystonejs.com/docs/guides/custom-admin-ui-navigation) for all the details!
+
+<img width="810" alt="Custom navigation screenshot" src="https://user-images.githubusercontent.com/737821/127438549-621da3c6-1201-495b-ad2a-73328b834262.png" />
+
+## Custom Admin UI Pages <Emoji symbol="📃" alt="Paper" />
+
+Take things a step further with custom pages. As the Admin UI is built on top of Next.js, it exposes the same `/pages` directory for adding custom pages.
+
+<Emoji symbol="ℹ️" alt="Info" /> In the near future you'll be able to directly embed pages within the Keystone Admin UI itself, stay tuned!
+
+Read our new [Custom Admin UI Pages guide](https://keystonejs.com/docs/guides/custom-admin-ui-pages) for more details.
+
+<img width="810" alt="Custom page screenshot" src="https://user-images.githubusercontent.com/737821/127438536-68617646-805e-4031-aced-b2f12c4190fb.png" />
+
+## Custom Admin UI Logo <Emoji symbol="🚩" alt="Flag" />
+
+Wait, theres more. You can also replace the default Admin UI logo with your own brand assets. <Emoji symbol="✨" alt="Sparkles" />
+
+Dive into our [Custom Admin UI Logo guide](https://keystonejs.com/docs/guides/custom-admin-ui-logo) to find out how.
+
+<img width="810" alt="Animated logo screenshot" src="https://user-images.githubusercontent.com/737821/127438961-40bc6ddd-e34a-497d-ac6a-c135e88324d1.gif" />
+
+## Health Check <Emoji symbol="💙" alt="Blue heart" />
+
+We've added an optional `/_healthcheck` endpoint to Keystone's express server. You can use this endpoint to ensure your Keystone instance is up and running using website monitoring solutions.
+
+Enable it by setting `config.server.healthCheck: true`, by default it will respond with `{ status: 'pass', timestamp: Date.now() }`.
+
+You can also specify a custom path and JSON data:
+
+```js
+config({
+  server: {
+    healthCheck: {
+      path: "/my-health-check",
+      data: { status: "healthy" },
+    },
+  },
+});
+```
+
+Or use a function for the `data` config to return real-time information:
+
+```js
+config({
+  server: {
+    healthCheck: {
+      path: "/my-health-check",
+      data: () => ({
+        status: "healthy",
+        timestamp: Date.now(),
+        uptime: process.uptime(),
+      }),
+    },
+  },
+});
+```
+
+## Prisma Update <Emoji symbol="⬆️" alt="Up arrow" />
+
+Updated Prisma dependencies to `2.27.0`, check out the [Prisma releases page](https://github.com/prisma/prisma/releases/tag/2.27.0) for more details.
+
+## Credits <Emoji symbol="💫" alt="Swirling star" />
+
+- Fixed virtual field rendering of `false` & `0` values thanks to [@ChuckJonas](https://github.com/ChuckJonas)!
+
+- Added `/` to `list.path` on `HomePage` `ListCard` to better allow custom `basePath` thanks to [@borisno2](https://github.com/borisno2)!
+
+- Changed symlink generation to use relative path instead of absolute which solves running project in docker when mapping volume, thanks to [@gautamsi](https://github.com/gautamsi)!
+
+You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-07-29) on GitHub.
+
+export default ({ children, ...props }) => <Markdown description="Custom navigation, pages and logo in this big Admin UI themed release!" {...props}>{children}</Markdown>;
+export { getStaticProps }

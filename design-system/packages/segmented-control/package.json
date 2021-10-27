@@ -1,22 +1,22 @@
 {
   "name": "@keystone-ui/segmented-control",
-  "version": "2.0.1",
+  "version": "5.0.1",
   "license": "MIT",
-  "main": "dist/segmented-control.cjs.js",
-  "module": "dist/segmented-control.esm.js",
+  "main": "dist/keystone-ui-segmented-control.cjs.js",
+  "module": "dist/keystone-ui-segmented-control.esm.js",
   "devDependencies": {
-    "@types/react": "^17.0.3",
+    "@types/react": "^17.0.29",
     "react": "^17.0.2"
   },
   "dependencies": {
-    "@babel/runtime": "^7.13.10",
-    "@keystone-ui/core": "^2.0.1"
+    "@babel/runtime": "^7.15.4",
+    "@keystone-ui/core": "^3.2.1"
   },
   "peerDependencies": {
     "react": "^17.0.2"
   },
   "engines": {
-    "node": ">=12.13.0"
+    "node": "^12.20 || >= 14.13"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/design-system/packages/segmented-control"
+  "repository": "https://github.com/keystonejs/keystone/tree/main/design-system/packages/segmented-control"
 }

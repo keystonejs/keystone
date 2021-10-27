@@ -1,0 +1,4 @@
+{
+  "main": "dist/keystone-next-keystone-migrations.cjs.js",
+  "module": "dist/keystone-next-keystone-migrations.esm.js"
+}

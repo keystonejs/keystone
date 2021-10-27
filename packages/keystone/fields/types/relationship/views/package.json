@@ -1,0 +1,4 @@
+{
+  "main": "dist/keystone-next-keystone-fields-types-relationship-views.cjs.js",
+  "module": "dist/keystone-next-keystone-fields-types-relationship-views.esm.js"
+}

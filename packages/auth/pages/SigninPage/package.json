@@ -1,0 +1,4 @@
+{
+  "main": "dist/keystone-next-auth-pages-SigninPage.cjs.js",
+  "module": "dist/keystone-next-auth-pages-SigninPage.esm.js"
+}

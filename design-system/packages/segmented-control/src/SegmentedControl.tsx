@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 
 /**
@@ -12,7 +13,6 @@
  */
 
 import {
-  ChangeEvent,
   ChangeEventHandler,
   HTMLAttributes,
   ReactNode,
@@ -20,6 +20,7 @@ import {
   useEffect,
   useRef,
   useState,
+  InputHTMLAttributes,
 } from 'react';
 
 import {
@@ -28,9 +29,9 @@ import {
   jsx,
   ManagedChangeHandler,
   useId,
-  useManagedState,
   useTheme,
   VisuallyHidden,
+  css,
 } from '@keystone-ui/core';
 
 import { SizeKey, WidthKey, useControlTokens } from './hooks/segmentedControl';
@@ -45,14 +46,12 @@ type SegmentedControlProps = {
   animate?: boolean;
   /** Whether the controls should take up the full width of their container. */
   fill?: boolean;
-  /** Provide an initial index for an uncontrolled segmented control. */
-  initialIndex?: Index;
   /** Function to be called when one of the segments is selected. */
-  onChange?: ManagedChangeHandler<Index>;
+  onChange: ManagedChangeHandler<Index>;
   /** Provide labels for each segment. */
   segments: string[];
   /** The the selected index of the segmented control. */
-  selectedIndex?: Index;
+  selectedIndex: Index | undefined;
   /** The size of the controls. */
   size?: SizeKey;
   /** The width of the controls. */
@@ -62,25 +61,15 @@ type SegmentedControlProps = {
 export const SegmentedControl = ({
   animate = false,
   fill = false,
-  initialIndex: initialIndexProp = 0,
-  onChange: onChangeProp,
+  onChange,
   segments,
   size = 'medium',
   width = 'large',
-  selectedIndex: selectedIndexProp,
+  selectedIndex,
   ...props
 }: SegmentedControlProps) => {
   const rootRef = useRef<HTMLDivElement>(null);
   const [selectedRect, setSelectedRect] = useState({});
-  const [selectedIndex, setIndex] = useManagedState<Index>(
-    selectedIndexProp,
-    initialIndexProp,
-    onChangeProp
-  );
-
-  const handleChange = (index: Index) => (event: ChangeEvent<HTMLInputElement>) => {
-    setIndex(index, event);
-  };
 
   // Because we use radio buttons for the segments, they should share a unique `name`
   const name = String(useId());
@@ -89,12 +78,18 @@ export const SegmentedControl = ({
   useEffect(() => {
     if (animate && rootRef.current instanceof HTMLElement) {
       let nodes = Array.from(rootRef.current.children);
-      let selected = nodes[selectedIndex];
+      let selected = selectedIndex !== undefined && nodes[selectedIndex];
+      let rootRect;
+      let nodeRect = { height: 0, width: 0, left: 0, top: 0 };
+      let offsetLeft;
+      let offsetTop;
 
-      let rootRect = rootRef.current.getBoundingClientRect();
-      let nodeRect = selected.getBoundingClientRect();
-      let offsetLeft = nodeRect.left - rootRect.left;
-      let offsetTop = nodeRect.top - rootRect.top;
+      if (selected) {
+        rootRect = rootRef.current.getBoundingClientRect();
+        nodeRect = selected.getBoundingClientRect();
+        offsetLeft = nodeRect.left - rootRect.left;
+        offsetTop = nodeRect.top - rootRect.top;
+      }
 
       setSelectedRect({
         height: nodeRect.height,
@@ -107,8 +102,22 @@ export const SegmentedControl = ({
   }, [animate, selectedIndex]);
 
   return (
-    <Box {...props}>
-      <Root fill={fill} size={size} ref={rootRef} width={width}>
+    <Box
+      css={css`
+        outline: 0;
+        box-sizing: border-box;
+      `}
+      {...props}
+    >
+      <Root
+        css={css`
+          border: 1px solid #e1e5e9;
+        `}
+        fill={fill}
+        size={size}
+        ref={rootRef}
+        width={width}
+      >
         {segments.map((label, idx) => {
           const isSelected = selectedIndex === idx;
 
@@ -119,7 +128,9 @@ export const SegmentedControl = ({
               isSelected={isSelected}
               key={label}
               name={name}
-              onChange={handleChange(idx)}
+              onChange={event => {
+                onChange(idx, event);
+              }}
               size={size}
               value={idx}
             >
@@ -127,7 +138,9 @@ export const SegmentedControl = ({
             </Item>
           );
         })}
-        {animate && <SelectedIndicator size={size} style={selectedRect} />}
+        {animate && selectedIndex! > -1 ? (
+          <SelectedIndicator size={size} style={selectedRect} />
+        ) : null}
       </Root>
     </Box>
   );
@@ -170,22 +183,25 @@ const Root = forwardRef<HTMLDivElement, RootProps>(({ fill, size, width, ...prop
   );
 });
 
-type ItemProps = {
+type BaseInputProps = {
   children: ReactNode;
   fill: boolean;
   isAnimated: boolean;
   isSelected: boolean;
-  onChange: ChangeEventHandler;
+  onChange: ChangeEventHandler<HTMLInputElement>;
   name: string;
   size: SizeKey;
   value: Index;
-} & HTMLAttributes<HTMLInputElement>;
+};
+
+type ItemProps = BaseInputProps & Omit<InputHTMLAttributes<HTMLInputElement>, keyof BaseInputProps>;
 
 const Item = (props: ItemProps) => {
   const { children, fill, isAnimated, isSelected, onChange, size, value, ...attrs } = props;
   const { colors, fields, typography } = useTheme();
   const sizeStyles = useItemSize();
   const selectedStyles = useSelectedStyles();
+  const inputRef = useRef(null);
 
   return (
     <label
@@ -199,9 +215,14 @@ const Item = (props: ItemProps) => {
         textAlign: 'center',
         position: 'relative',
         zIndex: 2,
-
+        border: '1px solid transparent',
+        ':focus-within': {
+          boxShadow: '0 0 0 2px #bfdbfe;',
+          border: '1px solid #166bff;',
+        },
         ':hover': {
           color: !isSelected ? colors.linkHoverColor : undefined,
+          backgroundColor: 'rgba(255, 255, 255, 0.5)',
         },
         ':active': {
           backgroundColor: !isSelected ? fields.hover.inputBackground : undefined,
@@ -209,6 +230,7 @@ const Item = (props: ItemProps) => {
       }}
     >
       <VisuallyHidden
+        ref={inputRef}
         as="input"
         type="radio"
         onChange={onChange}
@@ -276,9 +298,9 @@ const useItemSize = () => {
   };
 };
 const useSelectedStyles = () => {
-  const { colors, shadow } = useTheme();
+  const { colors } = useTheme();
   return {
     background: colors.background,
-    boxShadow: shadow.s100,
+    boxShadow: '0px 1px 4px rgba(45, 55, 72, 0.07);', // used to be shadow.s100
   };
 };

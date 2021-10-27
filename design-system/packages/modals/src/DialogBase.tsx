@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 
 import { Fragment, KeyboardEvent, ReactNode } from 'react';
