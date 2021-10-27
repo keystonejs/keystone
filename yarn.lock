@@ -1471,6 +1471,14 @@
     "@graphql-tools/utils" "^8.2.2"
     tslib "~2.3.0"
 
+"@graphql-tools/merge@^8.2.0":
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/@graphql-tools/merge/-/merge-8.2.0.tgz#8f6638eeecf19f59fef28598024308e0452dd0a2"
+  integrity sha512-nfMLYF7zczjnIbChZtqbvozRfuRweMD1Fe9HHd4RXd3Tcsj6E17srW0QJfxUoIIWh4pitj+XwZAwhj1PWBDU7g==
+  dependencies:
+    "@graphql-tools/utils" "^8.4.0"
+    tslib "~2.3.0"
+
 "@graphql-tools/mock@^8.1.2":
   version "8.4.0"
   resolved "https://registry.yarnpkg.com/@graphql-tools/mock/-/mock-8.4.0.tgz#c4a5d0c35cc5760b99b3e062145f36ac9cfe9ffb"
@@ -1491,6 +1499,16 @@
     tslib "~2.3.0"
     value-or-promise "1.0.10"
 
+"@graphql-tools/schema@^8.3.0":
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/@graphql-tools/schema/-/schema-8.3.0.tgz#ddf4297859c6d7ac1ebbbd91460260ed424115db"
+  integrity sha512-OJD4Q1Xa3sffRiHzy0sskZz9ZWeqaujINfoim4CTk5Y9es1LS+WnKi25wVhmL2SGzzmKuAv7oDn+dpQAlM+Gfw==
+  dependencies:
+    "@graphql-tools/merge" "^8.2.0"
+    "@graphql-tools/utils" "^8.4.0"
+    tslib "~2.3.0"
+    value-or-promise "1.0.11"
+
 "@graphql-tools/utils@^8.0.0", "@graphql-tools/utils@^8.2.0", "@graphql-tools/utils@^8.2.2", "@graphql-tools/utils@^8.2.3":
   version "8.2.5"
   resolved "https://registry.yarnpkg.com/@graphql-tools/utils/-/utils-8.2.5.tgz#695e6d760c1187ad2b159d5d3c4696eff9c08a27"
@@ -1504,6 +1522,13 @@
   integrity sha512-1+NpyJemIbEDkunwhlumXbp8XglZnFmqI84lkw0TgZHhmj5g2xE2w4s/qONQg7Qx46ekq7kaifX+AO4jy8USlA==
   dependencies:
     "@babel/runtime" "^7.9.2"
+
+"@graphql-tools/utils@^8.4.0":
+  version "8.5.0"
+  resolved "https://registry.yarnpkg.com/@graphql-tools/utils/-/utils-8.5.0.tgz#439487ac756d9458a33091e5e0435ddf8e794f3e"
+  integrity sha512-jMwLm6YdN+Vbqntg5GHqDvGLpLa/xPSpRs/c40d0rBuel77wo7AaQ8jHeBSpp9y+7kp7HrGSWff1u7yJ7F8ppw==
+  dependencies:
+    tslib "~2.3.0"
 
 "@graphql-ts/schema@0.5.0":
   version "0.5.0"
@@ -12851,6 +12876,11 @@ value-or-promise@1.0.10:
   version "1.0.10"
   resolved "https://registry.yarnpkg.com/value-or-promise/-/value-or-promise-1.0.10.tgz#5bf041f1e9a8e7043911875547636768a836e446"
   integrity sha512-1OwTzvcfXkAfabk60UVr5NdjtjJ0Fg0T5+B1bhxtrOEwSH2fe8y4DnLgoksfCyd8yZCOQQHB0qLMQnwgCjbXLQ==
+
+value-or-promise@1.0.11:
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/value-or-promise/-/value-or-promise-1.0.11.tgz#3e90299af31dd014fe843fe309cefa7c1d94b140"
+  integrity sha512-41BrgH+dIbCFXClcSapVs5M6GkENd3gQOJpEfPDNa71LsUGMXDL0jMWpI/Rh7WhX+Aalfz2TTS3Zt5pUsbnhLg==
 
 vary@^1, vary@~1.1.2:
   version "1.1.2"
