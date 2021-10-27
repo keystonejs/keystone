@@ -29,7 +29,7 @@ type AccessArgs = {
   item?: any;
 };
 export const access = {
-  isAdmin: ({ session }: AccessArgs) => !!session?.data?.isAdmin,
+  isAdmin: ({ session }: AccessArgs) => !!session?.data.isAdmin,
 };
 
 const randomNumber = () => Math.round(Math.random() * 10);
