@@ -4,7 +4,7 @@
   "lockFileMaintenance": { "enabled": true },
   "separateMinorPatch": true,
   "prConcurrentLimit": 0,
-  "baseBranches": ["renovate"],
+  "baseBranches": ["renovating"],
   "packageRules": [
     {
       "packagePatterns": [
