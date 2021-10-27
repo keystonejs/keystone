@@ -25,26 +25,26 @@ import { RelationshipSelect } from './RelationshipSelect';
 
 function LinkToRelatedItems({
   itemId,
-  isDoubleSided,
   value,
   list,
+  refFieldKey,
 }: {
   itemId: string | null;
-  isDoubleSided: boolean;
   value: FieldProps<typeof controller>['value'] & { kind: 'many' | 'one' };
   list: ListMeta;
+  refFieldKey?: string;
 }) {
   function constructQuery({
-    isDoubleSided,
+    refFieldKey,
     itemId,
     value,
   }: {
-    isDoubleSided?: boolean;
+    refFieldKey?: string;
     itemId: string | null;
     value: FieldProps<typeof controller>['value'] & { kind: 'many' | 'one' };
   }) {
-    if (isDoubleSided && itemId) {
-      return `!assignedTo_matches="${itemId}"`;
+    if (!!refFieldKey && itemId) {
+      return `!${refFieldKey}_matches="${itemId}"`;
     }
     return `!id_in="${(value?.value as { id: string; label: string }[])
       .slice(0, 100)
@@ -58,7 +58,7 @@ function LinkToRelatedItems({
   } as const;
 
   if (value.kind === 'many') {
-    const query = constructQuery({ isDoubleSided, value, itemId });
+    const query = constructQuery({ refFieldKey, value, itemId });
     return (
       <Button {...commonProps} as={Link} href={`/${list.path}?${query}`}>
         View related {list.plural}
@@ -240,7 +240,7 @@ export const Field = ({
                 : value.kind === 'one' && value.value) && (
                 <LinkToRelatedItems
                   itemId={value.id}
-                  isDoubleSided={!!field.refFieldKey}
+                  refFieldKey={field.refFieldKey}
                   list={foreignList}
                   value={value}
                 />
