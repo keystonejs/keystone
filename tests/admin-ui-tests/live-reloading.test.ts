@@ -128,7 +128,7 @@ test('changing the prisma schema crashes the process', async () => {
 });
 
 afterAll(async () => {
-  await Promise.all([exit(), browser.close()]);
+  await Promise.all([replaceSchema('initial'), exit(), browser.close()]);
 });
 
 async function expectContentInStdio(process: ExecaChildProcess, content: string) {
