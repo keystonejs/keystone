@@ -36,6 +36,8 @@ export const extendGraphqlSchema = graphql.extend(base => {
   return {
     mutation: {
       publishPost: graphql.field({
+        // base.object will return an object type from the existing schema
+        // with the name provided or throw if it doesn't exist
         type: base.object('Post'),
         args: { id: graphql.arg({ type: graphql.nonNull(graphql.ID) }) },
         resolve(source, { id }, context) {

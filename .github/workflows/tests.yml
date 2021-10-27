@@ -186,6 +186,7 @@ jobs:
             'document-field.test.ts',
             'default-values.test.ts',
             'extend-graphql-schema.test.ts',
+            'extend-graphql-schema-graphql-ts.test.ts',
             'json.test.ts',
             'rest-api.test.ts',
             'roles.test.ts',
