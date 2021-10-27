@@ -1512,6 +1512,13 @@
   dependencies:
     "@babel/runtime" "^7.9.2"
 
+"@graphql-tools/utils@^8.4.0":
+  version "8.5.0"
+  resolved "https://registry.yarnpkg.com/@graphql-tools/utils/-/utils-8.5.0.tgz#439487ac756d9458a33091e5e0435ddf8e794f3e"
+  integrity sha512-jMwLm6YdN+Vbqntg5GHqDvGLpLa/xPSpRs/c40d0rBuel77wo7AaQ8jHeBSpp9y+7kp7HrGSWff1u7yJ7F8ppw==
+  dependencies:
+    tslib "~2.3.0"
+
 "@graphql-ts/schema@0.5.0":
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/@graphql-ts/schema/-/schema-0.5.0.tgz#cc9cbf614ed931aff4c9987e88094a4030ad9e32"
