@@ -247,7 +247,14 @@ jobs:
       DATABASE_URL: 'file:./test.db'
     strategy:
       matrix:
-        test: ['init.test.ts', 'filters.test.ts', 'list-view-crud.test.ts', 'navigation.test.ts']
+        test:
+          [
+            'init.test.ts',
+            'filters.test.ts',
+            'list-view-crud.test.ts',
+            'navigation.test.ts',
+            'live-reloading.test.ts',
+          ]
       fail-fast: false
     steps:
       - name: Checkout Repo
