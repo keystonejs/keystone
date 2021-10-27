@@ -126,9 +126,9 @@ exports.default = function (req, res) { return res.send(x.toString()) }
           delete require.cache[resolved];
           const newConfig = initConfig(require(resolved).getConfig());
           const newPrismaSchema = printPrismaSchema(
-            initialiseLists(config.lists, config.db.provider),
-            config.db.provider,
-            config.db.prismaPreviewFeatures
+            initialiseLists(newConfig.lists, newConfig.db.provider),
+            newConfig.db.provider,
+            newConfig.db.prismaPreviewFeatures
           );
           if (originalPrismaSchema !== newPrismaSchema) {
             console.log('Your prisma schema has changed, please restart Keystone');

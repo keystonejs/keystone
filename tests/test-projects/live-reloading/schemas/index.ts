@@ -1,1 +1,1 @@
-export * from './initial';
+export * from './changed-prisma-schema';

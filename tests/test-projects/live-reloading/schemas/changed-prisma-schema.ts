@@ -4,7 +4,8 @@ import { text } from '@keystone-next/keystone/fields';
 export const lists = {
   Something: list({
     fields: {
-      text: text(),
+      text: text({ label: 'Initial Label For Text' }),
+      anotherField: text(),
     },
   }),
 };

@@ -119,6 +119,14 @@ test('errors can be recovered from', async () => {
   expect(value).toBe('blah');
 });
 
+test('changing the prisma schema crashes the process', async () => {
+  await replaceSchema('changed-prisma-schema');
+  await expectContentInStdio(process, 'Your prisma schema has changed, please restart Keystone');
+  // the promise will reject when it exits with a non-zero exit code which is what we're expecting here
+  await process.catch(() => {});
+  expect(process.exitCode).toBe(1);
+});
+
 afterAll(async () => {
   await Promise.all([exit(), browser.close()]);
 });
@@ -131,7 +139,7 @@ async function expectContentInStdio(process: ExecaChildProcess, content: string)
       console.log('found content');
       promise.resolve();
     } else {
-      console.log('did not find content');
+      console.log('did not find content, found:', stringified);
     }
   };
   process.stdout!.on('data', listener);
