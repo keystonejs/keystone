@@ -16,7 +16,7 @@ const initialData = {
 const COOKIE_SECRET = 'qwertyuiopasdfghjlkzxcvbmnm1234567890';
 const defaultAccess = ({ context }: { context: KeystoneContext }) => !!context.session;
 
-function setup (options?: any) {
+function setup(options?: any) {
   const auth = createAuth({
     listKey: 'User',
     identityField: 'email',
@@ -237,7 +237,7 @@ describe('Auth testing', () => {
     test(
       'Session is dropped if sessionData configuration is invalid',
       setup({
-        sessionData: 'id foo' // foo does not exist
+        sessionData: 'id foo', // foo does not exist
       })(async ({ context, graphQLRequest }) => {
         await seed(context, initialData);
         const { sessionToken } = await login(
