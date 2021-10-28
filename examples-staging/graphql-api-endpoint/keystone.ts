@@ -37,7 +37,7 @@ export default auth.withAuth(
       url: process.env.DATABASE_URL || 'postgres://username:password@localhost/database-name',
     },
     ui: {
-      isAccessAllowed: context => !!context.session?.data,
+      isAccessAllowed: context => !!context.session,
     },
     lists,
     session: statelessSessions({ maxAge: sessionMaxAge, secret: sessionSecret }),
