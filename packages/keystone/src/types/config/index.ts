@@ -176,7 +176,7 @@ export type ExtendGraphqlSchema = (schema: GraphQLSchema) => GraphQLSchema;
 export type FilesConfig = {
   upload: AssetMode;
   transformFilename?: (str: string) => string;
-  local?: true | {
+  local?: {
     /**
      * The path local files are uploaded to.
      * @default 'public/files'
@@ -194,7 +194,7 @@ export type FilesConfig = {
 
 export type ImagesConfig = {
   upload: AssetMode;
-  local?: true | {
+  local?: {
     /**
      * The path local images are uploaded to.
      * @default 'public/images'

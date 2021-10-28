@@ -7,11 +7,7 @@ import fs from 'fs-extra';
 import slugify from '@sindresorhus/slugify';
 import { KeystoneConfig, FilesContext } from '../../types';
 import { parseFileRef } from '../../fields/types/file/utils';
-import {
-  buildKeystoneCloudFileSrc,
-  uploadFileToKeystoneCloud,
-  getFileFromKeystoneCloud,
-} from '../cloud/assets';
+import { CloudAssetsAPI } from '../cloud/assets';
 
 const DEFAULT_BASE_URL = '/files';
 const DEFAULT_STORAGE_PATH = './public/files';
@@ -46,16 +42,16 @@ const generateSafeFilename = (
   return `${urlSafeName}-${id}`;
 };
 
-export function createFilesContext(config: KeystoneConfig): FilesContext | undefined {
+export function createFilesContext(
+  config: KeystoneConfig,
+  cloudAssets: () => CloudAssetsAPI
+): FilesContext | undefined {
   if (!config.files) {
     return;
   }
 
-  const { files, experimental } = config;
+  const { files } = config;
   const { baseUrl = DEFAULT_BASE_URL, storagePath = DEFAULT_STORAGE_PATH } = files.local || {};
-  const {
-    apiKey = '',
-  } = experimental?.cloud || {};
 
   if (files.upload === 'local') {
     fs.mkdirSync(storagePath, { recursive: true });
@@ -64,7 +60,7 @@ export function createFilesContext(config: KeystoneConfig): FilesContext | undef
   return {
     getSrc: async (mode, filename) => {
       if (mode === 'cloud') {
-        return await buildKeystoneCloudFileSrc({ apiKey, graphqlApiEndpoint, filename });
+        return cloudAssets().files.url(filename);
       }
 
       return `${baseUrl}/${filename}`;
@@ -79,11 +75,7 @@ export function createFilesContext(config: KeystoneConfig): FilesContext | undef
       const { mode, filename } = fileRef;
 
       if (mode === 'cloud') {
-        const { filesize } = await getFileFromKeystoneCloud({
-          apiKey,
-          filename,
-          restApiEndpoint,
-        });
+        const { filesize } = await cloudAssets().files.metadata(filename);
 
         return { filesize, ...fileRef };
       }
@@ -97,12 +89,7 @@ export function createFilesContext(config: KeystoneConfig): FilesContext | undef
       const filename = generateSafeFilename(originalFilename, files.transformFilename);
 
       if (mode === 'cloud') {
-        const { filesize } = await uploadFileToKeystoneCloud({
-          apiKey,
-          stream,
-          filename,
-          restApiEndpoint,
-        });
+        const { filesize } = await cloudAssets().files.upload(stream, filename);
 
         return { mode, filesize, filename };
       }

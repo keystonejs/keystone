@@ -79,7 +79,7 @@ export const controller = (config: FieldControllerConfig): FileController => {
     path: config.path,
     label: config.label,
     graphqlSelection: `${config.path} {
-        src
+        url
         filename
         ref
         filesize
@@ -91,7 +91,7 @@ export const controller = (config: FieldControllerConfig): FileController => {
       return {
         kind: 'from-server',
         data: {
-          src: value.src,
+          src: value.url,
           filename: value.filename,
           ref: value.ref,
           filesize: value.filesize,

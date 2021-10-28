@@ -164,6 +164,7 @@ exports.default = function (req, res) { return res.send(x.toString()) }
           const keystone = getKeystone(function fakePrismaClientClass() {
             return prismaClient;
           });
+          await keystone.connect();
           const servers = await createExpressServer(
             newConfig,
             graphQLSchema,

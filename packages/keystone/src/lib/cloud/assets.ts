@@ -1,55 +1,58 @@
+import { Readable } from 'stream';
 import fetch from 'node-fetch';
 import FormData from 'form-data';
-import { ImageMetadata } from '../../types';
-import { Readable } from 'stream';
+import { FileData, ImageExtension, ImageMetadata } from '../../types/context';
 
-export type MetaFile = {
-  mode: AssetMode;
-  filename: string;
-  filesize: number;
-}
-
-export type ImageExtension = 'jpg' | 'png' | 'webp' | 'gif';
-export type MetaImage = MetaFile & {
-  extension: ImageExtension;
-  width: number;
-  height: number;
-}
-
-export type ImageData = {
-  mode: AssetMode;
-  id: string;
-} & ImageMetadata;
-
-function formUploadBody ({
+function formUploadBody({
   fieldName,
   fileName,
-  stream,
+  data,
 }: {
-  fieldName: string,
-  fileName: string,
-  stream: Readable,
+  fieldName: string;
+  fileName: string;
+  data: Buffer | Readable;
 }) {
   const form = new FormData();
-  form.append(fieldName, stream, fileName);
+  form.append(fieldName, data, fileName);
   return form;
 }
 
-async function getCloudContext ({ apiKey }: { apiKey: string }) {
-  if (!apiKey) throw new Error('No API key provided');
+export type CloudAssetsAPI = {
+  images: {
+    upload(buffer: Buffer, id: string, extension: ImageExtension): Promise<ImageMetadata>;
+    url(id: string, extension: ImageExtension): string;
+    metadata(id: string, extension: ImageExtension): Promise<ImageMetadata>;
+  };
+  files: {
+    upload(stream: Readable, filename: string): Promise<FileData>;
+    url(filename: string): string;
+    metadata(filename: string): Promise<FileData>;
+  };
+};
 
+type ImageMetadataResponse = {
+  width: number;
+  height: number;
+  filesize: number;
+  extension: ImageExtension;
+};
+
+export async function getCloudAssetsAPI({ apiKey }: { apiKey: string }): Promise<CloudAssetsAPI> {
   const headers = {
-    'Authorization': `Bearer ${apiKey}`,
-    'x-keystone-version': `TODO 6 RC`
+    Authorization: `Bearer ${apiKey}`,
+    'x-keystone-version': `TODO 6 RC`,
   };
 
-  const res = await fetch('https://init.keystonejs.cloud/v1/', { headers, });
+  const res = await fetch('https://init.keystonejs.cloud/v1/', { headers });
   const json = await res.json();
 
-  const { project, assets } = json;
+  const {
+    // project,
+    assets,
+  } = json;
   const {
     fileGetUrl,
-    fileDownloadUrl,
+    // fileDownloadUrl,
     fileUploadUrl,
     fileMetaUrl,
     imageGetUrl,
@@ -57,61 +60,61 @@ async function getCloudContext ({ apiKey }: { apiKey: string }) {
     imageMetaUrl,
   } = assets;
 
-  async function fileUpload (fileName: string, body: FormData) {
-    return await fetch(fileUploadUrl, {
-      method: 'POST',
-      body,
-      headers,
-    });
-  }
-
-  async function imageUpload (fileName: string, body: FormData) {
-    return await fetch(imageUploadUrl, {
-      method: 'POST',
-      body,
-      headers,
-    });
-  }
-
-  async function fileGet (fileId: string, filePath: string) {
-    const path = `${fileId}/${filePath}`;
-    return await fetch(`${fileGetUrl}/${path}`, { method: 'GET', headers, });
-  }
-
-  async function fileDownload (fileId: string, filePath: string) {
-    const path = `${fileId}/${filePath}`;
-    return await fetch(`${fileDownloadUrl}/${path}`, { method: 'GET', headers, });
-  }
-
-  async function fileGetMeta (fileId: string, filePath: string) {
-    const path = `${fileId}/${filePath}`;
-    return await fetch(`${fileMetaUrl}/${path}`, { method: 'GET', headers, });
-  }
-
-  async function imageGet (fileId: string, filePath: string) {
-    const path = `${fileId}/${filePath}`;
-    return await fetch(`${imageGetUrl}/${path}`, { method: 'GET', headers, });
-  }
-
-  async function imageGetMeta (fileId: string, filePath: string) {
-    const path = `${fileId}/${filePath}`;
-    return await fetch(`${imageMetaUrl}/${path}`, { method: 'GET', headers, });
-  }
-
   return {
-    project,
-    file: {
-      get: fileGet,
-      download: fileDownload,
-      upload: fileUpload,
-      meta: fileGetMeta,
+    images: {
+      url(id, extension) {
+        return `${imageGetUrl}/${id}.${extension}`;
+      },
+      async metadata(id, extension): Promise<ImageMetadata> {
+        const metadata: ImageMetadataResponse = await fetch(`${imageMetaUrl}/${id}.${extension}`, {
+          method: 'GET',
+          headers,
+        }).then(x => x.json());
+        return {
+          extension: metadata.extension,
+          height: metadata.height,
+          width: metadata.width,
+          filesize: metadata.filesize,
+        };
+      },
+      async upload(buffer, id, extension) {
+        const metadata: ImageMetadataResponse = await fetch(imageUploadUrl, {
+          method: 'POST',
+          body: formUploadBody({
+            data: buffer,
+            fieldName: 'image',
+            fileName: `${id}.${extension}`,
+          }),
+          headers,
+        }).then(x => x.json());
+        return {
+          extension: metadata.extension,
+          filesize: metadata.filesize,
+          height: metadata.height,
+          width: metadata.width,
+        };
+      },
     },
-    image: {
-      get: imageGet,
-      upload: imageUpload,
-      meta: imageGetMeta,
+    files: {
+      url(filename) {
+        return `${fileGetUrl}/${filename}`;
+      },
+      metadata(filename) {
+        return fetch(`${fileMetaUrl}/${filename}`, { method: 'GET', headers }).then(x => x.json());
+      },
+      upload(stream, filename) {
+        return fetch(fileUploadUrl, {
+          method: 'POST',
+          body: formUploadBody({ data: stream, fieldName: 'file', fileName: filename }),
+          headers,
+        }).then(x => x.json());
+      },
     },
+    // project,
+    // fileGetUrl,
+    // fileDownloadUrl,
+    // imageGetUrl,
+    // file: { upload: fileUpload, meta: fileGetMeta },
+    // image: { upload: imageUpload, meta: imageGetMeta },
   };
 }
-
-export { getCloudContext };
