@@ -232,13 +232,19 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
           return;
         }
 
-        const data = await sudoContext.query[listKey].findOne({
-          where: { id: session.itemId },
-          query: sessionData || 'id',
-        });
-        if (!data) return;
+        try {
+          const data = await sudoContext.query[listKey].findOne({
+            where: { id: session.itemId },
+            query: sessionData || 'id',
+          });
+          if (!data) return;
 
-        return { ...session, itemId: session.itemId, listKey, data };
+          return { ...session, itemId: session.itemId, listKey, data };
+        } catch (e) {
+          // TODO: the assumption is this should only be from an invalid sessionData configuration
+          //   it could be something else though, either way, result is a bad session
+          return;
+        }
       },
     };
   };
