@@ -70,7 +70,7 @@ export async function build(cwd: string) {
     console.log('✨ Skipping Admin UI code generation');
   } else {
     console.log('✨ Generating Admin UI code');
-    await generateAdminUI(config, graphQLSchema, adminMeta, getAdminPath(cwd));
+    await generateAdminUI(config, graphQLSchema, adminMeta, getAdminPath(cwd), false);
   }
 
   console.log('✨ Generating Keystone config code');

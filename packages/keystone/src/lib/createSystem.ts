@@ -76,7 +76,7 @@ export function createSystem(config: KeystoneConfig) {
         // https://github.com/keystonejs/keystone/issues/5477
         // We explicitly send a SIGINT signal to the prisma child process on exit
         // to ensure that the process is cleaned up appropriately.
-        prismaClient._engine.child.kill('SIGINT');
+        prismaClient._engine.child?.kill('SIGINT');
       });
 
       const createContext = makeCreateContext({

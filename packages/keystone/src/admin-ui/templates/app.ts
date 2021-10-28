@@ -20,7 +20,8 @@ export const appTemplate = (
   adminMetaRootVal: AdminMetaRootVal,
   graphQLSchema: GraphQLSchema,
   { configFileExists, projectAdminPath }: AppTemplateOptions,
-  apiPath: string
+  apiPath: string,
+  isLiveReload: boolean
 ) => {
   const result = executeSync({
     document: staticAdminMetaQuery,
@@ -34,9 +35,26 @@ export const appTemplate = (
   const adminMetaQueryResultHash = hashString(JSON.stringify(adminMeta));
 
   const allViews = adminMetaRootVal.views.map(views => {
-    const viewPath = Path.isAbsolute(views)
-      ? Path.relative(Path.join(projectAdminPath, 'pages'), views)
-      : views;
+    // during a live reload, we'll have paths from a webpack compilation which will make the paths
+    // that __dirname/__filename/require.resolve return relative to the webpack's "context" option
+    // which for Next, it's set to the directory of the Next project which is projectAdminPath here.
+    // so to get absolute paths, we need to resolve them relative to the projectAdminPath
+    // generally though, relative paths are problematic because
+    // we don't know where to resolve them from so we disallow them
+    // we're assuming that the relative paths we get
+    // of course, this isn't necessarily true but it's kinda the best we can do
+    // this means that if someone writes a relative path as a view during live reloading
+    // they'll get a more confusing error than they would get at startup
+    if (isLiveReload) {
+      views = Path.resolve(projectAdminPath, views);
+    } else if (!Path.isAbsolute(views)) {
+      throw new Error(
+        `Field views must be absolute paths, but ${JSON.stringify(
+          views
+        )} was provided. Use path.join(__dirname, './relative/path') or require.resolve('./relative/path') to get an absolute path.`
+      );
+    }
+    const viewPath = Path.relative(Path.join(projectAdminPath, 'pages'), views);
     return serializePathForImport(viewPath);
   });
   // -- TEMPLATE START

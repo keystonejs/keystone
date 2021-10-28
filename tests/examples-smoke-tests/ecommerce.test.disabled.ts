@@ -1,5 +1,5 @@
 import { Browser, Page } from 'playwright';
-import { exampleProjectTests, initFirstItemTest } from './utils';
+import { exampleProjectTests, initFirstItemTest, loadIndex } from './utils';
 
 // this is disabled currently because it's currently failing and we want to get the tests in without being blocked on this
 
@@ -9,7 +9,7 @@ exampleProjectTests('ecommerce', browserType => {
   beforeAll(async () => {
     browser = await browserType.launch();
     page = await browser.newPage();
-    await page.goto('http://localhost:3000');
+    await loadIndex(page);
   });
   initFirstItemTest(() => page);
   afterAll(async () => {

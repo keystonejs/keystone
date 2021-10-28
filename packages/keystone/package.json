@@ -105,6 +105,7 @@
     "micro": "^9.3.4",
     "next": "^11.1.0",
     "node-fetch": "^2.6.5",
+    "normalize-path": "^3.0.0",
     "object-hash": "^2.2.0",
     "p-limit": "^2.3.0",
     "pirates": "^4.0.1",
@@ -123,7 +124,7 @@
   "devDependencies": {
     "@testing-library/dom": "^8.7.2",
     "@testing-library/react": "^12.1.2",
-    "@testing-library/user-event": "^13.3.0",
+    "@testing-library/user-event": "^13.5.0",
     "@types/bytes": "^3.1.1",
     "fixturez": "^1.1.0",
     "mime": "^2.5.2",

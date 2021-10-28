@@ -35,7 +35,7 @@ Here's what we're going to do:
 - Create a Next.js app
 - Embed Keystone, and run an Admin UI you can read and write to locally
 - Add a simple Keystone [Schema](/apis/schema) with a `Post` List
-- Setup a secure read-only GraphQL API endpoint (and Apollo Sandbox) that you can access in production
+- Setup a secure read-only GraphQL API endpoint (and GraphQL Playground) that you can access in production
 - Deploy the app to Vercel 🚀
 
 ## Setup a Next.js app
@@ -284,7 +284,7 @@ Run `yarn dev` again.
 
 ## Bonus: add the GraphQL API to the frontend
 
-To get a read-only GraphQL API and Apollo Sandbox in production, add `/pages/api/graphql.tsx`with the following:
+To get a read-only GraphQL API and GraphQL Playground in production, add `/pages/api/graphql.tsx`with the following:
 
 ```tsx
 // pages/api/graphql.tsx
@@ -292,7 +292,7 @@ To get a read-only GraphQL API and Apollo Sandbox in production, add `/pages/api
 export { default, config } from '.keystone/next/graphql-api';
 ```
 
-This takes the fully functional GraphQL API that Keystone is already generating and makes it available as an endpoint and Apollo Sandbox within the Next.js frontend app at [http://localhost:3000/api/graphql](http://localhost:3000/api/graphql).
+This takes the fully functional GraphQL API that Keystone is already generating and makes it available as an endpoint and GraphQL Playground within the Next.js frontend app at [http://localhost:3000/api/graphql](http://localhost:3000/api/graphql).
 
 ![A browser displaying the GraphQL playground](/assets/walkthroughs/embedded-nextjs/graphql-api.png)
 
@@ -334,7 +334,7 @@ Keystone’s Embedded mode and SQLite support gives you the option to run a self
     heading="Getting Started with create-keystone-app"
     href="/docs/walkthroughs/getting-started-with-create-keystone-app"
     >
-    How to use Keystone's CLI app to standup a new local project with an Admin UI & the Apollo Sandbox.
+    How to use Keystone's CLI app to standup a new local project with an Admin UI & the GraphQL Playground.
   </Well>
 </RelatedContent>
 

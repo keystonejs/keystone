@@ -7,12 +7,25 @@ import _treeKill from 'tree-kill';
 import * as playwright from 'playwright';
 import dotenv from 'dotenv';
 
+export async function loadIndex(page: playwright.Page) {
+  await page.goto('http://localhost:3000');
+  try {
+    // sometimes Next will fail to load the page the first time
+    // this is probably because Keystone is fetching the API route to compile Keystone
+    // while we're fetching an Admin UI page
+    // and Next doesn't handle fetching two pages at the same time well
+    await page.waitForSelector(':has-text("Dashboard")', { timeout: 2000 });
+  } catch {
+    await page.goto('http://localhost:3000');
+  }
+}
+
 const treeKill = promisify(_treeKill);
 
 // this'll take a while
 jest.setTimeout(10000000);
 
-const promiseSignal = (): Promise<void> & { resolve: () => void } => {
+export const promiseSignal = (): Promise<void> & { resolve: () => void } => {
   let resolve;
   let promise = new Promise<void>(_resolve => {
     resolve = _resolve;
@@ -86,36 +99,7 @@ export const adminUITests = (
     });
 
     async function startKeystone(command: 'start' | 'dev') {
-      if (!fs.existsSync(projectDir)) {
-        throw new Error(`No such file or directory ${projectDir}`);
-      }
-
-      let keystoneProcess = execa('yarn', ['keystone-next', command], {
-        cwd: projectDir,
-        env: process.env,
-      });
-
-      let adminUIReady = promiseSignal();
-      let listener = (chunk: any) => {
-        let stringified = chunk.toString('utf8');
-        if (process.env.VERBOSE) {
-          console.log(stringified);
-        }
-        if (stringified.includes('Admin UI ready')) {
-          adminUIReady.resolve();
-        }
-      };
-      keystoneProcess.stdout!.on('data', listener);
-      keystoneProcess.stderr!.on('data', listener);
-
-      cleanupKeystoneProcess = async () => {
-        keystoneProcess.stdout!.off('data', listener);
-        keystoneProcess.stderr!.off('data', listener);
-        // childProcess.kill will only kill the direct child process
-        // so we use tree-kill to kill the process and it's children
-        await treeKill(keystoneProcess.pid!);
-      };
-      await adminUIReady;
+      cleanupKeystoneProcess = (await generalStartKeystone(projectDir, command)).exit;
     }
 
     if (mode === 'dev') {
@@ -160,3 +144,39 @@ export const adminUITests = (
     });
   });
 };
+
+export async function generalStartKeystone(projectDir: string, command: 'start' | 'dev') {
+  if (!fs.existsSync(projectDir)) {
+    throw new Error(`No such file or directory ${projectDir}`);
+  }
+
+  let keystoneProcess = execa('yarn', ['keystone-next', command], {
+    cwd: projectDir,
+    env: process.env,
+  });
+
+  let adminUIReady = promiseSignal();
+  let listener = (chunk: any) => {
+    let stringified = chunk.toString('utf8');
+    if (process.env.VERBOSE) {
+      console.log(stringified);
+    }
+    if (stringified.includes('Admin UI ready')) {
+      adminUIReady.resolve();
+    }
+  };
+  keystoneProcess.stdout!.on('data', listener);
+  keystoneProcess.stderr!.on('data', listener);
+
+  await adminUIReady;
+  return {
+    process: keystoneProcess,
+    exit: async () => {
+      keystoneProcess.stdout!.off('data', listener);
+      keystoneProcess.stderr!.off('data', listener);
+      // childProcess.kill will only kill the direct child process
+      // so we use tree-kill to kill the process and it's children
+      await treeKill(keystoneProcess.pid!);
+    },
+  };
+}

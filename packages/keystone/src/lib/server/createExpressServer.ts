@@ -48,6 +48,7 @@ const addApolloServer = async ({
     path: config.graphql?.path || '/api/graphql',
     cors: false,
   });
+  return apolloServer;
 };
 
 export const createExpressServer = async (
@@ -55,7 +56,7 @@ export const createExpressServer = async (
   graphQLSchema: GraphQLSchema,
   createContext: CreateContext
 ) => {
-  const server = express();
+  const expressServer = express();
 
   if (config.server?.cors) {
     // Setting config.server.cors = true will provide backwards compatible defaults
@@ -64,10 +65,10 @@ export const createExpressServer = async (
       typeof config.server.cors === 'boolean'
         ? { origin: true, credentials: true }
         : config.server.cors;
-    server.use(cors(corsConfig));
+    expressServer.use(cors(corsConfig));
   }
 
-  addHealthCheck({ config, server });
+  addHealthCheck({ config, server: expressServer });
 
   if (config.server?.extendExpressApp) {
     const createRequestContext = async (req: IncomingMessage, res: ServerResponse) =>
@@ -78,11 +79,11 @@ export const createExpressServer = async (
         req,
       });
 
-    config.server?.extendExpressApp(server, createRequestContext);
+    config.server?.extendExpressApp(expressServer, createRequestContext);
   }
 
-  await addApolloServer({
-    server,
+  const apolloServer = await addApolloServer({
+    server: expressServer,
     config,
     graphQLSchema,
     createContext,
@@ -90,5 +91,5 @@ export const createExpressServer = async (
     graphqlConfig: config.graphql,
   });
 
-  return server;
+  return { expressServer, apolloServer };
 };

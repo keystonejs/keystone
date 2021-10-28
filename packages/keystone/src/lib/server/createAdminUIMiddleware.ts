@@ -27,7 +27,11 @@ export const createAdminUIMiddleware = async (
   const publicPages = ui?.publicPages ?? [];
   return async (req: express.Request, res: express.Response) => {
     const { pathname } = url.parse(req.url);
-    if (pathname?.startsWith('/_next') || pathname === (graphql?.path || '/api/graphql')) {
+    if (
+      pathname?.startsWith('/_next') ||
+      pathname === (graphql?.path || '/api/graphql') ||
+      pathname === '/api/__keystone_api_build'
+    ) {
       handle(req, res);
       return;
     }
