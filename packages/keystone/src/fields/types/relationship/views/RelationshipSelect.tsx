@@ -164,7 +164,7 @@ export const RelationshipSelect = ({
               fields: {
                 [list.gqlNames.listQueryName]: {
                   keyArgs: ['where'],
-                  merge: (existing: readonly any[], incoming: readonly any[], { args }) => {
+                  merge: (existing: readonly unknown[], incoming: readonly unknown[], { args }) => {
                     const merged = existing ? existing.slice() : [];
                     const { skip } = args!;
                     for (let i = 0; i < incoming.length; ++i) {
