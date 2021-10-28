@@ -47,7 +47,7 @@ const imageOutputFields = graphql.fields<ImageData>()({
       if (!context.images) {
         throw new Error('Image context is undefined');
       }
-      return context.images.getSrc(data.mode, data.id, data.extension);
+      return context.images.getUrl(data.mode, data.id, data.extension);
     },
   }),
 });

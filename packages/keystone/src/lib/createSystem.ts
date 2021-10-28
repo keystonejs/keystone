@@ -55,7 +55,7 @@ function getSudoGraphQLSchema(config: KeystoneConfig, provider: DatabaseProvider
   return createGraphQLSchema(transformedConfig, lists, adminMeta);
 }
 
-export function createSystem(config: KeystoneConfig) {
+export function createSystem(config: KeystoneConfig, isLiveReload?: boolean) {
   const lists = initialiseLists(config.lists, config.db.provider);
 
   const adminMeta = createAdminMeta(config, lists);
@@ -96,9 +96,11 @@ export function createSystem(config: KeystoneConfig) {
 
       return {
         async connect() {
-          await prismaClient.$connect();
-          const context = createContext({ sudo: true });
-          await config.db.onConnect?.(context);
+          if (!isLiveReload) {
+            await prismaClient.$connect();
+            const context = createContext({ sudo: true });
+            await config.db.onConnect?.(context);
+          }
           if (config.experimental?.cloud?.apiKey) {
             cloudAssetsAPI = await getCloudAssetsAPI({
               apiKey: config.experimental.cloud.apiKey,

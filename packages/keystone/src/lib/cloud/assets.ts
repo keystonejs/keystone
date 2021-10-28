@@ -43,7 +43,7 @@ export async function getCloudAssetsAPI({ apiKey }: { apiKey: string }): Promise
     'x-keystone-version': `TODO 6 RC`,
   };
 
-  const res = await fetch('https://init.keystonejs.cloud/v1/', { headers });
+  const res = await fetch('https://api.staging-keystonejs.cloud/api/rest/config', { headers });
   const json = await res.json();
 
   const {
@@ -78,7 +78,7 @@ export async function getCloudAssetsAPI({ apiKey }: { apiKey: string }): Promise
         };
       },
       async upload(buffer, id, extension) {
-        const metadata: ImageMetadataResponse = await fetch(imageUploadUrl, {
+        const res = await fetch(imageUploadUrl, {
           method: 'POST',
           body: formUploadBody({
             data: buffer,
@@ -86,7 +86,12 @@ export async function getCloudAssetsAPI({ apiKey }: { apiKey: string }): Promise
             fileName: `${id}.${extension}`,
           }),
           headers,
-        }).then(x => x.json());
+        });
+        if (!res.ok) {
+          console.error(`${res.status} ${await res.text()}`);
+          throw new Error('Error occurred when uploading image');
+        }
+        const metadata: ImageMetadataResponse = await res.json();
         return {
           extension: metadata.extension,
           filesize: metadata.filesize,

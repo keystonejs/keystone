@@ -45,7 +45,7 @@ const fileFields = graphql.fields<FileData>()({
           'File context is undefined, this most likely means that you havent configurd keystone with a file config, see https://keystonejs.com/docs/apis/config#files for details'
         );
       }
-      return context.files.getSrc(data.mode, data.filename);
+      return context.files.getUrl(data.mode, data.filename);
     },
   }),
 });

@@ -47,7 +47,7 @@ export function createImagesContext(
   }
 
   return {
-    getSrc: async (mode, id, extension) => {
+    getUrl: async (mode, id, extension) => {
       if (mode === 'cloud') {
         return cloudAssets().images.url(id, extension);
       }

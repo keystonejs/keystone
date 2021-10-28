@@ -58,7 +58,7 @@ export function createFilesContext(
   }
 
   return {
-    getSrc: async (mode, filename) => {
+    getUrl: async (mode, filename) => {
       if (mode === 'cloud') {
         return cloudAssets().files.url(filename);
       }
