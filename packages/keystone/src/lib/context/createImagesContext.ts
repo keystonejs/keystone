@@ -79,6 +79,12 @@ export function createImagesContext(
       const { upload: mode } = images;
       const id = uuid();
 
+      if (mode === 'cloud') {
+        const cloudMetadata = await cloudAssets().images.upload(stream, id);
+
+        return { mode, id, ...cloudMetadata };
+      }
+
       const chunks = [];
 
       for await (let chunk of stream) {
@@ -87,12 +93,6 @@ export function createImagesContext(
 
       const buffer = Buffer.concat(chunks);
       const metadata = await getImageMetadataFromBuffer(buffer);
-
-      if (mode === 'cloud') {
-        const cloudMetadata = await cloudAssets().images.upload(buffer, id, metadata.extension);
-
-        return { mode, id, ...cloudMetadata };
-      }
 
       await fs.writeFile(path.join(storagePath, `${id}.${metadata.extension}`), buffer);
 

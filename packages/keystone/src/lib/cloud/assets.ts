@@ -10,7 +10,7 @@ function formUploadBody({
 }: {
   fieldName: string;
   fileName: string;
-  data: Buffer | Readable;
+  data: Readable;
 }) {
   const form = new FormData();
   form.append(fieldName, data, fileName);
@@ -19,7 +19,7 @@ function formUploadBody({
 
 export type CloudAssetsAPI = {
   images: {
-    upload(buffer: Buffer, id: string, extension: ImageExtension): Promise<ImageMetadata>;
+    upload(stream: Readable, id: string): Promise<ImageMetadata>;
     url(id: string, extension: ImageExtension): string;
     metadata(id: string, extension: ImageExtension): Promise<ImageMetadata>;
   };
@@ -45,7 +45,7 @@ export async function getCloudAssetsAPI({ apiKey }: { apiKey: string }): Promise
     'x-keystone-version': `TODO 6 RC`,
   };
   if (!cloudAssetsConfigCache.has(apiKey)) {
-    const res = await fetch('https://api.staging-keystonejs.cloud/api/rest/config', { headers });
+    const res = await fetch('https://init.staging-keystonejs.cloud/api/rest/config', { headers });
     if (!res.ok) {
       throw new Error(`Failed to load cloud config: ${res.status}\n${await res.text()}`);
     }
@@ -73,10 +73,7 @@ export async function getCloudAssetsAPI({ apiKey }: { apiKey: string }): Promise
         return `${imageGetUrl}/${id}.${extension}`;
       },
       async metadata(id, extension): Promise<ImageMetadata> {
-        const res = await fetch(`${imageMetaUrl}/${id}.${extension}`, {
-          method: 'GET',
-          headers,
-        });
+        const res = await fetch(`${imageMetaUrl}/${id}.${extension}`);
         if (!res.ok) {
           console.error(`${res.status} ${await res.text()}`);
           throw new Error('Error occurred when fetching image metadata');
@@ -89,13 +86,13 @@ export async function getCloudAssetsAPI({ apiKey }: { apiKey: string }): Promise
           filesize: metadata.filesize,
         };
       },
-      async upload(buffer, id, extension) {
+      async upload(buffer, id) {
         const res = await fetch(imageUploadUrl, {
           method: 'POST',
           body: formUploadBody({
             data: buffer,
             fieldName: 'image',
-            fileName: `${id}.${extension}`,
+            fileName: id,
           }),
           headers,
         });
@@ -117,7 +114,7 @@ export async function getCloudAssetsAPI({ apiKey }: { apiKey: string }): Promise
         return `${fileGetUrl}/${filename}`;
       },
       async metadata(filename) {
-        const res = await fetch(`${fileMetaUrl}/${filename}`, { method: 'GET', headers });
+        const res = await fetch(`${fileMetaUrl}/${filename}`);
         if (!res.ok) {
           console.error(`${res.status} ${await res.text()}`);
           throw new Error('Error occurred when fetching file metadata');
@@ -147,11 +144,5 @@ export async function getCloudAssetsAPI({ apiKey }: { apiKey: string }): Promise
         };
       },
     },
-    // project,
-    // fileGetUrl,
-    // fileDownloadUrl,
-    // imageGetUrl,
-    // file: { upload: fileUpload, meta: fileGetMeta },
-    // image: { upload: imageUpload, meta: imageGetMeta },
   };
 }
