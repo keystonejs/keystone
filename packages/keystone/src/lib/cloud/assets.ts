@@ -37,19 +37,26 @@ type ImageMetadataResponse = {
   extension: ImageExtension;
 };
 
+const cloudAssetsConfigCache = new Map();
+
 export async function getCloudAssetsAPI({ apiKey }: { apiKey: string }): Promise<CloudAssetsAPI> {
   const headers = {
     Authorization: `Bearer ${apiKey}`,
     'x-keystone-version': `TODO 6 RC`,
   };
-
-  const res = await fetch('https://api.staging-keystonejs.cloud/api/rest/config', { headers });
-  const json = await res.json();
+  if (!cloudAssetsConfigCache.has(apiKey)) {
+    const res = await fetch('https://api.staging-keystonejs.cloud/api/rest/config', { headers });
+    if (!res.ok) {
+      throw new Error(`Failed to load cloud config: ${res.status}\n${await res.text()}`);
+    }
+    const json = await res.json();
+    cloudAssetsConfigCache.set(apiKey, json);
+  }
 
   const {
     // project,
     assets,
-  } = json;
+  } = cloudAssetsConfigCache.get(apiKey)!;
   const {
     fileGetUrl,
     // fileDownloadUrl,
@@ -104,15 +111,27 @@ export async function getCloudAssetsAPI({ apiKey }: { apiKey: string }): Promise
       url(filename) {
         return `${fileGetUrl}/${filename}`;
       },
-      metadata(filename) {
-        return fetch(`${fileMetaUrl}/${filename}`, { method: 'GET', headers }).then(x => x.json());
+      async metadata(filename) {
+        const metadata = await fetch(`${fileMetaUrl}/${filename}`, { method: 'GET', headers }).then(
+          x => x.json()
+        );
+        return {
+          mode: 'cloud',
+          filesize: metadata.filesize,
+          filename,
+        };
       },
-      upload(stream, filename) {
-        return fetch(fileUploadUrl, {
+      async upload(stream, filename) {
+        const metadata = await fetch(fileUploadUrl, {
           method: 'POST',
           body: formUploadBody({ data: stream, fieldName: 'file', fileName: filename }),
           headers,
         }).then(x => x.json());
+        return {
+          mode: 'cloud',
+          filesize: metadata.filesize,
+          filename,
+        };
       },
     },
     // project,
