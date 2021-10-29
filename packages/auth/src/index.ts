@@ -232,20 +232,17 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
           return;
         }
 
-        // NOTE: This is wrapped in a try-catch block because a "not found" result will currently
-        // throw; I think this needs to be reviewed, but for now this prevents a system crash when
-        // the session item is invalid
         try {
-          // If no field selection is specified, just load the id. We still load the item,
-          // because doing so validates that it exists in the database
           const data = await sudoContext.query[listKey].findOne({
             where: { id: session.itemId },
             query: sessionData || 'id',
           });
+          if (!data) return;
+
           return { ...session, itemId: session.itemId, listKey, data };
         } catch (e) {
-          // TODO: This swallows all errors, we need a way to differentiate between "not found" and
-          // actual exceptions that should be thrown
+          // TODO: the assumption is this should only be from an invalid sessionData configuration
+          //   it could be something else though, either way, result is a bad session
           return;
         }
       },
@@ -292,10 +289,10 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
         },
       };
     }
-    let session = keystoneConfig.session;
-    if (session && sessionData) {
-      session = withItemData(session);
-    }
+
+    if (!keystoneConfig.session) throw new TypeError('Missing .session configuration');
+    const session = withItemData(keystoneConfig.session);
+
     const existingExtendGraphQLSchema = keystoneConfig.extendGraphqlSchema;
     const listConfig = keystoneConfig.lists[listKey];
     return {

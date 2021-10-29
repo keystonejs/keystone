@@ -6,12 +6,12 @@ export const lists = {
     access: {
       operation: {
         // Only allow admins to delete users
-        delete: ({ session }) => session?.data?.isAdmin,
+        delete: ({ session }) => session?.data.isAdmin,
       },
     },
     ui: {
       // Since you can't delete users unless you're an admin, we hide the UI for it
-      hideDelete: ({ session }) => !session?.data?.isAdmin,
+      hideDelete: ({ session }) => !session?.data.isAdmin,
       listView: {
         // These are the default columns that will be displayed in the list view
         initialColumns: ['name', 'email', 'isAdmin'],
@@ -34,7 +34,7 @@ export const lists = {
           // Based on the same logic as update access, the password field is editable.
           // The password field is hidden from non-Admin users (except for themselves)
           // createView: {
-          //   fieldMode: ({ session }) => (session?.data?.isAdmin ? 'edit' : 'hidden'),
+          //   fieldMode: ({ session }) => (session?.data.isAdmin ? 'edit' : 'hidden'),
           // },
           itemView: {
             fieldMode: ({ session, item }) =>

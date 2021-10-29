@@ -65,8 +65,11 @@ export async function setupTestEnv({
 
   const { connect, disconnect, createContext } = getKeystone(requirePrismaClient(artifactPath));
 
-  // (config, graphQLSchema, createContext, dev, projectAdminPath, isVerbose)
-  const app = await createExpressServer(config, graphQLSchema, createContext);
+  const { expressServer: app, apolloServer } = await createExpressServer(
+    config,
+    graphQLSchema,
+    createContext
+  );
 
   const graphQLRequest: GraphQLRequest = ({ query, variables = undefined, operationName }) =>
     supertest(app)
@@ -74,7 +77,13 @@ export async function setupTestEnv({
       .send({ query, variables, operationName })
       .set('Accept', 'application/json');
 
-  return { connect, disconnect, testArgs: { context: createContext(), graphQLRequest, app } };
+  return {
+    connect,
+    disconnect: async () => {
+      await Promise.all([disconnect(), apolloServer.stop()]);
+    },
+    testArgs: { context: createContext(), graphQLRequest, app },
+  };
 }
 
 export function setupTestRunner({ config }: { config: KeystoneConfig }) {

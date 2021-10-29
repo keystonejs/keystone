@@ -24,6 +24,12 @@ export const config = withPreconstruct({
         /@keystone-next\/keystone(?!\/___internal-do-not-use-will-break-in-patch\/admin-ui\/id-field-view|\/fields\/types\/[^\/]+\/views)/,
         '.prisma/client',
       ];
+      // we need to set these to true so that when __dirname/__filename is used
+      // to resolve the location of field views, we will get a path that we can use
+      // rather than just the __dirname/__filename of the generated file.
+      // https://webpack.js.org/configuration/node/#node__filename
+      config.node.__dirname = true;
+      config.node.__filename = true;
     }
     return config;
   },

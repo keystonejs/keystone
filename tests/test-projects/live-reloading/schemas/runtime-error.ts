@@ -1,0 +1,4 @@
+// @ts-ignore
+doesNotExist();
+
+export {};

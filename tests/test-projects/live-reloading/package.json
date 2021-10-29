@@ -1,0 +1,21 @@
+{
+  "name": "@keystone-next/test-projects-live-reloading",
+  "version": "0.0.6",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "keystone-next dev",
+    "start": "keystone-next start",
+    "build": "keystone-next build"
+  },
+  "dependencies": {
+    "@keystone-next/keystone": "^26.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.4.4"
+  },
+  "engines": {
+    "node": "^12.20 || >= 14.13"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/main/tests/test-projects/live-reloading"
+}

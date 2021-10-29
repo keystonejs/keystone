@@ -14,7 +14,7 @@ To run this project:
 
 This will start Keystone’s Admin UI at [localhost:3000](http://localhost:3000), where you can add items to an empty database.
 
-You can also access Keystone’s Apollo Sandbox at [localhost:3000/api/graphql](http://localhost:3000/api/graphql) to explore the GraphQL API, and run [queries](https://keystonejs.com/docs/guides/filters) and [mutations](https://keystonejs.com/docs/apis/graphql#mutations) on your data.
+You can also access Keystone’s GraphQL Playground at [localhost:3000/api/graphql](http://localhost:3000/api/graphql) to explore the GraphQL API, and run [queries](https://keystonejs.com/docs/guides/filters) and [mutations](https://keystonejs.com/docs/apis/graphql#mutations) on your data.
 
 Congratulations, you’re now up and running with Keystone! 🚀
 
@@ -28,6 +28,6 @@ This example includes sample data. To add it to your database:
 
 ## Next steps
 
-Experiment with the code in this example to see how Keystone works, familiarise yourself with the Admin UI, and learn about the Apollo Sandbox.
+Experiment with the code in this example to see how Keystone works, familiarise yourself with the Admin UI, and learn about the GraphQL Playground.
 
 When you’ve got the hang of this base project, try a [feature project](../) to learn Keystone’s advanced features and take your knowledge to the next level.

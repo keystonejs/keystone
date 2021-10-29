@@ -4,55 +4,58 @@ import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
 import type { KeystoneContext } from '@keystone-next/keystone/types';
 import { setupTestRunner, TestArgs, setupTestEnv } from '@keystone-next/keystone/testing';
-import { apiTestConfig, expectAccessDenied } from './utils';
+import { apiTestConfig, expectAccessDenied, seed } from './utils';
 
 const initialData = {
   User: [
-    { name: 'Boris Bozic', email: 'boris@keystone.com', password: 'correctbattery' },
-    { name: 'Jed Watson', email: 'jed@keystone.com', password: 'horsestaple' },
+    { name: 'Boris Bozic', email: 'boris@keystonejs.com', password: 'correctbattery' },
+    { name: 'Jed Watson', email: 'jed@keystonejs.com', password: 'horsestaple' },
   ],
 };
 
 const COOKIE_SECRET = 'qwertyuiopasdfghjlkzxcvbmnm1234567890';
-const defaultAccess = ({ context }: { context: KeystoneContext }) => !!context.session?.data;
+const defaultAccess = ({ context }: { context: KeystoneContext }) => !!context.session;
 
-const auth = createAuth({
-  listKey: 'User',
-  identityField: 'email',
-  secretField: 'password',
-  sessionData: 'id',
-});
+function setup(options?: any) {
+  const auth = createAuth({
+    listKey: 'User',
+    identityField: 'email',
+    secretField: 'password',
+    sessionData: 'id',
+    ...options,
+  });
 
-const runner = setupTestRunner({
-  config: auth.withAuth(
-    apiTestConfig({
-      lists: {
-        Post: list({
-          fields: {
-            title: text(),
-            postedAt: timestamp(),
-          },
-        }),
-        User: list({
-          fields: {
-            name: text(),
-            email: text({ isIndexed: 'unique' }),
-            password: password(),
-          },
-          access: {
-            operation: {
-              create: defaultAccess,
-              query: defaultAccess,
-              update: defaultAccess,
-              delete: defaultAccess,
+  return setupTestRunner({
+    config: auth.withAuth(
+      apiTestConfig({
+        lists: {
+          Post: list({
+            fields: {
+              title: text(),
+              postedAt: timestamp(),
             },
-          },
-        }),
-      },
-      session: statelessSessions({ secret: COOKIE_SECRET }),
-    })
-  ),
-});
+          }),
+          User: list({
+            fields: {
+              name: text(),
+              email: text({ isIndexed: 'unique' }),
+              password: password(),
+            },
+            access: {
+              operation: {
+                create: defaultAccess,
+                query: defaultAccess,
+                update: defaultAccess,
+                delete: defaultAccess,
+              },
+            },
+          }),
+        },
+        session: statelessSessions({ secret: COOKIE_SECRET }),
+      })
+    ),
+  });
+}
 
 async function login(
   graphQLRequest: TestArgs['graphQLRequest'],
@@ -78,17 +81,14 @@ async function login(
 describe('Auth testing', () => {
   test(
     'Gives access denied when not logged in',
-    runner(async ({ context }) => {
-      // seed the db
-      for (const [listKey, data] of Object.entries(initialData)) {
-        await context.sudo().query[listKey].createMany({ data });
-      }
+    setup()(async ({ context }) => {
+      await seed(context, initialData);
       const { data, errors } = await context.graphql.raw({ query: '{ users { id } }' });
       expect(data).toEqual({ users: [] });
       expect(errors).toBe(undefined);
 
       const result = await context.graphql.raw({
-        query: `mutation { updateUser(where: { email: "boris@keystone.com" }, data: { password: "new_password" }) { id } }`,
+        query: `mutation { updateUser(where: { email: "boris@keystonejs.com" }, data: { password: "new_password" }) { id } }`,
       });
       expect(result.data).toEqual({ updateUser: null });
       expectAccessDenied(result.errors, [
@@ -133,10 +133,8 @@ describe('Auth testing', () => {
   describe('logged in', () => {
     test(
       'Allows access with bearer token',
-      runner(async ({ context, graphQLRequest }) => {
-        for (const [listKey, data] of Object.entries(initialData)) {
-          await context.sudo().query[listKey].createMany({ data });
-        }
+      setup()(async ({ context, graphQLRequest }) => {
+        await seed(context, initialData);
         const { sessionToken } = await login(
           graphQLRequest,
           initialData.User[0].email,
@@ -157,10 +155,8 @@ describe('Auth testing', () => {
 
     test(
       'Allows access with cookie',
-      runner(async ({ context, graphQLRequest }) => {
-        for (const [listKey, data] of Object.entries(initialData)) {
-          await context.sudo().query[listKey].createMany({ data });
-        }
+      setup()(async ({ context, graphQLRequest }) => {
+        await seed(context, initialData);
         const { sessionToken } = await login(
           graphQLRequest,
           initialData.User[0].email,
@@ -176,6 +172,88 @@ describe('Auth testing', () => {
         const { data, errors } = body;
         expect(data).toHaveProperty('users');
         expect(data.users).toHaveLength(initialData.User.length);
+        expect(errors).toBe(undefined);
+      })
+    );
+
+    test(
+      'Invalid session receives nothing',
+      setup()(async ({ context, graphQLRequest }) => {
+        await seed(context, initialData);
+        const { body } = await graphQLRequest({ query: '{ users { id } }' }).set(
+          'Cookie',
+          `keystonejs-session=invalidfoo`
+        );
+
+        const { data, errors } = body;
+        expect(data).toHaveProperty('users');
+        expect(data.users).toHaveLength(0); // nothing
+        expect(errors).toBe(undefined);
+      })
+    );
+
+    test(
+      'Session is dropped if user is removed',
+      setup()(async ({ context, graphQLRequest }) => {
+        const { User: users } = await seed(context, initialData);
+        const { sessionToken } = await login(
+          graphQLRequest,
+          initialData.User[0].email,
+          initialData.User[0].password
+        );
+
+        {
+          const { body } = await graphQLRequest({ query: '{ users { id } }' }).set(
+            'Cookie',
+            `keystonejs-session=${sessionToken}` // still valid
+          );
+
+          const { data, errors } = body;
+          expect(data).toHaveProperty('users');
+          expect(data.users).toHaveLength(2); // something
+          expect(errors).toBe(undefined);
+        }
+
+        // delete the user we authenticated for
+        await graphQLRequest({
+          query: `mutation ($id: ID!) { deleteUser(where: { id: $id }) { id } }`,
+          variables: { id: users[0]?.id },
+        }).set('Cookie', `keystonejs-session=${sessionToken}`);
+
+        {
+          const { body } = await graphQLRequest({ query: '{ users { id } }' }).set(
+            'Cookie',
+            `keystonejs-session=${sessionToken}` // now invalid
+          );
+
+          const { data, errors } = body;
+          expect(data).toHaveProperty('users');
+          expect(data.users).toHaveLength(0); // nothing
+          expect(errors).toBe(undefined);
+        }
+      })
+    );
+
+    test(
+      'Session is dropped if sessionData configuration is invalid',
+      setup({
+        sessionData: 'id foo', // foo does not exist
+      })(async ({ context, graphQLRequest }) => {
+        await seed(context, initialData);
+        const { sessionToken } = await login(
+          graphQLRequest,
+          initialData.User[0].email,
+          initialData.User[0].password
+        );
+
+        const { body } = await graphQLRequest({ query: '{ users { id } }' }).set(
+          'Cookie',
+          `keystonejs-session=${sessionToken}`
+        );
+
+        const { data, errors } = body;
+        expect(data).toHaveProperty('users');
+        expect(data.users).toHaveLength(0); // nothing
         expect(errors).toBe(undefined);
       })
     );

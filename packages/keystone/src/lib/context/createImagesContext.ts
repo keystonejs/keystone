@@ -3,13 +3,9 @@ import { v4 as uuid } from 'uuid';
 import fs from 'fs-extra';
 import fromBuffer from 'image-type';
 import imageSize from 'image-size';
-import { KeystoneConfig, ImagesContext, ImageMetadata } from '../../types';
+import { KeystoneConfig, ImageMetadata, ImagesContext } from '../../types';
 import { parseImageRef } from '../../fields/types/image/utils';
-import {
-  buildKeystoneCloudImageSrc,
-  getImageMetadataFromKeystoneCloud,
-  uploadImageToKeystoneCloud,
-} from '../keystone-cloud/assets';
+import { CloudAssetsAPI } from '../cloud/assets';
 
 const DEFAULT_BASE_URL = '/images';
 const DEFAULT_STORAGE_PATH = './public/images';
@@ -21,16 +17,10 @@ const getImageMetadataFromBuffer = async (buffer: Buffer): Promise<ImageMetadata
     throw new Error('File type not found');
   }
 
-  if (
-    fileType.ext !== 'jpg' &&
-    fileType.ext !== 'png' &&
-    fileType.ext !== 'webp' &&
-    fileType.ext !== 'gif'
-  ) {
-    throw new Error(`${fileType.ext} is not a supported image type`);
-  }
-
   const extension = fileType.ext;
+  if (extension !== 'jpg' && extension !== 'png' && extension !== 'webp' && extension !== 'gif') {
+    throw new Error(`${extension} is not a supported image type`);
+  }
 
   const { height, width } = imageSize(buffer);
 
@@ -40,35 +30,27 @@ const getImageMetadataFromBuffer = async (buffer: Buffer): Promise<ImageMetadata
   return { width, height, filesize, extension };
 };
 
-export function createImagesContext(config: KeystoneConfig): ImagesContext | undefined {
+export function createImagesContext(
+  config: KeystoneConfig,
+  cloudAssets: () => CloudAssetsAPI
+): ImagesContext | undefined {
   if (!config.images) {
     return;
   }
 
-  const { images, experimental } = config;
+  const { images } = config;
   const { baseUrl = DEFAULT_BASE_URL, storagePath = DEFAULT_STORAGE_PATH } = images.local || {};
-  const {
-    apiKey = '',
-    imagesDomain = '',
-    restApiEndpoint = '',
-  } = experimental?.keystoneCloud || {};
 
   if (images.upload === 'local') {
     fs.mkdirSync(storagePath, { recursive: true });
   }
 
   return {
-    getSrc: async (mode, id, extension) => {
-      const filename = `${id}.${extension}`;
-
-      if (mode === 'keystone-cloud') {
-        return await buildKeystoneCloudImageSrc({
-          apiKey,
-          imagesDomain,
-          filename,
-        });
+    getUrl: async (mode, id, extension) => {
+      if (mode === 'cloud') {
+        return cloudAssets().images.url(id, extension);
       }
-
+      const filename = `${id}.${extension}`;
       return `${baseUrl}/${filename}`;
     },
     getDataFromRef: async ref => {
@@ -80,15 +62,8 @@ export function createImagesContext(config: KeystoneConfig): ImagesContext | und
 
       const { mode } = imageRef;
 
-      if (mode === 'keystone-cloud') {
-        const { id, extension } = imageRef;
-        const filename = `${id}.${extension}`;
-        const metadata = await getImageMetadataFromKeystoneCloud({
-          filename,
-          apiKey,
-          restApiEndpoint,
-        });
-
+      if (mode === 'cloud') {
+        const metadata = await cloudAssets().images.metadata(imageRef.id, imageRef.extension);
         return { ...imageRef, ...metadata };
       }
 
@@ -103,15 +78,10 @@ export function createImagesContext(config: KeystoneConfig): ImagesContext | und
       const { upload: mode } = images;
       const id = uuid();
 
-      if (mode === 'keystone-cloud') {
-        const metadata = await uploadImageToKeystoneCloud({
-          apiKey,
-          stream,
-          restApiEndpoint,
-          filename: id,
-        });
+      if (mode === 'cloud') {
+        const cloudMetadata = await cloudAssets().images.upload(stream, id);
 
-        return { mode, id, ...metadata };
+        return { mode, id, ...cloudMetadata };
       }
 
       const chunks = [];

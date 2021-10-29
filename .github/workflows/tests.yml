@@ -20,14 +20,16 @@ jobs:
           filters: |
             shouldRunTests:
               - '!{{design-system}/**,**/*.md}'
+
       - run: echo "SHOULD_RUN_TESTS=$SHOULD_RUN" >> $GITHUB_ENV
         if: github.event_name == 'pull_request'
         env:
           SHOULD_RUN: ${{ steps.filter.outputs.shouldRunTests }}
+
       - run: echo "SHOULD_RUN_TESTS=true" >> $GITHUB_ENV
         if: github.event_name != 'pull_request'
 
-  graphql-api-tests:
+  graphql_api_tests:
     name: API Tests
     needs: should_run_tests
     runs-on: ubuntu-latest
@@ -75,6 +77,7 @@ jobs:
       - name: Install Dependencies
         run: yarn
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+
       - name: Unit tests
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: yarn jest --ci --runInBand api-tests
@@ -87,7 +90,7 @@ jobs:
           TEST_ADAPTER: ${{ matrix.adapter }}
           DATABASE_URL: ${{ matrix.adapter == 'sqlite' && 'file:./dev.db' || 'postgres://keystone5:k3yst0n3@localhost:5432/test_db' }}
 
-  non-api-tests:
+  unit_tests:
     name: Package Unit Tests
     needs: should_run_tests
     runs-on: ubuntu-latest
@@ -129,6 +132,7 @@ jobs:
 
       - name: Install Dependencies
         run: yarn
+
       - name: Unit tests
         run: yarn jest --ci --runInBand --testPathIgnorePatterns=admin-ui-tests --testPathIgnorePatterns=api-tests --testPathIgnorePatterns=examples-smoke-tests --testPathIgnorePatterns=examples/testing
         env:
@@ -136,7 +140,7 @@ jobs:
           CLOUDINARY_KEY: ${{ secrets.CLOUDINARY_KEY }}
           CLOUDINARY_SECRET: ${{ secrets.CLOUDINARY_SECRET }}
 
-  example-testing:
+  examples_tests:
     name: Testing example project
     needs: should_run_tests
     runs-on: ubuntu-latest
@@ -167,7 +171,8 @@ jobs:
 
       - name: Install Dependencies
         run: yarn
-      - name: Unit tests
+
+      - name: Example unit tests
         run: cd examples/testing; yarn test
 
   examples_smoke_tests:
@@ -229,12 +234,15 @@ jobs:
       - name: Install Dependencies
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: yarn
+
       - name: Install Dependencies of Browsers
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: npx playwright install-deps
+
       - name: Install Browsers
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: npx playwright install
+
       - name: Unit tests
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: yarn jest --ci --runInBand tests/examples-smoke-tests/${{ matrix.test }}
@@ -247,7 +255,14 @@ jobs:
       DATABASE_URL: 'file:./test.db'
     strategy:
       matrix:
-        test: ['init.test.ts', 'filters.test.ts', 'list-view-crud.test.ts', 'navigation.test.ts']
+        test:
+          [
+            'init.test.ts',
+            'filters.test.ts',
+            'list-view-crud.test.ts',
+            'navigation.test.ts',
+            'live-reloading.test.ts',
+          ]
       fail-fast: false
     steps:
       - name: Checkout Repo
@@ -279,12 +294,15 @@ jobs:
       - name: Install Dependencies
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: yarn
+
       - name: Install Dependencies of Browsers
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         uses: microsoft/playwright-github-action@v1
+
       - name: Install Browsers for Playwright
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: node ./node_modules/playwright/install.js
+
       - name: Unit tests
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: yarn jest --ci --runInBand tests/admin-ui-tests/${{ matrix.test }}
@@ -317,17 +335,24 @@ jobs:
 
       - name: Install Dependencies
         run: yarn
+
       - name: Prettier
         run: yarn lint:prettier
+
       - name: TypeScript
         run: yarn lint:types
+
       - name: ESLint
         run: yarn lint:eslint
+
       - name: Preconstruct
         run: yarn build
+
       - name: Remark
         run: yarn lint:markdown
+
       - name: Example schemas
         run: yarn lint:examples
+
       - name: Prisma Filters
         run: yarn lint:filters

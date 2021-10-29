@@ -26,7 +26,7 @@ interface ImageFieldOutput {
   height: Int!
   extension: ImageExtension!
   ref: String!
-  src: String!
+  url: String!
 }
 
 enum ImageExtension {
@@ -47,7 +47,17 @@ type LocalImageFieldOutput implements ImageFieldOutput {
   height: Int!
   extension: ImageExtension!
   ref: String!
-  src: String!
+  url: String!
+}
+
+type CloudImageFieldOutput implements ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  ref: String!
+  url: String!
 }
 
 input PostWhereInput {

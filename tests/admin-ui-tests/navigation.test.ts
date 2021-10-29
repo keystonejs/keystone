@@ -1,5 +1,5 @@
 import { Browser, Page } from 'playwright';
-import { adminUITests, makeGqlRequest } from './utils';
+import { adminUITests, loadIndex, makeGqlRequest } from './utils';
 
 adminUITests('./tests/test-projects/basic', browserType => {
   let browser: Browser = undefined as any;
@@ -8,7 +8,7 @@ adminUITests('./tests/test-projects/basic', browserType => {
   beforeAll(async () => {
     browser = await browserType.launch();
     page = await browser.newPage();
-    await page.goto('http://localhost:3000');
+    await loadIndex(page);
   });
   test('Nav contains a Dashboard route by default', async () => {
     await page.waitForSelector('nav a:has-text("Dashboard")');

@@ -16,20 +16,20 @@ import { KeystoneListsAPI } from '@keystone-next/keystone/types';
 import { componentBlocks } from './admin/fieldViews/Content';
 import { KeystoneListsTypeInfo } from '.keystone/types';
 
-// TODO: Can we generate this type based on sessionData in the main config?
 type AccessArgs = {
   session?: {
     itemId?: string;
     listKey?: string;
-    data?: {
+    data: {
       name?: string;
       isAdmin: boolean;
     };
   };
   item?: any;
 };
+
 export const access = {
-  isAdmin: ({ session }: AccessArgs) => !!session?.data?.isAdmin,
+  isAdmin: ({ session }: AccessArgs) => !!session?.data.isAdmin,
 };
 
 const randomNumber = () => Math.round(Math.random() * 10);

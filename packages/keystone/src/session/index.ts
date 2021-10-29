@@ -108,7 +108,7 @@ export function statelessSessions<T>({
       );
     },
     async start({ res, data }) {
-      let sealedData = await Iron.seal(data, secret, { ...ironOptions, ttl: maxAge * 1000 });
+      const sealedData = await Iron.seal(data, secret, { ...ironOptions, ttl: maxAge * 1000 });
 
       res.setHeader(
         'Set-Cookie',
