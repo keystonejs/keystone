@@ -30,7 +30,6 @@ const getImageMetadataFromBuffer = async (buffer: Buffer): Promise<ImageMetadata
   return { width, height, filesize, extension };
 };
 
-// TODO: get the cloudConfiguration into here
 export function createImagesContext(
   config: KeystoneConfig,
   cloudAssets: () => CloudAssetsAPI
