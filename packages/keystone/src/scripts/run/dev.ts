@@ -145,7 +145,7 @@ exports.default = function (req, res) { return res.send(x.toString()) }
             console.log('Your db config has changed, please restart Keystone');
             process.exit(1);
           }
-          const { graphQLSchema, getKeystone, adminMeta } = createSystem(newConfig);
+          const { graphQLSchema, getKeystone, adminMeta } = createSystem(newConfig, true);
           // we're not using generateCommittedArtifacts or any of the similar functions
           // because we will never need to write a new prisma schema here
           // and formatting the prisma schema leaves some listeners on the process
@@ -164,6 +164,7 @@ exports.default = function (req, res) { return res.send(x.toString()) }
           const keystone = getKeystone(function fakePrismaClientClass() {
             return prismaClient;
           });
+          await keystone.connect();
           const servers = await createExpressServer(
             newConfig,
             graphQLSchema,
