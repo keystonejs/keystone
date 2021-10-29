@@ -45,7 +45,7 @@ export async function getCloudAssetsAPI({ apiKey }: { apiKey: string }): Promise
     'x-keystone-version': `TODO 6 RC`,
   };
   if (!cloudAssetsConfigCache.has(apiKey)) {
-    const res = await fetch('https://init.staging-keystonejs.cloud/api/rest/config', { headers });
+    const res = await fetch('https://init.keystonejs.cloud/api/rest/config', { headers });
     if (!res.ok) {
       throw new Error(`Failed to load cloud config: ${res.status}\n${await res.text()}`);
     }
