@@ -281,6 +281,36 @@ query {
 
 Unauthenticated users won't be able to find unpublished posts by querying the relationship field on tags, and you don't have to do anything special to make this work.
 
+### Operation-specific Access Control
+
+Each specific operation that can be performed through the GraphQL API has corresponding access control you can provide. The four operations are:
+
+* Query
+* Create
+* Update
+* Delete
+
+Access control is operation-specific, so if you want to prevent _any_ changes being made to items in a list, you would need to provide settings for all the mutation operations: `create`, `update` and `delete`.
+
+#### Why it's `query` and not `read`
+
+We designed the Access Control API for lists to clearly reflect the GraphQL operations it affects. Because of the way GraphQL works, you can retrieve values from an item through any operation, even deletes. For example:
+
+```graphql
+query {
+  user(where: { id: 1 }) {
+    name
+  }
+}
+mutation {
+  updateUser(where: { id: 1 }) {
+    name
+  }
+}
+```
+
+Both of these operations will "read" the user's name. Having access control named "read" on the list might be confusing as to whether it affects just the query, or also the mutations, so we called it "query" to make it clearer that it only affects queries and **not** mutations.
+
 ### Different levels of Access Control
 
 Keystone provides three different levels of access control for lists, as well as field-level access control. Here are all the available functions:
@@ -312,19 +342,36 @@ You'll generally only need to use a subset of the available options:
 
 - If you want to block an operation based on Session Data, use `operation`
 - If you want to filter items based on Session Data, use `filter`
-- If you need to check some logic based on the item or input data, use `item`
+- If you need to block an operation **or** filter items based on Session Data, use `filter`
+- If you need to check some logic based on the item data or input data, use `item`
 
-!> You might need to _either_ block or allow an operation entirely, _or_ return a filter, based on Session Data. In this case it's usually easier to write a single `filter` function, rather than specifying both `filter` and `operation` access control.
+#### How `filter` access control works
 
-### Notes about the levels
+Filter access control is combined with `where` input from the GraphQL Query to create the full set of conditions provided to the database query. It can be used to limit which records can be queried and mutated in your system.
 
-There isn't much difference between using `operation` and returning a boolean from `filter` access control. In either case, if your function returns `false` the operation won't be run at all.
+In addition to returning filters, you can return a boolean where:
 
-If you need to limit access to some items in a list, `filter` access control is usually the best option. `item` access control requires Keystone to load data from the database before the access control rule can be evaluated, and should only be used if you have logic that can't be expressed as a filter, or if you need to check the `inputData` provided to the mutation.
+* `true` effectively means match _all_ records (no filter is applied)
+* `false` effectively means match _no_ records (the operation will be blocked)
+
+!> Returning a boolean from filter access control is functionally the same as using operation access control, so if you specify filter access control, you rarely also need to specify operation access control.
+
+Query filters are also applied to count operations, so you can paginate items predictably without revealing the existence of items the user does not have access to.
 
 Although Keystone doesn't implement database-level security, the design and effect of `filter` access control is similar to [Row Level Security](https://www.postgresql.org/docs/9.5/ddl-rowsecurity.html) in Postgres, with the benefit of being expressed declaratively in TypeScript and using the same filter syntax as the GraphQL API. This makes it easier to reason about in the context of your schema, session data, and other logic in your application.
 
-!> For more information, see the [Access Control API Docs](../apis/access-control)
+You can't specify filters for the `create` operation because you can't query records that don't exist yet.
+
+#### How `item` access control works
+
+When mutating items, item access control is checked with the mutation input (for `create` and `update`) and the item that has been retrieved from the database (for `update` and `delete`).
+
+This gives you the most granular control over whether an operation is allowed to proceed, but is the least performant because:
+
+* Keystone retrieves all matching records from the database before the access control rule can be evaluated
+* For the operations `updateMany` and `deleteMany` item access control function is invoked once for each item being updated or deleted
+
+If you need to limit access to some items in a list, filter access control is usually the best option. Item access control should only be used if you have logic that can't be expressed as a filter, or if you need to check the `inputData` provided to the mutation.
 
 ### Access Control in Hooks and Extensions
 
