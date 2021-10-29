@@ -73,10 +73,15 @@ export async function getCloudAssetsAPI({ apiKey }: { apiKey: string }): Promise
         return `${imageGetUrl}/${id}.${extension}`;
       },
       async metadata(id, extension): Promise<ImageMetadata> {
-        const metadata: ImageMetadataResponse = await fetch(`${imageMetaUrl}/${id}.${extension}`, {
+        const res = await fetch(`${imageMetaUrl}/${id}.${extension}`, {
           method: 'GET',
           headers,
-        }).then(x => x.json());
+        });
+        if (!res.ok) {
+          console.error(`${res.status} ${await res.text()}`);
+          throw new Error('Error occurred when fetching image metadata');
+        }
+        const metadata: ImageMetadataResponse = await res.json();
         return {
           extension: metadata.extension,
           height: metadata.height,
@@ -112,9 +117,12 @@ export async function getCloudAssetsAPI({ apiKey }: { apiKey: string }): Promise
         return `${fileGetUrl}/${filename}`;
       },
       async metadata(filename) {
-        const metadata = await fetch(`${fileMetaUrl}/${filename}`, { method: 'GET', headers }).then(
-          x => x.json()
-        );
+        const res = await fetch(`${fileMetaUrl}/${filename}`, { method: 'GET', headers });
+        if (!res.ok) {
+          console.error(`${res.status} ${await res.text()}`);
+          throw new Error('Error occurred when fetching file metadata');
+        }
+        const metadata = await res.json();
         return {
           mode: 'cloud',
           filesize: metadata.filesize,
@@ -122,11 +130,16 @@ export async function getCloudAssetsAPI({ apiKey }: { apiKey: string }): Promise
         };
       },
       async upload(stream, filename) {
-        const metadata = await fetch(fileUploadUrl, {
+        const res = await fetch(fileUploadUrl, {
           method: 'POST',
           body: formUploadBody({ data: stream, fieldName: 'file', fileName: filename }),
           headers,
-        }).then(x => x.json());
+        });
+        if (!res.ok) {
+          console.error(`${res.status} ${await res.text()}`);
+          throw new Error('Error occurred when uploading file');
+        }
+        const metadata = await res.json();
         return {
           mode: 'cloud',
           filesize: metadata.filesize,
