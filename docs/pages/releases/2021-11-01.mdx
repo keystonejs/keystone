@@ -3,30 +3,56 @@ import { Emoji } from '../../components/primitives/Emoji';
 
 # Release: 1st November 2021
 
-Live reloading is now available in Keystone! <Emoji symbol="🚀" alt="Rocket" /> Plus more updates as we finalise the Keystone 6 GA release.
+Server-side Live Reloading is here! <Emoji symbol="🚀" alt="Rocket" /> Plus more updates as we finalise the Keystone 6 GA release.
 
 ```json
 "@keystone-next/keystone": "x.x.x",
 ```
 ## Live Reloading <Emoji symbol="🚀" alt="Rocket" />
 
-Keystone now supports live reloading via `keystone-next dev`!
+Keystone now supports live reloading with `keystone-next dev`
 
-You can now update your GraphQL schema, log errors and see how your data returns, then immediately use the playground to test it and iterate.
+You can now update your GraphQL schema, change your hooks and access control, log errors and see how your data returns, then immediately use the playground to test it and iterate.
 
-We feel this is an absolute game changer when developing with Keystone.
+This is in addition to the current support for live reloading changes to custom views in the Admin UI.
+
+### How it works
+
+When you run `keystone-next dev` now, it will start watching for changes to your config and schema. When changes are detected, Keystone will reload your config and schema and hot-swap the GraphQL endpoint.
+
+To balance performance and predictability, Keystone does not do a complete restart when changes are made. The things to know are:
+
+#### Prisma Schema Changes
+
+The Prisma Client is **not** reloaded as you make changes to the Keystone Schema. If you make changes that affect your Prisma schema, Keystone will exit the process and wait for you to run `keystone-next dev` again.
+
+This is because making database schema changes involves generating database migrations, and can result in data loss if those migrations are automatically run against your current database.
+
+When adding or removing lists and fields (except virtual fields), we recommend you finish making your changes then start the `dev` process again. This will generate a single migration for all the changes you have made, and interactively prompt you for how to deal with migrations that can't be run safely.
+
+#### onConnect is not hot reloaded
+
+The `db.onConnect` function (if specified) will only be run **once** when Keystone is started, and not when your config is hot reloaded.
+
+This is because `onConnect` is typically used to run data seeding and other once-off processes that should be executed once before the Keystone server comes online. Re-running it whenever a file is changed could result in a heavy database load, harming overall dev performance and introducing unpredictable behaviour.
+
+If you make changes to the `onConnect` function, you need to manually stop the `dev` process and start it again for your changes to take effect.
 
 ## GraphQL Playground and Apollo Sandbox <Emoji symbol="⏪" alt="Reverse" />
 
 In the last release we upgraded to Apollo Server 3 which brought Apollo Sandbox as the default development UI for testing your GraphQL queries.
 
-This brought a number of issues as **Apollo Sandbox** is hosted remotely rather than locally, which surfaced CORs error among others.
+This surfaced a number of issues as **Apollo Sandbox** is hosted remotely rather than locally, including CORS issues and security concerns, making it a bad default.
 
 With this in mind, Keystone will now go back to using the **GraphQL Playground** by default instead of **Apollo Sandbox** as it did prior to updating to Apollo Server 3.
 
-If you want to use **Apollo Sandbox**, you can set `graphql.playground: 'apollo'` to use Apollo.
+We have now introduced the `graphql.playground` config option, with three possible settings:
 
-`graphql.playground` defaults to `process.env.NODE_ENV !== 'production'`, which will serve **GraphQL Playground** in development and serve nothing in production, if you'd like to set it to one of those always, you can set `graphql.playground` to a boolean explicitly.
+* `true` will configure Apollo Server plugins to enable the GraphQL Playground
+* `false` will configure Apollo Server plugins to disable any `GET` requests to the GraphQL endpoint
+* `'apollo'` will add no plugins to Apollo Server, enabling the new Apollo Sandbox behaviour
+
+`graphql.playground` defaults to `process.env.NODE_ENV !== 'production'` which matches the previous Keystone 6 behaviour before the October update and Apollo Server 3.
 
 ## CORS Configuration <Emoji symbol="🌐" alt="World" />
 
