@@ -28,7 +28,7 @@ The Prisma Client is **not** reloaded as you make changes to the Keystone Schema
 
 This is because making database schema changes involves generating database migrations, and can result in data loss if those migrations are automatically run against your current database.
 
-When adding or removing lists and fields (except virtual fields), we recommend you finish making your changes then start the `dev` process again. This will generate a single migration for all the changes you have made, and interactively prompt you for how to deal with migrations that can't be run safely.
+When adding or removing lists and fields (except virtual fields), we recommend you finish making your changes then start the `dev` process again. This will generate a single migration for all the changes you’ve made, and interactively prompt you to resolve any migrations that can't be run safely.
 
 #### onConnect is not hot reloaded
 
