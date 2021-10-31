@@ -4,6 +4,7 @@ import { createAdminMeta } from '../admin-ui/system/createAdminMeta';
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './context/createContext';
 import { initialiseLists } from './core/types-for-lists';
+import { CloudAssetsAPI, getCloudAssetsAPI } from './cloud/assets';
 
 function getSudoGraphQLSchema(config: KeystoneConfig, provider: DatabaseProvider) {
   // This function creates a GraphQLSchema based on a modified version of the provided config.
@@ -54,7 +55,7 @@ function getSudoGraphQLSchema(config: KeystoneConfig, provider: DatabaseProvider
   return createGraphQLSchema(transformedConfig, lists, adminMeta);
 }
 
-export function createSystem(config: KeystoneConfig) {
+export function createSystem(config: KeystoneConfig, isLiveReload?: boolean) {
   const lists = initialiseLists(config.lists, config.db.provider);
 
   const adminMeta = createAdminMeta(config, lists);
@@ -79,6 +80,8 @@ export function createSystem(config: KeystoneConfig) {
         prismaClient._engine.child?.kill('SIGINT');
       });
 
+      let cloudAssetsAPI: CloudAssetsAPI = undefined!;
+
       const createContext = makeCreateContext({
         graphQLSchema,
         sudoGraphQLSchema,
@@ -88,13 +91,21 @@ export function createSystem(config: KeystoneConfig) {
           Object.entries(lists).map(([listKey, list]) => [listKey, getGqlNames(list)])
         ),
         lists,
+        cloudAssetsAPI: () => cloudAssetsAPI,
       });
 
       return {
         async connect() {
-          await prismaClient.$connect();
-          const context = createContext({ sudo: true });
-          await config.db.onConnect?.(context);
+          if (!isLiveReload) {
+            await prismaClient.$connect();
+            const context = createContext({ sudo: true });
+            await config.db.onConnect?.(context);
+          }
+          if (config.experimental?.cloud?.apiKey) {
+            cloudAssetsAPI = await getCloudAssetsAPI({
+              apiKey: config.experimental.cloud.apiKey,
+            });
+          }
         },
         async disconnect() {
           await prismaClient.$disconnect();

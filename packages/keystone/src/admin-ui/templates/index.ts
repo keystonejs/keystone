@@ -1,6 +1,6 @@
 import * as Path from 'path';
 import { GraphQLSchema } from 'graphql';
-import type { AdminMetaRootVal, KeystoneConfig, AdminFileToWrite } from '../../../types';
+import type { AdminMetaRootVal, KeystoneConfig, AdminFileToWrite } from '../../types';
 import { appTemplate } from './app';
 import { homeTemplate } from './home';
 import { listTemplate } from './list';

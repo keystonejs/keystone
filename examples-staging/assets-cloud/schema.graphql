@@ -27,7 +27,7 @@ interface ImageFieldOutput {
   height: Int!
   extension: ImageExtension!
   ref: String!
-  src: String!
+  url: String!
 }
 
 enum ImageExtension {
@@ -41,7 +41,7 @@ interface FileFieldOutput {
   filename: String!
   filesize: Int!
   ref: String!
-  src: String!
+  url: String!
 }
 
 input PostWhereUniqueInput {
@@ -55,14 +55,31 @@ type LocalImageFieldOutput implements ImageFieldOutput {
   height: Int!
   extension: ImageExtension!
   ref: String!
-  src: String!
+  url: String!
+}
+
+type CloudImageFieldOutput implements ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  ref: String!
+  url: String!
 }
 
 type LocalFileFieldOutput implements FileFieldOutput {
   filename: String!
   filesize: Int!
   ref: String!
-  src: String!
+  url: String!
+}
+
+type CloudFileFieldOutput implements FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  url: String!
 }
 
 input PostWhereInput {

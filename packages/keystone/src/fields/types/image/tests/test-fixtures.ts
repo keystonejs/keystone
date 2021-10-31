@@ -80,14 +80,14 @@ export const crudTests = (keystoneTestWrapper: any) => {
                 height
                 extension
                 ref
-                src
+                url
               }
           `,
           });
           expect(data).not.toBe(null);
           expect(data.avatar).toEqual({
             ref: `local:image:${data.avatar.id}.jpg`,
-            src: `/images/${data.avatar.id}.jpg`,
+            url: `/images/${data.avatar.id}.jpg`,
             id: data.avatar.id,
             __typename: 'LocalImageFieldOutput',
             filesize: 3250,
@@ -135,7 +135,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
               height
               extension
               ref
-              src
+              url
             }
         `,
         });
@@ -154,7 +154,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
               height
               extension
               ref
-              src
+              url
             }
         `,
         });

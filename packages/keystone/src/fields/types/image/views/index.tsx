@@ -26,7 +26,7 @@ export const Cell: CellComponent = ({ item, field }) => {
         width: 24,
       }}
     >
-      <img alt={data.filename} css={{ maxHeight: '100%', maxWidth: '100%' }} src={data.src} />
+      <img alt={data.filename} css={{ maxHeight: '100%', maxWidth: '100%' }} src={data.url} />
     </div>
   );
 };
@@ -38,7 +38,7 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
       <FieldLabel>{field.label}</FieldLabel>
       {data && (
         <ImageWrapper>
-          <img css={{ width: '100%' }} alt={data.filename} src={data.src} />
+          <img css={{ width: '100%' }} alt={data.filename} src={data.url} />
         </ImageWrapper>
       )}
     </FieldContainer>
@@ -85,7 +85,7 @@ export const controller = (config: FieldControllerConfig): ImageController => {
     path: config.path,
     label: config.label,
     graphqlSelection: `${config.path} {
-        src
+        url
         id
         ref
         extension
@@ -100,7 +100,7 @@ export const controller = (config: FieldControllerConfig): ImageController => {
       return {
         kind: 'from-server',
         data: {
-          src: value.src,
+          src: value.url,
           id: value.id,
           extension: value.extension,
           ref: value.ref,

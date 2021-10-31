@@ -1,6 +1,6 @@
 import { AssetMode, ImageExtension } from '../../../types';
 
-const IMAGEREGEX = /^(local|keystone-cloud):image:([^\\\/:\n]+)\.(gif|jpg|png|webp)$/;
+const IMAGEREGEX = /^(local|cloud):image:([^\\\/:\n]+)\.(gif|jpg|png|webp)$/;
 
 export const getImageRef = (mode: AssetMode, id: string, extension: ImageExtension) =>
   `${mode}:image:${id}.${extension}`;

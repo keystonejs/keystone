@@ -1,5 +1,5 @@
-import { GraphQLString } from 'graphql';
-import type { KeystoneConfig, AdminMetaRootVal } from '../../../types';
+import { GraphQLString, isInputObjectType } from 'graphql';
+import { KeystoneConfig, AdminMetaRootVal, QueryMode } from '../../types';
 import { humanize } from '../../lib/utils';
 import { InitialisedList } from '../../lib/core/types-for-lists';
 
@@ -97,12 +97,21 @@ export function createAdminMeta(
       );
     }
     const whereInputFields = list.types.where.graphQLType.getFields();
+    const possibleSearchFields = new Map<string, 'default' | 'insensitive' | null>();
 
+    for (const fieldKey of Object.keys(list.fields)) {
+      const filterType = whereInputFields[fieldKey]?.type;
+      const fieldFilterFields = isInputObjectType(filterType) ? filterType.getFields() : undefined;
+      if (fieldFilterFields?.contains?.type === GraphQLString) {
+        possibleSearchFields.set(
+          fieldKey,
+          fieldFilterFields?.mode?.type === QueryMode.graphQLType ? 'insensitive' : 'default'
+        );
+      }
+    }
     if (config.lists[key].ui?.searchFields === undefined) {
       const labelField = adminMetaRoot.listsByKey[key].labelField;
-      const potentialFilterField =
-        whereInputFields[`${labelField}_contains_i`] || whereInputFields[`${labelField}_contains`];
-      if (potentialFilterField?.type === GraphQLString) {
+      if (possibleSearchFields.has(labelField)) {
         searchFields.add(labelField);
       }
     }
@@ -113,17 +122,11 @@ export function createAdminMeta(
       // FIXME: Disabling this entirely for now until the Admin UI can properly
       // handle `omit: ['read']` correctly.
       if (field.graphql.isEnabled.read === false) continue;
-      let search: 'default' | 'insensitive' | null = null;
-      if (searchFields.has(fieldKey)) {
-        if (whereInputFields[`${fieldKey}_contains_i`]?.type === GraphQLString) {
-          search = 'insensitive';
-        } else if (whereInputFields[`${fieldKey}_contains`]?.type === GraphQLString) {
-          search = 'default';
-        } else {
-          throw new Error(
-            `The ui.searchFields option on the ${key} list includes '${fieldKey}' but that field doesn't have a contains filter that accepts a GraphQL String`
-          );
-        }
+      let search = searchFields.has(fieldKey) ? possibleSearchFields.get(fieldKey) ?? null : null;
+      if (searchFields.has(fieldKey) && search === null) {
+        throw new Error(
+          `The ui.searchFields option on the ${key} list includes '${fieldKey}' but that field doesn't have a contains filter that accepts a GraphQL String`
+        );
       }
       adminMetaRoot.listsByKey[key].fields.push({
         label: field.label ?? humanize(fieldKey),

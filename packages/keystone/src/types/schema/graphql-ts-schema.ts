@@ -100,13 +100,13 @@ const RFC_3339_REGEX =
 function parseDate(input: string): Date {
   if (!RFC_3339_REGEX.test(input)) {
     throw new GraphQLError(
-      'DateTime scalars must be in the form of a full ISO 8601 date-time stirng'
+      'DateTime scalars must be in the form of a full ISO 8601 date-time string'
     );
   }
   const parsed = new Date(input);
   if (isNaN(parsed.valueOf())) {
     throw new GraphQLError(
-      'DateTime scalars must be in the form of a full ISO 8601 date-time stirng'
+      'DateTime scalars must be in the form of a full ISO 8601 date-time string'
     );
   }
   return parsed;

@@ -36,8 +36,8 @@ export type KeystoneConfig = {
     generateNodeAPI?: boolean;
     /** Creates a file at `node_modules/.keystone/next/graphql-api` with `default` and `config` exports that can be re-exported in a Next API route */
     generateNextGraphqlAPI?: boolean;
-    /** Config options for Keystone Cloud */
-    keystoneCloud?: KeystoneCloudConfig;
+    /** Options for Keystone Cloud */
+    cloud?: CloudConfig;
     /** Adds the internal data structure `experimental.initialisedLists` to the context object.
      * This is not a stable API and may contain breaking changes in `patch` level releases.
      */
@@ -208,13 +208,10 @@ export type ImagesConfig = {
   };
 };
 
-// config.experimental.keystoneCloud
+// config.experimental.cloud
 
-export type KeystoneCloudConfig = {
-  apiKey: string;
-  imagesDomain: string;
-  graphqlApiEndpoint: string;
-  restApiEndpoint: string;
+export type CloudConfig = {
+  apiKey?: string;
 };
 
 // Exports from sibling packages
