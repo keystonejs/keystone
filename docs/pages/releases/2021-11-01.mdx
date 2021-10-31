@@ -91,7 +91,7 @@ The way the `endSession` field on the `Mutation` type and the `keystone` field o
 - `context.session` no longer has a value if the session is invalid.
 - `text`, `integer`, `float` and `decimal` on the item view now render correctly when using `ui.itemView.fieldMode: 'read'`.
 - Admin UI home page now respects `ui.hideCreate` and won't show a plus button when create is disabled.
-- Read only arrays are now accepted where previously mutable arrays were required. This means that if you use `as const` when writing an array and then pass it to various APIs in Keystone, that will now work.
+- Read-only arrays are now accepted where previously mutable arrays were required. Using `as const` when writing an array and then passing it to various APIs in Keystone will now work.
 - Fixed bug in `LinkToRelatedItems` button for double sided relationships.
 
 ## Prisma Update <Emoji symbol="🗃" alt="Card File Box" />
