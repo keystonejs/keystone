@@ -4,19 +4,6 @@
 type Mutation {
   addToCart(productId: ID): CartItem
   checkout(token: String!): Order
-  sendUserPasswordResetLink(email: String!): Boolean!
-  redeemUserPasswordResetToken(
-    email: String!
-    token: String!
-    password: String!
-  ): RedeemUserPasswordResetTokenResult
-  createInitialUser(
-    data: CreateInitialUserInput!
-  ): UserAuthenticationWithPasswordSuccess!
-  authenticateUserWithPassword(
-    email: String!
-    password: String!
-  ): UserAuthenticationWithPasswordResult!
   createUser(data: UserCreateInput!): User
   createUsers(data: [UserCreateInput!]!): [User]
   updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
@@ -72,108 +59,19 @@ type Mutation {
   deleteRole(where: RoleWhereUniqueInput!): Role
   deleteRoles(where: [RoleWhereUniqueInput!]!): [Role]
   endSession: Boolean!
-}
-
-type Query {
-  validateUserPasswordResetToken(
+  authenticateUserWithPassword(
+    email: String!
+    password: String!
+  ): UserAuthenticationWithPasswordResult
+  createInitialUser(
+    data: CreateInitialUserInput!
+  ): UserAuthenticationWithPasswordSuccess!
+  sendUserPasswordResetLink(email: String!): Boolean!
+  redeemUserPasswordResetToken(
     email: String!
     token: String!
-  ): ValidateUserPasswordResetTokenResult
-  authenticatedItem: AuthenticatedItem
-  users(
-    where: UserWhereInput! = {}
-    orderBy: [UserOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [User!]
-  user(where: UserWhereUniqueInput!): User
-  usersCount(where: UserWhereInput! = {}): Int
-  products(
-    where: ProductWhereInput! = {}
-    orderBy: [ProductOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Product!]
-  product(where: ProductWhereUniqueInput!): Product
-  productsCount(where: ProductWhereInput! = {}): Int
-  productImages(
-    where: ProductImageWhereInput! = {}
-    orderBy: [ProductImageOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [ProductImage!]
-  productImage(where: ProductImageWhereUniqueInput!): ProductImage
-  productImagesCount(where: ProductImageWhereInput! = {}): Int
-  cartItems(
-    where: CartItemWhereInput! = {}
-    orderBy: [CartItemOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [CartItem!]
-  cartItem(where: CartItemWhereUniqueInput!): CartItem
-  cartItemsCount(where: CartItemWhereInput! = {}): Int
-  orderItems(
-    where: OrderItemWhereInput! = {}
-    orderBy: [OrderItemOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [OrderItem!]
-  orderItem(where: OrderItemWhereUniqueInput!): OrderItem
-  orderItemsCount(where: OrderItemWhereInput! = {}): Int
-  orders(
-    where: OrderWhereInput! = {}
-    orderBy: [OrderOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Order!]
-  order(where: OrderWhereUniqueInput!): Order
-  ordersCount(where: OrderWhereInput! = {}): Int
-  roles(
-    where: RoleWhereInput! = {}
-    orderBy: [RoleOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Role!]
-  role(where: RoleWhereUniqueInput!): Role
-  rolesCount(where: RoleWhereInput! = {}): Int
-  keystone: KeystoneMeta!
-}
-
-type ValidateUserPasswordResetTokenResult {
-  code: PasswordResetRedemptionErrorCode!
-  message: String!
-}
-
-type RedeemUserPasswordResetTokenResult {
-  code: PasswordResetRedemptionErrorCode!
-  message: String!
-}
-
-enum PasswordResetRedemptionErrorCode {
-  FAILURE
-  TOKEN_EXPIRED
-  TOKEN_REDEEMED
-}
-
-input CreateInitialUserInput {
-  name: String
-  email: String
-  password: String
-}
-
-union AuthenticatedItem = User
-
-union UserAuthenticationWithPasswordResult =
-    UserAuthenticationWithPasswordSuccess
-  | UserAuthenticationWithPasswordFailure
-
-type UserAuthenticationWithPasswordSuccess {
-  sessionToken: String!
-  item: User!
-}
-
-type UserAuthenticationWithPasswordFailure {
-  message: String!
+    password: String!
+  ): RedeemUserPasswordResetTokenResult
 }
 
 type User {
@@ -927,6 +825,108 @@ scalar JSON
   @specifiedBy(
     url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
   )
+
+union UserAuthenticationWithPasswordResult =
+    UserAuthenticationWithPasswordSuccess
+  | UserAuthenticationWithPasswordFailure
+
+type UserAuthenticationWithPasswordSuccess {
+  sessionToken: String!
+  item: User!
+}
+
+type UserAuthenticationWithPasswordFailure {
+  message: String!
+}
+
+input CreateInitialUserInput {
+  name: String
+  email: String
+  password: String
+}
+
+type RedeemUserPasswordResetTokenResult {
+  code: PasswordResetRedemptionErrorCode!
+  message: String!
+}
+
+enum PasswordResetRedemptionErrorCode {
+  FAILURE
+  TOKEN_EXPIRED
+  TOKEN_REDEEMED
+}
+
+type Query {
+  users(
+    where: UserWhereInput! = {}
+    orderBy: [UserOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [User!]
+  user(where: UserWhereUniqueInput!): User
+  usersCount(where: UserWhereInput! = {}): Int
+  products(
+    where: ProductWhereInput! = {}
+    orderBy: [ProductOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Product!]
+  product(where: ProductWhereUniqueInput!): Product
+  productsCount(where: ProductWhereInput! = {}): Int
+  productImages(
+    where: ProductImageWhereInput! = {}
+    orderBy: [ProductImageOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [ProductImage!]
+  productImage(where: ProductImageWhereUniqueInput!): ProductImage
+  productImagesCount(where: ProductImageWhereInput! = {}): Int
+  cartItems(
+    where: CartItemWhereInput! = {}
+    orderBy: [CartItemOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [CartItem!]
+  cartItem(where: CartItemWhereUniqueInput!): CartItem
+  cartItemsCount(where: CartItemWhereInput! = {}): Int
+  orderItems(
+    where: OrderItemWhereInput! = {}
+    orderBy: [OrderItemOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [OrderItem!]
+  orderItem(where: OrderItemWhereUniqueInput!): OrderItem
+  orderItemsCount(where: OrderItemWhereInput! = {}): Int
+  orders(
+    where: OrderWhereInput! = {}
+    orderBy: [OrderOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Order!]
+  order(where: OrderWhereUniqueInput!): Order
+  ordersCount(where: OrderWhereInput! = {}): Int
+  roles(
+    where: RoleWhereInput! = {}
+    orderBy: [RoleOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Role!]
+  role(where: RoleWhereUniqueInput!): Role
+  rolesCount(where: RoleWhereInput! = {}): Int
+  keystone: KeystoneMeta!
+  authenticatedItem: AuthenticatedItem
+  validateUserPasswordResetToken(
+    email: String!
+    token: String!
+  ): ValidateUserPasswordResetTokenResult
+}
+
+union AuthenticatedItem = User
+
+type ValidateUserPasswordResetTokenResult {
+  code: PasswordResetRedemptionErrorCode!
+  message: String!
+}
 
 type KeystoneMeta {
   adminMeta: KeystoneAdminMeta!
