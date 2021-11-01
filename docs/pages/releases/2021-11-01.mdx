@@ -3,14 +3,14 @@ import { Emoji } from '../../components/primitives/Emoji';
 
 # Release: 1st November 2021
 
-Server-side Live Reloading is here! <Emoji symbol="🚀" alt="Rocket" /> Plus more updates as we finalise the Keystone 6 GA release.
+**Server-side Live Reloading** is here! <Emoji symbol="🚀" alt="Rocket" /> Plus more updates as we finalise the Keystone 6 GA release.
 
 ```json
 "@keystone-next/keystone": "x.x.x",
 ```
-## Live Reloading <Emoji symbol="🚀" alt="Rocket" />
+## Server-side Live Reloading <Emoji symbol="🚀" alt="Rocket" />
 
-Keystone now supports live reloading with `keystone-next dev`
+Keystone now supports live reloading with `keystone-next dev`.
 
 You can now update your GraphQL schema, change your hooks and access control, log errors and see how your data returns, then immediately use the playground to test it and iterate.
 
@@ -74,7 +74,7 @@ If you were still using it, you should switch to providing `the query option` to
 
 The `context.query` functions will now also throw an error if an empty string is passed to `query` rather than silently returning what the `context.db` functions return, you must select at least one field or omit the `query` option to default to selecting the `id`.
 
-## Internal types renamed <Emoji symbol="✏️" alt="Pencil" />
+## Internal Types Renamed <Emoji symbol="✏️" alt="Pencil" />
 
 We have updated `@graphql-ts/schema` to `0.5.0`.
 
@@ -84,19 +84,18 @@ In addition the `fields` property on `InterfaceType` has been renamed to `__fiel
 
 ## GraphQL Schema Reorder <Emoji symbol="🛗" alt="Elevator" />
 
-We've made internal changes to the `endSession` field on the `Mutation` type and the `keystone` field on the `Query` type.
-
-This may result in re-ordering in your generated `schema.graphql` file.
-
-The `sessionSchema` export of `@keystone-next/keystone/session` has also been removed.
+We've made internal changes to the `endSession` field on the `Mutation` type and the `keystone` field on the `Query` type. This may result in re-ordering in your generated `schema.graphql` file.
 
 ## Miscellaneous Fixes <Emoji symbol="⚙️" alt="Gear" />
 
+- The `sessionSchema` export of `@keystone-next/keystone/session` has also been removed.
 - `context.session` no longer has a value if the session is invalid.
 - `text`, `integer`, `float` and `decimal` on the item view now render correctly when using `ui.itemView.fieldMode: 'read'`.
 - Admin UI home page now respects `ui.hideCreate` and won't show a plus button when create is disabled.
 - Read-only arrays are now accepted where previously mutable arrays were required. Using `as const` when writing an array and then passing it to various APIs in Keystone will now work.
 - Fixed bug in `LinkToRelatedItems` button for double sided relationships.
+- The `src` field on the output of `image` and `file` fields has been renamed to `url`, subsequently the `getSrc` function on `ImagesContext` and `FilesContext` has been renamed to `getUrl`.
+- Updated minor typos in GraphQL errors.
 
 ## Prisma Update <Emoji symbol="🗃" alt="Card File Box" />
 
@@ -107,6 +106,8 @@ Check out the [Prisma releases page](https://github.com/prisma/prisma/releases) 
 ## Credits <Emoji symbol="💫" alt="Circle Star" />
 
 - Added a short plain-text display to `document` fields in the `List` view as well as a rendered document view in `CardValue`. Thanks [@oplik0](https://github.com/oplik0)!
+
+- We now support extensions with numerical characters when generating safe filenames. Thanks [@Zlitus](https://github.com/Zlitus)!
 
 ## Complete Changelog <Emoji symbol="📜" alt="Scroll" />
 
