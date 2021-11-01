@@ -1,5 +1,6 @@
 import { Markdown, getStaticProps } from '../../components/Markdown';
 import { Emoji } from '../../components/primitives/Emoji';
+import { Stack } from '../../components/primitives/Stack';
 
 # Release: 1st November 2021
 
@@ -38,7 +39,12 @@ This is because `onConnect` is typically used to run data seeding and other once
 
 If you make changes to the `onConnect` function, you need to manually stop the `dev` process and start it again for your changes to take effect.
 
-## GraphQL Playground and Apollo Sandbox <Emoji symbol="⏪" alt="Reverse" />
+## GraphQL Playground and Apollo Sandbox <Emoji symbol="🏝" alt="Beach" />
+
+<Stack orientation="horizontal">
+<img src="/assets/releases/2021-11-01-playground.png" width="100%" />
+<img src="/assets/releases/2021-11-01-studio.png" width="100%" />
+</Stack>
 
 In the last release we upgraded to Apollo Server 3 which brought Apollo Sandbox as the default development UI for testing your GraphQL queries.
 
