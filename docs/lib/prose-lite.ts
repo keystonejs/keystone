@@ -122,15 +122,18 @@ export const proseStyles = {
     color: 'var(--code)',
     backgroundColor: 'var(--code-bg)',
     border: `1px solid ${'var(--border)'}`,
-    fontSize: 'var(--font-xsmall)',
+    // we would ideally set fontSize using tokens directly here, but Safari has
+    // an unfortunate bug which makes code font size tiny unless you force it to
+    // think about it real hard
+    fontSize: 'calc(var(--font-xsmall))',
     lineHeight: 1.7142857,
     marginTop: '1.7142857143em',
     marginBottom: '1.7142857143em',
     borderRadius: '0.375rem',
-    paddingTop: '0.8571428571em',
-    paddingRight: '1.1428571429em',
-    paddingBottom: '0.8571428571em',
-    paddingLeft: '1.1428571429em',
+    paddingTop: '0.8em',
+    paddingRight: '1em',
+    paddingBottom: '0.8em',
+    paddingLeft: '1em',
   },
   'pre code': {
     backgroundColor: 'transparent',
