@@ -48,7 +48,7 @@
     "@keystone-ui/segmented-control": "^5.0.1",
     "@keystone-ui/toast": "^4.0.4",
     "@keystone-ui/tooltip": "^4.0.3",
-    "@preconstruct/next": "^3.0.0",
+    "@preconstruct/next": "^3.0.1",
     "@prisma/client": "3.3.0",
     "@prisma/migrate": "3.3.0",
     "@prisma/sdk": "3.3.0",

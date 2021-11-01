@@ -1498,19 +1498,19 @@
   dependencies:
     tslib "~2.3.0"
 
-"@graphql-ts/extend@0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@graphql-ts/extend/-/extend-0.4.0.tgz#20cf964cc826a32445c29a10599f52bf81b027b6"
-  integrity sha512-1+NpyJemIbEDkunwhlumXbp8XglZnFmqI84lkw0TgZHhmj5g2xE2w4s/qONQg7Qx46ekq7kaifX+AO4jy8USlA==
-  dependencies:
-    "@babel/runtime" "^7.9.2"
-
 "@graphql-tools/utils@^8.4.0":
   version "8.5.0"
   resolved "https://registry.yarnpkg.com/@graphql-tools/utils/-/utils-8.5.0.tgz#439487ac756d9458a33091e5e0435ddf8e794f3e"
   integrity sha512-jMwLm6YdN+Vbqntg5GHqDvGLpLa/xPSpRs/c40d0rBuel77wo7AaQ8jHeBSpp9y+7kp7HrGSWff1u7yJ7F8ppw==
   dependencies:
     tslib "~2.3.0"
+
+"@graphql-ts/extend@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@graphql-ts/extend/-/extend-0.4.0.tgz#20cf964cc826a32445c29a10599f52bf81b027b6"
+  integrity sha512-1+NpyJemIbEDkunwhlumXbp8XglZnFmqI84lkw0TgZHhmj5g2xE2w4s/qONQg7Qx46ekq7kaifX+AO4jy8USlA==
+  dependencies:
+    "@babel/runtime" "^7.9.2"
 
 "@graphql-ts/schema@0.5.0":
   version "0.5.0"
@@ -2066,10 +2066,10 @@
     pirates "^4.0.1"
     source-map-support "^0.5.16"
 
-"@preconstruct/next@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@preconstruct/next/-/next-3.0.0.tgz#71781cbaecd011f43e456a149817094a43e4755f"
-  integrity sha512-G90cyJX9w4Zr3Bt/j2fURgDhsJb5+agqf4YUgrvDe3Dyvbbssy9a6d0tzLH0ehfa2Osxw/EEhQb+W4X+v/x06A==
+"@preconstruct/next@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@preconstruct/next/-/next-3.0.1.tgz#7070edaf7adb350010114adbbc90079a98b0f31a"
+  integrity sha512-b9q1US5vsUzHPeMGlCFGWdttAHQ2q6raFlY1vf5binrKMkki/gt6GvskTJ4RXfFCt7QmVx9tRcuTFXMhUDgb6A==
 
 "@prisma/client@3.3.0":
   version "3.3.0"
