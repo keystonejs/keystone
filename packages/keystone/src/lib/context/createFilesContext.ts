@@ -22,8 +22,8 @@ const generateSafeFilename = (
   //
   // This regex lazily matches for any characters that aren't a new line
   // it then optionally matches the last instance of a "." symbol
-  // followed by any alphabetical character before the end of the string
-  const [, name, ext] = filename.match(/^([^:\n].*?)(\.[A-Za-z]+)?$/) as RegExpMatchArray;
+  // followed by any alphanumerical character before the end of the string
+  const [, name, ext] = filename.match(/^([^:\n].*?)(\.[A-Za-z0-9]+)?$/) as RegExpMatchArray;
 
   const id = crypto
     .randomBytes(24)
