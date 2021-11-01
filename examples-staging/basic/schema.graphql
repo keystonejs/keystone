@@ -3,7 +3,6 @@
 
 type Query {
   randomNumber: RandomNumber
-  authenticatedItem: AuthenticatedItem
   users(
     where: UserWhereInput! = {}
     orderBy: [UserOrderByInput!]! = []
@@ -29,6 +28,7 @@ type Query {
   post(where: PostWhereUniqueInput!): Post
   postsCount(where: PostWhereInput! = {}): Int
   keystone: KeystoneMeta!
+  authenticatedItem: AuthenticatedItem
 }
 
 type RandomNumber {
@@ -38,13 +38,6 @@ type RandomNumber {
 
 type Mutation {
   createRandomPosts: [Post!]!
-  createInitialUser(
-    data: CreateInitialUserInput!
-  ): UserAuthenticationWithPasswordSuccess!
-  authenticateUserWithPassword(
-    email: String!
-    password: String!
-  ): UserAuthenticationWithPasswordResult!
   createUser(data: UserCreateInput!): User
   createUsers(data: [UserCreateInput!]!): [User]
   updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
@@ -67,27 +60,13 @@ type Mutation {
   deletePost(where: PostWhereUniqueInput!): Post
   deletePosts(where: [PostWhereUniqueInput!]!): [Post]
   endSession: Boolean!
-}
-
-input CreateInitialUserInput {
-  name: String
-  email: String
-  password: String
-}
-
-union AuthenticatedItem = User
-
-union UserAuthenticationWithPasswordResult =
-    UserAuthenticationWithPasswordSuccess
-  | UserAuthenticationWithPasswordFailure
-
-type UserAuthenticationWithPasswordSuccess {
-  sessionToken: String!
-  item: User!
-}
-
-type UserAuthenticationWithPasswordFailure {
-  message: String!
+  authenticateUserWithPassword(
+    email: String!
+    password: String!
+  ): UserAuthenticationWithPasswordResult
+  createInitialUser(
+    data: CreateInitialUserInput!
+  ): UserAuthenticationWithPasswordSuccess!
 }
 
 type User {
@@ -123,7 +102,7 @@ interface ImageFieldOutput {
   height: Int!
   extension: ImageExtension!
   ref: String!
-  src: String!
+  url: String!
 }
 
 enum ImageExtension {
@@ -137,7 +116,7 @@ interface FileFieldOutput {
   filename: String!
   filesize: Int!
   ref: String!
-  src: String!
+  url: String!
 }
 
 type PasswordState {
@@ -156,14 +135,31 @@ type LocalImageFieldOutput implements ImageFieldOutput {
   height: Int!
   extension: ImageExtension!
   ref: String!
-  src: String!
+  url: String!
+}
+
+type CloudImageFieldOutput implements ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  ref: String!
+  url: String!
 }
 
 type LocalFileFieldOutput implements FileFieldOutput {
   filename: String!
   filesize: Int!
   ref: String!
-  src: String!
+  url: String!
+}
+
+type CloudFileFieldOutput implements FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  url: String!
 }
 
 input UserWhereInput {
@@ -482,6 +478,27 @@ scalar JSON
   @specifiedBy(
     url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
   )
+
+union UserAuthenticationWithPasswordResult =
+    UserAuthenticationWithPasswordSuccess
+  | UserAuthenticationWithPasswordFailure
+
+type UserAuthenticationWithPasswordSuccess {
+  sessionToken: String!
+  item: User!
+}
+
+type UserAuthenticationWithPasswordFailure {
+  message: String!
+}
+
+input CreateInitialUserInput {
+  name: String
+  email: String
+  password: String
+}
+
+union AuthenticatedItem = User
 
 type KeystoneMeta {
   adminMeta: KeystoneAdminMeta!

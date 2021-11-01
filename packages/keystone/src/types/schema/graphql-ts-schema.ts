@@ -38,6 +38,8 @@ export type {
   ScalarType,
 } from '@graphql-ts/schema/api-without-context';
 export { bindGraphQLSchemaAPIToContext } from '@graphql-ts/schema';
+export type { BaseSchemaMeta, Extension } from '@graphql-ts/extend';
+export { extend, wrap } from '@graphql-ts/extend';
 export { field, fields, interface, interfaceField, object, union } from './schema-api-with-context';
 
 export type Context = KeystoneContext;
@@ -98,13 +100,13 @@ const RFC_3339_REGEX =
 function parseDate(input: string): Date {
   if (!RFC_3339_REGEX.test(input)) {
     throw new GraphQLError(
-      'DateTime scalars must be in the form of a full ISO 8601 date-time stirng'
+      'DateTime scalars must be in the form of a full ISO 8601 date-time string'
     );
   }
   const parsed = new Date(input);
   if (isNaN(parsed.valueOf())) {
     throw new GraphQLError(
-      'DateTime scalars must be in the form of a full ISO 8601 date-time stirng'
+      'DateTime scalars must be in the form of a full ISO 8601 date-time string'
     );
   }
   return parsed;
@@ -153,8 +155,8 @@ export type FieldResolver<
   Args extends Record<string, graphqlTsSchema.Arg<any>>,
   TType extends OutputType
 > = graphqlTsSchema.FieldResolver<Source, Args, TType, Context>;
-export type ObjectType<RootVal> = graphqlTsSchema.ObjectType<RootVal, Context>;
-export type UnionType<RootVal> = graphqlTsSchema.UnionType<RootVal, Context>;
+export type ObjectType<Source> = graphqlTsSchema.ObjectType<Source, Context>;
+export type UnionType<Source> = graphqlTsSchema.UnionType<Source, Context>;
 export type InterfaceType<
   Source,
   Fields extends Record<string, graphqlTsSchema.InterfaceField<any, OutputType, Context>>

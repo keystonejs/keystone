@@ -1,5 +1,5 @@
 import { Browser, Page } from 'playwright';
-import { exampleProjectTests } from './utils';
+import { exampleProjectTests, loadIndex } from './utils';
 
 exampleProjectTests('custom-admin-ui-logo', browserType => {
   let browser: Browser = undefined as any;
@@ -7,7 +7,7 @@ exampleProjectTests('custom-admin-ui-logo', browserType => {
   beforeAll(async () => {
     browser = await browserType.launch();
     page = await browser.newPage();
-    await page.goto('http://localhost:3000');
+    await loadIndex(page);
   });
   test('Find custom logo', async () => {
     const content = await page.textContent('h3 a');

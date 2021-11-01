@@ -41,13 +41,13 @@ const imageOutputFields = graphql.fields<ImageData>()({
       return getImageRef(data.mode, data.id, data.extension);
     },
   }),
-  src: graphql.field({
+  url: graphql.field({
     type: graphql.nonNull(graphql.String),
     resolve(data, args, context) {
       if (!context.images) {
         throw new Error('Image context is undefined');
       }
-      return context.images.getSrc(data.mode, data.id, data.extension);
+      return context.images.getUrl(data.mode, data.id, data.extension);
     },
   }),
 });
@@ -55,11 +55,17 @@ const imageOutputFields = graphql.fields<ImageData>()({
 const ImageFieldOutput = graphql.interface<ImageData>()({
   name: 'ImageFieldOutput',
   fields: imageOutputFields,
-  resolveType: () => 'LocalImageFieldOutput',
+  resolveType: val => (val.mode === 'local' ? 'LocalImageFieldOutput' : 'CloudImageFieldOutput'),
 });
 
 const LocalImageFieldOutput = graphql.object<ImageData>()({
   name: 'LocalImageFieldOutput',
+  interfaces: [ImageFieldOutput],
+  fields: imageOutputFields,
+});
+
+const CloudImageFieldOutput = graphql.object<ImageData>()({
+  name: 'CloudImageFieldOutput',
   interfaces: [ImageFieldOutput],
   fields: imageOutputFields,
 });
@@ -128,14 +134,14 @@ export const image =
             width === null ||
             id === null ||
             mode === null ||
-            (mode !== 'local' && mode !== 'keystone-cloud')
+            (mode !== 'local' && mode !== 'cloud')
           ) {
             return null;
           }
           return { mode, extension, filesize, height, width, id };
         },
       }),
-      unreferencedConcreteInterfaceImplementations: [LocalImageFieldOutput],
+      unreferencedConcreteInterfaceImplementations: [LocalImageFieldOutput, CloudImageFieldOutput],
       views: resolveView('image/views'),
     });
   };
