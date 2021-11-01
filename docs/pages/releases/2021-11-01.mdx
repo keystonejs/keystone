@@ -60,17 +60,23 @@ We have now introduced the `graphql.playground` config option, with three possib
 
 `graphql.playground` defaults to `process.env.NODE_ENV !== 'production'` which matches the previous Keystone 6 behaviour before the October update and Apollo Server 3.
 
-## CORS Configuration <Emoji symbol="🌐" alt="World" />
+## Next.js Update <Emoji symbol="✨" alt="Sparkles" />
 
-We've removed the `graphql.cors` option, we had one too many ways to configure CORS and it was proving to be confusing.
+We've updated our Next.js dependency from `11.x` to `12.x`! This latest release of Next.js includes a new Rust powered compiler with faster refresh and build rates.
 
-You should now exclusively configure `cors` with the `server.cors` option.
+Check out the [Next.js blog]( https://nextjs.org/blog/next-12) for more details.
 
 ## Relationship Filtering <Emoji symbol="❤️" alt="Heart" />
 
 If you have hundreds of items in your relationship fields, the Admin UI was sometimes displaying duplicate entries and/or missing entries.
 
 We've made a series of improvements to fetching data resulting in a performance boost, as well as filtering fixes. We also changed the way we detect when an ID is pasted into the field allowing you to select a related item quickly.
+
+## CORS Configuration <Emoji symbol="🌐" alt="World" />
+
+We've removed the `graphql.cors` option, we had one too many ways to configure CORS and it was proving to be confusing.
+
+You should now exclusively configure `cors` with the `server.cors` option.
 
 ## Removed `resolveFields` <Emoji symbol="🚧" alt="Construction" />
 
