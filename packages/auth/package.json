@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.15.4",
-    "@graphql-tools/schema": "^8.2.0",
     "@keystone-ui/button": "^5.0.2",
     "@keystone-ui/core": "^3.2.1",
     "@keystone-ui/fields": "^5.0.1",
