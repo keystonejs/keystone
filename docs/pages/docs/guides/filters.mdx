@@ -160,6 +160,17 @@ For example, to find all the tasks where the task is assigned to a used named `"
 }
 ```
 
+For example, to find any tasks that have no assigned user, we can run the following query.
+
+```graphql
+{
+  tasks(where: { assignedTo: null }) {
+    id
+    label
+  }
+}
+```
+
 ### Many
 
 If you have `many: true` configured on the relationship field, then you can find items based on whether `some`, `none`, or `every` of the related items match a `where` filter using the fields from the related list.
