@@ -27,8 +27,8 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
           value={value.inner.kind === 'null' ? '' : value.inner.value}
         />
       )
-    ) : (
-      value
+    ) : value.inner.kind === 'null' ? null : (
+      value.inner.value
     )}
   </FieldContainer>
 );

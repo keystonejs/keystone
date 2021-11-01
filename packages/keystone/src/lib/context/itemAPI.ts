@@ -1,4 +1,4 @@
-import { GraphQLSchema, GraphQLField } from 'graphql';
+import { GraphQLSchema } from 'graphql';
 import {
   BaseGeneratedListTypes,
   KeystoneDbAPI,
@@ -19,26 +19,29 @@ export function getDbAPIFactory(
   gqlNames: GqlNames,
   schema: GraphQLSchema
 ): (context: KeystoneContext) => KeystoneDbAPI<Record<string, BaseGeneratedListTypes>>[string] {
-  const queryFields = schema.getQueryType()!.getFields();
-  const mutationFields = schema.getMutationType()!.getFields();
-  const f = (field: GraphQLField<any, any> | undefined) => {
+  const f = (operation: 'query' | 'mutation', fieldName: string) => {
+    const rootType = operation === 'mutation' ? schema.getMutationType()! : schema.getQueryType()!;
+    const field = rootType.getFields()[fieldName];
+
     if (field === undefined) {
       return (): never => {
-        throw new Error('You do not have access to this resource');
+        // This will be triggered if the field is missing due to `omit` configuration.
+        // The GraphQL equivalent would be a bad user input error.
+        throw new Error(`This ${operation} is not supported by the GraphQL schema: ${fieldName}()`);
       };
     }
     return executeGraphQLFieldToRootVal(field);
   };
   const api = {
-    findOne: f(queryFields[gqlNames.itemQueryName]),
-    findMany: f(queryFields[gqlNames.listQueryName]),
-    count: f(queryFields[gqlNames.listQueryCountName]),
-    createOne: f(mutationFields[gqlNames.createMutationName]),
-    createMany: f(mutationFields[gqlNames.createManyMutationName]),
-    updateOne: f(mutationFields[gqlNames.updateMutationName]),
-    updateMany: f(mutationFields[gqlNames.updateManyMutationName]),
-    deleteOne: f(mutationFields[gqlNames.deleteMutationName]),
-    deleteMany: f(mutationFields[gqlNames.deleteManyMutationName]),
+    findOne: f('query', gqlNames.itemQueryName),
+    findMany: f('query', gqlNames.listQueryName),
+    count: f('query', gqlNames.listQueryCountName),
+    createOne: f('mutation', gqlNames.createMutationName),
+    createMany: f('mutation', gqlNames.createManyMutationName),
+    updateOne: f('mutation', gqlNames.updateMutationName),
+    updateMany: f('mutation', gqlNames.updateManyMutationName),
+    deleteOne: f('mutation', gqlNames.deleteMutationName),
+    deleteMany: f('mutation', gqlNames.deleteManyMutationName),
   };
   return (context: KeystoneContext) =>
     Object.fromEntries(
@@ -49,62 +52,32 @@ export function getDbAPIFactory(
     ) as Record<keyof typeof api, any>;
 }
 
-function defaultQueryParam(query?: string, resolveFields?: string | false) {
-  if (query !== undefined && resolveFields !== undefined) {
-    throw new Error('query and resolveFields cannot both be passed to an Items API query');
-  }
-  if (query !== undefined) return query;
-  if (resolveFields !== undefined) return resolveFields;
-  return 'id';
-}
-
-/* NOTE
- *
- * The `resolveFields` param has been deprecated in favor of `query` (when selecting fields to
- * query) or the new dbAPI which is available via `context.db.{List}`, which replaces
- * the previous `resolveFields: false` behaviour.
- *
- * We'll be removing the option to use `resolveFields` entirely in a future release.
- */
 export function itemAPIForList(
   listKey: string,
-  context: KeystoneContext,
-  dbAPI: KeystoneDbAPI<Record<string, BaseGeneratedListTypes>>[string]
+  context: KeystoneContext
 ): KeystoneListsAPI<Record<string, BaseGeneratedListTypes>>[string] {
-  const f = (
-    operation: 'query' | 'mutation',
-    field: string,
-    dbAPIVersionOfAPI: (args: any) => Promise<any>
-  ) => {
+  const f = (operation: 'query' | 'mutation', field: string) => {
     const exec = executeGraphQLFieldWithSelection(context.graphql.schema, operation, field);
-    return ({
-      query,
-      resolveFields,
-      ...args
-    }: { resolveFields?: false | string; query?: string } & Record<string, any> = {}) => {
-      const returnFields = defaultQueryParam(query, resolveFields);
-      if (returnFields) {
-        return exec(args, returnFields, context);
-      } else {
-        return dbAPIVersionOfAPI(args);
-      }
+    return ({ query, ...args }: { query?: string } & Record<string, any> = {}) => {
+      const returnFields = query ?? 'id';
+      return exec(args, returnFields, context);
     };
   };
   const gqlNames = context.gqlNames(listKey);
   return {
-    findOne: f('query', gqlNames.itemQueryName, dbAPI.findOne),
-    findMany: f('query', gqlNames.listQueryName, dbAPI.findMany),
+    findOne: f('query', gqlNames.itemQueryName),
+    findMany: f('query', gqlNames.listQueryName),
     async count({ where = {} } = {}) {
       const { listQueryCountName, whereInputName } = context.gqlNames(listKey);
       const query = `query ($where: ${whereInputName}!) { count: ${listQueryCountName}(where: $where)  }`;
       const response = await context.graphql.run({ query, variables: { where } });
       return response.count;
     },
-    createOne: f('mutation', gqlNames.createMutationName, dbAPI.createOne),
-    createMany: f('mutation', gqlNames.createManyMutationName, dbAPI.createMany),
-    updateOne: f('mutation', gqlNames.updateMutationName, dbAPI.updateOne),
-    updateMany: f('mutation', gqlNames.updateManyMutationName, dbAPI.updateMany),
-    deleteOne: f('mutation', gqlNames.deleteMutationName, dbAPI.deleteOne),
-    deleteMany: f('mutation', gqlNames.deleteManyMutationName, dbAPI.deleteMany),
+    createOne: f('mutation', gqlNames.createMutationName),
+    createMany: f('mutation', gqlNames.createManyMutationName),
+    updateOne: f('mutation', gqlNames.updateMutationName),
+    updateMany: f('mutation', gqlNames.updateManyMutationName),
+    deleteOne: f('mutation', gqlNames.deleteMutationName),
+    deleteMany: f('mutation', gqlNames.deleteManyMutationName),
   };
 }

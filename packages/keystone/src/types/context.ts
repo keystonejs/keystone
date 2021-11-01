@@ -87,13 +87,6 @@ type ResolveFields = {
    * @default 'id'
    */
   readonly query?: string;
-  /**
-   * @deprecated
-   *
-   * resolveFields has been deprecated. Please use the `query` param to query fields,
-   * or `context.db.{List}` instead of passing `resolveFields: false`
-   */
-  readonly resolveFields?: false | string;
 };
 
 export type KeystoneDbAPI<KeystoneListsTypeInfo extends Record<string, BaseGeneratedListTypes>> = {
@@ -160,7 +153,7 @@ export type SessionContext<T> = {
   endSession(): Promise<void>;
 };
 
-export type AssetMode = 'local' | 'keystone-cloud';
+export type AssetMode = 'local' | 'cloud';
 
 // Files API
 
@@ -171,7 +164,7 @@ export type FileData = {
 };
 
 export type FilesContext = {
-  getSrc: (mode: AssetMode, filename: string) => Promise<string>;
+  getUrl: (mode: AssetMode, filename: string) => Promise<string>;
   getDataFromRef: (ref: string) => Promise<FileData>;
   getDataFromStream: (stream: Readable, filename: string) => Promise<FileData>;
 };
@@ -193,7 +186,7 @@ export type ImageData = {
 } & ImageMetadata;
 
 export type ImagesContext = {
-  getSrc: (mode: AssetMode, id: string, extension: ImageExtension) => Promise<string>;
+  getUrl: (mode: AssetMode, id: string, extension: ImageExtension) => Promise<string>;
   getDataFromRef: (ref: string) => Promise<ImageData>;
   getDataFromStream: (stream: Readable) => Promise<ImageData>;
 };

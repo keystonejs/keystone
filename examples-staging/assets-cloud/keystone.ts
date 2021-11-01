@@ -4,12 +4,7 @@ import { lists } from './schema';
 
 dotenv.config();
 
-const {
-  KEYSTONE_CLOUD_API_KEY = '',
-  KEYSTONE_CLOUD_IMAGES_DOMAIN = '',
-  KEYSTONE_CLOUD_GRAPHQL_API_ENDPOINT = '',
-  KEYSTONE_CLOUD_REST_API_ENDPOINT = '',
-} = process.env;
+const { KEYSTONE_CLOUD_API_KEY = '' } = process.env;
 
 export default config({
   db: {
@@ -18,17 +13,18 @@ export default config({
   },
   lists,
   images: {
-    upload: 'keystone-cloud',
+    upload: 'cloud',
+    local: {
+      storagePath: 'uploads/images', // defaults to 'public/images'
+      baseUrl: 'http://localhost:3000/images', // defaults to `/images`
+    },
   },
   files: {
-    upload: 'keystone-cloud',
+    upload: 'cloud',
   },
   experimental: {
-    keystoneCloud: {
+    cloud: {
       apiKey: KEYSTONE_CLOUD_API_KEY,
-      imagesDomain: KEYSTONE_CLOUD_IMAGES_DOMAIN,
-      graphqlApiEndpoint: KEYSTONE_CLOUD_GRAPHQL_API_ENDPOINT,
-      restApiEndpoint: KEYSTONE_CLOUD_REST_API_ENDPOINT,
     },
   },
 });

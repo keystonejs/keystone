@@ -29,7 +29,7 @@ export function InlineCreate({
 }: {
   list: ListMeta;
   selectedFields: string;
-  fields: string[];
+  fields: readonly string[];
   onCancel: () => void;
   onCreate: (itemGetter: DataGetter<ItemData>) => void;
 }) {

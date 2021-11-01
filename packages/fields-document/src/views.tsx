@@ -4,6 +4,7 @@
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { Descendant, Node, Text } from 'slate';
+import { DocumentRenderer } from '@keystone-next/document-renderer';
 
 import {
   CardValueComponent,
@@ -13,6 +14,7 @@ import {
   FieldProps,
 } from '@keystone-next/keystone/types';
 import weakMemoize from '@emotion/weak-memoize';
+import { CellContainer, CellLink } from '@keystone-next/keystone/admin-ui/components';
 import { DocumentEditor } from './DocumentEditor';
 import { ComponentBlock } from './component-blocks';
 import { Relationships } from './DocumentEditor/relationship';
@@ -42,15 +44,28 @@ export const Field = ({
   </FieldContainer>
 );
 
-export const Cell: CellComponent = () => {
-  return null;
+const serialize = (nodes: Node[]) => {
+  return nodes.map((n: Node) => Node.string(n)).join('\n');
 };
+
+export const Cell: CellComponent = ({ item, field, linkTo }) => {
+  const value = item[field.path]?.document;
+  if (!value) return null;
+  const plainText = serialize(value);
+  const cutText = plainText.length > 100 ? plainText.slice(0, 100) + '...' : plainText;
+  return linkTo ? (
+    <CellLink {...linkTo}>{cutText}</CellLink>
+  ) : (
+    <CellContainer>{cutText}</CellContainer>
+  );
+};
+Cell.supportsLinkTo = true;
 
 export const CardValue: CardValueComponent = ({ item, field }) => {
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
-      <pre>{JSON.stringify(item[field.path], null, 2)}</pre>
+      <DocumentRenderer document={item[field.path]?.document || []} />
     </FieldContainer>
   );
 };

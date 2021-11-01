@@ -1,7 +1,7 @@
 import { text } from '@keystone-next/keystone/fields';
 import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
-import { apiTestConfig } from '../utils';
+import { apiTestConfig, expectExtensionError } from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -35,20 +35,30 @@ const runner = setupTestRunner({
 describe('Access control - Filter', () => {
   test(
     'findMany - Bad function return value',
-    runner(async ({ graphQLRequest }) => {
+    runner(async ({ context }) => {
       // Valid name
-      const { body } = await graphQLRequest({
+      const { data, errors } = await context.graphql.raw({
         query: `query { badAccesses { id } }`,
       });
 
       // Returns null and throws an error
-      expect(body.data).toEqual({ badAccesses: null });
-      expect(body.errors).toHaveLength(1);
-      expect(body.errors[0].path).toEqual(['badAccesses']);
-      expect(body.errors[0].message).toMatchInlineSnapshot(`
-"An error occured while running \\"Access control\\".
-  - BadAccess.access.filter.query: Variable \\"$where\\" got invalid value \\"blah\\" at \\"where.name\\"; Expected type \\"StringFilter\\" to be an object."
-`);
+      expect(data).toEqual({ badAccesses: null });
+      const message =
+        'Variable "$where" got invalid value "blah" at "where.name"; Expected type "StringFilter" to be an object.';
+      expectExtensionError('dev', false, false, errors, 'Access control', [
+        {
+          path: ['badAccesses'],
+          messages: [`BadAccess.access.filter.query: ${message}`],
+          debug: [
+            {
+              message,
+              stacktrace: expect.stringMatching(
+                new RegExp(`GraphQLError: ${message.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`)
+              ),
+            },
+          ],
+        },
+      ]);
     })
   );
   test(

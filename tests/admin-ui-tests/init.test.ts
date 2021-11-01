@@ -1,5 +1,5 @@
 import { Browser, Page } from 'playwright';
-import { adminUITests, deleteAllData, generateDataArray, makeGqlRequest } from './utils';
+import { adminUITests, deleteAllData, generateDataArray, loadIndex, makeGqlRequest } from './utils';
 
 adminUITests('./tests/test-projects/basic', browserType => {
   let browser: Browser = undefined as any;
@@ -8,7 +8,7 @@ adminUITests('./tests/test-projects/basic', browserType => {
   beforeAll(async () => {
     browser = await browserType.launch();
     page = await browser.newPage();
-    await page.goto('http://localhost:3000');
+    await loadIndex(page);
   });
   test('Task List card should be visible', async () => {
     await page.waitForSelector('h3:has-text("Task")');

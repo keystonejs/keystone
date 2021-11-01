@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
 
 jobs:
@@ -20,82 +20,16 @@ jobs:
           filters: |
             shouldRunTests:
               - '!{{design-system}/**,**/*.md}'
+
       - run: echo "SHOULD_RUN_TESTS=$SHOULD_RUN" >> $GITHUB_ENV
         if: github.event_name == 'pull_request'
         env:
           SHOULD_RUN: ${{ steps.filter.outputs.shouldRunTests }}
+
       - run: echo "SHOULD_RUN_TESTS=true" >> $GITHUB_ENV
         if: github.event_name != 'pull_request'
 
-  cypress:
-    name: Cypress tests
-    needs: should_run_tests
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:12
-        env:
-          POSTGRES_USER: keystone5
-          POSTGRES_PASSWORD: k3yst0n3
-          POSTGRES_DB: test_db
-        ports:
-          - 5432:5432
-    env:
-      DATABASE_URL: 'postgres://keystone5:k3yst0n3@localhost:5432/test_db'
-      CLOUDINARY_CLOUD_NAME: $CLOUDINARY_CLOUD_NAME
-      CLOUDINARY_KEY: $CLOUDINARY_KEY
-      CLOUDINARY_SECRET: $CLOUDINARY_SECRET
-      PORT: 3000
-    strategy:
-      fail-fast: false
-      matrix:
-        project:
-          - docs
-    steps:
-      - name: Checkout Repo
-        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        uses: actions/checkout@v2
-      - name: Setup Node.js 14.x
-        uses: actions/setup-node@main
-        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        with:
-          node-version: 14.x
-
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - uses: actions/cache@v2
-        id: yarn-cache
-        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        with:
-          path: |
-            ${{ steps.yarn-cache-dir-path.outputs.dir }}
-            node_modules
-          key: ${{ runner.os }}-yarn-v4-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-v4-
-
-      - name: Install Dependencies
-        run: yarn
-        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-      - run: yarn --cwd ${{ matrix.project }} cypress install
-        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-      - run: yarn --cwd ${{ matrix.project }} cypress:run:ci
-        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-      - uses: actions/upload-artifact@v2
-        if: failure()
-        with:
-          name: cypress-screenshots
-          path: cypress/screenshots
-      - uses: actions/upload-artifact@v2
-        if: failure()
-        with:
-          name: cypress-videos
-          path: cypress/videos
-
-  graphql-api-tests:
+  graphql_api_tests:
     name: API Tests
     needs: should_run_tests
     runs-on: ubuntu-latest
@@ -136,13 +70,14 @@ jobs:
           path: |
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
             node_modules
-          key: ${{ runner.os }}-yarn-v4-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-yarn-v5-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-v4-
+            ${{ runner.os }}-yarn-v5-
 
       - name: Install Dependencies
         run: yarn
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+
       - name: Unit tests
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: yarn jest --ci --runInBand api-tests
@@ -155,7 +90,7 @@ jobs:
           TEST_ADAPTER: ${{ matrix.adapter }}
           DATABASE_URL: ${{ matrix.adapter == 'sqlite' && 'file:./dev.db' || 'postgres://keystone5:k3yst0n3@localhost:5432/test_db' }}
 
-  non-api-tests:
+  unit_tests:
     name: Package Unit Tests
     needs: should_run_tests
     runs-on: ubuntu-latest
@@ -191,12 +126,13 @@ jobs:
           path: |
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
             node_modules
-          key: ${{ runner.os }}-yarn-v4-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-yarn-v5-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-v4-
+            ${{ runner.os }}-yarn-v5-
 
       - name: Install Dependencies
         run: yarn
+
       - name: Unit tests
         run: yarn jest --ci --runInBand --testPathIgnorePatterns=admin-ui-tests --testPathIgnorePatterns=api-tests --testPathIgnorePatterns=examples-smoke-tests --testPathIgnorePatterns=examples/testing
         env:
@@ -204,7 +140,7 @@ jobs:
           CLOUDINARY_KEY: ${{ secrets.CLOUDINARY_KEY }}
           CLOUDINARY_SECRET: ${{ secrets.CLOUDINARY_SECRET }}
 
-  example-testing:
+  examples_tests:
     name: Testing example project
     needs: should_run_tests
     runs-on: ubuntu-latest
@@ -229,13 +165,14 @@ jobs:
           path: |
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
             node_modules
-          key: ${{ runner.os }}-yarn-v4-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-yarn-v5-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-v4-
+            ${{ runner.os }}-yarn-v5-
 
       - name: Install Dependencies
         run: yarn
-      - name: Unit tests
+
+      - name: Example unit tests
         run: cd examples/testing; yarn test
 
   examples_smoke_tests:
@@ -254,6 +191,7 @@ jobs:
             'document-field.test.ts',
             'default-values.test.ts',
             'extend-graphql-schema.test.ts',
+            'extend-graphql-schema-graphql-ts.test.ts',
             'json.test.ts',
             'rest-api.test.ts',
             'roles.test.ts',
@@ -290,19 +228,22 @@ jobs:
           path: |
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
             node_modules
-          key: ${{ runner.os }}-yarn-v4-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-yarn-v5-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-v4-
+            ${{ runner.os }}-yarn-v5-
 
       - name: Install Dependencies
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: yarn
+
       - name: Install Dependencies of Browsers
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: npx playwright install-deps
+
       - name: Install Browsers
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: npx playwright install
+
       - name: Unit tests
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: yarn jest --ci --runInBand tests/examples-smoke-tests/${{ matrix.test }}
@@ -315,7 +256,14 @@ jobs:
       DATABASE_URL: 'file:./test.db'
     strategy:
       matrix:
-        test: ['init.test.ts', 'filters.test.ts', 'list-view-crud.test.ts', 'navigation.test.ts']
+        test:
+          [
+            'init.test.ts',
+            'filters.test.ts',
+            'list-view-crud.test.ts',
+            'navigation.test.ts',
+            'live-reloading.test.ts',
+          ]
       fail-fast: false
     steps:
       - name: Checkout Repo
@@ -340,19 +288,22 @@ jobs:
           path: |
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
             node_modules
-          key: ${{ runner.os }}-yarn-v4-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-yarn-v5-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-v4-
+            ${{ runner.os }}-yarn-v5-
 
       - name: Install Dependencies
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: yarn
+
       - name: Install Dependencies of Browsers
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         uses: microsoft/playwright-github-action@v1
+
       - name: Install Browsers for Playwright
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: node ./node_modules/playwright/install.js
+
       - name: Unit tests
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: yarn jest --ci --runInBand tests/admin-ui-tests/${{ matrix.test }}
@@ -379,23 +330,30 @@ jobs:
           path: |
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
             node_modules
-          key: ${{ runner.os }}-yarn-v4-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-yarn-v5-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-v4-
+            ${{ runner.os }}-yarn-v5-
 
       - name: Install Dependencies
         run: yarn
+
       - name: Prettier
         run: yarn lint:prettier
+
       - name: TypeScript
         run: yarn lint:types
+
       - name: ESLint
         run: yarn lint:eslint
+
       - name: Preconstruct
         run: yarn build
+
       - name: Remark
         run: yarn lint:markdown
+
       - name: Example schemas
         run: yarn lint:examples
+
       - name: Prisma Filters
         run: yarn lint:filters

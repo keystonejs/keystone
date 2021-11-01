@@ -1,7 +1,7 @@
 import { text, relationship } from '@keystone-next/keystone/fields';
 import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
-import { apiTestConfig, expectRelationshipError } from '../../utils';
+import { apiTestConfig, expectSingleRelationshipError } from '../../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -36,13 +36,9 @@ describe('errors on incomplete data', () => {
       });
 
       expect(data).toEqual({ createEvent: null });
-      expectRelationshipError(errors, [
-        {
-          path: ['createEvent'],
-          message:
-            "Input error: Nested to-one mutations must provide exactly one field if they're provided but Event.group<Group> did not",
-        },
-      ]);
+      const message =
+        'Input error: You must provide "connect" or "create" in to-one relationship inputs for "create" operations.';
+      expectSingleRelationshipError(errors, 'createEvent', 'Event.group', message);
     })
   );
 
@@ -63,13 +59,9 @@ describe('errors on incomplete data', () => {
       });
 
       expect(data).toEqual({ createEvent: null });
-      expectRelationshipError(errors, [
-        {
-          path: ['createEvent'],
-          message:
-            "Input error: Nested to-one mutations must provide exactly one field if they're provided but Event.group<Group> did not",
-        },
-      ]);
+      const message =
+        'Input error: You must provide "connect" or "create" in to-one relationship inputs for "create" operations.';
+      expectSingleRelationshipError(errors, 'createEvent', 'Event.group', message);
     })
   );
 });

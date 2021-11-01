@@ -3,14 +3,13 @@ import { list } from '@keystone-next/keystone';
 import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
 import { setupTestRunner, TestArgs } from '@keystone-next/keystone/testing';
-import { KeystoneContext } from '@keystone-next/keystone/types';
-import { apiTestConfig, expectInternalServerError } from './utils';
+import { apiTestConfig, expectInternalServerError, expectValidationError, seed } from './utils';
 
 const initialData = {
   User: [
-    { name: 'Boris Bozic', email: 'boris@keystone.com', password: 'correctbattery' },
-    { name: 'Jed Watson', email: 'jed@keystone.com', password: 'horsestaple' },
-    { name: 'Bad User', email: 'bad@keystone.com', password: 'incorrectbattery' },
+    { name: 'Boris Bozic', email: 'boris@keystonejs.com', password: 'correctbattery' },
+    { name: 'Jed Watson', email: 'jed@keystonejs.com', password: 'horsestaple' },
+    { name: 'Bad User', email: 'bad@keystonejs.com', password: 'incorrectbattery' },
   ],
 };
 
@@ -26,7 +25,7 @@ const auth = createAuth({
   initFirstItem: { fields: ['email', 'password'], itemData: { name: 'First User' } },
   magicAuthLink: {
     sendToken: async ({ identity, token }) => {
-      if (identity === 'bad@keystone.com') {
+      if (identity === 'bad@keystonejs.com') {
         throw new Error('Error in sendToken');
       }
       MAGIC_TOKEN = token;
@@ -35,7 +34,7 @@ const auth = createAuth({
   },
   passwordResetLink: {
     sendToken: async ({ identity, token }) => {
-      if (identity === 'bad@keystone.com') {
+      if (identity === 'bad@keystonejs.com') {
         throw new Error('Error in sendToken');
       }
       MAGIC_TOKEN = token;
@@ -84,21 +83,15 @@ async function authenticateWithPassword(
   });
 }
 
-async function initialiseData(context: KeystoneContext) {
-  return context.query.User.createMany({ data: initialData.User });
-}
-
 describe('Auth testing', () => {
   describe('authenticateItemWithPassword', () => {
     test(
       'Success - set token in header and return value',
       runner(async ({ context, graphQLRequest }) => {
-        // seed the db
-        const users = await initialiseData(context);
-
+        const { User: users } = await seed(context, initialData);
         const { body, res } = (await authenticateWithPassword(
           graphQLRequest,
-          'boris@keystone.com',
+          'boris@keystonejs.com',
           'correctbattery'
         )) as any;
 
@@ -119,12 +112,11 @@ describe('Auth testing', () => {
     test(
       'Failure - bad password',
       runner(async ({ context, graphQLRequest }) => {
-        // seed the db
-        await initialiseData(context);
+        await seed(context, initialData);
 
         const { body, res } = (await authenticateWithPassword(
           graphQLRequest,
-          'boris@keystone.com',
+          'boris@keystonejs.com',
           'incorrectbattery'
         )) as any;
 
@@ -142,12 +134,11 @@ describe('Auth testing', () => {
     test(
       'Failure - bad identify value',
       runner(async ({ context, graphQLRequest }) => {
-        // seed the db
-        await initialiseData(context);
+        await seed(context, initialData);
 
         const { body, res } = (await authenticateWithPassword(
           graphQLRequest,
-          'bort@keystone.com',
+          'bort@keystonejs.com',
           'correctbattery'
         )) as any;
 
@@ -194,8 +185,7 @@ describe('Auth testing', () => {
     test(
       'Failure - items already exist',
       runner(async ({ context, graphQLRequest }) => {
-        // seed the db
-        await initialiseData(context);
+        await seed(context, initialData);
 
         const { body, res } = (await graphQLRequest({
           query: `
@@ -240,11 +230,10 @@ describe('Auth testing', () => {
           h.startsWith('keystonejs-session')
         );
         expect(sessionHeader).toBe(undefined);
-        expectInternalServerError(body.errors, false, [
+        expectValidationError(body.errors, [
           {
             path: ['createUser'], // I don't like this!
-            message:
-              'You provided invalid data for this operation.\n  - User.email: Email must not be empty',
+            messages: ['User.email: Email must not be empty'],
           },
         ]);
         expect(body.data).toEqual(null);
@@ -256,7 +245,7 @@ describe('Auth testing', () => {
     test(
       'sendItemMagicAuthLink - Success',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
 
         const { body } = await graphQLRequest({
           query: `
@@ -264,14 +253,14 @@ describe('Auth testing', () => {
               sendUserMagicAuthLink(email: $email)
             }
           `,
-          variables: { email: 'boris@keystone.com' },
+          variables: { email: 'boris@keystonejs.com' },
         });
         expect(body.errors).toBe(undefined);
         expect(body.data).toEqual({ sendUserMagicAuthLink: true });
 
         // Verify that token fields cant be read.
         let user = await context.query.User.findOne({
-          where: { email: 'boris@keystone.com' },
+          where: { email: 'boris@keystonejs.com' },
           query: 'magicAuthToken { isSet } magicAuthIssuedAt magicAuthRedeemedAt',
         });
         expect(user).toEqual({
@@ -282,7 +271,7 @@ describe('Auth testing', () => {
 
         // Verify that token fields have been updated
         user = await context.sudo().query.User.findOne({
-          where: { email: 'boris@keystone.com' },
+          where: { email: 'boris@keystonejs.com' },
           query: 'magicAuthToken { isSet } magicAuthIssuedAt magicAuthRedeemedAt',
         });
         expect(user).toEqual({
@@ -295,7 +284,7 @@ describe('Auth testing', () => {
     test(
       'sendItemMagicAuthLink - Failure - missing user',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
 
         const { body } = await graphQLRequest({
           query: `
@@ -303,7 +292,7 @@ describe('Auth testing', () => {
               sendUserMagicAuthLink(email: $email)
             }
           `,
-          variables: { email: 'bores@keystone.com' },
+          variables: { email: 'bores@keystonejs.com' },
         });
         expect(body.errors).toBe(undefined);
         expect(body.data).toEqual({ sendUserMagicAuthLink: true });
@@ -312,7 +301,7 @@ describe('Auth testing', () => {
     test(
       'sendItemMagicAuthLink - Failure - Error in sendToken',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
 
         const { body } = await graphQLRequest({
           query: `
@@ -320,7 +309,7 @@ describe('Auth testing', () => {
               sendUserMagicAuthLink(email: $email)
             }
           `,
-          variables: { email: 'bad@keystone.com' },
+          variables: { email: 'bad@keystonejs.com' },
         });
         expect(body.data).toEqual(null);
         expectInternalServerError(body.errors, false, [
@@ -329,7 +318,7 @@ describe('Auth testing', () => {
 
         // Verify that token fields have been updated
         const user = await context.sudo().query.User.findOne({
-          where: { email: 'bad@keystone.com' },
+          where: { email: 'bad@keystonejs.com' },
           query: 'magicAuthToken { isSet } magicAuthIssuedAt magicAuthRedeemedAt',
         });
         expect(user).toEqual({
@@ -343,14 +332,14 @@ describe('Auth testing', () => {
     test(
       'redeemItemMagicAuthToken - Success',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {
               sendUserMagicAuthLink(email: $email)
             }
           `,
-          variables: { email: 'boris@keystone.com' },
+          variables: { email: 'boris@keystonejs.com' },
         });
 
         const { body } = await graphQLRequest({
@@ -366,12 +355,12 @@ describe('Auth testing', () => {
               }
             }
           `,
-          variables: { email: 'boris@keystone.com', token: MAGIC_TOKEN },
+          variables: { email: 'boris@keystonejs.com', token: MAGIC_TOKEN },
         });
         // Veryify we get back a token for the expected user.
 
         const user = await context.sudo().query.User.findOne({
-          where: { email: 'boris@keystone.com' },
+          where: { email: 'boris@keystonejs.com' },
           query: 'id magicAuthToken { isSet } magicAuthIssuedAt magicAuthRedeemedAt',
         });
         expect(body.errors).toBe(undefined);
@@ -390,7 +379,7 @@ describe('Auth testing', () => {
     test(
       'redeemItemMagicAuthToken - Failure - bad token',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {
@@ -399,7 +388,7 @@ describe('Auth testing', () => {
               }
             }
           `,
-          variables: { email: 'boris@keystone.com' },
+          variables: { email: 'boris@keystonejs.com' },
         });
 
         const { body } = await graphQLRequest({
@@ -415,7 +404,7 @@ describe('Auth testing', () => {
               }
             }
           `,
-          variables: { email: 'boris@keystone.com', token: 'BAD TOKEN' },
+          variables: { email: 'boris@keystonejs.com', token: 'BAD TOKEN' },
         });
         // Generic failure message
         expect(body.errors).toBe(undefined);
@@ -430,14 +419,14 @@ describe('Auth testing', () => {
     test(
       'redeemItemMagicAuthToken - Failure - non-existent user',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {
               sendUserMagicAuthLink(email: $email)
             }
           `,
-          variables: { email: 'boris@keystone.com' },
+          variables: { email: 'boris@keystonejs.com' },
         });
 
         const { body } = await graphQLRequest({
@@ -453,7 +442,7 @@ describe('Auth testing', () => {
               }
             }
           `,
-          variables: { email: 'missing@keystone.com', token: 'BAD TOKEN' },
+          variables: { email: 'missing@keystonejs.com', token: 'BAD TOKEN' },
         });
         // Generic failure message
         expect(body.errors).toBe(undefined);
@@ -468,14 +457,14 @@ describe('Auth testing', () => {
     test(
       'redeemItemMagicAuthToken - Failure - already redemmed',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {
               sendUserMagicAuthLink(email: $email)
             }
           `,
-          variables: { email: 'boris@keystone.com' },
+          variables: { email: 'boris@keystonejs.com' },
         });
         // Redeem once
         await graphQLRequest({
@@ -491,7 +480,7 @@ describe('Auth testing', () => {
               }
             }
           `,
-          variables: { email: 'boris@keystone.com', token: MAGIC_TOKEN },
+          variables: { email: 'boris@keystonejs.com', token: MAGIC_TOKEN },
         });
         // Redeem twice
         const { body } = await graphQLRequest({
@@ -507,7 +496,7 @@ describe('Auth testing', () => {
               }
             }
           `,
-          variables: { email: 'boris@keystone.com', token: MAGIC_TOKEN },
+          variables: { email: 'boris@keystonejs.com', token: MAGIC_TOKEN },
         });
         // Generic failure message
         expect(body.errors).toBe(undefined);
@@ -523,18 +512,18 @@ describe('Auth testing', () => {
     test(
       'redeemItemMagicAuthToken - Failure - Token expired',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {
               sendUserMagicAuthLink(email: $email)
             }
           `,
-          variables: { email: 'boris@keystone.com' },
+          variables: { email: 'boris@keystonejs.com' },
         });
         // Set the "issued at" date to 59 minutes ago
         let user = await context.sudo().query.User.updateOne({
-          where: { email: 'boris@keystone.com' },
+          where: { email: 'boris@keystonejs.com' },
           data: { magicAuthIssuedAt: new Date(Number(new Date()) - 59 * 60 * 1000).toISOString() },
         });
         const { body } = await graphQLRequest({
@@ -550,7 +539,7 @@ describe('Auth testing', () => {
               }
             }
           `,
-          variables: { email: 'boris@keystone.com', token: MAGIC_TOKEN },
+          variables: { email: 'boris@keystonejs.com', token: MAGIC_TOKEN },
         });
 
         expect(body.errors).toBe(undefined);
@@ -565,11 +554,11 @@ describe('Auth testing', () => {
               sendUserMagicAuthLink(email: $email)
             }
           `,
-          variables: { email: 'boris@keystone.com' },
+          variables: { email: 'boris@keystonejs.com' },
         });
         // Set the "issued at" date to 61 minutes ago
         user = await context.sudo().query.User.updateOne({
-          where: { email: 'boris@keystone.com' },
+          where: { email: 'boris@keystonejs.com' },
           data: { magicAuthIssuedAt: new Date(Number(new Date()) - 61 * 60 * 1000).toISOString() },
         });
         const result = await graphQLRequest({
@@ -585,7 +574,7 @@ describe('Auth testing', () => {
               }
             }
           `,
-          variables: { email: 'boris@keystone.com', token: MAGIC_TOKEN },
+          variables: { email: 'boris@keystonejs.com', token: MAGIC_TOKEN },
         });
 
         expect(result.body.errors).toBe(undefined);
@@ -603,7 +592,7 @@ describe('Auth testing', () => {
     test(
       'sendItemPasswordResetLink - Success',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
 
         const { body } = await graphQLRequest({
           query: `
@@ -611,14 +600,14 @@ describe('Auth testing', () => {
               sendUserPasswordResetLink(email: $email)
             }
           `,
-          variables: { email: 'boris@keystone.com' },
+          variables: { email: 'boris@keystonejs.com' },
         });
         expect(body.errors).toBe(undefined);
         expect(body.data).toEqual({ sendUserPasswordResetLink: true });
 
         // Verify that token fields cant be read.
         let user = await context.query.User.findOne({
-          where: { email: 'boris@keystone.com' },
+          where: { email: 'boris@keystonejs.com' },
           query: 'passwordResetToken { isSet } passwordResetIssuedAt passwordResetRedeemedAt',
         });
         expect(user).toEqual({
@@ -629,7 +618,7 @@ describe('Auth testing', () => {
 
         // Verify that token fields have been updated
         user = await context.sudo().query.User.findOne({
-          where: { email: 'boris@keystone.com' },
+          where: { email: 'boris@keystonejs.com' },
           query: 'passwordResetToken { isSet } passwordResetIssuedAt passwordResetRedeemedAt',
         });
         expect(user).toEqual({
@@ -643,7 +632,7 @@ describe('Auth testing', () => {
     test(
       'sendItemPasswordResetLink - Failure - missing user',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
 
         const { body } = await graphQLRequest({
           query: `
@@ -651,7 +640,7 @@ describe('Auth testing', () => {
               sendUserPasswordResetLink(email: $email)
             }
           `,
-          variables: { email: 'bores@keystone.com' },
+          variables: { email: 'bores@keystonejs.com' },
         });
         expect(body.errors).toBe(undefined);
         expect(body.data).toEqual({ sendUserPasswordResetLink: true });
@@ -660,7 +649,7 @@ describe('Auth testing', () => {
     test(
       'sendItemPasswordResetLink - Failure - Error in sendToken',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
 
         const { body } = await graphQLRequest({
           query: `
@@ -668,7 +657,7 @@ describe('Auth testing', () => {
               sendUserPasswordResetLink(email: $email)
             }
           `,
-          variables: { email: 'bad@keystone.com' },
+          variables: { email: 'bad@keystonejs.com' },
         });
         expect(body.data).toEqual(null);
         expectInternalServerError(body.errors, false, [
@@ -677,7 +666,7 @@ describe('Auth testing', () => {
 
         // Verify that token fields have been updated
         const user = await context.sudo().query.User.findOne({
-          where: { email: 'bad@keystone.com' },
+          where: { email: 'bad@keystonejs.com' },
           query: 'passwordResetToken { isSet } passwordResetIssuedAt passwordResetRedeemedAt',
         });
         expect(user).toEqual({
@@ -691,14 +680,14 @@ describe('Auth testing', () => {
     test(
       'redeemItemPasswordToken - Success',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {
               sendUserPasswordResetLink(email: $email)
             }
           `,
-          variables: { email: 'boris@keystone.com' },
+          variables: { email: 'boris@keystonejs.com' },
         });
 
         const { body } = await graphQLRequest({
@@ -709,12 +698,16 @@ describe('Auth testing', () => {
               }
             }
           `,
-          variables: { email: 'boris@keystone.com', token: MAGIC_TOKEN, password: 'NEW PASSWORD' },
+          variables: {
+            email: 'boris@keystonejs.com',
+            token: MAGIC_TOKEN,
+            password: 'NEW PASSWORD',
+          },
         });
         // Veryify we get back a token for the expected user.
 
         const user = await context.sudo().query.User.findOne({
-          where: { email: 'boris@keystone.com' },
+          where: { email: 'boris@keystonejs.com' },
           query:
             'id passwordResetToken { isSet } passwordResetIssuedAt passwordResetRedeemedAt password { isSet }',
         });
@@ -733,14 +726,14 @@ describe('Auth testing', () => {
     test(
       'redeemItemPasswordToken - Failure - bad token',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {
               sendUserPasswordResetLink(email: $email)
             }
           `,
-          variables: { email: 'boris@keystone.com' },
+          variables: { email: 'boris@keystonejs.com' },
         });
 
         const { body } = await graphQLRequest({
@@ -751,7 +744,11 @@ describe('Auth testing', () => {
               }
             }
           `,
-          variables: { email: 'boris@keystone.com', token: 'BAD TOKEN', password: 'NEW PASSWORD' },
+          variables: {
+            email: 'boris@keystonejs.com',
+            token: 'BAD TOKEN',
+            password: 'NEW PASSWORD',
+          },
         });
         // Generic failure message
         expect(body.errors).toBe(undefined);
@@ -766,14 +763,14 @@ describe('Auth testing', () => {
     test(
       'redeemItemPasswordToken - Failure - non-existent user',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {
               sendUserPasswordResetLink(email: $email)
             }
           `,
-          variables: { email: 'boris@keystone.com' },
+          variables: { email: 'boris@keystonejs.com' },
         });
 
         const { body } = await graphQLRequest({
@@ -785,7 +782,7 @@ describe('Auth testing', () => {
             }
           `,
           variables: {
-            email: 'missing@keystone.com',
+            email: 'missing@keystonejs.com',
             token: 'BAD TOKEN',
             password: 'NEW PASSWORD',
           },
@@ -803,14 +800,14 @@ describe('Auth testing', () => {
     test(
       'redeemItemPasswordToken - Failure - already redemmed',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {
               sendUserPasswordResetLink(email: $email)
             }
           `,
-          variables: { email: 'boris@keystone.com' },
+          variables: { email: 'boris@keystonejs.com' },
         });
         // Redeem once
         await graphQLRequest({
@@ -821,7 +818,11 @@ describe('Auth testing', () => {
               }
             }
           `,
-          variables: { email: 'boris@keystone.com', token: MAGIC_TOKEN, password: 'NEW PASSWORD' },
+          variables: {
+            email: 'boris@keystonejs.com',
+            token: MAGIC_TOKEN,
+            password: 'NEW PASSWORD',
+          },
         });
         // Redeem twice
         const { body } = await graphQLRequest({
@@ -832,7 +833,11 @@ describe('Auth testing', () => {
               }
             }
           `,
-          variables: { email: 'boris@keystone.com', token: MAGIC_TOKEN, password: 'NEW PASSWORD' },
+          variables: {
+            email: 'boris@keystonejs.com',
+            token: MAGIC_TOKEN,
+            password: 'NEW PASSWORD',
+          },
         });
         // Generic failure message
         expect(body.errors).toBe(undefined);
@@ -848,18 +853,18 @@ describe('Auth testing', () => {
     test(
       'redeemItemPasswordToken - Failure - Token expired',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {
               sendUserPasswordResetLink(email: $email)
             }
           `,
-          variables: { email: 'boris@keystone.com' },
+          variables: { email: 'boris@keystonejs.com' },
         });
         // Set the "issued at" date to 59 minutes ago
         await context.sudo().query.User.updateOne({
-          where: { email: 'boris@keystone.com' },
+          where: { email: 'boris@keystonejs.com' },
           data: {
             passwordResetIssuedAt: new Date(Number(new Date()) - 59 * 60 * 1000).toISOString(),
           },
@@ -872,7 +877,11 @@ describe('Auth testing', () => {
               }
             }
           `,
-          variables: { email: 'boris@keystone.com', token: MAGIC_TOKEN, password: 'NEW PASSWORD' },
+          variables: {
+            email: 'boris@keystonejs.com',
+            token: MAGIC_TOKEN,
+            password: 'NEW PASSWORD',
+          },
         });
 
         expect(body.errors).toBe(undefined);
@@ -885,11 +894,11 @@ describe('Auth testing', () => {
               sendUserPasswordResetLink(email: $email)
             }
           `,
-          variables: { email: 'boris@keystone.com' },
+          variables: { email: 'boris@keystonejs.com' },
         });
         // Set the "issued at" date to 61 minutes ago
         await context.sudo().query.User.updateOne({
-          where: { email: 'boris@keystone.com' },
+          where: { email: 'boris@keystonejs.com' },
           data: {
             passwordResetIssuedAt: new Date(Number(new Date()) - 61 * 60 * 1000).toISOString(),
           },
@@ -902,7 +911,11 @@ describe('Auth testing', () => {
               }
             }
           `,
-          variables: { email: 'boris@keystone.com', token: MAGIC_TOKEN, password: 'NEW PASSWORD' },
+          variables: {
+            email: 'boris@keystonejs.com',
+            token: MAGIC_TOKEN,
+            password: 'NEW PASSWORD',
+          },
         });
 
         expect(result.body.errors).toBe(undefined);
@@ -918,14 +931,14 @@ describe('Auth testing', () => {
     test(
       'validateItemPasswordToken - Success',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {
               sendUserPasswordResetLink(email: $email)
             }
           `,
-          variables: { email: 'boris@keystone.com' },
+          variables: { email: 'boris@keystonejs.com' },
         });
 
         const { body } = await graphQLRequest({
@@ -936,7 +949,7 @@ describe('Auth testing', () => {
               }
             }
           `,
-          variables: { email: 'boris@keystone.com', token: MAGIC_TOKEN },
+          variables: { email: 'boris@keystonejs.com', token: MAGIC_TOKEN },
         });
         expect(body.errors).toBe(undefined);
         expect(body.data).toEqual({ validateUserPasswordResetToken: null });
@@ -945,14 +958,14 @@ describe('Auth testing', () => {
     test(
       'validateItemPasswordToken - Failure - bad token',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {
               sendUserPasswordResetLink(email: $email)
             }
           `,
-          variables: { email: 'boris@keystone.com' },
+          variables: { email: 'boris@keystonejs.com' },
         });
 
         const { body } = await graphQLRequest({
@@ -963,7 +976,7 @@ describe('Auth testing', () => {
               }
             }
           `,
-          variables: { email: 'boris@keystone.com', token: 'BAD TOKEN' },
+          variables: { email: 'boris@keystonejs.com', token: 'BAD TOKEN' },
         });
         // Generic failure message
         expect(body.errors).toBe(undefined);
@@ -978,14 +991,14 @@ describe('Auth testing', () => {
     test(
       'validateItemPasswordToken - Failure - non-existent user',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {
               sendUserPasswordResetLink(email: $email)
             }
           `,
-          variables: { email: 'boris@keystone.com' },
+          variables: { email: 'boris@keystonejs.com' },
         });
 
         const { body } = await graphQLRequest({
@@ -996,7 +1009,7 @@ describe('Auth testing', () => {
               }
             }
           `,
-          variables: { email: 'missing@keystone.com', token: 'BAD TOKEN' },
+          variables: { email: 'missing@keystonejs.com', token: 'BAD TOKEN' },
         });
         // Generic failure message
         expect(body.errors).toBe(undefined);
@@ -1011,14 +1024,14 @@ describe('Auth testing', () => {
     test(
       'validateItemPasswordToken - Failure - already redemmed',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {
               sendUserPasswordResetLink(email: $email)
             }
           `,
-          variables: { email: 'boris@keystone.com' },
+          variables: { email: 'boris@keystonejs.com' },
         });
         // Redeem once
         await graphQLRequest({
@@ -1029,7 +1042,11 @@ describe('Auth testing', () => {
               }
             }
           `,
-          variables: { email: 'boris@keystone.com', token: MAGIC_TOKEN, password: 'NEW PASSWORD' },
+          variables: {
+            email: 'boris@keystonejs.com',
+            token: MAGIC_TOKEN,
+            password: 'NEW PASSWORD',
+          },
         });
         // Redeem twice
         const { body } = await graphQLRequest({
@@ -1040,7 +1057,7 @@ describe('Auth testing', () => {
               }
             }
           `,
-          variables: { email: 'boris@keystone.com', token: MAGIC_TOKEN },
+          variables: { email: 'boris@keystonejs.com', token: MAGIC_TOKEN },
         });
         // Generic failure message
         expect(body.errors).toBe(undefined);
@@ -1056,18 +1073,18 @@ describe('Auth testing', () => {
     test(
       'validateItemPasswordToken - Failure - Token expired',
       runner(async ({ context, graphQLRequest }) => {
-        await initialiseData(context);
+        await seed(context, initialData);
         await graphQLRequest({
           query: `
             mutation($email: String!) {
               sendUserPasswordResetLink(email: $email)
             }
           `,
-          variables: { email: 'boris@keystone.com' },
+          variables: { email: 'boris@keystonejs.com' },
         });
         // Set the "issued at" date to 59 minutes ago
         await context.sudo().query.User.updateOne({
-          where: { email: 'boris@keystone.com' },
+          where: { email: 'boris@keystonejs.com' },
           data: {
             passwordResetIssuedAt: new Date(Number(new Date()) - 59 * 60 * 1000).toISOString(),
           },
@@ -1080,7 +1097,7 @@ describe('Auth testing', () => {
               }
             }
           `,
-          variables: { email: 'boris@keystone.com', token: MAGIC_TOKEN },
+          variables: { email: 'boris@keystonejs.com', token: MAGIC_TOKEN },
         });
 
         expect(body.errors).toBe(undefined);
@@ -1093,11 +1110,11 @@ describe('Auth testing', () => {
               sendUserPasswordResetLink(email: $email)
             }
           `,
-          variables: { email: 'boris@keystone.com' },
+          variables: { email: 'boris@keystonejs.com' },
         });
         // Set the "issued at" date to 61 minutes ago
         await context.sudo().query.User.updateOne({
-          where: { email: 'boris@keystone.com' },
+          where: { email: 'boris@keystonejs.com' },
           data: {
             passwordResetIssuedAt: new Date(Number(new Date()) - 61 * 60 * 1000).toISOString(),
           },
@@ -1110,7 +1127,7 @@ describe('Auth testing', () => {
               }
             }
           `,
-          variables: { email: 'boris@keystone.com', token: MAGIC_TOKEN },
+          variables: { email: 'boris@keystonejs.com', token: MAGIC_TOKEN },
         });
 
         expect(result.body.errors).toBe(undefined);

@@ -1,7 +1,7 @@
 import { IncomingMessage, ServerResponse } from 'http';
-import { GraphQLObjectType, GraphQLSchema } from 'graphql';
 import * as cookie from 'cookie';
 import Iron from '@hapi/iron';
+// uid-safe is what express-session uses so let's just use it
 import { sync as uid } from 'uid-safe';
 import {
   SessionStrategy,
@@ -10,8 +10,6 @@ import {
   SessionContext,
   CreateContext,
 } from '../types';
-import { graphql } from '..';
-// uid-safe is what express-session uses so let's just use it
 
 function generateSessionId() {
   return uid(24);
@@ -28,7 +26,7 @@ type StatelessSessionsOptions = {
   secret: string;
   /**
    * Iron seal options for customizing the key derivation algorithm used to generate encryption and integrity verification keys as well as the algorithms and salt sizes used.
-   * See {@link https://hapi.dev/module/iron/api/?v=6.0.0#options} for available options.
+   * See https://hapi.dev/module/iron/api/?v=6.0.0#options for available options.
    *
    * @default Iron.defaults
    */
@@ -41,7 +39,7 @@ type StatelessSessionsOptions = {
    */
   maxAge?: number;
   /**
-   * Specifies the boolean value for the {@link https://tools.ietf.org/html/rfc6265#section-5.2.5|`Secure` `Set-Cookie` attribute}.
+   * Specifies the boolean value for the [`Secure` `Set-Cookie` attribute](https://tools.ietf.org/html/rfc6265#section-5.2.5).
    *
    * *Note* be careful when setting this to `true`, as compliant clients will
    * not send the cookie back to the server in the future if the browser does
@@ -51,19 +49,19 @@ type StatelessSessionsOptions = {
    */
   secure?: boolean;
   /**
-   * Specifies the value for the {@link https://tools.ietf.org/html/rfc6265#section-5.2.4|`Path` `Set-Cookie` attribute}.
+   * Specifies the value for the [`Path` `Set-Cookie` attribute](https://tools.ietf.org/html/rfc6265#section-5.2.4).
    *
    * @default '/'
    */
   path?: string;
   /**
-   * Specifies the domain for the {@link https://tools.ietf.org/html/rfc6265#section-5.2.3|`Domain` `Set-Cookie` attribute}
+   * Specifies the domain for the [`Domain` `Set-Cookie` attribute](https://tools.ietf.org/html/rfc6265#section-5.2.3)
    *
    * @default current domain
    */
   domain?: string;
   /**
-   * Specifies the boolean or string to be the value for the {@link https://tools.ietf.org/html/draft-ietf-httpbis-rfc6265bis-03#section-4.1.2.7|`SameSite` `Set-Cookie` attribute}.
+   * Specifies the boolean or string to be the value for the [`SameSite` `Set-Cookie` attribute](https://tools.ietf.org/html/draft-ietf-httpbis-rfc6265bis-03#section-4.1.2.7).
    *
    * @default 'lax'
    */
@@ -110,7 +108,7 @@ export function statelessSessions<T>({
       );
     },
     async start({ res, data }) {
-      let sealedData = await Iron.seal(data, secret, { ...ironOptions, ttl: maxAge * 1000 });
+      const sealedData = await Iron.seal(data, secret, { ...ironOptions, ttl: maxAge * 1000 });
 
       res.setHeader(
         'Set-Cookie',
@@ -188,33 +186,4 @@ export async function createSessionContext<T>(
     startSession: (data: T) => sessionStrategy.start({ res, data, createContext }),
     endSession: () => sessionStrategy.end({ req, res, createContext }),
   };
-}
-
-export function sessionSchema(graphQLSchema: GraphQLSchema) {
-  const schemaConfig = graphQLSchema.toConfig();
-  const mutationTypeConfig = graphQLSchema.getMutationType()!.toConfig();
-  const endSessionField = graphql.field({
-    type: graphql.nonNull(graphql.Boolean),
-    async resolve(rootVal, args, context) {
-      if (context.endSession) {
-        await context.endSession();
-      }
-      return true;
-    },
-  });
-  const mutationType = new GraphQLObjectType({
-    ...mutationTypeConfig,
-    fields: {
-      ...mutationTypeConfig.fields,
-      endSession: {
-        ...endSessionField,
-        type: endSessionField.type.graphQLType,
-      },
-    },
-  });
-  return new GraphQLSchema({
-    ...schemaConfig,
-    types: schemaConfig.types.map(x => (x.name === 'Mutation' ? mutationType : x)),
-    mutation: mutationType,
-  });
 }

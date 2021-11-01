@@ -18,7 +18,8 @@ In this guide we'll introduce the syntax for adding virtual fields, and show how
 We'll start with a list called `Example` and create a virtual field called `hello`.
 
 ```typescript
-import { config, list, graphql } from '@keystone-next/keystone';
+import { config, createSchema, list } from '@keystone-next/keystone';
+import { graphql } from '@keystone-next/keystone/types';
 import { virtual } from '@keystone-next/keystone/fields';
 
 export default config({
@@ -93,8 +94,8 @@ export default config({
         content: text(),
         author: relationship({ ref: 'Author', many: false }),
         authorName: virtual({
-          type: graphql.String,
           field: graphql.field({
+          type: graphql.String,
             async resolve(item, args, context) {
               const { author } = await context.query.Post.findOne({
                 where: { id: item.id.toString() },
@@ -238,12 +239,12 @@ This fragment tells the Keystone Admin UI which values to show in the item page 
 
 !> This information is specifically for TypeScript users of the `graphql.object()` function with a self-referential GraphQL type.
 
-GraphQL types will often contain references to themselves and to make TypeScript allow that, you need have an explicit type annotation of `graphql.ObjectType<RootVal>` along with making `fields` a function that returns the object.
+GraphQL types will often contain references to themselves and to make TypeScript allow that, you need have an explicit type annotation of `graphql.ObjectType<Source>` along with making `fields` a function that returns the object.
 
 ```ts
-type PersonRootVal = { name: string; friends: PersonRootVal[] };
+type PersonSource = { name: string; friends: PersonSource[] };
 
-const Person: graphql.ObjectType<PersonRootVal> = graphql.object<PersonRootVal>()({
+const Person: graphql.ObjectType<PersonSource> = graphql.object<PersonSource>()({
   name: "Person",
   fields: () => ({
     name: graphql.field({ type: graphql.String }),
@@ -321,7 +322,7 @@ Using a pre-calculated scalar field is the best solution to use if you need filt
 <RelatedContent>
   <Well
     heading="Virtual fields example"
-    href="https://github.com/keystonejs/keystone/tree/master/examples/virtual-field"
+    href="https://github.com/keystonejs/keystone/tree/main/examples/virtual-field"
     target="_blank"
     rel="noopener noreferrer"
   >

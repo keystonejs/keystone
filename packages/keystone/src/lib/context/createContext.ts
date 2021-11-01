@@ -10,6 +10,7 @@ import {
 
 import { PrismaClient } from '../core/utils';
 import { InitialisedList } from '../core/types-for-lists';
+import { CloudAssetsAPI } from '../cloud/assets';
 import { getDbAPIFactory, itemAPIForList } from './itemAPI';
 import { createImagesContext } from './createImagesContext';
 import { createFilesContext } from './createFilesContext';
@@ -21,6 +22,7 @@ export function makeCreateContext({
   gqlNamesByList,
   config,
   lists,
+  cloudAssetsAPI,
 }: {
   graphQLSchema: GraphQLSchema;
   sudoGraphQLSchema: GraphQLSchema;
@@ -28,9 +30,10 @@ export function makeCreateContext({
   prismaClient: PrismaClient;
   gqlNamesByList: Record<string, GqlNames>;
   lists: Record<string, InitialisedList>;
+  cloudAssetsAPI: () => CloudAssetsAPI;
 }) {
-  const images = createImagesContext(config);
-  const files = createFilesContext(config);
+  const images = createImagesContext(config, cloudAssetsAPI);
+  const files = createFilesContext(config, cloudAssetsAPI);
   // We precompute these helpers here rather than every time createContext is called
   // because they involve creating a new GraphQLSchema, creating a GraphQL document AST(programmatically, not by parsing) and validating the
   // note this isn't as big of an optimisation as you would imagine(at least in comparison with the rest of the system),
@@ -105,7 +108,7 @@ export function makeCreateContext({
     const dbAPIFactories = sudo ? sudoDbApiFactories : publicDbApiFactories;
     for (const listKey of Object.keys(gqlNamesByList)) {
       dbAPI[listKey] = dbAPIFactories[listKey](contextToReturn);
-      itemAPI[listKey] = itemAPIForList(listKey, contextToReturn, dbAPI[listKey]);
+      itemAPI[listKey] = itemAPIForList(listKey, contextToReturn);
     }
     return contextToReturn;
   };

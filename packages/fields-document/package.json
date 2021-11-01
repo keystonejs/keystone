@@ -1,9 +1,9 @@
 {
   "name": "@keystone-next/fields-document",
   "description": "KeystoneJS Document Field Type",
-  "version": "10.0.0",
-  "main": "dist/fields-document.cjs.js",
-  "module": "dist/fields-document.esm.js",
+  "version": "11.0.0",
+  "main": "dist/keystone-next-fields-document.cjs.js",
+  "module": "dist/keystone-next-fields-document.esm.js",
   "files": [
     "dist",
     "component-blocks",
@@ -19,23 +19,24 @@
     ]
   },
   "peerDependencies": {
-    "@keystone-next/keystone": "^26.0.1"
+    "@keystone-next/keystone": "^26.1.1"
   },
   "dependencies": {
     "@babel/runtime": "^7.15.4",
     "@braintree/sanitize-url": "^5.0.2",
     "@emotion/weak-memoize": "^0.2.5",
-    "@keystone-ui/button": "^5.0.1",
-    "@keystone-ui/core": "^3.2.0",
-    "@keystone-ui/fields": "^5.0.0",
-    "@keystone-ui/icons": "^4.0.1",
-    "@keystone-ui/popover": "^4.0.4",
-    "@keystone-ui/tooltip": "^4.0.2",
-    "@types/react": "^17.0.24",
-    "apollo-server-errors": "^3.1.0",
+    "@keystone-next/document-renderer": "^4.0.1",
+    "@keystone-ui/button": "^5.0.2",
+    "@keystone-ui/core": "^3.2.1",
+    "@keystone-ui/fields": "^5.0.1",
+    "@keystone-ui/icons": "^4.0.2",
+    "@keystone-ui/popover": "^4.0.5",
+    "@keystone-ui/tooltip": "^4.0.3",
+    "@types/react": "^17.0.29",
+    "apollo-server-errors": "^3.2.0",
     "apply-ref": "^1.0.0",
     "fp-ts": "^2.11.4",
-    "graphql": "^15.6.0",
+    "graphql": "^15.6.1",
     "io-ts": "^2.2.16",
     "io-ts-excess": "^1.0.1",
     "is-hotkey": "^0.2.0",
@@ -52,13 +53,13 @@
     "slate-history": "^0.60.4",
     "slate-react": "^0.60.4"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-document",
+  "repository": "https://github.com/keystonejs/keystone/tree/main/packages/fields-document",
   "devDependencies": {
     "@keystone-next/keystone": "*",
-    "@testing-library/react": "^12.1.1",
-    "array.prototype.flat": "^1.2.4",
-    "jest-diff": "^27.2.3",
-    "pretty-format": "^27.2.3",
+    "@testing-library/react": "^12.1.2",
+    "array.prototype.flat": "^1.2.5",
+    "jest-diff": "^27.2.5",
+    "pretty-format": "^27.2.5",
     "slate-hyperscript": "^0.60.8"
   },
   "engines": {

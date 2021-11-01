@@ -1,5 +1,6 @@
 import type { CacheHint } from 'apollo-server-types';
 import type { BaseGeneratedListTypes, MaybePromise } from '../utils';
+import type { KeystoneContext } from '../context';
 import type { ListHooks } from './hooks';
 import type { ListAccessControl } from './access-control';
 import type { BaseFields, FilterOrderArgs } from './fields';
@@ -93,7 +94,7 @@ export type ListAdminUIConfig<
    * It is always possible to search by id and `id` should not be specified in this option.
    * @default The `labelField` if it has a string `contains` filter, otherwise none.
    */
-  searchFields?: Extract<keyof Fields, string>[];
+  searchFields?: readonly Extract<keyof Fields, string>[];
 
   /** The path that the list should be at in the Admin UI */
   // Not currently used. Should be passed into `keystone.createList()`.
@@ -138,7 +139,7 @@ export type ListAdminUIConfig<
    */
   itemView?: {
     /**
-     * The default field mode for fields on the create view for this list.
+     * The default field mode for fields on the item view for this list.
      * This controls what people can do for fields
      * Specific field modes on a per-field basis via a field's config.
      * @default 'edit'
@@ -151,7 +152,7 @@ export type ListAdminUIConfig<
    */
   listView?: {
     /**
-     * The default field mode for fields on the create view for this list.
+     * The default field mode for fields on the list view for this list.
      * Specific field modes on a per-field basis via a field's config.
      * @default 'read'
      */
@@ -161,7 +162,7 @@ export type ListAdminUIConfig<
      * Users of the Admin UI can select different columns to show in the UI.
      * @default the first three fields in the list
      */
-    initialColumns?: ('id' | keyof Fields)[];
+    initialColumns?: readonly ('id' | keyof Fields)[];
     // was previously top-level defaultSort
     initialSort?: { field: 'id' | keyof Fields; direction: 'ASC' | 'DESC' };
     // was previously defaultPageSize
@@ -172,12 +173,13 @@ export type ListAdminUIConfig<
 
 export type MaybeSessionFunction<T extends string | boolean> =
   | T
-  | ((args: { session: any }) => MaybePromise<T>);
+  | ((args: { session: any; context: KeystoneContext }) => MaybePromise<T>);
 
 export type MaybeItemFunction<T> =
   | T
   | ((args: {
       session: any;
+      context: KeystoneContext;
       item: { id: string | number; [path: string]: any };
     }) => MaybePromise<T>);
 
@@ -209,7 +211,7 @@ export type ListGraphQLConfig = {
   // including from the point of view of relationships to this list.
   //
   // Default: undefined
-  omit?: true | ('query' | 'create' | 'update' | 'delete')[];
+  omit?: true | readonly ('query' | 'create' | 'update' | 'delete')[];
 };
 
 export type CacheHintArgs = { results: any; operationName?: string; meta: boolean };

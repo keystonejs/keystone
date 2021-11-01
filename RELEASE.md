@@ -4,9 +4,9 @@ These instructions capture the internal process for making releases of the Keyst
 
 ## npm release
 
-Merge the PR named `Version Packages` into `master` on GitHub once tests are passing.
+Merge the PR named `Version Packages` into `main` on GitHub once tests are passing.
 
-Get latest from `master`:
+Get latest from `main`:
 
 ```sh
 git pull
@@ -26,25 +26,13 @@ yarn publish-changed
 
 ## GitHub tags
 
-Publish all new tags to GitHub:
-
-```sh
-git push --tags
-```
-
-Checkout merge commit as a result of the `Version Packages` PR:
-
-```sh
-git checkout sha123
-```
-
 Create git tag relevant to release date:
 
 ```sh
 git tag -a "YYYY-MM-DD" -m "YYYY-MM-DD"
 ```
 
-Push tag to GitHub:
+Publish all new tags (releases plus release date version) to GitHub:
 
 ```sh
 git push --tags
@@ -157,44 +145,49 @@ Copy over the GitHub markdown content from the GitHub release into this document
 
 Add release to release page index under `/docs/pages/releases/index.mdx` with a summarised heading.
 
-Commit website update and open PR to add to `master`.
+Commit website update and open PR to add to `main`.
 
-Have PR reviewed and merged into `master`.
+Have PR reviewed and merged into `main`.
 
 ## GitHub branch sync
 
-When we do a release we need to make sure `master` and `website_live` are both in sync with each other, this is done by:
+When we do a release we need to make sure `main` and `website_live` are both in sync with each other.
 
-Creating a branch off `master` such as `bring-in-latest-website-changes` and merging in `website_live` changes, opening a PR and getting it merged, example - <https://github.com/keystonejs/keystone/pull/6470>
+Before doing this, ensure nothing is merged into `main` or `website_live` for the time it takes to complete the following (around 15 minutes).
 
-Then the other way around, create a branch off `website_live` such as `bring-in-latest-master-changes`, and merging in `master` changes, opening a PR and getting it merged, example - <https://github.com/keystonejs/keystone/pull/6472>
+Create a branch off `main` such as `bring-in-latest-website-changes` and merge in `website_live` changes, open a PR and get it merged, example - <https://github.com/keystonejs/keystone/pull/6470>
 
-Once this is done, the histories will be out of sync, GitHub will state that `website_live` is still x commits behind, if you look at the branches page - <https://github.com/keystonejs/keystone/branches>
+Then the other way around, create a branch off `website_live` such as `bring-in-latest-main-changes`, and merge in `main` changes, open a PR and get it merged, example - <https://github.com/keystonejs/keystone/pull/6472>
 
-To resolve this in the CLI:
+Once this is done, the histories will be out of sync, GitHub will state that `website_live` is still x commits behind and x commits ahead, if you look at the branches page - <https://github.com/keystonejs/keystone/branches>
+
+To resolve this in the CLI (first on the `website_live` side):
 
 Go to the `website_live` branch
-
 `git checkout website_live`
 
-Check that we're identical to master
-
-`git diff master`
+Check that we're identical to main
+`git diff main`
 
 Do a merge that should just update the parents of the new commit
-
-`git merge master`
+`git merge main`
 
 This should be empty
-
 `git diff origin/website_live`
 
 This should be empty
-
-`git diff master`
+`git diff main`
 
 Force push `website_live` (after turning off branch protection in github)
-
 `git push --force`
 
-Branches should now be nicely aligned.
+Do this again once again for the opposite direction:
+
+`git checkout main`
+`git diff website_live`
+`git merge website_live`
+`git diff origin/main`
+`git diff website_live`
+`git push --force`
+
+Branches should now be nicely aligned and show `0 | 0` on the branches page <https://github.com/keystonejs/keystone/branches>.

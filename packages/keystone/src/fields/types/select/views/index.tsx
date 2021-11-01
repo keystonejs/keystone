@@ -103,7 +103,7 @@ export const CardValue: CardValueComponent<typeof controller> = ({ item, field }
 };
 
 export type AdminSelectFieldMeta = {
-  options: { label: string; value: string | number }[];
+  options: readonly { label: string; value: string | number }[];
   type: 'string' | 'integer' | 'enum';
   displayMode: 'select' | 'segmented-control';
   isRequired: boolean;

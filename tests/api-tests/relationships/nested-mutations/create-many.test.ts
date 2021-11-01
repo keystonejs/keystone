@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/keystone/fields';
 import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
-import { apiTestConfig, expectRelationshipError } from '../../utils';
+import { apiTestConfig, expectSingleRelationshipError } from '../../utils';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -298,12 +298,14 @@ describe('with access control', () => {
 
         // Assert it throws an access denied error
         expect(data).toEqual({ createUserToNotesNoCreate: null });
-        expectRelationshipError(errors, [
-          {
-            path: ['createUserToNotesNoCreate'],
-            message: 'Unable to create and/or connect 1 UserToNotesNoCreate.notes<NoteNoCreate>',
-          },
-        ]);
+        const message =
+          "Access denied: You cannot perform the 'create' operation on the list 'NoteNoCreate'.";
+        expectSingleRelationshipError(
+          errors,
+          'createUserToNotesNoCreate',
+          'UserToNotesNoCreate.notes',
+          message
+        );
 
         // Confirm it didn't insert either of the records anyway
         const allNoteNoCreates = await context.query.NoteNoCreate.findMany({
@@ -345,13 +347,14 @@ describe('with access control', () => {
 
         // Assert it throws an access denied error
         expect(data).toEqual({ updateUserToNotesNoCreate: null });
-        expectRelationshipError(errors, [
-          {
-            path: ['updateUserToNotesNoCreate'],
-            message:
-              'Unable to create, connect, disconnect and/or set 1 UserToNotesNoCreate.notes<NoteNoCreate>',
-          },
-        ]);
+        const message =
+          "Access denied: You cannot perform the 'create' operation on the list 'NoteNoCreate'.";
+        expectSingleRelationshipError(
+          errors,
+          'updateUserToNotesNoCreate',
+          'UserToNotesNoCreate.notes',
+          message
+        );
 
         // Confirm it didn't insert the record anyway
         const items = await context.query.NoteNoCreate.findMany({

@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/keystone/fields';
 import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
-import { apiTestConfig, expectRelationshipError } from '../../utils';
+import { apiTestConfig, expectSingleRelationshipError } from '../../utils';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -257,9 +257,8 @@ describe('non-matching filter', () => {
               }`,
       });
       expect(data).toEqual({ createUser: null });
-      expectRelationshipError(errors, [
-        { path: ['createUser'], message: 'Unable to create and/or connect 1 User.notes<Note>' },
-      ]);
+      const message = `Access denied: You cannot perform the 'connect' operation on the item '{\"id\":\"${FAKE_ID}\"}'. It may not exist.`;
+      expectSingleRelationshipError(errors, 'createUser', 'User.notes', message);
     })
   );
 
@@ -289,12 +288,8 @@ describe('non-matching filter', () => {
       });
 
       expect(data).toEqual({ updateUser: null });
-      expectRelationshipError(errors, [
-        {
-          path: ['updateUser'],
-          message: 'Unable to create, connect, disconnect and/or set 1 User.notes<Note>',
-        },
-      ]);
+      const message = `Access denied: You cannot perform the 'connect' operation on the item '{\"id\":\"${FAKE_ID}\"}'. It may not exist.`;
+      expectSingleRelationshipError(errors, 'updateUser', 'User.notes', message);
     })
   );
 
@@ -318,13 +313,9 @@ describe('non-matching filter', () => {
       });
 
       expect(data).toEqual({ updateUser: null });
-      expectRelationshipError(errors, [
-        {
-          path: ['updateUser'],
-          message:
-            'Input error: You must provide at least one field in to-many relationship inputs but none were provided at User.notes<Note>',
-        },
-      ]);
+      const message =
+        'Input error: You must provide at least one of "set", "connect", "create" or "disconnect" in to-many relationship inputs for "update" operations.';
+      expectSingleRelationshipError(errors, 'updateUser', 'User.notes', message);
     })
   );
 });
@@ -354,12 +345,13 @@ describe('with access control', () => {
         });
 
         expect(data).toEqual({ createUserToNotesNoRead: null });
-        expectRelationshipError(errors, [
-          {
-            path: ['createUserToNotesNoRead'],
-            message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
-          },
-        ]);
+        const message = `Access denied: You cannot perform the 'connect' operation on the item '{\"id\":\"${createNoteNoRead.id}\"}'. It may not exist.`;
+        expectSingleRelationshipError(
+          errors,
+          'createUserToNotesNoRead',
+          'UserToNotesNoRead.notes',
+          message
+        );
       })
     );
 
@@ -394,13 +386,13 @@ describe('with access control', () => {
                 }`,
         });
         expect(data).toEqual({ updateUserToNotesNoRead: null });
-        expectRelationshipError(errors, [
-          {
-            path: ['updateUserToNotesNoRead'],
-            message:
-              'Unable to create, connect, disconnect and/or set 1 UserToNotesNoRead.notes<NoteNoRead>',
-          },
-        ]);
+        const message = `Access denied: You cannot perform the 'connect' operation on the item '{\"id\":\"${createNote.id}\"}'. It may not exist.`;
+        expectSingleRelationshipError(
+          errors,
+          'updateUserToNotesNoRead',
+          'UserToNotesNoRead.notes',
+          message
+        );
       })
     );
   });

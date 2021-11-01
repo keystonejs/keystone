@@ -4,7 +4,7 @@ import { Upload } from 'graphql-upload';
 import mime from 'mime';
 import { KeystoneContext } from '../../../../types';
 import { image } from '..';
-import { expectResolverError } from '../../../../../../../tests/api-tests/utils';
+import { expectSingleResolverError } from '../../../../../../../tests/api-tests/utils';
 
 const prepareFile = (_filePath: string) => {
   const filePath = path.resolve(`${__dirname}/../test-files/${_filePath}`);
@@ -80,14 +80,14 @@ export const crudTests = (keystoneTestWrapper: any) => {
                 height
                 extension
                 ref
-                src
+                url
               }
           `,
           });
           expect(data).not.toBe(null);
           expect(data.avatar).toEqual({
             ref: `local:image:${data.avatar.id}.jpg`,
-            src: `/images/${data.avatar.id}.jpg`,
+            url: `/images/${data.avatar.id}.jpg`,
             id: data.avatar.id,
             __typename: 'LocalImageFieldOutput',
             filesize: 3250,
@@ -115,15 +115,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
         });
         expect(data).toEqual({ createTest: null });
         const message = `File type not found`;
-        expectResolverError('dev', false, false, errors, [
-          {
-            path: ['createTest'],
-            messages: [`Test.avatar: ${message}`],
-            debug: [
-              { message, stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)) },
-            ],
-          },
-        ]);
+        expectSingleResolverError(errors, 'createTest', 'Test.avatar', message);
       })
     );
   });
@@ -143,7 +135,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
               height
               extension
               ref
-              src
+              url
             }
         `,
         });
@@ -162,7 +154,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
               height
               extension
               ref
-              src
+              url
             }
         `,
         });
@@ -189,15 +181,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
         });
         expect(data).toEqual({ createTest: null });
         const message = `Invalid image reference`;
-        expectResolverError('dev', false, false, errors, [
-          {
-            path: ['createTest'],
-            messages: [`Test.avatar: ${message}`],
-            debug: [
-              { message, stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)) },
-            ],
-          },
-        ]);
+        expectSingleResolverError(errors, 'createTest', 'Test.avatar', message);
       })
     );
     test(
@@ -217,15 +201,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
         });
         expect(data).toEqual({ createTest: null });
         const message = `Input error: Either ref or upload must be passed to ImageFieldInput`;
-        expectResolverError('dev', false, false, errors, [
-          {
-            path: ['createTest'],
-            messages: [`Test.avatar: ${message}`],
-            debug: [
-              { message, stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)) },
-            ],
-          },
-        ]);
+        expectSingleResolverError(errors, 'createTest', 'Test.avatar', message);
       })
     );
     test(
@@ -253,15 +229,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
         });
         expect(data).toEqual({ createTest: null });
         const message = `Input error: Only one of ref and upload can be passed to ImageFieldInput`;
-        expectResolverError('dev', false, false, errors, [
-          {
-            path: ['createTest'],
-            messages: [`Test.avatar: ${message}`],
-            debug: [
-              { message, stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)) },
-            ],
-          },
-        ]);
+        expectSingleResolverError(errors, 'createTest', 'Test.avatar', message);
       })
     );
     test(
@@ -283,15 +251,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
         });
         expect(data).toEqual({ createTest: null });
         const message = `Input error: Only one of ref and upload can be passed to ImageFieldInput`;
-        expectResolverError('dev', false, false, errors, [
-          {
-            path: ['createTest'],
-            messages: [`Test.avatar: ${message}`],
-            debug: [
-              { message, stacktrace: expect.stringMatching(new RegExp(`Error: ${message}\n`)) },
-            ],
-          },
-        ]);
+        expectSingleResolverError(errors, 'createTest', 'Test.avatar', message);
       })
     );
   });

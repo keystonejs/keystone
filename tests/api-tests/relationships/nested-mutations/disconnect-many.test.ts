@@ -2,7 +2,11 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/keystone/fields';
 import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
-import { apiTestConfig, expectGraphQLValidationError, expectRelationshipError } from '../../utils';
+import {
+  apiTestConfig,
+  expectGraphQLValidationError,
+  expectSingleRelationshipError,
+} from '../../utils';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -130,12 +134,9 @@ describe('non-matching filter', () => {
         variables: { id: createUser.id },
       });
       expect(data).toEqual({ updateUser: null });
-      expectRelationshipError(errors, [
-        {
-          path: ['updateUser'],
-          message: 'Unable to create, connect, disconnect and/or set 1 User.notes<Note>',
-        },
-      ]);
+      const message =
+        'Access denied: You cannot perform the \'disconnect\' operation on the item \'{"id":"c5b84f38256d3c2df59a0d9bf"}\'. It may not exist.';
+      expectSingleRelationshipError(errors, 'updateUser', 'User.notes', message);
     })
   );
 });
@@ -174,13 +175,13 @@ describe('with access control', () => {
             variables: { id: createUser.id, idToDisconnect: createNote.id },
           });
           expect(data).toEqual({ updateUserToNotesNoRead: null });
-          expectRelationshipError(errors, [
-            {
-              path: ['updateUserToNotesNoRead'],
-              message:
-                'Unable to create, connect, disconnect and/or set 1 UserToNotesNoRead.notes<NoteNoRead>',
-            },
-          ]);
+          const message = `Access denied: You cannot perform the 'disconnect' operation on the item '{\"id\":\"${createNote.id}\"}'. It may not exist.`;
+          expectSingleRelationshipError(
+            errors,
+            'updateUserToNotesNoRead',
+            'UserToNotesNoRead.notes',
+            message
+          );
         }
 
         const data = await context.sudo().query.UserToNotesNoRead.findOne({

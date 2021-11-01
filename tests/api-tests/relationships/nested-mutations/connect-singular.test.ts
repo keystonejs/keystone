@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/keystone/fields';
 import { list } from '@keystone-next/keystone';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
-import { apiTestConfig, expectRelationshipError } from '../../utils';
+import { apiTestConfig, expectSingleRelationshipError } from '../../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -155,9 +155,8 @@ describe('non-matching filter', () => {
       });
 
       expect(data).toEqual({ createEvent: null });
-      expectRelationshipError(errors, [
-        { path: ['createEvent'], message: 'Unable to connect a Event.group<Group>' },
-      ]);
+      const message = `Access denied: You cannot perform the 'connect' operation on the item '{"id":"${FAKE_ID}"}'. It may not exist.`;
+      expectSingleRelationshipError(errors, 'createEvent', 'Event.group', message);
     })
   );
 
@@ -186,9 +185,8 @@ describe('non-matching filter', () => {
               }`,
       });
       expect(data).toEqual({ updateEvent: null });
-      expectRelationshipError(errors, [
-        { path: ['updateEvent'], message: 'Unable to connect a Event.group<Group>' },
-      ]);
+      const message = `Access denied: You cannot perform the 'connect' operation on the item '{"id":"${FAKE_ID}"}'. It may not exist.`;
+      expectSingleRelationshipError(errors, 'updateEvent', 'Event.group', message);
     })
   );
 
@@ -211,12 +209,9 @@ describe('non-matching filter', () => {
               }`,
       });
       expect(data).toEqual({ updateEvent: null });
-      expectRelationshipError(errors, [
-        {
-          path: ['updateEvent'],
-          message: `Input error: Nested to-one mutations must provide exactly one field if they're provided but Event.group<Group> did not`,
-        },
-      ]);
+      const message =
+        'Input error: You must provide one of "connect", "create" or "disconnect" in to-one relationship inputs for "update" operations.';
+      expectSingleRelationshipError(errors, 'updateEvent', 'Event.group', message);
     })
   );
 });
@@ -326,12 +321,13 @@ describe('with access control', () => {
                     }`,
             });
             expect(data).toEqual({ [`updateEventTo${group.name}`]: null });
-            expectRelationshipError(errors, [
-              {
-                path: [`updateEventTo${group.name}`],
-                message: `Unable to connect a EventTo${group.name}.group<${group.name}>`,
-              },
-            ]);
+            const message = `Access denied: You cannot perform the 'connect' operation on the item '{"id":"${groupModel.id}"}'. It may not exist.`;
+            expectSingleRelationshipError(
+              errors,
+              `updateEventTo${group.name}`,
+              `EventTo${group.name}.group`,
+              message
+            );
           })
         );
 
@@ -360,12 +356,13 @@ describe('with access control', () => {
             });
 
             expect(data).toEqual({ [`createEventTo${group.name}`]: null });
-            expectRelationshipError(errors, [
-              {
-                path: [`createEventTo${group.name}`],
-                message: `Unable to connect a EventTo${group.name}.group<${group.name}>`,
-              },
-            ]);
+            const message = `Access denied: You cannot perform the 'connect' operation on the item '{"id":"${id}"}'. It may not exist.`;
+            expectSingleRelationshipError(
+              errors,
+              `createEventTo${group.name}`,
+              `EventTo${group.name}.group`,
+              message
+            );
           })
         );
       }

@@ -1,5 +1,65 @@
 # @keystone-next/keystone
 
+## 26.1.1
+
+### Patch Changes
+
+- [#6774](https://github.com/keystonejs/keystone/pull/6774) [`d67066e6d`](https://github.com/keystonejs/keystone/commit/d67066e6d6bc46119279f5e382581d46658cb39d) Thanks [@bladey](https://github.com/bladey)! - Fixed `text`, `integer`, `float` and `decimal` on the item view when using `ui.itemView.fieldMode: 'read'`.
+
+## 26.1.0
+
+### Minor Changes
+
+- [#6746](https://github.com/keystonejs/keystone/pull/6746) [`d64bd4a7f`](https://github.com/keystonejs/keystone/commit/d64bd4a7f3da87e13e9cac41f0eb9757b771835f) Thanks [@timleslie](https://github.com/timleslie)! - The following config functions now also access a `context` argument:
+  - `list.ui.isHidden`
+  - `list.ui.hideCreate`
+  - `list.ui.hideDelete`
+  - `list.ui.createView.defaultFieldMode`
+  - `list.ui.itemView.defaultFieldMode`
+  - `list.ui.listView.defaultFieldMode`
+  - `field.ui.createView.fieldMode`
+  - `field.ui.itemView.fieldMode`
+  - `field.ui.listView.fieldMode`
+
+* [#6743](https://github.com/keystonejs/keystone/pull/6743) [`abeceaf90`](https://github.com/keystonejs/keystone/commit/abeceaf902c231aabe9cf3a383ecf29c09b8f4dd) Thanks [@timleslie](https://github.com/timleslie)! - Added custom error codes to all GraphQL errors to support easier debugging and processing of errors.
+
+### Patch Changes
+
+- [#6732](https://github.com/keystonejs/keystone/pull/6732) [`73544fd19`](https://github.com/keystonejs/keystone/commit/73544fd19b865be9fbf3ea9ae68fae5f039eb13f) Thanks [@timleslie](https://github.com/timleslie)! - Improved the error messages for user input errors on relationships in update/create operations.
+
+* [#6744](https://github.com/keystonejs/keystone/pull/6744) [`0ef1ee3cc`](https://github.com/keystonejs/keystone/commit/0ef1ee3ccd99f0f3e1f955f03d00b1a0f238c7cd) Thanks [@bladey](https://github.com/bladey)! - Renamed branch `master` to `main`.
+
+- [#6737](https://github.com/keystonejs/keystone/pull/6737) [`930b7129f`](https://github.com/keystonejs/keystone/commit/930b7129f37beb396bb8ecc8a8dc9f1b3615a7e0) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Improved dev startup performance
+
+* [#6727](https://github.com/keystonejs/keystone/pull/6727) [`fac96cbd1`](https://github.com/keystonejs/keystone/commit/fac96cbd14febcc01bdffbecd1aceee391f6a20a) Thanks [@timleslie](https://github.com/timleslie)! - Improved error messages when using the items and DB APIs.
+
+- [#6729](https://github.com/keystonejs/keystone/pull/6729) [`3d289eb3d`](https://github.com/keystonejs/keystone/commit/3d289eb3d00c3e6a0c26ce962fb0f942a08c400a) Thanks [@timleslie](https://github.com/timleslie)! - Improved the error message when trying to perform a `connect` operation on a missing/access denied ID.
+
+* [#6754](https://github.com/keystonejs/keystone/pull/6754) [`bed3a560a`](https://github.com/keystonejs/keystone/commit/bed3a560a59d4fe787f3beebd65f8148453aae35) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updated dist filenames
+
+- [#6737](https://github.com/keystonejs/keystone/pull/6737) [`930b7129f`](https://github.com/keystonejs/keystone/commit/930b7129f37beb396bb8ecc8a8dc9f1b3615a7e0) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Keystone will now consistently not respect a custom Babel config if it exists rather than the previous behaviour of respecting it in some commands but not for compilations from `keystone-next build` that are run with `keystone-next start`
+
+* [#6721](https://github.com/keystonejs/keystone/pull/6721) [`6e4a0cf56`](https://github.com/keystonejs/keystone/commit/6e4a0cf56ce35b2446db7970763c55446de3db0e) Thanks [@timleslie](https://github.com/timleslie)! - Improved error messages when updating/creating relationship fields.
+
+- [#6719](https://github.com/keystonejs/keystone/pull/6719) [`704f68b38`](https://github.com/keystonejs/keystone/commit/704f68b38f970860137380e21c36e04d2c51a7a4) Thanks [@renovate](https://github.com/apps/renovate)! - Upgraded Prisma monorepo packages to [3.2.0](https://github.com/prisma/prisma/releases/tag/3.2.0).
+
+* [#6738](https://github.com/keystonejs/keystone/pull/6738) [`576f341e6`](https://github.com/keystonejs/keystone/commit/576f341e61b31bbcf076ba70002d137c7b7ff9a9) Thanks [@timleslie](https://github.com/timleslie)! - Improved error messages when to-many relationship update/create operations fail.
+
+* Updated dependencies [[`0ef1ee3cc`](https://github.com/keystonejs/keystone/commit/0ef1ee3ccd99f0f3e1f955f03d00b1a0f238c7cd), [`bed3a560a`](https://github.com/keystonejs/keystone/commit/bed3a560a59d4fe787f3beebd65f8148453aae35)]:
+  - @keystone-ui/button@5.0.2
+  - @keystone-ui/core@3.2.1
+  - @keystone-ui/fields@5.0.1
+  - @keystone-ui/icons@4.0.2
+  - @keystone-ui/loading@4.0.2
+  - @keystone-ui/modals@4.0.2
+  - @keystone-ui/notice@4.1.1
+  - @keystone-ui/options@4.0.4
+  - @keystone-ui/pill@5.0.2
+  - @keystone-ui/popover@4.0.5
+  - @keystone-ui/segmented-control@5.0.1
+  - @keystone-ui/toast@4.0.4
+  - @keystone-ui/tooltip@4.0.3
+
 ## 26.0.1
 
 ### Patch Changes

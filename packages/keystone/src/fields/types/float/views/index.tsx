@@ -148,7 +148,7 @@ export const Field = ({
           />
         </span>
       ) : (
-        value
+        value.value
       )}
     </FieldContainer>
   );
