@@ -6,7 +6,6 @@ import { AnchorHTMLAttributes, ReactNode } from 'react';
 
 import { Type } from './Type';
 import { Badge } from './Badge';
-import { useMediaQuery } from '../../lib/media';
 
 export type WellGradient = 'grad1' | 'grad2' | 'grad3' | 'grad4';
 
@@ -19,8 +18,6 @@ type WellProps = {
 } & AnchorHTMLAttributes<HTMLAnchorElement>;
 
 export function Well({ grad = 'grad1', heading, badge, href, children, ...props }: WellProps) {
-  const mq = useMediaQuery();
-
   return (
     <Link href={href} passHref>
       <a
