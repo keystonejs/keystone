@@ -53,11 +53,11 @@ export const generateAdminUI = async (
   graphQLSchema: GraphQLSchema,
   adminMeta: AdminMetaRootVal,
   projectAdminPath: string,
-  isLiveReload: boolean
+  mode: 'initial-dev' | 'build' | 'live-reload-dev'
 ) => {
-  // when we're not doing a live reload, we want to clear everything out except the .next directory (not the .next directory because it has caches)
+  // in the initial dev load, we want to clear everything out except the .next directory (not the .next directory because it has caches)
   // so that at least every so often, we'll clear out anything that the deleting we do during live reloads doesn't (should just be directories)
-  if (!isLiveReload) {
+  if (mode === 'initial-dev') {
     const dir = await fs.readdir(projectAdminPath).catch(err => {
       if (err.code === 'ENOENT') {
         return [];
@@ -72,11 +72,17 @@ export const generateAdminUI = async (
       })
     );
   }
+  // ideally we would keep the Next caches for prod builds
+  // but in Next 12, for some reason, when the caches are kept
+  // Next just doesn't hydrate the React tree so you just see a spinner forever
+  if (mode === 'build') {
+    await fs.remove(projectAdminPath);
+  }
   const publicDirectory = Path.join(projectAdminPath, 'public');
 
   if (config.images || config.files) {
     // when we're not doing a live reload, we've already done this with the deleting above
-    if (isLiveReload) {
+    if (mode === 'live-reload-dev') {
       await fs.remove(publicDirectory);
     }
     await fs.mkdir(publicDirectory, { recursive: true });
@@ -118,7 +124,7 @@ export const generateAdminUI = async (
     adminMeta,
     configFileExists,
     projectAdminPath,
-    isLiveReload
+    mode === 'live-reload-dev'
   );
 
   // Add files to pages/ which point to any files which exist in admin/pages
@@ -150,7 +156,7 @@ export const generateAdminUI = async (
   // this won't clear out empty directories, this is fine since:
   // - they won't create pages in Admin UI which is really what this deleting is about avoiding
   // - we'll remove them when the user restarts the process
-  if (isLiveReload) {
+  if (mode === 'live-reload-dev') {
     // fast-glob expects unix style paths/globs in ignore so we need to normalize to that
     const ignore = adminFiles.map(x => normalizePath(x.outputPath));
     ignore.push('.next');
