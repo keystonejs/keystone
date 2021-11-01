@@ -160,13 +160,7 @@ exports.default = function (req, res) { return res.send(x.toString()) }
           }
 
           await generateNodeModulesArtifactsWithoutPrismaClient(graphQLSchema, newConfig, cwd);
-          await generateAdminUI(
-            newConfig,
-            graphQLSchema,
-            adminMeta,
-            getAdminPath(cwd),
-            'live-reload-dev'
-          );
+          await generateAdminUI(newConfig, graphQLSchema, adminMeta, getAdminPath(cwd), true);
           const keystone = getKeystone(function fakePrismaClientClass() {
             return prismaClient;
           });
@@ -359,7 +353,7 @@ async function initAdminUI(
   createContext: CreateContext
 ) {
   console.log('✨ Generating Admin UI code');
-  await generateAdminUI(config, graphQLSchema, adminMeta, getAdminPath(cwd), 'initial-dev');
+  await generateAdminUI(config, graphQLSchema, adminMeta, getAdminPath(cwd), false);
 
   console.log('✨ Preparing Admin UI app');
   const middleware = await createAdminUIMiddleware(config, createContext, true, getAdminPath(cwd));
