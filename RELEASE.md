@@ -132,7 +132,7 @@ This can be done by checking out `website_live`.
 Then running:
 
 ```sh
-EDITOR=subl git rebase --interactive origin/main
+git rebase --interactive origin/main
 ```
 
 Resolve any conflicts then run:
