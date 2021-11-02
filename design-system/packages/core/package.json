@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.15.4",
-    "@emotion/react": "^11.4.1",
+    "@emotion/react": "^11.5.0",
     "@types/facepaint": "^1.2.2",
     "facepaint": "^1.2.1"
   },
