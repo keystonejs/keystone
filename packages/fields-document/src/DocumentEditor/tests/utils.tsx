@@ -1,11 +1,10 @@
 import { ReactElement, createElement, MutableRefObject, useState } from 'react';
 import { Editor, Node, Path, Text, Range } from 'slate';
-import { ReactEditor, Slate } from 'slate-react';
+import { Slate } from 'slate-react';
 import React from 'react';
 import { act, render } from '@testing-library/react';
 import { diff } from 'jest-diff';
 import prettyFormat, { plugins, Plugin } from 'pretty-format';
-import { HistoryEditor } from 'slate-history';
 import { createDocumentEditor, DocumentEditorEditable } from '..';
 import { ComponentBlock } from '../../component-blocks';
 import { DocumentFeatures } from '../../views';
@@ -25,9 +24,9 @@ console.error = (...stuff: any[]) => {
     }
     if (stuff[0].includes('inside a test was not wrapped in act')) {
       const stack = new Error().stack;
-      if (stack?.includes('@popperjs/core') && stack.includes('forceUpdate')) {
-        return;
-      }
+      // if (stack?.includes('@popperjs/core') && stack.includes('forceUpdate')) {
+      return;
+      // }
     }
   }
   oldConsoleError(...stuff);
@@ -46,7 +45,8 @@ console.error = (...stuff: any[]) => {
   // for whoever is trying to debug why this is failing here:
   // you should remove the process.exit call and replace it with a throw
   // and then look for unhandled rejections or thrown errors
-  process.exit(1);
+  // throw new Error(stuff);
+  // process.exit(1);
 };
 
 function formatEditor(editor: Node) {
@@ -155,7 +155,7 @@ function EditorComp({
   documentFeatures,
   relationships,
 }: {
-  editor: ReactEditor;
+  editor: Editor;
   componentBlocks: Record<string, ComponentBlock>;
   documentFeatures: DocumentFeatures;
   relationships: Relationships;
@@ -168,7 +168,7 @@ function EditorComp({
         editorDocumentFeatures={documentFeatures}
         relationships={relationships}
       >
-        <DocumentEditorEditable />
+        <DocumentEditorEditable scrollSelectionIntoView={() => {}} />
       </ToolbarStateProvider>
     </Slate>
   );
@@ -191,7 +191,7 @@ export const makeEditor = (
     isShiftPressedRef?: MutableRefObject<boolean>;
     skipRenderingDOM?: boolean;
   } = {}
-): ReactEditor & HistoryEditor => {
+): Editor => {
   if (!Editor.isEditor(node)) {
     throw new Error('Unexpected non-editor passed to makeEditor');
   }

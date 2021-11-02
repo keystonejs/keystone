@@ -55,7 +55,7 @@ function getAncestorList(editor: Editor) {
   return { isInside: false } as const;
 }
 
-export function withList<T extends Editor>(editor: T): T {
+export function withList(editor: Editor): Editor {
   const { insertBreak, normalizeNode, deleteBackward } = editor;
   editor.deleteBackward = unit => {
     if (editor.selection) {

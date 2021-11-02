@@ -1,4 +1,3 @@
-import { ReactEditor } from 'slate-react';
 import { Editor, Element, Transforms, Range, NodeEntry, Path, Node, Text } from 'slate';
 
 import weakMemoize from '@emotion/weak-memoize';
@@ -17,7 +16,7 @@ import {
   getDocumentFeaturesForChildField,
 } from './utils';
 
-function getAncestorComponentBlock(editor: ReactEditor) {
+function getAncestorComponentBlock(editor: Editor) {
   if (editor.selection) {
     const ancestorEntry = Editor.above(editor, {
       match: node => Editor.isBlock(editor, node) && node.type !== 'paragraph',
@@ -48,7 +47,7 @@ const alreadyNormalizedThings: WeakMap<
 
 function normalizeNodeWithinComponentProp(
   [node, path]: NodeEntry,
-  editor: ReactEditor,
+  editor: Editor,
   fieldOptions: DocumentFeaturesForChildField,
   relationships: Relationships
 ): boolean {
@@ -101,12 +100,12 @@ function normalizeNodeWithinComponentProp(
   return didNormalization;
 }
 
-export function withComponentBlocks<T extends ReactEditor>(
+export function withComponentBlocks(
   blockComponents: Record<string, ComponentBlock | undefined>,
   editorDocumentFeatures: DocumentFeatures,
   relationships: Relationships,
-  editor: T
-): T {
+  editor: Editor
+): Editor {
   // note that conflicts between the editor document features
   // and the child field document features are dealt with elsewhere
   const memoizedGetDocumentFeaturesForChildField = weakMemoize(
