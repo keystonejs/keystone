@@ -12,7 +12,7 @@
   "dependencies": {
     "@babel/runtime": "^7.15.4",
     "@emotion/cache": "11.5.0",
-    "@emotion/react": "^11.4.1",
+    "@emotion/react": "^11.5.0",
     "@emotion/server": "11.4.0",
     "@emotion/weak-memoize": "^0.2.5",
     "@keystone-next/fields-document": "^11.0.0",
@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@types/lodash.debounce": "^4.0.6",
-    "next-sitemap": "^1.6.179",
+    "next-sitemap": "^1.6.199",
     "start-server-and-test": "^1.14.0",
     "typescript": "^4.4.4"
   },
