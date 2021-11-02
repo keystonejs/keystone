@@ -53,7 +53,7 @@
     "@manypkg/cli": "^0.19.0",
     "@preconstruct/cli": "2.1.5",
     "@preconstruct/eslint-plugin-format-js-tag": "^0.1.0",
-    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/jest-dom": "^5.15.0",
     "@types/babel__core": "^7.1.16",
     "@types/jest": "^27.0.2",
     "@types/node-fetch": "^2.5.12",
