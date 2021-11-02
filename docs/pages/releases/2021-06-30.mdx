@@ -7,7 +7,7 @@ import { Emoji } from '../../components/primitives/Emoji';
 
 We've fixed an issue with `cloudinaryImage` and `relationship` fields. <Emoji symbol="🔥" alt="Fire" />
 
-```sh
+```json
 "@keystone-next/auth": "28.0.1",
 "@keystone-next/cloudinary": "6.0.3",
 "@keystone-next/fields": "11.0.3",
@@ -22,5 +22,9 @@ We've discovered an issue where `cloudinaryImage` and `relationship` fields were
 
 You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-06-30) on GitHub.
 
-export default ({ children, ...props }) => <Markdown description="Bugfixes for `cloudinaryimage` and `relationships` fields." {...props}>{children}</Markdown>;
-export { getStaticProps }
+export default ({ children, ...props }) => (
+	<Markdown description="Bugfixes for `cloudinaryimage` and `relationships` fields." {...props}>
+		{children}
+	</Markdown>
+);
+export { getStaticProps };
