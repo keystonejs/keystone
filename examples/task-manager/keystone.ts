@@ -13,9 +13,4 @@ export default config({
     },
   },
   lists,
-  ui: {
-    getAdditionalFiles: [
-      () => [{ mode: 'write', outputPath: 'pages/api/blah/[...rest].js', src: '' }],
-    ],
-  },
 });

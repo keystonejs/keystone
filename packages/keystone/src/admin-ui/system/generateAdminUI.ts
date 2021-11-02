@@ -154,12 +154,6 @@ export const generateAdminUI = async (
   // - they won't create pages in Admin UI which is really what this deleting is about avoiding
   // - we'll remove them when the user restarts the process
   if (isLiveReload) {
-    // fast-glob expects unix style paths/globs in ignore so we need to normalize to that
-    const ignore = adminFiles.map(x => x.outputPath);
-    ignore.push('.next');
-    ignore.push('next-env.d.ts');
-    ignore.push('public');
-    ignore.push('pages/api/__keystone_api_build.js');
     const ignoredDirs = new Set(['.next', 'public'].map(x => Path.resolve(projectAdminPath, x)));
     const ignoredFiles = new Set(
       [
@@ -174,8 +168,6 @@ export const generateAdminUI = async (
       deepFilter: entry => !ignoredDirs.has(entry.path),
       entryFilter: entry => entry.dirent.isFile() && !ignoredFiles.has(entry.path),
     });
-
-    console.log(entries);
 
     await Promise.all(entries.map(entry => fs.remove(entry.path)));
   }

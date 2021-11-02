@@ -8,4 +8,15 @@ export default config({
   },
   lists,
   extendGraphqlSchema,
+  ui: {
+    getAdditionalFiles: [
+      () => [
+        {
+          mode: 'write',
+          src: "export default function(req,res) {res.send('something')}",
+          outputPath: 'pages/api/blah/[...rest].js',
+        },
+      ],
+    ],
+  },
 });
