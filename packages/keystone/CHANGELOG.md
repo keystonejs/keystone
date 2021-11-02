@@ -1,5 +1,53 @@
 # @keystone-next/keystone
 
+## 27.0.0
+
+### Major Changes
+
+- [#6824](https://github.com/keystonejs/keystone/pull/6824) [`ddabdbd02`](https://github.com/keystonejs/keystone/commit/ddabdbd02230374ff921998f9d21c0ad7d32b226) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Keystone will now default to using GraphQL Playground instead of Apollo Sandbox as it did prior to updating to Apollo Server 3. If you want to use Apollo Sandbox, you can set `graphql.playground: 'apollo'` to use Apollo. `graphql.playground` defaults to `process.env.NODE_ENV !== 'production'`, which will serve GraphQL Playground in development and serve nothing in production, if you'd like to set it to one of those always, you can set `graphql.playground` to a boolean explicitly.
+
+* [#6845](https://github.com/keystonejs/keystone/pull/6845) [`71600965b`](https://github.com/keystonejs/keystone/commit/71600965b963e098ca77ae1261b850b9573c9f22) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Added `CloudImageFieldOutput` and `CloudFileFieldOutput` GraphQL types to the `image` and `file` fields respectively
+
+- [#6789](https://github.com/keystonejs/keystone/pull/6789) [`d9e1ba8fa`](https://github.com/keystonejs/keystone/commit/d9e1ba8fa23c0d9e902ef61167913ee92f5657cb) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removed the deprecated `resolveFields` from `context.query`, if you were still using it, you should switch to providing `the query option` to `context.query` or use `context.db` if you were providing `false`. The `context.query` functions will now also throw an error if an empty string is passed to `query` rather than silently returning what the `context.db` functions return, you must select at least one field or omit the `query` option to default to selecting the `id`.
+
+* [#6845](https://github.com/keystonejs/keystone/pull/6845) [`71600965b`](https://github.com/keystonejs/keystone/commit/71600965b963e098ca77ae1261b850b9573c9f22) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The `src` field on the output of `image` and `file` fields has been renamed to `url`.
+
+- [#6813](https://github.com/keystonejs/keystone/pull/6813) [`c0661b8ee`](https://github.com/keystonejs/keystone/commit/c0661b8ee9e16a1ffdd7fc77c9c56fead0efda36) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updated `@graphql-ts/schema` to `0.5.0`. The `__rootVal` properties on `ObjectType`, `InterfaceType` and `UnionType` have been renamed to `__source`, this is intended to be internal but it could be depended on so if you did, you will need to change to `__source`. The `fields` property on `InterfaceType` has been renamed to `__fields` and it will no longer exist at runtime like the other types.
+
+* [#6797](https://github.com/keystonejs/keystone/pull/6797) [`cbb9df927`](https://github.com/keystonejs/keystone/commit/cbb9df927a0f106aaa35d107961a405b0d08a751) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - `createExpressServer` now returns `Promise<{ expressServer: Express; apolloServer: ApolloServer; }>` instead of `Promise<Express>` so that the apollo server can be stopped.
+
+- [#6797](https://github.com/keystonejs/keystone/pull/6797) [`cbb9df927`](https://github.com/keystonejs/keystone/commit/cbb9df927a0f106aaa35d107961a405b0d08a751) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Added live reloading of your Keystone config to `keystone-next dev`
+
+* [#6824](https://github.com/keystonejs/keystone/pull/6824) [`ddabdbd02`](https://github.com/keystonejs/keystone/commit/ddabdbd02230374ff921998f9d21c0ad7d32b226) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removed `graphql.cors` option. You should exclusively configure `cors` with the `server.cors` option.
+
+- [#6845](https://github.com/keystonejs/keystone/pull/6845) [`71600965b`](https://github.com/keystonejs/keystone/commit/71600965b963e098ca77ae1261b850b9573c9f22) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The `getSrc` function on `ImagesContext` and `FilesContext` has been renamed to `getUrl`
+
+* [#6755](https://github.com/keystonejs/keystone/pull/6755) [`dcf5241d8`](https://github.com/keystonejs/keystone/commit/dcf5241d8e3e62b080842a5d4bfd47a7f2cce5ca) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updated the way the `endSession` field on the `Mutation` type and the `keystone` field on the `Query` type are added to the GraphQL schema. This may result in re-ordering in your generated `schema.graphql` file. The `sessionSchema` export of `@keystone-next/keystone/session` has also been removed.
+
+### Minor Changes
+
+- [#6856](https://github.com/keystonejs/keystone/pull/6856) [`f3e8aac31`](https://github.com/keystonejs/keystone/commit/f3e8aac31efb3eb1573eb340e07a25920084a4aa) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Added `graphql.extend` and `graphql.wrap`.
+
+### Patch Changes
+
+- [#6714](https://github.com/keystonejs/keystone/pull/6714) [`5e61e0050`](https://github.com/keystonejs/keystone/commit/5e61e00503715f0f634d97e573926091a52661e6) Thanks [@Zlitus](https://github.com/Zlitus)! - When generating safe filenames, support extensions with numerical characters
+
+* [#6758](https://github.com/keystonejs/keystone/pull/6758) [`f38772b27`](https://github.com/keystonejs/keystone/commit/f38772b27d3e9d157127dabfa40036462c235a9f) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed `text`, `integer`, `float` and `decimal` on the item view when using `ui.itemView.fieldMode: 'read'`.
+
+- [#6777](https://github.com/keystonejs/keystone/pull/6777) [`30fc08b51`](https://github.com/keystonejs/keystone/commit/30fc08b515e4f8851fd2583a265a813c683bf604) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed the home page of the Admin UI not respecting `ui.hideCreate`
+
+* [#6790](https://github.com/keystonejs/keystone/pull/6790) [`f683dcfe3`](https://github.com/keystonejs/keystone/commit/f683dcfe37d013b3d17f1fbad3df335b2f2ee51c) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Readonly arrays are now accepted where previously mutable arrays were required. This means that if you use `as const` when writing an array and then pass it to various APIs in keystone, that will now work.
+
+- [#6837](https://github.com/keystonejs/keystone/pull/6837) [`db7f2311b`](https://github.com/keystonejs/keystone/commit/db7f2311bb2ff8e1e70350cd0f087439b8404a8a) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Fixed bug in LinkToRelatedItems button for double sided relationships
+
+* [#6804](https://github.com/keystonejs/keystone/pull/6804) [`023bc7a0b`](https://github.com/keystonejs/keystone/commit/023bc7a0b1e6fb0ebdc5055f0243d9dad255a667) Thanks [@renovate](https://github.com/apps/renovate)! - Update prisma monorepo to [v3.3.0 (minor)](https://github.com/prisma/prisma/releases/tag/3.3.0)
+
+- [#6839](https://github.com/keystonejs/keystone/pull/6839) [`d1141ea82`](https://github.com/keystonejs/keystone/commit/d1141ea8235bca4ce88500991c24b962b06ade45) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed overfetching, not filtering by the search and erroring when an id is searched for in the relationship select UI.
+
+* [#6843](https://github.com/keystonejs/keystone/pull/6843) [`d107a5bec`](https://github.com/keystonejs/keystone/commit/d107a5becdd16245caf208c3979965fa926e484c) Thanks [@dcousens](https://github.com/dcousens)! - - We have bumped `memoize-one` to [`v6.0.0`](https://github.com/alexreardon/`/releases/tag/v6.0.0), the only breaking changes for the package were related to Typescript (please see the release notes)
+
+- [#6853](https://github.com/keystonejs/keystone/pull/6853) [`44cbef543`](https://github.com/keystonejs/keystone/commit/44cbef5435081311acb9e68dd750f1ca289b8221) Thanks [@lukebennett88](https://github.com/lukebennett88)! - Updated minor typos in GraphQL errors
+
 ## 26.1.1
 
 ### Patch Changes
