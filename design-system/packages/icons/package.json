@@ -21,7 +21,7 @@
     "to-pascal-case": "^1.0.0"
   },
   "dependencies": {
-    "@babel/runtime": "^7.15.4",
+    "@babel/runtime": "^7.16.0",
     "@keystone-ui/core": "^3.2.1"
   },
   "peerDependencies": {

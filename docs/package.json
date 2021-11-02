@@ -10,7 +10,7 @@
     "sitemap": "yarn next-sitemap"
   },
   "dependencies": {
-    "@babel/runtime": "^7.15.4",
+    "@babel/runtime": "^7.16.0",
     "@emotion/cache": "11.5.0",
     "@emotion/react": "^11.5.0",
     "@emotion/server": "11.4.0",

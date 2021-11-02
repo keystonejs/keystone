@@ -27,8 +27,8 @@
   },
   "dependencies": {
     "@apollo/client": "^3.4.16",
-    "@babel/core": "^7.15.8",
-    "@babel/runtime": "^7.15.4",
+    "@babel/core": "^7.16.0",
+    "@babel/runtime": "^7.16.0",
     "@emotion/hash": "^0.8.0",
     "@emotion/weak-memoize": "^0.2.5",
     "@graphql-tools/schema": "^8.3.1",

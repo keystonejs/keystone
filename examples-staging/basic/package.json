@@ -9,7 +9,7 @@
     "build": "keystone-next build"
   },
   "dependencies": {
-    "@babel/runtime": "^7.15.4",
+    "@babel/runtime": "^7.16.0",
     "@keystone-next/auth": "^34.0.0",
     "@keystone-next/document-renderer": "^4.0.1",
     "@keystone-next/fields-document": "^11.0.0",
