@@ -74,7 +74,7 @@ Update the following:
 - Packages output
 - Verbose release notes link
 
-```
+````
 [summary headline]
 
 **[View the release notes on the Keystone website](https://keystonejs.com/releases/YYYY-MM-DD)**
@@ -91,7 +91,7 @@ Star this repo 🌟 ☝️ or connect to Keystone on [Twitter](https://twitter.c
 ## Verbose Release Notes
 
 You can view the [verbose release notes](https://github.com/keystonejs/keystone/pull/6762) in the related PR (https://github.com/keystonejs/keystone/pull/XXX) for this release.
-```
+````
 
 ## Website releases notes
 
