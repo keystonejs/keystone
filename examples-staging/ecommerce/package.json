@@ -25,7 +25,7 @@
     "nodemailer": "^6.7.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "stripe": "^8.181.0"
+    "stripe": "^8.186.0"
   },
   "devDependencies": {
     "typescript": "^4.4.4"
