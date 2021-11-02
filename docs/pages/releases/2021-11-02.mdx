@@ -9,6 +9,9 @@ import { Stack } from '../../components/primitives/Stack';
 ```json
 "@keystone-next/keystone": "x.x.x",
 ```
+
+**⚠️ &nbsp; This release contains breaking changes, please see below!**
+
 ## Server-side Live Reloading <Emoji symbol="🚀" alt="Rocket" />
 
 Keystone now supports live reloading with `keystone-next dev`.
@@ -78,6 +81,14 @@ We've removed the `graphql.cors` option, we had one too many ways to configure C
 
 You should now exclusively configure `cors` with the `server.cors` option.
 
+## Renamed `src` in Image and File Fields <Emoji symbol="🗄️" alt="File Cabinet" />
+
+**⚠️ &nbsp; Breaking Change**
+
+The `src` field on the output of `image` and `file` fields has been renamed to `url`.
+
+Subsequently the `getSrc` function on `ImagesContext` and `FilesContext` has been renamed to `getUrl`.
+
 ## Removed `resolveFields` <Emoji symbol="🚧" alt="Construction" />
 
 The deprecated `resolveFields` from `context.query` has been removed.
@@ -106,7 +117,6 @@ We've made internal changes to the `endSession` field on the `Mutation` type and
 - Admin UI home page now respects `ui.hideCreate` and won't show a plus button when create is disabled.
 - Read-only arrays are now accepted where previously mutable arrays were required. Using `as const` when writing an array and then passing it to various APIs in Keystone will now work.
 - Fixed bug in `LinkToRelatedItems` button for double sided relationships.
-- The `src` field on the output of `image` and `file` fields has been renamed to `url`, subsequently the `getSrc` function on `ImagesContext` and `FilesContext` has been renamed to `getUrl`.
 - Updated minor typos in GraphQL errors.
 
 ## Prisma Update <Emoji symbol="🗃" alt="Card File Box" />
