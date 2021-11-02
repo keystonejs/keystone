@@ -129,16 +129,8 @@ When we do a release we need to make sure `main` and `website_live` are both in 
 
 This can be done by checking out `website_live`.
 
-Then running:
+Then running `git rebase --interactive origin/main`.
 
-```sh
-git rebase --interactive origin/main
-```
+Resolve any conflicts then run `git push --force`.
 
-Resolve any conflicts then run:
-
-```sh
-git push --force
-```
-
-Branches should now be nicely aligned and show `0 | 0` on the branches page <https://github.com/keystonejs/keystone/branches>.
+Branches should now be mostly aligned on the branches page <https://github.com/keystonejs/keystone/branches>.
