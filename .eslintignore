@@ -3,3 +3,4 @@ coverage
 dist
 reports
 docs/public/assets/
+tests/test-projects/live-reloading/schemas/syntax-error.js

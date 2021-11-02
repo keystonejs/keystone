@@ -1,5 +1,7 @@
+import retry from 'async-retry';
 import { Browser, Page } from 'playwright';
-import { exampleProjectTests } from './utils';
+
+import { exampleProjectTests, loadIndex } from './utils';
 
 exampleProjectTests('custom-admin-ui-pages', browserType => {
   let browser: Browser = undefined as any;
@@ -7,12 +9,16 @@ exampleProjectTests('custom-admin-ui-pages', browserType => {
   beforeAll(async () => {
     browser = await browserType.launch();
     page = await browser.newPage();
-    await page.goto('http://localhost:3000');
+    await loadIndex(page);
   });
+
   test('Load list', async () => {
-    await page.goto('http://localhost:3000/custom-page');
-    await page.waitForSelector('main h1:has-text("This is a custom Admin UI page")');
+    await retry(async () => {
+      await page.goto('http://localhost:3000/custom-page');
+      await page.waitForSelector('main h1:has-text("This is a custom Admin UI page")');
+    });
   });
+
   afterAll(async () => {
     await browser.close();
   });

@@ -7,8 +7,7 @@ import { Emoji } from '../../components/primitives/Emoji';
 
 Custom **navigation**, **pages** and **logo** in this big **Admin UI** themed release! <Emoji symbol="🎛️" alt="Control knobs" />
 
-```sh
-"@keystone-ui/tooltip": "4.0.1",
+```json
 "@keystone-next/admin-ui-utils": "5.0.5",
 "@keystone-next/auth": "30.0.0",
 "@keystone-next/cloudinary": "6.0.5",
@@ -26,17 +25,26 @@ You can now create your own custom navigation component with custom routes to be
 
 Check out our detailed [Custom Admin UI Navigation guide](https://keystonejs.com/docs/guides/custom-admin-ui-navigation) for all the details!
 
-<img width="810" alt="Custom navigation screenshot" src="https://user-images.githubusercontent.com/737821/127438549-621da3c6-1201-495b-ad2a-73328b834262.png" />
+<img
+  width="810"
+  alt="Custom navigation screenshot"
+  src="https://user-images.githubusercontent.com/737821/127438549-621da3c6-1201-495b-ad2a-73328b834262.png"
+/>
 
 ## Custom Admin UI Pages <Emoji symbol="📃" alt="Paper" />
 
 Take things a step further with custom pages. As the Admin UI is built on top of Next.js, it exposes the same `/pages` directory for adding custom pages.
 
-<Emoji symbol="ℹ️" alt="Info" /> In the near future you'll be able to directly embed pages within the Keystone Admin UI itself, stay tuned!
+<Emoji symbol="ℹ️" alt="Info" /> In the near future you'll be able to directly embed pages within the
+Keystone Admin UI itself, stay tuned!
 
 Read our new [Custom Admin UI Pages guide](https://keystonejs.com/docs/guides/custom-admin-ui-pages) for more details.
 
-<img width="810" alt="Custom page screenshot" src="https://user-images.githubusercontent.com/737821/127438536-68617646-805e-4031-aced-b2f12c4190fb.png" />
+<img
+  width="810"
+  alt="Custom page screenshot"
+  src="https://user-images.githubusercontent.com/737821/127438536-68617646-805e-4031-aced-b2f12c4190fb.png"
+/>
 
 ## Custom Admin UI Logo <Emoji symbol="🚩" alt="Flag" />
 
@@ -44,7 +52,11 @@ Wait, theres more. You can also replace the default Admin UI logo with your own 
 
 Dive into our [Custom Admin UI Logo guide](https://keystonejs.com/docs/guides/custom-admin-ui-logo) to find out how.
 
-<img width="810" alt="Animated logo screenshot" src="https://user-images.githubusercontent.com/737821/127438961-40bc6ddd-e34a-497d-ac6a-c135e88324d1.gif" />
+<img
+  width="810"
+  alt="Animated logo screenshot"
+  src="https://user-images.githubusercontent.com/737821/127438961-40bc6ddd-e34a-497d-ac6a-c135e88324d1.gif"
+/>
 
 ## Health Check <Emoji symbol="💙" alt="Blue heart" />
 
@@ -58,8 +70,8 @@ You can also specify a custom path and JSON data:
 config({
   server: {
     healthCheck: {
-      path: "/my-health-check",
-      data: { status: "healthy" },
+      path: '/my-health-check',
+      data: { status: 'healthy' },
     },
   },
 });
@@ -71,9 +83,9 @@ Or use a function for the `data` config to return real-time information:
 config({
   server: {
     healthCheck: {
-      path: "/my-health-check",
+      path: '/my-health-check',
       data: () => ({
-        status: "healthy",
+        status: 'healthy',
         timestamp: Date.now(),
         uptime: process.uptime(),
       }),
@@ -96,5 +108,12 @@ Updated Prisma dependencies to `2.27.0`, check out the [Prisma releases page](ht
 
 You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-07-29) on GitHub.
 
-export default ({ children, ...props }) => <Markdown description="Custom navigation, pages and logo in this big Admin UI themed release!" {...props}>{children}</Markdown>;
-export { getStaticProps }
+export default ({ children, ...props }) => (
+  <Markdown
+    description="Custom navigation, pages and logo in this big Admin UI themed release!"
+    {...props}
+  >
+    {children}
+  </Markdown>
+);
+export { getStaticProps };

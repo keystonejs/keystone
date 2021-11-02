@@ -1,6 +1,6 @@
 {
   "name": "keystone-next-app",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "private": true,
   "scripts": {
     "dev": "keystone-next dev",
@@ -12,9 +12,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.15.4",
-    "@keystone-next/auth": "^34.0.0",
-    "@keystone-next/fields-document": "^11.0.0",
-    "@keystone-next/keystone": "^26.1.0"
+    "@keystone-next/auth": "^35.0.0",
+    "@keystone-next/fields-document": "^12.0.0",
+    "@keystone-next/keystone": "^27.0.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/examples-staging/graphql-api-endpoint"
 }

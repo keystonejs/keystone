@@ -1,5 +1,5 @@
-import type { GraphQLSchemaExtension, KeystoneContext } from '@keystone-next/keystone/types';
-
+import type { ItemRootValue } from '@keystone-next/keystone/types';
+import { graphql } from '@keystone-next/keystone';
 import { AuthGqlNames, SecretFieldImpl } from '../types';
 
 import { validateSecret } from '../lib/validateSecret';
@@ -10,40 +10,65 @@ export function getBaseAuthSchema<I extends string, S extends string>({
   secretField,
   gqlNames,
   secretFieldImpl,
+  base,
 }: {
   listKey: string;
   identityField: I;
   secretField: S;
   gqlNames: AuthGqlNames;
   secretFieldImpl: SecretFieldImpl;
-}): GraphQLSchemaExtension {
-  return {
-    typeDefs: `
-      # Auth
-      union AuthenticatedItem = ${listKey}
-      type Query {
-        authenticatedItem: AuthenticatedItem
+  base: graphql.BaseSchemaMeta;
+}) {
+  const ItemAuthenticationWithPasswordSuccess = graphql.object<{
+    sessionToken: string;
+    item: ItemRootValue;
+  }>()({
+    name: gqlNames.ItemAuthenticationWithPasswordSuccess,
+    fields: {
+      sessionToken: graphql.field({ type: graphql.nonNull(graphql.String) }),
+      item: graphql.field({ type: graphql.nonNull(base.object(listKey)) }),
+    },
+  });
+  const ItemAuthenticationWithPasswordFailure = graphql.object<{ message: string }>()({
+    name: gqlNames.ItemAuthenticationWithPasswordFailure,
+    fields: {
+      message: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    },
+  });
+  const AuthenticationResult = graphql.union({
+    name: gqlNames.ItemAuthenticationWithPasswordResult,
+    types: [ItemAuthenticationWithPasswordSuccess, ItemAuthenticationWithPasswordFailure],
+    resolveType(val) {
+      if ('sessionToken' in val) {
+        return gqlNames.ItemAuthenticationWithPasswordSuccess;
       }
-      # Password auth
-      type Mutation {
-        ${gqlNames.authenticateItemWithPassword}(${identityField}: String!, ${secretField}: String!): ${gqlNames.ItemAuthenticationWithPasswordResult}!
-      }
-      union ${gqlNames.ItemAuthenticationWithPasswordResult} = ${gqlNames.ItemAuthenticationWithPasswordSuccess} | ${gqlNames.ItemAuthenticationWithPasswordFailure}
-      type ${gqlNames.ItemAuthenticationWithPasswordSuccess} {
-        sessionToken: String!
-        item: ${listKey}!
-      }
-      type ${gqlNames.ItemAuthenticationWithPasswordFailure} {
-        message: String!
-      }
-    `,
-    resolvers: {
-      Mutation: {
-        async [gqlNames.authenticateItemWithPassword](
-          root: any,
-          args: { [P in I]: string } & { [P in S]: string },
-          context
-        ) {
+      return gqlNames.ItemAuthenticationWithPasswordFailure;
+    },
+  });
+  const extension = {
+    query: {
+      authenticatedItem: graphql.field({
+        type: graphql.union({
+          name: 'AuthenticatedItem',
+          types: [base.object(listKey) as graphql.ObjectType<ItemRootValue>],
+          resolveType: (root, context) => context.session?.listKey,
+        }),
+        resolve(root, args, { session, db }) {
+          if (typeof session?.itemId === 'string' && typeof session.listKey === 'string') {
+            return db[session.listKey].findOne({ where: { id: session.itemId } });
+          }
+          return null;
+        },
+      }),
+    },
+    mutation: {
+      [gqlNames.authenticateItemWithPassword]: graphql.field({
+        type: AuthenticationResult,
+        args: {
+          [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
+          [secretField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
+        },
+        async resolve(root, { [identityField]: identity, [secretField]: secret }, context) {
           if (!context.startSession) {
             throw new Error('No session implementation available on context');
           }
@@ -52,9 +77,9 @@ export function getBaseAuthSchema<I extends string, S extends string>({
           const result = await validateSecret(
             secretFieldImpl,
             identityField,
-            args[identityField],
+            identity,
             secretField,
-            args[secretField],
+            secret,
             dbItemAPI
           );
 
@@ -69,28 +94,8 @@ export function getBaseAuthSchema<I extends string, S extends string>({
           });
           return { sessionToken, item: result.item };
         },
-      },
-      Query: {
-        async authenticatedItem(root, args, { session, db }) {
-          if (typeof session?.itemId === 'string' && typeof session.listKey === 'string') {
-            return db[session.listKey].findOne({ where: { id: session.itemId } });
-          }
-          return null;
-        },
-      },
-      AuthenticatedItem: {
-        __resolveType(rootVal: any, { session }: KeystoneContext) {
-          return session?.listKey;
-        },
-      },
-      // TODO: Is this the preferred approach for this?
-      [gqlNames.ItemAuthenticationWithPasswordResult]: {
-        __resolveType(rootVal: any) {
-          return rootVal.sessionToken
-            ? gqlNames.ItemAuthenticationWithPasswordSuccess
-            : gqlNames.ItemAuthenticationWithPasswordFailure;
-        },
-      },
+      }),
     },
   };
+  return { extension, ItemAuthenticationWithPasswordSuccess };
 }

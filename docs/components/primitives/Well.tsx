@@ -5,17 +5,19 @@ import Link from 'next/link';
 import { AnchorHTMLAttributes, ReactNode } from 'react';
 
 import { Type } from './Type';
+import { Badge } from './Badge';
 
 export type WellGradient = 'grad1' | 'grad2' | 'grad3' | 'grad4';
 
 type WellProps = {
   grad?: WellGradient;
   heading?: ReactNode;
+  badge?: string;
   href: string;
   children: ReactNode;
 } & AnchorHTMLAttributes<HTMLAnchorElement>;
 
-export function Well({ grad = 'grad1', heading, href, children, ...props }: WellProps) {
+export function Well({ grad = 'grad1', heading, badge, href, children, ...props }: WellProps) {
   return (
     <Link href={href} passHref>
       <a
@@ -50,12 +52,25 @@ export function Well({ grad = 'grad1', heading, href, children, ...props }: Well
           look="heading20bold"
           css={{
             margin: '0 0 1rem 0 !important',
-            paddingRight: '2rem',
+            paddingRight: badge ? '6rem' : '2rem',
             fontSize: '1.25rem !important',
           }}
         >
           {heading} →
         </Type>
+        {badge && (
+          <Badge
+            look="info"
+            css={{
+              position: 'absolute',
+              top: '2rem',
+              right: '1.2rem',
+              transform: 'rotate(15deg)',
+            }}
+          >
+            {badge}
+          </Badge>
+        )}
         <Type as="p" look="body16">
           {children}
         </Type>

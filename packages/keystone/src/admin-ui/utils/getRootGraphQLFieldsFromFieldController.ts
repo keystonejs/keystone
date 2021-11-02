@@ -1,6 +1,6 @@
 import weakMemoize from '@emotion/weak-memoize';
 import { FragmentDefinitionNode, parse, SelectionSetNode } from 'graphql';
-import { FieldController } from '../../../types';
+import { FieldController } from '../../types';
 
 function extractRootFields(selectedFields: Set<string>, selectionSet: SelectionSetNode) {
   selectionSet.selections.forEach(selection => {

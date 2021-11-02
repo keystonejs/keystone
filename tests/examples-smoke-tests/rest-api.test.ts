@@ -1,6 +1,6 @@
 import { Browser, Page } from 'playwright';
 import fetch from 'node-fetch';
-import { exampleProjectTests } from './utils';
+import { exampleProjectTests, loadIndex } from './utils';
 
 exampleProjectTests('rest-api', browserType => {
   let browser: Browser = undefined as any;
@@ -8,7 +8,7 @@ exampleProjectTests('rest-api', browserType => {
   beforeAll(async () => {
     browser = await browserType.launch();
     page = await browser.newPage();
-    await page.goto('http://localhost:3000');
+    await loadIndex(page);
   });
   test('Load list', async () => {
     await Promise.all([page.waitForNavigation(), page.click('h3:has-text("People")')]);

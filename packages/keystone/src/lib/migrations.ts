@@ -25,8 +25,16 @@ function runMigrateWithDbUrl<T>(dbUrl: string, cb: () => T): T {
     process.env.PRISMA_HIDE_UPDATE_MESSAGE = '1';
     return cb();
   } finally {
-    process.env.DATABASE_URL = prevDBURLFromEnv;
-    process.env.PRISMA_HIDE_UPDATE_MESSAGE = prevHiddenUpdateMessage;
+    if (prevDBURLFromEnv === undefined) {
+      delete process.env.DATABASE_URL;
+    } else {
+      process.env.DATABASE_URL = prevDBURLFromEnv;
+    }
+    if (prevHiddenUpdateMessage === undefined) {
+      delete process.env.PRISMA_HIDE_UPDATE_MESSAGE;
+    } else {
+      process.env.PRISMA_HIDE_UPDATE_MESSAGE = prevHiddenUpdateMessage;
+    }
   }
 }
 

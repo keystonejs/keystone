@@ -78,15 +78,15 @@ Options:
 - `label`: The label displayed for this field in the Admin UI. Defaults to a human readable version of the field name.
 - `ui`: Controls how the field is displayed in the Admin UI.
   - `views`: A [resolved](https://nodejs.org/api/modules.html#modules_require_resolve_request_options) path to a module containing code to replace or extend the default Admin UI components for this field. See the [Custom Field Views](../guides/custom-field-views) guide for details on how to use this option.
-  - `createView` (default: `'edit'`): Controls the create view page of the Admin UI.
+  - `createView.fieldMode` (default: `'edit'`): Controls the create view page of the Admin UI.
     Can be one of `['edit', 'hidden']`, or an async function with an argument `{ session, context }` that returns one of `['edit', 'hidden']`.
     Defaults to the list's `ui.createView.defaultFieldMode` config if defined.
     See the [Schema API](./schema#ui) for details.
-  - `itemView` (default: `'edit'`): Controls the item view page of the Admin UI.
+  - `itemView.fieldMode` (default: `'edit'`): Controls the item view page of the Admin UI.
     Can be one of `['edit', 'read', 'hidden']`, or an async function with an argument `{ session, context, item }` that returns one of `['edit', 'read', 'hidden']`.
     Defaults to the list's `ui.itemView.defaultFieldMode` config if defined.
     See the [Schema API](./schema#ui) for details.
-  - `listView` (default: `'read'`): Controls the list view page of the Admin UI.
+  - `listView.fieldMode` (default: `'read'`): Controls the list view page of the Admin UI.
     Can be one of `['read', 'hidden']`, or an async function with an argument `{ session, context }` that returns one of `['read', 'hidden']`.
     Defaults to the list's `ui.listView.defaultFieldMode` config if defined.
     See the [Schema API](./schema#ui) for details.
