@@ -182,7 +182,7 @@ import { InferGetStaticPropsType } from 'next';
 import Link from 'next/link';
 
 // Import the generated Lists API from Keystone
-import { lists } from '.keystone/api';
+import { query } from '.keystone/api';
 
 // Home receives a `posts` prop from `getStaticProps` below
 export default function Home({
@@ -210,7 +210,7 @@ export default function Home({
 // Here we use the Lists API to load all the posts we want to display
 // The return of this function is provided to the `Home` component
 export async function getStaticProps() {
-  const posts = await lists.Post.findMany({ query: 'id title slug' });
+  const posts = await query.Post.findMany({ query: 'id title slug' });
   return { props: { posts } };
 }
 ```
@@ -226,7 +226,7 @@ import {
   InferGetStaticPropsType,
 } from 'next';
 import Link from 'next/link';
-import { lists } from '.keystone/api';
+import { query } from '.keystone/api';
 
 export default function PostPage({
   post,
@@ -247,7 +247,7 @@ export default function PostPage({
 }
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
-  const posts = await lists.Post.findMany({
+  const posts = await query.Post.findMany({
     query: `slug`,
   });
 
@@ -265,7 +265,7 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
 export async function getStaticProps({
   params,
 }: GetStaticPropsContext) {
-  const post = await lists.Post.findOne({
+  const post = await query.Post.findOne({
     where: { slug: params!.slug as string },
     query: 'id title content',
   });
