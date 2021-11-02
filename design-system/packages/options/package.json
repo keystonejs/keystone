@@ -16,7 +16,7 @@
     "@keystone-ui/fields": "^5.0.1",
     "@keystone-ui/icons": "^4.0.2",
     "@types/react-select": "^5.0.0",
-    "react-select": "^5.1.0"
+    "react-select": "^5.2.0"
   },
   "engines": {
     "node": "^12.20 || >= 14.13"
