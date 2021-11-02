@@ -133,4 +133,4 @@ Then running `git rebase --interactive origin/main`.
 
 Resolve any conflicts then run `git push --force`.
 
-Branches should now be mostly aligned on the branches page <https://github.com/keystonejs/keystone/branches>.
+The `website_live` branch should no longer be behind in commits on the branches page <https://github.com/keystonejs/keystone/branches>.
