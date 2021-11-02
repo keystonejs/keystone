@@ -7,7 +7,7 @@ import { Emoji } from '../../components/primitives/Emoji';
 
 The ID Field option has been revamped with `cuid`, `uuid` and `autoincrement` options! <Emoji symbol="🤹" alt="Juggler" />
 
-```sh
+```json
 "@keystone-next/admin-ui-utils": "5.0.3",
 "@keystone-next/auth": "28.0.0",
 "@keystone-next/cloudinary@": "6.0.2",
@@ -63,5 +63,12 @@ config({
 
 You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-06-29) on GitHub.
 
-export default ({ children, ...props }) => <Markdown description="The ID Field option has been revamped with cuid, uuid and autoincrement options." {...props}>{children}</Markdown>;
-export { getStaticProps }
+export default ({ children, ...props }) => (
+  <Markdown
+    description="The ID Field option has been revamped with cuid, uuid and autoincrement options."
+    {...props}
+  >
+    {children}
+  </Markdown>
+);
+export { getStaticProps };

@@ -1,0 +1,145 @@
+import { Markdown, getStaticProps } from '../../components/Markdown';
+import { Emoji } from '../../components/primitives/Emoji';
+import { Stack } from '../../components/primitives/Stack';
+
+# Release: 2nd November 2021
+
+**Server-side Live Reloading** is here! <Emoji symbol="🚀" alt="Rocket" /> Plus more updates as we finalise the Keystone 6 GA release.
+
+```json
+"keystone-next/auth": "35.0.0",
+"keystone-next/cloudinary": "10.0.0",
+"keystone-next/fields-document": "12.0.0",
+"keystone-next/keystone": "27.0.0",
+"keystone-next/session-store-redis": "7.0.0",
+```
+
+!> Like this release? [Give us a star](https://github.com/keystonejs/keystone) on GitHub!
+
+**⚠️ &nbsp; This release contains breaking changes, please see below!**
+
+## Server-side Live Reloading <Emoji symbol="🚀" alt="Rocket" />
+
+Keystone now supports live reloading with `keystone-next dev`.
+
+You can now update your GraphQL schema, change your hooks and access control, log errors and see how your data returns, then immediately use the playground to test it and iterate.
+
+This is in addition to the current support for live reloading changes to custom views in the Admin UI.
+
+### How it works
+
+When you run `keystone-next dev` now, it will start watching for changes to your config and schema. When changes are detected, Keystone will reload your config and schema and hot-swap the GraphQL endpoint.
+
+To balance performance and predictability, Keystone does not do a complete restart when changes are made. The things to know are:
+
+#### Prisma Schema Changes
+
+The Prisma Client is **not** reloaded as you make changes to the Keystone Schema. If you make changes that affect your Prisma schema, Keystone will exit the process and wait for you to run `keystone-next dev` again.
+
+This is because making database schema changes involves generating database migrations, and can result in data loss if those migrations are automatically run against your current database.
+
+When adding or removing lists and fields (except virtual fields), we recommend you finish making your changes then start the `dev` process again. This will generate a single migration for all the changes you’ve made, and interactively prompt you to resolve any migrations that can't be run safely.
+
+#### onConnect is not hot reloaded
+
+The `db.onConnect` function (if specified) will only be run **once** when Keystone is started, and not when your config is hot reloaded.
+
+This is because `onConnect` is typically used to run data seeding and other once-off processes that should be executed once before the Keystone server comes online. Re-running it whenever a file is changed could result in a heavy database load, harming overall dev performance and introducing unpredictable behaviour.
+
+If you make changes to the `onConnect` function, you need to manually stop the `dev` process and start it again for your changes to take effect.
+
+## GraphQL Playground and Apollo Sandbox <Emoji symbol="🏝" alt="Beach" />
+
+<Stack orientation="horizontal">
+<img src="/assets/releases/2021-11-01-playground.png" width="100%" />
+<img src="/assets/releases/2021-11-01-studio.png" width="100%" />
+</Stack>
+
+In the last release we upgraded to Apollo Server 3 which brought Apollo Sandbox as the default development UI for testing your GraphQL queries.
+
+This surfaced a number of issues as **Apollo Sandbox** is hosted remotely rather than locally, including CORS issues and security concerns, making it a bad default.
+
+With this in mind, Keystone will now go back to using the **GraphQL Playground** by default instead of **Apollo Sandbox** as it did prior to updating to Apollo Server 3.
+
+We have now introduced the `graphql.playground` config option, with three possible settings:
+
+* `true` will configure Apollo Server plugins to enable the GraphQL Playground
+* `false` will configure Apollo Server plugins to disable any `GET` requests to the GraphQL endpoint
+* `'apollo'` will add no plugins to Apollo Server, enabling the new Apollo Sandbox behaviour
+
+`graphql.playground` defaults to `process.env.NODE_ENV !== 'production'` which matches the previous Keystone 6 behaviour before the October update and Apollo Server 3.
+
+## Next.js Update <Emoji symbol="✨" alt="Sparkles" />
+
+We've updated our Next.js dependency from `11.x` to `12.x`! This latest release of Next.js includes a new Rust powered compiler with faster refresh and build rates, making your  Keystone dev experience even faster.
+
+Check out the [Next.js blog]( https://nextjs.org/blog/next-12) for more details.
+
+## Relationship Filtering <Emoji symbol="❤️" alt="Heart" />
+
+If you have hundreds of items in your relationship fields, the Admin UI was sometimes displaying duplicate entries and/or missing entries.
+
+We've made a series of improvements to fetching data resulting in a performance boost, as well as filtering fixes. We also changed the way we detect when an ID is pasted into the field allowing you to select a related item quickly.
+
+## CORS Configuration <Emoji symbol="🌐" alt="World" />
+
+We've removed the `graphql.cors` option, we had one too many ways to configure CORS and it was proving to be confusing.
+
+You should now exclusively configure `cors` with the `server.cors` option.
+
+## Renamed `src` in Image and File Fields <Emoji symbol="🗄️" alt="File Cabinet" />
+
+**⚠️ &nbsp; Breaking Change**
+
+The `src` field on the output of `image` and `file` fields has been renamed to `url`.
+
+Subsequently the `getSrc` function on `ImagesContext` and `FilesContext` has been renamed to `getUrl`.
+
+## Removed `resolveFields` <Emoji symbol="🚧" alt="Construction" />
+
+The deprecated `resolveFields` from `context.query` has been removed.
+
+If you were still using it, you should switch to providing `the query option` to `context.query` or use `context.db` if you were providing `false`.
+
+The `context.query` functions will now also throw an error if an empty string is passed to `query` rather than silently returning what the `context.db` functions return, you must select at least one field or omit the `query` option to default to selecting the `id`.
+
+## Internal Types Renamed <Emoji symbol="✏️" alt="Pencil" />
+
+We have updated `@graphql-ts/schema` to `0.5.0`.
+
+The `__rootVal` properties on `ObjectType`, `InterfaceType` and `UnionType` have been renamed to `__source`, this is intended to be internal but you may have depended on it, if you were using it, rename `__rootVal` to `__source`.
+
+In addition the `fields` property on `InterfaceType` has been renamed to `__fields` and it will no longer exist at runtime like the other types.
+
+## GraphQL Schema Reorder <Emoji symbol="🛗" alt="Elevator" />
+
+We've made internal changes to the `endSession` field on the `Mutation` type and the `keystone` field on the `Query` type. This may result in re-ordering in your generated `schema.graphql` file.
+
+## Miscellaneous Fixes <Emoji symbol="⚙️" alt="Gear" />
+
+- The `sessionSchema` export of `@keystone-next/keystone/session` has been removed.
+- `context.session` no longer has a value if the session is invalid.
+- `text`, `integer`, `float` and `decimal` on the item view now render correctly when using `ui.itemView.fieldMode: 'read'`.
+- Admin UI home page now respects `ui.hideCreate` and won't show a plus button when create is disabled.
+- Read-only arrays are now accepted where previously mutable arrays were required. Using `as const` when writing an array and then passing it to various APIs in Keystone will now work.
+- Fixed bug in `LinkToRelatedItems` button for double sided relationships.
+- Updated minor typos in GraphQL errors.
+
+## Prisma Update <Emoji symbol="🗃" alt="Card File Box" />
+
+We've updated our Prisma dependency from `3.1.1` to `3.3.0`!
+
+Check out the [Prisma releases page](https://github.com/prisma/prisma/releases) for more details.
+
+## Credits <Emoji symbol="💫" alt="Circle Star" />
+
+- Added a short plain-text display to `document` fields in the `List` view as well as a rendered document view in `CardValue`. Thanks [@oplik0](https://github.com/oplik0)!
+
+- We now support extensions with numerical characters when generating safe filenames. Thanks [@Zlitus](https://github.com/Zlitus)!
+
+## Complete Changelog <Emoji symbol="📜" alt="Scroll" />
+
+You can also view the [verbose release notes](https://github.com/keystonejs/keystone/pull/6762) for this release on GitHub.
+
+export default ({ children, ...props }) => <Markdown description="2021-10-05" {...props}>{children}</Markdown>;
+export { getStaticProps }

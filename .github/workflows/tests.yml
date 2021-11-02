@@ -52,11 +52,11 @@ jobs:
         uses: actions/checkout@v2
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
 
-      - name: Setup Node.js 14.x
+      - name: Setup Node.js LTS
         uses: actions/setup-node@main
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         with:
-          node-version: 14.x
+          node-version: lts/*
 
       - name: Get yarn cache directory path
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
@@ -111,10 +111,10 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
-      - name: Setup Node.js 14.x
+      - name: Setup Node.js LTS
         uses: actions/setup-node@main
         with:
-          node-version: 14.x
+          node-version: lts/*
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -150,10 +150,10 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
-      - name: Setup Node.js 14.x
+      - name: Setup Node.js LTS
         uses: actions/setup-node@main
         with:
-          node-version: 14.x
+          node-version: lts/*
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -191,6 +191,7 @@ jobs:
             'document-field.test.ts',
             'default-values.test.ts',
             'extend-graphql-schema.test.ts',
+            'extend-graphql-schema-graphql-ts.test.ts',
             'json.test.ts',
             'rest-api.test.ts',
             'roles.test.ts',
@@ -209,11 +210,11 @@ jobs:
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         uses: actions/checkout@v2
 
-      - name: Setup Node.js 14.x
+      - name: Setup Node.js LTS
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         uses: actions/setup-node@main
         with:
-          node-version: 14.x
+          node-version: lts/*
 
       - name: Get yarn cache directory path
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
@@ -269,11 +270,11 @@ jobs:
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         uses: actions/checkout@v2
 
-      - name: Setup Node.js 14.x
+      - name: Setup Node.js LTS
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         uses: actions/setup-node@main
         with:
-          node-version: 14.x
+          node-version: lts/*
 
       - name: Get yarn cache directory path
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
@@ -314,10 +315,10 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
-      - name: Setup Node.js 14.x
+      - name: Setup Node.js LTS
         uses: actions/setup-node@main
         with:
-          node-version: 14.x
+          node-version: lts/*
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path

@@ -1,10 +1,17 @@
-import type { GraphQLSchemaExtension } from '@keystone-next/keystone/types';
-
+import type { ItemRootValue } from '@keystone-next/keystone/types';
+import { graphql } from '@keystone-next/keystone';
 import { AuthGqlNames, AuthTokenTypeConfig, SecretFieldImpl } from '../types';
 
 import { createAuthToken } from '../lib/createAuthToken';
 import { validateAuthToken } from '../lib/validateAuthToken';
 import { getAuthTokenErrorMessage } from '../lib/getErrorMessage';
+
+const errorCodes = ['FAILURE', 'TOKEN_EXPIRED', 'TOKEN_REDEEMED'] as const;
+
+const MagicLinkRedemptionErrorCode = graphql.enum({
+  name: 'MagicLinkRedemptionErrorCode',
+  values: graphql.enumValues(errorCodes),
+});
 
 export function getMagicAuthLinkSchema<I extends string>({
   listKey,
@@ -12,41 +19,49 @@ export function getMagicAuthLinkSchema<I extends string>({
   gqlNames,
   magicAuthLink,
   magicAuthTokenSecretFieldImpl,
+  base,
 }: {
   listKey: string;
   identityField: I;
   gqlNames: AuthGqlNames;
   magicAuthLink: AuthTokenTypeConfig;
   magicAuthTokenSecretFieldImpl: SecretFieldImpl;
-}): GraphQLSchemaExtension {
+  base: graphql.BaseSchemaMeta;
+}) {
+  const RedeemItemMagicAuthTokenFailure = graphql.object<{
+    code: typeof errorCodes[number];
+    message: string;
+  }>()({
+    name: gqlNames.RedeemItemMagicAuthTokenFailure,
+    fields: {
+      code: graphql.field({ type: graphql.nonNull(MagicLinkRedemptionErrorCode) }),
+      message: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    },
+  });
+  const RedeemItemMagicAuthTokenSuccess = graphql.object<{ token: string; item: ItemRootValue }>()({
+    name: gqlNames.RedeemItemMagicAuthTokenSuccess,
+    fields: {
+      token: graphql.field({ type: graphql.nonNull(graphql.String) }),
+      item: graphql.field({ type: graphql.nonNull(base.object(listKey)) }),
+    },
+  });
+  const RedeemItemMagicAuthTokenResult = graphql.union({
+    name: gqlNames.RedeemItemMagicAuthTokenResult,
+    types: [RedeemItemMagicAuthTokenSuccess, RedeemItemMagicAuthTokenFailure],
+    resolveType(val) {
+      return 'token' in val
+        ? gqlNames.RedeemItemMagicAuthTokenSuccess
+        : gqlNames.RedeemItemMagicAuthTokenFailure;
+    },
+  });
   return {
-    typeDefs: `
-      # Magic links
-      type Mutation {
-        ${gqlNames.sendItemMagicAuthLink}(${identityField}: String!): Boolean!
-        ${gqlNames.redeemItemMagicAuthToken}(${identityField}: String!, token: String!): ${gqlNames.RedeemItemMagicAuthTokenResult}!
-      }
-      union ${gqlNames.RedeemItemMagicAuthTokenResult} = ${gqlNames.RedeemItemMagicAuthTokenSuccess} | ${gqlNames.RedeemItemMagicAuthTokenFailure}
-      type ${gqlNames.RedeemItemMagicAuthTokenSuccess} {
-        token: String!
-        item: ${listKey}!
-      }
-      type ${gqlNames.RedeemItemMagicAuthTokenFailure} {
-        code: MagicLinkRedemptionErrorCode!
-        message: String!
-      }
-      enum MagicLinkRedemptionErrorCode {
-        FAILURE
-        TOKEN_EXPIRED
-        TOKEN_REDEEMED
-      }
-    `,
-    resolvers: {
-      Mutation: {
-        async [gqlNames.sendItemMagicAuthLink](root: any, args: { [P in I]: string }, context) {
+    mutation: {
+      [gqlNames.sendItemMagicAuthLink]: graphql.field({
+        type: graphql.nonNull(graphql.Boolean),
+        args: { [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }) },
+        async resolve(rootVal, { [identityField]: identity }, context) {
           const dbItemAPI = context.sudo().db[listKey];
           const tokenType = 'magicAuth';
-          const identity = args[identityField];
 
           const result = await createAuthToken(identityField, identity, dbItemAPI);
 
@@ -67,11 +82,14 @@ export function getMagicAuthLinkSchema<I extends string>({
           }
           return true;
         },
-        async [gqlNames.redeemItemMagicAuthToken](
-          root: any,
-          args: { [P in I]: string } & { token: string },
-          context
-        ) {
+      }),
+      [gqlNames.redeemItemMagicAuthToken]: graphql.field({
+        type: graphql.nonNull(RedeemItemMagicAuthTokenResult),
+        args: {
+          [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
+          token: graphql.arg({ type: graphql.nonNull(graphql.String) }),
+        },
+        async resolve(rootVal, { [identityField]: identity, token }, context) {
           if (!context.startSession) {
             throw new Error('No session implementation available on context');
           }
@@ -83,9 +101,9 @@ export function getMagicAuthLinkSchema<I extends string>({
             magicAuthTokenSecretFieldImpl,
             tokenType,
             identityField,
-            args[identityField],
+            identity,
             magicAuthLink.tokensValidForMins,
-            args.token,
+            token,
             dbItemAPI
           );
 
@@ -105,16 +123,7 @@ export function getMagicAuthLinkSchema<I extends string>({
           });
           return { token: sessionToken, item: result.item };
         },
-      },
-
-      // TODO: Is this the preferred approach for this?
-      [gqlNames.RedeemItemMagicAuthTokenResult]: {
-        __resolveType(rootVal: any) {
-          return rootVal.token
-            ? gqlNames.RedeemItemMagicAuthTokenSuccess
-            : gqlNames.RedeemItemMagicAuthTokenFailure;
-        },
-      },
+      }),
     },
   };
 }

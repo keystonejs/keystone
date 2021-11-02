@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/cloudinary",
-  "version": "9.0.0",
+  "version": "10.0.0",
   "license": "MIT",
   "main": "dist/keystone-next-cloudinary.cjs.js",
   "module": "dist/keystone-next-cloudinary.esm.js",
@@ -10,17 +10,17 @@
     "@keystone-ui/core": "^3.2.1",
     "@keystone-ui/fields": "^5.0.1",
     "@keystone-ui/pill": "^5.0.2",
-    "@types/react": "^17.0.29",
+    "@types/react": "^17.0.33",
     "cloudinary": "^1.27.1",
     "cuid": "^2.1.8",
     "graphql-upload": "^12.0.0",
     "react": "^17.0.2"
   },
   "peerDependencies": {
-    "@keystone-next/keystone": "^26.1.0"
+    "@keystone-next/keystone": "^27.0.0"
   },
   "devDependencies": {
-    "@keystone-next/keystone": "^26.1.0",
+    "@keystone-next/keystone": "^27.0.0",
     "mime": "^2.5.2"
   },
   "engines": {

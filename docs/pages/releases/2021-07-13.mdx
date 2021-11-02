@@ -7,8 +7,7 @@ import { Emoji } from '../../components/primitives/Emoji';
 
 More examples, types, and UI rendering tweaks as we push forward towards a general availability release! <Emoji symbol="🚀" alt="Rocket" />
 
-```sh
-"@keystone-ui/core": "3.1.1",
+```json
 "@keystone-next/admin-ui-utils": "5.0.4",
 "@keystone-next/auth": "29.0.0",
 "@keystone-next/cloudinary": "6.0.4",
@@ -28,13 +27,21 @@ More examples, types, and UI rendering tweaks as we push forward towards a gener
 
 We have a [new example for custom field views](https://github.com/keystonejs/keystone/tree/main/examples/custom-field-view), demonstrating how to create a custom field view for a JSON field. This example allows users to add, edit and remove navigation items from a list:
 
-<img width="534" alt="Screenshot of Custom Field View" src="https://user-images.githubusercontent.com/737821/125416760-ad68037b-7978-4c98-9d03-c877dadb98c3.png" />
+<img
+	width="534"
+	alt="Screenshot of Custom Field View"
+	src="https://user-images.githubusercontent.com/737821/125416760-ad68037b-7978-4c98-9d03-c877dadb98c3.png"
+/>
 
 ### Inline Relationship in Document Field
 
 Rendering an inline relationship for the document field has been added to the existing [example project](https://github.com/keystonejs/keystone/blob/b21b4e0595e65d44d5863417f9e49981f1f8da54/examples/document-field/schema.ts#L28) as well as our [docs page](https://keystonejs.com/docs/guides/document-fields#inline-relationships):
 
-<img width="288" alt="Screenshot of Inline Relationship in Document Field" src="https://user-images.githubusercontent.com/737821/125416705-70d8cfb8-2275-440a-9720-c7e6e56e2b8b.png" />
+<img
+	width="288"
+	alt="Screenshot of Inline Relationship in Document Field"
+	src="https://user-images.githubusercontent.com/737821/125416705-70d8cfb8-2275-440a-9720-c7e6e56e2b8b.png"
+/>
 
 Be sure to check out all the [examples](https://github.com/keystonejs/keystone/tree/main/examples), with more to come.
 
@@ -68,5 +75,12 @@ Our `packages-next` folder has moved over to `packages` as part of our push to a
 
 You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-07-13) on GitHub.
 
-export default ({ children, ...props }) => <Markdown description="More examples, types, and UI rendering tweaks as we push forward towards a general availability release." {...props}>{children}</Markdown>;
-export { getStaticProps }
+export default ({ children, ...props }) => (
+	<Markdown
+		description="More examples, types, and UI rendering tweaks as we push forward towards a general availability release."
+		{...props}
+	>
+		{children}
+	</Markdown>
+);
+export { getStaticProps };

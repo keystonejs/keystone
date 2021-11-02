@@ -3,6 +3,7 @@ import fs from 'fs/promises';
 import { Browser, Page, chromium } from 'playwright';
 import { parse, print } from 'graphql';
 import { ExecaChildProcess } from 'execa';
+import fetch from 'node-fetch';
 import { generalStartKeystone, loadIndex, makeGqlRequest, promiseSignal } from './utils';
 
 const gql = ([content]: TemplateStringsArray) => content;
@@ -56,6 +57,12 @@ test('Creating an item with the GraphQL API and navigating to the item page for 
   expect(value).toBe('blah');
 });
 
+test('api routes written with getAdditionalFiles containing [...rest] work', async () => {
+  expect(
+    await fetch('http://localhost:3000/api/blah/asdasdas/das/da/sdad').then(x => x.text())
+  ).toEqual('something');
+});
+
 test('changing the label of a field updates in the Admin UI', async () => {
   await replaceSchema('second');
 
@@ -101,7 +108,7 @@ test('the generated schema includes schema updates', async () => {
 
 test("a syntax error is shown and doesn't crash the process", async () => {
   await replaceSchema('syntax-error');
-  await expectContentInStdio(process, 'error - ../../schemas/syntax-error.js:4:6');
+  await expectContentInStdio(process, 'error - ../../schemas/syntax-error.js');
 });
 
 test("a runtime error is shown and doesn't crash the process", async () => {

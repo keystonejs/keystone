@@ -1,13 +1,15 @@
 import Path from 'path';
+import { promisify } from 'util';
 import fs from 'fs-extra';
-
 import fastGlob from 'fast-glob';
 import resolve from 'resolve';
 import { GraphQLSchema } from 'graphql';
-import normalizePath from 'normalize-path';
+import { walk as _walk } from '@nodelib/fs.walk';
 import type { KeystoneConfig, AdminMetaRootVal, AdminFileToWrite } from '../../types';
 import { writeAdminFiles } from '../templates';
 import { serializePathForImport } from '../utils/serializePathForImport';
+
+const walk = promisify(_walk);
 
 function getDoesAdminConfigExist() {
   try {
@@ -151,21 +153,21 @@ export const generateAdminUI = async (
   // - they won't create pages in Admin UI which is really what this deleting is about avoiding
   // - we'll remove them when the user restarts the process
   if (isLiveReload) {
-    // fast-glob expects unix style paths/globs in ignore so we need to normalize to that
-    const ignore = adminFiles.map(x => normalizePath(x.outputPath));
-    ignore.push('.next');
-    ignore.push('next-env.d.ts');
-    ignore.push('public');
-    ignore.push('pages/api/__keystone_api_build.js');
-    for (const filename of uniqueFiles) {
-      ignore.push(normalizePath(filename));
-    }
-    const filesToDelete = await fastGlob(['**/*'], {
-      cwd: projectAdminPath,
-      ignore,
-      followSymbolicLinks: false,
-      absolute: true,
+    const ignoredDirs = new Set(['.next', 'public'].map(x => Path.resolve(projectAdminPath, x)));
+    const ignoredFiles = new Set(
+      [
+        ...adminFiles.map(x => x.outputPath),
+        ...uniqueFiles,
+        'next-env.d.ts',
+        'pages/api/__keystone_api_build.js',
+      ].map(x => Path.resolve(projectAdminPath, x))
+    );
+
+    const entries = await walk(projectAdminPath, {
+      deepFilter: entry => !ignoredDirs.has(entry.path),
+      entryFilter: entry => entry.dirent.isFile() && !ignoredFiles.has(entry.path),
     });
-    await Promise.all(filesToDelete.map(filepath => fs.remove(filepath)));
+
+    await Promise.all(entries.map(entry => fs.remove(entry.path)));
   }
 };

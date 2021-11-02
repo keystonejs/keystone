@@ -239,12 +239,12 @@ This fragment tells the Keystone Admin UI which values to show in the item page 
 
 !> This information is specifically for TypeScript users of the `graphql.object()` function with a self-referential GraphQL type.
 
-GraphQL types will often contain references to themselves and to make TypeScript allow that, you need have an explicit type annotation of `graphql.ObjectType<RootVal>` along with making `fields` a function that returns the object.
+GraphQL types will often contain references to themselves and to make TypeScript allow that, you need have an explicit type annotation of `graphql.ObjectType<Source>` along with making `fields` a function that returns the object.
 
 ```ts
-type PersonRootVal = { name: string; friends: PersonRootVal[] };
+type PersonSource = { name: string; friends: PersonSource[] };
 
-const Person: graphql.ObjectType<PersonRootVal> = graphql.object<PersonRootVal>()({
+const Person: graphql.ObjectType<PersonSource> = graphql.object<PersonSource>()({
   name: "Person",
   fields: () => ({
     name: graphql.field({ type: graphql.String }),

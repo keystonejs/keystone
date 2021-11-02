@@ -139,7 +139,7 @@ export type ListAdminUIConfig<
    */
   itemView?: {
     /**
-     * The default field mode for fields on the create view for this list.
+     * The default field mode for fields on the item view for this list.
      * This controls what people can do for fields
      * Specific field modes on a per-field basis via a field's config.
      * @default 'edit'
@@ -152,7 +152,7 @@ export type ListAdminUIConfig<
    */
   listView?: {
     /**
-     * The default field mode for fields on the create view for this list.
+     * The default field mode for fields on the list view for this list.
      * Specific field modes on a per-field basis via a field's config.
      * @default 'read'
      */
