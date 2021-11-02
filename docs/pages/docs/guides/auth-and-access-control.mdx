@@ -161,7 +161,7 @@ The way to think about access control is –
 
 You define access control for each List (and field) individually; the rules you specify will always be run, even when the list being queried or mutated through a relationship.
 
-### Example
+### Posts Example
 
 Let's say we have a list of Blog Posts, which have a published status. We want Admin users to see all blog posts and be able to crete and update them, but anonymous (public) users can only see published posts and can't write to the API. Our Post list might look like this:
 
@@ -171,6 +171,7 @@ const Post = list({
     title: text(),
     isPublished: checkbox(),
     publishDate: timestamp(),
+    author: relationship({ ref: 'Person' }),
     // more content fields would go here
   },
 });
@@ -190,20 +191,18 @@ type Session = {
 We can now set up operational access control to restrict the **create**, **update** and **delete** operations to authenticated users with the `isAdmin` checkbox set:
 
 ```ts
-const onlyAdmins = ({ session }: { session: Session }) => session?.data.isAdmin;
+const isAdmin = ({ session }: { session: Session }) => session?.data.isAdmin;
 
 const Post = list({
   access: {
     operation: {
-      create: onlyAdmins,
-      update: onlyAdmins,
-      delete: onlyAdmins,
+      create: isAdmin,
+      update: isAdmin,
+      delete: isAdmin,
     },
   },
   fields: {
-    title: text(),
-    isPublished: checkbox(),
-    publishDate: timestamp(),
+    // see above
   },
 });
 ```
@@ -228,9 +227,7 @@ const Post = list({
     }
   },
   fields: {
-    title: text(),
-    isPublished: checkbox(),
-    publishDate: timestamp(),
+    // see above
   },
 });
 ```
@@ -281,7 +278,7 @@ query {
 
 Unauthenticated users won't be able to find unpublished posts by querying the relationship field on tags, and you don't have to do anything special to make this work.
 
-### Operation-specific Access Control
+### Operations
 
 Each specific operation that can be performed through the GraphQL API has corresponding access control you can provide. The four operations are:
 
@@ -313,7 +310,7 @@ Both of these operations will "read" the user's name. Having access control name
 
 ### Different levels of Access Control
 
-Keystone provides three different levels of access control for lists, as well as field-level access control. Here are all the available functions:
+Keystone provides three different levels of access control for lists, as well as field-level access control. Here are the available functions for lists:
 
 ```ts
 type Filter = Record<string, any>; // the GraphQL Filters for the List
@@ -338,6 +335,8 @@ type Access = {
 };
 ```
 
+!> We'll cover field access control separately below
+
 You'll generally only need to use a subset of the available options:
 
 - If you want to block an operation based on Session Data, use `operation`
@@ -358,7 +357,7 @@ In addition to returning filters, you can return a boolean where:
 
 Query filters are also applied to count operations, so you can paginate items predictably without revealing the existence of items the user does not have access to.
 
-Although Keystone doesn't implement database-level security, the design and effect of `filter` access control is similar to [Row Level Security](https://www.postgresql.org/docs/9.5/ddl-rowsecurity.html) in Postgres, with the benefit of being expressed declaratively in TypeScript and using the same filter syntax as the GraphQL API. This makes it easier to reason about in the context of your schema, session data, and other logic in your application.
+Although Keystone doesn't implement database-level security, the design and effect of `filter` access control is similar to [Row Level Security](https://www.postgresql.org/docs/current/ddl-rowsecurity.html) in Postgres, with the benefit of being expressed declaratively in TypeScript and using the same filter syntax as the GraphQL API. This makes it easier to reason about in the context of your schema, session data, and other logic in your application.
 
 You can't specify filters for the `create` operation because you can't query records that don't exist yet.
 
@@ -411,17 +410,14 @@ When you need it, you can call `context.sudo()` to create a new context with ele
 For example, we probably want to block all public access to querying users in our system:
 
 ```ts
-const onlyAdmins = ({ session }: { session: Session }) => session?.data.isAdmin;
+const isAdmin = ({ session }: { session: Session }) => session?.data.isAdmin;
 
 const Person = list({
   access: {
-    query: onlyAdmins,
+    query: isAdmin,
   },
   fields: {
-    name: text(),
-    email: text({ isIndexed: 'unique' }),
-    password: password(),
-    isAdmin: checkbox(),
+    // see above
   },
 }),
 ```
@@ -453,3 +449,84 @@ const extendGraphqlSchema = graphQLSchemaExtension({
 ```
 
 export default ({ children }) => <Markdown description="Learn how to use Keystone's built-in Authentication and Access Control systems.">{children}</Markdown>;
+
+## Field Access Control
+
+We've covered access control for lists now; but Keystone also lets you specify field-level access control, which is important when users should only be able to perform operations on _some of the fields_ in items that they can access.
+
+You can provide field-level rules for:
+
+* Read – applied when the field is selected through any GraphQL operation
+* Create – applied when items are being created
+* Update – applied when items are being updated
+
+!> If you want to completely block users from setting a field's value, make sure you set both the `create` and `update` rules.
+
+For more information about the arguments provided to field rules, see the [Access Control API Docs](../apis/access-control#field-access-control)
+
+### People Example
+
+Building on our blog example above, let's implement the following rules for our **Person** list:
+
+* Anyone should be able to see the names of people in the system (otherwise we wouldn't be able to display authors' names)
+* Visitors are never able to see a person's email addresses
+* Users are able to see their own email address
+* Users can update their own name and email address
+* Users can only update their own password
+* Admins can update information for any user _except_ their password
+* Only admins can change the `isAdmin` checkbox
+* Only admins can create and delete users
+
+The implementation of these rules would look like this:
+
+```ts
+type PersonData = {
+  id: string;
+  name: string;
+  email: string;
+  isAdmin: boolean;
+};
+
+// Validate there is a user with a valid session
+const isUser = ({ session }: { session: Session }) =>
+  !!session?.data.id;
+
+// Validate the current user is an Admin
+const isAdmin = ({ session }: { session: Session }) =>
+  session?.data.isAdmin;
+
+// Validate the current user is updating themselves
+const isPerson = ({ session, item }: { session: Session, item: Person }) =>
+  session?.data.id === item.id;
+
+// Validate the current user is an Admin, or updating themselves
+const isAdminOrPerson = ({ session, item }: { session: Session, item: Person }) =>
+  isAdmin({ session }) || isPerson({ session, item });
+
+const Person = list({
+  access: {
+    operation: {
+      create: isAdmin,
+      delete: isAdmin,
+    },
+    item: {
+      update: isAdminOrPerson,
+    },
+  },
+  fields: {
+    name: text(),
+    email: text({ isIndexed: 'unique', access: {
+      read: isAdminOrPerson,
+    }}),
+    password: password({ access: {
+      // Note: password fields never reveal their value, only whether a value exists
+      read: isAdminOrPerson,
+      update: isPerson,
+    }}),
+    isAdmin: checkbox({ access: {
+      read: isUser,
+      update: isAdmin,
+    }}),
+  },
+});
+```
