@@ -113,14 +113,6 @@ Since the example projects don't get published anywhere and don't expose API, it
 
 Minor refactoring, including incorporating changes to Keystone APIs, would not warrant updating the package version.
 
-#### When we don't publish changes
-
-Sometimes a PR should not include a changeset, or cause a new version of a package to be published. These cases include:
-
-- A dependency is bumped by a patch version, and the version is specified with a caret range
-- A dependency is bumped by a minor or major version but it has no impact on the package API or behaviour (e.g a feature is added in a minor release, but ignored by Keystone)
-- Internal refactoring to improve code clarity or organisation that has no impact on the package API or behaviour
-
 Generally, these guidelines are in place so that we don't spam consumers with version upgrades that don't provide value. They are subjective however, and not "one size fits all" so if you're not sure whether a change warrants a version bump, ask for advice in the PR.
 
 ### Release Guidelines
