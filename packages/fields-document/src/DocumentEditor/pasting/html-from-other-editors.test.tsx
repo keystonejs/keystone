@@ -38,7 +38,6 @@ test('confluence', () => {
       >
         <text>
           Heading 1
-          <cursor />
         </text>
       </heading>
       <heading
@@ -244,6 +243,7 @@ test('confluence', () => {
       >
         <text>
           heading align end
+          <cursor />
         </text>
       </heading>
       <paragraph>
@@ -302,7 +302,6 @@ there is a break before this</p>
       >
         <text>
           Heading 1
-          <cursor />
         </text>
       </heading>
       <heading
@@ -444,6 +443,7 @@ there is a break before this</p>
         <text>
           some text
     there is a break before this
+          <cursor />
         </text>
       </paragraph>
     </editor>
@@ -466,7 +466,6 @@ test('dropbox paper', () => {
       >
         <text>
           Heading 1
-          <cursor />
         </text>
       </heading>
       <heading
@@ -612,6 +611,7 @@ test('dropbox paper', () => {
       <paragraph>
         <text>
           more test
+          <cursor />
         </text>
       </paragraph>
     </editor>
@@ -625,11 +625,6 @@ test('google docs', () => {
     )
   ).toMatchInlineSnapshot(`
     <editor>
-      <paragraph>
-        <text>
-          
-        </text>
-      </paragraph>
       <heading
         level={1}
       >

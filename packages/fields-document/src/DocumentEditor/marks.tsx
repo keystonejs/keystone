@@ -86,10 +86,9 @@ export function withMarks(
       for (const [mark, shortcuts] of Object.entries(selectedMarkdownShortcuts)) {
         for (const shortcutText of shortcuts!) {
           if (text === shortcutText[shortcutText.length - 1]) {
-            const startOfBlock = Editor.start(
-              editor,
-              Editor.above(editor, { match: node => Editor.isBlock(editor, node) })![1]
-            );
+            // this function is not inlined because
+            // https://github.com/swc-project/swc/issues/2622
+            const startOfBlock = getStartOfBlock(editor);
 
             let startOfBlockToEndOfShortcutString = Editor.string(editor, {
               anchor: editor.selection.anchor,
@@ -186,4 +185,11 @@ export function withMarks(
   };
 
   return editor;
+}
+
+function getStartOfBlock(editor: Editor) {
+  return Editor.start(
+    editor,
+    Editor.above(editor, { match: node => Editor.isBlock(editor, node) })![1]
+  );
 }

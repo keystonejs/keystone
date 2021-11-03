@@ -75,13 +75,18 @@ test('pasting from another slate editor works', () => {
   const editor = makeEditor(newIntermediateEditor);
   editor.insertData(data);
   expect(editor).toMatchInlineSnapshot(`
-    <editor>
+    <editor
+      marks={
+        Object {
+          "bold": true,
+        }
+      }
+    >
       <heading
         level={1}
       >
         <text>
           some heading
-          <cursor />
         </text>
       </heading>
       <paragraph>
@@ -89,6 +94,7 @@ test('pasting from another slate editor works', () => {
           bold={true}
         >
           some heading
+          <cursor />
         </text>
       </paragraph>
     </editor>

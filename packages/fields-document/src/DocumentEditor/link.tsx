@@ -251,7 +251,7 @@ export function withLink(
       const [, maybeWhitespace, linkText, href] = match;
       // by doing this, the insertText(')') above will happen in a different undo than the link replacement
       // so that means that when someone does an undo after this
-      // it will undo the the state of "[content](link)" rather than "[content](link" (note the missing closing bracket)
+      // it will undo to the state of "[content](link)" rather than "[content](link" (note the missing closing bracket)
       editor.history.undos.push([]);
       const startOfShortcut =
         match.index === 0
@@ -280,8 +280,12 @@ export function withLink(
       Transforms.wrapNodes(
         editor,
         { type: 'link', href, children: [] },
-        { at: { anchor: editor.selection.anchor, focus: startOfShortcut } }
+        { at: { anchor: editor.selection.anchor, focus: startOfShortcut }, split: true }
       );
+      const nextNode = Editor.next(editor);
+      if (nextNode) {
+        Transforms.select(editor, nextNode[1]);
+      }
     };
   }
 
