@@ -14,7 +14,7 @@ export function Keystone5DocsCTA() {
         }}
       >
         Using <strong>Keystone 5</strong>? Find the docs at{' '}
-        <a href="https://v5.keystonejs.com/documentation" target="_blank">
+        <a href="https://v5.keystonejs.com/documentation" target="_blank" rel="noopener noreferrer">
           v5.keystonejs.com
         </a>
       </span>
