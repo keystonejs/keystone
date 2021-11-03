@@ -224,7 +224,7 @@ export default function ForOrganisations() {
             }}
           >
             Built by{' '}
-            <a href="https://www.thinkmill.com.au" target="_blank">
+            <a href="https://www.thinkmill.com.au" target="_blank" rel="noopener noreferrer">
               Thinkmill
             </a>
             , an internationally recognised design & development consultancy. Keystone is proven in
