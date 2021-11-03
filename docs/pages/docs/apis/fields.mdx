@@ -554,7 +554,7 @@ Options:
 - `validation.isRequired` (default: `false`): If `true` then this field can never be set to `null`.
   It validate this when creating and updating an item through the GraphQL API or the Admin UI.
   It will also default `db.isNullable` to false.
-- `db.createdAt` (default: `false`) If `true` then this field will add the `@updatedAt` attribute to this field in the Prisma schema.
+- `db.updatedAt` (default: `false`) If `true` then this field will add the `@updatedAt` attribute to this field in the Prisma schema.
   This will update this field to the current time whenever an item is created/updated with the GraphQL API or any other usage of the Prisma Client if this field is not explicitly set in the request.
   Note this happens at the Prisma Client level, not at the database so if you update an item in your database directly, fields with `db.updatedAt: true` will not automatically update.
 - `isIndexed` (default: `false`)
