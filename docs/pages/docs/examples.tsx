@@ -260,6 +260,18 @@ export default function Docs() {
           Deploys a Keystone app backend to Railway. Based on the <InlineCode>with-auth</InlineCode>{' '}
           project. <strong>One-click deployment</strong> included.
         </Well>
+        <Well
+          grad="grad4"
+          heading="Microsoft Azure"
+          badge="Third Party"
+          href="https://github.com/aaronpowell/keystone-6-azure-example"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Deploys a Keystone app backend to Microsoft Azure. Based on the{' '}
+          <InlineCode>with-auth</InlineCode> project. <strong>One-click deployment</strong>{' '}
+          included.
+        </Well>
       </div>
     </DocsPage>
   );

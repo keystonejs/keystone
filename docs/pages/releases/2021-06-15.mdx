@@ -9,9 +9,10 @@ Keystone Next now has a new core <Emoji symbol="🤖" alt="Robot" />, unblocking
 
 After months of work deep in the codebase, it’ll be much easier for us to ship roadmap features like **custom field types**, **GraphQL Schema extensions**, and more.
 
-<Emoji symbol="⚠️" alt="Warning" /> This release does come with some minor behavioural changes to Keystone’s APIs, read on below.
+<Emoji symbol="⚠️" alt="Warning" /> This release does come with some minor behavioural changes to Keystone’s
+APIs, read on below.
 
-```sh
+```json
 "@keystone-next/admin-ui-utils": "5.0.2",
 "@keystone-next/auth": "27.0.0",
 "@keystone-next/cloudinary": "6.0.0",
@@ -92,5 +93,12 @@ We've updated our Prisma dependencies to `2.24.1`, check out the [Prisma release
 
 You can also view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-06-15) on GitHub.
 
-export default ({ children, ...props }) => <Markdown description="Keystone 6 now has a new core. It’ll now easier for us to ship roadmap features like custom field types, GraphQL Schema extensions, and more." {...props}>{children}</Markdown>;
-export { getStaticProps }
+export default ({ children, ...props }) => (
+  <Markdown
+    description="Keystone 6 now has a new core. It’ll now easier for us to ship roadmap features like custom field types, GraphQL Schema extensions, and more."
+    {...props}
+  >
+    {children}
+  </Markdown>
+);
+export { getStaticProps };
