@@ -240,7 +240,7 @@ export function Footer() {
           </Type> */}
           <Type look="body14" as="p" css={{ justifySelf: 'start' }}>
             Made in Australia <Emoji symbol="🇦🇺" alt="Australia" /> by{' '}
-            <a href="https://www.thinkmill.com.au" target="_blank">
+            <a href="https://www.thinkmill.com.au" target="_blank" rel="noopener noreferrer">
               Thinkmill
             </a>
             . Contributed to around the world <Emoji symbol="🌏" alt="Globe" />
