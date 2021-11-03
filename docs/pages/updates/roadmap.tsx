@@ -8,6 +8,7 @@ import { Button } from '../../components/primitives/Button';
 import { Highlight } from '../../components/primitives/Highlight';
 import { Gradient } from '../../components/primitives/Gradient';
 import { Alert } from '../../components/primitives/Alert';
+import { Emoji } from '../../components/primitives/Emoji';
 import { Type } from '../../components/primitives/Type';
 import { ArrowR } from '../../components/icons/ArrowR';
 import { DocsPage } from '../../components/Page';
@@ -85,7 +86,7 @@ function TimelineWeAreHere() {
           width: arrowSize,
         })}
       />
-      We are here! 👋
+      We are here! <Emoji symbol="👋" alt="Hand waving" />
     </span>
   );
 }

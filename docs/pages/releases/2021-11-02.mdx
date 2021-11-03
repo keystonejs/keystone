@@ -16,7 +16,7 @@ import { Stack } from '../../components/primitives/Stack';
 
 !> Like this release? [Give us a star](https://github.com/keystonejs/keystone) on GitHub!
 
-**⚠️ &nbsp; This release contains breaking changes, please see below!**
+**<Emoji symbol="⚠️" alt="Warning" /> &nbsp; This release contains breaking changes, please see below!**
 
 ## Server-side Live Reloading <Emoji symbol="🚀" alt="Rocket" />
 
@@ -63,17 +63,17 @@ With this in mind, Keystone will now go back to using the **GraphQL Playground**
 
 We have now introduced the `graphql.playground` config option, with three possible settings:
 
-* `true` will configure Apollo Server plugins to enable the GraphQL Playground
-* `false` will configure Apollo Server plugins to disable any `GET` requests to the GraphQL endpoint
-* `'apollo'` will add no plugins to Apollo Server, enabling the new Apollo Sandbox behaviour
+- `true` will configure Apollo Server plugins to enable the GraphQL Playground
+- `false` will configure Apollo Server plugins to disable any `GET` requests to the GraphQL endpoint
+- `'apollo'` will add no plugins to Apollo Server, enabling the new Apollo Sandbox behaviour
 
 `graphql.playground` defaults to `process.env.NODE_ENV !== 'production'` which matches the previous Keystone 6 behaviour before the October update and Apollo Server 3.
 
 ## Next.js Update <Emoji symbol="✨" alt="Sparkles" />
 
-We've updated our Next.js dependency from `11.x` to `12.x`! This latest release of Next.js includes a new Rust powered compiler with faster refresh and build rates, making your  Keystone dev experience even faster.
+We've updated our Next.js dependency from `11.x` to `12.x`! This latest release of Next.js includes a new Rust powered compiler with faster refresh and build rates, making your Keystone dev experience even faster.
 
-Check out the [Next.js blog]( https://nextjs.org/blog/next-12) for more details.
+Check out the [Next.js blog](https://nextjs.org/blog/next-12) for more details.
 
 ## Relationship Filtering <Emoji symbol="❤️" alt="Heart" />
 
@@ -89,7 +89,7 @@ You should now exclusively configure `cors` with the `server.cors` option.
 
 ## Renamed `src` in Image and File Fields <Emoji symbol="🗄️" alt="File Cabinet" />
 
-**⚠️ &nbsp; Breaking Change**
+**<Emoji symbol="⚠️" alt="Warning" /> &nbsp; Breaking Change**
 
 The `src` field on the output of `image` and `file` fields has been renamed to `url`.
 
