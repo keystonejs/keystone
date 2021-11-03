@@ -528,7 +528,7 @@ export default function WhatsNew() {
           <Link href="/docs/apis">
             <a>APIs</a>
           </Link>
-          , and a better mobile experience. We hope you like it ❤️
+          , and a better mobile experience. We hope you like it <Emoji symbol="❤️" alt="Love" />
         </Box>
         <Timeline date="21st June 2021" />
         <Box heading="New guides">
