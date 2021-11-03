@@ -151,17 +151,17 @@ If you're using SQLite, Prisma will generate a migration that makes the column n
 If you're using PostgreSQL, Prisma will generate a migration but you'll need to modify it if you have nulls in a checkbox field. Keystone will say that the migration cannot be executed:
 
 ```
-✨ Starting Keystone
-⭐️ Dev Server Ready on http://localhost:3000
-✨ Generating GraphQL and Prisma schemas
-✨ There has been a change to your Keystone schema that requires a migration
+<Emoji symbol="✨" alt="Sparkles" /> Starting Keystone
+<Emoji symbol="⭐️" alt="star" /> Dev Server Ready on http://localhost:3000
+<Emoji symbol="✨" alt="Sparkles" /> Generating GraphQL and Prisma schemas
+<Emoji symbol="✨" alt="Sparkles" /> There has been a change to your Keystone schema that requires a migration
 
-⚠️ We found changes that cannot be executed:
+<Emoji symbol="⚠️" alt="Warning" /> We found changes that cannot be executed:
 
   • Made the column `isAdmin` on table `User` required, but there are 1 existing NULL values.
 
-✔ Name of migration … make-is-admin-non-null
-✨ A migration has been created at migrations/20210906053141_make_is_admin_non_null
+<Emoji symbol="✔" alt="Tick" /> Name of migration … make-is-admin-non-null
+<Emoji symbol="✨" alt="Sparkles" /> A migration has been created at migrations/20210906053141_make_is_admin_non_null
 Please edit the migration and run keystone-next dev again to apply the migration
 ```
 
@@ -202,17 +202,17 @@ If you're using PostgreSQL, Prisma will generate a migration but you'll need to 
 Keystone will say that the migration cannot be executed:
 
 ```
-✨ Starting Keystone
-⭐️ Dev Server Ready on http://localhost:3000
-✨ Generating GraphQL and Prisma schemas
-✨ There has been a change to your Keystone schema that requires a migration
+<Emoji symbol="✨" alt="Sparkles" /> Starting Keystone
+<Emoji symbol="⭐️" alt="star" /> Dev Server Ready on http://localhost:3000
+<Emoji symbol="✨" alt="Sparkles" /> Generating GraphQL and Prisma schemas
+<Emoji symbol="✨" alt="Sparkles" /> There has been a change to your Keystone schema that requires a migration
 
-⚠️ We found changes that cannot be executed:
+<Emoji symbol="⚠️" alt="Warning" /> We found changes that cannot be executed:
 
   • Made the column `content` on table `Post` required, but there are 1 existing NULL values.
 
-✔ Name of migration … make_document_field_non_null
-✨ A migration has been created at migrations/20210915050920_make_document_field_non_null
+<Emoji symbol="✔" alt="Tick" /> Name of migration … make_document_field_non_null
+<Emoji symbol="✨" alt="Sparkles" /> A migration has been created at migrations/20210915050920_make_document_field_non_null
 Please edit the migration and run keystone-next dev again to apply the migration
 ```
 
