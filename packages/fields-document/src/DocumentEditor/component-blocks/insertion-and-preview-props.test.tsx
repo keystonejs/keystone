@@ -81,8 +81,6 @@ const relationships: Relationships = {
   },
 };
 
-test.only('blah', () => {});
-
 test('inserting a void component block', () => {
   let editor = makeEditor(
     <editor>

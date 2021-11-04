@@ -721,7 +721,7 @@ test('nested list as direct child of list is moved to last list-item', () => {
   `);
 });
 
-test.only('nest list', () => {
+test('nest list', () => {
   let editor = makeEditor(
     <editor>
       <unordered-list>
