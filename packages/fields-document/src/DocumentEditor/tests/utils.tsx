@@ -43,7 +43,7 @@ console.error = (...stuff: any[]) => {
   // you should remove the process.exit call and replace it with a throw
   // and then look for unhandled rejections or thrown errors
   // throw new Error(stuff);
-  // process.exit(1);
+  process.exit(1);
 };
 
 function formatEditor(editor: Node) {
