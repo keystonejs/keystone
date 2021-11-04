@@ -192,7 +192,7 @@ type Session = {
 }
 ```
 
-We can now set up operational access control to restrict the **create**, **update** and **delete** operations to authenticated users with the `isAdmin` checkbox set:
+We can now set up **operation** access control to restrict the **create**, **update** and **delete** operations to authenticated users with the `isAdmin` checkbox set:
 
 ```ts
 const isAdmin = ({ session }: { session: Session }) => session?.data.isAdmin;
