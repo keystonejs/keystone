@@ -363,7 +363,7 @@ You can't specify filters for the `create` operation because you can't query rec
 
 #### How `item` access control works
 
-When mutating items, item access control is checked with the mutation input (for `create` and `update`) and the item that has been retrieved from the database (for `update` and `delete`).
+When mutating items, item access control is checked against the mutation input (for `create` and `update`) and the item that has been retrieved from the database (for `update` and `delete`).
 
 This gives you the most granular control over whether an operation is allowed to proceed, but is the least performant because:
 
