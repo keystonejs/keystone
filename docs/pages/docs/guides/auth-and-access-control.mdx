@@ -49,7 +49,7 @@ const { withAuth } = createAuth({
 });
 ```
 
-The `createAuth` function returns another function called `withAuth` that will automatically extend Keystone's config to set up everything we need. Behind the scenes, the auth package is just using lower-level Keystone APIs to do everything, which means if you want to do something differently, you can fork our implementation of auth and build your own (this is true for session management as well)
+The `createAuth` function returns another function called `withAuth` that will automatically extend Keystone's config to set up everything we need. Behind the scenes, the `auth` package is just using lower-level Keystone APIs to do everything, which means if you want to do something differently, you can fork our implementation of `auth` and build your own (this is true for session management as well)
 
 !> Read more about `createAuth` in the [Auth API Docs](../apis/auth)
 
