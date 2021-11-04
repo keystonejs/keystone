@@ -440,14 +440,14 @@ export default function WhatsNew() {
           <ul>
             <li>
               Public{' '}
-              <Link href="/docs/guides/auth">
+              <Link href="/docs/apis/auth">
                 <a>auth</a>
               </Link>{' '}
               and signup
             </li>
             <li>
               Role-based{' '}
-              <Link href="/docs/guides/access-control">
+              <Link href="/docs/apis/access-control">
                 <a>access control</a>
               </Link>
             </li>
