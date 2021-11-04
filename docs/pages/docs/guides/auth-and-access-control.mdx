@@ -295,22 +295,24 @@ Access control is operation-specific, so if you want to prevent _any_ changes be
 
 #### Why it's `query` and not `read`
 
-We designed the Access Control API for lists to clearly reflect the GraphQL operations it affects. Because of the way GraphQL works, you can retrieve values from an item through any operation, even deletes. For example:
+Because of the way GraphQL works, you can retrieve an item through both **queries** _and_ **mutations**. The `query` rules don't affect mutations, so our **list** access control is aligned to GraphQL operations.
+
+For example, both the `person` query and `updatePerson` mutation will find a Person by their ID and return their name:
 
 ```graphql
 query {
-  user(where: { id: 1 }) {
+  person(where: { id: 1 }) {
     name
   }
 }
 mutation {
-  updateUser(where: { id: 1 }) {
+  updatePerson(where: { id: 1 }) {
     name
   }
 }
 ```
 
-Both of these operations will "read" the user's name. Having access control named "read" on the list might be confusing as to whether it affects just the query, or also the mutations, so we called it "query" to make it clearer that it only affects queries and **not** mutations.
+!> Note: this is different to **field** access control, where the `read` access control rule will affect a user's ability to retrieve the value for that field regardless of the query or mutation.
 
 ### Different levels of Access Control
 
