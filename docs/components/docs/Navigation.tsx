@@ -186,15 +186,14 @@ export function DocsNavigation() {
         <NavItem href="/docs/apis/fields">
           Fields API <Badge look="success">Updated</Badge>
         </NavItem>
+        <NavItem href="/docs/apis/auth">Authentication API</NavItem>
         <NavItem href="/docs/apis/access-control">
           Access Control API <Badge look="success">Updated</Badge>
         </NavItem>
         <NavItem href="/docs/apis/hooks">
-          {' '}
           Hooks API <Badge look="success">Updated</Badge>
         </NavItem>
         <NavItem href="/docs/apis/session">Session API</NavItem>
-        <NavItem href="/docs/apis/auth">Authentication API</NavItem>
 
         <SubHeading>Context</SubHeading>
         <NavItem href="/docs/apis/context">Context API</NavItem>

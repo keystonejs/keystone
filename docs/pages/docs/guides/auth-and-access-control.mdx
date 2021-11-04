@@ -1,5 +1,6 @@
-import { ComingSoon } from '../../../components/docs/ComingSoon';
 import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
 
 # Authentication and Access Control
 
@@ -536,3 +537,20 @@ const Person = list({
   },
 });
 ```
+
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="Authentication"
+    href="../apis/auth"
+    >
+    Documentation for the Auth Package API
+  </Well>
+  <Well
+    heading="Access Control"
+    href="../apis/access-control"
+    >
+    Documentation for the Access Control API
+  </Well>
+</RelatedContent>
