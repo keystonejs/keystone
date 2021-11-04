@@ -23,10 +23,7 @@ console.error = (...stuff: any[]) => {
       return;
     }
     if (stuff[0].includes('inside a test was not wrapped in act')) {
-      const stack = new Error().stack;
-      // if (stack?.includes('@popperjs/core') && stack.includes('forceUpdate')) {
       return;
-      // }
     }
   }
   oldConsoleError(...stuff);

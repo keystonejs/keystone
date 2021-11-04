@@ -211,9 +211,12 @@ export function nestList(editor: Editor) {
   const type = Editor.parent(editor, Path.parent(block[1]))[0].type as
     | 'ordered-list'
     | 'unordered-list';
-  Transforms.wrapNodes(editor, {
-    type,
-    children: [],
+  Editor.withoutNormalizing(editor, () => {
+    Transforms.wrapNodes(editor, { type, children: [] }, { at: listItemPath });
+    Transforms.moveNodes(editor, {
+      to: [...previousListItemPath, previousListItemNode.children.length],
+      at: listItemPath,
+    });
   });
   return true;
 }

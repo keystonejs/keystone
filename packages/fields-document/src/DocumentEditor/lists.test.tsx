@@ -1,27 +1,8 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { Editor, Operation } from 'slate';
 import { nestList, toggleList } from './lists';
 import { jsx, makeEditor } from './tests/utils';
-
-function recordOperations(editor: Editor, cb: () => void) {
-  let prevEditorApply = editor.apply;
-  let state: { op: Operation; editor: Editor }[] = [];
-  try {
-    editor.apply = op => {
-      prevEditorApply(op);
-      state.push({
-        op,
-        editor: makeEditor(editor, { normalization: 'skip', skipRenderingDOM: true }),
-      });
-    };
-    cb();
-    return state;
-  } finally {
-    editor.apply = prevEditorApply;
-  }
-}
 
 test('ordered list shortcut', () => {
   let editor = makeEditor(
@@ -740,7 +721,7 @@ test('nested list as direct child of list is moved to last list-item', () => {
   `);
 });
 
-test('nest list', () => {
+test.only('nest list', () => {
   let editor = makeEditor(
     <editor>
       <unordered-list>
@@ -764,513 +745,43 @@ test('nest list', () => {
     </editor>
   );
 
-  expect(
-    recordOperations(editor, () => {
-      nestList(editor);
-    })
-  ).toMatchInlineSnapshot(`
-    Array [
-      Object {
-        "editor": <editor>
-          <unordered-list>
-            <list-item>
-              <list-item-content>
-                <text>
-                  some text
-                </text>
-              </list-item-content>
-            </list-item>
-            <list-item>
-              <list-item-content>
-                <text>
-                  content
-                  <cursor />
-                </text>
-              </list-item-content>
-              <unordered-list />
-            </list-item>
-          </unordered-list>
-          <paragraph>
-            <text>
-              
-            </text>
-          </paragraph>
-        </editor>,
-        "op": Object {
-          "node": Object {
-            "children": Array [],
-            "type": "unordered-list",
-          },
-          "path": Array [
-            0,
-            1,
-            1,
-          ],
-          "type": "insert_node",
-        },
-      },
-      Object {
-        "editor": <editor>
-          <unordered-list>
-            <list-item>
-              <list-item-content>
-                <text>
-                  some text
-                </text>
-              </list-item-content>
-            </list-item>
-            <list-item>
-              <unordered-list>
-                <list-item-content>
-                  <text>
-                    content
-                    <cursor />
-                  </text>
-                </list-item-content>
-              </unordered-list>
-            </list-item>
-          </unordered-list>
-          <paragraph>
-            <text>
-              
-            </text>
-          </paragraph>
-        </editor>,
-        "op": Object {
-          "newPath": Array [
-            0,
-            1,
-            1,
-            0,
-          ],
-          "path": Array [
-            0,
-            1,
-            0,
-          ],
-          "type": "move_node",
-        },
-      },
-      Object {
-        "editor": <editor>
-          <unordered-list>
-            <list-item>
-              <list-item-content>
-                <text>
-                  some text
-                </text>
-              </list-item-content>
-            </list-item>
-            <list-item>
-              <unordered-list>
-                <list-item-content />
-                <text>
-                  content
-                  <cursor />
-                </text>
-              </unordered-list>
-            </list-item>
-          </unordered-list>
-          <paragraph>
-            <text>
-              
-            </text>
-          </paragraph>
-        </editor>,
-        "op": Object {
-          "newPath": Array [
-            0,
-            1,
-            0,
-            1,
-          ],
-          "path": Array [
-            0,
-            1,
-            0,
-            0,
-            0,
-          ],
-          "type": "move_node",
-        },
-      },
-      Object {
-        "editor": <editor>
-          <unordered-list>
-            <list-item>
-              <list-item-content>
-                <text>
-                  some text
-                </text>
-              </list-item-content>
-            </list-item>
-            <list-item>
-              <unordered-list>
-                <text>
-                  content
-                  <cursor />
-                </text>
-              </unordered-list>
-            </list-item>
-          </unordered-list>
-          <paragraph>
-            <text>
-              
-            </text>
-          </paragraph>
-        </editor>,
-        "op": Object {
-          "node": Object {
-            "children": Array [],
-            "type": "list-item-content",
-          },
-          "path": Array [
-            0,
-            1,
-            0,
-            0,
-          ],
-          "type": "remove_node",
-        },
-      },
-      Object {
-        "editor": <editor>
-          <unordered-list>
-            <list-item>
-              <list-item-content>
-                <text>
-                  some text
-                </text>
-              </list-item-content>
-            </list-item>
-            <list-item>
-              <unordered-list>
-                <text>
-                  content
-                  <cursor />
-                </text>
-                <list-item />
-              </unordered-list>
-            </list-item>
-          </unordered-list>
-          <paragraph>
-            <text>
-              
-            </text>
-          </paragraph>
-        </editor>,
-        "op": Object {
-          "node": Object {
-            "children": Array [],
-            "type": "list-item",
-          },
-          "path": Array [
-            0,
-            1,
-            0,
-            1,
-          ],
-          "type": "insert_node",
-        },
-      },
-      Object {
-        "editor": <editor>
-          <unordered-list>
-            <list-item>
-              <list-item-content>
-                <text>
-                  some text
-                </text>
-              </list-item-content>
-            </list-item>
-            <list-item>
-              <unordered-list>
-                <list-item>
-                  <text>
-                    content
-                    <cursor />
-                  </text>
-                </list-item>
-              </unordered-list>
-            </list-item>
-          </unordered-list>
-          <paragraph>
-            <text>
-              
-            </text>
-          </paragraph>
-        </editor>,
-        "op": Object {
-          "newPath": Array [
-            0,
-            1,
-            0,
-            1,
-            0,
-          ],
-          "path": Array [
-            0,
-            1,
-            0,
-            0,
-          ],
-          "type": "move_node",
-        },
-      },
-      Object {
-        "editor": <editor>
-          <unordered-list>
-            <list-item>
-              <list-item-content>
-                <text>
-                  some text
-                </text>
-              </list-item-content>
-            </list-item>
-            <list-item>
-              <unordered-list>
-                <list-item>
-                  <text>
-                    content
-                    <cursor />
-                  </text>
-                  <list-item-content />
-                </list-item>
-              </unordered-list>
-            </list-item>
-          </unordered-list>
-          <paragraph>
-            <text>
-              
-            </text>
-          </paragraph>
-        </editor>,
-        "op": Object {
-          "node": Object {
-            "children": Array [],
-            "type": "list-item-content",
-          },
-          "path": Array [
-            0,
-            1,
-            0,
-            0,
-            1,
-          ],
-          "type": "insert_node",
-        },
-      },
-      Object {
-        "editor": <editor>
-          <unordered-list>
-            <list-item>
-              <list-item-content>
-                <text>
-                  some text
-                </text>
-              </list-item-content>
-            </list-item>
-            <list-item>
-              <unordered-list>
-                <list-item>
-                  <list-item-content>
-                    <text>
-                      content
-                      <cursor />
-                    </text>
-                  </list-item-content>
-                </list-item>
-              </unordered-list>
-            </list-item>
-          </unordered-list>
-          <paragraph>
-            <text>
-              
-            </text>
-          </paragraph>
-        </editor>,
-        "op": Object {
-          "newPath": Array [
-            0,
-            1,
-            0,
-            0,
-            1,
-            0,
-          ],
-          "path": Array [
-            0,
-            1,
-            0,
-            0,
-            0,
-          ],
-          "type": "move_node",
-        },
-      },
-      Object {
-        "editor": <editor>
-          <unordered-list>
-            <list-item>
-              <list-item-content>
-                <text>
-                  some text
-                </text>
-              </list-item-content>
-              <list-item>
-                <unordered-list>
-                  <list-item>
-                    <list-item-content>
-                      <text>
-                        content
-                        <cursor />
-                      </text>
-                    </list-item-content>
-                  </list-item>
-                </unordered-list>
-              </list-item>
-            </list-item>
-          </unordered-list>
-          <paragraph>
-            <text>
-              
-            </text>
-          </paragraph>
-        </editor>,
-        "op": Object {
-          "newPath": Array [
-            0,
-            0,
-            1,
-          ],
-          "path": Array [
-            0,
-            1,
-          ],
-          "type": "move_node",
-        },
-      },
-      Object {
-        "editor": <editor>
-          <unordered-list>
-            <list-item>
-              <list-item-content>
-                <text>
-                  some text
-                </text>
-              </list-item-content>
-              <list-item />
-              <unordered-list>
-                <list-item>
-                  <list-item-content>
-                    <text>
-                      content
-                      <cursor />
-                    </text>
-                  </list-item-content>
-                </list-item>
-              </unordered-list>
-            </list-item>
-          </unordered-list>
-          <paragraph>
-            <text>
-              
-            </text>
-          </paragraph>
-        </editor>,
-        "op": Object {
-          "newPath": Array [
-            0,
-            0,
-            2,
-          ],
-          "path": Array [
-            0,
-            0,
-            1,
-            0,
-          ],
-          "type": "move_node",
-        },
-      },
-      Object {
-        "editor": <editor>
-          <unordered-list>
-            <list-item>
-              <list-item-content>
-                <text>
-                  some text
-                </text>
-              </list-item-content>
-              <unordered-list>
-                <list-item>
-                  <list-item-content>
-                    <text>
-                      content
-                      <cursor />
-                    </text>
-                  </list-item-content>
-                </list-item>
-              </unordered-list>
-            </list-item>
-          </unordered-list>
-          <paragraph>
-            <text>
-              
-            </text>
-          </paragraph>
-        </editor>,
-        "op": Object {
-          "node": Object {
-            "children": Array [],
-            "type": "list-item",
-          },
-          "path": Array [
-            0,
-            0,
-            1,
-          ],
-          "type": "remove_node",
-        },
-      },
-    ]
-  `);
+  nestList(editor);
   // all these extra nest calls should do nothing
-  // nestList(editor);
-  // nestList(editor);
-  // nestList(editor);
-  // nestList(editor);
-  // nestList(editor);
-  // nestList(editor);
+  nestList(editor);
+  nestList(editor);
+  nestList(editor);
+  nestList(editor);
+  nestList(editor);
+  nestList(editor);
 
-  // expect(editor).toMatchInlineSnapshot(`
-  //   <editor>
-  //     <unordered-list>
-  //       <list-item>
-  //         <list-item-content>
-  //           <text>
-  //             some text
-  //           </text>
-  //         </list-item-content>
-  //         <unordered-list>
-  //           <list-item>
-  //             <list-item-content>
-  //               <text>
-  //                 content
-  //                 <cursor />
-  //               </text>
-  //             </list-item-content>
-  //           </list-item>
-  //         </unordered-list>
-  //       </list-item>
-  //     </unordered-list>
-  //     <paragraph>
-  //       <text>
-
-  //       </text>
-  //     </paragraph>
-  //   </editor>
-  // `);
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <unordered-list>
+        <list-item>
+          <list-item-content>
+            <text>
+              some text
+            </text>
+          </list-item-content>
+          <unordered-list>
+            <list-item>
+              <list-item-content>
+                <text>
+                  content
+                  <cursor />
+                </text>
+              </list-item-content>
+            </list-item>
+          </unordered-list>
+        </list-item>
+      </unordered-list>
+      <paragraph>
+        <text>
+          
+        </text>
+      </paragraph>
+    </editor>
+  `);
 });
 
 test('nest list when previous thing is nested', () => {
