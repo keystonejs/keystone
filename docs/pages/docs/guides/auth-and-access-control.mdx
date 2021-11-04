@@ -236,7 +236,7 @@ const Post = list({
 });
 ```
 
-See that object we return when the session data doesn't say there's a user with `isAdmin`? It's the same format as `where` arguments you can provide to the `posts` query through the GraphQL API:
+When there's no session, or the user is not an Admin, the `filterPosts` function returns a filter object. This is the same format as the `where` arguments you can provide to the `posts` query through the GraphQL API:
 
 ```graphql
 query {
@@ -246,7 +246,9 @@ query {
 }
 ```
 
-!> An easy way to set up Access Control filters is to write them as queries in the GraphQL Playground, then test them to make sure they return the results you expect. When you're happy, copy and paste the `where` argument into your access control function.
+!> An easy way to set up Access Control filters is to write them as queries in the GraphQL Playground, then test them to make sure they return the results you expect. When you're happy, copy and paste the `where` input into your access control function.
+
+These filters are **combined** with any filters provided through the GraphQL API, and there's no way to circumvent them when making HTTP Requests.
 
 You can also return a boolean value to switch on or off access to a list entirely:
 
@@ -254,8 +256,6 @@ You can also return a boolean value to switch on or off access to a list entirel
 - `false` prevents access to all items in the list
 
 In the example above, if the user has `isAdmin` we return `true` allowing them to access all posts.
-
-!> Access control filters are **combined** with any filters provided through the GraphQL API, and there is no way to circumvent them when making HTTP Requests.
 
 Access control is always applied when querying or mutating items in a list, regardless of how GraphQL queries are written. For example, if we also had a **Tags** list that relates to **Posts**:
 
