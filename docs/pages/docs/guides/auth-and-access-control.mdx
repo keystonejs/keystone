@@ -14,6 +14,8 @@ Session Management and Auth are extremely flexible in Keystone, and it's possibl
 
 ## Setting up Users, Auth and Session
 
+While you can use Keystone's APIs to implement your own custom session and authentication systems, we've built one for you that probably does what you need most of the time: the `@keystone-next/auth` package. We recommend starting with that.
+
 Keystone is designed to make as few assumptions about your schema and system design as possible, which means it doesn't come with a built-in concept of **Users**. In your app, Users are just another List that you create and specify fields for – you can set them up however you like.
 
 ### Create a list for users
@@ -42,6 +44,8 @@ const Person = list({
 With our users list in place, we can start configuring our authentication:
 
 ```ts
+import { createAuth } from '@keystone-next/auth';
+
 const { withAuth } = createAuth({
   listKey: 'Person',
   identityField: 'email',
@@ -282,10 +286,10 @@ Unauthenticated users won't be able to find unpublished posts by querying the re
 
 Each specific operation that can be performed through the GraphQL API has corresponding access control you can provide. The four operations are:
 
-* Query
-* Create
-* Update
-* Delete
+- Query
+- Create
+- Update
+- Delete
 
 Access control is operation-specific, so if you want to prevent _any_ changes being made to items in a list, you would need to provide settings for all the mutation operations: `create`, `update` and `delete`.
 
@@ -350,8 +354,8 @@ Filter access control is combined with `where` input from the GraphQL Query to c
 
 In addition to returning filters, you can return a boolean where:
 
-* `true` effectively means match _all_ records (no filter is applied)
-* `false` effectively means match _no_ records (the operation will be blocked)
+- `true` effectively means match _all_ records (no filter is applied)
+- `false` effectively means match _no_ records (the operation will be blocked)
 
 !> Returning a boolean from filter access control is functionally the same as using operation access control, so if you specify filter access control, you rarely also need to specify operation access control.
 
@@ -367,8 +371,8 @@ When mutating items, item access control is checked against the mutation input (
 
 This gives you the most granular control over whether an operation is allowed to proceed, but is the least performant because:
 
-* Keystone retrieves all matching records from the database before the access control rule can be evaluated
-* For the operations `updateMany` and `deleteMany` item access control function is invoked once for each item being updated or deleted
+- Keystone retrieves all matching records from the database before the access control rule can be evaluated
+- For the operations `updateMany` and `deleteMany` item access control function is invoked once for each item being updated or deleted
 
 If you need to limit access to some items in a list, filter access control is usually the best option. Item access control should only be used if you have logic that can't be expressed as a filter, or if you need to check the `inputData` provided to the mutation.
 
@@ -456,9 +460,9 @@ We've covered access control for lists now; but Keystone also lets you specify f
 
 You can provide field-level rules for:
 
-* Read – applied when the field is selected through any GraphQL operation
-* Create – applied when items are being created
-* Update – applied when items are being updated
+- Read – applied when the field is selected through any GraphQL operation
+- Create – applied when items are being created
+- Update – applied when items are being updated
 
 !> If you want to completely block users from setting a field's value, make sure you set both the `create` and `update` rules.
 
@@ -468,14 +472,14 @@ For more information about the arguments provided to field rules, see the [Acces
 
 Building on our blog example above, let's implement the following rules for our **Person** list:
 
-* Anyone should be able to see the names of people in the system (otherwise we wouldn't be able to display authors' names)
-* Visitors are never able to see a person's email addresses
-* Users are able to see their own email address
-* Users can update their own name and email address
-* Users can only update their own password
-* Admins can update information for any user _except_ their password
-* Only admins can change the `isAdmin` checkbox
-* Only admins can create and delete users
+- Anyone should be able to see the names of people in the system (otherwise we wouldn't be able to display authors' names)
+- Visitors are never able to see a person's email addresses
+- Users are able to see their own email address
+- Users can update their own name and email address
+- Users can only update their own password
+- Admins can update information for any user _except_ their password
+- Only admins can change the `isAdmin` checkbox
+- Only admins can create and delete users
 
 The implementation of these rules would look like this:
 
