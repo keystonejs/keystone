@@ -33,10 +33,10 @@ export default function Index({ authors }: { authors: Author[] }) {
 export async function getStaticProps() {
   const data = await fetchGraphQL(gql`
     query {
-      allAuthors {
+      authors {
         id
         name
-        posts(where: { status: published }, orderBy: { publishDate: desc }) {
+        posts(where: { status: { equals: published } }, orderBy: { publishDate: desc }) {
           id
           slug
           title
@@ -44,5 +44,5 @@ export async function getStaticProps() {
       }
     }
   `);
-  return { props: { authors: data.allAuthors }, revalidate: 30 };
+  return { props: { authors: data.authors }, revalidate: 30 };
 }
