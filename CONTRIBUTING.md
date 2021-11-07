@@ -6,7 +6,7 @@ Contributions which improve the documentation and test coverage are particularly
 
 ### Community Ecosystem
 
-Keystone makes no assumptions about type of applications it powers. It achieves flexibility through small, highly composable parts that allow you to build a foundation for any type of application.
+Keystone makes no assumptions about type of applications it powers. It achieves flexibility through small, highly composable parts that allow you to build a foundation for a broad variety of applications.
 
 For this reason we might not add features to Keystone if they are prescriptive about:
 
@@ -77,6 +77,43 @@ We’re sometimes lovingly picky on the wording of our changesets because these 
 In particular, please try to write in the past tense (e.g. "Added a new feature" rather than "Add a new feature") and write in complete sentences. This means proper capitalisation and punctuation, including full stops/periods at the end of sentences. We try to be terse when possible but if needed it's fine to write multiple lines including examples for changing APIs.
 
 Thanks for your help with this.
+
+### How we version packages
+
+Keystone follows the semver model of {major}.{minor}.{patch}. Version numbers are the first and most obvious way we have of communicating changes to our users, so it's important we convey consistent meaning with them, and strike a careful balance between releasing often vs. overloading consumers with package updates.
+
+Generally, versions should be interpreted like:
+
+- `major` means a breaking change to the public API of a package, and/or a meaningful change to the internal behaviour
+- `minor` means we added a feature to the package, which is backwards compatible with the current major version
+- `patch` means a bug has been fixed in the package
+
+If a PR includes any of the above, it needs a changeset so the updated packages get released and versioned correctly.
+
+Other reasons for versioning packages include:
+
+- If a dependency is updated, and that dependency's API is exposed, the package exposing the API should be bumped by the same level as the dependency being updated. For example a new major version of mongoose would warrant a new major version of keystone.
+- If a dependency is updated, and that dependency is not exposed, it may be important to release a package with the update, for example with security fixes. In that case, the package would be bumped with a `patch` version.
+
+#### Versioning UI changes
+
+Front-end packages (the Admin UI, Design System, etc) should always follow the rules above for API changes, but may also warrant a version bump for UI changes without an API change. This is more open to interpretation, but should follow the spirit of the rules above:
+
+- `major` should be used if we're meaningfully changing how the UI looks or works (think: should we update screenshots on the website? might users need to relearn something they know how to do?)
+- `minor` should be used if a new feature is available
+- `patch` should be used if something has been tweaked or fixed
+
+#### Versioning example projects
+
+Since the example projects don't get published anywhere and don't expose API, it's less obvious when they should be versioned. In this case, think of "someone referring to the example project" as an API consumer, and use the version number to communicate anything they should know.
+
+- `major` means the example has been meaningfully changed, and the difference would break expectations about how it works
+- `minor` means the example has had features added or is significantly improved
+- `patch` means something has been fixed
+
+Minor refactoring, including incorporating changes to Keystone APIs, would not warrant updating the package version.
+
+Generally, these guidelines are in place so that we don't spam consumers with version upgrades that don't provide value. They are subjective however, and not "one size fits all" so if you're not sure whether a change warrants a version bump, ask for advice in the PR.
 
 ### Release Guidelines
 
@@ -247,10 +284,10 @@ Now, for each release we want to backport to, we follow this process:
    )
    ```
 
-     <!-- this was the cd command but we don't have a command to replace the exact bolt part yet    cd `bolt ws $PACKAGE_NAME exec -- pwd | grep pwd | sed -e 's/.*pwd[ ]*//'` && \ w
-   -->
-
    _NOTE: When prompted for "New version", just hit Enter_
+
+   <!-- this was the cd command but we don't have a command to replace the exact bolt part yet: cd `bolt ws $PACKAGE_NAME exec -- pwd | grep pwd | sed -e 's/.*pwd[ ]*//'` && \ w
+   -->
 
 6. Confirm it was published
 

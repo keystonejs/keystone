@@ -27,13 +27,13 @@ export default function Post({ author }: { author: any }) {
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const data = await fetchGraphQL(gql`
     query {
-      allAuthors {
+      authors {
         id
       }
     }
   `);
   return {
-    paths: data.allAuthors.map((post: any) => ({ params: { id: post.id } })),
+    paths: data.authors.map((post: any) => ({ params: { id: post.id } })),
     fallback: 'blocking',
   };
 }
@@ -42,12 +42,12 @@ export async function getStaticProps({ params }: GetStaticPropsContext) {
   const data = await fetchGraphQL(
     gql`
       query ($id: ID!) {
-        Author(where: { id: $id }) {
+        author(where: { id: $id }) {
           name
           bio {
             document
           }
-          posts {
+          posts(where: { status: { equals: published } }, orderBy: { publishDate: desc }) {
             id
             title
             slug
@@ -57,5 +57,5 @@ export async function getStaticProps({ params }: GetStaticPropsContext) {
     `,
     { id: params!.id }
   );
-  return { props: { author: data.Author }, revalidate: 60 };
+  return { props: { author: data.author }, revalidate: 60 };
 }

@@ -16,7 +16,7 @@ export const apiTestConfig = (
   },
 });
 
-const unpackErrors = (errors: readonly any[] | undefined) =>
+export const unpackErrors = (errors: readonly any[] | undefined) =>
   (errors || []).map(({ locations, ...unpacked }) => unpacked);
 
 const j = (messages: string[]) => messages.map(m => `  - ${m}`).join('\n');

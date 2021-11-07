@@ -160,33 +160,23 @@ export function DocsNavigation() {
         <NavItem href="/docs/guides/hooks">
           Hooks <Badge look="success">Updated</Badge>
         </NavItem>
-        <NavItem href="/docs/guides/document-fields">Document Fields</NavItem>
-        <NavItem href="/docs/guides/document-field-demo">Document Field Demo</NavItem>
-        <NavItem href="/docs/guides/virtual-fields">Virtual Fields</NavItem>
-        <NavItem href="/docs/guides/testing">Testing</NavItem>
-        <NavItem href="/docs/guides/custom-fields">
-          Custom Fields <Badge look="success">Updated</Badge>
-        </NavItem>
-        <NavItem href="/docs/guides/custom-admin-ui-logo">Custom Admin UI Logo</NavItem>
-        <NavItem href="/docs/guides/custom-admin-ui-pages">
-          Custom Admin UI Pages <Badge look="success">Updated</Badge>
-        </NavItem>
-        <NavItem href="/docs/guides/custom-admin-ui-navigation">Custom Admin UI Navigation</NavItem>
-        <NavItem href="/docs/guides/access-control" isPlaceholder>
-          Access Control
-        </NavItem>
-        <NavItem href="/docs/guides/auth" isPlaceholder>
-          Authentication
+        <NavItem href="/docs/guides/auth-and-access-control">
+          Auth and Access Control <Badge look="success">New</Badge>
         </NavItem>
         <NavItem href="/docs/guides/schema-extension" isPlaceholder>
           Schema Extension
         </NavItem>
-        <NavItem href="/docs/guides/internal-items" isPlaceholder>
-          Internal Items
-        </NavItem>
+        <NavItem href="/docs/guides/testing">Testing</NavItem>
+        <NavItem href="/docs/guides/document-fields">Document Fields</NavItem>
+        <NavItem href="/docs/guides/document-field-demo">Document Field Demo</NavItem>
+        <NavItem href="/docs/guides/virtual-fields">Virtual Fields</NavItem>
+        <NavItem href="/docs/guides/custom-fields">Custom Fields</NavItem>
         <NavItem href="/docs/guides/custom-field-views" isPlaceholder>
           Custom Field Views
         </NavItem>
+        <NavItem href="/docs/guides/custom-admin-ui-logo">Custom Admin UI Logo</NavItem>
+        <NavItem href="/docs/guides/custom-admin-ui-pages">Custom Admin UI Pages</NavItem>
+        <NavItem href="/docs/guides/custom-admin-ui-navigation">Custom Admin UI Navigation</NavItem>
       </Section>
       <Section>
         <PrimaryNavItem href="/docs/apis">APIs</PrimaryNavItem>
@@ -196,15 +186,14 @@ export function DocsNavigation() {
         <NavItem href="/docs/apis/fields">
           Fields API <Badge look="success">Updated</Badge>
         </NavItem>
+        <NavItem href="/docs/apis/auth">Authentication API</NavItem>
         <NavItem href="/docs/apis/access-control">
           Access Control API <Badge look="success">Updated</Badge>
         </NavItem>
         <NavItem href="/docs/apis/hooks">
-          {' '}
           Hooks API <Badge look="success">Updated</Badge>
         </NavItem>
         <NavItem href="/docs/apis/session">Session API</NavItem>
-        <NavItem href="/docs/apis/auth">Authentication API</NavItem>
 
         <SubHeading>Context</SubHeading>
         <NavItem href="/docs/apis/context">Context API</NavItem>

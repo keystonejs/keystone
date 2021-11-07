@@ -55,10 +55,6 @@ const reexportKeystoneConfig = async (cwd: string, isDisabled?: boolean) => {
 };
 
 export async function build(cwd: string) {
-  // Next does a broken build unless we set NODE_ENV to production
-  // @ts-ignore
-  process.env.NODE_ENV = 'production';
-
   const config = initConfig(requireSource(getConfigPath(cwd)).default);
 
   const { graphQLSchema, adminMeta } = createSystem(config);

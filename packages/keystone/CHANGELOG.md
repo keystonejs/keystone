@@ -1,5 +1,15 @@
 # @keystone-next/keystone
 
+## 27.0.1
+
+### Patch Changes
+
+- [#6870](https://github.com/keystonejs/keystone/pull/6870) [`8dac6bb93`](https://github.com/keystonejs/keystone/commit/8dac6bb93ccfbe62fe73e3ada311d2283f57ba6c) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed files with names including things like `[...rest]` created using `ui.getAdditionalFiles` being deleted after being written in dev.
+
+* [#6880](https://github.com/keystonejs/keystone/pull/6880) [`400f4e1eb`](https://github.com/keystonejs/keystone/commit/400f4e1eb34ef70d11a1f8c1f8bcf20d5fb10a1a) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Runtime type errors from Prisma are now actually returned instead of being returned as `Prisma error:`
+
+- [#6872](https://github.com/keystonejs/keystone/pull/6872) [`aa98b1c49`](https://github.com/keystonejs/keystone/commit/aa98b1c49b44938d2cf0904fd05b041f2259d267) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed `Schema must contain uniquely named types but contains multiple types named "OrderDirection".` error when running `keystone-next build`.
+
 ## 27.0.0
 
 ### Major Changes
