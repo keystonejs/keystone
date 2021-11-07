@@ -205,7 +205,7 @@ export default function ForOrganisations() {
                 as="a"
                 // look="soft"
                 size="large"
-                href="/docs/guides/document-fields#try-the-demo"
+                href="/docs/guides/document-field-demo"
                 css={{ margin: '1.5rem 1rem 1rem 0' }}
               >
                 Try the demo <ArrowR />
