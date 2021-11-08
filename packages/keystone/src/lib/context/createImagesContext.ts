@@ -8,7 +8,7 @@ import { parseImageRef } from '../../fields/types/image/utils';
 import { CloudAssetsAPI } from '../cloud/assets';
 
 const DEFAULT_BASE_URL = '/images';
-const DEFAULT_STORAGE_PATH = './public/images';
+export const DEFAULT_IMAGES_STORAGE_PATH = './public/images';
 
 const getImageMetadataFromBuffer = async (buffer: Buffer): Promise<ImageMetadata> => {
   const filesize = buffer.length;
@@ -39,7 +39,8 @@ export function createImagesContext(
   }
 
   const { images } = config;
-  const { baseUrl = DEFAULT_BASE_URL, storagePath = DEFAULT_STORAGE_PATH } = images.local || {};
+  const { baseUrl = DEFAULT_BASE_URL, storagePath = DEFAULT_IMAGES_STORAGE_PATH } =
+    images.local || {};
 
   if (images.upload === 'local') {
     fs.mkdirSync(storagePath, { recursive: true });
