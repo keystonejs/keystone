@@ -4,3 +4,4 @@ dist
 reports
 docs/public/assets/
 nexus-typegen.ts
+tests/test-projects/live-reloading/schemas/syntax-error.js

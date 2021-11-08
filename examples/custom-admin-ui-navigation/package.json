@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/example-custom-admin-ui-navigation",
-  "version": "5.0.3",
+  "version": "5.0.4",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -9,7 +9,7 @@
     "build": "keystone-next build"
   },
   "dependencies": {
-    "@keystone-next/keystone": "^26.1.0",
+    "@keystone-next/keystone": "^27.0.0",
     "react": "^17.0.2"
   },
   "devDependencies": {

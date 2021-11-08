@@ -37,7 +37,7 @@ const fileFields = graphql.fields<FileData>()({
       return getFileRef(data.mode, data.filename);
     },
   }),
-  src: graphql.field({
+  url: graphql.field({
     type: graphql.nonNull(graphql.String),
     resolve(data, args, context) {
       if (!context.files) {
@@ -45,7 +45,7 @@ const fileFields = graphql.fields<FileData>()({
           'File context is undefined, this most likely means that you havent configurd keystone with a file config, see https://keystonejs.com/docs/apis/config#files for details'
         );
       }
-      return context.files.getSrc(data.mode, data.filename);
+      return context.files.getUrl(data.mode, data.filename);
     },
   }),
 });
@@ -53,11 +53,17 @@ const fileFields = graphql.fields<FileData>()({
 const FileFieldOutput = graphql.interface<FileData>()({
   name: 'FileFieldOutput',
   fields: fileFields,
-  resolveType: () => 'LocalFileFieldOutput',
+  resolveType: val => (val.mode === 'local' ? 'LocalFileFieldOutput' : 'CloudFileFieldOutput'),
 });
 
 const LocalFileFieldOutput = graphql.object<FileData>()({
   name: 'LocalFileFieldOutput',
+  interfaces: [FileFieldOutput],
+  fields: fileFields,
+});
+
+const CloudFileFieldOutput = graphql.object<FileData>()({
+  name: 'CloudFileFieldOutput',
   interfaces: [FileFieldOutput],
   fields: fileFields,
 });
@@ -109,14 +115,14 @@ export const file =
             filesize === null ||
             filename === null ||
             mode === null ||
-            (mode !== 'local' && mode !== 'keystone-cloud')
+            (mode !== 'local' && mode !== 'cloud')
           ) {
             return null;
           }
           return { mode, filename, filesize };
         },
       }),
-      unreferencedConcreteInterfaceImplementations: [LocalFileFieldOutput],
+      unreferencedConcreteInterfaceImplementations: [LocalFileFieldOutput, CloudFileFieldOutput],
       views: resolveView('file/views'),
     });
   };

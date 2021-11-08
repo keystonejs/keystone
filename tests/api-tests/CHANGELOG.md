@@ -1,5 +1,11 @@
 # @keystonejs/api-tests
 
+## 11.1.4
+
+### Patch Changes
+
+- [#6804](https://github.com/keystonejs/keystone/pull/6804) [`023bc7a0b`](https://github.com/keystonejs/keystone/commit/023bc7a0b1e6fb0ebdc5055f0243d9dad255a667) Thanks [@renovate](https://github.com/apps/renovate)! - Update prisma monorepo to [v3.3.0 (minor)](https://github.com/prisma/prisma/releases/tag/3.3.0)
+
 ## 11.1.3
 
 ### Patch Changes

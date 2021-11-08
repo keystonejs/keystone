@@ -36,8 +36,8 @@ export type KeystoneConfig = {
     generateNodeAPI?: boolean;
     /** Creates a file at `node_modules/.keystone/next/graphql-api` with `default` and `config` exports that can be re-exported in a Next API route */
     generateNextGraphqlAPI?: boolean;
-    /** Config options for Keystone Cloud */
-    keystoneCloud?: KeystoneCloudConfig;
+    /** Options for Keystone Cloud */
+    cloud?: CloudConfig;
     /** Adds the internal data structure `experimental.initialisedLists` to the context object.
      * This is not a stable API and may contain breaking changes in `patch` level releases.
      */
@@ -120,11 +120,18 @@ export type GraphQLConfig = {
     maxTotalResults?: number;
   };
   /**
+   * - `true` - Add `ApolloServerPluginLandingPageGraphQLPlayground` to the Apollo Server plugins
+   * - `false` - Add `ApolloServerPluginLandingPageDisabled` to the Apollo Server plugins
+   * - `'apollo'` - Do not add any plugins to the Apollo config, this will use [Apollo Sandbox](https://www.apollographql.com/docs/apollo-server/testing/build-run-queries/#apollo-sandbox)
+   * @default process.env.NODE_ENV !== 'production'
+   */
+  playground?: boolean | 'apollo';
+  /**
    *  Additional options to pass into the ApolloServer constructor.
    *  @see https://www.apollographql.com/docs/apollo-server/api/apollo-server/#constructor
    */
   apolloConfig?: Config;
-  /*
+  /**
    * When an error is returned from the GraphQL API, Apollo can include a stacktrace
    * indicating where the error occurred. When Keystone is processing mutations, it
    * will sometimes captures more than one error at a time, and then group these into
@@ -140,7 +147,7 @@ export type GraphQLConfig = {
    * `apolloConfig.formatError` to log the stacktraces and then strip them out before
    * returning the error.
    *
-   * ```
+   * ```ts
    * graphql: {
    *   debug: true,
    *   apolloConfig: {
@@ -154,8 +161,8 @@ export type GraphQLConfig = {
    *   },
    * }
    * ```
-   *   *
-   * Default: process.env.NODE_ENV !== 'production'
+   *
+   * @default process.env.NODE_ENV !== 'production'
    */
   debug?: boolean;
 };
@@ -201,13 +208,10 @@ export type ImagesConfig = {
   };
 };
 
-// config.experimental.keystoneCloud
+// config.experimental.cloud
 
-export type KeystoneCloudConfig = {
-  apiKey: string;
-  imagesDomain: string;
-  graphqlApiEndpoint: string;
-  restApiEndpoint: string;
+export type CloudConfig = {
+  apiKey?: string;
 };
 
 // Exports from sibling packages

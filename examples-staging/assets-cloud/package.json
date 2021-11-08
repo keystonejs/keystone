@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/example-assets-cloud",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -9,7 +9,7 @@
     "build": "keystone-next build"
   },
   "dependencies": {
-    "@keystone-next/keystone": "^26.1.0",
+    "@keystone-next/keystone": "^27.0.0",
     "dotenv": "^10.0.0"
   },
   "devDependencies": {

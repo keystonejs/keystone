@@ -1,10 +1,16 @@
-import type { GraphQLSchemaExtension } from '@keystone-next/keystone/types';
-
+import { graphql } from '@keystone-next/keystone';
 import { AuthGqlNames, AuthTokenTypeConfig, SecretFieldImpl } from '../types';
 
 import { createAuthToken } from '../lib/createAuthToken';
 import { validateAuthToken } from '../lib/validateAuthToken';
 import { getAuthTokenErrorMessage } from '../lib/getErrorMessage';
+
+const errorCodes = ['FAILURE', 'TOKEN_EXPIRED', 'TOKEN_REDEEMED'] as const;
+
+const PasswordResetRedemptionErrorCode = graphql.enum({
+  name: 'PasswordResetRedemptionErrorCode',
+  values: graphql.enumValues(errorCodes),
+});
 
 export function getPasswordResetSchema<I extends string, S extends string>({
   listKey,
@@ -20,38 +26,27 @@ export function getPasswordResetSchema<I extends string, S extends string>({
   gqlNames: AuthGqlNames;
   passwordResetLink: AuthTokenTypeConfig;
   passwordResetTokenSecretFieldImpl: SecretFieldImpl;
-}): GraphQLSchemaExtension {
+}) {
+  const getResult = (name: string) =>
+    graphql.object<{ code: typeof errorCodes[number]; message: string }>()({
+      name,
+      fields: {
+        code: graphql.field({ type: graphql.nonNull(PasswordResetRedemptionErrorCode) }),
+        message: graphql.field({ type: graphql.nonNull(graphql.String) }),
+      },
+    });
+  const ValidateItemPasswordResetTokenResult = getResult(
+    gqlNames.ValidateItemPasswordResetTokenResult
+  );
+  const RedeemItemPasswordResetTokenResult = getResult(gqlNames.RedeemItemPasswordResetTokenResult);
   return {
-    typeDefs: `
-      # Reset password
-      type Query {
-        ${gqlNames.validateItemPasswordResetToken}(${identityField}: String!, token: String!): ${gqlNames.ValidateItemPasswordResetTokenResult}
-      }
-      type Mutation {
-        ${gqlNames.sendItemPasswordResetLink}(${identityField}: String!): Boolean!
-        ${gqlNames.redeemItemPasswordResetToken}(${identityField}: String!, token: String!, ${secretField}: String!): ${gqlNames.RedeemItemPasswordResetTokenResult}
-      }
-
-      type ${gqlNames.ValidateItemPasswordResetTokenResult} {
-        code: PasswordResetRedemptionErrorCode!
-        message: String!
-      }
-      type ${gqlNames.RedeemItemPasswordResetTokenResult} {
-        code: PasswordResetRedemptionErrorCode!
-        message: String!
-      }
-      enum PasswordResetRedemptionErrorCode {
-        FAILURE
-        TOKEN_EXPIRED
-        TOKEN_REDEEMED
-      }
-    `,
-    resolvers: {
-      Mutation: {
-        async [gqlNames.sendItemPasswordResetLink](root: any, args: { [P in I]: string }, context) {
+    mutation: {
+      [gqlNames.sendItemPasswordResetLink]: graphql.field({
+        type: graphql.nonNull(graphql.Boolean),
+        args: { [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }) },
+        async resolve(rootVal, { [identityField]: identity }, context) {
           const dbItemAPI = context.sudo().db[listKey];
           const tokenType = 'passwordReset';
-          const identity = args[identityField];
 
           const result = await createAuthToken(identityField, identity, dbItemAPI);
 
@@ -72,9 +67,17 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           }
           return true;
         },
-        async [gqlNames.redeemItemPasswordResetToken](
-          root: any,
-          args: { [P in I]: string } & { [P in S]: string } & { token: string },
+      }),
+      [gqlNames.redeemItemPasswordResetToken]: graphql.field({
+        type: RedeemItemPasswordResetTokenResult,
+        args: {
+          [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
+          token: graphql.arg({ type: graphql.nonNull(graphql.String) }),
+          [secretField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
+        },
+        async resolve(
+          rootVal,
+          { [identityField]: identity, token, [secretField]: secret },
           context
         ) {
           const dbItemAPI = context.sudo().db[listKey];
@@ -84,9 +87,9 @@ export function getPasswordResetSchema<I extends string, S extends string>({
             passwordResetTokenSecretFieldImpl,
             tokenType,
             identityField,
-            args[identityField],
+            identity,
             passwordResetLink.tokensValidForMins,
-            args.token,
+            token,
             dbItemAPI
           );
 
@@ -107,18 +110,21 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           // (NB: Is this *really* what we want? -TL)
           await dbItemAPI.updateOne({
             where: { id: itemId },
-            data: { [secretField]: args[secretField] },
+            data: { [secretField]: secret },
           });
 
           return null;
         },
-      },
-      Query: {
-        async [gqlNames.validateItemPasswordResetToken](
-          root: any,
-          args: { [P in I]: string } & { token: string },
-          context
-        ) {
+      }),
+    },
+    query: {
+      [gqlNames.validateItemPasswordResetToken]: graphql.field({
+        type: ValidateItemPasswordResetTokenResult,
+        args: {
+          [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
+          token: graphql.arg({ type: graphql.nonNull(graphql.String) }),
+        },
+        async resolve(rootVal, { [identityField]: identity, token }, context) {
           const dbItemAPI = context.sudo().db[listKey];
           const tokenType = 'passwordReset';
           const result = await validateAuthToken(
@@ -126,9 +132,9 @@ export function getPasswordResetSchema<I extends string, S extends string>({
             passwordResetTokenSecretFieldImpl,
             tokenType,
             identityField,
-            args[identityField],
+            identity,
             passwordResetLink.tokensValidForMins,
-            args.token,
+            token,
             dbItemAPI
           );
 
@@ -137,7 +143,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           }
           return null;
         },
-      },
+      }),
     },
   };
 }

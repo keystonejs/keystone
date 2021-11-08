@@ -1,12 +1,15 @@
 import Path from 'path';
+import { promisify } from 'util';
 import fs from 'fs-extra';
-
 import fastGlob from 'fast-glob';
 import resolve from 'resolve';
 import { GraphQLSchema } from 'graphql';
+import { walk as _walk } from '@nodelib/fs.walk';
 import type { KeystoneConfig, AdminMetaRootVal, AdminFileToWrite } from '../../types';
 import { writeAdminFiles } from '../templates';
 import { serializePathForImport } from '../utils/serializePathForImport';
+
+const walk = promisify(_walk);
 
 function getDoesAdminConfigExist() {
   try {
@@ -33,7 +36,15 @@ export async function writeAdminFile(file: AdminFileToWrite, projectAdminPath: s
     // TODO: should we use copyFile or copy?
     await fs.copyFile(file.inputPath, outputFilename);
   }
-  if (file.mode === 'write') {
+  let content: undefined | string;
+  try {
+    content = await fs.readFile(outputFilename, 'utf8');
+  } catch (err: any) {
+    if (err.code !== 'ENOENT') {
+      throw err;
+    }
+  }
+  if (file.mode === 'write' && content !== file.src) {
     await fs.outputFile(outputFilename, file.src);
   }
   return Path.normalize(outputFilename);
@@ -43,50 +54,30 @@ export const generateAdminUI = async (
   config: KeystoneConfig,
   graphQLSchema: GraphQLSchema,
   adminMeta: AdminMetaRootVal,
-  projectAdminPath: string
+  projectAdminPath: string,
+  isLiveReload: boolean
 ) => {
-  const dir = await fs.readdir(projectAdminPath).catch(err => {
-    if (err.code === 'ENOENT') {
-      return [];
-    }
-    throw err;
-  });
+  // when we're not doing a live reload, we want to clear everything out except the .next directory (not the .next directory because it has caches)
+  // so that at least every so often, we'll clear out anything that the deleting we do during live reloads doesn't (should just be directories)
+  if (!isLiveReload) {
+    const dir = await fs.readdir(projectAdminPath).catch(err => {
+      if (err.code === 'ENOENT') {
+        return [];
+      }
+      throw err;
+    });
 
-  await Promise.all(
-    dir.map(x => {
-      if (x === '.next') return;
-      return fs.remove(Path.join(projectAdminPath, x));
-    })
-  );
-  const publicDirectory = Path.join(projectAdminPath, 'public');
-
-  if (config.images || config.files) {
-    await fs.mkdir(publicDirectory, { recursive: true });
-  }
-
-  if (config.images) {
-    const storagePath = Path.resolve(config.images.local?.storagePath ?? './public/images');
-    await fs.mkdir(storagePath, { recursive: true });
-    await fs.symlink(
-      Path.relative(publicDirectory, storagePath),
-      Path.join(publicDirectory, 'images'),
-      'junction'
-    );
-  }
-
-  if (config.files) {
-    const storagePath = Path.resolve(config.files.local?.storagePath ?? './public/files');
-    await fs.mkdir(storagePath, { recursive: true });
-    await fs.symlink(
-      Path.relative(publicDirectory, storagePath),
-      Path.join(publicDirectory, 'files'),
-      'junction'
+    await Promise.all(
+      dir.map(x => {
+        if (x === '.next') return;
+        return fs.remove(Path.join(projectAdminPath, x));
+      })
     );
   }
 
   // Write out the files configured by the user
-  const userPages = config.ui?.getAdditionalFiles?.map(x => x(config)) ?? [];
-  const userFilesToWrite = (await Promise.all(userPages)).flat();
+  const userFiles = config.ui?.getAdditionalFiles?.map(x => x(config)) ?? [];
+  const userFilesToWrite = (await Promise.all(userFiles)).flat();
   const savedFiles = await Promise.all(
     userFilesToWrite.map(file => writeAdminFile(file, projectAdminPath))
   );
@@ -94,29 +85,60 @@ export const generateAdminUI = async (
 
   // Write out the built-in admin UI files. Don't overwrite any user-defined pages.
   const configFileExists = getDoesAdminConfigExist();
-  const adminFiles = writeAdminFiles(
+  let adminFiles = writeAdminFiles(
     config,
     graphQLSchema,
     adminMeta,
     configFileExists,
-    projectAdminPath
-  );
-  await Promise.all(
-    adminFiles
-      .filter(x => !uniqueFiles.has(Path.normalize(Path.join(projectAdminPath, x.outputPath))))
-      .map(file => writeAdminFile(file, projectAdminPath))
+    projectAdminPath,
+    isLiveReload
   );
 
   // Add files to pages/ which point to any files which exist in admin/pages
   const userPagesDir = Path.join(process.cwd(), 'admin', 'pages');
-  const files = await fastGlob('**/*.{js,jsx,ts,tsx}', { cwd: userPagesDir });
+  const userPagesEntries = await fastGlob('**/*.{js,jsx,ts,tsx}', { cwd: userPagesDir });
+  for (const filename of userPagesEntries) {
+    const outputFilename = Path.join('pages', filename);
+    const path = Path.relative(
+      Path.dirname(Path.join(projectAdminPath, outputFilename)),
+      Path.join(userPagesDir, filename)
+    );
+    const importPath = serializePathForImport(path);
+    adminFiles.push({
+      mode: 'write',
+      outputPath: outputFilename,
+      src: `export { default } from ${importPath}`,
+    });
+  }
 
-  await Promise.all(
-    files.map(async filename => {
-      const outputFilename = Path.join(projectAdminPath, 'pages', filename);
-      const path = Path.relative(Path.dirname(outputFilename), Path.join(userPagesDir, filename));
-      const importPath = serializePathForImport(path);
-      await fs.outputFile(outputFilename, `export { default } from ${importPath}`);
-    })
+  adminFiles = adminFiles.filter(
+    x => !uniqueFiles.has(Path.normalize(Path.join(projectAdminPath, x.outputPath)))
   );
+
+  await Promise.all(adminFiles.map(file => writeAdminFile(file, projectAdminPath)));
+
+  // Because Next will re-compile things (or at least check things and log a bunch of stuff)
+  // if we delete pages and then re-create them, we want to avoid that when live reloading
+  // so we only delete things that shouldn't exist anymore
+  // this won't clear out empty directories, this is fine since:
+  // - they won't create pages in Admin UI which is really what this deleting is about avoiding
+  // - we'll remove them when the user restarts the process
+  if (isLiveReload) {
+    const ignoredDir = Path.resolve(projectAdminPath, '.next');
+    const ignoredFiles = new Set(
+      [
+        ...adminFiles.map(x => x.outputPath),
+        ...uniqueFiles,
+        'next-env.d.ts',
+        'pages/api/__keystone_api_build.js',
+      ].map(x => Path.resolve(projectAdminPath, x))
+    );
+
+    const entries = await walk(projectAdminPath, {
+      deepFilter: entry => entry.path !== ignoredDir,
+      entryFilter: entry => entry.dirent.isFile() && !ignoredFiles.has(entry.path),
+    });
+
+    await Promise.all(entries.map(entry => fs.remove(entry.path)));
+  }
 };

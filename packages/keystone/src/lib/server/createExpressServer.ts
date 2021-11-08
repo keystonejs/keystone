@@ -5,6 +5,8 @@ import { GraphQLSchema } from 'graphql';
 import { graphqlUploadExpress } from 'graphql-upload';
 import type { KeystoneConfig, CreateContext, SessionStrategy, GraphQLConfig } from '../../types';
 import { createSessionContext } from '../../session';
+import { DEFAULT_FILES_STORAGE_PATH } from '../context/createFilesContext';
+import { DEFAULT_IMAGES_STORAGE_PATH } from '../context/createImagesContext';
 import { createApolloServerExpress } from './createApolloServer';
 import { addHealthCheck } from './addHealthCheck';
 
@@ -46,12 +48,9 @@ const addApolloServer = async ({
   apolloServer.applyMiddleware({
     app: server,
     path: config.graphql?.path || '/api/graphql',
-    cors:
-      config.graphql?.cors ||
-      (process.env.NODE_ENV !== 'production'
-        ? { origin: 'https://studio.apollographql.com', credentials: true }
-        : undefined),
+    cors: false,
   });
+  return apolloServer;
 };
 
 export const createExpressServer = async (
@@ -59,7 +58,7 @@ export const createExpressServer = async (
   graphQLSchema: GraphQLSchema,
   createContext: CreateContext
 ) => {
-  const server = express();
+  const expressServer = express();
 
   if (config.server?.cors) {
     // Setting config.server.cors = true will provide backwards compatible defaults
@@ -68,10 +67,10 @@ export const createExpressServer = async (
       typeof config.server.cors === 'boolean'
         ? { origin: true, credentials: true }
         : config.server.cors;
-    server.use(cors(corsConfig));
+    expressServer.use(cors(corsConfig));
   }
 
-  addHealthCheck({ config, server });
+  addHealthCheck({ config, server: expressServer });
 
   if (config.server?.extendExpressApp) {
     const createRequestContext = async (req: IncomingMessage, res: ServerResponse) =>
@@ -82,11 +81,25 @@ export const createExpressServer = async (
         req,
       });
 
-    config.server?.extendExpressApp(server, createRequestContext);
+    config.server?.extendExpressApp(expressServer, createRequestContext);
   }
 
-  await addApolloServer({
-    server,
+  if (config.files) {
+    expressServer.use(
+      '/files',
+      express.static(config.files.local?.storagePath ?? DEFAULT_FILES_STORAGE_PATH)
+    );
+  }
+
+  if (config.images) {
+    expressServer.use(
+      '/images',
+      express.static(config.images.local?.storagePath ?? DEFAULT_IMAGES_STORAGE_PATH)
+    );
+  }
+
+  const apolloServer = await addApolloServer({
+    server: expressServer,
     config,
     graphQLSchema,
     createContext,
@@ -94,5 +107,5 @@ export const createExpressServer = async (
     graphqlConfig: config.graphql,
   });
 
-  return server;
+  return { expressServer, apolloServer };
 };

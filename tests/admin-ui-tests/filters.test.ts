@@ -1,5 +1,5 @@
 import { Browser, Page, BrowserContext } from 'playwright';
-import { adminUITests, deleteAllData, generateDataArray, makeGqlRequest } from './utils';
+import { adminUITests, deleteAllData, generateDataArray, loadIndex, makeGqlRequest } from './utils';
 
 adminUITests('./tests/test-projects/basic', browserType => {
   let browser: Browser = undefined as any;
@@ -10,7 +10,7 @@ adminUITests('./tests/test-projects/basic', browserType => {
     browser = await browserType.launch();
     context = await browser.newContext();
     page = await browser.newPage();
-    await page.goto('http://localhost:3000');
+    await loadIndex(page);
   });
 
   describe('relationship filters', () => {

@@ -1,5 +1,5 @@
 import { Browser, Page } from 'playwright';
-import { exampleProjectTests } from './utils';
+import { exampleProjectTests, loadIndex } from './utils';
 
 exampleProjectTests('custom-field-view', browserType => {
   let browser: Browser = undefined as any;
@@ -7,7 +7,7 @@ exampleProjectTests('custom-field-view', browserType => {
   beforeAll(async () => {
     browser = await browserType.launch();
     page = await browser.newPage();
-    await page.goto('http://localhost:3000');
+    await loadIndex(page);
   });
   test('Load list', async () => {
     await Promise.all([page.waitForNavigation(), page.click('h3:has-text("People")')]);

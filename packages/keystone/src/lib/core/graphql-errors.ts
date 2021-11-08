@@ -7,6 +7,13 @@ export const accessDeniedError = (msg: string) =>
   new ApolloError(`Access denied: ${msg}`, 'KS_ACCESS_DENIED');
 
 export const prismaError = (err: Error) => {
+  if ((err as any).code === undefined) {
+    return new ApolloError(`Prisma error`, 'KS_PRISMA_ERROR', {
+      debug: {
+        message: err.message,
+      },
+    });
+  }
   return new ApolloError(
     `Prisma error: ${err.message.split('\n').slice(-1)[0].trim()}`,
     'KS_PRISMA_ERROR',

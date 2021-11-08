@@ -645,7 +645,7 @@ export default function WhyKeystonePage() {
             <Type as="p" look="body18" color="var(--muted)" margin="1rem 0 0 0">
               Use an API-first content platform to unlocks the power of multichannel content ops.
               Connect to your audience where they want to be. Ship content to any frontend over
-              performant APIs. Use the built-in Apollo Sandbox to query with ease.
+              performant APIs. Use the built-in GraphQL Playground to query with ease.
             </Type>
           </div>
           <TweetBox

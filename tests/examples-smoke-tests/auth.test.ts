@@ -1,5 +1,5 @@
 import { Browser, Page } from 'playwright';
-import { exampleProjectTests, initFirstItemTest } from './utils';
+import { exampleProjectTests, initFirstItemTest, loadIndex } from './utils';
 
 exampleProjectTests('../examples-staging/auth', browserType => {
   let browser: Browser = undefined as any;
@@ -7,7 +7,7 @@ exampleProjectTests('../examples-staging/auth', browserType => {
   beforeAll(async () => {
     browser = await browserType.launch();
     page = await browser.newPage();
-    await page.goto('http://localhost:3000');
+    await loadIndex(page);
   });
   initFirstItemTest(() => page);
   afterAll(async () => {
