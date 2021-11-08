@@ -89,7 +89,7 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
     // dynamic importing didn't work on windows because it couldn't get the path to require the chunk for some reason
     await fs.outputFile(
       `${getAdminPath(cwd)}/pages/api/__keystone_api_build.js`,
-      `exports.getConfig = () => require(${p}).default;
+      `exports.getConfig = () => require(${p});
 const x = Math.random();
 exports.default = function (req, res) { return res.send(x.toString()) }
 `
@@ -124,7 +124,13 @@ exports.default = function (req, res) { return res.send(x.toString()) }
             `${getAdminPath(cwd)}/.next/server/pages/api/__keystone_api_build`
           );
           delete require.cache[resolved];
-          const newConfig = initConfig(require(resolved).getConfig());
+          // webpack will make modules that import Node ESM externals(which must be loaded with dynamic import)
+          // export a promise that resolves to the actual export so yeah, we need to await a require call
+          // technically, the await for requiring the api route module isn't necessary since there are no imports there
+          // but just in case webpack decides to make it async in the future, this'll still work
+          const apiRouteModule = await require(resolved);
+          const uninitializedConfig = (await apiRouteModule.getConfig()).default;
+          const newConfig = initConfig(uninitializedConfig);
           const newPrismaSchema = printPrismaSchema(
             initialiseLists(newConfig.lists, newConfig.db.provider),
             newConfig.db.provider,
@@ -138,9 +144,9 @@ exports.default = function (req, res) { return res.send(x.toString()) }
           // we only need to test for the things which influence the prisma client creation
           // and aren't written into the prisma schema since we check whether the prisma schema has changed above
           if (
-            newConfig.db.enableLogging !== config.db.enableLogging ||
-            newConfig.db.url !== config.db.url ||
-            newConfig.db.useMigrations !== config.db.useMigrations
+            newConfig.db.enableLogging !== uninitializedConfig.db.enableLogging ||
+            newConfig.db.url !== uninitializedConfig.db.url ||
+            newConfig.db.useMigrations !== uninitializedConfig.db.useMigrations
           ) {
             console.log('Your db config has changed, please restart Keystone');
             process.exit(1);

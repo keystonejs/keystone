@@ -13,6 +13,7 @@ import {
 import { document } from '@keystone-next/fields-document';
 // import { cloudinaryImage } from '@keystone-next/cloudinary';
 import { KeystoneListsAPI } from '@keystone-next/keystone/types';
+import { v4 } from 'uuid';
 import { componentBlocks } from './admin/fieldViews/Content';
 import { KeystoneListsTypeInfo } from '.keystone/types';
 
@@ -196,6 +197,7 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
   typeDefs: gql`
     type Query {
       randomNumber: RandomNumber
+      uuid: ID!
     }
     type RandomNumber {
       number: Int
@@ -227,6 +229,7 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
         number: randomNumber(),
         generatedAt: Date.now(),
       }),
+      uuid: () => v4(),
     },
   },
 });
