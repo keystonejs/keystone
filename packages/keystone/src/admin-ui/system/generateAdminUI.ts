@@ -74,35 +74,6 @@ export const generateAdminUI = async (
       })
     );
   }
-  const publicDirectory = Path.join(projectAdminPath, 'public');
-
-  if (config.images || config.files) {
-    // when we're not doing a live reload, we've already done this with the deleting above
-    if (isLiveReload) {
-      await fs.remove(publicDirectory);
-    }
-    await fs.mkdir(publicDirectory, { recursive: true });
-  }
-
-  if (config.images) {
-    const storagePath = Path.resolve(config.images.local?.storagePath ?? './public/images');
-    await fs.mkdir(storagePath, { recursive: true });
-    await fs.symlink(
-      Path.relative(publicDirectory, storagePath),
-      Path.join(publicDirectory, 'images'),
-      'junction'
-    );
-  }
-
-  if (config.files) {
-    const storagePath = Path.resolve(config.files.local?.storagePath ?? './public/files');
-    await fs.mkdir(storagePath, { recursive: true });
-    await fs.symlink(
-      Path.relative(publicDirectory, storagePath),
-      Path.join(publicDirectory, 'files'),
-      'junction'
-    );
-  }
 
   // Write out the files configured by the user
   const userFiles = config.ui?.getAdditionalFiles?.map(x => x(config)) ?? [];
@@ -153,7 +124,7 @@ export const generateAdminUI = async (
   // - they won't create pages in Admin UI which is really what this deleting is about avoiding
   // - we'll remove them when the user restarts the process
   if (isLiveReload) {
-    const ignoredDirs = new Set(['.next', 'public'].map(x => Path.resolve(projectAdminPath, x)));
+    const ignoredDir = Path.resolve(projectAdminPath, '.next');
     const ignoredFiles = new Set(
       [
         ...adminFiles.map(x => x.outputPath),
@@ -164,7 +135,7 @@ export const generateAdminUI = async (
     );
 
     const entries = await walk(projectAdminPath, {
-      deepFilter: entry => !ignoredDirs.has(entry.path),
+      deepFilter: entry => entry.path !== ignoredDir,
       entryFilter: entry => entry.dirent.isFile() && !ignoredFiles.has(entry.path),
     });
 
