@@ -10,8 +10,8 @@
     "build": "keystone-next build"
   },
   "dependencies": {
-    "@graphql-tools/schema": "^8.2.0",
-    "@keystone-next/keystone": "^26.1.0",
+    "@graphql-tools/schema": "^8.3.0",
+    "@keystone-next/keystone": "^27.0.1",
     "graphql": "^15.6.1",
     "nexus": "^1.1.0"
   },
