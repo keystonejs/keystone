@@ -346,5 +346,5 @@ type NexusPost {
 
 type Thing {
   id: Int
-  name: String
+  title: String
 }

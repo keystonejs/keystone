@@ -6,7 +6,7 @@ export const Thing = objectType({
   name: 'Thing',
   definition(t) {
     t.int('id');
-    t.string('name');
+    t.string('title');
   },
 });
 

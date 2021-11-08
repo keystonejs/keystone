@@ -32,7 +32,7 @@ export const PostQuery = extendType({
       async resolve(root, { authorId, days }, context) {
         const cutoff = new Date(
           new Date().setUTCDate(new Date().getUTCDate() - days)
-        ).toUTCString();
+        ).toISOString();
 
         return await context.prisma.post.findMany({
           where: {
