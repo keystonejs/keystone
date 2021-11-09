@@ -124,7 +124,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@testing-library/dom": "^8.10.1",
+    "@testing-library/dom": "^8.11.0",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
     "@types/bytes": "^3.1.1",
