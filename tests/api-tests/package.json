@@ -15,7 +15,7 @@
     "@keystone-next/auth": "*",
     "@keystone-next/fields-document": "*",
     "@keystone-next/keystone": "*",
-    "apollo-server-types": "^3.3.0",
+    "apollo-server-types": "^3.4.0",
     "cookie-signature": "^1.1.0",
     "cuid": "^2.1.8",
     "globby": "^11.0.4",
