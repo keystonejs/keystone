@@ -16,7 +16,7 @@
     "date-fns": "^2.25.0",
     "react": "^17.0.2",
     "react-day-picker": "npm:react-day-picker@^7.4.8",
-    "react-focus-lock": "^2.5.2",
+    "react-focus-lock": "^2.6.0",
     "react-select": "^5.2.0"
   },
   "engines": {
