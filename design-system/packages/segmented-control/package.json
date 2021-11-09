@@ -5,11 +5,11 @@
   "main": "dist/keystone-ui-segmented-control.cjs.js",
   "module": "dist/keystone-ui-segmented-control.esm.js",
   "devDependencies": {
-    "@types/react": "^17.0.33",
+    "@types/react": "^17.0.34",
     "react": "^17.0.2"
   },
   "dependencies": {
-    "@babel/runtime": "^7.15.4",
+    "@babel/runtime": "^7.16.3",
     "@keystone-ui/core": "^3.2.1"
   },
   "peerDependencies": {
