@@ -22,6 +22,10 @@ console.error = (...stuff: any[]) => {
     if (stuff[0].includes('validateDOMNesting')) {
       return;
     }
+    // _somehow_ act is being used wrong
+    // it's not really worth digging into imo
+    // these tests aren't about thoroughly testing the rendering of the editor
+    // they're just a quick it doesn't crash
     if (stuff[0].includes('inside a test was not wrapped in act')) {
       return;
     }
@@ -42,7 +46,6 @@ console.error = (...stuff: any[]) => {
   // for whoever is trying to debug why this is failing here:
   // you should remove the process.exit call and replace it with a throw
   // and then look for unhandled rejections or thrown errors
-  // throw new Error(stuff);
   process.exit(1);
 };
 
@@ -165,7 +168,11 @@ function EditorComp({
         editorDocumentFeatures={documentFeatures}
         relationships={relationships}
       >
-        <DocumentEditorEditable scrollSelectionIntoView={() => {}} />
+        <DocumentEditorEditable
+          // the default implementation of scrollSelectionIntoView crashes in JSDOM for some reason
+          // so we just do nothing
+          scrollSelectionIntoView={() => {}}
+        />
       </ToolbarStateProvider>
     </Slate>
   );
