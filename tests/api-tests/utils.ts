@@ -132,7 +132,7 @@ export const expectPrismaError = (
     args.map(({ path, message, code, target }) => ({
       extensions: {
         code: 'KS_PRISMA_ERROR',
-        prisma: { clientVersion: '3.3.0', code, meta: { target } },
+        prisma: { clientVersion: '3.4.0', code, meta: { target } },
       },
       path,
       message,
