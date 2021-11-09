@@ -80,7 +80,7 @@ export function createSystem(config: KeystoneConfig, isLiveReload?: boolean) {
         prismaClient._engine.child?.kill('SIGINT');
       });
 
-      let cloudAssetsAPI: CloudAssetsAPI = undefined!;
+      let cloudAssetsAPI: CloudAssetsAPI | undefined = undefined;
 
       const createContext = makeCreateContext({
         graphQLSchema,
@@ -91,7 +91,12 @@ export function createSystem(config: KeystoneConfig, isLiveReload?: boolean) {
           Object.entries(lists).map(([listKey, list]) => [listKey, getGqlNames(list)])
         ),
         lists,
-        cloudAssetsAPI: () => cloudAssetsAPI,
+        cloudAssetsAPI: () => {
+          if (cloudAssetsAPI === undefined) {
+            throw new Error('Keystone Cloud config was not loaded');
+          }
+          return cloudAssetsAPI;
+        },
       });
 
       return {
@@ -102,9 +107,13 @@ export function createSystem(config: KeystoneConfig, isLiveReload?: boolean) {
             await config.db.onConnect?.(context);
           }
           if (config.experimental?.cloud?.apiKey) {
-            cloudAssetsAPI = await getCloudAssetsAPI({
-              apiKey: config.experimental.cloud.apiKey,
-            });
+            try {
+              cloudAssetsAPI = await getCloudAssetsAPI({
+                apiKey: config.experimental.cloud.apiKey,
+              });
+            } catch (err) {
+              console.error('failed to connect to Keystone Cloud', err);
+            }
           }
         },
         async disconnect() {
