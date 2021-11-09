@@ -1,5 +1,6 @@
 import { ScalarDBField, ScalarDBFieldDefault, DatabaseProvider } from '../../types';
 import { ResolvedDBField, ListsWithResolvedRelations } from './resolve-relationships';
+import { InitialisedList } from './types-for-lists';
 import { getDBFieldKeyForFieldOnMultiField } from './utils';
 
 function areArraysEqual(a: readonly unknown[], b: readonly unknown[]) {
@@ -69,15 +70,17 @@ function printField(
     const defaultValue = field.default
       ? ` @default(${printScalarDefaultValue(field.default)})`
       : '';
+    const map = field.map ? ` @map(${JSON.stringify(field.map)})` : '';
     const updatedAt = field.updatedAt ? ' @updatedAt' : '';
     return `${fieldPath} ${field.scalar}${
       modifiers[field.mode]
-    }${updatedAt}${nativeType}${defaultValue}${index}`;
+    }${updatedAt}${nativeType}${defaultValue}${index}${map}`;
   }
   if (field.kind === 'enum') {
     const index = printIndex(fieldPath, field.index);
     const defaultValue = field.default ? ` @default(${field.default.value})` : '';
-    return `${fieldPath} ${field.name}${modifiers[field.mode]}${defaultValue}${index}`;
+    const map = field.map ? ` @map(${JSON.stringify(field.map)})` : '';
+    return `${fieldPath} ${field.name}${modifiers[field.mode]}${defaultValue}${index}${map}`;
   }
   if (field.kind === 'multi') {
     return Object.entries(field.fields)
@@ -95,7 +98,7 @@ function printField(
     if (field.mode === 'many') {
       return `${fieldPath} ${field.list}[] @relation("${field.relationName}")`;
     }
-    if (field.foreignIdField === 'none') {
+    if (field.foreignIdField.kind === 'none') {
       return `${fieldPath} ${field.list}? @relation("${field.relationName}")`;
     }
     const relationIdFieldPath = `${fieldPath}Id`;
@@ -105,9 +108,11 @@ function printField(
     const nativeType = printNativeType(foreignIdField.nativeType, datasourceName);
     const index = printIndex(
       relationIdFieldPath,
-      field.foreignIdField === 'owned' ? 'index' : 'unique'
+      field.foreignIdField.kind === 'owned' ? 'index' : 'unique'
     );
-    const relationIdField = `${relationIdFieldPath} ${foreignIdField.scalar}? @map("${fieldPath}") ${nativeType}${index}`;
+    const relationIdField = `${relationIdFieldPath} ${foreignIdField.scalar}? @map(${JSON.stringify(
+      field.foreignIdField.map
+    )}) ${nativeType}${index}`;
     return `${relationField}\n${relationIdField}`;
   }
   // TypeScript's control flow analysis doesn't understand that this will never happen without the assertNever
@@ -192,7 +197,7 @@ function assertDbFieldIsValidForIdField(
 }
 
 export function printPrismaSchema(
-  lists: ListsWithResolvedRelations,
+  lists: Record<string, InitialisedList>,
   provider: DatabaseProvider,
   prismaPreviewFeatures: readonly string[] | undefined
 ) {
@@ -214,7 +219,7 @@ generator client {
   engineType = "binary"
 }
 \n`;
-  for (const [listKey, { resolvedDbFields }] of Object.entries(lists)) {
+  for (const [listKey, { resolvedDbFields, dbMap }] of Object.entries(lists)) {
     prismaSchema += `model ${listKey} {`;
     for (const [fieldPath, field] of Object.entries(resolvedDbFields)) {
       if (field.kind !== 'none') {
@@ -224,6 +229,9 @@ generator client {
         assertDbFieldIsValidForIdField(listKey, field);
         prismaSchema += ' @id';
       }
+    }
+    if (dbMap !== undefined) {
+      prismaSchema += `\n@@map(${JSON.stringify(dbMap)})`;
     }
     prismaSchema += `\n}\n`;
   }

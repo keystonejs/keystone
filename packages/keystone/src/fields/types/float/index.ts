@@ -35,6 +35,7 @@ export type FloatFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes>
     };
     db?: {
       isNullable?: boolean;
+      map?: string;
     };
   };
 
@@ -100,6 +101,7 @@ export const float =
       index: isIndexed === true ? 'index' : isIndexed || undefined,
       default:
         typeof defaultValue === 'number' ? { kind: 'literal', value: defaultValue } : undefined,
+      map: config.db?.map,
     })({
       ...config,
       hooks: {

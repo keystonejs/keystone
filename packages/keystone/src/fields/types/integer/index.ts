@@ -34,6 +34,7 @@ export type IntegerFieldConfig<TGeneratedListTypes extends BaseGeneratedListType
     };
     db?: {
       isNullable?: boolean;
+      map?: string;
     };
   };
 
@@ -124,6 +125,7 @@ export const integer =
           : defaultValue?.kind === 'autoincrement'
           ? { kind: 'autoincrement' }
           : undefined,
+      map: config.db?.map,
     })({
       ...config,
       hooks: {

@@ -29,7 +29,7 @@ export type DecimalFieldConfig<TGeneratedListTypes extends BaseGeneratedListType
     defaultValue?: string;
     isIndexed?: boolean | 'unique';
     graphql?: { create?: { isNonNull?: boolean }; read?: { isNonNull?: boolean } };
-    db?: { isNullable?: boolean };
+    db?: { isNullable?: boolean; map?: string };
   };
 
 function parseDecimalValueOption(meta: FieldData, value: string, name: string) {
@@ -121,6 +121,7 @@ export const decimal =
       index,
       default:
         defaultValue === undefined ? undefined : { kind: 'literal' as const, value: defaultValue },
+      map: config.db?.map,
     } as const;
     return fieldType(dbField)({
       ...config,

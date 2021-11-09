@@ -113,7 +113,7 @@ function getValueForDBField(
   if (dbField.kind === 'relation') {
     // If we're holding a foreign key value, let's take advantage of that.
     let fk: IdType | undefined;
-    if (dbField.mode === 'one' && dbField.foreignIdField !== 'none') {
+    if (dbField.mode === 'one' && dbField.foreignIdField.kind !== 'none') {
       fk = rootVal[`${fieldPath}Id`] as IdType;
     }
     return getRelationVal(dbField, id, lists[dbField.list], context, info, fk);

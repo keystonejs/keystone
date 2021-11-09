@@ -75,6 +75,7 @@ export type DocumentFieldConfig<TGeneratedListTypes extends BaseGeneratedListTyp
     links?: true;
     dividers?: true;
     layouts?: readonly (readonly [number, ...number[]])[];
+    db?: { map?: string };
   };
 
 const views = path.join(path.dirname(__dirname), 'views');
@@ -176,6 +177,7 @@ export const document =
           kind: 'literal',
           value: JSON.stringify([{ type: 'paragraph', children: [{ text: '' }] }]),
         },
+        map: config.db?.map,
       }
     );
   };
