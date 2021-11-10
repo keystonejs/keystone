@@ -9,6 +9,7 @@ import {
 } from '@keystone-next/keystone/types';
 import { password, timestamp } from '@keystone-next/keystone/fields';
 
+import { GraphQLError } from 'graphql';
 import { AuthConfig, AuthGqlNames } from './types';
 import { getSchemaExtension } from './schema';
 import { signinTemplate } from './templates/signin';
@@ -241,6 +242,14 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
 
           return { ...session, itemId: session.itemId, listKey, data };
         } catch (e) {
+          // if originalError is undefined, then this error should be from GraphQL validation and not execution
+          // so we know the developer is at fault and not just the browser sending a bad session
+          if (e instanceof GraphQLError && e.originalError === undefined) {
+            console.error(
+              'The query to fetch session data failed, the sessionData option in your createAuth usage is likely incorrect',
+              e
+            );
+          }
           // TODO: the assumption is this should only be from an invalid sessionData configuration
           //   it could be something else though, either way, result is a bad session
           return;
