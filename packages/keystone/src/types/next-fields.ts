@@ -42,7 +42,7 @@ export type NextFieldType<
   dbField: TDBField;
 } & FieldTypeWithoutDBField<TDBField, CreateArg, UpdateArg, UniqueWhereArg, OrderByArg, FilterArg>;
 
-export type ScalarPrismaTypes = {
+type ScalarPrismaTypes = {
   String: string;
   Boolean: boolean;
   Int: number;
