@@ -28,7 +28,7 @@ model Post {
   publishDate DateTime?
   author      User?     @relation("Post_author", fields: [authorId], references: [id])
   authorId    String?   @map("author")
-  tags        Tag[]     @relation("Post_tags_Tag_posts")
+  tags        Tag[]     @relation("Post_tags")
 
   @@index([authorId])
 }
@@ -36,5 +36,5 @@ model Post {
 model Tag {
   id    String @id @default(cuid())
   name  String @default("")
-  posts Post[] @relation("Post_tags_Tag_posts")
+  posts Post[] @relation("Post_tags")
 }

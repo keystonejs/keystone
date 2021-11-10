@@ -166,7 +166,7 @@ export function resolveRelationships(
           continue;
         }
         if (leftRel.field.mode === 'many' && rightRel.field.mode === 'many') {
-          const relationName = `${leftRel.listKey}_${leftRel.fieldPath}_${rightRel.listKey}_${rightRel.fieldPath}`;
+          const relationName = `${leftRel.listKey}_${leftRel.fieldPath}`;
           resolvedLists[leftRel.listKey][leftRel.fieldPath] = {
             kind: 'relation',
             mode: 'many',
@@ -215,7 +215,7 @@ export function resolveRelationships(
       }
 
       if (field.mode === 'many') {
-        const relationName = `${listKey}_${fieldPath}_many`;
+        const relationName = `${listKey}_${fieldPath}`;
         resolvedLists[field.list][foreignFieldPath] = {
           kind: 'relation',
           mode: 'many',
