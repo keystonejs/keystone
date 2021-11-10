@@ -413,7 +413,10 @@ testModules
                     lists: {
                       [listKey]: list({
                         fields: {
-                          field: mod.typeFunction({ isIndexed: 'unique' }),
+                          field: mod.typeFunction({
+                            isIndexed: 'unique',
+                            ...mod.fieldConfig?.(matrixValue),
+                          }),
                         },
                       }),
                     },

@@ -96,6 +96,8 @@ export const timestamp =
         },
       },
       input: {
+        uniqueWhere:
+          isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.DateTime }) } : undefined,
         where: {
           arg: graphql.arg({ type: filters[meta.provider].DateTime[mode] }),
           resolve: mode === 'optional' ? filters.resolveCommon : undefined,
