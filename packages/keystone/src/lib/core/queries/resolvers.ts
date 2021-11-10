@@ -15,7 +15,7 @@ import { getDBFieldKeyForFieldOnMultiField, runWithPrisma } from '../utils';
 import { checkFilterOrderAccess } from '../filter-order-access';
 
 // we want to put the value we get back from the field's unique where resolver into an equals
-// rather than directly passing the value as the filter even though Prisma supports directly passing in a value to do an equals
+// rather than directly passing the value as the filter (even though Prisma supports that), we use equals
 // because we want to disallow fields from providing an arbitrary filter
 export function mapUniqueWhereToWhere(uniqueWhere: UniquePrismaFilter): PrismaFilter {
   // inputResolvers.uniqueWhere validates that there is only one key
