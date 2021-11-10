@@ -10,7 +10,7 @@ In the command line, run `git pull` to latest from `main`.
 
 Run `yarn fresh` to rebuild `node_modules` and clean-up any build output.
 
-Finally, run `yarn published-changed` to find packages where the version listed in the `package.json` is ahead of the version published on npm, and publish just those packages.
+Finally, run `yarn publish-changed` to find packages where the version listed in the `package.json` is ahead of the version published on npm, and publish just those packages.
 
 The above command requires OTP and publish privileges on npm.
 
