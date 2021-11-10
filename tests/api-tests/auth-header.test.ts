@@ -235,7 +235,7 @@ describe('Auth testing', () => {
     );
 
     test(
-      'Session is dropped if sessionData configuration is invalid',
+      'Session is dropped if sessionData configuration is invalid and the error is logged',
       setup({
         sessionData: 'id foo', // foo does not exist
       })(async ({ context, graphQLRequest }) => {
@@ -246,15 +246,32 @@ describe('Auth testing', () => {
           initialData.User[0].password
         );
 
-        const { body } = await graphQLRequest({ query: '{ users { id } }' }).set(
-          'Cookie',
-          `keystonejs-session=${sessionToken}`
-        );
+        let logs: unknown[] = [];
+        let prevConsoleError = console.error;
+        console.error = (...args) => {
+          logs.push(args);
+        };
+        try {
+          const { body } = await graphQLRequest({ query: '{ users { id } }' }).set(
+            'Cookie',
+            `keystonejs-session=${sessionToken}`
+          );
 
-        const { data, errors } = body;
-        expect(data).toHaveProperty('users');
-        expect(data.users).toHaveLength(0); // nothing
-        expect(errors).toBe(undefined);
+          const { data, errors } = body;
+          expect(data).toHaveProperty('users');
+          expect(data.users).toHaveLength(0); // nothing
+          expect(errors).toBe(undefined);
+          expect(logs).toMatchInlineSnapshot(`
+            Array [
+              Array [
+                "The query to fetch session data failed, the sessionData option in your createAuth usage is likely incorrect",
+                [GraphQLError: Cannot query field "foo" on type "User".],
+              ],
+            ]
+          `);
+        } finally {
+          console.error = prevConsoleError;
+        }
       })
     );
   });
