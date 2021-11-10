@@ -1,5 +1,14 @@
 # @keystone-next/example-document-field
 
+## 1.1.7
+
+### Patch Changes
+
+- [#6889](https://github.com/keystonejs/keystone/pull/6889) [`191c46820`](https://github.com/keystonejs/keystone/commit/191c468202c1aa872988bed55c0ce555b3dfde70) Thanks [@bladey](https://github.com/bladey)! - Updated GraphQL filters to use most recent API.
+
+- Updated dependencies [[`14d74b014`](https://github.com/keystonejs/keystone/commit/14d74b0149a6d34063c8c7d6df5071694e639291), [`465eb3f95`](https://github.com/keystonejs/keystone/commit/465eb3f9595892cec34d17e1b7c21aea0c61a9d6), [`859ccb974`](https://github.com/keystonejs/keystone/commit/859ccb97489370443bc8d78b0bd7543d83f5b381), [`127a0db64`](https://github.com/keystonejs/keystone/commit/127a0db646ecbfb9ec51c58a98d013e4e7ead20a)]:
+  - @keystone-next/keystone@27.0.2
+
 ## 1.1.6
 
 ### Patch Changes
