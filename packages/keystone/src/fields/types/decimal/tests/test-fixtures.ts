@@ -40,4 +40,5 @@ export const supportedFilters = (provider: DatabaseProvider) => [
   'ordering',
   provider !== 'postgresql' && 'in_empty_null',
   provider !== 'postgresql' && 'in_equal',
+  'unique_equality',
 ];

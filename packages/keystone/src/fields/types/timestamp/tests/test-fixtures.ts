@@ -39,6 +39,7 @@ export const supportedFilters = () => [
   'ordering',
   'in_empty_null',
   'in_equal',
+  'unique_equality',
 ];
 
 export const filterTests = (withKeystone: (args: any) => any) => {

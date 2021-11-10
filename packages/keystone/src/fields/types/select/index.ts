@@ -165,6 +165,8 @@ export const select =
       })({
         ...commonConfig(config.options),
         input: {
+          uniqueWhere:
+            isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.Int }) } : undefined,
           where: {
             arg: graphql.arg({ type: filters[meta.provider].Int[mode] }),
             resolve: mode === 'required' ? undefined : filters.resolveCommon,
@@ -204,6 +206,8 @@ export const select =
       )({
         ...commonConfig(options),
         input: {
+          uniqueWhere:
+            isIndexed === 'unique' ? { arg: graphql.arg({ type: graphQLType }) } : undefined,
           where: {
             arg: graphql.arg({ type: filters[meta.provider].enum(graphQLType).optional }),
             resolve: mode === 'required' ? undefined : filters.resolveCommon,
@@ -218,6 +222,8 @@ export const select =
     return fieldType({ kind: 'scalar', scalar: 'String', ...commonDbFieldConfig })({
       ...commonConfig(options),
       input: {
+        uniqueWhere:
+          isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.String }) } : undefined,
         where: {
           arg: graphql.arg({ type: filters[meta.provider].String[mode] }),
           resolve: mode === 'required' ? undefined : filters.resolveString,
