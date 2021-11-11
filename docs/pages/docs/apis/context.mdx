@@ -47,7 +47,7 @@ context = {
 
   // Images API
   images: {
-    getSrc,
+    getUrl,
     getDataFromRef,
     getDataFromStream,
   },
@@ -138,7 +138,7 @@ type ImageData = {
 };
 ```
 
-`images.getSrc(mode, id, extension)`: Given a `mode`, `id`, and `extension` from an `ImageData` object, returns the `src` value representing the location from which the image can be accessed over HTTP.
+`image.getUrl(mode, id, extension)`: Given a `mode`, `id`, and `extension` from an `ImageData` object, returns the `src` value representing the location from which the image can be accessed over HTTP.
 
 `async images.getDataFromRef(ref)`: Given a `ref` string, taken from the `id` field of an existing image, returns an `ImageData` object.
 
@@ -150,7 +150,7 @@ These properties are used internally by Keystone and generally do not need to be
 
 `totalResults`: The cumulative total number of results returned by the current request. See [`config.graphql.queryLimits`](./config#graphql).
 
-`maxTotalResults`: The maximum number of results which can be returned before a query limit error is triggered. See [`config.graphql.queryLimits`](./apis/config#graphql).
+`maxTotalResults`: The maximum number of results which can be returned before a query limit error is triggered. See [`config.graphql.queryLimits`](./config#graphql).
 
 ### Deprecated
 
