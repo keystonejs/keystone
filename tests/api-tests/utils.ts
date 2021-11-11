@@ -1,5 +1,7 @@
 import { KeystoneConfig, KeystoneContext, DatabaseProvider } from '@keystone-next/keystone/types';
 
+export const dbProvider = process.env.TEST_ADAPTER as DatabaseProvider;
+
 // This function injects the db configuration that we use for testing in CI.
 // This functionality is a keystone repo specific way of doing things, so we don't
 // export it from `@keystone-next/keystone/testing`.
@@ -11,7 +13,7 @@ export const apiTestConfig = (
   ...config,
   db: {
     ...config.db,
-    provider: process.env.TEST_ADAPTER as DatabaseProvider,
+    provider: dbProvider,
     url: process.env.DATABASE_URL as string,
   },
 });
