@@ -7677,6 +7677,11 @@ istanbul-reports@^3.0.2:
     html-escaper "^2.0.0"
     istanbul-lib-report "^3.0.0"
 
+iterall@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/iterall/-/iterall-1.3.0.tgz#afcb08492e2915cbd8a0884eb93a8c94d0d72fea"
+  integrity sha512-QZ9qOMdF+QLHxy1QIpUHUU1D5pS2CG2P69LF6L6CPjPYA/XMOmKV3PZpawHoAjHNyB0swdVTRxdYT4tbBbxqwg==
+
 jest-changed-files@^27.3.0:
   version "27.3.0"
   resolved "https://registry.yarnpkg.com/jest-changed-files/-/jest-changed-files-27.3.0.tgz#22a02cc2b34583fc66e443171dc271c0529d263c"
@@ -9305,6 +9310,14 @@ next@^12.0.2:
     "@next/swc-win32-arm64-msvc" "12.0.2"
     "@next/swc-win32-ia32-msvc" "12.0.2"
     "@next/swc-win32-x64-msvc" "12.0.2"
+
+nexus@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/nexus/-/nexus-1.1.0.tgz#3d8fa05c29e7a61aa55f64ef5e0ba43dd76b3ed6"
+  integrity sha512-jUhbg22gKVY2YwZm726BrbfHaQ7Xzc0hNXklygDhuqaVxCuHCgFMhWa2svNWd1npe8kfeiu5nbwnz+UnhNXzCQ==
+  dependencies:
+    iterall "^1.3.0"
+    tslib "^2.0.3"
 
 node-fetch@2.6.1:
   version "2.6.1"
