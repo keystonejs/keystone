@@ -211,7 +211,6 @@ datasource ${provider} {
 generator client {
   provider = "prisma-client-js"
   output = "node_modules/.prisma/client"${prismaFlags}
-  engineType = "binary"
 }
 \n`;
   for (const [listKey, { resolvedDbFields }] of Object.entries(lists)) {
