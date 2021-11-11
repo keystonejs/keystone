@@ -33,7 +33,7 @@ async function getFilteredItem(
   }
 
   // Merge the filter access control and try to get the item.
-  let where = mapUniqueWhereToWhere(list, uniqueWhere);
+  let where = mapUniqueWhereToWhere(uniqueWhere);
   if (typeof accessFilters === 'object') {
     where = { AND: [where, await resolveWhereInput(accessFilters, list, context)] };
   }

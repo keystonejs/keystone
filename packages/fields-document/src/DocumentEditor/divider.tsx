@@ -1,6 +1,5 @@
 import React, { ComponentProps, Fragment, useMemo } from 'react';
 import { Editor } from 'slate';
-import { ReactEditor } from 'slate-react';
 
 import { MinusIcon } from '@keystone-ui/icons/icons/MinusIcon';
 import { Tooltip } from '@keystone-ui/tooltip';
@@ -11,7 +10,7 @@ import { insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading } from './u
 
 const minusIcon = <MinusIcon size="small" />;
 
-export function insertDivider(editor: ReactEditor) {
+export function insertDivider(editor: Editor) {
   insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
     type: 'divider',
     children: [{ text: '' }],
@@ -58,7 +57,7 @@ export const dividerButton = (
   </Tooltip>
 );
 
-export function withDivider<T extends Editor>(editor: T): T {
+export function withDivider(editor: Editor): Editor {
   const { isVoid } = editor;
   editor.isVoid = node => {
     return node.type === 'divider' || isVoid(node);

@@ -19,7 +19,7 @@
     ]
   },
   "peerDependencies": {
-    "@keystone-next/keystone": "^27.0.1"
+    "@keystone-next/keystone": "^27.0.2"
   },
   "dependencies": {
     "@babel/runtime": "^7.15.4",
@@ -33,10 +33,10 @@
     "@keystone-ui/popover": "^4.0.5",
     "@keystone-ui/tooltip": "^4.0.3",
     "@types/react": "^17.0.33",
-    "apollo-server-errors": "^3.2.0",
+    "apollo-server-errors": "^3.3.0",
     "apply-ref": "^1.0.0",
     "fp-ts": "^2.11.5",
-    "graphql": "^15.6.1",
+    "graphql": "^15.7.2",
     "io-ts": "^2.2.16",
     "io-ts-excess": "^1.0.1",
     "is-hotkey": "^0.2.0",
@@ -49,9 +49,9 @@
     "micromark-extension-gfm-strikethrough": "0.6.5",
     "react": "^17.0.2",
     "scroll-into-view-if-needed": "^2.2.28",
-    "slate": "^0.60.4",
-    "slate-history": "^0.60.4",
-    "slate-react": "^0.60.4"
+    "slate": "^0.67.1",
+    "slate-history": "^0.66.0",
+    "slate-react": "^0.69.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/packages/fields-document",
   "devDependencies": {
@@ -60,7 +60,7 @@
     "array.prototype.flat": "^1.2.5",
     "jest-diff": "^27.3.1",
     "pretty-format": "^27.3.1",
-    "slate-hyperscript": "^0.60.8"
+    "slate-hyperscript": "^0.67.0"
   },
   "engines": {
     "node": "^12.20 || >= 14.13"

@@ -5,7 +5,7 @@ export const paragraphElement = () => ({
   children: [{ text: '' }],
 });
 
-export function withParagraphs<T extends Editor>(editor: T): T {
+export function withParagraphs(editor: Editor): Editor {
   const { normalizeNode } = editor;
 
   editor.normalizeNode = entry => {

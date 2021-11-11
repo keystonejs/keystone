@@ -7,6 +7,9 @@
 // ideally Slate would use generics instead of module augmentation so this
 // wouldn't be a problem but for now, it is so
 // DO NOT IMPORT THIS FILE
+import { BaseEditor, BaseElement, BaseRange } from 'slate';
+import { HistoryEditor } from 'slate-history';
+import { ReactEditor } from 'slate-react';
 import { RelationshipData } from './component-blocks/api';
 import { Mark } from './utils';
 
@@ -60,7 +63,7 @@ type ComponentProp = {
   propPath?: (string | number)[] | undefined;
 };
 
-type Element =
+type Element = (
   | Layout
   | OnlyChildrenElements
   | Heading
@@ -68,15 +71,17 @@ type Element =
   | ComponentProp
   | Paragraph
   | Link
-  | Relationship;
-
+  | Relationship
+) &
+  BaseElement;
 declare module 'slate' {
   interface CustomTypes {
     Element: Element;
-    Range: { placeholder?: string };
-    Editor: { type?: undefined };
+    Range: { placeholder?: string } & BaseRange;
+    Editor: { type?: undefined } & BaseEditor & ReactEditor & HistoryEditor;
     Text: {
       type?: undefined;
+      text: string;
       placeholder?: string;
     } & { [Key in Mark | 'insertMenu']?: true };
   }
