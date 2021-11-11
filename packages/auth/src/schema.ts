@@ -1,4 +1,4 @@
-import { ExtendGraphqlSchema } from '@keystone-next/keystone/types';
+import { ExtendGraphqlSchema, getGqlNames } from '@keystone-next/keystone/types';
 
 import {
   assertObjectType,
@@ -6,6 +6,8 @@ import {
   assertInputObjectType,
   GraphQLString,
   GraphQLID,
+  parse,
+  validate,
 } from 'graphql';
 import { graphql } from '@keystone-next/keystone';
 import { AuthGqlNames, AuthTokenTypeConfig, InitFirstItemConfig, SecretFieldImpl } from './types';
@@ -46,6 +48,7 @@ export const getSchemaExtension = ({
   initFirstItem,
   passwordResetLink,
   magicAuthLink,
+  sessionData,
 }: {
   identityField: string;
   listKey: string;
@@ -54,6 +57,7 @@ export const getSchemaExtension = ({
   initFirstItem?: InitFirstItemConfig<any>;
   passwordResetLink?: AuthTokenTypeConfig;
   magicAuthLink?: AuthTokenTypeConfig;
+  sessionData: string;
 }): ExtendGraphqlSchema =>
   graphql.extend(base => {
     const uniqueWhereInputType = assertInputObjectType(
@@ -79,6 +83,34 @@ export const getSchemaExtension = ({
       secretFieldImpl: getSecretFieldImpl(base.schema, listKey, secretField),
       base,
     });
+
+    // technically this will incorrectly error if someone has a schema extension that adds a field to the list output type
+    // and then wants to fetch that field with `sessionData` but it's extremely unlikely someone will do that since if
+    // they want to add a GraphQL field, they'll probably use a virtual field
+    let ast;
+    let query = `query($id: ID!) { ${
+      getGqlNames({
+        listKey,
+        // this isn't used to get the itemQueryName and we don't know it here
+        pluralGraphQLName: '',
+      }).itemQueryName
+    }(where: { id: $id }) { ${sessionData} } }`;
+    try {
+      ast = parse(query);
+    } catch (err) {
+      throw new Error(
+        `The query to get session data has a syntax error, the sessionData option in your createAuth usage is likely incorrect\n${err}`
+      );
+    }
+
+    const errors = validate(base.schema, ast);
+    if (errors.length) {
+      throw new Error(
+        `The query to get session data has validation errors, the sessionData option in your createAuth usage is likely incorrect\n${errors.join(
+          '\n'
+        )}`
+      );
+    }
 
     return [
       baseSchema.extension,

@@ -234,28 +234,34 @@ describe('Auth testing', () => {
       })
     );
 
-    test(
-      'Session is dropped if sessionData configuration is invalid',
-      setup({
-        sessionData: 'id foo', // foo does not exist
-      })(async ({ context, graphQLRequest }) => {
-        await seed(context, initialData);
-        const { sessionToken } = await login(
-          graphQLRequest,
-          initialData.User[0].email,
-          initialData.User[0].password
-        );
+    test('Starting up fails if there sessionData configuration has a syntax error', async () => {
+      await expect(
+        setup({
+          sessionData: 'id {',
+        })(async () => {})
+      ).rejects.toMatchInlineSnapshot(`
+              [Error: The query to get session data has a syntax error, the sessionData option in your createAuth usage is likely incorrect
+              Syntax Error: Expected Name, found "}".
 
-        const { body } = await graphQLRequest({ query: '{ users { id } }' }).set(
-          'Cookie',
-          `keystonejs-session=${sessionToken}`
-        );
+              GraphQL request:1:51
+              1 | query($id: ID!) { user(where: { id: $id }) { id { } }
+                |                                                   ^]
+            `);
+    });
 
-        const { data, errors } = body;
-        expect(data).toHaveProperty('users');
-        expect(data.users).toHaveLength(0); // nothing
-        expect(errors).toBe(undefined);
-      })
-    );
+    test('Starting up fails if there sessionData configuration has a validation error', async () => {
+      await expect(
+        setup({
+          sessionData: 'id foo', // foo does not exist
+        })(async () => {})
+      ).rejects.toMatchInlineSnapshot(`
+              [Error: The query to get session data has validation errors, the sessionData option in your createAuth usage is likely incorrect
+              Cannot query field "foo" on type "User".
+
+              GraphQL request:1:49
+              1 | query($id: ID!) { user(where: { id: $id }) { id foo } }
+                |                                                 ^]
+            `);
+    });
   });
 });
