@@ -5,4 +5,4 @@
 "@keystone-next/keystone": minor
 ---
 
-Added `db.map` option to lists and fields which add the `@@map` and `@map` Prisma attributes respectively
+Added `db.map` option to lists and fields which adds the `@@map` and `@map` Prisma attributes respectively
