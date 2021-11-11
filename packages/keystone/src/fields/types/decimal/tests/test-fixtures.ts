@@ -9,6 +9,7 @@ export const supportsNullInput = true;
 export const supportsUnique = true;
 export const fieldName = 'price';
 export const unSupportedAdapterList = ['sqlite'];
+export const supportsDbMap = true;
 
 export const getTestFields = () => ({ price: decimal({ scale: 2 }) });
 
