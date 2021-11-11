@@ -58,7 +58,7 @@ export function ComponentInlineProp(props: RenderElementProps) {
 }
 
 export function insertComponentBlock(
-  editor: ReactEditor,
+  editor: Editor,
   componentBlocks: Record<string, ComponentBlock>,
   componentBlock: string,
   relationships: Relationships
@@ -327,7 +327,7 @@ function ComponentBlockRender({
   componentBlock,
   element,
   onElementChange,
-  children: _children,
+  children,
 }: {
   element: Element & { type: 'component-block' };
   onElementChange: (element: Partial<Element>) => void;
@@ -335,10 +335,9 @@ function ComponentBlockRender({
   children: any;
 }) {
   const childrenByPath: Record<string, ReactElement> = {};
-  const children = _children.type(_children.props).props.children;
   let maybeChild: ReactElement | undefined;
   children.forEach((child: ReactElement) => {
-    let stringified = JSON.stringify(child.props.element.propPath);
+    let stringified = JSON.stringify(child.props.children.props.element.propPath);
     if (stringified === undefined) {
       maybeChild = child;
     } else {

@@ -1,10 +1,9 @@
 import { Descendant, Editor, Transforms } from 'slate';
-import { ReactEditor } from 'slate-react';
 import { insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading } from '../utils';
 import { deserializeHTML } from './html';
 import { deserializeMarkdown } from './markdown';
 
-function insertFragmentButDifferent(editor: ReactEditor, nodes: Descendant[]) {
+function insertFragmentButDifferent(editor: Editor, nodes: Descendant[]) {
   if (Editor.isBlock(editor, nodes[0])) {
     insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, nodes);
   } else {
@@ -12,7 +11,7 @@ function insertFragmentButDifferent(editor: ReactEditor, nodes: Descendant[]) {
   }
 }
 
-export function withPasting<T extends ReactEditor>(editor: T): T {
+export function withPasting(editor: Editor): Editor {
   const { insertData, setFragmentData } = editor;
 
   editor.setFragmentData = data => {
