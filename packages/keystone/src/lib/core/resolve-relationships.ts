@@ -45,7 +45,7 @@ function sortRelationships(left: Rel, right: Rel): [Rel, RelWithoutForeignKey] {
   if (left.field.mode === 'one' && right.field.mode === 'one') {
     if (left.field.foreignKey !== undefined && right.field.foreignKey !== undefined) {
       throw new Error(
-        `You can only set foreignKey on one side of a One-One relationship, but foreignKey is set on both ${left.listKey}.${left.fieldPath} and ${right.listKey}.${right.fieldPath}`
+        `You can only set db.foreignKey on one side of a one to one relationship, but foreignKey is set on both ${left.listKey}.${left.fieldPath} and ${right.listKey}.${right.fieldPath}`
       );
     }
     if (left.field.foreignKey || right.field.foreignKey) {
