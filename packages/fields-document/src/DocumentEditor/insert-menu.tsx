@@ -20,7 +20,7 @@ let noop = () => {};
 type Option = {
   label: string;
   keywords?: string[];
-  insert: (editor: ReactEditor) => void;
+  insert: (editor: Editor) => void;
 };
 
 function getOptions(
@@ -36,7 +36,7 @@ function getOptions(
       )
       .map(([relationship, { label }]) => ({
         label,
-        insert: (editor: ReactEditor) => {
+        insert: (editor: Editor) => {
           Transforms.insertNodes(editor, {
             type: 'relationship',
             relationship,
@@ -47,13 +47,13 @@ function getOptions(
       })),
     ...Object.keys(componentBlocks).map(key => ({
       label: componentBlocks[key].label,
-      insert: (editor: ReactEditor) => {
+      insert: (editor: Editor) => {
         insertComponentBlock(editor, componentBlocks, key, relationships);
       },
     })),
     ...toolbarState.textStyles.allowedHeadingLevels.map(level => ({
       label: `Heading ${level}`,
-      insert(editor: ReactEditor) {
+      insert(editor: Editor) {
         insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
           type: 'heading',
           level,
@@ -123,7 +123,7 @@ function getOptions(
   return options.filter((x): x is Exclude<typeof x, boolean> => typeof x !== 'boolean');
 }
 
-function insertOption(editor: ReactEditor, text: Text, option: Option) {
+function insertOption(editor: Editor, text: Text, option: Option) {
   const path = ReactEditor.findPath(editor, text);
   Transforms.delete(editor, {
     at: {
@@ -304,7 +304,7 @@ function removeInsertMenuMarkWhenOutsideOfSelection(editor: Editor) {
   return false;
 }
 
-export function withInsertMenu<T extends Editor>(editor: T): T {
+export function withInsertMenu(editor: Editor): Editor {
   const { normalizeNode, apply, insertText } = editor;
   editor.normalizeNode = ([node, path]) => {
     if (Text.isText(node) && node.insertMenu) {

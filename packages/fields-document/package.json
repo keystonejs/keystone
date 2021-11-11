@@ -49,9 +49,9 @@
     "micromark-extension-gfm-strikethrough": "0.6.5",
     "react": "^17.0.2",
     "scroll-into-view-if-needed": "^2.2.28",
-    "slate": "^0.60.4",
-    "slate-history": "^0.60.4",
-    "slate-react": "^0.60.4"
+    "slate": "^0.67.1",
+    "slate-history": "^0.66.0",
+    "slate-react": "^0.69.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/packages/fields-document",
   "devDependencies": {
@@ -60,7 +60,7 @@
     "array.prototype.flat": "^1.2.5",
     "jest-diff": "^27.3.1",
     "pretty-format": "^27.3.1",
-    "slate-hyperscript": "^0.60.8"
+    "slate-hyperscript": "^0.67.0"
   },
   "engines": {
     "node": "^12.20 || >= 14.13"
