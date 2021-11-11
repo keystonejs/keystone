@@ -12,7 +12,9 @@ export {
 type MatrixValue = typeof testMatrix[number];
 
 export const name = 'Select with isNullable: false';
-export const typeFunction = (config: any) => select({ ...config, db: { isNullable: false } });
+export const typeFunction = (config: any) =>
+  select({ ...config, db: { ...config?.db, isNullable: false } });
+export const supportsDbMap = true;
 
 export const supportedFilters = () => [];
 

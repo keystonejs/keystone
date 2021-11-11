@@ -18,6 +18,7 @@ export type CheckboxFieldConfig<TGeneratedListTypes extends BaseGeneratedListTyp
       read?: { isNonNull?: boolean };
       create?: { isNonNull?: boolean };
     };
+    db?: { map?: string };
   };
 
 export const checkbox =
@@ -38,6 +39,7 @@ export const checkbox =
       mode: 'required',
       scalar: 'Boolean',
       default: { kind: 'literal', value: defaultValue },
+      map: config.db?.map,
     })({
       ...config,
       input: {

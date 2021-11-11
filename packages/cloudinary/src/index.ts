@@ -28,6 +28,7 @@ type CloudinaryImageFieldConfig<TGeneratedListTypes extends BaseGeneratedListTyp
       apiSecret: string;
       folder?: string;
     };
+    db?: { map?: string };
   };
 
 const CloudinaryImageFormat = graphql.inputObject({
@@ -143,30 +144,38 @@ export const cloudinaryImage =
 
       return { id, filename, originalFilename, mimetype, encoding, _meta };
     };
-    return jsonFieldTypePolyfilledForSQLite(meta.provider, {
-      ...config,
-      input: {
-        create: { arg: graphql.arg({ type: graphql.Upload }), resolve: resolveInput },
-        update: { arg: graphql.arg({ type: graphql.Upload }), resolve: resolveInput },
-      },
-      output: graphql.field({
-        type: outputType,
-        resolve({ value }) {
-          if (value === null) {
-            return null;
-          }
-          const val = value as any;
-          return {
-            publicUrl: adapter.publicUrl(val),
-            publicUrlTransformed: ({
-              transformation,
-            }: {
-              transformation: graphql.InferValueFromArg<graphql.Arg<typeof CloudinaryImageFormat>>;
-            }) => adapter.publicUrlTransformed(val, transformation ?? {}),
-            ...val,
-          };
+    return jsonFieldTypePolyfilledForSQLite(
+      meta.provider,
+      {
+        ...config,
+        input: {
+          create: { arg: graphql.arg({ type: graphql.Upload }), resolve: resolveInput },
+          update: { arg: graphql.arg({ type: graphql.Upload }), resolve: resolveInput },
         },
-      }),
-      views: path.join(path.dirname(__dirname), 'views'),
-    });
+        output: graphql.field({
+          type: outputType,
+          resolve({ value }) {
+            if (value === null) {
+              return null;
+            }
+            const val = value as any;
+            return {
+              publicUrl: adapter.publicUrl(val),
+              publicUrlTransformed: ({
+                transformation,
+              }: {
+                transformation: graphql.InferValueFromArg<
+                  graphql.Arg<typeof CloudinaryImageFormat>
+                >;
+              }) => adapter.publicUrlTransformed(val, transformation ?? {}),
+              ...val,
+            };
+          },
+        }),
+        views: path.join(path.dirname(__dirname), 'views'),
+      },
+      {
+        map: config.db?.map,
+      }
+    );
   };

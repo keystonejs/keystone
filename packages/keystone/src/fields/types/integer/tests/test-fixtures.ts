@@ -6,6 +6,7 @@ export const exampleValue = () => 37;
 export const exampleValue2 = () => 38;
 export const supportsNullInput = true;
 export const supportsUnique = true;
+export const supportsDbMap = true;
 export const fieldName = 'testField';
 
 export const getTestFields = () => ({ testField: integer() });

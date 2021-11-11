@@ -56,6 +56,7 @@ export type InitialisedList = {
   maxResults: number;
   listKey: string;
   lists: Record<string, InitialisedList>;
+  dbMap: string | undefined;
   graphql: {
     isEnabled: {
       type: boolean;
@@ -408,6 +409,7 @@ export function initialiseLists(
         ...getNamesFromList(listKey, list),
         hooks: list.hooks,
         access: list.access,
+        dbMap: list.db?.map,
       },
     ])
   );

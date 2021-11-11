@@ -1,4 +1,4 @@
-import { DBField, MultiDBField, NoDBField, ScalarishDBField } from '../../types';
+import { DBField, MultiDBField, NoDBField, RelationDBField, ScalarishDBField } from '../../types';
 
 type BaseResolvedRelationDBField = {
   kind: 'relation';
@@ -13,7 +13,7 @@ export type ResolvedRelationDBField =
     })
   | (BaseResolvedRelationDBField & {
       mode: 'one';
-      foreignIdField: 'none' | 'owned' | 'owned-unique';
+      foreignIdField: { kind: 'none' } | { kind: 'owned' | 'owned-unique'; map: string };
     });
 
 export type ListsWithResolvedRelations = Record<
@@ -34,10 +34,28 @@ type FieldsWithResolvedRelations = Record<string, ResolvedDBField>;
 type Rel = {
   listKey: string;
   fieldPath: string;
-  mode: 'many' | 'one';
+  field: RelationDBField<'many' | 'one'>;
 };
 
-function sortRelationships(left: Rel, right: Rel) {
+type RelWithoutForeignKey = Omit<Rel, 'field'> & {
+  field: Omit<RelationDBField<'many' | 'one'>, 'foreignKey'>;
+};
+
+function sortRelationships(left: Rel, right: Rel): [Rel, RelWithoutForeignKey] {
+  if (left.field.mode === 'one' && right.field.mode === 'one') {
+    if (left.field.foreignKey !== undefined && right.field.foreignKey !== undefined) {
+      throw new Error(
+        `You can only set db.foreignKey on one side of a one to one relationship, but foreignKey is set on both ${left.listKey}.${left.fieldPath} and ${right.listKey}.${right.fieldPath}`
+      );
+    }
+    if (left.field.foreignKey || right.field.foreignKey) {
+      // return the field that specifies the foreignKey first
+      return left.field.foreignKey ? [left, right] : [right, left];
+    }
+  } else if (left.field.mode === 'one' || right.field.mode === 'one') {
+    // many relationships will never have a foreign key, so return the one relationship first
+    return left.field.mode === 'one' ? [left, right] : [right, left];
+  }
   const order = left.listKey.localeCompare(right.listKey);
   if (order > 0) {
     // left comes after right, so swap them.
@@ -117,18 +135,24 @@ export function resolveRelationships(
         }
 
         let [leftRel, rightRel] = sortRelationships(
-          { listKey, fieldPath, mode: field.mode },
-          { listKey: field.list, fieldPath: field.field, mode: foreignField.mode }
+          { listKey, fieldPath, field },
+          { listKey: field.list, fieldPath: field.field, field: foreignField }
         );
 
-        if (leftRel.mode === 'one' && rightRel.mode === 'one') {
+        if (leftRel.field.mode === 'one' && rightRel.field.mode === 'one') {
           const relationName = `${leftRel.listKey}_${leftRel.fieldPath}`;
           resolvedLists[leftRel.listKey][leftRel.fieldPath] = {
             kind: 'relation',
             mode: 'one',
             field: rightRel.fieldPath,
             list: rightRel.listKey,
-            foreignIdField: 'owned-unique',
+            foreignIdField: {
+              kind: 'owned-unique',
+              map:
+                typeof leftRel.field.foreignKey === 'object'
+                  ? leftRel.field.foreignKey?.map
+                  : leftRel.fieldPath,
+            },
             relationName,
           };
           resolvedLists[rightRel.listKey][rightRel.fieldPath] = {
@@ -136,12 +160,12 @@ export function resolveRelationships(
             mode: 'one',
             field: leftRel.fieldPath,
             list: leftRel.listKey,
-            foreignIdField: 'none',
+            foreignIdField: { kind: 'none' },
             relationName,
           };
           continue;
         }
-        if (leftRel.mode === 'many' && rightRel.mode === 'many') {
+        if (leftRel.field.mode === 'many' && rightRel.field.mode === 'many') {
           const relationName = `${leftRel.listKey}_${leftRel.fieldPath}_${rightRel.listKey}_${rightRel.fieldPath}`;
           resolvedLists[leftRel.listKey][leftRel.fieldPath] = {
             kind: 'relation',
@@ -159,20 +183,19 @@ export function resolveRelationships(
           };
           continue;
         }
-        // if we're here, we're in a 1:N
-        // and we want to make sure the 1 side on the left and the many on the right
-        // (technically only one of these checks is necessary, the other one will have to be true if one is
-        // but this communicates what's going on here)
-        if (leftRel.mode === 'many' && rightRel.mode === 'one') {
-          [leftRel, rightRel] = [rightRel, leftRel];
-        }
         const relationName = `${leftRel.listKey}_${leftRel.fieldPath}`;
         resolvedLists[leftRel.listKey][leftRel.fieldPath] = {
           kind: 'relation',
           mode: 'one',
           field: rightRel.fieldPath,
           list: rightRel.listKey,
-          foreignIdField: 'owned',
+          foreignIdField: {
+            kind: 'owned',
+            map:
+              typeof leftRel.field.foreignKey === 'object'
+                ? leftRel.field.foreignKey?.map
+                : leftRel.fieldPath,
+          },
           relationName,
         };
         resolvedLists[rightRel.listKey][rightRel.fieldPath] = {
@@ -220,7 +243,10 @@ export function resolveRelationships(
           kind: 'relation',
           list: field.list,
           field: foreignFieldPath,
-          foreignIdField: 'owned',
+          foreignIdField: {
+            kind: 'owned',
+            map: typeof field.foreignKey === 'object' ? field.foreignKey?.map : fieldPath,
+          },
           relationName,
           mode: 'one',
         };
