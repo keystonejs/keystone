@@ -23,8 +23,7 @@ Tag: list({
 
 When you run Keystone after updating, Keystone will prompt you to create a migration, you should do this but **DO NOT APPLY IT**, it needs to be modified before being applied.
 
-Prisma will generate a migration that looks something like this:
-
+On Postgres, Prisma will generate a migration that looks something like this:
 
 ```sql
 /*
@@ -69,4 +68,44 @@ ALTER INDEX "_Post_tags_Tag_posts_AB_unique" RENAME TO "_Post_tags_AB_unique";
 ALTER INDEX "_Post_tags_Tag_posts_B_index" RENAME TO "_Post_tags_B_index";
 ALTER TABLE "_Post_tags" RENAME CONSTRAINT "_Post_tags_Tag_posts_A_fkey" TO "_Post_tags_A_fkey";
 ALTER TABLE "_Post_tags" RENAME CONSTRAINT "_Post_tags_Tag_posts_B_fkey" TO "_Post_tags_B_fkey";
+```
+
+On SQLite, Prisma will generate a migration that looks something like this:
+
+
+```sql
+/*
+  Warnings:
+
+  - You are about to drop the `_Post_tags_Tag_posts` table. If the table is not empty, all the data it contains will be lost.
+
+*/
+-- DropTable
+PRAGMA foreign_keys=off;
+DROP TABLE "_Post_tags_Tag_posts";
+PRAGMA foreign_keys=on;
+
+-- CreateTable
+CREATE TABLE "_Post_tags" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL,
+    FOREIGN KEY ("A") REFERENCES "Post" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY ("B") REFERENCES "Tag" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_Post_tags_AB_unique" ON "_Post_tags"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_Post_tags_B_index" ON "_Post_tags"("B");
+```
+
+You need to modify it so that it looks like this with the old and new table names for your schema substituted:
+
+```sql
+ALTER TABLE "_Post_tags_Tag_posts" RENAME TO "_Post_tags";
+DROP INDEX "_Post_tags_Tag_posts_AB_unique";
+DROP INDEX "_Post_tags_Tag_posts_B_index";
+CREATE UNIQUE INDEX "_Post_tags_AB_unique" ON "_Post_tags"("A", "B");
+CREATE INDEX "_Post_tags_B_index" ON "_Post_tags"("B");
 ```
