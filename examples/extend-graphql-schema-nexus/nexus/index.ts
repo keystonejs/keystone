@@ -1,36 +1,20 @@
-import { join } from 'path';
-import type { GraphQLSchema } from 'graphql';
+import path from 'path';
 import { makeSchema } from 'nexus';
-import { mergeSchemas } from '@graphql-tools/schema';
 
 import * as types from './types';
 
-const nexusSchema = makeSchema({
+export const nexusSchema = makeSchema({
   types,
   outputs: {
-    typegen: join(__dirname, 'nexus-typegen.ts'),
+    typegen: path.join(process.cwd(), 'nexus', 'nexus-typegen.ts'),
   },
+  // __dirname is absolute in Node but under webpack it is not so this is
+  // "only generate when running under webpack and not in production"
+  shouldGenerateArtifacts: !path.isAbsolute(__dirname) && process.env.NODE_ENV !== 'production',
   // This binds the Keystone Context with correctly generated types for the
   // Keystone `db` and `query` args, as well as the prisma client
   contextType: {
-    module: getContextModule(),
+    module: path.join(process.cwd(), 'node_modules', '.keystone', 'types.d.ts'),
     export: 'KeystoneContext',
   },
 });
-
-// After dependencies are installed, but before Keystone's types are generated,
-// resolving the path to the types will fail, so we fall back to the default
-// (generic) context type path. When the dev process is started, the correct
-// path will be used.
-function getContextModule() {
-  let contextModule;
-  try {
-    contextModule = require.resolve('.keystone/types');
-  } catch (e) {
-    contextModule = '@keystone-next/keystone/types';
-  }
-  return contextModule;
-}
-
-export const extendGraphqlSchema = (keystoneSchema: GraphQLSchema) =>
-  mergeSchemas({ schemas: [keystoneSchema, nexusSchema] });

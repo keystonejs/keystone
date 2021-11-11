@@ -5,19 +5,14 @@
   "license": "MIT",
   "scripts": {
     "dev": "keystone-next dev",
-    "dev-nexus": "ts-node-dev --transpile-only --no-notify nexus/dev.ts",
     "start": "keystone-next start",
     "build": "keystone-next build"
   },
   "dependencies": {
     "@graphql-tools/schema": "^8.3.1",
     "@keystone-next/keystone": "^27.0.1",
-    "graphql": "^15.6.1",
+    "graphql": "^15.7.2",
     "nexus": "^1.1.0"
-  },
-  "devDependencies": {
-    "ts-node-dev": "^1.1.8",
-    "typescript": "^4.4.4"
   },
   "engines": {
     "node": "^12.20 || >= 14.13"
