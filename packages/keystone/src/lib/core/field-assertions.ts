@@ -13,9 +13,9 @@ export function assertFieldsValid(list: ListForValidation) {
 function assertUniqueWhereInputsValid(list: ListForValidation) {
   for (const [fieldKey, { dbField, input }] of Object.entries(list.fields)) {
     if (input?.uniqueWhere) {
-      if (dbField.kind !== 'scalar' || (dbField.scalar !== 'String' && dbField.scalar !== 'Int')) {
+      if (dbField.kind !== 'scalar' && dbField.kind !== 'enum') {
         throw new Error(
-          `Only String and Int scalar db fields can provide a uniqueWhere input currently but the field at ${list.listKey}.${fieldKey} specifies a uniqueWhere input`
+          `Only scalar db fields can provide a uniqueWhere input currently but the field at ${list.listKey}.${fieldKey} specifies a uniqueWhere input`
         );
       }
 

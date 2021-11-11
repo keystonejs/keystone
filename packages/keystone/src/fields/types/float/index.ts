@@ -131,6 +131,8 @@ export const float =
         },
       },
       input: {
+        uniqueWhere:
+          isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.Float }) } : undefined,
         where: {
           arg: graphql.arg({ type: filters[meta.provider].Float[mode] }),
           resolve: filters.resolveCommon,

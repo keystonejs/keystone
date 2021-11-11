@@ -147,6 +147,8 @@ export const decimal =
         },
       },
       input: {
+        uniqueWhere:
+          isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.Decimal }) } : undefined,
         where: {
           arg: graphql.arg({ type: filters[meta.provider].Decimal[mode] }),
           resolve: mode === 'optional' ? filters.resolveCommon : undefined,

@@ -39,4 +39,5 @@ export const supportedFilters = () => [
   'ordering',
   'in_empty_null',
   'in_equal',
+  'unique_equality',
 ];

@@ -39,7 +39,7 @@ export function useDocumentFieldRelationships() {
 
 export const DocumentFieldRelationshipsProvider = DocumentFieldRelationshipsContext.Provider;
 
-export function withRelationship<T extends Editor>(editor: T): T {
+export function withRelationship(editor: Editor): Editor {
   const { isVoid, isInline } = editor;
   editor.isVoid = element => {
     return element.type === 'relationship' || isVoid(element);
