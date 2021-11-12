@@ -1,4 +1,4 @@
-import { DatabaseProvider, getGqlNames } from '../../../types';
+import { getGqlNames } from '../../../types';
 import { graphql } from '../../..';
 import { InitialisedList } from '../types-for-lists';
 import * as createAndUpdate from './create-update';
@@ -20,7 +20,7 @@ function promisesButSettledWhenAllSettledAndInOrder<T extends Promise<unknown>[]
   }) as T;
 }
 
-export function getMutationsForList(list: InitialisedList, provider: DatabaseProvider) {
+export function getMutationsForList(list: InitialisedList) {
   const names = getGqlNames(list);
 
   const createOne = graphql.field({
@@ -40,7 +40,7 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
     },
     async resolve(_rootVal, args, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
-        await createAndUpdate.createMany(args, list, context, provider)
+        await createAndUpdate.createMany(args, list, context)
       );
     },
   });
@@ -70,7 +70,7 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
     },
     async resolve(_rootVal, args, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
-        await createAndUpdate.updateMany(args, list, context, provider)
+        await createAndUpdate.updateMany(args, list, context)
       );
     },
   });
@@ -92,7 +92,7 @@ export function getMutationsForList(list: InitialisedList, provider: DatabasePro
     },
     async resolve(rootVal, { where }, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
-        await deletes.deleteMany(where, list, context, provider)
+        await deletes.deleteMany(where, list, context)
       );
     },
   });

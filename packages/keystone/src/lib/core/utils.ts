@@ -1,3 +1,4 @@
+import { Limit } from 'p-limit';
 import pluralize from 'pluralize';
 import { ItemRootValue, KeystoneConfig, KeystoneContext } from '../../types';
 import { humanize } from '../utils';
@@ -169,3 +170,17 @@ const labelToClass = (str: string) => str.replace(/\s+/g, '');
 export function getDBFieldKeyForFieldOnMultiField(fieldKey: string, subField: string) {
   return `${fieldKey}_${subField}`;
 }
+
+const writeLimits = new WeakMap<object, Limit>();
+
+export const setWriteLimit = (prismaClient: object, limit: Limit) => {
+  writeLimits.set(prismaClient, limit);
+};
+
+export const getWriteLimit = (context: KeystoneContext) => {
+  const limit = writeLimits.get(context.prisma);
+  if (limit === undefined) {
+    throw new Error('unexpected write limit not set for prisma client');
+  }
+  return limit;
+};
