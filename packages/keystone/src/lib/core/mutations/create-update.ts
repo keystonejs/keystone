@@ -53,7 +53,7 @@ async function createSingle(
     undefined
   );
 
-  const writeLimit = getWriteLimit(context.prisma);
+  const writeLimit = getWriteLimit(context);
 
   const item = await writeLimit(() =>
     runWithPrisma(context, list, model => model.create({ data }))
@@ -155,7 +155,7 @@ async function updateSingle(
     item
   );
 
-  const writeLimit = getWriteLimit(context.prisma);
+  const writeLimit = getWriteLimit(context);
 
   const updatedItem = await writeLimit(() =>
     runWithPrisma(context, list, model => model.update({ where: { id: item.id }, data }))

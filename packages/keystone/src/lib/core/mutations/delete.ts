@@ -3,7 +3,7 @@ import { getOperationAccess, getAccessFilters } from '../access-control';
 import { checkFilterOrderAccess } from '../filter-order-access';
 import { accessDeniedError } from '../graphql-errors';
 import { InitialisedList } from '../types-for-lists';
-import { getWriteLimit as getWriteLimit, runWithPrisma } from '../utils';
+import { getWriteLimit, runWithPrisma } from '../utils';
 import { InputFilter, resolveUniqueWhereInput, UniqueInputFilter } from '../where-inputs';
 import { getAccessControlledItemForDelete } from './access-control';
 import { runSideEffectOnlyHook } from './hooks';
