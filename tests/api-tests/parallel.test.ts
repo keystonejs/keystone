@@ -18,7 +18,7 @@ const runner = setupTestRunner({
 test(
   'creating a lot of items with createOne in parallel',
   runner(async ({ context }) => {
-    const data = Array.from({ length: 100 }).map((_, i) => {
+    const data = Array.from({ length: 500 }).map((_, i) => {
       return { title: `Post ${i}` };
     });
     const posts = await Promise.all(
@@ -30,7 +30,7 @@ test(
 test(
   'updating a lot of items with updateOne in parallel',
   runner(async ({ context }) => {
-    const data = Array.from({ length: 100 }).map((_, i) => {
+    const data = Array.from({ length: 500 }).map((_, i) => {
       return { title: `Post ${i}` };
     });
     const initialPosts = await context.query.Post.createMany({ data, query: 'id' });
@@ -50,7 +50,7 @@ test(
 test(
   'deleting a lot of items with deleteOne in parallel',
   runner(async ({ context }) => {
-    const data = Array.from({ length: 100 }).map((_, i) => {
+    const data = Array.from({ length: 500 }).map((_, i) => {
       return { title: `Post ${i}` };
     });
     const initialPosts = await context.query.Post.createMany({ data, query: 'id' });
