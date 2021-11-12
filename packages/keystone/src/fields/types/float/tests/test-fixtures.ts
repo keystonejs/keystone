@@ -7,6 +7,7 @@ export const exampleValue2 = () => 6.283;
 export const supportsNullInput = true;
 export const supportsUnique = true;
 export const fieldName = 'testField';
+export const supportsDbMap = true;
 
 export const getTestFields = () => ({ testField: float() });
 

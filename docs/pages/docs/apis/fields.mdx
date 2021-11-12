@@ -143,6 +143,7 @@ A `checkbox` field represents a boolean (`true`/`false`) value.
 Options:
 
 - `defaultValue` (default: `false`): This value will be used for the field when creating items if no explicit value is set.
+- `db.map`: Adds a [Prisma `@map`](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#map) attribute to this field which changes the column name in the database
 - `graphql.read.isNonNull` (default: `false`): If you have no read access control and you don't intend to add any in the future,
   you can set this to true and the output field will be non-nullable. This is only allowed when you have no read access control because otherwise,
   when access is denied, `null` will be returned which will cause an error since the field is non-nullable and the error
@@ -162,6 +163,7 @@ export default config({
       fields: {
         fieldName: checkbox({
           defaultValue: true,
+          db: { map: 'my_checkbox' },
           graphql: {
             read: {
               isNonNull: true
@@ -189,6 +191,7 @@ Options:
 - `defaultValue` (default: `undefined`): Can be either an integer value or `{ kind: 'autoincrement' }`.
   This value will be used for the field when creating items if no explicit value is set.
 - `db.isNullable` (default: `validation.isRequired ? false : true`): If `false` then this field will be made non-nullable in the database and it will never be possible to set as `null`.
+- `db.map`: Adds a [Prisma `@map`](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#map) attribute to this field which changes the column name in the database
 - `validation.isRequired` (default: `false`): If `true` then this field can never be set to `null`.
   It validate this when creating and updating an item through the GraphQL API or the Admin UI.
   It will also default `db.isNullable` to false.
@@ -217,6 +220,7 @@ export default config({
       fields: {
         fieldName: integer({
           defaultValue: 0,
+          db: { map: 'my_integer' },
           validation: {
             isRequired: true,
           },
@@ -238,6 +242,7 @@ Currently the `json` field is non-orderable and non-filterable.
 
 - `defaultValue` (default: `null`): Can be set to any JSON value.
   This value will be used for the field when creating items if no explicit value is set.
+- `db.map`: Adds a [Prisma `@map`](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#map) attribute to this field which changes the column name in the database
 
 ```typescript
 import { config, list } from '@keystone-next/keystone';
@@ -249,6 +254,7 @@ export default config({
       fields: {
         fieldName: json({
           defaultValue: { something: true },
+          db: { map: 'my_json' },
         }),
         /* ... */
       },
@@ -267,6 +273,7 @@ Options:
 
 - `defaultValue` (default: `undefined`): Can be a finite float value.
   This value will be used for the field when creating items if no explicit value is set.
+- `db.map`: Adds a [Prisma `@map`](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#map) attribute to this field which changes the column name in the database
 - `db.isNullable` (default: `validation.isRequired ? false : true`): If `false` then this field will be made non-nullable in the database and it will never be possible to set as `null`.
 - `validation.isRequired` (default: `false`): If `true` then this field can never be set to `null`.
   It validate this when creating and updating an item through the GraphQL API or the Admin UI.
@@ -295,6 +302,7 @@ export default config({
       fields: {
         fieldName: float({
           defaultValue: 3.14159,
+          db: { map: 'my_float' },
           validation: {
             isRequired: true,
           },
@@ -319,6 +327,7 @@ Options:
   This value will be used for the field when creating items if no explicit value is set.
 - `precision` (default: `18`): Maximum number of digits that are present in the number.
 - `scale` (default: `4`): Maximum number of decimal places.
+- `db.map`: Adds a [Prisma `@map`](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#map) attribute to this field which changes the column name in the database
 - `db.isNullable` (default: `validation.isRequired ? false : true`): If `false` then this field will be made non-nullable in the database and it will never be possible to set as `null`.
 - `validation.isRequired` (default: `false`): If `true` then this field can never be set to `null`.
   It validate this when creating and updating an item through the GraphQL API or the Admin UI.
@@ -350,6 +359,7 @@ export default config({
           defaultValue: '3.142',
           precision: 12,
           scale: 3,
+          db: { map: 'my_decimal' },
           validation: {
             isRequired: true,
             max: '10000',
@@ -372,6 +382,7 @@ A `password` field represents an encrypted password value.
 
 Options:
 
+- `db.map`: Adds a [Prisma `@map`](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#map) attribute to this field which changes the column name in the database
 - `db.isNullable` (default: `validation.isRequired ? false : true`): If `false` then this field will be made non-nullable in the database and it will never be possible to set as `null`.
 - `validation.isRequired` (default: `false`): If `true` then this field can never be set to `null`.
   It validate this when creating and updating an item through the GraphQL API or the Admin UI.
@@ -394,6 +405,7 @@ export default config({
     ListName: list({
       fields: {
         fieldName: password({
+          db: { map: 'password_field' },
           validation: {
             length: { min: 10, max: 1000 },
             isRequired: true,
@@ -426,6 +438,7 @@ Options:
   `value` is either a `string` (for `{ type: 'string' }` or `{ type: 'enum' }`), or a `number` (for `{ type: 'integer' }`).
   The `value` will be used in the GraphQL API and stored in the database.
 - `defaultValue` (default: `undefined`): This value will be used for the field when creating items if no explicit value is set.
+- `db.map`: Adds a [Prisma `@map`](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#map) attribute to this field which changes the column name in the database
 - `db.isNullable` (default: `validation.isRequired ? false : true`): If `false` then this field will be made non-nullable in the database and it will never be possible to set as `null`.
 - `validation.isRequired` (default: `false`): If `true` then this field can never be set to `null`.
   It validate this when creating and updating an item through the GraphQL API or the Admin UI.
@@ -459,6 +472,7 @@ export default config({
             /* ... */
           ],
           defaultValue: '...',
+          db: { map: 'my_select' },
           validation: { isRequired: true, },
           isIndexed: 'unique',
           ui: { displayMode: 'select' },
@@ -478,8 +492,9 @@ A `text` field represents a string value.
 
 Options:
 
-- `db.isNullable` (default: `false`): If `true` then this field will be made nullable in the database and it will be possible to set as `null`.
 - `defaultValue` (default: `db.isNullable === true ? undefined : ''`): This value will be used for the field when creating items if no explicit value is set.
+- `db.map`: Adds a [Prisma `@map`](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#map) attribute to this field which changes the column name in the database
+- `db.isNullable` (default: `false`): If `true` then this field will be made nullable in the database and it will be possible to set as `null`.
 - `validation.isRequired` (default: `false`): If `true` then this field can never be set to `null` or an empty string.
   Unlike `db.isNullable`, this will require that a value with at least 1 character is provided in the Admin UI.
   It will also validate this when creating and updating an item through the GraphQL API but it will not enforce it at the database level.
@@ -512,6 +527,7 @@ export default config({
       fields: {
         fieldName: text({
           defaultValue: '...',
+          db: { map: 'my_text' },
           validation: { isRequired: true },
           isIndexed: 'unique',
           ui: { displayMode: 'textarea' },
@@ -533,6 +549,7 @@ Options:
 
 - `defaultValue` (default: `undefined`): Can be either a string value with a date time string in ISO8601 format or `{ kind: 'now' }`.
   This value will be used for the field when creating items if no explicit value is set.
+- `db.map`: Adds a [Prisma `@map`](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#map) attribute to this field which changes the column name in the database
 - `db.isNullable` (default: `validation.isRequired ? false : true`): If `false` then this field will be made non-nullable in the database and it will never be possible to set as `null`.
 - `validation.isRequired` (default: `false`): If `true` then this field can never be set to `null`.
   It validate this when creating and updating an item through the GraphQL API or the Admin UI.
@@ -562,6 +579,7 @@ export default config({
       fields: {
         fieldName: timestamp({
           defaultValue: '1970-01-01T00:00:00.000Z',
+          db: { map: 'my_timestamp' },
           validation: { isRequired: true },
           isIndexed: 'unique',
         }),
@@ -584,6 +602,8 @@ Read our [relationships guide](../guides/relationships) for details on Keystoneâ
 
 - `ref` (required): A string of the form `<listKey>` or `<listKey>.<fieldKey>`.
 - `many` (default: `false`): Configures the cardinality of the relationship.
+- `db.foreignKey`: When `true` or an object, ensures the foreign Key for two-sided relationships is stored in the table for this list (only available on single relationships, and not on both sides of a 1:1 relationship)
+  - `map`: Changes the column name in the database
 - `ui` (default: `{ hideCreate: false, displayMode: 'select' }`): Configures the display mode of the field in the Admin UI.
   - `hideCreate` (default: `false`). If `true`, the "Create related item" button is not shown in the item view.
   - `displayMode` (default: `'select'`): Controls the mode used to display the field in the item view. The mode `'select'` displays related items in a select component, while `'cards'` displays the related items in a card layout. Each display mode supports further configuration.
@@ -609,6 +629,11 @@ export default config({
         fieldName: relationship({
           ref: '...',
           many: false,
+          db: {
+            foreignKey: {
+              map: 'foreign_id',
+            },
+          },
           ui: {
             hideCreate: false,
             // Display mode: 'select'

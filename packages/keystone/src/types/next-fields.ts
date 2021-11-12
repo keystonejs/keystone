@@ -95,6 +95,7 @@ export type ScalarDBField<
   nativeType?: string;
   default?: ScalarDBFieldDefault<Scalar, Mode>;
   index?: 'unique' | 'index';
+  map?: string;
 } & (Scalar extends 'DateTime'
   ? {
       updatedAt?: boolean;
@@ -118,6 +119,7 @@ export type RelationDBField<Mode extends 'many' | 'one'> = {
   list: string;
   field?: string;
   mode: Mode;
+  foreignKey?: { one: true | { map: string }; many: undefined }[Mode];
 };
 
 export type EnumDBField<Value extends string, Mode extends 'required' | 'many' | 'optional'> = {
@@ -127,6 +129,7 @@ export type EnumDBField<Value extends string, Mode extends 'required' | 'many' |
   mode: Mode;
   default?: { kind: 'literal'; value: Value };
   index?: 'unique' | 'index';
+  map?: string;
 };
 
 export type NoDBField = { kind: 'none' };

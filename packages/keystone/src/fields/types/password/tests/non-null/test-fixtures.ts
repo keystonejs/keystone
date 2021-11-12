@@ -1,10 +1,11 @@
 import { password } from '../..';
 
 export const name = 'Password with isNullable: false';
-export const typeFunction = (x: any) => password({ ...x, db: { isNullable: false } });
+export const typeFunction = (x: any) => password({ ...x, db: { ...x?.db, isNullable: false } });
 export const exampleValue = () => 'password';
 export const exampleValue2 = () => 'password2';
 export const supportsUnique = false;
+export const supportsDbMap = true;
 export const fieldName = 'password';
 export const subfieldName = 'isSet';
 export const skipCreateTest = true;

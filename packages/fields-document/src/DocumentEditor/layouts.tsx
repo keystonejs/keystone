@@ -120,7 +120,7 @@ export const LayoutArea = ({ attributes, children }: RenderElementProps) => {
   );
 };
 
-export const insertLayout = (editor: ReactEditor, layout: [number, ...number[]]) => {
+export const insertLayout = (editor: Editor, layout: [number, ...number[]]) => {
   insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, [
     {
       type: 'layout',
@@ -137,7 +137,7 @@ export const insertLayout = (editor: ReactEditor, layout: [number, ...number[]])
 };
 
 // Plugin
-export function withLayouts<T extends Editor>(editor: T): T {
+export function withLayouts(editor: Editor): Editor {
   const { normalizeNode, deleteBackward } = editor;
   editor.deleteBackward = unit => {
     if (
