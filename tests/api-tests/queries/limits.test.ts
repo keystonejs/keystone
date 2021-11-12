@@ -262,7 +262,7 @@ describe('maxResults Limit', () => {
             posts(where: { title: { equals: "Two authors" } }) {
               title
               author {
-                posts {
+                posts(orderBy: { title: asc }) {
                   title
                 }
               }
