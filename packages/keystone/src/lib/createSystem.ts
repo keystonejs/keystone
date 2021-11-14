@@ -74,7 +74,7 @@ export function createSystem(config: KeystoneConfig, isLiveReload?: boolean) {
         log: config.db.enableLogging && ['query'],
         datasources: { [config.db.provider]: { url: config.db.url } },
       });
-      setWriteLimit(prismaClient, pLimit(config.db.provider === 'sqlite' ? 1 : Infinity));
+      setWriteLimit(prismaClient, pLimit(config.db.provider === 'sqlite' ? Infinity : Infinity));
       prismaClient.$on('beforeExit', async () => {
         // Prisma is failing to properly clean up its child processes
         // https://github.com/keystonejs/keystone/issues/5477
