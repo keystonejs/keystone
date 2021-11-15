@@ -69,15 +69,15 @@ Create a draft release on GitHub based on the above tag (such as 2021-11-02) wit
 
 Update the following:
 
-- Summary headline of what's in the release (can be updated later)
-- The Keystone website link
-- Packages output
-- Verbose release notes link
+-   Summary headline of what's in the release (can be updated later)
+-   The Keystone website link
+-   Packages output
+-   Verbose release notes link
 
 ````
 [summary headline]
 
-**[View the release notes on the Keystone website](https://keystonejs.com/releases/YYYY-MM-DD)**
+### **View the [complete release notes on the Keystone website](https://keystonejs.com/releases/YYYY-MM-DD)**.
 
 ```sh
 "keystone-next/keystone": "x.x.x",
@@ -88,9 +88,9 @@ Update the following:
 
 Star this repo 🌟 ☝️ or connect to Keystone on [Twitter](https://twitter.com/KeystoneJS) and in [Slack](http://community.keystonejs.com/).
 
-## Verbose Release Notes
+## Changelog
 
-You can view the [verbose release notes](https://github.com/keystonejs/keystone/pull/6762) in the related PR (https://github.com/keystonejs/keystone/pull/XXX) for this release.
+Aside from the [complete release notes on the Keystone website](https://keystonejs.com/releases/YYYY-MM-DD), you can also view the [verbose change log](https://github.com/keystonejs/keystone/pull/XXXX) in the related PR (https://github.com/keystonejs/keystone/pull/XXXX) for this release.
 ````
 
 ## Website releases notes
