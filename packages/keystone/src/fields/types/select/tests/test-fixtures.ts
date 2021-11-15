@@ -10,6 +10,7 @@ export const exampleValue2 = (matrixValue: MatrixValue) =>
   matrixValue === 'enum' ? 'atlassian' : matrixValue === 'string' ? '1number' : 2;
 export const supportsNullInput = true;
 export const supportsUnique = true;
+export const supportsDbMap = true;
 export const fieldConfig = (matrixValue: MatrixValue) => {
   if (matrixValue === 'enum' || matrixValue === 'string') {
     return {

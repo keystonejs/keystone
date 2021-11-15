@@ -30,6 +30,7 @@ export type TimestampFieldConfig<TGeneratedListTypes extends BaseGeneratedListTy
     db?: {
       updatedAt?: boolean;
       isNullable?: boolean;
+      map?: string;
     };
   };
 
@@ -82,6 +83,7 @@ export const timestamp =
           ? undefined
           : { kind: 'now' },
       updatedAt: config.db?.updatedAt,
+      map: config.db?.map,
     })({
       ...config,
       hooks: {

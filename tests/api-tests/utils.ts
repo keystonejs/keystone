@@ -1,4 +1,8 @@
+import { initConfig, createSystem } from '@keystone-next/keystone/system';
+import { getCommittedArtifacts } from '@keystone-next/keystone/artifacts';
 import { KeystoneConfig, KeystoneContext, DatabaseProvider } from '@keystone-next/keystone/types';
+
+export const dbProvider = process.env.TEST_ADAPTER as DatabaseProvider;
 
 // This function injects the db configuration that we use for testing in CI.
 // This functionality is a keystone repo specific way of doing things, so we don't
@@ -11,7 +15,7 @@ export const apiTestConfig = (
   ...config,
   db: {
     ...config.db,
-    provider: process.env.TEST_ADAPTER as DatabaseProvider,
+    provider: dbProvider,
     url: process.env.DATABASE_URL as string,
   },
 });
@@ -259,3 +263,11 @@ export async function seed<T extends Record<keyof T, Record<string, unknown>[]>>
 
   return results as Record<keyof T, Record<string, unknown>[]>;
 }
+
+export const getPrismaSchema = async (_config: KeystoneConfig) => {
+  const config = initConfig(_config);
+  const { graphQLSchema } = createSystem(config);
+
+  const artifacts = await getCommittedArtifacts(graphQLSchema, config);
+  return artifacts.prisma;
+};

@@ -58,6 +58,7 @@ export type SelectFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes
       };
       db?: {
         isNullable?: boolean;
+        map?: string;
       };
     };
 
@@ -128,6 +129,7 @@ export const select =
         defaultValue === undefined
           ? undefined
           : { kind: 'literal' as const, value: defaultValue as any },
+      map: config.db?.map,
     } as const;
 
     const resolveCreate = <T extends string | number>(val: T | null | undefined): T | null => {
