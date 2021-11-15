@@ -59,7 +59,7 @@ export const createExpressServer = async (
   graphQLSchema: GraphQLSchema,
   createContext: CreateContext
 ): Promise<{
-  expressServer: express.Application;
+  expressServer: express.Express;
   apolloServer: ApolloServer<{
     req: IncomingMessage;
     res: ServerResponse;
