@@ -1,5 +1,17 @@
 # @keystone-next/cloudinary
 
+## 11.0.0
+
+### Minor Changes
+
+- [#6907](https://github.com/keystonejs/keystone/pull/6907) [`990b56291`](https://github.com/keystonejs/keystone/commit/990b56291e677077656b201b935086754c6257f1) Thanks [@JedWatson](https://github.com/JedWatson)! - Added `db.map` option to lists and fields which adds the `@@map` and `@map` Prisma attributes respectively
+
+### Patch Changes
+
+- Updated dependencies [[`70eb86237`](https://github.com/keystonejs/keystone/commit/70eb86237bd3eafd36b0579f66ad3f1e173357b1), [`990b56291`](https://github.com/keystonejs/keystone/commit/990b56291e677077656b201b935086754c6257f1), [`70eb86237`](https://github.com/keystonejs/keystone/commit/70eb86237bd3eafd36b0579f66ad3f1e173357b1), [`b981f4c3e`](https://github.com/keystonejs/keystone/commit/b981f4c3ee135a1184188deb5ed8de22f718080c)]:
+  - @keystone-next/keystone@28.0.0
+  - @keystone-ui/fields@5.0.2
+
 ## 10.0.0
 
 ### Patch Changes
