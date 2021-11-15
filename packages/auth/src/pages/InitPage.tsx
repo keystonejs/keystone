@@ -4,7 +4,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import fetch from 'cross-fetch';
 
-import { jsx, H1, Stack, Inline, VisuallyHidden } from '@keystone-ui/core';
+import { jsx, H1, Stack, Inline, VisuallyHidden, Center } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
 import { Checkbox, TextInput } from '@keystone-ui/fields';
 import { useRawKeystone } from '@keystone-next/keystone/admin-ui/context';
@@ -20,6 +20,7 @@ import {
   serializeValueToObjByFieldKey,
   useInvalidFields,
 } from '@keystone-next/keystone/admin-ui/utils';
+import { LoadingDots } from '@keystone-ui/loading';
 import { guessEmailFromValue, validEmail } from '../lib/emailHeuristics';
 import { IconTwitter, IconGithub } from '../components/Icons';
 import { SigninContainer } from '../components/SigninContainer';
@@ -213,6 +214,14 @@ const InitPage = ({ fieldPaths, listKey, enableWelcome }: InitPageProps) => {
       }
     }
   }, [rawKeystone.authenticatedItem, enableWelcome, router]);
+
+  if (rawKeystone.authenticatedItem.state === 'authenticated' && !enableWelcome) {
+    return (
+      <Center fillView>
+        <LoadingDots label="Loading page" size="large" />
+      </Center>
+    );
+  }
 
   return mode === 'init' ? (
     <SigninContainer>
