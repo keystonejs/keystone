@@ -31,11 +31,24 @@ query {
 }
 ```
 
+This is instead of running a settings query where you would have received a list back, and have had to check for results and get the first element:
+
+```ts
+query {
+  settings ( where: { provider: { equals: "github" }  ) {
+	id
+	token
+  }
+}
+```
+
 ## Customisable Table and Column Names <Emoji symbol="📇" alt="Index cards" />
 
-You may now use different table and column names to those automatically chosen by Keystone for your list and field keys. This is powered by Prisma's [@map](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#map) and [@@map](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#map) attributes.
+You may now use different table and column names to those automatically chosen by Keystone for your list and field keys. This is powered by Prisma's [@map](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#map) and [@@map](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#map) attributes. You can read more about this concept in [Prisma's documentation](https://www.prisma.io/docs/concepts/components/prisma-client/working-with-prismaclient/use-custom-model-and-field-names).
 
-To utilise this, provide `config.db.map` to a list or field key such as:
+This is useful if you do not want to modify your existing database (such as a read-only database) and use it with Keystone.
+
+For example if you wanted to refer to a table named `stories` but you refer to it in Keystone as `Posts` provide `config.db.map` to a list or field key such as:
 
 ```
 Post: list({
@@ -48,11 +61,9 @@ Post: list({
 })
 ```
 
-Additionally for relationship fields you can now provide a `config.db.foreignKey` value which ensures the foreign Key for two-sided relationships is stored in the table for a list. This is only available on single relationships, and not on both sides of a 1:1 relationship.
-
 ## Nexus Example <Emoji symbol="🪢" alt="Rope" />
 
-We've got a new example using [Nexus](https://nexusjs.org/), a declarative, code-first and strongly typed GraphQL schema construction for TypeScript & JavaScript.
+We've got a [new example](https://github.com/keystonejs/keystone/tree/main/examples/extend-graphql-schema-nexus) using [Nexus](https://nexusjs.org/), a declarative, code-first and strongly typed GraphQL schema construction for TypeScript & JavaScript.
 
 Using Nexus you can extend the GraphQL API provided by Keystone with custom queries and mutations.
 
