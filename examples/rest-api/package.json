@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/example-rest-api",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -10,7 +10,7 @@
     "seed-data": "keystone-next --seed-data"
   },
   "dependencies": {
-    "@keystone-next/keystone": "^27.0.0",
+    "@keystone-next/keystone": "^28.0.0",
     "express": "^4.17.1"
   },
   "devDependencies": {

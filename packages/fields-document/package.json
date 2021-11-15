@@ -1,7 +1,7 @@
 {
   "name": "@keystone-next/fields-document",
   "description": "KeystoneJS Document Field Type",
-  "version": "12.0.0",
+  "version": "13.0.0",
   "main": "dist/keystone-next-fields-document.cjs.js",
   "module": "dist/keystone-next-fields-document.esm.js",
   "files": [
@@ -19,7 +19,7 @@
     ]
   },
   "peerDependencies": {
-    "@keystone-next/keystone": "^27.0.2"
+    "@keystone-next/keystone": "^28.0.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.15.4",
@@ -28,7 +28,7 @@
     "@keystone-next/document-renderer": "^4.0.1",
     "@keystone-ui/button": "^5.0.2",
     "@keystone-ui/core": "^3.2.1",
-    "@keystone-ui/fields": "^5.0.1",
+    "@keystone-ui/fields": "^5.0.2",
     "@keystone-ui/icons": "^4.0.2",
     "@keystone-ui/popover": "^4.0.5",
     "@keystone-ui/tooltip": "^4.0.3",

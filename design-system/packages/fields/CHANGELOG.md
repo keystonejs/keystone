@@ -1,5 +1,11 @@
 # @keystone-ui/fields
 
+## 5.0.2
+
+### Patch Changes
+
+- [#6918](https://github.com/keystonejs/keystone/pull/6918) [`70eb86237`](https://github.com/keystonejs/keystone/commit/70eb86237bd3eafd36b0579f66ad3f1e173357b1) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The format of the date shown in the `DatePicker` now uses the user's locale
+
 ## 5.0.1
 
 ### Patch Changes
