@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/keystone",
-  "version": "27.0.2",
+  "version": "28.0.0",
   "license": "MIT",
   "main": "dist/keystone-next-keystone.cjs.js",
   "module": "dist/keystone-next-keystone.esm.js",
@@ -37,7 +37,7 @@
     "@hapi/iron": "^6.0.0",
     "@keystone-ui/button": "^5.0.2",
     "@keystone-ui/core": "^3.2.1",
-    "@keystone-ui/fields": "^5.0.1",
+    "@keystone-ui/fields": "^5.0.2",
     "@keystone-ui/icons": "^4.0.2",
     "@keystone-ui/loading": "^4.0.2",
     "@keystone-ui/modals": "^4.0.2",
