@@ -65,7 +65,7 @@
     "eslint": "^7.32.0",
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-jest": "^25.2.4",
-    "eslint-plugin-react": "^7.26.1",
+    "eslint-plugin-react": "^7.27.0",
     "eslint-plugin-react-hooks": "^4.3.0",
     "is-ci": "^3.0.1",
     "jest": "^27.3.1",
