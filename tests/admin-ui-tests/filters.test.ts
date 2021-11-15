@@ -79,42 +79,41 @@ adminUITests('./tests/test-projects/basic', browserType => {
     });
 
     test('Deeplinking a url with the appropriate relationship filter query params will apply the filter', async () => {
+      const gql = String.raw;
+      const TASK_MUTATION_CREATE = gql`
+        mutation TASK_MUTATION_CREATE($name: String!, $assignedTo: String!) {
+          assignedTask: createTask(
+            data: { label: $name, assignedTo: { create: { name: $assignedTo } } }
+          ) {
+            id
+            assignedTo {
+              id
+              name
+            }
+          }
+        }
+      `;
+      const CREATE_TASKS = gql`
+        mutation CREATE_TASKS_MUTATION($data: [TaskCreateInput!]!) {
+          createTasks(data: $data) {
+            id
+          }
+        }
+      `;
+      const { assignedTask } = await makeGqlRequest(TASK_MUTATION_CREATE, {
+        name: 'Task-assigned',
+        assignedTo: 'James Joyce',
+      });
+
+      await makeGqlRequest(CREATE_TASKS, {
+        data: generateDataArray(
+          key => ({
+            label: `Task-not-assigned-${key}`,
+          }),
+          20
+        ),
+      });
       await retry(async () => {
-        const gql = String.raw;
-        const TASK_MUTATION_CREATE = gql`
-          mutation TASK_MUTATION_CREATE($name: String!, $assignedTo: String!) {
-            assignedTask: createTask(
-              data: { label: $name, assignedTo: { create: { name: $assignedTo } } }
-            ) {
-              id
-              assignedTo {
-                id
-                name
-              }
-            }
-          }
-        `;
-        const CREATE_TASKS = gql`
-          mutation CREATE_TASKS_MUTATION($data: [TaskCreateInput!]!) {
-            createTasks(data: $data) {
-              id
-            }
-          }
-        `;
-        const { assignedTask } = await makeGqlRequest(TASK_MUTATION_CREATE, {
-          name: 'Task-assigned',
-          assignedTo: 'James Joyce',
-        });
-
-        await makeGqlRequest(CREATE_TASKS, {
-          data: generateDataArray(
-            key => ({
-              label: `Task-not-assigned-${key}`,
-            }),
-            20
-          ),
-        });
-
         await page.goto('http://localhost:3000/tasks');
         await page.waitForSelector('table tbody tr');
         const elements = await page.$$('table tbody tr');
