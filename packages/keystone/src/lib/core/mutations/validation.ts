@@ -68,7 +68,6 @@ export async function validateDelete({
       }
     })
   );
-
   if (fieldsErrors.length) {
     throw extensionError('validateDelete', fieldsErrors);
   }
