@@ -2,4 +2,4 @@
 '@keystone-next/auth': patch
 ---
 
-Fixed auth init and sign in pages showing for a short amount of time after submitting and seeing a loading spinner.
+Fixed auth init and sign in pages showing for a short amount of time after submitting on the init/sign in pages and seeing a loading spinner.
