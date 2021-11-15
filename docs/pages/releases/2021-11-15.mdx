@@ -25,8 +25,8 @@ For example, if you added `isIndexed: 'unique'` to a select field in a theoretic
 ```ts
 query {
   setting ( where: { provider: "github" } ) {
-	id
-	token
+		id
+		token
   }
 }
 ```
@@ -35,9 +35,9 @@ This is instead of running a settings query where you would have received a list
 
 ```ts
 query {
-  settings ( where: { provider: { equals: "github" }  ) {
-	id
-	token
+  settings ( where: { provider: { equals: "github" } } ) {
+		id
+		token
   }
 }
 ```
@@ -100,8 +100,8 @@ export const PostQuery = extendType({
 
 ## Miscellaneous Fixes <Emoji symbol="⚙️" alt="Gear" />
 
--   The format of the date shown in the `DatePicker` now uses the user's locale.
--   When the `sessionData` option is invalid, the error will now be thrown on startup instead of silently ignored.
+- The format of the date shown in the `DatePicker` now uses the user's locale.
+- When the `sessionData` option is invalid, the error will now be thrown on startup instead of silently ignored.
 
 ## Complete Changelog <Emoji symbol="📜" alt="Scroll" />
 
