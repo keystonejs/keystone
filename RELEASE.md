@@ -93,7 +93,7 @@ Star this repo 🌟 ☝️ or connect to Keystone on [Twitter](https://twitter.c
 Aside from the [complete release notes on the Keystone website](https://keystonejs.com/releases/YYYY-MM-DD), you can also view the [verbose change log](https://github.com/keystonejs/keystone/pull/XXXX) in the related PR (https://github.com/keystonejs/keystone/pull/XXXX) for this release.
 ````
 
-## Website releases notes
+## Website release notes
 
 Retrieve release notes from the `Version Packages` PR to format.
 
