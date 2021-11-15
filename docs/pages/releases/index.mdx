@@ -4,9 +4,13 @@ import { Status } from '../../components/primitives/Status';
 
 # Release Notes
 
-## 2nd November 2021
+## 15th November 2021
 
 <Status look="latestRelease" />
+
+Expanded unique filters, customisable table and column names support and a new example featuring Nexus. <Emoji symbol="🪢" alt="Rope" /> — [Read more](/releases/2021-11-15)
+
+## 2nd November 2021
 
 **Server-side Live Reloading** is here! <Emoji symbol="🚀" alt="Rocket" /> Plus more updates as we finalise the Keystone 6 GA release. — [Read more](/releases/2021-11-02)
 
@@ -90,9 +94,13 @@ Added support for SQLite with Prisma <Emoji symbol="🎉" alt="Celebration"/>, N
 
 Prisma migrations <Emoji symbol="🚚" alt="Truck"/>, Noteworthy bug-squashing <Emoji symbol="🐛" alt="Bug"/> — [Read more](/releases/2021-03-22)
 
-<br/>
+<br />
 
 ?> 🔎 You can also find all the **Keystone 6** releases on [GitHub](https://github.com/keystonejs/keystone/releases)!
 
-export default ({ children, ...props }) => <Markdown description="A complete timeline of KeystoneJS releases." {...props} noRightNav>{children}</Markdown>;
-export { getStaticProps }
+export default ({ children, ...props }) => (
+	<Markdown description="A complete timeline of KeystoneJS releases." {...props} noRightNav>
+		{children}
+	</Markdown>
+);
+export { getStaticProps };
