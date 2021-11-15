@@ -100,15 +100,18 @@ export const PostQuery = extendType({
 
 ## Miscellaneous Fixes <Emoji symbol="⚙️" alt="Gear" />
 
--   The format of the date shown in the `DatePicker` now uses the user's locale.
--   When the `sessionData` option is invalid, the error will now be thrown on startup instead of silently ignored.
+- The format of the date shown in the `DatePicker` now uses the user's locale.
+- When the `sessionData` option is invalid, the error will now be thrown on startup instead of silently ignored.
 
 ## Complete Changelog <Emoji symbol="📜" alt="Scroll" />
 
 You can also view the [verbose changelog](https://github.com/keystonejs/keystone/pull/6914) in the related PR (https://github.com/keystonejs/keystone/pull/6914) for this release.
 
 export default ({ children, ...props }) => (
-	<Markdown description="TBA" {...props}>
+	<Markdown
+		description="Expanded unique filters, customisable table and column names support and a new example featuring Nexus."
+		{...props}
+	>
 		{children}
 	</Markdown>
 );
