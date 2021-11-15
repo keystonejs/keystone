@@ -70,6 +70,7 @@ export const text =
       },
     };
 
+    // defaulted to false as a zero length string is preferred
     const isNullable = config.db?.isNullable ?? false;
 
     const fieldLabel = config.label ?? humanize(meta.fieldKey);
