@@ -167,29 +167,31 @@ export async function getAccessControlledItemForUpdate(
   }
 
   // Field level 'item' access control
-  const nonBooleans = [];
-  const fieldsDenied = [];
-  const accessErrors = [];
-  for (const fieldKey of Object.keys(inputData)) {
-    let result;
-    try {
-      result =
-        typeof list.fields[fieldKey].access[operation] === 'function'
-          ? await list.fields[fieldKey].access[operation]({ ...args, fieldKey })
-          : access;
-    } catch (error: any) {
-      accessErrors.push({ error, tag: `${args.listKey}.${fieldKey}.access.${args.operation}` });
-      continue;
-    }
-    if (typeof result !== 'boolean') {
-      nonBooleans.push({
-        tag: `${args.listKey}.${fieldKey}.access.${args.operation}`,
-        returned: typeof result,
-      });
-    } else if (!result) {
-      fieldsDenied.push(fieldKey);
-    }
-  }
+  const nonBooleans: { tag: string; returned: string }[] = [];
+  const fieldsDenied: string[] = [];
+  const accessErrors: { error: Error; tag: string }[] = [];
+  await Promise.all(
+    Object.keys(inputData).map(async fieldKey => {
+      let result;
+      try {
+        result =
+          typeof list.fields[fieldKey].access[operation] === 'function'
+            ? await list.fields[fieldKey].access[operation]({ ...args, fieldKey })
+            : access;
+      } catch (error: any) {
+        accessErrors.push({ error, tag: `${args.listKey}.${fieldKey}.access.${args.operation}` });
+        return;
+      }
+      if (typeof result !== 'boolean') {
+        nonBooleans.push({
+          tag: `${args.listKey}.${fieldKey}.access.${args.operation}`,
+          returned: typeof result,
+        });
+      } else if (!result) {
+        fieldsDenied.push(fieldKey);
+      }
+    })
+  );
 
   if (accessErrors.length) {
     throw extensionError('Access control', accessErrors);
@@ -257,30 +259,31 @@ export async function applyAccessControlForCreate(
   }
 
   // Field level 'item' access control
-  // Field level 'item' access control
-  const nonBooleans = [];
-  const fieldsDenied = [];
-  const accessErrors = [];
-  for (const fieldKey of Object.keys(inputData)) {
-    let result;
-    try {
-      result =
-        typeof list.fields[fieldKey].access[operation] === 'function'
-          ? await list.fields[fieldKey].access[operation]({ ...args, fieldKey })
-          : access;
-    } catch (error: any) {
-      accessErrors.push({ error, tag: `${args.listKey}.${fieldKey}.access.${args.operation}` });
-      continue;
-    }
-    if (typeof result !== 'boolean') {
-      nonBooleans.push({
-        tag: `${args.listKey}.${fieldKey}.access.${args.operation}`,
-        returned: typeof result,
-      });
-    } else if (!result) {
-      fieldsDenied.push(fieldKey);
-    }
-  }
+  const nonBooleans: { tag: string; returned: string }[] = [];
+  const fieldsDenied: string[] = [];
+  const accessErrors: { error: Error; tag: string }[] = [];
+  await Promise.all(
+    Object.keys(inputData).map(async fieldKey => {
+      let result;
+      try {
+        result =
+          typeof list.fields[fieldKey].access[operation] === 'function'
+            ? await list.fields[fieldKey].access[operation]({ ...args, fieldKey })
+            : access;
+      } catch (error: any) {
+        accessErrors.push({ error, tag: `${args.listKey}.${fieldKey}.access.${args.operation}` });
+        return;
+      }
+      if (typeof result !== 'boolean') {
+        nonBooleans.push({
+          tag: `${args.listKey}.${fieldKey}.access.${args.operation}`,
+          returned: typeof result,
+        });
+      } else if (!result) {
+        fieldsDenied.push(fieldKey);
+      }
+    })
+  );
 
   if (accessErrors.length) {
     throw extensionError('Access control', accessErrors);
