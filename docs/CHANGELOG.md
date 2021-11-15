@@ -1,5 +1,14 @@
 # @keystone-next/website
 
+## 3.1.9
+
+### Patch Changes
+
+- [#6907](https://github.com/keystonejs/keystone/pull/6907) [`990b56291`](https://github.com/keystonejs/keystone/commit/990b56291e677077656b201b935086754c6257f1) Thanks [@JedWatson](https://github.com/JedWatson)! - Added `db.map` option to lists and fields which adds the `@@map` and `@map` Prisma attributes respectively
+
+- Updated dependencies [[`990b56291`](https://github.com/keystonejs/keystone/commit/990b56291e677077656b201b935086754c6257f1)]:
+  - @keystone-next/fields-document@13.0.0
+
 ## 3.1.8
 
 ### Patch Changes
