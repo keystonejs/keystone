@@ -3,6 +3,7 @@ import cors, { CorsOptions } from 'cors';
 import express from 'express';
 import { GraphQLSchema } from 'graphql';
 import { graphqlUploadExpress } from 'graphql-upload';
+import { ApolloServer } from 'apollo-server-express';
 import type { KeystoneConfig, CreateContext, SessionStrategy, GraphQLConfig } from '../../types';
 import { createSessionContext } from '../../session';
 import { DEFAULT_FILES_STORAGE_PATH } from '../context/createFilesContext';
@@ -57,7 +58,13 @@ export const createExpressServer = async (
   config: KeystoneConfig,
   graphQLSchema: GraphQLSchema,
   createContext: CreateContext
-) => {
+): Promise<{
+  expressServer: express.Express;
+  apolloServer: ApolloServer<{
+    req: IncomingMessage;
+    res: ServerResponse;
+  }>;
+}> => {
   const expressServer = express();
 
   if (config.server?.cors) {
