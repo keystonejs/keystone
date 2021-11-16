@@ -156,6 +156,8 @@ export const Field = ({
     );
   }
 
+  const authenticatedItem = keystone.authenticatedItem;
+
   return (
     <FieldContainer as="fieldset">
       <FieldLabel as="legend">{field.label}</FieldLabel>
@@ -206,33 +208,34 @@ export const Field = ({
                   Create related {foreignList.singular}
                 </Button>
               )}
-              {keystone.authenticatedItem.state === 'authenticated' &&
-                keystone.authenticatedItem.listKey === field.refListKey && (
+              {authenticatedItem.state === 'authenticated' &&
+                authenticatedItem.listKey === field.refListKey &&
+                (value.kind === 'many'
+                  ? value.value.find(x => x.id === authenticatedItem.id) === undefined
+                  : value.value?.id !== authenticatedItem.id) && (
                   <Button
                     size="small"
                     isDisabled={onChange === undefined}
                     onClick={() => {
-                      if (keystone.authenticatedItem.state === 'authenticated') {
-                        const val = {
-                          label: keystone.authenticatedItem.label,
-                          id: keystone.authenticatedItem.id,
-                        };
-                        if (value.kind === 'many') {
-                          onChange({
-                            ...value,
-                            value: [...value.value, val],
-                          });
-                        } else {
-                          onChange({
-                            ...value,
-                            value: val,
-                          });
-                        }
+                      const val = {
+                        label: authenticatedItem.label,
+                        id: authenticatedItem.id,
+                      };
+                      if (value.kind === 'many') {
+                        onChange({
+                          ...value,
+                          value: [...value.value, val],
+                        });
+                      } else {
+                        onChange({
+                          ...value,
+                          value: val,
+                        });
                       }
                     }}
                   >
                     {value.kind === 'many' ? 'Add ' : 'Set as '}
-                    {keystone.authenticatedItem.label}
+                    {authenticatedItem.label}
                   </Button>
                 )}
               {!!(value.kind === 'many'
