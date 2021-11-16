@@ -1,6 +1,8 @@
 import { extensionError, validationFailureError } from '../graphql-errors';
 import { InitialisedList } from '../types-for-lists';
 
+type DistributiveOmit<T, K extends keyof T> = T extends any ? Omit<T, K> : never;
+
 type UpdateCreateHookArgs = Parameters<
   Exclude<InitialisedList['hooks']['validateInput'], undefined>
 >[0];
@@ -9,22 +11,24 @@ export async function validateUpdateCreate({
   hookArgs,
 }: {
   list: InitialisedList;
-  hookArgs: Omit<UpdateCreateHookArgs, 'addValidationError'>;
+  hookArgs: DistributiveOmit<UpdateCreateHookArgs, 'addValidationError'>;
 }) {
   const messages: string[] = [];
 
   const fieldsErrors: { error: Error; tag: string }[] = [];
   // Field validation hooks
-  for (const [fieldKey, field] of Object.entries(list.fields)) {
-    const addValidationError = (msg: string) =>
-      messages.push(`${list.listKey}.${fieldKey}: ${msg}`);
-    try {
-      // @ts-ignore
-      await field.hooks.validateInput?.({ ...hookArgs, addValidationError, fieldKey });
-    } catch (error: any) {
-      fieldsErrors.push({ error, tag: `${list.listKey}.${fieldKey}.hooks.validateInput` });
-    }
-  }
+  await Promise.all(
+    Object.entries(list.fields).map(async ([fieldKey, field]) => {
+      const addValidationError = (msg: string) =>
+        messages.push(`${list.listKey}.${fieldKey}: ${msg}`);
+      try {
+        await field.hooks.validateInput?.({ ...hookArgs, addValidationError, fieldKey });
+      } catch (error: any) {
+        fieldsErrors.push({ error, tag: `${list.listKey}.${fieldKey}.hooks.validateInput` });
+      }
+    })
+  );
+
   if (fieldsErrors.length) {
     throw extensionError('validateInput', fieldsErrors);
   }
@@ -32,7 +36,6 @@ export async function validateUpdateCreate({
   // List validation hooks
   const addValidationError = (msg: string) => messages.push(`${list.listKey}: ${msg}`);
   try {
-    // @ts-ignore
     await list.hooks.validateInput?.({ ...hookArgs, addValidationError });
   } catch (error: any) {
     throw extensionError('validateInput', [{ error, tag: `${list.listKey}.hooks.validateInput` }]);
@@ -54,15 +57,17 @@ export async function validateDelete({
   const messages: string[] = [];
   const fieldsErrors: { error: Error; tag: string }[] = [];
   // Field validation
-  for (const [fieldKey, field] of Object.entries(list.fields)) {
-    const addValidationError = (msg: string) =>
-      messages.push(`${list.listKey}.${fieldKey}: ${msg}`);
-    try {
-      await field.hooks.validateDelete?.({ ...hookArgs, addValidationError, fieldKey });
-    } catch (error: any) {
-      fieldsErrors.push({ error, tag: `${list.listKey}.${fieldKey}.hooks.validateDelete` });
-    }
-  }
+  await Promise.all(
+    Object.entries(list.fields).map(async ([fieldKey, field]) => {
+      const addValidationError = (msg: string) =>
+        messages.push(`${list.listKey}.${fieldKey}: ${msg}`);
+      try {
+        await field.hooks.validateDelete?.({ ...hookArgs, addValidationError, fieldKey });
+      } catch (error: any) {
+        fieldsErrors.push({ error, tag: `${list.listKey}.${fieldKey}.hooks.validateDelete` });
+      }
+    })
+  );
   if (fieldsErrors.length) {
     throw extensionError('validateDelete', fieldsErrors);
   }
