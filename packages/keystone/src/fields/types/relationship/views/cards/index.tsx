@@ -157,7 +157,7 @@ export function Cards({
           const itemGetter = items[id];
           const isEditMode = !!(onChange !== undefined) && value.itemsBeingEdited.has(id);
           return (
-            <CardContainer role="status" mode={isEditMode ? 'edit' : 'view'}>
+            <CardContainer role="status" mode={isEditMode ? 'edit' : 'view'} key={id}>
               <VisuallyHidden as="h2">{`${field.label} ${index + 1} ${
                 isEditMode ? 'edit' : 'view'
               } mode`}</VisuallyHidden>

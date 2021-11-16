@@ -16,10 +16,10 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Setup Node.js 14.x
+      - name: Setup Node.js LTS
         uses: actions/setup-node@master
         with:
-          node-version: 14.x
+          node-version: lts/*
 
       - name: Install Dependencies
         # we have a postinstall script that uses is-ci which doesn't yet detect GitHub Actions
