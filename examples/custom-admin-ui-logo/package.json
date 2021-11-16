@@ -11,7 +11,7 @@
   "dependencies": {
     "@keystone-next/keystone": "^27.0.0",
     "@keystone-ui/core": "^3.2.1",
-    "next": "^12.0.3",
+    "next": "^12.0.4",
     "react": "^17.0.2"
   },
   "devDependencies": {
