@@ -33,15 +33,18 @@ export async function runSideEffectOnlyHook<
 
   // Field hooks
   const fieldsErrors: { error: Error; tag: string }[] = [];
-  for (const [fieldKey, field] of Object.entries(list.fields)) {
-    if (shouldRunFieldLevelHook(fieldKey)) {
-      try {
-        await field.hooks[hookName]?.({ fieldKey, ...args });
-      } catch (error: any) {
-        fieldsErrors.push({ error, tag: `${list.listKey}.${fieldKey}.hooks.${hookName}` });
+  await Promise.all(
+    Object.entries(list.fields).map(async ([fieldKey, field]) => {
+      if (shouldRunFieldLevelHook(fieldKey)) {
+        try {
+          await field.hooks[hookName]?.({ fieldKey, ...args });
+        } catch (error: any) {
+          fieldsErrors.push({ error, tag: `${list.listKey}.${fieldKey}.hooks.${hookName}` });
+        }
       }
-    }
-  }
+    })
+  );
+
   if (fieldsErrors.length) {
     throw extensionError(hookName, fieldsErrors);
   }
