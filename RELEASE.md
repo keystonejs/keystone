@@ -14,7 +14,7 @@ Finally, run `yarn publish-changed` to find packages where the version listed in
 
 The above command requires OTP and publish privileges on npm.
 
-Create git tag relevant to release date, such as `git tag -a "YYYY-MM-DD" -m "YYYY-MM-DD"`
+Create git tag relevant to release date, such as `git tag "$(date +'%Y-%m-%d')"`.
 
 Then publish all new tags (releases plus release date version) to GitHub with `git push --tags`.
 
@@ -27,7 +27,7 @@ Copy the successful output of the published packages from the above npm release,
 
 ```
 
-Convert to a `package.json` style syntax for ease of copying, example conversion:
+Translate to a `package.json` style syntax for ease of copying, example:
 
 ```json
 "@keystone-next/auth": "27.0.0",
@@ -59,9 +59,7 @@ Publish release on GitHub.
 
 Add release to release page index under `/docs/pages/releases/index.mdx` with a summarised heading.
 
-Commit website update and open PR to add to `main`.
-
-Have PR reviewed and merged into `main`.
+Commit your changes; have them reviewed, then merged into `website_live` from the above PR.
 
 ## Github release notes
 
