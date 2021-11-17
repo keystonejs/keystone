@@ -31,6 +31,7 @@ export function getAdminMetaSchema({
     config.ui?.isAccessAllowed ??
     (config.session === undefined ? undefined : ({ session }) => session !== undefined);
   const jsonScalar = graphqlBoundToKeystoneContext.JSON;
+
   const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
     name: 'KeystoneAdminUIFieldMeta',
     fields: {
@@ -354,7 +355,6 @@ export function getAdminMetaSchema({
         adminMeta: graphql.field({
           type: graphql.nonNull(adminMeta),
           resolve(rootVal, args, context) {
-            debugger;
             if ('isAdminUIBuildProcess' in context || isAccessAllowed === undefined) {
               return adminMetaRoot;
             }
