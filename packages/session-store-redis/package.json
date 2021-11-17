@@ -5,7 +5,7 @@
   "main": "dist/keystone-next-session-store-redis.cjs.js",
   "module": "dist/keystone-next-session-store-redis.esm.js",
   "engines": {
-    "node": "^12.20 || >= 14.13"
+    "node": "^14.15 || ^16.13"
   },
   "dependencies": {
     "@babel/runtime": "^7.15.4",
