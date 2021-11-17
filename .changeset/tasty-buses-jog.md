@@ -6,7 +6,7 @@ The names of two-sided many-many relationships now only include the list key and
 
 There are two ways to update:
 
-1. Enable the `experimental.legacyManyRelationNames` option at the root of your config. This will make Keystone revert to the old relation names. This option will be removed in a future release.
+1. Enable the `experimental.useLegacyManyRelationNames` option at the root of your config. This will make Keystone revert to the old relation names. This option will be removed in a future release.
 2. Apply a migration to rename your many relation tables
 
 Given a schema like this:

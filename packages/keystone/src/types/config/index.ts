@@ -46,7 +46,7 @@ export type KeystoneConfig = {
      * Uses the old many relation names in the format of `ListKeyA_fieldKeyA_ListKeyB_fieldKeyB` instead of the newer format of `ListKeyA_fieldKeyA`.
      * You may want to use this to avoid a migration when upgrading. This option will be removed in a future release.
      */
-    legacyManyRelationNames?: boolean;
+    useLegacyManyRelationNames?: boolean;
   };
 };
 

@@ -414,7 +414,7 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
 
   const listsWithResolvedDBFields = resolveRelationships(
     listsWithInitialisedFields,
-    config.experimental?.legacyManyRelationNames ?? false
+    config.experimental?.useLegacyManyRelationNames ?? false
   );
 
   const listsWithInitialisedFieldsAndResolvedDbFields = Object.fromEntries(
