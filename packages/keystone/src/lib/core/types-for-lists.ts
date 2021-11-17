@@ -8,7 +8,6 @@ import {
   ListInfo,
   ListHooks,
   KeystoneConfig,
-  DatabaseProvider,
   FindManyArgs,
   CacheHintArgs,
   MaybePromise,
@@ -69,10 +68,9 @@ export type InitialisedList = {
   };
 };
 
-export function initialiseLists(
-  listsConfig: KeystoneConfig['lists'],
-  provider: DatabaseProvider
-): Record<string, InitialisedList> {
+export function initialiseLists(config: KeystoneConfig): Record<string, InitialisedList> {
+  const listsConfig = config.lists;
+  const { provider } = config.db;
   const listInfos: Record<string, ListInfo> = {};
   const isEnabled: Record<
     string,
@@ -414,7 +412,10 @@ export function initialiseLists(
     ])
   );
 
-  const listsWithResolvedDBFields = resolveRelationships(listsWithInitialisedFields);
+  const listsWithResolvedDBFields = resolveRelationships(
+    listsWithInitialisedFields,
+    config.experimental?.legacyManyRelationNames ?? false
+  );
 
   const listsWithInitialisedFieldsAndResolvedDbFields = Object.fromEntries(
     Object.entries(listsWithInitialisedFields).map(([listKey, list]) => {

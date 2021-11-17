@@ -77,7 +77,8 @@ function sortRelationships(left: Rel, right: Rel): [Rel, RelWithoutForeignKey] {
 //   (note that this means that there are "fields" in the returned ListsWithResolvedRelations
 //   which are not actually proper Keystone fields, they are just a db field and nothing else)
 export function resolveRelationships(
-  lists: Record<string, { fields: Record<string, { dbField: DBField }> }>
+  lists: Record<string, { fields: Record<string, { dbField: DBField }> }>,
+  useLegacyManyRelationNames: boolean
 ): ListsWithResolvedRelations {
   const alreadyResolvedTwoSidedRelationships = new Set<string>();
   const resolvedLists: Record<string, Record<string, ResolvedDBField>> = Object.fromEntries(
@@ -166,7 +167,9 @@ export function resolveRelationships(
           continue;
         }
         if (leftRel.field.mode === 'many' && rightRel.field.mode === 'many') {
-          const relationName = `${leftRel.listKey}_${leftRel.fieldPath}`;
+          const relationName = `${leftRel.listKey}_${leftRel.fieldPath}${
+            useLegacyManyRelationNames ? `_${rightRel.listKey}_${rightRel.fieldPath}` : ''
+          }`;
           resolvedLists[leftRel.listKey][leftRel.fieldPath] = {
             kind: 'relation',
             mode: 'many',
@@ -215,7 +218,7 @@ export function resolveRelationships(
       }
 
       if (field.mode === 'many') {
-        const relationName = `${listKey}_${fieldPath}`;
+        const relationName = `${listKey}_${fieldPath}${useLegacyManyRelationNames ? '_many' : ''}`;
         resolvedLists[field.list][foreignFieldPath] = {
           kind: 'relation',
           mode: 'many',

@@ -4,7 +4,10 @@
 
 The names of two-sided many-many relationships now only include the list key and field key for one side of the relationship and one-sided many relationships(which are many-many) no longer have `_many` at the end of them for consistency with two-sided relationships. This allows having many-many relationships with long list and field keys without hitting Postgres's 63 character limit.
 
-This will require migrations if you have many-many relationships.
+There are two ways to update:
+
+1. Enable the `experimental.legacyManyRelationNames` option at the root of your config. This will make Keystone revert to the old relation names. This option will be removed in a future release.
+2. Apply a migration to rename your many relation tables
 
 Given a schema like this:
 
