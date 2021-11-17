@@ -1,4 +1,4 @@
-import { gql, list } from '@keystone-next/keystone';
+import { list } from '@keystone-next/keystone';
 import { text } from '@keystone-next/keystone/fields';
 import { staticAdminMetaQuery } from '@keystone-next/keystone/src/admin-ui/admin-meta-graphql';
 import { setupTestRunner } from '@keystone-next/keystone/testing';
