@@ -20,6 +20,10 @@ function getSudoGraphQLSchema(config: KeystoneConfig, provider: DatabaseProvider
   // The resulting schema is used as the GraphQL schema when calling `context.sudo()`.
   const transformedConfig: KeystoneConfig = {
     ...config,
+    ui: {
+      ...config.ui,
+      isAccessAllowed: () => true,
+    },
     lists: Object.fromEntries(
       Object.entries(config.lists).map(([listKey, list]) => {
         return [
