@@ -6,7 +6,7 @@ These instructions capture the internal process for making releases of the Keyst
 
 Merge the PR named `Version Packages` into `main` on GitHub once tests are passing.
 
-In the command line, run `git pull` to latest from `main`.
+In the command line, run `git pull` to fetch latest changes from `main`.
 
 Run `yarn fresh` to rebuild `node_modules` and clean-up any build output.
 
