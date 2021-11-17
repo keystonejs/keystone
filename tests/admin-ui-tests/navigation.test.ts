@@ -1,3 +1,4 @@
+import retry from 'async-retry';
 import { Browser, Page } from 'playwright';
 import { adminUITests, loadIndex, makeGqlRequest } from './utils';
 
@@ -19,10 +20,12 @@ adminUITests('./tests/test-projects/basic', browserType => {
     expect(ariaCurrent).toBe('location');
   });
   test('When navigated to a List route, the representative list NavItem is selected', async () => {
-    await page.goto('http://localhost:3000/tasks');
-    const element = await page.waitForSelector('nav a:has-text("Tasks")');
-    const ariaCurrent = await element?.getAttribute('aria-current');
-    expect(ariaCurrent).toBe('location');
+    await retry(async () => {
+      await page.goto('http://localhost:3000/tasks');
+      const element = await page.waitForSelector('nav a:has-text("Tasks")');
+      const ariaCurrent = await element?.getAttribute('aria-current');
+      expect(ariaCurrent).toBe('location');
+    });
   });
   test('Can access all list pages via the navigation', async () => {
     await page.goto('http://localhost:3000');
