@@ -127,11 +127,12 @@ export function RelationshipElement({
                   ? null
                   : { id: element.data.id, label: element.data.label || element.data.id },
               onChange(value) {
-                Transforms.setNodes(
-                  editor,
-                  { data: value },
-                  { at: ReactEditor.findPath(editor, element) }
-                );
+                const at = ReactEditor.findPath(editor, element);
+                if (value === null) {
+                  Transforms.removeNodes(editor, { at });
+                } else {
+                  Transforms.setNodes(editor, { data: value }, { at });
+                }
               },
             }}
           />

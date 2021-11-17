@@ -5,7 +5,7 @@
   "main": "dist/keystone-next-auth.cjs.js",
   "module": "dist/keystone-next-auth.esm.js",
   "engines": {
-    "node": "^12.20 || >= 14.13"
+    "node": "^14.15 || ^16.13"
   },
   "dependencies": {
     "@babel/runtime": "^7.15.4",
