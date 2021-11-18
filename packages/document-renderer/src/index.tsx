@@ -97,7 +97,9 @@ export const defaultRenderers: Renderers = {
             gridTemplateColumns: layout.map(x => `${x}fr`).join(' '),
           }}
         >
-          {children}
+          {children.map((element, i) => (
+            <div key={i}>{element}</div>
+          ))}
         </div>
       );
     },
