@@ -50,6 +50,11 @@ export default function Brand() {
               color: '#fff',
               background: 'linear-gradient(135deg, var(--grad1-1), var(--grad1-2))',
               borderRadius: '0.5rem',
+              filter: 'saturate(80%)',
+              transition: 'filter 0.3s ease',
+              '&:focus,&:hover': {
+                filter: 'saturate(150%)',
+              },
             }}
           >
             <Keystone
@@ -87,21 +92,24 @@ export default function Brand() {
                 padding: 0,
                 display: 'inline-block',
                 '& li': {
-                  display: 'flex',
-                  alignItems: 'center',
+                  display: 'grid',
+                  gridTemplateColumns: '1.25rem auto',
+                  gap: '0.5rem',
+                  alignItems: 'normal',
                   marginRight: '1rem',
                   color: 'var(--muted)',
                 },
                 '& svg': {
-                  height: '1.25rem',
-                  margin: '0.25rem 0.5rem 0 0',
+                  width: '1.25rem',
+                  margin: '0.4rem 0.5rem 0 0',
                 },
               }}
             >
               <li>
                 <Tick grad="grad2" />
                 <Type look="body18" color="var(--muted)">
-                  TODO
+                  Sdf dsf sdkfhbdskhfg kdafsldasfg ldksfg ldsakjfg ldskjg sdfh sjhfg sdkjhfg skdjhfg
+                  kdsjhg fdskjhg
                 </Type>
               </li>
               <li>
@@ -130,14 +138,16 @@ export default function Brand() {
                 padding: 0,
                 display: 'inline-block',
                 '& li': {
-                  display: 'flex',
-                  alignItems: 'center',
+                  display: 'grid',
+                  gridTemplateColumns: '1.25rem auto',
+                  gap: '0.5rem',
+                  alignItems: 'normal',
                   marginRight: '1rem',
                   color: 'var(--muted)',
                 },
                 '& svg': {
-                  height: '1.25rem',
-                  margin: '0.25rem 0.5rem 0 0',
+                  width: '1.25rem',
+                  margin: '0.4rem 0.5rem 0 0',
                 },
               }}
             >
@@ -150,7 +160,9 @@ export default function Brand() {
               <li>
                 <Nope grad="grad5" />
                 <Type look="body18" color="var(--muted)">
-                  TODO
+                  ksdfbsdl kgsdk fsdfk ldfklbh fdskjbfgdskjb fdskj blfdskjln dadknsbfdsfnbdsfb
+                  dfskjl fdskjl dsfakjl sdb df bdfsmndfs ndsfm, dsafnsdaj nsda jdfsj bdsjk f dfskl
+                  hdfsbjk fnf n fdmn,dsdsfn
                 </Type>
               </li>
               <li>
