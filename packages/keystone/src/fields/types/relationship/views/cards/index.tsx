@@ -76,7 +76,6 @@ export function Cards({
   foreignList: ListMeta;
   localList: ListMeta;
   id: string | null;
-  forceValidation: boolean | undefined;
   value: { kind: 'cards-view' };
 } & FieldProps<typeof controller>) {
   const { displayOptions } = value;
