@@ -99,7 +99,10 @@ export async function pushPrismaSchemaToDatabase(
         'If you want to keep the data in your database, set db.useMigrations to true in your config or change the data in your database so the migration can be applied'
       );
       if (
-        !(await confirmPrompt(`Do you want to continue? ${chalk.red('All data will be lost')}.`, false))
+        !(await confirmPrompt(
+          `Do you want to continue? ${chalk.red('All data will be lost')}.`,
+          false
+        ))
       ) {
         console.log('Reset cancelled');
         throw new ExitError(0);
@@ -115,7 +118,10 @@ export async function pushPrismaSchemaToDatabase(
     if (migration.warnings.length) {
       logWarnings(migration.warnings);
       if (
-        !(await confirmPrompt(`Do you want to continue? ${chalk.red('Some data will be lost')}.`, false))
+        !(await confirmPrompt(
+          `Do you want to continue? ${chalk.red('Some data will be lost')}.`,
+          false
+        ))
       ) {
         console.log('Push cancelled.');
         throw new ExitError(0);
@@ -252,7 +258,8 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
       console.log(`✨ A migration has been created at migrations/${generatedMigrationName}`);
 
       let shouldApplyMigration =
-        migrationCanBeApplied && (await confirmPrompt('Would you like to apply this migration?', false));
+        migrationCanBeApplied &&
+        (await confirmPrompt('Would you like to apply this migration?', false));
       if (shouldApplyMigration) {
         await runMigrateWithDbUrl(dbUrl, () => migrate.applyMigrations());
         console.log('✅ The migration has been applied');
