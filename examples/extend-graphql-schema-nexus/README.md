@@ -4,7 +4,7 @@ This project demonstrates how to use [Nexus](https://nexusjs.org) to extend the 
 
 ## Instructions
 
-To run this project, clone the Keystone repository locally then navigate to this directory and run:
+To run this project, clone the Keystone repository locally, run `yarn` at the root of the repository then navigate to this directory and run:
 
 ```shell
 yarn dev
