@@ -68,22 +68,6 @@ function Logo() {
           <Highlight>Keystone 6</Highlight>
         </a>
       </Link>
-      <span
-        css={{
-          display: 'inline-block',
-          padding: '0 var(--space-xsmall)',
-          borderRadius: '0.25rem',
-          background: 'var(--code-bg)',
-          color: 'var(--code)',
-          border: '1px solid var(--border)',
-          fontSize: 'var(--font-xxsmall)',
-          fontWeight: 400,
-          lineHeight: '1rem',
-          marginLeft: 'var(--space-medium)',
-        }}
-      >
-        preview
-      </span>
     </div>
   );
 }
