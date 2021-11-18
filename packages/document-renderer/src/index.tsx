@@ -42,7 +42,6 @@ interface Renderers {
     blockquote: OnlyChildrenComponent;
     code: Component<{ children: string }> | keyof JSX.IntrinsicElements;
     layout: Component<{ layout: [number, ...number[]]; children: ReactElement[] }>;
-    layoutArea: OnlyChildrenComponent;
     divider: Component<{}> | keyof JSX.IntrinsicElements;
     heading: Component<{
       level: 1 | 2 | 3 | 4 | 5 | 6;
@@ -98,11 +97,12 @@ export const defaultRenderers: Renderers = {
             gridTemplateColumns: layout.map(x => `${x}fr`).join(' '),
           }}
         >
-          {children}
+          {children.map((element, i) => (
+            <div key={i}>{element}</div>
+          ))}
         </div>
       );
     },
-    layoutArea: 'div',
   },
 };
 
@@ -150,9 +150,6 @@ function DocumentNode({
     }
     case 'layout': {
       return <renderers.block.layout layout={node.layout as any} children={children} />;
-    }
-    case 'layout-area': {
-      return <renderers.block.layoutArea children={children} />;
     }
     case 'divider': {
       return <renderers.block.divider />;
