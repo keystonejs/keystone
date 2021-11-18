@@ -2,14 +2,18 @@
 '@keystone-next/keystone': major
 ---
 
-The names of two-sided many-many relationships now only include the list key and field key for one side of the relationship and one-sided many relationships(which are many-many) no longer have `_many` at the end of them for consistency with two-sided relationships. This allows having many-many relationships with long list and field keys without hitting Postgres's 63 character limit.
+The names of one-sided and two-sided, many-many relationships has been shortened. Two-sided many-many relationship names contain only the left-hand side names now; and the `_many` suffix has been dropped from one-sided many-many relationships.
+
+This reduces the probability that you will exceed [PostgreSQL's 63 character limit for identifiers](https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS) with typical usage.
+
+This is a breaking change. 
 
 There are two ways to update:
 
-1. Enable the `experimental.useLegacyManyRelationNames` option at the root of your config. This will make Keystone revert to the old relation names. This option will be removed in a future release.
-2. Apply a migration to rename your many relation tables
+1. Set `experimental.useLegacyManyRelationNames: true` at the root of your config. This will make Keystone revert to the old relation names. This feature will be removed in a future release.
+2. Or, rename your many relation tables using a migration (see below)
 
-Given a schema like this:
+For example, given a schema like this:
 
 ```ts
 Post: list({
@@ -24,9 +28,13 @@ Tag: list({
 }),
 ```
 
-When you run Keystone after updating, Keystone will prompt you to create a migration, you should do this but **DO NOT APPLY IT**, it needs to be modified before being applied.
+When updating to this change, and running `yarn dev`, Keystone will prompt you to update your schema.
 
-On Postgres, Prisma will generate a migration that looks something like this:
+- If you are using `useMigrations: true`, Keystone will follow the typical migration flow offer to apply an automatically generated migration. **DO NOT APPLY THE AUTOMATICALLY GENERATED MIGRATION** - unless you want to `DROP` your data.
+
+- If you are using `useMigrations: false`, Keystone will follow the typical flow and offer to automatically migrate your schema.  Again, **DO NOT RUN THE AUTOMATIC MIGRATION** - unless you want to `DROP` your data.
+
+On PostgreSQL, Prisma will generate a migration that looks something like this:
 
 ```sql
 /*
@@ -74,7 +82,6 @@ ALTER TABLE "_Post_tags" RENAME CONSTRAINT "_Post_tags_Tag_posts_B_fkey" TO "_Po
 ```
 
 On SQLite, Prisma will generate a migration that looks something like this:
-
 
 ```sql
 /*
