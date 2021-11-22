@@ -1,5 +1,4 @@
-import pLimit, { Limit } from 'p-limit';
-import { KeystoneContext, DatabaseProvider, ItemRootValue } from '../../../types';
+import { KeystoneContext, ItemRootValue } from '../../../types';
 import { ResolvedDBField } from '../resolve-relationships';
 import { InitialisedList } from '../types-for-lists';
 import {
@@ -7,6 +6,7 @@ import {
   getDBFieldKeyForFieldOnMultiField,
   IdType,
   runWithPrisma,
+  getWriteLimit,
 } from '../utils';
 import { InputFilter, resolveUniqueWhereInput, UniqueInputFilter } from '../where-inputs';
 import {
@@ -34,8 +34,7 @@ async function createSingle(
   { data: rawData }: { data: Record<string, any> },
   list: InitialisedList,
   context: KeystoneContext,
-  operationAccess: boolean,
-  writeLimit: Limit
+  operationAccess: boolean
 ) {
   // Operation level access control
   if (!operationAccess) {
@@ -54,6 +53,8 @@ async function createSingle(
     undefined
   );
 
+  const writeLimit = getWriteLimit(context);
+
   const item = await writeLimit(() =>
     runWithPrisma(context, list, model => model.create({ data }))
   );
@@ -69,18 +70,11 @@ export class NestedMutationState {
   }
   async create(data: Record<string, any>, list: InitialisedList) {
     const context = this.#context;
-    const writeLimit = pLimit(1);
 
     // Check operation permission to pass into single operation
     const operationAccess = await getOperationAccess(list, context, 'create');
 
-    const { item, afterOperation } = await createSingle(
-      { data },
-      list,
-      context,
-      operationAccess,
-      writeLimit
-    );
+    const { item, afterOperation } = await createSingle({ data }, list, context, operationAccess);
 
     this.#afterOperations.push(() => afterOperation(item));
     return { id: item.id as IdType };
@@ -96,18 +90,10 @@ export async function createOne(
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  const writeLimit = pLimit(1);
-
   // Check operation permission to pass into single operation
   const operationAccess = await getOperationAccess(list, context, 'create');
 
-  const { item, afterOperation } = await createSingle(
-    createInput,
-    list,
-    context,
-    operationAccess,
-    writeLimit
-  );
+  const { item, afterOperation } = await createSingle(createInput, list, context, operationAccess);
 
   await afterOperation(item);
 
@@ -117,22 +103,13 @@ export async function createOne(
 export async function createMany(
   createInputs: { data: Record<string, any>[] },
   list: InitialisedList,
-  context: KeystoneContext,
-  provider: DatabaseProvider
+  context: KeystoneContext
 ) {
-  const writeLimit = pLimit(provider === 'sqlite' ? 1 : Infinity);
-
   // Check operation permission to pass into single operation
   const operationAccess = await getOperationAccess(list, context, 'create');
 
   return createInputs.data.map(async data => {
-    const { item, afterOperation } = await createSingle(
-      { data },
-      list,
-      context,
-      operationAccess,
-      writeLimit
-    );
+    const { item, afterOperation } = await createSingle({ data }, list, context, operationAccess);
 
     await afterOperation(item);
 
@@ -145,8 +122,7 @@ async function updateSingle(
   list: InitialisedList,
   context: KeystoneContext,
   accessFilters: boolean | InputFilter,
-  operationAccess: boolean,
-  writeLimit: Limit
+  operationAccess: boolean
 ) {
   // Operation level access control
   if (!operationAccess) {
@@ -179,6 +155,8 @@ async function updateSingle(
     item
   );
 
+  const writeLimit = getWriteLimit(context);
+
   const updatedItem = await writeLimit(() =>
     runWithPrisma(context, list, model => model.update({ where: { id: item.id }, data }))
   );
@@ -193,25 +171,20 @@ export async function updateOne(
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  const writeLimit = pLimit(1);
-
   // Check operation permission to pass into single operation
   const operationAccess = await getOperationAccess(list, context, 'update');
 
   // Get list-level access control filters
   const accessFilters = await getAccessFilters(list, context, 'update');
 
-  return updateSingle(updateInput, list, context, accessFilters, operationAccess, writeLimit);
+  return updateSingle(updateInput, list, context, accessFilters, operationAccess);
 }
 
 export async function updateMany(
   { data }: { data: { where: UniqueInputFilter; data: Record<string, any> }[] },
   list: InitialisedList,
-  context: KeystoneContext,
-  provider: DatabaseProvider
+  context: KeystoneContext
 ) {
-  const writeLimit = pLimit(provider === 'sqlite' ? 1 : Infinity);
-
   // Check operation permission to pass into single operation
   const operationAccess = await getOperationAccess(list, context, 'update');
 
@@ -219,7 +192,7 @@ export async function updateMany(
   const accessFilters = await getAccessFilters(list, context, 'update');
 
   return data.map(async updateInput =>
-    updateSingle(updateInput, list, context, accessFilters, operationAccess, writeLimit)
+    updateSingle(updateInput, list, context, accessFilters, operationAccess)
   );
 }
 

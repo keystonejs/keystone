@@ -408,50 +408,64 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
           <Notice tone="negative">{metaQueryErrors[0].message}</Notice>
         </Box>
       ) : (
-        <Fragment>
-          <ColumnLayout>
-            <ItemForm
-              fieldModes={itemViewFieldModesByField}
-              selectedFields={selectedFields}
-              showDelete={!data.keystone.adminMeta.list!.hideDelete}
-              listKey={listKey}
-              itemGetter={dataGetter.get('item') as DataGetter<ItemData>}
-            />
-
-            <StickySidebar>
-              <FieldLabel>Item ID</FieldLabel>
-              <div
-                css={{
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                <TextInput
-                  css={{
-                    marginRight: spacing.medium,
-                    fontFamily: typography.fontFamily.monospace,
-                    fontSize: typography.fontSize.small,
-                  }}
-                  readOnly
-                  value={data.item.id}
+        <ColumnLayout>
+          {data?.item == null ? (
+            <Box marginY="xlarge">
+              {error?.graphQLErrors.length || error?.networkError ? (
+                <GraphQLErrorNotice
+                  errors={error?.graphQLErrors}
+                  networkError={error?.networkError}
                 />
-                <Tooltip content="Copy ID">
-                  {props => (
-                    <Button
-                      {...props}
-                      aria-label="Copy ID"
-                      onClick={() => {
-                        copyToClipboard(data.item.id);
-                      }}
-                    >
-                      <ClipboardIcon size="small" />
-                    </Button>
-                  )}
-                </Tooltip>
-              </div>
-            </StickySidebar>
-          </ColumnLayout>
-        </Fragment>
+              ) : (
+                <Notice tone="negative">
+                  The item with id "{id}" could not be found or you don't have access to it.
+                </Notice>
+              )}
+            </Box>
+          ) : (
+            <Fragment>
+              <ItemForm
+                fieldModes={itemViewFieldModesByField}
+                selectedFields={selectedFields}
+                showDelete={!data.keystone.adminMeta.list!.hideDelete}
+                listKey={listKey}
+                itemGetter={dataGetter.get('item') as DataGetter<ItemData>}
+              />
+              <StickySidebar>
+                <FieldLabel>Item ID</FieldLabel>
+                <div
+                  css={{
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  <TextInput
+                    css={{
+                      marginRight: spacing.medium,
+                      fontFamily: typography.fontFamily.monospace,
+                      fontSize: typography.fontSize.small,
+                    }}
+                    readOnly
+                    value={data.item.id}
+                  />
+                  <Tooltip content="Copy ID">
+                    {props => (
+                      <Button
+                        {...props}
+                        aria-label="Copy ID"
+                        onClick={() => {
+                          copyToClipboard(data.item.id);
+                        }}
+                      >
+                        <ClipboardIcon size="small" />
+                      </Button>
+                    )}
+                  </Tooltip>
+                </div>
+              </StickySidebar>
+            </Fragment>
+          )}
+        </ColumnLayout>
       )}
     </PageContainer>
   );
