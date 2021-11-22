@@ -1,5 +1,4 @@
 import { GraphQLNamedType, GraphQLSchema } from 'graphql';
-import { DatabaseProvider } from '../../types';
 import { graphql } from '../..';
 import { InitialisedList } from './types-for-lists';
 
@@ -8,7 +7,6 @@ import { getQueriesForList } from './queries';
 
 export function getGraphQLSchema(
   lists: Record<string, InitialisedList>,
-  provider: DatabaseProvider,
   extraFields: {
     mutation: Record<string, graphql.Field<unknown, any, graphql.OutputType, string>>;
     query: Record<string, graphql.Field<unknown, any, graphql.OutputType, string>>;
@@ -30,7 +28,7 @@ export function getGraphQLSchema(
     fields: Object.assign(
       {},
       ...Object.values(lists).map(list => {
-        const { mutations, updateManyInput } = getMutationsForList(list, provider);
+        const { mutations, updateManyInput } = getMutationsForList(list);
         updateManyByList[list.listKey] = updateManyInput;
         return mutations;
       }),

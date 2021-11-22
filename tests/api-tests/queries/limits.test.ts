@@ -271,7 +271,9 @@ describe('maxResults Limit', () => {
       `,
         }));
 
-        expectLimitsExceededError(errors, [{ path: ['posts', 0, 'author', 1, 'posts'] }]);
+        expectLimitsExceededError(errors, [
+          { path: ['posts', 0, 'author', expect.any(Number), 'posts'] },
+        ]);
       })
     );
   });

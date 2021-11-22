@@ -1,3 +1,4 @@
+import pLimit from 'p-limit';
 import { FieldData, KeystoneConfig, DatabaseProvider, getGqlNames } from '../types';
 
 import { createAdminMeta } from '../admin-ui/system/createAdminMeta';
@@ -5,6 +6,7 @@ import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './context/createContext';
 import { initialiseLists } from './core/types-for-lists';
 import { CloudAssetsAPI, getCloudAssetsAPI } from './cloud/assets';
+import { setWriteLimit } from './core/utils';
 
 function getSudoGraphQLSchema(config: KeystoneConfig, provider: DatabaseProvider) {
   // This function creates a GraphQLSchema based on a modified version of the provided config.
@@ -76,6 +78,7 @@ export function createSystem(config: KeystoneConfig, isLiveReload?: boolean) {
         log: config.db.enableLogging && ['query'],
         datasources: { [config.db.provider]: { url: config.db.url } },
       });
+      setWriteLimit(prismaClient, pLimit(config.db.provider === 'sqlite' ? 1 : Infinity));
       prismaClient.$on('beforeExit', async () => {
         // Prisma is failing to properly clean up its child processes
         // https://github.com/keystonejs/keystone/issues/5477

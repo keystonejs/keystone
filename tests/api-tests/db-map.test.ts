@@ -28,9 +28,8 @@ datasource ${dbProvider} {
 }
 
 generator client {
-  provider   = "prisma-client-js"
-  output     = "node_modules/.prisma/client"
-  engineType = "binary"
+  provider = "prisma-client-js"
+  output   = "node_modules/.prisma/client"
 }
 
 model SomeList {
@@ -102,9 +101,8 @@ datasource ${dbProvider} {
 }
 
 generator client {
-  provider   = "prisma-client-js"
-  output     = "node_modules/.prisma/client"
-  engineType = "binary"
+  provider = "prisma-client-js"
+  output   = "node_modules/.prisma/client"
 }
 
 model SomeList {
