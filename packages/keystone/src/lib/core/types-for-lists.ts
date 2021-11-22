@@ -412,10 +412,7 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
     ])
   );
 
-  const listsWithResolvedDBFields = resolveRelationships(
-    listsWithInitialisedFields,
-    config.experimental?.useLegacyManyRelationNames ?? false
-  );
+  const listsWithResolvedDBFields = resolveRelationships(listsWithInitialisedFields);
 
   const listsWithInitialisedFieldsAndResolvedDbFields = Object.fromEntries(
     Object.entries(listsWithInitialisedFields).map(([listKey, list]) => {
