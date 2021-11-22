@@ -149,6 +149,7 @@
       "testing.ts",
       "session/index.ts",
       "scripts/index.ts",
+      "scripts/cli.ts",
       "admin-ui/components/index.ts",
       "admin-ui/apollo.tsx",
       "admin-ui/context.tsx",
