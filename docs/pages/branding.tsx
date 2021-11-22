@@ -6,7 +6,6 @@ import { Highlight } from '../components/primitives/Highlight';
 import { MWrapper } from '../components/content/MWrapper';
 import { Download } from '../components/icons/Download';
 import { Keystone } from '../components/icons/Keystone';
-import { EndCta } from '../components/content/EndCta';
 import { Type } from '../components/primitives/Type';
 import { Pill } from '../components/content/Pill';
 import { Nope } from '../components/icons/Nope';
