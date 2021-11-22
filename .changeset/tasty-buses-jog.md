@@ -12,7 +12,8 @@ There are two ways to update:
 
 ### Set `db.relationName` on many to many relation
 
-To avoid doing a migration, you can set `db.relationName` to the previous relation name on one side of a many to many relationship.
+Rather than doing a migration, you can set the new field property `db.relationName`, for either side of a many-to-many relationship field.
+If set to the existing relation name,  your database will remain unchanged.
 
 For example, given a schema like this:
 
@@ -57,7 +58,9 @@ model Tag {
 }
 ```
 
-You can add `db: { relationName: 'Post_tags_Tag_posts' }` to one side of the many to many relationship. It doesn't matter which side of the relationship it's on but it must only be on one side. 
+By adding `db: { relationName: 'Post_tags_Tag_posts' }` to one side of the many-to-many relationship; you can preclude yourself from a migration.
+
+**Note:** It doesn't matter which side of the relationship you put this property,  but it should be only on one side; otherwise you will receive an error.
 
 ```ts
 Post: list({
