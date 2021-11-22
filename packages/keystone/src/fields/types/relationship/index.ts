@@ -61,6 +61,9 @@ type OneDbConfig = {
 
 type ManyDbConfig = {
   many: true;
+  db?: {
+    relationName?: string;
+  };
 };
 
 export type RelationshipFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
@@ -156,6 +159,7 @@ export const relationship =
         mode: 'many',
         list: foreignListKey,
         field: foreignFieldKey,
+        relationName: config.db?.relationName,
       })({
         ...commonConfig,
         input: {
