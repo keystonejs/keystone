@@ -20,7 +20,7 @@ export default function Brand() {
   return (
     <Page title="KeystoneJS Brand" description="Keystones brand assets and guidelines">
       <MWrapper>
-        <Pill grad="grad1">Keystone branding</Pill>
+        <Pill grad="grad1">Branding</Pill>
         <IntroWrapper>
           <IntroHeading>
             Keystone logos
@@ -28,8 +28,10 @@ export default function Brand() {
             <Highlight look="grad1">& brand assets</Highlight>
           </IntroHeading>
           <IntroLead>
-            TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-            TODO TODO TODO TODO TODO TODO TODO TODO TODO
+            The Keystone Logo and Monogram are the primary visual identifiers to use when referring
+            to the Keystone project, its resources, and Keystone related integrations. Using these
+            assets in a consistent manner will make it easier for people to relate to the Keystone
+            brand in a unified way.
           </IntroLead>
         </IntroWrapper>
 
@@ -83,7 +85,7 @@ export default function Brand() {
         >
           <div>
             <Type as="h2" look="heading20bold">
-              Do this
+              Use these assets to
             </Type>
             <ul
               css={{
@@ -108,20 +110,19 @@ export default function Brand() {
               <li>
                 <Tick grad="grad2" />
                 <Type look="body18" color="var(--muted)">
-                  Sdf dsf sdkfhbdskhfg kdafsldasfg ldksfg ldsakjfg ldskjg sdfh sjhfg sdkjhfg skdjhfg
-                  kdsjhg fdskjhg
+                  Link to the Keystone website.
                 </Type>
               </li>
               <li>
                 <Tick grad="grad2" />
                 <Type look="body18" color="var(--muted)">
-                  TODO
+                  Reference Keystone in your own publications.
                 </Type>
               </li>
               <li>
                 <Tick grad="grad2" />
                 <Type look="body18" color="var(--muted)">
-                  TODO
+                  Communicate that your product integrates with Keystone in some way.
                 </Type>
               </li>
             </ul>
@@ -129,7 +130,7 @@ export default function Brand() {
 
           <div>
             <Type as="h2" look="heading20bold">
-              Don't do this
+              Please don’t
             </Type>
             <ul
               css={{
@@ -154,28 +155,25 @@ export default function Brand() {
               <li>
                 <Nope grad="grad5" />
                 <Type look="body18" color="var(--muted)">
-                  TODO
+                  Use the Keystone monogram or logo for your own product or app’s icon.
                 </Type>
               </li>
               <li>
                 <Nope grad="grad5" />
                 <Type look="body18" color="var(--muted)">
-                  ksdfbsdl kgsdk fsdfk ldfklbh fdskjbfgdskjb fdskj blfdskjln dadknsbfdsfnbdsfb
-                  dfskjl fdskjl dsfakjl sdb df bdfsmndfs ndsfm, dsafnsdaj nsda jdfsj bdsjk f dfskl
-                  hdfsbjk fnf n fdmn,dsdsfn
+                  Modify the logo in any way (such as altering the dimensions, colours, or adding
+                  other text or graphics).
                 </Type>
               </li>
               <li>
                 <Nope grad="grad5" />
                 <Type look="body18" color="var(--muted)">
-                  TODO
+                  Integrate the Keystone logo or monogram with a logo of your own.
                 </Type>
               </li>
             </ul>
           </div>
         </div>
-
-        <EndCta grad="grad1" />
       </MWrapper>
     </Page>
   );
