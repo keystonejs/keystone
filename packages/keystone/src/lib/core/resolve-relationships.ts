@@ -65,7 +65,11 @@ function sortRelationships(left: Rel, right: Rel): readonly [Rel, RelWithoutFore
     }
     return rels;
   }
-  if (left.field.mode === 'many' && right.field.mode === 'many') {
+  if (
+    left.field.mode === 'many' &&
+    right.field.mode === 'many' &&
+    (left.field.relationName !== undefined || right.field.relationName !== undefined)
+  ) {
     if (left.field.relationName !== undefined && right.field.relationName !== undefined) {
       throw new Error(
         `You can only set db.relationName on one side of a many to many relationship, but db.relationName is set on both ${left.listKey}.${left.fieldPath} and ${right.listKey}.${right.fieldPath}`

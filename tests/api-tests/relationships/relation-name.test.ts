@@ -29,19 +29,18 @@ datasource ${dbProvider} {
 }
 
 generator client {
-  provider   = "prisma-client-js"
-  output     = "node_modules/.prisma/client"
-  engineType = "binary"
+  provider = "prisma-client-js"
+  output   = "node_modules/.prisma/client"
 }
 
 model A {
   id String @id @default(cuid())
-  b  B[]    @relation("B_a")
+  b  B[]    @relation("A_b")
 }
 
 model B {
   id String @id @default(cuid())
-  a  A[]    @relation("B_a")
+  a  A[]    @relation("A_b")
 }`);
 });
 
@@ -72,19 +71,18 @@ datasource ${dbProvider} {
 }
 
 generator client {
-  provider   = "prisma-client-js"
-  output     = "node_modules/.prisma/client"
-  engineType = "binary"
+  provider = "prisma-client-js"
+  output   = "node_modules/.prisma/client"
 }
 
 model A {
   id String @id @default(cuid())
-  b  B[]    @relation("B_a")
+  b  B[]    @relation("A_b")
 }
 
 model B {
   id String @id @default(cuid())
-  a  A[]    @relation("B_a")
+  a  A[]    @relation("A_b")
 }`);
 });
 
@@ -115,9 +113,8 @@ datasource ${dbProvider} {
 }
 
 generator client {
-  provider   = "prisma-client-js"
-  output     = "node_modules/.prisma/client"
-  engineType = "binary"
+  provider = "prisma-client-js"
+  output   = "node_modules/.prisma/client"
 }
 
 model A {
