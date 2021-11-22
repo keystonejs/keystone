@@ -58,7 +58,6 @@
     "@types/bcryptjs": "^2.4.2",
     "@types/cookie": "^0.4.1",
     "@types/express": "^4.17.13",
-    "@types/form-data": "2.5.0",
     "@types/fs-extra": "^9.0.13",
     "@types/graphql-upload": "^8.0.7",
     "@types/inflection": "^1.13.0",
