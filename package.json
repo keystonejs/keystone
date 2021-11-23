@@ -51,7 +51,7 @@
     "@jest/test-sequencer": "^27.3.1",
     "@manypkg/cli": "^0.19.1",
     "@preconstruct/cli": "2.1.5",
-    "@preconstruct/eslint-plugin-format-js-tag": "^0.1.0",
+    "@preconstruct/eslint-plugin-format-js-tag": "^0.2.0",
     "@testing-library/jest-dom": "^5.15.0",
     "@types/babel__core": "^7.1.16",
     "@types/jest": "^27.0.2",
