@@ -218,6 +218,19 @@ export default function WhatsNew() {
           use the playground to test it and iterate. This is on top of to the current support for
           live reloading changes to custom views in the Admin UI.
         </Box>
+        <Timeline date="13th October 2021" />
+        <Box heading="New deployment example: Microsoft Azure">
+          <a
+            href="https://github.com/aaronpowell/keystone-6-azure-example"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            This example
+          </a>{' '}
+          shows you how to deploy Keystone to Azure PaaS using AppService, Storage and Postgres.
+          Thanks to community member Aaron Powell for the awesome contribution{' '}
+          <Emoji symbol="🙌" alt="Raised hands" />
+        </Box>
         <Timeline date="5th October 2021" />
         <Box heading="New example: REST API endpoint">
           <a
