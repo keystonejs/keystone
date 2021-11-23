@@ -4,7 +4,11 @@ import { Stack } from '../../components/primitives/Stack';
 
 # Release: 23rd November 2021
 
-Our **Release Candidate** for **General Availability** is here! This is our RC for **Keystone 6** with numerous tweaks and fixes across the project. <Emoji symbol="⭐️" alt="Gold star"/>
+Our **Release Candidate** for **General Availability** is finally here! This is our RC for **Keystone 6** with numerous tweaks and fixes across the project. <Emoji symbol="⭐️" alt="Gold star"/>
+
+Next week we're planning to move **Keystone 6** to General Availability with this release, graduating to the `@keystone-6` namespace on npm.
+
+We encourage all Keystone developers to upgrade to this release.
 
 ```json
 "keystone-next/keystone": "xx.x.x",
@@ -113,7 +117,7 @@ Tag: list({
 
 When updating to this change, and running `yarn dev`, Keystone will prompt you to update your schema.
 
-x> <Emoji symbol="⚠️" alt="Danger" /> **DO NOT APPLY THE AUTOMATICALLY GENERATED MIGRATION**<br/> You will lose your data. Only apply the migration if you want to `DROP` your data!
+x> <Emoji symbol="⚠️" alt="Danger" /> **Warning: DO NOT APPLY THE AUTOMATICALLY GENERATED MIGRATION!**<br/> You will lose your data. Only apply the migration if you want to `DROP` your data.
 
 If using `useMigrations: true`, Keystone will follow the typical migration flow offer to apply an automatically generated migration.
 
