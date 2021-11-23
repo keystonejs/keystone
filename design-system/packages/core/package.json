@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/core",
-  "version": "3.2.1",
+  "version": "4.0.0",
   "license": "MIT",
   "main": "dist/keystone-ui-core.cjs.js",
   "module": "dist/keystone-ui-core.esm.js",
