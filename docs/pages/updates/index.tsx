@@ -173,7 +173,53 @@ export default function WhatsNew() {
           gap: 0,
         })}
       >
-        <Timeline date="5th October 2021" isLatest />
+        <Timeline date="23rd November 2021" isLatest />
+        <Box heading="Keystone Brand Portal">
+          We now have a <a href="/branding">brand portal</a> full of logos, monograms and assets.
+          Perfect for your blog posts, plugins and more.
+        </Box>
+        <Timeline date="15th November 2021" />
+        <Box heading="New example: Nexus">
+          <a
+            href="https://github.com/keystonejs/keystone/tree/main/examples/extend-graphql-schema-nexus"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            This example
+          </a>{' '}
+          uses{' '}
+          <a href="https://nexusjs.org/" target="_blank" rel="noopener noreferrer">
+            Nexus
+          </a>{' '}
+          — a declarative, code-first and strongly typed GraphQL schema construction for TypeScript
+          & JavaScript —to extend the GraphQL API provided by Keystone with custom queries and
+          mutations.
+        </Box>
+        <Timeline date="15th November 2021" />
+        <Box heading="Expanded Unique Filters" link="releases/2021-11-15#expanded-unique-filters">
+          <InlineCode>select</InlineCode>, <InlineCode>timestamp</InlineCode>,{' '}
+          <InlineCode>float</InlineCode> and <InlineCode>decimal</InlineCode> fields with{' '}
+          <InlineCode>isIndexed: 'unique'</InlineCode> now have unique filters via
+          <InlineCode>ListWhereUniqueInput</InlineCode>.
+        </Box>
+        <Timeline date="15th November 2021" />
+        <Box
+          heading="Customisable Table & Column Names"
+          link="/releases/2021-11-15#customisable-table-and-column-names"
+        >
+          You can now use different table and column names for your list and field keys. Powered by
+          Prisma's <InlineCode>@map</InlineCode> and <InlineCode>@@map</InlineCode> attributes: this
+          is useful if you don’t want to modify your existing database (such as a read-only
+          database) and use it with Keystone.
+        </Box>
+        <Timeline date="2nd November 2021" />
+        <Box heading="Server-side reloading" link="/releases/2021-11-02#server-side-live-reloading">
+          With <InlineCode>keystone-next dev</InlineCode> you can now update your GraphQL schema,
+          change hooks and access control, log errors to see how your data returns, then immediately
+          use the playground to test it and iterate. This is on top of to the current support for
+          live reloading changes to custom views in the Admin UI.
+        </Box>
+        <Timeline date="5th October 2021" />
         <Box heading="New example: REST API endpoint">
           <a
             href="https://github.com/keystonejs/keystone/tree/main/examples/rest-api"
