@@ -83,7 +83,7 @@ model Tag {
 
 By adding `db: { relationName: 'Post_tags_Tag_posts' }` to one side of the many-to-many relationship; you can preclude yourself from a migration.
 
-**Note:** It doesn't matter which side of the relationship you put this property, but it should be only on one side; otherwise you will receive an error.
+?> It doesn't matter which side of the relationship you put this property, but it should be only on one side; otherwise you will receive an error.
 
 ```ts
 Post: list({
