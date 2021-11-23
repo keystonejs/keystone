@@ -25,7 +25,7 @@ The names of **one-sided** and **two-sided**, **many-many** relationships has be
 
 This reduces the probability that you will exceed [PostgreSQL's 63 character limit for identifiers](https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS) with typical usage.
 
-There are two different methods of upgrading to this new version without losing your data
+There are two different ways you can update your schema:
 
 - Explicitly set the `db.relationName` on many-to-many relations, allowing your database to remain unchanged.
 
