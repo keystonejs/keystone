@@ -13,6 +13,9 @@ import { Nope } from '../components/icons/Nope';
 import { Tick } from '../components/icons/Tick';
 import { useMediaQuery } from '../lib/media';
 import { Page } from '../components/Page';
+import { Alert } from '../components/primitives/Alert';
+import { Button } from '../components/primitives/Button';
+import { ArrowR } from '../components/icons/ArrowR';
 
 export default function Brand() {
   const mq = useMediaQuery();
@@ -174,6 +177,26 @@ export default function Brand() {
             </ul>
           </div>
         </div>
+        <Alert css={{ margin: '2rem 0' }}>
+          <span
+            css={{
+              display: 'inline-block',
+              margin: '0 1rem 0.5rem 0',
+            }}
+          >
+            Got a question about branding this page doesn't answer? Get help in our
+          </span>
+          <Button
+            as="a"
+            look="secondary"
+            size="small"
+            href="https://community.keystonejs.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Community Slack <ArrowR />
+          </Button>
+        </Alert>
       </MWrapper>
     </Page>
   );
