@@ -27,7 +27,7 @@ This reduces the probability that you will exceed [PostgreSQL's 63 character lim
 
 There are two different methods of upgrading to this new version without losing your data
 
-- Set `db.relationName` on many to many relations, this allows your database to remain unchanged.
+- Explicitly set the `db.relationName` on many-to-many relations, allowing your database to remain unchanged.
 
 - Rename your many relation tables using a migration, updating your DB.
 
