@@ -44,7 +44,7 @@ export default function Brand() {
           }}
         >
           <a
-            href="https://keystonejs.s3.amazonaws.com/framework-assets/211108-KeystoneJS-logos.zip"
+            href="https://keystonejs.s3.amazonaws.com/framework-assets/211123-KeystoneJS-logos.zip"
             target="_blank"
             rel="noopener noreferrer"
             download
