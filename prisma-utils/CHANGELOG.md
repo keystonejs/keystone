@@ -1,5 +1,11 @@
 # @keystone-next/prisma-utils
 
+## 2.0.0
+
+### Major Changes
+
+- [#6957](https://github.com/keystonejs/keystone/pull/6957) [`de8cf44e7`](https://github.com/keystonejs/keystone/commit/de8cf44e7b328ab98e1466d7191d9ee65a57b02a) Thanks [@bladey](https://github.com/bladey)! - Update Node engines to support current Node LTS versions, currently versions 14 and 16.
+
 ## 1.0.3
 
 ### Patch Changes

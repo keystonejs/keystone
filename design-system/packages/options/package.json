@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/options",
-  "version": "4.0.4",
+  "version": "5.0.0",
   "license": "MIT",
   "main": "dist/keystone-ui-options.cjs.js",
   "module": "dist/keystone-ui-options.esm.js",
@@ -12,9 +12,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
-    "@keystone-ui/core": "^3.2.1",
-    "@keystone-ui/fields": "^5.0.1",
-    "@keystone-ui/icons": "^4.0.2",
+    "@keystone-ui/core": "^4.0.0",
+    "@keystone-ui/fields": "^6.0.0",
+    "@keystone-ui/icons": "^5.0.0",
     "react-select": "^5.2.1"
   },
   "engines": {

@@ -1,7 +1,7 @@
 {
   "name": "@keystone-next/document-renderer",
   "description": "KeystoneJS Document Renderer",
-  "version": "4.0.1",
+  "version": "5.0.0",
   "main": "dist/keystone-next-document-renderer.cjs.js",
   "module": "dist/keystone-next-document-renderer.esm.js",
   "peerDependencies": {
