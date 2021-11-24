@@ -14,30 +14,14 @@ import { InitialisedList } from '../types-for-lists';
 import { getDBFieldKeyForFieldOnMultiField, runWithPrisma } from '../utils';
 import { checkFilterOrderAccess } from '../filter-order-access';
 
-// doing this is a result of an optimisation to skip doing a findUnique and then a findFirst(where the second one is done with access control)
-// we want to do this explicit mapping because:
-// - we are passing the values into a normal where filter and we want to ensure that fields cannot do non-unique filters(we don't do validation on non-unique wheres because prisma will validate all that)
-// - for multi-field unique indexes, we need to a mapping because iirc findFirst/findMany won't understand the syntax for filtering by multi-field unique indexes(which makes sense and is correct imo)
-export function mapUniqueWhereToWhere(
-  list: InitialisedList,
-  uniqueWhere: UniquePrismaFilter
-): PrismaFilter {
+// we want to put the value we get back from the field's unique where resolver into an equals
+// rather than directly passing the value as the filter (even though Prisma supports that), we use equals
+// because we want to disallow fields from providing an arbitrary filter
+export function mapUniqueWhereToWhere(uniqueWhere: UniquePrismaFilter): PrismaFilter {
   // inputResolvers.uniqueWhere validates that there is only one key
   const key = Object.keys(uniqueWhere)[0];
-  const dbField = list.fields[key].dbField;
-  if (dbField.kind !== 'scalar' || (dbField.scalar !== 'String' && dbField.scalar !== 'Int')) {
-    throw new Error(
-      'Currently only String and Int scalar db fields can provide a uniqueWhere input'
-    );
-  }
   const val = uniqueWhere[key];
-  if (dbField.scalar === 'Int' && typeof val !== 'number') {
-    throw new Error('uniqueWhere inputs must return an integer for Int db fields');
-  }
-  if (dbField.scalar === 'String' && typeof val !== 'string') {
-    throw new Error('uniqueWhere inputs must return an string for String db fields');
-  }
-  return { [key]: val };
+  return { [key]: { equals: val } };
 }
 
 function traverseQuery(
@@ -110,7 +94,7 @@ export async function findOne(
 
   // Validate and resolve the input filter
   const uniqueWhere = await resolveUniqueWhereInput(args.where, list.fields, context);
-  const resolvedWhere = mapUniqueWhereToWhere(list, uniqueWhere);
+  const resolvedWhere = mapUniqueWhereToWhere(uniqueWhere);
 
   // Check filter access
   const fieldKey = Object.keys(args.where)[0];

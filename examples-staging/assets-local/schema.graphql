@@ -9,6 +9,7 @@ type Post {
   publishDate: DateTime
   author: Author
   hero: ImageFieldOutput
+  attachment: FileFieldOutput
 }
 
 enum PostStatusType {
@@ -36,6 +37,13 @@ enum ImageExtension {
   gif
 }
 
+interface FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  url: String!
+}
+
 input PostWhereUniqueInput {
   id: ID
 }
@@ -56,6 +64,20 @@ type CloudImageFieldOutput implements ImageFieldOutput {
   width: Int!
   height: Int!
   extension: ImageExtension!
+  ref: String!
+  url: String!
+}
+
+type LocalFileFieldOutput implements FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  url: String!
+}
+
+type CloudFileFieldOutput implements FileFieldOutput {
+  filename: String!
+  filesize: Int!
   ref: String!
   url: String!
 }
@@ -149,6 +171,7 @@ input PostUpdateInput {
   publishDate: DateTime
   author: AuthorRelateToOneForUpdateInput
   hero: ImageFieldInput
+  attachment: FileFieldInput
 }
 
 input AuthorRelateToOneForUpdateInput {
@@ -167,6 +190,11 @@ The `Upload` scalar type represents a file upload.
 """
 scalar Upload
 
+input FileFieldInput {
+  upload: Upload
+  ref: String
+}
+
 input PostUpdateArgs {
   where: PostWhereUniqueInput!
   data: PostUpdateInput!
@@ -179,6 +207,7 @@ input PostCreateInput {
   publishDate: DateTime
   author: AuthorRelateToOneForCreateInput
   hero: ImageFieldInput
+  attachment: FileFieldInput
 }
 
 input AuthorRelateToOneForCreateInput {

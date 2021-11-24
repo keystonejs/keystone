@@ -3,12 +3,12 @@ import prompts from 'prompts';
 // prompts is badly typed so we have some more specific typed APIs
 // prompts also returns an undefined value on SIGINT which we really just want to exit on
 
-async function confirmPromptImpl(message: string): Promise<boolean> {
+async function confirmPromptImpl(message: string, initial: boolean = true): Promise<boolean> {
   const { value } = await prompts({
     name: 'value',
     type: 'confirm',
     message,
-    initial: true,
+    initial,
   });
   if (value === undefined) {
     process.exit(1);

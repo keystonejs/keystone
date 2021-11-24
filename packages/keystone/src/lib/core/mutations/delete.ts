@@ -1,10 +1,9 @@
-import pLimit, { Limit } from 'p-limit';
-import { DatabaseProvider, KeystoneContext } from '../../../types';
+import { KeystoneContext } from '../../../types';
 import { getOperationAccess, getAccessFilters } from '../access-control';
 import { checkFilterOrderAccess } from '../filter-order-access';
 import { accessDeniedError } from '../graphql-errors';
 import { InitialisedList } from '../types-for-lists';
-import { runWithPrisma } from '../utils';
+import { getWriteLimit, runWithPrisma } from '../utils';
 import { InputFilter, resolveUniqueWhereInput, UniqueInputFilter } from '../where-inputs';
 import { getAccessControlledItemForDelete } from './access-control';
 import { runSideEffectOnlyHook } from './hooks';
@@ -15,8 +14,7 @@ async function deleteSingle(
   list: InitialisedList,
   context: KeystoneContext,
   accessFilters: boolean | InputFilter,
-  operationAccess: boolean,
-  writeLimit: Limit
+  operationAccess: boolean
 ) {
   // Operation level access control
   if (!operationAccess) {
@@ -50,6 +48,8 @@ async function deleteSingle(
   // Before operation
   await runSideEffectOnlyHook(list, 'beforeOperation', hookArgs);
 
+  const writeLimit = getWriteLimit(context);
+
   const newItem = await writeLimit(() =>
     runWithPrisma(context, list, model => model.delete({ where: { id: item.id } }))
   );
@@ -66,11 +66,8 @@ async function deleteSingle(
 export async function deleteMany(
   uniqueInputs: UniqueInputFilter[],
   list: InitialisedList,
-  context: KeystoneContext,
-  provider: DatabaseProvider
+  context: KeystoneContext
 ) {
-  const writeLimit = pLimit(provider === 'sqlite' ? 1 : Infinity);
-
   // Check operation permission to pass into single operation
   const operationAccess = await getOperationAccess(list, context, 'delete');
 
@@ -78,7 +75,7 @@ export async function deleteMany(
   const accessFilters = await getAccessFilters(list, context, 'delete');
 
   return uniqueInputs.map(async uniqueInput =>
-    deleteSingle(uniqueInput, list, context, accessFilters, operationAccess, writeLimit)
+    deleteSingle(uniqueInput, list, context, accessFilters, operationAccess)
   );
 }
 
@@ -93,5 +90,5 @@ export async function deleteOne(
   // Check filter permission to pass into single operation
   const accessFilters = await getAccessFilters(list, context, 'delete');
 
-  return deleteSingle(uniqueInput, list, context, accessFilters, operationAccess, pLimit(1));
+  return deleteSingle(uniqueInput, list, context, accessFilters, operationAccess);
 }

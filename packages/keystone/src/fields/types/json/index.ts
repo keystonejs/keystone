@@ -11,6 +11,7 @@ import { resolveView } from '../../resolve-view';
 export type JsonFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
     defaultValue?: JSONValue;
+    db?: { map?: string };
   };
 
 export const json =
@@ -51,6 +52,7 @@ export const json =
                 kind: 'literal',
                 value: JSON.stringify(defaultValue),
               },
+        map: config.db?.map,
       }
     );
   };

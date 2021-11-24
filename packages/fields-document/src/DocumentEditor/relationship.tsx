@@ -39,7 +39,7 @@ export function useDocumentFieldRelationships() {
 
 export const DocumentFieldRelationshipsProvider = DocumentFieldRelationshipsContext.Provider;
 
-export function withRelationship<T extends Editor>(editor: T): T {
+export function withRelationship(editor: Editor): Editor {
   const { isVoid, isInline } = editor;
   editor.isVoid = element => {
     return element.type === 'relationship' || isVoid(element);
@@ -127,11 +127,12 @@ export function RelationshipElement({
                   ? null
                   : { id: element.data.id, label: element.data.label || element.data.id },
               onChange(value) {
-                Transforms.setNodes(
-                  editor,
-                  { data: value },
-                  { at: ReactEditor.findPath(editor, element) }
-                );
+                const at = ReactEditor.findPath(editor, element);
+                if (value === null) {
+                  Transforms.removeNodes(editor, { at });
+                } else {
+                  Transforms.setNodes(editor, { data: value }, { at });
+                }
               },
             }}
           />

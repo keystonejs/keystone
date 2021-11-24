@@ -8,7 +8,6 @@ import {
   ListInfo,
   ListHooks,
   KeystoneConfig,
-  DatabaseProvider,
   FindManyArgs,
   CacheHintArgs,
   MaybePromise,
@@ -56,6 +55,7 @@ export type InitialisedList = {
   maxResults: number;
   listKey: string;
   lists: Record<string, InitialisedList>;
+  dbMap: string | undefined;
   graphql: {
     isEnabled: {
       type: boolean;
@@ -68,10 +68,9 @@ export type InitialisedList = {
   };
 };
 
-export function initialiseLists(
-  listsConfig: KeystoneConfig['lists'],
-  provider: DatabaseProvider
-): Record<string, InitialisedList> {
+export function initialiseLists(config: KeystoneConfig): Record<string, InitialisedList> {
+  const listsConfig = config.lists;
+  const { provider } = config.db;
   const listInfos: Record<string, ListInfo> = {};
   const isEnabled: Record<
     string,
@@ -408,6 +407,7 @@ export function initialiseLists(
         ...getNamesFromList(listKey, list),
         hooks: list.hooks,
         access: list.access,
+        dbMap: list.db?.map,
       },
     ])
   );

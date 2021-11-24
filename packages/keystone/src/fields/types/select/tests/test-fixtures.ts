@@ -10,6 +10,7 @@ export const exampleValue2 = (matrixValue: MatrixValue) =>
   matrixValue === 'enum' ? 'atlassian' : matrixValue === 'string' ? '1number' : 2;
 export const supportsNullInput = true;
 export const supportsUnique = true;
+export const supportsDbMap = true;
 export const fieldConfig = (matrixValue: MatrixValue) => {
   if (matrixValue === 'enum' || matrixValue === 'string') {
     return {
@@ -26,6 +27,7 @@ export const fieldConfig = (matrixValue: MatrixValue) => {
           : matrixValue === 'string'
           ? [
               { label: 'A string', value: 'a string' },
+              { label: 'Another string', value: 'another string' },
               { label: '1number', value: '1number' },
               { label: '@¯\\_(ツ)_/¯', value: '@¯\\_(ツ)_/¯' },
               { label: 'something else', value: 'something else' },
@@ -46,7 +48,13 @@ export const fieldConfig = (matrixValue: MatrixValue) => {
 };
 export const fieldName = 'company';
 
-export const supportedFilters = () => ['null_equality', 'equality', 'in_empty_null', 'in_equal'];
+export const supportedFilters = () => [
+  'null_equality',
+  'equality',
+  'in_empty_null',
+  'in_equal',
+  'unique_equality',
+];
 
 export const testMatrix = ['enum', 'string', 'integer'] as const;
 
@@ -69,7 +77,7 @@ export const initItems = (matrixValue: MatrixValue) => {
     return [
       { name: 'a', company: 'a string' },
       { name: 'b', company: '@¯\\_(ツ)_/¯' },
-      { name: 'c', company: 'a string' },
+      { name: 'c', company: 'another string' },
       { name: 'd', company: '1number' },
       { name: 'e', company: 'something else' },
       { name: 'f', company: null },
@@ -104,7 +112,7 @@ export const storedValues = (matrixValue: MatrixValue) => {
     return [
       { name: 'a', company: 'a string' },
       { name: 'b', company: '@¯\\_(ツ)_/¯' },
-      { name: 'c', company: 'a string' },
+      { name: 'c', company: 'another string' },
       { name: 'd', company: '1number' },
       { name: 'e', company: 'something else' },
       { name: 'f', company: null },

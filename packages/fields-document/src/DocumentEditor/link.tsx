@@ -12,7 +12,6 @@ import { LinkIcon } from '@keystone-ui/icons/icons/LinkIcon';
 import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
 import { ExternalLinkIcon } from '@keystone-ui/icons/icons/ExternalLinkIcon';
 
-import { HistoryEditor } from 'slate-history';
 import { DocumentFeatures } from '../views';
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
 import {
@@ -214,11 +213,11 @@ export const linkButton = (
 
 const markdownLinkPattern = /(^|\s)\[(.+?)\]\((\S+)\)$/;
 
-export function withLink<T extends HistoryEditor>(
+export function withLink(
   editorDocumentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>,
-  editor: T
-): T {
+  editor: Editor
+): Editor {
   const { insertText, isInline, normalizeNode } = editor;
 
   editor.isInline = element => {
@@ -252,7 +251,7 @@ export function withLink<T extends HistoryEditor>(
       const [, maybeWhitespace, linkText, href] = match;
       // by doing this, the insertText(')') above will happen in a different undo than the link replacement
       // so that means that when someone does an undo after this
-      // it will undo the the state of "[content](link)" rather than "[content](link" (note the missing closing bracket)
+      // it will undo to the state of "[content](link)" rather than "[content](link" (note the missing closing bracket)
       editor.history.undos.push([]);
       const startOfShortcut =
         match.index === 0
@@ -281,8 +280,12 @@ export function withLink<T extends HistoryEditor>(
       Transforms.wrapNodes(
         editor,
         { type: 'link', href, children: [] },
-        { at: { anchor: editor.selection.anchor, focus: startOfShortcut } }
+        { at: { anchor: editor.selection.anchor, focus: startOfShortcut }, split: true }
       );
+      const nextNode = Editor.next(editor);
+      if (nextNode) {
+        Transforms.select(editor, nextNode[1]);
+      }
     };
   }
 

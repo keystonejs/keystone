@@ -10,4 +10,7 @@ export default config({
   images: {
     upload: 'local',
   },
+  files: {
+    upload: 'local',
+  },
 });

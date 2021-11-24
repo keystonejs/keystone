@@ -11,6 +11,7 @@ export const exampleValue2 = () => ({
 export const supportsNullInput = true;
 export const supportsUnique = false;
 export const skipRequiredTest = true;
+export const supportsDbMap = true;
 export const fieldName = 'testField';
 
 export const getTestFields = () => ({ testField: json() });

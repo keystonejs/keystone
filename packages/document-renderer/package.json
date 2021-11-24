@@ -1,7 +1,7 @@
 {
   "name": "@keystone-next/document-renderer",
   "description": "KeystoneJS Document Renderer",
-  "version": "4.0.1",
+  "version": "5.0.0",
   "main": "dist/keystone-next-document-renderer.cjs.js",
   "module": "dist/keystone-next-document-renderer.esm.js",
   "peerDependencies": {
@@ -11,7 +11,7 @@
     "react": "^17.0.2"
   },
   "engines": {
-    "node": "^12.20 || >= 14.13"
+    "node": "^14.15 || ^16.13"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/packages/document-renderer"
 }

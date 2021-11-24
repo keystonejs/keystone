@@ -17,7 +17,9 @@ export const start = async (cwd: string) => {
     console.log('🚨 keystone-next build must be run before running keystone-next start');
     throw new ExitError(1);
   }
-  const config = initConfig(require(apiFile).config);
+  // webpack will make modules that import Node ESM externals(which must be loaded with dynamic import)
+  // export a promise that resolves to the actual export so yeah, we need to await a require call
+  const config = initConfig((await require(apiFile)).config);
   const { getKeystone, graphQLSchema } = createSystem(config);
 
   const prismaClient = requirePrismaClient(cwd);

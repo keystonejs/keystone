@@ -2,21 +2,21 @@
   "name": "@keystonejs/examples-smoke-tests",
   "description": "A set of tests for smoke testing our examples",
   "private": true,
-  "version": "2.0.2",
+  "version": "3.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
-    "node": "^12.20 || >= 14.13"
+    "node": "^14.15 || ^16.13"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/tests/examples-smoke-tests",
   "homepage": "https://github.com/keystonejs/keystone",
   "dependencies": {
     "@types/async-retry": "^1.4.3",
     "@types/tough-cookie": "^4.0.1",
-    "async-retry": "1.3.3",
+    "async-retry": "^1.3.3",
     "execa": "^5.1.1",
-    "node-fetch": "^2.6.5",
-    "playwright": "^1.16.1",
+    "node-fetch": "^2.6.6",
+    "playwright": "^1.16.3",
     "tree-kill": "^1.2.2"
   }
 }

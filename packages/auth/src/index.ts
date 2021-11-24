@@ -26,7 +26,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   identityField,
   magicAuthLink,
   passwordResetLink,
-  sessionData,
+  sessionData = 'id',
 }: AuthConfig<GeneratedListTypes>) {
   const gqlNames: AuthGqlNames = {
     // Core
@@ -163,6 +163,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     initFirstItem,
     passwordResetLink,
     magicAuthLink,
+    sessionData,
   });
 
   /**
@@ -235,7 +236,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
         try {
           const data = await sudoContext.query[listKey].findOne({
             where: { id: session.itemId },
-            query: sessionData || 'id',
+            query: sessionData,
           });
           if (!data) return;
 

@@ -3,12 +3,17 @@ import { integer } from '../../index';
 
 export const name = 'Integer with autoincrement default';
 export const typeFunction = (config: any) =>
-  integer({ ...config, db: { isNullable: false }, defaultValue: { kind: 'autoincrement' } });
+  integer({
+    ...config,
+    db: { ...config?.db, isNullable: false },
+    defaultValue: { kind: 'autoincrement' },
+  });
 export const exampleValue = () => 35;
 export const exampleValue2 = () => 36;
 export const supportsUnique = true;
 export const fieldName = 'orderNumber';
 export const supportsGraphQLIsNonNull = true;
+export const supportsDbMap = true;
 export const skipRequiredTest = true;
 export const skipCreateTest = false;
 export const skipUpdateTest = true;

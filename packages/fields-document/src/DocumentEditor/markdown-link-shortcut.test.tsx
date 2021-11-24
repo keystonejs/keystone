@@ -29,11 +29,10 @@ test('basic link shortcut', () => {
         >
           <text>
             content
-            <cursor />
           </text>
         </link>
         <text>
-          
+          <cursor />
         </text>
       </paragraph>
     </editor>
@@ -56,19 +55,18 @@ test('link shortcut with content before it and whitespace directly before it wor
     <editor>
       <paragraph>
         <text>
-          
+          asdasd asd
         </text>
         <link
           @@isInline={true}
           href="https://keystonejs.com"
         >
           <text>
-            asdasd asdcontent
-            <cursor />
+            content
           </text>
         </link>
         <text>
-          
+          <cursor />
         </text>
       </paragraph>
     </editor>
@@ -123,11 +121,10 @@ test('shortcut with whitespace in the middle of the content works', () => {
         >
           <text>
             content more stuff
-            <cursor />
           </text>
         </link>
         <text>
-          
+          <cursor />
         </text>
       </paragraph>
     </editor>
@@ -204,11 +201,10 @@ test('link shortcut with bold in some of the content works', () => {
           </text>
           <text>
             ent
-            <cursor />
           </text>
         </link>
         <text>
-          
+          <cursor />
         </text>
       </paragraph>
     </editor>
@@ -351,11 +347,10 @@ test('link shortcut works when inside of a component block with links option inh
           >
             <text>
               content
-              <cursor />
             </text>
           </link>
           <text>
-            
+            <cursor />
           </text>
         </component-inline-prop>
       </component-block>
@@ -392,11 +387,10 @@ test('an undo only reverts to the whole shortcut text', () => {
         >
           <text>
             content
-            <cursor />
           </text>
         </link>
         <text>
-          
+          <cursor />
         </text>
       </paragraph>
     </editor>
@@ -408,6 +402,42 @@ test('an undo only reverts to the whole shortcut text', () => {
         <text>
           [content](https://keystonejs.com)
           <cursor />
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});
+
+test("text after the markdown shortcut isn't included in the link text", () => {
+  let editor = makeEditor(
+    <editor>
+      <paragraph>
+        <text>
+          [content](https://keystonejs.com
+          <cursor /> blah blah
+        </text>
+      </paragraph>
+    </editor>
+  );
+  editor.insertText(')');
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <paragraph>
+        <text>
+          
+        </text>
+        <link
+          @@isInline={true}
+          href="https://keystonejs.com"
+        >
+          <text>
+            content
+          </text>
+        </link>
+        <text>
+          <anchor />
+           blah blah
+          <focus />
         </text>
       </paragraph>
     </editor>
