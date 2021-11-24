@@ -248,9 +248,20 @@ export function Header() {
         >
           <SearchField />
         </div>
-
-        <LinkItem href="/why-keystone">Why Keystone</LinkItem>
-        <LinkItem href="/updates">Updates</LinkItem>
+        <span
+          css={mq({
+            display: ['none', null, 'inline-block'],
+          })}
+        >
+          <LinkItem href="/why-keystone">Why Keystone</LinkItem>
+        </span>
+        <span
+          css={mq({
+            display: ['none', null, 'inline-block'],
+          })}
+        >
+          <LinkItem href="/updates">Updates</LinkItem>
+        </span>
 
         {/* TODO: Add in search for mobile via this button */}
         {/*
@@ -275,7 +286,7 @@ export function Header() {
           shadow
           css={mq({
             '&&': {
-              display: ['none', null, null, 'inline-flex'],
+              display: ['none', null, 'inline-flex'],
             },
           })}
         >
