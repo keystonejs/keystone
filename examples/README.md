@@ -20,7 +20,9 @@ Each project below demonstrates a Keystone feature you can learn about and exper
 - [`withAuth()`](./with-auth): Adds password-based authentication to the Task Manager base.
 - [JSON field](./json): Adds a JSON field to the Task Manager base.
 - [`defaultValue`](./default-values): Adds default values to the Blog base.
-- [`extendGraphqlSchema`](./extend-graphql-schema): Extends the GraphQL API of the Task Manager base.
+- [`extendGraphqlSchema`](./extend-graphql-schema): Extends the GraphQL API of the Blog base.
+- [`extendGraphqlSchema` with graphql-ts](./extend-graphql-schema-graphql-ts): Extends the GraphQL API of the Blog base with [graphql-ts](https://github.com/Thinkmill/graphql-ts).
+- [`extendGraphqlSchema` with Nexus](./extend-graphql-schema-nexus): Extends the GraphQL API of the Blog base with [Nexus](https://nexusjs.org/).
 - [Virtual field](./virtual-field): Adds virtual fields to the Blog base.
 - [Document field](./document-field): Adds document fields to the Blog base.
 - [Testing](./testing): Adds tests with `@keystone-next/keystone/testing` to the `withAuth()` example.

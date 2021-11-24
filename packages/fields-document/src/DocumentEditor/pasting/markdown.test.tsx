@@ -83,7 +83,6 @@ there is a break before this
       >
         <text>
           Heading 1
-          <cursor />
         </text>
       </heading>
       <heading
@@ -272,6 +271,7 @@ there is a break before this
       <paragraph>
         <text>
           ![Image reference](http://keystonejs.com/image-reference)
+          <cursor />
         </text>
       </paragraph>
     </editor>

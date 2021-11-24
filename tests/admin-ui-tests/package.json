@@ -2,11 +2,11 @@
   "name": "@keystone-next/admin-ui-tests",
   "description": "A set of tests for the KeystoneJS Admin UI.",
   "private": true,
-  "version": "0.0.5",
+  "version": "1.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
-    "node": "^12.20 || >= 14.13"
+    "node": "^14.15 || ^16.13"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/tests/admin-ui-tests",
   "homepage": "https://github.com/keystonejs/keystone",
@@ -15,8 +15,8 @@
     "@keystone-next/keystone": "*",
     "execa": "^5.1.1",
     "express": "^4.17.1",
-    "graphql": "^15.6.1",
-    "playwright": "^1.16.1",
+    "graphql": "^15.7.2",
+    "playwright": "^1.16.3",
     "treekill": "^1.0.0"
   },
   "scripts": {
@@ -26,8 +26,9 @@
   },
   "dependencies": {
     "@manypkg/find-root": "^1.1.0",
+    "async-retry": "^1.3.3",
     "dotenv": "^10.0.0",
-    "node-fetch": "^2.6.5",
+    "node-fetch": "^2.6.6",
     "tree-kill": "^1.2.2"
   }
 }

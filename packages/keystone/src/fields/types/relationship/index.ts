@@ -48,6 +48,24 @@ type CountDisplayConfig = {
   };
 };
 
+type OneDbConfig = {
+  many?: false;
+  db?: {
+    foreignKey?:
+      | true
+      | {
+          map: string;
+        };
+  };
+};
+
+type ManyDbConfig = {
+  many: true;
+  db?: {
+    relationName?: string;
+  };
+};
+
 export type RelationshipFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
   CommonFieldConfig<TGeneratedListTypes> & {
     many?: boolean;
@@ -55,15 +73,16 @@ export type RelationshipFieldConfig<TGeneratedListTypes extends BaseGeneratedLis
     ui?: {
       hideCreate?: boolean;
     };
-  } & (SelectDisplayConfig | CardsDisplayConfig | CountDisplayConfig);
+  } & (OneDbConfig | ManyDbConfig) &
+    (SelectDisplayConfig | CardsDisplayConfig | CountDisplayConfig);
 
 export const relationship =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
-    many = false,
     ref,
     ...config
   }: RelationshipFieldConfig<TGeneratedListTypes>): FieldTypeFunc =>
   meta => {
+    const { many = false } = config;
     const [foreignListKey, foreignFieldKey] = ref.split('.');
     const commonConfig = {
       ...config,
@@ -134,12 +153,13 @@ export const relationship =
       );
     }
     const listTypes = meta.lists[foreignListKey].types;
-    if (many) {
+    if (config.many) {
       return fieldType({
         kind: 'relation',
         mode: 'many',
         list: foreignListKey,
         field: foreignFieldKey,
+        relationName: config.db?.relationName,
       })({
         ...commonConfig,
         input: {
@@ -189,6 +209,7 @@ export const relationship =
       mode: 'one',
       list: foreignListKey,
       field: foreignFieldKey,
+      foreignKey: config.db?.foreignKey,
     })({
       ...commonConfig,
       input: {

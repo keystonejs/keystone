@@ -15,6 +15,7 @@ export const updateReturnedValue = [
 export const neverNull = true;
 export const supportsUnique = false;
 export const skipRequiredTest = true;
+export const supportsDbMap = true;
 export const fieldName = 'content';
 export const subfieldName = 'document';
 

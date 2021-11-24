@@ -1,5 +1,4 @@
 import { Editor, Transforms, Range, Text, Point, Node, Path } from 'slate';
-import { HistoryEditor } from 'slate-history';
 import { DocumentFeatures } from '../views';
 import { ComponentBlock } from './component-blocks/api';
 import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state';
@@ -12,12 +11,7 @@ export const allMarkdownShortcuts = {
   code: ['`'],
 };
 
-function applyMark(
-  editor: HistoryEditor,
-  mark: string,
-  shortcutText: string,
-  startOfStartPoint: Point
-) {
+function applyMark(editor: Editor, mark: string, shortcutText: string, startOfStartPoint: Point) {
   // so that this starts a new undo group
   editor.history.undos.push([]);
   const startPointRef = Editor.pointRef(editor, startOfStartPoint);
@@ -43,11 +37,11 @@ function applyMark(
   editor.removeMark(mark);
 }
 
-export function withMarks<T extends HistoryEditor>(
+export function withMarks(
   editorDocumentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>,
-  editor: T
-): T {
+  editor: Editor
+): Editor {
   const { insertText, insertBreak } = editor;
 
   editor.insertBreak = () => {
@@ -92,10 +86,9 @@ export function withMarks<T extends HistoryEditor>(
       for (const [mark, shortcuts] of Object.entries(selectedMarkdownShortcuts)) {
         for (const shortcutText of shortcuts!) {
           if (text === shortcutText[shortcutText.length - 1]) {
-            const startOfBlock = Editor.start(
-              editor,
-              Editor.above(editor, { match: node => Editor.isBlock(editor, node) })![1]
-            );
+            // this function is not inlined because
+            // https://github.com/swc-project/swc/issues/2622
+            const startOfBlock = getStartOfBlock(editor);
 
             let startOfBlockToEndOfShortcutString = Editor.string(editor, {
               anchor: editor.selection.anchor,
@@ -192,4 +185,11 @@ export function withMarks<T extends HistoryEditor>(
   };
 
   return editor;
+}
+
+function getStartOfBlock(editor: Editor) {
+  return Editor.start(
+    editor,
+    Editor.above(editor, { match: node => Editor.isBlock(editor, node) })![1]
+  );
 }

@@ -1,12 +1,12 @@
 /** @jest-environment jsdom */
 import React, { useState } from 'react';
 import { createEditor, Editor } from 'slate';
-import { Editable, ReactEditor, Slate, withReact } from 'slate-react';
+import { Editable, Slate, withReact } from 'slate-react';
 import { render } from '@testing-library/react';
 import { makeEditor } from '../tests/utils';
 import { MyDataTransfer } from './data-transfer';
 
-function OtherEditor({ editor }: { editor: ReactEditor }) {
+function OtherEditor({ editor }: { editor: Editor }) {
   // note that the entire point here is to have a different document structure to Keystone's
   const [val, setVal] = useState(
     () =>
@@ -75,13 +75,18 @@ test('pasting from another slate editor works', () => {
   const editor = makeEditor(newIntermediateEditor);
   editor.insertData(data);
   expect(editor).toMatchInlineSnapshot(`
-    <editor>
+    <editor
+      marks={
+        Object {
+          "bold": true,
+        }
+      }
+    >
       <heading
         level={1}
       >
         <text>
           some heading
-          <cursor />
         </text>
       </heading>
       <paragraph>
@@ -89,6 +94,7 @@ test('pasting from another slate editor works', () => {
           bold={true}
         >
           some heading
+          <cursor />
         </text>
       </paragraph>
     </editor>

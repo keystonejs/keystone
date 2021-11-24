@@ -2,11 +2,11 @@
   "name": "@keystone-next/api-tests-legacy",
   "description": "A set of tests for running against the KeystoneJS API.",
   "private": true,
-  "version": "11.1.4",
+  "version": "12.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
-    "node": "^12.20 || >= 14.13"
+    "node": "^14.15 || ^16.13"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/tests/api-tests",
   "homepage": "https://github.com/keystonejs/keystone",
@@ -15,11 +15,11 @@
     "@keystone-next/auth": "*",
     "@keystone-next/fields-document": "*",
     "@keystone-next/keystone": "*",
-    "apollo-server-types": "^3.3.0",
+    "apollo-server-types": "^3.4.0",
     "cookie-signature": "^1.1.0",
     "cuid": "^2.1.8",
     "globby": "^11.0.4",
-    "graphql": "^15.6.1",
+    "graphql": "^15.7.2",
     "memoize-one": "^6.0.0",
     "superagent": "^6.1.0",
     "supertest": "^6.1.6",

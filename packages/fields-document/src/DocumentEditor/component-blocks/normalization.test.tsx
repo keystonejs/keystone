@@ -270,9 +270,7 @@ test('extra component props are removed', () => {
         </component-block-prop>
         <component-block-prop propPath={['block']}>
           <paragraph>
-            <text>
-              <cursor />
-            </text>
+            <text />
           </paragraph>
         </component-block-prop>
         <component-inline-prop propPath={['inline']}>
