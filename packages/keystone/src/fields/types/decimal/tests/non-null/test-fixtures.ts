@@ -1,13 +1,14 @@
 import { decimal } from '../..';
 
 export const name = 'Decimal with isNullable: false';
-export const typeFunction = (x: any) => decimal({ ...x, db: { isNullable: false } });
+export const typeFunction = (x: any) => decimal({ ...x, db: { ...x?.db, isNullable: false } });
 export const exampleValue = () => '6.28';
 export const exampleValue2 = () => '6.45';
 export const supportsGraphQLIsNonNull = true;
 export const supportsUnique = true;
 export const fieldName = 'price';
 export const unSupportedAdapterList = ['sqlite'];
+export const supportsDbMap = true;
 
 export const getTestFields = () => ({ price: decimal({ scale: 2, db: { isNullable: false } }) });
 

@@ -50,7 +50,10 @@ export const resolverError = (things: { error: Error; tag: string }[]) => {
 };
 
 export const relationshipError = (things: { error: Error; tag: string }[]) => {
-  const s = things.map(t => `  - ${t.tag}: ${t.error.message}`).join('\n');
+  const s = things
+    .map(t => `  - ${t.tag}: ${t.error.message}`)
+    .sort()
+    .join('\n');
   return new ApolloError(
     `An error occured while resolving relationship fields.\n${s}`,
     'KS_RELATIONSHIP_ERROR',

@@ -7,6 +7,7 @@ export const exampleValue2 = () => 'bar';
 export const supportsNullInput = false;
 export const supportsUnique = true;
 export const supportsGraphQLIsNonNull = true;
+export const supportsDbMap = true;
 export const fieldName = 'testField';
 
 export const getTestFields = () => ({ testField: text() });

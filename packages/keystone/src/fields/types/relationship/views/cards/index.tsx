@@ -75,23 +75,22 @@ export function Cards({
 }: {
   foreignList: ListMeta;
   localList: ListMeta;
-  field: ReturnType<typeof controller> & { display: { mode: 'cards' } };
-  id: string;
-  forceValidation: boolean | undefined;
+  id: string | null;
   value: { kind: 'cards-view' };
-} & Pick<FieldProps<typeof controller>, 'value' | 'onChange'>) {
+} & FieldProps<typeof controller>) {
+  const { displayOptions } = value;
   let selectedFields = [
-    ...new Set([...field.display.cardFields, ...(field.display.inlineEdit?.fields || [])]),
+    ...new Set([...displayOptions.cardFields, ...(displayOptions.inlineEdit?.fields || [])]),
   ]
     .map(fieldPath => {
       return foreignList.fields[fieldPath].controller.graphqlSelection;
     })
     .join('\n');
-  if (!field.display.cardFields.includes('id')) {
+  if (!displayOptions.cardFields.includes('id')) {
     selectedFields += '\nid';
   }
   if (
-    !field.display.cardFields.includes(foreignList.labelField) &&
+    !displayOptions.cardFields.includes(foreignList.labelField) &&
     foreignList.labelField !== 'id'
   ) {
     selectedFields += `\n${foreignList.labelField}`;
@@ -157,14 +156,14 @@ export function Cards({
           const itemGetter = items[id];
           const isEditMode = !!(onChange !== undefined) && value.itemsBeingEdited.has(id);
           return (
-            <CardContainer role="status" mode={isEditMode ? 'edit' : 'view'}>
+            <CardContainer role="status" mode={isEditMode ? 'edit' : 'view'} key={id}>
               <VisuallyHidden as="h2">{`${field.label} ${index + 1} ${
                 isEditMode ? 'edit' : 'view'
               } mode`}</VisuallyHidden>
               {isEditMode ? (
                 <InlineEdit
                   list={foreignList}
-                  fields={field.display.inlineEdit!.fields}
+                  fields={displayOptions.inlineEdit!.fields}
                   onSave={newItemGetter => {
                     setItems({
                       ...items,
@@ -191,7 +190,7 @@ export function Cards({
               ) : (
                 <Fragment>
                   <Stack gap="xlarge">
-                    {field.display.cardFields.map(fieldPath => {
+                    {displayOptions.cardFields.map(fieldPath => {
                       const field = foreignList.fields[fieldPath];
                       const itemForField: Record<string, any> = {};
                       for (const graphqlField of getRootGraphQLFieldsFromFieldController(
@@ -219,7 +218,7 @@ export function Cards({
                     })}
                   </Stack>
                   <Stack across gap="small" marginTop="xlarge">
-                    {field.display.inlineEdit && onChange !== undefined && (
+                    {displayOptions.inlineEdit && onChange !== undefined && (
                       <Button
                         size="small"
                         disabled={onChange === undefined}
@@ -234,7 +233,7 @@ export function Cards({
                         Edit
                       </Button>
                     )}
-                    {field.display.removeMode === 'disconnect' && onChange !== undefined && (
+                    {displayOptions.removeMode === 'disconnect' && onChange !== undefined && (
                       <Tooltip content="This item will not be deleted. It will only be removed from this field.">
                         {props => (
                           <Button
@@ -256,7 +255,7 @@ export function Cards({
                         )}
                       </Tooltip>
                     )}
-                    {field.display.linkToItem && (
+                    {displayOptions.linkToItem && (
                       <Button
                         size="small"
                         weight="link"
@@ -275,7 +274,7 @@ export function Cards({
           );
         })}
       </Stack>
-      {onChange === undefined ? null : field.display.inlineConnect && showConnectItems ? (
+      {onChange === undefined ? null : displayOptions.inlineConnect && showConnectItems ? (
         <CardContainer mode="edit">
           <Stack
             gap="small"
@@ -366,7 +365,7 @@ export function Cards({
         <CardContainer mode="create">
           <InlineCreate
             selectedFields={selectedFields}
-            fields={field.display.inlineCreate!.fields}
+            fields={displayOptions.inlineCreate!.fields}
             list={foreignList}
             onCancel={() => {
               onChange({ ...value, itemBeingCreated: false });
@@ -382,10 +381,10 @@ export function Cards({
             }}
           />
         </CardContainer>
-      ) : field.display.inlineCreate || field.display.inlineConnect ? (
+      ) : displayOptions.inlineCreate || displayOptions.inlineConnect ? (
         <CardContainer mode="create">
           <Stack gap="small" marginTop="medium" across>
-            {field.display.inlineCreate && (
+            {displayOptions.inlineCreate && (
               <Button
                 size="small"
                 disabled={onChange === undefined}
@@ -400,7 +399,7 @@ export function Cards({
                 Create {foreignList.singular}
               </Button>
             )}
-            {field.display.inlineConnect && (
+            {displayOptions.inlineConnect && (
               <Button
                 size="small"
                 weight="none"

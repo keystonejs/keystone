@@ -197,6 +197,7 @@ Options:
 
 - `idField` (default: `{ kind: "cuid" }`): The kind of id field to use, it can be one of: `cuid`, `uuid` or `autoincrement`.
   The default across all lists can be changed at the root-level `db.idField` config.
+- `map`: Adds a [Prisma `@@map`](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#map-1) attribute to the Prisma model for this list which specifies a custom database table name for the list, instead of using the list key
 
 ```typescript
 import { config, list } from '@keystone-next/keystone';
@@ -206,6 +207,7 @@ export default config({
     ListName: list({
       db: {
         idField: { kind: 'uuid' },
+        map: 'table_name',
       },
       /* ... */
     }),

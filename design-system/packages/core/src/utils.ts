@@ -147,7 +147,7 @@ type Props = {
   children: ReactElement;
 };
 
-export const Portal = ({ children }: Props) => {
+export const Portal = ({ children }: Props): React.ReactPortal | null => {
   if (typeof document === 'undefined') {
     return null;
   }

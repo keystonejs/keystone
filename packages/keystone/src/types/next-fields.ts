@@ -95,13 +95,9 @@ export type ScalarDBField<
   nativeType?: string;
   default?: ScalarDBFieldDefault<Scalar, Mode>;
   index?: 'unique' | 'index';
-} & (Scalar extends 'DateTime'
-  ? {
-      updatedAt?: boolean;
-    }
-  : {
-      updatedAt?: undefined;
-    });
+  map?: string;
+  updatedAt?: Scalar extends 'DateTime' ? boolean : undefined;
+};
 
 export const orderDirectionEnum = graphql.enum({
   name: 'OrderDirection',
@@ -118,6 +114,8 @@ export type RelationDBField<Mode extends 'many' | 'one'> = {
   list: string;
   field?: string;
   mode: Mode;
+  foreignKey?: { one: true | { map: string }; many: undefined }[Mode];
+  relationName?: { one: undefined; many: string }[Mode];
 };
 
 export type EnumDBField<Value extends string, Mode extends 'required' | 'many' | 'optional'> = {
@@ -127,6 +125,7 @@ export type EnumDBField<Value extends string, Mode extends 'required' | 'many' |
   mode: Mode;
   default?: { kind: 'literal'; value: Value };
   index?: 'unique' | 'index';
+  map?: string;
 };
 
 export type NoDBField = { kind: 'none' };

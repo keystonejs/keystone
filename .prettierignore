@@ -9,4 +9,5 @@ coverage
 docs/public/assets/
 .keystone/tests
 prisma-utils/src/generated
+nexus-typegen.ts
 tests/test-projects/live-reloading/schemas/syntax-error.js

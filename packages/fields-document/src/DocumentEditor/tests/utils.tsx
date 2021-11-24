@@ -1,11 +1,10 @@
 import { ReactElement, createElement, MutableRefObject, useState } from 'react';
 import { Editor, Node, Path, Text, Range } from 'slate';
-import { ReactEditor, Slate } from 'slate-react';
+import { Slate } from 'slate-react';
 import React from 'react';
 import { act, render } from '@testing-library/react';
 import { diff } from 'jest-diff';
 import prettyFormat, { plugins, Plugin } from 'pretty-format';
-import { HistoryEditor } from 'slate-history';
 import { createDocumentEditor, DocumentEditorEditable } from '..';
 import { ComponentBlock } from '../../component-blocks';
 import { DocumentFeatures } from '../../views';
@@ -23,11 +22,12 @@ console.error = (...stuff: any[]) => {
     if (stuff[0].includes('validateDOMNesting')) {
       return;
     }
+    // _somehow_ act is being used wrong
+    // it's not really worth digging into imo
+    // these tests aren't about thoroughly testing the rendering of the editor
+    // they're just a quick it doesn't crash
     if (stuff[0].includes('inside a test was not wrapped in act')) {
-      const stack = new Error().stack;
-      if (stack?.includes('@popperjs/core') && stack.includes('forceUpdate')) {
-        return;
-      }
+      return;
     }
   }
   oldConsoleError(...stuff);
@@ -155,7 +155,7 @@ function EditorComp({
   documentFeatures,
   relationships,
 }: {
-  editor: ReactEditor;
+  editor: Editor;
   componentBlocks: Record<string, ComponentBlock>;
   documentFeatures: DocumentFeatures;
   relationships: Relationships;
@@ -168,7 +168,11 @@ function EditorComp({
         editorDocumentFeatures={documentFeatures}
         relationships={relationships}
       >
-        <DocumentEditorEditable />
+        <DocumentEditorEditable
+          // the default implementation of scrollSelectionIntoView crashes in JSDOM for some reason
+          // so we just do nothing
+          scrollSelectionIntoView={() => {}}
+        />
       </ToolbarStateProvider>
     </Slate>
   );
@@ -191,7 +195,7 @@ export const makeEditor = (
     isShiftPressedRef?: MutableRefObject<boolean>;
     skipRenderingDOM?: boolean;
   } = {}
-): ReactEditor & HistoryEditor => {
+): Editor => {
   if (!Editor.isEditor(node)) {
     throw new Error('Unexpected non-editor passed to makeEditor');
   }

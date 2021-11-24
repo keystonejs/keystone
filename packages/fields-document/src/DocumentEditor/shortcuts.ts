@@ -1,5 +1,5 @@
 import { Range, Editor, Transforms, Path } from 'slate';
-import { HistoryEditor } from 'slate-history';
+
 export const shortcuts: Record<string, string> = {
   '...': '…',
   '-->': '→',
@@ -9,7 +9,7 @@ export const shortcuts: Record<string, string> = {
   '--': '–',
 };
 
-export function withShortcuts<T extends HistoryEditor>(editor: T): T {
+export function withShortcuts(editor: Editor): Editor {
   const { insertText } = editor;
   editor.insertText = text => {
     insertText(text);

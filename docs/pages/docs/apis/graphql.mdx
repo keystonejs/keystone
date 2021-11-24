@@ -422,7 +422,7 @@ These error codes and messages can be used to provide useful feedback to users, 
 The following error codes can be returned from the Keystone GraphQL API.
 
 - `KS_USER_INPUT_ERROR`: The input to the operation is syntactically correct GraphQL, but the values provided are invalid. E.g, an `orderBy` input without any keys.
-- `KS_ACCESS_DENIED`: The operation is not allowed because of an [Access Control](./access-control) rule.
+- `KS_ACCESS_DENIED`: The operation is not allowed because either an [Access Control](./access-control) rule prevents it, or the item does not exist.
 - `KS_FILTER_DENIED`: The filter or ordering operation is not allowed because of [`isFilterable` or `isOrderable`](fields#common-configuration) rules.
 - `KS_VALIDATION_FAILURE`: The operation is not allowed because of a [validation](../guides/hooks#validating-inputs) rule.
 - `KS_LIMITS_EXCEEDED`: The user has exceeded their [query limits](./schema#graphql).
@@ -431,6 +431,8 @@ The following error codes can be returned from the Keystone GraphQL API.
 - `KS_RESOLVER_ERROR`: An error occured while resolving the input for a field.
 - `KS_RELATIONSHIP_ERROR`: An error occured while resolving the input relationship field.
 - `KS_PRISMA_ERROR`: An error occured while running a Prisma client operation.
+
+> A note on `KS_ACCESS_DENIED`: Returning a "not found" error from a mutation like `updateUser({ where: { secretKey: 'abc' } })` but an "access denied" error from `updateUser({ where: { secretKey: 'def' } })` would reveal the existence of a user with the secret key "def". To prevent leaking private information in this way, Keystone will always say "access denied" when you try to perform a mutation on an item that can't be operated on, whether that is because there is no matching record in the database, or there was but the user performing the operation doesn't have access to it.
 
 ## Related resources
 

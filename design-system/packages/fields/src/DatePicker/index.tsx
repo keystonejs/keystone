@@ -6,7 +6,7 @@ import FocusLock from 'react-focus-lock';
 import { jsx } from '@keystone-ui/core';
 import { PopoverDialog, useControlledPopover } from '@keystone-ui/popover';
 
-import { formatDMY, formatDateType } from '../utils/dateFormatters';
+import { formatDate, formatDateType, dateFormatPlaceholder } from '../utils/dateFormatters';
 import { DateType } from '../types';
 import { Calendar } from './Calendar';
 import { InputButton } from './components/InputButton';
@@ -83,7 +83,7 @@ export const DatePicker = ({
   );
 
   const selectedDay = new Date(value as string);
-  const formattedDate: DateInputValue = value ? formatDMY(new Date(value)) : undefined;
+  const formattedDate: DateInputValue = value ? formatDate(new Date(value)) : undefined;
 
   return (
     <Fragment>
@@ -105,7 +105,7 @@ export const DatePicker = ({
         // todo - magic number - align instead to parent Field ?
         style={{ minWidth: 200 }}
       >
-        {formattedDate || 'dd/mm/yyyy'}
+        {formattedDate || dateFormatPlaceholder}
       </InputButton>
       <PopoverDialog arrow={arrow} isVisible={isOpen} ref={dialog.ref} {...dialog.props}>
         <FocusLock autoFocus returnFocus disabled={!isOpen}>

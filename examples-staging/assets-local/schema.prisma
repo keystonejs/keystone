@@ -7,25 +7,27 @@ datasource sqlite {
 }
 
 generator client {
-  provider   = "prisma-client-js"
-  output     = "node_modules/.prisma/client"
-  engineType = "binary"
+  provider = "prisma-client-js"
+  output   = "node_modules/.prisma/client"
 }
 
 model Post {
-  id             String    @id @default(cuid())
-  title          String    @default("")
-  status         String?
-  content        String    @default("")
-  publishDate    DateTime?
-  author         Author?   @relation("Post_author", fields: [authorId], references: [id])
-  authorId       String?   @map("author")
-  hero_filesize  Int?
-  hero_extension String?
-  hero_width     Int?
-  hero_height    Int?
-  hero_mode      String?
-  hero_id        String?
+  id                  String    @id @default(cuid())
+  title               String    @default("")
+  status              String?
+  content             String    @default("")
+  publishDate         DateTime?
+  author              Author?   @relation("Post_author", fields: [authorId], references: [id])
+  authorId            String?   @map("author")
+  hero_filesize       Int?
+  hero_extension      String?
+  hero_width          Int?
+  hero_height         Int?
+  hero_mode           String?
+  hero_id             String?
+  attachment_filesize Int?
+  attachment_mode     String?
+  attachment_filename String?
 
   @@index([authorId])
 }

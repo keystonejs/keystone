@@ -192,6 +192,7 @@ jobs:
             'default-values.test.ts',
             'extend-graphql-schema.test.ts',
             'extend-graphql-schema-graphql-ts.test.ts',
+            'extend-graphql-schema-nexus.test.ts',
             'json.test.ts',
             'rest-api.test.ts',
             'roles.test.ts',

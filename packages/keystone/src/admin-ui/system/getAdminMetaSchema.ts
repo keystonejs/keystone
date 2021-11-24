@@ -28,9 +28,8 @@ export function getAdminMetaSchema({
   lists: Record<string, InitialisedList>;
 }) {
   const isAccessAllowed =
-    config.session === undefined
-      ? undefined
-      : config.ui?.isAccessAllowed ?? (({ session }) => session !== undefined);
+    config.ui?.isAccessAllowed ??
+    (config.session === undefined ? undefined : ({ session }) => session !== undefined);
   const jsonScalar = graphqlBoundToKeystoneContext.JSON;
 
   const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({

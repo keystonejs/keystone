@@ -35,7 +35,7 @@ export async function getCommittedArtifacts(
   graphQLSchema: GraphQLSchema,
   config: KeystoneConfig
 ): Promise<CommittedArtifacts> {
-  const lists = initialiseLists(config.lists, config.db.provider);
+  const lists = initialiseLists(config);
   const prismaSchema = printPrismaSchema(
     lists,
     config.db.provider,
@@ -183,7 +183,7 @@ export async function generateNodeModulesArtifactsWithoutPrismaClient(
   config: KeystoneConfig,
   cwd: string
 ) {
-  const lists = initialiseLists(config.lists, config.db.provider);
+  const lists = initialiseLists(config);
 
   const printedSchema = printSchema(graphQLSchema);
   const dotKeystoneDir = path.join(cwd, 'node_modules/.keystone');

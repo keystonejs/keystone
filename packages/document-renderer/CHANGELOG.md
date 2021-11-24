@@ -1,5 +1,15 @@
 # @keystone-next/document-renderer
 
+## 5.0.0
+
+### Major Changes
+
+- [#6957](https://github.com/keystonejs/keystone/pull/6957) [`de8cf44e7`](https://github.com/keystonejs/keystone/commit/de8cf44e7b328ab98e1466d7191d9ee65a57b02a) Thanks [@bladey](https://github.com/bladey)! - Update Node engines to support current Node LTS versions, currently versions 14 and 16.
+
+### Patch Changes
+
+- [#6961](https://github.com/keystonejs/keystone/pull/6961) [`18e3168aa`](https://github.com/keystonejs/keystone/commit/18e3168aae5739f5596c7811cd30c8d1f47ad77a) Thanks [@datner](https://github.com/datner)! - Fixed default renderer of `layout` block
+
 ## 4.0.1
 
 ### Patch Changes

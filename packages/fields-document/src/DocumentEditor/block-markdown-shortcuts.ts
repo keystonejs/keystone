@@ -1,17 +1,15 @@
 import { Editor, Transforms, Range } from 'slate';
-import { HistoryEditor } from 'slate-history';
-import { ReactEditor } from 'slate-react';
 import { DocumentFeatures } from '../views';
 import { ComponentBlock } from './component-blocks/api';
 import { insertDivider } from './divider';
 import { DocumentFeaturesForNormalization } from './document-features-normalization';
 import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state';
 
-export function withBlockMarkdownShortcuts<T extends ReactEditor & HistoryEditor>(
+export function withBlockMarkdownShortcuts(
   documentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>,
-  editor: T
-): T {
+  editor: Editor
+): Editor {
   const { insertText } = editor;
   const shortcuts: Record<
     string,
