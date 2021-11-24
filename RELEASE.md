@@ -24,7 +24,6 @@ Copy the successful output of the published packages from the above npm release,
 @keystone-next/auth@27.0.0
 @keystone-next/fields@11.0.0
 @keystone-next/keystone@20.0.0
-
 ```
 
 Translate to a `package.json` style syntax for ease of copying, example:
@@ -132,3 +131,5 @@ Then running `git rebase --interactive origin/main`.
 Resolve any conflicts then run `git push --force`.
 
 The `website_live` branch should no longer be behind in commits on the branches page <https://github.com/keystonejs/keystone/branches>.
+
+Finally, create a PR to merge `website_live` into `main`, and merge it via `Rebase and merge` so the commits aren't lost and to keep `main` up to date with `website_live`.
