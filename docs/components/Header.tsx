@@ -286,7 +286,7 @@ export function Header() {
           shadow
           css={mq({
             '&&': {
-              display: ['none', null, 'inline-flex', 'inline-flex'],
+              display: ['none', null, 'inline-flex'],
             },
           })}
         >
