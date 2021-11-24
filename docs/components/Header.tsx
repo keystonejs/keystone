@@ -213,7 +213,7 @@ export function Header() {
         css={mq({
           display: 'grid',
           gridTemplateColumns: [
-            'auto max-content max-content max-content',
+            'auto auto max-content max-content',
             'auto max-content max-content max-content max-content max-content max-content',
             'max-content auto max-content max-content max-content max-content max-content',
             'max-content auto max-content max-content max-content max-content max-content max-content',
