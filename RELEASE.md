@@ -24,7 +24,6 @@ Copy the successful output of the published packages from the above npm release,
 @keystone-next/auth@27.0.0
 @keystone-next/fields@11.0.0
 @keystone-next/keystone@20.0.0
-
 ```
 
 Translate to a `package.json` style syntax for ease of copying, example:
