@@ -213,7 +213,7 @@ export function Header() {
         css={mq({
           display: 'grid',
           gridTemplateColumns: [
-            'auto auto max-content max-content',
+            'auto max-content max-content max-content',
             'auto max-content max-content max-content max-content max-content max-content',
             'max-content auto max-content max-content max-content max-content max-content',
             'max-content auto max-content max-content max-content max-content max-content max-content',
@@ -242,7 +242,7 @@ export function Header() {
         <div
           id="search-field-container"
           css={mq({
-            display: 'block',
+            display: ['none', null, 'block'],
             width: ['100%', null, null, null, '80%'],
           })}
         >
