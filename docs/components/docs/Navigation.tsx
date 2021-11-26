@@ -232,7 +232,7 @@ export function UpdatesNavigation({ releases = [] }: { releases: string[] }) {
         </Section>
       ) : null}
       <Section label="Featured News">
-        <NavItem href="/updates/new-access-control">
+        <NavItem href="/updates/general-availability">
           <Emoji symbol="🎉" alt="Party Popper" />
           &nbsp; General Availability Release
         </NavItem>

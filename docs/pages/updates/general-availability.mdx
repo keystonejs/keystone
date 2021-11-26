@@ -1,8 +1,64 @@
 import { Markdown } from '../../components/Markdown';
 import { Emoji } from '../../components/primitives/Emoji';
 
-# Welcome Keystone 6 to General Availability <Emoji symbol="🎉" alt="party popper" />
+# Welcome Keystone 6 to General Availability <Emoji symbol="🎉" alt="Party popper" />
 
-?> TODO
+We’re proud to announce that Keystone 6 is **now in General Availability**! Today’s Keystone is faster and more flexible than it’s ever been and is now **production-ready** for you to build amazing things with. <Emoji symbol="🚀" alt="Rocket" />
 
-export default ({ children }) => <Markdown description="TODO">{children}</Markdown>
+We’ve come a long way on the road from v5 to v6. Looking back on the journey from early concepts to a complete core, there’s a great deal to be proud of. Here’s an overview of the most noteworthy improvements we’ve shipped on our way to GA.
+
+## Modern workflows with Prisma, NextJS & Typescript
+
+We extended Keystone’s foundations in Node, Express, and JavaScript, by adding Prisma to take care of the database layer and NextJS to power Keystone’s Admin UI. We also introduced a strongly-typed developer experience to make Keystone **the first TypeScript Headless CMS**.
+
+## Automatic migrations
+
+With Prisma under the hood, Keystone can now generate database migrations every time you update schema so you can stay focused on building awesome apps instead of wasting time with DB admin chores. Keystone migrations are now 100% automated in local, and in production you have total control over what goes where with our [new CLI](../docs/guides/cli#command-line).
+
+## Next-generation Rich Text editor
+
+Our new [Document field](../docs/guides/document-fields) takes the experience of creating rich content to new levels. It’s highly customisable and stores JSON-structured data so you can do things like:
+
+-   insert relationships to other items in your database
+-   define your own [custom editor blocks](../docs/guides/document-fields#component-blocks) based on React Components
+-   add formatting and custom blocks from your keyboard using slash / commands
+
+This field gives you the control you need to set your editors up for success without compromising your DX or the integrity of the data in your system. [Try the demo](../docs/guides/document-field-demo).
+
+## Sweeter APIs
+
+Our [Fields](../docs/apis/fields), [Hooks](../docs/apis/hooks), [Access Control](../docs/apis/access-control), [GraphQL](../docs/apis/graphql), and [Query Filter](../docs/apis/filters) APIs are better than ever. They’re now much easier to program and have better naming parameters and more consistent authoring patterns in place so you’re less likely to need our docs the every time you use that one API.
+
+## Admin UI
+
+Is faster and more accessible. We also made our first steps towards delivering a next-level Admin UI customisation story with the introduction of features for custom [pages](../docs/guides/custom-admin-ui-pages), [logos](../docs/guides/custom-admin-ui-logo), and [navigation](../docs/guides/custom-admin-ui-navigation).
+
+Here’s a few of the other cool things we shipped in Keystone this year:
+
+-   Support for SQLite
+-   [Server-side live reloading](https://keystonejs.com/releases/2021-11-02#server-side-live-reloading)
+-   [JSON field](../docs/apis/fields#json)
+-   [Health check server endpoints](../docs/apis/config#health-check)
+-   [17 example projects](../docs/examples) to explore Keystone’s many features and get you up and running on the web
+
+This release completes a body of work that make **Keystone 6 our best developer experience yet**. If you’ve been waiting to tryout Keystone 6 **there’s never been a better time**. Just `yarn create keystone-app` or read our [getting started guide](../docs/walkthroughs/getting-started-with-create-keystone-app) to take your first steps.
+
+## What's Next
+
+While we’re really happy with what we achieved this year, one of the most important benefits of our work to date is the foundations we’ve put in place for 2022 and beyond. [Check out our roadmap](https://keystonejs.com/updates/roadmap) to understand where we’re taking Keystone next year <Emoji symbol="🔮" alt="Crystal ball" />
+
+To talk about this release and share your thoughts about the road ahead, be sure to join the conversation in [Slack](https://community.keystonejs.com/), [Github](https://github.com/keystonejs/keystone/discussions) and [Twitter](https://twitter.com/keystonejs). <Emoji symbol="❤️" alt="Love" />
+
+## Thank you
+
+This release would not have been possible without the support and feedback of such an awesome developer community. We’re grateful for the ideas you bring, the help you give others, and the code contributions the you’ve made to get Keystone to where it is today.
+
+Thank you, and here’s to a feature rich 2022! <Emoji symbol="🥳" alt="Party" /> <Emoji symbol="❤️" alt="Love" />
+
+Team Keystone
+
+export default ({ children }) => (
+	<Markdown description="We’re proud to announce that Keystone 6 is now in General Availability!">
+		{children}
+	</Markdown>
+);
