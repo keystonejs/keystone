@@ -2,6 +2,7 @@
 /** @jsx jsx  */
 import { ComponentProps, Fragment, ReactNode } from 'react';
 import { jsx } from '@emotion/react';
+import Link from 'next/link';
 
 import { getStaticProps } from '../../components/Markdown';
 import { InlineCode } from '../../components/primitives/Code';
@@ -11,6 +12,7 @@ import { Gradient } from '../../components/primitives/Gradient';
 import { Alert } from '../../components/primitives/Alert';
 import { Emoji } from '../../components/primitives/Emoji';
 import { Type } from '../../components/primitives/Type';
+import { Pill } from '../../components/content/Pill';
 import { ArrowR } from '../../components/icons/ArrowR';
 import { DocsPage } from '../../components/Page';
 import { useMediaQuery } from '../../lib/media';
@@ -109,58 +111,76 @@ function TimelineContent({ title, look, children }: TimelineContentProps) {
   );
 }
 
-const roadmapItemStatusStyles = {
-  margin: '1rem 0',
+type RoadmapListProps = {
+  section: keyof typeof roadmapItemSection;
+};
+function RoadmapList({ children }: RoadmapListProps) {
+  const mq = useMediaQuery();
+  return (
+    <ul
+      css={mq({
+        listStyle: 'none',
+        margin: '3rem 0 2rem 0',
+        padding: 0,
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(12.5rem, 1fr))',
+        gap: '2rem',
+        gridRowGap: '4rem',
+        '& svg': {
+          height: '2.5rem',
+          marginBottom: '0.5rem',
+        },
+      })}
+    >
+      {children}
+    </ul>
+  );
+}
+
+const roadmapItemSectionStyles = {
+  margin: '0rem 0',
   borderRadius: '0.4rem',
   display: 'inline-block',
   padding: '0.3rem 0.6rem',
   fontSize: '0.9rem',
   fontWeight: 700,
 };
-const roadmapItemStatus = {
-  'not started': () => (
-    <span css={{ ...roadmapItemStatusStyles, background: '#f1f3f5', color: '#495057' }}>
-      Not Started
+const roadmapItemSection = {
+  docs: () => (
+    <span css={{ ...roadmapItemSectionStyles, background: '#f1f3f5', color: '#495057' }}>Docs</span>
+  ),
+  'fields and schema': () => (
+    <span css={{ ...roadmapItemSectionStyles, background: '#fff0f6', color: '#a61e4d' }}>
+      Fields & Schema
     </span>
   ),
-  'theres a plan': () => (
-    <span css={{ ...roadmapItemStatusStyles, background: '#fff0f6', color: '#a61e4d' }}>
-      There's a Plan
-    </span>
+  core: () => (
+    <span css={{ ...roadmapItemSectionStyles, background: '#f3f0ff', color: '#5f3dc4' }}>Core</span>
   ),
-  'figuring it out': () => (
-    <span css={{ ...roadmapItemStatusStyles, background: '#f3f0ff', color: '#5f3dc4' }}>
-      Figuring It Out
-    </span>
-  ),
-  'making it happen': () => (
-    <span css={{ ...roadmapItemStatusStyles, background: '#e7f5ff', color: '#1864ab' }}>
-      Making It Happen
-    </span>
-  ),
-  'wrapping it up': () => (
-    <span css={{ ...roadmapItemStatusStyles, background: '#e6fcf5', color: '#087f5b' }}>
-      Wrapping It Up
+  'admin ui': () => (
+    <span css={{ ...roadmapItemSectionStyles, background: '#e7f5ff', color: '#1864ab' }}>
+      Admin UI
     </span>
   ),
 };
+
 type RoadmapItemProps = {
   title: ReactNode;
-  status?: keyof typeof roadmapItemStatus;
+  section: keyof typeof roadmapItemSection;
   children: ReactNode;
 };
-function RoadmapItem({ title, status = 'not started', children }: RoadmapItemProps) {
-  const Status = roadmapItemStatus[status];
+function RoadmapItem({ title, section, children }: RoadmapItemProps) {
+  const Section = roadmapItemSection[section];
   return (
-    <Fragment>
-      <Type as="h3" look="heading30" margin="2rem 0 0">
+    <li>
+      <Type as="h3" look="heading20bold" margin="0 0 1rem 0">
         {title}
       </Type>
-      <Status />
-      <Type as="div" look="body16" css={{ p: { margin: '0 0 1rem 0' } }}>
+      {section && <Section />}
+      <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
         {children}
       </Type>
-    </Fragment>
+    </li>
   );
 }
 
@@ -177,29 +197,13 @@ export default function Roadmap() {
       <Type as="h1" look="heading64">
         Roadmap
       </Type>
-
       <Type as="p" look="body18" margin="1rem 0">
-        After a year of development, Keystone 6 is in the final stages of{' '}
-        {/* <Highlight look="grad5" css={{ fontWeight: 700 }}>
-          Community Preview
-        </Highlight> */}
-        <strong>Community Preview</strong>.
+        After a year of intensive development, Keystone 6 has achieved a{' '}
+        <Link href="/updates/general-availability">General Availability release</Link>.{' '}
+        <Emoji symbol="🚀" alt="Rocket" /> We’ve graduated to the
+        <InlineCode>@keystone-6</InlineCode>namespace on npm and have a stable set of APIs that you
+        can confidently build on.
       </Type>
-
-      <Type as="p" look="body18" margin="1rem 0">
-        This means we're integrating feedback and tweaking our APIs before finalising our move from
-        v5 to v6, and publishing packages under the <InlineCode>@keystone-next</InlineCode> scope on
-        npm.
-      </Type>
-
-      <Type as="p" look="body18" margin="1rem 0">
-        In <strong>Q3 2021</strong> we'll be moving Keystone 6 to{' '}
-        {/* <Highlight css={{ fontWeight: 700 }}>General Availability</Highlight> */}
-        <strong>General Availability</strong>, graduating to the{' '}
-        <InlineCode>@keystone-6</InlineCode> namespace on npm, and will commit to a stable set of
-        APIs for you to build on confidently.
-      </Type>
-
       <div
         css={mq({
           marginTop: '4em',
@@ -210,44 +214,35 @@ export default function Roadmap() {
       >
         <TimelineItem>
           <TimelineMarker look="grad2" />
-          <TimelineContent title="Research" look="grad2">
-            We started looking at what the next generation of cms platforms could look like, and how
-            to dramatically improve Keystone's developer experience
+          <TimelineContent title="Research & Development" look="grad2">
+            Surveyed the landscape. Formed concepts around what a next-gen experience would look
+            like. Started laying the foundations.
           </TimelineContent>
         </TimelineItem>
         <TimelineItem>
           <TimelineMarker look="grad2" />
-          <TimelineContent title="Development" look="grad2">
-            Confident about our approach and the benefits, we started building the new interfaces
-            around Keystone 5's core with Prisma and TypeScript
+          <TimelineContent title="Community Preview" look="grad2">
+            Published the <strong>New Interfaces</strong> as <InlineCode>@keystone-next</InlineCode>
+            on npm. Commenced iteration based on community & internal feedback.
           </TimelineContent>
         </TimelineItem>
         <TimelineItem>
           <TimelineWeAreHere />
           <TimelineMarker look="grad2" />
-          <TimelineContent title="Community Preview" look="grad2">
-            We published the <strong>New Interfaces</strong> as{' '}
-            <InlineCode>@keystone-next</InlineCode> on npm, and have been iterating based on
-            internal & community feedback
+          <TimelineContent title="General Availability Release" look="grad2">
+            Stabilised the new architecture & APIs. Docs & example projects. Published as{' '}
+            <InlineCode>@keystone-6</InlineCode> on npm.
           </TimelineContent>
         </TimelineItem>
         <TimelineItem>
           <TimelineMarker look="grad1" />
-          <TimelineContent title="General Availability" look="grad1">
-            Finalised our new architecture and API updates, including comprehensive documentation.
-            Published as <InlineCode>@keystone-6</InlineCode> on npm.
+          <TimelineContent title="Maturity, community, & Next-gen Admin UI" look="grad1">
+            A better dev-configured editing experience. Maturity & features in Keystone core. More
+            pathways to grow with Keystone.
           </TimelineContent>
         </TimelineItem>
       </div>
-
-      {/* <Alert css={{ margin: '2rem 0 4rem' }}>
-        If you're assessing whether to start a project today on Keystone 5 or 6, check our{' '}
-        <Link href="/updates/keystone-5-vs-keystone-6-preview">
-          <a>Comparison Page</a>
-        </Link>
-      </Alert> */}
-
-      <Alert look="tip" css={{ margin: '4rem 0 4rem' }}>
+      {/* <Alert look="tip" css={{ margin: '4rem 0 4rem' }}>
         <span
           css={{
             display: 'inline-block',
@@ -259,161 +254,331 @@ export default function Roadmap() {
         <Button as="a" href="/docs">
           Read the Docs <ArrowR />
         </Button>
-      </Alert>
-
-      <Type as="h2" look="heading48">
+      </Alert>*/}
+      <Type as="h2" look="heading48" css={{ margin: '2rem 0 0' }}>
         What's Next
+      </Type>
+      <Type as="p" look="body18" margin="1rem 0">
+        We’re using the foundations we shipped in 2021 as a springboard to bring{' '}
+        <Link href="/for-developers" passHref>
+          <a>developers</a>
+        </Link>
+        ,{' '}
+        <Link href="/for-organisations" passHref>
+          <a>project owners</a>
+        </Link>
+        , and{' '}
+        <Link href="/for-content-management" passHref>
+          <a>editors</a>
+        </Link>{' '}
+        into more productive ways of working together. Our key areas of focus for 2022 are:
+      </Type>
+      <div className="prose" css={{ li: { fontSize: '1.125rem' } }}>
+        <ul>
+          <li>
+            <strong>A next-gen Admin UI</strong> that unifies developer and editor collaborations in
+            new and exciting ways
+          </li>
+          <li>
+            <strong>Maturing the DX</strong> with better Types and capabilities for self-hosting and
+            media management
+          </li>
+          <li>
+            <strong>Enabling community</strong> with more pathways for you to learn and grow with
+            Keystone
+          </li>
+        </ul>
+      </div>
+
+      <Type as="h3" look="body18bold" margin="1rem 0">
+        Next-gen Admin UI
+      </Type>
+      <Type as="p" look="body18" margin="1rem 0">
+        Our design team spent much of the second half of 2021 defining a new vision for Admin UI
+        that gives you more capabilities to support content editors in ways that matter most to
+        them. We’ve already shipped quick wins for customisable{' '}
+        <Link href="/docs/guides/custom-admin-ui-logo" passHref>
+          <a>logos</a>
+        </Link>
+        ,{' '}
+        <Link href="/docs/guides/custom-admin-ui-pages" passHref>
+          <a>pages</a>
+        </Link>
+        , and{' '}
+        <Link href="/docs/guides/custom-admin-ui-navigation" passHref>
+          <a>navigation</a>
+        </Link>
+        , but the really transformative features (that rely on more extensive customisation) are
+        still in the works. This body of work will elevate the experience of authoring content in
+        Keystone to the same high standards we have for authoring with Keystone’s core APIs.
+      </Type>
+
+      <Type as="h3" look="body18bold" margin="1rem 0">
+        Maturing the Developer Experience
       </Type>
 
       <Type as="p" look="body18" margin="1rem 0">
-        Here are the upcoming technical foundations and features we're planning to focus on. Changes
-        that impact API stability are being prioritised ahead of Keystone 6 reaching general
-        availability. We've included status markers so you can get an idea of what we're up to with
-        each of them.
+        We’ll continue to iterate on making Keystone the easiest way to design and standup a GraphQL
+        API on the web. Going all-in on Typescript has made the DX so sweet, but we want to take it{' '}
+        <em>further</em> so that Keystone’s the best Typescript &gt; GraphQL developer experience in
+        the ecosystem. <Emoji symbol="✨" alt="Sparkles" />
       </Type>
 
-      <RoadmapItem status="making it happen" title="More guides and walkthroughs">
-        <p>
-          We know the highest priority for our users is guides and walkthroughs of how to implement
-          various solutions with Keystone, so we're planning to greatly expand this part of our
-          documentation (including corresponding example repos)
-        </p>
-      </RoadmapItem>
+      <Type as="p" look="body18" margin="1rem 0">
+        We’ll also focus on making better pathways for you to integrate Keystone with the deployment
+        services you use most, so you can get the most out of where the modern web is going. Image
+        and file management is an area we’re actively iterating on, and we’ll have more to share
+        soon.
+      </Type>
 
-      <RoadmapItem status="figuring it out" title="New back-end APIs for Node.js apps">
-        <p>
-          Keystone has so far focused on delivering a great GraphQL API for front-end apps to use.
-          We're expanding on this with first class support for accessing the same APIs from Node.js
-          so you have more flexibility in how you write your apps, including hybrid use-cases.
-        </p>
-        <p>
-          These new APIs will make fetching and updating your Keystone data from custom GraphQL
-          queries and resolvers, express apps, and server-side frameworks like Next.js incredibly
-          straight-forward.
-        </p>
-      </RoadmapItem>
-      <RoadmapItem status="figuring it out" title="GraphQL API Updates">
-        <p>
-          Keystone's GraphQL API has been stable (no breaking changes!) for several years now. While
-          this has been great for building front-end apps with confidence, it has held us back from
-          fixing some pain points (like error handling) for a while now.
-        </p>
-        <p>
-          We take the stability of code written against Keystone very seriously, and with that in
-          mind are planning to make some changes to the API that we expect to provide
-          backwards-compatibility and streamlined migration stories for.
-        </p>
-      </RoadmapItem>
-      <RoadmapItem status="wrapping it up" title="Improved Build and Deployment Options">
-        <p>
-          Deploying a database-backed application to production is still surprisingly complex, and
-          it can be challenging to find the right tradeoffs and hosting providers. So we're looking
-          at ways Keystone can help streamline these options.
-        </p>
-        <p>
-          This will include building for serverless environments, targeting different architectures
-          for your GraphQL API and Admin UI applications, and independent{' '}
-          <InlineCode>dev</InlineCode>, <InlineCode>build</InlineCode> and{' '}
-          <InlineCode>start</InlineCode>
-          commands. Thanks to Prisma, it will also include tools for previewing and managing
-          database changes.
-        </p>
-      </RoadmapItem>
-      <RoadmapItem status="making it happen" title="New Image and File functionality">
-        <p>
-          We are building new functionality for handling images and files in Keystone. Initially
-          this will mean support for local image and file uploads, and we have plans to expand this
-          into native cloud hosting support as well.
-        </p>
-      </RoadmapItem>
-      <RoadmapItem status="making it happen" title="Better Admin UI Accessibility (a11y)">
-        <p>
-          As web developers, we all know how important accessibility is, but very few CMS UIs are
-          truly accessible. We're changing that by baking first class accessibility into Keystone's
-          Admin UI.
-        </p>
-      </RoadmapItem>
-      <RoadmapItem status="theres a plan" title="Field Types Review">
-        <p>
-          We're planning to revisit our field types and make them more powerful and consistent. This
-          will include new interface options for the Admin UI, new features for validation and
-          logic, and better <InlineCode>null</InlineCode> value handling.
-        </p>
-      </RoadmapItem>
-      <RoadmapItem status="theres a plan" title="Admin UI Translation">
-        <p>
-          If you have users who speak a languge other than English, you'll soon be able to provide a
-          custom translation for all the strings in Keystone's Admin UI.
-        </p>
-      </RoadmapItem>
-      <RoadmapItem status="figuring it out" title="Custom Admin UI Pages, Navigation and APIs">
-        <p>
-          As your app outgrows the built-in CRUD queries and mutations that Keystone provides, we
-          want the Admin UI to continue to be a comprehensive solution for your users. We're working
-          on a framework that will let you extend the Admin UI with your own custom pages, React
-          components, API route handlers and navigation - so you can make it your own.
-        </p>
-      </RoadmapItem>
-      <RoadmapItem status="not started" title="Admin UI Field Groups and Dynamic Updates">
-        <p>
-          When lists get complex, you want to break up the form into multiple sections of fields.
-          Also, some fields depend on the value of others, and the form should update dynamically as
-          item data is changed.
-        </p>
-        <p>
-          We're planning to design a way of defining this behaviour in your List Schema, so you can
-          ship a better authoring experience out of the box.
-        </p>
-      </RoadmapItem>
-      <RoadmapItem status="not started" title="Nested (JSON) Fields">
-        <p>
-          Often when you're working with items, you want to allow content authors to manage nested
-          repeating data. Relationships have traditionally been the answer for this, but come with
-          complexity and can't be ordered.
-        </p>
-        <p>
-          So we're looking to add support for defining simplified nested schemas to lists, which
-          will be stored in a JSON field in the database.
-        </p>
-      </RoadmapItem>
-      <RoadmapItem status="not started" title="Singletons">
-        <p>
-          Keystone is great for lists of data, but sometimes you want a single object that is
-          editable through the Admin UI and accessible in the GraphQL API. So we're planning to add
-          the ability to define singletons in Keystone's Schema.
-        </p>
-      </RoadmapItem>
-      <RoadmapItem status="not started" title="Sortable list items">
-        <p>
-          Ever wanted a list of items you can sort by dragging and dropping them in the Admin UI? We
-          have.
-        </p>
-        <p>
-          And it will custom with custom mutations for handling ordering operations like{' '}
-          <InlineCode>insertBefore</InlineCode> and <InlineCode>insertAfter</InlineCode> so it's
-          just as easy for you to build your own UIs for sorting items in the list too.
-        </p>
-      </RoadmapItem>
-      <RoadmapItem status="not started" title="Translation Support">
-        <p>
-          If you're building a website with multi-language support, in Keystone 5 you'd have to add
-          individual fields for each translation. To make for a better authoring experience, simpler
-          schema definition, and streamlined experience for front-end developers we're planning to
-          build first-class support for translated fields into Keystone.
-        </p>
-      </RoadmapItem>
-      <RoadmapItem status="not started" title="Draft / Preview / Publishing Workflow">
-        <p>
-          Previewing content changes is a critical part of editing with confidence, but it's hard to
-          implement consistently across sets of changes in a relational database backend.
-        </p>
-        <p>
-          Now that popular front-ends like Next.js have built-in support for live content previews,
-          we're planning to develop an integrated workflow for Keystone content that will allow
-          authors to preview sets of content changes in draft, and publish them atomically.
-        </p>
-        <p>We're also looking at a built-in solution for tracking changes and version history.</p>
-      </RoadmapItem>
+      <Type as="h3" look="body18bold" margin="1rem 0">
+        Enabling the community
+      </Type>
+
+      <Type as="p" look="body18" margin="1rem 0">
+        At{' '}
+        <a href="https://thinkmill.com.au" target="_blank" rel="noopener noreferrer">
+          Thinkmill
+        </a>
+        , we have a longstanding commitment to open source that includes the likes of{' '}
+        <a href="https://react-select.com" target="_blank" rel="noopener noreferrer">
+          react select
+        </a>
+        ,{' '}
+        <a
+          href="https://github.com/JedWatson/classnamesu"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          classnames
+        </a>
+        , and of course Keystone <Emoji symbol="🙂" alt="Smile" />. Now that Keystone 6 is stable
+        enough to develop features and integrations around, we’ll put better processes in place for
+        you to collaborate around the Keystone project and showcase your awesome work with others in
+        the community.
+      </Type>
+
+      <Type as="h2" look="heading48" css={{ margin: '2rem 0 0' }}>
+        Feature Roadmap
+      </Type>
+
+      <Alert look="tip" css={{ margin: '2rem 0 2rem' }}>
+        <span
+          css={{
+            display: 'inline-block',
+            margin: '0.5rem 0.8rem 0.5rem 0',
+          }}
+        >
+          To see what we’ve recently shipped, checkout our{' '}
+          <Link href="/updates" passHref>
+            <a>updates</a>
+          </Link>{' '}
+          and{' '}
+          <Link href="/releases" passHref>
+            <a>release notes</a>
+          </Link>
+        </span>
+        <Emoji symbol="🚀" alt="Rocket" />
+      </Alert>
+
+      <Type as="h3" look="heading36">
+        Currently iterating on
+      </Type>
+
+      <RoadmapList>
+        <RoadmapItem title="Image & file management" section="fields and schema">
+          <Fragment>
+            We have the basics in place and are working towards more seamless end-to-end options.
+          </Fragment>
+        </RoadmapItem>
+        <RoadmapItem title="Back-end APIs for Node.js apps" section="core">
+          <Fragment>
+            Access your GraphQL APIs from Node.js for greater flexibility when writing apps and
+            hybrid use-cases
+          </Fragment>
+        </RoadmapItem>
+        <RoadmapItem title="Build & Deployment options" section="docs">
+          <Fragment>
+            We’re broadening our list of streamlined scenarios & looking into options for serverless
+            environments
+          </Fragment>
+        </RoadmapItem>
+        <RoadmapItem title="Onboarding series" section="docs">
+          <Fragment>
+            A step by step tutorial series that takes you from first principles through to a working
+            local Keystone instance.
+          </Fragment>
+        </RoadmapItem>
+      </RoadmapList>
+
+      <Type as="h3" look="heading36">
+        Next up
+      </Type>
+
+      <RoadmapList>
+        <RoadmapItem title=" Nested fields" section="fields and schema">
+          <Fragment>
+            Sometimes you need to manage data in structures that are nested and/or repeating. We’re
+            working on a way to define these in schema and have them stored as JSON field in the
+            database.
+          </Fragment>
+        </RoadmapItem>
+        <RoadmapItem title="Singletons" section="fields and schema">
+          <Fragment>
+            A way to define a single object in schema that’s editable in Admin UI and accessible in
+            the GraphQL API. Handy for storing website & social settings, API keys, and more.
+          </Fragment>
+        </RoadmapItem>
+        <RoadmapItem title="  Sortable lists" section="core">
+          <Fragment>Certain list types come with a need to order the items they contain.</Fragment>
+        </RoadmapItem>
+        <RoadmapItem title="  Field Descriptions" section="admin ui">
+          <Fragment>
+            A place to give helpful context to your editors. Makes their job easier and improves
+            what goes into your database.
+          </Fragment>
+        </RoadmapItem>
+      </RoadmapList>
+
+      <Type as="h3" look="heading36" css={{ margin: '3rem 0 2rem 0' }}>
+        Further afield
+      </Type>
+
+      <Type as="h2" look="heading24">
+        Admin UI
+      </Type>
+
+      <RoadmapList>
+        <RoadmapItem title="Customisation APIs">
+          <Fragment>
+            Consistent and predictable authoring patterns for tailoring your Admin UI to any use
+            case.
+          </Fragment>
+        </RoadmapItem>
+        <RoadmapItem title="Field Groups">
+          <Fragment>
+            It’s often easier to work with content when the form is grouped into different sections
+            of related fields.
+          </Fragment>
+        </RoadmapItem>
+        <RoadmapItem title="UI Translation">
+          <Fragment>
+            When an English-language UI doesn’t work for your team there’ll be a way for you to add
+            translations to all the strings in Admin UI.
+          </Fragment>
+        </RoadmapItem>
+        <RoadmapItem title="Conditional fields">
+          <Fragment>
+            Dynamically showing fields based on the value of other fields is a great way to improve
+            editing flow and content integrity.
+          </Fragment>
+        </RoadmapItem>
+        <RoadmapItem title="Responsive Layout">
+          <Fragment>
+            An editing interface that’s available for you to use no matter what device you’re on.
+          </Fragment>
+        </RoadmapItem>
+        <RoadmapItem title="A11y compliances">
+          <Fragment>
+            Solving accessibility in a customisable editing interface is a hard problem. We’re up
+            for the challenge.
+          </Fragment>
+        </RoadmapItem>
+        <RoadmapItem title="Content preview ">
+          <Fragment>
+            Built in tooling for you to give editors a sense of how their content will be consumed
+            by end users.
+          </Fragment>
+        </RoadmapItem>
+        <RoadmapItem title="Non-destructive editing">
+          <Fragment>
+            Better safeguards for saving changes when you transition in and our of different
+            contexts.
+          </Fragment>
+        </RoadmapItem>
+        <RoadmapItem title="Version history">
+          <Fragment>
+            Store content changes over time. Easy rollbacks to earlier versions if you make a
+            mistake or change your mind.
+          </Fragment>
+        </RoadmapItem>
+        <RoadmapItem title="Custom Publishing workflows">
+          <Fragment>
+            Design your own journey from <InlineCode>draft</InlineCode> to{' '}
+            <InlineCode>published</InlineCode> to meet the unique needs of your content team.
+          </Fragment>
+        </RoadmapItem>
+      </RoadmapList>
+
+      <Type as="h2" look="heading24">
+        Schema & Fields
+      </Type>
+
+      <RoadmapList>
+        <RoadmapItem title="Field Translations">
+          <Fragment>
+            A built-in schema-driven approach to supporting multilingual content projects.
+          </Fragment>
+        </RoadmapItem>
+      </RoadmapList>
+
+      <Type as="h2" look="heading24">
+        Core
+      </Type>
+
+      <RoadmapList>
+        <RoadmapItem title="Mongo DB">
+          <Fragment>Native support for the MongoDB database type.</Fragment>
+        </RoadmapItem>
+        <RoadmapItem title="Native full-text search">
+          <Fragment>
+            A way for you and editors to easily search for strings across your entire dataset. Handy
+            for when you need something specific but don’t know where it lives.
+          </Fragment>
+        </RoadmapItem>
+      </RoadmapList>
+
+      <Type as="h2" look="heading24">
+        API
+      </Type>
+
+      <RoadmapList>
+        <RoadmapItem title="Upsert mutations">
+          <Fragment>
+            If you want to update an item but aren’t sure if it exists, this will update the item if
+            it’s there or create a new item with the data you’ve provided.
+          </Fragment>
+        </RoadmapItem>
+        <RoadmapItem title="GraphQL Subscriptions">
+          <Fragment>
+            Long lasting server operations that can change their result over time. Handy for
+            updating your front-end in real time when important data changes in your backend.
+          </Fragment>
+        </RoadmapItem>
+      </RoadmapList>
+
+      <Type as="p" look="body18bold" margin="1rem 0">
+        Got a feature you’re after, or want to know more about the future?
+      </Type>
+      <Type as="p" look="body18" margin="1rem 0">
+        Join the Keystone conversation on{' '}
+        <a href="https://community.slack.com" target="_blank" rel="noopener noreferrer">
+          Slack
+        </a>
+        ,{' '}
+        <a
+          href="https://github.com/keystonejs/keystone/discussions"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GitHub
+        </a>
+        , and{' '}
+        <a href="https://twitter.com/keystonejs" target="_blank" rel="noopener noreferrer">
+          Twitter
+        </a>
+        .
+      </Type>
     </DocsPage>
   );
 }
