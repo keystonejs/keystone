@@ -1,6 +1,6 @@
 import Decimal from 'decimal.js';
 import { graphql } from '..';
-import { BaseGeneratedListTypes } from './utils';
+import { BaseGeneratedListTypes } from './generated';
 import { CommonFieldConfig } from './config';
 import { DatabaseProvider } from './core';
 import { AdminMetaRootVal, JSONValue, KeystoneContext, MaybePromise } from '.';
@@ -18,7 +18,17 @@ export type FieldData = {
   fieldKey: string;
 };
 
-export type FieldTypeFunc = (data: FieldData) => NextFieldType;
+export type FieldTypeFunc<GeneratedListTypes extends BaseGeneratedListTypes> = (
+  data: FieldData
+) => NextFieldType<
+  DBField,
+  graphql.Arg<graphql.InputType> | undefined,
+  graphql.Arg<graphql.InputType>,
+  graphql.Arg<graphql.NullableInputType, false>,
+  graphql.Arg<graphql.NullableInputType, false>,
+  graphql.Arg<graphql.NullableInputType, false>,
+  GeneratedListTypes
+>;
 
 export type NextFieldType<
   TDBField extends DBField = DBField,
@@ -37,10 +47,19 @@ export type NextFieldType<
   FilterArg extends graphql.Arg<graphql.NullableInputType, false> = graphql.Arg<
     graphql.NullableInputType,
     false
-  >
+  >,
+  GeneratedListTypes extends BaseGeneratedListTypes = BaseGeneratedListTypes
 > = {
   dbField: TDBField;
-} & FieldTypeWithoutDBField<TDBField, CreateArg, UpdateArg, UniqueWhereArg, OrderByArg, FilterArg>;
+} & FieldTypeWithoutDBField<
+  TDBField,
+  CreateArg,
+  UpdateArg,
+  UniqueWhereArg,
+  OrderByArg,
+  FilterArg,
+  GeneratedListTypes
+>;
 
 type ScalarPrismaTypes = {
   String: string;
@@ -354,7 +373,8 @@ export type FieldTypeWithoutDBField<
   FilterArg extends graphql.Arg<graphql.NullableInputType, false> = graphql.Arg<
     graphql.NullableInputType,
     false
-  >
+  >,
+  GeneratedListTypes extends BaseGeneratedListTypes = BaseGeneratedListTypes
 > = {
   input?: {
     uniqueWhere?: UniqueWhereFieldInputArg<DBFieldUniqueWhere<TDBField>, UniqueWhereArg>;
@@ -368,7 +388,7 @@ export type FieldTypeWithoutDBField<
   extraOutputFields?: Record<string, FieldTypeOutputField<TDBField>>;
   getAdminMeta?: (adminMeta: AdminMetaRootVal) => JSONValue;
   unreferencedConcreteInterfaceImplementations?: readonly graphql.ObjectType<any>[];
-} & CommonFieldConfig<BaseGeneratedListTypes>;
+} & CommonFieldConfig<GeneratedListTypes>;
 
 type AnyInputObj = graphql.InputObjectType<Record<string, graphql.Arg<graphql.InputType, any>>>;
 
@@ -425,7 +445,10 @@ export type FindManyArgs = {
 export type FindManyArgsValue = graphql.InferValueFromArgs<FindManyArgs>;
 
 // fieldType(dbField)(fieldInfo) => { ...fieldInfo, dbField };
-export function fieldType<TDBField extends DBField>(dbField: TDBField) {
+export function fieldType<
+  TDBField extends DBField,
+  GeneratedListTypes extends BaseGeneratedListTypes
+>(dbField: TDBField) {
   return function <
     CreateArg extends graphql.Arg<graphql.InputType> | undefined,
     UpdateArg extends graphql.Arg<graphql.InputType>,
@@ -441,7 +464,15 @@ export function fieldType<TDBField extends DBField>(dbField: TDBField) {
       OrderByArg,
       FilterArg
     >
-  ): NextFieldType<TDBField, CreateArg, UpdateArg, UniqueWhereArg, OrderByArg> {
+  ): NextFieldType<
+    TDBField,
+    CreateArg,
+    UpdateArg,
+    UniqueWhereArg,
+    OrderByArg,
+    FilterArg,
+    GeneratedListTypes
+  > {
     return { ...graphQLInfo, dbField };
   };
 }

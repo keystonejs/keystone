@@ -2,11 +2,11 @@ import path from 'path';
 import { validate } from 'uuid';
 import { isCuid } from 'cuid';
 import {
+  BaseGeneratedListTypes,
   fieldType,
   FieldTypeFunc,
   IdFieldConfig,
   orderDirectionEnum,
-  ScalarDBField,
 } from '../types';
 import { graphql } from '..';
 import { packagePath } from '../package-path';
@@ -102,10 +102,10 @@ function resolveVal(
 }
 
 export const idFieldType =
-  (config: IdFieldConfig): FieldTypeFunc =>
+  (config: IdFieldConfig): FieldTypeFunc<BaseGeneratedListTypes> =>
   meta => {
     const parseVal = idParsers[config.kind];
-    return fieldType<ScalarDBField<'String' | 'Int', 'required'>>({
+    return fieldType({
       kind: 'scalar',
       mode: 'required',
       scalar: config.kind === 'autoincrement' ? 'Int' : 'String',

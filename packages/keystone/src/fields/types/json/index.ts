@@ -18,7 +18,7 @@ export const json =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     defaultValue = null,
     ...config
-  }: JsonFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
+  }: JsonFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc<TGeneratedListTypes> =>
   meta => {
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type json");

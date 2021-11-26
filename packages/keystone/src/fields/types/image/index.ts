@@ -101,7 +101,7 @@ function isValidImageExtension(extension: string): extension is ImageExtension {
 export const image =
   <TGeneratedListTypes extends BaseGeneratedListTypes>(
     config: ImageFieldConfig<TGeneratedListTypes> = {}
-  ): FieldTypeFunc =>
+  ): FieldTypeFunc<TGeneratedListTypes> =>
   () => {
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type image");

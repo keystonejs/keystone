@@ -41,7 +41,7 @@ export const virtual =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     field,
     ...config
-  }: VirtualFieldConfig<TGeneratedListTypes>): FieldTypeFunc =>
+  }: VirtualFieldConfig<TGeneratedListTypes>): FieldTypeFunc<TGeneratedListTypes> =>
   meta => {
     const usableField = typeof field === 'function' ? field(meta.lists) : field;
     const namedType = getNamedType(usableField.type.graphQLType);

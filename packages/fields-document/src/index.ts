@@ -89,7 +89,7 @@ export const document =
     relationships: configRelationships,
     links,
     ...config
-  }: DocumentFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
+  }: DocumentFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc<TGeneratedListTypes> =>
   meta => {
     const documentFeatures = normaliseDocumentFeatures({
       dividers,

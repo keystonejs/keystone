@@ -73,7 +73,7 @@ export const select =
     defaultValue,
     validation,
     ...config
-  }: SelectFieldConfig<TGeneratedListTypes>): FieldTypeFunc =>
+  }: SelectFieldConfig<TGeneratedListTypes>): FieldTypeFunc<TGeneratedListTypes> =>
   meta => {
     const fieldLabel = config.label ?? humanize(meta.fieldKey);
     const resolvedIsNullable = getResolvedIsNullable(validation, config.db);

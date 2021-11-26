@@ -1,8 +1,8 @@
-import type { KeystoneContext } from '..';
-import type { BaseGeneratedListTypes } from '../utils';
+import type { KeystoneContextFromListTypes } from '..';
+import { BaseGeneratedListTypes } from '../generated';
 
-type CommonArgs = {
-  context: KeystoneContext;
+type CommonArgs<GeneratedListTypes extends BaseGeneratedListTypes> = {
+  context: KeystoneContextFromListTypes<GeneratedListTypes>;
   /**
    * The key of the list that the operation is occurring on
    */
@@ -76,7 +76,7 @@ type ArgsForCreateOrUpdateOperation<TGeneratedListTypes extends BaseGeneratedLis
     };
 
 type ResolveInputHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
-  args: ArgsForCreateOrUpdateOperation<TGeneratedListTypes> & CommonArgs
+  args: ArgsForCreateOrUpdateOperation<TGeneratedListTypes> & CommonArgs<TGeneratedListTypes>
 ) =>
   | Promise<TGeneratedListTypes['inputs']['create'] | TGeneratedListTypes['inputs']['update']>
   | TGeneratedListTypes['inputs']['create']
@@ -92,7 +92,7 @@ type ResolveInputHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
 type ValidateInputHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
   args: ArgsForCreateOrUpdateOperation<TGeneratedListTypes> & {
     addValidationError: (error: string) => void;
-  } & CommonArgs
+  } & CommonArgs<TGeneratedListTypes>
 ) => Promise<void> | void;
 
 type ValidateDeleteHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
@@ -100,7 +100,7 @@ type ValidateDeleteHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
     operation: 'delete';
     item: TGeneratedListTypes['backing'];
     addValidationError: (error: string) => void;
-  } & CommonArgs
+  } & CommonArgs<TGeneratedListTypes>
 ) => Promise<void> | void;
 
 type BeforeOperationHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
@@ -113,7 +113,7 @@ type BeforeOperationHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
         resolvedData: undefined;
       }
   ) &
-    CommonArgs
+    CommonArgs<TGeneratedListTypes>
 ) => Promise<void> | void;
 
 type AfterOperationHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
@@ -131,5 +131,5 @@ type AfterOperationHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
       }
   ) & {
     originalItem: TGeneratedListTypes['backing'];
-  } & CommonArgs
+  } & CommonArgs<TGeneratedListTypes>
 ) => Promise<void> | void;

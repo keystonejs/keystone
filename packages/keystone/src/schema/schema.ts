@@ -7,16 +7,18 @@ import type {
   ExtendGraphqlSchema,
   GraphQLSchemaExtension,
   KeystoneConfig,
+  KeystoneGeneratedTypes,
   ListConfig,
 } from '../types';
 
-export function config(config: KeystoneConfig) {
+export function config<KSTypes extends KeystoneGeneratedTypes>(config: KeystoneConfig<KSTypes>) {
   return config;
 }
 
-export function list<Fields extends BaseFields<BaseGeneratedListTypes>>(
-  config: ListConfig<BaseGeneratedListTypes, Fields>
-): ListConfig<any, any> {
+export function list<
+  Fields extends BaseFields<GeneratedListTypes>,
+  GeneratedListTypes extends BaseGeneratedListTypes
+>(config: ListConfig<GeneratedListTypes, Fields>): ListConfig<GeneratedListTypes, any> {
   return config;
 }
 
@@ -24,9 +26,9 @@ export function gql(strings: TemplateStringsArray) {
   return strings[0];
 }
 
-export function graphQLSchemaExtension({
+export function graphQLSchemaExtension<KSTypes extends KeystoneGeneratedTypes>({
   typeDefs,
   resolvers,
-}: GraphQLSchemaExtension): ExtendGraphqlSchema {
+}: GraphQLSchemaExtension<KSTypes>): ExtendGraphqlSchema {
   return (schema: GraphQLSchema) => mergeSchemas({ schemas: [schema], typeDefs, resolvers });
 }

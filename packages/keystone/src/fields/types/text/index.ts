@@ -36,7 +36,7 @@ export const text =
     defaultValue: _defaultValue,
     validation: _validation,
     ...config
-  }: TextFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
+  }: TextFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc<TGeneratedListTypes> =>
   meta => {
     for (const type of ['min', 'max'] as const) {
       const val = _validation?.length?.[type];

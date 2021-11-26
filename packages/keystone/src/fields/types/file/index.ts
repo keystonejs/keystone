@@ -89,7 +89,7 @@ async function inputResolver(data: FileFieldInputType, context: KeystoneContext)
 export const file =
   <TGeneratedListTypes extends BaseGeneratedListTypes>(
     config: FileFieldConfig<TGeneratedListTypes> = {}
-  ): FieldTypeFunc =>
+  ): FieldTypeFunc<TGeneratedListTypes> =>
   () => {
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type file");

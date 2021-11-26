@@ -35,8 +35,8 @@ export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access' | 'graph
       read: boolean;
       create: boolean;
       update: boolean;
-      filter: boolean | ((args: FilterOrderArgs) => MaybePromise<boolean>);
-      orderBy: boolean | ((args: FilterOrderArgs) => MaybePromise<boolean>);
+      filter: boolean | ((args: FilterOrderArgs<BaseGeneratedListTypes>) => MaybePromise<boolean>);
+      orderBy: boolean | ((args: FilterOrderArgs<BaseGeneratedListTypes>) => MaybePromise<boolean>);
     };
     cacheHint?: CacheHint | undefined;
   };
@@ -80,8 +80,8 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
       create: boolean;
       update: boolean;
       delete: boolean;
-      filter: boolean | ((args: FilterOrderArgs) => MaybePromise<boolean>);
-      orderBy: boolean | ((args: FilterOrderArgs) => MaybePromise<boolean>);
+      filter: boolean | ((args: FilterOrderArgs<BaseGeneratedListTypes>) => MaybePromise<boolean>);
+      orderBy: boolean | ((args: FilterOrderArgs<BaseGeneratedListTypes>) => MaybePromise<boolean>);
     }
   > = {};
 

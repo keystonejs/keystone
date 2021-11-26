@@ -151,10 +151,10 @@ export function parseListAccessControl(
 
 export type ResolvedListAccessControl = {
   operation: {
-    create: ListOperationAccessControl<'create'>;
-    query: ListOperationAccessControl<'query'>;
-    update: ListOperationAccessControl<'update'>;
-    delete: ListOperationAccessControl<'delete'>;
+    create: ListOperationAccessControl<'create', BaseGeneratedListTypes>;
+    query: ListOperationAccessControl<'query', BaseGeneratedListTypes>;
+    update: ListOperationAccessControl<'update', BaseGeneratedListTypes>;
+    delete: ListOperationAccessControl<'delete', BaseGeneratedListTypes>;
   };
   filter: {
     // create: not supported

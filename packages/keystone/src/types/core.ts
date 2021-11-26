@@ -2,13 +2,14 @@ import { IncomingMessage, ServerResponse } from 'http';
 import type { GraphQLResolveInfo } from 'graphql';
 import type { GqlNames } from './utils';
 import type { KeystoneContext, SessionContext } from './context';
+import { KeystoneContextFromKSTypes, KeystoneGeneratedTypes } from '.';
 
 export type DatabaseProvider = 'sqlite' | 'postgresql';
 
-export type CreateRequestContext = (
+export type CreateRequestContext<KSTypes extends KeystoneGeneratedTypes> = (
   req: IncomingMessage,
   res: ServerResponse
-) => Promise<KeystoneContext>;
+) => Promise<KeystoneContextFromKSTypes<KSTypes>>;
 
 export type CreateContext = (args: {
   sessionContext?: SessionContext<any>;
@@ -24,16 +25,16 @@ export type SessionImplementation = {
   ): Promise<SessionContext<any>>;
 };
 
-export type GraphQLResolver = (
+export type GraphQLResolver<KSTypes extends KeystoneGeneratedTypes> = (
   root: any,
   args: any,
-  context: KeystoneContext,
+  context: KeystoneContextFromKSTypes<KSTypes>,
   info: GraphQLResolveInfo
 ) => any;
 
-export type GraphQLSchemaExtension = {
+export type GraphQLSchemaExtension<KSTypes extends KeystoneGeneratedTypes> = {
   typeDefs: string;
-  resolvers: Record<string, Record<string, GraphQLResolver>>;
+  resolvers: Record<string, Record<string, GraphQLResolver<KSTypes>>>;
 };
 
 // TODO: don't duplicate this between here and packages/keystone/ListTypes/list.js

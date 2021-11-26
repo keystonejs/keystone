@@ -45,7 +45,7 @@ export const float =
     validation,
     defaultValue,
     ...config
-  }: FloatFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
+  }: FloatFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc<TGeneratedListTypes> =>
   meta => {
     if (
       defaultValue !== undefined &&

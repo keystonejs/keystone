@@ -80,7 +80,7 @@ export const relationship =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     ref,
     ...config
-  }: RelationshipFieldConfig<TGeneratedListTypes>): FieldTypeFunc =>
+  }: RelationshipFieldConfig<TGeneratedListTypes>): FieldTypeFunc<TGeneratedListTypes> =>
   meta => {
     const { many = false } = config;
     const [foreignListKey, foreignFieldKey] = ref.split('.');

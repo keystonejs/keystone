@@ -1,19 +1,18 @@
 import { CacheHint } from 'apollo-server-types';
 import { FieldTypeFunc } from '../next-fields';
-import type { BaseGeneratedListTypes } from '../utils';
-import { KeystoneContext, MaybePromise } from '..';
+import { BaseGeneratedListTypes } from '../generated';
+import { KeystoneContextFromListTypes, MaybePromise } from '..';
 import { MaybeItemFunction, MaybeSessionFunction } from './lists';
 import { FieldHooks } from './hooks';
 import { FieldAccessControl } from './access-control';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type BaseFields<TGeneratedListTypes extends BaseGeneratedListTypes> = {
-  [key: string]: FieldTypeFunc;
+  [key: string]: FieldTypeFunc<TGeneratedListTypes>;
 };
 
-export type FilterOrderArgs = {
-  context: KeystoneContext;
-  session: KeystoneContext['session'];
+export type FilterOrderArgs<GeneratedListTypes extends BaseGeneratedListTypes> = {
+  context: KeystoneContextFromListTypes<GeneratedListTypes>;
+  session: KeystoneContextFromListTypes<GeneratedListTypes>['session'];
   listKey: string;
   fieldKey: string;
 };
@@ -23,9 +22,9 @@ export type CommonFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes
   label?: string;
   ui?: {
     views?: string;
-    createView?: { fieldMode?: MaybeSessionFunction<'edit' | 'hidden'> };
-    itemView?: { fieldMode?: MaybeItemFunction<'edit' | 'read' | 'hidden'> };
-    listView?: { fieldMode?: MaybeSessionFunction<'read' | 'hidden'> };
+    createView?: { fieldMode?: MaybeSessionFunction<'edit' | 'hidden', TGeneratedListTypes> };
+    itemView?: { fieldMode?: MaybeItemFunction<'edit' | 'read' | 'hidden', TGeneratedListTypes> };
+    listView?: { fieldMode?: MaybeSessionFunction<'read' | 'hidden', TGeneratedListTypes> };
   };
   graphql?: {
     cacheHint?: CacheHint;
@@ -42,6 +41,6 @@ export type CommonFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes
     omit?: true | readonly ('read' | 'create' | 'update')[];
   };
   // Disabled by default...
-  isFilterable?: boolean | ((args: FilterOrderArgs) => MaybePromise<boolean>);
-  isOrderable?: boolean | ((args: FilterOrderArgs) => MaybePromise<boolean>);
+  isFilterable?: boolean | ((args: FilterOrderArgs<TGeneratedListTypes>) => MaybePromise<boolean>);
+  isOrderable?: boolean | ((args: FilterOrderArgs<TGeneratedListTypes>) => MaybePromise<boolean>);
 };

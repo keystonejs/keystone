@@ -48,7 +48,7 @@ export const integer =
     defaultValue: _defaultValue,
     validation,
     ...config
-  }: IntegerFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
+  }: IntegerFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc<TGeneratedListTypes> =>
   meta => {
     const defaultValue = _defaultValue ?? null;
     const hasAutoIncDefault =

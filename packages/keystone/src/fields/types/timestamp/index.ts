@@ -40,7 +40,7 @@ export const timestamp =
     validation,
     defaultValue,
     ...config
-  }: TimestampFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
+  }: TimestampFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc<TGeneratedListTypes> =>
   meta => {
     if (typeof defaultValue === 'string') {
       try {

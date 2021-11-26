@@ -110,7 +110,7 @@ export const cloudinaryImage =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     cloudinary,
     ...config
-  }: CloudinaryImageFieldConfig<TGeneratedListTypes>): FieldTypeFunc =>
+  }: CloudinaryImageFieldConfig<TGeneratedListTypes>): FieldTypeFunc<TGeneratedListTypes> =>
   meta => {
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type cloudinaryImage");

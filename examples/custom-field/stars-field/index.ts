@@ -24,7 +24,7 @@ export const stars =
     isIndexed,
     maxStars = 5,
     ...config
-  }: StarsFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
+  }: StarsFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc<TGeneratedListTypes> =>
   meta =>
     fieldType({
       // this configures what data is stored in the database

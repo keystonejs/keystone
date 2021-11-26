@@ -1,14 +1,12 @@
 import type { CacheHint } from 'apollo-server-types';
-import type { BaseGeneratedListTypes, MaybePromise } from '../utils';
-import type { KeystoneContext } from '../context';
+import type { MaybePromise } from '../utils';
+import { BaseGeneratedListTypes } from '../generated';
+import { KeystoneContextFromListTypes } from '..';
 import type { ListHooks } from './hooks';
 import type { ListAccessControl } from './access-control';
 import type { BaseFields, FilterOrderArgs } from './fields';
 
-export type ListSchemaConfig = Record<
-  string,
-  ListConfig<BaseGeneratedListTypes, BaseFields<BaseGeneratedListTypes>>
->;
+export type ListSchemaConfig = Record<string, ListConfig<any, any>>;
 
 export type IdFieldConfig = {
   kind: 'cuid' | 'uuid' | 'autoincrement';
@@ -52,8 +50,12 @@ export type ListConfig<
   description?: string; // defaults both { adminUI: { description }, graphQL: { description } }
 
   // Defaults to apply to all fields.
-  defaultIsFilterable?: false | ((args: FilterOrderArgs) => MaybePromise<boolean>); // The default value to use for graphql.isEnabled.filter on all fields for this list
-  defaultIsOrderable?: false | ((args: FilterOrderArgs) => MaybePromise<boolean>); // The default value to use for graphql.isEnabled.orderBy on all fields for this list
+  defaultIsFilterable?:
+    | false
+    | ((args: FilterOrderArgs<TGeneratedListTypes>) => MaybePromise<boolean>); // The default value to use for graphql.isEnabled.filter on all fields for this list
+  defaultIsOrderable?:
+    | false
+    | ((args: FilterOrderArgs<TGeneratedListTypes>) => MaybePromise<boolean>); // The default value to use for graphql.isEnabled.orderBy on all fields for this list
 
   /**
    * The label used for the list
@@ -109,19 +111,19 @@ export type ListAdminUIConfig<
    * Excludes this list from the Admin UI
    * @default false
    */
-  isHidden?: MaybeSessionFunction<boolean>;
+  isHidden?: MaybeSessionFunction<boolean, TGeneratedListTypes>;
   /**
    * Hides the create button in the Admin UI.
    * Note that this does **not** disable creating items through the GraphQL API, it only hides the button to create an item for this list in the Admin UI.
    * @default false
    */
-  hideCreate?: MaybeSessionFunction<boolean>;
+  hideCreate?: MaybeSessionFunction<boolean, TGeneratedListTypes>;
   /**
    * Hides the delete button in the Admin UI.
    * Note that this does **not** disable deleting items through the GraphQL API, it only hides the button to delete an item for this list in the Admin UI.
    * @default false
    */
-  hideDelete?: MaybeSessionFunction<boolean>;
+  hideDelete?: MaybeSessionFunction<boolean, TGeneratedListTypes>;
   /**
    * Configuration specific to the create view in the Admin UI
    */
@@ -131,7 +133,7 @@ export type ListAdminUIConfig<
      * Specific field modes on a per-field basis via a field's config.
      * @default 'edit'
      */
-    defaultFieldMode?: MaybeSessionFunction<'edit' | 'hidden'>;
+    defaultFieldMode?: MaybeSessionFunction<'edit' | 'hidden', TGeneratedListTypes>;
   };
 
   /**
@@ -144,7 +146,7 @@ export type ListAdminUIConfig<
      * Specific field modes on a per-field basis via a field's config.
      * @default 'edit'
      */
-    defaultFieldMode?: MaybeItemFunction<'edit' | 'read' | 'hidden'>;
+    defaultFieldMode?: MaybeItemFunction<'edit' | 'read' | 'hidden', TGeneratedListTypes>;
   };
 
   /**
@@ -156,7 +158,7 @@ export type ListAdminUIConfig<
      * Specific field modes on a per-field basis via a field's config.
      * @default 'read'
      */
-    defaultFieldMode?: MaybeSessionFunction<'read' | 'hidden'>;
+    defaultFieldMode?: MaybeSessionFunction<'read' | 'hidden', TGeneratedListTypes>;
     /**
      * The columns(which refer to fields) that should be shown to users of the Admin UI.
      * Users of the Admin UI can select different columns to show in the UI.
@@ -171,15 +173,21 @@ export type ListAdminUIConfig<
   };
 };
 
-export type MaybeSessionFunction<T extends string | boolean> =
-  | T
-  | ((args: { session: any; context: KeystoneContext }) => MaybePromise<T>);
-
-export type MaybeItemFunction<T> =
+export type MaybeSessionFunction<
+  T extends string | boolean,
+  GeneratedListTypes extends BaseGeneratedListTypes
+> =
   | T
   | ((args: {
       session: any;
-      context: KeystoneContext;
+      context: KeystoneContextFromListTypes<GeneratedListTypes>;
+    }) => MaybePromise<T>);
+
+export type MaybeItemFunction<T, GeneratedListTypes extends BaseGeneratedListTypes> =
+  | T
+  | ((args: {
+      session: any;
+      context: KeystoneContextFromListTypes<GeneratedListTypes>;
       item: { id: string | number; [path: string]: any };
     }) => MaybePromise<T>);
 

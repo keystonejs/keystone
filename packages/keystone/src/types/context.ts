@@ -2,18 +2,18 @@ import { IncomingMessage } from 'http';
 import { Readable } from 'stream';
 import { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql';
 import { InitialisedList } from '../lib/core/types-for-lists';
-import type { BaseGeneratedListTypes, GqlNames } from './utils';
+import { BaseGeneratedListTypes } from './generated';
+import { GqlNames, KeystoneGeneratedTypes } from '.';
 
-export type KeystoneContext = {
+export type KeystoneContext<KSTypes extends KeystoneGeneratedTypes = KeystoneGeneratedTypes> = {
   req?: IncomingMessage;
-  db: KeystoneDbAPI<Record<string, BaseGeneratedListTypes>>;
-  query: KeystoneListsAPI<Record<string, BaseGeneratedListTypes>>;
-  graphql: KeystoneGraphQLAPI<any>;
-  sudo: () => KeystoneContext;
-  exitSudo: () => KeystoneContext;
-  withSession: (session: any) => KeystoneContext;
-  // TODO: Correctly type this as a prisma client
-  prisma: any;
+  db: KeystoneDbAPI<KSTypes['lists']>;
+  query: KeystoneListsAPI<KSTypes['lists']>;
+  graphql: KeystoneGraphQLAPI;
+  sudo: () => KeystoneContext<KSTypes>;
+  exitSudo: () => KeystoneContext<KSTypes>;
+  withSession: (session: any) => KeystoneContext<KSTypes>;
+  prisma: KSTypes['prisma'];
   files: FilesContext | undefined;
   images: ImagesContext | undefined;
   totalResults: number;
@@ -127,11 +127,7 @@ export type KeystoneDbAPI<KeystoneListsTypeInfo extends Record<string, BaseGener
 
 // GraphQL API
 
-export type KeystoneGraphQLAPI<
-  // this is here because it will be used soon
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  KeystoneListsTypeInfo extends Record<string, BaseGeneratedListTypes>
-> = {
+export type KeystoneGraphQLAPI = {
   schema: GraphQLSchema;
   run: (args: GraphQLExecutionArguments) => Promise<Record<string, any>>;
   raw: (args: GraphQLExecutionArguments) => Promise<ExecutionResult>;

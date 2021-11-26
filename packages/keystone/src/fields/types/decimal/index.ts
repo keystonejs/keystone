@@ -57,7 +57,7 @@ export const decimal =
     validation,
     defaultValue,
     ...config
-  }: DecimalFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
+  }: DecimalFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc<TGeneratedListTypes> =>
   meta => {
     if (meta.provider === 'sqlite') {
       throw new Error('The decimal field does not support sqlite');

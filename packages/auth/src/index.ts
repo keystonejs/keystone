@@ -6,6 +6,7 @@ import {
   KeystoneContext,
   AdminUIConfig,
   SessionStrategy,
+  KeystoneGeneratedTypes,
 } from '@keystone-next/keystone/types';
 import { password, timestamp } from '@keystone-next/keystone/fields';
 
@@ -88,7 +89,10 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
    *  - to the init page when initFirstItem is configured, and there are no user in the database
    *  - to the signin page when no valid session is present
    */
-  const pageMiddleware: AdminUIConfig['pageMiddleware'] = async ({ context, isValidSession }) => {
+  const pageMiddleware: AdminUIConfig<KeystoneGeneratedTypes>['pageMiddleware'] = async ({
+    context,
+    isValidSession,
+  }) => {
     const { req, session } = context;
     const pathname = url.parse(req!.url!).pathname!;
 

@@ -25,7 +25,7 @@ export const checkbox =
   <TGeneratedListTypes extends BaseGeneratedListTypes>({
     defaultValue = false,
     ...config
-  }: CheckboxFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
+  }: CheckboxFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc<TGeneratedListTypes> =>
   meta => {
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type checkbox");
