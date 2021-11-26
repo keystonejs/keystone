@@ -52,7 +52,7 @@ export default function Brand() {
               display: 'block',
               padding: '1.5rem',
               maxWidth: '20rem',
-              color: '#fff',
+              color: 'var(--app-bg)',
               background: 'linear-gradient(135deg, var(--grad1-1), var(--grad1-2))',
               borderRadius: '0.5rem',
               filter: 'saturate(80%)',
