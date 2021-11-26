@@ -562,7 +562,7 @@ export default function Roadmap() {
       </Type>
       <Type as="p" look="body18" margin="1rem 0">
         Join the Keystone conversation on{' '}
-        <a href="https://community.slack.com" target="_blank" rel="noopener noreferrer">
+        <a href="https://community.keystonejs.com" target="_blank" rel="noopener noreferrer">
           Slack
         </a>
         ,{' '}
