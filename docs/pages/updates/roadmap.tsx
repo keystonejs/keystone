@@ -138,7 +138,7 @@ function RoadmapList({ children }: RoadmapListProps) {
 }
 
 const roadmapItemSectionStyles = {
-  margin: '0rem 0',
+  margin: '0rem 0 1.25rem',
   borderRadius: '0.4rem',
   display: 'inline-block',
   padding: '0.3rem 0.6rem',
@@ -173,10 +173,10 @@ function RoadmapItem({ title, section, children }: RoadmapItemProps) {
   const Section = roadmapItemSection[section];
   return (
     <li>
+      {section && <Section />}
       <Type as="h3" look="heading20bold" margin="0 0 1rem 0">
         {title}
       </Type>
-      {section && <Section />}
       <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
         {children}
       </Type>
@@ -293,7 +293,7 @@ export default function Roadmap() {
       <Type as="h3" look="body18bold" margin="1rem 0">
         Next-gen Admin UI
       </Type>
-      <Type as="p" look="body18" margin="1rem 0">
+      <Type as="p" look="body18">
         Our design team spent much of the second half of 2021 defining a new vision for Admin UI
         that gives you more capabilities to support content editors in ways that matter most to
         them. We’ve already shipped quick wins for customisable{' '}
@@ -317,7 +317,7 @@ export default function Roadmap() {
         Maturing the Developer Experience
       </Type>
 
-      <Type as="p" look="body18" margin="1rem 0">
+      <Type as="p" look="body18">
         We’ll continue to iterate on making Keystone the easiest way to design and standup a GraphQL
         API on the web. Going all-in on Typescript has made the DX so sweet, but we want to take it{' '}
         <em>further</em> so that Keystone’s the best Typescript &gt; GraphQL developer experience in
