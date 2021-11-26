@@ -1,4 +1,4 @@
-import { format, formatISO } from 'date-fns';
+import { formatISO } from 'date-fns';
 import { DateType } from '../types';
 
 /**
@@ -8,10 +8,25 @@ export const formatDateType = (date: Date): DateType => {
   return formatISO(date, { representation: 'date' });
 };
 
-/**
- * Format day, month, year, like "Dec 01 2010" as "12/01/2010"
- * Note, subject to localisation, such as Jan 02 2009, can read 02/01/2009.
- *
- * @usage formatDMY(new Date('2019-09-18T19:00:52')) => "09/18/2019"
- */
-export const formatDMY = (date: Date): string => format(date, 'MM/dd/yyyy');
+// undefined means we'll use the user's locale
+const formatter = new Intl.DateTimeFormat(undefined, {
+  dateStyle: 'short',
+});
+
+export const formatDate = (date: Date): string => formatter.format(date);
+
+export const dateFormatPlaceholder = formatter
+  .formatToParts(new Date())
+  .map(x => {
+    if (x.type === 'day') {
+      return 'dd';
+    }
+    if (x.type === 'month') {
+      return 'mm';
+    }
+    if (x.type === 'year') {
+      return 'yyyy';
+    }
+    return x.value;
+  })
+  .join('');

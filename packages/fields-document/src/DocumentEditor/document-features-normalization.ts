@@ -137,11 +137,11 @@ export function normalizeElementBasedOnDocumentFeatures(
   );
 }
 
-export function withDocumentFeaturesNormalization<T extends Editor>(
+export function withDocumentFeaturesNormalization(
   documentFeatures: DocumentFeatures,
   relationships: Relationships,
-  editor: T
-): T {
+  editor: Editor
+): Editor {
   const { normalizeNode } = editor;
   const documentFeaturesForNormalization = { ...documentFeatures, relationships: true };
   editor.normalizeNode = ([node, path]) => {

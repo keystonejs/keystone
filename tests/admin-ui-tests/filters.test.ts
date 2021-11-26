@@ -1,3 +1,4 @@
+import retry from 'async-retry';
 import { Browser, Page, BrowserContext } from 'playwright';
 import { adminUITests, deleteAllData, generateDataArray, loadIndex, makeGqlRequest } from './utils';
 
@@ -112,19 +113,20 @@ adminUITests('./tests/test-projects/basic', browserType => {
           20
         ),
       });
+      await retry(async () => {
+        await page.goto('http://localhost:3000/tasks');
+        await page.waitForSelector('table tbody tr');
+        const elements = await page.$$('table tbody tr');
+        expect(elements.length).toBe(21);
 
-      await page.goto('http://localhost:3000/tasks');
-      await page.waitForSelector('table tbody tr');
-      const elements = await page.$$('table tbody tr');
-      expect(elements.length).toBe(21);
+        await page.goto(
+          `http://localhost:3000/tasks?!assignedTo_matches="${assignedTask.assignedTo.id}"`
+        );
 
-      await page.goto(
-        `http://localhost:3000/tasks?!assignedTo_matches="${assignedTask.assignedTo.id}"`
-      );
-
-      await page.waitForSelector('table tbody tr');
-      const filteredElements = await page.$$('table tbody tr');
-      expect(filteredElements.length).toBe(1);
+        await page.waitForSelector('table tbody tr');
+        const filteredElements = await page.$$('table tbody tr');
+        expect(filteredElements.length).toBe(1);
+      });
     });
   });
 

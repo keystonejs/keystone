@@ -9,6 +9,7 @@ export const supportsUnique = false;
 export const fieldName = 'enabled';
 export const skipRequiredTest = true;
 export const supportsGraphQLIsNonNull = true;
+export const supportsDbMap = true;
 
 export const getTestFields = () => ({ enabled: checkbox() });
 

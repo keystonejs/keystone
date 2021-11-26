@@ -6,11 +6,11 @@ Use it as a starting place for learning how to use Keystone.
 
 ## Instructions
 
-To run this project:
+To run this project, clone the Keystone repository locally, run `yarn` at the root of the repository then navigate to this directory and run:
 
-1. Clone the Keystone repository locally
-2. Navigate to this directory `cd examples/blog`
-3. Run `yarn install` and then `yarn dev`
+```shell
+yarn dev
+```
 
 This will start the Admin UI at [localhost:3000](http://localhost:3000).
 You can use the Admin UI to create items in your database.

@@ -32,6 +32,7 @@ export type PasswordFieldConfig<TGeneratedListTypes extends BaseGeneratedListTyp
     };
     db?: {
       isNullable?: boolean;
+      map?: string;
     };
     bcrypt?: Pick<typeof import('bcryptjs'), 'compare' | 'hash'>;
   };
@@ -117,6 +118,7 @@ export const password =
       kind: 'scalar',
       scalar: 'String',
       mode: isNullable === false ? 'required' : 'optional',
+      map: config.db?.map,
     })({
       ...config,
       hooks: {

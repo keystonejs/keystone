@@ -1,10 +1,10 @@
 import { MutableRefObject, useEffect, useRef } from 'react';
 import { Transforms, Editor } from 'slate';
 
-export function withSoftBreaks<T extends Editor>(
+export function withSoftBreaks(
   isShiftPressedRef: MutableRefObject<boolean>,
-  editor: T
-): T {
+  editor: Editor
+): Editor {
   const { insertBreak } = editor;
   // TODO: should soft breaks only work in particular places
   editor.insertBreak = () => {

@@ -222,4 +222,9 @@ export type ListDBConfig = {
    * @default { kind: "cuid" }
    */
   idField?: IdFieldConfig;
+  /**
+   * Specifies an alternative name name for the table to use, if you don't want
+   * the default (derived from the list key)
+   */
+  map?: string;
 };

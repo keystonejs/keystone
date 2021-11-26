@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/example-json-field",
-  "version": "4.0.11",
+  "version": "5.0.0",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -9,13 +9,13 @@
     "build": "keystone-next build"
   },
   "dependencies": {
-    "@keystone-next/keystone": "^27.0.0"
+    "@keystone-next/keystone": "^29.0.0"
   },
   "devDependencies": {
     "typescript": "^4.4.4"
   },
   "engines": {
-    "node": "^12.20 || >= 14.13"
+    "node": "^14.15 || ^16.13"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/examples/json"
 }

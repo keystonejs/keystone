@@ -1,5 +1,5 @@
 import { list } from '@keystone-next/keystone';
-import { select, relationship, text, timestamp, image } from '@keystone-next/keystone/fields';
+import { select, relationship, text, timestamp, image, file } from '@keystone-next/keystone/fields';
 
 export const lists = {
   Post: list({
@@ -16,6 +16,7 @@ export const lists = {
       publishDate: timestamp(),
       author: relationship({ ref: 'Author.posts', many: false }),
       hero: image(),
+      attachment: file(),
     },
   }),
   Author: list({

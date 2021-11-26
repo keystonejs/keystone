@@ -1,5 +1,17 @@
 # @keystone-next/prisma-utils
 
+## 2.0.0
+
+### Major Changes
+
+- [#6957](https://github.com/keystonejs/keystone/pull/6957) [`de8cf44e7`](https://github.com/keystonejs/keystone/commit/de8cf44e7b328ab98e1466d7191d9ee65a57b02a) Thanks [@bladey](https://github.com/bladey)! - Update Node engines to support current Node LTS versions, currently versions 14 and 16.
+
+## 1.0.3
+
+### Patch Changes
+
+- [#6904](https://github.com/keystonejs/keystone/pull/6904) [`859ccb974`](https://github.com/keystonejs/keystone/commit/859ccb97489370443bc8d78b0bd7543d83f5b381) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Update prisma monorepo to [v3.4.0 (minor)](https://github.com/prisma/prisma/releases/tag/3.4.0)
+
 ## 1.0.2
 
 ### Patch Changes

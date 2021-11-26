@@ -27,7 +27,7 @@ export type TextFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> 
     };
     defaultValue?: string;
     graphql?: { create?: { isNonNull?: boolean }; read?: { isNonNull?: boolean } };
-    db?: { isNullable?: boolean };
+    db?: { isNullable?: boolean; map?: string };
   };
 
 export const text =
@@ -70,6 +70,7 @@ export const text =
       },
     };
 
+    // defaulted to false as a zero length string is preferred to null
     const isNullable = config.db?.isNullable ?? false;
 
     const fieldLabel = config.label ?? humanize(meta.fieldKey);
@@ -88,6 +89,7 @@ export const text =
       scalar: 'String',
       default: defaultValue === undefined ? undefined : { kind: 'literal', value: defaultValue },
       index: isIndexed === true ? 'index' : isIndexed || undefined,
+      map: config.db?.map,
     })({
       ...config,
       hooks: {

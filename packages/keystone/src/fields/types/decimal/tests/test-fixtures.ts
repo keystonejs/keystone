@@ -9,8 +9,11 @@ export const supportsNullInput = true;
 export const supportsUnique = true;
 export const fieldName = 'price';
 export const unSupportedAdapterList = ['sqlite'];
+export const supportsDbMap = true;
 
-export const getTestFields = () => ({ price: decimal({ scale: 2 }) });
+export const getTestFields = () => ({ price: decimal(fieldConfig()) });
+
+export const fieldConfig = () => ({ scale: 2 });
 
 export const initItems = () => {
   return [
@@ -40,4 +43,5 @@ export const supportedFilters = (provider: DatabaseProvider) => [
   'ordering',
   provider !== 'postgresql' && 'in_empty_null',
   provider !== 'postgresql' && 'in_equal',
+  'unique_equality',
 ];

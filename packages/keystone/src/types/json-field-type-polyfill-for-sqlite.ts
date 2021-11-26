@@ -107,6 +107,7 @@ export function jsonFieldTypePolyfilledForSQLite<
     };
   },
   dbFieldConfig?: {
+    map?: string;
     mode?: 'required' | 'optional';
     default?: ScalarDBField<'Json', 'optional'>['default'];
   }
@@ -117,6 +118,7 @@ export function jsonFieldTypePolyfilledForSQLite<
       mode: dbFieldConfig?.mode ?? 'optional',
       scalar: 'String',
       default: dbFieldConfig?.default,
+      map: dbFieldConfig?.map,
     })({
       ...config,
       input: {
@@ -137,5 +139,6 @@ export function jsonFieldTypePolyfilledForSQLite<
     mode: (dbFieldConfig?.mode ?? 'optional') as 'optional',
     scalar: 'Json',
     default: dbFieldConfig?.default,
+    map: dbFieldConfig?.map,
   })(config);
 }

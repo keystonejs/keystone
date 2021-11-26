@@ -9,7 +9,7 @@ export function createGraphQLSchema(
   adminMeta: AdminMetaRootVal
 ) {
   // Start with the core keystone graphQL schema
-  let graphQLSchema = getGraphQLSchema(lists, config.db.provider, {
+  let graphQLSchema = getGraphQLSchema(lists, {
     mutation: config.session
       ? {
           endSession: graphql.field({

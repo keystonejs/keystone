@@ -30,6 +30,7 @@ export type TimestampFieldConfig<TGeneratedListTypes extends BaseGeneratedListTy
     db?: {
       updatedAt?: boolean;
       isNullable?: boolean;
+      map?: string;
     };
   };
 
@@ -82,6 +83,7 @@ export const timestamp =
           ? undefined
           : { kind: 'now' },
       updatedAt: config.db?.updatedAt,
+      map: config.db?.map,
     })({
       ...config,
       hooks: {
@@ -96,6 +98,8 @@ export const timestamp =
         },
       },
       input: {
+        uniqueWhere:
+          isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.DateTime }) } : undefined,
         where: {
           arg: graphql.arg({ type: filters[meta.provider].DateTime[mode] }),
           resolve: mode === 'optional' ? filters.resolveCommon : undefined,
