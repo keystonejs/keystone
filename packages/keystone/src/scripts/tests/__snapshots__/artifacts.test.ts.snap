@@ -2,11 +2,6 @@
 
 exports[`postinstall writes the correct node_modules files 1`] = `
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/types.d.ts ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
-import {
-  KeystoneListsAPI as GenericKeystoneListsAPI,
-  KeystoneDbAPI as GenericKeystoneDbAPI,
-  KeystoneContext as GenericKeystoneContext,
-} from '@keystone-next/keystone/types';
 type Scalars = {
   readonly ID: string;
   readonly Boolean: boolean;
@@ -130,23 +125,27 @@ export type TodoListTypeInfo = {
   readonly skip?: Scalars["Int"];
 }
   };
+  all: KeystoneTypeInfo;
 };
-
-export type TodoListFn = (
-  listConfig: import('@keystone-next/keystone').ListConfig<TodoListTypeInfo, TodoListTypeInfo['fields']>
-) => import('@keystone-next/keystone').ListConfig<TodoListTypeInfo, TodoListTypeInfo['fields']>;
 
 export type KeystoneListsTypeInfo = {
-  readonly "Todo": TodoListTypeInfo;
+  readonly Todo: TodoListTypeInfo;
 };
-export type KeystoneListsAPI = GenericKeystoneListsAPI<KeystoneListsTypeInfo>;
-export type KeystoneDbAPI = GenericKeystoneDbAPI<KeystoneListsTypeInfo>;
+export declare namespace Lists {
+  export type Todo = import('@keystone-next/keystone').ListConfig<TodoListTypeInfo, any>;
+}
+export type KeystoneListsAPI = import('@keystone-next/keystone/types').KeystoneListsAPI<KeystoneListsTypeInfo>;
+export type KeystoneDbAPI = import('@keystone-next/keystone/types').KeystoneDbAPI<KeystoneListsTypeInfo>;
+export type KeystoneContext = import('@keystone-next/keystone/types').KeystoneContextFromKSTypes<KeystoneTypeInfo>;
 
-export type KeystoneContext = Omit<GenericKeystoneContext, 'db' | 'query' | 'prisma'> & {
-  db: KeystoneDbAPI;
-  query: KeystoneListsAPI;
+export type KeystoneTypeInfo = {
+  lists: KeystoneListsTypeInfo;
   prisma: import('.prisma/client').PrismaClient;
 };
+
+export type Lists = {
+  [Key in keyof KeystoneListsTypeInfo]?: import('@keystone-next/keystone').ListConfig<KeystoneListsTypeInfo[Key], any>
+} & Record<string, import('@keystone-next/keystone').ListConfig<any, any>>;
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/types.js ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 
