@@ -40,6 +40,12 @@ export function useChangedFieldsAndDataForUpdate(
     changedFields.forEach(fieldKey => {
       Object.assign(dataForUpdate, serializedFieldValues[fieldKey]);
     });
+    Object.keys(serializedFieldValues)
+      .filter(key => fields[key].itemView.alwaysSend)
+      .filter(key => !changedFields.has(key))
+      .forEach(alwaysSendKey => {
+        Object.assign(dataForUpdate, serializedFieldValues[alwaysSendKey]);
+      });
     return { changedFields: changedFields as ReadonlySet<string>, dataForUpdate };
-  }, [serializedFieldValues, serializedValuesFromItem]);
+  }, [serializedFieldValues, serializedValuesFromItem, fields]);
 }

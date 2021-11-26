@@ -88,6 +88,11 @@ export type FieldMeta = {
      * `null` indicates that the value is dynamic and must be fetched for any given item
      */
     fieldMode: 'edit' | 'read' | 'hidden' | null;
+    /**
+     * `true` indicates that this field will be sent on every create/update regardless
+     * of whether it was changed or not (useful for optimistic locking fields).
+     */
+    alwaysSend?: boolean;
   };
 };
 
