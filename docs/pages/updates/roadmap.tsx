@@ -345,11 +345,7 @@ export default function Roadmap() {
           react select
         </a>
         ,{' '}
-        <a
-          href="https://github.com/JedWatson/classnamesu"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href="https://github.com/JedWatson/classnames" target="_blank" rel="noopener noreferrer">
           classnames
         </a>
         , and of course Keystone <Emoji symbol="🙂" alt="Smile" />. Now that Keystone 6 is stable
