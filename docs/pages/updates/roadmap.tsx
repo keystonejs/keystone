@@ -191,11 +191,11 @@ export default function Roadmap() {
         Roadmap
       </Type>
       <Type as="p" look="body18" margin="1rem 0">
-        After a year of intensive development, Keystone 6 has achieved a{' '}
-        <Link href="/updates/general-availability">General Availability release</Link>.{' '}
-        <Emoji symbol="🚀" alt="Rocket" /> We’ve graduated to the
+        After a year of intensive development Keystone 6 has achieved a{' '}
+        <Link href="/updates/general-availability">General Availability release</Link>! We’ve
+        graduated to the
         <InlineCode>@keystone-6</InlineCode>namespace on npm and have a stable set of APIs that you
-        can confidently build on.
+        can confidently build on {}
       </Type>
       <div
         css={mq({
@@ -406,12 +406,15 @@ export default function Roadmap() {
           </Fragment>
         </RoadmapItem>
         <RoadmapItem title="  Sortable lists" section="core">
-          <Fragment>Certain list types come with a need to order the items they contain.</Fragment>
+          <Fragment>
+            Certain list types come with a need to order the items they contain. We’re looking in to
+            an approach that’s easy to implement in schema.
+          </Fragment>
         </RoadmapItem>
         <RoadmapItem title="  Field Descriptions" section="admin ui">
           <Fragment>
-            A place to give helpful context to your editors. Makes their job easier and improves
-            what goes into your database.
+            A way to give helpful context to your editors when they’re filling out fields. Makes
+            their job easier and improves what goes into your database.
           </Fragment>
         </RoadmapItem>
       </RoadmapList>
@@ -462,13 +465,13 @@ export default function Roadmap() {
         </RoadmapItem>
         <RoadmapItem title="Content preview ">
           <Fragment>
-            Built in tooling for you to give editors a sense of how their content will be consumed
+            Built-in tooling for you to give editors a sense of how their content will be consumed
             by end users.
           </Fragment>
         </RoadmapItem>
         <RoadmapItem title="Non-destructive editing">
           <Fragment>
-            Better safeguards for saving changes when you transition in and our of different
+            Better safeguards for saving changes when you transition in and out of different editing
             contexts.
           </Fragment>
         </RoadmapItem>
