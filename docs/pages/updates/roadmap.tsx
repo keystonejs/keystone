@@ -132,7 +132,7 @@ function RoadmapList({ children }: RoadmapListProps) {
 
 const roadmapItemSectionStyles = {
   margin: '0rem 0 .75rem',
-  borderRadius: '5rem',
+  borderRadius: '.4rem',
   display: 'inline-block',
   padding: '0.1825rem 0.5rem',
   fontSize: '0.9rem',
@@ -235,20 +235,7 @@ export default function Roadmap() {
           </TimelineContent>
         </TimelineItem>
       </div>
-      {/* <Alert look="tip" css={{ margin: '4rem 0 4rem' }}>
-        <span
-          css={{
-            display: 'inline-block',
-            margin: '0 0.8rem 0.5rem 0',
-          }}
-        >
-          Ready to get started with Keystone 6?
-        </span>
-        <Button as="a" href="/docs">
-          Read the Docs <ArrowR />
-        </Button>
-      </Alert>*/}
-      <Type as="h2" look="heading48" css={{ margin: '2rem 0 0' }}>
+      <Type as="h2" look="heading36" css={{ margin: '2rem 0 0' }}>
         What's Next
       </Type>
       <Type as="p" look="body18" margin="1rem 0">
@@ -283,7 +270,7 @@ export default function Roadmap() {
         </ul>
       </div>
 
-      <Type as="h3" look="body18bold" margin="1rem 0">
+      <Type as="h3" look="heading20bold" margin="2rem 0 1rem">
         Next-gen Admin UI
       </Type>
       <Type as="p" look="body18">
@@ -306,7 +293,7 @@ export default function Roadmap() {
         Keystone to the same high standards we have for authoring with Keystone’s core APIs.
       </Type>
 
-      <Type as="h3" look="body18bold" margin="1rem 0">
+      <Type as="h3" look="heading20bold" margin="1rem 0">
         Maturing the Developer Experience
       </Type>
 
@@ -324,7 +311,7 @@ export default function Roadmap() {
         soon.
       </Type>
 
-      <Type as="h3" look="body18bold" margin="1rem 0">
+      <Type as="h3" look="heading20bold" margin="1rem 0">
         Enabling the community
       </Type>
 
@@ -347,7 +334,7 @@ export default function Roadmap() {
         the community.
       </Type>
 
-      <Type as="h2" look="heading48" css={{ margin: '2rem 0 0' }}>
+      <Type as="h2" look="heading36" css={{ margin: '2rem 0 0' }}>
         Feature Roadmap
       </Type>
 
