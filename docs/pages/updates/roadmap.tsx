@@ -12,8 +12,6 @@ import { Gradient } from '../../components/primitives/Gradient';
 import { Alert } from '../../components/primitives/Alert';
 import { Emoji } from '../../components/primitives/Emoji';
 import { Type } from '../../components/primitives/Type';
-import { Pill } from '../../components/content/Pill';
-import { ArrowR } from '../../components/icons/ArrowR';
 import { DocsPage } from '../../components/Page';
 import { useMediaQuery } from '../../lib/media';
 
@@ -68,7 +66,7 @@ function TimelineWeAreHere() {
       css={mq({
         position: ['relative', null, null, 'absolute'],
         margin: ['1rem 0', null, null, '-3rem 0 0'],
-        right: ['0.6rem', null, null, '1rem'],
+        left: ['0', null, null, null],
         display: 'inline-block',
         borderRadius: '0.4rem',
         backgroundColor: 'var(--text)',
@@ -84,7 +82,7 @@ function TimelineWeAreHere() {
           border: `${arrowSize} solid var(--text)`,
           borderColor: 'var(--text) transparent transparent transparent',
           top: '100%',
-          right: [undefined, null, null, '1rem'],
+          left: ['0.75rem', null, null, null],
           height: arrowSize,
           width: arrowSize,
         })}
@@ -120,16 +118,11 @@ function RoadmapList({ children }: RoadmapListProps) {
     <ul
       css={mq({
         listStyle: 'none',
-        margin: '3rem 0 2rem 0',
+        margin: '2rem 0 3rem 0',
         padding: 0,
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(12.5rem, 1fr))',
+        gridTemplateColumns: ['1fr', '1fr 1fr', null, '1fr 1fr 1fr 1fr'],
         gap: '2rem',
-        gridRowGap: '4rem',
-        '& svg': {
-          height: '2.5rem',
-          marginBottom: '0.5rem',
-        },
       })}
     >
       {children}
@@ -138,10 +131,10 @@ function RoadmapList({ children }: RoadmapListProps) {
 }
 
 const roadmapItemSectionStyles = {
-  margin: '0rem 0 1.25rem',
-  borderRadius: '0.4rem',
+  margin: '0rem 0 .75rem',
+  borderRadius: '5rem',
   display: 'inline-block',
-  padding: '0.3rem 0.6rem',
+  padding: '0.1825rem 0.5rem',
   fontSize: '0.9rem',
   fontWeight: 700,
 };
@@ -174,10 +167,10 @@ function RoadmapItem({ title, section, children }: RoadmapItemProps) {
   return (
     <li>
       {section && <Section />}
-      <Type as="h3" look="heading20bold" margin="0 0 1rem 0">
+      <Type as="h3" look="heading20bold" margin="0">
         {title}
       </Type>
-      <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
+      <Type as="p" look="body16" margin=".75rem 0">
         {children}
       </Type>
     </li>
@@ -227,7 +220,6 @@ export default function Roadmap() {
           </TimelineContent>
         </TimelineItem>
         <TimelineItem>
-          <TimelineWeAreHere />
           <TimelineMarker look="grad2" />
           <TimelineContent title="General Availability Release" look="grad2">
             Stabilised the new architecture & APIs. Docs & example projects. Published as{' '}
@@ -235,6 +227,7 @@ export default function Roadmap() {
           </TimelineContent>
         </TimelineItem>
         <TimelineItem>
+          <TimelineWeAreHere />
           <TimelineMarker look="grad1" />
           <TimelineContent title="Maturity, community, & Next-gen Admin UI" look="grad1">
             A better dev-configured editing experience. Maturity & features in Keystone core. More
@@ -372,12 +365,12 @@ export default function Roadmap() {
           and{' '}
           <Link href="/releases" passHref>
             <a>release notes</a>
-          </Link>
+          </Link>{' '}
+          <Emoji symbol="🚀" alt="Rocket" />
         </span>
-        <Emoji symbol="🚀" alt="Rocket" />
       </Alert>
 
-      <Type as="h3" look="heading36">
+      <Type as="h3" look="heading30">
         Currently iterating on
       </Type>
 
@@ -407,7 +400,7 @@ export default function Roadmap() {
         </RoadmapItem>
       </RoadmapList>
 
-      <Type as="h3" look="heading36">
+      <Type as="h3" look="heading30">
         Next up
       </Type>
 
@@ -436,7 +429,7 @@ export default function Roadmap() {
         </RoadmapItem>
       </RoadmapList>
 
-      <Type as="h3" look="heading36" css={{ margin: '3rem 0 2rem 0' }}>
+      <Type as="h3" look="heading30" css={{ margin: '3rem 0 2rem 0' }}>
         Further afield
       </Type>
 
@@ -474,7 +467,7 @@ export default function Roadmap() {
             An editing interface that’s available for you to use no matter what device you’re on.
           </Fragment>
         </RoadmapItem>
-        <RoadmapItem title="A11y compliances">
+        <RoadmapItem title="A11y compliance">
           <Fragment>
             Solving accessibility in a customisable editing interface is a hard problem. We’re up
             for the challenge.
@@ -519,22 +512,6 @@ export default function Roadmap() {
       </RoadmapList>
 
       <Type as="h2" look="heading24">
-        Core
-      </Type>
-
-      <RoadmapList>
-        <RoadmapItem title="Mongo DB">
-          <Fragment>Native support for the MongoDB database type.</Fragment>
-        </RoadmapItem>
-        <RoadmapItem title="Native full-text search">
-          <Fragment>
-            A way for you and editors to easily search for strings across your entire dataset. Handy
-            for when you need something specific but don’t know where it lives.
-          </Fragment>
-        </RoadmapItem>
-      </RoadmapList>
-
-      <Type as="h2" look="heading24">
         API
       </Type>
 
@@ -553,28 +530,46 @@ export default function Roadmap() {
         </RoadmapItem>
       </RoadmapList>
 
-      <Type as="p" look="body18bold" margin="1rem 0">
-        Got a feature you’re after, or want to know more about the future?
+      <Type as="h2" look="heading24">
+        Core
       </Type>
-      <Type as="p" look="body18" margin="1rem 0">
-        Join the Keystone conversation on{' '}
-        <a href="https://community.keystonejs.com" target="_blank" rel="noopener noreferrer">
-          Slack
-        </a>
-        ,{' '}
-        <a
-          href="https://github.com/keystonejs/keystone/discussions"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          GitHub
-        </a>
-        , and{' '}
-        <a href="https://twitter.com/keystonejs" target="_blank" rel="noopener noreferrer">
-          Twitter
-        </a>
-        .
-      </Type>
+
+      <RoadmapList>
+        <RoadmapItem title="Native full-text search">
+          <Fragment>
+            A way for you and editors to easily search for strings across your entire dataset. Handy
+            for when you need something specific but don’t know where it lives.
+          </Fragment>
+        </RoadmapItem>
+        <RoadmapItem title="Mongo DB">
+          <Fragment>Native support for the MongoDB database type.</Fragment>
+        </RoadmapItem>
+      </RoadmapList>
+
+      <Alert look="tip" css={{ margin: '2rem 0 2rem' }}>
+        <Type as="p">
+          <strong>Got a feature you’re after, or want to know more about the future?</strong>
+        </Type>
+        <Type as="p" margin=".5rem 0 0">
+          Join the Keystone conversation on{' '}
+          <a href="https://community.keystonejs.com" target="_blank" rel="noopener noreferrer">
+            Slack
+          </a>
+          ,{' '}
+          <a
+            href="https://github.com/keystonejs/keystone/discussions"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GitHub
+          </a>
+          , and{' '}
+          <a href="https://twitter.com/keystonejs" target="_blank" rel="noopener noreferrer">
+            Twitter
+          </a>
+          .
+        </Type>
+      </Alert>
     </DocsPage>
   );
 }
