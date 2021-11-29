@@ -1,24 +1,24 @@
 import Decimal from 'decimal.js';
 import { graphql } from '..';
-import { BaseGeneratedListTypes } from './generated';
+import { BaseListTypeInfo } from './generated';
 import { CommonFieldConfig } from './config';
 import { DatabaseProvider } from './core';
 import { AdminMetaRootVal, JSONValue, KeystoneContext, MaybePromise } from '.';
 
 export { Decimal };
 
-export type ItemRootValue = { id: { toString(): string }; [key: string]: unknown };
+export type BaseItem = { id: { toString(): string }; [key: string]: unknown };
 
-export type ListInfo = { types: TypesForList };
+export type ListGraphQLTypes = { types: GraphQLTypesForList };
 
 export type FieldData = {
-  lists: Record<string, ListInfo>;
+  lists: Record<string, ListGraphQLTypes>;
   provider: DatabaseProvider;
   listKey: string;
   fieldKey: string;
 };
 
-export type FieldTypeFunc<GeneratedListTypes extends BaseGeneratedListTypes> = (
+export type FieldTypeFunc<ListTypeInfo extends BaseListTypeInfo> = (
   data: FieldData
 ) => NextFieldType<
   DBField,
@@ -27,7 +27,7 @@ export type FieldTypeFunc<GeneratedListTypes extends BaseGeneratedListTypes> = (
   graphql.Arg<graphql.NullableInputType, false>,
   graphql.Arg<graphql.NullableInputType, false>,
   graphql.Arg<graphql.NullableInputType, false>,
-  GeneratedListTypes
+  ListTypeInfo
 >;
 
 export type NextFieldType<
@@ -48,7 +48,7 @@ export type NextFieldType<
     graphql.NullableInputType,
     false
   >,
-  GeneratedListTypes extends BaseGeneratedListTypes = BaseGeneratedListTypes
+  ListTypeInfo extends BaseListTypeInfo = BaseListTypeInfo
 > = {
   dbField: TDBField;
 } & FieldTypeWithoutDBField<
@@ -58,7 +58,7 @@ export type NextFieldType<
   UniqueWhereArg,
   OrderByArg,
   FilterArg,
-  GeneratedListTypes
+  ListTypeInfo
 >;
 
 type ScalarPrismaTypes = {
@@ -211,9 +211,9 @@ type DBFieldToOutputValue<TDBField extends DBField> = TDBField extends ScalarDBF
     }[Mode]
   : TDBField extends RelationDBField<infer Mode>
   ? {
-      one: () => Promise<ItemRootValue>;
+      one: () => Promise<BaseItem>;
       many: {
-        findMany(args: FindManyArgsValue): Promise<ItemRootValue[]>;
+        findMany(args: FindManyArgsValue): Promise<BaseItem[]>;
         count(args: { where: FindManyArgsValue['where'] }): Promise<number>;
       };
     }[Mode]
@@ -342,7 +342,7 @@ export type UniqueWhereFieldInputArg<Val, TArg extends graphql.Arg<graphql.Input
 >;
 
 type FieldTypeOutputField<TDBField extends DBField> = graphql.Field<
-  { value: DBFieldToOutputValue<TDBField>; item: ItemRootValue },
+  { value: DBFieldToOutputValue<TDBField>; item: BaseItem },
   any,
   graphql.OutputType,
   'value'
@@ -374,7 +374,7 @@ export type FieldTypeWithoutDBField<
     graphql.NullableInputType,
     false
   >,
-  GeneratedListTypes extends BaseGeneratedListTypes = BaseGeneratedListTypes
+  ListTypeInfo extends BaseListTypeInfo = BaseListTypeInfo
 > = {
   input?: {
     uniqueWhere?: UniqueWhereFieldInputArg<DBFieldUniqueWhere<TDBField>, UniqueWhereArg>;
@@ -388,17 +388,17 @@ export type FieldTypeWithoutDBField<
   extraOutputFields?: Record<string, FieldTypeOutputField<TDBField>>;
   getAdminMeta?: (adminMeta: AdminMetaRootVal) => JSONValue;
   unreferencedConcreteInterfaceImplementations?: readonly graphql.ObjectType<any>[];
-} & CommonFieldConfig<GeneratedListTypes>;
+} & CommonFieldConfig<ListTypeInfo>;
 
 type AnyInputObj = graphql.InputObjectType<Record<string, graphql.Arg<graphql.InputType, any>>>;
 
-export type TypesForList = {
+export type GraphQLTypesForList = {
   update: AnyInputObj;
   create: AnyInputObj;
   uniqueWhere: AnyInputObj;
   where: AnyInputObj;
   orderBy: AnyInputObj;
-  output: graphql.ObjectType<ItemRootValue>;
+  output: graphql.ObjectType<BaseItem>;
   findManyArgs: FindManyArgs;
   relateTo: {
     many: {
@@ -408,24 +408,30 @@ export type TypesForList = {
         none: graphql.Arg<AnyInputObj>;
       }>;
       create?: graphql.InputObjectType<{
-        connect: graphql.Arg<graphql.ListType<graphql.NonNullType<TypesForList['uniqueWhere']>>>;
-        create?: graphql.Arg<graphql.ListType<graphql.NonNullType<TypesForList['create']>>>;
+        connect: graphql.Arg<
+          graphql.ListType<graphql.NonNullType<GraphQLTypesForList['uniqueWhere']>>
+        >;
+        create?: graphql.Arg<graphql.ListType<graphql.NonNullType<GraphQLTypesForList['create']>>>;
       }>;
       update?: graphql.InputObjectType<{
-        disconnect: graphql.Arg<graphql.ListType<graphql.NonNullType<TypesForList['uniqueWhere']>>>;
-        set: graphql.Arg<graphql.ListType<graphql.NonNullType<TypesForList['uniqueWhere']>>>;
-        connect: graphql.Arg<graphql.ListType<graphql.NonNullType<TypesForList['uniqueWhere']>>>;
-        create?: graphql.Arg<graphql.ListType<graphql.NonNullType<TypesForList['create']>>>;
+        disconnect: graphql.Arg<
+          graphql.ListType<graphql.NonNullType<GraphQLTypesForList['uniqueWhere']>>
+        >;
+        set: graphql.Arg<graphql.ListType<graphql.NonNullType<GraphQLTypesForList['uniqueWhere']>>>;
+        connect: graphql.Arg<
+          graphql.ListType<graphql.NonNullType<GraphQLTypesForList['uniqueWhere']>>
+        >;
+        create?: graphql.Arg<graphql.ListType<graphql.NonNullType<GraphQLTypesForList['create']>>>;
       }>;
     };
     one: {
       create?: graphql.InputObjectType<{
-        create?: graphql.Arg<TypesForList['create']>;
-        connect: graphql.Arg<TypesForList['uniqueWhere']>;
+        create?: graphql.Arg<GraphQLTypesForList['create']>;
+        connect: graphql.Arg<GraphQLTypesForList['uniqueWhere']>;
       }>;
       update?: graphql.InputObjectType<{
-        create?: graphql.Arg<TypesForList['create']>;
-        connect: graphql.Arg<TypesForList['uniqueWhere']>;
+        create?: graphql.Arg<GraphQLTypesForList['create']>;
+        connect: graphql.Arg<GraphQLTypesForList['uniqueWhere']>;
         disconnect: graphql.Arg<typeof graphql.Boolean>;
       }>;
     };
@@ -433,9 +439,9 @@ export type TypesForList = {
 };
 
 export type FindManyArgs = {
-  where: graphql.Arg<graphql.NonNullType<TypesForList['where']>, true>;
+  where: graphql.Arg<graphql.NonNullType<GraphQLTypesForList['where']>, true>;
   orderBy: graphql.Arg<
-    graphql.NonNullType<graphql.ListType<graphql.NonNullType<TypesForList['orderBy']>>>,
+    graphql.NonNullType<graphql.ListType<graphql.NonNullType<GraphQLTypesForList['orderBy']>>>,
     true
   >;
   take: graphql.Arg<typeof graphql.Int>;
@@ -445,10 +451,9 @@ export type FindManyArgs = {
 export type FindManyArgsValue = graphql.InferValueFromArgs<FindManyArgs>;
 
 // fieldType(dbField)(fieldInfo) => { ...fieldInfo, dbField };
-export function fieldType<
-  TDBField extends DBField,
-  GeneratedListTypes extends BaseGeneratedListTypes
->(dbField: TDBField) {
+export function fieldType<TDBField extends DBField, ListTypeInfo extends BaseListTypeInfo>(
+  dbField: TDBField
+) {
   return function <
     CreateArg extends graphql.Arg<graphql.InputType> | undefined,
     UpdateArg extends graphql.Arg<graphql.InputType>,
@@ -471,7 +476,7 @@ export function fieldType<
     UniqueWhereArg,
     OrderByArg,
     FilterArg,
-    GeneratedListTypes
+    ListTypeInfo
   > {
     return { ...graphQLInfo, dbField };
   };

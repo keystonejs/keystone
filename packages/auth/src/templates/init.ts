@@ -1,9 +1,9 @@
-import { BaseGeneratedListTypes } from '@keystone-next/keystone/types';
+import { BaseListTypeInfo } from '@keystone-next/keystone/types';
 import { AuthConfig } from '../types';
 
 type InitTemplateArgs = {
   listKey: string;
-  initFirstItem: NonNullable<AuthConfig<BaseGeneratedListTypes>['initFirstItem']>;
+  initFirstItem: NonNullable<AuthConfig<BaseListTypeInfo>['initFirstItem']>;
 };
 
 export const initTemplate = ({ listKey, initFirstItem }: InitTemplateArgs) => {

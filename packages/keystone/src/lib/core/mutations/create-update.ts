@@ -1,4 +1,4 @@
-import { KeystoneContext, ItemRootValue } from '../../../types';
+import { KeystoneContext, BaseItem } from '../../../types';
 import { ResolvedDBField } from '../resolve-relationships';
 import { InitialisedList } from '../types-for-lists';
 import {
@@ -338,7 +338,7 @@ async function resolveInputForCreateOrUpdate(
   list: InitialisedList,
   context: KeystoneContext,
   inputData: Record<string, any>,
-  item: Record<string, any> | undefined
+  item: BaseItem | undefined
 ) {
   const operation: 'create' | 'update' = item === undefined ? 'create' : 'update';
   const nestedMutationState = new NestedMutationState(context);
@@ -366,7 +366,7 @@ async function resolveInputForCreateOrUpdate(
   // and the afterOperation hook to be applied
   return {
     data: flattenMultiDbFields(list.fields, hookArgs.resolvedData),
-    afterOperation: async (updatedItem: ItemRootValue) => {
+    afterOperation: async (updatedItem: BaseItem) => {
       await nestedMutationState.afterOperation();
       await runSideEffectOnlyHook(list, 'afterOperation', {
         ...hookArgs,

@@ -107,44 +107,38 @@ export type KeystoneAdminUISortDirection =
   | "DESC";
 
 
-export type TodoListTypeInfo = {
-  key: "Todo";
-  fields: "id"|"title"
-  backing: import(".prisma/client").Todo;
-  inputs: {
-    where: TodoWhereInput;
-    uniqueWhere: TodoWhereUniqueInput;
-    create: TodoCreateInput;
-    update: TodoUpdateInput;
-  };
-  args: {
-    listQuery: {
-  readonly where?: TodoWhereInput;
-  readonly orderBy?: ReadonlyArray<TodoOrderByInput> | TodoOrderByInput;
-  readonly take?: Scalars["Int"] | null;
-  readonly skip?: Scalars["Int"];
-}
-  };
-  all: KeystoneTypeInfo;
-};
-
-export type KeystoneListsTypeInfo = {
-  readonly Todo: TodoListTypeInfo;
-};
 export declare namespace Lists {
-  export type Todo = import('@keystone-next/keystone').ListConfig<TodoListTypeInfo, any>;
+  export type Todo = import('@keystone-next/keystone').ListConfig<Lists.Todo.TypeInfo, any>;
+  namespace Todo {
+    export type Item = import('.prisma/client').Todo;
+    export type TypeInfo = {
+      key: "Todo";
+      fields: "id" | "title"
+      item: Item;
+      inputs: {
+        where: TodoWhereInput;
+        uniqueWhere: TodoWhereUniqueInput;
+        create: TodoCreateInput;
+        update: TodoUpdateInput;
+        orderBy: TodoOrderByInput;
+      };
+      all: __TypeInfo;
+    };
+  }
 }
-export type KeystoneListsAPI = import('@keystone-next/keystone/types').KeystoneListsAPI<KeystoneListsTypeInfo>;
-export type KeystoneDbAPI = import('@keystone-next/keystone/types').KeystoneDbAPI<KeystoneListsTypeInfo>;
-export type KeystoneContext = import('@keystone-next/keystone/types').KeystoneContextFromKSTypes<KeystoneTypeInfo>;
+export type Context = import('@keystone-next/keystone/types').KeystoneContext<TypeInfo>;
 
-export type KeystoneTypeInfo = {
-  lists: KeystoneListsTypeInfo;
+export type TypeInfo = {
+  lists: {
+  readonly Todo: Lists.Todo.TypeInfo;
+  };
   prisma: import('.prisma/client').PrismaClient;
 };
 
+type __TypeInfo = TypeInfo;
+
 export type Lists = {
-  [Key in keyof KeystoneListsTypeInfo]?: import('@keystone-next/keystone').ListConfig<KeystoneListsTypeInfo[Key], any>
+  [Key in keyof TypeInfo['lists']]?: import('@keystone-next/keystone').ListConfig<TypeInfo['lists'][Key], any>
 } & Record<string, import('@keystone-next/keystone').ListConfig<any, any>>;
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/types.js ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯

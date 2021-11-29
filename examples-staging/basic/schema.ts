@@ -13,7 +13,6 @@ import {
 import { document } from '@keystone-next/fields-document';
 // import { cloudinaryImage } from '@keystone-next/cloudinary';
 import { v4 } from 'uuid';
-// import { BaseGeneratedListTypes } from '@keystone-next/keystone/types';
 import { componentBlocks } from './admin/fieldViews/Content';
 import * as Keystone from '.keystone/types';
 
@@ -92,9 +91,9 @@ const User: Keystone.Lists.User = list({
       }),
     }),
   },
-}) as any;
+});
 
-export const lists = {
+export const lists: Keystone.Lists = {
   User,
   PhoneNumber: list({
     ui: {
@@ -196,7 +195,7 @@ export const lists = {
 };
 
 // note this usage of the type is important because it tests that the generated types work
-export const extendGraphqlSchema = graphQLSchemaExtension<Keystone.KeystoneTypeInfo>({
+export const extendGraphqlSchema = graphQLSchemaExtension<Keystone.Context>({
   typeDefs: gql`
     type Query {
       randomNumber: RandomNumber

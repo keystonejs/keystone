@@ -3,22 +3,23 @@ import { mergeSchemas } from '@graphql-tools/schema';
 
 import type {
   BaseFields,
-  BaseGeneratedListTypes,
+  BaseListTypeInfo,
   ExtendGraphqlSchema,
   GraphQLSchemaExtension,
   KeystoneConfig,
-  KeystoneGeneratedTypes,
+  KeystoneContext,
+  BaseKeystoneTypeInfo,
   ListConfig,
 } from '../types';
 
-export function config<KSTypes extends KeystoneGeneratedTypes>(config: KeystoneConfig<KSTypes>) {
+export function config<TypeInfo extends BaseKeystoneTypeInfo>(config: KeystoneConfig<TypeInfo>) {
   return config;
 }
 
 export function list<
-  Fields extends BaseFields<GeneratedListTypes>,
-  GeneratedListTypes extends BaseGeneratedListTypes
->(config: ListConfig<GeneratedListTypes, Fields>): ListConfig<GeneratedListTypes, any> {
+  Fields extends BaseFields<ListTypeInfo>,
+  ListTypeInfo extends BaseListTypeInfo
+>(config: ListConfig<ListTypeInfo, Fields>): ListConfig<ListTypeInfo, any> {
   return config;
 }
 
@@ -26,9 +27,9 @@ export function gql(strings: TemplateStringsArray) {
   return strings[0];
 }
 
-export function graphQLSchemaExtension<KSTypes extends KeystoneGeneratedTypes>({
+export function graphQLSchemaExtension<Context extends KeystoneContext>({
   typeDefs,
   resolvers,
-}: GraphQLSchemaExtension<KSTypes>): ExtendGraphqlSchema {
+}: GraphQLSchemaExtension<Context>): ExtendGraphqlSchema {
   return (schema: GraphQLSchema) => mergeSchemas({ schemas: [schema], typeDefs, resolvers });
 }

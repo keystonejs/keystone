@@ -1,12 +1,12 @@
 import url from 'url';
 import {
   AdminFileToWrite,
-  BaseGeneratedListTypes,
+  BaseListTypeInfo,
   KeystoneConfig,
   KeystoneContext,
   AdminUIConfig,
   SessionStrategy,
-  KeystoneGeneratedTypes,
+  BaseKeystoneTypeInfo,
 } from '@keystone-next/keystone/types';
 import { password, timestamp } from '@keystone-next/keystone/fields';
 
@@ -20,7 +20,7 @@ import { initTemplate } from './templates/init';
  *
  * Generates config for Keystone to implement standard auth features.
  */
-export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
+export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
   listKey,
   secretField,
   initFirstItem,
@@ -28,7 +28,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   magicAuthLink,
   passwordResetLink,
   sessionData = 'id',
-}: AuthConfig<GeneratedListTypes>) {
+}: AuthConfig<ListTypeInfo>) {
   const gqlNames: AuthGqlNames = {
     // Core
     authenticateItemWithPassword: `authenticate${listKey}WithPassword`,
@@ -89,7 +89,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
    *  - to the init page when initFirstItem is configured, and there are no user in the database
    *  - to the signin page when no valid session is present
    */
-  const pageMiddleware: AdminUIConfig<KeystoneGeneratedTypes>['pageMiddleware'] = async ({
+  const pageMiddleware: AdminUIConfig<BaseKeystoneTypeInfo>['pageMiddleware'] = async ({
     context,
     isValidSession,
   }) => {

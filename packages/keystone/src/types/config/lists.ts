@@ -1,20 +1,20 @@
 import type { CacheHint } from 'apollo-server-types';
 import type { MaybePromise } from '../utils';
-import { BaseGeneratedListTypes } from '../generated';
-import { KeystoneContextFromListTypes } from '..';
+import { BaseListTypeInfo } from '../generated';
+import { KeystoneContextFromListTypeInfo } from '..';
 import type { ListHooks } from './hooks';
 import type { ListAccessControl } from './access-control';
 import type { BaseFields, FilterOrderArgs } from './fields';
 
-export type ListSchemaConfig = Record<string, ListConfig<any, any>>;
+export type ListSchemaConfig = Record<string, ListConfig<any, BaseFields<BaseListTypeInfo>>>;
 
 export type IdFieldConfig = {
   kind: 'cuid' | 'uuid' | 'autoincrement';
 };
 
 export type ListConfig<
-  TGeneratedListTypes extends BaseGeneratedListTypes,
-  Fields extends BaseFields<TGeneratedListTypes>
+  ListTypeInfo extends BaseListTypeInfo,
+  Fields extends BaseFields<ListTypeInfo>
 > = {
   /*
       A note on defaults: several options default based on the listKey, including label, path,
@@ -29,16 +29,16 @@ export type ListConfig<
    * @default true
    * @see https://www.keystonejs.com/guides/access-control
    */
-  access?: ListAccessControl<TGeneratedListTypes>;
+  access?: ListAccessControl<ListTypeInfo>;
 
   /** Config for how this list should act in the Admin UI */
-  ui?: ListAdminUIConfig<TGeneratedListTypes, Fields>;
+  ui?: ListAdminUIConfig<ListTypeInfo, Fields>;
 
   /**
    * Hooks to modify the behaviour of GraphQL operations at certain points
    * @see https://www.keystonejs.com/guides/hooks
    */
-  hooks?: ListHooks<TGeneratedListTypes>;
+  hooks?: ListHooks<ListTypeInfo>;
 
   graphql?: ListGraphQLConfig;
 
@@ -50,12 +50,8 @@ export type ListConfig<
   description?: string; // defaults both { adminUI: { description }, graphQL: { description } }
 
   // Defaults to apply to all fields.
-  defaultIsFilterable?:
-    | false
-    | ((args: FilterOrderArgs<TGeneratedListTypes>) => MaybePromise<boolean>); // The default value to use for graphql.isEnabled.filter on all fields for this list
-  defaultIsOrderable?:
-    | false
-    | ((args: FilterOrderArgs<TGeneratedListTypes>) => MaybePromise<boolean>); // The default value to use for graphql.isEnabled.orderBy on all fields for this list
+  defaultIsFilterable?: false | ((args: FilterOrderArgs<ListTypeInfo>) => MaybePromise<boolean>); // The default value to use for graphql.isEnabled.filter on all fields for this list
+  defaultIsOrderable?: false | ((args: FilterOrderArgs<ListTypeInfo>) => MaybePromise<boolean>); // The default value to use for graphql.isEnabled.orderBy on all fields for this list
 
   /**
    * The label used for the list
@@ -83,8 +79,8 @@ export type ListConfig<
 };
 
 export type ListAdminUIConfig<
-  TGeneratedListTypes extends BaseGeneratedListTypes,
-  Fields extends BaseFields<TGeneratedListTypes>
+  ListTypeInfo extends BaseListTypeInfo,
+  Fields extends BaseFields<ListTypeInfo>
 > = {
   /**
    * The field to use as a label in the Admin UI. If you want to base the label off more than a single field, use a virtual field and reference that field here.
@@ -111,19 +107,19 @@ export type ListAdminUIConfig<
    * Excludes this list from the Admin UI
    * @default false
    */
-  isHidden?: MaybeSessionFunction<boolean, TGeneratedListTypes>;
+  isHidden?: MaybeSessionFunction<boolean, ListTypeInfo>;
   /**
    * Hides the create button in the Admin UI.
    * Note that this does **not** disable creating items through the GraphQL API, it only hides the button to create an item for this list in the Admin UI.
    * @default false
    */
-  hideCreate?: MaybeSessionFunction<boolean, TGeneratedListTypes>;
+  hideCreate?: MaybeSessionFunction<boolean, ListTypeInfo>;
   /**
    * Hides the delete button in the Admin UI.
    * Note that this does **not** disable deleting items through the GraphQL API, it only hides the button to delete an item for this list in the Admin UI.
    * @default false
    */
-  hideDelete?: MaybeSessionFunction<boolean, TGeneratedListTypes>;
+  hideDelete?: MaybeSessionFunction<boolean, ListTypeInfo>;
   /**
    * Configuration specific to the create view in the Admin UI
    */
@@ -133,7 +129,7 @@ export type ListAdminUIConfig<
      * Specific field modes on a per-field basis via a field's config.
      * @default 'edit'
      */
-    defaultFieldMode?: MaybeSessionFunction<'edit' | 'hidden', TGeneratedListTypes>;
+    defaultFieldMode?: MaybeSessionFunction<'edit' | 'hidden', ListTypeInfo>;
   };
 
   /**
@@ -146,7 +142,7 @@ export type ListAdminUIConfig<
      * Specific field modes on a per-field basis via a field's config.
      * @default 'edit'
      */
-    defaultFieldMode?: MaybeItemFunction<'edit' | 'read' | 'hidden', TGeneratedListTypes>;
+    defaultFieldMode?: MaybeItemFunction<'edit' | 'read' | 'hidden', ListTypeInfo>;
   };
 
   /**
@@ -158,7 +154,7 @@ export type ListAdminUIConfig<
      * Specific field modes on a per-field basis via a field's config.
      * @default 'read'
      */
-    defaultFieldMode?: MaybeSessionFunction<'read' | 'hidden', TGeneratedListTypes>;
+    defaultFieldMode?: MaybeSessionFunction<'read' | 'hidden', ListTypeInfo>;
     /**
      * The columns(which refer to fields) that should be shown to users of the Admin UI.
      * Users of the Admin UI can select different columns to show in the UI.
@@ -175,20 +171,20 @@ export type ListAdminUIConfig<
 
 export type MaybeSessionFunction<
   T extends string | boolean,
-  GeneratedListTypes extends BaseGeneratedListTypes
+  ListTypeInfo extends BaseListTypeInfo
 > =
   | T
   | ((args: {
       session: any;
-      context: KeystoneContextFromListTypes<GeneratedListTypes>;
+      context: KeystoneContextFromListTypeInfo<ListTypeInfo>;
     }) => MaybePromise<T>);
 
-export type MaybeItemFunction<T, GeneratedListTypes extends BaseGeneratedListTypes> =
+export type MaybeItemFunction<T, ListTypeInfo extends BaseListTypeInfo> =
   | T
   | ((args: {
       session: any;
-      context: KeystoneContextFromListTypes<GeneratedListTypes>;
-      item: { id: string | number; [path: string]: any };
+      context: KeystoneContextFromListTypeInfo<ListTypeInfo>;
+      item: ListTypeInfo['item'];
     }) => MaybePromise<T>);
 
 export type ListGraphQLConfig = {

@@ -1,5 +1,5 @@
 import { graphql } from '@keystone-next/keystone';
-import { ItemRootValue } from '@keystone-next/keystone/types';
+import { BaseItem } from '@keystone-next/keystone/types';
 import { assertInputObjectType, GraphQLInputObjectType, GraphQLSchema } from 'graphql';
 
 import { AuthGqlNames, InitFirstItemConfig } from '../types';
@@ -18,7 +18,7 @@ export function getInitFirstItemSchema({
   gqlNames: AuthGqlNames;
   graphQLSchema: GraphQLSchema;
   ItemAuthenticationWithPasswordSuccess: graphql.ObjectType<{
-    item: ItemRootValue;
+    item: BaseItem;
     sessionToken: string;
   }>;
 }) {

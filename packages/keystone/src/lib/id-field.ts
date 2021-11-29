@@ -2,7 +2,7 @@ import path from 'path';
 import { validate } from 'uuid';
 import { isCuid } from 'cuid';
 import {
-  BaseGeneratedListTypes,
+  BaseListTypeInfo,
   fieldType,
   FieldTypeFunc,
   IdFieldConfig,
@@ -102,7 +102,7 @@ function resolveVal(
 }
 
 export const idFieldType =
-  (config: IdFieldConfig): FieldTypeFunc<BaseGeneratedListTypes> =>
+  (config: IdFieldConfig): FieldTypeFunc<BaseListTypeInfo> =>
   meta => {
     const parseVal = idParsers[config.kind];
     return fieldType({

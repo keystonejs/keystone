@@ -9,7 +9,7 @@ export const lists = {
         field: graphql.field({
           type: graphql.String,
           resolve(item) {
-            return item.text as string;
+            return (item as { text: string }).text;
           },
         }),
       }),
