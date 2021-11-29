@@ -10,7 +10,7 @@
     "seed-data": "keystone-next --seed-data"
   },
   "dependencies": {
-    "@keystone-6/keystone": "^29.0.0",
+    "@keystone-6/keystone": "^0.0.0",
     "express": "^4.17.1"
   },
   "devDependencies": {

@@ -9,7 +9,7 @@
     "build": "keystone-next build"
   },
   "dependencies": {
-    "@keystone-6/keystone": "^29.0.0",
+    "@keystone-6/keystone": "^0.0.0",
     "@keystone-ui/fields": "^6.0.0",
     "react": "^17.0.2"
   },

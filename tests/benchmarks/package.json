@@ -14,7 +14,7 @@
   "repository": "https://github.com/keystonejs/keystone/tree/main/tests/benchmarks",
   "homepage": "https://github.com/keystonejs/keystone",
   "dependencies": {
-    "@keystone-6/keystone": "^29.0.0",
+    "@keystone-6/keystone": "^0.0.0",
     "cookie-signature": "^1.1.0",
     "testcheck": "^1.0.0-rc.2"
   }
