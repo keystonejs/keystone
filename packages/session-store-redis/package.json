@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/session-store-redis",
-  "version": "9.0.0",
+  "version": "0.0.0",
   "license": "MIT",
   "main": "dist/keystone-6-session-store-redis.cjs.js",
   "module": "dist/keystone-6-session-store-redis.esm.js",

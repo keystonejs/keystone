@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/keystone",
-  "version": "29.0.0",
+  "version": "0.0.0",
   "license": "MIT",
   "main": "dist/keystone-6-keystone.cjs.js",
   "module": "dist/keystone-6-keystone.esm.js",
