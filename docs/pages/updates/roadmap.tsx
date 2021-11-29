@@ -166,7 +166,7 @@ function RoadmapItem({ title, section, children }: RoadmapItemProps) {
   const Section = section ? roadmapItemSection[section] : null;
   return (
     <li>
-      {section && <Section />}
+      {Section && <Section />}
       <Type as="h3" look="heading20bold" margin="0">
         {title}
       </Type>
