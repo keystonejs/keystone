@@ -6,7 +6,6 @@ import Link from 'next/link';
 
 import { getStaticProps } from '../../components/Markdown';
 import { InlineCode } from '../../components/primitives/Code';
-import { Button } from '../../components/primitives/Button';
 import { Highlight } from '../../components/primitives/Highlight';
 import { Gradient } from '../../components/primitives/Gradient';
 import { Alert } from '../../components/primitives/Alert';
@@ -110,21 +109,8 @@ function TimelineContent({ title, look, children }: TimelineContentProps) {
 }
 
 type RoadmapListProps = {
-  section: keyof typeof roadmapItemSection;
+  children: ReactNode;
 };
-
-function Divider() {
-  return (
-    <hr
-      css={{
-        margin: '3rem 0',
-        border: 'none',
-        height: '1px',
-        backgroundColor: 'var(--border)',
-      }}
-    />
-  );
-}
 
 function RoadmapList({ children }: RoadmapListProps) {
   const mq = useMediaQuery();
@@ -173,11 +159,11 @@ const roadmapItemSection = {
 
 type RoadmapItemProps = {
   title: ReactNode;
-  section: keyof typeof roadmapItemSection;
+  section?: keyof typeof roadmapItemSection;
   children: ReactNode;
 };
 function RoadmapItem({ title, section, children }: RoadmapItemProps) {
-  const Section = roadmapItemSection[section];
+  const Section = section ? roadmapItemSection[section] : null;
   return (
     <li>
       {section && <Section />}
@@ -188,6 +174,19 @@ function RoadmapItem({ title, section, children }: RoadmapItemProps) {
         {children}
       </Type>
     </li>
+  );
+}
+
+function Divider() {
+  return (
+    <hr
+      css={{
+        margin: '3rem 0',
+        border: 'none',
+        height: '1px',
+        backgroundColor: 'var(--border)',
+      }}
+    />
   );
 }
 

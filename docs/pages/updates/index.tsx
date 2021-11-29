@@ -174,12 +174,9 @@ export default function WhatsNew() {
         })}
       >
         <Timeline date="29th November 2021" isLatest />
-        <Box
-          heading="Welcome Keystone 6 to General Availability!
-"
-        >
+        <Box heading="Welcome Keystone 6 to General Availability!">
           <svg viewBox="0 0 1336 752" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <g clip-path="url(#a)">
+            <g clipPath="url(#a)">
               <path fill="url(#bg)" d="M0 0h1336v751.5H0z" />
               <g filter="url(#b)">
                 <path
@@ -227,8 +224,8 @@ export default function WhatsNew() {
               </g>
               <g filter="url(#n)">
                 <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
+                  fillRule="evenodd"
+                  clipRule="evenodd"
                   d="M597.21 142.33a42.49 42.49 0 0 0-42.47 42.5V326.5a42.49 42.49 0 0 0 42.47 42.5H738.8a42.49 42.49 0 0 0 42.47-42.5V184.83a42.49 42.49 0 0 0-42.47-42.5H597.2Zm51.63 139.68v33.87h-30.45V196.1h30.45v51.46h1.57l39.82-51.47h32.68l-41.39 52.88 43.8 66.9h-35.75l-30.2-47.23-10.53 13.37Z"
                   fill="url(#logo)"
                 />
@@ -243,8 +240,8 @@ export default function WhatsNew() {
                 y2="752"
                 gradientUnits="userSpaceOnUse"
               >
-                <stop stop-color="hsl(218, 100%, 10%)"></stop>
-                <stop offset="1" stop-color="hsl(218, 100%, 10%)"></stop>
+                <stop stopColor="hsl(218, 100%, 10%)" />
+                <stop offset="1" stopColor="hsl(218, 100%, 10%)" />
               </linearGradient>
               <linearGradient
                 id="keystone"
@@ -254,21 +251,21 @@ export default function WhatsNew() {
                 y2="578.07"
                 gradientUnits="userSpaceOnUse"
               >
-                <stop stop-color="hsl(215, 100%, 50%)">
+                <stop stopColor="hsl(215, 100%, 50%)">
                   <animate
-                    attributeName="stop-color"
+                    attributeName="stopColor"
                     values="hsl(215, 100%, 50%);hsl(193, 100%, 35%);hsl(215, 100%, 50%)"
                     dur="2s"
                     repeatCount="indefinite"
-                  ></animate>
+                  />
                 </stop>
-                <stop offset="1" stop-color="hsl(193, 99%, 50%)">
+                <stop offset="1" stopColor="hsl(193, 99%, 50%)">
                   <animate
-                    attributeName="stop-color"
+                    attributeName="stopColor"
                     values="hsl(203, 99%, 50%);hsl(168, 99%, 75%);hsl(203, 99%, 50%)"
                     dur="2s"
                     repeatCount="indefinite"
-                  ></animate>
+                  />
                 </stop>
               </linearGradient>
               <linearGradient
@@ -279,24 +276,24 @@ export default function WhatsNew() {
                 y2="392.42"
                 gradientUnits="userSpaceOnUse"
               >
-                <stop stop-color="hsl(215, 100%, 50%)">
+                <stop stopColor="hsl(215, 100%, 50%)">
                   <animate
-                    attributeName="stop-color"
+                    attributeName="stopColor"
                     values="hsl(215, 100%, 50%);hsl(193, 100%, 35%);hsl(215, 100%, 50%)"
                     dur="2s"
                     repeatCount="indefinite"
                     calcMode="spline"
                     keyTimes="0;1"
                     keySplines="0.1,1 0.9,0"
-                  ></animate>
+                  />
                 </stop>
-                <stop offset="1" stop-color="#01C7FE">
+                <stop offset="1" stopColor="#01C7FE">
                   <animate
-                    attributeName="stop-color"
+                    attributeName="stopColor"
                     values="hsl(203, 99%, 50%);hsl(168, 99%, 75%);hsl(203, 99%, 50%)"
                     dur="2s"
                     repeatCount="indefinite"
-                  ></animate>
+                  />
                 </stop>
               </linearGradient>
               <radialGradient
@@ -307,9 +304,9 @@ export default function WhatsNew() {
                 gradientUnits="userSpaceOnUse"
                 gradientTransform="rotate(-.29 202658.6 -129784.35) scale(861.614 640.89)"
               >
-                <stop stop-color="hsl(215, 100%, 49%)"></stop>
-                <stop offset=".19" stop-color="hsl(215, 100%, 40%)" stop-opacity=".95"></stop>
-                <stop offset="1" stop-color="hsl(215, 100%, 36%)" stop-opacity="0"></stop>
+                <stop stopColor="hsl(215, 100%, 49%)" />
+                <stop offset=".19" stopColor="hsl(215, 100%, 40%)" stopOpacity=".95" />
+                <stop offset="1" stopColor="hsl(215, 100%, 36%)" stopOpacity="0" />
               </radialGradient>
 
               <filter
@@ -319,9 +316,9 @@ export default function WhatsNew() {
                 width="2160.78"
                 height="1188.05"
                 filterUnits="userSpaceOnUse"
-                color-interpolation-filters="sRGB"
+                colorInterpolationFilters="sRGB"
               >
-                <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                <feFlood floodOpacity="0" result="BackgroundImageFix" />
                 <feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
                 <feGaussianBlur stdDeviation="48" result="effect1_foregroundBlur_2247_58141" />
               </filter>
@@ -332,9 +329,9 @@ export default function WhatsNew() {
                 width="1104.48"
                 height="429.99"
                 filterUnits="userSpaceOnUse"
-                color-interpolation-filters="sRGB"
+                colorInterpolationFilters="sRGB"
               >
-                <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                <feFlood floodOpacity="0" result="BackgroundImageFix" />
                 <feColorMatrix
                   in="SourceAlpha"
                   values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
@@ -353,9 +350,9 @@ export default function WhatsNew() {
                 width="305.86"
                 height="306.01"
                 filterUnits="userSpaceOnUse"
-                color-interpolation-filters="sRGB"
+                colorInterpolationFilters="sRGB"
               >
-                <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                <feFlood floodOpacity="0" result="BackgroundImageFix" />
                 <feColorMatrix
                   in="SourceAlpha"
                   values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
