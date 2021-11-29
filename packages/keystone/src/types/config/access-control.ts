@@ -1,6 +1,6 @@
 import type { MaybePromise } from '../utils';
 import type { KeystoneContextFromListTypeInfo } from '..';
-import { BaseListTypeInfo } from '../generated';
+import { BaseListTypeInfo } from '../type-info';
 
 type BaseAccessArgs<ListTypeInfo extends BaseListTypeInfo> = {
   session: any;

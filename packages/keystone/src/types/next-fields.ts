@@ -1,6 +1,6 @@
 import Decimal from 'decimal.js';
 import { graphql } from '..';
-import { BaseListTypeInfo } from './generated';
+import { BaseListTypeInfo } from './type-info';
 import { CommonFieldConfig } from './config';
 import { DatabaseProvider } from './core';
 import { AdminMetaRootVal, JSONValue, KeystoneContext, MaybePromise } from '.';

@@ -1,6 +1,6 @@
 import { CacheHint } from 'apollo-server-types';
 import { FieldTypeFunc } from '../next-fields';
-import { BaseListTypeInfo } from '../generated';
+import { BaseListTypeInfo } from '../type-info';
 import { KeystoneContextFromListTypeInfo, MaybePromise } from '..';
 import { MaybeItemFunction, MaybeSessionFunction } from './lists';
 import { FieldHooks } from './hooks';

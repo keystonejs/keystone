@@ -1,5 +1,5 @@
 import type { KeystoneContextFromListTypeInfo } from '..';
-import { BaseListTypeInfo } from '../generated';
+import { BaseListTypeInfo } from '../type-info';
 
 type CommonArgs<ListTypeInfo extends BaseListTypeInfo> = {
   context: KeystoneContextFromListTypeInfo<ListTypeInfo>;

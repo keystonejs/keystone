@@ -2,7 +2,7 @@ import { IncomingMessage } from 'http';
 import { Readable } from 'stream';
 import { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql';
 import { InitialisedList } from '../lib/core/types-for-lists';
-import { BaseListTypeInfo } from './generated';
+import { BaseListTypeInfo } from './type-info';
 import { GqlNames, BaseKeystoneTypeInfo } from '.';
 
 export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
