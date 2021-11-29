@@ -1,4 +1,4 @@
-# @keystone-next/auth
+# @keystone-6/auth
 
 Keystone-next is a preview release of the next version of Keystone. Please visit <https://keystonejs.com/> for full details.
 

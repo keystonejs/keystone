@@ -7,7 +7,7 @@ import {
   CellComponent,
   FieldController,
   FieldControllerConfig,
-} from '@keystone-next/keystone/types';
+} from '@keystone-6/keystone/types';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { validateImage } from './Field';
 

@@ -1,5 +1,5 @@
 {
-  "name": "@keystone-next/example-blog",
+  "name": "@keystone-6/example-blog",
   "version": "3.0.0",
   "private": true,
   "license": "MIT",
@@ -10,7 +10,7 @@
     "seed-data": "keystone-next --seed-data"
   },
   "dependencies": {
-    "@keystone-next/keystone": "^29.0.0"
+    "@keystone-6/keystone": "^29.0.0"
   },
   "devDependencies": {
     "typescript": "^4.4.4"

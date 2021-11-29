@@ -1,7 +1,7 @@
 import { GetStaticPathsResult, GetStaticPropsContext } from 'next';
 import Link from 'next/link';
 import React from 'react';
-import { DocumentRenderer, DocumentRendererProps } from '@keystone-next/document-renderer';
+import { DocumentRenderer, DocumentRendererProps } from '@keystone-6/document-renderer';
 import { fetchGraphQL, gql } from '../../utils';
 
 // By default the DocumentRenderer will render unstyled html elements.

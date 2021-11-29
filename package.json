@@ -1,5 +1,5 @@
 {
-  "name": "@keystone-next/mono-repo",
+  "name": "@keystone-6/mono-repo",
   "description": "KeystoneJS monorepo for all the @keystonejs-next packages",
   "private": true,
   "version": "0.0.0",
@@ -9,7 +9,7 @@
   "homepage": "https://github.com/keystonejs/keystone",
   "scripts": {
     "prisma": "prisma",
-    "docs": "manypkg run @keystone-next/website dev",
+    "docs": "manypkg run @keystone-6/website dev",
     "coverage": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --runInBand --coverage",
     "format:file": "prettier --write",
     "format": "prettier --write \"**/*.{js,json,ts,tsx,md,mdx}\" && remark . --output",
@@ -24,7 +24,7 @@
     "test:unit": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --no-watchman --runInBand --logHeapUsage",
     "test:unit:debug": "cross-env NODE_ENV=test node --inspect-brk `which jest` --runInBand",
     "test:admin-ui": "yarn jest tests/admin-ui-tests",
-    "benchmark": "yarn workspace @keystone-next/benchmarks-legacy go",
+    "benchmark": "yarn workspace @keystone-6/benchmarks-legacy go",
     "changeset": "changeset",
     "publish-changed": "yarn build && changeset publish --public",
     "version-packages": "changeset version",

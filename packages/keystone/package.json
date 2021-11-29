@@ -1,9 +1,9 @@
 {
-  "name": "@keystone-next/keystone",
+  "name": "@keystone-6/keystone",
   "version": "29.0.0",
   "license": "MIT",
-  "main": "dist/keystone-next-keystone.cjs.js",
-  "module": "dist/keystone-next-keystone.esm.js",
+  "main": "dist/keystone-6-keystone.cjs.js",
+  "module": "dist/keystone-6-keystone.esm.js",
   "files": [
     "session",
     "bin",

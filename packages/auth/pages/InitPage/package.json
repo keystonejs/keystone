@@ -1,4 +1,4 @@
 {
-  "main": "dist/keystone-next-auth-pages-InitPage.cjs.js",
-  "module": "dist/keystone-next-auth-pages-InitPage.esm.js"
+  "main": "dist/keystone-6-auth-pages-InitPage.cjs.js",
+  "module": "dist/keystone-6-auth-pages-InitPage.esm.js"
 }

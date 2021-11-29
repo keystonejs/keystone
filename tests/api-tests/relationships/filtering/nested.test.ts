@@ -1,6 +1,6 @@
-import { text, relationship } from '@keystone-next/keystone/fields';
-import { setupTestRunner } from '@keystone-next/keystone/testing';
-import { list } from '@keystone-next/keystone';
+import { text, relationship } from '@keystone-6/keystone/fields';
+import { setupTestRunner } from '@keystone-6/keystone/testing';
+import { list } from '@keystone-6/keystone';
 import { apiTestConfig } from '../../utils';
 
 type IdType = any;

@@ -1,4 +1,4 @@
-# @keystone-next/session-store-redis
+# @keystone-6/session-store-redis
 
 Keystone-next is a preview release of the next version of Keystone. Please visit <https://keystonejs.com/> for full details.
 

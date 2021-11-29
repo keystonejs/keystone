@@ -188,7 +188,7 @@ export default function Roadmap() {
 
       <Type as="p" look="body18" margin="1rem 0">
         This means we're integrating feedback and tweaking our APIs before finalising our move from
-        v5 to v6, and publishing packages under the <InlineCode>@keystone-next</InlineCode> scope on
+        v5 to v6, and publishing packages under the <InlineCode>@keystone-6</InlineCode> scope on
         npm.
       </Type>
 
@@ -226,9 +226,8 @@ export default function Roadmap() {
           <TimelineWeAreHere />
           <TimelineMarker look="grad2" />
           <TimelineContent title="Community Preview" look="grad2">
-            We published the <strong>New Interfaces</strong> as{' '}
-            <InlineCode>@keystone-next</InlineCode> on npm, and have been iterating based on
-            internal & community feedback
+            We published the <strong>New Interfaces</strong> as <InlineCode>@keystone-6</InlineCode>{' '}
+            on npm, and have been iterating based on internal & community feedback
           </TimelineContent>
         </TimelineItem>
         <TimelineItem>

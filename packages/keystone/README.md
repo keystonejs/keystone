@@ -1,4 +1,4 @@
-# @keystone-next/keystone
+# @keystone-6/keystone
 
 Keystone-next is a preview release of the next version of Keystone. Please visit <https://keystonejs.com/> for full details.
 
