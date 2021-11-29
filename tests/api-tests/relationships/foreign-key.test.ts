@@ -1,5 +1,5 @@
-import { list } from '@keystone-next/keystone';
-import { relationship } from '@keystone-next/keystone/fields';
+import { list } from '@keystone-6/keystone';
+import { relationship } from '@keystone-6/keystone/fields';
 import { apiTestConfig, dbProvider, getPrismaSchema } from '../utils';
 
 test('when not specifying foreignKey in a one to one relationship, the side is picked based on the list key + field key ordering', async () => {

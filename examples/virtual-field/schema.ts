@@ -1,5 +1,5 @@
-import { list, graphql } from '@keystone-next/keystone';
-import { select, relationship, text, timestamp, virtual } from '@keystone-next/keystone/fields';
+import { list, graphql } from '@keystone-6/keystone';
+import { select, relationship, text, timestamp, virtual } from '@keystone-6/keystone/fields';
 
 export const lists = {
   Post: list({

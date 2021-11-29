@@ -1,6 +1,6 @@
-import { text } from '@keystone-next/keystone/fields';
-import { list } from '@keystone-next/keystone';
-import { setupTestRunner } from '@keystone-next/keystone/testing';
+import { text } from '@keystone-6/keystone/fields';
+import { list } from '@keystone-6/keystone';
+import { setupTestRunner } from '@keystone-6/keystone/testing';
 import { apiTestConfig } from './utils';
 
 const runner = setupTestRunner({

@@ -1,4 +1,4 @@
-import { KeystoneContext } from '@keystone-next/keystone/types';
+import { KeystoneContext } from '@keystone-6/keystone/types';
 import { authors, posts } from './data';
 
 type AuthorProps = {

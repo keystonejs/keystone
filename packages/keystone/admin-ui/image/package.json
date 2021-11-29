@@ -1,4 +1,4 @@
 {
-  "main": "dist/keystone-next-keystone-admin-ui-image.cjs.js",
-  "module": "dist/keystone-next-keystone-admin-ui-image.esm.js"
+  "main": "dist/keystone-6-keystone-admin-ui-image.cjs.js",
+  "module": "dist/keystone-6-keystone-admin-ui-image.esm.js"
 }

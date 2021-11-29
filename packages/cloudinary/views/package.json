@@ -1,4 +1,4 @@
 {
-  "main": "dist/keystone-next-cloudinary-views.cjs.js",
-  "module": "dist/keystone-next-cloudinary-views.esm.js"
+  "main": "dist/keystone-6-cloudinary-views.cjs.js",
+  "module": "dist/keystone-6-cloudinary-views.esm.js"
 }
