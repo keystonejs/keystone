@@ -378,8 +378,9 @@ export default function WhatsNew() {
               </clipPath>
             </defs>
           </svg>
-          Keystone 6 is now in General Availability, faster and more flexible than it’s ever been
-          and is now production-ready for you to build amazing things with.{' '}
+          Keystone 6 is now in General Availability! Today’s Keystone is faster and more flexible
+          than it’s ever been, and is ready for you to build amazing things with{' '}
+          <Emoji symbol="🚀" alt="Rocket" />{' '}
           <a href="/updates/general-availability">Read the full story here</a>.
         </Box>
         <Timeline date="24th November 2021" />
