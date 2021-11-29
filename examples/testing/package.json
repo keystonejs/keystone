@@ -4,9 +4,9 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "dev": "keystone-next dev",
-    "start": "keystone-next start",
-    "build": "keystone-next build",
+    "dev": "keystone dev",
+    "start": "keystone start",
+    "build": "keystone build",
     "test": "jest --runInBand --testTimeout=60000"
   },
   "dependencies": {
