@@ -122,15 +122,23 @@ type AfterOperationHook<ListTypeInfo extends BaseListTypeInfo> = (
     | ArgsForCreateOrUpdateOperation<ListTypeInfo>
     | {
         operation: 'delete';
-        // technically this will never actually exist for a create
+        // technically this will never actually exist for a delete
         // but making it optional rather than not here
         // makes for a better experience
-        // because then people will see the right type even if they haven't refined the type of operation to 'create'
-        item?: ListTypeInfo['item'];
+        // because then people will see the right type even if they haven't refined the type of operation to 'delete'
+        item: undefined;
         inputData: undefined;
         resolvedData: undefined;
       }
-  ) & {
-    originalItem: ListTypeInfo['item'];
-  } & CommonArgs<ListTypeInfo>
+  ) &
+    ({ operation: 'delete' } | { operation: 'create' | 'update'; item: ListTypeInfo['item'] }) &
+    (
+      | // technically this will never actually exist for a create
+      // but making it optional rather than not here
+      // makes for a better experience
+      // because then people will see the right type even if they haven't refined the type of operation to 'create'
+      { operation: 'create'; originalItem: undefined }
+      | { operation: 'delete' | 'update'; originalItem: ListTypeInfo['item'] }
+    ) &
+    CommonArgs<ListTypeInfo>
 ) => Promise<void> | void;

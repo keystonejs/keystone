@@ -201,10 +201,8 @@ async function getResolvedData(
   hookArgs: {
     context: KeystoneContext;
     listKey: string;
-    operation: 'create' | 'update';
     inputData: Record<string, any>;
-    item: Record<string, any> | undefined;
-  },
+  } & ({ operation: 'create'; item: undefined } | { operation: 'update'; item: BaseItem }),
   nestedMutationState: NestedMutationState
 ) {
   const { context, operation } = hookArgs;
@@ -340,17 +338,17 @@ async function resolveInputForCreateOrUpdate(
   inputData: Record<string, any>,
   item: BaseItem | undefined
 ) {
-  const operation: 'create' | 'update' = item === undefined ? 'create' : 'update';
   const nestedMutationState = new NestedMutationState(context);
-  const { listKey } = list;
-  const hookArgs = {
+  const baseHookArgs = {
     context,
-    listKey,
-    operation,
+    listKey: list.listKey,
     inputData,
-    item,
     resolvedData: {},
   };
+  const hookArgs =
+    item === undefined
+      ? { ...baseHookArgs, operation: 'create' as const, item }
+      : { ...baseHookArgs, operation: 'update' as const, item };
 
   // Take the original input and resolve all the fields down to what
   // will be saved into the database.
@@ -368,11 +366,17 @@ async function resolveInputForCreateOrUpdate(
     data: flattenMultiDbFields(list.fields, hookArgs.resolvedData),
     afterOperation: async (updatedItem: BaseItem) => {
       await nestedMutationState.afterOperation();
-      await runSideEffectOnlyHook(list, 'afterOperation', {
-        ...hookArgs,
-        item: updatedItem,
-        originalItem: item,
-      });
+      await runSideEffectOnlyHook(
+        list,
+        'afterOperation',
+        // at runtime this conditional is pointless
+        // but TypeScript needs it because in each case, it will narrow
+        // `hookArgs` based on the `operation` which will make `hookArgs.item`
+        // be the right type for `originalItem` for the operation
+        hookArgs.operation === 'create'
+          ? { ...hookArgs, item: updatedItem, originalItem: hookArgs.item }
+          : { ...hookArgs, item: updatedItem, originalItem: hookArgs.item }
+      );
     },
   };
 }
