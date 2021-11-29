@@ -19,7 +19,7 @@ You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://
 ## Features
 
 This project demonstrates how to use virtual fields.
-It uses the `graphql` export from `@keystone-next/keystone` to define the GraphQL schema used by the virtual fields.
+It uses the `graphql` export from `@keystone-6/keystone` to define the GraphQL schema used by the virtual fields.
 
 ### `isPublished`
 

@@ -1,5 +1,5 @@
 {
-  "name": "@keystone-next/test-projects-live-reloading",
+  "name": "@keystone-6/test-projects-live-reloading",
   "version": "1.0.0",
   "private": true,
   "license": "MIT",
@@ -9,7 +9,7 @@
     "build": "keystone-next build"
   },
   "dependencies": {
-    "@keystone-next/keystone": "^29.0.0"
+    "@keystone-6/keystone": "^29.0.0"
   },
   "devDependencies": {
     "typescript": "^4.4.4"

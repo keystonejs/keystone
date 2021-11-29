@@ -1,6 +1,6 @@
-import { createAuth } from '@keystone-next/auth';
-import { config } from '@keystone-next/keystone';
-import { statelessSessions } from '@keystone-next/keystone/session';
+import { createAuth } from '@keystone-6/auth';
+import { config } from '@keystone-6/keystone';
+import { statelessSessions } from '@keystone-6/keystone/session';
 import { permissionsList } from './schemas/fields';
 import { Role } from './schemas/Role';
 import { OrderItem } from './schemas/OrderItem';

@@ -1,5 +1,5 @@
-import { list } from '@keystone-next/keystone';
-import { text, checkbox, password } from '@keystone-next/keystone/fields';
+import { list } from '@keystone-6/keystone';
+import { text, checkbox, password } from '@keystone-6/keystone/fields';
 
 export const lists = {
   User: list({

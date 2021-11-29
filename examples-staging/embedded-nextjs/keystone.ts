@@ -1,4 +1,4 @@
-import { config } from '@keystone-next/keystone';
+import { config } from '@keystone-6/keystone';
 
 import { Post } from './schema';
 

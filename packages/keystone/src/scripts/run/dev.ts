@@ -28,7 +28,7 @@ import { initialiseLists } from '../../lib/core/types-for-lists';
 import { printPrismaSchema } from '../../lib/core/prisma-schema';
 
 const devLoadingHTMLFilepath = path.join(
-  path.dirname(require.resolve('@keystone-next/keystone/package.json')),
+  path.dirname(require.resolve('@keystone-6/keystone/package.json')),
   'static',
   'dev-loading.html'
 );

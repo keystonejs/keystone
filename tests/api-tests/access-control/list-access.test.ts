@@ -1,6 +1,6 @@
 import { GraphQLError } from 'graphql';
-import { KeystoneContext } from '@keystone-next/keystone/types';
-import { setupTestEnv, TestEnv } from '@keystone-next/keystone/testing';
+import { KeystoneContext } from '@keystone-6/keystone/types';
+import { setupTestEnv, TestEnv } from '@keystone-6/keystone/testing';
 import { expectAccessDenied } from '../utils';
 import {
   nameFn,

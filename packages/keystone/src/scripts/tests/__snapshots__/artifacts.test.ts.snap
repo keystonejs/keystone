@@ -6,15 +6,15 @@ import {
   KeystoneListsAPI as GenericKeystoneListsAPI,
   KeystoneDbAPI as GenericKeystoneDbAPI,
   KeystoneContext as GenericKeystoneContext,
-} from '@keystone-next/keystone/types';
+} from '@keystone-6/keystone/types';
 type Scalars = {
   readonly ID: string;
   readonly Boolean: boolean;
   readonly String: string;
   readonly Int: number;
   readonly Float: number;
-  readonly JSON: import("@keystone-next/keystone/types").JSONValue;
-  readonly Decimal: import("@keystone-next/keystone/types").Decimal | string;
+  readonly JSON: import("@keystone-6/keystone/types").JSONValue;
+  readonly Decimal: import("@keystone-6/keystone/types").Decimal | string;
 };
 
 export type TodoWhereUniqueInput = {
@@ -133,8 +133,8 @@ export type TodoListTypeInfo = {
 };
 
 export type TodoListFn = (
-  listConfig: import('@keystone-next/keystone').ListConfig<TodoListTypeInfo, TodoListTypeInfo['fields']>
-) => import('@keystone-next/keystone').ListConfig<TodoListTypeInfo, TodoListTypeInfo['fields']>;
+  listConfig: import('@keystone-6/keystone').ListConfig<TodoListTypeInfo, TodoListTypeInfo['fields']>
+) => import('@keystone-6/keystone').ListConfig<TodoListTypeInfo, TodoListTypeInfo['fields']>;
 
 export type KeystoneListsTypeInfo = {
   readonly "Todo": TodoListTypeInfo;

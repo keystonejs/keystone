@@ -8,12 +8,12 @@ import { AlertOctagonIcon } from '@keystone-ui/icons/icons/AlertOctagonIcon';
 import { CheckCircleIcon } from '@keystone-ui/icons/icons/CheckCircleIcon';
 import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
 import { Tooltip } from '@keystone-ui/tooltip';
-import { component, fields, NotEditable } from '@keystone-next/fields-document/component-blocks';
+import { component, fields, NotEditable } from '@keystone-6/fields-document/component-blocks';
 import {
   ToolbarButton,
   ToolbarGroup,
   ToolbarSeparator,
-} from '@keystone-next/fields-document/primitives';
+} from '@keystone-6/fields-document/primitives';
 
 const noticeIconMap = {
   info: InfoIcon,
