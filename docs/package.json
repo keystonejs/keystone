@@ -12,7 +12,7 @@
   "dependencies": {
     "@babel/runtime": "^7.16.3",
     "@emotion/cache": "11.6.0",
-    "@emotion/react": "^11.6.0",
+    "@emotion/react": "^11.7.0",
     "@emotion/server": "11.4.0",
     "@emotion/weak-memoize": "^0.2.5",
     "@keystone-next/fields-document": "^13.0.0",
