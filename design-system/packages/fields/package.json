@@ -5,7 +5,7 @@
   "main": "dist/keystone-ui-fields.cjs.js",
   "module": "dist/keystone-ui-fields.esm.js",
   "devDependencies": {
-    "@types/react": "^17.0.36"
+    "@types/react": "^17.0.37"
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
