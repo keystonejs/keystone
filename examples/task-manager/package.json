@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-task-manager",
-  "version": "5.0.0",
+  "version": "0.0.0",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -10,7 +10,7 @@
     "seed-data": "keystone-next --seed-data"
   },
   "dependencies": {
-    "@keystone-6/keystone": "^29.0.0"
+    "@keystone-6/keystone": "^0.0.0"
   },
   "devDependencies": {
     "typescript": "^4.4.4"
