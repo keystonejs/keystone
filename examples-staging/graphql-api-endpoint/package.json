@@ -1,5 +1,5 @@
 {
-  "name": "keystone-next-app",
+  "name": "@keystone-6/example-graphql-api-endpoint",
   "version": "2.0.0",
   "private": true,
   "scripts": {
