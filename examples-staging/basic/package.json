@@ -19,7 +19,7 @@
     "@keystone-ui/icons": "^4.0.2",
     "@keystone-ui/tooltip": "^4.0.3",
     "@preconstruct/next": "^3.0.1",
-    "@types/react": "^17.0.36",
+    "@types/react": "^17.0.37",
     "graphql": "^15.7.2",
     "graphql-tag": "^2.12.6",
     "next": "^12.0.4",
