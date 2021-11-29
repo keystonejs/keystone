@@ -214,10 +214,10 @@ export default function WhatsNew() {
         </Box>
         <Timeline date="2nd November 2021" />
         <Box heading="Server-side reloading" link="/releases/2021-11-02#server-side-live-reloading">
-          With <InlineCode>keystone dev</InlineCode> you can now update your GraphQL schema, change
-          hooks and access control, log errors to see how your data returns, then immediately use
-          the playground to test it and iterate. This is on top of to the current support for live
-          reloading changes to custom views in the Admin UI.
+          With <InlineCode>keystone-next dev</InlineCode> you can now update your GraphQL schema,
+          change hooks and access control, log errors to see how your data returns, then immediately
+          use the playground to test it and iterate. This is on top of to the current support for
+          live reloading changes to custom views in the Admin UI.
         </Box>
         <Timeline date="13th October 2021" />
         <Box heading="New deployment example: Microsoft Azure">
@@ -715,7 +715,7 @@ export default function WhatsNew() {
             <li>
               Exchanged <InlineCode>deploy</InlineCode>, <InlineCode>reset</InlineCode> and{' '}
               <InlineCode>generate</InlineCode> commands for{' '}
-              <InlineCode>keystone prisma</InlineCode> commands.
+              <InlineCode>keystone-next prisma</InlineCode> commands.
             </li>
           </ul>
         </Box>
