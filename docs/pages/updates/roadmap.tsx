@@ -120,8 +120,6 @@ function Divider() {
         margin: '3rem 0',
         border: 'none',
         height: '1px',
-        backgroundSize: '1rem 0.4rem',
-        backgroundRepeat: 'repeat',
         backgroundColor: 'var(--border)',
       }}
     />
