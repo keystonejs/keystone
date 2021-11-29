@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-document-field",
-  "version": "2.0.0",
+  "version": "0.0.0",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -10,9 +10,9 @@
     "build": "keystone-next build"
   },
   "dependencies": {
-    "@keystone-6/document-renderer": "^5.0.0",
-    "@keystone-6/fields-document": "^14.0.0",
-    "@keystone-6/keystone": "^29.0.0",
+    "@keystone-6/document-renderer": "^0.0.0",
+    "@keystone-6/fields-document": "^0.0.0",
+    "@keystone-6/keystone": "^0.0.0",
     "@preconstruct/next": "^3.0.1",
     "next": "^12.0.4",
     "react": "^17.0.2"
