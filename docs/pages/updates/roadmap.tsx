@@ -112,6 +112,22 @@ function TimelineContent({ title, look, children }: TimelineContentProps) {
 type RoadmapListProps = {
   section: keyof typeof roadmapItemSection;
 };
+
+function Divider() {
+  return (
+    <hr
+      css={{
+        margin: '3rem 0',
+        border: 'none',
+        height: '1px',
+        backgroundSize: '1rem 0.4rem',
+        backgroundRepeat: 'repeat',
+        backgroundColor: 'var(--border)',
+      }}
+    />
+  );
+}
+
 function RoadmapList({ children }: RoadmapListProps) {
   const mq = useMediaQuery();
   return (
@@ -194,8 +210,8 @@ export default function Roadmap() {
         After a year of intensive development Keystone 6 has achieved a{' '}
         <Link href="/updates/general-availability">General Availability release</Link>! We’ve
         graduated to the
-        <InlineCode>@keystone-6</InlineCode>namespace on npm and have a stable set of APIs that you
-        can confidently build on {}
+        <InlineCode>@keystone-6</InlineCode> namespace on npm and have a stable set of APIs that you
+        can confidently build on <Emoji symbol="🚀" alt="Rocket" />
       </Type>
       <div
         css={mq({
@@ -229,7 +245,7 @@ export default function Roadmap() {
         <TimelineItem>
           <TimelineWeAreHere />
           <TimelineMarker look="grad1" />
-          <TimelineContent title="Maturity, community, & Next-gen Admin UI" look="grad1">
+          <TimelineContent title="Maturity, community, & next-gen Admin UI" look="grad1">
             A better dev-configured editing experience. Maturity & features in Keystone core. More
             pathways to grow with Keystone.
           </TimelineContent>
@@ -269,7 +285,6 @@ export default function Roadmap() {
           </li>
         </ul>
       </div>
-
       <Type as="h3" look="heading20bold" margin="2rem 0 1rem">
         Next-gen Admin UI
       </Type>
@@ -292,29 +307,24 @@ export default function Roadmap() {
         still in the works. This body of work will elevate the experience of authoring content in
         Keystone to the same high standards we have for authoring with Keystone’s core APIs.
       </Type>
-
       <Type as="h3" look="heading20bold" margin="1rem 0">
         Maturing the Developer Experience
       </Type>
-
       <Type as="p" look="body18">
         We’ll continue to iterate on making Keystone the easiest way to design and standup a GraphQL
         API on the web. Going all-in on Typescript has made the DX so sweet, but we want to take it{' '}
         <em>further</em> so that Keystone’s the best Typescript &gt; GraphQL developer experience in
         the ecosystem. <Emoji symbol="✨" alt="Sparkles" />
       </Type>
-
       <Type as="p" look="body18" margin="1rem 0">
         We’ll also focus on making better pathways for you to integrate Keystone with the deployment
         services you use most, so you can get the most out of where the modern web is going. Image
         and file management is an area we’re actively iterating on, and we’ll have more to share
         soon.
       </Type>
-
       <Type as="h3" look="heading20bold" margin="1rem 0">
         Enabling the community
       </Type>
-
       <Type as="p" look="body18" margin="1rem 0">
         At{' '}
         <a href="https://thinkmill.com.au" target="_blank" rel="noopener noreferrer">
@@ -333,11 +343,9 @@ export default function Roadmap() {
         you to collaborate around the Keystone project and showcase your awesome work with others in
         the community.
       </Type>
-
       <Type as="h2" look="heading36" css={{ margin: '2rem 0 0' }}>
         Feature Roadmap
       </Type>
-
       <Alert look="tip" css={{ margin: '2rem 0 2rem' }}>
         <span
           css={{
@@ -356,11 +364,12 @@ export default function Roadmap() {
           <Emoji symbol="🚀" alt="Rocket" />
         </span>
       </Alert>
-
       <Type as="h3" look="heading30">
         Currently iterating on
       </Type>
-
+      <Type as="p" look="body18" margin="1rem 0 2rem">
+        We have the foundations for these in place, and are working on making them better.
+      </Type>
       <RoadmapList>
         <RoadmapItem title="Image & file management" section="fields and schema">
           <Fragment>
@@ -370,13 +379,13 @@ export default function Roadmap() {
         <RoadmapItem title="Back-end APIs for Node.js apps" section="core">
           <Fragment>
             Access your GraphQL APIs from Node.js for greater flexibility when writing apps and
-            hybrid use-cases
+            hybrid use-cases.
           </Fragment>
         </RoadmapItem>
         <RoadmapItem title="Build & Deployment options" section="docs">
           <Fragment>
             We’re broadening our list of streamlined scenarios & looking into options for serverless
-            environments
+            environments.
           </Fragment>
         </RoadmapItem>
         <RoadmapItem title="Onboarding series" section="docs">
@@ -386,11 +395,10 @@ export default function Roadmap() {
           </Fragment>
         </RoadmapItem>
       </RoadmapList>
-
+      <Divider />
       <Type as="h3" look="heading30">
         Next up
       </Type>
-
       <RoadmapList>
         <RoadmapItem title=" Nested fields" section="fields and schema">
           <Fragment>
@@ -418,29 +426,25 @@ export default function Roadmap() {
           </Fragment>
         </RoadmapItem>
       </RoadmapList>
-
-      <Type as="h3" look="heading30" css={{ margin: '3rem 0 2rem 0' }}>
+      <Divider />
+      <Type as="h3" look="heading30">
         Further afield
       </Type>
-
+      <Type as="p" look="body18" margin="1rem 0 2rem">
+        These features form a complete vision for Keystone over the next year or two, but we’re not
+        focused on their implementation right now.
+      </Type>
       <Type as="h2" look="heading24">
         Admin UI
       </Type>
-
       <RoadmapList>
-        <RoadmapItem title="Customisation APIs">
-          <Fragment>
-            Consistent and predictable authoring patterns for tailoring your Admin UI to any use
-            case.
-          </Fragment>
-        </RoadmapItem>
         <RoadmapItem title="Field Groups">
           <Fragment>
             It’s often easier to work with content when the form is grouped into different sections
             of related fields.
           </Fragment>
         </RoadmapItem>
-        <RoadmapItem title="UI Translation">
+        <RoadmapItem title="Localisation">
           <Fragment>
             When an English-language UI doesn’t work for your team there’ll be a way for you to add
             translations to all the strings in Admin UI.
@@ -481,18 +485,16 @@ export default function Roadmap() {
             mistake or change your mind.
           </Fragment>
         </RoadmapItem>
-        <RoadmapItem title="Custom Publishing workflows">
+        <RoadmapItem title="Custom publishing workflows">
           <Fragment>
             Design your own journey from <InlineCode>draft</InlineCode> to{' '}
             <InlineCode>published</InlineCode> to meet the unique needs of your content team.
           </Fragment>
         </RoadmapItem>
       </RoadmapList>
-
       <Type as="h2" look="heading24">
         Schema & Fields
       </Type>
-
       <RoadmapList>
         <RoadmapItem title="Field Translations">
           <Fragment>
@@ -500,11 +502,9 @@ export default function Roadmap() {
           </Fragment>
         </RoadmapItem>
       </RoadmapList>
-
       <Type as="h2" look="heading24">
         API
       </Type>
-
       <RoadmapList>
         <RoadmapItem title="Upsert mutations">
           <Fragment>
@@ -519,11 +519,9 @@ export default function Roadmap() {
           </Fragment>
         </RoadmapItem>
       </RoadmapList>
-
       <Type as="h2" look="heading24">
         Core
       </Type>
-
       <RoadmapList>
         <RoadmapItem title="Native full-text search">
           <Fragment>
@@ -532,10 +530,12 @@ export default function Roadmap() {
           </Fragment>
         </RoadmapItem>
         <RoadmapItem title="Mongo DB">
-          <Fragment>Native support for the MongoDB database type.</Fragment>
+          <Fragment>
+            Native support for the MongoDB database type. We’ll look at adding this when Prisma’s
+            implementation of MongoDB is battle-tested.
+          </Fragment>
         </RoadmapItem>
       </RoadmapList>
-
       <Alert look="tip" css={{ margin: '2rem 0 2rem' }}>
         <Type as="p">
           <strong>Got a feature you’re after, or want to know more about the future?</strong>
