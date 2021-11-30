@@ -23,7 +23,7 @@ test("start errors when a build hasn't happened", async () => {
   const recording = recordConsole();
   await expect(runCommand(tmp, 'start')).rejects.toEqual(new ExitError(1));
   expect(recording()).toMatchInlineSnapshot(`
-    "🤞🏻 Starting Keystone
+    "✨ Starting Keystone
     🚨 keystone build must be run before running keystone start"
   `);
 });
