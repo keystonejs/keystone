@@ -10,8 +10,8 @@ Additional options to this function provide support for creating an initial item
 For examples of how to use authentication in your system please see the [authentication guide](../guides/auth-and-access-control).
 
 ```typescript
-import { config, list } from '@keystone-6/keystone';
-import { text, password, checkbox } from '@keystone-6/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { text, password, checkbox } from '@keystone-6/core/fields';
 import { createAuth } from '@keystone-6/auth';
 
 const { withAuth } = createAuth({

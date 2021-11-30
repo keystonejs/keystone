@@ -8,8 +8,8 @@ type Scalars = {
   readonly String: string;
   readonly Int: number;
   readonly Float: number;
-  readonly JSON: import("@keystone-6/keystone/types").JSONValue;
-  readonly Decimal: import("@keystone-6/keystone/types").Decimal | string;
+  readonly JSON: import("@keystone-6/core/types").JSONValue;
+  readonly Decimal: import("@keystone-6/core/types").Decimal | string;
 };
 
 export type TodoWhereUniqueInput = {
@@ -108,7 +108,7 @@ export type KeystoneAdminUISortDirection =
 
 
 export declare namespace Lists {
-  export type Todo = import('@keystone-6/keystone').ListConfig<Lists.Todo.TypeInfo, any>;
+  export type Todo = import('@keystone-6/core').ListConfig<Lists.Todo.TypeInfo, any>;
   namespace Todo {
     export type Item = import('.prisma/client').Todo;
     export type TypeInfo = {
@@ -126,7 +126,7 @@ export declare namespace Lists {
     };
   }
 }
-export type Context = import('@keystone-6/keystone/types').KeystoneContext<TypeInfo>;
+export type Context = import('@keystone-6/core/types').KeystoneContext<TypeInfo>;
 
 export type TypeInfo = {
   lists: {
@@ -138,8 +138,8 @@ export type TypeInfo = {
 type __TypeInfo = TypeInfo;
 
 export type Lists = {
-  [Key in keyof TypeInfo['lists']]?: import('@keystone-6/keystone').ListConfig<TypeInfo['lists'][Key], any>
-} & Record<string, import('@keystone-6/keystone').ListConfig<any, any>>;
+  [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core').ListConfig<TypeInfo['lists'][Key], any>
+} & Record<string, import('@keystone-6/core').ListConfig<any, any>>;
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/types.js ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 

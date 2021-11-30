@@ -55,11 +55,11 @@ const { withAuth } = createAuth({
 
 ### Session
 
-We use a basic `statelessSessions` from `@keystone-6/keystone/session` for session handling.
+We use a basic `statelessSessions` from `@keystone-6/core/session` for session handling.
 You need to have sessions enabled in order to use the `withAuth` config wrapper.
 
 ```typescript
-import { statelessSessions } from '@keystone-6/keystone/session';
+import { statelessSessions } from '@keystone-6/core/session';
 
 const session = statelessSessions({ secret: '-- EXAMPLE COOKIE SECRET; CHANGE ME --' });
 ```

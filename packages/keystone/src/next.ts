@@ -15,14 +15,14 @@ export const withKeystone =
     thing: any
   ) => {
     if (phase === 'phase-production-build') {
-      execa.sync('node', [require.resolve('@keystone-6/keystone/bin/cli.js'), 'postinstall'], {
+      execa.sync('node', [require.resolve('@keystone-6/core/bin/cli.js'), 'postinstall'], {
         stdio: 'inherit',
       });
     }
     if (phase === 'phase-development-server' && !hasAlreadyStarted) {
       hasAlreadyStarted = true;
 
-      const cliPath = require.resolve('@keystone-6/keystone/bin/cli.js');
+      const cliPath = require.resolve('@keystone-6/core/bin/cli.js');
 
       execa.sync('node', [cliPath, 'postinstall', '--fix'], {
         stdio: 'inherit',
@@ -44,10 +44,10 @@ export const withKeystone =
       if (options.isServer) {
         webpackConfig.externals = [
           ...webpackConfig.externals,
-          '@keystone-6/keystone/___internal-do-not-use-will-break-in-patch/api',
-          '@keystone-6/keystone/___internal-do-not-use-will-break-in-patch/next-graphql',
-          '@keystone-6/keystone/next',
-          '@keystone-6/keystone/system',
+          '@keystone-6/core/___internal-do-not-use-will-break-in-patch/api',
+          '@keystone-6/core/___internal-do-not-use-will-break-in-patch/next-graphql',
+          '@keystone-6/core/next',
+          '@keystone-6/core/system',
           '.prisma/client',
         ];
       }

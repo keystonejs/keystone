@@ -14,7 +14,7 @@
     "@babel/preset-env": "^7.16.0",
     "@babel/preset-typescript": "^7.16.0",
     "@keystone-6/auth": "^0.0.0",
-    "@keystone-6/keystone": "^0.0.0"
+    "@keystone-6/core": "^0.0.0"
   },
   "devDependencies": {
     "babel-jest": "^27.3.1",

@@ -1,6 +1,6 @@
-import { list } from '@keystone-6/keystone';
-import { text } from '@keystone-6/keystone/fields';
-import { setupTestRunner } from '@keystone-6/keystone/testing';
+import { list } from '@keystone-6/core';
+import { text } from '@keystone-6/core/fields';
+import { setupTestRunner } from '@keystone-6/core/testing';
 import { isCuid } from 'cuid';
 import { validate } from 'uuid';
 import { apiTestConfig, expectBadUserInput } from './utils';

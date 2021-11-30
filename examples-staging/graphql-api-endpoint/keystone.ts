@@ -1,6 +1,6 @@
-import { statelessSessions } from '@keystone-6/keystone/session';
+import { statelessSessions } from '@keystone-6/core/session';
 
-import { config } from '@keystone-6/keystone';
+import { config } from '@keystone-6/core';
 import { createAuth } from '@keystone-6/auth';
 import { lists } from './schema';
 

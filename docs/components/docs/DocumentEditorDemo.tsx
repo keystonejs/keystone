@@ -91,7 +91,7 @@ const componentBlocks = {
 type DocumentFieldConfig = Parameters<typeof import('@keystone-6/fields-document').document>[0];
 
 function documentFeaturesCodeExample(config: DocumentFieldConfig | DocumentFeatures) {
-  return `import { config, list } from '@keystone-6/keystone';
+  return `import { config, list } from '@keystone-6/core';
 import { document } from '@keystone-6/fields-document';
 
 export default config({

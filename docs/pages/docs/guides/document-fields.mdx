@@ -22,7 +22,7 @@ The document field provides a number of different formatting options, all of whi
 To get started with a fully featured editor experience, you can turn on all of the built-in options.
 
 ```typescript
-import { list } from '@keystone-6/keystone';
+import { list } from '@keystone-6/core';
 import { document } from '@keystone-6/fields-document';
 
 export const lists = {
@@ -161,9 +161,9 @@ For example, you might want to include twitter-style mentions of other users in 
 We can achieve this with the `relationships` option to the document field.
 
 ```tsx
-import { config, list } from '@keystone-6/keystone';
+import { config, list } from '@keystone-6/core';
 import { document } from '@keystone-6/fields-document';
-import { text } from '@keystone-6/keystone/fields';
+import { text } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
@@ -352,7 +352,7 @@ You need to import the `componentBlocks` and pass it to the document field along
 `keystone.ts`
 
 ```ts
-import { config, list } from '@keystone-6/keystone';
+import { config, list } from '@keystone-6/core';
 import { document } from '@keystone-6/fields-document';
 import { componentBlocks } from './component-blocks';
 
@@ -510,7 +510,7 @@ There are a variety of fields you can configure.
 
 #### Form Fields
 
-`@keystone-6/keystone/component-blocks` ships with a set of form fields for common purposes:
+`@keystone-6/core/component-blocks` ships with a set of form fields for common purposes:
 
 - `fields.text({ label: '...', defaultValue: '...' })`
 - `fields.url({ label: '...', defaultValue: '...' })`
@@ -571,7 +571,7 @@ fields.object({
 To use relationship fields on component blocks, you need to add a relationship to the document field config.
 
 ```tsx
-import { config, list } from '@keystone-6/keystone';
+import { config, list } from '@keystone-6/core';
 import { document } from '@keystone-6/fields-document';
 
 export default config({

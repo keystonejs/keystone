@@ -1,4 +1,4 @@
-import { KeystoneContext } from '@keystone-6/keystone/types';
+import { KeystoneContext } from '@keystone-6/core/types';
 import { Session } from '../types';
 
 async function addToCart(

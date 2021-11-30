@@ -1,5 +1,5 @@
-import { list } from '@keystone-6/keystone';
-import { text, relationship, password, timestamp, select } from '@keystone-6/keystone/fields';
+import { list } from '@keystone-6/core';
+import { text, relationship, password, timestamp, select } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
 
 export const lists = {

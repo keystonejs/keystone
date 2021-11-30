@@ -1,4 +1,4 @@
-import { list, graphQLSchemaExtension, gql, graphql } from '@keystone-6/keystone';
+import { list, graphQLSchemaExtension, gql, graphql } from '@keystone-6/core';
 import {
   text,
   relationship,
@@ -9,7 +9,7 @@ import {
   virtual,
   image,
   file,
-} from '@keystone-6/keystone/fields';
+} from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
 import { v4 } from 'uuid';
 import { componentBlocks } from './admin/fieldViews/Content';

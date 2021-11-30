@@ -77,9 +77,9 @@ Keystone also comes with a Redis session adapter, which uses a cookie to store a
 Your entire Keystone config should now look like this:
 
 ```ts
-import { config, list } from '@keystone-6/keystone';
-import { checkbox, password, text } from '@keystone-6/keystone/fields';
-import { statelessSessions } from '@keystone-6/keystone/session';
+import { config, list } from '@keystone-6/core';
+import { checkbox, password, text } from '@keystone-6/core/fields';
+import { statelessSessions } from '@keystone-6/core/session';
 import { createAuth } from '@keystone-6/auth';
 
 const db = {
