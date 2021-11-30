@@ -13,8 +13,8 @@
   "devDependencies": {
     "@hapi/iron": "^6.0.0",
     "@keystone-6/auth": "*",
-    "@keystone-6/fields-document": "*",
     "@keystone-6/core": "*",
+    "@keystone-6/fields-document": "*",
     "apollo-server-types": "^3.4.0",
     "cookie-signature": "^1.1.0",
     "cuid": "^2.1.8",
