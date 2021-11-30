@@ -154,7 +154,7 @@ export async function generalStartKeystone(projectDir: string, command: 'start' 
     throw new Error(`No such file or directory ${projectDir}`);
   }
 
-  let keystoneProcess = execa('yarn', ['keystone-next', command], {
+  let keystoneProcess = execa('yarn', ['keystone', command], {
     cwd: projectDir,
     env: process.env,
   });

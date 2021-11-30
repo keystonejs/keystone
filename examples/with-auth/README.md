@@ -19,7 +19,7 @@ You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://
 ## Features
 
 This project demonstrates how to add authentication to a Keystone system.
-It uses the [`@keystone-next/auth`](https://keystonejs.com/docs/apis/auth) package, along with Keystone's [session management API](https://keystonejs.com/docs/apis/session), to add the following features to the Task Manager base:
+It uses the [`@keystone-6/auth`](https://keystonejs.com/docs/apis/auth) package, along with Keystone's [session management API](https://keystonejs.com/docs/apis/session), to add the following features to the Task Manager base:
 
 - Configure which fields to use for signin
 - Set up stateless session handling to keep track of the signed in user
@@ -40,10 +40,10 @@ These are used as our _identity_ and _secret_ fields for login.
 
 ### Auth config
 
-We use the `createAuth` function from `@keystone-next/auth` to configure a `withAuth` config wrapper, which will inject all the extra config used to enable authentication.
+We use the `createAuth` function from `@keystone-6/auth` to configure a `withAuth` config wrapper, which will inject all the extra config used to enable authentication.
 
 ```typescript
-import { createAuth } from '@keystone-next/auth';
+import { createAuth } from '@keystone-6/auth';
 
 const { withAuth } = createAuth({
   listKey: 'Person',
@@ -55,11 +55,11 @@ const { withAuth } = createAuth({
 
 ### Session
 
-We use a basic `statelessSessions` from `@keystone-next/keystone/session` for session handling.
+We use a basic `statelessSessions` from `@keystone-6/keystone/session` for session handling.
 You need to have sessions enabled in order to use the `withAuth` config wrapper.
 
 ```typescript
-import { statelessSessions } from '@keystone-next/keystone/session';
+import { statelessSessions } from '@keystone-6/keystone/session';
 
 const session = statelessSessions({ secret: '-- EXAMPLE COOKIE SECRET; CHANGE ME --' });
 ```

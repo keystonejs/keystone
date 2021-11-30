@@ -4,9 +4,9 @@ import {
   ListNavItems,
   NavigationContainer,
   NavItem,
-} from '@keystone-next/keystone/admin-ui/components';
+} from '@keystone-6/keystone/admin-ui/components';
 
-import type { NavigationProps } from '@keystone-next/keystone/admin-ui/components';
+import type { NavigationProps } from '@keystone-6/keystone/admin-ui/components';
 
 export function CustomNavigation({ lists, authenticatedItem }: NavigationProps) {
   return (

@@ -1,5 +1,5 @@
-import type { BaseItem } from '@keystone-next/keystone/types';
-import { graphql } from '@keystone-next/keystone';
+import type { BaseItem } from '@keystone-6/keystone/types';
+import { graphql } from '@keystone-6/keystone';
 import { AuthGqlNames, SecretFieldImpl } from '../types';
 
 import { validateSecret } from '../lib/validateSecret';

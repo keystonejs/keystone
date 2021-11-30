@@ -1,4 +1,4 @@
-import { BaseListTypeInfo, KeystoneContext } from '@keystone-next/keystone/types';
+import { BaseListTypeInfo, KeystoneContext } from '@keystone-6/keystone/types';
 
 export type AuthGqlNames = {
   CreateInitialInput: string;

@@ -1,9 +1,9 @@
 {
-  "name": "@keystone-next/keystone",
-  "version": "29.0.0",
+  "name": "@keystone-6/keystone",
+  "version": "0.0.0",
   "license": "MIT",
-  "main": "dist/keystone-next-keystone.cjs.js",
-  "module": "dist/keystone-next-keystone.esm.js",
+  "main": "dist/keystone-6-keystone.cjs.js",
+  "module": "dist/keystone-6-keystone.esm.js",
   "files": [
     "session",
     "bin",
@@ -23,7 +23,7 @@
     "system"
   ],
   "bin": {
-    "keystone-next": "bin/cli.js"
+    "keystone": "bin/cli.js"
   },
   "dependencies": {
     "@apollo/client": "3.4.17",

@@ -5,7 +5,7 @@ import type { KeystoneConfig, CreateContext } from '../../types';
 import { createSessionContext } from '../../session';
 
 const adminErrorHTMLFilepath = path.join(
-  path.dirname(require.resolve('@keystone-next/keystone/package.json')),
+  path.dirname(require.resolve('@keystone-6/keystone/package.json')),
   'static',
   'admin-error.html'
 );

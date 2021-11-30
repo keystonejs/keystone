@@ -12,7 +12,7 @@ export async function cli(cwd: string, argv: string[]) {
   const { input, help, flags } = meow(
     `
     Usage
-      $ keystone-next [command]
+      $ keystone [command]
     Commands
         dev           start the project in development mode (default)
         postinstall   generate client APIs and types (optional)
@@ -30,7 +30,7 @@ export async function cli(cwd: string, argv: string[]) {
   );
   const command = input[0] || 'dev';
   if (!isCommand(command)) {
-    console.log(`${command} is not a command that keystone-next accepts`);
+    console.log(`${command} is not a command that keystone accepts`);
     console.log(help);
     throw new ExitError(1);
   }
