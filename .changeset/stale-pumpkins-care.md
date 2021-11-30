@@ -23,3 +23,8 @@
 - `KeystoneGraphQLAPI` no longer has a type parameter
 - The first parameter to the resolver in a `virtual` field will be typed as the item type if the list is typed with `Keystone.Lists` or `Keystone.Lists.ListKey`, otherwise it will be typed as `unknown`
 - The `item`/`originalItem` arguments in hooks/access control will now receive the `Item` type if the list is typed with `Keystone.Lists` or `Keystone.Lists.ListKey`, otherwise it will be typed as `BaseItem`
+- `args` has been removed from `BaseListTypeInfo`
+- `inputs.orderBy` and `all` has been added to `BaseListTypeInfo`
+- In `.keystone/types`:
+  - `ListKeyListTypeInfo` has been moved to `Lists.ListKey.TypeInfo`
+  - `KeystoneContext` has been renamed to `Context`
