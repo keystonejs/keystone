@@ -4,7 +4,7 @@ import { basicKeystoneConfig, cliBinPath, schemas, symlinkKeystoneDeps, testdir 
 
 // testing erroring when the schemas are not up to date is in artifacts.test.ts
 
-test('keystone-next prisma exits with the same code as the prisma child process exits with', async () => {
+test('keystone prisma exits with the same code as the prisma child process exits with', async () => {
   const tmp = await testdir({
     ...symlinkKeystoneDeps,
     ...schemas,
@@ -62,7 +62,7 @@ test('keystone-next prisma exits with the same code as the prisma child process 
   `);
 });
 
-test('keystone-next prisma uses the db url in the keystone config', async () => {
+test('keystone prisma uses the db url in the keystone config', async () => {
   const tmp = await testdir({
     ...symlinkKeystoneDeps,
     ...schemas,

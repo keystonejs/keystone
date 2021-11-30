@@ -24,7 +24,7 @@ test("start errors when a build hasn't happened", async () => {
   await expect(runCommand(tmp, 'start')).rejects.toEqual(new ExitError(1));
   expect(recording()).toMatchInlineSnapshot(`
     "✨ Starting Keystone
-    🚨 keystone-next build must be run before running keystone-next start"
+    🚨 keystone build must be run before running keystone start"
   `);
 });
 

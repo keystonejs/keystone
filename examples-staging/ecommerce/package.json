@@ -5,10 +5,10 @@
   "author": "Wes Bos & Jed Watson",
   "license": "MIT",
   "scripts": {
-    "dev": "keystone-next dev",
-    "start": "keystone-next start",
-    "build": "keystone-next build",
-    "seed-data": "keystone-next --seed-data"
+    "dev": "keystone dev",
+    "start": "keystone start",
+    "build": "keystone build",
+    "seed-data": "keystone --seed-data"
   },
   "dependencies": {
     "@babel/plugin-transform-runtime": "^7.16.0",
