@@ -1,4 +1,4 @@
-import type { ItemRootValue } from '@keystone-6/keystone/types';
+import type { BaseItem } from '@keystone-6/keystone/types';
 import { graphql } from '@keystone-6/keystone';
 import { AuthGqlNames, SecretFieldImpl } from '../types';
 
@@ -21,7 +21,7 @@ export function getBaseAuthSchema<I extends string, S extends string>({
 }) {
   const ItemAuthenticationWithPasswordSuccess = graphql.object<{
     sessionToken: string;
-    item: ItemRootValue;
+    item: BaseItem;
   }>()({
     name: gqlNames.ItemAuthenticationWithPasswordSuccess,
     fields: {
@@ -50,7 +50,7 @@ export function getBaseAuthSchema<I extends string, S extends string>({
       authenticatedItem: graphql.field({
         type: graphql.union({
           name: 'AuthenticatedItem',
-          types: [base.object(listKey) as graphql.ObjectType<ItemRootValue>],
+          types: [base.object(listKey) as graphql.ObjectType<BaseItem>],
           resolveType: (root, context) => context.session?.listKey,
         }),
         resolve(root, args, { session, db }) {

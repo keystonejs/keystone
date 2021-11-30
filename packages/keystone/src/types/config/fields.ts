@@ -1,31 +1,30 @@
 import { CacheHint } from 'apollo-server-types';
 import { FieldTypeFunc } from '../next-fields';
-import type { BaseGeneratedListTypes } from '../utils';
-import { KeystoneContext, MaybePromise } from '..';
+import { BaseListTypeInfo } from '../type-info';
+import { KeystoneContextFromListTypeInfo, MaybePromise } from '..';
 import { MaybeItemFunction, MaybeSessionFunction } from './lists';
 import { FieldHooks } from './hooks';
 import { FieldAccessControl } from './access-control';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export type BaseFields<TGeneratedListTypes extends BaseGeneratedListTypes> = {
-  [key: string]: FieldTypeFunc;
+export type BaseFields<ListTypeInfo extends BaseListTypeInfo> = {
+  [key: string]: FieldTypeFunc<ListTypeInfo>;
 };
 
-export type FilterOrderArgs = {
-  context: KeystoneContext;
-  session: KeystoneContext['session'];
+export type FilterOrderArgs<ListTypeInfo extends BaseListTypeInfo> = {
+  context: KeystoneContextFromListTypeInfo<ListTypeInfo>;
+  session: KeystoneContextFromListTypeInfo<ListTypeInfo>['session'];
   listKey: string;
   fieldKey: string;
 };
-export type CommonFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = {
-  access?: FieldAccessControl<TGeneratedListTypes>;
-  hooks?: FieldHooks<TGeneratedListTypes>;
+export type CommonFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
+  access?: FieldAccessControl<ListTypeInfo>;
+  hooks?: FieldHooks<ListTypeInfo>;
   label?: string;
   ui?: {
     views?: string;
-    createView?: { fieldMode?: MaybeSessionFunction<'edit' | 'hidden'> };
-    itemView?: { fieldMode?: MaybeItemFunction<'edit' | 'read' | 'hidden'> };
-    listView?: { fieldMode?: MaybeSessionFunction<'read' | 'hidden'> };
+    createView?: { fieldMode?: MaybeSessionFunction<'edit' | 'hidden', ListTypeInfo> };
+    itemView?: { fieldMode?: MaybeItemFunction<'edit' | 'read' | 'hidden', ListTypeInfo> };
+    listView?: { fieldMode?: MaybeSessionFunction<'read' | 'hidden', ListTypeInfo> };
   };
   graphql?: {
     cacheHint?: CacheHint;
@@ -42,6 +41,6 @@ export type CommonFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes
     omit?: true | readonly ('read' | 'create' | 'update')[];
   };
   // Disabled by default...
-  isFilterable?: boolean | ((args: FilterOrderArgs) => MaybePromise<boolean>);
-  isOrderable?: boolean | ((args: FilterOrderArgs) => MaybePromise<boolean>);
+  isFilterable?: boolean | ((args: FilterOrderArgs<ListTypeInfo>) => MaybePromise<boolean>);
+  isOrderable?: boolean | ((args: FilterOrderArgs<ListTypeInfo>) => MaybePromise<boolean>);
 };

@@ -1,6 +1,6 @@
 import { Limit } from 'p-limit';
 import pluralize from 'pluralize';
-import { ItemRootValue, KeystoneConfig, KeystoneContext } from '../../types';
+import { BaseItem, KeystoneConfig, KeystoneContext } from '../../types';
 import { humanize } from '../utils';
 import { prismaError } from './graphql-errors';
 import { InitialisedList } from './types-for-lists';
@@ -28,30 +28,30 @@ type PrismaModel = {
     orderBy?: readonly Record<string, 'asc' | 'desc'>[];
     include?: Record<string, boolean>;
     select?: Record<string, any>;
-  }) => PrismaPromise<ItemRootValue[]>;
-  delete: (arg: { where: UniquePrismaFilter }) => PrismaPromise<ItemRootValue>;
-  deleteMany: (arg: { where: PrismaFilter }) => PrismaPromise<ItemRootValue>;
+  }) => PrismaPromise<BaseItem[]>;
+  delete: (arg: { where: UniquePrismaFilter }) => PrismaPromise<BaseItem>;
+  deleteMany: (arg: { where: PrismaFilter }) => PrismaPromise<BaseItem>;
   findUnique: (args: {
     where: UniquePrismaFilter;
     include?: Record<string, any>;
     select?: Record<string, any>;
-  }) => PrismaPromise<ItemRootValue | null>;
+  }) => PrismaPromise<BaseItem | null>;
   findFirst: (args: {
     where: PrismaFilter;
     include?: Record<string, any>;
     select?: Record<string, any>;
-  }) => PrismaPromise<ItemRootValue | null>;
+  }) => PrismaPromise<BaseItem | null>;
   create: (args: {
     data: Record<string, any>;
     include?: Record<string, any>;
     select?: Record<string, any>;
-  }) => PrismaPromise<ItemRootValue>;
+  }) => PrismaPromise<BaseItem>;
   update: (args: {
     where: UniquePrismaFilter;
     data: Record<string, any>;
     include?: Record<string, any>;
     select?: Record<string, any>;
-  }) => PrismaPromise<ItemRootValue>;
+  }) => PrismaPromise<BaseItem>;
 };
 
 export type UnwrapPromise<TPromise extends Promise<any>> = TPromise extends Promise<infer T>

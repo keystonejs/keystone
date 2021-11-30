@@ -1,4 +1,4 @@
-import type { ItemRootValue } from '@keystone-6/keystone/types';
+import type { BaseItem } from '@keystone-6/keystone/types';
 import { graphql } from '@keystone-6/keystone';
 import { AuthGqlNames, AuthTokenTypeConfig, SecretFieldImpl } from '../types';
 
@@ -38,7 +38,7 @@ export function getMagicAuthLinkSchema<I extends string>({
       message: graphql.field({ type: graphql.nonNull(graphql.String) }),
     },
   });
-  const RedeemItemMagicAuthTokenSuccess = graphql.object<{ token: string; item: ItemRootValue }>()({
+  const RedeemItemMagicAuthTokenSuccess = graphql.object<{ token: string; item: BaseItem }>()({
     name: gqlNames.RedeemItemMagicAuthTokenSuccess,
     fields: {
       token: graphql.field({ type: graphql.nonNull(graphql.String) }),

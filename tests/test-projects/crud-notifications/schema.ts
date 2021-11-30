@@ -7,7 +7,7 @@ export const lists = {
     access: {
       item: {
         delete: async ({ item }) => {
-          const matchString = item.label.replace(/([\d])+/g, '').trim();
+          const matchString = (item.label as string).replace(/([\d])+/g, '').trim();
           return !['do not delete', 'do not destroy', 'do not kill'].includes(matchString);
         },
       },
