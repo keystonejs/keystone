@@ -34,7 +34,7 @@ describe.each(['postinstall', 'build', 'prisma migrate status'])('%s', command =
     await expect(runCommand(tmp, command)).rejects.toEqual(new ExitError(1));
     expect(recording()).toMatchInlineSnapshot(`
       "Your Prisma and GraphQL schemas are not up to date
-      Please run keystone-next postinstall --fix to update your Prisma and GraphQL schemas"
+      Please run keystone postinstall --fix to update your Prisma and GraphQL schemas"
     `);
   });
 });

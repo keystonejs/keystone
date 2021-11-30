@@ -4,10 +4,10 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "dev": "keystone-next dev",
+    "dev": "keystone dev",
     "dev:site": "next dev -p 3001",
-    "start": "keystone-next start",
-    "build": "keystone-next build"
+    "start": "keystone start",
+    "build": "keystone build"
   },
   "dependencies": {
     "@keystone-6/document-renderer": "^0.0.0",

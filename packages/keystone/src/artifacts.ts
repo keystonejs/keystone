@@ -97,7 +97,7 @@ export async function validateCommittedArtifacts(
     if (shouldPrompt && (await confirmPrompt(`Would you like to update your ${term}?`))) {
       await writeCommittedArtifacts(artifacts, cwd);
     } else {
-      console.log(`Please run keystone-next postinstall --fix to update your ${term}`);
+      console.log(`Please run keystone postinstall --fix to update your ${term}`);
       throw new ExitError(1);
     }
   }
