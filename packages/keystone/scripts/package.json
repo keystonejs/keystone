@@ -1,4 +1,4 @@
 {
-  "main": "dist/keystone-6-keystone-scripts.cjs.js",
-  "module": "dist/keystone-6-keystone-scripts.esm.js"
+  "main": "dist/keystone-6-core-scripts.cjs.js",
+  "module": "dist/keystone-6-core-scripts.esm.js"
 }

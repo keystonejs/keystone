@@ -2,8 +2,8 @@
   "name": "@keystone-6/core",
   "version": "0.0.0",
   "license": "MIT",
-  "main": "dist/keystone-6-keystone.cjs.js",
-  "module": "dist/keystone-6-keystone.esm.js",
+  "main": "dist/keystone-6-core.cjs.js",
+  "module": "dist/keystone-6-core.esm.js",
   "files": [
     "session",
     "bin",
