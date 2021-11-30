@@ -128,7 +128,7 @@ test('errors can be recovered from', async () => {
 
 test('changing the prisma schema crashes the process', async () => {
   await replaceSchema('changed-prisma-schema');
-  await expectContentInStdio(process, 'Your prisma schema has changed, please restart Keystone');
+  await expectContentInStdio(process, '🔄 Your prisma schema has changed, please restart Keystone');
   // the promise will reject when it exits with a non-zero exit code which is what we're expecting here
   await process.catch(() => {});
   expect(process.exitCode).toBe(1);
