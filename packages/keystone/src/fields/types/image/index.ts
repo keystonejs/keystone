@@ -1,7 +1,7 @@
 import { FileUpload } from 'graphql-upload';
 import { userInputError } from '../../../lib/core/graphql-errors';
 import {
-  BaseGeneratedListTypes,
+  BaseListTypeInfo,
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
@@ -13,8 +13,8 @@ import { graphql } from '../../..';
 import { resolveView } from '../../resolve-view';
 import { getImageRef, SUPPORTED_IMAGE_EXTENSIONS } from './utils';
 
-export type ImageFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
-  CommonFieldConfig<TGeneratedListTypes>;
+export type ImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
+  CommonFieldConfig<ListTypeInfo>;
 
 const ImageExtensionEnum = graphql.enum({
   name: 'ImageExtension',
@@ -99,9 +99,9 @@ function isValidImageExtension(extension: string): extension is ImageExtension {
 }
 
 export const image =
-  <TGeneratedListTypes extends BaseGeneratedListTypes>(
-    config: ImageFieldConfig<TGeneratedListTypes> = {}
-  ): FieldTypeFunc =>
+  <ListTypeInfo extends BaseListTypeInfo>(
+    config: ImageFieldConfig<ListTypeInfo> = {}
+  ): FieldTypeFunc<ListTypeInfo> =>
   () => {
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type image");

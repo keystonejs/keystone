@@ -63,13 +63,13 @@ export function makeCreateContext({
   } = {}): KeystoneContext => {
     const schema = sudo ? sudoGraphQLSchema : graphQLSchema;
 
-    const rawGraphQL: KeystoneGraphQLAPI<any>['raw'] = ({ query, variables }) => {
+    const rawGraphQL: KeystoneGraphQLAPI['raw'] = ({ query, variables }) => {
       const source = typeof query === 'string' ? query : print(query);
       return Promise.resolve(
         graphql({ schema, source, contextValue: contextToReturn, variableValues: variables })
       );
     };
-    const runGraphQL: KeystoneGraphQLAPI<any>['run'] = async ({ query, variables }) => {
+    const runGraphQL: KeystoneGraphQLAPI['run'] = async ({ query, variables }) => {
       let result = await rawGraphQL({ query, variables });
       if (result.errors?.length) {
         throw result.errors[0];

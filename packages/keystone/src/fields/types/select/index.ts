@@ -1,7 +1,7 @@
 import inflection from 'inflection';
 import { humanize } from '../../../lib/utils';
 import {
-  BaseGeneratedListTypes,
+  BaseListTypeInfo,
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
@@ -16,8 +16,8 @@ import {
 } from '../../non-null-graphql';
 import { resolveView } from '../../resolve-view';
 
-export type SelectFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
-  CommonFieldConfig<TGeneratedListTypes> &
+export type SelectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
+  CommonFieldConfig<ListTypeInfo> &
     (
       | {
           /**
@@ -67,13 +67,13 @@ const MAX_INT = 2147483647;
 const MIN_INT = -2147483648;
 
 export const select =
-  <TGeneratedListTypes extends BaseGeneratedListTypes>({
+  <ListTypeInfo extends BaseListTypeInfo>({
     isIndexed,
     ui: { displayMode = 'select', ...ui } = {},
     defaultValue,
     validation,
     ...config
-  }: SelectFieldConfig<TGeneratedListTypes>): FieldTypeFunc =>
+  }: SelectFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> =>
   meta => {
     const fieldLabel = config.label ?? humanize(meta.fieldKey);
     const resolvedIsNullable = getResolvedIsNullable(validation, config.db);
@@ -82,7 +82,7 @@ export const select =
     assertCreateIsNonNullAllowed(meta, config);
     const commonConfig = (
       options: readonly { value: string | number; label: string }[]
-    ): CommonFieldConfig<TGeneratedListTypes> & {
+    ): CommonFieldConfig<ListTypeInfo> & {
       views: string;
       getAdminMeta: () => import('./views').AdminSelectFieldMeta;
     } => {

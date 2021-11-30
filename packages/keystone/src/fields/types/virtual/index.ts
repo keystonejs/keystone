@@ -1,23 +1,30 @@
 import { getNamedType, isLeafType } from 'graphql';
 import {
-  BaseGeneratedListTypes,
-  ItemRootValue,
+  BaseListTypeInfo,
+  BaseItem,
   CommonFieldConfig,
   FieldTypeFunc,
   fieldType,
-  ListInfo,
+  ListGraphQLTypes,
   getGqlNames,
 } from '../../../types';
 import { graphql } from '../../..';
 import { resolveView } from '../../resolve-view';
 
-type VirtualFieldGraphQLField = graphql.Field<ItemRootValue, any, graphql.OutputType, string>;
+type VirtualFieldGraphQLField<Item extends BaseItem> = graphql.Field<
+  Item,
+  any,
+  graphql.OutputType,
+  string
+>;
 
-export type VirtualFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
-  CommonFieldConfig<TGeneratedListTypes> & {
+export type VirtualFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
+  CommonFieldConfig<ListTypeInfo> & {
     field:
-      | VirtualFieldGraphQLField
-      | ((lists: Record<string, ListInfo>) => VirtualFieldGraphQLField);
+      | VirtualFieldGraphQLField<ListTypeInfo['item']>
+      | ((
+          lists: Record<string, ListGraphQLTypes>
+        ) => VirtualFieldGraphQLField<ListTypeInfo['item']>);
     unreferencedConcreteInterfaceImplementations?: readonly graphql.ObjectType<any>[];
     ui?: {
       /**
@@ -38,10 +45,10 @@ export type VirtualFieldConfig<TGeneratedListTypes extends BaseGeneratedListType
   };
 
 export const virtual =
-  <TGeneratedListTypes extends BaseGeneratedListTypes>({
+  <ListTypeInfo extends BaseListTypeInfo>({
     field,
     ...config
-  }: VirtualFieldConfig<TGeneratedListTypes>): FieldTypeFunc =>
+  }: VirtualFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> =>
   meta => {
     const usableField = typeof field === 'function' ? field(meta.lists) : field;
     const namedType = getNamedType(usableField.type.graphQLType);

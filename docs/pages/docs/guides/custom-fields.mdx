@@ -25,7 +25,7 @@ We define our field type `myInt` and the corresponding type `MyIntFieldConfig` w
 
 ```ts
 import {
-  BaseGeneratedListTypes,
+  BaseListTypeInfo,
   FieldTypeFunc,
   CommonFieldConfig,
   fieldType,
@@ -34,18 +34,16 @@ import {
 } from '@keystone-6/keystone/types';
 import { graphql } from '@keystone-6/keystone';
 
-export type MyIntFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
-  CommonFieldConfig<TGeneratedListTypes> & {
+export type MyIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
+  CommonFieldConfig<ListTypeInfo> & {
     isIndexed?: boolean | 'unique';
   };
 
 export const myInt =
-  <TGeneratedListTypes extends BaseGeneratedListTypes>({
+  <ListTypeInfo extends BaseListTypeInfo>({
     isIndexed,
-    isRequired,
-    defaultValue,
     ...config
-  }: MyIntFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
+  }: MyIntFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
   meta =>
     fieldType({
       kind: 'scalar',
