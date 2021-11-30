@@ -20,9 +20,9 @@
     "treekill": "^1.0.0"
   },
   "scripts": {
-    "dev": "keystone-next dev",
-    "start": "keystone-next start",
-    "build": "keystone-next build"
+    "dev": "keystone dev",
+    "start": "keystone start",
+    "build": "keystone build"
   },
   "dependencies": {
     "@manypkg/find-root": "^1.1.0",
