@@ -24,16 +24,16 @@ Among other internal naming changes, our CLI commands have switched from `keysto
 
 ## Type Enhancements <Emoji symbol="✨" alt="Sparkles" />
 
-We've shipped a significant update to our type generation.
+We've shipped a significant update to our generated TypeScript types.
 
-If you're implementing a custom field or are using specific types for certain fields, you're going to see types being better, the biggest impact is when `KeystoneContext` is used.
+The type for a Keystone context is stricter when a type specifier is provided to support Typescript's inference engine.
+This results in a smoother, type-safe auto-complete experience and stricter types for your access control, hooks, and any other code that uses a Keystone context. 
 
-Generated types are now more usable and convenient. Prior to this release, the generated types were only usable to cast the `KeystoneContext` to one with the query, DB, or Prisma fields to a specific version, not being very user friendly.
 
-Now, for example, if you want to write all your lists in one big object:
+For example, if you want to write all your lists in one big object:
 
 ```ts
-import { Lists } from '.keystone/lists'
+import { Lists } from '.keystone/types'
 
 export const lists: Lists = {
   Blah: list({...})
