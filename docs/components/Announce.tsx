@@ -18,7 +18,7 @@ export function Announce({ children, ...props }: AnnounceProps) {
         // background: 'var(--brand-bg)',
         // special styling (orange gradient)
         backgroundColor: 'var(--grad4-2)',
-        backgroundImage: `linear-gradient(116.01deg, var(--grad4-2), var(--grad4-1))`,
+        backgroundImage: `linear-gradient(116.01deg, var(--grad2-2), var(--grad2-1))`,
         color: 'var(--brand-text)',
         padding: '1rem',
         textAlign: 'center',

@@ -46,7 +46,9 @@ function Announcement() {
   // standard announcement
   return (
     <Announce>
-      Keystone 6 is now in <Link href="/updates/general-availability">General Availability</Link>!
+      <strong>
+        Keystone 6 is now in <Link href="/updates/general-availability">General Availability</Link>!
+      </strong>
     </Announce>
   );
 }
