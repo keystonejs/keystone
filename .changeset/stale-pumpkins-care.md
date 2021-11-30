@@ -1,8 +1,8 @@
 ---
-'@keystone-next/keystone': major
-'@keystone-next/auth': major
-'@keystone-next/fields-document': major
-'@keystone-next/cloudinary': major
+'@keystone-6/core': major
+'@keystone-6/auth': major
+'@keystone-6/fields-document': major
+'@keystone-6/cloudinary': major
 ---
 
 - The following types have been renamed:

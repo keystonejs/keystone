@@ -1,5 +1,5 @@
 import { randomBytes } from 'crypto';
-import type { KeystoneDbAPI } from '@keystone-6/keystone/types';
+import type { KeystoneDbAPI } from '@keystone-6/core/types';
 
 function generateToken(length: number): string {
   return randomBytes(length) // Generates N*8 bits of data

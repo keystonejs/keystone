@@ -7,19 +7,19 @@ import fetch from 'cross-fetch';
 import { jsx, H1, Stack, Inline, VisuallyHidden, Center } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
 import { Checkbox, TextInput } from '@keystone-ui/fields';
-import { useRawKeystone } from '@keystone-6/keystone/admin-ui/context';
-import { FieldMeta } from '@keystone-6/keystone/types';
+import { useRawKeystone } from '@keystone-6/core/admin-ui/context';
+import { FieldMeta } from '@keystone-6/core/types';
 import isDeepEqual from 'fast-deep-equal';
 
-import { gql, useMutation } from '@keystone-6/keystone/admin-ui/apollo';
-import { useReinitContext, useKeystone } from '@keystone-6/keystone/admin-ui/context';
-import { useRouter, Link } from '@keystone-6/keystone/admin-ui/router';
-import { GraphQLErrorNotice } from '@keystone-6/keystone/admin-ui/components';
+import { gql, useMutation } from '@keystone-6/core/admin-ui/apollo';
+import { useReinitContext, useKeystone } from '@keystone-6/core/admin-ui/context';
+import { useRouter, Link } from '@keystone-6/core/admin-ui/router';
+import { GraphQLErrorNotice } from '@keystone-6/core/admin-ui/components';
 import {
   Fields,
   serializeValueToObjByFieldKey,
   useInvalidFields,
-} from '@keystone-6/keystone/admin-ui/utils';
+} from '@keystone-6/core/admin-ui/utils';
 import { LoadingDots } from '@keystone-ui/loading';
 import { guessEmailFromValue, validEmail } from '../lib/emailHeuristics';
 import { IconTwitter, IconGithub } from '../components/Icons';

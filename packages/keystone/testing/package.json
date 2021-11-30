@@ -1,4 +1,4 @@
 {
-  "main": "dist/keystone-6-keystone-testing.cjs.js",
-  "module": "dist/keystone-6-keystone-testing.esm.js"
+  "main": "dist/keystone-6-core-testing.cjs.js",
+  "module": "dist/keystone-6-core-testing.esm.js"
 }

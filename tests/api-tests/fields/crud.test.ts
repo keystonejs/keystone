@@ -1,9 +1,9 @@
 import globby from 'globby';
-import { list } from '@keystone-6/keystone';
-import { text } from '@keystone-6/keystone/fields';
-import { KeystoneContext } from '@keystone-6/keystone/types';
-import { setupTestRunner } from '@keystone-6/keystone/testing';
-import { humanize } from '@keystone-6/keystone/src/lib/utils';
+import { list } from '@keystone-6/core';
+import { text } from '@keystone-6/core/fields';
+import { KeystoneContext } from '@keystone-6/core/types';
+import { setupTestRunner } from '@keystone-6/core/testing';
+import { humanize } from '@keystone-6/core/src/lib/utils';
 import { apiTestConfig, expectSingleResolverError, expectValidationError } from '../utils';
 
 const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {

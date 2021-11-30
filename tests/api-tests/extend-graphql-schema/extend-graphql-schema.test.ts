@@ -1,6 +1,6 @@
-import { list, graphQLSchemaExtension, gql } from '@keystone-6/keystone';
-import { text } from '@keystone-6/keystone/fields';
-import { setupTestRunner } from '@keystone-6/keystone/testing';
+import { list, graphQLSchemaExtension, gql } from '@keystone-6/core';
+import { text } from '@keystone-6/core/fields';
+import { setupTestRunner } from '@keystone-6/core/testing';
 import { apiTestConfig, expectInternalServerError } from '../utils';
 
 const falseFn: (...args: any) => boolean = () => false;

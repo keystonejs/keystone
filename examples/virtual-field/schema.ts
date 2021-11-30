@@ -1,6 +1,6 @@
-import { list, graphql } from '@keystone-6/keystone';
-import { select, relationship, text, timestamp, virtual } from '@keystone-6/keystone/fields';
-import { BaseItem } from '@keystone-6/keystone/types';
+import { list, graphql } from '@keystone-6/core';
+import { select, relationship, text, timestamp, virtual } from '@keystone-6/core/fields';
+import { BaseItem } from '@keystone-6/core/types';
 
 export const lists = {
   Post: list({

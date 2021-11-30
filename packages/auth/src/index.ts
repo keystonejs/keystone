@@ -7,8 +7,8 @@ import {
   AdminUIConfig,
   SessionStrategy,
   BaseKeystoneTypeInfo,
-} from '@keystone-6/keystone/types';
-import { password, timestamp } from '@keystone-6/keystone/fields';
+} from '@keystone-6/core/types';
+import { password, timestamp } from '@keystone-6/core/fields';
 
 import { AuthConfig, AuthGqlNames } from './types';
 import { getSchemaExtension } from './schema';
