@@ -12,9 +12,7 @@
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
     "noUnusedLocals": true,
     "types": ["@types/jest"],
-    "typeRoots": [],
-    // remove this when https://github.com/vercel/next.js/issues/30352 is fixed
-    "skipLibCheck": true
+    "typeRoots": []
   },
   "include": ["**/*"],
   "exclude": ["**/node_modules/**/*"]
