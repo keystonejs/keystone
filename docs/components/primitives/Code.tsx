@@ -79,6 +79,17 @@ const findRange = <TRange extends Range | CollapseRange>(
   num: number
 ): TRange | undefined => ranges.find(({ start, end }) => start <= num && end >= num);
 
+export function CodeBlock(props: { children: string; className?: string }) {
+  /*
+    In MDX 2, we no longer get different components for rendering `inlineCode` and code blocks.
+    This function returns us to our old behaviour, though a bit inelegantly
+  */
+  if (props.children.includes('\n')) {
+    return <Code {...props} />;
+  }
+  return <InlineCode {...props} />;
+}
+
 export function Code({ children, className }: { children: string; className?: string }) {
   let { language, highlightRanges, collapseRanges } = useMemo(
     () => parseClassName(className),
