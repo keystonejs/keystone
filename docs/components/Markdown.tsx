@@ -40,6 +40,7 @@ export function Markdown({
 
   return (
     <DocsPage headings={headings} title={firstHeading} description={description} {...props}>
+      {/* @ts-ignore */}
       <MDXProvider components={components}>{children}</MDXProvider>
     </DocsPage>
   );
