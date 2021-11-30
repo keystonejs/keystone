@@ -24,41 +24,35 @@ Among other internal naming changes, our CLI commands have switched from `keysto
 
 ## Type Enhancements <Emoji symbol="✨" alt="Sparkles" />
 
-We've shipped a significant update to our type generation.
+We've shipped a significant update to our generated TypeScript types.
 
-If you're implementing a custom field or are using specific types for certain fields, you're going to see types being better, the biggest impact is when `KeystoneContext` is used.
+The types for your schema are stricter when your lists are contextually typed by the newly provided `Lists` types from `.keystone/types`.
+This results in a smoother, type-safe auto-complete experience and stricter types for your access control, hooks, and any other code that uses a Keystone context. 
 
-Generated types are now more usable and convenient. Prior to this release, the generated types were only usable to cast the `KeystoneContext` to one with the query, DB, or Prisma fields to a specific version, not being very user friendly.
 
-Now, for example, if you want to write all your lists in one big object:
+For example, if you write all your lists in one object:
 
 ```ts
-import { Lists } from '.keystone/lists'
+import { Lists } from '.keystone/types'
 
 export const lists: Lists = {
   Blah: list({...})
 }
 ```
 
-Hooks, access control and so forth will accept things like a context with query, DB, and Prisma fields typed exactly, for example the `item` parameter in hooks.
 
 If you're defining your lists separately, you can do this:
 
 ```ts
-import { Lists } from '.keystone/lists'
+import { Lists } from '.keystone/types'
 
 export const Blah: Lists.Blah = list({
   ...
 })
 ```
 
-Note the `.Blah` rather than `["Blah"]`, `Lists` is both a type alias and a namespace.
 
-`Lists.Blah` and `Lists["Blah"]` mean different things, `Lists["Blah"]` is essentially `Lists.Blah | undefined` because all the properties on `Lists` are optional.
-
-This allows you to define lists in one file and more in another.
-
-For a more in-depth view of what's been changed, see below:
+For a more in-depth view of what TypeScript types have been changed, see below:
 
 - The following types have been renamed:
   - `BaseGeneratedListTypes` → `BaseListTypeInfo`
@@ -66,7 +60,7 @@ For a more in-depth view of what's been changed, see below:
   - `ListInfo` → `ListGraphQLTypes`
   - `TypesForList` → `GraphQLTypesForList`
   - `FieldTypeFunc` now has a required type parameter which must satisfy `BaseListTypeInfo`
-  - The following types now have a required type parameter which must satisfy `BaseKeystoneTypeInfo`:
+- The following types now have a required type parameter which must satisfy `BaseKeystoneTypeInfo`:
     - `ServerConfig`
     - `CreateRequestContext`
     - `AdminUIConfig`
