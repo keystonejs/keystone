@@ -52,11 +52,6 @@ export const Blah: Lists.Blah = list({
 })
 ```
 
-Note the `.Blah` rather than `["Blah"]`, `Lists` is both a type alias and a namespace.
-
-`Lists.Blah` and `Lists["Blah"]` mean different things, `Lists["Blah"]` is essentially `Lists.Blah | undefined` because all the properties on `Lists` are optional.
-
-This allows you to define lists in one file and more in another.
 
 For a more in-depth view of what TypeScript types have been changed, see below:
 
