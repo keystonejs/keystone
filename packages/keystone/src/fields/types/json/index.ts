@@ -1,5 +1,5 @@
 import {
-  BaseGeneratedListTypes,
+  BaseListTypeInfo,
   JSONValue,
   FieldTypeFunc,
   CommonFieldConfig,
@@ -8,17 +8,17 @@ import {
 import { graphql } from '../../..';
 import { resolveView } from '../../resolve-view';
 
-export type JsonFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
-  CommonFieldConfig<TGeneratedListTypes> & {
+export type JsonFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
+  CommonFieldConfig<ListTypeInfo> & {
     defaultValue?: JSONValue;
     db?: { map?: string };
   };
 
 export const json =
-  <TGeneratedListTypes extends BaseGeneratedListTypes>({
+  <ListTypeInfo extends BaseListTypeInfo>({
     defaultValue = null,
     ...config
-  }: JsonFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
+  }: JsonFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
   meta => {
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type json");

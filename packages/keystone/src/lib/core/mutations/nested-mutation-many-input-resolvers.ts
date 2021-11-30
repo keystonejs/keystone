@@ -1,4 +1,4 @@
-import { KeystoneContext, TypesForList } from '../../../types';
+import { KeystoneContext, GraphQLTypesForList } from '../../../types';
 import { graphql } from '../../..';
 import { UniqueInputFilter } from '../where-inputs';
 import { InitialisedList } from '../types-for-lists';
@@ -9,14 +9,14 @@ import { checkUniqueItemExists } from './access-control';
 
 type _CreateValueType = Exclude<
   graphql.InferValueFromArg<
-    graphql.Arg<Exclude<TypesForList['relateTo']['many']['create'], undefined>>
+    graphql.Arg<Exclude<GraphQLTypesForList['relateTo']['many']['create'], undefined>>
   >,
   null | undefined
 >;
 
 type _UpdateValueType = Exclude<
   graphql.InferValueFromArg<
-    graphql.Arg<Exclude<TypesForList['relateTo']['many']['update'], undefined>>
+    graphql.Arg<Exclude<GraphQLTypesForList['relateTo']['many']['update'], undefined>>
   >,
   null | undefined
 >;

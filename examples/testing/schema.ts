@@ -24,7 +24,7 @@ export const lists = {
       item: {
         update: async ({ session, item, context }) => {
           const task = await context.query.Task.findOne({
-            where: { id: item.id },
+            where: { id: item.id.toString() },
             query: 'assignedTo { id }',
           });
           return !!(session?.itemId && session.itemId === task.assignedTo?.id);

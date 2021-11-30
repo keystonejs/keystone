@@ -1,7 +1,7 @@
 import { graphql } from './schema';
 import {
   JSONValue,
-  ItemRootValue,
+  BaseItem,
   KeystoneContext,
   UpdateFieldInputArg,
   ScalarDBField,
@@ -12,12 +12,12 @@ import {
 } from '.';
 
 function mapOutputFieldToSQLite(
-  field: graphql.Field<{ value: JSONValue; item: ItemRootValue }, {}, any, 'value'>
+  field: graphql.Field<{ value: JSONValue; item: BaseItem }, {}, any, 'value'>
 ) {
   const innerResolver = field.resolve || (({ value }) => value);
   return graphql.fields<{
     value: string | null;
-    item: ItemRootValue;
+    item: BaseItem;
   }>()({
     value: graphql.field({
       type: field.type,

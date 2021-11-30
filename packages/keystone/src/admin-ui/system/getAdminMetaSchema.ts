@@ -5,7 +5,7 @@ import {
   AdminMetaRootVal,
   ListMetaRootVal,
   FieldMetaRootVal,
-  ItemRootValue,
+  BaseItem,
 } from '../../types';
 import { graphql as graphqlBoundToKeystoneContext } from '../..';
 
@@ -404,7 +404,7 @@ function fakeAssert<T>(val: any): asserts val is T {}
 const fetchItemForItemViewFieldMode = extendContext(context => {
   type ListKey = string;
   type ItemId = string;
-  const lists = new Map<ListKey, Map<ItemId, Promise<ItemRootValue | null>>>();
+  const lists = new Map<ListKey, Map<ItemId, Promise<BaseItem | null>>>();
   return (listKey: ListKey, id: ItemId) => {
     if (!lists.has(listKey)) {
       lists.set(listKey, new Map());
