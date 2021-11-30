@@ -163,17 +163,19 @@ export function DocsNavigation() {
         <NavItem href="/docs/guides/auth-and-access-control">
           Auth and Access Control <Badge look="success">New</Badge>
         </NavItem>
-        <NavItem href="/docs/guides/schema-extension" isPlaceholder>
+        {/* Disable placeholder for now */}
+        {/* <NavItem href="/docs/guides/schema-extension" isPlaceholder>
           Schema Extension
-        </NavItem>
+        </NavItem> */}
         <NavItem href="/docs/guides/testing">Testing</NavItem>
         <NavItem href="/docs/guides/document-fields">Document Fields</NavItem>
         <NavItem href="/docs/guides/document-field-demo">Document Field Demo</NavItem>
         <NavItem href="/docs/guides/virtual-fields">Virtual Fields</NavItem>
         <NavItem href="/docs/guides/custom-fields">Custom Fields</NavItem>
-        <NavItem href="/docs/guides/custom-field-views" isPlaceholder>
+        {/* Disable placeholder for now */}
+        {/* <NavItem href="/docs/guides/custom-field-views" isPlaceholder>
           Custom Field Views
-        </NavItem>
+        </NavItem> */}
         <NavItem href="/docs/guides/custom-admin-ui-logo">Custom Admin UI Logo</NavItem>
         <NavItem href="/docs/guides/custom-admin-ui-pages">Custom Admin UI Pages</NavItem>
         <NavItem href="/docs/guides/custom-admin-ui-navigation">Custom Admin UI Navigation</NavItem>
