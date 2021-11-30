@@ -1,4 +1,4 @@
-import type { KeystoneDbAPI } from '@keystone-6/keystone/types';
+import type { KeystoneDbAPI } from '@keystone-6/core/types';
 import { AuthTokenRedemptionErrorCode, SecretFieldImpl } from '../types';
 import { validateSecret } from './validateSecret';
 

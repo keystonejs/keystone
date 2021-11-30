@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@keystone-6/auth": "^0.0.0",
-    "@keystone-6/keystone": "^0.0.0"
+    "@keystone-6/core": "^0.0.0"
   },
   "engines": {
     "node": "^14.15 || ^16.13"

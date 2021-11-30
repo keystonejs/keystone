@@ -1,5 +1,5 @@
-import type { BaseItem } from '@keystone-6/keystone/types';
-import { graphql } from '@keystone-6/keystone';
+import type { BaseItem } from '@keystone-6/core/types';
+import { graphql } from '@keystone-6/core';
 import { AuthGqlNames, AuthTokenTypeConfig, SecretFieldImpl } from '../types';
 
 import { createAuthToken } from '../lib/createAuthToken';

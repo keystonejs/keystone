@@ -14,7 +14,7 @@ This document covers the different field types which are available and the confi
 To see how to access fields in the GraphQL API please see the [GraphQL API](./graphql) docs.
 
 ```typescript
-import { config, list } from '@keystone-6/keystone';
+import { config, list } from '@keystone-6/core';
 import {
   // Scalar types
   checkbox,
@@ -35,7 +35,7 @@ import {
   // File types
   file,
   image,
-} from '@keystone-6/keystone/fields';
+} from '@keystone-6/core/fields';
 
 // Complex types
 import { document } from '@keystone-6/fields-document';
@@ -154,8 +154,8 @@ Options:
   if a user doesn't have access to create the particular field regardless of whether or not they specify the field in the create.
 
 ```typescript
-import { config, list } from '@keystone-6/keystone';
-import { checkbox } from '@keystone-6/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { checkbox } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
@@ -211,8 +211,8 @@ Options:
   if a user doesn't have access to create the particular field regardless of whether or not they specify the field in the create.
 
 ```typescript
-import { config, list } from '@keystone-6/keystone';
-import { integer } from '@keystone-6/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { integer } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
@@ -245,8 +245,8 @@ Currently the `json` field is non-orderable and non-filterable.
 - `db.map`: Adds a [Prisma `@map`](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#map) attribute to this field which changes the column name in the database
 
 ```typescript
-import { config, list } from '@keystone-6/keystone';
-import { json } from '@keystone-6/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { json } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
@@ -293,8 +293,8 @@ Options:
   if a user doesn't have access to create the particular field regardless of whether or not they specify the field in the create.
 
 ```typescript
-import { config, list } from '@keystone-6/keystone';
-import { float } from '@keystone-6/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { float } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
@@ -348,8 +348,8 @@ Options:
   if a user doesn't have access to create the particular field regardless of whether or not they specify the field in the create.
 
 ```typescript
-import { config, list } from '@keystone-6/keystone';
-import { decimal } from '@keystone-6/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { decimal } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
@@ -397,8 +397,8 @@ Options:
   This module will be used for all encryption routines in the `password` field.
 
 ```typescript
-import { config, list } from '@keystone-6/keystone';
-import { password } from '@keystone-6/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { password } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
@@ -458,8 +458,8 @@ Options:
   if a user doesn't have access to create the particular field regardless of whether or not they specify the field in the create.
 
 ```typescript
-import { config, list } from '@keystone-6/keystone';
-import { select } from '@keystone-6/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { select } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
@@ -518,8 +518,8 @@ Options:
   if a user doesn't have access to create the particular field regardless of whether or not they specify the field in the create.
 
 ```typescript
-import { config, list } from '@keystone-6/keystone';
-import { text } from '@keystone-6/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { text } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
@@ -570,8 +570,8 @@ Options:
   if a user doesn't have access to create the particular field regardless of whether or not they specify the field in the create.
 
 ```typescript
-import { config, list } from '@keystone-6/keystone';
-import { timestamp } from '@keystone-6/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { timestamp } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
@@ -619,8 +619,8 @@ Read our [relationships guide](../guides/relationships) for details on Keystoneâ
 - `ui.displayMode === 'count'` only supports `many` relationships
 
 ```typescript
-import { config, list } from '@keystone-6/keystone';
-import { relationship } from '@keystone-6/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { relationship } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
@@ -684,9 +684,9 @@ Options:
   or an enum or you need to provide arguments to the field.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-6/keystone';
-import { graphql } from '@keystone-6/keystone/types';
-import { virtual } from '@keystone-6/keystone/fields';
+import { config, createSchema, list } from '@keystone-6/core';
+import { graphql } from '@keystone-6/core/types';
+import { virtual } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
@@ -721,8 +721,8 @@ A `file` field represents a file of any type.
 See [`config.files`](./config#files) for details on how to configure your Keystone system with support for the `file` field type.
 
 ```typescript
-import { config, list } from '@keystone-6/keystone';
-import { file } from '@keystone-6/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { file } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
@@ -745,8 +745,8 @@ An `image` field represents an image file, i.e. `.jpg`, `.png`, `.webp`, or `.gi
 See [`config.images`](./config#images) for details on how to configure your Keystone system with support for the `image` field type.
 
 ```typescript
-import { config, list } from '@keystone-6/keystone';
-import { image } from '@keystone-6/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { image } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
@@ -778,7 +778,7 @@ Options:
 - `layouts`
 
 ```typescript
-import { config, list } from '@keystone-6/keystone';
+import { config, list } from '@keystone-6/core';
 import { document } from '@keystone-6/fields-document';
 
 export default config({
@@ -816,7 +816,7 @@ export default config({
   - `folder`
 
 ```typescript
-import { config, list } from '@keystone-6/keystone';
+import { config, list } from '@keystone-6/core';
 import { cloudinaryImage } from '@keystone-6/cloudinary';
 
 export default config({

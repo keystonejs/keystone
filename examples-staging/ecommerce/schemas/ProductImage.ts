@@ -1,6 +1,6 @@
 import 'dotenv/config';
-import { relationship, text } from '@keystone-6/keystone/fields';
-import { list } from '@keystone-6/keystone';
+import { relationship, text } from '@keystone-6/core/fields';
+import { list } from '@keystone-6/core';
 import { cloudinaryImage } from '@keystone-6/cloudinary';
 import { isSignedIn, permissions } from '../access';
 

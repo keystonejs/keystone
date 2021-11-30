@@ -6,8 +6,8 @@ import {
   FieldTypeFunc,
   jsonFieldTypePolyfilledForSQLite,
   JSONValue,
-} from '@keystone-6/keystone/types';
-import { graphql } from '@keystone-6/keystone';
+} from '@keystone-6/core/types';
+import { graphql } from '@keystone-6/core';
 import { Relationships } from './DocumentEditor/relationship';
 import { ComponentBlock } from './component-blocks';
 import { DocumentFeatures } from './views';

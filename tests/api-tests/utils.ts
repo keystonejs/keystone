@@ -1,12 +1,12 @@
-import { initConfig, createSystem } from '@keystone-6/keystone/system';
-import { getCommittedArtifacts } from '@keystone-6/keystone/artifacts';
-import { KeystoneConfig, KeystoneContext, DatabaseProvider } from '@keystone-6/keystone/types';
+import { initConfig, createSystem } from '@keystone-6/core/system';
+import { getCommittedArtifacts } from '@keystone-6/core/artifacts';
+import { KeystoneConfig, KeystoneContext, DatabaseProvider } from '@keystone-6/core/types';
 
 export const dbProvider = process.env.TEST_ADAPTER as DatabaseProvider;
 
 // This function injects the db configuration that we use for testing in CI.
 // This functionality is a keystone repo specific way of doing things, so we don't
-// export it from `@keystone-6/keystone/testing`.
+// export it from `@keystone-6/core/testing`.
 export const apiTestConfig = (
   config: Omit<KeystoneConfig, 'db'> & {
     db?: Omit<KeystoneConfig['db'], 'provider' | 'url'>;

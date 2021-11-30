@@ -1,6 +1,6 @@
-import { integer, relationship, text, virtual } from '@keystone-6/keystone/fields';
-import { BaseFields, list, graphql } from '@keystone-6/keystone';
-import { setupTestEnv, setupTestRunner } from '@keystone-6/keystone/testing';
+import { integer, relationship, text, virtual } from '@keystone-6/core/fields';
+import { BaseFields, list, graphql } from '@keystone-6/core';
+import { setupTestEnv, setupTestRunner } from '@keystone-6/core/testing';
 import { apiTestConfig } from '../../utils';
 
 function makeRunner(fields: BaseFields<any>) {

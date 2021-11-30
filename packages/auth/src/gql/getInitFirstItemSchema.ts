@@ -1,5 +1,5 @@
-import { graphql } from '@keystone-6/keystone';
-import { BaseItem } from '@keystone-6/keystone/types';
+import { graphql } from '@keystone-6/core';
+import { BaseItem } from '@keystone-6/core/types';
 import { assertInputObjectType, GraphQLInputObjectType, GraphQLSchema } from 'graphql';
 
 import { AuthGqlNames, InitFirstItemConfig } from '../types';

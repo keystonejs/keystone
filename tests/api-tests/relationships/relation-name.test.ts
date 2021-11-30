@@ -1,5 +1,5 @@
-import { list } from '@keystone-6/keystone';
-import { relationship } from '@keystone-6/keystone/fields';
+import { list } from '@keystone-6/core';
+import { relationship } from '@keystone-6/core/fields';
 import { getPrismaSchema, apiTestConfig, dbProvider } from '../utils';
 
 test('when not specifying relationName in a many to many relationship, the name is picked based on the lexicographic list key + field key ordering', async () => {

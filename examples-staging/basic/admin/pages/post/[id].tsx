@@ -1,8 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, useTheme } from '@keystone-ui/core';
-import { useRouter } from '@keystone-6/keystone/admin-ui/router';
-import { gql, useQuery } from '@keystone-6/keystone/admin-ui/apollo';
+import { useRouter } from '@keystone-6/core/admin-ui/router';
+import { gql, useQuery } from '@keystone-6/core/admin-ui/apollo';
 import { DocumentRenderer } from '@keystone-6/document-renderer';
 import { InferRenderersForComponentBlocks } from '@keystone-6/fields-document/component-blocks';
 

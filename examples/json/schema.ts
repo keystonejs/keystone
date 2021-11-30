@@ -1,5 +1,5 @@
-import { list } from '@keystone-6/keystone';
-import { checkbox, json, relationship, text } from '@keystone-6/keystone/fields';
+import { list } from '@keystone-6/core';
+import { checkbox, json, relationship, text } from '@keystone-6/core/fields';
 
 export const lists = {
   Package: list({

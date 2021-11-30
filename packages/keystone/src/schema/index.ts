@@ -5,7 +5,7 @@
 // this will not so we should keep this for probably a couple months at least
 
 throw new Error(
-  'The exports of `@keystone-6/keystone/schema` have been moved to `@keystone-6/keystone`, please import from there instead.'
+  'The exports of `@keystone-6/core/schema` have been moved to `@keystone-6/core`, please import from there instead.'
 );
 
 export {};

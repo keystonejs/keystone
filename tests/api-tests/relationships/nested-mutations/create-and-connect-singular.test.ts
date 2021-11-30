@@ -1,6 +1,6 @@
-import { text, relationship } from '@keystone-6/keystone/fields';
-import { list } from '@keystone-6/keystone';
-import { setupTestRunner } from '@keystone-6/keystone/testing';
+import { text, relationship } from '@keystone-6/core/fields';
+import { list } from '@keystone-6/core';
+import { setupTestRunner } from '@keystone-6/core/testing';
 import { apiTestConfig, expectSingleRelationshipError } from '../../utils';
 
 const runner = setupTestRunner({
