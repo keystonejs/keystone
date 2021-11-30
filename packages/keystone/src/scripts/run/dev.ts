@@ -36,7 +36,7 @@ const devLoadingHTMLFilepath = path.join(
 const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
-  console.log('✨ Starting Keystone');
+  console.log('🤞🏻 Starting Keystone');
 
   const app = express();
   let expressServer: express.Express | null = null;
@@ -137,7 +137,7 @@ exports.default = function (req, res) { return res.send(x.toString()) }
             newConfig.db.prismaPreviewFeatures
           );
           if (originalPrismaSchema !== newPrismaSchema) {
-            console.log('Your prisma schema has changed, please restart Keystone');
+            console.log('🔄 Your prisma schema has changed, please restart Keystone');
             process.exit(1);
           }
 

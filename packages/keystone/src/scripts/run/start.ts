@@ -8,7 +8,7 @@ import { requirePrismaClient } from '../../artifacts';
 import { ExitError, getAdminPath } from '../utils';
 
 export const start = async (cwd: string) => {
-  console.log('✨ Starting Keystone');
+  console.log('🤞🏻 Starting Keystone');
 
   // This is the compiled version of the configuration which was generated during the build step.
   // See reexportKeystoneConfig().

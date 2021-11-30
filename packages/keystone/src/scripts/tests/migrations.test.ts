@@ -89,7 +89,7 @@ model Todo {
 }
 `);
 
-  expect(recording()).toEqual(`✨ Starting Keystone
+  expect(recording()).toEqual(`🤞🏻 Starting Keystone
 ⭐️ Dev Server Starting on http://localhost:3000
 ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
 ✨ Generating GraphQL and Prisma schemas
@@ -112,7 +112,7 @@ describe('useMigrations: false', () => {
     await setupAndStopDevServerForMigrations(tmp);
 
     expect(recording()).toMatchInlineSnapshot(`
-      "✨ Starting Keystone
+      "🤞🏻 Starting Keystone
       ⭐️ Dev Server Starting on http://localhost:3000
       ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
@@ -153,7 +153,7 @@ describe('useMigrations: false', () => {
       "
     `);
     expect(recording()).toMatchInlineSnapshot(`
-      "✨ Starting Keystone
+      "🤞🏻 Starting Keystone
       ⭐️ Dev Server Starting on http://localhost:3000
       ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
@@ -200,7 +200,7 @@ describe('useMigrations: false', () => {
       "
     `);
     expect(recording()).toMatchInlineSnapshot(`
-      "✨ Starting Keystone
+      "🤞🏻 Starting Keystone
       ⭐️ Dev Server Starting on http://localhost:3000
       ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
@@ -228,7 +228,7 @@ describe('useMigrations: false', () => {
     }
 
     expect(recording()).toMatchInlineSnapshot(`
-      "✨ Starting Keystone
+      "🤞🏻 Starting Keystone
       ⭐️ Dev Server Starting on http://localhost:3000
       ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
@@ -272,7 +272,7 @@ CREATE TABLE "Todo" (
 `);
 
   expect(recording().replace(new RegExp(migrationName, 'g'), 'migration_name'))
-    .toEqual(`✨ Starting Keystone
+    .toEqual(`🤞🏻 Starting Keystone
 ⭐️ Dev Server Starting on http://localhost:3000
 ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
 ✨ Generating GraphQL and Prisma schemas
@@ -352,7 +352,7 @@ describe('useMigrations: true', () => {
 
     expect(recording().replace(new RegExp(migrationName, 'g'), 'migration_name'))
       .toMatchInlineSnapshot(`
-      "✨ Starting Keystone
+      "🤞🏻 Starting Keystone
       ⭐️ Dev Server Starting on http://localhost:3000
       ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
@@ -428,7 +428,7 @@ describe('useMigrations: true', () => {
 
     expect(recording().replace(new RegExp(migrationName, 'g'), 'migration_name'))
       .toMatchInlineSnapshot(`
-      "✨ Starting Keystone
+      "🤞🏻 Starting Keystone
       ⭐️ Dev Server Starting on http://localhost:3000
       ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
@@ -492,7 +492,7 @@ describe('useMigrations: true', () => {
         .replace(new RegExp(migrationName, 'g'), 'migration_name')
         .replace(oldMigrationName, 'old_migration_name')
     ).toMatchInlineSnapshot(`
-      "✨ Starting Keystone
+      "🤞🏻 Starting Keystone
       ⭐️ Dev Server Starting on http://localhost:3000
       ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
@@ -541,7 +541,7 @@ describe('useMigrations: true', () => {
     expect(await fs.readFile(`${prevCwd}/app.db`)).toEqual(dbBuffer);
 
     expect(recording().replace(oldMigrationName, 'old_migration_name')).toMatchInlineSnapshot(`
-      "✨ Starting Keystone
+      "🤞🏻 Starting Keystone
       ⭐️ Dev Server Starting on http://localhost:3000
       ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
@@ -620,7 +620,7 @@ describe('useMigrations: true', () => {
     `);
 
     expect(recording().replace(migrationName!, 'migration_name')).toMatchInlineSnapshot(`
-      "✨ Starting Keystone
+      "🤞🏻 Starting Keystone
       ⭐️ Dev Server Starting on http://localhost:3000
       ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
@@ -660,7 +660,7 @@ describe('useMigrations: true', () => {
 
     expect(recording().replace(new RegExp(migrationName, 'g'), 'migration_name'))
       .toMatchInlineSnapshot(`
-      "✨ Starting Keystone
+      "🤞🏻 Starting Keystone
       ⭐️ Dev Server Starting on http://localhost:3000
       ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
@@ -696,7 +696,7 @@ describe('useMigrations: true', () => {
 
     expect(recording().replace(new RegExp(migrationName, 'g'), 'migration_name'))
       .toMatchInlineSnapshot(`
-      "✨ Starting Keystone
+      "🤞🏻 Starting Keystone
       ⭐️ Dev Server Starting on http://localhost:3000
       ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
@@ -719,7 +719,7 @@ describe('useMigrations: true', () => {
     await setupAndStopDevServerForMigrations(tmp);
 
     expect(recording()).toMatchInlineSnapshot(`
-      "✨ Starting Keystone
+      "🤞🏻 Starting Keystone
       ⭐️ Dev Server Starting on http://localhost:3000
       ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
