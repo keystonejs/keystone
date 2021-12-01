@@ -75,7 +75,7 @@ Now that we have the Next.js starter with static files, let‘s embed Keystone i
 Add the following Keystone dependency to your project:
 
 ```bash
-yarn add @keystone-next/keystone
+yarn add @keystone-6/core
 ```
 
 ### Update .gitignore
@@ -97,8 +97,8 @@ To create and edit blog records in Keystone’s Admin UI, add a `keystone.ts` [c
 ```tsx
 // keystone.ts
 
-import { config, list } from '@keystone-next/keystone';
-import { text } from '@keystone-next/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { text } from '@keystone-6/core/fields';
 
 const Post = list({
   fields: {
@@ -133,7 +133,7 @@ Edit the `next.config.js` file in your project root with the following:
 -   reactStrictMode: true,
 - }
 
-+ const { withKeystone } = require("@keystone-next/keystone/next");
++ const { withKeystone } = require("@keystone-6/core/next");
 
 + module.exports = withKeystone({
 +  reactStrictMode: true,
@@ -148,7 +148,7 @@ Finally, make a small change to the `scripts` object in `package.json` to includ
 
 ```diff
 "scripts": {
-+ "postinstall": "keystone-next postinstall",
++ "postinstall": "keystone postinstall",
   "dev": "next dev",
   "build": "next build",
   "start": "next start",
@@ -185,26 +185,24 @@ import Link from 'next/link';
 import { query } from '.keystone/api';
 
 // Home receives a `posts` prop from `getStaticProps` below
-export default function Home({
-  posts,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function Home({ posts }: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <div>
-      <main style={{margin: "3rem"}}>
-      <h1>Hello World! 👋🏻 </h1>
-      <ul>
-        {/* Render each post with a link to the content page */}
-        {posts.map(post => (
-          <li key={post.id}>
-            <Link href={`/post/${post.slug}`}>
-              <a>{post.title}</a>
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <main style={{ margin: '3rem' }}>
+        <h1>Hello World! 👋🏻 </h1>
+        <ul>
+          {/* Render each post with a link to the content page */}
+          {posts.map(post => (
+            <li key={post.id}>
+              <Link href={`/post/${post.slug}`}>
+                <a>{post.title}</a>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </main>
     </div>
-  )
+  );
 }
 
 // Here we use the Lists API to load all the posts we want to display
@@ -220,27 +218,21 @@ Now add a `/post` subdirectory in `/pages` and include the code below in `[slug]
 ```tsx
 // pages/post/[slug].tsx
 
-import {
-  GetStaticPathsResult,
-  GetStaticPropsContext,
-  InferGetStaticPropsType,
-} from 'next';
+import { GetStaticPathsResult, GetStaticPropsContext, InferGetStaticPropsType } from 'next';
 import Link from 'next/link';
 import { query } from '.keystone/api';
 
-export default function PostPage({
-  post,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function PostPage({ post }: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <div>
-      <main style={{margin: "3rem"}}>
-      <div>
-        <Link href="/">
-          <a>&larr; back home</a>
-        </Link>
-      </div>
-      <h1>{post.title}</h1>
-      <p>{post.content}</p>
+      <main style={{ margin: '3rem' }}>
+        <div>
+          <Link href="/">
+            <a>&larr; back home</a>
+          </Link>
+        </div>
+        <h1>{post.title}</h1>
+        <p>{post.content}</p>
       </main>
     </div>
   );
@@ -262,9 +254,7 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   };
 }
 
-export async function getStaticProps({
-  params,
-}: GetStaticPropsContext) {
+export async function getStaticProps({ params }: GetStaticPropsContext) {
   const post = await query.Post.findOne({
     where: { slug: params!.slug as string },
     query: 'id title content',
@@ -333,9 +323,14 @@ Keystone’s Embedded mode and SQLite support gives you the option to run a self
   <Well
     heading="Getting Started with create-keystone-app"
     href="/docs/walkthroughs/getting-started-with-create-keystone-app"
-    >
-    How to use Keystone's CLI app to standup a new local project with an Admin UI & the GraphQL Playground.
+  >
+    How to use Keystone's CLI app to standup a new local project with an Admin UI & the GraphQL
+    Playground.
   </Well>
 </RelatedContent>
 
-export default ({ children }) => <Markdown description="Learn how to embed Keystone and an SQLite database into a Next.js app to get a queryable GraphQL endpoint, based on your Keystone schema, running live on Vercel.">{children}</Markdown>;
+export default ({ children }) => (
+  <Markdown description="Learn how to embed Keystone and an SQLite database into a Next.js app to get a queryable GraphQL endpoint, based on your Keystone schema, running live on Vercel.">
+    {children}
+  </Markdown>
+);
