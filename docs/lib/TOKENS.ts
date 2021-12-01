@@ -104,6 +104,7 @@ export const COLORS = {
     '--danger-90': '#e03c3c',
     '--danger--40': 'rgba(220, 38, 38, 0.6)',
     '--alert-text': 'rgba(247, 250, 252, 0.8)',
+
     '--grad1-1': '#F7F9FC',
     '--grad1-2': '#F7F9FC',
     '--grad2-1': '#F7F9FC',
