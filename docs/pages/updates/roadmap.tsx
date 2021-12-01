@@ -65,7 +65,7 @@ function TimelineWeAreHere() {
       css={mq({
         position: ['relative', null, null, 'absolute'],
         margin: ['1rem 0', null, null, '-3rem 0 0'],
-        left: ['0', null, null, null],
+        left: ['-0.75rem', null, null, null],
         display: 'inline-block',
         borderRadius: '0.4rem',
         backgroundColor: 'var(--text)',
@@ -233,6 +233,7 @@ export default function Roadmap() {
           </TimelineContent>
         </TimelineItem>
         <TimelineItem>
+          <TimelineWeAreHere />
           <TimelineMarker look="grad2" />
           <TimelineContent title="General Availability Release" look="grad2">
             Stabilised the new architecture & APIs. Docs & example projects. Published as{' '}
@@ -240,7 +241,6 @@ export default function Roadmap() {
           </TimelineContent>
         </TimelineItem>
         <TimelineItem>
-          <TimelineWeAreHere />
           <TimelineMarker look="grad1" />
           <TimelineContent title="Maturity, community, & next-gen Admin UI" look="grad1">
             A better dev-configured editing experience. Maturity & features in Keystone core. More
