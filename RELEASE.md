@@ -21,17 +21,17 @@ Then publish all new tags (releases plus release date version) to GitHub with `g
 Copy the successful output of the published packages from the above npm release, example output:
 
 ```sh
-@keystone-6/auth@27.0.0
-@keystone-6/fields@11.0.0
-@keystone-6/core@20.0.0
+@keystone-6/auth@1.0.0
+@keystone-6/fields@1.0.0
+@keystone-6/core@1.0.0
 ```
 
 Translate to a `package.json` style syntax for ease of copying, example:
 
 ```json
-"@keystone-6/auth": "27.0.0",
-"@keystone-6/fields": "11.0.0",
-"@keystone-6/core": "20.0.0",
+"@keystone-6/auth": "1.0.0",
+"@keystone-6/fields": "1.0.0",
+"@keystone-6/core": "1.0.0",
 ```
 
 You can safely remove references to `@keystone-ui` as they are primarily for internal use in the Admin UI.
@@ -66,10 +66,10 @@ Create a draft release on GitHub based on the above tag (such as 2021-11-02) wit
 
 Update the following:
 
-- Summary headline of what's in the release (can be updated later)
-- The Keystone website link
-- Packages output
-- Verbose release notes link
+-   Summary headline of what's in the release (can be updated later)
+-   The Keystone website link
+-   Packages output
+-   Verbose release notes link
 
 ````
 [summary headline]
