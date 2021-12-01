@@ -63,9 +63,9 @@ With this in mind, Keystone will now go back to using the **GraphQL Playground**
 
 We have now introduced the `graphql.playground` config option, with three possible settings:
 
--   `true` will configure Apollo Server plugins to enable the GraphQL Playground
--   `false` will configure Apollo Server plugins to disable any `GET` requests to the GraphQL endpoint
--   `'apollo'` will add no plugins to Apollo Server, enabling the new Apollo Sandbox behaviour
+- `true` will configure Apollo Server plugins to enable the GraphQL Playground
+- `false` will configure Apollo Server plugins to disable any `GET` requests to the GraphQL endpoint
+- `'apollo'` will add no plugins to Apollo Server, enabling the new Apollo Sandbox behaviour
 
 `graphql.playground` defaults to `process.env.NODE_ENV !== 'production'` which matches the previous Keystone 6 behaviour before the October update and Apollo Server 3.
 
@@ -117,13 +117,13 @@ We've made internal changes to the `endSession` field on the `Mutation` type and
 
 ## Miscellaneous Fixes <Emoji symbol="⚙️" alt="Gear" />
 
--   The `sessionSchema` export of `@keystone-next/keystone/session` has been removed.
--   `context.session` no longer has a value if the session is invalid.
--   `text`, `integer`, `float` and `decimal` on the item view now render correctly when using `ui.itemView.fieldMode: 'read'`.
--   Admin UI home page now respects `ui.hideCreate` and won't show a plus button when create is disabled.
--   Read-only arrays are now accepted where previously mutable arrays were required. Using `as const` when writing an array and then passing it to various APIs in Keystone will now work.
--   Fixed bug in `LinkToRelatedItems` button for double sided relationships.
--   Updated minor typos in GraphQL errors.
+- The `sessionSchema` export of `@keystone-next/keystone/session` has been removed.
+- `context.session` no longer has a value if the session is invalid.
+- `text`, `integer`, `float` and `decimal` on the item view now render correctly when using `ui.itemView.fieldMode: 'read'`.
+- Admin UI home page now respects `ui.hideCreate` and won't show a plus button when create is disabled.
+- Read-only arrays are now accepted where previously mutable arrays were required. Using `as const` when writing an array and then passing it to various APIs in Keystone will now work.
+- Fixed bug in `LinkToRelatedItems` button for double sided relationships.
+- Updated minor typos in GraphQL errors.
 
 ## Prisma Update <Emoji symbol="🗃" alt="Card File Box" />
 
@@ -133,9 +133,9 @@ Check out the [Prisma releases page](https://github.com/prisma/prisma/releases) 
 
 ## Credits <Emoji symbol="💫" alt="Circle Star" />
 
--   Added a short plain-text display to `document` fields in the `List` view as well as a rendered document view in `CardValue`. Thanks [@oplik0](https://github.com/oplik0)!
+- Added a short plain-text display to `document` fields in the `List` view as well as a rendered document view in `CardValue`. Thanks [@oplik0](https://github.com/oplik0)!
 
--   We now support extensions with numerical characters when generating safe filenames. Thanks [@Zlitus](https://github.com/Zlitus)!
+- We now support extensions with numerical characters when generating safe filenames. Thanks [@Zlitus](https://github.com/Zlitus)!
 
 ## Complete Changelog <Emoji symbol="📜" alt="Scroll" />
 

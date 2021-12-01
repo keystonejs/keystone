@@ -46,11 +46,9 @@ function Announcement() {
   // standard announcement
   return (
     <Announce>
-      Keystone 6 is in <Link href="/updates/roadmap">Community Preview</Link>! For Keystone 5 docs
-      visit{' '}
-      <a href="https://v5.keystonejs.com" rel="noopener noreferrer" target="_blank">
-        v5.keystonejs.com
-      </a>
+      <strong>
+        Keystone 6 is now in <Link href="/updates/general-availability">General Availability</Link>!
+      </strong>
     </Announce>
   );
 }

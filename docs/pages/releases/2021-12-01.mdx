@@ -1,0 +1,105 @@
+import { Markdown, getStaticProps } from '../../components/Markdown';
+import { Emoji } from '../../components/primitives/Emoji';
+import { Stack } from '../../components/primitives/Stack';
+
+# Release: 1st December 2021
+
+This release marks the achievement of **General Availability** status for Keystone 6! <Emoji symbol="🚀" alt="Rocket"/>
+
+We’ve also included a range of improvements to Keystone’s TypeScript DX since shipping [last week’s release candidate](/releases/2021-11-24).
+
+## Keystone 6 <Emoji symbol="⚡️" alt="Lightning" />
+
+With this major release, the project has moved to the `@keystone-6` namespace on npm, and our version numbers have been reset.
+
+We **highly recommend you upgrade** your existing **Keystone Next** projects to **Keystone 6** with the packages below:
+
+```json
+"@keystone-6/auth": "1.0.0",
+"@keystone-6/cloudinary": "1.0.0",
+"@keystone-6/document-renderer": "1.0.0",
+"@keystone-6/fields-document": "1.0.0",
+"@keystone-6/core": "1.0.0",
+"@keystone-6/session-store-redis": "1.0.0",
+```
+
+?> **Note:** `@keystone-next/keystone` has been changed to `@keystone-6/core`
+
+Among other internal naming changes, our CLI commands have switched from `keystone-next` to simply `keystone`, please ensure you update your startup scripts to suit!
+
+!> To learn more about this major release and what’s in store for the road ahead, checkout our official [general availability announcement](/updates/general-availability) and updated [roadmap](/updates/roadmap).
+
+## Type Enhancements <Emoji symbol="✨" alt="Sparkles" />
+
+We've shipped a significant update to our generated TypeScript types.
+
+The types for your schema are stricter when your lists are contextually typed by the newly provided `Lists` types from `.keystone/types`.
+This results in a smoother, type-safe auto-complete experience and stricter types for your access control, hooks, and any other code that uses a Keystone context.
+
+For example, if you write all your lists in one object:
+
+```ts
+import { Lists } from '.keystone/types'
+
+export const lists: Lists = {
+  Blah: list({...})
+}
+```
+
+If you're defining your lists separately, you can do this:
+
+```ts
+import { Lists } from '.keystone/types'
+
+export const Blah: Lists.Blah = list({
+  ...
+})
+```
+
+For a more in-depth view of what TypeScript types have been changed, see below:
+
+- The following types have been renamed:
+  - `BaseGeneratedListTypes` → `BaseListTypeInfo`
+  - `ItemRootValue` → `BaseItem`
+  - `ListInfo` → `ListGraphQLTypes`
+  - `TypesForList` → `GraphQLTypesForList`
+  - `FieldTypeFunc` now has a required type parameter which must satisfy `BaseListTypeInfo`
+- The following types now have a required type parameter which must satisfy `BaseKeystoneTypeInfo`:
+  - `ServerConfig`
+  - `CreateRequestContext`
+  - `AdminUIConfig`
+  - `DatabaseConfig`
+  - `ListOperationAccessControl`
+  - `MaybeSessionFunction`
+  - `MaybeItemFunction`
+- `GraphQLResolver` and `GraphQLSchemaExtension` now have a required type parameter which must satisfy `KeystoneContext`
+- `KeystoneGraphQLAPI` no longer has a type parameter
+- The first parameter to the resolver in a `virtual` field will be typed as the item type if the list is typed with `Keystone.Lists` or `Keystone.Lists.ListKey`, otherwise it will be typed as `unknown`
+- The `item`/`originalItem` arguments in hooks/access control will now receive the `Item` type if the list is typed with `Keystone.Lists` or `Keystone.Lists.ListKey`, otherwise it will be typed as `BaseItem`
+- `args` has been removed from `BaseListTypeInfo`
+- `inputs.orderBy` and `all` has been added to `BaseListTypeInfo`
+- In `.keystone/types`:
+  - `ListKeyListTypeInfo` has been moved to `Lists.ListKey.TypeInfo`
+  - `KeystoneContext` has been renamed to `Context`
+
+## Credits <Emoji symbol="💫" alt="Circle Star" />
+
+This release would not have been possible without the support and feedback of such an awesome developer community.
+
+We’re grateful for the ideas you bring, the help you give others, and the code contributions the you’ve made to get Keystone to where it is today.
+
+!> Like this release? [Give us a star](https://github.com/keystonejs/keystone) on GitHub!
+
+## Complete Changelog <Emoji symbol="📜" alt="Scroll" />
+
+You can also view the [verbose release notes](https://github.com/keystonejs/keystone/pull/7018) for this release on GitHub.
+
+export default ({ children, ...props }) => (
+  <Markdown
+    description="Keystone 6 has hit **General Availability**! We've shipped several more improvements since our release candidate last week."
+    {...props}
+  >
+    {children}
+  </Markdown>
+);
+export { getStaticProps };
