@@ -173,7 +173,219 @@ export default function WhatsNew() {
           gap: 0,
         })}
       >
-        <Timeline date="23rd November 2021" isLatest />
+        <Timeline date="29th November 2021" isLatest />
+        <Box heading="Welcome Keystone 6 to General Availability!">
+          <svg viewBox="0 0 1336 752" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clipPath="url(#a)">
+              <path fill="url(#bg)" d="M0 0h1336v751.5H0z" />
+              <g filter="url(#b)">
+                <path
+                  d="M1652.39 943.93c0 274.73-440.73 497.44-984.39 497.44s-984.4-222.71-984.4-497.44S124.35 446.48 668 446.48c413.93-20.07 984.39 222.72 984.39 497.45Z"
+                  fill="url(#blob)"
+                />
+              </g>
+              <g filter="url(#d)">
+                <path
+                  d="M282.04 557.38v-35.32l10.81-12.97 34.28 48.29h28.9l-45.72-64.3 42.76-51.26h-26.9l-43.4 52.7h-.73v-52.7h-24.18v115.56h24.18Z"
+                  fill="url(#keystone)"
+                />
+                <path
+                  d="M397.2 486.99c10.4 0 17.53 7.52 18.01 18.5h-36.43c.8-10.74 8.17-18.5 18.42-18.5Zm18.33 44.12c-2.16 6.57-8.72 10.81-17.3 10.81-11.93 0-19.7-8.4-19.7-20.66v-1.44h59.19v-7.13c0-26.1-15.78-43-40.77-43-25.38 0-41.4 17.78-41.4 45.16 0 27.47 15.86 44.37 42.29 44.37 21.22 0 36.6-11.3 39.15-28.11h-21.46Z"
+                  fill="url(#keystone)"
+                />
+                <path
+                  d="M459.5 589.17c21.94 0 32.67-7.85 40.04-29.87l29.54-87.77h-24.66l-18.26 67.1h-.4l-18.26-67.1h-25.7l29.87 85.93c.16.32-.72 3.76-.72 4.08-1.6 6.8-5.85 9.53-14.42 9.53-.88 0-5.12 0-5.84-.16v18.02c.72.16 8 .24 8.8.24Z"
+                  fill="url(#keystone)"
+                />
+                <path
+                  d="M535.65 496.76c0 12.65 8.33 21.14 24.58 24.82l15.86 3.52c7.69 1.85 10.57 4.25 10.57 8.57 0 5.6-5.37 9.13-14.25 9.13-9.3 0-14.98-4.16-16.1-11.37H533.5c1.28 16.74 15.37 27.79 38.28 27.79 22.66 0 38.2-11.13 38.2-28.03 0-12.81-6.97-19.62-24.2-23.46l-16.4-3.53c-7.53-1.76-11.22-4.64-11.22-8.88 0-5.53 5.29-9.21 13.38-9.21 8.64 0 14.17 4.24 14.65 11.13h21.54c-.32-16.66-14.33-27.55-35.87-27.55-22.03 0-36.2 10.73-36.2 27.07Z"
+                  fill="url(#keystone)"
+                />
+                <path
+                  d="M627.9 451.75v19.78h-12.1v17.62h12.1v45.08c0 16.74 7.85 23.47 28.03 23.47 4.72 0 8.73-.4 11.13-.97v-17.21c-1.44.24-3.6.4-5.69.4-6.88 0-10.09-3.12-10.09-9.7v-41.07h15.86v-17.62h-15.86v-19.78H627.9Z"
+                  fill="url(#keystone)"
+                />
+                <path
+                  d="M718.07 559.22c25.94 0 42.52-16.58 42.52-44.85 0-27.86-16.82-44.68-42.52-44.68-25.7 0-42.52 16.9-42.52 44.68 0 28.2 16.57 44.85 42.52 44.85Zm0-17.86c-11.53 0-18.82-9.69-18.82-26.9 0-17.06 7.45-26.91 18.82-26.91 11.37 0 18.74 9.85 18.74 26.9 0 17.22-7.29 26.91-18.74 26.91Z"
+                  fill="url(#keystone)"
+                />
+                <path
+                  d="M772.68 557.38h23.38v-49.25c0-11.13 6.65-18.82 17.14-18.82 10.5 0 15.78 6.4 15.78 17.62v50.45h23.38v-55.34c0-20.1-10.73-32.1-29.79-32.1-13.21 0-22.26 6.24-26.83 16.89h-.48v-15.3h-22.58v85.85Z"
+                  fill="url(#keystone)"
+                />
+                <path
+                  d="M905.7 486.99c10.4 0 17.53 7.52 18 18.5h-36.43c.8-10.74 8.17-18.5 18.42-18.5Zm18.33 44.12c-2.16 6.57-8.73 10.81-17.3 10.81-11.93 0-19.7-8.4-19.7-20.66v-1.44h59.18v-7.13c0-26.1-15.77-43-40.76-43-25.38 0-41.4 17.78-41.4 45.16 0 27.47 15.86 44.37 42.28 44.37 21.22 0 36.6-11.3 39.16-28.11h-21.46Z"
+                  fill="url(#keystone)"
+                />
+                <path
+                  d="M1037.98 560.02c25.87 0 44.36-17.06 44.36-40.84 0-21.94-16.25-38.12-38.19-38.12-14.74 0-26.11 7.53-30.75 18.82h-.48c-.56-26.1 9.2-41.56 25.3-41.56 9.05 0 16.5 5.12 18.82 12.81h23.78c-3.2-18.9-20.42-31.95-42.44-31.95-29.87 0-48.45 23.06-48.45 61.34 0 15.38 3.29 28.43 9.7 38.2 8.08 13.77 21.77 21.3 38.35 21.3Zm-.24-19.3a20.83 20.83 0 0 1-21.06-21.06c0-11.7 9.13-20.42 21.14-20.42 12.09 0 20.98 8.73 20.98 20.66 0 11.61-9.29 20.82-21.06 20.82Z"
+                  fill="url(#keystone)"
+                />
+              </g>
+              <g filter="url(#n)">
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M597.21 142.33a42.49 42.49 0 0 0-42.47 42.5V326.5a42.49 42.49 0 0 0 42.47 42.5H738.8a42.49 42.49 0 0 0 42.47-42.5V184.83a42.49 42.49 0 0 0-42.47-42.5H597.2Zm51.63 139.68v33.87h-30.45V196.1h30.45v51.46h1.57l39.82-51.47h32.68l-41.39 52.88 43.8 66.9h-35.75l-30.2-47.23-10.53 13.37Z"
+                  fill="url(#logo)"
+                />
+              </g>
+            </g>
+            <defs>
+              <linearGradient
+                id="bg"
+                x1="0"
+                y1="0"
+                x2="1336"
+                y2="752"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop stopColor="hsl(218, 100%, 10%)" />
+                <stop offset="1" stopColor="hsl(218, 100%, 10%)" />
+              </linearGradient>
+              <linearGradient
+                id="keystone"
+                x1="628"
+                y1="416.32"
+                x2="628"
+                y2="578.07"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop stopColor="hsl(215, 100%, 50%)">
+                  <animate
+                    attributeName="stopColor"
+                    values="hsl(215, 100%, 50%);hsl(193, 100%, 35%);hsl(215, 100%, 50%)"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                </stop>
+                <stop offset="1" stopColor="hsl(193, 99%, 50%)">
+                  <animate
+                    attributeName="stopColor"
+                    values="hsl(203, 99%, 50%);hsl(168, 99%, 75%);hsl(203, 99%, 50%)"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                </stop>
+              </linearGradient>
+              <linearGradient
+                id="logo"
+                x1="629.5"
+                y1="102.94"
+                x2="629.48"
+                y2="392.42"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop stopColor="hsl(215, 100%, 50%)">
+                  <animate
+                    attributeName="stopColor"
+                    values="hsl(215, 100%, 50%);hsl(193, 100%, 35%);hsl(215, 100%, 50%)"
+                    dur="2s"
+                    repeatCount="indefinite"
+                    calcMode="spline"
+                    keyTimes="0;1"
+                    keySplines="0.1,1 0.9,0"
+                  />
+                </stop>
+                <stop offset="1" stopColor="#01C7FE">
+                  <animate
+                    attributeName="stopColor"
+                    values="hsl(203, 99%, 50%);hsl(168, 99%, 75%);hsl(203, 99%, 50%)"
+                    dur="2s"
+                    repeatCount="indefinite"
+                  />
+                </stop>
+              </linearGradient>
+              <radialGradient
+                id="blob"
+                cx="0"
+                cy="0"
+                r="1"
+                gradientUnits="userSpaceOnUse"
+                gradientTransform="rotate(-.29 202658.6 -129784.35) scale(861.614 640.89)"
+              >
+                <stop stopColor="hsl(215, 100%, 49%)" />
+                <stop offset=".19" stopColor="hsl(215, 100%, 40%)" stopOpacity=".95" />
+                <stop offset="1" stopColor="hsl(215, 100%, 36%)" stopOpacity="0" />
+              </radialGradient>
+
+              <filter
+                id="b"
+                x="-412.39"
+                y="349.32"
+                width="2160.78"
+                height="1188.05"
+                filterUnits="userSpaceOnUse"
+                colorInterpolationFilters="sRGB"
+              >
+                <feFlood floodOpacity="0" result="BackgroundImageFix" />
+                <feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                <feGaussianBlur stdDeviation="48" result="effect1_foregroundBlur_2247_58141" />
+              </filter>
+              <filter
+                id="d"
+                x="117.86"
+                y="331.18"
+                width="1104.48"
+                height="429.99"
+                filterUnits="userSpaceOnUse"
+                colorInterpolationFilters="sRGB"
+              >
+                <feFlood floodOpacity="0" result="BackgroundImageFix" />
+                <feColorMatrix
+                  in="SourceAlpha"
+                  values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                  result="hardAlpha"
+                />
+                <feOffset dy="32" />
+                <feGaussianBlur stdDeviation="70" />
+                <feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.85 0" />
+                <feBlend in2="BackgroundImageFix" result="effect1_dropShadow_2247_58141" />
+                <feBlend in="SourceGraphic" in2="effect1_dropShadow_2247_58141" result="shape" />
+              </filter>
+              <filter
+                id="n"
+                x="515.07"
+                y="127.32"
+                width="305.86"
+                height="306.01"
+                filterUnits="userSpaceOnUse"
+                colorInterpolationFilters="sRGB"
+              >
+                <feFlood floodOpacity="0" result="BackgroundImageFix" />
+                <feColorMatrix
+                  in="SourceAlpha"
+                  values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                  result="hardAlpha"
+                />
+                <feMorphology
+                  radius="8.58"
+                  in="SourceAlpha"
+                  result="effect1_dropShadow_2247_58141"
+                />
+                <feOffset dy="24.66" />
+                <feGaussianBlur stdDeviation="24.13" />
+                <feColorMatrix values="0 0 0 0 0.043486 0 0 0 0 0.226735 0 0 0 0 0.545804 0 0 0 0.24 0" />
+                <feBlend in2="BackgroundImageFix" result="effect1_dropShadow_2247_58141" />
+                <feBlend in="SourceGraphic" in2="effect1_dropShadow_2247_58141" result="shape" />
+              </filter>
+
+              <clipPath id="a">
+                <path fill="#fff" d="M0 0h1336v751.5H0z" />
+              </clipPath>
+            </defs>
+          </svg>
+          Keystone 6 is now in General Availability! Today’s Keystone is faster and more flexible
+          than it’s ever been, and is ready for you to build amazing things with{' '}
+          <Emoji symbol="🚀" alt="Rocket" />{' '}
+          <a href="/updates/general-availability">Read the full story here</a>.
+        </Box>
+        <Timeline date="24th November 2021" />
+        <Box heading="Improved performance with Prisma’s Node Engine">
+          Keystone now uses Prisma’s Node-API Query Engine. Query times are now much faster,
+          especially for large data sets.
+        </Box>
+        <Timeline date="23rd November 2021" />
         <Box heading="Keystone Brand Portal">
           We now have a <a href="/branding">brand portal</a> full of logos, monograms and assets.
           Perfect for your blog posts, plugins and more.

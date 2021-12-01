@@ -69,22 +69,6 @@ function Logo() {
           <Highlight>Keystone 6</Highlight>
         </a>
       </Link>
-      <span
-        css={{
-          display: 'inline-block',
-          padding: '0 var(--space-xsmall)',
-          borderRadius: '0.25rem',
-          background: 'var(--code-bg)',
-          color: 'var(--code)',
-          border: '1px solid var(--border)',
-          fontSize: 'var(--font-xxsmall)',
-          fontWeight: 400,
-          lineHeight: '1rem',
-          marginLeft: 'var(--space-medium)',
-        }}
-      >
-        preview
-      </span>
     </div>
   );
 }
@@ -265,9 +249,20 @@ export function Header() {
         >
           <SearchField />
         </div>
-
-        <LinkItem href="/why-keystone">Why Keystone</LinkItem>
-        <LinkItem href="/updates">Updates</LinkItem>
+        <span
+          css={mq({
+            display: ['none', null, 'inline-block'],
+          })}
+        >
+          <LinkItem href="/why-keystone">Why Keystone</LinkItem>
+        </span>
+        <span
+          css={mq({
+            display: ['none', null, 'inline-block'],
+          })}
+        >
+          <LinkItem href="/updates">Updates</LinkItem>
+        </span>
 
         {/* TODO: Add in search for mobile via this button */}
         {/*
@@ -292,7 +287,7 @@ export function Header() {
           shadow
           css={mq({
             '&&': {
-              display: ['none', null, null, 'inline-flex'],
+              display: ['none', null, 'inline-flex'],
             },
           })}
         >

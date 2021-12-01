@@ -234,6 +234,10 @@ export function UpdatesNavigation({ releases = [] }: { releases: string[] }) {
         </Section>
       ) : null}
       <Section label="Featured News">
+        <NavItem href="/updates/general-availability">
+          <Emoji symbol="🎉" alt="Party Popper" />
+          &nbsp; General Availability Release
+        </NavItem>
         <NavItem href="/updates/new-access-control">
           <Emoji symbol="🔐" alt="Padlock" />
           &nbsp; New Access Control API
@@ -261,10 +265,6 @@ export function UpdatesNavigation({ releases = [] }: { releases: string[] }) {
         >
           <Emoji symbol="🧪" alt="Test Tube" />
           &nbsp; New Examples Collection
-        </NavItem>
-        <NavItem href="/updates/keystone-5-vs-keystone-6-preview">
-          <Emoji symbol="ℹ️" alt="Information" />
-          &nbsp; Keystone 5 vs 6
         </NavItem>
       </Section>
     </nav>
