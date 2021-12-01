@@ -424,12 +424,8 @@ export default function Roadmap() {
         </RoadmapItem>
       </RoadmapList>
       <Divider />
-      <Type as="h3" look="heading30">
+      <Type as="h3" look="heading30" margin="1rem 0 2rem">
         Further afield
-      </Type>
-      <Type as="p" look="body18" margin="1rem 0 2rem">
-        These features form a complete vision for Keystone over the next year or two, but we’re not
-        focused on their implementation right now.
       </Type>
       <Type as="h2" look="heading24">
         Admin UI
@@ -488,31 +484,32 @@ export default function Roadmap() {
             <InlineCode>published</InlineCode> to meet the unique needs of your content team.
           </Fragment>
         </RoadmapItem>
+        <RoadmapItem title="Relationship management">
+          <Fragment>
+            More powerful interfaces for managing different scales of related data, from small to
+            really really large
+          </Fragment>
+        </RoadmapItem>
       </RoadmapList>
       <Type as="h2" look="heading24">
-        Schema & Fields
+        Schema & API
       </Type>
       <RoadmapList>
+        <RoadmapItem title="GraphQL Subscriptions">
+          <Fragment>
+            Long lasting server operations that can change their result over time. Handy for
+            updating your front-end in real time when important data changes in your backend.
+          </Fragment>
+        </RoadmapItem>
         <RoadmapItem title="Field Translations">
           <Fragment>
             A built-in schema-driven approach to supporting multilingual content projects.
           </Fragment>
         </RoadmapItem>
-      </RoadmapList>
-      <Type as="h2" look="heading24">
-        API
-      </Type>
-      <RoadmapList>
         <RoadmapItem title="Upsert mutations">
           <Fragment>
             If you want to update an item but aren’t sure if it exists, this will update the item if
             it’s there or create a new item with the data you’ve provided.
-          </Fragment>
-        </RoadmapItem>
-        <RoadmapItem title="GraphQL Subscriptions">
-          <Fragment>
-            Long lasting server operations that can change their result over time. Handy for
-            updating your front-end in real time when important data changes in your backend.
           </Fragment>
         </RoadmapItem>
       </RoadmapList>
@@ -520,13 +517,19 @@ export default function Roadmap() {
         Core
       </Type>
       <RoadmapList>
+        <RoadmapItem title="Serverless hosting">
+          <Fragment>
+            The future of deployment is serverless, and we're tracking the state of the ecosystem to
+            make sure Keystone is ready for it.
+          </Fragment>
+        </RoadmapItem>
         <RoadmapItem title="Native full-text search">
           <Fragment>
             A way for you and editors to easily search for strings across your entire dataset. Handy
             for when you need something specific but don’t know where it lives.
           </Fragment>
         </RoadmapItem>
-        <RoadmapItem title="Mongo DB">
+        <RoadmapItem title="MongoDB">
           <Fragment>
             Native support for the MongoDB database type. We’ll look at adding this when Prisma’s
             implementation of MongoDB is battle-tested.
