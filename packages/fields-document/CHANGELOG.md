@@ -1,5 +1,11 @@
 # @keystone-next/fields-document
 
+## 1.0.1
+
+### Patch Changes
+
+- [#7030](https://github.com/keystonejs/keystone/pull/7030) [`26213c6f3`](https://github.com/keystonejs/keystone/commit/26213c6f3c49dd47392c0e31389339aae3f10806) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed the input in the link dialog not being focusable
+
 ## 1.0.0
 
 ### Major Changes
