@@ -19,11 +19,12 @@ export function Announce({ children, ...props }: AnnounceProps) {
         // special styling (orange gradient)
         backgroundColor: 'var(--grad4-2)',
         backgroundImage: `linear-gradient(116.01deg, var(--grad2-2), var(--grad2-1))`,
-        color: 'var(--brand-text)',
+        // color: 'var(--brand-text)',
+        color: 'var(--app-bg)', // ensures dark mode works with the gradient background
         padding: '1rem',
         textAlign: 'center',
         '& a': {
-          color: 'var(--brand-text)',
+          color: 'var(--app-bg)',
           textDecoration: 'underline',
         },
       }}
