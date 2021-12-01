@@ -30,7 +30,7 @@ export function Markdown({
   title?: string;
 }) {
   const headings = getHeadings(children.type().props.children);
-  const firstHeading = headings[0]?.label;
+  const firstHeading = title || headings[0]?.label;
 
   if (!firstHeading) {
     throw new Error('The DocsPage component requires a `title` prop');
