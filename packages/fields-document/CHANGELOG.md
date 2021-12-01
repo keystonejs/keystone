@@ -1,5 +1,41 @@
 # @keystone-next/fields-document
 
+## 1.0.0
+
+### Major Changes
+
+- [#7028](https://github.com/keystonejs/keystone/pull/7028) [`3c7a581c1`](https://github.com/keystonejs/keystone/commit/3c7a581c1e53ae49c9f74509de3927ebf2703bde) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Released Keystone 6
+
+* [#7005](https://github.com/keystonejs/keystone/pull/7005) [`f4554980f`](https://github.com/keystonejs/keystone/commit/f4554980f6243a6545eee6c887d946ff25cd90e3) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - - The following types have been renamed:
+  - `BaseGeneratedListTypes` → `BaseListTypeInfo`
+  - `ItemRootValue` → `BaseItem`
+  - `ListInfo` → `ListGraphQLTypes`
+  - `TypesForList` → `GraphQLTypesForList`
+  - `FieldTypeFunc` now has a required type parameter which must satisfy `BaseListTypeInfo`
+  - The following types now have a required type parameter which must satisfy `BaseKeystoneTypeInfo`:
+    - `ServerConfig`
+    - `CreateRequestContext`
+    - `AdminUIConfig`
+    - `DatabaseConfig`
+    - `ListOperationAccessControl`
+    - `MaybeSessionFunction`
+    - `MaybeItemFunction`
+  - `GraphQLResolver` and `GraphQLSchemaExtension` now have a required type parameter which must satisfy `KeystoneContext`
+  - `KeystoneGraphQLAPI` no longer has a type parameter
+  - The first parameter to the resolver in a `virtual` field will be typed as the item type if the list is typed with `Keystone.Lists` or `Keystone.Lists.ListKey`, otherwise it will be typed as `unknown`
+  - The `item`/`originalItem` arguments in hooks/access control will now receive the `Item` type if the list is typed with `Keystone.Lists` or `Keystone.Lists.ListKey`, otherwise it will be typed as `BaseItem`
+  - `args` has been removed from `BaseListTypeInfo`
+  - `inputs.orderBy` and `all` has been added to `BaseListTypeInfo`
+  - In `.keystone/types`:
+    - `ListKeyListTypeInfo` has been moved to `Lists.ListKey.TypeInfo`
+    - `KeystoneContext` has been renamed to `Context`
+
+### Patch Changes
+
+- Updated dependencies [[`7dddbe0fd`](https://github.com/keystonejs/keystone/commit/7dddbe0fd5b42a2596ba4dc0bbe1813cb54571c7), [`fb7844ab5`](https://github.com/keystonejs/keystone/commit/fb7844ab50c1d4a6d14b2ad46a568665f6661921), [`3c7a581c1`](https://github.com/keystonejs/keystone/commit/3c7a581c1e53ae49c9f74509de3927ebf2703bde), [`f4554980f`](https://github.com/keystonejs/keystone/commit/f4554980f6243a6545eee6c887d946ff25cd90e3)]:
+  - @keystone-6/core@1.0.0
+  - @keystone-6/document-renderer@1.0.0
+
 ## 14.0.0
 
 ### Major Changes
