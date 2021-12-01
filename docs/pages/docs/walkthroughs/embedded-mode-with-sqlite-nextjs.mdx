@@ -102,7 +102,7 @@ import { text } from '@keystone-6/core/fields';
 
 const Post = list({
   fields: {
-    title: text({ isRequired: true }),
+    title: text({ validation: { isRequired: true } }),
     slug: text({ isIndexed: 'unique', isFilterable: true }),
     content: text(),
   },
