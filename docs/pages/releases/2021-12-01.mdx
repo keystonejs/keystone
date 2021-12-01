@@ -15,8 +15,15 @@ With this major release, the project has moved to the `@keystone-6` namespace on
 We **highly recommend you upgrade** your existing **Keystone Next** projects to **Keystone 6** with the packages below:
 
 ```json
-"@keystone-6/keystone": "1.0.0",
+"@keystone-6/auth": "1.0.0",
+"@keystone-6/cloudinary": "1.0.0",
+"@keystone-6/document-renderer": "1.0.0",
+"@keystone-6/fields-document": "1.0.0",
+"@keystone-6/core": "1.0.0",
+"@keystone-6/session-store-redis": "1.0.0",
 ```
+
+?> **Note:** `@keystone-next/keystone` has been changed to `@keystone-6/core`
 
 Among other internal naming changes, our CLI commands have switched from `keystone-next` to simply `keystone`, please ensure you update your startup scripts to suit!
 
@@ -27,8 +34,7 @@ Among other internal naming changes, our CLI commands have switched from `keysto
 We've shipped a significant update to our generated TypeScript types.
 
 The types for your schema are stricter when your lists are contextually typed by the newly provided `Lists` types from `.keystone/types`.
-This results in a smoother, type-safe auto-complete experience and stricter types for your access control, hooks, and any other code that uses a Keystone context. 
-
+This results in a smoother, type-safe auto-complete experience and stricter types for your access control, hooks, and any other code that uses a Keystone context.
 
 For example, if you write all your lists in one object:
 
@@ -40,7 +46,6 @@ export const lists: Lists = {
 }
 ```
 
-
 If you're defining your lists separately, you can do this:
 
 ```ts
@@ -51,7 +56,6 @@ export const Blah: Lists.Blah = list({
 })
 ```
 
-
 For a more in-depth view of what TypeScript types have been changed, see below:
 
 - The following types have been renamed:
@@ -61,13 +65,13 @@ For a more in-depth view of what TypeScript types have been changed, see below:
   - `TypesForList` → `GraphQLTypesForList`
   - `FieldTypeFunc` now has a required type parameter which must satisfy `BaseListTypeInfo`
 - The following types now have a required type parameter which must satisfy `BaseKeystoneTypeInfo`:
-    - `ServerConfig`
-    - `CreateRequestContext`
-    - `AdminUIConfig`
-    - `DatabaseConfig`
-    - `ListOperationAccessControl`
-    - `MaybeSessionFunction`
-    - `MaybeItemFunction`
+  - `ServerConfig`
+  - `CreateRequestContext`
+  - `AdminUIConfig`
+  - `DatabaseConfig`
+  - `ListOperationAccessControl`
+  - `MaybeSessionFunction`
+  - `MaybeItemFunction`
 - `GraphQLResolver` and `GraphQLSchemaExtension` now have a required type parameter which must satisfy `KeystoneContext`
 - `KeystoneGraphQLAPI` no longer has a type parameter
 - The first parameter to the resolver in a `virtual` field will be typed as the item type if the list is typed with `Keystone.Lists` or `Keystone.Lists.ListKey`, otherwise it will be typed as `unknown`
