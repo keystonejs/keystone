@@ -9,6 +9,26 @@ import {
 } from '@keystone-6/core/artifacts';
 import { requireSource } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/require-source';
 
+const mode = process.env.UPDATE_SCHEMAS ? 'generate' : 'validate';
+
+async function generateArtifactsForProjectDir(projectDir: string) {
+  try {
+    const config = initConfig(requireSource(path.join(projectDir, 'keystone')).default);
+    const { graphQLSchema } = createSystem(config, false);
+    if (mode === 'validate') {
+      await validateCommittedArtifacts(graphQLSchema, config, projectDir);
+    } else {
+      await generateCommittedArtifacts(graphQLSchema, config, projectDir);
+    }
+    await generateNodeModulesArtifacts(graphQLSchema, config, projectDir);
+  } catch (err) {
+    throw new Error(
+      `An error occurred generating/validating the artifacts for the project at ${projectDir}:\n${format(
+        err
+      )}\n`
+    );
+  }
+}
 async function main() {
   const repoRoot = path.resolve(__dirname, '../../../');
   const directoriesOfProjects = [
@@ -25,26 +45,13 @@ async function main() {
     )
   ).flat();
 
-  const mode = process.env.UPDATE_SCHEMAS ? 'generate' : 'validate';
+  const [firstProject, ...otherProjects] = projectDirectories;
+
+  await generateArtifactsForProjectDir(firstProject);
 
   await Promise.all(
-    projectDirectories.map(async projectDir => {
-      try {
-        const config = initConfig(requireSource(path.join(projectDir, 'keystone')).default);
-        const { graphQLSchema } = createSystem(config, false);
-        if (mode === 'validate') {
-          await validateCommittedArtifacts(graphQLSchema, config, projectDir);
-        } else {
-          await generateCommittedArtifacts(graphQLSchema, config, projectDir);
-        }
-        await generateNodeModulesArtifacts(graphQLSchema, config, projectDir);
-      } catch (err) {
-        throw new Error(
-          `An error occurred generating/validating the artifacts for the project at ${projectDir}:\n${format(
-            err
-          )}\n`
-        );
-      }
+    otherProjects.map(async projectDir => {
+      await generateArtifactsForProjectDir(projectDir);
     })
   );
 }
