@@ -47,9 +47,12 @@ export const createAdminUIMiddleware = async (
         : session
         ? context.session !== undefined
         : true;
-      const maybeRedirect = await ui?.pageMiddleware?.({ context, isValidSession });
-      if (maybeRedirect) {
-        res.redirect(maybeRedirect.to);
+      const shouldRedirect = await ui?.pageMiddleware?.({ context, isValidSession });
+      if (shouldRedirect) {
+        res.header('Cache-Control', 'no-cache, max-age=0');
+        res.header('Location', shouldRedirect.to);
+        res.status(302);
+        res.send();
         return;
       }
       if (!isValidSession && !publicPages.includes(url.parse(req.url).pathname!)) {
