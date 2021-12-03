@@ -1,4 +1,4 @@
-# Keystone-Next eCommerce Example
+# Keystone-6 eCommerce Example
 
 👋 This is an example eCommerce backend implementation using KeystoneJS.
 

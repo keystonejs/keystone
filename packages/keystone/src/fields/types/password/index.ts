@@ -3,19 +3,14 @@ import bcryptjs from 'bcryptjs';
 import dumbPasswords from 'dumb-passwords';
 import { userInputError } from '../../../lib/core/graphql-errors';
 import { humanize } from '../../../lib/utils';
-import {
-  BaseGeneratedListTypes,
-  fieldType,
-  FieldTypeFunc,
-  CommonFieldConfig,
-} from '../../../types';
+import { BaseListTypeInfo, fieldType, FieldTypeFunc, CommonFieldConfig } from '../../../types';
 import { graphql } from '../../..';
 import { resolveView } from '../../resolve-view';
 import { getResolvedIsNullable } from '../../non-null-graphql';
 import { PasswordFieldMeta } from './views';
 
-export type PasswordFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
-  CommonFieldConfig<TGeneratedListTypes> & {
+export type PasswordFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
+  CommonFieldConfig<ListTypeInfo> & {
     /**
      * @default 10
      */
@@ -54,12 +49,12 @@ const PasswordFilter = graphql.inputObject({
 const bcryptHashRegex = /^\$2[aby]?\$\d{1,2}\$[.\/A-Za-z0-9]{53}$/;
 
 export const password =
-  <TGeneratedListTypes extends BaseGeneratedListTypes>({
+  <ListTypeInfo extends BaseListTypeInfo>({
     bcrypt = bcryptjs,
     workFactor = 10,
     validation: _validation,
     ...config
-  }: PasswordFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
+  }: PasswordFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
   meta => {
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type password");

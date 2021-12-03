@@ -1,4 +1,4 @@
-# Keystone-Next Roles-based Access Example
+# Keystone-6 Roles-based Access Example
 
 👋 This example demonstrates how you can set up a powerful, custom roles-based access control system with Keystone for an otherwise very simple to-do app.
 

@@ -1,0 +1,10 @@
+{
+  "name": "@keystone-6/generate-artifacts-for-projects",
+  "version": "0.0.0",
+  "private": true,
+  "main": "dist/keystone-6-generate-artifacts-for-projects.cjs.js",
+  "dependencies": {
+    "@keystone-6/core": "^1.0.0"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/main/scripts/generate-artifacts-for-projects"
+}

@@ -1,5 +1,6 @@
-import { list, graphql } from '@keystone-next/keystone';
-import { select, relationship, text, timestamp, virtual } from '@keystone-next/keystone/fields';
+import { list, graphql } from '@keystone-6/core';
+import { select, relationship, text, timestamp, virtual } from '@keystone-6/core/fields';
+import { BaseItem } from '@keystone-6/core/types';
 
 export const lists = {
   Post: list({
@@ -58,7 +59,7 @@ export const lists = {
           args: {
             length: graphql.arg({ type: graphql.nonNull(graphql.Int), defaultValue: 200 }),
           },
-          resolve(item, { length }) {
+          resolve(item: BaseItem, { length }) {
             if (!item.content) {
               return null;
             }
@@ -78,7 +79,7 @@ export const lists = {
       authorName: virtual({
         field: graphql.field({
           type: graphql.String,
-          async resolve(item, args, context) {
+          async resolve(item: BaseItem, args, context) {
             const { author } = await context.query.Post.findOne({
               where: { id: item.id.toString() },
               query: 'author { name }',
@@ -99,7 +100,7 @@ export const lists = {
         field: lists =>
           graphql.field({
             type: lists.Post.types.output,
-            async resolve(item, args, context) {
+            async resolve(item: BaseItem, args, context) {
               const { posts } = await context.query.Author.findOne({
                 where: { id: item.id.toString() },
                 query: `posts(

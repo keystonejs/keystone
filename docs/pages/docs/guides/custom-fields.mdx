@@ -25,27 +25,25 @@ We define our field type `myInt` and the corresponding type `MyIntFieldConfig` w
 
 ```ts
 import {
-  BaseGeneratedListTypes,
+  BaseListTypeInfo,
   FieldTypeFunc,
   CommonFieldConfig,
   fieldType,
   orderDirectionEnum,
   filters,
-} from '@keystone-next/keystone/types';
-import { graphql } from '@keystone-next/keystone';
+} from '@keystone-6/core/types';
+import { graphql } from '@keystone-6/core';
 
-export type MyIntFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
-  CommonFieldConfig<TGeneratedListTypes> & {
+export type MyIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
+  CommonFieldConfig<ListTypeInfo> & {
     isIndexed?: boolean | 'unique';
   };
 
 export const myInt =
-  <TGeneratedListTypes extends BaseGeneratedListTypes>({
+  <ListTypeInfo extends BaseListTypeInfo>({
     isIndexed,
-    isRequired,
-    defaultValue,
     ...config
-  }: MyIntFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
+  }: MyIntFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
   meta =>
     fieldType({
       kind: 'scalar',
@@ -155,7 +153,7 @@ The `Field` export is a React component which is used in the **item view** and t
 // view.tsx
 
 import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
-import { FieldProps } from '@keystone-next/keystone/types';
+import { FieldProps } from '@keystone-6/core/types';
 
 export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
   <FieldContainer>
@@ -185,8 +183,8 @@ Note it does not allow modifying the value.
 ```tsx
 // view.tsx
 
-import { CellLink, CellContainer } from '@keystone-next/keystone/admin-ui/components';
-import { CellComponent } from '@keystone-next/keystone/types';
+import { CellLink, CellContainer } from '@keystone-6/core/admin-ui/components';
+import { CellComponent } from '@keystone-6/core/types';
 
 export const Cell: CellComponent = ({ item, field, linkTo }) => {
   let value = item[field.path] + '';
@@ -204,7 +202,7 @@ Note it does not allow modifying the value.
 // view.tsx
 
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
-import { CardValueComponent } from '@keystone-next/keystone/types';
+import { CardValueComponent } from '@keystone-6/core/types';
 
 export const CardValue: CardValueComponent = ({ item, field }) => {
   return (

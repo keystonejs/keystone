@@ -2,7 +2,7 @@ import { humanize } from '../../../lib/utils';
 import {
   fieldType,
   FieldTypeFunc,
-  BaseGeneratedListTypes,
+  BaseListTypeInfo,
   CommonFieldConfig,
   orderDirectionEnum,
   Decimal,
@@ -17,8 +17,8 @@ import {
   getResolvedIsNullable,
 } from '../../non-null-graphql';
 
-export type DecimalFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
-  CommonFieldConfig<TGeneratedListTypes> & {
+export type DecimalFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
+  CommonFieldConfig<ListTypeInfo> & {
     validation?: {
       min?: string;
       max?: string;
@@ -50,14 +50,14 @@ function parseDecimalValueOption(meta: FieldData, value: string, name: string) {
 }
 
 export const decimal =
-  <TGeneratedListTypes extends BaseGeneratedListTypes>({
+  <ListTypeInfo extends BaseListTypeInfo>({
     isIndexed,
     precision = 18,
     scale = 4,
     validation,
     defaultValue,
     ...config
-  }: DecimalFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
+  }: DecimalFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
   meta => {
     if (meta.provider === 'sqlite') {
       throw new Error('The decimal field does not support sqlite');

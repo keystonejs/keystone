@@ -264,9 +264,7 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
         await runMigrateWithDbUrl(dbUrl, () => migrate.applyMigrations());
         console.log('✅ The migration has been applied');
       } else {
-        console.log(
-          'Please edit the migration and run keystone-next dev again to apply the migration'
-        );
+        console.log('Please edit the migration and run keystone dev again to apply the migration');
         throw new ExitError(0);
       }
     } else {

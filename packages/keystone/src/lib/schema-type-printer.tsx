@@ -9,7 +9,6 @@ import {
   InputObjectTypeDefinitionNode,
   ObjectTypeDefinitionNode,
   FieldDefinitionNode,
-  InputValueDefinitionNode,
 } from 'graphql';
 import { getGqlNames } from '../types';
 import { InitialisedList } from './core/types-for-lists';
@@ -68,7 +67,7 @@ function printInputTypesFromSchema(
       typeString += '\n\n' + printEnumTypeDefinition(node);
     }
   }
-  return { printedTypes: typeString + '\n', ast, printTypeNode };
+  return { printedTypes: typeString + '\n', ast };
 }
 
 export function printGeneratedTypes(
@@ -82,26 +81,13 @@ export function printGeneratedTypes(
     String: 'string',
     Int: 'number',
     Float: 'number',
-    JSON: 'import("@keystone-next/keystone/types").JSONValue',
-    Decimal: 'import("@keystone-next/keystone/types").Decimal | string',
+    JSON: 'import("@keystone-6/core/types").JSONValue',
+    Decimal: 'import("@keystone-6/core/types").Decimal | string',
   };
 
-  let prelude = `import {
-  KeystoneListsAPI as GenericKeystoneListsAPI,
-  KeystoneDbAPI as GenericKeystoneDbAPI,
-  KeystoneContext as GenericKeystoneContext,
-} from '@keystone-next/keystone/types';
-`;
-
-  let { printedTypes, ast, printTypeNode } = printInputTypesFromSchema(
-    printedSchema,
-    graphQLSchema,
-    scalars
-  );
+  let { printedTypes, ast } = printInputTypesFromSchema(printedSchema, graphQLSchema, scalars);
 
   printedTypes += '\n';
-
-  let allListsStr = '\nexport type KeystoneListsTypeInfo = {';
 
   let queryTypeName = graphQLSchema.getQueryType()!.name;
 
@@ -119,60 +105,55 @@ export function printGeneratedTypes(
     queryNodeFieldsByName[field.name.value] = field;
   }
 
-  let printArgs = (args: readonly InputValueDefinitionNode[]) => {
-    let types = '{\n';
-    for (const arg of args) {
-      if (arg.name.value === 'search') continue;
-      types += `  readonly ${arg.name.value}${
-        arg.type.kind === 'NonNullType' && !arg.defaultValue ? '' : '?'
-      }: ${printTypeNode(arg.type)};\n`;
-    }
-    return types + '}';
-  };
+  let allListsStr = '';
+  let listsNamespaceStr = '\nexport declare namespace Lists {';
 
   for (const [listKey, list] of Object.entries(lists)) {
     const gqlNames = getGqlNames(list);
-    let listTypeInfoName = `${listKey}ListTypeInfo`;
-    const listQuery = queryNodeFieldsByName[gqlNames.listQueryName];
-    printedTypes += `
-export type ${listTypeInfoName} = {
-  key: ${JSON.stringify(listKey)};
-  fields: ${Object.keys(list.fields)
-    .map(x => JSON.stringify(x))
-    .join('|')}
-  backing: import(".prisma/client").${listKey};
-  inputs: {
-    where: ${gqlNames.whereInputName};
-    uniqueWhere: ${gqlNames.whereUniqueInputName};
-    create: ${gqlNames.createInputName};
-    update: ${gqlNames.updateInputName};
-  };
-  args: {
-    listQuery: ${
-      listQuery
-        ? printArgs(listQuery.arguments!)
-        : 'import("@keystone-next/keystone/types").BaseGeneratedListTypes["args"]["listQuery"]'
-    }
-  };
-};
 
-export type ${listKey}ListFn = (
-  listConfig: import('@keystone-next/keystone').ListConfig<${listTypeInfoName}, ${listTypeInfoName}['fields']>
-) => import('@keystone-next/keystone').ListConfig<${listTypeInfoName}, ${listTypeInfoName}['fields']>;
-`;
-    allListsStr += `\n  readonly ${JSON.stringify(listKey)}: ${listTypeInfoName};`;
+    const listTypeInfoName = `Lists.${listKey}.TypeInfo`;
+
+    allListsStr += `\n  readonly ${listKey}: ${listTypeInfoName};`;
+    listsNamespaceStr += `
+  export type ${listKey} = import('@keystone-6/core').ListConfig<${listTypeInfoName}, any>;
+  namespace ${listKey} {
+    export type Item = import('.prisma/client').${listKey};
+    export type TypeInfo = {
+      key: ${JSON.stringify(listKey)};
+      fields: ${Object.keys(list.fields)
+        .map(x => JSON.stringify(x))
+        .join(' | ')}
+      item: Item;
+      inputs: {
+        where: ${gqlNames.whereInputName};
+        uniqueWhere: ${gqlNames.whereUniqueInputName};
+        create: ${gqlNames.createInputName};
+        update: ${gqlNames.updateInputName};
+        orderBy: ${gqlNames.listOrderName};
+      };
+      all: __TypeInfo;
+    };
+  }`;
   }
-  allListsStr += '\n};';
+  listsNamespaceStr += '\n}';
 
   const postlude = `
-export type KeystoneListsAPI = GenericKeystoneListsAPI<KeystoneListsTypeInfo>;
-export type KeystoneDbAPI = GenericKeystoneDbAPI<KeystoneListsTypeInfo>;
+export type Context = import('@keystone-6/core/types').KeystoneContext<TypeInfo>;
 
-export type KeystoneContext = Omit<GenericKeystoneContext, 'db' | 'query' | 'prisma'> & {
-  db: KeystoneDbAPI;
-  query: KeystoneListsAPI;
+export type TypeInfo = {
+  lists: {${allListsStr}
+  };
   prisma: import('.prisma/client').PrismaClient;
 };
+${
+  ''
+  // we need to reference the `TypeInfo` above in another type that is also called `TypeInfo`
+}
+type __TypeInfo = TypeInfo;
+
+export type Lists = {
+  [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core').ListConfig<TypeInfo['lists'][Key], any>
+} & Record<string, import('@keystone-6/core').ListConfig<any, any>>;
 `;
-  return prelude + printedTypes + allListsStr + postlude;
+  return printedTypes + listsNamespaceStr + postlude;
 }

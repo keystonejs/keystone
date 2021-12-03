@@ -8,7 +8,7 @@ import { itemTemplate } from './item';
 import { apiTemplate } from './api';
 import { noAccessTemplate } from './no-access';
 
-const pkgDir = Path.dirname(require.resolve('@keystone-next/keystone/package.json'));
+const pkgDir = Path.dirname(require.resolve('@keystone-6/core/package.json'));
 
 export const writeAdminFiles = (
   config: KeystoneConfig,

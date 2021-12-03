@@ -1,8 +1,8 @@
 // import React from 'react';
 
-import { AdminConfig } from '@keystone-next/keystone/types';
+import { AdminConfig } from '@keystone-6/core/types';
 
-// import { DarkTheme } from '@keystone-next/keystone/admin-ui/themes';
+// import { DarkTheme } from '@keystone-6/core/admin-ui/themes';
 // export const theme = DarkTheme;
 
 // const CustomLogo = () => <h1>Keystone!</h1>;

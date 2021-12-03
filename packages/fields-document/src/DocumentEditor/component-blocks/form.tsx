@@ -1,5 +1,5 @@
-import { useKeystone } from '@keystone-next/keystone/admin-ui/context';
-import { RelationshipSelect } from '@keystone-next/keystone/fields/types/relationship/views/RelationshipSelect';
+import { useKeystone } from '@keystone-6/core/admin-ui/context';
+import { RelationshipSelect } from '@keystone-6/core/fields/types/relationship/views/RelationshipSelect';
 import { Stack } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import React, { useState } from 'react';

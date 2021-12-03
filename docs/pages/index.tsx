@@ -414,8 +414,8 @@ export default function IndexPage() {
               <CodeWindow lines={21}>
                 <WindowL>
                   <SourceCode>
-                    {`import { list } from '@keystone-next/keystone';
-import { document, text, timestamp, password, relationship } from '@keystone-next/keystone/fields';
+                    {`import { list } from '@keystone-6/core';
+import { document, text, timestamp, password, relationship } from '@keystone-6/core/fields';
 
 export const lists = {
   Post: list({

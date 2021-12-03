@@ -6,11 +6,11 @@ import { InlineCode } from '../../../components/primitives/Code';
 # Testing
 
 When building a web application it's important to be able to test the behaviour of your system to ensure it does what you expect.
-In this guide we'll show you how to use `@keystone-next/keystone/testing` and [Jest](https://jestjs.io/) to write tests to check the behaviour of your GraphQL API.
+In this guide we'll show you how to use `@keystone-6/core/testing` and [Jest](https://jestjs.io/) to write tests to check the behaviour of your GraphQL API.
 
 ## Running tests
 
-In order to run tests using `@keystone-next/keystone/testing`, we recommend adding the following script to your `package.json` file.
+In order to run tests using `@keystone-6/core/testing`, we recommend adding the following script to your `package.json` file.
 
 ```json
 "scripts": {
@@ -33,7 +33,7 @@ The first step to writing a test for your Keystone system is to setup a test run
 You can then use this runner to wrap your test functions.
 
 ```typescript
-import { setupTestRunner } from '@keystone-next/keystone/testing';
+import { setupTestRunner } from '@keystone-6/core/testing';
 import { config } from './keystone';
 
 const runner = setupTestRunner({ config });
@@ -209,8 +209,8 @@ The context API can be used after calling `connect()` in the `beforeAll()` block
 x> Be careful of sharing database state across tests. Avoid relying on changes of state from one test in subsequent tests.
 
 ```
-import { setupTestEnv, TestEnv } from '@keystone-next/keystone/testing';
-import { KeystoneContext } from '@keystone-next/keystone/types';
+import { setupTestEnv, TestEnv } from '@keystone-6/core/testing';
+import { KeystoneContext } from '@keystone-6/core/types';
 
 describe('Example tests using test environment', () => {
   let testEnv: TestEnv;
@@ -264,4 +264,4 @@ describe('Example tests using test environment', () => {
   </Well>
 </RelatedContent>
 
-export default ({ children }) => <Markdown description="Learn how to use the `@keystone-next/testing` package and Jest to write tests that check the behaviour of your GraphQL API.">{children}</Markdown>;
+export default ({ children }) => <Markdown description="Learn how to use the `@keystone-6/testing` package and Jest to write tests that check the behaviour of your GraphQL API.">{children}</Markdown>;

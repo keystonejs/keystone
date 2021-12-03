@@ -1,7 +1,7 @@
-import { text, password } from '@keystone-next/keystone/fields';
-import { list, ListSchemaConfig } from '@keystone-next/keystone';
-import { statelessSessions } from '@keystone-next/keystone/session';
-import { createAuth } from '@keystone-next/auth';
+import { text, password } from '@keystone-6/core/fields';
+import { list, ListSchemaConfig } from '@keystone-6/core';
+import { statelessSessions } from '@keystone-6/core/session';
+import { createAuth } from '@keystone-6/auth';
 import { apiTestConfig } from '../utils';
 
 const FAKE_ID = 'cdsfasfafafadfasdf';

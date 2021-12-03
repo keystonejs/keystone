@@ -1,8 +1,4 @@
-import {
-  BaseGeneratedListTypes,
-  GqlNames,
-  KeystoneGraphQLAPI,
-} from '@keystone-next/keystone/types';
+import { GqlNames, KeystoneGraphQLAPI } from '@keystone-6/core/types';
 import { Descendant } from 'slate';
 import { GraphQLSchema, executeSync, parse } from 'graphql';
 import weakMemoize from '@emotion/weak-memoize';
@@ -15,7 +11,7 @@ const idFieldAlias = '____document_field_relationship_item_id';
 
 export function addRelationshipData(
   nodes: Descendant[],
-  graphQLAPI: KeystoneGraphQLAPI<Record<string, BaseGeneratedListTypes>>,
+  graphQLAPI: KeystoneGraphQLAPI,
   relationships: Relationships,
   componentBlocks: Record<string, ComponentBlock>,
   gqlNames: (listKey: string) => GqlNames

@@ -1,5 +1,5 @@
-import { KeystoneContext } from '@keystone-next/keystone/types';
-import { setupTestEnv, setupTestRunner, TestEnv } from '@keystone-next/keystone/testing';
+import { KeystoneContext } from '@keystone-6/core/types';
+import { setupTestEnv, setupTestRunner, TestEnv } from '@keystone-6/core/testing';
 import config from './keystone';
 
 // Setup a test runner which will provide a clean test environment

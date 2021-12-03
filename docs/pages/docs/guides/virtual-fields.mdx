@@ -18,9 +18,9 @@ In this guide we'll introduce the syntax for adding virtual fields, and show how
 We'll start with a list called `Example` and create a virtual field called `hello`.
 
 ```typescript
-import { config, createSchema, list } from '@keystone-next/keystone';
-import { graphql } from '@keystone-next/keystone/types';
-import { virtual } from '@keystone-next/keystone/fields';
+import { config, createSchema, list } from '@keystone-6/core';
+import { graphql } from '@keystone-6/core/types';
+import { virtual } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
@@ -61,7 +61,7 @@ The value of `hello` is generated from the `resolve` function, which returns the
 
 ## The `graphql` API
 
-The `virtual` field is configured using functions from the `graphql` export from `@keystone-next/keystone`.
+The `virtual` field is configured using functions from the `graphql` export from `@keystone-6/core`.
 This API provides the interface required to create type-safe extensions to the Keystone GraphQL schema.
 The `graphql` API is based on the [`@graphql-ts/schema`](https://github.com/Thinkmill/graphql-ts) package.
 

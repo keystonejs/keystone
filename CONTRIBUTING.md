@@ -57,12 +57,12 @@ While not every changeset is going to need a huge amount of detail, a good idea 
 - WHY the change was made
 - HOW a consumer should update their code
 
-An example, if you generate a changeset that includes `adapter-prisma` as a patch, and `keystone` as a minor, you can merge your PR, and the next time the `version-packages` command is run, these will both be updated.
+An example, if you generate a changeset that includes `auth` as a patch, and `core` as a minor, you can merge your PR, and the next time the `version-packages` command is run, these will both be updated.
 
 ```md
 ---
-'@keystone-next/adapter-prisma-legacy': patch
-'@keystone-next/keystone': minor
+'@keystone-6/auth': patch
+'@keystone-6/core': minor
 ---
 
 A very useful description of the changes should be here.

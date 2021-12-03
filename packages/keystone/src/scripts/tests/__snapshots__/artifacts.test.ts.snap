@@ -2,19 +2,14 @@
 
 exports[`postinstall writes the correct node_modules files 1`] = `
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/types.d.ts ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
-import {
-  KeystoneListsAPI as GenericKeystoneListsAPI,
-  KeystoneDbAPI as GenericKeystoneDbAPI,
-  KeystoneContext as GenericKeystoneContext,
-} from '@keystone-next/keystone/types';
 type Scalars = {
   readonly ID: string;
   readonly Boolean: boolean;
   readonly String: string;
   readonly Int: number;
   readonly Float: number;
-  readonly JSON: import("@keystone-next/keystone/types").JSONValue;
-  readonly Decimal: import("@keystone-next/keystone/types").Decimal | string;
+  readonly JSON: import("@keystone-6/core/types").JSONValue;
+  readonly Decimal: import("@keystone-6/core/types").Decimal | string;
 };
 
 export type TodoWhereUniqueInput = {
@@ -112,41 +107,39 @@ export type KeystoneAdminUISortDirection =
   | "DESC";
 
 
-export type TodoListTypeInfo = {
-  key: "Todo";
-  fields: "id"|"title"
-  backing: import(".prisma/client").Todo;
-  inputs: {
-    where: TodoWhereInput;
-    uniqueWhere: TodoWhereUniqueInput;
-    create: TodoCreateInput;
-    update: TodoUpdateInput;
-  };
-  args: {
-    listQuery: {
-  readonly where?: TodoWhereInput;
-  readonly orderBy?: ReadonlyArray<TodoOrderByInput> | TodoOrderByInput;
-  readonly take?: Scalars["Int"] | null;
-  readonly skip?: Scalars["Int"];
+export declare namespace Lists {
+  export type Todo = import('@keystone-6/core').ListConfig<Lists.Todo.TypeInfo, any>;
+  namespace Todo {
+    export type Item = import('.prisma/client').Todo;
+    export type TypeInfo = {
+      key: "Todo";
+      fields: "id" | "title"
+      item: Item;
+      inputs: {
+        where: TodoWhereInput;
+        uniqueWhere: TodoWhereUniqueInput;
+        create: TodoCreateInput;
+        update: TodoUpdateInput;
+        orderBy: TodoOrderByInput;
+      };
+      all: __TypeInfo;
+    };
+  }
 }
+export type Context = import('@keystone-6/core/types').KeystoneContext<TypeInfo>;
+
+export type TypeInfo = {
+  lists: {
+  readonly Todo: Lists.Todo.TypeInfo;
   };
-};
-
-export type TodoListFn = (
-  listConfig: import('@keystone-next/keystone').ListConfig<TodoListTypeInfo, TodoListTypeInfo['fields']>
-) => import('@keystone-next/keystone').ListConfig<TodoListTypeInfo, TodoListTypeInfo['fields']>;
-
-export type KeystoneListsTypeInfo = {
-  readonly "Todo": TodoListTypeInfo;
-};
-export type KeystoneListsAPI = GenericKeystoneListsAPI<KeystoneListsTypeInfo>;
-export type KeystoneDbAPI = GenericKeystoneDbAPI<KeystoneListsTypeInfo>;
-
-export type KeystoneContext = Omit<GenericKeystoneContext, 'db' | 'query' | 'prisma'> & {
-  db: KeystoneDbAPI;
-  query: KeystoneListsAPI;
   prisma: import('.prisma/client').PrismaClient;
 };
+
+type __TypeInfo = TypeInfo;
+
+export type Lists = {
+  [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core').ListConfig<TypeInfo['lists'][Key], any>
+} & Record<string, import('@keystone-6/core').ListConfig<any, any>>;
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/types.js ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 

@@ -28,7 +28,7 @@ import { initialiseLists } from '../../lib/core/types-for-lists';
 import { printPrismaSchema } from '../../lib/core/prisma-schema';
 
 const devLoadingHTMLFilepath = path.join(
-  path.dirname(require.resolve('@keystone-next/keystone/package.json')),
+  path.dirname(require.resolve('@keystone-6/core/package.json')),
   'static',
   'dev-loading.html'
 );
@@ -137,7 +137,7 @@ exports.default = function (req, res) { return res.send(x.toString()) }
             newConfig.db.prismaPreviewFeatures
           );
           if (originalPrismaSchema !== newPrismaSchema) {
-            console.log('Your prisma schema has changed, please restart Keystone');
+            console.log('🔄 Your prisma schema has changed, please restart Keystone');
             process.exit(1);
           }
 

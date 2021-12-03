@@ -1,6 +1,6 @@
 import { assertInputObjectType } from 'graphql';
 import {
-  BaseGeneratedListTypes,
+  BaseListTypeInfo,
   CreateListItemAccessControl,
   FieldAccessControl,
   IndividualFieldAccessControl,
@@ -80,7 +80,7 @@ export async function getAccessFilters(
 }
 
 export function parseFieldAccessControl(
-  access: FieldAccessControl<BaseGeneratedListTypes> | undefined
+  access: FieldAccessControl<BaseListTypeInfo> | undefined
 ): ResolvedFieldAccessControl {
   if (typeof access === 'boolean' || typeof access === 'function') {
     return { read: access, create: access, update: access };
@@ -95,13 +95,13 @@ export function parseFieldAccessControl(
 }
 
 export type ResolvedFieldAccessControl = {
-  read: IndividualFieldAccessControl<FieldReadItemAccessArgs<BaseGeneratedListTypes>>;
-  create: IndividualFieldAccessControl<FieldCreateItemAccessArgs<BaseGeneratedListTypes>>;
-  update: IndividualFieldAccessControl<FieldUpdateItemAccessArgs<BaseGeneratedListTypes>>;
+  read: IndividualFieldAccessControl<FieldReadItemAccessArgs<BaseListTypeInfo>>;
+  create: IndividualFieldAccessControl<FieldCreateItemAccessArgs<BaseListTypeInfo>>;
+  update: IndividualFieldAccessControl<FieldUpdateItemAccessArgs<BaseListTypeInfo>>;
 };
 
 export function parseListAccessControl(
-  access: ListAccessControl<BaseGeneratedListTypes> | undefined
+  access: ListAccessControl<BaseListTypeInfo> | undefined
 ): ResolvedListAccessControl {
   let item, filter, operation;
 
@@ -151,21 +151,21 @@ export function parseListAccessControl(
 
 export type ResolvedListAccessControl = {
   operation: {
-    create: ListOperationAccessControl<'create'>;
-    query: ListOperationAccessControl<'query'>;
-    update: ListOperationAccessControl<'update'>;
-    delete: ListOperationAccessControl<'delete'>;
+    create: ListOperationAccessControl<'create', BaseListTypeInfo>;
+    query: ListOperationAccessControl<'query', BaseListTypeInfo>;
+    update: ListOperationAccessControl<'update', BaseListTypeInfo>;
+    delete: ListOperationAccessControl<'delete', BaseListTypeInfo>;
   };
   filter: {
     // create: not supported
-    query: ListFilterAccessControl<'query', BaseGeneratedListTypes>;
-    update: ListFilterAccessControl<'update', BaseGeneratedListTypes>;
-    delete: ListFilterAccessControl<'delete', BaseGeneratedListTypes>;
+    query: ListFilterAccessControl<'query', BaseListTypeInfo>;
+    update: ListFilterAccessControl<'update', BaseListTypeInfo>;
+    delete: ListFilterAccessControl<'delete', BaseListTypeInfo>;
   };
   item: {
-    create: CreateListItemAccessControl<BaseGeneratedListTypes>;
+    create: CreateListItemAccessControl<BaseListTypeInfo>;
     // query: not supported
-    update: UpdateListItemAccessControl<BaseGeneratedListTypes>;
-    delete: DeleteListItemAccessControl<BaseGeneratedListTypes>;
+    update: UpdateListItemAccessControl<BaseListTypeInfo>;
+    delete: DeleteListItemAccessControl<BaseListTypeInfo>;
   };
 };

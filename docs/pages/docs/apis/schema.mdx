@@ -8,7 +8,7 @@ The `lists` property of the [system configuration](./config) object is where you
 It accepts an object with list names as keys, and `list()` configurations as values.
 
 ```typescript
-import { config, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-6/core';
 
 export default config({
   lists: ({
@@ -42,8 +42,8 @@ The `fields` option defines the names, types, and configuration of the fields in
 This configuration option takes an object with field names as keys, and configured field types as values.
 
 ```typescript
-import { config, list } from '@keystone-next/keystone';
-import { text } from '@keystone-next/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { text } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
@@ -108,8 +108,8 @@ Options:
   - `pageSize` (default: `50`): Sets the number of items to show per page in the list view.
 
 ```typescript
-import { config, list } from '@keystone-next/keystone';
-import { text } from '@keystone-next/keystone/fields`;
+import { config, list } from '@keystone-6/core';
+import { text } from '@keystone-6/core/fields`;
 
 export default config({
   lists: {
@@ -168,7 +168,7 @@ Options:
 
 ```typescript
 import { CacheScope } from 'apollo-cache-control';
-import { config, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-6/core';
 
 export default config({
   lists: {
@@ -200,7 +200,7 @@ Options:
 - `map`: Adds a [Prisma `@@map`](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#map-1) attribute to the Prisma model for this list which specifies a custom database table name for the list, instead of using the list key
 
 ```typescript
-import { config, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-6/core';
 
 export default config({
   lists: {

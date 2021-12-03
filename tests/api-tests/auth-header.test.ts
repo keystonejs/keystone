@@ -1,9 +1,9 @@
-import { text, timestamp, password } from '@keystone-next/keystone/fields';
-import { list } from '@keystone-next/keystone';
-import { statelessSessions } from '@keystone-next/keystone/session';
-import { createAuth } from '@keystone-next/auth';
-import type { KeystoneContext } from '@keystone-next/keystone/types';
-import { setupTestRunner, TestArgs, setupTestEnv } from '@keystone-next/keystone/testing';
+import { text, timestamp, password } from '@keystone-6/core/fields';
+import { list } from '@keystone-6/core';
+import { statelessSessions } from '@keystone-6/core/session';
+import { createAuth } from '@keystone-6/auth';
+import type { KeystoneContext } from '@keystone-6/core/types';
+import { setupTestRunner, TestArgs, setupTestEnv } from '@keystone-6/core/testing';
 import { apiTestConfig, expectAccessDenied, seed } from './utils';
 
 const initialData = {

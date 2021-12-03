@@ -13,7 +13,7 @@ Previous versions of Keystone allowed you to control which operations were inclu
 For example, the following access control definition would omit all delete operations for the list from the GraphQL API.
 
 ```typescript
-import { config, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-6/core';
 
 export default config({
   lists: {
@@ -32,7 +32,7 @@ If you would like to exclude an operation from the GraphQL API, you can use the 
 To exclude all `delete` operations, you would write:
 
 ```typescript
-import { config, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-6/core';
 
 export default config({
   lists: {
@@ -75,7 +75,7 @@ If you are using **static** access control, you will generally want to update th
 If you previously had the following:
 
 ```typescript
-import { config, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-6/core';
 
 export default config({
   lists: {
@@ -94,7 +94,7 @@ export default config({
 you will need to change it to:
 
 ```typescript
-import { config, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-6/core';
 
 export default config({
   lists: {
@@ -120,7 +120,7 @@ If you are using **declarative** access control, you will neeed to update this t
 If you previously had the following:
 
 ```typescript
-import { config, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-6/core';
 
 export default config({
   lists: {
@@ -138,7 +138,7 @@ export default config({
 you will need to change it to:
 
 ```typescript
-import { config, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-6/core';
 
 export default config({
   lists: {

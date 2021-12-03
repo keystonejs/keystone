@@ -1,4 +1,4 @@
-import { KeystoneContext } from '@keystone-next/keystone/types';
+import { KeystoneContext } from '@keystone-6/core/types';
 import { persons, tasks } from './data';
 
 type PersonProps = {

@@ -14,14 +14,12 @@ export const config = withPreconstruct({
       ...config.resolve.alias,
       react: Path.dirname(require.resolve('react/package.json')),
       'react-dom': Path.dirname(require.resolve('react-dom/package.json')),
-      '@keystone-next/keystone': Path.dirname(
-        require.resolve('@keystone-next/keystone/package.json')
-      ),
+      '@keystone-6/core': Path.dirname(require.resolve('@keystone-6/core/package.json')),
     };
     if (isServer) {
       config.externals = [
         ...config.externals,
-        /@keystone-next\/keystone(?!\/___internal-do-not-use-will-break-in-patch\/admin-ui\/id-field-view|\/fields\/types\/[^\/]+\/views)/,
+        /@keystone-6\/core(?!\/___internal-do-not-use-will-break-in-patch\/admin-ui\/id-field-view|\/fields\/types\/[^\/]+\/views)/,
         '.prisma/client',
       ];
       // we need to set these to true so that when __dirname/__filename is used

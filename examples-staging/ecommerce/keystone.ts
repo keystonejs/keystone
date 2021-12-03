@@ -1,6 +1,6 @@
-import { createAuth } from '@keystone-next/auth';
-import { config } from '@keystone-next/keystone';
-import { statelessSessions } from '@keystone-next/keystone/session';
+import { createAuth } from '@keystone-6/auth';
+import { config } from '@keystone-6/core';
+import { statelessSessions } from '@keystone-6/core/session';
 import { permissionsList } from './schemas/fields';
 import { Role } from './schemas/Role';
 import { OrderItem } from './schemas/OrderItem';
@@ -46,18 +46,16 @@ export default withAuth(
         credentials: true,
       },
     },
-    db: process.env.DATABASE_URL
-      ? { provider: 'postgresql', url: process.env.DATABASE_URL }
-      : {
-          provider: 'sqlite',
-          url: databaseURL,
-          async onConnect(context) {
-            console.log('Connected to the database!');
-            if (process.argv.includes('--seed-data')) {
-              await insertSeedData(context);
-            }
-          },
-        },
+    db: {
+      provider: 'sqlite',
+      url: databaseURL,
+      async onConnect(context) {
+        console.log('Connected to the database!');
+        if (process.argv.includes('--seed-data')) {
+          await insertSeedData(context);
+        }
+      },
+    },
     lists: {
       // Schema items go in here
       User,

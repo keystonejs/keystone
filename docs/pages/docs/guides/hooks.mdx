@@ -16,8 +16,8 @@ A hook is a function you define as part of your [schema configuration](../apis/s
 Let's look at a basic example to log a message to the console whenever a new user is created.
 
 ```typescript
-import { config, list } from '@keystone-next/keystone';
-import { text } from '@keystone-next/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { text } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
@@ -54,8 +54,8 @@ The `resolveInput` hook lets us take the data which has been provided to the Gra
 Let's write a hook which takes the data for a blog post and converts the first letter to upper-case.
 
 ```typescript
-import { config, list } from '@keystone-next/keystone';
-import { text } from '@keystone-next/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { text } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
@@ -100,8 +100,8 @@ An empty string, `""`, is a perfectly valid `String` value to pass into GraphQL.
 Let's use a validation hook to ensure that this value doesn't make it into our database.
 
 ```typescript
-import { config, list } from '@keystone-next/keystone';
-import { text } from '@keystone-next/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { text } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
@@ -144,8 +144,8 @@ We can use the `beforeOperation` and `afterOperation` hooks to do this.
 Let's send an email after a user is created.
 
 ```typescript
-import { config, list } from '@keystone-next/keystone';
-import { text } from '@keystone-next/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { text } from '@keystone-6/core/fields';
 // Keystone leaves it up to you to decide how best to implement email in your system
 import { sendWelcomeEmail } from './lib/welcomeEmail';
 
@@ -187,8 +187,8 @@ For example, you might have an email validation function which want to use in yo
 You could always write this as a list hook, but it will make your code more clear if you write this as a field hook.
 
 ```typescript
-import { config, list } from '@keystone-next/keystone';
-import { text } from '@keystone-next/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { text } from '@keystone-6/core/fields';
 
 export default config({
   lists: {

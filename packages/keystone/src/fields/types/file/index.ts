@@ -4,7 +4,7 @@ import {
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
-  BaseGeneratedListTypes,
+  BaseListTypeInfo,
   KeystoneContext,
   FileData,
 } from '../../../types';
@@ -12,8 +12,8 @@ import { graphql } from '../../..';
 import { resolveView } from '../../resolve-view';
 import { getFileRef } from './utils';
 
-export type FileFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
-  CommonFieldConfig<TGeneratedListTypes>;
+export type FileFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
+  CommonFieldConfig<ListTypeInfo>;
 
 const FileFieldInput = graphql.inputObject({
   name: 'FileFieldInput',
@@ -87,9 +87,9 @@ async function inputResolver(data: FileFieldInputType, context: KeystoneContext)
 }
 
 export const file =
-  <TGeneratedListTypes extends BaseGeneratedListTypes>(
-    config: FileFieldConfig<TGeneratedListTypes> = {}
-  ): FieldTypeFunc =>
+  <ListTypeInfo extends BaseListTypeInfo>(
+    config: FileFieldConfig<ListTypeInfo> = {}
+  ): FieldTypeFunc<ListTypeInfo> =>
   () => {
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type file");

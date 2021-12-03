@@ -4,7 +4,7 @@
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { Descendant, Node, Text } from 'slate';
-import { DocumentRenderer } from '@keystone-next/document-renderer';
+import { DocumentRenderer } from '@keystone-6/document-renderer';
 
 import {
   CardValueComponent,
@@ -12,9 +12,9 @@ import {
   FieldController,
   FieldControllerConfig,
   FieldProps,
-} from '@keystone-next/keystone/types';
+} from '@keystone-6/core/types';
 import weakMemoize from '@emotion/weak-memoize';
-import { CellContainer, CellLink } from '@keystone-next/keystone/admin-ui/components';
+import { CellContainer, CellLink } from '@keystone-6/core/admin-ui/components';
 import { DocumentEditor } from './DocumentEditor';
 import { ComponentBlock } from './component-blocks';
 import { Relationships } from './DocumentEditor/relationship';

@@ -6,11 +6,11 @@ import { RelatedContent } from '../../../components/RelatedContent';
 
 The `session` property of the [system configuration](./config) object allows you to configure session management of your Keystone system.
 It has a TypeScript type of `SessionStrategy<any>`.
-In general you will use `SessionStrategy` objects from the `@keystone-next/keystone/session` package, rather than writing this yourself.
+In general you will use `SessionStrategy` objects from the `@keystone-6/core/session` package, rather than writing this yourself.
 
 ```typescript
-import { config } from '@keystone-next/keystone';
-import { statelessSessions } from '@keystone-next/keystone/session';
+import { config } from '@keystone-6/core';
+import { statelessSessions } from '@keystone-6/core/session';
 
 export default config({
   session: statelessSessions({
@@ -37,8 +37,8 @@ Both `statelessSessions()` and `storedSessions()` accept a common set of argumen
 `storedSessions()` accepts an additional `store` argument, which is an object capable of loading and storing session data.
 
 ```typescript
-import { config } from '@keystone-next/keystone';
-import { statelessSessions, storedSessions } from '@keystone-next/keystone/session';
+import { config } from '@keystone-6/core';
+import { statelessSessions, storedSessions } from '@keystone-6/core/session';
 
 export default config({
   // Stateless
@@ -96,13 +96,13 @@ Interface:
 - `get`: Get the `data` value associated with `sessionId`.
 - `delete`: Delete the entry associated with `sessionId` from the session store.
 
-Keystone provides a [Redis](https://redis.io/) based session store in the package `@keystone-next/session-store-redis`.
+Keystone provides a [Redis](https://redis.io/) based session store in the package `@keystone-6/session-store-redis`.
 
 ```typescript
 import redis from 'redis';
-import { redisSessionStore } from '@keystone-next/session-store-redis';
-import { config } from '@keystone-next/keystone';
-import { storedSessions } from '@keystone-next/keystone/session';
+import { redisSessionStore } from '@keystone-6/session-store-redis';
+import { config } from '@keystone-6/core';
+import { storedSessions } from '@keystone-6/core/session';
 
 export default config({
   session: storedSessions({

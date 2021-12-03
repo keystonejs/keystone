@@ -1,10 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, useTheme } from '@keystone-ui/core';
-import { useRouter } from '@keystone-next/keystone/admin-ui/router';
-import { gql, useQuery } from '@keystone-next/keystone/admin-ui/apollo';
-import { DocumentRenderer } from '@keystone-next/document-renderer';
-import { InferRenderersForComponentBlocks } from '@keystone-next/fields-document/component-blocks';
+import { useRouter } from '@keystone-6/core/admin-ui/router';
+import { gql, useQuery } from '@keystone-6/core/admin-ui/apollo';
+import { DocumentRenderer } from '@keystone-6/document-renderer';
+import { InferRenderersForComponentBlocks } from '@keystone-6/fields-document/component-blocks';
 
 import { InfoIcon } from '@keystone-ui/icons/icons/InfoIcon';
 import { AlertTriangleIcon } from '@keystone-ui/icons/icons/AlertTriangleIcon';

@@ -1,7 +1,7 @@
 import globby from 'globby';
-import { list } from '@keystone-next/keystone';
-import { text } from '@keystone-next/keystone/fields';
-import { setupTestEnv } from '@keystone-next/keystone/testing';
+import { list } from '@keystone-6/core';
+import { text } from '@keystone-6/core/fields';
+import { setupTestEnv } from '@keystone-6/core/testing';
 import { assertInputObjectType, assertObjectType, GraphQLNonNull } from 'graphql';
 import { apiTestConfig } from '../utils';
 

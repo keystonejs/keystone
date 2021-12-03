@@ -1,7 +1,7 @@
-import { integer } from '@keystone-next/keystone/fields';
-import { list } from '@keystone-next/keystone';
-import { setupTestRunner } from '@keystone-next/keystone/testing';
-import { KeystoneContext } from '@keystone-next/keystone/types';
+import { integer } from '@keystone-6/core/fields';
+import { list } from '@keystone-6/core';
+import { setupTestRunner } from '@keystone-6/core/testing';
+import { KeystoneContext } from '@keystone-6/core/types';
 import {
   apiTestConfig,
   expectAccessReturnError,

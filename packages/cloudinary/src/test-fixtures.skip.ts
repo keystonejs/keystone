@@ -2,7 +2,7 @@ import fs from 'fs';
 import mime from 'mime';
 import { FileUpload, Upload } from 'graphql-upload';
 import cloudinary from 'cloudinary';
-import { DatabaseProvider } from '@keystone-next/keystone/types';
+import { DatabaseProvider } from '@keystone-6/core/types';
 import { cloudinaryImage } from './index';
 
 const path = require('path');

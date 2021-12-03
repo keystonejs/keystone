@@ -1,6 +1,6 @@
-import { list } from '@keystone-next/keystone';
-import { checkbox, password, relationship, text, timestamp } from '@keystone-next/keystone/fields';
-import { select } from '@keystone-next/keystone/fields';
+import { list } from '@keystone-6/core';
+import { checkbox, password, relationship, text, timestamp } from '@keystone-6/core/fields';
+import { select } from '@keystone-6/core/fields';
 
 export const lists = {
   Task: list({

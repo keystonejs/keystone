@@ -1,5 +1,5 @@
-import { KeystoneContext } from '@keystone-next/keystone/types';
-import { setupTestEnv, TestEnv } from '@keystone-next/keystone/testing';
+import { KeystoneContext } from '@keystone-6/core/types';
+import { setupTestEnv, TestEnv } from '@keystone-6/core/testing';
 import { expectAccessDenied } from '../utils';
 import { nameFn, fieldMatrix, getFieldName, getItemListName, config } from './utils';
 

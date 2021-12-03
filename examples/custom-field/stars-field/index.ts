@@ -1,30 +1,30 @@
 import {
-  BaseGeneratedListTypes,
+  BaseListTypeInfo,
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
   orderDirectionEnum,
   filters,
-} from '@keystone-next/keystone/types';
-import { graphql } from '@keystone-next/keystone';
+} from '@keystone-6/core/types';
+import { graphql } from '@keystone-6/core';
 
 // this field is based on the integer field
 // but with validation to ensure the value is within an expected range
 // and a different input in the Admin UI
 // https://github.com/keystonejs/keystone/tree/main/packages/keystone/src/fields/types/integer
 
-export type StarsFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
-  CommonFieldConfig<TGeneratedListTypes> & {
+export type StarsFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
+  CommonFieldConfig<ListTypeInfo> & {
     isIndexed?: boolean | 'unique';
     maxStars?: number;
   };
 
 export const stars =
-  <TGeneratedListTypes extends BaseGeneratedListTypes>({
+  <ListTypeInfo extends BaseListTypeInfo>({
     isIndexed,
     maxStars = 5,
     ...config
-  }: StarsFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
+  }: StarsFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
   meta =>
     fieldType({
       // this configures what data is stored in the database

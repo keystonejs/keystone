@@ -24,7 +24,7 @@ test("start errors when a build hasn't happened", async () => {
   await expect(runCommand(tmp, 'start')).rejects.toEqual(new ExitError(1));
   expect(recording()).toMatchInlineSnapshot(`
     "✨ Starting Keystone
-    🚨 keystone-next build must be run before running keystone-next start"
+    🚨 keystone build must be run before running keystone start"
   `);
 });
 
@@ -37,8 +37,8 @@ test('build works with typescript without the user defining a babel config', asy
     ...symlinkKeystoneDeps,
     ...schemas,
     'keystone.ts': js`
-                     import { config, list } from "@keystone-next/keystone";
-                     import { text } from "@keystone-next/keystone/fields";
+                     import { config, list } from "@keystone-6/core";
+                     import { text } from "@keystone-6/core/fields";
 
                      type x = string;
 

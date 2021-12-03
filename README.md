@@ -30,7 +30,7 @@
 
 [Keystone 6](http://keystonejs.com) is the new major version of KeystoneJS, the most powerful headless content management system around. We've substantially rewritten the CLI, Schema config, and Admin UI to make them more powerful and easier to use than ever before.
 
-It's currently in the final stages of preview release, and published on npm under the `@keystone-next` namespace. To learn more, check out our [Roadmap page](https://keystonejs.com/updates/roadmap).
+Keystone 6 is published on npm under the `@keystone-6` namespace. To learn about where we’re taking Keystone check out our [Roadmap](https://keystonejs.com/updates/roadmap).
 
 ### Looking for Keystone 5?
 

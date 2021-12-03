@@ -14,7 +14,7 @@ export const start = async (cwd: string) => {
   // See reexportKeystoneConfig().
   const apiFile = path.join(getAdminPath(cwd), '.next/server/pages/api/__keystone_api_build.js');
   if (!fs.existsSync(apiFile)) {
-    console.log('🚨 keystone-next build must be run before running keystone-next start');
+    console.log('🚨 keystone build must be run before running keystone start');
     throw new ExitError(1);
   }
   // webpack will make modules that import Node ESM externals(which must be loaded with dynamic import)

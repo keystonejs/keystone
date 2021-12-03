@@ -1,7 +1,7 @@
-import { BaseGeneratedListTypes, FieldAccessControl, FieldData } from '../types';
+import { BaseListTypeInfo, FieldAccessControl, FieldData } from '../types';
 
-export function hasReadAccessControl(
-  access: FieldAccessControl<BaseGeneratedListTypes> | undefined
+export function hasReadAccessControl<ListTypeInfo extends BaseListTypeInfo>(
+  access: FieldAccessControl<ListTypeInfo> | undefined
 ) {
   if (access === undefined) {
     return false;
@@ -9,8 +9,8 @@ export function hasReadAccessControl(
   return typeof access === 'function' || typeof access.read === 'function';
 }
 
-export function hasCreateAccessControl(
-  access: FieldAccessControl<BaseGeneratedListTypes> | undefined
+export function hasCreateAccessControl<ListTypeInfo extends BaseListTypeInfo>(
+  access: FieldAccessControl<ListTypeInfo> | undefined
 ) {
   if (access === undefined) {
     return false;
@@ -31,10 +31,10 @@ export function getResolvedIsNullable(
   return true;
 }
 
-export function assertReadIsNonNullAllowed(
+export function assertReadIsNonNullAllowed<ListTypeInfo extends BaseListTypeInfo>(
   meta: FieldData,
   config: {
-    access?: FieldAccessControl<BaseGeneratedListTypes> | undefined;
+    access?: FieldAccessControl<ListTypeInfo> | undefined;
     graphql?: { read?: { isNonNull?: boolean } };
   },
   resolvedIsNullable: boolean
@@ -55,10 +55,10 @@ export function assertReadIsNonNullAllowed(
   }
 }
 
-export function assertCreateIsNonNullAllowed(
+export function assertCreateIsNonNullAllowed<ListTypeInfo extends BaseListTypeInfo>(
   meta: FieldData,
   config: {
-    access?: FieldAccessControl<BaseGeneratedListTypes> | undefined;
+    access?: FieldAccessControl<ListTypeInfo> | undefined;
     graphql?: { create?: { isNonNull?: boolean } };
   }
 ) {

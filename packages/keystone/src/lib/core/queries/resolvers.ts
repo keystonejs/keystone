@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo } from 'graphql';
-import { FindManyArgsValue, ItemRootValue, KeystoneContext, OrderDirection } from '../../../types';
+import { FindManyArgsValue, BaseItem, KeystoneContext, OrderDirection } from '../../../types';
 import { getOperationAccess, getAccessFilters } from '../access-control';
 import {
   PrismaFilter,
@@ -112,7 +112,7 @@ export async function findMany(
   context: KeystoneContext,
   info: GraphQLResolveInfo,
   extraFilter?: PrismaFilter
-): Promise<ItemRootValue[]> {
+): Promise<BaseItem[]> {
   const orderBy = await resolveOrderBy(rawOrderBy, list, context);
 
   // Check operation permission, throw access denied if not allowed

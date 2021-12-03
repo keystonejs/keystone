@@ -1,6 +1,6 @@
-import { list } from '@keystone-next/keystone';
-import { checkbox, password, relationship, text, timestamp } from '@keystone-next/keystone/fields';
-import { select } from '@keystone-next/keystone/fields';
+import { list } from '@keystone-6/core';
+import { checkbox, password, relationship, text, timestamp } from '@keystone-6/core/fields';
+import { select } from '@keystone-6/core/fields';
 
 export const lists = {
   Task: list({
@@ -24,7 +24,7 @@ export const lists = {
       item: {
         update: async ({ session, item, context }) => {
           const task = await context.query.Task.findOne({
-            where: { id: item.id },
+            where: { id: item.id.toString() },
             query: 'assignedTo { id }',
           });
           return !!(session?.itemId && session.itemId === task.assignedTo?.id);

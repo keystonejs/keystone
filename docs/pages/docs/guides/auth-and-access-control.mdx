@@ -15,7 +15,7 @@ Session Management and Auth are extremely flexible in Keystone, and it's possibl
 
 ## Setting up Users, Auth and Session
 
-While you can use Keystone's APIs to implement your own custom session and authentication systems, we've built one for you that probably does what you need most of the time: the `@keystone-next/auth` package. We recommend starting with that.
+While you can use Keystone's APIs to implement your own custom session and authentication systems, we've built one for you that probably does what you need most of the time: the `@keystone-6/auth` package. We recommend starting with that.
 
 Keystone is designed to make as few assumptions about your schema and system design as possible, which means it doesn't come with a built-in concept of **Users**. In your app, Users are just another List that you create and specify fields for – you can set them up however you like.
 
@@ -45,7 +45,7 @@ const Person = list({
 With our users list in place, we can start configuring our authentication:
 
 ```ts
-import { createAuth } from '@keystone-next/auth';
+import { createAuth } from '@keystone-6/auth';
 
 const { withAuth } = createAuth({
   listKey: 'Person',
@@ -77,10 +77,10 @@ Keystone also comes with a Redis session adapter, which uses a cookie to store a
 Your entire Keystone config should now look like this:
 
 ```ts
-import { config, list } from '@keystone-next/keystone';
-import { checkbox, password, text } from '@keystone-next/keystone/fields';
-import { statelessSessions } from '@keystone-next/keystone/session';
-import { createAuth } from '@keystone-next/auth';
+import { config, list } from '@keystone-6/core';
+import { checkbox, password, text } from '@keystone-6/core/fields';
+import { statelessSessions } from '@keystone-6/core/session';
+import { createAuth } from '@keystone-6/auth';
 
 const db = {
   provider: 'sqlite',

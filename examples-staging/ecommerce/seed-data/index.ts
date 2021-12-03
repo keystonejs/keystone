@@ -1,4 +1,4 @@
-import { KeystoneContext } from '@keystone-next/keystone/types';
+import { KeystoneContext } from '@keystone-6/core/types';
 import { products } from './data';
 
 export async function insertSeedData({ prisma }: KeystoneContext) {

@@ -1,13 +1,13 @@
 import path from 'path';
 import { ApolloError } from 'apollo-server-errors';
 import {
-  BaseGeneratedListTypes,
+  BaseListTypeInfo,
   CommonFieldConfig,
   FieldTypeFunc,
   jsonFieldTypePolyfilledForSQLite,
   JSONValue,
-} from '@keystone-next/keystone/types';
-import { graphql } from '@keystone-next/keystone';
+} from '@keystone-6/core/types';
+import { graphql } from '@keystone-6/core';
 import { Relationships } from './DocumentEditor/relationship';
 import { ComponentBlock } from './component-blocks';
 import { DocumentFeatures } from './views';
@@ -67,8 +67,8 @@ type FormattingConfig = {
   softBreaks?: true;
 };
 
-export type DocumentFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
-  CommonFieldConfig<TGeneratedListTypes> & {
+export type DocumentFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
+  CommonFieldConfig<ListTypeInfo> & {
     relationships?: RelationshipsConfig;
     componentBlocks?: Record<string, ComponentBlock>;
     formatting?: true | FormattingConfig;
@@ -81,7 +81,7 @@ export type DocumentFieldConfig<TGeneratedListTypes extends BaseGeneratedListTyp
 const views = path.join(path.dirname(__dirname), 'views');
 
 export const document =
-  <TGeneratedListTypes extends BaseGeneratedListTypes>({
+  <ListTypeInfo extends BaseListTypeInfo>({
     componentBlocks = {},
     dividers,
     formatting,
@@ -89,7 +89,7 @@ export const document =
     relationships: configRelationships,
     links,
     ...config
-  }: DocumentFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
+  }: DocumentFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
   meta => {
     const documentFeatures = normaliseDocumentFeatures({
       dividers,
@@ -183,7 +183,7 @@ export const document =
   };
 
 function normaliseRelationships(
-  configRelationships: DocumentFieldConfig<BaseGeneratedListTypes>['relationships']
+  configRelationships: DocumentFieldConfig<BaseListTypeInfo>['relationships']
 ) {
   const relationships: Relationships = {};
   if (configRelationships) {
@@ -204,7 +204,7 @@ function normaliseRelationships(
 
 function normaliseDocumentFeatures(
   config: Pick<
-    DocumentFieldConfig<BaseGeneratedListTypes>,
+    DocumentFieldConfig<BaseListTypeInfo>,
     'formatting' | 'dividers' | 'layouts' | 'links'
   >
 ) {

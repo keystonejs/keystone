@@ -1,35 +1,35 @@
-import type { KeystoneContext } from '..';
-import type { BaseGeneratedListTypes } from '../utils';
+import type { KeystoneContextFromListTypeInfo } from '..';
+import { BaseListTypeInfo } from '../type-info';
 
-type CommonArgs = {
-  context: KeystoneContext;
+type CommonArgs<ListTypeInfo extends BaseListTypeInfo> = {
+  context: KeystoneContextFromListTypeInfo<ListTypeInfo>;
   /**
    * The key of the list that the operation is occurring on
    */
   listKey: string;
 };
 
-export type ListHooks<TGeneratedListTypes extends BaseGeneratedListTypes> = {
+export type ListHooks<ListTypeInfo extends BaseListTypeInfo> = {
   /**
    * Used to **modify the input** for create and update operations after default values and access control have been applied
    */
-  resolveInput?: ResolveInputHook<TGeneratedListTypes>;
+  resolveInput?: ResolveInputHook<ListTypeInfo>;
   /**
    * Used to **validate the input** for create and update operations once all resolveInput hooks resolved
    */
-  validateInput?: ValidateInputHook<TGeneratedListTypes>;
+  validateInput?: ValidateInputHook<ListTypeInfo>;
   /**
    * Used to **validate** that a delete operation can happen after access control has occurred
    */
-  validateDelete?: ValidateDeleteHook<TGeneratedListTypes>;
+  validateDelete?: ValidateDeleteHook<ListTypeInfo>;
   /**
    * Used to **cause side effects** before a create, update, or delete operation once all validateInput hooks have resolved
    */
-  beforeOperation?: BeforeOperationHook<TGeneratedListTypes>;
+  beforeOperation?: BeforeOperationHook<ListTypeInfo>;
   /**
    * Used to **cause side effects** after a create, update, or delete operation operation has occurred
    */
-  afterOperation?: AfterOperationHook<TGeneratedListTypes>;
+  afterOperation?: AfterOperationHook<ListTypeInfo>;
 };
 
 // TODO: probably maybe don't do this and write it out manually
@@ -42,45 +42,46 @@ type AddFieldPathArgToAllPropsOnObj<T extends Record<string, (arg: any) => any>>
   [Key in keyof T]: AddFieldPathToObj<T[Key]>;
 };
 
-export type FieldHooks<TGeneratedListTypes extends BaseGeneratedListTypes> =
-  AddFieldPathArgToAllPropsOnObj<ListHooks<TGeneratedListTypes>>;
+export type FieldHooks<ListTypeInfo extends BaseListTypeInfo> = AddFieldPathArgToAllPropsOnObj<
+  ListHooks<ListTypeInfo>
+>;
 
-type ArgsForCreateOrUpdateOperation<TGeneratedListTypes extends BaseGeneratedListTypes> =
+type ArgsForCreateOrUpdateOperation<ListTypeInfo extends BaseListTypeInfo> =
   | {
       operation: 'create';
       // technically this will never actually exist for a create
       // but making it optional rather than not here
       // makes for a better experience
       // because then people will see the right type even if they haven't refined the type of operation to 'create'
-      item?: TGeneratedListTypes['backing'];
+      item?: ListTypeInfo['item'];
       /**
        * The GraphQL input **before** default values are applied
        */
-      inputData: TGeneratedListTypes['inputs']['create'];
+      inputData: ListTypeInfo['inputs']['create'];
       /**
        * The GraphQL input **after** default values are applied
        */
-      resolvedData: TGeneratedListTypes['inputs']['create'];
+      resolvedData: ListTypeInfo['inputs']['create'];
     }
   | {
       operation: 'update';
-      item: TGeneratedListTypes['backing'];
+      item: ListTypeInfo['item'];
       /**
        * The GraphQL input **before** default values are applied
        */
-      inputData: TGeneratedListTypes['inputs']['update'];
+      inputData: ListTypeInfo['inputs']['update'];
       /**
        * The GraphQL input **after** default values are applied
        */
-      resolvedData: TGeneratedListTypes['inputs']['update'];
+      resolvedData: ListTypeInfo['inputs']['update'];
     };
 
-type ResolveInputHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
-  args: ArgsForCreateOrUpdateOperation<TGeneratedListTypes> & CommonArgs
+type ResolveInputHook<ListTypeInfo extends BaseListTypeInfo> = (
+  args: ArgsForCreateOrUpdateOperation<ListTypeInfo> & CommonArgs<ListTypeInfo>
 ) =>
-  | Promise<TGeneratedListTypes['inputs']['create'] | TGeneratedListTypes['inputs']['update']>
-  | TGeneratedListTypes['inputs']['create']
-  | TGeneratedListTypes['inputs']['update']
+  | Promise<ListTypeInfo['inputs']['create'] | ListTypeInfo['inputs']['update']>
+  | ListTypeInfo['inputs']['create']
+  | ListTypeInfo['inputs']['update']
   // TODO: I'm pretty sure this is wrong, but without these additional types you can't define a
   // resolveInput hook for a field that returns a simple value (e.g timestamp)
   | Record<string, any>
@@ -89,47 +90,55 @@ type ResolveInputHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
   | boolean
   | null;
 
-type ValidateInputHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
-  args: ArgsForCreateOrUpdateOperation<TGeneratedListTypes> & {
+type ValidateInputHook<ListTypeInfo extends BaseListTypeInfo> = (
+  args: ArgsForCreateOrUpdateOperation<ListTypeInfo> & {
     addValidationError: (error: string) => void;
-  } & CommonArgs
+  } & CommonArgs<ListTypeInfo>
 ) => Promise<void> | void;
 
-type ValidateDeleteHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
+type ValidateDeleteHook<ListTypeInfo extends BaseListTypeInfo> = (
   args: {
     operation: 'delete';
-    item: TGeneratedListTypes['backing'];
+    item: ListTypeInfo['item'];
     addValidationError: (error: string) => void;
-  } & CommonArgs
+  } & CommonArgs<ListTypeInfo>
 ) => Promise<void> | void;
 
-type BeforeOperationHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
+type BeforeOperationHook<ListTypeInfo extends BaseListTypeInfo> = (
   args: (
-    | ArgsForCreateOrUpdateOperation<TGeneratedListTypes>
+    | ArgsForCreateOrUpdateOperation<ListTypeInfo>
     | {
         operation: 'delete';
-        item: TGeneratedListTypes['backing'];
+        item: ListTypeInfo['item'];
         inputData: undefined;
         resolvedData: undefined;
       }
   ) &
-    CommonArgs
+    CommonArgs<ListTypeInfo>
 ) => Promise<void> | void;
 
-type AfterOperationHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
+type AfterOperationHook<ListTypeInfo extends BaseListTypeInfo> = (
   args: (
-    | ArgsForCreateOrUpdateOperation<TGeneratedListTypes>
+    | ArgsForCreateOrUpdateOperation<ListTypeInfo>
     | {
         operation: 'delete';
-        // technically this will never actually exist for a create
+        // technically this will never actually exist for a delete
         // but making it optional rather than not here
         // makes for a better experience
-        // because then people will see the right type even if they haven't refined the type of operation to 'create'
-        item?: TGeneratedListTypes['backing'];
+        // because then people will see the right type even if they haven't refined the type of operation to 'delete'
+        item: undefined;
         inputData: undefined;
         resolvedData: undefined;
       }
-  ) & {
-    originalItem: TGeneratedListTypes['backing'];
-  } & CommonArgs
+  ) &
+    ({ operation: 'delete' } | { operation: 'create' | 'update'; item: ListTypeInfo['item'] }) &
+    (
+      | // technically this will never actually exist for a create
+      // but making it optional rather than not here
+      // makes for a better experience
+      // because then people will see the right type even if they haven't refined the type of operation to 'create'
+      { operation: 'create'; originalItem: undefined }
+      | { operation: 'delete' | 'update'; originalItem: ListTypeInfo['item'] }
+    ) &
+    CommonArgs<ListTypeInfo>
 ) => Promise<void> | void;

@@ -1,8 +1,8 @@
-import { text, password } from '@keystone-next/keystone/fields';
-import { list } from '@keystone-next/keystone';
-import { statelessSessions } from '@keystone-next/keystone/session';
-import { createAuth } from '@keystone-next/auth';
-import { setupTestRunner, TestArgs } from '@keystone-next/keystone/testing';
+import { text, password } from '@keystone-6/core/fields';
+import { list } from '@keystone-6/core';
+import { statelessSessions } from '@keystone-6/core/session';
+import { createAuth } from '@keystone-6/auth';
+import { setupTestRunner, TestArgs } from '@keystone-6/core/testing';
 import { apiTestConfig, expectInternalServerError, expectValidationError, seed } from './utils';
 
 const initialData = {

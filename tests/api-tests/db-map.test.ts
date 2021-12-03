@@ -1,5 +1,5 @@
-import { list } from '@keystone-next/keystone';
-import { text } from '@keystone-next/keystone/fields';
+import { list } from '@keystone-6/core';
+import { text } from '@keystone-6/core/fields';
 import globby from 'globby';
 import { apiTestConfig, dbProvider, getPrismaSchema } from './utils';
 

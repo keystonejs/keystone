@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import type { KeystoneContext } from '@keystone-next/keystone/types';
+import type { KeystoneContext } from '@keystone-6/core/types';
 
 /*
   This example route handler gets all the tasks in the database and returns

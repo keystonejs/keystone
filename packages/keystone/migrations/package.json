@@ -1,4 +1,4 @@
 {
-  "main": "dist/keystone-next-keystone-migrations.cjs.js",
-  "module": "dist/keystone-next-keystone-migrations.esm.js"
+  "main": "dist/keystone-6-core-migrations.cjs.js",
+  "module": "dist/keystone-6-core-migrations.esm.js"
 }

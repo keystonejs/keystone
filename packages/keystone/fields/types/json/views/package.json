@@ -1,4 +1,4 @@
 {
-  "main": "dist/keystone-next-keystone-fields-types-json-views.cjs.js",
-  "module": "dist/keystone-next-keystone-fields-types-json-views.esm.js"
+  "main": "dist/keystone-6-core-fields-types-json-views.cjs.js",
+  "module": "dist/keystone-6-core-fields-types-json-views.esm.js"
 }

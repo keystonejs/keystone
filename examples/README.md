@@ -25,7 +25,7 @@ Each project below demonstrates a Keystone feature you can learn about and exper
 - [`extendGraphqlSchema` with Nexus](./extend-graphql-schema-nexus): Extends the GraphQL API of the Blog base with [Nexus](https://nexusjs.org/).
 - [Virtual field](./virtual-field): Adds virtual fields to the Blog base.
 - [Document field](./document-field): Adds document fields to the Blog base.
-- [Testing](./testing): Adds tests with `@keystone-next/keystone/testing` to the `withAuth()` example.
+- [Testing](./testing): Adds tests with `@keystone-6/core/testing` to the `withAuth()` example.
 - [Custom field](./custom-field): Adds a custom `stars` field to the Blog base.
 - [Custom field view](./custom-field-view): Adds a custom Admin UI view to a `json` field to the Task Manager base.
 - [Custom Admin UI logo](./custom-admin-ui-logo): Adds a custom logo in the Admin UI to the Task Manager base.

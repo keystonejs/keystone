@@ -1,4 +1,4 @@
-import { checkbox } from '@keystone-next/keystone/fields';
+import { checkbox } from '@keystone-6/core/fields';
 
 export const permissionFields = {
   canManageProducts: checkbox({

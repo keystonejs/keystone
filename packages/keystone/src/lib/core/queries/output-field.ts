@@ -3,11 +3,11 @@ import { GraphQLResolveInfo } from 'graphql';
 import {
   NextFieldType,
   IndividualFieldAccessControl,
-  BaseGeneratedListTypes,
-  ItemRootValue,
+  BaseListTypeInfo,
+  BaseItem,
   FindManyArgsValue,
   KeystoneContext,
-  TypesForList,
+  GraphQLTypesForList,
   FieldReadItemAccessArgs,
 } from '../../../types';
 import { graphql } from '../../..';
@@ -37,7 +37,7 @@ function getRelationVal(
     return {
       findMany: async (args: FindManyArgsValue) =>
         queries.findMany(args, foreignList, context, info, relationFilter),
-      count: async ({ where }: { where: TypesForList['where'] }) =>
+      count: async ({ where }: { where: GraphQLTypesForList['where'] }) =>
         queries.count({ where }, foreignList, context, info, relationFilter),
     };
   } else {
@@ -94,7 +94,7 @@ function getRelationVal(
 }
 
 function getValueForDBField(
-  rootVal: ItemRootValue,
+  rootVal: BaseItem,
   dbField: ResolvedDBField,
   id: IdType,
   fieldPath: string,
@@ -126,7 +126,7 @@ export function outputTypeField(
   output: NextFieldType['output'],
   dbField: ResolvedDBField,
   cacheHint: CacheHint | undefined,
-  access: IndividualFieldAccessControl<FieldReadItemAccessArgs<BaseGeneratedListTypes>>,
+  access: IndividualFieldAccessControl<FieldReadItemAccessArgs<BaseListTypeInfo>>,
   listKey: string,
   fieldKey: string,
   lists: Record<string, InitialisedList>
@@ -137,7 +137,7 @@ export function outputTypeField(
     description: output.description,
     args: output.args,
     extensions: output.extensions,
-    async resolve(rootVal: ItemRootValue, args, context, info) {
+    async resolve(rootVal: BaseItem, args, context, info) {
       const id = (rootVal as any).id as IdType;
 
       // Check access

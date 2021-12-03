@@ -94,17 +94,6 @@ jobs:
     name: Package Unit Tests
     needs: should_run_tests
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:12
-        env:
-          POSTGRES_USER: keystone5
-          POSTGRES_PASSWORD: k3yst0n3
-          POSTGRES_DB: test_db
-        ports:
-          - 5432:5432
-    env:
-      DATABASE_URL: 'postgres://keystone5:k3yst0n3@localhost:5432/test_db'
     strategy:
       fail-fast: false
     steps:
@@ -352,9 +341,6 @@ jobs:
 
       - name: Remark
         run: yarn lint:markdown
-
-      - name: Example schemas
-        run: yarn lint:examples
 
       - name: Prisma Filters
         run: yarn lint:filters

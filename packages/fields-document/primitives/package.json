@@ -1,4 +1,4 @@
 {
-  "main": "dist/keystone-next-fields-document-primitives.cjs.js",
-  "module": "dist/keystone-next-fields-document-primitives.esm.js"
+  "main": "dist/keystone-6-fields-document-primitives.cjs.js",
+  "module": "dist/keystone-6-fields-document-primitives.esm.js"
 }

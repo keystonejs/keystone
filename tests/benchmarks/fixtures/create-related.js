@@ -1,6 +1,6 @@
-const { text, relationship } = require('@keystone-next/keystone/fields');
-const { list } = require('@keystone-next/keystone');
-const { setupTestRunner } = require('@keystone-next/keystone/testing');
+const { text, relationship } = require('@keystone-6/core/fields');
+const { list } = require('@keystone-6/core');
+const { setupTestRunner } = require('@keystone-6/core/testing');
 const { apiTestConfig } = require('../../utils.ts');
 const { FixtureGroup, timeQuery, populate, range } = require('../lib/utils');
 

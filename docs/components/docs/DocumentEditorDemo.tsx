@@ -1,22 +1,22 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { getInitialPropsValue } from '@keystone-next/fields-document/src/DocumentEditor/component-blocks/initial-values';
-import { FormValueContent } from '@keystone-next/fields-document/src/DocumentEditor/component-blocks/form';
-import { useKeyDownRef } from '@keystone-next/fields-document/src/DocumentEditor/soft-breaks';
+import { getInitialPropsValue } from '@keystone-6/fields-document/src/DocumentEditor/component-blocks/initial-values';
+import { FormValueContent } from '@keystone-6/fields-document/src/DocumentEditor/component-blocks/form';
+import { useKeyDownRef } from '@keystone-6/fields-document/src/DocumentEditor/soft-breaks';
 import React, { ReactNode, useContext, useEffect, useMemo, useState } from 'react';
-import { Toolbar } from '@keystone-next/fields-document/src/DocumentEditor/Toolbar';
-import { DocumentFeatures } from '@keystone-next/fields-document/views';
+import { Toolbar } from '@keystone-6/fields-document/src/DocumentEditor/Toolbar';
+import { DocumentFeatures } from '@keystone-6/fields-document/views';
 import {
   createDocumentEditor,
   DocumentEditorEditable,
   DocumentEditorProvider,
   Editor,
-} from '@keystone-next/fields-document/src/DocumentEditor';
+} from '@keystone-6/fields-document/src/DocumentEditor';
 import {
   ComponentBlock,
   fields,
   InferRenderersForComponentBlocks,
-} from '@keystone-next/fields-document/component-blocks';
+} from '@keystone-6/fields-document/component-blocks';
 import { Global, jsx } from '@emotion/react';
 
 import { componentBlocks as componentBlocksInExampleProject } from '../../../examples-staging/basic/admin/fieldViews/Content';
@@ -88,11 +88,11 @@ const componentBlocks = {
   quote: componentBlocksInExampleProject.quote,
 };
 
-type DocumentFieldConfig = Parameters<typeof import('@keystone-next/fields-document').document>[0];
+type DocumentFieldConfig = Parameters<typeof import('@keystone-6/fields-document').document>[0];
 
 function documentFeaturesCodeExample(config: DocumentFieldConfig | DocumentFeatures) {
-  return `import { config, list } from '@keystone-next/keystone';
-import { document } from '@keystone-next/fields-document';
+  return `import { config, list } from '@keystone-6/core';
+import { document } from '@keystone-6/fields-document';
 
 export default config({
   lists: {

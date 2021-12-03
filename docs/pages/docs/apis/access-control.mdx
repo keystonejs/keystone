@@ -8,8 +8,8 @@ The `access` property of the [list configuration](./schema) object configures wh
 The `access` property of the [field configuration](./fields) object configures who can read, create, and update specific field values of an item.
 
 ```typescript
-import { config, list } from '@keystone-next/keystone';
-import { text } from '@keystone-next/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { text } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
@@ -58,7 +58,7 @@ Individual functions can be provided for each of the operations.
 !> These functions must return `true` if the operation is allowed, or `false` if it is not allowed.
 
 ```typescript
-import { config, list } from '@keystone-next/keystone';
+import { config, list } from '@keystone-6/core';
 
 export default config({
   lists: {
@@ -91,8 +91,8 @@ In general, the filter access control functions will return GraphQL filters.
 They can also return boolean values `true` or `false` to match or exclude all items.
 
 ```typescript
-import { config, list } from '@keystone-next/keystone';
-import { checkbox } from '@keystone-next/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { checkbox } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
@@ -137,8 +137,8 @@ It’s available to `create`, `update`, and `delete` mutations, and lets you wri
 !> These functions must return `true` if the operation is allowed, or `false` if it is not allowed.
 
 ```typescript
-import { config, list } from '@keystone-next/keystone';
-import { checkbox } from '@keystone-next/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { checkbox } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
@@ -194,8 +194,8 @@ No errors will be returned for `read` access denied.
 !> The `read` access control is applied to fields returned from both **queries** and **mutations**.
 
 ```typescript
-import { config, list } from '@keystone-next/keystone';
-import { text } from '@keystone-next/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { text } from '@keystone-6/core/fields';
 
 export default config({
   lists: {

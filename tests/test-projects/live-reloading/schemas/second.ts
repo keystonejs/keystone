@@ -1,5 +1,5 @@
-import { graphql, graphQLSchemaExtension, list } from '@keystone-next/keystone';
-import { text, virtual } from '@keystone-next/keystone/fields';
+import { graphql, graphQLSchemaExtension, list } from '@keystone-6/core';
+import { text, virtual } from '@keystone-6/core/fields';
 
 export const lists = {
   Something: list({
@@ -9,7 +9,7 @@ export const lists = {
         field: graphql.field({
           type: graphql.String,
           resolve(item) {
-            return item.text as string;
+            return (item as { text: string }).text;
           },
         }),
       }),

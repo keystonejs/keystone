@@ -1,4 +1,4 @@
-import { config } from '@keystone-next/keystone';
+import { config } from '@keystone-6/core';
 import { mergeSchemas } from '@graphql-tools/schema';
 import { lists } from './schema';
 import { nexusSchema } from './nexus';

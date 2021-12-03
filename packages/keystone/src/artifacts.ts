@@ -97,7 +97,7 @@ export async function validateCommittedArtifacts(
     if (shouldPrompt && (await confirmPrompt(`Would you like to update your ${term}?`))) {
       await writeCommittedArtifacts(artifacts, cwd);
     } else {
-      console.log(`Please run keystone-next postinstall --fix to update your ${term}`);
+      console.log(`Please run keystone postinstall --fix to update your ${term}`);
       throw new ExitError(1);
     }
   }
@@ -126,13 +126,13 @@ const nodeAPIJS = (
   config: KeystoneConfig
 ) => `import keystoneConfig from '../../keystone';
 import { PrismaClient } from '.prisma/client';
-import { createQueryAPI } from '@keystone-next/keystone/___internal-do-not-use-will-break-in-patch/node-api';
+import { createQueryAPI } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/node-api';
 ${makeVercelIncludeTheSQLiteDB(cwd, path.join(cwd, 'node_modules/.keystone/next'), config)}
 
 export const query = createQueryAPI(keystoneConfig, PrismaClient);
 `;
 
-const nodeAPIDTS = `import { KeystoneListsAPI } from '@keystone-next/keystone/types';
+const nodeAPIDTS = `import { KeystoneListsAPI } from '@keystone-6/core/types';
 import { KeystoneListsTypeInfo } from './types';
 
 export const query: KeystoneListsAPI<KeystoneListsTypeInfo>;`;
@@ -161,7 +161,7 @@ const nextGraphQLAPIJS = (
   config: KeystoneConfig
 ) => `import keystoneConfig from '../../../keystone';
 import { PrismaClient } from '.prisma/client';
-import { nextGraphQLAPIRoute } from '@keystone-next/keystone/___internal-do-not-use-will-break-in-patch/next-graphql';
+import { nextGraphQLAPIRoute } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/next-graphql';
 ${makeVercelIncludeTheSQLiteDB(cwd, path.join(cwd, 'node_modules/.keystone/next'), config)}
 
 export const config = {

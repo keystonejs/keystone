@@ -1,4 +1,4 @@
-import { BaseGeneratedListTypes, KeystoneContext } from '@keystone-next/keystone/types';
+import { BaseListTypeInfo, KeystoneContext } from '@keystone-6/core/types';
 
 export type AuthGqlNames = {
   CreateInitialInput: string;
@@ -35,15 +35,15 @@ export type AuthTokenTypeConfig = {
   tokensValidForMins?: number;
 };
 
-export type AuthConfig<GeneratedListTypes extends BaseGeneratedListTypes> = {
+export type AuthConfig<ListTypeInfo extends BaseListTypeInfo> = {
   /** The key of the list to authenticate users with */
-  listKey: GeneratedListTypes['key'];
+  listKey: ListTypeInfo['key'];
   /** The path of the field the identity is stored in; must be text-ish */
-  identityField: GeneratedListTypes['fields'];
+  identityField: ListTypeInfo['fields'];
   /** The path of the field the secret is stored in; must be password-ish */
-  secretField: GeneratedListTypes['fields'];
+  secretField: ListTypeInfo['fields'];
   /** The initial user/db seeding functionality */
-  initFirstItem?: InitFirstItemConfig<GeneratedListTypes>;
+  initFirstItem?: InitFirstItemConfig<ListTypeInfo>;
   /** Password reset link functionality */
   passwordResetLink?: AuthTokenTypeConfig;
   /** "Magic link" functionality */
@@ -52,13 +52,13 @@ export type AuthConfig<GeneratedListTypes extends BaseGeneratedListTypes> = {
   sessionData?: string;
 };
 
-export type InitFirstItemConfig<GeneratedListTypes extends BaseGeneratedListTypes> = {
+export type InitFirstItemConfig<ListTypeInfo extends BaseListTypeInfo> = {
   /** Array of fields to collect, e.g ['name', 'email', 'password'] */
-  fields: readonly GeneratedListTypes['fields'][];
+  fields: readonly ListTypeInfo['fields'][];
   /** Suppresses the second screen where we ask people to subscribe and follow Keystone */
   skipKeystoneWelcome?: boolean;
   /** Extra input to add for the create mutation */
-  itemData?: Partial<GeneratedListTypes['inputs']['create']>;
+  itemData?: Partial<ListTypeInfo['inputs']['create']>;
 };
 
 export type AuthTokenRedemptionErrorCode = 'FAILURE' | 'TOKEN_EXPIRED' | 'TOKEN_REDEEMED';

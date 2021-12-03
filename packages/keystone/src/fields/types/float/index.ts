@@ -1,7 +1,7 @@
 // Float in GQL: A signed double-precision floating-point value.
 import { humanize } from '../../../lib/utils';
 import {
-  BaseGeneratedListTypes,
+  BaseListTypeInfo,
   FieldTypeFunc,
   CommonFieldConfig,
   fieldType,
@@ -16,8 +16,8 @@ import {
 } from '../../non-null-graphql';
 import { resolveView } from '../../resolve-view';
 
-export type FloatFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> =
-  CommonFieldConfig<TGeneratedListTypes> & {
+export type FloatFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
+  CommonFieldConfig<ListTypeInfo> & {
     defaultValue?: number;
     isIndexed?: boolean | 'unique';
     validation?: {
@@ -40,12 +40,12 @@ export type FloatFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes>
   };
 
 export const float =
-  <TGeneratedListTypes extends BaseGeneratedListTypes>({
+  <ListTypeInfo extends BaseListTypeInfo>({
     isIndexed,
     validation,
     defaultValue,
     ...config
-  }: FloatFieldConfig<TGeneratedListTypes> = {}): FieldTypeFunc =>
+  }: FloatFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
   meta => {
     if (
       defaultValue !== undefined &&

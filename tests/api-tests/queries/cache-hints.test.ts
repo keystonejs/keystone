@@ -1,8 +1,8 @@
 import { CacheScope } from 'apollo-server-types';
-import { text, relationship, integer } from '@keystone-next/keystone/fields';
-import { list, graphQLSchemaExtension } from '@keystone-next/keystone';
-import { KeystoneContext } from '@keystone-next/keystone/types';
-import { setupTestRunner } from '@keystone-next/keystone/testing';
+import { text, relationship, integer } from '@keystone-6/core/fields';
+import { list, graphQLSchemaExtension } from '@keystone-6/core';
+import { KeystoneContext } from '@keystone-6/core/types';
+import { setupTestRunner } from '@keystone-6/core/testing';
 import { apiTestConfig } from '../utils';
 
 const runner = setupTestRunner({

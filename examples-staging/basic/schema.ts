@@ -1,4 +1,4 @@
-import { list, graphQLSchemaExtension, gql, graphql } from '@keystone-next/keystone';
+import { list, graphQLSchemaExtension, gql, graphql } from '@keystone-6/core';
 import {
   text,
   relationship,
@@ -9,13 +9,11 @@ import {
   virtual,
   image,
   file,
-} from '@keystone-next/keystone/fields';
-import { document } from '@keystone-next/fields-document';
-// import { cloudinaryImage } from '@keystone-next/cloudinary';
-import { KeystoneListsAPI } from '@keystone-next/keystone/types';
+} from '@keystone-6/core/fields';
+import { document } from '@keystone-6/fields-document';
 import { v4 } from 'uuid';
 import { componentBlocks } from './admin/fieldViews/Content';
-import { KeystoneListsTypeInfo } from '.keystone/types';
+import * as Keystone from '.keystone/types';
 
 type AccessArgs = {
   session?: {
@@ -35,65 +33,67 @@ export const access = {
 
 const randomNumber = () => Math.round(Math.random() * 10);
 
-export const lists = {
-  User: list({
-    ui: {
-      listView: {
-        initialColumns: ['name', 'posts', 'avatar'],
+const User: Keystone.Lists.User = list({
+  ui: {
+    listView: {
+      initialColumns: ['name', 'posts', 'avatar'],
+    },
+  },
+  fields: {
+    /** The user's first and last name. */
+    name: text({ validation: { isRequired: true } }),
+    /** Email is used to log into the system. */
+    email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
+    /** Avatar upload for the users profile, stored locally */
+    avatar: image(),
+    attachment: file(),
+    /** Used to log in. */
+    password: password(),
+    /** Administrators have more access to various lists and fields. */
+    isAdmin: checkbox({
+      access: {
+        read: access.isAdmin,
+        create: access.isAdmin,
+        update: access.isAdmin,
       },
-    },
-    fields: {
-      /** The user's first and last name. */
-      name: text({ validation: { isRequired: true } }),
-      /** Email is used to log into the system. */
-      email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
-      /** Avatar upload for the users profile, stored locally */
-      avatar: image(),
-      attachment: file(),
-      /** Used to log in. */
-      password: password(),
-      /** Administrators have more access to various lists and fields. */
-      isAdmin: checkbox({
-        access: {
-          read: access.isAdmin,
-          create: access.isAdmin,
-          update: access.isAdmin,
+      ui: {
+        createView: {
+          fieldMode: args => (access.isAdmin(args) ? 'edit' : 'hidden'),
         },
-        ui: {
-          createView: {
-            fieldMode: args => (access.isAdmin(args) ? 'edit' : 'hidden'),
-          },
-          itemView: {
-            fieldMode: args => (access.isAdmin(args) ? 'edit' : 'read'),
-          },
+        itemView: {
+          fieldMode: args => (access.isAdmin(args) ? 'edit' : 'read'),
         },
-      }),
-      roles: text({}),
-      phoneNumbers: relationship({
-        ref: 'PhoneNumber.user',
-        many: true,
-        ui: {
-          // TODO: Work out how to use custom views to customise the card + edit / create forms
-          // views: './admin/fieldViews/user/phoneNumber',
-          displayMode: 'cards',
-          cardFields: ['type', 'value'],
-          inlineEdit: { fields: ['type', 'value'] },
-          inlineCreate: { fields: ['type', 'value'] },
-          linkToItem: true,
-          // removeMode: 'delete',
+      },
+    }),
+    roles: text({}),
+    phoneNumbers: relationship({
+      ref: 'PhoneNumber.user',
+      many: true,
+      ui: {
+        // TODO: Work out how to use custom views to customise the card + edit / create forms
+        // views: './admin/fieldViews/user/phoneNumber',
+        displayMode: 'cards',
+        cardFields: ['type', 'value'],
+        inlineEdit: { fields: ['type', 'value'] },
+        inlineCreate: { fields: ['type', 'value'] },
+        linkToItem: true,
+        // removeMode: 'delete',
+      },
+    }),
+    posts: relationship({ ref: 'Post.author', many: true }),
+    randomNumber: virtual({
+      field: graphql.field({
+        type: graphql.Float,
+        resolve() {
+          return randomNumber();
         },
       }),
-      posts: relationship({ ref: 'Post.author', many: true }),
-      randomNumber: virtual({
-        field: graphql.field({
-          type: graphql.Float,
-          resolve() {
-            return randomNumber();
-          },
-        }),
-      }),
-    },
-  }),
+    }),
+  },
+});
+
+export const lists: Keystone.Lists = {
+  User,
   PhoneNumber: list({
     ui: {
       isHidden: true,
@@ -132,7 +132,7 @@ export const lists = {
   }),
   Post: list({
     fields: {
-      title: text(),
+      title: text({ access: {} }),
       // TODO: expand this out into a proper example project
       // Enable this line to test custom field views
       // test: text({ ui: { views: require.resolve('./admin/fieldViews/Test.tsx') } }),
@@ -193,7 +193,8 @@ export const lists = {
   }),
 };
 
-export const extendGraphqlSchema = graphQLSchemaExtension({
+// note this usage of the type is important because it tests that the generated types work
+export const extendGraphqlSchema = graphQLSchemaExtension<Keystone.Context>({
   typeDefs: gql`
     type Query {
       randomNumber: RandomNumber
@@ -215,13 +216,8 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
     },
     Mutation: {
       createRandomPosts(root, args, context) {
-        // TODO: add a way to verify access control here, e.g
-        // await context.verifyAccessControl(userIsAdmin);
         const data = Array.from({ length: 238 }).map((x, i) => ({ title: `Post ${i}` }));
-        // note this usage of the type is important because it tests that the generated
-        // KeystoneListsTypeInfo extends Record<string, BaseGeneratedListTypes>
-        const query = context.query as KeystoneListsAPI<KeystoneListsTypeInfo>;
-        return query.Post.createMany({ data });
+        return context.query.Post.createMany({ data });
       },
     },
     Query: {

@@ -17,8 +17,8 @@ When operating on multiple values the hooks are called individually for each ite
 For examples of how to use hooks in your system please see the [hooks guide](../guides/hooks).
 
 ```typescript
-import { config, list } from '@keystone-next/keystone';
-import { text } from '@keystone-next/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { text } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
@@ -67,8 +67,8 @@ The result of `resolveInput` will be passed as `resolvedData` into the next stag
 | `context`      | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                                              |
 
 ```typescript
-import { config, list } from '@keystone-next/keystone';
-import { text } from '@keystone-next/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { text } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
@@ -130,8 +130,8 @@ These error messages will be returned as a `ValidationFailureError` from the Gra
 | `addValidationError(msg)` | Used to set a validation error.                                                                                                                                                                |
 
 ```typescript
-import { config, list } from '@keystone-next/keystone';
-import { text } from '@keystone-next/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { text } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
@@ -187,8 +187,8 @@ These error messages will be returned as a `ValidationFailureError` from the Gra
 | `addValidationError(msg)` | Used to set a validation error.                                                                                                                  |
 
 ```typescript
-import { config, list } from '@keystone-next/keystone';
-import { text } from '@keystone-next/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { text } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
@@ -238,8 +238,8 @@ It is invoked after all `validateInput`/`validateDelete` hooks have been run, bu
 | `context`      | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                                                               |
 
 ```typescript
-import { config, list } from '@keystone-next/keystone';
-import { text } from '@keystone-next/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { text } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
@@ -290,8 +290,8 @@ The `afterOperation` function is used to perform side effects after the data has
 | `context`      | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                                                                           |
 
 ```typescript
-import { config, list } from '@keystone-next/keystone';
-import { text } from '@keystone-next/keystone/fields';
+import { config, list } from '@keystone-6/core';
+import { text } from '@keystone-6/core/fields';
 
 export default config({
   lists: {

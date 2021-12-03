@@ -1,15 +1,15 @@
 {
-  "name": "@keystone-next/example-custom-admin-ui-pages",
-  "version": "2.0.0",
+  "name": "@keystone-6/example-custom-admin-ui-pages",
+  "version": "0.0.1",
   "private": true,
   "license": "MIT",
   "scripts": {
-    "dev": "keystone-next dev",
-    "start": "keystone-next start",
-    "build": "keystone-next build"
+    "dev": "keystone dev",
+    "start": "keystone start",
+    "build": "keystone build"
   },
   "dependencies": {
-    "@keystone-next/keystone": "^29.0.0",
+    "@keystone-6/core": "^1.0.0",
     "@keystone-ui/core": "^4.0.0",
     "react": "^17.0.2"
   },

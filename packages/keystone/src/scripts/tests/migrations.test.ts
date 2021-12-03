@@ -629,7 +629,7 @@ describe('useMigrations: true', () => {
       Prompt: Name of migration add-is-complete
       ✨ A migration has been created at migrations/migration_name
       Prompt: Would you like to apply this migration? false
-      Please edit the migration and run keystone-next dev again to apply the migration"
+      Please edit the migration and run keystone dev again to apply the migration"
     `);
   });
   test('apply already existing migrations', async () => {

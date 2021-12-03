@@ -1,4 +1,4 @@
 {
-  "main": "dist/keystone-next-fields-document-views.cjs.js",
-  "module": "dist/keystone-next-fields-document-views.esm.js"
+  "main": "dist/keystone-6-fields-document-views.cjs.js",
+  "module": "dist/keystone-6-fields-document-views.esm.js"
 }

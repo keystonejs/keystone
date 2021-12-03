@@ -1,9 +1,9 @@
 {
-  "name": "@keystone-next/auth",
-  "version": "37.0.0",
+  "name": "@keystone-6/auth",
+  "version": "1.0.0",
   "license": "MIT",
-  "main": "dist/keystone-next-auth.cjs.js",
-  "module": "dist/keystone-next-auth.esm.js",
+  "main": "dist/keystone-6-auth.cjs.js",
+  "module": "dist/keystone-6-auth.esm.js",
   "engines": {
     "node": "^14.15 || ^16.13"
   },
@@ -19,11 +19,11 @@
     "graphql": "^15.7.2"
   },
   "devDependencies": {
-    "@keystone-next/keystone": "^29.0.0",
+    "@keystone-6/core": "^1.0.0",
     "react": "^17.0.2"
   },
   "peerDependencies": {
-    "@keystone-next/keystone": "^29.0.0",
+    "@keystone-6/core": "^1.0.0",
     "react": "^17.0.2"
   },
   "preconstruct": {

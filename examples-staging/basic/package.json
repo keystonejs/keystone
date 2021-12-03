@@ -1,28 +1,26 @@
 {
-  "name": "@keystone-next/examples-app-basic",
-  "version": "5.0.0",
+  "name": "@keystone-6/examples-app-basic",
+  "version": "0.0.1",
   "private": true,
   "license": "MIT",
   "scripts": {
-    "dev": "keystone-next dev",
-    "start": "keystone-next start",
-    "build": "keystone-next build"
+    "dev": "keystone dev",
+    "start": "keystone start",
+    "build": "keystone build"
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
-    "@keystone-next/auth": "^37.0.0",
-    "@keystone-next/document-renderer": "^5.0.0",
-    "@keystone-next/fields-document": "^14.0.0",
-    "@keystone-next/keystone": "^29.0.0",
+    "@keystone-6/auth": "^1.0.0",
+    "@keystone-6/core": "^1.0.0",
+    "@keystone-6/document-renderer": "^1.0.0",
+    "@keystone-6/fields-document": "^1.0.0",
     "@keystone-ui/core": "^4.0.0",
     "@keystone-ui/fields": "^6.0.0",
     "@keystone-ui/icons": "^5.0.0",
     "@keystone-ui/tooltip": "^5.0.0",
-    "@preconstruct/next": "^3.0.1",
     "@types/react": "^17.0.35",
     "graphql": "^15.7.2",
     "graphql-tag": "^2.12.6",
-    "next": "^12.0.4",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "uuid": "^8.3.2"

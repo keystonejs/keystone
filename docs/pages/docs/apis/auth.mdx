@@ -4,15 +4,15 @@ import { RelatedContent } from '../../../components/RelatedContent';
 
 # Authentication API
 
-Keystone allows you to extend your Keystone system to support authentication against a `password` field using the `createAuth()` function in the `@keystone-next/auth` package.
+Keystone allows you to extend your Keystone system to support authentication against a `password` field using the `createAuth()` function in the `@keystone-6/auth` package.
 Additional options to this function provide support for creating an initial item in your database, sending password reset tokens, and sending one-time authentication tokens.
 
 For examples of how to use authentication in your system please see the [authentication guide](../guides/auth-and-access-control).
 
 ```typescript
-import { config, list } from '@keystone-next/keystone';
-import { text, password, checkbox } from '@keystone-next/keystone/fields';
-import { createAuth } from '@keystone-next/auth';
+import { config, list } from '@keystone-6/core';
+import { text, password, checkbox } from '@keystone-6/core/fields';
+import { createAuth } from '@keystone-6/auth';
 
 const { withAuth } = createAuth({
   // Required options
@@ -66,7 +66,7 @@ The core functionality of the authentication system provides a GraphQL mutation 
 - `secretField`: The name of the field to use as a secret. This field must be a `password()` field type.
 
 ```typescript
-import { createAuth } from '@keystone-next/auth';
+import { createAuth } from '@keystone-6/auth';
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -138,7 +138,7 @@ Configuring `sessionData` will add an `session.data` based on the `itemId`, popu
 The value is a GraphQL query string which indicates which fields should be populated on the `session.data` object
 
 ```typescript
-import { createAuth } from '@keystone-next/auth';
+import { createAuth } from '@keystone-6/auth';
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -161,7 +161,7 @@ Once the user is created, they will be presented with a Keystone Welcome screen,
 - `skipKeystoneWelcome` (default: `false`): A flag to skip display of the Keystone Welcome screen.
 
 ```typescript
-import { createAuth } from '@keystone-next/auth';
+import { createAuth } from '@keystone-6/auth';
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -224,7 +224,7 @@ It is expected that you will use these mutations as part of a password reset wor
 - `tokensValidForMins` (default: `10`, max: `24 * 60` (1 day), min: `0.16` (10 seconds)): The length of time, in minutes, that the token is valid for.
 
 ```typescript
-import { createAuth } from '@keystone-next/auth';
+import { createAuth } from '@keystone-6/auth';
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -347,7 +347,7 @@ It is expected that you will use these mutations as part of a one-time authentic
 - `tokensValidForMins` (default: `10`, max: `24 * 60` (1 day), min: `0.16` (10 seconds)): The length of time, in minutes, that the token is valid for.
 
 ```typescript
-import { createAuth } from '@keystone-next/auth';
+import { createAuth } from '@keystone-6/auth';
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -447,4 +447,4 @@ The authenticated item will be returned as `item`.
   </Well>
 </RelatedContent>
 
-export default ({ children }) => <Markdown description="API reference for supporting authentication against a password field using the createAuth() function in the `@keystone-next/auth` package.">{children}</Markdown>;
+export default ({ children }) => <Markdown description="API reference for supporting authentication against a password field using the createAuth() function in the `@keystone-6/auth` package.">{children}</Markdown>;

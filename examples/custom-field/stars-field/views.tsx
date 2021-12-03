@@ -1,6 +1,6 @@
 import React from 'react';
 import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
-import { CellLink, CellContainer } from '@keystone-next/keystone/admin-ui/components';
+import { CellLink, CellContainer } from '@keystone-6/core/admin-ui/components';
 
 import {
   CardValueComponent,
@@ -8,7 +8,7 @@ import {
   FieldController,
   FieldControllerConfig,
   FieldProps,
-} from '@keystone-next/keystone/types';
+} from '@keystone-6/core/types';
 import { StarsInput } from './stars-input';
 
 // this is the component shown in the create modal and item page
