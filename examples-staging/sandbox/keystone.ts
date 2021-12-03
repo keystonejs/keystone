@@ -7,14 +7,9 @@ import { config } from '@keystone-6/core';
 import { lists } from './schema';
 
 export default config({
-  db: process.env.DATABASE_URL?.startsWith('postgres')
-    ? {
-        provider: 'postgresql',
-        url: process.env.DATABASE_URL,
-      }
-    : {
-        provider: 'sqlite',
-        url: process.env.DATABASE_URL || 'file:./dev.db',
-      },
+  db: {
+    provider: 'sqlite',
+    url: process.env.DATABASE_URL || 'file:./dev.db',
+  },
   lists,
 });

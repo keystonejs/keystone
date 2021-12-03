@@ -29,12 +29,11 @@
     "publish-changed": "yarn build && changeset publish --public",
     "version-packages": "changeset version",
     "build": "preconstruct build",
-    "prepare": "manypkg check && preconstruct dev && yarn run --silent contributing-guide && cd examples-staging/basic && yarn keystone postinstall",
+    "prepare": "manypkg check && preconstruct dev && yarn run --silent contributing-guide && node scripts/generate-artifacts-for-projects",
     "contributing-guide": "is-ci && exit 0 || chalk -t \"{bold 📝 Contributing to KeystoneJS?}\" && terminal-link \"🔗 Read the full Contributing Guide\" \"https://github.com/keystonejs/keystone/blob/main/CONTRIBUTING.md\"",
     "npm-tag": "manypkg npm-tag",
     "update": "manypkg upgrade",
-    "postinstall-examples": "for d in `find examples -type d -maxdepth 1 -mindepth 1`; do echo $d; cd $d; yarn keystone postinstall --fix; cd ../..; done; for d in `find examples-staging -type d -maxdepth 1 -mindepth 1`; do echo $d; cd $d; yarn keystone postinstall --fix; cd ../..; done; for d in `find tests/test-projects -type d -maxdepth 1 -mindepth 1`; do echo $d; cd $d; yarn keystone postinstall --fix; cd ../../..; done",
-    "lint:examples": "for d in `find examples -type d -maxdepth 1 -mindepth 1`; do cd $d; echo $d; SKIP_PROMPTS=1 yarn keystone postinstall; if [ $? -ne 0 ]; then exit 1; fi; cd ../..; done; for d in `find examples-staging -type d -maxdepth 1 -mindepth 1`; do cd $d; echo $d; SKIP_PROMPTS=1 yarn keystone postinstall; if [ $? -ne 0 ]; then exit 1; fi; cd ../..; done; for d in `find tests/test-projects -type d -maxdepth 1 -mindepth 1`; do cd $d; echo $d; SKIP_PROMPTS=1 yarn keystone postinstall; if [ $? -ne 0 ]; then exit 1; fi; cd ../../..; done",
+    "update-project-schemas": "cross-env UPDATE_SCHEMAS=1 node scripts/generate-artifacts-for-projects",
     "generate-filters": "cd prisma-utils && yarn generate",
     "lint:filters": "cd prisma-utils && yarn verify"
   },
@@ -120,14 +119,16 @@
       "tests/benchmarks",
       "tests/examples-smoke-tests",
       "tests/test-projects/*",
-      "prisma-utils"
+      "prisma-utils",
+      "scripts/*"
     ]
   },
   "preconstruct": {
     "packages": [
       "packages/*",
       "design-system/packages/*",
-      "prisma-utils"
+      "prisma-utils",
+      "scripts/*"
     ]
   },
   "manypkg": {

@@ -141,7 +141,7 @@
       "index.ts",
       "system.ts",
       "next.ts",
-      "___internal-do-not-use-will-break-in-patch/{node-api,next-graphql}.ts",
+      "___internal-do-not-use-will-break-in-patch/{node-api,next-graphql,require-source}.ts",
       "___internal-do-not-use-will-break-in-patch/admin-ui/pages/*/index.tsx",
       "___internal-do-not-use-will-break-in-patch/admin-ui/{next-config.ts,id-field-view.tsx}",
       "artifacts.ts",

@@ -46,18 +46,16 @@ export default withAuth(
         credentials: true,
       },
     },
-    db: process.env.DATABASE_URL
-      ? { provider: 'postgresql', url: process.env.DATABASE_URL }
-      : {
-          provider: 'sqlite',
-          url: databaseURL,
-          async onConnect(context) {
-            console.log('Connected to the database!');
-            if (process.argv.includes('--seed-data')) {
-              await insertSeedData(context);
-            }
-          },
-        },
+    db: {
+      provider: 'sqlite',
+      url: databaseURL,
+      async onConnect(context) {
+        console.log('Connected to the database!');
+        if (process.argv.includes('--seed-data')) {
+          await insertSeedData(context);
+        }
+      },
+    },
     lists: {
       // Schema items go in here
       User,
