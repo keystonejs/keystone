@@ -17,8 +17,8 @@ exampleProjectTests('../examples-staging/auth', browserType => {
     expect(res.headers.get('Cache-Control')).toEqual('no-cache, max-age=0');
 
     const resWithAutoRedirect = await fetch('http://localhost:3000');
-    expect(resWithAutoRedirect.status).toBe(200);
-    expect(resWithAutoRedirect.url).toBe('http://localhost:3000/init');
+    expect(resWithAutoRedirect.status).toEqual(200);
+    expect(resWithAutoRedirect.url).toEqual('http://localhost:3000/init');
   });
   initFirstItemTest(() => page);
   afterAll(async () => {
