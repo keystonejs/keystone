@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@apollo/client@3.4.17", "@apollo/client@^3.1.3":
-  version "3.4.17"
-  resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.4.17.tgz#4972e19a49809e16d17c5adc67f45623a6dac135"
-  integrity sha512-MDt2rwMX1GqodiVEKJqmDmAz8xr0qJmq5PdWeIt0yDaT4GOkKYWZiWkyfhfv3raTk8PyJvbsNG9q2CqmUrlGfg==
+"@apollo/client@^3.1.3", "@apollo/client@^3.5.5":
+  version "3.5.5"
+  resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.5.5.tgz#ce331403ee5f099e595430890f9b510c8435c932"
+  integrity sha512-EiQstc8VjeqosS2h21bwY9fhL3MCRRmACtRrRh2KYpp9vkDyx5pUfMnN3swgiBVYw1twdXg9jHmyZa1gZlvlog==
   dependencies:
     "@graphql-typed-document-node/core" "^3.0.0"
     "@wry/context" "^0.6.0"
@@ -18,7 +18,7 @@
     symbol-observable "^4.0.0"
     ts-invariant "^0.9.0"
     tslib "^2.3.0"
-    zen-observable-ts "~1.1.0"
+    zen-observable-ts "^1.2.0"
 
 "@apollo/protobufjs@1.2.2":
   version "1.2.2"
@@ -2879,15 +2879,7 @@
   dependencies:
     "@types/istanbul-lib-report" "*"
 
-"@types/jest@*":
-  version "27.0.2"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-27.0.2.tgz#ac383c4d4aaddd29bbf2b916d8d105c304a5fcd7"
-  integrity sha512-4dRxkS/AFX0c5XW6IPMNOydLn2tEhNhJV7DnYK+0bjoJZ+QTmfucBlihX7aoEsh/ocYtkLC73UbnBXBXIxsULA==
-  dependencies:
-    jest-diff "^27.0.0"
-    pretty-format "^27.0.0"
-
-"@types/jest@^27.0.3":
+"@types/jest@*", "@types/jest@^27.0.3":
   version "27.0.3"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-27.0.3.tgz#0cf9dfe9009e467f70a342f0f94ead19842a783a"
   integrity sha512-cmmwv9t7gBYt7hNKH5Spu7Kuu/DotGa+Ff+JGRKZ4db5eh8PnKS4LuebJ3YLUoyOyIHraTGyULn23YtEAm0VSg==
@@ -3102,16 +3094,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*":
-  version "17.0.34"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.34.tgz#797b66d359b692e3f19991b6b07e4b0c706c0102"
-  integrity sha512-46FEGrMjc2+8XhHXILr+3+/sTe3OfzSPU9YGKILLrUYbQ1CLQC9Daqo1KzENGXAWwrFwiY0l4ZbF20gRvgpWTg==
-  dependencies:
-    "@types/prop-types" "*"
-    "@types/scheduler" "*"
-    csstype "^3.0.2"
-
-"@types/react@^17.0.37":
+"@types/react@*", "@types/react@^17.0.37":
   version "17.0.37"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.37.tgz#6884d0aa402605935c397ae689deed115caad959"
   integrity sha512-2FS1oTqBGcH/s0E+CjrCCR9+JMpsu9b69RTFO+40ua43ZqP5MmQ4iUde/dMjWR909KxZwmOQIFq6AV6NjEG5xg==
@@ -3250,11 +3233,6 @@
   integrity sha512-8uALY5LTvSuHgloDVUvWP3pIauILm+8/0pDMokuDYIoNsOkSwd5AiHBTSEJjKTDcZr5z8UpgOWZkxBF4iJftoA==
   dependencies:
     "@types/node" "*"
-
-"@types/zen-observable@0.8.3":
-  version "0.8.3"
-  resolved "https://registry.yarnpkg.com/@types/zen-observable/-/zen-observable-0.8.3.tgz#781d360c282436494b32fe7d9f7f8e64b3118aa3"
-  integrity sha512-fbF6oTd4sGGy0xjHPKAt+eS2CrxJ3+6gQ3FGcBoIJR2TLAyCkCyI8JqZNy+FeON0AhVgNJoUumVoZQjBFUqHkw==
 
 "@typescript-eslint/eslint-plugin@^5.4.0":
   version "5.4.0"
@@ -13697,12 +13675,11 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-zen-observable-ts@~1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/zen-observable-ts/-/zen-observable-ts-1.1.0.tgz#2d1aa9d79b87058e9b75698b92791c1838551f83"
-  integrity sha512-1h4zlLSqI2cRLPJUHJFL8bCWHhkpuXkF+dbGkRaWjgDIG26DmzyshUMrdV/rL3UnR+mhaX4fRq8LPouq0MYYIA==
+zen-observable-ts@^1.2.0:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/zen-observable-ts/-/zen-observable-ts-1.2.3.tgz#c2f5ccebe812faf0cfcde547e6004f65b1a6d769"
+  integrity sha512-hc/TGiPkAWpByykMwDcem3SdUgA4We+0Qb36bItSuJC9xD0XVBZoFHYoadAomDSNf64CG8Ydj0Qb8Od8BUWz5g==
   dependencies:
-    "@types/zen-observable" "0.8.3"
     zen-observable "0.8.15"
 
 zen-observable@0.8.15:
