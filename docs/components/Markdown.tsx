@@ -1,8 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx  */
+import { ReactComponentElement } from 'react';
 import { MDXProvider } from '@mdx-js/react';
 import { jsx } from '@emotion/react';
-import { ReactElement, ReactNode } from 'react';
 
 import { H1, H2, H3, H4, H5, H6 } from '../components/docs/Heading';
 import { Code, InlineCode } from '../components/primitives/Code';
@@ -23,12 +23,14 @@ export const components = {
 export function Markdown({
   children,
   description,
+  title,
   ...props
 }: {
-  children: ReactNode;
+  children: ReactComponentElement<any>;
   description: string;
+  title?: string;
 }) {
-  const headings = getHeadings((children as ReactElement).props.children);
+  const headings = getHeadings(children.type().props.children);
   const firstHeading = headings[0]?.label;
 
   if (!firstHeading) {

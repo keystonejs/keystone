@@ -22,7 +22,7 @@ You can see the changes both in the toolbar of the editor, and in the field conf
 <DocumentFeaturesFormAndCode />
 
 export default ({ children }) => {
-  const headings = getHeadings(children);
+  const headings = getHeadings(children.type().props.children);
   return (
     <DocsPage
       noProse
