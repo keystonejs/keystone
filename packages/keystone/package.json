@@ -78,7 +78,7 @@
     "apollo-upload-client": "^16.0.0",
     "bcryptjs": "^2.4.3",
     "bytes": "^3.1.1",
-    "chalk": "^4.1.2",
+    "chalk": "^5.0.0",
     "clipboard-copy": "^4.0.1",
     "cookie": "^0.4.1",
     "copy-to-clipboard": "^3.3.1",
