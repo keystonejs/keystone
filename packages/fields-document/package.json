@@ -36,7 +36,7 @@
     "apollo-server-errors": "^3.3.0",
     "apply-ref": "^1.0.0",
     "fp-ts": "^2.11.5",
-    "graphql": "^15.7.2",
+    "graphql": "^15.8.0",
     "io-ts": "^2.2.16",
     "io-ts-excess": "^1.0.1",
     "is-hotkey": "^0.2.0",
