@@ -75,7 +75,7 @@ export function createSystem(config: KeystoneConfig, isLiveReload?: boolean) {
     adminMeta,
     getKeystone: (PrismaClient: any) => {
       const prismaClient = new PrismaClient({
-        log: config.db.enableLogging && ['query'],
+        log: config.db.enableLogging ? ['query'] : undefined,
         datasources: { [config.db.provider]: { url: config.db.url } },
       });
       setWriteLimit(prismaClient, pLimit(config.db.provider === 'sqlite' ? 1 : Infinity));
