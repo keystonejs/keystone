@@ -54,7 +54,11 @@ export type S3AssetsAPI = {
   };
 };
 
-export async function getS3AssetsAPI({ config }: { config: S3Config }): Promise<S3AssetsAPI> {
+export function getS3AssetsAPI(config: S3Config | undefined): S3AssetsAPI {
+  if (!config) {
+    throw new Error('S3 config missing, please check your Keystone.ts file');
+  }
+
   const { bucketName, region } = config;
   const s3 = getS3Client(config);
 
