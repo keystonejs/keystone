@@ -1,0 +1,96 @@
+import { Markdown } from '../../../components/Markdown';
+
+# Lesson 1: Setting up Keystone
+
+> In this lesson we will install the keystone package, create our first list, and get Keystone running
+
+## Installing the packages you need
+
+We will be using `yarn` for this, however you can use `npm` if you would prefer.
+
+The first thing we are going to do is set ourselves up a workspace for our new project. Let's make ourselves a new folder and initialise yarn.
+
+```sh
+mkdir keystone-learning
+cd keystone-learning
+yarn init
+```
+
+After this, let's add the keystone package
+
+`yarn add @keystone-6/keystone`
+
+## Setting up Keystone
+
+There are two bits of keystone's configuration that are required to start our project: the `lists`, and the `db`. The `lists` define
+she shape of the information we want to save in our database, while the `db` defines how we will connect to our database. For now though
+let us set up our `keystone.js` file
+
+`touch keystone.js`
+
+```js
+export default {};
+```
+
+When you run keystone, it will use this file's export to load the config. If we try to run `yarn keystone dev` it will not work.
+
+> If you want to use typescript, you can use keystone.ts instead.
+
+### Setting up a Database
+
+For our first project, we're going to use `sqlite` as we can do this without any further database setup. The config for this is below:
+
+```js
+export default {
+  db: {
+    provider: 'sqlite',
+    url: 'file:./keystone.db',
+  },
+};
+```
+
+This will use a local file as the database.
+
+### Setting up a user list
+
+After this, we are going to add a list, with two simple fields.
+
+We are going to name the list `User`, and then let's add `name` and `email` fields to it:
+
+```js{9-16}[5-8]
+import { list } from '@keystone-6/keystone';
+import { text } from '@keystone-6/keystone/fields';
+
+export default {
+  db: {
+    provider: 'sqlite',
+    url: 'file:./keystone.db',
+  },
+  lists: {
+    User: list({
+      fields: {
+        name: text({ isRequired: true }),
+        email: text({ isRequired: true }),
+      },
+    }),
+  },
+};
+```
+
+The key of the `lists` object are used as the name of the list. The key of the `fields` object are used as the name for the fields.
+
+## Starting your new app
+
+`yarn keystone dev`
+
+Wait till command line shows
+
+```
+go to [http://localhost:3000](http://localhost:3000)
+```
+
+Hurray! You now have a running keystone app with one list.
+
+Next lesson, we will add a new list so we can represent posts from users.
+
+export default ({ children }) => <Markdown description="Learn how to get your first Keystone project up and running using the `create-keystone-app` Command Line Interface.">{children}</Markdown>

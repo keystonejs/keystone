@@ -1,0 +1,246 @@
+import { Markdown } from '../../../components/Markdown';
+
+# Lesson 2: Adding the post list
+
+> In this lesson we will add a second list, and talk about Keystone's relationships
+
+## Where we left off
+
+After the last lesson, we had installed keystone, and set up a new project with a basic keystone
+list and database configuration.
+
+```js
+// keystone.js
+import { list } from '@keystone-next/keystone';
+import { text } from '@keystone-next/keystone/fields';
+
+export default {
+  db: {
+    provider: 'sqlite',
+    url: 'file:./keystone.db',
+  },
+  lists: {
+    User: list({
+      fields: {
+        name: text({ isRequired: true }),
+        email: text({ isRequired: true }),
+      },
+    }),
+  },
+};
+```
+
+## In this lesson
+
+In this lesson, we are going to help users make `posts`. For posts, users need to be
+able to have posts, which have a title, publishing info, and the 'content'.
+
+## Adding a second list
+
+First, let's pull lists out into its own object:
+
+```js{4-11,18}
+import { list } from '@keystone-next/keystone';
+import { text } from '@keystone-next/keystone/fields';
+
+const lists = {
+  User: list({
+    fields: {
+      name: text({ isRequired: true }),
+      email: text({ isRequired: true }),
+    },
+  }),
+};
+
+export default {
+  db: {
+    provider: 'sqlite',
+    url: 'file:./keystone.db',
+  },
+  lists,
+};
+```
+
+You may find it handy at this point to move lists into its own file, and import it, but for this lesson, it should be fine to leave here.
+
+The next thing we want to do is add a second list. To do this, we need to add a second key to our lists object, which we are going to title `Post`, and then provide it at least one field. We are going to start by adding the `title` field, and a `content` field both as `text`.
+
+```js{10-15}[4-9]
+import { text } from '@keystone-next/keystone/fields';
+
+const lists = {
+  User: list({
+    fields: {
+      name: text({ isRequired: true }),
+      email: text({ isRequired: true }),
+    },
+  }),
+  Post: list({
+    fields: {
+      title: text(),
+      content: text(),
+    },
+  }),
+};
+```
+
+Let's check that this works. Boot up our keystone app and have a look.
+
+## Connecting users with posts
+
+The important thing we need to model next with our list is a relationship between a user and posts. For deciding on how they relate we should ask:
+
+"Does a user have many posts?"
+"Does a post have many authors?"
+
+For this case, we are saying a post only has one author, but a user has many posts.
+
+To define this relationship, we will add a field to each list that defines how they relate to each other.
+
+```js{8,15}[6-7,13-14]
+import { relationship } from '@keystone-next/keystone/fields';
+
+const lists = {
+  User: list({
+    fields: {
+      name: text({ isRequired: true }),
+      email: text({ isRequired: true }),
+      posts: relationship({ ref: 'Post.author', many: true }),
+    },
+  }),
+  Post: list({
+    fields: {
+      title: text(),
+      content: text(),
+      author: relationship({ ref: 'User.posts' }),
+    },
+  }),
+};
+```
+
+The relationship references the name for the `field` of the list it is relating to to make it a two-way connection, so the
+`author` field relates to `User.posts`, while the `posts` field relates to `User.author`. Naming these relationships can be
+important if lists have multiple relationships. If, for example, we wanted to let users also 'like' posts, we could add a
+second differently named relationship between `User` and `Post`
+
+## Looking at the admin UI
+
+Quickly, let's open the Admin UI and create a post.
+
+This experience is a bit rough. The `text()` field for the post's content is a very bad editing experience. Additionally, while the authors's
+name is shown in the post, we want to make editing the author from a post easier.
+Thankfully, keystone allows you to define how the admin UI presents this information.
+
+## Improving the Admin UI Experience
+
+The main way to tweak the admin UI for this is in the `ui` options for a `field`. All field types have a `ui` option that you can explore, but
+for this we want to focus on a few simple improvements.
+
+### Using a text area for the content
+
+In a field, there are `ui` options that can be provided. Here, we can change the `displayMode` for text to be `textarea`.
+
+```js{14}[4-10]
+import { relationship } from '@keystone-next/keystone/fields';
+
+const lists = {
+  User: list({
+    fields: {
+      name: text({ isRequired: true }),
+      email: text({ isRequired: true }),
+      posts: relationship({ ref: 'Post.author', many: true }),
+    },
+  }),
+  Post: list({
+    fields: {
+      title: text(),
+      content: text({ ui: { displayMode: 'textarea'}}),
+      author: relationship({ ref: 'User.posts' }),
+    },
+  }),
+};
+```
+
+### Improving the display of the User relationship in Posts
+
+The next thing to do is improve the inline experience for authors in posts.
+
+```js{17-23}[4-10]
+import { relationship } from '@keystone-next/keystone/fields';
+
+const lists = {
+  User: list({
+    fields: {
+      name: text({ isRequired: true }),
+      email: text({ isRequired: true }),
+      posts: relationship({ ref: 'Post.author', many: true }),
+    },
+  }),
+  Post: list({
+    fields: {
+      title: text(),
+      content: text({ ui: { displayMode: 'textarea'}}),
+      author: relationship({
+        ref: 'User.posts',
+        ui: {
+          displayMode: 'cards',
+          cardFields: ['name', 'email'],
+          inlineEdit: { fields: ['name', 'email'] },
+          linkToItem: true,
+          inlineCreate: { fields: ['name', 'email'] },
+        },
+      }),
+    },
+  }),
+};
+```
+
+We've made a few changes here, so let's break them down. The first is the relationship is shown as a `card` isntead of just a name,
+and we've made sure that the card links to the user item.
+
+The second is we have made the user attributes of name and email editable inline.
+
+## What We Have Now
+
+At the end of this lesson, our app has a new `post` list, which has info for its title and content, as well as a link to the author, and a time stamp for when it will be published. It config file looks like:
+
+```js
+import { list } from '@keystone-next/keystone';
+import { text, timestamp, relationship } from '@keystone-next/keystone/fields';
+
+const lists = {
+  User: list({
+    fields: {
+      name: text({ isRequired: true }),
+      email: text({ isRequired: true }),
+      posts: relationship({ ref: 'Post.author', many: true }),
+    },
+  }),
+  Post: list({
+    fields: {
+      title: text(),
+      content: text({ ui: { displayMode: 'textarea'}}),
+      author: relationship({
+        ref: 'User.posts',
+        ui: {
+          displayMode: 'cards',
+          cardFields: ['name', 'email'],
+          inlineEdit: { fields: ['name', 'email'] },
+          linkToItem: true,
+          inlineCreate: { fields: ['name', 'email'] },
+        },
+      }),
+    },
+  }),
+};
+
+export default {
+  db: {
+    provider: 'sqlite',
+    url: 'file:./keystone.db',
+  },
+  lists,
+};
+```
+
+export default ({ children }) => <Markdown description="Learn how to get your first Keystone project up and running using the `create-keystone-app` Command Line Interface.">{children}</Markdown>
