@@ -6,6 +6,7 @@ import imageSize from 'image-size';
 import { KeystoneConfig, ImageMetadata, ImagesContext } from '../../types';
 import { parseImageRef } from '../../fields/types/image/utils';
 import { CloudAssetsAPI } from '../cloud/assets';
+import { getS3AssetsAPI } from '../s3/assets';
 
 const DEFAULT_BASE_URL = '/images';
 export const DEFAULT_IMAGES_STORAGE_PATH = './public/images';
@@ -39,6 +40,7 @@ export function createImagesContext(
   }
 
   const { images } = config;
+  const { s3 } = config.experimental || {};
   const { baseUrl = DEFAULT_BASE_URL, storagePath = DEFAULT_IMAGES_STORAGE_PATH } =
     images.local || {};
 
@@ -48,11 +50,21 @@ export function createImagesContext(
 
   return {
     getUrl: async (mode, id, extension) => {
-      if (mode === 'cloud') {
-        return cloudAssets().images.url(id, extension);
+      switch (mode) {
+        case 'cloud': {
+          return cloudAssets().images.url(id, extension);
+          break;
+        }
+        case 's3': {
+          return getS3AssetsAPI(s3).images.url(id, extension);
+          break;
+        }
+        default: {
+          const filename = `${id}.${extension}`;
+          return `${baseUrl}/${filename}`;
+          break;
+        }
       }
-      const filename = `${id}.${extension}`;
-      return `${baseUrl}/${filename}`;
     },
     getDataFromRef: async ref => {
       const imageRef = parseImageRef(ref);
@@ -63,40 +75,60 @@ export function createImagesContext(
 
       const { mode } = imageRef;
 
-      if (mode === 'cloud') {
-        const metadata = await cloudAssets().images.metadata(imageRef.id, imageRef.extension);
-        return { ...imageRef, ...metadata };
+      switch (mode) {
+        case 'cloud': {
+          const metadata = await cloudAssets().images.metadata(imageRef.id, imageRef.extension);
+          return { ...imageRef, ...metadata };
+          break;
+        }
+        case 's3': {
+          const metadata = await getS3AssetsAPI(s3).images.metadata(
+            imageRef.id,
+            imageRef.extension
+          );
+          return { ...imageRef, ...metadata };
+          break;
+        }
+        default: {
+          const buffer = await fs.readFile(
+            path.join(storagePath, `${imageRef.id}.${imageRef.extension}`)
+          );
+          const metadata = await getImageMetadataFromBuffer(buffer);
+
+          return { ...imageRef, ...metadata };
+          break;
+        }
       }
-
-      const buffer = await fs.readFile(
-        path.join(storagePath, `${imageRef.id}.${imageRef.extension}`)
-      );
-      const metadata = await getImageMetadataFromBuffer(buffer);
-
-      return { ...imageRef, ...metadata };
     },
     getDataFromStream: async stream => {
       const { upload: mode } = images;
       const id = uuid();
 
-      if (mode === 'cloud') {
-        const cloudMetadata = await cloudAssets().images.upload(stream, id);
+      switch (mode) {
+        case 'cloud': {
+          const metadata = await cloudAssets().images.upload(stream, id);
+          return { mode, id, ...metadata };
+          break;
+        }
+        case 's3': {
+          const metadata = await getS3AssetsAPI(s3).images.upload(stream, id);
+          return { mode, id, ...metadata };
+          break;
+        }
+        default: {
+          const chunks = [];
 
-        return { mode, id, ...cloudMetadata };
+          for await (let chunk of stream) {
+            chunks.push(chunk);
+          }
+
+          const buffer = Buffer.concat(chunks);
+          const metadata = await getImageMetadataFromBuffer(buffer);
+
+          await fs.writeFile(path.join(storagePath, `${id}.${metadata.extension}`), buffer);
+          return { mode, id, ...metadata };
+        }
       }
-
-      const chunks = [];
-
-      for await (let chunk of stream) {
-        chunks.push(chunk);
-      }
-
-      const buffer = Buffer.concat(chunks);
-      const metadata = await getImageMetadataFromBuffer(buffer);
-
-      await fs.writeFile(path.join(storagePath, `${id}.${metadata.extension}`), buffer);
-
-      return { mode, id, ...metadata };
     },
   };
 }
