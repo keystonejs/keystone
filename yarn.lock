@@ -1850,18 +1850,17 @@
     read-yaml-file "^1.1.0"
 
 "@mdx-js/loader@next":
-  version "2.0.0-rc.1"
-  resolved "https://registry.yarnpkg.com/@mdx-js/loader/-/loader-2.0.0-rc.1.tgz#56588fc0ab8ab85cea24a2589f6ea34c1e89d1c5"
-  integrity sha512-qAwpcpa7lxovWONlBRYMmCWJti7PstIQQ7gAhXvHGDsIp8I/tJiCLNIE9/KTXCsN8TJoMoOoSxzxYToKtvYAUw==
+  version "2.0.0-rc.2"
+  resolved "https://registry.yarnpkg.com/@mdx-js/loader/-/loader-2.0.0-rc.2.tgz#f9da795f51acfb19f41e7e1286de962e01cc8495"
+  integrity sha512-cdOV/RZI0/5OnLwBjChvF2UewSuR8L39pZ+/5s/GAigIlzoef169S87Cn2osUabj6wkdWe+sb+4pfcD0x0o5Ig==
   dependencies:
-    "@mdx-js/mdx" "^2.0.0-rc.1"
-    loader-utils "^2.0.0"
+    "@mdx-js/mdx" "^2.0.0-rc.2"
     source-map "^0.7.0"
 
-"@mdx-js/mdx@^2.0.0-rc.1":
-  version "2.0.0-rc.1"
-  resolved "https://registry.yarnpkg.com/@mdx-js/mdx/-/mdx-2.0.0-rc.1.tgz#ae0e8ce3499dac5cffff1d4cef57dc9cefba67e5"
-  integrity sha512-RMq9uNEDD0XfLcshTeiFX+jkbOyqZucodVDM6xg/mZtLiVeJyz+7K5URpRViWUG97F553mEdyLk/9v9cr4+0DA==
+"@mdx-js/mdx@^2.0.0-rc.2":
+  version "2.0.0-rc.2"
+  resolved "https://registry.yarnpkg.com/@mdx-js/mdx/-/mdx-2.0.0-rc.2.tgz#46f343030539717adffd5f7bcb4f97325b31de7b"
+  integrity sha512-hf/kfsQSl/fhFP6s4TRWic7LYDzwsLieD37n90w8CP3U6dsbVhuk+n/OwLSS1pfdb5NJulTV4LQBv4e4h7Y1iw==
   dependencies:
     "@types/estree-jsx" "^0.0.1"
     "@types/mdx" "^2.0.0"
@@ -1872,7 +1871,7 @@
     hast-util-to-estree "^2.0.0"
     markdown-extensions "^1.0.0"
     periscopic "^3.0.0"
-    remark-mdx "^2.0.0-rc.1"
+    remark-mdx "^2.0.0-rc.2"
     remark-parse "^10.0.0"
     remark-rehype "^10.0.0"
     unified "^10.0.0"
@@ -5556,11 +5555,6 @@ emojis-list@^2.0.0:
   resolved "https://registry.yarnpkg.com/emojis-list/-/emojis-list-2.1.0.tgz#4daa4d9db00f9819880c79fa457ae5b09a1fd389"
   integrity sha1-TapNnbAPmBmIDHn6RXrlsJof04k=
 
-emojis-list@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/emojis-list/-/emojis-list-3.0.0.tgz#5570662046ad29e2e916e71aae260abdff4f6a78"
-  integrity sha512-/kyM18EfinwXZbno9FyUGeFh87KC8HRQBQGildHZbEuRyWFOmv1U10o9BBp8XVZDVNNuQKyIGIu5ZYAAXJ0V2Q==
-
 encodeurl@~1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/encodeurl/-/encodeurl-1.0.2.tgz#ad3ff4c86ec2d029322f5a02c3a9a606c95b3f59"
@@ -8463,15 +8457,6 @@ loader-utils@1.2.3:
     emojis-list "^2.0.0"
     json5 "^1.0.1"
 
-loader-utils@^2.0.0:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-2.0.2.tgz#d6e3b4fb81870721ae4e0868ab11dd638368c129"
-  integrity sha512-TM57VeHptv569d/GKh6TAYdzKblwDNiumOdkFnejjD0XwTH87K90w3O7AiJRqdQoXygvi1VQTJTLGhJl7WqA7A==
-  dependencies:
-    big.js "^5.2.2"
-    emojis-list "^3.0.0"
-    json5 "^2.1.2"
-
 locate-path@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/locate-path/-/locate-path-2.0.0.tgz#2b568b265eec944c6d9c0de9c3dbbbca0354cd8e"
@@ -11124,10 +11109,10 @@ remark-hint@^1.0.10:
   dependencies:
     unist-builder "^2.0.3"
 
-remark-mdx@^2.0.0-rc.1:
-  version "2.0.0-rc.1"
-  resolved "https://registry.yarnpkg.com/remark-mdx/-/remark-mdx-2.0.0-rc.1.tgz#613c9757fba3b82a409f4f93870a5a9f1ca0eb5d"
-  integrity sha512-y3cj3wDwpXTE1boMco/nsquHj2noK0mtnXwBC8FJ/CtU06y66jOBWX1kLknluBl06pYbxtx1ypAOHKvjgT4vsA==
+remark-mdx@^2.0.0-rc.2:
+  version "2.0.0-rc.2"
+  resolved "https://registry.yarnpkg.com/remark-mdx/-/remark-mdx-2.0.0-rc.2.tgz#07676a08f34cd292505414e5440927e1b7d26289"
+  integrity sha512-TMgFSEVx42/YzJWjDY+GKw7CGSbp3XKqBraXPxFS27r8iD9U6zuOZKXH4MoLl9JqiTOmQi0M1zJwT2YhPs32ug==
   dependencies:
     mdast-util-mdx "^1.0.0"
     micromark-extension-mdxjs "^1.0.0"
