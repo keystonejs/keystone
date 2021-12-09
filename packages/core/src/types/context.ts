@@ -160,7 +160,7 @@ export type SessionContext<T> = {
   endSession(): Promise<void>;
 };
 
-export type AssetMode = 'local' | 'cloud';
+export type AssetMode = 'local' | 'cloud' | 's3';
 
 // Files API
 

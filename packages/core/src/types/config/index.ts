@@ -43,6 +43,7 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
      * This is not a stable API and may contain breaking changes in `patch` level releases.
      */
     contextInitialisedLists?: boolean;
+    s3?: S3Config;
   };
 };
 
@@ -217,6 +218,14 @@ export type ImagesConfig = {
 
 export type CloudConfig = {
   apiKey?: string;
+};
+
+// config.experimental.s3
+export type S3Config = {
+  bucketName: string;
+  region: string;
+  accessKeyId: string;
+  secretAccessKey: string;
 };
 
 // Exports from sibling packages
