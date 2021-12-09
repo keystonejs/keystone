@@ -75,7 +75,7 @@ context = {
 
 ### GraphQL helpers
 
-`graphql.schema`: The [GraphQL Schema](https://graphql.org/graphql-js/type/#graphqlschema) object, which can be used directly, or via `graphql.raw`, `graphql.run`, or the `lists` API.
+`graphql.schema`: The [GraphQL Schema](https://graphql.org/graphql-js/type/#graphqlschema) object, which can be used directly, or via `graphql.raw` and `graphql.run`.
 
 `graphql.raw`: An async function which takes `({ query, variables })` and executes the query against the GraphQL schema, returning `{ data, errors }`.
 `query` can be either a string or a GraphQL [`Document`](https://graphql.org/graphql-js/language/#parse).
