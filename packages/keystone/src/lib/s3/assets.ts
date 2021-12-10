@@ -54,7 +54,7 @@ export type S3AssetsAPI = {
   };
 };
 
-export function getS3AssetsAPI(config: S3Config | undefined): S3AssetsAPI {
+export function s3Assets(config: S3Config | undefined): S3AssetsAPI {
   if (!config) {
     throw new Error('S3 config missing, please check your Keystone.ts file');
   }
