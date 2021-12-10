@@ -7,13 +7,7 @@ import memoizeOne from 'memoize-one';
 import { getGenerator } from '@prisma/sdk';
 import { ApolloServer } from 'apollo-server-express';
 import type { KeystoneConfig, KeystoneContext } from './types';
-import {
-  getCommittedArtifacts,
-  writeCommittedArtifacts,
-  requirePrismaClient,
-  generateNodeModulesArtifacts,
-  getSchemaPaths,
-} from './artifacts';
+import { requirePrismaClient, getSchemaPaths } from './artifacts';
 import { pushPrismaSchemaToDatabase } from './migrations';
 import { initConfig, createSystem, createExpressServer } from './system';
 import { printPrismaSchema } from './lib/core/prisma-schema';
