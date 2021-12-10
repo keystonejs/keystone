@@ -1,18 +1,23 @@
 import path from 'path';
 import crypto from 'crypto';
-import fs from 'fs';
+import fs from 'fs-extra';
 import express from 'express';
 import supertest, { Test } from 'supertest';
 import memoizeOne from 'memoize-one';
+import { getGenerator } from '@prisma/sdk';
+import { ApolloServer } from 'apollo-server-express';
 import type { KeystoneConfig, KeystoneContext } from './types';
 import {
   getCommittedArtifacts,
   writeCommittedArtifacts,
   requirePrismaClient,
   generateNodeModulesArtifacts,
+  getSchemaPaths,
 } from './artifacts';
 import { pushPrismaSchemaToDatabase } from './migrations';
 import { initConfig, createSystem, createExpressServer } from './system';
+import { printPrismaSchema } from './lib/core/prisma-schema';
+import { initialiseLists } from './lib/core/types-for-lists';
 
 export type GraphQLRequest = (arg: {
   query: string;
@@ -44,32 +49,60 @@ export async function setupTestEnv({
   // Force the UI to always be disabled.
   const config = initConfig({ ..._config, ui: { ..._config.ui, isDisabled: true } });
   const { graphQLSchema, getKeystone } = createSystem(config);
-
-  const artifacts = await getCommittedArtifacts(graphQLSchema, config);
-  const hash = _hashPrismaSchema(artifacts.prisma);
+  const prismaSchema = printPrismaSchema(
+    initialiseLists(config),
+    config.db.provider,
+    config.db.prismaPreviewFeatures
+  );
+  const hash = _hashPrismaSchema(prismaSchema);
 
   const artifactPath = path.resolve('.keystone', 'tests', hash);
 
   if (!_alreadyGeneratedProjects.has(hash)) {
     _alreadyGeneratedProjects.add(hash);
     fs.mkdirSync(artifactPath, { recursive: true });
-    await writeCommittedArtifacts(artifacts, artifactPath);
-    await generateNodeModulesArtifacts(graphQLSchema, config, artifactPath);
+    const schemaPath = getSchemaPaths(artifactPath).prisma;
+    await fs.writeFile(schemaPath, prismaSchema);
+    const generator = await getGenerator({ schemaPath });
+    await generator.generate();
+    generator.stop();
   }
   await pushPrismaSchemaToDatabase(
     config.db.url,
-    artifacts.prisma,
+    prismaSchema,
     path.join(artifactPath, 'schema.prisma'),
     true // shouldDropDatabase
   );
 
   const { connect, disconnect, createContext } = getKeystone(requirePrismaClient(artifactPath));
+  type Servers = {
+    apolloServer: ApolloServer;
+    expressServer: express.Express;
+    // to make TS not complain when checking .then to see if we have a promise or not
+    then?: undefined;
+  };
+  let servers: Servers | Promise<Servers> | undefined;
 
-  const { expressServer: app, apolloServer } = await createExpressServer(
-    config,
-    graphQLSchema,
-    createContext
-  );
+  const app = express();
+
+  app.use((req, res) => {
+    if (servers === undefined) {
+      // we don't just want to await it here
+      servers = createExpressServer(config, graphQLSchema, createContext).then(x => {
+        servers = x;
+        return x;
+      });
+    }
+
+    if (typeof servers.then === 'function') {
+      servers.then(({ expressServer }) => {
+        expressServer(req, res);
+      });
+    }
+    if (servers.then === undefined) {
+      servers.expressServer(req, res);
+    }
+  });
 
   const graphQLRequest: GraphQLRequest = ({ query, variables = undefined, operationName }) =>
     supertest(app)
@@ -80,7 +113,7 @@ export async function setupTestEnv({
   return {
     connect,
     disconnect: async () => {
-      await Promise.all([disconnect(), apolloServer.stop()]);
+      await Promise.all([disconnect(), (await servers)?.apolloServer.stop()]);
     },
     testArgs: { context: createContext(), graphQLRequest, app },
   };
