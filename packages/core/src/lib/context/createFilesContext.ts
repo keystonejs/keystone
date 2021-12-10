@@ -8,6 +8,7 @@ import slugify from '@sindresorhus/slugify';
 import { KeystoneConfig, FilesContext } from '../../types';
 import { parseFileRef } from '../../fields/types/file/utils';
 import { CloudAssetsAPI } from '../cloud/assets';
+import { getS3AssetsAPI } from '../s3/assets';
 
 const DEFAULT_BASE_URL = '/files';
 export const DEFAULT_FILES_STORAGE_PATH = './public/files';
@@ -51,6 +52,7 @@ export function createFilesContext(
   }
 
   const { files } = config;
+  const { s3 } = config.experimental || {};
   const { baseUrl = DEFAULT_BASE_URL, storagePath = DEFAULT_FILES_STORAGE_PATH } =
     files.local || {};
 
@@ -60,11 +62,20 @@ export function createFilesContext(
 
   return {
     getUrl: async (mode, filename) => {
-      if (mode === 'cloud') {
-        return cloudAssets().files.url(filename);
+      switch (mode) {
+        case 'cloud': {
+          return cloudAssets().files.url(filename);
+          break;
+        }
+        case 's3': {
+          return getS3AssetsAPI(s3).files.url(filename);
+          break;
+        }
+        default: {
+          return `${baseUrl}/${filename}`;
+          break;
+        }
       }
-
-      return `${baseUrl}/${filename}`;
     },
     getDataFromRef: async (ref: string) => {
       const fileRef = parseFileRef(ref);
@@ -75,44 +86,61 @@ export function createFilesContext(
 
       const { mode, filename } = fileRef;
 
-      if (mode === 'cloud') {
-        const { filesize } = await cloudAssets().files.metadata(filename);
+      switch (mode) {
+        case 'cloud': {
+          const { filesize } = await cloudAssets().files.metadata(filename);
+          return { filesize, ...fileRef };
+          break;
+        }
+        case 's3': {
+          const { filesize } = await getS3AssetsAPI(s3).files.metadata(filename);
+          return { filesize, ...fileRef };
+          break;
+        }
+        default: {
+          const { size: filesize } = await fs.stat(path.join(storagePath, fileRef.filename));
 
-        return { filesize, ...fileRef };
+          return { filesize, ...fileRef };
+          break;
+        }
       }
-
-      const { size: filesize } = await fs.stat(path.join(storagePath, fileRef.filename));
-
-      return { filesize, ...fileRef };
     },
     getDataFromStream: async (stream, originalFilename) => {
       const { upload: mode } = files;
       const filename = generateSafeFilename(originalFilename, files.transformFilename);
 
-      if (mode === 'cloud') {
-        const { filesize } = await cloudAssets().files.upload(stream, filename);
+      switch (mode) {
+        case 'cloud': {
+          const { filesize } = await cloudAssets().files.upload(stream, filename);
+          return { mode, filesize, filename };
+          break;
+        }
+        case 's3': {
+          const { filesize } = await getS3AssetsAPI(s3).files.upload(stream, filename);
+          return { mode, filesize, filename };
+          break;
+        }
+        default: {
+          const writeStream = fs.createWriteStream(path.join(storagePath, filename));
+          const pipeStreams: Promise<void> = new Promise((resolve, reject) => {
+            pipeline(stream, writeStream, err => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve();
+              }
+            });
+          });
 
-        return { mode, filesize, filename };
-      }
-
-      const writeStream = fs.createWriteStream(path.join(storagePath, filename));
-      const pipeStreams: Promise<void> = new Promise((resolve, reject) => {
-        pipeline(stream, writeStream, err => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve();
+          try {
+            await pipeStreams;
+            const { size: filesize } = await fs.stat(path.join(storagePath, filename));
+            return { mode, filesize, filename };
+          } catch (e) {
+            await fs.remove(path.join(storagePath, filename));
+            throw e;
           }
-        });
-      });
-
-      try {
-        await pipeStreams;
-        const { size: filesize } = await fs.stat(path.join(storagePath, filename));
-        return { mode, filesize, filename };
-      } catch (e) {
-        await fs.remove(path.join(storagePath, filename));
-        throw e;
+        }
       }
     },
   };
