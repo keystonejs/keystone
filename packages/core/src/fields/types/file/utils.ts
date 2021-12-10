@@ -1,6 +1,6 @@
 import { AssetMode } from '../../../types';
 
-const FILEREGEX = /^(local|cloud):file:([^\\\/:\n]+)/;
+const FILEREGEX = /^(local|cloud|s3):file:([^\\\/:\n]+)/;
 
 export const getFileRef = (mode: AssetMode, name: string) => `${mode}:file:${name}`;
 export const parseFileRef = (ref: string) => {

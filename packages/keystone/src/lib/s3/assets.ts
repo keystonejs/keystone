@@ -1,6 +1,6 @@
 import { Readable } from 'stream';
 import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
-import { fileTypeFromStream } from 'file-type';
+import { fromBuffer as fileTypeFromBuffer } from 'file-type';
 import sizeOf from 'image-size';
 import { FileData, ImageExtension, ImageMetadata } from '../../types/context';
 import { S3Config } from '../../types';
@@ -85,7 +85,7 @@ export function s3Assets(config: S3Config | undefined): S3AssetsAPI {
       },
       async upload(stream, id) {
         const buffer = await streamToBuffer(stream);
-        const fileType = await fileTypeFromStream(stream);
+        const fileType = await fileTypeFromBuffer(buffer);
         const { width, height } = sizeOf(buffer);
         const filesize = buffer.length;
 
@@ -107,7 +107,7 @@ export function s3Assets(config: S3Config | undefined): S3AssetsAPI {
         const uploadParams = {
           Bucket: bucketName,
           Key: `${id}.${fileType.ext}`,
-          Body: stream,
+          Body: buffer,
           Metadata: metadata,
         };
 
@@ -156,7 +156,7 @@ export function s3Assets(config: S3Config | undefined): S3AssetsAPI {
         const uploadParams = {
           Bucket: bucketName,
           Key: filename,
-          Body: stream,
+          Body: buffer,
           Metadata: metadata,
         };
 
