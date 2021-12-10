@@ -4,7 +4,12 @@ import { lists } from './schema';
 
 dotenv.config();
 
-const { KEYSTONE_CLOUD_API_KEY = '' } = process.env;
+const {
+  S3_BUCKET_NAME: bucketName = '',
+  S3_REGION: region = 'ap-southeast-2',
+  S3_ACCESS_KEY_ID: accessKeyId = '',
+  S3_SECRET_ACCESS_KEY: secretAccessKey = '',
+} = process.env;
 
 export default config({
   db: {
@@ -13,18 +18,17 @@ export default config({
   },
   lists,
   images: {
-    upload: 'cloud',
-    local: {
-      storagePath: 'uploads/images', // defaults to 'public/images'
-      baseUrl: 'http://localhost:3000/images', // defaults to `/images`
-    },
+    upload: 's3',
   },
   files: {
-    upload: 'cloud',
+    upload: 's3',
   },
   experimental: {
-    cloud: {
-      apiKey: KEYSTONE_CLOUD_API_KEY,
+    s3: {
+      bucketName,
+      region,
+      accessKeyId,
+      secretAccessKey,
     },
   },
 });

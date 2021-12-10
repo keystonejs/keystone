@@ -115,7 +115,7 @@ export const file =
             filesize === null ||
             filename === null ||
             mode === null ||
-            (mode !== 'local' && mode !== 'cloud')
+            (mode !== 'local' && mode !== 'cloud' && mode !== 's3')
           ) {
             return null;
           }

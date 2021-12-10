@@ -89,6 +89,7 @@ async function inputResolver(data: ImageFieldInputType, context: KeystoneContext
   if (!data.upload) {
     throw userInputError('Either ref or upload must be passed to ImageFieldInput');
   }
+
   return context.images!.getDataFromStream((await data.upload).createReadStream());
 }
 
@@ -134,7 +135,7 @@ export const image =
             width === null ||
             id === null ||
             mode === null ||
-            (mode !== 'local' && mode !== 'cloud')
+            (mode !== 'local' && mode !== 'cloud' && mode !== 's3')
           ) {
             return null;
           }
