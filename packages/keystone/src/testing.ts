@@ -87,7 +87,8 @@ export async function setupTestEnv({
 
   app.use((req, res) => {
     if (servers === undefined) {
-      // we don't just want to await it here
+      // we don't just want to await it here because multiple requests could come in while the express server is initialising
+      // so we store the promise
       servers = createExpressServer(config, graphQLSchema, createContext).then(x => {
         servers = x;
         return x;
