@@ -6,7 +6,7 @@ import imageSize from 'image-size';
 import { KeystoneConfig, ImageMetadata, ImagesContext } from '../../types';
 import { parseImageRef } from '../../fields/types/image/utils';
 import { CloudAssetsAPI } from '../cloud/assets';
-import { getS3AssetsAPI } from '../s3/assets';
+import { s3Assets } from '../s3/assets';
 
 const DEFAULT_BASE_URL = '/images';
 export const DEFAULT_IMAGES_STORAGE_PATH = './public/images';
@@ -56,7 +56,7 @@ export function createImagesContext(
           break;
         }
         case 's3': {
-          return getS3AssetsAPI(s3).images.url(id, extension);
+          return s3Assets(s3).images.url(id, extension);
           break;
         }
         default: {
@@ -82,10 +82,7 @@ export function createImagesContext(
           break;
         }
         case 's3': {
-          const metadata = await getS3AssetsAPI(s3).images.metadata(
-            imageRef.id,
-            imageRef.extension
-          );
+          const metadata = await s3Assets(s3).images.metadata(imageRef.id, imageRef.extension);
           return { ...imageRef, ...metadata };
           break;
         }
@@ -111,7 +108,7 @@ export function createImagesContext(
           break;
         }
         case 's3': {
-          const metadata = await getS3AssetsAPI(s3).images.upload(stream, id);
+          const metadata = await s3Assets(s3).images.upload(stream, id);
           return { mode, id, ...metadata };
           break;
         }

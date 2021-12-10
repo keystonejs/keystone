@@ -8,7 +8,7 @@ import slugify from '@sindresorhus/slugify';
 import { KeystoneConfig, FilesContext } from '../../types';
 import { parseFileRef } from '../../fields/types/file/utils';
 import { CloudAssetsAPI } from '../cloud/assets';
-import { getS3AssetsAPI } from '../s3/assets';
+import { s3Assets } from '../s3/assets';
 
 const DEFAULT_BASE_URL = '/files';
 export const DEFAULT_FILES_STORAGE_PATH = './public/files';
@@ -68,7 +68,7 @@ export function createFilesContext(
           break;
         }
         case 's3': {
-          return getS3AssetsAPI(s3).files.url(filename);
+          return s3Assets(s3).files.url(filename);
           break;
         }
         default: {
@@ -93,7 +93,7 @@ export function createFilesContext(
           break;
         }
         case 's3': {
-          const { filesize } = await getS3AssetsAPI(s3).files.metadata(filename);
+          const { filesize } = await s3Assets(s3).files.metadata(filename);
           return { filesize, ...fileRef };
           break;
         }
@@ -116,7 +116,7 @@ export function createFilesContext(
           break;
         }
         case 's3': {
-          const { filesize } = await getS3AssetsAPI(s3).files.upload(stream, filename);
+          const { filesize } = await s3Assets(s3).files.upload(stream, filename);
           return { mode, filesize, filename };
           break;
         }
