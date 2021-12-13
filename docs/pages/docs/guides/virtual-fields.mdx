@@ -94,7 +94,7 @@ export default config({
         author: relationship({ ref: 'Author', many: false }),
         authorName: virtual({
           field: graphql.field({
-          type: graphql.String,
+            type: graphql.String,
             async resolve(item, args, context) {
               const { author } = await context.query.Post.findOne({
                 where: { id: item.id.toString() },
