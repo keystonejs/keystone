@@ -2448,10 +2448,10 @@
     "@svgr/hast-util-to-babel-ast" "^6.0.0"
     svg-parser "^2.0.2"
 
-"@svgr/plugin-prettier@^6.0.0":
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/@svgr/plugin-prettier/-/plugin-prettier-6.0.0.tgz#ae2d6e0d97c713dfd6e0b8480d59c00ce0545e1d"
-  integrity sha512-kSftpFXmaElRtvar+C4E3r2N9Xyz8vjijcXW0nkMt0O0EJ9vN8lf8KgsHIH+lfs4sxEkW1TCSeP9zyeo4uZBmw==
+"@svgr/plugin-prettier@^6.1.2":
+  version "6.1.2"
+  resolved "https://registry.yarnpkg.com/@svgr/plugin-prettier/-/plugin-prettier-6.1.2.tgz#e87eab379b96a6414ddfb9555754e35e64798a90"
+  integrity sha512-jd9+Arj+6wsv8XxbE2VxfXGftibV+QIH+Uzl4Y0JZ+j5jgJsbCd+7Yey7ZBgVRe7xaW0aRwshUAmP6axOAl37A==
   dependencies:
     deepmerge "^4.2.2"
     prettier "^2.4.0"

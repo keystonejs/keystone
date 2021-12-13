@@ -10,7 +10,7 @@
   "devDependencies": {
     "@svgr/core": "^6.1.1",
     "@svgr/plugin-jsx": "^6.1.0",
-    "@svgr/plugin-prettier": "^6.0.0",
+    "@svgr/plugin-prettier": "^6.1.2",
     "@svgr/plugin-svgo": "^6.1.0",
     "@types/react": "^17.0.37",
     "chalk": "^4.1.2",
