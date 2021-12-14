@@ -16,7 +16,7 @@ export function Walkthroughs() {
       })}
     >
       <Well
-        heading="Getting started with Keystone 6"
+        heading="Keystone 6 QUick Start"
         href="/docs/walkthroughs/getting-started-with-create-keystone-app"
       >
         Learn how to use our CLI to get Keystone’s Admin UI and GraphQL API running in a new local
@@ -26,6 +26,10 @@ export function Walkthroughs() {
         heading="How to embed Keystone + SQLite in a Next.js app"
         href="/docs/walkthroughs/embedded-mode-with-sqlite-nextjs"
       >
+        Learn how to run Keystone in the same folder as your frontend code and commit everything to
+        Git. You end up with a queryable GraphQL endpoint running live on Vercel for free.
+      </Well>
+      <Well heading="Learning Keystone Lessons" href="/docs/walkthroughs/lesson-1">
         Learn how to run Keystone in the same folder as your frontend code and commit everything to
         Git. You end up with a queryable GraphQL endpoint running live on Vercel for free.
       </Well>
