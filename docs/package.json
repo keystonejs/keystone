@@ -10,9 +10,9 @@
     "sitemap": "yarn next-sitemap"
   },
   "dependencies": {
-    "@babel/runtime": "^7.16.3",
+    "@babel/runtime": "^7.16.5",
     "@emotion/cache": "11.6.0",
-    "@emotion/react": "^11.7.0",
+    "@emotion/react": "^11.7.1",
     "@emotion/server": "11.4.0",
     "@emotion/weak-memoize": "^0.2.5",
     "@keystone-6/fields-document": "^1.0.0",
@@ -35,7 +35,7 @@
     "prism-react-renderer": "^1.2.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-focus-lock": "^2.6.0",
+    "react-focus-lock": "^2.7.1",
     "react-toast-notifications": "^2.5.1",
     "remark-gfm": "^1.0.0",
     "remark-hint": "^1.0.10"
@@ -44,7 +44,7 @@
     "@types/lodash.debounce": "^4.0.6",
     "next-sitemap": "^1.6.203",
     "start-server-and-test": "^1.14.0",
-    "typescript": "^4.5.2"
+    "typescript": "^4.5.4"
   },
   "engines": {
     "node": "^14.15 || ^16.13"
