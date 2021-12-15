@@ -112,7 +112,6 @@ export function createImagesContext(
         case 's3': {
           const metadata = await s3Assets(s3).images.upload(stream, id);
 
-          console.log('METADATA', metadata);
 
           return { mode, id, ...metadata };
           break;
