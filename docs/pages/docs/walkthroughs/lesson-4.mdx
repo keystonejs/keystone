@@ -1,0 +1,226 @@
+# Lesson 3: Add in auth
+
+> In this lesson we will set up auth for the keystone admin UI
+
+## Where we left off
+
+We had added a second list to our keystone app for posts. We now have a keystone.js file that looks like:
+
+```js
+import { list } from '@keystone-next/keystone';
+import { text, timestamp, relationship } from '@keystone-next/keystone/fields';
+
+const lists = {
+  User: list({
+    fields: {
+      name: text({ isRequired: true }),
+      email: text({ isRequired: true }),
+      posts: relationship({ ref: 'Post.author', many: true }),
+    },
+  }),
+  Post: list({
+    fields: {
+      title: text(),
+      publishedAt: timestamp(),
+      status: select({
+        options: [
+          { label: 'Published', value: 'published' },
+          { label: 'Draft', value: 'draft' },
+        ],
+        defaultValue: 'draft',
+      }),
+      author: relationship({ ref: 'User.posts' }),
+      content: text({ ui: { displayMode: 'textarea' } }),
+    },
+  }),
+};
+
+export default {
+  db: {
+    provider: 'sqlite',
+    url: 'file:./keystone.db',
+  },
+  lists,
+};
+```
+
+## This Lesson
+
+This gives us a blog list that we can use. As we are looking at this list, we look at rounding out our keystone app, we want to put in auth, so that not everyone can view draft content, and not everyone can edit content.
+
+Keystone has very granular permissions controls, which you can read about [here](TK), however what we will focus on this tutorial is how to lock the Admin UI behind a password.
+
+## Adding The Password Field
+
+Keystone comes with an inbuilt password field, designed specifically for passwords. This takes care of hashing the password for storing in the database, as well as UI niceties such as making sure the password is obscured.
+
+We are going to use our existing `User` list for logging in, so we are going to add a new field to it:
+
+```js
+import { password } from '@keystone-next/keystone/fields';
+
+const lists = {
+  User: list({
+    fields: {
+      name: text({ isRequired: true }),
+      email: text({ isRequired: true }),
+      posts: relationship({ ref: 'Post.author', many: true }),
+      password: password({ isRequired: true }),
+    },
+  }),
+};
+```
+
+This gives us all the pieces we need in our database, now we need to add auth.
+
+## Adding the Auth package
+
+Auth isn't built directly in to keystone - it's an enhancement you can add on top. We are going to be using another package from the keystone team designed to do session-based auth. To add this package, run:
+
+`yarn add @keystone-next/auth`
+
+Next, we are going to create a new file to write our auth config in.
+
+`touch auth.js`
+
+## Creating auth
+
+```js
+import { createAuth } from '@keystone-next/auth';
+
+const { withAuth } = createAuth({
+  listKey: 'User',
+  identityField: 'email',
+  sessionData: 'name',
+  secretField: 'password',
+});
+
+export { withAuth };
+```
+
+This says that the `User` list will be used for auth, and the combination of `email` and `password` will be used to log a user in.
+
+## Adding session
+
+Having added an authentication method, we need to add a 'session', so that authentication can be kept between refreshes. Also in the auth file, we want to add:
+
+```js
+import { statelessSessions } from '@keystone-next/keystone/session';
+
+let sessionSecret = 'super-secret-session-string;
+let sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
+
+const session = statelessSessions({
+  maxAge: sessionMaxAge,
+  secret: sessionSecret,
+});
+
+export { withAuth, session }
+```
+
+## Using these in the keystone file
+
+Back over in our keystone file, we want to import our `withAuth` function, and our `session` object.
+
+The `withAuth` will wrap our default export, and modify it as a last step in setting up our config. The session is attached to the export. Finally, we add a new bit of config to our export: we need to add an `isAccessAllowed` function so that only users with a valid session can see the admin UI.
+
+```js
+import { withAuth, session } from './auth';
+
+export default withAuth({
+  db: {
+    provider: 'sqlite',
+    url: 'file:./keystone.db',
+  },
+  lists,
+  session,
+  ui: {
+    isAccessAllowed: (context) => !!context.session?.data,
+  },
+});
+```
+
+## Adding init first item
+
+```js
+const { withAuth } = createAuth({
+  listKey: 'User',
+  identityField: 'email',
+  sessionData: 'name',
+  secretField: 'password',
+  initFirstItem: {
+    fields: ['name', 'email', 'password'],
+  },
+});
+```
+
+## Looking at the admin UI
+
+## What We Have Now
+
+```js
+// auth.js
+import { createAuth } from '@keystone-next/auth';
+import { statelessSessions } from '@keystone-next/keystone/session';
+
+import { withAuth, session } from './auth';
+
+const { withAuth } = createAuth({
+  listKey: 'User',
+  identityField: 'email',
+  sessionData: 'name',
+  secretField: 'password',
+});
+
+let sessionSecret = 'super-secret-session-string;
+let sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
+
+const session = statelessSessions({
+  maxAge: sessionMaxAge,
+  secret: sessionSecret,
+});
+
+export { withAuth, session }
+```
+
+```js
+// keystone.js
+import { list } from '@keystone-next/keystone';
+import { text, timestamp, relationship } from '@keystone-next/keystone/fields';
+import { withAuth, session } from './auth';
+
+const lists = {
+  User: list({
+    fields: {
+      name: text({ isRequired: true }),
+      email: text({ isRequired: true }),
+      posts: relationship({ ref: 'Post.author', many: true }),
+    },
+  }),
+  Post: list({
+    fields: {
+      title: text(),
+      publishedAt: timestamp(),
+      status: select({
+        options: [
+          { label: 'Published', value: 'published' },
+          { label: 'Draft', value: 'draft' },
+        ],
+        defaultValue: 'draft',
+      }),
+      author: relationship({ ref: 'User.posts' }),
+      content: text({ ui: { displayMode: 'textarea' } }),
+    },
+  }),
+};
+
+export default withAuth({
+  db: {
+    provider: 'sqlite',
+    url: 'file:./keystone.db',
+  },
+  lists,
+  session,
+  ui: { isAccessAllowed: (context) => !!context.session?.data },
+});
+```

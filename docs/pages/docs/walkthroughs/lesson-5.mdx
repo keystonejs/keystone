@@ -1,0 +1,81 @@
+## Lesson 5: Using the document field
+
+> In this lesson we will switch from using text to using Keystone's document field for the post content
+
+## Where we left off
+
+At this point, we have a working backend for a collection of posts. We have authors (in the User list), and posts, and we have added auth, so that we can ensure only users can access the Admin UI to write and edit posts.
+
+## Lesson Goal
+
+In setting this project up quickly, we have used used `text` for the post's `content`, which will be a string, and has no rich text features. Keystone has a [document field](https://keystonejs.com/docs/apis/fields#document) that we want to use.
+
+## Replacing the Content
+
+First, we need to add the package for the document field:
+
+```sh
+yarn add @keystone-next/fields-document
+```
+
+Next, we update the code, replacing the text field with the document field:
+
+```js
+import { document } from '@keystone-next/fields-document';
+
+const lists = {
+  Post: list({
+    fields: {
+      content: document(),
+    },
+  }),
+};
+```
+
+If we've run our Keystone app before, this will create a migration, which will lose us our previous data. While we are in a quick iteration phase for our project, this can be fine, but if the project was more mature, we would want a migration.
+
+## Looking at the Admin UI
+
+Starting up Keystone, and going to the post, we can see our new document field:
+
+At this stage, the experience is going to be a little bare. We need to add some configuration to really get the most of the document field
+
+## Adding features to the document field
+
+At this stage though, the document field is still fairly bare. There are 4 things we are going to add in:
+
+- formatting (bold, underline, italics)
+- links
+- dividers
+- layouts
+
+```js
+const lists = {
+  Post: list({
+    fields: {
+      content: document({
+        formatting: true,
+        links: true,
+        dividers: true,
+        layouts: [
+          [1, 1],
+          [1, 1, 1],
+          [2, 1],
+          [1, 2],
+          [1, 2, 1],
+        ],
+      }),
+    },
+  }),
+};
+```
+
+For all the options available on the document field, check out our full [guide to the document field](https://keystonejs.com/docs/guides/document-fields#how-to-use-document-fields).
+
+Now, when we reopen the Admin UI, we see:
+
+## Looking at the GraphQL API
+
+## What We Have Now
+
+> We are assuming we are still in an iteration phase of designing our project - therefore preserving data is not important. If there is needed content in the posts, you will need to take care when migrating it.

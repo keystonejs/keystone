@@ -1,0 +1,143 @@
+# Lesson 3: Adding a Publishing Flow
+
+> In this lesson, we are going to add a publishing flow, looking at the `select` and `timestamp` field.
+
+## Where we left off
+
+We had just added our second list, leaving us with the code
+
+```js
+import { list } from '@keystone-next/keystone';
+import { text, relationship } from '@keystone-next/keystone/fields';
+
+const lists = {
+  User: list({
+    fields: {
+      name: text({ isRequired: true }),
+      email: text({ isRequired: true }),
+      posts: relationship({ ref: 'Post.author', many: true }),
+    },
+  }),
+  Post: list({
+    fields: {
+      title: text(),
+      content: text({ ui: { displayMode: 'textarea' } }),
+      author: relationship({ ref: 'User.posts' }),
+    },
+  }),
+};
+
+export default {
+  db: {
+    provider: 'sqlite',
+    url: 'file:./keystone.db',
+  },
+  lists,
+};
+```
+
+## What should be in our publishing flow
+
+For publishing, there are two bits of information we want. First, we want to show if a post is still being written, or is already published. Secondly, we want to be able to show when it is published. To do this, we are going to use two new fields, `select` and `timestamp`.
+
+## Adding `publishedAt`
+
+```js
+import { text, timestamp } from '@keystone-next/keystone/fields';
+
+const lists = {
+  Post: list({
+    fields: {
+      publishedAt: timestamp(),
+    },
+  }),
+};
+```
+
+## Adding our status
+
+Status is going to use a select. Selects are a little more complicated, as they require options to be provided. The options provided will be the only options available in the Admin UI and through GraphQL types.
+
+```js
+import { text, timestamp } from '@keystone-next/keystone/fields';
+
+const lists = {
+  Post: list({
+    fields: {
+      publishedAt: timestamp(),
+      status: select({
+        options: [
+          { label: 'Published', value: 'published' },
+          { label: 'Draft', value: 'draft' },
+        ],
+        defaultValue: 'draft',
+      }),
+    },
+  }),
+};
+```
+
+## Looking at the admin UI
+
+- open the Admin UI, create the things
+
+## Improving the Admin UI Experience
+
+Immediately, there are some parts of the admin UI that could do with improvement. We are going to add some config to the admin UI to improve the experience.
+
+## Looking at the GraphQL API
+
+Show filtering for just published posts
+
+### Changing the view for select
+
+## What We Have Now
+
+At the end of this lesson, we have taken our `post` list type and added two fields, together give us the information our system will need to display posts. Our code now looks like:
+
+```js
+import { list } from '@keystone-next/keystone';
+import {
+  text,
+  timestamp,
+  select,
+  relationship,
+} from '@keystone-next/keystone/fields';
+
+const lists = {
+  User: list({
+    fields: {
+      name: text({ isRequired: true }),
+      email: text({ isRequired: true }),
+      posts: relationship({ ref: 'Post.author', many: true }),
+    },
+  }),
+  Post: list({
+    fields: {
+      title: text(),
+      publishedAt: timestamp(),
+      status: select({
+        options: [
+          { label: 'Published', value: 'published' },
+          { label: 'Draft', value: 'draft' },
+        ],
+        defaultValue: 'draft',
+      }),
+      author: relationship({ ref: 'User.posts' }),
+      content: text({ ui: { displayMode: 'textarea' } }),
+    },
+  }),
+};
+
+export default {
+  db: {
+    provider: 'sqlite',
+    url: 'file:./keystone.db',
+  },
+  lists,
+};
+```
+
+## Bonus exercise
+
+In these lessons, we are going to leave publishedAt here, but if you want to try extending this, you could look at using keystone's [hooks API]() so when a post moves from `draft` to `published`, the `publishedAt` is automatically updated.
