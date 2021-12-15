@@ -1,10 +1,9 @@
 import Path from 'path';
 import { promisify } from 'util';
 import fs from 'fs-extra';
-import fastGlob from 'fast-glob';
 import resolve from 'resolve';
 import { GraphQLSchema } from 'graphql';
-import { walk as _walk } from '@nodelib/fs.walk';
+import { Entry, walk as _walk } from '@nodelib/fs.walk';
 import type { KeystoneConfig, AdminMetaRootVal, AdminFileToWrite } from '../../types';
 import { writeAdminFiles } from '../templates';
 import { serializePathForImport } from '../utils/serializePathForImport';
@@ -49,6 +48,8 @@ export async function writeAdminFile(file: AdminFileToWrite, projectAdminPath: s
   }
   return Path.normalize(outputFilename);
 }
+
+const pageExtensions = new Set(['.js', '.jsx', '.ts', '.tsx']);
 
 export const generateAdminUI = async (
   config: KeystoneConfig,
@@ -95,19 +96,31 @@ export const generateAdminUI = async (
   );
 
   // Add files to pages/ which point to any files which exist in admin/pages
-  const userPagesDir = Path.join(process.cwd(), 'admin', 'pages');
-  const userPagesEntries = await fastGlob('**/*.{js,jsx,ts,tsx}', { cwd: userPagesDir });
-  for (const filename of userPagesEntries) {
-    const outputFilename = Path.join('pages', filename);
-    const path = Path.relative(
+  const adminConfigDir = Path.join(process.cwd(), 'admin');
+  const userPagesDir = Path.join(adminConfigDir, 'pages');
+
+  let userPagesEntries: Entry[] = [];
+  try {
+    userPagesEntries = await walk(userPagesDir, {
+      entryFilter: entry => entry.dirent.isFile() && pageExtensions.has(Path.extname(entry.name)),
+    });
+  } catch (err: any) {
+    if (err.code !== 'ENOENT') {
+      throw err;
+    }
+  }
+
+  for (const { path } of userPagesEntries) {
+    const outputFilename = Path.relative(adminConfigDir, path);
+    const importPath = Path.relative(
       Path.dirname(Path.join(projectAdminPath, outputFilename)),
-      Path.join(userPagesDir, filename)
+      path
     );
-    const importPath = serializePathForImport(path);
+    const serializedImportPath = serializePathForImport(importPath);
     adminFiles.push({
       mode: 'write',
       outputPath: outputFilename,
-      src: `export { default } from ${importPath}`,
+      src: `export { default } from ${serializedImportPath}`,
     });
   }
 
