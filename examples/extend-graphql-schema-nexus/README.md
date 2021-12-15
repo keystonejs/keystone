@@ -1,5 +1,7 @@
 ## Feature Example - Using Nexus to extend the GraphQL API
 
+![KeystoneJS and Nexus logos](keystone-nexus.png)
+
 This project demonstrates how to use [Nexus](https://nexusjs.org) to extend the GraphQL API provided by Keystone with custom queries and mutations. It builds on the [Blog](../blog) starter project.
 
 ## Instructions
