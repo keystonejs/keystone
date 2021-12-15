@@ -184,31 +184,27 @@ import Link from 'next/link';
 // Import the generated Lists API from Keystone
 import { query } from '.keystone/api';
 
-type Post = {
-  id: string;
-  slug: string;
-  title: string;
-};
-
 // Home receives a `posts` prop from `getStaticProps` below
-export default function Home({ posts }: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function Home({
+  posts,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <div>
-      <main style={{ margin: '3rem' }}>
-        <h1>Hello World! 👋🏻 </h1>
-        <ul>
-          {/* Render each post with a link to the content page */}
-          {posts.map((post: Post) => (
-            <li key={post.id}>
-              <Link href={`/post/${post.slug}`}>
-                <a>{post.title}</a>
-              </Link>
-            </li>
-          ))}
-        </ul>
+      <main style={{margin: "3rem"}}>
+      <h1>Hello World! 👋🏻 </h1>
+      <ul>
+        {/* Render each post with a link to the content page */}
+        {posts.map(post => (
+          <li key={post.id}>
+            <Link href={`/post/${post.slug}`}>
+              <a>{post.title}</a>
+            </Link>
+          </li>
+        ))}
+      </ul>
       </main>
     </div>
-  );
+  )
 }
 
 // Here we use the Lists API to load all the posts we want to display
@@ -224,29 +220,31 @@ Now add a `/post` subdirectory in `/pages` and include the code below in `[slug]
 ```tsx
 // pages/post/[slug].tsx
 
-import { GetStaticPathsResult, GetStaticPropsContext, InferGetStaticPropsType } from 'next';
+import {
+  GetStaticPathsResult,
+  GetStaticPropsContext,
+  InferGetStaticPropsType,
+} from 'next';
 import Link from 'next/link';
 import { query } from '.keystone/api';
 
-export default function PostPage({ post }: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function PostPage({
+  post,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <div>
-      <main style={{ margin: '3rem' }}>
-        <div>
-          <Link href="/">
-            <a>&larr; back home</a>
-          </Link>
-        </div>
-        <h1>{post.title}</h1>
-        <p>{post.content}</p>
+      <main style={{margin: "3rem"}}>
+      <div>
+        <Link href="/">
+          <a>&larr; back home</a>
+        </Link>
+      </div>
+      <h1>{post.title}</h1>
+      <p>{post.content}</p>
       </main>
     </div>
   );
 }
-
-type Post = {
-  slug: string;
-};
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const posts = await query.Post.findMany({
@@ -254,9 +252,9 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   });
 
   const paths = posts
-    .map((post: Post) => post.slug)
-    .filter((slug: string): slug is string => !!slug)
-    .map((slug: string) => `/post/${slug}`);
+    .map(post => post.slug)
+    .filter((slug): slug is string => !!slug)
+    .map(slug => `/post/${slug}`);
 
   return {
     paths,
@@ -264,7 +262,9 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   };
 }
 
-export async function getStaticProps({ params }: GetStaticPropsContext) {
+export async function getStaticProps({
+  params,
+}: GetStaticPropsContext) {
   const post = await query.Post.findOne({
     where: { slug: params!.slug as string },
     query: 'id title content',
@@ -333,14 +333,9 @@ Keystone’s Embedded mode and SQLite support gives you the option to run a self
   <Well
     heading="Getting Started with create-keystone-app"
     href="/docs/walkthroughs/getting-started-with-create-keystone-app"
-  >
-    How to use Keystone's CLI app to standup a new local project with an Admin UI & the GraphQL
-    Playground.
+    >
+    How to use Keystone's CLI app to standup a new local project with an Admin UI & the GraphQL Playground.
   </Well>
 </RelatedContent>
 
-export default ({ children }) => (
-  <Markdown description="Learn how to embed Keystone and an SQLite database into a Next.js app to get a queryable GraphQL endpoint, based on your Keystone schema, running live on Vercel.">
-    {children}
-  </Markdown>
-);
+export default ({ children }) => <Markdown description="Learn how to embed Keystone and an SQLite database into a Next.js app to get a queryable GraphQL endpoint, based on your Keystone schema, running live on Vercel.">{children}</Markdown>;
