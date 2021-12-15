@@ -8,7 +8,7 @@
     "node": "^14.15 || ^16.13"
   },
   "dependencies": {
-    "@babel/runtime": "^7.16.3",
+    "@babel/runtime": "^7.16.5",
     "@keystone-ui/button": "^6.0.0",
     "@keystone-ui/core": "^4.0.0",
     "@keystone-ui/fields": "^6.0.0",
