@@ -1,9 +1,12 @@
+import { ApolloServer } from 'apollo-server-micro';
 import { KeystoneConfig } from '../types';
 import { initConfig } from '../lib/config/initConfig';
 import { createSystem } from '../lib/createSystem';
 import { createApolloServerMicro } from '../lib/server/createApolloServer';
 
-export function nextGraphQLAPIRoute(keystoneConfig: KeystoneConfig, prismaClient: any) {
+type Handler = ReturnType<ApolloServer['createHandler']>;
+
+export function nextGraphQLAPIRoute(keystoneConfig: KeystoneConfig, prismaClient: any): Handler {
   const initializedKeystoneConfig = initConfig(keystoneConfig);
   const { graphQLSchema, getKeystone } = createSystem(initializedKeystoneConfig);
 
@@ -19,5 +22,13 @@ export function nextGraphQLAPIRoute(keystoneConfig: KeystoneConfig, prismaClient
     connectionPromise: keystone.connect(),
   });
 
-  return apolloServer.createHandler({ path: keystoneConfig.graphql?.path || '/api/graphql' });
+  let startPromise = apolloServer.start();
+
+  return async (req, res) => {
+    await startPromise;
+    return apolloServer.createHandler({ path: keystoneConfig.graphql?.path || '/api/graphql' })(
+      req,
+      res
+    );
+  };
 }
