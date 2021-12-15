@@ -1,3 +1,5 @@
+import { Markdown } from '../../../components/Markdown';
+
 # Lesson 3: Adding a Publishing Flow
 
 > In this lesson, we are going to add a publishing flow, looking at the `select` and `timestamp` field.
@@ -141,3 +143,7 @@ export default {
 ## Bonus exercise
 
 In these lessons, we are going to leave publishedAt here, but if you want to try extending this, you could look at using keystone's [hooks API]() so when a post moves from `draft` to `published`, the `publishedAt` is automatically updated.
+
+export default ({ children }) => <Markdown description="Learn how to get your first Keystone project up and running using the `create-keystone-app` Command Line Interface.">{children}</Markdown
+
+>

@@ -1,3 +1,5 @@
+import { Markdown } from '../../../components/Markdown';
+
 ## Lesson 5: Using the document field
 
 > In this lesson we will switch from using text to using Keystone's document field for the post content
@@ -79,3 +81,7 @@ Now, when we reopen the Admin UI, we see:
 ## What We Have Now
 
 > We are assuming we are still in an iteration phase of designing our project - therefore preserving data is not important. If there is needed content in the posts, you will need to take care when migrating it.
+
+export default ({ children }) => <Markdown description="Learn how to get your first Keystone project up and running using the `create-keystone-app` Command Line Interface.">{children}</Markdown
+
+>

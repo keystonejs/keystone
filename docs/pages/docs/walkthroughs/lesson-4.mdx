@@ -1,3 +1,6 @@
+import { Markdown } from '../../../components/Markdown';
+import { Markdown } from '../../../components/Markdown';
+
 # Lesson 3: Add in auth
 
 > In this lesson we will set up auth for the keystone admin UI
@@ -224,3 +227,7 @@ export default withAuth({
   ui: { isAccessAllowed: (context) => !!context.session?.data },
 });
 ```
+
+export default ({ children }) => <Markdown description="Learn how to get your first Keystone project up and running using the `create-keystone-app` Command Line Interface.">{children}</Markdown
+
+>
