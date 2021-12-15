@@ -9,7 +9,7 @@
     "build": "keystone build"
   },
   "dependencies": {
-    "@emotion/css": "^11.5.0",
+    "@emotion/css": "^11.7.1",
     "@keystone-6/core": "^1.0.0",
     "@keystone-ui/button": "^6.0.0",
     "@keystone-ui/core": "^4.0.0",
