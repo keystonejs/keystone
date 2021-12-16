@@ -5,7 +5,7 @@
   "main": "dist/keystone-ui-loading.cjs.js",
   "module": "dist/keystone-ui-loading.esm.js",
   "devDependencies": {
-    "@types/react": "^17.0.35"
+    "@types/react": "^17.0.37"
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
