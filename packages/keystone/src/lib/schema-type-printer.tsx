@@ -1,36 +1,37 @@
 import {
   GraphQLSchema,
-  parse,
-  TypeNode,
-  ListTypeNode,
-  NamedTypeNode,
   GraphQLScalarType,
-  EnumTypeDefinitionNode,
-  InputObjectTypeDefinitionNode,
-  ObjectTypeDefinitionNode,
-  FieldDefinitionNode,
+  GraphQLEnumType,
+  GraphQLType,
+  GraphQLNonNull,
+  GraphQLNamedType,
+  GraphQLList,
+  GraphQLInputObjectType,
+  introspectionTypes,
 } from 'graphql';
 import { getGqlNames } from '../types';
 import { InitialisedList } from './core/types-for-lists';
 
-let printEnumTypeDefinition = (node: EnumTypeDefinitionNode) => {
-  return `export type ${node.name.value} =\n${node
-    .values!.map(x => `  | ${JSON.stringify(x.name.value)}`)
+const introspectionTypesSet = new Set(introspectionTypes);
+
+let printEnumTypeDefinition = (type: GraphQLEnumType) => {
+  return `export type ${type.name} =\n${type
+    .getValues()
+    .map(x => `  | ${JSON.stringify(x.name)}`)
     .join('\n')};`;
 };
 
-function printInputTypesFromSchema(
-  schema: string,
-  schemaObj: GraphQLSchema,
-  scalars: Record<string, string>
-) {
-  let ast = parse(schema);
-  let printTypeNodeWithoutNullable = (node: ListTypeNode | NamedTypeNode): string => {
-    if (node.kind === 'ListType') {
-      return `ReadonlyArray<${printTypeNode(node.type)}> | ${printTypeNode(node.type)}`;
+function printInputTypesFromSchema(schema: GraphQLSchema, scalars: Record<string, string>) {
+  let printTypeReferenceWithoutNullable = (
+    type: GraphQLNamedType | GraphQLList<GraphQLType>
+  ): string => {
+    if (type instanceof GraphQLList) {
+      return `ReadonlyArray<${printTypeReference(type.ofType)}> | ${printTypeReference(
+        type.ofType
+      )}`;
     }
-    let name = node.name.value;
-    if (schemaObj.getType(name) instanceof GraphQLScalarType) {
+    let name = type.name;
+    if (type instanceof GraphQLScalarType) {
       if (scalars[name] === undefined) {
         return 'any';
       }
@@ -38,19 +39,20 @@ function printInputTypesFromSchema(
     }
     return name;
   };
-  let printTypeNode = (node: TypeNode): string => {
-    if (node.kind === 'NonNullType') {
-      return printTypeNodeWithoutNullable(node.type);
+  let printTypeReference = (type: GraphQLType): string => {
+    if (type instanceof GraphQLNonNull) {
+      return printTypeReferenceWithoutNullable(type.ofType);
     }
-    return `${printTypeNodeWithoutNullable(node)} | null`;
+    return `${printTypeReferenceWithoutNullable(type)} | null`;
   };
-  let printInputObjectTypeDefinition = (node: InputObjectTypeDefinitionNode) => {
-    let str = `export type ${node.name.value} = {\n`;
-    node.fields?.forEach(node => {
-      str += `  readonly ${node.name.value}${
-        node.type.kind === 'NonNullType' && !node.defaultValue ? '' : '?'
-      }: ${printTypeNode(node.type)};\n`;
-    });
+  let printInputObjectTypeDefinition = (type: GraphQLInputObjectType) => {
+    let str = `export type ${type.name} = {\n`;
+    for (const field of Object.values(type.getFields())) {
+      str += `  readonly ${field.name}${
+        field.type instanceof GraphQLNonNull && field.defaultValue === undefined ? '' : '?'
+      }: ${printTypeReference(field.type)};\n`;
+    }
+
     str += '};';
     return str;
   };
@@ -59,19 +61,21 @@ function printInputTypesFromSchema(
     typeString += `  readonly ${scalar}: ${scalars[scalar]};\n`;
   }
   typeString += '};';
-  for (const node of ast.definitions) {
-    if (node.kind === 'InputObjectTypeDefinition') {
-      typeString += '\n\n' + printInputObjectTypeDefinition(node);
+  for (const type of Object.values(schema.getTypeMap())) {
+    // We don't want to print TS types for the built-in GraphQL introspection types
+    // they won't be used for anything we want to print here.
+    if (introspectionTypesSet.has(type)) continue;
+    if (type instanceof GraphQLInputObjectType) {
+      typeString += '\n\n' + printInputObjectTypeDefinition(type);
     }
-    if (node.kind === 'EnumTypeDefinition') {
-      typeString += '\n\n' + printEnumTypeDefinition(node);
+    if (type instanceof GraphQLEnumType) {
+      typeString += '\n\n' + printEnumTypeDefinition(type);
     }
   }
-  return { printedTypes: typeString + '\n', ast };
+  return typeString + '\n\n';
 }
 
 export function printGeneratedTypes(
-  printedSchema: string,
   graphQLSchema: GraphQLSchema,
   lists: Record<string, InitialisedList>
 ) {
@@ -85,25 +89,7 @@ export function printGeneratedTypes(
     Decimal: 'import("@keystone-6/core/types").Decimal | string',
   };
 
-  let { printedTypes, ast } = printInputTypesFromSchema(printedSchema, graphQLSchema, scalars);
-
-  printedTypes += '\n';
-
-  let queryTypeName = graphQLSchema.getQueryType()!.name;
-
-  let queryNode = ast.definitions.find((node): node is ObjectTypeDefinitionNode => {
-    return node.kind === 'ObjectTypeDefinition' && node.name.value === queryTypeName;
-  });
-
-  if (!queryNode) {
-    throw new Error('Query type on GraphQL schema not found when generating types');
-  }
-
-  let queryNodeFieldsByName: Record<string, FieldDefinitionNode> = {};
-
-  for (const field of queryNode.fields!) {
-    queryNodeFieldsByName[field.name.value] = field;
-  }
+  const printedTypes = printInputTypesFromSchema(graphQLSchema, scalars);
 
   let allListsStr = '';
   let listsNamespaceStr = '\nexport declare namespace Lists {';

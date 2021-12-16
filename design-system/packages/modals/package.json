@@ -5,14 +5,14 @@
   "main": "dist/keystone-ui-modals.cjs.js",
   "module": "dist/keystone-ui-modals.esm.js",
   "devDependencies": {
-    "@types/react": "^17.0.35"
+    "@types/react": "^17.0.37"
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
     "@keystone-ui/button": "^6.0.0",
     "@keystone-ui/core": "^4.0.0",
     "react": "^17.0.2",
-    "react-focus-lock": "^2.6.0",
+    "react-focus-lock": "^2.7.1",
     "react-remove-scroll": "^2.4.3",
     "react-transition-group": "^4.4.2"
   },

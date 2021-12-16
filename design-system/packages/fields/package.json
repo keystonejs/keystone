@@ -5,17 +5,17 @@
   "main": "dist/keystone-ui-fields.cjs.js",
   "module": "dist/keystone-ui-fields.esm.js",
   "devDependencies": {
-    "@types/react": "^17.0.35"
+    "@types/react": "^17.0.37"
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
     "@keystone-ui/core": "^4.0.0",
     "@keystone-ui/icons": "^5.0.0",
     "@keystone-ui/popover": "^5.0.0",
-    "date-fns": "^2.25.0",
+    "date-fns": "^2.26.0",
     "react": "^17.0.2",
     "react-day-picker": "npm:react-day-picker@^7.4.8",
-    "react-focus-lock": "^2.6.0",
+    "react-focus-lock": "^2.7.1",
     "react-select": "^5.2.1"
   },
   "engines": {
