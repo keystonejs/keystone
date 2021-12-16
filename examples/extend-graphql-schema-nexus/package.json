@@ -11,7 +11,7 @@
   "dependencies": {
     "@graphql-tools/schema": "^8.3.1",
     "@keystone-6/core": "^1.0.0",
-    "graphql": "^15.7.2",
+    "graphql": "^15.8.0",
     "nexus": "^1.1.0"
   },
   "engines": {
