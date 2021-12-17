@@ -74,7 +74,7 @@ export const SigninPage = ({
   }
 
   return (
-    <SigninContainer>
+    <SigninContainer title="Keystone - Sign In">
       <Stack
         gap="xlarge"
         as="form"
