@@ -224,7 +224,7 @@ const InitPage = ({ fieldPaths, listKey, enableWelcome }: InitPageProps) => {
   }
 
   return mode === 'init' ? (
-    <SigninContainer>
+    <SigninContainer title="Welcome to KeystoneJS">
       <H1>Welcome to KeystoneJS</H1>
       <p>Create your first user to get started</p>
       <form

@@ -10,6 +10,7 @@ import { Logo } from './Logo';
 type PageContainerProps = {
   children: ReactNode;
   header: ReactNode;
+  title?: string;
 };
 
 export const HEADER_HEIGHT = 80;
@@ -70,7 +71,7 @@ const Content = (props: HTMLAttributes<HTMLElement>) => {
   );
 };
 
-export const PageContainer = ({ children, header }: PageContainerProps) => {
+export const PageContainer = ({ children, header, title }: PageContainerProps) => {
   const { colors, spacing } = useTheme();
   return (
     <PageWrapper>
@@ -99,6 +100,7 @@ export const PageContainer = ({ children, header }: PageContainerProps) => {
           paddingRight: spacing.xlarge,
         }}
       >
+        <title>{title ? `Keystone - ${title}` : 'Keystone'}</title>
         {header}
       </header>
       <Sidebar>

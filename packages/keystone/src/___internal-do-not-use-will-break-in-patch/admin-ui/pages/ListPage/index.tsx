@@ -242,7 +242,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
   const showCreate = !(metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true) || null;
 
   return (
-    <PageContainer header={<ListPageHeader listKey={listKey} />}>
+    <PageContainer header={<ListPageHeader listKey={listKey} />} title={list.label}>
       {metaQuery.error ? (
         // TODO: Show errors nicely and with information
         'Error...'

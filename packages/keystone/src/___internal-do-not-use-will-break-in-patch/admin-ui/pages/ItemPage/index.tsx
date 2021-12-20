@@ -345,8 +345,13 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
   // placment of the save and delete buttons.
   const hideCreate = true; // data?.keystone.adminMeta.list.hideCreate;
 
+  const pageTitle: string = loading
+    ? undefined
+    : (data && data.item && (data.item[list.labelField] || data.item.id)) || id;
+
   return (
     <PageContainer
+      title={pageTitle}
       header={
         <Container
           css={{

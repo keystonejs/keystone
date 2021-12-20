@@ -45,6 +45,7 @@ PageContainer has the following types:
 type PageContainerProps = {
   header: ReactElement;
   children: ReactNode;
+  title?: string;
 };
 ```
 
