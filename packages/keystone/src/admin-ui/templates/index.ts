@@ -32,6 +32,11 @@ export const writeAdminFiles = (
       outputPath =>
         ({ mode: 'copy', inputPath: Path.join(pkgDir, 'static', outputPath), outputPath } as const)
     ),
+    {
+      mode: 'copy',
+      inputPath: Path.join(pkgDir, 'static', 'favicon.ico'),
+      outputPath: 'public/favicon.ico',
+    },
     { mode: 'write', src: noAccessTemplate(config.session), outputPath: 'pages/no-access.js' },
     {
       mode: 'write',
