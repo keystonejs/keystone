@@ -18,38 +18,30 @@ export async function insertSeedData(context: KeystoneContext) {
   console.log(`🌱 Inserting seed data`);
 
   const createAuthor = async (authorData: AuthorProps) => {
-    let author = null;
-    try {
-      author = await context.query.Author.findOne({
-        where: { email: authorData.email },
-        query: 'id',
-      });
-    } catch (e) {}
+    let author = await context.query.Author.findOne({
+      where: { email: authorData.email },
+      query: 'id',
+    });
+
     if (!author) {
       author = await context.query.Author.createOne({
         data: authorData,
         query: 'id',
       });
     }
-    return author;
   };
 
   const createPost = async (postData: PostProps) => {
-    let authors;
-    try {
-      authors = await context.query.Author.findMany({
-        where: { name: { equals: postData.author } },
-        query: 'id',
-      });
-    } catch (e) {
-      authors = [];
-    }
+    let authors = await context.query.Author.findMany({
+      where: { name: { equals: postData.author } },
+      query: 'id',
+    });
+
     postData.author = { connect: { id: authors[0].id } };
-    const post = await context.query.Post.createOne({
+    await context.query.Post.createOne({
       data: postData,
       query: 'id',
     });
-    return post;
   };
 
   for (const author of authors) {
