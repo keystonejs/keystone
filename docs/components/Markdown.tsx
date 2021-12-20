@@ -29,7 +29,9 @@ export function Markdown({
   description: string;
   title?: string;
 }) {
-  const headings = getHeadings(children.type().props.children);
+  const headings = getHeadings(
+    (typeof children.type === 'function' ? children.type() : children).props.children
+  );
   const firstHeading = title || headings[0]?.label;
 
   if (!firstHeading) {
