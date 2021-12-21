@@ -112,9 +112,9 @@ describe('postinstall', () => {
     expect(await getFiles(tmp, ['node_modules/.keystone/api.{d.ts,js}'])).toMatchInlineSnapshot(`
       ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/api.d.ts ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
       import { KeystoneListsAPI } from '@keystone-6/core/types';
-      import { KeystoneListsTypeInfo } from './types';
+      import { Context } from './types';
 
-      export const query: KeystoneListsAPI<KeystoneListsTypeInfo>;
+      export const query: Context['query'];
       ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/api.js ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
       import keystoneConfig from '../../keystone';
       import { PrismaClient } from '.prisma/client';
