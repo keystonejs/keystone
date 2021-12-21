@@ -60,10 +60,10 @@ After this, we are going to add a list, with two simple fields.
 We are going to name the list `User`, and then let's add `name` and `email` fields to it:
 
 ```js{9-16}[5-8]
-import { list } from '@keystone-6/keystone';
-import { text } from '@keystone-6/keystone/fields';
+import { list, config } from '@keystone-6/core';
+import { text } from '@keystone-6/core/fields';
 
-export default {
+export default config({
   db: {
     provider: 'sqlite',
     url: 'file:./keystone.db',
@@ -76,7 +76,7 @@ export default {
       },
     }),
   },
-};
+});
 ```
 
 The key of the `lists` object are used as the name of the list. The key of the `fields` object are used as the name for the fields.

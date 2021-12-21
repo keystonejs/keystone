@@ -10,8 +10,8 @@ import { Markdown } from '../../../components/Markdown';
 We had added a second list to our keystone app for posts. We now have a keystone.js file that looks like:
 
 ```js
-import { list } from '@keystone-next/keystone';
-import { text, timestamp, relationship } from '@keystone-next/keystone/fields';
+import { list, config } from '@keystone-6/core';
+import { text, timestamp, relationship } from '@keystone-6/core/fields';
 
 const lists = {
   User: list({
@@ -38,13 +38,13 @@ const lists = {
   }),
 };
 
-export default {
+export default config({
   db: {
     provider: 'sqlite',
     url: 'file:./keystone.db',
   },
   lists,
-};
+});
 ```
 
 ## This Lesson
@@ -60,7 +60,7 @@ Keystone comes with an inbuilt password field, designed specifically for passwor
 We are going to use our existing `User` list for logging in, so we are going to add a new field to it:
 
 ```js
-import { password } from '@keystone-next/keystone/fields';
+import { password } from '@keystone-6/core/fields';
 
 const lists = {
   User: list({
@@ -108,7 +108,7 @@ This says that the `User` list will be used for auth, and the combination of `em
 Having added an authentication method, we need to add a 'session', so that authentication can be kept between refreshes. Also in the auth file, we want to add:
 
 ```js
-import { statelessSessions } from '@keystone-next/keystone/session';
+import { statelessSessions } from '@keystone-6/core/session';
 
 let sessionSecret = 'super-secret-session-string;
 let sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
@@ -128,19 +128,22 @@ Back over in our keystone file, we want to import our `withAuth` function, and o
 The `withAuth` will wrap our default export, and modify it as a last step in setting up our config. The session is attached to the export. Finally, we add a new bit of config to our export: we need to add an `isAccessAllowed` function so that only users with a valid session can see the admin UI.
 
 ```js
+import { config } from '@keystone-6/core'
 import { withAuth, session } from './auth';
 
-export default withAuth({
-  db: {
-    provider: 'sqlite',
-    url: 'file:./keystone.db',
-  },
-  lists,
-  session,
-  ui: {
-    isAccessAllowed: (context) => !!context.session?.data,
-  },
-});
+export default config(
+  withAuth({
+    db: {
+      provider: 'sqlite',
+      url: 'file:./keystone.db',
+    },
+    lists,
+    session,
+    ui: {
+      isAccessAllowed: (context) => !!context.session?.data,
+    },
+  })
+);
 ```
 
 ## Adding init first item
@@ -164,7 +167,7 @@ const { withAuth } = createAuth({
 ```js
 // auth.js
 import { createAuth } from '@keystone-next/auth';
-import { statelessSessions } from '@keystone-next/keystone/session';
+import { statelessSessions } from '@keystone-6/core/session';
 
 import { withAuth, session } from './auth';
 
@@ -188,8 +191,8 @@ export { withAuth, session }
 
 ```js
 // keystone.js
-import { list } from '@keystone-next/keystone';
-import { text, timestamp, relationship } from '@keystone-next/keystone/fields';
+import { list, config } from '@keystone-6/core';
+import { text, timestamp, relationship } from '@keystone-6/core/fields';
 import { withAuth, session } from './auth';
 
 const lists = {
@@ -217,17 +220,17 @@ const lists = {
   }),
 };
 
-export default withAuth({
-  db: {
-    provider: 'sqlite',
-    url: 'file:./keystone.db',
-  },
-  lists,
-  session,
-  ui: { isAccessAllowed: (context) => !!context.session?.data },
-});
+export default config(
+  withAuth({
+    db: {
+      provider: 'sqlite',
+      url: 'file:./keystone.db',
+    },
+    lists,
+    session,
+    ui: { isAccessAllowed: (context) => !!context.session?.data },
+  })
+);
 ```
 
 export default ({ children }) => <Markdown description="Learn how to get your first Keystone project up and running using the `create-keystone-app` Command Line Interface.">{children}</Markdown
-
->

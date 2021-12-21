@@ -2,15 +2,15 @@ import { Markdown } from '../../../components/Markdown';
 
 # Lesson 3: Adding a Publishing Flow
 
-> In this lesson, we are going to add a publishing flow, looking at the `select` and `timestamp` field.
+> In this lesson, we are going to add a publishing flow for our posts, looking at the `select` and `timestamp` fields.
 
 ## Where we left off
 
 We had just added our second list, leaving us with the code
 
 ```js
-import { list } from '@keystone-next/keystone';
-import { text, relationship } from '@keystone-next/keystone/fields';
+import { list, context } from '@keystone-6/core';
+import { text, relationship } from '@keystone-6/core/fields';
 
 const lists = {
   User: list({
@@ -29,13 +29,13 @@ const lists = {
   }),
 };
 
-export default {
+export default context({
   db: {
     provider: 'sqlite',
     url: 'file:./keystone.db',
   },
   lists,
-};
+});
 ```
 
 ## What should be in our publishing flow
@@ -45,7 +45,7 @@ For publishing, there are two bits of information we want. First, we want to sho
 ## Adding `publishedAt`
 
 ```js
-import { text, timestamp } from '@keystone-next/keystone/fields';
+import { text, timestamp } from '@keystone-6/core/fields';
 
 const lists = {
   Post: list({
@@ -61,7 +61,7 @@ const lists = {
 Status is going to use a select. Selects are a little more complicated, as they require options to be provided. The options provided will be the only options available in the Admin UI and through GraphQL types.
 
 ```js
-import { text, timestamp } from '@keystone-next/keystone/fields';
+import { text, timestamp } from '@keystone-6/core/fields';
 
 const lists = {
   Post: list({
@@ -98,13 +98,13 @@ Show filtering for just published posts
 At the end of this lesson, we have taken our `post` list type and added two fields, together give us the information our system will need to display posts. Our code now looks like:
 
 ```js
-import { list } from '@keystone-next/keystone';
+import { list, config } from '@keystone-6/core';
 import {
   text,
   timestamp,
   select,
   relationship,
-} from '@keystone-next/keystone/fields';
+} from '@keystone-6/core/fields';
 
 const lists = {
   User: list({
@@ -131,13 +131,13 @@ const lists = {
   }),
 };
 
-export default {
+export default config({
   db: {
     provider: 'sqlite',
     url: 'file:./keystone.db',
   },
   lists,
-};
+});
 ```
 
 ## Bonus exercise

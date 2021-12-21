@@ -11,10 +11,10 @@ list and database configuration.
 
 ```js
 // keystone.js
-import { list } from '@keystone-next/keystone';
-import { text } from '@keystone-next/keystone/fields';
+import { list, config } from '@keystone-6/core';
+import { text } from '@keystone-6/core/fields';
 
-export default {
+export default config({
   db: {
     provider: 'sqlite',
     url: 'file:./keystone.db',
@@ -27,7 +27,7 @@ export default {
       },
     }),
   },
-};
+});
 ```
 
 ## In this lesson
@@ -40,8 +40,8 @@ able to have posts, which have a title, publishing info, and the 'content'.
 First, let's pull lists out into its own object:
 
 ```js{4-11,18}
-import { list } from '@keystone-next/keystone';
-import { text } from '@keystone-next/keystone/fields';
+import { list, config } from '@keystone-6/core';
+import { text } from '@keystone-6/core/fields';
 
 const lists = {
   User: list({
@@ -52,13 +52,13 @@ const lists = {
   }),
 };
 
-export default {
+export default config({
   db: {
     provider: 'sqlite',
     url: 'file:./keystone.db',
   },
   lists,
-};
+});
 ```
 
 You may find it handy at this point to move lists into its own file, and import it, but for this lesson, it should be fine to leave here.
@@ -66,7 +66,7 @@ You may find it handy at this point to move lists into its own file, and import 
 The next thing we want to do is add a second list. To do this, we need to add a second key to our lists object, which we are going to title `Post`, and then provide it at least one field. We are going to start by adding the `title` field, and a `content` field both as `text`.
 
 ```js{10-15}[4-9]
-import { text } from '@keystone-next/keystone/fields';
+import { text } from '@keystone-6/core/fields';
 
 const lists = {
   User: list({
@@ -98,7 +98,7 @@ For this case, we are saying a post only has one author, but a user has many pos
 To define this relationship, we will add a field to each list that defines how they relate to each other.
 
 ```js{8,15}[6-7,13-14]
-import { relationship } from '@keystone-next/keystone/fields';
+import { text, relationship } from '@keystone-6/core/fields';
 
 const lists = {
   User: list({
@@ -141,7 +141,7 @@ for this we want to focus on a few simple improvements.
 In a field, there are `ui` options that can be provided. Here, we can change the `displayMode` for text to be `textarea`.
 
 ```js{14}[4-10]
-import { relationship } from '@keystone-next/keystone/fields';
+import { text, relationship } from '@keystone-6/core/fields';
 
 const lists = {
   User: list({
@@ -166,7 +166,7 @@ const lists = {
 The next thing to do is improve the inline experience for authors in posts.
 
 ```js{17-23}[4-10]
-import { relationship } from '@keystone-next/keystone/fields';
+import { text, relationship } from '@keystone-6/core/fields';
 
 const lists = {
   User: list({
@@ -205,8 +205,8 @@ The second is we have made the user attributes of name and email editable inline
 At the end of this lesson, our app has a new `post` list, which has info for its title and content, as well as a link to the author, and a time stamp for when it will be published. It config file looks like:
 
 ```js
-import { list } from '@keystone-next/keystone';
-import { text, timestamp, relationship } from '@keystone-next/keystone/fields';
+import { list, config } from '@keystone-6/core';
+import { text, timestamp, relationship } from '@keystone-6/core/fields';
 
 const lists = {
   User: list({
@@ -234,13 +234,13 @@ const lists = {
   }),
 };
 
-export default {
+export default config({
   db: {
     provider: 'sqlite',
     url: 'file:./keystone.db',
   },
   lists,
-};
+});
 ```
 
 export default ({ children }) => <Markdown description="Learn how to get your first Keystone project up and running using the `create-keystone-app` Command Line Interface.">{children}</Markdown>
