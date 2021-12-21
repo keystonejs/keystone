@@ -24,23 +24,24 @@ yarn add @keystone-6/core
 
 ## Setting up Keystone
 
-There are two bits of keystone's configuration that are required to start our project: the `lists`, and the `db`. The `lists` define
-she shape of the information we want to save in our database, while the `db` defines how we will connect to our database. For now though
-let us set up our `keystone.js` file
+There are two parts of Keystone's configuration that are required to start our project: `lists` and the `db`.
 
-`touch keystone.js`
+The `lists` define the shape of the information we want to save in our database, while the `db` defines how we will connect to our database.
 
+For now though let us set up our `keystone.ts`:
 ```js
 export default {};
 ```
 
-When you run keystone, it will use this file's export to load the config. If we try to run `yarn keystone dev` it will not work.
+When you run Keystone using `yarn keystone dev`, it will use this file's default export to as Keystone's configuration.
+However, as is, if we try to run `yarn keystone dev` it will not work _yet_.
 
-> If you want to use typescript, you can use keystone.ts instead.
+> If you want to use Keystone without TypeScript, you can use `keystone.js` instead.
 
 ### Setting up a Database
 
-For our first project, we're going to use `sqlite` as we can do this without any further database setup. The config for this is below:
+For our first project, we're going to use [SQLite](https://www.sqlite.org/) to minimise database configuration.
+The configuration for a minimal example using SQLite example is below:
 
 ```js
 export default {
@@ -51,13 +52,12 @@ export default {
 };
 ```
 
-This will use a local file as the database.
+This will use the local path `./keystone.db` for our database storage.
 
 ### Setting up a user list
 
-After this, we are going to add a list, with two simple fields.
-
-We are going to name the list `User`, and then let's add `name` and `email` fields to it:
+We're almost there!
+Now we are going to add a `User` list, with the two fields `name` and `email`:
 
 ```js{9-16}[5-8]
 import { list, config } from '@keystone-6/core';
