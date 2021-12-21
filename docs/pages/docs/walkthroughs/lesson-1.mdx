@@ -45,12 +45,14 @@ For our first project, we're going to use [SQLite](https://www.sqlite.org/) to m
 The configuration for a minimal example using SQLite example is below:
 
 ```js
-export default {
+import { config } from '@keystone-6/core';
+
+export default config({
   db: {
     provider: 'sqlite',
     url: 'file:./keystone.db',
   },
-};
+});
 ```
 
 This will use the local path `./keystone.db` for our database storage.
