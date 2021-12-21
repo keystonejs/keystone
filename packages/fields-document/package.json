@@ -58,8 +58,8 @@
     "@keystone-6/core": "*",
     "@testing-library/react": "^12.1.2",
     "array.prototype.flat": "^1.2.5",
-    "jest-diff": "^27.3.1",
-    "pretty-format": "^27.3.1",
+    "jest-diff": "^27.4.2",
+    "pretty-format": "^27.4.2",
     "slate-hyperscript": "^0.67.0"
   },
   "engines": {
