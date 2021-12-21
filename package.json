@@ -76,7 +76,7 @@
     "remark-toc": "^5.1.1",
     "rimraf": "^3.0.2",
     "terminal-link-cli": "^3.0.0",
-    "typescript": "^4.4.4"
+    "typescript": "^4.5.4"
   },
   "prettier": {
     "proseWrap": "preserve",
