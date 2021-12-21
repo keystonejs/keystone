@@ -6,7 +6,7 @@ import { Markdown } from '../../../components/Markdown';
 
 ## Installing the packages you need
 
-For our packages,  we will be using `yarn`,  but you can use `npm` or any other package manager that you prefer.
+For our packages, we will be using `yarn`, but you can use `npm` or any other package manager that you prefer.
 
 The first thing we are going to do is set ourselves up a workspace for our new project. Let's make ourselves a new folder and initialise `yarn`.
 
@@ -16,7 +16,7 @@ cd keystone-learning
 yarn init
 ```
 
-After this, let's add the Keystone package
+After this, let's add the Keystone package:
 
 ```bash
 yarn add @keystone-6/core
@@ -29,6 +29,7 @@ There are two parts of Keystone's configuration that are required to start our p
 The `lists` define the shape of the information we want to save in our database, while the `db` defines how we will connect to our database.
 
 For now though let us set up our `keystone.ts`:
+
 ```js
 export default {};
 ```
@@ -60,7 +61,7 @@ We're almost there!
 Now we are going to add a `User` list, with the two fields `name` and `email`:
 
 ```js{9-16}[5-8]
-import { list, config } from '@keystone-6/core';
+import { config, list } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
 
 export default config({
@@ -79,22 +80,32 @@ export default config({
 });
 ```
 
-The key of the `lists` object are used as the name of the list. The key of the `fields` object are used as the name for the fields.
+The list names are derived from the keys in the `lists` object.
+For example, the `User` key becomes the name for the respective `User` list.
+This will be used in the Admin UI for the default display name of the list; and it is also used for the generated GraphQL API.
+More on that later.
+
+The field names are derived from the keys in the `fields` object.
+This will be used in the Admin UI for the default display name of the fields; and it is also used for the generated GraphQL API.
+Again, more on that later.
 
 ## Starting your new app
+
+Congratulations!
+You can now start Keystone instance:
 
 ```bash
 yarn keystone dev
 ```
 
-Wait till command line shows
-
+Wait until your terminal shows a link to the Admin UI:
 ```
 go to [http://localhost:3000](http://localhost:3000)
 ```
 
-Hurray! You now have a running keystone app with one list.
+Hurray! :tada:
+You now have a running Keystone with one list.
 
-Next lesson, we will add a new list so we can represent posts from users.
+Next lesson, we will add a second list for posts associated with our users.
 
 export default ({ children }) => <Markdown description="Learn how to get your first Keystone project up and running using the `create-keystone-app` Command Line Interface.">{children}</Markdown>
