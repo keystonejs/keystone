@@ -27,7 +27,7 @@ export function Walkthroughs() {
         href="/docs/walkthroughs/embedded-mode-with-sqlite-nextjs"
       >
         Learn how to run Keystone in the same folder as your frontend code and commit everything to
-        Git. You end up with a queryable GraphQL endpoint running live on Vercel for free.
+        Git. You end up with a queryable GraphQL endpoint running live on Vercel.
       </Well>
       <Well heading="Learning Keystone Lessons" href="/docs/walkthroughs/lesson-1">
         Learn how to run Keystone in the same folder as your frontend code and commit everything to
