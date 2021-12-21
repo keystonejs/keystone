@@ -25,6 +25,6 @@ model Task {
 
 model Person {
   id    String @id @default(cuid())
-  name  String @default("")
+  name  String @unique @default("")
   tasks Task[] @relation("Task_assignedTo")
 }
