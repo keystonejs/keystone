@@ -135,7 +135,7 @@ export const query = createQueryAPI(keystoneConfig, PrismaClient);
 const nodeAPIDTS = `import { KeystoneListsAPI } from '@keystone-6/core/types';
 import { Context } from './types';
 
-export const query: Context['query'];
+export const query: Context['query'];`;
 
 const makeVercelIncludeTheSQLiteDB = (
   cwd: string,
