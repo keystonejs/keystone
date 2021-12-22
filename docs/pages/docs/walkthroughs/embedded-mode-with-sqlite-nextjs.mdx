@@ -210,7 +210,7 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
 // Here we use the Lists API to load all the posts we want to display
 // The return of this function is provided to the `Home` component
 export async function getStaticProps() {
-  const posts = await query.Post.findMany({ query: 'id title slug' }) as Lists.Post.Item[];
+  const posts = await query.Post.findMany({ query: 'id title slug' }) as Pick<Lists.Post.Item, 'id' | 'title' | 'slug'>[];
   return {
     props: {
       posts
@@ -266,7 +266,7 @@ export async function getStaticProps({ params }: GetStaticPropsContext) {
   const post = (await query.Post.findOne({
     where: { slug: params!.slug as string },
     query: 'id title content',
-  })) as Lists.Post.Item | null;
+  })) as Pick<Lists.Post.Item, 'id' | 'title' | 'content'> | null;
   if (!post) {
     return { notFound: true };
   }
