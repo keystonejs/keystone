@@ -2,4 +2,5 @@
 '@keystone-6/core': patch
 ---
 
-Change types for 'list field types' so hooks can accept 'undefined' when appropriate
+Differentiate types for the field `resolveInput` hook and the list `resolveInput` hook.
+`undefined` may  be returned by field `resolveInput` hooks (indicates a no-op), but not for lists.
