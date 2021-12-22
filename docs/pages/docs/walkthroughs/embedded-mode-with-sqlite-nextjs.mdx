@@ -224,9 +224,7 @@ Now add a `/post` subdirectory in `/pages` and include the code below in `[slug]
 ```tsx
 // pages/post/[slug].tsx
 
-// pages/post/[slug].tsx
-
-import { GetStaticPathsResult, GetStaticPropsContext, InferGetStaticPropsType } from 'next';
+import { GetStaticPathsResult, GetStaticPropsContext } from 'next';
 import Link from 'next/link';
 
 import { query } from '.keystone/api';
