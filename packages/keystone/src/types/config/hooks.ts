@@ -46,7 +46,7 @@ export type FieldHooks<ListTypeInfo extends BaseListTypeInfo> = AddFieldPathArgT
   /**
    * Used to **modify the input** for create and update operations after default values and access control have been applied
    */
-  resolveInput?: resolveFieldInputHook<ListTypeInfo>;
+  resolveInput?: ResolveInputFieldHook<ListTypeInfo>;
   /**
    * Used to **validate the input** for create and update operations once all resolveInput hooks resolved
    */
@@ -109,7 +109,7 @@ type ResolveInputListHook<ListTypeInfo extends BaseListTypeInfo> = (
   | boolean
   | null;
 
-type resolveFieldInputHook<ListTypeInfo extends BaseListTypeInfo> = (
+type ResolveInputFieldHook<ListTypeInfo extends BaseListTypeInfo> = (
   args: ArgsForCreateOrUpdateOperation<ListTypeInfo> & CommonArgs<ListTypeInfo>
 ) =>
   | Promise<ListTypeInfo['inputs']['create'] | ListTypeInfo['inputs']['update']>
