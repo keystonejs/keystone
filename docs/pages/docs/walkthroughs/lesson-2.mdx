@@ -10,7 +10,7 @@ After the last lesson, we had installed keystone, and set up a new project with 
 list and database configuration.
 
 ```js
-// keystone.js
+// keystone.ts
 import { list, config } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
 
@@ -61,9 +61,11 @@ export default config({
 });
 ```
 
-You may find it handy at this point to move lists into its own file, and import it, but for this lesson, it should be fine to leave here.
+You may find it handy at this point to move lists into its own file, and import it, but for now we will leave it here.
 
-The next thing we want to do is add a second list. To do this, we need to add a second key to our lists object, which we are going to title `Post`, and then provide it at least one field. We are going to start by adding the `title` field, and a `content` field both as `text`.
+The next thing we want to do is add a second list.
+To do this, we need to add a second key to our lists object, which we are going to title `Post`, and then provide it at least one field.
+We are going to start by adding the `title` field, and a `content` field both as `text`.
 
 ```js{10-15}[4-9]
 import { text } from '@keystone-6/core/fields';
@@ -95,7 +97,7 @@ The important thing we need to model next with our list is a relationship betwee
 
 For this case, we are saying a post only has one author, but a user has many posts.
 
-To define this relationship, we will add a field to each list that defines how they relate to each other.
+To define this relationship, we will add a field to each list that defines how they relate to each other:
 
 ```js{8,15}[6-7,13-14]
 import { text, relationship } from '@keystone-6/core/fields';
