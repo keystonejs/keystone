@@ -101,8 +101,8 @@ type ResolveInputListHook<ListTypeInfo extends BaseListTypeInfo> = (
   | Promise<ListTypeInfo['inputs']['create'] | ListTypeInfo['inputs']['update']>
   | ListTypeInfo['inputs']['create']
   | ListTypeInfo['inputs']['update']
-  // TODO: I'm pretty sure this is wrong, but without these additional types you can't define a
-  // resolveInput hook for a field that returns a simple value (e.g timestamp)
+  // TODO: These were here to support field hooks before we created a separate type
+  // (see ResolveInputFieldHook), check whether they're safe to remove now
   | Record<string, any>
   | string
   | number
@@ -115,14 +115,14 @@ type ResolveInputFieldHook<ListTypeInfo extends BaseListTypeInfo> = (
   | Promise<ListTypeInfo['inputs']['create'] | ListTypeInfo['inputs']['update']>
   | ListTypeInfo['inputs']['create']
   | ListTypeInfo['inputs']['update']
-  // TODO: I'm pretty sure this is wrong, but without these additional types you can't define a
+  // TODO: These may or may not be correct, but without them you can't define a
   // resolveInput hook for a field that returns a simple value (e.g timestamp)
   | Record<string, any>
   | string
   | number
   | boolean
   | null
-  // Undefined is necessary for field input hooks, but we don't want it for list input hooks
+  // Fields need to be able to return `undefined` to say "don't touch this field"
   | undefined;
 
 type ValidateInputHook<ListTypeInfo extends BaseListTypeInfo> = (
