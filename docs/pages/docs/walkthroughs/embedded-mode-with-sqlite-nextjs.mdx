@@ -186,6 +186,12 @@ import Link from 'next/link';
 import { query } from '.keystone/api';
 import { Lists } from '.keystone/types';
 
+type Post = {
+  id: string;
+  title: string;
+  slug: string;
+};
+
 // Home receives a `posts` prop from `getStaticProps` below
 export default function Home({ posts }: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
@@ -210,7 +216,7 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
 // Here we use the Lists API to load all the posts we want to display
 // The return of this function is provided to the `Home` component
 export async function getStaticProps() {
-  const posts = await query.Post.findMany({ query: 'id title slug' }) as Lists.Post.Item[];
+  const posts = await query.Post.findMany({ query: 'id title slug' }) as Post[];
   return {
     props: {
       posts
@@ -224,15 +230,19 @@ Now add a `/post` subdirectory in `/pages` and include the code below in `[slug]
 ```tsx
 // pages/post/[slug].tsx
 
-// pages/post/[slug].tsx
-
 import { GetStaticPathsResult, GetStaticPropsContext, InferGetStaticPropsType } from 'next';
 import Link from 'next/link';
 
 import { query } from '.keystone/api';
 import { Lists } from '.keystone/types';
 
-export default function PostPage({ post }: { post: Lists.Post.Item }) {
+type Post = {
+  id: string;
+  title: string;
+  content: string;
+};
+
+export default function PostPage({ post }: { post: Post }) {
   return (
     <div>
       <main style={{ margin: '3rem' }}>
@@ -251,12 +261,11 @@ export default function PostPage({ post }: { post: Lists.Post.Item }) {
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const posts = (await query.Post.findMany({
     query: `slug`,
-  })) as Lists.Post.Item[];
+  })) as { slug: string }[];
 
   const paths = posts
-    .map(post => post.slug)
-    .filter((slug): slug is string => !!slug)
-    .map(slug => `/post/${slug}`);
+    .filter(({ slug }) => !!slug)
+    .map(({ slug }) => `/post/${slug}`);
 
   return {
     paths,
@@ -268,7 +277,7 @@ export async function getStaticProps({ params }: GetStaticPropsContext) {
   const post = (await query.Post.findOne({
     where: { slug: params!.slug as string },
     query: 'id title content',
-  })) as Lists.Post.Item | null;
+  })) as Post | null;
   if (!post) {
     return { notFound: true };
   }
