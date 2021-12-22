@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/prisma-utils",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "main": "dist/keystone-6-prisma-utils.cjs.js",
   "dependencies": {

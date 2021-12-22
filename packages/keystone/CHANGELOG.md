@@ -1,5 +1,30 @@
 # @keystone-next/keystone
 
+## 1.0.1
+
+### Patch Changes
+
+- [#7091](https://github.com/keystonejs/keystone/pull/7091) [`5ac8ef453`](https://github.com/keystonejs/keystone/commit/5ac8ef4533198ed8aa732131959ddd09758bda8d) Thanks [@Noviny](https://github.com/Noviny)! - Page names now reflect the page you are on: Item view shows the item's label, list view shows the list name, other pages show 'Keystone'
+
+* [#7064](https://github.com/keystonejs/keystone/pull/7064) [`54c056c58`](https://github.com/keystonejs/keystone/commit/54c056c58af60d2ab86fd5590df5544e0a0132f9) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Refactoring of TypeScript type generation
+
+- [#7029](https://github.com/keystonejs/keystone/pull/7029) [`53f3ca6fd`](https://github.com/keystonejs/keystone/commit/53f3ca6fdbef16b305a41240f107754ad6823ff7) Thanks [@rohan-deshpande](https://github.com/rohan-deshpande)! - Explicitly disable caching for redirect responses in the Admin UI
+
+* [#7069](https://github.com/keystonejs/keystone/pull/7069) [`c51f8f7a0`](https://github.com/keystonejs/keystone/commit/c51f8f7a0b18fa53d45c026664454dbb6cd60694) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed `You must await server.start() before calling server.createHandler()` error when using the `generateNextGraphqlAPI` experimental option.
+
+- [#7062](https://github.com/keystonejs/keystone/pull/7062) [`30b3cacb0`](https://github.com/keystonejs/keystone/commit/30b3cacb08601a8db445e3c7be85dee10d0d2958) Thanks [@dcousens](https://github.com/dcousens)! - Updated prisma monorepo to [v3.6.0 (minor)](https://github.com/prisma/prisma/releases/tag/3.6.0).
+
+* [#7052](https://github.com/keystonejs/keystone/pull/7052) [`911972098`](https://github.com/keystonejs/keystone/commit/911972098c1bdaa6e64a7aee028b3446e00106e5) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed setting `db.enableLogging` to `false` erroring
+
+- [#7073](https://github.com/keystonejs/keystone/pull/7073) [`1353c6290`](https://github.com/keystonejs/keystone/commit/1353c62906ee63d8f4006193f73357168208078c) Thanks [@SerWonka](https://github.com/SerWonka)! - Fix Lists import in artifacts types (changed in https://github.com/keystonejs/keystone/pull/7001)
+
+* [#7092](https://github.com/keystonejs/keystone/pull/7092) [`1eed5d546`](https://github.com/keystonejs/keystone/commit/1eed5d54668757eb28cb3c8460631125d20b6722) Thanks [@Noviny](https://github.com/Noviny)! - Keystone favicon is now displayed on keystone sites
+
+- [#7065](https://github.com/keystonejs/keystone/pull/7065) [`8c7a54453`](https://github.com/keystonejs/keystone/commit/8c7a54453e740906c18222244f86c3d59ddd54a4) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removed `fast-glob` dependency
+
+* [#7111](https://github.com/keystonejs/keystone/pull/7111) [`888cf021a`](https://github.com/keystonejs/keystone/commit/888cf021a1beee64937c00bc5b58f8b3628dbdd4) Thanks [@Noviny](https://github.com/Noviny)! - Differentiate types for the field `resolveInput` hook and the list `resolveInput` hook.
+  `undefined` may be returned by field `resolveInput` hooks (indicates a no-op), but not for lists.
+
 ## 1.0.0
 
 ### Major Changes

@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/auth",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "main": "dist/keystone-6-auth.cjs.js",
   "module": "dist/keystone-6-auth.esm.js",
@@ -19,11 +19,11 @@
     "graphql": "^15.8.0"
   },
   "devDependencies": {
-    "@keystone-6/core": "^1.0.0",
+    "@keystone-6/core": "^1.0.1",
     "react": "^17.0.2"
   },
   "peerDependencies": {
-    "@keystone-6/core": "^1.0.0",
+    "@keystone-6/core": "^1.0.1",
     "react": "^17.0.2"
   },
   "preconstruct": {

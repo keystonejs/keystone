@@ -1,5 +1,11 @@
 # @keystone-next/prisma-utils
 
+## 0.0.1
+
+### Patch Changes
+
+- [#7062](https://github.com/keystonejs/keystone/pull/7062) [`30b3cacb0`](https://github.com/keystonejs/keystone/commit/30b3cacb08601a8db445e3c7be85dee10d0d2958) Thanks [@dcousens](https://github.com/dcousens)! - Updated prisma monorepo to [v3.6.0 (minor)](https://github.com/prisma/prisma/releases/tag/3.6.0).
+
 ## 2.0.0
 
 ### Major Changes
