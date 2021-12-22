@@ -99,8 +99,9 @@ To create and edit blog records in Keystone’s Admin UI, add a `keystone.ts` [c
 
 import { config, list } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
+import { Lists } from '.keystone/types';
 
-const Post = list({
+const Post: Lists.Post = list({
   fields: {
     title: text({ validation: { isRequired: true } }),
     slug: text({ isIndexed: 'unique', isFilterable: true }),
@@ -181,37 +182,40 @@ In order to query Keystone content we need to use the [`getStaticProps`](https:/
 import { InferGetStaticPropsType } from 'next';
 import Link from 'next/link';
 
-// Import the generated Lists API from Keystone
+// Import the generated Lists API and types from Keystone
 import { query } from '.keystone/api';
+import { Lists } from '.keystone/types';
 
 // Home receives a `posts` prop from `getStaticProps` below
-export default function Home({
-  posts,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function Home({ posts }: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <div>
-      <main style={{margin: "3rem"}}>
-      <h1>Hello World! 👋🏻 </h1>
-      <ul>
-        {/* Render each post with a link to the content page */}
-        {posts.map(post => (
-          <li key={post.id}>
-            <Link href={`/post/${post.slug}`}>
-              <a>{post.title}</a>
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <main style={{ margin: '3rem' }}>
+        <h1>Hello World! 👋🏻 </h1>
+        <ul>
+          {/* Render each post with a link to the content page */}
+          {posts.map(post => (
+            <li key={post.id}>
+              <Link href={`/post/${post.slug}`}>
+                <a>{post.title}</a>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </main>
     </div>
-  )
+  );
 }
 
 // Here we use the Lists API to load all the posts we want to display
 // The return of this function is provided to the `Home` component
 export async function getStaticProps() {
-  const posts = await query.Post.findMany({ query: 'id title slug' });
-  return { props: { posts } };
+  const posts = await query.Post.findMany({ query: 'id title slug' }) as Lists.Post.Item[];
+  return {
+    props: {
+      posts
+    }
+  };
 }
 ```
 
@@ -220,36 +224,34 @@ Now add a `/post` subdirectory in `/pages` and include the code below in `[slug]
 ```tsx
 // pages/post/[slug].tsx
 
-import {
-  GetStaticPathsResult,
-  GetStaticPropsContext,
-  InferGetStaticPropsType,
-} from 'next';
-import Link from 'next/link';
-import { query } from '.keystone/api';
+// pages/post/[slug].tsx
 
-export default function PostPage({
-  post,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
+import { GetStaticPathsResult, GetStaticPropsContext, InferGetStaticPropsType } from 'next';
+import Link from 'next/link';
+
+import { query } from '.keystone/api';
+import { Lists } from '.keystone/types';
+
+export default function PostPage({ post }: { post: Lists.Post.Item }) {
   return (
     <div>
-      <main style={{margin: "3rem"}}>
-      <div>
-        <Link href="/">
-          <a>&larr; back home</a>
-        </Link>
-      </div>
-      <h1>{post.title}</h1>
-      <p>{post.content}</p>
+      <main style={{ margin: '3rem' }}>
+        <div>
+          <Link href="/">
+            <a>&larr; back home</a>
+          </Link>
+        </div>
+        <h1>{post.title}</h1>
+        <p>{post.content}</p>
       </main>
     </div>
   );
 }
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
-  const posts = await query.Post.findMany({
+  const posts = (await query.Post.findMany({
     query: `slug`,
-  });
+  })) as Lists.Post.Item[];
 
   const paths = posts
     .map(post => post.slug)
@@ -262,13 +264,14 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   };
 }
 
-export async function getStaticProps({
-  params,
-}: GetStaticPropsContext) {
-  const post = await query.Post.findOne({
+export async function getStaticProps({ params }: GetStaticPropsContext) {
+  const post = (await query.Post.findOne({
     where: { slug: params!.slug as string },
     query: 'id title content',
-  });
+  })) as Lists.Post.Item | null;
+  if (!post) {
+    return { notFound: true };
+  }
   return { props: { post } };
 }
 ```
