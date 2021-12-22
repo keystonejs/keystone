@@ -177,6 +177,8 @@ Go ahead and add two post entries using your Admin UI, ensuring you only use `hy
 In order to query Keystone content we need to use the [`getStaticProps`](https://Next.js.org/docs/basic-features/data-fetching#getstaticprops-static-generation) and [`getStaticPaths`](https://Next.js.org/docs/basic-features/data-fetching#getstaticpaths-static-generation) functions in Next.js. Let’s overwrite the contents of `pages/index.tsx` with the following to query posts from Keystone:
 
 ```tsx
+// pages/index.tsx
+
 import { InferGetStaticPropsType } from 'next';
 import Link from 'next/link';
 
