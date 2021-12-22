@@ -29,9 +29,13 @@ export function Walkthroughs() {
         Learn how to run Keystone in the same folder as your frontend code and commit everything to
         Git. You end up with a queryable GraphQL endpoint running live on Vercel.
       </Well>
-      <Well heading="Learning Keystone Lessons" href="/docs/walkthroughs/lesson-1">
-        Learn how to run Keystone in the same folder as your frontend code and commit everything to
-        Git. You end up with a queryable GraphQL endpoint running live on Vercel for free.
+      <Well heading="Learning Keystone Lesson 1" href="/docs/walkthroughs/lesson-1">
+        Set up Keystone from scratch, and learn about the minimum configuration you need to run
+        Keystone. At the end you'll have a small keystone project with a `User` list.
+      </Well>
+      <Well heading="Learning Keystone Lesson 2" href="/docs/walkthroughs/lesson-2">
+        Expand on what we looked through in lesson 1, by adding a more complex list with some new
+        fields. We will explore adding a `Post` list and using relationships in keystone
       </Well>
     </div>
   );
