@@ -111,7 +111,7 @@ export const text =
             }
             if (validation?.length?.max !== undefined && val.length > validation.length.max) {
               args.addValidationError(
-                `${fieldLabel} must be no longer than ${validation.length.min} characters`
+                `${fieldLabel} must be no longer than ${validation.length.max} characters`
               );
             }
             if (validation?.match && !validation.match.regex.test(val)) {

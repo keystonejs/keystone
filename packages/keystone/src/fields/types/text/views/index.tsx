@@ -155,7 +155,7 @@ function validate(value: TextValue, validation: Validation, fieldLabel: string):
     }
   }
   if (validation.length.max !== null && val.length > validation.length.max) {
-    messages.push(`${fieldLabel} must be no longer than ${validation.length.min} characters`);
+    messages.push(`${fieldLabel} must be no longer than ${validation.length.max} characters`);
   }
   if (validation.match && !validation.match.regex.test(val)) {
     messages.push(
