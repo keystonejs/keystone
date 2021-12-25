@@ -66,7 +66,7 @@ export const Notice = ({
           flex: 1,
           flexDirection: 'row',
           outline: 0,
-          'white-space': 'pre-wrap',
+          whiteSpace: 'pre-wrap',
           ...styles.box,
         }}
         tabIndex={0}
