@@ -11,7 +11,7 @@ The return values of this API are **internal item** objects, which are suitable 
 
 Refer to the [internal items guide](../guides/internal-items) for details on how to work with internal items in Keystone.
 
-This API executes the [`access control`](../guides/access-control) rules and [`hooks`](../guides/hooks) defined in your system.
+This API executes the [`access control`](../guides/auth-and-access-control) rules and [`hooks`](../guides/hooks) defined in your system.
 To bypass these, you can directly use the Prisma Client at [`context.prisma`](./context#database-access).
 
 For each list in your system the following API is available at `context.db.<listName>`.

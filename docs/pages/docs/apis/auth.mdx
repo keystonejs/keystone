@@ -132,7 +132,7 @@ By default they are disabled.
 This option adds support for setting a custom `session.data` value based on the authenticated user.
 
 The authentication mutations will set the values `{ listKey, itemId }` on the `context.session` object.
-You will often need to know more than just the `itemId` of the authenticated user, such as when performing [access-control](../guides/access-control) or using [hooks](../guides/hooks).
+You will often need to know more than just the `itemId` of the authenticated user, such as when performing [access-control](../guides/auth-and-access-control) or using [hooks](../guides/hooks).
 Configuring `sessionData` will add an `session.data` based on the `itemId`, populated by the fields given in `sessionData.query`.
 
 The value is a GraphQL query string which indicates which fields should be populated on the `session.data` object
