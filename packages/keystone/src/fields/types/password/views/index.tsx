@@ -40,7 +40,7 @@ function validate(value: Value, validation: Validation, fieldLabel: string): str
       return `${fieldLabel} must be at least ${validation.length.min} characters long`;
     }
     if (validation.length.max !== null && val.length > validation.length.max) {
-      return `${fieldLabel} must be no longer than ${validation.length.min} characters`;
+      return `${fieldLabel} must be no longer than ${validation.length.max} characters`;
     }
     if (validation.match && !validation.match.regex.test(val)) {
       return validation.match.explanation;
