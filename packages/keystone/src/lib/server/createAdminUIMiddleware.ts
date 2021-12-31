@@ -18,9 +18,10 @@ export const createAdminUIMiddleware = async (
 ) => {
   /** We do this to stop webpack from bundling next inside of next */
   const { ui, graphql, session } = config;
+  const basePath = ui?.path;
   const _next = 'next';
   const next = require(_next);
-  const app = next({ dev, dir: projectAdminPath });
+  const app = basePath ? next({ dev, dir: projectAdminPath, conf: { basePath } }) : next({ dev, dir: projectAdminPath });
   const handle = app.getRequestHandler();
   await app.prepare();
 

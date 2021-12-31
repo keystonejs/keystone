@@ -73,8 +73,7 @@ export type AdminUIConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   /** An array of page routes that can be accessed without passing the isAccessAllowed check */
   publicPages?: readonly string[];
   /** The basePath for the Admin UI App */
-  // FIXME: currently unused
-  // path?: string;
+  path?: string;
   getAdditionalFiles?: readonly ((
     config: KeystoneConfig<TypeInfo>
   ) => MaybePromise<readonly AdminFileToWrite[]>)[];
