@@ -15,7 +15,7 @@
     "@keystone-6/auth": "*",
     "@keystone-6/core": "*",
     "@keystone-6/fields-document": "*",
-    "apollo-server-types": "^3.4.0",
+    "apollo-server-types": "^3.5.0",
     "cookie-signature": "^1.1.0",
     "cuid": "^2.1.8",
     "globby": "^11.0.4",
