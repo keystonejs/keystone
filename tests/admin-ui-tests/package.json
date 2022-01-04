@@ -14,7 +14,7 @@
     "@keystone-6/auth": "*",
     "@keystone-6/core": "*",
     "execa": "^5.1.1",
-    "express": "^4.17.1",
+    "express": "^4.17.2",
     "graphql": "^15.8.0",
     "playwright": "^1.17.1",
     "treekill": "^1.0.0"

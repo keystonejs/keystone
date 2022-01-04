@@ -9,7 +9,7 @@
     "build": "keystone build"
   },
   "dependencies": {
-    "@babel/runtime": "^7.16.3",
+    "@babel/runtime": "^7.16.7",
     "@keystone-6/auth": "^1.0.0",
     "@keystone-6/core": "^1.0.0",
     "@keystone-6/document-renderer": "^1.0.0",
@@ -18,7 +18,7 @@
     "@keystone-ui/fields": "^6.0.0",
     "@keystone-ui/icons": "^5.0.0",
     "@keystone-ui/tooltip": "^5.0.0",
-    "@types/react": "^17.0.37",
+    "@types/react": "^17.0.38",
     "graphql": "^15.8.0",
     "graphql-tag": "^2.12.6",
     "react": "^17.0.2",
