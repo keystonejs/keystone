@@ -1,4 +1,4 @@
-# @keystone-next/example-virtual-field
+# @keystone-6/example-virtual-field
 
 ## 0.0.1
 

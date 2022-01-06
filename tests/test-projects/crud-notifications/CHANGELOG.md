@@ -1,4 +1,4 @@
-# @keystone-next/test-projects-crud-notifications
+# @keystone-6/test-projects-crud-notifications
 
 ## 1.0.1
 

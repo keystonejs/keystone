@@ -1,4 +1,4 @@
-# @keystone-next/example-next-lite
+# @keystone-6/example-next-lite
 
 ## 0.0.1
 

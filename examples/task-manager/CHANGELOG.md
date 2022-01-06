@@ -1,4 +1,4 @@
-# @keystone-next/example-task-manager
+# @keystone-6/example-task-manager
 
 ## 0.0.1
 

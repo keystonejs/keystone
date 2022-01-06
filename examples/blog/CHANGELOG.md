@@ -1,4 +1,4 @@
-# @keystone-next/example-blog
+# @keystone-6/example-blog
 
 ## 0.0.1
 

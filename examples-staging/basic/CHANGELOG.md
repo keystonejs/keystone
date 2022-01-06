@@ -1,4 +1,4 @@
-# @keystone-next/example-app-basic
+# @keystone-6/example-app-basic
 
 ## 0.0.1
 

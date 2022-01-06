@@ -1,4 +1,4 @@
-# @keystone-next/example-with-auth
+# @keystone-6/example-with-auth
 
 ## 0.0.1
 

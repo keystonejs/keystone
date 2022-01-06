@@ -1,4 +1,4 @@
-# @keystone-next/example-extend-graphql-schema
+# @keystone-6/example-extend-graphql-schema
 
 ## 0.0.1
 

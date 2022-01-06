@@ -1,4 +1,4 @@
-# @keystone-next/example-ecommerce
+# @keystone-6/example-ecommerce
 
 ## 0.0.1
 

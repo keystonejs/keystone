@@ -1,4 +1,4 @@
-# @keystone-next/example-default-values
+# @keystone-6/example-default-values
 
 ## 0.0.1
 

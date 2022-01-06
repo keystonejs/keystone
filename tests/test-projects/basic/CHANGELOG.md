@@ -1,4 +1,4 @@
-# @keystone-next/test-projects-basic
+# @keystone-6/test-projects-basic
 
 ## 0.0.1
 

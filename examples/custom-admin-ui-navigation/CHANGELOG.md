@@ -1,4 +1,4 @@
-# @keystone-next/example-custom-navigation-component
+# @keystone-6/example-custom-navigation-component
 
 ## 0.0.1
 
