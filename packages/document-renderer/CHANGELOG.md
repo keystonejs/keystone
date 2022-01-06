@@ -1,10 +1,12 @@
-# @keystone-next/document-renderer
+# @keystone-6/document-renderer
 
 ## 1.0.0
 
 ### Major Changes
 
 - [#7028](https://github.com/keystonejs/keystone/pull/7028) [`3c7a581c1`](https://github.com/keystonejs/keystone/commit/3c7a581c1e53ae49c9f74509de3927ebf2703bde) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Released Keystone 6
+
+# @keystone-next/document-renderer
 
 ## 5.0.0
 
