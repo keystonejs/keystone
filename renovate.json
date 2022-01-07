@@ -2,9 +2,11 @@
   "extends": ["config:base"],
   "ignorePaths": ["packages/build-field-tyes/__fixtures__/**/*"],
   "lockFileMaintenance": { "enabled": true },
-  "separateMinorPatch": true,
+  "separateMinorPatch": false,
+  "separateMajorMinor": true,
   "prConcurrentLimit": 0,
-  "baseBranches": ["renovating"],
+  "prHourlyLimit": 3,
+  "baseBranches": ["main"],
   "packageRules": [
     {
       "packagePatterns": [
@@ -20,7 +22,7 @@
       "groupName": "patch dependencies"
     }
   ],
-  "rangeStrategy": "bump",
+  "rangeStrategy": "update-lockfile",
   "schedule": ["before 7am on Tuesday", "before 7am on Wednesday"],
   "timezone": "Australia/Sydney",
   "updateNotScheduled": false
