@@ -1,4 +1,4 @@
-# @keystone-next/example-rest-api
+# @keystone-6/example-rest-api
 
 ## 0.0.1
 

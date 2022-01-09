@@ -1,4 +1,4 @@
-# @keystone-next/keystone
+# @keystone-6/core
 
 ## 1.0.1
 
@@ -61,6 +61,7 @@
 
 - [#7005](https://github.com/keystonejs/keystone/pull/7005) [`fb7844ab5`](https://github.com/keystonejs/keystone/commit/fb7844ab50c1d4a6d14b2ad46a568665f6661921) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Improve console output for when you need to restart the server because of schema changes
 
+# @keystone-next/keystone
 ## 29.0.0
 
 ### Major Changes

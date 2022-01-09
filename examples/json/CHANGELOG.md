@@ -1,4 +1,4 @@
-# @keystone-next/example-json
+# @keystone-6/example-json
 
 ## 0.0.1
 

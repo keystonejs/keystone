@@ -1,4 +1,4 @@
-# @keystone-next/example-document-field
+# @keystone-6/example-document-field
 
 ## 0.0.1
 

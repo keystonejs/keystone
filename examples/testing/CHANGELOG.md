@@ -1,4 +1,4 @@
-# @keystone-next/example-testing
+# @keystone-6/example-testing
 
 ## 0.0.1
 

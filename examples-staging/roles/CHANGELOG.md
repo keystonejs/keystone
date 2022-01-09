@@ -1,4 +1,4 @@
-# @keystone-next/example-roles
+# @keystone-6/example-roles
 
 ## 0.0.1
 

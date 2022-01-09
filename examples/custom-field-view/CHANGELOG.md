@@ -1,4 +1,4 @@
-# @keystone-next/example-custom-field-view
+# @keystone-6/example-custom-field-view
 
 ## 0.0.1
 

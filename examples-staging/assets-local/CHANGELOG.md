@@ -1,4 +1,4 @@
-# @keystone-next/example-assets-local
+# @keystone-6/example-assets-local
 
 ## 0.0.1
 

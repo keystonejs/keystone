@@ -1,4 +1,4 @@
-# @keystone-next/example-sandbox
+# @keystone-6/example-sandbox
 
 ## 0.0.1
 

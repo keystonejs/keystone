@@ -1,4 +1,4 @@
-# @keystone-next/test-projects-live-reloading
+# @keystone-6/test-projects-live-reloading
 
 ## 1.0.1
 

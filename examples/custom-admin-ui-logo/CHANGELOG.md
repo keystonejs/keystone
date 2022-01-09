@@ -1,4 +1,4 @@
-# @keystone-next/example-custom-admin-ui-logo
+# @keystone-6/example-custom-admin-ui-logo
 
 ## 0.0.1
 

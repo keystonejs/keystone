@@ -1,4 +1,4 @@
-# @keystone-next/example-assets-cloud
+# @keystone-6/example-assets-cloud
 
 ## 0.0.1
 
