@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { useState, Fragment, FormEvent, useRef, useEffect, useMemo } from 'react';
+import { useState, Fragment, FormEvent, useRef, useEffect } from 'react';
 
 import { jsx, H1, Stack, VisuallyHidden, Center } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
