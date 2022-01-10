@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/auth",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "license": "MIT",
   "main": "dist/keystone-6-auth.cjs.js",
   "module": "dist/keystone-6-auth.esm.js",
