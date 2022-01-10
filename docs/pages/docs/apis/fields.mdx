@@ -495,6 +495,8 @@ Options:
 - `defaultValue` (default: `db.isNullable === true ? undefined : ''`): This value will be used for the field when creating items if no explicit value is set.
 - `db.map`: Adds a [Prisma `@map`](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#map) attribute to this field which changes the column name in the database
 - `db.isNullable` (default: `false`): If `true` then this field will be made nullable in the database and it will be possible to set as `null`.
+  Note the nullability defaults for `text` fields are different from those of most other scalar fields.
+  These differences, and the rational for them, are examined in detail [on GitHub](https://github.com/keystonejs/keystone/discussions/7158).
 - `validation.isRequired` (default: `false`): If `true` then this field can never be set to `null` or an empty string.
   Unlike `db.isNullable`, this will require that a value with at least 1 character is provided in the Admin UI.
   It will also validate this when creating and updating an item through the GraphQL API but it will not enforce it at the database level.
