@@ -24,6 +24,7 @@ import { LoadingDots } from '@keystone-ui/loading';
 import { guessEmailFromValue, validEmail } from '../lib/emailHeuristics';
 import { IconTwitter, IconGithub } from '../components/Icons';
 import { SigninContainer } from '../components/SigninContainer';
+import { useRedirect } from '../lib/useFromRedirect';
 
 const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup';
 
@@ -33,6 +34,8 @@ const Welcome = ({ value }: { value: any }) => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const redirect = useRedirect();
+
   const onSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     setError(null);
@@ -65,7 +68,7 @@ const Welcome = ({ value }: { value: any }) => {
                 setLoading(false);
               });
             } else {
-              router.push((router.query.from as string | undefined) || '/');
+              router.push(redirect);
             }
           })
           .catch(err => {
@@ -80,7 +83,7 @@ const Welcome = ({ value }: { value: any }) => {
         return;
       }
     }
-    return router.push((router.query.from as string | undefined) || '/');
+    return router.push(redirect);
   };
   return (
     <Stack gap="large">
@@ -195,6 +198,7 @@ const InitPage = ({ fieldPaths, listKey, enableWelcome }: InitPageProps) => {
   }`);
   const reinitContext = useReinitContext();
   const router = useRouter();
+  const redirect = useRedirect();
   const rawKeystone = useRawKeystone();
 
   useEffect(() => {
@@ -210,10 +214,10 @@ const InitPage = ({ fieldPaths, listKey, enableWelcome }: InitPageProps) => {
         setMode('welcome');
       } else {
         // otherwise we route them through to the admin dashboard
-        router.push((router.query.from as string | undefined) || '/');
+        router.push(redirect);
       }
     }
-  }, [rawKeystone.authenticatedItem, enableWelcome, router]);
+  }, [rawKeystone.authenticatedItem, enableWelcome, router, redirect]);
 
   if (rawKeystone.authenticatedItem.state === 'authenticated' && !enableWelcome) {
     return (

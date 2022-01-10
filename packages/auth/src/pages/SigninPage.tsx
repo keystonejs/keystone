@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { useState, Fragment, FormEvent, useRef, useEffect } from 'react';
+import { useState, Fragment, FormEvent, useRef, useEffect, useMemo } from 'react';
 
 import { jsx, H1, Stack, VisuallyHidden, Center } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
@@ -13,6 +13,7 @@ import { useRawKeystone, useReinitContext } from '@keystone-6/core/admin-ui/cont
 import { useRouter } from '@keystone-6/core/admin-ui/router';
 import { LoadingDots } from '@keystone-ui/loading';
 import { SigninContainer } from '../components/SigninContainer';
+import { useRedirect } from '../lib/useFromRedirect';
 
 type SigninPageProps = {
   identityField: string;
@@ -58,12 +59,14 @@ export const SigninPage = ({
   const reinitContext = useReinitContext();
   const router = useRouter();
   const rawKeystone = useRawKeystone();
+  const redirect = useRedirect();
 
+  // This useEffect specifically handles ending up on the signin page from a SPA navigation
   useEffect(() => {
     if (rawKeystone.authenticatedItem.state === 'authenticated') {
-      router.push((router.query.from as string | undefined) || '/');
+      router.push(redirect);
     }
-  }, [rawKeystone.authenticatedItem, router]);
+  }, [rawKeystone.authenticatedItem, router, redirect]);
 
   if (rawKeystone.authenticatedItem.state === 'authenticated') {
     return (
@@ -96,7 +99,7 @@ export const SigninPage = ({
               return;
             }
             reinitContext();
-            router.push((router.query.from as string | undefined) || '/');
+            router.push(redirect);
           }
         }}
       >

@@ -114,7 +114,8 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     }
 
     if (!session && pathname !== '/signin') {
-      return { kind: 'redirect', to: `/signin?from=${encodeURIComponent(req!.url!)}` };
+      let to = pathname === '/' ? '/signin' : `/signin?from=${encodeURIComponent(req!.url!)}`;
+      return { kind: 'redirect', to };
     }
   };
 
