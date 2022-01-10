@@ -1,5 +1,12 @@
 # @keystone-6/auth
 
+## 1.0.2
+
+### Patch Changes
+
+- [`96bf833a2`](https://github.com/keystonejs/keystone/commit/96bf833a23b1a0a5d365cf394467a943cc481b38) Thanks [@Noviny](https://github.com/Noviny)! - When redirecting to the homepage, the `from` query parameter unnecessarily displayed `=/`.
+  This patch fixes that so it is only provided as a query parameter when needed.
+
 ## 1.0.1
 
 ### Patch Changes
