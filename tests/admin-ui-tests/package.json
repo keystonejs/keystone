@@ -13,7 +13,7 @@
   "devDependencies": {
     "@keystone-6/auth": "*",
     "@keystone-6/core": "*",
-    "execa": "^5.1.1",
+    "execa": "^6.0.0",
     "express": "^4.17.1",
     "graphql": "^15.8.0",
     "playwright": "^1.17.1",
