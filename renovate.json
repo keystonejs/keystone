@@ -1,6 +1,5 @@
 {
   "extends": ["config:base"],
-  "ignorePaths": ["packages/build-field-tyes/__fixtures__/**/*"],
   "lockFileMaintenance": { "enabled": true },
   "separateMinorPatch": false,
   "separateMajorMinor": true,
@@ -16,13 +15,9 @@
         "^slate"
       ],
       "enabled": false
-    },
-    {
-      "updateTypes": ["patch"],
-      "groupName": "patch dependencies"
     }
   ],
-  "rangeStrategy": "update-lockfile",
+  "rangeStrategy": "replace",
   "schedule": ["before 7am on Tuesday", "before 7am on Wednesday"],
   "timezone": "Australia/Sydney",
   "updateNotScheduled": false
