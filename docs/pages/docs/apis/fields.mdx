@@ -519,7 +519,7 @@ Options:
 
 !> **\*Warning** Unlike with other `keystone` fields, `db.isNullable` is defaulted to `false` for the text field.
 This is primarily in the interest of not having to make assumptions about how a `null` value can be represented in a text field in the Admin-UI in the default case.
-Please our [technical discussion](https://github.com/keystonejs/keystone/discussions/7158) on the topic for an in-depth explanation.
+These differences, and the rationale for them, are examined in detail [on GitHub](https://github.com/keystonejs/keystone/discussions/7158).
 You can opt into this behaviour by explicitly setting `isNullable: true`.
 
 ```typescript
