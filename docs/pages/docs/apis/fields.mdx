@@ -517,14 +517,10 @@ Options:
   This is only allowed when you have no create access control because otherwise, the item will always fail access control
   if a user doesn't have access to create the particular field regardless of whether or not they specify the field in the create.
 
-!> **\*Gotchas** Unlike with other `keystone` fields, `db.isNullable` is defaulted to `false` for the text field.
-This is primarily in the interest of not having to make assumptions about how a `null` value
-can be represented in a text field in the Admin-UI in the default case.
-For example if the text field were `nullable` by default, the text-field component would need to represent it as `''` in the Admin UI,
-but this would mean either overloading `''` to mean both `null` and an empty string,
-or having to find another representation for an empty string. We opted out of this problem in the default case as in our experience
-it is often not what users want. However if you understand the trade-offs you can opt into this behaviour by
-explicitly setting `isNullable: true`.
+!> **\*Warning** Unlike with other `keystone` fields, `db.isNullable` is defaulted to `false` for the text field.
+This is primarily in the interest of not having to make assumptions about how a `null` value can be represented in a text field in the Admin-UI in the default case.
+Please our [technical discussion](https://github.com/keystonejs/keystone/discussions/7158) on the topic for an in-depth explanation.
+You can opt into this behaviour by explicitly setting `isNullable: true`.
 
 ```typescript
 import { config, list } from '@keystone-6/core';
