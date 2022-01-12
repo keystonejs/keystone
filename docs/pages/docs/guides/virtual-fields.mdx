@@ -18,7 +18,7 @@ In this guide we'll introduce the syntax for adding virtual fields, and show how
 We'll start with a list called `Example` and create a virtual field called `hello`.
 
 ```typescript
-import { config, createSchema, list, graphql } from '@keystone-6/core';
+import { config, createSchema, graphql, list } from '@keystone-6/core';
 import { virtual } from '@keystone-6/core/fields';
 
 export default config({
@@ -94,7 +94,7 @@ export default config({
         author: relationship({ ref: 'Author', many: false }),
         authorName: virtual({
           field: graphql.field({
-          type: graphql.String,
+            type: graphql.String,
             async resolve(item, args, context) {
               const { author } = await context.query.Post.findOne({
                 where: { id: item.id.toString() },
