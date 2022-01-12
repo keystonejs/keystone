@@ -10,6 +10,7 @@ export type ListSchemaConfig = Record<string, ListConfig<any, BaseFields<BaseLis
 
 export type IdFieldConfig = {
   kind: 'cuid' | 'uuid' | 'autoincrement';
+  useBigInt?: boolean;
 };
 
 export type ListConfig<

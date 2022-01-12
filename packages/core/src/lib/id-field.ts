@@ -28,6 +28,16 @@ const idParsers = {
     }
     throw userInputError('Only an integer can be passed to id filters');
   },
+  autoincrementBigInt(val: string | null) {
+    if (val === null) {
+      throw userInputError('Only BigInt integer can be passed to id filters');
+    }
+    const parsed = BigInt(val);
+    if (typeof parsed === 'bigint') {
+      return parsed;
+    }
+    throw userInputError('Only BigInt integer can be passed to id filters');
+  },
   cuid(val: string | null) {
     // isCuid is just "it's a string and it starts with c"
     // https://github.com/ericelliott/cuid/blob/215b27bdb78d3400d4225a4eeecb3b71891a5f6f/index.js#L69-L73
@@ -108,7 +118,9 @@ export const idFieldType =
     return fieldType({
       kind: 'scalar',
       mode: 'required',
-      scalar: config.kind === 'autoincrement' ? 'Int' : 'String',
+      scalar: config.kind === 'autoincrement'
+        ? config.useBigInt ? 'BigInt' : 'Int'
+        : 'String',
       nativeType: meta.provider === 'postgresql' && config.kind === 'uuid' ? 'Uuid' : undefined,
       default: { kind: config.kind },
     })({
