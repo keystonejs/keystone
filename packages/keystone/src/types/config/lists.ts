@@ -27,7 +27,7 @@ export type ListConfig<
   /**
    * Controls what data users of the Admin UI and GraphQL can access and change
    * @default true
-   * @see https://www.keystonejs.com/guides/access-control
+   * @see https://www.keystonejs.com/guides/auth-and-access-control
    */
   access?: ListAccessControl<ListTypeInfo>;
 

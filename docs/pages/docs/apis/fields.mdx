@@ -70,7 +70,7 @@ Options:
   If `true` (default), the GraphQL API and Admin UI will support ordering by this field.
   If a function is provided, it will be evaluated dynamically each time this field is used as an ordering field in a GraphQL operation.
   If the function returns `false`, the operation will return an error indicating this ordering by this field is not allowed.
-- `access`: Defines the [Access Control](../guides/access-control) rules for the field.
+- `access`: Defines the [Access Control](../guides/auth-and-access-control) rules for the field.
   See the [Access Control API](./access-control) for full details on the available access control options.
 - `hooks`: The `hooks` option defines [hook](../guides/hooks) functions for the field.
   Hooks allow you to execute code at different stages of the mutation lifecycle.
