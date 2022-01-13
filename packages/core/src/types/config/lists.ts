@@ -8,10 +8,14 @@ import type { BaseFields, FilterOrderArgs } from './fields';
 
 export type ListSchemaConfig = Record<string, ListConfig<any, BaseFields<BaseListTypeInfo>>>;
 
-export type IdFieldConfig = {
-  kind: 'cuid' | 'uuid' | 'autoincrement';
-  useBigInt?: boolean;
-};
+export type IdFieldConfig =
+  | {
+      kind: 'cuid' | 'uuid';
+    }
+  | {
+      kind: 'autoincrement';
+      useBigInt?: boolean;
+    };
 
 export type ListConfig<
   ListTypeInfo extends BaseListTypeInfo,
