@@ -118,11 +118,14 @@ export const idFieldType =
     return fieldType({
       kind: 'scalar',
       mode: 'required',
-      scalar: config.kind === 'autoincrement'
-      // SQLite doesn't support autoincrement feature for BigInt fields, solution is using Int field
-      // because it is 64 bit integer always in SQLite, more info here https://github.com/linq2db/linq2db/issues/930
-      ? config.useBigInt && meta.provider !== 'sqlite' ? 'BigInt' : 'Int'
-        : 'String',
+      scalar:
+        config.kind === 'autoincrement'
+          ? // SQLite doesn't support autoincrement feature for BigInt fields, solution is using Int field
+            // because it is 64 bit integer always in SQLite, more info here https://github.com/linq2db/linq2db/issues/930
+            config.useBigInt && meta.provider !== 'sqlite'
+            ? 'BigInt'
+            : 'Int'
+          : 'String',
       nativeType: meta.provider === 'postgresql' && config.kind === 'uuid' ? 'Uuid' : undefined,
       default: { kind: config.kind },
     })({
