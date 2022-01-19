@@ -1,6 +1,7 @@
 import { graphQLSchemaExtension } from '@keystone-6/core';
+import { Context } from '.keystone/types';
 
-export const extendGraphqlSchema = graphQLSchemaExtension({
+export const extendGraphqlSchema = graphQLSchemaExtension<Context>({
   typeDefs: `
     type Mutation {
       """ Publish a post """
@@ -61,7 +62,7 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
           where: { id },
           query: 'posts(take: 1, orderBy: { publishDate: desc }) { id }',
         });
-        return { draft, published, latestPostId: posts ? posts[0].id : null };
+        return { draft, published, latestPostId: posts ? posts![0]!.id : null };
       },
     },
     Statistics: {
