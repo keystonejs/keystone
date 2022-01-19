@@ -13,6 +13,7 @@ import { limitsExceededError, userInputError } from '../graphql-errors';
 import { InitialisedList } from '../types-for-lists';
 import { getDBFieldKeyForFieldOnMultiField, runWithPrisma } from '../utils';
 import { checkFilterOrderAccess } from '../filter-order-access';
+import { Prisma } from '@prisma/client';
 
 // we want to put the value we get back from the field's unique where resolver into an equals
 // rather than directly passing the value as the filter (even though Prisma supports that), we use equals
@@ -77,7 +78,7 @@ export async function accessControlledFilter(
 }
 
 export async function findOne(
-  args: { where: UniqueInputFilter },
+  args: { where: UniqueInputFilter; select: Prisma.UserSelect; include: Prisma.UserInclude },
   list: InitialisedList,
   context: KeystoneContext
 ) {
@@ -103,11 +104,17 @@ export async function findOne(
   // Apply access control
   const filter = await accessControlledFilter(list, context, resolvedWhere, accessFilters);
 
-  return runWithPrisma(context, list, model => model.findFirst({ where: filter }));
+  return runWithPrisma(context, list, model =>
+    model.findFirst({
+      where: filter,
+      select: args.select ?? undefined,
+      include: args.include ?? undefined,
+    })
+  );
 }
 
 export async function findMany(
-  { where, take, skip, orderBy: rawOrderBy }: FindManyArgsValue,
+  { where, take, skip, orderBy: rawOrderBy, select, include }: FindManyArgsValue,
   list: InitialisedList,
   context: KeystoneContext,
   info: GraphQLResolveInfo,
@@ -141,6 +148,8 @@ export async function findMany(
       orderBy,
       take: take ?? undefined,
       skip,
+      select: select ?? undefined,
+      include: include ?? undefined,
     })
   );
 
