@@ -177,7 +177,7 @@ const MarkButton = forwardRef<any, { children: ReactNode; type: Mark }>(function
 });
 
 const ToolbarContainer = ({ children }: { children: ReactNode }) => {
-  const { colors, spacing } = useTheme();
+  const { colors, spacing, elevation } = useTheme();
 
   return (
     <div
@@ -188,7 +188,7 @@ const ToolbarContainer = ({ children }: { children: ReactNode }) => {
         paddingTop: spacing.small,
         position: 'sticky',
         top: 0,
-        zIndex: 11,
+        zIndex: 2,
       }}
     >
       <ToolbarGroup>{children}</ToolbarGroup>

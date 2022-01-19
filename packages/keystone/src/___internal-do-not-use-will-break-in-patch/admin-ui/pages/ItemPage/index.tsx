@@ -548,7 +548,7 @@ const Toolbar = memo(function Toolbar({
         paddingBottom: spacing.xlarge,
         paddingTop: spacing.xlarge,
         position: 'sticky',
-        zIndex: 10,
+        zIndex: 20,
       }}
     >
       <Stack align="center" across gap="small">
