@@ -51,16 +51,18 @@ function getOptions(
         insertComponentBlock(editor, componentBlocks, key, relationships);
       },
     })),
-    ...(toolbarState.editorDocumentFeatures.formatting.headingLevels ? toolbarState.editorDocumentFeatures.formatting.headingLevels.map(level => ({
-      label: `Heading ${level}`,
-      insert(editor: Editor) {
-        insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
-          type: 'heading',
-          level,
-          children: [{ text: '' }],
-        });
-      },
-    })) : []),
+    ...toolbarState.textStyles.allowedHeadingLevels
+      .filter(a => toolbarState.editorDocumentFeatures.formatting.headingLevels.includes(a))
+      .map(level => ({
+        label: `Heading ${level}`,
+        insert(editor: Editor) {
+          insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
+            type: 'heading',
+            level,
+            children: [{ text: '' }],
+          });
+        },
+      })),
     !toolbarState.blockquote.isDisabled &&
       toolbarState.editorDocumentFeatures.formatting.blockTypes.blockquote && {
         label: 'Blockquote',
