@@ -4,6 +4,7 @@ import { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql';
 import { InitialisedList } from '../lib/core/types-for-lists';
 import { BaseListTypeInfo } from './type-info';
 import { GqlNames, BaseKeystoneTypeInfo } from '.';
+import { Prisma } from '@prisma/client';
 
 export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   req?: IncomingMessage;
@@ -104,9 +105,13 @@ export type KeystoneDbAPI<KeystoneListsTypeInfo extends Record<string, BaseListT
       readonly orderBy?:
         | KeystoneListsTypeInfo[Key]['inputs']['orderBy']
         | readonly KeystoneListsTypeInfo[Key]['inputs']['orderBy'][];
+      readonly select?: Prisma.UserSelect;
+      readonly include?: Prisma.UserInclude;
     }): Promise<readonly KeystoneListsTypeInfo[Key]['item'][]>;
     findOne(args: {
       readonly where: KeystoneListsTypeInfo[Key]['inputs']['uniqueWhere'];
+      readonly select?: Prisma.UserSelect;
+      readonly include?: Prisma.UserInclude;
     }): Promise<KeystoneListsTypeInfo[Key]['item']>;
     count(args?: {
       readonly where?: KeystoneListsTypeInfo[Key]['inputs']['where'];
