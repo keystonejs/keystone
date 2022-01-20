@@ -177,7 +177,7 @@ const MarkButton = forwardRef<any, { children: ReactNode; type: Mark }>(function
 });
 
 const ToolbarContainer = ({ children }: { children: ReactNode }) => {
-  const { colors, spacing, elevation } = useTheme();
+  const { colors, spacing } = useTheme();
 
   return (
     <div
