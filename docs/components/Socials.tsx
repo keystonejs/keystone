@@ -68,7 +68,7 @@ export function Socials(props: HTMLAttributes<HTMLElement>) {
       >
         <Slack css={{ height: '1.5em' }} />
       </a>
-      <a
+      {/* <a
         href="https://www.youtube.com/channel/UClWScN0YMgpN7swHVaEPKuQ"
         target="_blank"
         rel="noopener noreferrer"
@@ -85,7 +85,7 @@ export function Socials(props: HTMLAttributes<HTMLElement>) {
         }}
       >
         <YouTube css={{ height: '2em' }} />
-      </a>
+      </a> */}
     </div>
   );
 }
