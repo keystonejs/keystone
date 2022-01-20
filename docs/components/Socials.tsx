@@ -4,7 +4,7 @@ import { jsx } from '@emotion/react';
 import { HTMLAttributes } from 'react';
 
 import { Twitter } from './icons/Twitter';
-import { YouTube } from './icons/YouTube';
+// import { YouTube } from './icons/YouTube';
 import { Slack } from './icons/Slack';
 
 export function Socials(props: HTMLAttributes<HTMLElement>) {

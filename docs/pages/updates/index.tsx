@@ -12,7 +12,7 @@ import { Type } from '../../components/primitives/Type';
 import { DocsPage } from '../../components/Page';
 import { ArrowR } from '../../components/icons/ArrowR';
 import { Emoji } from '../../components/primitives/Emoji';
-import { Stack } from '../../components/primitives/Stack';
+// import { Stack } from '../../components/primitives/Stack';
 import { useMediaQuery } from '../../lib/media';
 
 type TimelineProps = {
