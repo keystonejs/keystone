@@ -28,6 +28,7 @@ const PageWrapper = (props: HTMLAttributes<HTMLElement>) => {
           gridTemplateColumns: `minmax(300px, 1fr) 4fr`,
           gridTemplateRows: `${HEADER_HEIGHT}px auto`,
           height: '100vh',
+          isolation: 'isolate',
         }}
         {...props}
       />
