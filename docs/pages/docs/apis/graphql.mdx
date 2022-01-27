@@ -9,6 +9,30 @@ import { InlineCode } from '../../../components/primitives/Code';
 
 Keystone generates a CRUD (create, read, update, delete) GraphQL API based on the [schema](./schema) definition provided in the system [config](./config).
 
+## Using The API
+
+By default the GraphQL endpoint is served at `/api/graphql`, though this can be overridden by setting `config.graphql.path` in the [system config](https://keystonejs.com/docs/apis/config#graphql).
+
+Keystone also includes [GraphQL Playground](https://github.com/graphql/graphql-playground), an in-browser GraphQL IDE, that gives you a great way to explore the API Keystone creates for your app.
+By default the interface is disabled when running Keystone in production.
+You can control this behaviour using the `config.graphql.playground` option in the [system config](https://keystonejs.com/docs/apis/config#graphql).
+
+So when using Keystone's default settings in dev, both the GraphQL Playground and the GraphQL API itself will be available at [`http://localhost:3000/api/graphql`](http://localhost:3000/api/graphql).
+This will be the case if you're running one of the example projects or using Keystone in your own app.
+
+The URL of the GraphQL API is a important value will likely be set as an environment variable for related apps.
+For example, when building a frontend app with Apollo Client, you'll need the GraphQL URL when [initializing the client instance](https://www.apollographql.com/docs/react/get-started/#2-initialize-apolloclient).
+Your code may look like this:
+
+```js
+const client = new ApolloClient({
+  uri: process.env.APOLLO_CLIENT_GRAPHQL_URI || 'http://localhost:3000/api/graphql',
+  cache: new InMemoryCache()
+});
+```
+
+## Example
+
 Consider the following system definition:
 
 ```typescript
@@ -134,9 +158,9 @@ input UserCreateInput {
 }
 ```
 
-## Queries
+### Queries
 
-### user
+#### `user`
 
 ```graphql
 type Query {
@@ -153,7 +177,7 @@ input UserWhereUniqueInput {
 }
 ```
 
-### users
+#### `users`
 
 ```graphql
 type Query {
@@ -234,7 +258,7 @@ enum OrderDirection {
 }
 ```
 
-### usersCount
+#### `usersCount`
 
 ```graphql
 type Query {
@@ -295,9 +319,9 @@ input NestedStringNullableFilter {
 }
 ```
 
-## Mutations
+### Mutations
 
-### createUser
+#### `createUser`
 
 ```graphql
 type Mutation {
@@ -314,7 +338,7 @@ type User {
 }
 ```
 
-### createUsers
+#### `createUsers`
 
 ```graphql
 type Mutation {
@@ -331,7 +355,7 @@ type User {
 }
 ```
 
-### updateUser
+#### `updateUser`
 
 ```graphql
 type Mutation {
@@ -352,7 +376,7 @@ type User {
 }
 ```
 
-### updateUsers
+#### `updateUsers`
 
 ```graphql
 type Mutation {
@@ -378,7 +402,7 @@ type User {
 }
 ```
 
-### deleteUser
+#### `deleteUser`
 
 ```graphql
 type Mutation {
@@ -395,7 +419,7 @@ type User {
 }
 ```
 
-### deleteUsers
+#### `deleteUsers`
 
 ```graphql
 type Mutation {
