@@ -1,0 +1,891 @@
+import { Markdown } from '../../../components/Markdown';
+
+# Using Keystone's API from a Web App
+
+There are two main features of Keystone that you can leverage in building an app. The first is the Admin UI, a fully-featured schema-driven admin UI. The second is the schema-driven graphql API, which this walkthrough is going to go through using.
+
+For this walkthrough, we are going to start from an existing keystone project with a simple schema for a todo list, and build out a single page frontend for our to-dos, then add functionality to mark to-dos as done from our web app.
+
+## Technology choices
+
+_This is great, but I like this_
+
+You can access Keystone's graphql API using anything that can make a fetch request, including basic fetch functions. For this walkthrough, we'll be showing how to set up queries using [next.js]() and [apollo](). If you have a preferred frontend library, or graphql query library, the learnings here will help you out in those places.
+
+For much of the next/react code, we'll provide you with existing code, so we can stay focused on learning about making graphql queries with keystone.
+
+## A new foundation
+
+For this walkthrough, we're going to give you a starting project, which has keystone set up with a schema.
+
+```sh
+git clone ohno-make-this-a-cloneable-repo
+```
+
+This will give us a `keystone.ts` file with a basic config, as well as a next app basic setup that renders a todo page ready for us to add code.
+
+Once you've got the starting code, run
+
+```sh
+yarn
+```
+
+to install your dependencies, and then run
+
+```
+yarn dev
+```
+
+This will seed the database with some existing users and to-dos
+You should now be able to visit [localhost:3000](http://localhost:3000) to see the admin UI, and more importantly, you can now access the graphql playground, findable at [localhost:3000/api/graphql](http://localhost:3000/api/graphql)
+
+## Running the next app as well
+
+For development, we are going to want to run next alongside our keystone app. If we start our next app now, it will be smart and start on port `3001`, however we want to make a consistent relationship between the two, so we are going to set the port for keystone. On our keystone object, we can set the port on the server object:
+
+```ts{8-10}[1-4]
+import { config } from '@keystone-6/core';
+import { lists } from './schema';
+import { db } from './database-config'
+
+export default config({
+  db,
+  lists,
+  server: {
+    port: 3001,
+  },
+});
+```
+
+Now, we can open two terminals. In one we can run
+
+```
+yarn dev
+```
+
+and in the second terminal we can run
+
+```
+yarn dev:frontend
+```
+
+With both of these running, we can now access [localhost:3001/api/graphql](http://localhost:3001/api/graphql) for the graphql API, and then we can find our frontend on [localhost:3000](http://localhost:3000).
+
+## Connecting the frontend to keystone
+
+```
+yarn add @apollo/client graphql
+```
+
+### Adding our apollo provider
+
+We are going to want a file, `src/pages/_app.tsx` - this file is responsible for global config in next. This is the best place to put an apollo provider so it will be accessible to all next pages.
+
+```ts
+import React from 'react';
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+import type { AppProps } from 'next/app';
+
+const client = new ApolloClient({
+  uri: process.env.GRAPHQL_API || 'http://localhost:3001/api/graphql',
+  cache: new InMemoryCache(),
+  credentials: 'same-origin',
+});
+
+function MyApp({ Component, pageProps }: AppProps) {
+  return (
+    <ApolloProvider client={client}>
+      <Component {...pageProps} />
+    </ApolloProvider>
+  );
+}
+
+export default MyApp;
+```
+
+Add Explanatory text
+
+We have defaulted the graphql client url to `http://localhost:3001/api/graphql`, however have set up an ENV variable to override it, which will be needed if we were to deploy this app.
+
+### Changing Keystone's CORS
+
+With this, we are almost ready to make a request, but we have another part of keystone config that needs setting.
+
+```ts{10-12}[1-4]
+import { config } from '@keystone-6/core';
+import { lists } from './schema';
+import { db } from './database-config'
+
+export default config({
+  db,
+  lists,
+  server: {
+    port: 3001,
+    cors: {
+        origin: process.env.NODE_ENV === 'development' && '*',
+    },
+  },
+});
+```
+
+Once again, we are using an environment variable. In development mode, we are happy to set the `cors.origin` to `*`, however we would want to be more selective if we were to deploy this app.
+
+## Making our first query
+
+Open the file `src/pages/index.tsx` - this file is where we will be working for the rest of this lesson series.
+
+Currently it should look like:
+
+```ts
+import React from 'react';
+import { Divider } from '../components';
+
+export default function Index() {
+  return (
+    <div>
+        <div>still to do: {'oh no what is it?'}</div>
+      <h2 style={{ textAlign: 'center' }}>To-Do 💻</h2>
+      <Divider />
+      <h2 style={{ textAlign: 'center' }}>Done! 🏖</h2>
+    </div>
+  );
+}
+```
+
+So let's get cracking!
+
+For our first query, we're simply going to get the count of items. If we open the graphql explorer, we can see there's an easy option in the docs for getting the count of items in a list:
+
+```graphql
+query countQuery {
+  tasksCount
+}
+```
+
+however in this instance, we want to be a little more specific: we want just the items that are still to be complete. Keystone has an easy answer for this as it provides `where` properties for filtering on any field:
+
+```graphql
+query countQuery {
+  tasksCount(where: { isComplete: { equals: true } })
+}
+```
+
+Now that we know what our query looks like, we need to put it into our file, so we can execute it. We want to use the `gql` helper from apollo to make this easier:
+
+```ts{3,5-9}
+import React from 'react';
+import { Divider } from '../components';
+import { gql } from '@apollo/client';
+
+const countQuery = gql`
+query countQuery {
+  tasksCount(where: { isComplete: { equals: true } })
+}
+`
+
+export default function Index() {
+  return (
+    <div>
+        <div>still to do: {'oh no what is it?'}</div>
+      <h2 style={{ textAlign: 'center' }}>To-Do 💻</h2>
+      <Divider />
+      <h2 style={{ textAlign: 'center' }}>Done! 🏖</h2>
+    </div>
+  );
+}
+```
+
+Finally, we need to run the query. We are going to use the `useQuery` hook from apollo:
+
+```ts{3,12,13}
+import React from 'react';
+import { Divider } from '../components';
+import { gql, useQuery } from '@apollo/client';
+
+const countQuery = gql`
+query countQuery {
+  tasksCount(where: { isComplete: { equals: true } })
+}
+`
+
+export default function Index() {
+    const { data, loading, error } = useQuery(countQuery)
+    console.log({ data, loading, error })
+
+  return (
+    <div>
+        <div>still to do: {'oh no what is it?'}</div>
+      <h2 style={{ textAlign: 'center' }}>To-Do 💻</h2>
+      <Divider />
+      <h2 style={{ textAlign: 'center' }}>Done! 🏖</h2>
+    </div>
+  );
+}
+```
+
+Just to check that it's working, we've just added a console log to check in on the output of the query. Let's check in on the frontend and make sure it's all working. Cool!
+
+Finally, let's handle rendering the count. We want to handle when the data is still loading, or if there is an error, so we'll quickly add early returns in those cases:
+
+```ts{14-25}[1-10]
+import React from 'react';
+import { Divider } from '../components';
+import { gql, useQuery } from '@apollo/client';
+
+const countQuery = gql`
+query countQuery {
+  tasksCount(where: { isComplete: { equals: true } })
+}
+`
+
+export default function Index() {
+    const { data, loading, error } = useQuery(countQuery)
+
+      if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error || !data) {
+        return (
+        <div>
+            <div>We had an error contacting the Keystone server - make sure it's up and running.</div>
+            <div>Error message: {error?.message}</div>
+        </div>
+        );
+    }
+
+  return (
+    <div>
+        <div>still to do: {'oh no what is it?'}</div>
+      <h2 style={{ textAlign: 'center' }}>To-Do 💻</h2>
+      <Divider />
+      <h2 style={{ textAlign: 'center' }}>Done! 🏖</h2>
+    </div>
+  );
+}
+```
+
+And at last, rendering the count:
+
+```ts{29}[1-10,14-25]
+import React from 'react';
+import { Divider } from '../components';
+import { gql, useQuery } from '@apollo/client';
+
+const countQuery = gql`
+query countQuery {
+  tasksCount(where: { isComplete: { equals: true } })
+}
+`
+
+export default function Index() {
+    const { data, loading, error } = useQuery(countQuery)
+
+      if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error || !data) {
+        return (
+        <div>
+            <div>We had an error contacting the Keystone server - make sure it's up and running.</div>
+            <div>Error message: {error?.message}</div>
+        </div>
+        );
+    }
+
+  return (
+    <div>
+        <div>still to do: {data.tasksCount}</div>
+      <h2 style={{ textAlign: 'center' }}>To-Do 💻</h2>
+      <Divider />
+      <h2 style={{ textAlign: 'center' }}>Done! 🏖</h2>
+    </div>
+  );
+}
+```
+
+Fantastic! We are now hitting the Keystone API, and rendering the count of items still to do.
+
+## Rendering our Todos
+
+Now that we've confirmed the Keystone API is running, let's get our todos themselves, and render them.
+
+Before we add any code to our project, let's head to the graphql explorer to form our new query. For now, we are going to just get all todos, and we want to be able to display their priority, whether they are done, and the label for the to-do.
+
+```graphql
+query getTasks {
+    tasks(orderBy: [{ finishBy: desc }]) {
+        id
+        priority
+        isComplete
+        label
+    }
+}
+```
+
+| Keystone adds a query type for each list to get one item, or, like here, get many items. Using the graphql exploerer you can look at the type signatures for all available queries
+
+Execute our new query and check it's giving us what we want, great!
+
+Okay, we've decided the count query isn't that useful, so we're going to remove the count from our app, and replace it with performing our new query:
+
+```ts{5-14}[1-4,19-32]
+import React from 'react';
+import { Divider } from '../components'
+import { gql, useQuery } from '@apollo/client';
+
+const tasksQuery = gql`
+query getTasks {
+    tasks(orderBy: [{ finishBy: desc }]) {
+        id
+        priority
+        isComplete
+        label
+    }
+}
+`
+
+export default function Index() {
+    // We've replaced the countQuery with our new tasksQuery
+    const { data, loading, error } = useQuery(tasksQuery)
+
+      if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error || !data) {
+        return (
+        <div>
+            <div>We had an error contacting the Keystone server - make sure it's up and running.</div>
+            <div>Error message: {error?.message}</div>
+        </div>
+        );
+    }
+
+  return (
+    <div>
+      <h2 style={{ textAlign: 'center' }}>To-Do 💻</h2>
+      <Divider />
+      <h2 style={{ textAlign: 'center' }}>Done! 🏖</h2>
+    </div>
+  );
+}
+```
+
+For displaying them, we are going to use an existing component we can import, `TodoItem`.
+
+```tsx{2}[4-1000]
+import React from 'react';
+import { Divider, TodoItem } from '../components'
+import { gql, useQuery } from '@apollo/client';
+
+const tasksQuery = gql`
+  query getTasks {
+    tasks(orderBy: [{ finishBy: desc }]) {
+      id
+      priority
+      isComplete
+      label
+    }
+  }
+`
+
+export default function Index() {
+    const { data, loading, error } = useQuery(tasksQuery)
+
+      if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error || !data) {
+        return (
+        <div>
+            <div>We had an error contacting the Keystone server - make sure it's up and running.</div>
+            <div>Error message: {error?.message}</div>
+        </div>
+        );
+    }
+
+  return (
+    <div>
+      <h2 style={{ textAlign: 'center' }}>To-Do 💻</h2>
+      <Divider />
+      <h2 style={{ textAlign: 'center' }}>Done! 🏖</h2>
+    </div>
+  );
+}
+```
+
+From here, we can map over our data to render todo items:
+
+```tsx{35-38}[1-4,18-31]
+import React from 'react';
+import { Divider, TodoItem } from '../components'
+import { gql, useQuery } from '@apollo/client';
+
+const tasksQuery = gql`
+  query getTasks {
+    tasks(orderBy: [{ finishBy: desc }]) {
+      id
+      priority
+      isComplete
+      label
+    }
+  }
+`
+
+export default function Index() {
+    const { data, loading, error } = useQuery(tasksQuery)
+
+      if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error || !data) {
+        return (
+        <div>
+            <div>We had an error contacting the Keystone server - make sure it's up and running.</div>
+            <div>Error message: {error?.message}</div>
+        </div>
+        );
+    }
+
+  return (
+    <div>
+      <h2 style={{ textAlign: 'center' }}>To-Do 💻</h2>
+            {data.tasks
+        .map(todoItem => (
+          <TodoItem {...todoItem} />
+        ))}
+      <Divider />
+      <h2 style={{ textAlign: 'center' }}>Done! 🏖</h2>
+    </div>
+  );
+}
+```
+
+Great! We've now got all our to-do items rendering, but we want to sort them into two groups for done items and not-done items:
+
+```tsx{36,42-46}[1-4,18-31]
+import React from 'react';
+import { Divider, TodoItem } from '../components'
+import { gql, useQuery } from '@apollo/client';
+
+const tasksQuery = gql`
+  query getTasks {
+    tasks(orderBy: [{ finishBy: desc }]) {
+      id
+      priority
+      isComplete
+      label
+    }
+  }
+`
+
+export default function Index() {
+    const { data, loading, error } = useQuery(tasksQuery)
+
+      if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error || !data) {
+        return (
+        <div>
+            <div>We had an error contacting the Keystone server - make sure it's up and running.</div>
+            <div>Error message: {error?.message}</div>
+        </div>
+        );
+    }
+
+  return (
+    <div>
+      <h2 style={{ textAlign: 'center' }}>To-Do 💻</h2>
+            {data.tasks
+            .filter(task => !task.isComplete)
+        .map(todoItem => (
+          <TodoItem {...todoItem} />
+        ))}
+      <Divider />
+      <h2 style={{ textAlign: 'center' }}>Done! 🏖</h2>
+                  {data.tasks
+            .filter(task => !task.isComplete)
+        .map(todoItem => (
+          <TodoItem {...todoItem} />
+        ))}
+    </div>
+  );
+}
+```
+
+And that's the rendering done
+
+## Making a smarter query
+
+This is a bit of a bonus over our last step. In our last step, we're performing two filters on the list to get the subsets of items. It would be good to move this logic back into the query itself, and thankfully with keystone and graphql we can, using the `where` field, and filtering by `isComplete:
+
+```graphql
+query getTasks {
+  incompleteTasks: tasks(
+    orderBy: [{ finishBy: desc }]
+    where: { isComplete: { equals: false } }
+  ) {
+    id
+    priority
+    isComplete
+    finishBy
+    label
+  }
+  completeTasks: tasks(
+    orderBy: [{ finishBy: desc }]
+    where: { isComplete: { equals: false } }
+  ) {
+    id
+    priority
+    isComplete
+    finishBy
+    label
+  }
+}
+```
+
+Once we swap this query out on the frontend, we can just write:
+
+```tsx{5-28,31}[1-4,32-45]
+import React from 'react';
+import { Divider, TodoItem } from '../components'
+import { gql, useQuery } from '@apollo/client';
+
+const tasksQuery = gql`
+query getTasks {
+  incompleteTasks: tasks(
+    orderBy: [{ finishBy: desc }]
+    where: { isComplete: { equals: false } }
+  ) {
+    id
+    priority
+    isComplete
+    finishBy
+    label
+  }
+  completeTasks: tasks(
+    orderBy: [{ finishBy: desc }]
+    where: { isComplete: { equals: false } }
+  ) {
+    id
+    priority
+    isComplete
+    finishBy
+    label
+  }
+}
+`
+
+export default function Index() {
+    const { data, loading, error } = useQuery(tasksQuery)
+
+      if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error || !data) {
+        return (
+        <div>
+            <div>We had an error contacting the Keystone server - make sure it's up and running.</div>
+            <div>Error message: {error?.message}</div>
+        </div>
+        );
+    }
+
+  return (
+    <div>
+        <div>still to do: {data.tasksCount}</div>
+      <h2 style={{ textAlign: 'center' }}>To-Do 💻</h2>
+            {data.incompleteTasks
+        .map(todoItem => (
+          <TodoItem {...todoItem} />
+        ))}
+      <Divider />
+      <h2 style={{ textAlign: 'center' }}>Done! 🏖</h2>
+                  {data.completeTasks
+        .map(todoItem => (
+          <TodoItem {...todoItem} />
+        ))}
+    </div>
+  );
+}
+```
+
+This query, instead of returning a single array for tasks, returns two different variables with the different filtered lists we want.
+
+## Updating the status of items
+
+Now that we've got items split into two lists, it's time to add a bit of interaction to our list. We're not going to make a fully-functional frontend in this lesson, instead we just want to allow people to mark if a task is completed, and have it update both the database entry and the frontend.
+
+When we update an item, we need a piece of unique information about that item. Here, that will be the ID. Next, we need to update the `isComplete` field, and finally, we want to set the `finishedBy` property. If the item is being completed, this should be set to `now`, otherwise if a task is being marked as no longer done, it should be cleared.
+
+Turning back to our graphql playground, we can write a mutation for this:
+
+```graphql
+  mutation updateATask($id: ID, $isComplete: Boolean, $finishedBy: DateTime) {
+    updateTask(where: { id: $id }, data: { isComplete: $isComplete, finishBy: $finishedBy }) {
+      isComplete
+      id
+      finishBy
+    }
+  }
+```
+
+| Including the return signature here makes sure the apollo cache for the item gets updated
+
+Using the `query variables` in the playround, you can check that this query works. (you'll need to get the ID of one of your items to do so)
+
+### Calling the mutation
+
+Now that we have a mutation, we want to add this to our frontend. The `TodoItem` component has a property for `onCheckboxChange` which we can use. We'll be using the `useMutation` hook from apollo. Let's add the hook in first.
+
+```tsx{3,30-38,42-45,66-74}[1-2,4-29]
+import React from 'react';
+import { Divider, TodoItem } from '../components'
+import { gql, useQuery, useMutation } from '@apollo/client';
+
+const tasksQuery = gql`
+query getTasks {
+  incompleteTasks: tasks(
+    orderBy: [{ finishBy: desc }]
+    where: { isComplete: { equals: false } }
+  ) {
+    id
+    priority
+    isComplete
+    finishBy
+    label
+  }
+  completeTasks: tasks(
+    orderBy: [{ finishBy: desc }]
+    where: { isComplete: { equals: false } }
+  ) {
+    id
+    priority
+    isComplete
+    finishBy
+    label
+  }
+}
+`
+
+const mutation = gql`
+  mutation updateATask($id: ID, $isComplete: Boolean, $finishedBy: DateTime) {
+    updateTask(where: { id: $id }, data: { isComplete: $isComplete, finishBy: $finishedBy }) {
+      isComplete
+      id
+      finishBy
+    }
+  }
+`;
+
+export default function Index() {
+    const { data, loading, error } = useQuery(tasksQuery)
+      const [updateDoneStatus] = useMutation<
+    any,
+    { id: string; finishedBy: string; isComplete: boolean }
+  >(mutation);
+
+      if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error || !data) {
+        return (
+        <div>
+            <div>We had an error contacting the Keystone server - make sure it's up and running.</div>
+            <div>Error message: {error?.message}</div>
+        </div>
+        );
+    }
+
+  return (
+    <div>
+      <h2 style={{ textAlign: 'center' }}>To-Do 💻</h2>
+            {data.incompleteTasks
+        .map(todoItem => (
+          <TodoItem {...todoItem}
+                      onCheckboxChange={() =>
+              updateDoneStatus({
+                variables: {
+                  id: todoItem.id,
+                  finishedBy: new Date().toISOString(),
+                  isComplete: true,
+                },
+              })
+            }
+          />
+        ))}
+      <Divider />
+      <h2 style={{ textAlign: 'center' }}>Done! 🏖</h2>
+                  {data.completeTasks
+        .map(todoItem => (
+          <TodoItem {...todoItem} />
+        ))}
+    </div>
+  );
+}
+```
+
+Great, we can now check out this working - go to the frontend and try and checking off the an item.
+
+Neat! Our final bit of code, we want to add unticking items from the list.
+
+```tsx{0,83-91}[1-39,46-59]
+import React from 'react';
+import { Divider, TodoItem } from '../components'
+import { gql, useQuery, useMutation } from '@apollo/client';
+
+const tasksQuery = gql`
+query getTasks {
+  incompleteTasks: tasks(
+    orderBy: [{ finishBy: desc }]
+    where: { isComplete: { equals: false } }
+  ) {
+    id
+    priority
+    isComplete
+    finishBy
+    label
+  }
+  completeTasks: tasks(
+    orderBy: [{ finishBy: desc }]
+    where: { isComplete: { equals: false } }
+  ) {
+    id
+    priority
+    isComplete
+    finishBy
+    label
+  }
+}
+`
+
+const mutation = gql`
+  mutation updateATask($id: ID, $isComplete: Boolean, $finishedBy: DateTime) {
+    updateTask(where: { id: $id }, data: { isComplete: $isComplete, finishBy: $finishedBy }) {
+      isComplete
+      id
+      finishBy
+    }
+  }
+`;
+
+export default function Index() {
+    const { data, loading, error } = useQuery(tasksQuery)
+      const [updateDoneStatus] = useMutation<
+    any,
+    { id: string; finishedBy: string; isComplete: boolean }
+  >(mutation);
+
+      if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error || !data) {
+        return (
+        <div>
+            <div>We had an error contacting the Keystone server - make sure it's up and running.</div>
+            <div>Error message: {error?.message}</div>
+        </div>
+        );
+    }
+
+  return (
+    <div>
+        <div>still to do: {data.tasksCount}</div>
+      <h2 style={{ textAlign: 'center' }}>To-Do 💻</h2>
+            {data.incompleteTasks
+        .map(todoItem => (
+          <TodoItem {...todoItem}
+                      onCheckboxChange={() =>
+              updateDoneStatus({
+                variables: {
+                  id: todoItem.id,
+                  finishedBy: new Date().toISOString(),
+                  isComplete: true,
+                },
+              })
+            }
+          />
+        ))}
+      <Divider />
+      <h2 style={{ textAlign: 'center' }}>Done! 🏖</h2>
+                  {data.completeTasks
+        .map(todoItem => (
+          <TodoItem {...todoItem}
+                    onCheckboxChange={() =>
+            updateDoneStatus({
+              variables: {
+                id: todoItem.id,
+                finishedBy: null,
+                isComplete: false,
+              },
+            })
+          }
+          />
+        ))}
+    </div>
+  );
+}
+```
+
+## Where to now?
+
+We've now covered off a bunch of learnings:
+
+- Connecting a next app to keystone using apollo
+- Making queries to keystone's graphql API
+- Tying this in to our frontend
+- creating mutations
+
+Before we leave you, let's talk about some other things that you could explore with this app to improve it further:
+
+Locally, responses will always be quick, but we should handle the loading state for the mutation.
+
+We've got a few places where we are specifying environment variables for deployment - we could shore up these areas more to be safer.
+
+Currently this frontend app can mark items as done/not done, but we might want to allow editing other properties, such as the priority or the text.
+
+In nextjs, we could move the graphql query to a server-side request so we could statically render the page.
+
+We could add [ts-gql](https://github.com/Thinkmill/ts-gql), which plays nicely with keystone to give us inbuilt type inference from the types generated by keystone on our frontend.
+
+---
+
+The starting code:
+A keystone app with a seed script and a TODO app schema (no permissions)
+
+We will cover:
+
+Installations
+Running two scripts side-by-side
+keystone config to make this nice (PORT and CORS)
+Setting up the apollo client to the correct location of the keystone admin UI
+Querying for the data
+
+    you'll be given code blocks for the data display logic, lesson will focus on they query bits
+
+Calling a graphql mutation to update the data
+
+The end state:
+We have a single page displaying to-dos and their priority.
+We can update the status of a to-do if it is done or not done
+
+Next steps/alternatives/further readying
+Loading states for updating
+Environment variables for cors etc
+UI for updating priority, text, etc from the frontend
+Keystone setup of 'thinkmill standard' (using ts-gql for types logic, sort out server-side rendering)
+
+TODO: build initial project to clone
+TODO: initial project
+TODO: move db settings into a separate folder
+
+export default ({ children }) => <Markdown description="Learn how to get your first Keystone project up and running using the `create-keystone-app` Command Line Interface.">{children}</Markdown>

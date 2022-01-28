@@ -1,0 +1,28 @@
+{
+  "name": "@keystone-6/example-task-manager",
+  "version": "0.0.1",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "keystone dev",
+    "start": "keystone start",
+    "build": "keystone build",
+    "dev:frontend": "next dev",
+    "seed-data": "keystone --seed-data"
+  },
+  "dependencies": {
+    "@apollo/client": "3.4.17",
+    "@keystone-6/core": "^1.0.0",
+    "graphql": "^15.8.0",
+    "next": "^12.0.7",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "typescript": "^4.4.4"
+  },
+  "engines": {
+    "node": "^14.15 || ^16.13"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/task-manager"
+}
