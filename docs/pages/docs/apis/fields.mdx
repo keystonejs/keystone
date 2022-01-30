@@ -195,7 +195,7 @@ Options:
 - `validation.isRequired` (default: `false`): If `true` then this field can never be set to `null`.
   It validate this when creating and updating an item through the GraphQL API or the Admin UI.
   It will also default `db.isNullable` to false.
-- `validation.min` (default: `-2147483647`): This describes the minimum number allowed. If you attempt to submit a number under this, you will get a validation error.
+- `validation.min` (default: `-2147483648`): This describes the minimum number allowed. If you attempt to submit a number under this, you will get a validation error.
 - `validation.max` (default: `2147483647`): This describes the maximum number allowed. If you attempt to submit a number over this, you will get a validation error.
   - If you want to specify a range within which the numbers must fall, specify both a minimum and a maximum value.
 - `isIndexed` (default: `false`)
