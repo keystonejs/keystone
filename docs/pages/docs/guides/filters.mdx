@@ -43,7 +43,7 @@ Keystone provides a wide range of different filters. If we want to find all thos
 
 ```graphql
 {
-  tasks(where: { label: { NOT: { equals: "Hello" } } }) {
+  tasks(where: { label: { not: { equals: "Hello" } } }) {
     id
     label
   }
