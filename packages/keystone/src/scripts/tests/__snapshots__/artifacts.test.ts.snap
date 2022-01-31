@@ -2,7 +2,8 @@
 
 exports[`postinstall writes the correct node_modules files 1`] = `
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/types.d.ts ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
-type Scalars = {
+export type Scalars = {
+  readonly [key: string]: unknown;
   readonly ID: string;
   readonly Boolean: boolean;
   readonly String: string;
@@ -10,6 +11,7 @@ type Scalars = {
   readonly Float: number;
   readonly JSON: import("@keystone-6/core/types").JSONValue;
   readonly Decimal: import("@keystone-6/core/types").Decimal | string;
+  readonly DateTime: Date | string;
 };
 
 export type TodoWhereUniqueInput = {
@@ -106,7 +108,137 @@ export type KeystoneAdminUISortDirection =
   | "ASC"
   | "DESC";
 
+export declare namespace OutputTypes {
+  export type Scalars = {
+    readonly [key: string]: unknown;
+    readonly ID: string;
+    readonly Boolean: boolean;
+    readonly String: string;
+    readonly Int: number;
+    readonly Float: number;
+    readonly JSON: import("@keystone-6/core/types").JSONValue;
+    readonly Decimal: string;
+    readonly DateTime: string;
+  };
 
+  export type Todo = {
+    readonly __typename?: "Todo";
+    readonly id?: Scalars["ID"];
+    readonly title?: Scalars["String"] | null;
+  };
+
+  export type OrderDirection =
+    | "asc"
+    | "desc";
+
+  export type Mutation = {
+    readonly __typename?: "Mutation";
+    readonly createTodo?: Todo | null;
+    readonly createTodos?: ReadonlyArray<Todo | null> | null;
+    readonly updateTodo?: Todo | null;
+    readonly updateTodos?: ReadonlyArray<Todo | null> | null;
+    readonly deleteTodo?: Todo | null;
+    readonly deleteTodos?: ReadonlyArray<Todo | null> | null;
+  };
+
+  export type Query = {
+    readonly __typename?: "Query";
+    readonly todos?: ReadonlyArray<Todo> | null;
+    readonly todo?: Todo | null;
+    readonly todosCount?: Scalars["Int"] | null;
+    readonly keystone?: KeystoneMeta;
+  };
+
+  export type KeystoneMeta = {
+    readonly __typename?: "KeystoneMeta";
+    readonly adminMeta?: KeystoneAdminMeta;
+  };
+
+  export type KeystoneAdminMeta = {
+    readonly __typename?: "KeystoneAdminMeta";
+    readonly enableSignout?: Scalars["Boolean"];
+    readonly enableSessionItem?: Scalars["Boolean"];
+    readonly lists?: ReadonlyArray<KeystoneAdminUIListMeta>;
+    readonly list?: KeystoneAdminUIListMeta | null;
+  };
+
+  export type KeystoneAdminUIListMeta = {
+    readonly __typename?: "KeystoneAdminUIListMeta";
+    readonly key?: Scalars["String"];
+    readonly itemQueryName?: Scalars["String"];
+    readonly listQueryName?: Scalars["String"];
+    readonly hideCreate?: Scalars["Boolean"];
+    readonly hideDelete?: Scalars["Boolean"];
+    readonly path?: Scalars["String"];
+    readonly label?: Scalars["String"];
+    readonly singular?: Scalars["String"];
+    readonly plural?: Scalars["String"];
+    readonly description?: Scalars["String"] | null;
+    readonly initialColumns?: ReadonlyArray<Scalars["String"]>;
+    readonly pageSize?: Scalars["Int"];
+    readonly labelField?: Scalars["String"];
+    readonly fields?: ReadonlyArray<KeystoneAdminUIFieldMeta>;
+    readonly initialSort?: KeystoneAdminUISort | null;
+    readonly isHidden?: Scalars["Boolean"];
+  };
+
+  export type KeystoneAdminUIFieldMeta = {
+    readonly __typename?: "KeystoneAdminUIFieldMeta";
+    readonly path?: Scalars["String"];
+    readonly label?: Scalars["String"];
+    readonly isOrderable?: Scalars["Boolean"];
+    readonly isFilterable?: Scalars["Boolean"];
+    readonly fieldMeta?: Scalars["JSON"] | null;
+    readonly viewsIndex?: Scalars["Int"];
+    readonly customViewsIndex?: Scalars["Int"] | null;
+    readonly createView?: KeystoneAdminUIFieldMetaCreateView;
+    readonly listView?: KeystoneAdminUIFieldMetaListView;
+    readonly itemView?: KeystoneAdminUIFieldMetaItemView | null;
+    readonly search?: QueryMode | null;
+  };
+
+  export type KeystoneAdminUIFieldMetaCreateView = {
+    readonly __typename?: "KeystoneAdminUIFieldMetaCreateView";
+    readonly fieldMode?: KeystoneAdminUIFieldMetaCreateViewFieldMode;
+  };
+
+  export type KeystoneAdminUIFieldMetaCreateViewFieldMode =
+    | "edit"
+    | "hidden";
+
+  export type KeystoneAdminUIFieldMetaListView = {
+    readonly __typename?: "KeystoneAdminUIFieldMetaListView";
+    readonly fieldMode?: KeystoneAdminUIFieldMetaListViewFieldMode;
+  };
+
+  export type KeystoneAdminUIFieldMetaListViewFieldMode =
+    | "read"
+    | "hidden";
+
+  export type KeystoneAdminUIFieldMetaItemView = {
+    readonly __typename?: "KeystoneAdminUIFieldMetaItemView";
+    readonly fieldMode?: KeystoneAdminUIFieldMetaItemViewFieldMode | null;
+  };
+
+  export type KeystoneAdminUIFieldMetaItemViewFieldMode =
+    | "edit"
+    | "read"
+    | "hidden";
+
+  export type QueryMode =
+    | "default"
+    | "insensitive";
+
+  export type KeystoneAdminUISort = {
+    readonly __typename?: "KeystoneAdminUISort";
+    readonly field?: Scalars["String"];
+    readonly direction?: KeystoneAdminUISortDirection;
+  };
+
+  export type KeystoneAdminUISortDirection =
+    | "ASC"
+    | "DESC";
+}
 export declare namespace Lists {
   export type Todo = import('@keystone-6/core').ListConfig<Lists.Todo.TypeInfo, any>;
   namespace Todo {
@@ -115,6 +247,9 @@ export declare namespace Lists {
       key: "Todo";
       fields: "id" | "title"
       item: Item;
+      outputs: {
+        item: OutputTypes.Todo;
+      };
       inputs: {
         where: TodoWhereInput;
         uniqueWhere: TodoWhereUniqueInput;

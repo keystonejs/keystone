@@ -133,7 +133,7 @@ function printScalarTypes(scalars: Record<string, string>) {
   for (const [name, type] of Object.entries(scalars)) {
     types += `\n  readonly ${name}: ${type};`;
   }
-  return types + ' }';
+  return types + '\n};';
 }
 
 const commonScalarTypes = {
