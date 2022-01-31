@@ -79,6 +79,8 @@ We add a custom query to our schema using `type Query` in the `typeDefs`, and de
 
 We add a custom type to our schema using `type Statisics` in the `typeDefs`, and defining `resolvers.Statisics`.
 
+Note that we're not doing any actual fetching inside `Query.stats`, we're doing all the fetching inside the fields of `Statistics` because inside of `Query.stats` we don't know what fields the user has requested. By fetching the data inside the individual field resolvers, we'll only fetch the data when the user has actually requested it.
+
 ```typescript
   extendGraphqlSchema: graphQLSchemaExtension({
     typeDefs: `
@@ -96,23 +98,34 @@ We add a custom type to our schema using `type Statisics` in the `typeDefs`, and
       }`,
     resolvers: {
       Query: {
-        stats: async (root, { id }, context) => {
-          const draft = await context.query.Post.count({
-            where: { author: { id }, status: 'draft' },
-          });
-          const published = await context.query.Post.count({
-            where: { author: { id }, status: 'published' },
-          });
-          const { posts } = await context.query.Author.findOne({
-            where: { id },
-            query: 'posts(take: 1, orderBy: { publishDate: desc }) { id }',
-          });
-          return { draft, published, latestPostId: posts ? posts[0].id : null };
+        stats: async (root, { id }) => {
+          return { authorId: id };
         },
       },
       Statistics: {
-        latest: (root, args, context) =>
-          context.db.Post.findOne({ where: { id: root.latestPostId } }),
+        // The stats resolver returns an object which is passed to this resolver as
+        // the root value. We use that object to further resolve ths specific fields.
+        // In this case we want to take root.authorId and get the latest post for that author
+        //
+        // As above we use the context.db.Post API to achieve this.
+        latest: async (val, args, context) => {
+          const [post] = await context.db.Post.findMany({
+            take: 1,
+            orderBy: { publishDate: 'desc' },
+            where: { author: { id: { equals: val.authorId } } },
+          });
+          return post;
+        },
+        draft: (val, args, context) => {
+          return context.query.Post.count({
+            where: { author: { id: { equals: val.authorId } }, status: { equals: 'draft' } },
+          });
+        },
+        published: (val, args, context) => {
+          return context.query.Post.count({
+            where: { author: { id: { equals: val.authorId } }, status: { equals: 'published' } },
+          });
+        },
       },
     },
   }),
