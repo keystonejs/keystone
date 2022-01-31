@@ -66,7 +66,7 @@ function printOutputTypeReferenceWithoutNullable(
   type: GraphQLNamedType | GraphQLList<GraphQLType>
 ): string {
   if (type instanceof GraphQLList) {
-    return `ReadonlyArray<${printInputTypeReference(type.ofType)}>`;
+    return `ReadonlyArray<${printOutputTypeReference(type.ofType)}>`;
   }
   return printNamedTypeReference(type);
 }
