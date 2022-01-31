@@ -294,9 +294,8 @@ Could be re-written as simply:
 
 ### Filtering Related Items
 
-In the relationship examples above we've been filtering items based on their related items but we haven't been loading any information about the related items themselves.
-What makes GraphQL so powerful that it gives developers the ability to write queries that retrieve data from across a graph of interconnected objects.
-In Keystone, relationships form the linkages between objects this graph.
+In the relationship examples above we have been filtering items based on their related items, but we haven't been loading any information about the related items themselves.
+GraphQL gives us the ability to write queries that retrieve data across a graph of interconnected items - in Keystone, relationships form the links between these items.
 Queries that traverse these links apply filters both the top-level "list" fields (ie. `tasks` and `people` in these examples) and when selecting data about related items themselves.
 
 This is easier to explain with examples so let's expand on one from earlier.
