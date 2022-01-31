@@ -164,7 +164,7 @@ export const Popover = ({ placement = 'bottom', triggerRenderer, ...props }: Pro
         triggerProps: {
           ref: trigger.ref,
           ...trigger.props,
-          onClick: () => setOpen(true),
+          onClick: () => setOpen(open => !open),
         },
       })}
       <PopoverDialog
