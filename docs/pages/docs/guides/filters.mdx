@@ -217,7 +217,7 @@ This indicate that no conditions should be applied to tasks so all tasks are mat
 
 #### None
 
-The `none` filter returns true when at there are zero related items that match the conditions supplied.
+The `none` filter returns true when there are zero related items that match the conditions supplied.
 
 For example, if we had an urgent task we were looking to assign, we could query for people who didn't have any task that were both incomplete and high-priority:
 
@@ -230,7 +230,7 @@ For example, if we had an urgent task we were looking to assign, we could query 
 }
 ```
 
-Or, if we wanted people with no assigned tasks at all (not even any completed ones), we could pass `none` an empty object:
+Or, if we wanted people with no assigned tasks at all (not even completed tasks), we could pass `none` as an empty object:
 
 ```graphql
 {
@@ -245,7 +245,7 @@ Or, if we wanted people with no assigned tasks at all (not even any completed on
 
 The `every` filter returns true when all related items match the conditions supplied.
 
-For example, if we wanted to find people who have completed all their assigned tasks, we could write:
+For example, if we wanted to find people who have completed their assigned tasks, we could write:
 
 ```graphql
 {
@@ -257,7 +257,7 @@ For example, if we wanted to find people who have completed all their assigned t
 ```
 
 Note the results will also include people with no tasks assigned at all.
-If you wanted people who have completed all their assigned tasks and actually have at least one task assigned, you'd could add a `some` filter:
+If you only wanted people who have both completed their assigned tasks _and_ actually have at least one task assigned, you could add a `some` filter:
 
 ```graphql
 {
