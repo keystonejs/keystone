@@ -1,5 +1,5 @@
 ---
-'@keystone-ui/popover': minor
+'@keystone-ui/popover': patch
 ---
 
 Clicking the meatballs menu again will close the Popover dialog

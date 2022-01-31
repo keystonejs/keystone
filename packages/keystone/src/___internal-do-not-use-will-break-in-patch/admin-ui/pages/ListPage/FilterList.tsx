@@ -41,7 +41,7 @@ function FilterPill({ filter, field }: { filter: Filter; field: FieldMeta }) {
         }}
         {...trigger.props}
         ref={trigger.ref}
-        onClick={() => setOpen(true)}
+        onClick={() => setOpen(!isOpen)}
         weight="light"
         tone="passive"
         onRemove={() => {
