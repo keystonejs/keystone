@@ -164,7 +164,7 @@ export const Popover = ({ placement = 'bottom', triggerRenderer, ...props }: Pro
         triggerProps: {
           ref: trigger.ref,
           ...trigger.props,
-          onClick: () => setOpen(true),
+          onClick: () => setOpen(!isOpen),
         },
       })}
       <PopoverDialog
@@ -202,7 +202,9 @@ export const PopoverDialog = forwardRef<HTMLDivElement, DialogProps>(
 
     useEffect(() => {
       if (focusTrapRef?.current) {
-        focusTrap.current = focusTrapModule.createFocusTrap(focusTrapRef.current);
+        focusTrap.current = focusTrapModule.createFocusTrap(focusTrapRef.current, {
+          allowOutsideClick: true,
+        });
       }
     }, [focusTrapRef]);
 

@@ -31,7 +31,7 @@ export function SortSelection({
         weight="link"
         css={{ padding: 4 }}
         ref={trigger.ref}
-        onClick={() => setOpen(true)}
+        onClick={() => setOpen(!isOpen)}
       >
         <span css={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center' }}>
           {sort
