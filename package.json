@@ -61,9 +61,9 @@
     "@typescript-eslint/parser": "^5.7.0",
     "chalk-cli": "^5.0.0",
     "cross-env": "^7.0.3",
-    "eslint": "^7.32.0",
+    "eslint": "^8.0.0",
     "eslint-plugin-import": "^2.25.3",
-    "eslint-plugin-jest": "^25.2.4",
+    "eslint-plugin-jest": "^26.0.0",
     "eslint-plugin-react": "^7.27.0",
     "eslint-plugin-react-hooks": "^4.3.0",
     "is-ci": "^3.0.1",
@@ -151,7 +151,7 @@
       "packages/**/*.{js,ts,tsx}",
       "!**/*.d.ts",
       "!packages/**/dist/**",
-      "!packages/keystone/src/fields/**/test-fixtures.{js,ts}"
+      "!packages/core/src/fields/**/test-fixtures.{js,ts}"
     ]
   },
   "resolutions": {

@@ -60,7 +60,7 @@ export function FilterAdd({
         size="small"
         {...trigger.props}
         ref={trigger.ref}
-        onClick={() => setOpen(true)}
+        onClick={() => setOpen(!isOpen)}
       >
         <Box as="span" marginRight="xsmall">
           Filter List

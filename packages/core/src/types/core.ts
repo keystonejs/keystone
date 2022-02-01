@@ -37,7 +37,7 @@ export type GraphQLSchemaExtension<Context extends KeystoneContext> = {
   resolvers: Record<string, Record<string, GraphQLResolver<Context>>>;
 };
 
-// TODO: don't duplicate this between here and packages/keystone/ListTypes/list.js
+// TODO: don't duplicate this between here and packages/core/ListTypes/list.js
 export function getGqlNames({
   listKey,
   pluralGraphQLName,

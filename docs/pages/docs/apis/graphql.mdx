@@ -9,6 +9,32 @@ import { InlineCode } from '../../../components/primitives/Code';
 
 Keystone generates a CRUD (create, read, update, delete) GraphQL API based on the [schema](./schema) definition provided in the system [config](./config).
 
+## Using The API
+
+By default Keystone serves your GraphQL endpoint at `/api/graphql`.
+Keystone also includes [GraphQL Playground](https://github.com/graphql/graphql-playground), an in-browser GraphQL IDE, giving you a great way to explore the API Keystone creates for your app.
+
+When using Keystone's default settings in dev, both the GraphQL Playground and the GraphQL API itself will be available at [`http://localhost:3000/api/graphql`](http://localhost:3000/api/graphql).
+This will likely be the case if you're running one of the example projects or developing your own Keystone app locally.
+
+The URL of the GraphQL API is an important value and will likely be set as an environment variable for related apps.
+For example, when building a frontend app with Apollo Client, you'll need the GraphQL URL when [initializing the client instance](https://www.apollographql.com/docs/react/get-started/#2-initialize-apolloclient).
+Your code may look like this:
+
+```js
+const client = new ApolloClient({
+  uri: process.env.APOLLO_CLIENT_GRAPHQL_URI || 'http://localhost:3000/api/graphql',
+  cache: new InMemoryCache()
+});
+```
+
+If you don't like the default path you can control where the GraphQL API and playground are published by setting `config.graphql.path` in the [system config](https://keystonejs.com/docs/apis/config#graphql).
+Note that for security, both the playground and [introspection](https://graphql.org/learn/introspection/) are disabled when running Keystone in production.
+You can control this behaviour using the `config.graphql.playground` and `config.graphql.apolloConfig` options.
+For example, to disable these features in dev environments, add this to your Keystone config: `graphql: { playground: false, apolloConfig: { introspection: false } }`.
+
+## Example
+
 Consider the following system definition:
 
 ```typescript
@@ -134,9 +160,9 @@ input UserCreateInput {
 }
 ```
 
-## Queries
+### Queries
 
-### user
+#### `user`
 
 ```graphql
 type Query {
@@ -153,7 +179,7 @@ input UserWhereUniqueInput {
 }
 ```
 
-### users
+#### `users`
 
 ```graphql
 type Query {
@@ -234,7 +260,7 @@ enum OrderDirection {
 }
 ```
 
-### usersCount
+#### `usersCount`
 
 ```graphql
 type Query {
@@ -295,9 +321,9 @@ input NestedStringNullableFilter {
 }
 ```
 
-## Mutations
+### Mutations
 
-### createUser
+#### `createUser`
 
 ```graphql
 type Mutation {
@@ -314,7 +340,7 @@ type User {
 }
 ```
 
-### createUsers
+#### `createUsers`
 
 ```graphql
 type Mutation {
@@ -331,7 +357,7 @@ type User {
 }
 ```
 
-### updateUser
+#### `updateUser`
 
 ```graphql
 type Mutation {
@@ -352,7 +378,7 @@ type User {
 }
 ```
 
-### updateUsers
+#### `updateUsers`
 
 ```graphql
 type Mutation {
@@ -378,7 +404,7 @@ type User {
 }
 ```
 
-### deleteUser
+#### `deleteUser`
 
 ```graphql
 type Mutation {
@@ -395,7 +421,7 @@ type User {
 }
 ```
 
-### deleteUsers
+#### `deleteUsers`
 
 ```graphql
 type Mutation {

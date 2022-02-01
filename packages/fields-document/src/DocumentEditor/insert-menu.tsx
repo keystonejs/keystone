@@ -51,16 +51,18 @@ function getOptions(
         insertComponentBlock(editor, componentBlocks, key, relationships);
       },
     })),
-    ...toolbarState.textStyles.allowedHeadingLevels.map(level => ({
-      label: `Heading ${level}`,
-      insert(editor: Editor) {
-        insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
-          type: 'heading',
-          level,
-          children: [{ text: '' }],
-        });
-      },
-    })),
+    ...toolbarState.textStyles.allowedHeadingLevels
+      .filter(a => toolbarState.editorDocumentFeatures.formatting.headingLevels.includes(a))
+      .map(level => ({
+        label: `Heading ${level}`,
+        insert(editor: Editor) {
+          insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
+            type: 'heading',
+            level,
+            children: [{ text: '' }],
+          });
+        },
+      })),
     !toolbarState.blockquote.isDisabled &&
       toolbarState.editorDocumentFeatures.formatting.blockTypes.blockquote && {
         label: 'Blockquote',
@@ -241,6 +243,7 @@ export function InsertMenu({ children, text }: { children: ReactNode; text: Text
             display: options.length ? undefined : 'none',
             userSelect: 'none',
             maxHeight: DIALOG_HEIGHT,
+            zIndex: 3,
           }}
           ref={dialog.ref}
         >

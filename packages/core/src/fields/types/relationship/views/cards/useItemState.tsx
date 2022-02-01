@@ -118,6 +118,9 @@ export function useItemState({
       [setItemsState]
     ),
     state: ((): ItemsState => {
+      if (id === null) {
+        return { kind: 'loaded' };
+      }
       if (loading) {
         return { kind: 'loading' };
       }
