@@ -4,6 +4,7 @@ import { BaseListTypeInfo } from './type-info';
 import { CommonFieldConfig } from './config';
 import { DatabaseProvider } from './core';
 import { AdminMetaRootVal, JSONValue, KeystoneContext, MaybePromise } from '.';
+import { Prisma } from '@prisma/client';
 
 export { Decimal };
 
@@ -446,6 +447,8 @@ export type FindManyArgs = {
   >;
   take: graphql.Arg<typeof graphql.Int>;
   skip: graphql.Arg<graphql.NonNullType<typeof graphql.Int>, true>;
+  select: Prisma.UserSelect;
+  include: Prisma.UserInclude;
 };
 
 export type FindManyArgsValue = graphql.InferValueFromArgs<FindManyArgs>;
