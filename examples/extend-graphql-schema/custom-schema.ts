@@ -1,6 +1,7 @@
 import { graphQLSchemaExtension } from '@keystone-6/core';
+import { Context } from '.keystone/types';
 
-export const extendGraphqlSchema = graphQLSchemaExtension({
+export const extendGraphqlSchema = graphQLSchemaExtension<Context>({
   typeDefs: `
     type Mutation {
       """ Publish a post """
@@ -50,30 +51,34 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
           where: { author: { id: { equals: id } }, publishDate: { gt: cutoff } },
         });
       },
-      stats: async (root, { id }, context) => {
-        const draft = await context.query.Post.count({
-          where: { author: { id: { equals: id } }, status: { equals: 'draft' } },
-        });
-        const published = await context.query.Post.count({
-          where: { author: { id: { equals: id } }, status: { equals: 'published' } },
-        });
-        const { posts } = await context.query.Author.findOne({
-          where: { id },
-          query: 'posts(take: 1, orderBy: { publishDate: desc }) { id }',
-        });
-        return { draft, published, latestPostId: posts ? posts[0].id : null };
+      stats: async (root, { id }) => {
+        return { authorId: id };
       },
     },
     Statistics: {
       // The stats resolver returns an object which is passed to this resolver as
       // the root value. We use that object to further resolve ths specific fields.
-      // In this case we want to take root.latestPostId and resolve it as a Post object
+      // In this case we want to take root.authorId and get the latest post for that author
       //
       // As above we use the context.db.Post API to achieve this.
-      latest: (root, args, context) =>
-        context.db.Post.findOne({ where: { id: root.latestPostId } }),
-      // We don't need to define resolvers for draft and published, as apollo will
-      // return root.draft and root.published respectively.
+      latest: async (val, args, context) => {
+        const [post] = await context.db.Post.findMany({
+          take: 1,
+          orderBy: { publishDate: 'desc' },
+          where: { author: { id: { equals: val.authorId } } },
+        });
+        return post;
+      },
+      draft: (val, args, context) => {
+        return context.query.Post.count({
+          where: { author: { id: { equals: val.authorId } }, status: { equals: 'draft' } },
+        });
+      },
+      published: (val, args, context) => {
+        return context.query.Post.count({
+          where: { author: { id: { equals: val.authorId } }, status: { equals: 'published' } },
+        });
+      },
     },
   },
 });
