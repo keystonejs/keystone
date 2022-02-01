@@ -275,7 +275,7 @@ Now, for each release we want to backport to, we follow this process:
    (\
    export PACKAGE_NAME=@keystonejs/keystone && \
    export OTP_CODE= && \
-   cd packages/keystone && \
+   cd packages/core && \
    yarn publish --tag=backport --otp=$OTP_CODE && \
    export BACKPORTED_VERSION=`npm dist-tag ls $PACKAGE_NAME | grep 'backport' | sed -e 's/backport: //'` && \
    yarn tag remove $PACKAGE_NAME backport --otp=$OTP_CODE && \

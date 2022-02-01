@@ -118,8 +118,8 @@ For links to work across these mediums, certain rules for URLs formulation must 
   - The full filename, include the extension
     - Eg. `/docs/pages/guides/cli.mdx` (**not** `/docs/guides/cli`)
 - Links to `README.md` files must be explicit; they cannot rely on the GitHub behaviour that uses `README.md` at a sort of "index" for a directory
-  - Eg. `/packages/keystone/README.md#CLI` (**not** `/packages/keystone#CLI`)
-- Links to directories end in a slash (eg. `/packages/keystone/`)
+  - Eg. `/packages/core/README.md#CLI` (**not** `/packages/core#CLI`)
+- Links to directories end in a slash (eg. `/packages/core/`)
   - This as is convention for URLs (so as not to be confused with a files)
 
 ## Code and Code Blocks
