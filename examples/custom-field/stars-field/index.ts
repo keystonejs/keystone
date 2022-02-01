@@ -11,7 +11,7 @@ import { graphql } from '@keystone-6/core';
 // this field is based on the integer field
 // but with validation to ensure the value is within an expected range
 // and a different input in the Admin UI
-// https://github.com/keystonejs/keystone/tree/main/packages/keystone/src/fields/types/integer
+// https://github.com/keystonejs/keystone/tree/main/packages/core/src/fields/types/integer
 
 export type StarsFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
