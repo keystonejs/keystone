@@ -11,7 +11,7 @@ import { s3Assets } from '../s3/assets';
 const DEFAULT_BASE_URL = '/images';
 export const DEFAULT_IMAGES_STORAGE_PATH = './public/images';
 
-const getImageMetadataFromBuffer = async (buffer: Buffer): Promise<ImageMetadata> => {
+export function getImageMetadataFromBuffer(buffer: Buffer): ImageMetadata {
   const filesize = buffer.length;
   const fileType = fromBuffer(buffer);
   if (!fileType) {
@@ -29,7 +29,7 @@ const getImageMetadataFromBuffer = async (buffer: Buffer): Promise<ImageMetadata
     throw new Error('Height and width could not be found for image');
   }
   return { width, height, filesize, extension };
-};
+}
 
 export function createImagesContext(
   config: KeystoneConfig,
@@ -53,16 +53,13 @@ export function createImagesContext(
       switch (mode) {
         case 'cloud': {
           return cloudAssets().images.url(id, extension);
-          break;
         }
         case 's3': {
           return s3Assets(s3).images.url(id, extension);
-          break;
         }
-        default: {
+        case 'local': {
           const filename = `${id}.${extension}`;
           return `${baseUrl}/${filename}`;
-          break;
         }
       }
     },
@@ -79,21 +76,18 @@ export function createImagesContext(
         case 'cloud': {
           const metadata = await cloudAssets().images.metadata(imageRef.id, imageRef.extension);
           return { ...imageRef, ...metadata };
-          break;
         }
         case 's3': {
           const metadata = await s3Assets(s3).images.metadata(imageRef.id, imageRef.extension);
           return { ...imageRef, ...metadata };
-          break;
         }
-        default: {
+        case 'local': {
           const buffer = await fs.readFile(
             path.join(storagePath, `${imageRef.id}.${imageRef.extension}`)
           );
-          const metadata = await getImageMetadataFromBuffer(buffer);
+          const metadata = getImageMetadataFromBuffer(buffer);
 
           return { ...imageRef, ...metadata };
-          break;
         }
       }
     },
@@ -101,22 +95,16 @@ export function createImagesContext(
       const { upload: mode } = images;
       const id = uuid();
 
-      console.log('MODE', mode);
-
       switch (mode) {
         case 'cloud': {
           const metadata = await cloudAssets().images.upload(stream, id);
           return { mode, id, ...metadata };
-          break;
         }
         case 's3': {
           const metadata = await s3Assets(s3).images.upload(stream, id);
-
-
           return { mode, id, ...metadata };
-          break;
         }
-        default: {
+        case 'local': {
           const chunks = [];
 
           for await (let chunk of stream) {
@@ -124,7 +112,7 @@ export function createImagesContext(
           }
 
           const buffer = Buffer.concat(chunks);
-          const metadata = await getImageMetadataFromBuffer(buffer);
+          const metadata = getImageMetadataFromBuffer(buffer);
 
           await fs.writeFile(path.join(storagePath, `${id}.${metadata.extension}`), buffer);
           return { mode, id, ...metadata };
