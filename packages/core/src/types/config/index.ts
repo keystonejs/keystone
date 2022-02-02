@@ -254,6 +254,8 @@ export type S3Config = {
   region: string;
   accessKeyId: string;
   secretAccessKey: string;
+  endpoint?: string;
+  forcePathStyle?: boolean;
 };
 
 // Exports from sibling packages

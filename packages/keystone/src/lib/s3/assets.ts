@@ -1,11 +1,8 @@
 import { Readable } from 'stream';
-import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
-import { fileTypeFromStream } from 'file-type';
-import sizeOf from 'image-size';
+import { S3 } from '@aws-sdk/client-s3';
 import { FileData, ImageExtension, ImageMetadata } from '../../types/context';
 import { S3Config } from '../../types';
-
-let s3Client: null | S3Client = null;
+import { getImageMetadataFromBuffer } from '../context/createImagesContext';
 
 async function streamToBuffer(stream: Readable): Promise<Buffer> {
   return new Promise((resolve, reject) => {
@@ -25,22 +22,6 @@ async function streamToBuffer(stream: Readable): Promise<Buffer> {
   });
 }
 
-function getS3Client({ region, accessKeyId, secretAccessKey }: S3Config): S3Client {
-  if (s3Client) {
-    return s3Client;
-  }
-
-  s3Client = new S3Client({
-    credentials: {
-      accessKeyId,
-      secretAccessKey,
-    },
-    region,
-  });
-
-  return s3Client;
-}
-
 export type S3AssetsAPI = {
   images: {
     upload(stream: Readable, id: string): Promise<ImageMetadata>;
@@ -56,112 +37,95 @@ export type S3AssetsAPI = {
 
 export async function getS3AssetsAPI({ config }: { config: S3Config }): Promise<S3AssetsAPI> {
   const { bucketName, region } = config;
-  const s3 = getS3Client(config);
+  const s3 = new S3({
+    credentials: {
+      accessKeyId: config.accessKeyId,
+      secretAccessKey: config.secretAccessKey,
+    },
+    region,
+    endpoint: config.endpoint,
+    forcePathStyle: config.forcePathStyle,
+  });
+
+  let endpoint = config.endpoint
+    ? new URL(config.endpoint)
+    : new URL(`https://s3.${region}.amazonaws.com`);
+  if (config.forcePathStyle) {
+    endpoint = new URL(`/${config.bucketName}`, endpoint);
+  } else {
+    endpoint.hostname = `${config.bucketName}.${endpoint.hostname}`;
+  }
 
   return {
     images: {
       url(id, extension) {
-        return region
-          ? `https://${bucketName}.s3.${region}.amazonaws.com/${id}.${extension}`
-          : `https://${bucketName}.s3.amazonaws.com/${id}.${extension}`;
+        const url = new URL(`/${id}.${extension}`, endpoint);
+        return url.toString();
       },
       async metadata(id, extension): Promise<ImageMetadata> {
-        const getObjectCommand = new GetObjectCommand({
+        const { Metadata = {}, ContentLength } = await s3.headObject({
           Bucket: bucketName,
           Key: `${id}.${extension}`,
         });
-        const { Metadata = {} } = await s3.send(getObjectCommand);
 
         return {
-          extension: Metadata.extension as ImageExtension,
+          extension,
           height: Number(Metadata.height),
           width: Number(Metadata.width),
-          filesize: Number(Metadata.filesize),
+          filesize: ContentLength!,
         };
       },
       async upload(stream, id) {
         const buffer = await streamToBuffer(stream);
-        const fileType = await fileTypeFromStream(stream);
-        const { width, height } = sizeOf(buffer);
-        const filesize = buffer.length;
+        const metadata = getImageMetadataFromBuffer(buffer);
 
-        if (!width || !height) {
-          throw new Error('Unable to calculate dimensions of image');
-        }
-
-        if (!fileType) {
-          throw new Error('Unable to determine image file extension');
-        }
-
-        const { ext: extension } = fileType;
-        const metadata = {
-          width: String(width),
-          height: String(height),
-          filesize: String(filesize),
-          extension: extension as ImageExtension,
-        };
-        const uploadParams = {
+        await s3.putObject({
           Bucket: bucketName,
-          Key: `${id}.${fileType.ext}`,
-          Body: stream,
-          Metadata: metadata,
-        };
+          Key: `${id}.${metadata.extension}`,
+          Body: buffer,
+          Metadata: {
+            width: String(metadata.width),
+            height: String(metadata.height),
+          },
+        });
 
-        await s3.send(new PutObjectCommand(uploadParams));
-
-        return {
-          width: Number(width),
-          height: Number(height),
-          filesize: Number(filesize),
-          extension: extension as ImageExtension,
-        };
+        return metadata;
       },
     },
     files: {
       url(filename) {
-        return region
-          ? `https://${bucketName}.s3.${region}.amazonaws.com/${filename}`
-          : `https://${bucketName}.s3.amazonaws.com/${filename}`;
+        const url = new URL(`/${filename}`, endpoint);
+        return url.toString();
       },
       async metadata(filename) {
-        const getObjectCommand = new GetObjectCommand({
+        const { ContentLength } = await s3.headObject({
           Bucket: bucketName,
           Key: filename,
         });
-        const { Metadata } = await s3.send(getObjectCommand);
 
-        if (!Metadata) {
+        if (ContentLength === undefined) {
           throw new Error('File metadata not found');
         }
 
         return {
           mode: 's3',
-          filesize: Number(Metadata.filesize),
+          filesize: ContentLength,
           filename,
         };
       },
       async upload(stream, filename) {
         const buffer = await streamToBuffer(stream);
-        const filesize = buffer.length;
-        const mode = 's3';
-        const metadata = {
-          mode,
-          filename,
-          filesize: String(filesize),
-        };
-        const uploadParams = {
+
+        await s3.putObject({
           Bucket: bucketName,
           Key: filename,
-          Body: stream,
-          Metadata: metadata,
-        };
-
-        await s3.send(new PutObjectCommand(uploadParams));
+          Body: buffer,
+        });
 
         return {
-          mode,
+          mode: 's3',
           filename,
-          filesize,
+          filesize: buffer.length,
         };
       },
     },
