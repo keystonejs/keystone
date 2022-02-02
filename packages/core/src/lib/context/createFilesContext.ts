@@ -65,15 +65,12 @@ export function createFilesContext(
       switch (mode) {
         case 'cloud': {
           return cloudAssets().files.url(filename);
-          break;
         }
         case 's3': {
           return s3Assets(s3).files.url(filename);
-          break;
         }
         default: {
           return `${baseUrl}/${filename}`;
-          break;
         }
       }
     },
@@ -90,18 +87,14 @@ export function createFilesContext(
         case 'cloud': {
           const { filesize } = await cloudAssets().files.metadata(filename);
           return { filesize, ...fileRef };
-          break;
         }
         case 's3': {
           const { filesize } = await s3Assets(s3).files.metadata(filename);
           return { filesize, ...fileRef };
-          break;
         }
-        default: {
+        case 'local': {
           const { size: filesize } = await fs.stat(path.join(storagePath, fileRef.filename));
-
           return { filesize, ...fileRef };
-          break;
         }
       }
     },
@@ -113,14 +106,12 @@ export function createFilesContext(
         case 'cloud': {
           const { filesize } = await cloudAssets().files.upload(stream, filename);
           return { mode, filesize, filename };
-          break;
         }
         case 's3': {
           const { filesize } = await s3Assets(s3).files.upload(stream, filename);
           return { mode, filesize, filename };
-          break;
         }
-        default: {
+        case 'local': {
           const writeStream = fs.createWriteStream(path.join(storagePath, filename));
           const pipeStreams: Promise<void> = new Promise((resolve, reject) => {
             pipeline(stream, writeStream, err => {
