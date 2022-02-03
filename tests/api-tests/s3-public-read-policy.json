@@ -5,13 +5,8 @@
       "Sid": "PublicRead",
       "Effect": "Allow",
       "Principal": "*",
-      "Action": [
-        "s3:GetObject",
-        "s3:GetObjectVersion"
-      ],
-      "Resource": [
-        "arn:aws:s3:::keystone-test/*"
-      ]
+      "Action": ["s3:GetObject", "s3:GetObjectVersion"],
+      "Resource": ["arn:aws:s3:::keystone-test/*"]
     }
   ]
 }
