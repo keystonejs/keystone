@@ -190,8 +190,10 @@ jobs:
           export AWS_SECRET_ACCESS_KEY=keystone
           export AWS_EC2_METADATA_DISABLED=true
 
+
+
           aws --endpoint-url http://127.0.0.1:9000/ s3 mb s3://keystone-test
-          aws --endpoint-url http://127.0.0.1:9000/ s3api put-bucket-acl --bucket keystone-test --acl public-read
+          aws --endpoint-url http://127.0.0.1:9000/ s3api put-bucket-policy --bucket keystone-test --policy file://tests/api-tests/s3-public-read-policy.json
 
       - name: Unit tests
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
@@ -204,9 +206,10 @@ jobs:
           S3_FORCE_PATH_STYLE: true
           S3_BUCKET_NAME: keystone-test
           S3_ACCESS_KEY_ID: keystone
-          AWS_SECRET_ACCESS_KEY: keystone
+          S3_SECRET_ACCESS_KEY: keystone
           # this doesn't mean anything when we're using a custom s3 endpoint but the sdk wants something so we just give it something
           S3_REGION: us-east-1
+          TEST_ADAPTER: ${{ matrix.adapter }}
           DATABASE_URL: ${{ matrix.adapter == 'sqlite' && 'file:./dev.db' || 'postgres://keystone5:k3yst0n3@localhost:5432/test_db' }}
 
   examples_tests:
