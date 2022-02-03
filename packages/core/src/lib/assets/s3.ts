@@ -1,6 +1,8 @@
 import { Readable } from 'stream';
 import { S3 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
+import imageSize from 'image-size';
+
 import { S3Config } from '../../types';
 import { getImageMetadataFromBuffer } from './createImagesContext';
 import { AssetsAPI } from './types';
@@ -49,6 +51,19 @@ export function s3Assets(config: S3Config): AssetsAPI {
           Key: `${id}.${extension}`,
         });
 
+        if (Metadata.height === undefined || Metadata.width === undefined) {
+          const { Body } = await s3.getObject({ Bucket: bucketName, Key: `${id}.${extension}` });
+
+          const buffer = await streamToBuffer(Body as Readable);
+
+          const { height, width } = imageSize(buffer);
+
+          if (width === undefined || height === undefined) {
+            throw new Error('Height and width could not be found for image');
+          }
+          return { extension, height, width, filesize: ContentLength! };
+        }
+
         return {
           extension,
           height: Number(Metadata.height),
@@ -70,6 +85,12 @@ export function s3Assets(config: S3Config): AssetsAPI {
               width: String(metadata.width),
               height: String(metadata.height),
             },
+            ContentType: {
+              png: 'image/png',
+              webp: 'image/webp',
+              gif: 'image/gif',
+              jpg: 'image/jpeg',
+            }[metadata.extension],
           },
         });
         await upload.done();
