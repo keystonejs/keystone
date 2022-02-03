@@ -190,7 +190,7 @@ jobs:
           export AWS_SECRET_ACCESS_KEY=keystone
           export AWS_EC2_METADATA_DISABLED=true
 
-          aws --endpoint-url http://127.0.0.1:9000/ s3 mb s3://keystone_test
+          aws --endpoint-url http://127.0.0.1:9000/ s3 mb s3://keystone-test
 
       - name: Unit tests
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
@@ -201,7 +201,7 @@ jobs:
           CLOUDINARY_SECRET: ${{ secrets.CLOUDINARY_SECRET }}
           S3_ENDPOINT: http://127.0.0.1:9000/
           S3_FORCE_PATH_STYLE: true
-          S3_BUCKET_NAME: keystone_test
+          S3_BUCKET_NAME: keystone-test
           S3_ACCESS_KEY_ID: keystone
           AWS_SECRET_ACCESS_KEY: keystone
           # this doesn't mean anything when we're using a custom s3 endpoint but the sdk wants something so we just give it something
