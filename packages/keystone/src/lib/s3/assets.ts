@@ -1,5 +1,6 @@
 import { Readable } from 'stream';
 import { S3 } from '@aws-sdk/client-s3';
+import { Upload } from '@aws-sdk/lib-storage';
 import { FileData, ImageExtension, ImageMetadata } from '../../types/context';
 import { S3Config } from '../../types';
 import { getImageMetadataFromBuffer } from '../context/createImagesContext';
@@ -52,11 +53,12 @@ export function s3Assets(config: S3Config | undefined): S3AssetsAPI {
     endpoint.hostname = `${config.bucketName}.${endpoint.hostname}`;
   }
 
+  const endpointString = endpoint.toString();
+
   return {
     images: {
       url(id, extension) {
-        const url = new URL(`/${id}.${extension}`, endpoint);
-        return url.toString();
+        return endpointString.replace(/\/?$/, `/${id}.${extension}`);
       },
       async metadata(id, extension): Promise<ImageMetadata> {
         const { Metadata = {}, ContentLength } = await s3.headObject({
@@ -75,23 +77,26 @@ export function s3Assets(config: S3Config | undefined): S3AssetsAPI {
         const buffer = await streamToBuffer(stream);
         const metadata = getImageMetadataFromBuffer(buffer);
 
-        await s3.putObject({
-          Bucket: bucketName,
-          Key: `${id}.${metadata.extension}`,
-          Body: buffer,
-          Metadata: {
-            width: String(metadata.width),
-            height: String(metadata.height),
+        const upload = new Upload({
+          client: s3,
+          params: {
+            Bucket: bucketName,
+            Key: `${id}.${metadata.extension}`,
+            Body: buffer,
+            Metadata: {
+              width: String(metadata.width),
+              height: String(metadata.height),
+            },
           },
         });
+        await upload.done();
 
         return metadata;
       },
     },
     files: {
       url(filename) {
-        const url = new URL(`/${filename}`, endpoint);
-        return url.toString();
+        return endpointString.replace(/\/?$/, `/${filename}`);
       },
       async metadata(filename) {
         const { ContentLength } = await s3.headObject({
@@ -115,11 +120,16 @@ export function s3Assets(config: S3Config | undefined): S3AssetsAPI {
           filesize += data.length;
         });
 
-        await s3.putObject({
-          Bucket: bucketName,
-          Key: filename,
-          Body: stream,
+        const upload = new Upload({
+          client: s3,
+          params: {
+            Bucket: bucketName,
+            Key: filename,
+            Body: stream,
+          },
         });
+
+        await upload.done();
 
         return {
           mode: 's3',

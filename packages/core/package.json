@@ -28,6 +28,7 @@
   "dependencies": {
     "@apollo/client": "3.4.17",
     "@aws-sdk/client-s3": "3.44.0",
+    "@aws-sdk/lib-storage": "^3.49.0",
     "@babel/core": "^7.16.0",
     "@babel/runtime": "^7.16.3",
     "@emotion/hash": "^0.8.0",
