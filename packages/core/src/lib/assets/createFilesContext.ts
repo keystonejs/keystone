@@ -7,8 +7,7 @@ import fs from 'fs-extra';
 import slugify from '@sindresorhus/slugify';
 import { KeystoneConfig, FilesContext } from '../../types';
 import { parseFileRef } from '../../fields/types/file/utils';
-import { CloudAssetsAPI } from '../cloud/assets';
-import { S3AssetsAPI } from '../s3/assets';
+import { AssetsAPI } from './types';
 
 const DEFAULT_BASE_URL = '/files';
 export const DEFAULT_FILES_STORAGE_PATH = './public/files';
@@ -45,8 +44,8 @@ const generateSafeFilename = (
 
 export function createFilesContext(
   config: KeystoneConfig,
-  cloudAssets: () => CloudAssetsAPI,
-  s3Assets: () => S3AssetsAPI
+  cloudAssets: () => AssetsAPI,
+  s3Assets: () => AssetsAPI
 ): FilesContext | undefined {
   if (!config.files) {
     return;

@@ -10,11 +10,11 @@ import {
 
 import { PrismaClient } from '../core/utils';
 import { InitialisedList } from '../core/types-for-lists';
-import { CloudAssetsAPI } from '../cloud/assets';
-import { s3Assets } from '../s3/assets';
+import { createImagesContext } from '../assets/createImagesContext';
+import { createFilesContext } from '../assets/createFilesContext';
+import { CloudAssetsAPI } from '../assets/cloud';
+import { s3Assets } from '../assets/s3';
 import { getDbAPIFactory, itemAPIForList } from './itemAPI';
-import { createImagesContext } from './createImagesContext';
-import { createFilesContext } from './createFilesContext';
 
 export function makeCreateContext({
   graphQLSchema,

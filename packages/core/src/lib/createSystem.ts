@@ -2,10 +2,10 @@ import pLimit from 'p-limit';
 import { FieldData, KeystoneConfig, getGqlNames } from '../types';
 
 import { createAdminMeta } from '../admin-ui/system/createAdminMeta';
+import { CloudAssetsAPI, getCloudAssetsAPI } from './assets/cloud';
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './context/createContext';
 import { initialiseLists } from './core/types-for-lists';
-import { CloudAssetsAPI, getCloudAssetsAPI } from './cloud/assets';
 import { setWriteLimit } from './core/utils';
 
 function getSudoGraphQLSchema(config: KeystoneConfig) {
