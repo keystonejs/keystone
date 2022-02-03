@@ -1,7 +1,8 @@
 import { Readable } from 'stream';
 import fetch from 'node-fetch';
 import FormData from 'form-data';
-import { FileData, ImageExtension, ImageMetadata } from '../../types/context';
+import { ImageExtension, ImageMetadata } from '../../types/context';
+import { AssetsAPI } from './types';
 
 function formUploadBody({
   fieldName,
@@ -17,19 +18,6 @@ function formUploadBody({
   return form;
 }
 
-export type CloudAssetsAPI = {
-  images: {
-    upload(stream: Readable, id: string): Promise<ImageMetadata>;
-    url(id: string, extension: ImageExtension): string;
-    metadata(id: string, extension: ImageExtension): Promise<ImageMetadata>;
-  };
-  files: {
-    upload(stream: Readable, filename: string): Promise<FileData>;
-    url(filename: string): string;
-    metadata(filename: string): Promise<FileData>;
-  };
-};
-
 type ImageMetadataResponse = {
   width: number;
   height: number;
@@ -39,7 +27,7 @@ type ImageMetadataResponse = {
 
 const cloudAssetsConfigCache = new Map();
 
-export async function getCloudAssetsAPI({ apiKey }: { apiKey: string }): Promise<CloudAssetsAPI> {
+export async function getCloudAssetsAPI({ apiKey }: { apiKey: string }): Promise<AssetsAPI> {
   const headers = {
     Authorization: `Bearer ${apiKey}`,
     'x-keystone-version': `TODO 6 RC`,
