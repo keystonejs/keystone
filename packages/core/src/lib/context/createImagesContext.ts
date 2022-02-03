@@ -6,7 +6,7 @@ import imageSize from 'image-size';
 import { KeystoneConfig, ImageMetadata, ImagesContext } from '../../types';
 import { parseImageRef } from '../../fields/types/image/utils';
 import { CloudAssetsAPI } from '../cloud/assets';
-import { s3Assets } from '../s3/assets';
+import { S3AssetsAPI } from '../s3/assets';
 
 const DEFAULT_BASE_URL = '/images';
 export const DEFAULT_IMAGES_STORAGE_PATH = './public/images';
@@ -32,14 +32,14 @@ export function getImageMetadataFromBuffer(buffer: Buffer): ImageMetadata {
 
 export function createImagesContext(
   config: KeystoneConfig,
-  cloudAssets: () => CloudAssetsAPI
+  cloudAssets: () => CloudAssetsAPI,
+  s3Assets: () => S3AssetsAPI
 ): ImagesContext | undefined {
   if (!config.images) {
     return;
   }
 
   const { images } = config;
-  const { s3 } = config.experimental || {};
   const { baseUrl = DEFAULT_BASE_URL, storagePath = DEFAULT_IMAGES_STORAGE_PATH } =
     images.local || {};
 
@@ -54,7 +54,7 @@ export function createImagesContext(
           return cloudAssets().images.url(id, extension);
         }
         case 's3': {
-          return s3Assets(s3).images.url(id, extension);
+          return s3Assets().images.url(id, extension);
         }
         case 'local': {
           const filename = `${id}.${extension}`;
@@ -77,7 +77,7 @@ export function createImagesContext(
           return { ...imageRef, ...metadata };
         }
         case 's3': {
-          const metadata = await s3Assets(s3).images.metadata(imageRef.id, imageRef.extension);
+          const metadata = await s3Assets().images.metadata(imageRef.id, imageRef.extension);
           return { ...imageRef, ...metadata };
         }
         case 'local': {
@@ -100,7 +100,7 @@ export function createImagesContext(
           return { mode, id, ...metadata };
         }
         case 's3': {
-          const metadata = await s3Assets(s3).images.upload(stream, id);
+          const metadata = await s3Assets().images.upload(stream, id);
           return { mode, id, ...metadata };
         }
         case 'local': {

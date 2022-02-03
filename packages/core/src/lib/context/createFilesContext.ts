@@ -8,7 +8,7 @@ import slugify from '@sindresorhus/slugify';
 import { KeystoneConfig, FilesContext } from '../../types';
 import { parseFileRef } from '../../fields/types/file/utils';
 import { CloudAssetsAPI } from '../cloud/assets';
-import { s3Assets } from '../s3/assets';
+import { S3AssetsAPI } from '../s3/assets';
 
 const DEFAULT_BASE_URL = '/files';
 export const DEFAULT_FILES_STORAGE_PATH = './public/files';
@@ -45,14 +45,14 @@ const generateSafeFilename = (
 
 export function createFilesContext(
   config: KeystoneConfig,
-  cloudAssets: () => CloudAssetsAPI
+  cloudAssets: () => CloudAssetsAPI,
+  s3Assets: () => S3AssetsAPI
 ): FilesContext | undefined {
   if (!config.files) {
     return;
   }
 
   const { files } = config;
-  const { s3 } = config.experimental || {};
   const { baseUrl = DEFAULT_BASE_URL, storagePath = DEFAULT_FILES_STORAGE_PATH } =
     files.local || {};
 
@@ -67,7 +67,7 @@ export function createFilesContext(
           return cloudAssets().files.url(filename);
         }
         case 's3': {
-          return s3Assets(s3).files.url(filename);
+          return s3Assets().files.url(filename);
         }
         default: {
           return `${baseUrl}/${filename}`;
@@ -89,7 +89,7 @@ export function createFilesContext(
           return { filesize, ...fileRef };
         }
         case 's3': {
-          const { filesize } = await s3Assets(s3).files.metadata(filename);
+          const { filesize } = await s3Assets().files.metadata(filename);
           return { filesize, ...fileRef };
         }
         case 'local': {
@@ -108,7 +108,7 @@ export function createFilesContext(
           return { mode, filesize, filename };
         }
         case 's3': {
-          const { filesize } = await s3Assets(s3).files.upload(stream, filename);
+          const { filesize } = await s3Assets().files.upload(stream, filename);
           return { mode, filesize, filename };
         }
         case 'local': {
