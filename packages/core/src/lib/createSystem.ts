@@ -2,11 +2,12 @@ import pLimit from 'p-limit';
 import { FieldData, KeystoneConfig, getGqlNames } from '../types';
 
 import { createAdminMeta } from '../admin-ui/system/createAdminMeta';
-import { CloudAssetsAPI, getCloudAssetsAPI } from './assets/cloud';
+import { getCloudAssetsAPI } from './assets/cloud';
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './context/createContext';
 import { initialiseLists } from './core/types-for-lists';
 import { setWriteLimit } from './core/utils';
+import { AssetsAPI } from './assets/types';
 
 function getSudoGraphQLSchema(config: KeystoneConfig) {
   // This function creates a GraphQLSchema based on a modified version of the provided config.
@@ -87,7 +88,7 @@ export function createSystem(config: KeystoneConfig, isLiveReload?: boolean) {
         prismaClient._engine.child?.kill('SIGINT');
       });
 
-      let cloudAssetsAPI: CloudAssetsAPI | undefined = undefined;
+      let cloudAssetsAPI: AssetsAPI | undefined = undefined;
 
       const createContext = makeCreateContext({
         graphQLSchema,

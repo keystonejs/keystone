@@ -12,8 +12,8 @@ import { PrismaClient } from '../core/utils';
 import { InitialisedList } from '../core/types-for-lists';
 import { createImagesContext } from '../assets/createImagesContext';
 import { createFilesContext } from '../assets/createFilesContext';
-import { CloudAssetsAPI } from '../assets/cloud';
 import { s3Assets } from '../assets/s3';
+import { AssetsAPI } from '../assets/types';
 import { getDbAPIFactory, itemAPIForList } from './itemAPI';
 
 export function makeCreateContext({
@@ -31,7 +31,7 @@ export function makeCreateContext({
   prismaClient: PrismaClient;
   gqlNamesByList: Record<string, GqlNames>;
   lists: Record<string, InitialisedList>;
-  cloudAssetsAPI: () => CloudAssetsAPI;
+  cloudAssetsAPI: () => AssetsAPI;
 }) {
   const s3AssetsAPI = config.experimental?.s3 ? s3Assets(config.experimental.s3) : undefined;
   const getS3AssetsAPI = () => {

@@ -21,22 +21,22 @@ if (unsupportedModules.length > 0) {
       describe(`${mod.name} - Unsupported field type`, () => {
         beforeEach(() => {
           if (mod.beforeEach) {
-            mod.beforeEach();
+            mod.beforeEach(matrixValue);
           }
         });
         afterEach(async () => {
           if (mod.afterEach) {
-            await mod.afterEach();
+            await mod.afterEach(matrixValue);
           }
         });
         beforeAll(() => {
           if (mod.beforeAll) {
-            mod.beforeAll();
+            mod.beforeAll(matrixValue);
           }
         });
         afterAll(async () => {
           if (mod.afterAll) {
-            await mod.afterAll();
+            await mod.afterAll(matrixValue);
           }
         });
 

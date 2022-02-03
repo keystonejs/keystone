@@ -121,6 +121,20 @@ jobs:
 
       - name: Install Dependencies
         run: yarn
+      - name: Setup local S3 bucket
+        run: |
+          docker run -d -p 9000:9000 --name minio \
+                     -e "MINIO_ACCESS_KEY=keystone" \
+                     -e "MINIO_SECRET_KEY=keystone" \
+                     -v /tmp/data:/data \
+                     -v /tmp/config:/root/.minio \
+                     minio/minio server /data
+
+          export AWS_ACCESS_KEY_ID=keystone
+          export AWS_SECRET_ACCESS_KEY=keystone
+          export AWS_EC2_METADATA_DISABLED=true
+
+          aws --endpoint-url http://127.0.0.1:9000/ s3 mb s3://keystone_test
 
       - name: Unit tests
         run: yarn jest --ci --runInBand --testPathIgnorePatterns=admin-ui-tests --testPathIgnorePatterns=api-tests --testPathIgnorePatterns=examples-smoke-tests --testPathIgnorePatterns=examples/testing
@@ -128,6 +142,13 @@ jobs:
           CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
           CLOUDINARY_KEY: ${{ secrets.CLOUDINARY_KEY }}
           CLOUDINARY_SECRET: ${{ secrets.CLOUDINARY_SECRET }}
+          S3_ENDPOINT: http://127.0.0.1:9000/
+          S3_FORCE_PATH_STYLE: true
+          S3_BUCKET_NAME: keystone_test
+          S3_ACCESS_KEY_ID: keystone
+          AWS_SECRET_ACCESS_KEY: keystone
+          # this doesn't mean anything when we're using a custom s3 endpoint but the sdk wants something so we just give it something
+          S3_REGION: us-east-1
 
   examples_tests:
     name: Testing example project

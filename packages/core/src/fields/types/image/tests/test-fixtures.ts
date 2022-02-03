@@ -2,7 +2,8 @@ import path from 'path';
 import fs from 'fs-extra';
 import { Upload } from 'graphql-upload';
 import mime from 'mime';
-import { KeystoneContext } from '../../../../types';
+import fetch from 'node-fetch';
+import { KeystoneConfig, KeystoneContext } from '../../../../types';
 import { image } from '..';
 import { expectSingleResolverError } from '../../../../../../../tests/api-tests/utils';
 
@@ -17,6 +18,33 @@ const prepareFile = (_filePath: string) => {
     encoding: 'utf-8',
   });
   return { upload };
+};
+
+export const testMatrix = ['local'];
+
+if (process.env.S3_BUCKET_NAME) {
+  testMatrix.push('s3');
+}
+
+export const getRootConfig = (matrixValue: 's3' | 'local'): Partial<KeystoneConfig> => {
+  if (matrixValue === 'local') {
+    return {};
+  }
+  return {
+    images: {
+      upload: 's3',
+    },
+    experimental: {
+      s3: {
+        bucketName: process.env.S3_BUCKET_NAME!,
+        accessKeyId: process.env.S3_ACCESS_KEY_ID!,
+        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY!,
+        region: process.env.S3_REGION!,
+        endpoint: process.env.S3_ENDPOINT,
+        forcePathStyle: process.env.S3_FORCE_PATH_STYLE === 'true',
+      },
+    },
+  };
 };
 
 export const name = 'Image';
@@ -35,9 +63,11 @@ export const subfieldName = 'extension';
 
 export const getTestFields = () => ({ avatar: image() });
 
-export const afterAll = async () => {
-  // This matches the storagePath in the keystone config in the various test files.
-  fs.rmdirSync('tmp_test_images', { recursive: true });
+export const afterAll = (matrixValue: 's3' | 'local') => {
+  if (matrixValue === 'local') {
+    // This matches the storagePath in the keystone config in the various test files.
+    fs.rmdirSync('tmp_test_images', { recursive: true });
+  }
 };
 
 export const initItems = () => [
@@ -66,12 +96,19 @@ export const crudTests = (keystoneTestWrapper: any) => {
   describe('Create - upload', () => {
     test(
       'upload values should match expected',
-      keystoneTestWrapper(async ({ context }: { context: KeystoneContext }) => {
-        const filenames = ['keystone.jpeg', 'keystone.jpg', 'keystone'];
-        for (const filename of filenames) {
-          const data = await context.query.Test.createOne({
-            data: { avatar: prepareFile(filename) },
-            query: `
+      keystoneTestWrapper(
+        async ({
+          context,
+          matrixValue,
+        }: {
+          context: KeystoneContext;
+          matrixValue: 's3' | 'local';
+        }) => {
+          const filenames = ['keystone.jpeg', 'keystone.jpg', 'keystone'];
+          for (const filename of filenames) {
+            const data = await context.query.Test.createOne({
+              data: { avatar: prepareFile(filename) },
+              query: `
               avatar {
                 __typename
                 id
@@ -83,20 +120,33 @@ export const crudTests = (keystoneTestWrapper: any) => {
                 url
               }
           `,
-          });
-          expect(data).not.toBe(null);
-          expect(data.avatar).toEqual({
-            ref: `local:image:${data.avatar.id}.jpg`,
-            url: `/images/${data.avatar.id}.jpg`,
-            id: data.avatar.id,
-            __typename: 'LocalImageFieldOutput',
-            filesize: 3250,
-            width: 150,
-            height: 152,
-            extension: 'jpg',
-          });
+            });
+            expect(data).not.toBe(null);
+
+            expect(data.avatar).toEqual({
+              ref: `${matrixValue}:image:${data.avatar.id}.jpg`,
+              url:
+                matrixValue === 's3'
+                  ? expect.stringContaining(`/${data.avatar.id}.jpg`)
+                  : `/images/${data.avatar.id}.jpg`,
+              id: data.avatar.id,
+              __typename: matrixValue === 'local' ? `LocalImageFieldOutput` : `S3ImageFieldOutput`,
+              filesize: 3250,
+              width: 150,
+              height: 152,
+              extension: 'jpg',
+            });
+            // since it would be hard to assert exactly on the returned url for s3, we're gonna check the content instead.
+            if (matrixValue === 's3') {
+              const contentFromURL = await fetch(data.avatar.url).then(x => x.buffer());
+              const contentFromFile = await fs.readFile(
+                path.resolve(`${__dirname}/../test-files/${filename}`)
+              );
+              expect(contentFromURL).toEqual(contentFromFile);
+            }
+          }
         }
-      })
+      )
     );
     test(
       'if not image file, throw',
