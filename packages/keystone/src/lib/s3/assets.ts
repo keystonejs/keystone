@@ -5,21 +5,13 @@ import { S3Config } from '../../types';
 import { getImageMetadataFromBuffer } from '../context/createImagesContext';
 
 async function streamToBuffer(stream: Readable): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    const data: Array<Uint8Array> = [];
+  const chunks = [];
 
-    stream.on('data', chunk => {
-      data.push(chunk);
-    });
+  for await (let chunk of stream) {
+    chunks.push(chunk);
+  }
 
-    stream.on('end', () => {
-      resolve(Buffer.concat(data));
-    });
-
-    stream.on('error', err => {
-      reject(err);
-    });
-  });
+  return Buffer.concat(chunks);
 }
 
 export type S3AssetsAPI = {
@@ -118,18 +110,21 @@ export function s3Assets(config: S3Config | undefined): S3AssetsAPI {
         };
       },
       async upload(stream, filename) {
-        const buffer = await streamToBuffer(stream);
+        let filesize = 0;
+        stream.on('data', data => {
+          filesize += data.length;
+        });
 
         await s3.putObject({
           Bucket: bucketName,
           Key: filename,
-          Body: buffer,
+          Body: stream,
         });
 
         return {
           mode: 's3',
           filename,
-          filesize: buffer.length,
+          filesize,
         };
       },
     },
