@@ -5,8 +5,7 @@ import fromBuffer from 'image-type';
 import imageSize from 'image-size';
 import { KeystoneConfig, ImageMetadata, ImagesContext } from '../../types';
 import { parseImageRef } from '../../fields/types/image/utils';
-import { CloudAssetsAPI } from '../cloud/assets';
-import { S3AssetsAPI } from '../s3/assets';
+import { AssetsAPI } from './types';
 
 const DEFAULT_BASE_URL = '/images';
 export const DEFAULT_IMAGES_STORAGE_PATH = './public/images';
@@ -32,8 +31,8 @@ export function getImageMetadataFromBuffer(buffer: Buffer): ImageMetadata {
 
 export function createImagesContext(
   config: KeystoneConfig,
-  cloudAssets: () => CloudAssetsAPI,
-  s3Assets: () => S3AssetsAPI
+  cloudAssets: () => AssetsAPI,
+  s3Assets: () => AssetsAPI
 ): ImagesContext | undefined {
   if (!config.images) {
     return;

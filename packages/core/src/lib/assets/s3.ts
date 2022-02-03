@@ -1,9 +1,9 @@
 import { Readable } from 'stream';
 import { S3 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
-import { FileData, ImageExtension, ImageMetadata } from '../../types/context';
 import { S3Config } from '../../types';
-import { getImageMetadataFromBuffer } from '../context/createImagesContext';
+import { getImageMetadataFromBuffer } from './createImagesContext';
+import { AssetsAPI } from './types';
 
 async function streamToBuffer(stream: Readable): Promise<Buffer> {
   const chunks = [];
@@ -15,20 +15,7 @@ async function streamToBuffer(stream: Readable): Promise<Buffer> {
   return Buffer.concat(chunks);
 }
 
-export type S3AssetsAPI = {
-  images: {
-    upload(stream: Readable, id: string): Promise<ImageMetadata>;
-    url(id: string, extension: ImageExtension): string;
-    metadata(id: string, extension: ImageExtension): Promise<ImageMetadata>;
-  };
-  files: {
-    upload(stream: Readable, filename: string): Promise<FileData>;
-    url(filename: string): string;
-    metadata(filename: string): Promise<FileData>;
-  };
-};
-
-export function s3Assets(config: S3Config): S3AssetsAPI {
+export function s3Assets(config: S3Config): AssetsAPI {
   const { bucketName, region } = config;
   const s3 = new S3({
     credentials: {
@@ -56,7 +43,7 @@ export function s3Assets(config: S3Config): S3AssetsAPI {
       url(id, extension) {
         return endpointString.replace(/\/?$/, `/${id}.${extension}`);
       },
-      async metadata(id, extension): Promise<ImageMetadata> {
+      async metadata(id, extension) {
         const { Metadata = {}, ContentLength } = await s3.headObject({
           Bucket: bucketName,
           Key: `${id}.${extension}`,
