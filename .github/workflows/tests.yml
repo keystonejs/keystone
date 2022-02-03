@@ -80,7 +80,7 @@ jobs:
 
       - name: Unit tests
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        run: yarn jest --ci --runInBand api-tests
+        run: yarn jest --ci --runInBand api-tests --testPathIgnorePatterns=examples-smoke-tests  --testPathIgnorePatterns=tests/api-tests/fields/crud
         env:
           CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
           CLOUDINARY_KEY: ${{ secrets.CLOUDINARY_KEY }}
@@ -121,7 +121,63 @@ jobs:
 
       - name: Install Dependencies
         run: yarn
+
+      - name: Unit tests
+        run: yarn jest --ci --runInBand --testPathIgnorePatterns=admin-ui-tests --testPathIgnorePatterns=api-tests --testPathIgnorePatterns=examples-smoke-tests --testPathIgnorePatterns=examples/testing
+        env:
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_KEY: ${{ secrets.CLOUDINARY_KEY }}
+          CLOUDINARY_SECRET: ${{ secrets.CLOUDINARY_SECRET }}
+
+  field_crud_tests:
+    name: Field CRUD Tests
+    needs: should_run_tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_USER: keystone5
+          POSTGRES_PASSWORD: k3yst0n3
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+    strategy:
+      fail-fast: false
+      matrix:
+        adapter: ['postgresql', 'sqlite']
+    steps:
+      - name: Checkout Repo
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js LTS
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        uses: actions/setup-node@main
+        with:
+          node-version: lts/*
+
+      - name: Get yarn cache directory path
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - uses: actions/cache@v2
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        id: yarn-cache
+        with:
+          path: |
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            node_modules
+          key: ${{ runner.os }}-yarn-v5-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-v5-
+
+      - name: Install Dependencies
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        run: yarn
       - name: Setup local S3 bucket
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: |
           docker run -d -p 9000:9000 --name minio \
                      -e "MINIO_ACCESS_KEY=keystone" \
@@ -137,7 +193,8 @@ jobs:
           aws --endpoint-url http://127.0.0.1:9000/ s3 mb s3://keystone_test
 
       - name: Unit tests
-        run: yarn jest --ci --runInBand --testPathIgnorePatterns=admin-ui-tests --testPathIgnorePatterns=api-tests --testPathIgnorePatterns=examples-smoke-tests --testPathIgnorePatterns=examples/testing
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        run: yarn jest --ci --runInBand tests/api-tests/fields/crud
         env:
           CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
           CLOUDINARY_KEY: ${{ secrets.CLOUDINARY_KEY }}
@@ -149,6 +206,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: keystone
           # this doesn't mean anything when we're using a custom s3 endpoint but the sdk wants something so we just give it something
           S3_REGION: us-east-1
+          DATABASE_URL: ${{ matrix.adapter == 'sqlite' && 'file:./dev.db' || 'postgres://keystone5:k3yst0n3@localhost:5432/test_db' }}
 
   examples_tests:
     name: Testing example project
