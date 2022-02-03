@@ -42,22 +42,22 @@ testModules
         describe(`${mod.name} - ${matrixValue} - Custom Filtering`, () => {
           beforeEach(() => {
             if (mod.beforeEach) {
-              mod.beforeEach();
+              mod.beforeEach(matrixValue);
             }
           });
           afterEach(async () => {
             if (mod.afterEach) {
-              await mod.afterEach();
+              await mod.afterEach(matrixValue);
             }
           });
           beforeAll(() => {
             if (mod.beforeAll) {
-              mod.beforeAll();
+              mod.beforeAll(matrixValue);
             }
           });
           afterAll(async () => {
             if (mod.afterAll) {
-              await mod.afterAll();
+              await mod.afterAll(matrixValue);
             }
           });
           mod.filterTests(withKeystone, matrixValue);
@@ -68,22 +68,22 @@ testModules
         describe(`${mod.name} - ${matrixValue} - Common Filtering`, () => {
           beforeEach(() => {
             if (mod.beforeEach) {
-              mod.beforeEach();
+              mod.beforeEach(matrixValue);
             }
           });
           afterEach(async () => {
             if (mod.afterEach) {
-              await mod.afterEach();
+              await mod.afterEach(matrixValue);
             }
           });
           beforeAll(() => {
             if (mod.beforeAll) {
-              mod.beforeAll();
+              mod.beforeAll(matrixValue);
             }
           });
           afterAll(async () => {
             if (mod.afterAll) {
-              await mod.afterAll();
+              await mod.afterAll(matrixValue);
             }
           });
           const { readFieldName, fieldName, subfieldName, storedValues: _storedValues } = mod;

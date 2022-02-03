@@ -50,20 +50,32 @@ const fileFields = graphql.fields<FileData>()({
   }),
 });
 
+const modeToTypeName = {
+  local: 'LocalFileFieldOutput',
+  cloud: 'CloudFileFieldOutput',
+  s3: 'S3FileFieldOutput',
+};
+
 const FileFieldOutput = graphql.interface<FileData>()({
   name: 'FileFieldOutput',
   fields: fileFields,
-  resolveType: val => (val.mode === 'local' ? 'LocalFileFieldOutput' : 'CloudFileFieldOutput'),
+  resolveType: val => modeToTypeName[val.mode],
 });
 
 const LocalFileFieldOutput = graphql.object<FileData>()({
-  name: 'LocalFileFieldOutput',
+  name: modeToTypeName.local,
   interfaces: [FileFieldOutput],
   fields: fileFields,
 });
 
 const CloudFileFieldOutput = graphql.object<FileData>()({
-  name: 'CloudFileFieldOutput',
+  name: modeToTypeName.cloud,
+  interfaces: [FileFieldOutput],
+  fields: fileFields,
+});
+
+const S3FileFieldOutput = graphql.object<FileData>()({
+  name: modeToTypeName.s3,
   interfaces: [FileFieldOutput],
   fields: fileFields,
 });
@@ -122,7 +134,11 @@ export const file =
           return { mode, filename, filesize };
         },
       }),
-      unreferencedConcreteInterfaceImplementations: [LocalFileFieldOutput, CloudFileFieldOutput],
+      unreferencedConcreteInterfaceImplementations: [
+        LocalFileFieldOutput,
+        CloudFileFieldOutput,
+        S3FileFieldOutput,
+      ],
       views: resolveView('file/views'),
     });
   };

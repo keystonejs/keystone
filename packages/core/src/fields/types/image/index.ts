@@ -52,20 +52,32 @@ const imageOutputFields = graphql.fields<ImageData>()({
   }),
 });
 
+const modeToTypeName = {
+  local: 'LocalImageFieldOutput',
+  cloud: 'CloudImageFieldOutput',
+  s3: 'S3ImageFieldOutput',
+};
+
 const ImageFieldOutput = graphql.interface<ImageData>()({
   name: 'ImageFieldOutput',
   fields: imageOutputFields,
-  resolveType: val => (val.mode === 'local' ? 'LocalImageFieldOutput' : 'CloudImageFieldOutput'),
+  resolveType: val => modeToTypeName[val.mode],
 });
 
 const LocalImageFieldOutput = graphql.object<ImageData>()({
-  name: 'LocalImageFieldOutput',
+  name: modeToTypeName.local,
   interfaces: [ImageFieldOutput],
   fields: imageOutputFields,
 });
 
 const CloudImageFieldOutput = graphql.object<ImageData>()({
-  name: 'CloudImageFieldOutput',
+  name: modeToTypeName.cloud,
+  interfaces: [ImageFieldOutput],
+  fields: imageOutputFields,
+});
+
+const S3ImageFieldOutput = graphql.object<ImageData>()({
+  name: modeToTypeName.s3,
   interfaces: [ImageFieldOutput],
   fields: imageOutputFields,
 });
@@ -142,7 +154,11 @@ export const image =
           return { mode, extension, filesize, height, width, id };
         },
       }),
-      unreferencedConcreteInterfaceImplementations: [LocalImageFieldOutput, CloudImageFieldOutput],
+      unreferencedConcreteInterfaceImplementations: [
+        LocalImageFieldOutput,
+        CloudImageFieldOutput,
+        S3ImageFieldOutput,
+      ],
       views: resolveView('image/views'),
     });
   };
