@@ -149,6 +149,16 @@ type CloudImageFieldOutput implements ImageFieldOutput {
   url: String!
 }
 
+type S3ImageFieldOutput implements ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  ref: String!
+  url: String!
+}
+
 type LocalFileFieldOutput implements FileFieldOutput {
   filename: String!
   filesize: Int!
@@ -157,6 +167,13 @@ type LocalFileFieldOutput implements FileFieldOutput {
 }
 
 type CloudFileFieldOutput implements FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  url: String!
+}
+
+type S3FileFieldOutput implements FileFieldOutput {
   filename: String!
   filesize: Int!
   ref: String!
