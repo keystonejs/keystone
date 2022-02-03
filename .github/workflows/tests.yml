@@ -137,8 +137,8 @@ jobs:
       postgres:
         image: postgres:12
         env:
-          POSTGRES_USER: keystone5
-          POSTGRES_PASSWORD: k3yst0n3
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
           POSTGRES_DB: test_db
         ports:
           - 5432:5432
@@ -210,7 +210,7 @@ jobs:
           # this doesn't mean anything when we're using a custom s3 endpoint but the sdk wants something so we just give it something
           S3_REGION: us-east-1
           TEST_ADAPTER: ${{ matrix.adapter }}
-          DATABASE_URL: ${{ matrix.adapter == 'sqlite' && 'file:./dev.db' || 'postgres://keystone5:k3yst0n3@localhost:5432/test_db' }}
+          DATABASE_URL: ${{ matrix.adapter == 'sqlite' && 'file:./dev.db' || 'postgres://testuser:testpass@localhost:5432/test_db' }}
 
   examples_tests:
     name: Testing example project
