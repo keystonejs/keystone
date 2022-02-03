@@ -37,8 +37,8 @@ jobs:
       postgres:
         image: postgres:12
         env:
-          POSTGRES_USER: keystone5
-          POSTGRES_PASSWORD: k3yst0n3
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
           POSTGRES_DB: test_db
         ports:
           - 5432:5432
@@ -88,7 +88,7 @@ jobs:
           CI_NODE_TOTAL: 9
           CI_NODE_INDEX: ${{ matrix.index }}
           TEST_ADAPTER: ${{ matrix.adapter }}
-          DATABASE_URL: ${{ matrix.adapter == 'sqlite' && 'file:./dev.db' || 'postgres://keystone5:k3yst0n3@localhost:5432/test_db' }}
+          DATABASE_URL: ${{ matrix.adapter == 'sqlite' && 'file:./dev.db' || 'postgres://testuser:testpass@localhost:5432/test_db' }}
 
   unit_tests:
     name: Package Unit Tests
