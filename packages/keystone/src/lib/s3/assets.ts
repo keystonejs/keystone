@@ -28,11 +28,7 @@ export type S3AssetsAPI = {
   };
 };
 
-export function s3Assets(config: S3Config | undefined): S3AssetsAPI {
-  if (!config) {
-    throw new Error('S3 config missing, please check your Keystone.ts file');
-  }
-
+export function s3Assets(config: S3Config): S3AssetsAPI {
   const { bucketName, region } = config;
   const s3 = new S3({
     credentials: {
@@ -108,11 +104,7 @@ export function s3Assets(config: S3Config | undefined): S3AssetsAPI {
           throw new Error('File metadata not found');
         }
 
-        return {
-          mode: 's3',
-          filesize: ContentLength,
-          filename,
-        };
+        return { mode: 's3', filesize: ContentLength, filename };
       },
       async upload(stream, filename) {
         let filesize = 0;
@@ -131,11 +123,7 @@ export function s3Assets(config: S3Config | undefined): S3AssetsAPI {
 
         await upload.done();
 
-        return {
-          mode: 's3',
-          filename,
-          filesize,
-        };
+        return { mode: 's3', filename, filesize };
       },
     },
   };

@@ -11,6 +11,7 @@ import {
 import { PrismaClient } from '../core/utils';
 import { InitialisedList } from '../core/types-for-lists';
 import { CloudAssetsAPI } from '../cloud/assets';
+import { s3Assets } from '../s3/assets';
 import { getDbAPIFactory, itemAPIForList } from './itemAPI';
 import { createImagesContext } from './createImagesContext';
 import { createFilesContext } from './createFilesContext';
@@ -32,8 +33,15 @@ export function makeCreateContext({
   lists: Record<string, InitialisedList>;
   cloudAssetsAPI: () => CloudAssetsAPI;
 }) {
-  const images = createImagesContext(config, cloudAssetsAPI);
-  const files = createFilesContext(config, cloudAssetsAPI);
+  const s3AssetsAPI = config.experimental?.s3 ? s3Assets(config.experimental.s3) : undefined;
+  const getS3AssetsAPI = () => {
+    if (s3AssetsAPI === undefined) {
+      throw new Error('S3 assets have not been configured');
+    }
+    return s3AssetsAPI;
+  };
+  const images = createImagesContext(config, cloudAssetsAPI, getS3AssetsAPI);
+  const files = createFilesContext(config, cloudAssetsAPI, getS3AssetsAPI);
   // We precompute these helpers here rather than every time createContext is called
   // because they involve creating a new GraphQLSchema, creating a GraphQL document AST(programmatically, not by parsing) and validating the
   // note this isn't as big of an optimisation as you would imagine(at least in comparison with the rest of the system),
