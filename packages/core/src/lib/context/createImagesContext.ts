@@ -12,7 +12,6 @@ const DEFAULT_BASE_URL = '/images';
 export const DEFAULT_IMAGES_STORAGE_PATH = './public/images';
 
 export function getImageMetadataFromBuffer(buffer: Buffer): ImageMetadata {
-  const filesize = buffer.length;
   const fileType = fromBuffer(buffer);
   if (!fileType) {
     throw new Error('File type not found');
@@ -28,7 +27,7 @@ export function getImageMetadataFromBuffer(buffer: Buffer): ImageMetadata {
   if (width === undefined || height === undefined) {
     throw new Error('Height and width could not be found for image');
   }
-  return { width, height, filesize, extension };
+  return { width, height, filesize: buffer.length, extension };
 }
 
 export function createImagesContext(
