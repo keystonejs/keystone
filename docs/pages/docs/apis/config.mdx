@@ -448,6 +448,59 @@ Options:
 
 ## experimental
 
+### Uploading images and files to S3
+
+The `image` and `file` fields now have options for uploading their contents to s3 buckets. To get access to this, set the upload property
+in your config for the field to `s3`
+
+```typescript
+import { config } from '@keystone-6/core';
+
+export default config({
+  files: {
+    upload: 's3',
+  }
+  images: {
+    upload: 's3'
+  }
+  /* ... */
+});
+```
+
+After you have pointed this at s3, you need to provide the s3 config to keystone:
+
+```typescript
+import { config } from '@keystone-6/core';
+
+export default config({
+  files: {
+    upload: 's3',
+  }
+  images: {
+    upload: 's3'
+  }
+  experimental: {
+    s3: {
+      bucketName: process.env.S3_BUCKET_NAME,
+      region: process.env.S3_REGION,
+      accessKeyId: process.env.S3_ACCESS_KEY_ID,
+      secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+      // you should only need these two if you're using a different s3 implementation
+      endpoint: process.env.S3_ENDPOINT,
+      forcePathStyle: PROCESS.env.FORCE_PATH_STYLE === 'true',
+    }
+  }
+});
+```
+
+You will need to provide the S3 options through env variables to be able to run Keystone
+
+These options will be set for both the files and the images field.
+
+From there, using the fields is the same as using `local`
+
+### Other Experimental Options
+
 The following flags allow you to enable features which are still in preview.
 These features are not guaranteed to work, and should be used with caution.
 
