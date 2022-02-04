@@ -3,6 +3,7 @@ import fs from 'fs-extra';
 import { Upload } from 'graphql-upload';
 import mime from 'mime';
 import fetch from 'node-fetch';
+import { S3 } from '@aws-sdk/client-s3';
 import { KeystoneConfig, KeystoneContext } from '../../../../types';
 import { image } from '..';
 import { expectSingleResolverError } from '../../../../../../../tests/api-tests/utils';
@@ -94,6 +95,61 @@ export const supportedFilters = () => [];
 
 export const crudTests = (keystoneTestWrapper: any) => {
   describe('Create - upload', () => {
+    test(
+      'uploading an image directly to s3 and linking with a ref works',
+      keystoneTestWrapper(
+        async ({
+          context,
+          matrixValue,
+        }: {
+          context: KeystoneContext;
+          matrixValue: 's3' | 'local';
+        }) => {
+          if (matrixValue === 'local') return;
+          const s3 = new S3({
+            credentials: {
+              accessKeyId: process.env.S3_ACCESS_KEY_ID!,
+              secretAccessKey: process.env.S3_SECRET_ACCESS_KEY!,
+            },
+            region: process.env.S3_REGION!,
+            endpoint: process.env.S3_ENDPOINT,
+            forcePathStyle: process.env.S3_FORCE_PATH_STYLE === 'true',
+          });
+          const contentFromFile = await fs.readFile(
+            path.resolve(`${__dirname}/../test-files/keystone.jpg`)
+          );
+
+          await s3.putObject({
+            Bucket: process.env.S3_BUCKET_NAME!,
+            Key: 'keystone.jpg',
+            Body: contentFromFile,
+          });
+
+          const ref = `s3:image:keystone.jpg`;
+
+          const data = await context.query.Test.createOne({
+            data: { avatar: { ref } },
+            query: `
+            avatar {
+              __typename
+              id
+              filesize
+              width
+              height
+              extension
+              ref
+              url
+            }
+        `,
+          });
+          const contentFromURL = await fetch(data.avatar.url).then(x => x.buffer());
+
+          expect(contentFromURL).toEqual(contentFromFile);
+          expect(data.avatar.height).toEqual(152);
+          expect(data.avatar.width).toEqual(150);
+        }
+      )
+    );
     test(
       'upload values should match expected',
       keystoneTestWrapper(
