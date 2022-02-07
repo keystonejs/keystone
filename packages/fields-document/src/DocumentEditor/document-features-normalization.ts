@@ -66,21 +66,17 @@ export function normalizeInlineBasedOnLinksAndRelationships(
   }
   if (
     node.type === 'relationship' &&
-    (!relationshipsEnabled ||
-      relationships[node.relationship] === undefined ||
-      relationships[node.relationship].kind !== 'inline')
+    (!relationshipsEnabled || relationships[node.relationship] === undefined)
   ) {
     const data: any = node.data;
     if (data) {
       const relationship = relationships[node.relationship];
       Transforms.insertText(
         editor,
-        `${data.label || data.id || ''} (${
-          relationship?.kind === 'inline' ? relationship.label : node.relationship
-        }:${data.id || ''})`,
-        {
-          at: Editor.before(editor, path),
-        }
+        `${data.label || data.id || ''} (${relationship?.label || node.relationship}:${
+          data.id || ''
+        })`,
+        { at: Editor.before(editor, path) }
       );
     }
     Transforms.removeNodes(editor, { at: path });

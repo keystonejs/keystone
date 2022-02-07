@@ -19,16 +19,8 @@ export type Relationships = Record<
     listKey: string;
     /** GraphQL fields to select when querying the field */
     selection: string | null;
-  } & (
-    | {
-        kind: 'inline';
-        label: string;
-      }
-    | {
-        kind: 'prop';
-        many: boolean;
-      }
-  )
+    label: string;
+  }
 >;
 
 export const DocumentFieldRelationshipsContext = createContext<Relationships>({});
@@ -59,7 +51,6 @@ export function RelationshipButton({ onClose }: { onClose: () => void }) {
   return (
     <Fragment>
       {Object.entries(relationships).map(([key, relationship]) => {
-        if (relationship.kind === 'prop') return null;
         return (
           <ToolbarButton
             key={key}

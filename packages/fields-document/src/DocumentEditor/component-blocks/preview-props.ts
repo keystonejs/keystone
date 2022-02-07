@@ -1,7 +1,6 @@
 import { Element } from 'slate';
 import { ReactElement } from 'react';
 import { ComponentBlock } from '../../component-blocks';
-import { Relationships } from '../relationship';
 import { getPropsForConditionalChange } from './utils';
 import { ComponentPropField } from './api';
 
@@ -10,7 +9,6 @@ function _getPreviewProps(
   value: Record<string, any>,
   childrenByPath: Record<string, ReactElement>,
   path: (string | number)[],
-  relationships: Relationships,
   onFormPropsChange: (formProps: Record<string, any>) => void
 ): any {
   switch (prop.kind) {
@@ -32,7 +30,6 @@ function _getPreviewProps(
           value[key],
           childrenByPath,
           path.concat(key),
-          relationships,
           newVal => {
             onFormPropsChange({ ...value, [key]: newVal });
           }
@@ -56,8 +53,7 @@ function _getPreviewProps(
             getPropsForConditionalChange(
               { discriminant: newDiscriminant, value: value.value },
               value,
-              prop,
-              relationships
+              prop
             )
           );
         },
@@ -67,7 +63,6 @@ function _getPreviewProps(
           value.value,
           childrenByPath,
           path.concat('value'),
-          relationships,
           val => {
             onFormPropsChange({
               discriminant: value.discriminant,
@@ -84,7 +79,6 @@ export function createPreviewProps(
   element: Element & { type: 'component-block' },
   componentBlock: ComponentBlock,
   childrenByPath: Record<string, ReactElement>,
-  relationships: Relationships,
   setNode: (props: Partial<Element & { type: 'component-block' }>) => void
 ) {
   return _getPreviewProps(
@@ -92,7 +86,6 @@ export function createPreviewProps(
     element.props,
     childrenByPath,
     [],
-    relationships,
     props => {
       setNode({ props });
     }

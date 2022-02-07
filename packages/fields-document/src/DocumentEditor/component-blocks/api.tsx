@@ -91,9 +91,10 @@ export type ChildField = {
 
 export type RelationshipField<Cardinality extends 'one' | 'many'> = {
   kind: 'relationship';
-  relationship: string;
+  listKey: string;
+  selection: string | undefined;
   label: string;
-  cardinality?: Cardinality;
+  cardinality: Cardinality;
 };
 
 export interface ObjectField<
@@ -387,14 +388,25 @@ export const fields = {
       values: values,
     };
   },
-  relationship<Cardinality extends 'one' | 'many'>({
-    relationship,
+  relationship<Many extends boolean | undefined = false>({
+    listKey,
+    selection,
     label,
+    many,
   }: {
-    relationship: string;
+    listKey: string;
     label: string;
-  }): RelationshipField<Cardinality> {
-    return { kind: 'relationship', relationship, label };
+    selection?: string;
+  } & (Many extends undefined | false ? { many?: Many } : { many: Many })): RelationshipField<
+    Many extends true ? 'many' : 'one'
+  > {
+    return {
+      kind: 'relationship',
+      listKey,
+      selection,
+      label,
+      cardinality: (many ? 'many' : 'one') as any,
+    };
   },
 };
 

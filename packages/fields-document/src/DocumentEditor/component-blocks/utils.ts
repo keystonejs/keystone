@@ -1,7 +1,6 @@
 import { ComponentPropField, ConditionalField } from '../../component-blocks';
 import { DocumentFeatures } from '../../views';
 import { DocumentFeaturesForNormalization } from '../document-features-normalization';
-import { Relationships } from '../relationship';
 import { Mark } from '../utils';
 import { ChildField } from './api';
 import { getInitialPropsValue } from './initial-values';
@@ -58,13 +57,12 @@ export function assertNever(arg: never) {
 export function getPropsForConditionalChange(
   newValue: Record<string, any>,
   oldValue: Record<string, any>,
-  prop: ConditionalField<any, any, any>,
-  relationships: Relationships
+  prop: ConditionalField<any, any, any>
 ) {
   if (newValue.discriminant !== oldValue.discriminant) {
     return {
       discriminant: newValue.discriminant,
-      value: getInitialPropsValue(prop.values[newValue.discriminant], relationships),
+      value: getInitialPropsValue(prop.values[newValue.discriminant]),
     };
   } else {
     return newValue;
