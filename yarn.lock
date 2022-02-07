@@ -1555,10 +1555,10 @@
   dependencies:
     tslib "~2.3.0"
 
-"@graphql-ts/extend@0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@graphql-ts/extend/-/extend-0.4.0.tgz#20cf964cc826a32445c29a10599f52bf81b027b6"
-  integrity sha512-1+NpyJemIbEDkunwhlumXbp8XglZnFmqI84lkw0TgZHhmj5g2xE2w4s/qONQg7Qx46ekq7kaifX+AO4jy8USlA==
+"@graphql-ts/extend@0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@graphql-ts/extend/-/extend-0.4.1.tgz#b2325c43fab5435f6b70219168a1c554eeadb0a3"
+  integrity sha512-qMi1rFfEjdgQ9QjixIqPq5sCasJF1xEbRxjzxh6Z/6LhpFbQSoQlOxgGSM7PiPCgV/VsEIuPXebILLjRKmHyRA==
   dependencies:
     "@babel/runtime" "^7.9.2"
 
