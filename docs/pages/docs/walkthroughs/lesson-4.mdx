@@ -217,7 +217,7 @@ export default config(
 
 ## Adding init first item
 
-With our new set-up, we'll be locked out of the admin UI! What's more, if we don't have a user in our database yet,
+With our new set-up, we'll be locked out of Admin UI! What's more, if we don't have a user in our database yet,
 or, if a new person clones our project, they won't be able to access Admin UI. Thankfully, Keystone has a feature
 so that if there are no existing users, you can create one when you first launch Admin UI. This is the `initFirstItem`
 feature in the `auth` package:
@@ -248,7 +248,7 @@ const session = statelessSessions({
 export { withAuth, session }
 ```
 
-Now, if you open the admin UI, you can check out the sign in flow. If you have no users, you can even see the initialising of a first item.
+Now, if you open Admin UI, you can check out the sign in flow. If you have no users, you can even see the initialising of a first item.
 
 ## What we have now
 
