@@ -155,6 +155,13 @@ async function addRelationshipDataToComponentProps(
         ),
       };
     }
+    case 'array': {
+      return await Promise.all(
+        (val as any[]).map(async innerVal =>
+          addRelationshipDataToComponentProps(prop.element, innerVal, fetchData)
+        )
+      );
+    }
   }
   assertNever(prop);
 }

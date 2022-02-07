@@ -19,7 +19,7 @@ import {
   useElementWithSetNodes,
   useStaticEditor,
 } from '../utils';
-import { clientSideValidateProp } from './utils';
+import { clientSideValidateProp, getChildFieldAtPropPath } from './utils';
 import { createPreviewProps } from './preview-props';
 import { getInitialValue } from './initial-values';
 import { FormValue } from './form';
@@ -33,24 +33,7 @@ export function getPlaceholderTextForPropPath(
   fields: Record<string, ComponentPropField>,
   formProps: Record<string, any>
 ): string {
-  const prop = propPath[0];
-  const field = fields[prop];
-  if (field.kind === 'relationship' || field.kind === 'form') {
-    throw new Error('unexpected prop field when finding placeholder text for child prop');
-  }
-  if (field.kind === 'object') {
-    return getPlaceholderTextForPropPath(propPath.slice(1), field.value, formProps[prop]);
-  }
-  if (field.kind === 'conditional') {
-    return getPlaceholderTextForPropPath(
-      propPath.slice(1),
-      {
-        value: field.values[formProps[prop].discriminant],
-      },
-      formProps[prop]
-    );
-  }
-  return field.options.placeholder;
+  return getChildFieldAtPropPath(propPath, fields, formProps)?.options.placeholder ?? '';
 }
 
 export function ComponentInlineProp(props: RenderElementProps) {

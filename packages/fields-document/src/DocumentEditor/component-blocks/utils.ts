@@ -32,6 +32,13 @@ function _findChildPropPaths(
       });
       return paths;
     }
+    case 'array': {
+      let paths: PathToChildFieldWithOption[] = [];
+      (value as any[]).forEach((val, i) => {
+        paths.push(..._findChildPropPaths(val, prop.element, path.concat(i)));
+      });
+      return paths;
+    }
   }
 }
 
@@ -159,23 +166,45 @@ export function getDocumentFeaturesForChildField(
   };
 }
 
-export function getChildFieldAtPropPath(
-  [key, ...restOfPath]: (string | number)[],
-  values: Record<string, any>,
-  props: Record<string, ComponentPropField>
+function getChildFieldAtPropPathInner(
+  path: (string | number)[],
+  value: unknown,
+  prop: ComponentPropField
 ): undefined | ChildField {
-  let prop = props[key];
-  if (!prop || prop.kind === 'form' || prop.kind === 'relationship') {
+  // because we're checking the length here
+  // the non-null asserts on shift are fine
+  if (path.length === 0 || prop.kind === 'form' || prop.kind === 'relationship') {
     return;
   }
+  if (prop.kind === 'child') {
+    return prop;
+  }
   if (prop.kind === 'conditional') {
-    const propVal = prop.values[values[key].discriminant];
-    return getChildFieldAtPropPath(restOfPath, values, { value: propVal });
+    path.shift();
+    const propVal = prop.values[(value as any).discriminant];
+    return getChildFieldAtPropPathInner(path, (value as any).value, propVal);
   }
   if (prop.kind === 'object') {
-    return getChildFieldAtPropPath(restOfPath, values[key], prop.value);
+    const key = path.shift()!;
+    return getChildFieldAtPropPathInner(path, (value as any)[key], prop.value[key]);
   }
+  if (prop.kind === 'array') {
+    const index = path.shift()!;
+    return getChildFieldAtPropPathInner(path, (value as any)[index], prop.element);
+  }
+
   return prop;
+}
+
+export function getChildFieldAtPropPath(
+  path: readonly (string | number)[],
+  value: Record<string, unknown>,
+  props: Record<string, ComponentPropField>
+): undefined | ChildField {
+  return getChildFieldAtPropPathInner([...path], value, {
+    kind: 'object',
+    value: props,
+  });
 }
 
 export function clientSideValidateProp(prop: ComponentPropField, value: any): boolean {
@@ -196,6 +225,14 @@ export function clientSideValidateProp(prop: ComponentPropField, value: any): bo
     case 'object': {
       for (const [key, childProp] of Object.entries(prop.value)) {
         if (!clientSideValidateProp(childProp, value[key])) {
+          return false;
+        }
+      }
+      return true;
+    }
+    case 'array': {
+      for (const innerVal of value) {
+        if (!clientSideValidateProp(prop.element, innerVal)) {
           return false;
         }
       }

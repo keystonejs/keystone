@@ -52,6 +52,9 @@ export function getInitialPropsValue(prop: ComponentPropField, relationships: Re
       });
       return obj;
     }
+    case 'array': {
+      return [];
+    }
   }
   assertNever(prop);
 }

@@ -3,11 +3,12 @@ import { RelationshipSelect } from '@keystone-6/core/fields/types/relationship/v
 import { Stack } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import React, { useState } from 'react';
-import { Button as KeystoneUIButton } from '@keystone-ui/button';
+import { Button, Button as KeystoneUIButton } from '@keystone-ui/button';
 import { ComponentPropField, RelationshipData } from '../../component-blocks';
 import { useDocumentFieldRelationships, Relationships } from '../relationship';
 import { assertNever, getPropsForConditionalChange } from './utils';
 import { RelationshipField } from './api';
+import { getInitialPropsValue } from './initial-values';
 
 // this is in a different component to the other form inputs because it uses useKeystone
 // and we want to render the editor outside of the Admin UI on the docs site
@@ -147,6 +148,39 @@ export function FormValueContent({
       />
     );
   }
+  if (prop.kind === 'array') {
+    return (
+      <Stack gap="xlarge">
+        {(value as any[]).map((val, i) => {
+          return (
+            <div>
+              <div>{dragIcon}</div>
+              <FormValueContent
+                key={i}
+                forceValidation={forceValidation}
+                stringifiedPropPathToAutoFocus={stringifiedPropPathToAutoFocus}
+                path={path.concat(i)}
+                prop={prop.element}
+                value={val}
+                onChange={val => {
+                  const newValue = [...value];
+                  newValue[i] = val;
+                  onChange(newValue);
+                }}
+              />
+            </div>
+          );
+        })}
+        <Button
+          onClick={() => {
+            onChange([...value, getInitialPropsValue(prop.element, relationships)]);
+          }}
+        >
+          Add
+        </Button>
+      </Stack>
+    );
+  }
   return (
     <prop.Input
       autoFocus={JSON.stringify(path) === stringifiedPropPathToAutoFocus}
@@ -157,41 +191,59 @@ export function FormValueContent({
   );
 }
 
-// child as in the props are a tree and you want the children of a prop, not as in the kind === 'inline'
-function getChildProps(prop: ComponentPropField, value: any): Record<string, ComponentPropField> {
-  if (prop.kind === 'conditional') {
-    return {
-      discriminant: prop.discriminant,
-      value: prop.values[value.discriminant],
-    };
-  } else if (prop.kind === 'form' || prop.kind === 'child' || prop.kind === 'relationship') {
-    return {};
-  } else if (prop.kind === 'object') {
-    return prop.value;
-  } else {
-    assertNever(prop);
-    // TypeScript should understand that this will never happen but for some reason it doesn't
-    return {};
-  }
-}
+const dragIcon = (
+  <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <g fill="#939393">
+      <circle cy="6" cx="6" r="2" />
+      <circle cy="6" cx="12" r="2" />
+      <circle cy="12" cx="6" r="2" />
+      <circle cy="12" cx="12" r="2" />
+      <circle cy="18" cx="6" r="2" />
+      <circle cy="18" cx="12" r="2" />
+    </g>
+  </svg>
+);
 
 export function findFirstFocusablePropPath(
-  props: Record<string, ComponentPropField>,
+  prop: ComponentPropField,
   path: (string | number)[],
-  value: Record<string, any>
+  value: any
 ): (string | number)[] | undefined {
-  for (const key of Object.keys(props)) {
-    const prop = props[key];
-    const newPath = path.concat(key);
-    if (prop.kind === 'form' || prop.kind === 'relationship') {
-      return newPath;
-    }
-    let children = getChildProps(prop, value[key]);
-    const childFocusable = findFirstFocusablePropPath(children, newPath, value[key]);
-    if (childFocusable) {
-      return childFocusable;
-    }
+  if (prop.kind === 'form' || prop.kind === 'relationship') {
+    return path;
   }
+  if (prop.kind === 'child') {
+    return undefined;
+  }
+  if (prop.kind === 'object' || prop.kind === 'conditional') {
+    const props: Record<string, ComponentPropField> =
+      prop.kind === 'object'
+        ? prop.value
+        : {
+            discriminant: prop.discriminant,
+            value: prop.values[value.discriminant],
+          };
+    for (const key of Object.keys(props)) {
+      const prop = props[key];
+      const newPath = path.concat(key);
+      const childFocusable = findFirstFocusablePropPath(prop, newPath, value[key]);
+      if (childFocusable) {
+        return childFocusable;
+      }
+    }
+    return undefined;
+  }
+  if (prop.kind === 'array') {
+    for (const [idx, val] of (value as any[]).entries()) {
+      const newPath = path.concat(idx);
+      const childFocusable = findFirstFocusablePropPath(prop, newPath, val);
+      if (childFocusable) {
+        return childFocusable;
+      }
+    }
+    return undefined;
+  }
+  assertNever(prop);
 }
 
 export function FormValue({
@@ -208,14 +260,15 @@ export function FormValue({
   isValid: boolean;
 }) {
   const [forceValidation, setForceValidation] = useState(false);
-  const focusablePath = JSON.stringify(findFirstFocusablePropPath(componentBlockProps, [], value));
+  const rootProp = { kind: 'object' as const, value: componentBlockProps };
+  const focusablePath = JSON.stringify(findFirstFocusablePropPath(rootProp, [], value));
   return (
     <Stack gap="xlarge" contentEditable={false}>
       <FormValueContent
         forceValidation={forceValidation}
         onChange={onChange}
         path={[]}
-        prop={{ kind: 'object', value: componentBlockProps }}
+        prop={rootProp}
         value={value}
         stringifiedPropPathToAutoFocus={focusablePath}
       />

@@ -130,6 +130,14 @@ function validateComponentBlockProps(
     }
     return val;
   }
+  if (prop.kind === 'array') {
+    if (!Array.isArray(value)) {
+      throw new PropValidationError('Array field value must be an array', path);
+    }
+    return value.map((innerVal, i) => {
+      return validateComponentBlockProps(prop.element, innerVal, relationships, path.concat(i));
+    });
+  }
   assertNever(prop);
 }
 

@@ -103,6 +103,11 @@ export type ChildField = {
       };
 };
 
+export type ArrayField<ElementField extends ComponentPropField> = {
+  kind: 'array';
+  element: ElementField;
+};
+
 export type RelationshipField<Cardinality extends 'one' | 'many'> = {
   kind: 'relationship';
   relationship: string;
@@ -136,7 +141,9 @@ export type ComponentPropField =
   | FormField<any, any>
   | ObjectField
   | ConditionalField<any, any, any>
-  | RelationshipField<'one' | 'many'>;
+  | RelationshipField<'one' | 'many'>
+  // this is written like this rather than ArrayField<ComponentPropField> to avoid TypeScript erroring about circularity
+  | { kind: 'array'; element: ComponentPropField };
 
 export const fields = {
   text({
@@ -446,6 +453,9 @@ export const fields = {
     label: string;
   }): RelationshipField<Cardinality> {
     return { kind: 'relationship', relationship, label };
+  },
+  array<ElementField extends ComponentPropField>(element: ElementField): ArrayField<ElementField> {
+    return { kind: 'array', element };
   },
 };
 
