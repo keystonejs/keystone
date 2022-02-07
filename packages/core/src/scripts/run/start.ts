@@ -2,6 +2,7 @@ import path from 'path';
 import * as fs from 'fs-extra';
 import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/config/initConfig';
+import { normalizeConfig } from '../../lib/config/normalizeConfig';
 import { createExpressServer } from '../../lib/server/createExpressServer';
 import { createAdminUIMiddleware } from '../../lib/server/createAdminUIMiddleware';
 import { requirePrismaClient } from '../../artifacts';
@@ -19,7 +20,8 @@ export const start = async (cwd: string) => {
   }
   // webpack will make modules that import Node ESM externals(which must be loaded with dynamic import)
   // export a promise that resolves to the actual export so yeah, we need to await a require call
-  const config = initConfig((await require(apiFile)).config);
+  const uninitializedConfig = await normalizeConfig((await require(apiFile)).config);
+  const config = initConfig(uninitializedConfig);
   const { getKeystone, graphQLSchema } = createSystem(config);
 
   const prismaClient = requirePrismaClient(cwd);

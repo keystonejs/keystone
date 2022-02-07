@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs/promises';
 import { format } from 'util';
-import { createSystem, initConfig } from '@keystone-6/core/system';
+import { createSystem, initConfig, normalizeConfig } from '@keystone-6/core/system';
 import {
   validateCommittedArtifacts,
   generateNodeModulesArtifacts,
@@ -13,7 +13,8 @@ const mode = process.env.UPDATE_SCHEMAS ? 'generate' : 'validate';
 
 async function generateArtifactsForProjectDir(projectDir: string) {
   try {
-    const config = initConfig(requireSource(path.join(projectDir, 'keystone')).default);
+    const uninitializedConfig = await normalizeConfig(requireSource(path.join(projectDir, 'keystone')).default);
+    const config = initConfig(uninitializedConfig);
     const { graphQLSchema } = createSystem(config, false);
     if (mode === 'validate') {
       await validateCommittedArtifacts(graphQLSchema, config, projectDir);

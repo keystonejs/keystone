@@ -9,6 +9,7 @@ import { generateAdminUI } from '../../admin-ui/system';
 import { devMigrations, pushPrismaSchemaToDatabase } from '../../lib/migrations';
 import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/config/initConfig';
+import { normalizeConfig } from '../../lib/config/normalizeConfig';
 import { requireSource } from '../../lib/config/requireSource';
 import { defaults } from '../../lib/config/defaults';
 import { createExpressServer } from '../../lib/server/createExpressServer';
@@ -50,7 +51,8 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
   // - you have an error in your config after startup -> will keep the last working version until importing the config succeeds
   // also, if you're thinking "why not always use the Next api route to get the config"?
   // this will get the GraphQL API up earlier
-  const config = initConfig(requireSource(getConfigPath(cwd)).default);
+  const uninitializedConfig = await normalizeConfig(requireSource(getConfigPath(cwd)).default);
+  const config = initConfig(uninitializedConfig);
 
   const isReady = () =>
     expressServer !== null && (hasAddedAdminUIMiddleware || config.ui?.isDisabled === true);
@@ -129,7 +131,7 @@ exports.default = function (req, res) { return res.send(x.toString()) }
           // technically, the await for requiring the api route module isn't necessary since there are no imports there
           // but just in case webpack decides to make it async in the future, this'll still work
           const apiRouteModule = await require(resolved);
-          const uninitializedConfig = (await apiRouteModule.getConfig()).default;
+          const uninitializedConfig = await normalizeConfig((await apiRouteModule.getConfig()).default);
           const newConfig = initConfig(uninitializedConfig);
           const newPrismaSchema = printPrismaSchema(
             initialiseLists(newConfig),

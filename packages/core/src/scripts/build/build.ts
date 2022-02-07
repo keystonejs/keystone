@@ -4,6 +4,7 @@ import { AdminFileToWrite } from '../../types';
 import { buildAdminUI, generateAdminUI } from '../../admin-ui/system';
 import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/config/initConfig';
+import { normalizeConfig } from '../../lib/config/normalizeConfig';
 import { requireSource } from '../../lib/config/requireSource';
 import { generateNodeModulesArtifacts, validateCommittedArtifacts } from '../../artifacts';
 import { getAdminPath, getConfigPath } from '../utils';
@@ -55,7 +56,8 @@ const reexportKeystoneConfig = async (cwd: string, isDisabled?: boolean) => {
 };
 
 export async function build(cwd: string) {
-  const config = initConfig(requireSource(getConfigPath(cwd)).default);
+  const uninitializedConfig = await normalizeConfig(requireSource(getConfigPath(cwd)).default);
+  const config = initConfig(uninitializedConfig);
 
   const { graphQLSchema, adminMeta } = createSystem(config);
 

@@ -6,6 +6,7 @@ import {
 } from '../artifacts';
 import { requireSource } from '../lib/config/requireSource';
 import { initConfig } from '../lib/config/initConfig';
+import { normalizeConfig } from '../lib/config/normalizeConfig';
 import { getConfigPath } from './utils';
 
 // The postinstall step serves two purposes:
@@ -40,7 +41,8 @@ import { getConfigPath } from './utils';
 //         * only generated with generateNodeAPI option
 
 export async function postinstall(cwd: string, shouldFix: boolean) {
-  const config = initConfig(requireSource(getConfigPath(cwd)).default);
+  const uninitializedConfig = await normalizeConfig(requireSource(getConfigPath(cwd)).default);
+  const config = initConfig(uninitializedConfig);
 
   const { graphQLSchema } = createSystem(config);
 
