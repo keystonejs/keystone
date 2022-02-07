@@ -9,14 +9,16 @@
     "dist",
     "component-blocks",
     "primitives",
-    "views"
+    "views",
+    "component-views"
   ],
   "preconstruct": {
     "entrypoints": [
       "component-blocks.tsx",
       "index.ts",
       "primitives.ts",
-      "views.tsx"
+      "views.tsx",
+      "component-views/index.tsx"
     ]
   },
   "peerDependencies": {

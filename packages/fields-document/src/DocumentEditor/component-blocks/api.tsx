@@ -1,5 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import { graphql } from '@keystone-6/core';
 import { jsx } from '@keystone-ui/core';
 import {
   FieldContainer,
@@ -42,6 +43,19 @@ export type FormField<Value, Options> = {
    * a potentially malicious client
    */
   validate(value: unknown): boolean;
+};
+
+export type FormFieldWithGraphQLField<Value, Options> = FormField<Value, Options> & {
+  graphql: {
+    output: graphql.Field<
+      { value: Value },
+      Record<string, graphql.Arg<graphql.InputType, boolean>>,
+      graphql.OutputType,
+      'value'
+    >;
+    selection: (fieldKey: string) => string;
+    input: graphql.Arg<graphql.NullableInputType, boolean>;
+  };
 };
 
 type InlineMarksConfig =
@@ -131,7 +145,7 @@ export const fields = {
   }: {
     label: string;
     defaultValue?: string;
-  }): FormField<string, undefined> {
+  }): FormFieldWithGraphQLField<string, undefined> {
     return {
       kind: 'form',
       Input({ value, onChange, autoFocus }) {
@@ -153,6 +167,11 @@ export const fields = {
       validate(value) {
         return typeof value === 'string';
       },
+      graphql: {
+        input: graphql.arg({ type: graphql.String }),
+        output: graphql.field({ type: graphql.String }),
+        selection: x => x,
+      },
     };
   },
   url({
@@ -161,7 +180,7 @@ export const fields = {
   }: {
     label: string;
     defaultValue?: string;
-  }): FormField<string, undefined> {
+  }): FormFieldWithGraphQLField<string, undefined> {
     const validate = (value: unknown) => {
       return typeof value === 'string' && (value === '' || isValidURL(value));
     };
@@ -190,6 +209,11 @@ export const fields = {
       options: undefined,
       defaultValue,
       validate,
+      graphql: {
+        input: graphql.arg({ type: graphql.String }),
+        output: graphql.field({ type: graphql.String }),
+        selection: x => x,
+      },
     };
   },
   select<Option extends { label: string; value: string }>({
@@ -200,7 +224,7 @@ export const fields = {
     label: string;
     options: readonly Option[];
     defaultValue: Option['value'];
-  }): FormField<Option['value'], readonly Option[]> {
+  }): FormFieldWithGraphQLField<Option['value'], readonly Option[]> {
     const optionValuesSet = new Set(options.map(x => x.value));
     return {
       kind: 'form',
@@ -226,6 +250,17 @@ export const fields = {
       validate(value) {
         return typeof value === 'string' && optionValuesSet.has(value);
       },
+      graphql: {
+        input: graphql.arg({ type: graphql.String }),
+        output: graphql.field({
+          type: graphql.String,
+          // TODO: investigate why this resolve is required here
+          resolve({ value }) {
+            return value;
+          },
+        }),
+        selection: x => x,
+      },
     };
   },
   multiselect<Option extends { label: string; value: string }>({
@@ -236,7 +271,7 @@ export const fields = {
     label: string;
     options: readonly Option[];
     defaultValue: readonly Option['value'][];
-  }): FormField<readonly Option['value'][], readonly Option[]> {
+  }): FormFieldWithGraphQLField<readonly Option['value'][], readonly Option[]> {
     const valuesToOption = new Map(options.map(x => [x.value, x]));
     return {
       kind: 'form',
@@ -263,6 +298,17 @@ export const fields = {
           value.every(value => typeof value === 'string' && valuesToOption.has(value))
         );
       },
+      graphql: {
+        input: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.String)) }),
+        output: graphql.field({
+          type: graphql.list(graphql.nonNull(graphql.String)),
+          // TODO: investigate why this resolve is required here
+          resolve({ value }) {
+            return value;
+          },
+        }),
+        selection: x => x,
+      },
     };
   },
   checkbox({
@@ -271,7 +317,7 @@ export const fields = {
   }: {
     label: string;
     defaultValue?: boolean;
-  }): FormField<boolean, undefined> {
+  }): FormFieldWithGraphQLField<boolean, undefined> {
     return {
       kind: 'form',
       Input({ value, onChange, autoFocus }) {
@@ -293,6 +339,11 @@ export const fields = {
       defaultValue,
       validate(value) {
         return typeof value === 'boolean';
+      },
+      graphql: {
+        input: graphql.arg({ type: graphql.Boolean }),
+        output: graphql.field({ type: graphql.Boolean }),
+        selection: x => x,
       },
     };
   },
