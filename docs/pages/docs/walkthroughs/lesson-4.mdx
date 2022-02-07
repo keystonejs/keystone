@@ -1,17 +1,20 @@
 import { Markdown } from '../../../components/Markdown';
-import { Markdown } from '../../../components/Markdown';
+import { RelatedContent } from '../../../components/RelatedContent';
+import { Well } from '../../../components/primitives/Well';
+import { InlineCode } from '../../../components/primitives/Code';
 
-# Lesson 3: Add in auth
+# Lesson 4: Auth & Sessions
 
-> In this lesson we will set up auth for the keystone admin UI
+Learn how to add passwords, session data and authentication to your Keystone app.
 
 ## Where we left off
 
-We had added a second list to our keystone app for posts. We now have a keystone.js file that looks like:
+In the [last lesson](/docs/walkthroughs/lesson-3) we setup a publishing workflow for blog posts and ended up with a keystone.js file that looks like:
 
-```js
+```ts
+//keystone.ts
 import { list, config } from '@keystone-6/core';
-import { text, timestamp, relationship } from '@keystone-6/core/fields';
+import { text, timestamp, select, relationship } from '@keystone-6/core/fields';
 
 const lists = {
   User: list({
@@ -31,9 +34,9 @@ const lists = {
           { label: 'Draft', value: 'draft' },
         ],
         defaultValue: 'draft',
+        ui: { displayMode: 'segmented-control' },
       }),
       author: relationship({ ref: 'User.posts' }),
-      content: text({ ui: { displayMode: 'textarea' } }),
     },
   }),
 };
@@ -47,20 +50,15 @@ export default config({
 });
 ```
 
-## This Lesson
+We’re now going to add auth to our app so that different types of users have access to different types of things. While Keystone has very granular permissions controls, which you can read about [here](/docs/guides/auth-and-access-control), this lesson will stay to focused on securing our Admin UI behind a password.
 
-This gives us a blog list that we can use. As we are looking at this list, we look at rounding out our keystone app, we want to put in auth, so that not everyone can view draft content, and not everyone can edit content.
+## Add the Password field
 
-Keystone has very granular permissions controls, which you can read about [here](TK), however what we will focus on this tutorial is how to lock the Admin UI behind a password.
+Keystone’s [password](/docs/apis/fields#password) field takes care of hashing the password for storing in the database, as well as UI niceties such as making sure the password is obscured. Let’s add it to our `User` list so they can securely log in to Keystone:
 
-## Adding The Password Field
-
-Keystone comes with an inbuilt password field, designed specifically for passwords. This takes care of hashing the password for storing in the database, as well as UI niceties such as making sure the password is obscured.
-
-We are going to use our existing `User` list for logging in, so we are going to add a new field to it:
-
-```js
-import { password } from '@keystone-6/core/fields';
+```ts{2,10}[13-27,29-500]
+import { list, config } from '@keystone-6/core';
+import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields';
 
 const lists = {
   User: list({
@@ -68,27 +66,57 @@ const lists = {
       name: text({ isRequired: true }),
       email: text({ isRequired: true }),
       posts: relationship({ ref: 'Post.author', many: true }),
-      password: password({ isRequired: true }),
+      password: password({ required: true })
+    },
+  }),
+  Post: list({
+    fields: {
+      title: text(),
+      publishedAt: timestamp(),
+      status: select({
+        options: [
+          { label: 'Published', value: 'published' },
+          { label: 'Draft', value: 'draft' },
+        ],
+        defaultValue: 'draft',
+        ui: { displayMode: 'segmented-control' },
+      }),
+      author: relationship({ ref: 'User.posts' }),
     },
   }),
 };
+
+export default config({
+  db: {
+    provider: 'sqlite',
+    url: 'file:./keystone.db',
+  },
+  lists,
+});
 ```
 
-This gives us all the pieces we need in our database, now we need to add auth.
+That's all we need to store secure passwords in our database!
 
-## Adding the Auth package
+## Add Authentication
 
-Auth isn't built directly in to keystone - it's an enhancement you can add on top. We are going to be using another package from the keystone team designed to do session-based auth. To add this package, run:
+### Install the `auth` package
 
-`yarn add @keystone-next/auth`
+Authentication isn't built directly in to Keystone - it's an enhancement you can add on top. To use it in our app we need to add Keystone’s [auth package](https://github.com/keystonejs/keystone/tree/main/packages/auth):
 
-Next, we are going to create a new file to write our auth config in.
+```sh
+yarn add @keystone-6/auth
+```
 
-`touch auth.js`
+Now that we have the package, let’s create a new file in the root of our project to write our auth config in:
 
-## Creating auth
+```sh
+touch auth.ts
+```
 
-```js
+And add the following code:
+
+```ts
+// auth.ts
 import { createAuth } from '@keystone-next/auth';
 
 const { withAuth } = createAuth({
@@ -101,16 +129,28 @@ const { withAuth } = createAuth({
 export { withAuth };
 ```
 
-This says that the `User` list will be used for auth, and the combination of `email` and `password` will be used to log a user in.
+This code says:
 
-## Adding session
+- The `User` list is the list that auth should be applied to
+- `email` and `password` will be the fields used to log a user in
+
+### Add sessions
 
 Having added an authentication method, we need to add a 'session', so that authentication can be kept between refreshes. Also in the auth file, we want to add:
 
-```js
+```ts{3,12-500}[4-11]
+// auth.ts
+import { createAuth } from '@keystone-next/auth';
 import { statelessSessions } from '@keystone-6/core/session';
 
-let sessionSecret = 'super-secret-session-string;
+const { withAuth } = createAuth({
+  listKey: 'User',
+  identityField: 'email',
+  sessionData: 'name',
+  secretField: 'password',
+});
+
+let sessionSecret = 'super-secret-session-string';
 let sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
 
 const session = statelessSessions({
@@ -121,15 +161,44 @@ const session = statelessSessions({
 export { withAuth, session }
 ```
 
-## Using these in the keystone file
+### Import Auth & Sessions to Keystone config
 
 Back over in our keystone file, we want to import our `withAuth` function, and our `session` object.
 
-The `withAuth` will wrap our default export, and modify it as a last step in setting up our config. The session is attached to the export. Finally, we add a new bit of config to our export: we need to add an `isAccessAllowed` function so that only users with a valid session can see the admin UI.
+`withAuth` will wrap our default export and modify it as a last step in setting up our config. The session is attached to the export.
 
-```js
-import { config } from '@keystone-6/core'
+Finally, we need to add to add an `isAccessAllowed` function to our export so that only users with a valid session can see Admin UI:
+
+```ts{4,31-500}[7-28]
+//keystone.ts
+import { list, config } from '@keystone-6/core';
+import { text, timestamp, select, relationship } from '@keystone-6/core/fields';
 import { withAuth, session } from './auth';
+
+const lists = {
+  User: list({
+    fields: {
+      name: text({ isRequired: true }),
+      email: text({ isRequired: true }),
+      posts: relationship({ ref: 'Post.author', many: true }),
+    },
+  }),
+  Post: list({
+    fields: {
+      title: text(),
+      publishedAt: timestamp(),
+      status: select({
+        options: [
+          { label: 'Published', value: 'published' },
+          { label: 'Draft', value: 'draft' },
+        ],
+        defaultValue: 'draft',
+        ui: { displayMode: 'segmented-control' },
+      }),
+      author: relationship({ ref: 'User.posts' }),
+    },
+  }),
+};
 
 export default config(
   withAuth({
@@ -148,7 +217,16 @@ export default config(
 
 ## Adding init first item
 
-```js
+With our new set-up, we'll be locked out of the admin UI! What's more, if we don't have a user in our database yet,
+or, if a new person clones our project, they won't be able to access the admin UI. Thankfully, keystone has a feature
+so that if there are no existing users, you can create one when you first launch the admin UI. This is the `initFirstItem`
+feature in the `auth` package:
+
+```ts{10-12}
+// auth.ts
+import { createAuth } from '@keystone-next/auth';
+import { statelessSessions } from '@keystone-6/core/session';
+
 const { withAuth } = createAuth({
   listKey: 'User',
   identityField: 'email',
@@ -158,27 +236,8 @@ const { withAuth } = createAuth({
     fields: ['name', 'email', 'password'],
   },
 });
-```
 
-## Looking at the admin UI
-
-## What We Have Now
-
-```js
-// auth.js
-import { createAuth } from '@keystone-next/auth';
-import { statelessSessions } from '@keystone-6/core/session';
-
-import { withAuth, session } from './auth';
-
-const { withAuth } = createAuth({
-  listKey: 'User',
-  identityField: 'email',
-  sessionData: 'name',
-  secretField: 'password',
-});
-
-let sessionSecret = 'super-secret-session-string;
+let sessionSecret = 'super-secret-session-string';
 let sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
 
 const session = statelessSessions({
@@ -189,8 +248,38 @@ const session = statelessSessions({
 export { withAuth, session }
 ```
 
-```js
-// keystone.js
+Now, if you open the admin UI, you can check out the sign in flow. If you have no users, you can even see the initialising of a first item.
+
+## What We Have Now
+
+```ts
+// auth.ts
+import { createAuth } from '@keystone-next/auth';
+import { statelessSessions } from '@keystone-6/core/session';
+
+const { withAuth } = createAuth({
+  listKey: 'User',
+  identityField: 'email',
+  sessionData: 'name',
+  secretField: 'password',
+  initFirstItem: {
+    fields: ['name', 'email', 'password'],
+  },
+});
+
+let sessionSecret = 'super-secret-session-string';
+let sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
+
+const session = statelessSessions({
+  maxAge: sessionMaxAge,
+  secret: sessionSecret,
+});
+
+export { withAuth, session }
+```
+
+```ts
+// keystone.ts
 import { list, config } from '@keystone-6/core';
 import { text, timestamp, relationship } from '@keystone-6/core/fields';
 import { withAuth, session } from './auth';
@@ -214,8 +303,7 @@ const lists = {
         ],
         defaultValue: 'draft',
       }),
-      author: relationship({ ref: 'User.posts' }),
-      content: text({ ui: { displayMode: 'textarea' } }),
+      author: relationship({ ref: 'User.posts' })
     },
   }),
 };
@@ -233,4 +321,13 @@ export default config(
 );
 ```
 
-export default ({ children }) => <Markdown description="Learn how to get your first Keystone project up and running using the `create-keystone-app` Command Line Interface.">{children}</Markdown
+## Next lesson
+
+<RelatedContent>
+  <Well heading="Lesson 5: Rich Text" href="/docs/walkthroughs/lesson-5">
+    Add a powerful <InlineCode>document</InlineCode> field to your app and learn how to
+    configure it to meet your needs
+  </Well>
+</RelatedContent>
+
+export default ({ children }) => <Markdown description="Learn Keystone: Lesson 4">{children}</Markdown>

@@ -1,14 +1,30 @@
 import { Markdown } from '../../../components/Markdown';
+import { Emoji } from '../../../components/primitives/Emoji';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
 
-# Lesson 1: Setting up Keystone
+# Lesson 1: Installing Keystone
 
-> In this lesson we will install the keystone package, create our first list, and get Keystone running
+Learn how to install Keystone, create your first content type, and get an app up and running with an intuitive editing environment.
 
-## Installing the packages you need
+## Introduction
 
-For our packages, we will be using `yarn`, but you can use `npm` or any other package manager that you prefer.
+Welcome to the Keystone getting started series!
 
-The first thing we are going to do is set ourselves up a workspace for our new project. Let's make ourselves a new folder and initialise `yarn`.
+Together we’ll learn how to turn an empty folder into a database-backed Keystone instance with related content types, publishing workflows, password protection, an editing interface, and more.
+
+!> Looking to demo Keystone in under 5 minutes? [Try the quick-start CLI](/docs/walkthroughs/getting-started-with-create-keystone-app)
+
+This series assumes you have some basic familiarity with:
+
+- The **command line** for running Keystone
+- The **node ecosystem** for installing packages from npm, and running npm scripts
+- **JavaScript/TypeScript** for programming Keystone. You won't need to use much typescript in this series, however you can still benefit from using Keystone's inbuilt types
+- **GraphQL** for querying your Keystone content
+
+## Install Keystone
+
+Let’s start by setting up a workspace for a new Keystone project. Make a new folder and initialise it:
 
 ```bash
 mkdir keystone-learning
@@ -16,35 +32,52 @@ cd keystone-learning
 yarn init
 ```
 
-After this, let's add the Keystone package:
+!> We’ll be using `yarn` for installing packages, but you can use `npm` or any other package manager you prefer.
+
+Now add the Keystone package:
 
 ```bash
 yarn add @keystone-6/core
 ```
 
-## Setting up Keystone
+## Configure Keystone
 
-There are two parts of Keystone's configuration that are required to start our project: `lists` and the `db`.
-
-The `lists` define the shape of the information we want to save in our database, while the `db` defines how we will connect to our database.
-
-For now though let us set up our `keystone.ts`:
+Keystone looks for a file named `keystone.ts` (or `keystone.js`) at the project root to handle configuration needs. Let's go ahead and set one up using TypeScript:
 
 ```js
+
+// keystone.ts
 export default {};
 ```
 
-When you run Keystone using `yarn keystone dev`, it will use this file's default export to as Keystone's configuration.
-However, as is, if we try to run `yarn keystone dev` it will not work _yet_.
+And add TypeScript as a dependency:
 
-> If you want to use Keystone without TypeScript, you can use `keystone.js` instead.
+```bash
+yarn add typescript
+```
 
-### Setting up a Database
+!> If you’d rather use JavaScript, make a `keystone.js` file and skip the TypeScript installation step above.
 
-For our first project, we're going to use [SQLite](https://www.sqlite.org/) to minimise database configuration.
-The configuration for a minimal example using SQLite example is below:
+Your folder structure should now look like this:
 
-```js
+```sh
+.
+├── node_modules   # Dependencies
+├── keystone.ts    # Keystone config
+├── package.json   # With Keystone and TypeScript as dependencies
+└── yarn.lock      # Your yarn lock file
+```
+
+We now need to configure `keystone.ts` with two parts to get our project running:
+
+- [`db`](/docs/apis/config#db) to define a database configuration
+- [`list`](/docs/apis/schema) to define the shape of the information we put in that database
+
+### Add a Database
+
+We’ll use [SQLite](/docs/apis/config#sqlite) in this project to keep things simple, but you can also use [Postgres](/docs/apis/config#postgresql). The minimum config for SQLite looks like this:
+
+```ts
 import { config } from '@keystone-6/core';
 
 export default config({
@@ -55,14 +88,17 @@ export default config({
 });
 ```
 
-This will use the local path `./keystone.db` for our database storage.
+This will use the local path `./keystone.db` for your database storage.
 
-### Setting up a user list
+!> Keystone uses [Prisma](https://www.prisma.io/) to take care of database admin including [migrations](/docs/guides/cli#working-with-migrations). Keystone owns the Prisma workflow so you can focus on building apps instead of DB admin chores.
 
-We're almost there!
-Now we are going to add a `User` list, with the two fields `name` and `email`:
+### Create your first List
 
-```js{9-16}[5-8]
+Now that we have a database configured, let’s connect some content to it!
+
+We’re going to build a simple blog with **users** and **posts**. Let’s start with the `User` list using [`text`](/docs/apis/fields#text) fields for their `name` and `email`:
+
+```js{2,9-15}[5-8]
 import { config, list } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
 
@@ -82,35 +118,41 @@ export default config({
 });
 ```
 
-The list names are derived from the keys in the `lists` object.
+**List** names are derived from the keys in the `lists` object.
 For example, the `User` key becomes the name for the respective `User` list.
-This will be used in the Admin UI for the default display name of the list; and it is also used for the generated GraphQL API.
-More on that later.
+This key will be used in Admin UI for the list’s default display name, and in Keystone’s auto-generated GraphQL API.
 
-The field names are derived from the keys in the `fields` object.
-This will be used in the Admin UI for the default display name of the fields; and it is also used for the generated GraphQL API.
-Again, more on that later.
+**Field** names are derived from the keys in the [`fields`](/docs/apis/fields#fields-api) object.
+Like lists, they’ll be used in Admin UI for field label defaults, and in the GraphQL API.
 
-## Starting your new app
+!> **Admin UI** is the name of Keystone’s user friendly editing environment. Accessible from a browser, it’s the place where we’ll add and update content that will be stored in the database.
 
-Congratulations!
-You can now start Keystone instance:
+## Run Keystone
+
+We now have everything we need to start Keystone, so let’s do just that:
 
 ```bash
 yarn keystone dev
 ```
 
-Wait until your terminal shows a link to the Admin UI:
+In a few seconds your terminal will provide you with you a link to the Keystone Admin UI at [http://localhost:3000](http://localhost:3000)
 
-```
-go to [http://localhost:3000](http://localhost:3000)
-```
+![Terminal dialog showing successful Keystone startup](https://keystonejs.s3.amazonaws.com/framework-assets/assets/walkthroughs/lesson-1/keystone-startup.png)
 
-Hurray! :tada:
-You now have a running Keystone with one list.
-Go to [http://localhost:3000](http://localhost:3000) to explore the Admin UI.
-You should be able to create new users and manually populate their `name` and `email` fields using the interface.
+Head on over to [http://localhost:3000/users](http://localhost:3000/users) where you can create your first user with a `name` and `email`:
 
-Next lesson, we will add a second list for posts associated with our users.
+![Adding a user record in Keystone Admin UI](https://keystonejs.s3.amazonaws.com/framework-assets/assets/assets/walkthroughs/lesson-1/first-user-creation.gif)
 
-export default ({ children }) => <Markdown description="Learn how to get your first Keystone project up and running using the `create-keystone-app` Command Line Interface.">{children}</Markdown>
+**Hurrah! You now have Keystone up and running** <Emoji symbol="🎉" alt="Party Popper" />
+
+Next up, we’ll level-up our blog starter with a `post` list and connect it to our users.
+
+## Next lesson
+
+<RelatedContent>
+  <Well heading="Lesson 2: Relating things" href="/docs/walkthroughs/lesson-2">
+    Connect two content types and learn how to configure the appearance of field inputs
+  </Well>
+</RelatedContent>
+
+export default ({ children }) => <Markdown description="Learn Keystone: Lesson 1">{children}</Markdown>
