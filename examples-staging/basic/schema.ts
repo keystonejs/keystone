@@ -10,9 +10,10 @@ import {
   image,
   file,
 } from '@keystone-6/core/fields';
-import { document } from '@keystone-6/fields-document';
+import { componentThing, document } from '@keystone-6/fields-document';
 import { v4 } from 'uuid';
 import { componentBlocks } from './admin/fieldViews/Content';
+import { prop as blahProp } from './admin/fieldViews/Blah';
 import * as Keystone from '.keystone/types';
 
 type AccessArgs = {
@@ -148,6 +149,10 @@ export const lists: Keystone.Lists = {
           isRequired: true,
         },
         defaultValue: 'draft',
+      }),
+      blah: componentThing({
+        prop: blahProp,
+        ui: { views: require.resolve('./admin/fieldViews/Blah.tsx') },
       }),
       content: document({
         ui: { views: require.resolve('./admin/fieldViews/Content.tsx') },

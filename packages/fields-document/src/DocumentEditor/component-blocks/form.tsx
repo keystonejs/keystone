@@ -4,7 +4,7 @@ import { Stack } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import React, { useState } from 'react';
 import { Button as KeystoneUIButton } from '@keystone-ui/button';
-import { ComponentPropField, RelationshipData, ComponentBlock } from '../../component-blocks';
+import { ComponentPropField, RelationshipData } from '../../component-blocks';
 import { useDocumentFieldRelationships, Relationships } from '../relationship';
 import { assertNever, getPropsForConditionalChange } from './utils';
 import { RelationshipField } from './api';
@@ -175,7 +175,7 @@ function getChildProps(prop: ComponentPropField, value: any): Record<string, Com
   }
 }
 
-function findFirstFocusablePropPath(
+export function findFirstFocusablePropPath(
   props: Record<string, ComponentPropField>,
   path: (string | number)[],
   value: Record<string, any>
@@ -198,24 +198,24 @@ export function FormValue({
   value,
   onClose,
   onChange,
-  componentBlock,
+  componentBlockProps,
   isValid,
 }: {
   value: any;
   onChange(value: any): void;
   onClose(): void;
-  componentBlock: ComponentBlock;
+  componentBlockProps: Record<string, ComponentPropField>;
   isValid: boolean;
 }) {
   const [forceValidation, setForceValidation] = useState(false);
-  const focusablePath = JSON.stringify(findFirstFocusablePropPath(componentBlock.props, [], value));
+  const focusablePath = JSON.stringify(findFirstFocusablePropPath(componentBlockProps, [], value));
   return (
     <Stack gap="xlarge" contentEditable={false}>
       <FormValueContent
         forceValidation={forceValidation}
         onChange={onChange}
         path={[]}
-        prop={{ kind: 'object', value: componentBlock.props }}
+        prop={{ kind: 'object', value: componentBlockProps }}
         value={value}
         stringifiedPropPathToAutoFocus={focusablePath}
       />

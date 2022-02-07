@@ -178,7 +178,7 @@ Content:`}
       {editMode && (
         <FormValue
           isValid={isValid}
-          componentBlock={componentBlock}
+          componentBlockProps={componentBlock.props}
           onClose={() => {
             setEditMode(false);
           }}

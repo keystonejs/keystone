@@ -7,25 +7,31 @@ import {
   jsonFieldTypePolyfilledForSQLite,
 } from '@keystone-6/core/types';
 import { graphql } from '@keystone-6/core';
+import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values';
+import { ComponentPropField } from './component-blocks';
 
-export type ComponentFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
+export type ComponentThingFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
     db?: { map?: string };
+    prop: ComponentPropField;
   };
 
 const views = path.join(path.dirname(__dirname), 'component-views');
 
-export const component =
+export const componentThing =
   <ListTypeInfo extends BaseListTypeInfo>({
+    prop,
     ...config
-  }: ComponentFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
+  }: ComponentThingFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> =>
   meta => {
     if ((config as any).isIndexed === 'unique') {
-      throw Error("isIndexed: 'unique' is not a supported option for field type json");
+      throw Error("isIndexed: 'unique' is not a supported option for field type component");
     }
 
     const resolve = (val: JSONValue | undefined) =>
-      val === null && meta.provider === 'postgresql' ? 'DbNull' : val;
+      val === null && meta.provider === 'postgresql' ? 'JsonNull' : val;
+
+    const defaultValue = getInitialPropsValue(prop, {});
 
     return jsonFieldTypePolyfilledForSQLite(
       meta.provider,
@@ -45,13 +51,10 @@ export const component =
         getAdminMeta: () => ({}),
       },
       {
-        default:
-          defaultValue === null
-            ? undefined
-            : {
-                kind: 'literal',
-                value: JSON.stringify(defaultValue),
-              },
+        default: {
+          kind: 'literal',
+          value: JSON.stringify(defaultValue),
+        },
         map: config.db?.map,
         mode: 'required',
       }

@@ -14,6 +14,8 @@ import { DocumentFeatures } from './views';
 import { validateAndNormalizeDocument } from './validation';
 import { addRelationshipData } from './relationship-data';
 
+export { componentThing } from './component';
+
 type RelationshipsConfig = Record<
   string,
   {
