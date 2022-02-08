@@ -169,7 +169,7 @@ export async function devMigrations(
   schemaPath: string,
   shouldDropDatabase: boolean
 ) {
-  return withMigrate(dbUrl, schemaPath, async migrate => 
+  return withMigrate(dbUrl, schemaPath, async migrate => {
     if (!migrate.migrationsDirectoryPath) {
       console.log('No migrations directory provided.');
       throw new ExitError(0);
