@@ -24,8 +24,8 @@ export default config({
   lists: {
     User: list({
       fields: {
-        name: text({ isRequired: true }),
-        email: text({ isRequired: true }),
+        name: text({ validation: { isRequired: true } }),
+        email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
       },
     }),
   },
@@ -45,8 +45,8 @@ import { text } from '@keystone-6/core/fields';
 const lists = {
   User: list({
     fields: {
-      name: text({ isRequired: true }),
-      email: text({ isRequired: true }),
+      name: text({ validation: { isRequired: true } }),
+      email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
     },
   }),
 };
@@ -73,8 +73,8 @@ import { text } from '@keystone-6/core/fields';
 const lists = {
   User: list({
     fields: {
-      name: text({ isRequired: true }),
-      email: text({ isRequired: true }),
+      name: text({ validation: { isRequired: true } }),
+      email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
     },
   }),
   Post: list({
@@ -108,15 +108,15 @@ Now that we have two lists, let's make a relationship between them. When decidin
 
 Let’s say that a post can be associated with only one user, but a user can have many posts. To create this relationship, we will add a [relationship](/docs/guides/relationships) field to each list that defines their connection to one another:
 
-```js{9,15}[1-3,19-30]
+```js{2,9,15}[19-30]
 import { list, config } from '@keystone-6/core';
 import { text, relationship } from '@keystone-6/core/fields';
 
 const lists = {
   User: list({
     fields: {
-      name: text({ isRequired: true }),
-      email: text({ isRequired: true }),
+      name: text({ validation: { isRequired: true } }),
+      email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
       posts: relationship({ ref: 'Post.author', many: true }),
     },
   }),
@@ -160,8 +160,8 @@ import { text, relationship } from '@keystone-6/core/fields';
 const lists = {
   User: list({
     fields: {
-      name: text({ isRequired: true }),
-      email: text({ isRequired: true }),
+      name: text({ validation: { isRequired: true } }),
+      email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
       posts: relationship({ ref: 'Post.author', many: true }),
     },
   }),
@@ -205,14 +205,15 @@ With a dash of extra config we’ve created a very different editing experience 
 Our app has a new `post` list with a title and a link to `users` via the `author` field that you can edit inline with the `cards` UI display mode. Admin UI editors can also create posts from the `user` form with a two-way relationship.
 
 ```ts
+// keystone.ts
 import { list, config } from '@keystone-6/core';
-import { text, timestamp, relationship } from '@keystone-6/core/fields';
+import { text, relationship } from '@keystone-6/core/fields';
 
 const lists = {
   User: list({
     fields: {
-      name: text({ isRequired: true }),
-      email: text({ isRequired: true }),
+      name: text({ validation: { isRequired: true } }),
+      email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
       posts: relationship({ ref: 'Post.author', many: true }),
     },
   }),

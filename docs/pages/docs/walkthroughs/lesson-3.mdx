@@ -18,8 +18,8 @@ import { text, relationship } from '@keystone-6/core/fields';
 const lists = {
   User: list({
     fields: {
-      name: text({ isRequired: true }),
-      email: text({ isRequired: true }),
+      name: text({ validation: { isRequired: true } }),
+      email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
       posts: relationship({ ref: 'Post.author', many: true }),
     },
   }),
@@ -71,8 +71,8 @@ import { text, timestamp, relationship } from '@keystone-6/core/fields';
 const lists = {
   User: list({
     fields: {
-      name: text({ isRequired: true }),
-      email: text({ isRequired: true }),
+      name: text({ validation: { isRequired: true } }),
+      email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
       posts: relationship({ ref: 'Post.author', many: true }),
     },
   }),
@@ -116,8 +116,8 @@ import { text, relationship, timestamp, select } from '@keystone-6/core/fields';
 const lists = {
   User: list({
     fields: {
-      name: text({ isRequired: true }),
-      email: text({ isRequired: true }),
+      name: text({ validation: { isRequired: true } }),
+      email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
       posts: relationship({ ref: 'Post.author', many: true }),
     },
   }),
@@ -179,6 +179,46 @@ When a select field only has a few values to choose from, changing the UI's `dis
 ui: { displayMode: 'segmented-control' },
 ```
 
+This now gives us:
+
+```ts{21-22}[1-3,5-11,13-15,28-500]
+import { list, config } from '@keystone-6/core';
+import { text, timestamp, select, relationship } from '@keystone-6/core/fields';
+
+const lists = {
+  User: list({
+    fields: {
+      name: text({ validation: { isRequired: true } }),
+      email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
+      posts: relationship({ ref: 'Post.author', many: true }),
+    },
+  }),
+  Post: list({
+    fields: {
+      title: text(),
+      publishedAt: timestamp(),
+      status: select({
+        options: [
+          { label: 'Published', value: 'published' },
+          { label: 'Draft', value: 'draft' },
+        ],
+        defaultValue: 'draft',
+        ui: { displayMode: 'segmented-control' },
+      }),
+      author: relationship({ ref: 'User.posts' }),
+    },
+  }),
+};
+
+export default config({
+  db: {
+    provider: 'sqlite',
+    url: 'file:./keystone.db',
+  },
+  lists,
+});
+```
+
 Let's put it all together to see the changes:
 
 ![Post list type showing "status" select input as segmented control type with default value of "draft"](https://keystonejs.s3.amazonaws.com/framework-assets/assets/walkthroughs/lesson-3/status-segmented-control.png)
@@ -187,7 +227,7 @@ Let's put it all together to see the changes:
 
 ## Looking at the GraphQL API
 
-We can now query these values using Keystone's [GraphQL API playground](#) to show all the published posts
+We can now query these values using Keystone's [GraphQL API playground](http://localhost:3000/api/graphql) to show all the published posts
 
 ```graphql
 query getAllPosts {
@@ -212,19 +252,15 @@ query getPublishedPosts {
 We’ve successfully added two new fields to our `post` type that give us the information our system will need to display posts:
 
 ```js
+// keystone.ts
 import { list, config } from '@keystone-6/core';
-import {
-  text,
-  timestamp,
-  select,
-  relationship,
-} from '@keystone-6/core/fields';
+import { text, timestamp, select, relationship } from '@keystone-6/core/fields';
 
 const lists = {
   User: list({
     fields: {
-      name: text({ isRequired: true }),
-      email: text({ isRequired: true }),
+      name: text({ validation: { isRequired: true } }),
+      email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
       posts: relationship({ ref: 'Post.author', many: true }),
     },
   }),

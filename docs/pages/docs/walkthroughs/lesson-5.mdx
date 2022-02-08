@@ -11,17 +11,18 @@ Learn how to implement a powerful and customisable Rich Text editing experience 
 We have a working backend for a collection of interconnected posts and authors (in the User list), and thanks to our efforts in [lesson 4](/docs/walkthroughs/lesson-4) our app is now secured so that only registered users can access the Admin UI to write and edit posts.
 
 ```ts
-// keystone.ts
+//keystone.ts
 import { list, config } from '@keystone-6/core';
-import { text, timestamp, relationship } from '@keystone-6/core/fields';
+import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields';
 import { withAuth, session } from './auth';
 
 const lists = {
   User: list({
     fields: {
-      name: text({ isRequired: true }),
-      email: text({ isRequired: true }),
+      name: text({ validation: { isRequired: true } }),
+      email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
       posts: relationship({ ref: 'Post.author', many: true }),
+      password: password({ validation: { isRequired: true } })
     },
   }),
   Post: list({
@@ -34,6 +35,7 @@ const lists = {
           { label: 'Draft', value: 'draft' },
         ],
         defaultValue: 'draft',
+        ui: { displayMode: 'segmented-control' },
       }),
       author: relationship({ ref: 'User.posts' }),
     },
@@ -48,7 +50,9 @@ export default config(
     },
     lists,
     session,
-    ui: { isAccessAllowed: (context) => !!context.session?.data },
+    ui: {
+      isAccessAllowed: (context) => !!context.session?.data,
+    },
   })
 );
 ```
@@ -67,7 +71,7 @@ yarn add @keystone-6/fields-document
 
 Next, we add the document field to our `post` list:
 
-```ts{4,27}[8-14,31-500]
+```ts{4,28}[8-14,31-500]
 // keystone.ts
 import { list, config } from '@keystone-6/core';
 import { text, timestamp, relationship } from '@keystone-6/core/fields';
@@ -77,9 +81,10 @@ import { withAuth, session } from './auth';
 const lists = {
   User: list({
     fields: {
-      name: text({ isRequired: true }),
-      email: text({ isRequired: true }),
+      name: text({ validation: { isRequired: true } }),
+      email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
       posts: relationship({ ref: 'Post.author', many: true }),
+      password: password({ validation: { isRequired: true } })
     },
   }),
   Post: list({
@@ -124,7 +129,7 @@ Let’s start by adding four [formatting](docs/guides/document-fields#formatting
 - dividers
 - layouts
 
-```ts{27-38}[1-6,8-14,17-26,42-500]
+```ts{28-39}[1-6,8-14,17-27,42-500]
 // keystone.ts
 import { list, config } from '@keystone-6/core';
 import { text, timestamp, relationship } from '@keystone-6/core/fields';
@@ -134,9 +139,10 @@ import { withAuth, session } from './auth';
 const lists = {
   User: list({
     fields: {
-      name: text({ isRequired: true }),
-      email: text({ isRequired: true }),
+      name: text({ validation: { isRequired: true } }),
+      email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
       posts: relationship({ ref: 'Post.author', many: true }),
+      password: password({ validation: { isRequired: true } })
     },
   }),
   Post: list({
@@ -198,9 +204,10 @@ import { withAuth, session } from './auth';
 const lists = {
   User: list({
     fields: {
-      name: text({ isRequired: true }),
-      email: text({ isRequired: true }),
+      name: text({ validation: { isRequired: true } }),
+      email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
       posts: relationship({ ref: 'Post.author', many: true }),
+      password: password({ validation: { isRequired: true } })
     },
   }),
   Post: list({

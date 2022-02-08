@@ -110,8 +110,8 @@ export default config({
   lists: {
     User: list({
       fields: {
-        name: text({ isRequired: true }),
-        email: text({ isRequired: true }),
+        name: text({ validation: { isRequired: true } }),
+        email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
       },
     }),
   },
@@ -123,7 +123,8 @@ For example, the `User` key becomes the name for the respective `User` list.
 This key will be used in Admin UI for the list’s default display name, and in Keystone’s auto-generated GraphQL API.
 
 **Field** names are derived from the keys in the [`fields`](/docs/apis/fields#fields-api) object.
-Like lists, they’ll be used in Admin UI for field label defaults, and in the GraphQL API.
+Like lists, they’ll be used in Admin UI for field label defaults, and in the GraphQL API. We've added validation to both our fields to say that they
+are required, and declared that emails must be unique, so there can only be one user with each email.
 
 !> **Admin UI** is the name of Keystone’s user friendly editing environment. Accessible from a browser, it’s the place where we’ll add and update content that will be stored in the database.
 
