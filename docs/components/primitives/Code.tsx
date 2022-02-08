@@ -152,6 +152,7 @@ export function Code({ children, className }: { children: string; className?: st
                       padding: '0 1.1em',
                       borderLeft: '3px solid var(--info)',
                       marginRight: '-1.0em',
+                      paddingLeft: 'calc(1.1em - 3px)',
                     }),
                     ':before': {
                       content: `"${i + 1}"`,
