@@ -143,9 +143,10 @@ You'll generally only pass a single filter to `NOT` rather than a list but if yo
 ## Relationship Filters
 
 As well as filtering by scalar fields, you can also filter against relationship fields.
-Relationship filters will depend on whether you have `many: true` or `many: false` [configured on the field](./relationships).
+The Relationship filters available depend on the number of item that can exist on the far side of the relationship,
+that is, whether you have `many: true` or `many: false` [configured on the field](./relationships).
 
-### One
+### To-One
 
 If you have `many: false` configured on the relationship field, then you can find items based on a `where` filter using the fields from the related list.
 
@@ -160,7 +161,7 @@ For example, to find all the tasks where the task is assigned to a used named `"
 }
 ```
 
-For example, to find any tasks that have no assigned user, we can run the following query.
+To find any tasks that have no assigned user, we can run the following query.
 
 ```graphql
 {
@@ -171,20 +172,165 @@ For example, to find any tasks that have no assigned user, we can run the follow
 }
 ```
 
-### Many
-
-If you have `many: true` configured on the relationship field, then you can find items based on whether `some`, `none`, or `every` of the related items match a `where` filter using the fields from the related list.
-
-For example, to find all the people which have `some` posts with the label `"Hello"`, we can run the following query:
+Conversely, if we wanted tasks where any user was assigned, we can invert the above using the `NOT` operator:
 
 ```graphql
 {
-  people(where: { tasks: { some: { label: { equals: "Hello" } } } }) {
+  tasks(where: { NOT: { assignedTo: null } }) {
+    id
+    label
+  }
+}
+```
+
+### To-Many
+
+If you have `many: true` configured on the relationship field, then you can find items based on whether `some`, `none`, or `every` of the related items match a a condition.
+The condition itself can be a `where` filter using the fields from the related list or an empty object (`{}`) to indicate all related items should be matched.
+
+#### Some
+
+The `some` filter returns true when at least one of the related items match the conditions supplied.
+
+For example, to find people that have one or more tasks where the task label contains `"shopping"`, we can run the following query:
+
+```graphql
+{
+  people(where: { tasks: { some: { label: { contains: "shopping" } } } }) {
     id
     name
   }
 }
 ```
+
+To find people with any tasks at all, we could can pass an empty object.
+This indicate that no conditions should be applied to tasks so all tasks are matched:
+
+```graphql
+{
+  people(where: { tasks: { some: {} } }) {
+    id
+    name
+  }
+}
+```
+
+#### None
+
+The `none` filter returns true when there are zero related items that match the conditions supplied.
+
+For example, if we had an urgent task we were looking to assign, we could query for people who didn't have any task that were both incomplete and high-priority:
+
+```graphql
+{
+  people(where: { tasks: { none: { priority: { equals: high }, isComplete: { equals: false } } } }) {
+    id
+    name
+  }
+}
+```
+
+Or, if we wanted people with no assigned tasks at all (not even completed tasks), we could pass `none` as an empty object:
+
+```graphql
+{
+  people(where: { tasks: { none: {} } }) {
+    id
+    name
+  }
+}
+```
+
+#### Every
+
+The `every` filter returns true when all related items match the conditions supplied.
+
+For example, if we wanted to find people who have completed their assigned tasks, we could write:
+
+```graphql
+{
+  people(where: { tasks: { every: { isComplete: { equals: true } } } }) {
+    id
+    name
+  }
+}
+```
+
+Note the results will also include people with no tasks assigned at all.
+If you only wanted people who have both completed their assigned tasks _and_ actually have at least one task assigned, you could add a `some` filter:
+
+```graphql
+{
+  people(where: { tasks: { every: { isComplete: { equals: true } }, some: {} } }) {
+    id
+    name
+  }
+}
+```
+
+Like the other "to-many" relationship filters, `every` does also accept an empty object, indicating no filters should be applied to the related items matched.
+However, doing so has no effect – it always evaluates to true, regardless of the properties of related items or whether they exist at all.
+So a query like this:
+
+```graphql
+{
+  people(where: { tasks: { every: {} } }) {
+    id
+    name
+  }
+}
+```
+
+Could be re-written as simply:
+
+```graphql
+{
+  people {
+    id
+    name
+  }
+}
+```
+
+### Filtering Related Items
+
+In the relationship examples above we have been filtering items based on their related items, but we haven't been loading any information about the related items themselves.
+GraphQL gives us the ability to write queries that retrieve data across a graph of interconnected items - in Keystone, relationships form the links between these items.
+Queries that traverse these links apply filters both the top-level "list" fields (ie. `tasks` and `people` in these examples) and when selecting data about related items themselves.
+
+This is easier to explain with examples so let's expand on one from earlier.
+Lets say we want to find **people who have no high-priority, incomplete tasks** but we want to see **all the incomplete tasks they still have on their list**.
+We could write something like this:
+
+```graphql
+{
+  # Only return people who have no high-priority, incomplete tasks
+  people(where: {
+    tasks: {
+      none: {
+        priority: { equals: high },
+        isComplete: { equals: false }
+      }
+    }
+  }) {
+    id
+    name
+    # For each person, get tasks that are not complete
+    tasks(where: {
+      isComplete: { equals: false }
+    }) {
+      id
+      label
+    }
+  }
+}
+```
+
+A good way to explore what's possible within your Keystone GraphQL API is using the
+[GraphQL Playground](https://github.com/graphql/graphql-playground)
+that should be
+[available on your GraphQL endpoint in dev](https://keystonejs.com/releases/2021-11-02#graph-ql-playground-and-apollo-sandbox)
+(ie. at [`http://localhost:3000/api/graphql`](http://localhost:3000/api/graphql)).
 
 ## Related resources
 
