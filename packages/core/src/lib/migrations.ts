@@ -169,7 +169,12 @@ export async function devMigrations(
   schemaPath: string,
   shouldDropDatabase: boolean
 ) {
-  return withMigrate(dbUrl, schemaPath, async migrate => {
+  return withMigrate(dbUrl, schemaPath, async migrate => 
+    if (!migrate.migrationsDirectoryPath) {
+      console.log('No migrations directory provided.');
+      throw new ExitError(0);
+    }  
+                     
     if (shouldDropDatabase) {
       await runMigrateWithDbUrl(dbUrl, () => migrate.reset());
       if (!process.env.TEST_ADAPTER) {
@@ -223,7 +228,8 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
     // if there are no steps, there was no change to the prisma schema so we don't need to create a migration
     if (evaluateDataLossResult.migrationSteps) {
       console.log('✨ There has been a change to your Keystone schema that requires a migration');
-      let migrationCanBeApplied = !evaluateDataLossResult.unexecutableSteps.length;
+      const migrationCanBeApplied = !evaluateDataLossResult.unexecutableSteps.length;
+      
       // see the link below for what "unexecutable steps" are
       // https://github.com/prisma/prisma-engines/blob/c65d20050f139a7917ef2efc47a977338070ea61/migration-engine/connectors/sql-migration-connector/src/sql_destructive_change_checker/unexecutable_step_check.rs
       // the tl;dr is "making things non null when there are nulls in the db"
@@ -239,7 +245,7 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
 
       console.log(); // for an empty line
 
-      let migrationName = await getMigrationName();
+      const migrationName = await getMigrationName();
 
       // note this only creates the migration, it does not apply it
       let { generatedMigrationName } = await runMigrateWithDbUrl(dbUrl, () =>
@@ -257,9 +263,10 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
 
       console.log(`✨ A migration has been created at migrations/${generatedMigrationName}`);
 
-      let shouldApplyMigration =
+      const shouldApplyMigration =
         migrationCanBeApplied &&
         (await confirmPrompt('Would you like to apply this migration?', false));
+      
       if (shouldApplyMigration) {
         await runMigrateWithDbUrl(dbUrl, () => migrate.applyMigrations());
         console.log('✅ The migration has been applied');
