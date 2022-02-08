@@ -33,7 +33,7 @@
     "@emotion/weak-memoize": "^0.2.5",
     "@graphql-tools/schema": "^8.3.1",
     "@graphql-ts/extend": "0.4.0",
-    "@graphql-ts/schema": "0.5.0",
+    "@graphql-ts/schema": "^0.5.1",
     "@hapi/iron": "^6.0.0",
     "@keystone-ui/button": "^6.0.0",
     "@keystone-ui/core": "^4.0.0",

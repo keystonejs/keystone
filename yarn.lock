@@ -1562,10 +1562,10 @@
   dependencies:
     "@babel/runtime" "^7.9.2"
 
-"@graphql-ts/schema@0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@graphql-ts/schema/-/schema-0.5.0.tgz#cc9cbf614ed931aff4c9987e88094a4030ad9e32"
-  integrity sha512-uljlEm6hRk92MG3XMXpKfSWzJ+03MXRLbsmGj5alZ/gbfS+CJkeh+hsvQOjwPD1EL5RhCE7L3E/zDWjH6W+V6g==
+"@graphql-ts/schema@0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@graphql-ts/schema/-/schema-0.5.1.tgz#d41b70199c10254d083ee26b0a9fbcdc30a68fb7"
+  integrity sha512-Dz8nMKxHe7KJaet2WHqt1Yn36hEsonVwzj3N5GSPZsGrHJOaRh3Q9pptKATfplkfpYMrc7vb3gbSkGy2XA8q3A==
   dependencies:
     "@babel/runtime" "^7.9.2"
 
