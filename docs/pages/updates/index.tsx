@@ -173,7 +173,14 @@ export default function WhatsNew() {
           gap: 0,
         })}
       >
-        <Timeline date="29th November 2021" isLatest />
+        <Timeline date="8th February 2022" isLatest />
+        <Box heading="New learning series">
+          Aimed at Keystone beginners, our{' '}
+          <a href="/docs/walkthroughs#learn-keystone">new learning series</a> shows you how to turn
+          an empty folder into a functioning blog backend with relationships, auth, and session
+          data.
+        </Box>
+        <Timeline date="29th November 2021" />
         <Box heading="Welcome Keystone 6 to General Availability!">
           <svg viewBox="0 0 1336 752" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g clipPath="url(#a)">
