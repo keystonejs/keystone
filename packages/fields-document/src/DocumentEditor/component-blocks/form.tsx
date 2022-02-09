@@ -19,7 +19,7 @@ function RelationshipFormInput({
   stringifiedPropPathToAutoFocus,
 }: {
   path: (string | number)[];
-  prop: RelationshipField<'many' | 'one'>;
+  prop: RelationshipField<boolean>;
   value: any;
   onChange(value: any): void;
   stringifiedPropPathToAutoFocus: string;
@@ -37,7 +37,7 @@ function RelationshipFormInput({
         extraSelection={prop.selection || ''}
         portalMenu
         state={
-          prop.cardinality === 'many'
+          prop.many
             ? {
                 kind: 'many',
                 value: (value as RelationshipData[]).map(x => ({

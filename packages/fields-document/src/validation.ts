@@ -35,7 +35,7 @@ function validateComponentBlockProps(
     return undefined;
   }
   if (prop.kind === 'relationship') {
-    if (prop.cardinality === 'many') {
+    if (prop.many) {
       if (Array.isArray(value) && value.every(isRelationshipData)) {
         // yes, ts understands this completely correctly, i'm as suprised as you are
         return value.map(x => ({ id: x.id }));

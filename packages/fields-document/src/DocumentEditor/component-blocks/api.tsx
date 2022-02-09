@@ -89,12 +89,12 @@ export type ChildField = {
       };
 };
 
-export type RelationshipField<Cardinality extends 'one' | 'many'> = {
+export type RelationshipField<Many extends boolean> = {
   kind: 'relationship';
   listKey: string;
   selection: string | undefined;
   label: string;
-  cardinality: Cardinality;
+  many: Many;
 };
 
 export interface ObjectField<
@@ -123,7 +123,7 @@ export type ComponentPropField =
   | FormField<any, any>
   | ObjectField
   | ConditionalField<any, any, any>
-  | RelationshipField<'one' | 'many'>;
+  | RelationshipField<boolean>;
 
 export const fields = {
   text({
@@ -398,14 +398,14 @@ export const fields = {
     label: string;
     selection?: string;
   } & (Many extends undefined | false ? { many?: Many } : { many: Many })): RelationshipField<
-    Many extends true ? 'many' : 'one'
+    Many extends true ? true : false
   > {
     return {
       kind: 'relationship',
       listKey,
       selection,
       label,
-      cardinality: (many ? 'many' : 'one') as any,
+      many: (many ? true : false) as any,
     };
   },
 };
@@ -462,17 +462,16 @@ export type ExtractPropFromComponentPropFieldForPreview<Prop extends ComponentPr
             : never;
         };
       }[DiscriminantToString<Discriminant>]
-    : Prop extends RelationshipField<infer Cardinality>
+    : Prop extends RelationshipField<true>
     ? {
-        one: {
-          readonly value: HydratedRelationshipData | null;
-          onChange(relationshipData: HydratedRelationshipData | null): void;
-        };
-        many: {
-          readonly value: readonly HydratedRelationshipData[];
-          onChange(relationshipData: readonly HydratedRelationshipData[]): void;
-        };
-      }[Cardinality]
+        readonly value: readonly HydratedRelationshipData[];
+        onChange(relationshipData: readonly HydratedRelationshipData[]): void;
+      }
+    : Prop extends RelationshipField<false>
+    ? {
+        readonly value: HydratedRelationshipData | null;
+        onChange(relationshipData: HydratedRelationshipData | null): void;
+      }
     : never;
 
 type ExtractPropFromComponentPropFieldForToolbar<Prop extends ComponentPropField> =
@@ -499,17 +498,16 @@ type ExtractPropFromComponentPropFieldForToolbar<Prop extends ComponentPropField
             : never;
         };
       }[DiscriminantToString<Discriminant>]
-    : Prop extends RelationshipField<infer Cardinality>
+    : Prop extends RelationshipField<true>
     ? {
-        one: {
-          readonly value: HydratedRelationshipData | null;
-          onChange(relationshipData: HydratedRelationshipData | null): void;
-        };
-        many: {
-          readonly value: readonly HydratedRelationshipData[];
-          onChange(relationshipData: readonly HydratedRelationshipData[]): void;
-        };
-      }[Cardinality]
+        readonly value: readonly HydratedRelationshipData[];
+        onChange(relationshipData: readonly HydratedRelationshipData[]): void;
+      }
+    : Prop extends RelationshipField<false>
+    ? {
+        readonly value: HydratedRelationshipData | null;
+        onChange(relationshipData: HydratedRelationshipData | null): void;
+      }
     : never;
 
 export type HydratedRelationshipData = {
@@ -597,11 +595,10 @@ type ExtractPropFromComponentPropFieldForRendering<Prop extends ComponentPropFie
             : never;
         };
       }[DiscriminantToString<Discriminant>]
-    : Prop extends RelationshipField<infer Cardinality>
-    ? {
-        one: HydratedRelationshipData | null;
-        many: readonly HydratedRelationshipData[];
-      }[Cardinality]
+    : Prop extends RelationshipField<true>
+    ? readonly HydratedRelationshipData[]
+    : Prop extends RelationshipField<false>
+    ? HydratedRelationshipData | null
     : never;
 
 type ExtractPropsForPropsForRendering<Props extends Record<string, ComponentPropField>> = {

@@ -112,7 +112,7 @@ export function addRelationshipData(
               (relationship, data) =>
                 fetchData(
                   relationship.listKey,
-                  relationship.cardinality === 'many',
+                  relationship.many,
                   relationship.selection || '',
                   data
                 )
@@ -152,7 +152,7 @@ export function addRelationshipData(
 async function addRelationshipDataToComponentProps(
   prop: ComponentPropField,
   val: any,
-  fetchData: (relationship: RelationshipField<'one' | 'many'>, data: any) => Promise<any>
+  fetchData: (relationship: RelationshipField<boolean>, data: any) => Promise<any>
 ): Promise<any> {
   switch (prop.kind) {
     case 'child':

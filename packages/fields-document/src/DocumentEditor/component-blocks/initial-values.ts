@@ -26,7 +26,7 @@ export function getInitialPropsValue(prop: ComponentPropField): any {
     case 'child':
       return undefined;
     case 'relationship':
-      return prop.cardinality === 'many' ? [] : null;
+      return prop.many ? [] : null;
     case 'conditional': {
       const defaultValue = prop.discriminant.defaultValue;
       return {
