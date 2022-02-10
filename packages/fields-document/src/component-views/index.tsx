@@ -13,6 +13,7 @@ import {
 } from '@keystone-6/core/types';
 import { FormValueContent } from '../DocumentEditor/component-blocks/form';
 import { ComponentPropField } from '../component-blocks';
+import { getInitialPropsValue } from '../DocumentEditor/component-blocks/initial-values';
 
 export const Field = ({
   field,
@@ -58,12 +59,13 @@ export const controller = (
       `No prop in custom view. Did you forgot to set \`views\` to a file that exports a \`prop\` on ${config.listKey}.${config.path}`
     );
   }
+  console.log(config.customViews.prop);
   return {
     path: config.path,
     label: config.label,
     graphqlSelection: `${config.path}`,
     prop: config.customViews.prop,
-    defaultValue: [{ type: 'paragraph', children: [{ text: '' }] }],
+    defaultValue: getInitialPropsValue(config.customViews.prop, {}),
     deserialize: data => {
       return data[config.path];
     },

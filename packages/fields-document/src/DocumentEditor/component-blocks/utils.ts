@@ -65,7 +65,7 @@ export function assertNever(arg: never) {
 export function getPropsForConditionalChange(
   newValue: Record<string, any>,
   oldValue: Record<string, any>,
-  prop: ConditionalField<any, any, any>,
+  prop: ConditionalField<any, any>,
   relationships: Relationships
 ) {
   if (newValue.discriminant !== oldValue.discriminant) {

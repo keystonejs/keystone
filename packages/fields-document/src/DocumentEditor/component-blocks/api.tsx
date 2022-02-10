@@ -123,27 +123,41 @@ export interface ObjectField<
 }
 
 export type ConditionalField<
-  Discriminant extends string | boolean,
-  ConditionalValue extends [Discriminant] extends [boolean]
+  DiscriminantField extends FormField<string | boolean, any>,
+  ConditionalValues extends DiscriminantField['defaultValue'] extends boolean
     ? { true: ComponentPropField; false: ComponentPropField }
-    : [Discriminant] extends [string]
-    ? { [Key in Discriminant]: ComponentPropField }
-    : never,
-  DiscriminantOptions
+    : DiscriminantField['defaultValue'] extends string
+    ? { [Key in DiscriminantField['defaultValue']]: ComponentPropField }
+    : never
 > = {
   kind: 'conditional';
-  discriminant: FormField<Discriminant, DiscriminantOptions>;
-  values: ConditionalValue;
+  discriminant: DiscriminantField;
+  values: ConditionalValues;
 };
 
 export type ComponentPropField =
   | ChildField
   | FormField<any, any>
   | ObjectField
-  | ConditionalField<any, any, any>
+  | ConditionalField<FormField<any, any>, any>
   | RelationshipField<'one' | 'many'>
   // this is written like this rather than ArrayField<ComponentPropField> to avoid TypeScript erroring about circularity
   | { kind: 'array'; element: ComponentPropField };
+
+export type ComponentPropFieldForGraphQL =
+  | FormFieldWithGraphQLField<any, any>
+  | ObjectField<Record<string, ComponentPropFieldForGraphQL>>
+  | ConditionalField<
+      FormFieldWithGraphQLField<string, any>,
+      { [key: string]: ComponentPropFieldForGraphQL }
+    >
+  | ConditionalField<
+      FormFieldWithGraphQLField<boolean, any>,
+      { true: ComponentPropFieldForGraphQL; false: ComponentPropFieldForGraphQL }
+    >
+  | RelationshipField<'one' | 'many'>
+  // this is written like this rather than ArrayField<ComponentPropField> to avoid TypeScript erroring about circularity
+  | { kind: 'array'; element: ComponentPropFieldForGraphQL };
 
 export const fields = {
   text({
@@ -428,17 +442,24 @@ export const fields = {
     return { kind: 'object', value };
   },
   conditional<
-    Discriminant extends string | boolean,
-    ConditionalValue extends [Discriminant] extends [boolean]
+    DiscriminantField extends FormField<string | boolean, any>,
+    ConditionalValues extends DiscriminantField['defaultValue'] extends boolean
       ? { true: ComponentPropField; false: ComponentPropField }
-      : [Discriminant] extends [string]
-      ? { [Key in Discriminant]: ComponentPropField }
-      : never,
-    DiscriminantOptions
+      : DiscriminantField['defaultValue'] extends string
+      ? { [Key in DiscriminantField['defaultValue']]: ComponentPropField }
+      : never
   >(
-    discriminant: FormField<Discriminant, DiscriminantOptions>,
-    values: ConditionalValue
-  ): ConditionalField<Discriminant, ConditionalValue, DiscriminantOptions> {
+    discriminant: DiscriminantField,
+    values: ConditionalValues
+  ): ConditionalField<DiscriminantField, ConditionalValues> {
+    if (
+      (discriminant.validate('true') || discriminant.validate('false')) &&
+      (discriminant.validate(true) || discriminant.validate(false))
+    ) {
+      throw new Error(
+        'The discriminant of a conditional field must not allow both strings and booleans to be valid values. only strings or only booleans can be valid'
+      );
+    }
     return {
       kind: 'conditional',
       discriminant,
@@ -481,10 +502,6 @@ export type ComponentBlock<
     }
 );
 
-type DiscriminantToString<Discriminant extends string | boolean> = Discriminant extends boolean
-  ? 'true' | 'false'
-  : Discriminant;
-
 type CastToComponentPropField<Prop> = Prop extends ComponentPropField ? Prop : never;
 
 export type ExtractPropFromComponentPropFieldForPreview<Prop extends ComponentPropField> =
@@ -494,23 +511,17 @@ export type ExtractPropFromComponentPropFieldForPreview<Prop extends ComponentPr
     ? { readonly value: Value; onChange(value: Value): void; readonly options: Options }
     : Prop extends ObjectField<infer Value>
     ? { readonly [Key in keyof Value]: ExtractPropFromComponentPropFieldForPreview<Value[Key]> }
-    : Prop extends ConditionalField<infer Discriminant, infer Value, infer DiscriminantOptions>
+    : Prop extends ConditionalField<infer DiscriminantField, infer Values>
     ? {
-        readonly [Key in DiscriminantToString<Discriminant>]: {
-          readonly discriminant: Discriminant extends boolean
-            ? 'true' extends Key
-              ? true
-              : 'false' extends Key
-              ? false
-              : never
-            : Discriminant;
-          onChange(discriminant: Discriminant): void;
-          readonly options: DiscriminantOptions;
-          readonly value: Key extends keyof Value
-            ? ExtractPropFromComponentPropFieldForPreview<CastToComponentPropField<Value[Key]>>
-            : never;
+        readonly [Key in keyof Values]: {
+          readonly discriminant: DiscriminantStringToDiscriminantValue<DiscriminantField, Key>;
+          onChange(discriminant: DiscriminantField['defaultValue']): void;
+          readonly options: DiscriminantField['options'];
+          readonly value: ExtractPropFromComponentPropFieldForPreview<
+            CastToComponentPropField<Values[Key]>
+          >;
         };
-      }[DiscriminantToString<Discriminant>]
+      }[keyof Values]
     : Prop extends RelationshipField<infer Cardinality>
     ? {
         one: {
@@ -524,6 +535,17 @@ export type ExtractPropFromComponentPropFieldForPreview<Prop extends ComponentPr
       }[Cardinality]
     : never;
 
+type DiscriminantStringToDiscriminantValue<
+  DiscriminantField extends FormField<any, any>,
+  DiscriminantString extends PropertyKey
+> = DiscriminantField['defaultValue'] extends boolean
+  ? 'true' extends DiscriminantString
+    ? true
+    : 'false' extends DiscriminantString
+    ? false
+    : never
+  : DiscriminantString;
+
 type ExtractPropFromComponentPropFieldForToolbar<Prop extends ComponentPropField> =
   Prop extends ChildField
     ? undefined
@@ -531,23 +553,17 @@ type ExtractPropFromComponentPropFieldForToolbar<Prop extends ComponentPropField
     ? { readonly value: Value; onChange(value: Value): void; readonly options: Options }
     : Prop extends ObjectField<infer Value>
     ? { readonly [Key in keyof Value]: ExtractPropFromComponentPropFieldForToolbar<Value[Key]> }
-    : Prop extends ConditionalField<infer Discriminant, infer Value, infer DiscriminantOptions>
+    : Prop extends ConditionalField<infer DiscriminantField, infer Values>
     ? {
-        readonly [Key in DiscriminantToString<Discriminant>]: {
-          readonly discriminant: Discriminant extends boolean
-            ? 'true' extends Key
-              ? true
-              : 'false' extends Key
-              ? false
-              : never
-            : Discriminant;
-          onChange(discriminant: Discriminant): void;
-          readonly options: DiscriminantOptions;
-          readonly value: Key extends keyof Value
-            ? ExtractPropFromComponentPropFieldForToolbar<CastToComponentPropField<Value[Key]>>
-            : never;
+        readonly [Key in keyof Values]: {
+          readonly discriminant: DiscriminantStringToDiscriminantValue<DiscriminantField, Key>;
+          onChange(discriminant: DiscriminantField['defaultValue']): void;
+          readonly options: DiscriminantField['options'];
+          readonly value: ExtractPropFromComponentPropFieldForToolbar<
+            CastToComponentPropField<Values[Key]>
+          >;
         };
-      }[DiscriminantToString<Discriminant>]
+      }[keyof Values]
     : Prop extends RelationshipField<infer Cardinality>
     ? {
         one: {
@@ -631,21 +647,15 @@ type ExtractPropFromComponentPropFieldForRendering<Prop extends ComponentPropFie
     ? Value
     : Prop extends ObjectField<infer Value>
     ? { readonly [Key in keyof Value]: ExtractPropFromComponentPropFieldForRendering<Value[Key]> }
-    : Prop extends ConditionalField<infer Discriminant, infer Value, any>
+    : Prop extends ConditionalField<infer DiscriminantField, infer Values>
     ? {
-        readonly [Key in DiscriminantToString<Discriminant>]: {
-          readonly discriminant: Discriminant extends boolean
-            ? 'true' extends Key
-              ? true
-              : 'false' extends Key
-              ? false
-              : never
-            : Discriminant;
-          readonly value: Key extends keyof Value
-            ? ExtractPropFromComponentPropFieldForRendering<CastToComponentPropField<Value[Key]>>
-            : never;
+        readonly [Key in keyof Values]: {
+          readonly discriminant: DiscriminantStringToDiscriminantValue<DiscriminantField, Key>;
+          readonly value: ExtractPropFromComponentPropFieldForRendering<
+            CastToComponentPropField<Values[Key]>
+          >;
         };
-      }[DiscriminantToString<Discriminant>]
+      }[keyof Values]
     : Prop extends RelationshipField<infer Cardinality>
     ? {
         one: HydratedRelationshipData | null;

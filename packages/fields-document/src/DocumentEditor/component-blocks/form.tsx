@@ -153,10 +153,9 @@ export function FormValueContent({
       <Stack gap="xlarge">
         {(value as any[]).map((val, i) => {
           return (
-            <div>
+            <div key={i}>
               <div>{dragIcon}</div>
               <FormValueContent
-                key={i}
                 forceValidation={forceValidation}
                 stringifiedPropPathToAutoFocus={stringifiedPropPathToAutoFocus}
                 path={path.concat(i)}
