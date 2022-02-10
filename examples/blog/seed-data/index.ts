@@ -53,6 +53,23 @@ export async function insertSeedData(context: KeystoneContext) {
     await createPost(post);
   }
 
+  console.log('generate large number of data');
+  const existing = await context.query.Author.findMany({
+    take: 1,
+    query: 'id',
+  });
+
+  const data = [];
+  for (let index = 0; index < 5000; index++) {
+    // data.push({ title: `title: ${index}`, author: { connect: { email: 'arthur.cd@email.com' } } });
+    data.push({ title: `title: ${index}`, author: { connect: { id: existing[0].id } } });
+  }
+  console.log('start createMany', data.length);
+  await context.query.Post.createMany({
+    data,
+    query: 'id',
+  });
+
   console.log(`✅ Seed data inserted`);
   console.log(`👋 Please start the process with \`yarn dev\` or \`npm run dev\``);
   process.exit();

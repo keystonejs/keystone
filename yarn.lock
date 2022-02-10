@@ -1562,10 +1562,10 @@
   dependencies:
     "@babel/runtime" "^7.9.2"
 
-"@graphql-ts/schema@0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@graphql-ts/schema/-/schema-0.5.1.tgz#d41b70199c10254d083ee26b0a9fbcdc30a68fb7"
-  integrity sha512-Dz8nMKxHe7KJaet2WHqt1Yn36hEsonVwzj3N5GSPZsGrHJOaRh3Q9pptKATfplkfpYMrc7vb3gbSkGy2XA8q3A==
+"@graphql-ts/schema@^0.5.1":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@graphql-ts/schema/-/schema-0.5.2.tgz#2c3c3e286af4b01e9f7b97c995fd68c63c169927"
+  integrity sha512-udSLgvID8Kxay1CPntXRN83CiLGw9LOj9booONngefzNag4CHAdd9YqdcPfHFdcdDEN9sNZrFJvRWe//OQMJ1A==
   dependencies:
     "@babel/runtime" "^7.9.2"
 
@@ -3968,11 +3968,6 @@ babel-plugin-polyfill-regenerator@^0.2.3:
   dependencies:
     "@babel/helper-define-polyfill-provider" "^0.2.4"
 
-babel-plugin-remove-graphql-queries@2.7.2:
-  version "2.7.2"
-  resolved "https://registry.yarnpkg.com/babel-plugin-remove-graphql-queries/-/babel-plugin-remove-graphql-queries-2.7.2.tgz#101c8b26567e35c217e817e892135a9a04a5a805"
-  integrity sha512-kkIqi2+oZ7YCLbZbrhOGxPA/HuWpfvzRUxbD75SHqwxl9fZVWSLQhOUl72GEpAuEt4MeCEguKpMX100oDN3MQA==
-
 babel-plugin-syntax-jsx@^6.18.0:
   version "6.18.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-syntax-jsx/-/babel-plugin-syntax-jsx-6.18.0.tgz#0af32a9a6e13ca7a3fd5069e62d7b0f58d0d8946"
@@ -5542,6 +5537,11 @@ dotenv@^11.0.0:
   version "11.0.0"
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-11.0.0.tgz#ee37feddf8ada6d348a79e198312d4a8abfd1c1e"
   integrity sha512-Fp/b504Y5W+e+FpCxTFMUZ7ZEQkQYF0rx+KZtmwixJxGQbLHrhCwo3FjZgNC8vIfrSi29PABNbMoCGD9YoiXbQ==
+
+dotenv@^16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.0.0.tgz#c619001253be89ebb638d027b609c75c26e47411"
+  integrity sha512-qD9WU0MPM4SWLPJy/r2Be+2WgQj8plChsyrCNQzW/0WjvcJQiKQJ9mH3ZgB3fxbUUxgc/11ZJ0Fi5KiimWGz2Q==
 
 dotenv@^8.1.0:
   version "8.6.0"
