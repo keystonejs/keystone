@@ -503,11 +503,11 @@ const isAdmin = ({ session }: { session: Session }) =>
   session?.data.isAdmin;
 
 // Validate the current user is updating themselves
-const isPerson = ({ session, item }: { session: Session, item: Person }) =>
+const isPerson = ({ session, item }: { session: Session, item: PersonData }) =>
   session?.data.id === item.id;
 
 // Validate the current user is an Admin, or updating themselves
-const isAdminOrPerson = ({ session, item }: { session: Session, item: Person }) =>
+const isAdminOrPerson = ({ session, item }: { session: Session, item: PersonData }) =>
   isAdmin({ session }) || isPerson({ session, item });
 
 const Person = list({
