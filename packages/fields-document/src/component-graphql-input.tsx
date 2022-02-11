@@ -54,6 +54,9 @@ export function getValueForUpdate(
   value: any,
   prevValue: any
 ): any {
+  if (prevValue === undefined) {
+    prevValue = getInitialPropsValue(prop, {});
+  }
   if (value === undefined) {
     value = prevValue;
   }
@@ -85,7 +88,6 @@ export function getValueForUpdate(
   }
   if (prop.kind === 'relationship') {
     // TODO handle this case
-    // throw new Error('unhandled');
   }
   if (prop.kind === 'conditional') {
     if (value === null) {
@@ -102,7 +104,11 @@ export function getValueForUpdate(
     }
     return {
       discriminant,
-      value: getValueForUpdate((prop.values as any)[key], value[key], prevValue[key]),
+      value: getValueForUpdate(
+        (prop.values as any)[key],
+        value[key],
+        prevValue.discriminant === discriminant ? prevValue.value : getInitialPropsValue(prop, {})
+      ),
     };
   }
 
@@ -110,7 +116,7 @@ export function getValueForUpdate(
 }
 
 export function getValueForCreate(prop: ComponentPropFieldForGraphQL, value: any): any {
-  // If  this
+  // If value is undefined, get the specified defaultValue
   if (value === undefined) {
     value = getInitialPropsValue(prop, {});
   }
@@ -155,4 +161,6 @@ export function getValueForCreate(prop: ComponentPropFieldForGraphQL, value: any
       value: getValueForCreate((prop.values as any)[key], value[key]),
     };
   }
+
+  assertNever(prop);
 }

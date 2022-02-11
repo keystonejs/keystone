@@ -12,7 +12,6 @@ import {
   FieldProps,
 } from '@keystone-6/core/types';
 import { FormValueContent } from '../DocumentEditor/component-blocks/form';
-import { ComponentPropField } from '../component-blocks';
 import { getInitialPropsValue } from '../DocumentEditor/component-blocks/initial-values';
 import { ComponentPropFieldForGraphQL } from '../DocumentEditor/component-blocks/api';
 import { assertNever } from '../DocumentEditor/component-blocks/utils';

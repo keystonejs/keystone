@@ -54,6 +54,7 @@ export const componentThing =
               let prevVal = args.item[meta.fieldKey];
               if (meta.provider === 'sqlite') {
                 prevVal = JSON.parse(prevVal as any);
+                val = args.inputData[meta.fieldKey];
               }
               val = getValueForUpdate(prop, val, prevVal);
               if (val === null && meta.provider === 'postgresql') {

@@ -190,7 +190,6 @@ export const fields = {
       graphql: {
         input: graphql.String,
         output: graphql.field({ type: graphql.String }),
-        selection: x => x,
       },
     };
   },
