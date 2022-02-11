@@ -4,8 +4,23 @@
 import { fields } from '@keystone-6/fields-document/component-blocks';
 
 export const prop = fields.array(
-  fields.object({
-    a: fields.text({ label: 'Blah A' }),
-    b: fields.text({ label: 'Blah B' }),
-  })
+  fields.conditional(
+    fields.select({
+      label: 'Type',
+      options: [
+        { label: 'Group', value: 'group' },
+        { label: 'Leaf', value: 'leaf' },
+      ] as const,
+      defaultValue: 'leaf',
+    }),
+    {
+      leaf: fields.object({
+        url: fields.url({ label: 'URL' }),
+        label: fields.text({ label: 'Label' }),
+      }),
+      group: fields.object({
+        label: fields.text({ label: 'Label' }),
+      }),
+    }
+  )
 );

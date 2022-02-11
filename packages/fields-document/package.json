@@ -27,6 +27,8 @@
   "dependencies": {
     "@babel/runtime": "^7.16.3",
     "@braintree/sanitize-url": "^5.0.2",
+    "@dnd-kit/core": "^5.0.1",
+    "@dnd-kit/sortable": "^6.0.0",
     "@emotion/weak-memoize": "^0.2.5",
     "@keystone-6/document-renderer": "^1.0.0",
     "@keystone-ui/button": "^6.0.0",

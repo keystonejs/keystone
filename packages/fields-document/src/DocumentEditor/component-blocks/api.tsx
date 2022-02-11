@@ -53,8 +53,7 @@ export type FormFieldWithGraphQLField<Value, Options> = FormField<Value, Options
       graphql.OutputType,
       'value'
     >;
-    selection: (fieldKey: string) => string;
-    input: graphql.Arg<graphql.NullableInputType, boolean>;
+    input: graphql.NullableInputType;
   };
 };
 
@@ -189,7 +188,7 @@ export const fields = {
         return typeof value === 'string';
       },
       graphql: {
-        input: graphql.arg({ type: graphql.String }),
+        input: graphql.String,
         output: graphql.field({ type: graphql.String }),
         selection: x => x,
       },
@@ -231,9 +230,8 @@ export const fields = {
       defaultValue,
       validate,
       graphql: {
-        input: graphql.arg({ type: graphql.String }),
+        input: graphql.String,
         output: graphql.field({ type: graphql.String }),
-        selection: x => x,
       },
     };
   },
@@ -272,7 +270,7 @@ export const fields = {
         return typeof value === 'string' && optionValuesSet.has(value);
       },
       graphql: {
-        input: graphql.arg({ type: graphql.String }),
+        input: graphql.String,
         output: graphql.field({
           type: graphql.String,
           // TODO: investigate why this resolve is required here
@@ -280,7 +278,6 @@ export const fields = {
             return value;
           },
         }),
-        selection: x => x,
       },
     };
   },
@@ -320,7 +317,7 @@ export const fields = {
         );
       },
       graphql: {
-        input: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.String)) }),
+        input: graphql.list(graphql.nonNull(graphql.String)),
         output: graphql.field({
           type: graphql.list(graphql.nonNull(graphql.String)),
           // TODO: investigate why this resolve is required here
@@ -328,7 +325,6 @@ export const fields = {
             return value;
           },
         }),
-        selection: x => x,
       },
     };
   },
@@ -362,9 +358,8 @@ export const fields = {
         return typeof value === 'boolean';
       },
       graphql: {
-        input: graphql.arg({ type: graphql.Boolean }),
+        input: graphql.Boolean,
         output: graphql.field({ type: graphql.Boolean }),
-        selection: x => x,
       },
     };
   },

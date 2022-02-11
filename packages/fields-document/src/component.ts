@@ -8,12 +8,18 @@ import {
 } from '@keystone-6/core/types';
 import { graphql } from '@keystone-6/core';
 import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values';
-import { ComponentPropField } from './component-blocks';
+import { getOutputGraphQLField } from './component-graphql-output';
+import { ComponentPropFieldForGraphQL } from './DocumentEditor/component-blocks/api';
+import {
+  getGraphQLInputType,
+  getValueForCreate,
+  getValueForUpdate,
+} from './component-graphql-input';
 
 export type ComponentThingFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
     db?: { map?: string };
-    prop: ComponentPropField;
+    prop: ComponentPropFieldForGraphQL;
   };
 
 const views = path.join(path.dirname(__dirname), 'component-views');
@@ -33,22 +39,57 @@ export const componentThing =
 
     const defaultValue = getInitialPropsValue(prop, {});
 
+    const unreferencedConcreteInterfaceImplementations: graphql.ObjectType<any>[] = [];
+
+    const name = meta.listKey + meta.fieldKey[0].toUpperCase() + meta.fieldKey.slice(1);
     return jsonFieldTypePolyfilledForSQLite(
       meta.provider,
       {
         ...config,
+        hooks: {
+          ...config.hooks,
+          resolveInput(args) {
+            let val = args.resolvedData[meta.fieldKey];
+            if (args.operation === 'update') {
+              let prevVal = args.item[meta.fieldKey];
+              if (meta.provider === 'sqlite') {
+                prevVal = JSON.parse(prevVal as any);
+              }
+              val = getValueForUpdate(prop, val, prevVal);
+              if (val === null && meta.provider === 'postgresql') {
+                val = 'JsonNull';
+              }
+              if (meta.provider === 'sqlite') {
+                val = JSON.stringify(val);
+              }
+            }
+
+            return config.hooks?.resolveInput
+              ? config.hooks.resolveInput({
+                  ...args,
+                  resolvedData: { ...args.resolvedData, [meta.fieldKey]: val },
+                })
+              : val;
+          },
+        },
         input: {
           create: {
-            arg: graphql.arg({ type: graphql.JSON }),
+            arg: graphql.arg({ type: getGraphQLInputType(name, prop, 'create') }),
             resolve(val) {
-              return resolve(val === undefined ? defaultValue : val);
+              return resolve(getValueForCreate(prop, val));
             },
           },
-          update: { arg: graphql.arg({ type: graphql.JSON }), resolve },
+          update: { arg: graphql.arg({ type: getGraphQLInputType(name, prop, 'update') }) },
         },
-        output: graphql.field({ type: graphql.JSON }),
+        output: getOutputGraphQLField(name, prop, unreferencedConcreteInterfaceImplementations),
+        extraOutputFields: {
+          [`${meta.fieldKey}Raw`]: graphql.field({
+            type: graphql.JSON,
+          }),
+        },
         views,
         getAdminMeta: () => ({}),
+        unreferencedConcreteInterfaceImplementations,
       },
       {
         default: {

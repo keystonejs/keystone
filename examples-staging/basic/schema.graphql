@@ -406,10 +406,15 @@ type Post {
   id: ID!
   title: String
   status: String
-  blah: JSON
+  blah: [PostBlah]
+  blahRaw: JSON
   content: Post_content_Document
   publishDate: DateTime
   author: User
+}
+
+interface PostBlah {
+  discriminant: String
 }
 
 type Post_content_Document {
@@ -421,6 +426,25 @@ scalar DateTime
 
 input PostWhereUniqueInput {
   id: ID
+}
+
+type PostBlahLeaf implements PostBlah {
+  discriminant: String
+  value: PostBlahLeafValue
+}
+
+type PostBlahLeafValue {
+  url: String
+  label: String
+}
+
+type PostBlahGroup implements PostBlah {
+  discriminant: String
+  value: PostBlahGroupValue
+}
+
+type PostBlahGroupValue {
+  label: String
 }
 
 input PostWhereInput {
@@ -455,10 +479,24 @@ input PostOrderByInput {
 input PostUpdateInput {
   title: String
   status: String
-  blah: JSON
+  blah: [PostBlahUpdateInput]
   content: JSON
   publishDate: DateTime
   author: UserRelateToOneForUpdateInput
+}
+
+input PostBlahUpdateInput {
+  leaf: PostBlahLeafUpdateInput
+  group: PostBlahGroupUpdateInput
+}
+
+input PostBlahLeafUpdateInput {
+  url: String
+  label: String
+}
+
+input PostBlahGroupUpdateInput {
+  label: String
 }
 
 input PostUpdateArgs {
@@ -469,10 +507,24 @@ input PostUpdateArgs {
 input PostCreateInput {
   title: String
   status: String
-  blah: JSON
+  blah: [PostBlahCreateInput]
   content: JSON
   publishDate: DateTime
   author: UserRelateToOneForCreateInput
+}
+
+input PostBlahCreateInput {
+  leaf: PostBlahLeafCreateInput
+  group: PostBlahGroupCreateInput
+}
+
+input PostBlahLeafCreateInput {
+  url: String
+  label: String
+}
+
+input PostBlahGroupCreateInput {
+  label: String
 }
 
 """

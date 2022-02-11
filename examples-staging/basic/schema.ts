@@ -9,6 +9,7 @@ import {
   virtual,
   image,
   file,
+  decimal,
 } from '@keystone-6/core/fields';
 import { componentThing, document } from '@keystone-6/fields-document';
 import { v4 } from 'uuid';
@@ -133,7 +134,9 @@ export const lists: Keystone.Lists = {
   }),
   Post: list({
     fields: {
-      title: text({ access: {} }),
+      title: text({
+        // ui: { views: require.resolve('./admin/fieldViews/whatever.tsx') },
+      }),
       // TODO: expand this out into a proper example project
       // Enable this line to test custom field views
       // test: text({ ui: { views: require.resolve('./admin/fieldViews/Test.tsx') } }),
@@ -154,6 +157,19 @@ export const lists: Keystone.Lists = {
         prop: blahProp,
         ui: { views: require.resolve('./admin/fieldViews/Blah.tsx') },
       }),
+      // something: json({
+      //   hooks: {
+      //     validateInput({ resolvedData, addValidationError }) {
+      //       const x = resolvedData.something;
+      //       if (x !== undefined) {
+      //         const error = myIoTsSchema.validate(x);
+      //         if (error) {
+      //           addValidationError(error);
+      //         }
+      //       }
+      //     },
+      //   },
+      // }),
       content: document({
         ui: { views: require.resolve('./admin/fieldViews/Content.tsx') },
         relationships: {

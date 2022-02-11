@@ -58,7 +58,7 @@ export function findChildPropPaths(
   return propPaths;
 }
 
-export function assertNever(arg: never) {
+export function assertNever(arg: never): never {
   throw new Error('expected to never be called but received: ' + JSON.stringify(arg));
 }
 
