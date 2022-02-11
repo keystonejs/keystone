@@ -70,19 +70,19 @@ export const controller = (
       return data[config.path + 'Raw'];
     },
     serialize: value => ({
-      [config.path]: serializeThing(config.customViews.prop, value),
+      [config.path]: serializeValue(config.customViews.prop, value),
     }),
   };
 };
 
-const serializeThing = (prop: ComponentPropFieldForGraphQL, value: any): any => {
+const serializeValue = (prop: ComponentPropFieldForGraphQL, value: any): any => {
   if (prop.kind === 'conditional') {
     return {
-      [value.discriminant]: serializeThing((prop.values as any)[value.discriminant], value.value),
+      [value.discriminant]: serializeValue((prop.values as any)[value.discriminant], value.value),
     };
   }
   if (prop.kind === 'array') {
-    return (value as any[]).map(a => serializeThing(prop.element, a));
+    return (value as any[]).map(a => serializeValue(prop.element, a));
   }
   if (prop.kind === 'form') {
     return value;
@@ -90,7 +90,7 @@ const serializeThing = (prop: ComponentPropFieldForGraphQL, value: any): any => 
   if (prop.kind === 'object') {
     return Object.fromEntries(
       Object.entries(prop.value).map(([key, val]) => {
-        return [key, serializeThing(val, value[key])];
+        return [key, serializeValue(val, value[key])];
       })
     );
   }

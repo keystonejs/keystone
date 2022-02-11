@@ -3,12 +3,12 @@ import { RelationshipSelect } from '@keystone-6/core/fields/types/relationship/v
 import { Stack } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import React, { useState } from 'react';
-import { Button, Button as KeystoneUIButton } from '@keystone-ui/button';
+import { Button as KeystoneUIButton } from '@keystone-ui/button';
 import { ComponentPropField, RelationshipData } from '../../component-blocks';
 import { useDocumentFieldRelationships, Relationships } from '../relationship';
 import { assertNever, getPropsForConditionalChange } from './utils';
 import { RelationshipField } from './api';
-import { getInitialPropsValue } from './initial-values';
+import { ArrayFormValueContent } from './array-form-value';
 
 // this is in a different component to the other form inputs because it uses useKeystone
 // and we want to render the editor outside of the Admin UI on the docs site
@@ -150,34 +150,14 @@ export function FormValueContent({
   }
   if (prop.kind === 'array') {
     return (
-      <Stack gap="xlarge">
-        {(value as any[]).map((val, i) => {
-          return (
-            <div key={i}>
-              <div>{dragIcon}</div>
-              <FormValueContent
-                forceValidation={forceValidation}
-                stringifiedPropPathToAutoFocus={stringifiedPropPathToAutoFocus}
-                path={path.concat(i)}
-                prop={prop.element}
-                value={val}
-                onChange={val => {
-                  const newValue = [...value];
-                  newValue[i] = val;
-                  onChange(newValue);
-                }}
-              />
-            </div>
-          );
-        })}
-        <Button
-          onClick={() => {
-            onChange([...value, getInitialPropsValue(prop.element, relationships)]);
-          }}
-        >
-          Add
-        </Button>
-      </Stack>
+      <ArrayFormValueContent
+        prop={prop}
+        path={path}
+        value={value}
+        onChange={onChange}
+        stringifiedPropPathToAutoFocus={stringifiedPropPathToAutoFocus}
+        forceValidation={forceValidation}
+      />
     );
   }
   return (
@@ -189,19 +169,6 @@ export function FormValueContent({
     />
   );
 }
-
-const dragIcon = (
-  <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <g fill="#939393">
-      <circle cy="6" cx="6" r="2" />
-      <circle cy="6" cx="12" r="2" />
-      <circle cy="12" cx="6" r="2" />
-      <circle cy="12" cx="12" r="2" />
-      <circle cy="18" cx="6" r="2" />
-      <circle cy="18" cx="12" r="2" />
-    </g>
-  </svg>
-);
 
 export function findFirstFocusablePropPath(
   prop: ComponentPropField,
