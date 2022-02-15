@@ -172,8 +172,9 @@ export async function devMigrations(
   return withMigrate(dbUrl, schemaPath, async migrate => {
     if (!migrate.migrationsDirectoryPath) {
       console.log('No migrations directory provided.');
-      throw new ExitError(0);
+      throw new ExitError(1);
     }
+    const { migrationsDirectoryPath } = migrate;
 
     if (shouldDropDatabase) {
       await runMigrateWithDbUrl(dbUrl, () => migrate.reset());
@@ -250,7 +251,7 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
       // note this only creates the migration, it does not apply it
       let { generatedMigrationName } = await runMigrateWithDbUrl(dbUrl, () =>
         migrate.createMigration({
-          migrationsDirectoryPath: migrate.migrationsDirectoryPath,
+          migrationsDirectoryPath,
           // https://github.com/prisma/prisma-engines/blob/11dfcc85d7f9b55235e31630cd87da7da3aed8cc/migration-engine/core/src/commands/create_migration.rs#L16-L17
           // draft means "create an empty migration even if there are no changes rather than exiting"
           // because this whole thing only happens when there are changes to the schema, this can be false
