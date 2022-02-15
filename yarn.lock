@@ -1555,17 +1555,17 @@
   dependencies:
     tslib "~2.3.0"
 
-"@graphql-ts/extend@0.4.1":
+"@graphql-ts/extend@^0.4.1":
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/@graphql-ts/extend/-/extend-0.4.1.tgz#b2325c43fab5435f6b70219168a1c554eeadb0a3"
   integrity sha512-qMi1rFfEjdgQ9QjixIqPq5sCasJF1xEbRxjzxh6Z/6LhpFbQSoQlOxgGSM7PiPCgV/VsEIuPXebILLjRKmHyRA==
   dependencies:
     "@babel/runtime" "^7.9.2"
 
-"@graphql-ts/schema@0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@graphql-ts/schema/-/schema-0.5.1.tgz#d41b70199c10254d083ee26b0a9fbcdc30a68fb7"
-  integrity sha512-Dz8nMKxHe7KJaet2WHqt1Yn36hEsonVwzj3N5GSPZsGrHJOaRh3Q9pptKATfplkfpYMrc7vb3gbSkGy2XA8q3A==
+"@graphql-ts/schema@^0.5.1":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@graphql-ts/schema/-/schema-0.5.2.tgz#2c3c3e286af4b01e9f7b97c995fd68c63c169927"
+  integrity sha512-udSLgvID8Kxay1CPntXRN83CiLGw9LOj9booONngefzNag4CHAdd9YqdcPfHFdcdDEN9sNZrFJvRWe//OQMJ1A==
   dependencies:
     "@babel/runtime" "^7.9.2"
 
@@ -6419,9 +6419,9 @@ focus-trap@^6.7.1:
     tabbable "^5.2.1"
 
 follow-redirects@^1.14.0:
-  version "1.14.7"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.7.tgz#2004c02eb9436eee9a21446a6477debf17e81685"
-  integrity sha512-+hbxoLbFMbRKDwohX8GkTataGqO6Jb7jGwpAlwgy2bIz25XtRm7KEzJM76R1WiNT5SwZkX4Y75SwBolkpmE7iQ==
+  version "1.14.8"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.8.tgz#016996fb9a11a100566398b1c6839337d7bfa8fc"
+  integrity sha512-1x0S9UVJHsQprFcEC/qnNzBLcIxsjAV905f/UkQxbclCsoTWlacCNOpQa/anodLl2uaEKFhfWOvM2Qg77+15zA==
 
 for-in@^1.0.2:
   version "1.0.2"
