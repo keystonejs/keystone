@@ -2,30 +2,21 @@ import { useKeystone } from '@keystone-6/core/admin-ui/context';
 import { RelationshipSelect } from '@keystone-6/core/fields/types/relationship/views/RelationshipSelect';
 import { Stack } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
-import React, { useState } from 'react';
+import React, { memo, ReactElement, useCallback, useMemo, useState } from 'react';
 import { Button as KeystoneUIButton } from '@keystone-ui/button';
 import { ComponentPropField, RelationshipData } from '../../component-blocks';
 import { useDocumentFieldRelationships, Relationships } from '../relationship';
 import { assertNever, getPropsForConditionalChange } from './utils';
-import { RelationshipField } from './api';
 import { ArrayFormValueContent } from './array-form-value';
+import { FormField, RelationshipField } from './api';
 
-// this is in a different component to the other form inputs because it uses useKeystone
-// and we want to render the editor outside of the Admin UI on the docs site
-// and a call to useKeystone will break on the docs site
 function RelationshipFormInput({
   prop,
   path,
   value,
   onChange,
   stringifiedPropPathToAutoFocus,
-}: {
-  path: (string | number)[];
-  prop: RelationshipField<any>;
-  value: any;
-  onChange(value: any): void;
-  stringifiedPropPathToAutoFocus: string;
-}) {
+}: ComponentFieldProps<RelationshipField<'many' | 'one'>>) {
   const relationships = useDocumentFieldRelationships();
   const keystone = useKeystone();
   const relationship = relationships[prop.relationship] as Extract<
@@ -52,7 +43,7 @@ function RelationshipFormInput({
                   label: x.label || x.id,
                   data: x.data,
                 })),
-                onChange,
+                onChange: val => onChange(() => val),
               }
             : {
                 kind: 'one',
@@ -62,7 +53,7 @@ function RelationshipFormInput({
                       label: (value as RelationshipData).label || (value as RelationshipData).id,
                     }
                   : null,
-                onChange,
+                onChange: val => onChange(() => val),
               }
         }
       />
@@ -70,105 +61,152 @@ function RelationshipFormInput({
   );
 }
 
-export function FormValueContent({
-  prop,
-  path,
-  value,
-  onChange,
-  stringifiedPropPathToAutoFocus,
-  forceValidation,
-}: {
-  path: (string | number)[];
-  prop: ComponentPropField;
-  value: any;
-  onChange(value: any): void;
+export type ComponentFieldProps<Field extends ComponentPropField> = {
+  path: readonly (string | number)[];
+  prop: Field;
+  // ExtractPropFromComponentPropFieldForRendering is not exactly correct
+  // (specifically it's wrong for child fields)
+  // but it's correct enough to be helpful and child fields do nothing here
+  value: GeneralValuesForFields[Field['kind']];
+  onChange(
+    cb: (val: GeneralValuesForFields[Field['kind']]) => GeneralValuesForFields[Field['kind']]
+  ): void;
   stringifiedPropPathToAutoFocus: string;
   forceValidation: boolean;
-}) {
-  const relationships = useDocumentFieldRelationships();
-  if (prop.kind === 'child') return null;
-  if (prop.kind === 'object') {
+};
+
+type GeneralValuesForFields = {
+  array: readonly unknown[];
+  relationship: null | RelationshipData | readonly RelationshipData[];
+  child: undefined;
+  form: unknown;
+  object: Record<string, unknown>;
+  conditional: { discriminant: string | boolean; value: unknown };
+};
+
+const fieldRenderers: {
+  [Key in ComponentPropField['kind']]: (
+    props: ComponentFieldProps<Extract<ComponentPropField, { kind: Key }>>
+  ) => ReactElement | null;
+} = {
+  array: ArrayFormValueContent,
+  relationship: RelationshipFormInput,
+  child: () => null,
+  form: function FormField(props) {
+    const { onChange } = props;
+    return (
+      <props.prop.Input
+        autoFocus={JSON.stringify(props.path) === props.stringifiedPropPathToAutoFocus}
+        value={props.value}
+        onChange={useCallback(
+          val => {
+            onChange(() => val);
+          },
+          [onChange]
+        )}
+        forceValidation={props.forceValidation && !props.prop.validate(props.value)}
+      />
+    );
+  },
+  object: function ObjectField(props) {
+    const { onChange, prop, path } = props;
+    const onChangeAndPaths = useMemo(() => {
+      return Object.fromEntries(
+        Object.keys(prop.value).map(key => {
+          return [
+            key,
+            {
+              onChange: (cb: (val: unknown) => unknown) => {
+                onChange(value => ({ ...value, [key]: cb(value[key]) }));
+              },
+              path: path.concat(key),
+            },
+          ];
+        })
+      );
+    }, [onChange, prop, path]);
     return (
       <Stack gap="xlarge">
         {Object.entries(prop.value).map(([key, propVal]) => (
           <FormValueContent
             key={key}
-            forceValidation={forceValidation}
-            stringifiedPropPathToAutoFocus={stringifiedPropPathToAutoFocus}
-            path={path.concat(key)}
+            forceValidation={props.forceValidation}
+            stringifiedPropPathToAutoFocus={props.stringifiedPropPathToAutoFocus}
+            path={onChangeAndPaths[key].path}
             prop={propVal}
-            value={value[key]}
-            onChange={val => {
-              onChange({ ...value, [key]: val });
-            }}
+            value={props.value[key]}
+            onChange={onChangeAndPaths[key].onChange}
           />
         ))}
       </Stack>
     );
-  }
-  if (prop.kind === 'conditional') {
+  },
+  conditional: function ConditionalField(props) {
+    const relationships = useDocumentFieldRelationships();
+    const { onChange, prop, path } = props;
+    const discriminant = props.prop.discriminant as FormField<string | boolean, unknown>;
+    const onDiscriminantChange = useCallback(
+      discriminant => {
+        onChange(value =>
+          getPropsForConditionalChange(
+            { discriminant, value: value.value },
+            value,
+            prop,
+            relationships
+          )
+        );
+      },
+      [prop, onChange, relationships]
+    );
+    const discriminantAutoFocus =
+      JSON.stringify(path.concat('discriminant')) === props.stringifiedPropPathToAutoFocus;
     return (
       <Stack gap="xlarge">
-        <prop.discriminant.Input
-          autoFocus={JSON.stringify(path.concat('discriminant')) === stringifiedPropPathToAutoFocus}
-          value={value.discriminant}
-          onChange={discriminant => {
-            onChange(
-              getPropsForConditionalChange(
-                { discriminant, value: value.value },
-                value,
-                prop,
-                relationships
-              )
-            );
-          }}
-          forceValidation={forceValidation && !prop.discriminant.validate(value)}
-        />
+        {useMemo(
+          () => (
+            <discriminant.Input
+              autoFocus={discriminantAutoFocus}
+              value={props.value.discriminant}
+              onChange={onDiscriminantChange}
+              forceValidation={
+                props.forceValidation && !discriminant.validate(props.value.discriminant)
+              }
+            />
+          ),
+          [
+            discriminant,
+            discriminantAutoFocus,
+            props.value.discriminant,
+            props.forceValidation,
+            onDiscriminantChange,
+          ]
+        )}
         <FormValueContent
-          forceValidation={forceValidation}
-          stringifiedPropPathToAutoFocus={stringifiedPropPathToAutoFocus}
-          path={path.concat('value')}
-          prop={prop.values[value.discriminant]}
-          value={value.value}
-          onChange={val => {
-            onChange({ discriminant: value.discriminant, value: val });
-          }}
+          forceValidation={props.forceValidation}
+          stringifiedPropPathToAutoFocus={props.stringifiedPropPathToAutoFocus}
+          path={useMemo(() => path.concat('value'), [path])}
+          prop={prop.values[props.value.discriminant.toString()]}
+          value={props.value.value}
+          onChange={useCallback(
+            val => {
+              onChange(value => {
+                return { discriminant: value.discriminant, value: val(value.value) };
+              });
+            },
+            [onChange]
+          )}
         />
       </Stack>
     );
-  }
-  if (prop.kind === 'relationship') {
-    return (
-      <RelationshipFormInput
-        prop={prop}
-        path={path}
-        value={value}
-        onChange={onChange}
-        stringifiedPropPathToAutoFocus={stringifiedPropPathToAutoFocus}
-      />
-    );
-  }
-  if (prop.kind === 'array') {
-    return (
-      <ArrayFormValueContent
-        prop={prop}
-        path={path}
-        value={value}
-        onChange={onChange}
-        stringifiedPropPathToAutoFocus={stringifiedPropPathToAutoFocus}
-        forceValidation={forceValidation}
-      />
-    );
-  }
-  return (
-    <prop.Input
-      autoFocus={JSON.stringify(path) === stringifiedPropPathToAutoFocus}
-      value={value}
-      onChange={onChange}
-      forceValidation={forceValidation && !prop.validate(value)}
-    />
-  );
-}
+  },
+};
+
+export const FormValueContent = memo(function FormValueContent(
+  props: ComponentFieldProps<ComponentPropField>
+) {
+  const Comp = fieldRenderers[props.prop.kind];
+  return <Comp {...(props as any)} />;
+});
 
 export function findFirstFocusablePropPath(
   prop: ComponentPropField,
@@ -178,21 +216,16 @@ export function findFirstFocusablePropPath(
   if (prop.kind === 'form' || prop.kind === 'relationship') {
     return path;
   }
+  if (prop.kind === 'conditional') {
+    return path.concat('discriminant');
+  }
   if (prop.kind === 'child') {
     return undefined;
   }
-  if (prop.kind === 'object' || prop.kind === 'conditional') {
-    const props: Record<string, ComponentPropField> =
-      prop.kind === 'object'
-        ? prop.value
-        : {
-            discriminant: prop.discriminant,
-            value: prop.values[value.discriminant],
-          };
-    for (const key of Object.keys(props)) {
-      const prop = props[key];
+  if (prop.kind === 'object') {
+    for (const [key, innerProp] of Object.entries(prop.value)) {
       const newPath = path.concat(key);
-      const childFocusable = findFirstFocusablePropPath(prop, newPath, value[key]);
+      const childFocusable = findFirstFocusablePropPath(innerProp, newPath, value[key]);
       if (childFocusable) {
         return childFocusable;
       }
@@ -212,6 +245,8 @@ export function findFirstFocusablePropPath(
   assertNever(prop);
 }
 
+const basePath: (string | number)[] = [];
+
 export function FormValue({
   value,
   onClose,
@@ -220,20 +255,23 @@ export function FormValue({
   isValid,
 }: {
   value: any;
-  onChange(value: any): void;
+  onChange(cb: (val: any) => any): void;
   onClose(): void;
   componentBlockProps: Record<string, ComponentPropField>;
   isValid: boolean;
 }) {
   const [forceValidation, setForceValidation] = useState(false);
-  const rootProp = { kind: 'object' as const, value: componentBlockProps };
-  const focusablePath = JSON.stringify(findFirstFocusablePropPath(rootProp, [], value));
+  const rootProp = useMemo(
+    () => ({ kind: 'object' as const, value: componentBlockProps }),
+    [componentBlockProps]
+  );
+  const focusablePath = JSON.stringify(findFirstFocusablePropPath(rootProp, basePath, value));
   return (
     <Stack gap="xlarge" contentEditable={false}>
       <FormValueContent
         forceValidation={forceValidation}
         onChange={onChange}
-        path={[]}
+        path={basePath}
         prop={rootProp}
         value={value}
         stringifiedPropPathToAutoFocus={focusablePath}

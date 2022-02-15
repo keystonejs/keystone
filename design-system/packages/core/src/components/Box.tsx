@@ -241,7 +241,10 @@ function useMargin(
 // Box Component
 // -------------
 
-export const Box = forwardRefWithAs<'div', BoxProps>(({ as: Tag = 'div', ...props }, ref) => {
+export const Box = forwardRefWithAs<'div', BoxProps>(function Box(
+  { as: Tag = 'div', ...props },
+  ref
+) {
   const {
     background,
     foreground,

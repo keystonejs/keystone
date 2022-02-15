@@ -19,11 +19,11 @@ import {
   sortableKeyboardCoordinates,
 } from '@dnd-kit/sortable';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
-import { useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import { useDocumentFieldRelationships } from '../relationship';
 import { getInitialPropsValue } from './initial-values';
 import { ArrayField, ComponentPropField } from './api';
-import { FormValueContent } from './form';
+import { ComponentFieldProps, FormValueContent } from './form';
 
 const dragIcon = (
   <svg width="18" height="24" viewBox="0 0 18 24" xmlns="http://www.w3.org/2000/svg">
@@ -46,14 +46,7 @@ export function ArrayFormValueContent({
   onChange,
   stringifiedPropPathToAutoFocus,
   forceValidation,
-}: {
-  path: (string | number)[];
-  prop: ArrayField<ComponentPropField>;
-  value: any[];
-  onChange(value: any[]): void;
-  stringifiedPropPathToAutoFocus: string;
-  forceValidation: boolean;
-}) {
+}: ComponentFieldProps<ArrayField<ComponentPropField>>) {
   const relationships = useDocumentFieldRelationships();
   const sensors = useSensors(
     useSensor(MouseSensor),
@@ -62,6 +55,39 @@ export function ArrayFormValueContent({
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+
+  const { length } = value;
+  // this is not ideal since every item will re-render after adding a new item
+  // and many will re-render after a re-order
+  // but it does mean not every item will be re-rendered for changes within an item
+  // which is the most performance-sensitive case since it'll be for an input or etc.
+  const memoizedPropsForItems = useMemo(() => {
+    return Array.from({ length }).map((_, i) => {
+      return {
+        onChange: (cb: (val: any) => any) => {
+          onChange(value => {
+            const newValue = [...value];
+            newValue[i] = cb(newValue[i]);
+            return newValue;
+          });
+        },
+        onRemove: () => {
+          setKeys(keys => {
+            const newKeys = [...keys];
+            newKeys.splice(i, 1);
+            return newKeys;
+          });
+          onChange(value => {
+            const newValue = [...value];
+            newValue.splice(i, 1);
+            return newValue;
+          });
+        },
+        path: path.concat(i),
+      };
+    });
+  }, [length, onChange, path]);
+
   // this key stuff will sort of produce a less ideal experience if the value array
   // is modified outside of this component, mainly if adding items in the middle or re-ordering
   const [keys, setKeys] = useState(() => value.map(() => (keyCount++).toString()));
@@ -72,11 +98,9 @@ export function ArrayFormValueContent({
     setKeys(keys.concat(Array.from({ length: diff }).map(() => (keyCount++).toString())));
     return null;
   } else if (diff < 0) {
-    setKeys(value.slice(0, keys.length - 1));
+    setKeys(keys.slice(0, keys.length - 1));
     return null;
   }
-
-  console.log(keys);
 
   return (
     <DndContext
@@ -88,7 +112,7 @@ export function ArrayFormValueContent({
           const overIndex = keys.indexOf(over.id);
           const activeIndex = keys.indexOf(active.id);
           setKeys(arrayMove(keys, activeIndex, overIndex));
-          onChange(arrayMove(value, activeIndex, overIndex));
+          onChange(value => arrayMove(value as any[], activeIndex, overIndex));
         }
       }}
     >
@@ -110,28 +134,15 @@ export function ArrayFormValueContent({
                 id={keys[i]}
                 forceValidation={forceValidation}
                 stringifiedPropPathToAutoFocus={stringifiedPropPathToAutoFocus}
-                path={path.concat(i)}
                 prop={prop.element}
                 value={val}
-                onChange={val => {
-                  const newValue = [...value];
-                  newValue[i] = val;
-                  onChange(newValue);
-                }}
-                onRemove={() => {
-                  const newKeys = [...keys];
-                  newKeys.splice(i, 1);
-                  setKeys(newKeys);
-                  const newValue = [...value];
-                  newValue.splice(i, 1);
-                  onChange(newValue);
-                }}
+                {...memoizedPropsForItems[i]}
               />
             );
           })}
           <Button
             onClick={() => {
-              onChange([...value, getInitialPropsValue(prop.element, relationships)]);
+              onChange(value => [...value, getInitialPropsValue(prop.element, relationships)]);
             }}
           >
             Add
@@ -142,7 +153,7 @@ export function ArrayFormValueContent({
   );
 }
 
-function SortableItem({
+const SortableItem = memo(function SortableItem({
   id,
   onRemove,
   ...props
@@ -216,4 +227,4 @@ function SortableItem({
       </div>
     </li>
   );
-}
+});

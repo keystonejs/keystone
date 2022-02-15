@@ -121,13 +121,19 @@ export interface ObjectField<
   value: Value;
 }
 
+type StringOrBooleanToString<Val extends string | boolean> = Val extends string
+  ? Val
+  : Val extends true
+  ? 'true'
+  : Val extends false
+  ? 'false'
+  : never;
+
 export type ConditionalField<
   DiscriminantField extends FormField<string | boolean, any>,
-  ConditionalValues extends DiscriminantField['defaultValue'] extends boolean
-    ? { true: ComponentPropField; false: ComponentPropField }
-    : DiscriminantField['defaultValue'] extends string
-    ? { [Key in DiscriminantField['defaultValue']]: ComponentPropField }
-    : never
+  ConditionalValues extends {
+    [Key in StringOrBooleanToString<DiscriminantField['defaultValue']>]: ComponentPropField;
+  }
 > = {
   kind: 'conditional';
   discriminant: DiscriminantField;
@@ -138,7 +144,7 @@ export type ComponentPropField =
   | ChildField
   | FormField<any, any>
   | ObjectField
-  | ConditionalField<FormField<any, any>, any>
+  | ConditionalField<FormField<string | boolean, any>, { [key: string]: ComponentPropField }>
   | RelationshipField<'one' | 'many'>
   // this is written like this rather than ArrayField<ComponentPropField> to avoid TypeScript erroring about circularity
   | { kind: 'array'; element: ComponentPropField };
@@ -147,12 +153,8 @@ export type ComponentPropFieldForGraphQL =
   | FormFieldWithGraphQLField<any, any>
   | ObjectField<Record<string, ComponentPropFieldForGraphQL>>
   | ConditionalField<
-      FormFieldWithGraphQLField<string, any>,
+      FormFieldWithGraphQLField<string | boolean, any>,
       { [key: string]: ComponentPropFieldForGraphQL }
-    >
-  | ConditionalField<
-      FormFieldWithGraphQLField<boolean, any>,
-      { true: ComponentPropFieldForGraphQL; false: ComponentPropFieldForGraphQL }
     >
   | RelationshipField<'one' | 'many'>
   // this is written like this rather than ArrayField<ComponentPropField> to avoid TypeScript erroring about circularity
@@ -437,11 +439,9 @@ export const fields = {
   },
   conditional<
     DiscriminantField extends FormField<string | boolean, any>,
-    ConditionalValues extends DiscriminantField['defaultValue'] extends boolean
-      ? { true: ComponentPropField; false: ComponentPropField }
-      : DiscriminantField['defaultValue'] extends string
-      ? { [Key in DiscriminantField['defaultValue']]: ComponentPropField }
-      : never
+    ConditionalValues extends {
+      [Key in StringOrBooleanToString<DiscriminantField['defaultValue']>]: ComponentPropField;
+    }
   >(
     discriminant: DiscriminantField,
     values: ConditionalValues
@@ -655,6 +655,8 @@ type ExtractPropFromComponentPropFieldForRendering<Prop extends ComponentPropFie
         one: HydratedRelationshipData | null;
         many: readonly HydratedRelationshipData[];
       }[Cardinality]
+    : Prop extends ArrayField<infer ElementField>
+    ? readonly ExtractPropFromComponentPropFieldForRendering<ElementField>[]
     : never;
 
 type ExtractPropsForPropsForRendering<Props extends Record<string, ComponentPropField>> = {

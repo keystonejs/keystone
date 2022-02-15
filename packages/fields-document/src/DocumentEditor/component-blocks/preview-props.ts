@@ -55,7 +55,7 @@ function _getPreviewProps(
           onFormPropsChange(
             getPropsForConditionalChange(
               { discriminant: newDiscriminant, value: value.value },
-              value,
+              value as { discriminant: string | boolean; value: any },
               prop,
               relationships
             )

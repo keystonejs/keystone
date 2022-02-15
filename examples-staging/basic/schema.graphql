@@ -436,6 +436,12 @@ type PostBlahLeaf implements PostBlah {
 type PostBlahLeafValue {
   url: String
   label: String
+  label2: String
+  label3: String
+  label4: String
+  label5: String
+  label6: String
+  label7: String
 }
 
 type PostBlahGroup implements PostBlah {
@@ -493,6 +499,12 @@ input PostBlahUpdateInput {
 input PostBlahLeafUpdateInput {
   url: String
   label: String
+  label2: String
+  label3: String
+  label4: String
+  label5: String
+  label6: String
+  label7: String
 }
 
 input PostBlahGroupUpdateInput {
@@ -521,6 +533,12 @@ input PostBlahCreateInput {
 input PostBlahLeafCreateInput {
   url: String
   label: String
+  label2: String
+  label3: String
+  label4: String
+  label5: String
+  label6: String
+  label7: String
 }
 
 input PostBlahGroupCreateInput {

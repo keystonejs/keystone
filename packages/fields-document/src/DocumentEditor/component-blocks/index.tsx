@@ -1,7 +1,15 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Fragment, ReactElement, createContext, useContext, useState, useMemo } from 'react';
+import {
+  Fragment,
+  ReactElement,
+  createContext,
+  useContext,
+  useState,
+  useMemo,
+  useCallback,
+} from 'react';
 import { ReactEditor, RenderElementProps, useFocused, useSelected } from 'slate-react';
 import { Editor, Element, Transforms } from 'slate';
 
@@ -33,7 +41,7 @@ export function getPlaceholderTextForPropPath(
   fields: Record<string, ComponentPropField>,
   formProps: Record<string, any>
 ): string {
-  return getChildFieldAtPropPath(propPath, fields, formProps)?.options.placeholder ?? '';
+  return getChildFieldAtPropPath(propPath, formProps, fields)?.options?.placeholder ?? '';
 }
 
 export function ComponentInlineProp(props: RenderElementProps) {
@@ -101,6 +109,17 @@ export const ComponentBlocksElement = ({
       : true;
   }, [componentBlock, currentElement.props]);
   const documentFieldRelationships = useDocumentFieldRelationships();
+
+  const onCloseEditView = useCallback(() => {
+    setEditMode(false);
+  }, []);
+
+  const onPropsChange = useCallback(
+    val => {
+      setElement(element => ({ props: val(element.props) }));
+    },
+    [setElement]
+  );
   if (!componentBlock) {
     return (
       <div css={{ border: 'red 4px solid', padding: spacing.medium }}>
@@ -162,13 +181,9 @@ Content:`}
         <FormValue
           isValid={isValid}
           componentBlockProps={componentBlock.props}
-          onClose={() => {
-            setEditMode(false);
-          }}
+          onClose={onCloseEditView}
           value={currentElement.props}
-          onChange={val => {
-            setElement({ props: val });
-          }}
+          onChange={onPropsChange}
         />
       )}
       <div css={{ display: editMode ? 'none' : 'block', position: 'relative' }}>
@@ -313,7 +328,11 @@ function ComponentBlockRender({
   children,
 }: {
   element: Element & { type: 'component-block' };
-  onElementChange: (element: Partial<Element>) => void;
+  onElementChange: (
+    cb: (
+      element: Element & { type: 'component-block' }
+    ) => Partial<Element & { type: 'component-block' }>
+  ) => void;
   componentBlock: ComponentBlock;
   children: any;
 }) {
@@ -333,7 +352,7 @@ function ComponentBlockRender({
     componentBlock,
     childrenByPath,
     useDocumentFieldRelationships(),
-    onElementChange
+    props => onElementChange(() => props)
   );
 
   return (

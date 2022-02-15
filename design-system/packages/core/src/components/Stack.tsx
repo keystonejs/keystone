@@ -45,45 +45,46 @@ export type StackProps = {
   gap?: keyof Theme['spacing'];
 } & BoxProps;
 
-export const Stack = forwardRefWithAs<'div', StackProps>(
-  ({ across, align = 'stretch', children, dividers = 'none', gap = 'none', ...props }, ref) => {
-    const { spacing } = useTheme();
-    const { mq } = useMediaQuery();
+export const Stack = forwardRefWithAs<'div', StackProps>(function Stack(
+  { across, align = 'stretch', children, dividers = 'none', gap = 'none', ...props },
+  ref
+) {
+  const { spacing } = useTheme();
+  const { mq } = useMediaQuery();
 
-    const orientation = across ? 'horizontal' : 'vertical';
-    const { dimension, flexDirection, marginProperty } = orientationMap[orientation];
-    const ChildWrapper = getChildTag(props.as);
+  const orientation = across ? 'horizontal' : 'vertical';
+  const { dimension, flexDirection, marginProperty } = orientationMap[orientation];
+  const ChildWrapper = getChildTag(props.as);
 
-    return (
-      <Box
-        ref={ref}
-        css={mq({
-          alignItems: alignment[align],
-          display: 'flex',
-          flexDirection,
-          [dimension]: 'fit-content',
+  return (
+    <Box
+      ref={ref}
+      css={mq({
+        alignItems: alignment[align],
+        display: 'flex',
+        flexDirection,
+        [dimension]: 'fit-content',
 
-          '& > * + *': {
-            [marginProperty]: mapResponsiveProp(gap, spacing),
-          },
+        '& > * + *': {
+          [marginProperty]: mapResponsiveProp(gap, spacing),
+        },
+      })}
+      {...props}
+    >
+      {['around', 'start'].includes(dividers) && <Divider orientation={orientation} />}
+      {Children.toArray(children)
+        .filter(child => isValidElement(child))
+        .map((child, index) => {
+          return (
+            <Fragment key={index}>
+              {dividers !== 'none' && index ? <Divider orientation={orientation} /> : null}
+
+              {/* wrap the child to avoid unwanted or unexpected "stretch" on things like buttons */}
+              <ChildWrapper css={{ ':empty': { display: 'none' } }}>{child}</ChildWrapper>
+            </Fragment>
+          );
         })}
-        {...props}
-      >
-        {['around', 'start'].includes(dividers) && <Divider orientation={orientation} />}
-        {Children.toArray(children)
-          .filter(child => isValidElement(child))
-          .map((child, index) => {
-            return (
-              <Fragment key={index}>
-                {dividers !== 'none' && index ? <Divider orientation={orientation} /> : null}
-
-                {/* wrap the child to avoid unwanted or unexpected "stretch" on things like buttons */}
-                <ChildWrapper css={{ ':empty': { display: 'none' } }}>{child}</ChildWrapper>
-              </Fragment>
-            );
-          })}
-        {['around', 'end'].includes(dividers) && <Divider orientation={orientation} />}
-      </Box>
-    );
-  }
-);
+      {['around', 'end'].includes(dividers) && <Divider orientation={orientation} />}
+    </Box>
+  );
+});

@@ -63,15 +63,15 @@ export function assertNever(arg: never): never {
 }
 
 export function getPropsForConditionalChange(
-  newValue: Record<string, any>,
-  oldValue: Record<string, any>,
+  newValue: { discriminant: string | boolean; value: any },
+  oldValue: { discriminant: string | boolean; value: any },
   prop: ConditionalField<any, any>,
   relationships: Relationships
 ) {
   if (newValue.discriminant !== oldValue.discriminant) {
     return {
       discriminant: newValue.discriminant,
-      value: getInitialPropsValue(prop.values[newValue.discriminant], relationships),
+      value: getInitialPropsValue(prop.values[newValue.discriminant.toString()], relationships),
     };
   } else {
     return newValue;
@@ -171,13 +171,13 @@ function getChildFieldAtPropPathInner(
   value: unknown,
   prop: ComponentPropField
 ): undefined | ChildField {
+  if (prop.kind === 'child') {
+    return prop;
+  }
   // because we're checking the length here
   // the non-null asserts on shift are fine
   if (path.length === 0 || prop.kind === 'form' || prop.kind === 'relationship') {
     return;
-  }
-  if (prop.kind === 'child') {
-    return prop;
   }
   if (prop.kind === 'conditional') {
     path.shift();

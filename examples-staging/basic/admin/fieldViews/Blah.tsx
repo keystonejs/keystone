@@ -17,6 +17,12 @@ export const prop = fields.array(
       leaf: fields.object({
         url: fields.url({ label: 'URL' }),
         label: fields.text({ label: 'Label' }),
+        label2: fields.text({ label: 'Label2' }),
+        label3: fields.text({ label: 'Label3' }),
+        label4: fields.text({ label: 'Label4' }),
+        label5: fields.text({ label: 'Label5' }),
+        label6: fields.text({ label: 'Label6' }),
+        label7: fields.text({ label: 'Label7' }),
       }),
       group: fields.object({
         label: fields.text({ label: 'Label' }),

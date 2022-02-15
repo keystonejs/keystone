@@ -11,10 +11,13 @@ import {
   FieldControllerConfig,
   FieldProps,
 } from '@keystone-6/core/types';
+import { useCallback, useEffect, useRef } from 'react';
 import { FormValueContent } from '../DocumentEditor/component-blocks/form';
 import { getInitialPropsValue } from '../DocumentEditor/component-blocks/initial-values';
 import { ComponentPropFieldForGraphQL } from '../DocumentEditor/component-blocks/api';
 import { assertNever } from '../DocumentEditor/component-blocks/utils';
+
+const basePath: readonly (string | number)[] = [];
 
 export const Field = ({
   field,
@@ -23,15 +26,22 @@ export const Field = ({
   autoFocus,
   forceValidation,
 }: FieldProps<typeof controller>) => {
+  const valueRef = useRef(value);
+  useEffect(() => {
+    valueRef.current = value;
+  });
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
       <FormValueContent
         forceValidation={!!forceValidation}
-        onChange={value => {
-          onChange?.(value);
-        }}
-        path={[]}
+        onChange={useCallback(
+          getNewVal => {
+            onChange?.(getNewVal(valueRef.current));
+          },
+          [onChange]
+        )}
+        path={basePath}
         prop={field.prop}
         value={value}
         stringifiedPropPathToAutoFocus={autoFocus ? '' : ''}
