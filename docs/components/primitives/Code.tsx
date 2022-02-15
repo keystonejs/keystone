@@ -145,14 +145,21 @@ export function Code({ children, className }: { children: string; className?: st
                 <div
                   key={i}
                   {...getLineProps({ line, key: i })}
-                  css={
-                    findRange(highlightRanges, i) && {
+                  css={{
+                    ...(findRange(highlightRanges, i) && {
                       backgroundColor: 'var(--info-bg)',
                       margin: '0 -1.1em',
                       padding: '0 1.1em',
                       borderLeft: '3px solid var(--info)',
-                    }
-                  }
+                      marginRight: '-1.0em',
+                      paddingLeft: 'calc(1.1em - 3px)',
+                    }),
+                    ':before': {
+                      content: `"${i + 1}"`,
+                      width: 24,
+                      display: 'inline-block',
+                    },
+                  }}
                 >
                   {line.map((token, key) => {
                     // Fix for document field import
