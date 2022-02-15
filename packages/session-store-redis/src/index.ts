@@ -1,14 +1,14 @@
 import { promisify } from 'util';
-import type { RedisClient } from 'redis';
+import type { RedisClientType } from 'redis';
 import type { SessionStoreFunction } from '@keystone-6/core/types';
 
 type Options = {
   /** An initialised redis client from the `redis` npm package */
-  client: RedisClient;
+  client: RedisClientType;
 };
 export const redisSessionStore = ({ client }: Options): SessionStoreFunction => {
   let promisifiedGet = promisify(client.get).bind(client);
-  let promisifiedSetex = promisify(client.setex).bind(client);
+  let promisifiedSetex = promisify(client.setEx).bind(client);
   let promisifiedDel = promisify(client.del).bind(client);
   let promisifiedQuit = promisify(client.quit).bind(client);
   return ({ maxAge }) => ({
