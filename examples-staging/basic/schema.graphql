@@ -436,7 +436,6 @@ type PostBlahLeaf implements PostBlah {
 type PostBlahLeafValue {
   url: String
   label: String
-  thing: [PostBlah]
 }
 
 type PostBlahGroup implements PostBlah {
@@ -495,7 +494,6 @@ input PostBlahUpdateInput {
 input PostBlahLeafUpdateInput {
   url: String
   label: String
-  thing: [PostBlahUpdateInput]
 }
 
 input PostBlahGroupUpdateInput {
@@ -525,7 +523,6 @@ input PostBlahCreateInput {
 input PostBlahLeafCreateInput {
   url: String
   label: String
-  thing: [PostBlahCreateInput]
 }
 
 input PostBlahGroupCreateInput {

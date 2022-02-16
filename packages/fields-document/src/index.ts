@@ -13,6 +13,7 @@ import { ComponentBlock } from './component-blocks';
 import { DocumentFeatures } from './views';
 import { validateAndNormalizeDocument } from './validation';
 import { addRelationshipData } from './relationship-data';
+import { assertValidComponentPropField } from './DocumentEditor/component-blocks/field-assertions';
 
 export { componentThing } from './component';
 
@@ -113,6 +114,15 @@ export const document =
 
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type document");
+    }
+    for (const [name, block] of Object.entries(componentBlocks)) {
+      try {
+        assertValidComponentPropField({ kind: 'object', value: block.props });
+      } catch (err) {
+        throw new Error(
+          `Component block ${name} in ${meta.listKey}.${meta.fieldKey}: ${(err as any).message}`
+        );
+      }
     }
 
     return jsonFieldTypePolyfilledForSQLite(

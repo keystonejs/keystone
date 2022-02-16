@@ -15,6 +15,7 @@ import {
   getValueForCreate,
   getValueForUpdate,
 } from './component-graphql-input';
+import { assertValidComponentPropField } from './DocumentEditor/component-blocks/field-assertions';
 
 export type ComponentThingFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -32,6 +33,11 @@ export const componentThing =
   meta => {
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type component");
+    }
+    try {
+      assertValidComponentPropField(prop);
+    } catch (err) {
+      throw new Error(`${meta.listKey}.${meta.fieldKey}: ${(err as any).message}`);
     }
 
     const resolve = (val: JSONValue | undefined) =>
