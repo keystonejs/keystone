@@ -9,4 +9,5 @@ export type {
   RelationshipData,
   RelationshipField,
   InferRenderersForComponentBlocks,
+  ArrayField,
 } from './DocumentEditor/component-blocks/api';

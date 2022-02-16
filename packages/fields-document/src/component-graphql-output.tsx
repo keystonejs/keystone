@@ -32,16 +32,32 @@ function wrapGraphQLFieldInResolver<InputSource, OutputSource>(
   });
 }
 
-export function getOutputGraphQLField(
-  name: string,
-  prop: ComponentPropFieldForGraphQL,
-  interfaceImplementations: graphql.ObjectType<unknown>[]
-): graphql.Field<
+type OutputField = graphql.Field<
   { value: unknown },
   Record<string, graphql.Arg<graphql.InputType, boolean>>,
   graphql.OutputType,
   'value'
-> {
+>;
+
+export function getOutputGraphQLField(
+  name: string,
+  prop: ComponentPropFieldForGraphQL,
+  interfaceImplementations: graphql.ObjectType<unknown>[],
+  cache: Map<ComponentPropFieldForGraphQL, OutputField>
+) {
+  if (!cache.has(prop)) {
+    const res = getOutputGraphQLFieldInner(name, prop, interfaceImplementations, cache);
+    cache.set(prop, res);
+  }
+  return cache.get(prop)!;
+}
+
+function getOutputGraphQLFieldInner(
+  name: string,
+  prop: ComponentPropFieldForGraphQL,
+  interfaceImplementations: graphql.ObjectType<unknown>[],
+  cache: Map<ComponentPropFieldForGraphQL, OutputField>
+): OutputField {
   if (prop.kind === 'form') {
     return prop.graphql.output;
   }
@@ -49,23 +65,25 @@ export function getOutputGraphQLField(
     return graphql.field({
       type: graphql.object<unknown>()({
         name,
-        fields: Object.fromEntries(
-          Object.entries(prop.value).map(
-            ([key, val]): [string, graphql.Field<unknown, {}, graphql.OutputType, string>] => {
-              const field = getOutputGraphQLField(
-                `${name}${key[0].toUpperCase()}${key.slice(1)}`,
-                val,
-                interfaceImplementations
-              );
-              return [key, wrapGraphQLFieldInResolver(field, source => (source as any)[key])];
-            }
-          )
-        ),
+        fields: () =>
+          Object.fromEntries(
+            Object.entries(prop.value).map(
+              ([key, val]): [string, graphql.Field<unknown, {}, graphql.OutputType, string>] => {
+                const field = getOutputGraphQLField(
+                  `${name}${key[0].toUpperCase()}${key.slice(1)}`,
+                  val,
+                  interfaceImplementations,
+                  cache
+                );
+                return [key, wrapGraphQLFieldInResolver(field, source => (source as any)[key])];
+              }
+            )
+          ),
       }),
     });
   }
   if (prop.kind === 'array') {
-    const innerField = getOutputGraphQLField(name, prop.element, interfaceImplementations);
+    const innerField = getOutputGraphQLField(name, prop.element, interfaceImplementations, cache);
     const resolve = innerField.resolve;
 
     return graphql.field({
@@ -83,21 +101,30 @@ export function getOutputGraphQLField(
     });
   }
   if (prop.kind === 'conditional') {
-    const discriminantField = getOutputGraphQLField(
-      name + 'Discriminant',
-      prop.discriminant,
-      interfaceImplementations
-    );
+    let discriminantField: OutputField;
+
+    const getDiscriminantField = () => {
+      if (!discriminantField) {
+        discriminantField = getOutputGraphQLField(
+          name + 'Discriminant',
+          prop.discriminant,
+          interfaceImplementations,
+          cache
+        );
+      }
+      return discriminantField;
+    };
     type SourceType = { discriminant: string | boolean; value: unknown };
+
     const interfaceType = graphql.interface<SourceType>()({
       name,
       resolveType: value => {
         const stringifiedDiscriminant = value.discriminant.toString();
         return name + stringifiedDiscriminant[0].toUpperCase() + stringifiedDiscriminant.slice(1);
       },
-      fields: {
-        discriminant: discriminantField,
-      },
+      fields: () => ({
+        discriminant: getDiscriminantField(),
+      }),
     });
 
     interfaceImplementations.push(
@@ -106,10 +133,10 @@ export function getOutputGraphQLField(
         return graphql.object<SourceType>()({
           name: innerName,
           interfaces: [interfaceType],
-          fields: {
-            discriminant: wrapGraphQLFieldInResolver(discriminantField, x => x.discriminant),
-            value: getOutputGraphQLField(`${innerName}Value`, val, interfaceImplementations),
-          },
+          fields: () => ({
+            discriminant: wrapGraphQLFieldInResolver(getDiscriminantField(), x => x.discriminant),
+            value: getOutputGraphQLField(`${innerName}Value`, val, interfaceImplementations, cache),
+          }),
         });
       })
     );

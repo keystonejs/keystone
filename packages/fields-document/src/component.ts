@@ -75,14 +75,21 @@ export const componentThing =
         },
         input: {
           create: {
-            arg: graphql.arg({ type: getGraphQLInputType(name, prop, 'create') }),
+            arg: graphql.arg({ type: getGraphQLInputType(name, prop, 'create', new Map()) }),
             resolve(val) {
               return resolve(getValueForCreate(prop, val));
             },
           },
-          update: { arg: graphql.arg({ type: getGraphQLInputType(name, prop, 'update') }) },
+          update: {
+            arg: graphql.arg({ type: getGraphQLInputType(name, prop, 'update', new Map()) }),
+          },
         },
-        output: getOutputGraphQLField(name, prop, unreferencedConcreteInterfaceImplementations),
+        output: getOutputGraphQLField(
+          name,
+          prop,
+          unreferencedConcreteInterfaceImplementations,
+          new Map()
+        ),
         extraOutputFields: {
           [`${meta.fieldKey}Raw`]: graphql.field({
             type: graphql.JSON,

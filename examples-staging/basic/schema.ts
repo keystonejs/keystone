@@ -9,7 +9,6 @@ import {
   virtual,
   image,
   file,
-  decimal,
 } from '@keystone-6/core/fields';
 import { componentThing, document } from '@keystone-6/fields-document';
 import { v4 } from 'uuid';

@@ -42,7 +42,7 @@ export function getInitialPropsValue(prop: ComponentPropField, relationships: Re
       const defaultValue = prop.discriminant.defaultValue;
       return {
         discriminant: defaultValue,
-        value: getInitialPropsValue(prop.values[defaultValue], relationships),
+        value: getInitialPropsValue(prop.values[defaultValue.toString()], relationships),
       };
     }
     case 'object': {

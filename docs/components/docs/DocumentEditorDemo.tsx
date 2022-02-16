@@ -265,7 +265,9 @@ export function DocumentFeaturesFormAndCode() {
         path={[]}
         stringifiedPropPathToAutoFocus=""
         value={formValue}
-        onChange={setFormValue}
+        onChange={getNewVal => {
+          setFormValue((getNewVal as any)(formValue));
+        }}
       />
     </div>
   );
