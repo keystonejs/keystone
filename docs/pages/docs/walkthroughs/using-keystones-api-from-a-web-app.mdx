@@ -2,46 +2,81 @@ import { Markdown } from '../../../components/Markdown';
 
 # Using Keystone's API from a Web App
 
-There are two main features of Keystone that you can leverage in building an app. The first is the Admin UI, a fully-featured schema-driven admin UI. The second is the schema-driven graphql API, which this walkthrough is going to go through using.
+There are two main features of Keystone that you can leverage in building an app. The first is the
+Admin UI, a fully-featured schema-driven admin UI. The second is the schema-driven graphql API,
+which this walkthrough is going to go through using.
 
-For this walkthrough, we are going to start from an existing keystone project with a simple schema for a todo list, and build out a single page frontend for our to-dos, then add functionality to mark to-dos as done from our web app.
+For this walkthrough, we are going to start from an existing keystone project with a simple schema
+for a todo list, and build out a single page frontend for our to-dos, then add functionality to mark
+to-dos as done from our web app.
+
+> Looking for an introduction on setting up Keystone, including setting up a schema?
+> [this walkthrough series](https://keystonejs.com/docs/walkthroughs/lesson-1) is a good place to start
 
 ## Technology choices
 
-_This is great, but I like this_
+You can access Keystone's graphql API using anything that can make a fetch request, including basic
+fetch functions. For this walkthrough, we'll be showing how to set up queries using [next.js](https://nextjs.org/) and
+[apollo](https://www.apollographql.com/). If you have a preferred frontend library, or graphql query library,
+the learnings here will help you out in those places.
 
-You can access Keystone's graphql API using anything that can make a fetch request, including basic fetch functions. For this walkthrough, we'll be showing how to set up queries using [next.js]() and [apollo](). If you have a preferred frontend library, or graphql query library, the learnings here will help you out in those places.
-
-For much of the next/react code, we'll provide you with existing code, so we can stay focused on learning about making graphql queries with keystone.
+For much of the next/react code, we'll provide you with existing code, so we can stay focused on
+learning about making graphql queries with keystone.
 
 ## A new foundation
 
 For this walkthrough, we're going to give you a starting project, which has keystone set up with a schema.
 
-```sh
-git clone ohno-make-this-a-cloneable-repo
+```shell
+git clone https://github.com/keystonejs/keystone-frontend-example.git
 ```
 
 This will give us a `keystone.ts` file with a basic config, as well as a next app basic setup that renders a todo page ready for us to add code.
 
 Once you've got the starting code, run
 
-```sh
+```shell
 yarn
 ```
 
 to install your dependencies, and then run
 
+```shell
+yarn dev --seed-data
 ```
+
+Which will give us a nice base set of
+
+```shell
 yarn dev
 ```
 
 This will seed the database with some existing users and to-dos
-You should now be able to visit [localhost:3000](http://localhost:3000) to see the admin UI, and more importantly, you can now access the graphql playground, findable at [localhost:3000/api/graphql](http://localhost:3000/api/graphql)
+
+You should now be able to visit [localhost:3000](http://localhost:3000) to see the admin UI, and more
+importantly, you can now access the graphql playground, findable at
+[localhost:3000/api/graphql](http://localhost:3000/api/graphql).
+
+End the terminal process, and let's add next.js.
+
+## A whirlwind fast next.js setup
+
+```shell
+yarn add @apollo/client @keystone-6/core graphql next react react-dom
+yarn add --dev typescript npm-run-all
+touch pages/index.tsx
+```
+
+```
+
+```
 
 ## Running the next app as well
 
-For development, we are going to want to run next alongside our keystone app. If we start our next app now, it will be smart and start on port `3001`, however we want to make a consistent relationship between the two, so we are going to set the port for keystone. On our keystone object, we can set the port on the server object:
+For development, we are going to want to run next alongside our keystone app.
+If we start our next app now, it will be smart and start on port `3001`, however we want to make a
+consistent relationship between the two, so we are going to set the port for keystone. On our
+keystone object, we can set the port on the server object:
 
 ```ts{8-10}[1-4]
 import { config } from '@keystone-6/core';
