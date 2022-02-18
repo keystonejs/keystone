@@ -32,7 +32,7 @@ export function getInitialPropsValue(prop: ComponentPropField, relationships: Re
     case 'form':
       return prop.defaultValue;
     case 'child':
-      return undefined;
+      return null;
     case 'relationship':
       return (relationships[prop.relationship] as Extract<Relationships[string], { kind: 'prop' }>)
         .many

@@ -14,6 +14,7 @@ import {
   ToolbarGroup,
   ToolbarSeparator,
 } from '@keystone-6/fields-document/primitives';
+import { useEffect } from 'react';
 
 const noticeIconMap = {
   info: InfoIcon,
@@ -23,6 +24,49 @@ const noticeIconMap = {
 };
 
 export const componentBlocks = {
+  myList: component({
+    component: function MyList({ children }) {
+      useEffect(() => {
+        if (!children.elements.length) {
+          children.insert();
+        }
+      });
+      return (
+        <ul css={{ padding: 0 }}>
+          {children.elements.map((element, i) => (
+            <li css={{ listStyle: 'none' }} key={i}>
+              <input
+                contentEditable="false"
+                css={{ marginRight: 8 }}
+                type="checkbox"
+                checked={element.done.value}
+                onChange={event => {
+                  element.done.onChange(event.target.checked);
+                }}
+              />
+              {element.content}
+            </li>
+          ))}
+        </ul>
+      );
+    },
+    label: 'My List',
+    props: {
+      children: fields.array(
+        fields.object({
+          done: fields.checkbox({ label: 'Done' }),
+          content: fields.child({
+            kind: 'inline',
+            placeholder: '',
+            formatting: 'inherit',
+            links: 'inherit',
+            relationships: 'inherit',
+          }),
+        })
+      ),
+    },
+    chromeless: true,
+  }),
   hero: component({
     component: props => {
       return (

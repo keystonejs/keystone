@@ -2,12 +2,13 @@ import { Element } from 'slate';
 import { ReactElement } from 'react';
 import { ComponentBlock } from '../../component-blocks';
 import { Relationships } from '../relationship';
-import { getPropsForConditionalChange } from './utils';
+import { assertNever, getPropsForConditionalChange } from './utils';
 import { ComponentPropField } from './api';
+import { getInitialPropsValue } from './initial-values';
 
 function _getPreviewProps(
   prop: ComponentPropField,
-  value: Record<string, any>,
+  value: unknown,
   childrenByPath: Record<string, ReactElement>,
   path: (string | number)[],
   relationships: Relationships,
@@ -29,12 +30,12 @@ function _getPreviewProps(
       Object.keys(prop.value).forEach(key => {
         previewProps[key] = _getPreviewProps(
           prop.value[key],
-          value[key],
+          (value as any)[key],
           childrenByPath,
           path.concat(key),
           relationships,
           newVal => {
-            onFormPropsChange({ ...value, [key]: newVal });
+            onFormPropsChange({ ...(value as any), [key]: newVal });
           }
         );
       });
@@ -49,13 +50,14 @@ function _getPreviewProps(
       };
     }
     case 'conditional': {
+      const conditionalValue = value as { discriminant: string | boolean; value: unknown };
       return {
-        discriminant: value.discriminant,
+        discriminant: (value as any).discriminant,
         onChange(newDiscriminant: any) {
           onFormPropsChange(
             getPropsForConditionalChange(
-              { discriminant: newDiscriminant, value: value.value },
-              value as { discriminant: string | boolean; value: any },
+              { discriminant: newDiscriminant, value: conditionalValue.value },
+              conditionalValue,
               prop,
               relationships
             )
@@ -63,19 +65,44 @@ function _getPreviewProps(
         },
         options: prop.discriminant.options,
         value: _getPreviewProps(
-          prop.values[value.discriminant],
-          value.value,
+          prop.values[conditionalValue.discriminant.toString()],
+          conditionalValue.value,
           childrenByPath,
           path.concat('value'),
           relationships,
           val => {
             onFormPropsChange({
-              discriminant: value.discriminant,
+              discriminant: conditionalValue.discriminant,
               value: val,
             });
           }
         ),
       };
+    }
+    case 'array': {
+      const arrayValue = value as unknown[];
+      return {
+        elements: arrayValue.map((val, i) =>
+          _getPreviewProps(
+            prop.element,
+            val,
+            childrenByPath,
+            path.concat(i),
+            relationships,
+            val => {
+              const newValue = [...(value as unknown[])];
+              newValue[i] = val;
+              onFormPropsChange(newValue);
+            }
+          )
+        ),
+        insert() {
+          onFormPropsChange([...arrayValue, getInitialPropsValue(prop.element, relationships)]);
+        },
+      };
+    }
+    default: {
+      assertNever(prop);
     }
   }
 }

@@ -240,3 +240,38 @@ export function clientSideValidateProp(prop: ComponentPropField, value: any): bo
     }
   }
 }
+
+export function getAncestorFields(
+  rootProp: ComponentPropField,
+  path: (string | number)[],
+  value: unknown
+) {
+  const ancestors: ComponentPropField[] = [];
+  const currentPath = [...path];
+  let currentProp = rootProp;
+  let currentValue = value;
+  while (currentPath.length) {
+    ancestors.push(currentProp);
+    const key = currentPath.shift()!; // this code only runs when path.length is truthy so this non-null assertion is fine
+    if (currentProp.kind === 'array') {
+      currentProp = currentProp.element;
+      currentValue = (currentValue as any)[key];
+    } else if (currentProp.kind === 'conditional') {
+      currentProp = currentProp.values[(value as any).discriminant];
+      currentValue = (currentValue as any).value;
+    } else if (currentProp.kind === 'object') {
+      currentValue = (currentValue as any)[key];
+      currentProp = currentProp.value[key];
+    } else if (
+      currentProp.kind === 'child' ||
+      currentProp.kind === 'form' ||
+      currentProp.kind === 'relationship'
+    ) {
+      console.log(key);
+      throw new Error('unexpected prop');
+    } else {
+      assertNever(currentProp);
+    }
+  }
+  return ancestors;
+}

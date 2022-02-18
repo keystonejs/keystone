@@ -32,7 +32,7 @@ function validateComponentBlockProps(
     throw new PropValidationError('Invalid form prop value', path);
   }
   if (prop.kind === 'child') {
-    return undefined;
+    return null;
   }
   if (prop.kind === 'relationship') {
     // these two checks will only fail because of things done by the solution developer, not an solution user

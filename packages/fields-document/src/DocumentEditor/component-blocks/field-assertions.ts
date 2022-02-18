@@ -51,10 +51,7 @@ function assertValidComponentPropFieldInner(
         assertValidComponentPropFieldInner(innerProp, propAncestors, propPath, seenProps);
         propPath.pop();
       }
-      const poppedProp = propAncestors.pop();
-      if (poppedProp !== prop) {
-        throw new Error('there is an internal bug');
-      }
+      propAncestors.pop();
       return;
     }
     if (prop.kind === 'conditional') {
@@ -77,10 +74,7 @@ function assertValidComponentPropFieldInner(
         );
         propPath.pop();
       }
-      const poppedProp = propAncestors.pop();
-      if (poppedProp !== prop) {
-        throw new Error('there is an internal bug');
-      }
+      propAncestors.pop();
       return;
     }
   } finally {

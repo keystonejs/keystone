@@ -527,6 +527,11 @@ export type ExtractPropFromComponentPropFieldForPreview<Prop extends ComponentPr
           onChange(relationshipData: readonly HydratedRelationshipData[]): void;
         };
       }[Cardinality]
+    : Prop extends ArrayField<infer ElementField>
+    ? {
+        readonly elements: readonly ExtractPropFromComponentPropFieldForPreview<ElementField>[];
+        insert(): void;
+      }
     : never;
 
 type DiscriminantStringToDiscriminantValue<
@@ -569,6 +574,11 @@ type ExtractPropFromComponentPropFieldForToolbar<Prop extends ComponentPropField
           onChange(relationshipData: readonly HydratedRelationshipData[]): void;
         };
       }[Cardinality]
+    : Prop extends ArrayField<infer ElementField>
+    ? {
+        readonly elements: readonly ExtractPropFromComponentPropFieldForToolbar<ElementField>[];
+        insert(): void;
+      }
     : never;
 
 export type HydratedRelationshipData = {
