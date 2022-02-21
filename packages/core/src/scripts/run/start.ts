@@ -30,7 +30,7 @@ export const start = async (cwd: string) => {
   await keystone.connect();
 
   console.log('✨ Creating server');
-  const { expressServer } = await createExpressServer(
+  const { expressServer, httpServer } = await createExpressServer(
     config,
     graphQLSchema,
     keystone.createContext
@@ -45,7 +45,7 @@ export const start = async (cwd: string) => {
   }
 
   const port = config.server?.port || process.env.PORT || 3000;
-  expressServer.listen(port, (err?: any) => {
+  httpServer.listen(port, (err?: any) => {
     if (err) throw err;
     console.log(`⭐️ Server Ready on http://localhost:${port}`);
   });
