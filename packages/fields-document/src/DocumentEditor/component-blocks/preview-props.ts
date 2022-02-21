@@ -2,7 +2,7 @@ import { Element } from 'slate';
 import { ReactElement } from 'react';
 import { ComponentBlock } from '../../component-blocks';
 import { Relationships } from '../relationship';
-import { assertNever, getPropsForConditionalChange } from './utils';
+import { assertNever, getPropsForConditionalChange, PropPath } from './utils';
 import { ComponentPropField } from './api';
 import { getInitialPropsValue } from './initial-values';
 
@@ -10,7 +10,7 @@ function _getPreviewProps(
   prop: ComponentPropField,
   value: unknown,
   childrenByPath: Record<string, ReactElement>,
-  path: (string | number)[],
+  path: PropPath,
   relationships: Relationships,
   onFormPropsChange: (formProps: Record<string, any>) => void
 ): any {

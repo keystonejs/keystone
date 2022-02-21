@@ -614,3 +614,280 @@ test('toggling to heading when in an inline prop', () => {
     </editor>
   `);
 });
+
+test('child field in array field insertBreak', () => {
+  const editor = makeEditor(
+    <editor>
+      <component-block component="myList" props={{ children: [{ content: null, done: false }] }}>
+        <component-inline-prop propPath={['children', 0, 'content']}>
+          <text>
+            something
+            <cursor />
+          </text>
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>,
+    {
+      componentBlocks: {
+        myList: component({
+          component: () => null,
+          label: '',
+          props: {
+            children: fields.array(
+              fields.object({
+                content: fields.child({ kind: 'inline', placeholder: '' }),
+                done: fields.checkbox({ label: '' }),
+              })
+            ),
+          },
+        }),
+      },
+    }
+  );
+  editor.insertBreak();
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <component-block
+        component="myList"
+        props={
+          Object {
+            "children": Array [
+              Object {
+                "content": null,
+                "done": false,
+              },
+              Object {
+                "content": null,
+                "done": false,
+              },
+            ],
+          }
+        }
+      >
+        <component-inline-prop
+          propPath={
+            Array [
+              "children",
+              0,
+              "content",
+            ]
+          }
+        >
+          <text>
+            something
+          </text>
+        </component-inline-prop>
+        <component-inline-prop
+          propPath={
+            Array [
+              "children",
+              1,
+              "content",
+            ]
+          }
+        >
+          <text>
+            <cursor />
+          </text>
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text>
+          
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});
+
+test('child field in array field deleteBackward at end', () => {
+  const editor = makeEditor(
+    <editor>
+      <component-block
+        component="myList"
+        props={{
+          children: [
+            { content: null, done: false },
+            { content: null, done: true },
+          ],
+        }}
+      >
+        <component-inline-prop propPath={['children', 0, 'content']}>
+          <text>something</text>
+        </component-inline-prop>
+        <component-inline-prop propPath={['children', 1, 'content']}>
+          <text>
+            <cursor />
+          </text>
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>,
+    {
+      skipRenderingDOM: true,
+      componentBlocks: {
+        myList: component({
+          component: () => null,
+          label: '',
+          props: {
+            children: fields.array(
+              fields.object({
+                content: fields.child({ kind: 'inline', placeholder: '' }),
+                done: fields.checkbox({ label: '' }),
+              })
+            ),
+          },
+        }),
+      },
+    }
+  );
+  editor.deleteBackward('character');
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <component-block
+        component="myList"
+        props={
+          Object {
+            "children": Array [
+              Object {
+                "content": null,
+                "done": false,
+              },
+            ],
+          }
+        }
+      >
+        <component-inline-prop
+          propPath={
+            Array [
+              "children",
+              0,
+              "content",
+            ]
+          }
+        >
+          <text>
+            something
+            <cursor />
+          </text>
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text>
+          
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});
+
+test('child field in array field deleteBackward in middle', () => {
+  const editor = makeEditor(
+    <editor>
+      <component-block
+        component="myList"
+        props={{
+          children: [
+            { content: null, something: '1' },
+            { content: null, something: '2' },
+            { content: null, something: '3' },
+          ],
+        }}
+      >
+        <component-inline-prop propPath={['children', 0, 'content']}>
+          <text>first</text>
+        </component-inline-prop>
+        <component-inline-prop propPath={['children', 1, 'content']}>
+          <text>
+            <cursor />
+            second
+          </text>
+        </component-inline-prop>
+        <component-inline-prop propPath={['children', 2, 'content']}>
+          <text>third</text>
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>,
+    {
+      skipRenderingDOM: true,
+      componentBlocks: {
+        myList: component({
+          component: () => null,
+          label: '',
+          props: {
+            children: fields.array(
+              fields.object({
+                content: fields.child({ kind: 'inline', placeholder: '' }),
+                something: fields.text({ label: '' }),
+              })
+            ),
+          },
+        }),
+      },
+    }
+  );
+  editor.deleteBackward('character');
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <component-block
+        component="myList"
+        props={
+          Object {
+            "children": Array [
+              Object {
+                "content": null,
+                "something": "1",
+              },
+              Object {
+                "content": null,
+                "something": "3",
+              },
+            ],
+          }
+        }
+      >
+        <component-inline-prop
+          propPath={
+            Array [
+              "children",
+              0,
+              "content",
+            ]
+          }
+        >
+          <text>
+            first
+            <cursor />
+            second
+          </text>
+        </component-inline-prop>
+        <component-inline-prop
+          propPath={
+            Array [
+              "children",
+              1,
+              "content",
+            ]
+          }
+        >
+          <text>
+            third
+          </text>
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text>
+          
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});

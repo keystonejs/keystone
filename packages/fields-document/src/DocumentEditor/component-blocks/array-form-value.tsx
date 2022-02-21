@@ -24,6 +24,7 @@ import { useDocumentFieldRelationships } from '../relationship';
 import { getInitialPropsValue } from './initial-values';
 import { ArrayField, ComponentPropField } from './api';
 import { ComponentFieldProps, FormValueContent } from './form';
+import { PropPath } from './utils';
 
 const dragIcon = (
   <svg width="18" height="24" viewBox="0 0 18 24" xmlns="http://www.w3.org/2000/svg">
@@ -123,7 +124,6 @@ export function ArrayFormValueContent({
             display: 'flex',
             gap: 8,
             flexDirection: 'column',
-            listStyle: 'none',
             padding: 0,
           }}
         >
@@ -159,7 +159,7 @@ const SortableItem = memo(function SortableItem({
   ...props
 }: {
   id: string;
-  path: (string | number)[];
+  path: PropPath;
   prop: ComponentPropField;
   value: any;
   onChange(value: any): void;
@@ -181,7 +181,10 @@ const SortableItem = memo(function SortableItem({
   return (
     <li
       ref={setNodeRef}
-      css={{ transform: `translateX(var(--translate-x, 0)) translateY(var(--translate-y, 0))` }}
+      css={{
+        transform: `translateX(var(--translate-x, 0)) translateY(var(--translate-y, 0))`,
+        listStyle: 'none',
+      }}
       style={style}
     >
       <div

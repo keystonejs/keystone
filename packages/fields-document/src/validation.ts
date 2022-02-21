@@ -1,7 +1,7 @@
 import { Text, Editor } from 'slate';
 import { createDocumentEditor } from './DocumentEditor';
 import { ComponentBlock, ComponentPropField } from './DocumentEditor/component-blocks/api';
-import { assertNever } from './DocumentEditor/component-blocks/utils';
+import { assertNever, PropPath } from './DocumentEditor/component-blocks/utils';
 import { Relationships } from './DocumentEditor/relationship';
 import {
   ElementFromValidation,
@@ -12,8 +12,8 @@ import {
 import { DocumentFeatures } from './views';
 
 export class PropValidationError extends Error {
-  path: (string | number)[];
-  constructor(message: string, path: (string | number)[]) {
+  path: PropPath;
+  constructor(message: string, path: PropPath) {
     super(message);
     this.path = path;
   }
@@ -23,7 +23,7 @@ function validateComponentBlockProps(
   prop: ComponentPropField,
   value: unknown,
   relationships: Relationships,
-  path: (string | number)[]
+  path: PropPath
 ): any {
   if (prop.kind === 'form') {
     if (prop.validate(value)) {

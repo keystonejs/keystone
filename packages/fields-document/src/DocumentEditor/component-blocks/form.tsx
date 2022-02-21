@@ -6,7 +6,7 @@ import React, { memo, ReactElement, useCallback, useMemo, useState } from 'react
 import { Button as KeystoneUIButton } from '@keystone-ui/button';
 import { ComponentPropField, RelationshipData } from '../../component-blocks';
 import { useDocumentFieldRelationships, Relationships } from '../relationship';
-import { assertNever, getPropsForConditionalChange } from './utils';
+import { assertNever, getPropsForConditionalChange, PropPath, ReadonlyPropPath } from './utils';
 import { ArrayFormValueContent } from './array-form-value';
 import { FormField, RelationshipField } from './api';
 
@@ -62,7 +62,7 @@ function RelationshipFormInput({
 }
 
 export type ComponentFieldProps<Field extends ComponentPropField> = {
-  path: readonly (string | number)[];
+  path: ReadonlyPropPath;
   prop: Field;
   // ExtractPropFromComponentPropFieldForRendering is not exactly correct
   // (specifically it's wrong for child fields)
@@ -210,9 +210,9 @@ export const FormValueContent = memo(function FormValueContent(
 
 export function findFirstFocusablePropPath(
   prop: ComponentPropField,
-  path: (string | number)[],
+  path: PropPath,
   value: any
-): (string | number)[] | undefined {
+): PropPath | undefined {
   if (prop.kind === 'form' || prop.kind === 'relationship') {
     return path;
   }
@@ -235,7 +235,7 @@ export function findFirstFocusablePropPath(
   if (prop.kind === 'array') {
     for (const [idx, val] of (value as any[]).entries()) {
       const newPath = path.concat(idx);
-      const childFocusable = findFirstFocusablePropPath(prop, newPath, val);
+      const childFocusable = findFirstFocusablePropPath(prop.element, newPath, val);
       if (childFocusable) {
         return childFocusable;
       }
@@ -245,7 +245,7 @@ export function findFirstFocusablePropPath(
   assertNever(prop);
 }
 
-const basePath: (string | number)[] = [];
+const basePath: PropPath = [];
 
 export function FormValue({
   value,

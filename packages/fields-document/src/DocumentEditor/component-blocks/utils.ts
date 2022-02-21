@@ -6,12 +6,12 @@ import { Mark } from '../utils';
 import { ChildField } from './api';
 import { getInitialPropsValue } from './initial-values';
 
-type PathToChildFieldWithOption = { path: (string | number)[]; options: ChildField['options'] };
+type PathToChildFieldWithOption = { path: PropPath; options: ChildField['options'] };
 
 function _findChildPropPaths(
   value: any,
   prop: ComponentPropField,
-  path: (string | number)[]
+  path: PropPath
 ): PathToChildFieldWithOption[] {
   switch (prop.kind) {
     case 'form':
@@ -45,7 +45,7 @@ function _findChildPropPaths(
 export function findChildPropPaths(
   value: Record<string, any>,
   props: Record<string, ComponentPropField>
-): { path: (string | number)[] | undefined; options: ChildField['options'] }[] {
+): { path: PropPath | undefined; options: ChildField['options'] }[] {
   let propPaths = _findChildPropPaths(value, { kind: 'object', value: props }, []);
   if (!propPaths.length) {
     return [
@@ -167,7 +167,7 @@ export function getDocumentFeaturesForChildField(
 }
 
 function getChildFieldAtPropPathInner(
-  path: (string | number)[],
+  path: PropPath,
   value: unknown,
   prop: ComponentPropField
 ): undefined | ChildField {
@@ -197,7 +197,7 @@ function getChildFieldAtPropPathInner(
 }
 
 export function getChildFieldAtPropPath(
-  path: readonly (string | number)[],
+  path: ReadonlyPropPath,
   value: Record<string, unknown>,
   props: Record<string, ComponentPropField>
 ): undefined | ChildField {
@@ -241,11 +241,7 @@ export function clientSideValidateProp(prop: ComponentPropField, value: any): bo
   }
 }
 
-export function getAncestorFields(
-  rootProp: ComponentPropField,
-  path: (string | number)[],
-  value: unknown
-) {
+export function getAncestorFields(rootProp: ComponentPropField, path: PropPath, value: unknown) {
   const ancestors: ComponentPropField[] = [];
   const currentPath = [...path];
   let currentProp = rootProp;
@@ -275,3 +271,6 @@ export function getAncestorFields(
   }
   return ancestors;
 }
+
+export type PropPath = (string | number)[];
+export type ReadonlyPropPath = readonly (string | number)[];

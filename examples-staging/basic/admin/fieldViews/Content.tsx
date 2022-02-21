@@ -40,9 +40,7 @@ export const componentBlocks = {
                 css={{ marginRight: 8 }}
                 type="checkbox"
                 checked={element.done.value}
-                onChange={event => {
-                  element.done.onChange(event.target.checked);
-                }}
+                onChange={event => element.done.onChange(event.target.checked)}
               />
               {element.content}
             </li>
@@ -55,17 +53,11 @@ export const componentBlocks = {
       children: fields.array(
         fields.object({
           done: fields.checkbox({ label: 'Done' }),
-          content: fields.child({
-            kind: 'inline',
-            placeholder: '',
-            formatting: 'inherit',
-            links: 'inherit',
-            relationships: 'inherit',
-          }),
+          content: fields.child({ kind: 'inline', placeholder: '', formatting: 'inherit' }),
         })
       ),
     },
-    chromeless: true,
+    // chromeless: true,
   }),
   hero: component({
     component: props => {

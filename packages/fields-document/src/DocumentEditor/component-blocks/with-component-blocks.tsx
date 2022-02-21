@@ -1,20 +1,26 @@
 import { Editor, Element, Transforms, Range, NodeEntry, Path, Node, Text } from 'slate';
 
 import weakMemoize from '@emotion/weak-memoize';
-import { ChildField, ComponentBlock } from '../../component-blocks';
+import { ChildField, ComponentBlock, ComponentPropField } from '../../component-blocks';
 import { assert, moveChildren } from '../utils';
 import { DocumentFeatures } from '../../views';
 import {
+  areArraysEqual,
   normalizeElementBasedOnDocumentFeatures,
   normalizeInlineBasedOnLinksAndRelationships,
   normalizeTextBasedOnInlineMarksAndSoftBreaks,
 } from '../document-features-normalization';
 import { Relationships } from '../relationship';
 import {
+  assertNever,
   DocumentFeaturesForChildField,
   findChildPropPaths,
+  getAncestorFields,
   getDocumentFeaturesForChildField,
+  PropPath,
 } from './utils';
+import { getInitialPropsValue } from './initial-values';
+import { ArrayField } from './api';
 
 function getAncestorComponentBlock(editor: Editor) {
   if (editor.selection) {
@@ -100,6 +106,132 @@ function normalizeNodeWithinComponentProp(
   return didNormalization;
 }
 
+function doesPropOnlyEverContainASingleChildField(rootProp: ComponentPropField): boolean {
+  const queue = new Set<ComponentPropField>([rootProp]);
+  let hasFoundChildField = false;
+  for (const prop of queue) {
+    if (prop.kind === 'form' || prop.kind === 'relationship') {
+    } else if (prop.kind === 'child') {
+      if (hasFoundChildField) {
+        return false;
+      }
+      hasFoundChildField = true;
+    } else if (prop.kind === 'array') {
+      queue.add(prop.element);
+    } else if (prop.kind === 'object') {
+      for (const innerProp of Object.values(prop.value)) {
+        queue.add(innerProp);
+      }
+    } else if (prop.kind === 'conditional') {
+      for (const innerProp of Object.values(prop.values)) {
+        queue.add(innerProp);
+      }
+    } else {
+      assertNever(prop);
+    }
+  }
+  return hasFoundChildField;
+}
+
+function isPropPathWithin(outer: PropPath, inner: PropPath) {
+  if (outer.length >= inner.length) {
+    return false;
+  }
+  for (const [idx, element] of outer.entries()) {
+    if (element !== inner[idx]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function findArrayFieldsWithSingleChildField(prop: ComponentPropField, value: unknown) {
+  const propPaths: [PropPath, ArrayField<ComponentPropField>][] = [];
+  transformProps(prop, value, (prop, value, path) => {
+    if (prop.kind === 'array') {
+      if (doesPropOnlyEverContainASingleChildField(prop.element)) {
+        propPaths.push([path, prop]);
+      }
+    }
+    return value;
+  });
+  return propPaths;
+}
+
+function transformProps(
+  prop: ComponentPropField,
+  value: unknown,
+  transformer: (prop: ComponentPropField, value: unknown, path: PropPath) => unknown,
+  path: PropPath = []
+): unknown {
+  if (prop.kind === 'form' || prop.kind === 'relationship' || prop.kind === 'child') {
+    return transformer(prop, value, path);
+  }
+  if (prop.kind === 'object') {
+    return transformer(
+      prop,
+      Object.fromEntries(
+        Object.entries(value as Record<string, unknown>).map(([key, val]) => {
+          return [key, transformProps(prop.value[key], val, transformer, path.concat(key))];
+        })
+      ),
+      path
+    );
+  }
+  if (prop.kind === 'array') {
+    return transformer(
+      prop,
+      (value as unknown[]).map((val, i) =>
+        transformProps(prop.element, val, transformer, path.concat(i))
+      ),
+      path
+    );
+  }
+  if (prop.kind === 'conditional') {
+    const discriminant = (value as any).discriminant;
+    return transformer(
+      prop,
+      {
+        discriminant: transformer(prop, discriminant, path.concat('discriminant')),
+        value: transformProps(
+          prop.values[discriminant.toString() as string],
+          (value as any).value,
+          transformer,
+          path.concat('value')
+        ),
+      },
+      path
+    );
+  }
+  assertNever(prop);
+}
+
+function getValueAtPropPath(value: unknown, path: PropPath) {
+  path = [...path];
+  while (path.length) {
+    const key = path.shift()!;
+    value = (value as any)[key];
+  }
+  return value;
+}
+
+function isEmptyChildFieldNode(
+  element: Element & ({ type: 'component-block-prop' } | { type: 'component-inline-prop' })
+) {
+  const firstChild = element.children[0];
+  return (
+    element.children.length === 1 &&
+    ((element.type === 'component-inline-prop' &&
+      firstChild.type === undefined &&
+      firstChild.text === '') ||
+      (element.type === 'component-block-prop' &&
+        firstChild.type === 'paragraph' &&
+        firstChild.children.length === 1 &&
+        firstChild.children[0].type === undefined &&
+        firstChild.children[0].text === ''))
+  );
+}
+
 export function withComponentBlocks(
   blockComponents: Record<string, ComponentBlock | undefined>,
   editorDocumentFeatures: DocumentFeatures,
@@ -152,8 +284,6 @@ export function withComponentBlocks(
               to: Path.next(ancestorComponentBlock.componentBlock[1]),
             });
           } else {
-            // TODO: this goes to the start of the next block, is that right?
-            // should we just insertBreak always here?
             Transforms.move(editor, { distance: 1, unit: 'line' });
             Transforms.removeNodes(editor, { at: paragraphPath });
           }
@@ -162,8 +292,49 @@ export function withComponentBlocks(
       }
       if (componentPropNode.type === 'component-inline-prop') {
         Editor.withoutNormalizing(editor, () => {
+          const componentBlock = blockComponents[componentBlockNode.component];
+          if (componentPropNode.propPath !== undefined && componentBlock !== undefined) {
+            const rootProp = { kind: 'object' as const, value: componentBlock.props };
+            const ancestorFields = getAncestorFields(
+              rootProp,
+              componentPropNode.propPath,
+              componentBlockNode.props
+            );
+            const idx = [...ancestorFields].reverse().findIndex(item => item.kind === 'array');
+            if (idx !== -1) {
+              const arrayFieldIdx = ancestorFields.length - 1 - idx;
+              const arrayField = ancestorFields[arrayFieldIdx];
+              const val = getValueAtPropPath(
+                componentBlockNode.props,
+                componentPropNode.propPath.slice(0, arrayFieldIdx)
+              ) as unknown[];
+              if (doesPropOnlyEverContainASingleChildField(arrayField)) {
+                if (
+                  Node.string(componentPropNode) === '' &&
+                  val.length - 1 === componentPropNode.propPath[arrayFieldIdx]
+                ) {
+                  Transforms.removeNodes(editor, { at: componentPropPath });
+                  if (isLastProp) {
+                    Transforms.insertNodes(
+                      editor,
+                      { type: 'paragraph', children: [{ text: '' }] },
+                      { at: Path.next(componentBlockPath) }
+                    );
+                    Transforms.select(editor, Path.next(componentBlockPath));
+                  } else {
+                    Transforms.move(editor, { distance: 1, unit: 'line' });
+                  }
+                } else {
+                  insertBreak();
+                }
+                return;
+              }
+            }
+          }
+
           Transforms.splitNodes(editor, { always: true });
           const splitNodePath = Path.next(componentPropPath);
+
           if (isLastProp) {
             Transforms.moveNodes(editor, {
               at: splitNodePath,
@@ -199,6 +370,83 @@ export function withComponentBlocks(
       if (Element.isElement(node) && node.type === 'component-block') {
         const componentBlock = blockComponents[node.component];
         if (componentBlock) {
+          const rootProp = { kind: 'object' as const, value: componentBlock.props };
+          for (const [propPath, arrayField] of findArrayFieldsWithSingleChildField(
+            rootProp,
+            node.props
+          )) {
+            if (
+              node.children.length === 1 &&
+              node.children[0].type === 'component-inline-prop' &&
+              node.children[0].propPath === undefined
+            ) {
+              break;
+            }
+            const nodesWithin: [
+              number,
+              Element & { type: 'component-block-prop' | 'component-inline-prop' }
+            ][] = [];
+            for (const [idx, childNode] of node.children.entries()) {
+              if (
+                (childNode.type === 'component-block-prop' ||
+                  childNode.type === 'component-inline-prop') &&
+                childNode.propPath !== undefined &&
+                isPropPathWithin(propPath, childNode.propPath!)
+              ) {
+                nodesWithin.push([idx, childNode]);
+              }
+            }
+            const arrVal = getValueAtPropPath(node.props, propPath) as unknown[];
+            // delete backwards
+            const alreadyUsedIndicies = new Set<number>();
+            // all of the fields are unique so we've removed/re-ordered/done nothing
+            const newVal: unknown[] = [];
+            for (const [, node] of nodesWithin) {
+              const idxFromValue = node.propPath![propPath.length] as number;
+              if (alreadyUsedIndicies.has(idxFromValue) && isEmptyChildFieldNode(node)) {
+                newVal.push(getInitialPropsValue(arrayField.element, relationships));
+              } else {
+                alreadyUsedIndicies.add(idxFromValue);
+                newVal.push(arrVal[idxFromValue]);
+              }
+            }
+            if (!areArraysEqual(arrVal, newVal)) {
+              Editor.withoutNormalizing(editor, () => {
+                const transformedProps = transformProps(
+                  rootProp,
+                  node.props,
+                  (prop, value, path) => {
+                    if (prop.kind === 'array' && areArraysEqual(path, propPath)) {
+                      return newVal;
+                    }
+                    return value;
+                  }
+                );
+                Transforms.setNodes(
+                  editor,
+                  { props: transformedProps as Record<string, unknown> },
+                  { at: path }
+                );
+                for (const [idx, [idxInChildrenOfBlock, nodeWithin]] of nodesWithin.entries()) {
+                  const newPropPath = [...nodeWithin.propPath!];
+                  newPropPath[propPath.length] = idx;
+                  Transforms.setNodes(
+                    editor,
+                    { propPath: newPropPath },
+                    { at: [...path, idxInChildrenOfBlock] }
+                  );
+                }
+              });
+              return;
+            }
+            // for (const [
+            //   idxAsChildOfArrayField,
+            //   [idxAsChildOfBlock, node],
+            // ] of nodesWithin.entries()) {
+            //   const propPathWithin = node.propPath!.slice(0, propPath.length);
+            // }
+            // console.log(nodesWithin);
+          }
           let missingKeys = new Map(
             findChildPropPaths(node.props, componentBlock.props).map(x => [
               JSON.stringify(x.path) as string | undefined,

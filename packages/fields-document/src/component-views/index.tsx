@@ -15,9 +15,9 @@ import { useCallback, useEffect, useRef } from 'react';
 import { FormValueContent } from '../DocumentEditor/component-blocks/form';
 import { getInitialPropsValue } from '../DocumentEditor/component-blocks/initial-values';
 import { ComponentPropFieldForGraphQL } from '../DocumentEditor/component-blocks/api';
-import { assertNever } from '../DocumentEditor/component-blocks/utils';
+import { assertNever, ReadonlyPropPath } from '../DocumentEditor/component-blocks/utils';
 
-const basePath: readonly (string | number)[] = [];
+const basePath: ReadonlyPropPath = [];
 
 export const Field = ({
   field,

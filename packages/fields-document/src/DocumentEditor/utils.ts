@@ -210,6 +210,7 @@ export function nodeTypeMatcher<Type extends Element['type'][]>(
 
 export function assert(condition: boolean): asserts condition {
   if (!condition) {
+    debugger;
     throw new Error('failed assert');
   }
 }
