@@ -10,7 +10,13 @@ import {
   useMemo,
   useCallback,
 } from 'react';
-import { ReactEditor, RenderElementProps, useFocused, useSelected } from 'slate-react';
+import {
+  ReactEditor,
+  RenderElementProps,
+  useFocused,
+  useSelected,
+  useSlateStatic,
+} from 'slate-react';
 import { Editor, Element, Transforms } from 'slate';
 
 import { jsx, useTheme } from '@keystone-ui/core';
@@ -27,7 +33,7 @@ import {
   useElementWithSetNodes,
   useStaticEditor,
 } from '../utils';
-import { clientSideValidateProp, getChildFieldAtPropPath } from './utils';
+import { clientSideValidateProp, getFieldAtPropPath, ReadonlyPropPath } from './utils';
 import { createPreviewProps } from './preview-props';
 import { getInitialValue } from './initial-values';
 import { FormValue } from './form';
@@ -37,11 +43,15 @@ export { withComponentBlocks } from './with-component-blocks';
 export const ComponentBlockContext = createContext<Record<string, ComponentBlock>>({});
 
 export function getPlaceholderTextForPropPath(
-  propPath: (number | string)[],
+  propPath: ReadonlyPropPath,
   fields: Record<string, ComponentPropField>,
   formProps: Record<string, any>
 ): string {
-  return getChildFieldAtPropPath(propPath, formProps, fields)?.options?.placeholder ?? '';
+  const field = getFieldAtPropPath(propPath, formProps, fields);
+  if (field?.kind === 'child') {
+    return field.options.placeholder;
+  }
+  return '';
 }
 
 export function ComponentInlineProp(props: RenderElementProps) {
@@ -195,6 +205,7 @@ Content:`}
             componentBlock={componentBlock}
             element={currentElement}
             onElementChange={setElement}
+            elementToGetPath={__elementToGetPath}
           />
         )}
         {!editMode &&
@@ -204,7 +215,9 @@ Content:`}
               componentBlock,
               {},
               documentFieldRelationships,
-              setElement
+              setElement,
+              editor,
+              __elementToGetPath
             );
             const ChromefulToolbar = componentBlock.toolbar
               ? componentBlock.toolbar
@@ -325,6 +338,7 @@ function ComponentBlockRender({
   componentBlock,
   element,
   onElementChange,
+  elementToGetPath,
   children,
 }: {
   element: Element & { type: 'component-block' };
@@ -334,8 +348,11 @@ function ComponentBlockRender({
     ) => Partial<Element & { type: 'component-block' }>
   ) => void;
   componentBlock: ComponentBlock;
+  elementToGetPath: Element & { type: 'component-block' };
   children: any;
 }) {
+  const editor = useSlateStatic();
+  const relationships = useDocumentFieldRelationships();
   const childrenByPath: Record<string, ReactElement> = {};
   let maybeChild: ReactElement | undefined;
   children.forEach((child: ReactElement) => {
@@ -351,8 +368,10 @@ function ComponentBlockRender({
     element,
     componentBlock,
     childrenByPath,
-    useDocumentFieldRelationships(),
-    props => onElementChange(() => props)
+    relationships,
+    partialElement => onElementChange(() => partialElement),
+    editor,
+    elementToGetPath
   );
 
   return (

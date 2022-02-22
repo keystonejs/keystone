@@ -6,12 +6,12 @@ import { Mark } from '../utils';
 import { ChildField } from './api';
 import { getInitialPropsValue } from './initial-values';
 
-type PathToChildFieldWithOption = { path: PropPath; options: ChildField['options'] };
+type PathToChildFieldWithOption = { path: ReadonlyPropPath; options: ChildField['options'] };
 
-function _findChildPropPaths(
+export function findChildPropPathsForProp(
   value: any,
   prop: ComponentPropField,
-  path: PropPath
+  path: ReadonlyPropPath
 ): PathToChildFieldWithOption[] {
   switch (prop.kind) {
     case 'form':
@@ -20,7 +20,7 @@ function _findChildPropPaths(
     case 'child':
       return [{ path: path, options: prop.options }];
     case 'conditional':
-      return _findChildPropPaths(
+      return findChildPropPathsForProp(
         value.value,
         prop.values[value.discriminant],
         path.concat('value')
@@ -28,14 +28,14 @@ function _findChildPropPaths(
     case 'object': {
       let paths: PathToChildFieldWithOption[] = [];
       Object.keys(prop.value).forEach(key => {
-        paths.push(..._findChildPropPaths(value[key], prop.value[key], path.concat(key)));
+        paths.push(...findChildPropPathsForProp(value[key], prop.value[key], path.concat(key)));
       });
       return paths;
     }
     case 'array': {
       let paths: PathToChildFieldWithOption[] = [];
       (value as any[]).forEach((val, i) => {
-        paths.push(..._findChildPropPaths(val, prop.element, path.concat(i)));
+        paths.push(...findChildPropPathsForProp(val, prop.element, path.concat(i)));
       });
       return paths;
     }
@@ -45,8 +45,8 @@ function _findChildPropPaths(
 export function findChildPropPaths(
   value: Record<string, any>,
   props: Record<string, ComponentPropField>
-): { path: PropPath | undefined; options: ChildField['options'] }[] {
-  let propPaths = _findChildPropPaths(value, { kind: 'object', value: props }, []);
+): { path: ReadonlyPropPath | undefined; options: ChildField['options'] }[] {
+  let propPaths = findChildPropPathsForProp(value, { kind: 'object', value: props }, []);
   if (!propPaths.length) {
     return [
       {
@@ -166,42 +166,47 @@ export function getDocumentFeaturesForChildField(
   };
 }
 
-function getChildFieldAtPropPathInner(
+function getFieldAtPropPathInner(
   path: PropPath,
   value: unknown,
   prop: ComponentPropField
-): undefined | ChildField {
-  if (prop.kind === 'child') {
+): undefined | ComponentPropField {
+  if (path.length === 0) {
     return prop;
   }
   // because we're checking the length here
   // the non-null asserts on shift are fine
-  if (path.length === 0 || prop.kind === 'form' || prop.kind === 'relationship') {
+  if (prop.kind === 'child' || prop.kind === 'form' || prop.kind === 'relationship') {
     return;
   }
   if (prop.kind === 'conditional') {
-    path.shift();
-    const propVal = prop.values[(value as any).discriminant];
-    return getChildFieldAtPropPathInner(path, (value as any).value, propVal);
+    const key = path.shift();
+    if (key === 'discriminant') {
+      return getFieldAtPropPathInner(path, (value as any).discriminant, prop.discriminant);
+    }
+    if (key === 'value') {
+      const propVal = prop.values[(value as any).discriminant];
+      return getFieldAtPropPathInner(path, (value as any).value, propVal);
+    }
+    return;
   }
   if (prop.kind === 'object') {
     const key = path.shift()!;
-    return getChildFieldAtPropPathInner(path, (value as any)[key], prop.value[key]);
+    return getFieldAtPropPathInner(path, (value as any)[key], prop.value[key]);
   }
   if (prop.kind === 'array') {
     const index = path.shift()!;
-    return getChildFieldAtPropPathInner(path, (value as any)[index], prop.element);
+    return getFieldAtPropPathInner(path, (value as any)[index], prop.element);
   }
-
-  return prop;
+  assertNever(prop);
 }
 
-export function getChildFieldAtPropPath(
+export function getFieldAtPropPath(
   path: ReadonlyPropPath,
   value: Record<string, unknown>,
   props: Record<string, ComponentPropField>
-): undefined | ChildField {
-  return getChildFieldAtPropPathInner([...path], value, {
+): undefined | ComponentPropField {
+  return getFieldAtPropPathInner([...path], value, {
     kind: 'object',
     value: props,
   });
@@ -241,7 +246,11 @@ export function clientSideValidateProp(prop: ComponentPropField, value: any): bo
   }
 }
 
-export function getAncestorFields(rootProp: ComponentPropField, path: PropPath, value: unknown) {
+export function getAncestorFields(
+  rootProp: ComponentPropField,
+  path: ReadonlyPropPath,
+  value: unknown
+) {
   const ancestors: ComponentPropField[] = [];
   const currentPath = [...path];
   let currentProp = rootProp;
@@ -274,3 +283,60 @@ export function getAncestorFields(rootProp: ComponentPropField, path: PropPath, 
 
 export type PropPath = (string | number)[];
 export type ReadonlyPropPath = readonly (string | number)[];
+
+export function getValueAtPropPath(value: unknown, inputPath: ReadonlyPropPath) {
+  const path = [...inputPath];
+  while (path.length) {
+    const key = path.shift()!;
+    value = (value as any)[key];
+  }
+  return value;
+}
+
+export function transformProps(
+  prop: ComponentPropField,
+  value: unknown,
+  transformer: (prop: ComponentPropField, value: unknown, path: PropPath) => unknown,
+  path: PropPath = []
+): unknown {
+  if (prop.kind === 'form' || prop.kind === 'relationship' || prop.kind === 'child') {
+    return transformer(prop, value, path);
+  }
+  if (prop.kind === 'object') {
+    return transformer(
+      prop,
+      Object.fromEntries(
+        Object.entries(value as Record<string, unknown>).map(([key, val]) => {
+          return [key, transformProps(prop.value[key], val, transformer, path.concat(key))];
+        })
+      ),
+      path
+    );
+  }
+  if (prop.kind === 'array') {
+    return transformer(
+      prop,
+      (value as unknown[]).map((val, i) =>
+        transformProps(prop.element, val, transformer, path.concat(i))
+      ),
+      path
+    );
+  }
+  if (prop.kind === 'conditional') {
+    const discriminant = (value as any).discriminant;
+    return transformer(
+      prop,
+      {
+        discriminant: transformer(prop, discriminant, path.concat('discriminant')),
+        value: transformProps(
+          prop.values[discriminant.toString() as string],
+          (value as any).value,
+          transformer,
+          path.concat('value')
+        ),
+      },
+      path
+    );
+  }
+  assertNever(prop);
+}

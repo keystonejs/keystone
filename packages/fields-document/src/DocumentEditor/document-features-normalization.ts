@@ -2,7 +2,7 @@ import { Text, Transforms, Element, NodeEntry, Editor, Node } from 'slate';
 import { DocumentFeatures } from '../views';
 import { Relationships } from './relationship';
 
-export function areArraysEqual(arrA: unknown[], arrB: unknown[]) {
+export function areArraysEqual(arrA: readonly unknown[], arrB: readonly unknown[]) {
   if (arrA.length !== arrB.length) {
     return false;
   }

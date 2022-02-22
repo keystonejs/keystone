@@ -17,7 +17,9 @@ import {
   findChildPropPaths,
   getAncestorFields,
   getDocumentFeaturesForChildField,
+  getValueAtPropPath,
   PropPath,
+  transformProps,
 } from './utils';
 import { getInitialPropsValue } from './initial-values';
 import { ArrayField } from './api';
@@ -117,6 +119,9 @@ function doesPropOnlyEverContainASingleChildField(rootProp: ComponentPropField):
       }
       hasFoundChildField = true;
     } else if (prop.kind === 'array') {
+      if (doesPropOnlyEverContainASingleChildField(prop.element)) {
+        return false;
+      }
       queue.add(prop.element);
     } else if (prop.kind === 'object') {
       for (const innerProp of Object.values(prop.value)) {
@@ -133,18 +138,6 @@ function doesPropOnlyEverContainASingleChildField(rootProp: ComponentPropField):
   return hasFoundChildField;
 }
 
-function isPropPathWithin(outer: PropPath, inner: PropPath) {
-  if (outer.length >= inner.length) {
-    return false;
-  }
-  for (const [idx, element] of outer.entries()) {
-    if (element !== inner[idx]) {
-      return false;
-    }
-  }
-  return true;
-}
-
 function findArrayFieldsWithSingleChildField(prop: ComponentPropField, value: unknown) {
   const propPaths: [PropPath, ArrayField<ComponentPropField>][] = [];
   transformProps(prop, value, (prop, value, path) => {
@@ -156,63 +149,6 @@ function findArrayFieldsWithSingleChildField(prop: ComponentPropField, value: un
     return value;
   });
   return propPaths;
-}
-
-function transformProps(
-  prop: ComponentPropField,
-  value: unknown,
-  transformer: (prop: ComponentPropField, value: unknown, path: PropPath) => unknown,
-  path: PropPath = []
-): unknown {
-  if (prop.kind === 'form' || prop.kind === 'relationship' || prop.kind === 'child') {
-    return transformer(prop, value, path);
-  }
-  if (prop.kind === 'object') {
-    return transformer(
-      prop,
-      Object.fromEntries(
-        Object.entries(value as Record<string, unknown>).map(([key, val]) => {
-          return [key, transformProps(prop.value[key], val, transformer, path.concat(key))];
-        })
-      ),
-      path
-    );
-  }
-  if (prop.kind === 'array') {
-    return transformer(
-      prop,
-      (value as unknown[]).map((val, i) =>
-        transformProps(prop.element, val, transformer, path.concat(i))
-      ),
-      path
-    );
-  }
-  if (prop.kind === 'conditional') {
-    const discriminant = (value as any).discriminant;
-    return transformer(
-      prop,
-      {
-        discriminant: transformer(prop, discriminant, path.concat('discriminant')),
-        value: transformProps(
-          prop.values[discriminant.toString() as string],
-          (value as any).value,
-          transformer,
-          path.concat('value')
-        ),
-      },
-      path
-    );
-  }
-  assertNever(prop);
-}
-
-function getValueAtPropPath(value: unknown, path: PropPath) {
-  path = [...path];
-  while (path.length) {
-    const key = path.shift()!;
-    value = (value as any)[key];
-  }
-  return value;
 }
 
 function isEmptyChildFieldNode(
@@ -390,10 +326,15 @@ export function withComponentBlocks(
               if (
                 (childNode.type === 'component-block-prop' ||
                   childNode.type === 'component-inline-prop') &&
-                childNode.propPath !== undefined &&
-                isPropPathWithin(propPath, childNode.propPath!)
+                childNode.propPath !== undefined
               ) {
-                nodesWithin.push([idx, childNode]);
+                const indexForLastArrayIndex = findLastIndex(
+                  childNode.propPath,
+                  x => typeof x === 'number'
+                );
+                if (areArraysEqual(propPath, childNode.propPath.slice(0, indexForLastArrayIndex))) {
+                  nodesWithin.push([idx, childNode]);
+                }
               }
             }
             const arrVal = getValueAtPropPath(node.props, propPath) as unknown[];
@@ -402,50 +343,42 @@ export function withComponentBlocks(
             // all of the fields are unique so we've removed/re-ordered/done nothing
             const newVal: unknown[] = [];
             for (const [, node] of nodesWithin) {
-              const idxFromValue = node.propPath![propPath.length] as number;
-              if (alreadyUsedIndicies.has(idxFromValue) && isEmptyChildFieldNode(node)) {
+              const idxFromValue = node.propPath![propPath.length];
+              assert(typeof idxFromValue === 'number');
+              if (
+                arrVal.length <= idxFromValue ||
+                (alreadyUsedIndicies.has(idxFromValue) && isEmptyChildFieldNode(node))
+              ) {
                 newVal.push(getInitialPropsValue(arrayField.element, relationships));
               } else {
                 alreadyUsedIndicies.add(idxFromValue);
                 newVal.push(arrVal[idxFromValue]);
               }
             }
+            // console.log({ arrVal, newVal });
             if (!areArraysEqual(arrVal, newVal)) {
-              Editor.withoutNormalizing(editor, () => {
-                const transformedProps = transformProps(
-                  rootProp,
-                  node.props,
-                  (prop, value, path) => {
-                    if (prop.kind === 'array' && areArraysEqual(path, propPath)) {
-                      return newVal;
-                    }
-                    return value;
-                  }
-                );
+              const transformedProps = transformProps(rootProp, node.props, (prop, value, path) => {
+                if (prop.kind === 'array' && areArraysEqual(path, propPath)) {
+                  return newVal;
+                }
+                return value;
+              });
+              Transforms.setNodes(
+                editor,
+                { props: transformedProps as Record<string, unknown> },
+                { at: path }
+              );
+              for (const [idx, [idxInChildrenOfBlock, nodeWithin]] of nodesWithin.entries()) {
+                const newPropPath = [...nodeWithin.propPath!];
+                newPropPath[propPath.length] = idx;
                 Transforms.setNodes(
                   editor,
-                  { props: transformedProps as Record<string, unknown> },
-                  { at: path }
+                  { propPath: newPropPath },
+                  { at: [...path, idxInChildrenOfBlock] }
                 );
-                for (const [idx, [idxInChildrenOfBlock, nodeWithin]] of nodesWithin.entries()) {
-                  const newPropPath = [...nodeWithin.propPath!];
-                  newPropPath[propPath.length] = idx;
-                  Transforms.setNodes(
-                    editor,
-                    { propPath: newPropPath },
-                    { at: [...path, idxInChildrenOfBlock] }
-                  );
-                }
-              });
+              }
               return;
             }
-            // for (const [
-            //   idxAsChildOfArrayField,
-            //   [idxAsChildOfBlock, node],
-            // ] of nodesWithin.entries()) {
-            //   const propPathWithin = node.propPath!.slice(0, propPath.length);
-            // }
-            // console.log(nodesWithin);
           }
           let missingKeys = new Map(
             findChildPropPaths(node.props, componentBlock.props).map(x => [
@@ -534,4 +467,13 @@ export function withComponentBlocks(
   };
 
   return editor;
+}
+
+function findLastIndex<T>(array: readonly T[], predicate: (item: T) => boolean): number {
+  for (let i = array.length - 1; i >= 0; --i) {
+    if (predicate(array[i])) {
+      return i;
+    }
+  }
+  return -1;
 }

@@ -206,7 +206,9 @@ const getPreviewProps = (
     relationships,
     data => {
       Transforms.setNodes(editor, data, { at: [0] });
-    }
+    },
+    editor,
+    editor.children[0] as Element & { type: 'component-block' }
   ) as any;
 
 const makeEditorWithComplexComponentBlock = () =>
