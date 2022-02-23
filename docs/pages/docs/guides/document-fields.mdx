@@ -624,12 +624,14 @@ Similarly to inline relationships, they will be hydrated with this selection if 
 ```tsx
 import { fields } from '@keystone-6/fields-document/component-blocks';
 
-fields.relationship({
-  label: 'Authors',
-  listKey: 'Author',
-  selection: 'id name posts { title }',
-  many: true,
- });
+...
+someField: fields.relationship({
+    label: 'Authors',
+    listKey: 'Author',
+    selection: 'id name posts { title }',
+    many: true,
+  });
+...
 ```
 
 > Note: Like inline relationships, relationship fields on component blocks are not stored like relationship fields on lists, they are stored as ids in the document structure.
