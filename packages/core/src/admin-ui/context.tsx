@@ -6,7 +6,14 @@ import { DrawerProvider } from '@keystone-ui/modals';
 import { createUploadLink } from 'apollo-upload-client';
 import type { AdminConfig, AdminMeta, FieldViews } from '../types';
 import { useAdminMeta } from './utils/useAdminMeta';
-import { ApolloProvider, ApolloClient, InMemoryCache, ApolloError, DocumentNode } from './apollo';
+import {
+  ApolloProvider,
+  ApolloClient,
+  InMemoryCache,
+  ApolloError,
+  DocumentNode,
+  from,
+} from './apollo';
 import {
   AuthenticatedItem,
   VisibleLists,
@@ -84,14 +91,16 @@ function InternalKeystoneProvider({
 }
 
 export const KeystoneProvider = (props: KeystoneProviderProps) => {
-  const apolloClient = useMemo(
-    () =>
-      new ApolloClient({
-        cache: new InMemoryCache(),
-        link: createUploadLink({ uri: props.apiPath }),
-      }),
-    [props.apiPath]
-  );
+  const apolloClient = useMemo(() => {
+    let link = createUploadLink({ uri: props.apiPath });
+    if (props.adminConfig?.apolloLinks && props.adminConfig?.apolloLinks.length) {
+      link = from([...props.adminConfig.apolloLinks, link]);
+    }
+    return new ApolloClient({
+      cache: new InMemoryCache(),
+      link,
+    });
+  }, [props.apiPath, props.adminConfig]);
 
   return (
     <ApolloProvider client={apolloClient}>

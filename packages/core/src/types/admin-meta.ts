@@ -1,5 +1,6 @@
 import { GraphQLError } from 'graphql';
 import type { ReactElement } from 'react';
+import type { ApolloLink } from '@apollo/client';
 import { GqlNames, JSONValue } from './utils';
 
 export type NavigationProps = {
@@ -28,6 +29,7 @@ export type AdminConfig = {
     Logo?: (props: {}) => ReactElement;
     Navigation?: (props: NavigationProps) => ReactElement;
   };
+  apolloLinks?: ApolloLink[];
 };
 
 export type FieldControllerConfig<FieldMeta extends JSONValue | undefined = undefined> = {
