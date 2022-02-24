@@ -217,7 +217,7 @@ export const extendGraphqlSchema = graphQLSchemaExtension<Keystone.Context>({
     Mutation: {
       createRandomPosts(root, args, context) {
         const data = Array.from({ length: 238 }).map((x, i) => ({ title: `Post ${i}` }));
-        return context.query.Post.createMany({ data });
+        return context.db.Post.createMany({ data });
       },
     },
     Query: {
