@@ -10,9 +10,8 @@ const runner = setupTestRunner({
     lists: { User: list({ fields: { name: text() } }) },
     server: {
       extendHttpServer: server => {
-        server.on('request', (req: IncomingMessage, res: ServerResponse) => {
-          req.headers.testHeader = 'test';
-          res.end('test');
+        server.prependListener('request', (req: IncomingMessage, res: ServerResponse) => {
+          res.setHeader('test-header', 'test-header-value');
         });
       },
     },
@@ -20,9 +19,8 @@ const runner = setupTestRunner({
 });
 
 test(
-  'basic extension',
-  runner(async ({ app }) => {
-    const { text } = await supertest(app).get('/anything').expect('testHeader', 'test');
-    expect(JSON.parse(text)).toEqual('test');
+  'server extension',
+  runner(async ({ server }) => {
+    await supertest(server).get('/anything').expect('test-header', 'test-header-value');
   })
 );
