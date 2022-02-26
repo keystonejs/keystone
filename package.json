@@ -22,7 +22,7 @@
     "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:markdown && yarn lint:types && yarn lint:filters",
     "test": "yarn lint && yarn test:unit",
     "test:unit": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --no-watchman --runInBand --logHeapUsage",
-    "test:unit:debug": "cross-env NODE_ENV=test node --inspect-brk `which jest` --runInBand --watch",
+    "test:unit:debug": "cross-env NODE_ENV=test node --inspect-brk `which jest` --runInBand",
     "test:admin-ui": "yarn jest tests/admin-ui-tests",
     "benchmark": "yarn workspace @keystone-6/benchmarks-legacy go",
     "changeset": "changeset",
