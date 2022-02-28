@@ -10,13 +10,15 @@ import { ArrayFormValueContent } from './array-form-value';
 import { FormField, PreviewProps, RelationshipField } from './api';
 import { getPreviewPropsForProp } from './preview-props';
 
-function RelationshipFormInput({
+export function RelationshipFormInput({
   prop,
   path,
   value,
   onChange,
-  stringifiedPropPathToAutoFocus,
-}: ComponentFieldProps<RelationshipField<boolean>>) {
+  common: { stringifiedPropPathToAutoFocus },
+}: Omit<ComponentFieldProps<RelationshipField<boolean>>, 'common'> & {
+  common: { stringifiedPropPathToAutoFocus: string };
+}) {
   const keystone = useKeystone();
   const stringifiedPath = JSON.stringify(path);
   return (
@@ -56,6 +58,12 @@ function RelationshipFormInput({
   );
 }
 
+export type CommonComponentFieldProps = {
+  onAddArrayItem: (path: ReadonlyPropPath) => void;
+  stringifiedPropPathToAutoFocus: string;
+  forceValidation: boolean;
+};
+
 export type ComponentFieldProps<Field extends ComponentPropField> = {
   path: ReadonlyPropPath;
   prop: Field;
@@ -63,9 +71,7 @@ export type ComponentFieldProps<Field extends ComponentPropField> = {
   onChange(
     cb: (val: GeneralValuesForFields[Field['kind']]) => GeneralValuesForFields[Field['kind']]
   ): void;
-  onAddArrayItem: (path: ReadonlyPropPath) => void;
-  stringifiedPropPathToAutoFocus: string;
-  forceValidation: boolean;
+  common: CommonComponentFieldProps;
 };
 
 type GeneralValuesForFields = {
@@ -89,7 +95,7 @@ const fieldRenderers: {
     const { onChange } = props;
     return (
       <props.prop.Input
-        autoFocus={JSON.stringify(props.path) === props.stringifiedPropPathToAutoFocus}
+        autoFocus={JSON.stringify(props.path) === props.common.stringifiedPropPathToAutoFocus}
         value={props.value}
         onChange={useCallback(
           val => {
@@ -97,7 +103,7 @@ const fieldRenderers: {
           },
           [onChange]
         )}
-        forceValidation={props.forceValidation && !props.prop.validate(props.value)}
+        forceValidation={props.common.forceValidation && !props.prop.validate(props.value)}
       />
     );
   },
@@ -123,13 +129,11 @@ const fieldRenderers: {
         {Object.entries(prop.value).map(([key, propVal]) => (
           <FormValueContent
             key={key}
-            forceValidation={props.forceValidation}
-            stringifiedPropPathToAutoFocus={props.stringifiedPropPathToAutoFocus}
             path={onChangeAndPaths[key].path}
             prop={propVal}
             value={props.value[key]}
             onChange={onChangeAndPaths[key].onChange}
-            onAddArrayItem={props.onAddArrayItem}
+            common={props.common}
           />
         ))}
       </Stack>
@@ -147,7 +151,7 @@ const fieldRenderers: {
       [prop, onChange]
     );
     const discriminantAutoFocus =
-      JSON.stringify(path.concat('discriminant')) === props.stringifiedPropPathToAutoFocus;
+      JSON.stringify(path.concat('discriminant')) === props.common.stringifiedPropPathToAutoFocus;
     return (
       <Stack gap="xlarge">
         {useMemo(
@@ -157,7 +161,7 @@ const fieldRenderers: {
               value={props.value.discriminant}
               onChange={onDiscriminantChange}
               forceValidation={
-                props.forceValidation && !discriminant.validate(props.value.discriminant)
+                props.common.forceValidation && !discriminant.validate(props.value.discriminant)
               }
             />
           ),
@@ -165,13 +169,12 @@ const fieldRenderers: {
             discriminant,
             discriminantAutoFocus,
             props.value.discriminant,
-            props.forceValidation,
+            props.common.forceValidation,
             onDiscriminantChange,
           ]
         )}
         <FormValueContent
-          forceValidation={props.forceValidation}
-          stringifiedPropPathToAutoFocus={props.stringifiedPropPathToAutoFocus}
+          common={props.common}
           path={useMemo(() => path.concat('value'), [path])}
           prop={prop.values[props.value.discriminant.toString()]}
           value={props.value.value}
@@ -183,7 +186,6 @@ const fieldRenderers: {
             },
             [onChange]
           )}
-          onAddArrayItem={props.onAddArrayItem}
         />
       </Stack>
     );
@@ -233,29 +235,19 @@ function PreviewWrapper(
   const Preview = props.prop.preview as (
     props: PreviewProps<ComponentPropField>
   ) => ReactElement | null;
-  const [isOpen, setIsOpen] = useState(false);
   return (
-    <div>
-      {isOpen ? (
-        <FormValueInsidePreviewBit
-          {...props}
-          onClose={() => {
-            setIsOpen(false);
-          }}
-        />
-      ) : (
-        <Preview
-          {...getPreviewPropsForProp(
-            props.prop,
-            props.value,
-            {},
-            props.path,
-            newVal => props.onChange(() => newVal),
-            props.onAddArrayItem
-          )}
-        />
+    <Preview
+      {...getPreviewPropsForProp(
+        props.prop,
+        props.value,
+        props.path,
+        newVal => props.onChange(() => newVal),
+        {
+          childrenByPath: {},
+          onAddArrayItem: props.common.onAddArrayItem,
+        }
       )}
-    </div>
+    />
   );
 }
 
@@ -345,13 +337,17 @@ export function FormValue({
   return (
     <Stack gap="xlarge" contentEditable={false}>
       <FormValueContent
-        forceValidation={forceValidation}
+        common={useMemo(() => {
+          return {
+            forceValidation,
+            onAddArrayItem,
+            stringifiedPropPathToAutoFocus: focusablePath,
+          };
+        }, [forceValidation, onAddArrayItem, focusablePath])}
         onChange={onChange}
         path={basePath}
         prop={rootProp}
         value={value}
-        stringifiedPropPathToAutoFocus={focusablePath}
-        onAddArrayItem={onAddArrayItem}
       />
       <KeystoneUIButton
         size="small"

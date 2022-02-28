@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@keystone-ui/core';
+import { Box, jsx } from '@keystone-ui/core';
 import { useMemo } from 'react';
 import {
   useSensors,
@@ -19,64 +19,71 @@ import {
 } from '@dnd-kit/sortable';
 import { createContext, ReactNode, useContext } from 'react';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
+import { Popover } from '@keystone-ui/popover';
+import { ToolbarButton } from '.';
+
+const RemoveContext = createContext<null | ((index: number) => void)>(null);
 
 export function SortableList(props: {
   move: (index: number, newIndex: number) => void;
+  remove: (index: number) => void;
   elements: ({ id: string } | string)[];
   children: ReactNode;
 }) {
   const sensors = useSensors(
-    useSensor(MouseSensor),
+    useSensor(MouseSensor, { activationConstraint: { distance: 3 } }),
     useSensor(TouchSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
-      modifiers={[restrictToVerticalAxis]}
-      onDragEnd={({ over, active }) => {
-        if (over && over.id !== active.id) {
-          const activeIndex = props.elements.findIndex(
-            x => (typeof x === 'string' ? x : x.id) === active.id
-          );
-          const overIndex = props.elements.findIndex(
-            x => (typeof x === 'string' ? x : x.id) === over.id
-          );
-          props.move(activeIndex, overIndex);
-        }
-      }}
-    >
-      <SortableContext items={props.elements} strategy={verticalListSortingStrategy}>
-        <ul
-          css={{
-            isolation: 'isolate',
-            display: 'flex',
-            gap: 8,
-            flexDirection: 'column',
-            padding: 0,
-          }}
-        >
-          {props.children}
-        </ul>
-      </SortableContext>
-    </DndContext>
+    <RemoveContext.Provider value={props.remove}>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        modifiers={[restrictToVerticalAxis]}
+        onDragEnd={({ over, active }) => {
+          if (over && over.id !== active.id) {
+            const activeIndex = props.elements.findIndex(
+              x => (typeof x === 'string' ? x : x.id) === active.id
+            );
+            const overIndex = props.elements.findIndex(
+              x => (typeof x === 'string' ? x : x.id) === over.id
+            );
+            props.move(activeIndex, overIndex);
+          }
+        }}
+      >
+        <SortableContext items={props.elements} strategy={verticalListSortingStrategy}>
+          <ul
+            css={{
+              isolation: 'isolate',
+              display: 'flex',
+              gap: 8,
+              flexDirection: 'column',
+              padding: 0,
+              margin: 0,
+            }}
+          >
+            {props.children}
+          </ul>
+        </SortableContext>
+      </DndContext>
+    </RemoveContext.Provider>
   );
 }
 
 const DragHandleListenersContext = createContext<Pick<
   ReturnType<typeof useSortable>,
-  'listeners' | 'isDragging' | 'attributes'
+  'listeners' | 'isDragging' | 'attributes' | 'index'
 > | null>(null);
 
 export function SortableItem(props: { id: string; children: ReactNode }) {
-  const { attributes, isDragging, listeners, setNodeRef, transform, transition } = useSortable({
-    id: props.id,
-  });
-
-  console.log(transform);
+  const { attributes, isDragging, listeners, setNodeRef, transform, transition, index } =
+    useSortable({
+      id: props.id,
+    });
 
   const style = {
     transition,
@@ -92,8 +99,9 @@ export function SortableItem(props: { id: string; children: ReactNode }) {
           attributes,
           listeners,
           isDragging,
+          index,
         };
-      }, [attributes, listeners, isDragging])}
+      }, [attributes, listeners, isDragging, index])}
     >
       <li
         ref={setNodeRef}
@@ -131,26 +139,54 @@ export function DragHandle() {
     throw new Error('Must use SortableItem above DragHandle');
   }
 
+  const onRemove = useContext(RemoveContext);
+  if (onRemove === null) {
+    throw new Error('Must use SortableList above DragHandle');
+  }
+
   return (
-    <button
-      {...sortable.attributes}
-      css={{
-        display: 'flex',
-        justifyContent: 'center',
-        cursor: sortable.isDragging ? 'grabbing' : 'grab',
-        appearance: 'none',
-        background: 'transparent',
-        borderRadius: 4,
-        padding: 0,
-        ':focus-visible': {
-          outline: ['2px solid Highlight', '2px solid -webkit-focus-ring-color'],
-        },
-      }}
-      aria-label="Drag handle"
-      {...sortable.listeners}
-    >
-      {dragIcon}
-    </button>
+    <span css={{ position: 'relative' }}>
+      <Popover
+        placement="left"
+        triggerRenderer={opts => {
+          console.log(sortable.listeners);
+          return (
+            <div>
+              <button
+                {...sortable.attributes}
+                {...sortable.listeners}
+                {...opts.triggerProps}
+                css={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  cursor: sortable.isDragging ? 'grabbing' : undefined,
+                  appearance: 'none',
+                  background: 'transparent',
+                  borderRadius: 4,
+                  padding: 0,
+                  ':focus-visible': {
+                    outline: ['2px solid Highlight', '2px solid -webkit-focus-ring-color'],
+                  },
+                }}
+                aria-label="Drag handle"
+              >
+                {dragIcon}
+              </button>
+            </div>
+          );
+        }}
+      >
+        <Box margin="small">
+          <ToolbarButton
+            onClick={() => {
+              onRemove(sortable.index);
+            }}
+          >
+            Remove
+          </ToolbarButton>
+        </Box>
+      </Popover>
+    </span>
   );
 }
 

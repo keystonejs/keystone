@@ -7,14 +7,17 @@ import {
   ConditionalField,
   ObjectField,
 } from '@keystone-6/fields-document/component-blocks';
+import { PreviewProps } from '@keystone-6/fields-document/src/DocumentEditor/component-blocks/api';
+import { FormValueContentFromPreview } from '@keystone-6/fields-document/src/DocumentEditor/component-blocks/form-from-preview';
 import {
   SortableList,
   SortableItem,
   DragHandle,
 } from '@keystone-6/fields-document/src/DocumentEditor/primitives/sortable';
 import { Button } from '@keystone-ui/button';
-import { jsx } from '@keystone-ui/core';
-import { Select } from '@keystone-ui/fields';
+import { jsx, Stack } from '@keystone-ui/core';
+import { FieldContainer, FieldLabel, Select } from '@keystone-ui/fields';
+import { AlertDialog } from '@keystone-ui/modals';
 import { useState } from 'react';
 
 const label = fields.text({ label: 'Label' });
@@ -40,38 +43,49 @@ type Prop = ArrayField<
   >
 >;
 
-export const prop: Prop = fields.array(
-  fields.conditional(discriminant, {
-    leaf,
-    group: fields.object({
-      label,
-      get children() {
-        return prop;
-      },
-    }),
-  }),
-  {
-    preview(props) {
-      console.log(props);
-      return (
-        <div>
-          <SortableList elements={props.elements.map((_, i) => i.toString())} move={props.move}>
-            {props.elements.map((x, i) => {
-              return <DraggableElement key={i} {...x} />;
-            })}
-          </SortableList>
-          <AddButton options={props.field.element.discriminant.options} insert={props.insert} />
-        </div>
-      );
+const conditional = fields.conditional(discriminant, {
+  leaf,
+  group: fields.object({
+    label,
+    get children() {
+      return innerProp;
     },
-  }
-);
+  }),
+});
+
+function Preview(props: PreviewProps<Prop>) {
+  return (
+    <Stack gap="medium">
+      {!!props.elements.length && (
+        <SortableList {...props}>
+          {props.elements.map(x => {
+            return <DraggableElement key={x.id} {...x} />;
+          })}
+        </SortableList>
+      )}
+      <AddButton options={props.field.element.discriminant.options} insert={props.insert} />
+    </Stack>
+  );
+}
+export const prop: Prop = fields.array(conditional, {
+  preview: Preview,
+});
+
+const innerProp: Prop = fields.array(conditional, {
+  preview(props) {
+    return (
+      <FieldContainer>
+        <FieldLabel>Children</FieldLabel>
+        <Preview {...props} />
+      </FieldContainer>
+    );
+  },
+});
 
 function AddButton<Value extends string>(props: {
   options: readonly { label: string; value: Value }[];
   insert: (initialValue: Value extends any ? { discriminant: Value } : never) => void;
 }) {
-  // props;
   return (
     <Select
       placeholder="Add"
@@ -86,22 +100,37 @@ function AddButton<Value extends string>(props: {
   );
 }
 
-// function UIForField() {}
-
-function DraggableElement(props) {
+function DraggableElement(props: PreviewProps<Prop>['elements'][number]) {
   const [isEditing, setIsEditing] = useState(false);
   return (
     <SortableItem id={props.id}>
-      <DragHandle />
-      <Button
-        onClick={() => {
-          setIsEditing(true);
-        }}
-      >
-        Edit
-      </Button>
-      blah
-      {/* {isEditing ? <UIForField {...props} /> : <div>{props.value.label.value}</div>} */}
+      <Stack across align="center">
+        <DragHandle />
+        <Button
+          onClick={() => {
+            setIsEditing(true);
+          }}
+        >
+          Edit {props.element.discriminant}
+        </Button>
+        <AlertDialog
+          title={`Edit ${
+            props.element.options.find(x => x.value === props.element.discriminant)!.label
+          }`}
+          actions={{
+            confirm: {
+              action: () => {
+                setIsEditing(false);
+              },
+              label: 'Done',
+            },
+          }}
+          isOpen={isEditing}
+        >
+          <FormValueContentFromPreview props={props.element.value} />
+        </AlertDialog>
+        <div>{props.element.value.label.value}</div>
+      </Stack>
     </SortableItem>
   );
 }

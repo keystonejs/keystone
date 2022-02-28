@@ -12,6 +12,7 @@ import {
 } from '@keystone-ui/fields';
 import { HTMLAttributes, ReactElement, ReactNode, useState } from 'react';
 import { isValidURL } from '../isValidURL';
+import { objectFieldSymbol } from './preview-props';
 
 export type FormField<Value, Options> = {
   kind: 'form';
@@ -566,7 +567,9 @@ export type ExtractPropFromComponentPropFieldForPreview<Prop extends ComponentPr
         readonly field: Prop;
       }
     : Prop extends ObjectField<infer Value>
-    ? { readonly [Key in keyof Value]: ExtractPropFromComponentPropFieldForPreview<Value[Key]> }
+    ? { readonly [Key in keyof Value]: ExtractPropFromComponentPropFieldForPreview<Value[Key]> } & {
+        [Key in typeof objectFieldSymbol]: Prop;
+      }
     : Prop extends ConditionalField<infer DiscriminantField, infer Values>
     ? {
         readonly [Key in keyof Values]: {

@@ -47,3 +47,44 @@ export function getInitialPropsValue(prop: ComponentPropField): any {
   }
   assertNever(prop);
 }
+
+export function getInitialPropsValueFromInitializer(
+  prop: ComponentPropField,
+  initializer: any
+): any {
+  switch (prop.kind) {
+    case 'form':
+      return initializer === undefined ? prop.defaultValue : initializer;
+    case 'child':
+      return null;
+    case 'relationship':
+      return initializer === undefined ? (prop.many ? [] : null) : initializer;
+    case 'conditional': {
+      const defaultValue =
+        initializer === undefined ? prop.discriminant.defaultValue : initializer.discriminant;
+      return {
+        discriminant: defaultValue,
+        value: getInitialPropsValueFromInitializer(
+          prop.values[defaultValue.toString()],
+          initializer === undefined ? undefined : initializer.value
+        ),
+      };
+    }
+    case 'object': {
+      let obj: Record<string, any> = {};
+      Object.keys(prop.value).forEach(key => {
+        obj[key] = getInitialPropsValueFromInitializer(
+          prop.value[key],
+          initializer === undefined ? undefined : initializer[key]
+        );
+      });
+      return obj;
+    }
+    case 'array': {
+      return ((initializer ?? []) as unknown[]).map(x =>
+        getInitialPropsValueFromInitializer(prop.element, x)
+      );
+    }
+  }
+  assertNever(prop);
+}

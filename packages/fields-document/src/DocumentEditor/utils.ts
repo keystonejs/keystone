@@ -208,9 +208,9 @@ export function nodeTypeMatcher<Type extends Element['type'][]>(
   return ((node: Node) => typeof node.type === 'string' && set.has(node.type)) as any;
 }
 
-export function assert(condition: boolean): asserts condition {
+export function assert(condition: boolean, message?: string): asserts condition {
   if (!condition) {
     debugger;
-    throw new Error('failed assert');
+    throw new Error(message ?? 'failed assert');
   }
 }

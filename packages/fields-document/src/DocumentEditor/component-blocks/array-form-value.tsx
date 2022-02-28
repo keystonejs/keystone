@@ -3,27 +3,25 @@
 import { jsx, Stack } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
 import { arrayMove } from '@dnd-kit/sortable';
-import { memo, useMemo, useState } from 'react';
-import { useDocumentFieldRelationships } from '../relationship';
+import { memo, useMemo } from 'react';
 import { DragHandle, SortableItem, SortableList } from '../primitives/sortable';
 import { getInitialPropsValue } from './initial-values';
 import { ArrayField, ComponentPropField } from './api';
-import { ComponentFieldProps, FormValueContent } from './form';
-import { PropPath, ReadonlyPropPath } from './utils';
-
-let keyCount = 0;
+import { CommonComponentFieldProps, ComponentFieldProps, FormValueContent } from './form';
+import { ReadonlyPropPath } from './utils';
+import {
+  getElementIdsForArrayValue,
+  getNewArrayElementId,
+  setElementIdsForArrayValue,
+} from './preview-props';
 
 export function ArrayFormValueContent({
   prop,
   path,
   value,
   onChange,
-  stringifiedPropPathToAutoFocus,
-  forceValidation,
-  onAddArrayItem,
+  common,
 }: ComponentFieldProps<ArrayField<ComponentPropField>>) {
-  const relationships = useDocumentFieldRelationships();
-
   const { length } = value;
   // this is not ideal since every item will re-render after adding a new item
   // and many will re-render after a re-order
@@ -36,18 +34,7 @@ export function ArrayFormValueContent({
           onChange(value => {
             const newValue = [...value];
             newValue[i] = cb(newValue[i]);
-            return newValue;
-          });
-        },
-        onRemove: () => {
-          setKeys(keys => {
-            const newKeys = [...keys];
-            newKeys.splice(i, 1);
-            return newKeys;
-          });
-          onChange(value => {
-            const newValue = [...value];
-            newValue.splice(i, 1);
+            setElementIdsForArrayValue(newValue, getElementIdsForArrayValue(value));
             return newValue;
           });
         },
@@ -55,38 +42,35 @@ export function ArrayFormValueContent({
       };
     });
   }, [length, onChange, path]);
-
-  // this key stuff will sort of produce a less ideal experience if the value array
-  // is modified outside of this component, mainly if adding items in the middle or re-ordering
-  const [keys, setKeys] = useState(() => value.map(() => (keyCount++).toString()));
-
-  const diff = value.length - keys.length;
-
-  if (diff > 0) {
-    setKeys(keys.concat(Array.from({ length: diff }).map(() => (keyCount++).toString())));
-    return null;
-  } else if (diff < 0) {
-    setKeys(keys.slice(0, keys.length - 1));
-    return null;
-  }
-
+  const elementIds = getElementIdsForArrayValue(value);
   return (
     <Stack gap="medium">
       <SortableList
-        elements={keys}
+        elements={elementIds}
         move={(from, to) => {
-          setKeys(arrayMove(keys, from, to));
-          onChange(value => arrayMove(value as any[], from, to));
+          onChange(value => {
+            const newValue = arrayMove(value as any[], from, to);
+            setElementIdsForArrayValue(newValue, arrayMove(elementIds, from, to));
+            return newValue;
+          });
+        }}
+        remove={index => {
+          onChange(value => {
+            const newValue = [...value];
+            newValue.splice(index, 1);
+            const newKeys = [...getElementIdsForArrayValue(value)];
+            newKeys.splice(index, 1);
+            setElementIdsForArrayValue(newValue, newKeys);
+            return newValue;
+          });
         }}
       >
         {value.map((val, i) => {
           return (
             <SortableItemInForm
-              key={keys[i]}
-              id={keys[i]}
-              forceValidation={forceValidation}
-              stringifiedPropPathToAutoFocus={stringifiedPropPathToAutoFocus}
-              onAddArrayItem={onAddArrayItem}
+              key={elementIds[i]}
+              id={elementIds[i]}
+              common={common}
               prop={prop.element}
               value={val}
               {...memoizedPropsForItems[i]}
@@ -96,7 +80,11 @@ export function ArrayFormValueContent({
       </SortableList>
       <Button
         onClick={() => {
-          onChange(value => [...value, getInitialPropsValue(prop.element)]);
+          onChange(value => {
+            const newValue = [...value, getInitialPropsValue(prop.element)];
+            setElementIdsForArrayValue(newValue, [...newValue, getNewArrayElementId()]);
+            return newValue;
+          });
         }}
       >
         Add
@@ -107,26 +95,19 @@ export function ArrayFormValueContent({
 
 const SortableItemInForm = memo(function SortableItemInForm({
   id,
-  onRemove,
   ...props
 }: {
   id: string;
-  path: PropPath;
+  path: ReadonlyPropPath;
   prop: ComponentPropField;
   value: any;
   onChange(value: any): void;
-  stringifiedPropPathToAutoFocus: string;
-  forceValidation: boolean;
-  onRemove: () => void;
-  onAddArrayItem: (path: ReadonlyPropPath) => void;
+  common: CommonComponentFieldProps;
 }) {
   return (
     <SortableItem id={id}>
       <Stack across align="center" gap="small" css={{ justifyContent: 'center' }}>
         <DragHandle />
-        <Button tone="negative" onClick={onRemove}>
-          Remove
-        </Button>
       </Stack>
       <FormValueContent {...props} />s
     </SortableItem>

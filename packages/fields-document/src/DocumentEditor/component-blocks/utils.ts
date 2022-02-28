@@ -4,6 +4,7 @@ import { DocumentFeaturesForNormalization } from '../document-features-normaliza
 import { Mark } from '../utils';
 import { ChildField } from './api';
 import { getInitialPropsValue } from './initial-values';
+import { getElementIdsForArrayValue, setElementIdsForArrayValue } from './preview-props';
 
 type PathToChildFieldWithOption = { path: ReadonlyPropPath; options: ChildField['options'] };
 
@@ -312,13 +313,12 @@ export function transformProps(
     );
   }
   if (prop.kind === 'array') {
-    return transformer(
-      prop,
-      (value as unknown[]).map((val, i) =>
-        transformProps(prop.element, val, transformer, path.concat(i))
-      ),
-      path
+    const prevVal = value as unknown[];
+    const newVal = prevVal.map((val, i) =>
+      transformProps(prop.element, val, transformer, path.concat(i))
     );
+    setElementIdsForArrayValue(newVal, getElementIdsForArrayValue(prevVal));
+    return transformer(prop, newVal, path);
   }
   if (prop.kind === 'conditional') {
     const discriminant = (value as any).discriminant;

@@ -11,7 +11,7 @@ import {
   FieldControllerConfig,
   FieldProps,
 } from '@keystone-6/core/types';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { FormValueContent } from '../DocumentEditor/component-blocks/form';
 import { getInitialPropsValue } from '../DocumentEditor/component-blocks/initial-values';
 import { ComponentPropFieldForGraphQL } from '../DocumentEditor/component-blocks/api';
@@ -21,6 +21,11 @@ import {
   transformProps,
 } from '../DocumentEditor/component-blocks/utils';
 import { areArraysEqual } from '../DocumentEditor/document-features-normalization';
+import {
+  getElementIdsForArrayValue,
+  getNewArrayElementId,
+  setElementIdsForArrayValue,
+} from '../DocumentEditor/component-blocks/preview-props';
 
 const basePath: ReadonlyPropPath = [];
 
@@ -39,7 +44,28 @@ export const Field = ({
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
       <FormValueContent
-        forceValidation={!!forceValidation}
+        common={useMemo(
+          () => ({
+            stringifiedPropPathToAutoFocus: autoFocus ? '' : '',
+            forceValidation: !!forceValidation,
+            onAddArrayItem: pathToInsertIn => {
+              onChange?.(
+                transformProps(field.prop, valueRef.current, (prop, value, path) => {
+                  if (prop.kind === 'array' && areArraysEqual(path, pathToInsertIn)) {
+                    const newVal = [...(value as any[]), getInitialPropsValue(prop)];
+                    setElementIdsForArrayValue(newVal, [
+                      ...getElementIdsForArrayValue(value as unknown[]),
+                      getNewArrayElementId(),
+                    ]);
+                    return newVal;
+                  }
+                  return value;
+                })
+              );
+            },
+          }),
+          [autoFocus, forceValidation, onChange, field.prop]
+        )}
         onChange={useCallback(
           getNewVal => {
             onChange?.(getNewVal(valueRef.current));
@@ -49,20 +75,6 @@ export const Field = ({
         path={basePath}
         prop={field.prop}
         value={value}
-        stringifiedPropPathToAutoFocus={autoFocus ? '' : ''}
-        onAddArrayItem={useCallback(
-          pathToInsertIn => {
-            onChange?.(
-              transformProps(field.prop, valueRef.current, (prop, value, path) => {
-                if (prop.kind === 'array' && areArraysEqual(path, pathToInsertIn)) {
-                  return [...(value as any[]), getInitialPropsValue(prop)];
-                }
-                return value;
-              })
-            );
-          },
-          [field.prop, onChange]
-        )}
       />
     </FieldContainer>
   );

@@ -23,6 +23,11 @@ import {
 } from './utils';
 import { getInitialPropsValue } from './initial-values';
 import { ArrayField } from './api';
+import {
+  getElementIdsForArrayValue,
+  getNewArrayElementId,
+  setElementIdsForArrayValue,
+} from './preview-props';
 
 function getAncestorComponentBlock(editor: Editor) {
   if (editor.selection) {
@@ -338,10 +343,12 @@ export function withComponentBlocks(
               }
             }
             const arrVal = getValueAtPropPath(node.props, propPath) as unknown[];
+            const prevKeys = getElementIdsForArrayValue(arrVal);
             // delete backwards
             const alreadyUsedIndicies = new Set<number>();
             // all of the fields are unique so we've removed/re-ordered/done nothing
             const newVal: unknown[] = [];
+            const newKeys: string[] = [];
             for (const [, node] of nodesWithin) {
               const idxFromValue = node.propPath![propPath.length];
               assert(typeof idxFromValue === 'number');
@@ -350,11 +357,14 @@ export function withComponentBlocks(
                 (alreadyUsedIndicies.has(idxFromValue) && isEmptyChildFieldNode(node))
               ) {
                 newVal.push(getInitialPropsValue(arrayField.element));
+                newKeys.push(getNewArrayElementId());
               } else {
                 alreadyUsedIndicies.add(idxFromValue);
                 newVal.push(arrVal[idxFromValue]);
+                newKeys.push(prevKeys[idxFromValue]);
               }
             }
+            setElementIdsForArrayValue(newVal, newKeys);
             // console.log({ arrVal, newVal });
             if (!areArraysEqual(arrVal, newVal)) {
               const transformedProps = transformProps(rootProp, node.props, (prop, value, path) => {
