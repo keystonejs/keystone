@@ -3,17 +3,19 @@ import { ApolloError } from 'apollo-server-errors';
 import {
   BaseListTypeInfo,
   CommonFieldConfig,
+  FieldData,
   FieldTypeFunc,
   jsonFieldTypePolyfilledForSQLite,
   JSONValue,
 } from '@keystone-6/core/types';
 import { graphql } from '@keystone-6/core';
 import { Relationships } from './DocumentEditor/relationship';
-import { ComponentBlock } from './component-blocks';
+import { ComponentBlock, ComponentPropField } from './component-blocks';
 import { DocumentFeatures } from './views';
 import { validateAndNormalizeDocument } from './validation';
 import { addRelationshipData } from './relationship-data';
 import { assertValidComponentPropField } from './DocumentEditor/component-blocks/field-assertions';
+import { assertNever } from './DocumentEditor/component-blocks/utils';
 
 export { componentThing } from './component';
 
@@ -23,16 +25,8 @@ type RelationshipsConfig = Record<
     listKey: string;
     /** GraphQL fields to select when querying the field */
     selection?: string;
-  } & (
-    | {
-        kind: 'inline';
-        label: string;
-      }
-    | {
-        kind: 'prop';
-        many?: true;
-      }
-  )
+    label: string;
+  }
 >;
 
 type FormattingConfig = {
@@ -83,6 +77,56 @@ export type DocumentFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
 
 const views = path.join(path.dirname(__dirname), 'views');
 
+function validateRelationshipProps(
+  field: ComponentPropField,
+  path: string[],
+  meta: FieldData,
+  componentBlockLabel: string
+): void {
+  if (field.kind === 'relationship') {
+    // ideally we would validate the GraphQL selection here too but
+    // when this is running the GraphQL schema is still being created
+    if (meta.lists[field.listKey] === undefined) {
+      throw new Error(
+        `A component block named ${componentBlockLabel} in the field at ${meta.listKey}.${
+          meta.fieldKey
+        } has a relationship field at ${path.join('.')} with the listKey "${
+          field.listKey
+        }" but no list named "${field.listKey}" exists.`
+      );
+    }
+    return;
+  }
+  if (field.kind === 'form' || field.kind === 'child') {
+    return;
+  }
+  if (field.kind === 'object') {
+    for (const [key, innerField] of Object.entries(field.value)) {
+      validateRelationshipProps(innerField, path.concat(key), meta, componentBlockLabel);
+    }
+    return;
+  }
+  if (field.kind === 'conditional') {
+    // the discriminant field must be a form field so no need to check that
+    for (const [key, innerField] of Object.entries(
+      field.values as Record<string, ComponentPropField>
+    )) {
+      validateRelationshipProps(innerField, path.concat(key), meta, componentBlockLabel);
+    }
+    return;
+  }
+  if (field.kind === 'array') {
+    validateRelationshipProps(
+      field.element,
+      path.concat('(array element)'),
+      meta,
+      componentBlockLabel
+    );
+    return;
+  }
+  assertNever(field);
+}
+
 export const document =
   <ListTypeInfo extends BaseListTypeInfo>({
     componentBlocks = {},
@@ -100,7 +144,15 @@ export const document =
       layouts,
       links,
     });
-    const relationships = normaliseRelationships(configRelationships);
+    const relationships = normaliseRelationships(configRelationships, meta);
+    for (const componentBlock of Object.values(componentBlocks)) {
+      validateRelationshipProps(
+        { kind: 'object', value: componentBlock.props },
+        [],
+        meta,
+        componentBlock.label
+      );
+    }
 
     const inputResolver = (data: JSONValue | null | undefined): any => {
       if (data === null) {
@@ -195,20 +247,19 @@ export const document =
   };
 
 function normaliseRelationships(
-  configRelationships: DocumentFieldConfig<BaseListTypeInfo>['relationships']
+  configRelationships: DocumentFieldConfig<BaseListTypeInfo>['relationships'],
+  meta: FieldData
 ) {
   const relationships: Relationships = {};
   if (configRelationships) {
     Object.keys(configRelationships).forEach(key => {
       const relationship = configRelationships[key];
-      relationships[key] =
-        relationship.kind === 'inline'
-          ? { ...relationship, selection: relationship.selection ?? null }
-          : {
-              ...relationship,
-              selection: relationship.selection ?? null,
-              many: relationship.many || false,
-            };
+      if (meta.lists[relationship.listKey] === undefined) {
+        throw new Error(
+          `An inline relationship ${relationship.label} (${key}) in the field at ${meta.listKey}.${meta.fieldKey} has listKey set to "${relationship.listKey}" but no list named "${relationship.listKey}" exists.`
+        );
+      }
+      relationships[key] = { ...relationship, selection: relationship.selection ?? null };
     });
   }
   return relationships;

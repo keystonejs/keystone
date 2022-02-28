@@ -12,7 +12,7 @@ import { Type } from '../../components/primitives/Type';
 import { DocsPage } from '../../components/Page';
 import { ArrowR } from '../../components/icons/ArrowR';
 import { Emoji } from '../../components/primitives/Emoji';
-import { Stack } from '../../components/primitives/Stack';
+// import { Stack } from '../../components/primitives/Stack';
 import { useMediaQuery } from '../../lib/media';
 
 type TimelineProps = {
@@ -173,7 +173,14 @@ export default function WhatsNew() {
           gap: 0,
         })}
       >
-        <Timeline date="29th November 2021" isLatest />
+        <Timeline date="8th February 2022" isLatest />
+        <Box heading="New learning series">
+          Aimed at Keystone beginners, our{' '}
+          <a href="/docs/walkthroughs#learn-keystone">new learning series</a> shows you how to turn
+          an empty folder into a functioning blog backend with relationships, auth, and session
+          data.
+        </Box>
+        <Timeline date="29th November 2021" />
         <Box heading="Welcome Keystone 6 to General Availability!">
           <svg viewBox="0 0 1336 752" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g clipPath="url(#a)">
@@ -456,7 +463,7 @@ export default function WhatsNew() {
           shows you how to create REST endpoints by extending Keystone’s express app so you can use
           the Query API to execute queries against the schema.
         </Box>
-        <Timeline date="21st September 2021" />
+        {/* <Timeline date="21st September 2021" />
         <Box heading="Keystone Community Q&A + YouTube launch">
           <Stack orientation="horizontal">
             <a
@@ -516,7 +523,7 @@ export default function WhatsNew() {
             Watch it online here
           </a>
           .
-        </Box>
+        </Box> */}
         <Timeline date="16th September 2021" />
         <Box heading="create-keystone-app now uses SQLite">
           Our CLI app now uses <InlineCode>SQLite</InlineCode> under the hood so you don’t have to

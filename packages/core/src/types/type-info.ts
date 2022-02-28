@@ -7,9 +7,6 @@ export type BaseListTypeInfo = {
   key: string;
   fields: string;
   item: BaseItem;
-  outputs: {
-    item: Record<string, any>;
-  };
   inputs: {
     create: GraphQLInput;
     update: GraphQLInput;

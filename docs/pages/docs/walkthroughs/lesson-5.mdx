@@ -1,0 +1,273 @@
+import { Markdown } from '../../../components/Markdown';
+import { RelatedContent } from '../../../components/RelatedContent';
+import { Well } from '../../../components/primitives/Well';
+
+# Lesson 5: Document field
+
+Learn how to implement a powerful and customisable Rich Text editing experience with Keystone’s `document` field.
+
+## Where we left off
+
+We have a working backend for a collection of interconnected posts and authors (in the User list), and thanks to our efforts in [lesson 4](/docs/walkthroughs/lesson-4) our app is now secured so that only registered users can access the Admin UI to write and edit posts.
+
+```ts
+//keystone.ts
+import { list, config } from '@keystone-6/core';
+import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields';
+import { withAuth, session } from './auth';
+
+const lists = {
+  User: list({
+    fields: {
+      name: text({ validation: { isRequired: true } }),
+      email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
+      posts: relationship({ ref: 'Post.author', many: true }),
+      password: password({ validation: { isRequired: true } })
+    },
+  }),
+  Post: list({
+    fields: {
+      title: text(),
+      publishedAt: timestamp(),
+      status: select({
+        options: [
+          { label: 'Published', value: 'published' },
+          { label: 'Draft', value: 'draft' },
+        ],
+        defaultValue: 'draft',
+        ui: { displayMode: 'segmented-control' },
+      }),
+      author: relationship({ ref: 'User.posts' }),
+    },
+  }),
+};
+
+export default config(
+  withAuth({
+    db: {
+      provider: 'sqlite',
+      url: 'file:./keystone.db',
+    },
+    lists,
+    session,
+    ui: {
+      isAccessAllowed: (context) => !!context.session?.data,
+    },
+  })
+);
+```
+
+Back in [Lesson 2](/docs/walkthroughs/lesson-4) we setup a `post` type, but we skipped the all important "content" part. Let’s go ahead and fill that gap.
+
+## Add the Document field
+
+Keystone’s [document](https://keystonejs.com/docs/apis/fields#document) field is a highly customisable Rich Text editor that lets content creators quickly and easily edit content in your system.
+
+To implement the document field we start by adding the package to our project:
+
+```sh
+yarn add @keystone-6/fields-document
+```
+
+Next, we add the document field to our `post` list:
+
+```ts{4,28}[8-14,31-500]
+// keystone.ts
+import { list, config } from '@keystone-6/core';
+import { text, timestamp, relationship } from '@keystone-6/core/fields';
+import { document } from '@keystone-6/fields-document';
+import { withAuth, session } from './auth';
+
+const lists = {
+  User: list({
+    fields: {
+      name: text({ validation: { isRequired: true } }),
+      email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
+      posts: relationship({ ref: 'Post.author', many: true }),
+      password: password({ validation: { isRequired: true } })
+    },
+  }),
+  Post: list({
+    fields: {
+      title: text(),
+      publishedAt: timestamp(),
+      status: select({
+        options: [
+          { label: 'Published', value: 'published' },
+          { label: 'Draft', value: 'draft' },
+        ],
+        defaultValue: 'draft',
+      }),
+      author: relationship({ ref: 'User.posts' }),
+      content: document()
+    },
+  }),
+};
+
+export default config(
+  withAuth({
+    db: {
+      provider: 'sqlite',
+      url: 'file:./keystone.db',
+    },
+    lists,
+    session,
+    ui: { isAccessAllowed: (context) => !!context.session?.data },
+  })
+);
+```
+
+Let’s startup Keystone to see the document field in a post:
+
+![Create user screen in Admin UI showing name, email, and password fields](https://keystonejs.s3.amazonaws.com/framework-assets/assets/walkthroughs/lesson-5/document-field-basic.png)
+
+We have a place to write Rich Text, but the control header needs configuring to make this a
+good editor experience.
+
+## Customise the Document field
+
+Let’s start by adding four [formatting](docs/guides/document-fields#formatting) options available in the document field’s config:
+
+- formatting (bold, underline, italics)
+- links
+- dividers
+- layouts
+
+```ts{28-39}[1-6,8-14,17-27,42-500]
+// keystone.ts
+import { list, config } from '@keystone-6/core';
+import { text, timestamp, relationship } from '@keystone-6/core/fields';
+import { document } from '@keystone-6/fields-document';
+import { withAuth, session } from './auth';
+
+const lists = {
+  User: list({
+    fields: {
+      name: text({ validation: { isRequired: true } }),
+      email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
+      posts: relationship({ ref: 'Post.author', many: true }),
+      password: password({ validation: { isRequired: true } })
+    },
+  }),
+  Post: list({
+    fields: {
+      title: text(),
+      publishedAt: timestamp(),
+      status: select({
+        options: [
+          { label: 'Published', value: 'published' },
+          { label: 'Draft', value: 'draft' },
+        ],
+        defaultValue: 'draft',
+      }),
+      author: relationship({ ref: 'User.posts' }),
+      content: document({
+        formatting: true,
+        links: true,
+        dividers: true,
+        layouts: [
+          [1, 1],
+          [1, 1, 1],
+          [2, 1],
+          [1, 2],
+          [1, 2, 1],
+        ],
+      }),
+    },
+  }),
+};
+
+export default config(
+  withAuth({
+    db: {
+      provider: 'sqlite',
+      url: 'file:./keystone.db',
+    },
+    lists,
+    session,
+    ui: { isAccessAllowed: (context) => !!context.session?.data },
+  })
+);
+```
+
+And take a look at how they can be used in Admin UI:
+
+![Screenshot of the admin UI with the content field visible](https://keystonejs.s3.amazonaws.com/framework-assets/assets/walkthroughs/lesson-5/document-field.png)
+
+For a full guide on using the document field, including rendering this in your own frontend app, check out the full guide on [how to use document fields](/docs/guides/document-fields)
+
+## What we have now
+
+```ts
+// keystone.ts
+import { list, config } from '@keystone-6/core';
+import { text, timestamp, relationship } from '@keystone-6/core/fields';
+import { document } from '@keystone-6/fields-document';
+import { withAuth, session } from './auth';
+
+const lists = {
+  User: list({
+    fields: {
+      name: text({ validation: { isRequired: true } }),
+      email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
+      posts: relationship({ ref: 'Post.author', many: true }),
+      password: password({ validation: { isRequired: true } })
+    },
+  }),
+  Post: list({
+    fields: {
+      title: text(),
+      publishedAt: timestamp(),
+      status: select({
+        options: [
+          { label: 'Published', value: 'published' },
+          { label: 'Draft', value: 'draft' },
+        ],
+        defaultValue: 'draft',
+      }),
+      author: relationship({ ref: 'User.posts' }),
+      content: document({
+        formatting: true,
+        links: true,
+        dividers: true,
+        layouts: [
+          [1, 1],
+          [1, 1, 1],
+          [2, 1],
+          [1, 2],
+          [1, 2, 1],
+        ],
+      }),
+    },
+  }),
+};
+
+export default config(
+  withAuth({
+    db: {
+      provider: 'sqlite',
+      url: 'file:./keystone.db',
+    },
+    lists,
+    session,
+    ui: { isAccessAllowed: (context) => !!context.session?.data },
+  })
+);
+```
+
+## Next steps
+
+Congratulations! You've now built a Keystone app from an empty folder and have the basics in place for a functional blog that you can could connect to a frontend of your choice.
+
+This lesson marks the end of this learning series. To dive deeper into Keystone's capabilities take a look at the following:
+
+<RelatedContent>
+  <Well heading="Examples" href="/docs/examples">
+    A growing collection of projects you can run locally to learn more about Keystone’s capabilities
+  </Well>
+   <Well heading="Guides" href="/docs/guides/">
+    Practical explanations of Keystone’s fundamental building blocks
+  </Well>
+</RelatedContent>
+
+export default ({ children }) => <Markdown description="Learn Keystone: Lesson 5">{children}</Markdown>

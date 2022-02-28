@@ -5,7 +5,7 @@ import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import React, { memo, ReactElement, useCallback, useMemo, useState } from 'react';
 import { Button as KeystoneUIButton } from '@keystone-ui/button';
 import { ComponentPropField, RelationshipData } from '../../component-blocks';
-import { useDocumentFieldRelationships, Relationships } from '../relationship';
+import { useDocumentFieldRelationships } from '../relationship';
 import { assertNever, getPropsForConditionalChange, PropPath, ReadonlyPropPath } from './utils';
 import { ArrayFormValueContent } from './array-form-value';
 import { FormField, PreviewProps, RelationshipField } from './api';
@@ -17,13 +17,8 @@ function RelationshipFormInput({
   value,
   onChange,
   stringifiedPropPathToAutoFocus,
-}: ComponentFieldProps<RelationshipField<'many' | 'one'>>) {
-  const relationships = useDocumentFieldRelationships();
+}: ComponentFieldProps<RelationshipField<boolean>>) {
   const keystone = useKeystone();
-  const relationship = relationships[prop.relationship] as Extract<
-    Relationships[string],
-    { kind: 'prop' }
-  >;
   const stringifiedPath = JSON.stringify(path);
   return (
     <FieldContainer>
@@ -32,11 +27,11 @@ function RelationshipFormInput({
         autoFocus={stringifiedPath === stringifiedPropPathToAutoFocus}
         controlShouldRenderValue
         isDisabled={false}
-        list={keystone.adminMeta.lists[relationship.listKey]}
-        extraSelection={relationship.selection || ''}
+        list={keystone.adminMeta.lists[prop.listKey]}
+        extraSelection={prop.selection || ''}
         portalMenu
         state={
-          relationship.many
+          prop.many
             ? {
                 kind: 'many',
                 value: (value as RelationshipData[]).map(x => ({

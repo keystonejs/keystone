@@ -494,8 +494,8 @@ Options:
 
 - `defaultValue` (default: `db.isNullable === true ? undefined : ''`): This value will be used for the field when creating items if no explicit value is set.
 - `db.map`: Adds a [Prisma `@map`](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#map) attribute to this field which changes the column name in the database
-- `db.isNullable` (default: `false`): If `true` then this field will be made nullable in the database and it will be possible to set as `null`.
-- `validation.isRequired` (default: `false`): If `true` then this field can never be set to `null` or an empty string.
+- `db.isNullable` (default: `false`\*): If `true` then this field will be made nullable in the database and it will be possible to set as `null`.
+- `validation.isRequired` (default: `false`\*\*): If `true` then this field can never be set to `null` or an empty string.
   Unlike `db.isNullable`, this will require that a value with at least 1 character is provided in the Admin UI.
   It will also validate this when creating and updating an item through the GraphQL API but it will not enforce it at the database level.
 - `validation.length.min` (default: `0`): This describes the minimum number allowed. If you attempt to submit a string shorter than this, you will get a validation error.
@@ -516,6 +516,11 @@ Options:
   you can set this to true and the create field will be non-nullable and have a default value at the GraphQL level.
   This is only allowed when you have no create access control because otherwise, the item will always fail access control
   if a user doesn't have access to create the particular field regardless of whether or not they specify the field in the create.
+
+!> **\*Warning** Unlike with other `keystone` fields, `db.isNullable` is defaulted to `false` for the text field.
+This is primarily in the interest of not having to make assumptions about how a `null` value can be represented in a text field in the Admin-UI in the default case.
+These differences, and the rationale for them, are examined in detail [on GitHub](https://github.com/keystonejs/keystone/discussions/7158).
+You can opt into this behaviour by explicitly setting `isNullable: true`.
 
 ```typescript
 import { config, list } from '@keystone-6/core';
@@ -809,7 +814,7 @@ export default config({
 
 ### cloudinaryImage
 
-(coming soon)
+Upload images to your Cloudinary account via Keystone's Admin UI.
 
 - `cloudinary`: Configuration for the connected Cloudinary account.
   - `cloudName`

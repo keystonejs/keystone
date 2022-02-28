@@ -228,7 +228,7 @@ test('inserting a void component block', () => {
     </editor>,
     { componentBlocks }
   );
-  insertComponentBlock(editor, componentBlocks, 'basic', {});
+  insertComponentBlock(editor, componentBlocks, 'basic');
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block

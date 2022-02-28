@@ -3,7 +3,6 @@ import { ReactElement } from 'react';
 import { ReactEditor } from 'slate-react';
 import { arrayMove } from '@dnd-kit/sortable';
 import { ComponentBlock } from '../../component-blocks';
-import { Relationships } from '../relationship';
 import { areArraysEqual } from '../document-features-normalization';
 import { assert } from '../utils';
 import {
@@ -29,7 +28,6 @@ export function getPreviewPropsForProp(
   value: unknown,
   childrenByPath: Record<string, ReactElement>,
   path: ReadonlyPropPath,
-  relationships: Relationships,
   onFormPropsChange: (formProps: Record<string, any>) => void,
   onAddArrayItem: (path: ReadonlyPropPath) => void
 ): any {
@@ -54,7 +52,6 @@ export function getPreviewPropsForProp(
           (value as any)[key],
           childrenByPath,
           path.concat(key),
-          relationships,
           newVal => {
             onFormPropsChange({ ...(value as any), [key]: newVal });
           },
@@ -64,7 +61,7 @@ export function getPreviewPropsForProp(
       return previewProps;
     }
     case 'relationship': {
-      const props: PreviewProps<RelationshipField<'many' | 'one'>> = {
+      const props: PreviewProps<RelationshipField<boolean>> = {
         value: value as any,
         onChange(newValue: any) {
           onFormPropsChange(newValue);
@@ -87,8 +84,7 @@ export function getPreviewPropsForProp(
             getPropsForConditionalChange(
               { discriminant: newDiscriminant, value: conditionalValue.value },
               conditionalValue,
-              prop,
-              relationships
+              prop
             )
           );
         },
@@ -98,7 +94,6 @@ export function getPreviewPropsForProp(
           conditionalValue.value,
           childrenByPath,
           path.concat('value'),
-          relationships,
           val => {
             onFormPropsChange({
               discriminant: conditionalValue.discriminant,
@@ -120,7 +115,6 @@ export function getPreviewPropsForProp(
             val,
             childrenByPath,
             path.concat(i),
-            relationships,
             val => {
               const newValue = [...(value as unknown[])];
               newValue[i] = val;
@@ -155,7 +149,6 @@ export function createPreviewProps(
   element: Element & { type: 'component-block' },
   componentBlock: ComponentBlock,
   childrenByPath: Record<string, ReactElement>,
-  relationships: Relationships,
   setNode: (props: Partial<Element & { type: 'component-block' }>) => void,
   editor: Editor,
   elementToGetPropPath: Element & { type: 'component-block' }
@@ -165,12 +158,10 @@ export function createPreviewProps(
     element.props,
     childrenByPath,
     [],
-    relationships,
     props => {
       setNode({ props });
     },
-    propPath =>
-      onAddArrayItem(editor, propPath, element, elementToGetPropPath, componentBlock, relationships)
+    propPath => onAddArrayItem(editor, propPath, element, elementToGetPropPath, componentBlock)
   );
 }
 
@@ -179,13 +170,12 @@ export function onAddArrayItem(
   path: ReadonlyPropPath,
   element: Element & { type: 'component-block' },
   elementToGetPath: Element & { type: 'component-block' },
-  componentBlock: ComponentBlock,
-  relationships: Relationships
+  componentBlock: ComponentBlock
 ) {
   Editor.withoutNormalizing(editor, () => {
     const arrayField = getFieldAtPropPath(path, element.props, componentBlock.props);
     assert(arrayField?.kind === 'array');
-    const elementVal = getInitialPropsValue(arrayField.element, relationships);
+    const elementVal = getInitialPropsValue(arrayField.element);
     let nextIdx = 0;
     const newProps = transformProps(
       { kind: 'object', value: componentBlock.props },

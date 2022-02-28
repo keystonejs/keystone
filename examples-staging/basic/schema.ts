@@ -173,17 +173,8 @@ export const lists: Keystone.Lists = {
         ui: { views: require.resolve('./admin/fieldViews/Content.tsx') },
         relationships: {
           mention: {
-            kind: 'inline',
             label: 'Mention',
             listKey: 'User',
-          },
-          featuredAuthors: {
-            kind: 'prop',
-            listKey: 'User',
-            many: true,
-            selection: `posts(take: 10) {
-            title
-          }`,
           },
         },
         formatting: true,

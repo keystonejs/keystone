@@ -109,11 +109,12 @@ export type ArrayField<ElementField extends ComponentPropField> = {
   preview?: PreviewComponent;
 };
 
-export type RelationshipField<Cardinality extends 'one' | 'many'> = {
+export type RelationshipField<Many extends boolean> = {
   kind: 'relationship';
-  relationship: string;
+  listKey: string;
+  selection: string | undefined;
   label: string;
-  cardinality?: Cardinality;
+  many: Many;
   preview?: PreviewComponent;
 };
 
@@ -158,7 +159,7 @@ export type ComponentPropField =
   | FormField<any, any>
   | ObjectField
   | ConditionalField<FormField<string | boolean, any>, { [key: string]: ComponentPropField }>
-  | RelationshipField<'one' | 'many'>
+  | RelationshipField<boolean>
   // this is written like this rather than ArrayField<ComponentPropField> to avoid TypeScript erroring about circularity
   | { kind: 'array'; element: ComponentPropField; preview?: PreviewComponent };
 
@@ -169,7 +170,7 @@ export type ComponentPropFieldForGraphQL =
       FormFieldWithGraphQLField<string | boolean, any>,
       { [key: string]: ComponentPropFieldForGraphQL }
     >
-  | RelationshipField<'one' | 'many'>
+  | RelationshipField<boolean>
   // this is written like this rather than ArrayField<ComponentPropField> to avoid TypeScript erroring about circularity
   | { kind: 'array'; element: ComponentPropFieldForGraphQL; preview?: PreviewComponent };
 
@@ -499,16 +500,28 @@ export const fields = {
       preview: opts?.preview as PreviewComponent,
     };
   },
-  relationship<Cardinality extends 'one' | 'many'>({
-    relationship,
+  relationship<Many extends boolean | undefined = false>({
+    listKey,
+    selection,
     label,
     preview,
+    many,
   }: {
-    relationship: string;
+    listKey: string;
     label: string;
-    preview: TypedPreviewComponent<RelationshipField<Cardinality>>;
-  }): RelationshipField<Cardinality> {
-    return { kind: 'relationship', relationship, label, preview: preview as PreviewComponent };
+    preview: TypedPreviewComponent<RelationshipField<Many extends true ? true : false>>;
+    selection?: string;
+  } & (Many extends undefined | false ? { many?: Many } : { many: Many })): RelationshipField<
+    Many extends true ? true : false
+  > {
+    return {
+      kind: 'relationship',
+      listKey,
+      selection,
+      label,
+      many: (many ? true : false) as any,
+      preview: preview as PreviewComponent,
+    };
   },
   array<ElementField extends ComponentPropField>(
     element: ElementField,
@@ -566,19 +579,18 @@ export type ExtractPropFromComponentPropFieldForPreview<Prop extends ComponentPr
           field: Prop;
         };
       }[keyof Values]
-    : Prop extends RelationshipField<infer Cardinality>
+    : Prop extends RelationshipField<infer Many>
     ? {
-        one: {
-          readonly value: HydratedRelationshipData | null;
-          onChange(relationshipData: HydratedRelationshipData | null): void;
-          field: Prop;
-        };
-        many: {
-          readonly value: readonly HydratedRelationshipData[];
-          onChange(relationshipData: readonly HydratedRelationshipData[]): void;
-          field: Prop;
-        };
-      }[Cardinality]
+        readonly value: Many extends true
+          ? readonly HydratedRelationshipData[]
+          : HydratedRelationshipData | null;
+        onChange(
+          relationshipData: Many extends true
+            ? readonly HydratedRelationshipData[]
+            : HydratedRelationshipData | null
+        ): void;
+        field: Prop;
+      }
     : Prop extends ArrayField<infer ElementField>
     ? {
         elements: {
@@ -606,11 +618,10 @@ export type InitialValueForComponentPropField<Prop extends ComponentPropField> =
           readonly value?: InitialValueForComponentPropField<CastToComponentPropField<Values[Key]>>;
         };
       }[keyof Values]
-    : Prop extends RelationshipField<infer Cardinality>
-    ? {
-        one: HydratedRelationshipData | null;
-        many: readonly HydratedRelationshipData[];
-      }[Cardinality]
+    : Prop extends RelationshipField<infer Many>
+    ? Many extends true
+      ? readonly HydratedRelationshipData[]
+      : HydratedRelationshipData | null
     : Prop extends ArrayField<infer ElementField>
     ? InitialValueForComponentPropField<ElementField>[]
     : never;
@@ -644,17 +655,16 @@ type ExtractPropFromComponentPropFieldForToolbar<Prop extends ComponentPropField
           >;
         };
       }[keyof Values]
-    : Prop extends RelationshipField<infer Cardinality>
-    ? {
-        one: {
-          readonly value: HydratedRelationshipData | null;
-          onChange(relationshipData: HydratedRelationshipData | null): void;
-        };
-        many: {
+    : Prop extends RelationshipField<infer Many>
+    ? Many extends true
+      ? {
           readonly value: readonly HydratedRelationshipData[];
           onChange(relationshipData: readonly HydratedRelationshipData[]): void;
-        };
-      }[Cardinality]
+        }
+      : {
+          readonly value: HydratedRelationshipData | null;
+          onChange(relationshipData: HydratedRelationshipData | null): void;
+        }
     : Prop extends ArrayField<infer ElementField>
     ? {
         readonly elements: readonly ExtractPropFromComponentPropFieldForToolbar<ElementField>[];
@@ -741,11 +751,10 @@ type ExtractPropFromComponentPropFieldForRendering<Prop extends ComponentPropFie
           >;
         };
       }[keyof Values]
-    : Prop extends RelationshipField<infer Cardinality>
-    ? {
-        one: HydratedRelationshipData | null;
-        many: readonly HydratedRelationshipData[];
-      }[Cardinality]
+    : Prop extends RelationshipField<infer Many>
+    ? Many extends true
+      ? readonly HydratedRelationshipData[]
+      : HydratedRelationshipData | null
     : Prop extends ArrayField<infer ElementField>
     ? readonly ExtractPropFromComponentPropFieldForRendering<ElementField>[]
     : never;

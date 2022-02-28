@@ -44,12 +44,12 @@ export type KeystoneListsAPI<KeystoneListsTypeInfo extends Record<string, BaseLi
           | KeystoneListsTypeInfo[Key]['inputs']['orderBy']
           | readonly KeystoneListsTypeInfo[Key]['inputs']['orderBy'][];
       } & ResolveFields
-    ): Promise<readonly KeystoneListsTypeInfo[Key]['outputs']['item'][]>;
+    ): Promise<readonly Record<string, any>[]>;
     findOne(
       args: {
         readonly where: KeystoneListsTypeInfo[Key]['inputs']['uniqueWhere'];
       } & ResolveFields
-    ): Promise<KeystoneListsTypeInfo[Key]['outputs']['item']>;
+    ): Promise<Record<string, any>>;
     count(args?: {
       readonly where?: KeystoneListsTypeInfo[Key]['inputs']['where'];
     }): Promise<number>;
@@ -58,7 +58,7 @@ export type KeystoneListsAPI<KeystoneListsTypeInfo extends Record<string, BaseLi
         readonly where: KeystoneListsTypeInfo[Key]['inputs']['uniqueWhere'];
         readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
       } & ResolveFields
-    ): Promise<KeystoneListsTypeInfo[Key]['outputs']['item']>;
+    ): Promise<Record<string, any>>;
     updateMany(
       args: {
         readonly data: readonly {
@@ -66,25 +66,25 @@ export type KeystoneListsAPI<KeystoneListsTypeInfo extends Record<string, BaseLi
           readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
         }[];
       } & ResolveFields
-    ): Promise<KeystoneListsTypeInfo[Key]['outputs']['item'][]>;
+    ): Promise<Record<string, any>[]>;
     createOne(
       args: { readonly data: KeystoneListsTypeInfo[Key]['inputs']['create'] } & ResolveFields
-    ): Promise<KeystoneListsTypeInfo[Key]['outputs']['item']>;
+    ): Promise<Record<string, any>>;
     createMany(
       args: {
         readonly data: readonly KeystoneListsTypeInfo[Key]['inputs']['create'][];
       } & ResolveFields
-    ): Promise<KeystoneListsTypeInfo[Key]['outputs']['item'][]>;
+    ): Promise<Record<string, any>[]>;
     deleteOne(
       args: {
         readonly where: KeystoneListsTypeInfo[Key]['inputs']['uniqueWhere'];
       } & ResolveFields
-    ): Promise<KeystoneListsTypeInfo[Key]['outputs']['item']>;
+    ): Promise<Record<string, any> | null>;
     deleteMany(
       args: {
         readonly where: readonly KeystoneListsTypeInfo[Key]['inputs']['uniqueWhere'][];
       } & ResolveFields
-    ): Promise<KeystoneListsTypeInfo[Key]['outputs']['item'][]>;
+    ): Promise<Record<string, any>[]>;
   };
 };
 

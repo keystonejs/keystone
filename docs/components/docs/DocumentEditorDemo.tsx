@@ -237,7 +237,7 @@ const DocumentFeaturesContext = React.createContext<{
 
 export function DocumentFeaturesProvider({ children }: { children: ReactNode }) {
   const [formValue, setFormValue] = useState<DocumentFeaturesFormValue>(() =>
-    getInitialPropsValue(documentFeaturesProp, {})
+    getInitialPropsValue(documentFeaturesProp)
   );
   return (
     <DocumentFeaturesContext.Provider

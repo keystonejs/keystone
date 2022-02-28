@@ -172,7 +172,6 @@ export default config({
         content: document({
           relationships: {
             mention: {
-              kind: 'inline',
               listKey: 'Author',
               label: 'Mention',
               selection: 'id name',
@@ -189,9 +188,6 @@ export default config({
   },
 });
 ```
-
-We use the `kind: 'inline'` option to indicate that we want to have an inline relationship.
-The other option, `kind: 'prop'`, is used with custom component blocks, which are discussed [below](#component-blocks).
 
 When you add an inline relationship to your document field, it becomes accessible in the Admin UI behind the `+` icon.
 This menu uses the `label` specified in the relationship config.
@@ -506,7 +502,60 @@ export const componentBlocks = {
 
 There are a variety of fields you can configure.
 
-{/** TBC: ### Child Fields **/}
+#### Child Fields
+
+Child fields allow you to embed an editable region inside of a component block preview.
+
+They can either have `kind: 'inline'`, or `kind: 'block'`.
+This refers to **what elements can be inside of them**.
+`kind: 'inline'` child fields can only contain text with marks/links/inline relationships.
+`kind: 'block'` child fields contain block-level elements such as paragraph, lists, etc.
+
+They require a placeholder which is shown when there is no text inside the child field.
+The placeholder is required though it can be an empty string if it'll be clear to editors that the location of the child field is editable.
+
+By default, child fields can only contain plain text, if you'd like to enable other features of the document editor inside a child field, you can enable the features similarly to enabling them in the document field config.
+Unlike the document field config though, these options accept `'inherit'` instead of `true`, this is because if `'inherit'` is set then that feature will be enabled **if it's also enabled at the document field config level** so you can't enable features in a child field but not in the rest of the document field.
+
+In the preview, child fields appear as React nodes that should be rendered.
+Note that you **must** render child fields in the preview.
+If they are not rendered, you will receive errors.
+
+```tsx
+import { NotEditable, component, fields } from '@keystone-6/fields-document/component-blocks';
+
+component({
+  component: ({ attribution, content }) => {
+    return (
+      <div
+        style={{
+          borderLeft: '3px solid #CBD5E0',
+          paddingLeft: 16,
+        }}
+      >
+        <div style={{ fontStyle: 'italic', color: '#4A5568' }}>{content}</div>
+        <div style={{ fontWeight: 'bold', color: '#718096' }}>
+          <NotEditable>— </NotEditable>
+          {attribution}
+        </div>
+      </div>
+    );
+  },
+  label: 'Quote',
+  props: {
+    content: fields.child({
+      kind: 'block',
+      placeholder: 'Quote...',
+      formatting: { inlineMarks: 'inherit', softBreaks: 'inherit' },
+      links: 'inherit',
+    }),
+    attribution: fields.child({ kind: 'inline', placeholder: 'Attribution...' }),
+  },
+  chromeless: true,
+})
+```
+
+> Note: You have to be careful to wrap `NotEditable` around other elements in the preview but you cannot wrap it around a child field.
 
 #### Form Fields
 
@@ -568,42 +617,21 @@ fields.object({
 
 #### Relationship Fields
 
-To use relationship fields on component blocks, you need to add a relationship to the document field config.
-
-```tsx
-import { config, list } from '@keystone-6/core';
-import { document } from '@keystone-6/fields-document';
-
-export default config({
-  lists: {
-    ListName: list({
-      fields: {
-        fieldName: document({
-          relationships: {
-            featuredAuthors: {
-              kind: 'prop',
-              listKey: 'Author',
-              selection: 'id title',
-              many: true,
-            },
-          },
-          /* ... */
-        }),
-        /* ... */
-      },
-    }),
-    /* ... */
-  },
-  /* ... */
-});
-```
-
-You can reference the key of the relationship in the relationship and in the form, it will render a relationship select like the relationship field on lists.
+To use relationship fields on component blocks, you need to add a relationship field and provide a list key, label and options selection.
+In the form, it will render a relationship select like the relationship field on lists.
+Similarly to inline relationships, they will be hydrated with this selection if `hydrateRelationships: true` is provided when fetching.
 
 ```tsx
 import { fields } from '@keystone-6/fields-document/component-blocks';
 
-fields.relationship({ label: 'Authors', relationship: 'featuredAuthors' });
+...
+someField: fields.relationship({
+    label: 'Authors',
+    listKey: 'Author',
+    selection: 'id name posts { title }',
+    many: true,
+  });
+...
 ```
 
 > Note: Like inline relationships, relationship fields on component blocks are not stored like relationship fields on lists, they are stored as ids in the document structure.
@@ -637,7 +665,7 @@ fields.conditional(fields.checkbox({ label: 'Show Call to action' }), {
 
 > You might find `fields.empty()` useful which stores and renders nothing if you want to have a field in one case and nothing anything in another
 
-{/** TBC: ### Preview Props **/}
+{/* * TBC: ### Preview Props * */}
 
 ### Chromeless
 

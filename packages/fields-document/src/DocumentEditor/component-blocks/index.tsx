@@ -27,7 +27,6 @@ import { NotEditable } from '../../component-blocks';
 
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from '../primitives';
 import { ComponentPropField, ComponentBlock } from '../../component-blocks';
-import { Relationships, useDocumentFieldRelationships } from '../relationship';
 import {
   insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading,
   useElementWithSetNodes,
@@ -62,10 +61,9 @@ export function ComponentInlineProp(props: RenderElementProps) {
 export function insertComponentBlock(
   editor: Editor,
   componentBlocks: Record<string, ComponentBlock>,
-  componentBlock: string,
-  relationships: Relationships
+  componentBlock: string
 ) {
-  let node = getInitialValue(componentBlock, componentBlocks[componentBlock], relationships);
+  let node = getInitialValue(componentBlock, componentBlocks[componentBlock]);
   insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, node);
   const componentBlockEntry = Editor.above(editor, {
     match: node => node.type === 'component-block',
@@ -79,7 +77,6 @@ export function insertComponentBlock(
 export const BlockComponentsButtons = ({ onClose }: { onClose: () => void }) => {
   const editor = useStaticEditor();
   const blockComponents = useContext(ComponentBlockContext)!;
-  const relationships = useDocumentFieldRelationships();
   return (
     <Fragment>
       {Object.keys(blockComponents).map(key => (
@@ -87,7 +84,7 @@ export const BlockComponentsButtons = ({ onClose }: { onClose: () => void }) => 
           key={key}
           onMouseDown={event => {
             event.preventDefault();
-            insertComponentBlock(editor, blockComponents, key, relationships);
+            insertComponentBlock(editor, blockComponents, key);
             onClose();
           }}
         >
@@ -119,20 +116,12 @@ export const ComponentBlocksElement = ({
         )
       : true;
   }, [componentBlock, currentElement.props]);
-  const documentFieldRelationships = useDocumentFieldRelationships();
 
   const onCloseEditView = useCallback(() => {
     setEditMode(false);
   }, []);
   const onAddArrayItemCb = useEventCallback((path: ReadonlyPropPath) => {
-    onAddArrayItem(
-      editor,
-      path,
-      currentElement,
-      __elementToGetPath,
-      componentBlock!,
-      documentFieldRelationships
-    );
+    onAddArrayItem(editor, path, currentElement, __elementToGetPath, componentBlock!);
   });
 
   const onPropsChange = useCallback(
@@ -226,7 +215,6 @@ Content:`}
               currentElement,
               componentBlock,
               {},
-              documentFieldRelationships,
               setElement,
               editor,
               __elementToGetPath
@@ -380,7 +368,6 @@ function ComponentBlockRender({
     element,
     componentBlock,
     childrenByPath,
-    relationships,
     partialElement => onElementChange(() => partialElement),
     editor,
     elementToGetPath
