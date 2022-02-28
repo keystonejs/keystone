@@ -349,7 +349,7 @@ export function withComponentBlocks(
                 arrVal.length <= idxFromValue ||
                 (alreadyUsedIndicies.has(idxFromValue) && isEmptyChildFieldNode(node))
               ) {
-                newVal.push(getInitialPropsValue(arrayField.element, relationships));
+                newVal.push(getInitialPropsValue(arrayField.element));
               } else {
                 alreadyUsedIndicies.add(idxFromValue);
                 newVal.push(arrVal[idxFromValue]);

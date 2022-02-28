@@ -5,7 +5,6 @@ import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import React, { memo, ReactElement, useCallback, useMemo, useState } from 'react';
 import { Button as KeystoneUIButton } from '@keystone-ui/button';
 import { ComponentPropField, RelationshipData } from '../../component-blocks';
-import { useDocumentFieldRelationships } from '../relationship';
 import { assertNever, getPropsForConditionalChange, PropPath, ReadonlyPropPath } from './utils';
 import { ArrayFormValueContent } from './array-form-value';
 import { FormField, PreviewProps, RelationshipField } from './api';
@@ -137,21 +136,15 @@ const fieldRenderers: {
     );
   },
   conditional: function ConditionalField(props) {
-    const relationships = useDocumentFieldRelationships();
     const { onChange, prop, path } = props;
     const discriminant = props.prop.discriminant as FormField<string | boolean, unknown>;
     const onDiscriminantChange = useCallback(
       discriminant => {
         onChange(value =>
-          getPropsForConditionalChange(
-            { discriminant, value: value.value },
-            value,
-            prop,
-            relationships
-          )
+          getPropsForConditionalChange({ discriminant, value: value.value }, value, prop)
         );
       },
-      [prop, onChange, relationships]
+      [prop, onChange]
     );
     const discriminantAutoFocus =
       JSON.stringify(path.concat('discriminant')) === props.stringifiedPropPathToAutoFocus;
@@ -237,7 +230,6 @@ function PreviewWrapper(
     >
   >
 ) {
-  const relationships = useDocumentFieldRelationships();
   const Preview = props.prop.preview as (
     props: PreviewProps<ComponentPropField>
   ) => ReactElement | null;
@@ -258,7 +250,6 @@ function PreviewWrapper(
             props.value,
             {},
             props.path,
-            relationships,
             newVal => props.onChange(() => newVal),
             props.onAddArrayItem
           )}

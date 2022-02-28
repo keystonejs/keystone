@@ -509,7 +509,7 @@ export const fields = {
   }: {
     listKey: string;
     label: string;
-    preview: TypedPreviewComponent<RelationshipField<Many extends true ? true : false>>;
+    preview?: TypedPreviewComponent<RelationshipField<Many extends true ? true : false>>;
     selection?: string;
   } & (Many extends undefined | false ? { many?: Many } : { many: Many })): RelationshipField<
     Many extends true ? true : false

@@ -352,7 +352,6 @@ function ComponentBlockRender({
   children: any;
 }) {
   const editor = useSlateStatic();
-  const relationships = useDocumentFieldRelationships();
   const childrenByPath: Record<string, ReactElement> = {};
   let maybeChild: ReactElement | undefined;
   children.forEach((child: ReactElement) => {

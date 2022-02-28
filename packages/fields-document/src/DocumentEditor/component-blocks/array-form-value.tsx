@@ -96,7 +96,7 @@ export function ArrayFormValueContent({
       </SortableList>
       <Button
         onClick={() => {
-          onChange(value => [...value, getInitialPropsValue(prop.element, relationships)]);
+          onChange(value => [...value, getInitialPropsValue(prop.element)]);
         }}
       >
         Add

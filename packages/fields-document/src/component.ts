@@ -43,7 +43,7 @@ export const componentThing =
     const resolve = (val: JSONValue | undefined) =>
       val === null && meta.provider === 'postgresql' ? 'JsonNull' : val;
 
-    const defaultValue = getInitialPropsValue(prop, {});
+    const defaultValue = getInitialPropsValue(prop);
 
     const unreferencedConcreteInterfaceImplementations: graphql.ObjectType<any>[] = [];
 

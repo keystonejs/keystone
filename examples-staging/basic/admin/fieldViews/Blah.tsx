@@ -15,6 +15,7 @@ import {
 import { Button } from '@keystone-ui/button';
 import { jsx } from '@keystone-ui/core';
 import { Select } from '@keystone-ui/fields';
+import { useState } from 'react';
 
 const label = fields.text({ label: 'Label' });
 
@@ -77,7 +78,7 @@ function AddButton<Value extends string>(props: {
       options={props.options}
       onChange={val => {
         if (val) {
-          props.insert({ discriminant: val.value });
+          props.insert({ discriminant: val.value } as any);
         }
       }}
       value={null}
@@ -88,17 +89,17 @@ function AddButton<Value extends string>(props: {
 // function UIForField() {}
 
 function DraggableElement(props) {
-  // const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   return (
     <SortableItem id={props.id}>
       <DragHandle />
-      {/* <Button
+      <Button
         onClick={() => {
           setIsEditing(true);
         }}
       >
         Edit
-      </Button> */}
+      </Button>
       blah
       {/* {isEditing ? <UIForField {...props} /> : <div>{props.value.label.value}</div>} */}
     </SortableItem>

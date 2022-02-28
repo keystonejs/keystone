@@ -117,17 +117,17 @@ export const componentBlocks = {
               {rows.elements.map((row, i) => {
                 return (
                   <tr key={i} css={{ border: '1px solid black' }}>
-                    {row.elements.map((column, i) => {
+                    {row.element.elements.map((column, i) => {
                       return (
                         <td key={i} css={{ border: '1px solid black' }}>
-                          {column.content}
+                          {column.element.content}
                         </td>
                       );
                     })}
                     <NotEditable>
                       <Button
                         onClick={() => {
-                          row.insert();
+                          row.element.insert();
                         }}
                       >
                         Insert Column
@@ -176,16 +176,20 @@ export const componentBlocks = {
         <div>
           <ul css={{ padding: 0 }}>
             {children.elements.map((element, i) => (
-              <li css={{ listStyle: 'none' }} key={i}>
+              <li css={{ listStyle: 'none' }} key={element.id}>
                 <input
                   contentEditable="false"
                   css={{ marginRight: 8 }}
                   type="checkbox"
-                  checked={element.done.value}
-                  onChange={event => element.done.onChange(event.target.checked)}
+                  checked={element.element.done.value}
+                  onChange={event => element.element.done.onChange(event.target.checked)}
                 />
-                <span style={{ textDecoration: element.done.value ? 'line-through' : undefined }}>
-                  {element.content}
+                <span
+                  style={{
+                    textDecoration: element.element.done.value ? 'line-through' : undefined,
+                  }}
+                >
+                  {element.element.content}
                 </span>
               </li>
             ))}

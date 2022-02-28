@@ -55,7 +55,7 @@ export const Field = ({
             onChange?.(
               transformProps(field.prop, valueRef.current, (prop, value, path) => {
                 if (prop.kind === 'array' && areArraysEqual(path, pathToInsertIn)) {
-                  return [...(value as any[]), getInitialPropsValue(prop, {})];
+                  return [...(value as any[]), getInitialPropsValue(prop)];
                 }
                 return value;
               })
@@ -93,7 +93,7 @@ export const controller = (
     label: config.label,
     graphqlSelection: `${config.path}Raw`,
     prop: config.customViews.prop,
-    defaultValue: getInitialPropsValue(config.customViews.prop, {}),
+    defaultValue: getInitialPropsValue(config.customViews.prop),
     deserialize: data => {
       return data[config.path + 'Raw'];
     },

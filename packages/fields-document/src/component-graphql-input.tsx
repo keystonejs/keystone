@@ -75,7 +75,7 @@ export function getValueForUpdate(
   prevValue: any
 ): any {
   if (prevValue === undefined) {
-    prevValue = getInitialPropsValue(prop, {});
+    prevValue = getInitialPropsValue(prop);
   }
   if (value === undefined) {
     value = prevValue;
@@ -124,7 +124,7 @@ export function getValueForUpdate(
       value: getValueForUpdate(
         (prop.values as any)[key],
         value[key],
-        prevValue.discriminant === discriminant ? prevValue.value : getInitialPropsValue(prop, {})
+        prevValue.discriminant === discriminant ? prevValue.value : getInitialPropsValue(prop)
       ),
     };
   }
@@ -135,7 +135,7 @@ export function getValueForUpdate(
 export function getValueForCreate(prop: ComponentPropFieldForGraphQL, value: any): any {
   // If value is undefined, get the specified defaultValue
   if (value === undefined) {
-    value = getInitialPropsValue(prop, {});
+    value = getInitialPropsValue(prop);
   }
   if (prop.kind === 'form') {
     if (prop.validate(value)) {
