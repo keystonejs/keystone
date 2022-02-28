@@ -31,10 +31,11 @@ import { Relationships, useDocumentFieldRelationships } from '../relationship';
 import {
   insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading,
   useElementWithSetNodes,
+  useEventCallback,
   useStaticEditor,
 } from '../utils';
 import { clientSideValidateProp, getFieldAtPropPath, ReadonlyPropPath } from './utils';
-import { createPreviewProps } from './preview-props';
+import { createPreviewProps, onAddArrayItem } from './preview-props';
 import { getInitialValue } from './initial-values';
 import { FormValue } from './form';
 
@@ -123,6 +124,16 @@ export const ComponentBlocksElement = ({
   const onCloseEditView = useCallback(() => {
     setEditMode(false);
   }, []);
+  const onAddArrayItemCb = useEventCallback((path: ReadonlyPropPath) => {
+    onAddArrayItem(
+      editor,
+      path,
+      currentElement,
+      __elementToGetPath,
+      componentBlock!,
+      documentFieldRelationships
+    );
+  });
 
   const onPropsChange = useCallback(
     val => {
@@ -194,6 +205,7 @@ Content:`}
           onClose={onCloseEditView}
           value={currentElement.props}
           onChange={onPropsChange}
+          onAddArrayItem={onAddArrayItemCb}
         />
       )}
       <div css={{ display: editMode ? 'none' : 'block', position: 'relative' }}>

@@ -8,7 +8,8 @@ import { ComponentPropField, RelationshipData } from '../../component-blocks';
 import { useDocumentFieldRelationships, Relationships } from '../relationship';
 import { assertNever, getPropsForConditionalChange, PropPath, ReadonlyPropPath } from './utils';
 import { ArrayFormValueContent } from './array-form-value';
-import { FormField, RelationshipField } from './api';
+import { FormField, PreviewProps, RelationshipField } from './api';
+import { getPreviewPropsForProp } from './preview-props';
 
 function RelationshipFormInput({
   prop,
@@ -64,13 +65,11 @@ function RelationshipFormInput({
 export type ComponentFieldProps<Field extends ComponentPropField> = {
   path: ReadonlyPropPath;
   prop: Field;
-  // ExtractPropFromComponentPropFieldForRendering is not exactly correct
-  // (specifically it's wrong for child fields)
-  // but it's correct enough to be helpful and child fields do nothing here
   value: GeneralValuesForFields[Field['kind']];
   onChange(
     cb: (val: GeneralValuesForFields[Field['kind']]) => GeneralValuesForFields[Field['kind']]
   ): void;
+  onAddArrayItem: (path: ReadonlyPropPath) => void;
   stringifiedPropPathToAutoFocus: string;
   forceValidation: boolean;
 };
@@ -136,6 +135,7 @@ const fieldRenderers: {
             prop={propVal}
             value={props.value[key]}
             onChange={onChangeAndPaths[key].onChange}
+            onAddArrayItem={props.onAddArrayItem}
           />
         ))}
       </Stack>
@@ -195,6 +195,7 @@ const fieldRenderers: {
             },
             [onChange]
           )}
+          onAddArrayItem={props.onAddArrayItem}
         />
       </Stack>
     );
@@ -204,9 +205,73 @@ const fieldRenderers: {
 export const FormValueContent = memo(function FormValueContent(
   props: ComponentFieldProps<ComponentPropField>
 ) {
+  const preview = handlePreview(props);
+  if (preview !== undefined) {
+    return preview;
+  }
   const Comp = fieldRenderers[props.prop.kind];
   return <Comp {...(props as any)} />;
 });
+
+function handlePreview(props: ComponentFieldProps<ComponentPropField>) {
+  if (props.prop.kind === 'child') {
+    return;
+  }
+
+  if (
+    props.prop.kind === 'conditional' ||
+    props.prop.kind === 'form' ||
+    props.prop.kind === 'object' ||
+    props.prop.kind === 'relationship' ||
+    props.prop.kind === 'array'
+  ) {
+    if (props.prop.preview) {
+      return <PreviewWrapper {...props} prop={props.prop} />;
+    }
+    return;
+  }
+
+  assertNever(props.prop);
+}
+
+function PreviewWrapper(
+  props: ComponentFieldProps<
+    Extract<
+      ComponentPropField,
+      { kind: 'conditional' | 'form' | 'object' | 'relationship' | 'array' }
+    >
+  >
+) {
+  const relationships = useDocumentFieldRelationships();
+  const Preview = props.prop.preview as (
+    props: PreviewProps<ComponentPropField>
+  ) => ReactElement | null;
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <div>
+      {isOpen ? (
+        <FormValueInsidePreviewBit
+          {...props}
+          onClose={() => {
+            setIsOpen(false);
+          }}
+        />
+      ) : (
+        <Preview
+          {...getPreviewPropsForProp(
+            props.prop,
+            props.value,
+            {},
+            props.path,
+            relationships,
+            newVal => props.onChange(() => newVal),
+            props.onAddArrayItem
+          )}
+        />
+      )}
+    </div>
+  );
+}
 
 export function findFirstFocusablePropPath(
   prop: ComponentPropField,
@@ -245,6 +310,29 @@ export function findFirstFocusablePropPath(
   assertNever(prop);
 }
 
+export function FormValueInsidePreviewBit({
+  onClose,
+  ...props
+}: { onClose(): void } & ComponentFieldProps<ComponentPropField>) {
+  const Comp = fieldRenderers[props.prop.kind];
+
+  return (
+    <Stack gap="xlarge" contentEditable={false}>
+      <Comp {...(props as any)} />;
+      <KeystoneUIButton
+        size="small"
+        tone="active"
+        weight="bold"
+        onClick={() => {
+          onClose();
+        }}
+      >
+        Done
+      </KeystoneUIButton>
+    </Stack>
+  );
+}
+
 const basePath: PropPath = [];
 
 export function FormValue({
@@ -253,12 +341,14 @@ export function FormValue({
   onChange,
   componentBlockProps,
   isValid,
+  onAddArrayItem,
 }: {
   value: any;
   onChange(cb: (val: any) => any): void;
   onClose(): void;
   componentBlockProps: Record<string, ComponentPropField>;
   isValid: boolean;
+  onAddArrayItem(path: ReadonlyPropPath): void;
 }) {
   const [forceValidation, setForceValidation] = useState(false);
   const rootProp = useMemo(
@@ -275,6 +365,7 @@ export function FormValue({
         prop={rootProp}
         value={value}
         stringifiedPropPathToAutoFocus={focusablePath}
+        onAddArrayItem={onAddArrayItem}
       />
       <KeystoneUIButton
         size="small"

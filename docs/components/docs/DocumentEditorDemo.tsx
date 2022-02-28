@@ -268,6 +268,7 @@ export function DocumentFeaturesFormAndCode() {
         onChange={getNewVal => {
           setFormValue((getNewVal as any)(formValue));
         }}
+        onAddArrayItem={() => {}}
       />
     </div>
   );

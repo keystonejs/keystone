@@ -43,6 +43,7 @@ export type FormField<Value, Options> = {
    * a potentially malicious client
    */
   validate(value: unknown): boolean;
+  preview?: PreviewComponent;
 };
 
 export type FormFieldWithGraphQLField<Value, Options> = FormField<Value, Options> & {
@@ -105,6 +106,7 @@ export type ChildField = {
 export type ArrayField<ElementField extends ComponentPropField> = {
   kind: 'array';
   element: ElementField;
+  preview?: PreviewComponent;
 };
 
 export type RelationshipField<Cardinality extends 'one' | 'many'> = {
@@ -112,6 +114,7 @@ export type RelationshipField<Cardinality extends 'one' | 'many'> = {
   relationship: string;
   label: string;
   cardinality?: Cardinality;
+  preview?: PreviewComponent;
 };
 
 export interface ObjectField<
@@ -119,7 +122,11 @@ export interface ObjectField<
 > {
   kind: 'object';
   value: Value;
+  preview?: PreviewComponent;
 }
+
+export type PreviewProps<Field extends ComponentPropField> =
+  ExtractPropFromComponentPropFieldForPreview<Field>;
 
 type StringOrBooleanToString<Val extends string | boolean> = Val extends string
   ? Val
@@ -138,7 +145,13 @@ export type ConditionalField<
   kind: 'conditional';
   discriminant: DiscriminantField;
   values: ConditionalValues;
+  preview?: PreviewComponent;
 };
+
+type PreviewComponent = (props: unknown) => ReactElement | null;
+type TypedPreviewComponent<Field extends ComponentPropField> = (
+  props: PreviewProps<Field>
+) => ReactElement | null;
 
 export type ComponentPropField =
   | ChildField
@@ -147,7 +160,7 @@ export type ComponentPropField =
   | ConditionalField<FormField<string | boolean, any>, { [key: string]: ComponentPropField }>
   | RelationshipField<'one' | 'many'>
   // this is written like this rather than ArrayField<ComponentPropField> to avoid TypeScript erroring about circularity
-  | { kind: 'array'; element: ComponentPropField };
+  | { kind: 'array'; element: ComponentPropField; preview?: PreviewComponent };
 
 export type ComponentPropFieldForGraphQL =
   | FormFieldWithGraphQLField<any, any>
@@ -158,15 +171,17 @@ export type ComponentPropFieldForGraphQL =
     >
   | RelationshipField<'one' | 'many'>
   // this is written like this rather than ArrayField<ComponentPropField> to avoid TypeScript erroring about circularity
-  | { kind: 'array'; element: ComponentPropFieldForGraphQL };
+  | { kind: 'array'; element: ComponentPropFieldForGraphQL; preview?: PreviewComponent };
 
 export const fields = {
   text({
     label,
     defaultValue = '',
+    preview,
   }: {
     label: string;
     defaultValue?: string;
+    preview?: TypedPreviewComponent<FormFieldWithGraphQLField<string, undefined>>;
   }): FormFieldWithGraphQLField<string, undefined> {
     return {
       kind: 'form',
@@ -193,14 +208,17 @@ export const fields = {
         input: graphql.String,
         output: graphql.field({ type: graphql.String }),
       },
+      preview: preview as PreviewComponent,
     };
   },
   url({
     label,
     defaultValue = '',
+    preview,
   }: {
     label: string;
     defaultValue?: string;
+    preview?: TypedPreviewComponent<FormFieldWithGraphQLField<string, undefined>>;
   }): FormFieldWithGraphQLField<string, undefined> {
     const validate = (value: unknown) => {
       return typeof value === 'string' && (value === '' || isValidURL(value));
@@ -234,16 +252,19 @@ export const fields = {
         input: graphql.String,
         output: graphql.field({ type: graphql.String }),
       },
+      preview: preview as PreviewComponent,
     };
   },
   select<Option extends { label: string; value: string }>({
     label,
     options,
     defaultValue,
+    preview,
   }: {
     label: string;
     options: readonly Option[];
     defaultValue: Option['value'];
+    preview?: TypedPreviewComponent<FormFieldWithGraphQLField<Option['value'], readonly Option[]>>;
   }): FormFieldWithGraphQLField<Option['value'], readonly Option[]> {
     const optionValuesSet = new Set(options.map(x => x.value));
     return {
@@ -280,16 +301,21 @@ export const fields = {
           },
         }),
       },
+      preview: preview as PreviewComponent,
     };
   },
   multiselect<Option extends { label: string; value: string }>({
     label,
     options,
     defaultValue,
+    preview,
   }: {
     label: string;
     options: readonly Option[];
     defaultValue: readonly Option['value'][];
+    preview?: TypedPreviewComponent<
+      FormFieldWithGraphQLField<readonly Option['value'][], readonly Option[]>
+    >;
   }): FormFieldWithGraphQLField<readonly Option['value'][], readonly Option[]> {
     const valuesToOption = new Map(options.map(x => [x.value, x]));
     return {
@@ -327,14 +353,17 @@ export const fields = {
           },
         }),
       },
+      preview: preview as PreviewComponent,
     };
   },
   checkbox({
     label,
     defaultValue = false,
+    preview,
   }: {
     label: string;
     defaultValue?: boolean;
+    preview?: TypedPreviewComponent<FormFieldWithGraphQLField<boolean, undefined>>;
   }): FormFieldWithGraphQLField<boolean, undefined> {
     return {
       kind: 'form',
@@ -362,6 +391,7 @@ export const fields = {
         input: graphql.Boolean,
         output: graphql.field({ type: graphql.Boolean }),
       },
+      preview: preview as PreviewComponent,
     };
   },
   empty(): FormField<undefined, undefined> {
@@ -434,8 +464,13 @@ export const fields = {
             },
     };
   },
-  object<Value extends Record<string, ComponentPropField>>(value: Value): ObjectField<Value> {
-    return { kind: 'object', value };
+  object<Value extends Record<string, ComponentPropField>>(
+    value: Value,
+    opts?: {
+      preview?: TypedPreviewComponent<ObjectField<Value>>;
+    }
+  ): ObjectField<Value> {
+    return { kind: 'object', value, preview: opts?.preview as PreviewComponent };
   },
   conditional<
     DiscriminantField extends FormField<string | boolean, any>,
@@ -444,7 +479,10 @@ export const fields = {
     }
   >(
     discriminant: DiscriminantField,
-    values: ConditionalValues
+    values: ConditionalValues,
+    opts?: {
+      preview?: TypedPreviewComponent<ConditionalField<DiscriminantField, ConditionalValues>>;
+    }
   ): ConditionalField<DiscriminantField, ConditionalValues> {
     if (
       (discriminant.validate('true') || discriminant.validate('false')) &&
@@ -458,19 +496,25 @@ export const fields = {
       kind: 'conditional',
       discriminant,
       values: values,
+      preview: opts?.preview as PreviewComponent,
     };
   },
   relationship<Cardinality extends 'one' | 'many'>({
     relationship,
     label,
+    preview,
   }: {
     relationship: string;
     label: string;
+    preview: TypedPreviewComponent<RelationshipField<Cardinality>>;
   }): RelationshipField<Cardinality> {
-    return { kind: 'relationship', relationship, label };
+    return { kind: 'relationship', relationship, label, preview: preview as PreviewComponent };
   },
-  array<ElementField extends ComponentPropField>(element: ElementField): ArrayField<ElementField> {
-    return { kind: 'array', element };
+  array<ElementField extends ComponentPropField>(
+    element: ElementField,
+    opts?: { preview?: TypedPreviewComponent<ArrayField<ElementField>> }
+  ): ArrayField<ElementField> {
+    return { kind: 'array', element, preview: opts?.preview as PreviewComponent };
   },
 };
 
@@ -502,7 +546,12 @@ export type ExtractPropFromComponentPropFieldForPreview<Prop extends ComponentPr
   Prop extends ChildField
     ? ReactNode
     : Prop extends FormField<infer Value, infer Options>
-    ? { readonly value: Value; onChange(value: Value): void; readonly options: Options }
+    ? {
+        readonly value: Value;
+        onChange(value: Value): void;
+        readonly options: Options;
+        readonly field: Prop;
+      }
     : Prop extends ObjectField<infer Value>
     ? { readonly [Key in keyof Value]: ExtractPropFromComponentPropFieldForPreview<Value[Key]> }
     : Prop extends ConditionalField<infer DiscriminantField, infer Values>
@@ -514,6 +563,7 @@ export type ExtractPropFromComponentPropFieldForPreview<Prop extends ComponentPr
           readonly value: ExtractPropFromComponentPropFieldForPreview<
             CastToComponentPropField<Values[Key]>
           >;
+          field: Prop;
         };
       }[keyof Values]
     : Prop extends RelationshipField<infer Cardinality>
@@ -521,17 +571,48 @@ export type ExtractPropFromComponentPropFieldForPreview<Prop extends ComponentPr
         one: {
           readonly value: HydratedRelationshipData | null;
           onChange(relationshipData: HydratedRelationshipData | null): void;
+          field: Prop;
         };
         many: {
           readonly value: readonly HydratedRelationshipData[];
           onChange(relationshipData: readonly HydratedRelationshipData[]): void;
+          field: Prop;
         };
       }[Cardinality]
     : Prop extends ArrayField<infer ElementField>
     ? {
-        readonly elements: readonly ExtractPropFromComponentPropFieldForPreview<ElementField>[];
-        insert(): void;
+        elements: {
+          id: string;
+          element: ExtractPropFromComponentPropFieldForPreview<ElementField>;
+        }[];
+        move: (from: number, to: number) => void;
+        insert: (initial?: InitialValueForComponentPropField<ElementField>, index?: number) => void;
+        remove: (index: number) => void;
+        field: Prop;
       }
+    : never;
+
+export type InitialValueForComponentPropField<Prop extends ComponentPropField> =
+  Prop extends ChildField
+    ? null
+    : Prop extends FormField<infer Value, any>
+    ? Value
+    : Prop extends ObjectField<infer Value>
+    ? { readonly [Key in keyof Value]?: InitialValueForComponentPropField<Value[Key]> }
+    : Prop extends ConditionalField<infer DiscriminantField, infer Values>
+    ? {
+        readonly [Key in keyof Values]: {
+          readonly discriminant: DiscriminantStringToDiscriminantValue<DiscriminantField, Key>;
+          readonly value?: InitialValueForComponentPropField<CastToComponentPropField<Values[Key]>>;
+        };
+      }[keyof Values]
+    : Prop extends RelationshipField<infer Cardinality>
+    ? {
+        one: HydratedRelationshipData | null;
+        many: readonly HydratedRelationshipData[];
+      }[Cardinality]
+    : Prop extends ArrayField<infer ElementField>
+    ? InitialValueForComponentPropField<ElementField>[]
     : never;
 
 type DiscriminantStringToDiscriminantValue<

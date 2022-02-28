@@ -15,7 +15,12 @@ import { useCallback, useEffect, useRef } from 'react';
 import { FormValueContent } from '../DocumentEditor/component-blocks/form';
 import { getInitialPropsValue } from '../DocumentEditor/component-blocks/initial-values';
 import { ComponentPropFieldForGraphQL } from '../DocumentEditor/component-blocks/api';
-import { assertNever, ReadonlyPropPath } from '../DocumentEditor/component-blocks/utils';
+import {
+  assertNever,
+  ReadonlyPropPath,
+  transformProps,
+} from '../DocumentEditor/component-blocks/utils';
+import { areArraysEqual } from '../DocumentEditor/document-features-normalization';
 
 const basePath: ReadonlyPropPath = [];
 
@@ -45,6 +50,19 @@ export const Field = ({
         prop={field.prop}
         value={value}
         stringifiedPropPathToAutoFocus={autoFocus ? '' : ''}
+        onAddArrayItem={useCallback(
+          pathToInsertIn => {
+            onChange?.(
+              transformProps(field.prop, valueRef.current, (prop, value, path) => {
+                if (prop.kind === 'array' && areArraysEqual(path, pathToInsertIn)) {
+                  return [...(value as any[]), getInitialPropsValue(prop, {})];
+                }
+                return value;
+              })
+            );
+          },
+          [field.prop, onChange]
+        )}
       />
     </FieldContainer>
   );

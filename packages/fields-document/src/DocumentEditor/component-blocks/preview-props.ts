@@ -1,6 +1,7 @@
 import { Editor, Element, Transforms } from 'slate';
 import { ReactElement } from 'react';
 import { ReactEditor } from 'slate-react';
+import { arrayMove } from '@dnd-kit/sortable';
 import { ComponentBlock } from '../../component-blocks';
 import { Relationships } from '../relationship';
 import { areArraysEqual } from '../document-features-normalization';
@@ -10,37 +11,45 @@ import {
   findChildPropPathsForProp,
   getFieldAtPropPath,
   getPropsForConditionalChange,
-  PropPath,
   ReadonlyPropPath,
   transformProps,
 } from './utils';
-import { ComponentPropField } from './api';
+import {
+  ArrayField,
+  ComponentPropField,
+  ConditionalField,
+  FormField,
+  PreviewProps,
+  RelationshipField,
+} from './api';
 import { getInitialPropsValue } from './initial-values';
 
-function _getPreviewProps(
+export function getPreviewPropsForProp(
   prop: ComponentPropField,
   value: unknown,
   childrenByPath: Record<string, ReactElement>,
-  path: PropPath,
+  path: ReadonlyPropPath,
   relationships: Relationships,
   onFormPropsChange: (formProps: Record<string, any>) => void,
   onAddArrayItem: (path: ReadonlyPropPath) => void
 ): any {
   switch (prop.kind) {
     case 'form':
-      return {
+      const props: PreviewProps<FormField<unknown, unknown>> = {
         value,
         onChange(newValue: any) {
           onFormPropsChange(newValue);
         },
         options: prop.options,
+        field: prop,
       };
+      return props;
     case 'child':
       return childrenByPath[JSON.stringify(path)];
     case 'object': {
       const previewProps: Record<string, any> = {};
       Object.keys(prop.value).forEach(key => {
-        previewProps[key] = _getPreviewProps(
+        previewProps[key] = getPreviewPropsForProp(
           prop.value[key],
           (value as any)[key],
           childrenByPath,
@@ -55,16 +64,23 @@ function _getPreviewProps(
       return previewProps;
     }
     case 'relationship': {
-      return {
-        value,
+      const props: PreviewProps<RelationshipField<'many' | 'one'>> = {
+        value: value as any,
         onChange(newValue: any) {
           onFormPropsChange(newValue);
         },
+        field: prop,
       };
+      return props;
     }
     case 'conditional': {
       const conditionalValue = value as { discriminant: string | boolean; value: unknown };
-      return {
+      const props: PreviewProps<
+        ConditionalField<
+          FormField<string | boolean, unknown>,
+          { [key: string]: ComponentPropField }
+        >
+      > = {
         discriminant: (value as any).discriminant,
         onChange(newDiscriminant: any) {
           onFormPropsChange(
@@ -77,7 +93,7 @@ function _getPreviewProps(
           );
         },
         options: prop.discriminant.options,
-        value: _getPreviewProps(
+        value: getPreviewPropsForProp(
           prop.values[conditionalValue.discriminant.toString()],
           conditionalValue.value,
           childrenByPath,
@@ -91,13 +107,15 @@ function _getPreviewProps(
           },
           onAddArrayItem
         ),
+        field: prop,
       };
+      return props;
     }
     case 'array': {
       const arrayValue = value as unknown[];
-      return {
+      const props: PreviewProps<ArrayField<ComponentPropField>> = {
         elements: arrayValue.map((val, i) =>
-          _getPreviewProps(
+          getPreviewPropsForProp(
             prop.element,
             val,
             childrenByPath,
@@ -111,10 +129,21 @@ function _getPreviewProps(
             onAddArrayItem
           )
         ),
-        insert() {
-          onAddArrayItem(path);
+        field: prop,
+        insert(initial, index) {
+          // onAddArrayItem(path);
+          const newValue = [...(value as unknown[])];
+          newValue.splice(index ?? newValue.length, 0, initial);
+          onFormPropsChange(newValue);
+        },
+        move(from, to) {
+          onFormPropsChange(arrayMove(value as unknown[], from, to));
+        },
+        remove(index) {
+          onFormPropsChange((value as unknown[]).filter((_, i) => i !== index));
         },
       };
+      return props;
     }
     default: {
       assertNever(prop);
@@ -131,7 +160,7 @@ export function createPreviewProps(
   editor: Editor,
   elementToGetPropPath: Element & { type: 'component-block' }
 ) {
-  return _getPreviewProps(
+  return getPreviewPropsForProp(
     { kind: 'object', value: componentBlock.props },
     element.props,
     childrenByPath,
@@ -145,7 +174,7 @@ export function createPreviewProps(
   );
 }
 
-function onAddArrayItem(
+export function onAddArrayItem(
   editor: Editor,
   path: ReadonlyPropPath,
   element: Element & { type: 'component-block' },

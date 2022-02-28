@@ -2,42 +2,15 @@
 /** @jsx jsx */
 import { jsx, Stack } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
-import {
-  closestCenter,
-  DndContext,
-  KeyboardSensor,
-  MouseSensor,
-  TouchSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
-import {
-  arrayMove,
-  useSortable,
-  SortableContext,
-  verticalListSortingStrategy,
-  sortableKeyboardCoordinates,
-} from '@dnd-kit/sortable';
-import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
+import { arrayMove } from '@dnd-kit/sortable';
 import { memo, useMemo, useState } from 'react';
 import { useDocumentFieldRelationships } from '../relationship';
+import { DragHandle, SortableItem, SortableList } from '../primitives/sortable';
 import { getInitialPropsValue } from './initial-values';
 import { ArrayField, ComponentPropField } from './api';
 import { ComponentFieldProps, FormValueContent } from './form';
-import { PropPath } from './utils';
+import { PropPath, ReadonlyPropPath } from './utils';
 
-const dragIcon = (
-  <svg width="18" height="24" viewBox="0 0 18 24" xmlns="http://www.w3.org/2000/svg">
-    <g fill="#939393">
-      <circle cy="6" cx="6" r="2" />
-      <circle cy="6" cx="12" r="2" />
-      <circle cy="12" cx="6" r="2" />
-      <circle cy="12" cx="12" r="2" />
-      <circle cy="18" cx="6" r="2" />
-      <circle cy="18" cx="12" r="2" />
-    </g>
-  </svg>
-);
 let keyCount = 0;
 
 export function ArrayFormValueContent({
@@ -47,15 +20,9 @@ export function ArrayFormValueContent({
   onChange,
   stringifiedPropPathToAutoFocus,
   forceValidation,
+  onAddArrayItem,
 }: ComponentFieldProps<ArrayField<ComponentPropField>>) {
   const relationships = useDocumentFieldRelationships();
-  const sensors = useSensors(
-    useSensor(MouseSensor),
-    useSensor(TouchSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
 
   const { length } = value;
   // this is not ideal since every item will re-render after adding a new item
@@ -104,56 +71,41 @@ export function ArrayFormValueContent({
   }
 
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
-      modifiers={[restrictToVerticalAxis]}
-      onDragEnd={({ over, active }) => {
-        if (over && over.id !== active.id) {
-          const overIndex = keys.indexOf(over.id);
-          const activeIndex = keys.indexOf(active.id);
-          setKeys(arrayMove(keys, activeIndex, overIndex));
-          onChange(value => arrayMove(value as any[], activeIndex, overIndex));
-        }
-      }}
-    >
-      <SortableContext items={keys} strategy={verticalListSortingStrategy}>
-        <ul
-          css={{
-            isolation: 'isolate',
-            display: 'flex',
-            gap: 8,
-            flexDirection: 'column',
-            padding: 0,
-          }}
-        >
-          {value.map((val, i) => {
-            return (
-              <SortableItem
-                key={keys[i]}
-                id={keys[i]}
-                forceValidation={forceValidation}
-                stringifiedPropPathToAutoFocus={stringifiedPropPathToAutoFocus}
-                prop={prop.element}
-                value={val}
-                {...memoizedPropsForItems[i]}
-              />
-            );
-          })}
-          <Button
-            onClick={() => {
-              onChange(value => [...value, getInitialPropsValue(prop.element, relationships)]);
-            }}
-          >
-            Add
-          </Button>
-        </ul>
-      </SortableContext>
-    </DndContext>
+    <Stack gap="medium">
+      <SortableList
+        elements={keys}
+        move={(from, to) => {
+          setKeys(arrayMove(keys, from, to));
+          onChange(value => arrayMove(value as any[], from, to));
+        }}
+      >
+        {value.map((val, i) => {
+          return (
+            <SortableItemInForm
+              key={keys[i]}
+              id={keys[i]}
+              forceValidation={forceValidation}
+              stringifiedPropPathToAutoFocus={stringifiedPropPathToAutoFocus}
+              onAddArrayItem={onAddArrayItem}
+              prop={prop.element}
+              value={val}
+              {...memoizedPropsForItems[i]}
+            />
+          );
+        })}
+      </SortableList>
+      <Button
+        onClick={() => {
+          onChange(value => [...value, getInitialPropsValue(prop.element, relationships)]);
+        }}
+      >
+        Add
+      </Button>
+    </Stack>
   );
 }
 
-const SortableItem = memo(function SortableItem({
+const SortableItemInForm = memo(function SortableItemInForm({
   id,
   onRemove,
   ...props
@@ -166,68 +118,17 @@ const SortableItem = memo(function SortableItem({
   stringifiedPropPathToAutoFocus: string;
   forceValidation: boolean;
   onRemove: () => void;
+  onAddArrayItem: (path: ReadonlyPropPath) => void;
 }) {
-  const { attributes, isDragging, listeners, setNodeRef, transform, transition } = useSortable({
-    id,
-  });
-
-  const style = {
-    transition,
-    zIndex: isDragging ? 2 : 1,
-    '--translate-x': `${Math.round(transform?.x ?? 0)}px`,
-    '--translate-y': `${Math.round(transform?.y ?? 0)}px`,
-    cursor: isDragging ? 'grabbing' : undefined,
-  };
   return (
-    <li
-      ref={setNodeRef}
-      css={{
-        transform: `translateX(var(--translate-x, 0)) translateY(var(--translate-y, 0))`,
-        listStyle: 'none',
-      }}
-      style={style}
-    >
-      <div
-        style={{
-          pointerEvents: isDragging ? 'none' : undefined,
-          transform: `scale(${isDragging ? '1.02' : '1'})`,
-          boxShadow: isDragging
-            ? 'rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 12%) 0px 10px 5px 0px'
-            : 'rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 12%) 0px 1px 5px 0px',
-        }}
-        css={{
-          backgroundColor: 'white',
-          borderRadius: 8,
-          padding: '8px',
-          transition: 'transform 100ms ease, box-shadow 150ms ease',
-        }}
-      >
-        <Stack across align="center" gap="small" css={{ justifyContent: 'center' }}>
-          <button
-            {...attributes}
-            css={{
-              display: 'flex',
-              justifyContent: 'center',
-              cursor: isDragging ? 'grabbing' : 'grab',
-              appearance: 'none',
-              background: 'transparent',
-              borderRadius: 4,
-              padding: 0,
-              ':focus-visible': {
-                outline: ['2px solid Highlight', '2px solid -webkit-focus-ring-color'],
-              },
-            }}
-            aria-label="Drag handle"
-            {...listeners}
-          >
-            {dragIcon}
-          </button>
-          <Button tone="negative" onClick={onRemove}>
-            Remove
-          </Button>
-        </Stack>
-        <FormValueContent {...props} />
-      </div>
-    </li>
+    <SortableItem id={id}>
+      <Stack across align="center" gap="small" css={{ justifyContent: 'center' }}>
+        <DragHandle />
+        <Button tone="negative" onClick={onRemove}>
+          Remove
+        </Button>
+      </Stack>
+      <FormValueContent {...props} />s
+    </SortableItem>
   );
 });

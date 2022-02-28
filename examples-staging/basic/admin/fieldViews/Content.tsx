@@ -15,6 +15,7 @@ import {
   ToolbarSeparator,
 } from '@keystone-6/fields-document/primitives';
 import { useEffect } from 'react';
+import { Button } from '@keystone-ui/button';
 
 const noticeIconMap = {
   info: InfoIcon,
@@ -24,6 +25,146 @@ const noticeIconMap = {
 };
 
 export const componentBlocks = {
+  // yellowBackgroundDivider: component({
+  //   component: () => <NotEditable>Yellow Divider</NotEditable>,
+  //   props: {},
+  //   label: 'Yellow Background Divider',
+  // }),
+  // button: component({
+  //   component: props => {
+  //     return <div>{props.content}</div>;
+  //   },
+  //   props: {
+  //     content: fields.child({ kind: 'inline', placeholder: 'Content' }),
+  //   },
+  //   label: 'Button',
+  // }),
+  // modalButton: component({
+  //   component: function ModalThing(props) {
+  //     const [isOpen, setIsOpen] = useState(false);
+  //     return (
+  //       <div>
+  //         {props.buttonContent}
+  //         <div>
+  //           <NotEditable>
+  //             <button
+  //               onClick={() => {
+  //                 setIsOpen(x => !x);
+  //               }}
+  //             >
+  //               Toggle Modal
+  //             </button>
+  //           </NotEditable>
+  //         </div>
+  //         <div style={{ display: isOpen ? 'block' : 'none' }}>
+  //           <NotEditable>
+  //             <h1>Modal Content</h1>
+  //           </NotEditable>
+  //           {props.modalContent}
+  //         </div>
+  //       </div>
+  //     );
+  //   },
+  //   props: {
+  //     buttonContent: fields.child({ kind: 'inline', placeholder: 'Content' }),
+  //     modalContent: fields.child({ kind: 'block', placeholder: 'Content' }),
+  //   },
+  //   label: 'Modal Button',
+  // }),
+  thing: component({
+    component: props => {
+      return (
+        <div>
+          <h1>{props.heading}</h1>
+          <NotEditable>
+            <h1>{props.icon.value}</h1>
+          </NotEditable>
+          <div>{props.content}</div>
+        </div>
+      );
+    },
+    props: {
+      heading: fields.child({ kind: 'inline', placeholder: 'Heading' }),
+      icon: fields.select({
+        label: 'Icon',
+        options: [{ label: 'A', value: 'a' }],
+        defaultValue: 'a',
+      }),
+      content: fields.child({ kind: 'block', placeholder: 'Content' }),
+    },
+    label: 'thing',
+  }),
+  table: component({
+    component: function MyTable({ rows }) {
+      // useEffect(() => {
+      //   let maxColumns = 1;
+      //   for (const row of rows.elements) {
+      //     if (row.elements.length > maxColumns) {
+      //       maxColumns = row.elements.length;
+      //     }
+      //   }
+      //   for (const columns of rows.elements) {
+      //     for (const _ of Array.from({ length: maxColumns - columns.elements.length })) {
+      //       columns.insert();
+      //     }
+      //   }
+      // });
+
+      return (
+        <div>
+          <table css={{ width: '100%' }}>
+            <tbody>
+              {rows.elements.map((row, i) => {
+                return (
+                  <tr key={i} css={{ border: '1px solid black' }}>
+                    {row.elements.map((column, i) => {
+                      return (
+                        <td key={i} css={{ border: '1px solid black' }}>
+                          {column.content}
+                        </td>
+                      );
+                    })}
+                    <NotEditable>
+                      <Button
+                        onClick={() => {
+                          row.insert();
+                        }}
+                      >
+                        Insert Column
+                      </Button>
+                    </NotEditable>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          <NotEditable>
+            <div
+              onClick={() => {
+                rows.insert();
+              }}
+            >
+              <Button>Insert row</Button>
+            </div>
+          </NotEditable>
+        </div>
+      );
+    },
+    label: 'Table',
+    props: {
+      rows: fields.array(
+        fields.array(
+          fields.object({
+            content: fields.child({ kind: 'block', placeholder: '' }),
+          })
+        )
+      ),
+      headers: fields.object({
+        row: fields.checkbox({ label: 'Header Row' }),
+        column: fields.checkbox({ label: 'Header Column' }),
+      }),
+    },
+  }),
   myList: component({
     component: function MyList({ children }) {
       useEffect(() => {
@@ -32,20 +173,33 @@ export const componentBlocks = {
         }
       });
       return (
-        <ul css={{ padding: 0 }}>
-          {children.elements.map((element, i) => (
-            <li css={{ listStyle: 'none' }} key={i}>
-              <input
-                contentEditable="false"
-                css={{ marginRight: 8 }}
-                type="checkbox"
-                checked={element.done.value}
-                onChange={event => element.done.onChange(event.target.checked)}
-              />
-              {element.content}
-            </li>
-          ))}
-        </ul>
+        <div>
+          <ul css={{ padding: 0 }}>
+            {children.elements.map((element, i) => (
+              <li css={{ listStyle: 'none' }} key={i}>
+                <input
+                  contentEditable="false"
+                  css={{ marginRight: 8 }}
+                  type="checkbox"
+                  checked={element.done.value}
+                  onChange={event => element.done.onChange(event.target.checked)}
+                />
+                <span style={{ textDecoration: element.done.value ? 'line-through' : undefined }}>
+                  {element.content}
+                </span>
+              </li>
+            ))}
+          </ul>
+          <NotEditable>
+            <Button
+              onClick={() => {
+                children.insert();
+              }}
+            >
+              Add
+            </Button>
+          </NotEditable>
+        </div>
       );
     },
     label: 'My List',
@@ -57,7 +211,7 @@ export const componentBlocks = {
         })
       ),
     },
-    // chromeless: true,
+    chromeless: true,
   }),
   hero: component({
     component: props => {
@@ -327,7 +481,7 @@ export const componentBlocks = {
       content: fields.child({
         kind: 'block',
         placeholder: 'Quote...',
-        formatting: { inlineMarks: 'inherit', softBreaks: 'inherit' },
+        formatting: { inlineMarks: 'inherit', softBreaks: 'inherit', alignment: 'inherit' },
         links: 'inherit',
       }),
       attribution: fields.child({ kind: 'inline', placeholder: 'Attribution...' }),
@@ -335,3 +489,5 @@ export const componentBlocks = {
     chromeless: true,
   }),
 };
+
+fields.relationship;
