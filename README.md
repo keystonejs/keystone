@@ -75,17 +75,3 @@ KeystoneJS adheres to the [Contributor Covenant Code of Conduct](/CODE-OF-CONDUC
 ## License
 
 Copyright (c) 2021 Thinkmill Labs Pty Ltd. Licensed under the MIT License.
-
-[tsserver 2322] [E] Type ‘(newValue: Array<Collaborator | string>) => void’ is not assignable to type ‘(((users: { **typename: “User”; id: string; name: string; email: string; pictureUrl?: string | null | undefined; status?: MembershipStatus | null | undefined; position?: string | ... 1 more ... | undefined; role?: WorkspaceUserRole | ... 1 more ... | undefined; }[]) => void) & (((value: string[] | null) => void) | ....‘.
-Type ‘(newValue: Array<Collaborator | string>) => void’ is not assignable to type ‘((users: { **typename: “User”; id: string; name: string; email: string; pictureUrl?: string | null | undefined; status?: MembershipStatus | null | undefined; position?: string | null | undefined; role?: WorkspaceUserRole | ... 1 more ... | undefined; }[]) => void) & ((value: string[] | null) => void)‘.
-Type ‘(newValue: Array<Collaborator | string>) => void’ is not assignable to type ‘(value: string[] | null) => void’.
-Types of parameters ‘newValue’ and ‘value’ are incompatible.
-Type ‘string[] | null’ is not assignable to type ‘(string | { **typename: “User”; id: string; name: string; email: string; pictureUrl?: string | null | undefined; status?: MembershipStatus | null | undefined; position?: string | ... 1 more ... | undefined; role?: WorkspaceUserRole | ... 1 more ... | undefined; })[]’.
-Type ‘null’ is not assignable to type ‘(string | { **typename: “User”; id: string; name: string; email: string; pictureUrl?: string | null | undefined; status?: MembershipStatus | null | undefined; position?: string | ... 1 more ... | undefined; role?: WorkspaceUserRole | ... 1 more ... | undefined; })[]’.
-
-[tsserver 2322] [E] Type ‘(newValue: Array<Collaborator | string>) => void’ is not assignable to type ‘(((users: Collaborator[]) => void) & (((value: string[] | null) => void) | ((value: string | null) => void | Promise<void>) | undefined)) | (((users: (string | Collaborator)[]) => void) & (((value: string[] | null) => void) | ... 1 more ... | undefined)) | (((user: Collaborator | null) => void) & (((value: string[] ...‘.
-Type ‘(newValue: Array<Collaborator | string>) => void’ is not assignable to type ‘((users: Collaborator[]) => void) & ((value: string[] | null) => void)‘.
-Type ‘(newValue: Array<Collaborator | string>) => void’ is not assignable to type ‘(value: string[] | null) => void’.
-Types of parameters ‘newValue’ and ‘value’ are incompatible.
-Type ‘string[] | null’ is not assignable to type ‘(string | Collaborator)[]’.
-Type ‘null’ is not assignable to type ‘(string | Collaborator)[]’.
