@@ -1,6 +1,7 @@
 import path from 'path';
 import crypto from 'crypto';
 import fs from 'fs';
+import { Server } from 'http';
 import express from 'express';
 import supertest, { Test } from 'supertest';
 import memoizeOne from 'memoize-one';
@@ -24,6 +25,7 @@ export type TestArgs = {
   context: KeystoneContext;
   graphQLRequest: GraphQLRequest;
   app: express.Express;
+  server: Server;
 };
 
 export type TestEnv = {
@@ -65,11 +67,11 @@ export async function setupTestEnv({
 
   const { connect, disconnect, createContext } = getKeystone(requirePrismaClient(artifactPath));
 
-  const { expressServer: app, apolloServer } = await createExpressServer(
-    config,
-    graphQLSchema,
-    createContext
-  );
+  const {
+    expressServer: app,
+    apolloServer,
+    httpServer: server,
+  } = await createExpressServer(config, graphQLSchema, createContext);
 
   const graphQLRequest: GraphQLRequest = ({ query, variables = undefined, operationName }) =>
     supertest(app)
@@ -82,7 +84,7 @@ export async function setupTestEnv({
     disconnect: async () => {
       await Promise.all([disconnect(), apolloServer.stop()]);
     },
-    testArgs: { context: createContext(), graphQLRequest, app },
+    testArgs: { context: createContext(), graphQLRequest, app, server },
   };
 }
 
