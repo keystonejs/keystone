@@ -67,16 +67,21 @@ yarn add --dev typescript npm-run-all
 touch pages/index.tsx
 ```
 
-```
+Open `pages/index.tsx` in your editor of choice and add:
 
+```ts
+import React from 'react';
+
+export default () => <div>Hello Keystone Dev!</div>
 ```
 
 ## Running the next app as well
 
 For development, we are going to want to run next alongside our keystone app.
-If we start our next app now, it will be smart and start on port `3001`, however we want to make a
-consistent relationship between the two, so we are going to set the port for keystone. On our
-keystone object, we can set the port on the server object:
+If we start our next app while our keystone app is running, it will be smart and run on port `3001`,
+however we want to make aconsistent relationship between the two, so that the next app has a consistent
+place to find keystone and connect with it. The best option here is to manually pick a port for keystone
+to be served on. In our `keystone.ts` file. we can tell keystone what port we want it to start on:
 
 ```ts{8-10}[1-4]
 import { config } from '@keystone-6/core';
@@ -92,21 +97,75 @@ export default config({
 });
 ```
 
-Now, we can open two terminals. In one we can run
+Now, we can open two terminal windows. In one we can run:
 
-```
-yarn dev
+```shell
+yarn keystone dev
 ```
 
-and in the second terminal we can run
+and in the second terminal we can run:
 
-```
-yarn dev:frontend
+```shell
+yarn next dev
 ```
 
 With both of these running, we can now access [localhost:3001/api/graphql](http://localhost:3001/api/graphql) for the graphql API, and then we can find our frontend on [localhost:3000](http://localhost:3000).
 
+### Improving the Dev Experience
+
+Since we are effectively working on only one app consisting of a frontend and backend, we ideally only want to run one command to start up both processes.
+
+To do this, we are going to use [npm-run-all](TODO):
+
+```shell
+yarn add --dev npm-run-all
+```
+
+Next we need to add some scripts to our `package.json`:
+
+```json
+{
+  "name": "@keystone-6/example-task-manager",
+  "version": "0.0.1",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "seed-data": "keystone --seed-data",
+    "keystone:dev": "keystone dev",
+    "next:dev": "next dev",
+    "dev": "run-p *:dev"
+  },
+  "dependencies": {
+    "@keystone-6/core": "^1.0.0",
+    "graphql": "^15.8.0",
+    "next": "^12.0.7",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.1.5",
+    "typescript": "^4.4.4"
+  },
+  "engines": {
+    "node": "^14.15 || ^16.13"
+  },
+}
+```
+
+> The versions are up-to-date when this was written - if you are using more recent versions of packages that should be a-ok
+
+Now you can get your app running with just with:
+
+```shell
+yarn dev
+```
+
+which will start both the next process and the keystone process.
+
 ## Connecting the frontend to keystone
+
+Our next step along our app journey is to connect our frontend to Keystone's graphql API, so we can render the information. As we mentioned earlier,
+we'll be using apollo, so let's install that:
 
 ```
 yarn add @apollo/client graphql
@@ -114,7 +173,9 @@ yarn add @apollo/client graphql
 
 ### Adding our apollo provider
 
-We are going to want a file, `src/pages/_app.tsx` - this file is responsible for global config in next. This is the best place to put an apollo provider so it will be accessible to all next pages.
+With The apollo client and graphql installed, we need to set up the apollo provider. We are going to want to set
+this up in a new file, `src/pages/_app.tsx` - this file is responsible for global config in next. This is the best
+place to put an apollo provider so it will be accessible to all next pages.
 
 ```ts
 import React from 'react';
@@ -138,13 +199,15 @@ function MyApp({ Component, pageProps }: AppProps) {
 export default MyApp;
 ```
 
-Add Explanatory text
+> We are looking to do a bit of future-proofing here. For deployment, we would need to provide an environment variable for the
+> graphql endpoint, but we can default it to http://localhost:3001/api/graphql for local development
 
-We have defaulted the graphql client url to `http://localhost:3001/api/graphql`, however have set up an ENV variable to override it, which will be needed if we were to deploy this app.
+This finishes the config set-up on next's side. Now we need to do some config in keystone land.
 
 ### Changing Keystone's CORS
 
-With this, we are almost ready to make a request, but we have another part of keystone config that needs setting.
+Keystone is pretty strict by default on how it handles cross-origin requests by default, but we want to allow our next frontend
+to make requests freely to keystone.
 
 ```ts{10-12}[1-4]
 import { config } from '@keystone-6/core';
@@ -163,9 +226,12 @@ export default config({
 });
 ```
 
-Once again, we are using an environment variable. In development mode, we are happy to set the `cors.origin` to `*`, however we would want to be more selective if we were to deploy this app.
+Once again, we are using an environment variable. In development mode, we are happy to set the `cors.origin` to `*`,
+however we would want to be more selective if we were to deploy this app, and have made cors permissive only in development mode..
 
 ## Making our first query
+
+Now that the config is complete, we should make a query to ensure that it's all working.
 
 Open the file `src/pages/index.tsx` - this file is where we will be working for the rest of this lesson series.
 
@@ -173,23 +239,14 @@ Currently it should look like:
 
 ```ts
 import React from 'react';
-import { Divider } from '../components';
 
-export default function Index() {
-  return (
-    <div>
-        <div>still to do: {'oh no what is it?'}</div>
-      <h2 style={{ textAlign: 'center' }}>To-Do 💻</h2>
-      <Divider />
-      <h2 style={{ textAlign: 'center' }}>Done! 🏖</h2>
-    </div>
-  );
-}
+export default () => <div>Hello Keystone Dev!</div>
 ```
 
-So let's get cracking!
+So let's get something more interesting on the page.
 
-For our first query, we're simply going to get the count of items. If we open the graphql explorer, we can see there's an easy option in the docs for getting the count of items in a list:
+For our test query, we're simply going to get the count of items.If we open the graphql explorer, found at http://localhost:3001/api/graphql,
+and look in the `DOCS` tab on the right, we can see that keystone allows us to get the count of items in a list. A query for tasks would look like:
 
 ```graphql
 query countQuery {
@@ -197,7 +254,8 @@ query countQuery {
 }
 ```
 
-however in this instance, we want to be a little more specific: we want just the items that are still to be complete. Keystone has an easy answer for this as it provides `where` properties for filtering on any field:
+however in this instance, we want to be a little more specific: we want just the items that are still to be complete.
+Keystone has an easy answer for this as it provides `where` properties for filtering on any field:
 
 ```graphql
 query countQuery {
@@ -205,9 +263,10 @@ query countQuery {
 }
 ```
 
-Now that we know what our query looks like, we need to put it into our file, so we can execute it. We want to use the `gql` helper from apollo to make this easier:
+Now that we know what our query looks like, we need to put it into our file, so we can execute it. We want to use
+the `gql` helper from apollo to make this easier:
 
-```ts{3,5-9}
+```tsx{3,5-9}
 import React from 'react';
 import { Divider } from '../components';
 import { gql } from '@apollo/client';
@@ -221,10 +280,9 @@ query countQuery {
 export default function Index() {
   return (
     <div>
-        <div>still to do: {'oh no what is it?'}</div>
+      <div>still to do: {'oh no what is it?'}</div>
       <h2 style={{ textAlign: 'center' }}>To-Do 💻</h2>
-      <Divider />
-      <h2 style={{ textAlign: 'center' }}>Done! 🏖</h2>
+      <div>To-do: display our todos</div>
     </div>
   );
 }
@@ -232,7 +290,7 @@ export default function Index() {
 
 Finally, we need to run the query. We are going to use the `useQuery` hook from apollo:
 
-```ts{3,12,13}
+```tsx{3,12,13}
 import React from 'react';
 import { Divider } from '../components';
 import { gql, useQuery } from '@apollo/client';
@@ -249,22 +307,23 @@ export default function Index() {
 
   return (
     <div>
-        <div>still to do: {'oh no what is it?'}</div>
+      <div>still to do: {'oh no what is it?'}</div>
       <h2 style={{ textAlign: 'center' }}>To-Do 💻</h2>
-      <Divider />
-      <h2 style={{ textAlign: 'center' }}>Done! 🏖</h2>
+      <div>To-do: display our todos</div>
     </div>
   );
 }
 ```
 
-Just to check that it's working, we've just added a console log to check in on the output of the query. Let's check in on the frontend and make sure it's all working. Cool!
+Just to check that it's working, we've just added a console log to check in on the output of the query.
+Let's check in on the frontend and make sure it's all working. Cool!
 
-Finally, let's handle rendering the count. We want to handle when the data is still loading, or if there is an error, so we'll quickly add early returns in those cases:
+Finally, let's handle rendering the count. We want to handle when the data is still loading, or if
+there is an error, so we'll quickly add early returns in those cases:
 
-```ts{14-25}[1-10]
+```tsx{14-25}[1-10]
 import React from 'react';
-import { Divider } from '../components';
+import { Error } from '../components';
 import { gql, useQuery } from '@apollo/client';
 
 const countQuery = gql`
@@ -274,27 +333,21 @@ query countQuery {
 `
 
 export default function Index() {
-    const { data, loading, error } = useQuery(countQuery)
+  const { data, loading, error } = useQuery(countQuery)
 
-      if (loading) {
-        return <div>Loading...</div>;
-    }
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-    if (error || !data) {
-        return (
-        <div>
-            <div>We had an error contacting the Keystone server - make sure it's up and running.</div>
-            <div>Error message: {error?.message}</div>
-        </div>
-        );
-    }
+  if (error || !data) {
+    return <Error error={error} />;
+  }
 
   return (
     <div>
-        <div>still to do: {'oh no what is it?'}</div>
+      <div>still to do: {'oh no what is it?'}</div>
       <h2 style={{ textAlign: 'center' }}>To-Do 💻</h2>
-      <Divider />
-      <h2 style={{ textAlign: 'center' }}>Done! 🏖</h2>
+      <div>To-do: display our todos</div>
     </div>
   );
 }
@@ -302,7 +355,7 @@ export default function Index() {
 
 And at last, rendering the count:
 
-```ts{29}[1-10,14-25]
+```tsx{29}[1-10,14-25]
 import React from 'react';
 import { Divider } from '../components';
 import { gql, useQuery } from '@apollo/client';
@@ -333,8 +386,7 @@ export default function Index() {
     <div>
         <div>still to do: {data.tasksCount}</div>
       <h2 style={{ textAlign: 'center' }}>To-Do 💻</h2>
-      <Divider />
-      <h2 style={{ textAlign: 'center' }}>Done! 🏖</h2>
+      <div>To-do: display our todos</div>
     </div>
   );
 }
@@ -346,7 +398,8 @@ Fantastic! We are now hitting the Keystone API, and rendering the count of items
 
 Now that we've confirmed the Keystone API is running, let's get our todos themselves, and render them.
 
-Before we add any code to our project, let's head to the graphql explorer to form our new query. For now, we are going to just get all todos, and we want to be able to display their priority, whether they are done, and the label for the to-do.
+Before we add any code to our project, let's head to the graphql explorer to form our new query. For now, we are going
+to just get all todos, and we want to be able to display their priority, whether they are done, and the label for the to-do.
 
 ```graphql
 query getTasks {
@@ -359,13 +412,13 @@ query getTasks {
 }
 ```
 
-| Keystone adds a query type for each list to get one item, or, like here, get many items. Using the graphql exploerer you can look at the type signatures for all available queries
+> Keystone adds a query type for each list to get one item, or, like here, get many items. Using the graphql exploerer you can look at the type signatures for all available queries
 
 Execute our new query and check it's giving us what we want, great!
 
 Okay, we've decided the count query isn't that useful, so we're going to remove the count from our app, and replace it with performing our new query:
 
-```ts{5-14}[1-4,19-32]
+```tsx{5-14}[1-4,19-32]
 import React from 'react';
 import { Divider } from '../components'
 import { gql, useQuery } from '@apollo/client';
@@ -382,27 +435,26 @@ query getTasks {
 `
 
 export default function Index() {
-    // We've replaced the countQuery with our new tasksQuery
-    const { data, loading, error } = useQuery(tasksQuery)
+  // We've replaced the countQuery with our new tasksQuery
+  const { data, loading, error } = useQuery(tasksQuery)
 
-      if (loading) {
-        return <div>Loading...</div>;
-    }
+    if (loading) {
+      return <div>Loading...</div>;
+  }
 
-    if (error || !data) {
-        return (
-        <div>
-            <div>We had an error contacting the Keystone server - make sure it's up and running.</div>
-            <div>Error message: {error?.message}</div>
-        </div>
-        );
-    }
+  if (error || !data) {
+      return (
+      <div>
+          <div>We had an error contacting the Keystone server - make sure it's up and running.</div>
+          <div>Error message: {error?.message}</div>
+      </div>
+      );
+  }
 
   return (
     <div>
       <h2 style={{ textAlign: 'center' }}>To-Do 💻</h2>
-      <Divider />
-      <h2 style={{ textAlign: 'center' }}>Done! 🏖</h2>
+      <div>To-do: display our todos</div>
     </div>
   );
 }
@@ -412,7 +464,7 @@ For displaying them, we are going to use an existing component we can import, `T
 
 ```tsx{2}[4-1000]
 import React from 'react';
-import { Divider, TodoItem } from '../components'
+import { TodoItem } from '../components'
 import { gql, useQuery } from '@apollo/client';
 
 const tasksQuery = gql`
@@ -445,8 +497,7 @@ export default function Index() {
   return (
     <div>
       <h2 style={{ textAlign: 'center' }}>To-Do 💻</h2>
-      <Divider />
-      <h2 style={{ textAlign: 'center' }}>Done! 🏖</h2>
+      <div>To-do: display our todos</div>
     </div>
   );
 }
@@ -456,7 +507,7 @@ From here, we can map over our data to render todo items:
 
 ```tsx{35-38}[1-4,18-31]
 import React from 'react';
-import { Divider, TodoItem } from '../components'
+import { TodoItem } from '../components'
 import { gql, useQuery } from '@apollo/client';
 
 const tasksQuery = gql`
@@ -469,6 +520,8 @@ const tasksQuery = gql`
     }
   }
 `
+
+TODO pick up from here
 
 export default function Index() {
     const { data, loading, error } = useQuery(tasksQuery)
