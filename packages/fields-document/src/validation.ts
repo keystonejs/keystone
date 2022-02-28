@@ -35,23 +35,7 @@ function validateComponentBlockProps(
     return undefined;
   }
   if (prop.kind === 'relationship') {
-    // these two checks will only fail because of things done by the solution developer, not an solution user
-    // TODO: move these checks
-    const relationship = relationships[prop.relationship];
-    if (!relationship) {
-      throw new PropValidationError(
-        `Relationship prop specifies the relationship "${prop.relationship}" but it is not an allowed relationship`,
-        path
-      );
-    }
-    if (relationship.kind !== 'prop') {
-      throw new PropValidationError(
-        `Unexpected relationship "${prop.relationship}" of kind "${relationship.kind}" where the kind should be "prop"`,
-        path
-      );
-    }
-
-    if (relationship.many) {
+    if (prop.many) {
       if (Array.isArray(value) && value.every(isRelationshipData)) {
         // yes, ts understands this completely correctly, i'm as suprised as you are
         return value.map(x => ({ id: x.id }));

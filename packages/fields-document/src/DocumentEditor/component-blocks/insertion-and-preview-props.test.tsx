@@ -4,7 +4,6 @@
 import { Transforms, Element, Editor } from 'slate';
 import React from 'react';
 import { jsx, makeEditor } from '../tests/utils';
-import { Relationships } from '../relationship';
 import { component, fields } from '../../component-blocks';
 import { createPreviewProps } from './preview-props';
 import { ExtractPropFromComponentPropFieldForPreview } from './api';
@@ -14,7 +13,7 @@ const objectProp = fields.object({
   prop: fields.text({ label: 'Prop' }),
   block: fields.child({ kind: 'block', placeholder: '' }),
   inline: fields.child({ kind: 'inline', placeholder: '' }),
-  many: fields.relationship<'many'>({ label: 'Relationship', relationship: 'many' }),
+  many: fields.relationship({ label: 'Relationship', listKey: 'many', many: true }),
   select: fields.select({
     label: 'Select',
     defaultValue: 'a',
@@ -25,7 +24,7 @@ const objectProp = fields.object({
   }),
   conditional: fields.conditional(fields.checkbox({ label: 'Conditional' }), {
     true: fields.child({ kind: 'block', placeholder: '' }),
-    false: fields.relationship<'one'>({ label: 'Relationship', relationship: 'one' }),
+    false: fields.relationship({ label: 'Relationship', listKey: 'one' }),
   }),
   conditionalSelect: fields.conditional(
     fields.select({
@@ -66,21 +65,6 @@ const componentBlocks = {
   }),
 };
 
-const relationships: Relationships = {
-  one: {
-    kind: 'prop',
-    many: false,
-    listKey: 'User',
-    selection: null,
-  },
-  many: {
-    kind: 'prop',
-    many: true,
-    listKey: 'User',
-    selection: null,
-  },
-};
-
 test('inserting a void component block', () => {
   let editor = makeEditor(
     <editor>
@@ -92,7 +76,7 @@ test('inserting a void component block', () => {
     </editor>,
     { componentBlocks }
   );
-  insertComponentBlock(editor, componentBlocks, 'void', relationships);
+  insertComponentBlock(editor, componentBlocks, 'void');
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -127,9 +111,9 @@ test('inserting a complex component block', () => {
         </text>
       </paragraph>
     </editor>,
-    { componentBlocks, relationships }
+    { componentBlocks }
   );
-  insertComponentBlock(editor, componentBlocks, 'complex', relationships);
+  insertComponentBlock(editor, componentBlocks, 'complex');
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -203,7 +187,6 @@ const getPreviewProps = (
       '["object","inline"]': React.createElement('inline-prop'),
       '["object","conditional","value"]': React.createElement('conditional-prop'),
     },
-    relationships,
     data => {
       Transforms.setNodes(editor, data, { at: [0] });
     }
@@ -245,7 +228,7 @@ const makeEditorWithComplexComponentBlock = () =>
         <text />
       </paragraph>
     </editor>,
-    { componentBlocks, relationships }
+    { componentBlocks }
   );
 
 test('preview props api', () => {
