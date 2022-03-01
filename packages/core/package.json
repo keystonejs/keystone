@@ -103,7 +103,7 @@
     "memoize-one": "^6.0.0",
     "meow": "^9.0.0",
     "micro": "^9.3.4",
-    "next": "^12.0.7",
+    "next": "^12.1.0",
     "node-fetch": "^2.6.7",
     "normalize-path": "^3.0.0",
     "object-hash": "^3.0.0",
