@@ -46,14 +46,17 @@ export const createApolloServerExpress = ({
   sessionStrategy?: SessionStrategy<any>;
   graphqlConfig?: GraphQLConfig;
 }) => {
-  const context = async ({ req, res }: { req: IncomingMessage; res: ServerResponse }) =>
-    createContext({
+  const serverConfig = _createApolloServerConfig({ graphQLSchema, graphqlConfig });
+  const contextInConfig = serverConfig.context;
+  const context = async ({ req, res }: { req: IncomingMessage; res: ServerResponse }) => ({
+    ...typeof contextInConfig === 'function' ? contextInConfig({ req, res }) : { ...contextInConfig },
+    ...createContext({
       sessionContext: sessionStrategy
         ? await createSessionContext(sessionStrategy, req, res, createContext)
         : undefined,
       req,
-    });
-  const serverConfig = _createApolloServerConfig({ graphQLSchema, graphqlConfig });
+    })
+  });
   return new ApolloServerExpress({ ...serverConfig, context });
 };
 
