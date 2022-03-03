@@ -1,4 +1,5 @@
 import path from 'path';
+import type { ListenOptions } from 'net';
 import url from 'url';
 import util from 'util';
 import express from 'express';
@@ -115,9 +116,9 @@ exports.default = function (req, res) { return res.send(x.toString()) }
         //   so we shouldn't log something like "hey, we reloaded your config"
         //   because it would go off at times when the user didn't change their config
 
-        const version = await fetch(`http://localhost:${port}/api/__keystone_api_build`).then(x =>
-          x.text()
-        );
+        const version = await fetch(
+          `http://localhost:${httpOptions.port}/api/__keystone_api_build`
+        ).then(x => x.text());
         if (lastVersion !== version) {
           lastVersion = version;
           const resolved = require.resolve(
@@ -231,19 +232,36 @@ exports.default = function (req, res) { return res.send(x.toString()) }
     res.sendFile(devLoadingHTMLFilepath);
   });
 
-  const port = config.server?.port || process.env.PORT || 3000;
   let initKeystonePromiseResolve: () => void | undefined;
   let initKeystonePromiseReject: (err: any) => void | undefined;
   let initKeystonePromise = new Promise<void>((resolve, reject) => {
     initKeystonePromiseResolve = resolve;
     initKeystonePromiseReject = reject;
   });
-  const server = app.listen(port, (err?: any) => {
+
+  const httpOptions: ListenOptions = {
+    port: 3000,
+  };
+
+  if (config?.server && 'port' in config.server) {
+    httpOptions.port = config.server.port;
+  }
+
+  if (config?.server && 'options' in config.server && config.server.options) {
+    Object.assign(httpOptions, config.server.options);
+  }
+
+  // preference env.PORT if supplied
+  if ('PORT' in process.env) {
+    httpOptions.port = parseInt(process.env.PORT || '');
+  }
+
+  const server = app.listen(httpOptions, (err?: any) => {
     if (err) throw err;
     // We start initialising Keystone after the dev server is ready,
-    console.log(`⭐️ Dev Server Starting on http://localhost:${port}`);
+    console.log(`⭐️ Dev Server Starting on http://localhost:${httpOptions.port}`);
     console.log(
-      `⭐️ GraphQL API Starting on http://localhost:${port}${
+      `⭐️ GraphQL API Starting on http://localhost:${httpOptions.port}${
         config.graphql?.path || '/api/graphql'
       }`
     );
