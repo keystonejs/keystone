@@ -1,3 +1,4 @@
+import path from 'path';
 import {
   BaseListTypeInfo,
   fieldType,
@@ -88,7 +89,7 @@ export const stars =
           return value;
         },
       }),
-      views: require.resolve('./views'),
+      views: path.join(process.cwd(), 'stars-field/views'),
       getAdminMeta() {
         return { maxStars };
       },

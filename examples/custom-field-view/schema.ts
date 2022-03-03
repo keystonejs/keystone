@@ -1,3 +1,4 @@
+import path from 'path';
 import { list } from '@keystone-6/core';
 import { checkbox, relationship, text, timestamp } from '@keystone-6/core/fields';
 import { json, select } from '@keystone-6/core/fields';
@@ -20,7 +21,7 @@ export const lists = {
       // We've added a json field which implements custom views in the Admin UI
       relatedLinks: json({
         ui: {
-          views: require.resolve('./fields/related-links/components.tsx'),
+          views: path.join(process.cwd(), 'fields/related-links/components'),
           createView: { fieldMode: 'edit' },
           listView: { fieldMode: 'hidden' },
           itemView: { fieldMode: 'edit' },
