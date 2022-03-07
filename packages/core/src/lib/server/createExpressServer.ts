@@ -1,4 +1,4 @@
-import { IncomingMessage, ServerResponse } from 'http';
+import { createServer, IncomingMessage, Server, ServerResponse } from 'http';
 import cors, { CorsOptions } from 'cors';
 import express from 'express';
 import { GraphQLSchema } from 'graphql';
@@ -64,8 +64,10 @@ export const createExpressServer = async (
     req: IncomingMessage;
     res: ServerResponse;
   }>;
+  httpServer: Server;
 }> => {
   const expressServer = express();
+  const httpServer = createServer(expressServer);
 
   if (config.server?.cors) {
     // Setting config.server.cors = true will provide backwards compatible defaults
@@ -91,6 +93,17 @@ export const createExpressServer = async (
     config.server?.extendExpressApp(expressServer, createRequestContext);
   }
 
+  if (config.server?.extendHttpServer) {
+    const createRequestContext = async (req: IncomingMessage, res: ServerResponse) =>
+      createContext({
+        sessionContext: config.session
+          ? await createSessionContext(config.session, req, res, createContext)
+          : undefined,
+        req,
+      });
+    config.server?.extendHttpServer(httpServer, createRequestContext);
+  }
+
   if (config.files) {
     expressServer.use(
       '/files',
@@ -114,5 +127,5 @@ export const createExpressServer = async (
     graphqlConfig: config.graphql,
   });
 
-  return { expressServer, apolloServer };
+  return { expressServer, apolloServer, httpServer };
 };

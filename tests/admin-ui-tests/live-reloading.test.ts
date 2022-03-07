@@ -65,6 +65,9 @@ test('api routes written with getAdditionalFiles containing [...rest] work', asy
 
 test('changing the label of a field updates in the Admin UI', async () => {
   await replaceSchema('second');
+  // Next shows a "we need to do a full reload" message
+  // this is expected because of how _app is written so we need to do the reload
+  page.click('button:has-text("Reload")');
 
   const element = await page.waitForSelector(
     'label:has-text("Very Important Text") >> .. >> input'

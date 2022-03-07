@@ -10,14 +10,11 @@ import { PropValidationError, validateAndNormalizeDocument } from './validation'
 // because the test utils run validation
 
 const relationships: Relationships = {
-  one: { kind: 'prop', listKey: 'Post', many: false, selection: 'somethine' },
   inline: {
-    kind: 'inline',
     label: 'Inline',
     listKey: 'Post',
     selection: `something`,
   },
-  many: { kind: 'prop', listKey: 'Post', many: true, selection: 'somethine' },
 };
 
 const componentBlocks: Record<string, ComponentBlock> = {
@@ -30,22 +27,8 @@ const componentBlocks: Record<string, ComponentBlock> = {
     component: () => null,
     label: '',
     props: {
-      one: fields.relationship({ label: '', relationship: 'one' }),
-      many: fields.relationship({ label: '', relationship: 'many' }),
-    },
-  }),
-  relationshipSpecifiedInPropThatDoesNotExist: component({
-    component: () => null,
-    label: '',
-    props: {
-      prop: fields.relationship({ label: '', relationship: 'doesNotExist' }),
-    },
-  }),
-  relationshipSpecifiedInPropIsWrongKind: component({
-    component: () => null,
-    label: '',
-    props: {
-      prop: fields.relationship({ label: '', relationship: 'inline' }),
+      one: fields.relationship({ label: '', listKey: 'Post', selection: 'something' }),
+      many: fields.relationship({ label: '', listKey: 'Post', many: true, selection: 'something' }),
     },
   }),
   object: component({
@@ -347,48 +330,6 @@ test('missing relationships', () => {
       },
     ])
   ).toMatchInlineSnapshot(`PropValidationError "Invalid relationship value" ["one"]`);
-});
-
-test('relationship specified in prop does not exist', () => {
-  expect(
-    validate([
-      {
-        type: 'component-block',
-        props: {
-          prop: null,
-        },
-        component: 'relationshipSpecifiedInPropThatDoesNotExist',
-        children: [],
-      },
-      {
-        type: 'paragraph',
-        children: [{ text: '' }],
-      },
-    ])
-  ).toMatchInlineSnapshot(
-    `PropValidationError "Relationship prop specifies the relationship \\"doesNotExist\\" but it is not an allowed relationship" ["prop"]`
-  );
-});
-
-test("relationship specified in prop is not kind: 'prop'", () => {
-  expect(
-    validate([
-      {
-        type: 'component-block',
-        props: {
-          prop: null,
-        },
-        component: 'relationshipSpecifiedInPropIsWrongKind',
-        children: [],
-      },
-      {
-        type: 'paragraph',
-        children: [{ text: '' }],
-      },
-    ])
-  ).toMatchInlineSnapshot(
-    `PropValidationError "Unexpected relationship \\"inline\\" of kind \\"inline\\" where the kind should be \\"prop\\"" ["prop"]`
-  );
 });
 
 test('excess prop', () => {

@@ -5,7 +5,6 @@ import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import React, { useState } from 'react';
 import { Button as KeystoneUIButton } from '@keystone-ui/button';
 import { ComponentPropField, RelationshipData, ComponentBlock } from '../../component-blocks';
-import { useDocumentFieldRelationships, Relationships } from '../relationship';
 import { assertNever, getPropsForConditionalChange } from './utils';
 import { RelationshipField } from './api';
 
@@ -20,17 +19,12 @@ function RelationshipFormInput({
   stringifiedPropPathToAutoFocus,
 }: {
   path: (string | number)[];
-  prop: RelationshipField<any>;
+  prop: RelationshipField<boolean>;
   value: any;
   onChange(value: any): void;
   stringifiedPropPathToAutoFocus: string;
 }) {
-  const relationships = useDocumentFieldRelationships();
   const keystone = useKeystone();
-  const relationship = relationships[prop.relationship] as Extract<
-    Relationships[string],
-    { kind: 'prop' }
-  >;
   const stringifiedPath = JSON.stringify(path);
   return (
     <FieldContainer>
@@ -39,11 +33,11 @@ function RelationshipFormInput({
         autoFocus={stringifiedPath === stringifiedPropPathToAutoFocus}
         controlShouldRenderValue
         isDisabled={false}
-        list={keystone.adminMeta.lists[relationship.listKey]}
-        extraSelection={relationship.selection || ''}
+        list={keystone.adminMeta.lists[prop.listKey]}
+        extraSelection={prop.selection || ''}
         portalMenu
         state={
-          relationship.many
+          prop.many
             ? {
                 kind: 'many',
                 value: (value as RelationshipData[]).map(x => ({
@@ -84,7 +78,6 @@ export function FormValueContent({
   stringifiedPropPathToAutoFocus: string;
   forceValidation: boolean;
 }) {
-  const relationships = useDocumentFieldRelationships();
   if (prop.kind === 'child') return null;
   if (prop.kind === 'object') {
     return (
@@ -113,12 +106,7 @@ export function FormValueContent({
           value={value.discriminant}
           onChange={discriminant => {
             onChange(
-              getPropsForConditionalChange(
-                { discriminant, value: value.value },
-                value,
-                prop,
-                relationships
-              )
+              getPropsForConditionalChange({ discriminant, value: value.value }, value, prop)
             );
           }}
           forceValidation={forceValidation && !prop.discriminant.validate(value)}

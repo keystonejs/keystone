@@ -29,7 +29,6 @@ export const lists = {
         // inline relationship which references the `Author` list.
         relationships: {
           mention: {
-            kind: 'inline',
             listKey: 'Author',
             label: 'Mention', // This will display in the Admin UI toolbar behind the `+` icon
             selection: 'id name', // These fields will be available to the renderer
