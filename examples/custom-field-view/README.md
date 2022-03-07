@@ -23,7 +23,7 @@ In this project we add a new JSON field to the `Task` list:
 ```typescript
 relatedLinks: json({
   ui: {
-      views: path.join(__dirname, 'fields/related-links/components.tsx'),
+      views: require.resolve('./fields/related-links/components.tsx'),
       createView: { fieldMode: 'edit' },
       listView: { fieldMode: 'hidden' },
       itemView: { fieldMode: 'edit' },

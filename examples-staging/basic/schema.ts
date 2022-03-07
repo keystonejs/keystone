@@ -1,4 +1,3 @@
-import path from 'path';
 import { list, graphQLSchemaExtension, gql, graphql } from '@keystone-6/core';
 import {
   text,
@@ -136,7 +135,7 @@ export const lists: Keystone.Lists = {
       title: text({ access: {} }),
       // TODO: expand this out into a proper example project
       // Enable this line to test custom field views
-      // test: text({ ui: { views: path.join(__dirname, 'admin/fieldViews/Test.tsx') } }),
+      // test: text({ ui: { views: require.resolve('./admin/fieldViews/Test.tsx') } }),
       status: select({
         options: [
           { label: 'Published', value: 'published' },
@@ -151,7 +150,7 @@ export const lists: Keystone.Lists = {
         defaultValue: 'draft',
       }),
       content: document({
-        ui: { views: path.join(__dirname, 'admin/fieldViews/Content.tsx') },
+        ui: { views: require.resolve('./admin/fieldViews/Content.tsx') },
         relationships: {
           mention: {
             label: 'Mention',

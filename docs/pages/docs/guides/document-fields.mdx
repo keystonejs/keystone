@@ -351,7 +351,6 @@ You need to import the `componentBlocks` and pass it to the document field along
 import { config, list } from '@keystone-6/core';
 import { document } from '@keystone-6/fields-document';
 import { componentBlocks } from './component-blocks';
-import path from 'path'
 
 export default config({
   lists: {
@@ -359,7 +358,7 @@ export default config({
       fields: {
         fieldName: document({
           ui: {
-            views: path.join(__dirname, 'component-blocks'),
+            views: require.resolve('./component-blocks')
           },
           componentBlocks,
         }),

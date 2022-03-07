@@ -109,7 +109,7 @@ export default config({
           hooks: { /* ... */ },
           label: '...',
           ui: {
-            views: path.join(__dirname, 'path/to/viewsModule.tsx'),
+            views: require.resolve('path/to/viewsModule.tsx'),
             createView: {
               fieldMode: ({ session, context }) => 'edit',
             },
