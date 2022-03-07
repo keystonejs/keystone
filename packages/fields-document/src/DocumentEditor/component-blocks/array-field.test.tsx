@@ -285,7 +285,7 @@ test('add to multiple in child field in nested array', () => {
     editor,
     editor.children[0] as any
   ) as any;
-  previewProps.children.elements[0].element.insert();
+  previewProps.children.elements[0].element.onInsert();
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block

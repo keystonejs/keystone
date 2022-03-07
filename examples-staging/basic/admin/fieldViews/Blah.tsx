@@ -48,9 +48,20 @@ const conditional = fields.conditional(discriminant, {
   group: fields.object({
     label,
     get children() {
-      return innerProp;
+      return innerChildren;
     },
   }),
+});
+
+const innerChildren: Prop = fields.array(conditional, {
+  preview(props) {
+    return (
+      <FieldContainer>
+        <FieldLabel>Children</FieldLabel>
+        <Preview {...props} />
+      </FieldContainer>
+    );
+  },
 });
 
 function Preview(props: PreviewProps<Prop>) {
@@ -63,23 +74,12 @@ function Preview(props: PreviewProps<Prop>) {
           })}
         </SortableList>
       )}
-      <AddButton options={props.field.element.discriminant.options} insert={props.insert} />
+      <AddButton options={props.field.element.discriminant.options} insert={props.onInsert} />
     </Stack>
   );
 }
 export const prop: Prop = fields.array(conditional, {
   preview: Preview,
-});
-
-const innerProp: Prop = fields.array(conditional, {
-  preview(props) {
-    return (
-      <FieldContainer>
-        <FieldLabel>Children</FieldLabel>
-        <Preview {...props} />
-      </FieldContainer>
-    );
-  },
 });
 
 function AddButton<Value extends string>(props: {
@@ -102,34 +102,36 @@ function AddButton<Value extends string>(props: {
 
 function DraggableElement(props: PreviewProps<Prop>['elements'][number]) {
   const [isEditing, setIsEditing] = useState(false);
+  const label = props.element.options.find(x => x.value === props.element.discriminant)!.label;
   return (
     <SortableItem id={props.id}>
-      <Stack across align="center">
-        <DragHandle />
-        <Button
-          onClick={() => {
-            setIsEditing(true);
-          }}
-        >
-          Edit {props.element.discriminant}
-        </Button>
-        <AlertDialog
-          title={`Edit ${
-            props.element.options.find(x => x.value === props.element.discriminant)!.label
-          }`}
-          actions={{
-            confirm: {
-              action: () => {
-                setIsEditing(false);
+      <Stack gap="medium">
+        <Stack across align="center">
+          <DragHandle />
+          <Button
+            onClick={() => {
+              setIsEditing(true);
+            }}
+          >
+            Edit {label}
+          </Button>
+          <AlertDialog
+            title={`Edit ${label}`}
+            actions={{
+              confirm: {
+                action: () => {
+                  setIsEditing(false);
+                },
+                label: 'Done',
               },
-              label: 'Done',
-            },
-          }}
-          isOpen={isEditing}
-        >
-          <FormValueContentFromPreview props={props.element.value} />
-        </AlertDialog>
-        <div>{props.element.value.label.value}</div>
+            }}
+            isOpen={isEditing}
+          >
+            <FormValueContentFromPreview props={props.element.value} />
+          </AlertDialog>
+          <div>{props.element.value.label.value}</div>
+        </Stack>
+        {props.element.discriminant === 'group' && <Preview {...props.element.value.children} />}
       </Stack>
     </SortableItem>
   );

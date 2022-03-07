@@ -25,7 +25,7 @@ import { getInitialPropsValue, getInitialPropsValueFromInitializer } from './ini
 
 export const objectFieldSymbol = Symbol('object field');
 
-const arrayValuesToElementIds = new Map<readonly unknown[], string[]>();
+const arrayValuesToElementIds = new WeakMap<readonly unknown[], string[]>();
 
 let counter = 0;
 
@@ -151,7 +151,7 @@ export function getPreviewPropsForProp(
           ),
         })),
         field: prop,
-        insert(initial, index) {
+        onInsert(initial, index) {
           // onAddArrayItem(path);
           const newValue = [...(value as unknown[])];
           newValue.splice(
@@ -162,12 +162,12 @@ export function getPreviewPropsForProp(
           setElementIdsForArrayValue(newValue, [...keys, getNewArrayElementId()]);
           onFormPropsChange(newValue);
         },
-        move(from, to) {
+        onMove(from, to) {
           const newValue = arrayMove(value as unknown[], from, to);
           setElementIdsForArrayValue(newValue, arrayMove(keys, from, to));
           onFormPropsChange(newValue);
         },
-        remove(index) {
+        onRemove(index) {
           const newValue = (value as unknown[]).filter((_, i) => i !== index);
           setElementIdsForArrayValue(
             newValue,

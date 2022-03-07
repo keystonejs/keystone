@@ -25,8 +25,8 @@ import { ToolbarButton } from '.';
 const RemoveContext = createContext<null | ((index: number) => void)>(null);
 
 export function SortableList(props: {
-  move: (index: number, newIndex: number) => void;
-  remove: (index: number) => void;
+  onMove: (index: number, newIndex: number) => void;
+  onRemove: (index: number) => void;
   elements: ({ id: string } | string)[];
   children: ReactNode;
 }) {
@@ -38,7 +38,7 @@ export function SortableList(props: {
     })
   );
   return (
-    <RemoveContext.Provider value={props.remove}>
+    <RemoveContext.Provider value={props.onRemove}>
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
@@ -51,7 +51,7 @@ export function SortableList(props: {
             const overIndex = props.elements.findIndex(
               x => (typeof x === 'string' ? x : x.id) === over.id
             );
-            props.move(activeIndex, overIndex);
+            props.onMove(activeIndex, overIndex);
           }
         }}
       >

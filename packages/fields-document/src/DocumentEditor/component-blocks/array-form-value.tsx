@@ -47,14 +47,14 @@ export function ArrayFormValueContent({
     <Stack gap="medium">
       <SortableList
         elements={elementIds}
-        move={(from, to) => {
+        onMove={(from, to) => {
           onChange(value => {
             const newValue = arrayMove(value as any[], from, to);
             setElementIdsForArrayValue(newValue, arrayMove(elementIds, from, to));
             return newValue;
           });
         }}
-        remove={index => {
+        onRemove={index => {
           onChange(value => {
             const newValue = [...value];
             newValue.splice(index, 1);

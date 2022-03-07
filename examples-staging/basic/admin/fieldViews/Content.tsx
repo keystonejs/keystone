@@ -127,7 +127,7 @@ export const componentBlocks = {
                     <NotEditable>
                       <Button
                         onClick={() => {
-                          row.element.insert();
+                          row.element.onInsert();
                         }}
                       >
                         Insert Column
@@ -141,7 +141,7 @@ export const componentBlocks = {
           <NotEditable>
             <div
               onClick={() => {
-                rows.insert();
+                rows.onInsert();
               }}
             >
               <Button>Insert row</Button>
@@ -169,7 +169,7 @@ export const componentBlocks = {
     component: function MyList({ children }) {
       useEffect(() => {
         if (!children.elements.length) {
-          children.insert();
+          children.onInsert();
         }
       });
       return (
@@ -197,7 +197,7 @@ export const componentBlocks = {
           <NotEditable>
             <Button
               onClick={() => {
-                children.insert();
+                children.onInsert();
               }}
             >
               Add
@@ -498,5 +498,3 @@ export const componentBlocks = {
     chromeless: true,
   }),
 };
-
-fields.relationship;

@@ -27,7 +27,7 @@ const fieldRenderers: {
         </SortableList>
         <Button
           onClick={() => {
-            props.insert();
+            props.onInsert();
           }}
         >
           Add

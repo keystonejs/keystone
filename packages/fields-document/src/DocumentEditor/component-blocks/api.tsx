@@ -12,8 +12,8 @@ import {
 } from '@keystone-ui/fields';
 import { HTMLAttributes, ReactElement, ReactNode, useState } from 'react';
 import { isValidURL } from '../isValidURL';
-import { objectFieldSymbol } from './preview-props';
 
+// TODO: Value should be only json (especially not undefined)
 export type FormField<Value, Options> = {
   kind: 'form';
   Input(props: {
@@ -567,9 +567,7 @@ export type ExtractPropFromComponentPropFieldForPreview<Prop extends ComponentPr
         readonly field: Prop;
       }
     : Prop extends ObjectField<infer Value>
-    ? { readonly [Key in keyof Value]: ExtractPropFromComponentPropFieldForPreview<Value[Key]> } & {
-        [Key in typeof objectFieldSymbol]: Prop;
-      }
+    ? { readonly [Key in keyof Value]: ExtractPropFromComponentPropFieldForPreview<Value[Key]> }
     : Prop extends ConditionalField<infer DiscriminantField, infer Values>
     ? {
         readonly [Key in keyof Values]: {
@@ -600,12 +598,56 @@ export type ExtractPropFromComponentPropFieldForPreview<Prop extends ComponentPr
           id: string;
           element: ExtractPropFromComponentPropFieldForPreview<ElementField>;
         }[];
-        move: (from: number, to: number) => void;
-        insert: (initial?: InitialValueForComponentPropField<ElementField>, index?: number) => void;
-        remove: (index: number) => void;
+        onMove: (from: number, to: number) => void;
+        onInsert: (
+          initial?: InitialValueForComponentPropField<ElementField>,
+          index?: number
+        ) => void;
+        onRemove: (index: number) => void;
         field: Prop;
       }
     : never;
+
+export type ExtractPropFromComponentPropFieldFord<Prop extends ComponentPropField> =
+  Prop extends ChildField
+    ? undefined
+    : Prop extends FormField<infer Value, any>
+    ? Value | undefined
+    : Prop extends ObjectField<infer Value>
+    ? { readonly [Key in keyof Value]?: ExtractPropFromComponentPropFieldFord<Value[Key]> }
+    : Prop extends ConditionalField<infer DiscriminantField, infer Values>
+    ? {
+        readonly [Key in keyof Values]: {
+          readonly discriminant: DiscriminantStringToDiscriminantValue<DiscriminantField, Key>;
+          readonly value?: ExtractPropFromComponentPropFieldFord<
+            CastToComponentPropField<Values[Key]>
+          >;
+        };
+      }[keyof Values]
+    : Prop extends RelationshipField<infer Many>
+    ? Many extends true
+      ? readonly HydratedRelationshipData[]
+      : HydratedRelationshipData | null
+    : Prop extends ArrayField<infer ElementField>
+    ? {
+        operations: ArrayFieldUpdater<ElementField> | ArrayFieldUpdater<ElementField>[];
+        value: { key: string; value: ExtractPropFromComponentPropFieldFord<ElementField> }[];
+      }
+    : never;
+
+type ArrayFieldUpdater<ElementField extends ComponentPropField> =
+  | {
+      kind: 'update';
+      index: number;
+      value: ExtractPropFromComponentPropFieldFord<ElementField>;
+    }
+  | { kind: 'move'; from: number; to: number }
+  | {
+      kind: 'insert';
+      index?: number;
+      value: InitialValueForComponentPropField<ElementField>;
+    }
+  | { kind: 'remove'; index: number };
 
 export type InitialValueForComponentPropField<Prop extends ComponentPropField> =
   Prop extends ChildField
@@ -626,7 +668,17 @@ export type InitialValueForComponentPropField<Prop extends ComponentPropField> =
       ? readonly HydratedRelationshipData[]
       : HydratedRelationshipData | null
     : Prop extends ArrayField<infer ElementField>
-    ? InitialValueForComponentPropField<ElementField>[]
+    ?
+        | {
+            kind: 'insert';
+            index?: number;
+            value: InitialValueForComponentPropField<ElementField>;
+          }
+        | {
+            kind: 'insert';
+            index?: number;
+            value: InitialValueForComponentPropField<ElementField>;
+          }[]
     : never;
 
 type DiscriminantStringToDiscriminantValue<
