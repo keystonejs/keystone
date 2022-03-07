@@ -7,7 +7,6 @@ import createCache from '@emotion/cache';
 import createEmotionServer, { EmotionCriticalToChunks } from '@emotion/server/create-instance';
 
 import { SkipLinks } from '../components/SkipLinks';
-import { GA_TRACKING_ID } from '../lib/analytics';
 
 class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {
@@ -71,19 +70,6 @@ class MyDocument extends Document {
           <script
             async
             src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"
-          />
-          <script async data-api="/_sb" src="/sb.js" />
-          <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`} />
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-
-            gtag('config', '${GA_TRACKING_ID}');
-          `,
-            }}
           />
         </Head>
         <body
