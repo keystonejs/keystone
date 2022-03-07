@@ -7,7 +7,6 @@ import createCache from '@emotion/cache';
 import createEmotionServer, { EmotionCriticalToChunks } from '@emotion/server/create-instance';
 
 import { SkipLinks } from '../components/SkipLinks';
-import { GA_TRACKING_ID } from '../lib/analytics';
 
 class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {
