@@ -21,7 +21,7 @@ export const lists = {
       // We've added a json field which implements custom views in the Admin UI
       relatedLinks: json({
         ui: {
-          views: path.join(process.cwd(), 'fields/related-links/components'),
+          views: path.join(__dirname, 'fields/related-links/components'),
           createView: { fieldMode: 'edit' },
           listView: { fieldMode: 'hidden' },
           itemView: { fieldMode: 'edit' },

@@ -89,7 +89,7 @@ export const stars =
           return value;
         },
       }),
-      views: path.join(process.cwd(), 'stars-field/views'),
+      views: path.join(__dirname, 'views'),
       getAdminMeta() {
         return { maxStars };
       },

@@ -72,7 +72,7 @@ Date.now = () => 0;
 
 function cleanOutputForApplyingMigration(output: string, generatedMigrationName: string) {
   // sometimes "✅ The migration has been applied" is printed in a different order which messes up the snapshots
-  // so we just assert
+  // so we just assert the text exists somewhere and remove it from what we snapshot
   expect(output).toContain('✅ The migration has been applied\n');
   return output
     .replace(new RegExp(generatedMigrationName, 'g'), 'migration_name')

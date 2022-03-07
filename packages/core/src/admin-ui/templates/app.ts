@@ -55,7 +55,7 @@ export const appTemplate = (
       throw new Error(
         `Field views must be absolute paths, but ${JSON.stringify(
           views
-        )} was provided. Use path.join(__dirname, './relative/path') or require.resolve('./relative/path') to get an absolute path.`
+        )} was provided. Use path.join(__dirname, './relative/path') to get an absolute path.`
       );
     }
     const viewPath = Path.relative(Path.join(projectAdminPath, 'pages'), views);
