@@ -70,6 +70,15 @@ async function getGeneratedMigration(
 // so that the timestamps in the logs are all 0ms
 Date.now = () => 0;
 
+function cleanOutputForApplyingMigration(output: string, generatedMigrationName: string) {
+  // sometimes "✅ The migration has been applied" is printed in a different order which messes up the snapshots
+  // so we just assert the text exists somewhere and remove it from what we snapshot
+  expect(output).toContain('✅ The migration has been applied\n');
+  return output
+    .replace(new RegExp(generatedMigrationName, 'g'), 'migration_name')
+    .replace('✅ The migration has been applied\n', '');
+}
+
 async function setupInitialProjectWithoutMigrations() {
   const tmp = await testdir({
     ...symlinkKeystoneDeps,
@@ -271,8 +280,7 @@ CREATE TABLE "Todo" (
 );
 `);
 
-  expect(recording().replace(new RegExp(migrationName, 'g'), 'migration_name'))
-    .toEqual(`✨ Starting Keystone
+  expect(cleanOutputForApplyingMigration(recording(), migrationName)).toEqual(`✨ Starting Keystone
 ⭐️ Dev Server Starting on http://localhost:3000
 ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
 ✨ Generating GraphQL and Prisma schemas
@@ -283,7 +291,6 @@ Prompt: Name of migration init
 ✨ A migration has been created at migrations/migration_name
 Prompt: Would you like to apply this migration? true
 Applying migration \`migration_name\`
-✅ The migration has been applied
 ✨ Connecting to the database
 ✨ Creating server
 ✅ GraphQL API ready`);
@@ -350,8 +357,7 @@ describe('useMigrations: true', () => {
       "
     `);
 
-    expect(recording().replace(new RegExp(migrationName, 'g'), 'migration_name'))
-      .toMatchInlineSnapshot(`
+    expect(cleanOutputForApplyingMigration(recording(), migrationName)).toMatchInlineSnapshot(`
       "✨ Starting Keystone
       ⭐️ Dev Server Starting on http://localhost:3000
       ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
@@ -362,7 +368,6 @@ describe('useMigrations: true', () => {
       ✨ A migration has been created at migrations/migration_name
       Prompt: Would you like to apply this migration? true
       Applying migration \`migration_name\`
-      ✅ The migration has been applied
       ✨ Connecting to the database
       ✨ Creating server
       ✅ GraphQL API ready"
@@ -426,8 +431,7 @@ describe('useMigrations: true', () => {
       "
     `);
 
-    expect(recording().replace(new RegExp(migrationName, 'g'), 'migration_name'))
-      .toMatchInlineSnapshot(`
+    expect(cleanOutputForApplyingMigration(recording(), migrationName)).toMatchInlineSnapshot(`
       "✨ Starting Keystone
       ⭐️ Dev Server Starting on http://localhost:3000
       ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
@@ -442,7 +446,6 @@ describe('useMigrations: true', () => {
       ✨ A migration has been created at migrations/migration_name
       Prompt: Would you like to apply this migration? true
       Applying migration \`migration_name\`
-      ✅ The migration has been applied
       ✨ Connecting to the database
       ✨ Creating server
       ✅ GraphQL API ready"
@@ -488,9 +491,10 @@ describe('useMigrations: true', () => {
     `);
 
     expect(
-      recording()
-        .replace(new RegExp(migrationName, 'g'), 'migration_name')
-        .replace(oldMigrationName, 'old_migration_name')
+      cleanOutputForApplyingMigration(recording(), migrationName).replace(
+        oldMigrationName,
+        'old_migration_name'
+      )
     ).toMatchInlineSnapshot(`
       "✨ Starting Keystone
       ⭐️ Dev Server Starting on http://localhost:3000
@@ -517,7 +521,6 @@ describe('useMigrations: true', () => {
       ✨ A migration has been created at migrations/migration_name
       Prompt: Would you like to apply this migration? true
       Applying migration \`migration_name\`
-      ✅ The migration has been applied
       ✨ Connecting to the database
       ✨ Creating server
       ✅ GraphQL API ready"

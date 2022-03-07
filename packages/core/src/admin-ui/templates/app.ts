@@ -39,6 +39,8 @@ export const appTemplate = (
     // because it does it _sometimes_, we have to remove it so that during live reloading
     // we're not constantly doing builds because the query param is there and then it's not and then it is and so on
     views = views.replace(/\?[A-Za-z0-9]+$/, '');
+    // webpack/next adds (api)/ to the return of require.resolve
+    views = views.replace(/^\(api\)\//, '');
     // during a live reload, we'll have paths from a webpack compilation which will make the paths
     // that __dirname/__filename/require.resolve return relative to the webpack's "context" option
     // which for Next, it's set to the directory of the Next project which is projectAdminPath here.
