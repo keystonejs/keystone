@@ -36,7 +36,7 @@ type KeystoneContextType = {
 
 const KeystoneContext = createContext<KeystoneContextType | undefined>(undefined);
 
-type KeystoneProviderProps = {
+export type KeystoneProviderProps = {
   children: ReactNode;
   adminConfig: AdminConfig;
   adminMetaHash: string;
@@ -101,7 +101,12 @@ export const KeystoneProvider = (props: KeystoneProviderProps) => {
       link,
     });
   }, [props.apiPath, props.adminConfig]);
-
+  if (props.adminConfig?.providerLogic) {
+    const result = props.adminConfig?.providerLogic(props);
+    if (result) {
+      return result;
+    }
+  }
   return (
     <ApolloProvider client={apolloClient}>
       <InternalKeystoneProvider {...props} />

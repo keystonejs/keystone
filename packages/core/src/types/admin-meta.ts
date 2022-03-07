@@ -1,6 +1,7 @@
 import { GraphQLError } from 'graphql';
 import type { ReactElement } from 'react';
 import type { ApolloLink } from '@apollo/client';
+import { KeystoneProviderProps } from '../admin-ui/context';
 import { GqlNames, JSONValue } from './utils';
 
 export type NavigationProps = {
@@ -24,12 +25,14 @@ export type CreateViewFieldModes =
   | { state: 'loading' }
   | { state: 'error'; error: Error | readonly [GraphQLError, ...GraphQLError[]] };
 
+
 export type AdminConfig = {
   components?: {
     Logo?: (props: {}) => ReactElement;
     Navigation?: (props: NavigationProps) => ReactElement;
   };
   apolloLinks?: ApolloLink[];
+  providerLogic?: (props: KeystoneProviderProps) => ReactElement;
 };
 
 export type FieldControllerConfig<FieldMeta extends JSONValue | undefined = undefined> = {
