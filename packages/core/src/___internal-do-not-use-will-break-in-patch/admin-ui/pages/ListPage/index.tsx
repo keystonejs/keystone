@@ -4,7 +4,7 @@
 import { Fragment, HTMLAttributes, ReactNode, useEffect, useMemo, useState } from 'react';
 
 import { Button } from '@keystone-ui/button';
-import { Box, Center, Heading, jsx, Stack, useTheme } from '@keystone-ui/core';
+import { Box, Center, Heading, jsx, Stack, useTheme, VisuallyHidden } from '@keystone-ui/core';
 import { CheckboxControl } from '@keystone-ui/fields';
 import { ArrowRightCircleIcon } from '@keystone-ui/icons/icons/ArrowRightCircleIcon';
 import { LoadingDots } from '@keystone-ui/loading';
@@ -584,6 +584,7 @@ function ListTable({
   return (
     <Box paddingBottom="xlarge">
       <TableContainer>
+        <VisuallyHidden as="caption">{list.label} list</VisuallyHidden>
         <colgroup>
           <col width="30" />
           {shouldShowLinkIcon && <col width="30" />}
