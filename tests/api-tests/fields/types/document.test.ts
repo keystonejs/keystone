@@ -1,8 +1,9 @@
 import { text } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
 import { list } from '@keystone-6/core';
-import { setupTestRunner } from '@keystone-6/core/testing';
+import { setupTestEnv, setupTestRunner } from '@keystone-6/core/testing';
 import { KeystoneContext } from '@keystone-6/core/types';
+import { component, fields } from '@keystone-6/fields-document/component-blocks';
 import { apiTestConfig, expectInternalServerError } from '../../utils';
 
 const runner = setupTestRunner({
@@ -13,7 +14,6 @@ const runner = setupTestRunner({
           content: document({
             relationships: {
               mention: {
-                kind: 'inline',
                 listKey: 'Author',
                 label: 'Mention',
                 selection: 'id name',
@@ -28,7 +28,6 @@ const runner = setupTestRunner({
           bio: document({
             relationships: {
               mention: {
-                kind: 'inline',
                 listKey: 'Author',
                 label: 'Mention',
                 // selection: INTENTIONALLY LEFT BLANK
@@ -38,7 +37,6 @@ const runner = setupTestRunner({
           badBio: document({
             relationships: {
               mention: {
-                kind: 'inline',
                 listKey: 'Author',
                 label: 'Mention',
                 selection: 'bad selection',
@@ -292,4 +290,64 @@ describe('Document field type', () => {
       ]);
     })
   );
+  test("an inline relationship to a list that doesn't exist throws an error", async () => {
+    await expect(
+      setupTestEnv({
+        config: apiTestConfig({
+          lists: {
+            Post: list({
+              fields: {
+                content: document({
+                  relationships: {
+                    mention: {
+                      listKey: 'Author',
+                      label: 'Mention',
+                      selection: 'id name',
+                    },
+                  },
+                }),
+              },
+            }),
+          },
+        }),
+      })
+    ).rejects.toMatchInlineSnapshot(
+      `[Error: An inline relationship Mention (mention) in the field at Post.content has listKey set to "Author" but no list named "Author" exists.]`
+    );
+  });
+  test("an relationship on a component block prop to a list that doesn't exist throws an error", async () => {
+    await expect(
+      setupTestEnv({
+        config: apiTestConfig({
+          lists: {
+            Post: list({
+              fields: {
+                content: document({
+                  componentBlocks: {
+                    someBlock: component({
+                      component: () => null,
+                      label: 'Some Block',
+                      props: {
+                        something: fields.object({
+                          blah: fields.conditional(fields.checkbox({ label: 'Some conditional' }), {
+                            false: fields.empty(),
+                            true: fields.relationship({
+                              label: 'Some Relationship',
+                              listKey: 'Author',
+                            }),
+                          }),
+                        }),
+                      },
+                    }),
+                  },
+                }),
+              },
+            }),
+          },
+        }),
+      })
+    ).rejects.toMatchInlineSnapshot(
+      `[Error: A component block named Some Block in the field at Post.content has a relationship field at something.blah.true with the listKey "Author" but no list named "Author" exists.]`
+    );
+  });
 });

@@ -1,16 +1,8 @@
 import { ComponentPropField, ComponentBlock } from '../../component-blocks';
-import { Relationships } from '../relationship';
 import { assertNever, findChildPropPaths } from './utils';
 
-export function getInitialValue(
-  type: string,
-  componentBlock: ComponentBlock,
-  relationships: Relationships
-) {
-  const props = getInitialPropsValue(
-    { kind: 'object', value: componentBlock.props },
-    relationships
-  );
+export function getInitialValue(type: string, componentBlock: ComponentBlock) {
+  const props = getInitialPropsValue({ kind: 'object', value: componentBlock.props });
   return {
     type: 'component-block' as const,
     component: type,
@@ -27,28 +19,25 @@ export function getInitialValue(
   };
 }
 
-export function getInitialPropsValue(prop: ComponentPropField, relationships: Relationships): any {
+export function getInitialPropsValue(prop: ComponentPropField): any {
   switch (prop.kind) {
     case 'form':
       return prop.defaultValue;
     case 'child':
       return undefined;
     case 'relationship':
-      return (relationships[prop.relationship] as Extract<Relationships[string], { kind: 'prop' }>)
-        .many
-        ? []
-        : null;
+      return prop.many ? [] : null;
     case 'conditional': {
       const defaultValue = prop.discriminant.defaultValue;
       return {
         discriminant: defaultValue,
-        value: getInitialPropsValue(prop.values[defaultValue], relationships),
+        value: getInitialPropsValue(prop.values[defaultValue]),
       };
     }
     case 'object': {
       let obj: Record<string, any> = {};
       Object.keys(prop.value).forEach(key => {
-        obj[key] = getInitialPropsValue(prop.value[key], relationships);
+        obj[key] = getInitialPropsValue(prop.value[key]);
       });
       return obj;
     }

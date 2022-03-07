@@ -1,3 +1,4 @@
+import type { Server } from 'http';
 import type { Config } from 'apollo-server-express';
 import { CorsOptions } from 'cors';
 import express from 'express';
@@ -106,6 +107,7 @@ export type ServerConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   healthCheck?: HealthCheckConfig | true;
   /** Hook to extend the Express App that Keystone creates */
   extendExpressApp?: (app: express.Express, createContext: CreateRequestContext<TypeInfo>) => void;
+  extendHttpServer?: (server: Server, createContext: CreateRequestContext<TypeInfo>) => void;
 };
 
 // config.graphql

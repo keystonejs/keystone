@@ -144,7 +144,12 @@ export const componentBlocks = {
     },
     props: {
       title: fields.child({ kind: 'inline', placeholder: 'Title...' }),
-      authors: fields.relationship<'many'>({ label: 'Authors', relationship: 'featuredAuthors' }),
+      authors: fields.relationship({
+        label: 'Authors',
+        listKey: 'User',
+        many: true,
+        selection: `posts(take: 10) { title }`,
+      }),
     },
   }),
   notice: component({

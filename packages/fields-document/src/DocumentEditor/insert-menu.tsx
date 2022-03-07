@@ -29,26 +29,21 @@ function getOptions(
   relationships: Relationships
 ): Option[] {
   const options: (Option | boolean)[] = [
-    ...Object.entries(relationships)
-      .filter(
-        (x): x is [string, Extract<Relationships[string], { kind: 'inline' }>] =>
-          x[1].kind === 'inline'
-      )
-      .map(([relationship, { label }]) => ({
-        label,
-        insert: (editor: Editor) => {
-          Transforms.insertNodes(editor, {
-            type: 'relationship',
-            relationship,
-            data: null,
-            children: [{ text: '' }],
-          });
-        },
-      })),
+    ...Object.entries(relationships).map(([relationship, { label }]) => ({
+      label,
+      insert: (editor: Editor) => {
+        Transforms.insertNodes(editor, {
+          type: 'relationship',
+          relationship,
+          data: null,
+          children: [{ text: '' }],
+        });
+      },
+    })),
     ...Object.keys(componentBlocks).map(key => ({
       label: componentBlocks[key].label,
       insert: (editor: Editor) => {
-        insertComponentBlock(editor, componentBlocks, key, relationships);
+        insertComponentBlock(editor, componentBlocks, key);
       },
     })),
     ...toolbarState.textStyles.allowedHeadingLevels
