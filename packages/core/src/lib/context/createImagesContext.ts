@@ -7,7 +7,7 @@ import { KeystoneConfig, ImageMetadata, ImagesContext } from '../../types';
 import { parseImageRef } from '../../fields/types/image/utils';
 import { CloudAssetsAPI } from '../cloud/assets';
 
-const DEFAULT_BASE_URL = '/images';
+export const DEFAULT_IMAGES_BASE_URL = '/images';
 export const DEFAULT_IMAGES_STORAGE_PATH = './public/images';
 
 const getImageMetadataFromBuffer = async (buffer: Buffer): Promise<ImageMetadata> => {
@@ -39,7 +39,7 @@ export function createImagesContext(
   }
 
   const { images } = config;
-  const { baseUrl = DEFAULT_BASE_URL, storagePath = DEFAULT_IMAGES_STORAGE_PATH } =
+  const { baseUrl = DEFAULT_IMAGES_BASE_URL, storagePath = DEFAULT_IMAGES_STORAGE_PATH } =
     images.local || {};
 
   if (images.upload === 'local') {

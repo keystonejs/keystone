@@ -9,7 +9,7 @@ import { KeystoneConfig, FilesContext } from '../../types';
 import { parseFileRef } from '../../fields/types/file/utils';
 import { CloudAssetsAPI } from '../cloud/assets';
 
-const DEFAULT_BASE_URL = '/files';
+export const DEFAULT_FILES_BASE_URL = '/files';
 export const DEFAULT_FILES_STORAGE_PATH = './public/files';
 
 const defaultTransformer = (str: string) => slugify(str);
@@ -51,7 +51,7 @@ export function createFilesContext(
   }
 
   const { files } = config;
-  const { baseUrl = DEFAULT_BASE_URL, storagePath = DEFAULT_FILES_STORAGE_PATH } =
+  const { baseUrl = DEFAULT_FILES_BASE_URL, storagePath = DEFAULT_FILES_STORAGE_PATH } =
     files.local || {};
 
   if (files.upload === 'local') {

@@ -6,8 +6,8 @@ import { graphqlUploadExpress } from 'graphql-upload';
 import { ApolloServer } from 'apollo-server-express';
 import type { KeystoneConfig, CreateContext, SessionStrategy, GraphQLConfig } from '../../types';
 import { createSessionContext } from '../../session';
-import { DEFAULT_FILES_STORAGE_PATH } from '../context/createFilesContext';
-import { DEFAULT_IMAGES_STORAGE_PATH } from '../context/createImagesContext';
+import { DEFAULT_FILES_BASE_URL, DEFAULT_FILES_STORAGE_PATH } from '../context/createFilesContext';
+import { DEFAULT_IMAGES_BASE_URL, DEFAULT_IMAGES_STORAGE_PATH } from '../context/createImagesContext';
 import { createApolloServerExpress } from './createApolloServer';
 import { addHealthCheck } from './addHealthCheck';
 
@@ -106,14 +106,14 @@ export const createExpressServer = async (
 
   if (config.files) {
     expressServer.use(
-      '/files',
+      config.files.local?.baseUrl ?? DEFAULT_FILES_BASE_URL,
       express.static(config.files.local?.storagePath ?? DEFAULT_FILES_STORAGE_PATH)
     );
   }
 
   if (config.images) {
     expressServer.use(
-      '/images',
+      config.images.local?.baseUrl ?? DEFAULT_IMAGES_BASE_URL,
       express.static(config.images.local?.storagePath ?? DEFAULT_IMAGES_STORAGE_PATH)
     );
   }
