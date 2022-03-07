@@ -2,25 +2,14 @@
 /** @jsx jsx */
 import { ToastProvider } from 'react-toast-notifications';
 import { jsx, Global, css } from '@emotion/react';
-import { Fragment, useEffect } from 'react';
+import { Fragment } from 'react';
 import type { AppProps } from 'next/app';
-import { useRouter } from 'next/router';
 import Head from 'next/head';
 
-import { handleRouteChange } from '../lib/analytics';
 import { proseStyles } from '../lib/prose-lite';
 import { Theme } from '../components/Theme';
 
 export default function App({ Component, pageProps }: AppProps) {
-  const router = useRouter();
-
-  useEffect(() => {
-    router.events.on('routeChangeComplete', handleRouteChange);
-    return () => {
-      router.events.off('routeChangeComplete', handleRouteChange);
-    };
-  }, [router.events]);
-
   return (
     <Fragment>
       <Global
