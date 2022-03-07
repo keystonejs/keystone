@@ -35,7 +35,6 @@ export const appTemplate = (
   const adminMetaQueryResultHash = hashString(JSON.stringify(adminMeta));
 
   const allViews = adminMetaRootVal.views.map(views => {
-    console.log(views);
     // webpack/next for some reason _sometimes_ adds a query parameter to the return of require.resolve
     // because it does it _sometimes_, we have to remove it so that during live reloading
     // we're not constantly doing builds because the query param is there and then it's not and then it is and so on
