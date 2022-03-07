@@ -33,6 +33,7 @@ import {
   filters,
 } from '@keystone-6/core/types';
 import { graphql } from '@keystone-6/core';
+import path from 'path';
 
 export type MyIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -59,7 +60,7 @@ export const myInt =
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
       output: graphql.field({ type: graphql.Int }),
-      views: require.resolve('./view.tsx'),
+      views: path.join(__dirname, './view.tsx'),
     });
 ```
 
@@ -116,7 +117,7 @@ output: graphql.field({
 The frontend portion of a field must be in a seperate file that the backend implementation points to with the `views` option.
 
 ```
-views: require.resolve('./view.tsx'),
+views: path.join(__dirname, './view.tsx'),
 ```
 
 #### Controller
