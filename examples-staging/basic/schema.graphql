@@ -199,7 +199,13 @@ input StringFilter {
   contains: String
   startsWith: String
   endsWith: String
+  mode: QueryMode
   not: NestedStringFilter
+}
+
+enum QueryMode {
+  default
+  insensitive
 }
 
 input NestedStringFilter {
@@ -351,6 +357,7 @@ input StringNullableFilter {
   contains: String
   startsWith: String
   endsWith: String
+  mode: QueryMode
   not: NestedStringNullableFilter
 }
 
@@ -407,7 +414,7 @@ type Post {
   title: String
   status: String
   blah: [PostBlah]
-  blahRaw: JSON
+  blahRaw(hydrateRelationships: Boolean! = false): JSON
   content: Post_content_Document
   publishDate: DateTime
   author: User
@@ -436,6 +443,7 @@ type PostBlahLeaf implements PostBlah {
 type PostBlahLeafValue {
   url: String
   label: String
+  author: User
 }
 
 type PostBlahGroup implements PostBlah {
@@ -494,6 +502,7 @@ input PostBlahUpdateInput {
 input PostBlahLeafUpdateInput {
   url: String
   label: String
+  author: UserRelateToOneForUpdateInput
 }
 
 input PostBlahGroupUpdateInput {
@@ -523,6 +532,7 @@ input PostBlahCreateInput {
 input PostBlahLeafCreateInput {
   url: String
   label: String
+  author: UserRelateToOneForCreateInput
 }
 
 input PostBlahGroupCreateInput {
@@ -629,11 +639,6 @@ enum KeystoneAdminUIFieldMetaItemViewFieldMode {
   edit
   read
   hidden
-}
-
-enum QueryMode {
-  default
-  insensitive
 }
 
 type KeystoneAdminUISort {

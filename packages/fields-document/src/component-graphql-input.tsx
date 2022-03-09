@@ -1,4 +1,7 @@
 import { graphql } from '@keystone-6/core';
+import { FieldData, GraphQLTypesForList, KeystoneContext } from '@keystone-6/core/types';
+import { GraphQLResolveInfo } from 'graphql';
+
 import { ComponentPropFieldForGraphQL } from './DocumentEditor/component-blocks/api';
 import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values';
 import { assertNever } from './DocumentEditor/component-blocks/utils';
@@ -7,10 +10,11 @@ export function getGraphQLInputType(
   name: string,
   prop: ComponentPropFieldForGraphQL,
   operation: 'create' | 'update',
-  cache: Map<ComponentPropFieldForGraphQL, graphql.InputType>
+  cache: Map<ComponentPropFieldForGraphQL, graphql.InputType>,
+  meta: FieldData
 ) {
   if (!cache.has(prop)) {
-    const res = getGraphQLInputTypeInner(name, prop, operation, cache);
+    const res = getGraphQLInputTypeInner(name, prop, operation, cache, meta);
     cache.set(prop, res);
   }
   return cache.get(prop)!;
@@ -20,7 +24,8 @@ function getGraphQLInputTypeInner(
   name: string,
   prop: ComponentPropFieldForGraphQL,
   operation: 'create' | 'update',
-  cache: Map<ComponentPropFieldForGraphQL, graphql.InputType>
+  cache: Map<ComponentPropFieldForGraphQL, graphql.InputType>,
+  meta: FieldData
 ): graphql.InputType {
   if (prop.kind === 'form') {
     return prop.graphql.input;
@@ -35,7 +40,8 @@ function getGraphQLInputTypeInner(
               `${name}${key[0].toUpperCase()}${key.slice(1)}`,
               val,
               operation,
-              cache
+              cache,
+              meta
             );
             return [key, graphql.arg({ type })];
           })
@@ -43,7 +49,7 @@ function getGraphQLInputTypeInner(
     });
   }
   if (prop.kind === 'array') {
-    const innerType = getGraphQLInputType(name, prop.element, operation, cache);
+    const innerType = getGraphQLInputType(name, prop.element, operation, cache, meta);
     return graphql.list(innerType);
   }
   if (prop.kind === 'conditional') {
@@ -57,7 +63,8 @@ function getGraphQLInputTypeInner(
                 `${name}${key[0].toUpperCase()}${key.slice(1)}`,
                 val,
                 operation,
-                cache
+                cache,
+                meta
               );
               return [key, graphql.arg({ type })];
             }
@@ -66,14 +73,26 @@ function getGraphQLInputTypeInner(
     });
   }
 
+  if (prop.kind === 'relationship') {
+    const inputType =
+      meta.lists[prop.listKey].types.relateTo[prop.many ? 'many' : 'one'][operation];
+    // there are cases where this won't exist
+    // for example if gql omit is enabled on the related field
+    if (inputType === undefined) {
+      throw new Error('');
+    }
+    return inputType;
+  }
+
   assertNever(prop);
 }
 
-export function getValueForUpdate(
+export async function getValueForUpdate(
   prop: ComponentPropFieldForGraphQL,
   value: any,
-  prevValue: any
-): any {
+  prevValue: any,
+  context: KeystoneContext
+): Promise<any> {
   if (prevValue === undefined) {
     prevValue = getInitialPropsValue(prop);
   }
@@ -91,9 +110,11 @@ export function getValueForUpdate(
       throw new Error();
     }
     return Object.fromEntries(
-      Object.entries(prop.value).map(([key, val]) => {
-        return [key, getValueForUpdate(val, value[key], prevValue[key])];
-      })
+      await Promise.all(
+        Object.entries(prop.value).map(async ([key, val]) => {
+          return [key, await getValueForUpdate(val, value[key], prevValue[key], context)];
+        })
+      )
     );
   }
   if (prop.kind === 'array') {
@@ -101,10 +122,29 @@ export function getValueForUpdate(
       throw new Error();
     }
 
-    return (value as any[]).map((val, i) => getValueForUpdate(prop.element, val, prevValue[i]));
+    return Promise.all(
+      (value as any[]).map((val, i) => getValueForUpdate(prop.element, val, prevValue[i], context))
+    );
   }
   if (prop.kind === 'relationship') {
-    // TODO handle this case
+    if (value === undefined) {
+      return prevValue;
+    }
+    if (value === null) {
+      throw new Error();
+    }
+    if (prop.many) {
+      const val = (value as graphql.InferValueFromArg<
+        graphql.Arg<NonNullable<GraphQLTypesForList['relateTo']['many']['update']>>
+      >)!;
+      return resolveRelateToManyForUpdateInput(val, context, prop.listKey, prevValue);
+    } else {
+      const val = (value as graphql.InferValueFromArg<
+        graphql.Arg<NonNullable<GraphQLTypesForList['relateTo']['one']['update']>>
+      >)!;
+
+      return resolveRelateToOneForUpdateInput(val, context, prop.listKey);
+    }
   }
   if (prop.kind === 'conditional') {
     if (value === null) {
@@ -121,10 +161,11 @@ export function getValueForUpdate(
     }
     return {
       discriminant,
-      value: getValueForUpdate(
+      value: await getValueForUpdate(
         (prop.values as any)[key],
         value[key],
-        prevValue.discriminant === discriminant ? prevValue.value : getInitialPropsValue(prop)
+        prevValue.discriminant === discriminant ? prevValue.value : getInitialPropsValue(prop),
+        context
       ),
     };
   }
@@ -132,7 +173,11 @@ export function getValueForUpdate(
   assertNever(prop);
 }
 
-export function getValueForCreate(prop: ComponentPropFieldForGraphQL, value: any): any {
+export async function getValueForCreate(
+  prop: ComponentPropFieldForGraphQL,
+  value: any,
+  context: KeystoneContext
+): Promise<any> {
   // If value is undefined, get the specified defaultValue
   if (value === undefined) {
     value = getInitialPropsValue(prop);
@@ -147,17 +192,46 @@ export function getValueForCreate(prop: ComponentPropFieldForGraphQL, value: any
     if (value === null) {
       throw new Error();
     }
-    return (value as any[]).map(val => getValueForCreate(prop.element, val));
+    return Promise.all((value as any[]).map(val => getValueForCreate(prop.element, val, context)));
   }
   if (prop.kind === 'object') {
     if (value === null) {
       throw new Error();
     }
     return Object.fromEntries(
-      Object.entries(prop.value).map(([key, val]) => {
-        return [key, getValueForCreate(val, value[key])];
-      })
+      await Promise.all(
+        Object.entries(prop.value).map(async ([key, val]) => {
+          return [key, await getValueForCreate(val, value[key], context)];
+        })
+      )
     );
+  }
+  if (prop.kind === 'relationship') {
+    if (prop.many) {
+      const val = value as graphql.InferValueFromArg<
+        graphql.Arg<NonNullable<GraphQLTypesForList['relateTo']['many']['create']>>
+      >;
+
+      if (val === undefined) {
+        return [];
+      }
+
+      if (val === null) {
+        throw new Error();
+      }
+      return resolveRelateToManyForCreateInput(val, context, prop.listKey);
+    } else {
+      const val = value as graphql.InferValueFromArg<
+        graphql.Arg<NonNullable<GraphQLTypesForList['relateTo']['one']['create']>>
+      >;
+      if (val === undefined) {
+        return null;
+      }
+      if (val === null) {
+        throw new Error();
+      }
+      return resolveRelateToOneForCreateInput(val, context, prop.listKey);
+    }
   }
   if (prop.kind === 'conditional') {
     if (value === null) {
@@ -175,9 +249,253 @@ export function getValueForCreate(prop: ComponentPropFieldForGraphQL, value: any
 
     return {
       discriminant,
-      value: getValueForCreate((prop.values as any)[key], value[key]),
+      value: await getValueForCreate((prop.values as any)[key], value[key], context),
     };
   }
 
   assertNever(prop);
+}
+/** MANY */
+
+type _CreateValueManyType = Exclude<
+  graphql.InferValueFromArg<
+    graphql.Arg<Exclude<GraphQLTypesForList['relateTo']['many']['create'], undefined>>
+  >,
+  null | undefined
+>;
+
+type _UpdateValueManyType = Exclude<
+  graphql.InferValueFromArg<
+    graphql.Arg<Exclude<GraphQLTypesForList['relateTo']['many']['update'], undefined>>
+  >,
+  null | undefined
+>;
+
+export class RelationshipErrors extends Error {
+  errors: { error: Error; tag: string }[];
+  constructor(errors: { error: Error; tag: string }[]) {
+    super('Multiple relationship errors');
+    this.errors = errors;
+  }
+}
+
+function getResolvedUniqueWheres(
+  uniqueInputs: Record<string, any>[],
+  context: KeystoneContext,
+  foreignListKey: string,
+  operation: string
+) {
+  return uniqueInputs.map(uniqueInput =>
+    checkUniqueItemExists(uniqueInput, foreignListKey, context, operation)
+  );
+}
+
+// these aren't here out of thinking this is better syntax(i do not think it is),
+// it's just because TS won't infer the arg is X bit
+export const isFulfilled = <T,>(arg: PromiseSettledResult<T>): arg is PromiseFulfilledResult<T> =>
+  arg.status === 'fulfilled';
+export const isRejected = (arg: PromiseSettledResult<any>): arg is PromiseRejectedResult =>
+  arg.status === 'rejected';
+
+export async function resolveRelateToManyForCreateInput(
+  value: _CreateValueManyType,
+  context: KeystoneContext,
+  foreignListKey: string,
+  tag?: string
+) {
+  if (!Array.isArray(value.connect) && !Array.isArray(value.create)) {
+    throw new Error(
+      `You must provide "connect" or "create" in to-many relationship inputs for "create" operations.`
+    );
+  }
+
+  // Perform queries for the connections
+  const connects = Promise.allSettled(
+    getResolvedUniqueWheres(value.connect || [], context, foreignListKey, 'connect')
+  );
+
+  // Perform nested mutations for the creations
+  const creates = Promise.allSettled(
+    (value.create || []).map(x => resolveCreateMutation(x, context, foreignListKey))
+  );
+
+  const [connectResult, createResult] = await Promise.all([connects, creates]);
+
+  // Collect all the errors
+  const errors = [...connectResult, ...createResult].filter(isRejected);
+  if (errors.length) {
+    // readd tag
+    throw new RelationshipErrors(errors.map(x => ({ error: x.reason, tag: tag || '' })));
+  }
+
+  // Perform queries for the connections
+  return [...connectResult, ...createResult].filter(isFulfilled).map(x => x.value);
+}
+
+export async function resolveRelateToManyForUpdateInput(
+  value: _UpdateValueManyType,
+  context: KeystoneContext,
+  foreignListKey: string,
+  prevVal: { id: string }[]
+) {
+  if (
+    !Array.isArray(value.connect) &&
+    !Array.isArray(value.create) &&
+    !Array.isArray(value.disconnect) &&
+    !Array.isArray(value.set)
+  ) {
+    throw new Error(
+      `You must provide at least one of "set", "connect", "create" or "disconnect" in to-many relationship inputs for "update" operations.`
+    );
+  }
+  if (value.set && value.disconnect) {
+    throw new Error(
+      `The "set" and "disconnect" fields cannot both be provided to to-many relationship inputs for "update" operations.`
+    );
+  }
+
+  // Perform queries for the connections
+  const connects = Promise.allSettled(
+    getResolvedUniqueWheres(value.connect || [], context, foreignListKey, 'connect')
+  );
+
+  const disconnects = Promise.allSettled(
+    getResolvedUniqueWheres(value.disconnect || [], context, foreignListKey, 'disconnect')
+  );
+
+  const sets = Promise.allSettled(
+    getResolvedUniqueWheres(value.set || [], context, foreignListKey, 'set')
+  );
+
+  // Perform nested mutations for the creations
+  const creates = Promise.allSettled(
+    (value.create || []).map(x => resolveCreateMutation(x, context, foreignListKey))
+  );
+
+  const [connectResult, createResult, disconnectResult, setResult] = await Promise.all([
+    connects,
+    creates,
+    disconnects,
+    sets,
+  ]);
+
+  // Collect all the errors
+  const errors = [...connectResult, ...createResult, ...disconnectResult, ...setResult].filter(
+    isRejected
+  );
+  if (errors.length) {
+    throw new RelationshipErrors(errors.map(x => ({ error: x.reason, tag: '' })));
+  }
+
+  let values = prevVal;
+
+  if (value.set) {
+    values = setResult.filter(isFulfilled).map(x => x.value);
+  }
+
+  const idsToDisconnect = new Set(disconnectResult.filter(isFulfilled).map(x => x.value.id));
+  values = values.filter(x => !idsToDisconnect.has(x.id));
+  values.push(...connectResult.filter(isFulfilled).map(x => x.value));
+  values.push(...createResult.filter(isFulfilled).map(x => x.value));
+
+  return values;
+}
+
+/** ONE */
+
+type _CreateValueType = Exclude<
+  graphql.InferValueFromArg<
+    graphql.Arg<Exclude<GraphQLTypesForList['relateTo']['one']['create'], undefined>>
+  >,
+  null | undefined
+>;
+type _UpdateValueType = Exclude<
+  graphql.InferValueFromArg<
+    graphql.Arg<
+      graphql.NonNullType<Exclude<GraphQLTypesForList['relateTo']['one']['update'], undefined>>
+    >
+  >,
+  null | undefined
+>;
+
+const missingItem = (operation: string, uniqueWhere: Record<string, any>) => {
+  throw new Error(
+    `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
+      uniqueWhere
+    )}'. It may not exist.`
+  );
+};
+
+export async function checkUniqueItemExists(
+  uniqueInput: Record<string, unknown>,
+  listKey: string,
+  context: KeystoneContext,
+  operation: string
+) {
+  // Check whether the item exists (from this users POV).
+  const item = await context.db[listKey].findOne({ where: uniqueInput });
+  if (item === null) {
+    throw missingItem(operation, uniqueInput);
+  }
+
+  return { id: item.id.toString() };
+}
+
+async function handleCreateAndUpdate(
+  value: _CreateValueType,
+  context: KeystoneContext,
+  foreignListKey: string
+) {
+  if (value.connect) {
+    return checkUniqueItemExists(value.connect, foreignListKey, context, 'connect');
+  } else if (value.create) {
+    return resolveCreateMutation(value, context, foreignListKey);
+  }
+}
+
+async function resolveCreateMutation(value: any, context: KeystoneContext, foreignListKey: string) {
+  const mutationType = context.graphql.schema.getMutationType()!;
+  const { id } = await mutationType.getFields()[context.gqlNames(foreignListKey).createMutationName]
+    .resolve!(
+    {},
+    { data: value.create },
+    context,
+    // we happen to know this isn't used
+    // no one else should rely on that though
+    // it could change in the future
+    {} as GraphQLResolveInfo
+  );
+  return { id };
+}
+
+export function resolveRelateToOneForCreateInput(
+  value: _CreateValueType,
+  context: KeystoneContext,
+  foreignListKey: string
+) {
+  const numOfKeys = Object.keys(value).length;
+  if (numOfKeys !== 1) {
+    throw new Error(
+      `You must provide "connect" or "create" in to-one relationship inputs for "create" operations.`
+    );
+  }
+  return handleCreateAndUpdate(value, context, foreignListKey);
+}
+
+export function resolveRelateToOneForUpdateInput(
+  value: _UpdateValueType,
+  context: KeystoneContext,
+  foreignListKey: string
+) {
+  if (Object.keys(value).length !== 1) {
+    throw new Error(
+      `You must provide one of "connect", "create" or "disconnect" in to-one relationship inputs for "update" operations.`
+    );
+  }
+
+  if (value.connect || value.create) {
+    return handleCreateAndUpdate(value, context, foreignListKey);
+  } else if (value.disconnect) {
+    return null;
+  }
 }

@@ -25,6 +25,10 @@ const label = fields.text({ label: 'Label' });
 const leaf = fields.object({
   url: fields.url({ label: 'URL' }),
   label,
+  author: fields.relationship({
+    label: 'Author',
+    listKey: 'User',
+  }),
 });
 
 const discriminant = fields.select({

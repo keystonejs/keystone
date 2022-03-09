@@ -207,13 +207,7 @@ export const document =
                 type: graphql.nonNull(graphql.JSON),
                 resolve({ document }, { hydrateRelationships }, context) {
                   return hydrateRelationships
-                    ? addRelationshipData(
-                        document as any,
-                        context.graphql,
-                        relationships,
-                        componentBlocks,
-                        context.gqlNames
-                      )
+                    ? addRelationshipData(document as any, context, relationships, componentBlocks)
                     : (document as any);
                 },
               }),

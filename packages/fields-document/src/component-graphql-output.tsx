@@ -1,4 +1,5 @@
 import { graphql } from '@keystone-6/core';
+import { FieldData } from '@keystone-6/core/types';
 import { ComponentPropFieldForGraphQL } from './DocumentEditor/component-blocks/api';
 import { assertNever } from './DocumentEditor/component-blocks/utils';
 
@@ -43,10 +44,11 @@ export function getOutputGraphQLField(
   name: string,
   prop: ComponentPropFieldForGraphQL,
   interfaceImplementations: graphql.ObjectType<unknown>[],
-  cache: Map<ComponentPropFieldForGraphQL, OutputField>
+  cache: Map<ComponentPropFieldForGraphQL, OutputField>,
+  meta: FieldData
 ) {
   if (!cache.has(prop)) {
-    const res = getOutputGraphQLFieldInner(name, prop, interfaceImplementations, cache);
+    const res = getOutputGraphQLFieldInner(name, prop, interfaceImplementations, cache, meta);
     cache.set(prop, res);
   }
   return cache.get(prop)!;
@@ -56,7 +58,8 @@ function getOutputGraphQLFieldInner(
   name: string,
   prop: ComponentPropFieldForGraphQL,
   interfaceImplementations: graphql.ObjectType<unknown>[],
-  cache: Map<ComponentPropFieldForGraphQL, OutputField>
+  cache: Map<ComponentPropFieldForGraphQL, OutputField>,
+  meta: FieldData
 ): OutputField {
   if (prop.kind === 'form') {
     return prop.graphql.output;
@@ -73,7 +76,8 @@ function getOutputGraphQLFieldInner(
                   `${name}${key[0].toUpperCase()}${key.slice(1)}`,
                   val,
                   interfaceImplementations,
-                  cache
+                  cache,
+                  meta
                 );
                 return [key, wrapGraphQLFieldInResolver(field, source => (source as any)[key])];
               }
@@ -83,7 +87,13 @@ function getOutputGraphQLFieldInner(
     });
   }
   if (prop.kind === 'array') {
-    const innerField = getOutputGraphQLField(name, prop.element, interfaceImplementations, cache);
+    const innerField = getOutputGraphQLField(
+      name,
+      prop.element,
+      interfaceImplementations,
+      cache,
+      meta
+    );
     const resolve = innerField.resolve;
 
     return graphql.field({
@@ -109,7 +119,8 @@ function getOutputGraphQLFieldInner(
           name + 'Discriminant',
           prop.discriminant,
           interfaceImplementations,
-          cache
+          cache,
+          meta
         );
       }
       return discriminantField;
@@ -135,7 +146,13 @@ function getOutputGraphQLFieldInner(
           interfaces: [interfaceType],
           fields: () => ({
             discriminant: wrapGraphQLFieldInResolver(getDiscriminantField(), x => x.discriminant),
-            value: getOutputGraphQLField(`${innerName}Value`, val, interfaceImplementations, cache),
+            value: getOutputGraphQLField(
+              `${innerName}Value`,
+              val,
+              interfaceImplementations,
+              cache,
+              meta
+            ),
           }),
         });
       })
@@ -145,6 +162,30 @@ function getOutputGraphQLFieldInner(
       type: interfaceType,
       resolve({ value }) {
         return value as SourceType;
+      },
+    });
+  }
+
+  if (prop.kind === 'relationship') {
+    const listOutputType = meta.lists[prop.listKey].types.output;
+    return graphql.field({
+      type: prop.many ? graphql.list(listOutputType) : listOutputType,
+      resolve({ value }, args, context) {
+        if (Array.isArray(value)) {
+          return context.db[prop.listKey].findMany({
+            where: {
+              id: { in: (value as { id: string }[]).map(x => x.id) },
+            },
+          });
+        }
+        if ((value as any)?.id == null) {
+          return null;
+        }
+        return context.db[prop.listKey].findOne({
+          where: {
+            id: (value as { id: string }).id,
+          },
+        });
       },
     });
   }

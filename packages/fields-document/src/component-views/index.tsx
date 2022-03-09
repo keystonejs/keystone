@@ -49,8 +49,9 @@ export const Field = ({
             stringifiedPropPathToAutoFocus: autoFocus ? '' : '',
             forceValidation: !!forceValidation,
             onAddArrayItem: pathToInsertIn => {
-              onChange?.(
-                transformProps(field.prop, valueRef.current, (prop, value, path) => {
+              onChange?.({
+                kind: valueRef.current.kind,
+                value: transformProps(field.prop, valueRef.current.value, (prop, value, path) => {
                   if (prop.kind === 'array' && areArraysEqual(path, pathToInsertIn)) {
                     const newVal = [...(value as any[]), getInitialPropsValue(prop)];
                     setElementIdsForArrayValue(newVal, [
@@ -60,21 +61,21 @@ export const Field = ({
                     return newVal;
                   }
                   return value;
-                })
-              );
+                }),
+              });
             },
           }),
           [autoFocus, forceValidation, onChange, field.prop]
         )}
         onChange={useCallback(
           getNewVal => {
-            onChange?.(getNewVal(valueRef.current));
+            onChange?.({ kind: valueRef.current.kind, value: getNewVal(valueRef.current.value) });
           },
           [onChange]
         )}
         path={basePath}
         prop={field.prop}
-        value={value}
+        value={value.value}
       />
     </FieldContainer>
   );
@@ -92,7 +93,7 @@ export const allowedExportsOnCustomViews = ['prop'];
 
 export const controller = (
   config: FieldControllerConfig
-): FieldController<unknown> & {
+): FieldController<{ kind: 'create' | 'update'; value: unknown }> & {
   prop: ComponentPropFieldForGraphQL;
 } => {
   if (!config.customViews.prop) {
@@ -103,26 +104,35 @@ export const controller = (
   return {
     path: config.path,
     label: config.label,
-    graphqlSelection: `${config.path}Raw`,
+    graphqlSelection: `${config.path}Raw(hydrateRelationships: true)`,
     prop: config.customViews.prop,
-    defaultValue: getInitialPropsValue(config.customViews.prop),
+    defaultValue: { kind: 'create', value: getInitialPropsValue(config.customViews.prop) },
     deserialize: data => {
-      return data[config.path + 'Raw'];
+      return {
+        kind: 'update',
+        value: data[`${config.path}Raw`],
+      };
     },
-    serialize: value => ({
-      [config.path]: serializeValue(config.customViews.prop, value),
-    }),
+    serialize: value => {
+      return {
+        [config.path]: serializeValue(config.customViews.prop, value.value, value.kind),
+      };
+    },
   };
 };
 
-const serializeValue = (prop: ComponentPropFieldForGraphQL, value: any): any => {
+function serializeValue(
+  prop: ComponentPropFieldForGraphQL,
+  value: any,
+  kind: 'update' | 'create'
+): any {
   if (prop.kind === 'conditional') {
     return {
-      [value.discriminant]: serializeValue((prop.values as any)[value.discriminant], value.value),
+      [value.discriminant]: serializeValue(prop.values[value.discriminant], value.value, kind),
     };
   }
   if (prop.kind === 'array') {
-    return (value as any[]).map(a => serializeValue(prop.element, a));
+    return (value as any[]).map(a => serializeValue(prop.element, a, kind));
   }
   if (prop.kind === 'form') {
     return value;
@@ -130,12 +140,25 @@ const serializeValue = (prop: ComponentPropFieldForGraphQL, value: any): any => 
   if (prop.kind === 'object') {
     return Object.fromEntries(
       Object.entries(prop.value).map(([key, val]) => {
-        return [key, serializeValue(val, value[key])];
+        return [key, serializeValue(val, value[key], kind)];
       })
     );
   }
   if (prop.kind === 'relationship') {
-    // TODO
+    if (Array.isArray(value)) {
+      return {
+        [kind === 'create' ? 'connect' : 'set']: value.map(x => ({ id: x.id })),
+      };
+    }
+    if (value === null) {
+      if (kind === 'create') {
+        return undefined;
+      }
+      return { disconnect: true };
+    }
+    return {
+      connect: { id: value.id },
+    };
   }
   assertNever(prop);
-};
+}

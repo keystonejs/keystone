@@ -16,6 +16,7 @@ import {
   getValueForUpdate,
 } from './component-graphql-input';
 import { assertValidComponentPropField } from './DocumentEditor/component-blocks/field-assertions';
+import { addRelationshipDataToComponentProps, fetchRelationshipData } from './relationship-data';
 
 export type ComponentThingFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -62,7 +63,7 @@ export const componentThing =
                 prevVal = JSON.parse(prevVal as any);
                 val = args.inputData[meta.fieldKey];
               }
-              val = getValueForUpdate(prop, val, prevVal);
+              val = getValueForUpdate(prop, val, prevVal, args.context);
               if (val === null && meta.provider === 'postgresql') {
                 val = 'JsonNull';
               }
@@ -81,24 +82,45 @@ export const componentThing =
         },
         input: {
           create: {
-            arg: graphql.arg({ type: getGraphQLInputType(name, prop, 'create', new Map()) }),
-            resolve(val) {
-              return resolve(getValueForCreate(prop, val));
+            arg: graphql.arg({ type: getGraphQLInputType(name, prop, 'create', new Map(), meta) }),
+            async resolve(val, context) {
+              return resolve(await getValueForCreate(prop, val, context));
             },
           },
           update: {
-            arg: graphql.arg({ type: getGraphQLInputType(name, prop, 'update', new Map()) }),
+            arg: graphql.arg({ type: getGraphQLInputType(name, prop, 'update', new Map(), meta) }),
           },
         },
         output: getOutputGraphQLField(
           name,
           prop,
           unreferencedConcreteInterfaceImplementations,
-          new Map()
+          new Map(),
+          meta
         ),
         extraOutputFields: {
           [`${meta.fieldKey}Raw`]: graphql.field({
             type: graphql.JSON,
+            args: {
+              hydrateRelationships: graphql.arg({
+                type: graphql.nonNull(graphql.Boolean),
+                defaultValue: false,
+              }),
+            },
+            resolve({ value }, args, context) {
+              if (args.hydrateRelationships) {
+                return addRelationshipDataToComponentProps(prop, value, (prop, value) =>
+                  fetchRelationshipData(
+                    context,
+                    prop.listKey,
+                    prop.many,
+                    prop.selection || '',
+                    value
+                  )
+                );
+              }
+              return value;
+            },
           }),
         },
         views,
