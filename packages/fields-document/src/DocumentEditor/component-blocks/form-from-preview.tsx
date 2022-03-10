@@ -155,7 +155,7 @@ function isNonChildFieldPreviewProps(
   return true;
 }
 
-export function FormValueContentFromPreview(
+export const FormValueContentFromPreview = memo(function FormValueContentFromPreview(
   props: PreviewProps<NonChildFieldComponentPropField> & {
     autoFocus?: boolean;
     forceValidation?: boolean;
@@ -167,7 +167,7 @@ export function FormValueContentFromPreview(
 
   const Comp = fieldRenderers[props.field.kind];
   return <Comp props={props as any} />;
-}
+});
 
 const SortableItemInForm = memo(function SortableItemInForm(
   props: PreviewProps<ArrayField<ComponentPropField>>['elements'][number]
