@@ -49,7 +49,7 @@ jobs:
         adapter: ['postgresql', 'sqlite']
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
 
       - name: Setup Node.js LTS
@@ -98,7 +98,7 @@ jobs:
       fail-fast: false
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Node.js LTS
         uses: actions/setup-node@main
@@ -137,7 +137,7 @@ jobs:
       fail-fast: false
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Node.js LTS
         uses: actions/setup-node@main
@@ -198,7 +198,7 @@ jobs:
     steps:
       - name: Checkout Repo
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Node.js LTS
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
@@ -258,7 +258,7 @@ jobs:
     steps:
       - name: Checkout Repo
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Node.js LTS
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
@@ -303,7 +303,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Node.js LTS
         uses: actions/setup-node@main
