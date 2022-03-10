@@ -133,9 +133,11 @@ function DraggableElement(props: PreviewProps<Prop>['elements'][number]) {
           >
             <FormValueContentFromPreview props={props.element.value} />
           </AlertDialog>
-          <div>{props.element.value.label.value}</div>
+          <div>{props.element.value.fields.label.value}</div>
         </Stack>
-        {props.element.discriminant === 'group' && <Preview {...props.element.value.children} />}
+        {props.element.discriminant === 'group' && (
+          <Preview {...props.element.value.fields.children} />
+        )}
       </Stack>
     </SortableItem>
   );

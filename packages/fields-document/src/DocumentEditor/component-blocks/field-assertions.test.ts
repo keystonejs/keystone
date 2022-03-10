@@ -57,7 +57,7 @@ test('does not allow a circular object within a value for a non-default discrimi
 test("does allow a circular conditional as long as it's not the default", () => {
   type Field = ConditionalField<
     typeof discriminant,
-    { true: Field; false: FormField<undefined, undefined> }
+    { true: Field; false: FormField<null, undefined> }
   >;
   const conditional: Field = fields.conditional(discriminant, {
     get true() {
@@ -71,7 +71,7 @@ test("does allow a circular conditional as long as it's not the default", () => 
 test("does not allow a circular conditional if it's the default", () => {
   type Field = ConditionalField<
     typeof discriminant,
-    { false: Field; true: FormField<undefined, undefined> }
+    { false: Field; true: FormField<null, undefined> }
   >;
   const conditional: Field = fields.conditional(discriminant, {
     get false() {

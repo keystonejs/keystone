@@ -5,10 +5,11 @@ import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import React, { memo, ReactElement, useCallback, useMemo, useState } from 'react';
 import { Button as KeystoneUIButton } from '@keystone-ui/button';
 import { ComponentPropField, RelationshipData } from '../../component-blocks';
-import { assertNever, getPropsForConditionalChange, PropPath, ReadonlyPropPath } from './utils';
+import { assertNever, PropPath, ReadonlyPropPath } from './utils';
 import { ArrayFormValueContent } from './array-form-value';
-import { FormField, PreviewProps, RelationshipField } from './api';
+import { ConditionalField, FormField, PreviewProps, RelationshipField } from './api';
 import { getPreviewPropsForProp } from './preview-props';
+import { getInitialPropsValue } from './initial-values';
 
 export function RelationshipFormInput({
   prop,
@@ -83,6 +84,20 @@ type GeneralValuesForFields = {
   conditional: { discriminant: string | boolean; value: unknown };
 };
 
+function getPropsForConditionalChange(
+  newValue: { discriminant: string | boolean; value: any },
+  oldValue: { discriminant: string | boolean; value: any },
+  prop: ConditionalField<any, any>
+) {
+  if (newValue.discriminant !== oldValue.discriminant) {
+    return {
+      discriminant: newValue.discriminant,
+      value: getInitialPropsValue(prop.values[newValue.discriminant.toString()]),
+    };
+  } else {
+    return newValue;
+  }
+}
 const fieldRenderers: {
   [Key in ComponentPropField['kind']]: (
     props: ComponentFieldProps<Extract<ComponentPropField, { kind: Key }>>

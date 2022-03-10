@@ -9,7 +9,6 @@ import {
   assertNever,
   findChildPropPathsForProp,
   getFieldAtPropPath,
-  getPropsForConditionalChange,
   ReadonlyPropPath,
   transformProps,
 } from './utils';
@@ -18,10 +17,16 @@ import {
   ComponentPropField,
   ConditionalField,
   FormField,
+  FormFieldValue,
+  ObjectField,
   PreviewProps,
   RelationshipField,
 } from './api';
-import { getInitialPropsValue, getInitialPropsValueFromInitializer } from './initial-values';
+import {
+  getInitialPropsValue,
+  getInitialPropsValueFromInitializer,
+  updateValue,
+} from './initial-values';
 
 export const objectFieldSymbol = Symbol('object field');
 
@@ -58,10 +63,10 @@ export function getPreviewPropsForProp(
 ): any {
   switch (prop.kind) {
     case 'form':
-      const props: PreviewProps<FormField<unknown, unknown>> = {
-        value,
+      const props: PreviewProps<FormField<FormFieldValue, unknown>> = {
+        value: value as FormFieldValue,
         onChange(newValue: any) {
-          onFormPropsChange(newValue);
+          onFormPropsChange(newValue === undefined ? value : newValue);
         },
         options: prop.options,
         field: prop,
@@ -70,11 +75,9 @@ export function getPreviewPropsForProp(
     case 'child':
       return common.childrenByPath[JSON.stringify(path)];
     case 'object': {
-      const previewProps: Record<string, any> = {
-        [objectFieldSymbol]: prop,
-      };
+      const fields: Record<string, any> = {};
       Object.keys(prop.value).forEach(key => {
-        previewProps[key] = getPreviewPropsForProp(
+        fields[key] = getPreviewPropsForProp(
           prop.value[key],
           (value as any)[key],
           path.concat(key),
@@ -84,6 +87,13 @@ export function getPreviewPropsForProp(
           common
         );
       });
+      const previewProps: PreviewProps<ObjectField<Record<string, ComponentPropField>>> = {
+        fields,
+        onChange(updater) {
+          onFormPropsChange(updateValue(prop, value, updater));
+        },
+        field: prop,
+      };
       return previewProps;
     }
     case 'relationship': {
@@ -105,14 +115,8 @@ export function getPreviewPropsForProp(
         >
       > = {
         discriminant: (value as any).discriminant,
-        onChange(newDiscriminant: any) {
-          onFormPropsChange(
-            getPropsForConditionalChange(
-              { discriminant: newDiscriminant, value: conditionalValue.value },
-              conditionalValue,
-              prop
-            )
-          );
+        onChange(discriminant, value) {
+          onFormPropsChange(updateValue(prop, value, { discriminant, value }));
         },
         options: prop.discriminant.options,
         value: getPreviewPropsForProp(
@@ -142,7 +146,7 @@ export function getPreviewPropsForProp(
             val,
             path.concat(i),
             val => {
-              const newValue = [...(value as unknown[])];
+              const newValue = [...arrayValue];
               newValue[i] = val;
               setElementIdsForArrayValue(newValue, keys);
               onFormPropsChange(newValue);
@@ -163,12 +167,15 @@ export function getPreviewPropsForProp(
           onFormPropsChange(newValue);
         },
         onMove(from, to) {
-          const newValue = arrayMove(value as unknown[], from, to);
+          const newValue = arrayMove(arrayValue, from, to);
           setElementIdsForArrayValue(newValue, arrayMove(keys, from, to));
           onFormPropsChange(newValue);
         },
+        onChange(updater) {
+          onFormPropsChange(updateValue(prop, value, updater));
+        },
         onRemove(index) {
-          const newValue = (value as unknown[]).filter((_, i) => i !== index);
+          const newValue = arrayValue.filter((_, i) => i !== index);
           setElementIdsForArrayValue(
             newValue,
             keys.filter((_, i) => i !== index)

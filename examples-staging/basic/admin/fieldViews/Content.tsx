@@ -25,52 +25,6 @@ const noticeIconMap = {
 };
 
 export const componentBlocks = {
-  // yellowBackgroundDivider: component({
-  //   component: () => <NotEditable>Yellow Divider</NotEditable>,
-  //   props: {},
-  //   label: 'Yellow Background Divider',
-  // }),
-  // button: component({
-  //   component: props => {
-  //     return <div>{props.content}</div>;
-  //   },
-  //   props: {
-  //     content: fields.child({ kind: 'inline', placeholder: 'Content' }),
-  //   },
-  //   label: 'Button',
-  // }),
-  // modalButton: component({
-  //   component: function ModalThing(props) {
-  //     const [isOpen, setIsOpen] = useState(false);
-  //     return (
-  //       <div>
-  //         {props.buttonContent}
-  //         <div>
-  //           <NotEditable>
-  //             <button
-  //               onClick={() => {
-  //                 setIsOpen(x => !x);
-  //               }}
-  //             >
-  //               Toggle Modal
-  //             </button>
-  //           </NotEditable>
-  //         </div>
-  //         <div style={{ display: isOpen ? 'block' : 'none' }}>
-  //           <NotEditable>
-  //             <h1>Modal Content</h1>
-  //           </NotEditable>
-  //           {props.modalContent}
-  //         </div>
-  //       </div>
-  //     );
-  //   },
-  //   props: {
-  //     buttonContent: fields.child({ kind: 'inline', placeholder: 'Content' }),
-  //     modalContent: fields.child({ kind: 'block', placeholder: 'Content' }),
-  //   },
-  //   label: 'Modal Button',
-  // }),
   thing: component({
     component: props => {
       return (
@@ -120,7 +74,7 @@ export const componentBlocks = {
                     {row.element.elements.map((column, i) => {
                       return (
                         <td key={i} css={{ border: '1px solid black' }}>
-                          {column.element.content}
+                          {column.element.fields.content}
                         </td>
                       );
                     })}
@@ -175,21 +129,21 @@ export const componentBlocks = {
       return (
         <div>
           <ul css={{ padding: 0 }}>
-            {children.elements.map((element, i) => (
+            {children.elements.map(element => (
               <li css={{ listStyle: 'none' }} key={element.id}>
                 <input
                   contentEditable="false"
                   css={{ marginRight: 8 }}
                   type="checkbox"
-                  checked={element.element.done.value}
-                  onChange={event => element.element.done.onChange(event.target.checked)}
+                  checked={element.element.fields.done.value}
+                  onChange={event => element.element.fields.done.onChange(event.target.checked)}
                 />
                 <span
                   style={{
-                    textDecoration: element.element.done.value ? 'line-through' : undefined,
+                    textDecoration: element.element.fields.done.value ? 'line-through' : undefined,
                   }}
                 >
-                  {element.element.content}
+                  {element.element.fields.content}
                 </span>
               </li>
             ))}
@@ -272,7 +226,7 @@ export const componentBlocks = {
                 padding: '12px 16px',
               }}
             >
-              {props.cta.value.text}
+              {props.cta.value.fields.text}
             </div>
           ) : null}
         </div>

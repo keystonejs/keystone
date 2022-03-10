@@ -27,7 +27,7 @@ const RemoveContext = createContext<null | ((index: number) => void)>(null);
 export function SortableList(props: {
   onMove: (index: number, newIndex: number) => void;
   onRemove: (index: number) => void;
-  elements: ({ id: string } | string)[];
+  elements: readonly ({ id: string } | string)[];
   children: ReactNode;
 }) {
   const sensors = useSensors(
@@ -55,7 +55,10 @@ export function SortableList(props: {
           }
         }}
       >
-        <SortableContext items={props.elements} strategy={verticalListSortingStrategy}>
+        <SortableContext
+          items={props.elements as (string | { id: string })[]}
+          strategy={verticalListSortingStrategy}
+        >
           <ul
             css={{
               isolation: 'isolate',

@@ -14,7 +14,7 @@ const table = component({
       null,
       props.children.elements.map(x => {
         return x.element.elements.map(x => {
-          return x.element.content;
+          return x.element.fields.content;
         });
       })
     ),
@@ -285,7 +285,7 @@ test('add to multiple in child field in nested array', () => {
     editor,
     editor.children[0] as any
   ) as any;
-  previewProps.children.elements[0].element.onInsert();
+  previewProps.fields.children.elements[0].element.onInsert();
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block

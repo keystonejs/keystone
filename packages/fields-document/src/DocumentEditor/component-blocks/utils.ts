@@ -1,9 +1,8 @@
-import { ComponentPropField, ConditionalField } from '../../component-blocks';
+import { ComponentPropField } from '../../component-blocks';
 import { DocumentFeatures } from '../../views';
 import { DocumentFeaturesForNormalization } from '../document-features-normalization';
 import { Mark } from '../utils';
 import { ChildField } from './api';
-import { getInitialPropsValue } from './initial-values';
 import { getElementIdsForArrayValue, setElementIdsForArrayValue } from './preview-props';
 
 type PathToChildFieldWithOption = { path: ReadonlyPropPath; options: ChildField['options'] };
@@ -60,21 +59,6 @@ export function findChildPropPaths(
 
 export function assertNever(arg: never): never {
   throw new Error('expected to never be called but received: ' + JSON.stringify(arg));
-}
-
-export function getPropsForConditionalChange(
-  newValue: { discriminant: string | boolean; value: any },
-  oldValue: { discriminant: string | boolean; value: any },
-  prop: ConditionalField<any, any>
-) {
-  if (newValue.discriminant !== oldValue.discriminant) {
-    return {
-      discriminant: newValue.discriminant,
-      value: getInitialPropsValue(prop.values[newValue.discriminant.toString()]),
-    };
-  } else {
-    return newValue;
-  }
 }
 
 export type DocumentFeaturesForChildField =
