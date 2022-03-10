@@ -1,7 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { getInitialPropsValue } from '@keystone-6/fields-document/src/DocumentEditor/component-blocks/initial-values';
-import { FormValueContent } from '@keystone-6/fields-document/src/DocumentEditor/component-blocks/form';
 import { useKeyDownRef } from '@keystone-6/fields-document/src/DocumentEditor/soft-breaks';
 import React, { ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import { Toolbar } from '@keystone-6/fields-document/src/DocumentEditor/Toolbar';
@@ -19,6 +18,8 @@ import {
 } from '@keystone-6/fields-document/component-blocks';
 import { Global, jsx } from '@emotion/react';
 
+import { FormValueContentFromPreview } from '@keystone-6/fields-document/src/DocumentEditor/component-blocks/form-from-preview';
+import { createGetPreviewProps } from '@keystone-6/fields-document/src/DocumentEditor/component-blocks/preview-props';
 import { componentBlocks as componentBlocksInExampleProject } from '../../../examples-staging/basic/admin/fieldViews/Content';
 import { initialContent } from '../../lib/initialDocumentDemoContent';
 import { Code } from '../primitives/Code';
@@ -259,16 +260,10 @@ export function DocumentFeaturesFormAndCode() {
   const { formValue, setFormValue } = useContext(DocumentFeaturesContext);
   return (
     <div>
-      <FormValueContent
-        prop={documentFeaturesProp}
-        forceValidation={false}
-        path={[]}
-        stringifiedPropPathToAutoFocus=""
-        value={formValue}
-        onChange={getNewVal => {
-          setFormValue((getNewVal as any)(formValue));
-        }}
-        onAddArrayItem={() => {}}
+      <FormValueContentFromPreview
+        {...createGetPreviewProps(documentFeaturesProp, getNewVal => {
+          setFormValue(getNewVal(formValue));
+        })(formValue)}
       />
     </div>
   );

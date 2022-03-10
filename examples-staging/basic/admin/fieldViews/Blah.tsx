@@ -131,7 +131,7 @@ function DraggableElement(props: PreviewProps<Prop>['elements'][number]) {
             }}
             isOpen={isEditing}
           >
-            <FormValueContentFromPreview props={props.element.value} />
+            <FormValueContentFromPreview {...props.element.value} />
           </AlertDialog>
           <div>{props.element.value.fields.label.value}</div>
         </Stack>

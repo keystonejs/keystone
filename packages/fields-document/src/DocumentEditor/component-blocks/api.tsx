@@ -162,7 +162,7 @@ export type ConditionalField<
 
 type PreviewComponent = (props: unknown) => ReactElement | null;
 type TypedPreviewComponent<Field extends ComponentPropField> = (
-  props: PreviewProps<Field>
+  props: PreviewProps<Field> & { autoFocus?: boolean }
 ) => ReactElement | null;
 
 export type ComponentPropField =
@@ -716,9 +716,7 @@ export function component<
 >(
   options: {
     /** The preview component shown in the editor */
-    component: (props: {
-      [Key in keyof PropsOption]: ExtractPropFromComponentPropFieldForPreview<PropsOption[Key]>;
-    }) => ReactElement | null;
+    component: (props: PreviewProps<ObjectField<PropsOption>>) => ReactElement | null;
     /** The props that the preview component, toolbar and rendered component will receive */
     props: PropsOption;
     /** The label to show in the insert menu and chrome around the block if chromeless is false */

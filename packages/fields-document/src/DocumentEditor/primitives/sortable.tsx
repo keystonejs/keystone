@@ -152,7 +152,6 @@ export function DragHandle() {
       <Popover
         placement="left"
         triggerRenderer={opts => {
-          console.log(sortable.listeners);
           return (
             <div>
               <button

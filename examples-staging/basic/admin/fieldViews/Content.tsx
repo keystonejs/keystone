@@ -29,11 +29,11 @@ export const componentBlocks = {
     component: props => {
       return (
         <div>
-          <h1>{props.heading}</h1>
+          <h1>{props.fields.heading}</h1>
           <NotEditable>
-            <h1>{props.icon.value}</h1>
+            <h1>{props.fields.icon.value}</h1>
           </NotEditable>
-          <div>{props.content}</div>
+          <div>{props.fields.content}</div>
         </div>
       );
     },
@@ -49,7 +49,7 @@ export const componentBlocks = {
     label: 'thing',
   }),
   table: component({
-    component: function MyTable({ rows }) {
+    component: function MyTable(props) {
       // useEffect(() => {
       //   let maxColumns = 1;
       //   for (const row of rows.elements) {
@@ -68,7 +68,7 @@ export const componentBlocks = {
         <div>
           <table css={{ width: '100%' }}>
             <tbody>
-              {rows.elements.map((row, i) => {
+              {props.fields.rows.elements.map((row, i) => {
                 return (
                   <tr key={i} css={{ border: '1px solid black' }}>
                     {row.element.elements.map((column, i) => {
@@ -95,7 +95,7 @@ export const componentBlocks = {
           <NotEditable>
             <div
               onClick={() => {
-                rows.onInsert();
+                props.fields.rows.onInsert();
               }}
             >
               <Button>Insert row</Button>
@@ -120,16 +120,16 @@ export const componentBlocks = {
     },
   }),
   myList: component({
-    component: function MyList({ children }) {
+    component: function MyList(props) {
       useEffect(() => {
-        if (!children.elements.length) {
-          children.onInsert();
+        if (!props.fields.children.elements.length) {
+          props.fields.children.onInsert();
         }
       });
       return (
         <div>
           <ul css={{ padding: 0 }}>
-            {children.elements.map(element => (
+            {props.fields.children.elements.map(element => (
               <li css={{ listStyle: 'none' }} key={element.id}>
                 <input
                   contentEditable="false"
@@ -151,7 +151,7 @@ export const componentBlocks = {
           <NotEditable>
             <Button
               onClick={() => {
-                children.onInsert();
+                props.fields.children.onInsert();
               }}
             >
               Add
@@ -177,7 +177,7 @@ export const componentBlocks = {
         <div
           css={{
             backgroundColor: 'white',
-            backgroundImage: `url(${props.imageSrc.value})`,
+            backgroundImage: `url(${props.fields.imageSrc.value})`,
             backgroundPosition: 'center',
             backgroundSize: 'cover',
             display: 'flex',
@@ -199,7 +199,7 @@ export const componentBlocks = {
               textShadow: '0px 1px 3px black',
             }}
           >
-            {props.title}
+            {props.fields.title}
           </div>
           <div
             css={{
@@ -211,9 +211,9 @@ export const componentBlocks = {
               textShadow: '0px 1px 3px black',
             }}
           >
-            {props.content}
+            {props.fields.content}
           </div>
-          {props.cta.discriminant ? (
+          {props.fields.cta.discriminant ? (
             <div
               css={{
                 backgroundColor: '#F9BF12',
@@ -226,7 +226,7 @@ export const componentBlocks = {
                 padding: '12px 16px',
               }}
             >
-              {props.cta.value.fields.text}
+              {props.fields.cta.value.fields.text}
             </div>
           ) : null}
         </div>
@@ -251,13 +251,17 @@ export const componentBlocks = {
   }),
   void: component({
     label: 'Void',
-    component: ({ value }) => <NotEditable>{value.value}</NotEditable>,
+    component: props => <NotEditable>{props.fields.value.value}</NotEditable>,
     props: { value: fields.text({ label: 'Value' }) },
   }),
   conditionallyVoid: component({
     label: 'Conditionally Void',
-    component: ({ something }) =>
-      something.discriminant ? <NotEditable>Is void</NotEditable> : <div>{something.value}</div>,
+    component: props =>
+      props.fields.something.discriminant ? (
+        <NotEditable>Is void</NotEditable>
+      ) : (
+        <div>{props.fields.something.value}</div>
+      ),
     props: {
       something: fields.conditional(fields.checkbox({ label: 'Is void' }), {
         false: fields.child({ kind: 'inline', placeholder: '...' }),
@@ -270,10 +274,10 @@ export const componentBlocks = {
     component: props => {
       return (
         <div>
-          <h1>{props.title}</h1>
+          <h1>{props.fields.title}</h1>
           <NotEditable>
             <ul>
-              {props.authors.value.map((author, i) => {
+              {props.fields.authors.value.map((author, i) => {
                 return (
                   <li key={i}>
                     {author.label}
@@ -301,7 +305,7 @@ export const componentBlocks = {
     },
   }),
   notice: component({
-    component: function Notice({ content, intent }) {
+    component: function Notice(props) {
       const { palette, radii, spacing } = useTheme();
       const intentMap = {
         info: {
@@ -325,7 +329,7 @@ export const componentBlocks = {
           icon: noticeIconMap.success,
         },
       };
-      const intentConfig = intentMap[intent.value];
+      const intentConfig = intentMap[props.fields.intent.value];
 
       return (
         <div
@@ -350,7 +354,7 @@ export const componentBlocks = {
               <intentConfig.icon />
             </div>
           </NotEditable>
-          <div css={{ flex: 1 }}>{content}</div>
+          <div css={{ flex: 1 }}>{props.fields.content}</div>
         </div>
       );
     },
@@ -413,7 +417,7 @@ export const componentBlocks = {
     },
   }),
   quote: component({
-    component: ({ attribution, content }) => {
+    component: props => {
       return (
         <div
           css={{
@@ -431,10 +435,10 @@ export const componentBlocks = {
             },
           }}
         >
-          <div css={{ fontStyle: 'italic', color: '#4A5568' }}>{content}</div>
+          <div css={{ fontStyle: 'italic', color: '#4A5568' }}>{props.fields.content}</div>
           <div css={{ fontWeight: 'bold', color: '#47546b' }}>
             <NotEditable>— </NotEditable>
-            {attribution}
+            {props.fields.attribution}
           </div>
         </div>
       );

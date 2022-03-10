@@ -10,13 +10,7 @@ import {
   useMemo,
   useCallback,
 } from 'react';
-import {
-  ReactEditor,
-  RenderElementProps,
-  useFocused,
-  useSelected,
-  useSlateStatic,
-} from 'slate-react';
+import { ReactEditor, RenderElementProps, useFocused, useSelected } from 'slate-react';
 import { Editor, Element, Transforms } from 'slate';
 
 import { jsx, useTheme } from '@keystone-ui/core';
@@ -30,13 +24,13 @@ import { ComponentPropField, ComponentBlock } from '../../component-blocks';
 import {
   insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading,
   useElementWithSetNodes,
-  useEventCallback,
   useStaticEditor,
 } from '../utils';
 import { clientSideValidateProp, getFieldAtPropPath, ReadonlyPropPath } from './utils';
-import { createPreviewProps, onAddArrayItem } from './preview-props';
+import { ChildrenByPathContext, getElementIdsForArrayValue } from './preview-props';
 import { getInitialValue } from './initial-values';
-import { FormValue } from './form';
+import { FormValue } from './edit-mode';
+import { createGetPreviewProps } from './preview-props';
 
 export { withComponentBlocks } from './with-component-blocks';
 
@@ -120,16 +114,18 @@ export const ComponentBlocksElement = ({
   const onCloseEditView = useCallback(() => {
     setEditMode(false);
   }, []);
-  const onAddArrayItemCb = useEventCallback((path: ReadonlyPropPath) => {
-    onAddArrayItem(editor, path, currentElement, __elementToGetPath, componentBlock!);
-  });
 
-  const onPropsChange = useCallback(
-    val => {
-      setElement(element => ({ props: val(element.props) }));
-    },
-    [setElement]
-  );
+  const getPreviewProps = useMemo(() => {
+    if (!componentBlock) {
+      return () => {
+        throw new Error('expected component block to exist when called');
+      };
+    }
+    return createGetPreviewProps({ kind: 'object', value: componentBlock.props }, getNewProps => {
+      setElement(current => ({ props: getNewProps(current.props) }));
+    });
+  }, [setElement, componentBlock]);
+
   if (!componentBlock) {
     return (
       <div css={{ border: 'red 4px solid', padding: spacing.medium }}>
@@ -146,6 +142,8 @@ Content:`}
       </div>
     );
   }
+
+  const previewProps = getPreviewProps(currentElement.props);
   return (
     <div
       data-with-chrome={!componentBlock.chromeless}
@@ -187,16 +185,7 @@ Content:`}
           {componentBlock.label}
         </NotEditable>
       )}
-      {editMode && (
-        <FormValue
-          isValid={isValid}
-          componentBlockProps={componentBlock.props}
-          onClose={onCloseEditView}
-          value={currentElement.props}
-          onChange={onPropsChange}
-          onAddArrayItem={onAddArrayItemCb}
-        />
-      )}
+      {editMode && <FormValue isValid={isValid} props={previewProps} onClose={onCloseEditView} />}
       <div css={{ display: editMode ? 'none' : 'block', position: 'relative' }}>
         {editMode ? (
           children
@@ -206,19 +195,10 @@ Content:`}
             componentBlock={componentBlock}
             element={currentElement}
             onElementChange={setElement}
-            elementToGetPath={__elementToGetPath}
           />
         )}
         {!editMode &&
           (() => {
-            const toolbarProps = createPreviewProps(
-              currentElement,
-              componentBlock,
-              {},
-              setElement,
-              editor,
-              __elementToGetPath
-            );
             const ChromefulToolbar = componentBlock.toolbar
               ? componentBlock.toolbar
               : DefaultToolbarWithChrome;
@@ -234,7 +214,7 @@ Content:`}
                       const path = ReactEditor.findPath(editor, __elementToGetPath);
                       Transforms.removeNodes(editor, { at: path });
                     }}
-                    props={toolbarProps}
+                    props={previewProps}
                   />
                 </InlineDialog>
               )
@@ -248,7 +228,7 @@ Content:`}
                 onShowEditMode={() => {
                   setEditMode(true);
                 }}
-                props={toolbarProps}
+                props={previewProps}
               />
             );
           })()}
@@ -338,7 +318,6 @@ function ComponentBlockRender({
   componentBlock,
   element,
   onElementChange,
-  elementToGetPath,
   children,
 }: {
   element: Element & { type: 'component-block' };
@@ -348,34 +327,50 @@ function ComponentBlockRender({
     ) => Partial<Element & { type: 'component-block' }>
   ) => void;
   componentBlock: ComponentBlock;
-  elementToGetPath: Element & { type: 'component-block' };
   children: any;
 }) {
-  const editor = useSlateStatic();
+  const getPreviewProps = useMemo(() => {
+    return createGetPreviewProps({ kind: 'object', value: componentBlock.props }, props => {
+      onElementChange(() => ({ props }));
+    });
+  }, [onElementChange, componentBlock]);
+
+  const previewProps = getPreviewProps(element.props);
+
   const childrenByPath: Record<string, ReactElement> = {};
   let maybeChild: ReactElement | undefined;
   children.forEach((child: ReactElement) => {
-    let stringified = JSON.stringify(child.props.children.props.element.propPath);
-    if (stringified === undefined) {
+    const propPath = child.props.children.props.element.propPath;
+    if (propPath === undefined) {
       maybeChild = child;
     } else {
-      childrenByPath[stringified] = child;
+      childrenByPath[JSON.stringify(propPathWithIndiciesToKeys(propPath, element.props))] = child;
     }
   });
 
-  const previewProps = createPreviewProps(
-    element,
-    componentBlock,
-    childrenByPath,
-    partialElement => onElementChange(() => partialElement),
-    editor,
-    elementToGetPath
-  );
+  const ComponentBlockPreview = componentBlock.component;
 
   return (
-    <Fragment>
-      <componentBlock.component {...previewProps} />
+    <ChildrenByPathContext.Provider value={childrenByPath}>
+      {useMemo(
+        () => (
+          <ComponentBlockPreview {...previewProps} />
+        ),
+        [previewProps, ComponentBlockPreview]
+      )}
       <span css={{ display: 'none' }}>{maybeChild}</span>
-    </Fragment>
+    </ChildrenByPathContext.Provider>
   );
+}
+
+function propPathWithIndiciesToKeys(propPath: ReadonlyPropPath, val: any): readonly string[] {
+  return propPath.map((key, i) => {
+    if (typeof key === 'string') {
+      val = val[key];
+      return key;
+    }
+    const keys = getElementIdsForArrayValue(val);
+    val = val[key];
+    return keys[i];
+  });
 }

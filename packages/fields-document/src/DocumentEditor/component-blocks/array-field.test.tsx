@@ -4,15 +4,14 @@
 import React from 'react';
 import { jsx, makeEditor } from '../tests/utils';
 import { component, fields } from '../../component-blocks';
-import { createPreviewProps } from './preview-props';
-import { ExtractPropFromComponentPropFieldForPreview } from './api';
+import { createGetPreviewProps } from './preview-props';
 
 const table = component({
   component: props =>
     React.createElement(
       'div',
       null,
-      props.children.elements.map(x => {
+      props.fields.children.elements.map(x => {
         return x.element.elements.map(x => {
           return x.element.fields.content;
         });
@@ -274,17 +273,9 @@ test('add to multiple in child field in nested array', () => {
       },
     }
   );
-  const previewProps: ExtractPropFromComponentPropFieldForPreview<{
-    kind: 'object';
-    value: typeof table['props'];
-  }> = createPreviewProps(
-    editor.children[0] as any,
-    table,
-    {},
-    () => {},
-    editor,
-    editor.children[0] as any
-  ) as any;
+  const previewProps = createGetPreviewProps({ kind: 'object', value: table.props }, () => {})(
+    (editor.children[0] as any).props
+  );
   previewProps.fields.children.elements[0].element.onInsert();
   expect(editor).toMatchInlineSnapshot(`
     <editor>

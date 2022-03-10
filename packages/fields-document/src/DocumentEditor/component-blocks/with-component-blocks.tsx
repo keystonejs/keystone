@@ -365,7 +365,6 @@ export function withComponentBlocks(
               }
             }
             setElementIdsForArrayValue(newVal, newKeys);
-            // console.log({ arrVal, newVal });
             if (!areArraysEqual(arrVal, newVal)) {
               const transformedProps = transformProps(rootProp, node.props, (prop, value, path) => {
                 if (prop.kind === 'array' && areArraysEqual(path, propPath)) {

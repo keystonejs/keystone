@@ -1,12 +1,11 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { Transforms, Element, Editor } from 'slate';
+import { Transforms, Editor } from 'slate';
 import React from 'react';
 import { jsx, makeEditor } from '../tests/utils';
 import { component, fields } from '../../component-blocks';
-import { createPreviewProps } from './preview-props';
-import { ExtractPropFromComponentPropFieldForPreview } from './api';
+import { createGetPreviewProps } from './preview-props';
 import { insertComponentBlock } from '.';
 
 const objectProp = fields.object({
@@ -53,9 +52,10 @@ const componentBlocks = {
       return React.createElement(
         'div',
         null,
-        props.object.fields.block,
-        props.object.fields.inline,
-        props.object.fields.conditional.discriminant && props.object.fields.conditional.value
+        props.fields.object.fields.block,
+        props.fields.object.fields.inline,
+        props.fields.object.fields.conditional.discriminant &&
+          props.fields.object.fields.conditional.value
       );
     },
     label: 'Complex',
@@ -174,25 +174,10 @@ test('inserting a complex component block', () => {
   `);
 });
 
-const getPreviewProps = (
-  editor: Editor
-): {
-  object: ExtractPropFromComponentPropFieldForPreview<typeof objectProp>;
-} =>
-  createPreviewProps(
-    editor.children[0] as Element & { type: 'component-block' },
-    componentBlocks.complex,
-    {
-      '["object","block"]': React.createElement('block-prop'),
-      '["object","inline"]': React.createElement('inline-prop'),
-      '["object","conditional","value"]': React.createElement('conditional-prop'),
-    },
-    data => {
-      Transforms.setNodes(editor, data, { at: [0] });
-    },
-    editor,
-    editor.children[0] as Element & { type: 'component-block' }
-  ) as any;
+const getPreviewProps = (editor: Editor) =>
+  createGetPreviewProps({ kind: 'object', value: componentBlocks.complex.props }, props => {
+    Transforms.setNodes(editor, { props }, { at: [0] });
+  })((editor.children[0] as any).props);
 
 const makeEditorWithComplexComponentBlock = () =>
   makeEditor(
@@ -302,7 +287,7 @@ test('preview props conditional change', () => {
   let editor = makeEditorWithComplexComponentBlock();
 
   let previewProps = getPreviewProps(editor);
-  previewProps.object.fields.conditional.onChange(true);
+  previewProps.fields.object.fields.conditional.onChange(true);
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -374,7 +359,7 @@ test('preview props conditional change', () => {
       </paragraph>
     </editor>
   `);
-  expect(getPreviewProps(editor).object.fields.conditional).toMatchInlineSnapshot(`
+  expect(getPreviewProps(editor).fields.object.fields.conditional).toMatchInlineSnapshot(`
     Object {
       "discriminant": true,
       "onChange": [Function],
@@ -388,9 +373,9 @@ test('preview props form change', () => {
   let editor = makeEditorWithComplexComponentBlock();
 
   let previewProps = getPreviewProps(editor);
-  previewProps.object.fields.select.onChange('b');
+  previewProps.fields.object.fields.select.onChange('b');
   expect((editor.children[0] as any).props.object.fields.select).toBe('b');
-  expect(getPreviewProps(editor).object.fields.select.value).toBe('b');
+  expect(getPreviewProps(editor).fields.object.fields.select.value).toBe('b');
 });
 
 test('relationship many change', () => {
@@ -398,9 +383,9 @@ test('relationship many change', () => {
 
   let previewProps = getPreviewProps(editor);
   const val = [{ data: {}, id: 'some-id', label: 'some-id' }];
-  previewProps.object.fields.many.onChange(val);
+  previewProps.fields.object.fields.many.onChange(val);
   expect((editor.children[0] as any).props.object.fields.many).toEqual(val);
-  expect(getPreviewProps(editor).object.fields.many.value).toEqual(val);
+  expect(getPreviewProps(editor).fields.object.fields.many.value).toEqual(val);
 });
 
 function assert(condition: boolean): asserts condition {
@@ -413,19 +398,21 @@ test('relationship single change', () => {
   let editor = makeEditorWithComplexComponentBlock();
 
   let previewProps = getPreviewProps(editor);
-  assert(previewProps.object.fields.conditional.discriminant === false);
+  assert(previewProps.fields.object.fields.conditional.discriminant === false);
   const val = { data: {}, id: 'some-id', label: 'some-id' };
-  previewProps.object.fields.conditional.value.onChange(val);
+  previewProps.fields.object.fields.conditional.value.onChange(val);
   expect((editor.children[0] as any).props.object.fields.conditional.value).toEqual(val);
-  expect((getPreviewProps(editor).object.fields.conditional.value as any).value).toEqual(val);
+  expect((getPreviewProps(editor).fields.object.fields.conditional.value as any).value).toEqual(
+    val
+  );
 });
 
 test('changing conditional with form inside', () => {
   let editor = makeEditorWithComplexComponentBlock();
 
   let previewProps = getPreviewProps(editor);
-  assert(previewProps.object.fields.conditional.discriminant === false);
-  previewProps.object.fields.conditionalSelect.onChange('b');
+  assert(previewProps.fields.object.fields.conditional.discriminant === false);
+  previewProps.fields.object.fields.conditionalSelect.onChange('b');
 
   expect((editor.children[0] as any).props.object.fields.conditionalSelect).toMatchInlineSnapshot(`
     Object {
@@ -433,7 +420,7 @@ test('changing conditional with form inside', () => {
       "value": "B",
     }
   `);
-  expect(getPreviewProps(editor).object.fields.conditionalSelect).toMatchInlineSnapshot(`
+  expect(getPreviewProps(editor).fields.object.fields.conditionalSelect).toMatchInlineSnapshot(`
     Object {
       "discriminant": "b",
       "onChange": [Function],
@@ -460,8 +447,8 @@ test('changing form inside conditional', () => {
   let editor = makeEditorWithComplexComponentBlock();
 
   let previewProps = getPreviewProps(editor);
-  assert(previewProps.object.fields.conditional.discriminant === false);
-  previewProps.object.fields.conditionalSelect.value.onChange('Some content');
+  assert(previewProps.fields.object.fields.conditional.discriminant === false);
+  previewProps.fields.object.fields.conditionalSelect.value.onChange('Some content');
 
   expect((editor.children[0] as any).props.object.fields.conditionalSelect).toMatchInlineSnapshot(`
     Object {
@@ -469,7 +456,7 @@ test('changing form inside conditional', () => {
       "value": "Some content",
     }
   `);
-  expect(getPreviewProps(editor).object.fields.conditionalSelect).toMatchInlineSnapshot(`
+  expect(getPreviewProps(editor).fields.object.fields.conditionalSelect).toMatchInlineSnapshot(`
     Object {
       "discriminant": "a",
       "onChange": [Function],

@@ -11,23 +11,12 @@ import {
   FieldControllerConfig,
   FieldProps,
 } from '@keystone-6/core/types';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { FormValueContent } from '../DocumentEditor/component-blocks/form';
+import { useEffect, useMemo, useRef } from 'react';
 import { getInitialPropsValue } from '../DocumentEditor/component-blocks/initial-values';
 import { ComponentPropFieldForGraphQL } from '../DocumentEditor/component-blocks/api';
-import {
-  assertNever,
-  ReadonlyPropPath,
-  transformProps,
-} from '../DocumentEditor/component-blocks/utils';
-import { areArraysEqual } from '../DocumentEditor/document-features-normalization';
-import {
-  getElementIdsForArrayValue,
-  getNewArrayElementId,
-  setElementIdsForArrayValue,
-} from '../DocumentEditor/component-blocks/preview-props';
-
-const basePath: ReadonlyPropPath = [];
+import { assertNever } from '../DocumentEditor/component-blocks/utils';
+import { FormValueContentFromPreview } from '../DocumentEditor/component-blocks/form-from-preview';
+import { createGetPreviewProps } from '../DocumentEditor/component-blocks/preview-props';
 
 export const Field = ({
   field,
@@ -40,42 +29,18 @@ export const Field = ({
   useEffect(() => {
     valueRef.current = value;
   });
+  const createPreviewProps = useMemo(() => {
+    return createGetPreviewProps(field.prop, getNewVal => {
+      onChange?.({ kind: valueRef.current.kind, value: getNewVal(valueRef.current.value) });
+    });
+  }, [field.prop, onChange]);
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
-      <FormValueContent
-        common={useMemo(
-          () => ({
-            stringifiedPropPathToAutoFocus: autoFocus ? '' : '',
-            forceValidation: !!forceValidation,
-            onAddArrayItem: pathToInsertIn => {
-              onChange?.({
-                kind: valueRef.current.kind,
-                value: transformProps(field.prop, valueRef.current.value, (prop, value, path) => {
-                  if (prop.kind === 'array' && areArraysEqual(path, pathToInsertIn)) {
-                    const newVal = [...(value as any[]), getInitialPropsValue(prop)];
-                    setElementIdsForArrayValue(newVal, [
-                      ...getElementIdsForArrayValue(value as unknown[]),
-                      getNewArrayElementId(),
-                    ]);
-                    return newVal;
-                  }
-                  return value;
-                }),
-              });
-            },
-          }),
-          [autoFocus, forceValidation, onChange, field.prop]
-        )}
-        onChange={useCallback(
-          getNewVal => {
-            onChange?.({ kind: valueRef.current.kind, value: getNewVal(valueRef.current.value) });
-          },
-          [onChange]
-        )}
-        path={basePath}
-        prop={field.prop}
-        value={value.value}
+      <FormValueContentFromPreview
+        forceValidation={forceValidation}
+        autoFocus={autoFocus}
+        {...createPreviewProps(value.value)}
       />
     </FieldContainer>
   );

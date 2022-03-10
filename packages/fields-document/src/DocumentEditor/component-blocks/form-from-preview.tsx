@@ -1,20 +1,31 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import { useKeystone } from '@keystone-6/core/admin-ui/context';
+import { RelationshipSelect } from '@keystone-6/core/fields/types/relationship/views/RelationshipSelect';
 import { Button } from '@keystone-ui/button';
 import { jsx, Stack } from '@keystone-ui/core';
+import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { memo, useMemo } from 'react';
 import { ReactElement } from 'react';
 import { DragHandle, SortableItem, SortableList } from '../primitives/sortable';
-import { ArrayField, ComponentPropField, FormField, PreviewProps } from './api';
-import { RelationshipFormInput } from './form';
-import { objectFieldSymbol } from './preview-props';
+import {
+  ArrayField,
+  ComponentPropField,
+  ConditionalField,
+  FormField,
+  ObjectField,
+  PreviewProps,
+  RelationshipData,
+  RelationshipField,
+} from './api';
 import { assertNever } from './utils';
-
-const emptyPath: never[] = [];
 
 const fieldRenderers: {
   [Key in ComponentPropField['kind']]: (props: {
-    props: PreviewProps<Extract<ComponentPropField, { kind: Key }>>;
+    props: PreviewProps<Extract<ComponentPropField, { kind: Key }>> & {
+      autoFocus?: boolean;
+      forceValidation?: boolean;
+    };
   }) => ReactElement | null;
 } = {
   array({ props }) {
@@ -26,6 +37,7 @@ const fieldRenderers: {
           })}
         </SortableList>
         <Button
+          autoFocus={props.autoFocus}
           onClick={() => {
             props.onInsert();
           }}
@@ -35,36 +47,71 @@ const fieldRenderers: {
       </Stack>
     );
   },
-  relationship({ props }) {
+  relationship: function RelationshipField({ props }) {
+    const keystone = useKeystone();
     return (
-      <RelationshipFormInput
-        common={{ stringifiedPropPathToAutoFocus: '' }}
-        onChange={getVal => {
-          props.onChange(getVal(props.value) as any);
-        }}
-        path={emptyPath}
-        value={props.value}
-        prop={props.field}
-      />
+      <FieldContainer>
+        <FieldLabel>{props.field.label}</FieldLabel>
+        <RelationshipSelect
+          autoFocus={props.autoFocus}
+          controlShouldRenderValue
+          isDisabled={false}
+          list={keystone.adminMeta.lists[props.field.listKey]}
+          extraSelection={props.field.selection || ''}
+          portalMenu
+          state={
+            props.field.many
+              ? {
+                  kind: 'many',
+                  value: (props.value as RelationshipData[]).map(x => ({
+                    id: x.id,
+                    label: x.label || x.id,
+                    data: x.data,
+                  })),
+                  onChange: props.onChange,
+                }
+              : {
+                  kind: 'one',
+                  value: props.value
+                    ? {
+                        ...(props.value as RelationshipData),
+                        label:
+                          (props.value as RelationshipData).label ||
+                          (props.value as RelationshipData).id,
+                      }
+                    : null,
+                  onChange: props.onChange,
+                }
+          }
+        />
+      </FieldContainer>
     );
   },
   child: () => null,
   form: function FormField({ props }) {
     return (
       <props.field.Input
-        autoFocus={false}
+        autoFocus={!!props.autoFocus}
         value={props.value}
         onChange={props.onChange}
-        forceValidation={false}
+        forceValidation={!!props.forceValidation}
       />
     );
   },
   object: function ObjectField({ props }) {
+    const firstFocusable = props.autoFocus ? findFocusableObjectFieldKey(props.field) : undefined;
     return (
       <Stack gap="xlarge">
-        {Object.entries(props).map(([key, propVal]) => (
-          <FormValueContentFromPreview key={key} props={propVal} />
-        ))}
+        {Object.entries(props.fields).map(
+          ([key, propVal]) =>
+            isNonChildFieldPreviewProps(propVal) && (
+              <FormValueContentFromPreview
+                autoFocus={key === firstFocusable}
+                key={key}
+                {...propVal}
+              />
+            )
+        )}
       </Stack>
     );
   },
@@ -75,59 +122,51 @@ const fieldRenderers: {
         {useMemo(
           () => (
             <discriminant.Input
-              autoFocus={false}
+              autoFocus={!!props.autoFocus}
               value={props.discriminant}
               onChange={props.onChange}
               forceValidation={false}
             />
           ),
-          [discriminant, props.discriminant, props.onChange]
+          [props.autoFocus, discriminant, props.discriminant, props.onChange]
         )}
-        <FormValueContentFromPreview props={props.value as any} />
+        {isNonChildFieldPreviewProps(props.value) && (
+          <FormValueContentFromPreview {...props.value} />
+        )}
       </Stack>
     );
   },
 };
 
-export function FormValueContentFromPreview({
-  props,
-}: {
-  props: PreviewProps<ComponentPropField>;
-}) {
-  const preview = handlePreview(props);
-  if (preview !== undefined) {
-    return preview;
-  }
+export type NonChildFieldComponentPropField =
+  | FormField<any, any>
+  | ObjectField
+  | ConditionalField<FormField<string | boolean, any>, { [key: string]: ComponentPropField }>
+  | RelationshipField<boolean>
+  | ArrayField<ComponentPropField>;
 
-  const kind: ComponentPropField['kind'] = (props as any)[objectFieldSymbol]
-    ? (props as any)[objectFieldSymbol].kind
-    : (props as any).field.kind;
-  const Comp = fieldRenderers[kind];
-  return <Comp props={props as any} />;
+function isNonChildFieldPreviewProps(
+  props: PreviewProps<ComponentPropField>
+): props is PreviewProps<NonChildFieldComponentPropField> {
+  const kind: ComponentPropField['kind'] = (props as any)?.field?.kind;
+  if (!kind) {
+    return false;
+  }
+  return true;
 }
 
-function handlePreview(props: any) {
-  const prop: ComponentPropField = props[objectFieldSymbol]
-    ? props[objectFieldSymbol]
-    : props.field;
-  if (prop.kind === 'child') {
-    return;
+export function FormValueContentFromPreview(
+  props: PreviewProps<NonChildFieldComponentPropField> & {
+    autoFocus?: boolean;
+    forceValidation?: boolean;
+  }
+) {
+  if (props.field.preview) {
+    return <props.field.preview {...(props as any)} />;
   }
 
-  if (
-    prop.kind === 'conditional' ||
-    prop.kind === 'form' ||
-    prop.kind === 'object' ||
-    prop.kind === 'relationship' ||
-    prop.kind === 'array'
-  ) {
-    if (prop.preview) {
-      return <prop.preview {...props} />;
-    }
-    return;
-  }
-
-  assertNever(prop);
+  const Comp = fieldRenderers[props.field.kind];
+  return <Comp props={props as any} />;
 }
 
 const SortableItemInForm = memo(function SortableItemInForm(
@@ -138,7 +177,42 @@ const SortableItemInForm = memo(function SortableItemInForm(
       <Stack across align="center" gap="small" css={{ justifyContent: 'center' }}>
         <DragHandle />
       </Stack>
-      <FormValueContentFromPreview {...(props.element as any)} />s
+      {isNonChildFieldPreviewProps(props.element) && (
+        <FormValueContentFromPreview {...props.element} />
+      )}
     </SortableItem>
   );
 });
+
+function findFocusableObjectFieldKey(prop: ObjectField): string | undefined {
+  for (const [key, innerProp] of Object.entries(prop.value)) {
+    const childFocusable = canFieldBeFocused(innerProp);
+    if (childFocusable) {
+      return key;
+    }
+  }
+  return undefined;
+}
+
+export function canFieldBeFocused(prop: ComponentPropField): boolean {
+  if (
+    prop.kind === 'array' ||
+    prop.kind === 'conditional' ||
+    prop.kind === 'form' ||
+    prop.kind === 'relationship'
+  ) {
+    return true;
+  }
+  if (prop.kind === 'child') {
+    return false;
+  }
+  if (prop.kind === 'object') {
+    for (const innerProp of Object.values(prop.value)) {
+      if (canFieldBeFocused(innerProp)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  assertNever(prop);
+}
