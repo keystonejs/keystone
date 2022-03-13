@@ -60,6 +60,7 @@ export async function setupTestEnv({
   }
   await pushPrismaSchemaToDatabase(
     config.db.url,
+    config.db.shadowUrl,
     artifacts.prisma,
     path.join(artifactPath, 'schema.prisma'),
     true // shouldDropDatabase

@@ -312,6 +312,7 @@ async function setupInitialKeystone(
   if (config.db.useMigrations) {
     migrationPromise = devMigrations(
       config.db.url,
+      config.db.shadowUrl,
       prismaSchema,
       getSchemaPaths(cwd).prisma,
       shouldDropDatabase
@@ -319,6 +320,7 @@ async function setupInitialKeystone(
   } else {
     migrationPromise = pushPrismaSchemaToDatabase(
       config.db.url,
+      config.db.shadowUrl,
       prismaSchema,
       getSchemaPaths(cwd).prisma,
       shouldDropDatabase
