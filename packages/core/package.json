@@ -53,7 +53,7 @@
     "@prisma/client": "3.9.2",
     "@prisma/migrate": "3.9.2",
     "@prisma/sdk": "3.9.2",
-    "@sindresorhus/slugify": "^1.1.2",
+    "@sindresorhus/slugify": "^2.0.0",
     "@types/apollo-upload-client": "14.1.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/cookie": "^0.4.1",
