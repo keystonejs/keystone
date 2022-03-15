@@ -31,11 +31,10 @@ export const getRootConfig = (matrixValue: 's3' | 'local'): Partial<KeystoneConf
     return {};
   }
   return {
-    files: {
-      upload: 's3',
-    },
-    experimental: {
-      s3: {
+    storage: {
+      test_file: {
+        kind: 's3',
+        type: 'file',
         bucketName: process.env.S3_BUCKET_NAME!,
         accessKeyId: process.env.S3_ACCESS_KEY_ID!,
         secretAccessKey: process.env.S3_SECRET_ACCESS_KEY!,
@@ -61,7 +60,7 @@ export const skipRequiredTest = true;
 export const fieldName = 'secretFile';
 export const subfieldName = 'filesize';
 
-export const getTestFields = () => ({ secretFile: file() });
+export const getTestFields = () => ({ secretFile: file({ storage: 'test-storage' }) });
 
 export const afterEach = async (matrixValue: 's3' | 'local') => {
   if (matrixValue === 'local') {

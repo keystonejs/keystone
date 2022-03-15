@@ -1,5 +1,4 @@
 import { FileUpload } from 'graphql-upload';
-import { userInputError } from '../../../lib/core/graphql-errors';
 import {
   BaseListTypeInfo,
   fieldType,
@@ -8,13 +7,15 @@ import {
   ImageData,
   ImageExtension,
   KeystoneContext,
+  AssetMode,
 } from '../../../types';
 import { graphql } from '../../..';
 import { resolveView } from '../../resolve-view';
-import { getImageRef, SUPPORTED_IMAGE_EXTENSIONS } from './utils';
+import { SUPPORTED_IMAGE_EXTENSIONS } from './utils';
 
-export type ImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo>;
+export type ImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
+  storage: string;
+} & CommonFieldConfig<ListTypeInfo>;
 
 const ImageExtensionEnum = graphql.enum({
   name: 'ImageExtension',
@@ -24,85 +25,60 @@ const ImageExtensionEnum = graphql.enum({
 const ImageFieldInput = graphql.inputObject({
   name: 'ImageFieldInput',
   fields: {
-    upload: graphql.arg({ type: graphql.Upload }),
-    ref: graphql.arg({ type: graphql.String }),
+    upload: graphql.arg({ type: graphql.nonNull(graphql.Upload) }),
   },
 });
 
-const imageOutputFields = graphql.fields<ImageData>()({
+type ImageSource = ImageData & { mode: AssetMode };
+
+const imageOutputFields = graphql.fields<ImageSource>()({
   id: graphql.field({ type: graphql.nonNull(graphql.ID) }),
   filesize: graphql.field({ type: graphql.nonNull(graphql.Int) }),
   width: graphql.field({ type: graphql.nonNull(graphql.Int) }),
   height: graphql.field({ type: graphql.nonNull(graphql.Int) }),
   extension: graphql.field({ type: graphql.nonNull(ImageExtensionEnum) }),
-  ref: graphql.field({
-    type: graphql.nonNull(graphql.String),
-    resolve(data) {
-      return getImageRef(data.mode, data.id, data.extension);
-    },
-  }),
   url: graphql.field({
     type: graphql.nonNull(graphql.String),
     resolve(data, args, context) {
       if (!context.images) {
         throw new Error('Image context is undefined');
       }
-      return context.images.getUrl(data.mode, data.id, data.extension);
+      return context.images.getUrl(data.storage, data.id, data.extension);
     },
   }),
 });
 
 const modeToTypeName = {
   local: 'LocalImageFieldOutput',
-  cloud: 'CloudImageFieldOutput',
   s3: 'S3ImageFieldOutput',
 };
 
-const ImageFieldOutput = graphql.interface<ImageData>()({
+const ImageFieldOutput = graphql.interface<ImageSource>()({
   name: 'ImageFieldOutput',
   fields: imageOutputFields,
   resolveType: val => modeToTypeName[val.mode],
 });
 
-const LocalImageFieldOutput = graphql.object<ImageData>()({
+const LocalImageFieldOutput = graphql.object<ImageSource>()({
   name: modeToTypeName.local,
   interfaces: [ImageFieldOutput],
   fields: imageOutputFields,
 });
 
-const CloudImageFieldOutput = graphql.object<ImageData>()({
-  name: modeToTypeName.cloud,
-  interfaces: [ImageFieldOutput],
-  fields: imageOutputFields,
-});
-
-const S3ImageFieldOutput = graphql.object<ImageData>()({
+const S3ImageFieldOutput = graphql.object<ImageSource>()({
   name: modeToTypeName.s3,
   interfaces: [ImageFieldOutput],
   fields: imageOutputFields,
 });
 
-type ImageFieldInputType =
-  | undefined
-  | null
-  | { upload?: Promise<FileUpload> | null; ref?: string | null };
+type ImageFieldInputType = undefined | null | { upload: Promise<FileUpload> };
 
-async function inputResolver(data: ImageFieldInputType, context: KeystoneContext) {
+async function inputResolver(storage: string, data: ImageFieldInputType, context: KeystoneContext) {
   if (data === null || data === undefined) {
-    return { extension: data, filesize: data, height: data, id: data, mode: data, width: data };
+    return { extension: data, filesize: data, height: data, id: data, storage: data, width: data };
   }
 
-  if (data.ref) {
-    if (data.upload) {
-      throw userInputError('Only one of ref and upload can be passed to ImageFieldInput');
-    }
-    return context.images!.getDataFromRef(data.ref);
-  }
-  if (!data.upload) {
-    throw userInputError('Either ref or upload must be passed to ImageFieldInput');
-  }
-
-  return context.images!.getDataFromStream((await data.upload).createReadStream());
+  return context.images!.getDataFromStream(storage, (await data.upload).createReadStream());
 }
 
 const extensionsSet = new Set(SUPPORTED_IMAGE_EXTENSIONS);
@@ -113,9 +89,17 @@ function isValidImageExtension(extension: string): extension is ImageExtension {
 
 export const image =
   <ListTypeInfo extends BaseListTypeInfo>(
-    config: ImageFieldConfig<ListTypeInfo> = {}
+    config: ImageFieldConfig<ListTypeInfo>
   ): FieldTypeFunc<ListTypeInfo> =>
-  () => {
+  meta => {
+    const mode = meta.assets.getMode(config.storage);
+
+    if (mode === undefined) {
+      throw new Error(
+        `${meta.listKey}.${meta.fieldKey} has storage set to ${config.storage} but there is no storage config under that key`
+      );
+    }
+
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type image");
     }
@@ -127,18 +111,24 @@ export const image =
         extension: { kind: 'scalar', scalar: 'String', mode: 'optional' },
         width: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
         height: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
-        mode: { kind: 'scalar', scalar: 'String', mode: 'optional' },
+        storage: { kind: 'scalar', scalar: 'String', mode: 'optional' },
         id: { kind: 'scalar', scalar: 'String', mode: 'optional' },
       },
     })({
       ...config,
       input: {
-        create: { arg: graphql.arg({ type: ImageFieldInput }), resolve: inputResolver },
-        update: { arg: graphql.arg({ type: ImageFieldInput }), resolve: inputResolver },
+        create: {
+          arg: graphql.arg({ type: ImageFieldInput }),
+          resolve: (data, context) => inputResolver(config.storage, data, context),
+        },
+        update: {
+          arg: graphql.arg({ type: ImageFieldInput }),
+          resolve: (data, context) => inputResolver(config.storage, data, context),
+        },
       },
       output: graphql.field({
         type: ImageFieldOutput,
-        resolve({ value: { extension, filesize, height, id, mode, width } }) {
+        resolve({ value: { extension, filesize, height, id, storage, width } }) {
           if (
             extension === null ||
             !isValidImageExtension(extension) ||
@@ -146,19 +136,14 @@ export const image =
             height === null ||
             width === null ||
             id === null ||
-            mode === null ||
-            (mode !== 'local' && mode !== 'cloud' && mode !== 's3')
+            storage === null
           ) {
             return null;
           }
-          return { mode, extension, filesize, height, width, id };
+          return { mode, extension, filesize, height, width, id, storage };
         },
       }),
-      unreferencedConcreteInterfaceImplementations: [
-        LocalImageFieldOutput,
-        CloudImageFieldOutput,
-        S3ImageFieldOutput,
-      ],
+      unreferencedConcreteInterfaceImplementations: [LocalImageFieldOutput, S3ImageFieldOutput],
       views: resolveView('image/views'),
     });
   };

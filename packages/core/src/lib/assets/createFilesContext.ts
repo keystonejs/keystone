@@ -6,7 +6,6 @@ import fs from 'fs-extra';
 
 import slugify from '@sindresorhus/slugify';
 import { KeystoneConfig, FilesContext } from '../../types';
-import { parseFileRef } from '../../fields/types/file/utils';
 import { AssetsAPI } from './types';
 
 const DEFAULT_BASE_URL = '/files';
@@ -44,74 +43,65 @@ const generateSafeFilename = (
 
 export function createFilesContext(
   config: KeystoneConfig,
-  cloudAssets: () => AssetsAPI,
-  s3Assets: () => AssetsAPI
+  s3Assets: () => Map<string, AssetsAPI>
 ): FilesContext | undefined {
-  if (!config.files) {
+  if (!config.storage) {
     return;
   }
 
-  const { files } = config;
-  const { baseUrl = DEFAULT_BASE_URL, storagePath = DEFAULT_FILES_STORAGE_PATH } =
-    files.local || {};
+  const { storage } = config;
 
-  if (files.upload === 'local') {
-    fs.mkdirSync(storagePath, { recursive: true });
-  }
+  Object.entries(storage).forEach(([, val]) => {
+    if (val.type === 'file' && val.kind === 'local') {
+      fs.mkdirSync(val.storagePath || DEFAULT_FILES_STORAGE_PATH, { recursive: true });
+    }
+  });
 
   return {
-    getUrl: async (mode, filename) => {
-      switch (mode) {
-        case 'cloud': {
-          return cloudAssets().files.url(filename);
-        }
+    getUrl: async (storageString, filename) => {
+      let storage = config.storage?.[storageString];
+
+      switch (storage?.kind) {
         case 's3': {
-          return s3Assets().files.url(filename);
-        }
-        default: {
-          return `${baseUrl}/${filename}`;
-        }
-      }
-    },
-    getDataFromRef: async (ref: string) => {
-      const fileRef = parseFileRef(ref);
+          const s3Instance = s3Assets().get(storageString);
 
-      if (!fileRef) {
-        throw new Error('Invalid file reference');
-      }
+          if (!s3Instance) {
+            throw new Error(`Keystone has no connection to S3 storage location ${storage}`);
+          }
 
-      const { mode, filename } = fileRef;
-
-      switch (mode) {
-        case 'cloud': {
-          const { filesize } = await cloudAssets().files.metadata(filename);
-          return { filesize, ...fileRef };
-        }
-        case 's3': {
-          const { filesize } = await s3Assets().files.metadata(filename);
-          return { filesize, ...fileRef };
+          return s3Instance.files.url(filename);
         }
         case 'local': {
-          const { size: filesize } = await fs.stat(path.join(storagePath, fileRef.filename));
-          return { filesize, ...fileRef };
+          return `${storage.baseUrl || DEFAULT_BASE_URL}/${filename}`;
         }
       }
-    },
-    getDataFromStream: async (stream, originalFilename) => {
-      const { upload: mode } = files;
-      const filename = generateSafeFilename(originalFilename, files.transformFilename);
 
-      switch (mode) {
-        case 'cloud': {
-          const { filesize } = await cloudAssets().files.upload(stream, filename);
-          return { mode, filesize, filename };
-        }
+      throw new Error(
+        `attempted to get URL for storage ${storageString}, however could not find the config for it`
+      );
+    },
+    getDataFromStream: async (storage, stream, originalFilename) => {
+      const storageConfig = config.storage?.[storage];
+
+      // const mode = config.storage?.[storage]?.kind;
+      // const filename = generateSafeFilename(originalFilename, storage.transformFilename);
+      const filename = generateSafeFilename(originalFilename);
+
+      switch (storageConfig?.kind) {
         case 's3': {
-          const { filesize } = await s3Assets().files.upload(stream, filename);
-          return { mode, filesize, filename };
+          const s3Instance = s3Assets().get(storage);
+
+          if (!s3Instance) {
+            throw new Error(`Keystone has no connection to S3 storage location ${storage}`);
+          }
+
+          const { filesize } = await s3Instance.files.upload(stream, filename);
+          return { storage, filesize, filename };
         }
         case 'local': {
-          const writeStream = fs.createWriteStream(path.join(storagePath, filename));
+          const writeStream = fs.createWriteStream(
+            path.join(storageConfig.storagePath || DEFAULT_FILES_STORAGE_PATH, filename)
+          );
           const pipeStreams: Promise<void> = new Promise((resolve, reject) => {
             pipeline(stream, writeStream, err => {
               if (err) {
@@ -124,14 +114,22 @@ export function createFilesContext(
 
           try {
             await pipeStreams;
-            const { size: filesize } = await fs.stat(path.join(storagePath, filename));
-            return { mode, filesize, filename };
+            const { size: filesize } = await fs.stat(
+              path.join(storageConfig.storagePath || DEFAULT_FILES_STORAGE_PATH, filename)
+            );
+            return { storage, filesize, filename };
           } catch (e) {
-            await fs.remove(path.join(storagePath, filename));
+            await fs.remove(
+              path.join(storageConfig.storagePath || DEFAULT_FILES_STORAGE_PATH, filename)
+            );
             throw e;
           }
         }
       }
+
+      throw new Error(
+        `attempted to get URL for storage ${storageConfig}, however could not find the config for it`
+      );
     },
   };
 }

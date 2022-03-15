@@ -34,8 +34,10 @@ export default auth.withAuth(
       // path: '/admin',
       // isAccessAllowed,
     },
-    images: { upload: 'local' },
-    files: { upload: 'local' },
+    storage: {
+      images: { kind: 'local', type: 'image', storagePath: '/images', baseUrl: '' },
+      files: { kind: 'local', type: 'image', storagePath: '/files', baseUrl: '' },
+    },
     lists,
     extendGraphqlSchema,
     session: statelessSessions({ maxAge: sessionMaxAge, secret: sessionSecret }),

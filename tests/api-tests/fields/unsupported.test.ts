@@ -50,8 +50,18 @@ if (unsupportedModules.length > 0) {
                       fields: { name: text(), ...mod.getTestFields(matrixValue) },
                     }),
                   },
-                  images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
-                  files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
+                  storage: {
+                    test_image: {
+                      kind: 'local',
+                      storagePath: 'tmp_test_images',
+                      type: 'image',
+                    },
+                    test_file: {
+                      kind: 'local',
+                      storagePath: 'tmp_test_files',
+                      type: 'file',
+                    },
+                  },
                 }),
               })
           ).rejects.toThrow(Error);

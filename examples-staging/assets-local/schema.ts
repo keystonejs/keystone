@@ -15,8 +15,8 @@ export const lists = {
       content: text(),
       publishDate: timestamp(),
       author: relationship({ ref: 'Author.posts', many: false }),
-      hero: image(),
-      attachment: file(),
+      hero: image({ storage: 'images' }),
+      attachment: file({ storage: 'files' }),
     },
   }),
   Author: list({

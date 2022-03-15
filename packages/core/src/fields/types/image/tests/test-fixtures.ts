@@ -32,11 +32,10 @@ export const getRootConfig = (matrixValue: 's3' | 'local'): Partial<KeystoneConf
     return {};
   }
   return {
-    images: {
-      upload: 's3',
-    },
-    experimental: {
-      s3: {
+    storage: {
+      image_test: {
+        type: 'image',
+        kind: 's3',
         bucketName: process.env.S3_BUCKET_NAME!,
         accessKeyId: process.env.S3_ACCESS_KEY_ID!,
         secretAccessKey: process.env.S3_SECRET_ACCESS_KEY!,
@@ -62,7 +61,7 @@ export const skipRequiredTest = true;
 export const fieldName = 'avatar';
 export const subfieldName = 'extension';
 
-export const getTestFields = () => ({ avatar: image() });
+export const getTestFields = () => ({ avatar: image({ storage: 'fake-storage' }) });
 
 export const afterAll = (matrixValue: 's3' | 'local') => {
   if (matrixValue === 'local') {

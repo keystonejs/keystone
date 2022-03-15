@@ -160,20 +160,19 @@ export type SessionContext<T> = {
   endSession(): Promise<void>;
 };
 
-export type AssetMode = 'local' | 'cloud' | 's3';
+export type AssetMode = 'local' | 's3';
 
 // Files API
 
 export type FileData = {
-  mode: AssetMode;
+  storage: string;
   filename: string;
   filesize: number;
 };
 
 export type FilesContext = {
-  getUrl: (mode: AssetMode, filename: string) => Promise<string>;
-  getDataFromRef: (ref: string) => Promise<FileData>;
-  getDataFromStream: (stream: Readable, filename: string) => Promise<FileData>;
+  getUrl: (storage: string, filename: string) => Promise<string>;
+  getDataFromStream: (storage: string, stream: Readable, filename: string) => Promise<FileData>;
 };
 
 // Images API
@@ -188,12 +187,11 @@ export type ImageMetadata = {
 };
 
 export type ImageData = {
-  mode: AssetMode;
+  storage: string;
   id: string;
 } & ImageMetadata;
 
 export type ImagesContext = {
-  getUrl: (mode: AssetMode, id: string, extension: ImageExtension) => Promise<string>;
-  getDataFromRef: (ref: string) => Promise<ImageData>;
-  getDataFromStream: (stream: Readable) => Promise<ImageData>;
+  getUrl: (storage: string, id: string, extension: ImageExtension) => Promise<string>;
+  getDataFromStream: (storage: string, stream: Readable) => Promise<ImageData>;
 };

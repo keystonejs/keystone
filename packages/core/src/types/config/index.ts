@@ -27,8 +27,27 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
   session?: SessionStrategy<any>;
   graphql?: GraphQLConfig;
   extendGraphqlSchema?: ExtendGraphqlSchema;
-  files?: FilesConfig;
-  images?: ImagesConfig;
+  // Storage key used for the name of the storage
+  storage?: Record<
+    string,
+    | {
+        kind: 'local';
+        type: 'file' | 'image';
+        storagePath?: string;
+        baseUrl?: string; // e.g. https://blah.com/images
+      }
+    | ({
+        kind: 's3';
+        type: 'file' | 'image';
+        signed?: { expiry: number };
+        proxied?: {
+          baseUrl: string;
+          generate?: boolean; // if false, allow proxied requests but return urls directly to s3
+        };
+        // not 100% sure how this works
+        pathPrefix?: string;
+      } & S3Config)
+  >;
   /** Experimental config options */
   experimental?: {
     /** Enables nextjs graphql api route mode */
@@ -37,13 +56,10 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
     generateNodeAPI?: boolean;
     /** Creates a file at `node_modules/.keystone/next/graphql-api` with `default` and `config` exports that can be re-exported in a Next API route */
     generateNextGraphqlAPI?: boolean;
-    /** Options for Keystone Cloud */
-    cloud?: CloudConfig;
     /** Adds the internal data structure `experimental.initialisedLists` to the context object.
      * This is not a stable API and may contain breaking changes in `patch` level releases.
      */
     contextInitialisedLists?: boolean;
-    s3?: S3Config;
   };
 };
 
