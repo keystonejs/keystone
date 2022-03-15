@@ -12,19 +12,8 @@ export default config({
     url: process.env.DATABASE_URL || 'file:./keystone-example.db',
   },
   lists,
-  images: {
-    upload: 'cloud',
-    local: {
-      storagePath: 'uploads/images', // defaults to 'public/images'
-      baseUrl: 'http://localhost:3000/images', // defaults to `/images`
-    },
-  },
-  files: {
-    upload: 'cloud',
-  },
-  experimental: {
-    cloud: {
-      apiKey: KEYSTONE_CLOUD_API_KEY,
-    },
+  storage: {
+    images: { kind: 's3', type: 'image', bucketName, region, accessKeyId, secretAccessKey },
+    files: { kind: 's3', type: 'file', bucketName, region, accessKeyId, secretAccessKey },
   },
 });

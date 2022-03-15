@@ -2,11 +2,8 @@ import { v4 as uuid } from 'uuid';
 import fromBuffer from 'image-type';
 import imageSize from 'image-size';
 import { KeystoneConfig, ImageMetadata, ImagesContext } from '../../types';
-import { ImageAdapter } from './types';
-import { localImageAssetsAPI } from './local';
-import { s3ImageAssetsAPI } from './s3';
-
-export const DEFAULT_BASE_IMAGE_URL = '/images';
+import { AssetsAPI } from './types';
+const DEFAULT_BASE_URL = '/images';
 export const DEFAULT_IMAGES_STORAGE_PATH = './public/images';
 
 export function getImageMetadataFromBuffer(buffer: Buffer): ImageMetadata {
@@ -28,34 +25,86 @@ export function getImageMetadataFromBuffer(buffer: Buffer): ImageMetadata {
   return { width, height, filesize: buffer.length, extension };
 }
 
-export function createImagesContext(config: KeystoneConfig): ImagesContext {
-  const imageAssetsAPIs = new Map<string, ImageAdapter>();
-  for (const [storageKey, storageConfig] of Object.entries(config.storage || {})) {
-    if (storageConfig.type !== 'image') break;
-    imageAssetsAPIs.set(
-      storageKey,
-      storageConfig.kind === 'local'
-        ? localImageAssetsAPI(storageConfig)
-        : s3ImageAssetsAPI(storageConfig)
-    );
+export function createImagesContext(
+  config: KeystoneConfig,
+  s3Assets: () => Map<string, AssetsAPI>
+): ImagesContext | undefined {
+  if (!config.storage) {
+    return;
   }
 
-  return (storageString: string) => {
-    const assetsAPI = imageAssetsAPIs.get(storageString);
-    if (assetsAPI === undefined) {
-      throw new Error(`No file assets API found for storage string "${storageString}"`);
-    }
+  const { storage } = config;
 
-    return {
-      getUrl: async (id, extension) => {
-        return assetsAPI.url(id, extension);
-      },
-      getDataFromStream: async stream => {
-        const id = uuid();
-        const metadata = await assetsAPI.upload(stream, id);
-        return { storage: storageString, id, ...metadata };
-      },
-      deleteAtSource: assetsAPI.delete,
-    };
+  Object.entries(storage).forEach(([, val]) => {
+    if (val.type === 'image' && val.kind === 'local') {
+      fs.mkdirSync(val.storagePath || DEFAULT_IMAGES_STORAGE_PATH, { recursive: true });
+    }
+  });
+
+  return {
+    getUrl: async (storageString, id, extension) => {
+      let storage = config.storage?.[storageString];
+
+      switch (storage?.kind) {
+        case 's3': {
+          const s3Instance = s3Assets().get(storageString);
+
+          if (!s3Instance) {
+            throw new Error(`Keystone has no connection to S3 storage location ${storageString}`);
+          }
+
+          return s3Instance.images.url(id, extension);
+        }
+        case 'local': {
+          const filename = `${id}.${extension}`;
+          return `${storage.baseUrl || DEFAULT_BASE_URL}/${filename}`;
+        }
+      }
+
+      throw new Error(
+        `attempted to get URL for storage ${storageString}, however could not find the config for it`
+      );
+    },
+    getDataFromStream: async (storage, stream) => {
+      const storageConfig = config.storage?.[storage];
+
+      const id = uuid();
+
+      switch (storageConfig?.kind) {
+        case 's3': {
+          const s3Instance = s3Assets().get(storage);
+
+          if (!s3Instance) {
+            throw new Error(`Keystone has no connection to S3 storage location ${storage}`);
+          }
+
+          const metadata = await s3Instance.images.upload(stream, id);
+          return { storage, id, ...metadata };
+        }
+        case 'local': {
+          const chunks = [];
+
+          for await (let chunk of stream) {
+            chunks.push(chunk);
+          }
+
+          const buffer = Buffer.concat(chunks);
+          const metadata = getImageMetadataFromBuffer(buffer);
+
+          await fs.writeFile(
+            path.join(
+              storageConfig.storagePath || DEFAULT_IMAGES_STORAGE_PATH,
+              `${id}.${metadata.extension}`
+            ),
+            buffer
+          );
+          return { storage, id, ...metadata };
+        }
+      }
+
+      throw new Error(
+        `attempted to get data from stream for storage ${storageConfig}, however could not find the config for it`
+      );
+    },
   };
 }

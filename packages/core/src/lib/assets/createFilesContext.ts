@@ -3,9 +3,7 @@ import filenamify from 'filenamify';
 
 import slugify from '@sindresorhus/slugify';
 import { KeystoneConfig, FilesContext } from '../../types';
-import { localFileAssetsAPI } from './local';
-import { s3FileAssetsAPI } from './s3';
-import { FileAdapter } from './types';
+import { AssetsAPI } from './types';
 
 export const DEFAULT_BASE_FILE_URL = '/files';
 export const DEFAULT_FILES_STORAGE_PATH = './public/files';
@@ -40,38 +38,95 @@ const generateSafeFilename = (
   return `${urlSafeName}-${id}`;
 };
 
-export function createFilesContext(config: KeystoneConfig): FilesContext {
-  const { storage } = config;
-
-  const adaptersMap = new Map<string, FileAdapter>();
-  for (const [storageKey, storageConfig] of Object.entries(storage || {})) {
-    if (storageConfig.type !== 'file') break;
-    adaptersMap.set(
-      storageKey,
-      storageConfig.kind === 'local'
-        ? localFileAssetsAPI(storageConfig)
-        : s3FileAssetsAPI(storageConfig)
-    );
+export function createFilesContext(
+  config: KeystoneConfig,
+  s3Assets: () => Map<string, AssetsAPI>
+): FilesContext | undefined {
+  if (!config.storage) {
+    return;
   }
 
-  return (storageString: string) => {
-    const adapter = adaptersMap.get(storageString);
-    if (!adapter) {
-      throw new Error(`No file assets API found for storage string "${storageString}"`);
-    }
+  const { storage } = config;
 
-    return {
-      getUrl: async filename => {
-        return adapter.url(filename);
-      },
-      getDataFromStream: async (stream, originalFilename) => {
-        const filename = generateSafeFilename(originalFilename);
-        const { filesize } = await adapter.upload(stream, filename);
-        return { filename, filesize };
-      },
-      deleteAtSource: async filename => {
-        await adapter.delete(filename);
-      },
-    };
+  Object.entries(storage).forEach(([, val]) => {
+    if (val.type === 'file' && val.kind === 'local') {
+      fs.mkdirSync(val.storagePath || DEFAULT_FILES_STORAGE_PATH, { recursive: true });
+    }
+  });
+
+  return {
+    getUrl: async (storageString, filename) => {
+      let storage = config.storage?.[storageString];
+
+      switch (storage?.kind) {
+        case 's3': {
+          const s3Instance = s3Assets().get(storageString);
+
+          if (!s3Instance) {
+            throw new Error(`Keystone has no connection to S3 storage location ${storage}`);
+          }
+
+          return s3Instance.files.url(filename);
+        }
+        case 'local': {
+          return `${storage.baseUrl || DEFAULT_BASE_URL}/${filename}`;
+        }
+      }
+
+      throw new Error(
+        `attempted to get URL for storage ${storageString}, however could not find the config for it`
+      );
+    },
+    getDataFromStream: async (storage, stream, originalFilename) => {
+      const storageConfig = config.storage?.[storage];
+
+      // const mode = config.storage?.[storage]?.kind;
+      // const filename = generateSafeFilename(originalFilename, storage.transformFilename);
+      const filename = generateSafeFilename(originalFilename);
+
+      switch (storageConfig?.kind) {
+        case 's3': {
+          const s3Instance = s3Assets().get(storage);
+
+          if (!s3Instance) {
+            throw new Error(`Keystone has no connection to S3 storage location ${storage}`);
+          }
+
+          const { filesize } = await s3Instance.files.upload(stream, filename);
+          return { storage, filesize, filename };
+        }
+        case 'local': {
+          const writeStream = fs.createWriteStream(
+            path.join(storageConfig.storagePath || DEFAULT_FILES_STORAGE_PATH, filename)
+          );
+          const pipeStreams: Promise<void> = new Promise((resolve, reject) => {
+            pipeline(stream, writeStream, err => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve();
+              }
+            });
+          });
+
+          try {
+            await pipeStreams;
+            const { size: filesize } = await fs.stat(
+              path.join(storageConfig.storagePath || DEFAULT_FILES_STORAGE_PATH, filename)
+            );
+            return { storage, filesize, filename };
+          } catch (e) {
+            await fs.remove(
+              path.join(storageConfig.storagePath || DEFAULT_FILES_STORAGE_PATH, filename)
+            );
+            throw e;
+          }
+        }
+      }
+
+      throw new Error(
+        `attempted to get URL for storage ${storageConfig}, however could not find the config for it`
+      );
+    },
   };
 }

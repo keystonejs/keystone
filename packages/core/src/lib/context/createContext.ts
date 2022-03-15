@@ -30,7 +30,10 @@ export function makeCreateContext({
   gqlNamesByList: Record<string, GqlNames>;
   lists: Record<string, InitialisedList>;
 }) {
-  const s3AssetsAPI = config.storage ? s3Assets(config.storage) : undefined;
+  const s3AssetsAPI =
+    config.storage && Object.values(config.storage).find(({ kind }) => kind === 's3')
+      ? s3Assets(config.storage)
+      : undefined;
   const getS3AssetsAPI = () => {
     if (s3AssetsAPI === undefined) {
       throw new Error('S3 assets have not been configured');

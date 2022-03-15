@@ -5,7 +5,8 @@ import {
   CommonFieldConfig,
   BaseListTypeInfo,
   KeystoneContext,
-  FileMetadata,
+  FileData,
+  AssetMode,
 } from '../../../types';
 import { graphql } from '../../..';
 import { resolveView } from '../../resolve-view';
@@ -13,6 +14,8 @@ import { resolveView } from '../../resolve-view';
 export type FileFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
   storage: string;
 } & CommonFieldConfig<ListTypeInfo>;
+
+type FileSource = FileData & { mode: AssetMode };
 
 const FileFieldInput = graphql.inputObject({
   name: 'FileFieldInput',
@@ -23,26 +26,55 @@ const FileFieldInput = graphql.inputObject({
 
 type FileFieldInputType = undefined | null | { upload: Promise<FileUpload> };
 
-const FileFieldOutput = graphql.object<FileMetadata & { storage: string }>()({
+const fileFields = graphql.fields<FileData>()({
+  filename: graphql.field({ type: graphql.nonNull(graphql.String) }),
+  filesize: graphql.field({ type: graphql.nonNull(graphql.Int) }),
+  url: graphql.field({
+    type: graphql.nonNull(graphql.String),
+    resolve(data, args, context) {
+      if (!context.files) {
+        throw new Error(
+          'File context is undefined, this most likely means that you havent configurd keystone with a file config, see https://keystonejs.com/docs/apis/config#files for details'
+        );
+      }
+      return context.files.getUrl(data.storage, data.filename);
+    },
+  }),
+});
+
+const modeToTypeName = {
+  local: 'LocalFileFieldOutput',
+  s3: 'S3FileFieldOutput',
+};
+
+const FileFieldOutput = graphql.interface<FileSource>()({
   name: 'FileFieldOutput',
-  fields: {
-    filename: graphql.field({ type: graphql.nonNull(graphql.String) }),
-    filesize: graphql.field({ type: graphql.nonNull(graphql.Int) }),
-    url: graphql.field({
-      type: graphql.nonNull(graphql.String),
-      resolve(data, args, context) {
-        return context.files(data.storage).getUrl(data.filename);
-      },
-    }),
-  },
+  fields: fileFields,
+  resolveType: val => modeToTypeName[val.mode],
+});
+
+const LocalFileFieldOutput = graphql.object<FileSource>()({
+  name: modeToTypeName.local,
+  interfaces: [FileFieldOutput],
+  fields: fileFields,
+});
+
+const S3FileFieldOutput = graphql.object<FileSource>()({
+  name: modeToTypeName.s3,
+  interfaces: [FileFieldOutput],
+  fields: fileFields,
 });
 
 async function inputResolver(storage: string, data: FileFieldInputType, context: KeystoneContext) {
   if (data === null || data === undefined) {
-    return { filename: data, filesize: data };
+    return { storage: data, filename: data, filesize: data };
+  }
+
+  if (!data.upload) {
+    throw userInputError('Upload must be passed to FileFieldInput');
   }
   const upload = await data.upload;
-  return context.files(storage).getDataFromStream(upload.createReadStream(), upload.filename);
+  return context.files!.getDataFromStream(storage, upload.createReadStream(), upload.filename);
 }
 
 export const file =
@@ -50,16 +82,16 @@ export const file =
     config: FileFieldConfig<ListTypeInfo>
   ): FieldTypeFunc<ListTypeInfo> =>
   meta => {
-    const storage = meta.assets.getStorage(config.storage);
+    const mode = meta.assets.getMode(config.storage);
 
-    if (!storage) {
+    if (mode === undefined) {
       throw new Error(
         `${meta.listKey}.${meta.fieldKey} has storage set to ${config.storage} but there is no storage config under that key`
       );
     }
 
-    if ('isIndexed' in config) {
-      throw Error('isIndexed is not a supported option for the file field type');
+    if ((config as any).isIndexed === 'unique') {
+      throw Error("isIndexed: 'unique' is not a supported option for field type file");
     }
 
     return fieldType({
@@ -67,6 +99,7 @@ export const file =
       fields: {
         filesize: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
         filename: { kind: 'scalar', scalar: 'String', mode: 'optional' },
+        storage: { kind: 'scalar', scalar: 'String', mode: 'optional' },
       },
     })({
       ...config,
@@ -100,13 +133,14 @@ export const file =
       },
       output: graphql.field({
         type: FileFieldOutput,
-        resolve({ value: { filesize, filename } }) {
-          if (filesize === null || filename === null) {
+        resolve({ value: { filesize, filename, storage } }) {
+          if (filesize === null || filename === null || storage === null) {
             return null;
           }
-          return { filename, filesize, storage: config.storage };
+          return { mode, filename, filesize, storage };
         },
       }),
+      unreferencedConcreteInterfaceImplementations: [LocalFileFieldOutput, S3FileFieldOutput],
       views: resolveView('file/views'),
     });
   };

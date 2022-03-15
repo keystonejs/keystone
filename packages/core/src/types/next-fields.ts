@@ -3,7 +3,7 @@ import { graphql } from '..';
 import { BaseListTypeInfo } from './type-info';
 import { CommonFieldConfig } from './config';
 import { DatabaseProvider } from './core';
-import { AdminMetaRootVal, JSONValue, KeystoneContext, MaybePromise, StorageConfig } from '.';
+import { AdminMetaRootVal, AssetMode, JSONValue, KeystoneContext, MaybePromise } from '.';
 
 export { Decimal };
 
@@ -15,7 +15,7 @@ export type FieldData = {
   lists: Record<string, ListGraphQLTypes>;
   provider: DatabaseProvider;
   assets: {
-    getStorage: (storage: string) => StorageConfig | undefined;
+    getMode: (storage: string) => AssetMode | undefined;
   };
   listKey: string;
   fieldKey: string;

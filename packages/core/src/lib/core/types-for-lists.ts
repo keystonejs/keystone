@@ -373,7 +373,7 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
               lists: listInfos,
               provider,
               assets: {
-                getStorage: storage => config.storage?.[storage],
+                getMode: storage => config.storage?.[storage]?.kind,
               },
             });
 

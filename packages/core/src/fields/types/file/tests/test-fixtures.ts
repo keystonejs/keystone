@@ -69,7 +69,11 @@ export const fieldName = 'secretFile';
 export const subfieldName = 'filesize';
 export const fieldConfig = () => ({ storage: 'test_file' });
 
+<<<<<<< HEAD
 export type MatrixValue = 's3' | 'local';
+=======
+export const getTestFields = () => ({ secretFile: file({ storage: 'test-storage' }) });
+>>>>>>> 91bf8f2f8... comparable functionality
 
 export const getTestFields = () => ({
   secretFile: file({ storage: 'test_file' }),

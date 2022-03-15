@@ -44,7 +44,7 @@ export const getRootConfig = (matrixValue: MatrixValue): Partial<KeystoneConfig>
   }
   return {
     storage: {
-      test_image: {
+      image_test: {
         type: 'image',
         kind: 's3',
         bucketName: process.env.S3_BUCKET_NAME!,
@@ -72,7 +72,14 @@ export const skipRequiredTest = true;
 export const fieldName = 'avatar';
 export const subfieldName = 'extension';
 
-export const getTestFields = () => ({ avatar: image({ storage: 'test_image' }) });
+export const getTestFields = () => ({ avatar: image({ storage: 'fake-storage' }) });
+
+export const afterAll = (matrixValue: 's3' | 'local') => {
+  if (matrixValue === 'local') {
+    // This matches the storagePath in the keystone config in the various test files.
+    fs.rmdirSync('tmp_test_images', { recursive: true });
+  }
+};
 
 export const initItems = () => [
   { avatar: prepareFile('graphql.jpg'), name: 'file0' },

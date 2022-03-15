@@ -111,44 +111,24 @@ export const createExpressServer = async (
   }
 
   if (config.storage) {
-    for (const val of Object.values(config.storage)) {
-      if (!val.addServerRoute) continue;
+    Object.entries(config.storage).forEach(([, val]) => {
       if (val.kind === 'local') {
-        expressServer.use(
-          val.addServerRoute.path,
-          express.static(
-            val.storagePath || val.type === 'image'
-              ? DEFAULT_IMAGES_STORAGE_PATH
-              : DEFAULT_FILES_STORAGE_PATH
-          )
-        );
-      } else if (val.kind === 's3') {
-        const endpoint = getS3AssetsEndpoint(val);
-        expressServer.use(`${val.addServerRoute.path}/:id`, async (req, res) => {
-          const url = new URL(endpoint);
-          url.pathname += `/${req.params.id}`;
-
-          // pass through the URL query parameters verbatim
-          const { searchParams } = new URL(req.url);
-          for (const [key, value] of searchParams) {
-            url.searchParams.append(key, value);
+        switch (val.type) {
+          case 'image': {
+            expressServer.use(
+              '/files',
+              express.static(val.storagePath || DEFAULT_FILES_STORAGE_PATH)
+            );
           }
-
-          const imageResponse = await fetch(url.toString());
-          if (!imageResponse.ok) throw new Error(`Unexpected response ${imageResponse.statusText}`);
-
-          for (const header of ['Content-Type', 'Content-Length', 'Cache-Control']) {
-            const headerValue = imageResponse.headers.get(header);
-            if (headerValue) {
-              res.setHeader(header, headerValue);
-            }
+          case 'image': {
+            expressServer.use(
+              '/images',
+              express.static(val.storagePath || DEFAULT_IMAGES_STORAGE_PATH)
+            );
           }
-
-          res.status(200);
-          await streamPipeline(imageResponse.body, res);
-        });
+        }
       }
-    }
+    });
   }
 
   const apolloServer = await addApolloServer({

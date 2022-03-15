@@ -7,6 +7,7 @@ import {
   ImageData,
   ImageExtension,
   KeystoneContext,
+  AssetMode,
 } from '../../../types';
 import { graphql } from '../../..';
 import { resolveView } from '../../resolve-view';
@@ -28,21 +29,46 @@ const ImageFieldInput = graphql.inputObject({
   },
 });
 
-const ImageFieldOutput = graphql.object<ImageData & { storage: string }>()({
+type ImageSource = ImageData & { mode: AssetMode };
+
+const imageOutputFields = graphql.fields<ImageSource>()({
+  id: graphql.field({ type: graphql.nonNull(graphql.ID) }),
+  filesize: graphql.field({ type: graphql.nonNull(graphql.Int) }),
+  width: graphql.field({ type: graphql.nonNull(graphql.Int) }),
+  height: graphql.field({ type: graphql.nonNull(graphql.Int) }),
+  extension: graphql.field({ type: graphql.nonNull(ImageExtensionEnum) }),
+  url: graphql.field({
+    type: graphql.nonNull(graphql.String),
+    resolve(data, args, context) {
+      if (!context.images) {
+        throw new Error('Image context is undefined');
+      }
+      return context.images.getUrl(data.storage, data.id, data.extension);
+    },
+  }),
+});
+
+const modeToTypeName = {
+  local: 'LocalImageFieldOutput',
+  s3: 'S3ImageFieldOutput',
+};
+
+const ImageFieldOutput = graphql.interface<ImageSource>()({
   name: 'ImageFieldOutput',
-  fields: {
-    id: graphql.field({ type: graphql.nonNull(graphql.ID) }),
-    filesize: graphql.field({ type: graphql.nonNull(graphql.Int) }),
-    width: graphql.field({ type: graphql.nonNull(graphql.Int) }),
-    height: graphql.field({ type: graphql.nonNull(graphql.Int) }),
-    extension: graphql.field({ type: graphql.nonNull(ImageExtensionEnum) }),
-    url: graphql.field({
-      type: graphql.nonNull(graphql.String),
-      resolve(data, args, context) {
-        return context.images(data.storage).getUrl(data.id, data.extension);
-      },
-    }),
-  },
+  fields: imageOutputFields,
+  resolveType: val => modeToTypeName[val.mode],
+});
+
+const LocalImageFieldOutput = graphql.object<ImageSource>()({
+  name: modeToTypeName.local,
+  interfaces: [ImageFieldOutput],
+  fields: imageOutputFields,
+});
+
+const S3ImageFieldOutput = graphql.object<ImageSource>()({
+  name: modeToTypeName.s3,
+  interfaces: [ImageFieldOutput],
+  fields: imageOutputFields,
 });
 
 type ImageFieldInputType = undefined | null | { upload: Promise<FileUpload> };
@@ -51,8 +77,8 @@ async function inputResolver(storage: string, data: ImageFieldInputType, context
   if (data === null || data === undefined) {
     return { extension: data, filesize: data, height: data, id: data, storage: data, width: data };
   }
-  const upload = await data.upload;
-  return context.images(storage).getDataFromStream(upload.createReadStream());
+
+  return context.images!.getDataFromStream(storage, (await data.upload).createReadStream());
 }
 
 const extensionsSet = new Set(SUPPORTED_IMAGE_EXTENSIONS);
@@ -66,16 +92,16 @@ export const image =
     config: ImageFieldConfig<ListTypeInfo>
   ): FieldTypeFunc<ListTypeInfo> =>
   meta => {
-    const storage = meta.assets.getStorage(config.storage);
+    const mode = meta.assets.getMode(config.storage);
 
-    if (!storage) {
+    if (mode === undefined) {
       throw new Error(
         `${meta.listKey}.${meta.fieldKey} has storage set to ${config.storage} but there is no storage config under that key`
       );
     }
 
-    if ('isIndexed' in config) {
-      throw Error('isIndexed is not a supported option for the image field type');
+    if ((config as any).isIndexed === 'unique') {
+      throw Error("isIndexed: 'unique' is not a supported option for field type image");
     }
 
     return fieldType({
@@ -85,6 +111,7 @@ export const image =
         extension: { kind: 'scalar', scalar: 'String', mode: 'optional' },
         width: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
         height: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
+        storage: { kind: 'scalar', scalar: 'String', mode: 'optional' },
         id: { kind: 'scalar', scalar: 'String', mode: 'optional' },
       },
     })({
@@ -122,7 +149,7 @@ export const image =
       },
       output: graphql.field({
         type: ImageFieldOutput,
-        resolve({ value: { extension, filesize, height, id, width } }) {
+        resolve({ value: { extension, filesize, height, id, storage, width } }) {
           if (
             extension === null ||
             !isValidImageExtension(extension) ||
@@ -134,16 +161,10 @@ export const image =
           ) {
             return null;
           }
-          return {
-            extension,
-            filesize,
-            height,
-            width,
-            id,
-            storage: config.storage,
-          };
+          return { mode, extension, filesize, height, width, id, storage };
         },
       }),
+      unreferencedConcreteInterfaceImplementations: [LocalImageFieldOutput, S3ImageFieldOutput],
       views: resolveView('image/views'),
     });
   };
