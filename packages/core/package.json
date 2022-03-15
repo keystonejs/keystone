@@ -107,7 +107,7 @@
     "node-fetch": "^2.6.7",
     "normalize-path": "^3.0.0",
     "object-hash": "^3.0.0",
-    "p-limit": "^2.3.0",
+    "p-limit": "^4.0.0",
     "pirates": "^4.0.1",
     "pluralize": "^8.0.0",
     "prettier": "^2.5.0",
