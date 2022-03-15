@@ -17,18 +17,8 @@ export default config({
     url: process.env.DATABASE_URL || 'file:./keystone-example.db',
   },
   lists,
-  images: {
-    upload: 's3',
-  },
-  files: {
-    upload: 's3',
-  },
-  experimental: {
-    s3: {
-      bucketName,
-      region,
-      accessKeyId,
-      secretAccessKey,
-    },
+  storage: {
+    images: { kind: 's3', type: 'image', bucketName, region, accessKeyId, secretAccessKey },
+    files: { kind: 's3', type: 'file', bucketName, region, accessKeyId, secretAccessKey },
   },
 });

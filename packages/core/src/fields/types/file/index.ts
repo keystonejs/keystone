@@ -7,36 +7,29 @@ import {
   BaseListTypeInfo,
   KeystoneContext,
   FileData,
+  AssetMode,
 } from '../../../types';
 import { graphql } from '../../..';
 import { resolveView } from '../../resolve-view';
-import { getFileRef } from './utils';
 
-export type FileFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo>;
+export type FileFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
+  storage: string;
+} & CommonFieldConfig<ListTypeInfo>;
+
+type FileSource = FileData & { mode: AssetMode };
 
 const FileFieldInput = graphql.inputObject({
   name: 'FileFieldInput',
   fields: {
-    upload: graphql.arg({ type: graphql.Upload }),
-    ref: graphql.arg({ type: graphql.String }),
+    upload: graphql.arg({ type: graphql.nonNull(graphql.Upload) }),
   },
 });
 
-type FileFieldInputType =
-  | undefined
-  | null
-  | { upload?: Promise<FileUpload> | null; ref?: string | null };
+type FileFieldInputType = undefined | null | { upload: Promise<FileUpload> };
 
 const fileFields = graphql.fields<FileData>()({
   filename: graphql.field({ type: graphql.nonNull(graphql.String) }),
   filesize: graphql.field({ type: graphql.nonNull(graphql.Int) }),
-  ref: graphql.field({
-    type: graphql.nonNull(graphql.String),
-    resolve(data) {
-      return getFileRef(data.mode, data.filename);
-    },
-  }),
   url: graphql.field({
     type: graphql.nonNull(graphql.String),
     resolve(data, args, context) {
@@ -45,64 +38,59 @@ const fileFields = graphql.fields<FileData>()({
           'File context is undefined, this most likely means that you havent configurd keystone with a file config, see https://keystonejs.com/docs/apis/config#files for details'
         );
       }
-      return context.files.getUrl(data.mode, data.filename);
+      return context.files.getUrl(data.storage, data.filename);
     },
   }),
 });
 
 const modeToTypeName = {
   local: 'LocalFileFieldOutput',
-  cloud: 'CloudFileFieldOutput',
   s3: 'S3FileFieldOutput',
 };
 
-const FileFieldOutput = graphql.interface<FileData>()({
+const FileFieldOutput = graphql.interface<FileSource>()({
   name: 'FileFieldOutput',
   fields: fileFields,
   resolveType: val => modeToTypeName[val.mode],
 });
 
-const LocalFileFieldOutput = graphql.object<FileData>()({
+const LocalFileFieldOutput = graphql.object<FileSource>()({
   name: modeToTypeName.local,
   interfaces: [FileFieldOutput],
   fields: fileFields,
 });
 
-const CloudFileFieldOutput = graphql.object<FileData>()({
-  name: modeToTypeName.cloud,
-  interfaces: [FileFieldOutput],
-  fields: fileFields,
-});
-
-const S3FileFieldOutput = graphql.object<FileData>()({
+const S3FileFieldOutput = graphql.object<FileSource>()({
   name: modeToTypeName.s3,
   interfaces: [FileFieldOutput],
   fields: fileFields,
 });
 
-async function inputResolver(data: FileFieldInputType, context: KeystoneContext) {
+async function inputResolver(storage: string, data: FileFieldInputType, context: KeystoneContext) {
   if (data === null || data === undefined) {
-    return { mode: data, filename: data, filesize: data };
+    return { storage: data, filename: data, filesize: data };
   }
 
-  if (data.ref) {
-    if (data.upload) {
-      throw userInputError('Only one of ref and upload can be passed to FileFieldInput');
-    }
-    return context.files!.getDataFromRef(data.ref);
-  }
   if (!data.upload) {
-    throw userInputError('Either ref or upload must be passed to FileFieldInput');
+    throw userInputError('Upload must be passed to FileFieldInput');
   }
   const upload = await data.upload;
-  return context.files!.getDataFromStream(upload.createReadStream(), upload.filename);
+  return context.files!.getDataFromStream(storage, upload.createReadStream(), upload.filename);
 }
 
 export const file =
   <ListTypeInfo extends BaseListTypeInfo>(
-    config: FileFieldConfig<ListTypeInfo> = {}
+    config: FileFieldConfig<ListTypeInfo>
   ): FieldTypeFunc<ListTypeInfo> =>
-  () => {
+  meta => {
+    const mode = meta.assets.getMode(config.storage);
+
+    if (mode === undefined) {
+      throw new Error(
+        `${meta.listKey}.${meta.fieldKey} has storage set to ${config.storage} but there is no storage config under that key`
+      );
+    }
+
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type file");
     }
@@ -111,34 +99,31 @@ export const file =
       kind: 'multi',
       fields: {
         filesize: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
-        mode: { kind: 'scalar', scalar: 'String', mode: 'optional' },
         filename: { kind: 'scalar', scalar: 'String', mode: 'optional' },
+        storage: { kind: 'scalar', scalar: 'String', mode: 'optional' },
       },
     })({
       ...config,
       input: {
-        create: { arg: graphql.arg({ type: FileFieldInput }), resolve: inputResolver },
-        update: { arg: graphql.arg({ type: FileFieldInput }), resolve: inputResolver },
+        create: {
+          arg: graphql.arg({ type: FileFieldInput }),
+          resolve: (data, context) => inputResolver(config.storage, data, context),
+        },
+        update: {
+          arg: graphql.arg({ type: FileFieldInput }),
+          resolve: (data, context) => inputResolver(config.storage, data, context),
+        },
       },
       output: graphql.field({
         type: FileFieldOutput,
-        resolve({ value: { filesize, filename, mode } }) {
-          if (
-            filesize === null ||
-            filename === null ||
-            mode === null ||
-            (mode !== 'local' && mode !== 'cloud' && mode !== 's3')
-          ) {
+        resolve({ value: { filesize, filename, storage } }) {
+          if (filesize === null || filename === null || storage === null) {
             return null;
           }
-          return { mode, filename, filesize };
+          return { mode, filename, filesize, storage };
         },
       }),
-      unreferencedConcreteInterfaceImplementations: [
-        LocalFileFieldOutput,
-        CloudFileFieldOutput,
-        S3FileFieldOutput,
-      ],
+      unreferencedConcreteInterfaceImplementations: [LocalFileFieldOutput, S3FileFieldOutput],
       views: resolveView('file/views'),
     });
   };

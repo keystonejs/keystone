@@ -7,10 +7,8 @@ export default config({
     url: process.env.DATABASE_URL || 'file:./keystone-example.db',
   },
   lists,
-  images: {
-    upload: 'local',
-  },
-  files: {
-    upload: 'local',
+  storage: {
+    images: { kind: 'local', type: 'image' },
+    files: { kind: 'local', type: 'file' },
   },
 });

@@ -1,7 +1,0 @@
-{
-  "template": "node",
-  "container": {
-    "startScript": "keystone dev",
-    "node": "14"
-  }
-}

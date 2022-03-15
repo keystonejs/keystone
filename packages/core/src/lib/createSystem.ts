@@ -2,12 +2,10 @@ import pLimit from 'p-limit';
 import { FieldData, KeystoneConfig, getGqlNames } from '../types';
 
 import { createAdminMeta } from '../admin-ui/system/createAdminMeta';
-import { getCloudAssetsAPI } from './assets/cloud';
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './context/createContext';
 import { initialiseLists } from './core/types-for-lists';
 import { setWriteLimit } from './core/utils';
-import { AssetsAPI } from './assets/types';
 
 function getSudoGraphQLSchema(config: KeystoneConfig) {
   // This function creates a GraphQLSchema based on a modified version of the provided config.
@@ -88,8 +86,6 @@ export function createSystem(config: KeystoneConfig, isLiveReload?: boolean) {
         prismaClient._engine.child?.kill('SIGINT');
       });
 
-      let cloudAssetsAPI: AssetsAPI | undefined = undefined;
-
       const createContext = makeCreateContext({
         graphQLSchema,
         sudoGraphQLSchema,
@@ -99,12 +95,6 @@ export function createSystem(config: KeystoneConfig, isLiveReload?: boolean) {
           Object.entries(lists).map(([listKey, list]) => [listKey, getGqlNames(list)])
         ),
         lists,
-        cloudAssetsAPI: () => {
-          if (cloudAssetsAPI === undefined) {
-            throw new Error('Keystone Cloud config was not loaded');
-          }
-          return cloudAssetsAPI;
-        },
       });
 
       return {
@@ -113,15 +103,6 @@ export function createSystem(config: KeystoneConfig, isLiveReload?: boolean) {
             await prismaClient.$connect();
             const context = createContext({ sudo: true });
             await config.db.onConnect?.(context);
-          }
-          if (config.experimental?.cloud?.apiKey) {
-            try {
-              cloudAssetsAPI = await getCloudAssetsAPI({
-                apiKey: config.experimental.cloud.apiKey,
-              });
-            } catch (err) {
-              console.error('failed to connect to Keystone Cloud', err);
-            }
           }
         },
         async disconnect() {

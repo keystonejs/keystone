@@ -4,9 +4,7 @@ import fs from 'fs-extra';
 import fromBuffer from 'image-type';
 import imageSize from 'image-size';
 import { KeystoneConfig, ImageMetadata, ImagesContext } from '../../types';
-import { parseImageRef } from '../../fields/types/image/utils';
 import { AssetsAPI } from './types';
-
 const DEFAULT_BASE_URL = '/images';
 export const DEFAULT_IMAGES_STORAGE_PATH = './public/images';
 
@@ -31,76 +29,59 @@ export function getImageMetadataFromBuffer(buffer: Buffer): ImageMetadata {
 
 export function createImagesContext(
   config: KeystoneConfig,
-  cloudAssets: () => AssetsAPI,
-  s3Assets: () => AssetsAPI
+  s3Assets: () => Map<string, AssetsAPI>
 ): ImagesContext | undefined {
-  if (!config.images) {
+  if (!config.storage) {
     return;
   }
 
-  const { images } = config;
-  const { baseUrl = DEFAULT_BASE_URL, storagePath = DEFAULT_IMAGES_STORAGE_PATH } =
-    images.local || {};
+  const { storage } = config;
 
-  if (images.upload === 'local') {
-    fs.mkdirSync(storagePath, { recursive: true });
-  }
+  Object.entries(storage).forEach(([, val]) => {
+    if (val.type === 'image' && val.kind === 'local') {
+      fs.mkdirSync(val.storagePath || DEFAULT_IMAGES_STORAGE_PATH, { recursive: true });
+    }
+  });
 
   return {
-    getUrl: async (mode, id, extension) => {
-      switch (mode) {
-        case 'cloud': {
-          return cloudAssets().images.url(id, extension);
-        }
+    getUrl: async (storageString, id, extension) => {
+      let storage = config.storage?.[storageString];
+
+      switch (storage?.kind) {
         case 's3': {
-          return s3Assets().images.url(id, extension);
+          const s3Instance = s3Assets().get(storageString);
+
+          if (!s3Instance) {
+            throw new Error(`Keystone has no connection to S3 storage location ${storageString}`);
+          }
+
+          return s3Instance.images.url(id, extension);
         }
         case 'local': {
           const filename = `${id}.${extension}`;
-          return `${baseUrl}/${filename}`;
+          return `${storage.baseUrl || DEFAULT_BASE_URL}/${filename}`;
         }
       }
+
+      throw new Error(
+        `attempted to get URL for storage ${storageString}, however could not find the config for it`
+      );
     },
-    getDataFromRef: async ref => {
-      const imageRef = parseImageRef(ref);
+    getDataFromStream: async (storage, stream) => {
+      const storageConfig = config.storage?.[storage];
 
-      if (!imageRef) {
-        throw new Error('Invalid image reference');
-      }
-
-      const { mode } = imageRef;
-
-      switch (mode) {
-        case 'cloud': {
-          const metadata = await cloudAssets().images.metadata(imageRef.id, imageRef.extension);
-          return { ...imageRef, ...metadata };
-        }
-        case 's3': {
-          const metadata = await s3Assets().images.metadata(imageRef.id, imageRef.extension);
-          return { ...imageRef, ...metadata };
-        }
-        case 'local': {
-          const buffer = await fs.readFile(
-            path.join(storagePath, `${imageRef.id}.${imageRef.extension}`)
-          );
-          const metadata = getImageMetadataFromBuffer(buffer);
-
-          return { ...imageRef, ...metadata };
-        }
-      }
-    },
-    getDataFromStream: async stream => {
-      const { upload: mode } = images;
       const id = uuid();
 
-      switch (mode) {
-        case 'cloud': {
-          const metadata = await cloudAssets().images.upload(stream, id);
-          return { mode, id, ...metadata };
-        }
+      switch (storageConfig?.kind) {
         case 's3': {
-          const metadata = await s3Assets().images.upload(stream, id);
-          return { mode, id, ...metadata };
+          const s3Instance = s3Assets().get(storage);
+
+          if (!s3Instance) {
+            throw new Error(`Keystone has no connection to S3 storage location ${storage}`);
+          }
+
+          const metadata = await s3Instance.images.upload(stream, id);
+          return { storage, id, ...metadata };
         }
         case 'local': {
           const chunks = [];
@@ -112,10 +93,20 @@ export function createImagesContext(
           const buffer = Buffer.concat(chunks);
           const metadata = getImageMetadataFromBuffer(buffer);
 
-          await fs.writeFile(path.join(storagePath, `${id}.${metadata.extension}`), buffer);
-          return { mode, id, ...metadata };
+          await fs.writeFile(
+            path.join(
+              storageConfig.storagePath || DEFAULT_IMAGES_STORAGE_PATH,
+              `${id}.${metadata.extension}`
+            ),
+            buffer
+          );
+          return { storage, id, ...metadata };
         }
       }
+
+      throw new Error(
+        `attempted to get data from stream for storage ${storageConfig}, however could not find the config for it`
+      );
     },
   };
 }
