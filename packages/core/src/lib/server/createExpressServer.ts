@@ -90,7 +90,7 @@ export const createExpressServer = async (
         req,
       });
 
-    config.server?.extendExpressApp(expressServer, createRequestContext);
+    await config.server.extendExpressApp(expressServer, createRequestContext);
   }
 
   if (config.server?.extendHttpServer) {
