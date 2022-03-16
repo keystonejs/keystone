@@ -107,11 +107,17 @@ export function updateValue(prop: ComponentPropField, currentValue: any, updater
     case 'conditional': {
       return {
         discriminant: updater.discriminant,
-        value: updateValue(
-          prop.values[updater.discriminant.toString()],
-          currentValue.value,
-          updater.value
-        ),
+        value:
+          updater.discriminant === currentValue.discriminant
+            ? updateValue(
+                prop.values[updater.discriminant.toString()],
+                currentValue.value,
+                updater.value
+              )
+            : getInitialPropsValueFromInitializer(
+                prop.values[updater.discriminant.toString()],
+                updater.value
+              ),
       };
     }
     case 'object': {
@@ -153,10 +159,10 @@ export function updateValue(prop: ComponentPropField, currentValue: any, updater
       );
       const val = newVal.map((x, i) => {
         const id = keys[i];
-        const prevVal = prevValuesByKey.has(id)
-          ? prevValuesByKey.get(id)
-          : getInitialPropsValue(prop.element);
-        return updateValue(prop.element, prevVal, x.value);
+        if (prevValuesByKey.has(id)) {
+          return updateValue(prop.element, prevValuesByKey.get(id), x.value);
+        }
+        return getInitialPropsValueFromInitializer(prop.element, x.value);
       });
       setElementIdsForArrayValue(val, keys);
       return val;

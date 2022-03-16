@@ -1,18 +1,18 @@
 import React, { ReactElement, useContext } from 'react';
 import { arrayMove } from '@dnd-kit/sortable';
-import weakMemoize from '@emotion/weak-memoize';
 import {
   ArrayField,
   ComponentPropField,
   ConditionalField,
+  ValueForComponentPropField,
   FormField,
   FormFieldValue,
+  HydratedRelationshipData,
   ObjectField,
   PreviewProps,
   RelationshipField,
 } from './api';
 import { updateValue, getInitialPropsValueFromInitializer } from './initial-values';
-import { assertNever } from './utils';
 
 const arrayValuesToElementIds = new WeakMap<readonly unknown[], string[]>();
 
@@ -39,296 +39,352 @@ function ChildFieldEditable({ path }: { path: readonly string[] }) {
   return useContext(ChildrenByPathContext)[JSON.stringify(path)];
 }
 
-export function createGetPreviewProps<Field extends ComponentPropField>(
-  rootProp: Field,
-  rootOnChange: (cb: (val: any) => any) => void
-) {
-  const innerOnChangeCacheForObjectAndArrayField = new WeakMap<
-    (cb: (val: any) => any) => any,
-    Map<string, (cb: (val: any) => any) => any>
-  >();
-
-  const onChangeCacheForObjectAndConditionalField = new WeakMap<
-    (cb: (val: any) => any) => void,
-    (...args: any[]) => void
-  >();
-
-  const onChangeCacheForArrayField = new WeakMap<
-    (...args: any[]) => any,
-    {
-      readonly onChange: (value: any) => void;
-      readonly onMove: (from: number, to: number) => void;
-      readonly onInsert: (initial?: any, index?: number) => void;
-      readonly onRemove: (index: number) => void;
-    }
-  >();
-
-  const emptyMap = () => new Map<string, (cb: (val: any) => any) => void>();
-
-  type GeneralMap<K, V> = {
-    has(key: K): boolean;
-    get(key: K): V | undefined;
-    set(key: K, value: V): void;
-  };
-
-  function getOrInsert<K, V>(map: GeneralMap<K, V>, key: K, val: (key: K) => V): V {
-    if (!map.has(key)) {
-      map.set(key, val(key));
-    }
-    return map.get(key)!;
+function castToMemoizedInfoForProp<
+  T extends {
+    [Kind in ComponentPropField['kind']]: (
+      prop: Extract<ComponentPropField, { kind: Kind }>,
+      onChange: (
+        cb: (
+          prevVal: ValueForComponentPropField<Extract<ComponentPropField, { kind: Kind }>>
+        ) => ValueForComponentPropField<Extract<ComponentPropField, { kind: Kind }>>
+      ) => void
+    ) => unknown;
   }
+>(val: T): T {
+  return val;
+}
 
-  const makeOnChangeForFormAndRelationshipFields = weakMemoize(
-    (onChange: (cb: (prevVal: any) => any) => void) => {
-      return (newVal: FormFieldValue) => {
-        onChange(() => newVal);
-      };
-    }
-  );
+const memoizedInfoForProp = castToMemoizedInfoForProp({
+  form(prop, onChange) {
+    return (newVal: unknown) => onChange(() => newVal);
+  },
+  array(prop, onChange) {
+    return {
+      rawOnChange: onChange,
+      inner: new Map<
+        string,
+        {
+          onChange: (cb: (val: unknown) => unknown) => void;
+          inner: { id: string; element: unknown };
+        }
+      >(),
+      props: {
+        onInsert(initial?: unknown, index?: number) {
+          onChange(value => {
+            const newValue = [...(value as unknown[])];
 
-  const makeOnChangeForValueOfConditionalField = weakMemoize(
-    (onChange: (cb: (prevVal: any) => any) => void) => {
-      return (val: (prevVal: any) => any) => {
-        onChange(prev => ({
-          discriminant: prev.discriminant,
-          value: val(prev.value),
-        }));
-      };
-    }
-  );
-
-  function getPreviewPropsForProp(
-    prop: ComponentPropField,
-    value: unknown,
-    path: readonly string[],
-    onChange: (cb: (prevVal: any) => any) => void,
-    getInnerProp: (
-      prop: ComponentPropField,
-      value: unknown,
-      path: readonly string[],
-      onChange: (cb: (prevVal: any) => any) => void
-    ) => any
-  ): any {
-    switch (prop.kind) {
-      case 'form':
-        const props: PreviewProps<FormField<FormFieldValue, unknown>> = {
-          value: value as FormFieldValue,
-          onChange: makeOnChangeForFormAndRelationshipFields(onChange),
-          options: prop.options,
-          field: prop,
-        };
-        return props;
-      case 'child':
-        return <ChildFieldEditable path={path} />;
-      case 'object': {
-        const fields: Record<string, any> = {};
-        const onChangeCache = getOrInsert(
-          innerOnChangeCacheForObjectAndArrayField,
-          onChange,
-          emptyMap
-        );
-        const getOnChange = (key: string) => {
-          return (newVal: (prevVal: any) => any) => {
-            onChange(val => ({ ...val, [key]: newVal(val[key]) }));
-          };
-        };
-        Object.keys(prop.value).forEach(key => {
-          const onChange = getOrInsert(onChangeCache, key, getOnChange);
-          fields[key] = getInnerProp(
-            prop.value[key],
-            (value as any)[key],
-            path.concat(key),
-            onChange
-          );
-        });
-
-        const previewProps: PreviewProps<ObjectField<Record<string, ComponentPropField>>> = {
-          fields,
-          onChange: getOrInsert(
-            onChangeCacheForObjectAndConditionalField,
-            onChange,
-            () => updater => {
-              onChange(value => updateValue(prop, value, updater));
-            }
-          ),
-          field: prop,
-        };
-        return previewProps;
-      }
-      case 'relationship': {
-        const props: PreviewProps<RelationshipField<boolean>> = {
-          value: value as any,
-          onChange: makeOnChangeForFormAndRelationshipFields(onChange),
-          field: prop,
-        };
-        return props;
-      }
-      case 'conditional': {
-        const conditionalValue = value as { discriminant: string | boolean; value: unknown };
-        const props: PreviewProps<
-          ConditionalField<
-            FormField<string | boolean, unknown>,
-            { [key: string]: ComponentPropField }
-          >
-        > = {
-          discriminant: (value as any).discriminant,
-          onChange: getOrInsert(
-            onChangeCacheForObjectAndConditionalField,
-            onChange,
-            () => (discriminant, value) => {
-              onChange(val => updateValue(prop, val, { discriminant, value }));
-            }
-          ),
-          options: prop.discriminant.options,
-          value: getInnerProp(
-            prop.values[conditionalValue.discriminant.toString()],
-            conditionalValue.value,
-            path.concat('value'),
-            makeOnChangeForValueOfConditionalField(onChange)
-          ),
-          field: prop,
-        };
-        return props;
-      }
-      case 'array': {
-        const arrayValue = value as readonly unknown[];
-        const keys = getElementIdsForArrayValue(arrayValue);
-
-        const onChangeArrayItem = (key: string) => (val: (val: any) => any) => {
-          onChange(prev => {
-            const keys = getElementIdsForArrayValue(prev);
-            const index = keys.indexOf(key);
-            const newValue = [...prev];
-            newValue[index] = val(newValue[index]);
-            setElementIdsForArrayValue(newValue, keys);
+            newValue.splice(
+              index ?? newValue.length,
+              0,
+              getInitialPropsValueFromInitializer(prop.element, initial)
+            );
+            const keys = getElementIdsForArrayValue(value as readonly unknown[]);
+            setElementIdsForArrayValue(newValue, [...keys, getNewArrayElementId()]);
             return newValue;
           });
-        };
-        const onChangeCache = getOrInsert(
-          innerOnChangeCacheForObjectAndArrayField,
-          onChange,
-          emptyMap
-        );
-        const props: PreviewProps<ArrayField<ComponentPropField>> = {
-          elements: arrayValue.map((val, i) => {
-            const key = keys[i];
+        },
+        onMove(from: number, to: number) {
+          onChange(value => {
+            const newValue = arrayMove(value as unknown[], from, to);
+            const keys = getElementIdsForArrayValue(value as readonly unknown[]);
+            setElementIdsForArrayValue(newValue, arrayMove(keys, from, to));
+            return newValue;
+          });
+        },
+        onChange(updater: readonly { id?: string; value?: unknown }[]) {
+          onChange(value => updateValue(prop, value, updater));
+        },
+        onRemove(index: number) {
+          onChange(value => {
+            const newValue = (value as unknown[]).filter((_, i) => i !== index);
+            const keys = getElementIdsForArrayValue(value as readonly unknown[]);
+            setElementIdsForArrayValue(
+              newValue,
+              keys.filter((_, i) => i !== index)
+            );
+            return newValue;
+          });
+        },
+      },
+    };
+  },
+  child() {},
+  conditional(prop, onChange) {
+    return {
+      onChange: (discriminant: string | boolean, value?: unknown) =>
+        onChange(val => updateValue(prop, val, { discriminant, value })),
+      onChangeForValue: (cb: (prevVal: unknown) => unknown) =>
+        onChange(val => ({ discriminant: val.discriminant, value: cb(val.value) })),
+    };
+  },
+  object(prop, onChange) {
+    return {
+      onChange: (updater: Record<string, unknown>) => {
+        onChange(value => updateValue(prop, value, updater));
+      },
+      innerOnChanges: Object.fromEntries(
+        Object.keys(prop.value).map(key => {
+          return [
+            key,
+            (newVal: (prevVal: unknown) => unknown) => {
+              onChange(val => ({ ...(val as any), [key]: newVal((val as any)[key]) }));
+            },
+          ];
+        })
+      ),
+    };
+  },
+  relationship(prop, onChange) {
+    return (newVal: HydratedRelationshipData | readonly HydratedRelationshipData[] | null) =>
+      onChange(() => newVal);
+  },
+});
 
-            return {
-              id: keys[i],
-              element: getInnerProp(
-                prop.element,
-                val,
-                path.concat(key),
-                getOrInsert(onChangeCache, key, onChangeArrayItem)
-              ),
-            };
-          }),
-          field: prop,
-          ...getOrInsert(onChangeCacheForArrayField, onChange, () => ({
-            onInsert(initial, index) {
-              onChange(value => {
-                const newValue = [...(value as unknown[])];
+type GeneralMap<K, V> = {
+  has(key: K): boolean;
+  get(key: K): V | undefined;
+  set(key: K, value: V): void;
+};
 
-                newValue.splice(
-                  index ?? newValue.length,
-                  0,
-                  getInitialPropsValueFromInitializer(prop.element, initial)
-                );
-                const keys = getElementIdsForArrayValue(value);
-                setElementIdsForArrayValue(newValue, [...keys, getNewArrayElementId()]);
-                return newValue;
-              });
-            },
-            onMove(from, to) {
-              onChange(value => {
-                const newValue = arrayMove(value as unknown[], from, to);
-                const keys = getElementIdsForArrayValue(value);
-                setElementIdsForArrayValue(newValue, arrayMove(keys, from, to));
-                return newValue;
-              });
-            },
-            onChange(updater) {
-              onChange(value => updateValue(prop, value, updater));
-            },
-            onRemove(index) {
-              onChange(value => {
-                const newValue = (value as unknown[]).filter((_, i) => i !== index);
-                const keys = getElementIdsForArrayValue(value);
-                setElementIdsForArrayValue(
-                  newValue,
-                  keys.filter((_, i) => i !== index)
-                );
-                return newValue;
-              });
-            },
-          })),
-        };
-        return props;
-      }
-      default: {
-        assertNever(prop);
-      }
-    }
+function getOrInsert<K, V>(map: GeneralMap<K, V>, key: K, val: (key: K) => V): V {
+  if (!map.has(key)) {
+    map.set(key, val(key));
   }
-  function getInitialMemoState<Field extends ComponentPropField>(
+  return map.get(key)!;
+}
+
+export function createGetPreviewProps<Field extends ComponentPropField>(
+  rootProp: Field,
+  rootOnChange: (
+    cb: (val: ValueForComponentPropField<Field>) => ValueForComponentPropField<Field>
+  ) => void
+) {
+  const previewPropsFactories: {
+    [Kind in ComponentPropField['kind']]: (
+      prop: Extract<ComponentPropField, { kind: Kind }>,
+      value: ValueForComponentPropField<Extract<ComponentPropField, { kind: Kind }>>,
+      memoized: ReturnType<typeof memoizedInfoForProp[Kind]>,
+      path: readonly string[],
+      getInnerProp: <Field extends ComponentPropField>(
+        prop: Field,
+        value: ValueForComponentPropField<Field>,
+        onChange: (
+          cb: (prevVal: ValueForComponentPropField<Field>) => ValueForComponentPropField<Field>
+        ) => void,
+        key: string
+      ) => PreviewProps<Field>
+    ) => PreviewProps<Extract<ComponentPropField, { kind: Kind }>>;
+  } = {
+    form(prop, value, onChange) {
+      return {
+        value: value as FormFieldValue,
+        onChange,
+        options: prop.options,
+        field: prop,
+      };
+    },
+    child(prop, value, onChange, path) {
+      return <ChildFieldEditable path={path} />;
+    },
+    object(prop, value, memoized, path, getInnerProp) {
+      const fields: Record<string, PreviewProps<ComponentPropField>> = {};
+
+      Object.keys(prop.value).forEach(key => {
+        fields[key] = getInnerProp(
+          prop.value[key],
+          (value as any)[key],
+          memoized.innerOnChanges[key],
+          key
+        );
+      });
+
+      const previewProps: PreviewProps<ObjectField<Record<string, ComponentPropField>>> = {
+        fields,
+        onChange: memoized.onChange,
+        field: prop,
+      };
+      return previewProps;
+    },
+    array(prop, value, memoized, path, getInnerProp) {
+      const arrayValue = value as readonly unknown[];
+      const keys = getElementIdsForArrayValue(arrayValue);
+
+      const unusedKeys = new Set(getElementIdsForArrayValue(value));
+
+      const props: PreviewProps<ArrayField<ComponentPropField>> = {
+        elements: arrayValue.map((val, i) => {
+          const key = keys[i];
+          unusedKeys.delete(key);
+          const element = getOrInsert(memoized.inner, key, () => {
+            const onChange = (val: (val: unknown) => unknown) => {
+              memoized.rawOnChange(prev => {
+                const keys = getElementIdsForArrayValue(prev as readonly unknown[]);
+                const index = keys.indexOf(key);
+                const newValue = [...(prev as readonly unknown[])];
+                newValue[index] = val(newValue[index]);
+                setElementIdsForArrayValue(newValue, keys);
+                return newValue;
+              });
+            };
+            return {
+              inner: {
+                element: getInnerProp(prop.element, val, onChange, key),
+                id: key,
+              },
+              onChange,
+            };
+          });
+          const currentInnerProp = getInnerProp(prop.element, val, element.onChange, key);
+          if (element.inner.element !== currentInnerProp) {
+            element.inner = {
+              element: currentInnerProp,
+              id: key,
+            };
+          }
+          return element.inner as { id: string; element: typeof currentInnerProp };
+        }),
+        field: prop,
+        ...memoized.props,
+      };
+      for (const key of unusedKeys) {
+        memoized.inner.delete(key);
+      }
+      return props;
+    },
+    relationship(prop, value, onChange) {
+      const props: PreviewProps<RelationshipField<boolean>> = {
+        value: value,
+        onChange,
+        field: prop,
+      };
+      return props;
+    },
+    conditional(prop, value, memoized, path, getInnerProp) {
+      const props: PreviewProps<
+        ConditionalField<
+          FormField<string | boolean, unknown>,
+          { [key: string]: ComponentPropField }
+        >
+      > = {
+        discriminant: value.discriminant as any,
+        onChange: memoized.onChange,
+        options: prop.discriminant.options,
+        value: getInnerProp(
+          prop.values[value.discriminant.toString()],
+          value.value,
+          memoized.onChangeForValue,
+          'value'
+        ),
+        field: prop,
+      };
+      return props;
+    },
+  };
+
+  function getPreviewPropsForProp<Field extends ComponentPropField>(
     prop: Field,
     value: unknown,
-    onChange: (cb: (val: unknown) => unknown) => void,
+    memoedThing: { __memoizedThing: true },
+    path: readonly string[],
+    getInnerProp: <Field extends ComponentPropField>(
+      prop: Field,
+      value: ValueForComponentPropField<Field>,
+      onChange: (
+        cb: (prevVal: ValueForComponentPropField<Field>) => ValueForComponentPropField<Field>
+      ) => void,
+      key: string
+    ) => PreviewProps<Field>
+  ): PreviewProps<Field> {
+    return previewPropsFactories[prop.kind](
+      prop as any,
+      value as any,
+      memoedThing as any,
+      path,
+      getInnerProp
+    ) as any;
+  }
+
+  function getInitialMemoState<Field extends ComponentPropField>(
+    prop: Field,
+    value: ValueForComponentPropField<Field>,
+    onChange: (
+      cb: (val: ValueForComponentPropField<Field>) => ValueForComponentPropField<Field>
+    ) => void,
     path: readonly string[]
   ): MemoState<Field> {
     let innerState = new Map<string, MemoState<ComponentPropField>>();
-    let state = {
+    const blah = (
+      memoizedInfoForProp[prop.kind] as (
+        prop: ComponentPropField,
+        onChange: (
+          cb: (val: ValueForComponentPropField<Field>) => ValueForComponentPropField<Field>
+        ) => void
+      ) => any
+    )(prop, onChange);
+    let state: MemoState<ComponentPropField> = {
       value,
       inner: innerState,
-      props: getPreviewPropsForProp(prop, value, path, onChange, (prop, value, path, onChange) => {
-        const state = getInitialMemoState(prop, value, onChange, path);
-        const lastPathEntry = path[path.length - 1];
-        innerState.set(lastPathEntry, state);
+      props: getPreviewPropsForProp(prop, value, blah, path, (prop, value, onChange, key) => {
+        const state = getInitialMemoState(prop, value, onChange, path.concat(key));
+        innerState.set(key, state);
         return state.props;
       }),
+      field: prop,
+      cached: blah,
     };
-    return state;
+    return state as MemoState<Field>;
   }
   function getUpToDateProps<Field extends ComponentPropField>(
     prop: Field,
-    value: unknown,
-    onChange: (cb: (val: unknown) => unknown) => void,
+    value: ValueForComponentPropField<Field>,
+    onChange: (
+      cb: (val: ValueForComponentPropField<Field>) => ValueForComponentPropField<Field>
+    ) => void,
     memoState: MemoState<Field>,
     path: readonly string[]
   ): PreviewProps<Field> {
+    if (memoState.field !== prop) {
+      Object.assign(memoState, getInitialMemoState(prop, value, onChange, path));
+      return memoState.props;
+    }
     if (memoState.value === value) {
       return memoState.props;
     }
     memoState.value = value;
+    const unusedKeys = new Set(memoState.inner.keys());
     memoState.props = getPreviewPropsForProp(
       prop,
       value,
+      memoState.cached as any,
       path,
-      onChange,
-      (prop, value, path, onChange) => {
-        const innerMemoStateKey = path[path.length - 1];
+      (prop, value, onChange, innerMemoStateKey) => {
+        unusedKeys.delete(innerMemoStateKey);
         if (!memoState.inner.has(innerMemoStateKey)) {
-          const innerState = getInitialMemoState(prop, value, onChange, path);
+          const innerState = getInitialMemoState(
+            prop,
+            value,
+            onChange,
+            path.concat(innerMemoStateKey)
+          );
           memoState.inner.set(innerMemoStateKey, innerState);
           return innerState.props;
         }
-        return getUpToDateProps(
+        return getUpToDateProps<typeof prop>(
           prop,
           value,
           onChange,
-          memoState.inner.get(innerMemoStateKey)!,
-          path
+          memoState.inner.get(innerMemoStateKey) as MemoState<typeof prop>,
+          path.concat(innerMemoStateKey)
         );
       }
     );
+    for (const key of unusedKeys) {
+      memoState.inner.delete(key);
+    }
     return memoState.props;
   }
-  let memoState: {
-    props: PreviewProps<Field>;
-    value: unknown;
-    inner: Map<string, MemoState<ComponentPropField>>;
-  };
-  return (value: unknown): PreviewProps<Field> => {
+  let memoState: MemoState<Field>;
+  return (value: ValueForComponentPropField<Field>): PreviewProps<Field> => {
     if (memoState === undefined) {
       memoState = getInitialMemoState(rootProp, value, rootOnChange, []);
       return memoState.props;
@@ -340,6 +396,8 @@ export function createGetPreviewProps<Field extends ComponentPropField>(
 type MemoState<Field extends ComponentPropField> = {
   props: PreviewProps<Field>;
   value: unknown;
+  field: Field;
+  cached: ReturnType<typeof memoizedInfoForProp[Field['kind']]>;
   inner: Map<string, MemoState<ComponentPropField>>;
 };
 
@@ -360,10 +418,10 @@ type MemoState<Field extends ComponentPropField> = {
 //       element.props,
 //       (prop, value, currentPath) => {
 //         if (prop.kind === 'array' && areArraysEqual(path, currentPath)) {
-//           nextIdx = (value as any[]).length;
-//           const newVal = [...(value as any[]), elementVal];
+//           nextIdx = (value as unknown[]).length;
+//           const newVal = [...(value as unknown[]), elementVal];
 //           setElementIdsForArrayValue(newVal, [
-//             ...getElementIdsForArrayValue(value as any[]),
+//             ...getElementIdsForArrayValue(value as unknown[]),
 //             getNewArrayElementId(),
 //           ]);
 //           return newVal;

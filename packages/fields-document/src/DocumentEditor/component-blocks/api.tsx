@@ -782,6 +782,29 @@ type ExtractPropFromComponentPropFieldForRendering<Prop extends ComponentPropFie
     ? readonly ExtractPropFromComponentPropFieldForRendering<ElementField>[]
     : never;
 
+export type ValueForComponentPropField<Prop extends ComponentPropField> = Prop extends ChildField
+  ? null
+  : Prop extends FormField<infer Value, any>
+  ? Value
+  : Prop extends ObjectField<infer Value>
+  ? { readonly [Key in keyof Value]: ExtractPropFromComponentPropFieldForRendering<Value[Key]> }
+  : Prop extends ConditionalField<infer DiscriminantField, infer Values>
+  ? {
+      readonly [Key in keyof Values]: {
+        readonly discriminant: DiscriminantStringToDiscriminantValue<DiscriminantField, Key>;
+        readonly value: ExtractPropFromComponentPropFieldForRendering<
+          CastToComponentPropField<Values[Key]>
+        >;
+      };
+    }[keyof Values]
+  : Prop extends RelationshipField<infer Many>
+  ? Many extends true
+    ? readonly HydratedRelationshipData[]
+    : HydratedRelationshipData | null
+  : Prop extends ArrayField<infer ElementField>
+  ? readonly ExtractPropFromComponentPropFieldForRendering<ElementField>[]
+  : never;
+
 type ExtractPropsForPropsForRendering<Props extends Record<string, ComponentPropField>> = {
   readonly [Key in keyof Props]: ExtractPropFromComponentPropFieldForRendering<Props[Key]>;
 };
