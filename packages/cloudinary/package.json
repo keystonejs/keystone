@@ -13,7 +13,7 @@
     "@types/react": "^17.0.37",
     "cloudinary": "^1.27.1",
     "cuid": "^2.1.8",
-    "graphql-upload": "^12.0.0",
+    "graphql-upload": "^13.0.0",
     "react": "^17.0.2"
   },
   "peerDependencies": {
