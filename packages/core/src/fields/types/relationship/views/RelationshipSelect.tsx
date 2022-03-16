@@ -102,6 +102,7 @@ export const RelationshipSelect = ({
   isDisabled,
   isLoading,
   list,
+  orderBy,
   placeholder,
   portalMenu,
   state,
@@ -112,6 +113,7 @@ export const RelationshipSelect = ({
   isDisabled: boolean;
   isLoading?: boolean;
   list: ListMeta;
+  orderBy: false | Array<{ labelField:  'asc' | 'desc' } | { field: string, order: 'asc' | 'desc' }>;
   placeholder?: string;
   portalMenu?: true | undefined;
   state:
@@ -136,7 +138,7 @@ export const RelationshipSelect = ({
 
   const QUERY: TypedDocumentNode<
     { items: { [idField]: string; [labelField]: string | null }[]; count: number },
-    { where: Record<string, any>; take: number; skip: number, orderBy: Array<Record<string, 'asc'>> | undefined }
+    { where: Record<string, any>; take: number; skip: number, orderBy: Array<Record<string, 'asc' | 'desc'>> | undefined }
   > = gql`
     query RelationshipSelect(
       $where: ${list.gqlNames.whereInputName}!,
@@ -186,13 +188,21 @@ export const RelationshipSelect = ({
     [link, list.gqlNames.listQueryName]
   );
 
+  let orderByClause: Record<string, 'asc' | 'desc' >[] | undefined = undefined;
+  if (orderBy !== false) {
+    orderByClause = orderBy.map(
+      item => 'labelField' in item ? { [list.labelField] : item.labelField } : { [item.field]: item.order }
+    );
+  }
+
+
   const { data, error, loading, fetchMore } = useQuery(QUERY, {
     fetchPolicy: 'network-only',
     variables: {
       where,
       take: initialItemsToLoad,
       skip: 0,
-      orderBy: [{ [list.labelField]: 'asc' }],
+      orderBy: orderByClause,
     },
     client: apolloClient,
   });
@@ -260,7 +270,7 @@ export const RelationshipSelect = ({
             where,
             take: subsequentItemsToLoad,
             skip,
-            orderBy: [{ [list.labelField]: 'asc' }],
+            orderBy: orderByClause,
           },
         })
           .then(() => {

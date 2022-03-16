@@ -14,14 +14,22 @@ export const lists = {
       }),
       content: text(),
       publishDate: timestamp(),
-      author: relationship({ ref: 'Author.posts', many: false }),
+      author: relationship({ ref: 'Author.posts', many: false,
+        ui: {
+          orderBy: [ { labelField: 'asc' }]
+        }
+      }),
     },
   }),
   Author: list({
     fields: {
       name: text({ validation: { isRequired: true } }),
       email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
-      posts: relationship({ ref: 'Post.author', many: true }),
+      posts: relationship({ ref: 'Post.author', many: true,
+        ui: {
+          orderBy: [ { field: 'status', order: 'asc' }, { field: 'title', order: 'asc' }]
+        }
+      }),
     },
   }),
 };

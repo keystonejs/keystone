@@ -7,6 +7,7 @@ import {
 } from '../../../types';
 import { graphql } from '../../..';
 import { resolveView } from '../../resolve-view';
+import { OrderByType } from './OrderByType';
 
 // This is the default display mode for Relationships
 type SelectDisplayConfig = {
@@ -72,6 +73,7 @@ export type RelationshipFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     ref: string;
     ui?: {
       hideCreate?: boolean;
+      orderBy?: OrderByType;
     };
   } & (OneDbConfig | ManyDbConfig) &
     (SelectDisplayConfig | CardsDisplayConfig | CountDisplayConfig);
@@ -127,6 +129,7 @@ export const relationship =
           refListKey: foreignListKey,
           many,
           hideCreate: config.ui?.hideCreate ?? false,
+          orderBy: config.ui?.orderBy ?? [ { labelField:  'asc' }],
           ...(config.ui?.displayMode === 'cards'
             ? {
                 displayMode: 'cards',

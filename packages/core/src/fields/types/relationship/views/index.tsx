@@ -20,6 +20,7 @@ import { useKeystone, useList } from '../../../../admin-ui/context';
 import { gql, useQuery } from '../../../../admin-ui/apollo';
 import { CellContainer, CreateItemDrawer } from '../../../../admin-ui/components';
 
+import { OrderByType } from '../OrderByType';
 import { Cards } from './cards';
 import { RelationshipSelect } from './RelationshipSelect';
 
@@ -169,6 +170,7 @@ export const Field = ({
               autoFocus={autoFocus}
               isDisabled={onChange === undefined}
               list={foreignList}
+              orderBy={field.orderBy}
               portalMenu
               state={
                 value.kind === 'many'
@@ -385,6 +387,7 @@ type RelationshipController = FieldController<
   refListKey: string;
   refFieldKey?: string;
   hideCreate: boolean;
+  orderBy: OrderByType;
   many: boolean;
 };
 
@@ -395,6 +398,7 @@ export const controller = (
       refListKey: string;
       many: boolean;
       hideCreate: boolean;
+      orderBy: OrderByType;
     } & (
       | {
           displayMode: 'select';
@@ -442,6 +446,7 @@ export const controller = (
               label: ${config.fieldMeta.refLabelField}
             }`,
     hideCreate: config.fieldMeta.hideCreate,
+    orderBy: config.fieldMeta.orderBy,
     // note we're not making the state kind: 'count' when ui.displayMode is set to 'count'.
     // that ui.displayMode: 'count' is really just a way to have reasonable performance
     // because our other UIs don't handle relationships with a large number of items well
@@ -538,6 +543,7 @@ export const controller = (
             list={foreignList}
             isLoading={loading}
             isDisabled={onChange === undefined}
+            orderBy={config.fieldMeta.orderBy}
             state={state}
           />
         );
