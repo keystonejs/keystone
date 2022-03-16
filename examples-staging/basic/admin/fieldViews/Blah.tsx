@@ -9,16 +9,18 @@ import {
 } from '@keystone-6/fields-document/component-blocks';
 import { PreviewProps } from '@keystone-6/fields-document/src/DocumentEditor/component-blocks/api';
 import { FormValueContentFromPreview } from '@keystone-6/fields-document/src/DocumentEditor/component-blocks/form-from-preview';
+import { Button } from '@keystone-ui/button';
+import { jsx, Stack } from '@keystone-ui/core';
+import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
+import { AlertDialog } from '@keystone-ui/modals';
+import { useState } from 'react';
+import { EditIcon } from '@keystone-ui/icons/icons/EditIcon';
 import {
+  AddButton,
   SortableList,
   SortableItem,
   DragHandle,
-} from '@keystone-6/fields-document/src/DocumentEditor/primitives/sortable';
-import { Button } from '@keystone-ui/button';
-import { jsx, Stack } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel, Select } from '@keystone-ui/fields';
-import { AlertDialog } from '@keystone-ui/modals';
-import { useState } from 'react';
+} from '@keystone-6/fields-document/primitives';
 
 const label = fields.text({ label: 'Label' });
 
@@ -78,7 +80,8 @@ function Preview(props: PreviewProps<Prop>) {
           })}
         </SortableList>
       )}
-      <AddButton options={props.field.element.discriminant.options} insert={props.onInsert} />
+
+      <AddButton options={props.field.element.discriminant.options} onInsert={props.onInsert} />
     </Stack>
   );
 }
@@ -86,56 +89,80 @@ export const prop: Prop = fields.array(conditional, {
   preview: Preview,
 });
 
-function AddButton<Value extends string>(props: {
-  options: readonly { label: string; value: Value }[];
-  insert: (initialValue: Value extends any ? { discriminant: Value } : never) => void;
-}) {
-  return (
-    <Select
-      placeholder="Add"
-      options={props.options}
-      onChange={val => {
-        if (val) {
-          props.insert({ discriminant: val.value } as any);
-        }
-      }}
-      value={null}
-    />
-  );
-}
-
 function DraggableElement(props: PreviewProps<Prop>['elements'][number]) {
   const [isEditing, setIsEditing] = useState(false);
+  const [isChildrenOpen, setIsChildrenOpen] = useState(true);
   const label = props.element.options.find(x => x.value === props.element.discriminant)!.label;
   return (
     <SortableItem id={props.id}>
       <Stack gap="medium">
-        <Stack across align="center">
-          <DragHandle />
-          <Button
-            onClick={() => {
-              setIsEditing(true);
-            }}
-          >
-            Edit {label}
-          </Button>
-          <AlertDialog
-            title={`Edit ${label}`}
-            actions={{
-              confirm: {
-                action: () => {
-                  setIsEditing(false);
+        <div css={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Stack across gap="xsmall" align="center">
+            <DragHandle />
+            <button
+              onClick={() => {
+                setIsEditing(true);
+              }}
+              css={{
+                border: '0',
+                background: 'transparent',
+                cursor: 'pointer',
+                ':hover,:focus': {
+                  background: '#f0f0f0',
                 },
-                label: 'Done',
-              },
-            }}
-            isOpen={isEditing}
-          >
-            <FormValueContentFromPreview {...props.element.value} />
-          </AlertDialog>
-          <div>{props.element.value.fields.label.value}</div>
-        </Stack>
-        {props.element.discriminant === 'group' && (
+
+                borderRadius: 8,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: 24,
+                width: 28,
+              }}
+            >
+              <EditIcon size="small" color="#596794" />
+            </button>
+            <div
+              css={{
+                background: '#F6F8FC',
+                border: '1px solid #E9EBF3',
+                height: 32,
+                width: 32,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: 4,
+              }}
+            >
+              {label.slice(0, 2)}
+            </div>
+
+            <AlertDialog
+              title={`Edit ${label}`}
+              actions={{
+                confirm: {
+                  action: () => {
+                    setIsEditing(false);
+                  },
+                  label: 'Done',
+                },
+              }}
+              isOpen={isEditing}
+            >
+              <FormValueContentFromPreview {...props.element.value} />
+            </AlertDialog>
+            <div>{props.element.value.fields.label.value}</div>
+          </Stack>
+          {props.element.discriminant === 'group' && (
+            <Button
+              onClick={() => {
+                setIsChildrenOpen(!isChildrenOpen);
+              }}
+            >
+              {isChildrenOpen ? 'Close' : 'Open'}
+            </Button>
+          )}
+        </div>
+        {isChildrenOpen && props.element.discriminant === 'group' && (
           <Preview {...props.element.value.fields.children} />
         )}
       </Stack>

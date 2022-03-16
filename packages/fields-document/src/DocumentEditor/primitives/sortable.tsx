@@ -118,9 +118,8 @@ export function SortableItem(props: { id: string; children: ReactNode }) {
           style={{
             pointerEvents: isDragging ? 'none' : undefined,
             transform: `scale(${isDragging ? '1.02' : '1'})`,
-            boxShadow: isDragging
-              ? 'rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 12%) 0px 10px 5px 0px'
-              : 'rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 12%) 0px 1px 5px 0px',
+            border: '1px solid #DADEEB',
+            boxShadow: '0px 1px 4px rgba(9, 30, 66, 0.04)',
           }}
           css={{
             backgroundColor: 'white',
@@ -193,14 +192,10 @@ export function DragHandle() {
 }
 
 export const dragIcon = (
-  <svg width="18" height="24" viewBox="0 0 18 24" xmlns="http://www.w3.org/2000/svg">
-    <g fill="#939393">
-      <circle cy="6" cx="6" r="2" />
-      <circle cy="6" cx="12" r="2" />
-      <circle cy="12" cx="6" r="2" />
-      <circle cy="12" cx="12" r="2" />
-      <circle cy="18" cx="6" r="2" />
-      <circle cy="18" cx="12" r="2" />
-    </g>
+  <svg width="20" height="21" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M6 4h3v3H6V4Zm5 0h3v3h-3V4ZM9 9H6v3h3V9Zm2 0h3v3h-3V9Zm-2 5H6v3h3v-3Zm2 0h3v3h-3v-3Z"
+      fill="#B7BFD7"
+    />
   </svg>
 );

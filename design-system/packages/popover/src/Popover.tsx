@@ -186,7 +186,7 @@ type DialogProps = {
   children: ReactNode;
   /** When true, the popover will be visible. */
   isVisible: boolean;
-  arrow: {
+  arrow?: {
     ref: (element: HTMLDivElement) => void;
     props: {
       style: CSSProperties;
@@ -236,7 +236,9 @@ export const PopoverDialog = forwardRef<HTMLDivElement, DialogProps>(
           }}
           {...props}
         >
-          <div data-popper-arrow ref={arrow.ref} className="tooltipArrow" {...arrow.props} />
+          {arrow && (
+            <div data-popper-arrow ref={arrow.ref} className="tooltipArrow" {...arrow.props} />
+          )}
           <div ref={focusTrapRef}>{isVisible ? children : null}</div>
         </div>
       </Portal>

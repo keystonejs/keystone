@@ -4,4 +4,8 @@ export {
   ToolbarGroup,
   ToolbarSeparator,
   ToolbarSpacer,
+  AddButton,
+  DragHandle,
+  SortableItem,
+  SortableList,
 } from './DocumentEditor/primitives';
