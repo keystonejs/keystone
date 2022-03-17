@@ -129,7 +129,7 @@ export const relationship =
           refListKey: foreignListKey,
           many,
           hideCreate: config.ui?.hideCreate ?? false,
-          orderBy: config.ui?.orderBy ?? [ { labelField:  'asc' }],
+          orderBy: config.ui?.orderBy ?? [ { labelField:  'asc' } ],
           ...(config.ui?.displayMode === 'cards'
             ? {
                 displayMode: 'cards',

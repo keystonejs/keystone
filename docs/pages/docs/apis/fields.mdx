@@ -609,7 +609,7 @@ Read our [relationships guide](../guides/relationships) for details on Keystoneâ
 - `many` (default: `false`): Configures the cardinality of the relationship.
 - `db.foreignKey`: When `true` or an object, ensures the foreign Key for two-sided relationships is stored in the table for this list (only available on single relationships, and not on both sides of a 1:1 relationship)
   - `map`: Changes the column name in the database
-- `ui` (default: `{ hideCreate: false, displayMode: 'select' }`): Configures the display mode of the field in the Admin UI.
+- `ui` (default: `{ hideCreate: false, displayMode: 'select', orderBy: [ { labelField:  'asc' } ] }`): Configures the display mode of the field in the Admin UI.
   - `hideCreate` (default: `false`). If `true`, the "Create related item" button is not shown in the item view.
   - `displayMode` (default: `'select'`): Controls the mode used to display the field in the item view. The mode `'select'` displays related items in a select component, while `'cards'` displays the related items in a card layout. Each display mode supports further configuration.
 - `ui.displayMode === 'select'` options:
@@ -622,6 +622,13 @@ Read our [relationships guide](../guides/relationships) for details on Keystoneâ
   - `inlineEdit` (default: `null`): If not `null`, an object of the form `{ fields: [...] }`, where `fields` is a list of field paths from the related list should be provided. An `Edit` button will be included in each card, allowing the configured fields to be edited for each related item.
   - `inlineConnect` (default: `false`): If `true`, an inline `Link existing item` button will be present, allowing existing items of the related list to be connected in this field.
 - `ui.displayMode === 'count'` only supports `many` relationships
+- `ui.orderBy`: Specifies how items in the select or card list will be ordered. Options are:
+  - Not specified: Applies default option of `[ { labelField: 'asc' } ]`.  Items in select will be sorted by label field values in ascending order.
+  - `'none'`: Don't sort select or card items.
+  - Array of items to sort by. An example of a valid specifier is `[ { labelField: 'asc' }, { field: 'status', order: 'desc' }]`. This would order items by the label field ascending first and then by the `status` field, descending, next. There are two different items specifiers that can be used:
+    - `{ labelField`: `asc` } or `{ labelField`: `desc` }: Sort by the relationship's label field.
+    - `{ field: '<field_name>': order: 'asc' }` or `{ field: '<field_name>': order: 'desc' }`: Sort the specified field, with specified ordering.
+
 
 ```typescript
 import { config, list } from '@keystone-6/core';
