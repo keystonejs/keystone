@@ -341,11 +341,19 @@ export function withComponentBlocks(
             }
             const arrVal = getValueAtPropPath(node.props, propPath) as unknown[];
             const prevKeys = getElementIdsForArrayValue(arrVal);
+            const prevKeysSet = new Set(prevKeys);
             // delete backwards
             const alreadyUsedIndicies = new Set<number>();
             // all of the fields are unique so we've removed/re-ordered/done nothing
             const newVal: unknown[] = [];
             const newKeys: string[] = [];
+            const getNewKey = () => {
+              let key = getNewArrayElementId();
+              while (prevKeysSet.has(key)) {
+                key = getNewArrayElementId();
+              }
+              return key;
+            };
             for (const [, node] of nodesWithin) {
               const idxFromValue = node.propPath![propPath.length];
               assert(typeof idxFromValue === 'number');
@@ -354,11 +362,13 @@ export function withComponentBlocks(
                 (alreadyUsedIndicies.has(idxFromValue) && isEmptyChildFieldNode(node))
               ) {
                 newVal.push(getInitialPropsValue(arrayField.element));
-                newKeys.push(getNewArrayElementId());
+                newKeys.push(getNewKey());
               } else {
                 alreadyUsedIndicies.add(idxFromValue);
                 newVal.push(arrVal[idxFromValue]);
-                newKeys.push(prevKeys[idxFromValue]);
+                newKeys.push(
+                  alreadyUsedIndicies.has(idxFromValue) ? getNewKey() : prevKeys[idxFromValue]
+                );
               }
             }
             setElementIdsForArrayValue(newVal, newKeys);

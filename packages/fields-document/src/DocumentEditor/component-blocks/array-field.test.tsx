@@ -1,49 +1,41 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import React, { Fragment } from 'react';
+import React from 'react';
+import { Transforms } from 'slate';
 import { jsx, makeEditor } from '../tests/utils';
 import { component, fields } from '../../component-blocks';
-import { createGetPreviewProps } from './preview-props';
 
-const table = component({
+const list = component({
   component: props =>
     React.createElement(
-      'div',
+      'ul',
       null,
       props.fields.children.elements.map(x => {
-        return React.createElement(
-          Fragment,
-          { key: x.id },
-          x.element.elements.map(x => {
-            return React.createElement(Fragment, { key: x.id }, x.element.fields.content);
-          })
-        );
+        return React.createElement('li', { key: x.id }, x.element.fields.content);
       })
     ),
   label: '',
   props: {
     children: fields.array(
-      fields.array(
-        fields.object({
-          content: fields.child({ kind: 'inline', placeholder: '' }),
-          something: fields.text({ label: '' }),
-        })
-      )
+      fields.object({
+        content: fields.child({ kind: 'inline', placeholder: '' }),
+        done: fields.checkbox({ label: '' }),
+      })
     ),
   },
 });
 
 test('child field in nested array', () => {
-  const editor = makeEditor(
+  makeEditor(
     <editor>
       <component-block
-        component="table"
+        component="list"
         props={{
-          children: [[{ content: null, something: '1' }]],
+          children: [{ content: null, done: false }],
         }}
       >
-        <component-inline-prop propPath={['children', 0, 0, 'content']}>
+        <component-inline-prop propPath={['children', 0, 'content']}>
           <text>first</text>
         </component-inline-prop>
       </component-block>
@@ -51,25 +43,48 @@ test('child field in nested array', () => {
         <text />
       </paragraph>
     </editor>,
-    {
-      componentBlocks: {
-        table,
-      },
-    }
+    { componentBlocks: { list } }
   );
+});
+
+test('inserting a break at the end of a child field creates a new item with fresh values', () => {
+  const editor = makeEditor(
+    <editor>
+      <component-block
+        component="list"
+        props={{
+          children: [{ content: null, done: true }],
+        }}
+      >
+        <component-inline-prop propPath={['children', 0, 'content']}>
+          <text>
+            first
+            <cursor />
+          </text>
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>,
+    { componentBlocks: { list } }
+  );
+  editor.insertBreak();
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
-        component="table"
+        component="list"
         props={
           Object {
             "children": Array [
-              Array [
-                Object {
-                  "content": null,
-                  "something": "1",
-                },
-              ],
+              Object {
+                "content": null,
+                "done": true,
+              },
+              Object {
+                "content": null,
+                "done": false,
+              },
             ],
           }
         }
@@ -79,13 +94,25 @@ test('child field in nested array', () => {
             Array [
               "children",
               0,
-              0,
               "content",
             ]
           }
         >
           <text>
             first
+          </text>
+        </component-inline-prop>
+        <component-inline-prop
+          propPath={
+            Array [
+              "children",
+              1,
+              "content",
+            ]
+          }
+        >
+          <text>
+            <cursor />
           </text>
         </component-inline-prop>
       </component-block>
@@ -98,74 +125,45 @@ test('child field in nested array', () => {
   `);
 });
 
-test('multiple in child field in nested array', () => {
+test('inserting a break splits the text and uses the values from the first entry', () => {
   const editor = makeEditor(
     <editor>
       <component-block
-        component="table"
+        component="list"
         props={{
-          children: [
-            [
-              { content: null, something: '1' },
-              { content: null, something: '2' },
-            ],
-            [
-              { content: null, something: '3' },
-              { content: null, something: '4' },
-            ],
-          ],
+          children: [{ content: null, done: true }],
         }}
       >
-        <component-inline-prop propPath={['children', 0, 0, 'content']}>
-          <text>first</text>
-        </component-inline-prop>
-        <component-inline-prop propPath={['children', 0, 1, 'content']}>
-          <text>second</text>
-        </component-inline-prop>
-        <component-inline-prop propPath={['children', 1, 0, 'content']}>
-          <text>third</text>
-        </component-inline-prop>
-        <component-inline-prop propPath={['children', 1, 1, 'content']}>
-          <text>fourth</text>
+        <component-inline-prop propPath={['children', 0, 'content']}>
+          <text>
+            some
+            <cursor />
+            text
+          </text>
         </component-inline-prop>
       </component-block>
       <paragraph>
         <text />
       </paragraph>
     </editor>,
-    {
-      componentBlocks: {
-        table,
-      },
-    }
+    { componentBlocks: { list } }
   );
+  editor.insertBreak();
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
-        component="table"
+        component="list"
         props={
           Object {
             "children": Array [
-              Array [
-                Object {
-                  "content": null,
-                  "something": "1",
-                },
-                Object {
-                  "content": null,
-                  "something": "2",
-                },
-              ],
-              Array [
-                Object {
-                  "content": null,
-                  "something": "3",
-                },
-                Object {
-                  "content": null,
-                  "something": "4",
-                },
-              ],
+              Object {
+                "content": null,
+                "done": true,
+              },
+              Object {
+                "content": null,
+                "done": true,
+              },
             ],
           }
         }
@@ -175,27 +173,12 @@ test('multiple in child field in nested array', () => {
             Array [
               "children",
               0,
-              0,
               "content",
             ]
           }
         >
           <text>
-            first
-          </text>
-        </component-inline-prop>
-        <component-inline-prop
-          propPath={
-            Array [
-              "children",
-              0,
-              1,
-              "content",
-            ]
-          }
-        >
-          <text>
-            second
+            some
           </text>
         </component-inline-prop>
         <component-inline-prop
@@ -203,27 +186,13 @@ test('multiple in child field in nested array', () => {
             Array [
               "children",
               1,
-              0,
               "content",
             ]
           }
         >
           <text>
-            third
-          </text>
-        </component-inline-prop>
-        <component-inline-prop
-          propPath={
-            Array [
-              "children",
-              1,
-              1,
-              "content",
-            ]
-          }
-        >
-          <text>
-            fourth
+            <cursor />
+            text
           </text>
         </component-inline-prop>
       </component-block>
@@ -236,78 +205,45 @@ test('multiple in child field in nested array', () => {
   `);
 });
 
-test('add to multiple in child field in nested array', () => {
+test('inserting a break in an empty child removes the element and inserts a paragraph', () => {
   const editor = makeEditor(
     <editor>
       <component-block
-        component="table"
+        component="list"
         props={{
           children: [
-            [
-              { content: null, something: '1' },
-              { content: null, something: '2' },
-            ],
-            [
-              { content: null, something: '3' },
-              { content: null, something: '4' },
-            ],
+            { content: null, done: true },
+            { content: null, done: false },
           ],
         }}
       >
-        <component-inline-prop propPath={['children', 0, 0, 'content']}>
-          <text>first</text>
+        <component-inline-prop propPath={['children', 0, 'content']}>
+          <text>some text</text>
         </component-inline-prop>
-        <component-inline-prop propPath={['children', 0, 1, 'content']}>
-          <text>second</text>
-        </component-inline-prop>
-        <component-inline-prop propPath={['children', 1, 0, 'content']}>
-          <text>third</text>
-        </component-inline-prop>
-        <component-inline-prop propPath={['children', 1, 1, 'content']}>
-          <text>fourth</text>
+        <component-inline-prop propPath={['children', 1, 'content']}>
+          <text>
+            <cursor />
+          </text>
         </component-inline-prop>
       </component-block>
       <paragraph>
         <text />
       </paragraph>
     </editor>,
-    {
-      componentBlocks: {
-        table,
-      },
-    }
+    { componentBlocks: { list } }
   );
-  const previewProps = createGetPreviewProps({ kind: 'object', value: table.props }, () => {})(
-    (editor.children[0] as any).props
-  );
-  previewProps.fields.children.elements[0].element.onInsert();
+  editor.insertBreak();
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
-        component="table"
+        component="list"
         props={
           Object {
             "children": Array [
-              Array [
-                Object {
-                  "content": null,
-                  "something": "1",
-                },
-                Object {
-                  "content": null,
-                  "something": "2",
-                },
-              ],
-              Array [
-                Object {
-                  "content": null,
-                  "something": "3",
-                },
-                Object {
-                  "content": null,
-                  "something": "4",
-                },
-              ],
+              Object {
+                "content": null,
+                "done": true,
+              },
             ],
           }
         }
@@ -317,55 +253,135 @@ test('add to multiple in child field in nested array', () => {
             Array [
               "children",
               0,
+              "content",
+            ]
+          }
+        >
+          <text>
+            some text
+          </text>
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text>
+          <cursor />
+        </text>
+      </paragraph>
+      <paragraph>
+        <text>
+          
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});
+
+test('deleting a range of nodes removes them', () => {
+  const editor = makeEditor(
+    <editor>
+      <component-block
+        component="list"
+        props={{
+          children: [
+            { content: null, done: true },
+            { content: null, done: false },
+            { content: null, done: true },
+            { content: null, done: false },
+            { content: null, done: true },
+            { content: null, done: false },
+          ],
+        }}
+      >
+        <component-inline-prop propPath={['children', 0, 'content']}>
+          <text>0</text>
+        </component-inline-prop>
+        <component-inline-prop propPath={['children', 1, 'content']}>
+          <text>
+            <anchor />1
+          </text>
+        </component-inline-prop>
+        <component-inline-prop propPath={['children', 2, 'content']}>
+          <text>2</text>
+        </component-inline-prop>
+        <component-inline-prop propPath={['children', 3, 'content']}>
+          <text>3</text>
+        </component-inline-prop>
+        <component-inline-prop propPath={['children', 4, 'content']}>
+          <text>
+            4<focus />
+          </text>
+        </component-inline-prop>
+        <component-inline-prop propPath={['children', 5, 'content']}>
+          <text>5</text>
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>,
+    { componentBlocks: { list } }
+  );
+  Transforms.delete(editor);
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <component-block
+        component="list"
+        props={
+          Object {
+            "children": Array [
+              Object {
+                "content": null,
+                "done": true,
+              },
+              Object {
+                "content": null,
+                "done": true,
+              },
+              Object {
+                "content": null,
+                "done": false,
+              },
+            ],
+          }
+        }
+      >
+        <component-inline-prop
+          propPath={
+            Array [
+              "children",
               0,
               "content",
             ]
           }
         >
           <text>
-            first
+            0
           </text>
         </component-inline-prop>
         <component-inline-prop
           propPath={
             Array [
               "children",
-              0,
               1,
               "content",
             ]
           }
         >
           <text>
-            second
+            <cursor />
           </text>
         </component-inline-prop>
         <component-inline-prop
           propPath={
             Array [
               "children",
-              1,
-              0,
+              2,
               "content",
             ]
           }
         >
           <text>
-            third
-          </text>
-        </component-inline-prop>
-        <component-inline-prop
-          propPath={
-            Array [
-              "children",
-              1,
-              1,
-              "content",
-            ]
-          }
-        >
-          <text>
-            fourth
+            5
           </text>
         </component-inline-prop>
       </component-block>
