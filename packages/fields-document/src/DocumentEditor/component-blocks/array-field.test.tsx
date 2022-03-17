@@ -13,7 +13,8 @@ const list = component({
       null,
       props.fields.children.elements.map(x => {
         return React.createElement('li', { key: x.id }, x.element.fields.content);
-      })
+      }),
+      React.createElement('button', { onClick: () => props.fields.children.onInsert() }, 'Insert')
     ),
   label: '',
   props: {
@@ -382,6 +383,64 @@ test('deleting a range of nodes removes them', () => {
         >
           <text>
             5
+          </text>
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text>
+          
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});
+
+test('inserting an item from empty works', () => {
+  const editor = makeEditor(
+    <editor>
+      <component-block
+        component="list"
+        props={{
+          children: [],
+        }}
+      >
+        <component-inline-prop>
+          <text />
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>,
+    { componentBlocks: { list } }
+  );
+  editor.container!.querySelector('button')!.click();
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <component-block
+        component="list"
+        props={
+          Object {
+            "children": Array [
+              Object {
+                "content": null,
+                "done": false,
+              },
+            ],
+          }
+        }
+      >
+        <component-inline-prop
+          propPath={
+            Array [
+              "children",
+              0,
+              "content",
+            ]
+          }
+        >
+          <text>
+            
           </text>
         </component-inline-prop>
       </component-block>

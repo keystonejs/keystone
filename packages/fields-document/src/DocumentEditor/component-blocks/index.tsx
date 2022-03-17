@@ -203,7 +203,8 @@ export const ComponentBlocksElement = ({
           assert(path !== null);
           Transforms.removeNodes(editor, { at: path });
         }
-        let newIdx = elementForChildren.children.length;
+        const getNode = () => Node.get(editor, basePath) as Element;
+        let newIdx = getNode().children.length;
         for (const thing of thingsLeftToAdd) {
           Transforms.insertNodes(
             editor,
@@ -225,9 +226,7 @@ export const ComponentBlocksElement = ({
           propPathsToExpectedIndexes.set(JSON.stringify(thing.path), idx);
         }
         outer: while (true) {
-          for (const [idx, childNode] of (
-            Node.get(editor, basePath) as Element
-          ).children.entries()) {
+          for (const [idx, childNode] of getNode().children.entries()) {
             assert(
               childNode.type === 'component-block-prop' ||
                 childNode.type === 'component-inline-prop'

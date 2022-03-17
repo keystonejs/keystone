@@ -133,28 +133,26 @@ export const componentBlocks = {
         }
       });
       return (
-        <div>
-          <ul css={{ padding: 0 }}>
-            {props.fields.children.elements.map(element => (
-              <li css={{ listStyle: 'none' }} key={element.id}>
-                <input
-                  contentEditable="false"
-                  css={{ marginRight: 8 }}
-                  type="checkbox"
-                  checked={element.element.fields.done.value}
-                  onChange={event => element.element.fields.done.onChange(event.target.checked)}
-                />
-                <span
-                  style={{
-                    textDecoration: element.element.fields.done.value ? 'line-through' : undefined,
-                  }}
-                >
-                  {element.element.fields.content}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <ul css={{ padding: 0 }}>
+          {props.fields.children.elements.map(element => (
+            <li css={{ listStyle: 'none' }} key={element.id}>
+              <input
+                contentEditable="false"
+                css={{ marginRight: 8 }}
+                type="checkbox"
+                checked={element.element.fields.done.value}
+                onChange={event => element.element.fields.done.onChange(event.target.checked)}
+              />
+              <span
+                style={{
+                  textDecoration: element.element.fields.done.value ? 'line-through' : undefined,
+                }}
+              >
+                {element.element.fields.content}
+              </span>
+            </li>
+          ))}
+        </ul>
       );
     },
     label: 'My List',

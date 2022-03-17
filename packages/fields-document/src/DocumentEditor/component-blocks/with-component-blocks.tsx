@@ -342,9 +342,7 @@ export function withComponentBlocks(
             const arrVal = getValueAtPropPath(node.props, propPath) as unknown[];
             const prevKeys = getElementIdsForArrayValue(arrVal);
             const prevKeysSet = new Set(prevKeys);
-            // delete backwards
             const alreadyUsedIndicies = new Set<number>();
-            // all of the fields are unique so we've removed/re-ordered/done nothing
             const newVal: unknown[] = [];
             const newKeys: string[] = [];
             const getNewKey = () => {
