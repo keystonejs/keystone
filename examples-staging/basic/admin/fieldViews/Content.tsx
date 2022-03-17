@@ -16,6 +16,7 @@ import {
 } from '@keystone-6/fields-document/primitives';
 import { useEffect } from 'react';
 import { Button } from '@keystone-ui/button';
+import { prop as blah } from './Blah';
 
 const noticeIconMap = {
   info: InfoIcon,
@@ -25,6 +26,11 @@ const noticeIconMap = {
 };
 
 export const componentBlocks = {
+  navigation: component({
+    component: () => <NotEditable>empty</NotEditable>,
+    props: { blah },
+    label: 'Navigation',
+  }),
   thing: component({
     component: props => {
       return (
@@ -148,15 +154,6 @@ export const componentBlocks = {
               </li>
             ))}
           </ul>
-          <NotEditable>
-            <Button
-              onClick={() => {
-                props.fields.children.onInsert();
-              }}
-            >
-              Add
-            </Button>
-          </NotEditable>
         </div>
       );
     },
@@ -169,7 +166,7 @@ export const componentBlocks = {
         })
       ),
     },
-    chromeless: true,
+    // chromeless: true,
   }),
   hero: component({
     component: props => {

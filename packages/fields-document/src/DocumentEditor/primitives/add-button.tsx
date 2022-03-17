@@ -66,7 +66,7 @@ export function AddButton<Value extends string>(props: {
             return (
               <Box
                 key={option.value}
-                {...getItemProps({ item: option, index: i, role: 'menuitemradio' })}
+                {...getItemProps({ item: option, index: i, role: 'menuitem' })}
                 css={{
                   cursor: 'pointer',
                   backgroundColor: highlightedIndex === i ? '#F6F8FC' : '',

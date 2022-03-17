@@ -35,8 +35,9 @@ export const componentThing =
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type component");
     }
+    const lists = new Set(Object.keys(meta.lists));
     try {
-      assertValidComponentPropField(prop);
+      assertValidComponentPropField(prop, lists);
     } catch (err) {
       throw new Error(`${meta.listKey}.${meta.fieldKey}: ${(err as any).message}`);
     }
@@ -63,7 +64,7 @@ export const componentThing =
                 prevVal = JSON.parse(prevVal as any);
                 val = args.inputData[meta.fieldKey];
               }
-              val = getValueForUpdate(prop, val, prevVal, args.context);
+              val = getValueForUpdate(prop, val, prevVal, args.context, []);
               if (val === null && meta.provider === 'postgresql') {
                 val = 'JsonNull';
               }
@@ -84,7 +85,7 @@ export const componentThing =
           create: {
             arg: graphql.arg({ type: getGraphQLInputType(name, prop, 'create', new Map(), meta) }),
             async resolve(val, context) {
-              return resolve(await getValueForCreate(prop, val, context));
+              return resolve(await getValueForCreate(prop, val, context, []));
             },
           },
           update: {

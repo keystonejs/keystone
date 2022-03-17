@@ -1,7 +1,7 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import React from 'react';
+import React, { Fragment } from 'react';
 import { jsx, makeEditor } from '../tests/utils';
 import { component, fields } from '../../component-blocks';
 import { createGetPreviewProps } from './preview-props';
@@ -12,9 +12,13 @@ const table = component({
       'div',
       null,
       props.fields.children.elements.map(x => {
-        return x.element.elements.map(x => {
-          return x.element.fields.content;
-        });
+        return React.createElement(
+          Fragment,
+          { key: x.id },
+          x.element.elements.map(x => {
+            return React.createElement(Fragment, { key: x.id }, x.element.fields.content);
+          })
+        );
       })
     ),
   label: '',

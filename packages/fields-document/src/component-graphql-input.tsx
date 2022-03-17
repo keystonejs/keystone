@@ -4,7 +4,7 @@ import { GraphQLResolveInfo } from 'graphql';
 
 import { ComponentPropFieldForGraphQL } from './DocumentEditor/component-blocks/api';
 import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values';
-import { assertNever } from './DocumentEditor/component-blocks/utils';
+import { assertNever, ReadonlyPropPath } from './DocumentEditor/component-blocks/utils';
 
 export function getGraphQLInputType(
   name: string,
@@ -91,48 +91,49 @@ export async function getValueForUpdate(
   prop: ComponentPropFieldForGraphQL,
   value: any,
   prevValue: any,
-  context: KeystoneContext
+  context: KeystoneContext,
+  path: ReadonlyPropPath
 ): Promise<any> {
+  if (value === undefined) {
+    return prevValue;
+  }
   if (prevValue === undefined) {
     prevValue = getInitialPropsValue(prop);
   }
-  if (value === undefined) {
-    value = prevValue;
-  }
+
   if (prop.kind === 'form') {
     if (prop.validate(value)) {
       return value;
     }
-    throw new Error();
+    throw new Error(`The value of the form field at '${path.join('.')}' is invalid`);
+  }
+  if (value === null) {
+    throw new Error(
+      `${
+        prop.kind[0].toUpperCase() + prop.kind.slice(1)
+      } fields cannot be set to null but the field at '${path.join('.')}' is null`
+    );
   }
   if (prop.kind === 'object') {
-    if (value === null) {
-      throw new Error();
-    }
     return Object.fromEntries(
       await Promise.all(
         Object.entries(prop.value).map(async ([key, val]) => {
-          return [key, await getValueForUpdate(val, value[key], prevValue[key], context)];
+          return [
+            key,
+            await getValueForUpdate(val, value[key], prevValue[key], context, path.concat(key)),
+          ];
         })
       )
     );
   }
   if (prop.kind === 'array') {
-    if (value === null) {
-      throw new Error();
-    }
-
     return Promise.all(
-      (value as any[]).map((val, i) => getValueForUpdate(prop.element, val, prevValue[i], context))
+      (value as any[]).map((val, i) =>
+        getValueForUpdate(prop.element, val, prevValue[i], context, path.concat(i))
+      )
     );
   }
   if (prop.kind === 'relationship') {
-    if (value === undefined) {
-      return prevValue;
-    }
-    if (value === null) {
-      throw new Error();
-    }
     if (prop.many) {
       const val = (value as graphql.InferValueFromArg<
         graphql.Arg<NonNullable<GraphQLTypesForList['relateTo']['many']['update']>>
@@ -147,12 +148,13 @@ export async function getValueForUpdate(
     }
   }
   if (prop.kind === 'conditional') {
-    if (value === null) {
-      throw new Error();
-    }
     const conditionalValueKeys = Object.keys(value);
     if (conditionalValueKeys.length !== 1) {
-      throw new Error();
+      throw new Error(
+        `Conditional field inputs must set exactly one of the fields but the field at ${path.join(
+          '.'
+        )} has ${conditionalValueKeys.length} fields set`
+      );
     }
     const key = conditionalValueKeys[0];
     let discriminant: string | boolean = key;
@@ -165,7 +167,8 @@ export async function getValueForUpdate(
         (prop.values as any)[key],
         value[key],
         prevValue.discriminant === discriminant ? prevValue.value : getInitialPropsValue(prop),
-        context
+        context,
+        path.concat('value')
       ),
     };
   }
@@ -176,60 +179,54 @@ export async function getValueForUpdate(
 export async function getValueForCreate(
   prop: ComponentPropFieldForGraphQL,
   value: any,
-  context: KeystoneContext
+  context: KeystoneContext,
+  path: ReadonlyPropPath
 ): Promise<any> {
   // If value is undefined, get the specified defaultValue
   if (value === undefined) {
-    value = getInitialPropsValue(prop);
+    return getInitialPropsValue(prop);
   }
   if (prop.kind === 'form') {
     if (prop.validate(value)) {
       return value;
     }
-    throw new Error();
+    throw new Error(`The value of the form field at '${path.join('.')}' is invalid`);
+  }
+  if (value === null) {
+    throw new Error(
+      `${
+        prop.kind[0].toUpperCase() + prop.kind.slice(1)
+      } fields cannot be set to null but the field at '${path.join('.')}' is null`
+    );
   }
   if (prop.kind === 'array') {
-    if (value === null) {
-      throw new Error();
-    }
-    return Promise.all((value as any[]).map(val => getValueForCreate(prop.element, val, context)));
+    return Promise.all(
+      (value as any[]).map((val, i) =>
+        getValueForCreate(prop.element, val, context, path.concat(i))
+      )
+    );
   }
   if (prop.kind === 'object') {
-    if (value === null) {
-      throw new Error();
-    }
     return Object.fromEntries(
       await Promise.all(
         Object.entries(prop.value).map(async ([key, val]) => {
-          return [key, await getValueForCreate(val, value[key], context)];
+          return [key, await getValueForCreate(val, value[key], context, path.concat(key))];
         })
       )
     );
   }
   if (prop.kind === 'relationship') {
     if (prop.many) {
-      const val = value as graphql.InferValueFromArg<
+      const val = (value as graphql.InferValueFromArg<
         graphql.Arg<NonNullable<GraphQLTypesForList['relateTo']['many']['create']>>
-      >;
+      >)!;
 
-      if (val === undefined) {
-        return [];
-      }
-
-      if (val === null) {
-        throw new Error();
-      }
       return resolveRelateToManyForCreateInput(val, context, prop.listKey);
     } else {
-      const val = value as graphql.InferValueFromArg<
+      const val = (value as graphql.InferValueFromArg<
         graphql.Arg<NonNullable<GraphQLTypesForList['relateTo']['one']['create']>>
-      >;
-      if (val === undefined) {
-        return null;
-      }
-      if (val === null) {
-        throw new Error();
-      }
+      >)!;
+
       return resolveRelateToOneForCreateInput(val, context, prop.listKey);
     }
   }
@@ -249,7 +246,12 @@ export async function getValueForCreate(
 
     return {
       discriminant,
-      value: await getValueForCreate((prop.values as any)[key], value[key], context),
+      value: await getValueForCreate(
+        (prop.values as any)[key],
+        value[key],
+        context,
+        path.concat('value')
+      ),
     };
   }
 

@@ -36,7 +36,12 @@ export function getNewArrayElementId() {
 export const ChildrenByPathContext = React.createContext<Record<string, ReactElement>>({});
 
 function ChildFieldEditable({ path }: { path: readonly string[] }) {
-  return useContext(ChildrenByPathContext)[JSON.stringify(path)];
+  const childrenByPath = useContext(ChildrenByPathContext);
+  const child = childrenByPath[JSON.stringify(path)];
+  if (child === undefined) {
+    return null;
+  }
+  return child;
 }
 
 function castToMemoizedInfoForProp<

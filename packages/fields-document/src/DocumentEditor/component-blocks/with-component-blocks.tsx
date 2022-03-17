@@ -124,9 +124,6 @@ function doesPropOnlyEverContainASingleChildField(rootProp: ComponentPropField):
       }
       hasFoundChildField = true;
     } else if (prop.kind === 'array') {
-      if (doesPropOnlyEverContainASingleChildField(prop.element)) {
-        return false;
-      }
       queue.add(prop.element);
     } else if (prop.kind === 'object') {
       for (const innerProp of Object.values(prop.value)) {

@@ -10,12 +10,11 @@ import {
 } from '@keystone-6/core/types';
 import { graphql } from '@keystone-6/core';
 import { Relationships } from './DocumentEditor/relationship';
-import { ComponentBlock, ComponentPropField } from './component-blocks';
+import { ComponentBlock } from './component-blocks';
 import { DocumentFeatures } from './views';
 import { validateAndNormalizeDocument } from './validation';
 import { addRelationshipData } from './relationship-data';
 import { assertValidComponentPropField } from './DocumentEditor/component-blocks/field-assertions';
-import { assertNever } from './DocumentEditor/component-blocks/utils';
 
 export { componentThing } from './component';
 
@@ -77,56 +76,6 @@ export type DocumentFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
 
 const views = path.join(path.dirname(__dirname), 'views');
 
-function validateRelationshipProps(
-  field: ComponentPropField,
-  path: string[],
-  meta: FieldData,
-  componentBlockLabel: string
-): void {
-  if (field.kind === 'relationship') {
-    // ideally we would validate the GraphQL selection here too but
-    // when this is running the GraphQL schema is still being created
-    if (meta.lists[field.listKey] === undefined) {
-      throw new Error(
-        `A component block named ${componentBlockLabel} in the field at ${meta.listKey}.${
-          meta.fieldKey
-        } has a relationship field at ${path.join('.')} with the listKey "${
-          field.listKey
-        }" but no list named "${field.listKey}" exists.`
-      );
-    }
-    return;
-  }
-  if (field.kind === 'form' || field.kind === 'child') {
-    return;
-  }
-  if (field.kind === 'object') {
-    for (const [key, innerField] of Object.entries(field.value)) {
-      validateRelationshipProps(innerField, path.concat(key), meta, componentBlockLabel);
-    }
-    return;
-  }
-  if (field.kind === 'conditional') {
-    // the discriminant field must be a form field so no need to check that
-    for (const [key, innerField] of Object.entries(
-      field.values as Record<string, ComponentPropField>
-    )) {
-      validateRelationshipProps(innerField, path.concat(key), meta, componentBlockLabel);
-    }
-    return;
-  }
-  if (field.kind === 'array') {
-    validateRelationshipProps(
-      field.element,
-      path.concat('(array element)'),
-      meta,
-      componentBlockLabel
-    );
-    return;
-  }
-  assertNever(field);
-}
-
 export const document =
   <ListTypeInfo extends BaseListTypeInfo>({
     componentBlocks = {},
@@ -145,14 +94,6 @@ export const document =
       links,
     });
     const relationships = normaliseRelationships(configRelationships, meta);
-    for (const componentBlock of Object.values(componentBlocks)) {
-      validateRelationshipProps(
-        { kind: 'object', value: componentBlock.props },
-        [],
-        meta,
-        componentBlock.label
-      );
-    }
 
     const inputResolver = (data: JSONValue | null | undefined): any => {
       if (data === null) {
@@ -167,9 +108,10 @@ export const document =
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type document");
     }
+    const lists = new Set(Object.keys(meta.lists));
     for (const [name, block] of Object.entries(componentBlocks)) {
       try {
-        assertValidComponentPropField({ kind: 'object', value: block.props });
+        assertValidComponentPropField({ kind: 'object', value: block.props }, lists);
       } catch (err) {
         throw new Error(
           `Component block ${name} in ${meta.listKey}.${meta.fieldKey}: ${(err as any).message}`

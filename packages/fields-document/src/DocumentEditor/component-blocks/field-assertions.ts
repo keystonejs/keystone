@@ -1,8 +1,11 @@
 import { ComponentPropField } from './api';
 import { assertNever } from './utils';
 
-export function assertValidComponentPropField(prop: ComponentPropField) {
-  assertValidComponentPropFieldInner(prop, [], [], new Set());
+export function assertValidComponentPropField(
+  prop: ComponentPropField,
+  lists: ReadonlySet<string>
+) {
+  assertValidComponentPropFieldInner(prop, [], [], new Set(), lists);
 }
 
 // recursive things can exist but they have to either be:
@@ -14,10 +17,21 @@ function assertValidComponentPropFieldInner(
   prop: ComponentPropField,
   propAncestors: ComponentPropField[],
   propPath: string[],
-  seenProps: Set<ComponentPropField>
+  seenProps: Set<ComponentPropField>,
+  lists: ReadonlySet<string>
 ) {
-  if (prop.kind === 'form' || prop.kind === 'child' || prop.kind === 'relationship') {
+  if (prop.kind === 'form' || prop.kind === 'child') {
     return;
+  }
+  if (prop.kind === 'relationship') {
+    if (lists.has(prop.listKey)) {
+      return;
+    }
+    throw new Error(
+      `The relationship field at "${propPath.join('.')}"  has the listKey "${
+        prop.listKey
+      }" but no list named "${prop.listKey}" exists.`
+    );
   }
   const ancestor = propAncestors.indexOf(prop);
   if (ancestor !== -1) {
@@ -34,7 +48,7 @@ function assertValidComponentPropFieldInner(
   try {
     seenProps.add(prop);
     if (prop.kind === 'array') {
-      assertValidComponentPropFieldInner(prop.element, [], propPath, seenProps);
+      assertValidComponentPropFieldInner(prop.element, [], propPath, seenProps, lists);
       return;
     }
     if (prop.kind === 'object') {
@@ -48,7 +62,7 @@ function assertValidComponentPropFieldInner(
             )}" changes between accesses`
           );
         }
-        assertValidComponentPropFieldInner(innerProp, propAncestors, propPath, seenProps);
+        assertValidComponentPropFieldInner(innerProp, propAncestors, propPath, seenProps, lists);
         propPath.pop();
       }
       propAncestors.pop();
@@ -70,7 +84,8 @@ function assertValidComponentPropFieldInner(
           innerProp,
           key === stringifiedDefaultDiscriminant ? propAncestors : [],
           propPath,
-          seenProps
+          seenProps,
+          lists
         );
         propPath.pop();
       }
