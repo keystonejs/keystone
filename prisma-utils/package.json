@@ -4,8 +4,8 @@
   "private": true,
   "main": "dist/keystone-6-prisma-utils.cjs.js",
   "dependencies": {
-    "@prisma/generator-helper": "3.9.2",
-    "@prisma/sdk": "3.9.2",
+    "@prisma/generator-helper": "3.11.0",
+    "@prisma/sdk": "3.11.0",
     "fs-extra": "^10.0.0",
     "prettier": "^2.5.0"
   },
