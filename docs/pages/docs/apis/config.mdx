@@ -307,16 +307,8 @@ export default config({
 
 The created context will be bound to the request, including the current visitor's session, meaning access control will work the same as for GraphQL API requests.
 
-You can also return a Promise or use async/await to perform async bootstrap tasks:
-
-```ts
-export default config({
-  server: {
-    extendExpressApp: async () => {
-      await performBootstrapTask();
-    },
-  },
-});
+```suggestion
+*ProTip!*: `extendExpressApp` can be `async` 
 ```
 
 ## session
