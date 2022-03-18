@@ -16,12 +16,16 @@ export const lists = {
       publishDate: timestamp(),
       author: relationship({ ref: 'Author.posts', many: false,
         ui: {
-          orderBy: [ { labelField: 'asc' }]
+          orderBy: [ { labelField: 'asc' }],
+          labelField: 'email',
         }
       }),
     },
   }),
   Author: list({
+    ui: {
+      labelField: 'name'
+    },
     fields: {
       name: text({ validation: { isRequired: true } }),
       email: text({ isIndexed: 'unique', validation: { isRequired: true } }),

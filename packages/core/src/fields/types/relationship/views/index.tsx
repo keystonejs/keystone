@@ -169,6 +169,7 @@ export const Field = ({
               controlShouldRenderValue
               autoFocus={autoFocus}
               isDisabled={onChange === undefined}
+              labelField={field.labelField}
               list={foreignList}
               orderBy={field.orderBy}
               portalMenu
@@ -388,6 +389,7 @@ type RelationshipController = FieldController<
   refFieldKey?: string;
   hideCreate: boolean;
   orderBy: OrderByType;
+  labelField?: string;
   many: boolean;
 };
 
@@ -399,6 +401,7 @@ export const controller = (
       many: boolean;
       hideCreate: boolean;
       orderBy: OrderByType;
+      labelField?: string;
     } & (
       | {
           displayMode: 'select';
@@ -447,6 +450,7 @@ export const controller = (
             }`,
     hideCreate: config.fieldMeta.hideCreate,
     orderBy: config.fieldMeta.orderBy,
+    labelField: config.fieldMeta.labelField,
     // note we're not making the state kind: 'count' when ui.displayMode is set to 'count'.
     // that ui.displayMode: 'count' is really just a way to have reasonable performance
     // because our other UIs don't handle relationships with a large number of items well
@@ -544,6 +548,7 @@ export const controller = (
             isLoading={loading}
             isDisabled={onChange === undefined}
             orderBy={config.fieldMeta.orderBy}
+            labelField={config.fieldMeta.labelField}
             state={state}
           />
         );

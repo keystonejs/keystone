@@ -84,9 +84,9 @@ function useFilter(search: string, list: ListMeta) {
 const initialItemsToLoad = 10;
 const subsequentItemsToLoad = 50;
 
-const idField = '____id____';
+const idOutputFieldName = '____id____';
 
-const labelField = '____label____';
+const labelOutputFieldName = '____label____';
 
 const LoadingIndicatorContext = createContext<{
   count: number;
@@ -103,6 +103,7 @@ export const RelationshipSelect = ({
   isLoading,
   list,
   orderBy,
+  labelField,
   placeholder,
   portalMenu,
   state,
@@ -114,6 +115,7 @@ export const RelationshipSelect = ({
   isLoading?: boolean;
   list: ListMeta;
   orderBy: false | Array<{ labelField:  'asc' | 'desc' } | { field: string, order: 'asc' | 'desc' }>;
+  labelField: string | undefined;
   placeholder?: string;
   portalMenu?: true | undefined;
   state:
@@ -137,7 +139,7 @@ export const RelationshipSelect = ({
   const [loadingIndicatorElement, setLoadingIndicatorElement] = useState<null | HTMLElement>(null);
 
   const QUERY: TypedDocumentNode<
-    { items: { [idField]: string; [labelField]: string | null }[]; count: number },
+    { items: { [idOutputFieldName]: string; [labelOutputFieldName]: string | null }[]; count: number },
     { where: Record<string, any>; take: number; skip: number, orderBy: Array<Record<string, 'asc' | 'desc'>> | undefined }
   > = gql`
     query RelationshipSelect(
@@ -147,8 +149,8 @@ export const RelationshipSelect = ({
       $orderBy: [${list.gqlNames.listOrderName}!]! = []
     ) {
       items: ${list.gqlNames.listQueryName}(where: $where, take: $take, skip: $skip, orderBy: $orderBy) {
-        ${idField}: id
-        ${labelField}: ${list.labelField}
+        ${idOutputFieldName}: id
+        ${labelOutputFieldName}: ${labelField || list.labelField}
         ${extraSelection}
       }
       count: ${list.gqlNames.listQueryCountName}(where: $where)
@@ -191,7 +193,7 @@ export const RelationshipSelect = ({
   let orderByClause: Record<string, 'asc' | 'desc' >[] | undefined = undefined;
   if (orderBy !== false) {
     orderByClause = orderBy.map(
-      item => 'labelField' in item ? { [list.labelField] : item.labelField } : { [item.field]: item.order }
+      item => 'labelField' in item ? { [labelField || list.labelField] : item.labelField } : { [item.field]: item.order }
     );
   }
 
@@ -210,7 +212,7 @@ export const RelationshipSelect = ({
   const count = data?.count || 0;
 
   const options =
-    data?.items?.map(({ [idField]: value, [labelField]: label, ...data }) => ({
+    data?.items?.map(({ [idOutputFieldName]: value, [labelOutputFieldName]: label, ...data }) => ({
       value,
       label: label || value,
       data,
@@ -247,7 +249,7 @@ export const RelationshipSelect = ({
           lastFetchMore?.skip !== skip)
       ) {
         const QUERY: TypedDocumentNode<
-          { items: { [idField]: string; [labelField]: string | null }[] },
+          { items: { [idOutputFieldName]: string; [labelOutputFieldName]: string | null }[] },
           { where: Record<string, any>; take: number; skip: number }
         > = gql`
               query RelationshipSelectMore(
@@ -257,8 +259,8 @@ export const RelationshipSelect = ({
                 $orderBy: [${list.gqlNames.listOrderName}!]! = []
               ) {
                 items: ${list.gqlNames.listQueryName}(where: $where, take: $take, skip: $skip, orderBy: $orderBy) {
-                  ${labelField}: ${list.labelField}
-                  ${idField}: id
+                  ${labelOutputFieldName}: ${labelField || list.labelField}
+                  ${idOutputFieldName}: id
                   ${extraSelection}
                 }
               }
