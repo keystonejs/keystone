@@ -295,6 +295,7 @@ export function Cards({
               list={foreignList}
               isLoading={isLoadingLazyItems}
               placeholder={`Select a ${foreignList.singular}`}
+              orderBy={field.orderBy}
               portalMenu
               state={{
                 kind: 'many',

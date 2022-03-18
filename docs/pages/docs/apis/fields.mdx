@@ -622,7 +622,7 @@ Read our [relationships guide](../guides/relationships) for details on Keystoneâ
   - `inlineEdit` (default: `null`): If not `null`, an object of the form `{ fields: [...] }`, where `fields` is a list of field paths from the related list should be provided. An `Edit` button will be included in each card, allowing the configured fields to be edited for each related item.
   - `inlineConnect` (default: `false`): If `true`, an inline `Link existing item` button will be present, allowing existing items of the related list to be connected in this field.
 - `ui.displayMode === 'count'` only supports `many` relationships
-- `ui.orderBy`: Specifies how items in the select or card list will be ordered. Options are:
+- `ui.orderBy`: Specifies how items in the select list for choosing the related record(s) will be ordered. Options are:
   - Not specified: Applies default option of `[ { labelField: 'asc' } ]`.  Items in select will be sorted by label field values in ascending order.
   - `'none'`: Don't sort select or card items.
   - Array of items to sort by. An example of a valid specifier is `[ { labelField: 'asc' }, { field: 'status', order: 'desc' }]`. This would order items by the label field ascending first and then by the `status` field, descending, next. There are two different items specifiers that can be used:
