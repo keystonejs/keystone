@@ -662,6 +662,8 @@ export default config({
             // Display mode: 'count'
             // requires many: true above
             displayMode: 'count',
+            // Complex example of orderBy option. Order by the label field (ascending) and then status (descending).
+            orderBy: [ { labelField: 'asc' }, { field: 'status', order: 'desc' }],
            },
         }),
         /* ... */
