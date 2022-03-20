@@ -13,9 +13,7 @@ export function AddButton<Value extends string>(props: {
   const { dialog, trigger, isOpen, setOpen } = usePopover({
     modifiers: [{ name: 'offset', options: { offset: [0, 4] } }],
   });
-  //   if (!isOpen) {
-  //     setOpen(true);
-  //   }
+
   const { getToggleButtonProps, getMenuProps, getItemProps, highlightedIndex } = useSelect<{
     label: string;
     value: Value;
