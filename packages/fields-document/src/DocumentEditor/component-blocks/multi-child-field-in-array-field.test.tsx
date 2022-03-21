@@ -31,7 +31,10 @@ const qAndA = component({
   },
 });
 
-test('deleting all child fields in an array element removes the element', () => {
+// ideally this would probably work like array fields with a single child field in the array
+// getting that behaviour right would be difficult though, so this test exists assert
+// our current behaviour so we know if it changes for any reason
+test('deleting all child fields in an array field element when there are multiple child fields as the element of the array field does not remove the child fields/array element', () => {
   const editor = makeEditor(
     <editor>
       <component-block
@@ -49,19 +52,21 @@ test('deleting all child fields in an array element removes the element', () => 
         </component-inline-prop>
         <component-inline-prop propPath={['children', 0, 'answer']}>
           <text>
-            answer 1<anchor />
+            answer
+            <anchor /> 1
           </text>
         </component-inline-prop>
         <component-inline-prop propPath={['children', 1, 'question']}>
           <text>question 2</text>
         </component-inline-prop>
         <component-inline-prop propPath={['children', 1, 'answer']}>
-          <text>
-            answer 2<focus />
-          </text>
+          <text>answer 2</text>
         </component-inline-prop>
         <component-inline-prop propPath={['children', 2, 'question']}>
-          <text>question 3</text>
+          <text>
+            question
+            <focus /> 3
+          </text>
         </component-inline-prop>
         <component-inline-prop propPath={['children', 2, 'answer']}>
           <text>answer 3</text>
@@ -73,95 +78,7 @@ test('deleting all child fields in an array element removes the element', () => 
     </editor>,
     { componentBlocks: { qAndA } }
   );
-  Editor.withoutNormalizing(editor, () => {
-    Transforms.delete(editor);
-    expect(editor).toMatchInlineSnapshot(`
-      <editor>
-        <component-block
-          component="qAndA"
-          props={
-            Object {
-              "children": Array [
-                Object {
-                  "answer": null,
-                  "question": null,
-                },
-                Object {
-                  "answer": null,
-                  "question": null,
-                },
-                Object {
-                  "answer": null,
-                  "question": null,
-                },
-              ],
-            }
-          }
-        >
-          <component-inline-prop
-            propPath={
-              Array [
-                "children",
-                0,
-                "question",
-              ]
-            }
-          >
-            <text>
-              question 1
-            </text>
-          </component-inline-prop>
-          <component-inline-prop
-            propPath={
-              Array [
-                "children",
-                0,
-                "answer",
-              ]
-            }
-          >
-            <text>
-              answer 1
-            </text>
-            <text>
-              <cursor />
-            </text>
-          </component-inline-prop>
-          <component-inline-prop
-            propPath={
-              Array [
-                "children",
-                2,
-                "question",
-              ]
-            }
-          >
-            <text>
-              question 3
-            </text>
-          </component-inline-prop>
-          <component-inline-prop
-            propPath={
-              Array [
-                "children",
-                2,
-                "answer",
-              ]
-            }
-          >
-            <text>
-              answer 3
-            </text>
-          </component-inline-prop>
-        </component-block>
-        <paragraph>
-          <text>
-            
-          </text>
-        </paragraph>
-      </editor>
-    `);
-  });
+  Transforms.delete(editor);
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -208,8 +125,9 @@ test('deleting all child fields in an array element removes the element', () => 
           }
         >
           <text>
-            answer 1
+            answer
             <cursor />
+             3
           </text>
         </component-inline-prop>
         <component-inline-prop
@@ -248,7 +166,7 @@ test('deleting all child fields in an array element removes the element', () => 
           }
         >
           <text>
-            question 3
+            
           </text>
         </component-inline-prop>
         <component-inline-prop

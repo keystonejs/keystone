@@ -13,7 +13,7 @@ import {
   useRef,
 } from 'react';
 import { ReactEditor, RenderElementProps, useFocused, useSelected } from 'slate-react';
-import { Editor, Element, Path, PathRef, Transforms, Node } from 'slate';
+import { Editor, Element, PathRef, Transforms, Node } from 'slate';
 
 import { jsx, useTheme } from '@keystone-ui/core';
 import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
