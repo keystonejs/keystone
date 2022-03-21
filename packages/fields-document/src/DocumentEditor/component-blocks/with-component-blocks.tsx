@@ -113,6 +113,29 @@ function normalizeNodeWithinComponentProp(
   return didNormalization;
 }
 
+function canPropContainChildField(rootProp: ComponentPropField) {
+  const queue = new Set<ComponentPropField>([rootProp]);
+  for (const prop of queue) {
+    if (prop.kind === 'form' || prop.kind === 'relationship') {
+    } else if (prop.kind === 'child') {
+      return true;
+    } else if (prop.kind === 'array') {
+      queue.add(prop.element);
+    } else if (prop.kind === 'object') {
+      for (const innerProp of Object.values(prop.value)) {
+        queue.add(innerProp);
+      }
+    } else if (prop.kind === 'conditional') {
+      for (const innerProp of Object.values(prop.values)) {
+        queue.add(innerProp);
+      }
+    } else {
+      assertNever(prop);
+    }
+  }
+  return false;
+}
+
 function doesPropOnlyEverContainASingleChildField(rootProp: ComponentPropField): boolean {
   const queue = new Set<ComponentPropField>([rootProp]);
   let hasFoundChildField = false;
@@ -124,7 +147,9 @@ function doesPropOnlyEverContainASingleChildField(rootProp: ComponentPropField):
       }
       hasFoundChildField = true;
     } else if (prop.kind === 'array') {
-      queue.add(prop.element);
+      if (canPropContainChildField(prop.element)) {
+        return false;
+      }
     } else if (prop.kind === 'object') {
       for (const innerProp of Object.values(prop.value)) {
         queue.add(innerProp);
@@ -242,11 +267,12 @@ export function withComponentBlocks(
             if (idx !== -1) {
               const arrayFieldIdx = ancestorFields.length - 1 - idx;
               const arrayField = ancestorFields[arrayFieldIdx];
+              assert(arrayField.kind === 'array');
               const val = getValueAtPropPath(
                 componentBlockNode.props,
                 componentPropNode.propPath.slice(0, arrayFieldIdx)
               ) as unknown[];
-              if (doesPropOnlyEverContainASingleChildField(arrayField)) {
+              if (doesPropOnlyEverContainASingleChildField(arrayField.element)) {
                 if (
                   Node.string(componentPropNode) === '' &&
                   val.length - 1 === componentPropNode.propPath[arrayFieldIdx]
