@@ -2,7 +2,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import React from 'react';
-import { Editor, Transforms } from 'slate';
+import { Transforms } from 'slate';
 import { jsx, makeEditor } from '../tests/utils';
 import { component, fields } from '../../component-blocks';
 
@@ -180,6 +180,141 @@ test('deleting all child fields in an array field element when there are multipl
         >
           <text>
             answer 3
+          </text>
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text>
+          
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});
+
+// again, in the future, this might not be the behaviour we want but we want to explicitly state what the behaviour is currently
+test('when the wrong children exist, the children are normalized based on the props', () => {
+  const editor = makeEditor(
+    <editor>
+      <component-block
+        component="qAndA"
+        props={{
+          children: [
+            { question: null, answer: null },
+            { question: null, answer: null },
+            { question: null, answer: null },
+          ],
+        }}
+      >
+        <component-inline-prop propPath={['children', 3, 'question']}>
+          <text>some question</text>
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>,
+    { componentBlocks: { qAndA }, skipRenderingDOM: true, normalization: 'normalize' }
+  );
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <component-block
+        component="qAndA"
+        props={
+          Object {
+            "children": Array [
+              Object {
+                "answer": null,
+                "question": null,
+              },
+              Object {
+                "answer": null,
+                "question": null,
+              },
+              Object {
+                "answer": null,
+                "question": null,
+              },
+            ],
+          }
+        }
+      >
+        <component-inline-prop
+          propPath={
+            Array [
+              "children",
+              0,
+              "question",
+            ]
+          }
+        >
+          <text>
+            
+          </text>
+        </component-inline-prop>
+        <component-inline-prop
+          propPath={
+            Array [
+              "children",
+              0,
+              "answer",
+            ]
+          }
+        >
+          <text>
+            
+          </text>
+        </component-inline-prop>
+        <component-inline-prop
+          propPath={
+            Array [
+              "children",
+              1,
+              "question",
+            ]
+          }
+        >
+          <text>
+            
+          </text>
+        </component-inline-prop>
+        <component-inline-prop
+          propPath={
+            Array [
+              "children",
+              1,
+              "answer",
+            ]
+          }
+        >
+          <text>
+            
+          </text>
+        </component-inline-prop>
+        <component-inline-prop
+          propPath={
+            Array [
+              "children",
+              2,
+              "question",
+            ]
+          }
+        >
+          <text>
+            
+          </text>
+        </component-inline-prop>
+        <component-inline-prop
+          propPath={
+            Array [
+              "children",
+              2,
+              "answer",
+            ]
+          }
+        >
+          <text>
+            
           </text>
         </component-inline-prop>
       </component-block>

@@ -35,7 +35,7 @@ export function getNewArrayElementId() {
 
 export const ChildrenByPathContext = React.createContext<Record<string, ReactElement>>({});
 
-function ChildFieldEditable({ path }: { path: readonly string[] }) {
+export function ChildFieldEditable({ path }: { path: readonly string[] }) {
   const childrenByPath = useContext(ChildrenByPathContext);
   const child = childrenByPath[JSON.stringify(path)];
   if (child === undefined) {
