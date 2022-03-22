@@ -45,9 +45,9 @@ export function createImagesContext(
 
   return {
     getUrl: async (storageString, id, extension) => {
-      let storage = config.storage?.[storageString];
+      let storageConfig = config.storage?.[storageString];
 
-      switch (storage?.kind) {
+      switch (storageConfig?.kind) {
         case 's3': {
           const s3Instance = s3Assets().get(storageString);
 
@@ -59,7 +59,7 @@ export function createImagesContext(
         }
         case 'local': {
           const filename = `${id}.${extension}`;
-          return `${storage.baseUrl || DEFAULT_BASE_URL}/${filename}`;
+          return `${storageConfig.baseUrl || DEFAULT_BASE_URL}/${filename}`;
         }
       }
 
@@ -107,6 +107,26 @@ export function createImagesContext(
       throw new Error(
         `attempted to get data from stream for storage ${storageConfig}, however could not find the config for it`
       );
+    },
+    deleteAtSource: async (storageString, id, extension) => {
+      let storageConfig = config.storage?.[storageString];
+
+      switch (storageConfig?.kind) {
+        case 's3': {
+          const s3Instance = s3Assets().get(storageString);
+
+          await s3Instance?.images.delete(id, extension);
+        }
+        case 'local': {
+          await fs.remove(
+            // TODO: find out why this isn't narrowing
+            path.join(
+              storageConfig.storagePath || DEFAULT_IMAGES_STORAGE_PATH,
+              `${id}.${extension}`
+            )
+          );
+        }
+      }
     },
   };
 }

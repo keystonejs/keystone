@@ -116,6 +116,29 @@ export const image =
       },
     })({
       ...config,
+      hooks: config.removeFileOnDelete
+        ? {
+            ...config.hooks,
+            async afterOperation(afterOpreationConfig) {
+              const { originalItem, item, fieldKey, context } = afterOpreationConfig;
+              await config.hooks?.afterOperation?.(afterOpreationConfig);
+              const idKey = `${fieldKey}_id`;
+              const id = originalItem?.[idKey];
+              // This will occur on an update where an image already existed but has been
+              // changed, or on a delete, where there is no longer an item
+              if (id && id !== item?.[idKey]) {
+                const extensionKey = `${fieldKey}_extension`;
+                const extension = originalItem[extensionKey];
+
+                await context.images?.deleteAtSource(
+                  config.storage,
+                  id as string,
+                  extension as ImageExtension
+                );
+              }
+            },
+          }
+        : config.hooks,
       input: {
         create: {
           arg: graphql.arg({ type: ImageFieldInput }),

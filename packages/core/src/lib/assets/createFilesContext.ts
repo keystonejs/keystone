@@ -59,20 +59,20 @@ export function createFilesContext(
 
   return {
     getUrl: async (storageString, filename) => {
-      let storage = config.storage?.[storageString];
+      let storageConfig = config.storage?.[storageString];
 
-      switch (storage?.kind) {
+      switch (storageConfig?.kind) {
         case 's3': {
           const s3Instance = s3Assets().get(storageString);
 
           if (!s3Instance) {
-            throw new Error(`Keystone has no connection to S3 storage location ${storage}`);
+            throw new Error(`Keystone has no connection to S3 storage location ${storageConfig}`);
           }
 
           return s3Instance.files.url(filename);
         }
         case 'local': {
-          return `${storage.baseUrl || DEFAULT_BASE_URL}/${filename}`;
+          return `${storageConfig.baseUrl || DEFAULT_BASE_URL}/${filename}`;
         }
       }
 
@@ -80,23 +80,20 @@ export function createFilesContext(
         `attempted to get URL for storage ${storageString}, however could not find the config for it`
       );
     },
-    getDataFromStream: async (storage, stream, originalFilename) => {
-      const storageConfig = config.storage?.[storage];
-
-      // const mode = config.storage?.[storage]?.kind;
-      // const filename = generateSafeFilename(originalFilename, storage.transformFilename);
+    getDataFromStream: async (storageString, stream, originalFilename) => {
+      const storageConfig = config.storage?.[storageString];
       const filename = generateSafeFilename(originalFilename);
 
       switch (storageConfig?.kind) {
         case 's3': {
-          const s3Instance = s3Assets().get(storage);
+          const s3Instance = s3Assets().get(storageString);
 
           if (!s3Instance) {
-            throw new Error(`Keystone has no connection to S3 storage location ${storage}`);
+            throw new Error(`Keystone has no connection to S3 storage location ${storageString}`);
           }
 
           const { filesize } = await s3Instance.files.upload(stream, filename);
-          return { storage, filesize, filename };
+          return { storage: storageString, filesize, filename };
         }
         case 'local': {
           const writeStream = fs.createWriteStream(
@@ -117,7 +114,7 @@ export function createFilesContext(
             const { size: filesize } = await fs.stat(
               path.join(storageConfig.storagePath || DEFAULT_FILES_STORAGE_PATH, filename)
             );
-            return { storage, filesize, filename };
+            return { storage: storageString, filesize, filename };
           } catch (e) {
             await fs.remove(
               path.join(storageConfig.storagePath || DEFAULT_FILES_STORAGE_PATH, filename)
@@ -130,6 +127,23 @@ export function createFilesContext(
       throw new Error(
         `attempted to get URL for storage ${storageConfig}, however could not find the config for it`
       );
+    },
+    deleteAtSource: async (storageString, filename) => {
+      let storageConfig = config.storage?.[storageString];
+
+      switch (storageConfig?.kind) {
+        case 's3': {
+          const s3Instance = s3Assets().get(storageString);
+
+          await s3Instance?.files.delete(filename);
+        }
+        case 'local': {
+          // TODO why is this not narrowing
+          await fs.remove(
+            path.join(storageConfig.storagePath || DEFAULT_FILES_STORAGE_PATH, filename)
+          );
+        }
+      }
     },
   };
 }

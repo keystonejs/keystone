@@ -19,6 +19,35 @@ import type { BaseFields } from './fields';
 import type { ListAccessControl, FieldAccessControl } from './access-control';
 import type { ListHooks } from './hooks';
 
+export type Storage = Record<
+  string,
+  | {
+      kind: 'local';
+      type: 'file' | 'image';
+      storagePath?: string;
+      baseUrl?: string; // e.g. https://blah.com/images
+      removeFileOnDelete?: boolean;
+    }
+  | {
+      kind: 's3';
+      type: 'file' | 'image';
+      signed?: { expiry: number };
+      proxied?: {
+        baseUrl: string;
+        generate?: boolean; // if false, allow proxied requests but return urls directly to s3
+      };
+      removeFileOnDelete?: boolean;
+      // not 100% sure how this works
+      pathPrefix?: string;
+      bucketName: string;
+      region: string;
+      accessKeyId: string;
+      secretAccessKey: string;
+      endpoint?: string;
+      forcePathStyle?: boolean;
+    }
+>;
+
 export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   lists: ListSchemaConfig;
   db: DatabaseConfig<TypeInfo>;
@@ -28,26 +57,7 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
   graphql?: GraphQLConfig;
   extendGraphqlSchema?: ExtendGraphqlSchema;
   // Storage key used for the name of the storage
-  storage?: Record<
-    string,
-    | {
-        kind: 'local';
-        type: 'file' | 'image';
-        storagePath?: string;
-        baseUrl?: string; // e.g. https://blah.com/images
-      }
-    | ({
-        kind: 's3';
-        type: 'file' | 'image';
-        signed?: { expiry: number };
-        proxied?: {
-          baseUrl: string;
-          generate?: boolean; // if false, allow proxied requests but return urls directly to s3
-        };
-        // not 100% sure how this works
-        pathPrefix?: string;
-      } & S3Config)
-  >;
+  storage?: Storage;
   /** Experimental config options */
   experimental?: {
     /** Enables nextjs graphql api route mode */
@@ -234,16 +244,6 @@ export type ImagesConfig = {
 
 export type CloudConfig = {
   apiKey?: string;
-};
-
-// config.experimental.s3
-export type S3Config = {
-  bucketName: string;
-  region: string;
-  accessKeyId: string;
-  secretAccessKey: string;
-  endpoint?: string;
-  forcePathStyle?: boolean;
 };
 
 // Exports from sibling packages

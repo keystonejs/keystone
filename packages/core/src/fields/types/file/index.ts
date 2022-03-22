@@ -83,9 +83,9 @@ export const file =
     config: FileFieldConfig<ListTypeInfo>
   ): FieldTypeFunc<ListTypeInfo> =>
   meta => {
-    const mode = meta.assets.getMode(config.storage);
+    const storage = meta.assets.getStorage(config.storage);
 
-    if (mode === undefined) {
+    if (!storage) {
       throw new Error(
         `${meta.listKey}.${meta.fieldKey} has storage set to ${config.storage} but there is no storage config under that key`
       );
@@ -104,6 +104,24 @@ export const file =
       },
     })({
       ...config,
+      hooks: storage.removeFileOnDelete
+        ? {
+            ...config.hooks,
+            async afterOperation(afterOpreationConfig) {
+              const { originalItem, item, context } = afterOpreationConfig;
+
+              await config.hooks?.afterOperation?.(afterOpreationConfig);
+              const nameKey = `${meta.fieldKey}_filename`;
+              const filename = originalItem?.[nameKey];
+
+              // This will occur on an update where an image already existed but has been
+              // changed, or on a delete, where there is no longer an item
+              if (filename && filename !== item?.[nameKey]) {
+                await context.files?.deleteAtSource(config.storage, filename as string);
+              }
+            },
+          }
+        : config.hooks,
       input: {
         create: {
           arg: graphql.arg({ type: FileFieldInput }),
@@ -116,11 +134,11 @@ export const file =
       },
       output: graphql.field({
         type: FileFieldOutput,
-        resolve({ value: { filesize, filename, storage } }) {
-          if (filesize === null || filename === null || storage === null) {
+        resolve({ value: { filesize, filename } }) {
+          if (filesize === null || filename === null) {
             return null;
           }
-          return { mode, filename, filesize, storage };
+          return { mode: storage.kind, filename, filesize, storage: config.storage };
         },
       }),
       unreferencedConcreteInterfaceImplementations: [LocalFileFieldOutput, S3FileFieldOutput],

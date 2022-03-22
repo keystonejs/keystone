@@ -173,6 +173,7 @@ export type FileData = {
 export type FilesContext = {
   getUrl: (storage: string, filename: string) => Promise<string>;
   getDataFromStream: (storage: string, stream: Readable, filename: string) => Promise<FileData>;
+  deleteAtSource: (storage: string, filename: string) => Promise<void>;
 };
 
 // Images API
@@ -194,4 +195,5 @@ export type ImageData = {
 export type ImagesContext = {
   getUrl: (storage: string, id: string, extension: ImageExtension) => Promise<string>;
   getDataFromStream: (storage: string, stream: Readable) => Promise<ImageData>;
+  deleteAtSource: (storage: string, id: string, extension: ImageExtension) => Promise<void>;
 };
