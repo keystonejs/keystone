@@ -84,6 +84,9 @@ export function s3Assets(config: NonNullable<KeystoneConfig['storage']>): Map<st
 
             return metadata;
           },
+          async delete(id, extension) {
+            s3.deleteObject({ Bucket: bucketName, Key: `${id}.${extension}` });
+          },
         },
         files: {
           url(filename) {
@@ -119,6 +122,9 @@ export function s3Assets(config: NonNullable<KeystoneConfig['storage']>): Map<st
             await upload.done();
 
             return { mode: 's3', filename, filesize, storage };
+          },
+          async delete(filename) {
+            s3.deleteObject({ Bucket: bucketName, Key: filename });
           },
         },
       });

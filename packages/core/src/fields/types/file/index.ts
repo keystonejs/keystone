@@ -14,6 +14,7 @@ import { resolveView } from '../../resolve-view';
 
 export type FileFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
   storage: string;
+  removeFileOnDelete?: boolean;
 } & CommonFieldConfig<ListTypeInfo>;
 
 type FileSource = FileData & { mode: AssetMode };
@@ -104,6 +105,24 @@ export const file =
       },
     })({
       ...config,
+      hooks: config.removeFileOnDelete
+        ? {
+            ...config.hooks,
+            async afterOperation(afterOpreationConfig) {
+              const { originalItem, item, context } = afterOpreationConfig;
+
+              await config.hooks?.afterOperation?.(afterOpreationConfig);
+              const nameKey = `${meta.fieldKey}_filename`;
+              const filename = originalItem?.[nameKey];
+
+              // This will occur on an update where an image already existed but has been
+              // changed, or on a delete, where there is no longer an item
+              if (filename && filename !== item?.[nameKey]) {
+                await context.files?.deleteAtSource(config.storage, filename as string);
+              }
+            },
+          }
+        : config.hooks,
       input: {
         create: {
           arg: graphql.arg({ type: FileFieldInput }),

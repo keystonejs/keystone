@@ -108,5 +108,22 @@ export function createImagesContext(
         `attempted to get data from stream for storage ${storageConfig}, however could not find the config for it`
       );
     },
+    deleteAtSource: async (storageString, id, extension) => {
+      let storage = config.storage?.[storageString];
+
+      switch (storage?.kind) {
+        case 's3': {
+          const s3Instance = s3Assets().get(storageString);
+
+          await s3Instance?.images.delete(id, extension);
+        }
+        case 'local': {
+          await fs.remove(
+            // TODO: find out why this isn't narrowing
+            path.join(storage.storagePath || DEFAULT_IMAGES_STORAGE_PATH, `${id}.${extension}`)
+          );
+        }
+      }
+    },
   };
 }
