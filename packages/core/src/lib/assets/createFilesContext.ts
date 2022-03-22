@@ -80,23 +80,20 @@ export function createFilesContext(
         `attempted to get URL for storage ${storageString}, however could not find the config for it`
       );
     },
-    getDataFromStream: async (storage, stream, originalFilename) => {
-      const storageConfig = config.storage?.[storage];
-
-      // const mode = config.storage?.[storage]?.kind;
-      // const filename = generateSafeFilename(originalFilename, storage.transformFilename);
+    getDataFromStream: async (storageString, stream, originalFilename) => {
+      const storageConfig = config.storage?.[storageString];
       const filename = generateSafeFilename(originalFilename);
 
       switch (storageConfig?.kind) {
         case 's3': {
-          const s3Instance = s3Assets().get(storage);
+          const s3Instance = s3Assets().get(storageString);
 
           if (!s3Instance) {
-            throw new Error(`Keystone has no connection to S3 storage location ${storage}`);
+            throw new Error(`Keystone has no connection to S3 storage location ${storageString}`);
           }
 
           const { filesize } = await s3Instance.files.upload(stream, filename);
-          return { storage, filesize, filename };
+          return { storage: storageString, filesize, filename };
         }
         case 'local': {
           const writeStream = fs.createWriteStream(
@@ -117,7 +114,7 @@ export function createFilesContext(
             const { size: filesize } = await fs.stat(
               path.join(storageConfig.storagePath || DEFAULT_FILES_STORAGE_PATH, filename)
             );
-            return { storage, filesize, filename };
+            return { storage: storageString, filesize, filename };
           } catch (e) {
             await fs.remove(
               path.join(storageConfig.storagePath || DEFAULT_FILES_STORAGE_PATH, filename)

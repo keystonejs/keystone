@@ -15,7 +15,6 @@ import { SUPPORTED_IMAGE_EXTENSIONS } from './utils';
 
 export type ImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
   storage: string;
-  removeFileOnDelete?: boolean;
 } & CommonFieldConfig<ListTypeInfo>;
 
 const ImageExtensionEnum = graphql.enum({
