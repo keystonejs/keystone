@@ -82,7 +82,7 @@ The `context` argument is a [`KeystoneContext`](../apis/context) object.
 The `info` argument holds field-specific information relevant to the current query as well as the schema details.
 
 We can use the `item` and `context` arguments to query data in our Keystone system.
-For example, if have a blog with `Author` and `Post` lists, it might be convenient to have an `authorName` field on the `Post` list.
+For example, if we have a blog with `Author` and `Post` lists, it might be convenient to have an `authorName` field on the `Post` list.
 We can do this with a `virtual` field which queries for the related `author` and returns their name.
 
 ```typescript
