@@ -7,7 +7,6 @@ import {
   ImageData,
   ImageExtension,
   KeystoneContext,
-  AssetMode,
 } from '../../../types';
 import { graphql } from '../../..';
 import { resolveView } from '../../resolve-view';
@@ -29,7 +28,7 @@ const ImageFieldInput = graphql.inputObject({
   },
 });
 
-type ImageSource = ImageData & { mode: AssetMode };
+type ImageSource = ImageData;
 
 const imageOutputFields = graphql.fields<ImageSource>()({
   id: graphql.field({ type: graphql.nonNull(graphql.ID) }),
@@ -56,7 +55,6 @@ const modeToTypeName = {
 const ImageFieldOutput = graphql.interface<ImageSource>()({
   name: 'ImageFieldOutput',
   fields: imageOutputFields,
-  resolveType: val => modeToTypeName[val.mode],
 });
 
 const LocalImageFieldOutput = graphql.object<ImageSource>()({
@@ -92,9 +90,9 @@ export const image =
     config: ImageFieldConfig<ListTypeInfo>
   ): FieldTypeFunc<ListTypeInfo> =>
   meta => {
-    const mode = meta.assets.getMode(config.storage);
+    const storage = meta.assets.getStorage(config.storage);
 
-    if (mode === undefined) {
+    if (!storage) {
       throw new Error(
         `${meta.listKey}.${meta.fieldKey} has storage set to ${config.storage} but there is no storage config under that key`
       );
@@ -116,7 +114,7 @@ export const image =
       },
     })({
       ...config,
-      hooks: config.removeFileOnDelete
+      hooks: storage.removeFileOnDelete
         ? {
             ...config.hooks,
             async afterOperation(afterOpreationConfig) {
@@ -151,7 +149,7 @@ export const image =
       },
       output: graphql.field({
         type: ImageFieldOutput,
-        resolve({ value: { extension, filesize, height, id, storage, width } }) {
+        resolve({ value: { extension, filesize, height, id, width } }) {
           if (
             extension === null ||
             !isValidImageExtension(extension) ||
@@ -163,7 +161,14 @@ export const image =
           ) {
             return null;
           }
-          return { mode, extension, filesize, height, width, id, storage };
+          return {
+            extension,
+            filesize,
+            height,
+            width,
+            id,
+            storage: config.storage,
+          };
         },
       }),
       unreferencedConcreteInterfaceImplementations: [LocalImageFieldOutput, S3ImageFieldOutput],

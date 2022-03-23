@@ -7,7 +7,6 @@ import {
   BaseListTypeInfo,
   KeystoneContext,
   FileData,
-  AssetMode,
 } from '../../../types';
 import { graphql } from '../../..';
 import { resolveView } from '../../resolve-view';
@@ -16,7 +15,7 @@ export type FileFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
   storage: string;
 } & CommonFieldConfig<ListTypeInfo>;
 
-type FileSource = FileData & { mode: AssetMode };
+type FileSource = FileData;
 
 const FileFieldInput = graphql.inputObject({
   name: 'FileFieldInput',
@@ -51,7 +50,6 @@ const modeToTypeName = {
 const FileFieldOutput = graphql.interface<FileSource>()({
   name: 'FileFieldOutput',
   fields: fileFields,
-  resolveType: val => modeToTypeName[val.mode],
 });
 
 const LocalFileFieldOutput = graphql.object<FileSource>()({
@@ -138,7 +136,7 @@ export const file =
           if (filesize === null || filename === null) {
             return null;
           }
-          return { mode: storage.kind, filename, filesize, storage: config.storage };
+          return { filename, filesize, storage: config.storage };
         },
       }),
       unreferencedConcreteInterfaceImplementations: [LocalFileFieldOutput, S3FileFieldOutput],

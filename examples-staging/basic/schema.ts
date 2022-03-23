@@ -45,8 +45,8 @@ const User: Keystone.Lists.User = list({
     /** Email is used to log into the system. */
     email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
     /** Avatar upload for the users profile, stored locally */
-    avatar: image({ storage: 'local-base' }),
-    attachment: file({ storage: 'local-base' }),
+    avatar: image({ storage: 'images_basic' }),
+    attachment: file({ storage: 'files_basic' }),
     /** Used to log in. */
     password: password(),
     /** Administrators have more access to various lists and fields. */
