@@ -19,11 +19,11 @@ model User {
   avatar_extension    String?
   avatar_width        Int?
   avatar_height       Int?
-  avatar_mode         String?
+  avatar_storage      String?
   avatar_id           String?
   attachment_filesize Int?
-  attachment_mode     String?
   attachment_filename String?
+  attachment_storage  String?
   password            String?
   isAdmin             Boolean       @default(false)
   roles               String        @default("")

@@ -116,10 +116,10 @@ export function createImagesContext(
           const s3Instance = s3Assets().get(storageString);
 
           await s3Instance?.images.delete(id, extension);
+          break;
         }
         case 'local': {
           await fs.remove(
-            // TODO: find out why this isn't narrowing
             path.join(
               storageConfig.storagePath || DEFAULT_IMAGES_STORAGE_PATH,
               `${id}.${extension}`

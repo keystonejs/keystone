@@ -35,8 +35,8 @@ export default auth.withAuth(
       // isAccessAllowed,
     },
     storage: {
-      images: { kind: 'local', type: 'image', storagePath: '/images', baseUrl: '' },
-      files: { kind: 'local', type: 'image', storagePath: '/files', baseUrl: '' },
+      images_basic: { kind: 'local', type: 'image', storagePath: '/images', baseUrl: '' },
+      files_basic: { kind: 'local', type: 'image', storagePath: '/files', baseUrl: '' },
     },
     lists,
     extendGraphqlSchema,

@@ -19,8 +19,7 @@ import type { BaseFields } from './fields';
 import type { ListAccessControl, FieldAccessControl } from './access-control';
 import type { ListHooks } from './hooks';
 
-export type Storage = Record<
-  string,
+export type StorageKind =
   | {
       kind: 'local';
       type: 'file' | 'image';
@@ -45,8 +44,9 @@ export type Storage = Record<
       secretAccessKey: string;
       endpoint?: string;
       forcePathStyle?: boolean;
-    }
->;
+    };
+
+export type StorageConfig = Record<string, StorageKind>;
 
 export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   lists: ListSchemaConfig;
@@ -57,7 +57,7 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
   graphql?: GraphQLConfig;
   extendGraphqlSchema?: ExtendGraphqlSchema;
   // Storage key used for the name of the storage
-  storage?: Storage;
+  storage?: StorageConfig;
   /** Experimental config options */
   experimental?: {
     /** Enables nextjs graphql api route mode */

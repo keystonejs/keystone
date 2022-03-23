@@ -136,6 +136,7 @@ export function createFilesContext(
           const s3Instance = s3Assets().get(storageString);
 
           await s3Instance?.files.delete(filename);
+          break;
         }
         case 'local': {
           // TODO why is this not narrowing

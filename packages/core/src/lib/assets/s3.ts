@@ -1,5 +1,6 @@
 import { Readable } from 'stream';
-import { S3 } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { S3, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 import imageSize from 'image-size';
 
@@ -17,12 +18,28 @@ async function streamToBuffer(stream: Readable): Promise<Buffer> {
   return Buffer.concat(chunks);
 }
 
+// default
+// url(id, extension) { },          // via https://my_files.s3.amazonaws.com/...
+
+// proxied
+// url(id, extension) { },          // via https://localhost:9000/files/...
+
+// signed
+// url(id, extension) { },          // via https://my_files.s3.amazonaws.com/...?signature=Cx19AOIRmbGI7ACGsnikhQ
+
+// proxy signed
+// url(id, extension) { },          // via https://localhost:9000/files/...?signature=Cx19AOIRmbGI7ACGsnikhQ
+
+// for each of them
+// async upload(stream, id) { },    // api
+// async delete(id, extension) { }, // api
+
 export function s3Assets(config: NonNullable<KeystoneConfig['storage']>): Map<string, AssetsAPI> {
   const assets = new Map<string, AssetsAPI>();
 
   for (let [storage, val] of Object.entries(config)) {
     if (val.kind === 's3') {
-      const { bucketName, region } = val;
+      const { bucketName, region, proxied: { baseUrl } = {}, signed: { expiry } = {} } = val;
 
       const s3 = new S3({
         credentials: {
@@ -48,19 +65,15 @@ export function s3Assets(config: NonNullable<KeystoneConfig['storage']>): Map<st
       assets.set(storage, {
         images: {
           url(id, extension) {
-            return endpointString.replace(/\/?$/, `/${id}.${extension}`);
-          },
-          async metadata(id, extension) {
-            const { Body } = await s3.getObject({ Bucket: bucketName, Key: `${id}.${extension}` });
-
-            const buffer = await streamToBuffer(Body as Readable);
-
-            const { height, width } = imageSize(buffer);
-
-            if (width === undefined || height === undefined) {
-              throw new Error('Height and width could not be found for image');
+            if (proxy.baseUrl && proxy.default) {
+              return endpointString.replace(/\/?$/, `/${id}.${extension}`);
+            } else if (baseUrl) {
+              return endpointString.replace(/\/?$/, `/${id}.${extension}`);
+            } else if (expiry) {
+              return endpointString.replace(/\/?$/, `/${id}.${extension}`);
             }
-            return { extension, height, width, filesize: buffer.length };
+
+            return endpointString.replace(/\/?$/, `/${id}.${extension}`);
           },
           async upload(stream, id) {
             const buffer = await streamToBuffer(stream);
@@ -91,18 +104,6 @@ export function s3Assets(config: NonNullable<KeystoneConfig['storage']>): Map<st
         files: {
           url(filename) {
             return endpointString.replace(/\/?$/, `/${filename}`);
-          },
-          async metadata(filename) {
-            const { ContentLength } = await s3.headObject({
-              Bucket: bucketName,
-              Key: filename,
-            });
-
-            if (ContentLength === undefined) {
-              throw new Error('File metadata not found');
-            }
-
-            return { mode: 's3', filesize: ContentLength, filename, storage };
           },
           async upload(stream, filename) {
             let filesize = 0;
