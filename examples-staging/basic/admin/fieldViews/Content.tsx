@@ -56,19 +56,32 @@ export const componentBlocks = {
   }),
   table: component({
     component: function MyTable(props) {
-      // useEffect(() => {
-      //   let maxColumns = 1;
-      //   for (const row of rows.elements) {
-      //     if (row.elements.length > maxColumns) {
-      //       maxColumns = row.elements.length;
-      //     }
-      //   }
-      //   for (const columns of rows.elements) {
-      //     for (const _ of Array.from({ length: maxColumns - columns.elements.length })) {
-      //       columns.insert();
-      //     }
-      //   }
-      // });
+      useEffect(() => {
+        let maxColumns = 1;
+        const rows = props.fields.rows;
+        for (const row of rows.elements) {
+          if (row.element.elements.length > maxColumns) {
+            maxColumns = row.element.elements.length;
+          }
+        }
+        if (rows.elements.some(x => x.element.elements.length !== maxColumns)) {
+          rows.onChange(
+            rows.elements.map(element => {
+              return {
+                id: element.id,
+                value: [
+                  ...element.element.elements.map(element => {
+                    return { id: element.id };
+                  }),
+                  ...Array.from({ length: maxColumns - element.element.elements.length }, () => ({
+                    id: undefined,
+                  })),
+                ],
+              };
+            })
+          );
+        }
+      });
 
       return (
         <div>
@@ -87,7 +100,19 @@ export const componentBlocks = {
                     <NotEditable>
                       <Button
                         onClick={() => {
-                          row.element.onInsert();
+                          props.fields.rows.onChange(
+                            props.fields.rows.elements.map(element => {
+                              return {
+                                id: element.id,
+                                value: [
+                                  ...element.element.elements.map(element => {
+                                    return { id: element.id };
+                                  }),
+                                  { id: undefined },
+                                ],
+                              };
+                            })
+                          );
                         }}
                       >
                         Insert Column
@@ -161,6 +186,39 @@ export const componentBlocks = {
         fields.object({
           done: fields.checkbox({ label: 'Done' }),
           content: fields.child({ kind: 'inline', placeholder: '', formatting: 'inherit' }),
+        })
+      ),
+    },
+    // chromeless: true,
+  }),
+  qAndA: component({
+    component: function MyList(props) {
+      useEffect(() => {
+        if (!props.fields.children.elements.length) {
+          props.fields.children.onInsert();
+        }
+      });
+      return (
+        <div>
+          {props.fields.children.elements.map(element => (
+            <div key={element.id}>
+              <h1>{element.element.fields.question}</h1>
+              <div>{element.element.fields.answer}</div>
+            </div>
+          ))}
+        </div>
+      );
+    },
+    label: 'Question & Answers',
+    props: {
+      children: fields.array(
+        fields.object({
+          question: fields.child({
+            kind: 'inline',
+            placeholder: 'Question...',
+            formatting: 'inherit',
+          }),
+          answer: fields.child({ kind: 'inline', placeholder: 'Answer...', formatting: 'inherit' }),
         })
       ),
     },

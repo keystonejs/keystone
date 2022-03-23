@@ -56,7 +56,7 @@ export const componentThing =
         ...config,
         hooks: {
           ...config.hooks,
-          resolveInput(args) {
+          async resolveInput(args) {
             let val = args.resolvedData[meta.fieldKey];
             if (args.operation === 'update') {
               let prevVal = args.item[meta.fieldKey];
@@ -64,7 +64,7 @@ export const componentThing =
                 prevVal = JSON.parse(prevVal as any);
                 val = args.inputData[meta.fieldKey];
               }
-              val = getValueForUpdate(prop, val, prevVal, args.context, []);
+              val = await getValueForUpdate(prop, val, prevVal, args.context, []);
               if (val === null && meta.provider === 'postgresql') {
                 val = 'JsonNull';
               }
