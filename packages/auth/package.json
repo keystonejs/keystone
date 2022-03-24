@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/auth",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "license": "MIT",
   "main": "dist/keystone-6-auth.cjs.js",
   "module": "dist/keystone-6-auth.esm.js",
@@ -11,7 +11,7 @@
     "@babel/runtime": "^7.16.3",
     "@keystone-ui/button": "^6.0.0",
     "@keystone-ui/core": "^4.0.0",
-    "@keystone-ui/fields": "^6.0.0",
+    "@keystone-ui/fields": "^6.0.1",
     "@keystone-ui/loading": "^5.0.0",
     "@keystone-ui/notice": "^5.0.0",
     "cross-fetch": "^3.1.4",
@@ -19,11 +19,11 @@
     "graphql": "^15.8.0"
   },
   "devDependencies": {
-    "@keystone-6/core": "^1.0.1",
+    "@keystone-6/core": "^1.1.0",
     "react": "^17.0.2"
   },
   "peerDependencies": {
-    "@keystone-6/core": "^1.0.1",
+    "@keystone-6/core": "^1.1.0",
     "react": "^17.0.2"
   },
   "preconstruct": {

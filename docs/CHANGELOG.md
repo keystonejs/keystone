@@ -1,5 +1,14 @@
 # @keystone-6/website
 
+## 0.0.2
+
+### Patch Changes
+
+- [#7192](https://github.com/keystonejs/keystone/pull/7192) [`58f525d91`](https://github.com/keystonejs/keystone/commit/58f525d9118471abb434bf912dd557d282c87250) Thanks [@nizhu](https://github.com/nizhu)! - Fix invalid field value for Selection in docs for Component Block Relationship Fields
+
+- Updated dependencies [[`29c6a45fd`](https://github.com/keystonejs/keystone/commit/29c6a45fd5fef8ea27f5d051b4fb5d660492aad5), [`c9ec91c8d`](https://github.com/keystonejs/keystone/commit/c9ec91c8d971063169c10e94e93e4626c3d52298), [`29c6a45fd`](https://github.com/keystonejs/keystone/commit/29c6a45fd5fef8ea27f5d051b4fb5d660492aad5)]:
+  - @keystone-6/fields-document@2.0.0
+
 ## 0.0.1
 
 ### Patch Changes
