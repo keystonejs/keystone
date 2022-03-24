@@ -10,7 +10,9 @@ export const formatDateType = (date: Date): DateType => {
 
 // undefined means we'll use the user's locale
 const formatter = new Intl.DateTimeFormat(undefined, {
-  dateStyle: 'short',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
 });
 
 export const formatDate = (date: Date): string => formatter.format(date);

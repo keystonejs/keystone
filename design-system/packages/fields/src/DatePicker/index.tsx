@@ -31,6 +31,11 @@ export function useEventCallback<Func extends (...args: any) => any>(callback: F
   return cb as any;
 }
 
+function deserializeDate(value: string): Date {
+  const [year, month, day] = value.split('-').map(el => parseInt(el, 10));
+  return new Date(year, month - 1, day);
+}
+
 export const DatePicker = ({
   value,
   onUpdate,
@@ -82,8 +87,11 @@ export const DatePicker = ({
     [onUpdate, setOpen]
   );
 
-  const selectedDay = new Date(value as string);
-  const formattedDate: DateInputValue = value ? formatDate(new Date(value)) : undefined;
+  // We **can** memoize this, but its a trivial operation
+  // and in the opinion of the author not really something to do
+  // before other more important performance optimisations
+  const selectedDay = deserializeDate(value);
+  const formattedDate: DateInputValue = value ? formatDate(selectedDay) : undefined;
 
   return (
     <Fragment>
