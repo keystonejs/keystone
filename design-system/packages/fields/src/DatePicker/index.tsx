@@ -6,7 +6,12 @@ import FocusLock from 'react-focus-lock';
 import { jsx } from '@keystone-ui/core';
 import { PopoverDialog, useControlledPopover } from '@keystone-ui/popover';
 
-import { formatDate, formatDateType, dateFormatPlaceholder } from '../utils/dateFormatters';
+import {
+  deserializeDate,
+  formatDate,
+  formatDateType,
+  dateFormatPlaceholder,
+} from '../utils/dateFormatters';
 import { DateType } from '../types';
 import { Calendar } from './Calendar';
 import { InputButton } from './components/InputButton';
@@ -29,11 +34,6 @@ export function useEventCallback<Func extends (...args: any) => any>(callback: F
     callbackRef.current = callback;
   });
   return cb as any;
-}
-
-function deserializeDate(value: string): Date {
-  const [year, month, day] = value.split('-').map(el => parseInt(el, 10));
-  return new Date(year, month - 1, day);
 }
 
 export const DatePicker = ({
