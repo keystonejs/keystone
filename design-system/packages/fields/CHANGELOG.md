@@ -1,5 +1,14 @@
 # @keystone-ui/fields
 
+## 6.0.1
+
+### Patch Changes
+
+- [#7394](https://github.com/keystonejs/keystone/pull/7394) [`5d96ee646`](https://github.com/keystonejs/keystone/commit/5d96ee646b3c6342935464763071ad7c3f0a8b43) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Fixed off by one issue in date selection when using the timestamp field.
+
+- Updated dependencies [[`518bd2e43`](https://github.com/keystonejs/keystone/commit/518bd2e437227fbd1a8f7fb947dcb11c57ffb7dd)]:
+  - @keystone-ui/popover@5.0.1
+
 ## 6.0.0
 
 ### Major Changes

@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-with-auth",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -9,8 +9,8 @@
     "build": "keystone build"
   },
   "dependencies": {
-    "@keystone-6/auth": "^1.0.0",
-    "@keystone-6/core": "^1.0.0"
+    "@keystone-6/auth": "^2.0.0",
+    "@keystone-6/core": "^1.1.0"
   },
   "devDependencies": {
     "typescript": "^4.4.4"
