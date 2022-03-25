@@ -25,7 +25,7 @@ export function withShortcuts(editor: Editor): Editor {
           if (pointBefore && Path.isDescendant(pointBefore.path, ancestorBlock[1])) {
             const range = { anchor: selectionPoint, focus: pointBefore };
             const str = Editor.string(editor, range);
-            if (str.substr(0, shortcut.length) === shortcut) {
+            if (str.slice(0, shortcut.length) === shortcut) {
               editor.history.undos.push([]);
               Transforms.select(editor, range);
               editor.insertText(shortcuts[shortcut] + ' ');

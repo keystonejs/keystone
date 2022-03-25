@@ -3,7 +3,7 @@
  * @param {String} str The string to convert.
  * @returns The new string
  */
-export const upcase = (str: string) => str.substr(0, 1).toUpperCase() + str.substr(1);
+export const upcase = (str: string) => str.slice(0, 1).toUpperCase() + str.slice(1);
 
 /**
  * Turns a passed in string into
