@@ -124,4 +124,18 @@ const CURRENT = [
   },
 ];
 
-module.exports = [...CURRENT, ...ORIGINAL_NEXT, ...KEYSTONE_5, ...KEYSTONE_4];
+/* Splitbee Proxy */
+const SPLITBEE = [
+  {
+    source: '/sb.js',
+    destination: 'https://cdn.splitbee.io/sb.js',
+    permanent: false,
+  },
+  {
+    source: '/_sb/:slug',
+    destination: 'https://hive.splitbee.io/:slug',
+    permanent: false,
+  },
+];
+
+module.exports = [...SPLITBEE, ...CURRENT, ...ORIGINAL_NEXT, ...KEYSTONE_5, ...KEYSTONE_4];
