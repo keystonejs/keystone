@@ -72,6 +72,10 @@ We do our best to catch this but recommend updating Keystone packages together t
 
 KeystoneJS adheres to the [Contributor Covenant Code of Conduct](/CODE-OF-CONDUCT.md).
 
+## Security
+
+For vulnerabilty reporting, please refer to our [security policy](/SECURITY.md).
+
 ## License
 
 Copyright (c) 2021 Thinkmill Labs Pty Ltd. Licensed under the MIT License.
