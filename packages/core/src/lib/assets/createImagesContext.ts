@@ -30,14 +30,10 @@ export function getImageMetadataFromBuffer(buffer: Buffer): ImageMetadata {
 export function createImagesContext(
   config: KeystoneConfig,
   s3Assets: () => Map<string, AssetsAPI>
-): ImagesContext | undefined {
-  if (!config.storage) {
-    return;
-  }
-
+): ImagesContext {
   const { storage } = config;
 
-  Object.entries(storage).forEach(([, val]) => {
+  Object.entries(storage || {}).forEach(([, val]) => {
     if (val.type === 'image' && val.kind === 'local') {
       fs.mkdirSync(val.storagePath || DEFAULT_IMAGES_STORAGE_PATH, { recursive: true });
     }
@@ -115,6 +111,10 @@ export function createImagesContext(
         case 's3': {
           const s3Instance = s3Assets().get(storageString);
 
+          if (!s3Instance) {
+            throw new Error(`Keystone has no connection to S3 storage location ${storage}`);
+          }
+
           await s3Instance?.images.delete(id, extension);
           break;
         }
@@ -124,6 +124,12 @@ export function createImagesContext(
               storageConfig.storagePath || DEFAULT_IMAGES_STORAGE_PATH,
               `${id}.${extension}`
             )
+          );
+          break;
+        }
+        default: {
+          throw new Error(
+            `attempted to get data from stream for storage ${storageString}, however could not find the config for it`
           );
         }
       }

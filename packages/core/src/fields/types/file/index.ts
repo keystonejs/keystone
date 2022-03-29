@@ -15,8 +15,6 @@ export type FileFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
   storage: string;
 } & CommonFieldConfig<ListTypeInfo>;
 
-type FileSource = FileData;
-
 const FileFieldInput = graphql.inputObject({
   name: 'FileFieldInput',
   fields: {
@@ -26,42 +24,18 @@ const FileFieldInput = graphql.inputObject({
 
 type FileFieldInputType = undefined | null | { upload: Promise<FileUpload> };
 
-const fileFields = graphql.fields<FileData>()({
-  filename: graphql.field({ type: graphql.nonNull(graphql.String) }),
-  filesize: graphql.field({ type: graphql.nonNull(graphql.Int) }),
-  url: graphql.field({
-    type: graphql.nonNull(graphql.String),
-    resolve(data, args, context) {
-      if (!context.files) {
-        throw new Error(
-          'File context is undefined, this most likely means that you havent configurd keystone with a file config, see https://keystonejs.com/docs/apis/config#files for details'
-        );
-      }
-      return context.files.getUrl(data.storage, data.filename);
-    },
-  }),
-});
-
-const modeToTypeName = {
-  local: 'LocalFileFieldOutput',
-  s3: 'S3FileFieldOutput',
-};
-
-const FileFieldOutput = graphql.interface<FileSource>()({
+const FileFieldOutput = graphql.object<FileData>()({
   name: 'FileFieldOutput',
-  fields: fileFields,
-});
-
-const LocalFileFieldOutput = graphql.object<FileSource>()({
-  name: modeToTypeName.local,
-  interfaces: [FileFieldOutput],
-  fields: fileFields,
-});
-
-const S3FileFieldOutput = graphql.object<FileSource>()({
-  name: modeToTypeName.s3,
-  interfaces: [FileFieldOutput],
-  fields: fileFields,
+  fields: {
+    filename: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    filesize: graphql.field({ type: graphql.nonNull(graphql.Int) }),
+    url: graphql.field({
+      type: graphql.nonNull(graphql.String),
+      resolve(data, args, context) {
+        return context.files.getUrl(data.storage, data.filename);
+      },
+    }),
+  },
 });
 
 async function inputResolver(storage: string, data: FileFieldInputType, context: KeystoneContext) {
@@ -73,7 +47,7 @@ async function inputResolver(storage: string, data: FileFieldInputType, context:
     throw userInputError('Upload must be passed to FileFieldInput');
   }
   const upload = await data.upload;
-  return context.files!.getDataFromStream(storage, upload.createReadStream(), upload.filename);
+  return context.files.getDataFromStream(storage, upload.createReadStream(), upload.filename);
 }
 
 export const file =
@@ -115,7 +89,7 @@ export const file =
               // This will occur on an update where an image already existed but has been
               // changed, or on a delete, where there is no longer an item
               if (filename && filename !== item?.[nameKey]) {
-                await context.files?.deleteAtSource(config.storage, filename as string);
+                await context.files.deleteAtSource(config.storage, filename as string);
               }
             },
           }
@@ -139,7 +113,6 @@ export const file =
           return { filename, filesize, storage: config.storage };
         },
       }),
-      unreferencedConcreteInterfaceImplementations: [LocalFileFieldOutput, S3FileFieldOutput],
       views: resolveView('file/views'),
     });
   };

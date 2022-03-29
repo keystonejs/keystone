@@ -28,45 +28,21 @@ const ImageFieldInput = graphql.inputObject({
   },
 });
 
-type ImageSource = ImageData;
-
-const imageOutputFields = graphql.fields<ImageSource>()({
-  id: graphql.field({ type: graphql.nonNull(graphql.ID) }),
-  filesize: graphql.field({ type: graphql.nonNull(graphql.Int) }),
-  width: graphql.field({ type: graphql.nonNull(graphql.Int) }),
-  height: graphql.field({ type: graphql.nonNull(graphql.Int) }),
-  extension: graphql.field({ type: graphql.nonNull(ImageExtensionEnum) }),
-  url: graphql.field({
-    type: graphql.nonNull(graphql.String),
-    resolve(data, args, context) {
-      if (!context.images) {
-        throw new Error('Image context is undefined');
-      }
-      return context.images.getUrl(data.storage, data.id, data.extension);
-    },
-  }),
-});
-
-const modeToTypeName = {
-  local: 'LocalImageFieldOutput',
-  s3: 'S3ImageFieldOutput',
-};
-
-const ImageFieldOutput = graphql.interface<ImageSource>()({
+const ImageFieldOutput = graphql.object<ImageData>()({
   name: 'ImageFieldOutput',
-  fields: imageOutputFields,
-});
-
-const LocalImageFieldOutput = graphql.object<ImageSource>()({
-  name: modeToTypeName.local,
-  interfaces: [ImageFieldOutput],
-  fields: imageOutputFields,
-});
-
-const S3ImageFieldOutput = graphql.object<ImageSource>()({
-  name: modeToTypeName.s3,
-  interfaces: [ImageFieldOutput],
-  fields: imageOutputFields,
+  fields: {
+    id: graphql.field({ type: graphql.nonNull(graphql.ID) }),
+    filesize: graphql.field({ type: graphql.nonNull(graphql.Int) }),
+    width: graphql.field({ type: graphql.nonNull(graphql.Int) }),
+    height: graphql.field({ type: graphql.nonNull(graphql.Int) }),
+    extension: graphql.field({ type: graphql.nonNull(ImageExtensionEnum) }),
+    url: graphql.field({
+      type: graphql.nonNull(graphql.String),
+      resolve(data, args, context) {
+        return context.images.getUrl(data.storage, data.id, data.extension);
+      },
+    }),
+  },
 });
 
 type ImageFieldInputType = undefined | null | { upload: Promise<FileUpload> };
@@ -76,7 +52,7 @@ async function inputResolver(storage: string, data: ImageFieldInputType, context
     return { extension: data, filesize: data, height: data, id: data, storage: data, width: data };
   }
 
-  return context.images!.getDataFromStream(storage, (await data.upload).createReadStream());
+  return context.images.getDataFromStream(storage, (await data.upload).createReadStream());
 }
 
 const extensionsSet = new Set(SUPPORTED_IMAGE_EXTENSIONS);
@@ -128,7 +104,7 @@ export const image =
                 const extensionKey = `${fieldKey}_extension`;
                 const extension = originalItem[extensionKey];
 
-                await context.images?.deleteAtSource(
+                await context.images.deleteAtSource(
                   config.storage,
                   id as string,
                   extension as ImageExtension
@@ -171,7 +147,6 @@ export const image =
           };
         },
       }),
-      unreferencedConcreteInterfaceImplementations: [LocalImageFieldOutput, S3ImageFieldOutput],
       views: resolveView('image/views'),
     });
   };
