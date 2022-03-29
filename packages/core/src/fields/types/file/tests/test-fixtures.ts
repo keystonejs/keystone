@@ -6,6 +6,7 @@ import fetch from 'node-fetch';
 import { file } from '..';
 import { expectSingleResolverError } from '../../../../../../../tests/api-tests/utils';
 import { KeystoneConfig } from '../../../../types/config';
+import { createHash } from 'crypto';
 
 const prepareFile = (_filePath: string) => {
   const filePath = path.resolve(`${__dirname}/../test-files/${_filePath}`);
@@ -28,7 +29,14 @@ if (process.env.S3_BUCKET_NAME) {
 
 export const getRootConfig = (matrixValue: 's3' | 'local'): Partial<KeystoneConfig> => {
   if (matrixValue === 'local') {
-    return {};
+    return {
+      storage: {
+        test_file: {
+          kind: 'local',
+          type: 'file',
+        },
+      },
+    };
   }
   return {
     storage: {
@@ -59,8 +67,9 @@ export const supportsUnique = false;
 export const skipRequiredTest = true;
 export const fieldName = 'secretFile';
 export const subfieldName = 'filesize';
+export const fieldConfig = () => ({ storage: 'test_file' });
 
-export const getTestFields = () => ({ secretFile: file({ storage: 'test-storage' }) });
+export const getTestFields = () => ({ secretFile: file({ storage: 'test_file' }) });
 
 export const afterEach = async (matrixValue: 's3' | 'local') => {
   if (matrixValue === 'local') {
@@ -91,6 +100,29 @@ export const storedValues = () => [
 
 export const supportedFilters = () => [];
 
+const addFile = () => {};
+
+const checkFileExists = async (fileName: string) => {
+  // expect(data).not.toBe(null);
+  // since it would be hard to assert exactly on the returned url for s3, we're gonna check the content instead.
+  if (matrixValue === 's3') {
+    // expect(data.secretFile.url).toEqual(expect.stringContaining(`/${data.secretFile.filename}`));
+
+    const contentFromURL = await fetch(fileName).then(x => x.buffer());
+    const contentFromFile = await fs.readFile(
+      path.resolve(`${__dirname}/../test-files/${fileName}`)
+    );
+    expect(contentFromURL).toEqual(contentFromFile);
+  } else {
+    expect(data.secretFile.url).toEqual(`/files/${data.secretFile.filename}`);
+  }
+  expect(data.secretFile.filesize).toEqual(3250);
+  expect(data.secretFile.__typename).toEqual(
+    matrixValue === 'local' ? 'LocalFileFieldOutput' : 'S3FileFieldOutput'
+  );
+  return createHash('sha1').update(contentFromFile).digest('hex');
+};
+
 export const crudTests = (keystoneTestWrapper: any) => {
   describe('Create - upload', () => {
     test(
@@ -110,159 +142,16 @@ export const crudTests = (keystoneTestWrapper: any) => {
               }
           `,
           });
-          expect(data).not.toBe(null);
-          expect(data.secretFile.ref).toEqual(`${matrixValue}:file:${data.secretFile.filename}`);
-          // since it would be hard to assert exactly on the returned url for s3, we're gonna check the content instead.
-          if (matrixValue === 's3') {
-            expect(data.secretFile.url).toEqual(
-              expect.stringContaining(`/${data.secretFile.filename}`)
-            );
-            const contentFromURL = await fetch(data.secretFile.url).then(x => x.buffer());
-            const contentFromFile = await fs.readFile(
-              path.resolve(`${__dirname}/../test-files/${filename}`)
-            );
-            expect(contentFromURL).toEqual(contentFromFile);
-          } else {
-            expect(data.secretFile.url).toEqual(`/files/${data.secretFile.filename}`);
-          }
-          expect(data.secretFile.filesize).toEqual(3250);
-          expect(data.secretFile.__typename).toEqual(
-            matrixValue === 'local' ? 'LocalFileFieldOutput' : 'S3FileFieldOutput'
-          );
         }
       )
     );
   });
-  describe('Create - ref', () => {
-    test(
-      'From existing item succeeds',
-      keystoneTestWrapper(async ({ context }: { context: any }) => {
-        // Create an initial item
-        const initialItem = await context.query.Test.createOne({
-          data: { secretFile: prepareFile('keystone.jpg') },
-          query: `
-            secretFile {
-              filename
-              __typename
-              filesize
-              ref
-              url
-            }
-        `,
-        });
-        expect(initialItem).not.toBe(null);
-
-        // Create a new item base on the first items ref
-        const ref = initialItem.secretFile.ref;
-        const newItem = await context.query.Test.createOne({
-          data: { secretFile: { ref } },
-          query: `
-            secretFile {
-              filename
-              __typename
-              filesize
-              ref
-              url
-            }
-        `,
-        });
-        expect(newItem).not.toBe(null);
-
-        // Check that the details of both items match
-        expect(newItem.secretFile).toEqual(initialItem.secretFile);
-      })
-    );
-    test(
-      'From invalid ref fails',
-      keystoneTestWrapper(async ({ context }: { context: any }) => {
-        const { data, errors } = await context.graphql.raw({
-          query: `
-            mutation ($item: TestCreateInput!) {
-                createTest(data: $item) {
-                    secretFile {
-                        filename
-                    }
-                }
-            }
-        `,
-          variables: { item: { secretFile: { ref: 'Invalid ref!' } } },
-        });
-        expect(data).toEqual({ createTest: null });
-        const message = `Invalid file reference`;
-        expectSingleResolverError(errors, 'createTest', 'Test.secretFile', message);
-      })
-    );
-    test(
-      'From null ref fails',
-      keystoneTestWrapper(async ({ context }: { context: any }) => {
-        const { data, errors } = await context.graphql.raw({
-          query: `
-            mutation ($item: TestCreateInput!) {
-                createTest(data: $item) {
-                    secretFile {
-                        filename
-                    }
-                }
-            }
-        `,
-          variables: { item: { secretFile: { ref: null } } },
-        });
-        expect(data).toEqual({ createTest: null });
-        const message = `Input error: Either ref or upload must be passed to FileFieldInput`;
-        expectSingleResolverError(errors, 'createTest', 'Test.secretFile', message);
-      })
-    );
-    test(
-      'Both upload and ref fails - valid ref',
-      keystoneTestWrapper(async ({ context }: { context: any }) => {
-        const initialItem = await context.query.Test.createOne({
-          data: { secretFile: prepareFile('keystone.jpg') },
-          query: `secretFile { ref }`,
-        });
-        expect(initialItem).not.toBe(null);
-
-        const { data, errors } = await context.graphql.raw({
-          query: `
-          mutation ($item: TestCreateInput!) {
-              createTest(data: $item) {
-                  secretFile {
-                     filename
-                  }
-              }
-          }
-      `,
-          variables: {
-            item: {
-              secretFile: { ref: initialItem.secretFile.ref, ...prepareFile('keystone.jpg') },
-            },
-          },
-        });
-        expect(data).toEqual({ createTest: null });
-        const message = `Input error: Only one of ref and upload can be passed to FileFieldInput`;
-        expectSingleResolverError(errors, 'createTest', 'Test.secretFile', message);
-      })
-    );
-    test(
-      'Both upload and ref fails - invalid ref',
-      keystoneTestWrapper(async ({ context }: { context: any }) => {
-        const { data, errors } = await context.graphql.raw({
-          query: `
-          mutation ($item: TestCreateInput!) {
-              createTest(data: $item) {
-                  secretFile {
-                      filename
-                  }
-              }
-          }
-      `,
-          variables: {
-            item: { secretFile: { ref: 'Invalid', ...prepareFile('keystone.jpg') } },
-          },
-        });
-        expect(data).toEqual({ createTest: null });
-        const message = `Input error: Only one of ref and upload can be passed to FileFieldInput`;
-        expectSingleResolverError(errors, 'createTest', 'Test.secretFile', message);
-      })
-    );
+  describe('Delete - remove file', () => {
+    // test 1: remove field, check file is deleted at source
+    // test 2: remove item, check file is deleted at source
+    // test 3: add difference file, check file is deleted at source
+    // test 4: check file still exists in one(?) of the above if delete isn't set
+    // checkExists function
   });
+  describe('Update - replace file', () => {});
 };

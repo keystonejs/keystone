@@ -2,7 +2,6 @@ import { Readable } from 'stream';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { S3, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
-import imageSize from 'image-size';
 
 import { KeystoneConfig } from '../../types';
 import { getImageMetadataFromBuffer } from './createImagesContext';
