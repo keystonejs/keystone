@@ -2258,10 +2258,10 @@
     pirates "^4.0.1"
     source-map-support "^0.5.16"
 
-"@preconstruct/next@^3.0.1":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@preconstruct/next/-/next-3.0.1.tgz#7070edaf7adb350010114adbbc90079a98b0f31a"
-  integrity sha512-b9q1US5vsUzHPeMGlCFGWdttAHQ2q6raFlY1vf5binrKMkki/gt6GvskTJ4RXfFCt7QmVx9tRcuTFXMhUDgb6A==
+"@preconstruct/next@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@preconstruct/next/-/next-4.0.0.tgz#4d9c64ed68bb7cdc72d35d79d1dbe26ba2cae61e"
+  integrity sha512-vSrc8wFQgBErU7dKTKSQtr/DLWPHcN9jMoiWOAQodB1+B4Kpqqry6QhGYoRm0DQU5gNL+Rcp+Xb350O1E/gjsg==
 
 "@prisma/client@3.9.2":
   version "3.9.2"
