@@ -1,4 +1,5 @@
 import path from 'path';
+import { createHash } from 'crypto';
 import fs from 'fs-extra';
 import { Upload } from 'graphql-upload';
 import mime from 'mime';
@@ -26,15 +27,21 @@ if (process.env.S3_BUCKET_NAME) {
   testMatrix.push('s3');
 }
 
+type MatrixValue = 's3' | 'local';
+
 export const fieldConfig = () => ({ storage: 'test_image' });
 
-export const getRootConfig = (matrixValue: 's3' | 'local'): Partial<KeystoneConfig> => {
+const TEMP_STORAGE = 'tmp_test_images';
+
+export const getRootConfig = (matrixValue: MatrixValue): Partial<KeystoneConfig> => {
   if (matrixValue === 'local') {
     return {
       storage: {
         test_image: {
           type: 'image',
           kind: 'local',
+          storagePath: TEMP_STORAGE,
+          removeFileOnDelete: true,
         },
       },
     };
@@ -71,7 +78,7 @@ export const subfieldName = 'extension';
 
 export const getTestFields = () => ({ avatar: image({ storage: 'test_image' }) });
 
-export const afterAll = (matrixValue: 's3' | 'local') => {
+export const afterAll = (matrixValue: MatrixValue) => {
   if (matrixValue === 'local') {
     // This matches the storagePath in the keystone config in the various test files.
     fs.rmdirSync('tmp_test_images', { recursive: true });
@@ -100,6 +107,37 @@ export const storedValues = () => [
 
 export const supportedFilters = () => [];
 
+const checkFileExists = async (filename: string, matrixValue: MatrixValue) => {
+  let contentFromURL = null;
+
+  try {
+    if (matrixValue === 's3') {
+      contentFromURL = await fetch(filename).then(x => x.buffer());
+    } else {
+      contentFromURL = await fs.readFile(path.join(TEMP_STORAGE, `${filename}`));
+    }
+  } catch (e) {}
+
+  return contentFromURL && createHash('sha1').update(contentFromURL).digest('hex');
+};
+
+const createItem = async (context: any, filename: string) =>
+  await context.query.Test.createOne({
+    data: { avatar: prepareFile(filename) },
+    query: `
+  id
+  avatar {
+    __typename
+    id
+    filesize
+    width
+    height
+    extension
+    url
+  }
+`,
+  });
+
 export const crudTests = (keystoneTestWrapper: any) => {
   describe('Create - upload', () => {
     test(
@@ -110,25 +148,15 @@ export const crudTests = (keystoneTestWrapper: any) => {
           matrixValue,
         }: {
           context: KeystoneContext;
-          matrixValue: 's3' | 'local';
+          matrixValue: MatrixValue;
         }) => {
           const filenames = ['keystone.jpeg', 'keystone.jpg', 'keystone'];
           for (const filename of filenames) {
-            const data = await context.query.Test.createOne({
-              data: { avatar: prepareFile(filename) },
-              query: `
-              avatar {
-                __typename
-                id
-                filesize
-                width
-                height
-                extension
-                ref
-                url
-              }
-          `,
-            });
+            const fileHash = createHash('sha1')
+              .update(fs.readFileSync(path.resolve(`${__dirname}/../test-files/${filename}`)))
+              .digest('hex');
+
+            const data = await createItem(context, filename);
             expect(data).not.toBe(null);
 
             expect(data.avatar).toEqual({
@@ -137,20 +165,16 @@ export const crudTests = (keystoneTestWrapper: any) => {
                   ? expect.stringContaining(`/${data.avatar.id}.jpg`)
                   : `/images/${data.avatar.id}.jpg`,
               id: data.avatar.id,
-              __typename: matrixValue === 'local' ? `LocalImageFieldOutput` : `S3ImageFieldOutput`,
+              __typename: 'ImageFieldOutput',
               filesize: 3250,
               width: 150,
               height: 152,
               extension: 'jpg',
             });
-            // since it would be hard to assert exactly on the returned url for s3, we're gonna check the content instead.
-            if (matrixValue === 's3') {
-              const contentFromURL = await fetch(data.avatar.url).then(x => x.buffer());
-              const contentFromFile = await fs.readFile(
-                path.resolve(`${__dirname}/../test-files/${filename}`)
-              );
-              expect(contentFromURL).toEqual(contentFromFile);
-            }
+
+            expect(fileHash).toEqual(
+              await checkFileExists(data.avatar.url.replace('/images', ''), matrixValue)
+            );
           }
         }
       )
@@ -174,6 +198,67 @@ export const crudTests = (keystoneTestWrapper: any) => {
         const message = `File type not found`;
         expectSingleResolverError(errors, 'createTest', 'Test.avatar', message);
       })
+    );
+  });
+
+  describe('After Operation Hook', () => {
+    test(
+      'without delete',
+      keystoneTestWrapper(
+        async ({ context, matrixValue }: { context: any; matrixValue: MatrixValue }) => {
+          const ogFilename = 'keystone.jpeg';
+
+          const { id, avatar } = await createItem(context, ogFilename);
+
+          await context.query.Test.updateOne({
+            where: { id },
+            data: { avatar: prepareFile('thinkmill.jpg') },
+          });
+
+          expect(
+            await checkFileExists(`${avatar.id}.${avatar.extension}`, matrixValue)
+          ).toBeTruthy();
+
+          await context.query.Test.deleteOne({ where: { id } });
+
+          expect(
+            await checkFileExists(`${avatar.id}.${avatar.extension}`, matrixValue)
+          ).toBeTruthy();
+          // TODO test that just nulling the field doesn't delete it
+        }
+      )
+    );
+
+    test(
+      'with delete',
+      keystoneTestWrapper(
+        async ({ context, matrixValue }: { context: any; matrixValue: MatrixValue }) => {
+          const ogFilename = 'keystone.jpeg';
+          const { id, avatar } = await createItem(context, ogFilename);
+          const filename = `${avatar.id}.${avatar.extension}`;
+
+          expect(await checkFileExists(filename, matrixValue)).toBeTruthy();
+          const { avatar: avatar2 } = await context.query.Test.updateOne({
+            where: { id },
+            data: { avatar: prepareFile('thinkmill.jpg') },
+            query: `avatar {
+              id
+              extension
+            }`,
+          });
+
+          const filename2 = `${avatar2.id}.${avatar2.extension}`;
+
+          expect(await checkFileExists(filename, matrixValue)).toBeFalsy();
+          expect(await checkFileExists(filename2, matrixValue)).toBeTruthy();
+
+          await context.query.Test.deleteOne({ where: { id } });
+
+          expect(await checkFileExists(filename2, matrixValue)).toBeFalsy();
+
+          // TODO test that just nulling the field removes the file
+        }
+      )
     );
   });
 };
