@@ -5,10 +5,10 @@
   "main": "dist/keystone-ui-pill.cjs.js",
   "module": "dist/keystone-ui-pill.esm.js",
   "peerDependencies": {
-    "react": "^17.0.2"
+    "react": "^18.0.0"
   },
   "devDependencies": {
-    "react": "^17.0.2"
+    "react": "^18.0.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",

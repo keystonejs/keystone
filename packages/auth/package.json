@@ -20,11 +20,11 @@
   },
   "devDependencies": {
     "@keystone-6/core": "^1.1.0",
-    "react": "^17.0.2"
+    "react": "^18.0.0"
   },
   "peerDependencies": {
     "@keystone-6/core": "^1.1.0",
-    "react": "^17.0.2"
+    "react": "^18.0.0"
   },
   "preconstruct": {
     "entrypoints": [

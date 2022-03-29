@@ -6,12 +6,12 @@
   "module": "dist/keystone-ui-core.esm.js",
   "devDependencies": {
     "@types/react": "^17.0.37",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   },
   "peerDependencies": {
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",

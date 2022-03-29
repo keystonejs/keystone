@@ -14,7 +14,7 @@
     "cloudinary": "^1.27.1",
     "cuid": "^2.1.8",
     "graphql-upload": "^13.0.0",
-    "react": "^17.0.2"
+    "react": "^18.0.0"
   },
   "peerDependencies": {
     "@keystone-6/core": "^1.1.0"

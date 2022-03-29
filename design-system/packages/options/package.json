@@ -5,10 +5,10 @@
   "main": "dist/keystone-ui-options.cjs.js",
   "module": "dist/keystone-ui-options.esm.js",
   "peerDependencies": {
-    "react": "^17.0.2"
+    "react": "^18.0.0"
   },
   "devDependencies": {
-    "react": "^17.0.2"
+    "react": "^18.0.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
