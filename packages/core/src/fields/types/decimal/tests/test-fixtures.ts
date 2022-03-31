@@ -1,4 +1,4 @@
-import { DatabaseProvider } from '../../../../types';
+import { DatabaseProvider, KeystoneContext } from '../../../../types';
 import { decimal } from '..';
 
 export const name = 'Decimal';
@@ -13,7 +13,7 @@ export const supportsDbMap = true;
 
 export const getTestFields = () => ({ price: decimal(fieldConfig()) });
 
-export const fieldConfig = () => ({ scale: 2 });
+export const fieldConfig = () => ({ scale: 2, validation: { min: '-300', max: '50000000' } });
 
 export const initItems = () => {
   return [
@@ -45,3 +45,24 @@ export const supportedFilters = (provider: DatabaseProvider) => [
   provider !== 'postgresql' && 'in_equal',
   'unique_equality',
 ];
+
+export const crudTests = (keystoneTestWrapper: any) => {
+  test(
+    'errors when below validation.min',
+    keystoneTestWrapper(async ({ context }: { context: KeystoneContext }) => {
+      const result = await context.graphql.raw({
+        query: `
+          mutation {
+            createTest(data: { price: "-400" }) {
+              id
+              decimal
+            }
+          }
+        `,
+      });
+      expect(result.data).toEqual({ createTest: null });
+      expect(result.errors).toHaveLength(1);
+      expect(result.errors![0].message).toMatchInlineSnapshot();
+    })
+  );
+};

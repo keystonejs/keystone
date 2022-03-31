@@ -89,9 +89,9 @@ export const decimal =
         ? undefined
         : parseDecimalValueOption(meta, validation.max, 'validation.max');
     const min =
-      validation?.max === undefined
+      validation?.min === undefined
         ? undefined
-        : parseDecimalValueOption(meta, validation.max, 'validation.max');
+        : parseDecimalValueOption(meta, validation.min, 'validation.min');
 
     if (min !== undefined && max !== undefined && max.lessThan(min)) {
       throw new Error(
