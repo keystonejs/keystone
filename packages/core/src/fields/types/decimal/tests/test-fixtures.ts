@@ -55,14 +55,55 @@ export const crudTests = (keystoneTestWrapper: any) => {
           mutation {
             createTest(data: { price: "-400" }) {
               id
-              decimal
+              price
             }
           }
         `,
       });
       expect(result.data).toEqual({ createTest: null });
       expect(result.errors).toHaveLength(1);
-      expect(result.errors![0].message).toMatchInlineSnapshot();
+      expect(result.errors![0].message).toMatchInlineSnapshot(`
+        "You provided invalid data for this operation.
+          - Test.price: Price must be greater than or equal to -300"
+      `);
     })
   );
+  test(
+    'errors when above validation.min',
+    keystoneTestWrapper(async ({ context }: { context: KeystoneContext }) => {
+      const result = await context.graphql.raw({
+        query: `
+          mutation {
+            createTest(data: { price: "50000001" }) {
+              id
+              price
+            }
+          }
+        `,
+      });
+      expect(result.data).toEqual({ createTest: null });
+      expect(result.errors).toHaveLength(1);
+      expect(result.errors![0].message).toMatchInlineSnapshot(`
+        "You provided invalid data for this operation.
+          - Test.price: Price must be less than or equal to 50000000"
+      `);
+    })
+  );
+  for (const [name, value] of [
+    ['min', '-300.00'],
+    ['max', '50000000.00'],
+  ]) {
+    test(
+      `saves when the value is exactly the ${name}`,
+      keystoneTestWrapper(async ({ context }: { context: KeystoneContext }) => {
+        const result = await context.query.Test.createOne({
+          data: {
+            price: value,
+          },
+          query: 'price',
+        });
+        expect(result).toEqual({ price: value });
+      })
+    );
+  }
 };
