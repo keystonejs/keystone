@@ -1,5 +1,31 @@
 # @keystone-6/core
 
+## 1.1.0
+
+### Minor Changes
+
+- [#7268](https://github.com/keystonejs/keystone/pull/7268) [`45c2bbaf3`](https://github.com/keystonejs/keystone/commit/45c2bbaf34594e135ccd09f5c9221eb822ac9965) Thanks [@renovate](https://github.com/apps/renovate)! - Updated Prisma to 3.9.2
+
+### Patch Changes
+
+- [#7289](https://github.com/keystonejs/keystone/pull/7289) [`dfb4aea31`](https://github.com/keystonejs/keystone/commit/dfb4aea3112ed83322a698f177545618275699b7) Thanks [@dependabot](https://github.com/apps/dependabot)! - Fixed using `require.resolve` to get the paths to views not woking with newer versions of Next.
+
+* [#7290](https://github.com/keystonejs/keystone/pull/7290) [`3e538d136`](https://github.com/keystonejs/keystone/commit/3e538d1360add48c37a099de7c9d1621e2c74ddf) Thanks [@gautamsi](https://github.com/gautamsi)! - Fixed issues with float field filtering when the field is required with default value
+
+- [#7253](https://github.com/keystonejs/keystone/pull/7253) [`518bd2e43`](https://github.com/keystonejs/keystone/commit/518bd2e437227fbd1a8f7fb947dcb11c57ffb7dd) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Fixed popover behaviour to accomodate mobile usages.
+
+* [#7340](https://github.com/keystonejs/keystone/pull/7340) [`ec8103a12`](https://github.com/keystonejs/keystone/commit/ec8103a12861a7cd182603b82aa3b1133a43da4e) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Minor a11y improvement to table browsing
+
+- [#7292](https://github.com/keystonejs/keystone/pull/7292) [`81e663d31`](https://github.com/keystonejs/keystone/commit/81e663d3157b3c49a191aaa1bc1c179dd8cc34d4) Thanks [@lachieh](https://github.com/lachieh)! - added support for extending the underlying node http server
+
+* [#7218](https://github.com/keystonejs/keystone/pull/7218) [`4f3d0a073`](https://github.com/keystonejs/keystone/commit/4f3d0a073dba50f22505af545402a2f1e38afe0d) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed cards view in the relationship field not showing up for many relationships in the create view
+
+- [#7221](https://github.com/keystonejs/keystone/pull/7221) [`6cea02475`](https://github.com/keystonejs/keystone/commit/6cea02475b02528e5f04f0a5bca641367ca1584d) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Improved how stacking contexts are organised in the Admin UI
+
+- Updated dependencies [[`5d96ee646`](https://github.com/keystonejs/keystone/commit/5d96ee646b3c6342935464763071ad7c3f0a8b43), [`518bd2e43`](https://github.com/keystonejs/keystone/commit/518bd2e437227fbd1a8f7fb947dcb11c57ffb7dd)]:
+  - @keystone-ui/fields@6.0.1
+  - @keystone-ui/popover@5.0.1
+
 ## 1.0.1
 
 ### Patch Changes
@@ -62,6 +88,7 @@
 - [#7005](https://github.com/keystonejs/keystone/pull/7005) [`fb7844ab5`](https://github.com/keystonejs/keystone/commit/fb7844ab50c1d4a6d14b2ad46a568665f6661921) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Improve console output for when you need to restart the server because of schema changes
 
 # @keystone-next/keystone
+
 ## 29.0.0
 
 ### Major Changes

@@ -6,7 +6,12 @@ import FocusLock from 'react-focus-lock';
 import { jsx } from '@keystone-ui/core';
 import { PopoverDialog, useControlledPopover } from '@keystone-ui/popover';
 
-import { formatDate, formatDateType, dateFormatPlaceholder } from '../utils/dateFormatters';
+import {
+  deserializeDate,
+  formatDate,
+  formatDateType,
+  dateFormatPlaceholder,
+} from '../utils/dateFormatters';
 import { DateType } from '../types';
 import { Calendar } from './Calendar';
 import { InputButton } from './components/InputButton';
@@ -82,8 +87,11 @@ export const DatePicker = ({
     [onUpdate, setOpen]
   );
 
-  const selectedDay = new Date(value as string);
-  const formattedDate: DateInputValue = value ? formatDate(new Date(value)) : undefined;
+  // We **can** memoize this, but its a trivial operation
+  // and in the opinion of the author not really something to do
+  // before other more important performance optimisations
+  const selectedDay = deserializeDate(value);
+  const formattedDate: DateInputValue = value ? formatDate(selectedDay) : undefined;
 
   return (
     <Fragment>

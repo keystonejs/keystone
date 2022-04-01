@@ -71,6 +71,7 @@ class MyDocument extends Document {
             async
             src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"
           />
+          <script data-no-cookie data-respect-dnt async data-api="/_sb" src="/sb.js" />
         </Head>
         <body
           css={{

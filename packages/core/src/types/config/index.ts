@@ -106,7 +106,10 @@ export type ServerConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   /** Health check configuration. Set to `true` to add a basic `/_healthcheck` route, or specify the path and data explicitly */
   healthCheck?: HealthCheckConfig | true;
   /** Hook to extend the Express App that Keystone creates */
-  extendExpressApp?: (app: express.Express, createContext: CreateRequestContext<TypeInfo>) => void;
+  extendExpressApp?: (
+    app: express.Express,
+    createContext: CreateRequestContext<TypeInfo>
+  ) => void | Promise<void>;
   extendHttpServer?: (server: Server, createContext: CreateRequestContext<TypeInfo>) => void;
 };
 

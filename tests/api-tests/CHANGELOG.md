@@ -1,5 +1,11 @@
 # @keystonejs/api-tests
 
+## 0.0.2
+
+### Patch Changes
+
+- [#7292](https://github.com/keystonejs/keystone/pull/7292) [`81e663d31`](https://github.com/keystonejs/keystone/commit/81e663d3157b3c49a191aaa1bc1c179dd8cc34d4) Thanks [@lachieh](https://github.com/lachieh)! - added support for extending the underlying node http server
+
 ## 0.0.1
 
 ### Patch Changes
