@@ -38,6 +38,8 @@ testModules
           }
         });
 
+        const fieldConfig = mod.fieldConfig ? mod.fieldConfig(matrixValue) : {};
+
         const runner = setupTestRunner({
           config: apiTestConfig({
             lists: {
@@ -45,8 +47,11 @@ testModules
                 fields: {
                   name: text(),
                   testField: mod.typeFunction({
-                    validation: { isRequired: true },
-                    ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
+                    ...fieldConfig,
+                    validation: {
+                      ...fieldConfig.validation,
+                      isRequired: true,
+                    },
                   }),
                 },
               }),
