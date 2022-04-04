@@ -18,7 +18,7 @@ import {
   getAncestorFields,
   getDocumentFeaturesForChildField,
   getValueAtPropPath,
-  PropPath,
+  ReadonlyPropPath,
   transformProps,
 } from './utils';
 import { getInitialPropsValue } from './initial-values';
@@ -166,7 +166,7 @@ function doesPropOnlyEverContainASingleChildField(rootProp: ComponentPropField):
 }
 
 function findArrayFieldsWithSingleChildField(prop: ComponentPropField, value: unknown) {
-  const propPaths: [PropPath, ArrayField<ComponentPropField>][] = [];
+  const propPaths: [ReadonlyPropPath, ArrayField<ComponentPropField>][] = [];
   transformProps(prop, value, (prop, value, path) => {
     if (prop.kind === 'array') {
       if (doesPropOnlyEverContainASingleChildField(prop.element)) {

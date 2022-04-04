@@ -1,5 +1,4 @@
 import { Node } from 'slate';
-import { PropPath } from '../../component-blocks/utils';
 import { Mark } from '../../utils';
 
 export const __jsx: any;
@@ -8,7 +7,7 @@ type Children = Node | string | (Node | string)[];
 
 type OnlyChildren = { children: Children };
 
-type ComponentProp = { children: Children; propPath?: PropPath };
+type ComponentProp = { children: Children; propPath?: ReadonlyPropPath };
 declare namespace __jsx {
   namespace JSX {
     interface IntrinsicElements {

@@ -3,7 +3,7 @@ import excess from 'io-ts-excess';
 import { RelationshipData } from './DocumentEditor/component-blocks/api';
 import { Mark } from './DocumentEditor/utils';
 import { isValidURL } from './DocumentEditor/isValidURL';
-import { PropPath } from './DocumentEditor/component-blocks/utils';
+
 // note that this validation isn't about ensuring that a document has nodes in the right positions and things
 // it's just about validating that it's a valid slate structure
 // we'll then run normalize on it which will enforce more things
@@ -195,7 +195,7 @@ const componentBlock: t.Type<ComponentBlock> = t.recursion('ComponentBlock', () 
 
 type ComponentProp = {
   type: 'component-inline-prop' | 'component-block-prop';
-  propPath: PropPath | undefined;
+  propPath: (string | number)[] | undefined;
   children: Children;
 };
 

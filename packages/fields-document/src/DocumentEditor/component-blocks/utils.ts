@@ -150,15 +150,15 @@ export function getDocumentFeaturesForChildField(
 }
 
 function getFieldAtPropPathInner(
-  path: PropPath,
+  path: (string | number)[],
   value: unknown,
   prop: ComponentPropField
 ): undefined | ComponentPropField {
+  // because we're checking the length here
+  // the non-null asserts on shift below are fine
   if (path.length === 0) {
     return prop;
   }
-  // because we're checking the length here
-  // the non-null asserts on shift are fine
   if (prop.kind === 'child' || prop.kind === 'form' || prop.kind === 'relationship') {
     return;
   }
@@ -264,7 +264,6 @@ export function getAncestorFields(
   return ancestors;
 }
 
-export type PropPath = (string | number)[];
 export type ReadonlyPropPath = readonly (string | number)[];
 
 export function getValueAtPropPath(value: unknown, inputPath: ReadonlyPropPath) {
@@ -279,8 +278,8 @@ export function getValueAtPropPath(value: unknown, inputPath: ReadonlyPropPath) 
 export function transformProps(
   prop: ComponentPropField,
   value: unknown,
-  transformer: (prop: ComponentPropField, value: unknown, path: PropPath) => unknown,
-  path: PropPath = []
+  transformer: (prop: ComponentPropField, value: unknown, path: ReadonlyPropPath) => unknown,
+  path: ReadonlyPropPath = []
 ): unknown {
   if (prop.kind === 'form' || prop.kind === 'relationship' || prop.kind === 'child') {
     return transformer(prop, value, path);
