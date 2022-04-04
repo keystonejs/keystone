@@ -1,4 +1,5 @@
 import { Node } from 'slate';
+import { ReadonlyPropPath } from '../../component-blocks/utils';
 import { Mark } from '../../utils';
 
 export const __jsx: any;

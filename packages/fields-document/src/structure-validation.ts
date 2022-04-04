@@ -3,7 +3,6 @@ import excess from 'io-ts-excess';
 import { RelationshipData } from './DocumentEditor/component-blocks/api';
 import { Mark } from './DocumentEditor/utils';
 import { isValidURL } from './DocumentEditor/isValidURL';
-
 // note that this validation isn't about ensuring that a document has nodes in the right positions and things
 // it's just about validating that it's a valid slate structure
 // we'll then run normalize on it which will enforce more things
