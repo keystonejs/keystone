@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { Box, jsx } from '@keystone-ui/core';
-import { useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import {
   useSensors,
   useSensor,
@@ -12,6 +12,7 @@ import {
   closestCenter,
 } from '@dnd-kit/core';
 import {
+  arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
@@ -25,9 +26,8 @@ import { ToolbarButton } from '.';
 const RemoveContext = createContext<null | ((index: number) => void)>(null);
 
 export function SortableList(props: {
-  onMove: (index: number, newIndex: number) => void;
-  onRemove: (index: number) => void;
-  elements: readonly ({ id: string } | string)[];
+  onChange: (elements: readonly { id: string }[]) => void;
+  elements: readonly { id: string }[];
   children: ReactNode;
 }) {
   const sensors = useSensors(
@@ -37,8 +37,20 @@ export function SortableList(props: {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+  const elementsRef = useRef(props.elements);
+
+  useEffect(() => {
+    elementsRef.current = props.elements;
+  });
+  const { onChange } = props;
+  const onRemove = useCallback(
+    (index: number) => {
+      onChange(elementsRef.current.filter((_, i) => i !== index).map(x => ({ id: x.id })));
+    },
+    [onChange]
+  );
   return (
-    <RemoveContext.Provider value={props.onRemove}>
+    <RemoveContext.Provider value={onRemove}>
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
@@ -51,7 +63,8 @@ export function SortableList(props: {
             const overIndex = props.elements.findIndex(
               x => (typeof x === 'string' ? x : x.id) === over.id
             );
-            props.onMove(activeIndex, overIndex);
+            const newValue = arrayMove(props.elements as { id: string }[], activeIndex, overIndex);
+            props.onChange(newValue);
           }
         }}
       >

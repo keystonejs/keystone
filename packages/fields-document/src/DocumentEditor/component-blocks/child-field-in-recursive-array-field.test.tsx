@@ -34,7 +34,14 @@ function List(props: PreviewProps<ListItems>): ReactElement {
         React.createElement(List, x.element.fields.children)
       );
     }),
-    React.createElement('button', { onClick: () => props.onInsert() }, 'Insert')
+    React.createElement(
+      'button',
+      {
+        onClick: () =>
+          props.onChange([...props.elements.map(x => ({ id: x.id })), { id: undefined }]),
+      },
+      'Insert'
+    )
   );
 }
 

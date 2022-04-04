@@ -126,7 +126,10 @@ export const componentBlocks = {
           <NotEditable>
             <div
               onClick={() => {
-                props.fields.rows.onInsert();
+                props.fields.rows.onChange([
+                  ...props.fields.rows.elements.map(x => ({ id: x.id })),
+                  { id: undefined },
+                ]);
               }}
             >
               <Button>Insert row</Button>
@@ -154,7 +157,10 @@ export const componentBlocks = {
     component: function MyList(props) {
       useEffect(() => {
         if (!props.fields.children.elements.length) {
-          props.fields.children.onInsert();
+          props.fields.children.onChange([
+            ...props.fields.children.elements.map(x => ({ id: x.id })),
+            { id: undefined },
+          ]);
         }
       });
       return (
@@ -195,7 +201,10 @@ export const componentBlocks = {
     component: function MyList(props) {
       useEffect(() => {
         if (!props.fields.children.elements.length) {
-          props.fields.children.onInsert();
+          props.fields.children.onChange([
+            ...props.fields.children.elements.map(x => ({ id: x.id })),
+            { id: undefined },
+          ]);
         }
       });
       return (

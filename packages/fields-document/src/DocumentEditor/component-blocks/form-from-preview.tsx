@@ -39,7 +39,7 @@ const fieldRenderers: {
         <Button
           autoFocus={props.autoFocus}
           onClick={() => {
-            props.onInsert();
+            props.onChange([...props.elements.map(x => ({ id: x.id })), { id: undefined }]);
           }}
         >
           Add

@@ -280,7 +280,11 @@ test('add to multiple in child field in nested array', () => {
   const previewProps = createGetPreviewProps({ kind: 'object', value: table.props }, () => {})(
     (editor.children[0] as any).props
   );
-  previewProps.fields.children.elements[0].element.onInsert();
+
+  previewProps.fields.children.elements[0].element.onChange([
+    ...previewProps.fields.children.elements[0].element.elements.map(x => ({ id: x.id })),
+    { id: undefined },
+  ]);
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block

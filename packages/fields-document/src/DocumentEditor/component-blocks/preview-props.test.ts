@@ -74,12 +74,12 @@ test('the props of two array fields in a conditional field change when the discr
   });
   let props = getPreviewProps(val);
   assert(props.discriminant === false);
-  let prevOnInsert = props.value.onInsert;
+  let prevArrayOnChange = props.value.onChange;
   props.onChange(true);
   props = getPreviewProps(val);
   assert(props.discriminant === true);
-  expect(prevOnInsert).not.toBe(props.value.onInsert);
-  props.value.onInsert([{ id: undefined, value: 'blah' }]);
+  expect(prevArrayOnChange).not.toBe(props.value.onChange);
+  props.value.onChange([{ id: undefined, value: [{ id: undefined, value: 'blah' }] }]);
   expect(props.value.elements).toHaveLength(1);
   expect(props.value.elements[0].element.elements).toHaveLength(1);
   expect(props.value.elements[0].element.elements[0].element.value).toEqual('blah');

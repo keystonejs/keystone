@@ -631,12 +631,6 @@ export type ExtractPropFromComponentPropField<
           value?: ExtractPropFromComponentPropFieldForInitialOrUpdate<ElementField>;
         }[]
       ) => void;
-      readonly onMove: (from: number, to: number) => void;
-      readonly onInsert: (
-        initial?: ExtractPropFromComponentPropFieldForInitialOrUpdate<ElementField>,
-        index?: number
-      ) => void;
-      readonly onRemove: (index: number) => void;
       readonly field: Prop;
     }
   : never;

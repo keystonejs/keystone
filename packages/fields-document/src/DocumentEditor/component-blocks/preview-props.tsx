@@ -1,5 +1,4 @@
 import React, { ReactElement, useContext } from 'react';
-import { arrayMove } from '@dnd-kit/sortable';
 import {
   ArrayField,
   ComponentPropField,
@@ -12,7 +11,7 @@ import {
   PreviewProps,
   RelationshipField,
 } from './api';
-import { updateValue, getInitialPropsValueFromInitializer } from './initial-values';
+import { updateValue } from './initial-values';
 
 const arrayValuesToElementIds = new WeakMap<readonly unknown[], string[]>();
 
@@ -73,43 +72,8 @@ const memoizedInfoForProp = castToMemoizedInfoForProp({
           inner: { id: string; element: unknown };
         }
       >(),
-      props: {
-        onInsert(initial?: unknown, index?: number) {
-          onChange(value => {
-            const newValue = [...(value as unknown[])];
-
-            newValue.splice(
-              index ?? newValue.length,
-              0,
-              getInitialPropsValueFromInitializer(prop.element, initial)
-            );
-            const keys = getElementIdsForArrayValue(value as readonly unknown[]);
-            setElementIdsForArrayValue(newValue, [...keys, getNewArrayElementId()]);
-            return newValue;
-          });
-        },
-        onMove(from: number, to: number) {
-          onChange(value => {
-            const newValue = arrayMove(value as unknown[], from, to);
-            const keys = getElementIdsForArrayValue(value as readonly unknown[]);
-            setElementIdsForArrayValue(newValue, arrayMove(keys, from, to));
-            return newValue;
-          });
-        },
-        onChange(updater: readonly { id?: string; value?: unknown }[]) {
-          onChange(value => updateValue(prop, value, updater));
-        },
-        onRemove(index: number) {
-          onChange(value => {
-            const newValue = (value as unknown[]).filter((_, i) => i !== index);
-            const keys = getElementIdsForArrayValue(value as readonly unknown[]);
-            setElementIdsForArrayValue(
-              newValue,
-              keys.filter((_, i) => i !== index)
-            );
-            return newValue;
-          });
-        },
+      onChange(updater: readonly { id?: string; value?: unknown }[]) {
+        onChange(value => updateValue(prop, value, updater));
       },
     };
   },
@@ -249,7 +213,7 @@ export function createGetPreviewProps<Field extends ComponentPropField>(
           return element.inner as { id: string; element: typeof currentInnerProp };
         }),
         field: prop,
-        ...memoized.props,
+        onChange: memoized.onChange,
       };
       for (const key of unusedKeys) {
         memoized.inner.delete(key);
