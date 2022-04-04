@@ -26,8 +26,8 @@ const auth = createAuth({
 export default auth.withAuth(
   config({
     db: {
-      provider: 'postgresql',
-      url: process.env.DATABASE_URL || `postgres://${process.env.USER}@localhost/basic`,
+      provider: 'sqlite',
+      url: process.env.DATABASE_URL || 'file:./keystone-example.db',
     },
     ui: {
       // NOTE -- this is not implemented, keystone currently always provides an admin ui at /
