@@ -14,8 +14,8 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
   exitSudo: () => KeystoneContext<TypeInfo>;
   withSession: (session: any) => KeystoneContext<TypeInfo>;
   prisma: TypeInfo['prisma'];
-  files: FilesContext | undefined;
-  images: ImagesContext | undefined;
+  files: FilesContext;
+  images: ImagesContext;
   totalResults: number;
   maxTotalResults: number;
   /** @deprecated */

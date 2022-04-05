@@ -96,7 +96,7 @@ type User {
   randomNumber: Float
 }
 
-interface ImageFieldOutput {
+type ImageFieldOutput {
   id: ID!
   filesize: Int!
   width: Int!
@@ -112,7 +112,7 @@ enum ImageExtension {
   gif
 }
 
-interface FileFieldOutput {
+type FileFieldOutput {
   filename: String!
   filesize: Int!
   url: String!
@@ -125,36 +125,6 @@ type PasswordState {
 input UserWhereUniqueInput {
   id: ID
   email: String
-}
-
-type LocalImageFieldOutput implements ImageFieldOutput {
-  id: ID!
-  filesize: Int!
-  width: Int!
-  height: Int!
-  extension: ImageExtension!
-  url: String!
-}
-
-type S3ImageFieldOutput implements ImageFieldOutput {
-  id: ID!
-  filesize: Int!
-  width: Int!
-  height: Int!
-  extension: ImageExtension!
-  url: String!
-}
-
-type LocalFileFieldOutput implements FileFieldOutput {
-  filename: String!
-  filesize: Int!
-  url: String!
-}
-
-type S3FileFieldOutput implements FileFieldOutput {
-  filename: String!
-  filesize: Int!
-  url: String!
 }
 
 input UserWhereInput {

@@ -29,8 +29,6 @@ testModules
               },
             }),
           },
-          images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
-          files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
           ...mod.getRootConfig?.(matrixValue),
         }),
       });

@@ -39,9 +39,6 @@ const ImageFieldOutput = graphql.object<ImageData>()({
     url: graphql.field({
       type: graphql.nonNull(graphql.String),
       resolve(data, args, context) {
-        if (!context.images) {
-          throw new Error('Image context is undefined');
-        }
         return context.images.getUrl(data.storage, data.id, data.extension);
       },
     }),
@@ -55,7 +52,7 @@ async function inputResolver(storage: string, data: ImageFieldInputType, context
     return { extension: data, filesize: data, height: data, id: data, storage: data, width: data };
   }
 
-  return context.images!.getDataFromStream(storage, (await data.upload).createReadStream());
+  return context.images.getDataFromStream(storage, (await data.upload).createReadStream());
 }
 
 const extensionsSet = new Set(SUPPORTED_IMAGE_EXTENSIONS);
@@ -107,7 +104,7 @@ export const image =
                 const extensionKey = `${fieldKey}_extension`;
                 const extension = originalItem[extensionKey];
 
-                await context.images?.deleteAtSource(
+                await context.images.deleteAtSource(
                   config.storage,
                   id as string,
                   extension as ImageExtension

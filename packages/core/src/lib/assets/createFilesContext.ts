@@ -44,14 +44,10 @@ const generateSafeFilename = (
 export function createFilesContext(
   config: KeystoneConfig,
   s3Assets: () => Map<string, AssetsAPI>
-): FilesContext | undefined {
-  if (!config.storage) {
-    return;
-  }
-
+): FilesContext {
   const { storage } = config;
 
-  Object.entries(storage).forEach(([, val]) => {
+  Object.entries(storage || {}).forEach(([, val]) => {
     if (val.type === 'file' && val.kind === 'local') {
       fs.mkdirSync(val.storagePath || DEFAULT_FILES_STORAGE_PATH, { recursive: true });
     }
@@ -135,6 +131,10 @@ export function createFilesContext(
         case 's3': {
           const s3Instance = s3Assets().get(storageString);
 
+          if (!s3Instance) {
+            throw new Error(`Keystone has no connection to S3 storage location ${storageString}`);
+          }
+
           await s3Instance?.files.delete(filename);
           break;
         }
@@ -145,6 +145,10 @@ export function createFilesContext(
           );
         }
       }
+
+      throw new Error(
+        `attempted to get URL for storage ${storageString}, however could not find the config for it`
+      );
     },
   };
 }

@@ -1,6 +1,9 @@
 import { Readable } from 'stream';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { S3, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
+// import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import {
+  S3,
+  // GetObjectCommand, PutObjectCommand
+} from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 
 import { KeystoneConfig } from '../../types';
@@ -63,8 +66,9 @@ export function s3Assets(config: NonNullable<KeystoneConfig['storage']>): Map<st
 
       assets.set(storage, {
         images: {
+          // TODO this
           url(id, extension) {
-            if (proxy.baseUrl && proxy.default) {
+            if (baseUrl) {
               return endpointString.replace(/\/?$/, `/${id}.${extension}`);
             } else if (baseUrl) {
               return endpointString.replace(/\/?$/, `/${id}.${extension}`);
