@@ -16,7 +16,6 @@ import {
 } from '@keystone-6/fields-document/primitives';
 import { useEffect } from 'react';
 import { Button } from '@keystone-ui/button';
-import { prop as blah } from './Blah';
 
 const noticeIconMap = {
   info: InfoIcon,
@@ -26,34 +25,6 @@ const noticeIconMap = {
 };
 
 export const componentBlocks = {
-  navigation: component({
-    component: () => <NotEditable>empty</NotEditable>,
-    props: { blah },
-    label: 'Navigation',
-  }),
-  thing: component({
-    component: props => {
-      return (
-        <div>
-          <h1>{props.fields.heading}</h1>
-          <NotEditable>
-            <h1>{props.fields.icon.value}</h1>
-          </NotEditable>
-          <div>{props.fields.content}</div>
-        </div>
-      );
-    },
-    props: {
-      heading: fields.child({ kind: 'inline', placeholder: 'Heading' }),
-      icon: fields.select({
-        label: 'Icon',
-        options: [{ label: 'A', value: 'a' }],
-        defaultValue: 'a',
-      }),
-      content: fields.child({ kind: 'block', placeholder: 'Content' }),
-    },
-    label: 'thing',
-  }),
   table: component({
     component: function MyTable(props) {
       useEffect(() => {
@@ -192,42 +163,6 @@ export const componentBlocks = {
         fields.object({
           done: fields.checkbox({ label: 'Done' }),
           content: fields.child({ kind: 'inline', placeholder: '', formatting: 'inherit' }),
-        })
-      ),
-    },
-    // chromeless: true,
-  }),
-  qAndA: component({
-    component: function MyList(props) {
-      useEffect(() => {
-        if (!props.fields.children.elements.length) {
-          props.fields.children.onChange([
-            ...props.fields.children.elements.map(x => ({ id: x.id })),
-            { id: undefined },
-          ]);
-        }
-      });
-      return (
-        <div>
-          {props.fields.children.elements.map(element => (
-            <div key={element.id}>
-              <h1>{element.element.fields.question}</h1>
-              <div>{element.element.fields.answer}</div>
-            </div>
-          ))}
-        </div>
-      );
-    },
-    label: 'Question & Answers',
-    props: {
-      children: fields.array(
-        fields.object({
-          question: fields.child({
-            kind: 'inline',
-            placeholder: 'Question...',
-            formatting: 'inherit',
-          }),
-          answer: fields.child({ kind: 'inline', placeholder: 'Answer...', formatting: 'inherit' }),
         })
       ),
     },

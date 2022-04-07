@@ -4,10 +4,10 @@
 import {
   fields,
   ArrayField,
-  ComponentPropField,
+  ComponentPropFieldForGraphQL,
 } from '@keystone-6/fields-document/component-blocks';
 
-export const prop: ArrayField<ComponentPropField> = fields.array(
+export const prop: ArrayField<ComponentPropFieldForGraphQL> = fields.array(
   fields.conditional(
     fields.select({
       defaultValue: 'leaf',

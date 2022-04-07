@@ -178,7 +178,7 @@ export type ComponentPropFieldForGraphQL =
   | FormFieldWithGraphQLField<any, any>
   | ObjectField<Record<string, ComponentPropFieldForGraphQL>>
   | ConditionalField<
-      FormFieldWithGraphQLField<string | boolean, any>,
+      FormFieldWithGraphQLField<any, any>,
       { [key: string]: ComponentPropFieldForGraphQL }
     >
   | RelationshipField<boolean>

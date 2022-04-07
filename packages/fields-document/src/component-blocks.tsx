@@ -10,4 +10,5 @@ export type {
   RelationshipField,
   InferRenderersForComponentBlocks,
   ArrayField,
+  ComponentPropFieldForGraphQL,
 } from './DocumentEditor/component-blocks/api';
