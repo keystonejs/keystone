@@ -19,7 +19,8 @@ import {
   getDocumentFeaturesForChildField,
   getValueAtPropPath,
   ReadonlyPropPath,
-  transformProps,
+  replaceValueAtPropPath,
+  traverseProps,
 } from './utils';
 import { getInitialPropsValue } from './initial-values';
 import { ArrayField } from './api';
@@ -167,13 +168,10 @@ function doesPropOnlyEverContainASingleChildField(rootProp: ComponentPropField):
 
 function findArrayFieldsWithSingleChildField(prop: ComponentPropField, value: unknown) {
   const propPaths: [ReadonlyPropPath, ArrayField<ComponentPropField>][] = [];
-  transformProps(prop, value, (prop, value, path) => {
-    if (prop.kind === 'array') {
-      if (doesPropOnlyEverContainASingleChildField(prop.element)) {
-        propPaths.push([path, prop]);
-      }
+  traverseProps(prop, value, (prop, value, path) => {
+    if (prop.kind === 'array' && doesPropOnlyEverContainASingleChildField(prop.element)) {
+      propPaths.push([path, prop]);
     }
-    return value;
   });
   return propPaths;
 }
@@ -397,12 +395,12 @@ export function withComponentBlocks(
             }
             setElementIdsForArrayValue(newVal, newKeys);
             if (!areArraysEqual(arrVal, newVal)) {
-              const transformedProps = transformProps(rootProp, node.props, (prop, value, path) => {
-                if (prop.kind === 'array' && areArraysEqual(path, propPath)) {
-                  return newVal;
-                }
-                return value;
-              });
+              const transformedProps = replaceValueAtPropPath(
+                rootProp,
+                node.props,
+                newVal,
+                propPath
+              );
               Transforms.setNodes(
                 editor,
                 { props: transformedProps as Record<string, unknown> },

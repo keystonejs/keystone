@@ -13,7 +13,7 @@ import {
 } from './api';
 import { updateValue } from './initial-values';
 
-const arrayValuesToElementIds = new WeakMap<readonly unknown[], string[]>();
+const arrayValuesToElementIds = new WeakMap<readonly unknown[], readonly string[]>();
 
 let counter = 0;
 
@@ -24,7 +24,10 @@ export function getElementIdsForArrayValue(value: readonly unknown[]) {
   return arrayValuesToElementIds.get(value)!;
 }
 
-export function setElementIdsForArrayValue(value: unknown[], elementIds: string[]) {
+export function setElementIdsForArrayValue(
+  value: readonly unknown[],
+  elementIds: readonly string[]
+) {
   arrayValuesToElementIds.set(value, elementIds);
 }
 

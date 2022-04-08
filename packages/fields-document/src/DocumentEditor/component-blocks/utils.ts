@@ -1,7 +1,7 @@
 import { ComponentPropField } from '../../component-blocks';
 import { DocumentFeatures } from '../../views';
 import { DocumentFeaturesForNormalization } from '../document-features-normalization';
-import { Mark } from '../utils';
+import { assert, Mark } from '../utils';
 import { ChildField } from './api';
 import { getElementIdsForArrayValue, setElementIdsForArrayValue } from './preview-props';
 
@@ -275,49 +275,90 @@ export function getValueAtPropPath(value: unknown, inputPath: ReadonlyPropPath) 
   return value;
 }
 
-export function transformProps(
+export function traverseProps(
   prop: ComponentPropField,
   value: unknown,
-  transformer: (prop: ComponentPropField, value: unknown, path: ReadonlyPropPath) => unknown,
+  visitor: (prop: ComponentPropField, value: unknown, path: ReadonlyPropPath) => void,
   path: ReadonlyPropPath = []
-): unknown {
+) {
   if (prop.kind === 'form' || prop.kind === 'relationship' || prop.kind === 'child') {
-    return transformer(prop, value, path);
+    visitor(prop, value, path);
+    return;
   }
   if (prop.kind === 'object') {
-    return transformer(
-      prop,
-      Object.fromEntries(
-        Object.entries(value as Record<string, unknown>).map(([key, val]) => {
-          return [key, transformProps(prop.value[key], val, transformer, path.concat(key))];
-        })
-      ),
-      path
-    );
+    for (const [key, childProp] of Object.entries(prop.value)) {
+      traverseProps(childProp, (value as any)[key], visitor, [...path, key]);
+    }
+    visitor(prop, value, path);
+    return;
   }
   if (prop.kind === 'array') {
-    const prevVal = value as unknown[];
-    const newVal = prevVal.map((val, i) =>
-      transformProps(prop.element, val, transformer, path.concat(i))
-    );
-    setElementIdsForArrayValue(newVal, getElementIdsForArrayValue(prevVal));
-    return transformer(prop, newVal, path);
+    for (const [idx, val] of (value as unknown[]).entries()) {
+      traverseProps(prop.element, val, visitor, path.concat(idx));
+    }
+    return visitor(prop, value, path);
   }
   if (prop.kind === 'conditional') {
-    const discriminant = (value as any).discriminant;
-    return transformer(
-      prop,
-      {
-        discriminant: transformer(prop, discriminant, path.concat('discriminant')),
-        value: transformProps(
-          prop.values[discriminant.toString() as string],
-          (value as any).value,
-          transformer,
-          path.concat('value')
-        ),
-      },
-      path
+    const discriminant: string | boolean = (value as any).discriminant;
+    visitor(prop, discriminant, path.concat('discriminant'));
+    traverseProps(
+      prop.values[discriminant.toString()],
+      (value as any).value,
+      visitor,
+      path.concat('value')
     );
+    visitor(prop, value, path);
+    return;
   }
+  assertNever(prop);
+}
+
+export function replaceValueAtPropPath(
+  prop: ComponentPropField,
+  value: unknown,
+  newValue: unknown,
+  path: ReadonlyPropPath
+): unknown {
+  if (path.length === 0) {
+    return newValue;
+  }
+
+  const [key, ...newPath] = path;
+
+  if (prop.kind === 'object') {
+    return {
+      ...(value as any),
+      [key]: replaceValueAtPropPath(prop.value[key], (value as any)[key], newValue, newPath),
+    };
+  }
+
+  if (prop.kind === 'conditional') {
+    const conditionalValue = value as { discriminant: string | boolean; value: unknown };
+    // replaceValueAtPropPath should not be used to only update the discriminant of a conditional field
+    // if you want to update the discriminant of a conditional field, replace the value of the whole conditional field
+    assert(key === 'value');
+    return {
+      discriminant: conditionalValue.discriminant,
+      value: replaceValueAtPropPath(prop.values[key], conditionalValue.value, newValue, newPath),
+    };
+  }
+
+  if (prop.kind === 'array') {
+    const prevVal = value as unknown[];
+    const newVal = [...prevVal];
+    setElementIdsForArrayValue(newVal, getElementIdsForArrayValue(prevVal));
+    newVal[key as number] = replaceValueAtPropPath(
+      prop.element,
+      newVal[key as number],
+      newValue,
+      newPath
+    );
+    return newVal;
+  }
+
+  // we should never reach here since form, relationship or child fields don't contain other fields
+  // so the only thing that can happen to them is to be replaced which happens at the start of this function when path.length === 0
+  assert(prop.kind !== 'form' && prop.kind !== 'relationship' && prop.kind !== 'child');
+
   assertNever(prop);
 }
