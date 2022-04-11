@@ -13,7 +13,7 @@ Implementation and docs are WIP.
 To run the project locally:
 
 - Clone this repo
-- Run `yarn` in the root (this repo is a monorepo and uses yarn workspaces, so that will install everything you'll need)
+- Run `yarn` at the root directory of the project (this repo is a monorepo and uses yarn workspaces, so that will install everything you'll need)
 - Open this folder in your terminal and run `yarn dev`
 
 If everything works 🤞 the GraphQL Server and Admin UI will start on [localhost:3000](http://localhost:3000)
