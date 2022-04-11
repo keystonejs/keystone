@@ -80,7 +80,6 @@ export const supportsUnique = false;
 export const skipRequiredTest = true;
 export const supportsDbMap = true;
 export const fieldName = 'content';
-export const subfieldName = 'document';
 export const readFieldName = 'contentRaw';
 
 const prop: ArrayField<ComponentPropFieldForGraphQL> = fields.array(
@@ -108,8 +107,8 @@ const prop: ArrayField<ComponentPropFieldForGraphQL> = fields.array(
   )
 );
 
-export const getTestFields = () => ({ content: componentThing(getFieldConfig()) });
-export const getFieldConfig = () => ({
+export const getTestFields = () => ({ content: componentThing(fieldConfig()) });
+export const fieldConfig = () => ({
   prop,
 });
 
