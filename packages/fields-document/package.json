@@ -33,7 +33,7 @@
     "@keystone-ui/icons": "^5.0.0",
     "@keystone-ui/popover": "^5.0.1",
     "@keystone-ui/tooltip": "^5.0.0",
-    "@types/react": "^17.0.37",
+    "@types/react": "^18.0.0",
     "apollo-server-errors": "^3.3.0",
     "apply-ref": "^1.0.0",
     "fp-ts": "^2.11.5",

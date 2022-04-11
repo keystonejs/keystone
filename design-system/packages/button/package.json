@@ -5,7 +5,7 @@
   "main": "dist/keystone-ui-button.cjs.js",
   "module": "dist/keystone-ui-button.esm.js",
   "devDependencies": {
-    "@types/react": "^17.0.37"
+    "@types/react": "^18.0.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
