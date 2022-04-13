@@ -116,7 +116,7 @@ export function createImagesContext(
           }
 
           await s3Instance?.images.delete(id, extension);
-          break;
+          return;
         }
         case 'local': {
           await fs.remove(
@@ -125,14 +125,13 @@ export function createImagesContext(
               `${id}.${extension}`
             )
           );
-          break;
-        }
-        default: {
-          throw new Error(
-            `attempted to get data from stream for storage ${storageString}, however could not find the config for it`
-          );
+          return;
         }
       }
+
+      throw new Error(
+        `attempted to get data from stream for storage ${storageString}, however could not find the config for it`
+      );
     },
   };
 }

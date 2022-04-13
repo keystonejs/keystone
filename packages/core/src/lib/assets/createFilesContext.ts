@@ -136,7 +136,7 @@ export function createFilesContext(
           }
 
           await s3Instance?.files.delete(filename);
-          break;
+          return;
         }
         case 'local': {
           await fs.remove(
