@@ -139,10 +139,10 @@ export function createFilesContext(
           break;
         }
         case 'local': {
-          // TODO why is this not narrowing
           await fs.remove(
             path.join(storageConfig.storagePath || DEFAULT_FILES_STORAGE_PATH, filename)
           );
+          return;
         }
       }
 

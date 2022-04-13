@@ -125,12 +125,14 @@ export function createImagesContext(
               `${id}.${extension}`
             )
           );
+          break;
+        }
+        default: {
+          throw new Error(
+            `attempted to get data from stream for storage ${storageString}, however could not find the config for it`
+          );
         }
       }
-
-      throw new Error(
-        `attempted to get data from stream for storage ${storageConfig}, however could not find the config for it`
-      );
     },
   };
 }
