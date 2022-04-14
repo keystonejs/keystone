@@ -1,11 +1,14 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Questions and Chat (Slack)
+  - name: Ask a Question (GitHub)
+    url: https://github.com/keystonejs/keystone/discussions/categories/questions
+    about: Get answers from the Keystone community
+  - name: Request a Feature (GitHub)
+    url: https://github.com/keystonejs/keystone/discussions/categories/feature-requests
+    about: Share your improvement ideas with us!
+  - name: Hangout in the community Slack
     url: http://community.keystonejs.com/
-    about: Join the Keystone community Slack – a place to ask questions, share ideas, and connect to the latest announcements.
-  - name: Feature request (GitHub Discussions)
-    url: https://github.com/keystonejs/keystone/discussions
-    about: Share your feature requests and ideas with us!
+    about: A place to share ideas and meet other Keystone devs
   - name: Keystone 5
     url: https://github.com/keystonejs/keystone-5
-    about: Now in maintenance mode, please visit our dedicated Keystone 5 repository for support.
+    about: Now in maintenance mode, please visit our dedicated Keystone 5 repository for support
