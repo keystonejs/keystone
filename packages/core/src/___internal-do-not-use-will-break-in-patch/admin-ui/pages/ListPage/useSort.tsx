@@ -16,7 +16,7 @@ export function useSort(list: ListMeta, orderableFields: Set<string>) {
     let direction: 'ASC' | 'DESC' = 'ASC';
     let sortByField = sortByFromUrl;
     if (sortByFromUrl.charAt(0) === '-') {
-      sortByField = sortByFromUrl.substr(1);
+      sortByField = sortByFromUrl.slice(1);
       direction = 'DESC';
     }
     if (!orderableFields.has(sortByField)) return null;
