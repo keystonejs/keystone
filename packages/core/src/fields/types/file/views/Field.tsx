@@ -178,7 +178,7 @@ function FileView({
       try {
         copy(value?.data.ref);
       } catch (e) {
-        addToast({ title: 'Faild to oopy to clipboard', tone: 'negative' });
+        addToast({ title: 'Faild to copy to clipboard', tone: 'negative' });
       }
 
       return;
