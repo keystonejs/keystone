@@ -9,6 +9,7 @@ import { Pill } from '@keystone-ui/pill';
 import { Button } from '@keystone-ui/button';
 import { FieldProps } from '../../../../types';
 import { ImageValue } from './index';
+import { file } from '@babel/types';
 
 function useObjectURL(fileData: File | undefined) {
   let [objectURL, setObjectURL] = useState<string | undefined>(undefined);
@@ -107,6 +108,30 @@ function ImgView({
   return value.kind === 'from-server' || value.kind === 'upload' ? (
     <Stack gap="small" across align="end">
       <ImageWrapper>
+        {value.kind === 'upload' && (
+          <div
+            css={
+              {
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                color: 'white',
+                textAlign: 'center',
+                wordWrap: 'break-word',
+                display: 'flex',
+                alignItems: 'center',
+                padding: '25px',
+                backgroundColor: 'rgba(89, 103, 148, 0.7)',
+                lineHeight: '1rem',
+                fontWeight: 500,
+              } as const
+            }
+          >
+            Save to complete upload
+          </div>
+        )}
         {errorMessage === undefined ? (
           <img
             ref={imageRef}
@@ -139,8 +164,8 @@ function ImgView({
           <ImageMeta
             {...(value.kind === 'from-server'
               ? {
-                  width: value.data.width,
-                  height: value.data.height,
+                  width: value.data.width || 0,
+                  height: value.data.height || 0,
                   url: value.data.src,
                   name: `${value.data.id}.${value.data.extension}`,
                   size: value.data.filesize,
@@ -149,8 +174,6 @@ function ImgView({
                   width: imageDimensions.width,
                   height: imageDimensions.height,
                   size: value.data.file.size,
-                  url: imagePathFromUpload,
-                  name: value.data.file.name,
                 })}
           />
           <Stack across gap="small" align="center">
@@ -260,29 +283,41 @@ export function validateImage({
 // Styled Components
 // ==============================
 
-export const ImageMeta = ({ width, height, size, name, url }) => {
+export const ImageMeta = ({
+  width,
+  height,
+  size,
+  name,
+  url,
+}: {
+  width: number;
+  height: number;
+  size: number;
+  name?: string;
+  url?: string;
+}) => {
   return (
     <Stack padding="xxsmall" gap="xxsmall">
-      <Stack across align="center" gap="small">
-        <Text size="small">
-          <a href={url} target="_blank">
-            {name}
-          </a>
-        </Text>
-      </Stack>
+      {url && name && (
+        <Stack across align="center" gap="small">
+          <Text size="small">
+            <a href={url} target="_blank">
+              {name}
+            </a>
+          </Text>
+        </Stack>
+      )}
       <Text size="xsmall">{`${width} x ${height} (${bytes(size)})`}</Text>
     </Stack>
   );
 };
 
 export const ImageWrapper = ({ children }: { children: ReactNode }) => {
-  const theme = useTheme();
-
   return (
     <div
       css={{
+        position: 'relative',
         overflow: 'hidden',
-        // borderRadius: theme.radii.medium,
         flexShrink: 0,
         lineHeight: 0,
         padding: 4,
