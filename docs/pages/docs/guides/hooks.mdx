@@ -68,8 +68,11 @@ export default config({
         resolveInput: ({ resolvedData }) => {
           const { title } = resolvedData;
           if (title) {
-            // Ensure the first letter of the title is capitalised
-            resolvedData.title = title[0].toUpperCase() + title.slice(1)
+            return {
+              ...resolvedData,
+              // Ensure the first letter of the title is capitalised
+              title: title[0].toUpperCase() + title.slice(1)
+            }
           }
           // We always return resolvedData from the resolveInput hook
           return resolvedData;
