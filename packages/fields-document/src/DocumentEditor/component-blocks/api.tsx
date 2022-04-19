@@ -137,9 +137,6 @@ export interface ObjectField<
   preview?: PreviewComponent;
 }
 
-export type PreviewProps<Field extends ComponentPropField> =
-  ExtractPropFromComponentPropFieldForPreview<Field>;
-
 type StringOrBooleanToString<Val extends string | boolean> = Val extends string
   ? Val
   : Val extends true
@@ -569,12 +566,7 @@ export type ComponentBlock<
     }
 );
 
-type CastToComponentPropField<Prop> = Prop extends ComponentPropField ? Prop : never;
-
-export type ExtractPropFromComponentPropField<
-  Prop extends ComponentPropField,
-  ChildFieldType
-> = Prop extends ChildField
+type GenericPreviewProps<Prop extends ComponentPropField, ChildFieldType> = Prop extends ChildField
   ? ChildFieldType
   : Prop extends FormField<infer Value, infer Options>
   ? {
@@ -586,12 +578,10 @@ export type ExtractPropFromComponentPropField<
   : Prop extends ObjectField<infer Value>
   ? {
       readonly fields: {
-        readonly [Key in keyof Value]: ExtractPropFromComponentPropFieldForPreview<Value[Key]>;
+        readonly [Key in keyof Value]: GenericPreviewProps<Value[Key], ChildFieldType>;
       };
       onChange(value: {
-        readonly [Key in keyof Value]?: ExtractPropFromComponentPropFieldForInitialOrUpdate<
-          Value[Key]
-        >;
+        readonly [Key in keyof Value]?: InitialOrUpdateValueFromComponentPropField<Value[Key]>;
       }): void;
       readonly field: Prop;
     }
@@ -601,14 +591,12 @@ export type ExtractPropFromComponentPropField<
         readonly discriminant: DiscriminantStringToDiscriminantValue<DiscriminantField, Key>;
         onChange<Discriminant extends DiscriminantField['defaultValue']>(
           discriminant: Discriminant,
-          value?: ExtractPropFromComponentPropFieldForInitialOrUpdate<
+          value?: InitialOrUpdateValueFromComponentPropField<
             GetFromKey<Values, DiscrimiantToString<Discriminant>>
           >
         ): void;
         readonly options: DiscriminantField['options'];
-        readonly value: ExtractPropFromComponentPropFieldForPreview<
-          CastToComponentPropField<Values[Key]>
-        >;
+        readonly value: GenericPreviewProps<Values[Key], ChildFieldType>;
         readonly field: Prop;
       };
     }[keyof Values]
@@ -628,20 +616,19 @@ export type ExtractPropFromComponentPropField<
   ? {
       readonly elements: readonly {
         id: string;
-        element: ExtractPropFromComponentPropFieldForPreview<ElementField>;
+        element: GenericPreviewProps<ElementField, ChildFieldType>;
       }[];
       readonly onChange: (
         value: readonly {
           id: string | undefined;
-          value?: ExtractPropFromComponentPropFieldForInitialOrUpdate<ElementField>;
+          value?: InitialOrUpdateValueFromComponentPropField<ElementField>;
         }[]
       ) => void;
       readonly field: Prop;
     }
   : never;
 
-export type ExtractPropFromComponentPropFieldForPreview<Prop extends ComponentPropField> =
-  ExtractPropFromComponentPropField<Prop, ReactNode>;
+export type PreviewProps<Prop extends ComponentPropField> = GenericPreviewProps<Prop, ReactNode>;
 
 type GetFromKey<Obj, Key> = Key extends keyof Obj ? Obj[Key] : never;
 
@@ -651,24 +638,20 @@ type DiscrimiantToString<Discriminant extends string | boolean> = Discriminant e
   ? 'false'
   : Discriminant;
 
-export type ExtractPropFromComponentPropFieldForInitialOrUpdate<Prop extends ComponentPropField> =
+export type InitialOrUpdateValueFromComponentPropField<Prop extends ComponentPropField> =
   Prop extends ChildField
     ? undefined
     : Prop extends FormField<infer Value, any>
     ? Value | undefined
     : Prop extends ObjectField<infer Value>
     ? {
-        readonly [Key in keyof Value]?: ExtractPropFromComponentPropFieldForInitialOrUpdate<
-          Value[Key]
-        >;
+        readonly [Key in keyof Value]?: InitialOrUpdateValueFromComponentPropField<Value[Key]>;
       }
     : Prop extends ConditionalField<infer DiscriminantField, infer Values>
     ? {
         readonly [Key in keyof Values]: {
           readonly discriminant: DiscriminantStringToDiscriminantValue<DiscriminantField, Key>;
-          readonly value?: ExtractPropFromComponentPropFieldForInitialOrUpdate<
-            CastToComponentPropField<Values[Key]>
-          >;
+          readonly value?: InitialOrUpdateValueFromComponentPropField<Values[Key]>;
         };
       }[keyof Values]
     : Prop extends RelationshipField<infer Many>
@@ -678,7 +661,7 @@ export type ExtractPropFromComponentPropFieldForInitialOrUpdate<Prop extends Com
     : Prop extends ArrayField<infer ElementField>
     ? readonly {
         id: string | undefined;
-        value?: ExtractPropFromComponentPropFieldForInitialOrUpdate<ElementField>;
+        value?: InitialOrUpdateValueFromComponentPropField<ElementField>;
       }[]
     : never;
 
@@ -693,8 +676,10 @@ type DiscriminantStringToDiscriminantValue<
     : never
   : DiscriminantString;
 
-export type ExtractPropFromComponentPropFieldForToolbar<Prop extends ComponentPropField> =
-  ExtractPropFromComponentPropField<Prop, undefined>;
+export type PreviewPropsForToolbar<Prop extends ComponentPropField> = GenericPreviewProps<
+  Prop,
+  undefined
+>;
 
 export type HydratedRelationshipData = {
   id: string;
@@ -725,9 +710,7 @@ export function component<
         chromeless: true;
         toolbar?: (props: {
           props: {
-            [Key in keyof PropsOption]: ExtractPropFromComponentPropFieldForToolbar<
-              PropsOption[Key]
-            >;
+            [Key in keyof PropsOption]: PreviewPropsForToolbar<PropsOption[Key]>;
           };
           onRemove(): void;
         }) => ReactElement;
@@ -736,9 +719,7 @@ export function component<
         chromeless?: false;
         toolbar?: (props: {
           props: {
-            [Key in keyof PropsOption]: ExtractPropFromComponentPropFieldForToolbar<
-              PropsOption[Key]
-            >;
+            [Key in keyof PropsOption]: PreviewPropsForToolbar<PropsOption[Key]>;
           };
           onShowEditMode(): void;
           onRemove(): void;
@@ -757,20 +738,18 @@ export const NotEditable = ({ children, ...props }: HTMLAttributes<HTMLDivElemen
 
 type Comp<Props> = (props: Props) => ReactElement | null;
 
-type ExtractPropFromComponentPropFieldForRendering<Prop extends ComponentPropField> =
+type ValueForRenderingFromComponentPropField<Prop extends ComponentPropField> =
   Prop extends ChildField
     ? ReactNode
     : Prop extends FormField<infer Value, any>
     ? Value
     : Prop extends ObjectField<infer Value>
-    ? { readonly [Key in keyof Value]: ExtractPropFromComponentPropFieldForRendering<Value[Key]> }
+    ? { readonly [Key in keyof Value]: ValueForRenderingFromComponentPropField<Value[Key]> }
     : Prop extends ConditionalField<infer DiscriminantField, infer Values>
     ? {
         readonly [Key in keyof Values]: {
           readonly discriminant: DiscriminantStringToDiscriminantValue<DiscriminantField, Key>;
-          readonly value: ExtractPropFromComponentPropFieldForRendering<
-            CastToComponentPropField<Values[Key]>
-          >;
+          readonly value: ValueForRenderingFromComponentPropField<Values[Key]>;
         };
       }[keyof Values]
     : Prop extends RelationshipField<infer Many>
@@ -778,7 +757,7 @@ type ExtractPropFromComponentPropFieldForRendering<Prop extends ComponentPropFie
       ? readonly HydratedRelationshipData[]
       : HydratedRelationshipData | null
     : Prop extends ArrayField<infer ElementField>
-    ? readonly ExtractPropFromComponentPropFieldForRendering<ElementField>[]
+    ? readonly ValueForRenderingFromComponentPropField<ElementField>[]
     : never;
 
 export type ValueForComponentPropField<Prop extends ComponentPropField> = Prop extends ChildField
@@ -786,14 +765,12 @@ export type ValueForComponentPropField<Prop extends ComponentPropField> = Prop e
   : Prop extends FormField<infer Value, any>
   ? Value
   : Prop extends ObjectField<infer Value>
-  ? { readonly [Key in keyof Value]: ExtractPropFromComponentPropFieldForRendering<Value[Key]> }
+  ? { readonly [Key in keyof Value]: ValueForRenderingFromComponentPropField<Value[Key]> }
   : Prop extends ConditionalField<infer DiscriminantField, infer Values>
   ? {
       readonly [Key in keyof Values]: {
         readonly discriminant: DiscriminantStringToDiscriminantValue<DiscriminantField, Key>;
-        readonly value: ExtractPropFromComponentPropFieldForRendering<
-          CastToComponentPropField<Values[Key]>
-        >;
+        readonly value: ValueForRenderingFromComponentPropField<Values[Key]>;
       };
     }[keyof Values]
   : Prop extends RelationshipField<infer Many>
@@ -801,11 +778,11 @@ export type ValueForComponentPropField<Prop extends ComponentPropField> = Prop e
     ? readonly HydratedRelationshipData[]
     : HydratedRelationshipData | null
   : Prop extends ArrayField<infer ElementField>
-  ? readonly ExtractPropFromComponentPropFieldForRendering<ElementField>[]
+  ? readonly ValueForRenderingFromComponentPropField<ElementField>[]
   : never;
 
 type ExtractPropsForPropsForRendering<Props extends Record<string, ComponentPropField>> = {
-  readonly [Key in keyof Props]: ExtractPropFromComponentPropFieldForRendering<Props[Key]>;
+  readonly [Key in keyof Props]: ValueForRenderingFromComponentPropField<Props[Key]>;
 };
 
 export type InferRenderersForComponentBlocks<
