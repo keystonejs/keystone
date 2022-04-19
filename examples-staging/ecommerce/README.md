@@ -12,8 +12,8 @@ Implementation and docs are WIP.
 
 To run the project locally:
 
-- Clone this repo
-- Run `yarn` in the root (this repo is a monorepo and uses yarn workspaces, so that will install everything you'll need)
-- Open this folder in your terminal and run `yarn dev`
+- Clone the https://github.com/keystonejs/keystone repository
+- Run `yarn` at the root directory of the repository [(we use yarn workspaces)](https://classic.yarnpkg.com/lang/en/docs/workspaces/)
+- Navigate to this directory and run `yarn dev`
 
 If everything works 🤞 the GraphQL Server and Admin UI will start on [localhost:3000](http://localhost:3000)
