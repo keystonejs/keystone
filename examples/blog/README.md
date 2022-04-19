@@ -6,7 +6,7 @@ Use it as a starting place for learning how to use Keystone.
 
 ## Instructions
 
-To run this project, clone the Keystone repository locally, run `yarn` at the root of the repository then navigate to this directory and run:
+To run this project, clone the Keystone repository locally, run `yarn` at the root of this repository, then navigate to this directory and run:
 
 ```shell
 yarn dev
