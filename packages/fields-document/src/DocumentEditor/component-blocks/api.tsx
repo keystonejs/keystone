@@ -279,6 +279,11 @@ export const fields = {
     preview?: TypedPreviewComponent<FormFieldWithGraphQLField<Option['value'], readonly Option[]>>;
   }): FormFieldWithGraphQLField<Option['value'], readonly Option[]> {
     const optionValuesSet = new Set(options.map(x => x.value));
+    if (!optionValuesSet.has(defaultValue)) {
+      throw new Error(
+        `A defaultValue of ${defaultValue} was provided to a select field but it does not match the value of one of the options provided`
+      );
+    }
     return {
       kind: 'form',
       Input({ value, onChange, autoFocus }) {
