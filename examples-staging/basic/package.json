@@ -14,6 +14,7 @@
     "@keystone-6/core": "^1.1.0",
     "@keystone-6/document-renderer": "^1.0.0",
     "@keystone-6/fields-document": "^2.0.0",
+    "@keystone-ui/button": "^6.0.0",
     "@keystone-ui/core": "^4.0.0",
     "@keystone-ui/fields": "^6.0.1",
     "@keystone-ui/icons": "^5.0.0",
