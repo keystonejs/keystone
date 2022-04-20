@@ -141,7 +141,7 @@ const fieldRenderers: {
 export type NonChildFieldComponentPropField =
   | FormField<any, any>
   | ObjectField
-  | ConditionalField<FormField<string | boolean, any>, { [key: string]: ComponentPropField }>
+  | ConditionalField<FormField<any, any>, { [key: string]: ComponentPropField }>
   | RelationshipField<boolean>
   | ArrayField<ComponentPropField>;
 

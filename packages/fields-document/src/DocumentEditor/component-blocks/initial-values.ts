@@ -130,7 +130,7 @@ export function updateValue(prop: ComponentPropField, currentValue: any, updater
       for (const x of newVal) {
         if (x.key !== undefined) {
           if (uniqueKeys.has(x.key)) {
-            throw new Error('Array elements must have unique ids');
+            throw new Error('Array elements must have unique keys');
           }
           uniqueKeys.add(x.key);
         }
@@ -139,13 +139,13 @@ export function updateValue(prop: ComponentPropField, currentValue: any, updater
         if (x.key !== undefined) {
           return x.key;
         }
-        let elementId = getNewArrayElementKey();
-        // just in case someone gives an id that is above our counter
-        while (uniqueKeys.has(elementId)) {
-          elementId = getNewArrayElementKey();
+        let elementKey = getNewArrayElementKey();
+        // just in case someone gives a key that is above our counter
+        while (uniqueKeys.has(elementKey)) {
+          elementKey = getNewArrayElementKey();
         }
-        uniqueKeys.add(elementId);
-        return elementId;
+        uniqueKeys.add(elementKey);
+        return elementKey;
       });
       const prevKeys = getKeysForArrayValue(currentArrVal);
       const prevValuesByKey = new Map(

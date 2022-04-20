@@ -166,7 +166,7 @@ export type ComponentPropField =
   | ChildField
   | FormField<any, any>
   | ObjectField
-  | ConditionalField<FormField<string | boolean, any>, { [key: string]: ComponentPropField }>
+  | ConditionalField<FormField<any, any>, { [key: string]: ComponentPropField }>
   | RelationshipField<boolean>
   // this is written like this rather than ArrayField<ComponentPropField> to avoid TypeScript erroring about circularity
   | { kind: 'array'; element: ComponentPropField; preview?: PreviewComponent };

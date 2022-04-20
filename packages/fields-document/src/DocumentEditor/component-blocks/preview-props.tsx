@@ -76,7 +76,7 @@ const memoizedInfoForProp = castToMemoizedInfoForProp({
           element: PreviewProps<ComponentPropField>;
         }
       >(),
-      onChange(updater: readonly { key?: string; value?: unknown }[]) {
+      onChange(updater: readonly { key: string | undefined; value?: unknown }[]) {
         onChange(value => updateValue(prop, value, updater));
       },
     };
