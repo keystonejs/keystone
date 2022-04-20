@@ -33,13 +33,13 @@ const fieldRenderers: {
       <Stack gap="medium">
         <SortableList {...props}>
           {props.elements.map(val => {
-            return <SortableItemInForm key={val.id} {...val} />;
+            return <SortableItemInForm elementKey={val.key} {...val} />;
           })}
         </SortableList>
         <Button
           autoFocus={props.autoFocus}
           onClick={() => {
-            props.onChange([...props.elements.map(x => ({ id: x.id })), { id: undefined }]);
+            props.onChange([...props.elements, { key: undefined }]);
           }}
         >
           Add
@@ -170,16 +170,14 @@ export const FormValueContentFromPreview = memo(function FormValueContentFromPre
 });
 
 const SortableItemInForm = memo(function SortableItemInForm(
-  props: PreviewProps<ArrayField<ComponentPropField>>['elements'][number]
+  props: PreviewProps<ComponentPropField> & { elementKey: string }
 ) {
   return (
-    <SortableItem id={props.id}>
+    <SortableItem elementKey={props.elementKey}>
       <Stack across align="center" gap="small" css={{ justifyContent: 'center' }}>
         <DragHandle />
       </Stack>
-      {isNonChildFieldPreviewProps(props.element) && (
-        <FormValueContentFromPreview {...props.element} />
-      )}
+      {isNonChildFieldPreviewProps(props) && <FormValueContentFromPreview {...props} />}
     </SortableItem>
   );
 });

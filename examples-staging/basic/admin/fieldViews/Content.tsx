@@ -39,13 +39,11 @@ export const componentBlocks = {
           rows.onChange(
             rows.elements.map(element => {
               return {
-                id: element.id,
+                key: element.key,
                 value: [
-                  ...element.element.elements.map(element => {
-                    return { id: element.id };
-                  }),
+                  ...element.element.elements,
                   ...Array.from({ length: maxColumns - element.element.elements.length }, () => ({
-                    id: undefined,
+                    key: undefined,
                   })),
                 ],
               };
@@ -74,13 +72,8 @@ export const componentBlocks = {
                           props.fields.rows.onChange(
                             props.fields.rows.elements.map(element => {
                               return {
-                                id: element.id,
-                                value: [
-                                  ...element.element.elements.map(element => {
-                                    return { id: element.id };
-                                  }),
-                                  { id: undefined },
-                                ],
+                                key: element.key,
+                                value: [...element.element.elements, { key: undefined }],
                               };
                             })
                           );
@@ -97,10 +90,7 @@ export const componentBlocks = {
           <NotEditable>
             <div
               onClick={() => {
-                props.fields.rows.onChange([
-                  ...props.fields.rows.elements.map(x => ({ id: x.id })),
-                  { id: undefined },
-                ]);
+                props.fields.rows.onChange([...props.fields.rows.elements, { key: undefined }]);
               }}
             >
               <Button>Insert row</Button>
@@ -128,16 +118,13 @@ export const componentBlocks = {
     component: function MyList(props) {
       useEffect(() => {
         if (!props.fields.children.elements.length) {
-          props.fields.children.onChange([
-            ...props.fields.children.elements.map(x => ({ id: x.id })),
-            { id: undefined },
-          ]);
+          props.fields.children.onChange([...props.fields.children.elements, { key: undefined }]);
         }
       });
       return (
         <ul css={{ padding: 0 }}>
           {props.fields.children.elements.map(element => (
-            <li css={{ listStyle: 'none' }} key={element.id}>
+            <li css={{ listStyle: 'none' }} key={element.key}>
               <input
                 contentEditable="false"
                 css={{ marginRight: 8 }}

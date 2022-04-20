@@ -3,7 +3,7 @@ import { DocumentFeatures } from '../../views';
 import { DocumentFeaturesForNormalization } from '../document-features-normalization';
 import { assert, Mark } from '../utils';
 import { ChildField } from './api';
-import { getElementIdsForArrayValue, setElementIdsForArrayValue } from './preview-props';
+import { getKeysForArrayValue, setKeysForArrayValue } from './preview-props';
 
 type PathToChildFieldWithOption = { path: ReadonlyPropPath; options: ChildField['options'] };
 
@@ -346,7 +346,7 @@ export function replaceValueAtPropPath(
   if (prop.kind === 'array') {
     const prevVal = value as unknown[];
     const newVal = [...prevVal];
-    setElementIdsForArrayValue(newVal, getElementIdsForArrayValue(prevVal));
+    setKeysForArrayValue(newVal, getKeysForArrayValue(prevVal));
     newVal[key as number] = replaceValueAtPropPath(
       prop.element,
       newVal[key as number],

@@ -31,7 +31,7 @@ import {
 import { assert } from '../utils';
 import { areArraysEqual } from '../document-features-normalization';
 import { clientSideValidateProp, getFieldAtPropPath, ReadonlyPropPath } from './utils';
-import { ChildrenByPathContext, getElementIdsForArrayValue } from './preview-props';
+import { ChildrenByPathContext, getKeysForArrayValue } from './preview-props';
 import { getInitialPropsValue, getInitialValue } from './initial-values';
 import { FormValue } from './edit-mode';
 import { createGetPreviewProps } from './preview-props';
@@ -490,7 +490,7 @@ function propPathWithIndiciesToKeys(propPath: ReadonlyPropPath, val: any): reado
       val = val[key];
       return key;
     }
-    const keys = getElementIdsForArrayValue(val);
+    const keys = getKeysForArrayValue(val);
     val = val[key];
     return keys[key];
   });
@@ -546,8 +546,8 @@ function findChildPropPathsWithPrevious(
     }
     case 'array': {
       let paths: ChildPropPathWithPrevious[] = [];
-      const prevKeys = getElementIdsForArrayValue(prevValue);
-      const keys = getElementIdsForArrayValue(value);
+      const prevKeys = getKeysForArrayValue(prevValue);
+      const keys = getKeysForArrayValue(value);
       for (const [i, val] of (value as unknown[]).entries()) {
         const key = keys[i];
         const prevIdx = prevKeys.indexOf(key);

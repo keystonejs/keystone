@@ -24,11 +24,7 @@ import {
 } from './utils';
 import { getInitialPropsValue } from './initial-values';
 import { ArrayField } from './api';
-import {
-  getElementIdsForArrayValue,
-  getNewArrayElementId,
-  setElementIdsForArrayValue,
-} from './preview-props';
+import { getKeysForArrayValue, getNewArrayElementKey, setKeysForArrayValue } from './preview-props';
 
 function getAncestorComponentBlock(editor: Editor) {
   if (editor.selection) {
@@ -364,15 +360,15 @@ export function withComponentBlocks(
               }
             }
             const arrVal = getValueAtPropPath(node.props, propPath) as unknown[];
-            const prevKeys = getElementIdsForArrayValue(arrVal);
+            const prevKeys = getKeysForArrayValue(arrVal);
             const prevKeysSet = new Set(prevKeys);
             const alreadyUsedIndicies = new Set<number>();
             const newVal: unknown[] = [];
             const newKeys: string[] = [];
             const getNewKey = () => {
-              let key = getNewArrayElementId();
+              let key = getNewArrayElementKey();
               while (prevKeysSet.has(key)) {
-                key = getNewArrayElementId();
+                key = getNewArrayElementKey();
               }
               return key;
             };
@@ -393,7 +389,7 @@ export function withComponentBlocks(
                 );
               }
             }
-            setElementIdsForArrayValue(newVal, newKeys);
+            setKeysForArrayValue(newVal, newKeys);
             if (!areArraysEqual(arrVal, newVal)) {
               const transformedProps = replaceValueAtPropPath(
                 rootProp,

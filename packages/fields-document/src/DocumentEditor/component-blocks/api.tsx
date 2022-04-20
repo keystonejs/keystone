@@ -615,12 +615,12 @@ type GenericPreviewProps<Prop extends ComponentPropField, ChildFieldType> = Prop
   : Prop extends ArrayField<infer ElementField>
   ? {
       readonly elements: readonly {
-        id: string;
+        key: string;
         element: GenericPreviewProps<ElementField, ChildFieldType>;
       }[];
       readonly onChange: (
         value: readonly {
-          id: string | undefined;
+          key: string | undefined;
           value?: InitialOrUpdateValueFromComponentPropField<ElementField>;
         }[]
       ) => void;
@@ -660,7 +660,7 @@ export type InitialOrUpdateValueFromComponentPropField<Prop extends ComponentPro
       : HydratedRelationshipData | null
     : Prop extends ArrayField<infer ElementField>
     ? readonly {
-        id: string | undefined;
+        key: string | undefined;
         value?: InitialOrUpdateValueFromComponentPropField<ElementField>;
       }[]
     : never;

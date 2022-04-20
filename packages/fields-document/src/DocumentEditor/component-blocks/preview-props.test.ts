@@ -49,15 +49,15 @@ test("array fields don't keep the props of an array item around after removing t
   });
   let props = getPreviewProps(val);
   props.onChange([
-    { id: '1', value: 'blah' },
-    { id: '2', value: 'blah2' },
+    { key: '1', value: 'blah' },
+    { key: '2', value: 'blah2' },
   ]);
 
   let elementsBeforeChange = props.elements;
-  props.onChange([{ id: '2' }]);
+  props.onChange([{ key: '2' }]);
   expect(props.elements[0].element).toBe(elementsBeforeChange[1].element);
   expect(props.elements[0]).toBe(elementsBeforeChange[1]);
-  props.onChange([{ id: '2' }, { id: '1', value: 'blah' }]);
+  props.onChange([{ key: '2' }, { key: '1', value: 'blah' }]);
   expect(props.elements[1].element).not.toBe(elementsBeforeChange[0].element);
   expect(props.elements[1]).not.toBe(elementsBeforeChange[0]);
 });
@@ -79,7 +79,7 @@ test('the props of two array fields in a conditional field change when the discr
   props = getPreviewProps(val);
   assert(props.discriminant === true);
   expect(prevArrayOnChange).not.toBe(props.value.onChange);
-  props.value.onChange([{ id: undefined, value: [{ id: undefined, value: 'blah' }] }]);
+  props.value.onChange([{ key: undefined, value: [{ key: undefined, value: 'blah' }] }]);
   expect(props.value.elements).toHaveLength(1);
   expect(props.value.elements[0].element.elements).toHaveLength(1);
   expect(props.value.elements[0].element.elements[0].element.value).toEqual('blah');

@@ -29,7 +29,7 @@ function List(props: PreviewProps<ListItems>): ReactElement {
     props.elements.map(x => {
       return React.createElement(
         'li',
-        { key: x.id },
+        { key: x.key },
         x.element.fields.content,
         React.createElement(List, x.element.fields.children)
       );
@@ -37,8 +37,7 @@ function List(props: PreviewProps<ListItems>): ReactElement {
     React.createElement(
       'button',
       {
-        onClick: () =>
-          props.onChange([...props.elements.map(x => ({ id: x.id })), { id: undefined }]),
+        onClick: () => props.onChange([...props.elements, { key: undefined }]),
       },
       'Insert'
     )

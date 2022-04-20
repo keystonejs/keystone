@@ -12,16 +12,13 @@ const list = component({
       'ul',
       null,
       props.fields.children.elements.map(x => {
-        return React.createElement('li', { key: x.id }, x.element.fields.content);
+        return React.createElement('li', { key: x.key }, x.element.fields.content);
       }),
       React.createElement(
         'button',
         {
           onClick: () =>
-            props.fields.children.onChange([
-              ...props.fields.children.elements.map(x => ({ id: x.id })),
-              { id: undefined },
-            ]),
+            props.fields.children.onChange([...props.fields.children.elements, { key: undefined }]),
         },
         'Insert'
       )

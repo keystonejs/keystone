@@ -26,8 +26,8 @@ import { ToolbarButton } from '.';
 const RemoveContext = createContext<null | ((index: number) => void)>(null);
 
 export function SortableList(props: {
-  onChange: (elements: readonly { id: string }[]) => void;
-  elements: readonly { id: string }[];
+  onChange: (elements: readonly { key: string }[]) => void;
+  elements: readonly { key: string }[];
   children: ReactNode;
 }) {
   const sensors = useSensors(
@@ -45,7 +45,7 @@ export function SortableList(props: {
   const { onChange } = props;
   const onRemove = useCallback(
     (index: number) => {
-      onChange(elementsRef.current.filter((_, i) => i !== index).map(x => ({ id: x.id })));
+      onChange(elementsRef.current.filter((_, i) => i !== index).map(x => ({ key: x.key })));
     },
     [onChange]
   );
@@ -58,18 +58,18 @@ export function SortableList(props: {
         onDragEnd={({ over, active }) => {
           if (over && over.id !== active.id) {
             const activeIndex = props.elements.findIndex(
-              x => (typeof x === 'string' ? x : x.id) === active.id
+              x => (typeof x === 'string' ? x : x.key) === active.id
             );
             const overIndex = props.elements.findIndex(
-              x => (typeof x === 'string' ? x : x.id) === over.id
+              x => (typeof x === 'string' ? x : x.key) === over.id
             );
-            const newValue = arrayMove(props.elements as { id: string }[], activeIndex, overIndex);
+            const newValue = arrayMove(props.elements as { key: string }[], activeIndex, overIndex);
             props.onChange(newValue);
           }
         }}
       >
         <SortableContext
-          items={props.elements as (string | { id: string })[]}
+          items={useMemo(() => props.elements.map(x => x.key), [props.elements])}
           strategy={verticalListSortingStrategy}
         >
           <ul
@@ -95,10 +95,10 @@ const DragHandleListenersContext = createContext<Pick<
   'listeners' | 'isDragging' | 'attributes' | 'index'
 > | null>(null);
 
-export function SortableItem(props: { id: string; children: ReactNode }) {
+export function SortableItem(props: { elementKey: string; children: ReactNode }) {
   const { attributes, isDragging, listeners, setNodeRef, transform, transition, index } =
     useSortable({
-      id: props.id,
+      id: props.elementKey,
     });
 
   const style = {

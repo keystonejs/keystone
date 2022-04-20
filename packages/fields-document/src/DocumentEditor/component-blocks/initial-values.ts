@@ -1,9 +1,5 @@
 import { ComponentPropField, ComponentBlock } from '../../component-blocks';
-import {
-  getElementIdsForArrayValue,
-  getNewArrayElementId,
-  setElementIdsForArrayValue,
-} from './preview-props';
+import { getKeysForArrayValue, getNewArrayElementKey, setKeysForArrayValue } from './preview-props';
 import { assertNever, findChildPropPaths } from './utils';
 
 export function getInitialValue(type: string, componentBlock: ComponentBlock) {
@@ -129,29 +125,29 @@ export function updateValue(prop: ComponentPropField, currentValue: any, updater
     }
     case 'array': {
       const currentArrVal = currentValue as unknown[];
-      const newVal = updater as { id: string | undefined; value: unknown }[];
+      const newVal = updater as { key: string | undefined; value: unknown }[];
       const uniqueKeys = new Set();
       for (const x of newVal) {
-        if (x.id !== undefined) {
-          if (uniqueKeys.has(x.id)) {
+        if (x.key !== undefined) {
+          if (uniqueKeys.has(x.key)) {
             throw new Error('Array elements must have unique ids');
           }
-          uniqueKeys.add(x.id);
+          uniqueKeys.add(x.key);
         }
       }
       const keys = newVal.map(x => {
-        if (x.id !== undefined) {
-          return x.id;
+        if (x.key !== undefined) {
+          return x.key;
         }
-        let elementId = getNewArrayElementId();
+        let elementId = getNewArrayElementKey();
         // just in case someone gives an id that is above our counter
         while (uniqueKeys.has(elementId)) {
-          elementId = getNewArrayElementId();
+          elementId = getNewArrayElementKey();
         }
         uniqueKeys.add(elementId);
         return elementId;
       });
-      const prevKeys = getElementIdsForArrayValue(currentArrVal);
+      const prevKeys = getKeysForArrayValue(currentArrVal);
       const prevValuesByKey = new Map(
         currentArrVal.map((value, i) => {
           return [prevKeys[i], value];
@@ -164,7 +160,7 @@ export function updateValue(prop: ComponentPropField, currentValue: any, updater
         }
         return getInitialPropsValueFromInitializer(prop.element, x.value);
       });
-      setElementIdsForArrayValue(val, keys);
+      setKeysForArrayValue(val, keys);
       return val;
     }
   }

@@ -13,25 +13,25 @@ import {
 } from './api';
 import { updateValue } from './initial-values';
 
-const arrayValuesToElementIds = new WeakMap<readonly unknown[], readonly string[]>();
+const arrayValuesToElementKeys = new WeakMap<readonly unknown[], readonly string[]>();
 
 let counter = 0;
 
-export function getElementIdsForArrayValue(value: readonly unknown[]) {
-  if (!arrayValuesToElementIds.has(value)) {
-    arrayValuesToElementIds.set(value, Array.from({ length: value.length }, getNewArrayElementId));
+export function getKeysForArrayValue(value: readonly unknown[]) {
+  if (!arrayValuesToElementKeys.has(value)) {
+    arrayValuesToElementKeys.set(
+      value,
+      Array.from({ length: value.length }, getNewArrayElementKey)
+    );
   }
-  return arrayValuesToElementIds.get(value)!;
+  return arrayValuesToElementKeys.get(value)!;
 }
 
-export function setElementIdsForArrayValue(
-  value: readonly unknown[],
-  elementIds: readonly string[]
-) {
-  arrayValuesToElementIds.set(value, elementIds);
+export function setKeysForArrayValue(value: readonly unknown[], elementIds: readonly string[]) {
+  arrayValuesToElementKeys.set(value, elementIds);
 }
 
-export function getNewArrayElementId() {
+export function getNewArrayElementKey() {
   return (counter++).toString();
 }
 
@@ -72,10 +72,10 @@ const memoizedInfoForProp = castToMemoizedInfoForProp({
         string,
         {
           onChange: (cb: (val: unknown) => unknown) => void;
-          inner: { id: string; element: unknown };
+          inner: { key: string; element: unknown };
         }
       >(),
-      onChange(updater: readonly { id?: string; value?: unknown }[]) {
+      onChange(updater: readonly { key?: string; value?: unknown }[]) {
         onChange(value => updateValue(prop, value, updater));
       },
     };
@@ -179,9 +179,9 @@ export function createGetPreviewProps<Field extends ComponentPropField>(
     },
     array(prop, value, memoized, path, getInnerProp) {
       const arrayValue = value as readonly unknown[];
-      const keys = getElementIdsForArrayValue(arrayValue);
+      const keys = getKeysForArrayValue(arrayValue);
 
-      const unusedKeys = new Set(getElementIdsForArrayValue(value));
+      const unusedKeys = new Set(getKeysForArrayValue(value));
 
       const props: PreviewProps<ArrayField<ComponentPropField>> = {
         elements: arrayValue.map((val, i) => {
@@ -190,18 +190,18 @@ export function createGetPreviewProps<Field extends ComponentPropField>(
           const element = getOrInsert(memoized.inner, key, () => {
             const onChange = (val: (val: unknown) => unknown) => {
               memoized.rawOnChange(prev => {
-                const keys = getElementIdsForArrayValue(prev as readonly unknown[]);
+                const keys = getKeysForArrayValue(prev as readonly unknown[]);
                 const index = keys.indexOf(key);
                 const newValue = [...(prev as readonly unknown[])];
                 newValue[index] = val(newValue[index]);
-                setElementIdsForArrayValue(newValue, keys);
+                setKeysForArrayValue(newValue, keys);
                 return newValue;
               });
             };
             return {
               inner: {
                 element: getInnerProp(prop.element, val, onChange, key),
-                id: key,
+                key,
               },
               onChange,
             };
@@ -210,10 +210,10 @@ export function createGetPreviewProps<Field extends ComponentPropField>(
           if (element.inner.element !== currentInnerProp) {
             element.inner = {
               element: currentInnerProp,
-              id: key,
+              key,
             };
           }
-          return element.inner as { id: string; element: typeof currentInnerProp };
+          return element.inner as { key: string; element: typeof currentInnerProp };
         }),
         field: prop,
         onChange: memoized.onChange,

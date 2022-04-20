@@ -14,7 +14,7 @@ const qAndA = component({
       props.fields.children.elements.map(x => {
         return React.createElement(
           'div',
-          { key: x.id },
+          { key: x.key },
           React.createElement('h1', null, x.element.fields.question),
           React.createElement('p', null, x.element.fields.answer)
         );
