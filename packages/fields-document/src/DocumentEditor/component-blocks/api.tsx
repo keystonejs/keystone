@@ -567,7 +567,10 @@ export type ComponentBlock<
 );
 
 type GenericPreviewProps<Prop extends ComponentPropField, ChildFieldType> = Prop extends ChildField
-  ? ChildFieldType
+  ? {
+      readonly element: ChildFieldType;
+      readonly field: Prop;
+    }
   : Prop extends FormField<infer Value, infer Options>
   ? {
       readonly value: Value;

@@ -30,7 +30,7 @@ function List(props: PreviewProps<ListItems>): ReactElement {
       return React.createElement(
         'li',
         { key: x.key },
-        x.element.fields.content,
+        x.element.fields.content.element,
         React.createElement(List, x.element.fields.children)
       );
     }),

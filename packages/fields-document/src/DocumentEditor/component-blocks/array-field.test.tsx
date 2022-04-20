@@ -12,7 +12,7 @@ const list = component({
       'ul',
       null,
       props.fields.children.elements.map(x => {
-        return React.createElement('li', { key: x.key }, x.element.fields.content);
+        return React.createElement('li', { key: x.key }, x.element.fields.content.element);
       }),
       React.createElement(
         'button',

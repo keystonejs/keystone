@@ -33,7 +33,7 @@ const fieldRenderers: {
       <Stack gap="medium">
         <SortableList {...props}>
           {props.elements.map(val => {
-            return <SortableItemInForm elementKey={val.key} {...val} />;
+            return <SortableItemInForm elementKey={val.key} key={val.key} {...val.element} />;
           })}
         </SortableList>
         <Button

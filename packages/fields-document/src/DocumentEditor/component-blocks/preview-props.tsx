@@ -156,7 +156,7 @@ export function createGetPreviewProps<Field extends ComponentPropField>(
       };
     },
     child(prop, value, onChange, path) {
-      return <ChildFieldEditable path={path} />;
+      return { element: <ChildFieldEditable path={path} />, field: prop };
     },
     object(prop, value, memoized, path, getInnerProp) {
       const fields: Record<string, PreviewProps<ComponentPropField>> = {};

@@ -16,7 +16,7 @@ const table = component({
           Fragment,
           { key: x.key },
           x.element.elements.map(x => {
-            return React.createElement(Fragment, { key: x.key }, x.element.fields.content);
+            return React.createElement(Fragment, { key: x.key }, x.element.fields.content.element);
           })
         );
       })

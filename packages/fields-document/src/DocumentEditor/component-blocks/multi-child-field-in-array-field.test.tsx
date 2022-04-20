@@ -15,8 +15,8 @@ const qAndA = component({
         return React.createElement(
           'div',
           { key: x.key },
-          React.createElement('h1', null, x.element.fields.question),
-          React.createElement('p', null, x.element.fields.answer)
+          React.createElement('h1', null, x.element.fields.question.element),
+          React.createElement('p', null, x.element.fields.answer.element)
         );
       })
     ),

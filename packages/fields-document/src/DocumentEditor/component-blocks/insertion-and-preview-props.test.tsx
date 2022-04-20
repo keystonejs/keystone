@@ -52,10 +52,10 @@ const componentBlocks = {
       return React.createElement(
         'div',
         null,
-        props.fields.object.fields.block,
-        props.fields.object.fields.inline,
+        props.fields.object.fields.block.element,
+        props.fields.object.fields.inline.element,
         props.fields.object.fields.conditional.discriminant &&
-          props.fields.object.fields.conditional.value
+          props.fields.object.fields.conditional.value.element
       );
     },
     label: 'Complex',
@@ -231,7 +231,10 @@ test('preview props api', () => {
       object: {
         field: componentBlocks.complex.props.object,
         fields: {
-          block: React.createElement(ChildFieldEditable, { path: ['object', 'block'] }),
+          block: {
+            element: React.createElement(ChildFieldEditable, { path: ['object', 'block'] }),
+            field: componentBlocks.complex.props.object.value.block,
+          },
           conditional: {
             discriminant: false,
             field: componentBlocks.complex.props.object.value.conditional,
@@ -258,7 +261,10 @@ test('preview props api', () => {
               value: '',
             },
           },
-          inline: React.createElement(ChildFieldEditable, { path: ['object', 'inline'] }),
+          inline: {
+            element: React.createElement(ChildFieldEditable, { path: ['object', 'inline'] }),
+            field: componentBlocks.complex.props.object.value.inline,
+          },
           many: {
             field: componentBlocks.complex.props.object.value.many,
             value: [],
@@ -370,7 +376,12 @@ test('preview props conditional change', () => {
     discriminant: true,
     onChange: expect.any(Function),
     options: undefined,
-    value: React.createElement(ChildFieldEditable, { path: ['object', 'conditional', 'value'] }),
+    value: {
+      element: React.createElement(ChildFieldEditable, {
+        path: ['object', 'conditional', 'value'],
+      }),
+      field: componentBlocks.complex.props.object.value.conditional.values.true,
+    },
   };
   expect(getPreviewProps(editor).fields.object.fields.conditional).toEqual(
     expectedConditionalPreviewProps

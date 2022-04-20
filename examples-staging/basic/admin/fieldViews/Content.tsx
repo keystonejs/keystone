@@ -62,7 +62,7 @@ export const componentBlocks = {
                     {row.element.elements.map((column, i) => {
                       return (
                         <td key={i} css={{ border: '1px solid black' }}>
-                          {column.element.fields.content}
+                          {column.element.fields.content.element}
                         </td>
                       );
                     })}
@@ -137,7 +137,7 @@ export const componentBlocks = {
                   textDecoration: element.element.fields.done.value ? 'line-through' : undefined,
                 }}
               >
-                {element.element.fields.content}
+                {element.element.fields.content.element}
               </span>
             </li>
           ))}
@@ -183,7 +183,7 @@ export const componentBlocks = {
               textShadow: '0px 1px 3px black',
             }}
           >
-            {props.fields.title}
+            {props.fields.title.element}
           </div>
           <div
             css={{
@@ -195,7 +195,7 @@ export const componentBlocks = {
               textShadow: '0px 1px 3px black',
             }}
           >
-            {props.fields.content}
+            {props.fields.content.element}
           </div>
           {props.fields.cta.discriminant ? (
             <div
@@ -210,7 +210,7 @@ export const componentBlocks = {
                 padding: '12px 16px',
               }}
             >
-              {props.fields.cta.value.fields.text}
+              {props.fields.cta.value.fields.text.element}
             </div>
           ) : null}
         </div>
@@ -244,7 +244,7 @@ export const componentBlocks = {
       props.fields.something.discriminant ? (
         <NotEditable>Is void</NotEditable>
       ) : (
-        <div>{props.fields.something.value}</div>
+        <div>{props.fields.something.value.element}</div>
       ),
     props: {
       something: fields.conditional(fields.checkbox({ label: 'Is void' }), {
@@ -258,7 +258,7 @@ export const componentBlocks = {
     component: props => {
       return (
         <div>
-          <h1>{props.fields.title}</h1>
+          <h1>{props.fields.title.element}</h1>
           <NotEditable>
             <ul>
               {props.fields.authors.value.map((author, i) => {
@@ -338,7 +338,7 @@ export const componentBlocks = {
               <intentConfig.icon />
             </div>
           </NotEditable>
-          <div css={{ flex: 1 }}>{props.fields.content}</div>
+          <div css={{ flex: 1 }}>{props.fields.content.element}</div>
         </div>
       );
     },
@@ -419,10 +419,10 @@ export const componentBlocks = {
             },
           }}
         >
-          <div css={{ fontStyle: 'italic', color: '#4A5568' }}>{props.fields.content}</div>
+          <div css={{ fontStyle: 'italic', color: '#4A5568' }}>{props.fields.content.element}</div>
           <div css={{ fontWeight: 'bold', color: '#47546b' }}>
             <NotEditable>— </NotEditable>
-            {props.fields.attribution}
+            {props.fields.attribution.element}
           </div>
         </div>
       );
