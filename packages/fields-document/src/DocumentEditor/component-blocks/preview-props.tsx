@@ -72,7 +72,8 @@ const memoizedInfoForProp = castToMemoizedInfoForProp({
         string,
         {
           onChange: (cb: (val: unknown) => unknown) => void;
-          inner: { key: string; element: unknown };
+          elementWithKey: { key: string } & PreviewProps<ComponentPropField>;
+          element: PreviewProps<ComponentPropField>;
         }
       >(),
       onChange(updater: readonly { key?: string; value?: unknown }[]) {
@@ -198,22 +199,25 @@ export function createGetPreviewProps<Field extends ComponentPropField>(
                 return newValue;
               });
             };
+            const element = getInnerProp(prop.element, val, onChange, key);
             return {
-              inner: {
-                element: getInnerProp(prop.element, val, onChange, key),
+              element,
+              elementWithKey: {
+                ...element,
                 key,
               },
               onChange,
             };
           });
           const currentInnerProp = getInnerProp(prop.element, val, element.onChange, key);
-          if (element.inner.element !== currentInnerProp) {
-            element.inner = {
-              element: currentInnerProp,
+          if (element.element !== currentInnerProp) {
+            element.element = currentInnerProp;
+            element.elementWithKey = {
+              ...currentInnerProp,
               key,
             };
           }
-          return element.inner as { key: string; element: typeof currentInnerProp };
+          return element.elementWithKey;
         }),
         field: prop,
         onChange: memoized.onChange,

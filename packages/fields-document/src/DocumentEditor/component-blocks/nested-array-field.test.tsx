@@ -15,8 +15,8 @@ const table = component({
         return React.createElement(
           Fragment,
           { key: x.key },
-          x.element.elements.map(x => {
-            return React.createElement(Fragment, { key: x.key }, x.element.fields.content.element);
+          x.elements.map(x => {
+            return React.createElement(Fragment, { key: x.key }, x.fields.content.element);
           })
         );
       })
@@ -281,8 +281,8 @@ test('add to multiple in child field in nested array', () => {
     (editor.children[0] as any).props
   );
 
-  previewProps.fields.children.elements[0].element.onChange([
-    ...previewProps.fields.children.elements[0].element.elements,
+  previewProps.fields.children.elements[0].onChange([
+    ...previewProps.fields.children.elements[0].elements,
     { key: undefined },
   ]);
   expect(editor).toMatchInlineSnapshot(`

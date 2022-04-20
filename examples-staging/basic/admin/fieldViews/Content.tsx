@@ -31,18 +31,18 @@ export const componentBlocks = {
         let maxColumns = 1;
         const rows = props.fields.rows;
         for (const row of rows.elements) {
-          if (row.element.elements.length > maxColumns) {
-            maxColumns = row.element.elements.length;
+          if (row.elements.length > maxColumns) {
+            maxColumns = row.elements.length;
           }
         }
-        if (rows.elements.some(x => x.element.elements.length !== maxColumns)) {
+        if (rows.elements.some(x => x.elements.length !== maxColumns)) {
           rows.onChange(
             rows.elements.map(element => {
               return {
                 key: element.key,
                 value: [
-                  ...element.element.elements,
-                  ...Array.from({ length: maxColumns - element.element.elements.length }, () => ({
+                  ...element.elements,
+                  ...Array.from({ length: maxColumns - element.elements.length }, () => ({
                     key: undefined,
                   })),
                 ],
@@ -59,10 +59,10 @@ export const componentBlocks = {
               {props.fields.rows.elements.map((row, i) => {
                 return (
                   <tr key={i} css={{ border: '1px solid black' }}>
-                    {row.element.elements.map((column, i) => {
+                    {row.elements.map((column, i) => {
                       return (
                         <td key={i} css={{ border: '1px solid black' }}>
-                          {column.element.fields.content.element}
+                          {column.fields.content.element}
                         </td>
                       );
                     })}
@@ -73,7 +73,7 @@ export const componentBlocks = {
                             props.fields.rows.elements.map(element => {
                               return {
                                 key: element.key,
-                                value: [...element.element.elements, { key: undefined }],
+                                value: [...element.elements, { key: undefined }],
                               };
                             })
                           );
@@ -129,15 +129,15 @@ export const componentBlocks = {
                 contentEditable="false"
                 css={{ marginRight: 8 }}
                 type="checkbox"
-                checked={element.element.fields.done.value}
-                onChange={event => element.element.fields.done.onChange(event.target.checked)}
+                checked={element.fields.done.value}
+                onChange={event => element.fields.done.onChange(event.target.checked)}
               />
               <span
                 style={{
-                  textDecoration: element.element.fields.done.value ? 'line-through' : undefined,
+                  textDecoration: element.fields.done.value ? 'line-through' : undefined,
                 }}
               >
-                {element.element.fields.content.element}
+                {element.fields.content.element}
               </span>
             </li>
           ))}

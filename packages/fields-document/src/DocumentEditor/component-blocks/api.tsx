@@ -617,10 +617,9 @@ type GenericPreviewProps<Prop extends ComponentPropField, ChildFieldType> = Prop
     }
   : Prop extends ArrayField<infer ElementField>
   ? {
-      readonly elements: readonly {
-        key: string;
-        element: GenericPreviewProps<ElementField, ChildFieldType>;
-      }[];
+      readonly elements: readonly (GenericPreviewProps<ElementField, ChildFieldType> & {
+        readonly key: string;
+      })[];
       readonly onChange: (
         value: readonly {
           key: string | undefined;
