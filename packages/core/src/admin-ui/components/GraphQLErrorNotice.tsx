@@ -20,7 +20,9 @@ export function GraphQLErrorNotice({ errors, networkError }: GraphQLErrorNoticeP
     return (
       <Stack gap="small" marginBottom="large">
         {errors.map((err, idx) => (
-          <Notice tone="negative" key={idx}>{err.message}</Notice>
+          <Notice tone="negative" key={idx}>
+            {err.message}
+          </Notice>
         ))}
       </Stack>
     );
