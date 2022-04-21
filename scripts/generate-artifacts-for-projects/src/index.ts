@@ -40,7 +40,25 @@ async function main() {
     await Promise.all(
       directoriesOfProjects.map(async dir => {
         const entries = await fs.readdir(dir, { withFileTypes: true });
-        return entries.filter(x => x.isDirectory()).map(x => path.join(dir, x.name));
+        const projectPaths: string[] = [];
+        await Promise.all(
+          entries.map(async entry => {
+            if (entry.isDirectory()) {
+              const projectPath = path.join(dir, entry.name);
+              const packageJsonPath = path.join(projectPath, 'package.json');
+              try {
+                if ((await fs.stat(packageJsonPath)).isFile()) {
+                  projectPaths.push(projectPath);
+                }
+              } catch (err: any) {
+                if (err.code !== 'ENOENT') {
+                  throw err;
+                }
+              }
+            }
+          })
+        );
+        return projectPaths;
       })
     )
   ).flat();
