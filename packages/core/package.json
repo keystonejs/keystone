@@ -49,7 +49,7 @@
     "@keystone-ui/toast": "^5.0.0",
     "@keystone-ui/tooltip": "^5.0.0",
     "@nodelib/fs.walk": "^1.2.8",
-    "@preconstruct/next": "^3.0.1",
+    "@preconstruct/next": "^4.0.0",
     "@prisma/client": "3.12.0",
     "@prisma/migrate": "3.12.0",
     "@prisma/sdk": "3.12.0",

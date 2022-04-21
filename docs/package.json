@@ -19,7 +19,7 @@
     "@mdx-js/loader": "next",
     "@mdx-js/react": "next",
     "@next/mdx": "^12.0.7",
-    "@preconstruct/next": "^3.0.1",
+    "@preconstruct/next": "^4.0.0",
     "@sindresorhus/slugify": "^1.1.2",
     "@types/gtag.js": "^0.0.10",
     "@types/mdx-js__react": "^1.5.5",
