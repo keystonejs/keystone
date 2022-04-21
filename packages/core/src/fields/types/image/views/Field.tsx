@@ -218,7 +218,7 @@ function ImgView({
           </Stack>
         )
       ) : (
-        <Fragment>
+        <Stack across gap="small" align="center">
           <Button
             size="small"
             disabled={onChange === undefined}
@@ -249,7 +249,7 @@ function ImgView({
             //   Save to remove this image
             // </Pill>
             null}
-        </Fragment>
+        </Stack>
       )}
     </Stack>
   );
