@@ -15,7 +15,7 @@
     "@keystone-ui/core": "^4.0.0",
     "@keystone-ui/fields": "^6.0.0",
     "@keystone-ui/icons": "^5.0.0",
-    "react": "^17.0.2"
+    "react": "^18.0.0"
   },
   "devDependencies": {
     "typescript": "^4.4.4"
