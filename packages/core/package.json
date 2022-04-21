@@ -124,7 +124,7 @@
   "devDependencies": {
     "@testing-library/dom": "^8.11.1",
     "@testing-library/react": "^12.1.2",
-    "@testing-library/user-event": "^13.5.0",
+    "@testing-library/user-event": "^14.0.0",
     "@types/bytes": "^3.1.1",
     "fast-glob": "^3.2.7",
     "fixturez": "^1.1.0",
