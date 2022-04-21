@@ -143,11 +143,11 @@ function ImgView({
                 }
               }}
               css={{
-                objectFit: 'cover',
+                objectFit: 'contain',
                 width: '100%',
                 height: '100%',
               }}
-              alt={field.path}
+              alt={`Image uploaded to ${field.path} field`}
               src={imageSrc}
             />
           </Fragment>
@@ -318,7 +318,7 @@ export const ImageWrapper = ({ children }: { children: ReactNode }) => {
         overflow: 'hidden',
         flexShrink: 0,
         lineHeight: 0,
-        backgroundColor: '#FBFCFE',
+        backgroundColor: '#e2e8f0',
         textAlign: 'center',
         width: '120px', // 120px image + chrome
         height: '120px',
