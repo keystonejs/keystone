@@ -74,6 +74,7 @@ adminUITests('./tests/test-projects/basic', browserType => {
 
       // Assert that there's only one result.
       await page.waitForSelector('table tbody tr');
+      await page.waitForSelector('text=Task-not-assigned-0', { state: 'detached' });
       const filteredElements = await page.$$('table tbody tr');
       expect(filteredElements.length).toBe(1);
     });
