@@ -81,6 +81,7 @@ export function Field({
         <span
           css={{
             display: 'block',
+            marginTop: '8px',
             color: 'red',
           }}
         >
@@ -132,7 +133,7 @@ function ImgView({
                   alignItems: 'center',
                   padding: '25px',
                   backgroundColor: 'rgba(17, 24, 39, 0.65)',
-                  lineHeight: '1rem',
+                  lineHeight: '1.15',
                   fontWeight: 500,
                 }}
               >
@@ -275,16 +276,19 @@ export function validateImage({
   }
   // check if the file is actually an image
   if (!file.type.includes('image')) {
-    return `Only ${SUPPORTED_IMAGE_EXTENSIONS.reduce((acc, curr, currentIndex) => {
-      if (currentIndex === SUPPORTED_IMAGE_EXTENSIONS.length - 1) {
-        acc += ` and .${curr}`;
-      } else if (currentIndex > 0) {
-        acc += `, .${curr}`;
-      } else {
-        acc += `.${curr}`;
-      }
-      return acc;
-    }, '')} files are allowed. Please try again.`;
+    return `Sorry, that file type isn't accepted. Please try ${SUPPORTED_IMAGE_EXTENSIONS.reduce(
+      (acc, curr, currentIndex) => {
+        if (currentIndex === SUPPORTED_IMAGE_EXTENSIONS.length - 1) {
+          acc += ` or .${curr}`;
+        } else if (currentIndex > 0) {
+          acc += `, .${curr}`;
+        } else {
+          acc += `.${curr}`;
+        }
+        return acc;
+      },
+      ''
+    )}.`;
   }
 }
 
