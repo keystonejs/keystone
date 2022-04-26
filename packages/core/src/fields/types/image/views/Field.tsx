@@ -51,8 +51,9 @@ export function Field({
   // the user selects the same file again)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const inputKey = useMemo(() => Math.random(), [value]);
-  const accept = SUPPORTED_IMAGE_EXTENSIONS.map(ext => [`.${ext}`, `image/${ext}`].join(', ')).join(
-    ', '
+  const accept = useMemo(
+    () => SUPPORTED_IMAGE_EXTENSIONS.map(ext => [`.${ext}`, `image/${ext}`].join(', ')).join(', '),
+    []
   );
   return (
     <FieldContainer as="fieldset">
