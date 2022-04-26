@@ -5,7 +5,6 @@ import bytes from 'bytes';
 import { Fragment, ReactNode, RefObject, useEffect, useMemo, useRef, useState } from 'react';
 import { jsx, Stack, Text } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
-import { Pill } from '@keystone-ui/pill';
 import { Button } from '@keystone-ui/button';
 import { FieldProps } from '../../../../types';
 import { SUPPORTED_IMAGE_EXTENSIONS } from '../utils';
@@ -77,6 +76,16 @@ export function Field({
         accept={accept}
         disabled={onChange === undefined}
       />
+      {errorMessage && (
+        <span
+          css={{
+            display: 'block',
+            color: 'red',
+          }}
+        >
+          {errorMessage}
+        </span>
+      )}
     </FieldContainer>
   );
 }
@@ -174,11 +183,7 @@ function ImgView({
                       size: value.data.file.size,
                     })}
               />
-            ) : (
-              <Pill tone="negative" weight="light">
-                {errorMessage}
-              </Pill>
-            )}
+            ) : null}
             <Stack across gap="small" align="center">
               <Button
                 size="small"
@@ -269,7 +274,16 @@ export function validateImage({
   }
   // check if the file is actually an image
   if (!file.type.includes('image')) {
-    return 'Only image files are allowed. Please try again.';
+    return `Only ${SUPPORTED_IMAGE_EXTENSIONS.reduce((acc, curr, currentIndex) => {
+      if (currentIndex === SUPPORTED_IMAGE_EXTENSIONS.length - 1) {
+        acc += ` and .${curr}`;
+      } else if (currentIndex > 0) {
+        acc += `, .${curr}`;
+      } else {
+        acc += `.${curr}`;
+      }
+      return acc;
+    }, '')} files are allowed. Please try again.`;
   }
 }
 
@@ -319,6 +333,7 @@ export const ImageWrapper = ({ children }: { children: ReactNode }) => {
         textAlign: 'center',
         width: '120px', // 120px image + chrome
         height: '120px',
+        border: '1px solid #e1e5e9',
       }}
     >
       {children}
@@ -332,7 +347,6 @@ export const Placeholder = () => {
       css={{
         width: '100%',
         height: '100%',
-        border: '1px solid #e1e5e9',
       }}
       width="120"
       height="120"
