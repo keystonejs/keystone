@@ -1,10 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Fragment, ReactNode, useState } from 'react';
+import { Fragment, useState } from 'react';
 
 import { Button } from '@keystone-ui/button';
-import { Inline, jsx, Stack, useTheme } from '@keystone-ui/core';
+import { jsx, Stack, useTheme } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, FieldLegend } from '@keystone-ui/fields';
 import { DrawerController } from '@keystone-ui/modals';
 import {
@@ -73,46 +73,6 @@ function LinkToRelatedItems({
   );
 }
 
-const RelationshipLinkButton = ({ href, children }: { href: string; children: ReactNode }) => (
-  <Button css={{ padding: 0, height: 'auto' }} weight="link" tone="active" as={Link} href={href}>
-    {children}
-  </Button>
-);
-
-const RelationshipDisplay = ({
-  list,
-  value,
-}: {
-  list: ListMeta;
-  value: SingleRelationshipValue | ManyRelationshipValue;
-}) => {
-  if (value.kind === 'many') {
-    if (value.value.length) {
-      return (
-        <Inline gap="small">
-          {value.value.map(i => (
-            <RelationshipLinkButton href={`/${list.path}/${i.id}`}>
-              {i.label}
-            </RelationshipLinkButton>
-          ))}
-        </Inline>
-      );
-    } else {
-      return <div>(No {list.plural})</div>;
-    }
-  } else {
-    if (value.value) {
-      return (
-        <RelationshipLinkButton href={`/${list.path}/${value.value.id}`}>
-          {value.value.label}
-        </RelationshipLinkButton>
-      );
-    } else {
-      return <div>(No {list.singular})</div>;
-    }
-  }
-};
-
 export const Field = ({
   field,
   autoFocus,
@@ -161,95 +121,96 @@ export const Field = ({
   return (
     <FieldContainer as="fieldset">
       <FieldLabel as="legend">{field.label}</FieldLabel>
-      {onChange ? (
-        <Fragment>
-          <Stack gap="medium">
-            <RelationshipSelect
-              controlShouldRenderValue
-              autoFocus={autoFocus}
-              isDisabled={onChange === undefined}
-              list={foreignList}
-              portalMenu
-              state={
-                value.kind === 'many'
-                  ? {
-                      kind: 'many',
-                      value: value.value,
-                      onChange(newItems) {
-                        onChange({
+
+      <Fragment>
+        <Stack gap="medium">
+          <RelationshipSelect
+            controlShouldRenderValue
+            autoFocus={autoFocus}
+            isDisabled={onChange === undefined}
+            list={foreignList}
+            portalMenu
+            state={
+              value.kind === 'many'
+                ? {
+                    kind: 'many',
+                    value: value.value,
+                    onChange(newItems) {
+                      onChange?.({
+                        ...value,
+                        value: newItems,
+                      });
+                    },
+                  }
+                : {
+                    kind: 'one',
+                    value: value.value,
+                    onChange(newVal) {
+                      if (value.kind === 'one') {
+                        onChange?.({
                           ...value,
-                          value: newItems,
-                        });
-                      },
-                    }
-                  : {
-                      kind: 'one',
-                      value: value.value,
-                      onChange(newVal) {
-                        if (value.kind === 'one') {
-                          onChange({
-                            ...value,
-                            value: newVal,
-                          });
-                        }
-                      },
-                    }
-              }
-            />
-            <Stack across gap="small">
-              {!field.hideCreate && (
-                <Button
-                  size="small"
-                  disabled={isDrawerOpen}
-                  onClick={() => {
-                    setIsDrawerOpen(true);
-                  }}
-                >
-                  Create related {foreignList.singular}
-                </Button>
-              )}
-              {authenticatedItem.state === 'authenticated' &&
-                authenticatedItem.listKey === field.refListKey &&
-                (value.kind === 'many'
-                  ? value.value.find(x => x.id === authenticatedItem.id) === undefined
-                  : value.value?.id !== authenticatedItem.id) && (
-                  <Button
-                    size="small"
-                    isDisabled={onChange === undefined}
-                    onClick={() => {
-                      const val = {
-                        label: authenticatedItem.label,
-                        id: authenticatedItem.id,
-                      };
-                      if (value.kind === 'many') {
-                        onChange({
-                          ...value,
-                          value: [...value.value, val],
-                        });
-                      } else {
-                        onChange({
-                          ...value,
-                          value: val,
+                          value: newVal,
                         });
                       }
-                    }}
-                  >
-                    {value.kind === 'many' ? 'Add ' : 'Set as '}
-                    {authenticatedItem.label}
-                  </Button>
-                )}
-              {!!(value.kind === 'many'
-                ? value.value.length
-                : value.kind === 'one' && value.value) && (
-                <LinkToRelatedItems
-                  itemId={value.id}
-                  refFieldKey={field.refFieldKey}
-                  list={foreignList}
-                  value={value}
-                />
+                    },
+                  }
+            }
+          />
+          <Stack across gap="small">
+            {onChange !== undefined && !field.hideCreate && (
+              <Button
+                size="small"
+                disabled={isDrawerOpen}
+                onClick={() => {
+                  setIsDrawerOpen(true);
+                }}
+              >
+                Create related {foreignList.singular}
+              </Button>
+            )}
+            {onChange !== undefined &&
+              authenticatedItem.state === 'authenticated' &&
+              authenticatedItem.listKey === field.refListKey &&
+              (value.kind === 'many'
+                ? value.value.find(x => x.id === authenticatedItem.id) === undefined
+                : value.value?.id !== authenticatedItem.id) && (
+                <Button
+                  size="small"
+                  onClick={() => {
+                    const val = {
+                      label: authenticatedItem.label,
+                      id: authenticatedItem.id,
+                    };
+                    if (value.kind === 'many') {
+                      onChange({
+                        ...value,
+                        value: [...value.value, val],
+                      });
+                    } else {
+                      onChange({
+                        ...value,
+                        value: val,
+                      });
+                    }
+                  }}
+                >
+                  {value.kind === 'many' ? 'Add ' : 'Set as '}
+                  {authenticatedItem.label}
+                </Button>
               )}
-            </Stack>
+            {!!(value.kind === 'many'
+              ? value.value.length
+              : value.kind === 'one' && value.value) && (
+              <LinkToRelatedItems
+                itemId={value.id}
+                refFieldKey={field.refFieldKey}
+                list={foreignList}
+                value={value}
+              />
+            )}
           </Stack>
+        </Stack>
+        {onChange !== undefined && (
           <DrawerController isOpen={isDrawerOpen}>
             <CreateItemDrawer
               listKey={foreignList.key}
@@ -272,10 +233,8 @@ export const Field = ({
               }}
             />
           </DrawerController>
-        </Fragment>
-      ) : (
-        <RelationshipDisplay value={value} list={foreignList} />
-      )}
+        )}
+      </Fragment>
     </FieldContainer>
   );
 };
