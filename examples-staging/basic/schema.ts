@@ -132,9 +132,7 @@ export const lists: Keystone.Lists = {
   }),
   Post: list({
     fields: {
-      title: text({
-        // ui: { views: require.resolve('./admin/fieldViews/whatever.tsx') },
-      }),
+      title: text({ access: {} }),
       // TODO: expand this out into a proper example project
       // Enable this line to test custom field views
       // test: text({ ui: { views: require.resolve('./admin/fieldViews/Test.tsx') } }),
@@ -160,7 +158,13 @@ export const lists: Keystone.Lists = {
           },
         },
         formatting: true,
-        layouts: [[1], [1, 1], [1, 1, 1], [2, 1], [1, 2], [1, 2, 1]],
+        layouts: [
+          [1, 1],
+          [1, 1, 1],
+          [2, 1],
+          [1, 2],
+          [1, 2, 1],
+        ],
         links: true,
         dividers: true,
         componentBlocks,
