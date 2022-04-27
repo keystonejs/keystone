@@ -8,12 +8,12 @@ import { insertComponentBlock } from '.';
 
 const componentBlocks = {
   basic: component({
-    component: () => null,
+    preview: () => null,
     label: 'Basic',
     schema: { prop: fields.text({ label: 'Prop' }) },
   }),
   withChildElements: component({
-    component: () => null,
+    preview: () => null,
     label: 'With Child Elements',
     schema: {
       prop: fields.text({ label: 'Prop' }),
@@ -22,7 +22,7 @@ const componentBlocks = {
     },
   }),
   withLotsOfChildElements: component({
-    component: () => null,
+    preview: () => null,
     label: 'With Lots of Child Elements',
     schema: {
       block: fields.child({ kind: 'block', placeholder: '' }),
@@ -563,7 +563,7 @@ test('toggling to heading when in an inline prop', () => {
     {
       componentBlocks: {
         inline: component({
-          component: () => null,
+          preview: () => null,
           label: '',
           schema: {
             child: fields.child({ kind: 'inline', placeholder: '' }),
@@ -633,7 +633,7 @@ test('child field in array field insertBreak', () => {
     {
       componentBlocks: {
         myList: component({
-          component: () => null,
+          preview: () => null,
           label: '',
           schema: {
             children: fields.array(
@@ -732,7 +732,7 @@ test('child field in array field deleteBackward at end', () => {
       skipRenderingDOM: true,
       componentBlocks: {
         myList: component({
-          component: () => null,
+          preview: () => null,
           label: '',
           schema: {
             children: fields.array(
@@ -820,7 +820,7 @@ test('child field in array field deleteBackward in middle', () => {
       skipRenderingDOM: true,
       componentBlocks: {
         myList: component({
-          component: () => null,
+          preview: () => null,
           label: '',
           schema: {
             children: fields.array(

@@ -6,12 +6,12 @@ import { jsx, makeEditor } from '../tests/utils';
 
 const componentBlocks = {
   basic: component({
-    component: () => null,
+    preview: () => null,
     label: 'Basic',
     schema: { prop: fields.text({ label: 'Prop' }) },
   }),
   withChildElements: component({
-    component: () => null,
+    preview: () => null,
     label: 'With Child Elements',
     schema: {
       prop: fields.text({ label: 'Prop' }),
@@ -20,7 +20,7 @@ const componentBlocks = {
     },
   }),
   withChildElementsBlockLast: component({
-    component: () => null,
+    preview: () => null,
     label: 'With Child Elements Block last',
     schema: {
       prop: fields.text({ label: 'Prop' }),
@@ -29,7 +29,7 @@ const componentBlocks = {
     },
   }),
   complex: component({
-    component: () => null,
+    preview: () => null,
     label: 'Complex',
     schema: {
       object: fields.object({

@@ -7,7 +7,7 @@ import { jsx, makeEditor } from '../tests/utils';
 import { component, fields } from '../../component-blocks';
 
 const qAndA = component({
-  component: props =>
+  preview: props =>
     React.createElement(
       'div',
       null,

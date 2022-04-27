@@ -264,7 +264,7 @@ test("link shortcut doesn't do anything when inside of a component block with li
     {
       componentBlocks: {
         comp: component({
-          component: props => React.createElement('div', null, props.fields.child.element),
+          preview: props => React.createElement('div', null, props.fields.child.element),
           label: '',
           schema: { child: fields.child({ kind: 'inline', placeholder: '' }) },
         }),
@@ -317,7 +317,7 @@ test('link shortcut works when inside of a component block with links option inh
     {
       componentBlocks: {
         comp: component({
-          component: props => React.createElement('div', null, props.fields.child.element),
+          preview: props => React.createElement('div', null, props.fields.child.element),
           label: '',
           schema: { child: fields.child({ kind: 'inline', placeholder: '', links: 'inherit' }) },
         }),

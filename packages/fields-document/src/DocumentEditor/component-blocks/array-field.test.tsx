@@ -7,7 +7,7 @@ import { jsx, makeEditor } from '../tests/utils';
 import { component, fields } from '../../component-blocks';
 
 const list = component({
-  component: props =>
+  preview: props =>
     React.createElement(
       'ul',
       null,

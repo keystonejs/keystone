@@ -19,12 +19,12 @@ const relationships: Relationships = {
 
 const componentBlocks: Record<string, ComponentBlock> = {
   basic: component({
-    component: () => null,
+    preview: () => null,
     label: '',
     schema: { prop: fields.text({ label: '' }) },
   }),
   relationship: component({
-    component: () => null,
+    preview: () => null,
     label: '',
     schema: {
       one: fields.relationship({ label: '', listKey: 'Post', selection: 'something' }),
@@ -32,7 +32,7 @@ const componentBlocks: Record<string, ComponentBlock> = {
     },
   }),
   object: component({
-    component: () => null,
+    preview: () => null,
     label: '',
     schema: {
       prop: fields.object({
@@ -41,7 +41,7 @@ const componentBlocks: Record<string, ComponentBlock> = {
     },
   }),
   conditional: component({
-    component: () => null,
+    preview: () => null,
     label: '',
     schema: {
       prop: fields.conditional(fields.checkbox({ label: '' }), {

@@ -26,7 +26,7 @@ const noticeIconMap = {
 
 export const componentBlocks = {
   table: component({
-    component: function MyTable(props) {
+    preview: function MyTable(props) {
       useEffect(() => {
         let maxColumns = 1;
         const rows = props.fields.rows;
@@ -121,7 +121,7 @@ export const componentBlocks = {
     },
   }),
   myList: component({
-    component: function MyList(props) {
+    preview: function MyList(props) {
       useEffect(() => {
         if (!props.fields.children.elements.length) {
           props.fields.children.onChange([{ key: undefined }]);
@@ -162,7 +162,7 @@ export const componentBlocks = {
     // chromeless: true,
   }),
   hero: component({
-    component: props => {
+    preview: props => {
       return (
         <div
           css={{
@@ -241,12 +241,12 @@ export const componentBlocks = {
   }),
   void: component({
     label: 'Void',
-    component: props => <NotEditable>{props.fields.value.value}</NotEditable>,
+    preview: props => <NotEditable>{props.fields.value.value}</NotEditable>,
     schema: { value: fields.text({ label: 'Value' }) },
   }),
   conditionallyVoid: component({
     label: 'Conditionally Void',
-    component: props =>
+    preview: props =>
       props.fields.something.discriminant ? (
         <NotEditable>Is void</NotEditable>
       ) : (
@@ -261,7 +261,7 @@ export const componentBlocks = {
   }),
   featuredAuthors: component({
     label: 'Featured Authors',
-    component: props => {
+    preview: props => {
       return (
         <div>
           <h1>{props.fields.title.element}</h1>
@@ -295,7 +295,7 @@ export const componentBlocks = {
     },
   }),
   notice: component({
-    component: function Notice(props) {
+    preview: function Notice(props) {
       const { palette, radii, spacing } = useTheme();
       const intentMap = {
         info: {
@@ -407,7 +407,7 @@ export const componentBlocks = {
     },
   }),
   quote: component({
-    component: props => {
+    preview: props => {
       return (
         <div
           css={{

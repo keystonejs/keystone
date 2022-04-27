@@ -7,7 +7,7 @@ import { component, fields } from '../../component-blocks';
 import { createGetPreviewProps } from './preview-props';
 
 const table = component({
-  component: props =>
+  preview: props =>
     React.createElement(
       'div',
       null,

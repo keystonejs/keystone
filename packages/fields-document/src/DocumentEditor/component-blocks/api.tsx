@@ -446,7 +446,7 @@ export const fields = {
 export type ComponentBlock<
   Fields extends Record<string, ComponentSchema> = Record<string, ComponentSchema>
 > = {
-  component: (props: any) => ReactElement | null;
+  preview: (props: any) => ReactElement | null;
   schema: Fields;
   label: string;
 } & (
@@ -601,7 +601,7 @@ export function component<
 >(
   options: {
     /** The preview component shown in the editor */
-    component: (props: PreviewProps<ObjectField<Schema>>) => ReactElement | null;
+    preview: (props: PreviewProps<ObjectField<Schema>>) => ReactElement | null;
     /** The schema for the props that the preview component, toolbar and rendered component will receive */
     schema: Schema;
     /** The label to show in the insert menu and chrome around the block if chromeless is false */

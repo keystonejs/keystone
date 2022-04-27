@@ -325,7 +325,7 @@ describe('Document field type', () => {
                 content: document({
                   componentBlocks: {
                     someBlock: component({
-                      component: () => null,
+                      preview: () => null,
                       label: 'Some Block',
                       schema: {
                         something: fields.object({

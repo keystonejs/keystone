@@ -260,7 +260,7 @@ function makeEditorWithChildField(
     {
       normalization,
       componentBlocks: {
-        comp: component({ component: () => null, label: '', schema: { child: childField } }),
+        comp: component({ preview: () => null, label: '', schema: { child: childField } }),
       },
       relationships: {
         mention: {

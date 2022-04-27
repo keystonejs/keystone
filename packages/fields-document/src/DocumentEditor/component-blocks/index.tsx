@@ -469,7 +469,7 @@ function ComponentBlockRender({
     }
   });
 
-  const ComponentBlockPreview = componentBlock.component;
+  const ComponentBlockPreview = componentBlock.preview;
 
   return (
     <ChildrenByPathContext.Provider value={childrenByPath}>

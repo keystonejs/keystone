@@ -43,12 +43,12 @@ const objectProp = fields.object({
 
 const componentBlocks = {
   void: component({
-    component: () => null,
+    preview: () => null,
     label: 'Void',
     schema: { text: fields.text({ label: 'Text' }) },
   }),
   complex: component({
-    component: props => {
+    preview: props => {
       return React.createElement(
         'div',
         null,
