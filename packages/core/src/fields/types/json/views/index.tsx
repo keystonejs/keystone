@@ -24,23 +24,20 @@ export const Field = ({
     <FieldContainer>
       <FieldLabel>
         {field.label}
-        {onChange ? (
-          <Stack>
-            <TextArea
-              css={{ fontFamily: 'monospace' }}
-              autoFocus={autoFocus}
-              onChange={event => onChange(event.target.value)}
-              value={value}
-            />
-            {forceValidation && (
-              <Text color="red600" size="small">
-                {'Invalid JSON'}
-              </Text>
-            )}
-          </Stack>
-        ) : (
-          value
-        )}
+        <Stack>
+          <TextArea
+            readOnly={onChange === undefined}
+            css={{ fontFamily: 'monospace' }}
+            autoFocus={autoFocus}
+            onChange={event => onChange?.(event.target.value)}
+            value={value}
+          />
+          {forceValidation && (
+            <Text color="red600" size="small">
+              {'Invalid JSON'}
+            </Text>
+          )}
+        </Stack>
       </FieldLabel>
     </FieldContainer>
   );
