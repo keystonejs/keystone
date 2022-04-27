@@ -16,8 +16,6 @@ import { validateAndNormalizeDocument } from './validation';
 import { addRelationshipData } from './relationship-data';
 import { assertValidComponentSchema } from './DocumentEditor/component-blocks/field-assertions';
 
-export { componentThing } from './component';
-
 type RelationshipsConfig = Record<
   string,
   {

@@ -10,10 +10,9 @@ import {
   image,
   file,
 } from '@keystone-6/core/fields';
-import { componentThing, document } from '@keystone-6/fields-document';
+import { document } from '@keystone-6/fields-document';
 import { v4 } from 'uuid';
 import { componentBlocks } from './admin/fieldViews/Content';
-import { schema as blahProp } from './admin/fieldViews/Blah';
 import * as Keystone from '.keystone/types';
 
 type AccessArgs = {
@@ -152,23 +151,6 @@ export const lists: Keystone.Lists = {
         },
         defaultValue: 'draft',
       }),
-      blah: componentThing({
-        schema: blahProp,
-        ui: { views: require.resolve('./admin/fieldViews/Blah.tsx') },
-      }),
-      // something: json({
-      //   hooks: {
-      //     validateInput({ resolvedData, addValidationError }) {
-      //       const x = resolvedData.something;
-      //       if (x !== undefined) {
-      //         const error = myIoTsSchema.validate(x);
-      //         if (error) {
-      //           addValidationError(error);
-      //         }
-      //       }
-      //     },
-      //   },
-      // }),
       content: document({
         ui: { views: require.resolve('./admin/fieldViews/Content.tsx') },
         relationships: {

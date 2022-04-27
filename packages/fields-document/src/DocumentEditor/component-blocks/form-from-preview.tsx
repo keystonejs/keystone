@@ -105,7 +105,7 @@ const fieldRenderers: {
         {Object.entries(props.fields).map(
           ([key, propVal]) =>
             isNonChildFieldPreviewProps(propVal) && (
-              <FormValueContentFromPreview
+              <FormValueContentFromPreviewProps
                 autoFocus={key === firstFocusable}
                 key={key}
                 {...propVal}
@@ -131,7 +131,7 @@ const fieldRenderers: {
           [props.autoFocus, discriminant, props.discriminant, props.onChange]
         )}
         {isNonChildFieldPreviewProps(props.value) && (
-          <FormValueContentFromPreview {...props.value} />
+          <FormValueContentFromPreviewProps {...props.value} />
         )}
       </Stack>
     );
@@ -148,23 +148,15 @@ export type NonChildFieldComponentSchema =
 function isNonChildFieldPreviewProps(
   props: PreviewProps<ComponentSchema>
 ): props is PreviewProps<NonChildFieldComponentSchema> {
-  const kind: ComponentSchema['kind'] = (props as any)?.field?.kind;
-  if (!kind) {
-    return false;
-  }
-  return true;
+  return props.schema.kind !== 'child';
 }
 
-export const FormValueContentFromPreview = memo(function FormValueContentFromPreview(
+export const FormValueContentFromPreviewProps = memo(function FormValueContentFromPreview(
   props: PreviewProps<NonChildFieldComponentSchema> & {
     autoFocus?: boolean;
     forceValidation?: boolean;
   }
 ) {
-  if (props.schema.preview) {
-    return <props.schema.preview {...(props as any)} />;
-  }
-
   const Comp = fieldRenderers[props.schema.kind];
   return <Comp props={props as any} />;
 });
@@ -177,7 +169,7 @@ const SortableItemInForm = memo(function SortableItemInForm(
       <Stack across align="center" gap="small" css={{ justifyContent: 'center' }}>
         <DragHandle />
       </Stack>
-      {isNonChildFieldPreviewProps(props) && <FormValueContentFromPreview {...props} />}
+      {isNonChildFieldPreviewProps(props) && <FormValueContentFromPreviewProps {...props} />}
     </SortableItem>
   );
 });

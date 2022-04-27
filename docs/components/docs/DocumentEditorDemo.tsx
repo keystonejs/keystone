@@ -18,7 +18,7 @@ import {
 } from '@keystone-6/fields-document/component-blocks';
 import { Global, jsx } from '@emotion/react';
 
-import { FormValueContentFromPreview } from '@keystone-6/fields-document/src/DocumentEditor/component-blocks/form-from-preview';
+import { FormValueContentFromPreviewProps } from '@keystone-6/fields-document/src/DocumentEditor/component-blocks/form-from-preview';
 import { createGetPreviewProps } from '@keystone-6/fields-document/src/DocumentEditor/component-blocks/preview-props';
 import { componentBlocks as componentBlocksInExampleProject } from '../../../examples-staging/basic/admin/fieldViews/Content';
 import { initialContent } from '../../lib/initialDocumentDemoContent';
@@ -260,7 +260,7 @@ export function DocumentFeaturesFormAndCode() {
   const { formValue, setFormValue } = useContext(DocumentFeaturesContext);
   return (
     <div>
-      <FormValueContentFromPreview
+      <FormValueContentFromPreviewProps
         {...createGetPreviewProps(documentFeaturesProp, getNewVal => {
           setFormValue(getNewVal(formValue));
         })(formValue)}
