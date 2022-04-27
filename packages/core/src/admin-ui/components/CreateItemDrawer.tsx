@@ -91,14 +91,6 @@ export function CreateItemDrawer({
             setForceValidation(newForceValidation);
 
             if (newForceValidation) return;
-            const data: Record<string, any> = {};
-            Object.keys(list.fields).forEach(fieldPath => {
-              const { controller } = list.fields[fieldPath];
-              const serialized = controller.serialize(value[fieldPath].value);
-              if (!isDeepEqual(serialized, controller.serialize(controller.defaultValue))) {
-                Object.assign(data, serialized);
-              }
-            });
 
             createItem({
               variables: {
