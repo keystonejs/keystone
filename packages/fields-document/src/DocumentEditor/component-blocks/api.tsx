@@ -117,18 +117,10 @@ export interface ObjectField<
   fields: fields;
 }
 
-type StringOrBooleanToString<Val extends string | boolean> = Val extends string
-  ? Val
-  : Val extends true
-  ? 'true'
-  : Val extends false
-  ? 'false'
-  : never;
-
 export type ConditionalField<
   DiscriminantField extends FormField<string | boolean, any>,
   ConditionalValues extends {
-    [Key in StringOrBooleanToString<DiscriminantField['defaultValue']>]: ComponentSchema;
+    [Key in `${DiscriminantField['defaultValue']}`]: ComponentSchema;
   }
 > = {
   kind: 'conditional';
@@ -398,7 +390,7 @@ export const fields = {
   conditional<
     DiscriminantField extends FormField<string | boolean, any>,
     ConditionalValues extends {
-      [Key in StringOrBooleanToString<DiscriminantField['defaultValue']>]: ComponentSchema;
+      [Key in `${DiscriminantField['defaultValue']}`]: ComponentSchema;
     }
   >(
     discriminant: DiscriminantField,
