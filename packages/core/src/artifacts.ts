@@ -86,7 +86,7 @@ export async function validateCommittedArtifacts(
     const message = {
       both: 'Your Prisma and GraphQL schemas are not up to date',
       graphql: 'Your GraphQL schema is not up to date',
-      prisma: 'Your GraphQL schema is not up to date',
+      prisma: 'Your Prisma schema is not up to date',
     }[outOfDateSchemas];
     console.log(message);
     const term = {

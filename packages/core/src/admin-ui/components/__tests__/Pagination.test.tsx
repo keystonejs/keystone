@@ -70,7 +70,7 @@ describe('<Pagination/>', () => {
         pointerEvents: 'none',
       });
     });
-    it('should navigate to the next page when the next page link is clicked', () => {
+    it('should navigate to the next page when the next page link is clicked', async () => {
       const push = jest.fn().mockImplementation(() => Promise.resolve());
       useRouter.mockImplementation(() => ({
         route: '/',
@@ -90,11 +90,11 @@ describe('<Pagination/>', () => {
           list={{ plural: 'Items', singular: 'Item' }}
         />
       );
-      userEvent.click(screen.getByLabelText('Next page'));
+      await userEvent.click(screen.getByLabelText('Next page'));
       expect(push).toHaveBeenCalledTimes(1);
       expect(push.mock.calls[0][0]).toBe('/?pageSize=10&page=2');
     });
-    it('should navigate to the previous page when the previous page link is clicked', () => {
+    it('should navigate to the previous page when the previous page link is clicked', async () => {
       const push = jest.fn().mockImplementation(() => Promise.resolve());
       useRouter.mockImplementation(() => ({
         route: '/',
@@ -114,7 +114,7 @@ describe('<Pagination/>', () => {
           list={{ plural: 'Items', singular: 'Item' }}
         />
       );
-      userEvent.click(screen.getByLabelText('Previous page'));
+      await userEvent.click(screen.getByLabelText('Previous page'));
       expect(push).toHaveBeenCalledTimes(1);
       expect(push.mock.calls[0][0]).toBe('/?pageSize=10&page=1');
     });
