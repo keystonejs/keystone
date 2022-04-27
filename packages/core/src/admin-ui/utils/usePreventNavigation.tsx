@@ -6,7 +6,7 @@ export function usePreventNavigation(shouldPreventNavigation: boolean) {
 
   useEffect(() => {
     if (shouldPreventNavigation) {
-      const handler = () => {
+      const clientSideRouteChangeHandler = () => {
         if (!window.confirm('There are unsaved changes, are you sure you want to exit?')) {
           // throwing from here seems to be the only way to prevent the navigation
           // we're throwing just a string here rather than an error because throwing an error
@@ -14,13 +14,13 @@ export function usePreventNavigation(shouldPreventNavigation: boolean) {
           throw 'Navigation cancelled by user';
         }
       };
-      router.events.on('routeChangeStart', handler);
+      router.events.on('routeChangeStart', clientSideRouteChangeHandler);
       const beforeUnloadHandler = (event: BeforeUnloadEvent) => {
         event.preventDefault();
       };
       window.addEventListener('beforeunload', beforeUnloadHandler);
       return () => {
-        router.events.off('routeChangeStart', handler);
+        router.events.off('routeChangeStart', clientSideRouteChangeHandler);
         window.removeEventListener('beforeunload', beforeUnloadHandler);
       };
     }
