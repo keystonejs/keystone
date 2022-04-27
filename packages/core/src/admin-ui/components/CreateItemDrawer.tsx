@@ -12,6 +12,7 @@ import { gql, useMutation } from '../apollo';
 import { useKeystone, useList } from '../context';
 
 import { Fields } from '../utils/Fields';
+import { usePreventNavigation } from '../utils/usePreventNavigation';
 import { GraphQLErrorNotice } from './GraphQLErrorNotice';
 
 type ValueWithoutServerSideErrors = { [key: string]: { kind: 'value'; value: any } };
@@ -30,7 +31,7 @@ export function CreateItemDrawer({
 
   const toasts = useToasts();
 
-  const [createItem, { loading, error }] = useMutation(
+  const [createItem, { loading, error, data: returnedData }] = useMutation(
     gql`mutation($data: ${list.gqlNames.createInputName}!) {
       item: ${list.gqlNames.createMutationName}(data: $data) {
         id
@@ -66,6 +67,19 @@ export function CreateItemDrawer({
 
   const [forceValidation, setForceValidation] = useState(false);
 
+  const data: Record<string, any> = {};
+  Object.keys(list.fields).forEach(fieldPath => {
+    const { controller } = list.fields[fieldPath];
+    const serialized = controller.serialize(value[fieldPath].value);
+    if (!isDeepEqual(serialized, controller.serialize(controller.defaultValue))) {
+      Object.assign(data, serialized);
+    }
+  });
+
+  const shouldPreventNavigation = !returnedData?.item && Object.keys(data).length !== 0;
+
+  usePreventNavigation(shouldPreventNavigation);
+
   return (
     <Drawer
       title={`Create ${list.singular}`}
@@ -79,14 +93,6 @@ export function CreateItemDrawer({
             setForceValidation(newForceValidation);
 
             if (newForceValidation) return;
-            const data: Record<string, any> = {};
-            Object.keys(list.fields).forEach(fieldPath => {
-              const { controller } = list.fields[fieldPath];
-              const serialized = controller.serialize(value[fieldPath].value);
-              if (!isDeepEqual(serialized, controller.serialize(controller.defaultValue))) {
-                Object.assign(data, serialized);
-              }
-            });
 
             createItem({
               variables: {
@@ -107,7 +113,14 @@ export function CreateItemDrawer({
         },
         cancel: {
           label: 'Cancel',
-          action: onClose,
+          action: () => {
+            if (
+              !shouldPreventNavigation ||
+              window.confirm('There are unsaved changes, are you sure you want to exit?')
+            ) {
+              onClose();
+            }
+          },
         },
       }}
     >
