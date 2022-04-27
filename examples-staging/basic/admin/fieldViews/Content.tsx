@@ -41,7 +41,7 @@ export const componentBlocks = {
               return {
                 key: element.key,
                 value: [
-                  ...element.elements,
+                  ...element.elements.map(x => ({ key: x.key })),
                   ...Array.from({ length: maxColumns - element.elements.length }, () => ({
                     key: undefined,
                   })),
@@ -73,7 +73,10 @@ export const componentBlocks = {
                             props.fields.rows.elements.map(element => {
                               return {
                                 key: element.key,
-                                value: [...element.elements, { key: undefined }],
+                                value: [
+                                  ...element.elements.map(x => ({ key: x.key })),
+                                  { key: undefined },
+                                ],
                               };
                             })
                           );
@@ -90,7 +93,10 @@ export const componentBlocks = {
           <NotEditable>
             <div
               onClick={() => {
-                props.fields.rows.onChange([...props.fields.rows.elements, { key: undefined }]);
+                props.fields.rows.onChange([
+                  ...props.fields.rows.elements.map(x => ({ key: x.key })),
+                  { key: undefined },
+                ]);
               }}
             >
               <Button>Insert row</Button>
@@ -118,7 +124,7 @@ export const componentBlocks = {
     component: function MyList(props) {
       useEffect(() => {
         if (!props.fields.children.elements.length) {
-          props.fields.children.onChange([...props.fields.children.elements, { key: undefined }]);
+          props.fields.children.onChange([{ key: undefined }]);
         }
       });
       return (

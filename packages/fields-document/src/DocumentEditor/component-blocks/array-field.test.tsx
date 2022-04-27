@@ -18,7 +18,10 @@ const list = component({
         'button',
         {
           onClick: () =>
-            props.fields.children.onChange([...props.fields.children.elements, { key: undefined }]),
+            props.fields.children.onChange([
+              ...props.fields.children.elements.map(x => ({ key: x.key })),
+              { key: undefined },
+            ]),
         },
         'Insert'
       )

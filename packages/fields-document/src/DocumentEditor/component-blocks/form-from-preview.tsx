@@ -39,7 +39,7 @@ const fieldRenderers: {
         <Button
           autoFocus={props.autoFocus}
           onClick={() => {
-            props.onChange([...props.elements, { key: undefined }]);
+            props.onChange([...props.elements.map(x => ({ key: x.key })), { key: undefined }]);
           }}
         >
           Add

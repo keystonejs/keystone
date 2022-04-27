@@ -282,7 +282,7 @@ test('add to multiple in child field in nested array', () => {
   );
 
   previewProps.fields.children.elements[0].onChange([
-    ...previewProps.fields.children.elements[0].elements,
+    ...previewProps.fields.children.elements[0].elements.map(x => ({ key: x.key })),
     { key: undefined },
   ]);
   expect(editor).toMatchInlineSnapshot(`

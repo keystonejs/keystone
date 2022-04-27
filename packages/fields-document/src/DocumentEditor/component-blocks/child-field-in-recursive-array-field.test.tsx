@@ -37,7 +37,8 @@ function List(props: PreviewProps<ListItems>): ReactElement {
     React.createElement(
       'button',
       {
-        onClick: () => props.onChange([...props.elements, { key: undefined }]),
+        onClick: () =>
+          props.onChange([...props.elements.map(x => ({ key: x.key })), { key: undefined }]),
       },
       'Insert'
     )
