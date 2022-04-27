@@ -1,7 +1,7 @@
 import { Editor, Element, Transforms, Range, NodeEntry, Path, Node, Text } from 'slate';
 
 import weakMemoize from '@emotion/weak-memoize';
-import { ChildField, ComponentBlock, ComponentPropField } from '../../component-blocks';
+import { ChildField, ComponentBlock, ComponentSchema } from '../../component-blocks';
 import { assert, moveChildren } from '../utils';
 import { DocumentFeatures } from '../../views';
 import {
@@ -15,7 +15,7 @@ import {
   assertNever,
   DocumentFeaturesForChildField,
   findChildPropPaths,
-  getAncestorFields,
+  getAncestorSchemas,
   getDocumentFeaturesForChildField,
   getValueAtPropPath,
   ReadonlyPropPath,
@@ -110,63 +110,63 @@ function normalizeNodeWithinComponentProp(
   return didNormalization;
 }
 
-function canPropContainChildField(rootProp: ComponentPropField) {
-  const queue = new Set<ComponentPropField>([rootProp]);
-  for (const prop of queue) {
-    if (prop.kind === 'form' || prop.kind === 'relationship') {
-    } else if (prop.kind === 'child') {
+function canSchemaContainChildField(rootSchema: ComponentSchema) {
+  const queue = new Set<ComponentSchema>([rootSchema]);
+  for (const schema of queue) {
+    if (schema.kind === 'form' || schema.kind === 'relationship') {
+    } else if (schema.kind === 'child') {
       return true;
-    } else if (prop.kind === 'array') {
-      queue.add(prop.element);
-    } else if (prop.kind === 'object') {
-      for (const innerProp of Object.values(prop.value)) {
+    } else if (schema.kind === 'array') {
+      queue.add(schema.element);
+    } else if (schema.kind === 'object') {
+      for (const innerProp of Object.values(schema.value)) {
         queue.add(innerProp);
       }
-    } else if (prop.kind === 'conditional') {
-      for (const innerProp of Object.values(prop.values)) {
+    } else if (schema.kind === 'conditional') {
+      for (const innerProp of Object.values(schema.values)) {
         queue.add(innerProp);
       }
     } else {
-      assertNever(prop);
+      assertNever(schema);
     }
   }
   return false;
 }
 
-function doesPropOnlyEverContainASingleChildField(rootProp: ComponentPropField): boolean {
-  const queue = new Set<ComponentPropField>([rootProp]);
+function doesSchemaOnlyEverContainASingleChildField(rootSchema: ComponentSchema): boolean {
+  const queue = new Set<ComponentSchema>([rootSchema]);
   let hasFoundChildField = false;
-  for (const prop of queue) {
-    if (prop.kind === 'form' || prop.kind === 'relationship') {
-    } else if (prop.kind === 'child') {
+  for (const schema of queue) {
+    if (schema.kind === 'form' || schema.kind === 'relationship') {
+    } else if (schema.kind === 'child') {
       if (hasFoundChildField) {
         return false;
       }
       hasFoundChildField = true;
-    } else if (prop.kind === 'array') {
-      if (canPropContainChildField(prop.element)) {
+    } else if (schema.kind === 'array') {
+      if (canSchemaContainChildField(schema.element)) {
         return false;
       }
-    } else if (prop.kind === 'object') {
-      for (const innerProp of Object.values(prop.value)) {
+    } else if (schema.kind === 'object') {
+      for (const innerProp of Object.values(schema.value)) {
         queue.add(innerProp);
       }
-    } else if (prop.kind === 'conditional') {
-      for (const innerProp of Object.values(prop.values)) {
+    } else if (schema.kind === 'conditional') {
+      for (const innerProp of Object.values(schema.values)) {
         queue.add(innerProp);
       }
     } else {
-      assertNever(prop);
+      assertNever(schema);
     }
   }
   return hasFoundChildField;
 }
 
-function findArrayFieldsWithSingleChildField(prop: ComponentPropField, value: unknown) {
-  const propPaths: [ReadonlyPropPath, ArrayField<ComponentPropField>][] = [];
-  traverseProps(prop, value, (prop, value, path) => {
-    if (prop.kind === 'array' && doesPropOnlyEverContainASingleChildField(prop.element)) {
-      propPaths.push([path, prop]);
+function findArrayFieldsWithSingleChildField(schema: ComponentSchema, value: unknown) {
+  const propPaths: [ReadonlyPropPath, ArrayField<ComponentSchema>][] = [];
+  traverseProps(schema, value, (schema, value, path) => {
+    if (schema.kind === 'array' && doesSchemaOnlyEverContainASingleChildField(schema.element)) {
+      propPaths.push([path, schema]);
     }
   });
   return propPaths;
@@ -251,8 +251,8 @@ export function withComponentBlocks(
         Editor.withoutNormalizing(editor, () => {
           const componentBlock = blockComponents[componentBlockNode.component];
           if (componentPropNode.propPath !== undefined && componentBlock !== undefined) {
-            const rootProp = { kind: 'object' as const, value: componentBlock.props };
-            const ancestorFields = getAncestorFields(
+            const rootProp = { kind: 'object' as const, value: componentBlock.schema };
+            const ancestorFields = getAncestorSchemas(
               rootProp,
               componentPropNode.propPath,
               componentBlockNode.props
@@ -266,7 +266,7 @@ export function withComponentBlocks(
                 componentBlockNode.props,
                 componentPropNode.propPath.slice(0, arrayFieldIdx)
               ) as unknown[];
-              if (doesPropOnlyEverContainASingleChildField(arrayField.element)) {
+              if (doesSchemaOnlyEverContainASingleChildField(arrayField.element)) {
                 if (
                   Node.string(componentPropNode) === '' &&
                   val.length - 1 === componentPropNode.propPath[arrayFieldIdx]
@@ -328,7 +328,7 @@ export function withComponentBlocks(
       if (Element.isElement(node) && node.type === 'component-block') {
         const componentBlock = blockComponents[node.component];
         if (componentBlock) {
-          const rootProp = { kind: 'object' as const, value: componentBlock.props };
+          const rootProp = { kind: 'object' as const, value: componentBlock.schema };
           for (const [propPath, arrayField] of findArrayFieldsWithSingleChildField(
             rootProp,
             node.props
@@ -415,7 +415,7 @@ export function withComponentBlocks(
             }
           }
           let missingKeys = new Map(
-            findChildPropPaths(node.props, componentBlock.props).map(x => [
+            findChildPropPaths(node.props, componentBlock.schema).map(x => [
               JSON.stringify(x.path) as string | undefined,
               x.options.kind,
             ])
@@ -444,7 +444,7 @@ export function withComponentBlocks(
             string,
             { options: ChildField['options']; index: number } | undefined
           > = {};
-          findChildPropPaths(node.props, blockComponents[node.component]!.props).forEach(
+          findChildPropPaths(node.props, blockComponents[node.component]!.schema).forEach(
             (x, index) => {
               stringifiedInlinePropPaths[JSON.stringify(x.path)] = { options: x.options, index };
             }

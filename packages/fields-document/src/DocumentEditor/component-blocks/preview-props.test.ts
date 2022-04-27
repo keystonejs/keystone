@@ -15,10 +15,10 @@ test('onChange on a conditional field updates props.value', () => {
   });
   let props = getPreviewProps(val);
   assert(props.discriminant === false);
-  expect(props.value.field).toBe(field.values.false);
+  expect(props.value.schema).toBe(field.values.false);
   props.onChange(true);
   expect(props.discriminant).toBe(true);
-  expect(props.value.field).toBe(field.values.true);
+  expect(props.value.schema).toBe(field.values.true);
 });
 
 // note props.value is the preview props for the value of the conditional field, not the value itself
@@ -34,10 +34,10 @@ test("onChange on a conditional field updates props.value where the value doesn'
   });
   let props = getPreviewProps(val);
   assert(props.discriminant === false);
-  expect(props.value.field).toBe(field.values.false);
+  expect(props.value.schema).toBe(field.values.false);
   props.onChange(true);
   expect(props.discriminant).toBe(true);
-  expect(props.value.field).toBe(field.values.true);
+  expect(props.value.schema).toBe(field.values.true);
 });
 
 test("array fields don't keep the props of an array item around after removing the item", () => {

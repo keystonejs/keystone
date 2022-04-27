@@ -2,62 +2,64 @@ import { graphql } from '@keystone-6/core';
 import { FieldData, GraphQLTypesForList, KeystoneContext } from '@keystone-6/core/types';
 import { GraphQLResolveInfo } from 'graphql';
 
-import { ComponentPropFieldForGraphQL } from './DocumentEditor/component-blocks/api';
+import { ComponentSchemaForGraphQL } from './DocumentEditor/component-blocks/api';
 import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values';
 import { assertNever, ReadonlyPropPath } from './DocumentEditor/component-blocks/utils';
 
 export function getGraphQLInputType(
   name: string,
-  prop: ComponentPropFieldForGraphQL,
+  schema: ComponentSchemaForGraphQL,
   operation: 'create' | 'update',
-  cache: Map<ComponentPropFieldForGraphQL, graphql.InputType>,
+  cache: Map<ComponentSchemaForGraphQL, graphql.InputType>,
   meta: FieldData
 ) {
-  if (!cache.has(prop)) {
-    const res = getGraphQLInputTypeInner(name, prop, operation, cache, meta);
-    cache.set(prop, res);
+  if (!cache.has(schema)) {
+    const res = getGraphQLInputTypeInner(name, schema, operation, cache, meta);
+    cache.set(schema, res);
   }
-  return cache.get(prop)!;
+  return cache.get(schema)!;
 }
 
 function getGraphQLInputTypeInner(
   name: string,
-  prop: ComponentPropFieldForGraphQL,
+  schema: ComponentSchemaForGraphQL,
   operation: 'create' | 'update',
-  cache: Map<ComponentPropFieldForGraphQL, graphql.InputType>,
+  cache: Map<ComponentSchemaForGraphQL, graphql.InputType>,
   meta: FieldData
 ): graphql.InputType {
-  if (prop.kind === 'form') {
-    return prop.graphql.input;
+  if (schema.kind === 'form') {
+    return schema.graphql.input;
   }
-  if (prop.kind === 'object') {
+  if (schema.kind === 'object') {
     return graphql.inputObject({
       name: `${name}${operation[0].toUpperCase()}${operation.slice(1)}Input`,
       fields: () =>
         Object.fromEntries(
-          Object.entries(prop.value).map(([key, val]): [string, graphql.Arg<graphql.InputType>] => {
-            const type = getGraphQLInputType(
-              `${name}${key[0].toUpperCase()}${key.slice(1)}`,
-              val,
-              operation,
-              cache,
-              meta
-            );
-            return [key, graphql.arg({ type })];
-          })
+          Object.entries(schema.value).map(
+            ([key, val]): [string, graphql.Arg<graphql.InputType>] => {
+              const type = getGraphQLInputType(
+                `${name}${key[0].toUpperCase()}${key.slice(1)}`,
+                val,
+                operation,
+                cache,
+                meta
+              );
+              return [key, graphql.arg({ type })];
+            }
+          )
         ),
     });
   }
-  if (prop.kind === 'array') {
-    const innerType = getGraphQLInputType(name, prop.element, operation, cache, meta);
+  if (schema.kind === 'array') {
+    const innerType = getGraphQLInputType(name, schema.element, operation, cache, meta);
     return graphql.list(innerType);
   }
-  if (prop.kind === 'conditional') {
+  if (schema.kind === 'conditional') {
     return graphql.inputObject({
       name: `${name}${operation[0].toUpperCase()}${operation.slice(1)}Input`,
       fields: () =>
         Object.fromEntries(
-          Object.entries(prop.values).map(
+          Object.entries(schema.values).map(
             ([key, val]): [string, graphql.Arg<graphql.InputType>] => {
               const type = getGraphQLInputType(
                 `${name}${key[0].toUpperCase()}${key.slice(1)}`,
@@ -73,9 +75,9 @@ function getGraphQLInputTypeInner(
     });
   }
 
-  if (prop.kind === 'relationship') {
+  if (schema.kind === 'relationship') {
     const inputType =
-      meta.lists[prop.listKey].types.relateTo[prop.many ? 'many' : 'one'][operation];
+      meta.lists[schema.listKey].types.relateTo[schema.many ? 'many' : 'one'][operation];
     // there are cases where this won't exist
     // for example if gql omit is enabled on the related field
     if (inputType === undefined) {
@@ -84,11 +86,11 @@ function getGraphQLInputTypeInner(
     return inputType;
   }
 
-  assertNever(prop);
+  assertNever(schema);
 }
 
 export async function getValueForUpdate(
-  prop: ComponentPropFieldForGraphQL,
+  schema: ComponentSchemaForGraphQL,
   value: any,
   prevValue: any,
   context: KeystoneContext,
@@ -98,11 +100,11 @@ export async function getValueForUpdate(
     return prevValue;
   }
   if (prevValue === undefined) {
-    prevValue = getInitialPropsValue(prop);
+    prevValue = getInitialPropsValue(schema);
   }
 
-  if (prop.kind === 'form') {
-    if (prop.validate(value)) {
+  if (schema.kind === 'form') {
+    if (schema.validate(value)) {
       return value;
     }
     throw new Error(`The value of the form field at '${path.join('.')}' is invalid`);
@@ -110,14 +112,14 @@ export async function getValueForUpdate(
   if (value === null) {
     throw new Error(
       `${
-        prop.kind[0].toUpperCase() + prop.kind.slice(1)
+        schema.kind[0].toUpperCase() + schema.kind.slice(1)
       } fields cannot be set to null but the field at '${path.join('.')}' is null`
     );
   }
-  if (prop.kind === 'object') {
+  if (schema.kind === 'object') {
     return Object.fromEntries(
       await Promise.all(
-        Object.entries(prop.value).map(async ([key, val]) => {
+        Object.entries(schema.value).map(async ([key, val]) => {
           return [
             key,
             await getValueForUpdate(val, value[key], prevValue[key], context, path.concat(key)),
@@ -126,28 +128,28 @@ export async function getValueForUpdate(
       )
     );
   }
-  if (prop.kind === 'array') {
+  if (schema.kind === 'array') {
     return Promise.all(
       (value as any[]).map((val, i) =>
-        getValueForUpdate(prop.element, val, prevValue[i], context, path.concat(i))
+        getValueForUpdate(schema.element, val, prevValue[i], context, path.concat(i))
       )
     );
   }
-  if (prop.kind === 'relationship') {
-    if (prop.many) {
+  if (schema.kind === 'relationship') {
+    if (schema.many) {
       const val = (value as graphql.InferValueFromArg<
         graphql.Arg<NonNullable<GraphQLTypesForList['relateTo']['many']['update']>>
       >)!;
-      return resolveRelateToManyForUpdateInput(val, context, prop.listKey, prevValue);
+      return resolveRelateToManyForUpdateInput(val, context, schema.listKey, prevValue);
     } else {
       const val = (value as graphql.InferValueFromArg<
         graphql.Arg<NonNullable<GraphQLTypesForList['relateTo']['one']['update']>>
       >)!;
 
-      return resolveRelateToOneForUpdateInput(val, context, prop.listKey);
+      return resolveRelateToOneForUpdateInput(val, context, schema.listKey);
     }
   }
-  if (prop.kind === 'conditional') {
+  if (schema.kind === 'conditional') {
     const conditionalValueKeys = Object.keys(value);
     if (conditionalValueKeys.length !== 1) {
       throw new Error(
@@ -158,36 +160,36 @@ export async function getValueForUpdate(
     }
     const key = conditionalValueKeys[0];
     let discriminant: string | boolean = key;
-    if ((key === 'true' || key === 'false') && !prop.discriminant.validate(key)) {
+    if ((key === 'true' || key === 'false') && !schema.discriminant.validate(key)) {
       discriminant = key === 'true';
     }
     return {
       discriminant,
       value: await getValueForUpdate(
-        (prop.values as any)[key],
+        (schema.values as any)[key],
         value[key],
-        prevValue.discriminant === discriminant ? prevValue.value : getInitialPropsValue(prop),
+        prevValue.discriminant === discriminant ? prevValue.value : getInitialPropsValue(schema),
         context,
         path.concat('value')
       ),
     };
   }
 
-  assertNever(prop);
+  assertNever(schema);
 }
 
 export async function getValueForCreate(
-  prop: ComponentPropFieldForGraphQL,
+  schema: ComponentSchemaForGraphQL,
   value: any,
   context: KeystoneContext,
   path: ReadonlyPropPath
 ): Promise<any> {
   // If value is undefined, get the specified defaultValue
   if (value === undefined) {
-    return getInitialPropsValue(prop);
+    return getInitialPropsValue(schema);
   }
-  if (prop.kind === 'form') {
-    if (prop.validate(value)) {
+  if (schema.kind === 'form') {
+    if (schema.validate(value)) {
       return value;
     }
     throw new Error(`The value of the form field at '${path.join('.')}' is invalid`);
@@ -195,42 +197,42 @@ export async function getValueForCreate(
   if (value === null) {
     throw new Error(
       `${
-        prop.kind[0].toUpperCase() + prop.kind.slice(1)
+        schema.kind[0].toUpperCase() + schema.kind.slice(1)
       } fields cannot be set to null but the field at '${path.join('.')}' is null`
     );
   }
-  if (prop.kind === 'array') {
+  if (schema.kind === 'array') {
     return Promise.all(
       (value as any[]).map((val, i) =>
-        getValueForCreate(prop.element, val, context, path.concat(i))
+        getValueForCreate(schema.element, val, context, path.concat(i))
       )
     );
   }
-  if (prop.kind === 'object') {
+  if (schema.kind === 'object') {
     return Object.fromEntries(
       await Promise.all(
-        Object.entries(prop.value).map(async ([key, val]) => {
+        Object.entries(schema.value).map(async ([key, val]) => {
           return [key, await getValueForCreate(val, value[key], context, path.concat(key))];
         })
       )
     );
   }
-  if (prop.kind === 'relationship') {
-    if (prop.many) {
+  if (schema.kind === 'relationship') {
+    if (schema.many) {
       const val = (value as graphql.InferValueFromArg<
         graphql.Arg<NonNullable<GraphQLTypesForList['relateTo']['many']['create']>>
       >)!;
 
-      return resolveRelateToManyForCreateInput(val, context, prop.listKey);
+      return resolveRelateToManyForCreateInput(val, context, schema.listKey);
     } else {
       const val = (value as graphql.InferValueFromArg<
         graphql.Arg<NonNullable<GraphQLTypesForList['relateTo']['one']['create']>>
       >)!;
 
-      return resolveRelateToOneForCreateInput(val, context, prop.listKey);
+      return resolveRelateToOneForCreateInput(val, context, schema.listKey);
     }
   }
-  if (prop.kind === 'conditional') {
+  if (schema.kind === 'conditional') {
     if (value === null) {
       throw new Error();
     }
@@ -240,14 +242,14 @@ export async function getValueForCreate(
     }
     const key = conditionalValueKeys[0];
     let discriminant: string | boolean = key;
-    if ((key === 'true' || key === 'false') && !prop.discriminant.validate(key)) {
+    if ((key === 'true' || key === 'false') && !schema.discriminant.validate(key)) {
       discriminant = key === 'true';
     }
 
     return {
       discriminant,
       value: await getValueForCreate(
-        (prop.values as any)[key],
+        (schema.values as any)[key],
         value[key],
         context,
         path.concat('value')
@@ -255,7 +257,7 @@ export async function getValueForCreate(
     };
   }
 
-  assertNever(prop);
+  assertNever(schema);
 }
 /** MANY */
 

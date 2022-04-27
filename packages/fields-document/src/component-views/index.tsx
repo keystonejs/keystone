@@ -13,7 +13,7 @@ import {
 } from '@keystone-6/core/types';
 import { useEffect, useMemo, useRef } from 'react';
 import { getInitialPropsValue } from '../DocumentEditor/component-blocks/initial-values';
-import { ComponentPropFieldForGraphQL } from '../DocumentEditor/component-blocks/api';
+import { ComponentSchemaForGraphQL } from '../DocumentEditor/component-blocks/api';
 import { assertNever } from '../DocumentEditor/component-blocks/utils';
 import { FormValueContentFromPreview } from '../DocumentEditor/component-blocks/form-from-preview';
 import { createGetPreviewProps } from '../DocumentEditor/component-blocks/preview-props';
@@ -30,10 +30,10 @@ export const Field = ({
     valueRef.current = value;
   });
   const createPreviewProps = useMemo(() => {
-    return createGetPreviewProps(field.prop, getNewVal => {
+    return createGetPreviewProps(field.schema, getNewVal => {
       onChange?.({ kind: valueRef.current.kind, value: getNewVal(valueRef.current.value) });
     });
-  }, [field.prop, onChange]);
+  }, [field.schema, onChange]);
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
@@ -54,24 +54,24 @@ export const CardValue: CardValueComponent = ({}) => {
   return null as any;
 };
 
-export const allowedExportsOnCustomViews = ['prop'];
+export const allowedExportsOnCustomViews = ['schema'];
 
 export const controller = (
   config: FieldControllerConfig
 ): FieldController<{ kind: 'create' | 'update'; value: unknown }> & {
-  prop: ComponentPropFieldForGraphQL;
+  schema: ComponentSchemaForGraphQL;
 } => {
-  if (!config.customViews.prop) {
+  if (!config.customViews.schema) {
     throw new Error(
-      `No prop in custom view. Did you forgot to set \`views\` to a file that exports a \`prop\` on ${config.listKey}.${config.path}`
+      `No schema in custom view. Did you forgot to set \`views\` to a file that exports a \`schema\` on ${config.listKey}.${config.path}`
     );
   }
   return {
     path: config.path,
     label: config.label,
     graphqlSelection: `${config.path}Raw(hydrateRelationships: true)`,
-    prop: config.customViews.prop,
-    defaultValue: { kind: 'create', value: getInitialPropsValue(config.customViews.prop) },
+    schema: config.customViews.schema,
+    defaultValue: { kind: 'create', value: getInitialPropsValue(config.customViews.schema) },
     deserialize: data => {
       return {
         kind: 'update',
@@ -80,36 +80,36 @@ export const controller = (
     },
     serialize: value => {
       return {
-        [config.path]: serializeValue(config.customViews.prop, value.value, value.kind),
+        [config.path]: serializeValue(config.customViews.schema, value.value, value.kind),
       };
     },
   };
 };
 
 function serializeValue(
-  prop: ComponentPropFieldForGraphQL,
+  schema: ComponentSchemaForGraphQL,
   value: any,
   kind: 'update' | 'create'
 ): any {
-  if (prop.kind === 'conditional') {
+  if (schema.kind === 'conditional') {
     return {
-      [value.discriminant]: serializeValue(prop.values[value.discriminant], value.value, kind),
+      [value.discriminant]: serializeValue(schema.values[value.discriminant], value.value, kind),
     };
   }
-  if (prop.kind === 'array') {
-    return (value as any[]).map(a => serializeValue(prop.element, a, kind));
+  if (schema.kind === 'array') {
+    return (value as any[]).map(a => serializeValue(schema.element, a, kind));
   }
-  if (prop.kind === 'form') {
+  if (schema.kind === 'form') {
     return value;
   }
-  if (prop.kind === 'object') {
+  if (schema.kind === 'object') {
     return Object.fromEntries(
-      Object.entries(prop.value).map(([key, val]) => {
+      Object.entries(schema.value).map(([key, val]) => {
         return [key, serializeValue(val, value[key], kind)];
       })
     );
   }
-  if (prop.kind === 'relationship') {
+  if (schema.kind === 'relationship') {
     if (Array.isArray(value)) {
       return {
         [kind === 'create' ? 'connect' : 'set']: value.map(x => ({ id: x.id })),
@@ -125,5 +125,5 @@ function serializeValue(
       connect: { id: value.id },
     };
   }
-  assertNever(prop);
+  assertNever(schema);
 }

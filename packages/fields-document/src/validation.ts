@@ -1,6 +1,6 @@
 import { Text, Editor } from 'slate';
 import { createDocumentEditor } from './DocumentEditor';
-import { ComponentBlock, ComponentPropField } from './DocumentEditor/component-blocks/api';
+import { ComponentBlock, ComponentSchema } from './DocumentEditor/component-blocks/api';
 import { assertNever, ReadonlyPropPath } from './DocumentEditor/component-blocks/utils';
 import { Relationships } from './DocumentEditor/relationship';
 import {
@@ -20,22 +20,22 @@ export class PropValidationError extends Error {
 }
 
 function validateComponentBlockProps(
-  prop: ComponentPropField,
+  schema: ComponentSchema,
   value: unknown,
   relationships: Relationships,
   path: ReadonlyPropPath
 ): any {
-  if (prop.kind === 'form') {
-    if (prop.validate(value)) {
+  if (schema.kind === 'form') {
+    if (schema.validate(value)) {
       return value;
     }
     throw new PropValidationError('Invalid form prop value', path);
   }
-  if (prop.kind === 'child') {
+  if (schema.kind === 'child') {
     return null;
   }
-  if (prop.kind === 'relationship') {
-    if (prop.many) {
+  if (schema.kind === 'relationship') {
+    if (schema.many) {
       if (Array.isArray(value) && value.every(isRelationshipData)) {
         // yes, ts understands this completely correctly, i'm as suprised as you are
         return value.map(x => ({ id: x.id }));
@@ -50,7 +50,7 @@ function validateComponentBlockProps(
     }
   }
 
-  if (prop.kind === 'conditional') {
+  if (schema.kind === 'conditional') {
     if (typeof value !== 'object' || value === null) {
       throw new PropValidationError('Conditional value must be an object', path);
     }
@@ -68,7 +68,7 @@ function validateComponentBlockProps(
     // so we're doing this so that we avoid setting undefined on objects
     const obj: any = {};
     const discriminantVal = validateComponentBlockProps(
-      prop.discriminant,
+      schema.discriminant,
       discriminant,
       relationships,
       path.concat('discriminant')
@@ -77,7 +77,7 @@ function validateComponentBlockProps(
       obj.discriminant = discriminantVal;
     }
     const conditionalFieldValue = validateComponentBlockProps(
-      prop.values[discriminant],
+      schema.values[discriminant],
       val,
       relationships,
       path.concat('value')
@@ -88,20 +88,20 @@ function validateComponentBlockProps(
     return obj;
   }
 
-  if (prop.kind === 'object') {
+  if (schema.kind === 'object') {
     if (typeof value !== 'object' || value === null) {
       throw new PropValidationError('Object value must be an object', path);
     }
-    const allowedKeysSet = new Set(Object.keys(prop.value));
+    const allowedKeysSet = new Set(Object.keys(schema.value));
     for (const key of Object.keys(value)) {
       if (!allowedKeysSet.has(key)) {
         throw new PropValidationError(`Key on object value "${key}" is not allowed`, path);
       }
     }
     let val: Record<string, any> = {};
-    for (const key of Object.keys(prop.value)) {
+    for (const key of Object.keys(schema.value)) {
       const propVal = validateComponentBlockProps(
-        prop.value[key],
+        schema.value[key],
         (value as any)[key],
         relationships,
         path.concat(key)
@@ -114,15 +114,15 @@ function validateComponentBlockProps(
     }
     return val;
   }
-  if (prop.kind === 'array') {
+  if (schema.kind === 'array') {
     if (!Array.isArray(value)) {
       throw new PropValidationError('Array field value must be an array', path);
     }
     return value.map((innerVal, i) => {
-      return validateComponentBlockProps(prop.element, innerVal, relationships, path.concat(i));
+      return validateComponentBlockProps(schema.element, innerVal, relationships, path.concat(i));
     });
   }
-  assertNever(prop);
+  assertNever(schema);
 }
 
 function isText(node: ElementFromValidation): node is TextWithMarks {
@@ -147,7 +147,7 @@ export function getValidatedNodeWithNormalizedComponentFormProps(
       node = {
         ...node,
         props: validateComponentBlockProps(
-          { kind: 'object', value: componentBlock.props },
+          { kind: 'object', value: componentBlock.schema },
           node.props,
           relationships,
           []

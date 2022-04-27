@@ -1,5 +1,5 @@
 import { componentThing } from '../../component';
-import { ArrayField, ComponentPropFieldForGraphQL, fields } from '../../component-blocks';
+import { ArrayField, ComponentSchemaForGraphQL, fields } from '../../component-blocks';
 
 export const name = 'NEEDS A NAME';
 export const typeFunction = componentThing;
@@ -82,7 +82,7 @@ export const supportsDbMap = true;
 export const fieldName = 'content';
 export const readFieldName = 'contentRaw';
 
-const prop: ArrayField<ComponentPropFieldForGraphQL> = fields.array(
+const schema: ArrayField<ComponentSchemaForGraphQL> = fields.array(
   fields.conditional(
     fields.select({
       defaultValue: 'leaf',
@@ -100,7 +100,7 @@ const prop: ArrayField<ComponentPropFieldForGraphQL> = fields.array(
       group: fields.object({
         label: fields.text({ label: 'Label' }),
         get children() {
-          return prop;
+          return schema;
         },
       }),
     }
@@ -109,7 +109,7 @@ const prop: ArrayField<ComponentPropFieldForGraphQL> = fields.array(
 
 export const getTestFields = () => ({ content: componentThing(fieldConfig()) });
 export const fieldConfig = () => ({
-  prop,
+  schema,
 });
 
 export const initItems = () => [

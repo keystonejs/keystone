@@ -4,10 +4,10 @@
 import {
   fields,
   ArrayField,
-  ComponentPropFieldForGraphQL,
+  ComponentSchemaForGraphQL,
 } from '@keystone-6/fields-document/component-blocks';
 
-export const prop: ArrayField<ComponentPropFieldForGraphQL> = fields.array(
+export const schema: ArrayField<ComponentSchemaForGraphQL> = fields.array(
   fields.conditional(
     fields.select({
       defaultValue: 'leaf',
@@ -25,7 +25,7 @@ export const prop: ArrayField<ComponentPropFieldForGraphQL> = fields.array(
       group: fields.object({
         label: fields.text({ label: 'Label' }),
         get children() {
-          return prop;
+          return schema;
         },
       }),
     }

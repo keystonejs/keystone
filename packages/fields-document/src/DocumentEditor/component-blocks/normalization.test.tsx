@@ -10,12 +10,12 @@ const componentBlocks = {
   basic: component({
     component: () => null,
     label: 'Basic',
-    props: { prop: fields.text({ label: 'Prop' }) },
+    schema: { prop: fields.text({ label: 'Prop' }) },
   }),
   withChildElements: component({
     component: () => null,
     label: 'With Child Elements',
-    props: {
+    schema: {
       prop: fields.text({ label: 'Prop' }),
       block: fields.child({ kind: 'block', placeholder: '' }),
       inline: fields.child({ kind: 'inline', placeholder: '' }),
@@ -24,7 +24,7 @@ const componentBlocks = {
   withLotsOfChildElements: component({
     component: () => null,
     label: 'With Lots of Child Elements',
-    props: {
+    schema: {
       block: fields.child({ kind: 'block', placeholder: '' }),
       inline: fields.child({ kind: 'inline', placeholder: '' }),
       last: fields.child({ kind: 'block', placeholder: '' }),
@@ -565,7 +565,7 @@ test('toggling to heading when in an inline prop', () => {
         inline: component({
           component: () => null,
           label: '',
-          props: {
+          schema: {
             child: fields.child({ kind: 'inline', placeholder: '' }),
             other: fields.child({ kind: 'block', placeholder: '' }),
           },
@@ -635,7 +635,7 @@ test('child field in array field insertBreak', () => {
         myList: component({
           component: () => null,
           label: '',
-          props: {
+          schema: {
             children: fields.array(
               fields.object({
                 content: fields.child({ kind: 'inline', placeholder: '' }),
@@ -734,7 +734,7 @@ test('child field in array field deleteBackward at end', () => {
         myList: component({
           component: () => null,
           label: '',
-          props: {
+          schema: {
             children: fields.array(
               fields.object({
                 content: fields.child({ kind: 'inline', placeholder: '' }),
@@ -822,7 +822,7 @@ test('child field in array field deleteBackward in middle', () => {
         myList: component({
           component: () => null,
           label: '',
-          props: {
+          schema: {
             children: fields.array(
               fields.object({
                 content: fields.child({ kind: 'inline', placeholder: '' }),

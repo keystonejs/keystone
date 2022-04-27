@@ -1,14 +1,14 @@
-import { ComponentPropField, ComponentBlock } from '../../component-blocks';
+import { ComponentSchema, ComponentBlock } from '../../component-blocks';
 import { getKeysForArrayValue, getNewArrayElementKey, setKeysForArrayValue } from './preview-props';
 import { assertNever, findChildPropPaths } from './utils';
 
 export function getInitialValue(type: string, componentBlock: ComponentBlock) {
-  const props = getInitialPropsValue({ kind: 'object', value: componentBlock.props });
+  const props = getInitialPropsValue({ kind: 'object', value: componentBlock.schema });
   return {
     type: 'component-block' as const,
     component: type,
     props,
-    children: findChildPropPaths(props, componentBlock.props).map(x => ({
+    children: findChildPropPaths(props, componentBlock.schema).map(x => ({
       type: `component-${x.options.kind}-prop` as const,
       propPath: x.path,
       children: [
@@ -20,25 +20,25 @@ export function getInitialValue(type: string, componentBlock: ComponentBlock) {
   };
 }
 
-export function getInitialPropsValue(prop: ComponentPropField): any {
-  switch (prop.kind) {
+export function getInitialPropsValue(schema: ComponentSchema): any {
+  switch (schema.kind) {
     case 'form':
-      return prop.defaultValue;
+      return schema.defaultValue;
     case 'child':
       return null;
     case 'relationship':
-      return prop.many ? [] : null;
+      return schema.many ? [] : null;
     case 'conditional': {
-      const defaultValue = prop.discriminant.defaultValue;
+      const defaultValue = schema.discriminant.defaultValue;
       return {
         discriminant: defaultValue,
-        value: getInitialPropsValue(prop.values[defaultValue.toString()]),
+        value: getInitialPropsValue(schema.values[defaultValue.toString()]),
       };
     }
     case 'object': {
       let obj: Record<string, any> = {};
-      Object.keys(prop.value).forEach(key => {
-        obj[key] = getInitialPropsValue(prop.value[key]);
+      Object.keys(schema.value).forEach(key => {
+        obj[key] = getInitialPropsValue(schema.value[key]);
       });
       return obj;
     }
@@ -46,36 +46,36 @@ export function getInitialPropsValue(prop: ComponentPropField): any {
       return [];
     }
   }
-  assertNever(prop);
+  assertNever(schema);
 }
 
 export function getInitialPropsValueFromInitializer(
-  prop: ComponentPropField,
+  schema: ComponentSchema,
   initializer: any
 ): any {
-  switch (prop.kind) {
+  switch (schema.kind) {
     case 'form':
-      return initializer === undefined ? prop.defaultValue : initializer;
+      return initializer === undefined ? schema.defaultValue : initializer;
     case 'child':
       return null;
     case 'relationship':
-      return initializer === undefined ? (prop.many ? [] : null) : initializer;
+      return initializer === undefined ? (schema.many ? [] : null) : initializer;
     case 'conditional': {
       const defaultValue =
-        initializer === undefined ? prop.discriminant.defaultValue : initializer.discriminant;
+        initializer === undefined ? schema.discriminant.defaultValue : initializer.discriminant;
       return {
         discriminant: defaultValue,
         value: getInitialPropsValueFromInitializer(
-          prop.values[defaultValue.toString()],
+          schema.values[defaultValue.toString()],
           initializer === undefined ? undefined : initializer.value
         ),
       };
     }
     case 'object': {
       let obj: Record<string, any> = {};
-      Object.keys(prop.value).forEach(key => {
+      Object.keys(schema.value).forEach(key => {
         obj[key] = getInitialPropsValueFromInitializer(
-          prop.value[key],
+          schema.value[key],
           initializer === undefined ? undefined : initializer[key]
         );
       });
@@ -83,18 +83,18 @@ export function getInitialPropsValueFromInitializer(
     }
     case 'array': {
       return ((initializer ?? []) as { value?: unknown }[]).map(x =>
-        getInitialPropsValueFromInitializer(prop.element, x.value)
+        getInitialPropsValueFromInitializer(schema.element, x.value)
       );
     }
   }
-  assertNever(prop);
+  assertNever(schema);
 }
 
-export function updateValue(prop: ComponentPropField, currentValue: any, updater: any): any {
+export function updateValue(schema: ComponentSchema, currentValue: any, updater: any): any {
   if (updater === undefined) {
     return currentValue;
   }
-  switch (prop.kind) {
+  switch (schema.kind) {
     case 'relationship':
     case 'form':
       return updater;
@@ -106,20 +106,20 @@ export function updateValue(prop: ComponentPropField, currentValue: any, updater
         value:
           updater.discriminant === currentValue.discriminant
             ? updateValue(
-                prop.values[updater.discriminant.toString()],
+                schema.values[updater.discriminant.toString()],
                 currentValue.value,
                 updater.value
               )
             : getInitialPropsValueFromInitializer(
-                prop.values[updater.discriminant.toString()],
+                schema.values[updater.discriminant.toString()],
                 updater.value
               ),
       };
     }
     case 'object': {
       let obj: Record<string, any> = {};
-      Object.keys(prop.value).forEach(key => {
-        obj[key] = updateValue(prop.value[key], currentValue[key], updater[key]);
+      Object.keys(schema.value).forEach(key => {
+        obj[key] = updateValue(schema.value[key], currentValue[key], updater[key]);
       });
       return obj;
     }
@@ -156,13 +156,13 @@ export function updateValue(prop: ComponentPropField, currentValue: any, updater
       const val = newVal.map((x, i) => {
         const id = keys[i];
         if (prevValuesByKey.has(id)) {
-          return updateValue(prop.element, prevValuesByKey.get(id), x.value);
+          return updateValue(schema.element, prevValuesByKey.get(id), x.value);
         }
-        return getInitialPropsValueFromInitializer(prop.element, x.value);
+        return getInitialPropsValueFromInitializer(schema.element, x.value);
       });
       setKeysForArrayValue(val, keys);
       return val;
     }
   }
-  assertNever(prop);
+  assertNever(schema);
 }

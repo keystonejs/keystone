@@ -13,7 +13,7 @@ import {
 import { componentThing, document } from '@keystone-6/fields-document';
 import { v4 } from 'uuid';
 import { componentBlocks } from './admin/fieldViews/Content';
-import { prop as blahProp } from './admin/fieldViews/Blah';
+import { schema as blahProp } from './admin/fieldViews/Blah';
 import * as Keystone from '.keystone/types';
 
 type AccessArgs = {
@@ -153,7 +153,7 @@ export const lists: Keystone.Lists = {
         defaultValue: 'draft',
       }),
       blah: componentThing({
-        prop: blahProp,
+        schema: blahProp,
         ui: { views: require.resolve('./admin/fieldViews/Blah.tsx') },
       }),
       // something: json({

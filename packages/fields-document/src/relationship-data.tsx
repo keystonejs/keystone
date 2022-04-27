@@ -4,7 +4,7 @@ import { GraphQLSchema, executeSync, parse } from 'graphql';
 import weakMemoize from '@emotion/weak-memoize';
 import {
   ComponentBlock,
-  ComponentPropField,
+  ComponentSchema,
   RelationshipData,
   RelationshipField,
 } from './DocumentEditor/component-blocks/api';
@@ -41,7 +41,7 @@ export function addRelationshipData(
         if (componentBlock) {
           const [props, children] = await Promise.all([
             addRelationshipDataToComponentProps(
-              { kind: 'object', value: componentBlock.props },
+              { kind: 'object', value: componentBlock.schema },
               node.props,
               (relationship, data) =>
                 fetchRelationshipData(
@@ -152,24 +152,24 @@ async function fetchDataForOne(
 }
 
 export async function addRelationshipDataToComponentProps(
-  prop: ComponentPropField,
+  schema: ComponentSchema,
   val: any,
   fetchData: (relationship: RelationshipField<boolean>, data: any) => Promise<any>
 ): Promise<any> {
-  switch (prop.kind) {
+  switch (schema.kind) {
     case 'child':
     case 'form': {
       return val;
     }
     case 'relationship': {
-      return fetchData(prop, val);
+      return fetchData(schema, val);
     }
     case 'object': {
       return Object.fromEntries(
         await Promise.all(
-          Object.keys(prop.value).map(async key => [
+          Object.keys(schema.value).map(async key => [
             key,
-            await addRelationshipDataToComponentProps(prop.value[key], val[key], fetchData),
+            await addRelationshipDataToComponentProps(schema.value[key], val[key], fetchData),
           ])
         )
       );
@@ -178,7 +178,7 @@ export async function addRelationshipDataToComponentProps(
       return {
         discriminant: val.discriminant,
         value: await addRelationshipDataToComponentProps(
-          prop.values[val.discriminant],
+          schema.values[val.discriminant],
           val.value,
           fetchData
         ),
@@ -187,12 +187,12 @@ export async function addRelationshipDataToComponentProps(
     case 'array': {
       return await Promise.all(
         (val as any[]).map(async innerVal =>
-          addRelationshipDataToComponentProps(prop.element, innerVal, fetchData)
+          addRelationshipDataToComponentProps(schema.element, innerVal, fetchData)
         )
       );
     }
   }
-  assertNever(prop);
+  assertNever(schema);
 }
 
 const document = parse(`

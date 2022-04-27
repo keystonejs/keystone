@@ -48,7 +48,7 @@ function List(props: PreviewProps<ListItems>): ReactElement {
 const list = component({
   component: props => React.createElement(List, props.fields.children),
   label: '',
-  props: {
+  schema: {
     children,
   },
 });

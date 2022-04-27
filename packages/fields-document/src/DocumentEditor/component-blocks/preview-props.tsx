@@ -1,9 +1,9 @@
 import React, { ReactElement, useContext } from 'react';
 import {
   ArrayField,
-  ComponentPropField,
+  ComponentSchema,
   ConditionalField,
-  ValueForComponentPropField,
+  ValueForComponentSchema,
   FormField,
   FormFieldValue,
   HydratedRelationshipData,
@@ -46,14 +46,14 @@ export function ChildFieldEditable({ path }: { path: readonly string[] }) {
   return child;
 }
 
-function castToMemoizedInfoForProp<
+function castToMemoizedInfoForSchema<
   T extends {
-    [Kind in ComponentPropField['kind']]: (
-      prop: Extract<ComponentPropField, { kind: Kind }>,
+    [Kind in ComponentSchema['kind']]: (
+      schema: Extract<ComponentSchema, { kind: Kind }>,
       onChange: (
         cb: (
-          prevVal: ValueForComponentPropField<Extract<ComponentPropField, { kind: Kind }>>
-        ) => ValueForComponentPropField<Extract<ComponentPropField, { kind: Kind }>>
+          prevVal: ValueForComponentSchema<Extract<ComponentSchema, { kind: Kind }>>
+        ) => ValueForComponentSchema<Extract<ComponentSchema, { kind: Kind }>>
       ) => void
     ) => unknown;
   }
@@ -61,42 +61,42 @@ function castToMemoizedInfoForProp<
   return val;
 }
 
-const memoizedInfoForProp = castToMemoizedInfoForProp({
-  form(prop, onChange) {
+const memoizedInfoForSchema = castToMemoizedInfoForSchema({
+  form(schema, onChange) {
     return (newVal: unknown) => onChange(() => newVal);
   },
-  array(prop, onChange) {
+  array(schema, onChange) {
     return {
       rawOnChange: onChange,
       inner: new Map<
         string,
         {
           onChange: (cb: (val: unknown) => unknown) => void;
-          elementWithKey: { key: string } & PreviewProps<ComponentPropField>;
-          element: PreviewProps<ComponentPropField>;
+          elementWithKey: { key: string } & PreviewProps<ComponentSchema>;
+          element: PreviewProps<ComponentSchema>;
         }
       >(),
       onChange(updater: readonly { key: string | undefined; value?: unknown }[]) {
-        onChange(value => updateValue(prop, value, updater));
+        onChange(value => updateValue(schema, value, updater));
       },
     };
   },
   child() {},
-  conditional(prop, onChange) {
+  conditional(schema, onChange) {
     return {
       onChange: (discriminant: string | boolean, value?: unknown) =>
-        onChange(val => updateValue(prop, val, { discriminant, value })),
+        onChange(val => updateValue(schema, val, { discriminant, value })),
       onChangeForValue: (cb: (prevVal: unknown) => unknown) =>
         onChange(val => ({ discriminant: val.discriminant, value: cb(val.value) })),
     };
   },
-  object(prop, onChange) {
+  object(schema, onChange) {
     return {
       onChange: (updater: Record<string, unknown>) => {
-        onChange(value => updateValue(prop, value, updater));
+        onChange(value => updateValue(schema, value, updater));
       },
       innerOnChanges: Object.fromEntries(
-        Object.keys(prop.value).map(key => {
+        Object.keys(schema.value).map(key => {
           return [
             key,
             (newVal: (prevVal: unknown) => unknown) => {
@@ -107,7 +107,7 @@ const memoizedInfoForProp = castToMemoizedInfoForProp({
       ),
     };
   },
-  relationship(prop, onChange) {
+  relationship(schema, onChange) {
     return (newVal: HydratedRelationshipData | readonly HydratedRelationshipData[] | null) =>
       onChange(() => newVal);
   },
@@ -126,65 +126,65 @@ function getOrInsert<K, V>(map: GeneralMap<K, V>, key: K, val: (key: K) => V): V
   return map.get(key)!;
 }
 
-export function createGetPreviewProps<Field extends ComponentPropField>(
-  rootProp: Field,
+export function createGetPreviewProps<Schema extends ComponentSchema>(
+  rootSchema: Schema,
   rootOnChange: (
-    cb: (val: ValueForComponentPropField<Field>) => ValueForComponentPropField<Field>
+    cb: (val: ValueForComponentSchema<Schema>) => ValueForComponentSchema<Schema>
   ) => void
 ) {
   const previewPropsFactories: {
-    [Kind in ComponentPropField['kind']]: (
-      prop: Extract<ComponentPropField, { kind: Kind }>,
-      value: ValueForComponentPropField<Extract<ComponentPropField, { kind: Kind }>>,
-      memoized: ReturnType<typeof memoizedInfoForProp[Kind]>,
+    [Kind in ComponentSchema['kind']]: (
+      schema: Extract<ComponentSchema, { kind: Kind }>,
+      value: ValueForComponentSchema<Extract<ComponentSchema, { kind: Kind }>>,
+      memoized: ReturnType<typeof memoizedInfoForSchema[Kind]>,
       path: readonly string[],
-      getInnerProp: <Field extends ComponentPropField>(
-        prop: Field,
-        value: ValueForComponentPropField<Field>,
+      getInnerProp: <Field extends ComponentSchema>(
+        schema: Field,
+        value: ValueForComponentSchema<Field>,
         onChange: (
-          cb: (prevVal: ValueForComponentPropField<Field>) => ValueForComponentPropField<Field>
+          cb: (prevVal: ValueForComponentSchema<Field>) => ValueForComponentSchema<Field>
         ) => void,
         key: string
       ) => PreviewProps<Field>
-    ) => PreviewProps<Extract<ComponentPropField, { kind: Kind }>>;
+    ) => PreviewProps<Extract<ComponentSchema, { kind: Kind }>>;
   } = {
-    form(prop, value, onChange) {
+    form(schema, value, onChange) {
       return {
         value: value as FormFieldValue,
         onChange,
-        options: prop.options,
-        field: prop,
+        options: schema.options,
+        schema: schema,
       };
     },
-    child(prop, value, onChange, path) {
-      return { element: <ChildFieldEditable path={path} />, field: prop };
+    child(schema, value, onChange, path) {
+      return { element: <ChildFieldEditable path={path} />, schema: schema };
     },
-    object(prop, value, memoized, path, getInnerProp) {
-      const fields: Record<string, PreviewProps<ComponentPropField>> = {};
+    object(schema, value, memoized, path, getInnerProp) {
+      const fields: Record<string, PreviewProps<ComponentSchema>> = {};
 
-      Object.keys(prop.value).forEach(key => {
+      Object.keys(schema.value).forEach(key => {
         fields[key] = getInnerProp(
-          prop.value[key],
+          schema.value[key],
           (value as any)[key],
           memoized.innerOnChanges[key],
           key
         );
       });
 
-      const previewProps: PreviewProps<ObjectField<Record<string, ComponentPropField>>> = {
+      const previewProps: PreviewProps<ObjectField<Record<string, ComponentSchema>>> = {
         fields,
         onChange: memoized.onChange,
-        field: prop,
+        schema: schema,
       };
       return previewProps;
     },
-    array(prop, value, memoized, path, getInnerProp) {
+    array(schema, value, memoized, path, getInnerProp) {
       const arrayValue = value as readonly unknown[];
       const keys = getKeysForArrayValue(arrayValue);
 
       const unusedKeys = new Set(getKeysForArrayValue(value));
 
-      const props: PreviewProps<ArrayField<ComponentPropField>> = {
+      const props: PreviewProps<ArrayField<ComponentSchema>> = {
         elements: arrayValue.map((val, i) => {
           const key = keys[i];
           unusedKeys.delete(key);
@@ -199,7 +199,7 @@ export function createGetPreviewProps<Field extends ComponentPropField>(
                 return newValue;
               });
             };
-            const element = getInnerProp(prop.element, val, onChange, key);
+            const element = getInnerProp(schema.element, val, onChange, key);
             return {
               element,
               elementWithKey: {
@@ -209,7 +209,7 @@ export function createGetPreviewProps<Field extends ComponentPropField>(
               onChange,
             };
           });
-          const currentInnerProp = getInnerProp(prop.element, val, element.onChange, key);
+          const currentInnerProp = getInnerProp(schema.element, val, element.onChange, key);
           if (element.element !== currentInnerProp) {
             element.element = currentInnerProp;
             element.elementWithKey = {
@@ -219,7 +219,7 @@ export function createGetPreviewProps<Field extends ComponentPropField>(
           }
           return element.elementWithKey;
         }),
-        field: prop,
+        schema: schema,
         onChange: memoized.onChange,
       };
       for (const key of unusedKeys) {
@@ -227,52 +227,49 @@ export function createGetPreviewProps<Field extends ComponentPropField>(
       }
       return props;
     },
-    relationship(prop, value, onChange) {
+    relationship(schema, value, onChange) {
       const props: PreviewProps<RelationshipField<boolean>> = {
         value: value,
         onChange,
-        field: prop,
+        schema: schema,
       };
       return props;
     },
-    conditional(prop, value, memoized, path, getInnerProp) {
+    conditional(schema, value, memoized, path, getInnerProp) {
       const props: PreviewProps<
-        ConditionalField<
-          FormField<string | boolean, unknown>,
-          { [key: string]: ComponentPropField }
-        >
+        ConditionalField<FormField<string | boolean, unknown>, { [key: string]: ComponentSchema }>
       > = {
         discriminant: value.discriminant as any,
         onChange: memoized.onChange,
-        options: prop.discriminant.options,
+        options: schema.discriminant.options,
         value: getInnerProp(
-          prop.values[value.discriminant.toString()],
+          schema.values[value.discriminant.toString()],
           value.value,
           memoized.onChangeForValue,
           'value'
         ),
-        field: prop,
+        schema: schema,
       };
       return props;
     },
   };
 
-  function getPreviewPropsForProp<Field extends ComponentPropField>(
-    prop: Field,
+  function getPreviewPropsForProp<Schema extends ComponentSchema>(
+    schema: Schema,
     value: unknown,
     memoedThing: { __memoizedThing: true },
     path: readonly string[],
-    getInnerProp: <Field extends ComponentPropField>(
-      prop: Field,
-      value: ValueForComponentPropField<Field>,
+    getInnerProp: <Field extends ComponentSchema>(
+      schema: Field,
+      value: ValueForComponentSchema<Field>,
       onChange: (
-        cb: (prevVal: ValueForComponentPropField<Field>) => ValueForComponentPropField<Field>
+        cb: (prevVal: ValueForComponentSchema<Field>) => ValueForComponentSchema<Field>
       ) => void,
       key: string
     ) => PreviewProps<Field>
-  ): PreviewProps<Field> {
-    return previewPropsFactories[prop.kind](
-      prop as any,
+  ): PreviewProps<Schema> {
+    return previewPropsFactories[schema.kind](
+      schema as any,
       value as any,
       memoedThing as any,
       path,
@@ -280,47 +277,53 @@ export function createGetPreviewProps<Field extends ComponentPropField>(
     ) as any;
   }
 
-  function getInitialMemoState<Field extends ComponentPropField>(
-    prop: Field,
-    value: ValueForComponentPropField<Field>,
+  function getInitialMemoState<Schema extends ComponentSchema>(
+    schema: Schema,
+    value: ValueForComponentSchema<Schema>,
     onChange: (
-      cb: (val: ValueForComponentPropField<Field>) => ValueForComponentPropField<Field>
+      cb: (val: ValueForComponentSchema<Schema>) => ValueForComponentSchema<Schema>
     ) => void,
     path: readonly string[]
-  ): MemoState<Field> {
-    let innerState = new Map<string, MemoState<ComponentPropField>>();
-    const blah = (
-      memoizedInfoForProp[prop.kind] as (
-        prop: ComponentPropField,
+  ): MemoState<Schema> {
+    let innerState = new Map<string, MemoState<ComponentSchema>>();
+    const memoizedInfo = (
+      memoizedInfoForSchema[schema.kind] as (
+        schema: ComponentSchema,
         onChange: (
-          cb: (val: ValueForComponentPropField<Field>) => ValueForComponentPropField<Field>
+          cb: (val: ValueForComponentSchema<Schema>) => ValueForComponentSchema<Schema>
         ) => void
       ) => any
-    )(prop, onChange);
-    let state: MemoState<ComponentPropField> = {
+    )(schema, onChange);
+    let state: MemoState<ComponentSchema> = {
       value,
       inner: innerState,
-      props: getPreviewPropsForProp(prop, value, blah, path, (prop, value, onChange, key) => {
-        const state = getInitialMemoState(prop, value, onChange, path.concat(key));
-        innerState.set(key, state);
-        return state.props;
-      }),
-      field: prop,
-      cached: blah,
+      props: getPreviewPropsForProp(
+        schema,
+        value,
+        memoizedInfo,
+        path,
+        (schema, value, onChange, key) => {
+          const state = getInitialMemoState(schema, value, onChange, path.concat(key));
+          innerState.set(key, state);
+          return state.props;
+        }
+      ),
+      schema: schema,
+      cached: memoizedInfo,
     };
-    return state as MemoState<Field>;
+    return state as MemoState<Schema>;
   }
-  function getUpToDateProps<Field extends ComponentPropField>(
-    prop: Field,
-    value: ValueForComponentPropField<Field>,
+  function getUpToDateProps<Schema extends ComponentSchema>(
+    schema: Schema,
+    value: ValueForComponentSchema<Schema>,
     onChange: (
-      cb: (val: ValueForComponentPropField<Field>) => ValueForComponentPropField<Field>
+      cb: (val: ValueForComponentSchema<Schema>) => ValueForComponentSchema<Schema>
     ) => void,
-    memoState: MemoState<Field>,
+    memoState: MemoState<Schema>,
     path: readonly string[]
-  ): PreviewProps<Field> {
-    if (memoState.field !== prop) {
-      Object.assign(memoState, getInitialMemoState(prop, value, onChange, path));
+  ): PreviewProps<Schema> {
+    if (memoState.schema !== schema) {
+      Object.assign(memoState, getInitialMemoState(schema, value, onChange, path));
       return memoState.props;
     }
     if (memoState.value === value) {
@@ -329,15 +332,15 @@ export function createGetPreviewProps<Field extends ComponentPropField>(
     memoState.value = value;
     const unusedKeys = new Set(memoState.inner.keys());
     memoState.props = getPreviewPropsForProp(
-      prop,
+      schema,
       value,
       memoState.cached as any,
       path,
-      (prop, value, onChange, innerMemoStateKey) => {
+      (schema, value, onChange, innerMemoStateKey) => {
         unusedKeys.delete(innerMemoStateKey);
         if (!memoState.inner.has(innerMemoStateKey)) {
           const innerState = getInitialMemoState(
-            prop,
+            schema,
             value,
             onChange,
             path.concat(innerMemoStateKey)
@@ -345,11 +348,11 @@ export function createGetPreviewProps<Field extends ComponentPropField>(
           memoState.inner.set(innerMemoStateKey, innerState);
           return innerState.props;
         }
-        return getUpToDateProps<typeof prop>(
-          prop,
+        return getUpToDateProps<typeof schema>(
+          schema,
           value,
           onChange,
-          memoState.inner.get(innerMemoStateKey) as MemoState<typeof prop>,
+          memoState.inner.get(innerMemoStateKey) as MemoState<typeof schema>,
           path.concat(innerMemoStateKey)
         );
       }
@@ -359,20 +362,20 @@ export function createGetPreviewProps<Field extends ComponentPropField>(
     }
     return memoState.props;
   }
-  let memoState: MemoState<Field>;
-  return (value: ValueForComponentPropField<Field>): PreviewProps<Field> => {
+  let memoState: MemoState<Schema>;
+  return (value: ValueForComponentSchema<Schema>): PreviewProps<Schema> => {
     if (memoState === undefined) {
-      memoState = getInitialMemoState(rootProp, value, rootOnChange, []);
+      memoState = getInitialMemoState(rootSchema, value, rootOnChange, []);
       return memoState.props;
     }
-    return getUpToDateProps(rootProp, value, rootOnChange, memoState, []);
+    return getUpToDateProps(rootSchema, value, rootOnChange, memoState, []);
   };
 }
 
-type MemoState<Field extends ComponentPropField> = {
-  props: PreviewProps<Field>;
+type MemoState<Schema extends ComponentSchema> = {
+  props: PreviewProps<Schema>;
   value: unknown;
-  field: Field;
-  cached: ReturnType<typeof memoizedInfoForProp[Field['kind']]>;
-  inner: Map<string, MemoState<ComponentPropField>>;
+  schema: Schema;
+  cached: ReturnType<typeof memoizedInfoForSchema[Schema['kind']]>;
+  inner: Map<string, MemoState<ComponentSchema>>;
 };

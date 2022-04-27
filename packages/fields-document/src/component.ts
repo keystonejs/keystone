@@ -9,26 +9,26 @@ import {
 import { graphql } from '@keystone-6/core';
 import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values';
 import { getOutputGraphQLField } from './component-graphql-output';
-import { ComponentPropFieldForGraphQL } from './DocumentEditor/component-blocks/api';
+import { ComponentSchemaForGraphQL } from './DocumentEditor/component-blocks/api';
 import {
   getGraphQLInputType,
   getValueForCreate,
   getValueForUpdate,
 } from './component-graphql-input';
-import { assertValidComponentPropField } from './DocumentEditor/component-blocks/field-assertions';
+import { assertValidComponentSchema } from './DocumentEditor/component-blocks/field-assertions';
 import { addRelationshipDataToComponentProps, fetchRelationshipData } from './relationship-data';
 
 export type ComponentThingFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
     db?: { map?: string };
-    prop: ComponentPropFieldForGraphQL;
+    schema: ComponentSchemaForGraphQL;
   };
 
 const views = path.join(path.dirname(__dirname), 'component-views');
 
 export const componentThing =
   <ListTypeInfo extends BaseListTypeInfo>({
-    prop,
+    schema,
     ...config
   }: ComponentThingFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> =>
   meta => {
@@ -37,7 +37,7 @@ export const componentThing =
     }
     const lists = new Set(Object.keys(meta.lists));
     try {
-      assertValidComponentPropField(prop, lists);
+      assertValidComponentSchema(schema, lists);
     } catch (err) {
       throw new Error(`${meta.listKey}.${meta.fieldKey}: ${(err as any).message}`);
     }
@@ -45,7 +45,7 @@ export const componentThing =
     const resolve = (val: JSONValue | undefined) =>
       val === null && meta.provider === 'postgresql' ? 'JsonNull' : val;
 
-    const defaultValue = getInitialPropsValue(prop);
+    const defaultValue = getInitialPropsValue(schema);
 
     const unreferencedConcreteInterfaceImplementations: graphql.ObjectType<any>[] = [];
 
@@ -64,7 +64,7 @@ export const componentThing =
                 prevVal = JSON.parse(prevVal as any);
                 val = args.inputData[meta.fieldKey];
               }
-              val = await getValueForUpdate(prop, val, prevVal, args.context, []);
+              val = await getValueForUpdate(schema, val, prevVal, args.context, []);
               if (val === null && meta.provider === 'postgresql') {
                 val = 'JsonNull';
               }
@@ -83,18 +83,22 @@ export const componentThing =
         },
         input: {
           create: {
-            arg: graphql.arg({ type: getGraphQLInputType(name, prop, 'create', new Map(), meta) }),
+            arg: graphql.arg({
+              type: getGraphQLInputType(name, schema, 'create', new Map(), meta),
+            }),
             async resolve(val, context) {
-              return resolve(await getValueForCreate(prop, val, context, []));
+              return resolve(await getValueForCreate(schema, val, context, []));
             },
           },
           update: {
-            arg: graphql.arg({ type: getGraphQLInputType(name, prop, 'update', new Map(), meta) }),
+            arg: graphql.arg({
+              type: getGraphQLInputType(name, schema, 'update', new Map(), meta),
+            }),
           },
         },
         output: getOutputGraphQLField(
           name,
-          prop,
+          schema,
           unreferencedConcreteInterfaceImplementations,
           new Map(),
           meta
@@ -110,12 +114,12 @@ export const componentThing =
             },
             resolve({ value }, args, context) {
               if (args.hydrateRelationships) {
-                return addRelationshipDataToComponentProps(prop, value, (prop, value) =>
+                return addRelationshipDataToComponentProps(schema, value, (schema, value) =>
                   fetchRelationshipData(
                     context,
-                    prop.listKey,
-                    prop.many,
-                    prop.selection || '',
+                    schema.listKey,
+                    schema.many,
+                    schema.selection || '',
                     value
                   )
                 );

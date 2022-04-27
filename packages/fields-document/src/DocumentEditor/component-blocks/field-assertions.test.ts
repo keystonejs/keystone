@@ -1,5 +1,5 @@
 import { ArrayField, ConditionalField, fields, FormField, ObjectField } from './api';
-import { assertValidComponentPropField } from './field-assertions';
+import { assertValidComponentSchema } from './field-assertions';
 
 type EasilyCircularObject = ObjectField<{
   x: EasilyCircularObject;
@@ -14,7 +14,7 @@ const discriminant = fields.checkbox({ label: '' });
 
 test('does not allow circular object', () => {
   expect(() => {
-    assertValidComponentPropField(easilyCircularObject, new Set());
+    assertValidComponentSchema(easilyCircularObject, new Set());
   }).toThrowErrorMatchingInlineSnapshot(
     `"The field at \\"object.x\\" is a field that is also its ancestor, this is not allowed because it would create an infinitely recursive structure. Introduce an array or conditional field to represent recursive structure."`
   );
@@ -22,7 +22,7 @@ test('does not allow circular object', () => {
 
 test('does not allow a circular object within an array', () => {
   expect(() => {
-    assertValidComponentPropField(fields.array(easilyCircularObject), new Set());
+    assertValidComponentSchema(fields.array(easilyCircularObject), new Set());
   }).toThrowErrorMatchingInlineSnapshot(
     `"The field at \\"array.object.x\\" is a field that is also its ancestor, this is not allowed because it would create an infinitely recursive structure. Introduce an array or conditional field to represent recursive structure."`
   );
@@ -30,7 +30,7 @@ test('does not allow a circular object within an array', () => {
 
 test('does not allow a circular object within a value for a default discriminant of a conditional field', () => {
   expect(() => {
-    assertValidComponentPropField(
+    assertValidComponentSchema(
       fields.conditional(discriminant, {
         true: fields.empty(),
         false: easilyCircularObject,
@@ -44,7 +44,7 @@ test('does not allow a circular object within a value for a default discriminant
 
 test('does not allow a circular object within a value for a non-default discriminant of a conditional field', () => {
   expect(() => {
-    assertValidComponentPropField(
+    assertValidComponentSchema(
       fields.conditional(discriminant, {
         true: easilyCircularObject,
         false: fields.empty(),
@@ -67,7 +67,7 @@ test("does allow a circular conditional as long as it's not the default", () => 
     },
     false: fields.empty(),
   });
-  assertValidComponentPropField(conditional, new Set());
+  assertValidComponentSchema(conditional, new Set());
 });
 
 test("does not allow a circular conditional if it's the default", () => {
@@ -82,7 +82,7 @@ test("does not allow a circular conditional if it's the default", () => {
     true: fields.empty(),
   });
   expect(() => {
-    assertValidComponentPropField(conditional, new Set());
+    assertValidComponentSchema(conditional, new Set());
   }).toThrowErrorMatchingInlineSnapshot(
     `"The field at \\"conditional.false\\" is a field that is also its ancestor, this is not allowed because it would create an infinitely recursive structure. Introduce an array or conditional field to represent recursive structure."`
   );
@@ -101,7 +101,7 @@ test("allows circularity if it's stopped by an array field", () => {
       },
     })
   );
-  assertValidComponentPropField(blah, new Set());
+  assertValidComponentSchema(blah, new Set());
 });
 
 test('does not allow a field that returns a different field from a getter each time', () => {
@@ -119,7 +119,7 @@ test('does not allow a field that returns a different field from a getter each t
       })
     );
   expect(() => {
-    assertValidComponentPropField(blah(), new Set());
+    assertValidComponentSchema(blah(), new Set());
   }).toThrowErrorMatchingInlineSnapshot(
     `"Fields on an object field must not change over time but the field at \\"array.object.blah\\" changes between accesses"`
   );
@@ -147,13 +147,13 @@ test('exceeds the call stack size for an infinitely recursive field where all fi
     );
   };
   expect(() => {
-    assertValidComponentPropField(blah(), new Set());
+    assertValidComponentSchema(blah(), new Set());
   }).toThrowErrorMatchingInlineSnapshot(`"Maximum call stack size exceeded"`);
 });
 
 test('relationship field where no list exists with that name', () => {
   expect(() => {
-    assertValidComponentPropField(
+    assertValidComponentSchema(
       fields.object({ a: fields.relationship({ listKey: 'Blah', label: 'Something' }) }),
       new Set()
     );
@@ -163,7 +163,7 @@ test('relationship field where no list exists with that name', () => {
 });
 
 test('relationship field where a list exists with that name', () => {
-  assertValidComponentPropField(
+  assertValidComponentSchema(
     fields.object({ a: fields.relationship({ listKey: 'Blah', label: 'Something' }) }),
     new Set(['Blah'])
   );

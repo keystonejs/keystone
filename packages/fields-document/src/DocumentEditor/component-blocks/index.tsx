@@ -22,7 +22,7 @@ import { Tooltip } from '@keystone-ui/tooltip';
 import { NotEditable } from '../../component-blocks';
 
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from '../primitives';
-import { ComponentPropField, ComponentBlock } from '../../component-blocks';
+import { ComponentSchema, ComponentBlock } from '../../component-blocks';
 import {
   insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading,
   useElementWithSetNodes,
@@ -30,7 +30,7 @@ import {
 } from '../utils';
 import { assert } from '../utils';
 import { areArraysEqual } from '../document-features-normalization';
-import { clientSideValidateProp, getFieldAtPropPath, ReadonlyPropPath } from './utils';
+import { clientSideValidateProp, getSchemaAtPropPath, ReadonlyPropPath } from './utils';
 import { ChildrenByPathContext, getKeysForArrayValue } from './preview-props';
 import { getInitialPropsValue, getInitialValue } from './initial-values';
 import { FormValue } from './edit-mode';
@@ -43,10 +43,10 @@ export const ComponentBlockContext = createContext<Record<string, ComponentBlock
 
 export function getPlaceholderTextForPropPath(
   propPath: ReadonlyPropPath,
-  fields: Record<string, ComponentPropField>,
+  fields: Record<string, ComponentSchema>,
   formProps: Record<string, any>
 ): string {
-  const field = getFieldAtPropPath(propPath, formProps, fields);
+  const field = getSchemaAtPropPath(propPath, formProps, fields);
   if (field?.kind === 'child') {
     return field.options.placeholder;
   }
@@ -110,7 +110,7 @@ export const ComponentBlocksElement = ({
   const isValid = useMemo(() => {
     return componentBlock
       ? clientSideValidateProp(
-          { kind: 'object', value: componentBlock.props },
+          { kind: 'object', value: componentBlock.schema },
           currentElement.props
         )
       : true;
@@ -136,7 +136,7 @@ export const ComponentBlocksElement = ({
         const childPropPaths = findChildPropPathsWithPrevious(
           newProps,
           prevProps,
-          { kind: 'object', value: componentBlock!.props },
+          { kind: 'object', value: componentBlock!.schema },
           [],
           [],
           []
@@ -248,7 +248,7 @@ export const ComponentBlocksElement = ({
         throw new Error('expected component block to exist when called');
       };
     }
-    return createGetPreviewProps({ kind: 'object', value: componentBlock.props }, onPropsChange);
+    return createGetPreviewProps({ kind: 'object', value: componentBlock.schema }, onPropsChange);
   }, [componentBlock, onPropsChange]);
 
   if (!componentBlock) {
@@ -451,7 +451,7 @@ function ComponentBlockRender({
   children: any;
 }) {
   const getPreviewProps = useMemo(() => {
-    return createGetPreviewProps({ kind: 'object', value: componentBlock.props }, props => {
+    return createGetPreviewProps({ kind: 'object', value: componentBlock.schema }, props => {
       onChange(props);
     });
   }, [onChange, componentBlock]);
@@ -505,37 +505,37 @@ type ChildPropPathWithPrevious = {
 function findChildPropPathsWithPrevious(
   value: any,
   prevValue: any,
-  prop: ComponentPropField,
+  schema: ComponentSchema,
   newPath: ReadonlyPropPath,
   prevPath: ReadonlyPropPath | undefined,
   pathWithKeys: readonly string[] | undefined
 ): ChildPropPathWithPrevious[] {
-  switch (prop.kind) {
+  switch (schema.kind) {
     case 'form':
     case 'relationship':
       return [];
     case 'child':
-      return [{ path: newPath, prevPath, options: prop.options }];
+      return [{ path: newPath, prevPath, options: schema.options }];
     case 'conditional':
       const hasChangedDiscriminant = value.discriminant === prevValue.discriminant;
       return findChildPropPathsWithPrevious(
         value.value,
         hasChangedDiscriminant
           ? prevValue.value
-          : getInitialPropsValue(prop.values[value.discriminant]),
-        prop.values[value.discriminant],
+          : getInitialPropsValue(schema.values[value.discriminant]),
+        schema.values[value.discriminant],
         newPath.concat('value'),
         hasChangedDiscriminant ? undefined : prevPath?.concat('value'),
         hasChangedDiscriminant ? undefined : pathWithKeys?.concat('value')
       );
     case 'object': {
       let paths: ChildPropPathWithPrevious[] = [];
-      Object.keys(prop.value).forEach(key => {
+      Object.keys(schema.value).forEach(key => {
         paths.push(
           ...findChildPropPathsWithPrevious(
             value[key],
             prevValue[key],
-            prop.value[key],
+            schema.value[key],
             newPath.concat(key),
             prevPath?.concat(key),
             pathWithKeys?.concat(key)
@@ -553,7 +553,7 @@ function findChildPropPathsWithPrevious(
         const prevIdx = prevKeys.indexOf(key);
         let prevVal;
         if (prevIdx === -1) {
-          prevVal = getInitialPropsValue(prop.element);
+          prevVal = getInitialPropsValue(schema.element);
         } else {
           prevVal = prevValue[prevIdx];
         }
@@ -561,7 +561,7 @@ function findChildPropPathsWithPrevious(
           ...findChildPropPathsWithPrevious(
             val,
             prevVal,
-            prop.element,
+            schema.element,
             newPath.concat(i),
             prevIdx === -1 ? undefined : prevPath?.concat(prevIdx),
             prevIdx === -1 ? undefined : pathWithKeys?.concat(key)

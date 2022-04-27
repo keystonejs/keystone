@@ -327,7 +327,7 @@ describe('Document field type', () => {
                     someBlock: component({
                       component: () => null,
                       label: 'Some Block',
-                      props: {
+                      schema: {
                         something: fields.object({
                           blah: fields.conditional(fields.checkbox({ label: 'Some conditional' }), {
                             false: fields.empty(),

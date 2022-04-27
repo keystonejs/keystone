@@ -114,7 +114,7 @@ export type ChildField = {
       };
 };
 
-export type ArrayField<ElementField extends ComponentPropField> = {
+export type ArrayField<ElementField extends ComponentSchema> = {
   kind: 'array';
   element: ElementField;
   preview?: PreviewComponent;
@@ -130,7 +130,7 @@ export type RelationshipField<Many extends boolean> = {
 };
 
 export interface ObjectField<
-  Value extends Record<string, ComponentPropField> = Record<string, ComponentPropField>
+  Value extends Record<string, ComponentSchema> = Record<string, ComponentSchema>
 > {
   kind: 'object';
   value: Value;
@@ -148,7 +148,7 @@ type StringOrBooleanToString<Val extends string | boolean> = Val extends string
 export type ConditionalField<
   DiscriminantField extends FormField<string | boolean, any>,
   ConditionalValues extends {
-    [Key in StringOrBooleanToString<DiscriminantField['defaultValue']>]: ComponentPropField;
+    [Key in StringOrBooleanToString<DiscriminantField['defaultValue']>]: ComponentSchema;
   }
 > = {
   kind: 'conditional';
@@ -158,29 +158,29 @@ export type ConditionalField<
 };
 
 type PreviewComponent = (props: unknown) => ReactElement | null;
-type TypedPreviewComponent<Field extends ComponentPropField> = (
+type TypedPreviewComponent<Field extends ComponentSchema> = (
   props: PreviewProps<Field> & { autoFocus?: boolean }
 ) => ReactElement | null;
 
-export type ComponentPropField =
+export type ComponentSchema =
   | ChildField
   | FormField<any, any>
   | ObjectField
-  | ConditionalField<FormField<any, any>, { [key: string]: ComponentPropField }>
+  | ConditionalField<FormField<any, any>, { [key: string]: ComponentSchema }>
   | RelationshipField<boolean>
-  // this is written like this rather than ArrayField<ComponentPropField> to avoid TypeScript erroring about circularity
-  | { kind: 'array'; element: ComponentPropField; preview?: PreviewComponent };
+  // this is written like this rather than ArrayField<ComponentSchema> to avoid TypeScript erroring about circularity
+  | { kind: 'array'; element: ComponentSchema; preview?: PreviewComponent };
 
-export type ComponentPropFieldForGraphQL =
+export type ComponentSchemaForGraphQL =
   | FormFieldWithGraphQLField<any, any>
-  | ObjectField<Record<string, ComponentPropFieldForGraphQL>>
+  | ObjectField<Record<string, ComponentSchemaForGraphQL>>
   | ConditionalField<
       FormFieldWithGraphQLField<any, any>,
-      { [key: string]: ComponentPropFieldForGraphQL }
+      { [key: string]: ComponentSchemaForGraphQL }
     >
   | RelationshipField<boolean>
-  // this is written like this rather than ArrayField<ComponentPropField> to avoid TypeScript erroring about circularity
-  | { kind: 'array'; element: ComponentPropFieldForGraphQL; preview?: PreviewComponent };
+  // this is written like this rather than ArrayField<ComponentSchemaForGraphQL> to avoid TypeScript erroring about circularity
+  | { kind: 'array'; element: ComponentSchemaForGraphQL; preview?: PreviewComponent };
 
 export const fields = {
   text({
@@ -478,7 +478,7 @@ export const fields = {
             },
     };
   },
-  object<Value extends Record<string, ComponentPropField>>(
+  object<Value extends Record<string, ComponentSchema>>(
     value: Value,
     opts?: {
       preview?: TypedPreviewComponent<ObjectField<Value>>;
@@ -489,7 +489,7 @@ export const fields = {
   conditional<
     DiscriminantField extends FormField<string | boolean, any>,
     ConditionalValues extends {
-      [Key in StringOrBooleanToString<DiscriminantField['defaultValue']>]: ComponentPropField;
+      [Key in StringOrBooleanToString<DiscriminantField['defaultValue']>]: ComponentSchema;
     }
   >(
     discriminant: DiscriminantField,
@@ -536,7 +536,7 @@ export const fields = {
       preview: preview as PreviewComponent,
     };
   },
-  array<ElementField extends ComponentPropField>(
+  array<ElementField extends ComponentSchema>(
     element: ElementField,
     opts?: { preview?: TypedPreviewComponent<ArrayField<ElementField>> }
   ): ArrayField<ElementField> {
@@ -545,10 +545,10 @@ export const fields = {
 };
 
 export type ComponentBlock<
-  Props extends Record<string, ComponentPropField> = Record<string, ComponentPropField>
+  Fields extends Record<string, ComponentSchema> = Record<string, ComponentSchema>
 > = {
   component: (props: any) => ReactElement | null;
-  props: Props;
+  schema: Fields;
   label: string;
 } & (
   | {
@@ -566,17 +566,17 @@ export type ComponentBlock<
     }
 );
 
-type GenericPreviewProps<Prop extends ComponentPropField, ChildFieldType> = Prop extends ChildField
+type GenericPreviewProps<Prop extends ComponentSchema, ChildFieldType> = Prop extends ChildField
   ? {
       readonly element: ChildFieldType;
-      readonly field: Prop;
+      readonly schema: Prop;
     }
   : Prop extends FormField<infer Value, infer Options>
   ? {
       readonly value: Value;
       onChange(value: Value): void;
       readonly options: Options;
-      readonly field: Prop;
+      readonly schema: Prop;
     }
   : Prop extends ObjectField<infer Value>
   ? {
@@ -586,7 +586,7 @@ type GenericPreviewProps<Prop extends ComponentPropField, ChildFieldType> = Prop
       onChange(value: {
         readonly [Key in keyof Value]?: InitialOrUpdateValueFromComponentPropField<Value[Key]>;
       }): void;
-      readonly field: Prop;
+      readonly schema: Prop;
     }
   : Prop extends ConditionalField<infer DiscriminantField, infer Values>
   ? {
@@ -600,7 +600,7 @@ type GenericPreviewProps<Prop extends ComponentPropField, ChildFieldType> = Prop
         ): void;
         readonly options: DiscriminantField['options'];
         readonly value: GenericPreviewProps<Values[Key], ChildFieldType>;
-        readonly field: Prop;
+        readonly schema: Prop;
       };
     }[keyof Values]
   : Prop extends RelationshipField<infer Many>
@@ -613,7 +613,7 @@ type GenericPreviewProps<Prop extends ComponentPropField, ChildFieldType> = Prop
           ? readonly HydratedRelationshipData[]
           : HydratedRelationshipData | null
       ): void;
-      readonly field: Prop;
+      readonly schema: Prop;
     }
   : Prop extends ArrayField<infer ElementField>
   ? {
@@ -626,11 +626,11 @@ type GenericPreviewProps<Prop extends ComponentPropField, ChildFieldType> = Prop
           value?: InitialOrUpdateValueFromComponentPropField<ElementField>;
         }[]
       ) => void;
-      readonly field: Prop;
+      readonly schema: Prop;
     }
   : never;
 
-export type PreviewProps<Prop extends ComponentPropField> = GenericPreviewProps<Prop, ReactNode>;
+export type PreviewProps<Prop extends ComponentSchema> = GenericPreviewProps<Prop, ReactNode>;
 
 type GetFromKey<Obj, Key> = Key extends keyof Obj ? Obj[Key] : never;
 
@@ -640,7 +640,7 @@ type DiscrimiantToString<Discriminant extends string | boolean> = Discriminant e
   ? 'false'
   : Discriminant;
 
-export type InitialOrUpdateValueFromComponentPropField<Prop extends ComponentPropField> =
+export type InitialOrUpdateValueFromComponentPropField<Prop extends ComponentSchema> =
   Prop extends ChildField
     ? undefined
     : Prop extends FormField<infer Value, any>
@@ -678,7 +678,7 @@ type DiscriminantStringToDiscriminantValue<
     : never
   : DiscriminantString;
 
-export type PreviewPropsForToolbar<Prop extends ComponentPropField> = GenericPreviewProps<
+export type PreviewPropsForToolbar<Prop extends ComponentSchema> = GenericPreviewProps<
   Prop,
   undefined
 >;
@@ -696,15 +696,15 @@ export type RelationshipData = {
 };
 
 export function component<
-  PropsOption extends {
-    [Key in any]: ComponentPropField;
+  Schema extends {
+    [Key in any]: ComponentSchema;
   }
 >(
   options: {
     /** The preview component shown in the editor */
-    component: (props: PreviewProps<ObjectField<PropsOption>>) => ReactElement | null;
-    /** The props that the preview component, toolbar and rendered component will receive */
-    props: PropsOption;
+    component: (props: PreviewProps<ObjectField<Schema>>) => ReactElement | null;
+    /** The schema for the props that the preview component, toolbar and rendered component will receive */
+    schema: Schema;
     /** The label to show in the insert menu and chrome around the block if chromeless is false */
     label: string;
   } & (
@@ -712,7 +712,7 @@ export function component<
         chromeless: true;
         toolbar?: (props: {
           props: {
-            [Key in keyof PropsOption]: PreviewPropsForToolbar<PropsOption[Key]>;
+            [Key in keyof Schema]: PreviewPropsForToolbar<Schema[Key]>;
           };
           onRemove(): void;
         }) => ReactElement;
@@ -721,14 +721,14 @@ export function component<
         chromeless?: false;
         toolbar?: (props: {
           props: {
-            [Key in keyof PropsOption]: PreviewPropsForToolbar<PropsOption[Key]>;
+            [Key in keyof Schema]: PreviewPropsForToolbar<Schema[Key]>;
           };
           onShowEditMode(): void;
           onRemove(): void;
         }) => ReactElement;
       }
   )
-): ComponentBlock<PropsOption> {
+): ComponentBlock<Schema> {
   return options as any;
 }
 
@@ -740,29 +740,28 @@ export const NotEditable = ({ children, ...props }: HTMLAttributes<HTMLDivElemen
 
 type Comp<Props> = (props: Props) => ReactElement | null;
 
-type ValueForRenderingFromComponentPropField<Prop extends ComponentPropField> =
-  Prop extends ChildField
-    ? ReactNode
-    : Prop extends FormField<infer Value, any>
-    ? Value
-    : Prop extends ObjectField<infer Value>
-    ? { readonly [Key in keyof Value]: ValueForRenderingFromComponentPropField<Value[Key]> }
-    : Prop extends ConditionalField<infer DiscriminantField, infer Values>
-    ? {
-        readonly [Key in keyof Values]: {
-          readonly discriminant: DiscriminantStringToDiscriminantValue<DiscriminantField, Key>;
-          readonly value: ValueForRenderingFromComponentPropField<Values[Key]>;
-        };
-      }[keyof Values]
-    : Prop extends RelationshipField<infer Many>
-    ? Many extends true
-      ? readonly HydratedRelationshipData[]
-      : HydratedRelationshipData | null
-    : Prop extends ArrayField<infer ElementField>
-    ? readonly ValueForRenderingFromComponentPropField<ElementField>[]
-    : never;
+type ValueForRenderingFromComponentPropField<Prop extends ComponentSchema> = Prop extends ChildField
+  ? ReactNode
+  : Prop extends FormField<infer Value, any>
+  ? Value
+  : Prop extends ObjectField<infer Value>
+  ? { readonly [Key in keyof Value]: ValueForRenderingFromComponentPropField<Value[Key]> }
+  : Prop extends ConditionalField<infer DiscriminantField, infer Values>
+  ? {
+      readonly [Key in keyof Values]: {
+        readonly discriminant: DiscriminantStringToDiscriminantValue<DiscriminantField, Key>;
+        readonly value: ValueForRenderingFromComponentPropField<Values[Key]>;
+      };
+    }[keyof Values]
+  : Prop extends RelationshipField<infer Many>
+  ? Many extends true
+    ? readonly HydratedRelationshipData[]
+    : HydratedRelationshipData | null
+  : Prop extends ArrayField<infer ElementField>
+  ? readonly ValueForRenderingFromComponentPropField<ElementField>[]
+  : never;
 
-export type ValueForComponentPropField<Prop extends ComponentPropField> = Prop extends ChildField
+export type ValueForComponentSchema<Prop extends ComponentSchema> = Prop extends ChildField
   ? null
   : Prop extends FormField<infer Value, any>
   ? Value
@@ -783,7 +782,7 @@ export type ValueForComponentPropField<Prop extends ComponentPropField> = Prop e
   ? readonly ValueForRenderingFromComponentPropField<ElementField>[]
   : never;
 
-type ExtractPropsForPropsForRendering<Props extends Record<string, ComponentPropField>> = {
+type ExtractPropsForPropsForRendering<Props extends Record<string, ComponentSchema>> = {
   readonly [Key in keyof Props]: ValueForRenderingFromComponentPropField<Props[Key]>;
 };
 
@@ -791,6 +790,6 @@ export type InferRenderersForComponentBlocks<
   ComponentBlocks extends Record<string, ComponentBlock<any>>
 > = {
   [Key in keyof ComponentBlocks]: Comp<
-    ExtractPropsForPropsForRendering<ComponentBlocks[Key]['props']>
+    ExtractPropsForPropsForRendering<ComponentBlocks[Key]['schema']>
   >;
 };

@@ -21,7 +21,7 @@ const qAndA = component({
       })
     ),
   label: '',
-  props: {
+  schema: {
     children: fields.array(
       fields.object({
         question: fields.child({ kind: 'inline', placeholder: 'Question' }),

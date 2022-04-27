@@ -10,7 +10,7 @@ import { ReactElement } from 'react';
 import { DragHandle, SortableItem, SortableList } from '../primitives/sortable';
 import {
   ArrayField,
-  ComponentPropField,
+  ComponentSchema,
   ConditionalField,
   FormField,
   ObjectField,
@@ -21,8 +21,8 @@ import {
 import { assertNever } from './utils';
 
 const fieldRenderers: {
-  [Key in ComponentPropField['kind']]: (props: {
-    props: PreviewProps<Extract<ComponentPropField, { kind: Key }>> & {
+  [Key in ComponentSchema['kind']]: (props: {
+    props: PreviewProps<Extract<ComponentSchema, { kind: Key }>> & {
       autoFocus?: boolean;
       forceValidation?: boolean;
     };
@@ -51,16 +51,16 @@ const fieldRenderers: {
     const keystone = useKeystone();
     return (
       <FieldContainer>
-        <FieldLabel>{props.field.label}</FieldLabel>
+        <FieldLabel>{props.schema.label}</FieldLabel>
         <RelationshipSelect
           autoFocus={props.autoFocus}
           controlShouldRenderValue
           isDisabled={false}
-          list={keystone.adminMeta.lists[props.field.listKey]}
-          extraSelection={props.field.selection || ''}
+          list={keystone.adminMeta.lists[props.schema.listKey]}
+          extraSelection={props.schema.selection || ''}
           portalMenu
           state={
-            props.field.many
+            props.schema.many
               ? {
                   kind: 'many',
                   value: (props.value as RelationshipData[]).map(x => ({
@@ -90,7 +90,7 @@ const fieldRenderers: {
   child: () => null,
   form: function FormField({ props }) {
     return (
-      <props.field.Input
+      <props.schema.Input
         autoFocus={!!props.autoFocus}
         value={props.value}
         onChange={props.onChange}
@@ -99,7 +99,7 @@ const fieldRenderers: {
     );
   },
   object: function ObjectField({ props }) {
-    const firstFocusable = props.autoFocus ? findFocusableObjectFieldKey(props.field) : undefined;
+    const firstFocusable = props.autoFocus ? findFocusableObjectFieldKey(props.schema) : undefined;
     return (
       <Stack gap="xlarge">
         {Object.entries(props.fields).map(
@@ -116,7 +116,7 @@ const fieldRenderers: {
     );
   },
   conditional: function ConditionalField({ props }) {
-    const discriminant = props.field.discriminant as FormField<string | boolean, unknown>;
+    const discriminant = props.schema.discriminant as FormField<string | boolean, unknown>;
     return (
       <Stack gap="xlarge">
         {useMemo(
@@ -141,14 +141,14 @@ const fieldRenderers: {
 export type NonChildFieldComponentPropField =
   | FormField<any, any>
   | ObjectField
-  | ConditionalField<FormField<any, any>, { [key: string]: ComponentPropField }>
+  | ConditionalField<FormField<any, any>, { [key: string]: ComponentSchema }>
   | RelationshipField<boolean>
-  | ArrayField<ComponentPropField>;
+  | ArrayField<ComponentSchema>;
 
 function isNonChildFieldPreviewProps(
-  props: PreviewProps<ComponentPropField>
+  props: PreviewProps<ComponentSchema>
 ): props is PreviewProps<NonChildFieldComponentPropField> {
-  const kind: ComponentPropField['kind'] = (props as any)?.field?.kind;
+  const kind: ComponentSchema['kind'] = (props as any)?.field?.kind;
   if (!kind) {
     return false;
   }
@@ -161,16 +161,16 @@ export const FormValueContentFromPreview = memo(function FormValueContentFromPre
     forceValidation?: boolean;
   }
 ) {
-  if (props.field.preview) {
-    return <props.field.preview {...(props as any)} />;
+  if (props.schema.preview) {
+    return <props.schema.preview {...(props as any)} />;
   }
 
-  const Comp = fieldRenderers[props.field.kind];
+  const Comp = fieldRenderers[props.schema.kind];
   return <Comp props={props as any} />;
 });
 
 const SortableItemInForm = memo(function SortableItemInForm(
-  props: PreviewProps<ComponentPropField> & { elementKey: string }
+  props: PreviewProps<ComponentSchema> & { elementKey: string }
 ) {
   return (
     <SortableItem elementKey={props.elementKey}>
@@ -182,8 +182,8 @@ const SortableItemInForm = memo(function SortableItemInForm(
   );
 });
 
-function findFocusableObjectFieldKey(prop: ObjectField): string | undefined {
-  for (const [key, innerProp] of Object.entries(prop.value)) {
+function findFocusableObjectFieldKey(schema: ObjectField): string | undefined {
+  for (const [key, innerProp] of Object.entries(schema.value)) {
     const childFocusable = canFieldBeFocused(innerProp);
     if (childFocusable) {
       return key;
@@ -192,25 +192,25 @@ function findFocusableObjectFieldKey(prop: ObjectField): string | undefined {
   return undefined;
 }
 
-export function canFieldBeFocused(prop: ComponentPropField): boolean {
+export function canFieldBeFocused(schema: ComponentSchema): boolean {
   if (
-    prop.kind === 'array' ||
-    prop.kind === 'conditional' ||
-    prop.kind === 'form' ||
-    prop.kind === 'relationship'
+    schema.kind === 'array' ||
+    schema.kind === 'conditional' ||
+    schema.kind === 'form' ||
+    schema.kind === 'relationship'
   ) {
     return true;
   }
-  if (prop.kind === 'child') {
+  if (schema.kind === 'child') {
     return false;
   }
-  if (prop.kind === 'object') {
-    for (const innerProp of Object.values(prop.value)) {
+  if (schema.kind === 'object') {
+    for (const innerProp of Object.values(schema.value)) {
       if (canFieldBeFocused(innerProp)) {
         return true;
       }
     }
     return false;
   }
-  assertNever(prop);
+  assertNever(schema);
 }

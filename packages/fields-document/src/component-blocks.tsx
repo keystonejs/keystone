@@ -2,7 +2,7 @@ export { NotEditable, component, fields } from './DocumentEditor/component-block
 export type {
   ChildField,
   ComponentBlock,
-  ComponentPropField,
+  ComponentSchema,
   ConditionalField,
   FormField,
   ObjectField,
@@ -10,5 +10,5 @@ export type {
   RelationshipField,
   InferRenderersForComponentBlocks,
   ArrayField,
-  ComponentPropFieldForGraphQL,
+  ComponentSchemaForGraphQL,
 } from './DocumentEditor/component-blocks/api';

@@ -27,7 +27,7 @@ const list = component({
       )
     ),
   label: '',
-  props: {
+  schema: {
     children: fields.array(
       fields.object({
         content: fields.child({ kind: 'inline', placeholder: '' }),

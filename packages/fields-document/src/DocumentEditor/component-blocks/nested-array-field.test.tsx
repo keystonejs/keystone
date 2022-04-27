@@ -22,7 +22,7 @@ const table = component({
       })
     ),
   label: '',
-  props: {
+  schema: {
     children: fields.array(
       fields.array(
         fields.object({
@@ -277,7 +277,7 @@ test('add to multiple in child field in nested array', () => {
       },
     }
   );
-  const previewProps = createGetPreviewProps({ kind: 'object', value: table.props }, () => {})(
+  const previewProps = createGetPreviewProps({ kind: 'object', value: table.schema }, () => {})(
     (editor.children[0] as any).props
   );
 

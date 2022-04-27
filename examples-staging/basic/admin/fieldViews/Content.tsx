@@ -106,7 +106,7 @@ export const componentBlocks = {
       );
     },
     label: 'Table',
-    props: {
+    schema: {
       rows: fields.array(
         fields.array(
           fields.object({
@@ -151,7 +151,7 @@ export const componentBlocks = {
       );
     },
     label: 'My List',
-    props: {
+    schema: {
       children: fields.array(
         fields.object({
           done: fields.checkbox({ label: 'Done' }),
@@ -223,7 +223,7 @@ export const componentBlocks = {
       );
     },
     label: 'Hero',
-    props: {
+    schema: {
       title: fields.child({ kind: 'inline', placeholder: 'Title...' }),
       content: fields.child({ kind: 'block', placeholder: '...' }),
       imageSrc: fields.text({
@@ -242,7 +242,7 @@ export const componentBlocks = {
   void: component({
     label: 'Void',
     component: props => <NotEditable>{props.fields.value.value}</NotEditable>,
-    props: { value: fields.text({ label: 'Value' }) },
+    schema: { value: fields.text({ label: 'Value' }) },
   }),
   conditionallyVoid: component({
     label: 'Conditionally Void',
@@ -252,7 +252,7 @@ export const componentBlocks = {
       ) : (
         <div>{props.fields.something.value.element}</div>
       ),
-    props: {
+    schema: {
       something: fields.conditional(fields.checkbox({ label: 'Is void' }), {
         false: fields.child({ kind: 'inline', placeholder: '...' }),
         true: fields.empty(),
@@ -284,7 +284,7 @@ export const componentBlocks = {
         </div>
       );
     },
-    props: {
+    schema: {
       title: fields.child({ kind: 'inline', placeholder: 'Title...' }),
       authors: fields.relationship({
         label: 'Authors',
@@ -350,7 +350,7 @@ export const componentBlocks = {
     },
     label: 'Notice',
     chromeless: true,
-    props: {
+    schema: {
       intent: fields.select({
         label: 'Intent',
         options: [
@@ -434,7 +434,7 @@ export const componentBlocks = {
       );
     },
     label: 'Quote',
-    props: {
+    schema: {
       content: fields.child({
         kind: 'block',
         placeholder: 'Quote...',

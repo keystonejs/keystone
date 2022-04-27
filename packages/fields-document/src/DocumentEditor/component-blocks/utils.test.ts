@@ -1,5 +1,5 @@
 import { fields } from './api';
-import { getAncestorFields, getFieldAtPropPath } from './utils';
+import { getAncestorSchemas, getSchemaAtPropPath } from './utils';
 
 const blockChild = fields.child({ kind: 'block', placeholder: '' });
 const blockChild2 = fields.child({ kind: 'block', placeholder: '' });
@@ -32,19 +32,19 @@ const trueVal = {
 };
 
 test('getChildFieldAtPath', () => {
-  expect(getFieldAtPropPath(['something', 'blockChild'], falseVal, props)).toBe(blockChild);
-  expect(getFieldAtPropPath(['another', 'value'], falseVal, props)).toBe(blockChild2);
-  expect(getFieldAtPropPath(['another', 'value'], trueVal, props)).toBe(inlineChild);
-  expect(getFieldAtPropPath(['inlineChild2'], falseVal, props)).toBe(inlineChild2);
+  expect(getSchemaAtPropPath(['something', 'blockChild'], falseVal, props)).toBe(blockChild);
+  expect(getSchemaAtPropPath(['another', 'value'], falseVal, props)).toBe(blockChild2);
+  expect(getSchemaAtPropPath(['another', 'value'], trueVal, props)).toBe(inlineChild);
+  expect(getSchemaAtPropPath(['inlineChild2'], falseVal, props)).toBe(inlineChild2);
 });
 
 test('getAncestorFields', () => {
   let root = { kind: 'object' as const, value: props };
-  expect(getAncestorFields(root, ['something', 'blockChild'], falseVal)).toEqual([
+  expect(getAncestorSchemas(root, ['something', 'blockChild'], falseVal)).toEqual([
     root,
     props.something,
   ]);
-  expect(getAncestorFields(root, ['another', 'value'], falseVal)).toEqual([root, props.another]);
-  expect(getAncestorFields(root, ['another', 'value'], trueVal)).toEqual([root, props.another]);
-  expect(getAncestorFields(root, ['inlineChild2'], falseVal)).toEqual([root]);
+  expect(getAncestorSchemas(root, ['another', 'value'], falseVal)).toEqual([root, props.another]);
+  expect(getAncestorSchemas(root, ['another', 'value'], trueVal)).toEqual([root, props.another]);
+  expect(getAncestorSchemas(root, ['inlineChild2'], falseVal)).toEqual([root]);
 });
