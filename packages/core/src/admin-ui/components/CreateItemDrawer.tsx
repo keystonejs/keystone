@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import isDeepEqual from 'fast-deep-equal';
 import { jsx, Box } from '@keystone-ui/core';
 import { Drawer } from '@keystone-ui/modals';
