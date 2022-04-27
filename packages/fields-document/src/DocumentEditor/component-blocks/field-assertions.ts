@@ -50,9 +50,9 @@ function assertValidComponentSchemaInner(
     }
     if (schema.kind === 'object') {
       schemaAncestors.push(schema);
-      for (const [key, innerProp] of Object.entries(schema.value)) {
+      for (const [key, innerProp] of Object.entries(schema.fields)) {
         propPath.push(key);
-        if (schema.value[key] !== innerProp) {
+        if (schema.fields[key] !== innerProp) {
           throw new Error(
             `Fields on an object field must not change over time but the field at "${propPath.join(
               '.'

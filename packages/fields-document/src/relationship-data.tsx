@@ -41,7 +41,7 @@ export function addRelationshipData(
         if (componentBlock) {
           const [props, children] = await Promise.all([
             addRelationshipDataToComponentProps(
-              { kind: 'object', value: componentBlock.schema },
+              { kind: 'object', fields: componentBlock.schema },
               node.props,
               (relationship, data) =>
                 fetchRelationshipData(
@@ -167,9 +167,9 @@ export async function addRelationshipDataToComponentProps(
     case 'object': {
       return Object.fromEntries(
         await Promise.all(
-          Object.keys(schema.value).map(async key => [
+          Object.keys(schema.fields).map(async key => [
             key,
-            await addRelationshipDataToComponentProps(schema.value[key], val[key], fetchData),
+            await addRelationshipDataToComponentProps(schema.fields[key], val[key], fetchData),
           ])
         )
       );

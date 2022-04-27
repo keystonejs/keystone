@@ -96,7 +96,7 @@ const memoizedInfoForSchema = castToMemoizedInfoForSchema({
         onChange(value => updateValue(schema, value, updater));
       },
       innerOnChanges: Object.fromEntries(
-        Object.keys(schema.value).map(key => {
+        Object.keys(schema.fields).map(key => {
           return [
             key,
             (newVal: (prevVal: unknown) => unknown) => {
@@ -162,9 +162,9 @@ export function createGetPreviewProps<Schema extends ComponentSchema>(
     object(schema, value, memoized, path, getInnerProp) {
       const fields: Record<string, PreviewProps<ComponentSchema>> = {};
 
-      Object.keys(schema.value).forEach(key => {
+      Object.keys(schema.fields).forEach(key => {
         fields[key] = getInnerProp(
-          schema.value[key],
+          schema.fields[key],
           (value as any)[key],
           memoized.innerOnChanges[key],
           key

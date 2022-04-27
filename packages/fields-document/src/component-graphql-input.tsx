@@ -35,7 +35,7 @@ function getGraphQLInputTypeInner(
       name: `${name}${operation[0].toUpperCase()}${operation.slice(1)}Input`,
       fields: () =>
         Object.fromEntries(
-          Object.entries(schema.value).map(
+          Object.entries(schema.fields).map(
             ([key, val]): [string, graphql.Arg<graphql.InputType>] => {
               const type = getGraphQLInputType(
                 `${name}${key[0].toUpperCase()}${key.slice(1)}`,
@@ -119,7 +119,7 @@ export async function getValueForUpdate(
   if (schema.kind === 'object') {
     return Object.fromEntries(
       await Promise.all(
-        Object.entries(schema.value).map(async ([key, val]) => {
+        Object.entries(schema.fields).map(async ([key, val]) => {
           return [
             key,
             await getValueForUpdate(val, value[key], prevValue[key], context, path.concat(key)),
@@ -211,7 +211,7 @@ export async function getValueForCreate(
   if (schema.kind === 'object') {
     return Object.fromEntries(
       await Promise.all(
-        Object.entries(schema.value).map(async ([key, val]) => {
+        Object.entries(schema.fields).map(async ([key, val]) => {
           return [key, await getValueForCreate(val, value[key], context, path.concat(key))];
         })
       )

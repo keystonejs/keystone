@@ -111,7 +111,7 @@ export const document =
     const lists = new Set(Object.keys(meta.lists));
     for (const [name, block] of Object.entries(componentBlocks)) {
       try {
-        assertValidComponentSchema({ kind: 'object', value: block.schema }, lists);
+        assertValidComponentSchema({ kind: 'object', fields: block.schema }, lists);
       } catch (err) {
         throw new Error(
           `Component block ${name} in ${meta.listKey}.${meta.fieldKey}: ${(err as any).message}`

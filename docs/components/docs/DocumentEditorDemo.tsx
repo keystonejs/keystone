@@ -77,7 +77,7 @@ const documentFeaturesProp = fields.object({
 
 type DocumentFeaturesFormValue = Parameters<
   InferRenderersForComponentBlocks<
-    Record<'documentFeatures', ComponentBlock<typeof documentFeaturesProp['value']>>
+    Record<'documentFeatures', ComponentBlock<typeof documentFeaturesProp['fields']>>
   >['documentFeatures']
 >[0];
 

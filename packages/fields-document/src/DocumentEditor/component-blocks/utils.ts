@@ -26,8 +26,8 @@ export function findChildPropPathsForProp(
       );
     case 'object': {
       let paths: PathToChildFieldWithOption[] = [];
-      Object.keys(schema.value).forEach(key => {
-        paths.push(...findChildPropPathsForProp(value[key], schema.value[key], path.concat(key)));
+      Object.keys(schema.fields).forEach(key => {
+        paths.push(...findChildPropPathsForProp(value[key], schema.fields[key], path.concat(key)));
       });
       return paths;
     }
@@ -45,7 +45,7 @@ export function findChildPropPaths(
   value: Record<string, any>,
   props: Record<string, ComponentSchema>
 ): { path: ReadonlyPropPath | undefined; options: ChildField['options'] }[] {
-  let propPaths = findChildPropPathsForProp(value, { kind: 'object', value: props }, []);
+  let propPaths = findChildPropPathsForProp(value, { kind: 'object', fields: props }, []);
   if (!propPaths.length) {
     return [
       {
@@ -175,7 +175,7 @@ function getSchemaAtPropPathInner(
   }
   if (schema.kind === 'object') {
     const key = path.shift()!;
-    return getSchemaAtPropPathInner(path, (value as any)[key], schema.value[key]);
+    return getSchemaAtPropPathInner(path, (value as any)[key], schema.fields[key]);
   }
   if (schema.kind === 'array') {
     const index = path.shift()!;
@@ -191,7 +191,7 @@ export function getSchemaAtPropPath(
 ): undefined | ComponentSchema {
   return getSchemaAtPropPathInner([...path], value, {
     kind: 'object',
-    value: props,
+    fields: props,
   });
 }
 
@@ -211,7 +211,7 @@ export function clientSideValidateProp(schema: ComponentSchema, value: any): boo
       return clientSideValidateProp(schema.values[value.discriminant], value.value);
     }
     case 'object': {
-      for (const [key, childProp] of Object.entries(schema.value)) {
+      for (const [key, childProp] of Object.entries(schema.fields)) {
         if (!clientSideValidateProp(childProp, value[key])) {
           return false;
         }
@@ -249,7 +249,7 @@ export function getAncestorSchemas(
       currentValue = (currentValue as any).value;
     } else if (currentProp.kind === 'object') {
       currentValue = (currentValue as any)[key];
-      currentProp = currentProp.value[key];
+      currentProp = currentProp.fields[key];
     } else if (
       currentProp.kind === 'child' ||
       currentProp.kind === 'form' ||
@@ -286,7 +286,7 @@ export function traverseProps(
     return;
   }
   if (schema.kind === 'object') {
-    for (const [key, childProp] of Object.entries(schema.value)) {
+    for (const [key, childProp] of Object.entries(schema.fields)) {
       traverseProps(childProp, (value as any)[key], visitor, [...path, key]);
     }
     visitor(schema, value, path);
@@ -328,7 +328,7 @@ export function replaceValueAtPropPath(
   if (schema.kind === 'object') {
     return {
       ...(value as any),
-      [key]: replaceValueAtPropPath(schema.value[key], (value as any)[key], newValue, newPath),
+      [key]: replaceValueAtPropPath(schema.fields[key], (value as any)[key], newValue, newPath),
     };
   }
 

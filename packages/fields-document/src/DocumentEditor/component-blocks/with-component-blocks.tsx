@@ -119,7 +119,7 @@ function canSchemaContainChildField(rootSchema: ComponentSchema) {
     } else if (schema.kind === 'array') {
       queue.add(schema.element);
     } else if (schema.kind === 'object') {
-      for (const innerProp of Object.values(schema.value)) {
+      for (const innerProp of Object.values(schema.fields)) {
         queue.add(innerProp);
       }
     } else if (schema.kind === 'conditional') {
@@ -148,7 +148,7 @@ function doesSchemaOnlyEverContainASingleChildField(rootSchema: ComponentSchema)
         return false;
       }
     } else if (schema.kind === 'object') {
-      for (const innerProp of Object.values(schema.value)) {
+      for (const innerProp of Object.values(schema.fields)) {
         queue.add(innerProp);
       }
     } else if (schema.kind === 'conditional') {
@@ -251,9 +251,9 @@ export function withComponentBlocks(
         Editor.withoutNormalizing(editor, () => {
           const componentBlock = blockComponents[componentBlockNode.component];
           if (componentPropNode.propPath !== undefined && componentBlock !== undefined) {
-            const rootProp = { kind: 'object' as const, value: componentBlock.schema };
+            const rootSchema = { kind: 'object' as const, fields: componentBlock.schema };
             const ancestorFields = getAncestorSchemas(
-              rootProp,
+              rootSchema,
               componentPropNode.propPath,
               componentBlockNode.props
             );
@@ -328,9 +328,9 @@ export function withComponentBlocks(
       if (Element.isElement(node) && node.type === 'component-block') {
         const componentBlock = blockComponents[node.component];
         if (componentBlock) {
-          const rootProp = { kind: 'object' as const, value: componentBlock.schema };
+          const rootSchema = { kind: 'object' as const, fields: componentBlock.schema };
           for (const [propPath, arrayField] of findArrayFieldsWithSingleChildField(
-            rootProp,
+            rootSchema,
             node.props
           )) {
             if (
@@ -392,7 +392,7 @@ export function withComponentBlocks(
             setKeysForArrayValue(newVal, newKeys);
             if (!areArraysEqual(arrVal, newVal)) {
               const transformedProps = replaceValueAtPropPath(
-                rootProp,
+                rootSchema,
                 node.props,
                 newVal,
                 propPath

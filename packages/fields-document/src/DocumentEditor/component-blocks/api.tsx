@@ -130,10 +130,10 @@ export type RelationshipField<Many extends boolean> = {
 };
 
 export interface ObjectField<
-  Value extends Record<string, ComponentSchema> = Record<string, ComponentSchema>
+  fields extends Record<string, ComponentSchema> = Record<string, ComponentSchema>
 > {
   kind: 'object';
-  value: Value;
+  fields: fields;
   preview?: PreviewComponent;
 }
 
@@ -484,7 +484,7 @@ export const fields = {
       preview?: TypedPreviewComponent<ObjectField<Value>>;
     }
   ): ObjectField<Value> {
-    return { kind: 'object', value, preview: opts?.preview as PreviewComponent };
+    return { kind: 'object', fields: value, preview: opts?.preview as PreviewComponent };
   },
   conditional<
     DiscriminantField extends FormField<string | boolean, any>,

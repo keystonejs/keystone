@@ -138,7 +138,7 @@ const fieldRenderers: {
   },
 };
 
-export type NonChildFieldComponentPropField =
+export type NonChildFieldComponentSchema =
   | FormField<any, any>
   | ObjectField
   | ConditionalField<FormField<any, any>, { [key: string]: ComponentSchema }>
@@ -147,7 +147,7 @@ export type NonChildFieldComponentPropField =
 
 function isNonChildFieldPreviewProps(
   props: PreviewProps<ComponentSchema>
-): props is PreviewProps<NonChildFieldComponentPropField> {
+): props is PreviewProps<NonChildFieldComponentSchema> {
   const kind: ComponentSchema['kind'] = (props as any)?.field?.kind;
   if (!kind) {
     return false;
@@ -156,7 +156,7 @@ function isNonChildFieldPreviewProps(
 }
 
 export const FormValueContentFromPreview = memo(function FormValueContentFromPreview(
-  props: PreviewProps<NonChildFieldComponentPropField> & {
+  props: PreviewProps<NonChildFieldComponentSchema> & {
     autoFocus?: boolean;
     forceValidation?: boolean;
   }
@@ -183,7 +183,7 @@ const SortableItemInForm = memo(function SortableItemInForm(
 });
 
 function findFocusableObjectFieldKey(schema: ObjectField): string | undefined {
-  for (const [key, innerProp] of Object.entries(schema.value)) {
+  for (const [key, innerProp] of Object.entries(schema.fields)) {
     const childFocusable = canFieldBeFocused(innerProp);
     if (childFocusable) {
       return key;
@@ -205,7 +205,7 @@ export function canFieldBeFocused(schema: ComponentSchema): boolean {
     return false;
   }
   if (schema.kind === 'object') {
-    for (const innerProp of Object.values(schema.value)) {
+    for (const innerProp of Object.values(schema.fields)) {
       if (canFieldBeFocused(innerProp)) {
         return true;
       }

@@ -92,16 +92,16 @@ function validateComponentBlockProps(
     if (typeof value !== 'object' || value === null) {
       throw new PropValidationError('Object value must be an object', path);
     }
-    const allowedKeysSet = new Set(Object.keys(schema.value));
+    const allowedKeysSet = new Set(Object.keys(schema.fields));
     for (const key of Object.keys(value)) {
       if (!allowedKeysSet.has(key)) {
         throw new PropValidationError(`Key on object value "${key}" is not allowed`, path);
       }
     }
     let val: Record<string, any> = {};
-    for (const key of Object.keys(schema.value)) {
+    for (const key of Object.keys(schema.fields)) {
       const propVal = validateComponentBlockProps(
-        schema.value[key],
+        schema.fields[key],
         (value as any)[key],
         relationships,
         path.concat(key)
@@ -147,7 +147,7 @@ export function getValidatedNodeWithNormalizedComponentFormProps(
       node = {
         ...node,
         props: validateComponentBlockProps(
-          { kind: 'object', value: componentBlock.schema },
+          { kind: 'object', fields: componentBlock.schema },
           node.props,
           relationships,
           []

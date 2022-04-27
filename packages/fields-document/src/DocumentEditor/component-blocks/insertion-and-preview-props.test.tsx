@@ -175,7 +175,7 @@ test('inserting a complex component block', () => {
 });
 
 const getPreviewProps = (editor: Editor) =>
-  createGetPreviewProps({ kind: 'object', value: componentBlocks.complex.schema }, props => {
+  createGetPreviewProps({ kind: 'object', fields: componentBlocks.complex.schema }, props => {
     Transforms.setNodes(editor, { props: props((editor.children[0] as any).props) }, { at: [0] });
   })((editor.children[0] as any).props);
 
@@ -225,7 +225,7 @@ test('preview props api', () => {
   const expectedPreviewProps: typeof previewProps = {
     schema: {
       kind: 'object',
-      value: componentBlocks.complex.schema,
+      fields: componentBlocks.complex.schema,
     },
     fields: {
       object: {
@@ -233,29 +233,29 @@ test('preview props api', () => {
         fields: {
           block: {
             element: React.createElement(ChildFieldEditable, { path: ['object', 'block'] }),
-            schema: componentBlocks.complex.schema.object.value.block,
+            schema: componentBlocks.complex.schema.object.fields.block,
           },
           conditional: {
             discriminant: false,
-            schema: componentBlocks.complex.schema.object.value.conditional,
+            schema: componentBlocks.complex.schema.object.fields.conditional,
             onChange: expect.any(Function),
             options: undefined,
             value: {
-              schema: componentBlocks.complex.schema.object.value.conditional.values.false,
+              schema: componentBlocks.complex.schema.object.fields.conditional.values.false,
               onChange: expect.any(Function),
               value: null,
             },
           },
           conditionalSelect: {
             discriminant: 'a',
-            schema: componentBlocks.complex.schema.object.value.conditionalSelect,
+            schema: componentBlocks.complex.schema.object.fields.conditionalSelect,
             onChange: expect.any(Function),
             options: [
               { label: 'A', value: 'a' },
               { label: 'B', value: 'b' },
             ],
             value: {
-              schema: componentBlocks.complex.schema.object.value.conditionalSelect.values.a,
+              schema: componentBlocks.complex.schema.object.fields.conditionalSelect.values.a,
               onChange: expect.any(Function),
               options: undefined,
               value: '',
@@ -263,21 +263,21 @@ test('preview props api', () => {
           },
           inline: {
             element: React.createElement(ChildFieldEditable, { path: ['object', 'inline'] }),
-            schema: componentBlocks.complex.schema.object.value.inline,
+            schema: componentBlocks.complex.schema.object.fields.inline,
           },
           many: {
-            schema: componentBlocks.complex.schema.object.value.many,
+            schema: componentBlocks.complex.schema.object.fields.many,
             value: [],
             onChange: expect.any(Function),
           },
           prop: {
-            schema: componentBlocks.complex.schema.object.value.prop,
+            schema: componentBlocks.complex.schema.object.fields.prop,
             onChange: expect.any(Function),
             options: undefined,
             value: '',
           },
           select: {
-            schema: componentBlocks.complex.schema.object.value.select,
+            schema: componentBlocks.complex.schema.object.fields.select,
             onChange: expect.any(Function),
             options: [
               { label: 'A', value: 'a' },
@@ -372,7 +372,7 @@ test('preview props conditional change', () => {
   `);
   const conditionalPreviewProps = getPreviewProps(editor).fields.object.fields.conditional;
   const expectedConditionalPreviewProps: typeof conditionalPreviewProps = {
-    schema: componentBlocks.complex.schema.object.value.conditional,
+    schema: componentBlocks.complex.schema.object.fields.conditional,
     discriminant: true,
     onChange: expect.any(Function),
     options: undefined,
@@ -380,7 +380,7 @@ test('preview props conditional change', () => {
       element: React.createElement(ChildFieldEditable, {
         path: ['object', 'conditional', 'value'],
       }),
-      schema: componentBlocks.complex.schema.object.value.conditional.values.true,
+      schema: componentBlocks.complex.schema.object.fields.conditional.values.true,
     },
   };
   expect(getPreviewProps(editor).fields.object.fields.conditional).toEqual(
@@ -443,14 +443,14 @@ test('changing conditional with form inside', () => {
     getPreviewProps(editor).fields.object.fields.conditionalSelect;
   const expectedConditionalSelectPreviewProps: typeof conditionalSelectPreviewProps = {
     discriminant: 'b',
-    schema: componentBlocks.complex.schema.object.value.conditionalSelect,
+    schema: componentBlocks.complex.schema.object.fields.conditionalSelect,
     onChange: expect.any(Function),
     options: [
       { label: 'A', value: 'a' },
       { label: 'B', value: 'b' },
     ],
     value: {
-      schema: componentBlocks.complex.schema.object.value.conditionalSelect.values.b,
+      schema: componentBlocks.complex.schema.object.fields.conditionalSelect.values.b,
       onChange: expect.any(Function),
       options: undefined,
       value: 'B',
@@ -477,14 +477,14 @@ test('changing form inside conditional', () => {
     getPreviewProps(editor).fields.object.fields.conditionalSelect;
   const expectedConditionalSelectPreviewProps: typeof conditionalSelectPreviewProps = {
     discriminant: 'a',
-    schema: componentBlocks.complex.schema.object.value.conditionalSelect,
+    schema: componentBlocks.complex.schema.object.fields.conditionalSelect,
     onChange: expect.any(Function),
     options: [
       { label: 'A', value: 'a' },
       { label: 'B', value: 'b' },
     ],
     value: {
-      schema: componentBlocks.complex.schema.object.value.conditionalSelect.values.a,
+      schema: componentBlocks.complex.schema.object.fields.conditionalSelect.values.a,
       onChange: expect.any(Function),
       options: undefined,
       value: 'Some content',

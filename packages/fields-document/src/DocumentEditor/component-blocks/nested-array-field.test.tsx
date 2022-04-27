@@ -277,7 +277,7 @@ test('add to multiple in child field in nested array', () => {
       },
     }
   );
-  const previewProps = createGetPreviewProps({ kind: 'object', value: table.schema }, () => {})(
+  const previewProps = createGetPreviewProps({ kind: 'object', fields: table.schema }, () => {})(
     (editor.children[0] as any).props
   );
 

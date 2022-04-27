@@ -3,7 +3,7 @@ import { getKeysForArrayValue, getNewArrayElementKey, setKeysForArrayValue } fro
 import { assertNever, findChildPropPaths } from './utils';
 
 export function getInitialValue(type: string, componentBlock: ComponentBlock) {
-  const props = getInitialPropsValue({ kind: 'object', value: componentBlock.schema });
+  const props = getInitialPropsValue({ kind: 'object', fields: componentBlock.schema });
   return {
     type: 'component-block' as const,
     component: type,
@@ -37,8 +37,8 @@ export function getInitialPropsValue(schema: ComponentSchema): any {
     }
     case 'object': {
       let obj: Record<string, any> = {};
-      Object.keys(schema.value).forEach(key => {
-        obj[key] = getInitialPropsValue(schema.value[key]);
+      Object.keys(schema.fields).forEach(key => {
+        obj[key] = getInitialPropsValue(schema.fields[key]);
       });
       return obj;
     }
@@ -73,9 +73,9 @@ export function getInitialPropsValueFromInitializer(
     }
     case 'object': {
       let obj: Record<string, any> = {};
-      Object.keys(schema.value).forEach(key => {
+      Object.keys(schema.fields).forEach(key => {
         obj[key] = getInitialPropsValueFromInitializer(
-          schema.value[key],
+          schema.fields[key],
           initializer === undefined ? undefined : initializer[key]
         );
       });
@@ -118,8 +118,8 @@ export function updateValue(schema: ComponentSchema, currentValue: any, updater:
     }
     case 'object': {
       let obj: Record<string, any> = {};
-      Object.keys(schema.value).forEach(key => {
-        obj[key] = updateValue(schema.value[key], currentValue[key], updater[key]);
+      Object.keys(schema.fields).forEach(key => {
+        obj[key] = updateValue(schema.fields[key], currentValue[key], updater[key]);
       });
       return obj;
     }

@@ -104,7 +104,7 @@ function serializeValue(
   }
   if (schema.kind === 'object') {
     return Object.fromEntries(
-      Object.entries(schema.value).map(([key, val]) => {
+      Object.entries(schema.fields).map(([key, val]) => {
         return [key, serializeValue(val, value[key], kind)];
       })
     );

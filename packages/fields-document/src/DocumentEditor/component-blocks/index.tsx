@@ -110,7 +110,7 @@ export const ComponentBlocksElement = ({
   const isValid = useMemo(() => {
     return componentBlock
       ? clientSideValidateProp(
-          { kind: 'object', value: componentBlock.schema },
+          { kind: 'object', fields: componentBlock.schema },
           currentElement.props
         )
       : true;
@@ -136,7 +136,7 @@ export const ComponentBlocksElement = ({
         const childPropPaths = findChildPropPathsWithPrevious(
           newProps,
           prevProps,
-          { kind: 'object', value: componentBlock!.schema },
+          { kind: 'object', fields: componentBlock!.schema },
           [],
           [],
           []
@@ -248,7 +248,7 @@ export const ComponentBlocksElement = ({
         throw new Error('expected component block to exist when called');
       };
     }
-    return createGetPreviewProps({ kind: 'object', value: componentBlock.schema }, onPropsChange);
+    return createGetPreviewProps({ kind: 'object', fields: componentBlock.schema }, onPropsChange);
   }, [componentBlock, onPropsChange]);
 
   if (!componentBlock) {
@@ -451,7 +451,7 @@ function ComponentBlockRender({
   children: any;
 }) {
   const getPreviewProps = useMemo(() => {
-    return createGetPreviewProps({ kind: 'object', value: componentBlock.schema }, props => {
+    return createGetPreviewProps({ kind: 'object', fields: componentBlock.schema }, props => {
       onChange(props);
     });
   }, [onChange, componentBlock]);
@@ -530,12 +530,12 @@ function findChildPropPathsWithPrevious(
       );
     case 'object': {
       let paths: ChildPropPathWithPrevious[] = [];
-      Object.keys(schema.value).forEach(key => {
+      Object.keys(schema.fields).forEach(key => {
         paths.push(
           ...findChildPropPathsWithPrevious(
             value[key],
             prevValue[key],
-            schema.value[key],
+            schema.fields[key],
             newPath.concat(key),
             prevPath?.concat(key),
             pathWithKeys?.concat(key)
