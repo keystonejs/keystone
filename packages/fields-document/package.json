@@ -17,8 +17,7 @@
       "component-blocks.tsx",
       "index.ts",
       "primitives.ts",
-      "views.tsx",
-      "component-views/index.tsx"
+      "views.tsx"
     ]
   },
   "peerDependencies": {
