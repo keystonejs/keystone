@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import isDeepEqual from 'fast-deep-equal';
 import { jsx, Box } from '@keystone-ui/core';
 import { Drawer } from '@keystone-ui/modals';
@@ -31,7 +31,7 @@ export function CreateItemDrawer({
 
   const toasts = useToasts();
 
-  const [createItem, { loading, error }] = useMutation(
+  const [createItem, { loading, error, data: returnedData }] = useMutation(
     gql`mutation($data: ${list.gqlNames.createInputName}!) {
       item: ${list.gqlNames.createMutationName}(data: $data) {
         id
@@ -75,8 +75,15 @@ export function CreateItemDrawer({
       Object.assign(data, serialized);
     }
   });
+  const shouldPreventNavigation = !!returnedData?.item || Object.keys(data).length !== 0;
 
-  usePreventNavigation(Object.keys(data).length !== 0);
+  const shouldPreventNavigationRef = useRef(shouldPreventNavigation);
+
+  useEffect(() => {
+    shouldPreventNavigationRef.current = shouldPreventNavigation;
+  }, [shouldPreventNavigation]);
+
+  usePreventNavigation(shouldPreventNavigationRef);
 
   return (
     <Drawer
@@ -98,6 +105,7 @@ export function CreateItemDrawer({
               },
             })
               .then(({ data }) => {
+                shouldPreventNavigationRef.current = false;
                 const label = data.item.label || data.item.id;
                 onCreate({ id: data.item.id, label });
                 toasts.addToast({
@@ -113,7 +121,7 @@ export function CreateItemDrawer({
           label: 'Cancel',
           action: () => {
             if (
-              !Object.keys(data).length ||
+              !shouldPreventNavigation ||
               window.confirm('There are unsaved changes, are you sure you want to exit?')
             ) {
               onClose();
