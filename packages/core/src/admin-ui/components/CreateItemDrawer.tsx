@@ -75,15 +75,10 @@ export function CreateItemDrawer({
       Object.assign(data, serialized);
     }
   });
-  const shouldPreventNavigation = !!returnedData?.item || Object.keys(data).length !== 0;
 
-  const shouldPreventNavigationRef = useRef(shouldPreventNavigation);
+  const shouldPreventNavigation = !returnedData?.item && Object.keys(data).length !== 0;
 
-  useEffect(() => {
-    shouldPreventNavigationRef.current = shouldPreventNavigation;
-  }, [shouldPreventNavigation]);
-
-  usePreventNavigation(shouldPreventNavigationRef);
+  usePreventNavigation(shouldPreventNavigation);
 
   return (
     <Drawer
@@ -105,7 +100,6 @@ export function CreateItemDrawer({
               },
             })
               .then(({ data }) => {
-                shouldPreventNavigationRef.current = false;
                 const label = data.item.label || data.item.id;
                 onCreate({ id: data.item.id, label });
                 toasts.addToast({

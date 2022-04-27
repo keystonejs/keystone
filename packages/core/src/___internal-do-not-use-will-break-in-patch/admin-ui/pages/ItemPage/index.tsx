@@ -149,11 +149,7 @@ function ItemForm({
   const labelFieldValue = state.item.data?.[list.labelField];
   const itemId = state.item.data?.id!;
 
-  const shouldPreventNavigation = !!changedFields.size;
-
-  usePreventNavigation(
-    useMemo(() => ({ current: shouldPreventNavigation }), [shouldPreventNavigation])
-  );
+  usePreventNavigation(!!changedFields.size);
   return (
     <Box marginTop="xlarge">
       <GraphQLErrorNotice
