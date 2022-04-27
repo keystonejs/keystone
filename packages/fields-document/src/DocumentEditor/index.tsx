@@ -241,18 +241,19 @@ export function DocumentEditor({
         }}
       >
         {useMemo(
-          () => (
-            <Toolbar
-              documentFeatures={documentFeatures}
-              viewState={{
-                expanded,
-                toggle: () => {
-                  setExpanded(v => !v);
-                },
-              }}
-            />
-          ),
-          [expanded, documentFeatures]
+          () =>
+            onChange !== undefined && (
+              <Toolbar
+                documentFeatures={documentFeatures}
+                viewState={{
+                  expanded,
+                  toggle: () => {
+                    setExpanded(v => !v);
+                  },
+                }}
+              />
+            ),
+          [expanded, documentFeatures, onChange]
         )}
 
         <DocumentEditorEditable
