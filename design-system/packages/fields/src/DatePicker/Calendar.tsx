@@ -11,7 +11,7 @@ export const Calendar = ({ modifiers, ...props }: DayPickerProps) => {
   const indexOfMonday = 1;
 
   return (
-    <div css={styles} >
+    <div css={styles}>
       <DayPicker weekStartsOn={indexOfMonday} {...props} />
     </div>
   );
@@ -214,18 +214,17 @@ const useCalendarStyles = () => {
     },
 
     // range-specific day styles
-    '.rdp-day_range_start:not(.rdp-day_outside), .rdp-day_range_end:not(.rdp-day_outside)':
-      {
-        '&::before': {
-          backgroundColor: rangeBetweenColor,
-          position: 'absolute',
-          content: '" "',
-          width: cellSize / 2,
-          height: cellSize,
-          top: 0,
-          zIndex: -1,
-        },
+    '.rdp-day_range_start:not(.rdp-day_outside), .rdp-day_range_end:not(.rdp-day_outside)': {
+      '&::before': {
+        backgroundColor: rangeBetweenColor,
+        position: 'absolute',
+        content: '" "',
+        width: cellSize / 2,
+        height: cellSize,
+        top: 0,
+        zIndex: -1,
       },
+    },
     '.rdp-day_range_start': {
       '&::before': {
         right: 0,
