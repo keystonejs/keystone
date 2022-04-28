@@ -1,10 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Fragment, ReactNode, useState } from 'react';
+import { Fragment, useState } from 'react';
 
 import { Button } from '@keystone-ui/button';
-import { Inline, jsx, Stack, useTheme } from '@keystone-ui/core';
+import { jsx, Stack, useTheme } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, FieldLegend } from '@keystone-ui/fields';
 import { DrawerController } from '@keystone-ui/modals';
 import {
@@ -72,46 +72,6 @@ function LinkToRelatedItems({
     </Button>
   );
 }
-
-const RelationshipLinkButton = ({ href, children }: { href: string; children: ReactNode }) => (
-  <Button css={{ padding: 0, height: 'auto' }} weight="link" tone="active" as={Link} href={href}>
-    {children}
-  </Button>
-);
-
-const RelationshipDisplay = ({
-  list,
-  value,
-}: {
-  list: ListMeta;
-  value: SingleRelationshipValue | ManyRelationshipValue;
-}) => {
-  if (value.kind === 'many') {
-    if (value.value.length) {
-      return (
-        <Inline gap="small">
-          {value.value.map(i => (
-            <RelationshipLinkButton href={`/${list.path}/${i.id}`}>
-              {i.label}
-            </RelationshipLinkButton>
-          ))}
-        </Inline>
-      );
-    } else {
-      return <div>(No {list.plural})</div>;
-    }
-  } else {
-    if (value.value) {
-      return (
-        <RelationshipLinkButton href={`/${list.path}/${value.value.id}`}>
-          {value.value.label}
-        </RelationshipLinkButton>
-      );
-    } else {
-      return <div>(No {list.singular})</div>;
-    }
-  }
-};
 
 export const Field = ({
   field,
