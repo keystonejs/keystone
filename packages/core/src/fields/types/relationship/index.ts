@@ -7,17 +7,13 @@ import {
 } from '../../../types';
 import { graphql } from '../../..';
 import { resolveView } from '../../resolve-view';
+import { OrderByType } from './OrderByType';
 
 // This is the default display mode for Relationships
 type SelectDisplayConfig = {
   ui?: {
     // Sets the relationship to display as a Select field
     displayMode?: 'select';
-    /**
-     * The path of the field to use from the related list for item labels in the select.
-     * Defaults to the labelField configured on the related list.
-     */
-    labelField?: string;
   };
 };
 
@@ -72,6 +68,12 @@ export type RelationshipFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     ref: string;
     ui?: {
       hideCreate?: boolean;
+      /**
+       * The path of the field to use from the related list for item labels in the select.
+       * Defaults to the labelField configured on the related list.
+       */
+      labelField?: string;
+      orderBy?: OrderByType;
     };
   } & (OneDbConfig | ManyDbConfig) &
     (SelectDisplayConfig | CardsDisplayConfig | CountDisplayConfig);
@@ -127,6 +129,8 @@ export const relationship =
           refListKey: foreignListKey,
           many,
           hideCreate: config.ui?.hideCreate ?? false,
+          labelField: config.ui?.labelField,
+          orderBy: config.ui?.orderBy ?? [ { labelField:  'asc' } ],
           ...(config.ui?.displayMode === 'cards'
             ? {
                 displayMode: 'cards',
@@ -136,13 +140,13 @@ export const relationship =
                 inlineCreate: config.ui.inlineCreate ?? null,
                 inlineEdit: config.ui.inlineEdit ?? null,
                 inlineConnect: config.ui.inlineConnect ?? false,
-                refLabelField: adminMetaRoot.listsByKey[foreignListKey].labelField,
+                refLabelField: config.ui.labelField || adminMetaRoot.listsByKey[foreignListKey].labelField,
               }
             : config.ui?.displayMode === 'count'
             ? { displayMode: 'count' }
             : {
                 displayMode: 'select',
-                refLabelField: adminMetaRoot.listsByKey[foreignListKey].labelField,
+                refLabelField: config.ui?.labelField || adminMetaRoot.listsByKey[foreignListKey].labelField,
               }),
         };
       },
