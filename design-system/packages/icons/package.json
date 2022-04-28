@@ -12,7 +12,7 @@
     "@svgr/plugin-jsx": "^6.0.0",
     "@svgr/plugin-prettier": "^5.5.0",
     "@svgr/plugin-svgo": "^6.0.0",
-    "@types/react": "^17.0.37",
+    "@types/react": "^18.0.8",
     "chalk": "^4.1.2",
     "feather-icons": "^4.28.0",
     "fs-extra": "^10.0.0",

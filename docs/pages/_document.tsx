@@ -31,7 +31,7 @@ class MyDocument extends Document {
     return {
       ...initialProps,
       styles: (
-        <React.Fragment>
+        [<React.Fragment key="1">
           {initialProps.styles}
           {data!.styles.map((data, i) => (
             <style
@@ -40,7 +40,7 @@ class MyDocument extends Document {
               dangerouslySetInnerHTML={{ __html: data.css }}
             />
           ))}
-        </React.Fragment>
+        </React.Fragment>]
       ),
     };
   }

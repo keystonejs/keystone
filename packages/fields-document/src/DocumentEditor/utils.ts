@@ -93,7 +93,7 @@ export function useElementWithSetNodes<TElement extends Element>(
 
 export function useEventCallback<Func extends (...args: any) => any>(callback: Func): Func {
   const callbackRef = useRef(callback);
-  const cb = useCallback((...args) => {
+  const cb = useCallback((...args: any[]) => {
     return callbackRef.current(...args);
   }, []);
   useEffect(() => {
