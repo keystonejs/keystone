@@ -307,8 +307,8 @@ export const ImageMeta = ({
 }) => {
   return (
     <Stack padding="xxsmall" gap="xxsmall">
-      <Text size="xsmall">Size: {`(${bytes(size)})`}</Text>
-      <Text size="xsmall">Dimensions {`${width} x ${height}`}</Text>
+      <Text size="xsmall">Size: {`${bytes(size)}`}</Text>
+      <Text size="xsmall">Dimensions: {`${width} x ${height}`}</Text>
     </Stack>
   );
 };
