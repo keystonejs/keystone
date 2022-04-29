@@ -31,7 +31,6 @@ import {
   useId,
   useTheme,
   VisuallyHidden,
-  css,
 } from '@keystone-ui/core';
 
 import { SizeKey, WidthKey, useControlTokens } from './hooks/segmentedControl';
@@ -50,6 +49,8 @@ type SegmentedControlProps = {
   onChange: ManagedChangeHandler<Index>;
   /** Provide labels for each segment. */
   segments: string[];
+  /** To Disable */
+  isDisabled?: boolean;
   /** The the selected index of the segmented control. */
   selectedIndex: Index | undefined;
   /** The size of the controls. */
@@ -63,6 +64,7 @@ export const SegmentedControl = ({
   fill = false,
   onChange,
   segments,
+  isDisabled = false,
   size = 'medium',
   width = 'large',
   selectedIndex,
@@ -102,17 +104,9 @@ export const SegmentedControl = ({
   }, [animate, selectedIndex]);
 
   return (
-    <Box
-      css={css`
-        outline: 0;
-        box-sizing: border-box;
-      `}
-      {...props}
-    >
+    <Box css={{ outline: 0, boxSizing: 'border-box' }} {...props}>
       <Root
-        css={css`
-          border: 1px solid #e1e5e9;
-        `}
+        css={{ border: `1px solid ${isDisabled ? 'transparent' : '#e1e5e9'}` }}
         fill={fill}
         size={size}
         ref={rootRef}
@@ -126,6 +120,7 @@ export const SegmentedControl = ({
               fill={fill}
               isAnimated={animate}
               isSelected={isSelected}
+              disabled={isDisabled}
               key={label}
               name={name}
               onChange={event => {
@@ -209,7 +204,7 @@ const Item = (props: ItemProps) => {
         ...sizeStyles[size],
         ...(!isAnimated && isSelected && selectedStyles),
         boxSizing: 'border-box',
-        cursor: 'pointer',
+        cursor: props.disabled ? undefined : 'pointer',
         flex: fill ? 1 : undefined,
         fontWeight: typography.fontWeight.medium,
         textAlign: 'center',
@@ -220,10 +215,12 @@ const Item = (props: ItemProps) => {
           boxShadow: '0 0 0 2px #bfdbfe;',
           border: '1px solid #166bff;',
         },
-        ':hover': {
-          color: !isSelected ? colors.linkHoverColor : undefined,
-          backgroundColor: 'rgba(255, 255, 255, 0.5)',
-        },
+        ...(!props.disabled && {
+          ':hover': {
+            color: !isSelected ? colors.linkHoverColor : undefined,
+            backgroundColor: 'rgba(255, 255, 255, 0.5)',
+          },
+        }),
         ':active': {
           backgroundColor: !isSelected ? fields.hover.inputBackground : undefined,
         },
