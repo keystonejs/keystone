@@ -11035,7 +11035,7 @@ react-clientside-effect@^1.2.5:
   dependencies:
     "@babel/runtime" "^7.12.13"
 
-"react-day-picker@npm:react-day-picker@^8.0.4":
+react-day-picker@^8.0.4:
   version "8.0.4"
   resolved "https://registry.yarnpkg.com/react-day-picker/-/react-day-picker-8.0.4.tgz#1d6f2627ecec30752bbfd706edd6e664b1a04ed1"
   integrity sha512-RaGClmZjCgDl0O8OlgMnhtUBZgmSWNTv6p5TUXo8E9VudMPL9azAR9UCqF0JQxcDPLbjLgeMZnm53K0rWtRLCQ==

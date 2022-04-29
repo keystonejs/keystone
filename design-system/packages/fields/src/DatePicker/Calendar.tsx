@@ -80,11 +80,13 @@ const useCalendarStyles = () => {
 
     // the caption is the day/month title e.g. "July 2020"
     '.rdp-caption': {
-      display: 'table-caption',
+      display: 'flex',
       height: navButtonSize,
       marginBottom: '0.5em',
       padding: '0 0.5em',
       textAlign: 'left',
+      alignItems: 'center',
+      justifyContent: 'space-between',
     },
     '.rdp-caption_label': {
       fontWeight: 500, //theme.typography.fontWeight.medium,
@@ -127,10 +129,8 @@ const useCalendarStyles = () => {
 
     // nav buttons
     '.rdp-nav': {
-      display: 'flex',
       position: 'absolute',
       right: 4, //theme.spacing.xsmall,
-      top: 4, //theme.spacing.xsmall,
       zIndex: 1,
     },
     '.rdp-nav_button': {
