@@ -459,10 +459,10 @@ export type ComponentBlock<
 
 export type GenericPreviewProps<
   Schema extends ComponentSchema,
-  ChildFieldType
+  ChildFieldElement
 > = Schema extends ChildField
   ? {
-      readonly element: ChildFieldType;
+      readonly element: ChildFieldElement;
       readonly schema: Schema;
     }
   : Schema extends FormField<infer Value, infer Options>
@@ -475,7 +475,7 @@ export type GenericPreviewProps<
   : Schema extends ObjectField<infer Value>
   ? {
       readonly fields: {
-        readonly [Key in keyof Value]: GenericPreviewProps<Value[Key], ChildFieldType>;
+        readonly [Key in keyof Value]: GenericPreviewProps<Value[Key], ChildFieldElement>;
       };
       onChange(value: {
         readonly [Key in keyof Value]?: InitialOrUpdateValueFromComponentPropField<Value[Key]>;
@@ -488,12 +488,10 @@ export type GenericPreviewProps<
         readonly discriminant: DiscriminantStringToDiscriminantValue<DiscriminantField, Key>;
         onChange<Discriminant extends DiscriminantField['defaultValue']>(
           discriminant: Discriminant,
-          value?: InitialOrUpdateValueFromComponentPropField<
-            GetFromKey<Values, DiscrimiantToString<Discriminant>>
-          >
+          value?: InitialOrUpdateValueFromComponentPropField<Values[`${Discriminant}`]>
         ): void;
         readonly options: DiscriminantField['options'];
-        readonly value: GenericPreviewProps<Values[Key], ChildFieldType>;
+        readonly value: GenericPreviewProps<Values[Key], ChildFieldElement>;
         readonly schema: Schema;
       };
     }[keyof Values]
@@ -511,7 +509,7 @@ export type GenericPreviewProps<
     }
   : Schema extends ArrayField<infer ElementField>
   ? {
-      readonly elements: readonly (GenericPreviewProps<ElementField, ChildFieldType> & {
+      readonly elements: readonly (GenericPreviewProps<ElementField, ChildFieldElement> & {
         readonly key: string;
       })[];
       readonly onChange: (
@@ -525,14 +523,6 @@ export type GenericPreviewProps<
   : never;
 
 export type PreviewProps<Schema extends ComponentSchema> = GenericPreviewProps<Schema, ReactNode>;
-
-type GetFromKey<Obj, Key> = Key extends keyof Obj ? Obj[Key] : never;
-
-type DiscrimiantToString<Discriminant extends string | boolean> = Discriminant extends true
-  ? 'true'
-  : Discriminant extends false
-  ? 'false'
-  : Discriminant;
 
 export type InitialOrUpdateValueFromComponentPropField<Schema extends ComponentSchema> =
   Schema extends ChildField
