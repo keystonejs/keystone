@@ -8,7 +8,7 @@ type DrawerControllerProps = {
   children: ReactNode;
 };
 
-const DrawerControllerContext = React.createContext<null | TransitionState>(null);
+const DrawerControllerContext = React.createContext<null | 'unmounted' | TransitionState>(null);
 
 export const DrawerControllerContextProvider = DrawerControllerContext.Provider;
 
@@ -26,13 +26,11 @@ export const useDrawerControllerContext = () => {
 export const DrawerController = ({ isOpen, children }: DrawerControllerProps) => {
   return (
     <Transition appear mountOnEnter unmountOnExit in={isOpen} timeout={150}>
-      {transitionState =>
-        transitionState === 'unmounted' ? null : (
+      {(transitionState) => (
           <DrawerControllerContextProvider value={transitionState}>
             {children}
           </DrawerControllerContextProvider>
-        )
-      }
+      )}
     </Transition>
   );
 };
