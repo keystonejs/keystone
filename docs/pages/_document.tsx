@@ -30,8 +30,8 @@ class MyDocument extends Document {
     const initialProps = await Document.getInitialProps(ctx);
     return {
       ...initialProps,
-      styles: (
-        [<React.Fragment key="1">
+      styles: [
+        <React.Fragment key="1">
           {initialProps.styles}
           {data!.styles.map((data, i) => (
             <style
@@ -40,8 +40,8 @@ class MyDocument extends Document {
               dangerouslySetInnerHTML={{ __html: data.css }}
             />
           ))}
-        </React.Fragment>]
-      ),
+        </React.Fragment>,
+      ],
     };
   }
 
