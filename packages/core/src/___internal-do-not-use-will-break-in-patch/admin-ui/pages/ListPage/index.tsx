@@ -254,7 +254,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
               <FilterAdd listKey={listKey} filterableFields={filterableFields} />
             ) : null}
             {filters.filters.length ? <FilterList filters={filters.filters} list={list} /> : null}
-            {Boolean(Object.keys(query).length) && (
+            {Boolean(filters.filters.length || query.sortBy || query.fields) && (
               <Button size="small" onClick={resetToDefaults}>
                 Reset to defaults
               </Button>

@@ -95,7 +95,10 @@ export function withMarks(
               focus: startOfBlock,
             });
             const hasWhitespaceBeforeEndOfShortcut = /\s/.test(
-              startOfBlockToEndOfShortcutString.substr(-shortcutText.length - 1, 1)
+              startOfBlockToEndOfShortcutString.slice(
+                -shortcutText.length - 1,
+                -shortcutText.length
+              )
             );
 
             const endOfShortcutContainsExpectedContent =
@@ -111,9 +114,9 @@ export function withMarks(
             );
             // TODO: use regex probs
             for (const [offsetFromStartOfBlock] of [...strToMatchOn].reverse().entries()) {
-              const expectedShortcutText = strToMatchOn.substr(
+              const expectedShortcutText = strToMatchOn.slice(
                 offsetFromStartOfBlock,
-                shortcutText.length
+                offsetFromStartOfBlock + shortcutText.length
               );
               if (expectedShortcutText !== shortcutText) {
                 continue;
