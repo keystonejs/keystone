@@ -458,21 +458,21 @@ export type ComponentBlock<
 );
 
 export type GenericPreviewProps<
-  Prop extends ComponentSchema,
+  Schema extends ComponentSchema,
   ChildFieldType
-> = Prop extends ChildField
+> = Schema extends ChildField
   ? {
       readonly element: ChildFieldType;
-      readonly schema: Prop;
+      readonly schema: Schema;
     }
-  : Prop extends FormField<infer Value, infer Options>
+  : Schema extends FormField<infer Value, infer Options>
   ? {
       readonly value: Value;
       onChange(value: Value): void;
       readonly options: Options;
-      readonly schema: Prop;
+      readonly schema: Schema;
     }
-  : Prop extends ObjectField<infer Value>
+  : Schema extends ObjectField<infer Value>
   ? {
       readonly fields: {
         readonly [Key in keyof Value]: GenericPreviewProps<Value[Key], ChildFieldType>;
@@ -480,9 +480,9 @@ export type GenericPreviewProps<
       onChange(value: {
         readonly [Key in keyof Value]?: InitialOrUpdateValueFromComponentPropField<Value[Key]>;
       }): void;
-      readonly schema: Prop;
+      readonly schema: Schema;
     }
-  : Prop extends ConditionalField<infer DiscriminantField, infer Values>
+  : Schema extends ConditionalField<infer DiscriminantField, infer Values>
   ? {
       readonly [Key in keyof Values]: {
         readonly discriminant: DiscriminantStringToDiscriminantValue<DiscriminantField, Key>;
@@ -494,10 +494,10 @@ export type GenericPreviewProps<
         ): void;
         readonly options: DiscriminantField['options'];
         readonly value: GenericPreviewProps<Values[Key], ChildFieldType>;
-        readonly schema: Prop;
+        readonly schema: Schema;
       };
     }[keyof Values]
-  : Prop extends RelationshipField<infer Many>
+  : Schema extends RelationshipField<infer Many>
   ? {
       readonly value: Many extends true
         ? readonly HydratedRelationshipData[]
@@ -507,9 +507,9 @@ export type GenericPreviewProps<
           ? readonly HydratedRelationshipData[]
           : HydratedRelationshipData | null
       ): void;
-      readonly schema: Prop;
+      readonly schema: Schema;
     }
-  : Prop extends ArrayField<infer ElementField>
+  : Schema extends ArrayField<infer ElementField>
   ? {
       readonly elements: readonly (GenericPreviewProps<ElementField, ChildFieldType> & {
         readonly key: string;
@@ -520,11 +520,11 @@ export type GenericPreviewProps<
           value?: InitialOrUpdateValueFromComponentPropField<ElementField>;
         }[]
       ) => void;
-      readonly schema: Prop;
+      readonly schema: Schema;
     }
   : never;
 
-export type PreviewProps<Prop extends ComponentSchema> = GenericPreviewProps<Prop, ReactNode>;
+export type PreviewProps<Schema extends ComponentSchema> = GenericPreviewProps<Schema, ReactNode>;
 
 type GetFromKey<Obj, Key> = Key extends keyof Obj ? Obj[Key] : never;
 
@@ -534,27 +534,27 @@ type DiscrimiantToString<Discriminant extends string | boolean> = Discriminant e
   ? 'false'
   : Discriminant;
 
-export type InitialOrUpdateValueFromComponentPropField<Prop extends ComponentSchema> =
-  Prop extends ChildField
+export type InitialOrUpdateValueFromComponentPropField<Schema extends ComponentSchema> =
+  Schema extends ChildField
     ? undefined
-    : Prop extends FormField<infer Value, any>
+    : Schema extends FormField<infer Value, any>
     ? Value | undefined
-    : Prop extends ObjectField<infer Value>
+    : Schema extends ObjectField<infer Value>
     ? {
         readonly [Key in keyof Value]?: InitialOrUpdateValueFromComponentPropField<Value[Key]>;
       }
-    : Prop extends ConditionalField<infer DiscriminantField, infer Values>
+    : Schema extends ConditionalField<infer DiscriminantField, infer Values>
     ? {
         readonly [Key in keyof Values]: {
           readonly discriminant: DiscriminantStringToDiscriminantValue<DiscriminantField, Key>;
           readonly value?: InitialOrUpdateValueFromComponentPropField<Values[Key]>;
         };
       }[keyof Values]
-    : Prop extends RelationshipField<infer Many>
+    : Schema extends RelationshipField<infer Many>
     ? Many extends true
       ? readonly HydratedRelationshipData[]
       : HydratedRelationshipData | null
-    : Prop extends ArrayField<infer ElementField>
+    : Schema extends ArrayField<infer ElementField>
     ? readonly {
         key: string | undefined;
         value?: InitialOrUpdateValueFromComponentPropField<ElementField>;
@@ -572,8 +572,8 @@ type DiscriminantStringToDiscriminantValue<
     : never
   : DiscriminantString;
 
-export type PreviewPropsForToolbar<Prop extends ComponentSchema> = GenericPreviewProps<
-  Prop,
+export type PreviewPropsForToolbar<Schema extends ComponentSchema> = GenericPreviewProps<
+  Schema,
   undefined
 >;
 
@@ -630,45 +630,46 @@ export const NotEditable = ({ children, ...props }: HTMLAttributes<HTMLDivElemen
 
 type Comp<Props> = (props: Props) => ReactElement | null;
 
-type ValueForRenderingFromComponentPropField<Prop extends ComponentSchema> = Prop extends ChildField
-  ? ReactNode
-  : Prop extends FormField<infer Value, any>
-  ? Value
-  : Prop extends ObjectField<infer Value>
-  ? { readonly [Key in keyof Value]: ValueForRenderingFromComponentPropField<Value[Key]> }
-  : Prop extends ConditionalField<infer DiscriminantField, infer Values>
-  ? {
-      readonly [Key in keyof Values]: {
-        readonly discriminant: DiscriminantStringToDiscriminantValue<DiscriminantField, Key>;
-        readonly value: ValueForRenderingFromComponentPropField<Values[Key]>;
-      };
-    }[keyof Values]
-  : Prop extends RelationshipField<infer Many>
-  ? Many extends true
-    ? readonly HydratedRelationshipData[]
-    : HydratedRelationshipData | null
-  : Prop extends ArrayField<infer ElementField>
-  ? readonly ValueForRenderingFromComponentPropField<ElementField>[]
-  : never;
+type ValueForRenderingFromComponentPropField<Schema extends ComponentSchema> =
+  Schema extends ChildField
+    ? ReactNode
+    : Schema extends FormField<infer Value, any>
+    ? Value
+    : Schema extends ObjectField<infer Value>
+    ? { readonly [Key in keyof Value]: ValueForRenderingFromComponentPropField<Value[Key]> }
+    : Schema extends ConditionalField<infer DiscriminantField, infer Values>
+    ? {
+        readonly [Key in keyof Values]: {
+          readonly discriminant: DiscriminantStringToDiscriminantValue<DiscriminantField, Key>;
+          readonly value: ValueForRenderingFromComponentPropField<Values[Key]>;
+        };
+      }[keyof Values]
+    : Schema extends RelationshipField<infer Many>
+    ? Many extends true
+      ? readonly HydratedRelationshipData[]
+      : HydratedRelationshipData | null
+    : Schema extends ArrayField<infer ElementField>
+    ? readonly ValueForRenderingFromComponentPropField<ElementField>[]
+    : never;
 
-export type ValueForComponentSchema<Prop extends ComponentSchema> = Prop extends ChildField
+export type ValueForComponentSchema<Schema extends ComponentSchema> = Schema extends ChildField
   ? null
-  : Prop extends FormField<infer Value, any>
+  : Schema extends FormField<infer Value, any>
   ? Value
-  : Prop extends ObjectField<infer Value>
+  : Schema extends ObjectField<infer Value>
   ? { readonly [Key in keyof Value]: ValueForRenderingFromComponentPropField<Value[Key]> }
-  : Prop extends ConditionalField<infer DiscriminantField, infer Values>
+  : Schema extends ConditionalField<infer DiscriminantField, infer Values>
   ? {
       readonly [Key in keyof Values]: {
         readonly discriminant: DiscriminantStringToDiscriminantValue<DiscriminantField, Key>;
         readonly value: ValueForRenderingFromComponentPropField<Values[Key]>;
       };
     }[keyof Values]
-  : Prop extends RelationshipField<infer Many>
+  : Schema extends RelationshipField<infer Many>
   ? Many extends true
     ? readonly HydratedRelationshipData[]
     : HydratedRelationshipData | null
-  : Prop extends ArrayField<infer ElementField>
+  : Schema extends ArrayField<infer ElementField>
   ? readonly ValueForRenderingFromComponentPropField<ElementField>[]
   : never;
 
