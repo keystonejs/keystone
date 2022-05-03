@@ -79,15 +79,15 @@ component({
   schema: {
     questions: fields.array(
       fields.object({
-        question: fields.child({ placeholder: 'Question' }),
-        answer: fields.child({ placeholder: 'Answer', formatting: 'inherit' }),
+        question: fields.child({ placeholder: 'Question', kind: 'inline' }),
+        answer: fields.child({ placeholder: 'Answer', formatting: 'inherit', kind: 'block' }),
       })
     ),
   },
   preview: props => {
     return (
       <div>
-        {props.fields.questions.map(questionAndAnswer => {
+        {props.fields.questions.elements.map(questionAndAnswer => {
           return (
             <div key={questionAndAnswer.key}>
               <h2>{questionAndAnswer.fields.question.element}</h2>
@@ -95,8 +95,8 @@ component({
               <NotEditable>
                 <Button
                   onClick={() => {
-                    props.questions.onChange(
-                      props.questions
+                    props.fields.questions.onChange(
+                      props.fields.questions.elements
                         .filter(x => x.key !== questionAndAnswer.key)
                         .map(x => ({ key: x.key }))
                     );
@@ -111,8 +111,8 @@ component({
         <NotEditable>
           <Button
             onClick={() => {
-              props.questions.onChange([
-                ...props.questions.map(x => ({ key: x.key })),
+              props.fields.questions.onChange([
+                ...props.fields.questions.elements,
                 { key: undefined },
               ]);
             }}
