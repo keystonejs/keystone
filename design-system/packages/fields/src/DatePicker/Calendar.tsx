@@ -1,8 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { useMemo } from 'react';
-import DayPicker, { DayPickerProps } from 'react-day-picker';
+import { DayPicker, DayPickerProps } from 'react-day-picker';
 import { jsx, useTheme } from '@keystone-ui/core';
 import { getContrastText } from './utils/getContrastText';
 import { hexToRgb } from './utils/hexToRgb';
@@ -10,17 +9,10 @@ import { hexToRgb } from './utils/hexToRgb';
 export const Calendar = ({ modifiers, ...props }: DayPickerProps) => {
   const styles = useCalendarStyles();
   const indexOfMonday = 1;
-  const augmentedModifiers = useMemo(
-    () => ({
-      ...modifiers,
-      weekend: { daysOfWeek: [0, 6] },
-    }),
-    [modifiers]
-  );
 
   return (
     <div css={styles}>
-      <DayPicker firstDayOfWeek={indexOfMonday} modifiers={augmentedModifiers} {...props} />
+      <DayPicker weekStartsOn={indexOfMonday} {...props} />
     </div>
   );
 };
@@ -39,22 +31,38 @@ const useCalendarStyles = () => {
     padding: 8, //theme.spacing.small,
 
     // resets and wrapper stuff
-    '.DayPicker': {
+    '.rdp': {
       display: 'inline-block',
       fontSize: '1rem',
     },
-    '.DayPicker-wrapper': {
+    '.rdp-vhidden': {
+      boxSizing: 'border-box',
+      padding: 0,
+      margin: 0,
+      background: 'transparent',
+      border: 0,
+      MozAppearance: 'none',
+      WebkitAppearance: 'none',
+      appearance: 'none',
+      top: 0,
+      width: '1px !important',
+      height: '1px !important',
+      overflow: 'hidden !important',
+      clip: 'rect(1px, 1px, 1px, 1px) !important',
+      display: 'block !important',
+    },
+    '.rdp-wrapper': {
       position: 'relative',
       flexDirection: 'row',
       userSelect: 'none',
       outline: 0,
     },
-    '.DayPicker-Months': {
+    '.rdp-months': {
       display: 'flex',
       flexWrap: 'wrap',
       justifyContent: 'center',
     },
-    '.DayPicker-Month': {
+    '.rdp-month': {
       display: 'table',
 
       // separate weeks for easier parsing of range selection
@@ -67,26 +75,28 @@ const useCalendarStyles = () => {
       // NOTE: resolve weird safari bug:
       // https://bugs.webkit.org/show_bug.cgi?id=187903
       position: 'relative',
-      '.DayPicker-Caption > div': { position: 'absolute' },
+      '.rdp-caption_label': { position: 'absolute' },
     },
 
     // the caption is the day/month title e.g. "July 2020"
-    '.DayPicker-Caption': {
-      display: 'table-caption',
+    '.rdp-caption': {
+      display: 'flex',
       height: navButtonSize,
       marginBottom: '0.5em',
       padding: '0 0.5em',
       textAlign: 'left',
+      alignItems: 'center',
+      justifyContent: 'space-between',
     },
-    '.DayPicker-Caption > div': {
+    '.rdp-caption_label': {
       fontWeight: 500, //theme.typography.fontWeight.medium,
       fontSize: '1rem', //theme.typography.fontSize.medium,
     },
 
     // weekdays
-    '.DayPicker-Weekdays': { display: 'table-header-group', marginTop: '1em' },
-    '.DayPicker-WeekdaysRow': { display: 'table-row' },
-    '.DayPicker-Weekday': {
+    '.rdp-head': { display: 'table-header-group', marginTop: '1em' },
+    '.rdp-head_row': { display: 'table-row' },
+    '.rdp-head_cell': {
       color: colors.foregroundDim, //theme.palette.text.dim,
       display: 'table-cell',
       fontSize: '0.875rem', //theme.typography.fontSize.small,
@@ -94,17 +104,17 @@ const useCalendarStyles = () => {
       padding: '0.5em',
       textAlign: 'center',
     },
-    '.DayPicker-Weekday abbr[title]': {
+    '.rdp-head_cell abbr[title]': {
       borderBottom: 'none',
       textDecoration: 'none',
     },
-    '.DayPicker-Body': {
+    '.rdp-body': {
       display: 'table-row-group',
       fontSize: '0.875rem', //theme.typography.fontSize.small,
       fontWeight: 500, // theme.typography.fontWeight.medium,
     },
-    '.DayPicker-Week': { display: 'table-row' },
-    '.DayPicker-WeekNumber': {
+    '.rdp-week': { display: 'table-row' },
+    '.rdp-weeknumber': {
       display: 'table-cell',
       padding: '0.5em',
       minWidth: '1em',
@@ -115,19 +125,18 @@ const useCalendarStyles = () => {
       fontSize: '0.75em',
       cursor: 'pointer',
     },
-    '.DayPicker--interactionDisabled .DayPicker-Day': { cursor: 'default' },
+    '.rdp_interactionDisabled .rdp-day': { cursor: 'default' },
 
     // nav buttons
-    '.DayPicker-NavBar': {
-      display: 'flex',
+    '.rdp-nav': {
       position: 'absolute',
       right: 4, //theme.spacing.xsmall,
-      top: 4, //theme.spacing.xsmall,
       zIndex: 1,
     },
-    '.DayPicker-NavButton': {
+    '.rdp-nav_button': {
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
+      backgroundColor: 'transparent',
       // backgroundSize: '66.667%',
       borderRadius: 4, //theme.radii.xsmall,
       color: colors.foreground, // theme.palette.listItem.text,
@@ -147,30 +156,18 @@ const useCalendarStyles = () => {
         color: colors.foreground, //theme.palette.listItem.textPressed,
       },
     },
-    '.DayPicker-NavButton--next': {
-      backgroundImage:
-        `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24' stroke='${encodeURIComponent(
-          colors.foreground //theme.palette.listItem.text
-        )}' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpolyline points='9 18 15 12 9 6'%3E%3C/polyline%3E%3C/svg%3E")` as string,
-    },
-    '.DayPicker-NavButton--prev': {
-      backgroundImage:
-        `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24' stroke='${encodeURIComponent(
-          colors.foreground //theme.palette.listItem.text
-        )}' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpolyline points='15 18 9 12 15 6'%3E%3C/polyline%3E%3C/svg%3E")` as string,
-    },
 
     // "day" or grid cell
-    '.DayPicker-Day--outside': {
+    '.rdp-day_outside': {
       color: colors.foregroundDim, // theme.palette.text.dim,
       cursor: 'default',
     },
-    '.DayPicker-Day--disabled': {
+    '.rdp-day_disabled': {
       color: colors.foregroundDim, // theme.palette.text.dim,
       cursor: 'default',
     },
 
-    '.DayPicker-Day': {
+    '.rdp-day': {
       borderRadius: '50%',
       display: 'table-cell',
       height: cellSize,
@@ -180,11 +177,12 @@ const useCalendarStyles = () => {
       textAlign: 'center',
       verticalAlign: 'middle',
       width: cellSize,
+      backgroundColor: 'transparent',
     },
-    '.DayPicker-Day--weekend': {
+    '.rdp-day_weekend': {
       color: colors.foregroundMuted, // theme.palette.text.muted,
     },
-    '.DayPicker-Day:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside)': {
+    '.rdp-day:not(.rdp-day_disabled):not(.rdp-day_outside)': {
       cursor: 'pointer',
 
       '&:hover, &.focus-visible': {
@@ -203,11 +201,11 @@ const useCalendarStyles = () => {
         },
       },
     },
-    '.DayPicker-Day--today': {
+    '.rdp-day_today': {
       color: palette.red400, // theme.palette.text.critical,
       fontWeight: 700, // theme.typography.fontWeight.bold,
     },
-    '.DayPicker-Day--selected:not(.DayPicker-Day--outside)': {
+    '.rdp-day_selected:not(.rdp-day_outside)': {
       color: getContrastText(interactionColor),
 
       '&, &:hover, &.focus-visible': {
@@ -216,42 +214,41 @@ const useCalendarStyles = () => {
     },
 
     // range-specific day styles
-    '.DayPicker-Day--rangeStart:not(.DayPicker-Day--outside), .DayPicker-Day--rangeEnd:not(.DayPicker-Day--outside)':
-      {
-        '&::before': {
-          backgroundColor: rangeBetweenColor,
-          position: 'absolute',
-          content: '" "',
-          width: cellSize / 2,
-          height: cellSize,
-          top: 0,
-          zIndex: -1,
-        },
+    '.rdp-day_range_start:not(.rdp-day_outside), .rdp-day_range_end:not(.rdp-day_outside)': {
+      '&::before': {
+        backgroundColor: rangeBetweenColor,
+        position: 'absolute',
+        content: '" "',
+        width: cellSize / 2,
+        height: cellSize,
+        top: 0,
+        zIndex: -1,
       },
-    '.DayPicker-Day--rangeStart': {
+    },
+    '.rdp-day_range_start': {
       '&::before': {
         right: 0,
       },
     },
-    '.DayPicker-Day--rangeEnd': {
+    '.rdp-day_range_end': {
       '&::before': {
         left: 0,
       },
     },
-    '.DayPicker-Day--rangeBetween.DayPicker-Day--selected:not(.DayPicker-Day--outside)': {
+    '.rdp-day_range_between.rdp-day_selected:not(.rdp-day_outside)': {
       '&, &:hover, &.focus-visible': {
         backgroundColor: rangeBetweenColor,
         borderRadius: 0,
         color: colors.foreground, // theme.palette.text.base,
       },
     },
-    '.DayPicker-Day--rangeBetween.DayPicker-Day--firstOfMonth:not(.DayPicker-Day--outside)': {
+    '.rdp-day_rangeBetween.rdp-day_firstOfMonth:not(.rdp-day_outside)': {
       '&, &:hover, &.focus-visible': {
         // background: `linear-gradient(to left, ${rangeBetweenColor}, ${theme.palette.background.dialog})`,
         background: `linear-gradient(to left, ${rangeBetweenColor}, ${colors.overlayBackground})`,
       },
     },
-    '.DayPicker-Day--rangeBetween.DayPicker-Day--lastOfMonth:not(.DayPicker-Day--outside)': {
+    '.rdp-day_rangeBetween.rdp-day_lastOfMonth:not(.rdp-day_outside)': {
       '&, &:hover, &.focus-visible': {
         // background: `linear-gradient(to right, ${rangeBetweenColor}, ${theme.palette.background.dialog})`,
         background: `linear-gradient(to right, ${rangeBetweenColor}, ${colors.overlayBackground})`,
