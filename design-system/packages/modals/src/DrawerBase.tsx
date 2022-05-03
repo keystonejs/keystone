@@ -32,6 +32,7 @@ const blanketTransition = {
   entered: { opacity: 1 },
   exiting: { opacity: 0 },
   exited: { opacity: 0 },
+  unmounted: { opacity: 0 },
 };
 
 export const DrawerBase = ({
@@ -142,5 +143,6 @@ function getDialogTransition(depth: number) {
     entered: { transform: transformValue },
     exiting: { transform: 'translateX(100%)' },
     exited: { transform: 'translateX(100%)' },
+    unmounted: { transform: 'none' },
   };
 }

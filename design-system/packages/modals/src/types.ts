@@ -10,4 +10,4 @@ export type ActionsType = {
   };
 };
 
-export type TransitionState = 'entering' | 'entered' | 'exiting' | 'exited';
+export type TransitionState = 'entering' | 'entered' | 'exiting' | 'exited' | 'unmounted';

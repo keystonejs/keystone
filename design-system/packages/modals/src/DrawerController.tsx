@@ -8,7 +8,7 @@ type DrawerControllerProps = {
   children: ReactNode;
 };
 
-const DrawerControllerContext = React.createContext<null | 'unmounted' | TransitionState>(null);
+const DrawerControllerContext = React.createContext<null | TransitionState>(null);
 
 export const DrawerControllerContextProvider = DrawerControllerContext.Provider;
 
