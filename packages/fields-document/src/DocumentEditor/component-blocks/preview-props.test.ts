@@ -9,10 +9,14 @@ test('onChange on a conditional field updates props.value', () => {
     false: fields.array(fields.checkbox({ label: '' })),
   });
   let val = getInitialPropsValue(field);
-  const getPreviewProps = createGetPreviewProps(field, newVal => {
-    val = newVal(val);
-    props = getPreviewProps(val);
-  });
+  const getPreviewProps = createGetPreviewProps(
+    field,
+    newVal => {
+      val = newVal(val);
+      props = getPreviewProps(val);
+    },
+    () => undefined
+  );
   let props = getPreviewProps(val);
   assert(props.discriminant === false);
   expect(props.value.schema).toBe(field.values.false);
@@ -28,10 +32,14 @@ test("onChange on a conditional field updates props.value where the value doesn'
     false: fields.text({ label: 'false' }),
   });
   let val = getInitialPropsValue(field);
-  const getPreviewProps = createGetPreviewProps(field, newVal => {
-    val = newVal(val);
-    props = getPreviewProps(val);
-  });
+  const getPreviewProps = createGetPreviewProps(
+    field,
+    newVal => {
+      val = newVal(val);
+      props = getPreviewProps(val);
+    },
+    () => undefined
+  );
   let props = getPreviewProps(val);
   assert(props.discriminant === false);
   expect(props.value.schema).toBe(field.values.false);
@@ -43,10 +51,14 @@ test("onChange on a conditional field updates props.value where the value doesn'
 test("array fields don't keep the props of an array item around after removing the item", () => {
   const field = fields.array(fields.text({ label: '' }));
   let val = getInitialPropsValue(field);
-  const getPreviewProps = createGetPreviewProps(field, newVal => {
-    val = newVal(val);
-    props = getPreviewProps(val);
-  });
+  const getPreviewProps = createGetPreviewProps(
+    field,
+    newVal => {
+      val = newVal(val);
+      props = getPreviewProps(val);
+    },
+    () => undefined
+  );
   let props = getPreviewProps(val);
   props.onChange([
     { key: '1', value: 'blah' },
@@ -68,10 +80,14 @@ test('the props of two array fields in a conditional field change when the discr
     false: fields.array(fields.checkbox({ label: '' })),
   });
   let val = getInitialPropsValue(field);
-  const getPreviewProps = createGetPreviewProps(field, newVal => {
-    val = newVal(val);
-    props = getPreviewProps(val);
-  });
+  const getPreviewProps = createGetPreviewProps(
+    field,
+    newVal => {
+      val = newVal(val);
+      props = getPreviewProps(val);
+    },
+    () => undefined
+  );
   let props = getPreviewProps(val);
   assert(props.discriminant === false);
   let prevArrayOnChange = props.value.onChange;

@@ -261,9 +261,13 @@ export function DocumentFeaturesFormAndCode() {
   return (
     <div>
       <FormValueContentFromPreviewProps
-        {...createGetPreviewProps(documentFeaturesProp, getNewVal => {
-          setFormValue(getNewVal(formValue));
-        })(formValue)}
+        {...createGetPreviewProps(
+          documentFeaturesProp,
+          getNewVal => {
+            setFormValue(getNewVal(formValue));
+          },
+          () => undefined
+        )(formValue)}
       />
     </div>
   );

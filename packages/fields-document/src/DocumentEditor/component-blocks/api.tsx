@@ -457,7 +457,10 @@ export type ComponentBlock<
     }
 );
 
-type GenericPreviewProps<Prop extends ComponentSchema, ChildFieldType> = Prop extends ChildField
+export type GenericPreviewProps<
+  Prop extends ComponentSchema,
+  ChildFieldType
+> = Prop extends ChildField
   ? {
       readonly element: ChildFieldType;
       readonly schema: Prop;
@@ -602,18 +605,14 @@ export function component<
     | {
         chromeless: true;
         toolbar?: (props: {
-          props: {
-            [Key in keyof Schema]: PreviewPropsForToolbar<Schema[Key]>;
-          };
+          props: PreviewPropsForToolbar<ObjectField<Schema>>;
           onRemove(): void;
         }) => ReactElement;
       }
     | {
         chromeless?: false;
         toolbar?: (props: {
-          props: {
-            [Key in keyof Schema]: PreviewPropsForToolbar<Schema[Key]>;
-          };
+          props: PreviewPropsForToolbar<ObjectField<Schema>>;
           onShowEditMode(): void;
           onRemove(): void;
         }) => ReactElement;

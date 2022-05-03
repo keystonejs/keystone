@@ -373,16 +373,16 @@ export const componentBlocks = {
     toolbar({ props, onRemove }) {
       return (
         <ToolbarGroup>
-          {props.intent.options.map(opt => {
+          {props.fields.intent.options.map(opt => {
             const Icon = noticeIconMap[opt.value];
 
             return (
               <Tooltip key={opt.value} content={opt.label} weight="subtle">
                 {attrs => (
                   <ToolbarButton
-                    isSelected={props.intent.value === opt.value}
+                    isSelected={props.fields.intent.value === opt.value}
                     onClick={() => {
-                      props.intent.onChange(opt.value);
+                      props.fields.intent.onChange(opt.value);
                     }}
                     {...attrs}
                   >

@@ -2,7 +2,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { Transforms, Editor } from 'slate';
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { jsx, makeEditor } from '../tests/utils';
 import { component, fields } from '../../component-blocks';
 import { ChildFieldEditable, createGetPreviewProps } from './preview-props';
@@ -175,9 +175,13 @@ test('inserting a complex component block', () => {
 });
 
 const getPreviewProps = (editor: Editor) =>
-  createGetPreviewProps({ kind: 'object', fields: componentBlocks.complex.schema }, props => {
-    Transforms.setNodes(editor, { props: props((editor.children[0] as any).props) }, { at: [0] });
-  })((editor.children[0] as any).props);
+  createGetPreviewProps(
+    { kind: 'object', fields: componentBlocks.complex.schema },
+    props => {
+      Transforms.setNodes(editor, { props: props((editor.children[0] as any).props) }, { at: [0] });
+    },
+    (path): ReactElement => React.createElement(ChildFieldEditable, { path })
+  )((editor.children[0] as any).props);
 
 const makeEditorWithComplexComponentBlock = () =>
   makeEditor(

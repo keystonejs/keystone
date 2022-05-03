@@ -1,7 +1,7 @@
 import { Stack } from '@keystone-ui/core';
 import React, { useState } from 'react';
 import { Button as KeystoneUIButton } from '@keystone-ui/button';
-import { PreviewProps } from './api';
+import { GenericPreviewProps } from './api';
 import {
   FormValueContentFromPreviewProps,
   NonChildFieldComponentSchema,
@@ -12,7 +12,7 @@ export function FormValue({
   props,
   isValid,
 }: {
-  props: PreviewProps<NonChildFieldComponentSchema>;
+  props: GenericPreviewProps<NonChildFieldComponentSchema, unknown>;
   onClose(): void;
   isValid: boolean;
 }) {

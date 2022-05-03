@@ -31,7 +31,7 @@ import {
 import { assert } from '../utils';
 import { areArraysEqual } from '../document-features-normalization';
 import { clientSideValidateProp, getSchemaAtPropPath, ReadonlyPropPath } from './utils';
-import { ChildrenByPathContext, getKeysForArrayValue } from './preview-props';
+import { ChildFieldEditable, ChildrenByPathContext, getKeysForArrayValue } from './preview-props';
 import { getInitialPropsValue, getInitialValue } from './initial-values';
 import { FormValue } from './edit-mode';
 import { createGetPreviewProps } from './preview-props';
@@ -248,7 +248,11 @@ export const ComponentBlocksElement = ({
         throw new Error('expected component block to exist when called');
       };
     }
-    return createGetPreviewProps({ kind: 'object', fields: componentBlock.schema }, onPropsChange);
+    return createGetPreviewProps(
+      { kind: 'object', fields: componentBlock.schema },
+      onPropsChange,
+      () => undefined
+    );
   }, [componentBlock, onPropsChange]);
 
   if (!componentBlock) {
@@ -451,9 +455,13 @@ function ComponentBlockRender({
   children: any;
 }) {
   const getPreviewProps = useMemo(() => {
-    return createGetPreviewProps({ kind: 'object', fields: componentBlock.schema }, props => {
-      onChange(props);
-    });
+    return createGetPreviewProps(
+      { kind: 'object', fields: componentBlock.schema },
+      props => {
+        onChange(props);
+      },
+      path => <ChildFieldEditable path={path} />
+    );
   }, [onChange, componentBlock]);
 
   const previewProps = getPreviewProps(element.props);

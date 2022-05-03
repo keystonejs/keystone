@@ -13,8 +13,8 @@ import {
   ComponentSchema,
   ConditionalField,
   FormField,
+  GenericPreviewProps,
   ObjectField,
-  PreviewProps,
   RelationshipData,
   RelationshipField,
 } from './api';
@@ -22,7 +22,7 @@ import { assertNever } from './utils';
 
 const fieldRenderers: {
   [Key in ComponentSchema['kind']]: (props: {
-    props: PreviewProps<Extract<ComponentSchema, { kind: Key }>> & {
+    props: GenericPreviewProps<Extract<ComponentSchema, { kind: Key }>, unknown> & {
       autoFocus?: boolean;
       forceValidation?: boolean;
     };
@@ -146,13 +146,13 @@ export type NonChildFieldComponentSchema =
   | ArrayField<ComponentSchema>;
 
 function isNonChildFieldPreviewProps(
-  props: PreviewProps<ComponentSchema>
-): props is PreviewProps<NonChildFieldComponentSchema> {
+  props: GenericPreviewProps<ComponentSchema, unknown>
+): props is GenericPreviewProps<NonChildFieldComponentSchema, unknown> {
   return props.schema.kind !== 'child';
 }
 
 export const FormValueContentFromPreviewProps = memo(function FormValueContentFromPreview(
-  props: PreviewProps<NonChildFieldComponentSchema> & {
+  props: GenericPreviewProps<NonChildFieldComponentSchema, unknown> & {
     autoFocus?: boolean;
     forceValidation?: boolean;
   }
@@ -162,7 +162,7 @@ export const FormValueContentFromPreviewProps = memo(function FormValueContentFr
 });
 
 const SortableItemInForm = memo(function SortableItemInForm(
-  props: PreviewProps<ComponentSchema> & { elementKey: string }
+  props: GenericPreviewProps<ComponentSchema, unknown> & { elementKey: string }
 ) {
   return (
     <SortableItem elementKey={props.elementKey}>
