@@ -8,7 +8,7 @@ export default config({
   },
   lists,
   storage: {
-    images: { kind: 'local', type: 'image' },
+    images: { kind: 'local', type: 'image', baseUrl: '/extra-base-url' },
     files: { kind: 'local', type: 'file' },
   },
 });

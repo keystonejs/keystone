@@ -20,28 +20,18 @@ async function streamToBuffer(stream: Readable): Promise<Buffer> {
   return Buffer.concat(chunks);
 }
 
-// default
-// url(id, extension) { },          // via https://my_files.s3.amazonaws.com/...
-
-// proxied
-// url(id, extension) { },          // via https://localhost:9000/files/...
-
-// signed
-// url(id, extension) { },          // via https://my_files.s3.amazonaws.com/...?signature=Cx19AOIRmbGI7ACGsnikhQ
-
-// proxy signed
-// url(id, extension) { },          // via https://localhost:9000/files/...?signature=Cx19AOIRmbGI7ACGsnikhQ
-
-// for each of them
-// async upload(stream, id) { },    // api
-// async delete(id, extension) { }, // api
-
 export function s3Assets(config: NonNullable<KeystoneConfig['storage']>): Map<string, AssetsAPI> {
   const assets = new Map<string, AssetsAPI>();
 
   for (let [storage, val] of Object.entries(config)) {
     if (val.kind === 's3') {
-      const { bucketName, region, proxied: { baseUrl } = {}, signed: { expiry } = {} } = val;
+      const {
+        bucketName,
+        region,
+        proxied: { baseUrl } = {},
+        signed: { expiry } = {},
+        forcePathStyle,
+      } = val;
 
       const s3 = new S3({
         credentials: {
@@ -50,7 +40,7 @@ export function s3Assets(config: NonNullable<KeystoneConfig['storage']>): Map<st
         },
         region,
         endpoint: val.endpoint,
-        forcePathStyle: val.forcePathStyle,
+        forcePathStyle,
       });
 
       let endpoint = val.endpoint
@@ -66,17 +56,21 @@ export function s3Assets(config: NonNullable<KeystoneConfig['storage']>): Map<st
 
       assets.set(storage, {
         images: {
-          // TODO this
           url(id, extension) {
-            if (baseUrl) {
+            if (baseUrl && expiry) {
+              // https://localhost:9000/images/...?signature=Cx19AOIRmbGI7ACGsnikhQ
               return endpointString.replace(/\/?$/, `/${id}.${extension}`);
             } else if (baseUrl) {
+              return baseUrl.replace(/\/?$/, `/${id}.${extension}`);
+              // https://localhost:9000/images/...
               return endpointString.replace(/\/?$/, `/${id}.${extension}`);
             } else if (expiry) {
+              // https://my_images.s3.amazonaws.com/...?signature=Cx19AOIRmbGI7ACGsnikhQ
+              return endpointString.replace(/\/?$/, `/${id}.${extension}`);
+            } else {
+              // https://my_images.s3.amazonaws.com/...
               return endpointString.replace(/\/?$/, `/${id}.${extension}`);
             }
-
-            return endpointString.replace(/\/?$/, `/${id}.${extension}`);
           },
           async upload(stream, id) {
             const buffer = await streamToBuffer(stream);

@@ -5,7 +5,7 @@ import fromBuffer from 'image-type';
 import imageSize from 'image-size';
 import { KeystoneConfig, ImageMetadata, ImagesContext } from '../../types';
 import { AssetsAPI } from './types';
-const DEFAULT_BASE_URL = '/images';
+export const DEFAULT_BASE_IMAGE_URL = '/images';
 export const DEFAULT_IMAGES_STORAGE_PATH = './public/images';
 
 export function getImageMetadataFromBuffer(buffer: Buffer): ImageMetadata {
@@ -55,7 +55,7 @@ export function createImagesContext(
         }
         case 'local': {
           const filename = `${id}.${extension}`;
-          return `${storageConfig.baseUrl || DEFAULT_BASE_URL}/${filename}`;
+          return `${storageConfig.baseUrl || DEFAULT_BASE_IMAGE_URL}/${filename}`;
         }
       }
 

@@ -8,7 +8,7 @@ import slugify from '@sindresorhus/slugify';
 import { KeystoneConfig, FilesContext } from '../../types';
 import { AssetsAPI } from './types';
 
-const DEFAULT_BASE_URL = '/files';
+export const DEFAULT_BASE_FILE_URL = '/files';
 export const DEFAULT_FILES_STORAGE_PATH = './public/files';
 
 const defaultTransformer = (str: string) => slugify(str);
@@ -68,7 +68,7 @@ export function createFilesContext(
           return s3Instance.files.url(filename);
         }
         case 'local': {
-          return `${storageConfig.baseUrl || DEFAULT_BASE_URL}/${filename}`;
+          return `${storageConfig.baseUrl || DEFAULT_BASE_FILE_URL}/${filename}`;
         }
       }
 
