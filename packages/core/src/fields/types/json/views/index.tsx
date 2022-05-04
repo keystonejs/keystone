@@ -22,35 +22,35 @@ export const Field = ({
 }: FieldProps<typeof controller>) => {
   return (
     <FieldContainer>
-      <FieldLabel>
-        {field.label}
-        <Stack>
-          <TextArea
-            readOnly={onChange === undefined}
-            css={{
-              fontFamily: 'monospace',
-              ...(!onChange && {
-                cursor: 'default',
-                backgroundColor: '#F6F8FC',
-                '&:focus-visible': {
-                  outline: 0,
-                  backgroundColor: '#F6F8FC',
-                  boxShadow: '0 0 0 2px rgba(245,245,245,.7)',
-                  border: '1px solid rgb(220,220,220)',
-                },
-              }),
-            }}
-            autoFocus={autoFocus}
-            onChange={event => onChange?.(event.target.value)}
-            value={value}
-          />
-          {forceValidation && (
-            <Text color="red600" size="small">
-              {'Invalid JSON'}
-            </Text>
-          )}
-        </Stack>
-      </FieldLabel>
+      <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
+      <Stack>
+        <TextArea
+          id={field.path}
+          readOnly={onChange === undefined}
+          css={{
+            fontFamily: 'monospace',
+            ...(!onChange && {
+              cursor: 'default',
+              backgroundColor: '#eff3f6',
+              border: '1px solid transparent',
+              '&:focus-visible': {
+                outline: 0,
+                backgroundColor: '#eff3f6',
+                boxShadow: '0 0 0 2px #e1e5e9',
+                border: '1px solid #b1b5b9',
+              },
+            }),
+          }}
+          autoFocus={autoFocus}
+          onChange={event => onChange?.(event.target.value)}
+          value={value}
+        />
+        {forceValidation && (
+          <Text color="red600" size="small">
+            {'Invalid JSON'}
+          </Text>
+        )}
+      </Stack>
     </FieldContainer>
   );
 };
