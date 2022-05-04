@@ -27,7 +27,19 @@ export const Field = ({
         <Stack>
           <TextArea
             readOnly={onChange === undefined}
-            css={{ fontFamily: 'monospace' }}
+            css={{
+              fontFamily: 'monospace',
+              ...(!onChange && {
+                pointerEvents: 'none',
+                backgroundColor: '#F6F8FC',
+                '&:focus-visible': {
+                  outline: 0,
+                  backgroundColor: '#F6F8FC',
+                  boxShadow: '0 0 0 2px rgba(245,245,245,.7)',
+                  border: '1px solid rgb(220,220,220)',
+                },
+              }),
+            }}
             autoFocus={autoFocus}
             onChange={event => onChange?.(event.target.value)}
             value={value}
