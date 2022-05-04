@@ -3,7 +3,7 @@ import { createHash } from 'crypto';
 import fs from 'fs-extra';
 import fetch from 'node-fetch';
 import { file } from '..';
-import { StorageKind } from '../../../../types/config';
+import { StorageConfig } from '../../../../types/config';
 import { apiTestConfig } from '../../../../../../../tests/api-tests/utils';
 import { setupTestRunner } from '../../../../testing';
 import { list } from '../../../..';
@@ -22,7 +22,7 @@ const localDefaultStorage = {
   storagePath: TEMP_STORAGE,
 } as const;
 
-const s3DefaultStorage: StorageKind = {
+const s3DefaultStorage: StorageConfig = {
   kind: 's3',
   type: 'file',
   bucketName: process.env.S3_BUCKET_NAME!,
@@ -33,7 +33,7 @@ const s3DefaultStorage: StorageKind = {
   forcePathStyle: process.env.S3_FORCE_PATH_STYLE === 'true',
 };
 
-const getRunner = ({ storageConfig }: { storageConfig: StorageKind }) =>
+const getRunner = ({ storageConfig }: { storageConfig: StorageConfig }) =>
   setupTestRunner({
     config: apiTestConfig({
       storage: {

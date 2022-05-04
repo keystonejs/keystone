@@ -340,6 +340,15 @@ async function setupInitialKeystone(
     createContext
   );
   console.log(`✅ GraphQL API ready`);
+
+  // Set up some Local storage folders if used
+  for (const val of Object.values(config.storage || {})) {
+    if (val.kind !== 'local') continue;
+
+    fs.mkdirSync(val.storagePath, { recursive: true });
+    console.warn(`WARNING: We have created ${val.storagePath}, this won't happen in production`);
+  }
+
   return {
     adminMeta,
     disconnect: () => keystone.disconnect(),

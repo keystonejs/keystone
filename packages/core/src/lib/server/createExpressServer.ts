@@ -1,13 +1,17 @@
 import { createServer, IncomingMessage, Server, ServerResponse } from 'http';
+import { pipeline } from 'node:stream';
+import { promisify } from 'node:util';
 import cors, { CorsOptions } from 'cors';
 import express from 'express';
 import { GraphQLSchema } from 'graphql';
 import { graphqlUploadExpress } from 'graphql-upload';
 import { ApolloServer } from 'apollo-server-express';
+import fetch from 'node-fetch';
 import type { KeystoneConfig, CreateContext, SessionStrategy, GraphQLConfig } from '../../types';
 import { createSessionContext } from '../../session';
 import { DEFAULT_FILES_STORAGE_PATH } from '../assets/createFilesContext';
 import { DEFAULT_IMAGES_STORAGE_PATH } from '../assets/createImagesContext';
+import { getS3AssetsEndpoint } from '../assets/s3';
 import { createApolloServerExpress } from './createApolloServer';
 import { addHealthCheck } from './addHealthCheck';
 
@@ -53,6 +57,8 @@ const addApolloServer = async ({
   });
   return apolloServer;
 };
+
+const streamPipeline = promisify(pipeline);
 
 export const createExpressServer = async (
   config: KeystoneConfig,
@@ -105,24 +111,44 @@ export const createExpressServer = async (
   }
 
   if (config.storage) {
-    Object.entries(config.storage).forEach(([, val]) => {
+    for (const val of Object.values(config.storage)) {
+      if (!val.addServerRoute) continue;
       if (val.kind === 'local') {
-        switch (val.type) {
-          case 'image': {
-            expressServer.use(
-              '/files',
-              express.static(val.storagePath || DEFAULT_FILES_STORAGE_PATH)
-            );
+        expressServer.use(
+          val.addServerRoute.path,
+          express.static(
+            val.storagePath || val.type === 'image'
+              ? DEFAULT_IMAGES_STORAGE_PATH
+              : DEFAULT_FILES_STORAGE_PATH
+          )
+        );
+      } else if (val.kind === 's3') {
+        const endpoint = getS3AssetsEndpoint(val);
+        expressServer.use(`${val.addServerRoute.path}/:id`, async (req, res) => {
+          const url = new URL(endpoint);
+          url.pathname += `/${req.params.id}`;
+
+          // pass through the URL query parameters verbatim
+          const { searchParams } = new URL(req.url);
+          for (const [key, value] of searchParams) {
+            url.searchParams.append(key, value);
           }
-          case 'image': {
-            expressServer.use(
-              '/images',
-              express.static(val.storagePath || DEFAULT_IMAGES_STORAGE_PATH)
-            );
+
+          const imageResponse = await fetch(url.toString());
+          if (!imageResponse.ok) throw new Error(`Unexpected response ${imageResponse.statusText}`);
+
+          for (const header of ['Content-Type', 'Content-Length', 'Cache-Control']) {
+            const headerValue = imageResponse.headers.get(header);
+            if (headerValue) {
+              res.setHeader(header, headerValue);
+            }
           }
-        }
+
+          res.status(200);
+          await streamPipeline(imageResponse.body, res);
+        });
       }
-    });
+    }
   }
 
   const apolloServer = await addApolloServer({
