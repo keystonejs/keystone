@@ -22,9 +22,10 @@ export const Field = ({
 }: FieldProps<typeof controller>) => {
   return (
     <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
+      <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
       <Stack>
         <TextArea
+          id={field.path}
           readOnly={onChange === undefined}
           css={{
             fontFamily: 'monospace',
