@@ -59,7 +59,7 @@ export const file =
     }
 
     if ('isIndexed' in config) {
-      throw Error('isIndexed is not a supported option for field type file');
+      throw Error('isIndexed is not a supported option for the file field type');
     }
 
     return fieldType({
