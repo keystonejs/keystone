@@ -164,16 +164,19 @@ export type AssetMode = 'local' | 's3';
 
 // Files API
 
-export type FileData = {
-  storage: string;
+export type FileMetadata = {
   filename: string;
   filesize: number;
 };
 
-export type FilesContext = {
-  getUrl: (storage: string, filename: string) => Promise<string>;
-  getDataFromStream: (storage: string, stream: Readable, filename: string) => Promise<FileData>;
-  deleteAtSource: (storage: string, filename: string) => Promise<void>;
+export type FileData = {
+  filename: string;
+} & FileMetadata;
+
+export type FilesContext = (storage: string) => {
+  getUrl: (filename: string) => Promise<string>;
+  getDataFromStream: (stream: Readable, filename: string) => Promise<FileData>;
+  deleteAtSource: (filename: string) => Promise<void>;
 };
 
 // Images API
@@ -188,12 +191,11 @@ export type ImageMetadata = {
 };
 
 export type ImageData = {
-  storage: string;
   id: string;
 } & ImageMetadata;
 
-export type ImagesContext = {
-  getUrl: (storage: string, id: string, extension: ImageExtension) => Promise<string>;
-  getDataFromStream: (storage: string, stream: Readable) => Promise<ImageData>;
-  deleteAtSource: (storage: string, id: string, extension: ImageExtension) => Promise<void>;
+export type ImagesContext = (storage: string) => {
+  getUrl: (id: string, extension: ImageExtension) => Promise<string>;
+  getDataFromStream: (stream: Readable) => Promise<ImageData>;
+  deleteAtSource: (id: string, extension: ImageExtension) => Promise<void>;
 };

@@ -1,133 +1,120 @@
-import { Readable } from 'stream';
-// import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import {
-  S3,
-  // GetObjectCommand, PutObjectCommand
-} from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { S3, S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 
-import { KeystoneConfig } from '../../types';
+import { StorageConfig } from '../../types';
 import { getImageMetadataFromBuffer } from './createImagesContext';
-import { AssetsAPI } from './types';
+import { FileAdapter, ImageAdapter } from './types';
+import { streamToBuffer } from './utils';
 
-async function streamToBuffer(stream: Readable): Promise<Buffer> {
-  const chunks = [];
+export function s3ImageAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }): ImageAdapter {
+  const { generateUrl, s3, presign } = s3AssetsCommon(storageConfig);
+  return {
+    async url(id, extension) {
+      if (!storageConfig.signed) return generateUrl(`/${id}.${extension}`);
+      return presign(`${id}.${extension}`);
+    },
+    async upload(stream, id) {
+      const buffer = await streamToBuffer(stream);
+      const metadata = getImageMetadataFromBuffer(buffer);
 
-  for await (let chunk of stream) {
-    chunks.push(chunk);
-  }
+      const upload = new Upload({
+        client: s3,
+        params: {
+          Bucket: storageConfig.bucketName,
+          Key: `${id}.${metadata.extension}`,
+          Body: buffer,
+          ContentType: {
+            png: 'image/png',
+            webp: 'image/webp',
+            gif: 'image/gif',
+            jpg: 'image/jpeg',
+          }[metadata.extension],
+        },
+      });
+      await upload.done();
 
-  return Buffer.concat(chunks);
+      return metadata;
+    },
+    async delete(id, extension) {
+      s3.deleteObject({ Bucket: storageConfig.bucketName, Key: `${id}.${extension}` });
+    },
+  };
 }
 
-export function s3Assets(config: NonNullable<KeystoneConfig['storage']>): Map<string, AssetsAPI> {
-  const assets = new Map<string, AssetsAPI>();
+export function s3FileAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }): FileAdapter {
+  const { generateUrl, s3, presign } = s3AssetsCommon(storageConfig);
 
-  for (let [storage, val] of Object.entries(config)) {
-    if (val.kind === 's3') {
-      const {
-        bucketName,
-        region,
-        proxied: { baseUrl } = {},
-        signed: { expiry } = {},
-        forcePathStyle,
-      } = val;
-
-      const s3 = new S3({
-        credentials: {
-          accessKeyId: val.accessKeyId,
-          secretAccessKey: val.secretAccessKey,
-        },
-        region,
-        endpoint: val.endpoint,
-        forcePathStyle,
+  return {
+    async url(filename) {
+      if (!storageConfig.signed) return generateUrl(`/${filename}`);
+      return presign(filename);
+    },
+    async upload(stream, filename) {
+      let filesize = 0;
+      stream.on('data', data => {
+        filesize += data.length;
       });
 
-      let endpoint = val.endpoint
-        ? new URL(val.endpoint)
-        : new URL(`https://s3.${region}.amazonaws.com`);
-      if (val.forcePathStyle) {
-        endpoint = new URL(`/${val.bucketName}`, endpoint);
-      } else {
-        endpoint.hostname = `${val.bucketName}.${endpoint.hostname}`;
-      }
-
-      const endpointString = endpoint.toString();
-
-      assets.set(storage, {
-        images: {
-          url(id, extension) {
-            if (baseUrl && expiry) {
-              // https://localhost:9000/images/...?signature=Cx19AOIRmbGI7ACGsnikhQ
-              return endpointString.replace(/\/?$/, `/${id}.${extension}`);
-            } else if (baseUrl) {
-              return baseUrl.replace(/\/?$/, `/${id}.${extension}`);
-              // https://localhost:9000/images/...
-              return endpointString.replace(/\/?$/, `/${id}.${extension}`);
-            } else if (expiry) {
-              // https://my_images.s3.amazonaws.com/...?signature=Cx19AOIRmbGI7ACGsnikhQ
-              return endpointString.replace(/\/?$/, `/${id}.${extension}`);
-            } else {
-              // https://my_images.s3.amazonaws.com/...
-              return endpointString.replace(/\/?$/, `/${id}.${extension}`);
-            }
-          },
-          async upload(stream, id) {
-            const buffer = await streamToBuffer(stream);
-            const metadata = getImageMetadataFromBuffer(buffer);
-
-            const upload = new Upload({
-              client: s3,
-              params: {
-                Bucket: bucketName,
-                Key: `${id}.${metadata.extension}`,
-                Body: buffer,
-                ContentType: {
-                  png: 'image/png',
-                  webp: 'image/webp',
-                  gif: 'image/gif',
-                  jpg: 'image/jpeg',
-                }[metadata.extension],
-              },
-            });
-            await upload.done();
-
-            return metadata;
-          },
-          async delete(id, extension) {
-            s3.deleteObject({ Bucket: bucketName, Key: `${id}.${extension}` });
-          },
-        },
-        files: {
-          url(filename) {
-            return endpointString.replace(/\/?$/, `/${filename}`);
-          },
-          async upload(stream, filename) {
-            let filesize = 0;
-            stream.on('data', data => {
-              filesize += data.length;
-            });
-
-            const upload = new Upload({
-              client: s3,
-              params: {
-                Bucket: bucketName,
-                Key: filename,
-                Body: stream,
-              },
-            });
-
-            await upload.done();
-
-            return { mode: 's3', filename, filesize, storage };
-          },
-          async delete(filename) {
-            s3.deleteObject({ Bucket: bucketName, Key: filename });
-          },
+      const upload = new Upload({
+        client: s3,
+        params: {
+          Bucket: storageConfig.bucketName,
+          Key: filename,
+          Body: stream,
         },
       });
-    }
+
+      await upload.done();
+
+      return { filename, filesize };
+    },
+    async delete(filename) {
+      await s3.deleteObject({ Bucket: storageConfig.bucketName, Key: filename });
+    },
+  };
+}
+
+export function getS3AssetsEndpoint(storageConfig: StorageConfig & { kind: 's3' }) {
+  let endpoint = storageConfig.endpoint
+    ? new URL(storageConfig.endpoint)
+    : new URL(`https://s3.${storageConfig.region}.amazonaws.com`);
+  if (storageConfig.forcePathStyle) {
+    endpoint = new URL(`/${storageConfig.bucketName}`, endpoint);
+  } else {
+    endpoint.hostname = `${storageConfig.bucketName}.${endpoint.hostname}`;
   }
 
-  return assets;
+  const endpointString = endpoint.toString();
+  return endpointString;
+}
+
+function s3AssetsCommon(storageConfig: StorageConfig & { kind: 's3' }) {
+  const s3 = new S3({
+    credentials: {
+      accessKeyId: storageConfig.accessKeyId,
+      secretAccessKey: storageConfig.secretAccessKey,
+    },
+    region: storageConfig.region,
+    endpoint: storageConfig.endpoint,
+    forcePathStyle: storageConfig.forcePathStyle,
+  });
+
+  const endpointString = getS3AssetsEndpoint(storageConfig);
+  const generateUrl = storageConfig.generateUrl ?? (url => url);
+
+  return {
+    generateUrl,
+    s3,
+    presign: async (filename: string) => {
+      const command = new GetObjectCommand({ Bucket: storageConfig.bucketName, Key: filename });
+      const url = new URL(
+        await getSignedUrl(s3, command, {
+          expiresIn: storageConfig.signed?.expiry,
+        })
+      );
+      const searchParams = new URL(url).searchParams;
+      return { endpoint, path: `/${filename}?${searchParams.toString()}` };
+    },
+  };
 }

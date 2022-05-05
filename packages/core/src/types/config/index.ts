@@ -19,21 +19,22 @@ import type { BaseFields } from './fields';
 import type { ListAccessControl, FieldAccessControl } from './access-control';
 import type { ListHooks } from './hooks';
 
-export type StorageKind =
+export type StorageConfig = (
   | {
       kind: 'local';
-      type: 'file' | 'image';
-      storagePath?: string;
-      baseUrl?: string; // e.g. https://blah.com/images
+      storagePath: string;
+      generatedUrl: (path: string) => string; // e.g. https://my-website.com/somewhere
+      addServerRoute: {
+        path: string; // e.g. /images
+      } | null;
       removeFileOnDelete?: boolean;
     }
   | {
       kind: 's3';
-      type: 'file' | 'image';
       signed?: { expiry: number };
-      proxied?: {
-        baseUrl: string;
-        generate?: boolean; // if false, allow proxied requests but return urls directly to s3
+      generatedUrl?: (path: string) => string;
+      addServerRoute?: {
+        path: string; // e.g. /images
       };
       removeFileOnDelete?: boolean;
       // not 100% sure how this works
@@ -44,9 +45,9 @@ export type StorageKind =
       secretAccessKey: string;
       endpoint?: string;
       forcePathStyle?: boolean;
-    };
-
-export type StorageConfig = Record<string, StorageKind>;
+    }
+) &
+  ({ type: 'file' } | { type: 'image' });
 
 export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   lists: ListSchemaConfig;
@@ -57,7 +58,7 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
   graphql?: GraphQLConfig;
   extendGraphqlSchema?: ExtendGraphqlSchema;
   // Storage key used for the name of the storage
-  storage?: StorageConfig;
+  storage?: Record<string, StorageConfig>;
   /** Experimental config options */
   experimental?: {
     /** Enables nextjs graphql api route mode */

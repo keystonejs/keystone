@@ -1,13 +1,17 @@
 import { createServer, IncomingMessage, Server, ServerResponse } from 'http';
+import { pipeline } from 'node:stream';
+import { promisify } from 'node:util';
 import cors, { CorsOptions } from 'cors';
 import express from 'express';
 import { GraphQLSchema } from 'graphql';
 import { graphqlUploadExpress } from 'graphql-upload';
 import { ApolloServer } from 'apollo-server-express';
+import fetch from 'node-fetch';
 import type { KeystoneConfig, CreateContext, SessionStrategy, GraphQLConfig } from '../../types';
 import { createSessionContext } from '../../session';
-import { DEFAULT_BASE_FILE_URL, DEFAULT_FILES_STORAGE_PATH } from '../assets/createFilesContext';
-import { DEFAULT_BASE_IMAGE_URL, DEFAULT_IMAGES_STORAGE_PATH } from '../assets/createImagesContext';
+import { DEFAULT_FILES_STORAGE_PATH } from '../assets/createFilesContext';
+import { DEFAULT_IMAGES_STORAGE_PATH } from '../assets/createImagesContext';
+import { getS3AssetsEndpoint } from '../assets/s3';
 import { createApolloServerExpress } from './createApolloServer';
 import { addHealthCheck } from './addHealthCheck';
 
@@ -53,6 +57,8 @@ const addApolloServer = async ({
   });
   return apolloServer;
 };
+
+const streamPipeline = promisify(pipeline);
 
 export const createExpressServer = async (
   config: KeystoneConfig,
@@ -105,31 +111,43 @@ export const createExpressServer = async (
   }
 
   if (config.storage) {
-    Object.entries(config.storage).forEach(([, val]) => {
+    for (const val of Object.values(config.storage)) {
+      if (!val.addServerRoute) continue;
       if (val.kind === 'local') {
-        switch (val.type) {
-          case 'image': {
-            expressServer.use(
-              val.baseUrl || DEFAULT_BASE_IMAGE_URL,
-              express.static(val.storagePath || DEFAULT_IMAGES_STORAGE_PATH)
-            );
+        expressServer.use(
+          val.addServerRoute.path,
+          express.static(
+            val.storagePath || val.type === 'image'
+              ? DEFAULT_IMAGES_STORAGE_PATH
+              : DEFAULT_FILES_STORAGE_PATH
+          )
+        );
+      } else if (val.kind === 's3') {
+        const endpoint = getS3AssetsEndpoint(val);
+        expressServer.use(`${val.addServerRoute.path}/:id`, async (req, res) => {
+          // This should specifically use the default generated URL rather than any user provided one
+          const url = new URL(endpoint);
+          url.pathname += `/${req.params.id}`;
+          const { searchParams } = new URL(req.url);
+          for (const [key, value] of searchParams) {
+            url.searchParams.append(key, value);
           }
-          case 'file': {
-            expressServer.use(
-              val.baseUrl || DEFAULT_BASE_FILE_URL,
-              express.static(val.storagePath || DEFAULT_FILES_STORAGE_PATH)
-            );
-          }
-        }
-      } else if (val.kind === 's3' && val.proxied?.baseUrl) {
-        let { baseUrl } = val.proxied;
 
-        expressServer.get(`${baseUrl}/:id`, (req, res) => {
-          // http://127.0.0.1:9000/keystone-test/56acec3a-1c49-4994-acab-3e2204884041.png
-          res.send('lol what');
+          const imageResponse = await fetch(url.toString());
+          if (!imageResponse.ok) throw new Error(`Unexpected response ${imageResponse.statusText}`);
+
+          for (const header of ['Content-Type', 'Content-Length', 'Cache-Control']) {
+            const headerValue = imageResponse.headers.get(header);
+            if (headerValue) {
+              res.setHeader(header, headerValue);
+            }
+          }
+
+          res.status(200);
+          await streamPipeline(imageResponse.body, res);
         });
       }
-    });
+    }
   }
 
   const apolloServer = await addApolloServer({

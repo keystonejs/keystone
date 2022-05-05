@@ -1,12 +1,11 @@
 import { FileUpload } from 'graphql-upload';
-import { userInputError } from '../../../lib/core/graphql-errors';
 import {
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
   BaseListTypeInfo,
   KeystoneContext,
-  FileData,
+  FileMetadata,
 } from '../../../types';
 import { graphql } from '../../..';
 import { resolveView } from '../../resolve-view';
@@ -24,7 +23,7 @@ const FileFieldInput = graphql.inputObject({
 
 type FileFieldInputType = undefined | null | { upload: Promise<FileUpload> };
 
-const FileFieldOutput = graphql.object<FileData>()({
+const FileFieldOutput = graphql.object<FileMetadata & { storage: string }>()({
   name: 'FileFieldOutput',
   fields: {
     filename: graphql.field({ type: graphql.nonNull(graphql.String) }),
@@ -32,7 +31,7 @@ const FileFieldOutput = graphql.object<FileData>()({
     url: graphql.field({
       type: graphql.nonNull(graphql.String),
       resolve(data, args, context) {
-        return context.files.getUrl(data.storage, data.filename);
+        return context.files(data.storage).getUrl(data.filename);
       },
     }),
   },
@@ -40,14 +39,10 @@ const FileFieldOutput = graphql.object<FileData>()({
 
 async function inputResolver(storage: string, data: FileFieldInputType, context: KeystoneContext) {
   if (data === null || data === undefined) {
-    return { storage: data, filename: data, filesize: data };
-  }
-
-  if (!data.upload) {
-    throw userInputError('Upload must be passed to FileFieldInput');
+    return { filename: data, filesize: data };
   }
   const upload = await data.upload;
-  return context.files.getDataFromStream(storage, upload.createReadStream(), upload.filename);
+  return context.files(storage).getDataFromStream(upload.createReadStream(), upload.filename);
 }
 
 export const file =
@@ -63,8 +58,8 @@ export const file =
       );
     }
 
-    if ((config as any).isIndexed === 'unique') {
-      throw Error("isIndexed: 'unique' is not a supported option for field type file");
+    if ('isIndexed' in config) {
+      throw Error('isIndexed is not a supported option for field type file');
     }
 
     return fieldType({
@@ -72,7 +67,6 @@ export const file =
       fields: {
         filesize: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
         filename: { kind: 'scalar', scalar: 'String', mode: 'optional' },
-        storage: { kind: 'scalar', scalar: 'String', mode: 'optional' },
       },
     })({
       ...config,
@@ -89,7 +83,7 @@ export const file =
               // This will occur on an update where an image already existed but has been
               // changed, or on a delete, where there is no longer an item
               if (filename && filename !== item?.[nameKey]) {
-                await context.files.deleteAtSource(config.storage, filename as string);
+                await context.files(config.storage).deleteAtSource(filename as string);
               }
             },
           }

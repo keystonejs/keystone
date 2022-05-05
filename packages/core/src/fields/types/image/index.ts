@@ -28,7 +28,7 @@ const ImageFieldInput = graphql.inputObject({
   },
 });
 
-const ImageFieldOutput = graphql.object<ImageData>()({
+const ImageFieldOutput = graphql.object<ImageData & { storage: string }>()({
   name: 'ImageFieldOutput',
   fields: {
     id: graphql.field({ type: graphql.nonNull(graphql.ID) }),
@@ -39,7 +39,7 @@ const ImageFieldOutput = graphql.object<ImageData>()({
     url: graphql.field({
       type: graphql.nonNull(graphql.String),
       resolve(data, args, context) {
-        return context.images.getUrl(data.storage, data.id, data.extension);
+        return context.images(data.storage).getUrl(data.id, data.extension);
       },
     }),
   },
@@ -51,8 +51,8 @@ async function inputResolver(storage: string, data: ImageFieldInputType, context
   if (data === null || data === undefined) {
     return { extension: data, filesize: data, height: data, id: data, storage: data, width: data };
   }
-
-  return context.images.getDataFromStream(storage, (await data.upload).createReadStream());
+  const upload = await data.upload;
+  return context.images(storage).getDataFromStream(upload.createReadStream());
 }
 
 const extensionsSet = new Set(SUPPORTED_IMAGE_EXTENSIONS);
@@ -74,8 +74,8 @@ export const image =
       );
     }
 
-    if ((config as any).isIndexed === 'unique') {
-      throw Error("isIndexed: 'unique' is not a supported option for field type image");
+    if ('isIndexed' in config) {
+      throw Error('isIndexed is not a supported option for the image field type');
     }
 
     return fieldType({
@@ -85,7 +85,6 @@ export const image =
         extension: { kind: 'scalar', scalar: 'String', mode: 'optional' },
         width: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
         height: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
-        storage: { kind: 'scalar', scalar: 'String', mode: 'optional' },
         id: { kind: 'scalar', scalar: 'String', mode: 'optional' },
       },
     })({
@@ -104,11 +103,9 @@ export const image =
                 const extensionKey = `${fieldKey}_extension`;
                 const extension = originalItem[extensionKey];
 
-                await context.images.deleteAtSource(
-                  config.storage,
-                  id as string,
-                  extension as ImageExtension
-                );
+                await context
+                  .images(config.storage)
+                  .deleteAtSource(id as string, extension as ImageExtension);
               }
             },
           }
