@@ -108,13 +108,9 @@ function s3AssetsCommon(storageConfig: StorageConfig & { kind: 's3' }) {
     s3,
     presign: async (filename: string) => {
       const command = new GetObjectCommand({ Bucket: storageConfig.bucketName, Key: filename });
-      const url = new URL(
-        await getSignedUrl(s3, command, {
-          expiresIn: storageConfig.signed?.expiry,
-        })
-      );
-      const searchParams = new URL(url).searchParams;
-      return { endpoint, path: `/${filename}?${searchParams.toString()}` };
+      return await getSignedUrl(s3, command, {
+        expiresIn: storageConfig.signed?.expiry,
+      });
     },
   };
 }

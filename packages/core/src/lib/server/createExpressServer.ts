@@ -125,9 +125,10 @@ export const createExpressServer = async (
       } else if (val.kind === 's3') {
         const endpoint = getS3AssetsEndpoint(val);
         expressServer.use(`${val.addServerRoute.path}/:id`, async (req, res) => {
-          // This should specifically use the default generated URL rather than any user provided one
           const url = new URL(endpoint);
           url.pathname += `/${req.params.id}`;
+
+          // pass through the URL query parameters verbatim
           const { searchParams } = new URL(req.url);
           for (const [key, value] of searchParams) {
             url.searchParams.append(key, value);
