@@ -312,7 +312,7 @@ import { NotEditable, component, fields } from '@keystone-6/fields-document/comp
 // expects to find the components like on the componentBlocks export
 export const componentBlocks = {
   quote: component({
-    component: ({ attribution, content }) => {
+    preview: (props) => {
       return (
         <div
           style={{
@@ -320,16 +320,16 @@ export const componentBlocks = {
             paddingLeft: 16,
           }}
         >
-          <div style={{ fontStyle: 'italic', color: '#4A5568' }}>{content}</div>
+          <div style={{ fontStyle: 'italic', color: '#4A5568' }}>{props.fields.content.element}</div>
           <div style={{ fontWeight: 'bold', color: '#718096' }}>
             <NotEditable>— </NotEditable>
-            {attribution}
+            {props.fields.attribution.element}
           </div>
         </div>
       );
     },
     label: 'Quote',
-    props: {
+    schema: {
       content: fields.child({
         kind: 'block',
         placeholder: 'Quote...',
@@ -382,7 +382,7 @@ import { component, fields } from '@keystone-6/fields-document/component-blocks'
 
 export const componentBlocks = {
   notice: component({
-    component: function Notice({ content, intent }) {
+    preview: function Notice(props) {
       const { palette, radii, spacing } = useTheme();
       const intentMap = {
         info: {
@@ -406,7 +406,7 @@ export const componentBlocks = {
           icon: noticeIconMap.success,
         },
       };
-      const intentConfig = intentMap[intent.value];
+      const intentConfig = intentMap[props.fields.intent.value];
 
       return (
         <div
@@ -420,24 +420,24 @@ export const componentBlocks = {
             background: intentConfig.background,
           }}
         >
-          <div
-            contentEditable={false}
-            css={{
-              color: intentConfig.foreground,
-              marginRight: spacing.small,
-              marginTop: '1em',
-              userSelect: 'none',
-            }}
-          >
-            <intentConfig.icon />
-          </div>
-          <div css={{ flex: 1 }}>{content}</div>
+          <NotEditable>
+            <div
+              css={{
+                color: intentConfig.foreground,
+                marginRight: spacing.small,
+                marginTop: '1em',
+              }}
+            >
+              <intentConfig.icon />
+            </div>
+          </NotEditable>
+          <div css={{ flex: 1 }}>{props.fields.content.element}</div>
         </div>
       );
     },
     label: 'Notice',
     chromeless: true,
-    props: {
+    schema: {
       intent: fields.select({
         label: 'Intent',
         options: [
@@ -493,6 +493,84 @@ export const componentBlocks = {
       );
     },
   }),
+  hero: component({
+    preview: props => {
+      return (
+        <div
+          css={{
+            backgroundColor: 'white',
+            backgroundImage: `url(${props.fields.imageSrc.value})`,
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+            display: 'flex',
+            flexDirection: 'column',
+            fontSize: 28,
+            justifyContent: 'space-between',
+            minHeight: 200,
+            padding: 16,
+            width: '100%',
+          }}
+        >
+          <div
+            css={{
+              color: 'white',
+              fontWeight: 'bold',
+              fontSize: 48,
+              textAlign: 'center',
+              margin: 16,
+              textShadow: '0px 1px 3px black',
+            }}
+          >
+            {props.fields.title.element}
+          </div>
+          <div
+            css={{
+              color: 'white',
+              fontSize: 24,
+              fontWeight: 'bold',
+              margin: 16,
+              textAlign: 'center',
+              textShadow: '0px 1px 3px black',
+            }}
+          >
+            {props.fields.content.element}
+          </div>
+          {props.fields.cta.discriminant ? (
+            <div
+              css={{
+                backgroundColor: '#F9BF12',
+                borderRadius: 6,
+                color: '#002B55',
+                display: 'inline-block',
+                fontSize: 16,
+                fontWeight: 'bold',
+                margin: '16px auto',
+                padding: '12px 16px',
+              }}
+            >
+              {props.fields.cta.value.fields.text.element}
+            </div>
+          ) : null}
+        </div>
+      );
+    },
+    label: 'Hero',
+    schema: {
+      title: fields.child({ kind: 'inline', placeholder: 'Title...' }),
+      content: fields.child({ kind: 'block', placeholder: '...' }),
+      imageSrc: fields.text({
+        label: 'Image URL',
+        defaultValue: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809',
+      }),
+      cta: fields.conditional(fields.checkbox({ label: 'Show CTA' }), {
+        false: fields.empty(),
+        true: fields.object({
+          text: fields.child({ kind: 'inline', placeholder: 'CTA...' }),
+          href: fields.url({ label: 'Call to action link' }),
+        }),
+      }),
+    },
+  }),
 };
 ```
 
@@ -525,7 +603,7 @@ If they are not rendered, you will receive errors.
 import { NotEditable, component, fields } from '@keystone-6/fields-document/component-blocks';
 
 component({
-  component: ({ attribution, content }) => {
+  preview: (props) => {
     return (
       <div
         style={{
@@ -533,16 +611,16 @@ component({
           paddingLeft: 16,
         }}
       >
-        <div style={{ fontStyle: 'italic', color: '#4A5568' }}>{content}</div>
+        <div style={{ fontStyle: 'italic', color: '#4A5568' }}>{props.fields.content.element}</div>
         <div style={{ fontWeight: 'bold', color: '#718096' }}>
           <NotEditable>— </NotEditable>
-          {attribution}
+          {props.fields.attribution.element}
         </div>
       </div>
     );
   },
   label: 'Quote',
-  props: {
+  schema: {
     content: fields.child({
       kind: 'block',
       placeholder: 'Quote...',
@@ -665,6 +743,19 @@ fields.conditional(fields.checkbox({ label: 'Show Call to action' }), {
 
 > You might find `fields.empty()` useful which stores and renders nothing if you want to have a field in one case and nothing anything in another
 
+### Array Fields
+
+Array fields allow you to store an array of another component block field type.
+
+```tsx
+import { fields } from '@keystone-6/fields-document/component-blocks';
+
+fields.array(fields.object({
+  isComplete: fields.checkbox({ label: 'Is Complete' }),
+  content: fields.child({ kind: 'inline', placeholder: '' }),
+}))
+```
+
 {/* * TBC: ### Preview Props * */}
 
 ### Chromeless
@@ -673,11 +764,11 @@ If you want to hide the default UI around your component block, you can set `chr
 
 ```jsx
 quote: component({
-  component: ({ attribution, content }) => {
+  preview: ({ attribution, content }) => {
     ...
   },
   label: 'Quote',
-  props: {
+  schema: {
     ...
   },
   chromeless: true,

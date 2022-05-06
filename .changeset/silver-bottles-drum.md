@@ -178,8 +178,6 @@ component({
 });
 ```
 
-For more details on the API of array fields, see the docs.
-
 There are also some smaller improvements:
 
 - All preview props now have an `onChange` function so that you can update more than one field in a component at a time
