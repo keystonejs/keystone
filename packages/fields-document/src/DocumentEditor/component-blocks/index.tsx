@@ -13,7 +13,7 @@ import {
   useRef,
 } from 'react';
 import { ReactEditor, RenderElementProps, useFocused, useSelected } from 'slate-react';
-import { Editor, Element, PathRef, Transforms, Node } from 'slate';
+import { Editor, Element, PathRef, Transforms, Node, Range, Path } from 'slate';
 
 import { jsx, useTheme } from '@keystone-ui/core';
 import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
@@ -142,6 +142,7 @@ export const ComponentBlocksElement = ({
           []
         );
         const basePath = ReactEditor.findPath(editor, elementForChildren);
+        console.log(editor.selection);
         if (childPropPaths.length === 0) {
           const indexes = elementForChildren.children.map((_, i) => i).reverse();
           for (const idx of indexes) {
@@ -186,15 +187,7 @@ export const ComponentBlocksElement = ({
             initialPropPathsToEditorPath.delete(stringifiedPath);
           }
         }
-        const pathsToRemove: PathRef[] = [];
-        for (const [, idxInChildren] of initialPropPathsToEditorPath) {
-          pathsToRemove.push(Editor.pathRef(editor, [...basePath, idxInChildren]));
-        }
-        for (const pathRef of pathsToRemove) {
-          const path = pathRef.unref();
-          assert(path !== null);
-          Transforms.removeNodes(editor, { at: path });
-        }
+
         const getNode = () => Node.get(editor, basePath) as Element;
         let newIdx = getNode().children.length;
         for (const childProp of childrenLeftToAdd) {
@@ -213,6 +206,17 @@ export const ComponentBlocksElement = ({
           );
           newIdx++;
         }
+
+        const pathsToRemove: PathRef[] = [];
+        for (const [, idxInChildren] of initialPropPathsToEditorPath) {
+          pathsToRemove.push(Editor.pathRef(editor, [...basePath, idxInChildren]));
+        }
+        for (const pathRef of pathsToRemove) {
+          const path = pathRef.unref();
+          assert(path !== null);
+          Transforms.removeNodes(editor, { at: path });
+        }
+
         const propPathsToExpectedIndexes = new Map<string, number>();
         for (const [idx, thing] of childPropPaths.entries()) {
           propPathsToExpectedIndexes.set(JSON.stringify(thing.path), idx);
