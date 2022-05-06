@@ -30,7 +30,6 @@ export const Field = ({
           css={{
             fontFamily: 'monospace',
             ...(!onChange && {
-              cursor: 'default',
               backgroundColor: '#eff3f6',
               border: '1px solid transparent',
               '&:focus-visible': {
