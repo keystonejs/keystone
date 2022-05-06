@@ -11,12 +11,30 @@ const list = component({
     React.createElement(
       'ul',
       null,
-      props.fields.children.elements.map(x => {
-        return React.createElement('li', { key: x.key }, x.fields.content.element);
+      props.fields.children.elements.map((x, i) => {
+        return React.createElement(
+          'li',
+          { key: x.key },
+          x.fields.content.element,
+          React.createElement(
+            'button',
+            {
+              'data-remove': i,
+              onClick: () =>
+                props.onChange({
+                  children: props.fields.children.elements
+                    .filter(element => element.key !== x.key)
+                    .map(x => ({ key: x.key })),
+                }),
+            },
+            'Remove'
+          )
+        );
       }),
       React.createElement(
         'button',
         {
+          'data-insert': true,
           onClick: () =>
             props.fields.children.onChange([
               ...props.fields.children.elements.map(x => ({ key: x.key })),
@@ -424,7 +442,7 @@ test('inserting an item from empty works', () => {
     </editor>,
     { componentBlocks: { list } }
   );
-  editor.container!.querySelector('button')!.click();
+  (editor.container!.querySelector('button[data-insert]') as HTMLButtonElement).click();
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -449,6 +467,51 @@ test('inserting an item from empty works', () => {
             ]
           }
         >
+          <text>
+            
+          </text>
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text>
+          
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});
+
+test('removing an item using the preview props works', () => {
+  const editor = makeEditor(
+    <editor>
+      <component-block
+        component="list"
+        props={{
+          children: [{ content: null, done: false }],
+        }}
+      >
+        <component-inline-prop propPath={['children', 0, 'content']}>
+          <text>something</text>
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>,
+    { componentBlocks: { list } }
+  );
+  (editor.container!.querySelector('button[data-remove]') as HTMLButtonElement).click();
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <component-block
+        component="list"
+        props={
+          Object {
+            "children": Array [],
+          }
+        }
+      >
+        <component-inline-prop>
           <text>
             
           </text>
