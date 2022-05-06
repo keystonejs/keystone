@@ -51,6 +51,8 @@ type SegmentedControlProps = {
   segments: string[];
   /** To Disable */
   isDisabled?: boolean;
+  /** Marks the component as read only */
+  isReadOnly?: boolean;
   /** The the selected index of the segmented control. */
   selectedIndex: Index | undefined;
   /** The size of the controls. */
@@ -65,6 +67,7 @@ export const SegmentedControl = ({
   onChange,
   segments,
   isDisabled = false,
+  isReadOnly = false,
   size = 'medium',
   width = 'large',
   selectedIndex,
@@ -121,6 +124,7 @@ export const SegmentedControl = ({
               isAnimated={animate}
               isSelected={isSelected}
               disabled={isDisabled}
+              readOnly={isReadOnly}
               key={label}
               name={name}
               onChange={event => {
@@ -183,6 +187,7 @@ type BaseInputProps = {
   fill: boolean;
   isAnimated: boolean;
   isSelected: boolean;
+  readOnly: boolean;
   onChange: ChangeEventHandler<HTMLInputElement>;
   name: string;
   size: SizeKey;
@@ -192,11 +197,32 @@ type BaseInputProps = {
 type ItemProps = BaseInputProps & Omit<InputHTMLAttributes<HTMLInputElement>, keyof BaseInputProps>;
 
 const Item = (props: ItemProps) => {
-  const { children, fill, isAnimated, isSelected, onChange, size, value, ...attrs } = props;
+  const {
+    children,
+    fill,
+    isAnimated,
+    isSelected,
+    onChange,
+    size,
+    value,
+    disabled,
+    readOnly,
+    ...attrs
+  } = props;
   const { colors, fields, typography } = useTheme();
   const sizeStyles = useItemSize();
   const selectedStyles = useSelectedStyles();
   const inputRef = useRef(null);
+
+  const getDisabled = (disabled?: boolean, readOnly?: boolean, selected?: boolean) => {
+    // if its disabled we want to mark the radio item as disabled
+    if (disabled) return true;
+    // if its readOnly, we want to  check if the item isSelected, if it is we want to mark the radio item as disabled
+    if (readOnly && !selected) return true;
+    return false;
+  };
+
+  const isDisabled = getDisabled(disabled, readOnly, isSelected);
 
   return (
     <label
@@ -215,12 +241,20 @@ const Item = (props: ItemProps) => {
           boxShadow: '0 0 0 2px #bfdbfe;',
           border: '1px solid #166bff;',
         },
-        ...(!props.disabled && {
-          ':hover': {
-            color: !isSelected ? colors.linkHoverColor : undefined,
-            backgroundColor: 'rgba(255, 255, 255, 0.5)',
+        ...(readOnly && {
+          ':focus-within': {
+            boxShadow: '0 0 0 2px #e1e5e9',
+            border: '1px solid #b1b5b9',
           },
         }),
+        ...(props.disabled || readOnly
+          ? {}
+          : {
+              ':hover': {
+                color: !isSelected ? colors.linkHoverColor : undefined,
+                backgroundColor: 'rgba(255, 255, 255, 0.5)',
+              },
+            }),
         ':active': {
           backgroundColor: !isSelected ? fields.hover.inputBackground : undefined,
         },
@@ -233,6 +267,7 @@ const Item = (props: ItemProps) => {
         onChange={onChange}
         value={value}
         checked={isSelected}
+        disabled={isDisabled}
         {...attrs}
       />
       {children}
