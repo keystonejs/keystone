@@ -84,7 +84,7 @@ export default config({
 
 The `resolveInput` hook is called whenever we update or create an item.
 The value of `resolvedData` will contain the input provided to the mutation itself, with any field type input resolvers applied.
-For example, a `password` will field will convert the provided text input into an encrypted hash value.
+For example, a `password` field will convert the provided text input into an encrypted hash value.
 If you just want to see what the original input was, before the field type resolvers were applied, you can use the `inputData` argument.
 
 If you're performing an update operation, you might also want to access the current value of the item stored in the database.
