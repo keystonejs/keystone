@@ -151,7 +151,7 @@ export const SegmentedControl = ({
             type="radio"
             checked={noneSelected}
             disabled={getDisabled(isDisabled, isReadOnly, noneSelected)}
-            value="None Selected"
+            value="none"
           />
         </VisuallyHidden>
         {animate && selectedIndex! > -1 ? (
