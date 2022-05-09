@@ -16,7 +16,8 @@ type ComponentBlockRenderers = InferRenderersForComponentBlocks<
 >;
 
 const componentBlockRenderers: ComponentBlockRenderers = {
-  myList: props => {
+  questionsAndAnswers: () => null,
+  checkboxList: props => {
     return (
       <ul>
         {props.children.map((x, i) => {
