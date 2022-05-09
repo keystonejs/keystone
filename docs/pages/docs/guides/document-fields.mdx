@@ -371,8 +371,8 @@ export default config({
 <details>
 
 <summary>
-  In the [document editor demo](/docs/guides/document-field-demo), the insertable Quote, Notice and Hero items are
-  implemented as component blocks, see the implementation for Notice and Hero by expanding this.
+  In the [document editor demo](/docs/guides/document-field-demo), the insertable Quote, Notice, Hero and Checkbox List items are
+  implemented as component blocks, see the implementation for Notice, Hero and Checkbox List by expanding this.
 </summary>
 
 ```tsx
@@ -570,6 +570,47 @@ export const componentBlocks = {
         }),
       }),
     },
+  }),
+  checkboxList: component({
+    preview: function CheckboxList(props) {
+      useEffect(() => {
+        if (!props.fields.children.elements.length) {
+          props.fields.children.onChange([{ key: undefined }]);
+        }
+      });
+      return (
+        <ul css={{ padding: 0 }}>
+          {props.fields.children.elements.map(element => (
+            <li css={{ listStyle: 'none' }} key={element.key}>
+              <input
+                contentEditable="false"
+                css={{ marginRight: 8 }}
+                type="checkbox"
+                checked={element.fields.done.value}
+                onChange={event => element.fields.done.onChange(event.target.checked)}
+              />
+              <span
+                style={{
+                  textDecoration: element.fields.done.value ? 'line-through' : undefined,
+                }}
+              >
+                {element.fields.content.element}
+              </span>
+            </li>
+          ))}
+        </ul>
+      );
+    },
+    label: 'Checkbox List',
+    schema: {
+      children: fields.array(
+        fields.object({
+          done: fields.checkbox({ label: 'Done' }),
+          content: fields.child({ kind: 'inline', placeholder: '', formatting: 'inherit' }),
+        })
+      ),
+    },
+    chromeless: true,
   }),
 };
 ```

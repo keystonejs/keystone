@@ -170,8 +170,8 @@ export const componentBlocks = {
       }),
     },
   }),
-  myList: component({
-    preview: function MyList(props) {
+  checkboxList: component({
+    preview: function CheckboxList(props) {
       useEffect(() => {
         if (!props.fields.children.elements.length) {
           props.fields.children.onChange([{ key: undefined }]);
@@ -200,7 +200,7 @@ export const componentBlocks = {
         </ul>
       );
     },
-    label: 'My List',
+    label: 'Checkbox List',
     schema: {
       children: fields.array(
         fields.object({
@@ -209,7 +209,7 @@ export const componentBlocks = {
         })
       ),
     },
-    // chromeless: true,
+    chromeless: true,
   }),
   hero: component({
     preview: props => {

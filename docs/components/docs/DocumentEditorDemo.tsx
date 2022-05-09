@@ -87,6 +87,7 @@ const componentBlocks = {
   notice: componentBlocksInExampleProject.notice,
   hero: componentBlocksInExampleProject.hero,
   quote: componentBlocksInExampleProject.quote,
+  checkboxList: componentBlocksInExampleProject.checkboxList,
 };
 
 type DocumentFieldConfig = Parameters<typeof import('@keystone-6/fields-document').document>[0];
@@ -307,7 +308,6 @@ export const DocumentEditorDemo = () => {
         h5: { fontSize: 'var(--font-xsmall)' },
         h6: { fontSize: 'var(--font-xxsmall)' },
         'ul, ol': {
-          paddingLeft: 40,
           lineHeight: 1.75,
         },
       }}
