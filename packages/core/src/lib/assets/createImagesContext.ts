@@ -53,7 +53,7 @@ export function createImagesContext(config: KeystoneConfig): ImagesContext {
       getDataFromStream: async stream => {
         const id = uuid();
         const metadata = await assetsAPI.upload(stream, id);
-        return { storage: storageString, id, ...metadata };
+        return { id, ...metadata };
       },
       deleteAtSource: assetsAPI.delete,
     };

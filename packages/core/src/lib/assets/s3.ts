@@ -1,5 +1,5 @@
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { S3, S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+import { S3, GetObjectCommand } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 
 import { StorageConfig } from '../../types';
@@ -8,11 +8,11 @@ import { FileAdapter, ImageAdapter } from './types';
 import { streamToBuffer } from './utils';
 
 export function s3ImageAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }): ImageAdapter {
-  const { generateUrl, s3, presign } = s3AssetsCommon(storageConfig);
+  const { generateUrl, s3, presign, s3Endpoint } = s3AssetsCommon(storageConfig);
   return {
     async url(id, extension) {
-      if (!storageConfig.signed) return generateUrl(`/${id}.${extension}`);
-      return presign(`${id}.${extension}`);
+      if (!storageConfig.signed) return generateUrl(`${s3Endpoint}/${id}.${extension}`);
+      return generateUrl(await presign(`${id}.${extension}`));
     },
     async upload(stream, id) {
       const buffer = await streamToBuffer(stream);
@@ -43,12 +43,12 @@ export function s3ImageAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }):
 }
 
 export function s3FileAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }): FileAdapter {
-  const { generateUrl, s3, presign } = s3AssetsCommon(storageConfig);
+  const { generateUrl, s3, presign, s3Endpoint } = s3AssetsCommon(storageConfig);
 
   return {
     async url(filename) {
-      if (!storageConfig.signed) return generateUrl(`/${filename}`);
-      return presign(filename);
+      if (!storageConfig.signed) return generateUrl(`${s3Endpoint}/${filename}`);
+      return generateUrl(await presign(filename));
     },
     async upload(stream, filename) {
       let filesize = 0;
@@ -100,15 +100,16 @@ function s3AssetsCommon(storageConfig: StorageConfig & { kind: 's3' }) {
     forcePathStyle: storageConfig.forcePathStyle,
   });
 
-  const endpointString = getS3AssetsEndpoint(storageConfig);
-  const generateUrl = storageConfig.generateUrl ?? (url => url);
+  const s3Endpoint = getS3AssetsEndpoint(storageConfig);
+  const generateUrl = storageConfig.generatedUrl ?? (url => url);
 
   return {
     generateUrl,
     s3,
+    s3Endpoint,
     presign: async (filename: string) => {
       const command = new GetObjectCommand({ Bucket: storageConfig.bucketName, Key: filename });
-      return await getSignedUrl(s3, command, {
+      return getSignedUrl(s3, command, {
         expiresIn: storageConfig.signed?.expiry,
       });
     },

@@ -59,7 +59,7 @@ export function localFileAssetsAPI(
       }
     },
     async delete(filename) {
-      fs.unlink(path.join(storageConfig.storagePath, `${filename}`));
+      fs.unlink(path.join(storageConfig.storagePath, filename));
     },
   };
 }

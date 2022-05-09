@@ -49,7 +49,7 @@ type ImageFieldInputType = undefined | null | { upload: Promise<FileUpload> };
 
 async function inputResolver(storage: string, data: ImageFieldInputType, context: KeystoneContext) {
   if (data === null || data === undefined) {
-    return { extension: data, filesize: data, height: data, id: data, storage: data, width: data };
+    return { extension: data, filesize: data, height: data, id: data, width: data };
   }
   const upload = await data.upload;
   return context.images(storage).getDataFromStream(upload.createReadStream());

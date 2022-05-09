@@ -27,7 +27,7 @@ export type StorageConfig = (
       addServerRoute: {
         path: string; // e.g. /images
       } | null;
-      removeFileOnDelete?: boolean;
+      preserve: boolean;
     }
   | {
       kind: 's3';
@@ -36,8 +36,7 @@ export type StorageConfig = (
       addServerRoute?: {
         path: string; // e.g. /images
       };
-      removeFileOnDelete?: boolean;
-      // not 100% sure how this works
+      preserve: boolean;
       pathPrefix?: string;
       bucketName: string;
       region: string;

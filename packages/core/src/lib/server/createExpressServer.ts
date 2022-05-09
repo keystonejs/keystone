@@ -125,17 +125,21 @@ export const createExpressServer = async (
       } else if (val.kind === 's3') {
         const endpoint = getS3AssetsEndpoint(val);
         expressServer.use(`${val.addServerRoute.path}/:id`, async (req, res) => {
-          const url = new URL(endpoint);
-          url.pathname += `/${req.params.id}`;
+          const s3Url = new URL(endpoint);
+          s3Url.pathname += `/${req.params.id}`;
 
           // pass through the URL query parameters verbatim
           const { searchParams } = new URL(req.url);
           for (const [key, value] of searchParams) {
-            url.searchParams.append(key, value);
+            s3Url.searchParams.append(key, value);
           }
 
-          const imageResponse = await fetch(url.toString());
-          if (!imageResponse.ok) throw new Error(`Unexpected response ${imageResponse.statusText}`);
+          const imageResponse = await fetch(s3Url.toString());
+          if (!imageResponse.ok) {
+            return res
+              .status(imageResponse.status)
+              .end(`Unexpected response ${imageResponse.statusText}`);
+          }
 
           for (const header of ['Content-Type', 'Content-Length', 'Cache-Control']) {
             const headerValue = imageResponse.headers.get(header);
