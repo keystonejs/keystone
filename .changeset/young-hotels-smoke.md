@@ -2,4 +2,4 @@
 '@keystone-6/core': patch
 ---
 
-Fix the read only view for json field
+Fixed the JSON field not showing any formatting when the field mode is read-only
