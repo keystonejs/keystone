@@ -80,11 +80,11 @@ const users = await context.query.User.createMany({
   data: [
     {
       name: 'Alice',
-      posts: [{ create: { title: 'Alices first post' } }],
+      posts: { create: [{ title: 'Alices first post' }] },
     },
     {
       name: 'Bob',
-      posts: [{ create: { title: 'Bobs first post' } }],
+      posts: { create: [{ title: 'Bobs first post' }] },
     },
   ],
   query: 'id name posts { id title }',
@@ -113,14 +113,14 @@ const users = await context.query.User.updateMany({
       where: { id: '...' },
       data: {
         name: 'Alice',
-        posts: [{ create: { title: 'Alices first post' } }],
+        posts: { create: [{ title: 'Alices first post' }] },
       },
     },
     {
       where: { id: '...' },
       data: {
         name: 'Bob',
-        posts: [{ create: { title: 'Bobs first post' } }],
+        posts: { create: [{ title: 'Bobs first post' }] },
       },
     },
   ],
