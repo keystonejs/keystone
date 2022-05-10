@@ -31,7 +31,7 @@ export function getImageMetadataFromBuffer(buffer: Buffer): ImageMetadata {
 export function createImagesContext(config: KeystoneConfig): ImagesContext {
   const imageAssetsAPIs = new Map<string, ImageAdapter>();
   for (const [storageKey, storageConfig] of Object.entries(config.storage || {})) {
-    if (storageConfig.type !== 'image') break;
+    if (storageConfig.type !== 'image') continue;
     imageAssetsAPIs.set(
       storageKey,
       storageConfig.kind === 'local'

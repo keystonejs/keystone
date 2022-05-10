@@ -41,11 +41,10 @@ const generateSafeFilename = (
 };
 
 export function createFilesContext(config: KeystoneConfig): FilesContext {
-  const { storage } = config;
-
   const adaptersMap = new Map<string, FileAdapter>();
-  for (const [storageKey, storageConfig] of Object.entries(storage || {})) {
-    if (storageConfig.type !== 'file') break;
+
+  for (const [storageKey, storageConfig] of Object.entries(config.storage || {})) {
+    if (storageConfig.type !== 'file') continue;
     adaptersMap.set(
       storageKey,
       storageConfig.kind === 'local'
