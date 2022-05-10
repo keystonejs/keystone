@@ -2,4 +2,4 @@
 '@keystone-ui/segmented-control': minor
 ---
 
-Added isDisabled prop
+Added `isReadOnly` prop and custom read only logic for the Segmented Control component.
