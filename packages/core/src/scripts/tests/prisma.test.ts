@@ -80,6 +80,6 @@ test('keystone prisma uses the db url in the keystone config', async () => {
 
     Database connection error:
 
-    P1003: SQLite database file doesn't exist"
+    P1003: Database app.db does not exist at ./app.db"
   `);
 });
