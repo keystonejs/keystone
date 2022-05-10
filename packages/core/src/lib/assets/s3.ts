@@ -11,7 +11,9 @@ export function s3ImageAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }):
   const { generateUrl, s3, presign, s3Endpoint } = s3AssetsCommon(storageConfig);
   return {
     async url(id, extension) {
-      if (!storageConfig.signed) return generateUrl(`${s3Endpoint}/${id}.${extension}`);
+      if (!storageConfig.signed) {
+        return generateUrl(`${s3Endpoint}/${storageConfig.pathPrefix || ''}${id}.${extension}`);
+      }
       return generateUrl(await presign(`${id}.${extension}`));
     },
     async upload(stream, id) {
@@ -22,7 +24,7 @@ export function s3ImageAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }):
         client: s3,
         params: {
           Bucket: storageConfig.bucketName,
-          Key: `${id}.${metadata.extension}`,
+          Key: `${storageConfig.pathPrefix || ''}${id}.${metadata.extension}`,
           Body: buffer,
           ContentType: {
             png: 'image/png',
@@ -37,7 +39,10 @@ export function s3ImageAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }):
       return metadata;
     },
     async delete(id, extension) {
-      s3.deleteObject({ Bucket: storageConfig.bucketName, Key: `${id}.${extension}` });
+      s3.deleteObject({
+        Bucket: storageConfig.bucketName,
+        Key: `${storageConfig.pathPrefix || ''}${id}.${extension}`,
+      });
     },
   };
 }
@@ -47,7 +52,9 @@ export function s3FileAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }): 
 
   return {
     async url(filename) {
-      if (!storageConfig.signed) return generateUrl(`${s3Endpoint}/${filename}`);
+      if (!storageConfig.signed) {
+        return generateUrl(`${s3Endpoint}/${storageConfig.pathPrefix || ''}${filename}`);
+      }
       return generateUrl(await presign(filename));
     },
     async upload(stream, filename) {
@@ -60,7 +67,7 @@ export function s3FileAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }): 
         client: s3,
         params: {
           Bucket: storageConfig.bucketName,
-          Key: filename,
+          Key: (storageConfig.pathPrefix || '') + filename,
           Body: stream,
         },
       });
@@ -70,7 +77,10 @@ export function s3FileAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }): 
       return { filename, filesize };
     },
     async delete(filename) {
-      await s3.deleteObject({ Bucket: storageConfig.bucketName, Key: filename });
+      await s3.deleteObject({
+        Bucket: storageConfig.bucketName,
+        Key: (storageConfig.pathPrefix || '') + filename,
+      });
     },
   };
 }
@@ -108,7 +118,10 @@ function s3AssetsCommon(storageConfig: StorageConfig & { kind: 's3' }) {
     s3,
     s3Endpoint,
     presign: async (filename: string) => {
-      const command = new GetObjectCommand({ Bucket: storageConfig.bucketName, Key: filename });
+      const command = new GetObjectCommand({
+        Bucket: storageConfig.bucketName,
+        Key: storageConfig.pathPrefix + filename,
+      });
       return getSignedUrl(s3, command, {
         expiresIn: storageConfig.signed?.expiry,
       });
