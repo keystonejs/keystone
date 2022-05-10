@@ -89,27 +89,30 @@ export const image =
       },
     })({
       ...config,
-      hooks: storage.removeFileOnDelete
-        ? {
+      hooks: storage.preserve
+        ? config.hooks
+        : {
             ...config.hooks,
-            async afterOperation(afterOpreationConfig) {
-              const { originalItem, item, fieldKey, context } = afterOpreationConfig;
-              await config.hooks?.afterOperation?.(afterOpreationConfig);
+            async afterOperation(afterOperationArgs) {
+              const { originalItem, item, fieldKey, context } = afterOperationArgs;
+              await config.hooks?.afterOperation?.(afterOperationArgs);
               const idKey = `${fieldKey}_id`;
               const id = originalItem?.[idKey];
+              const extensionKey = `${fieldKey}_extension`;
+              const extension = originalItem?.[extensionKey];
+
               // This will occur on an update where an image already existed but has been
               // changed, or on a delete, where there is no longer an item
-              if (id && id !== item?.[idKey]) {
-                const extensionKey = `${fieldKey}_extension`;
-                const extension = originalItem[extensionKey];
-
-                await context
-                  .images(config.storage)
-                  .deleteAtSource(id as string, extension as ImageExtension);
+              if (
+                typeof id === 'string' &&
+                typeof extension === 'string' &&
+                isValidImageExtension(extension) &&
+                id !== item?.[idKey]
+              ) {
+                await context.images(config.storage).deleteAtSource(id, extension);
               }
             },
-          }
-        : config.hooks,
+          },
       input: {
         create: {
           arg: graphql.arg({ type: ImageFieldInput }),

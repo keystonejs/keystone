@@ -70,24 +70,24 @@ export const file =
       },
     })({
       ...config,
-      hooks: storage.removeFileOnDelete
-        ? {
+      hooks: storage.preserve
+        ? config.hooks
+        : {
             ...config.hooks,
-            async afterOperation(afterOpreationConfig) {
-              const { originalItem, item, context } = afterOpreationConfig;
+            async afterOperation(afterOperationArgs) {
+              const { originalItem, item, context } = afterOperationArgs;
 
-              await config.hooks?.afterOperation?.(afterOpreationConfig);
+              await config.hooks?.afterOperation?.(afterOperationArgs);
               const nameKey = `${meta.fieldKey}_filename`;
               const filename = originalItem?.[nameKey];
 
               // This will occur on an update where an image already existed but has been
               // changed, or on a delete, where there is no longer an item
-              if (filename && filename !== item?.[nameKey]) {
-                await context.files(config.storage).deleteAtSource(filename as string);
+              if (typeof filename === 'string' && filename !== item?.[nameKey]) {
+                await context.files(config.storage).deleteAtSource(filename);
               }
             },
-          }
-        : config.hooks,
+          },
       input: {
         create: {
           arg: graphql.arg({ type: FileFieldInput }),
