@@ -60,6 +60,7 @@ export const Field = ({
                   ? field.options.findIndex(x => x.value === value.value!.value)
                   : undefined
               }
+              isReadOnly={onChange === undefined}
               onChange={index => {
                 onChange?.({ ...value, value: field.options[index] });
                 setHasChanged(true);
