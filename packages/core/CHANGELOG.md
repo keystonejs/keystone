@@ -1,5 +1,31 @@
 # @keystone-6/core
 
+## 1.1.1
+
+### Patch Changes
+
+- [#7504](https://github.com/keystonejs/keystone/pull/7504) [`bb60d9a68`](https://github.com/keystonejs/keystone/commit/bb60d9a68ee611011ca0aea2ce45b052ad49517d) Thanks [@Achi06](https://github.com/Achi06)! - Fixed read only view for segmented control display mode in the select field. When a `segmented-control` select field is in `read` mode, the values no longer appear editable.
+
+* [#7417](https://github.com/keystonejs/keystone/pull/7417) [`aced61816`](https://github.com/keystonejs/keystone/commit/aced6181646bd6fc94977ea497801e6d3839f9c0) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed decimal `validation.min` not being respected and `validation.max` being used as the min if provided
+
+- [#7453](https://github.com/keystonejs/keystone/pull/7453) [`3bb1a5343`](https://github.com/keystonejs/keystone/commit/3bb1a53434b86e8a6294cff01a8699c36dd5df5a) Thanks [@dcousens](https://github.com/dcousens)! - Fixed Prisma schema mismatch warning accidentally showing a warning that there is a mismatch in the GraphQL schema
+
+* [`0260a30c9`](https://github.com/keystonejs/keystone/commit/0260a30c92a059268cb6bf8de8a077847c7cdd96) Thanks [@renovate[bot]](https://github.com/renovate%5Bbot%5D)! - Updated `@preconstruct/next` to v4
+
+- [`33fde0a26`](https://github.com/keystonejs/keystone/commit/33fde0a26d23b8ae3b5907abec70704a1c970547) Thanks [@Achi06](https://github.com/Achi06)! - Fix for the display of relationship fields in read only
+
+* [`20095f04b`](https://github.com/keystonejs/keystone/commit/20095f04be02592da99503d9b54b726d66040e77) Thanks [@moselhy](https://github.com/moselhy)! - Fixed React key warning when showing GraphQL errors
+
+- [`06feba78b`](https://github.com/keystonejs/keystone/commit/06feba78bda6743bc4a7d8b56305fb905bc2af95) Thanks [@Achi06](https://github.com/Achi06)! - Fixed Reset to default button bug.
+
+* [`b6f571a73`](https://github.com/keystonejs/keystone/commit/b6f571a7310af480be64af56fdc0732a7ebfe3f4) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The Admin UI now prompts users to confirm they want to navigate away when there are unsaved changes.
+
+- [`62201dd5f`](https://github.com/keystonejs/keystone/commit/62201dd5fcea0fe4cf95c33527c394ab65ddce7d) Thanks [@Achi06](https://github.com/Achi06)! - Fixed the JSON field not showing any formatting when the field mode is read-only
+
+- Updated dependencies [[`d7d27d887`](https://github.com/keystonejs/keystone/commit/d7d27d88778d50c761a2e362327aa26c06976b1c), [`bb60d9a68`](https://github.com/keystonejs/keystone/commit/bb60d9a68ee611011ca0aea2ce45b052ad49517d)]:
+  - @keystone-ui/fields@6.1.0
+  - @keystone-ui/segmented-control@6.1.0
+
 ## 1.1.0
 
 ### Minor Changes
