@@ -105,13 +105,10 @@ export const SegmentedControl = ({
       });
     }
   }, [animate, selectedIndex]);
-  const noneSelected = selectedIndex === undefined;
 
-  const getDisabled = (disabled?: boolean, readOnly?: boolean, selected?: boolean) => {
-    if (isDisabled) return true;
-    if (isReadOnly && !selected) return true;
-    return false;
-  };
+  const nothingIsSelected = selectedIndex === undefined;
+  // do we want to mark the radio item as disabled?
+  const actuallyDisabled = isDisabled || (isReadOnly && !nothingIsSelected);
 
   return (
     <Box css={{ outline: 0, boxSizing: 'border-box' }} {...props}>
@@ -149,8 +146,8 @@ export const SegmentedControl = ({
           <VisuallyHidden
             as="input"
             type="radio"
-            checked={noneSelected}
-            disabled={getDisabled(isDisabled, isReadOnly, noneSelected)}
+            checked={nothingIsSelected}
+            disabled={actuallyDisabled}
             value="none"
           />
         </VisuallyHidden>
@@ -231,15 +228,8 @@ const Item = (props: ItemProps) => {
   const selectedStyles = useSelectedStyles();
   const inputRef = useRef(null);
 
-  const getDisabled = (disabled?: boolean, readOnly?: boolean, selected?: boolean) => {
-    // if its disabled we want to mark the radio item as disabled
-    if (disabled) return true;
-    // if its readOnly, we want to check if the item isSelected, if it is we want to mark the radio item as disabled
-    if (readOnly && !selected) return true;
-    return false;
-  };
-
-  const isDisabled = getDisabled(disabled, readOnly, isSelected);
+  // do we want to mark the radio item as disabled?
+  const isDisabled = disabled || (readOnly && !isSelected);
 
   return (
     <label
