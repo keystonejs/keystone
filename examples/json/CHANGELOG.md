@@ -1,5 +1,14 @@
 # @keystone-6/example-json
 
+## 0.0.2
+
+### Patch Changes
+
+- [`aa80425a2`](https://github.com/keystonejs/keystone/commit/aa80425a24ccb7768ae516ab3252fcea49361da9) Thanks [@MurzNN](https://github.com/MurzNN)! - Added sandbox configs to allow launching sandboxes on codesandbox.io service
+
+- Updated dependencies [[`bb60d9a68`](https://github.com/keystonejs/keystone/commit/bb60d9a68ee611011ca0aea2ce45b052ad49517d), [`aced61816`](https://github.com/keystonejs/keystone/commit/aced6181646bd6fc94977ea497801e6d3839f9c0), [`3bb1a5343`](https://github.com/keystonejs/keystone/commit/3bb1a53434b86e8a6294cff01a8699c36dd5df5a), [`0260a30c9`](https://github.com/keystonejs/keystone/commit/0260a30c92a059268cb6bf8de8a077847c7cdd96), [`33fde0a26`](https://github.com/keystonejs/keystone/commit/33fde0a26d23b8ae3b5907abec70704a1c970547), [`20095f04b`](https://github.com/keystonejs/keystone/commit/20095f04be02592da99503d9b54b726d66040e77), [`06feba78b`](https://github.com/keystonejs/keystone/commit/06feba78bda6743bc4a7d8b56305fb905bc2af95), [`b6f571a73`](https://github.com/keystonejs/keystone/commit/b6f571a7310af480be64af56fdc0732a7ebfe3f4), [`62201dd5f`](https://github.com/keystonejs/keystone/commit/62201dd5fcea0fe4cf95c33527c394ab65ddce7d)]:
+  - @keystone-6/core@1.1.1
+
 ## 0.0.1
 
 ### Patch Changes
