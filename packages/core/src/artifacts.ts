@@ -223,8 +223,19 @@ export async function generateNodeModulesArtifacts(
 
 async function generatePrismaClient(cwd: string) {
   const generator = await getGenerator({ schemaPath: getSchemaPaths(cwd).prisma });
-  await generator.generate();
-  generator.stop();
+  try {
+    await generator.generate();
+  } finally {
+    let closePromise = new Promise<void>(resolve => {
+      const child = (generator as any).generatorProcess
+        .child as import('child_process').ChildProcess;
+      child.once('exit', () => {
+        resolve();
+      });
+    });
+    generator.stop();
+    await closePromise;
+  }
 }
 
 export function requirePrismaClient(cwd: string) {

@@ -49,7 +49,14 @@ async function withMigrate<T>(
   try {
     return await cb(migrate);
   } finally {
+    let closePromise = new Promise<void>(resolve => {
+      const child = (migrate.engine as any).child as import('child_process').ChildProcess;
+      child.once('exit', () => {
+        resolve();
+      });
+    });
     migrate.stop();
+    await closePromise;
   }
 }
 
