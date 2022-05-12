@@ -12,11 +12,11 @@
 
 * [`0260a30c9`](https://github.com/keystonejs/keystone/commit/0260a30c92a059268cb6bf8de8a077847c7cdd96) Thanks [@renovate[bot]](https://github.com/renovate%5Bbot%5D)! - Updated `@preconstruct/next` to v4
 
-- [`33fde0a26`](https://github.com/keystonejs/keystone/commit/33fde0a26d23b8ae3b5907abec70704a1c970547) Thanks [@Achi06](https://github.com/Achi06)! - Fix for the display of relationship fields in read only
+- [`33fde0a26`](https://github.com/keystonejs/keystone/commit/33fde0a26d23b8ae3b5907abec70704a1c970547) Thanks [@Achi06](https://github.com/Achi06)! - Updated the styling for the relationship select to be less confusing when the field mode is read-only
 
 * [`20095f04b`](https://github.com/keystonejs/keystone/commit/20095f04be02592da99503d9b54b726d66040e77) Thanks [@moselhy](https://github.com/moselhy)! - Fixed React key warning when showing GraphQL errors
 
-- [`06feba78b`](https://github.com/keystonejs/keystone/commit/06feba78bda6743bc4a7d8b56305fb905bc2af95) Thanks [@Achi06](https://github.com/Achi06)! - Fixed Reset to default button bug.
+- [`06feba78b`](https://github.com/keystonejs/keystone/commit/06feba78bda6743bc4a7d8b56305fb905bc2af95) Thanks [@Achi06](https://github.com/Achi06)! - Updated the List page to show the reset to default button when any sorting or other field value filters are provided
 
 * [`b6f571a73`](https://github.com/keystonejs/keystone/commit/b6f571a7310af480be64af56fdc0732a7ebfe3f4) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The Admin UI now prompts users to confirm they want to navigate away when there are unsaved changes.
 
