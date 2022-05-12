@@ -32,3 +32,7 @@ Ideally, we could tell Nexus about the GraphQL types Keystone generates so you c
 There's also a Prisma plugin for Nexus in development here: <https://github.com/prisma/nexus-prisma>
 
 When it's ready, it would make a good addition to this example (showing how to integrate the Prisma plugin with the Keystone-generated Prisma schema to auto-generate Nexus schema)
+
+## Try it out in Code Sandbox 🧪
+
+You can play with this example online in a web browser using the free [codesandbox.io](https://codesandbox.io/) service. To launch this example, open the URL https://githubbox.com/keystonejs/keystone/tree/main/examples/extend-graphql-schema-nexus. You can also fork this sandbox to make your own changes.
