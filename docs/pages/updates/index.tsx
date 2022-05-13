@@ -173,7 +173,19 @@ export default function WhatsNew() {
           gap: 0,
         })}
       >
-        <Timeline date="8th February 2022" isLatest />
+        <Timeline date="13th May 2022" isLatest />
+        <Box heading="Example projects in CodeSandbox">
+          You can now experiment with Keystone{' '}
+          <a href="https://github.com/keystonejs/keystone/tree/main/examples">example projects</a>{' '}
+          in a browser using the free <a href="https://codesandbox.io/">codesandbox.io</a> service.
+          Try the{' '}
+          <a href="https://githubbox.com/keystonejs/keystone/tree/main/examples/blog">
+            blog example
+          </a>{' '}
+          today. Thanks <a href="https://github.com/MurzNN">@murznn</a> for making it happen!{' '}
+          <Emoji symbol="🙌" alt="raised hands" />
+        </Box>
+        <Timeline date="8th February 2022" />
         <Box heading="New learning series">
           Aimed at Keystone beginners, our{' '}
           <a href="/docs/walkthroughs#learn-keystone">new learning series</a> shows you how to turn
