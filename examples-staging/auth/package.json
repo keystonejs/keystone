@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-auth",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@keystone-6/auth": "^2.0.0",
-    "@keystone-6/core": "^1.1.0",
+    "@keystone-6/core": "^1.1.1",
     "next": "^12.1.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"

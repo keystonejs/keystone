@@ -117,7 +117,7 @@ export const DatePicker = ({
       </InputButton>
       <PopoverDialog arrow={arrow} isVisible={isOpen} ref={dialog.ref} {...dialog.props}>
         <FocusLock autoFocus returnFocus disabled={!isOpen}>
-          <Calendar onDayClick={handleDayClick} selectedDays={selectedDay} />
+          <Calendar onDayClick={handleDayClick} selected={selectedDay} />
         </FocusLock>
       </PopoverDialog>
     </Fragment>

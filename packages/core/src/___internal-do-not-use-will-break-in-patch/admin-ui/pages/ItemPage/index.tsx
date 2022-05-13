@@ -44,6 +44,7 @@ import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/Pa
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice';
 import { CreateItemDrawer } from '../../../../admin-ui/components/CreateItemDrawer';
 import { Container } from '../../../../admin-ui/components/Container';
+import { usePreventNavigation } from '../../../../admin-ui/utils/usePreventNavigation';
 
 type ItemPageProps = {
   listKey: string;
@@ -147,6 +148,8 @@ function ItemForm({
   });
   const labelFieldValue = state.item.data?.[list.labelField];
   const itemId = state.item.data?.id!;
+
+  usePreventNavigation(!!changedFields.size);
   return (
     <Box marginTop="xlarge">
       <GraphQLErrorNotice

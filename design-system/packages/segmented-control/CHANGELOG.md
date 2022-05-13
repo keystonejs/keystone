@@ -1,5 +1,11 @@
 # @keystone-ui/segmented-control
 
+## 6.1.0
+
+### Minor Changes
+
+- [#7504](https://github.com/keystonejs/keystone/pull/7504) [`bb60d9a68`](https://github.com/keystonejs/keystone/commit/bb60d9a68ee611011ca0aea2ce45b052ad49517d) Thanks [@Achi06](https://github.com/Achi06)! - Added `isReadOnly` prop and custom read only logic for the Segmented Control component.
+
 ## 6.0.0
 
 ### Major Changes

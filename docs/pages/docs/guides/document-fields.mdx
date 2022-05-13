@@ -438,6 +438,14 @@ export const componentBlocks = {
     label: 'Notice',
     chromeless: true,
     schema: {
+      content: fields.child({
+        kind: 'block',
+        placeholder: '',
+        formatting: 'inherit',
+        dividers: 'inherit',
+        links: 'inherit',
+        relationships: 'inherit',
+      }),
       intent: fields.select({
         label: 'Intent',
         options: [
@@ -447,14 +455,6 @@ export const componentBlocks = {
           { value: 'success', label: 'Success' },
         ] as const,
         defaultValue: 'info',
-      }),
-      content: fields.child({
-        kind: 'block',
-        placeholder: '',
-        formatting: 'inherit',
-        dividers: 'inherit',
-        links: 'inherit',
-        relationships: 'inherit',
       }),
     },
     toolbar({ props, onRemove }) {
@@ -730,7 +730,7 @@ import { fields } from '@keystone-6/fields-document/component-blocks';
 
 fields.object({
   a: fields.text({ label: 'A' }),
-  a: fields.text({ label: 'B' }),
+  b: fields.text({ label: 'B' }),
 });
 ```
 
@@ -744,7 +744,7 @@ Similarly to inline relationships, they will be hydrated with this selection if 
 import { fields } from '@keystone-6/fields-document/component-blocks';
 
 ...
-someField: fields.relationship({
+  someField: fields.relationship({
     label: 'Authors',
     listKey: 'Author',
     selection: 'id name posts { title }',
@@ -832,6 +832,7 @@ If you're using TypeScript, you can infer the props types for component with `In
 import { DocumentRenderer } from '@keystone-6/document-renderer';
 import { InferRenderersForComponentBlocks } from '@keystone-6/fields-document/component-blocks';
 import { componentBlocks } from '../path/to/your/custom/views';
+
 const componentBlockRenderers: InferRenderersForComponentBlocks<typeof componentBlocks> = {
   someComponentBlock: props => {
     // props will be inferred from your component blocks
