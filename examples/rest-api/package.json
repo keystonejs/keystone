@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-rest-api",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -10,7 +10,7 @@
     "seed-data": "keystone --seed-data"
   },
   "dependencies": {
-    "@keystone-6/core": "^1.0.0",
+    "@keystone-6/core": "^1.1.1",
     "express": "^4.17.1"
   },
   "devDependencies": {

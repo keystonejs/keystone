@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-assets-cloud",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -9,8 +9,8 @@
     "build": "keystone build"
   },
   "dependencies": {
-    "@keystone-6/core": "^1.0.0",
-    "dotenv": "^11.0.0"
+    "@keystone-6/core": "^1.1.1",
+    "dotenv": "^16.0.0"
   },
   "devDependencies": {
     "typescript": "^4.4.4"
