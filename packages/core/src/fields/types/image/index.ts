@@ -93,23 +93,26 @@ export const image =
         ? config.hooks
         : {
             ...config.hooks,
-            async afterOperation(afterOperationArgs) {
-              const { originalItem, item, fieldKey, context } = afterOperationArgs;
-              await config.hooks?.afterOperation?.(afterOperationArgs);
-              const idKey = `${fieldKey}_id`;
-              const id = originalItem?.[idKey];
-              const extensionKey = `${fieldKey}_extension`;
-              const extension = originalItem?.[extensionKey];
+            async beforeOperation(args) {
+              await config.hooks?.beforeOperation?.(args);
+              if (args.operation === 'update' || args.operation === 'delete') {
+                const idKey = `${meta.fieldKey}_id`;
+                const id = args.item[idKey];
+                const extensionKey = `${meta.fieldKey}_extension`;
+                const extension = args.item[extensionKey];
 
-              // This will occur on an update where an image already existed but has been
-              // changed, or on a delete, where there is no longer an item
-              if (
-                typeof id === 'string' &&
-                typeof extension === 'string' &&
-                isValidImageExtension(extension) &&
-                id !== item?.[idKey]
-              ) {
-                await context.images(config.storage).deleteAtSource(id, extension);
+                // This will occur on an update where an image already existed but has been
+                // changed, or on a delete, where there is no longer an item
+                if (
+                  (args.operation === 'delete' ||
+                    typeof args.resolvedData[meta.fieldKey].id === 'string' ||
+                    args.resolvedData[meta.fieldKey].id === null) &&
+                  typeof id === 'string' &&
+                  typeof extension === 'string' &&
+                  isValidImageExtension(extension)
+                ) {
+                  await args.context.images(config.storage).deleteAtSource(id, extension);
+                }
               }
             },
           },

@@ -74,17 +74,22 @@ export const file =
         ? config.hooks
         : {
             ...config.hooks,
-            async afterOperation(afterOperationArgs) {
-              const { originalItem, item, context } = afterOperationArgs;
+            async beforeOperation(args) {
+              await config.hooks?.beforeOperation?.(args);
+              if (args.operation === 'update' || args.operation === 'delete') {
+                const filenameKey = `${meta.fieldKey}_filename`;
+                const filename = args.item[filenameKey];
 
-              await config.hooks?.afterOperation?.(afterOperationArgs);
-              const nameKey = `${meta.fieldKey}_filename`;
-              const filename = originalItem?.[nameKey];
-
-              // This will occur on an update where an image already existed but has been
-              // changed, or on a delete, where there is no longer an item
-              if (typeof filename === 'string' && filename !== item?.[nameKey]) {
-                await context.files(config.storage).deleteAtSource(filename);
+                // This will occur on an update where a file already existed but has been
+                // changed, or on a delete, where there is no longer an item
+                if (
+                  (args.operation === 'delete' ||
+                    typeof args.resolvedData[meta.fieldKey].filename === 'string' ||
+                    args.resolvedData[meta.fieldKey].filename === null) &&
+                  typeof filename === 'string'
+                ) {
+                  await args.context.files(config.storage).deleteAtSource(filename);
+                }
               }
             },
           },

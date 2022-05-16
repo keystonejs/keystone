@@ -39,7 +39,7 @@ export function s3ImageAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }):
       return metadata;
     },
     async delete(id, extension) {
-      s3.deleteObject({
+      await s3.deleteObject({
         Bucket: storageConfig.bucketName,
         Key: `${storageConfig.pathPrefix || ''}${id}.${extension}`,
       });
