@@ -25,7 +25,7 @@ jobs:
         # we have a postinstall script that uses is-ci which doesn't yet detect GitHub Actions
         run: CI=true yarn
 
-      - name: Create Release Pull Request or Publish to NPM
+      - name: Create Release Pull Request or Publish to npm
         uses: changesets/action@v1
         with:
           version: yarn version-packages
