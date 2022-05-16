@@ -1,8 +1,8 @@
 import path from 'path';
+import os from 'os';
 import fs from 'fs-extra';
 import { Upload } from 'graphql-upload';
 import mime from 'mime';
-import os from 'os';
 import { KeystoneConfig } from '../../../../types';
 import { image } from '..';
 
