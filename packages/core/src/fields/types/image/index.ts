@@ -75,7 +75,7 @@ export const image =
     }
 
     if ('isIndexed' in config) {
-      throw Error('isIndexed is not a supported option for the image field type');
+      throw Error("isIndexed: 'unique' is not a supported option for field type image");
     }
 
     return fieldType({

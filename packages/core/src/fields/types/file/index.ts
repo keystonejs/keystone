@@ -59,7 +59,7 @@ export const file =
     }
 
     if ('isIndexed' in config) {
-      throw Error('isIndexed is not a supported option for the file field type');
+      throw Error("isIndexed: 'unique' is not a supported option for field type file");
     }
 
     return fieldType({
