@@ -7,9 +7,6 @@ import { localFileAssetsAPI } from './local';
 import { s3FileAssetsAPI } from './s3';
 import { FileAdapter } from './types';
 
-export const DEFAULT_BASE_FILE_URL = '/files';
-export const DEFAULT_FILES_STORAGE_PATH = './public/files';
-
 const defaultTransformer = (str: string) => slugify(str);
 
 const generateSafeFilename = (

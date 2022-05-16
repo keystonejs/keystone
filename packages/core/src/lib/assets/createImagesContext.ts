@@ -6,9 +6,6 @@ import { ImageAdapter } from './types';
 import { localImageAssetsAPI } from './local';
 import { s3ImageAssetsAPI } from './s3';
 
-export const DEFAULT_BASE_IMAGE_URL = '/images';
-export const DEFAULT_IMAGES_STORAGE_PATH = './public/images';
-
 export function getImageMetadataFromBuffer(buffer: Buffer): ImageMetadata {
   const fileType = fromBuffer(buffer);
   if (!fileType) {

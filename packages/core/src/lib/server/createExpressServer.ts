@@ -9,8 +9,6 @@ import { ApolloServer } from 'apollo-server-express';
 import fetch from 'node-fetch';
 import type { KeystoneConfig, CreateContext, SessionStrategy, GraphQLConfig } from '../../types';
 import { createSessionContext } from '../../session';
-import { DEFAULT_FILES_STORAGE_PATH } from '../assets/createFilesContext';
-import { DEFAULT_IMAGES_STORAGE_PATH } from '../assets/createImagesContext';
 import { getS3AssetsEndpoint } from '../assets/s3';
 import { createApolloServerExpress } from './createApolloServer';
 import { addHealthCheck } from './addHealthCheck';
@@ -114,14 +112,7 @@ export const createExpressServer = async (
     for (const val of Object.values(config.storage)) {
       if (!val.addServerRoute) continue;
       if (val.kind === 'local') {
-        expressServer.use(
-          val.addServerRoute.path,
-          express.static(
-            val.storagePath || val.type === 'image'
-              ? DEFAULT_IMAGES_STORAGE_PATH
-              : DEFAULT_FILES_STORAGE_PATH
-          )
-        );
+        expressServer.use(val.addServerRoute.path, express.static(val.storagePath));
       } else if (val.kind === 's3') {
         const endpoint = getS3AssetsEndpoint(val);
         expressServer.use(`${val.addServerRoute.path}/:id`, async (req, res) => {
