@@ -1,6 +1,6 @@
 import { createServer, IncomingMessage, Server, ServerResponse } from 'http';
-import { pipeline } from 'node:stream';
-import { promisify } from 'node:util';
+import { pipeline } from 'stream';
+import { promisify } from 'util';
 import cors, { CorsOptions } from 'cors';
 import express from 'express';
 import { GraphQLSchema } from 'graphql';
