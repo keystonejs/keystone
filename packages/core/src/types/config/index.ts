@@ -120,7 +120,7 @@ export type DatabaseConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   useMigrations?: boolean;
   enableLogging?: boolean;
   idField?: IdFieldConfig;
-  provider: 'postgresql' | 'sqlite';
+  provider: 'postgresql' | 'sqlite' | 'mysql';
   prismaPreviewFeatures?: readonly string[]; // https://www.prisma.io/docs/concepts/components/preview-features
 };
 

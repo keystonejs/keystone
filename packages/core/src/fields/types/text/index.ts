@@ -157,7 +157,7 @@ export const text =
       getAdminMeta(): TextFieldMeta {
         return {
           displayMode: config.ui?.displayMode ?? 'input',
-          shouldUseModeInsensitive: meta.provider === 'postgresql',
+          shouldUseModeInsensitive: meta.provider === 'postgresql' || meta.provider === 'mysql',
           validation: {
             isRequired: validation?.isRequired ?? false,
             match: validation?.match

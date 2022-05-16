@@ -4,7 +4,7 @@ import type { GqlNames } from './utils';
 import type { KeystoneContext, SessionContext } from './context';
 import { BaseKeystoneTypeInfo } from '.';
 
-export type DatabaseProvider = 'sqlite' | 'postgresql';
+export type DatabaseProvider = 'sqlite' | 'postgresql' | 'mysql';
 
 export type CreateRequestContext<TypeInfo extends BaseKeystoneTypeInfo> = (
   req: IncomingMessage,
