@@ -28,6 +28,7 @@ export default config({
       // proxied: { baseUrl: '/images-proxy' },
       endpoint: 'http://127.0.0.1:9000/',
       forcePathStyle: true,
+      preserve: false,
     },
     // 127.0.0.1:9000/keystone-test
     // https://s3.ap-southeast-2.amazonaws.com/keystone-test
@@ -40,6 +41,7 @@ export default config({
       secretAccessKey,
       endpoint: 'http://127.0.0.1:9000/',
       forcePathStyle: true,
+      preserve: false,
     },
   },
 });

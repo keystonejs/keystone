@@ -55,11 +55,21 @@ if (unsupportedModules.length > 0) {
                       kind: 'local',
                       storagePath: 'tmp_test_images',
                       type: 'image',
+                      generatedUrl: path => `http://localhost:3000/images${path}`,
+                      addServerRoute: {
+                        path: '/images',
+                      },
+                      preserve: false,
                     },
                     test_file: {
                       kind: 'local',
                       storagePath: 'tmp_test_files',
                       type: 'file',
+                      generatedUrl: path => `http://localhost:3000/files${path}`,
+                      addServerRoute: {
+                        path: '/files',
+                      },
+                      preserve: false,
                     },
                   },
                 }),
