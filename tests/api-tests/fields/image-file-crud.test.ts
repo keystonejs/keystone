@@ -158,7 +158,7 @@ describe('File - Crud special tests', () => {
             ? { matrixValue: config.kind, folder: config.storagePath! }
             : { matrixValue: config.kind };
         test(
-          'without delete',
+          'with preserve: true',
           getRunner({ storage: { test_file: { ...config, preserve: true } }, fields })(
             async ({ context }) => {
               const {
@@ -187,7 +187,7 @@ describe('File - Crud special tests', () => {
           )
         );
         test(
-          'with delete',
+          'with preserve: false',
           getRunner({
             storage: { test_file: { ...config, preserve: false } },
             fields,
@@ -292,7 +292,7 @@ describe('Image - Crud special tests', () => {
                 });
 
                 expect(fileHash).toEqual(
-                  await getFileHash(data.avatar.url.replace('/images', ''), hashConfig)
+                  await getFileHash(`${data.avatar.id}.${data.avatar.extension}`, hashConfig)
                 );
               }
             })
@@ -320,7 +320,7 @@ describe('Image - Crud special tests', () => {
 
           describe('After Operation Hook', () => {
             test(
-              'without delete',
+              'with preserve: true',
               getRunner({ fields, storage: { test_image: { ...config, preserve: true } } })(
                 async ({ context }) => {
                   const ogFilename = 'keystone.jpeg';
@@ -347,7 +347,7 @@ describe('Image - Crud special tests', () => {
             );
 
             test(
-              'with delete',
+              'with preserve: false',
               getRunner({
                 fields,
                 storage: { test_image: { ...config, preserve: false } },
