@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@keystone-6/core": "^1.1.1",
-    "react": "^18.0.0"
+    "react": "^18.1.0"
   },
   "devDependencies": {
     "typescript": "^4.4.4"

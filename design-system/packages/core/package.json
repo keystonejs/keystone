@@ -5,13 +5,13 @@
   "main": "dist/keystone-ui-core.cjs.js",
   "module": "dist/keystone-ui-core.esm.js",
   "devDependencies": {
-    "@types/react": "^18.0.8",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "@types/react": "^18.0.9",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0"
   },
   "peerDependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",

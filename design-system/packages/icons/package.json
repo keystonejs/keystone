@@ -12,12 +12,12 @@
     "@svgr/plugin-jsx": "^6.0.0",
     "@svgr/plugin-prettier": "^5.5.0",
     "@svgr/plugin-svgo": "^6.0.0",
-    "@types/react": "^18.0.8",
+    "@types/react": "^18.0.9",
     "chalk": "^4.1.2",
     "feather-icons": "^4.28.0",
     "fs-extra": "^10.0.0",
     "globby": "^11.0.4",
-    "react": "^18.0.0",
+    "react": "^18.1.0",
     "to-pascal-case": "^1.0.0"
   },
   "dependencies": {
@@ -25,7 +25,7 @@
     "@keystone-ui/core": "^4.0.0"
   },
   "peerDependencies": {
-    "react": "^18.0.0"
+    "react": "^18.1.0"
   },
   "engines": {
     "node": "^14.15 || ^16.13"

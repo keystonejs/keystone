@@ -33,4 +33,4 @@
 '@keystone-6/admin-ui-tests': patch
 ---
 
-upgrade dependancy `"react": "^18.0.0"`
+upgrade dependancy `"react": "^18.1.0"`
