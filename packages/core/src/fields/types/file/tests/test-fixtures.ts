@@ -1,4 +1,5 @@
 import path from 'path';
+import os from 'os';
 import fs from 'fs-extra';
 import { Upload } from 'graphql-upload';
 import mime from 'mime';
@@ -24,7 +25,7 @@ if (process.env.S3_BUCKET_NAME) {
   testMatrix.push('s3');
 }
 
-export const TEMP_STORAGE = 'tmp_test_files' as const;
+export const TEMP_STORAGE = fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_images'));
 
 export const getRootConfig = (matrixValue: MatrixValue): Partial<KeystoneConfig> => {
   if (matrixValue === 'local') {
@@ -34,6 +35,11 @@ export const getRootConfig = (matrixValue: MatrixValue): Partial<KeystoneConfig>
           kind: 'local',
           type: 'file',
           storagePath: TEMP_STORAGE,
+          generatedUrl: path => `http://localhost:3000/images${path}`,
+          addServerRoute: {
+            path: '/images',
+          },
+          preserve: false,
         },
       },
     };
@@ -49,6 +55,7 @@ export const getRootConfig = (matrixValue: MatrixValue): Partial<KeystoneConfig>
         region: process.env.S3_REGION!,
         endpoint: process.env.S3_ENDPOINT,
         forcePathStyle: process.env.S3_FORCE_PATH_STYLE === 'true',
+        preserve: false,
       },
     },
   };
