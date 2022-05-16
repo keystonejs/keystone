@@ -103,14 +103,17 @@ describe('File - Crud special tests', () => {
     });
 
   for (let matrixValue of testMatrix) {
-    const getConfig = (): StorageKind => ({
+    const getConfig = (): StorageConfig => ({
       ...(matrixValue === 's3'
-        ? { ...s3DefaultStorage, type: 'file' }
-        : {
+        ? ({ ...s3DefaultStorage, type: 'file', preserve: false } as const)
+        : ({
             kind: 'local',
             type: 'file',
             storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'file-local-test')),
-          }),
+            addServerRoute: { path: '/files' },
+            generatedUrl: (path: string) => `http://localhost:3000/files${path}`,
+            preserve: false,
+          } as const)),
     });
 
     const fields = { secretFile: file({ storage: 'test_file' }) };
@@ -118,13 +121,13 @@ describe('File - Crud special tests', () => {
     describe(matrixValue, () => {
       describe('Create - upload', () => {
         const config = getConfig();
-        const hashConfig =
+        const hashConfig: { matrixValue: 'local'; folder: string } | { matrixValue: 's3' } =
           config.kind === 'local'
-            ? { matrixValue: config.kind, folder: config.storagePath! }
+            ? { matrixValue: 'local', folder: config.storagePath! }
             : { matrixValue: config.kind };
         test(
           'Upload values should match expected corrected',
-          getRunner({ storage: { test_file: config }, fields })(async ({ context }) => {
+          getRunner({ storage: { test_file: { ...config } }, fields })(async ({ context }) => {
             const data = await createItem(context);
             expect(data).not.toBe(null);
 
@@ -137,7 +140,7 @@ describe('File - Crud special tests', () => {
               url:
                 matrixValue === 's3'
                   ? expect.stringContaining(`/${data.secretFile.filename}`)
-                  : `/files/${data.secretFile.filename}`,
+                  : `http://localhost:3000/files/${data.secretFile.filename}`,
               filename: data.secretFile.filename,
               __typename: 'FileFieldOutput',
               filesize: 3250,
@@ -156,35 +159,37 @@ describe('File - Crud special tests', () => {
             : { matrixValue: config.kind };
         test(
           'without delete',
-          getRunner({ storage: { test_file: config }, fields })(async ({ context }) => {
-            const {
-              id,
-              secretFile: { filename },
-            } = await createItem(context);
+          getRunner({ storage: { test_file: { ...config, preserve: true } }, fields })(
+            async ({ context }) => {
+              const {
+                id,
+                secretFile: { filename },
+              } = await createItem(context);
 
-            expect(await getFileHash(filename, hashConfig)).toBeTruthy();
+              expect(await getFileHash(filename, hashConfig)).toBeTruthy();
 
-            const {
-              secretFile: { filename: filename2 },
-            } = await context.query.Test.updateOne({
-              where: { id },
-              data: { secretFile: prepareFile('thinkmill.jpg', 'file') },
-              query: `secretFile { filename }`,
-            });
+              const {
+                secretFile: { filename: filename2 },
+              } = await context.query.Test.updateOne({
+                where: { id },
+                data: { secretFile: prepareFile('thinkmill.jpg', 'file') },
+                query: `secretFile { filename }`,
+              });
 
-            expect(await getFileHash(filename, hashConfig)).toBeTruthy();
-            expect(await getFileHash(filename2, hashConfig)).toBeTruthy();
+              expect(await getFileHash(filename, hashConfig)).toBeTruthy();
+              expect(await getFileHash(filename2, hashConfig)).toBeTruthy();
 
-            await context.query.Test.deleteOne({ where: { id } });
+              await context.query.Test.deleteOne({ where: { id } });
 
-            expect(await getFileHash(filename, hashConfig)).toBeTruthy();
-            // TODO test that just nulling the field doesn't delete it
-          })
+              expect(await getFileHash(filename, hashConfig)).toBeTruthy();
+              // TODO test that just nulling the field doesn't delete it
+            }
+          )
         );
         test(
           'with delete',
           getRunner({
-            storage: { test_file: { ...config, removeFileOnDelete: true } },
+            storage: { test_file: { ...config, preserve: false } },
             fields,
           })(async ({ context }) => {
             const {
@@ -239,14 +244,17 @@ describe('Image - Crud special tests', () => {
     });
 
   for (let matrixValue of testMatrix) {
-    const getConfig = (): StorageKind => ({
+    const getConfig = () => ({
       ...(matrixValue === 's3'
-        ? { ...s3DefaultStorage, type: 'image' }
-        : {
+        ? ({ ...s3DefaultStorage, type: 'image', preserve: false } as const)
+        : ({
             kind: 'local',
             type: 'image',
             storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'image-local-test')),
-          }),
+            addServerRoute: { path: '/images' },
+            generatedUrl: (path: string) => `http://localhost:3000/images${path}`,
+            preserve: false,
+          } as const)),
     });
     const fields = { avatar: image({ storage: 'test_image' }) };
     const config = getConfig();
@@ -274,7 +282,7 @@ describe('Image - Crud special tests', () => {
                   url:
                     matrixValue === 's3'
                       ? expect.stringContaining(`/${data.avatar.id}.jpg`)
-                      : `/images/${data.avatar.id}.jpg`,
+                      : `http://localhost:3000/images/${data.avatar.id}.jpg`,
                   id: data.avatar.id,
                   __typename: 'ImageFieldOutput',
                   filesize: 3250,
@@ -313,34 +321,36 @@ describe('Image - Crud special tests', () => {
           describe('After Operation Hook', () => {
             test(
               'without delete',
-              getRunner({ fields, storage: { test_image: config } })(async ({ context }) => {
-                const ogFilename = 'keystone.jpeg';
+              getRunner({ fields, storage: { test_image: { ...config, preserve: true } } })(
+                async ({ context }) => {
+                  const ogFilename = 'keystone.jpeg';
 
-                const { id, avatar } = await createItem(context, ogFilename);
+                  const { id, avatar } = await createItem(context, ogFilename);
 
-                await context.query.Test.updateOne({
-                  where: { id },
-                  data: { avatar: prepareFile('thinkmill.jpg', 'image') },
-                });
+                  await context.query.Test.updateOne({
+                    where: { id },
+                    data: { avatar: prepareFile('thinkmill.jpg', 'image') },
+                  });
 
-                expect(
-                  await getFileHash(`${avatar.id}.${avatar.extension}`, hashConfig)
-                ).toBeTruthy();
+                  expect(
+                    await getFileHash(`${avatar.id}.${avatar.extension}`, hashConfig)
+                  ).toBeTruthy();
 
-                await context.query.Test.deleteOne({ where: { id } });
+                  await context.query.Test.deleteOne({ where: { id } });
 
-                expect(
-                  await getFileHash(`${avatar.id}.${avatar.extension}`, hashConfig)
-                ).toBeTruthy();
-                // TODO test that just nulling the field doesn't delete it
-              })
+                  expect(
+                    await getFileHash(`${avatar.id}.${avatar.extension}`, hashConfig)
+                  ).toBeTruthy();
+                  // TODO test that just nulling the field doesn't delete it
+                }
+              )
             );
 
             test(
               'with delete',
               getRunner({
                 fields,
-                storage: { test_image: { ...config, removeFileOnDelete: true } },
+                storage: { test_image: { ...config, preserve: false } },
               })(async ({ context }) => {
                 const ogFilename = 'keystone.jpeg';
                 const { id, avatar } = await createItem(context, ogFilename);
