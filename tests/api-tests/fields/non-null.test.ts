@@ -1,3 +1,6 @@
+import fs from 'fs';
+import path from 'path';
+import os from 'os';
 import globby from 'globby';
 import { list } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
@@ -55,7 +58,7 @@ testModules
               storage: {
                 test_image: {
                   kind: 'local',
-                  storagePath: 'tmp_test_images',
+                  storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_images')),
                   type: 'image',
                   generatedUrl: path => `http://localhost:3000/images${path}`,
                   addServerRoute: {
@@ -65,7 +68,7 @@ testModules
                 },
                 test_file: {
                   kind: 'local',
-                  storagePath: 'tmp_test_files',
+                  storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_files')),
                   type: 'file',
                   generatedUrl: path => `http://localhost:3000/files${path}`,
                   addServerRoute: {
