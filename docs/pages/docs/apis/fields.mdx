@@ -722,7 +722,7 @@ File types allow you to upload different types of files to your Keystone system.
 
 A `file` field represents a file of any type.
 
-See [`config.files`](./config#files) for details on how to configure your Keystone system with support for the `file` field type.
+See [`config.storage`](./config#storage) for details on how to configure your Keystone system with support for the `file` field type.
 
 ```typescript
 import { config, list } from '@keystone-6/core';
@@ -732,7 +732,7 @@ export default config({
   lists: {
     ListName: list({
       fields: {
-        repo: file(),
+        repo: file({ storage: 'my_file_storage' }),
         /* ... */
       },
     }),
@@ -742,11 +742,16 @@ export default config({
 });
 ```
 
+Options:
+
+- `storage`(required): A string that is the key for one of the entries in the storage object. This
+  is used to determine what storage config will be used.
+
 ### image
 
 An `image` field represents an image file, i.e. `.jpg`, `.png`, `.webp`, or `.gif`.
 
-See [`config.images`](./config#images) for details on how to configure your Keystone system with support for the `image` field type.
+See [`config.storage`](./config#storage) for details on how to configure your Keystone system with support for the `image` field type.
 
 ```typescript
 import { config, list } from '@keystone-6/core';
@@ -756,7 +761,7 @@ export default config({
   lists: {
     ListName: list({
       fields: {
-        avatar: image(),
+        avatar: image({ storage: 'my_image_storage' }),
         /* ... */
       },
     }),
@@ -765,6 +770,11 @@ export default config({
   /* ... */
 });
 ```
+
+Options:
+
+- `storage`(required): A string that is the key for one of the entries in the storage object. This
+  is used to determine what storage config will be used.
 
 ## Complex types
 

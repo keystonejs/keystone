@@ -307,7 +307,7 @@ export default config({
 
 The created context will be bound to the request, including the current visitor's session, meaning access control will work the same as for GraphQL API requests.
 
-*ProTip!*: `extendExpressApp` can be `async` 
+_ProTip!_: `extendExpressApp` can be `async`
 
 ## session
 
@@ -333,7 +333,7 @@ See the [Session API](./session) for more details on how to configure session ma
 
 ## graphql
 
-```
+```ts
 import type { GraphQLConfig } from '@keystone-6/core/types';
 ```
 
@@ -370,7 +370,7 @@ export default config({
 
 ## extendGraphqlSchema
 
-```
+```ts
 import type { ExtendGraphqlSchema } from '@keystone-6/core/types';
 ```
 
@@ -390,114 +390,50 @@ export default config({
 
 See the [schema extension guide](../guides/schema-extension) for more details on how to use `graphQLSchemaExtension()` to extend your GraphQL API.
 
-## files
+## storage (images and files)
 
-Keystone supports file handling via the [`file`](./fields#file) field type.
-In order to use this field type you need to configure Keystone with information about where your files will be stored and served from.
-At the moment Keystone supports storing files on the local filesystem, and is agnostic about how files are served.
-
-```typescript
-import { config } from '@keystone-6/core';
-
-export default config({
-  files: {
-    upload: 'local',
-    local: {
-      storagePath: 'public/files',
-      baseUrl: '/files',
-    },
-  }
-  /* ... */
-});
+```ts
+import type { StorageConfig } from '@keystone-6/core/types'
 ```
+
+The `storage` config option is used to provide information for use by the [`file`](./fields#file) field type or the
+[`image`](./fields#image) field type. You provide an object whose each property is a `StorageConfig` object, which fields may then reference.
+Each storage is configured separately using the options below.
+
+A single storage may be used by multiple file or image fields.
+
+When using the image or file field, you use the key from the object to specify which storage to use.
 
 Options:
 
-- `upload`: The storage target when uploading files. Currently only `local` is supported.
-- `local`: Configuration options when using the `local` storage target.
-  - `storagePath`: The path local files are uploaded to.
-  - `baseUrl`: The base of the URL local files will be served from, outside of keystone.
+- `type`: This sets whether this storage is used for storing files or images. Can be either `"file"` or `"image"`.
+- `kind`: Whether the storage will be on the machine, or in an [s3 bucket](https://aws.amazon.com/s3/) `"local"` or `"s3"`
+- `preserve`: Set whether the items should be deleted at the source when they are removed from Keystone's database. We
+  recommend that you set `preserve: false` unless you have a strong reason to preserve files that Keystone cannot reference.
 
-## images
+Local options:
 
-Keystone supports image handling via the [`image`](./fields#image) field type.
-In order to use this field type you need to configure Keystone with information about where your images will be stored and served from.
-At the moment Keystone supports storing files on the local filesystem, and is agnostic about how images are served.
+- `generatedUrl`: A function that recieves a partial path with the filename and extension, and the result
+  of which will be used as the `url` in the field's graphql - this should point to where the item is hosted.
+- `addServerRoute`: Sets whether or not to add a server route to Keystone. Set it to `null` if you don't want
+  keystone to host the images, otherwise set it to an object with a `path` property
+  - `path`: The partial path where keystone will host the images, eg `/images` or `/files`
 
-```typescript
-import { config } from '@keystone-6/core';
+S3 options:
 
-export default config({
-  images: {
-    upload: 'local',
-    local: {
-      storagePath: 'public/images',
-      baseUrl: '/images',
-    },
-  }
-  /* ... */
-});
-```
-
-Options:
-
-- `upload`: The storage target when uploading images. Currently only `local` is supported.
-- `local`: Configuration options when using the `local` storage target.
-  - `storagePath`: The path local images are uploaded to.
-  - `baseUrl`: The base of the URL local images will be served from, outside of keystone.
+- `bucketName`: The name of your s3 bucket
+- `region`: The region your s3 instance is hosted in
+- `accessKeyId`: Your s3 access Key ID
+- `secretAccessKey`: Your Access Key secret
+- `generatedUrl`: A funcion that recieves the original s3 url and returns a string that will be returned
+  from graphql as the `url`. If you want the s3 urls to be returned as is you do not need to set this.
+- `addServerRoute`: Sets whether keystone will proxy the images on its server.
+  - `path`: The partial path where keystone will proxy the images, eg `/images` or `/files`
+- `pathPrefix`: The prefix for the file, used to set the subfolder of your bucket files will be stored in.
+- `endpoint`: The endpoint to use - if provided, this endpoint will be used instead of the default amazon s3 endpoint
+- `forcePathStyle`: Force the old pathstyle of using the bucket name after the host
 
 ## experimental
-
-### Uploading images and files to S3
-
-The `image` and `file` fields now have options for uploading their contents to s3 buckets. To get access to this, set the upload property
-in your config for the field to `s3`
-
-```typescript
-import { config } from '@keystone-6/core';
-
-export default config({
-  files: {
-    upload: 's3',
-  }
-  images: {
-    upload: 's3'
-  }
-  /* ... */
-});
-```
-
-After you have pointed this at s3, you need to provide the s3 config to keystone:
-
-```typescript
-import { config } from '@keystone-6/core';
-
-export default config({
-  files: {
-    upload: 's3',
-  }
-  images: {
-    upload: 's3'
-  }
-  experimental: {
-    s3: {
-      bucketName: process.env.S3_BUCKET_NAME,
-      region: process.env.S3_REGION,
-      accessKeyId: process.env.S3_ACCESS_KEY_ID,
-      secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
-      // you should only need these two if you're using a different s3 implementation
-      endpoint: process.env.S3_ENDPOINT,
-      forcePathStyle: PROCESS.env.FORCE_PATH_STYLE === 'true',
-    }
-  }
-});
-```
-
-You will need to provide the S3 options through env variables to be able to run Keystone
-
-These options will be set for both the files and the images field.
-
-From there, using the fields is the same as using `local`
 
 ### Other Experimental Options
 
