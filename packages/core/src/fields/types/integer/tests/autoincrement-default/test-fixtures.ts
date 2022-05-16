@@ -7,6 +7,7 @@ export const typeFunction = (config: any) =>
     ...config,
     db: { ...config?.db, isNullable: false },
     defaultValue: { kind: 'autoincrement' },
+    isIndexed: true,
   });
 export const exampleValue = () => 35;
 export const exampleValue2 = () => 36;
@@ -21,7 +22,11 @@ export const skipUpdateTest = true;
 export const unSupportedAdapterList = ['sqlite'];
 
 export const getTestFields = () => ({
-  orderNumber: integer({ db: { isNullable: false }, defaultValue: { kind: 'autoincrement' } }),
+  orderNumber: integer({
+    db: { isNullable: false },
+    defaultValue: { kind: 'autoincrement' },
+    isIndexed: true,
+  }),
 });
 
 export const initItems = () => {
