@@ -248,6 +248,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
         'Error...'
       ) : data && metaQuery.data ? (
         <Fragment>
+          {list.description !== null && <p>{list.description}</p>}
           <Stack across gap="medium" align="center" marginTop="xlarge">
             {showCreate && <CreateButton listKey={listKey} />}
             {data.count || filters.filters.length ? (
