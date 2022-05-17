@@ -38,10 +38,10 @@ export const storedValues = () => [
 export const supportedFilters = (provider: DatabaseProvider) => [
   'null_equality',
   'equality',
-  provider !== 'sqlite' && 'equality_case_insensitive',
+  provider === 'postgresql' && 'equality_case_insensitive',
   'in_empty_null',
   'in_value',
-  provider !== 'sqlite' && 'string',
-  provider !== 'sqlite' && 'string_case_insensitive',
+  provider === 'postgresql' && 'string',
+  provider === 'postgresql' && 'string_case_insensitive',
   'unique_equality',
 ];
