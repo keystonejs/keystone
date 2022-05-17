@@ -8,7 +8,7 @@ export default config({
   },
   lists,
   storage: {
-    images: {
+    my_images: {
       kind: 'local',
       type: 'image',
       generatedUrl: path => `http://localhost:3000/images${path}`,
@@ -18,7 +18,7 @@ export default config({
       storagePath: 'public/images',
       preserve: false,
     },
-    files: {
+    my_files: {
       kind: 'local',
       type: 'file',
       generatedUrl: path => `http://localhost:3000/files${path}`,
