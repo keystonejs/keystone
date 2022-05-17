@@ -27,6 +27,6 @@ If you have specific components you think should also be exposed from this confi
 **NOTE** The Keystone monorepo leverages a babel config that means we use the old jsx transform (this doesn't have an impact on the code we ship to npm).
 This is why there are `import React from 'react'` statements in our examples. This is NOT necessary outside of the Keystone repo (unless you have a babel config with the old jsx transform which is currently the default with @babel/preset-react) as you'll be using Next.js' babel config which uses the new jsx transform.
 
-## Try it out in Code Sandbox 🧪
+## Try it out in CodeSandbox 🧪
 
 You can play with this example online in a web browser using the free [codesandbox.io](https://codesandbox.io/) service. To launch this example, open the URL https://githubbox.com/keystonejs/keystone/tree/main/examples/custom-admin-ui-logo. You can also fork this sandbox to make your own changes.

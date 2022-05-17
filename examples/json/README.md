@@ -31,6 +31,6 @@ This accepts any valid JSON including:
 
 The JSON field type stores its value in the `jsonb` format, as specified by Prisma. However if `sqlite` is specified as the database type instead, then the value is stored as a `string`.
 
-## Try it out in Code Sandbox 🧪
+## Try it out in CodeSandbox 🧪
 
 You can play with this example online in a web browser using the free [codesandbox.io](https://codesandbox.io/) service. To launch this example, open the URL https://githubbox.com/keystonejs/keystone/tree/main/examples/json. You can also fork this sandbox to make your own changes.

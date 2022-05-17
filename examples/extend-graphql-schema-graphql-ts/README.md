@@ -25,6 +25,6 @@ The `graphql.extend` function allows you to extend the existing query and mutati
 
 See the [`@graphql-ts/schema`](https://docsmill.dev/npm/@graphql-ts/schema) and [`@graphql-ts/extend`](https://docsmill.dev/npm/@graphql-ts/extend) docs for more information.
 
-## Try it out in Code Sandbox 🧪
+## Try it out in CodeSandbox 🧪
 
 You can play with this example online in a web browser using the free [codesandbox.io](https://codesandbox.io/) service. To launch this example, open the URL https://githubbox.com/keystonejs/keystone/tree/main/examples/extend-graphql-schema-graphql-ts. You can also fork this sandbox to make your own changes.
