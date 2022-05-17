@@ -48,7 +48,7 @@ See the README in each example for more specific details.
 
 ### In CodeSandbox
 
-You can also run our examples from your web browser using the free CodeSandbox service. Just look for the "Try it in CodeSandbox" heading in each example project’s README ([example](https://github.com/keystonejs/keystone/tree/main/examples/task-manager#try-it-out-in-code-sandbox-)).
+You can also run our examples from your web browser using the free CodeSandbox service. Just look for the "Try it in CodeSandbox" heading in each example project’s README ([example](https://github.com/keystonejs/keystone/tree/main/examples/task-manager#try-it-out-in-codesandbox-)).
 
 ## Getting in touch
 
