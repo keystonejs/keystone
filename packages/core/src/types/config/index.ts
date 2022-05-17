@@ -21,28 +21,51 @@ import type { ListHooks } from './hooks';
 
 export type StorageConfig =
   | {
+      /** The kind of storage being configured */
       kind: 'local';
+      /** The path to where the asset will be stored on disc, eg 'public/images' */
       storagePath: string;
-      generatedUrl: (path: string) => string; // e.g. https://my-website.com/somewhere
+      /** A function that receives a partial url, whose return will be used as the URL in graphql
+       *
+       * For example, a local dev usage of this might be:
+       * ```ts
+       * path => `http://localhost:3000/images${path}`
+       * ```
+       */
+      generatedUrl: (path: string) => string;
+      /** The configuration for keystone's hosting of the assets - if set to null, keystone will not host the assets */
       serverRoute: {
-        path: string; // e.g. /images
+        /** The partial path that the assets will be hosted at by keystone, eg `/images` or `/our-cool-files` */
+        path: string;
       } | null;
+      /** Sets whether the assets should be preserved locally on removal from keystone's database */
       preserve?: boolean;
     }
   | {
+      /** The kind of storage being configured */
       kind: 's3';
+      /** Sets signing of the asset - for use when you want private assets */
       signed?: { expiry: number };
       generatedUrl?: (path: string) => string;
+      /** Sets up proxying for s3 files through keystone's server */
       serverRoute?: {
-        path: string; // e.g. /images
+        /** The partial path that the assets will be hosted at by keystone, eg `/images` or `/our-cool-files` */
+        path: string;
       };
+      /** Sets whether the assets should be preserved locally on removal from keystone's database */
       preserve?: boolean;
       pathPrefix?: string;
+      /** Your s3 instance's bucket name */
       bucketName: string;
+      /** Your s3 instance's region */
       region: string;
+      /** An access Key ID with write access to your S3 instance */
       accessKeyId: string;
+      /** The secret access key that gives permissions to your access Key Id */
       secretAccessKey: string;
+      /** An endpoint to use - to be provided if you are not using AWS as your endpoint */
       endpoint?: string;
+      /** If true, will force the 'old' S3 path style of putting bucket name at the start of the pathname of the URL  */
       forcePathStyle?: boolean;
     };
 
@@ -54,7 +77,13 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
   session?: SessionStrategy<any>;
   graphql?: GraphQLConfig;
   extendGraphqlSchema?: ExtendGraphqlSchema;
-  // Storage key used for the name of the storage
+  /** An object containing configuration about keystone's various external storages.
+   *
+   * Each entry should be of either `kind: 'local'` or `kind: 's3'`, and follow the configuration of each.
+   *
+   * When configuring a `file` or `image` field that uses the storage, use the key in the storage object
+   * as the `storage` config option for the field.
+   */
   storage?: Record<string, StorageConfig>;
   /** Experimental config options */
   experimental?: {
