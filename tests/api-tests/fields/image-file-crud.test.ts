@@ -105,15 +105,13 @@ describe('File - Crud special tests', () => {
   for (let matrixValue of testMatrix) {
     const getConfig = (): StorageConfig => ({
       ...(matrixValue === 's3'
-        ? ({ ...s3DefaultStorage, type: 'file', preserve: false } as const)
-        : ({
+        ? { ...s3DefaultStorage, preserve: false }
+        : {
             kind: 'local',
-            type: 'file',
             storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'file-local-test')),
             addServerRoute: { path: '/files' },
             generatedUrl: (path: string) => `http://localhost:3000/files${path}`,
-            preserve: false,
-          } as const)),
+          }),
     });
 
     const fields = { secretFile: file({ storage: 'test_file' }) };
@@ -244,17 +242,16 @@ describe('Image - Crud special tests', () => {
     });
 
   for (let matrixValue of testMatrix) {
-    const getConfig = () => ({
+    const getConfig = (): StorageConfig => ({
       ...(matrixValue === 's3'
-        ? ({ ...s3DefaultStorage, type: 'image', preserve: false } as const)
-        : ({
+        ? { ...s3DefaultStorage, preserve: false }
+        : {
             kind: 'local',
-            type: 'image',
             storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'image-local-test')),
             addServerRoute: { path: '/images' },
             generatedUrl: (path: string) => `http://localhost:3000/images${path}`,
             preserve: false,
-          } as const)),
+          }),
     });
     const fields = { avatar: image({ storage: 'test_image' }) };
     const config = getConfig();

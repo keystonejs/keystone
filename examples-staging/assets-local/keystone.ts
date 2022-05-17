@@ -10,23 +10,19 @@ export default config({
   storage: {
     my_images: {
       kind: 'local',
-      type: 'image',
       generatedUrl: path => `http://localhost:3000/images${path}`,
       addServerRoute: {
         path: '/images',
       },
       storagePath: 'public/images',
-      preserve: false,
     },
     my_files: {
       kind: 'local',
-      type: 'file',
       generatedUrl: path => `http://localhost:3000/files${path}`,
       addServerRoute: {
         path: '/files',
       },
       storagePath: 'public/files',
-      preserve: false,
     },
   },
 });

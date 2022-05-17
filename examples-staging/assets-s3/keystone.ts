@@ -20,7 +20,6 @@ export default config({
   storage: {
     my_images: {
       kind: 's3',
-      type: 'image',
       bucketName,
       region,
       accessKeyId,
@@ -28,20 +27,17 @@ export default config({
       // proxied: { baseUrl: '/images-proxy' },
       endpoint: 'http://127.0.0.1:9000/',
       forcePathStyle: true,
-      preserve: false,
     },
     // 127.0.0.1:9000/keystone-test
     // https://s3.ap-southeast-2.amazonaws.com/keystone-test
     my_files: {
       kind: 's3',
-      type: 'file',
       bucketName,
       region,
       accessKeyId,
       secretAccessKey,
       endpoint: 'http://127.0.0.1:9000/',
       forcePathStyle: true,
-      preserve: false,
     },
   },
 });

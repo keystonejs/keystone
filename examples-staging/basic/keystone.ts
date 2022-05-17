@@ -37,23 +37,19 @@ export default auth.withAuth(
     storage: {
       images_basic: {
         kind: 'local',
-        type: 'image',
         storagePath: 'public/images',
         generatedUrl: path => `http://localhost:3000/images${path}`,
         addServerRoute: {
           path: '/images',
         },
-        preserve: false,
       },
       files_basic: {
         kind: 'local',
-        type: 'file',
         storagePath: 'public/files',
         generatedUrl: path => `http://localhost:3000/files${path}`,
         addServerRoute: {
           path: '/files',
         },
-        preserve: false,
       },
     },
     lists,

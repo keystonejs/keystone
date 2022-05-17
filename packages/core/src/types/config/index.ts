@@ -19,7 +19,7 @@ import type { BaseFields } from './fields';
 import type { ListAccessControl, FieldAccessControl } from './access-control';
 import type { ListHooks } from './hooks';
 
-export type StorageConfig = (
+export type StorageConfig =
   | {
       kind: 'local';
       storagePath: string;
@@ -27,7 +27,7 @@ export type StorageConfig = (
       addServerRoute: {
         path: string; // e.g. /images
       } | null;
-      preserve: boolean;
+      preserve?: boolean;
     }
   | {
       kind: 's3';
@@ -36,7 +36,7 @@ export type StorageConfig = (
       addServerRoute?: {
         path: string; // e.g. /images
       };
-      preserve: boolean;
+      preserve?: boolean;
       pathPrefix?: string;
       bucketName: string;
       region: string;
@@ -44,9 +44,7 @@ export type StorageConfig = (
       secretAccessKey: string;
       endpoint?: string;
       forcePathStyle?: boolean;
-    }
-) &
-  ({ type: 'file' } | { type: 'image' });
+    };
 
 export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   lists: ListSchemaConfig;

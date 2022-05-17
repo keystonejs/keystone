@@ -36,14 +36,12 @@ export const getRootConfig = (matrixValue: MatrixValue): Partial<KeystoneConfig>
     return {
       storage: {
         test_image: {
-          type: 'image',
           kind: 'local',
           storagePath: TEMP_STORAGE,
           generatedUrl: path => `http://localhost:3000/images${path}`,
           addServerRoute: {
             path: '/images',
           },
-          preserve: false,
         },
       },
     };
@@ -51,7 +49,6 @@ export const getRootConfig = (matrixValue: MatrixValue): Partial<KeystoneConfig>
   return {
     storage: {
       test_image: {
-        type: 'image',
         kind: 's3',
         bucketName: process.env.S3_BUCKET_NAME!,
         accessKeyId: process.env.S3_ACCESS_KEY_ID!,
@@ -59,7 +56,6 @@ export const getRootConfig = (matrixValue: MatrixValue): Partial<KeystoneConfig>
         region: process.env.S3_REGION!,
         endpoint: process.env.S3_ENDPOINT,
         forcePathStyle: process.env.S3_FORCE_PATH_STYLE === 'true',
-        preserve: false,
       },
     },
   };

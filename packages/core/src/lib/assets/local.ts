@@ -8,7 +8,7 @@ import { FileAdapter, ImageAdapter } from './types';
 import { streamToBuffer } from './utils';
 
 export function localImageAssetsAPI(
-  storageConfig: StorageConfig & { kind: 'local'; type: 'image' }
+  storageConfig: StorageConfig & { kind: 'local' }
 ): ImageAdapter {
   return {
     async url(id, extension) {
@@ -30,9 +30,7 @@ export function localImageAssetsAPI(
   };
 }
 
-export function localFileAssetsAPI(
-  storageConfig: StorageConfig & { kind: 'local'; type: 'file' }
-): FileAdapter {
+export function localFileAssetsAPI(storageConfig: StorageConfig & { kind: 'local' }): FileAdapter {
   return {
     async url(filename) {
       return storageConfig.generatedUrl(`/${filename}`);
