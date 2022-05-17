@@ -39,7 +39,7 @@ export default auth.withAuth(
         kind: 'local',
         storagePath: 'public/images',
         generatedUrl: path => `http://localhost:3000/images${path}`,
-        addServerRoute: {
+        serverRoute: {
           path: '/images',
         },
       },
@@ -47,7 +47,7 @@ export default auth.withAuth(
         kind: 'local',
         storagePath: 'public/files',
         generatedUrl: path => `http://localhost:3000/files${path}`,
-        addServerRoute: {
+        serverRoute: {
           path: '/files',
         },
       },

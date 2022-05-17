@@ -110,12 +110,12 @@ export const createExpressServer = async (
 
   if (config.storage) {
     for (const val of Object.values(config.storage)) {
-      if (!val.addServerRoute) continue;
+      if (!val.serverRoute) continue;
       if (val.kind === 'local') {
-        expressServer.use(val.addServerRoute.path, express.static(val.storagePath));
+        expressServer.use(val.serverRoute.path, express.static(val.storagePath));
       } else if (val.kind === 's3') {
         const endpoint = getS3AssetsEndpoint(val);
-        expressServer.use(`${val.addServerRoute.path}/:id`, async (req, res) => {
+        expressServer.use(`${val.serverRoute.path}/:id`, async (req, res) => {
           const s3Url = new URL(endpoint);
           s3Url.pathname += `${s3Url.pathname.endsWith('/') ? '' : '/'}${val.pathPrefix || ''}${
             req.params.id
