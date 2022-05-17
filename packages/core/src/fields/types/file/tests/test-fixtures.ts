@@ -35,7 +35,7 @@ export const getRootConfig = (matrixValue: MatrixValue): Partial<KeystoneConfig>
           kind: 'local',
           storagePath: TEMP_STORAGE,
           generatedUrl: path => `http://localhost:3000/images${path}`,
-          addServerRoute: {
+          serverRoute: {
             path: '/images',
           },
         },

@@ -50,11 +50,11 @@ export const file =
     config: FileFieldConfig<ListTypeInfo>
   ): FieldTypeFunc<ListTypeInfo> =>
   meta => {
-    const storage = meta.assets.getStorage(config.storage);
+    const storage = meta.getStorage(config.storage);
 
     if (!storage) {
       throw new Error(
-        `${meta.listKey}.${meta.fieldKey} has storage set to ${config.storage} but there is no storage config under that key`
+        `${meta.listKey}.${meta.fieldKey} has storage set to ${config.storage}, but no storage configuration was found for that key`
       );
     }
 

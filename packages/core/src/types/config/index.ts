@@ -24,7 +24,7 @@ export type StorageConfig =
       kind: 'local';
       storagePath: string;
       generatedUrl: (path: string) => string; // e.g. https://my-website.com/somewhere
-      addServerRoute: {
+      serverRoute: {
         path: string; // e.g. /images
       } | null;
       preserve?: boolean;
@@ -33,7 +33,7 @@ export type StorageConfig =
       kind: 's3';
       signed?: { expiry: number };
       generatedUrl?: (path: string) => string;
-      addServerRoute?: {
+      serverRoute?: {
         path: string; // e.g. /images
       };
       preserve?: boolean;
@@ -201,7 +201,7 @@ export type GraphQLConfig = {
 
 export type ExtendGraphqlSchema = (schema: GraphQLSchema) => GraphQLSchema;
 
-// config.files
+// config.storage
 
 export type FilesConfig = {
   upload: AssetMode;
@@ -220,7 +220,7 @@ export type FilesConfig = {
   };
 };
 
-// config.images
+// config.storage
 
 export type ImagesConfig = {
   upload: AssetMode;
@@ -236,12 +236,6 @@ export type ImagesConfig = {
      */
     baseUrl?: string;
   };
-};
-
-// config.experimental.cloud
-
-export type CloudConfig = {
-  apiKey?: string;
 };
 
 // Exports from sibling packages

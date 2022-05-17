@@ -35,19 +35,19 @@ export default auth.withAuth(
       // isAccessAllowed,
     },
     storage: {
-      images_basic: {
+      my_images: {
         kind: 'local',
         storagePath: 'public/images',
         generatedUrl: path => `http://localhost:3000/images${path}`,
-        addServerRoute: {
+        serverRoute: {
           path: '/images',
         },
       },
-      files_basic: {
+      my_files: {
         kind: 'local',
         storagePath: 'public/files',
         generatedUrl: path => `http://localhost:3000/files${path}`,
-        addServerRoute: {
+        serverRoute: {
           path: '/files',
         },
       },

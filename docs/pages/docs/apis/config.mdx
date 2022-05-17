@@ -396,28 +396,53 @@ See the [schema extension guide](../guides/schema-extension) for more details on
 import type { StorageConfig } from '@keystone-6/core/types'
 ```
 
-The `storage` config option is used to provide information for use by the [`file`](./fields#file) field type or the
-[`image`](./fields#image) field type. You provide an object whose each property is a `StorageConfig` object, which fields may then reference.
+The `storage` config option provides configuration which is by the [`file`](./fields#file) field type or the
+[`image`](./fields#image) field type. You provide an object whose property is a `StorageConfig` object, fields then reference this `storage` by the key.
 Each storage is configured separately using the options below.
 
-A single storage may be used by multiple file or image fields.
-
-When using the image or file field, you use the key from the object to specify which storage to use.
+A single storage may be used by multiple file and/or image fields.
 
 Options:
 
-- `type`: This sets whether this storage is used for storing files or images. Can be either `"file"` or `"image"`.
-- `kind`: Whether the storage will be on the machine, or in an [s3 bucket](https://aws.amazon.com/s3/) `"local"` or `"s3"`
-- `preserve`: Set whether the items should be deleted at the source when they are removed from Keystone's database. We
-  recommend that you set `preserve: false` unless you have a strong reason to preserve files that Keystone cannot reference.
+- `kind`: Whether the storage will be on the machine `"local"`, or in an [s3 bucket](https://aws.amazon.com/s3/) `"s3"`
+- `preserve`: Defines whether the items should be deleted at the source when they are removed from Keystone's database. We
+  recommend that you set `preserve: false` unless you have a strong reason to preserve files that Keystone cannot reference. The
+  default is `false`.
 
 Local options:
 
 - `generatedUrl`: A function that recieves a partial path with the filename and extension, and the result
-  of which will be used as the `url` in the field's graphql - this should point to where the item is hosted.
-- `addServerRoute`: Sets whether or not to add a server route to Keystone. Set it to `null` if you don't want
+  of which will be used as the `url` in the field's graphql - this should point to where the client can retrieve the item.
+- `serverRoute`: Sets whether or not to add a server route to Keystone. Set it to `null` if you don't want
   keystone to host the images, otherwise set it to an object with a `path` property
   - `path`: The partial path where keystone will host the images, eg `/images` or `/files`
+
+```typescript
+import { config } from '@keystone-6/core';
+import { lists } from './schema';
+
+export default config({
+   /* ... */
+  storage: {
+    my_images: {
+      kind: 'local',
+      generatedUrl: path => `http://localhost:3000/images${path}`,
+      serverRoute: {
+        path: '/images',
+      },
+      storagePath: 'public/images',
+    },
+    my_files: {
+      kind: 'local',
+      generatedUrl: path => `http://localhost:3000/files${path}`,
+      serverRoute: {
+        path: '/files',
+      },
+      storagePath: 'public/files',
+    },
+  },
+});
+```
 
 S3 options:
 
@@ -427,15 +452,52 @@ S3 options:
 - `secretAccessKey`: Your Access Key secret
 - `generatedUrl`: A funcion that recieves the original s3 url and returns a string that will be returned
   from graphql as the `url`. If you want the s3 urls to be returned as is you do not need to set this.
-- `addServerRoute`: Sets whether keystone will proxy the images on its server.
+- `serverRoute`: Sets whether keystone will proxy the images on its server.
   - `path`: The partial path where keystone will proxy the images, eg `/images` or `/files`
 - `pathPrefix`: The prefix for the file, used to set the subfolder of your bucket files will be stored in.
 - `endpoint`: The endpoint to use - if provided, this endpoint will be used instead of the default amazon s3 endpoint
 - `forcePathStyle`: Force the old pathstyle of using the bucket name after the host
 
-## experimental
+```typescript
+import { config } from '@keystone-6/core';
+import dotenv from 'dotenv';
+import { lists } from './schema';
 
-### Other Experimental Options
+dotenv.config();
+
+const {
+  S3_BUCKET_NAME: bucketName = 'keystone-test',
+  S3_REGION: region = 'ap-southeast-2',
+  S3_ACCESS_KEY_ID: accessKeyId = 'keystone',
+  S3_SECRET_ACCESS_KEY: secretAccessKey = 'keystone',
+} = process.env;
+
+export default config({
+   /* ... */
+  storage: {
+    my_images: {
+      kind: 's3',
+      bucketName,
+      region,
+      accessKeyId,
+      secretAccessKey,
+      proxied: { baseUrl: '/images-proxy' },
+      endpoint: 'http://127.0.0.1:9000/',
+      forcePathStyle: true,
+    },
+    my_files: {
+      kind: 's3',
+      bucketName,
+      region,
+      accessKeyId,
+      secretAccessKey,
+      forcePathStyle: true,
+    },
+  },
+});
+```
+
+## Experimental Options
 
 The following flags allow you to enable features which are still in preview.
 These features are not guaranteed to work, and should be used with caution.

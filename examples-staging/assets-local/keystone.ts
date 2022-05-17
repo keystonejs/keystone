@@ -11,7 +11,7 @@ export default config({
     my_images: {
       kind: 'local',
       generatedUrl: path => `http://localhost:3000/images${path}`,
-      addServerRoute: {
+      serverRoute: {
         path: '/images',
       },
       storagePath: 'public/images',
@@ -19,7 +19,7 @@ export default config({
     my_files: {
       kind: 'local',
       generatedUrl: path => `http://localhost:3000/files${path}`,
-      addServerRoute: {
+      serverRoute: {
         path: '/files',
       },
       storagePath: 'public/files',
