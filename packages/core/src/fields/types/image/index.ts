@@ -10,7 +10,8 @@ import {
 } from '../../../types';
 import { graphql } from '../../..';
 import { resolveView } from '../../resolve-view';
-import { SUPPORTED_IMAGE_EXTENSIONS } from './utils';
+
+const SUPPORTED_IMAGE_EXTENSIONS = ['jpg', 'png', 'webp', 'gif'];
 
 export type ImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
   storage: string;
