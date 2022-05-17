@@ -33,6 +33,8 @@ Each project below demonstrates a Keystone feature you can learn about and exper
 
 ## Running examples
 
+### In local dev
+
 To run an example, clone this repo and run the following commands:
 
 ```shell
@@ -43,6 +45,10 @@ yarn dev
 
 If everything works 🤞 the GraphQL Server and Admin UI will start on [localhost:3000](http://localhost:3000).
 See the README in each example for more specific details.
+
+### In CodeSandbox
+
+You can also run our examples from your web browser using the free CodeSandbox service. Just look for the "Try it in CodeSandbox" heading in each example project’s README ([example](https://github.com/keystonejs/keystone/tree/main/examples/task-manager#try-it-out-in-code-sandbox-)).
 
 ## Getting in touch
 
