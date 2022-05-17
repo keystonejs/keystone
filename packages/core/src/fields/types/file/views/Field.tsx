@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { Fragment, useMemo, useRef, RefObject } from 'react';
+import { useMemo, useRef, RefObject } from 'react';
 import bytes from 'bytes';
 
 import { jsx, Stack, Text } from '@keystone-ui/core';
@@ -65,24 +65,30 @@ function FileView({
   inputRef,
 }: {
   errorMessage?: string;
-  value: Exclude<FileValue, { kind: 'ref' }>;
+  value: FileValue;
   onChange?: (value: FileValue) => void;
   inputRef: RefObject<HTMLInputElement>;
 }) {
   return value.kind === 'from-server' || value.kind === 'upload' ? (
     <Stack gap="small" across align="center">
       {onChange && (
-        <Fragment>
+        <Stack gap="small">
           {value.kind === 'from-server' && (
             <Stack padding="xxsmall" gap="xxsmall">
-              <Stack across align="center" gap="small">
-                <Text size="medium">
-                  <a href={value.data.src} target="_blank">
-                    {`${value.data.filename}`}
-                  </a>
-                </Text>
-              </Stack>
-              <Text size="xsmall">{bytes(value.data.filesize)}</Text>
+              <Text size="small">
+                <a href={value.data.src} target="_blank">
+                  {`${value.data.filename}`}
+                </a>
+              </Text>
+              <Text size="small">Size: {bytes(value.data.filesize)}</Text>
+            </Stack>
+          )}
+          {value.kind === 'upload' && (
+            <Stack padding="xxsmall" gap="xxsmall">
+              <Text size="small" paddingBottom="xsmall">
+                File linked, save to complete upload
+              </Text>
+              <Text size="small">Size: {bytes(value.data.file.size)}</Text>
             </Stack>
           )}
           <Stack across gap="small" align="center">
@@ -116,19 +122,13 @@ function FileView({
                 Cancel
               </Button>
             )}
-            {errorMessage ? (
+            {errorMessage && (
               <Pill tone="negative" weight="light">
                 {errorMessage}
               </Pill>
-            ) : (
-              value.kind === 'upload' && (
-                <Pill weight="light" tone="positive">
-                  Save to upload this file
-                </Pill>
-              )
             )}
           </Stack>
-        </Fragment>
+        </Stack>
       )}
     </Stack>
   ) : (
@@ -140,7 +140,6 @@ function FileView({
           onClick={() => {
             inputRef.current?.click();
           }}
-          tone="positive"
         >
           Upload File
         </Button>

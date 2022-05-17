@@ -100,7 +100,7 @@ function ImgView({
   inputRef,
 }: {
   errorMessage?: string;
-  value: Exclude<ImageValue, { kind: 'ref' }>;
+  value: ImageValue;
   onChange?: (value: ImageValue) => void;
   field: ReturnType<typeof import('.').controller>;
   inputRef: RefObject<HTMLInputElement>;
@@ -228,7 +228,6 @@ function ImgView({
             onClick={() => {
               inputRef.current?.click();
             }}
-            tone="positive"
           >
             Upload Image
           </Button>
@@ -307,8 +306,8 @@ export const ImageMeta = ({
 }) => {
   return (
     <Stack padding="xxsmall" gap="xxsmall">
-      <Text size="xsmall">Size: {`${bytes(size)}`}</Text>
-      <Text size="xsmall">Dimensions: {`${width} x ${height}`}</Text>
+      <Text size="small">Size: {`${bytes(size)}`}</Text>
+      <Text size="small">Dimensions: {`${width} x ${height}`}</Text>
     </Stack>
   );
 };
