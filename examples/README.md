@@ -33,7 +33,7 @@ Each project below demonstrates a Keystone feature you can learn about and exper
 
 ## Running examples
 
-### In local dev
+### In your CLI
 
 To run an example, clone this repo and run the following commands:
 
