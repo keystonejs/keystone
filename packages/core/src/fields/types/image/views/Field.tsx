@@ -330,6 +330,7 @@ export const ImageWrapper = ({ children, url }: { children: ReactNode; url?: str
           height: '120px',
           border: '1px solid #e1e5e9',
         }}
+        target="_blank"
         href={url}
       >
         {children}
