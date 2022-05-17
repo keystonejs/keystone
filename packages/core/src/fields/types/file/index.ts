@@ -50,7 +50,7 @@ export const file =
     config: FileFieldConfig<ListTypeInfo>
   ): FieldTypeFunc<ListTypeInfo> =>
   meta => {
-    const storage = meta.assets.getStorage(config.storage);
+    const storage = meta.getStorage(config.storage);
 
     if (!storage) {
       throw new Error(
