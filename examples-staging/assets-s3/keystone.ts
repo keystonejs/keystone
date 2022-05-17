@@ -24,16 +24,15 @@ export default config({
       region,
       accessKeyId,
       secretAccessKey,
-      // proxied: { baseUrl: '/images-proxy' },
+      signed: { expiry: 5000 },
     },
-    // 127.0.0.1:9000/keystone-test
-    // https://s3.ap-southeast-2.amazonaws.com/keystone-test
     my_files: {
       kind: 's3',
       bucketName,
       region,
       accessKeyId,
       secretAccessKey,
+      signed: { expiry: 5000 },
     },
   },
 });
