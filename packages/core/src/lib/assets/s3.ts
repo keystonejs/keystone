@@ -12,7 +12,7 @@ export function s3ImageAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }):
   return {
     async url(id, extension) {
       if (!storageConfig.signed) {
-        return generateUrl(`${s3Endpoint}/${storageConfig.pathPrefix || ''}${id}.${extension}`);
+        return generateUrl(`${s3Endpoint}${storageConfig.pathPrefix || ''}${id}.${extension}`);
       }
       return generateUrl(await presign(`${id}.${extension}`));
     },
@@ -53,7 +53,7 @@ export function s3FileAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }): 
   return {
     async url(filename) {
       if (!storageConfig.signed) {
-        return generateUrl(`${s3Endpoint}/${storageConfig.pathPrefix || ''}${filename}`);
+        return generateUrl(`${s3Endpoint}${storageConfig.pathPrefix || ''}${filename}`);
       }
       return generateUrl(await presign(filename));
     },
