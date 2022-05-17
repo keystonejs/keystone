@@ -415,7 +415,7 @@ Local options:
 
 - `generatedUrl`: A function that recieves a partial path with the filename and extension, and the result
   of which will be used as the `url` in the field's graphql - this should point to where the item is hosted.
-- `addServerRoute`: Sets whether or not to add a server route to Keystone. Set it to `null` if you don't want
+- `serverRoute`: Sets whether or not to add a server route to Keystone. Set it to `null` if you don't want
   keystone to host the images, otherwise set it to an object with a `path` property
   - `path`: The partial path where keystone will host the images, eg `/images` or `/files`
 
@@ -427,15 +427,13 @@ S3 options:
 - `secretAccessKey`: Your Access Key secret
 - `generatedUrl`: A funcion that recieves the original s3 url and returns a string that will be returned
   from graphql as the `url`. If you want the s3 urls to be returned as is you do not need to set this.
-- `addServerRoute`: Sets whether keystone will proxy the images on its server.
+- `serverRoute`: Sets whether keystone will proxy the images on its server.
   - `path`: The partial path where keystone will proxy the images, eg `/images` or `/files`
 - `pathPrefix`: The prefix for the file, used to set the subfolder of your bucket files will be stored in.
 - `endpoint`: The endpoint to use - if provided, this endpoint will be used instead of the default amazon s3 endpoint
 - `forcePathStyle`: Force the old pathstyle of using the bucket name after the host
 
-## experimental
-
-### Other Experimental Options
+## Experimental Options
 
 The following flags allow you to enable features which are still in preview.
 These features are not guaranteed to work, and should be used with caution.
