@@ -37,21 +37,22 @@ export function createImagesContext(config: KeystoneConfig): ImagesContext {
   }
 
   return (storageString: string) => {
-    const assetsAPI = imageAssetsAPIs.get(storageString);
-    if (assetsAPI === undefined) {
+    const adapter = imageAssetsAPIs.get(storageString);
+    if (adapter === undefined) {
       throw new Error(`No file assets API found for storage string "${storageString}"`);
     }
 
     return {
       getUrl: async (id, extension) => {
-        return assetsAPI.url(id, extension);
+        return adapter.url(id, extension);
       },
-      getDataFromStream: async stream => {
+      getDataFromStream: async (stream, originalFilename) => {
+        console.log(originalFilename);
         const id = uuid();
-        const metadata = await assetsAPI.upload(stream, id);
+        const metadata = await adapter.upload(stream, id);
         return { id, ...metadata };
       },
-      deleteAtSource: assetsAPI.delete,
+      deleteAtSource: adapter.delete,
     };
   };
 }
