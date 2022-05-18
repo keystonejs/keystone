@@ -400,14 +400,24 @@ The `storage` config option provides configuration which is used by the [`file`]
 [`image`](./fields#image) field type. You provide an object whose property is a `StorageConfig` object, fields then reference this `storage` by the key.
 Each storage is configured separately using the options below.
 
-A single storage may be used by multiple file and/or image fields.
+A single storage may be used by multiple file or image fields, but only for files or images.
 
 Options:
 
 - `kind`: Whether the storage will be on the machine `"local"`, or in an [s3 bucket](https://aws.amazon.com/s3/) `"s3"`
+- `type`: Sets whether image fields or file fields should be used with this storage
 - `preserve`: Defines whether the items should be deleted at the source when they are removed from Keystone's database. We
   recommend that you set `preserve: false` unless you have a strong reason to preserve files that Keystone cannot reference. The
   default is `false`.
+- `transformName`: A function that creates the name for the file or image. This works a bit differently for files and images, which we'll explain below
+
+**For files:** transformName accepts a `filename` and returns a `filename` - the returned filename is what will be used as the name of the file at
+the storage location, and will be remmembered by the field to to look up at the database. For the default, we will return `${filename}-${RANDOM_ID}${extension}`
+**For images:** tranformName accepts both a `filename` and an `extension` - the passed filename will include the extension. The return should be the
+filename you want to use as the `id` for the image, and the unique identifier. We will add the extension on to the id provided. By default we return
+a unique identifier here.
+
+When using `transformName` you should ensure that these are unique
 
 Local options:
 
