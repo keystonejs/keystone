@@ -3,7 +3,6 @@ import { S3, GetObjectCommand } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 
 import { StorageConfig } from '../../types';
-import { getImageMetadataFromBuffer } from './createImagesContext';
 import { FileAdapter, ImageAdapter } from './types';
 import { streamToBuffer } from './utils';
 
@@ -16,27 +15,24 @@ export function s3ImageAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }):
       }
       return generateUrl(await presign(`${id}.${extension}`));
     },
-    async upload(stream, id) {
+    async upload(stream, id, extension) {
       const buffer = await streamToBuffer(stream);
-      const metadata = getImageMetadataFromBuffer(buffer);
 
       const upload = new Upload({
         client: s3,
         params: {
           Bucket: storageConfig.bucketName,
-          Key: `${storageConfig.pathPrefix || ''}${id}.${metadata.extension}`,
+          Key: `${storageConfig.pathPrefix || ''}${id}.${extension}`,
           Body: buffer,
           ContentType: {
             png: 'image/png',
             webp: 'image/webp',
             gif: 'image/gif',
             jpg: 'image/jpeg',
-          }[metadata.extension],
+          }[extension],
         },
       });
       await upload.done();
-
-      return metadata;
     },
     async delete(id, extension) {
       await s3.deleteObject({

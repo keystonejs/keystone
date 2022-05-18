@@ -56,6 +56,7 @@ if (unsupportedModules.length > 0) {
                   storage: {
                     test_image: {
                       kind: 'local',
+                      type: 'image',
                       storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_images')),
                       generatedUrl: path => `http://localhost:3000/images${path}`,
                       serverRoute: {
@@ -64,6 +65,7 @@ if (unsupportedModules.length > 0) {
                     },
                     test_file: {
                       kind: 'local',
+                      type: 'file',
                       storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_files')),
                       generatedUrl: path => `http://localhost:3000/files${path}`,
                       serverRoute: {

@@ -37,6 +37,7 @@ export default auth.withAuth(
     storage: {
       my_images: {
         kind: 'local',
+        type: 'file',
         storagePath: 'public/images',
         generatedUrl: path => `http://localhost:3000/images${path}`,
         serverRoute: {
@@ -45,6 +46,7 @@ export default auth.withAuth(
       },
       my_files: {
         kind: 'local',
+        type: 'file',
         storagePath: 'public/files',
         generatedUrl: path => `http://localhost:3000/files${path}`,
         serverRoute: {

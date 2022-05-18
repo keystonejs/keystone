@@ -5,6 +5,7 @@ import { KeystoneConfig, ImageMetadata, ImagesContext } from '../../types';
 import { ImageAdapter } from './types';
 import { localImageAssetsAPI } from './local';
 import { s3ImageAssetsAPI } from './s3';
+import { streamToBuffer } from './utils';
 
 export function getImageMetadataFromBuffer(buffer: Buffer): ImageMetadata {
   const fileType = fromBuffer(buffer);
@@ -28,12 +29,14 @@ export function getImageMetadataFromBuffer(buffer: Buffer): ImageMetadata {
 export function createImagesContext(config: KeystoneConfig): ImagesContext {
   const imageAssetsAPIs = new Map<string, ImageAdapter>();
   for (const [storageKey, storageConfig] of Object.entries(config.storage || {})) {
-    imageAssetsAPIs.set(
-      storageKey,
-      storageConfig.kind === 'local'
-        ? localImageAssetsAPI(storageConfig)
-        : s3ImageAssetsAPI(storageConfig)
-    );
+    if (storageConfig.type === 'image') {
+      imageAssetsAPIs.set(
+        storageKey,
+        storageConfig.kind === 'local'
+          ? localImageAssetsAPI(storageConfig)
+          : s3ImageAssetsAPI(storageConfig)
+      );
+    }
   }
 
   return (storageString: string) => {
@@ -47,10 +50,23 @@ export function createImagesContext(config: KeystoneConfig): ImagesContext {
         return adapter.url(id, extension);
       },
       getDataFromStream: async (stream, originalFilename) => {
-        console.log(originalFilename);
-        const id = uuid();
-        const metadata = await adapter.upload(stream, id);
-        return { id, ...metadata };
+        const storageConfig = config.storage![storageString];
+
+        if (storageConfig.type !== 'image') {
+          throw new Error(
+            `The storage ${storageString} is trying to retrieve a file, but it is of type: image`
+          );
+        }
+        const { transformName = () => uuid() } = storageConfig;
+
+        // Duplicating this get image data stuff now sucks
+        const buffer = await streamToBuffer(stream);
+        const { extension, ...rest } = getImageMetadataFromBuffer(buffer);
+
+        const id = await transformName(originalFilename, extension);
+
+        await adapter.upload(stream, id, extension);
+        return { id, extension, ...rest };
       },
       deleteAtSource: adapter.delete,
     };

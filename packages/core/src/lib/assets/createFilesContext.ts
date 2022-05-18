@@ -7,12 +7,7 @@ import { localFileAssetsAPI } from './local';
 import { s3FileAssetsAPI } from './s3';
 import { FileAdapter } from './types';
 
-const defaultTransformer = (str: string) => slugify(str);
-
-const generateSafeFilename = (
-  filename: string,
-  transformFilename: (str: string) => string = defaultTransformer
-) => {
+const defaultTransformName = (filename: string) => {
   // Appends a UUID to the filename so that people can't brute-force guess stored filenames
   //
   // This regex lazily matches for any characters that aren't a new line
@@ -27,7 +22,7 @@ const generateSafeFilename = (
     .slice(12);
 
   // console.log(id, id.length, id.slice(12).length);
-  const urlSafeName = filenamify(transformFilename(name), {
+  const urlSafeName = filenamify(slugify(name), {
     maxLength: 100 - id.length,
     replacement: '-',
   });
@@ -41,12 +36,14 @@ export function createFilesContext(config: KeystoneConfig): FilesContext {
   const adaptersMap = new Map<string, FileAdapter>();
 
   for (const [storageKey, storageConfig] of Object.entries(config.storage || {})) {
-    adaptersMap.set(
-      storageKey,
-      storageConfig.kind === 'local'
-        ? localFileAssetsAPI(storageConfig)
-        : s3FileAssetsAPI(storageConfig)
-    );
+    if (storageConfig.type === 'file') {
+      adaptersMap.set(
+        storageKey,
+        storageConfig.kind === 'local'
+          ? localFileAssetsAPI(storageConfig)
+          : s3FileAssetsAPI(storageConfig)
+      );
+    }
   }
 
   return (storageString: string) => {
@@ -60,7 +57,17 @@ export function createFilesContext(config: KeystoneConfig): FilesContext {
         return adapter.url(filename);
       },
       getDataFromStream: async (stream, originalFilename) => {
-        const filename = generateSafeFilename(originalFilename);
+        const storageConfig = config.storage![storageString];
+
+        if (storageConfig.type !== 'file') {
+          throw new Error(
+            `The storage ${storageString} is trying to retrieve a file, but it is of type: image`
+          );
+        }
+        const { transformName = defaultTransformName } = storageConfig;
+
+        const filename = await transformName(originalFilename);
+
         const { filesize } = await adapter.upload(stream, filename);
         return { filename, filesize };
       },

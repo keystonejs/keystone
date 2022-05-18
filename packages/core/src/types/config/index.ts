@@ -19,7 +19,17 @@ import type { BaseFields } from './fields';
 import type { ListAccessControl, FieldAccessControl } from './access-control';
 import type { ListHooks } from './hooks';
 
-export type StorageConfig =
+type FileOrImage =
+  // is given full file name, returns file name that will be used at
+  | { type: 'file'; transformName?: (filename: string) => MaybePromise<string> }
+  // return does not include extension, extension is handed over in case they want to use it
+  | {
+      type: 'image';
+      // is given full file name, returns file name that will be used at
+      transformName?: (filename: string, extension: string) => MaybePromise<string>;
+    };
+
+export type StorageConfig = (
   | {
       /** The kind of storage being configured */
       kind: 'local';
@@ -40,6 +50,7 @@ export type StorageConfig =
       } | null;
       /** Sets whether the assets should be preserved locally on removal from keystone's database */
       preserve?: boolean;
+      transformName?: (filename: string) => string;
     }
   | {
       /** The kind of storage being configured */
@@ -67,7 +78,9 @@ export type StorageConfig =
       endpoint?: string;
       /** If true, will force the 'old' S3 path style of putting bucket name at the start of the pathname of the URL  */
       forcePathStyle?: boolean;
-    };
+    }
+) &
+  FileOrImage;
 
 export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   lists: ListSchemaConfig;

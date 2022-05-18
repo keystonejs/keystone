@@ -196,6 +196,6 @@ export type ImageData = {
 
 export type ImagesContext = (storage: string) => {
   getUrl: (id: string, extension: ImageExtension) => Promise<string>;
-  getDataFromStream: (stream: Readable) => Promise<ImageData>;
+  getDataFromStream: (stream: Readable, filename: string) => Promise<ImageData>;
   deleteAtSource: (id: string, extension: ImageExtension) => Promise<void>;
 };

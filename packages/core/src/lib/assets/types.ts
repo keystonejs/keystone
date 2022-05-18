@@ -1,8 +1,8 @@
 import { Readable } from 'stream';
-import { ImageMetadata, ImageExtension, FileMetadata } from '../../types';
+import { ImageExtension, FileMetadata } from '../../types';
 
 export type ImageAdapter = {
-  upload(stream: Readable, id: string): Promise<ImageMetadata>;
+  upload(stream: Readable, id: string, extension: string): Promise<void>;
   delete(id: string, extension: ImageExtension): Promise<void>;
   url(id: string, extension: ImageExtension): Promise<string>;
 };

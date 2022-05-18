@@ -20,14 +20,20 @@ export default config({
   storage: {
     my_images: {
       kind: 's3',
+      type: 'image',
       bucketName,
       region,
+      pathPrefix: 'something/',
+      generatedUrl: path => {
+        return `localhost:3000${path.split('/something')[1]}`;
+      },
       accessKeyId,
       secretAccessKey,
       signed: { expiry: 5000 },
     },
     my_files: {
       kind: 's3',
+      type: 'file',
       bucketName,
       region,
       accessKeyId,

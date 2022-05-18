@@ -52,7 +52,7 @@ async function inputResolver(storage: string, data: ImageFieldInputType, context
     return { extension: data, filesize: data, height: data, id: data, width: data };
   }
   const upload = await data.upload;
-  return context.images(storage).getDataFromStream(upload.createReadStream());
+  return context.images(storage).getDataFromStream(upload.createReadStream(), upload.filename);
 }
 
 const extensionsSet = new Set(SUPPORTED_IMAGE_EXTENSIONS);
