@@ -92,7 +92,7 @@ or images persist separate to lists that use them.
 
 If you want the existing behaviour of keystone, set `preserve: true` on the storage instead.
 
-##### `file` and `image` URLs now use `generatedUrl`, allowing more control over what is returned to the user
+##### `file` and `image` URLs now use `generateUrl`, allowing more control over what is returned to the user
 
 ##### Local images no longer need a baseUrl
 

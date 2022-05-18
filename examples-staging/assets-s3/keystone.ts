@@ -24,7 +24,7 @@ export default config({
       bucketName,
       region,
       pathPrefix: 'something/',
-      generatedUrl: path => {
+      generateUrl: path => {
         return `localhost:3000${path.split('/something')[1]}`;
       },
       accessKeyId,

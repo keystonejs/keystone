@@ -42,7 +42,7 @@ export type StorageConfig = (
        * path => `http://localhost:3000/images${path}`
        * ```
        */
-      generatedUrl: (path: string) => string;
+      generateUrl: (path: string) => string;
       /** The configuration for keystone's hosting of the assets - if set to null, keystone will not host the assets */
       serverRoute: {
         /** The partial path that the assets will be hosted at by keystone, eg `/images` or `/our-cool-files` */
@@ -57,7 +57,7 @@ export type StorageConfig = (
       kind: 's3';
       /** Sets signing of the asset - for use when you want private assets */
       signed?: { expiry: number };
-      generatedUrl?: (path: string) => string;
+      generatedrl?: (path: string) => string;
       /** Sets up proxying for s3 files through keystone's server */
       serverRoute?: {
         /** The partial path that the assets will be hosted at by keystone, eg `/images` or `/our-cool-files` */

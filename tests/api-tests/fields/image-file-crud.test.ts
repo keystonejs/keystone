@@ -111,7 +111,7 @@ describe('File - Crud special tests', () => {
             type: 'file',
             storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'file-local-test')),
             serverRoute: { path: '/files' },
-            generatedUrl: (path: string) => `http://localhost:3000/files${path}`,
+            generateUrl: (path: string) => `http://localhost:3000/files${path}`,
           }),
     });
 
@@ -251,7 +251,7 @@ describe('Image - Crud special tests', () => {
             type: 'image',
             storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'image-local-test')),
             serverRoute: { path: '/images' },
-            generatedUrl: (path: string) => `http://localhost:3000/images${path}`,
+            generateUrl: (path: string) => `http://localhost:3000/images${path}`,
             preserve: false,
           }),
     });

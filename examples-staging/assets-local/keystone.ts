@@ -11,7 +11,7 @@ export default config({
     my_images: {
       kind: 'local',
       type: 'image',
-      generatedUrl: path => `http://localhost:3000/images${path}`,
+      generateUrl: path => `http://localhost:3000/images${path}`,
       serverRoute: {
         path: '/images',
       },
@@ -20,7 +20,7 @@ export default config({
     my_files: {
       kind: 'local',
       type: 'file',
-      generatedUrl: path => `http://localhost:3000/files${path}`,
+      generateUrl: path => `http://localhost:3000/files${path}`,
       serverRoute: {
         path: '/files',
       },

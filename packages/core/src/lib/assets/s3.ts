@@ -107,7 +107,7 @@ function s3AssetsCommon(storageConfig: StorageConfig & { kind: 's3' }) {
   });
 
   const s3Endpoint = getS3AssetsEndpoint(storageConfig);
-  const generateUrl = storageConfig.generatedUrl ?? (url => url);
+  const generateUrl = storageConfig.generatedrl ?? (url => url);
 
   return {
     generateUrl,

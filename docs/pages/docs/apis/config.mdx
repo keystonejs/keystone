@@ -421,7 +421,7 @@ When using `transformName` you should ensure that these are unique
 
 Local options:
 
-- `generatedUrl`: A function that recieves a partial path with the filename and extension, and the result
+- `generateUrl`: A function that recieves a partial path with the filename and extension, and the result
   of which will be used as the `url` in the field's graphql - this should point to where the client can retrieve the item.
 - `serverRoute`: Sets whether or not to add a server route to Keystone. Set it to `null` if you don't want
   keystone to host the images, otherwise set it to an object with a `path` property
@@ -436,7 +436,7 @@ export default config({
   storage: {
     my_images: {
       kind: 'local',
-      generatedUrl: path => `http://localhost:3000/images${path}`,
+      generateUrl: path => `http://localhost:3000/images${path}`,
       serverRoute: {
         path: '/images',
       },
@@ -444,7 +444,7 @@ export default config({
     },
     my_files: {
       kind: 'local',
-      generatedUrl: path => `http://localhost:3000/files${path}`,
+      generateUrl: path => `http://localhost:3000/files${path}`,
       serverRoute: {
         path: '/files',
       },
@@ -460,7 +460,7 @@ S3 options:
 - `region`: The region your s3 instance is hosted in
 - `accessKeyId`: Your s3 access Key ID
 - `secretAccessKey`: Your Access Key secret
-- `generatedUrl`: A funcion that recieves the original s3 url and returns a string that will be returned
+- `generateUrl`: A funcion that recieves the original s3 url and returns a string that will be returned
   from graphql as the `url`. If you want the s3 urls to be returned as is you do not need to set this.
 - `serverRoute`: Sets whether keystone will proxy the images on its server.
   - `path`: The partial path where keystone will proxy the images, eg `/images` or `/files`

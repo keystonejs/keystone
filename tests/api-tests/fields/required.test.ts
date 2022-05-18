@@ -64,7 +64,7 @@ testModules
                 kind: 'local',
                 type: 'image',
                 storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_images')),
-                generatedUrl: path => `http://localhost:3000/images${path}`,
+                generateUrl: path => `http://localhost:3000/images${path}`,
                 serverRoute: {
                   path: '/images',
                 },
@@ -73,7 +73,7 @@ testModules
                 kind: 'local',
                 type: 'file',
                 storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_files')),
-                generatedUrl: path => `http://localhost:3000/files${path}`,
+                generateUrl: path => `http://localhost:3000/files${path}`,
                 serverRoute: {
                   path: '/files',
                 },

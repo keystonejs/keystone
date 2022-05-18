@@ -12,7 +12,7 @@ export function localImageAssetsAPI(
 ): ImageAdapter {
   return {
     async url(id, extension) {
-      return storageConfig.generatedUrl(`/${id}.${extension}`);
+      return storageConfig.generateUrl(`/${id}.${extension}`);
     },
     async upload(stream, id, extension) {
       const buffer = await streamToBuffer(stream);
@@ -28,7 +28,7 @@ export function localImageAssetsAPI(
 export function localFileAssetsAPI(storageConfig: StorageConfig & { kind: 'local' }): FileAdapter {
   return {
     async url(filename) {
-      return storageConfig.generatedUrl(`/${filename}`);
+      return storageConfig.generateUrl(`/${filename}`);
     },
     async upload(stream, filename) {
       const writeStream = fs.createWriteStream(path.join(storageConfig.storagePath, filename));
