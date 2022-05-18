@@ -244,13 +244,6 @@ function ImgView({
               Undo removal
             </Button>
           )}
-          {value.kind === 'remove' &&
-            // NOTE -- UX decision is to not display this, I think it would only be relevant
-            // for deleting uploaded images (and we don't support that yet)
-            // <Pill weight="light" tone="warning">
-            //   Save to remove this image
-            // </Pill>
-            null}
         </Stack>
       )}
     </Stack>

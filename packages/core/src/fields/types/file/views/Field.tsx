@@ -6,7 +6,6 @@ import bytes from 'bytes';
 import { jsx, Stack, Text } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 
-import { Pill } from '@keystone-ui/pill';
 import { Button } from '@keystone-ui/button';
 import { FieldProps } from '../../../../types';
 import { FileValue } from './index';
@@ -123,9 +122,15 @@ function FileView({
               </Button>
             )}
             {errorMessage && (
-              <Pill tone="negative" weight="light">
+              <span
+                css={{
+                  display: 'block',
+                  marginTop: '8px',
+                  color: 'red',
+                }}
+              >
                 {errorMessage}
-              </Pill>
+              </span>
             )}
           </Stack>
         </Stack>
@@ -156,13 +161,6 @@ function FileView({
             Undo removal
           </Button>
         )}
-        {value.kind === 'remove' &&
-          // NOTE -- UX decision is to not display this, I think it would only be relevant
-          // for deleting uploaded images (and we don't support that yet)
-          // <Pill weight="light" tone="warning">
-          //   Save to remove this image
-          // </Pill>
-          null}
       </Stack>
     </Stack>
   );
