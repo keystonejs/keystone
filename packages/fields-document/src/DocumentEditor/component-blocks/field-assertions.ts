@@ -33,9 +33,9 @@ function assertValidComponentSchemaInner(
   const ancestor = schemaAncestors.indexOf(schema);
   if (ancestor !== -1) {
     throw new Error(
-      `The field at "${propPath.join(
+      `The field "${propPath.join(
         '.'
-      )}" is a field that is also its ancestor, this is not allowed because it would create an infinitely recursive structure. Introduce an array or conditional field to represent recursive structure.`
+      )}" is the same as it's ancestor. Use an array or conditional field for recursive structures.`
     );
   }
   if (seenProps.has(schema)) {
