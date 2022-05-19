@@ -19,12 +19,6 @@ You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://
 
 Congratulations, you're now up and running with Keystone! 🚀
 
-### Online sandox
-
-You can play with this example online in web browser using free [codesandbox.io](https://codesandbox.io/) service. To launch the sandbox just open the url https://githubbox.com/keystonejs/keystone/tree/main/examples/blog and that's all.
-
-You can even fork this sanbox to make your own changes.
-
 ### Optional: add sample data
 
 This example includes sample data. To add it to your database:
