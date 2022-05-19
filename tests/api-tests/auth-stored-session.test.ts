@@ -44,7 +44,7 @@ function setup(options?: any) {
             },
             access: {
               operation: {
-                create: ({ session }) => session.data.isAdmin,
+                create: ({ session }) => !!session?.data?.isAdmin,
                 query: defaultAccess,
                 update: defaultAccess,
                 delete: defaultAccess,
@@ -166,6 +166,45 @@ describe('Auth testing', () => {
         expect(data).toHaveProperty('createPost');
         expect(data.createPost.title).toBe('The Test Post');
         expect(errors).toBe(undefined);
+      })
+    );
+
+    test(
+      'Ending the session ends the session',
+      setup()(async ({ context, graphQLRequest }) => {
+        await seed(context, initialData);
+        const { sessionToken } = await login(
+          graphQLRequest,
+          initialData.User[0].email,
+          initialData.User[0].password
+        );
+
+        expect(sessionToken).toBeTruthy();
+
+        const { body: endSession } = await graphQLRequest({
+          query: `mutation { endSession}`,
+        }).set('Cookie', `keystonejs-session=${sessionToken}`);
+
+        expect(endSession.data).toHaveProperty('endSession');
+        expect(endSession.data.endSession).toBe(true);
+
+        const { body } = await graphQLRequest({
+          query: `mutation { createPost( data: { title: "The Test Post" }) {
+          id
+          title
+        } }`,
+        }).set('Cookie', `keystonejs-session=${sessionToken}`);
+
+        const { data, errors } = body;
+
+        expect(data).toHaveProperty('createPost');
+        expect(data.createPost).toBe(null);
+        expectAccessDenied(errors, [
+          {
+            path: ['createPost'],
+            msg: "You cannot perform the 'create' operation on the list 'Post'.",
+          },
+        ]);
       })
     );
 
