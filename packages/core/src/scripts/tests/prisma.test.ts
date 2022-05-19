@@ -28,7 +28,7 @@ test('keystone prisma exits with the same code as the prisma child process exits
 
     Commands
 
-                init   Setup Prisma for your app
+                init   Set up Prisma for your app
             generate   Generate artifacts (e.g. Prisma Client)
                   db   Manage your database schema and lifecycle
              migrate   Migrate your database
@@ -41,7 +41,7 @@ test('keystone prisma exits with the same code as the prisma child process exits
 
     Examples
 
-      Setup a new Prisma project
+      Set up a new Prisma project
       $ prisma init
 
       Generate artifacts (e.g. Prisma Client)
@@ -80,6 +80,6 @@ test('keystone prisma uses the db url in the keystone config', async () => {
 
     Database connection error:
 
-    P1003: SQLite database file doesn't exist"
+    P1003: Database app.db does not exist at ./app.db"
   `);
 });
