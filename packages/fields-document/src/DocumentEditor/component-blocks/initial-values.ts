@@ -94,9 +94,12 @@ export function updateValue(schema: ComponentSchema, currentValue: any, updater:
   if (updater === undefined) return currentValue;
 
   switch (schema.kind) {
-    case 'relationship': return updater;
-    case 'form': return updater;
-    case 'child': return null;
+    case 'relationship':
+      return updater;
+    case 'form':
+      return updater;
+    case 'child':
+      return null;
     case 'conditional': {
       return {
         discriminant: updater.discriminant,
