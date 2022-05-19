@@ -414,7 +414,8 @@ export function withComponentBlocks(
               return;
             }
           }
-          let missingKeys = new Map(
+
+          const missingKeys = new Map(
             findChildPropPaths(node.props, componentBlock.schema).map(x => [
               JSON.stringify(x.path) as string | undefined,
               x.options.kind,
@@ -438,9 +439,9 @@ export function withComponentBlocks(
             return;
           }
 
-          let foundProps = new Set<string>();
+          const foundProps = new Set<string>();
 
-          let stringifiedInlinePropPaths: Record<
+          const stringifiedInlinePropPaths: Record<
             string,
             { options: ChildField['options']; index: number } | undefined
           > = {};
