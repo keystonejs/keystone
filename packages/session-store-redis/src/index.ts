@@ -29,5 +29,8 @@ export const redisSessionStore = ({ client }: Options): SessionStoreFunction => 
     async disconnect() {
       await client.disconnect();
     },
+    async quit() {
+      await client.quit();
+    },
   });
 };

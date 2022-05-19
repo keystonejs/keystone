@@ -124,6 +124,8 @@ export function createSystem(config: KeystoneConfig, isLiveReload?: boolean) {
           }
         },
         async disconnect() {
+          // Tests that use the stored session won't stop until redis connection is closed
+          await config?.session?.close?.();
           await prismaClient.$disconnect();
         },
         createContext,
