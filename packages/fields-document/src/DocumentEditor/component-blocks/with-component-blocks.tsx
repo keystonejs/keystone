@@ -1,5 +1,6 @@
 import { Editor, Element, Transforms, Range, NodeEntry, Path, Node, Text } from 'slate';
 
+import findLastIndex from 'lodash/findLastIndex';
 import weakMemoize from '@emotion/weak-memoize';
 import { ChildField, ComponentBlock, ComponentSchema } from '../../component-blocks';
 import { assert, moveChildren } from '../utils';
@@ -505,13 +506,4 @@ export function withComponentBlocks(
   };
 
   return editor;
-}
-
-function findLastIndex<T>(array: readonly T[], predicate: (item: T) => boolean): number {
-  for (let i = array.length - 1; i >= 0; --i) {
-    if (predicate(array[i])) {
-      return i;
-    }
-  }
-  return -1;
 }
