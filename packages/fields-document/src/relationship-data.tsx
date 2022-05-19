@@ -114,38 +114,39 @@ async function fetchDataForOne(
 ): Promise<RelationshipData | null> {
   // Single related item
   const id = data?.id;
-  if (id != null) {
-    const labelField = getLabelFieldsForLists(context.graphql.schema)[listKey];
-    // An exception here indicates something wrong with either the system or the
-    // configuration (e.g. a bad selection field). These will surface as system
-    // errors from the GraphQL field resolver.
-    const val = await context.graphql.run({
-      query: `query($id: ID!) {item:${
-        context.gqlNames(listKey).itemQueryName
-      }(where: {id:$id}) {${labelFieldAlias}:${labelField}\n${selection}}}`,
-      variables: { id },
-    });
-    if (val.item === null) {
-      if (!process.env.TEST_ADAPTER) {
-        // If we're unable to find the item (e.g. we have a dangling reference), or access was denied
-        // then simply return { id } and leave `label` and `data` undefined.
-        console.error(
-          `Unable to fetch relationship data: listKey: ${listKey}, many: false, selection: ${selection}, id: ${id} `
-        );
-      }
-      return { id, data: undefined, label: undefined };
+  if (id == null) return null;
+
+  const labelField = getLabelFieldsForLists(context.graphql.schema)[listKey];
+
+  // An exception here indicates something wrong with either the system or the
+  // configuration (e.g. a bad selection field). These will surface as system
+  // errors from the GraphQL field resolver.
+  const val = await context.graphql.run({
+    query: `query($id: ID!) {item:${
+      context.gqlNames(listKey).itemQueryName
+    }(where: {id:$id}) {${labelFieldAlias}:${labelField}\n${selection}}}`,
+    variables: { id },
+  });
+
+  if (val.item === null) {
+    if (!process.env.TEST_ADAPTER) {
+      // If we're unable to find the item (e.g. we have a dangling reference), or access was denied
+      // then simply return { id } and leave `label` and `data` undefined.
+      console.error(
+        `Unable to fetch relationship data: listKey: ${listKey}, many: false, selection: ${selection}, id: ${id} `
+      );
     }
-    return {
-      id,
-      label: val.item[labelFieldAlias],
-      data: (() => {
-        const { [labelFieldAlias]: _ignore, ...otherData } = val.item;
-        return otherData;
-      })(),
-    };
-  } else {
-    return null;
+    return { id, data: undefined, label: undefined };
   }
+
+  return {
+    id,
+    label: val.item[labelFieldAlias],
+    data: (() => {
+      const { [labelFieldAlias]: _ignore, ...otherData } = val.item;
+      return otherData;
+    })(),
+  };
 }
 
 export async function addRelationshipDataToComponentProps(
