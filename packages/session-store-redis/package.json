@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
-    "@node-redis/client": "^1.0.4"
+    "@redis/client": "^1.1.0"
   },
   "peerDependencies": {
     "@keystone-6/core": "^1.1.0"
