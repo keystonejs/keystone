@@ -36,7 +36,7 @@ export function getInitialPropsValue(schema: ComponentSchema): any {
       };
     }
     case 'object': {
-      let obj: Record<string, any> = {};
+      const obj: Record<string, any> = {};
       Object.keys(schema.fields).forEach(key => {
         obj[key] = getInitialPropsValue(schema.fields[key]);
       });
@@ -72,7 +72,7 @@ export function getInitialPropsValueFromInitializer(
       };
     }
     case 'object': {
-      let obj: Record<string, any> = {};
+      const obj: Record<string, any> = {};
       Object.keys(schema.fields).forEach(key => {
         obj[key] = getInitialPropsValueFromInitializer(
           schema.fields[key],
@@ -91,15 +91,12 @@ export function getInitialPropsValueFromInitializer(
 }
 
 export function updateValue(schema: ComponentSchema, currentValue: any, updater: any): any {
-  if (updater === undefined) {
-    return currentValue;
-  }
+  if (updater === undefined) return currentValue;
+
   switch (schema.kind) {
-    case 'relationship':
-    case 'form':
-      return updater;
-    case 'child':
-      return null;
+    case 'relationship': return updater;
+    case 'form': return updater;
+    case 'child': return null;
     case 'conditional': {
       return {
         discriminant: updater.discriminant,
@@ -117,7 +114,7 @@ export function updateValue(schema: ComponentSchema, currentValue: any, updater:
       };
     }
     case 'object': {
-      let obj: Record<string, any> = {};
+      const obj: Record<string, any> = {};
       Object.keys(schema.fields).forEach(key => {
         obj[key] = updateValue(schema.fields[key], currentValue[key], updater[key]);
       });
@@ -136,9 +133,7 @@ export function updateValue(schema: ComponentSchema, currentValue: any, updater:
         }
       }
       const keys = newVal.map(x => {
-        if (x.key !== undefined) {
-          return x.key;
-        }
+        if (x.key !== undefined) return x.key;
         let elementKey = getNewArrayElementKey();
         // just in case someone gives a key that is above our counter
         while (uniqueKeys.has(elementKey)) {
