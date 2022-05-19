@@ -25,7 +25,7 @@ import { ToolbarButton } from '.';
 
 const RemoveContext = createContext<null | ((index: number) => void)>(null);
 
-export function SortableList(props: {
+export function OrderableList(props: {
   onChange: (elements: readonly { key: string }[]) => void;
   elements: readonly { key: string }[];
   children: ReactNode;
@@ -95,7 +95,7 @@ const DragHandleListenersContext = createContext<Pick<
   'listeners' | 'isDragging' | 'attributes' | 'index'
 > | null>(null);
 
-export function SortableItem(props: { elementKey: string; children: ReactNode }) {
+export function OrderableItem(props: { elementKey: string; children: ReactNode }) {
   const { attributes, isDragging, listeners, setNodeRef, transform, transition, index } =
     useSortable({
       id: props.elementKey,
@@ -151,12 +151,12 @@ export function SortableItem(props: { elementKey: string; children: ReactNode })
 export function DragHandle() {
   const sortable = useContext(DragHandleListenersContext);
   if (sortable === null) {
-    throw new Error('Must use SortableItem above DragHandle');
+    throw new Error('Must use OrderableItem above DragHandle');
   }
 
   const onRemove = useContext(RemoveContext);
   if (onRemove === null) {
-    throw new Error('Must use SortableList above DragHandle');
+    throw new Error('Must use OrderableItem above DragHandle');
   }
 
   return (

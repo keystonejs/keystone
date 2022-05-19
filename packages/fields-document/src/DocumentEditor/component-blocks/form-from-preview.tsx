@@ -7,7 +7,7 @@ import { jsx, Stack } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { memo, useMemo } from 'react';
 import { ReactElement } from 'react';
-import { DragHandle, SortableItem, SortableList } from '../primitives/sortable';
+import { DragHandle, OrderableItem, OrderableList } from '../primitives/orderable';
 import {
   ArrayField,
   ComponentSchema,
@@ -31,11 +31,11 @@ const fieldRenderers: {
   array({ props }) {
     return (
       <Stack gap="medium">
-        <SortableList {...props}>
+        <OrderableList {...props}>
           {props.elements.map(val => {
-            return <SortableItemInForm elementKey={val.key} {...val} />;
+            return <OrderableItemInForm elementKey={val.key} {...val} />;
           })}
-        </SortableList>
+        </OrderableList>
         <Button
           autoFocus={props.autoFocus}
           onClick={() => {
@@ -161,16 +161,16 @@ export const FormValueContentFromPreviewProps = memo(function FormValueContentFr
   return <Comp props={props as any} />;
 });
 
-const SortableItemInForm = memo(function SortableItemInForm(
+const OrderableItemInForm = memo(function OrderableItemInForm(
   props: GenericPreviewProps<ComponentSchema, unknown> & { elementKey: string }
 ) {
   return (
-    <SortableItem elementKey={props.elementKey}>
+    <OrderableItem elementKey={props.elementKey}>
       <Stack across align="center" gap="small" css={{ justifyContent: 'center' }}>
         <DragHandle />
       </Stack>
       {isNonChildFieldPreviewProps(props) && <FormValueContentFromPreviewProps {...props} />}
-    </SortableItem>
+    </OrderableItem>
   );
 });
 
