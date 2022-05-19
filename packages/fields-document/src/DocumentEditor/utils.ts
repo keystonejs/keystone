@@ -101,7 +101,7 @@ export function useElementWithSetNodes<TElement extends Element>(
       Transforms.setNodes(editor, changes, { at: ReactEditor.findPath(editor, currentElement) });
       setState({
         element: currentElement,
-        elementWithChanges: { ...currentElement, ...changes } as any,
+        elementWithChanges: { ...currentElement, ...changes },
       });
     },
     [editor]
