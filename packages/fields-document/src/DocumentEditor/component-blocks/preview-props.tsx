@@ -293,7 +293,7 @@ export function createGetPreviewProps<Schema extends ComponentSchema, ChildField
     ) => void,
     path: readonly string[]
   ): MemoState<Schema> {
-    let innerState = new Map<string, MemoState<ComponentSchema>>();
+    const innerState = new Map<string, MemoState<ComponentSchema>>();
     const memoizedInfo = (
       memoizedInfoForSchema[schema.kind] as (
         schema: ComponentSchema,
@@ -302,7 +302,7 @@ export function createGetPreviewProps<Schema extends ComponentSchema, ChildField
         ) => void
       ) => any
     )(schema, onChange);
-    let state: MemoState<ComponentSchema> = {
+    const state: MemoState<ComponentSchema> = {
       value,
       inner: innerState,
       props: getPreviewPropsForProp(
