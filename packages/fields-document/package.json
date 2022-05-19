@@ -9,8 +9,7 @@
     "dist",
     "component-blocks",
     "primitives",
-    "views",
-    "component-views"
+    "views"
   ],
   "preconstruct": {
     "entrypoints": [
