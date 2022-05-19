@@ -25,7 +25,7 @@ function assertValidComponentSchemaInner(
       return;
     }
     throw new Error(
-      `The relationship field at "${propPath.join('.')}"  has the listKey "${
+      `The relationship field at "${propPath.join('.')}" has the listKey "${
         schema.listKey
       }" but no list named "${schema.listKey}" exists.`
     );

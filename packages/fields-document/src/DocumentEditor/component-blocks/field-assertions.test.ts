@@ -158,7 +158,7 @@ test('relationship field where no list exists with that name', () => {
       new Set()
     );
   }).toThrowErrorMatchingInlineSnapshot(
-    `"The relationship field at \\"object.a\\"  has the listKey \\"Blah\\" but no list named \\"Blah\\" exists."`
+    `"The relationship field at \\"object.a\\" has the listKey \\"Blah\\" but no list named \\"Blah\\" exists."`
   );
 });
 
