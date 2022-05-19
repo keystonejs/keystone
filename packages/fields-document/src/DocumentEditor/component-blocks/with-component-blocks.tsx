@@ -455,43 +455,46 @@ export function withComponentBlocks(
             if (
               // children that are not these will be handled by
               // the generic allowedChildren normalization
-              childNode.type === 'component-inline-prop' ||
-              childNode.type === 'component-block-prop'
+              childNode.type !== 'component-inline-prop' &&
+              childNode.type !== 'component-block-prop'
+            ) continue;
+
+            const childPath = [...path, index];
+            const stringifiedPropPath = JSON.stringify(childNode.propPath);
+            if (stringifiedInlinePropPaths[stringifiedPropPath] === undefined) {
+              Transforms.removeNodes(editor, { at: childPath });
+              return;
+            }
+
+            if (foundProps.has(stringifiedPropPath)) {
+              Transforms.removeNodes(editor, { at: childPath });
+              return;
+            }
+
+            foundProps.add(stringifiedPropPath);
+            const propInfo = stringifiedInlinePropPaths[stringifiedPropPath]!;
+            const expectedIndex = propInfo.index;
+            if (index !== expectedIndex) {
+              Transforms.moveNodes(editor, { at: childPath, to: [...path, expectedIndex] });
+              return;
+            }
+
+            const expectedChildNodeType = `component-${propInfo.options.kind}-prop` as const;
+            if (childNode.type !== expectedChildNodeType) {
+              Transforms.setNodes(editor, { type: expectedChildNodeType }, { at: childPath });
+              return;
+            }
+
+            const documentFeatures = memoizedGetDocumentFeaturesForChildField(propInfo.options);
+            if (
+              normalizeNodeWithinComponentProp(
+                [childNode, childPath],
+                editor,
+                documentFeatures,
+                relationships
+              )
             ) {
-              const childPath = [...path, index];
-              const stringifiedPropPath = JSON.stringify(childNode.propPath);
-              if (stringifiedInlinePropPaths[stringifiedPropPath] === undefined) {
-                Transforms.removeNodes(editor, { at: childPath });
-                return;
-              } else {
-                if (foundProps.has(stringifiedPropPath)) {
-                  Transforms.removeNodes(editor, { at: childPath });
-                  return;
-                }
-                foundProps.add(stringifiedPropPath);
-                const propInfo = stringifiedInlinePropPaths[stringifiedPropPath]!;
-                const expectedIndex = propInfo.index;
-                if (index !== expectedIndex) {
-                  Transforms.moveNodes(editor, { at: childPath, to: [...path, expectedIndex] });
-                  return;
-                }
-                const expectedChildNodeType = `component-${propInfo.options.kind}-prop` as const;
-                if (childNode.type !== expectedChildNodeType) {
-                  Transforms.setNodes(editor, { type: expectedChildNodeType }, { at: childPath });
-                  return;
-                }
-                const documentFeatures = memoizedGetDocumentFeaturesForChildField(propInfo.options);
-                if (
-                  normalizeNodeWithinComponentProp(
-                    [childNode, childPath],
-                    editor,
-                    documentFeatures,
-                    relationships
-                  )
-                ) {
-                  return;
-                }
-              }
+              return;
             }
           }
         }
