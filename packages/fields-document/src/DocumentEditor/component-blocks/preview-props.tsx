@@ -123,7 +123,7 @@ export function createGetPreviewProps<Schema extends ComponentSchema, ChildField
             return [
               key,
               (newVal: (prevVal: unknown) => unknown) => {
-                onChange(val => ({ ...(val as any), [key]: newVal((val as any)[key]) }));
+                onChange(val => ({ ...val, [key]: newVal(val[key]) }));
               },
             ];
           })
@@ -169,7 +169,7 @@ export function createGetPreviewProps<Schema extends ComponentSchema, ChildField
       Object.keys(schema.fields).forEach(key => {
         fields[key] = getInnerProp(
           schema.fields[key],
-          (value as any)[key],
+          value[key],
           memoized.innerOnChanges[key],
           key
         );
@@ -278,7 +278,7 @@ export function createGetPreviewProps<Schema extends ComponentSchema, ChildField
   ): GenericPreviewProps<Schema, ChildFieldElement> {
     return previewPropsFactories[schema.kind](
       schema as any,
-      value as any,
+      value,
       memoedThing as any,
       path,
       getInnerProp
