@@ -401,7 +401,7 @@ export const fields = {
       (discriminant.validate(true) || discriminant.validate(false))
     ) {
       throw new Error(
-        'The discriminant of a conditional field must not allow both strings and booleans to be valid values. only strings or only booleans can be valid'
+        'The discriminant of a conditional field only supports string values, or boolean values, not both.'
       );
     }
     return {
