@@ -25,14 +25,14 @@ export function findChildPropPathsForProp(
         path.concat('value')
       );
     case 'object': {
-      let paths: PathToChildFieldWithOption[] = [];
+      const paths: PathToChildFieldWithOption[] = [];
       Object.keys(schema.fields).forEach(key => {
         paths.push(...findChildPropPathsForProp(value[key], schema.fields[key], path.concat(key)));
       });
       return paths;
     }
     case 'array': {
-      let paths: PathToChildFieldWithOption[] = [];
+      const paths: PathToChildFieldWithOption[] = [];
       (value as any[]).forEach((val, i) => {
         paths.push(...findChildPropPathsForProp(val, schema.element, path.concat(i)));
       });
@@ -45,7 +45,7 @@ export function findChildPropPaths(
   value: Record<string, any>,
   props: Record<string, ComponentSchema>
 ): { path: ReadonlyPropPath | undefined; options: ChildField['options'] }[] {
-  let propPaths = findChildPropPathsForProp(value, { kind: 'object', fields: props }, []);
+  const propPaths = findChildPropPathsForProp(value, { kind: 'object', fields: props }, []);
   if (!propPaths.length) {
     return [
       {
