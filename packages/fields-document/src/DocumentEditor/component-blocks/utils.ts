@@ -255,8 +255,7 @@ export function getAncestorSchemas(
       currentProp.kind === 'form' ||
       currentProp.kind === 'relationship'
     ) {
-      console.log(key);
-      throw new Error('unexpected prop');
+      throw new Error(`unexpected prop "${key}"`);
     } else {
       assertNever(currentProp);
     }
