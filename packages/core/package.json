@@ -147,7 +147,6 @@
       "artifacts.ts",
       "migrations.ts",
       "testing.ts",
-      "schema/index.ts",
       "session/index.ts",
       "scripts/index.ts",
       "admin-ui/components/index.ts",
