@@ -427,33 +427,6 @@ Local options:
   keystone to host the images, otherwise set it to an object with a `path` property
   - `path`: The partial path where keystone will host the images, eg `/images` or `/files`
 
-```typescript
-import { config } from '@keystone-6/core';
-import { lists } from './schema';
-
-export default config({
-   /* ... */
-  storage: {
-    my_images: {
-      kind: 'local',
-      generateUrl: path => `http://localhost:3000/images${path}`,
-      serverRoute: {
-        path: '/images',
-      },
-      storagePath: 'public/images',
-    },
-    my_files: {
-      kind: 'local',
-      generateUrl: path => `http://localhost:3000/files${path}`,
-      serverRoute: {
-        path: '/files',
-      },
-      storagePath: 'public/files',
-    },
-  },
-});
-```
-
 S3 options:
 
 - `bucketName`: The name of your s3 bucket
@@ -471,7 +444,7 @@ S3 options:
 ```typescript
 import { config } from '@keystone-6/core';
 import dotenv from 'dotenv';
-import { lists } from './schema';
+/* ... */
 
 dotenv.config();
 
@@ -485,7 +458,7 @@ const {
 export default config({
    /* ... */
   storage: {
-    my_images: {
+    my_S3_images: {
       kind: 's3',
       bucketName,
       region,
@@ -495,13 +468,13 @@ export default config({
       endpoint: 'http://127.0.0.1:9000/',
       forcePathStyle: true,
     },
-    my_files: {
-      kind: 's3',
-      bucketName,
-      region,
-      accessKeyId,
-      secretAccessKey,
-      forcePathStyle: true,
+    my_local_images: {
+      kind: 'local',
+      generatedUrl: path => `http://localhost:3000/images${path}`,
+      serverRoute: {
+        path: '/images',
+      },
+      storagePath: 'public/images',
     },
   },
 });
