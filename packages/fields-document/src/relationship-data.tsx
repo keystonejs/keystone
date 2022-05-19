@@ -84,29 +84,26 @@ export async function fetchRelationshipData(
   selection: string,
   data: any
 ) {
-  if (many) {
-    const ids = Array.isArray(data) ? data.filter(item => item.id != null).map(x => x.id) : [];
+  if (!many) return fetchDataForOne(context, listKey, selection, data);
 
-    if (ids.length) {
-      const labelField = getLabelFieldsForLists(context.graphql.schema)[listKey];
-      const val = await context.graphql.run({
-        query: `query($ids: [ID!]!) {items:${
-          context.gqlNames(listKey).listQueryName
-        }(where: { id: { in: $ids } }) {${idFieldAlias}:id ${labelFieldAlias}:${labelField}\n${
-          selection || ''
-        }}}`,
-        variables: { ids },
-      });
+  const ids = Array.isArray(data) ? data.filter(item => item.id != null).map(x => x.id) : [];
+  if (!ids.length) return [];
 
-      return Array.isArray(val.items)
-        ? val.items.map(({ [labelFieldAlias]: label, [idFieldAlias]: id, ...data }) => {
-            return { id, label, data };
-          })
-        : [];
-    }
-    return [];
-  }
-  return fetchDataForOne(context, listKey, selection, data);
+  const labelField = getLabelFieldsForLists(context.graphql.schema)[listKey];
+  const val = await context.graphql.run({
+    query: `query($ids: [ID!]!) {items:${
+      context.gqlNames(listKey).listQueryName
+    }(where: { id: { in: $ids } }) {${idFieldAlias}:id ${labelFieldAlias}:${labelField}\n${
+      selection || ''
+    }}}`,
+    variables: { ids },
+  });
+
+  return Array.isArray(val.items)
+    ? val.items.map(({ [labelFieldAlias]: label, [idFieldAlias]: id, ...data }) => {
+        return { id, label, data };
+      })
+    : [];
 }
 
 async function fetchDataForOne(
