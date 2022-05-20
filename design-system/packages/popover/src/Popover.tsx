@@ -216,6 +216,9 @@ export const PopoverDialog = forwardRef<HTMLDivElement, DialogProps>(
           focusTrap.current.deactivate();
         }
       }
+      return () => {
+        focusTrap.current?.deactivate();
+      };
     }, [isVisible, focusTrap]);
 
     return (
