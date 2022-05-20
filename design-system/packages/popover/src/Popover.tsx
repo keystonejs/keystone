@@ -201,7 +201,7 @@ export const PopoverDialog = forwardRef<HTMLDivElement, DialogProps>(
     const focusTrap = useRef<focusTrapModule.FocusTrap | null>(null);
 
     useEffect(() => {
-      if (focusTrapRef?.current) {
+      if (focusTrapRef.current) {
         focusTrap.current = focusTrapModule.createFocusTrap(focusTrapRef.current, {
           allowOutsideClick: true,
         });
@@ -209,16 +209,17 @@ export const PopoverDialog = forwardRef<HTMLDivElement, DialogProps>(
     }, [focusTrapRef]);
 
     useEffect(() => {
-      if (focusTrap?.current) {
+      const focusTrapInstance = focusTrap.current;
+      if (focusTrapInstance) {
         if (isVisible) {
-          focusTrap.current.activate();
+          focusTrapInstance.activate();
+          return () => {
+            focusTrapInstance.deactivate();
+          };
         } else {
-          focusTrap.current.deactivate();
+          focusTrapInstance.deactivate();
         }
       }
-      return () => {
-        focusTrap.current?.deactivate();
-      };
     }, [isVisible, focusTrap]);
 
     return (
