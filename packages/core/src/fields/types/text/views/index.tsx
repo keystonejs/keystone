@@ -24,7 +24,7 @@ export const Field = ({
   const validationMessages = validate(value, field.validation, field.label);
   return (
     <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
+      <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
       {onChange ? (
         <Stack gap="small">
           {field.displayMode === 'textarea' ? (
