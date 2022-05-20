@@ -99,13 +99,11 @@ const getKeyDownHandler = (editor: Editor) => (event: KeyboardEvent) => {
     return;
   }
   if (event.key === 'Tab') {
-    if (event.shiftKey) {
-      unnestList(editor);
-    } else {
-      nestList(editor);
+    const didAction = event.shiftKey ? unnestList(editor) : nestList(editor);
+    if (didAction) {
+      event.preventDefault();
+      return;
     }
-    event.preventDefault();
-    return;
   }
   if (event.key === 'Tab' && editor.selection) {
     const layoutArea = Editor.above(editor, {
