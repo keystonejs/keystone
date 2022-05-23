@@ -102,9 +102,7 @@ can still do this, but if you plan on serving them from another location, you ca
 
 #### New bits
 
-S3 support is no longer 'experimental'
-S3 supports proxying through the keystone server
-S3 signing is now supported
+S3 is now supported
 `preserve` flag added to both `file` and `image` fields to allow removal of files from the source
 Support for multiple `storage` sources - each `image` and `file` field can now use its own config (or not)
 

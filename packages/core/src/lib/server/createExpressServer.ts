@@ -1,15 +1,11 @@
 import { createServer, IncomingMessage, Server, ServerResponse } from 'http';
-import { pipeline } from 'stream';
-import { promisify } from 'util';
 import cors, { CorsOptions } from 'cors';
 import express from 'express';
 import { GraphQLSchema } from 'graphql';
 import { graphqlUploadExpress } from 'graphql-upload';
 import { ApolloServer } from 'apollo-server-express';
-import fetch from 'node-fetch';
 import type { KeystoneConfig, CreateContext, SessionStrategy, GraphQLConfig } from '../../types';
 import { createSessionContext } from '../../session';
-import { getS3AssetsEndpoint } from '../assets/s3';
 import { createApolloServerExpress } from './createApolloServer';
 import { addHealthCheck } from './addHealthCheck';
 
@@ -55,8 +51,6 @@ const addApolloServer = async ({
   });
   return apolloServer;
 };
-
-const streamPipeline = promisify(pipeline);
 
 export const createExpressServer = async (
   config: KeystoneConfig,
@@ -110,53 +104,20 @@ export const createExpressServer = async (
 
   if (config.storage) {
     for (const val of Object.values(config.storage)) {
-      if (!val.serverRoute) continue;
-      if (val.kind === 'local') {
-        expressServer.use(
-          val.serverRoute.path,
-          express.static(val.storagePath, {
-            setHeaders(res) {
-              if (val.type === 'file') {
-                res.setHeader('Content-Type', 'application/octet-stream');
-              }
-            },
-            index: false,
-            redirect: false,
-            lastModified: false,
-          })
-        );
-      } else if (val.kind === 's3') {
-        const endpoint = getS3AssetsEndpoint(val);
-        expressServer.use(`${val.serverRoute.path}/:id`, async (req, res) => {
-          const s3Url = new URL(endpoint);
-          s3Url.pathname += `${val.pathPrefix || ''}${req.params.id}`;
-
-          // pass through the URL query parameters verbatim
-          // the URL object is always absolute but req.url is not
-          // so we have to provide a base URL but we don't really care what it is
-          const { searchParams } = new URL(req.url, 'https://example.com');
-          for (const [key, value] of searchParams) {
-            s3Url.searchParams.append(key, value);
-          }
-
-          const imageResponse = await fetch(s3Url.toString());
-          if (!imageResponse.ok) {
-            return res
-              .status(imageResponse.status)
-              .end(`Unexpected response ${imageResponse.statusText}`);
-          }
-
-          for (const header of ['Content-Type', 'Content-Length', 'Cache-Control']) {
-            const headerValue = imageResponse.headers.get(header);
-            if (headerValue) {
-              res.setHeader(header, headerValue);
+      if (val.kind !== 'local' || !val.serverRoute) continue;
+      expressServer.use(
+        val.serverRoute.path,
+        express.static(val.storagePath, {
+          setHeaders(res) {
+            if (val.type === 'file') {
+              res.setHeader('Content-Type', 'application/octet-stream');
             }
-          }
-
-          res.status(200);
-          await streamPipeline(imageResponse.body, res);
-        });
-      }
+          },
+          index: false,
+          redirect: false,
+          lastModified: false,
+        })
+      );
     }
   }
 

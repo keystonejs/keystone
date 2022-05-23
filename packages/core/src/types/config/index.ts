@@ -58,11 +58,6 @@ export type StorageConfig = (
       /** Sets signing of the asset - for use when you want private assets */
       signed?: { expiry: number };
       generateUrl?: (path: string) => string;
-      /** Sets up proxying for s3 files through keystone's server */
-      serverRoute?: {
-        /** The partial path that the assets will be hosted at by keystone, eg `/images` or `/our-cool-files` */
-        path: string;
-      };
       /** Sets whether the assets should be preserved locally on removal from keystone's database */
       preserve?: boolean;
       pathPrefix?: string;

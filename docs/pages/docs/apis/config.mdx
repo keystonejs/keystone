@@ -435,8 +435,6 @@ S3 options:
 - `secretAccessKey`: Your Access Key secret
 - `generateUrl`: A funcion that recieves the original s3 url and returns a string that will be returned
   from graphql as the `url`. If you want the s3 urls to be returned as is you do not need to set this.
-- `serverRoute`: Sets whether keystone will proxy the images on its server.
-  - `path`: The partial path where keystone will proxy the images, eg `/images` or `/files`
 - `pathPrefix`: The prefix for the file, used to set the subfolder of your bucket files will be stored in.
 - `endpoint`: The endpoint to use - if provided, this endpoint will be used instead of the default amazon s3 endpoint
 - `forcePathStyle`: Force the old pathstyle of using the bucket name after the host
