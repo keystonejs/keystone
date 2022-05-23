@@ -76,7 +76,7 @@ const AuthenticatedItemDialog = ({ item }: { item: AuthenticatedItem | undefined
     >
       {item && item.state === 'authenticated' ? (
         <div css={{ fontSize: typography.fontSize.small }}>
-          Signed in as <strong>{item.label}</strong>
+          Signed in as <strong css={{ display: 'block' }}>{item.label}</strong>
         </div>
       ) : (
         process.env.NODE_ENV !== 'production' && (
