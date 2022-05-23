@@ -13,7 +13,7 @@ const defaultTransformName = (filename: string) => {
   // This regex lazily matches for any characters that aren't a new line
   // it then optionally matches the last instance of a "." symbol
   // followed by any alphanumerical character before the end of the string
-  const [, name, ext] = filename.match(/^([^:\n].*?)(\.[A-Za-z0-9]+)?$/) as RegExpMatchArray;
+  const [, name, ext] = filename.match(/^([^:\n].*?)(\.[A-Za-z0-9]{0,10})?$/) as RegExpMatchArray;
 
   const id = crypto
     .randomBytes(24)
@@ -23,7 +23,7 @@ const defaultTransformName = (filename: string) => {
 
   // console.log(id, id.length, id.slice(12).length);
   const urlSafeName = filenamify(slugify(name), {
-    maxLength: 100 - id.length,
+    maxLength: 100 - id.length - (ext ? ext.length : 0),
     replacement: '-',
   });
   if (ext) {
