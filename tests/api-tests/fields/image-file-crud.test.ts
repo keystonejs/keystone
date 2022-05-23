@@ -77,8 +77,6 @@ const getFileHash = async (
     contentFromURL = await fs.readFile(path.join(config.folder, filename));
   }
 
-  await fs.writeFile(`temp/${filename}`, contentFromURL);
-
   return createHash('sha1').update(contentFromURL).digest('hex');
 };
 
