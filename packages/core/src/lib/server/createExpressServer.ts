@@ -117,9 +117,7 @@ export const createExpressServer = async (
         const endpoint = getS3AssetsEndpoint(val);
         expressServer.use(`${val.serverRoute.path}/:id`, async (req, res) => {
           const s3Url = new URL(endpoint);
-          s3Url.pathname += `${val.pathPrefix || ''}${
-            req.params.id
-          }`;
+          s3Url.pathname += `${val.pathPrefix || ''}${req.params.id}`;
 
           // pass through the URL query parameters verbatim
           // the URL object is always absolute but req.url is not
