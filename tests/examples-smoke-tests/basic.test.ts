@@ -2,7 +2,7 @@ import { Browser, Page } from 'playwright';
 import fetch from 'node-fetch';
 import { exampleProjectTests, initFirstItemTest, loadIndex } from './utils';
 
-exampleProjectTests('../examples-staging/basic', browserType => {
+exampleProjectTests('../examples-staging/basic', (browserType, mode) => {
   let browser: Browser = undefined as any;
   let page: Page = undefined as any;
   beforeAll(async () => {
@@ -12,7 +12,9 @@ exampleProjectTests('../examples-staging/basic', browserType => {
   });
   initFirstItemTest(() => page);
   test('sign out and sign in', async () => {
-    await page.click('[aria-label="Links and signout"]');
+    if (mode === 'dev') {
+      await page.click('[aria-label="Links and signout"]');
+    }
     await Promise.all([page.waitForNavigation(), page.click('button:has-text("Sign out")')]);
     await page.fill('[placeholder="email"]', 'admin@keystonejs.com');
     await page.fill('[placeholder="password"]', 'password');

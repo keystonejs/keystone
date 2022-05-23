@@ -76,38 +76,44 @@ const AuthenticatedItemDialog = ({ item }: { item: AuthenticatedItem | undefined
     >
       {item && item.state === 'authenticated' ? (
         <div css={{ fontSize: typography.fontSize.small }}>
-          Signed in as <strong>{item.label}</strong>
+          Signed in as <strong css={{ display: 'block' }}>{item.label}</strong>
         </div>
       ) : (
-        <div css={{ fontSize: typography.fontSize.small }}>GraphQL Playground and Docs</div>
+        process.env.NODE_ENV !== 'production' && (
+          <div css={{ fontSize: typography.fontSize.small }}>GraphQL Playground and Docs</div>
+        )
       )}
 
-      <Popover
-        placement="bottom"
-        triggerRenderer={({ triggerProps }) => (
-          <Button
-            size="small"
-            style={{ padding: 0, width: 36 }}
-            aria-label="Links and signout"
-            {...triggerProps}
-          >
-            <MoreHorizontalIcon />
-          </Button>
-        )}
-      >
-        <Stack gap="medium" padding="large" dividers="between">
-          <PopoverLink target="_blank" href={apiPath}>
-            API Explorer
-          </PopoverLink>
-          <PopoverLink target="_blank" href="https://github.com/keystonejs/keystone">
-            GitHub Repository
-          </PopoverLink>
-          <PopoverLink target="_blank" href="https://keystonejs.com">
-            Keystone Documentation
-          </PopoverLink>
-          {item && item.state === 'authenticated' && <SignoutButton />}
-        </Stack>
-      </Popover>
+      {process.env.NODE_ENV === 'production' ? (
+        item && item.state === 'authenticated' && <SignoutButton />
+      ) : (
+        <Popover
+          placement="bottom"
+          triggerRenderer={({ triggerProps }) => (
+            <Button
+              size="small"
+              style={{ padding: 0, width: 36 }}
+              aria-label="Links and signout"
+              {...triggerProps}
+            >
+              <MoreHorizontalIcon />
+            </Button>
+          )}
+        >
+          <Stack gap="medium" padding="large" dividers="between">
+            <PopoverLink target="_blank" href={apiPath}>
+              API Explorer
+            </PopoverLink>
+            <PopoverLink target="_blank" href="https://github.com/keystonejs/keystone">
+              GitHub Repository
+            </PopoverLink>
+            <PopoverLink target="_blank" href="https://keystonejs.com">
+              Keystone Documentation
+            </PopoverLink>
+            {item && item.state === 'authenticated' && <SignoutButton />}
+          </Stack>
+        </Popover>
+      )}
     </div>
   );
 };
