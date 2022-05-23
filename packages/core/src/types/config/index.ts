@@ -90,7 +90,7 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
    * Each entry should be of either `kind: 'local'` or `kind: 's3'`, and follow the configuration of each.
    *
    * When configuring a `file` or `image` field that uses the storage, use the key in the storage object
-   * as the `storage` config option for the field.
+   * as the `storage` option for that field.
    */
   storage?: Record<string, StorageConfig>;
   /** Experimental config options */
@@ -238,7 +238,6 @@ export type GraphQLConfig = {
 
 export type ExtendGraphqlSchema = (schema: GraphQLSchema) => GraphQLSchema;
 
-// config.storage
 
 export type FilesConfig = {
   upload: AssetMode;
@@ -257,7 +256,6 @@ export type FilesConfig = {
   };
 };
 
-// config.storage
 
 export type ImagesConfig = {
   upload: AssetMode;
