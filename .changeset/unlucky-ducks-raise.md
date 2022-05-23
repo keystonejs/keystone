@@ -1,27 +1,18 @@
 ---
 '@keystone-6/core': major
 ---
-
-Large changes to the files and images fields.
-
 #### Breaking
 
 ##### Move of `image` and `files` in the keystone config into new option `storage`
 
 The `image` and `files` config options have been removed from Keystone's config - the configuration has
-been moved into the `storage` option.
+been moved into a new `storage` configuration object.
 
 Old:
 
 ```ts
 export default config({
     image: { upload: 's3' },
-    s3: {
-        bucketName: S3_BUCKET_NAME,
-        region: S3_REGION,
-        accessKeyId: S3_ACCESS_KEY_ID,
-        secretAccessKey: S3_SECRET_ACCESS_KEY
-    },
     lists: { 
         images: { fields: { image() }
         /* ... */
@@ -52,7 +43,7 @@ export default config({
 })
 ```
 
-##### Remove use of refs for `images` and `files`
+##### Removal of refs for `images` and `files`
 
 Refs were an interesting situation! They allowed you to link images stored in your storage source (s3 or local), and use the same
 image anywhere else images are used. This causes a bunch of complication, and prevented Keystone ever reliably being able
@@ -82,7 +73,7 @@ export default config({
 
 This allows mirroring of the old functionality, while allowing us to add the below feature/breaking change.
 
-##### Images will now be deleted from the source by default
+##### Images and Files will now be deleted when deleted
 
 Before this change, if you uploaded a file or image, Keystone would never remove it from where it was stored. The inability to tidy up unused
 files or images was unwelcome. With the removal of `ref`, we can no remove things from the source, and this will be done by default.
