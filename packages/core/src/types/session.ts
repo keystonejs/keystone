@@ -22,7 +22,7 @@ export type SessionStrategy<StoredSessionData, StartSessionData = never> = {
     createContext: CreateContext;
   }) => Promise<StoredSessionData | undefined>;
   // closes the store
-  close?: () => Promise<void | undefined>;
+  disconnect?: () => Promise<void>;
 };
 
 export type SessionStore = {
