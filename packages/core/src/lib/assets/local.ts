@@ -20,7 +20,7 @@ export function localImageAssetsAPI(
       await fs.writeFile(path.join(storageConfig.storagePath, `${id}.${extension}`), buffer);
     },
     async delete(id, extension) {
-      fs.unlink(path.join(storageConfig.storagePath, `${id}.${extension}`));
+      await fs.unlink(path.join(storageConfig.storagePath, `${id}.${extension}`));
     },
   };
 }
@@ -52,7 +52,7 @@ export function localFileAssetsAPI(storageConfig: StorageConfig & { kind: 'local
       }
     },
     async delete(filename) {
-      fs.unlink(path.join(storageConfig.storagePath, filename));
+      await fs.unlink(path.join(storageConfig.storagePath, filename));
     },
   };
 }
