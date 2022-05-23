@@ -238,7 +238,6 @@ export type GraphQLConfig = {
 
 export type ExtendGraphqlSchema = (schema: GraphQLSchema) => GraphQLSchema;
 
-
 export type FilesConfig = {
   upload: AssetMode;
   transformFilename?: (str: string) => string;
@@ -255,7 +254,6 @@ export type FilesConfig = {
     baseUrl?: string;
   };
 };
-
 
 export type ImagesConfig = {
   upload: AssetMode;

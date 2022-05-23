@@ -62,7 +62,7 @@ export function s3FileAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }): 
           Bucket: storageConfig.bucketName,
           Key: (storageConfig.pathPrefix || '') + filename,
           Body: stream,
-          ContentType: 'application/octet-stream'
+          ContentType: 'application/octet-stream',
         },
       });
 
