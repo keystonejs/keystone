@@ -169,9 +169,9 @@ export function storedSessions({
       }
       await end?.({ req, res, createContext });
     },
-    async close() {
+    async disconnect() {
       if (isConnected) {
-        await store.quit?.();
+        await store.disconnect?.();
         isConnected = false;
       }
     },
