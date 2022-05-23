@@ -93,7 +93,8 @@ export function getS3AssetsEndpoint(storageConfig: StorageConfig & { kind: 's3' 
   }
 
   const endpointString = endpoint.toString();
-  return endpointString;
+  if (endpointString.endsWith('/')) return endpointString;
+  return `${endpointString}/`;
 }
 
 function s3AssetsCommon(storageConfig: StorageConfig & { kind: 's3' }) {

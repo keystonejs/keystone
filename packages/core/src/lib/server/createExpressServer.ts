@@ -117,7 +117,7 @@ export const createExpressServer = async (
         const endpoint = getS3AssetsEndpoint(val);
         expressServer.use(`${val.serverRoute.path}/:id`, async (req, res) => {
           const s3Url = new URL(endpoint);
-          s3Url.pathname += `${s3Url.pathname.endsWith('/') ? '' : '/'}${val.pathPrefix || ''}${
+          s3Url.pathname += `${val.pathPrefix || ''}${
             req.params.id
           }`;
 
