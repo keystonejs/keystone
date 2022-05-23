@@ -75,7 +75,7 @@ export const initFirstItemTest = (getPage: () => playwright.Page) => {
 
 export const exampleProjectTests = (
   exampleName: string,
-  tests: (browser: playwright.BrowserType<playwright.Browser>) => void
+  tests: (browser: playwright.BrowserType<playwright.Browser>, mode: 'dev' | 'prod') => void
 ) => {
   const projectDir = path.join(__dirname, '..', '..', 'examples', exampleName);
   describe.each(['dev', 'prod'] as const)('%s', mode => {
@@ -151,7 +151,7 @@ export const exampleProjectTests = (
       beforeAll(async () => {
         await deleteAllData(projectDir);
       });
-      tests(playwright[browserName]);
+      tests(playwright[browserName], mode);
     });
   });
 };
