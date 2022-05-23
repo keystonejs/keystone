@@ -135,8 +135,7 @@ export const image =
             filesize === null ||
             height === null ||
             width === null ||
-            id === null ||
-            storage === null
+            id === null
           ) {
             return null;
           }
