@@ -23,10 +23,6 @@ export default config({
       type: 'image',
       bucketName,
       region,
-      pathPrefix: 'something/',
-      generateUrl: path => {
-        return `localhost:3000${path.split('/something')[1]}`;
-      },
       accessKeyId,
       secretAccessKey,
       signed: { expiry: 5000 },

@@ -5,7 +5,6 @@ import fs from 'fs-extra';
 import { StorageConfig } from '../../types';
 // import { getImageMetadataFromBuffer } from './createImagesContext';
 import { FileAdapter, ImageAdapter } from './types';
-import { streamToBuffer } from './utils';
 
 export function localImageAssetsAPI(
   storageConfig: StorageConfig & { kind: 'local' }
@@ -14,8 +13,8 @@ export function localImageAssetsAPI(
     async url(id, extension) {
       return storageConfig.generateUrl(`/${id}.${extension}`);
     },
-    async upload(stream, id, extension) {
-      const buffer = await streamToBuffer(stream);
+    async upload(buffer, id, extension) {
+      // const buffer = await streamToBuffer(stream);
 
       await fs.writeFile(path.join(storageConfig.storagePath, `${id}.${extension}`), buffer);
     },

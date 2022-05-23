@@ -53,13 +53,12 @@ export function createImagesContext(config: KeystoneConfig): ImagesContext {
         const storageConfig = config.storage![storageString];
         const { transformName = () => uuid() } = storageConfig;
 
-        // Duplicating this get image data stuff now sucks
         const buffer = await streamToBuffer(stream);
         const { extension, ...rest } = getImageMetadataFromBuffer(buffer);
 
         const id = await transformName(originalFilename, extension);
 
-        await adapter.upload(stream, id, extension);
+        await adapter.upload(buffer, id, extension);
         return { id, extension, ...rest };
       },
       deleteAtSource: adapter.delete,

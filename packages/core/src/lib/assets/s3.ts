@@ -4,7 +4,6 @@ import { Upload } from '@aws-sdk/lib-storage';
 
 import { StorageConfig } from '../../types';
 import { FileAdapter, ImageAdapter } from './types';
-import { streamToBuffer } from './utils';
 
 export function s3ImageAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }): ImageAdapter {
   const { generateUrl, s3, presign, s3Endpoint } = s3AssetsCommon(storageConfig);
@@ -15,9 +14,7 @@ export function s3ImageAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }):
       }
       return generateUrl(await presign(`${id}.${extension}`));
     },
-    async upload(stream, id, extension) {
-      const buffer = await streamToBuffer(stream);
-
+    async upload(buffer, id, extension) {
       const upload = new Upload({
         client: s3,
         params: {

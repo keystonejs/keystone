@@ -69,17 +69,28 @@ const getFileHash = async (
   filename: string,
   config: { matrixValue: 's3' } | { matrixValue: 'local'; folder: string }
 ) => {
-  let contentFromURL = null;
+  let contentFromURL;
 
-  try {
-    if (config.matrixValue === 's3') {
-      contentFromURL = await fetch(filename).then(x => x.buffer());
-    } else {
-      contentFromURL = await fs.readFile(path.join(config.folder, filename));
-    }
-  } catch (e) {}
+  if (config.matrixValue === 's3') {
+    contentFromURL = await fetch(filename).then(x => x.buffer());
+  } else {
+    contentFromURL = await fs.readFile(path.join(config.folder, filename));
+  }
 
-  return contentFromURL && createHash('sha1').update(contentFromURL).digest('hex');
+  await fs.writeFile(`temp/${filename}`, contentFromURL);
+
+  return createHash('sha1').update(contentFromURL).digest('hex');
+};
+
+const checkFile = async (
+  filename: string,
+  config: { matrixValue: 's3' } | { matrixValue: 'local'; folder: string }
+) => {
+  if (config.matrixValue === 's3') {
+    return await fetch(filename).then(x => x.status === 200);
+  } else {
+    return fs.existsSync(path.join(config.folder, filename));
+  }
 };
 
 describe('File - Crud special tests', () => {
@@ -122,7 +133,7 @@ describe('File - Crud special tests', () => {
         const config = getConfig();
         const hashConfig: { matrixValue: 'local'; folder: string } | { matrixValue: 's3' } =
           config.kind === 'local'
-            ? { matrixValue: 'local', folder: config.storagePath! }
+            ? { matrixValue: 'local', folder: `${config.storagePath}/`! }
             : { matrixValue: config.kind };
         test(
           'Upload values should match expected corrected',
@@ -154,7 +165,7 @@ describe('File - Crud special tests', () => {
         const config = getConfig();
         const hashConfig =
           config.kind === 'local'
-            ? { matrixValue: config.kind, folder: config.storagePath! }
+            ? { matrixValue: config.kind, folder: `${config.storagePath}/`! }
             : { matrixValue: config.kind };
         test(
           'with preserve: true',
@@ -165,7 +176,7 @@ describe('File - Crud special tests', () => {
                 secretFile: { filename },
               } = await createItem(context);
 
-              expect(await getFileHash(filename, hashConfig)).toBeTruthy();
+              expect(await checkFile(filename, hashConfig)).toBeTruthy();
 
               const {
                 secretFile: { filename: filename2 },
@@ -175,12 +186,12 @@ describe('File - Crud special tests', () => {
                 query: `secretFile { filename }`,
               });
 
-              expect(await getFileHash(filename, hashConfig)).toBeTruthy();
-              expect(await getFileHash(filename2, hashConfig)).toBeTruthy();
+              expect(await checkFile(filename, hashConfig)).toBeTruthy();
+              expect(await checkFile(filename2, hashConfig)).toBeTruthy();
 
               await context.query.Test.deleteOne({ where: { id } });
 
-              expect(await getFileHash(filename, hashConfig)).toBeTruthy();
+              expect(await checkFile(filename, hashConfig)).toBeTruthy();
               // TODO test that just nulling the field doesn't delete it
             }
           )
@@ -196,7 +207,7 @@ describe('File - Crud special tests', () => {
               secretFile: { filename },
             } = await createItem(context);
 
-            expect(await getFileHash(filename, hashConfig)).toBeTruthy();
+            expect(await checkFile(filename, hashConfig)).toBeTruthy();
 
             const {
               secretFile: { filename: filename2 },
@@ -209,12 +220,12 @@ describe('File - Crud special tests', () => {
                 }`,
             });
 
-            expect(await getFileHash(filename2, hashConfig)).toBeTruthy();
-            expect(await getFileHash(filename, hashConfig)).toBeFalsy();
+            expect(await checkFile(filename2, hashConfig)).toBeTruthy();
+            expect(await checkFile(filename, hashConfig)).toBeFalsy();
 
             await context.query.Test.deleteOne({ where: { id } });
 
-            expect(await getFileHash(filename2, hashConfig)).toBeFalsy();
+            expect(await checkFile(filename2, hashConfig)).toBeFalsy();
 
             // TODO test that just nulling the field removes the file
           })
@@ -259,7 +270,7 @@ describe('Image - Crud special tests', () => {
     const config = getConfig();
     const hashConfig =
       config.kind === 'local'
-        ? { matrixValue: config.kind, folder: config.storagePath! }
+        ? { matrixValue: config.kind, folder: `${config.storagePath}/`! }
         : { matrixValue: config.kind };
 
     describe(matrixValue, () => {
@@ -268,7 +279,7 @@ describe('Image - Crud special tests', () => {
           test(
             'upload values should match expected',
             getRunner({ fields, storage: { test_image: config } })(async ({ context }) => {
-              const filenames = ['keystone.jpeg', 'keystone.jpg', 'keystone'];
+              const filenames = ['keystone.jpg'];
               for (const filename of filenames) {
                 const fileHash = createHash('sha1')
                   .update(fs.readFileSync(path.resolve(fieldPath, 'image/test-files', filename)))
@@ -332,13 +343,13 @@ describe('Image - Crud special tests', () => {
                   });
 
                   expect(
-                    await getFileHash(`${avatar.id}.${avatar.extension}`, hashConfig)
+                    await checkFile(`${avatar.id}.${avatar.extension}`, hashConfig)
                   ).toBeTruthy();
 
                   await context.query.Test.deleteOne({ where: { id } });
 
                   expect(
-                    await getFileHash(`${avatar.id}.${avatar.extension}`, hashConfig)
+                    await checkFile(`${avatar.id}.${avatar.extension}`, hashConfig)
                   ).toBeTruthy();
                   // TODO test that just nulling the field doesn't delete it
                 }
@@ -355,7 +366,7 @@ describe('Image - Crud special tests', () => {
                 const { id, avatar } = await createItem(context, ogFilename);
                 const filename = `${avatar.id}.${avatar.extension}`;
 
-                expect(await getFileHash(filename, hashConfig)).toBeTruthy();
+                expect(await checkFile(filename, hashConfig)).toBeTruthy();
                 const { avatar: avatar2 } = await context.query.Test.updateOne({
                   where: { id },
                   data: { avatar: prepareFile('thinkmill.jpg', 'image') },
@@ -367,12 +378,12 @@ describe('Image - Crud special tests', () => {
 
                 const filename2 = `${avatar2.id}.${avatar2.extension}`;
 
-                expect(await getFileHash(filename, hashConfig)).toBeFalsy();
-                expect(await getFileHash(filename2, hashConfig)).toBeTruthy();
+                expect(await checkFile(filename, hashConfig)).toBeFalsy();
+                expect(await checkFile(filename2, hashConfig)).toBeTruthy();
 
                 await context.query.Test.deleteOne({ where: { id } });
 
-                expect(await getFileHash(filename2, hashConfig)).toBeFalsy();
+                expect(await checkFile(filename2, hashConfig)).toBeFalsy();
 
                 // TODO test that just nulling the field removes the file
               })
