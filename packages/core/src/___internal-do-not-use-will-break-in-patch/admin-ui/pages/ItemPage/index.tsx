@@ -52,7 +52,7 @@ type ItemPageProps = {
 
 function useEventCallback<Func extends (...args: any) => any>(callback: Func): Func {
   const callbackRef = useRef(callback);
-  const cb = useCallback((...args) => {
+  const cb = useCallback((...args: any[]) => {
     return callbackRef.current(...args);
   }, []);
   useEffect(() => {
@@ -148,8 +148,8 @@ function ItemForm({
   });
   const labelFieldValue = state.item.data?.[list.labelField];
   const itemId = state.item.data?.id!;
-
-  usePreventNavigation(!!changedFields.size);
+  const hasChangedFields = !!changedFields.size;
+  usePreventNavigation(useMemo(() => ({ current: hasChangedFields }), [hasChangedFields]));
   return (
     <Box marginTop="xlarge">
       <GraphQLErrorNotice

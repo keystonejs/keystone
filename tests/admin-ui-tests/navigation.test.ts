@@ -59,6 +59,7 @@ adminUITests('./tests/test-projects/basic', browserType => {
     await page.click('button[title="Create Task"]');
     await page.fill('id=label', 'Test Task');
     await Promise.all([page.waitForNavigation(), page.click('button[type="submit"]')]);
+    await page.hover('nav a:has-text("Tasks")');
     const element = await page.waitForSelector('nav a:has-text("Tasks")');
     const ariaCurrent = await element?.getAttribute('aria-current');
     expect(ariaCurrent).toBe('location');

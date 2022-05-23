@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import isDeepEqual from 'fast-deep-equal';
 import { jsx, Box } from '@keystone-ui/core';
 import { Drawer } from '@keystone-ui/modals';
@@ -78,7 +78,13 @@ export function CreateItemDrawer({
 
   const shouldPreventNavigation = !returnedData?.item && Object.keys(data).length !== 0;
 
-  usePreventNavigation(shouldPreventNavigation);
+  const shouldPreventNavigationRef = useRef(shouldPreventNavigation);
+
+  useEffect(() => {
+    shouldPreventNavigationRef.current = shouldPreventNavigation;
+  }, [shouldPreventNavigation]);
+
+  usePreventNavigation(shouldPreventNavigationRef);
 
   return (
     <Drawer
@@ -100,6 +106,7 @@ export function CreateItemDrawer({
               },
             })
               .then(({ data }) => {
+                shouldPreventNavigationRef.current = false;
                 const label = data.item.label || data.item.id;
                 onCreate({ id: data.item.id, label });
                 toasts.addToast({

@@ -5,14 +5,14 @@
   "main": "dist/keystone-ui-button.cjs.js",
   "module": "dist/keystone-ui-button.esm.js",
   "devDependencies": {
-    "@types/react": "^17.0.37"
+    "@types/react": "^18.0.9"
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
     "@keystone-ui/core": "^4.0.0",
     "@keystone-ui/icons": "^5.0.0",
     "@keystone-ui/loading": "^5.0.0",
-    "react": "^17.0.2"
+    "react": "^18.1.0"
   },
   "engines": {
     "node": "^14.15 || ^16.13"
