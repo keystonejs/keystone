@@ -177,20 +177,19 @@ export function createDocumentEditor(
 }
 
 export function DocumentEditor({
-  autoFocus,
   onChange,
   value,
   componentBlocks,
   relationships,
   documentFeatures,
+  ...props
 }: {
-  autoFocus?: boolean;
   onChange: undefined | ((value: Descendant[]) => void);
   value: Descendant[];
   componentBlocks: Record<string, ComponentBlock>;
   relationships: Relationships;
   documentFeatures: DocumentFeatures;
-}) {
+} & Omit<EditableProps, 'value' | 'onChange'>) {
   const isShiftPressedRef = useKeyDownRef('Shift');
   const { colors, spacing } = useTheme();
   const [expanded, setExpanded] = useState(false);
@@ -261,7 +260,7 @@ export function DocumentEditor({
               marginRight: spacing.medium,
             }
           }
-          autoFocus={autoFocus}
+          {...props}
           readOnly={onChange === undefined}
         />
         {

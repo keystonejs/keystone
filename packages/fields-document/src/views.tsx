@@ -30,10 +30,13 @@ export const Field = ({
   forceValidation,
 }: FieldProps<typeof controller>) => (
   <FieldContainer>
-    <FieldLabel>{field.label}</FieldLabel>
+    <FieldLabel as="span" id={`${field.path}-label`}>
+      {field.label}
+    </FieldLabel>
     <ForceValidationProvider value={!!forceValidation}>
       <DocumentEditor
         autoFocus={autoFocus}
+        aria-labelledby={`${field.path}-label`}
         value={value}
         onChange={onChange}
         componentBlocks={field.componentBlocks}
