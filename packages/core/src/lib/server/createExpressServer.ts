@@ -112,7 +112,19 @@ export const createExpressServer = async (
     for (const val of Object.values(config.storage)) {
       if (!val.serverRoute) continue;
       if (val.kind === 'local') {
-        expressServer.use(val.serverRoute.path, express.static(val.storagePath));
+        expressServer.use(
+          val.serverRoute.path,
+          express.static(val.storagePath, {
+            setHeaders(res) {
+              if (val.type === 'file') {
+                res.setHeader('Content-Type', 'application/octet-stream');
+              }
+            },
+            index: false,
+            redirect: false,
+            lastModified: false,
+          })
+        );
       } else if (val.kind === 's3') {
         const endpoint = getS3AssetsEndpoint(val);
         expressServer.use(`${val.serverRoute.path}/:id`, async (req, res) => {
