@@ -51,12 +51,6 @@ export function createImagesContext(config: KeystoneConfig): ImagesContext {
       },
       getDataFromStream: async (stream, originalFilename) => {
         const storageConfig = config.storage![storageString];
-
-        if (storageConfig.type !== 'image') {
-          throw new Error(
-            `The storage ${storageString} is trying to retrieve a file, but it is of type: image`
-          );
-        }
         const { transformName = () => uuid() } = storageConfig;
 
         // Duplicating this get image data stuff now sucks

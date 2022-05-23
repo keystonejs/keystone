@@ -58,14 +58,7 @@ export function createFilesContext(config: KeystoneConfig): FilesContext {
       },
       getDataFromStream: async (stream, originalFilename) => {
         const storageConfig = config.storage![storageString];
-
-        if (storageConfig.type !== 'file') {
-          throw new Error(
-            `The storage ${storageString} is trying to retrieve a file, but it is of type: image`
-          );
-        }
-        const { transformName = defaultTransformName } = storageConfig;
-
+        const { transformName = defaultTransformName } = storageConfig as (typeof storageConfig & { type: 'file' });
         const filename = await transformName(originalFilename);
 
         const { filesize } = await adapter.upload(stream, filename);
