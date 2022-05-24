@@ -2,17 +2,8 @@ import { Text, Transforms, Element, NodeEntry, Editor, Node } from 'slate';
 import { DocumentFeatures } from '../views';
 import { Relationships } from './relationship';
 
-export function areArraysEqual(arrA: readonly unknown[], arrB: readonly unknown[]) {
-  if (arrA.length !== arrB.length) {
-    return false;
-  }
-
-  for (let i = 0; i < arrA.length; i++) {
-    if (arrA[i] !== arrB[i]) {
-      return false;
-    }
-  }
-  return true;
+export function areArraysEqual(a: readonly unknown[], b: readonly unknown[]) {
+  return a.length === b.length && a.every((x, i) => x === b[i]);
 }
 
 export function normalizeTextBasedOnInlineMarksAndSoftBreaks(

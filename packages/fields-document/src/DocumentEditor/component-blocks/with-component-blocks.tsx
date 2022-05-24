@@ -1,6 +1,5 @@
 import { Editor, Element, Transforms, Range, NodeEntry, Path, Node, Text } from 'slate';
 
-import findLastIndex from 'lodash/findLastIndex';
 import weakMemoize from '@emotion/weak-memoize';
 import { ChildField, ComponentBlock, ComponentSchema } from '../../component-blocks';
 import { assert, moveChildren } from '../utils';
@@ -351,11 +350,12 @@ export function withComponentBlocks(
                   childNode.type === 'component-inline-prop') &&
                 childNode.propPath !== undefined
               ) {
-                const indexForLastArrayIndex = findLastIndex(
-                  childNode.propPath,
-                  x => typeof x === 'number'
-                );
-                if (areArraysEqual(propPath, childNode.propPath.slice(0, indexForLastArrayIndex))) {
+                const subPath = childNode.propPath.concat();
+                while (subPath.length) {
+                  if (typeof subPath.pop() === 'number') break;
+                }
+
+                if (areArraysEqual(propPath, subPath)) {
                   nodesWithin.push([idx, childNode]);
                 }
               }
