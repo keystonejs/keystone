@@ -21,14 +21,14 @@ import {
 import { assertNever } from './utils';
 
 const fieldRenderers: {
-  [Key in ComponentSchema['kind']]: (props: {
-    props: GenericPreviewProps<Extract<ComponentSchema, { kind: Key }>, unknown> & {
+  [Key in ComponentSchema['kind']]: (props:
+    GenericPreviewProps<Extract<ComponentSchema, { kind: Key }>, unknown> & {
       autoFocus?: boolean;
       forceValidation?: boolean;
-    };
-  }) => ReactElement | null;
+    }
+  ) => ReactElement | null;
 } = {
-  array({ props }) {
+  array: function ArrayField(props) {
     return (
       <Stack gap="medium">
         <OrderableList {...props}>
@@ -47,40 +47,40 @@ const fieldRenderers: {
       </Stack>
     );
   },
-  relationship: function RelationshipField({ props }) {
+  relationship: function RelationshipField({ schema, autoFocus, onChange, value }) {
     const keystone = useKeystone();
     return (
       <FieldContainer>
-        <FieldLabel>{props.schema.label}</FieldLabel>
+        <FieldLabel>{schema.label}</FieldLabel>
         <RelationshipSelect
-          autoFocus={props.autoFocus}
+          autoFocus={autoFocus}
           controlShouldRenderValue
           isDisabled={false}
-          list={keystone.adminMeta.lists[props.schema.listKey]}
-          extraSelection={props.schema.selection || ''}
+          list={keystone.adminMeta.lists[schema.listKey]}
+          extraSelection={schema.selection || ''}
           portalMenu
           state={
-            props.schema.many
+            schema.many
               ? {
                   kind: 'many',
-                  value: (props.value as RelationshipData[]).map(x => ({
+                  value: (value as RelationshipData[]).map(x => ({
                     id: x.id,
                     label: x.label || x.id,
                     data: x.data,
                   })),
-                  onChange: props.onChange,
+                  onChange: onChange,
                 }
               : {
                   kind: 'one',
-                  value: props.value
+                  value: value
                     ? {
-                        ...(props.value as RelationshipData),
+                        ...(value as RelationshipData),
                         label:
-                          (props.value as RelationshipData).label ||
-                          (props.value as RelationshipData).id,
+                          (value as RelationshipData).label ||
+                          (value as RelationshipData).id,
                       }
                     : null,
-                  onChange: props.onChange,
+                  onChange: onChange,
                 }
           }
         />
@@ -88,21 +88,21 @@ const fieldRenderers: {
     );
   },
   child: () => null,
-  form: function FormField({ props }) {
+  form: function FormField({ schema, autoFocus, forceValidation, onChange, value }) {
     return (
-      <props.schema.Input
-        autoFocus={!!props.autoFocus}
-        value={props.value}
-        onChange={props.onChange}
-        forceValidation={!!props.forceValidation}
+      <schema.Input
+        autoFocus={!!autoFocus}
+        value={value}
+        onChange={onChange}
+        forceValidation={!!forceValidation}
       />
     );
   },
-  object: function ObjectField({ props }) {
-    const firstFocusable = props.autoFocus ? findFocusableObjectFieldKey(props.schema) : undefined;
+  object: function ObjectField({ schema, autoFocus, fields }) {
+    const firstFocusable = autoFocus ? findFocusableObjectFieldKey(schema) : undefined;
     return (
       <Stack gap="xlarge">
-        {Object.entries(props.fields).map(
+        {Object.entries(fields).map(
           ([key, propVal]) =>
             isNonChildFieldPreviewProps(propVal) && (
               <FormValueContentFromPreviewProps
@@ -115,23 +115,23 @@ const fieldRenderers: {
       </Stack>
     );
   },
-  conditional: function ConditionalField({ props }) {
-    const discriminant = props.schema.discriminant as FormField<string | boolean, unknown>;
+  conditional: function ConditionalField({ schema, autoFocus, discriminant, onChange, value }) {
+    const schemaDiscriminant = schema.discriminant as FormField<string | boolean, unknown>;
     return (
       <Stack gap="xlarge">
         {useMemo(
           () => (
-            <discriminant.Input
-              autoFocus={!!props.autoFocus}
-              value={props.discriminant}
-              onChange={props.onChange}
+            <schemaDiscriminant.Input
+              autoFocus={!!autoFocus}
+              value={discriminant}
+              onChange={onChange}
               forceValidation={false}
             />
           ),
-          [props.autoFocus, discriminant, props.discriminant, props.onChange]
+          [autoFocus, schemaDiscriminant, discriminant, onChange]
         )}
-        {isNonChildFieldPreviewProps(props.value) && (
-          <FormValueContentFromPreviewProps {...props.value} />
+        {isNonChildFieldPreviewProps(value) && (
+          <FormValueContentFromPreviewProps {...value} />
         )}
       </Stack>
     );
@@ -158,7 +158,7 @@ export const FormValueContentFromPreviewProps = memo(function FormValueContentFr
   }
 ) {
   const Comp = fieldRenderers[props.schema.kind];
-  return <Comp props={props as any} />;
+  return <Comp {...props as any} />;
 });
 
 const OrderableItemInForm = memo(function OrderableItemInForm(
