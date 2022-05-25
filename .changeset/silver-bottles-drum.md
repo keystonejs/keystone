@@ -2,17 +2,21 @@
 '@keystone-6/fields-document': major
 ---
 
-This release contains substantial changes to the component blocks API and the addition of array fields in component blocks. The breaking changes are entirely about defining components, _no data migration_ is required.
+This release contains substantial changes to the underlying document-editor component block interfaces, with the addition of array fields.
+The breaking changes are only for defining components, _no database migration is needed_.
 
-The main breaking changes that will affect all usages of component blocks are:
+The primary breaking changes for component blocks are:
 
-- In the arguments to the `component` function from `@keystone-6/fields-document/component-blocks`, the following have been renamed
+- For the arguments to the `component` function from `@keystone-6/fields-document/component-blocks`, the following properties have been renamed
   - `component` -> `preview`
   - `props` -> `schema`
-- To access the preview props for the inner fields on an object field, you need to access `.fields.something` instead of `.something`
-- The React element to render a child field is now at `props.element` instead of being `props`
+- When using the fields within your preview component - as defined by your component `.schema` (previous `.props`) - you now use `props.fields.{innerFieldName}` instead of `props.{innerFieldName}`.
+For example, `props.fields.title` instead of `props.title`.
+For a nested example, `props.fields.someObject.fields.title` instead of `props.someObject.title`.
 
-As an example, the change needed for updating the "Hero" component block that can be seen on https://keystonejs.com/docs/guides/document-field-demo are shown below
+- The React element to render for a child field is now `props.{innerFieldName}.element` instead of `props.{innerFieldName}`.
+
+As an example, the changes needed for updating the "Hero" component block as seen on https://keystonejs.com/docs/guides/document-field-demo is shown shown below
 
 ```diff
    hero: component({
@@ -67,9 +71,8 @@ As an example, the change needed for updating the "Hero" component block that ca
        imageSrc: fields.text({
 ```
 
-This release introduces array fields to component blocks which accept another field (like an object, conditional, form or child field) and allow storing many of that inner field.
-
-Here's an example of implementing a question & answers component block with the array field:
+Additionally this release introduces an array field `fields.array` for component block which represents an array of another field type, such as an object, conditional, form or other child field.
+See below for an example of a question & answers component block with the new array field:
 
 ```tsx
 import { fields, component, NotEditable } from '@keystone-6/fields-document/component-blocks';
@@ -126,7 +129,8 @@ component({
 });
 ```
 
-When there is a single child field within an array field, the document editor will allow pressing enter at the end of an element to add/delete at the start to delete, this allows creating editing experiences similar to the built-in lists. For example, here's a checkbox list:
+Similar to the built-in document-editor lists,  when an array field has only 1 element,  pressing enter adds a new element and pressing delete removes an element.
+For example, here's a list of checkboxes:
 
 ```tsx
 /** @jsxRuntime classic */
@@ -146,12 +150,13 @@ component({
     ),
   },
   chromeless: true,
-  preview: function MyList(props) {
+  preview: (props) => {
     useEffect(() => {
       if (!props.fields.children.elements.length) {
         props.fields.children.onChange([{ key: undefined }]);
       }
     });
+
     return (
       <ul css={{ padding: 0 }}>
         {props.fields.children.elements.map(element => (
@@ -178,18 +183,22 @@ component({
 });
 ```
 
-There are also some smaller improvements:
+Finally, some other changes introduced in this release are:
 
-- All preview props now have an `onChange` function so that you can update more than one field in a component at a time
-- All preview props now have a `schema` property to access the schema for those preview props
-- Preview props are now referentially stable between renders when their value is stable
+- Each of the `preview` props `fields` (and their inner fields, if any) now have an `onChange` function so that you can update more than one field in a component at a time
+- Each of the `preview` props `fields` (and their inner fields, if any) now have a `schema` property to access their respective schema at that level
+- Generally, preview props are now referentially stable between renders when their value is stable
 
-And other breaking changes that are unlikely to affect most users:
+Some internal breaking changes that are unlikely to affect users are:
 
 - The `ComponentPropField` type is now named `ComponentSchema`
-- `FormField`'s are constrained to no longer allow storing `undefined`. They must be a string, number, boolean, null, array of one of these or object with one of these. This is required so that they can be represented within an array
-- In the `props` object on a component block node, child fields are now stored as `null` instead of undefined. This is required so that they can be represented within an array. Loading documents that stored `undefined` instead of `null` for a child field will still work though, no data migration is required.
-- `ObjectField` stores the fields on a property named `fields` instead of `value`
+- `FormField`'s are now constrained to prevent storing `undefined`.
+They must be a string, number, boolean, null, array of one of these or an object with one of these.
+This is required so that they can be represented within a JSON array.
+- Within the database, for the `props` object on a component-block node, child fields are now stored as `null` instead of `undefined`.
+This is required so that they can be represented within a JSON array.
+Component-block nodes that previously had `undefined` instead of `null` for a child field will continue to work though, no data migration is required.
+- The `ObjectField` type now has inner fields on a property named `fields` instead of `value`
 - The `ConditionalField` type now has two type parameters that look like this:
   ```ts
   type ConditionalField<
@@ -199,4 +208,3 @@ And other breaking changes that are unlikely to affect most users:
     }
   > = ...
   ```
-
