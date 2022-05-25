@@ -37,7 +37,7 @@ export function getInitialPropsValue(schema: ComponentSchema): any {
     }
     case 'object': {
       const obj: Record<string, any> = {};
-      for (const key in schema.fields) {
+      for (const key of Object.keys(schema.fields)) {
         obj[key] = getInitialPropsValue(schema.fields[key]);
       }
       return obj;
@@ -73,7 +73,7 @@ export function getInitialPropsValueFromInitializer(
     }
     case 'object': {
       const obj: Record<string, any> = {};
-      for (const key in schema.fields) {
+      for (const key of Object.keys(schema.fields)) {
         obj[key] = getInitialPropsValueFromInitializer(
           schema.fields[key],
           initializer === undefined ? undefined : initializer[key]
@@ -118,7 +118,7 @@ export function updateValue(schema: ComponentSchema, currentValue: any, updater:
     }
     case 'object': {
       const obj: Record<string, any> = {};
-      for (const key in schema.fields) {
+      for (const key of Object.keys(schema.fields)) {
         obj[key] = updateValue(schema.fields[key], currentValue[key], updater[key]);
       }
       return obj;

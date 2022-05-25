@@ -563,7 +563,7 @@ function findChildPropPathsWithPrevious(
       );
     case 'object': {
       const paths: ChildPropPathWithPrevious[] = [];
-      for (const key in schema.fields) {
+      for (const key of Object.keys(schema.fields)) {
         paths.push(
           ...findChildPropPathsWithPrevious(
             value[key],
