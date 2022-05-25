@@ -458,7 +458,8 @@ export function withComponentBlocks(
               // the generic allowedChildren normalization
               childNode.type !== 'component-inline-prop' &&
               childNode.type !== 'component-block-prop'
-            ) continue;
+            )
+              continue;
 
             const childPath = [...path, index];
             const stringifiedPropPath = JSON.stringify(childNode.propPath);

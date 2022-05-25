@@ -21,14 +21,14 @@ import {
 import { assertNever } from './utils';
 
 const fieldRenderers: {
-  [Key in ComponentSchema['kind']]: (props:
-    GenericPreviewProps<Extract<ComponentSchema, { kind: Key }>, unknown> & {
+  [Key in ComponentSchema['kind']]: (
+    props: GenericPreviewProps<Extract<ComponentSchema, { kind: Key }>, unknown> & {
       autoFocus?: boolean;
       forceValidation?: boolean;
     }
   ) => ReactElement | null;
 } = {
-  array (props) {
+  array(props) {
     return (
       <Stack gap="medium">
         <OrderableList {...props}>
@@ -47,7 +47,7 @@ const fieldRenderers: {
       </Stack>
     );
   },
-  relationship ({ schema, autoFocus, onChange, value }) {
+  relationship({ schema, autoFocus, onChange, value }) {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const keystone = useKeystone();
     return (
@@ -76,9 +76,7 @@ const fieldRenderers: {
                   value: value
                     ? {
                         ...(value as RelationshipData),
-                        label:
-                          (value as RelationshipData).label ||
-                          (value as RelationshipData).id,
+                        label: (value as RelationshipData).label || (value as RelationshipData).id,
                       }
                     : null,
                   onChange: onChange,
@@ -89,7 +87,7 @@ const fieldRenderers: {
     );
   },
   child: () => null,
-  form ({ schema, autoFocus, forceValidation, onChange, value }) {
+  form({ schema, autoFocus, forceValidation, onChange, value }) {
     return (
       <schema.Input
         autoFocus={!!autoFocus}
@@ -99,7 +97,7 @@ const fieldRenderers: {
       />
     );
   },
-  object ({ schema, autoFocus, fields }) {
+  object({ schema, autoFocus, fields }) {
     const firstFocusable = autoFocus ? findFocusableObjectFieldKey(schema) : undefined;
     return (
       <Stack gap="xlarge">
@@ -116,26 +114,25 @@ const fieldRenderers: {
       </Stack>
     );
   },
-  conditional ({ schema, autoFocus, discriminant, onChange, value }) {
+  conditional({ schema, autoFocus, discriminant, onChange, value }) {
     const schemaDiscriminant = schema.discriminant as FormField<string | boolean, unknown>;
     return (
       <Stack gap="xlarge">
         {
           // eslint-disable-next-line react-hooks/rules-of-hooks
           useMemo(
-          () => (
-            <schemaDiscriminant.Input
-              autoFocus={!!autoFocus}
-              value={discriminant}
-              onChange={onChange}
-              forceValidation={false}
-            />
-          ),
-          [autoFocus, schemaDiscriminant, discriminant, onChange]
-        )}
-        {isNonChildFieldPreviewProps(value) && (
-          <FormValueContentFromPreviewProps {...value} />
-        )}
+            () => (
+              <schemaDiscriminant.Input
+                autoFocus={!!autoFocus}
+                value={discriminant}
+                onChange={onChange}
+                forceValidation={false}
+              />
+            ),
+            [autoFocus, schemaDiscriminant, discriminant, onChange]
+          )
+        }
+        {isNonChildFieldPreviewProps(value) && <FormValueContentFromPreviewProps {...value} />}
       </Stack>
     );
   },
@@ -161,7 +158,7 @@ export const FormValueContentFromPreviewProps = memo(function FormValueContentFr
   }
 ) {
   const Comp = fieldRenderers[props.schema.kind];
-  return <Comp {...props as any} />;
+  return <Comp {...(props as any)} />;
 });
 
 const OrderableItemInForm = memo(function OrderableItemInForm(
