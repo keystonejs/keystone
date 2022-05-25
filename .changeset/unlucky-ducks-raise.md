@@ -76,7 +76,7 @@ This allows mirroring of the old functionality, while allowing us to add the bel
 ##### Images and Files will now be deleted when deleted
 
 Before this change, if you uploaded a file or image, Keystone would never remove it from where it was stored. The inability to tidy up unused
-files or images was unwelcome. With the removal of `ref`, we can no remove things from the source, and this will be done by default.
+files or images was unwelcome. With the removal of `ref`, we can now remove things from the source, and this will be done by default.
 
 If you don't want files or images removed, we recommend storing them as a `relationship`, rather than on items themselves, so the files
 or images persist separate to lists that use them.
