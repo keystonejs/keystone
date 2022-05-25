@@ -72,6 +72,10 @@ export default function Docs() {
           Virtual fields offer a powerful way to extend your GraphQL API. This guide introduces the
           syntax and shows you how start simply and end up with a complex result.
         </Well>
+        <Well grad="grad2" heading="Images and Files Guide" href="/docs/guides/images-and-files">
+          Learn how to use the File and Image fields in Keystone to store and manage images and
+          files
+        </Well>
       </div>
       <Type as="h2" look="heading30" margin="2rem 0 1rem 0">
         Admin UI Customisation
