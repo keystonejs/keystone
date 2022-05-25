@@ -554,30 +554,62 @@ const Toolbar = memo(function Toolbar({
         zIndex: 20,
       }}
     >
+      <Button
+        isDisabled={!hasChangedFields}
+        isLoading={loading}
+        weight="bold"
+        tone="active"
+        onClick={onSave}
+      >
+        Save changes
+      </Button>
       <Stack align="center" across gap="small">
-        <Button
-          isDisabled={!hasChangedFields}
-          isLoading={loading}
-          weight="bold"
-          tone="active"
-          onClick={onSave}
-        >
-          Save changes
-        </Button>
         {hasChangedFields ? (
-          <Button weight="none" onClick={onReset}>
-            Reset changes
-          </Button>
+          <ResetChangesButton onReset={onReset} />
         ) : (
           <Text weight="medium" paddingX="large" color="neutral600">
             No changes
           </Text>
         )}
+        {deleteButton}
       </Stack>
-      {deleteButton}
     </div>
   );
 });
+
+function ResetChangesButton(props: { onReset: () => void }) {
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
+
+  return (
+    <Fragment>
+      <Button
+        weight="none"
+        onClick={() => {
+          setConfirmModalOpen(true);
+        }}
+      >
+        Reset changes
+      </Button>
+      <AlertDialog
+        actions={{
+          confirm: {
+            action: () => props.onReset(),
+            label: 'Reset changes',
+          },
+          cancel: {
+            action: () => setConfirmModalOpen(false),
+            label: 'Cancel',
+          },
+        }}
+        isOpen={isConfirmModalOpen}
+        title="Are you sure you want to reset changes?"
+        tone="negative"
+      >
+        {null}
+      </AlertDialog>
+    </Fragment>
+  );
+}
 
 const ColumnLayout = (props: HTMLAttributes<HTMLDivElement>) => {
   const { spacing } = useTheme();
