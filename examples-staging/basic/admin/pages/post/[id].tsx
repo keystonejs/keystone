@@ -16,6 +16,19 @@ type ComponentBlockRenderers = InferRenderersForComponentBlocks<
 >;
 
 const componentBlockRenderers: ComponentBlockRenderers = {
+  questionsAndAnswers: () => null,
+  checkboxList: props => {
+    return (
+      <ul>
+        {props.children.map((x, i) => {
+          return <li key={i}>{x.content}</li>;
+        })}
+      </ul>
+    );
+  },
+  table: () => {
+    return null;
+  },
   hero: props => (
     <div
       css={{

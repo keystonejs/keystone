@@ -14,6 +14,8 @@ import {
   ToolbarGroup,
   ToolbarSeparator,
 } from '@keystone-6/fields-document/primitives';
+import { useEffect } from 'react';
+import { Button } from '@keystone-ui/button';
 
 const noticeIconMap = {
   info: InfoIcon,
@@ -23,13 +25,199 @@ const noticeIconMap = {
 };
 
 export const componentBlocks = {
+  questionsAndAnswers: component({
+    label: 'Questions & Answers',
+    schema: {
+      questions: fields.array(
+        fields.object({
+          question: fields.child({ placeholder: 'Question', kind: 'inline' }),
+          answer: fields.child({ placeholder: 'Answer', formatting: 'inherit', kind: 'block' }),
+        })
+      ),
+    },
+    preview: props => {
+      return (
+        <div>
+          {props.fields.questions.elements.map(questionAndAnswer => {
+            return (
+              <div key={questionAndAnswer.key}>
+                <h2>{questionAndAnswer.fields.question.element}</h2>
+                <p>{questionAndAnswer.fields.answer.element}</p>
+                <NotEditable>
+                  <Button
+                    onClick={() => {
+                      props.fields.questions.onChange(
+                        props.fields.questions.elements
+                          .filter(x => x.key !== questionAndAnswer.key)
+                          .map(x => ({ key: x.key }))
+                      );
+                    }}
+                  >
+                    Remove
+                  </Button>
+                </NotEditable>
+              </div>
+            );
+          })}
+          <NotEditable>
+            <Button
+              onClick={() => {
+                props.fields.questions.onChange([
+                  ...props.fields.questions.elements,
+                  { key: undefined },
+                ]);
+              }}
+            >
+              Insert
+            </Button>
+          </NotEditable>
+        </div>
+      );
+    },
+  }),
+  table: component({
+    preview: function MyTable(props) {
+      useEffect(() => {
+        let maxColumns = 1;
+        const rows = props.fields.rows;
+        for (const row of rows.elements) {
+          if (row.elements.length > maxColumns) {
+            maxColumns = row.elements.length;
+          }
+        }
+        if (rows.elements.some(x => x.elements.length !== maxColumns)) {
+          rows.onChange(
+            rows.elements.map(element => {
+              return {
+                key: element.key,
+                value: [
+                  ...element.elements.map(x => ({ key: x.key })),
+                  ...Array.from({ length: maxColumns - element.elements.length }, () => ({
+                    key: undefined,
+                  })),
+                ],
+              };
+            })
+          );
+        }
+      });
+
+      return (
+        <div>
+          <table css={{ width: '100%' }}>
+            <tbody>
+              {props.fields.rows.elements.map((row, i) => {
+                return (
+                  <tr key={i} css={{ border: '1px solid black' }}>
+                    {row.elements.map((column, i) => {
+                      return (
+                        <td key={i} css={{ border: '1px solid black' }}>
+                          {column.fields.content.element}
+                        </td>
+                      );
+                    })}
+                    <NotEditable>
+                      <Button
+                        onClick={() => {
+                          props.fields.rows.onChange(
+                            props.fields.rows.elements.map(element => {
+                              return {
+                                key: element.key,
+                                value: [
+                                  ...element.elements.map(x => ({ key: x.key })),
+                                  { key: undefined },
+                                ],
+                              };
+                            })
+                          );
+                        }}
+                      >
+                        Insert Column
+                      </Button>
+                    </NotEditable>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          <NotEditable>
+            <div
+              onClick={() => {
+                props.fields.rows.onChange([
+                  ...props.fields.rows.elements.map(x => ({ key: x.key })),
+                  { key: undefined },
+                ]);
+              }}
+            >
+              <Button>Insert row</Button>
+            </div>
+          </NotEditable>
+        </div>
+      );
+    },
+    label: 'Table',
+    schema: {
+      rows: fields.array(
+        fields.array(
+          fields.object({
+            content: fields.child({ kind: 'block', placeholder: '' }),
+          })
+        )
+      ),
+      headers: fields.object({
+        row: fields.checkbox({ label: 'Header Row' }),
+        column: fields.checkbox({ label: 'Header Column' }),
+      }),
+    },
+  }),
+  checkboxList: component({
+    preview: function CheckboxList(props) {
+      useEffect(() => {
+        if (!props.fields.children.elements.length) {
+          props.fields.children.onChange([{ key: undefined }]);
+        }
+      });
+      return (
+        <ul css={{ padding: 0 }}>
+          {props.fields.children.elements.map(element => (
+            <li css={{ listStyle: 'none' }} key={element.key}>
+              <input
+                contentEditable="false"
+                css={{ marginRight: 8 }}
+                type="checkbox"
+                checked={element.fields.done.value}
+                onChange={event => element.fields.done.onChange(event.target.checked)}
+              />
+              <span
+                style={{
+                  textDecoration: element.fields.done.value ? 'line-through' : undefined,
+                }}
+              >
+                {element.fields.content.element}
+              </span>
+            </li>
+          ))}
+        </ul>
+      );
+    },
+    label: 'Checkbox List',
+    schema: {
+      children: fields.array(
+        fields.object({
+          done: fields.checkbox({ label: 'Done' }),
+          content: fields.child({ kind: 'inline', placeholder: '', formatting: 'inherit' }),
+        })
+      ),
+    },
+    chromeless: true,
+  }),
   hero: component({
-    component: props => {
+    preview: props => {
       return (
         <div
           css={{
             backgroundColor: 'white',
-            backgroundImage: `url(${props.imageSrc.value})`,
+            backgroundImage: `url(${props.fields.imageSrc.value})`,
             backgroundPosition: 'center',
             backgroundSize: 'cover',
             display: 'flex',
@@ -51,7 +239,7 @@ export const componentBlocks = {
               textShadow: '0px 1px 3px black',
             }}
           >
-            {props.title}
+            {props.fields.title.element}
           </div>
           <div
             css={{
@@ -63,9 +251,9 @@ export const componentBlocks = {
               textShadow: '0px 1px 3px black',
             }}
           >
-            {props.content}
+            {props.fields.content.element}
           </div>
-          {props.cta.discriminant ? (
+          {props.fields.cta.discriminant ? (
             <div
               css={{
                 backgroundColor: '#F9BF12',
@@ -78,14 +266,14 @@ export const componentBlocks = {
                 padding: '12px 16px',
               }}
             >
-              {props.cta.value.text}
+              {props.fields.cta.value.fields.text.element}
             </div>
           ) : null}
         </div>
       );
     },
     label: 'Hero',
-    props: {
+    schema: {
       title: fields.child({ kind: 'inline', placeholder: 'Title...' }),
       content: fields.child({ kind: 'block', placeholder: '...' }),
       imageSrc: fields.text({
@@ -103,14 +291,18 @@ export const componentBlocks = {
   }),
   void: component({
     label: 'Void',
-    component: ({ value }) => <NotEditable>{value.value}</NotEditable>,
-    props: { value: fields.text({ label: 'Value' }) },
+    preview: props => <NotEditable>{props.fields.value.value}</NotEditable>,
+    schema: { value: fields.text({ label: 'Value' }) },
   }),
   conditionallyVoid: component({
     label: 'Conditionally Void',
-    component: ({ something }) =>
-      something.discriminant ? <NotEditable>Is void</NotEditable> : <div>{something.value}</div>,
-    props: {
+    preview: props =>
+      props.fields.something.discriminant ? (
+        <NotEditable>Is void</NotEditable>
+      ) : (
+        <div>{props.fields.something.value.element}</div>
+      ),
+    schema: {
       something: fields.conditional(fields.checkbox({ label: 'Is void' }), {
         false: fields.child({ kind: 'inline', placeholder: '...' }),
         true: fields.empty(),
@@ -119,13 +311,13 @@ export const componentBlocks = {
   }),
   featuredAuthors: component({
     label: 'Featured Authors',
-    component: props => {
+    preview: props => {
       return (
         <div>
-          <h1>{props.title}</h1>
+          <h1>{props.fields.title.element}</h1>
           <NotEditable>
             <ul>
-              {props.authors.value.map((author, i) => {
+              {props.fields.authors.value.map((author, i) => {
                 return (
                   <li key={i}>
                     {author.label}
@@ -142,7 +334,7 @@ export const componentBlocks = {
         </div>
       );
     },
-    props: {
+    schema: {
       title: fields.child({ kind: 'inline', placeholder: 'Title...' }),
       authors: fields.relationship({
         label: 'Authors',
@@ -153,7 +345,7 @@ export const componentBlocks = {
     },
   }),
   notice: component({
-    component: function Notice({ content, intent }) {
+    preview: function Notice(props) {
       const { palette, radii, spacing } = useTheme();
       const intentMap = {
         info: {
@@ -177,7 +369,7 @@ export const componentBlocks = {
           icon: noticeIconMap.success,
         },
       };
-      const intentConfig = intentMap[intent.value];
+      const intentConfig = intentMap[props.fields.intent.value];
 
       return (
         <div
@@ -202,13 +394,13 @@ export const componentBlocks = {
               <intentConfig.icon />
             </div>
           </NotEditable>
-          <div css={{ flex: 1 }}>{content}</div>
+          <div css={{ flex: 1 }}>{props.fields.content.element}</div>
         </div>
       );
     },
     label: 'Notice',
     chromeless: true,
-    props: {
+    schema: {
       intent: fields.select({
         label: 'Intent',
         options: [
@@ -231,16 +423,16 @@ export const componentBlocks = {
     toolbar({ props, onRemove }) {
       return (
         <ToolbarGroup>
-          {props.intent.options.map(opt => {
+          {props.fields.intent.options.map(opt => {
             const Icon = noticeIconMap[opt.value];
 
             return (
               <Tooltip key={opt.value} content={opt.label} weight="subtle">
                 {attrs => (
                   <ToolbarButton
-                    isSelected={props.intent.value === opt.value}
+                    isSelected={props.fields.intent.value === opt.value}
                     onClick={() => {
-                      props.intent.onChange(opt.value);
+                      props.fields.intent.onChange(opt.value);
                     }}
                     {...attrs}
                   >
@@ -265,7 +457,7 @@ export const componentBlocks = {
     },
   }),
   quote: component({
-    component: ({ attribution, content }) => {
+    preview: props => {
       return (
         <div
           css={{
@@ -283,20 +475,20 @@ export const componentBlocks = {
             },
           }}
         >
-          <div css={{ fontStyle: 'italic', color: '#4A5568' }}>{content}</div>
+          <div css={{ fontStyle: 'italic', color: '#4A5568' }}>{props.fields.content.element}</div>
           <div css={{ fontWeight: 'bold', color: '#47546b' }}>
             <NotEditable>— </NotEditable>
-            {attribution}
+            {props.fields.attribution.element}
           </div>
         </div>
       );
     },
     label: 'Quote',
-    props: {
+    schema: {
       content: fields.child({
         kind: 'block',
         placeholder: 'Quote...',
-        formatting: { inlineMarks: 'inherit', softBreaks: 'inherit' },
+        formatting: { inlineMarks: 'inherit', softBreaks: 'inherit', alignment: 'inherit' },
         links: 'inherit',
       }),
       attribution: fields.child({ kind: 'inline', placeholder: 'Attribution...' }),

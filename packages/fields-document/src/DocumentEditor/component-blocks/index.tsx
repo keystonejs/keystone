@@ -1,9 +1,19 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Fragment, ReactElement, createContext, useContext, useState, useMemo } from 'react';
+import {
+  Fragment,
+  ReactElement,
+  createContext,
+  useContext,
+  useState,
+  useMemo,
+  useCallback,
+  useEffect,
+  useRef,
+} from 'react';
 import { ReactEditor, RenderElementProps, useFocused, useSelected } from 'slate-react';
-import { Editor, Element, Transforms } from 'slate';
+import { Editor, Element, PathRef, Transforms, Node } from 'slate';
 
 import { jsx, useTheme } from '@keystone-ui/core';
 import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
@@ -12,44 +22,35 @@ import { Tooltip } from '@keystone-ui/tooltip';
 import { NotEditable } from '../../component-blocks';
 
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from '../primitives';
-import { ComponentPropField, ComponentBlock } from '../../component-blocks';
+import { ComponentSchema, ComponentBlock } from '../../component-blocks';
 import {
   insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading,
   useElementWithSetNodes,
   useStaticEditor,
 } from '../utils';
-import { clientSideValidateProp } from './utils';
-import { createPreviewProps } from './preview-props';
-import { getInitialValue } from './initial-values';
-import { FormValue } from './form';
+import { assert } from '../utils';
+import { areArraysEqual } from '../document-features-normalization';
+import { clientSideValidateProp, getSchemaAtPropPath, ReadonlyPropPath } from './utils';
+import { ChildFieldEditable, ChildrenByPathContext, getKeysForArrayValue } from './preview-props';
+import { getInitialPropsValue, getInitialValue } from './initial-values';
+import { FormValue } from './edit-mode';
+import { createGetPreviewProps } from './preview-props';
+import { ChildField } from './api';
 
 export { withComponentBlocks } from './with-component-blocks';
 
 export const ComponentBlockContext = createContext<Record<string, ComponentBlock>>({});
 
 export function getPlaceholderTextForPropPath(
-  propPath: (number | string)[],
-  fields: Record<string, ComponentPropField>,
+  propPath: ReadonlyPropPath,
+  fields: Record<string, ComponentSchema>,
   formProps: Record<string, any>
 ): string {
-  const prop = propPath[0];
-  const field = fields[prop];
-  if (field.kind === 'relationship' || field.kind === 'form') {
-    throw new Error('unexpected prop field when finding placeholder text for child prop');
+  const field = getSchemaAtPropPath(propPath, formProps, fields);
+  if (field?.kind === 'child') {
+    return field.options.placeholder;
   }
-  if (field.kind === 'object') {
-    return getPlaceholderTextForPropPath(propPath.slice(1), field.value, formProps[prop]);
-  }
-  if (field.kind === 'conditional') {
-    return getPlaceholderTextForPropPath(
-      propPath.slice(1),
-      {
-        value: field.values[formProps[prop].discriminant],
-      },
-      formProps[prop]
-    );
-  }
-  return field.options.placeholder;
+  return '';
 }
 
 export function ComponentInlineProp(props: RenderElementProps) {
@@ -61,11 +62,13 @@ export function insertComponentBlock(
   componentBlocks: Record<string, ComponentBlock>,
   componentBlock: string
 ) {
-  let node = getInitialValue(componentBlock, componentBlocks[componentBlock]);
+  const node = getInitialValue(componentBlock, componentBlocks[componentBlock]);
   insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, node);
+
   const componentBlockEntry = Editor.above(editor, {
     match: node => node.type === 'component-block',
   });
+
   if (componentBlockEntry) {
     const start = Editor.start(editor, componentBlockEntry[1]);
     Transforms.setSelection(editor, { anchor: start, focus: start });
@@ -109,11 +112,163 @@ export const ComponentBlocksElement = ({
   const isValid = useMemo(() => {
     return componentBlock
       ? clientSideValidateProp(
-          { kind: 'object', value: componentBlock.props },
+          { kind: 'object', fields: componentBlock.schema },
           currentElement.props
         )
       : true;
   }, [componentBlock, currentElement.props]);
+
+  const onCloseEditView = useCallback(() => {
+    setEditMode(false);
+  }, []);
+
+  const elementToGetPathRef = useRef({ __elementToGetPath, currentElement });
+
+  useEffect(() => {
+    elementToGetPathRef.current = { __elementToGetPath, currentElement };
+  });
+
+  const onPropsChange = useCallback(
+    (cb: (prevProps: Record<string, unknown>) => Record<string, unknown>) => {
+      Editor.withoutNormalizing(editor, () => {
+        const prevProps = elementToGetPathRef.current.currentElement.props;
+        const elementForChildren = elementToGetPathRef.current.__elementToGetPath;
+        const newProps = cb(prevProps);
+        setElement({ props: newProps });
+
+        const childPropPaths = findChildPropPathsWithPrevious(
+          newProps,
+          prevProps,
+          { kind: 'object', fields: componentBlock!.schema },
+          [],
+          [],
+          []
+        );
+
+        const basePath = ReactEditor.findPath(editor, elementForChildren);
+        if (childPropPaths.length === 0) {
+          const indexes = elementForChildren.children.map((_, i) => i).reverse();
+          for (const idx of indexes) {
+            Transforms.removeNodes(editor, {
+              at: [...basePath, idx],
+            });
+          }
+          Transforms.insertNodes(
+            editor,
+            { type: 'component-inline-prop', propPath: undefined, children: [{ text: '' }] },
+            { at: [...basePath, 0] }
+          );
+          return;
+        }
+
+        const initialPropPathsToEditorPath = new Map<undefined | string, number>();
+        for (const [idx, node] of elementForChildren.children.entries()) {
+          assert(node.type === 'component-block-prop' || node.type === 'component-inline-prop');
+          initialPropPathsToEditorPath.set(
+            node.propPath === undefined ? undefined : JSON.stringify(node.propPath),
+            idx
+          );
+        }
+
+        const childrenLeftToAdd = new Set(childPropPaths);
+        for (const childProp of childPropPaths) {
+          if (childProp.prevPath === undefined) {
+            continue;
+          }
+
+          const stringifiedPath = JSON.stringify(childProp.prevPath);
+          const idxInChildren = initialPropPathsToEditorPath.get(stringifiedPath);
+          if (idxInChildren !== undefined) {
+            type ChildProp = Element & { type: 'component-inline-prop' | 'component-block-prop' };
+            const prevNode = elementForChildren.children[idxInChildren] as ChildProp;
+            assert(prevNode.propPath !== undefined);
+            if (!areArraysEqual(childProp.path, prevNode.propPath)) {
+              Transforms.setNodes(
+                editor,
+                { propPath: childProp.path },
+                { at: [...basePath, idxInChildren] }
+              );
+            }
+            childrenLeftToAdd.delete(childProp);
+            initialPropPathsToEditorPath.delete(stringifiedPath);
+          }
+        }
+
+        const getNode = () => Node.get(editor, basePath) as Element;
+        let newIdx = getNode().children.length;
+        for (const childProp of childrenLeftToAdd) {
+          Transforms.insertNodes(
+            editor,
+            {
+              type: `component-${childProp.options.kind}-prop`,
+              propPath: childProp.path,
+              children: [
+                childProp.options.kind === 'block'
+                  ? { type: 'paragraph', children: [{ text: '' }] }
+                  : { text: '' },
+              ],
+            },
+            { at: [...basePath, newIdx] }
+          );
+          newIdx++;
+        }
+
+        const pathsToRemove: PathRef[] = [];
+        for (const [, idxInChildren] of initialPropPathsToEditorPath) {
+          pathsToRemove.push(Editor.pathRef(editor, [...basePath, idxInChildren]));
+        }
+        for (const pathRef of pathsToRemove) {
+          const path = pathRef.unref();
+          assert(path !== null);
+          Transforms.removeNodes(editor, { at: path });
+        }
+
+        const propPathsToExpectedIndexes = new Map<string, number>();
+        for (const [idx, thing] of childPropPaths.entries()) {
+          propPathsToExpectedIndexes.set(JSON.stringify(thing.path), idx);
+        }
+
+        outer: while (true) {
+          for (const [idx, childNode] of getNode().children.entries()) {
+            assert(
+              childNode.type === 'component-block-prop' ||
+                childNode.type === 'component-inline-prop'
+            );
+            const expectedIndex = propPathsToExpectedIndexes.get(
+              JSON.stringify(childNode.propPath)
+            );
+            assert(expectedIndex !== undefined);
+            if (idx === expectedIndex) continue;
+
+            Transforms.moveNodes(editor, {
+              at: [...basePath, idx],
+              to: [...basePath, expectedIndex],
+            });
+
+            // start the for-loop again
+            continue outer;
+          }
+
+          break;
+        }
+      });
+    },
+    [setElement, componentBlock, editor]
+  );
+
+  const getPreviewProps = useMemo(() => {
+    if (!componentBlock) {
+      return () => {
+        throw new Error('expected component block to exist when called');
+      };
+    }
+    return createGetPreviewProps(
+      { kind: 'object', fields: componentBlock.schema },
+      onPropsChange,
+      () => undefined
+    );
+  }, [componentBlock, onPropsChange]);
+
   if (!componentBlock) {
     return (
       <div css={{ border: 'red 4px solid', padding: spacing.medium }}>
@@ -130,6 +285,8 @@ Content:`}
       </div>
     );
   }
+
+  const previewProps = getPreviewProps(currentElement.props);
   return (
     <div
       data-with-chrome={!componentBlock.chromeless}
@@ -171,19 +328,7 @@ Content:`}
           {componentBlock.label}
         </NotEditable>
       )}
-      {editMode && (
-        <FormValue
-          isValid={isValid}
-          componentBlock={componentBlock}
-          onClose={() => {
-            setEditMode(false);
-          }}
-          value={currentElement.props}
-          onChange={val => {
-            setElement({ props: val });
-          }}
-        />
-      )}
+      {editMode && <FormValue isValid={isValid} props={previewProps} onClose={onCloseEditView} />}
       <div css={{ display: editMode ? 'none' : 'block', position: 'relative' }}>
         {editMode ? (
           children
@@ -192,12 +337,11 @@ Content:`}
             children={children}
             componentBlock={componentBlock}
             element={currentElement}
-            onElementChange={setElement}
+            onChange={onPropsChange}
           />
         )}
         {!editMode &&
           (() => {
-            const toolbarProps = createPreviewProps(currentElement, componentBlock, {}, setElement);
             const ChromefulToolbar = componentBlock.toolbar
               ? componentBlock.toolbar
               : DefaultToolbarWithChrome;
@@ -213,7 +357,7 @@ Content:`}
                       const path = ReactEditor.findPath(editor, __elementToGetPath);
                       Transforms.removeNodes(editor, { at: path });
                     }}
-                    props={toolbarProps}
+                    props={previewProps}
                   />
                 </InlineDialog>
               )
@@ -227,7 +371,7 @@ Content:`}
                 onShowEditMode={() => {
                   setEditMode(true);
                 }}
-                props={toolbarProps}
+                props={previewProps}
               />
             );
           })()}
@@ -316,31 +460,148 @@ function DefaultToolbarWithoutChrome({
 function ComponentBlockRender({
   componentBlock,
   element,
-  onElementChange,
+  onChange,
   children,
 }: {
   element: Element & { type: 'component-block' };
-  onElementChange: (element: Partial<Element>) => void;
+  onChange: (cb: (props: Record<string, unknown>) => Record<string, unknown>) => void;
   componentBlock: ComponentBlock;
   children: any;
 }) {
+  const getPreviewProps = useMemo(() => {
+    return createGetPreviewProps(
+      { kind: 'object', fields: componentBlock.schema },
+      props => {
+        onChange(props);
+      },
+      path => <ChildFieldEditable path={path} />
+    );
+  }, [onChange, componentBlock]);
+
+  const previewProps = getPreviewProps(element.props);
+
   const childrenByPath: Record<string, ReactElement> = {};
   let maybeChild: ReactElement | undefined;
   children.forEach((child: ReactElement) => {
-    let stringified = JSON.stringify(child.props.children.props.element.propPath);
-    if (stringified === undefined) {
+    const propPath = child.props.children.props.element.propPath;
+    if (propPath === undefined) {
       maybeChild = child;
     } else {
-      childrenByPath[stringified] = child;
+      childrenByPath[JSON.stringify(propPathWithIndiciesToKeys(propPath, element.props))] = child;
     }
   });
 
-  const previewProps = createPreviewProps(element, componentBlock, childrenByPath, onElementChange);
+  const ComponentBlockPreview = componentBlock.preview;
 
   return (
-    <Fragment>
-      <componentBlock.component {...previewProps} />
+    <ChildrenByPathContext.Provider value={childrenByPath}>
+      {useMemo(
+        () => (
+          <ComponentBlockPreview {...previewProps} />
+        ),
+        [previewProps, ComponentBlockPreview]
+      )}
       <span css={{ display: 'none' }}>{maybeChild}</span>
-    </Fragment>
+    </ChildrenByPathContext.Provider>
   );
+}
+
+// note this is written to avoid crashing when the given prop path doesn't exist in the value
+// this is because editor updates happen asynchronously but we have some logic to ensure
+// that updating the props of a component block synchronously updates it
+// (this is primarily to not mess up things like cursors in inputs)
+// this means that sometimes the child elements will be inconsistent with the values
+// so to deal with this, we return a prop path this is "wrong" but won't break anything
+function propPathWithIndiciesToKeys(propPath: ReadonlyPropPath, val: any): readonly string[] {
+  return propPath.map(key => {
+    if (typeof key === 'string') {
+      val = val?.[key];
+      return key;
+    }
+    if (!Array.isArray(val)) {
+      val = undefined;
+      return '';
+    }
+    const keys = getKeysForArrayValue(val);
+    val = val?.[key];
+    return keys[key];
+  });
+}
+
+type ChildPropPathWithPrevious = {
+  prevPath: ReadonlyPropPath | undefined;
+  path: ReadonlyPropPath;
+  options: ChildField['options'];
+};
+
+function findChildPropPathsWithPrevious(
+  value: any,
+  prevValue: any,
+  schema: ComponentSchema,
+  newPath: ReadonlyPropPath,
+  prevPath: ReadonlyPropPath | undefined,
+  pathWithKeys: readonly string[] | undefined
+): ChildPropPathWithPrevious[] {
+  switch (schema.kind) {
+    case 'form':
+      return [];
+    case 'relationship':
+      return [];
+    case 'child':
+      return [{ path: newPath, prevPath, options: schema.options }];
+    case 'conditional':
+      const hasChangedDiscriminant = value.discriminant === prevValue.discriminant;
+      return findChildPropPathsWithPrevious(
+        value.value,
+        hasChangedDiscriminant
+          ? prevValue.value
+          : getInitialPropsValue(schema.values[value.discriminant]),
+        schema.values[value.discriminant],
+        newPath.concat('value'),
+        hasChangedDiscriminant ? undefined : prevPath?.concat('value'),
+        hasChangedDiscriminant ? undefined : pathWithKeys?.concat('value')
+      );
+    case 'object': {
+      const paths: ChildPropPathWithPrevious[] = [];
+      for (const key of Object.keys(schema.fields)) {
+        paths.push(
+          ...findChildPropPathsWithPrevious(
+            value[key],
+            prevValue[key],
+            schema.fields[key],
+            newPath.concat(key),
+            prevPath?.concat(key),
+            pathWithKeys?.concat(key)
+          )
+        );
+      }
+      return paths;
+    }
+    case 'array': {
+      const paths: ChildPropPathWithPrevious[] = [];
+      const prevKeys = getKeysForArrayValue(prevValue);
+      const keys = getKeysForArrayValue(value);
+      for (const [i, val] of (value as unknown[]).entries()) {
+        const key = keys[i];
+        const prevIdx = prevKeys.indexOf(key);
+        let prevVal;
+        if (prevIdx === -1) {
+          prevVal = getInitialPropsValue(schema.element);
+        } else {
+          prevVal = prevValue[prevIdx];
+        }
+        paths.push(
+          ...findChildPropPathsWithPrevious(
+            val,
+            prevVal,
+            schema.element,
+            newPath.concat(i),
+            prevIdx === -1 ? undefined : prevPath?.concat(prevIdx),
+            prevIdx === -1 ? undefined : pathWithKeys?.concat(key)
+          )
+        );
+      }
+      return paths;
+    }
+  }
 }

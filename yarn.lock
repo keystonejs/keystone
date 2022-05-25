@@ -1610,6 +1610,45 @@
   resolved "https://registry.yarnpkg.com/@corex/deepmerge/-/deepmerge-2.6.148.tgz#8fa825d53ffd1cbcafce1b6a830eefd3dcc09dd5"
   integrity sha512-6QMz0/2h5C3ua51iAnXMPWFbb1QOU1UvSM4bKBw5mzdT+WtLgjbETBBIQZ+Sh9WvEcGwlAt/DEdRpIC3XlDBMA==
 
+"@dnd-kit/accessibility@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@dnd-kit/accessibility/-/accessibility-3.0.0.tgz#b56e3750414fd907b7d6972b3116aa8f96d07fde"
+  integrity sha512-QwaQ1IJHQHMMuAGOOYHQSx7h7vMZPfO97aDts8t5N/MY7n2QTDSnW+kF7uRQ1tVBkr6vJ+BqHWG5dlgGvwVjow==
+  dependencies:
+    tslib "^2.0.0"
+
+"@dnd-kit/core@^5.0.1":
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/@dnd-kit/core/-/core-5.0.1.tgz#ae8c01ca5a91083ab31bbd8c839c552e5cf62c26"
+  integrity sha512-h02GyHb2KqbpqbELA9QW5WVLdnAQODgZs8Nv15PTg/VpEpQxEkLPn0QHqiMSSOOFBx0qJOowwYh6ggfL1ZIJPQ==
+  dependencies:
+    "@dnd-kit/accessibility" "^3.0.0"
+    "@dnd-kit/utilities" "^3.1.0"
+    tslib "^2.0.0"
+
+"@dnd-kit/modifiers@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@dnd-kit/modifiers/-/modifiers-5.0.0.tgz#c2ba0bfdb6bed994affcfc4c86834795b7a7f029"
+  integrity sha512-ZVOfa5dKmvAPBxjjnI4QTm8fHV4/gMdS6k0zY5Z8p/p9HkL/3QEHn2fYgqM2zVDpxf5maqrZ4MvqXILSPNQPMQ==
+  dependencies:
+    "@dnd-kit/utilities" "^3.1.0"
+    tslib "^2.0.0"
+
+"@dnd-kit/sortable@^6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@dnd-kit/sortable/-/sortable-6.0.0.tgz#289c06ec594fb519d75cdf04ac5de7359b14f068"
+  integrity sha512-Kf0HO/rbFpd7HxXGEvxXtxBgPI6+IQuxRXDdFz6XKLhylxuDMEomi1netrhS+253KrOZ68V+sjqOmfE2RreLeQ==
+  dependencies:
+    "@dnd-kit/utilities" "^3.1.0"
+    tslib "^2.0.0"
+
+"@dnd-kit/utilities@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@dnd-kit/utilities/-/utilities-3.1.0.tgz#330ef24303da05f85ff20bb8f74b385c96caee58"
+  integrity sha512-2JBdIgjJ7xjMRpKagdMuYKWJdDoVVw9Wc6lfMrLjrq8t4QlMEjtsab5JVUlzWvHgANn7w3Y3VhalFfbp4dQrKg==
+  dependencies:
+    tslib "^2.0.0"
+
 "@emotion/babel-plugin@^11.7.1":
   version "11.7.1"
   resolved "https://registry.yarnpkg.com/@emotion/babel-plugin/-/babel-plugin-11.7.1.tgz#853fc4985d89dab0ea8e17af2858473d1b11be7e"

@@ -120,7 +120,7 @@ export const controller = (
 } => {
   const memoizedIsComponentBlockValid = weakMemoize((componentBlock: ComponentBlock) =>
     weakMemoize((props: any) =>
-      clientSideValidateProp({ kind: 'object', value: componentBlock.props }, props)
+      clientSideValidateProp({ kind: 'object', fields: componentBlock.schema }, props)
     )
   );
   const componentBlocks: Record<string, ComponentBlock> = config.customViews.componentBlocks || {};

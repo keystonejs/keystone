@@ -352,7 +352,7 @@ export function DocumentEditorEditable(props: EditableProps) {
                 const start = Editor.start(editor, [...path, index]);
                 const placeholder = getPlaceholderTextForPropPath(
                   child.propPath,
-                  componentBlocks[node.component].props,
+                  componentBlocks[node.component].schema,
                   node.props
                 );
                 if (placeholder) {
