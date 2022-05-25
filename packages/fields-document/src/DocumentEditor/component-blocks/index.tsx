@@ -238,14 +238,17 @@ export const ComponentBlocksElement = ({
               JSON.stringify(childNode.propPath)
             );
             assert(expectedIndex !== undefined);
-            if (idx !== expectedIndex) {
-              Transforms.moveNodes(editor, {
-                at: [...basePath, idx],
-                to: [...basePath, expectedIndex],
-              });
-              continue outer;
-            }
+            if (idx === expectedIndex) continue;
+
+            Transforms.moveNodes(editor, {
+              at: [...basePath, idx],
+              to: [...basePath, expectedIndex],
+            });
+
+            // start the for-loop again
+            continue outer;
           }
+
           break;
         }
       });
