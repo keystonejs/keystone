@@ -131,8 +131,9 @@ export const ComponentBlocksElement = ({
       Editor.withoutNormalizing(editor, () => {
         const prevProps = elementToGetPathRef.current.currentElement.props;
         const elementForChildren = elementToGetPathRef.current.__elementToGetPath;
-        let newProps = cb(prevProps);
+        const newProps = cb(prevProps);
         setElement({ props: newProps });
+
         const childPropPaths = findChildPropPathsWithPrevious(
           newProps,
           prevProps,
@@ -141,8 +142,8 @@ export const ComponentBlocksElement = ({
           [],
           []
         );
-        const basePath = ReactEditor.findPath(editor, elementForChildren);
 
+        const basePath = ReactEditor.findPath(editor, elementForChildren);
         if (childPropPaths.length === 0) {
           const indexes = elementForChildren.children.map((_, i) => i).reverse();
           for (const idx of indexes) {
@@ -157,6 +158,7 @@ export const ComponentBlocksElement = ({
           );
           return;
         }
+
         const initialPropPathsToEditorPath = new Map<undefined | string, number>();
         for (const [idx, node] of elementForChildren.children.entries()) {
           assert(node.type === 'component-block-prop' || node.type === 'component-inline-prop');
@@ -165,11 +167,13 @@ export const ComponentBlocksElement = ({
             idx
           );
         }
+
         const childrenLeftToAdd = new Set(childPropPaths);
         for (const childProp of childPropPaths) {
           if (childProp.prevPath === undefined) {
             continue;
           }
+
           const stringifiedPath = JSON.stringify(childProp.prevPath);
           const idxInChildren = initialPropPathsToEditorPath.get(stringifiedPath);
           if (idxInChildren !== undefined) {
@@ -221,6 +225,7 @@ export const ComponentBlocksElement = ({
         for (const [idx, thing] of childPropPaths.entries()) {
           propPathsToExpectedIndexes.set(JSON.stringify(thing.path), idx);
         }
+
         outer: while (true) {
           for (const [idx, childNode] of getNode().children.entries()) {
             assert(
