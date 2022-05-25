@@ -62,7 +62,7 @@ export default config({
         },
     }
     lists: {
-        images: { fields: { image({ storage: 'my_image_storage' }) } },
+        Image: { fields: { image({ storage: 'my_image_storage' }) } },
         user: { fields: avatar: relationship({ ref: 'images' })}
         blog: { fields: photos: relationship({ ref: 'images', many: true })}
         /* ... */
