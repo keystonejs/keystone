@@ -39,27 +39,35 @@ export const DialogBase = ({ children, isOpen, onClose, width, ...props }: Dialo
         <FocusLock autoFocus returnFocus>
           <RemoveScroll enabled>
             <div
-              aria-modal="true"
-              role="dialog"
-              tabIndex={-1}
-              onKeyDown={onKeyDown}
               css={{
-                animation: `${slideInAnim} 320ms ${easing}`,
-                backgroundColor: theme.colors.background,
-                borderRadius: theme.radii.large,
-                boxShadow: theme.shadow.s400,
-                margin: theme.spacing.small,
                 position: 'fixed',
-                marginLeft: -(width / 2),
-                left: '50%',
-                top: 64,
-                transition: `transform 150ms ${easing}`,
-                width: width,
-                zIndex: theme.elevation.e400,
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
               }}
-              {...props}
             >
-              {children}
+              <div
+                aria-modal="true"
+                role="dialog"
+                tabIndex={-1}
+                onKeyDown={onKeyDown}
+                css={{
+                  animation: `${slideInAnim} 320ms ${easing}`,
+                  backgroundColor: theme.colors.background,
+                  borderRadius: theme.radii.large,
+                  boxShadow: theme.shadow.s400,
+                  transition: `transform 150ms ${easing}`,
+                  width,
+                  zIndex: theme.elevation.e400,
+                }}
+                {...props}
+              >
+                {children}
+              </div>
             </div>
           </RemoveScroll>
         </FocusLock>
