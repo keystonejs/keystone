@@ -19,7 +19,10 @@ import {
 } from './api';
 import { assertNever } from './utils';
 
-type DefaultFieldProps<Key> = GenericPreviewProps<Extract<ComponentSchema, { kind: Key }>, unknown> & {
+type DefaultFieldProps<Key> = GenericPreviewProps<
+  Extract<ComponentSchema, { kind: Key }>,
+  unknown
+> & {
   autoFocus?: boolean;
   forceValidation?: boolean;
 };
@@ -44,7 +47,12 @@ function ArrayFieldPreview(props: DefaultFieldProps<'array'>) {
   );
 }
 
-function RelationshipFieldPreview({ schema, autoFocus, onChange, value }: DefaultFieldProps<'relationship'>) {
+function RelationshipFieldPreview({
+  schema,
+  autoFocus,
+  onChange,
+  value,
+}: DefaultFieldProps<'relationship'>) {
   const keystone = useKeystone();
   return (
     <FieldContainer>
@@ -83,7 +91,13 @@ function RelationshipFieldPreview({ schema, autoFocus, onChange, value }: Defaul
   );
 }
 
-function FormFieldPreview({ schema, autoFocus, forceValidation, onChange, value }: DefaultFieldProps<'form'>) {
+function FormFieldPreview({
+  schema,
+  autoFocus,
+  forceValidation,
+  onChange,
+  value,
+}: DefaultFieldProps<'form'>) {
   return (
     <schema.Input
       autoFocus={!!autoFocus}
@@ -112,23 +126,27 @@ function ObjectFieldPreview({ schema, autoFocus, fields }: DefaultFieldProps<'ob
   );
 }
 
-function ConditionalFieldPreview({ schema, autoFocus, discriminant, onChange, value }: DefaultFieldProps<'conditional'>) {
+function ConditionalFieldPreview({
+  schema,
+  autoFocus,
+  discriminant,
+  onChange,
+  value,
+}: DefaultFieldProps<'conditional'>) {
   const schemaDiscriminant = schema.discriminant as FormField<string | boolean, unknown>;
   return (
     <Stack gap="xlarge">
-      {
-        useMemo(
-          () => (
-            <schemaDiscriminant.Input
-              autoFocus={!!autoFocus}
-              value={discriminant}
-              onChange={onChange}
-              forceValidation={false}
-            />
-          ),
-          [autoFocus, schemaDiscriminant, discriminant, onChange]
-        )
-      }
+      {useMemo(
+        () => (
+          <schemaDiscriminant.Input
+            autoFocus={!!autoFocus}
+            value={discriminant}
+            onChange={onChange}
+            forceValidation={false}
+          />
+        ),
+        [autoFocus, schemaDiscriminant, discriminant, onChange]
+      )}
       {isNonChildFieldPreviewProps(value) && <FormValueContentFromPreviewProps {...value} />}
     </Stack>
   );
@@ -153,7 +171,7 @@ const fieldRenderers = {
   child: () => null,
   form: FormFieldPreview,
   object: ObjectFieldPreview,
-  conditional: ConditionalFieldPreview
+  conditional: ConditionalFieldPreview,
 };
 
 export const FormValueContentFromPreviewProps = memo(function FormValueContentFromPreview(
