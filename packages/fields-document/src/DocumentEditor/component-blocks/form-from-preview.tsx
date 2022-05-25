@@ -28,7 +28,7 @@ const fieldRenderers: {
     }
   ) => ReactElement | null;
 } = {
-  array: function ArrayField(props) {
+  array (props) {
     return (
       <Stack gap="medium">
         <OrderableList {...props}>
@@ -47,7 +47,8 @@ const fieldRenderers: {
       </Stack>
     );
   },
-  relationship: function RelationshipField({ schema, autoFocus, onChange, value }) {
+  relationship ({ schema, autoFocus, onChange, value }) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const keystone = useKeystone();
     return (
       <FieldContainer>
@@ -88,7 +89,7 @@ const fieldRenderers: {
     );
   },
   child: () => null,
-  form: function FormField({ schema, autoFocus, forceValidation, onChange, value }) {
+  form ({ schema, autoFocus, forceValidation, onChange, value }) {
     return (
       <schema.Input
         autoFocus={!!autoFocus}
@@ -98,7 +99,7 @@ const fieldRenderers: {
       />
     );
   },
-  object: function ObjectField({ schema, autoFocus, fields }) {
+  object ({ schema, autoFocus, fields }) {
     const firstFocusable = autoFocus ? findFocusableObjectFieldKey(schema) : undefined;
     return (
       <Stack gap="xlarge">
@@ -115,11 +116,13 @@ const fieldRenderers: {
       </Stack>
     );
   },
-  conditional: function ConditionalField({ schema, autoFocus, discriminant, onChange, value }) {
+  conditional ({ schema, autoFocus, discriminant, onChange, value }) {
     const schemaDiscriminant = schema.discriminant as FormField<string | boolean, unknown>;
     return (
       <Stack gap="xlarge">
-        {useMemo(
+        {
+          // eslint-disable-next-line react-hooks/rules-of-hooks
+          useMemo(
           () => (
             <schemaDiscriminant.Input
               autoFocus={!!autoFocus}
