@@ -89,7 +89,6 @@ export const DrawerBase = ({
           style={{
             transition: `opacity 150ms linear`,
             ...blanketTransition[transitionState],
-            zIndex: theme.elevation.e400,
           }}
         />
         <FocusLock autoFocus returnFocus onActivation={activateFocusLock}>
@@ -112,7 +111,6 @@ export const DrawerBase = ({
                 top: 0,
                 transition: `transform 150ms ${easing}`,
                 width: DRAWER_WIDTHS[width],
-                zIndex: theme.elevation.e400,
 
                 // flex layout must be applied here so content will grow/shrink properly
                 display: 'flex',
