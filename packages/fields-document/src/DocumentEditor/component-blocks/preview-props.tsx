@@ -166,14 +166,14 @@ export function createGetPreviewProps<Schema extends ComponentSchema, ChildField
     object(schema, value, memoized, path, getInnerProp) {
       const fields: Record<string, GenericPreviewProps<ComponentSchema, ChildFieldElement>> = {};
 
-      Object.keys(schema.fields).forEach(key => {
+      for (const key in schema.fields) {
         fields[key] = getInnerProp(
           schema.fields[key],
           value[key],
           memoized.innerOnChanges[key],
           key
         );
-      });
+      }
 
       const previewProps: GenericPreviewProps<
         ObjectField<Record<string, ComponentSchema>>,
