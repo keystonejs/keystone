@@ -4,7 +4,7 @@ import { RelatedContent } from '../../../components/RelatedContent';
 
 # Images and Files
 
-Keystone [field types](../apis/fields) contain both the `image` and `file`. These two field types can be used to reference, and if required, serve Images and/or Files from Keystone. These field types can be backed by either local or S3 storage.
+Keystone [field types](../apis/fields) contain both the `image` and `file`. These two field types can be used to reference, and if required, serve Images and/or Files from Keystone. These field types can be backed by either local or [Amazon S3 storage](https://aws.amazon.com/s3/).
 
 ## Storage Options - S3 and Local
 
@@ -16,7 +16,7 @@ The `storage` object defines how and where the assets are stored and accessed by
 - The `type` of `field` the storage is being used for - either `file` or `image`
 - A function to generate the URL (`generateUrl`) that Keystone returns in the GraphQL API pointing to the location or the storage where the assets can be accessed
 - The actual location where Keystone stores the assets - either a local `path` or `s3` bucket details
-- The location Keystone will serve the assets from - either a `serverRoute` for `local` or a `proxied` connection for `s3`. Both of these options add a route to Keystone backend which the files can be accessed from.
+- The location Keystone will serve the assets from - either a `serverRoute` for `local` or a `proxied` connection for `s3`. Both of these options add a route to Keystone backend which the files can be accessed from
 
 ### Defining `storage` in Keystone config
 
@@ -118,11 +118,11 @@ image {
 }
 ```
 
-The URL returned in this query is configurable by using the `generateUrl` function. This function takes the `path` which is the full filename and extension and should return the url you want in the GraphQL API.
+The URL returned in this query is configurable by using the `generateUrl` function. This function takes the `path` which is the full filename and extension and will return the URL you want in the GraphQL API.
 
 ### Putting it all together in your Keystone `config`
 
-The below defines two asset stores, one `s3` to stores files and one `local` to store images.
+The below defines two asset stores, one `s3` to store files and one `local` to store images.
 
 ```typescript{28-59}
 // keystone.ts
@@ -192,7 +192,7 @@ export default config({
 
 ## Field types - `image` and `file`
 
-Once you have your `storage` configuration in Keystone you can then use the `image` and `file` [field types](../apis/fields)
+Once you have your `storage` configuration in Keystone you can then use the `image` and `file` [field types](../apis/fields).
 
 Within an existing [list](../apis/schema) use the `image` of `file` field as follows:
 
