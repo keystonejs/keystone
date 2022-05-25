@@ -111,10 +111,10 @@ export type RelationshipField<Many extends boolean> = {
 };
 
 export interface ObjectField<
-  fields extends Record<string, ComponentSchema> = Record<string, ComponentSchema>
+  Fields extends Record<string, ComponentSchema> = Record<string, ComponentSchema>
 > {
   kind: 'object';
-  fields: fields;
+  fields: Fields;
 }
 
 export type ConditionalField<
