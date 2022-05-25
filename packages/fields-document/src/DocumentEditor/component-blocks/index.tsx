@@ -539,6 +539,7 @@ function findChildPropPathsWithPrevious(
 ): ChildPropPathWithPrevious[] {
   switch (schema.kind) {
     case 'form':
+      return [];
     case 'relationship':
       return [];
     case 'child':
@@ -556,8 +557,8 @@ function findChildPropPathsWithPrevious(
         hasChangedDiscriminant ? undefined : pathWithKeys?.concat('value')
       );
     case 'object': {
-      let paths: ChildPropPathWithPrevious[] = [];
-      Object.keys(schema.fields).forEach(key => {
+      const paths: ChildPropPathWithPrevious[] = [];
+      for (const key in schema.fields) {
         paths.push(
           ...findChildPropPathsWithPrevious(
             value[key],
@@ -568,11 +569,11 @@ function findChildPropPathsWithPrevious(
             pathWithKeys?.concat(key)
           )
         );
-      });
+      }
       return paths;
     }
     case 'array': {
-      let paths: ChildPropPathWithPrevious[] = [];
+      const paths: ChildPropPathWithPrevious[] = [];
       const prevKeys = getKeysForArrayValue(prevValue);
       const keys = getKeysForArrayValue(value);
       for (const [i, val] of (value as unknown[]).entries()) {
