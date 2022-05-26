@@ -6,8 +6,6 @@ import { graphqlUploadExpress } from 'graphql-upload';
 import { ApolloServer } from 'apollo-server-express';
 import type { KeystoneConfig, CreateContext, SessionStrategy, GraphQLConfig } from '../../types';
 import { createSessionContext } from '../../session';
-import { DEFAULT_FILES_STORAGE_PATH } from '../context/createFilesContext';
-import { DEFAULT_IMAGES_STORAGE_PATH } from '../context/createImagesContext';
 import { createApolloServerExpress } from './createApolloServer';
 import { addHealthCheck } from './addHealthCheck';
 
@@ -104,18 +102,23 @@ export const createExpressServer = async (
     config.server?.extendHttpServer(httpServer, createRequestContext);
   }
 
-  if (config.files) {
-    expressServer.use(
-      '/files',
-      express.static(config.files.local?.storagePath ?? DEFAULT_FILES_STORAGE_PATH)
-    );
-  }
-
-  if (config.images) {
-    expressServer.use(
-      '/images',
-      express.static(config.images.local?.storagePath ?? DEFAULT_IMAGES_STORAGE_PATH)
-    );
+  if (config.storage) {
+    for (const val of Object.values(config.storage)) {
+      if (val.kind !== 'local' || !val.serverRoute) continue;
+      expressServer.use(
+        val.serverRoute.path,
+        express.static(val.storagePath, {
+          setHeaders(res) {
+            if (val.type === 'file') {
+              res.setHeader('Content-Type', 'application/octet-stream');
+            }
+          },
+          index: false,
+          redirect: false,
+          lastModified: false,
+        })
+      );
+    }
   }
 
   const apolloServer = await addApolloServer({

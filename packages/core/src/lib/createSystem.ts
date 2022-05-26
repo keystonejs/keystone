@@ -5,7 +5,6 @@ import { createAdminMeta } from '../admin-ui/system/createAdminMeta';
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './context/createContext';
 import { initialiseLists } from './core/types-for-lists';
-import { CloudAssetsAPI, getCloudAssetsAPI } from './cloud/assets';
 import { setWriteLimit } from './core/utils';
 
 function getSudoGraphQLSchema(config: KeystoneConfig) {
@@ -87,8 +86,6 @@ export function createSystem(config: KeystoneConfig, isLiveReload?: boolean) {
         prismaClient._engine.child?.kill('SIGINT');
       });
 
-      let cloudAssetsAPI: CloudAssetsAPI | undefined = undefined;
-
       const createContext = makeCreateContext({
         graphQLSchema,
         sudoGraphQLSchema,
@@ -98,12 +95,6 @@ export function createSystem(config: KeystoneConfig, isLiveReload?: boolean) {
           Object.entries(lists).map(([listKey, list]) => [listKey, getGqlNames(list)])
         ),
         lists,
-        cloudAssetsAPI: () => {
-          if (cloudAssetsAPI === undefined) {
-            throw new Error('Keystone Cloud config was not loaded');
-          }
-          return cloudAssetsAPI;
-        },
       });
 
       return {
@@ -112,15 +103,6 @@ export function createSystem(config: KeystoneConfig, isLiveReload?: boolean) {
             await prismaClient.$connect();
             const context = createContext({ sudo: true });
             await config.db.onConnect?.(context);
-          }
-          if (config.experimental?.cloud?.apiKey) {
-            try {
-              cloudAssetsAPI = await getCloudAssetsAPI({
-                apiKey: config.experimental.cloud.apiKey,
-              });
-            } catch (err) {
-              console.error('failed to connect to Keystone Cloud', err);
-            }
           }
         },
         async disconnect() {

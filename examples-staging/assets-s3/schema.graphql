@@ -20,13 +20,12 @@ enum PostStatusType {
 scalar DateTime
   @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
 
-interface ImageFieldOutput {
+type ImageFieldOutput {
   id: ID!
   filesize: Int!
   width: Int!
   height: Int!
   extension: ImageExtension!
-  ref: String!
   url: String!
 }
 
@@ -37,49 +36,14 @@ enum ImageExtension {
   gif
 }
 
-interface FileFieldOutput {
+type FileFieldOutput {
   filename: String!
   filesize: Int!
-  ref: String!
   url: String!
 }
 
 input PostWhereUniqueInput {
   id: ID
-}
-
-type LocalImageFieldOutput implements ImageFieldOutput {
-  id: ID!
-  filesize: Int!
-  width: Int!
-  height: Int!
-  extension: ImageExtension!
-  ref: String!
-  url: String!
-}
-
-type CloudImageFieldOutput implements ImageFieldOutput {
-  id: ID!
-  filesize: Int!
-  width: Int!
-  height: Int!
-  extension: ImageExtension!
-  ref: String!
-  url: String!
-}
-
-type LocalFileFieldOutput implements FileFieldOutput {
-  filename: String!
-  filesize: Int!
-  ref: String!
-  url: String!
-}
-
-type CloudFileFieldOutput implements FileFieldOutput {
-  filename: String!
-  filesize: Int!
-  ref: String!
-  url: String!
 }
 
 input PostWhereInput {
@@ -181,8 +145,7 @@ input AuthorRelateToOneForUpdateInput {
 }
 
 input ImageFieldInput {
-  upload: Upload
-  ref: String
+  upload: Upload!
 }
 
 """
@@ -191,8 +154,7 @@ The `Upload` scalar type represents a file upload.
 scalar Upload
 
 input FileFieldInput {
-  upload: Upload
-  ref: String
+  upload: Upload!
 }
 
 input PostUpdateArgs {
