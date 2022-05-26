@@ -12,35 +12,55 @@ Old:
 
 ```ts
 export default config({
-    image: { upload: 'local' },
-    lists: { 
-        images: { fields: { image() }
-        /* ... */
-    },
+  image: { upload: 'local' },
+  lists: {
+    Image: { fields: { image: image() } },
     /* ... */
-})
+  },
+  /* ... */
+});
 ```
 
-New:
+New: 
+```ts
+export default config({
+  storage: {
+    my_images: {
+      kind: 'local',
+      type: 'image',
+      generateUrl: path => `http://localhost:3000/images${path}`,
+      serverRoute: { path: '/images' },
+      storagePath: 'public/images',
+    },
+  },
+  lists: {
+    Image: { fields: { image: image({ storage: 'my_images' }) } },
+    /* ... */
+  },
+  /* ... */
+});
+```
+
+You can also now store assets on S3:
 
 ```ts
 export default config({
-    storage: {
-        my_image_storage: {
-            kind: 's3',
-            type: 'image',
-            bucketName: S3_BUCKET_NAME,
-            region: S3_REGION,
-            accessKeyId: S3_ACCESS_KEY_ID,
-            secretAccessKey: S3_SECRET_ACCESS_KEY
-        },
-    }
-    lists: {
-        images: { fields: image({ storage: 'my_image_storage' }) }
-        /* ... */
+  storage: {
+    my_image_storage: {
+      kind: 's3',
+      type: 'image',
+      bucketName: S3_BUCKET_NAME,
+      region: S3_REGION,
+      accessKeyId: S3_ACCESS_KEY_ID,
+      secretAccessKey: S3_SECRET_ACCESS_KEY,
     },
+  },
+  lists: {
+    Image: { fields: { image: image({ storage: 'my_image_storage' }) } },
     /* ... */
-})
+  },
+  /* ... */
+});
 ```
 
 ##### Removal of refs for `images` and `files`
@@ -56,19 +76,19 @@ If you wanted refs, where images could be available in multiple places, our new 
 
 ```ts
 export default config({
-    storage: {
-        my_image_storage: {
-            /* ... */
-        },
-    }
-    lists: {
-        Image: { fields: { image({ storage: 'my_image_storage' }) } },
-        user: { fields: avatar: relationship({ ref: 'images' })}
-        blog: { fields: photos: relationship({ ref: 'images', many: true })}
-        /* ... */
+  storage: {
+    my_image_storage: {
+      /* ... */
     },
+  },
+  lists: {
+    Image: { fields: { image: image({ storage: 'my_image_storage' }) } },
+    User: { fields: { avatar: relationship({ ref: 'Image' }) } },
+    Blog: { fields: { photos: relationship({ ref: 'Image', many: true }) } },
     /* ... */
-})
+  },
+  /* ... */
+});
 ```
 
 This allows mirroring of the old functionality, while allowing us to add the below feature/breaking change.
@@ -91,7 +111,7 @@ Previously, if you were using local storage (you scallywag), you needed to provi
 can still do this, but if you plan on serving them from another location, you can opt into not doing this.
 
 
-```ts
+```diff
 {
 -   baseUrl: '/images'
 +   serverRoute: {
@@ -102,11 +122,6 @@ can still do this, but if you plan on serving them from another location, you ca
 
 #### New bits
 
-S3 is now supported! See the `storage` config for all the options for S3.
-
-`preserve` flag added to both `file` and `image` fields to allow removal of files from the source
-Support for multiple `storage` sources - each `image` and `file` field can now use its own config you want.
-
-#### Changes
-
-
+- S3 is now supported! See the `storage` config for all the options for S3.
+- `preserve` flag added to both `file` and `image` fields to allow removal of files from the source
+- Support for multiple `storage` sources - each `image` and `file` field can now use its own config you want.
