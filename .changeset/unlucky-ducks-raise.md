@@ -12,7 +12,7 @@ Old:
 
 ```ts
 export default config({
-    image: { upload: 's3' },
+    image: { upload: 'local' },
     lists: { 
         images: { fields: { image() }
         /* ... */
@@ -102,9 +102,10 @@ can still do this, but if you plan on serving them from another location, you ca
 
 #### New bits
 
-S3 is now supported
+S3 is now supported! See the `storage` config for all the options for S3.
+
 `preserve` flag added to both `file` and `image` fields to allow removal of files from the source
-Support for multiple `storage` sources - each `image` and `file` field can now use its own config (or not)
+Support for multiple `storage` sources - each `image` and `file` field can now use its own config you want.
 
 #### Changes
 
