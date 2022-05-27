@@ -9,6 +9,7 @@ import { Mark } from '../utils';
 
 const currentlyActiveMarks = new Set<Mark>();
 const currentlyDisabledMarks = new Set<Mark>();
+let currentLink: string | null = null;
 
 export function addMarkToChildren<T>(mark: Mark, cb: () => T): T {
   const wasPreviouslyActive = currentlyActiveMarks.has(mark);
@@ -19,6 +20,19 @@ export function addMarkToChildren<T>(mark: Mark, cb: () => T): T {
     if (!wasPreviouslyActive) {
       currentlyActiveMarks.delete(mark);
     }
+  }
+}
+
+export function setLinkForChildren<T>(href: string, cb: () => T): T {
+  // we'll only use the outer link
+  if (currentLink !== null) {
+    return cb();
+  }
+  currentLink = href;
+  try {
+    return cb();
+  } finally {
+    currentLink = null;
   }
 }
 
@@ -51,12 +65,35 @@ export function forceDisableMarkForChildren<T>(mark: Mark, cb: () => T): T {
   }
 }
 
-export function getTextNodeForCurrentlyActiveMarks(text: string) {
+/**
+ * This type is more strict than `Element & { type: 'link'; }` because `children`
+ * is constrained to only contain Text nodes. This can't be assumed generally around the editor
+ * (because of inline relationships or nested links(which are normalized away but the editor needs to not break if it happens))
+ * but where this type is used, we're only going to allow links to contain Text and that's important
+ * so that we know a block will never be inside an inline because Slate gets unhappy when that happens
+ * (really the link inline should probably be a mark rather than an inline,
+ * non-void inlines are probably always bad but that would imply changing the document
+ * structure which would be such unnecessary breakage)
+ */
+type StrictLink = { type: 'link'; href: string; children: Text[] };
+// inline relationships are not here because we never create them from handling a paste from html or markdown
+export type InlineFromExternalPaste = Text | StrictLink;
+
+export function getInlineNodes(
+  text: string
+): [InlineFromExternalPaste, ...InlineFromExternalPaste[]] {
   const node: Text = { text };
   for (const mark of currentlyActiveMarks) {
     if (!currentlyDisabledMarks.has(mark)) {
       node[mark] = true;
     }
   }
-  return node;
+  if (currentLink !== null) {
+    return [
+      { text: '' },
+      { type: 'link' as const, href: currentLink, children: [node] },
+      { text: '' },
+    ];
+  }
+  return [node];
 }

@@ -6,8 +6,13 @@ import autoLinkLiteralMarkdownSyntax from 'micromark-extension-gfm-autolink-lite
 // @ts-ignore
 import gfmStrikethroughFromMarkdownExtension from 'mdast-util-gfm-strikethrough/from-markdown';
 import gfmStrikethroughMarkdownSyntax from 'micromark-extension-gfm-strikethrough';
-import { Descendant } from 'slate';
-import { getTextNodeForCurrentlyActiveMarks, addMarkToChildren } from './utils';
+import { Block } from '..';
+import {
+  getInlineNodes,
+  addMarkToChildren,
+  setLinkForChildren,
+  InlineFromExternalPaste,
+} from './utils';
 
 const markdownConfig = {
   mdastExtensions: [autoLinkLiteralFromMarkdownExtension, gfmStrikethroughFromMarkdownExtension],
@@ -26,7 +31,7 @@ export function deserializeMarkdown(markdown: string) {
 type MDNode = ReturnType<typeof mdASTUtilFromMarkdown>['children'][number];
 
 function deserializeChildren(nodes: MDNode[], input: string) {
-  const outputNodes: Descendant[] = [];
+  const outputNodes: (InlineFromExternalPaste | Block)[] = [];
   for (const node of nodes) {
     const result = deserializeMarkdownNode(node, input);
     if (result.length) {
@@ -39,19 +44,16 @@ function deserializeChildren(nodes: MDNode[], input: string) {
   return outputNodes;
 }
 
-function deserializeMarkdownNode(node: MDNode, input: string): Descendant[] {
+function deserializeMarkdownNode(node: MDNode, input: string): (InlineFromExternalPaste | Block)[] {
   switch (node.type) {
     case 'blockquote': {
       return [{ type: 'blockquote', children: deserializeChildren(node.children, input) }];
     }
     case 'link': {
-      return [
-        {
-          type: 'link',
-          href: node.url,
-          children: deserializeChildren(node.children, input),
-        },
-      ];
+      // arguably this could just return a link node rather than use setLinkForChildren since the children _should_ only be inlines
+      // but rather than relying on the markdown parser we use being correct in this way since it isn't nicely codified in types
+      // let's be safe since we already have the code to do it the safer way because of html pasting
+      return setLinkForChildren(node.url, () => deserializeChildren(node.children, input));
     }
     case 'code': {
       return [{ type: 'code', children: [{ text: node.value }] }];
@@ -83,7 +85,7 @@ function deserializeMarkdownNode(node: MDNode, input: string): Descendant[] {
       return [{ type: 'divider', children: [{ text: '' }] }];
     }
     case 'break': {
-      return [getTextNodeForCurrentlyActiveMarks('\n')];
+      return getInlineNodes('\n');
     }
     case 'delete': {
       return addMarkToChildren('strikethrough', () => deserializeChildren(node.children, input));
@@ -95,20 +97,11 @@ function deserializeMarkdownNode(node: MDNode, input: string): Descendant[] {
       return addMarkToChildren('italic', () => deserializeChildren(node.children, input));
     }
     case 'inlineCode': {
-      return addMarkToChildren('code', () => [getTextNodeForCurrentlyActiveMarks(node.value)]);
+      return addMarkToChildren('code', () => getInlineNodes(node.value));
     }
-    // while it might be nice if we parsed the html here
-    // it's a bit more complicated than just parsing the html
-    // because an html node might just be an opening/closing node
-    // but we just have an opening/closing node here
-    // not the opening and closing and children
     case 'text': {
-      return [getTextNodeForCurrentlyActiveMarks(node.value)];
+      return getInlineNodes(node.value);
     }
   }
-  return [
-    getTextNodeForCurrentlyActiveMarks(
-      input.slice(node.position!.start.offset, node.position!.end.offset)
-    ),
-  ];
+  return getInlineNodes(input.slice(node.position!.start.offset, node.position!.end.offset));
 }

@@ -439,7 +439,7 @@ while (listDepth--) {
   }
 }
 
-type Block = Exclude<Element, { type: 'relationship' | 'link' }>;
+export type Block = Exclude<Element, { type: 'relationship' | 'link' }>;
 
 type BlockContainerSchema = {
   kind: 'blocks';
@@ -555,6 +555,14 @@ const inlineContainerTypes = new Set(
 
 export function isInlineContainer(node: Node): node is Block & { type: InlineContainingType } {
   return node.type !== undefined && inlineContainerTypes.has(node.type);
+}
+
+const blockTypes: Set<string | undefined> = new Set(
+  Object.keys(editorSchema).filter(x => x !== 'editor')
+);
+
+export function isBlock(node: Descendant): node is Block {
+  return blockTypes.has(node.type);
 }
 
 function withBlocksSchema(editor: Editor): Editor {
