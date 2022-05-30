@@ -106,6 +106,8 @@ export function createSystem(config: KeystoneConfig, isLiveReload?: boolean) {
           }
         },
         async disconnect() {
+          // Tests that use the stored session won't stop until the store connection is disconnected
+          await config?.session?.disconnect?.();
           await prismaClient.$disconnect();
         },
         createContext,
