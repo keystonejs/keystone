@@ -49,9 +49,9 @@ jobs:
       mysql:
         image: mariadb:10.7
         env:
-          MYSQL_USER: keystone5
+          MYSQL_USER: testuser
           MYSQL_PASSWORD: testpass
-          MYSQL_DATABASE: testpass
+          MYSQL_DATABASE: test_db
           MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
         ports:
           - 3306:3306
