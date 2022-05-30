@@ -490,8 +490,8 @@ export const lists = {
               <Image
                 src={contentEditorMockui}
                 alt="Overlay of Admin UI field panes showing fields for a Post content type. Promotional text overlays show: custom & virtual fields; flexible relationships; powerful sort & filtering."
-                width={2109}
-                height={1591}
+                width={1130}
+                height={997}
               />
             </div>
           </li>
