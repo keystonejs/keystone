@@ -4,10 +4,10 @@ import { integer } from '../../index';
 export const name = 'Integer with autoincrement default';
 export const typeFunction = (config: any) =>
   integer({
+    isIndexed: true,
     ...config,
     db: { ...config?.db, isNullable: false },
     defaultValue: { kind: 'autoincrement' },
-    isIndexed: true,
   });
 export const exampleValue = () => 35;
 export const exampleValue2 = () => 36;

@@ -129,7 +129,7 @@ export const expectExtensionError = (
 
 export const expectPrismaError = (
   errors: readonly any[] | undefined,
-  args: { path: any[]; message: string; code: string; target: string[] }[]
+  args: { path: (string | number)[]; message: string; code: string; target: string[] | string }[]
 ) => {
   const unpackedErrors = unpackErrors(errors);
   expect(unpackedErrors).toEqual(
