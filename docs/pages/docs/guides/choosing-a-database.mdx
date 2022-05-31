@@ -6,14 +6,16 @@ import { RelatedContent } from '../../../components/RelatedContent';
 
 Keystone supports Postgres, MySQL and SQLite database engines. This guide highlights the differences between these engines to help you choose the right one for your project.
 
-!> **Note:** SQLite is not recommended in production except for scenarios like the [embedded Keystone](../walkthroughs/embedded-mode-with-sqlite-nextjs) example
+!> **Note:** SQLite is not recommended in production except for scenarios like the [Embedded Keystone](../walkthroughs/embedded-mode-with-sqlite-nextjs) example
 
 ## Case Sensitivity
 
-By default, Postgres is case sensitive, while MySQL and SQLite are not case sensitive. This means when filtering and sorting the results will differ depending on the database type and collation used.
-When using `StringFilter` in a GraphQL query the `mode` defaults to that of the database - case sensitive for Postgres, and collation dependent for MySQL. You can make a query case insensitive by using `mode: insensitive`, there is no way to make a `StringQuery` case sensitive if your database is not case sensitive.
+By default, Postgres is case sensitive, while MySQL is not case sensitive, and SQLite is not case sensitive for `contains`, `startsWith` and `endsWith`. This means when filtering and sorting the results will differ depending on the database type and collation used.
+When using `StringFilter` in a GraphQL query the `mode` defaults to case sensitive for the database. You can make a query case insensitive in Postgres by using `mode: insensitive`.
 
 See the [Case Sensitivity Prisma Docs](https://www.prisma.io/docs/concepts/components/prisma-client/case-sensitivity) for more information.
+
+!> **Note:** `mode: insensitive` is not supported in MySQL or SQLite
 
 ## Default Types
 
