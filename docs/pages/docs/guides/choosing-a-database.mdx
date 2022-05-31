@@ -6,7 +6,6 @@ import { RelatedContent } from '../../../components/RelatedContent';
 
 Keystone supports Postgres, MySQL and SQLite database engines. This guide highlights the differences between these engines to help you choose the right one for your project.
 
-
 !> **Note:** SQLite is not recommended in production except for scenarios like the [embedded Keystone](../walkthroughs/embedded-mode-with-sqlite-nextjs) example
 
 ## Case Sensitivity
@@ -24,12 +23,13 @@ see [Primsa Schema Reference](https://www.prisma.io/docs/reference/api-reference
 
 The Keystone `text` field supports the `db.nativeType` option, allowing you to override this - [Fields API](../apis/fields). Over time this option will be added to other field types.
 
-## Prisma Resources
+## Auto Increment Integer Fields
 
-- [Database Features](https://www.prisma.io/docs/reference/database-reference/database-features)
-- [Supported Databases](https://www.prisma.io/docs/reference/database-reference/supported-databases)
+When using an [Integer field](../apis/fields#integer) with the `defaultValue: { kind: 'autoincrement' }` MySQL also requires this field to be indexed using the `isIndexed: true` or `isIndexed: 'unique'`.
 
-!> **Note**: Keystone currently supports Postgres, MySQL, SQLite
+## Supported Database Versions
+
+For supported database provider versions for Postgres and MySQL see [Prisma Supported Databases](https://www.prisma.io/docs/reference/database-reference/supported-databases)
 
 ## Related resources
 
