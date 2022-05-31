@@ -80,10 +80,7 @@ test(
                   },
                   label: 'Name',
                   path: 'name',
-                  search:
-                    dbProvider === 'postgresql' || dbProvider === 'mysql'
-                      ? 'insensitive'
-                      : 'default',
+                  search: dbProvider === 'postgresql' ? 'insensitive' : 'default',
                   viewsIndex: 1,
                 },
               ],
