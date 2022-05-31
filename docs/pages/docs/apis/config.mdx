@@ -59,8 +59,8 @@ import type { DatabaseConfig } from '@keystone-6/core/types';
 
 The `db` config option configures the database used to store data in your Keystone system.
 It has a TypeScript type of `DatabaseConfig`.
-Keystone supports the database types **PostgreSQL** and **SQLite**.
-These database types are powered by their corresponding Prisma database providers; `postgresql` and `sqlite`.
+Keystone supports the database types **PostgreSQL**, **MySQL** and **SQLite**.
+These database types are powered by their corresponding Prisma database providers; `postgresql`, `mysql` and `sqlite`.
 
 All database providers require the `url` argument, which defines the connection URL for your database.
 They also all have an optional `onConnect` async function, which takes a [`KeystoneContext`](./context) object, and lets perform any actions you might need at startup, such as data seeding.
@@ -82,6 +82,31 @@ export default config({
   db: {
     provider: 'postgresql',
     url: 'postgres://dbuser:dbpass@localhost:5432/keystone',
+    onConnect: async context => { /* ... */ },
+    // Optional advanced configuration
+    enableLogging: true,
+    useMigrations: true,
+    idField: { kind: 'uuid' },
+  },
+  /* ... */
+});
+```
+
+### mysql
+
+Advanced configuration:
+
+- `enableLogging` (default: `false`): Enable logging from the Prisma client.
+- `useMigrations` (default: `false`): Determines whether to use migrations or automatically force-update the database with the latest schema and potentially lose data.
+- `idField` (default: `{ kind: "cuid" }`): The kind of id field to use, it can be one of: `cuid`, `uuid` or `autoincrement`.
+  This can also be customised at the list level `db.idField`.
+- `prismaPreviewFeatures` (default: `[]`): Enable [Prisma preview features](https://www.prisma.io/docs/concepts/components/preview-features) by providing an array of strings.
+
+```typescript
+export default config({
+  db: {
+    provider: 'mysql',
+    url: 'mysql://dbuser:dbpass@localhost:5432/keystone',
     onConnect: async context => { /* ... */ },
     // Optional advanced configuration
     enableLogging: true,
