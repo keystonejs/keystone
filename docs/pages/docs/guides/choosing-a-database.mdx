@@ -13,7 +13,7 @@ This page seeks to clarify some of the differences in the databases supported by
 ## Case Sensitivity
 
 By default, Postgres is case sensitive, while MySQL and SQLite are not case sensitive. This means when filtering and sorting the results will differ depending on the database type and collation used.
-When using `StringFilter`in a GraphQL query the `mode` defaults to that of the database - case sensitive for postgres, and collation dependant for MySQL, you can make a query case insensitive by using `mode: insensitive`, there is no way to make a `StringQuery` case sensitive if your database is not case sensitive.
+When using `StringFilter`in a GraphQL query the `mode` defaults to that of the database - case sensitive for Postgres, and collation dependent for MySQL, you can make a query case insensitive by using `mode: insensitive`, there is no way to make a `StringQuery` case sensitive if your database is not case sensitive.
 
 See the [Case Sensitivity Prisma Docs](https://www.prisma.io/docs/concepts/components/prisma-client/case-sensitivity) for more information.
 
