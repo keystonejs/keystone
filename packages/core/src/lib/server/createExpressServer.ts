@@ -2,7 +2,8 @@ import { createServer, IncomingMessage, Server, ServerResponse } from 'http';
 import cors, { CorsOptions } from 'cors';
 import express from 'express';
 import { GraphQLSchema } from 'graphql';
-import { graphqlUploadExpress } from 'graphql-upload';
+// @ts-ignore (https://github.com/jaydenseric/graphql-upload/issues/305, upstream fixes to @types/ needed)
+import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js';
 import { ApolloServer } from 'apollo-server-express';
 import type { KeystoneConfig, CreateContext, SessionStrategy, GraphQLConfig } from '../../types';
 import { createSessionContext } from '../../session';

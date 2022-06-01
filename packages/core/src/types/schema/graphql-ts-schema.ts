@@ -1,9 +1,8 @@
 import * as graphqlTsSchema from '@graphql-ts/schema';
 import { GraphQLJSON } from 'graphql-type-json';
-// this is imported from a specific path so that we don't import busboy here because webpack doesn't like bundling it
-// @ts-ignore
-import GraphQLUpload from 'graphql-upload/public/GraphQLUpload.js';
-import type { FileUpload } from 'graphql-upload';
+// @ts-ignore (https://github.com/jaydenseric/graphql-upload/issues/305, upstream fixes to @types/ needed)
+import GraphQLUpload from 'graphql-upload/GraphQLUpload.js';
+import { type FileUpload } from 'graphql-upload';
 import { GraphQLError, GraphQLScalarType } from 'graphql';
 import { Decimal as DecimalValue } from 'decimal.js';
 import { KeystoneContext } from '../context';
