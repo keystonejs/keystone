@@ -71,7 +71,7 @@ type IsEnabled = {
   orderBy: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>);
 };
 
-function throwIfNotAFilter (x: unknown, listKey: string, fieldKey: string) {
+function throwIfNotAFilter(x: unknown, listKey: string, fieldKey: string) {
   if (['boolean', 'undefined', 'function'].includes(typeof x)) return;
 
   throw new Error(
