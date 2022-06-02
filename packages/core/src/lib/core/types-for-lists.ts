@@ -38,7 +38,7 @@ export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access' | 'graph
       filter: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>);
       orderBy: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>);
     };
-    cacheHint?: CacheHint | undefined;
+    cacheHint: CacheHint | undefined;
   };
 };
 
@@ -57,29 +57,19 @@ export type InitialisedList = {
   lists: Record<string, InitialisedList>;
   dbMap: string | undefined;
   graphql: {
-    isEnabled: {
-      type: boolean;
-      query: boolean;
-
-      create: boolean;
-      update: boolean;
-      delete: boolean;
-    };
+    isEnabled: IsEnabled;
   };
 };
 
-type IsEnabled = Record<
-  string,
-  {
-    type: boolean;
-    query: boolean;
-    create: boolean;
-    update: boolean;
-    delete: boolean;
-    filter: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>);
-    orderBy: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>);
-  }
->;
+type IsEnabled = {
+  type: boolean;
+  query: boolean;
+  create: boolean;
+  update: boolean;
+  delete: boolean;
+  filter: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>);
+  orderBy: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>);
+};
 
 function throwIfNotAFilter (x: unknown, listKey: string, fieldKey: string) {
   if (['boolean', 'undefined', 'function'].includes(typeof x)) return;
@@ -90,7 +80,7 @@ function throwIfNotAFilter (x: unknown, listKey: string, fieldKey: string) {
 }
 
 function getIsEnabled(listsConfig: KeystoneConfig['lists']) {
-  const isEnabled: IsEnabled = {};
+  const isEnabled: Record<string, IsEnabled> = {};
 
   for (const [listKey, listConfig] of Object.entries(listsConfig)) {
     const omit = listConfig.graphql?.omit;
@@ -141,7 +131,7 @@ function getIsEnabled(listsConfig: KeystoneConfig['lists']) {
 function getListsWithInitialisedFields(
   { storage: configStorage, lists: listsConfig, db: { provider } }: KeystoneConfig,
   listGraphqlTypes: Record<string, ListGraphQLTypes>,
-  isEnabled: IsEnabled
+  intermediateLists: Record<string, { graphql: { isEnabled: IsEnabled } }>
 ) {
   return Object.fromEntries(
     Object.entries(listsConfig).map(([listKey, list]) => [
@@ -175,70 +165,37 @@ function getListsWithInitialisedFields(
               create: omit !== true && !omit?.includes('create'),
               // Filter and orderBy can be defaulted at the list level, otherwise they
               // default to `false` if no value was set at the list level.
-              filter: read && (f.isFilterable ?? isEnabled[listKey].filter),
-              orderBy: read && (f.isOrderable ?? isEnabled[listKey].orderBy),
+              filter:
+                read && (f.isFilterable ?? intermediateLists[listKey].graphql.isEnabled.filter),
+              orderBy:
+                read && (f.isOrderable ?? intermediateLists[listKey].graphql.isEnabled.orderBy),
             };
             const field = {
               ...f,
-              graphql: { ...f.graphql, isEnabled: _isEnabled },
+              access: parseFieldAccessControl(f.access),
+              hooks: f.hooks ?? {},
+              graphql: { cacheHint: f.graphql?.cacheHint, isEnabled: _isEnabled },
               input: { ...f.input },
             };
 
             return [fieldKey, field];
           })
         ),
+        ...intermediateLists[listKey],
         ...getNamesFromList(listKey, list),
         hooks: list.hooks,
-        access: list.access,
+        access: parseListAccessControl(list.access),
         dbMap: list.db?.map,
+        types: listGraphqlTypes[listKey].types,
       },
     ])
-  );
-}
-
-function getListsWithInitialisedFieldsAndResolvedDbFields(
-  listsWithInitialisedFields: ReturnType<typeof getListsWithInitialisedFields>,
-  listsWithResolvedDBFields: ReturnType<typeof resolveRelationships>,
-  isEnabled: IsEnabled
-) {
-  return Object.fromEntries(
-    Object.entries(listsWithInitialisedFields).map(([listKey, list]) => {
-      let hasAnEnabledCreateField = false;
-      let hasAnEnabledUpdateField = false;
-      const fields = Object.fromEntries(
-        Object.entries(list.fields).map(([fieldKey, field]) => {
-          if (field.input?.create?.arg && field.graphql.isEnabled.create) {
-            hasAnEnabledCreateField = true;
-          }
-          if (field.input?.update && field.graphql.isEnabled.update) {
-            hasAnEnabledUpdateField = true;
-          }
-          const access = parseFieldAccessControl(field.access);
-          const dbField = listsWithResolvedDBFields[listKey].resolvedDbFields[fieldKey];
-          return [
-            fieldKey,
-            { ...field, access, dbField, hooks: field.hooks ?? {}, graphql: field.graphql },
-          ];
-        })
-      );
-      const access = parseListAccessControl(list.access);
-      // You can't have a graphQL type with no fields, so
-      // if they're all disabled, we have to disable the whole operation.
-      if (!hasAnEnabledCreateField) {
-        isEnabled[listKey].create = false;
-      }
-      if (!hasAnEnabledUpdateField) {
-        isEnabled[listKey].update = false;
-      }
-      return [listKey, { ...list, access, fields, graphql: { isEnabled: isEnabled[listKey] } }];
-    })
   );
 }
 
 function getListGraphqlTypes(
   listsConfig: KeystoneConfig['lists'],
   lists: Record<string, InitialisedList>,
-  isEnabled: IsEnabled
+  intermediateLists: Record<string, { graphql: { isEnabled: IsEnabled } }>
 ): Record<string, ListGraphQLTypes> {
   const graphQLTypes: Record<string, ListGraphQLTypes> = {};
 
@@ -258,7 +215,8 @@ function getListGraphqlTypes(
               if (
                 !field.output ||
                 !field.graphql.isEnabled.read ||
-                (field.dbField.kind === 'relation' && !isEnabled[field.dbField.list].query)
+                (field.dbField.kind === 'relation' &&
+                  !intermediateLists[field.dbField.list].graphql.isEnabled.query)
               ) {
                 return [];
               }
@@ -380,15 +338,15 @@ function getListGraphqlTypes(
       skip: graphql.arg({ type: graphql.nonNull(graphql.Int), defaultValue: 0 }),
     };
 
-    const _isEnabled = isEnabled[listKey];
+    const isEnabled = intermediateLists[listKey].graphql.isEnabled;
     let relateToManyForCreate, relateToManyForUpdate, relateToOneForCreate, relateToOneForUpdate;
-    if (_isEnabled.type) {
+    if (isEnabled.type) {
       relateToManyForCreate = graphql.inputObject({
         name: names.relateToManyForCreateInputName,
         fields: () => {
           return {
             // Create via a relationship is only supported if this list allows create
-            ...(_isEnabled.create && {
+            ...(isEnabled.create && {
               create: graphql.arg({ type: graphql.list(graphql.nonNull(create)) }),
             }),
             connect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
@@ -405,7 +363,7 @@ function getListGraphqlTypes(
             disconnect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
             set: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
             // Create via a relationship is only supported if this list allows create
-            ...(_isEnabled.create && {
+            ...(isEnabled.create && {
               create: graphql.arg({ type: graphql.list(graphql.nonNull(create)) }),
             }),
             connect: graphql.arg({ type: graphql.list(graphql.nonNull(uniqueWhere)) }),
@@ -418,7 +376,7 @@ function getListGraphqlTypes(
         fields: () => {
           return {
             // Create via a relationship is only supported if this list allows create
-            ...(_isEnabled.create && { create: graphql.arg({ type: create }) }),
+            ...(isEnabled.create && { create: graphql.arg({ type: create }) }),
             connect: graphql.arg({ type: uniqueWhere }),
           };
         },
@@ -429,7 +387,7 @@ function getListGraphqlTypes(
         fields: () => {
           return {
             // Create via a relationship is only supported if this list allows create
-            ...(_isEnabled.create && { create: graphql.arg({ type: create }) }),
+            ...(isEnabled.create && { create: graphql.arg({ type: create }) }),
             connect: graphql.arg({ type: uniqueWhere }),
             disconnect: graphql.arg({ type: graphql.Boolean }),
           };
@@ -469,51 +427,93 @@ function getListGraphqlTypes(
 }
 
 /**
- * 1. Get the `isEnabled` config object from the listConfig
- * 2.
+ * 1. Get the `isEnabled` config object from the listConfig - the returned object will be modified later
+ * 2. Instantiate `lists` object - it is done here as the object will be added to the listGraphqlTypes
+ * 3. Get graphqlTypes
+ * 4. Initialise fields - field functions are called
+ * 5. Handle relationships - ensure correct linking between two sides of all relationships (including one-sided relationships)
+ * 6.
  */
 export function initialiseLists(config: KeystoneConfig): Record<string, InitialisedList> {
   const listsConfig = config.lists;
-  const isEnabled = getIsEnabled(listsConfig);
+
+  let intermediateLists;
+
+  intermediateLists = Object.fromEntries(
+    Object.entries(getIsEnabled(listsConfig)).map(([key, isEnabled]) => [
+      key,
+      { graphql: { isEnabled } },
+    ])
+  );
+
   /**
    * Lists is instantiated here so that it can be passed into the `getListGraphqlTypes` function
    * This function attaches this list object to the various graphql functions
    *
    * The object will be populated at the end of this function, and the reference will be maintained
    */
-  const lists: Record<string, InitialisedList> = {};
-  const listGraphqlTypes = getListGraphqlTypes(listsConfig, lists, isEnabled);
+  const listsRef: Record<string, InitialisedList> = {};
+  /** Block statements to contain variables only being used within them */
+  {
+    const listGraphqlTypes = getListGraphqlTypes(listsConfig, listsRef, intermediateLists);
+    intermediateLists = getListsWithInitialisedFields(config, listGraphqlTypes, intermediateLists);
+  }
+  {
+    const resolvedDBFieldsForLists = resolveRelationships(intermediateLists);
+    intermediateLists = Object.fromEntries(
+      Object.entries(intermediateLists).map(([listKey, blah]) => [
+        listKey,
+        { ...blah, resolvedDbFields: resolvedDBFieldsForLists[listKey] },
+      ])
+    );
+  }
 
-  const listsWithInitialisedFields = getListsWithInitialisedFields(
-    config,
-    listGraphqlTypes,
-    isEnabled
+  intermediateLists = Object.fromEntries(
+    Object.entries(intermediateLists).map(([listKey, list]) => {
+      const fields: Record<string, InitialisedField> = Object.fromEntries(
+        Object.entries(list.fields).map(([fieldKey, field]) => [
+          fieldKey,
+          { ...field, dbField: list.resolvedDbFields[fieldKey] },
+        ])
+      );
+      return [listKey, { ...list, fields }];
+    })
   );
 
-  const listsWithResolvedDBFields = resolveRelationships(listsWithInitialisedFields);
+  for (const list of Object.values(intermediateLists)) {
+    let hasAnEnabledCreateField = false;
+    let hasAnEnabledUpdateField = false;
 
-  const listsWithInitialisedFieldsAndResolvedDbFields =
-    getListsWithInitialisedFieldsAndResolvedDbFields(
-      listsWithInitialisedFields,
-      listsWithResolvedDBFields,
-      isEnabled
-    );
+    for (const field of Object.values(list.fields)) {
+      if (field.input?.create?.arg && field.graphql.isEnabled.create) {
+        hasAnEnabledCreateField = true;
+      }
+      if (field.input?.update && field.graphql.isEnabled.update) {
+        hasAnEnabledUpdateField = true;
+      }
+    }
+    // You can't have a graphQL type with no fields, so
+    // if they're all disabled, we have to disable the whole operation.
+    if (!hasAnEnabledCreateField) {
+      list.graphql.isEnabled.create = false;
+    }
+    if (!hasAnEnabledUpdateField) {
+      list.graphql.isEnabled.update = false;
+    }
+  }
 
   /*
     Error checking
     */
-  for (const [listKey, { fields }] of Object.entries(
-    listsWithInitialisedFieldsAndResolvedDbFields
-  )) {
+  for (const [listKey, { fields }] of Object.entries(intermediateLists)) {
     assertFieldsValid({ listKey, fields });
   }
 
-  for (const [listKey, list] of Object.entries(listsWithInitialisedFieldsAndResolvedDbFields)) {
-    lists[listKey] = {
-      ...list,
-      ...listGraphqlTypes[listKey],
-      ...listsWithResolvedDBFields[listKey],
-      hooks: list.hooks || {},
+  for (const [listKey, intermediateList] of Object.entries(intermediateLists)) {
+    listsRef[listKey] = {
+      ...intermediateList,
+      /** These properties weren't related to any of the above actions but need to be here */
+      hooks: intermediateList.hooks || {},
       cacheHint: (() => {
         const cacheHint = listsConfig[listKey].graphql?.cacheHint;
         if (cacheHint === undefined) {
@@ -523,9 +523,10 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
       })(),
       maxResults: listsConfig[listKey].graphql?.queryLimits?.maxResults ?? Infinity,
       listKey,
-      lists,
+      /** Add self-reference */
+      lists: listsRef,
     };
   }
 
-  return lists;
+  return listsRef;
 }
