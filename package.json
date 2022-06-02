@@ -119,6 +119,7 @@
       "tests/benchmarks",
       "tests/examples-smoke-tests",
       "tests/test-projects/*",
+      "tests/sandbox",
       "prisma-utils",
       "scripts/*"
     ]
