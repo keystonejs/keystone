@@ -256,7 +256,7 @@ function getListGraphqlTypes(
       pluralGraphQLName: getNamesFromList(listKey, listConfig).pluralGraphQLName,
     });
 
-    let output = graphql.object<BaseItem>()({
+    const output = graphql.object<BaseItem>()({
       name: names.outputTypeName,
       fields: () => {
         const { fields } = lists[listKey];
@@ -445,7 +445,7 @@ function getListGraphqlTypes(
       });
     }
 
-    const types: ListGraphQLTypes = {
+    graphQLTypes[listKey] = {
       types: {
         output,
         uniqueWhere,
@@ -471,8 +471,6 @@ function getListGraphqlTypes(
         },
       },
     };
-
-    graphQLTypes[listKey] = types;
   }
 
   return graphQLTypes;
