@@ -81,6 +81,14 @@ type IsEnabled = Record<
   }
 >;
 
+function throwIfNotAFilter (x: unknown, listKey: string, fieldKey: string) {
+  if (['boolean', 'undefined', 'function'].includes(typeof x)) return;
+
+  throw new Error(
+    `Configuration option '${listKey}.${fieldKey}' must be either a boolean value or a function. Received'${x}'.`
+  );
+}
+
 function getIsEnabled(listsConfig: KeystoneConfig['lists']) {
   const isEnabled: IsEnabled = {};
 
@@ -91,16 +99,8 @@ function getIsEnabled(listsConfig: KeystoneConfig['lists']) {
       // We explicity check for boolean/function values here to ensure the dev hasn't made a mistake
       // when defining these values. We avoid duck-typing here as this is security related
       // and we want to make it hard to write incorrect code.
-      if (!['boolean', 'undefined', 'function'].includes(typeof defaultIsFilterable)) {
-        throw new Error(
-          `Configuration option '${listKey}.defaultIsFilterable' must be either a boolean value or a function. Recieved '${typeof defaultIsFilterable}'.`
-        );
-      }
-      if (!['boolean', 'undefined', 'function'].includes(typeof defaultIsOrderable)) {
-        throw new Error(
-          `Configuration option '${listKey}.defaultIsOrderable' must be either a boolean value or a function. Recieved '${typeof defaultIsOrderable}'.`
-        );
-      }
+      throwIfNotAFilter(defaultIsFilterable, listKey, 'defaultIsFilterable');
+      throwIfNotAFilter(defaultIsFilterable, listKey, 'defaultIsFilterable');
     }
     if (omit === true) {
       isEnabled[listKey] = {
@@ -166,16 +166,8 @@ function getListsWithInitialisedFields(
             // We explicity check for boolean values here to ensure the dev hasn't made a mistake
             // when defining these values. We avoid duck-typing here as this is security related
             // and we want to make it hard to write incorrect code.
-            if (!['boolean', 'function', 'undefined'].includes(typeof f.isFilterable)) {
-              throw new Error(
-                `Configuration option '${listKey}.${fieldKey}.isFilterable' must be either a boolean value or a function. Recieved '${typeof f.isFilterable}'.`
-              );
-            }
-            if (!['boolean', 'function', 'undefined'].includes(typeof f.isOrderable)) {
-              throw new Error(
-                `Configuration option '${listKey}.${fieldKey}.isOrderable' must be either a boolean value or a function. Recieved '${typeof f.isOrderable}'.`
-              );
-            }
+            throwIfNotAFilter(f.isFilterable, listKey, 'isFilterable');
+            throwIfNotAFilter(f.isFilterable, listKey, 'isOrderable');
 
             const _isEnabled = {
               read,
