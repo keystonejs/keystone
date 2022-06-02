@@ -68,22 +68,21 @@ export type InitialisedList = {
   };
 };
 
-export function initialiseLists(config: KeystoneConfig): Record<string, InitialisedList> {
-  const listsConfig = config.lists;
-  const { provider } = config.db;
-  const listInfos: Record<string, ListGraphQLTypes> = {};
-  const isEnabled: Record<
-    string,
-    {
-      type: boolean;
-      query: boolean;
-      create: boolean;
-      update: boolean;
-      delete: boolean;
-      filter: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>);
-      orderBy: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>);
-    }
-  > = {};
+type IsEnabled = Record<
+  string,
+  {
+    type: boolean;
+    query: boolean;
+    create: boolean;
+    update: boolean;
+    delete: boolean;
+    filter: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>);
+    orderBy: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>);
+  }
+>;
+
+function getIsEnabled(listsConfig: KeystoneConfig['lists']) {
+  const isEnabled: IsEnabled = {};
 
   for (const [listKey, listConfig] of Object.entries(listsConfig)) {
     const omit = listConfig.graphql?.omit;
@@ -135,6 +134,121 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
       };
     }
   }
+
+  return isEnabled;
+}
+
+function getListsWithInitialisedFields(
+  { storage: configStorage, lists: listsConfig, db: { provider } }: KeystoneConfig,
+  listGraphqlTypes: Record<string, ListGraphQLTypes>,
+  isEnabled: IsEnabled
+) {
+  return Object.fromEntries(
+    Object.entries(listsConfig).map(([listKey, list]) => [
+      listKey,
+      {
+        fields: Object.fromEntries(
+          Object.entries(list.fields).map(([fieldKey, fieldFunc]) => {
+            if (typeof fieldFunc !== 'function') {
+              throw new Error(`The field at ${listKey}.${fieldKey} does not provide a function`);
+            }
+            const f = fieldFunc({
+              fieldKey,
+              listKey,
+              lists: listGraphqlTypes,
+              provider,
+              getStorage: storage => configStorage?.[storage],
+            });
+
+            const omit = f.graphql?.omit;
+            const read = omit !== true && !omit?.includes('read');
+
+            // We explicity check for boolean values here to ensure the dev hasn't made a mistake
+            // when defining these values. We avoid duck-typing here as this is security related
+            // and we want to make it hard to write incorrect code.
+            if (!['boolean', 'function', 'undefined'].includes(typeof f.isFilterable)) {
+              throw new Error(
+                `Configuration option '${listKey}.${fieldKey}.isFilterable' must be either a boolean value or a function. Recieved '${typeof f.isFilterable}'.`
+              );
+            }
+            if (!['boolean', 'function', 'undefined'].includes(typeof f.isOrderable)) {
+              throw new Error(
+                `Configuration option '${listKey}.${fieldKey}.isOrderable' must be either a boolean value or a function. Recieved '${typeof f.isOrderable}'.`
+              );
+            }
+
+            const _isEnabled = {
+              read,
+              update: omit !== true && !omit?.includes('update'),
+              create: omit !== true && !omit?.includes('create'),
+              // Filter and orderBy can be defaulted at the list level, otherwise they
+              // default to `false` if no value was set at the list level.
+              filter: read && (f.isFilterable ?? isEnabled[listKey].filter),
+              orderBy: read && (f.isOrderable ?? isEnabled[listKey].orderBy),
+            };
+            const field = {
+              ...f,
+              graphql: { ...f.graphql, isEnabled: _isEnabled },
+              input: { ...f.input },
+            };
+
+            return [fieldKey, field];
+          })
+        ),
+        ...getNamesFromList(listKey, list),
+        hooks: list.hooks,
+        access: list.access,
+        dbMap: list.db?.map,
+      },
+    ])
+  );
+}
+
+function getListsWithInitialisedFieldsAndResolvedDbFields(
+  listsWithInitialisedFields: ReturnType<typeof getListsWithInitialisedFields>,
+  listsWithResolvedDBFields: ReturnType<typeof resolveRelationships>,
+  isEnabled: IsEnabled
+) {
+  return Object.fromEntries(
+    Object.entries(listsWithInitialisedFields).map(([listKey, list]) => {
+      let hasAnEnabledCreateField = false;
+      let hasAnEnabledUpdateField = false;
+      const fields = Object.fromEntries(
+        Object.entries(list.fields).map(([fieldKey, field]) => {
+          if (field.input?.create?.arg && field.graphql.isEnabled.create) {
+            hasAnEnabledCreateField = true;
+          }
+          if (field.input?.update && field.graphql.isEnabled.update) {
+            hasAnEnabledUpdateField = true;
+          }
+          const access = parseFieldAccessControl(field.access);
+          const dbField = listsWithResolvedDBFields[listKey].resolvedDbFields[fieldKey];
+          return [
+            fieldKey,
+            { ...field, access, dbField, hooks: field.hooks ?? {}, graphql: field.graphql },
+          ];
+        })
+      );
+      const access = parseListAccessControl(list.access);
+      // You can't have a graphQL type with no fields, so
+      // if they're all disabled, we have to disable the whole operation.
+      if (!hasAnEnabledCreateField) {
+        isEnabled[listKey].create = false;
+      }
+      if (!hasAnEnabledUpdateField) {
+        isEnabled[listKey].update = false;
+      }
+      return [listKey, { ...list, access, fields, graphql: { isEnabled: isEnabled[listKey] } }];
+    })
+  );
+}
+
+function getListGraphqlTypes(
+  listsConfig: KeystoneConfig['lists'],
+  lists: Record<string, InitialisedList>,
+  isEnabled: IsEnabled
+): Record<string, ListGraphQLTypes> {
+  const graphQLTypes: Record<string, ListGraphQLTypes> = {};
 
   for (const [listKey, listConfig] of Object.entries(listsConfig)) {
     const names = getGqlNames({
@@ -330,7 +444,8 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
         },
       });
     }
-    listInfos[listKey] = {
+
+    const types: ListGraphQLTypes = {
       types: {
         output,
         uniqueWhere,
@@ -356,115 +471,57 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
         },
       },
     };
+
+    graphQLTypes[listKey] = types;
   }
 
-  const listsWithInitialisedFields = Object.fromEntries(
-    Object.entries(listsConfig).map(([listKey, list]) => [
-      listKey,
-      {
-        fields: Object.fromEntries(
-          Object.entries(list.fields).map(([fieldKey, fieldFunc]) => {
-            if (typeof fieldFunc !== 'function') {
-              throw new Error(`The field at ${listKey}.${fieldKey} does not provide a function`);
-            }
-            const f = fieldFunc({
-              fieldKey,
-              listKey,
-              lists: listInfos,
-              provider,
-              getStorage: storage => config.storage?.[storage],
-            });
+  return graphQLTypes;
+}
 
-            const omit = f.graphql?.omit;
-            const read = omit !== true && !omit?.includes('read');
+/**
+ * 1. Get the `isEnabled` config object from the listConfig
+ * 2.
+ */
+export function initialiseLists(config: KeystoneConfig): Record<string, InitialisedList> {
+  const listsConfig = config.lists;
+  const isEnabled = getIsEnabled(listsConfig);
+  /**
+   * Lists is instantiated here so that it can be passed into the `getListGraphqlTypes` function
+   * This function attaches this list object to the various graphql functions
+   *
+   * The object will be populated at the end of this function, and the reference will be maintained
+   */
+  const lists: Record<string, InitialisedList> = {};
+  const listGraphqlTypes = getListGraphqlTypes(listsConfig, lists, isEnabled);
 
-            // We explicity check for boolean values here to ensure the dev hasn't made a mistake
-            // when defining these values. We avoid duck-typing here as this is security related
-            // and we want to make it hard to write incorrect code.
-            if (!['boolean', 'function', 'undefined'].includes(typeof f.isFilterable)) {
-              throw new Error(
-                `Configuration option '${listKey}.${fieldKey}.isFilterable' must be either a boolean value or a function. Recieved '${typeof f.isFilterable}'.`
-              );
-            }
-            if (!['boolean', 'function', 'undefined'].includes(typeof f.isOrderable)) {
-              throw new Error(
-                `Configuration option '${listKey}.${fieldKey}.isOrderable' must be either a boolean value or a function. Recieved '${typeof f.isOrderable}'.`
-              );
-            }
-
-            const _isEnabled = {
-              read,
-              update: omit !== true && !omit?.includes('update'),
-              create: omit !== true && !omit?.includes('create'),
-              // Filter and orderBy can be defaulted at the list level, otherwise they
-              // default to `false` if no value was set at the list level.
-              filter: read && (f.isFilterable ?? isEnabled[listKey].filter),
-              orderBy: read && (f.isOrderable ?? isEnabled[listKey].orderBy),
-            };
-            const field = {
-              ...f,
-              graphql: { ...f.graphql, isEnabled: _isEnabled },
-              input: { ...f.input },
-            };
-
-            return [fieldKey, field];
-          })
-        ),
-        ...getNamesFromList(listKey, list),
-        hooks: list.hooks,
-        access: list.access,
-        dbMap: list.db?.map,
-      },
-    ])
+  const listsWithInitialisedFields = getListsWithInitialisedFields(
+    config,
+    listGraphqlTypes,
+    isEnabled
   );
 
   const listsWithResolvedDBFields = resolveRelationships(listsWithInitialisedFields);
 
-  const listsWithInitialisedFieldsAndResolvedDbFields = Object.fromEntries(
-    Object.entries(listsWithInitialisedFields).map(([listKey, list]) => {
-      let hasAnEnabledCreateField = false;
-      let hasAnEnabledUpdateField = false;
-      const fields = Object.fromEntries(
-        Object.entries(list.fields).map(([fieldKey, field]) => {
-          if (field.input?.create?.arg && field.graphql.isEnabled.create) {
-            hasAnEnabledCreateField = true;
-          }
-          if (field.input?.update && field.graphql.isEnabled.update) {
-            hasAnEnabledUpdateField = true;
-          }
-          const access = parseFieldAccessControl(field.access);
-          const dbField = listsWithResolvedDBFields[listKey].resolvedDbFields[fieldKey];
-          return [
-            fieldKey,
-            { ...field, access, dbField, hooks: field.hooks ?? {}, graphql: field.graphql },
-          ];
-        })
-      );
-      const access = parseListAccessControl(list.access);
-      // You can't have a graphQL type with no fields, so
-      // if they're all disabled, we have to disable the whole operation.
-      if (!hasAnEnabledCreateField) {
-        isEnabled[listKey].create = false;
-      }
-      if (!hasAnEnabledUpdateField) {
-        isEnabled[listKey].update = false;
-      }
-      return [listKey, { ...list, access, fields, graphql: { isEnabled: isEnabled[listKey] } }];
-    })
-  );
+  const listsWithInitialisedFieldsAndResolvedDbFields =
+    getListsWithInitialisedFieldsAndResolvedDbFields(
+      listsWithInitialisedFields,
+      listsWithResolvedDBFields,
+      isEnabled
+    );
 
+  /*
+    Error checking
+    */
   for (const [listKey, { fields }] of Object.entries(
     listsWithInitialisedFieldsAndResolvedDbFields
   )) {
     assertFieldsValid({ listKey, fields });
   }
 
-  const lists: Record<string, InitialisedList> = {};
-
   for (const [listKey, list] of Object.entries(listsWithInitialisedFieldsAndResolvedDbFields)) {
     lists[listKey] = {
       ...list,
-      ...listInfos[listKey],
+      ...listGraphqlTypes[listKey],
       ...listsWithResolvedDBFields[listKey],
       hooks: list.hooks || {},
       cacheHint: (() => {
