@@ -71,7 +71,21 @@ export function Well({ grad = 'grad1', heading, badge, href, children, ...props 
             {badge}
           </Badge>
         )}
-        <Type as="p" look="body16">
+        <Type
+          as={
+            // if we have just a string for children or an array with a string in it,
+            // it comes from a code file so we should wrap it in a <p>
+            // if we have something else, it would have come from mdx
+            // so it'll already be wrapped in a <p>
+            // so we want to avoid it being wrapped in a <p> again
+            // since React will complain
+            typeof children === 'string' ||
+            (Array.isArray(children) && children.some(child => typeof child === 'string'))
+              ? 'p'
+              : 'div'
+          }
+          look="body16"
+        >
           {children}
         </Type>
       </a>
