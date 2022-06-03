@@ -427,7 +427,7 @@ export default function WhatsNew() {
           mutations.
         </Box>
         <Timeline date="15th November 2021" />
-        <Box heading="Expanded Unique Filters" link="releases/2021-11-15#expanded-unique-filters">
+        <Box heading="Expanded Unique Filters" link="/releases/2021-11-15#expanded-unique-filters">
           <InlineCode>select</InlineCode>, <InlineCode>timestamp</InlineCode>,{' '}
           <InlineCode>float</InlineCode> and <InlineCode>decimal</InlineCode> fields with{' '}
           <InlineCode>isIndexed: 'unique'</InlineCode> now have unique filters via
