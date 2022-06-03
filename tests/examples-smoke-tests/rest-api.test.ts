@@ -12,7 +12,7 @@ exampleProjectTests('rest-api', browserType => {
   });
   test('Load list', async () => {
     await Promise.all([page.waitForNavigation(), page.click('h3:has-text("People")')]);
-    await page.waitForSelector('button:has-text("Create Person")');
+    await page.waitForSelector('a:has-text("Create Person")');
   });
   test('Get Tasks', async () => {
     const tasks = await fetch('http://localhost:3000/rest/tasks', {
