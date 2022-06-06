@@ -157,7 +157,7 @@ function getListsWithInitialisedFields(
             // when defining these values. We avoid duck-typing here as this is security related
             // and we want to make it hard to write incorrect code.
             throwIfNotAFilter(f.isFilterable, listKey, 'isFilterable');
-            throwIfNotAFilter(f.isFilterable, listKey, 'isOrderable');
+            throwIfNotAFilter(f.isOrderable, listKey, 'isOrderable');
 
             const _isEnabled = {
               read,
