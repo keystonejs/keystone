@@ -90,7 +90,7 @@ function getIsEnabled(listsConfig: KeystoneConfig['lists']) {
       // when defining these values. We avoid duck-typing here as this is security related
       // and we want to make it hard to write incorrect code.
       throwIfNotAFilter(defaultIsFilterable, listKey, 'defaultIsFilterable');
-      throwIfNotAFilter(defaultIsFilterable, listKey, 'defaultIsFilterable');
+      throwIfNotAFilter(defaultIsOrderable, listKey, 'defaultIsOrderable');
     }
     if (omit === true) {
       isEnabled[listKey] = {
