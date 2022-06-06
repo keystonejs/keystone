@@ -75,7 +75,7 @@ function throwIfNotAFilter(x: unknown, listKey: string, fieldKey: string) {
   if (['boolean', 'undefined', 'function'].includes(typeof x)) return;
 
   throw new Error(
-    `Configuration option '${listKey}.${fieldKey}' must be either a boolean value or a function. Received'${x}'.`
+    `Configuration option '${listKey}.${fieldKey}' must be either a boolean value or a function. Received '${x}'.`
   );
 }
 
