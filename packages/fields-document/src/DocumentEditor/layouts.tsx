@@ -10,6 +10,7 @@ import { Tooltip } from '@keystone-ui/tooltip';
 import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
 
 import { ColumnsIcon } from '@keystone-ui/icons/icons/ColumnsIcon';
+import { useControlledPopover } from '@keystone-ui/popover';
 import { DocumentFeatures } from '../views';
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
 import { paragraphElement } from './paragraphs';
@@ -38,7 +39,10 @@ export const LayoutContainer = ({
 
   const layout = element.layout;
   const layoutOptions = useContext(LayoutOptionsContext);
-
+  const { dialog, trigger } = useControlledPopover(
+    { isOpen: focused && selected, onClose: () => {} },
+    { modifiers: [{ name: 'offset', options: { offset: [0, 8] } }] }
+  );
   return (
     <div
       css={{
@@ -49,6 +53,8 @@ export const LayoutContainer = ({
       {...attributes}
     >
       <div
+        {...trigger.props}
+        ref={trigger.ref}
         css={{
           columnGap: spacing.small,
           display: 'grid',
@@ -58,7 +64,7 @@ export const LayoutContainer = ({
         {children}
       </div>
       {focused && selected && (
-        <InlineDialog isRelative>
+        <InlineDialog ref={dialog.ref} {...dialog.props}>
           <ToolbarGroup>
             {layoutOptions.map((layoutOption, i) => (
               <ToolbarButton

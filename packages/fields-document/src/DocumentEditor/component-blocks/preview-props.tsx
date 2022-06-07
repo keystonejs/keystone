@@ -1,4 +1,3 @@
-import React, { ReactElement, useContext } from 'react';
 import {
   ArrayField,
   ComponentSchema,
@@ -33,17 +32,6 @@ export function setKeysForArrayValue(value: readonly unknown[], elementIds: read
 
 export function getNewArrayElementKey() {
   return (counter++).toString();
-}
-
-export const ChildrenByPathContext = React.createContext<Record<string, ReactElement>>({});
-
-export function ChildFieldEditable({ path }: { path: readonly string[] }) {
-  const childrenByPath = useContext(ChildrenByPathContext);
-  const child = childrenByPath[JSON.stringify(path)];
-  if (child === undefined) {
-    return null;
-  }
-  return child;
 }
 
 function castToMemoizedInfoForSchema<

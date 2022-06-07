@@ -361,3 +361,15 @@ export function replaceValueAtPropPath(
 
   assertNever(schema);
 }
+
+export function getPlaceholderTextForPropPath(
+  propPath: ReadonlyPropPath,
+  fields: Record<string, ComponentSchema>,
+  formProps: Record<string, any>
+): string {
+  const field = getSchemaAtPropPath(propPath, formProps, fields);
+  if (field?.kind === 'child') {
+    return field.options.placeholder;
+  }
+  return '';
+}
