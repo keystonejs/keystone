@@ -1,5 +1,14 @@
 # @keystone-6/website
 
+## 0.0.3
+
+### Patch Changes
+
+- [#7410](https://github.com/keystonejs/keystone/pull/7410) [`717830fd2`](https://github.com/keystonejs/keystone/commit/717830fd2388db372a047737fcb6bd3e13eeb313) Thanks [@renovate](https://github.com/apps/renovate)! - upgrade dependancy `"react": "^18.1.0"`
+
+- Updated dependencies [[`a7b8d7f9c`](https://github.com/keystonejs/keystone/commit/a7b8d7f9c63f5384dc9d479f47ba558ae8060707), [`fd8d4a64f`](https://github.com/keystonejs/keystone/commit/fd8d4a64f280145a3963f70f1d0cd23930e7109e), [`e0527693c`](https://github.com/keystonejs/keystone/commit/e0527693c7c3ba4da0705326ac46ca6bf2844524), [`5a4298909`](https://github.com/keystonejs/keystone/commit/5a42989096da810e659f20f2d34296d082a02db8), [`ccbc24889`](https://github.com/keystonejs/keystone/commit/ccbc24889fc19834de56f45703021a46e6b670b4), [`717830fd2`](https://github.com/keystonejs/keystone/commit/717830fd2388db372a047737fcb6bd3e13eeb313)]:
+  - @keystone-6/fields-document@3.0.0
+
 ## 0.0.2
 
 ### Patch Changes

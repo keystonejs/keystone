@@ -1,5 +1,173 @@
 # @keystone-6/core
 
+## 2.0.0
+
+### Major Changes
+
+- [#7410](https://github.com/keystonejs/keystone/pull/7410) [`717830fd2`](https://github.com/keystonejs/keystone/commit/717830fd2388db372a047737fcb6bd3e13eeb313) Thanks [@renovate](https://github.com/apps/renovate)! - upgrade dependancy `"react": "^18.1.0"`
+
+* [#7070](https://github.com/keystonejs/keystone/pull/7070) [`ae81dc190`](https://github.com/keystonejs/keystone/commit/ae81dc190f7028605fd88aecc4fb8b76dba15470) Thanks [@{](https://github.com/{)! - #### Breaking
+
+  ##### Move of `image` and `files` in the keystone config into new option `storage`
+
+  The `image` and `files` config options have been removed from Keystone's config - the configuration has
+  been moved into a new `storage` configuration object.
+
+  Old:
+
+  ```ts
+  export default config({
+    image: { upload: 'local' },
+    lists: {
+      Image: { fields: { image: image() } },
+      /* ... */
+    },
+    /* ... */
+  });
+  ```
+
+  New:
+
+  ```ts
+  export default config({
+    storage: {
+      my_images: {
+        kind: 'local',
+        type: 'image',
+        generateUrl: path => `http://localhost:3000/images${path}`,
+        serverRoute: { path: '/images' },
+        storagePath: 'public/images',
+      },
+    },
+    lists: {
+      Image: { fields: { image: image({ storage: 'my_images' }) } },
+      /* ... */
+    },
+    /* ... */
+  });
+  ```
+
+  You can also now store assets on S3:
+
+  ```ts
+  export default config({
+    storage: {
+      my_image_storage: {
+        kind: 's3',
+        type: 'image',
+        bucketName: S3_BUCKET_NAME,
+        region: S3_REGION,
+        accessKeyId: S3_ACCESS_KEY_ID,
+        secretAccessKey: S3_SECRET_ACCESS_KEY,
+      },
+    },
+    lists: {
+      Image: { fields: { image: image({ storage: 'my_image_storage' }) } },
+      /* ... */
+    },
+    /* ... */
+  });
+  ```
+
+  ##### Removal of refs for `images` and `files`
+
+  Refs were an interesting situation! They allowed you to link images stored in your storage source (s3 or local), and use the same
+  image anywhere else images are used. This causes a bunch of complication, and prevented Keystone ever reliably being able
+  to remove images from your source, as it couldn't easily track where images were used.
+
+  To simplify things for you and us, we're removing `refs` as a concept, but don't panic just yet, we are conceptually replacing
+  them with something you are already familiar with: `relationships`.
+
+  If you wanted refs, where images could be available in multiple places, our new recommendation is:
+
+  ```ts
+  export default config({
+    storage: {
+      my_image_storage: {
+        /* ... */
+      },
+    },
+    lists: {
+      Image: { fields: { image: image({ storage: 'my_image_storage' }) } },
+   fields: { avatar: relationship({ ref: 'Image' }) } },
+      Blog: { fields: { photos: relationship({ ref: 'Image', many: true }) } },
+      /* ... */
+    },
+    /* ... */
+  });
+  ```
+
+  This allows mirroring of the old functionality, while allowing us to add the below feature/breaking change.
+
+  ##### Images and Files will now be deleted when deleted
+
+  Before this change, if you uploaded a file or image, Keystone would never remove it from where it was stored. The inability to tidy up unused
+  files or images was unwelcome. With the removal of `ref`, we can now remove things from the source, and this will be done by default.
+
+  If you don't want files or images removed, we recommend storing them as a `relationship`, rather than on items themselves, so the files
+  or images persist separate to lists that use them.
+
+  If you want the existing behaviour of keystone, set `preserve: true` on the storage instead.
+
+  ##### `file` and `image` URLs now use `generateUrl`, allowing more control over what is returned to the user
+
+  ##### Local images no longer need a baseUrl
+
+  Previously, if you were using local storage (you scallywag), you needed to provide a path for keystone to host images on. You
+  can still do this, but if you plan on serving them from another location, you can opt into not doing this.
+
+  ```diff
+  {
+  -   baseUrl: '/images'
+  +   serverRoute: {
+  +       path: '/images'
+  +   }
+  }
+  ```
+
+  #### New bits
+
+  - S3 is now supported! See the `storage` config for all the options for S3.
+  - `preserve` flag added to both `file` and `image` fields to allow removal of files from the source
+  - Support for multiple `storage` sources - each `image` and `file` field can now use its own config you want.
+
+### Minor Changes
+
+- [#7051](https://github.com/keystonejs/keystone/pull/7051) [`52348d70d`](https://github.com/keystonejs/keystone/commit/52348d70df62ddc0b7e853deae0fb183974429c9) Thanks [@renovate](https://github.com/apps/renovate)! - Added `disconnect` to the `SessionStrategy` API, this allows Keystone to disconnect from the store when using stored sessions. This resolves the testrunner hanging when using stored sessions in automated tests.
+
+* [#7546](https://github.com/keystonejs/keystone/pull/7546) [`19446362f`](https://github.com/keystonejs/keystone/commit/19446362fe0816093b5cf7342e8644d5a3f816d6) Thanks [@Achisingh](https://github.com/Achisingh)! - Removed all Keystone Links, i.e. API explorer, GitHub repository and Keystone documentation, from the popover and replacing the popover button with `Sign out` button in production
+
+- [#7537](https://github.com/keystonejs/keystone/pull/7537) [`3fe69ed96`](https://github.com/keystonejs/keystone/commit/3fe69ed96b4817ae7cd10193acb5b06f247ce454) Thanks [@Achisingh](https://github.com/Achisingh)! - Fixed list description from schema to display in the Admin UI
+
+### Patch Changes
+
+- [#7562](https://github.com/keystonejs/keystone/pull/7562) [`5ca0d00c9`](https://github.com/keystonejs/keystone/commit/5ca0d00c9c8336d2108c504905a3a534db9c74ea) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The reset changes button on the item view now presents a confirmation modal before resetting changes and it has been moved to the right of the bottom bar so it is next to the delete button.
+
+* [#7595](https://github.com/keystonejs/keystone/pull/7595) [`3aad917ee`](https://github.com/keystonejs/keystone/commit/3aad917eee3f555fce02192583f018ec46dabca3) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The Prisma binaries are now downloaded just before they're needed if Prisma's install script to download them fails. Note this will never happen in production, they will always be downloaded before.
+
+- [#7561](https://github.com/keystonejs/keystone/pull/7561) [`a4a3e40ad`](https://github.com/keystonejs/keystone/commit/a4a3e40addeadb20494c58564cd3028e6a592ad5) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Alert dialogs are now centered in the Admin UI.
+
+* [#7543](https://github.com/keystonejs/keystone/pull/7543) [`0af99e462`](https://github.com/keystonejs/keystone/commit/0af99e4627765b8a63c899dafa3daf715709c1e3) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed the viewport sometimes shifting when opening the date picker in the create drawer.
+
+- [#7548](https://github.com/keystonejs/keystone/pull/7548) [`ea34fb183`](https://github.com/keystonejs/keystone/commit/ea34fb183423bea3ded7fc29fc022d8f3b56a924) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The label shown for a text field in the Admin UI is now associated with the input so the label can be read by screen readers
+
+* [#7598](https://github.com/keystonejs/keystone/pull/7598) [`e05e4e91c`](https://github.com/keystonejs/keystone/commit/e05e4e91c7436e235cae6a2cafc678218cbebbdb) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed the Admin UI crashing when saving an item with a relationship field using the cards display mode when another item is added to the relationship (e.g. by another user or a hook) since the item was initially loaded
+
+* Updated dependencies [[`a4a3e40ad`](https://github.com/keystonejs/keystone/commit/a4a3e40addeadb20494c58564cd3028e6a592ad5), [`0af99e462`](https://github.com/keystonejs/keystone/commit/0af99e4627765b8a63c899dafa3daf715709c1e3), [`e0527693c`](https://github.com/keystonejs/keystone/commit/e0527693c7c3ba4da0705326ac46ca6bf2844524), [`0af99e462`](https://github.com/keystonejs/keystone/commit/0af99e4627765b8a63c899dafa3daf715709c1e3), [`717830fd2`](https://github.com/keystonejs/keystone/commit/717830fd2388db372a047737fcb6bd3e13eeb313)]:
+  - @keystone-ui/modals@6.0.0
+  - @keystone-ui/popover@6.0.0
+  - @keystone-ui/fields@7.0.0
+  - @keystone-ui/button@7.0.0
+  - @keystone-ui/core@5.0.0
+  - @keystone-ui/icons@6.0.0
+  - @keystone-ui/loading@6.0.0
+  - @keystone-ui/notice@6.0.0
+  - @keystone-ui/options@6.0.0
+  - @keystone-ui/pill@7.0.0
+  - @keystone-ui/segmented-control@7.0.0
+  - @keystone-ui/toast@6.0.0
+  - @keystone-ui/tooltip@6.0.0
+
 ## 1.1.1
 
 ### Patch Changes

@@ -1,5 +1,16 @@
 # @keystone-ui/segmented-control
 
+## 7.0.0
+
+### Major Changes
+
+- [#7410](https://github.com/keystonejs/keystone/pull/7410) [`717830fd2`](https://github.com/keystonejs/keystone/commit/717830fd2388db372a047737fcb6bd3e13eeb313) Thanks [@renovate](https://github.com/apps/renovate)! - upgrade dependancy `"react": "^18.1.0"`
+
+### Patch Changes
+
+- Updated dependencies [[`717830fd2`](https://github.com/keystonejs/keystone/commit/717830fd2388db372a047737fcb6bd3e13eeb313)]:
+  - @keystone-ui/core@5.0.0
+
 ## 6.1.0
 
 ### Minor Changes
