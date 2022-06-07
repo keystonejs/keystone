@@ -3,6 +3,23 @@ import { list, config } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
 import { dbConfig } from '../utils';
 
+function makeQuery (size = 0) {
+  const query = JSON.stringify({
+    variables:{
+      data:{
+        value: `Test ${Date.now()}`
+      }
+    },
+    query: `mutation ($data: ThingCreateInput!) {
+      item: createThing(data: $data) {
+        id
+      }
+    }`
+  }).slice(1, -1);
+  const padding = Math.max(0, size - (query.length + 3));
+  return `{ ${' '.repeat(padding)} ${query} }`;
+}
+
 export const lists = {
   Thing: list({
     fields: {
@@ -11,25 +28,12 @@ export const lists = {
   }),
 };
 
-const query = JSON.stringify({
-  variables:{
-    data:{
-      value: `Test ${Date.now()}`
-    }
-  },
-  query: `mutation ($data: ThingCreateInput!) {
-    item: createThing(data: $data) {
-      id
-    }
-  }`
-});
-
 export default config({
   db: {
     ...dbConfig,
     onConnect: async () => {
       // try something ~2MiB
-      const json = `{  ${' '.repeat(2*1024*1024)}   ${query.slice(1, -1)}   }`;
+      const json = makeQuery(2*1024*1024);
       const req = http.request({
         method: 'POST',
         host: 'localhost',
