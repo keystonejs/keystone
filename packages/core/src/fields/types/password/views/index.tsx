@@ -5,7 +5,7 @@ import { Fragment, useState } from 'react';
 
 import { Button } from '@keystone-ui/button';
 import { Stack, Text, VisuallyHidden, jsx, useTheme } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
+import { FieldContainer, FieldDescription, FieldLabel, TextInput } from '@keystone-ui/fields';
 import { EyeIcon } from '@keystone-ui/icons/icons/EyeIcon';
 import { EyeOffIcon } from '@keystone-ui/icons/icons/EyeOffIcon';
 import { XIcon } from '@keystone-ui/icons/icons/XIcon';
@@ -79,6 +79,7 @@ export const Field = ({
   return (
     <FieldContainer as="fieldset">
       <FieldLabel as="legend">{field.label}</FieldLabel>
+      <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
       {onChange === undefined ? (
         isSetText(value.isSet)
       ) : value.kind === 'initial' ? (
@@ -245,6 +246,7 @@ export const controller = (
   return {
     path: config.path,
     label: config.label,
+    description: config.description,
     graphqlSelection: `${config.path} {isSet}`,
     validation,
     defaultValue: {
