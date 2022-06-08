@@ -154,6 +154,9 @@ export function Cards({
       >
         {[...value.currentIds].map((id, index) => {
           const itemGetter = items[id];
+          if (!itemGetter) {
+            return null;
+          }
           const isEditMode = !!(onChange !== undefined) && value.itemsBeingEdited.has(id);
           return (
             <CardContainer role="status" mode={isEditMode ? 'edit' : 'view'} key={id}>

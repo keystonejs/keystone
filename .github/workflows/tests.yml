@@ -19,7 +19,7 @@ jobs:
         with:
           filters: |
             shouldRunTests:
-              - '!{{design-system}/**,**/*.md}'
+              - '!{{design-system}/**,**/*.md,docs/**}'
 
       - run: echo "SHOULD_RUN_TESTS=$SHOULD_RUN" >> $GITHUB_ENV
         if: github.event_name == 'pull_request'
@@ -153,7 +153,7 @@ jobs:
     steps:
       - name: Checkout Repo
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Node.js LTS
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'

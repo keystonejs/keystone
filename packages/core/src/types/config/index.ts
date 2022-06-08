@@ -3,6 +3,7 @@ import type { Config } from 'apollo-server-express';
 import { CorsOptions } from 'cors';
 import express from 'express';
 import type { GraphQLSchema } from 'graphql';
+import type { Options as BodyParserOptions } from 'body-parser';
 
 import type { AssetMode, CreateRequestContext, BaseKeystoneTypeInfo, KeystoneContext } from '..';
 
@@ -183,6 +184,7 @@ export type GraphQLConfig = {
   // The CORS configuration to use on the GraphQL API endpoint.
   // Default: { origin: 'https://studio.apollographql.com', credentials: true }
   cors?: CorsOptions;
+  bodyParser?: BodyParserOptions;
   queryLimits?: {
     maxTotalResults?: number;
   };

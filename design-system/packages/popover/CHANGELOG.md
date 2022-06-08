@@ -1,5 +1,18 @@
 # @keystone-ui/popover
 
+## 6.0.0
+
+### Major Changes
+
+- [#7410](https://github.com/keystonejs/keystone/pull/7410) [`717830fd2`](https://github.com/keystonejs/keystone/commit/717830fd2388db372a047737fcb6bd3e13eeb313) Thanks [@renovate](https://github.com/apps/renovate)! - upgrade dependancy `"react": "^18.1.0"`
+
+### Patch Changes
+
+- [#7543](https://github.com/keystonejs/keystone/pull/7543) [`0af99e462`](https://github.com/keystonejs/keystone/commit/0af99e4627765b8a63c899dafa3daf715709c1e3) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed bug where focus trap wasn't deactivating on unmount.
+
+- Updated dependencies [[`717830fd2`](https://github.com/keystonejs/keystone/commit/717830fd2388db372a047737fcb6bd3e13eeb313)]:
+  - @keystone-ui/core@5.0.0
+
 ## 5.0.1
 
 ### Patch Changes

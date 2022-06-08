@@ -61,7 +61,9 @@ async function main() {
         return projectPaths;
       })
     )
-  ).flat();
+  )
+    .flat()
+    .concat(path.join(repoRoot, 'tests/sandbox'));
 
   // this breaks if we do this entirely in parallel (it only seemed to consistently fail on Vercel though)
   // because of Prisma's loading native libraries and child processes stuff and it seems racey

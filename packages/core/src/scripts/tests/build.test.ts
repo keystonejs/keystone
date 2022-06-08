@@ -82,11 +82,11 @@ test('build works with typescript without the user defining a babel config', asy
     info  - Creating an optimized production build...
     info  - Compiled successfully
     info  - Collecting page data...
-    info  - Generating static pages (0/6)
-    info  - Generating static pages (1/6)
-    info  - Generating static pages (2/6)
-    info  - Generating static pages (4/6)
-    info  - Generating static pages (6/6)
+    info  - Generating static pages (0/7)
+    info  - Generating static pages (1/7)
+    info  - Generating static pages (3/7)
+    info  - Generating static pages (5/7)
+    info  - Generating static pages (7/7)
     next build size report
     λ  (Server)  server-side renders at runtime (uses getInitialProps or getServerSideProps)
     ○  (Static)  automatically rendered as static HTML (uses no initial props)

@@ -1,0 +1,20 @@
+{
+  "name": "@keystone-6/sandbox",
+  "version": "0.0.3",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "keystone dev",
+    "sandbox": "yarn && yarn dev"
+  },
+  "dependencies": {
+    "@keystone-6/auth": "^3.0.0",
+    "@keystone-6/core": "^2.0.0",
+    "@keystone-6/fields-document": "^3.0.0",
+    "typescript": "^4.4.4"
+  },
+  "engines": {
+    "node": "^14.15 || ^16.13"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/main/tests/sandbox"
+}
