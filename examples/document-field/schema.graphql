@@ -5,46 +5,15 @@ type Post {
   id: ID!
   title: String
   slug: String
-  draft: Boolean
-  amount: Decimal
   status: PostStatusType
-  repo: FileFieldOutput
-  avatar: ImageFieldOutput
   content: Post_content_Document
-  price: Float
-  views: Int
-  someJson: JSON
   publishDate: DateTime
   author: Author
 }
 
-scalar Decimal
-
 enum PostStatusType {
   draft
   published
-}
-
-type FileFieldOutput {
-  filename: String!
-  filesize: Int!
-  url: String!
-}
-
-type ImageFieldOutput {
-  id: ID!
-  filesize: Int!
-  width: Int!
-  height: Int!
-  extension: ImageExtension!
-  url: String!
-}
-
-enum ImageExtension {
-  jpg
-  png
-  webp
-  gif
 }
 
 type Post_content_Document {
@@ -66,11 +35,7 @@ input PostWhereInput {
   id: IDFilter
   title: StringFilter
   slug: StringFilter
-  draft: BooleanFilter
-  amount: DecimalNullableFilter
   status: PostStatusTypeNullableFilter
-  price: FloatNullableFilter
-  views: IntNullableFilter
   publishDate: DateTimeNullableFilter
   author: AuthorWhereInput
 }
@@ -97,13 +62,7 @@ input StringFilter {
   contains: String
   startsWith: String
   endsWith: String
-  mode: QueryMode
   not: NestedStringFilter
-}
-
-enum QueryMode {
-  default
-  insensitive
 }
 
 input NestedStringFilter {
@@ -120,49 +79,11 @@ input NestedStringFilter {
   not: NestedStringFilter
 }
 
-input BooleanFilter {
-  equals: Boolean
-  not: BooleanFilter
-}
-
-input DecimalNullableFilter {
-  equals: Decimal
-  in: [Decimal!]
-  notIn: [Decimal!]
-  lt: Decimal
-  lte: Decimal
-  gt: Decimal
-  gte: Decimal
-  not: DecimalNullableFilter
-}
-
 input PostStatusTypeNullableFilter {
   equals: PostStatusType
   in: [PostStatusType!]
   notIn: [PostStatusType!]
   not: PostStatusTypeNullableFilter
-}
-
-input FloatNullableFilter {
-  equals: Float
-  in: [Float!]
-  notIn: [Float!]
-  lt: Float
-  lte: Float
-  gt: Float
-  gte: Float
-  not: FloatNullableFilter
-}
-
-input IntNullableFilter {
-  equals: Int
-  in: [Int!]
-  notIn: [Int!]
-  lt: Int
-  lte: Int
-  gt: Int
-  gte: Int
-  not: IntNullableFilter
 }
 
 input DateTimeNullableFilter {
@@ -180,11 +101,7 @@ input PostOrderByInput {
   id: OrderDirection
   title: OrderDirection
   slug: OrderDirection
-  draft: OrderDirection
-  amount: OrderDirection
   status: OrderDirection
-  price: OrderDirection
-  views: OrderDirection
   publishDate: OrderDirection
 }
 
@@ -196,30 +113,10 @@ enum OrderDirection {
 input PostUpdateInput {
   title: String
   slug: String
-  draft: Boolean
-  amount: Decimal
   status: PostStatusType
-  repo: FileFieldInput
-  avatar: ImageFieldInput
   content: JSON
-  price: Float
-  views: Int
-  someJson: JSON
   publishDate: DateTime
   author: AuthorRelateToOneForUpdateInput
-}
-
-input FileFieldInput {
-  upload: Upload!
-}
-
-"""
-The `Upload` scalar type represents a file upload.
-"""
-scalar Upload
-
-input ImageFieldInput {
-  upload: Upload!
 }
 
 input AuthorRelateToOneForUpdateInput {
@@ -236,15 +133,8 @@ input PostUpdateArgs {
 input PostCreateInput {
   title: String
   slug: String
-  draft: Boolean
-  amount: Decimal
   status: PostStatusType
-  repo: FileFieldInput
-  avatar: ImageFieldInput
   content: JSON
-  price: Float
-  views: Int
-  someJson: JSON
   publishDate: DateTime
   author: AuthorRelateToOneForCreateInput
 }
@@ -444,6 +334,11 @@ enum KeystoneAdminUIFieldMetaItemViewFieldMode {
   edit
   read
   hidden
+}
+
+enum QueryMode {
+  default
+  insensitive
 }
 
 type KeystoneAdminUISort {
