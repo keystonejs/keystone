@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/button",
-  "version": "6.0.0",
+  "version": "7.0.0",
   "license": "MIT",
   "main": "dist/keystone-ui-button.cjs.js",
   "module": "dist/keystone-ui-button.esm.js",
@@ -9,9 +9,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
-    "@keystone-ui/core": "^4.0.0",
-    "@keystone-ui/icons": "^5.0.0",
-    "@keystone-ui/loading": "^5.0.0",
+    "@keystone-ui/core": "^5.0.0",
+    "@keystone-ui/icons": "^6.0.0",
+    "@keystone-ui/loading": "^6.0.0",
     "react": "^18.1.0"
   },
   "engines": {
