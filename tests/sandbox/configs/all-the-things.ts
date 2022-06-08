@@ -19,10 +19,34 @@ import { dbConfig, localStorageConfig, trackingFields } from '../utils';
 export const lists = {
   Thing: list({
     fields: {
-      checkbox: checkbox(),
-      password: password(),
-      toOneRelationship: relationship({ ref: 'User' }),
-      toManyRelationship: relationship({ ref: 'Todo', many: true }),
+      checkbox: checkbox({
+        defaultValue: false,
+        ui: {
+          description:
+            'Some thing to describe to test the length of the text for width, kjhjkhkjhkhkjhkjhk bjhjh jhkjhkjhk jkhkjhk hguytyrdrtd jhjg',
+        },
+      }),
+      password: password({
+        ui: {
+          description:
+            'Some thing to describe to test the length of the text for width, kjhjkhkjhkhkjhkjhk bjhjh jhkjhkjhk jkhkjhk hguytyrdrtd jhjg',
+        },
+      }),
+      toOneRelationship: relationship({
+        ui: {
+          description:
+            'Some thing to describe to test the length of the text for width, kjhjkhkjhkhkjhkjhk bjhjh jhkjhkjhk jkhkjhk hguytyrdrtd jhjg',
+        },
+        ref: 'User',
+      }),
+      toManyRelationship: relationship({
+        ui: {
+          description:
+            'Some thing to describe to test the length of the text for width, kjhjkhkjhkhkjhkjhk bjhjh jhkjhkjhk jkhkjhk hguytyrdrtd jhjg',
+        },
+        ref: 'Todo',
+        many: true,
+      }),
       toOneRelationshipCard: relationship({
         ref: 'User',
         ui: {
@@ -46,9 +70,23 @@ export const lists = {
         },
         many: true,
       }),
-      text: text(),
-      timestamp: timestamp(),
+      text: text({
+        ui: {
+          description:
+            'Some thing to describe to test the length of the text for width, kjhjkhkjhkhkjhkjhk bjhjh jhkjhkjhk jkhkjhk hguytyrdrtd jhjg',
+        },
+      }),
+      timestamp: timestamp({
+        ui: {
+          description:
+            'Some thing to describe to test the length of the text for width, kjhjkhkjhkhkjhkjhk bjhjh jhkjhkjhk jkhkjhk hguytyrdrtd jhjg',
+        },
+      }),
       randomNumberVirtual: virtual({
+        ui: {
+          description:
+            'Some thing to describe to test the length of the text for width, kjhjkhkjhkhkjhkjhk bjhjh jhkjhkjhk jkhkjhk hguytyrdrtd jhjg',
+        },
         field: graphql.field({
           type: graphql.Float,
           resolve() {
@@ -57,6 +95,10 @@ export const lists = {
         }),
       }),
       select: select({
+        ui: {
+          description:
+            'Some thing to describe to test the length of the text for width, kjhjkhkjhkhkjhkjhk bjhjh jhkjhkjhk jkhkjhk hguytyrdrtd jhjg',
+        },
         options: [
           { value: 'one', label: 'One' },
           { value: 'two', label: 'Two' },
@@ -73,16 +115,43 @@ export const lists = {
           displayMode: 'segmented-control',
         },
       }),
-      json: json(),
-      integer: integer(),
-      float: float(),
+      json: json({
+        ui: {
+          description:
+            'Some thing to describe to test the length of the text for width, kjhjkhkjhkhkjhkjhk bjhjh jhkjhkjhk jkhkjhk hguytyrdrtd jhjg',
+        },
+      }),
+      integer: integer({
+        ui: {
+          description:
+            'Some thing to describe to test the length of the text for width, kjhjkhkjhkhkjhkjhk bjhjh jhkjhkjhk jkhkjhk hguytyrdrtd jhjg',
+        },
+      }),
+      float: float({
+        ui: {
+          description:
+            'Some thing to describe to test the length of the text for width, kjhjkhkjhkhkjhkjhk bjhjh jhkjhkjhk jkhkjhk hguytyrdrtd jhjg',
+        },
+      }),
       image: image({
+        ui: {
+          description:
+            'Some thing to describe to test the length of the text for width, kjhjkhkjhkhkjhkjhk bjhjh jhkjhkjhk jkhkjhk hguytyrdrtd jhjg',
+        },
         storage: 'images',
       }),
       file: file({
+        ui: {
+          description:
+            'Some thing to describe to test the length of the text for width, kjhjkhkjhkhkjhkjhk bjhjh jhkjhkjhk jkhkjhk hguytyrdrtd jhjg',
+        },
         storage: 'files',
       }),
       document: document({
+        ui: {
+          description:
+            'Some thing to describe to test the length of the text for width, kjhjkhkjhkhkjhkjhk bjhjh jhkjhkjhk jkhkjhk hguytyrdrtd jhjg',
+        },
         relationships: {
           mention: {
             label: 'Mention',
@@ -104,6 +173,8 @@ export const lists = {
   }),
   Todo: list({
     ui: {
+      description:
+        'some text describe to test the length of the text for width, kjhjkhkjhkhkjhkjhk bjhjh jhkjhkjhk jkhkjhk ',
       listView: {
         initialColumns: ['label', 'isComplete', 'createdAt', 'updatedAt'],
       },
