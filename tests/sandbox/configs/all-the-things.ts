@@ -50,6 +50,8 @@ export const lists = {
       toOneRelationshipCard: relationship({
         ref: 'User',
         ui: {
+          description:
+            'Some thing to describe to test the length of the text for width, kjhjkhkjhkhkjhkjhk bjhjh jhkjhkjhk jkhkjhk hguytyrdrtd jhjg',
           displayMode: 'cards',
           cardFields: ['name', 'email'],
           inlineConnect: true,
@@ -61,6 +63,8 @@ export const lists = {
       toManyRelationshipCard: relationship({
         ref: 'Todo',
         ui: {
+          description:
+            'Some thing to describe to test the length of the text for width, kjhjkhkjhkhkjhkjhk bjhjh jhkjhkjhk jkhkjhk hguytyrdrtd jhjg',
           displayMode: 'cards',
           cardFields: ['label', 'isComplete', 'assignedTo'],
           inlineConnect: true,
@@ -113,6 +117,8 @@ export const lists = {
         ],
         ui: {
           displayMode: 'segmented-control',
+          description:
+            'Some thing to describe to test the length of the text for width, kjhjkhkjhkhkjhkjhk bjhjh jhkjhkjhk jkhkjhk hguytyrdrtd jhjg',
         },
       }),
       json: json({

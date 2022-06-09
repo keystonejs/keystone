@@ -16,9 +16,9 @@ export const FieldDescription = (props: FieldDescriptionProps) => {
   return (
     <span
       css={{
-        color: '#667092',
+        color: '#6b7280',
         display: 'block',
-        marginBottom: spacing.xsmall,
+        marginBottom: spacing.small,
         minWidth: 120,
       }}
       {...props}

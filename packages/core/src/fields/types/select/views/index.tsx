@@ -60,6 +60,7 @@ export const Field = ({
       ) : (
         <Fragment>
           <FieldLabel as="legend">{field.label}</FieldLabel>
+          <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
           <Stack across gap="small" align="center">
             <SegmentedControl
               segments={field.options.map(x => x.label)}

@@ -89,6 +89,7 @@ export const Field = ({
     return (
       <FieldContainer as="fieldset">
         <FieldLegend>{field.label}</FieldLegend>
+        <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
         <Cards
           forceValidation={forceValidation}
           field={field}

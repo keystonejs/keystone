@@ -13,11 +13,10 @@ import {
 import { CellContainer } from '../../../../admin-ui/components';
 
 export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => {
-  const { fields, typography } = useTheme();
+  const { fields, typography, spacing } = useTheme();
   return (
     <FieldContainer>
       <Checkbox
-        css={{ alignItems: 'center' }}
         autoFocus={autoFocus}
         disabled={onChange === undefined}
         onChange={event => {
@@ -26,7 +25,15 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
         checked={value}
         aria-describedby={field.description === null ? undefined : `${field.path}-description`}
       >
-        <span css={{ fontWeight: typography.fontWeight.semibold, color: fields.labelColor }}>
+        <span
+          css={{
+            color: fields.labelColor,
+            display: 'block',
+            fontWeight: typography.fontWeight.semibold,
+            marginBottom: spacing.xsmall,
+            minWidth: 120,
+          }}
+        >
           {field.label}
         </span>
         <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
