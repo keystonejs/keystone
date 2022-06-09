@@ -28,6 +28,7 @@
     "changeset": "changeset",
     "publish-changed": "yarn build && changeset publish --public",
     "version-packages": "changeset version",
+    "no-run-version-packages": "echo \"This workflow should not be run when there are changesets on main\" && exit 1",
     "build": "preconstruct build",
     "prepare": "manypkg check && preconstruct dev && yarn run --silent contributing-guide && node scripts/generate-artifacts-for-projects",
     "contributing-guide": "is-ci && exit 0 || chalk -t \"{bold 📝 Contributing to KeystoneJS?}\" && terminal-link \"🔗 Read the full Contributing Guide\" \"https://github.com/keystonejs/keystone/blob/main/CONTRIBUTING.md\"",

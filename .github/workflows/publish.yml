@@ -1,14 +1,13 @@
-name: Release
+name: Publish
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
-  release:
-    name: Release
+  publish:
+    name: Publish
     runs-on: ubuntu-latest
+    environment: release
     steps:
       - name: Checkout Repo
         uses: actions/checkout@master
@@ -25,12 +24,14 @@ jobs:
         # we have a postinstall script that uses is-ci which doesn't yet detect GitHub Actions
         run: CI=true yarn
 
-      - name: Create Release Pull Request
-        uses: changesets/action@master
+      - name: Publish to npm
+        uses: changesets/action@v1
         with:
-          version: yarn version-packages
+          version: yarn no-run-version-packages
+          publish: yarn publish-changed
         env:
           # note that we're not using the GH token provided by Actions here because Actions has a rule that Actions
           # will not run as the result of another Action so CI wouldn't run on the release PRs then
           # we can get around it by using a personal access token from a GH account
           GITHUB_TOKEN: ${{ secrets.KEYSTONE_RELEASE_BOT_GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
