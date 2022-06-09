@@ -20,7 +20,7 @@ import { Global, jsx } from '@emotion/react';
 
 import { FormValueContentFromPreviewProps } from '@keystone-6/fields-document/src/DocumentEditor/component-blocks/form-from-preview';
 import { createGetPreviewProps } from '@keystone-6/fields-document/src/DocumentEditor/component-blocks/preview-props';
-import { componentBlocks as componentBlocksInExampleProject } from '../../../examples-staging/basic/admin/fieldViews/Content';
+import { componentBlocks as componentBlocksInSandboxProject } from '../../../tests/sandbox/component-blocks';
 import { initialContent } from '../../lib/initialDocumentDemoContent';
 import { Code } from '../primitives/Code';
 
@@ -84,10 +84,11 @@ type DocumentFeaturesFormValue = Parameters<
 const emptyObj = {};
 
 const componentBlocks = {
-  notice: componentBlocksInExampleProject.notice,
-  hero: componentBlocksInExampleProject.hero,
-  quote: componentBlocksInExampleProject.quote,
-  checkboxList: componentBlocksInExampleProject.checkboxList,
+  notice: componentBlocksInSandboxProject.notice,
+  hero: componentBlocksInSandboxProject.hero,
+  quote: componentBlocksInSandboxProject.quote,
+  checkboxList: componentBlocksInSandboxProject.checkboxList,
+  carousel: componentBlocksInSandboxProject.carousel,
 };
 
 type DocumentFieldConfig = Parameters<typeof import('@keystone-6/fields-document').document>[0];
