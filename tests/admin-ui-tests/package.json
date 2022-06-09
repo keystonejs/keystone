@@ -2,7 +2,7 @@
   "name": "@keystone-6/admin-ui-tests",
   "description": "A set of tests for the KeystoneJS Admin UI.",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {

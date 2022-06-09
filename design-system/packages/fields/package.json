@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/fields",
-  "version": "6.1.0",
+  "version": "7.0.0",
   "license": "MIT",
   "main": "dist/keystone-ui-fields.cjs.js",
   "module": "dist/keystone-ui-fields.esm.js",
@@ -9,9 +9,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
-    "@keystone-ui/core": "^4.0.0",
-    "@keystone-ui/icons": "^5.0.0",
-    "@keystone-ui/popover": "^5.0.1",
+    "@keystone-ui/core": "^5.0.0",
+    "@keystone-ui/icons": "^6.0.0",
+    "@keystone-ui/popover": "^6.0.0",
     "date-fns": "^2.26.0",
     "react": "^18.1.0",
     "react-day-picker": "^8.0.4",

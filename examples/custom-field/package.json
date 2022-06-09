@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-custom-field",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -9,8 +9,8 @@
     "build": "keystone build"
   },
   "dependencies": {
-    "@keystone-6/core": "^1.1.1",
-    "@keystone-ui/fields": "^6.1.0",
+    "@keystone-6/core": "^2.0.0",
+    "@keystone-ui/fields": "^7.0.0",
     "react": "^18.1.0"
   },
   "devDependencies": {
