@@ -29,6 +29,7 @@ jobs:
         with:
           version: yarn no-run-version-packages
           publish: yarn publish-changed
+          createGithubReleases: false
         env:
           # note that we're not using the GH token provided by Actions here because Actions has a rule that Actions
           # will not run as the result of another Action so CI wouldn't run on the release PRs then
