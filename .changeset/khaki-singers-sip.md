@@ -2,4 +2,4 @@
 '@keystone-6/cloudinary': patch
 ---
 
-Export cloudinary image output type for custom usage e.g. in virtual fields.
+Added an export for the Cloudinary image GraphQL output type for developer usage e.g. in virtual fields.
