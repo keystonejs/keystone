@@ -31,11 +31,8 @@ import { Toolbar } from './Toolbar';
 import { renderElement } from './render-element';
 import { withHeading } from './heading';
 import { nestList, unnestList, withList } from './lists';
-import {
-  ComponentBlockContext,
-  getPlaceholderTextForPropPath,
-  withComponentBlocks,
-} from './component-blocks';
+import { ComponentBlockContext, withComponentBlocks } from './component-blocks';
+import { getPlaceholderTextForPropPath } from './component-blocks/utils';
 import { withBlockquote } from './blockquote';
 import { Relationships, withRelationship } from './relationship';
 import { withDivider } from './divider';

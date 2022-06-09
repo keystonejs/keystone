@@ -5,7 +5,8 @@ import { Transforms, Editor } from 'slate';
 import React, { ReactElement } from 'react';
 import { jsx, makeEditor } from '../tests/utils';
 import { component, fields } from '../../component-blocks';
-import { ChildFieldEditable, createGetPreviewProps } from './preview-props';
+import { createGetPreviewProps } from './preview-props';
+import { ChildFieldEditable } from './component-block-render';
 import { insertComponentBlock } from '.';
 
 const objectProp = fields.object({
