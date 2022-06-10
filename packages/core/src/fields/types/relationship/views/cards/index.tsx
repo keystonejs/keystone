@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { ReactNode, Fragment } from 'react';
+import { ReactNode } from 'react';
 import {
   Box,
   BoxProps,
@@ -139,59 +139,59 @@ export function Cards({
     return <span css={{ color: 'red' }}>{itemsState.message}</span>;
   }
 
+  const currentIdsArrayWithFetchedItems = [...value.currentIds]
+    .map(id => ({ itemGetter: items[id], id }))
+    .filter(x => x.itemGetter);
+
   return (
-    <Stack gap="xlarge">
-      <Stack
-        as="ul"
-        gap="xlarge"
-        css={{
-          padding: 0,
-          marginBottom: 0,
-          li: {
-            listStyle: 'none',
-          },
-        }}
-      >
-        {[...value.currentIds].map((id, index) => {
-          const itemGetter = items[id];
-          if (!itemGetter) {
-            return null;
-          }
-          const isEditMode = !!(onChange !== undefined) && value.itemsBeingEdited.has(id);
-          return (
-            <CardContainer role="status" mode={isEditMode ? 'edit' : 'view'} key={id}>
-              <VisuallyHidden as="h2">{`${field.label} ${index + 1} ${
-                isEditMode ? 'edit' : 'view'
-              } mode`}</VisuallyHidden>
-              {isEditMode ? (
-                <InlineEdit
-                  list={foreignList}
-                  fields={displayOptions.inlineEdit!.fields}
-                  onSave={newItemGetter => {
-                    setItems({
-                      ...items,
-                      [id]: newItemGetter,
-                    });
-                    const itemsBeingEdited = new Set(value.itemsBeingEdited);
-                    itemsBeingEdited.delete(id);
-                    onChange!({
-                      ...value,
-                      itemsBeingEdited,
-                    });
-                  }}
-                  selectedFields={selectedFields}
-                  itemGetter={itemGetter}
-                  onCancel={() => {
-                    const itemsBeingEdited = new Set(value.itemsBeingEdited);
-                    itemsBeingEdited.delete(id);
-                    onChange!({
-                      ...value,
-                      itemsBeingEdited,
-                    });
-                  }}
-                />
-              ) : (
-                <Fragment>
+    <Stack gap="medium">
+      {currentIdsArrayWithFetchedItems.length !== 0 && (
+        <Stack
+          as="ul"
+          gap="medium"
+          css={{
+            padding: 0,
+            margin: 0,
+            li: {
+              listStyle: 'none',
+            },
+          }}
+        >
+          {currentIdsArrayWithFetchedItems.map(({ id, itemGetter }, index) => {
+            const isEditMode = !!(onChange !== undefined) && value.itemsBeingEdited.has(id);
+            return (
+              <CardContainer role="status" mode={isEditMode ? 'edit' : 'view'} key={id}>
+                <VisuallyHidden as="h2">{`${field.label} ${index + 1} ${
+                  isEditMode ? 'edit' : 'view'
+                } mode`}</VisuallyHidden>
+                {isEditMode ? (
+                  <InlineEdit
+                    list={foreignList}
+                    fields={displayOptions.inlineEdit!.fields}
+                    onSave={newItemGetter => {
+                      setItems({
+                        ...items,
+                        [id]: newItemGetter,
+                      });
+                      const itemsBeingEdited = new Set(value.itemsBeingEdited);
+                      itemsBeingEdited.delete(id);
+                      onChange!({
+                        ...value,
+                        itemsBeingEdited,
+                      });
+                    }}
+                    selectedFields={selectedFields}
+                    itemGetter={itemGetter}
+                    onCancel={() => {
+                      const itemsBeingEdited = new Set(value.itemsBeingEdited);
+                      itemsBeingEdited.delete(id);
+                      onChange!({
+                        ...value,
+                        itemsBeingEdited,
+                      });
+                    }}
+                  />
+                ) : (
                   <Stack gap="xlarge">
                     {displayOptions.cardFields.map(fieldPath => {
                       const field = foreignList.fields[fieldPath];
@@ -219,69 +219,68 @@ export function Cards({
                         />
                       );
                     })}
+                    <Stack across gap="small">
+                      {displayOptions.inlineEdit && onChange !== undefined && (
+                        <Button
+                          size="small"
+                          disabled={onChange === undefined}
+                          onClick={() => {
+                            onChange({
+                              ...value,
+                              itemsBeingEdited: new Set([...value.itemsBeingEdited, id]),
+                            });
+                          }}
+                          tone="active"
+                        >
+                          Edit
+                        </Button>
+                      )}
+                      {displayOptions.removeMode === 'disconnect' && onChange !== undefined && (
+                        <Tooltip content="This item will not be deleted. It will only be removed from this field.">
+                          {props => (
+                            <Button
+                              size="small"
+                              disabled={onChange === undefined}
+                              onClick={() => {
+                                const currentIds = new Set(value.currentIds);
+                                currentIds.delete(id);
+                                onChange({
+                                  ...value,
+                                  currentIds,
+                                });
+                              }}
+                              {...props}
+                              tone="negative"
+                            >
+                              Remove
+                            </Button>
+                          )}
+                        </Tooltip>
+                      )}
+                      {displayOptions.linkToItem && (
+                        <Button
+                          size="small"
+                          weight="link"
+                          tone="active"
+                          css={{ textDecoration: 'none' }}
+                          as={Link}
+                          href={`/${foreignList.path}/${id}`}
+                        >
+                          View {foreignList.singular} details
+                        </Button>
+                      )}
+                    </Stack>
                   </Stack>
-                  <Stack across gap="small" marginTop="xlarge">
-                    {displayOptions.inlineEdit && onChange !== undefined && (
-                      <Button
-                        size="small"
-                        disabled={onChange === undefined}
-                        onClick={() => {
-                          onChange({
-                            ...value,
-                            itemsBeingEdited: new Set([...value.itemsBeingEdited, id]),
-                          });
-                        }}
-                        tone="active"
-                      >
-                        Edit
-                      </Button>
-                    )}
-                    {displayOptions.removeMode === 'disconnect' && onChange !== undefined && (
-                      <Tooltip content="This item will not be deleted. It will only be removed from this field.">
-                        {props => (
-                          <Button
-                            size="small"
-                            disabled={onChange === undefined}
-                            onClick={() => {
-                              const currentIds = new Set(value.currentIds);
-                              currentIds.delete(id);
-                              onChange({
-                                ...value,
-                                currentIds,
-                              });
-                            }}
-                            {...props}
-                            tone="negative"
-                          >
-                            Remove
-                          </Button>
-                        )}
-                      </Tooltip>
-                    )}
-                    {displayOptions.linkToItem && (
-                      <Button
-                        size="small"
-                        weight="link"
-                        tone="active"
-                        css={{ textDecoration: 'none' }}
-                        as={Link}
-                        href={`/${foreignList.path}/${id}`}
-                      >
-                        View {foreignList.singular} details
-                      </Button>
-                    )}
-                  </Stack>
-                </Fragment>
-              )}
-            </CardContainer>
-          );
-        })}
-      </Stack>
+                )}
+              </CardContainer>
+            );
+          })}
+        </Stack>
+      )}
       {onChange === undefined ? null : displayOptions.inlineConnect && showConnectItems ? (
         <CardContainer mode="edit">
           <Stack
             gap="small"
-            marginY="medium"
             across
             css={{
               width: '100%',
@@ -386,7 +385,7 @@ export function Cards({
         </CardContainer>
       ) : displayOptions.inlineCreate || displayOptions.inlineConnect ? (
         <CardContainer mode="create">
-          <Stack gap="small" marginTop="medium" across>
+          <Stack gap="small" across>
             {displayOptions.inlineCreate && (
               <Button
                 size="small"
