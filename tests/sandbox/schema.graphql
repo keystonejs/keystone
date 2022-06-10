@@ -524,6 +524,7 @@ type KeystoneAdminUIListMeta {
 type KeystoneAdminUIFieldMeta {
   path: String!
   label: String!
+  description: String
   isOrderable: Boolean!
   isFilterable: Boolean!
   fieldMeta: JSON

@@ -34,6 +34,7 @@ export type FieldControllerConfig<FieldMeta extends JSONValue | undefined = unde
   listKey: string;
   path: string;
   label: string;
+  description: string | null;
   customViews: Record<string, any>;
   fieldMeta: FieldMeta;
 };
@@ -52,6 +53,7 @@ export type FilterTypeToFormat<Value extends JSONValue> = {
 export type FieldController<FormState, FilterValue extends JSONValue = never> = {
   path: string;
   label: string;
+  description: string | null;
   graphqlSelection: string;
   defaultValue: FormState;
   deserialize: (item: any) => FormState;
@@ -74,6 +76,7 @@ export type FieldController<FormState, FilterValue extends JSONValue = never> = 
 export type FieldMeta = {
   path: string;
   label: string;
+  description: string | null;
   fieldMeta: JSONValue;
   viewsIndex: number;
   customViewsIndex: number | null;
@@ -158,6 +161,7 @@ export type CardValueComponent<
 export type FieldMetaRootVal = {
   path: string;
   label: string;
+  description: string | null;
   fieldMeta: JSONValue | null;
   viewsIndex: number;
   customViewsIndex: number | null;

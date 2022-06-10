@@ -130,6 +130,7 @@ export function createAdminMeta(
       }
       adminMetaRoot.listsByKey[key].fields.push({
         label: field.label ?? humanize(fieldKey),
+        description: field.ui?.description ?? null,
         viewsIndex: getViewId(field.views),
         customViewsIndex: field.ui?.views === undefined ? null : getViewId(field.ui.views),
         fieldMeta: null,

@@ -2,7 +2,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
+import { FieldContainer, FieldDescription, FieldLabel } from '@keystone-ui/fields';
 import {
   CardValueComponent,
   CellComponent,
@@ -17,6 +17,7 @@ export const Field = ({ field, value }: FieldProps<typeof controller>) =>
   value === createViewValue ? null : (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
+      <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
       <PrettyData data={value} />
     </FieldContainer>
   );
@@ -42,6 +43,7 @@ export const controller = (
   return {
     path: config.path,
     label: config.label,
+    description: config.description,
     graphqlSelection: `${config.path}${config.fieldMeta.query}`,
     defaultValue: createViewValue,
     deserialize: data => {

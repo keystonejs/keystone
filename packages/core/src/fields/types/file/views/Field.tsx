@@ -4,7 +4,7 @@ import { useMemo, useRef, RefObject } from 'react';
 import bytes from 'bytes';
 
 import { jsx, Stack, Text } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
+import { FieldContainer, FieldDescription, FieldLabel } from '@keystone-ui/fields';
 
 import { Button } from '@keystone-ui/button';
 import { FieldProps } from '../../../../types';
@@ -41,6 +41,7 @@ export function Field({
   return (
     <FieldContainer as="fieldset">
       <FieldLabel as="legend">{field.label}</FieldLabel>
+      <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
       <FileView errorMessage={errorMessage} value={value} onChange={onChange} inputRef={inputRef} />
       <input
         css={{ display: 'none' }}
@@ -52,6 +53,7 @@ export function Field({
         onChange={onUploadChange}
         type="file"
         disabled={onChange === undefined}
+        aria-describedby={field.description === null ? undefined : `${field.path}-description`}
       />
     </FieldContainer>
   );
