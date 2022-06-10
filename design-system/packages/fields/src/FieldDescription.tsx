@@ -9,15 +9,14 @@ type FieldDescriptionProps = {
 };
 
 export const FieldDescription = (props: FieldDescriptionProps) => {
-  const { spacing } = useTheme();
+  const { spacing, palette } = useTheme();
   if (props.children === null) {
     return null;
   }
   return (
-    <span
+    <div
       css={{
-        color: '#6b7280',
-        display: 'block',
+        color: palette.neutral700,
         marginBottom: spacing.small,
         minWidth: 120,
       }}

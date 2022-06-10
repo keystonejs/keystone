@@ -107,6 +107,7 @@ export const Field = ({
     return (
       <Stack as="fieldset" gap="medium">
         <FieldLegend>{field.label}</FieldLegend>
+        <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
         <div>
           {value.count === 1
             ? `There is 1 ${foreignList.singular} `
