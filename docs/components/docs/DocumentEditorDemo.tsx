@@ -311,6 +311,9 @@ export const DocumentEditorDemo = () => {
         'ul, ol': {
           lineHeight: 1.75,
         },
+        button: {
+          borderWidth: 0,
+        },
       }}
     >
       <Global
