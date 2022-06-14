@@ -75,6 +75,7 @@ export default function Docs() {
         <Well grad="grad2" heading="Images and Files Guide" href="/docs/guides/images-and-files">
           Learn how to use the File and Image fields in Keystone to store and manage images and
           files
+        </Well>
         <Well grad="grad2" heading="Choosing a Database" href="/docs/guides/choosing-a-database">
           Keystone supports Postgres, MySQL and SQLite. This guide explains how to choose the best
           for your project.
