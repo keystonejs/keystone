@@ -11,6 +11,7 @@ export { Checkbox, CheckboxControl } from './Checkbox';
 export { FieldContainer } from './FieldContainer';
 export { FieldLabel } from './FieldLabel';
 export { FieldLegend } from './FieldLegend';
+export { FieldDescription } from './FieldDescription';
 export { Radio } from './Radio';
 export { Switch } from './Switch';
 export { TextArea } from './TextArea';

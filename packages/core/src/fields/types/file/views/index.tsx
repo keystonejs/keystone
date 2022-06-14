@@ -70,6 +70,7 @@ export const controller = (config: FieldControllerConfig): FileController => {
   return {
     path: config.path,
     label: config.label,
+    description: config.description,
     graphqlSelection: `${config.path} {
         url
         filename

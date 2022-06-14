@@ -740,6 +740,8 @@ To use relationship fields on component blocks, you need to add a relationship f
 In the form, it will render a relationship select like the relationship field on lists.
 Similarly to inline relationships, they will be hydrated with this selection if `hydrateRelationships: true` is provided when fetching.
 
+?> We recently updated the config API for inline relationships in component blocks. If you’re using a version prior to 2022-03-25 please [read this](https://github.com/keystonejs/keystone/releases/tag/2022-03-25) upgrade guidance.
+
 ```tsx
 import { fields } from '@keystone-6/fields-document/component-blocks';
 

@@ -107,6 +107,25 @@ type UserAuthenticationWithPasswordFailure {
 This mutation will check the supplied credentials and start a new [session](./session) if the credentials are valid.
 The argument names for this function are the values of `identityField` and `secretField`.
 
+```graphql
+mutation {
+  authenticateUserWithPassword(
+    email: "username@example.com",
+    password: "password"
+  ) {
+   ... on UserAuthenticationWithPasswordSuccess {
+    item {
+      id
+      email
+    }
+  }
+    ... on UserAuthenticationWithPasswordFailure {
+      message
+    }
+  }
+}
+```
+
 On success the session handler will start a new session and return the encoded session cookie data as `sessionToken`.
 The authenticated item will be returned as `item`.
 

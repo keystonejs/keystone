@@ -35,6 +35,7 @@ export const controller = (
   return {
     path: config.path,
     label: config.label,
+    description: config.description,
     graphqlSelection: config.path,
     idFieldKind: config.fieldMeta.kind,
     defaultValue: undefined,

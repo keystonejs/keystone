@@ -31,6 +31,7 @@ export const staticAdminMetaQuery = gql`
             __typename
             path
             label
+            description
             fieldMeta
             viewsIndex
             customViewsIndex
@@ -91,6 +92,7 @@ export type StaticAdminMetaQuery = {
           __typename: 'KeystoneAdminUIFieldMeta';
           path: string;
           label: string;
+          description: Maybe<string>;
           fieldMeta: Maybe<JSONValue>;
           viewsIndex: number;
           customViewsIndex: Maybe<number>;

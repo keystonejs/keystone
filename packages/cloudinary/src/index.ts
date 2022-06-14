@@ -84,7 +84,7 @@ type CloudinaryImage_File = {
   }) => string | null;
 };
 
-const outputType = graphql.object<CloudinaryImage_File>()({
+export const outputType = graphql.object<CloudinaryImage_File>()({
   name: 'CloudinaryImage_File',
   fields: {
     id: graphql.field({ type: graphql.ID }),

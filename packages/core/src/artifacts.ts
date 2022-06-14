@@ -1,4 +1,5 @@
 import path from 'path';
+import { createRequire } from 'module';
 import { printSchema, GraphQLSchema } from 'graphql';
 import * as fs from 'fs-extra';
 import { getGenerator, formatSchema } from '@prisma/sdk';
@@ -43,10 +44,34 @@ export async function getCommittedArtifacts(
   );
   return {
     graphql: getFormattedGraphQLSchema(printSchema(graphQLSchema)),
-    prisma: await formatSchema({
-      schema: prismaSchema,
-    }),
+    prisma: await formatPrismaSchema(prismaSchema),
   };
+}
+
+let hasEnsuredBinariesExist = false;
+async function ensurePrismaBinariesExist() {
+  // ensureBinariesExist does a bunch of slightly expensive things
+  // so if we can avoid running it a bunch in tests, that's ideal
+  if (hasEnsuredBinariesExist) return;
+  // we're resolving @prisma/engines from @prisma/sdk
+  // because we don't want to depend on @prisma/engines
+  // since its version includes a commit hash from https://github.com/prisma/prisma-engines
+  // and we just want to use whatever version @prisma/sdk is using
+  // also note we use an exact version of @prisma/sdk
+  // so if @prisma/sdk suddenly stops depending on @prisma/engines
+  // that won't break a released version of Keystone
+  // also, we're not just directly importing @prisma/engines
+  // since stricter package managers(e.g. pnpm, Yarn Berry)
+  // don't allow importing packages that aren't explicitly depended on
+  const requireFromPrismaSdk = createRequire(require.resolve('@prisma/sdk'));
+  const prismaEngines = requireFromPrismaSdk('@prisma/engines') as typeof import('@prisma/engines');
+  await prismaEngines.ensureBinariesExist();
+  hasEnsuredBinariesExist = true;
+}
+
+async function formatPrismaSchema(schema: string) {
+  await ensurePrismaBinariesExist();
+  return formatSchema({ schema });
 }
 
 async function readFileButReturnNothingIfDoesNotExist(filename: string) {

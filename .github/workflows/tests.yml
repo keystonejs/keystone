@@ -19,7 +19,7 @@ jobs:
         with:
           filters: |
             shouldRunTests:
-              - '!{{design-system}/**,**/*.md}'
+              - '!{{design-system}/**,**/*.md,docs/**}'
 
       - run: echo "SHOULD_RUN_TESTS=$SHOULD_RUN" >> $GITHUB_ENV
         if: github.event_name == 'pull_request'
@@ -29,8 +29,102 @@ jobs:
       - run: echo "SHOULD_RUN_TESTS=true" >> $GITHUB_ENV
         if: github.event_name != 'pull_request'
 
-  graphql_api_tests:
-    name: API Tests
+  graphql_api_tests_postgresql:
+    name: API Tests PostgreSQL
+    needs: should_run_tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+    strategy:
+      fail-fast: false
+      matrix:
+        index: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+
+      - uses: ./.github/actions/ci-setup
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+
+      - name: Unit tests
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        run: yarn jest --ci --runInBand api-tests --testPathIgnorePatterns=examples-smoke-tests  --testPathIgnorePatterns=tests/api-tests/fields/crud --testPathIgnorePatterns=tests/api-tests/auth-stored-session.test.ts
+        env:
+          CI_NODE_TOTAL: 9
+          CI_NODE_INDEX: ${{ matrix.index }}
+          TEST_ADAPTER: postgresql
+          DATABASE_URL: postgres://testuser:testpass@localhost:5432/test_db
+
+  graphql_api_tests_sqlite:
+    name: API Tests SQLite
+    needs: should_run_tests
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        index: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+
+      - uses: ./.github/actions/ci-setup
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+
+      - name: Unit tests
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        run: yarn jest --ci --runInBand api-tests --testPathIgnorePatterns=examples-smoke-tests  --testPathIgnorePatterns=tests/api-tests/fields/crud --testPathIgnorePatterns=tests/api-tests/auth-stored-session.test.ts
+        env:
+          CI_NODE_TOTAL: 9
+          CI_NODE_INDEX: ${{ matrix.index }}
+          TEST_ADAPTER: sqlite
+          DATABASE_URL: file:./dev.db
+
+  graphql_api_tests_mysql:
+    name: API Tests MySQL
+    needs: should_run_tests
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mariadb:10.7
+        env:
+          MYSQL_USER: testuser
+          MYSQL_PASSWORD: testpass
+          MYSQL_DATABASE: test_db
+          MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+        ports:
+          - 3306:3306
+    strategy:
+      fail-fast: false
+      matrix:
+        index: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+
+      - uses: ./.github/actions/ci-setup
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+
+      - name: Unit tests
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        run: yarn jest --ci --runInBand api-tests --testPathIgnorePatterns=examples-smoke-tests  --testPathIgnorePatterns=tests/api-tests/fields/crud --testPathIgnorePatterns=tests/api-tests/auth-stored-session.test.ts
+        env:
+          CI_NODE_TOTAL: 9
+          CI_NODE_INDEX: ${{ matrix.index }}
+          TEST_ADAPTER: mysql
+          DATABASE_URL: mysql://testuser:testpass@localhost:3306/test_db
+
+  redis_session_tests_postgresql:
+    name: Redis Session Tests PostgreSQL
     needs: should_run_tests
     runs-on: ubuntu-latest
     services:
@@ -46,6 +140,54 @@ jobs:
         image: redis:7
         ports:
           - 6379:6379
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+
+      - uses: ./.github/actions/ci-setup
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+
+      - name: Unit tests
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        run: yarn jest --ci --runInBand tests/api-tests/auth-stored-session.test.ts
+        env:
+          TEST_ADAPTER: postgresql
+          DATABASE_URL: postgres://testuser:testpass@localhost:5432/test_db
+
+  redis_session_tests_sqlite:
+    name: Redis Session Tests SQLite
+    needs: should_run_tests
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+
+      - uses: ./.github/actions/ci-setup
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+
+      - name: Unit tests
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        run: yarn jest --ci --runInBand tests/api-tests/auth-stored-session.test.ts
+        env:
+          TEST_ADAPTER: sqlite
+          DATABASE_URL: file:./dev.db
+
+  redis_session_tests_mysql:
+    name: Redis Session Tests MySQL
+    needs: should_run_tests
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
       mysql:
         image: mariadb:10.7
         env:
@@ -55,53 +197,21 @@ jobs:
           MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
         ports:
           - 3306:3306
-    strategy:
-      fail-fast: false
-      matrix:
-        index: [0, 1, 2, 3, 4, 5, 6, 7, 8]
-        adapter: ['postgresql', 'sqlite', 'mysql']
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
 
-      - name: Setup Node.js LTS
-        uses: actions/setup-node@main
-        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        with:
-          node-version: lts/*
-
-      - name: Get yarn cache directory path
-        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - uses: actions/cache@v3
-        id: yarn-cache
-        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        with:
-          path: |
-            ${{ steps.yarn-cache-dir-path.outputs.dir }}
-            node_modules
-          key: ${{ runner.os }}-yarn-v5-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-v5-
-
-      - name: Install Dependencies
-        run: yarn
+      - uses: ./.github/actions/ci-setup
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
 
       - name: Unit tests
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        run: yarn jest --ci --runInBand api-tests --testPathIgnorePatterns=examples-smoke-tests  --testPathIgnorePatterns=tests/api-tests/fields/crud
+        run: yarn jest --ci --runInBand tests/api-tests/auth-stored-session.test.ts
         env:
-          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
-          CLOUDINARY_KEY: ${{ secrets.CLOUDINARY_KEY }}
-          CLOUDINARY_SECRET: ${{ secrets.CLOUDINARY_SECRET }}
-          CI_NODE_TOTAL: 9
-          CI_NODE_INDEX: ${{ matrix.index }}
-          TEST_ADAPTER: ${{ matrix.adapter }}
-          DATABASE_URL: ${{ matrix.adapter == 'sqlite' && 'file:./dev.db' || matrix.adapter == 'postgresql' && 'postgres://testuser:testpass@localhost:5432/test_db' || 'mysql://testuser:testpass@localhost:3306/test_db' }}
+          TEST_ADAPTER: mysql
+          DATABASE_URL: mysql://testuser:testpass@localhost:3306/test_db
+
   unit_tests:
     name: Package Unit Tests
     needs: should_run_tests
@@ -112,37 +222,13 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v3
 
-      - name: Setup Node.js LTS
-        uses: actions/setup-node@main
-        with:
-          node-version: lts/*
-
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - uses: actions/cache@v3
-        id: yarn-cache
-        with:
-          path: |
-            ${{ steps.yarn-cache-dir-path.outputs.dir }}
-            node_modules
-          key: ${{ runner.os }}-yarn-v5-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-v5-
-
-      - name: Install Dependencies
-        run: yarn
+      - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
         run: yarn jest --ci --runInBand --testPathIgnorePatterns=admin-ui-tests --testPathIgnorePatterns=api-tests --testPathIgnorePatterns=examples-smoke-tests --testPathIgnorePatterns=examples/testing
-        env:
-          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
-          CLOUDINARY_KEY: ${{ secrets.CLOUDINARY_KEY }}
-          CLOUDINARY_SECRET: ${{ secrets.CLOUDINARY_SECRET }}
 
-  field_crud_tests:
-    name: Field CRUD Tests
+  field_crud_tests_postgresql:
+    name: Field CRUD Tests PostgreSQL
     needs: should_run_tests
     runs-on: ubuntu-latest
     services:
@@ -154,66 +240,22 @@ jobs:
           POSTGRES_DB: test_db
         ports:
           - 5432:5432
-    strategy:
-      fail-fast: false
-      matrix:
-        adapter: ['postgresql', 'sqlite']
     steps:
       - name: Checkout Repo
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Setup Node.js LTS
+      - uses: ./.github/actions/ci-setup
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        uses: actions/setup-node@main
-        with:
-          node-version: lts/*
 
-      - name: Get yarn cache directory path
-        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - uses: actions/cache@v2
-        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        id: yarn-cache
-        with:
-          path: |
-            ${{ steps.yarn-cache-dir-path.outputs.dir }}
-            node_modules
-          key: ${{ runner.os }}-yarn-v5-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-v5-
-
-      - name: Install Dependencies
-        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        run: yarn
       - name: Setup local S3 bucket
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        run: |
-          docker run -d -p 9000:9000 --name minio \
-                     -e "MINIO_ACCESS_KEY=keystone" \
-                     -e "MINIO_SECRET_KEY=keystone" \
-                     -v /tmp/data:/data \
-                     -v /tmp/config:/root/.minio \
-                     minio/minio server /data
-
-          export AWS_ACCESS_KEY_ID=keystone
-          export AWS_SECRET_ACCESS_KEY=keystone
-          export AWS_EC2_METADATA_DISABLED=true
-
-
-
-          aws --endpoint-url http://127.0.0.1:9000/ s3 mb s3://keystone-test
-          aws --endpoint-url http://127.0.0.1:9000/ s3api put-bucket-policy --bucket keystone-test --policy file://tests/api-tests/s3-public-read-policy.json
+        run: bash ./.github/workflows/s3-bucket.sh
 
       - name: Unit tests
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: yarn jest --ci --runInBand tests/api-tests/fields/crud
         env:
-          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
-          CLOUDINARY_KEY: ${{ secrets.CLOUDINARY_KEY }}
-          CLOUDINARY_SECRET: ${{ secrets.CLOUDINARY_SECRET }}
           S3_ENDPOINT: http://127.0.0.1:9000/
           S3_FORCE_PATH_STYLE: true
           S3_BUCKET_NAME: keystone-test
@@ -221,8 +263,78 @@ jobs:
           S3_SECRET_ACCESS_KEY: keystone
           # this doesn't mean anything when we're using a custom s3 endpoint but the sdk wants something so we just give it something
           S3_REGION: us-east-1
-          TEST_ADAPTER: ${{ matrix.adapter }}
-          DATABASE_URL: ${{ matrix.adapter == 'sqlite' && 'file:./dev.db' || 'postgres://testuser:testpass@localhost:5432/test_db' }}
+          TEST_ADAPTER: postgresql
+          DATABASE_URL: postgres://testuser:testpass@localhost:5432/test_db
+
+  field_crud_tests_sqlite:
+    name: Field CRUD Tests SQLite
+    needs: should_run_tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        uses: actions/checkout@v3
+
+      - uses: ./.github/actions/ci-setup
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+
+      - name: Setup local S3 bucket
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        run: bash ./.github/workflows/s3-bucket.sh
+
+      - name: Unit tests
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        run: yarn jest --ci --runInBand tests/api-tests/fields/crud
+        env:
+          S3_ENDPOINT: http://127.0.0.1:9000/
+          S3_FORCE_PATH_STYLE: true
+          S3_BUCKET_NAME: keystone-test
+          S3_ACCESS_KEY_ID: keystone
+          S3_SECRET_ACCESS_KEY: keystone
+          # this doesn't mean anything when we're using a custom s3 endpoint but the sdk wants something so we just give it something
+          S3_REGION: us-east-1
+          TEST_ADAPTER: sqlite
+          DATABASE_URL: file:./dev.db
+
+  field_crud_tests_mysql:
+    name: Field CRUD Tests MySQL
+    needs: should_run_tests
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mariadb:10.7
+        env:
+          MYSQL_USER: testuser
+          MYSQL_PASSWORD: testpass
+          MYSQL_DATABASE: test_db
+          MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+        ports:
+          - 3306:3306
+    steps:
+      - name: Checkout Repo
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        uses: actions/checkout@v3
+
+      - uses: ./.github/actions/ci-setup
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+
+      - name: Setup local S3 bucket
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        run: bash ./.github/workflows/s3-bucket.sh
+
+      - name: Unit tests
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        run: yarn jest --ci --runInBand tests/api-tests/fields/crud
+        env:
+          S3_ENDPOINT: http://127.0.0.1:9000/
+          S3_FORCE_PATH_STYLE: true
+          S3_BUCKET_NAME: keystone-test
+          S3_ACCESS_KEY_ID: keystone
+          S3_SECRET_ACCESS_KEY: keystone
+          # this doesn't mean anything when we're using a custom s3 endpoint but the sdk wants something so we just give it something
+          S3_REGION: us-east-1
+          TEST_ADAPTER: mysql
+          DATABASE_URL: mysql://testuser:testpass@localhost:3306/test_db
 
   examples_tests:
     name: Testing example project
@@ -233,29 +345,7 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
-
-      - name: Setup Node.js LTS
-        uses: actions/setup-node@main
-        with:
-          node-version: lts/*
-
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - uses: actions/cache@v3
-        id: yarn-cache
-        with:
-          path: |
-            ${{ steps.yarn-cache-dir-path.outputs.dir }}
-            node_modules
-          key: ${{ runner.os }}-yarn-v5-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-v5-
-
-      - name: Install Dependencies
-        run: yarn
-
+      - uses: ./.github/actions/ci-setup
       - name: Example unit tests
         run: cd examples/testing; yarn test
 
@@ -295,31 +385,8 @@ jobs:
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         uses: actions/checkout@v3
 
-      - name: Setup Node.js LTS
+      - uses: ./.github/actions/ci-setup
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        uses: actions/setup-node@main
-        with:
-          node-version: lts/*
-
-      - name: Get yarn cache directory path
-        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - uses: actions/cache@v3
-        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        id: yarn-cache
-        with:
-          path: |
-            ${{ steps.yarn-cache-dir-path.outputs.dir }}
-            node_modules
-          key: ${{ runner.os }}-yarn-v5-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-v5-
-
-      - name: Install Dependencies
-        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        run: yarn
 
       - name: Install Dependencies of Browsers
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
@@ -355,31 +422,8 @@ jobs:
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         uses: actions/checkout@v3
 
-      - name: Setup Node.js LTS
+      - uses: ./.github/actions/ci-setup
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        uses: actions/setup-node@main
-        with:
-          node-version: lts/*
-
-      - name: Get yarn cache directory path
-        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - uses: actions/cache@v3
-        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        id: yarn-cache
-        with:
-          path: |
-            ${{ steps.yarn-cache-dir-path.outputs.dir }}
-            node_modules
-          key: ${{ runner.os }}-yarn-v5-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-v5-
-
-      - name: Install Dependencies
-        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        run: yarn
 
       - name: Install Dependencies of Browsers
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
@@ -400,27 +444,7 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v3
 
-      - name: Setup Node.js LTS
-        uses: actions/setup-node@main
-        with:
-          node-version: lts/*
-
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - uses: actions/cache@v3
-        id: yarn-cache
-        with:
-          path: |
-            ${{ steps.yarn-cache-dir-path.outputs.dir }}
-            node_modules
-          key: ${{ runner.os }}-yarn-v5-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-v5-
-
-      - name: Install Dependencies
-        run: yarn
+      - uses: ./.github/actions/ci-setup
 
       - name: Prettier
         run: yarn lint:prettier

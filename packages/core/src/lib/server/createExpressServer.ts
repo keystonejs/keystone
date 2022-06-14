@@ -48,6 +48,7 @@ const addApolloServer = async ({
     app: server,
     path: config.graphql?.path || '/api/graphql',
     cors: false,
+    bodyParserConfig: config.graphql?.bodyParser,
   });
   return apolloServer;
 };

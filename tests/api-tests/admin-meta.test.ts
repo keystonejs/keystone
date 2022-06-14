@@ -47,6 +47,7 @@ test(
                 {
                   __typename: 'KeystoneAdminUIFieldMeta',
                   customViewsIndex: null,
+                  description: null,
                   fieldMeta: {
                     kind: 'cuid',
                   },
@@ -61,6 +62,7 @@ test(
                 {
                   __typename: 'KeystoneAdminUIFieldMeta',
                   customViewsIndex: null,
+                  description: null,
                   fieldMeta: {
                     defaultValue: '',
                     displayMode: 'input',

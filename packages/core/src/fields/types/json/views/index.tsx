@@ -2,7 +2,7 @@
 /** @jsx jsx */
 
 import { jsx, Stack, Text } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel, TextArea } from '@keystone-ui/fields';
+import { FieldContainer, FieldDescription, FieldLabel, TextArea } from '@keystone-ui/fields';
 import {
   CardValueComponent,
   CellComponent,
@@ -23,9 +23,11 @@ export const Field = ({
   return (
     <FieldContainer>
       <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
+      <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
       <Stack>
         <TextArea
           id={field.path}
+          aria-describedby={field.description === null ? undefined : `${field.path}-description`}
           readOnly={onChange === undefined}
           css={{
             fontFamily: 'monospace',
@@ -75,6 +77,7 @@ export const controller = (config: Config): FieldController<string, string> => {
   return {
     path: config.path,
     label: config.label,
+    description: config.description,
     graphqlSelection: config.path,
     defaultValue:
       config.fieldMeta.defaultValue === null

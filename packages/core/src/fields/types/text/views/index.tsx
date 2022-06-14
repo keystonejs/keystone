@@ -1,7 +1,14 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, Stack, useTheme } from '@keystone-ui/core';
-import { Checkbox, FieldContainer, FieldLabel, TextArea, TextInput } from '@keystone-ui/fields';
+import {
+  Checkbox,
+  FieldContainer,
+  FieldLabel,
+  FieldDescription,
+  TextArea,
+  TextInput,
+} from '@keystone-ui/fields';
 import { useState } from 'react';
 import {
   CardValueComponent,
@@ -25,6 +32,7 @@ export const Field = ({
   return (
     <FieldContainer>
       <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
+      <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
       {onChange ? (
         <Stack gap="small">
           {field.displayMode === 'textarea' ? (
@@ -39,6 +47,9 @@ export const Field = ({
               onBlur={() => {
                 setShouldShowErrors(true);
               }}
+              aria-describedby={
+                field.description === null ? undefined : `${field.path}-description`
+              }
             />
           ) : (
             <TextInput
@@ -52,6 +63,9 @@ export const Field = ({
               onBlur={() => {
                 setShouldShowErrors(true);
               }}
+              aria-describedby={
+                field.description === null ? undefined : `${field.path}-description`
+              }
             />
           )}
           {field.isNullable && (
@@ -200,6 +214,7 @@ export const controller = (
   return {
     path: config.path,
     label: config.label,
+    description: config.description,
     graphqlSelection: config.path,
     defaultValue: { kind: 'create', inner: deserializeTextValue(config.fieldMeta.defaultValue) },
     displayMode: config.fieldMeta.displayMode,

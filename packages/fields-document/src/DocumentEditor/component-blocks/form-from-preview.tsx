@@ -3,10 +3,10 @@
 import { useKeystone } from '@keystone-6/core/admin-ui/context';
 import { RelationshipSelect } from '@keystone-6/core/fields/types/relationship/views/RelationshipSelect';
 import { Button } from '@keystone-ui/button';
-import { jsx, Stack } from '@keystone-ui/core';
+import { Box, jsx, Stack } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { memo, useMemo } from 'react';
-import { DragHandle, OrderableItem, OrderableList } from '../primitives/orderable';
+import { DragHandle, OrderableItem, OrderableList, RemoveButton } from '../primitives/orderable';
 import {
   ArrayField,
   ComponentSchema,
@@ -185,14 +185,19 @@ export const FormValueContentFromPreviewProps = memo(function FormValueContentFr
 });
 
 const OrderableItemInForm = memo(function OrderableItemInForm(
-  props: GenericPreviewProps<ComponentSchema, unknown> & { elementKey: string }
+  props: GenericPreviewProps<ComponentSchema, unknown> & {
+    elementKey: string;
+  }
 ) {
   return (
     <OrderableItem elementKey={props.elementKey}>
-      <Stack across align="center" gap="small" css={{ justifyContent: 'center' }}>
+      <div css={{ display: 'flex', justifyContent: 'space-between' }}>
         <DragHandle />
-      </Stack>
-      {isNonChildFieldPreviewProps(props) && <FormValueContentFromPreviewProps {...props} />}
+        <RemoveButton />
+      </div>
+      <Box paddingX="medium" paddingBottom="medium">
+        {isNonChildFieldPreviewProps(props) && <FormValueContentFromPreviewProps {...props} />}
+      </Box>
     </OrderableItem>
   );
 });

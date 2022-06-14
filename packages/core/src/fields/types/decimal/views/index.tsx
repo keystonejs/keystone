@@ -2,7 +2,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
+import { FieldContainer, FieldDescription, FieldLabel, TextInput } from '@keystone-ui/fields';
 import { Decimal } from 'decimal.js';
 import { useState } from 'react';
 import {
@@ -60,8 +60,14 @@ export const Field = ({
   return (
     <FieldContainer>
       <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
+      <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
       {onChange ? (
-        <TextInput id={field.path} autoFocus={autoFocus} {...inputProps} />
+        <TextInput
+          id={field.path}
+          autoFocus={autoFocus}
+          {...inputProps}
+          aria-describedby={field.description === null ? undefined : `${field.path}-description`}
+        />
       ) : (
         value.value?.toString()
       )}
@@ -164,6 +170,7 @@ export const controller = (
   return {
     path: config.path,
     label: config.label,
+    description: config.description,
     graphqlSelection: config.path,
     scale: config.fieldMeta.scale,
     validation,
