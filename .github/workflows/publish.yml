@@ -15,14 +15,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Setup Node.js LTS
-        uses: actions/setup-node@master
-        with:
-          node-version: lts/*
-
-      - name: Install Dependencies
-        # we have a postinstall script that uses is-ci which doesn't yet detect GitHub Actions
-        run: CI=true yarn
+      - uses: ./.github/actions/ci-setup
 
       - name: Publish to npm
         uses: changesets/action@v1
