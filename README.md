@@ -73,7 +73,7 @@ KeystoneJS adheres to the [Contributor Covenant Code of Conduct](/CODE-OF-CONDUC
 
 ## Security
 
-For vulnerabilty reporting, please refer to our [security policy](/SECURITY.md).
+For vulnerability reporting, please refer to our [security policy](/SECURITY.md).
 
 ## License
 

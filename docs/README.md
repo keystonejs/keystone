@@ -42,7 +42,7 @@ You should use code highlighting to highlight new code, or the most relevant cod
 
 Sometimes you want to include only part of a code snippet. For this, you can collapse code blocks.
 
-The syntax for this is is
+The syntax for this is
 
 ```
 \`\`\`js[4-7]
