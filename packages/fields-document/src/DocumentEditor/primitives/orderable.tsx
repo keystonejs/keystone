@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { Box, jsx } from '@keystone-ui/core';
+import { jsx } from '@keystone-ui/core';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import {
   useSensors,
@@ -20,8 +20,8 @@ import {
 } from '@dnd-kit/sortable';
 import { createContext, ReactNode, useContext } from 'react';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
-import { Popover } from '@keystone-ui/popover';
-import { ToolbarButton } from '.';
+import { Button } from '@keystone-ui/button';
+import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
 
 const RemoveContext = createContext<null | ((index: number) => void)>(null);
 
@@ -131,8 +131,7 @@ export function OrderableItem(props: { elementKey: string; children: ReactNode }
           style={{
             pointerEvents: isDragging ? 'none' : undefined,
             transform: `scale(${isDragging ? '1.02' : '1'})`,
-            border: '1px solid #DADEEB',
-            boxShadow: '0px 1px 4px rgba(9, 30, 66, 0.04)',
+            border: '1px solid #DFDFE7',
           }}
           css={{
             backgroundColor: 'white',
@@ -148,67 +147,53 @@ export function OrderableItem(props: { elementKey: string; children: ReactNode }
   );
 }
 
+export function RemoveButton() {
+  const sortable = useContext(DragHandleListenersContext);
+  const onRemove = useContext(RemoveContext);
+  if (sortable === null || onRemove === null) {
+    throw new Error('Must use OrderableItem above RemoveButton');
+  }
+
+  return (
+    <Button
+      size="small"
+      weight="none"
+      css={{ padding: 7 }}
+      onClick={() => onRemove(sortable.index)}
+      aria-label="Remove"
+    >
+      <Trash2Icon size="small" />
+    </Button>
+  );
+}
+
 export function DragHandle() {
   const sortable = useContext(DragHandleListenersContext);
   if (sortable === null) {
     throw new Error('Must use OrderableItem above DragHandle');
   }
 
-  const onRemove = useContext(RemoveContext);
-  if (onRemove === null) {
-    throw new Error('Must use OrderableItem above DragHandle');
-  }
-
   return (
-    <span css={{ position: 'relative' }}>
-      <Popover
-        placement="left"
-        triggerRenderer={opts => {
-          return (
-            <div>
-              <button
-                {...sortable.attributes}
-                {...sortable.listeners}
-                {...opts.triggerProps}
-                css={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  cursor: sortable.isDragging ? 'grabbing' : undefined,
-                  appearance: 'none',
-                  background: 'transparent',
-                  borderRadius: 4,
-                  padding: 0,
-                  ':focus-visible': {
-                    outline: ['2px solid Highlight', '2px solid -webkit-focus-ring-color'],
-                  },
-                }}
-                aria-label="Drag handle"
-              >
-                {dragIcon}
-              </button>
-            </div>
-          );
-        }}
-      >
-        <Box margin="small">
-          <ToolbarButton
-            onClick={() => {
-              onRemove(sortable.index);
-            }}
-          >
-            Remove
-          </ToolbarButton>
-        </Box>
-      </Popover>
-    </span>
+    <Button
+      {...sortable.attributes}
+      {...sortable.listeners}
+      css={{ cursor: sortable.isDragging ? 'grabbing' : undefined, padding: 7 }}
+      weight="none"
+      size="small"
+      aria-label="Drag handle"
+    >
+      {dragIcon}
+    </Button>
   );
 }
 
 export const dragIcon = (
-  <svg width="20" height="21" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path
-      d="M6 4h3v3H6V4Zm5 0h3v3h-3V4ZM9 9H6v3h3V9Zm2 0h3v3h-3V9Zm-2 5H6v3h3v-3Zm2 0h3v3h-3v-3Z"
-      fill="#B7BFD7"
-    />
-  </svg>
+  <span css={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+    <svg width="20" height="21" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M6 4h3v3H6V4Zm5 0h3v3h-3V4ZM9 9H6v3h3V9Zm2 0h3v3h-3V9Zm-2 5H6v3h3v-3Zm2 0h3v3h-3v-3Z"
+        fill="currentColor"
+      />
+    </svg>
+  </span>
 );
