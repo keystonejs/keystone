@@ -22,7 +22,7 @@ export type AuthGqlNames = {
 };
 
 export type SendTokenFn = (args: {
-  itemId: string | number;
+  itemId: string | number | bigint;
   identity: string;
   token: string;
   context: KeystoneContext;
