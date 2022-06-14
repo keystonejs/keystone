@@ -85,7 +85,7 @@ export const lists = {
       image: image({ ui: { description }, storage: 'images' }),
       file: file({ ui: { description }, storage: 'files' }),
       document: document({
-        ui: { description, views: require.resolve('../component-blocks.tsx') },
+        ui: { views: require.resolve('../component-blocks.tsx') },
         relationships: { mention: { label: 'Mention', listKey: 'User' } },
         formatting: true,
         layouts: [
