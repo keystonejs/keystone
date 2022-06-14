@@ -5,7 +5,6 @@ import { RelationshipSelect } from '@keystone-6/core/fields/types/relationship/v
 import { Button } from '@keystone-ui/button';
 import { Box, jsx, Stack } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
-import { Trash2Icon } from '@keystone-ui/icons';
 import { memo, useMemo } from 'react';
 import { DragHandle, OrderableItem, OrderableList, RemoveButton } from '../primitives/orderable';
 import {
