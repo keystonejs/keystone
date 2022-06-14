@@ -72,6 +72,10 @@ export default function Docs() {
           Virtual fields offer a powerful way to extend your GraphQL API. This guide introduces the
           syntax and shows you how start simply and end up with a complex result.
         </Well>
+        <Well grad="grad2" heading="Choosing a Database" href="/docs/guides/choosing-a-database">
+          Keystone supports Postgres, MySQL and SQLite. This guide explains how to choose the best
+          for your project.
+        </Well>
       </div>
       <Type as="h2" look="heading30" margin="2rem 0 1rem 0">
         Admin UI Customisation

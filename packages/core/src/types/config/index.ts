@@ -5,7 +5,13 @@ import express from 'express';
 import type { GraphQLSchema } from 'graphql';
 import type { Options as BodyParserOptions } from 'body-parser';
 
-import type { AssetMode, CreateRequestContext, BaseKeystoneTypeInfo, KeystoneContext } from '..';
+import type {
+  AssetMode,
+  CreateRequestContext,
+  BaseKeystoneTypeInfo,
+  KeystoneContext,
+  DatabaseProvider,
+} from '..';
 
 import { SessionStrategy } from '../session';
 import type { MaybePromise } from '../utils';
@@ -121,7 +127,7 @@ export type DatabaseConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   useMigrations?: boolean;
   enableLogging?: boolean;
   idField?: IdFieldConfig;
-  provider: 'postgresql' | 'sqlite';
+  provider: DatabaseProvider;
   prismaPreviewFeatures?: readonly string[]; // https://www.prisma.io/docs/concepts/components/preview-features
 };
 

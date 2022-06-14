@@ -5,7 +5,20 @@ import globby from 'globby';
 import { list } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
 import { setupTestEnv, setupTestRunner } from '@keystone-6/core/testing';
-import { apiTestConfig, expectPrismaError } from '../utils';
+import { apiTestConfig, expectPrismaError, dbProvider } from '../utils';
+
+const expectedUniqueConstraintError =
+  dbProvider === 'mysql'
+    ? {
+        message: 'Prisma error: Unique constraint failed on the constraint: `Test_testField_key`',
+        code: 'P2002',
+        target: 'Test_testField_key',
+      }
+    : {
+        message: 'Prisma error: Unique constraint failed on the fields: (`testField`)',
+        code: 'P2002',
+        target: ['testField'],
+      };
 
 const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
@@ -94,11 +107,7 @@ testModules
             expectPrismaError(errors, [
               {
                 path: ['createTest'],
-                message: expect.stringMatching(
-                  /Prisma error: Unique constraint failed on the fields: \(`testField`\)/
-                ),
-                code: 'P2002',
-                target: ['testField'],
+                ...expectedUniqueConstraintError,
               },
             ]);
           })
@@ -124,11 +133,7 @@ testModules
             expectPrismaError(errors, [
               {
                 path: ['bar'],
-                message: expect.stringMatching(
-                  /Prisma error: Unique constraint failed on the fields: \(`testField`\)/
-                ),
-                code: 'P2002',
-                target: ['testField'],
+                ...expectedUniqueConstraintError,
               },
             ]);
           })

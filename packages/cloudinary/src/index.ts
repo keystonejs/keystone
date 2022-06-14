@@ -120,7 +120,7 @@ export const cloudinaryImage =
       uploadData: Promise<FileUpload> | undefined | null
     ): Promise<StoredFile | undefined | null | 'DbNull'> => {
       if (uploadData === null) {
-        return meta.provider === 'postgresql' ? 'DbNull' : null;
+        return meta.provider === 'postgresql' || meta.provider === 'mysql' ? 'DbNull' : null;
       }
       if (uploadData === undefined) {
         return undefined;

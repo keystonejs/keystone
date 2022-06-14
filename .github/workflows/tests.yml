@@ -88,6 +88,41 @@ jobs:
           TEST_ADAPTER: sqlite
           DATABASE_URL: file:./dev.db
 
+  graphql_api_tests_mysql:
+    name: API Tests MySQL
+    needs: should_run_tests
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mariadb:10.7
+        env:
+          MYSQL_USER: testuser
+          MYSQL_PASSWORD: testpass
+          MYSQL_DATABASE: test_db
+          MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+        ports:
+          - 3306:3306
+    strategy:
+      fail-fast: false
+      matrix:
+        index: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+
+      - uses: ./.github/actions/ci-setup
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+
+      - name: Unit tests
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        run: yarn jest --ci --runInBand api-tests --testPathIgnorePatterns=examples-smoke-tests  --testPathIgnorePatterns=tests/api-tests/fields/crud --testPathIgnorePatterns=tests/api-tests/auth-stored-session.test.ts
+        env:
+          CI_NODE_TOTAL: 9
+          CI_NODE_INDEX: ${{ matrix.index }}
+          TEST_ADAPTER: mysql
+          DATABASE_URL: mysql://testuser:testpass@localhost:3306/test_db
+
   redis_session_tests_postgresql:
     name: Redis Session Tests PostgreSQL
     needs: should_run_tests
@@ -143,6 +178,39 @@ jobs:
         env:
           TEST_ADAPTER: sqlite
           DATABASE_URL: file:./dev.db
+
+  redis_session_tests_mysql:
+    name: Redis Session Tests MySQL
+    needs: should_run_tests
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+      mysql:
+        image: mariadb:10.7
+        env:
+          MYSQL_USER: testuser
+          MYSQL_PASSWORD: testpass
+          MYSQL_DATABASE: test_db
+          MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+        ports:
+          - 3306:3306
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+
+      - uses: ./.github/actions/ci-setup
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+
+      - name: Unit tests
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        run: yarn jest --ci --runInBand tests/api-tests/auth-stored-session.test.ts
+        env:
+          TEST_ADAPTER: mysql
+          DATABASE_URL: mysql://testuser:testpass@localhost:3306/test_db
 
   unit_tests:
     name: Package Unit Tests
@@ -227,6 +295,46 @@ jobs:
           S3_REGION: us-east-1
           TEST_ADAPTER: sqlite
           DATABASE_URL: file:./dev.db
+
+  field_crud_tests_mysql:
+    name: Field CRUD Tests MySQL
+    needs: should_run_tests
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mariadb:10.7
+        env:
+          MYSQL_USER: testuser
+          MYSQL_PASSWORD: testpass
+          MYSQL_DATABASE: test_db
+          MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+        ports:
+          - 3306:3306
+    steps:
+      - name: Checkout Repo
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        uses: actions/checkout@v3
+
+      - uses: ./.github/actions/ci-setup
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+
+      - name: Setup local S3 bucket
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        run: bash ./.github/workflows/s3-bucket.sh
+
+      - name: Unit tests
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        run: yarn jest --ci --runInBand tests/api-tests/fields/crud
+        env:
+          S3_ENDPOINT: http://127.0.0.1:9000/
+          S3_FORCE_PATH_STYLE: true
+          S3_BUCKET_NAME: keystone-test
+          S3_ACCESS_KEY_ID: keystone
+          S3_SECRET_ACCESS_KEY: keystone
+          # this doesn't mean anything when we're using a custom s3 endpoint but the sdk wants something so we just give it something
+          S3_REGION: us-east-1
+          TEST_ADAPTER: mysql
+          DATABASE_URL: mysql://testuser:testpass@localhost:3306/test_db
 
   examples_tests:
     name: Testing example project
