@@ -1,5 +1,5 @@
 {
   "packages": ["packages/*", "design-system/packages/*"],
-  "sandboxes": ["/examples/sandbox"],
+  "sandboxes": ["/tests/sandbox"],
   "node": "14"
 }

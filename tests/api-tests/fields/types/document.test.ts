@@ -325,9 +325,9 @@ describe('Document field type', () => {
                 content: document({
                   componentBlocks: {
                     someBlock: component({
-                      component: () => null,
+                      preview: () => null,
                       label: 'Some Block',
-                      props: {
+                      schema: {
                         something: fields.object({
                           blah: fields.conditional(fields.checkbox({ label: 'Some conditional' }), {
                             false: fields.empty(),
@@ -347,7 +347,7 @@ describe('Document field type', () => {
         }),
       })
     ).rejects.toMatchInlineSnapshot(
-      `[Error: A component block named Some Block in the field at Post.content has a relationship field at something.blah.true with the listKey "Author" but no list named "Author" exists.]`
+      `[Error: Component block someBlock in Post.content: The relationship field at "object.something.object.blah.conditional.true" has the listKey "Author" but no list named "Author" exists.]`
     );
   });
 });

@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-extend-graphql-schema-graphql-ts",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -9,7 +9,7 @@
     "build": "keystone build"
   },
   "dependencies": {
-    "@keystone-6/core": "^1.1.1"
+    "@keystone-6/core": "^2.0.0"
   },
   "devDependencies": {
     "typescript": "^4.4.4"

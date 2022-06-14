@@ -5,7 +5,7 @@ import { ReactEditor, RenderElementProps, useFocused, useSelected } from 'slate-
 import { Editor, Node, Range, Transforms } from 'slate';
 import { forwardRef, memo, useEffect, useMemo, useState } from 'react';
 
-import { jsx, Portal, useTheme } from '@keystone-ui/core';
+import { jsx, useTheme } from '@keystone-ui/core';
 import { useControlledPopover } from '@keystone-ui/popover';
 import { Tooltip } from '@keystone-ui/tooltip';
 import { LinkIcon } from '@keystone-ui/icons/icons/LinkIcon';
@@ -123,51 +123,49 @@ export const LinkElement = ({
         {children}
       </a>
       {((selected && delayedFocused) || focusedInInlineDialog) && (
-        <Portal>
-          <InlineDialog
-            {...dialog.props}
-            ref={dialog.ref}
-            onFocus={() => {
-              setFocusedInInlineDialog(true);
-            }}
-            onBlur={() => {
-              setFocusedInInlineDialog(false);
-              setLocalForceValidation(true);
-            }}
-          >
-            <div css={{ display: 'flex', flexDirection: 'column' }}>
-              <ToolbarGroup>
-                <input
-                  css={{ fontSize: typography.fontSize.small, width: 240 }}
-                  value={href}
-                  onChange={event => {
-                    setNode({ href: event.target.value });
-                  }}
-                />
-                <Tooltip content="Open link in new tab" weight="subtle">
-                  {attrs => (
-                    <ToolbarButton
-                      as="a"
-                      onMouseDown={event => {
-                        event.preventDefault();
-                      }}
-                      href={href}
-                      target="_blank"
-                      rel="noreferrer"
-                      variant="action"
-                      {...attrs}
-                    >
-                      {externalLinkIcon}
-                    </ToolbarButton>
-                  )}
-                </Tooltip>
-                {separator}
-                <UnlinkButton onUnlink={unlink} />
-              </ToolbarGroup>
-              {showInvalidState && <span css={{ color: 'red' }}>Please enter a valid URL</span>}
-            </div>
-          </InlineDialog>
-        </Portal>
+        <InlineDialog
+          {...dialog.props}
+          ref={dialog.ref}
+          onFocus={() => {
+            setFocusedInInlineDialog(true);
+          }}
+          onBlur={() => {
+            setFocusedInInlineDialog(false);
+            setLocalForceValidation(true);
+          }}
+        >
+          <div css={{ display: 'flex', flexDirection: 'column' }}>
+            <ToolbarGroup>
+              <input
+                css={{ fontSize: typography.fontSize.small, width: 240 }}
+                value={href}
+                onChange={event => {
+                  setNode({ href: event.target.value });
+                }}
+              />
+              <Tooltip content="Open link in new tab" weight="subtle">
+                {attrs => (
+                  <ToolbarButton
+                    as="a"
+                    onMouseDown={event => {
+                      event.preventDefault();
+                    }}
+                    href={href}
+                    target="_blank"
+                    rel="noreferrer"
+                    variant="action"
+                    {...attrs}
+                  >
+                    {externalLinkIcon}
+                  </ToolbarButton>
+                )}
+              </Tooltip>
+              {separator}
+              <UnlinkButton onUnlink={unlink} />
+            </ToolbarGroup>
+            {showInvalidState && <span css={{ color: 'red' }}>Please enter a valid URL</span>}
+          </div>
+        </InlineDialog>
       )}
     </span>
   );

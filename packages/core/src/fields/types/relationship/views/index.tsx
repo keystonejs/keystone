@@ -5,7 +5,7 @@ import { Fragment, useState } from 'react';
 
 import { Button } from '@keystone-ui/button';
 import { jsx, Stack, useTheme } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel, FieldLegend } from '@keystone-ui/fields';
+import { FieldContainer, FieldDescription, FieldLabel, FieldLegend } from '@keystone-ui/fields';
 import { DrawerController } from '@keystone-ui/modals';
 import {
   CardValueComponent,
@@ -89,6 +89,7 @@ export const Field = ({
     return (
       <FieldContainer as="fieldset">
         <FieldLegend>{field.label}</FieldLegend>
+        <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
         <Cards
           forceValidation={forceValidation}
           field={field}
@@ -106,6 +107,7 @@ export const Field = ({
     return (
       <Stack as="fieldset" gap="medium">
         <FieldLegend>{field.label}</FieldLegend>
+        <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
         <div>
           {value.count === 1
             ? `There is 1 ${foreignList.singular} `
@@ -121,11 +123,12 @@ export const Field = ({
   return (
     <FieldContainer as="fieldset">
       <FieldLabel as="legend">{field.label}</FieldLabel>
-
+      <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
       <Fragment>
         <Stack gap="medium">
           <RelationshipSelect
             controlShouldRenderValue
+            aria-describedby={field.description === null ? undefined : `${field.path}-description`}
             autoFocus={autoFocus}
             isDisabled={onChange === undefined}
             list={foreignList}
@@ -391,6 +394,7 @@ export const controller = (
     listKey: config.listKey,
     path: config.path,
     label: config.label,
+    description: config.description,
     display: config.fieldMeta.displayMode === 'count' ? 'count' : 'cards-or-select',
     refListKey: config.fieldMeta.refListKey,
     graphqlSelection:

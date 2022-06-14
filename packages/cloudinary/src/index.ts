@@ -84,7 +84,7 @@ type CloudinaryImage_File = {
   }) => string | null;
 };
 
-const outputType = graphql.object<CloudinaryImage_File>()({
+export const outputType = graphql.object<CloudinaryImage_File>()({
   name: 'CloudinaryImage_File',
   fields: {
     id: graphql.field({ type: graphql.ID }),
@@ -120,7 +120,7 @@ export const cloudinaryImage =
       uploadData: Promise<FileUpload> | undefined | null
     ): Promise<StoredFile | undefined | null | 'DbNull'> => {
       if (uploadData === null) {
-        return meta.provider === 'postgresql' ? 'DbNull' : null;
+        return meta.provider === 'postgresql' || meta.provider === 'mysql' ? 'DbNull' : null;
       }
       if (uploadData === undefined) {
         return undefined;

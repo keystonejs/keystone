@@ -61,7 +61,7 @@ export const filterTests = (withKeystone: (args: any) => any) => {
         match(
           context,
           undefined,
-          provider === 'sqlite'
+          provider === 'sqlite' || provider === 'mysql'
             ? [
                 { name: 'person6', lastOnline: null },
                 { name: 'person7', lastOnline: null },
@@ -92,7 +92,7 @@ export const filterTests = (withKeystone: (args: any) => any) => {
         match(
           context,
           undefined,
-          provider === 'sqlite'
+          provider === 'sqlite' || provider === 'mysql'
             ? [
                 { name: 'person5', lastOnline: '2020-06-10T10:20:30.456Z' },
                 { name: 'person4', lastOnline: '2000-01-20T00:08:00.000Z' },

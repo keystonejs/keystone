@@ -108,8 +108,8 @@ export default function ForOrganisations() {
             <Image
               src={contentManagement1}
               alt="Dropdown selector from Keystone’s Admin UI showing different user roles: Administrator, Editor, Content Manager, Author"
-              width={1884}
-              height={1161}
+              width={2034}
+              height={1300}
             />
           </div>
         </SideBySideSection>
@@ -177,8 +177,8 @@ export default function ForOrganisations() {
             <Image
               src={contentManagement2}
               alt="Overlay of Admin UI field panes showing fields for a Post content type. Promotional text overlays show: custom and virtual fields; flexible relationships; powerful sort & filtering."
-              width={1878}
-              height={1561}
+              width={1254}
+              height={1107}
             />
           </div>
         </SideBySideSection>
@@ -343,8 +343,8 @@ export default function ForOrganisations() {
             <Image
               src={contentManagement3}
               alt="2 Admin UI panes showing creation of relationships in place. Author window opens up a Create Post window where Post categories can be selected."
-              width={2006}
-              height={1726}
+              width={2007}
+              height={1727}
             />
           </div>
         </SideBySideSection>

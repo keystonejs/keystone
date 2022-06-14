@@ -31,11 +31,8 @@ import { Toolbar } from './Toolbar';
 import { renderElement } from './render-element';
 import { withHeading } from './heading';
 import { nestList, unnestList, withList } from './lists';
-import {
-  ComponentBlockContext,
-  getPlaceholderTextForPropPath,
-  withComponentBlocks,
-} from './component-blocks';
+import { ComponentBlockContext, withComponentBlocks } from './component-blocks';
+import { getPlaceholderTextForPropPath } from './component-blocks/utils';
 import { withBlockquote } from './blockquote';
 import { Relationships, withRelationship } from './relationship';
 import { withDivider } from './divider';
@@ -352,7 +349,7 @@ export function DocumentEditorEditable(props: EditableProps) {
                 const start = Editor.start(editor, [...path, index]);
                 const placeholder = getPlaceholderTextForPropPath(
                   child.propPath,
-                  componentBlocks[node.component].props,
+                  componentBlocks[node.component].schema,
                   node.props
                 );
                 if (placeholder) {
@@ -546,6 +543,20 @@ function withBlocksSchema(editor: Editor): Editor {
         return;
       }
       const info = editorSchema[nodeType];
+
+      if (
+        info.kind === 'blocks' &&
+        node.children.length !== 0 &&
+        node.children.every(child => !Editor.isBlock(editor, child))
+      ) {
+        Transforms.wrapNodes(
+          editor,
+          { type: info.blockToWrapInlinesIn, children: [] },
+          { at: path, match: node => !Editor.isBlock(editor, node) }
+        );
+        return;
+      }
+
       for (const [index, childNode] of node.children.entries()) {
         const childPath = [...path, index];
         if (info.kind === 'inlines') {
@@ -587,13 +598,32 @@ function handleNodeInInvalidPosition(
 ) {
   const nodeType = node.type;
   const childNodeInfo = editorSchema[nodeType];
+  // the parent of a block will never be an inline so this casting is okay
+  const parentNode = Node.get(editor, parentPath) as Block | Editor;
+
+  const parentNodeType = Editor.isEditor(parentNode) ? 'editor' : parentNode.type;
+
+  const parentNodeInfo = editorSchema[parentNodeType];
 
   if (!childNodeInfo || childNodeInfo.invalidPositionHandleMode === 'unwrap') {
+    if (parentNodeInfo.kind === 'blocks' && parentNodeInfo.blockToWrapInlinesIn) {
+      Transforms.setNodes(
+        editor,
+        {
+          type: parentNodeInfo.blockToWrapInlinesIn,
+          ...(Object.fromEntries(
+            Object.keys(node)
+              .filter(key => key !== 'type' && key !== 'children')
+              .map(key => [key, null])
+          ) as any), // the Slate types don't understand that null is allowed and it will unset properties with setNodes
+        },
+        { at: path }
+      );
+      return;
+    }
     Transforms.unwrapNodes(editor, { at: path });
     return;
   }
-  // the parent of a block will never be an inline so this casting is okay
-  const parentNode = Node.get(editor, parentPath) as Block;
 
   const info = editorSchema[parentNode.type || 'editor'];
   if (info?.kind === 'blocks' && info.allowedChildren.has(nodeType)) {

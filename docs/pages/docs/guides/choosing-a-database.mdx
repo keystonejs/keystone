@@ -1,0 +1,53 @@
+import { Markdown } from '../../../components/Markdown';
+import { Well } from '../../../components/primitives/Well';
+import { RelatedContent } from '../../../components/RelatedContent';
+
+# Choosing the right Database
+
+Keystone supports [Postgres](https://www.postgresql.org), [MySQL](https://www.mysql.com) and [SQLite](https://www.sqlite.org/index.html) database [providers](../apis.config#db). This guide highlights the differences between these providers to help you choose the right one for your project.
+
+!> **Note:** SQLite is not recommended in production except for scenarios like the [Embedded Keystone](../walkthroughs/embedded-mode-with-sqlite-nextjs) example
+
+## Case Sensitivity
+
+By default, Postgres is case sensitive, while MySQL is not case sensitive, and SQLite is not case sensitive for `contains`, `startsWith` and `endsWith`. This means when filtering and sorting the results will differ depending on the database type and collation used.
+When using `StringFilter` in a GraphQL query the `mode` defaults to case sensitive for the database. You can make a query case insensitive in Postgres by using `mode: insensitive`.
+
+See the [Case Sensitivity Prisma Docs](https://www.prisma.io/docs/concepts/components/prisma-client/case-sensitivity) for more information.
+
+!> **Note:** `mode: insensitive` is not supported in MySQL or SQLite
+
+## Default Types
+
+Prisma has different default types for each database used, for example, the Keystone `text` field type uses the Prisma type of `String`,
+for Postgres, Prisma uses the `text` column type, and for MySQL, it uses the `varchar(191)` column type. For more details on the `field` type differences
+see [Primsa Schema Reference](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#model-field-scalar-types).
+
+The Keystone `text` field supports the `db.nativeType` option, allowing you to override this - [Fields API](../apis/fields). Over time this option will be added to other field types.
+
+## Auto Increment Integer Fields
+
+When using an [Integer field](../apis/fields#integer) with the `defaultValue: { kind: 'autoincrement' }` MySQL also requires this field to be indexed using the `isIndexed: true` or `isIndexed: 'unique'`.
+
+## Supported Database Versions
+
+For supported database provider versions for Postgres and MySQL see [Prisma Supported Databases](https://www.prisma.io/docs/reference/database-reference/supported-databases)
+
+## Related resources
+
+<RelatedContent>
+  <Well
+    heading="Fields API"
+    href="../apis/fields"
+    >
+    Documentation for the Fields API
+  </Well>
+  <Well
+    heading="DB Config API"
+    href="../apis/config#db"
+    >
+    Documentation for the DB Config API 
+  </Well>
+</RelatedContent>
+
+export default ({ children }) => <Markdown description="How to choose the right database for your Keystone project">{children}</Markdown>;

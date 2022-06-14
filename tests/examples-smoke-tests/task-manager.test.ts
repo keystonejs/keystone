@@ -11,7 +11,7 @@ exampleProjectTests('task-manager', browserType => {
   });
   test('Load list', async () => {
     await Promise.all([page.waitForNavigation(), page.click('h3:has-text("People")')]);
-    await page.waitForSelector('button:has-text("Create Person")');
+    await page.waitForSelector('a:has-text("Create Person")');
   });
   afterAll(async () => {
     await browser.close();

@@ -129,7 +129,7 @@ export const expectExtensionError = (
 
 export const expectPrismaError = (
   errors: readonly any[] | undefined,
-  args: { path: any[]; message: string; code: string; target: string[] }[]
+  args: { path: (string | number)[]; message: string; code: string; target: string[] | string }[]
 ) => {
   const unpackedErrors = unpackErrors(errors);
   expect(unpackedErrors).toEqual(
@@ -259,7 +259,7 @@ export async function seed<T extends Record<keyof T, Record<string, unknown>[]>>
   initialData: T
 ) {
   const results: any = {};
-  for (const listKey in initialData) {
+  for (const listKey of Object.keys(initialData)) {
     results[listKey as keyof T] = await context.sudo().query[listKey].createMany({
       data: initialData[listKey as keyof T],
     });

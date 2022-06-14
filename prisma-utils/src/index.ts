@@ -9,7 +9,7 @@ import { DMMF } from '@prisma/generator-helper';
 import { getDMMF } from '@prisma/sdk';
 import { format, resolveConfig } from 'prettier';
 
-const providers = ['postgresql', 'sqlite'] as const;
+const providers = ['postgresql', 'sqlite', 'mysql'] as const;
 
 type Provider = typeof providers[number];
 
@@ -91,7 +91,7 @@ ${
     for (const typeName of rootTypes) {
       collectReferencedTypes(types, typeName, referencedTypes);
     }
-    if (provider !== 'sqlite') {
+    if (provider === 'postgresql') {
       deepStrictEqual(
         dmmf.schema.enumTypes.prisma.find(x => x.name === 'QueryMode'),
         { name: 'QueryMode', values: ['default', 'insensitive'] }
@@ -114,7 +114,7 @@ ${
       import { graphql } from '../../schema';
 
 
-${provider !== 'sqlite' ? `import { QueryMode } from '../../next-fields'` : ''}
+${provider === 'postgresql' ? `import { QueryMode } from '../../next-fields'` : ''}
 
 ${[...referencedTypes].map(typeName => printInputTypeForGraphQLTS(typeName, types)).join('\n\n')}
 

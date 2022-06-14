@@ -1,5 +1,6 @@
 export * as postgresql from './providers/postgresql';
 export * as sqlite from './providers/sqlite';
+export * as mysql from './providers/mysql';
 
 type EntriesAssumingNoExtraProps<T> = {
   [Key in keyof T]-?: [Key, T[Key]];

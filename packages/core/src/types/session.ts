@@ -21,6 +21,7 @@ export type SessionStrategy<StoredSessionData, StartSessionData = never> = {
     req: IncomingMessage;
     createContext: CreateContext;
   }) => Promise<StoredSessionData | undefined>;
+  disconnect?: () => Promise<void>;
 };
 
 export type SessionStore = {
