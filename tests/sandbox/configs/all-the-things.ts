@@ -14,6 +14,7 @@ import {
   float,
 } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
+import { componentBlocks } from '../component-blocks';
 import { dbConfig, localStorageConfig, trackingFields } from '../utils';
 
 const description =
@@ -84,7 +85,7 @@ export const lists = {
       image: image({ ui: { description }, storage: 'images' }),
       file: file({ ui: { description }, storage: 'files' }),
       document: document({
-        ui: { description },
+        ui: { description, views: require.resolve('../component-blocks.tsx') },
         relationships: { mention: { label: 'Mention', listKey: 'User' } },
         formatting: true,
         layouts: [
@@ -96,6 +97,7 @@ export const lists = {
         ],
         links: true,
         dividers: true,
+        componentBlocks,
       }),
     },
   }),

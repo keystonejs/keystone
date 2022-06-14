@@ -12,7 +12,6 @@ import {
 } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
 import { v4 } from 'uuid';
-import { componentBlocks } from './admin/fieldViews/Content';
 import * as Keystone from '.keystone/types';
 
 type AccessArgs = {
@@ -150,7 +149,6 @@ export const lists: Keystone.Lists = {
         defaultValue: 'draft',
       }),
       content: document({
-        ui: { views: require.resolve('./admin/fieldViews/Content.tsx') },
         relationships: {
           mention: {
             label: 'Mention',
@@ -167,7 +165,6 @@ export const lists: Keystone.Lists = {
         ],
         links: true,
         dividers: true,
-        componentBlocks,
       }),
       publishDate: timestamp(),
       author: relationship({
