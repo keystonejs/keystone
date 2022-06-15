@@ -170,6 +170,9 @@ export function DocsNavigation() {
         <NavItem href="/docs/guides/auth-and-access-control">
           Auth and Access Control <Badge look="success">New</Badge>
         </NavItem>
+        <NavItem href="/docs/guides/images-and-files">
+          Images and Files <Badge look="success">New</Badge>
+        </NavItem>
         {/* Disable placeholder for now */}
         {/* <NavItem href="/docs/guides/schema-extension" isPlaceholder>
           Schema Extension
