@@ -168,10 +168,10 @@ export function DocsNavigation() {
           Hooks <Badge look="success">Updated</Badge>
         </NavItem>
         <NavItem href="/docs/guides/auth-and-access-control">
-          Auth and Access Control <Badge look="success">New</Badge>
+          Auth & Access Control <Badge look="success">New</Badge>
         </NavItem>
         <NavItem href="/docs/guides/images-and-files">
-          Images and Files <Badge look="success">New</Badge>
+          Images & Files <Badge look="success">New</Badge>
         </NavItem>
         {/* Disable placeholder for now */}
         {/* <NavItem href="/docs/guides/schema-extension" isPlaceholder>
