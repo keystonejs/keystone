@@ -390,11 +390,11 @@ jobs:
 
       - name: Install Dependencies of Browsers
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        run: npx playwright install-deps
+        run: yarn playwright install-deps chromium
 
       - name: Install Browsers
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        run: npx playwright install
+        run: yarn playwright install chromium
 
       - name: Unit tests
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
@@ -427,11 +427,11 @@ jobs:
 
       - name: Install Dependencies of Browsers
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        uses: microsoft/playwright-github-action@v1
+        run: yarn playwright install-deps chromium
 
-      - name: Install Browsers for Playwright
+      - name: Install Browsers
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        run: node ./node_modules/playwright/install.js
+        run: yarn playwright install chromium
 
       - name: Unit tests
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
