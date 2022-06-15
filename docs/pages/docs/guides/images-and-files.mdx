@@ -8,7 +8,7 @@ Keystone [fields](../apis/fields) include the `image` and `file` types. You can 
 
 ## How asset storage works in Keystone
 
-Getting started with Images and Files in Keystone requires you first to create a `storage` object in your Keystone configuration file. Any number of stores can be set up within the `storage` object, and you can mix and match between `local` and `s3` depending on your use case.
+Keystone manages file and image assets through a `storage` object you define in Keystone’s [configuration file](/docs/apis/config). Any number of stores can be set up within the `storage` object, and you can mix and match between `local` and `s3` (by [Amazon](https://aws.amazon.com/s3/)) depending on your use case.
 
 The `storage` object defines how and where the assets are stored and accessed by both Keystone and the client frontend. This object defines:
 
