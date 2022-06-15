@@ -73,7 +73,7 @@ export default function Docs() {
           syntax and shows you how start simply and end up with a complex result.
         </Well>
         <Well grad="grad2" heading="Images and Files" href="/docs/guides/images-and-files">
-            Learn how to store and manage Images and Files in Keystone.
+          Learn how to store and manage Images and Files in Keystone.
         </Well>
         <Well grad="grad2" heading="Choosing a Database" href="/docs/guides/choosing-a-database">
           Keystone supports Postgres, MySQL and SQLite. This guide explains how to choose the best
