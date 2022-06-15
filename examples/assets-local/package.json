@@ -17,5 +17,5 @@
   "engines": {
     "node": "^14.15 || ^16.13"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/main/examples-staging/assets-local"
+  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/assets-local"
 }
