@@ -3,13 +3,7 @@
 import { useState } from 'react';
 
 import { jsx, Inline, Stack, VisuallyHidden, Text } from '@keystone-ui/core';
-import {
-  FieldContainer,
-  FieldLabel,
-  TextInput,
-  DatePicker,
-  FieldDescription,
-} from '@keystone-ui/fields';
+import { FieldContainer, FieldLabel, TextInput, DatePicker } from '@keystone-ui/fields';
 import {
   CardValueComponent,
   CellComponent,
@@ -80,7 +74,6 @@ export const Field = ({
     <FieldContainer as="fieldset">
       <Stack>
         <FieldLabel as="legend">{field.label}</FieldLabel>
-        <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
         {onChange ? (
           <Inline gap="small">
             <Stack>
@@ -118,9 +111,6 @@ export const Field = ({
               <TextInput
                 id={`${field.path}--time-input`}
                 {...timeInputProps}
-                aria-describedby={
-                  field.description === null ? undefined : `${field.path}-description`
-                }
                 disabled={onChange === undefined}
                 placeholder="00:00"
               />
@@ -239,7 +229,6 @@ export const controller = (
   return {
     path: config.path,
     label: config.label,
-    description: config.description,
     graphqlSelection: config.path,
     fieldMeta: config.fieldMeta,
     defaultValue: {

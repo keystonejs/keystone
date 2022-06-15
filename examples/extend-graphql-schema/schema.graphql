@@ -6,15 +6,6 @@ type Mutation {
    Publish a post
   """
   publishPost(id: ID!): Post
-
-  """
-   Create or update an author based on email
-  """
-  upsertAuthor(
-    where: AuthorWhereUniqueInput!
-    create: AuthorCreateInput!
-    update: AuthorUpdateInput!
-  ): Author
   createPost(data: PostCreateInput!): Post
   createPosts(data: [PostCreateInput!]!): [Post]
   updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
@@ -312,7 +303,6 @@ type KeystoneAdminUIListMeta {
 type KeystoneAdminUIFieldMeta {
   path: String!
   label: String!
-  description: String
   isOrderable: Boolean!
   isFilterable: Boolean!
   fieldMeta: JSON

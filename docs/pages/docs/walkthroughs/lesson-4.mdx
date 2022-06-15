@@ -168,7 +168,7 @@ Back over in our keystone file, we want to import our `withAuth` function, and o
 
 `withAuth` will wrap our default export and modify it as a last step in setting up our config. The session is attached to the export.
 
-Finally, we need to add an `isAccessAllowed` function to our export so that only users with a valid session can see Admin UI:
+Finally, we need to add to add an `isAccessAllowed` function to our export so that only users with a valid session can see Admin UI:
 
 ```ts{4,32-33,39-42}[7-29]
 //keystone.ts

@@ -14,8 +14,8 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
   exitSudo: () => KeystoneContext<TypeInfo>;
   withSession: (session: any) => KeystoneContext<TypeInfo>;
   prisma: TypeInfo['prisma'];
-  files: FilesContext;
-  images: ImagesContext;
+  files: FilesContext | undefined;
+  images: ImagesContext | undefined;
   totalResults: number;
   maxTotalResults: number;
   /** @deprecated */
@@ -160,23 +160,20 @@ export type SessionContext<T> = {
   endSession(): Promise<void>;
 };
 
-export type AssetMode = 'local' | 's3';
+export type AssetMode = 'local' | 'cloud';
 
 // Files API
 
-export type FileMetadata = {
+export type FileData = {
+  mode: AssetMode;
   filename: string;
   filesize: number;
 };
 
-export type FileData = {
-  filename: string;
-} & FileMetadata;
-
-export type FilesContext = (storage: string) => {
-  getUrl: (filename: string) => Promise<string>;
+export type FilesContext = {
+  getUrl: (mode: AssetMode, filename: string) => Promise<string>;
+  getDataFromRef: (ref: string) => Promise<FileData>;
   getDataFromStream: (stream: Readable, filename: string) => Promise<FileData>;
-  deleteAtSource: (filename: string) => Promise<void>;
 };
 
 // Images API
@@ -191,11 +188,12 @@ export type ImageMetadata = {
 };
 
 export type ImageData = {
+  mode: AssetMode;
   id: string;
 } & ImageMetadata;
 
-export type ImagesContext = (storage: string) => {
-  getUrl: (id: string, extension: ImageExtension) => Promise<string>;
-  getDataFromStream: (stream: Readable, filename: string) => Promise<ImageData>;
-  deleteAtSource: (id: string, extension: ImageExtension) => Promise<void>;
+export type ImagesContext = {
+  getUrl: (mode: AssetMode, id: string, extension: ImageExtension) => Promise<string>;
+  getDataFromRef: (ref: string) => Promise<ImageData>;
+  getDataFromStream: (stream: Readable) => Promise<ImageData>;
 };

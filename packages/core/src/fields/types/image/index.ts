@@ -1,4 +1,5 @@
 import { FileUpload } from 'graphql-upload';
+import { userInputError } from '../../../lib/core/graphql-errors';
 import {
   BaseListTypeInfo,
   fieldType,
@@ -10,11 +11,10 @@ import {
 } from '../../../types';
 import { graphql } from '../../..';
 import { resolveView } from '../../resolve-view';
-import { SUPPORTED_IMAGE_EXTENSIONS } from './utils';
+import { getImageRef, SUPPORTED_IMAGE_EXTENSIONS } from './utils';
 
-export type ImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
-  storage: string;
-} & CommonFieldConfig<ListTypeInfo>;
+export type ImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
+  CommonFieldConfig<ListTypeInfo>;
 
 const ImageExtensionEnum = graphql.enum({
   name: 'ImageExtension',
@@ -24,35 +24,72 @@ const ImageExtensionEnum = graphql.enum({
 const ImageFieldInput = graphql.inputObject({
   name: 'ImageFieldInput',
   fields: {
-    upload: graphql.arg({ type: graphql.nonNull(graphql.Upload) }),
+    upload: graphql.arg({ type: graphql.Upload }),
+    ref: graphql.arg({ type: graphql.String }),
   },
 });
 
-const ImageFieldOutput = graphql.object<ImageData & { storage: string }>()({
+const imageOutputFields = graphql.fields<ImageData>()({
+  id: graphql.field({ type: graphql.nonNull(graphql.ID) }),
+  filesize: graphql.field({ type: graphql.nonNull(graphql.Int) }),
+  width: graphql.field({ type: graphql.nonNull(graphql.Int) }),
+  height: graphql.field({ type: graphql.nonNull(graphql.Int) }),
+  extension: graphql.field({ type: graphql.nonNull(ImageExtensionEnum) }),
+  ref: graphql.field({
+    type: graphql.nonNull(graphql.String),
+    resolve(data) {
+      return getImageRef(data.mode, data.id, data.extension);
+    },
+  }),
+  url: graphql.field({
+    type: graphql.nonNull(graphql.String),
+    resolve(data, args, context) {
+      if (!context.images) {
+        throw new Error('Image context is undefined');
+      }
+      return context.images.getUrl(data.mode, data.id, data.extension);
+    },
+  }),
+});
+
+const ImageFieldOutput = graphql.interface<ImageData>()({
   name: 'ImageFieldOutput',
-  fields: {
-    id: graphql.field({ type: graphql.nonNull(graphql.ID) }),
-    filesize: graphql.field({ type: graphql.nonNull(graphql.Int) }),
-    width: graphql.field({ type: graphql.nonNull(graphql.Int) }),
-    height: graphql.field({ type: graphql.nonNull(graphql.Int) }),
-    extension: graphql.field({ type: graphql.nonNull(ImageExtensionEnum) }),
-    url: graphql.field({
-      type: graphql.nonNull(graphql.String),
-      resolve(data, args, context) {
-        return context.images(data.storage).getUrl(data.id, data.extension);
-      },
-    }),
-  },
+  fields: imageOutputFields,
+  resolveType: val => (val.mode === 'local' ? 'LocalImageFieldOutput' : 'CloudImageFieldOutput'),
 });
 
-type ImageFieldInputType = undefined | null | { upload: Promise<FileUpload> };
+const LocalImageFieldOutput = graphql.object<ImageData>()({
+  name: 'LocalImageFieldOutput',
+  interfaces: [ImageFieldOutput],
+  fields: imageOutputFields,
+});
 
-async function inputResolver(storage: string, data: ImageFieldInputType, context: KeystoneContext) {
+const CloudImageFieldOutput = graphql.object<ImageData>()({
+  name: 'CloudImageFieldOutput',
+  interfaces: [ImageFieldOutput],
+  fields: imageOutputFields,
+});
+
+type ImageFieldInputType =
+  | undefined
+  | null
+  | { upload?: Promise<FileUpload> | null; ref?: string | null };
+
+async function inputResolver(data: ImageFieldInputType, context: KeystoneContext) {
   if (data === null || data === undefined) {
-    return { extension: data, filesize: data, height: data, id: data, width: data };
+    return { extension: data, filesize: data, height: data, id: data, mode: data, width: data };
   }
-  const upload = await data.upload;
-  return context.images(storage).getDataFromStream(upload.createReadStream(), upload.filename);
+
+  if (data.ref) {
+    if (data.upload) {
+      throw userInputError('Only one of ref and upload can be passed to ImageFieldInput');
+    }
+    return context.images!.getDataFromRef(data.ref);
+  }
+  if (!data.upload) {
+    throw userInputError('Either ref or upload must be passed to ImageFieldInput');
+  }
+  return context.images!.getDataFromStream((await data.upload).createReadStream());
 }
 
 const extensionsSet = new Set(SUPPORTED_IMAGE_EXTENSIONS);
@@ -63,18 +100,10 @@ function isValidImageExtension(extension: string): extension is ImageExtension {
 
 export const image =
   <ListTypeInfo extends BaseListTypeInfo>(
-    config: ImageFieldConfig<ListTypeInfo>
+    config: ImageFieldConfig<ListTypeInfo> = {}
   ): FieldTypeFunc<ListTypeInfo> =>
-  meta => {
-    const storage = meta.getStorage(config.storage);
-
-    if (!storage) {
-      throw new Error(
-        `${meta.listKey}.${meta.fieldKey} has storage set to ${config.storage}, but no storage configuration was found for that key`
-      );
-    }
-
-    if ('isIndexed' in config) {
+  () => {
+    if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type image");
     }
 
@@ -85,70 +114,34 @@ export const image =
         extension: { kind: 'scalar', scalar: 'String', mode: 'optional' },
         width: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
         height: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
+        mode: { kind: 'scalar', scalar: 'String', mode: 'optional' },
         id: { kind: 'scalar', scalar: 'String', mode: 'optional' },
       },
     })({
       ...config,
-      hooks: storage.preserve
-        ? config.hooks
-        : {
-            ...config.hooks,
-            async beforeOperation(args) {
-              await config.hooks?.beforeOperation?.(args);
-              if (args.operation === 'update' || args.operation === 'delete') {
-                const idKey = `${meta.fieldKey}_id`;
-                const id = args.item[idKey];
-                const extensionKey = `${meta.fieldKey}_extension`;
-                const extension = args.item[extensionKey];
-
-                // This will occur on an update where an image already existed but has been
-                // changed, or on a delete, where there is no longer an item
-                if (
-                  (args.operation === 'delete' ||
-                    typeof args.resolvedData[meta.fieldKey].id === 'string' ||
-                    args.resolvedData[meta.fieldKey].id === null) &&
-                  typeof id === 'string' &&
-                  typeof extension === 'string' &&
-                  isValidImageExtension(extension)
-                ) {
-                  await args.context.images(config.storage).deleteAtSource(id, extension);
-                }
-              }
-            },
-          },
       input: {
-        create: {
-          arg: graphql.arg({ type: ImageFieldInput }),
-          resolve: (data, context) => inputResolver(config.storage, data, context),
-        },
-        update: {
-          arg: graphql.arg({ type: ImageFieldInput }),
-          resolve: (data, context) => inputResolver(config.storage, data, context),
-        },
+        create: { arg: graphql.arg({ type: ImageFieldInput }), resolve: inputResolver },
+        update: { arg: graphql.arg({ type: ImageFieldInput }), resolve: inputResolver },
       },
       output: graphql.field({
         type: ImageFieldOutput,
-        resolve({ value: { extension, filesize, height, id, width } }) {
+        resolve({ value: { extension, filesize, height, id, mode, width } }) {
           if (
             extension === null ||
             !isValidImageExtension(extension) ||
             filesize === null ||
             height === null ||
             width === null ||
-            id === null
+            id === null ||
+            mode === null ||
+            (mode !== 'local' && mode !== 'cloud')
           ) {
             return null;
           }
-          return {
-            extension,
-            filesize,
-            height,
-            width,
-            id,
-            storage: config.storage,
-          };
+          return { mode, extension, filesize, height, width, id };
         },
       }),
+      unreferencedConcreteInterfaceImplementations: [LocalImageFieldOutput, CloudImageFieldOutput],
       views: resolveView('image/views'),
     });
   };

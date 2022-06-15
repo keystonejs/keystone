@@ -2,7 +2,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@keystone-ui/core';
-import { FieldContainer, FieldDescription, FieldLabel, TextInput } from '@keystone-ui/fields';
+import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
 import { useState } from 'react';
 import {
   CardValueComponent,
@@ -86,7 +86,6 @@ export const Field = ({
   return (
     <FieldContainer>
       <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
-      <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
       {onChange ? (
         <span>
           <IntegerInput
@@ -103,7 +102,6 @@ export const Field = ({
                 : undefined
             }
             validationMessage={message}
-            aria-describedby={field.description === null ? undefined : `${field.path}-description`}
           />
         </span>
       ) : (
@@ -188,7 +186,6 @@ export const controller = (
   return {
     path: config.path,
     label: config.label,
-    description: config.description,
     graphqlSelection: config.path,
     validation: config.fieldMeta.validation,
     defaultValue: {

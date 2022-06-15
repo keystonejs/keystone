@@ -117,7 +117,6 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
             listKey: list.key,
             fieldMeta: field.fieldMeta,
             label: field.label,
-            description: field.description,
             path: field.path,
             customViews,
           }),

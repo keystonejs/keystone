@@ -2,7 +2,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@keystone-ui/core';
-import { FieldContainer, FieldDescription, FieldLabel } from '@keystone-ui/fields';
+import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { Descendant, Node, Text } from 'slate';
 import { DocumentRenderer } from '@keystone-6/document-renderer';
 
@@ -33,7 +33,6 @@ export const Field = ({
     <FieldLabel as="span" id={`${field.path}-label`}>
       {field.label}
     </FieldLabel>
-    <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
     <ForceValidationProvider value={!!forceValidation}>
       <DocumentEditor
         autoFocus={autoFocus}
@@ -121,7 +120,7 @@ export const controller = (
 } => {
   const memoizedIsComponentBlockValid = weakMemoize((componentBlock: ComponentBlock) =>
     weakMemoize((props: any) =>
-      clientSideValidateProp({ kind: 'object', fields: componentBlock.schema }, props)
+      clientSideValidateProp({ kind: 'object', value: componentBlock.props }, props)
     )
   );
   const componentBlocks: Record<string, ComponentBlock> = config.customViews.componentBlocks || {};
@@ -172,7 +171,6 @@ export const controller = (
   return {
     path: config.path,
     label: config.label,
-    description: config.description,
     graphqlSelection: `${config.path} {document(hydrateRelationships: true)}`,
     componentBlocks: config.customViews.componentBlocks || {},
     documentFeatures: config.fieldMeta.documentFeatures,

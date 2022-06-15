@@ -38,6 +38,7 @@ export const ControlLabel = ({
             fontSize: size.fontSize,
             lineHeight: typography.leading.tight,
             marginLeft: spacing.small,
+            paddingTop: spacing.xsmall,
             userSelect: 'none',
           }}
         >

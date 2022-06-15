@@ -21,11 +21,7 @@ exampleProjectTests('../examples-staging/basic', (browserType, mode) => {
     await Promise.all([page.waitForNavigation(), page.click('button:has-text("Sign In")')]);
   });
   test('update user', async () => {
-    try {
-      await page.goto('http://localhost:3000/users');
-    } catch {
-      await page.goto('http://localhost:3000/users');
-    }
+    await Promise.all([page.waitForNavigation(), page.click('h3:has-text("Users")')]);
     await Promise.all([page.waitForNavigation(), page.click('a:has-text("Admin")')]);
     await page.type('label:has-text("Name") >> .. >> input', '1');
     await page.click('button:has-text("Save changes")');

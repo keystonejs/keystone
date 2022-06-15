@@ -34,26 +34,8 @@ export default auth.withAuth(
       // path: '/admin',
       // isAccessAllowed,
     },
-    storage: {
-      my_images: {
-        kind: 'local',
-        type: 'file',
-        storagePath: 'public/images',
-        generateUrl: path => `http://localhost:3000/images${path}`,
-        serverRoute: {
-          path: '/images',
-        },
-      },
-      my_files: {
-        kind: 'local',
-        type: 'file',
-        storagePath: 'public/files',
-        generateUrl: path => `http://localhost:3000/files${path}`,
-        serverRoute: {
-          path: '/files',
-        },
-      },
-    },
+    images: { upload: 'local' },
+    files: { upload: 'local' },
     lists,
     extendGraphqlSchema,
     session: statelessSessions({ maxAge: sessionMaxAge, secret: sessionSecret }),

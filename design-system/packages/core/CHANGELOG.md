@@ -1,11 +1,5 @@
 # @keystone-ui/core
 
-## 5.0.0
-
-### Major Changes
-
-- [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - upgrade dependancy `"react": "^18.1.0"`
-
 ## 4.0.0
 
 ### Major Changes

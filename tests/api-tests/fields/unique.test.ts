@@ -1,24 +1,8 @@
-import fs from 'fs';
-import path from 'path';
-import os from 'os';
 import globby from 'globby';
 import { list } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
 import { setupTestEnv, setupTestRunner } from '@keystone-6/core/testing';
-import { apiTestConfig, expectPrismaError, dbProvider } from '../utils';
-
-const expectedUniqueConstraintError =
-  dbProvider === 'mysql'
-    ? {
-        message: 'Prisma error: Unique constraint failed on the constraint: `Test_testField_key`',
-        code: 'P2002',
-        target: 'Test_testField_key',
-      }
-    : {
-        message: 'Prisma error: Unique constraint failed on the fields: (`testField`)',
-        code: 'P2002',
-        target: ['testField'],
-      };
+import { apiTestConfig, expectPrismaError } from '../utils';
 
 const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
@@ -35,22 +19,22 @@ testModules
       describe(`${mod.name} - ${matrixValue} - isIndexed: 'unique'`, () => {
         beforeEach(() => {
           if (mod.beforeEach) {
-            mod.beforeEach(matrixValue);
+            mod.beforeEach();
           }
         });
         afterEach(async () => {
           if (mod.afterEach) {
-            await mod.afterEach(matrixValue);
+            await mod.afterEach();
           }
         });
         beforeAll(() => {
           if (mod.beforeAll) {
-            mod.beforeAll(matrixValue);
+            mod.beforeAll();
           }
         });
         afterAll(async () => {
           if (mod.afterAll) {
-            await mod.afterAll(matrixValue);
+            await mod.afterAll();
           }
         });
         const runner = setupTestRunner({
@@ -66,26 +50,8 @@ testModules
                 },
               }),
             },
-            storage: {
-              test_image: {
-                kind: 'local',
-                type: 'image',
-                storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_images')),
-                generateUrl: path => `http://localhost:3000/images${path}`,
-                serverRoute: {
-                  path: '/images',
-                },
-              },
-              test_file: {
-                kind: 'local',
-                type: 'file',
-                storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_files')),
-                generateUrl: path => `http://localhost:3000/files${path}`,
-                serverRoute: {
-                  path: '/files',
-                },
-              },
-            },
+            images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
+            files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
           }),
         });
         test(
@@ -107,7 +73,11 @@ testModules
             expectPrismaError(errors, [
               {
                 path: ['createTest'],
-                ...expectedUniqueConstraintError,
+                message: expect.stringMatching(
+                  /Prisma error: Unique constraint failed on the fields: \(`testField`\)/
+                ),
+                code: 'P2002',
+                target: ['testField'],
               },
             ]);
           })
@@ -133,7 +103,11 @@ testModules
             expectPrismaError(errors, [
               {
                 path: ['bar'],
-                ...expectedUniqueConstraintError,
+                message: expect.stringMatching(
+                  /Prisma error: Unique constraint failed on the fields: \(`testField`\)/
+                ),
+                code: 'P2002',
+                target: ['testField'],
               },
             ]);
           })
@@ -184,26 +158,8 @@ testModules
                     },
                   }),
                 },
-                storage: {
-                  test_image: {
-                    kind: 'local',
-                    type: 'image',
-                    storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_images')),
-                    generateUrl: path => `http://localhost:3000/images${path}`,
-                    serverRoute: {
-                      path: '/images',
-                    },
-                  },
-                  test_file: {
-                    kind: 'local',
-                    type: 'file',
-                    storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_files')),
-                    generateUrl: path => `http://localhost:3000/images${path}`,
-                    serverRoute: {
-                      path: '/images',
-                    },
-                  },
-                },
+                images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
+                files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
               }),
             });
           } catch (error: any) {

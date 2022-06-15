@@ -367,13 +367,7 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
             if (typeof fieldFunc !== 'function') {
               throw new Error(`The field at ${listKey}.${fieldKey} does not provide a function`);
             }
-            const f = fieldFunc({
-              fieldKey,
-              listKey,
-              lists: listInfos,
-              provider,
-              getStorage: storage => config.storage?.[storage],
-            });
+            let f = fieldFunc({ fieldKey, listKey, lists: listInfos, provider });
 
             const omit = f.graphql?.omit;
             const read = omit !== true && !omit?.includes('read');

@@ -1,7 +1,7 @@
 import { Text, Editor } from 'slate';
 import { createDocumentEditor } from './DocumentEditor';
-import { ComponentBlock, ComponentSchema } from './DocumentEditor/component-blocks/api';
-import { assertNever, ReadonlyPropPath } from './DocumentEditor/component-blocks/utils';
+import { ComponentBlock, ComponentPropField } from './DocumentEditor/component-blocks/api';
+import { assertNever } from './DocumentEditor/component-blocks/utils';
 import { Relationships } from './DocumentEditor/relationship';
 import {
   ElementFromValidation,
@@ -12,30 +12,30 @@ import {
 import { DocumentFeatures } from './views';
 
 export class PropValidationError extends Error {
-  path: ReadonlyPropPath;
-  constructor(message: string, path: ReadonlyPropPath) {
+  path: (string | number)[];
+  constructor(message: string, path: (string | number)[]) {
     super(message);
     this.path = path;
   }
 }
 
 function validateComponentBlockProps(
-  schema: ComponentSchema,
+  prop: ComponentPropField,
   value: unknown,
   relationships: Relationships,
-  path: ReadonlyPropPath
+  path: (string | number)[]
 ): any {
-  if (schema.kind === 'form') {
-    if (schema.validate(value)) {
+  if (prop.kind === 'form') {
+    if (prop.validate(value)) {
       return value;
     }
     throw new PropValidationError('Invalid form prop value', path);
   }
-  if (schema.kind === 'child') {
-    return null;
+  if (prop.kind === 'child') {
+    return undefined;
   }
-  if (schema.kind === 'relationship') {
-    if (schema.many) {
+  if (prop.kind === 'relationship') {
+    if (prop.many) {
       if (Array.isArray(value) && value.every(isRelationshipData)) {
         // yes, ts understands this completely correctly, i'm as suprised as you are
         return value.map(x => ({ id: x.id }));
@@ -50,7 +50,7 @@ function validateComponentBlockProps(
     }
   }
 
-  if (schema.kind === 'conditional') {
+  if (prop.kind === 'conditional') {
     if (typeof value !== 'object' || value === null) {
       throw new PropValidationError('Conditional value must be an object', path);
     }
@@ -68,7 +68,7 @@ function validateComponentBlockProps(
     // so we're doing this so that we avoid setting undefined on objects
     const obj: any = {};
     const discriminantVal = validateComponentBlockProps(
-      schema.discriminant,
+      prop.discriminant,
       discriminant,
       relationships,
       path.concat('discriminant')
@@ -77,7 +77,7 @@ function validateComponentBlockProps(
       obj.discriminant = discriminantVal;
     }
     const conditionalFieldValue = validateComponentBlockProps(
-      schema.values[discriminant],
+      prop.values[discriminant],
       val,
       relationships,
       path.concat('value')
@@ -88,20 +88,20 @@ function validateComponentBlockProps(
     return obj;
   }
 
-  if (schema.kind === 'object') {
+  if (prop.kind === 'object') {
     if (typeof value !== 'object' || value === null) {
       throw new PropValidationError('Object value must be an object', path);
     }
-    const allowedKeysSet = new Set(Object.keys(schema.fields));
+    const allowedKeysSet = new Set(Object.keys(prop.value));
     for (const key of Object.keys(value)) {
       if (!allowedKeysSet.has(key)) {
         throw new PropValidationError(`Key on object value "${key}" is not allowed`, path);
       }
     }
     let val: Record<string, any> = {};
-    for (const key of Object.keys(schema.fields)) {
+    for (const key of Object.keys(prop.value)) {
       const propVal = validateComponentBlockProps(
-        schema.fields[key],
+        prop.value[key],
         (value as any)[key],
         relationships,
         path.concat(key)
@@ -114,15 +114,7 @@ function validateComponentBlockProps(
     }
     return val;
   }
-  if (schema.kind === 'array') {
-    if (!Array.isArray(value)) {
-      throw new PropValidationError('Array field value must be an array', path);
-    }
-    return value.map((innerVal, i) => {
-      return validateComponentBlockProps(schema.element, innerVal, relationships, path.concat(i));
-    });
-  }
-  assertNever(schema);
+  assertNever(prop);
 }
 
 function isText(node: ElementFromValidation): node is TextWithMarks {
@@ -147,7 +139,7 @@ export function getValidatedNodeWithNormalizedComponentFormProps(
       node = {
         ...node,
         props: validateComponentBlockProps(
-          { kind: 'object', fields: componentBlock.schema },
+          { kind: 'object', value: componentBlock.props },
           node.props,
           relationships,
           []

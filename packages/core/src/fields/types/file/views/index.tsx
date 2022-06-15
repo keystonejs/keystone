@@ -10,7 +10,7 @@ import {
   FieldControllerConfig,
 } from '../../../../types';
 
-import { validateFile } from './Field';
+import { validateFile, validateRef } from './Field';
 
 export { Field } from './Field';
 
@@ -44,12 +44,20 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
 
 type FileData = {
   src: string;
+  ref: string;
   filesize: number;
   filename: string;
 };
 
 export type FileValue =
   | { kind: 'empty' }
+  | {
+      kind: 'ref';
+      data: {
+        ref: string;
+      };
+      previous: FileValue;
+    }
   | {
       kind: 'from-server';
       data: FileData;
@@ -70,10 +78,10 @@ export const controller = (config: FieldControllerConfig): FileController => {
   return {
     path: config.path,
     label: config.label,
-    description: config.description,
     graphqlSelection: `${config.path} {
         url
         filename
+        ref
         filesize
       }`,
     defaultValue: { kind: 'empty' },
@@ -87,16 +95,21 @@ export const controller = (config: FieldControllerConfig): FileController => {
           filename: value.filename,
           ref: value.ref,
           filesize: value.filesize,
-          storage: value.storage,
         },
       };
     },
     validate(value): boolean {
+      if (value.kind === 'ref') {
+        return validateRef(value.data) === undefined;
+      }
       return value.kind !== 'upload' || validateFile(value.data) === undefined;
     },
     serialize(value) {
       if (value.kind === 'upload') {
         return { [config.path]: { upload: value.data.file } };
+      }
+      if (value.kind === 'ref') {
+        return { [config.path]: { ref: value.data.ref } };
       }
       if (value.kind === 'remove') {
         return { [config.path]: null };

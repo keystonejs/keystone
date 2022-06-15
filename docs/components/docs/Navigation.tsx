@@ -161,9 +161,6 @@ export function DocsNavigation() {
         <PrimaryNavItem href="/docs/guides">Guides</PrimaryNavItem>
         <NavItem href="/docs/guides/cli">Command Line</NavItem>
         <NavItem href="/docs/guides/relationships">Relationships</NavItem>
-        <NavItem href="/docs/guides/choosing-a-database">
-          Choosing a Database <Badge look="success">New</Badge>
-        </NavItem>
         <NavItem href="/docs/guides/filters">
           Query Filters <Badge look="success">Updated</Badge>
         </NavItem>

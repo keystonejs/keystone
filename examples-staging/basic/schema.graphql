@@ -96,12 +96,13 @@ type User {
   randomNumber: Float
 }
 
-type ImageFieldOutput {
+interface ImageFieldOutput {
   id: ID!
   filesize: Int!
   width: Int!
   height: Int!
   extension: ImageExtension!
+  ref: String!
   url: String!
 }
 
@@ -112,9 +113,10 @@ enum ImageExtension {
   gif
 }
 
-type FileFieldOutput {
+interface FileFieldOutput {
   filename: String!
   filesize: Int!
+  ref: String!
   url: String!
 }
 
@@ -125,6 +127,40 @@ type PasswordState {
 input UserWhereUniqueInput {
   id: ID
   email: String
+}
+
+type LocalImageFieldOutput implements ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  ref: String!
+  url: String!
+}
+
+type CloudImageFieldOutput implements ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  ref: String!
+  url: String!
+}
+
+type LocalFileFieldOutput implements FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  url: String!
+}
+
+type CloudFileFieldOutput implements FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  url: String!
 }
 
 input UserWhereInput {
@@ -227,7 +263,8 @@ input UserUpdateInput {
 }
 
 input ImageFieldInput {
-  upload: Upload!
+  upload: Upload
+  ref: String
 }
 
 """
@@ -236,7 +273,8 @@ The `Upload` scalar type represents a file upload.
 scalar Upload
 
 input FileFieldInput {
-  upload: Upload!
+  upload: Upload
+  ref: String
 }
 
 input PhoneNumberRelateToManyForUpdateInput {
@@ -496,7 +534,6 @@ type KeystoneAdminUIListMeta {
 type KeystoneAdminUIFieldMeta {
   path: String!
   label: String!
-  description: String
   isOrderable: Boolean!
   isFilterable: Boolean!
   fieldMeta: JSON

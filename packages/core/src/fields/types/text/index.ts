@@ -27,31 +27,7 @@ export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     };
     defaultValue?: string;
     graphql?: { create?: { isNonNull?: boolean }; read?: { isNonNull?: boolean } };
-    db?: {
-      isNullable?: boolean;
-      map?: string;
-      /**
-       * The underlying database type.
-       * Only some of the types are supported on PostgreSQL and MySQL.
-       * The native type is not customisable on SQLite.
-       * See Prisma's documentation for more information about the supported types.
-       *
-       * https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-       */
-      nativeType?:
-        | 'Text' // PostgreSQL and MySQL
-        | `VarChar(${number})`
-        | `Char(${number})`
-        | `Bit(${number})` // PostgreSQL
-        | 'VarBit'
-        | 'Uuid'
-        | 'Xml'
-        | 'Inet'
-        | 'Citext'
-        | 'TinyText' // MySQL
-        | 'MediumText'
-        | 'LargeText';
-    };
+    db?: { isNullable?: boolean; map?: string };
   };
 
 export const text =
@@ -114,7 +90,6 @@ export const text =
       default: defaultValue === undefined ? undefined : { kind: 'literal', value: defaultValue },
       index: isIndexed === true ? 'index' : isIndexed || undefined,
       map: config.db?.map,
-      nativeType: config.db?.nativeType,
     })({
       ...config,
       hooks: {

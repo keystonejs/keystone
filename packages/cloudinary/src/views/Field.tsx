@@ -4,7 +4,7 @@
 import { jsx, Stack, useTheme } from '@keystone-ui/core';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { FieldContainer, FieldDescription, FieldLabel } from '@keystone-ui/fields';
+import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { Pill } from '@keystone-ui/pill';
 import { Button } from '@keystone-ui/button';
 import { FieldProps } from '@keystone-6/core/types';
@@ -48,7 +48,6 @@ export function Field({
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
-      <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
       {value.kind === 'from-server' || value.kind === 'upload' ? (
         <Stack gap="small">
           {imagePath && errorMessage === undefined && <Image src={imagePath} alt={field.path} />}

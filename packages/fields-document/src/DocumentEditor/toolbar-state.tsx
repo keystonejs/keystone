@@ -6,7 +6,7 @@ import { ComponentBlockContext } from './component-blocks';
 import { ComponentBlock } from './component-blocks/api';
 import {
   DocumentFeaturesForChildField,
-  getSchemaAtPropPath,
+  getChildFieldAtPropPath,
   getDocumentFeaturesForChildField,
 } from './component-blocks/utils';
 import { LayoutOptionsProvider } from './layouts';
@@ -76,13 +76,13 @@ export function getAncestorComponentChildFieldDocumentFeatures(
       const component = ancestorComponent[0].component;
       const componentBlock = componentBlocks[component];
       if (componentBlock && propPath) {
-        const childField = getSchemaAtPropPath(
+        const options = getChildFieldAtPropPath(
           propPath,
           ancestorComponent[0].props,
-          componentBlock.schema
-        );
-        if (childField?.kind === 'child') {
-          return getDocumentFeaturesForChildField(editorDocumentFeatures, childField.options);
+          componentBlock.props
+        )?.options;
+        if (options) {
+          return getDocumentFeaturesForChildField(editorDocumentFeatures, options);
         }
       }
     }

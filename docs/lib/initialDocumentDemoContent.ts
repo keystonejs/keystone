@@ -227,36 +227,6 @@ export const initialContent = [
     ],
   },
   {
-    type: 'component-block',
-    component: 'carousel',
-    props: {
-      items: [
-        {
-          title: 'This is a carousel',
-          image: 'https://images.unsplash.com/photo-1618172193763-c511deb635ca',
-        },
-        {
-          title: 'It’s built with component block array fields',
-          image: 'https://images.unsplash.com/photo-1633412802994-5c058f151b66',
-        },
-        {
-          title: 'Click edit to reorder it via drag and drop',
-          image: 'https://images.unsplash.com/photo-1635377090186-036bca445c6b',
-        },
-      ],
-    },
-    children: [
-      {
-        type: 'component-inline-prop',
-        children: [
-          {
-            text: '',
-          },
-        ],
-      },
-    ],
-  },
-  {
     type: 'paragraph',
     children: [
       {

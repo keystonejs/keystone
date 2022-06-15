@@ -11,7 +11,6 @@ import { BaseEditor, BaseElement, BaseRange } from 'slate';
 import { HistoryEditor } from 'slate-history';
 import { ReactEditor } from 'slate-react';
 import { RelationshipData } from './component-blocks/api';
-import { ReadonlyPropPath } from './component-blocks/utils';
 import { Mark } from './utils';
 
 type Link = {
@@ -61,7 +60,7 @@ type ComponentBlock = {
 
 type ComponentProp = {
   type: 'component-inline-prop' | 'component-block-prop';
-  propPath?: ReadonlyPropPath | undefined;
+  propPath?: (string | number)[] | undefined;
 };
 
 type Element = (

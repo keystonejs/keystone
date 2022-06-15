@@ -6,32 +6,32 @@ import { jsx, makeEditor } from '../tests/utils';
 
 const componentBlocks = {
   basic: component({
-    preview: () => null,
+    component: () => null,
     label: 'Basic',
-    schema: { prop: fields.text({ label: 'Prop' }) },
+    props: { prop: fields.text({ label: 'Prop' }) },
   }),
   withChildElements: component({
-    preview: () => null,
+    component: () => null,
     label: 'With Child Elements',
-    schema: {
+    props: {
       prop: fields.text({ label: 'Prop' }),
       block: fields.child({ kind: 'block', placeholder: '' }),
       inline: fields.child({ kind: 'inline', placeholder: '' }),
     },
   }),
   withChildElementsBlockLast: component({
-    preview: () => null,
+    component: () => null,
     label: 'With Child Elements Block last',
-    schema: {
+    props: {
       prop: fields.text({ label: 'Prop' }),
       inline: fields.child({ kind: 'inline', placeholder: '' }),
       block: fields.child({ kind: 'block', placeholder: '' }),
     },
   }),
   complex: component({
-    preview: () => null,
+    component: () => null,
     label: 'Complex',
-    schema: {
+    props: {
       object: fields.object({
         prop: fields.text({ label: 'Prop' }),
         conditional: fields.conditional(fields.checkbox({ label: 'Conditional' }), {

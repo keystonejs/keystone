@@ -7,7 +7,6 @@ import { listTemplate } from './list';
 import { itemTemplate } from './item';
 import { apiTemplate } from './api';
 import { noAccessTemplate } from './no-access';
-import { createItemTemplate } from './create-item';
 
 const pkgDir = Path.dirname(require.resolve('@keystone-6/core/package.json'));
 
@@ -51,11 +50,14 @@ export const writeAdminFiles = (
       outputPath: 'pages/_app.js',
     },
     { mode: 'write', src: homeTemplate, outputPath: 'pages/index.js' },
-    ...adminMeta.lists.flatMap(({ path, key }): AdminFileToWrite[] => [
-      { mode: 'write', src: listTemplate(key), outputPath: `pages/${path}/index.js` },
-      { mode: 'write', src: itemTemplate(key), outputPath: `pages/${path}/[id].js` },
-      { mode: 'write', src: createItemTemplate(key), outputPath: `pages/${path}/create.js` },
-    ]),
+    ...adminMeta.lists.map(
+      ({ path, key }) =>
+        ({ mode: 'write', src: listTemplate(key), outputPath: `pages/${path}/index.js` } as const)
+    ),
+    ...adminMeta.lists.map(
+      ({ path, key }) =>
+        ({ mode: 'write', src: itemTemplate(key), outputPath: `pages/${path}/[id].js` } as const)
+    ),
     ...(config.experimental?.enableNextJsGraphqlApiEndpoint
       ? [
           {

@@ -4,7 +4,6 @@ import { integer } from '../../index';
 export const name = 'Integer with autoincrement default';
 export const typeFunction = (config: any) =>
   integer({
-    isIndexed: true,
     ...config,
     db: { ...config?.db, isNullable: false },
     defaultValue: { kind: 'autoincrement' },
@@ -22,11 +21,7 @@ export const skipUpdateTest = true;
 export const unSupportedAdapterList = ['sqlite'];
 
 export const getTestFields = () => ({
-  orderNumber: integer({
-    db: { isNullable: false },
-    defaultValue: { kind: 'autoincrement' },
-    isIndexed: true,
-  }),
+  orderNumber: integer({ db: { isNullable: false }, defaultValue: { kind: 'autoincrement' } }),
 });
 
 export const initItems = () => {

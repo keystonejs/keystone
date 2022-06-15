@@ -495,8 +495,6 @@ Options:
 - `defaultValue` (default: `db.isNullable === true ? undefined : ''`): This value will be used for the field when creating items if no explicit value is set.
 - `db.map`: Adds a [Prisma `@map`](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#map) attribute to this field which changes the column name in the database
 - `db.isNullable` (default: `false`\*): If `true` then this field will be made nullable in the database and it will be possible to set as `null`.
-- `db.nativeType`: Changes the [Prisma Native database type attibute](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string) from the default Prisma type for your database.
-  For more information see the [Choosing a Database Guide](../guides/choosing-a-database).
 - `validation.isRequired` (default: `false`\*\*): If `true` then this field can never be set to `null` or an empty string.
   Unlike `db.isNullable`, this will require that a value with at least 1 character is provided in the Admin UI.
   It will also validate this when creating and updating an item through the GraphQL API but it will not enforce it at the database level.
@@ -534,7 +532,7 @@ export default config({
       fields: {
         fieldName: text({
           defaultValue: '...',
-          db: { map: 'my_text', nativeType: 'VarChar(40)' },
+          db: { map: 'my_text' },
           validation: { isRequired: true },
           isIndexed: 'unique',
           ui: { displayMode: 'textarea' },
@@ -724,7 +722,7 @@ File types allow you to upload different types of files to your Keystone system.
 
 A `file` field represents a file of any type.
 
-See [`config.storage`](./config#storage) for details on how to configure your Keystone system with support for the `file` field type.
+See [`config.files`](./config#files) for details on how to configure your Keystone system with support for the `file` field type.
 
 ```typescript
 import { config, list } from '@keystone-6/core';
@@ -734,7 +732,7 @@ export default config({
   lists: {
     ListName: list({
       fields: {
-        repo: file({ storage: 'my_file_storage' }),
+        repo: file(),
         /* ... */
       },
     }),
@@ -744,16 +742,11 @@ export default config({
 });
 ```
 
-Options:
-
-- `storage`(required): A string that is the key for one of the entries in the storage object. This
-  is used to determine what storage config will be used.
-
 ### image
 
 An `image` field represents an image file, i.e. `.jpg`, `.png`, `.webp`, or `.gif`.
 
-See [`config.storage`](./config#storage) for details on how to configure your Keystone system with support for the `image` field type.
+See [`config.images`](./config#images) for details on how to configure your Keystone system with support for the `image` field type.
 
 ```typescript
 import { config, list } from '@keystone-6/core';
@@ -763,7 +756,7 @@ export default config({
   lists: {
     ListName: list({
       fields: {
-        avatar: image({ storage: 'my_image_storage' }),
+        avatar: image(),
         /* ... */
       },
     }),
@@ -772,11 +765,6 @@ export default config({
   /* ... */
 });
 ```
-
-Options:
-
-- `storage`(required): A string that is the key for one of the entries in the storage object. This
-  is used to determine what storage config will be used.
 
 ## Complex types
 
@@ -825,13 +813,14 @@ export default config({
 ```
 
 ### cloudinaryImage
+
 Upload images to your Cloudinary account via Keystone's Admin UI.
 
 - `cloudinary`: Configuration for the connected Cloudinary account.
-  - `cloudName` - TODO
-  - `apiKey` - TODO
-  - `apiSecret` - TODO
-  - `folder` - TODO
+  - `cloudName`
+  - `apiKey`
+  - `apiSecret`
+  - `folder`
 
 ```typescript
 import { config, list } from '@keystone-6/core';

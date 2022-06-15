@@ -29,7 +29,8 @@ testModules
               },
             }),
           },
-          ...mod.getRootConfig?.(matrixValue),
+          images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
+          files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
         }),
       });
       const keystoneTestWrapper = (testFn: (args: any) => void = () => {}) =>
@@ -38,35 +39,29 @@ testModules
           for (const data of mod.initItems(matrixValue, context)) {
             await context.query[listKey].createOne({ data });
           }
-          return testFn({
-            context,
-            listKey,
-            provider: process.env.TEST_ADAPTER,
-            matrixValue,
-            ...rest,
-          });
+          return testFn({ context, listKey, provider: process.env.TEST_ADAPTER, ...rest });
         });
 
       if (mod.crudTests) {
         describe(`${mod.name} - ${matrixValue} - Custom CRUD operations`, () => {
           beforeAll(() => {
             if (mod.beforeAll) {
-              mod.beforeAll(matrixValue);
+              mod.beforeAll();
             }
           });
           afterEach(async () => {
             if (mod.afterEach) {
-              await mod.afterEach(matrixValue);
+              await mod.afterEach();
             }
           });
           beforeEach(() => {
             if (mod.beforeEach) {
-              mod.beforeEach(matrixValue);
+              mod.beforeEach();
             }
           });
           afterAll(async () => {
             if (mod.afterAll) {
-              await mod.afterAll(matrixValue);
+              await mod.afterAll();
             }
           });
           mod.crudTests(keystoneTestWrapper);
@@ -77,22 +72,22 @@ testModules
         describe(`${mod.name} - ${matrixValue} - CRUD operations`, () => {
           beforeEach(() => {
             if (mod.beforeEach) {
-              mod.beforeEach(matrixValue);
+              mod.beforeEach();
             }
           });
           beforeAll(() => {
             if (mod.beforeAll) {
-              mod.beforeAll(matrixValue);
+              mod.beforeAll();
             }
           });
           afterEach(async () => {
             if (mod.afterEach) {
-              await mod.afterEach(matrixValue);
+              await mod.afterEach();
             }
           });
           afterAll(async () => {
             if (mod.afterAll) {
-              await mod.afterAll(matrixValue);
+              await mod.afterAll();
             }
           });
 
