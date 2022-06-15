@@ -1,6 +1,6 @@
 {
-  "name": "@keystone-6/example-assets-local",
-  "version": "0.0.3",
+  "name": "@keystone-6/example-assets-s3",
+  "version": "0.0.2",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -9,7 +9,8 @@
     "build": "keystone build"
   },
   "dependencies": {
-    "@keystone-6/core": "^2.0.0"
+    "@keystone-6/core": "^2.0.0",
+    "dotenv": "^16.0.0"
   },
   "devDependencies": {
     "typescript": "^4.4.4"
@@ -17,5 +18,5 @@
   "engines": {
     "node": "^14.15 || ^16.13"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/main/examples-staging/assets-local"
+  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/assets-s3"
 }
