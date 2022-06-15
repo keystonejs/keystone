@@ -245,6 +245,10 @@ export function UpdatesNavigation({ releases = [] }: { releases: string[] }) {
       ) : null}
       <Section label="Featured News">
         <NavItem href="/updates/general-availability">
+          <Emoji symbol="🖼️" alt="Picture" />
+          &nbsp; New Images & Files API
+        </NavItem>
+        <NavItem href="/updates/general-availability">
           <Emoji symbol="🎉" alt="Party Popper" />
           &nbsp; General Availability Release
         </NavItem>

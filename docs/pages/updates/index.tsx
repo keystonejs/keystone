@@ -173,7 +173,31 @@ export default function WhatsNew() {
           gap: 0,
         })}
       >
-        <Timeline date="13th May 2022" isLatest />
+        <Timeline date="9th June 2022" isLatest />
+        <Box heading="New Images & Files API">
+          You can now experiment with Keystone{' '}
+          <a href="https://github.com/keystonejs/keystone/tree/main/examples">example projects</a>{' '}
+          in a browser using the free <a href="https://codesandbox.io/">codesandbox.io</a> service.
+          Try the{' '}
+          <a href="https://githubbox.com/keystonejs/keystone/tree/main/examples/blog">
+            blog example
+          </a>{' '}
+          today. Thanks <a href="https://github.com/MurzNN">@murznn</a> for making it happen!{' '}
+          <Emoji symbol="🙌" alt="raised hands" />
+        </Box>
+        <Timeline date="9th June 2022" />
+        <Box heading="Array fields in Component Blocks">
+          You can now experiment with Keystone{' '}
+          <a href="https://github.com/keystonejs/keystone/tree/main/examples">example projects</a>{' '}
+          in a browser using the free <a href="https://codesandbox.io/">codesandbox.io</a> service.
+          Try the{' '}
+          <a href="https://githubbox.com/keystonejs/keystone/tree/main/examples/blog">
+            blog example
+          </a>{' '}
+          today. Thanks <a href="https://github.com/MurzNN">@murznn</a> for making it happen!{' '}
+          <Emoji symbol="🙌" alt="raised hands" />
+        </Box>
+        <Timeline date="13th May 2022" />
         <Box heading="Example projects in CodeSandbox">
           You can now experiment with Keystone{' '}
           <a href="https://github.com/keystonejs/keystone/tree/main/examples">example projects</a>{' '}
