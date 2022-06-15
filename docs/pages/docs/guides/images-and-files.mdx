@@ -6,23 +6,23 @@ import { RelatedContent } from '../../../components/RelatedContent';
 
 Keystone [field types](../apis/fields) contain both the `image` and `file`. These two field types can be used to reference, and if required, serve Images and/or Files from Keystone. These field types can be backed by either local or [Amazon S3 storage](https://aws.amazon.com/s3/).
 
-## Storage Options - S3 and Local
+## How asset storage works in Keystone
 
 Getting started with Images and Files in Keystone requires you first to create a `storage` object in your Keystone configuration file. Any number of stores can be set up within the `storage` object, and you can mix and match between `local` and `s3` depending on your use case.
 
 The `storage` object defines how and where the assets are stored and accessed by both Keystone and the client frontend. This object defines:
 
-- The `kind` of storage being used - either `s3` or `local`
-- The `type` of `field` the storage is being used for - either `file` or `image`
-- A function to generate the URL (`generateUrl`) that Keystone returns in the GraphQL API pointing to the location or the storage where the assets can be accessed
-- The actual location where Keystone stores the assets - either a local `path` or `s3` bucket details
-- The location Keystone will serve the assets from - either a `serverRoute` for `local` or a `proxied` connection for `s3`. Both of these options add a route to the Keystone backend which the files can be accessed from
+- The `kind` of storage being used – `s3` or `local`
+- The `type` of `field` the storage is being used for – `file` or `image`
+- A function to generate the URL (`generateUrl`) Keystone returns in the GraphQL API – pointing to the location or the storage where the assets can be accessed
+- The actual location where Keystone stores the assets – either a local `path` or the details of an `s3` bucket
+- The location Keystone will serve the assets from – either a `serverRoute` for `local` or a `proxied` connection for `s3`. Both of these options add a route to the Keystone backend which the files can be accessed from
 
-### Defining `storage` in Keystone config
+## Defining `storage` in Keystone config
 
 First, we are going to use [dotenv](https://www.npmjs.com/package/dotenv) to retrieve the S3 bucket and URL details from a `.env` file or set environment variables.
 
-In your Keystone Config file...
+In your Keystone Config file, pull in your environment variables and maps them to some easy to use names
 
 ```typescript{24-54}
 import { config } from '@keystone-6/core';
@@ -45,9 +45,8 @@ dotenv.config();
 /** ... */
 ```
 
-!> The above pulls the environment variables and maps them to friendly names to use below
 
-### Storing your assets in `s3`
+### Storing assets in `s3`
 
 We can then add an `s3` `storage` object, the object below is called `my_s3_files` and this is the name that we will use in our `field` config later. This can be called any name that makes sense to your use case.
 
@@ -61,13 +60,13 @@ storage: {
     kind: 's3',
     // This store is used for the file field type
     type: 'file',
-    // The S3 bucket name pulled from the S3_BUCKET_NAME environment variable above
+    // The S3 bucket name pulled from the S3_BUCKET_NAME environment variable
     bucketName,
-    // The S3 bucket region pulled from the S3_REGION environment variable above
+    // The S3 bucket region pulled from the S3_REGION environment variable
     region,
-    // The S3 Access Key ID pulled from the S3_ACCESS_KEY_ID environment variable above
+    // The S3 Access Key ID pulled from the S3_ACCESS_KEY_ID environment variable
     accessKeyId,
-    // The S3 Secret pulled from the S3_SECRET_ACCESS_KEY environment variable above
+    // The S3 Secret pulled from the S3_SECRET_ACCESS_KEY environment variable
     secretAccessKey
     // The S3 links will be signed so they remain private
     signed: { expiry: 5000 },
@@ -76,7 +75,7 @@ storage: {
 },
 ```
 
-### Storing assets on your `local` disk
+### Storing assets in `local`
 
 Assets can also be stored on the `local` disk. The object below is called `my_local_images` and is stored in `/public/images` and will be served by Keystone at `/images`.
 
@@ -120,9 +119,9 @@ image {
 
 The URL returned in this query is configurable by using the `generateUrl` function. This function takes the `path` which is the full filename and extension and will return the URL you want in the GraphQL API.
 
-### Putting it all together in your Keystone `config`
+### Putting it all together
 
-The below defines two asset stores, one `s3` to store files and one `local` to store images.
+The example below defines two asset stores – one `s3` to store files, and one `local` to store images.
 
 ```typescript{28-59}
 // keystone.ts
@@ -190,7 +189,7 @@ export default config({
 
 !> You can define as many stores as required for your use case
 
-## Field types - `image` and `file`
+## Using Images and Files in Lists
 
 Once you have your `storage` configuration in Keystone you can then use the `image` and `file` [field types](../apis/fields).
 
@@ -210,7 +209,7 @@ lists: {
 
 !> The `storage` name here relates to the `storage` defined in your `keystone.ts`
 
-## Relationships - ie Image Gallery
+## Relationships example
 
 If you want your images (and files) to be reused and accessible across multiple difference lists or in a [Document Field](./document-fields). You can set up a Gallery list and use relationships to reference this.
 You might also want to preserve an asset after 'deletion', with relationships you can instead remove the relationship and cleanup the assets separately.
@@ -246,8 +245,10 @@ export const lists = {
 
 ## A note on `Content-Type`
 
-When serving files, either from local or S3, Keystone uses the `Content-Type` of `application/octetstream`. For images, however, the `Content-Type` is set from the mime-type configured by the file extension.
-This means that for images the extension can be trusted, however, for files it can not.
+- When serving **files**, Keystone uses `application/octetstream` for the `Content-Type`.
+- When serving **images** the `Content-Type` is set from the mime-type configured by the file extension.
+
+This means that for images the extension can be trusted, but for files it can not. This applies to both `local` and `S3` options.
 
 ## Related Resources
 
@@ -269,4 +270,4 @@ This means that for images the extension can be trusted, however, for files it c
   </Well>
 </RelatedContent>
 
-export default ({ children }) => <Markdown description="Learn how to use Keystone’s `storage` config as well as the `image` and `file` field types">{children}</Markdown>;
+export default ({ children }) => <Markdown description="Learn how to add Images and Files to your project using Keystone’s Storage configuration">{children}</Markdown>;
