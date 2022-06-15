@@ -188,7 +188,7 @@ const ToolbarContainer = ({ children }: { children: ReactNode }) => {
         paddingTop: spacing.small,
         position: 'sticky',
         top: 0,
-        zIndex: 30,
+        zIndex: 2,
       }}
     >
       <ToolbarGroup>{children}</ToolbarGroup>

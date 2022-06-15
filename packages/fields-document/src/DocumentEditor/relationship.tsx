@@ -82,10 +82,7 @@ export function RelationshipElement({
   const keystone = useKeystone();
   const editor = useStaticEditor();
   const relationships = useContext(DocumentFieldRelationshipsContext)!;
-  const relationship = relationships[element.relationship] as Exclude<
-    Relationships[string],
-    { kind: 'prop' }
-  >;
+  const relationship = relationships[element.relationship];
   return (
     <span
       {...attributes}

@@ -60,7 +60,7 @@ export function AdvancedReactCta(props: HTMLAttributes<HTMLElement>) {
         </Type>
         <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
           Master eCommerce with Keystone, React, & GraphQL. Join Wes as he teaches you how to build
-          a full-stack online store with of today's best JavaScript technology.
+          a full-stack online store with today's best JavaScript technology.
         </Type>
         <ul
           css={{

@@ -2,7 +2,13 @@
 /** @jsx jsx */
 import { Fragment, useState } from 'react';
 import { jsx, Stack } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel, MultiSelect, Select } from '@keystone-ui/fields';
+import {
+  FieldContainer,
+  FieldDescription,
+  FieldLabel,
+  MultiSelect,
+  Select,
+} from '@keystone-ui/fields';
 import { SegmentedControl } from '@keystone-ui/segmented-control';
 import { Button } from '@keystone-ui/button';
 import { Text } from '@keystone-ui/core';
@@ -34,6 +40,7 @@ export const Field = ({
       {field.displayMode === 'select' ? (
         <Fragment>
           <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
+          <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
           <Select
             id={field.path}
             isClearable
@@ -45,6 +52,7 @@ export const Field = ({
               setHasChanged(true);
             }}
             value={value.value}
+            aria-describedby={field.description === null ? undefined : `${field.path}-description`}
             portalMenu
           />
           {validationMessage}
@@ -52,6 +60,7 @@ export const Field = ({
       ) : (
         <Fragment>
           <FieldLabel as="legend">{field.label}</FieldLabel>
+          <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
           <Stack across gap="small" align="center">
             <SegmentedControl
               segments={field.options.map(x => x.label)}
@@ -153,6 +162,7 @@ export const controller = (
   return {
     path: config.path,
     label: config.label,
+    description: config.description,
     graphqlSelection: config.path,
     defaultValue: {
       kind: 'create',

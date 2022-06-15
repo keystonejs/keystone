@@ -64,6 +64,11 @@ export const integer =
           `The integer field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' }, this is not supported on SQLite`
         );
       }
+      if (meta.provider === 'mysql' && !isIndexed) {
+        throw new Error(
+          `The integer field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' }, but doesn't specify isIndexed: true or 'unique'. autoincrement fields on MySQL must have an index.`
+        );
+      }
       if (isNullable !== false) {
         throw new Error(
           `The integer field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' } but doesn't specify db.isNullable: false.\n` +

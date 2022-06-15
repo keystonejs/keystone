@@ -195,7 +195,7 @@ export const makeEditor = (
     isShiftPressedRef?: MutableRefObject<boolean>;
     skipRenderingDOM?: boolean;
   } = {}
-): Editor => {
+): Editor & { container?: HTMLElement } => {
   if (!Editor.isEditor(node)) {
     throw new Error('Unexpected non-editor passed to makeEditor');
   }
@@ -204,7 +204,7 @@ export const makeEditor = (
     componentBlocks,
     relationships,
     isShiftPressedRef
-  );
+  ) as Editor & { container?: HTMLElement };
   // for validation
   (editor as any).__config = {
     documentFeatures,
@@ -258,7 +258,7 @@ export const makeEditor = (
     // this serves two purposes:
     // - a smoke test to make sure the ui doesn't throw from any of the actions in the tests
     // - so that things like ReactEditor.focus and etc. can be called
-    render(
+    const { container } = render(
       <EditorComp
         editor={editor}
         componentBlocks={componentBlocks}
@@ -266,6 +266,7 @@ export const makeEditor = (
         relationships={relationships}
       />
     );
+    editor.container = container;
   }
   return editor;
 };

@@ -2,7 +2,6 @@
 /** @jsx jsx */
 
 import copyToClipboard from 'clipboard-copy';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
   Fragment,
@@ -17,11 +16,10 @@ import {
 } from 'react';
 
 import { Button } from '@keystone-ui/button';
-import { Box, Center, Heading, Stack, Text, jsx, useTheme } from '@keystone-ui/core';
+import { Box, Center, Stack, Text, jsx, useTheme } from '@keystone-ui/core';
 import { LoadingDots } from '@keystone-ui/loading';
 import { ClipboardIcon } from '@keystone-ui/icons/icons/ClipboardIcon';
-import { ChevronRightIcon } from '@keystone-ui/icons/icons/ChevronRightIcon';
-import { AlertDialog, DrawerController } from '@keystone-ui/modals';
+import { AlertDialog } from '@keystone-ui/modals';
 import { Notice } from '@keystone-ui/notice';
 import { useToasts } from '@keystone-ui/toast';
 import { Tooltip } from '@keystone-ui/tooltip';
@@ -42,9 +40,8 @@ import { gql, useMutation, useQuery } from '../../../../admin-ui/apollo';
 import { useList } from '../../../../admin-ui/context';
 import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/PageContainer';
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice';
-import { CreateItemDrawer } from '../../../../admin-ui/components/CreateItemDrawer';
-import { Container } from '../../../../admin-ui/components/Container';
 import { usePreventNavigation } from '../../../../admin-ui/utils/usePreventNavigation';
+import { BaseToolbar, ColumnLayout, ItemPageHeader } from './common';
 
 type ItemPageProps = {
   listKey: string;
@@ -272,10 +269,9 @@ function DeleteButton({
 export const getItemPage = (props: ItemPageProps) => () => <ItemPage {...props} />;
 
 const ItemPage = ({ listKey }: ItemPageProps) => {
-  const router = useRouter();
-  const { id } = router.query;
   const list = useList(listKey);
-  const { palette, spacing, typography } = useTheme();
+  const id = useRouter().query.id as string;
+  const { spacing, typography } = useTheme();
 
   const { query, selectedFields } = useMemo(() => {
     let selectedFields = Object.entries(list.fields)
@@ -344,10 +340,6 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
 
   const metaQueryErrors = dataGetter.get('keystone').errors;
 
-  // NOTE: The create button is always hidden on this page for now, while we work on the
-  // placment of the save and delete buttons.
-  const hideCreate = true; // data?.keystone.adminMeta.list.hideCreate;
-
   const pageTitle: string = loading
     ? undefined
     : (data && data.item && (data.item[list.labelField] || data.item.id)) || id;
@@ -356,55 +348,14 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
     <PageContainer
       title={pageTitle}
       header={
-        <Container
-          css={{
-            alignItems: 'center',
-            display: 'flex',
-            flex: 1,
-            justifyContent: 'space-between',
-          }}
-        >
-          <div
-            css={{
-              alignItems: 'center',
-              display: 'flex',
-              flex: 1,
-              minWidth: 0,
-            }}
-          >
-            <Heading type="h3">
-              <Link href={`/${list.path}`} passHref>
-                <a css={{ textDecoration: 'none' }}>{list.label}</a>
-              </Link>
-            </Heading>
-            <div
-              css={{
-                color: palette.neutral500,
-                marginLeft: spacing.xsmall,
-                marginRight: spacing.xsmall,
-              }}
-            >
-              <ChevronRightIcon />
-            </div>
-            <Heading
-              as="h1"
-              type="h3"
-              css={{
-                minWidth: 0,
-                maxWidth: '100%',
-                overflow: 'hidden',
-                flex: 1,
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {loading
-                ? 'Loading...'
-                : (data && data.item && (data.item[list.labelField] || data.item.id)) || id}
-            </Heading>
-          </div>
-          {!hideCreate && <CreateButton listKey={listKey} id={data.item.id} />}
-        </Container>
+        <ItemPageHeader
+          list={list}
+          label={
+            loading
+              ? 'Loading...'
+              : (data && data.item && (data.item[list.labelField] || data.item.id)) || id
+          }
+        />
       }
     >
       {loading ? (
@@ -479,49 +430,6 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
   );
 };
 
-const CreateButton = ({ id, listKey }: { id: string; listKey: string }) => {
-  const list = useList(listKey);
-  const router = useRouter();
-
-  const [createModalState, setModalState] = useState<
-    { state: 'closed' } | { state: 'open'; id: string }
-  >({
-    state: 'closed',
-  });
-
-  if (createModalState.state === 'open' && createModalState.id !== id) {
-    setModalState({ state: 'closed' });
-  }
-
-  return (
-    <Fragment>
-      <Button
-        disabled={createModalState.state === 'open'}
-        onClick={() => {
-          setModalState({ state: 'open', id: id as string });
-        }}
-        tone="positive"
-        size="small"
-      >
-        Create New {list.singular}
-      </Button>
-
-      <DrawerController isOpen={createModalState.state === 'open'}>
-        <CreateItemDrawer
-          listKey={listKey}
-          onCreate={({ id }) => {
-            router.push(`/${list.path}/[id]`, `/${list.path}/${id}`);
-            setModalState({ state: 'closed' });
-          }}
-          onClose={() => {
-            setModalState({ state: 'closed' });
-          }}
-        />
-      </DrawerController>
-    </Fragment>
-  );
-};
-
 // Styled Components
 // ------------------------------
 
@@ -538,66 +446,64 @@ const Toolbar = memo(function Toolbar({
   onReset: () => void;
   deleteButton?: ReactElement;
 }) {
-  const { colors, spacing } = useTheme();
   return (
-    <div
-      css={{
-        background: colors.background,
-        borderTop: `1px solid ${colors.border}`,
-        bottom: 0,
-        display: 'flex',
-        justifyContent: 'space-between',
-        marginTop: spacing.xlarge,
-        paddingBottom: spacing.xlarge,
-        paddingTop: spacing.xlarge,
-        position: 'sticky',
-        zIndex: 20,
-      }}
-    >
+    <BaseToolbar>
+      <Button
+        isDisabled={!hasChangedFields}
+        isLoading={loading}
+        weight="bold"
+        tone="active"
+        onClick={onSave}
+      >
+        Save changes
+      </Button>
       <Stack align="center" across gap="small">
-        <Button
-          isDisabled={!hasChangedFields}
-          isLoading={loading}
-          weight="bold"
-          tone="active"
-          onClick={onSave}
-        >
-          Save changes
-        </Button>
         {hasChangedFields ? (
-          <Button weight="none" onClick={onReset}>
-            Reset changes
-          </Button>
+          <ResetChangesButton onReset={onReset} />
         ) : (
           <Text weight="medium" paddingX="large" color="neutral600">
             No changes
           </Text>
         )}
+        {deleteButton}
       </Stack>
-      {deleteButton}
-    </div>
+    </BaseToolbar>
   );
 });
 
-const ColumnLayout = (props: HTMLAttributes<HTMLDivElement>) => {
-  const { spacing } = useTheme();
+function ResetChangesButton(props: { onReset: () => void }) {
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
 
   return (
-    // this container must be relative to catch absolute children
-    // particularly the "expanded" document-field, which needs a height of 100%
-    <Container css={{ position: 'relative', height: '100%' }}>
-      <div
-        css={{
-          alignItems: 'start',
-          display: 'grid',
-          gap: spacing.xlarge,
-          gridTemplateColumns: `2fr 1fr`,
+    <Fragment>
+      <Button
+        weight="none"
+        onClick={() => {
+          setConfirmModalOpen(true);
         }}
-        {...props}
-      />
-    </Container>
+      >
+        Reset changes
+      </Button>
+      <AlertDialog
+        actions={{
+          confirm: {
+            action: () => props.onReset(),
+            label: 'Reset changes',
+          },
+          cancel: {
+            action: () => setConfirmModalOpen(false),
+            label: 'Cancel',
+          },
+        }}
+        isOpen={isConfirmModalOpen}
+        title="Are you sure you want to reset changes?"
+        tone="negative"
+      >
+        {null}
+      </AlertDialog>
+    </Fragment>
   );
-};
+}
 
 const StickySidebar = (props: HTMLAttributes<HTMLDivElement>) => {
   const { spacing } = useTheme();

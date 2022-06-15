@@ -25,7 +25,9 @@ export const json =
     }
 
     const resolve = (val: JSONValue | undefined) =>
-      val === null && meta.provider === 'postgresql' ? 'DbNull' : val;
+      val === null && (meta.provider === 'postgresql' || meta.provider === 'mysql')
+        ? 'DbNull'
+        : val;
 
     return jsonFieldTypePolyfilledForSQLite(
       meta.provider,

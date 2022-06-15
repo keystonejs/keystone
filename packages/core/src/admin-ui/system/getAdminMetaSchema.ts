@@ -37,6 +37,7 @@ export function getAdminMetaSchema({
     fields: {
       path: graphql.field({ type: graphql.nonNull(graphql.String) }),
       label: graphql.field({ type: graphql.nonNull(graphql.String) }),
+      description: graphql.field({ type: graphql.String }),
       isOrderable: graphql.field({
         type: graphql.nonNull(graphql.Boolean),
         resolve(rootVal, args, context) {

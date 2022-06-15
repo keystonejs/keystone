@@ -21,6 +21,7 @@ export type CommonFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
   hooks?: FieldHooks<ListTypeInfo>;
   label?: string;
   ui?: {
+    description?: string;
     views?: string;
     createView?: { fieldMode?: MaybeSessionFunction<'edit' | 'hidden', ListTypeInfo> };
     itemView?: { fieldMode?: MaybeItemFunction<'edit' | 'read' | 'hidden', ListTypeInfo> };

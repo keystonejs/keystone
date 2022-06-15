@@ -24,7 +24,7 @@ export default config({
   session: { /* ... */ },
   graphql: { /* ... */ },
   extendGraphqlSchema: { /* ... */ },
-  images: { /* ... */ },
+  storage: { /* ... */ },
   experimental: { /* ... */ },
 });
 ```
@@ -59,8 +59,8 @@ import type { DatabaseConfig } from '@keystone-6/core/types';
 
 The `db` config option configures the database used to store data in your Keystone system.
 It has a TypeScript type of `DatabaseConfig`.
-Keystone supports the database types **PostgreSQL** and **SQLite**.
-These database types are powered by their corresponding Prisma database providers; `postgresql` and `sqlite`.
+Keystone supports the database types **PostgreSQL**, **MySQL** and **SQLite**.
+These database types are powered by their corresponding Prisma database providers; `postgresql`, `mysql` and `sqlite`.
 
 All database providers require the `url` argument, which defines the connection URL for your database.
 They also all have an optional `onConnect` async function, which takes a [`KeystoneContext`](./context) object, and lets perform any actions you might need at startup, such as data seeding.
@@ -82,6 +82,31 @@ export default config({
   db: {
     provider: 'postgresql',
     url: 'postgres://dbuser:dbpass@localhost:5432/keystone',
+    onConnect: async context => { /* ... */ },
+    // Optional advanced configuration
+    enableLogging: true,
+    useMigrations: true,
+    idField: { kind: 'uuid' },
+  },
+  /* ... */
+});
+```
+
+### mysql
+
+Advanced configuration:
+
+- `enableLogging` (default: `false`): Enable logging from the Prisma client.
+- `useMigrations` (default: `false`): Determines whether to use migrations or automatically force-update the database with the latest schema and potentially lose data.
+- `idField` (default: `{ kind: "cuid" }`): The kind of id field to use, it can be one of: `cuid`, `uuid` or `autoincrement`.
+  This can also be customised at the list level `db.idField`.
+- `prismaPreviewFeatures` (default: `[]`): Enable [Prisma preview features](https://www.prisma.io/docs/concepts/components/preview-features) by providing an array of strings.
+
+```typescript
+export default config({
+  db: {
+    provider: 'mysql',
+    url: 'mysql://dbuser:dbpass@localhost:5432/keystone',
     onConnect: async context => { /* ... */ },
     // Optional advanced configuration
     enableLogging: true,
@@ -307,7 +332,7 @@ export default config({
 
 The created context will be bound to the request, including the current visitor's session, meaning access control will work the same as for GraphQL API requests.
 
-*ProTip!*: `extendExpressApp` can be `async` 
+_ProTip!_: `extendExpressApp` can be `async`
 
 ## session
 
@@ -333,7 +358,7 @@ See the [Session API](./session) for more details on how to configure session ma
 
 ## graphql
 
-```
+```ts
 import type { GraphQLConfig } from '@keystone-6/core/types';
 ```
 
@@ -370,7 +395,7 @@ export default config({
 
 ## extendGraphqlSchema
 
-```
+```ts
 import type { ExtendGraphqlSchema } from '@keystone-6/core/types';
 ```
 
@@ -390,63 +415,95 @@ export default config({
 
 See the [schema extension guide](../guides/schema-extension) for more details on how to use `graphQLSchemaExtension()` to extend your GraphQL API.
 
-## files
+## storage (images and files)
 
-Keystone supports file handling via the [`file`](./fields#file) field type.
-In order to use this field type you need to configure Keystone with information about where your files will be stored and served from.
-At the moment Keystone supports storing files on the local filesystem, and is agnostic about how files are served.
-
-```typescript
-import { config } from '@keystone-6/core';
-
-export default config({
-  files: {
-    upload: 'local',
-    local: {
-      storagePath: 'public/files',
-      baseUrl: '/files',
-    },
-  }
-  /* ... */
-});
+```ts
+import type { StorageConfig } from '@keystone-6/core/types'
 ```
+
+The `storage` config option provides configuration which is used by the [`file`](./fields#file) field type or the
+[`image`](./fields#image) field type. You provide an object whose property is a `StorageConfig` object, fields then reference this `storage` by the key.
+Each storage is configured separately using the options below.
+
+A single storage may be used by multiple file or image fields, but only for files or images.
 
 Options:
 
-- `upload`: The storage target when uploading files. Currently only `local` is supported.
-- `local`: Configuration options when using the `local` storage target.
-  - `storagePath`: The path local files are uploaded to.
-  - `baseUrl`: The base of the URL local files will be served from, outside of keystone.
+- `kind`: Whether the storage will be on the machine `"local"`, or in an [s3 bucket](https://aws.amazon.com/s3/) `"s3"`
+- `type`: Sets whether image fields or file fields should be used with this storage
+- `preserve`: Defines whether the items should be deleted at the source when they are removed from Keystone's database. We
+  recommend that you set `preserve: false` unless you have a strong reason to preserve files that Keystone cannot reference. The
+  default is `false`.
+- `transformName`: A function that creates the name for the file or image. This works a bit differently for files and images, which we'll explain below
 
-## images
+**For files:** transformName accepts a `filename` and returns a `filename` - the returned filename is what will be used as the name of the file at
+the storage location, and will be remmembered by the field to to look up at the database. For the default, we will return `${filename}-${RANDOM_ID}${extension}`
+**For images:** tranformName accepts both a `filename` and an `extension` - the passed filename will include the extension. The return should be the
+filename you want to use as the `id` for the image, and the unique identifier. We will add the extension on to the id provided. By default we return
+a unique identifier here.
 
-Keystone supports image handling via the [`image`](./fields#image) field type.
-In order to use this field type you need to configure Keystone with information about where your images will be stored and served from.
-At the moment Keystone supports storing files on the local filesystem, and is agnostic about how images are served.
+When using `transformName` you should ensure that these are unique
+
+Local options:
+
+- `generateUrl`: A function that recieves a partial path with the filename and extension, and the result
+  of which will be used as the `url` in the field's graphql - this should point to where the client can retrieve the item.
+- `serverRoute`: Sets whether or not to add a server route to Keystone. Set it to `null` if you don't want
+  keystone to host the images, otherwise set it to an object with a `path` property
+  - `path`: The partial path where keystone will host the images, eg `/images` or `/files`
+
+S3 options:
+
+- `bucketName`: The name of your s3 bucket
+- `region`: The region your s3 instance is hosted in
+- `accessKeyId`: Your s3 access Key ID
+- `secretAccessKey`: Your Access Key secret
+- `generateUrl`: A funcion that recieves the original s3 url and returns a string that will be returned
+  from graphql as the `url`. If you want the s3 urls to be returned as is you do not need to set this.
+- `pathPrefix`: The prefix for the file, used to set the subfolder of your bucket files will be stored in.
+- `endpoint`: The endpoint to use - if provided, this endpoint will be used instead of the default amazon s3 endpoint
+- `forcePathStyle`: Force the old pathstyle of using the bucket name after the host
 
 ```typescript
 import { config } from '@keystone-6/core';
+import dotenv from 'dotenv';
+/* ... */
+
+dotenv.config();
+
+const {
+  S3_BUCKET_NAME: bucketName = 'keystone-test',
+  S3_REGION: region = 'ap-southeast-2',
+  S3_ACCESS_KEY_ID: accessKeyId = 'keystone',
+  S3_SECRET_ACCESS_KEY: secretAccessKey = 'keystone',
+} = process.env;
 
 export default config({
-  images: {
-    upload: 'local',
-    local: {
+   /* ... */
+  storage: {
+    my_S3_images: {
+      kind: 's3',
+      bucketName,
+      region,
+      accessKeyId,
+      secretAccessKey,
+      proxied: { baseUrl: '/images-proxy' },
+      endpoint: 'http://127.0.0.1:9000/',
+      forcePathStyle: true,
+    },
+    my_local_images: {
+      kind: 'local',
+      generateUrl: path => `http://localhost:3000/images${path}`,
+      serverRoute: {
+        path: '/images',
+      },
       storagePath: 'public/images',
-      baseUrl: '/images',
     },
-  }
-  /* ... */
+  },
 });
 ```
 
-Options:
-
-- `upload`: The storage target when uploading images. Currently only `local` is supported.
-- `local`: Configuration options when using the `local` storage target.
-  - `storagePath`: The path local images are uploaded to.
-  - `baseUrl`: The base of the URL local images will be served from, outside of keystone.
-
-## experimental
+## Experimental Options
 
 The following flags allow you to enable features which are still in preview.
 These features are not guaranteed to work, and should be used with caution.

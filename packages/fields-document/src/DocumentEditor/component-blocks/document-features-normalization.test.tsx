@@ -9,19 +9,19 @@ import { ChildField } from './api';
 
 const cases: Record<
   string,
-  { prop: ChildField; children: Node | Node[] } & (
+  { schema: ChildField; children: Node | Node[] } & (
     | { kind: 'allowed' }
     | { kind: 'not-allowed'; expectedNormalized: Node }
   )
 > = {
   'mark where it should not exist in inline': {
-    prop: fields.child({ kind: 'inline', placeholder: '' }),
+    schema: fields.child({ kind: 'inline', placeholder: '' }),
     children: <text bold>this should not be bold</text>,
     kind: 'not-allowed',
     expectedNormalized: <text>this should not be bold</text>,
   },
   'mark where it should not exist in block': {
-    prop: fields.child({ kind: 'block', placeholder: '' }),
+    schema: fields.child({ kind: 'block', placeholder: '' }),
     children: (
       <paragraph>
         <text bold>this should not be bold</text>
@@ -35,12 +35,12 @@ const cases: Record<
     ),
   },
   'mark where it is is allowed in inline': {
-    prop: fields.child({ kind: 'inline', placeholder: '', formatting: 'inherit' }),
+    schema: fields.child({ kind: 'inline', placeholder: '', formatting: 'inherit' }),
     children: <text bold>this should be bold</text>,
     kind: 'allowed',
   },
   'code block where it is not allowed in a block': {
-    prop: fields.child({ kind: 'block', placeholder: '' }),
+    schema: fields.child({ kind: 'block', placeholder: '' }),
     children: (
       <code>
         <text>this should not be in a code block</text>
@@ -54,7 +54,7 @@ const cases: Record<
     ),
   },
   'code block where it is allowed in a block': {
-    prop: fields.child({ kind: 'block', placeholder: '', formatting: 'inherit' }),
+    schema: fields.child({ kind: 'block', placeholder: '', formatting: 'inherit' }),
     children: (
       <code>
         <text>this should not be in a code block</text>
@@ -63,7 +63,7 @@ const cases: Record<
     kind: 'allowed',
   },
   'links allowed': {
-    prop: fields.child({ kind: 'block', placeholder: '', links: 'inherit' }),
+    schema: fields.child({ kind: 'block', placeholder: '', links: 'inherit' }),
     children: (
       <paragraph>
         <text>some text </text>
@@ -76,7 +76,7 @@ const cases: Record<
     kind: 'allowed',
   },
   'links not allowed': {
-    prop: fields.child({ kind: 'block', placeholder: '' }),
+    schema: fields.child({ kind: 'block', placeholder: '' }),
     children: (
       <paragraph>
         <text>some text </text>
@@ -94,7 +94,7 @@ const cases: Record<
     kind: 'not-allowed',
   },
   'links allowed in inline': {
-    prop: fields.child({ kind: 'inline', placeholder: '', links: 'inherit' }),
+    schema: fields.child({ kind: 'inline', placeholder: '', links: 'inherit' }),
     children: [
       <text>some text </text>,
       <link href="https://example.com">
@@ -105,7 +105,7 @@ const cases: Record<
     kind: 'allowed',
   },
   'links not allowed in inline': {
-    prop: fields.child({ kind: 'inline', placeholder: '' }),
+    schema: fields.child({ kind: 'inline', placeholder: '' }),
     children: [
       <text>some text </text>,
       <link href="https://example.com">
@@ -117,7 +117,7 @@ const cases: Record<
     kind: 'not-allowed',
   },
   'relationship allowed': {
-    prop: fields.child({ kind: 'block', placeholder: '', relationships: 'inherit' }),
+    schema: fields.child({ kind: 'block', placeholder: '', relationships: 'inherit' }),
     children: (
       <paragraph>
         <text>some text </text>
@@ -137,7 +137,7 @@ const cases: Record<
     kind: 'allowed',
   },
   'relationship not allowed': {
-    prop: fields.child({ kind: 'block', placeholder: '' }),
+    schema: fields.child({ kind: 'block', placeholder: '' }),
     children: (
       <paragraph>
         <text>some text </text>
@@ -162,7 +162,7 @@ const cases: Record<
     kind: 'not-allowed',
   },
   'alignment allowed': {
-    prop: fields.child({ kind: 'block', placeholder: '', formatting: { alignment: 'inherit' } }),
+    schema: fields.child({ kind: 'block', placeholder: '', formatting: { alignment: 'inherit' } }),
     children: (
       <paragraph textAlign="end">
         <text>some text </text>
@@ -171,7 +171,7 @@ const cases: Record<
     kind: 'allowed',
   },
   'alignment not allowed': {
-    prop: fields.child({ kind: 'block', placeholder: '' }),
+    schema: fields.child({ kind: 'block', placeholder: '' }),
     children: (
       <paragraph textAlign="end">
         <text>some text </text>
@@ -185,7 +185,7 @@ const cases: Record<
     kind: 'not-allowed',
   },
   'divider allowed': {
-    prop: fields.child({ kind: 'block', placeholder: '', dividers: 'inherit' }),
+    schema: fields.child({ kind: 'block', placeholder: '', dividers: 'inherit' }),
     children: [
       <paragraph>
         <text>some text </text>
@@ -197,7 +197,7 @@ const cases: Record<
     kind: 'allowed',
   },
   'divider not allowed': {
-    prop: fields.child({ kind: 'block', placeholder: '' }),
+    schema: fields.child({ kind: 'block', placeholder: '' }),
     children: [
       <paragraph>
         <text>some text </text>
@@ -215,7 +215,7 @@ const cases: Record<
     kind: 'not-allowed',
   },
   'soft breaks allowed': {
-    prop: fields.child({ kind: 'block', placeholder: '', formatting: { softBreaks: 'inherit' } }),
+    schema: fields.child({ kind: 'block', placeholder: '', formatting: { softBreaks: 'inherit' } }),
     children: (
       <paragraph>
         <text>some{'\n'} text </text>
@@ -224,7 +224,7 @@ const cases: Record<
     kind: 'allowed',
   },
   'soft breaks not allowed': {
-    prop: fields.child({ kind: 'block', placeholder: '' }),
+    schema: fields.child({ kind: 'block', placeholder: '' }),
     children: (
       <paragraph>
         <text>
@@ -260,7 +260,7 @@ function makeEditorWithChildField(
     {
       normalization,
       componentBlocks: {
-        comp: component({ component: () => null, label: '', props: { child: childField } }),
+        comp: component({ preview: () => null, label: '', schema: { child: childField } }),
       },
       relationships: {
         mention: {
@@ -276,9 +276,9 @@ function makeEditorWithChildField(
 Object.keys(cases).forEach(key => {
   const testCase = cases[key];
   test(key, () => {
-    const Prop = `component-${testCase.prop.options.kind}-prop` as const;
+    const Prop = `component-${testCase.schema.options.kind}-prop` as const;
     let editor = makeEditorWithChildField(
-      testCase.prop,
+      testCase.schema,
       testCase.children,
       testCase.kind === 'allowed' ? 'disallow-non-normalized' : 'normalize'
     );

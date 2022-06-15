@@ -12,7 +12,6 @@ import {
 } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
 import { v4 } from 'uuid';
-import { componentBlocks } from './admin/fieldViews/Content';
 import * as Keystone from '.keystone/types';
 
 type AccessArgs = {
@@ -45,8 +44,8 @@ const User: Keystone.Lists.User = list({
     /** Email is used to log into the system. */
     email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
     /** Avatar upload for the users profile, stored locally */
-    avatar: image(),
-    attachment: file(),
+    avatar: image({ storage: 'my_images' }),
+    attachment: file({ storage: 'my_files' }),
     /** Used to log in. */
     password: password(),
     /** Administrators have more access to various lists and fields. */
@@ -150,7 +149,6 @@ export const lists: Keystone.Lists = {
         defaultValue: 'draft',
       }),
       content: document({
-        ui: { views: require.resolve('./admin/fieldViews/Content.tsx') },
         relationships: {
           mention: {
             label: 'Mention',
@@ -167,7 +165,6 @@ export const lists: Keystone.Lists = {
         ],
         links: true,
         dividers: true,
-        componentBlocks,
       }),
       publishDate: timestamp(),
       author: relationship({

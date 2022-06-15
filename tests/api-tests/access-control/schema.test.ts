@@ -1,5 +1,5 @@
-import { setupTestEnv, TestEnv } from '@keystone-6/core/testing';
-import { getGqlNames, KeystoneContext } from '@keystone-6/core/types';
+import { createSystem, initConfig } from '@keystone-6/core/system';
+import { getGqlNames } from '@keystone-6/core/types';
 import {
   getListName,
   listConfigVariables,
@@ -32,8 +32,20 @@ const introspectionQuery = `{
   }
 }`;
 
+class FakePrismaClient {
+  $on() {}
+  async findMany() {
+    return [{ id: 'blah' }];
+  }
+}
+
+const { getKeystone } = createSystem(initConfig(config));
+
+const { createContext } = getKeystone(FakePrismaClient);
+
+const context = createContext();
+
 describe(`Public schema`, () => {
-  let testEnv: TestEnv, context: KeystoneContext;
   let queries: string[],
     mutations: string[],
     types: string[],
@@ -48,11 +60,6 @@ describe(`Public schema`, () => {
     mutationType: { fields: { name: string }[] };
   };
   beforeAll(async () => {
-    testEnv = await setupTestEnv({ config });
-    context = testEnv.testArgs.context;
-
-    await testEnv.connect();
-
     const data = await context.graphql.run({ query: introspectionQuery });
     __schema = data.__schema;
     queries = __schema.queryType.fields.map(({ name }) => name);
@@ -69,9 +76,6 @@ describe(`Public schema`, () => {
         },
       ])
     );
-  });
-  afterAll(async () => {
-    await testEnv.disconnect();
   });
 
   describe('config', () => {
@@ -307,7 +311,6 @@ describe(`Public schema`, () => {
           });
 
           test(`adminMeta - not build mode ${JSON.stringify(config)} on ${listName}`, async () => {
-            const item = await context.sudo().query[listName].createOne({ data: {} });
             const query = `
               query q($listName: String!) {
                 keystone {
@@ -318,7 +321,7 @@ describe(`Public schema`, () => {
                         path
                         createView { fieldMode }
                         listView { fieldMode }
-                        itemView(id: "${item.id}") { fieldMode }
+                        itemView(id: "blah") { fieldMode }
                       }
                     }
                   }
@@ -373,7 +376,6 @@ describe(`Public schema`, () => {
 });
 
 describe(`Sudo schema`, () => {
-  let testEnv: TestEnv, context: KeystoneContext;
   let queries: string[],
     mutations: string[],
     types: string[],
@@ -388,11 +390,6 @@ describe(`Sudo schema`, () => {
     mutationType: { fields: { name: string }[] };
   };
   beforeAll(async () => {
-    testEnv = await setupTestEnv({ config });
-    context = testEnv.testArgs.context;
-
-    await testEnv.connect();
-
     const data = await context.sudo().graphql.run({ query: introspectionQuery });
     __schema = data.__schema;
     queries = __schema.queryType.fields.map(({ name }) => name);
@@ -409,9 +406,6 @@ describe(`Sudo schema`, () => {
         },
       ])
     );
-  });
-  afterAll(async () => {
-    await testEnv.disconnect();
   });
 
   describe('config', () => {

@@ -8,7 +8,7 @@ import { Box, Center, Heading, jsx, Stack, useTheme, VisuallyHidden } from '@key
 import { CheckboxControl } from '@keystone-ui/fields';
 import { ArrowRightCircleIcon } from '@keystone-ui/icons/icons/ArrowRightCircleIcon';
 import { LoadingDots } from '@keystone-ui/loading';
-import { AlertDialog, DrawerController } from '@keystone-ui/modals';
+import { AlertDialog } from '@keystone-ui/modals';
 import { useToasts } from '@keystone-ui/toast';
 
 import { ListMeta } from '../../../../types';
@@ -20,7 +20,6 @@ import {
 } from '../../../../admin-ui/utils';
 import { gql, TypedDocumentNode, useMutation, useQuery } from '../../../../admin-ui/apollo';
 import { CellLink } from '../../../../admin-ui/components';
-import { CreateItemDrawer } from '../../../../admin-ui/components/CreateItemDrawer';
 import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/PageContainer';
 import { Pagination, PaginationLabel } from '../../../../admin-ui/components/Pagination';
 import { useList } from '../../../../admin-ui/context';
@@ -340,33 +339,24 @@ const ListPage = ({ listKey }: ListPageProps) => {
 
 const CreateButton = ({ listKey }: { listKey: string }) => {
   const list = useList(listKey);
-  const router = useRouter();
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   return (
     <Fragment>
       <Button
-        disabled={isCreateModalOpen}
-        onClick={() => {
-          setIsCreateModalOpen(true);
+        css={{
+          textDecoration: 'none',
+          ':hover': {
+            color: 'white',
+          },
         }}
+        as={Link}
+        href={`/${list.path}/create`}
         tone="active"
         size="small"
         weight="bold"
       >
         Create {list.singular}
       </Button>
-      <DrawerController isOpen={isCreateModalOpen}>
-        <CreateItemDrawer
-          listKey={listKey}
-          onCreate={({ id }) => {
-            router.push(`/${list.path}/[id]`, `/${list.path}/${id}`);
-          }}
-          onClose={() => {
-            setIsCreateModalOpen(false);
-          }}
-        />
-      </DrawerController>
     </Fragment>
   );
 };

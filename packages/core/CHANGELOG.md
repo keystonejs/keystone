@@ -1,5 +1,57 @@
 # @keystone-6/core
 
+## 2.0.0
+
+### Major Changes
+
+- [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - upgrade dependancy `"react": "^18.1.0"`
+
+* [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - New support for uploading images and files to Amazon S3 and other compatible providers.
+  This is a _breaking change_, as the `.image` and `.files` configuration options have been removed, and a new storage configuration object introduced.
+
+  See [#7070](https://github.com/keystonejs/keystone/pull/7070) for how to upgrade.
+
+### Minor Changes
+
+- [#7591](https://github.com/keystonejs/keystone/pull/7591) [`8add4212c`](https://github.com/keystonejs/keystone/commit/8add4212cdb9304ebe054763eddd78640db62b42) Thanks [@dcousens](https://github.com/dcousens)! - Add optional `.graphql.bodyParser` options object for changing `body-parser` options when configuring GraphQL
+
+* [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - Added `disconnect` to the `SessionStrategy` API, this allows Keystone to disconnect from the store when using stored sessions. This resolves the testrunner hanging when using stored sessions in automated tests.
+
+- [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - Removed all Keystone Links, i.e. API explorer, GitHub repository and Keystone documentation, from the popover and replacing the popover button with `Sign out` button in production
+
+* [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - Fixed list description from schema to display in the Admin UI
+
+### Patch Changes
+
+- [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - The reset changes button on the item view now presents a confirmation modal before resetting changes and it has been moved to the right of the bottom bar so it is next to the delete button.
+
+* [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - The Prisma binaries are now downloaded just before they're needed if Prisma's install script to download them fails. Note this will never happen in production, they will always be downloaded before.
+
+- [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - Alert dialogs are now centered in the Admin UI.
+
+* [#7594](https://github.com/keystonejs/keystone/pull/7594) [`f603859cc`](https://github.com/keystonejs/keystone/commit/f603859cc6607327a45c0a519c7a9b6e58e02d6b) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Replaced create item drawer with a page when creating an item from the list view or dashboard.
+
+- [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - Fixed the viewport sometimes shifting when opening the date picker in the create drawer.
+
+* [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - The label shown for a text field in the Admin UI is now associated with the input so the label can be read by screen readers
+
+- [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - Fixed the Admin UI crashing when saving an item with a relationship field using the cards display mode when another item is added to the relationship (e.g. by another user or a hook) since the item was initially loaded
+
+- Updated dependencies [[`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea)]:
+  - @keystone-ui/modals@6.0.0
+  - @keystone-ui/popover@6.0.0
+  - @keystone-ui/fields@7.0.0
+  - @keystone-ui/button@7.0.0
+  - @keystone-ui/core@5.0.0
+  - @keystone-ui/icons@6.0.0
+  - @keystone-ui/loading@6.0.0
+  - @keystone-ui/notice@6.0.0
+  - @keystone-ui/options@6.0.0
+  - @keystone-ui/pill@7.0.0
+  - @keystone-ui/segmented-control@7.0.0
+  - @keystone-ui/toast@6.0.0
+  - @keystone-ui/tooltip@6.0.0
+
 ## 1.1.1
 
 ### Patch Changes

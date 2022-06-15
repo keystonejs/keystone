@@ -19,31 +19,31 @@ const relationships: Relationships = {
 
 const componentBlocks: Record<string, ComponentBlock> = {
   basic: component({
-    component: () => null,
+    preview: () => null,
     label: '',
-    props: { prop: fields.text({ label: '' }) },
+    schema: { prop: fields.text({ label: '' }) },
   }),
   relationship: component({
-    component: () => null,
+    preview: () => null,
     label: '',
-    props: {
+    schema: {
       one: fields.relationship({ label: '', listKey: 'Post', selection: 'something' }),
       many: fields.relationship({ label: '', listKey: 'Post', many: true, selection: 'something' }),
     },
   }),
   object: component({
-    component: () => null,
+    preview: () => null,
     label: '',
-    props: {
+    schema: {
       prop: fields.object({
         prop: fields.text({ label: '' }),
       }),
     },
   }),
   conditional: component({
-    component: () => null,
+    preview: () => null,
     label: '',
-    props: {
+    schema: {
       prop: fields.conditional(fields.checkbox({ label: '' }), {
         true: fields.text({ label: '' }),
         false: fields.child({ kind: 'inline', placeholder: '' }),

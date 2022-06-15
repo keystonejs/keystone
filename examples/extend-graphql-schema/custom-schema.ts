@@ -6,6 +6,9 @@ export const extendGraphqlSchema = graphQLSchemaExtension<Context>({
     type Mutation {
       """ Publish a post """
       publishPost(id: ID!): Post
+
+      """ Create or update an author based on email """
+      upsertAuthor(where: AuthorWhereUniqueInput!, create: AuthorCreateInput!, update: AuthorUpdateInput!): Author
     }
 
     type Query {
@@ -14,7 +17,6 @@ export const extendGraphqlSchema = graphQLSchemaExtension<Context>({
 
       """ Compute statistics for a user """
       stats(id: ID!): Statistics
-
     }
 
     """ A custom type to represent statistics for a user """
@@ -34,6 +36,21 @@ export const extendGraphqlSchema = graphQLSchemaExtension<Context>({
           where: { id },
           data: { status: 'published', publishDate: new Date().toUTCString() },
         });
+      },
+      upsertAuthor: async (root, { where, update, create }, context) => {
+        try {
+          // we need to await the update here so that if an error is thrown, it's caught
+          // by the try catch here and not returned through the graphql api
+          return await context.db.Author.updateOne({ where, data: update });
+        } catch (updateError: any) {
+          // updateOne will fail with the code KS_ACCESS_DENIED if the item isn't found,
+          // so we try to create it. If the item does exist, the unique constraint on
+          // email will prevent a duplicate being created, and we catch the error
+          if (updateError.extensions?.code === 'KS_ACCESS_DENIED') {
+            return await context.db.Author.createOne({ data: create });
+          }
+          throw updateError;
+        }
       },
     },
     Query: {

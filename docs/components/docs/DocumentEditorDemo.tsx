@@ -1,7 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { getInitialPropsValue } from '@keystone-6/fields-document/src/DocumentEditor/component-blocks/initial-values';
-import { FormValueContent } from '@keystone-6/fields-document/src/DocumentEditor/component-blocks/form';
 import { useKeyDownRef } from '@keystone-6/fields-document/src/DocumentEditor/soft-breaks';
 import React, { ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import { Toolbar } from '@keystone-6/fields-document/src/DocumentEditor/Toolbar';
@@ -19,7 +18,9 @@ import {
 } from '@keystone-6/fields-document/component-blocks';
 import { Global, jsx } from '@emotion/react';
 
-import { componentBlocks as componentBlocksInExampleProject } from '../../../examples-staging/basic/admin/fieldViews/Content';
+import { FormValueContentFromPreviewProps } from '@keystone-6/fields-document/src/DocumentEditor/component-blocks/form-from-preview';
+import { createGetPreviewProps } from '@keystone-6/fields-document/src/DocumentEditor/component-blocks/preview-props';
+import { componentBlocks as componentBlocksInSandboxProject } from '../../../tests/sandbox/component-blocks';
 import { initialContent } from '../../lib/initialDocumentDemoContent';
 import { Code } from '../primitives/Code';
 
@@ -76,16 +77,18 @@ const documentFeaturesProp = fields.object({
 
 type DocumentFeaturesFormValue = Parameters<
   InferRenderersForComponentBlocks<
-    Record<'documentFeatures', ComponentBlock<typeof documentFeaturesProp['value']>>
+    Record<'documentFeatures', ComponentBlock<typeof documentFeaturesProp['fields']>>
   >['documentFeatures']
 >[0];
 
 const emptyObj = {};
 
 const componentBlocks = {
-  notice: componentBlocksInExampleProject.notice,
-  hero: componentBlocksInExampleProject.hero,
-  quote: componentBlocksInExampleProject.quote,
+  notice: componentBlocksInSandboxProject.notice,
+  hero: componentBlocksInSandboxProject.hero,
+  quote: componentBlocksInSandboxProject.quote,
+  checkboxList: componentBlocksInSandboxProject.checkboxList,
+  carousel: componentBlocksInSandboxProject.carousel,
 };
 
 type DocumentFieldConfig = Parameters<typeof import('@keystone-6/fields-document').document>[0];
@@ -259,13 +262,14 @@ export function DocumentFeaturesFormAndCode() {
   const { formValue, setFormValue } = useContext(DocumentFeaturesContext);
   return (
     <div>
-      <FormValueContent
-        prop={documentFeaturesProp}
-        forceValidation={false}
-        path={[]}
-        stringifiedPropPathToAutoFocus=""
-        value={formValue}
-        onChange={setFormValue}
+      <FormValueContentFromPreviewProps
+        {...createGetPreviewProps(
+          documentFeaturesProp,
+          getNewVal => {
+            setFormValue(getNewVal(formValue));
+          },
+          () => undefined
+        )(formValue)}
       />
     </div>
   );
@@ -305,8 +309,10 @@ export const DocumentEditorDemo = () => {
         h5: { fontSize: 'var(--font-xsmall)' },
         h6: { fontSize: 'var(--font-xxsmall)' },
         'ul, ol': {
-          paddingLeft: 40,
           lineHeight: 1.75,
+        },
+        button: {
+          borderWidth: 0,
         },
       }}
     >

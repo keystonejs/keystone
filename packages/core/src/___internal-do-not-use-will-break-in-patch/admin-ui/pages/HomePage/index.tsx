@@ -1,19 +1,17 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { ButtonHTMLAttributes, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import { Center, Inline, Heading, VisuallyHidden, jsx, useTheme } from '@keystone-ui/core';
 import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon';
-import { DrawerController } from '@keystone-ui/modals';
 import { LoadingDots } from '@keystone-ui/loading';
 
 import { makeDataGetter } from '../../../../admin-ui/utils';
-import { CreateItemDrawer } from '../../../../admin-ui/components/CreateItemDrawer';
 import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/PageContainer';
 import { gql, useQuery } from '../../../../admin-ui/apollo';
 import { useKeystone, useList } from '../../../../admin-ui/context';
-import { useRouter, Link } from '../../../../admin-ui/router';
+import { Link, LinkProps } from '../../../../admin-ui/router';
 
 type ListCardProps = {
   listKey: string;
@@ -28,8 +26,6 @@ type ListCardProps = {
 const ListCard = ({ listKey, count, hideCreate }: ListCardProps) => {
   const { colors, palette, radii, spacing } = useTheme();
   const list = useList(listKey);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const router = useRouter();
   return (
     <div css={{ position: 'relative' }}>
       <Link
@@ -67,36 +63,19 @@ const ListCard = ({ listKey, count, hideCreate }: ListCardProps) => {
         )}
       </Link>
       {hideCreate === false && (
-        <CreateButton
-          title={`Create ${list.singular}`}
-          disabled={isCreateModalOpen}
-          onClick={() => {
-            setIsCreateModalOpen(true);
-          }}
-        >
+        <CreateButton title={`Create ${list.singular}`} href={`/${list.path}/create`}>
           <PlusIcon size="large" />
           <VisuallyHidden>Create {list.singular}</VisuallyHidden>
         </CreateButton>
       )}
-      <DrawerController isOpen={isCreateModalOpen}>
-        <CreateItemDrawer
-          listKey={list.key}
-          onCreate={({ id }) => {
-            router.push(`/${list.path}/${id}`);
-          }}
-          onClose={() => {
-            setIsCreateModalOpen(false);
-          }}
-        />
-      </DrawerController>
     </div>
   );
 };
 
-const CreateButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
+const CreateButton = (props: LinkProps) => {
   const theme = useTheme();
   return (
-    <button
+    <Link
       css={{
         alignItems: 'center',
         backgroundColor: theme.palette.neutral400,
@@ -113,8 +92,8 @@ const CreateButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
         top: theme.spacing.large,
         transition: 'background-color 80ms linear',
         width: 32,
-
         '&:hover, &:focus': {
+          color: 'white',
           backgroundColor: theme.tones.positive.fill[0],
         },
       }}

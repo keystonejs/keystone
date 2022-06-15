@@ -29,6 +29,8 @@ test(
           'prisma:query',
           dbProvider === 'sqlite'
             ? 'SELECT `main`.`User`.`id`, `main`.`User`.`name` FROM `main`.`User` WHERE 1=1 LIMIT ? OFFSET ?'
+            : dbProvider === 'mysql'
+            ? 'SELECT `test_db`.`User`.`id`, `test_db`.`User`.`name` FROM `test_db`.`User` WHERE 1=1'
             : 'SELECT "public"."User"."id", "public"."User"."name" FROM "public"."User" WHERE 1=1 OFFSET $1',
         ],
       ]);
