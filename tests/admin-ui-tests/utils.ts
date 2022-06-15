@@ -132,10 +132,12 @@ export const adminUITests = (
       });
     }
 
-    beforeAll(async () => {
-      await deleteAllData(projectDir);
+    describe('browser tests', () => {
+      beforeAll(async () => {
+        await deleteAllData(projectDir);
+      });
+      tests(playwright.chromium);
     });
-    tests(playwright.chromium);
   });
 };
 

@@ -139,9 +139,11 @@ export const exampleProjectTests = (
       });
     }
 
-    beforeAll(async () => {
-      await deleteAllData(projectDir);
+    describe('browser tests', () => {
+      beforeAll(async () => {
+        await deleteAllData(projectDir);
+      });
+      tests(playwright.chromium, mode);
     });
-    tests(playwright.chromium, mode);
   });
 };
