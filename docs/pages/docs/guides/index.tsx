@@ -72,9 +72,8 @@ export default function Docs() {
           Virtual fields offer a powerful way to extend your GraphQL API. This guide introduces the
           syntax and shows you how start simply and end up with a complex result.
         </Well>
-        <Well grad="grad2" heading="Images and Files Guide" href="/docs/guides/images-and-files">
-          Learn how to use the File and Image fields in Keystone to store and manage images and
-          files
+        <Well grad="grad2" heading="Images and Files" href="/docs/guides/images-and-files">
+            Learn how to store and manage Images and Files in Keystone.
         </Well>
         <Well grad="grad2" heading="Choosing a Database" href="/docs/guides/choosing-a-database">
           Keystone supports Postgres, MySQL and SQLite. This guide explains how to choose the best
