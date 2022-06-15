@@ -390,11 +390,11 @@ jobs:
 
       - name: Install Dependencies of Browsers
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        run: npx playwright install-deps chromium
+        run: yarn playwright install-deps chromium
 
       - name: Install Browsers
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        run: npx playwright install chromium
+        run: yarn playwright install chromium
 
       - name: Unit tests
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
@@ -427,11 +427,11 @@ jobs:
 
       - name: Install Dependencies of Browsers
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        run: npx playwright install-deps chromium
+        run: yarn playwright install-deps chromium
 
       - name: Install Browsers
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        run: npx playwright install chromium
+        run: yarn playwright install chromium
 
       - name: Unit tests
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
