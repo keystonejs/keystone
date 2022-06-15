@@ -4,7 +4,7 @@ import { RelatedContent } from '../../../components/RelatedContent';
 
 # Images and Files
 
-Keystone [field types](../apis/fields) contain both the `image` and `file`. These two field types can be used to reference, and if required, serve Images and/or Files from Keystone. These field types can be backed by either local or [Amazon S3 storage](https://aws.amazon.com/s3/).
+Keystone [fields](../apis/fields) include the `image` and `file` types. You can use them to reference and (if required) serve images and/or files from Keystone. This guide will show you how to configure images and files in your Keystone system so you can store assets either locally or [Amazon S3 storage](https://aws.amazon.com/s3/).
 
 ## How asset storage works in Keystone
 
@@ -44,7 +44,6 @@ dotenv.config();
  } = process.env;
 /** ... */
 ```
-
 
 ### Storing assets in `s3`
 
@@ -101,7 +100,7 @@ storage: {
 }
 ```
 
-### Customise the URL returned in GraphQL - `generateUrl`
+### Customise the URL returned in GraphQL
 
 When using an `image` or `file` field type Keystone returns the following in your GraphQL API query:
 
@@ -243,7 +242,7 @@ export const lists = {
 };
 ```
 
-## A note on `Content-Type`
+## How Content-Type differs between Images & Files
 
 - When serving **files**, Keystone uses `application/octetstream` for the `Content-Type`.
 - When serving **images** the `Content-Type` is set from the mime-type configured by the file extension.
