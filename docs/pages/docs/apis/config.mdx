@@ -447,6 +447,7 @@ S3 options:
 - `pathPrefix`: The prefix for the file, used to set the subfolder of your bucket files will be stored in.
 - `endpoint`: The endpoint to use - if provided, this endpoint will be used instead of the default amazon s3 endpoint
 - `forcePathStyle`: Force the old pathstyle of using the bucket name after the host
+- `signed.expiry`: Use S3 URL signing to keep S3 assets private. `expiry` is in seconds 
 
 ```typescript
 import { config } from '@keystone-6/core';
@@ -467,16 +468,19 @@ export default config({
   storage: {
     my_S3_images: {
       kind: 's3',
+      type: 'image',
       bucketName,
       region,
       accessKeyId,
       secretAccessKey,
       proxied: { baseUrl: '/images-proxy' },
+      signed: { expiry: 5000 }
       endpoint: 'http://127.0.0.1:9000/',
       forcePathStyle: true,
     },
     my_local_images: {
       kind: 'local',
+      type: 'image',
       generateUrl: path => `http://localhost:3000/images${path}`,
       serverRoute: {
         path: '/images',
