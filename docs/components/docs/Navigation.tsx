@@ -244,9 +244,9 @@ export function UpdatesNavigation({ releases = [] }: { releases: string[] }) {
         </Section>
       ) : null}
       <Section label="Featured News">
-        <NavItem href="/updates/general-availability">
+        <NavItem href="/docs/guides/images-and-files">
           <Emoji symbol="🖼️" alt="Picture" />
-          &nbsp; New Images & Files API
+          &nbsp; Better Images & Files
         </NavItem>
         <NavItem href="/updates/general-availability">
           <Emoji symbol="🎉" alt="Party Popper" />

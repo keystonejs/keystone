@@ -174,28 +174,15 @@ export default function WhatsNew() {
         })}
       >
         <Timeline date="9th June 2022" isLatest />
-        <Box heading="New Images & Files API">
-          You can now experiment with Keystone{' '}
-          <a href="https://github.com/keystonejs/keystone/tree/main/examples">example projects</a>{' '}
-          in a browser using the free <a href="https://codesandbox.io/">codesandbox.io</a> service.
-          Try the{' '}
-          <a href="https://githubbox.com/keystonejs/keystone/tree/main/examples/blog">
-            blog example
-          </a>{' '}
-          today. Thanks <a href="https://github.com/MurzNN">@murznn</a> for making it happen!{' '}
-          <Emoji symbol="🙌" alt="raised hands" />
+        <Box heading="Better Image & Files" link="/docs/guides/images-and-files">
+          It’s now much easier to get Images and Files working with Keystone’s new{' '}
+          <InlineCode>storage</InlineCode> configuration object.{' '}
         </Box>
         <Timeline date="9th June 2022" />
         <Box heading="Array fields in Component Blocks">
-          You can now experiment with Keystone{' '}
-          <a href="https://github.com/keystonejs/keystone/tree/main/examples">example projects</a>{' '}
-          in a browser using the free <a href="https://codesandbox.io/">codesandbox.io</a> service.
-          Try the{' '}
-          <a href="https://githubbox.com/keystonejs/keystone/tree/main/examples/blog">
-            blog example
-          </a>{' '}
-          today. Thanks <a href="https://github.com/MurzNN">@murznn</a> for making it happen!{' '}
-          <Emoji symbol="🙌" alt="raised hands" />
+          Document field components now accept re-orderable arrays. Drag and drop your way to
+          carousels, galleries, recipe steps and more. Look for the Carousel component in our{' '}
+          <a href="/docs/guides/document-field-demo">Document Field demo</a>.
         </Box>
         <Timeline date="13th May 2022" />
         <Box heading="Example projects in CodeSandbox">
@@ -452,7 +439,8 @@ export default function WhatsNew() {
         </Box>
         <Timeline date="15th November 2021" />
         <Box heading="Expanded Unique Filters" link="/releases/2021-11-15#expanded-unique-filters">
-          <InlineCode>select</InlineCode>, <InlineCode>timestamp</InlineCode>,{' '}
+          The image and files configuration options have been removed from Keystone's configuration,
+          and a new storage configuration object introduced. <InlineCode>timestamp</InlineCode>,{' '}
           <InlineCode>float</InlineCode> and <InlineCode>decimal</InlineCode> fields with{' '}
           <InlineCode>isIndexed: 'unique'</InlineCode> now have unique filters via
           <InlineCode>ListWhereUniqueInput</InlineCode>.
