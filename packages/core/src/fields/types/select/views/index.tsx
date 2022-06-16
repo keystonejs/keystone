@@ -75,7 +75,7 @@ export const Field = ({
                 setHasChanged(true);
               }}
             />
-            {value.value !== null && onChange !== undefined && (
+            {value.value !== null && onChange !== undefined && !field.isRequired && (
               <Button
                 onClick={() => {
                   onChange({ ...value, value: null });
