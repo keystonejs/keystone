@@ -202,6 +202,7 @@ export function printPrismaSchema(
 
 datasource ${provider} {
   url = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
   provider = "${provider}"
 }
 
