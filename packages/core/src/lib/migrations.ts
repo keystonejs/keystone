@@ -23,7 +23,7 @@ function runMigrateWithDbUrl<T>(dbUrl: string, shadowDbUrl: string | undefined, 
   let prevHiddenUpdateMessage = process.env.PRISMA_HIDE_UPDATE_MESSAGE;
   try {
     process.env.DATABASE_URL = dbUrl;
-    process.env.SHADOW_DATABASE_URL = shadowDbUrl;
+    process.env.SHADOW_DATABASE_URL = shadowDbUrl || ''; // avoid setting env to "undefined"
     process.env.PRISMA_HIDE_UPDATE_MESSAGE = '1';
     return cb();
   } finally {
