@@ -1,4 +1,4 @@
-import { DatabaseProvider, KeystoneContext } from '../../../../types';
+import { KeystoneContext } from '../../../../types';
 import { decimal } from '..';
 
 export const name = 'Decimal';
@@ -35,15 +35,6 @@ export const storedValues = () => [
   { name: 'price5', price: '40000.00' },
   { name: 'price6', price: null },
   { name: 'price7', price: null },
-];
-
-export const supportedFilters = (provider: DatabaseProvider) => [
-  'null_equality',
-  'equality',
-  'ordering',
-  provider !== 'postgresql' && 'in_empty_null',
-  provider !== 'postgresql' && 'in_equal',
-  'unique_equality',
 ];
 
 export const crudTests = (keystoneTestWrapper: any) => {

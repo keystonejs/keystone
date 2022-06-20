@@ -99,5 +99,3 @@ export const storedValues = () => [
   { secretFile: null, name: 'file5' },
   { secretFile: null, name: 'file6' },
 ];
-
-export const supportedFilters = () => [];

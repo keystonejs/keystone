@@ -76,5 +76,3 @@ export const storedValues = () => [
   { name: 'f', content: { document: [{ type: 'paragraph', children: [{ text: '' }] }] } },
   { name: 'g', content: { document: [{ type: 'paragraph', children: [{ text: '' }] }] } },
 ];
-
-export const supportedFilters = () => [];

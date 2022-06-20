@@ -36,5 +36,3 @@ export const storedValues = () => [
   { name: 'person6', password: { isSet: true } },
   { name: 'person7', password: { isSet: true } },
 ];
-
-export const supportedFilters = () => [];

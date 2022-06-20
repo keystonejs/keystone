@@ -34,5 +34,3 @@ export const storedValues = () => [
   { name: 'person6', enabled: false },
   { name: 'person7', enabled: false },
 ];
-
-export const supportedFilters = () => ['equality'];
