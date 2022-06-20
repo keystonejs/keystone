@@ -162,8 +162,8 @@ export default function WhyKeystonePage() {
 
         <Quote
           name="Erwann Mest"
-          title="Lead frontend engineer @contexte"
-          img="/assets/_kud.jpg"
+          title="Lead Frontend Engineer | Contexte"
+          img="/assets/erwann-mest.jpg"
           grad="grad2"
         >
           I think I'm in love. Keystone’s just what I needed: a dashboard &amp; GraphQL API that
@@ -500,14 +500,13 @@ export default function WhyKeystonePage() {
         </Section>
 
         <Quote
-          name="Dinesh Pandiyan"
-          title="JavaScript Developer | Thinkmill"
-          img="/assets/flexdinesh.jpg"
+          name="Matt Beaulne"
+          title="Developer | Shopify"
+          img="/assets/matt-beaulne.jpg"
           grad="grad2"
         >
-          With Keystone I could create a new data type, custom queries and mutations, and access it
-          all in a GraphQL playground in less than 15 mins. It’s so satisfying to make server-side
-          changes without having to spend time on the database. Keystone is magical and I love it!
+          The more I use Keystone, the more I am so impressed. If you have a project and need a
+          quick (and good) backend, I'd look into Keystone for sure.
         </Quote>
 
         <Section>
