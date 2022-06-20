@@ -12,7 +12,7 @@ Implementation and docs are WIP.
 
 To run the project locally:
 
-- Clone the https://github.com/keystonejs/keystone repository
+- Clone the <https://github.com/keystonejs/keystone> repository
 - Run `yarn` at the root directory of the repository [(we use yarn workspaces)](https://classic.yarnpkg.com/lang/en/docs/workspaces/)
 - Navigate to this directory and run `yarn dev`
 

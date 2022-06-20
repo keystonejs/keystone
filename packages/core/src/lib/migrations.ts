@@ -17,7 +17,7 @@ import { confirmPrompt, textPrompt } from './prompts';
 // We also want to silence messages from Prisma about available updates, since the developer is
 // not in control of their Prisma version.
 // https://www.prisma.io/docs/reference/api-reference/environment-variables-reference#prisma_hide_update_message
-function runMigrateWithDbUrl<T>(dbUrl: string, shadowDbUrl: string|undefined, cb: () => T): T {
+function runMigrateWithDbUrl<T>(dbUrl: string, shadowDbUrl: string | undefined, cb: () => T): T {
   let prevDBURLFromEnv = process.env.DATABASE_URL;
   let prevShadowDBURLFromEnv = process.env.SHADOW_DATABASE_URL;
   let prevHiddenUpdateMessage = process.env.PRISMA_HIDE_UPDATE_MESSAGE;
@@ -69,7 +69,7 @@ async function withMigrate<T>(
 
 export async function pushPrismaSchemaToDatabase(
   dbUrl: string,
-  shadowDbUrl: string|undefined,
+  shadowDbUrl: string | undefined,
   schema: string,
   schemaPath: string,
   shouldDropDatabase = false
@@ -180,7 +180,7 @@ function logWarnings(warnings: string[]) {
 // TODO: don't have process.exit calls here
 export async function devMigrations(
   dbUrl: string,
-  shadowDbUrl: string|undefined,
+  shadowDbUrl: string | undefined,
   prismaSchema: string,
   schemaPath: string,
   shouldDropDatabase: boolean
@@ -202,7 +202,9 @@ export async function devMigrations(
       // note that the other action devDiagnostic can return is createMigration
       // that doesn't necessarily mean that we need to create a migration
       // it only means that we don't need to reset the database
-      const devDiagnostic = await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () => migrate.devDiagnostic());
+      const devDiagnostic = await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () =>
+        migrate.devDiagnostic()
+      );
       // when the action is reset, the database is somehow inconsistent with the migrations so we need to reset it
       // (not just some migrations need to be applied but there's some inconsistency)
       if (devDiagnostic.action.tag === 'reset') {
