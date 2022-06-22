@@ -1,0 +1,22 @@
+{
+  "name": "@keystone-6/example-with-custom-session-validation",
+  "version": "0.0.1",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "keystone dev",
+    "start": "keystone start",
+    "build": "keystone build"
+  },
+  "dependencies": {
+    "@keystone-6/auth": "^3.0.0",
+    "@keystone-6/core": "^2.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.4.4"
+  },
+  "engines": {
+    "node": "^14.15 || ^16.13"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/custom-session-validation"
+}
