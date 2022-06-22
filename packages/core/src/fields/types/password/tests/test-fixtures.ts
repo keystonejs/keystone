@@ -39,8 +39,6 @@ export const storedValues = () => [
   { name: 'person7', password: { isSet: false } },
 ];
 
-export const supportedFilters = () => ['isSet'];
-
 export const crudTests = (keystoneTestWrapper: any) => {
   test(
     'setting a password below the length.min fails',

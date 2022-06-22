@@ -2,7 +2,6 @@ import fs from 'fs';
 import mime from 'mime';
 import { FileUpload, Upload } from 'graphql-upload';
 import cloudinary from 'cloudinary';
-import { DatabaseProvider } from '@keystone-6/core/types';
 import { cloudinaryImage } from './index';
 
 const path = require('path');
@@ -81,9 +80,4 @@ export const storedValues = () => [
   { image: { originalFilename: 'thinkmill1.jpeg' }, name: 'file4' },
   { image: null, name: 'file5' },
   { image: null, name: 'file6' },
-];
-
-export const supportedFilters = (provider: DatabaseProvider) => [
-  'null_equality',
-  !['postgresql', 'sqlite'].includes(provider) && 'in_empty_null',
 ];

@@ -32,5 +32,3 @@ export const storedValues = () => [
   { name: 'person6', lastOnline: '2020-06-10T10:20:30.456Z' },
   { name: 'person7', lastOnline: '2020-06-10T10:20:30.456Z' },
 ];
-
-export const supportedFilters = () => [];

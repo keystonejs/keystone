@@ -98,5 +98,3 @@ export const storedValues = () => [
   { avatar: null, name: 'file5' },
   { avatar: null, name: 'file6' },
 ];
-
-export const supportedFilters = () => [];

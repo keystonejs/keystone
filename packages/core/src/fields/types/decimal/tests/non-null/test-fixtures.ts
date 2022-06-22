@@ -33,5 +33,3 @@ export const storedValues = () => [
   { name: 'price6', price: '1.00' },
   { name: 'price7', price: '2.00' },
 ];
-
-export const supportedFilters = () => [];

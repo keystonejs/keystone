@@ -51,8 +51,6 @@ export const storedValues = () => [
   { name: 'product7', orderNumber: 7 },
 ];
 
-export const supportedFilters = () => [];
-
 export const filterTests = (withKeystone: (arg: any) => any) => {
   const _storedValues = storedValues();
   const match = async (context: KeystoneContext, where: Record<string, any>, expected: any[]) =>

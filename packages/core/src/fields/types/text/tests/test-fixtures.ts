@@ -33,5 +33,3 @@ export const storedValues = () => [
   { name: 'f', testField: '' },
   { name: 'g', testField: '' },
 ];
-
-export const supportedFilters = () => [];

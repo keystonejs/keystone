@@ -34,15 +34,6 @@ export const storedValues = () => [
   { name: 'person7', lastOnline: null },
 ];
 
-export const supportedFilters = () => [
-  'null_equality',
-  'equality',
-  'ordering',
-  'in_empty_null',
-  'in_equal',
-  'unique_equality',
-];
-
 export const filterTests = (withKeystone: (args: any) => any) => {
   const match = async (
     context: KeystoneContext,
