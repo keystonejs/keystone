@@ -500,13 +500,13 @@ export default function WhyKeystonePage() {
         </Section>
 
         <Quote
-          name="Matt Beaulne"
-          title="Developer | Shopify"
-          img="/assets/matt-beaulne.jpg"
+          name="Noorullah Ahmadzai"
+          title="Software Engineer | Gamerina"
+          img="/assets/noorullah.jpg"
           grad="grad2"
         >
-          The more I use Keystone, the more I am so impressed. If you have a project and need a
-          quick (and good) backend, I'd look into Keystone for sure.
+          I’m blown away by the amount of time I can save with Keystone. What used to take 30 days
+          in Express now takes 3 or less, not to mention the Database and Admin UI I get for free.
         </Quote>
 
         <Section>
