@@ -23,25 +23,21 @@ function runMigrateWithDbUrl<T>(dbUrl: string, shadowDbUrl: string | undefined, 
   let prevHiddenUpdateMessage = process.env.PRISMA_HIDE_UPDATE_MESSAGE;
   try {
     process.env.DATABASE_URL = dbUrl;
-    process.env.SHADOW_DATABASE_URL = shadowDbUrl || ''; // avoid setting env to "undefined"
+    setOrRemoveEnvVariable('SHADOW_DATABASE_URL', shadowDbUrl);
     process.env.PRISMA_HIDE_UPDATE_MESSAGE = '1';
     return cb();
   } finally {
-    if (prevDBURLFromEnv === undefined) {
-      delete process.env.DATABASE_URL;
-    } else {
-      process.env.DATABASE_URL = prevDBURLFromEnv;
-    }
-    if (prevShadowDBURLFromEnv === undefined) {
-      delete process.env.SHADOW_DATABASE_URL;
-    } else {
-      process.env.SHADOW_DATABASE_URL = prevShadowDBURLFromEnv;
-    }
-    if (prevHiddenUpdateMessage === undefined) {
-      delete process.env.PRISMA_HIDE_UPDATE_MESSAGE;
-    } else {
-      process.env.PRISMA_HIDE_UPDATE_MESSAGE = prevHiddenUpdateMessage;
-    }
+    setOrRemoveEnvVariable('DATABASE_URL', prevDBURLFromEnv);
+    setOrRemoveEnvVariable('SHADOW_DATABASE_URL', prevShadowDBURLFromEnv);
+    setOrRemoveEnvVariable('PRISMA_HIDE_UPDATE_MESSAGE', prevHiddenUpdateMessage);
+  }
+}
+
+function setOrRemoveEnvVariable(name: string, value: string | undefined) {
+  if (value === undefined) {
+    delete process.env[name];
+  } else {
+    process.env[name] = value;
   }
 }
 
