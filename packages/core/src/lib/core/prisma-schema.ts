@@ -201,13 +201,14 @@ export function printPrismaSchema(
 // Modify your Keystone config when you want to change this.
 
 datasource ${provider} {
-  url = env("DATABASE_URL")
-  provider = "${provider}"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  provider          = "${provider}"
 }
 
 generator client {
   provider = "prisma-client-js"
-  output = "node_modules/.prisma/client"${prismaFlags}
+  output   = "node_modules/.prisma/client"${prismaFlags}
 }
 \n`;
   for (const [listKey, { resolvedDbFields, dbMap }] of Object.entries(lists)) {
