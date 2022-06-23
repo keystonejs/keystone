@@ -93,18 +93,18 @@ test('the generated schema includes schema updates', async () => {
       (x.name.value === 'Query' || x.name.value === 'Something')
   );
   expect(objectTypes.map(x => print(x)).join('\n\n')).toMatchInlineSnapshot(`
-        "type Query {
-          someNumber: Int!
+        "type Something {
+          id: ID!
+          text: String
+          virtual: String
+        }
+        
+        type Query {
           somethings(where: SomethingWhereInput! = {}, orderBy: [SomethingOrderByInput!]! = [], take: Int, skip: Int! = 0): [Something!]
           something(where: SomethingWhereUniqueInput!): Something
           somethingsCount(where: SomethingWhereInput! = {}): Int
           keystone: KeystoneMeta!
-        }
-
-        type Something {
-          id: ID!
-          text: String
-          virtual: String
+          someNumber: Int!
         }"
       `);
 });

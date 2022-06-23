@@ -42,6 +42,9 @@ const runner = setupTestRunner({
         Query: {
           double: withAccessCheck(true, (_, { x }) => 2 * x),
           quads: withAccessCheck(falseFn, (_, { x }) => 4 * x),
+          users: withAccessCheck(true, () => {
+            return [{ name: 'foo' }];
+          }),
         },
         Mutation: {
           triple: withAccessCheck(true, (_, { x }) => 3 * x),
@@ -93,6 +96,38 @@ describe('extendGraphqlSchema', () => {
       });
 
       expect(data.triple).toEqual(30);
+    })
+  );
+  it(
+    'Default keystone resolvers remain unchanged',
+    runner(async ({ context }) => {
+      const data = await context.graphql.run({
+        query: `
+              mutation {
+                createUser(data: { name: "Real User" }) {
+                  name
+                }
+              }
+            `,
+      });
+
+      expect(data.createUser.name).toEqual('Real User');
+    })
+  );
+  it(
+    'Overrides default keystone resolvers with custom resolvers',
+    runner(async ({ context }) => {
+      const data = await context.graphql.run({
+        query: `
+              query {
+                users {
+                  name
+                }
+              }
+            `,
+      });
+
+      expect(data.users[0].name).toEqual('foo');
     })
   );
 });

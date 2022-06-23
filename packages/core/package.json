@@ -34,7 +34,7 @@
     "@babel/runtime": "^7.16.3",
     "@emotion/hash": "^0.8.0",
     "@emotion/weak-memoize": "^0.2.5",
-    "@graphql-tools/schema": "^8.3.1",
+    "@graphql-tools/schema": "npm:@graphql-tools/schema@9.0.0-alpha-7052f15d.0",
     "@graphql-ts/extend": "^0.4.1",
     "@graphql-ts/schema": "^0.5.1",
     "@hapi/iron": "^6.0.0",
