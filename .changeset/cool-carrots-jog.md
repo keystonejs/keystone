@@ -39,7 +39,7 @@ Example:
 config({
   // ... your prisma schema
   db: {
-    shadowUrl: "postgres://dbuser:dbpass@localhost:5432/shadowdb",
+    shadowDatabaseUrl: "postgres://dbuser:dbpass@localhost:5432/shadowdb",
   },
   // ...
 }),

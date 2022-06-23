@@ -123,7 +123,7 @@ export type { ListSchemaConfig, ListConfig, BaseFields, MaybeSessionFunction, Ma
 
 export type DatabaseConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   url: string;
-  shadowUrl?: string;
+  shadowDatabaseUrl?: string;
   onConnect?: (args: KeystoneContext<TypeInfo>) => Promise<void>;
   useMigrations?: boolean;
   enableLogging?: boolean;
