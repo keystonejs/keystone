@@ -28,6 +28,16 @@ const idParsers = {
     }
     throw userInputError('Only an integer can be passed to id filters');
   },
+  autoincrementBigInt(val: string | null) {
+    if (val === null) {
+      throw userInputError('Only a bigint can be passed to id filters');
+    }
+    try {
+      return BigInt(val);
+    } catch (err) {
+      throw userInputError('Only a bigint can be passed to id filters');
+    }
+  },
   cuid(val: string | null) {
     // isCuid is just "it's a string and it starts with c"
     // https://github.com/ericelliott/cuid/blob/215b27bdb78d3400d4225a4eeecb3b71891a5f6f/index.js#L69-L73
@@ -72,17 +82,16 @@ const filterArg = graphql.arg({ type: IDFilter });
 
 function resolveVal(
   input: Exclude<graphql.InferValueFromArg<typeof filterArg>, undefined>,
-  kind: IdFieldConfig['kind']
+  parseId: (id: string | null) => unknown
 ): any {
   if (input === null) {
     throw userInputError('id filter cannot be null');
   }
-  const idParser = idParsers[kind];
   const obj: any = {};
   for (const key of ['equals', 'gt', 'gte', 'lt', 'lte'] as const) {
     const val = input[key];
     if (val !== undefined) {
-      const parsed = idParser(val);
+      const parsed = parseId(val);
       obj[key] = parsed;
     }
   }
@@ -92,11 +101,11 @@ function resolveVal(
       if (val === null) {
         throw userInputError(`${key} id filter cannot be null`);
       }
-      obj[key] = val.map(x => idParser(x));
+      obj[key] = val.map(x => parseId(x));
     }
   }
   if (input.not !== undefined) {
-    obj.not = resolveVal(input.not, kind);
+    obj.not = resolveVal(input.not, parseId);
   }
   return obj;
 }
@@ -104,11 +113,15 @@ function resolveVal(
 export const idFieldType =
   (config: IdFieldConfig): FieldTypeFunc<BaseListTypeInfo> =>
   meta => {
-    const parseVal = idParsers[config.kind];
+    const parseVal =
+      config.kind === 'autoincrement' && config.type === 'BigInt'
+        ? idParsers.autoincrementBigInt
+        : idParsers[config.kind];
     return fieldType({
       kind: 'scalar',
       mode: 'required',
-      scalar: config.kind === 'autoincrement' ? 'Int' : 'String',
+      scalar:
+        config.kind === 'autoincrement' ? (config.type === 'BigInt' ? 'BigInt' : 'Int') : 'String',
       nativeType: meta.provider === 'postgresql' && config.kind === 'uuid' ? 'Uuid' : undefined,
       default: { kind: config.kind },
     })({
@@ -120,7 +133,7 @@ export const idFieldType =
         where: {
           arg: filterArg,
           resolve(val) {
-            return resolveVal(val, config.kind);
+            return resolveVal(val, parseVal);
           },
         },
         uniqueWhere: { arg: graphql.arg({ type: graphql.ID }), resolve: parseVal },

@@ -14,7 +14,9 @@ export async function createAuthToken(
   identityField: string,
   identity: string,
   dbItemAPI: KeystoneDbAPI<any>[string]
-): Promise<{ success: false } | { success: true; itemId: string | number; token: string }> {
+): Promise<
+  { success: false } | { success: true; itemId: string | number | bigint; token: string }
+> {
   const item = await dbItemAPI.findOne({ where: { [identityField]: identity } });
   if (item) {
     return { success: true, itemId: item.id, token: generateToken(20) };

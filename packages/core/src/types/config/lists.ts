@@ -8,9 +8,16 @@ import type { BaseFields, FilterOrderArgs } from './fields';
 
 export type ListSchemaConfig = Record<string, ListConfig<any, BaseFields<BaseListTypeInfo>>>;
 
-export type IdFieldConfig = {
-  kind: 'cuid' | 'uuid' | 'autoincrement';
-};
+export type IdFieldConfig =
+  | { kind: 'cuid' | 'uuid' }
+  | {
+      kind: 'autoincrement';
+      /**
+       * Configures the database type of the id field. Only `Int` is supported on SQLite.
+       * @default 'Int'
+       */
+      type?: 'Int' | 'BigInt';
+    };
 
 export type ListConfig<
   ListTypeInfo extends BaseListTypeInfo,
