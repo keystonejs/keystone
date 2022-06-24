@@ -32,11 +32,11 @@ const idParsers = {
     if (val === null) {
       throw userInputError('Only a bigint can be passed to id filters');
     }
-    const parsed = BigInt(val);
-    if (typeof parsed === 'bigint') {
-      return parsed;
+    try {
+      return BigInt(val);
+    } catch (err) {
+      throw userInputError('Only a bigint can be passed to id filters');
     }
-    throw userInputError('Only a bigint can be passed to id filters');
   },
   cuid(val: string | null) {
     // isCuid is just "it's a string and it starts with c"
