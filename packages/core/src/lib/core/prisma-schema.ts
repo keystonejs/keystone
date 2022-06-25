@@ -223,7 +223,7 @@ generator client {
       }
     }
     if (dbMap !== undefined) {
-      prismaSchema += `\n@@map(${JSON.stringify(dbMap)})`;
+      prismaSchema += ` @@map(${JSON.stringify(dbMap)})`;
     }
     prismaSchema += `\n}\n`;
   }
