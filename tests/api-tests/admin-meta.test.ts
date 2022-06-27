@@ -1,4 +1,4 @@
-import { list } from '@keystone-6/core';
+import { gql, list } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
 import { staticAdminMetaQuery } from '@keystone-6/core/src/admin-ui/admin-meta-graphql';
 import { setupTestRunner } from '@keystone-6/core/testing';
@@ -102,5 +102,44 @@ test(
         },
       },
     });
+  })
+);
+
+const names = {
+  label: 'Test Stuff',
+  plural: 'Test Things',
+  singular: 'Test Thing',
+  path: 'thing',
+};
+test(
+  'ui.{label,plural,singular,path} are returned in the admin meta',
+
+  setupTestRunner({
+    config: apiTestConfig({
+      lists: {
+        Test: list({
+          fields: { name: text() },
+          ui: names,
+        }),
+      },
+    }),
+  })(async ({ context }) => {
+    const res = await context.sudo().graphql.raw({
+      query: gql`
+        query {
+          keystone {
+            adminMeta {
+              list(key: "Test") {
+                label
+                singular
+                plural
+                path
+              }
+            }
+          }
+        }
+      `,
+    });
+    expect(res.data!.keystone.adminMeta.list).toEqual(names);
   })
 );
