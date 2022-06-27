@@ -40,7 +40,7 @@ dotenv.config();
   S3_ACCESS_KEY_ID: accessKeyId = 'keystone',
   S3_SECRET_ACCESS_KEY: secretAccessKey = 'keystone',
   // The base URL to serve assets from
-  ASSET_BASE_URL: baseUrl = 'http://localhost:3000,
+  ASSET_BASE_URL: baseUrl = 'http://localhost:3000',
  } = process.env;
 /** ... */
 ```
@@ -66,7 +66,7 @@ storage: {
     // The S3 Access Key ID pulled from the S3_ACCESS_KEY_ID environment variable
     accessKeyId,
     // The S3 Secret pulled from the S3_SECRET_ACCESS_KEY environment variable
-    secretAccessKey
+    secretAccessKey,
     // The S3 links will be signed so they remain private
     signed: { expiry: 5000 },
   },
@@ -141,7 +141,7 @@ dotenv.config();
    S3_ACCESS_KEY_ID: accessKeyId = 'keystone',
    S3_SECRET_ACCESS_KEY: secretAccessKey = 'keystone',
    // The base URL to serve assets from
-   ASSET_BASE_URL: baseUrl = 'http://localhost:3000,
+   ASSET_BASE_URL: baseUrl = 'http://localhost:3000',
  } = process.env;
 
 export default config({
@@ -178,7 +178,7 @@ export default config({
       // The S3 Access Key ID pulled from the S3_ACCESS_KEY_ID environment variable above
       accessKeyId,
       // The S3 Secret pulled from the S3_SECRET_ACCESS_KEY environment variable above
-      secretAccessKey
+      secretAccessKey,
       // The S3 links will be signed so they remain private
       signed: { expiry: 5000 },
     },
