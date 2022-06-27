@@ -66,13 +66,13 @@ function printField(
     const updatedAt = field.updatedAt ? ' @updatedAt' : '';
     return `${fieldPath} ${field.scalar}${
       modifiers[field.mode]
-    }${updatedAt}${nativeType}${defaultValue}${index}${map}`;
+    }${updatedAt}${nativeType}${defaultValue}${map}${index}`;
   }
   if (field.kind === 'enum') {
     const index = printIndex(fieldPath, field.index);
     const defaultValue = field.default ? ` @default(${field.default.value})` : '';
     const map = field.map ? ` @map(${JSON.stringify(field.map)})` : '';
-    return `${fieldPath} ${field.name}${modifiers[field.mode]}${defaultValue}${index}${map}`;
+    return `${fieldPath} ${field.name}${modifiers[field.mode]}${defaultValue}${map}${index}`;
   }
   if (field.kind === 'multi') {
     return Object.entries(field.fields)
