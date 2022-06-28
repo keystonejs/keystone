@@ -46,7 +46,10 @@ const componentBlocks = {
 test('delete backward at start', () => {
   let editor = makeEditor(
     <editor>
-      <component-block component="withChildElements" props={{ prop: '' }}>
+      <component-block
+        component="withChildElements"
+        props={{ prop: '', block: null, inline: null }}
+      >
         <component-block-prop propPath={['block']}>
           <paragraph>
             <text>
@@ -91,7 +94,10 @@ test('delete backward at start', () => {
 test('insert break in last (inline) child prop', () => {
   let editor = makeEditor(
     <editor>
-      <component-block component="withChildElements" props={{ prop: '' }}>
+      <component-block
+        component="withChildElements"
+        props={{ prop: '', block: null, inline: null }}
+      >
         <component-block-prop propPath={['block']}>
           <paragraph>
             <text>some text</text>
@@ -117,6 +123,8 @@ test('insert break in last (inline) child prop', () => {
         component="withChildElements"
         props={
           Object {
+            "block": null,
+            "inline": null,
             "prop": "",
           }
         }
@@ -164,7 +172,10 @@ test('insert break in last (inline) child prop', () => {
 test('insert break in first (block) child prop in empty paragraph', () => {
   let editor = makeEditor(
     <editor>
-      <component-block component="withChildElements" props={{ prop: '' }}>
+      <component-block
+        component="withChildElements"
+        props={{ prop: '', block: null, inline: null }}
+      >
         <component-block-prop propPath={['block']}>
           <paragraph>
             <text>some text</text>
@@ -192,6 +203,8 @@ test('insert break in first (block) child prop in empty paragraph', () => {
         component="withChildElements"
         props={
           Object {
+            "block": null,
+            "inline": null,
             "prop": "",
           }
         }
@@ -234,7 +247,10 @@ test('insert break in first (block) child prop in empty paragraph', () => {
 test('insert break in last (block) child prop in empty paragraph', () => {
   let editor = makeEditor(
     <editor>
-      <component-block component="withChildElementsBlockLast" props={{ prop: '' }}>
+      <component-block
+        component="withChildElementsBlockLast"
+        props={{ prop: '', block: null, inline: null }}
+      >
         <component-inline-prop propPath={['inline']}>
           <text>some more text</text>
         </component-inline-prop>
@@ -262,6 +278,8 @@ test('insert break in last (block) child prop in empty paragraph', () => {
         component="withChildElementsBlockLast"
         props={
           Object {
+            "block": null,
+            "inline": null,
             "prop": "",
           }
         }
@@ -308,7 +326,10 @@ test('insert break in last (block) child prop in empty paragraph', () => {
 test('insert break in first (inline) child prop', () => {
   let editor = makeEditor(
     <editor>
-      <component-block component="withChildElementsBlockLast" props={{ prop: '' }}>
+      <component-block
+        component="withChildElementsBlockLast"
+        props={{ prop: '', block: null, inline: null }}
+      >
         <component-inline-prop propPath={['inline']}>
           <text>
             some more
@@ -334,6 +355,8 @@ test('insert break in first (inline) child prop', () => {
         component="withChildElementsBlockLast"
         props={
           Object {
+            "block": null,
+            "inline": null,
             "prop": "",
           }
         }

@@ -249,7 +249,7 @@ test("link shortcut doesn't do anything when links are disabled globally in the 
 test("link shortcut doesn't do anything when inside of a component block with links disabled", () => {
   let editor = makeEditor(
     <editor>
-      <component-block component="comp" props={{}}>
+      <component-block component="comp" props={{ child: null }}>
         <component-inline-prop propPath={['child']}>
           <text>
             [content](https://keystonejs.com
@@ -276,7 +276,11 @@ test("link shortcut doesn't do anything when inside of a component block with li
     <editor>
       <component-block
         component="comp"
-        props={Object {}}
+        props={
+          Object {
+            "child": null,
+          }
+        }
       >
         <component-inline-prop
           propPath={
@@ -302,7 +306,7 @@ test("link shortcut doesn't do anything when inside of a component block with li
 test('link shortcut works when inside of a component block with links option inherited', () => {
   let editor = makeEditor(
     <editor>
-      <component-block component="comp" props={{}}>
+      <component-block component="comp" props={{ child: null }}>
         <component-inline-prop propPath={['child']}>
           <text>
             [content](https://keystonejs.com
@@ -329,7 +333,11 @@ test('link shortcut works when inside of a component block with links option inh
     <editor>
       <component-block
         component="comp"
-        props={Object {}}
+        props={
+          Object {
+            "child": null,
+          }
+        }
       >
         <component-inline-prop
           propPath={
