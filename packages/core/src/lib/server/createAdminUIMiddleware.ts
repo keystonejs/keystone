@@ -46,6 +46,7 @@ export function createAdminUIMiddlewareWithNextApp(
         : session
         ? context.session !== undefined
         : true;
+
       const shouldRedirect = await ui?.pageMiddleware?.({ context, isValidSession });
       if (shouldRedirect) {
         res.header('Cache-Control', 'no-cache, max-age=0');

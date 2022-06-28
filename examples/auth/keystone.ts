@@ -64,7 +64,6 @@ export default withAuth(
       url: process.env.DATABASE_URL || 'file:./keystone-example.db',
     },
     lists,
-    ui: {},
     session:
       // Stateless sessions will store the listKey and itemId of the signed-in user in a cookie
       statelessSessions({
