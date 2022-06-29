@@ -438,7 +438,6 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
   const listsConfig = config.lists;
 
   let intermediateLists;
-
   intermediateLists = Object.fromEntries(
     Object.entries(getIsEnabled(listsConfig)).map(([key, isEnabled]) => [
       key,
@@ -453,11 +452,12 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
    * The object will be populated at the end of this function, and the reference will be maintained
    */
   const listsRef: Record<string, InitialisedList> = {};
-  /** Block statements to contain variables only being used within them */
+
   {
     const listGraphqlTypes = getListGraphqlTypes(listsConfig, listsRef, intermediateLists);
     intermediateLists = getListsWithInitialisedFields(config, listGraphqlTypes, intermediateLists);
   }
+
   {
     const resolvedDBFieldsForLists = resolveRelationships(intermediateLists);
     intermediateLists = Object.fromEntries(
