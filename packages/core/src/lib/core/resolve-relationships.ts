@@ -16,10 +16,7 @@ export type ResolvedRelationDBField =
       foreignIdField: { kind: 'none' } | { kind: 'owned' | 'owned-unique'; map: string };
     });
 
-export type ListsWithResolvedRelations = Record<
-  string,
-  { resolvedDbFields: FieldsWithResolvedRelations }
->;
+export type ListsWithResolvedRelations = Record<string, FieldsWithResolvedRelations>;
 
 export type ResolvedDBField =
   | ResolvedRelationDBField
@@ -288,7 +285,7 @@ export function resolveRelationships(
       );
       // then we add the opposites to one-sided relations
       Object.assign(resolvedDbFields, outOfOrderDbFields);
-      return [listKey, { resolvedDbFields }];
+      return [listKey, resolvedDbFields];
     })
   );
 }

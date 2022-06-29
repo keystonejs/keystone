@@ -1,5 +1,5 @@
 import { ScalarDBField, ScalarDBFieldDefault, DatabaseProvider } from '../../types';
-import { ResolvedDBField, ListsWithResolvedRelations } from './resolve-relationships';
+import { ResolvedDBField } from './resolve-relationships';
 import { InitialisedList } from './types-for-lists';
 import { getDBFieldKeyForFieldOnMultiField } from './utils';
 
@@ -54,7 +54,7 @@ function printField(
   fieldPath: string,
   field: Exclude<ResolvedDBField, { kind: 'none' }>,
   datasourceName: string,
-  lists: ListsWithResolvedRelations
+  lists: Record<string, InitialisedList>
 ): string {
   if (field.kind === 'scalar') {
     const nativeType = printNativeType(field.nativeType, datasourceName);
@@ -112,7 +112,7 @@ function printField(
   return assertNever(field);
 }
 
-function collectEnums(lists: ListsWithResolvedRelations) {
+function collectEnums(lists: Record<string, InitialisedList>) {
   const enums: Record<string, { values: readonly string[]; firstDefinedByRef: string }> = {};
   for (const [listKey, { resolvedDbFields }] of Object.entries(lists)) {
     for (const [fieldPath, field] of Object.entries(resolvedDbFields)) {
