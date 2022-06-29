@@ -2,4 +2,4 @@
 '@keystone-ui/fields': minor
 ---
 
-Added `FieldDescription` component
+Adds a `FieldDescription` component

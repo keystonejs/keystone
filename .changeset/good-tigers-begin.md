@@ -2,4 +2,4 @@
 '@keystone-6/fields-document': patch
 ---
 
-Fixed layout and component block floating toolbars being shown behind other elements
+Fixes the layout and component block floating toolbars from being shown behind other elements

@@ -2,4 +2,4 @@
 '@keystone-6/core': minor
 ---
 
-Fix `graphQLSchemaExtension` so that custom resolvers override the defaults
+Fixes for `graphQLSchemaExtension`, custom resolvers, if replacing default resolvers, were previously broken
