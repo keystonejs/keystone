@@ -4,4 +4,4 @@
 '@keystone-6/fields-document': minor
 ---
 
-Added `ui.description` option to fields to show a description below the label in the Admin UI
+Adds `ui.description` for fields to show a description below the label in the Admin UI

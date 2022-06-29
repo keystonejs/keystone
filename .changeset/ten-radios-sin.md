@@ -2,4 +2,4 @@
 '@keystone-6/core': patch
 ---
 
-Fixed setting `isIndexed: true` and `db.map` generating an invalid Prisma schema.
+Fixes the generation of an invalid Prisma schema when `{field}.isIndexed: true` and `{field}.db.map` are set
