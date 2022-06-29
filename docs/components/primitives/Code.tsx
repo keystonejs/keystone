@@ -117,6 +117,7 @@ export function Code({ children, className }: { children: string; className?: st
               if (collapseState.find(({ start }) => start === i)?.isCollapsed) {
                 return (
                   <button
+                    key={i}
                     onClick={() => {
                       let updated = collapseState.map(item =>
                         item.start === i ? { ...item, isCollapsed: false } : item

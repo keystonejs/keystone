@@ -171,7 +171,10 @@ export function DocsNavigation() {
           Hooks <Badge look="success">Updated</Badge>
         </NavItem>
         <NavItem href="/docs/guides/auth-and-access-control">
-          Auth and Access Control <Badge look="success">New</Badge>
+          Auth & Access Control <Badge look="success">New</Badge>
+        </NavItem>
+        <NavItem href="/docs/guides/images-and-files">
+          Images & Files <Badge look="success">New</Badge>
         </NavItem>
         {/* Disable placeholder for now */}
         {/* <NavItem href="/docs/guides/schema-extension" isPlaceholder>
@@ -244,6 +247,10 @@ export function UpdatesNavigation({ releases = [] }: { releases: string[] }) {
         </Section>
       ) : null}
       <Section label="Featured News">
+        <NavItem href="/docs/guides/images-and-files">
+          <Emoji symbol="🖼️" alt="Picture" />
+          &nbsp; Better Images & Files
+        </NavItem>
         <NavItem href="/updates/general-availability">
           <Emoji symbol="🎉" alt="Party Popper" />
           &nbsp; General Availability Release

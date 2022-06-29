@@ -12,6 +12,7 @@
   "dependencies": {
     "@babel/runtime": "^7.16.3",
     "@emotion/cache": "11.7.1",
+    "@emotion/css": "^11.7.1",
     "@emotion/react": "^11.7.1",
     "@emotion/server": "11.4.0",
     "@emotion/weak-memoize": "^0.2.5",
