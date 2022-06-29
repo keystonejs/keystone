@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/examples-app-basic",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -10,13 +10,13 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
-    "@keystone-6/auth": "^3.0.0",
-    "@keystone-6/core": "^2.0.0",
+    "@keystone-6/auth": "^4.0.0",
+    "@keystone-6/core": "^2.1.0",
     "@keystone-6/document-renderer": "^1.1.0",
-    "@keystone-6/fields-document": "^3.0.0",
+    "@keystone-6/fields-document": "^4.0.0",
     "@keystone-ui/button": "^7.0.0",
     "@keystone-ui/core": "^5.0.0",
-    "@keystone-ui/fields": "^7.0.0",
+    "@keystone-ui/fields": "^7.1.0",
     "@keystone-ui/icons": "^6.0.0",
     "@keystone-ui/tooltip": "^6.0.0",
     "@types/react": "^18.0.9",

@@ -1,5 +1,11 @@
 # @keystone-ui/fields
 
+## 7.1.0
+
+### Minor Changes
+
+- [#7578](https://github.com/keystonejs/keystone/pull/7578) [`29db9b5de`](https://github.com/keystonejs/keystone/commit/29db9b5de4d4a13150730f797463e3f8bb1c75d8) Thanks [@Achisingh](https://github.com/Achisingh)! - Adds a `FieldDescription` component
+
 ## 7.0.0
 
 ### Major Changes

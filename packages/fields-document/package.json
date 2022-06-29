@@ -1,7 +1,7 @@
 {
   "name": "@keystone-6/fields-document",
   "description": "KeystoneJS Document Field Type",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "license": "MIT",
   "main": "dist/keystone-6-fields-document.cjs.js",
   "module": "dist/keystone-6-fields-document.esm.js",
@@ -20,7 +20,7 @@
     ]
   },
   "peerDependencies": {
-    "@keystone-6/core": "^2.0.0"
+    "@keystone-6/core": "^2.1.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
@@ -32,7 +32,7 @@
     "@keystone-6/document-renderer": "^1.1.0",
     "@keystone-ui/button": "^7.0.0",
     "@keystone-ui/core": "^5.0.0",
-    "@keystone-ui/fields": "^7.0.0",
+    "@keystone-ui/fields": "^7.1.0",
     "@keystone-ui/icons": "^6.0.0",
     "@keystone-ui/popover": "^6.0.0",
     "@keystone-ui/tooltip": "^6.0.0",

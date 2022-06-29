@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/core",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "license": "MIT",
   "main": "dist/keystone-6-core.cjs.js",
   "module": "dist/keystone-6-core.esm.js",
@@ -40,7 +40,7 @@
     "@hapi/iron": "^6.0.0",
     "@keystone-ui/button": "^7.0.0",
     "@keystone-ui/core": "^5.0.0",
-    "@keystone-ui/fields": "^7.0.0",
+    "@keystone-ui/fields": "^7.1.0",
     "@keystone-ui/icons": "^6.0.0",
     "@keystone-ui/loading": "^6.0.0",
     "@keystone-ui/modals": "^6.0.0",

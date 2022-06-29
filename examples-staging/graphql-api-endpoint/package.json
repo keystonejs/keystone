@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-graphql-api-endpoint",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "private": true,
   "scripts": {
     "dev": "keystone dev",
@@ -12,9 +12,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
-    "@keystone-6/auth": "^3.0.0",
-    "@keystone-6/core": "^2.0.0",
-    "@keystone-6/fields-document": "^3.0.0"
+    "@keystone-6/auth": "^4.0.0",
+    "@keystone-6/core": "^2.1.0",
+    "@keystone-6/fields-document": "^4.0.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/examples-staging/graphql-api-endpoint"
 }
