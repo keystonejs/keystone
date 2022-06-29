@@ -2,4 +2,4 @@
 '@keystone-6/core': patch
 ---
 
-Hide the clear button if is-required is true for segmented-control
+Changes segmented control to not show a clear button if `isRequired` is set
