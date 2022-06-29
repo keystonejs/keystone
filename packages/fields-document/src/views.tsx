@@ -183,6 +183,7 @@ export const controller = (
       if (!documentFromServer) {
         return [{ type: 'paragraph', children: [{ text: '' }] }];
       }
+      // make a temporary editor to normalize the document
       const editor = createDocumentEditor(
         config.fieldMeta.documentFeatures,
         componentBlocks,
