@@ -167,7 +167,14 @@ export async function addRelationshipDataToComponentProps(
         await Promise.all(
           Object.keys(schema.fields).map(async key => [
             key,
-            await addRelationshipDataToComponentProps(schema.fields[key], val[key], fetchData),
+            // if val[key] === undefined, we know a new field was added to the schema
+            // but there is old data in the database that doesn't have the new field
+            // we're intentionally not just magically adding it because we may want to
+            // have a more optimised strategy of hydrating relationships so we don't
+            // want to add something unrelated that requires the current "traverse everything" strategy
+            val[key] === undefined
+              ? undefined
+              : await addRelationshipDataToComponentProps(schema.fields[key], val[key], fetchData),
           ])
         )
       );

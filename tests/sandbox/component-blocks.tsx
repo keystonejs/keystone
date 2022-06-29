@@ -563,4 +563,18 @@ export const componentBlocks = {
     },
     chromeless: true,
   }),
+  addingFieldsLater: component({
+    preview: () => null,
+    label: 'Adding Fields Later',
+    schema: {
+      someText: fields.text({ label: 'Some text' }),
+      // try
+      // 1. creating a document with this component blocks
+      // 2. uncommenting the lines below
+      // 3. view the document again and see if the fields are there
+      // someObject: fields.object({
+      //   someTextAddedLater: fields.text({ label: 'Some text added later' }),
+      // }),
+    },
+  }),
 };

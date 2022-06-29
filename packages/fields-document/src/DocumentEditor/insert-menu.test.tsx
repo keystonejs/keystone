@@ -373,8 +373,7 @@ test('insertMenu thing typing', () => {
       <paragraph>
         <text />
       </paragraph>
-    </editor>,
-    { normalization: 'normalize' }
+    </editor>
   );
   [...'/thing'].forEach(char => {
     editor.insertText(char);

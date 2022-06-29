@@ -191,6 +191,7 @@ const makeEditorWithComplexComponentBlock = () =>
         component="complex"
         props={{
           object: {
+            block: null,
             conditional: {
               discriminant: false,
               value: null,
@@ -201,6 +202,7 @@ const makeEditorWithComplexComponentBlock = () =>
               discriminant: 'a',
               value: '',
             },
+            inline: null,
             many: [],
           },
         }}
@@ -311,6 +313,7 @@ test('preview props conditional change', () => {
         props={
           Object {
             "object": Object {
+              "block": null,
               "conditional": Object {
                 "discriminant": true,
                 "value": null,
@@ -319,6 +322,7 @@ test('preview props conditional change', () => {
                 "discriminant": "a",
                 "value": "",
               },
+              "inline": null,
               "many": Array [],
               "prop": "",
               "select": "a",

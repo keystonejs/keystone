@@ -311,194 +311,197 @@ export function withComponentBlocks(
 
   editor.normalizeNode = entry => {
     const [node, path] = entry;
-    if (Element.isElement(node) || Editor.isEditor(node)) {
-      if (
-        node.type === 'component-inline-prop' &&
-        !node.propPath &&
-        (node.children.length !== 1 ||
-          !Text.isText(node.children[0]) ||
-          node.children[0].text !== '')
-      ) {
-        Transforms.removeNodes(editor, {
-          at: path,
-        });
-        return;
-      }
+    if (
+      node.type === 'component-inline-prop' &&
+      !node.propPath &&
+      (node.children.length !== 1 || !Text.isText(node.children[0]) || node.children[0].text !== '')
+    ) {
+      Transforms.removeNodes(editor, {
+        at: path,
+      });
+      return;
+    }
 
-      if (Element.isElement(node) && node.type === 'component-block') {
-        const componentBlock = blockComponents[node.component];
-        if (componentBlock) {
-          const rootSchema = { kind: 'object' as const, fields: componentBlock.schema };
-          for (const [propPath, arrayField] of findArrayFieldsWithSingleChildField(
-            rootSchema,
-            node.props
-          )) {
+    if (node.type === 'component-block') {
+      const componentBlock = blockComponents[node.component];
+      if (componentBlock) {
+        const rootSchema = { kind: 'object' as const, fields: componentBlock.schema };
+
+        const updatedProps = addMissingFields(node.props, rootSchema) as Record<string, unknown>;
+        if (updatedProps !== node.props) {
+          Transforms.setNodes(editor, { props: updatedProps }, { at: path });
+          return;
+        }
+
+        for (const [propPath, arrayField] of findArrayFieldsWithSingleChildField(
+          rootSchema,
+          node.props
+        )) {
+          if (
+            node.children.length === 1 &&
+            node.children[0].type === 'component-inline-prop' &&
+            node.children[0].propPath === undefined
+          ) {
+            break;
+          }
+          const nodesWithin: [
+            number,
+            Element & { type: 'component-block-prop' | 'component-inline-prop' }
+          ][] = [];
+          for (const [idx, childNode] of node.children.entries()) {
             if (
-              node.children.length === 1 &&
-              node.children[0].type === 'component-inline-prop' &&
-              node.children[0].propPath === undefined
+              (childNode.type === 'component-block-prop' ||
+                childNode.type === 'component-inline-prop') &&
+              childNode.propPath !== undefined
             ) {
-              break;
-            }
-            const nodesWithin: [
-              number,
-              Element & { type: 'component-block-prop' | 'component-inline-prop' }
-            ][] = [];
-            for (const [idx, childNode] of node.children.entries()) {
-              if (
-                (childNode.type === 'component-block-prop' ||
-                  childNode.type === 'component-inline-prop') &&
-                childNode.propPath !== undefined
-              ) {
-                const subPath = childNode.propPath.concat();
-                while (subPath.length) {
-                  if (typeof subPath.pop() === 'number') break;
-                }
+              const subPath = childNode.propPath.concat();
+              while (subPath.length) {
+                if (typeof subPath.pop() === 'number') break;
+              }
 
-                if (areArraysEqual(propPath, subPath)) {
-                  nodesWithin.push([idx, childNode]);
-                }
+              if (areArraysEqual(propPath, subPath)) {
+                nodesWithin.push([idx, childNode]);
               }
-            }
-            const arrVal = getValueAtPropPath(node.props, propPath) as unknown[];
-            const prevKeys = getKeysForArrayValue(arrVal);
-            const prevKeysSet = new Set(prevKeys);
-            const alreadyUsedIndicies = new Set<number>();
-            const newVal: unknown[] = [];
-            const newKeys: string[] = [];
-            const getNewKey = () => {
-              let key = getNewArrayElementKey();
-              while (prevKeysSet.has(key)) {
-                key = getNewArrayElementKey();
-              }
-              return key;
-            };
-            for (const [, node] of nodesWithin) {
-              const idxFromValue = node.propPath![propPath.length];
-              assert(typeof idxFromValue === 'number');
-              if (
-                arrVal.length <= idxFromValue ||
-                (alreadyUsedIndicies.has(idxFromValue) && isEmptyChildFieldNode(node))
-              ) {
-                newVal.push(getInitialPropsValue(arrayField.element));
-                newKeys.push(getNewKey());
-              } else {
-                alreadyUsedIndicies.add(idxFromValue);
-                newVal.push(arrVal[idxFromValue]);
-                newKeys.push(
-                  alreadyUsedIndicies.has(idxFromValue) ? getNewKey() : prevKeys[idxFromValue]
-                );
-              }
-            }
-            setKeysForArrayValue(newVal, newKeys);
-            if (!areArraysEqual(arrVal, newVal)) {
-              const transformedProps = replaceValueAtPropPath(
-                rootSchema,
-                node.props,
-                newVal,
-                propPath
-              );
-              Transforms.setNodes(
-                editor,
-                { props: transformedProps as Record<string, unknown> },
-                { at: path }
-              );
-              for (const [idx, [idxInChildrenOfBlock, nodeWithin]] of nodesWithin.entries()) {
-                const newPropPath = [...nodeWithin.propPath!];
-                newPropPath[propPath.length] = idx;
-                Transforms.setNodes(
-                  editor,
-                  { propPath: newPropPath },
-                  { at: [...path, idxInChildrenOfBlock] }
-                );
-              }
-              return;
             }
           }
-
-          const missingKeys = new Map(
-            findChildPropPaths(node.props, componentBlock.schema).map(x => [
-              JSON.stringify(x.path) as string | undefined,
-              x.options.kind,
-            ])
-          );
-
-          node.children.forEach(node => {
-            assert(node.type === 'component-block-prop' || node.type === 'component-inline-prop');
-            missingKeys.delete(JSON.stringify(node.propPath));
-          });
-          if (missingKeys.size) {
-            Transforms.insertNodes(
-              editor,
-              [...missingKeys].map(([prop, kind]) => ({
-                type: `component-${kind}-prop` as const,
-                propPath: prop ? JSON.parse(prop) : prop,
-                children: [{ text: '' }],
-              })),
-              { at: [...path, node.children.length] }
+          const arrVal = getValueAtPropPath(node.props, propPath) as unknown[];
+          const prevKeys = getKeysForArrayValue(arrVal);
+          const prevKeysSet = new Set(prevKeys);
+          const alreadyUsedIndicies = new Set<number>();
+          const newVal: unknown[] = [];
+          const newKeys: string[] = [];
+          const getNewKey = () => {
+            let key = getNewArrayElementKey();
+            while (prevKeysSet.has(key)) {
+              key = getNewArrayElementKey();
+            }
+            return key;
+          };
+          for (const [, node] of nodesWithin) {
+            const idxFromValue = node.propPath![propPath.length];
+            assert(typeof idxFromValue === 'number');
+            if (
+              arrVal.length <= idxFromValue ||
+              (alreadyUsedIndicies.has(idxFromValue) && isEmptyChildFieldNode(node))
+            ) {
+              newVal.push(getInitialPropsValue(arrayField.element));
+              newKeys.push(getNewKey());
+            } else {
+              alreadyUsedIndicies.add(idxFromValue);
+              newVal.push(arrVal[idxFromValue]);
+              newKeys.push(
+                alreadyUsedIndicies.has(idxFromValue) ? getNewKey() : prevKeys[idxFromValue]
+              );
+            }
+          }
+          setKeysForArrayValue(newVal, newKeys);
+          if (!areArraysEqual(arrVal, newVal)) {
+            const transformedProps = replaceValueAtPropPath(
+              rootSchema,
+              node.props,
+              newVal,
+              propPath
             );
+            Transforms.setNodes(
+              editor,
+              { props: transformedProps as Record<string, unknown> },
+              { at: path }
+            );
+            for (const [idx, [idxInChildrenOfBlock, nodeWithin]] of nodesWithin.entries()) {
+              const newPropPath = [...nodeWithin.propPath!];
+              newPropPath[propPath.length] = idx;
+              Transforms.setNodes(
+                editor,
+                { propPath: newPropPath },
+                { at: [...path, idxInChildrenOfBlock] }
+              );
+            }
+            return;
+          }
+        }
+
+        const missingKeys = new Map(
+          findChildPropPaths(node.props, componentBlock.schema).map(x => [
+            JSON.stringify(x.path) as string | undefined,
+            x.options.kind,
+          ])
+        );
+
+        node.children.forEach(node => {
+          assert(node.type === 'component-block-prop' || node.type === 'component-inline-prop');
+          missingKeys.delete(JSON.stringify(node.propPath));
+        });
+        if (missingKeys.size) {
+          Transforms.insertNodes(
+            editor,
+            [...missingKeys].map(([prop, kind]) => ({
+              type: `component-${kind}-prop` as const,
+              propPath: prop ? JSON.parse(prop) : prop,
+              children: [{ text: '' }],
+            })),
+            { at: [...path, node.children.length] }
+          );
+          return;
+        }
+
+        const foundProps = new Set<string>();
+
+        const stringifiedInlinePropPaths: Record<
+          string,
+          { options: ChildField['options']; index: number } | undefined
+        > = {};
+        findChildPropPaths(node.props, blockComponents[node.component]!.schema).forEach(
+          (x, index) => {
+            stringifiedInlinePropPaths[JSON.stringify(x.path)] = { options: x.options, index };
+          }
+        );
+
+        for (const [index, childNode] of node.children.entries()) {
+          if (
+            // children that are not these will be handled by
+            // the generic allowedChildren normalization
+            childNode.type !== 'component-inline-prop' &&
+            childNode.type !== 'component-block-prop'
+          ) {
+            continue;
+          }
+
+          const childPath = [...path, index];
+          const stringifiedPropPath = JSON.stringify(childNode.propPath);
+          if (stringifiedInlinePropPaths[stringifiedPropPath] === undefined) {
+            Transforms.removeNodes(editor, { at: childPath });
             return;
           }
 
-          const foundProps = new Set<string>();
+          if (foundProps.has(stringifiedPropPath)) {
+            Transforms.removeNodes(editor, { at: childPath });
+            return;
+          }
 
-          const stringifiedInlinePropPaths: Record<
-            string,
-            { options: ChildField['options']; index: number } | undefined
-          > = {};
-          findChildPropPaths(node.props, blockComponents[node.component]!.schema).forEach(
-            (x, index) => {
-              stringifiedInlinePropPaths[JSON.stringify(x.path)] = { options: x.options, index };
-            }
-          );
+          foundProps.add(stringifiedPropPath);
+          const propInfo = stringifiedInlinePropPaths[stringifiedPropPath]!;
+          const expectedIndex = propInfo.index;
+          if (index !== expectedIndex) {
+            Transforms.moveNodes(editor, { at: childPath, to: [...path, expectedIndex] });
+            return;
+          }
 
-          for (const [index, childNode] of node.children.entries()) {
-            if (
-              // children that are not these will be handled by
-              // the generic allowedChildren normalization
-              childNode.type !== 'component-inline-prop' &&
-              childNode.type !== 'component-block-prop'
-            ) {
-              continue;
-            }
+          const expectedChildNodeType = `component-${propInfo.options.kind}-prop` as const;
+          if (childNode.type !== expectedChildNodeType) {
+            Transforms.setNodes(editor, { type: expectedChildNodeType }, { at: childPath });
+            return;
+          }
 
-            const childPath = [...path, index];
-            const stringifiedPropPath = JSON.stringify(childNode.propPath);
-            if (stringifiedInlinePropPaths[stringifiedPropPath] === undefined) {
-              Transforms.removeNodes(editor, { at: childPath });
-              return;
-            }
-
-            if (foundProps.has(stringifiedPropPath)) {
-              Transforms.removeNodes(editor, { at: childPath });
-              return;
-            }
-
-            foundProps.add(stringifiedPropPath);
-            const propInfo = stringifiedInlinePropPaths[stringifiedPropPath]!;
-            const expectedIndex = propInfo.index;
-            if (index !== expectedIndex) {
-              Transforms.moveNodes(editor, { at: childPath, to: [...path, expectedIndex] });
-              return;
-            }
-
-            const expectedChildNodeType = `component-${propInfo.options.kind}-prop` as const;
-            if (childNode.type !== expectedChildNodeType) {
-              Transforms.setNodes(editor, { type: expectedChildNodeType }, { at: childPath });
-              return;
-            }
-
-            const documentFeatures = memoizedGetDocumentFeaturesForChildField(propInfo.options);
-            if (
-              normalizeNodeWithinComponentProp(
-                [childNode, childPath],
-                editor,
-                documentFeatures,
-                relationships
-              )
-            ) {
-              return;
-            }
+          const documentFeatures = memoizedGetDocumentFeaturesForChildField(propInfo.options);
+          if (
+            normalizeNodeWithinComponentProp(
+              [childNode, childPath],
+              editor,
+              documentFeatures,
+              relationships
+            )
+          ) {
+            return;
           }
         }
       }
@@ -508,4 +511,53 @@ export function withComponentBlocks(
   };
 
   return editor;
+}
+
+// the only thing that this will fix is a new field being added to an object field, nothing else.
+function addMissingFields(value: unknown, schema: ComponentSchema): unknown {
+  if (schema.kind === 'child' || schema.kind === 'form' || schema.kind === 'relationship') {
+    return value;
+  }
+  if (schema.kind === 'conditional') {
+    const conditionalValue = value as { discriminant: string | boolean; value: unknown };
+    const updatedInnerValue = addMissingFields(
+      conditionalValue.value,
+      schema.values[conditionalValue.discriminant.toString()]
+    );
+    if (updatedInnerValue === conditionalValue.value) {
+      return value;
+    }
+    return { discriminant: conditionalValue.value, value: updatedInnerValue };
+  }
+  if (schema.kind === 'array') {
+    const arrValue = value as unknown[];
+    const newArrValue = arrValue.map(x => addMissingFields(x, schema.element));
+    if (areArraysEqual(arrValue, newArrValue)) {
+      return value;
+    }
+    return newArrValue;
+  }
+  if (schema.kind === 'object') {
+    const objectValue = value as Record<string, unknown>;
+    let hasChanged = false;
+    const newObjectValue: Record<string, unknown> = {};
+    for (const [key, innerSchema] of Object.entries(schema.fields)) {
+      const innerValue = objectValue[key];
+      if (innerValue === undefined) {
+        hasChanged = true;
+        newObjectValue[key] = getInitialPropsValue(innerSchema);
+        continue;
+      }
+      const newInnerValue = addMissingFields(innerValue as Record<string, unknown>, innerSchema);
+      if (newInnerValue !== innerValue) {
+        hasChanged = true;
+      }
+      newObjectValue[key] = newInnerValue;
+    }
+    if (hasChanged) {
+      return newObjectValue;
+    }
+    return value;
+  }
+  assertNever(schema);
 }

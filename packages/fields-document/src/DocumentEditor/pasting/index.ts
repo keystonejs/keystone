@@ -63,8 +63,7 @@ export function withPasting(editor: Editor): Editor {
       }
     }
 
-    let html = data.getData('text/html');
-
+    const html = data.getData('text/html');
     if (html) {
       const fragment = deserializeHTML(html);
       insertFragmentButDifferent(editor, fragment);

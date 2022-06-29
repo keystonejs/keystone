@@ -236,22 +236,24 @@ export const makeEditor = (
   if (editor.marks || (marks && Object.keys(marks).length)) {
     expect(marks).toEqual(editor.marks);
   }
-  if (normalization !== 'skip') {
+  // we need to make one of our editors because toEqualEditor expects the __config stuff to exist
+  // and if it fails, the snapshot serializer will be called to diff them which also expects __config
+  const makeEditorForComparison = (node: Node) =>
+    makeEditor(node, {
+      componentBlocks,
+      documentFeatures,
+      isShiftPressedRef: { current: false },
+      normalization: 'skip',
+      relationships,
+      skipRenderingDOM: true,
+    });
+  if (normalization === 'normalize') {
     Editor.normalize(editor, { force: true });
-    if (normalization === 'disallow-non-normalized') {
-      expect(
-        // we need to make one of our editors because toEqualEditor expects the __config stuff to exist
-        // and if it fails, the snapshot serializer will be called to diff them which also expects __config
-        makeEditor(node, {
-          componentBlocks,
-          documentFeatures,
-          isShiftPressedRef,
-          normalization: 'skip',
-          relationships,
-          skipRenderingDOM,
-        })
-      ).toEqualEditor(editor);
-    }
+    expect(editor).not.toEqual(makeEditorForComparison(node));
+  }
+  if (normalization === 'disallow-non-normalized') {
+    Editor.normalize(editor, { force: true });
+    expect(makeEditorForComparison(node)).toEqualEditor(editor);
   }
 
   if (skipRenderingDOM !== true) {

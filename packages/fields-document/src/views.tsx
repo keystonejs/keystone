@@ -3,7 +3,7 @@
 
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldDescription, FieldLabel } from '@keystone-ui/fields';
-import { Descendant, Node, Text } from 'slate';
+import { Descendant, Editor, Node, Text } from 'slate';
 import { DocumentRenderer } from '@keystone-6/document-renderer';
 
 import {
@@ -15,7 +15,7 @@ import {
 } from '@keystone-6/core/types';
 import weakMemoize from '@emotion/weak-memoize';
 import { CellContainer, CellLink } from '@keystone-6/core/admin-ui/components';
-import { DocumentEditor } from './DocumentEditor';
+import { createDocumentEditor, DocumentEditor } from './DocumentEditor';
 import { ComponentBlock } from './component-blocks';
 import { Relationships } from './DocumentEditor/relationship';
 import { clientSideValidateProp } from './DocumentEditor/component-blocks/utils';
@@ -179,7 +179,20 @@ export const controller = (
     relationships: config.fieldMeta.relationships,
     defaultValue: [{ type: 'paragraph', children: [{ text: '' }] }],
     deserialize: data => {
-      return data[config.path]?.document || [{ type: 'paragraph', children: [{ text: '' }] }];
+      const documentFromServer = data[config.path]?.document;
+      if (!documentFromServer) {
+        return [{ type: 'paragraph', children: [{ text: '' }] }];
+      }
+      // make a temporary editor to normalize the document
+      const editor = createDocumentEditor(
+        config.fieldMeta.documentFeatures,
+        componentBlocks,
+        config.customViews.componentBlocks,
+        { current: false }
+      );
+      editor.children = documentFromServer;
+      Editor.normalize(editor, { force: true });
+      return editor.children;
     },
     serialize: value => ({
       [config.path]: value,
