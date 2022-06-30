@@ -1,5 +1,6 @@
 import { Markdown, getStaticProps } from '../../components/Markdown';
 import { Emoji } from '../../components/primitives/Emoji';
+import { Stack } from '../../components/primitives/Stack';
 
 # Release: 30 June 2022
 
@@ -43,3 +44,13 @@ Thanks to [@mmachatschek](https://github.com/mmachatschek) ([#7607](https://gith
 # Verbose Changelog <Emoji symbol="📜" alt="Scroll" />
 
 You can also view the [verbose changelog](https://github.com/keystonejs/keystone/pull/7542) or compare via GitHub since our last release [https://github.com/keystonejs/keystone/compare/2022-06-09...2022-06-30](https://github.com/keystonejs/keystone/compare/2022-06-09...2022-06-30)
+
+export default ({ children, ...props }) => (
+  <Markdown
+    description="Adds support for MySQL and many additional Admin UI improvements."
+    {...props}
+  >
+    {children}
+  </Markdown>
+);
+export { getStaticProps };
