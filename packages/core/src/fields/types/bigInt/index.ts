@@ -39,8 +39,8 @@ export type BigIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   };
 
 // These are the max and min values available to a 64 bit signed integer
-const MAX_INT = 2n ** 63n - 1n;
-const MIN_INT = (-2n) ** 63n;
+const MAX_INT = 9223372036854775807n;
+const MIN_INT = -9223372036854775808n;
 
 export const bigInt =
   <ListTypeInfo extends BaseListTypeInfo>({
