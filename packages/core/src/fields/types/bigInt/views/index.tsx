@@ -157,10 +157,10 @@ function validate(
     return `${label} is required`;
   }
   if (typeof val === 'bigint') {
-    if (validation.min !== null && val < validation.min) {
+    if (val < validation.min) {
       return `${label} must be greater than or equal to ${validation.min}`;
     }
-    if (validation.max !== null && val > validation.max) {
+    if (val > validation.max) {
       return `${label} must be less than or equal to ${validation.max}`;
     }
   }
@@ -170,8 +170,8 @@ function validate(
 
 type Validation = {
   isRequired: boolean;
-  min: bigint | null;
-  max: bigint | null;
+  min: bigint;
+  max: bigint;
 };
 
 type Value =
@@ -182,8 +182,8 @@ export const controller = (
   config: FieldControllerConfig<{
     validation: {
       isRequired: boolean;
-      min: string | null;
-      max: string | null;
+      min: string;
+      max: string;
     };
     defaultValue: string | null | { kind: 'autoincrement' };
   }>
@@ -197,8 +197,8 @@ export const controller = (
 
   const validation = {
     isRequired: config.fieldMeta.validation.isRequired,
-    min: config.fieldMeta.validation.min === null ? null : BigInt(config.fieldMeta.validation.min),
-    max: config.fieldMeta.validation.max === null ? null : BigInt(config.fieldMeta.validation.max),
+    min: BigInt(config.fieldMeta.validation.min),
+    max: BigInt(config.fieldMeta.validation.max),
   };
 
   return {

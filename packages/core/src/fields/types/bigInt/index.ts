@@ -38,11 +38,15 @@ export type BigIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     };
   };
 
+// These are the max and min values available to a 64 bit signed integer
+const MAX_INT = 2n ** 63n - 1n;
+const MIN_INT = (-2n) ** 63n;
+
 export const bigInt =
   <ListTypeInfo extends BaseListTypeInfo>({
     isIndexed,
     defaultValue: _defaultValue,
-    validation,
+    validation: _validation,
     ...config
   }: BigIntFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
   meta => {
@@ -52,7 +56,7 @@ export const bigInt =
       defaultValue !== null &&
       defaultValue.kind === 'autoincrement';
 
-    const isNullable = getResolvedIsNullable(validation, config.db);
+    const isNullable = getResolvedIsNullable(_validation, config.db);
 
     if (hasAutoIncDefault) {
       if (meta.provider === 'sqlite' || meta.provider === 'mysql') {
@@ -69,18 +73,26 @@ export const bigInt =
       }
     }
 
-    if (
-      validation?.min !== undefined &&
-      validation?.max !== undefined &&
-      validation.min > validation.max
-    ) {
+    const validation = {
+      isRequired: _validation?.isRequired ?? false,
+      min: _validation?.min ?? MIN_INT,
+      max: _validation?.max ?? MAX_INT,
+    };
+
+    for (const type of ['min', 'max'] as const) {
+      if (validation[type] > MAX_INT || validation[type] < MIN_INT) {
+        throw new Error(
+          `The bigInt field at ${meta.listKey}.${meta.fieldKey} specifies validation.${type}: ${validation[type]} which is outside of the range of a 64bit signed integer(${MIN_INT}n - ${MAX_INT}n) which is not allowed`
+        );
+      }
+    }
+    if (validation.min > validation.max) {
       throw new Error(
         `The bigInt field at ${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`
       );
     }
 
     assertReadIsNonNullAllowed(meta, config, isNullable);
-
     assertCreateIsNonNullAllowed(meta, config);
 
     const mode = isNullable === false ? 'required' : 'optional';
@@ -165,9 +177,9 @@ export const bigInt =
       getAdminMeta() {
         return {
           validation: {
-            min: validation?.min === undefined ? null : validation.min.toString(),
-            max: validation?.max === undefined ? null : validation.max.toString(),
-            isRequired: validation?.isRequired ?? false,
+            min: validation.min.toString(),
+            max: validation.max.toString(),
+            isRequired: validation.isRequired,
           },
           defaultValue: typeof defaultValue === 'bigint' ? defaultValue.toString() : defaultValue,
         };
