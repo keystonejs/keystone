@@ -28,6 +28,7 @@ model Thing {
   selectSegmentedControl  String?
   json                    String?
   integer                 Int?
+  bigInt                  BigInt?
   float                   Float?
   image_filesize          Int?
   image_extension         String?

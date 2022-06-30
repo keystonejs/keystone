@@ -12,6 +12,7 @@ import {
   integer,
   image,
   float,
+  bigInt,
 } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
 import { componentBlocks } from '../component-blocks';
@@ -81,6 +82,7 @@ export const lists = {
       }),
       json: json({ ui: { description } }),
       integer: integer({ ui: { description } }),
+      bigInt: bigInt({ ui: { description } }),
       float: float({ ui: { description } }),
       image: image({ ui: { description }, storage: 'images' }),
       file: file({ ui: { description }, storage: 'files' }),

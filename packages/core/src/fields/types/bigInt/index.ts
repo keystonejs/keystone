@@ -15,14 +15,14 @@ import {
 } from '../../non-null-graphql';
 import { resolveView } from '../../resolve-view';
 
-export type IntegerFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
+export type BigIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
     isIndexed?: boolean | 'unique';
-    defaultValue?: number | { kind: 'autoincrement' };
+    defaultValue?: bigint | { kind: 'autoincrement' };
     validation?: {
       isRequired?: boolean;
-      min?: number;
-      max?: number;
+      min?: bigint;
+      max?: bigint;
     };
     graphql?: {
       create?: {
@@ -38,17 +38,13 @@ export type IntegerFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     };
   };
 
-// These are the max and min values available to a 32 bit signed integer
-const MAX_INT = 2147483647;
-const MIN_INT = -2147483648;
-
-export const integer =
+export const bigInt =
   <ListTypeInfo extends BaseListTypeInfo>({
     isIndexed,
     defaultValue: _defaultValue,
     validation,
     ...config
-  }: IntegerFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
+  }: BigIntFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
   meta => {
     const defaultValue = _defaultValue ?? null;
     const hasAutoIncDefault =
@@ -61,38 +57,16 @@ export const integer =
     if (hasAutoIncDefault) {
       if (meta.provider === 'sqlite' || meta.provider === 'mysql') {
         throw new Error(
-          `The integer field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' }, this is not supported on ${meta.provider}`
+          `The bigInt field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' }, this is not supported on ${meta.provider}`
         );
       }
       if (isNullable !== false) {
         throw new Error(
-          `The integer field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' } but doesn't specify db.isNullable: false.\n` +
+          `The bigInt field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' } but doesn't specify db.isNullable: false.\n` +
             `Having nullable autoincrements on Prisma currently incorrectly creates a non-nullable column so it is not allowed.\n` +
             `https://github.com/prisma/prisma/issues/8663`
         );
       }
-    }
-
-    if (validation?.min !== undefined && !Number.isInteger(validation.min)) {
-      throw new Error(
-        `The integer field at ${meta.listKey}.${meta.fieldKey} specifies validation.min: ${validation.min} but it must be an integer`
-      );
-    }
-    if (validation?.max !== undefined && !Number.isInteger(validation.max)) {
-      throw new Error(
-        `The integer field at ${meta.listKey}.${meta.fieldKey} specifies validation.max: ${validation.max} but it must be an integer`
-      );
-    }
-
-    if (validation?.min !== undefined && (validation?.min > MAX_INT || validation?.min < MIN_INT)) {
-      throw new Error(
-        `The integer field at ${meta.listKey}.${meta.fieldKey} specifies validation.min: ${validation.min} which is outside of the range of a 32bit signed integer(${MIN_INT} - ${MAX_INT}) which is not allowed`
-      );
-    }
-    if (validation?.max !== undefined && (validation?.max > MAX_INT || validation?.max < MIN_INT)) {
-      throw new Error(
-        `The integer field at ${meta.listKey}.${meta.fieldKey} specifies validation.max: ${validation.max} which is outside of the range of a 32bit signed integer(${MIN_INT} - ${MAX_INT}) which is not allowed`
-      );
     }
 
     if (
@@ -101,7 +75,7 @@ export const integer =
       validation.min > validation.max
     ) {
       throw new Error(
-        `The integer field at ${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`
+        `The bigInt field at ${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`
       );
     }
 
@@ -116,11 +90,11 @@ export const integer =
     return fieldType({
       kind: 'scalar',
       mode,
-      scalar: 'Int',
+      scalar: 'BigInt',
       // This will resolve to 'index' if the boolean is true, otherwise other values - false will be converted to undefined
       index: isIndexed === true ? 'index' : isIndexed || undefined,
       default:
-        typeof defaultValue === 'number'
+        typeof defaultValue === 'bigint'
           ? { kind: 'literal', value: defaultValue }
           : defaultValue?.kind === 'autoincrement'
           ? { kind: 'autoincrement' }
@@ -159,44 +133,43 @@ export const integer =
       },
       input: {
         uniqueWhere:
-          isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.Int }) } : undefined,
+          isIndexed === 'unique' ? { arg: graphql.arg({ type: graphql.BigInt }) } : undefined,
         where: {
-          arg: graphql.arg({ type: filters[meta.provider].Int[mode] }),
+          arg: graphql.arg({ type: filters[meta.provider].BigInt[mode] }),
           resolve: mode === 'optional' ? filters.resolveCommon : undefined,
         },
         create: {
           arg: graphql.arg({
-            type: config.graphql?.create?.isNonNull ? graphql.nonNull(graphql.Int) : graphql.Int,
+            type: config.graphql?.create?.isNonNull
+              ? graphql.nonNull(graphql.BigInt)
+              : graphql.BigInt,
             defaultValue:
-              config.graphql?.create?.isNonNull && typeof defaultValue === 'number'
+              config.graphql?.create?.isNonNull && typeof defaultValue === 'bigint'
                 ? defaultValue
                 : undefined,
           }),
           resolve(value) {
-            if (value === undefined && typeof defaultValue === 'number') {
+            if (value === undefined && typeof defaultValue === 'bigint') {
               return defaultValue;
             }
             return value;
           },
         },
-        update: { arg: graphql.arg({ type: graphql.Int }) },
+        update: { arg: graphql.arg({ type: graphql.BigInt }) },
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
       output: graphql.field({
-        type: config.graphql?.read?.isNonNull ? graphql.nonNull(graphql.Int) : graphql.Int,
+        type: config.graphql?.read?.isNonNull ? graphql.nonNull(graphql.BigInt) : graphql.BigInt,
       }),
-      views: resolveView('integer/views'),
+      views: resolveView('bigInt/views'),
       getAdminMeta() {
         return {
           validation: {
-            min: validation?.min ?? MIN_INT,
-            max: validation?.max ?? MAX_INT,
+            min: validation?.min === undefined ? null : validation.min.toString(),
+            max: validation?.max === undefined ? null : validation.max.toString(),
             isRequired: validation?.isRequired ?? false,
           },
-          defaultValue:
-            defaultValue === null || typeof defaultValue === 'number'
-              ? defaultValue
-              : 'autoincrement',
+          defaultValue: typeof defaultValue === 'bigint' ? defaultValue.toString() : defaultValue,
         };
       },
     });

@@ -9,7 +9,7 @@ export type { FloatFieldConfig } from './types/float';
 export { integer } from './types/integer';
 export type { IntegerFieldConfig } from './types/integer';
 export { bigInt } from './types/bigInt';
-export type { BigIntegerFieldConfig } from './types/bigInt';
+export type { BigIntFieldConfig } from './types/bigInt';
 export { image } from './types/image';
 export type { ImageFieldConfig } from './types/image';
 export { json } from './types/json';
