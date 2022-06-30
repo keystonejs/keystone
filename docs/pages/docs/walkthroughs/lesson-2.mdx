@@ -138,7 +138,7 @@ export default config({
 ```
 
 The `relationship` references the name for the `field` of the list it is relating to make it [two-sided](/docs/guides/relationships#two-sided), so the
-`author` field relates to `User.posts`, while the `posts` field relates to `User.author`.
+`author` field relates to `User.posts`, while the `posts` field relates to `Post.author`.
 
 !> Naming relationships can be important if lists have multiple relationships. If, for example, we wanted to let users also 'like' posts, we could add a second differently named relationship field between `User` and `Post` called 'likes'.
 
