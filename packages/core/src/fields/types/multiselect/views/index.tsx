@@ -12,13 +12,7 @@ import {
 } from '../../../../types';
 import { CellContainer, CellLink } from '../../../../admin-ui/components';
 
-export const Field = ({
-  field,
-  value,
-  onChange,
-  autoFocus,
-  forceValidation,
-}: FieldProps<typeof controller>) => {
+export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => {
   return (
     <FieldContainer>
       <Fragment>

@@ -20,6 +20,7 @@ export const supportsNullInput = false;
 export const neverNull = true;
 export const supportsUnique = false;
 export const supportsDbMap = true;
+export const skipRequiredTest = true;
 export const fieldConfig = (matrixValue: MatrixValue) => {
   if (matrixValue === 'enum' || matrixValue === 'string') {
     return {
