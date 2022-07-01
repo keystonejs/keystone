@@ -27,6 +27,7 @@ model Thing {
   calendarDay             String?
   select                  String?
   selectSegmentedControl  String?
+  multiselect             String    @default("[]")
   json                    String?
   integer                 Int?
   bigInt                  BigInt?

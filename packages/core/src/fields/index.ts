@@ -28,3 +28,5 @@ export { virtual } from './types/virtual';
 export type { VirtualFieldConfig } from './types/virtual';
 export { calendarDay } from './types/calendarDay';
 export type { CalendarDayFieldConfig } from './types/calendarDay';
+export { multiselect } from './types/multiselect';
+export type { MultiselectFieldConfig } from './types/multiselect';

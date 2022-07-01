@@ -14,6 +14,7 @@ import {
   float,
   bigInt,
   calendarDay,
+  multiselect,
 } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
 import { componentBlocks } from '../component-blocks';
@@ -81,6 +82,14 @@ export const lists = {
           { value: 'three', label: 'Three' },
         ],
         ui: { displayMode: 'segmented-control', description },
+      }),
+      multiselect: multiselect({
+        ui: { description },
+        options: [
+          { value: 'one', label: 'One' },
+          { value: 'two', label: 'Two' },
+          { value: 'three', label: 'Three' },
+        ],
       }),
       json: json({ ui: { description } }),
       integer: integer({ ui: { description } }),
