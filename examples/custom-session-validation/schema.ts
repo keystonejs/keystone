@@ -37,12 +37,12 @@ export const lists = {
             const sudo = context.sudo();
             await sudo.db.Person.updateOne({
               where: { id: item.id as string },
-              data: { secretResetTime: new Date() },
+              data: { passwordChangedAt: new Date() },
             });
           },
         },
       }),
-      secretResetTime: timestamp({
+      passwordChangedAt: timestamp({
         access: () => false,
         ui: {
           createView: { fieldMode: 'hidden' },

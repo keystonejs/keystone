@@ -41,10 +41,10 @@ const withTimeData = (
       }
       const data = await sudoContext.query[session.listKey].findOne({
         where: { id: session.itemId },
-        query: 'secretResetTime',
+        query: 'passwordChangedAt',
       });
       if (!data) return;
-      if (data.secretResetTime > session.startTime) return;
+      if (data.passwordChangedAt > session.startTime) return;
       return { ...session, startTime: session.startTime };
     },
     start: async ({ res, data, createContext }) => {
