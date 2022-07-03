@@ -147,7 +147,7 @@ type Person {
   name: String
   email: String
   password: PasswordState
-  secretResetTime: DateTime
+  passwordChangedAt: DateTime
   tasks(
     where: TaskWhereInput! = {}
     orderBy: [TaskOrderByInput!]! = []
@@ -173,7 +173,7 @@ input PersonWhereInput {
   id: IDFilter
   name: StringFilter
   email: StringFilter
-  secretResetTime: DateTimeNullableFilter
+  passwordChangedAt: DateTimeNullableFilter
   tasks: TaskManyRelationFilter
 }
 
@@ -187,14 +187,14 @@ input PersonOrderByInput {
   id: OrderDirection
   name: OrderDirection
   email: OrderDirection
-  secretResetTime: OrderDirection
+  passwordChangedAt: OrderDirection
 }
 
 input PersonUpdateInput {
   name: String
   email: String
   password: String
-  secretResetTime: DateTime
+  passwordChangedAt: DateTime
   tasks: TaskRelateToManyForUpdateInput
 }
 
@@ -214,7 +214,7 @@ input PersonCreateInput {
   name: String
   email: String
   password: String
-  secretResetTime: DateTime
+  passwordChangedAt: DateTime
   tasks: TaskRelateToManyForCreateInput
 }
 
