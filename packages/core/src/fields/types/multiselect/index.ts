@@ -58,7 +58,7 @@ export const multiselect =
   }: MultiselectFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> =>
   meta => {
     if ((config as any).isIndexed === 'unique') {
-      throw Error("isIndexed: 'unique' is not a supported option for field type password");
+      throw Error("isIndexed: 'unique' is not a supported option for field type multiselect");
     }
     const fieldLabel = config.label ?? humanize(meta.fieldKey);
     assertReadIsNonNullAllowed(meta, config, false);
