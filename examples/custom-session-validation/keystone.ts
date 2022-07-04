@@ -1,3 +1,4 @@
+import { KeystoneConfig } from '@keystone-6/core/types';
 import { SessionStrategy } from '@keystone-6/core/src/types/session';
 import { config } from '@keystone-6/core';
 import { statelessSessions } from '@keystone-6/core/session';
@@ -43,16 +44,8 @@ const withTimeData = (
       // If session.startTime is null session.data.passwordChangedAt > session.startTime will always be true and therefore
       // the session will never be invalid until the maxSessionAge is reached.
       if (!session || !session.startTime) return;
-      // If the session data does not have a passwordChageAt property, add the current time to the database this will stop the user from getting into a loop of invalid sessions
-      // Then return an invalid session - this could return a valid session but would be invalid for the next request anyway
-      if (!session.data.passwordChangedAt) {
-        const sudoContext = createContext({ sudo: true });
-        await sudoContext.query[session.listKey].updateOne({
-          where: { id: session.itemId },
-          data: { passwordChangedAt: new Date() },
-        });
-        return;
-      }
+      // If the session data does not have a passwordChageAt property return the session
+      if (!session.data.passwordChangedAt) return session;
       if (session.data.passwordChangedAt > session.startTime) return;
       return session;
     },
@@ -68,24 +61,33 @@ const withTimeData = (
   };
 };
 
-const session = withTimeData(
-  statelessSessions({
-    // The session secret is used to encrypt cookie data (should be an environment variable)
-    maxAge: maxSessionAge,
-    secret: '-- EXAMPLE COOKIE SECRET; CHANGE ME --',
-  })
-);
+const myAuth = (keystoneConfig: KeystoneConfig): KeystoneConfig => {
+  // Add the session strategy to the config
+  if (!keystoneConfig.session) throw new TypeError('Missing .session configuration');
+  return {
+    ...keystoneConfig,
+    session: withTimeData(keystoneConfig.session),
+  };
+};
+
+const session = statelessSessions({
+  // The session secret is used to encrypt cookie data (should be an environment variable)
+  maxAge: maxSessionAge,
+  secret: '-- EXAMPLE COOKIE SECRET; CHANGE ME --',
+});
 
 // We wrap our config using the withAuth function. This will inject all
 // the extra config required to add support for authentication in our system.
-export default withAuth(
-  config({
-    db: {
-      provider: 'sqlite',
-      url: process.env.DATABASE_URL || 'file:./keystone-example.db',
-    },
-    lists,
-    // We add our session configuration to the system here.
-    session,
-  })
+export default myAuth(
+  withAuth(
+    config({
+      db: {
+        provider: 'sqlite',
+        url: process.env.DATABASE_URL || 'file:./keystone-example.db',
+      },
+      lists,
+      // We add our session configuration to the system here.
+      session,
+    })
+  )
 );

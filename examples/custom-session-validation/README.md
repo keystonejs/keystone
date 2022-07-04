@@ -85,14 +85,7 @@ const withTimeData = (
     get: async ({ req, createContext }) => {
       const session = await get({ req, createContext });
       if (!session || !session.startTime) return;
-      if (!session.data.passwordChangedAt) {
-        const sudoContext = createContext({ sudo: true });
-        await sudoContext.query[session.listKey].updateOne({
-          where: { id: session.itemId },
-          data: { passwordChangedAt: new Date() },
-        });
-        return;
-      }
+      if (!session.data.passwordChangedAt) return session;
       if (session.data.passwordChangedAt > session.startTime) return;
       return session;
     },
@@ -106,12 +99,33 @@ const withTimeData = (
   };
 };
 
-const session = withTimeData(
-  statelessSessions({
-    // The session secret is used to encrypt cookie data (should be an environment variable)
-    maxAge: maxSessionAge,
-    secret: '-- EXAMPLE COOKIE SECRET; CHANGE ME --',
-  })
+const myAuth = (keystoneConfig: KeystoneConfig): KeystoneConfig => {
+  // Add the session strategy to the config
+  if (!keystoneConfig.session) throw new TypeError('Missing .session configuration');
+  return {
+    ...keystoneConfig,
+    session: withTimeData(keystoneConfig.session),
+  };
+};
+```
+
+### Wrapped config
+
+We now wrap our `withAuth` function inside the `myAuth` function which injects the custom session validation in the correct sequence.
+
+```typescript
+export default myAuth(
+  withAuth(
+    config({
+      db: {
+        provider: 'sqlite',
+        url: process.env.DATABASE_URL || 'file:./keystone-example.db',
+      },
+      lists,
+      // We add our session configuration to the system here.
+      session,
+    })
+  )
 );
 ```
 
