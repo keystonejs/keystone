@@ -21,7 +21,10 @@ const { withAuth } = createAuth({
     // These fields are collected in the "Create First User" form
     fields: ['name', 'email', 'password'],
   },
+
+  sessionData: 'id passwordChangedAt'
 });
+
 const sessionAge = 60 * 60 * 8; // 8 hours
 // Stateless sessions will store the listKey and itemId of the signed-in user in a cookie.
 // This session object will be made available on the context object used in hooks, access-control,
@@ -35,17 +38,13 @@ const withTimeData = (
     ...sessionStrategy,
     get: async ({ req, createContext }) => {
       const session = await get({ req, createContext });
-      const sudoContext = createContext({ sudo: true });
-      if (!session || !session.listKey || !session.startTime) {
+      // TODO: what if session.startTime is missing (pre-migration sessions)
+      // TODO: what if session.passwordChangedAt is missing (passwordChangedAt is NULL, aka, not set during migration)
+      if (!session || !session.startTime) {
         return;
       }
-      const data = await sudoContext.query[session.listKey].findOne({
-        where: { id: session.itemId },
-        query: 'passwordChangedAt',
-      });
-      if (!data) return;
-      if (data.passwordChangedAt > session.startTime) return;
-      return { ...session, startTime: session.startTime };
+      if (session.passwordChangedAt > session.startTime) return;
+      return session;
     },
     start: async ({ res, data, createContext }) => {
       const withTimeData = {
