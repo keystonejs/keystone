@@ -44,8 +44,10 @@ const withTimeData = (
       // If session.startTime is null session.data.passwordChangedAt > session.startTime will always be true and therefore
       // the session will never be invalid until the maxSessionAge is reached.
       if (!session || !session.startTime) return;
-      // If the session data does not have a passwordChageAt property return the session
+      //if the password hasn't changed (and isn't missing), then the session is OK
       if (session.data.passwordChangedAt === null) return session;
+      // If passwordChangeAt is undefined, then sessionData is missing the passwordChangedAt field
+      // Or something is wrong with the session configuration so throw and error
       if (session.data.passwordChangedAt === undefined) {
         throw new TypeError('passwordChangedAt is not listed in sessionData');
       }

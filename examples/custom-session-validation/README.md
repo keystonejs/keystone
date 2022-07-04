@@ -85,8 +85,14 @@ const withTimeData = (
     get: async ({ req, createContext }) => {
       const session = await get({ req, createContext });
       if (!session || !session.startTime) return;
-      if (!session.data.passwordChangedAt) return session;
-      if (session.data.passwordChangedAt > session.startTime) return;
+      if (session.data.passwordChangedAt === null) return session;
+      if (session.data.passwordChangedAt === undefined) {
+        throw new TypeError('passwordChangedAt is not listed in sessionData');
+      }
+      if (session.data.passwordChangedAt > session.startTime) {
+        return;
+      }
+
       return session;
     },
     start: async ({ res, data, createContext }) => {
