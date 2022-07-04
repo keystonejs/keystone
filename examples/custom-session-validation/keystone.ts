@@ -45,8 +45,14 @@ const withTimeData = (
       // the session will never be invalid until the maxSessionAge is reached.
       if (!session || !session.startTime) return;
       // If the session data does not have a passwordChageAt property return the session
-      if (!session.data.passwordChangedAt) return session;
-      if (session.data.passwordChangedAt > session.startTime) return;
+      if (session.data.passwordChangedAt === null) return session;
+      if (session.data.passwordChangedAt === undefined) {
+        throw new TypeError('passwordChangedAt is not listed in sessionData');
+      }
+      if (session.data.passwordChangedAt > session.startTime) {
+        return;
+      }
+
       return session;
     },
     start: async ({ res, data, createContext }) => {
