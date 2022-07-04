@@ -31,19 +31,17 @@ export const lists = {
       // the validation.isRequired flag.
       password: password({
         validation: { isRequired: true },
-        hooks: {
-          afterOperation: async ({ item, context }) => {
-            if (!item) return;
-            const sudo = context.sudo();
-            await sudo.db.Person.updateOne({
-              where: { id: item.id as string },
-              data: { passwordChangedAt: new Date() },
-            });
-          },
-        },
       }),
       passwordChangedAt: timestamp({
         access: () => false,
+        hooks: {
+          resolveInput: ({ resolvedData }) => {
+            if (resolvedData.password) {
+              return new Date();
+            }
+            return;
+          },
+        },
         ui: {
           createView: { fieldMode: 'hidden' },
           itemView: { fieldMode: 'hidden' },

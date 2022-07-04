@@ -27,25 +27,23 @@ It uses the [`@keystone-6/auth`](https://keystonejs.com/docs/apis/auth) package,
 
 ### Added fields
 
-We add one new field, `passwordChangedAt`, to the `Person` list. Setting the `passwordChangedAt` field to hidden with access not allowed, means this field will not be visible to the user. We then add an `afterOperation` hook on the `password` field to set the `passwordChangedAt` field when the password is changed.
+We add one new field, `passwordChangedAt`, to the `Person` list. Setting the `passwordChangedAt` field to hidden with access not allowed means this field will not be visible to the user. We then add a `resolveInput` hook on the `passwordChangedAt` field to set it to the current time whenever the password is changed.
 
 ```typescript
     email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
     password: password({
         validation: { isRequired: true },
-        hooks: {
-          afterOperation: async ({ item, context }) => {
-            if (!item) return;
-            const sudo = context.sudo();
-            await sudo.db.Person.updateOne({
-              where: { id: item.id as string },
-              data: { passwordChangedAt: new Date() },
-            });
-          },
-        },
       }),
     passwordChangedAt: timestamp({
         access: () => false,
+        hooks: {
+          resolveInput: ({ resolvedData }) => {
+            if (resolvedData.password) {
+              return new Date();
+            }
+            return;
+          },
+        },
         ui: {
           createView: { fieldMode: 'hidden' },
           itemView: { fieldMode: 'hidden' },
