@@ -21,38 +21,49 @@ const { withAuth } = createAuth({
     // These fields are collected in the "Create First User" form
     fields: ['name', 'email', 'password'],
   },
-
-  sessionData: 'id passwordChangedAt'
+  // Make passwordChangedAt available on the sesssion data
+  sessionData: 'id passwordChangedAt',
 });
 
-const sessionAge = 60 * 60 * 8; // 8 hours
+const maxSessionAge = 60 * 60 * 8; // 8 hours, in seconds
 // Stateless sessions will store the listKey and itemId of the signed-in user in a cookie.
 // This session object will be made available on the context object used in hooks, access-control,
 // resolvers, etc.
 
 const withTimeData = (
   _sessionStrategy: SessionStrategy<Record<string, any>>
-): SessionStrategy<{ startTime: string }> => {
+): SessionStrategy<Record<string, any>> => {
   const { get, start, ...sessionStrategy } = _sessionStrategy;
   return {
     ...sessionStrategy,
     get: async ({ req, createContext }) => {
+      // Get the session from the cookie stored by keystone
       const session = await get({ req, createContext });
-      // TODO: what if session.startTime is missing (pre-migration sessions)
-      // TODO: what if session.passwordChangedAt is missing (passwordChangedAt is NULL, aka, not set during migration)
-      if (!session || !session.startTime) {
+      // If there is no session returned from keystone or there is no startTime on the session return an invalid session
+      // If session.startTime is null session.data.passwordChangedAt > session.startTime will always be true and therefore
+      // the session will never be invalid until the maxSessionAge is reached.
+      if (!session || !session.startTime) return;
+      // If the session data does not have a passwordChageAt property, add the current time to the database this will stop the user from getting into a loop of invalid sessions
+      // Then return an invalid session - this could return a valid session but would be invalid for the next request anyway
+      if (!session.data.passwordChangedAt) {
+        const sudoContext = createContext({ sudo: true });
+        await sudoContext.query[session.listKey].updateOne({
+          where: { id: session.itemId },
+          data: { passwordChangedAt: new Date() },
+        });
         return;
       }
-      if (session.passwordChangedAt > session.startTime) return;
+      if (session.data.passwordChangedAt > session.startTime) return;
       return session;
     },
     start: async ({ res, data, createContext }) => {
+      // Add the current time to the session data
       const withTimeData = {
         ...data,
         startTime: new Date(),
       };
-      const newSession = await start({ res, data: withTimeData, createContext });
-      return newSession;
+      // Start the keystone session and include the startTime
+      return await start({ res, data: withTimeData, createContext });
     },
   };
 };
@@ -60,7 +71,7 @@ const withTimeData = (
 const session = withTimeData(
   statelessSessions({
     // The session secret is used to encrypt cookie data (should be an environment variable)
-    maxAge: sessionAge,
+    maxAge: maxSessionAge,
     secret: '-- EXAMPLE COOKIE SECRET; CHANGE ME --',
   })
 );

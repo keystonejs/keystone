@@ -1,7 +1,7 @@
 ## Feature Example - Invalidate Session Token
 
 This project demonstrates how to invalidate a session when a password is changed using password based authentication in your Keystone system.
-It builds on the [With Auth](../with-auth) example project.
+It builds on the [Authentication example](../with-auth) project.
 
 ## Instructions
 
@@ -18,10 +18,10 @@ You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://
 
 ## Features
 
-Based on the [With auth example](../with-auth/), this project demonstrates how to customise the kestone session configuration in order to invalidate a session when a user's passsword is changed.
+Based on the [Authentication example](../with-auth/), this project demonstrates how to customise the kestone session configuration in order to invalidate a session when a user's passsword is changed.
 It uses the [`@keystone-6/auth`](https://keystonejs.com/docs/apis/auth) package, along with Keystone's [session management API](https://keystonejs.com/docs/apis/session), to add the following features:
 
-- Adds a hooks to the `password` field to set a timestamp field when the user changes their password
+- Adds a hook to the `password` field to set a timestamp field when the user changes their password
 - Changes the stateless session handling to set the time a session starts
 - Checks the session start time against when the user's password was last changed and returns no session if the password was changed _after_ the session started.
 
@@ -64,6 +64,7 @@ const { withAuth } = createAuth({
   identityField: 'email',
   secretField: 'password',
   initFirstItem: { fields: ['name', 'email', 'password'] },
+  sessionData: 'id passwordChangedAt',
 });
 ```
 
@@ -73,35 +74,34 @@ We can then change the default `statelessSessions` by passing in a new `start` a
 
 ```typescript
 import { statelessSessions } from '@keystone-6/core/session';
-const sessionAge = 60 * 60 * 8; // 8 hours
+const maxSessionAge = 60 * 60 * 8; // 8 hours, in seconds
 
 const withTimeData = (
   _sessionStrategy: SessionStrategy<Record<string, any>>
-): SessionStrategy<{ startTime: string }> => {
+): SessionStrategy<Record<string, any>> => {
   const { get, start, ...sessionStrategy } = _sessionStrategy;
   return {
     ...sessionStrategy,
     get: async ({ req, createContext }) => {
       const session = await get({ req, createContext });
-      const sudoContext = createContext({ sudo: true });
-      if (!session || !session.listKey || !session.startTime) {
+      if (!session || !session.startTime) return;
+      if (!session.data.passwordChangedAt) {
+        const sudoContext = createContext({ sudo: true });
+        await sudoContext.query[session.listKey].updateOne({
+          where: { id: session.itemId },
+          data: { passwordChangedAt: new Date() },
+        });
         return;
       }
-      const data = await sudoContext.query[session.listKey].findOne({
-        where: { id: session.itemId },
-        query: 'passwordChangedAt',
-      });
-      if (!data) return;
-      if (data.passwordChangedAt > session.startTime) return;
-      return { ...session, startTime: session.startTime };
+      if (session.data.passwordChangedAt > session.startTime) return;
+      return session;
     },
     start: async ({ res, data, createContext }) => {
       const withTimeData = {
         ...data,
         startTime: new Date(),
       };
-      const newSession = await start({ res, data: withTimeData, createContext });
-      return newSession;
+      return await start({ res, data: withTimeData, createContext });
     },
   };
 };
@@ -109,7 +109,7 @@ const withTimeData = (
 const session = withTimeData(
   statelessSessions({
     // The session secret is used to encrypt cookie data (should be an environment variable)
-    maxAge: sessionAge,
+    maxAge: maxSessionAge,
     secret: '-- EXAMPLE COOKIE SECRET; CHANGE ME --',
   })
 );
