@@ -62,7 +62,7 @@ It has a TypeScript type of `DatabaseConfig`.
 Keystone supports the database types **PostgreSQL**, **MySQL** and **SQLite**.
 These database types are powered by their corresponding Prisma database providers; `postgresql`, `mysql` and `sqlite`.
 
-- `kind`: The database provider to use, it can be one of `postgresql`, `mysql` or `sqlite`.
+- `provider`: The database provider to use, it can be one of `postgresql`, `mysql` or `sqlite`.
 - `url`: The connection URL for your database
 - `onConnect`: which takes a [`KeystoneContext`](./context) object, and lets perform any actions you might need at startup, such as data seeding
 - `enableLogging` (default: `false`): Enable logging from the Prisma client.
