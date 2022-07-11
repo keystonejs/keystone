@@ -1,6 +1,6 @@
 ## Feature Example - Invalidate Session Token
 
-This project demonstrates how to invalidate a session when a password is changed using password based authentication in your Keystone system.
+This project demonstrates how to invalidate a session when a password is changed using password-based authentication in your Keystone system.
 It builds on the [Authentication example](../with-auth) project.
 
 ## Instructions
@@ -18,7 +18,7 @@ You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://
 
 ## Features
 
-Based on the [Authentication example](../with-auth/), this project demonstrates how to customise the kestone session configuration in order to invalidate a session when a user's passsword is changed.
+Based on the [Authentication example](../with-auth/), this project demonstrates how to customize the keystone session configuration in order to invalidate a session when a user's password is changed.
 It uses the [`@keystone-6/auth`](https://keystonejs.com/docs/apis/auth) package, along with Keystone's [session management API](https://keystonejs.com/docs/apis/session), to add the following features:
 
 - Adds a hook to the `password` field to set a timestamp field when the user changes their password
@@ -27,7 +27,7 @@ It uses the [`@keystone-6/auth`](https://keystonejs.com/docs/apis/auth) package,
 
 ### Added fields
 
-We add one new field, `passwordChangedAt`, to the `Person` list. Setting the `passwordChangedAt` field to hidden with access not allowed means this field will not be visible to the user. We then add a `resolveInput` hook on the `passwordChangedAt` field to set it to the current time whenever the password is changed.
+We add one new field, `passwordChangedAt`, to the `Person` list. Setting the `passwordChangedAt` field to hidden with access not allowed means this field will not be visible to the user. We then add a `resolveInput` hook on the `passwordChangedAt` field to set it to the current time whenever the password is changed. If the password has not changed (ie `resolvedData.password` is undefined) `resolvedInput` returns undefined for `passwordChangedAt` and therefore will not be updated.
 
 ```typescript
     email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
@@ -70,7 +70,7 @@ const { withAuth } = createAuth({
 
 ### Session
 
-We can then change the default `statelessSessions` by passing in a new `start` and `get` functions. In the `start` function, we add the `startTime` to the session and start the session using keystone's `start` session function. we can then customise the `get` function to check this `startTime` on the session and compare it to the `passwordChangedAt` time stored in the `Person` table.
+We can then change the default `statelessSessions` by passing in a new `start` and `get` functions. In the `start` function, we add the `startTime` to the session and start the session using keystone's `start` session function. we can then customize the `get` function to check this `startTime` on the session and compare it to the `passwordChangedAt` time stored in the `Person` table.
 
 ```typescript
 import { statelessSessions } from '@keystone-6/core/session';
