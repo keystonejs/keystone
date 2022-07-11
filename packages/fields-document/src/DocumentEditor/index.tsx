@@ -2,7 +2,7 @@
 /** @jsx jsx */
 
 import { jsx, useTheme } from '@keystone-ui/core';
-import { KeyboardEvent, MutableRefObject, ReactNode, useContext, useState } from 'react';
+import { KeyboardEvent, ReactNode, useContext, useState } from 'react';
 import isHotkey from 'is-hotkey';
 import { useCallback, useMemo } from 'react';
 import {
@@ -39,7 +39,7 @@ import { withDivider } from './divider';
 import { withCodeBlock } from './code-block';
 import { withMarks } from './marks';
 import { renderLeaf } from './leaf';
-import { useKeyDownRef, withSoftBreaks } from './soft-breaks';
+import { withSoftBreaks } from './soft-breaks';
 import { withShortcuts } from './shortcuts';
 import { withDocumentFeaturesNormalization } from './document-features-normalization';
 import { ToolbarStateProvider } from './toolbar-state';
@@ -119,12 +119,10 @@ const getKeyDownHandler = (editor: Editor) => (event: KeyboardEvent) => {
 export function createDocumentEditor(
   documentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>,
-  relationships: Relationships,
-  isShiftPressedRef: MutableRefObject<boolean>
+  relationships: Relationships
 ) {
   return withPasting(
     withSoftBreaks(
-      isShiftPressedRef,
       withBlocksSchema(
         withLink(
           documentFeatures,
@@ -187,12 +185,11 @@ export function DocumentEditor({
   relationships: Relationships;
   documentFeatures: DocumentFeatures;
 } & Omit<EditableProps, 'value' | 'onChange'>) {
-  const isShiftPressedRef = useKeyDownRef('Shift');
   const { colors, spacing } = useTheme();
   const [expanded, setExpanded] = useState(false);
   const editor = useMemo(
-    () => createDocumentEditor(documentFeatures, componentBlocks, relationships, isShiftPressedRef),
-    [documentFeatures, componentBlocks, relationships, isShiftPressedRef]
+    () => createDocumentEditor(documentFeatures, componentBlocks, relationships),
+    [documentFeatures, componentBlocks, relationships]
   );
 
   return (

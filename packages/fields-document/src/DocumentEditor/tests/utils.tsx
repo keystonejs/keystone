@@ -184,7 +184,6 @@ export const makeEditor = (
     documentFeatures = defaultDocumentFeatures,
     componentBlocks = {},
     normalization = 'disallow-non-normalized',
-    isShiftPressedRef = { current: false },
     relationships = {},
     skipRenderingDOM,
   }: {
@@ -199,12 +198,9 @@ export const makeEditor = (
   if (!Editor.isEditor(node)) {
     throw new Error('Unexpected non-editor passed to makeEditor');
   }
-  let editor = createDocumentEditor(
-    documentFeatures,
-    componentBlocks,
-    relationships,
-    isShiftPressedRef
-  ) as Editor & { container?: HTMLElement };
+  let editor = createDocumentEditor(documentFeatures, componentBlocks, relationships) as Editor & {
+    container?: HTMLElement;
+  };
   // for validation
   (editor as any).__config = {
     documentFeatures,
