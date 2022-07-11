@@ -185,9 +185,7 @@ export function validateAndNormalizeDocument(
   const children = value.map(x =>
     getValidatedNodeWithNormalizedComponentFormProps(x, componentBlocks, relationships)
   );
-  const editor = createDocumentEditor(documentFeatures, componentBlocks, relationships, {
-    current: false,
-  });
+  const editor = createDocumentEditor(documentFeatures, componentBlocks, relationships);
   editor.children = children;
   Editor.normalize(editor, { force: true });
   return editor.children;

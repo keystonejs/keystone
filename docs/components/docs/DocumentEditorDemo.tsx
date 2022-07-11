@@ -1,7 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { getInitialPropsValue } from '@keystone-6/fields-document/src/DocumentEditor/component-blocks/initial-values';
-import { useKeyDownRef } from '@keystone-6/fields-document/src/DocumentEditor/soft-breaks';
 import React, { ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import { Toolbar } from '@keystone-6/fields-document/src/DocumentEditor/Toolbar';
 import { DocumentFeatures } from '@keystone-6/fields-document/views';
@@ -279,10 +278,9 @@ export const DocumentEditorDemo = () => {
   const [value, setValue] = useState(initialContent as any);
   const { documentFeatures, formValue } = useContext(DocumentFeaturesContext);
 
-  const isShiftPressedRef = useKeyDownRef('Shift');
   const editor = useMemo(
-    () => createDocumentEditor(documentFeatures, componentBlocks, emptyObj, isShiftPressedRef),
-    [documentFeatures, isShiftPressedRef]
+    () => createDocumentEditor(documentFeatures, componentBlocks, emptyObj),
+    [documentFeatures]
   );
 
   // this is why we're creating the editor ourselves and not using the DocumentEditor component
@@ -290,7 +288,7 @@ export const DocumentEditorDemo = () => {
     // we want to force normalize when the document features change so
     // that no invalid things exist after a user changes something
     Editor.normalize(editor, { force: true });
-  }, [editor, documentFeatures, isShiftPressedRef]);
+  }, [editor, documentFeatures]);
 
   return (
     <div

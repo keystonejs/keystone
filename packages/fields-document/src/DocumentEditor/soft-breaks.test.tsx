@@ -13,11 +13,10 @@ test('basic soft break', () => {
           <cursor />
         </text>
       </paragraph>
-    </editor>,
-    { isShiftPressedRef: { current: true } }
+    </editor>
   );
 
-  editor.insertBreak();
+  editor.insertSoftBreak();
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
@@ -42,11 +41,10 @@ test('soft break deletes selection', () => {
           nt
         </text>
       </paragraph>
-    </editor>,
-    { isShiftPressedRef: { current: true } }
+    </editor>
   );
 
-  editor.insertBreak();
+  editor.insertSoftBreak();
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>

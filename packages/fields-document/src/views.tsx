@@ -187,8 +187,7 @@ export const controller = (
       const editor = createDocumentEditor(
         config.fieldMeta.documentFeatures,
         componentBlocks,
-        config.customViews.componentBlocks,
-        { current: false }
+        config.customViews.componentBlocks
       );
       editor.children = documentFromServer;
       Editor.normalize(editor, { force: true });
