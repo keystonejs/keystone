@@ -32,17 +32,24 @@ export const lists = {
       password: password({
         validation: { isRequired: true },
       }),
+      // Added a passwordChangedAt field that is updated using the resoolveInput hook whenever the password is changed.
+      // This value is checked against the session startTime to determine if the password has been changed since the
+      // session was started, and if so invalidate the session.
       passwordChangedAt: timestamp({
+        // Don't allow the passwordChangedAt field to be set by the user.
         access: () => false,
         hooks: {
           resolveInput: ({ resolvedData }) => {
+            // If the password has been changed, update the passwordChangedAt field to the current time.
             if (resolvedData.password) {
               return new Date();
             }
+            // Otherwise return undefined to indicate that the password hasn't been changed.
             return;
           },
         },
         ui: {
+          // Hide the passwordChangedAt field from the UI.
           createView: { fieldMode: 'hidden' },
           itemView: { fieldMode: 'hidden' },
           listView: { fieldMode: 'hidden' },
