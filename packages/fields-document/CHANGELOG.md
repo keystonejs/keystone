@@ -1,5 +1,13 @@
 # @keystone-6/fields-document
 
+## 4.0.1
+
+### Patch Changes
+
+- [#7701](https://github.com/keystonejs/keystone/pull/7701) [`047a84262`](https://github.com/keystonejs/keystone/commit/047a84262b559dda3bd73d87e0bfd257182bde29) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updates slate and slate-react to ^0.81.1
+
+* [#7700](https://github.com/keystonejs/keystone/pull/7700) [`d3fce3e37`](https://github.com/keystonejs/keystone/commit/d3fce3e37933494d930875cd13a89c008b48ade7) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixes inline relationships being removed when loading/saving an item in the Admin UI (#7685)
+
 ## 4.0.0
 
 ### Minor Changes
