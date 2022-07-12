@@ -173,8 +173,24 @@ export default function WhatsNew() {
           gap: 0,
         })}
       >
-        <Timeline date="9th June 2022" isLatest />
-        <Box heading="Better Image & Files" link="/docs/guides/images-and-files">
+        <Timeline date="30th June 2022" isLatest />
+        <Box heading="Field descriptions">
+          Now you can provide additional context to the reader of Admin UI form fields. Use them to
+          provide a better editing experience and improve the quality of what goes in to your
+          system.
+          <img
+            width="100%"
+            alt="Example of field descriptions in use on several Keystone field types"
+            src="/assets/updates/field-descriptions.png"
+          />
+        </Box>
+        <Timeline date="30th June 2022" />
+        <Box heading="MySQL support" link="/docs/apis/config#mysql">
+          We’ve added support for MySQL to Keystone's list of DB providers, bringing the total
+          number of supported DB types to three.
+        </Box>
+        <Timeline date="9th June 2022" />
+        <Box heading="Better Images & Files" link="/docs/guides/images-and-files">
           It’s now much easier to get Images and Files working with Keystone’s new{' '}
           <InlineCode>storage</InlineCode> configuration object.{' '}
         </Box>
