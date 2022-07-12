@@ -1,4 +1,4 @@
-name: Create Release PR
+name: Version Packages
 
 on:
   push:
@@ -7,19 +7,17 @@ on:
 
 jobs:
   release_pr:
-    name: Create Release PR
+    name: Pull Request
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@master
+      - uses: actions/checkout@master
         with:
           fetch-depth: 0
           persist-credentials: false
 
       - uses: ./.github/actions/ci-setup
 
-      - name: Create Release Pull Request
-        uses: changesets/action@v1
+      - uses: changesets/action@v1
         with:
           version: yarn version-packages
         env:
