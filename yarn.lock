@@ -3353,10 +3353,10 @@
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.10.2.tgz#0798c03351f0dea1a5a4cabddf26a55a7cbee590"
   integrity sha512-IXf3XA7+XyN7CP9gGh/XB0UxVMlvARGEgGXLubFICsUMGz6Q+DU+i4gGlpOxTjKvXjkJDJC8YdqdKkDj9qZHEQ==
 
-"@preconstruct/cli@2.1.7":
-  version "2.1.7"
-  resolved "https://registry.yarnpkg.com/@preconstruct/cli/-/cli-2.1.7.tgz#ac03f7396ab1e61f159858993009e6603c474ff1"
-  integrity sha512-5T8e5BX+TrT4/+1guWNVBccP+yxFERhVqpHLHO48SmB7IKqxeNt0ddcyLrH4WSzlV4tJ45Lk3OuELlKikso5bQ==
+"@preconstruct/cli@2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@preconstruct/cli/-/cli-2.2.0.tgz#30a92202e01201b7f2bdd81b6670a1a13dd4d69b"
+  integrity sha512-dFk2O5SF6urwG3OQ73a4kSgObjTary3eAEonfr0bNQ9JhgI4bkNLtkC6WstlBP+OMwcuyTPb9ZgCQy2wEC8L9A==
   dependencies:
     "@babel/code-frame" "^7.5.5"
     "@babel/core" "^7.7.7"
