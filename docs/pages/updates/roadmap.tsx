@@ -65,7 +65,7 @@ function TimelineWeAreHere() {
       css={mq({
         position: ['relative', null, null, 'absolute'],
         margin: ['1rem 0', null, null, '-3rem 0 0'],
-        left: ['-0.75rem', null, null, null],
+        left: ['7rem', null, null, null],
         display: 'inline-block',
         borderRadius: '0.4rem',
         backgroundColor: 'var(--text)',
