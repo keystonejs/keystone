@@ -227,7 +227,7 @@ export function DocsNavigation() {
   );
 }
 
-export function UpdatesNavigation({ releases = [] }: { releases: string[] }) {
+export function UpdatesNavigation() {
   return (
     <nav
       css={{
@@ -236,16 +236,7 @@ export function UpdatesNavigation({ releases = [] }: { releases: string[] }) {
     >
       <PrimaryNavItem href="/updates">Latest News</PrimaryNavItem>
       <PrimaryNavItem href="/updates/roadmap">Roadmap</PrimaryNavItem>
-      <PrimaryNavItem href="/releases">Release Notes</PrimaryNavItem>
-      {releases.length ? (
-        <Section label="Recent Releases">
-          {releases.map(name => (
-            <NavItem key={name} href={`/releases/${name}`}>
-              {format(parseISO(name), 'do LLL yyyy')}
-            </NavItem>
-          ))}
-        </Section>
-      ) : null}
+      <PrimaryNavItem href="https://github.com/keystonejs/keystone/releases">GitHub Releases</PrimaryNavItem>
       <Section label="Featured News">
         <NavItem href="/docs/guides/images-and-files">
           <Emoji symbol="🖼️" alt="Picture" />

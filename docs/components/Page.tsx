@@ -88,7 +88,6 @@ export function DocsPage({
   headings = [],
   noProse,
   noRightNav,
-  releases,
   title,
   description,
   ogImage,
@@ -99,7 +98,6 @@ export function DocsPage({
   headings?: Heading[];
   noProse?: boolean;
   noRightNav?: boolean;
-  releases?: any;
   title: string;
   description: string;
   ogImage?: string;
@@ -141,7 +139,7 @@ export function DocsPage({
             gap: ['var(--space-medium)', null, null, 'var(--space-large)', 'var(--space-xlarge)'],
           })}
         >
-          <Sidebar releases={releases} isUpdatesPage={isUpdatesPage} />
+          <Sidebar isUpdatesPage={isUpdatesPage} />
 
           <main
             id="skip-link-content"

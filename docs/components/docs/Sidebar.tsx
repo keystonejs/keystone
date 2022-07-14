@@ -7,10 +7,9 @@ import { DocsNavigation, UpdatesNavigation } from './Navigation';
 
 type SidebarProps = {
   isUpdatesPage?: boolean;
-  releases?: any;
 };
 
-export function Sidebar({ isUpdatesPage, releases }: SidebarProps) {
+export function Sidebar({ isUpdatesPage }: SidebarProps) {
   const mq = useMediaQuery();
   const Navigation = isUpdatesPage ? UpdatesNavigation : DocsNavigation;
 
@@ -29,7 +28,7 @@ export function Sidebar({ isUpdatesPage, releases }: SidebarProps) {
           borderBottom: ['1px solid var(--muted)', null, 'none'],
         })}
       >
-        <Navigation releases={releases} />
+        <Navigation />
       </div>
     </aside>
   );
