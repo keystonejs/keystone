@@ -176,7 +176,7 @@ Go ahead and add two post entries using your Admin UI, ensuring you only use `hy
 
 ## Query Keystone from Next.js
 
-In order to query Keystone content we need to use the [`getStaticProps`](https://Next.js.org/docs/basic-features/data-fetching#getstaticprops-static-generation) and [`getStaticPaths`](https://Next.js.org/docs/basic-features/data-fetching#getstaticpaths-static-generation) functions in Next.js. Let’s overwrite the contents of `pages/index.tsx` with the following to query posts from Keystone:
+In order to query Keystone content we need to use the [`getStaticProps`](https://nextjs.org/docs/basic-features/data-fetching/get-static-props) and [`getStaticPaths`](https://nextjs.org/docs/basic-features/data-fetching/get-static-paths) functions in Next.js. Let’s overwrite the contents of `pages/index.tsx` with the following to query posts from Keystone:
 
 ```tsx
 // pages/index.tsx
@@ -218,11 +218,11 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
 // Here we use the Lists API to load all the posts we want to display
 // The return of this function is provided to the `Home` component
 export async function getStaticProps() {
-  const posts = await query.Post.findMany({ query: 'id title slug' }) as Post[];
+  const posts = (await query.Post.findMany({ query: 'id title slug' })) as Post[];
   return {
     props: {
-      posts
-    }
+      posts,
+    },
   };
 }
 ```
@@ -265,9 +265,7 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
     query: `slug`,
   })) as { slug: string }[];
 
-  const paths = posts
-    .filter(({ slug }) => !!slug)
-    .map(({ slug }) => `/post/${slug}`);
+  const paths = posts.filter(({ slug }) => !!slug).map(({ slug }) => `/post/${slug}`);
 
   return {
     paths,
@@ -347,9 +345,14 @@ Keystone’s Embedded mode and SQLite support gives you the option to run a self
   <Well
     heading="Getting Started with create-keystone-app"
     href="/docs/walkthroughs/getting-started-with-create-keystone-app"
-    >
-    How to use Keystone's CLI app to standup a new local project with an Admin UI & the GraphQL Playground.
+  >
+    How to use Keystone's CLI app to standup a new local project with an Admin UI & the GraphQL
+    Playground.
   </Well>
 </RelatedContent>
 
-export default ({ children }) => <Markdown description="Learn how to embed Keystone and an SQLite database into a Next.js app to get a queryable GraphQL endpoint, based on your Keystone schema, running live on Vercel.">{children}</Markdown>;
+export default ({ children }) => (
+  <Markdown description="Learn how to embed Keystone and an SQLite database into a Next.js app to get a queryable GraphQL endpoint, based on your Keystone schema, running live on Vercel.">
+    {children}
+  </Markdown>
+);
