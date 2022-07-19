@@ -79,8 +79,8 @@ export default config({
 });
 ```
 
-?> The `query` operation is only applied when running GraphQL query operations.
-A user can still **read** fields as part of a return query when using a mutation `operation` (`create`, `update`, `delete`).
+?> The `query` access control is applied only when running GraphQL query operations.
+A user can still **read** fields as part of a return query when using a mutation `operation` (`create`, `update` or `delete`).
 If you want to limit access to fields, use [field access control](https://keystonejs.com/docs/apis/access-control#field-access-control).
 
 ### Filter
@@ -125,18 +125,17 @@ export default config({
 });
 ```
 
-!> Filter access control cannot be used on `create` operations, as there is no pre-existing item to filter against.
-To restrict `create` operations configure either `access.operation.create` or `access.item.create`.
+!> Filter based access control cannot be used for `create` operations.
+If you want to limit `create` operations, use either `access.operation.create` or `access.item.create`.
 
-?> Filter based access control can impact the performance when querying related items on a list.
-Keystone optimises queries for to-one relationships, however these optimisations cannot be used in conjunction with access control filters.
+?> Filter based access control can impact the performance of your database queries.
 
 ### Item (mutations only)
 
-`item` is the final and most powerful level of access control.
-It’s available to `create`, `update`, and `delete` mutations, and lets you write functions which have access to:
+Item-level access control lets you control which mutative operations can be applied to a list item.
+Individual functions can be provided for each of the operations, with each function receiving:
 
-- the **input data** of the mutation (for `create` and `update` operations), and
+- the **input data** of the mutation (for `create` and `update` operations), and or
 - the **existing item** in the database (for `update` and `delete` operations).
 
 ?> Each `item` access type *defaults to public* unless configured.
