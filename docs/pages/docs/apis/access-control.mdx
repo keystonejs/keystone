@@ -56,6 +56,8 @@ If access is **denied** due to any of the access control methods, the following 
 Operation-level access control lets you control which operations can be accessed by a user based on the `session` and `context`.
 Individual functions can be provided for each of the operations.
 
+?> Each operation type *defaults to public* unless configured.
+
 !> These functions must return `true` if the operation is allowed, or `false` if it is not allowed.
 
 ```typescript
@@ -77,9 +79,9 @@ export default config({
 });
 ```
 
-?> The `query` access control rule is applied when running GraphQL query operations.
-It does not prevent a user **reading** the data returned by the mutation operations.
-You should ensure that your `create`, `update`, and `delete` are also configured to prevent access to protected data.
+?> The `query` operation is only applied when running GraphQL query operations.
+A user can still **read** fields as part of a return query when using a mutation `operation` (`create`, `update`, `delete`).
+If you want to limit access to fields, use [field access control](https://keystonejs.com/docs/apis/access-control#field-access-control).
 
 ### Filter
 
@@ -90,6 +92,8 @@ Filter-level access control lets you restrict which items can be operated on by 
 
 In general, the filter access control functions will return GraphQL filters.
 They can also return boolean values `true` or `false` to match or exclude all items.
+
+?> Each `filter` type *defaults to an empty filter*, unless configured.
 
 ```typescript
 import { config, list } from '@keystone-6/core';
@@ -134,6 +138,8 @@ It’s available to `create`, `update`, and `delete` mutations, and lets you wri
 
 - the **input data** of the mutation (for `create` and `update` operations), and
 - the **existing item** in the database (for `update` and `delete` operations).
+
+?> Each `item` access type *defaults to public* unless configured.
 
 !> These functions must return `true` if the operation is allowed, or `false` if it is not allowed.
 
