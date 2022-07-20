@@ -136,22 +136,22 @@ describe.each([
       switch (kind) {
         case 'autoincrement': {
           expect(id).toBe('1');
-          expect(dbItem.id).toBe(1);
+          expect(dbItem?.id).toBe(1);
           return;
         }
         case 'cuid': {
           expect(isCuid(id)).toBe(true);
-          expect(dbItem.id).toBe(id);
+          expect(dbItem?.id).toBe(id);
           return;
         }
         case 'uuid': {
           expect(validate(id)).toBe(true);
-          expect(dbItem.id).toBe(id);
+          expect(dbItem?.id).toBe(id);
           return;
         }
         case 'bigint': {
           expect(id).toEqual('1');
-          expect(dbItem.id).toBe(1n);
+          expect(dbItem?.id).toBe(1n);
           return;
         }
         default: {
