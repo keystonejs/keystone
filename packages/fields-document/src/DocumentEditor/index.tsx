@@ -185,7 +185,7 @@ export function DocumentEditor({
   relationships: Relationships;
   documentFeatures: DocumentFeatures;
 } & Omit<EditableProps, 'value' | 'onChange'>) {
-  const { colors, spacing } = useTheme();
+  const { radii, colors, spacing } = useTheme();
   const [expanded, setExpanded] = useState(false);
   const editor = useMemo(
     () => createDocumentEditor(documentFeatures, componentBlocks, relationships),
@@ -196,10 +196,13 @@ export function DocumentEditor({
     <div
       css={[
         {
-          display: 'flex',
-          flexDirection: 'column',
+          // display: 'flex',
+          // flexDirection: 'column',
+          border: `1px solid ${colors.border}`,
+          borderRadius: radii.small,
         },
         expanded && {
+          border: 'none',
           background: colors.background,
           bottom: 0,
           left: 0,
@@ -248,12 +251,25 @@ export function DocumentEditor({
         )}
 
         <DocumentEditorEditable
-          css={
+          css={[
+            {
+              height: 270,
+              resize: 'vertical',
+              overflowY: 'auto',
+              minHeight: 120,
+              scrollbarGutter: 'stable',
+              paddingLeft: spacing.small,
+              paddingRight: spacing.small,
+            },
             expanded && {
-              marginLeft: spacing.medium,
-              marginRight: spacing.medium,
-            }
-          }
+              resize: 'none',
+              overflowY: 'hidden',
+              height: 'auto !important',
+              scrollbarGutter: 'unset',
+              paddingLeft: spacing.medium,
+              paddingRight: spacing.medium,
+            },
+          ]}
           {...props}
           readOnly={onChange === undefined}
         />
