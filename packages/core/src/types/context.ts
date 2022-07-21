@@ -107,7 +107,7 @@ export type KeystoneDbAPI<KeystoneListsTypeInfo extends Record<string, BaseListT
     }): Promise<readonly KeystoneListsTypeInfo[Key]['item'][]>;
     findOne(args: {
       readonly where: KeystoneListsTypeInfo[Key]['inputs']['uniqueWhere'];
-    }): Promise<KeystoneListsTypeInfo[Key]['item']>;
+    }): Promise<KeystoneListsTypeInfo[Key]['item'] | null>;
     count(args?: {
       readonly where?: KeystoneListsTypeInfo[Key]['inputs']['where'];
     }): Promise<number>;

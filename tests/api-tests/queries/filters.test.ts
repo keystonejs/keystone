@@ -207,6 +207,18 @@ describe('searching by unique fields', () => {
   );
 
   test(
+    'findOne returns null if missing',
+    runner(async ({ context }) => {
+      await context.query.User.createOne({ data: { email: 'test@example.com' } });
+      const { data, errors } = await context.graphql.raw({
+        query: '{ user(where: { email: "unknown@example.com" }) { id email } }',
+      });
+      expect(errors).toBe(undefined);
+      expect(data).toEqual({ user: null });
+    })
+  );
+
+  test(
     'findOne throws error with zero where values',
     runner(async ({ context }) => {
       const { data, errors } = await context.graphql.raw({
