@@ -196,8 +196,6 @@ export function DocumentEditor({
     <div
       css={[
         {
-          // display: 'flex',
-          // flexDirection: 'column',
           border: `1px solid ${colors.border}`,
           borderRadius: radii.small,
         },
@@ -251,25 +249,23 @@ export function DocumentEditor({
         )}
 
         <DocumentEditorEditable
-          css={[
-            {
-              height: 270,
-              resize: 'vertical',
-              overflowY: 'auto',
-              minHeight: 120,
-              scrollbarGutter: 'stable',
-              paddingLeft: spacing.small,
-              paddingRight: spacing.small,
-            },
-            expanded && {
-              resize: 'none',
-              overflowY: 'hidden',
-              height: 'auto !important',
-              scrollbarGutter: 'unset',
-              paddingLeft: spacing.medium,
-              paddingRight: spacing.medium,
-            },
-          ]}
+          css={
+            expanded
+              ? {
+                  height: 'auto !important',
+                  paddingLeft: spacing.medium,
+                  paddingRight: spacing.medium,
+                }
+              : {
+                  height: 270,
+                  resize: 'vertical',
+                  overflowY: 'auto',
+                  minHeight: 120,
+                  scrollbarGutter: 'stable',
+                  paddingLeft: spacing.small,
+                  paddingRight: spacing.small,
+                }
+          }
           {...props}
           readOnly={onChange === undefined}
         />

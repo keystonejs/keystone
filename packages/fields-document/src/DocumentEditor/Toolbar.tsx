@@ -55,87 +55,83 @@ export function Toolbar({
   const relationship = useContext(DocumentFieldRelationshipsContext);
   const blockComponent = useContext(ComponentBlockContext);
   const hasBlockItems = Object.entries(relationship).length || Object.keys(blockComponent).length;
-
+  const hasMarks = Object.values(documentFeatures.formatting.inlineMarks).some(x => x);
   return (
     <ToolbarContainer>
-      {!!documentFeatures.formatting.headingLevels.length && (
-        <Fragment>
+      <ToolbarGroup>
+        {!!documentFeatures.formatting.headingLevels.length && (
           <HeadingMenu headingLevels={documentFeatures.formatting.headingLevels} />
-          <ToolbarSeparator />
-        </Fragment>
-      )}
-      {Object.values(documentFeatures.formatting.inlineMarks).some(x => x) && (
-        <Fragment>
-          <InlineMarks marks={documentFeatures.formatting.inlineMarks} />
-          <ToolbarSeparator />
-        </Fragment>
-      )}
-      {(documentFeatures.formatting.alignment.center ||
-        documentFeatures.formatting.alignment.end) && (
-        <TextAlignMenu alignment={documentFeatures.formatting.alignment} />
-      )}
-      {documentFeatures.formatting.listTypes.unordered && (
-        <Tooltip
-          content={
-            <Fragment>
-              Bullet List <KeyboardInTooltip>- </KeyboardInTooltip>
-            </Fragment>
-          }
-          weight="subtle"
-        >
-          {attrs => (
-            <ListButton type="unordered-list" {...attrs}>
-              <BulletListIcon />
-            </ListButton>
-          )}
-        </Tooltip>
-      )}
-      {documentFeatures.formatting.listTypes.ordered && (
-        <Tooltip
-          content={
-            <Fragment>
-              Numbered List <KeyboardInTooltip>1. </KeyboardInTooltip>
-            </Fragment>
-          }
-          weight="subtle"
-        >
-          {attrs => (
-            <ListButton type="ordered-list" {...attrs}>
-              <NumberedListIcon />
-            </ListButton>
-          )}
-        </Tooltip>
-      )}
-      {(documentFeatures.formatting.alignment.center ||
-        documentFeatures.formatting.alignment.end ||
-        documentFeatures.formatting.listTypes.unordered ||
-        documentFeatures.formatting.listTypes.ordered) && <ToolbarSeparator />}
+        )}
+        {hasMarks && <InlineMarks marks={documentFeatures.formatting.inlineMarks} />}
+        {hasMarks && <ToolbarSeparator />}
+        {(documentFeatures.formatting.alignment.center ||
+          documentFeatures.formatting.alignment.end) && (
+          <TextAlignMenu alignment={documentFeatures.formatting.alignment} />
+        )}
+        {documentFeatures.formatting.listTypes.unordered && (
+          <Tooltip
+            content={
+              <Fragment>
+                Bullet List <KeyboardInTooltip>- </KeyboardInTooltip>
+              </Fragment>
+            }
+            weight="subtle"
+          >
+            {attrs => (
+              <ListButton type="unordered-list" {...attrs}>
+                <BulletListIcon />
+              </ListButton>
+            )}
+          </Tooltip>
+        )}
+        {documentFeatures.formatting.listTypes.ordered && (
+          <Tooltip
+            content={
+              <Fragment>
+                Numbered List <KeyboardInTooltip>1. </KeyboardInTooltip>
+              </Fragment>
+            }
+            weight="subtle"
+          >
+            {attrs => (
+              <ListButton type="ordered-list" {...attrs}>
+                <NumberedListIcon />
+              </ListButton>
+            )}
+          </Tooltip>
+        )}
+        {(documentFeatures.formatting.alignment.center ||
+          documentFeatures.formatting.alignment.end ||
+          documentFeatures.formatting.listTypes.unordered ||
+          documentFeatures.formatting.listTypes.ordered) && <ToolbarSeparator />}
 
-      {documentFeatures.dividers && dividerButton}
-      {documentFeatures.links && linkButton}
-      {documentFeatures.formatting.blockTypes.blockquote && blockquoteButton}
-      {!!documentFeatures.layouts.length && <LayoutsButton layouts={documentFeatures.layouts} />}
-      {documentFeatures.formatting.blockTypes.code && codeButton}
-      {!!hasBlockItems && <InsertBlockMenu />}
-
-      <ToolbarSeparator />
+        {documentFeatures.dividers && dividerButton}
+        {documentFeatures.links && linkButton}
+        {documentFeatures.formatting.blockTypes.blockquote && blockquoteButton}
+        {!!documentFeatures.layouts.length && <LayoutsButton layouts={documentFeatures.layouts} />}
+        {documentFeatures.formatting.blockTypes.code && codeButton}
+        {!!hasBlockItems && <InsertBlockMenu />}
+      </ToolbarGroup>
       {useMemo(() => {
         const ExpandIcon = viewState?.expanded ? Minimize2Icon : Maximize2Icon;
         return (
           viewState && (
-            <Tooltip content={viewState.expanded ? 'Collapse' : 'Expand'} weight="subtle">
-              {attrs => (
-                <ToolbarButton
-                  onMouseDown={event => {
-                    event.preventDefault();
-                    viewState.toggle();
-                  }}
-                  {...attrs}
-                >
-                  <ExpandIcon size="small" />
-                </ToolbarButton>
-              )}
-            </Tooltip>
+            <ToolbarGroup>
+              <ToolbarSeparator />
+              <Tooltip content={viewState.expanded ? 'Collapse' : 'Expand'} weight="subtle">
+                {attrs => (
+                  <ToolbarButton
+                    onMouseDown={event => {
+                      event.preventDefault();
+                      viewState.toggle();
+                    }}
+                    {...attrs}
+                  >
+                    <ExpandIcon size="small" />
+                  </ToolbarButton>
+                )}
+              </Tooltip>
+            </ToolbarGroup>
           )
         );
       }, [viewState])}
@@ -183,14 +179,27 @@ const ToolbarContainer = ({ children }: { children: ReactNode }) => {
     <div
       css={{
         borderBottom: `1px solid ${colors.border}`,
-        paddingBottom: spacing.small,
-        paddingTop: spacing.small,
+        background: colors.background,
         position: 'sticky',
         top: 0,
         zIndex: 2,
+        borderTopLeftRadius: 'inherit',
+        borderTopRightRadius: 'inherit',
       }}
     >
-      <ToolbarGroup>{children}</ToolbarGroup>
+      <div
+        css={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          height: 40,
+          paddingLeft: spacing.xsmall,
+          paddingRight: spacing.xsmall,
+        }}
+      >
+        {children}
+      </div>
     </div>
   );
 };
@@ -486,7 +495,7 @@ function MoreFormattingDialog({
   return (
     <InlineDialog
       onMouseDown={event => {
-        if ((event.target as any).nodeName === 'BUTTON') {
+        if (event.target instanceof HTMLElement && event.target.closest('button')) {
           onCloseMenu();
         }
       }}
