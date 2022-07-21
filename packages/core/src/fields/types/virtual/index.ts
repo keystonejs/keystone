@@ -1,4 +1,5 @@
 import { getNamedType, isLeafType } from 'graphql';
+import { Field, OutputType } from '@graphql-ts/schema';
 import {
   BaseListTypeInfo,
   BaseItem,
@@ -7,24 +8,32 @@ import {
   fieldType,
   ListGraphQLTypes,
   getGqlNames,
+  KeystoneContextFromListTypeInfo,
 } from '../../../types';
 import { graphql } from '../../..';
 import { resolveView } from '../../resolve-view';
 
-type VirtualFieldGraphQLField<Item extends BaseItem> = graphql.Field<
+type VirtualFieldGraphQLField<Item extends BaseItem, Context> = Field<
   Item,
   any,
-  graphql.OutputType,
-  string
+  OutputType<Context>,
+  string,
+  Context
 >;
 
 export type VirtualFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
     field:
-      | VirtualFieldGraphQLField<ListTypeInfo['item']>
+      | VirtualFieldGraphQLField<
+          ListTypeInfo['item'],
+          KeystoneContextFromListTypeInfo<ListTypeInfo>
+        >
       | ((
           lists: Record<string, ListGraphQLTypes>
-        ) => VirtualFieldGraphQLField<ListTypeInfo['item']>);
+        ) => VirtualFieldGraphQLField<
+          ListTypeInfo['item'],
+          KeystoneContextFromListTypeInfo<ListTypeInfo>
+        >);
     unreferencedConcreteInterfaceImplementations?: readonly graphql.ObjectType<any>[];
     ui?: {
       /**

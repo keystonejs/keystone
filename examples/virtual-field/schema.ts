@@ -1,6 +1,6 @@
-import { list, graphql } from '@keystone-6/core';
+import { list } from '@keystone-6/core';
 import { select, relationship, text, timestamp, virtual } from '@keystone-6/core/fields';
-import { Lists, Context } from '.keystone/types';
+import { Lists, Context, graphql } from '.keystone/types';
 
 export const lists: Lists = {
   Post: list({
@@ -17,7 +17,7 @@ export const lists: Lists = {
       isPublished: virtual({
         field: graphql.field({
           type: graphql.Boolean,
-          resolve(item: any) {
+          resolve(item) {
             return item.status === 'published';
           },
         }),
