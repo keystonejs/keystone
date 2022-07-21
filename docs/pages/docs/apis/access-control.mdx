@@ -135,7 +135,7 @@ If you want to limit `create` operations, use either `access.operation.create` o
 Item-level access control lets you control which mutative operations can be applied to a list item.
 Individual functions can be provided for each of the operations, with each function receiving:
 
-- the **input data** of the mutation (for `create` and `update` operations), and or
+- the **input data** of the mutation (for `create` and `update` operations), and/or
 - the **existing item** in the database (for `update` and `delete` operations).
 
 ?> Each `item` access type *defaults to public* unless configured.
