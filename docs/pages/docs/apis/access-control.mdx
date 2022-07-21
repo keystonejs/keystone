@@ -30,7 +30,7 @@ By default, all lists and fields are public without additional configuration.
 
 There are three types of access control that can be configured on the `access` object:
 
-- [`operation`](#operation), functions which provide the `context` and `session` to help decide if a request should be granted access to the list; this happens prior to any GraphQL query being executed.
+- [`operation`](#operation), functions that provide the `context` and `session` to help decide if a request should be granted access to the list; this happens prior to any GraphQL query being executed.
 - [`filter`](#filter), functions which return a [filter](./filters) that is applied to database queries on this list.
 - [`item`](#item-mutations-only), functions which provides the `context` and `session` to determine if a request can execute the respective mutative action.
 
