@@ -2,7 +2,6 @@
 /** @jsx jsx */
 import { getInitialPropsValue } from '@keystone-6/fields-document/src/DocumentEditor/component-blocks/initial-values';
 import React, { ReactNode, useContext, useEffect, useMemo, useState } from 'react';
-import { Toolbar } from '@keystone-6/fields-document/src/DocumentEditor/Toolbar';
 import { DocumentFeatures } from '@keystone-6/fields-document/views';
 import {
   createDocumentEditor,
