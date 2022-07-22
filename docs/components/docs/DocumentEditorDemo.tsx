@@ -280,6 +280,8 @@ export const DocumentEditorDemo = () => {
   useEffect(() => {
     // we want to force normalize when the document features change so
     // that no invalid things exist after a user changes something
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const editor = createDocumentEditor(documentFeatures, componentBlocks, emptyObj);
     editor.children = value;
     Editor.normalize(editor, { force: true });
