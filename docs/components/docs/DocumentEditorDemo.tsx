@@ -280,8 +280,6 @@ export const DocumentEditorDemo = () => {
   useEffect(() => {
     // we want to force normalize when the document features change so
     // that no invalid things exist after a user changes something
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     const editor = createDocumentEditor(documentFeatures, componentBlocks, emptyObj);
     editor.children = value;
     Editor.normalize(editor, { force: true });
@@ -289,6 +287,7 @@ export const DocumentEditorDemo = () => {
     // slate looks like it's a controlled component but it actually isn't
     // so we need to re-mount it so that it looks at the updated value
     setKey(x => x + 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [documentFeatures]);
 
   return (
