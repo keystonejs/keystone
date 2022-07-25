@@ -32,6 +32,19 @@ For more details on how to use filters in queries please consult to the [GraphQL
 | `notIn`         | `[Int!]`            | Is not in the array             |
 | `not`           | `IntNullableFilter` | Does not match the inner filter |
 
+### bigInt
+
+| **Filter name** | **Type**               | **Description**                 |
+| --------------- | ---------------------- | ------------------------------- |
+| `equals`        | `BigInt`               | Equals                          |
+| `lt`            | `BigInt`               | Less than                       |
+| `lte`           | `BigInt`               | Less than or equal              |
+| `gt`            | `BigInt`               | Greater than                    |
+| `gte`           | `BigInt`               | Greater than or equal           |
+| `in`            | `[BigInt!]`            | Is in the array                 |
+| `notIn`         | `[BigInt!]`            | Is not in the array             |
+| `not`           | `BigIntNullableFilter` | Does not match the inner filter |
+
 ### json
 
 The `json` field type does not support filters.

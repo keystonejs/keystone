@@ -28,6 +28,7 @@ type Thing {
   selectSegmentedControl: String
   json: JSON
   integer: Int
+  bigInt: BigInt
   float: Float
   image: ImageFieldOutput
   file: FileFieldOutput
@@ -40,6 +41,8 @@ type PasswordState {
 
 scalar DateTime
   @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
+
+scalar BigInt
 
 type ImageFieldOutput {
   id: ID!
@@ -87,6 +90,7 @@ input ThingWhereInput {
   select: StringNullableFilter
   selectSegmentedControl: StringNullableFilter
   integer: IntNullableFilter
+  bigInt: BigIntNullableFilter
   float: FloatNullableFilter
 }
 
@@ -194,6 +198,17 @@ input IntNullableFilter {
   not: IntNullableFilter
 }
 
+input BigIntNullableFilter {
+  equals: BigInt
+  in: [BigInt!]
+  notIn: [BigInt!]
+  lt: BigInt
+  lte: BigInt
+  gt: BigInt
+  gte: BigInt
+  not: BigIntNullableFilter
+}
+
 input FloatNullableFilter {
   equals: Float
   in: [Float!]
@@ -213,6 +228,7 @@ input ThingOrderByInput {
   select: OrderDirection
   selectSegmentedControl: OrderDirection
   integer: OrderDirection
+  bigInt: OrderDirection
   float: OrderDirection
 }
 
@@ -234,6 +250,7 @@ input ThingUpdateInput {
   selectSegmentedControl: String
   json: JSON
   integer: Int
+  bigInt: BigInt
   float: Float
   image: ImageFieldInput
   file: FileFieldInput
@@ -284,6 +301,7 @@ input ThingCreateInput {
   selectSegmentedControl: String
   json: JSON
   integer: Int
+  bigInt: BigInt
   float: Float
   image: ImageFieldInput
   file: FileFieldInput

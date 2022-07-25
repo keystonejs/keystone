@@ -18,10 +18,9 @@ type Provider = typeof providers[number];
 // we can add them when we want field types for those scalars
 // the missing ones are:
 // - Bytes
-// - BigInt
 // - Json
 // - Unsupported (this one can't be interacted with in the prisma client (and therefore cannot be filtered) so it's irrelevant here)
-const scalarTypes = ['String', 'Boolean', 'Int', 'Float', 'DateTime', 'Decimal'] as const;
+const scalarTypes = ['String', 'Boolean', 'Int', 'Float', 'DateTime', 'Decimal', 'BigInt'] as const;
 
 const getSchemaForProvider = (provider: Provider) => {
   return `datasource ${provider} {
@@ -307,4 +306,5 @@ const scalarsToGqlScalars: Record<string, string> = {
   Json: 'graphql.JSON',
   DateTime: 'graphql.DateTime',
   Decimal: 'graphql.Decimal',
+  BigInt: 'graphql.BigInt',
 };

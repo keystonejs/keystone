@@ -405,6 +405,64 @@ const DecimalFilter: DecimalFilterType = graphql.inputObject({
   }),
 });
 
+type BigIntNullableFilterType = graphql.InputObjectType<{
+  // can be null
+  equals: graphql.Arg<typeof graphql.BigInt>;
+  // can be null
+  in: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.BigInt>>>;
+  // can be null
+  notIn: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.BigInt>>>;
+  lt: graphql.Arg<typeof graphql.BigInt>;
+  lte: graphql.Arg<typeof graphql.BigInt>;
+  gt: graphql.Arg<typeof graphql.BigInt>;
+  gte: graphql.Arg<typeof graphql.BigInt>;
+  // can be null
+  not: graphql.Arg<typeof BigIntNullableFilter>;
+}>;
+
+const BigIntNullableFilter: BigIntNullableFilterType = graphql.inputObject({
+  name: 'BigIntNullableFilter',
+  fields: () => ({
+    // can be null
+    equals: graphql.arg({ type: graphql.BigInt }),
+    // can be null
+    in: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.BigInt)) }),
+    // can be null
+    notIn: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.BigInt)) }),
+    lt: graphql.arg({ type: graphql.BigInt }),
+    lte: graphql.arg({ type: graphql.BigInt }),
+    gt: graphql.arg({ type: graphql.BigInt }),
+    gte: graphql.arg({ type: graphql.BigInt }),
+    // can be null
+    not: graphql.arg({ type: BigIntNullableFilter }),
+  }),
+});
+
+type BigIntFilterType = graphql.InputObjectType<{
+  equals: graphql.Arg<typeof graphql.BigInt>;
+  in: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.BigInt>>>;
+  notIn: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.BigInt>>>;
+  lt: graphql.Arg<typeof graphql.BigInt>;
+  lte: graphql.Arg<typeof graphql.BigInt>;
+  gt: graphql.Arg<typeof graphql.BigInt>;
+  gte: graphql.Arg<typeof graphql.BigInt>;
+  not: graphql.Arg<typeof BigIntFilter>;
+}>;
+
+const BigIntFilter: BigIntFilterType = graphql.inputObject({
+  name: 'BigIntFilter',
+  fields: () => ({
+    equals: graphql.arg({ type: graphql.BigInt }),
+    in: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.BigInt)) }),
+    notIn: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.BigInt)) }),
+    lt: graphql.arg({ type: graphql.BigInt }),
+    lte: graphql.arg({ type: graphql.BigInt }),
+    gt: graphql.arg({ type: graphql.BigInt }),
+    gte: graphql.arg({ type: graphql.BigInt }),
+    not: graphql.arg({ type: BigIntFilter }),
+  }),
+});
+
 export const String = {
   optional: StringNullableFilter,
   required: StringFilter,
@@ -433,6 +491,11 @@ export const DateTime = {
 export const Decimal = {
   optional: DecimalNullableFilter,
   required: DecimalFilter,
+};
+
+export const BigInt = {
+  optional: BigIntNullableFilter,
+  required: BigIntFilter,
 };
 
 export { enumFilters as enum } from '../enum-filter';

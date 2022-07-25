@@ -92,6 +92,30 @@ export const Decimal = graphqlTsSchema.graphql.scalar<DecimalValue & { scaleToPr
   })
 );
 
+export const BigInt = graphqlTsSchema.graphql.scalar<bigint>(
+  new GraphQLScalarType({
+    name: 'BigInt',
+    serialize(value: bigint) {
+      return value.toString();
+    },
+    parseLiteral(value) {
+      if (value.kind !== 'StringValue') {
+        throw new GraphQLError('BigInt only accepts values as strings');
+      }
+      return globalThis.BigInt(value.value);
+    },
+    parseValue(value) {
+      if (typeof value === 'bigint') {
+        return value;
+      }
+      if (typeof value !== 'string') {
+        throw new GraphQLError('BigInt only accepts values as strings');
+      }
+      return globalThis.BigInt(value);
+    },
+  })
+);
+
 // from https://github.com/excitement-engineer/graphql-iso-date/blob/master/src/utils/validator.js#L121
 // this is also what prisma uses https://github.com/prisma/prisma/blob/20b58fe65d581bcb43c0d5c28d4b89cabc2d99b2/packages/client/src/runtime/utils/common.ts#L126-L128
 const RFC_3339_REGEX =
