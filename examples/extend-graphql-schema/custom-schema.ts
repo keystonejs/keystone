@@ -1,5 +1,5 @@
 import { graphQLSchemaExtension } from '@keystone-6/core';
-import { Context } from '.keystone/types';
+import { Context } from '.keystone';
 
 export const extendGraphqlSchema = graphQLSchemaExtension<Context>({
   typeDefs: `

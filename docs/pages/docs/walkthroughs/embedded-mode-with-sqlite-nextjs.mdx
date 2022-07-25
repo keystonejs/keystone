@@ -101,7 +101,7 @@ To create and edit blog records in Keystone’s Admin UI, add a `keystone.ts` [c
 
 import { config, list } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
-import { Lists } from '.keystone/types';
+import { Lists } from '.keystone';
 
 const Post: Lists.Post = list({
   fields: {
@@ -186,7 +186,7 @@ import Link from 'next/link';
 
 // Import the generated Lists API and types from Keystone
 import { query } from '.keystone/api';
-import { Lists } from '.keystone/types';
+import { Lists } from '.keystone';
 
 type Post = {
   id: string;
@@ -236,7 +236,7 @@ import { GetStaticPathsResult, GetStaticPropsContext, InferGetStaticPropsType } 
 import Link from 'next/link';
 
 import { query } from '.keystone/api';
-import { Lists } from '.keystone/types';
+import { Lists } from '.keystone';
 
 type Post = {
   id: string;

@@ -1,5 +1,4 @@
 import execa from 'execa';
-import * as fs from 'fs-extra';
 import { ExitError } from '../utils';
 import {
   basicKeystoneConfig,
@@ -62,7 +61,6 @@ test('build works with typescript without the user defining a babel config', asy
       NEXT_TELEMETRY_DISABLED: '1',
     } as any,
   });
-  expect(await fs.readFile(`${tmp}/node_modules/.keystone/types.js`, 'utf8')).toBe('');
   expect(
     result
       .all!.replace(

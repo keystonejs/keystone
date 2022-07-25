@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`postinstall writes the correct node_modules files 1`] = `
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/types.d.ts ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/index.d.ts ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 type Scalars = {
   readonly ID: string;
   readonly Boolean: boolean;
@@ -141,6 +141,50 @@ export type Lists = {
   [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core').ListConfig<TypeInfo['lists'][Key], any>
 } & Record<string, import('@keystone-6/core').ListConfig<any, any>>;
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/types.js ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+export * as graphql from './internal/graphql-ts';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/index.js ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+exports.graphql = require('@keystone-6/core').graphql;
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/internal/graphql-ts-with-context.d.ts ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+import { GraphQLSchemaAPIWithContext } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/graphql-ts';
+import { Context } from './graphql-ts';
+
+declare const __graphql: GraphQLSchemaAPIWithContext<Context>;
+
+export = __graphql;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/internal/graphql-ts.d.ts ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+import * as graphqlTsSchema from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/graphql-ts';
+import type { Context } from '../index';
+export * from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/graphql-ts-without-context';
+export { field, fields, interface, interfaceField, object, union } from './graphql-ts-with-context';
+
+export type { Context }
+
+export type NullableType = graphqlTsSchema.NullableType<Context>;
+export type Type = graphqlTsSchema.Type<Context>;
+export type NullableOutputType = graphqlTsSchema.NullableOutputType<Context>;
+export type OutputType = graphqlTsSchema.OutputType<Context>;
+export type Field<
+  Source,
+  Args extends Record<string, graphqlTsSchema.Arg<any>>,
+  TType extends OutputType,
+  Key extends string
+> = graphqlTsSchema.Field<Source, Args, TType, Key, Context>;
+export type FieldResolver<
+  Source,
+  Args extends Record<string, graphqlTsSchema.Arg<any>>,
+  TType extends OutputType
+> = graphqlTsSchema.FieldResolver<Source, Args, TType, Context>;
+export type ObjectType<Source> = graphqlTsSchema.ObjectType<Source, Context>;
+export type UnionType<Source> = graphqlTsSchema.UnionType<Source, Context>;
+export type InterfaceType<
+  Source,
+  Fields extends Record<string, graphqlTsSchema.InterfaceField<any, OutputType, Context>>
+> = graphqlTsSchema.InterfaceType<Source, Fields, Context>;
+export type InterfaceField<
+  Args extends Record<string, graphqlTsSchema.Arg<any>>,
+  TType extends OutputType
+> = graphqlTsSchema.InterfaceField<Args, TType, Context>;
 
 `;

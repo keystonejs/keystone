@@ -64,9 +64,8 @@ export type UnwrapPromises<T extends Promise<any>[]> = {
 };
 
 // please do not make this type be the value of KeystoneContext['prisma']
-// this type is meant for generic usage, KeystoneContext should be generic over a PrismaClient
-// and we should generate a KeystoneContext type in node_modules/.keystone/types which passes in the user's PrismaClient type
-// so that users get right PrismaClient types specifically for their project
+// the generated prisma client type should be used in actual apps
+// this type is meant for "we have _some_ prisma client" not "we have _a_ prisma client"
 export type PrismaClient = {
   $disconnect(): Promise<void>;
   $connect(): Promise<void>;

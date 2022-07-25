@@ -12,7 +12,7 @@ import {
 } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
 import { v4 } from 'uuid';
-import * as Keystone from '.keystone/types';
+import * as Keystone from '.keystone';
 
 type AccessArgs = {
   session?: {
