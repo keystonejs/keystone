@@ -1,12 +1,10 @@
+import { loadConfig } from '../lib/config/loadConfig';
 import { createSystem } from '../lib/createSystem';
 import {
   generateCommittedArtifacts,
   generateNodeModulesArtifacts,
   validateCommittedArtifacts,
 } from '../artifacts';
-import { requireSource } from '../lib/config/requireSource';
-import { initConfig } from '../lib/config/initConfig';
-import { getConfigPath } from './utils';
 
 // The postinstall step serves two purposes:
 
@@ -40,7 +38,7 @@ import { getConfigPath } from './utils';
 //         * only generated with generateNodeAPI option
 
 export async function postinstall(cwd: string, shouldFix: boolean) {
-  const config = initConfig(requireSource(getConfigPath(cwd)).default);
+  const config = await loadConfig(cwd);
 
   const { graphQLSchema } = createSystem(config);
 

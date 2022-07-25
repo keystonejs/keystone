@@ -3,12 +3,11 @@ import fs from 'fs-extra';
 import { AdminFileToWrite } from '../../types';
 import { buildAdminUI, generateAdminUI } from '../../admin-ui/system';
 import { createSystem } from '../../lib/createSystem';
-import { initConfig } from '../../lib/config/initConfig';
-import { requireSource } from '../../lib/config/requireSource';
 import { generateNodeModulesArtifacts, validateCommittedArtifacts } from '../../artifacts';
 import { getAdminPath, getConfigPath } from '../utils';
 import { serializePathForImport } from '../../admin-ui/utils/serializePathForImport';
 import { writeAdminFile } from '../../admin-ui/system/generateAdminUI';
+import { loadConfig } from '../../lib/config/loadConfig';
 
 const reexportKeystoneConfig = async (cwd: string, isDisabled?: boolean) => {
   const projectAdminPath = getAdminPath(cwd);
@@ -55,7 +54,7 @@ const reexportKeystoneConfig = async (cwd: string, isDisabled?: boolean) => {
 };
 
 export async function build(cwd: string) {
-  const config = initConfig(requireSource(getConfigPath(cwd)).default);
+  const config = await loadConfig(cwd);
 
   const { graphQLSchema, adminMeta } = createSystem(config);
 

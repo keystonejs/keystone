@@ -140,6 +140,8 @@ type __TypeInfo = TypeInfo;
 export type Lists = {
   [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core').ListConfig<TypeInfo['lists'][Key], any>
 } & Record<string, import('@keystone-6/core').ListConfig<any, any>>;
+
+export * as graphql from './internal/graphql-ts';
 `;
   return printedTypes + listsNamespaceStr + postlude;
 }
