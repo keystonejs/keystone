@@ -185,7 +185,7 @@ export function DocumentEditor({
   relationships: Relationships;
   documentFeatures: DocumentFeatures;
 } & Omit<EditableProps, 'value' | 'onChange'>) {
-  const { colors, spacing } = useTheme();
+  const { radii, colors, spacing, fields } = useTheme();
   const [expanded, setExpanded] = useState(false);
   const editor = useMemo(
     () => createDocumentEditor(documentFeatures, componentBlocks, relationships),
@@ -196,10 +196,11 @@ export function DocumentEditor({
     <div
       css={[
         {
-          display: 'flex',
-          flexDirection: 'column',
+          border: `1px solid ${colors.border}`,
+          borderRadius: radii.small,
         },
         expanded && {
+          border: 'none',
           background: colors.background,
           bottom: 0,
           left: 0,
@@ -248,12 +249,36 @@ export function DocumentEditor({
         )}
 
         <DocumentEditorEditable
-          css={
-            expanded && {
-              marginLeft: spacing.medium,
-              marginRight: spacing.medium,
-            }
-          }
+          css={[
+            {
+              borderRadius: 'inherit',
+              background: fields.inputBackground,
+              borderColor: fields.inputBorderColor,
+              paddingLeft: spacing.medium,
+              paddingRight: spacing.medium,
+              ':hover': {
+                background: fields.hover.inputBackground,
+              },
+              ':focus': {
+                background: fields.focus.inputBackground,
+              },
+              ':disabled': {
+                background: fields.disabled.inputBackground,
+              },
+            },
+            expanded
+              ? {
+                  height: 'auto !important',
+                  background: fields.focus.inputBackground,
+                }
+              : {
+                  height: 224,
+                  resize: 'vertical',
+                  overflowY: 'auto',
+                  minHeight: 120,
+                  scrollbarGutter: 'stable',
+                },
+          ]}
           {...props}
           readOnly={onChange === undefined}
         />

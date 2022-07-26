@@ -2,12 +2,10 @@
 /** @jsx jsx */
 import { getInitialPropsValue } from '@keystone-6/fields-document/src/DocumentEditor/component-blocks/initial-values';
 import React, { ReactNode, useContext, useEffect, useMemo, useState } from 'react';
-import { Toolbar } from '@keystone-6/fields-document/src/DocumentEditor/Toolbar';
 import { DocumentFeatures } from '@keystone-6/fields-document/views';
 import {
   createDocumentEditor,
-  DocumentEditorEditable,
-  DocumentEditorProvider,
+  DocumentEditor,
   Editor,
 } from '@keystone-6/fields-document/src/DocumentEditor';
 import {
@@ -276,19 +274,21 @@ export function DocumentFeaturesFormAndCode() {
 
 export const DocumentEditorDemo = () => {
   const [value, setValue] = useState(initialContent as any);
+  const [key, setKey] = useState(0);
   const { documentFeatures, formValue } = useContext(DocumentFeaturesContext);
 
-  const editor = useMemo(
-    () => createDocumentEditor(documentFeatures, componentBlocks, emptyObj),
-    [documentFeatures]
-  );
-
-  // this is why we're creating the editor ourselves and not using the DocumentEditor component
   useEffect(() => {
     // we want to force normalize when the document features change so
     // that no invalid things exist after a user changes something
+    const editor = createDocumentEditor(documentFeatures, componentBlocks, emptyObj);
+    editor.children = value;
     Editor.normalize(editor, { force: true });
-  }, [editor, documentFeatures]);
+    setValue(editor.children);
+    // slate looks like it's a controlled component but it actually isn't
+    // so we need to re-mount it so that it looks at the updated value
+    setKey(x => x + 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [documentFeatures]);
 
   return (
     <div
@@ -330,22 +330,14 @@ export const DocumentEditorDemo = () => {
           borderBottom: `1px var(--border) solid`,
         }}
       >
-        <DocumentEditorProvider
+        <DocumentEditor
+          key={key}
           value={value}
           onChange={setValue}
-          editor={editor}
           componentBlocks={componentBlocks}
           documentFeatures={documentFeatures}
           relationships={emptyObj}
-        >
-          {useMemo(
-            () => (
-              <Toolbar documentFeatures={documentFeatures} />
-            ),
-            [documentFeatures]
-          )}
-          <DocumentEditorEditable />
-        </DocumentEditorProvider>
+        />
       </div>
       <details css={{ marginBottom: 'var(--space-xlarge)' }}>
         <summary>View the Field Config</summary>

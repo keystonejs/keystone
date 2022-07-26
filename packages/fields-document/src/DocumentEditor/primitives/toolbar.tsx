@@ -32,11 +32,12 @@ export const ToolbarSeparator = () => {
 // Groups
 // ------------------------------
 
-const autoFlowDirection = {
-  column: 'row',
-  row: 'column',
+type DirectionType = 'row' | 'column';
+
+const directionToAlignment = {
+  row: 'center',
+  column: 'start',
 };
-type DirectionType = keyof typeof autoFlowDirection;
 
 const ToolbarGroupContext = createContext<{ direction: DirectionType }>({ direction: 'row' });
 const useToolbarGroupContext = () => useContext(ToolbarGroupContext);
@@ -51,9 +52,12 @@ export const ToolbarGroup = forwardRefWithAs<'div', ToolbarGroupProps>(
         <Box
           ref={ref}
           css={{
-            display: 'inline-grid',
+            display: 'flex',
             gap: spacing.xxsmall,
-            gridAutoFlow: autoFlowDirection[direction],
+            flexDirection: direction,
+            justifyContent: 'start',
+            alignItems: directionToAlignment[direction],
+            height: '100%',
           }}
           {...props}
         >
@@ -146,6 +150,7 @@ export const ToolbarButton = forwardRefWithAs<'button', ToolbarButtonProps>(func
         '&[data-display-mode=column]': {
           paddingLeft: spacing.medium,
           paddingRight: spacing.medium,
+          width: '100%',
         },
       }}
       {...props}
