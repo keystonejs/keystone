@@ -2,4 +2,4 @@
 '@keystone-6/fields-document': minor
 ---
 
-Added resize to document field editor which allows to scroll through the content when it overflows in `item-view`.
+Changes the editors default overflow behaviour to align with other multi-line text inputs, supporting scrolling instead of an unbounded height for the field.
