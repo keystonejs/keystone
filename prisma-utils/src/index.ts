@@ -6,7 +6,7 @@ import { deepStrictEqual } from 'assert';
 import { isDeepStrictEqual } from 'util';
 import fs from 'fs-extra';
 import { DMMF } from '@prisma/generator-helper';
-import { getDMMF } from '@prisma/sdk';
+import { getDMMF } from '@prisma/internals';
 import { format, resolveConfig } from 'prettier';
 
 const providers = ['postgresql', 'sqlite', 'mysql'] as const;

@@ -1,5 +1,5 @@
 import path from 'path';
-import { createDatabase, uriToCredentials, DatabaseCredentials } from '@prisma/sdk';
+import { createDatabase, uriToCredentials, DatabaseCredentials } from '@prisma/internals';
 import { Migrate } from '@prisma/migrate';
 import chalk from 'chalk';
 import slugify from '@sindresorhus/slugify';
