@@ -63,7 +63,7 @@ export const lists: Lists = {
             if (!item.content) {
               return null;
             }
-            const content = item.content as string;
+            const content = item.content;
             if (content.length <= length) {
               return content;
             } else {

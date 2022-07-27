@@ -2,7 +2,6 @@ import { config } from '@keystone-6/core';
 import { statelessSessions } from '@keystone-6/core/session';
 import { createAuth } from '@keystone-6/auth';
 import { lists } from './schema';
-import { TypeInfo } from '.keystone/types';
 
 // createAuth configures signin functionality based on the config below. Note this only implements
 // authentication, i.e signing in as an item using identity and secret fields in a list. Session
@@ -34,7 +33,7 @@ const session = statelessSessions({
 // We wrap our config using the withAuth function. This will inject all
 // the extra config required to add support for authentication in our system.
 export default withAuth(
-  config<TypeInfo>({
+  config({
     db: {
       provider: 'sqlite',
       url: process.env.DATABASE_URL || 'file:./keystone-example.db',
