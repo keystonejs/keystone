@@ -1,5 +1,6 @@
 import { Limit } from 'p-limit';
 import pluralize from 'pluralize';
+import { PrismaModule } from '../../artifacts';
 import { BaseItem, KeystoneConfig, KeystoneContext } from '../../types';
 import { humanize } from '../utils';
 import { prismaError } from './graphql-errors';
@@ -164,16 +165,32 @@ export function getDBFieldKeyForFieldOnMultiField(fieldKey: string, subField: st
 // because even across requests, we want to apply the limit on SQLite
 const writeLimits = new WeakMap<object, Limit>();
 
-export const setWriteLimit = (prismaClient: object, limit: Limit) => {
+export function setWriteLimit(prismaClient: object, limit: Limit) {
   writeLimits.set(prismaClient, limit);
-};
+}
 
 // this accepts the context instead of the prisma client because the prisma client on context is `any`
 // so by accepting the context, it'll be less likely the wrong thing will be passed.
-export const getWriteLimit = (context: KeystoneContext) => {
+export function getWriteLimit(context: KeystoneContext) {
   const limit = writeLimits.get(context.prisma);
   if (limit === undefined) {
     throw new Error('unexpected write limit not set for prisma client');
   }
   return limit;
-};
+}
+
+const prismaNamespaces = new WeakMap<object, PrismaModule['Prisma']>();
+
+export function setPrismaNamespace(prismaClient: object, prismaNamespace: PrismaModule['Prisma']) {
+  prismaNamespaces.set(prismaClient, prismaNamespace);
+}
+
+// this accepts the context instead of the prisma client because the prisma client on context is `any`
+// so by accepting the context, it'll be less likely the wrong thing will be passed.
+export function getPrismaNamespace(context: KeystoneContext) {
+  const limit = prismaNamespaces.get(context.prisma);
+  if (limit === undefined) {
+    throw new Error('unexpected prisma namespace not set for prisma client');
+  }
+  return limit;
+}

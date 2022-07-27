@@ -74,8 +74,16 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
     const p = serializePathForImport(
       path.relative(path.join(getAdminPath(cwd), 'pages', 'api'), `${cwd}/keystone`)
     );
-    const { adminMeta, graphQLSchema, createContext, prismaSchema, apolloServer, ...rest } =
-      await setupInitialKeystone(config, cwd, shouldDropDatabase);
+
+    const {
+      adminMeta,
+      graphQLSchema,
+      createContext,
+      prismaSchema,
+      apolloServer,
+      prismaClientModule,
+      ...rest
+    } = await setupInitialKeystone(config, cwd, shouldDropDatabase);
 
     if (configWithHTTP?.server?.extendHttpServer) {
       const createRequestContext = async (req: IncomingMessage, res: ServerResponse) =>
@@ -195,8 +203,11 @@ exports.default = function (req, res) { return res.send(x.toString()) }
 
           await generateNodeModulesArtifactsWithoutPrismaClient(graphQLSchema, newConfig, cwd);
           await generateAdminUI(newConfig, graphQLSchema, adminMeta, getAdminPath(cwd), true);
-          const keystone = getKeystone(function fakePrismaClientClass() {
-            return prismaClient;
+          const keystone = getKeystone({
+            PrismaClient: function fakePrismaClientClass() {
+              return prismaClient;
+            } as unknown as new (args: unknown) => any,
+            Prisma: prismaClientModule.Prisma,
           });
           await keystone.connect();
           const servers = await createExpressServer(
@@ -346,10 +357,8 @@ async function setupInitialKeystone(
   // Generate the Artifacts
   console.log('✨ Generating GraphQL and Prisma schemas');
   const prismaSchema = (await generateCommittedArtifacts(graphQLSchema, config, cwd)).prisma;
-  let keystonePromise = generateNodeModulesArtifacts(graphQLSchema, config, cwd).then(() => {
-    const prismaClient = requirePrismaClient(cwd);
-    return getKeystone(prismaClient);
-  });
+
+  let prismaClientGenerationPromise = generateNodeModulesArtifacts(graphQLSchema, config, cwd);
 
   let migrationPromise: Promise<void>;
 
@@ -372,8 +381,9 @@ async function setupInitialKeystone(
     );
   }
 
-  const [keystone] = await Promise.all([keystonePromise, migrationPromise]);
-  const { createContext } = keystone;
+  await Promise.all([prismaClientGenerationPromise, migrationPromise]);
+  const prismaClientModule = requirePrismaClient(cwd);
+  const keystone = getKeystone(prismaClientModule);
 
   // Connect to the Database
   console.log('✨ Connecting to the database');
@@ -384,7 +394,7 @@ async function setupInitialKeystone(
   const { apolloServer, expressServer } = await createExpressServer(
     config,
     graphQLSchema,
-    createContext
+    keystone.createContext
   );
   console.log(`✅ GraphQL API ready`);
 
@@ -402,8 +412,9 @@ async function setupInitialKeystone(
     expressServer,
     apolloServer,
     graphQLSchema,
-    createContext,
+    createContext: keystone.createContext,
     prismaSchema,
+    prismaClientModule,
   };
 }
 

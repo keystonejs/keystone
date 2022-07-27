@@ -267,6 +267,13 @@ async function generatePrismaClient(cwd: string) {
   }
 }
 
-export function requirePrismaClient(cwd: string) {
-  return require(path.join(cwd, 'node_modules/.prisma/client')).PrismaClient;
+export type PrismaModule = {
+  PrismaClient: {
+    new (args: unknown): any;
+  };
+  Prisma: { DbNull: unknown; JsonNull: unknown; [key: string]: unknown };
+};
+
+export function requirePrismaClient(cwd: string): PrismaModule {
+  return require(path.join(cwd, 'node_modules/.prisma/client'));
 }

@@ -41,7 +41,7 @@ class FakePrismaClient {
 
 const { getKeystone } = createSystem(initConfig(config));
 
-const { createContext } = getKeystone(FakePrismaClient);
+const { createContext } = getKeystone({ PrismaClient: FakePrismaClient, Prisma: {} as any });
 
 const context = createContext();
 
