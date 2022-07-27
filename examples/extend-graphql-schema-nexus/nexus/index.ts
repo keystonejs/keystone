@@ -15,6 +15,6 @@ export const nexusSchema = makeSchema({
   // Keystone `db` and `query` args, as well as the prisma client
   contextType: {
     module: path.join(process.cwd(), 'node_modules', '.keystone', 'types.d.ts'),
-    export: 'KeystoneContext',
+    export: 'Context',
   },
 });

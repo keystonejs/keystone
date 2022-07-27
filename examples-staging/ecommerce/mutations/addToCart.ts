@@ -1,10 +1,10 @@
-import { KeystoneContext } from '@keystone-6/core/types';
 import { Session } from '../types';
+import { Context } from '.keystone/types';
 
 async function addToCart(
   root: any,
   { productId }: { productId: string },
-  context: KeystoneContext
+  context: Context
 ): Promise<any> {
   console.log('ADDING TO CART!');
   // 1. Query the current user see if they are signed in

@@ -1,6 +1,6 @@
 import { list, graphql } from '@keystone-6/core';
 import { select, relationship, text, timestamp, virtual } from '@keystone-6/core/fields';
-import { Lists } from '.keystone/types';
+import { Lists, Context } from '.keystone/types';
 
 export const lists: Lists = {
   Post: list({
@@ -79,7 +79,8 @@ export const lists: Lists = {
       authorName: virtual({
         field: graphql.field({
           type: graphql.String,
-          async resolve(item, args, context) {
+          async resolve(item, args, _context) {
+            const context = _context as Context;
             const { author } = await context.query.Post.findOne({
               where: { id: item.id.toString() },
               query: 'author { name }',
@@ -100,7 +101,8 @@ export const lists: Lists = {
         field: lists =>
           graphql.field({
             type: lists.Post.types.output,
-            async resolve(item, args, context) {
+            async resolve(item, args, _context) {
+              const context = _context as Context;
               const { posts } = await context.query.Author.findOne({
                 where: { id: item.id.toString() },
                 query: `posts(

@@ -1,5 +1,5 @@
-import { KeystoneContext } from '@keystone-6/core/types';
 import { persons, tasks } from './data';
+import { Context } from '.keystone/types';
 
 type PersonProps = {
   name: string;
@@ -7,13 +7,12 @@ type PersonProps = {
 
 type TaskProps = {
   label: string;
-  isComplete: Boolean;
+  isComplete: boolean;
   finishBy: string;
-  assignedTo: Object;
-  person?: Object;
+  assignedTo: string;
 };
 
-export async function insertSeedData(context: KeystoneContext) {
+export async function insertSeedData(context: Context) {
   console.log(`🌱 Inserting seed data`);
 
   const createPerson = async (personData: PersonProps) => {
@@ -23,7 +22,7 @@ export async function insertSeedData(context: KeystoneContext) {
     });
 
     if (!person) {
-      await context.query.Person.createOne({
+      person = await context.query.Person.createOne({
         data: personData,
         query: 'id',
       });
@@ -36,9 +35,8 @@ export async function insertSeedData(context: KeystoneContext) {
       query: 'id',
     });
 
-    taskData.assignedTo = { connect: { id: persons[0].id } };
     await context.query.Task.createOne({
-      data: taskData,
+      data: { ...taskData, assignedTo: { connect: { id: persons[0].id } } },
       query: 'id',
     });
   };

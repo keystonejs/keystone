@@ -1,6 +1,6 @@
-import { KeystoneContext } from '@keystone-6/core/types';
 import { setupTestEnv, setupTestRunner, TestEnv } from '@keystone-6/core/testing';
 import config from './keystone';
+import { Context, TypeInfo } from '.keystone/types';
 
 // Setup a test runner which will provide a clean test environment
 // with access to our GraphQL API for each test.
@@ -163,7 +163,7 @@ describe('Example tests using test environment', () => {
   //
   // This gives us the opportunity to seed test data once up front and use it in
   // multiple tests.
-  let testEnv: TestEnv, context: KeystoneContext;
+  let testEnv: TestEnv<TypeInfo>, context: Context;
   let person: { id: string };
   beforeAll(async () => {
     testEnv = await setupTestEnv({ config });
