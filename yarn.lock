@@ -2861,10 +2861,10 @@
   dependencies:
     "@babel/runtime" "^7.9.2"
 
-"@graphql-ts/schema@^0.5.1":
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/@graphql-ts/schema/-/schema-0.5.2.tgz#2c3c3e286af4b01e9f7b97c995fd68c63c169927"
-  integrity sha512-udSLgvID8Kxay1CPntXRN83CiLGw9LOj9booONngefzNag4CHAdd9YqdcPfHFdcdDEN9sNZrFJvRWe//OQMJ1A==
+"@graphql-ts/schema@^0.5.3":
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/@graphql-ts/schema/-/schema-0.5.3.tgz#06f23b873c9b6dc517441f2ec9b22f0bf5dbf2a5"
+  integrity sha512-y39jQEsjW2SHLLcI8BJCrGl9Nh2JHkyOw5+MpeVSQA7QV1mjyJ8AdVCaUBocj0JiwhbTAJmb9dnbPTc26vAUHQ==
   dependencies:
     "@babel/runtime" "^7.9.2"
 
@@ -14170,10 +14170,10 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@^4.4.4:
-  version "4.5.4"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.5.4.tgz#a17d3a0263bf5c8723b9c52f43c5084edf13c2e8"
-  integrity sha512-VgYs2A2QIRuGphtzFV7aQJduJ2gyfTljngLzjpfW9FoYZF6xuw1W0vW9ghCKLfcWrCFxK81CSGRAvS1pn4fIUg==
+typescript@^4.7.4:
+  version "4.7.4"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.7.4.tgz#1a88596d1cf47d59507a1bcdfb5b9dfe4d488235"
+  integrity sha512-C0WQT0gezHuw6AdY1M2jxUO83Rjf0HP7Sk1DtXj6j1EwkQNZrHAg2XPWlq62oqEhYvONq5pkC2Y9oPljWToLmQ==
 
 uid-safe@^2.1.5:
   version "2.1.5"
