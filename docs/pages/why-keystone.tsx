@@ -608,7 +608,7 @@ export default function WhyKeystonePage() {
             </Type>
             <Type as="p" look="body18">
               <a
-                href="https://github.com/keystonejs/keystone/tree/main/examples-staging/ecommerce"
+                href="https://github.com/keystonejs/keystone/tree/main/examples/ecommerce"
                 target="_blank"
                 rel="noopener noreferrer"
               >
