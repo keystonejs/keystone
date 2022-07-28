@@ -1,5 +1,5 @@
-import { KeystoneContext } from '@keystone-6/core/types';
 import { authors, posts } from './data';
+import { Context } from '.keystone/types';
 
 type AuthorProps = {
   name: string;
@@ -8,13 +8,13 @@ type AuthorProps = {
 
 type PostProps = {
   title: string;
-  status: string;
+  status: 'draft' | 'published';
   publishDate: string;
-  author: Object;
+  author: string;
   content: string;
 };
 
-export async function insertSeedData(context: KeystoneContext) {
+export async function insertSeedData(context: Context) {
   console.log(`🌱 Inserting seed data`);
 
   const createAuthor = async (authorData: AuthorProps) => {
@@ -37,9 +37,8 @@ export async function insertSeedData(context: KeystoneContext) {
       query: 'id',
     });
 
-    postData.author = { connect: { id: authors[0].id } };
     await context.query.Post.createOne({
-      data: postData,
+      data: { ...postData, author: { connect: { id: authors[0].id } } },
       query: 'id',
     });
   };

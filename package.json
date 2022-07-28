@@ -112,7 +112,6 @@
       "design-system/packages/*",
       "design-system/website",
       "docs",
-      "examples-staging/*",
       "examples/*",
       "packages/*",
       "tests/admin-ui-tests",

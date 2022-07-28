@@ -2,6 +2,7 @@ import { config } from '@keystone-6/core';
 import { lists } from './schema';
 import { insertSeedData } from './seed-data';
 import { getTasks } from './routes/tasks';
+import { Context } from '.keystone/types';
 
 /*
   A quick note on types: normally if you're adding custom properties to your
@@ -14,7 +15,7 @@ export default config({
   db: {
     provider: 'sqlite',
     url: process.env.DATABASE_URL || 'file:./keystone-example.db',
-    async onConnect(context) {
+    async onConnect(context: Context) {
       if (process.argv.includes('--seed-data')) {
         await insertSeedData(context);
       }
@@ -35,6 +36,7 @@ export default config({
         (req as any).context = await createContext(req, res);
         next();
       });
+
       app.get('/rest/tasks', getTasks);
     },
   },

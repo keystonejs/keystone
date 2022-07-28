@@ -1,4 +1,4 @@
-import { KeystoneContext } from '@keystone-6/core/types';
+import { Context } from '.keystone/types';
 
 // import stripeConfig from '../lib/stripe';
 
@@ -8,7 +8,7 @@ interface Arguments {
   token: string;
 }
 
-async function checkout(root: any, { token }: Arguments, context: KeystoneContext): Promise<any> {
+async function checkout(root: any, { token }: Arguments, context: Context): Promise<any> {
   // 1. Make sure they are signed in
   const userId = context.session.itemId;
   if (!userId) {

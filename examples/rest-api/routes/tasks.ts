@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import type { KeystoneContext } from '@keystone-6/core/types';
+import type { Context } from '.keystone/types';
 
 /*
   This example route handler gets all the tasks in the database and returns
@@ -13,7 +13,8 @@ import type { KeystoneContext } from '@keystone-6/core/types';
 
 export async function getTasks(req: Request, res: Response) {
   // This was added by the context middleware in ../keystone.ts
-  const context = (req as any).context as KeystoneContext;
+  const { context } = req as typeof req & { context: Context };
+
   // Let's map the `complete` query param to a where filter
   let isComplete;
   if (req.query.complete === 'true') {

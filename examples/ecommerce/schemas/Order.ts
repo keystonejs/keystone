@@ -1,9 +1,21 @@
 import { integer, text, relationship, virtual } from '@keystone-6/core/fields';
 import { list, graphql } from '@keystone-6/core';
 import { isSignedIn, rules } from '../access';
-import formatMoney from '../lib/formatMoney';
+import { Lists } from '.keystone/types';
 
-export const Order = list({
+const formatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+});
+
+export default function formatMoney(cents: number | null) {
+  if (cents === null) return 'Unset';
+  const dollars = cents / 100;
+  return formatter.format(dollars);
+}
+
+// we add the type here, so `item` below is typed
+export const Order: Lists.Order = list({
   access: {
     operation: {
       create: isSignedIn,
@@ -17,7 +29,7 @@ export const Order = list({
       field: graphql.field({
         type: graphql.String,
         resolve(item) {
-          return `${formatMoney((item as any).total)}`;
+          return formatMoney(item.total);
         },
       }),
     }),

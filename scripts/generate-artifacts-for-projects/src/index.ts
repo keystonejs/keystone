@@ -33,7 +33,6 @@ async function main() {
   const repoRoot = path.resolve(__dirname, '../../../');
   const directoriesOfProjects = [
     path.join(repoRoot, 'examples'),
-    path.join(repoRoot, 'examples-staging'),
     path.join(repoRoot, 'tests/test-projects'),
   ];
   const projectDirectories = (

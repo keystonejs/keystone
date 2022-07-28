@@ -1,13 +1,11 @@
-import { KeystoneContext } from '@keystone-6/core/types';
 import { setupTestRunner } from '@keystone-6/core/testing';
 import config from '../keystone';
+import { Context } from '.keystone/types';
 
 const FAKE_ID = 'cinjfgbkjnfg';
 
-const asUser = (context: KeystoneContext, itemId?: string) =>
-  context.withSession({ itemId, data: {} });
-
-const runner = setupTestRunner({ config });
+const asUser = (context: Context, itemId?: string) => context.withSession({ itemId, data: {} });
+const runner = setupTestRunner<Context>({ config });
 
 describe(`Custom mutations`, () => {
   describe('checkout(token)', () => {
