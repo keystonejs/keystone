@@ -89,13 +89,29 @@ export async function setupTestEnv({
   };
 }
 
-export function setupTestRunner({ config }: { config: KeystoneConfig }) {
+export function setupTestRunner<Context extends KeystoneContext>({
+  config,
+}: {
+  config: KeystoneConfig;
+}) {
+  type TestArgs = {
+    context: Context;
+    graphQLRequest: GraphQLRequest;
+    app: express.Express;
+    server: Server;
+  };
+
   return (testFn: (testArgs: TestArgs) => Promise<void>) => async () => {
     // Reset the database to be empty for every test.
     const { connect, disconnect, testArgs } = await setupTestEnv({ config });
     await connect();
+
+    const { context } = testArgs;
     try {
-      return await testFn(testArgs);
+      return await testFn({
+        ...testArgs,
+        context: context as Context,
+      });
     } finally {
       await disconnect();
     }
