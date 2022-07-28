@@ -23,6 +23,7 @@ type Thing {
   toManyRelationshipCardCount(where: TodoWhereInput! = {}): Int
   text: String
   timestamp: DateTime
+  calendarDay: CalendarDay
   randomNumberVirtual: Float
   select: String
   selectSegmentedControl: String
@@ -40,6 +41,9 @@ type PasswordState {
 }
 
 scalar DateTime
+  @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
+
+scalar CalendarDay
   @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
 
 scalar BigInt
@@ -87,6 +91,7 @@ input ThingWhereInput {
   toManyRelationshipCard: TodoManyRelationFilter
   text: StringFilter
   timestamp: DateTimeNullableFilter
+  calendarDay: CalendarDayNullableFilter
   select: StringNullableFilter
   selectSegmentedControl: StringNullableFilter
   integer: IntNullableFilter
@@ -159,6 +164,17 @@ input DateTimeNullableFilter {
   not: DateTimeNullableFilter
 }
 
+input CalendarDayNullableFilter {
+  equals: CalendarDay
+  in: [CalendarDay!]
+  notIn: [CalendarDay!]
+  lt: CalendarDay
+  lte: CalendarDay
+  gt: CalendarDay
+  gte: CalendarDay
+  not: CalendarDayNullableFilter
+}
+
 input StringNullableFilter {
   equals: String
   in: [String!]
@@ -225,6 +241,7 @@ input ThingOrderByInput {
   checkbox: OrderDirection
   text: OrderDirection
   timestamp: OrderDirection
+  calendarDay: OrderDirection
   select: OrderDirection
   selectSegmentedControl: OrderDirection
   integer: OrderDirection
@@ -246,6 +263,7 @@ input ThingUpdateInput {
   toManyRelationshipCard: TodoRelateToManyForUpdateInput
   text: String
   timestamp: DateTime
+  calendarDay: CalendarDay
   select: String
   selectSegmentedControl: String
   json: JSON
@@ -297,6 +315,7 @@ input ThingCreateInput {
   toManyRelationshipCard: TodoRelateToManyForCreateInput
   text: String
   timestamp: DateTime
+  calendarDay: CalendarDay
   select: String
   selectSegmentedControl: String
   json: JSON

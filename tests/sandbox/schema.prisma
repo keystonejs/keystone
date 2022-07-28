@@ -24,6 +24,7 @@ model Thing {
   toManyRelationshipCard  Todo[]    @relation("Thing_toManyRelationshipCard")
   text                    String    @default("")
   timestamp               DateTime?
+  calendarDay             String?
   select                  String?
   selectSegmentedControl  String?
   json                    String?
