@@ -21,28 +21,28 @@ export type GraphQLRequest = (arg: {
   operationName?: string;
 }) => Test;
 
-export type TestArgs = {
-  context: KeystoneContext;
+export type TestArgs<Context extends KeystoneContext = KeystoneContext> = {
+  context: Context;
   graphQLRequest: GraphQLRequest;
   app: express.Express;
   server: Server;
 };
 
-export type TestEnv = {
+export type TestEnv<Context extends KeystoneContext = KeystoneContext> = {
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
-  testArgs: TestArgs;
+  testArgs: TestArgs<Context>;
 };
 
 const _hashPrismaSchema = memoizeOne(prismaSchema =>
   crypto.createHash('md5').update(prismaSchema).digest('hex')
 );
 const _alreadyGeneratedProjects = new Set<string>();
-export async function setupTestEnv({
+export async function setupTestEnv<Context extends KeystoneContext>({
   config: _config,
 }: {
   config: KeystoneConfig;
-}): Promise<TestEnv> {
+}): Promise<TestEnv<Context>> {
   // Force the UI to always be disabled.
   const config = initConfig({ ..._config, ui: { ..._config.ui, isDisabled: true } });
   const { graphQLSchema, getKeystone } = createSystem(config);
@@ -85,7 +85,12 @@ export async function setupTestEnv({
     disconnect: async () => {
       await Promise.all([disconnect(), apolloServer.stop()]);
     },
-    testArgs: { context: createContext(), graphQLRequest, app, server },
+    testArgs: {
+      context: createContext() as Context,
+      graphQLRequest,
+      app,
+      server,
+    },
   };
 }
 
@@ -103,15 +108,11 @@ export function setupTestRunner<Context extends KeystoneContext>({
 
   return (testFn: (testArgs: TestArgs) => Promise<void>) => async () => {
     // Reset the database to be empty for every test.
-    const { connect, disconnect, testArgs } = await setupTestEnv({ config });
+    const { connect, disconnect, testArgs } = await setupTestEnv<Context>({ config });
     await connect();
 
-    const { context } = testArgs;
     try {
-      return await testFn({
-        ...testArgs,
-        context: context as Context,
-      });
+      return await testFn(testArgs);
     } finally {
       await disconnect();
     }
