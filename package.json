@@ -160,6 +160,9 @@
       "^uuid$": "<rootDir>/node_modules/uuid/dist/index.js"
     }
   },
+  "resolutions": {
+    "**/pirates": "4.0.4"
+  },
   "engines": {
     "node": "^14.15 || ^16.13"
   }
