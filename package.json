@@ -161,7 +161,7 @@
     }
   },
   "resolutions": {
-    "babel-plugin-remove-graphql-queries": "2.7.2"
+    "@types/jest": "^27.0.2"
   },
   "engines": {
     "node": "^14.15 || ^16.13"

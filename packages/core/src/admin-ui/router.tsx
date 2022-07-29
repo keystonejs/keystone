@@ -9,7 +9,7 @@
 // that's normally not a problem because modules generally use Object.defineProperty(exports, '__esModule', { value: true })
 // which means that the property isn't enumerable but Next uses Babel's loose mode and Babel's loose mode for the CJS transform
 // uses exports.__esModule = true instead of defineProperty so the property is enumerable
-export { createRouter, makePublicRouterInstance, Router, useRouter, withRouter } from 'next/router';
+export { Router, useRouter, withRouter } from 'next/router';
 export type { NextRouter } from 'next/router';
 
 import NextLink, { LinkProps as NextLinkProps } from 'next/link';
