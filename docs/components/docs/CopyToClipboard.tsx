@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { useToasts } from 'react-toast-notifications';
+import { useToasts } from '@keystone-ui/toast';
 import { jsx } from '@emotion/react';
 import copy from 'copy-to-clipboard';
 
@@ -12,15 +12,14 @@ export function CopyToClipboard({ value }: { value: string }) {
   const handleCopy = () => {
     if (typeof value !== 'string' || typeof window === 'undefined') return;
 
-    const toastOpt = { autoDismiss: true, autoDismissTimeout: 2000 };
     const url = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
     const text = `${url}#${value}`;
 
     if (navigator) {
       // use the new navigator.clipboard API if it exists
       navigator.clipboard.writeText(text).then(
-        () => addToast('Copied to clipboard', { appearance: 'success', ...toastOpt }),
-        () => addToast('Failed to copy to clipboard', { appearance: 'error', ...toastOpt })
+        () => addToast({ title: 'Copied to clipboard', tone: 'positive' }),
+        () => addToast({ title: 'Failed to copy to clipboard', tone: 'negative' })
       );
       return;
     } else {
@@ -30,7 +29,7 @@ export function CopyToClipboard({ value }: { value: string }) {
       try {
         copy(text);
       } catch (e) {
-        addToast('Failed to copy to clipboard', { appearance: 'error', ...toastOpt });
+        addToast({ title: 'Failed to copy to clipboard', tone: 'negative' });
       }
 
       return;
