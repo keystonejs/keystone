@@ -40,7 +40,8 @@ export async function getCommittedArtifacts(
   const prismaSchema = printPrismaSchema(
     lists,
     config.db.provider,
-    config.db.prismaPreviewFeatures
+    config.db.prismaPreviewFeatures,
+    config.db.additionalPrismaDatasourceProperties
   );
   return {
     graphql: getFormattedGraphQLSchema(printSchema(graphQLSchema)),

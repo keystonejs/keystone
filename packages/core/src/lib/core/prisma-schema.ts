@@ -191,8 +191,13 @@ function assertDbFieldIsValidForIdField(
 export function printPrismaSchema(
   lists: Record<string, InitialisedList>,
   provider: DatabaseProvider,
-  prismaPreviewFeatures: readonly string[] | undefined
+  prismaPreviewFeatures: readonly string[] | undefined,
+  additionalPrismaDatasourceProperties: { [key: string]: string; } | undefined
 ) {
+  let additionalDataSourceString = '';
+  if (additionalPrismaDatasourceProperties && Object.keys(additionalPrismaDatasourceProperties).length) {
+    additionalDataSourceString = Object.keys(additionalPrismaDatasourceProperties).reduce((previousValue, key) => previousValue + `\n ${key} = ${additionalPrismaDatasourceProperties[key]}`,'');
+  }
   let prismaFlags = '';
   if (prismaPreviewFeatures && prismaPreviewFeatures.length) {
     prismaFlags = `\n  previewFeatures = ["${prismaPreviewFeatures.join('","')}"]`;
@@ -203,7 +208,7 @@ export function printPrismaSchema(
 datasource ${provider} {
   url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-  provider          = "${provider}"
+  provider          = "${provider}"${additionalDataSourceString}
 }
 
 generator client {
