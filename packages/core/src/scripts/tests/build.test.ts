@@ -78,7 +78,8 @@ test('build works with typescript without the user defining a babel config', asy
     ✨ Generating Admin UI code
     ✨ Generating Keystone config code
     ✨ Building Admin UI
-    info  - Skipping validation of types...
+    info  - Skipping validation of types
+    info  - Skipping linting
     info  - Creating an optimized production build...
     info  - Compiled successfully
     info  - Collecting page data...
