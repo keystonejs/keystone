@@ -30,7 +30,7 @@ export function Markdown({
   title?: string;
 }) {
   const headings = getHeadings(
-    (typeof children.type === 'function' ? children.type() : children).props.children
+    (typeof children.type === 'function' ? children.type({}) : children).props.children
   );
   const firstHeading = title || headings[0]?.label;
 
