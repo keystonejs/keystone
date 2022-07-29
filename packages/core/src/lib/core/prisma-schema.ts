@@ -191,8 +191,8 @@ function assertDbFieldIsValidForIdField(
 export function printPrismaSchema(
   lists: Record<string, InitialisedList>,
   provider: DatabaseProvider,
-  prismaPreviewFeatures: readonly string[] | undefined,
-  additionalPrismaDatasourceProperties: { [key: string]: string; } | undefined
+  prismaPreviewFeatures?: readonly string[] | null,
+  additionalPrismaDatasourceProperties?: { [key: string]: string; } | null
 ) {
   let additionalDataSourceString = '';
   if (additionalPrismaDatasourceProperties && Object.keys(additionalPrismaDatasourceProperties).length) {
