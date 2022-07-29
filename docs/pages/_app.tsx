@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { ToastProvider } from 'react-toast-notifications';
+import { ToastProvider } from '@keystone-ui/toast';
 import { jsx, Global, css, CacheProvider } from '@emotion/react';
 import type { AppProps } from 'next/app';
 import { cache } from '@emotion/css';

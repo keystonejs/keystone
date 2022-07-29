@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import type { HTMLAttributes } from 'react';
-import { useToasts } from 'react-toast-notifications';
+import { useToasts } from '@keystone-ui/toast';
 import { jsx } from '@emotion/react';
 import copy from 'copy-to-clipboard';
 
@@ -15,13 +15,11 @@ export function CodeBox({ code, ...props }: CodeBoxProps) {
   const { addToast } = useToasts();
 
   const handleCopy = () => {
-    const toastOpt = { autoDismiss: true, autoDismissTimeout: 2000 };
-
     if (navigator) {
       // use the new navigator.clipboard API if it exists
       navigator.clipboard.writeText(code).then(
-        () => addToast('Copied to clipboard', { appearance: 'success', ...toastOpt }),
-        () => addToast('Failed to copy to clipboard', { appearance: 'error', ...toastOpt })
+        () => addToast({ title: 'Copied to clipboard', tone: 'positive' }),
+        () => addToast({ title: 'Failed to copy to clipboard', tone: 'negative' })
       );
       return;
     } else {
@@ -31,7 +29,7 @@ export function CodeBox({ code, ...props }: CodeBoxProps) {
       try {
         copy(code);
       } catch (e) {
-        addToast('Failed to copy to clipboard', { appearance: 'error', ...toastOpt });
+        addToast({ title: 'Failed to copy to clipboard', tone: 'negative' });
       }
 
       return;
