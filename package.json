@@ -160,9 +160,6 @@
       "^uuid$": "<rootDir>/node_modules/uuid/dist/index.js"
     }
   },
-  "resolutions": {
-    "@types/jest": "^27.0.2"
-  },
   "engines": {
     "node": "^14.15 || ^16.13"
   }
