@@ -194,6 +194,31 @@ const { withAuth } = createAuth({
 });
 ```
 
+#### Bootstrapping a default user for local development at seed stage
+
+If you frequently reset your database during development and get frustrated having to create a user each time you want to log in, you can bootstrap a user in your seeding script.
+
+```typescript
+// seed-admin-user.ts
+import { KeystoneContext } from '@keystone-6/core/types';
+
+export default async (context: KeystoneContext) => {
+  // For local development convenience bootstrap the first admin user
+  if (process.env.NODE_ENV !== 'production') {
+    await context.query.User.createOne({
+        data: {
+          email: 'admin@example.com',
+          password: 'password', // min 8 characters by default
+          name: 'Admin',
+        },
+        query: 'id',
+    });
+  }
+}
+```
+
+For a complete seeding example check one of [the example sources on Github](https://github.com/keystonejs/keystone/tree/main/examples).
+
 #### GraphQL API {% #init-first-item-graphql-api %}
 
 Enabling `initFirstItem` will add the following elements to the GraphQL API.
