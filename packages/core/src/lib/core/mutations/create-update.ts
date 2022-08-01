@@ -389,7 +389,7 @@ function transformInnerDBField(
 ) {
   if (dbField.kind === 'scalar' && dbField.scalar === 'Json' && value === null) {
     const Prisma = getPrismaNamespace(context);
-    value = Prisma.DbNull;
+    return Prisma.DbNull;
   }
   return value;
 }
