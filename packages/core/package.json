@@ -111,7 +111,7 @@
     "normalize-path": "^3.0.0",
     "object-hash": "^3.0.0",
     "p-limit": "^2.3.0",
-    "pirates": "^4.0.1",
+    "pirates": "4.0.4",
     "pluralize": "^8.0.0",
     "prettier": "^2.5.0",
     "prisma": "3.14.0",
