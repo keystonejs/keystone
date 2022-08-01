@@ -12,7 +12,7 @@
     "@graphql-tools/schema": "^8.3.1",
     "@keystone-6/core": "^2.0.0",
     "graphql": "^15.8.0",
-    "nexus": "^1.1.0"
+    "nexus": "1.1.0"
   },
   "engines": {
     "node": "^14.15 || ^16.13"
