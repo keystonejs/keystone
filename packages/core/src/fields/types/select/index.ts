@@ -38,7 +38,7 @@ export type SelectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
         }
     ) & {
       ui?: {
-        displayMode?: 'select' | 'segmented-control';
+        displayMode?: 'select' | 'segmented-control' | 'radio';
       };
 
       validation?: {
