@@ -2,4 +2,4 @@
 '@keystone-6/core': major
 ---
 
-Returning `null` from a `resolveInput` hook for json fields will now store a database null as expected
+Changes the return type for `resolveInput` hook for `json` fields.  Previously you used `'DbNull'` or `'JsonNull'` for respective null magic values - you can now use a Javascript `null` value which is mapped by Keystone to a `Prisma.DbNull`.
