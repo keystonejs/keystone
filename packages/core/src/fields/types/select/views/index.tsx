@@ -65,6 +65,7 @@ export const Field = ({
           <Stack gap="small">
             {field.options.map(option => (
               <Radio
+                css={{ alignItems: 'center' }}
                 key={option.value}
                 value={option.value}
                 checked={value.value?.value === option.value}
