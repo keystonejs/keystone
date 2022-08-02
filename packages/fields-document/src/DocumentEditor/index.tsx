@@ -441,8 +441,6 @@ while (listDepth--) {
 
 type Block = Exclude<Element, { type: 'relationship' | 'link' }>;
 
-type EditorSchema = Record<Block['type'] | 'editor', BlockContainerSchema | InlineContainerSchema>;
-
 type BlockContainerSchema = {
   kind: 'blocks';
   allowedChildren: ReadonlySet<Element['type']>;
@@ -499,7 +497,11 @@ function satisfies<Base>() {
   };
 }
 
-export const editorSchema = satisfies<EditorSchema>()({
+type EditorSchema = typeof editorSchema;
+
+export const editorSchema = satisfies<
+  Record<Block['type'] | 'editor', BlockContainerSchema | InlineContainerSchema>
+>()({
   editor: blockContainer({
     allowedChildren: [...insideOfLayouts, 'layout'],
     invalidPositionHandleMode: 'move',
@@ -540,6 +542,20 @@ export const editorSchema = satisfies<EditorSchema>()({
   }),
   'list-item-content': inlineContainer({ invalidPositionHandleMode: 'unwrap' }),
 });
+
+type InlineContainingType = {
+  [Key in keyof EditorSchema]: { inlines: Key; blocks: never }[EditorSchema[Key]['kind']];
+}[keyof EditorSchema];
+
+const inlineContainerTypes = new Set(
+  Object.entries(editorSchema)
+    .filter(([, value]) => value.kind === 'inlines')
+    .map(([type]) => type)
+);
+
+export function isInlineContainer(node: Node): node is Block & { type: InlineContainingType } {
+  return node.type !== undefined && inlineContainerTypes.has(node.type);
+}
 
 function withBlocksSchema(editor: Editor): Editor {
   const { normalizeNode } = editor;
