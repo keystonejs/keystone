@@ -63,7 +63,7 @@
     "chalk-cli": "^5.0.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.0.0",
-    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-import": "2.25.3",
     "eslint-plugin-jest": "^26.0.0",
     "eslint-plugin-react": "^7.27.0",
     "eslint-plugin-react-hooks": "^4.3.0",
@@ -159,9 +159,6 @@
     "moduleNameMapper": {
       "^uuid$": "<rootDir>/node_modules/uuid/dist/index.js"
     }
-  },
-  "resolutions": {
-    "babel-plugin-remove-graphql-queries": "2.7.2"
   },
   "engines": {
     "node": "^14.15 || ^16.13"

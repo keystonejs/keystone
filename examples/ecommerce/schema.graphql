@@ -367,7 +367,7 @@ All options are strings as they ultimately end up in a URL.
 """
 input CloudinaryImageFormat {
   """
-   Rewrites the filename to be this pretty string. Do not include `/` or `.`
+  Rewrites the filename to be this pretty string. Do not include `/` or `.`
   """
   prettyName: String
   width: String

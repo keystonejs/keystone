@@ -8,12 +8,7 @@
   "baseBranches": ["main"],
   "packageRules": [
     {
-      "packagePatterns": [
-        "remark",
-        "babel-plugin-remove-graphql-queries",
-        "react-day-picker",
-        "^slate"
-      ],
+      "packagePatterns": ["remark", "react-day-picker", "^slate"],
       "enabled": false
     }
   ],
