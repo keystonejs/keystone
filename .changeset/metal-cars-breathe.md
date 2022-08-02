@@ -2,4 +2,4 @@
 '@keystone-6/core': minor
 ---
 
-Add 'radio' button display mode option to select field.
+Adds `ui.displayMode: 'radio'` as an option for the select field.
