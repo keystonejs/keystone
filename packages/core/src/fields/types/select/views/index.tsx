@@ -7,6 +7,7 @@ import {
   FieldDescription,
   FieldLabel,
   MultiSelect,
+  Radio,
   Select,
 } from '@keystone-ui/fields';
 import { SegmentedControl } from '@keystone-ui/segmented-control';
@@ -55,6 +56,40 @@ export const Field = ({
             aria-describedby={field.description === null ? undefined : `${field.path}-description`}
             portalMenu
           />
+          {validationMessage}
+        </Fragment>
+      ) : field.displayMode === 'radio' ? (
+        <Fragment>
+          <FieldLabel as="legend">{field.label}</FieldLabel>
+          <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
+          <Stack gap="small">
+            {field.options.map(option => (
+              <Radio
+                css={{ alignItems: 'center' }}
+                key={option.value}
+                value={option.value}
+                checked={value.value?.value === option.value}
+                onChange={event => {
+                  if (event.target.checked) {
+                    onChange?.({ ...value, value: option });
+                    setHasChanged(true);
+                  }
+                }}
+              >
+                {option.label}
+              </Radio>
+            ))}
+            {value.value !== null && onChange !== undefined && !field.isRequired && (
+              <Button
+                onClick={() => {
+                  onChange({ ...value, value: null });
+                  setHasChanged(true);
+                }}
+              >
+                Clear
+              </Button>
+            )}
+          </Stack>
           {validationMessage}
         </Fragment>
       ) : (
@@ -115,7 +150,7 @@ export const CardValue: CardValueComponent<typeof controller> = ({ item, field }
 export type AdminSelectFieldMeta = {
   options: readonly { label: string; value: string | number }[];
   type: 'string' | 'integer' | 'enum';
-  displayMode: 'select' | 'segmented-control';
+  displayMode: 'select' | 'segmented-control' | 'radio';
   isRequired: boolean;
   defaultValue: string | number | null;
 };
@@ -145,7 +180,7 @@ export const controller = (
 ): FieldController<Value, Option[]> & {
   options: Option[];
   type: 'string' | 'integer' | 'enum';
-  displayMode: 'select' | 'segmented-control';
+  displayMode: 'select' | 'segmented-control' | 'radio';
   isRequired: boolean;
 } => {
   const optionsWithStringValues = config.fieldMeta.options.map(x => ({
