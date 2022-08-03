@@ -1,6 +1,7 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import { Node } from 'slate';
 import { makeEditor, jsx } from '../tests/utils';
 import { MyDataTransfer } from './data-transfer';
 
@@ -254,23 +255,22 @@ there is a break before this
       </paragraph>
       <paragraph>
         <text>
-          
-        </text>
-        <link
-          @@isInline={true}
-          href="http://keystonejs.com/link-reference"
-        >
-          <text>
-            Link reference
-          </text>
-        </link>
-        <text>
-          
+          [Link reference][1]
         </text>
       </paragraph>
       <paragraph>
         <text>
-          ![Image reference](http://keystonejs.com/image-reference)
+          ![Image reference][2]
+        </text>
+      </paragraph>
+      <paragraph>
+        <text>
+          [1]: http://keystonejs.com/link-reference
+        </text>
+      </paragraph>
+      <paragraph>
+        <text>
+          [2]: http://keystonejs.com/image-reference
           <cursor />
         </text>
       </paragraph>
@@ -353,6 +353,95 @@ test('a link nested inside bold', () => {
           bold={true}
         >
            content
+          <cursor />
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});
+
+// this is written like this rather than a snapshot because the snapshot
+// formatting creates html escapes(which is nice for the formatting)
+// this test shows ensures that the snapshot formatting is not buggy
+// and we're not showing html escapes to users or something
+test('html in inline content is just written', () => {
+  const input = `a<code>blah</code>b`;
+  expect(Node.string(deserializeMarkdown(input))).toEqual(input);
+});
+
+test('html in complex inline content', () => {
+  expect(deserializeMarkdown(`__content [link<code>blah</code>](https://keystonejs.com) content__`))
+    .toMatchInlineSnapshot(`
+    <editor
+      marks={
+        Object {
+          "bold": true,
+        }
+      }
+    >
+      <paragraph>
+        <text
+          bold={true}
+        >
+          content 
+        </text>
+        <link
+          @@isInline={true}
+          href="https://keystonejs.com"
+        >
+          <text
+            bold={true}
+          >
+            link&lt;code&gt;blah&lt;/code&gt;
+          </text>
+        </link>
+        <text
+          bold={true}
+        >
+           content
+          <cursor />
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});
+
+// the difference between a delightful "oh, nice! the editor did the formatting i wanted"
+// and "UGH!! the editor just removed some of the content i wanted" can be really subtle
+// and while we want the delightful experiences, avoiding the bad experiences is _more important_
+
+// so even though we could parse link references & definitions in some cases we don't because it feels a bit too magical
+// also note that so the workaround of "paste into some plain text place, copy it from there"
+// like html pasting doesn't exist here since this is parsing _from_ plain text
+// so erring on the side of "don't be too smart" is better
+test('link and image references and images are left alone', () => {
+  const input = `[Link reference][1]
+
+![Image reference][2]
+
+![Image](http://keystonejs.com/image)
+
+[1]: http://keystonejs.com/link-reference
+
+[2]: http://keystonejs.com/image-reference`;
+
+  expect(
+    deserializeMarkdown(input)
+      .children.map(node => Node.string(node))
+      .join('\n\n')
+  ).toEqual(input);
+});
+
+// ideally, we would probably convert the mark here, but like the comment on the previous test says,
+// it being not perfect is fine, as long as it doesn't make things _worse_
+test('marks in image tags are converted', () => {
+  const input = `![Image **blah**](https://keystonejs.com/image)`;
+
+  expect(deserializeMarkdown(input)).toMatchInlineSnapshot(`
+    <editor>
+      <paragraph>
+        <text>
+          ![Image **blah**](https://keystonejs.com/image)
           <cursor />
         </text>
       </paragraph>
