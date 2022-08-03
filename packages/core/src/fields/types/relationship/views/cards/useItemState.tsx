@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { FieldMeta, ListMeta } from '../../../../../types';
+import { FieldMeta, ModelMeta, ListMeta } from '../../../../../types';
 import { DataGetter, makeDataGetter } from '../../../../../admin-ui/utils';
 import { gql, useQuery } from '../../../../../admin-ui/apollo';
 import { controller } from '../index';
@@ -15,18 +15,18 @@ type Items = Record<string, DataGetter<{ id: string; [key: string]: any }>>;
 
 export function useItemState({
   selectedFields,
-  localList,
+  localModel,
   id,
   field,
 }: {
   selectedFields: string;
-  localList: ListMeta;
+  localModel: ModelMeta;
   field: ReturnType<typeof controller>;
   id: string | null;
 }) {
   const { data, error, loading } = useQuery(
     gql`query($id: ID!) {
-  item: ${localList.gqlNames.itemQueryName}(where: {id: $id}) {
+  item: ${localModel.gqlNames.itemQueryName}(where: {id: $id}) {
     id
     relationship: ${field.path} {
       ${selectedFields}

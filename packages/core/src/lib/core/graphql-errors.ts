@@ -73,7 +73,7 @@ export const accessReturnError = (things: { tag: string; returned: string }[]) =
 // FIXME: In an upcoming PR we will use these args to construct a better
 // error message, so leaving the, here for now. - TL
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const limitsExceededError = (args: { type: string; limit: number; list: string }) =>
+export const limitsExceededError = (args: { type: string; limit: number; model: string }) =>
   new ApolloError('Your request exceeded server limits', 'KS_LIMITS_EXCEEDED');
 
 export const filterAccessError = ({

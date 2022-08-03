@@ -59,7 +59,7 @@ const getUserAndFriend = async (context: KeystoneContext, userId: IdType, friend
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: {
+    models: {
       User: list({
         fields: {
           name: text(),

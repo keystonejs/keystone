@@ -14,7 +14,7 @@ const basicKeystoneConfig = {
   kind: 'config' as const,
   config: config({
     db: { provider: 'sqlite', url: 'file:./app.db' },
-    lists: {
+    models: {
       Todo: list({
         fields: {
           title: text(),
@@ -111,7 +111,6 @@ describe('postinstall', () => {
     await runCommand(tmp, 'postinstall');
     expect(await getFiles(tmp, ['node_modules/.keystone/api.{d.ts,js}'])).toMatchInlineSnapshot(`
       ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/api.d.ts ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
-      import { KeystoneListsAPI } from '@keystone-6/core/types';
       import { Context } from './types';
 
       export const query: Context['query'];

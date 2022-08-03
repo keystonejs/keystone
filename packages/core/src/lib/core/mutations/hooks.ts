@@ -2,7 +2,7 @@ import { extensionError } from '../graphql-errors';
 
 export async function runSideEffectOnlyHook<
   HookName extends string,
-  List extends {
+  Model extends {
     fields: Record<
       string,
       {
@@ -14,10 +14,10 @@ export async function runSideEffectOnlyHook<
     hooks: {
       [Key in HookName]?: (args: any) => Promise<void> | void;
     };
-    listKey: string;
+    modelKey: string;
   },
-  Args extends Parameters<NonNullable<List['hooks'][HookName]>>[0]
->(list: List, hookName: HookName, args: Args) {
+  Args extends Parameters<NonNullable<Model['hooks'][HookName]>>[0]
+>(model: Model, hookName: HookName, args: Args) {
   // Runs the before/after operation hooks
 
   let shouldRunFieldLevelHook: (fieldKey: string) => boolean;
@@ -34,12 +34,15 @@ export async function runSideEffectOnlyHook<
   // Field hooks
   const fieldsErrors: { error: Error; tag: string }[] = [];
   await Promise.all(
-    Object.entries(list.fields).map(async ([fieldKey, field]) => {
+    Object.entries(model.fields).map(async ([fieldKey, field]) => {
       if (shouldRunFieldLevelHook(fieldKey)) {
         try {
           await field.hooks[hookName]?.({ fieldKey, ...args });
         } catch (error: any) {
-          fieldsErrors.push({ error, tag: `${list.listKey}.${fieldKey}.hooks.${hookName}` });
+          fieldsErrors.push({
+            error,
+            tag: `${model.modelKey}.${fieldKey}.hooks.${hookName}`,
+          });
         }
       }
     })
@@ -49,10 +52,10 @@ export async function runSideEffectOnlyHook<
     throw extensionError(hookName, fieldsErrors);
   }
 
-  // List hooks
+  // Model hooks
   try {
-    await list.hooks[hookName]?.(args);
+    await model.hooks[hookName]?.(args);
   } catch (error: any) {
-    throw extensionError(hookName, [{ error, tag: `${list.listKey}.hooks.${hookName}` }]);
+    throw extensionError(hookName, [{ error, tag: `${model.modelKey}.hooks.${hookName}` }]);
   }
 }

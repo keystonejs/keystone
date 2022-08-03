@@ -1,31 +1,31 @@
 import { CacheHint } from 'apollo-server-types';
 import { FieldTypeFunc } from '../next-fields';
-import { BaseListTypeInfo } from '../type-info';
-import { KeystoneContextFromListTypeInfo, MaybePromise } from '..';
+import { BaseModelTypeInfo } from '../type-info';
+import { KeystoneContextFromModelTypeInfo, MaybePromise } from '..';
 import { MaybeItemFunction, MaybeSessionFunction } from './lists';
 import { FieldHooks } from './hooks';
 import { FieldAccessControl } from './access-control';
 
-export type BaseFields<ListTypeInfo extends BaseListTypeInfo> = {
-  [key: string]: FieldTypeFunc<ListTypeInfo>;
+export type BaseFields<ModelTypeInfo extends BaseModelTypeInfo> = {
+  [key: string]: FieldTypeFunc<ModelTypeInfo>;
 };
 
-export type FilterOrderArgs<ListTypeInfo extends BaseListTypeInfo> = {
-  context: KeystoneContextFromListTypeInfo<ListTypeInfo>;
-  session: KeystoneContextFromListTypeInfo<ListTypeInfo>['session'];
-  listKey: string;
+export type FilterOrderArgs<ModelTypeInfo extends BaseModelTypeInfo> = {
+  context: KeystoneContextFromModelTypeInfo<ModelTypeInfo>;
+  session: KeystoneContextFromModelTypeInfo<ModelTypeInfo>['session'];
+  modelKey: string;
   fieldKey: string;
 };
-export type CommonFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
-  access?: FieldAccessControl<ListTypeInfo>;
-  hooks?: FieldHooks<ListTypeInfo>;
+export type CommonFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> = {
+  access?: FieldAccessControl<ModelTypeInfo>;
+  hooks?: FieldHooks<ModelTypeInfo>;
   label?: string;
   ui?: {
     description?: string;
     views?: string;
-    createView?: { fieldMode?: MaybeSessionFunction<'edit' | 'hidden', ListTypeInfo> };
-    itemView?: { fieldMode?: MaybeItemFunction<'edit' | 'read' | 'hidden', ListTypeInfo> };
-    listView?: { fieldMode?: MaybeSessionFunction<'read' | 'hidden', ListTypeInfo> };
+    createView?: { fieldMode?: MaybeSessionFunction<'edit' | 'hidden', ModelTypeInfo> };
+    itemView?: { fieldMode?: MaybeItemFunction<'edit' | 'read' | 'hidden', ModelTypeInfo> };
+    listView?: { fieldMode?: MaybeSessionFunction<'read' | 'hidden', ModelTypeInfo> };
   };
   graphql?: {
     cacheHint?: CacheHint;
@@ -42,6 +42,6 @@ export type CommonFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
     omit?: true | readonly ('read' | 'create' | 'update')[];
   };
   // Disabled by default...
-  isFilterable?: boolean | ((args: FilterOrderArgs<ListTypeInfo>) => MaybePromise<boolean>);
-  isOrderable?: boolean | ((args: FilterOrderArgs<ListTypeInfo>) => MaybePromise<boolean>);
+  isFilterable?: boolean | ((args: FilterOrderArgs<ModelTypeInfo>) => MaybePromise<boolean>);
+  isOrderable?: boolean | ((args: FilterOrderArgs<ModelTypeInfo>) => MaybePromise<boolean>);
 };

@@ -8,7 +8,7 @@ import { Button } from '@keystone-ui/button';
 import { Popover } from '@keystone-ui/popover';
 import { MoreHorizontalIcon } from '@keystone-ui/icons/icons/MoreHorizontalIcon';
 import { ChevronRightIcon } from '@keystone-ui/icons/icons/ChevronRightIcon';
-import { NavigationProps, ListMeta, AuthenticatedItem } from '../../types';
+import { NavigationProps, ModelMeta, AuthenticatedItem } from '../../types';
 
 import { useKeystone } from '../context';
 import { Link } from '../router';
@@ -170,27 +170,27 @@ export const NavigationContainer = ({ authenticatedItem, children }: NavigationC
   );
 };
 
-export const ListNavItem = ({ list }: { list: ListMeta }) => {
+export const ModelItem = ({ model }: { model: ModelMeta }) => {
   const router = useRouter();
   return (
     <NavItem
-      isSelected={router.pathname.split('/')[1] === `/${list.path}`.split('/')[1]}
-      href={`/${list.path}`}
+      isSelected={router.pathname.split('/')[1] === `/${model.path}`.split('/')[1]}
+      href={`/${model.path}`}
     >
-      {list.label}
+      {model.label}
     </NavItem>
   );
 };
 
-type NavItemsProps = Pick<NavigationProps, 'lists'> & { include?: string[] };
+type NavItemsProps = Pick<NavigationProps, 'models'> & { include?: string[] };
 
-export const ListNavItems = ({ lists = [], include = [] }: NavItemsProps) => {
-  const renderedList = include.length > 0 ? lists.filter(i => include.includes(i.key)) : lists;
+export const ModelNavItems = ({ models = [], include = [] }: NavItemsProps) => {
+  const renderedModels = include.length > 0 ? models.filter(i => include.includes(i.key)) : models;
 
   return (
     <Fragment>
-      {renderedList.map((list: ListMeta) => {
-        return <ListNavItem key={list.key} list={list} />;
+      {renderedModels.map((models: ModelMeta) => {
+        return <ModelItem key={models.key} model={models} />;
       })}
     </Fragment>
   );
@@ -198,28 +198,28 @@ export const ListNavItems = ({ lists = [], include = [] }: NavItemsProps) => {
 
 export const Navigation = () => {
   const {
-    adminMeta: { lists },
+    adminMeta: { models },
     adminConfig,
     authenticatedItem,
-    visibleLists,
+    visibleModels,
   } = useKeystone();
 
-  if (visibleLists.state === 'loading') return null;
-  // This visible lists error is critical and likely to result in a server restart
+  if (visibleModels.state === 'loading') return null;
+  // This visible models error is critical and likely to result in a server restart
   // if it happens, we'll show the error and not render the navigation component/s
-  if (visibleLists.state === 'error') {
+  if (visibleModels.state === 'error') {
     return (
       <Text as="span" paddingLeft="xlarge" css={{ color: 'red' }}>
-        {visibleLists.error instanceof Error
-          ? visibleLists.error.message
-          : visibleLists.error[0].message}
+        {visibleModels.error instanceof Error
+          ? visibleModels.error.message
+          : visibleModels.error[0].message}
       </Text>
     );
   }
-  const renderableLists = Object.keys(lists)
+  const renderableModels = Object.keys(models)
     .map(key => {
-      if (!visibleLists.lists.has(key)) return null;
-      return lists[key];
+      if (!visibleModels.models.has(key)) return null;
+      return models[key];
     })
     .filter((x): x is NonNullable<typeof x> => Boolean(x));
 
@@ -227,7 +227,7 @@ export const Navigation = () => {
     return (
       <adminConfig.components.Navigation
         authenticatedItem={authenticatedItem}
-        lists={renderableLists}
+        models={renderableModels}
       />
     );
   }
@@ -235,7 +235,7 @@ export const Navigation = () => {
   return (
     <NavigationContainer authenticatedItem={authenticatedItem}>
       <NavItem href="/">Dashboard</NavItem>
-      <ListNavItems lists={renderableLists} />
+      <ModelNavItems models={renderableModels} />
     </NavigationContainer>
   );
 };

@@ -1,22 +1,22 @@
 import {
-  BaseListTypeInfo,
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
   orderDirectionEnum,
   filters,
+  BaseModelTypeInfo,
 } from '@keystone-6/core/types';
 import { graphql } from '@keystone-6/core';
 
-export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
+export type TextFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> =
+  CommonFieldConfig<ModelTypeInfo> & {
     isIndexed?: boolean | 'unique';
   };
 
-export function text<ListTypeInfo extends BaseListTypeInfo>({
+export function text<ModelTypeInfo extends BaseModelTypeInfo>({
   isIndexed,
   ...config
-}: TextFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
+}: TextFieldConfig<ModelTypeInfo> = {}): FieldTypeFunc<ModelTypeInfo> {
   return meta =>
     fieldType({
       kind: 'scalar',

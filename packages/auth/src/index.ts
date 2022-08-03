@@ -177,7 +177,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
    * Validates the provided auth config; optional step when integrating auth
    */
   const validateConfig = (keystoneConfig: KeystoneConfig) => {
-    const listConfig = keystoneConfig.lists[listKey];
+    const listConfig = keystoneConfig.models[listKey];
     if (listConfig === undefined) {
       const msg = `A createAuth() invocation specifies the list "${listKey}" but no list with that key has been defined.`;
       throw new Error(msg);
@@ -300,7 +300,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     const session = withItemData(keystoneConfig.session);
 
     const existingExtendGraphQLSchema = keystoneConfig.extendGraphqlSchema;
-    const listConfig = keystoneConfig.lists[listKey];
+    const listConfig = keystoneConfig.models[listKey];
     return {
       ...keystoneConfig,
       ui,
@@ -309,8 +309,8 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
       // TODO: The fields we're adding here shouldn't naively replace existing fields with the same key
       // Leaving existing fields in place would allow solution devs to customise these field defs (eg. access control,
       // work factor for the tokens, etc.) without abandoning the withAuth() interface
-      lists: {
-        ...keystoneConfig.lists,
+      models: {
+        ...keystoneConfig.models,
         [listKey]: { ...listConfig, fields: { ...listConfig.fields, ...fields } },
       },
       extendGraphqlSchema: existingExtendGraphQLSchema

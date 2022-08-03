@@ -8,7 +8,7 @@ import type { KeystoneConfig } from './types';
 import { confirmPrompt, shouldPrompt } from './lib/prompts';
 import { printGeneratedTypes } from './lib/schema-type-printer';
 import { ExitError } from './scripts/utils';
-import { initialiseLists } from './lib/core/types-for-lists';
+import { initialiseModels } from './lib/core/types-for-lists';
 import { printPrismaSchema } from './lib/core/prisma-schema';
 
 export function getSchemaPaths(cwd: string) {
@@ -36,9 +36,9 @@ export async function getCommittedArtifacts(
   graphQLSchema: GraphQLSchema,
   config: KeystoneConfig
 ): Promise<CommittedArtifacts> {
-  const lists = initialiseLists(config);
+  const models = initialiseModels(config);
   const prismaSchema = printPrismaSchema(
-    lists,
+    models,
     config.db.provider,
     config.db.prismaPreviewFeatures,
     config.db.additionalPrismaDatasourceProperties
@@ -158,8 +158,7 @@ ${makeVercelIncludeTheSQLiteDB(cwd, path.join(cwd, 'node_modules/.keystone/next'
 export const query = createQueryAPI(keystoneConfig, PrismaClient);
 `;
 
-const nodeAPIDTS = `import { KeystoneListsAPI } from '@keystone-6/core/types';
-import { Context } from './types';
+const nodeAPIDTS = `import { Context } from './types';
 
 export const query: Context['query'];`;
 
@@ -209,13 +208,13 @@ export async function generateNodeModulesArtifactsWithoutPrismaClient(
   config: KeystoneConfig,
   cwd: string
 ) {
-  const lists = initialiseLists(config);
+  const models = initialiseModels(config);
 
   const dotKeystoneDir = path.join(cwd, 'node_modules/.keystone');
   await Promise.all([
     fs.outputFile(
       path.join(dotKeystoneDir, 'types.d.ts'),
-      printGeneratedTypes(graphQLSchema, lists)
+      printGeneratedTypes(graphQLSchema, models)
     ),
     fs.outputFile(path.join(dotKeystoneDir, 'types.js'), ''),
     ...(config.experimental?.generateNodeAPI

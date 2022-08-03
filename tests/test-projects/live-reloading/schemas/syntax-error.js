@@ -1,7 +1,7 @@
 import { graphQLSchemaExtension, list } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
 
-expor const lists = {
+expor const models = {
   Something: list({
     fields: {
       text: text(),

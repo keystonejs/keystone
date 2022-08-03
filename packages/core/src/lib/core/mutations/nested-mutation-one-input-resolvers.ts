@@ -1,20 +1,20 @@
-import { KeystoneContext, GraphQLTypesForList } from '../../../types';
+import { KeystoneContext, GraphQLTypesForModel } from '../../../types';
 import { graphql } from '../../..';
-import { InitialisedList } from '../types-for-lists';
+import { InitialisedModel } from '../types-for-lists';
 import { userInputError } from '../graphql-errors';
 import { NestedMutationState } from './create-update';
 import { checkUniqueItemExists } from './access-control';
 
 type _CreateValueType = Exclude<
   graphql.InferValueFromArg<
-    graphql.Arg<Exclude<GraphQLTypesForList['relateTo']['one']['create'], undefined>>
+    graphql.Arg<Exclude<GraphQLTypesForModel['relateTo']['one']['create'], undefined>>
   >,
   null | undefined
 >;
 type _UpdateValueType = Exclude<
   graphql.InferValueFromArg<
     graphql.Arg<
-      graphql.NonNullType<Exclude<GraphQLTypesForList['relateTo']['one']['update'], undefined>>
+      graphql.NonNullType<Exclude<GraphQLTypesForModel['relateTo']['one']['update'], undefined>>
     >
   >,
   null | undefined
@@ -24,7 +24,7 @@ async function handleCreateAndUpdate(
   value: _CreateValueType,
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
-  foreignList: InitialisedList
+  foreignList: InitialisedModel
 ) {
   if (value.connect) {
     return { connect: await checkUniqueItemExists(value.connect, foreignList, context, 'connect') };
@@ -37,7 +37,7 @@ async function handleCreateAndUpdate(
 export function resolveRelateToOneForCreateInput(
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
-  foreignList: InitialisedList
+  foreignList: InitialisedModel
 ) {
   return async (value: _CreateValueType) => {
     const numOfKeys = Object.keys(value).length;
@@ -53,7 +53,7 @@ export function resolveRelateToOneForCreateInput(
 export function resolveRelateToOneForUpdateInput(
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
-  foreignList: InitialisedList
+  foreignList: InitialisedModel
 ) {
   return async (value: _UpdateValueType) => {
     if (Object.keys(value).length !== 1) {

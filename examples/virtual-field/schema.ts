@@ -1,8 +1,8 @@
 import { list, graphql } from '@keystone-6/core';
 import { select, relationship, text, timestamp, virtual } from '@keystone-6/core/fields';
-import { Lists, Context } from '.keystone/types';
+import { Models, Context } from '.keystone/types';
 
-export const lists: Lists = {
+export const models: Models = {
   Post: list({
     fields: {
       title: text({ validation: { isRequired: true } }),
@@ -96,11 +96,11 @@ export const lists: Lists = {
       name: text({ validation: { isRequired: true } }),
       email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
       posts: relationship({ ref: 'Post.author', many: true }),
-      // A virtual field which returns a type derived from a Keystone list.
+      // A virtual field which returns a type derived from a Keystone model.
       latestPost: virtual({
-        field: lists =>
+        field: models =>
           graphql.field({
-            type: lists.Post.types.output,
+            type: models.Post.types.output,
             async resolve(item, args, _context) {
               const context = _context as Context;
               const { posts } = await context.query.Author.findOne({

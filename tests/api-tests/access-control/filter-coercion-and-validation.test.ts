@@ -5,7 +5,7 @@ import { apiTestConfig, expectExtensionError } from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: {
+    models: {
       BadAccess: list({
         fields: { name: text() },
         access: {

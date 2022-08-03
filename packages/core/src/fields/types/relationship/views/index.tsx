@@ -14,6 +14,7 @@ import {
   FieldControllerConfig,
   FieldProps,
   ListMeta,
+  ModelMeta,
 } from '../../../../types';
 import { Link } from '../../../../admin-ui/router';
 import { useKeystone, useList } from '../../../../admin-ui/context';
@@ -26,12 +27,12 @@ import { RelationshipSelect } from './RelationshipSelect';
 function LinkToRelatedItems({
   itemId,
   value,
-  list,
+  model,
   refFieldKey,
 }: {
   itemId: string | null;
   value: FieldProps<typeof controller>['value'] & { kind: 'many' | 'one' };
-  list: ListMeta;
+  model: ModelMeta;
   refFieldKey?: string;
 }) {
   function constructQuery({
@@ -60,15 +61,15 @@ function LinkToRelatedItems({
   if (value.kind === 'many') {
     const query = constructQuery({ refFieldKey, value, itemId });
     return (
-      <Button {...commonProps} as={Link} href={`/${list.path}?${query}`}>
-        View related {list.plural}
+      <Button {...commonProps} as={Link} href={`/${model.path}?${query}`}>
+        View related {model.plural}
       </Button>
     );
   }
 
   return (
-    <Button {...commonProps} as={Link} href={`/${list.path}/${value.value?.id}`}>
-      View {list.singular} details
+    <Button {...commonProps} as={Link} href={`/${model.path}/${value.value?.id}`}>
+      View {model.singular} details
     </Button>
   );
 }
@@ -82,7 +83,7 @@ export const Field = ({
 }: FieldProps<typeof controller>) => {
   const keystone = useKeystone();
   const foreignList = useList(field.refListKey);
-  const localList = useList(field.listKey);
+  const localModel = useList(field.modelKey);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   if (value.kind === 'cards-view') {
@@ -97,7 +98,7 @@ export const Field = ({
           value={value}
           onChange={onChange}
           foreignList={foreignList}
-          localList={localList}
+          localModel={localModel}
         />
       </FieldContainer>
     );
@@ -112,7 +113,7 @@ export const Field = ({
           {value.count === 1
             ? `There is 1 ${foreignList.singular} `
             : `There are ${value.count} ${foreignList.plural} `}
-          linked to this {localList.singular}
+          linked to this {localModel.singular}
         </div>
       </Stack>
     );
@@ -207,7 +208,7 @@ export const Field = ({
               <LinkToRelatedItems
                 itemId={value.id}
                 refFieldKey={field.refFieldKey}
-                list={foreignList}
+                model={foreignList}
                 value={value}
               />
             )}
@@ -343,7 +344,7 @@ type RelationshipController = FieldController<
   string
 > & {
   display: 'count' | 'cards-or-select';
-  listKey: string;
+  modelKey: string;
   refListKey: string;
   refFieldKey?: string;
   hideCreate: boolean;
@@ -391,7 +392,7 @@ export const controller = (
   return {
     refFieldKey: config.fieldMeta.refFieldKey,
     many: config.fieldMeta.many,
-    listKey: config.listKey,
+    modelKey: config.modelKey,
     path: config.path,
     label: config.label,
     description: config.description,

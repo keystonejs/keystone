@@ -1,6 +1,6 @@
 import { ScalarDBField, ScalarDBFieldDefault, DatabaseProvider } from '../../types';
 import { ResolvedDBField } from './resolve-relationships';
-import { InitialisedList } from './types-for-lists';
+import { InitialisedModel } from './types-for-lists';
 import { getDBFieldKeyForFieldOnMultiField } from './utils';
 
 function areArraysEqual(a: readonly unknown[], b: readonly unknown[]) {
@@ -54,7 +54,7 @@ function printField(
   fieldPath: string,
   field: Exclude<ResolvedDBField, { kind: 'none' }>,
   datasourceName: string,
-  lists: Record<string, InitialisedList>
+  models: Record<string, InitialisedModel>
 ): string {
   if (field.kind === 'scalar') {
     const nativeType = printNativeType(field.nativeType, datasourceName);
@@ -81,7 +81,7 @@ function printField(
           getDBFieldKeyForFieldOnMultiField(fieldPath, subField),
           field,
           datasourceName,
-          lists
+          models
         )
       )
       .join('\n');
@@ -95,7 +95,7 @@ function printField(
     }
     const relationIdFieldPath = `${fieldPath}Id`;
     const relationField = `${fieldPath} ${field.list}? @relation("${field.relationName}", fields: [${relationIdFieldPath}], references: [id])`;
-    const foreignIdField = lists[field.list].resolvedDbFields.id;
+    const foreignIdField = models[field.list].resolvedDbFields.id;
     assertDbFieldIsValidForIdField(field.list, foreignIdField);
     const nativeType = printNativeType(foreignIdField.nativeType, datasourceName);
     const index = printIndex(
@@ -112,16 +112,16 @@ function printField(
   return assertNever(field);
 }
 
-function collectEnums(lists: Record<string, InitialisedList>) {
+function collectEnums(models: Record<string, InitialisedModel>) {
   const enums: Record<string, { values: readonly string[]; firstDefinedByRef: string }> = {};
-  for (const [listKey, { resolvedDbFields }] of Object.entries(lists)) {
+  for (const [modelKey, { resolvedDbFields }] of Object.entries(models)) {
     for (const [fieldPath, field] of Object.entries(resolvedDbFields)) {
       const fields =
         field.kind === 'multi'
           ? Object.entries(field.fields).map(
-              ([key, field]) => [field, `${listKey}.${fieldPath} (sub field ${key})`] as const
+              ([key, field]) => [field, `${modelKey}.${fieldPath} (sub field ${key})`] as const
             )
-          : [[field, `${listKey}.${fieldPath}`] as const];
+          : [[field, `${modelKey}.${fieldPath}`] as const];
 
       for (const [field, ref] of fields) {
         if (field.kind !== 'enum') continue;
@@ -154,42 +154,42 @@ function collectEnums(lists: Record<string, InitialisedList>) {
 }
 
 function assertDbFieldIsValidForIdField(
-  listKey: string,
+  modelKey: string,
   field: ResolvedDBField
 ): asserts field is ScalarDBField<'Int' | 'String', 'required'> {
   if (field.kind !== 'scalar') {
     throw new Error(
-      `id fields must be either a String or Int Prisma scalar but the id field for the ${listKey} list is not a scalar`
+      `id fields must be either a String or Int Prisma scalar but the id field for the ${modelKey} model is not a scalar`
     );
   }
   // this may be loosened in the future
   if (field.scalar !== 'String' && field.scalar !== 'Int' && field.scalar !== 'BigInt') {
     throw new Error(
-      `id fields must be String, Int or BigInt Prisma scalars but the id field for the ${listKey} list is a ${field.scalar} scalar`
+      `id fields must be String, Int or BigInt Prisma scalars but the id field for the ${modelKey} model is a ${field.scalar} scalar`
     );
   }
   if (field.mode !== 'required') {
     throw new Error(
-      `id fields must be a singular required field but the id field for the ${listKey} list is ${
+      `id fields must be a singular required field but the id field for the ${modelKey} model is ${
         field.mode === 'many' ? 'a many' : 'an optional'
       } field`
     );
   }
   if (field.index !== undefined) {
     throw new Error(
-      `id fields must not specify indexes themselves but the id field for the ${listKey} list specifies an index`
+      `id fields must not specify indexes themselves but the id field for the ${modelKey} model specifies an index`
     );
   }
   // this will likely be loosened in the future
   if (field.default === undefined) {
     throw new Error(
-      `id fields must specify a Prisma/database level default value but the id field for the ${listKey} list does not`
+      `id fields must specify a Prisma/database level default value but the id field for the ${modelKey} model does not`
     );
   }
 }
 
 export function printPrismaSchema(
-  lists: Record<string, InitialisedList>,
+  models: Record<string, InitialisedModel>,
   provider: DatabaseProvider,
   prismaPreviewFeatures?: readonly string[] | null,
   additionalPrismaDatasourceProperties?: { [key: string]: string } | null
@@ -216,14 +216,14 @@ generator client {
   output   = "node_modules/.prisma/client"${prismaFlags}
 }
 \n`;
-  for (const [listKey, { resolvedDbFields, dbMap }] of Object.entries(lists)) {
-    prismaSchema += `model ${listKey} {`;
+  for (const [modelKey, { resolvedDbFields, dbMap }] of Object.entries(models)) {
+    prismaSchema += `model ${modelKey} {`;
     for (const [fieldPath, field] of Object.entries(resolvedDbFields)) {
       if (field.kind !== 'none') {
-        prismaSchema += '\n' + printField(fieldPath, field, provider, lists);
+        prismaSchema += '\n' + printField(fieldPath, field, provider, models);
       }
       if (fieldPath === 'id') {
-        assertDbFieldIsValidForIdField(listKey, field);
+        assertDbFieldIsValidForIdField(modelKey, field);
         prismaSchema += ' @id';
       }
     }
@@ -232,7 +232,7 @@ generator client {
     }
     prismaSchema += `\n}\n`;
   }
-  prismaSchema += `\n${collectEnums(lists)}\n`;
+  prismaSchema += `\n${collectEnums(models)}\n`;
 
   return prismaSchema;
 }

@@ -9,7 +9,7 @@ import { useAdminMeta } from './utils/useAdminMeta';
 import { ApolloProvider, ApolloClient, InMemoryCache, ApolloError, DocumentNode } from './apollo';
 import {
   AuthenticatedItem,
-  VisibleLists,
+  VisibleModels,
   useLazyMetadata,
   CreateViewFieldModes,
 } from './utils/useLazyMetadata';
@@ -21,7 +21,7 @@ type KeystoneContextType = {
     | { state: 'error'; error: ApolloError; refetch: () => void };
   fieldViews: FieldViews;
   authenticatedItem: AuthenticatedItem;
-  visibleLists: VisibleLists;
+  visibleModels: VisibleModels;
   createViewFieldModes: CreateViewFieldModes;
   reinitContext: () => void;
   apiPath: string;
@@ -47,7 +47,7 @@ function InternalKeystoneProvider({
   apiPath,
 }: KeystoneProviderProps) {
   const adminMeta = useAdminMeta(adminMetaHash, fieldViews);
-  const { authenticatedItem, visibleLists, createViewFieldModes, refetch } =
+  const { authenticatedItem, visibleModels, createViewFieldModes, refetch } =
     useLazyMetadata(lazyMetadataQuery);
   const reinitContext = () => {
     adminMeta?.refetch?.();
@@ -71,7 +71,7 @@ function InternalKeystoneProvider({
             fieldViews,
             authenticatedItem,
             reinitContext,
-            visibleLists,
+            visibleModels,
             createViewFieldModes,
             apiPath,
           }}
@@ -104,7 +104,7 @@ export const useKeystone = (): {
   adminConfig: AdminConfig;
   adminMeta: AdminMeta;
   authenticatedItem: AuthenticatedItem;
-  visibleLists: VisibleLists;
+  visibleModels: VisibleModels;
   createViewFieldModes: CreateViewFieldModes;
   apiPath: string;
 } => {
@@ -126,7 +126,7 @@ export const useKeystone = (): {
     adminConfig: value.adminConfig,
     adminMeta: value.adminMeta.value,
     authenticatedItem: value.authenticatedItem,
-    visibleLists: value.visibleLists,
+    visibleModels: value.visibleModels,
     createViewFieldModes: value.createViewFieldModes,
     apiPath: value.apiPath,
   };
@@ -148,13 +148,15 @@ export const useRawKeystone = () => {
   return value;
 };
 
-export const useList = (key: string) => {
+export const useModel = (key: string) => {
   const {
-    adminMeta: { lists },
+    adminMeta: { models },
   } = useKeystone();
-  if (lists[key]) {
-    return lists[key];
+  if (models[key]) {
+    return models[key];
   } else {
-    throw new Error(`Invalid list key provided to useList: ${key}`);
+    throw new Error(`Invalid model key provided to useModel: ${key}`);
   }
 };
+
+export { useModel as useList };

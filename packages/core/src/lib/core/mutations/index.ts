@@ -1,6 +1,6 @@
 import { getGqlNames } from '../../../types';
 import { graphql } from '../../..';
-import { InitialisedList } from '../types-for-lists';
+import { InitialisedModel } from '../types-for-lists';
 import * as createAndUpdate from './create-update';
 import * as deletes from './delete';
 
@@ -20,94 +20,94 @@ function promisesButSettledWhenAllSettledAndInOrder<T extends Promise<unknown>[]
   }) as T;
 }
 
-export function getMutationsForList(list: InitialisedList) {
-  const names = getGqlNames(list);
+export function getMutationsForModel(model: InitialisedModel) {
+  const names = getGqlNames(model);
 
   const createOne = graphql.field({
-    type: list.types.output,
-    args: { data: graphql.arg({ type: graphql.nonNull(list.types.create) }) },
+    type: model.types.output,
+    args: { data: graphql.arg({ type: graphql.nonNull(model.types.create) }) },
     resolve(_rootVal, { data }, context) {
-      return createAndUpdate.createOne({ data }, list, context);
+      return createAndUpdate.createOne({ data }, model, context);
     },
   });
 
   const createMany = graphql.field({
-    type: graphql.list(list.types.output),
+    type: graphql.list(model.types.output),
     args: {
       data: graphql.arg({
-        type: graphql.nonNull(graphql.list(graphql.nonNull(list.types.create))),
+        type: graphql.nonNull(graphql.list(graphql.nonNull(model.types.create))),
       }),
     },
     async resolve(_rootVal, args, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
-        await createAndUpdate.createMany(args, list, context)
+        await createAndUpdate.createMany(args, model, context)
       );
     },
   });
 
   const updateOne = graphql.field({
-    type: list.types.output,
+    type: model.types.output,
     args: {
-      where: graphql.arg({ type: graphql.nonNull(list.types.uniqueWhere) }),
-      data: graphql.arg({ type: graphql.nonNull(list.types.update) }),
+      where: graphql.arg({ type: graphql.nonNull(model.types.uniqueWhere) }),
+      data: graphql.arg({ type: graphql.nonNull(model.types.update) }),
     },
     resolve(_rootVal, args, context) {
-      return createAndUpdate.updateOne(args, list, context);
+      return createAndUpdate.updateOne(args, model, context);
     },
   });
 
   const updateManyInput = graphql.inputObject({
     name: names.updateManyInputName,
     fields: {
-      where: graphql.arg({ type: graphql.nonNull(list.types.uniqueWhere) }),
-      data: graphql.arg({ type: graphql.nonNull(list.types.update) }),
+      where: graphql.arg({ type: graphql.nonNull(model.types.uniqueWhere) }),
+      data: graphql.arg({ type: graphql.nonNull(model.types.update) }),
     },
   });
   const updateMany = graphql.field({
-    type: graphql.list(list.types.output),
+    type: graphql.list(model.types.output),
     args: {
       data: graphql.arg({ type: graphql.nonNull(graphql.list(graphql.nonNull(updateManyInput))) }),
     },
     async resolve(_rootVal, args, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
-        await createAndUpdate.updateMany(args, list, context)
+        await createAndUpdate.updateMany(args, model, context)
       );
     },
   });
 
   const deleteOne = graphql.field({
-    type: list.types.output,
-    args: { where: graphql.arg({ type: graphql.nonNull(list.types.uniqueWhere) }) },
+    type: model.types.output,
+    args: { where: graphql.arg({ type: graphql.nonNull(model.types.uniqueWhere) }) },
     resolve(rootVal, { where }, context) {
-      return deletes.deleteOne(where, list, context);
+      return deletes.deleteOne(where, model, context);
     },
   });
 
   const deleteMany = graphql.field({
-    type: graphql.list(list.types.output),
+    type: graphql.list(model.types.output),
     args: {
       where: graphql.arg({
-        type: graphql.nonNull(graphql.list(graphql.nonNull(list.types.uniqueWhere))),
+        type: graphql.nonNull(graphql.list(graphql.nonNull(model.types.uniqueWhere))),
       }),
     },
     async resolve(rootVal, { where }, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
-        await deletes.deleteMany(where, list, context)
+        await deletes.deleteMany(where, model, context)
       );
     },
   });
 
   return {
     mutations: {
-      ...(list.graphql.isEnabled.create && {
+      ...(model.graphql.isEnabled.create && {
         [names.createMutationName]: createOne,
         [names.createManyMutationName]: createMany,
       }),
-      ...(list.graphql.isEnabled.update && {
+      ...(model.graphql.isEnabled.update && {
         [names.updateMutationName]: updateOne,
         [names.updateManyMutationName]: updateMany,
       }),
-      ...(list.graphql.isEnabled.delete && {
+      ...(model.graphql.isEnabled.delete && {
         [names.deleteMutationName]: deleteOne,
         [names.deleteManyMutationName]: deleteMany,
       }),

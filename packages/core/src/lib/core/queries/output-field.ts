@@ -3,17 +3,17 @@ import { GraphQLResolveInfo } from 'graphql';
 import {
   NextFieldType,
   IndividualFieldAccessControl,
-  BaseListTypeInfo,
+  BaseModelTypeInfo,
   BaseItem,
   FindManyArgsValue,
   KeystoneContext,
-  GraphQLTypesForList,
+  GraphQLTypesForModel,
   FieldReadItemAccessArgs,
 } from '../../../types';
 import { graphql } from '../../..';
 import { getOperationAccess, getAccessFilters } from '../access-control';
 import { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relationships';
-import { InitialisedList } from '../types-for-lists';
+import { InitialisedModel } from '../types-for-lists';
 import { IdType, getDBFieldKeyForFieldOnMultiField, runWithPrisma } from '../utils';
 import { accessReturnError, extensionError } from '../graphql-errors';
 import { accessControlledFilter } from './resolvers';
@@ -22,7 +22,7 @@ import * as queries from './resolvers';
 function getRelationVal(
   dbField: ResolvedRelationDBField,
   id: IdType,
-  foreignList: InitialisedList,
+  foreignList: InitialisedModel,
   context: KeystoneContext,
   info: GraphQLResolveInfo,
   fk?: IdType
@@ -37,7 +37,7 @@ function getRelationVal(
     return {
       findMany: async (args: FindManyArgsValue) =>
         queries.findMany(args, foreignList, context, info, relationFilter),
-      count: async ({ where }: { where: GraphQLTypesForList['where'] }) =>
+      count: async ({ where }: { where: GraphQLTypesForModel['where'] }) =>
         queries.count({ where }, foreignList, context, info, relationFilter),
     };
   } else {
@@ -99,7 +99,7 @@ function getValueForDBField(
   id: IdType,
   fieldPath: string,
   context: KeystoneContext,
-  lists: Record<string, InitialisedList>,
+  lists: Record<string, InitialisedModel>,
   info: GraphQLResolveInfo
 ) {
   if (dbField.kind === 'multi') {
@@ -126,10 +126,10 @@ export function outputTypeField(
   output: NextFieldType['output'],
   dbField: ResolvedDBField,
   cacheHint: CacheHint | undefined,
-  access: IndividualFieldAccessControl<FieldReadItemAccessArgs<BaseListTypeInfo>>,
-  listKey: string,
+  access: IndividualFieldAccessControl<FieldReadItemAccessArgs<BaseModelTypeInfo>>,
+  modelKey: string,
   fieldKey: string,
-  lists: Record<string, InitialisedList>
+  lists: Record<string, InitialisedModel>
 ) {
   return graphql.field({
     type: output.type,
@@ -149,19 +149,19 @@ export function outputTypeField(
                 context,
                 fieldKey,
                 item: rootVal,
-                listKey,
+                modelKey,
                 operation: 'read',
                 session: context.session,
               })
             : access;
       } catch (error: any) {
         throw extensionError('Access control', [
-          { error, tag: `${listKey}.${fieldKey}.access.read` },
+          { error, tag: `${modelKey}.${fieldKey}.access.read` },
         ]);
       }
       if (typeof canAccess !== 'boolean') {
         throw accessReturnError([
-          { tag: `${listKey}.${fieldKey}.access.read`, returned: typeof canAccess },
+          { tag: `${modelKey}.${fieldKey}.access.read`, returned: typeof canAccess },
         ]);
       }
       if (!canAccess) {

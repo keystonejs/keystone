@@ -2,7 +2,7 @@ import { list } from '@keystone-6/core';
 import { checkbox, password, relationship, text, timestamp } from '@keystone-6/core/fields';
 import { select } from '@keystone-6/core/fields';
 
-export const lists = {
+export const models = {
   Task: list({
     fields: {
       label: text({ validation: { isRequired: true } }),

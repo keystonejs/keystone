@@ -131,7 +131,7 @@ export const controller = (
   );
   if (componentBlocksOnlyBeingPassedOnTheClient.length) {
     throw new Error(
-      `(${config.listKey}:${
+      `(${config.modelKey}:${
         config.path
       }) The following component blocks are being passed in the custom view but not in the server-side field config: ${JSON.stringify(
         componentBlocksOnlyBeingPassedOnTheClient
@@ -145,7 +145,7 @@ export const controller = (
     );
   if (componentBlocksOnlyBeingPassedOnTheServer.length) {
     throw new Error(
-      `(${config.listKey}:${
+      `(${config.modelKey}:${
         config.path
       }) The following component blocks are being passed in the server-side field config but not in the custom view: ${JSON.stringify(
         componentBlocksOnlyBeingPassedOnTheServer

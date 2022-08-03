@@ -7,12 +7,11 @@ import fetch from 'cross-fetch';
 import { jsx, H1, Stack, Inline, VisuallyHidden, Center } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
 import { Checkbox, TextInput } from '@keystone-ui/fields';
-import { useRawKeystone } from '@keystone-6/core/admin-ui/context';
+import { useList, useRawKeystone, useReinitContext } from '@keystone-6/core/admin-ui/context';
 import { FieldMeta } from '@keystone-6/core/types';
 import isDeepEqual from 'fast-deep-equal';
 
 import { gql, useMutation } from '@keystone-6/core/admin-ui/apollo';
-import { useReinitContext, useKeystone } from '@keystone-6/core/admin-ui/context';
 import { useRouter, Link } from '@keystone-6/core/admin-ui/router';
 import { GraphQLErrorNotice } from '@keystone-6/core/admin-ui/components';
 import {
@@ -163,14 +162,14 @@ type InitPageProps = {
 export const getInitPage = (props: InitPageProps) => () => <InitPage {...props} />;
 
 const InitPage = ({ fieldPaths, listKey, enableWelcome }: InitPageProps) => {
-  const { adminMeta } = useKeystone();
+  const list = useList(listKey);
   const fields = useMemo(() => {
     const fields: Record<string, FieldMeta> = {};
     fieldPaths.forEach(fieldPath => {
-      fields[fieldPath] = adminMeta.lists[listKey].fields[fieldPath];
+      fields[fieldPath] = list.fields[fieldPath];
     });
     return fields;
-  }, [fieldPaths, adminMeta.lists, listKey]);
+  }, [fieldPaths, list]);
 
   const [value, setValue] = useState(() => {
     let state: Record<string, any> = {};

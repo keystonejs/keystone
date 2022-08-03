@@ -1,33 +1,35 @@
 import { getGqlNames } from '../../../types';
 import { graphql } from '../../..';
-import { InitialisedList } from '../types-for-lists';
+import { InitialisedModel } from '../types-for-lists';
 import * as queries from './resolvers';
 
-export function getQueriesForList(list: InitialisedList) {
-  if (!list.graphql.isEnabled.query) return {};
-  const names = getGqlNames(list);
+export function getQueriesForModel(model: InitialisedModel) {
+  if (!model.graphql.isEnabled.query) return {};
+  const names = getGqlNames(model);
 
   const findOne = graphql.field({
-    type: list.types.output,
-    args: { where: graphql.arg({ type: graphql.nonNull(list.types.uniqueWhere) }) },
+    type: model.types.output,
+    args: { where: graphql.arg({ type: graphql.nonNull(model.types.uniqueWhere) }) },
     async resolve(_rootVal, args, context) {
-      return queries.findOne(args, list, context);
+      return queries.findOne(args, model, context);
     },
   });
 
   const findMany = graphql.field({
-    type: graphql.list(graphql.nonNull(list.types.output)),
-    args: list.types.findManyArgs,
+    type: graphql.list(graphql.nonNull(model.types.output)),
+    args: model.types.findManyArgs,
     async resolve(_rootVal, args, context, info) {
-      return queries.findMany(args, list, context, info);
+      return queries.findMany(args, model, context, info);
     },
   });
 
   const countQuery = graphql.field({
     type: graphql.Int,
-    args: { where: graphql.arg({ type: graphql.nonNull(list.types.where), defaultValue: {} }) },
+    args: {
+      where: graphql.arg({ type: graphql.nonNull(model.types.where), defaultValue: {} }),
+    },
     async resolve(_rootVal, args, context, info) {
-      return queries.count(args, list, context, info);
+      return queries.count(args, model, context, info);
     },
   });
 

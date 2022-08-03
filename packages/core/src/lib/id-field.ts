@@ -2,7 +2,7 @@ import path from 'path';
 import { validate } from 'uuid';
 import { isCuid } from 'cuid';
 import {
-  BaseListTypeInfo,
+  BaseModelTypeInfo,
   fieldType,
   FieldTypeFunc,
   IdFieldConfig,
@@ -111,7 +111,7 @@ function resolveVal(
 }
 
 export const idFieldType =
-  (config: IdFieldConfig): FieldTypeFunc<BaseListTypeInfo> =>
+  (config: IdFieldConfig): FieldTypeFunc<BaseModelTypeInfo> =>
   meta => {
     const parseVal =
       config.kind === 'autoincrement' && config.type === 'BigInt'

@@ -82,7 +82,7 @@ describe(`Public schema`, () => {
     listConfigVariables.forEach(config => {
       test(JSON.stringify(config), async () => {
         const name = getListName(config);
-        const gqlNames = getGqlNames({ listKey: name, pluralGraphQLName: `${name}s` });
+        const gqlNames = getGqlNames({ modelKey: name, pluralGraphQLName: `${name}s` });
         // The type is used in all the queries and mutations as a return type.
         if (config.omit === true) {
           expect(types).not.toContain(gqlNames.outputTypeName);
@@ -190,12 +190,12 @@ describe(`Public schema`, () => {
     fieldMatrix.forEach(config => {
       for (const isFilterable of [undefined, false as const]) {
         for (const isOrderable of [undefined, false as const]) {
-          const listName = getListName({ isFilterable, isOrderable });
-          test(`schema - ${JSON.stringify(config)} on ${listName}`, () => {
+          const modelName = getListName({ isFilterable, isOrderable });
+          test(`schema - ${JSON.stringify(config)} on ${modelName}`, () => {
             const name = getFieldName(config);
 
-            expect(fieldTypes[listName].fields).not.toBe(null);
-            const fields = fieldTypes[listName].fields;
+            expect(fieldTypes[modelName].fields).not.toBe(null);
+            const fields = fieldTypes[modelName].fields;
             if (
               config.omit !== true &&
               (config.omit === undefined || !config.omit.includes('read'))
@@ -206,62 +206,62 @@ describe(`Public schema`, () => {
             }
 
             // Filters require both `read` and `filter` to be true for
-            expect(fieldTypes[`${listName}WhereInput`].inputFields).not.toBe(undefined);
+            expect(fieldTypes[`${modelName}WhereInput`].inputFields).not.toBe(undefined);
             if (
               config.omit !== true && // Not excluded
               (config.omit === undefined || !config.omit.includes('read')) && // Can read
               isFilterable !== false &&
               config.isFilterable !== false // Can filter
             ) {
-              expect(fieldTypes[`${listName}WhereInput`].inputFields[name]).not.toBe(undefined);
+              expect(fieldTypes[`${modelName}WhereInput`].inputFields[name]).not.toBe(undefined);
             } else {
-              expect(fieldTypes[`${listName}WhereInput`].inputFields[name]).toBe(undefined);
+              expect(fieldTypes[`${modelName}WhereInput`].inputFields[name]).toBe(undefined);
             }
 
             // Orderby require both `read` and `orderBy` to be true for
-            expect(fieldTypes[`${listName}OrderByInput`].inputFields).not.toBe(undefined);
+            expect(fieldTypes[`${modelName}OrderByInput`].inputFields).not.toBe(undefined);
             if (
               config.omit !== true && // Not excluded
               (config.omit === undefined || !config.omit.includes('read')) && // Can read
               isOrderable !== false &&
               config.isOrderable !== false // Can orderBy
             ) {
-              expect(fieldTypes[`${listName}OrderByInput`].inputFields[name]).not.toBe(undefined);
+              expect(fieldTypes[`${modelName}OrderByInput`].inputFields[name]).not.toBe(undefined);
             } else {
-              expect(fieldTypes[`${listName}OrderByInput`].inputFields[name]).toBe(undefined);
+              expect(fieldTypes[`${modelName}OrderByInput`].inputFields[name]).toBe(undefined);
             }
 
             // Create inputs
-            expect(fieldTypes[`${listName}CreateInput`].inputFields).not.toBe(undefined);
+            expect(fieldTypes[`${modelName}CreateInput`].inputFields).not.toBe(undefined);
 
             if (
               config.omit !== true && // Not excluded
               (config.omit === undefined || !config.omit.includes('create')) // Can create
             ) {
-              expect(fieldTypes[`${listName}CreateInput`].inputFields[name]).not.toBe(undefined);
+              expect(fieldTypes[`${modelName}CreateInput`].inputFields[name]).not.toBe(undefined);
             } else {
-              expect(fieldTypes[`${listName}CreateInput`].inputFields[name]).toBe(undefined);
+              expect(fieldTypes[`${modelName}CreateInput`].inputFields[name]).toBe(undefined);
             }
 
             // Update inputs
-            expect(fieldTypes[`${listName}UpdateInput`].inputFields).not.toBe(undefined);
+            expect(fieldTypes[`${modelName}UpdateInput`].inputFields).not.toBe(undefined);
             if (
               config.omit !== true && // Not excluded
               (config.omit === undefined || !config.omit.includes('update')) // Can update
             ) {
-              expect(fieldTypes[`${listName}UpdateInput`].inputFields[name]).not.toBe(undefined);
+              expect(fieldTypes[`${modelName}UpdateInput`].inputFields[name]).not.toBe(undefined);
             } else {
-              expect(fieldTypes[`${listName}UpdateInput`].inputFields[name]).toBe(undefined);
+              expect(fieldTypes[`${modelName}UpdateInput`].inputFields[name]).toBe(undefined);
             }
           });
           test(`adminMeta - isFilterable and isOrderable ${JSON.stringify(
             config
-          )} on ${listName}`, async () => {
+          )} on ${modelName}`, async () => {
             const query = `
-              query q($listName: String!) {
+              query q($modelName: String!) {
                 keystone {
                   adminMeta {
-                    list(key: $listName) {
+                    model(key: $modelName) {
                       fields {
                         path
                         isFilterable
@@ -271,11 +271,11 @@ describe(`Public schema`, () => {
                   }
                 }
               }`;
-            const variables = { listName };
+            const variables = { modelName };
             const { data, errors } = await context.graphql.raw({ query, variables });
             expect(errors).toBe(undefined);
 
-            const field = data!.keystone.adminMeta.list.fields.filter(
+            const field = data!.keystone.adminMeta.model.fields.filter(
               (f: any) => f.path === getFieldName(config)
             )[0];
             if (config.omit === true || config.omit?.includes('read')) {
@@ -310,12 +310,12 @@ describe(`Public schema`, () => {
             }
           });
 
-          test(`adminMeta - not build mode ${JSON.stringify(config)} on ${listName}`, async () => {
+          test(`adminMeta - not build mode ${JSON.stringify(config)} on ${modelName}`, async () => {
             const query = `
-              query q($listName: String!) {
+              query q($modelName: String!) {
                 keystone {
                   adminMeta {
-                    list(key: $listName) {
+                    model(key: $modelName) {
                       key
                       fields {
                         path
@@ -327,14 +327,14 @@ describe(`Public schema`, () => {
                   }
                 }
               }`;
-            const variables = { listName };
+            const variables = { modelName };
 
             const { data, errors } = await context
               .withSession({})
               .graphql.raw({ query, variables });
             expect(errors).toBe(undefined);
 
-            const field = data!.keystone.adminMeta.list.fields.filter(
+            const field = data!.keystone.adminMeta.model.fields.filter(
               (f: any) => f.path === getFieldName(config)
             )[0];
 
@@ -412,7 +412,7 @@ describe(`Sudo schema`, () => {
     listConfigVariables.forEach(config => {
       test(JSON.stringify(config), async () => {
         const name = getListName(config);
-        const gqlNames = getGqlNames({ listKey: name, pluralGraphQLName: `${name}s` });
+        const gqlNames = getGqlNames({ modelKey: name, pluralGraphQLName: `${name}s` });
         expect(types).toContain(gqlNames.outputTypeName);
         expect(types).toContain(gqlNames.whereUniqueInputName);
         expect(types).toContain(gqlNames.relateToManyForCreateInputName);

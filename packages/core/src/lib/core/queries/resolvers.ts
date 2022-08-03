@@ -10,7 +10,7 @@ import {
   InputFilter,
 } from '../where-inputs';
 import { limitsExceededError, userInputError } from '../graphql-errors';
-import { InitialisedList } from '../types-for-lists';
+import { InitialisedModel } from '../types-for-lists';
 import { getDBFieldKeyForFieldOnMultiField, runWithPrisma } from '../utils';
 import { checkFilterOrderAccess } from '../filter-order-access';
 
@@ -25,45 +25,45 @@ export function mapUniqueWhereToWhere(uniqueWhere: UniquePrismaFilter): PrismaFi
 }
 
 function traverseQuery(
-  list: InitialisedList,
+  model: InitialisedModel,
   context: KeystoneContext,
   inputFilter: InputFilter,
-  filterFields: Record<string, { fieldKey: string; list: InitialisedList }>
+  filterFields: Record<string, { fieldKey: string; model: InitialisedModel }>
 ) {
   // Recursively traverse a where filter to find all the fields which are being
   // filtered on.
   Object.entries(inputFilter).forEach(([fieldKey, value]) => {
     if (fieldKey === 'OR' || fieldKey === 'AND' || fieldKey === 'NOT') {
       value.forEach((value: any) => {
-        traverseQuery(list, context, value, filterFields);
+        traverseQuery(model, context, value, filterFields);
       });
     } else if (fieldKey === 'some' || fieldKey === 'none' || fieldKey === 'every') {
-      traverseQuery(list, context, value, filterFields);
+      traverseQuery(model, context, value, filterFields);
     } else {
-      filterFields[`${list.listKey}.${fieldKey}`] = { fieldKey, list };
+      filterFields[`${model.modelKey}.${fieldKey}`] = { fieldKey, model };
       // If it's a relationship, check the nested filters.
-      const field = list.fields[fieldKey];
+      const field = model.fields[fieldKey];
       if (field.dbField.kind === 'relation' && value !== null) {
         const foreignList = field.dbField.list;
-        traverseQuery(list.lists[foreignList], context, value, filterFields);
+        traverseQuery(model.models[foreignList], context, value, filterFields);
       }
     }
   });
 }
 
 export async function checkFilterAccess(
-  list: InitialisedList,
+  model: InitialisedModel,
   context: KeystoneContext,
   inputFilter: InputFilter
 ) {
   if (!inputFilter) return;
-  const filterFields: Record<string, { fieldKey: string; list: InitialisedList }> = {};
-  traverseQuery(list, context, inputFilter, filterFields);
+  const filterFields: Record<string, { fieldKey: string; model: InitialisedModel }> = {};
+  traverseQuery(model, context, inputFilter, filterFields);
   await checkFilterOrderAccess(Object.values(filterFields), context, 'filter');
 }
 
 export async function accessControlledFilter(
-  list: InitialisedList,
+  list: InitialisedModel,
   context: KeystoneContext,
   resolvedWhere: PrismaFilter,
   accessFilters: boolean | InputFilter
@@ -78,37 +78,37 @@ export async function accessControlledFilter(
 
 export async function findOne(
   args: { where: UniqueInputFilter },
-  list: InitialisedList,
+  model: InitialisedModel,
   context: KeystoneContext
 ) {
   // Check operation permission to pass into single operation
-  const operationAccess = await getOperationAccess(list, context, 'query');
+  const operationAccess = await getOperationAccess(model, context, 'query');
   if (!operationAccess) {
     return null;
   }
 
-  const accessFilters = await getAccessFilters(list, context, 'query');
+  const accessFilters = await getAccessFilters(model, context, 'query');
   if (accessFilters === false) {
     return null;
   }
 
   // Validate and resolve the input filter
-  const uniqueWhere = await resolveUniqueWhereInput(args.where, list.fields, context);
+  const uniqueWhere = await resolveUniqueWhereInput(args.where, model.fields, context);
   const resolvedWhere = mapUniqueWhereToWhere(uniqueWhere);
 
   // Check filter access
   const fieldKey = Object.keys(args.where)[0];
-  await checkFilterOrderAccess([{ fieldKey, list }], context, 'filter');
+  await checkFilterOrderAccess([{ fieldKey, model: model }], context, 'filter');
 
   // Apply access control
-  const filter = await accessControlledFilter(list, context, resolvedWhere, accessFilters);
+  const filter = await accessControlledFilter(model, context, resolvedWhere, accessFilters);
 
-  return runWithPrisma(context, list, model => model.findFirst({ where: filter }));
+  return runWithPrisma(context, model, model => model.findFirst({ where: filter }));
 }
 
 export async function findMany(
   { where, take, skip, orderBy: rawOrderBy }: FindManyArgsValue,
-  list: InitialisedList,
+  list: InitialisedModel,
   context: KeystoneContext,
   info: GraphQLResolveInfo,
   extraFilter?: PrismaFilter
@@ -156,7 +156,7 @@ export async function findMany(
 
 async function resolveOrderBy(
   orderBy: readonly Record<string, any>[],
-  list: InitialisedList,
+  model: InitialisedModel,
   context: KeystoneContext
 ): Promise<readonly Record<string, OrderDirection>[]> {
   // Check input format. FIXME: Group all errors
@@ -164,7 +164,7 @@ async function resolveOrderBy(
     const keys = Object.keys(orderBySelection);
     if (keys.length !== 1) {
       throw userInputError(
-        `Only a single key must be passed to ${list.types.orderBy.graphQLType.name}`
+        `Only a single key must be passed to ${model.types.orderBy.graphQLType.name}`
       );
     }
 
@@ -178,7 +178,7 @@ async function resolveOrderBy(
   // Check orderBy access
   const orderByKeys = orderBy.map(orderBySelection => ({
     fieldKey: Object.keys(orderBySelection)[0],
-    list,
+    model,
   }));
   await checkFilterOrderAccess(orderByKeys, context, 'orderBy');
 
@@ -187,7 +187,7 @@ async function resolveOrderBy(
       const keys = Object.keys(orderBySelection);
       const fieldKey = keys[0];
       const value = orderBySelection[fieldKey];
-      const field = list.fields[fieldKey];
+      const field = model.fields[fieldKey];
       const resolve = field.input!.orderBy!.resolve;
       const resolvedValue = resolve ? await resolve(value, context) : value;
       if (field.dbField.kind === 'multi') {
@@ -212,7 +212,7 @@ async function resolveOrderBy(
 
 export async function count(
   { where }: { where: Record<string, any> },
-  list: InitialisedList,
+  list: InitialisedModel,
   context: KeystoneContext,
   info: GraphQLResolveInfo,
   extraFilter?: PrismaFilter
@@ -252,7 +252,7 @@ export async function count(
   return count;
 }
 
-function applyEarlyMaxResults(_take: number | null | undefined, list: InitialisedList) {
+function applyEarlyMaxResults(_take: number | null | undefined, list: InitialisedModel) {
   const take = Math.abs(_take ?? Infinity);
   // We want to help devs by failing fast and noisily if limits are violated.
   // Unfortunately, we can't always be sure of intent.
@@ -262,19 +262,27 @@ function applyEarlyMaxResults(_take: number | null | undefined, list: Initialise
   // * The query explicitly has a "take" that exceeds the limit
   // * The query has no "take", and has more results than the limit
   if (take < Infinity && take > list.maxResults) {
-    throw limitsExceededError({ list: list.listKey, type: 'maxResults', limit: list.maxResults });
+    throw limitsExceededError({
+      model: list.modelKey,
+      type: 'maxResults',
+      limit: list.maxResults,
+    });
   }
 }
 
-function applyMaxResults(results: unknown[], list: InitialisedList, context: KeystoneContext) {
+function applyMaxResults(results: unknown[], list: InitialisedModel, context: KeystoneContext) {
   if (results.length > list.maxResults) {
-    throw limitsExceededError({ list: list.listKey, type: 'maxResults', limit: list.maxResults });
+    throw limitsExceededError({
+      model: list.modelKey,
+      type: 'maxResults',
+      limit: list.maxResults,
+    });
   }
   if (context) {
     context.totalResults += results.length;
     if (context.totalResults > context.maxTotalResults) {
       throw limitsExceededError({
-        list: list.listKey,
+        model: list.modelKey,
         type: 'maxTotalResults',
         limit: context.maxTotalResults,
       });

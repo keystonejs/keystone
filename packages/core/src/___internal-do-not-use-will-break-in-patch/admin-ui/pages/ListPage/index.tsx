@@ -45,7 +45,7 @@ let listMetaGraphqlQuery: TypedDocumentNode<
   {
     keystone: {
       adminMeta: {
-        list: {
+        model: {
           hideCreate: boolean;
           hideDelete: boolean;
           fields: FetchedFieldMeta[];
@@ -58,7 +58,7 @@ let listMetaGraphqlQuery: TypedDocumentNode<
   query ($listKey: String!) {
     keystone {
       adminMeta {
-        list(key: $listKey) {
+        model(key: $listKey) {
           hideDelete
           hideCreate
           fields {
@@ -147,7 +147,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
     const listViewFieldModesByField: Record<string, 'read' | 'hidden'> = {};
     const orderableFields = new Set<string>();
     const filterableFields = new Set<string>();
-    for (const field of metaQuery.data?.keystone.adminMeta.list?.fields || []) {
+    for (const field of metaQuery.data?.keystone.adminMeta.model?.fields || []) {
       listViewFieldModesByField[field.path] = field.listView.fieldMode;
       if (field.isOrderable) {
         orderableFields.add(field.path);
@@ -158,7 +158,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
     }
 
     return { listViewFieldModesByField, orderableFields, filterableFields };
-  }, [metaQuery.data?.keystone.adminMeta.list?.fields]);
+  }, [metaQuery.data?.keystone.adminMeta.model?.fields]);
 
   const sort = useSort(list, orderableFields);
 
@@ -238,7 +238,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
   }
 
   const theme = useTheme();
-  const showCreate = !(metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true) || null;
+  const showCreate = !(metaQuery.data?.keystone.adminMeta.model?.hideCreate ?? true) || null;
 
   return (
     <PageContainer header={<ListPageHeader listKey={listKey} />} title={list.label}>
@@ -274,7 +274,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
                         <span css={{ marginRight: theme.spacing.small }}>
                           Selected {selectedItemsCount} of {data.items.length}
                         </span>
-                        {!(metaQuery.data?.keystone.adminMeta.list?.hideDelete ?? true) && (
+                        {!(metaQuery.data?.keystone.adminMeta.model?.hideDelete ?? true) && (
                           <DeleteManyButton
                             list={list}
                             selectedItems={selectedItems}

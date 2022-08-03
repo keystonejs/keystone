@@ -107,8 +107,8 @@ export type KeystoneAdminUISortDirection =
   | "DESC";
 
 
-export declare namespace Lists {
-  export type Todo = import('@keystone-6/core').ListConfig<Lists.Todo.TypeInfo, any>;
+export declare namespace Models {
+  export type Todo = import('@keystone-6/core').ModelConfig<Models.Todo.TypeInfo, any>;
   namespace Todo {
     export type Item = import('.prisma/client').Todo;
     export type TypeInfo = {
@@ -133,17 +133,17 @@ export declare namespace Lists {
 export type Context = import('@keystone-6/core/types').KeystoneContext<TypeInfo>;
 
 export type TypeInfo = {
-  lists: {
-  readonly Todo: Lists.Todo.TypeInfo;
+  models: {
+  readonly Todo: Models.Todo.TypeInfo;
   };
   prisma: import('.prisma/client').PrismaClient;
 };
 
 type __TypeInfo = TypeInfo;
 
-export type Lists = {
-  [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core').ListConfig<TypeInfo['lists'][Key], any>
-} & Record<string, import('@keystone-6/core').ListConfig<any, any>>;
+export type Models = {
+  [Key in keyof TypeInfo['models']]?: import('@keystone-6/core').ModelConfig<TypeInfo['models'][Key], any>
+} & Record<string, import('@keystone-6/core').ModelConfig<any, any>>;
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/types.js ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 

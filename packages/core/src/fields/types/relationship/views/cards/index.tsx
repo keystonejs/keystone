@@ -18,7 +18,7 @@ import { Button } from '@keystone-ui/button';
 import { Tooltip } from '@keystone-ui/tooltip';
 import { LoadingDots } from '@keystone-ui/loading';
 import { useEffect, useRef, useState } from 'react';
-import { FieldProps, ListMeta } from '../../../../../types';
+import { FieldProps, ListMeta, ModelMeta } from '../../../../../types';
 import {
   getRootGraphQLFieldsFromFieldController,
   makeDataGetter,
@@ -65,7 +65,7 @@ const CardContainer = forwardRefWithAs(({ mode = 'view', ...props }: CardContain
 });
 
 export function Cards({
-  localList,
+  localModel,
   field,
   foreignList,
   id,
@@ -74,7 +74,7 @@ export function Cards({
   forceValidation,
 }: {
   foreignList: ListMeta;
-  localList: ListMeta;
+  localModel: ModelMeta;
   id: string | null;
   value: { kind: 'cards-view' };
 } & FieldProps<typeof controller>) {
@@ -102,7 +102,7 @@ export function Cards({
     state: itemsState,
   } = useItemState({
     selectedFields,
-    localList,
+    localModel,
     id,
     field,
   });
@@ -421,7 +421,7 @@ export function Cards({
       {forceValidation && (
         <Text color="red600" size="small">
           You must finish creating and editing any related {foreignList.label.toLowerCase()} before
-          saving the {localList.singular.toLowerCase()}
+          saving the {localModel.singular.toLowerCase()}
         </Text>
       )}
     </Stack>

@@ -1,8 +1,8 @@
 import { GraphQLSchema } from 'graphql';
 import {
-  BaseListTypeInfo,
+  BaseModelTypeInfo,
   KeystoneDbAPI,
-  KeystoneListsAPI,
+  KeystoneQueryAPI,
   KeystoneContext,
   GqlNames,
 } from '../../types';
@@ -18,7 +18,7 @@ const objectEntriesButUsingKeyof: <T extends Record<string, any>>(
 export function getDbAPIFactory(
   gqlNames: GqlNames,
   schema: GraphQLSchema
-): (context: KeystoneContext) => KeystoneDbAPI<Record<string, BaseListTypeInfo>>[string] {
+): (context: KeystoneContext) => KeystoneDbAPI<Record<string, BaseModelTypeInfo>>[string] {
   const f = (operation: 'query' | 'mutation', fieldName: string) => {
     const rootType = operation === 'mutation' ? schema.getMutationType()! : schema.getQueryType()!;
     const field = rootType.getFields()[fieldName];
@@ -52,10 +52,10 @@ export function getDbAPIFactory(
     ) as Record<keyof typeof api, any>;
 }
 
-export function itemAPIForList(
-  listKey: string,
+export function itemAPIForModel(
+  modelKey: string,
   context: KeystoneContext
-): KeystoneListsAPI<Record<string, BaseListTypeInfo>>[string] {
+): KeystoneQueryAPI<Record<string, BaseModelTypeInfo>>[string] {
   const f = (operation: 'query' | 'mutation', field: string) => {
     const exec = executeGraphQLFieldWithSelection(context.graphql.schema, operation, field);
     return ({ query, ...args }: { query?: string } & Record<string, any> = {}) => {
@@ -63,13 +63,14 @@ export function itemAPIForList(
       return exec(args, returnFields, context);
     };
   };
-  const gqlNames = context.gqlNames(listKey);
+  const gqlNames = context.gqlNames(modelKey);
   return {
     findOne: f('query', gqlNames.itemQueryName),
     findMany: f('query', gqlNames.listQueryName),
     async count({ where = {} } = {}) {
-      const { listQueryCountName, whereInputName } = context.gqlNames(listKey);
-      const query = `query ($where: ${whereInputName}!) { count: ${listQueryCountName}(where: $where)  }`;
+      const { listQueryCountName: modelQueryCountName, whereInputName } =
+        context.gqlNames(modelKey);
+      const query = `query ($where: ${whereInputName}!) { count: ${modelQueryCountName}(where: $where)  }`;
       const response = await context.graphql.run({ query, variables: { where } });
       return response.count;
     },

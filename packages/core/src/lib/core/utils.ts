@@ -4,7 +4,7 @@ import { PrismaModule } from '../../artifacts';
 import { BaseItem, KeystoneConfig, KeystoneContext } from '../../types';
 import { humanize } from '../utils';
 import { prismaError } from './graphql-errors';
-import { InitialisedList } from './types-for-lists';
+import { InitialisedModel } from './types-for-lists';
 import { PrismaFilter, UniquePrismaFilter } from './where-inputs';
 
 declare const prisma: unique symbol;
@@ -77,10 +77,10 @@ export type PrismaClient = {
 // Run prisma operations as part of a resolver
 export async function runWithPrisma<T>(
   context: KeystoneContext,
-  { listKey }: InitialisedList,
+  { modelKey: modelKey }: InitialisedModel,
   fn: (model: PrismaModel) => Promise<T>
 ) {
-  const model = context.prisma[listKey[0].toLowerCase() + listKey.slice(1)];
+  const model = context.prisma[modelKey[0].toLowerCase() + modelKey.slice(1)];
   try {
     return await fn(model);
   } catch (err: any) {
@@ -120,18 +120,18 @@ export async function promiseAllRejectWithAllErrors<T extends unknown[]>(
   return results.map((x: any) => x.value) as any;
 }
 
-export function getNamesFromList(
-  listKey: string,
-  { graphql, ui }: KeystoneConfig['lists'][string]
+export function getNamesFromModel(
+  modelKey: string,
+  { graphql, ui }: KeystoneConfig['models'][string]
 ) {
-  const computedSingular = humanize(listKey);
+  const computedSingular = humanize(modelKey);
   const computedPlural = pluralize.plural(computedSingular);
 
   const path = ui?.path || labelToPath(computedPlural);
 
   if (ui?.path !== undefined && !/^[a-z-_][a-z0-9-_]*$/.test(ui.path)) {
     throw new Error(
-      `ui.path for ${listKey} is ${ui.path} but it must only contain lowercase letters, numbers, dashes, and underscores and not start with a number`
+      `ui.path for ${modelKey} is ${ui.path} but it must only contain lowercase letters, numbers, dashes, and underscores and not start with a number`
     );
   }
 
@@ -143,9 +143,9 @@ export function getNamesFromList(
   };
 
   const pluralGraphQLName = graphql?.plural || labelToClass(computedPlural);
-  if (pluralGraphQLName === listKey) {
+  if (pluralGraphQLName === modelKey) {
     throw new Error(
-      `The list key and the plural name used in GraphQL must be different but the list key ${listKey} is the same as the plural GraphQL name, please specify graphql.plural`
+      `The model key and the plural name used in GraphQL must be different but the model key ${modelKey} is the same as the plural GraphQL name, please specify graphql.plural`
     );
   }
   return { pluralGraphQLName, adminUILabels };

@@ -255,14 +255,13 @@ type KeystoneMeta {
 type KeystoneAdminMeta {
   enableSignout: Boolean!
   enableSessionItem: Boolean!
-  lists: [KeystoneAdminUIListMeta!]!
-  list(key: String!): KeystoneAdminUIListMeta
+  models: [KeystoneAdminUIModelMeta!]!
+  model(key: String!): KeystoneAdminUIModelMeta
 }
 
-type KeystoneAdminUIListMeta {
+type KeystoneAdminUIModelMeta {
   key: String!
-  itemQueryName: String!
-  listQueryName: String!
+  graphqlPlural: String!
   hideCreate: Boolean!
   hideDelete: Boolean!
   path: String!

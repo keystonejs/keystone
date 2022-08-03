@@ -1,9 +1,9 @@
 import { KeystoneContext } from '../../types';
 import { accessReturnError, extensionError, filterAccessError } from './graphql-errors';
-import { InitialisedList } from './types-for-lists';
+import { InitialisedModel } from './types-for-lists';
 
 export async function checkFilterOrderAccess(
-  things: { fieldKey: string; list: InitialisedList }[],
+  things: { fieldKey: string; model: InitialisedModel }[],
   context: KeystoneContext,
   operation: 'filter' | 'orderBy'
 ) {
@@ -11,7 +11,7 @@ export async function checkFilterOrderAccess(
   const failures: string[] = [];
   const returnTypeErrors: any[] = [];
   const accessErrors: any[] = [];
-  for (const { fieldKey, list } of things) {
+  for (const { fieldKey, model: list } of things) {
     const field = list.fields[fieldKey];
     const rule = field.graphql.isEnabled[operation];
     // Check isOrderable
@@ -22,9 +22,14 @@ export async function checkFilterOrderAccess(
       // Apply dynamic rules
       let result;
       try {
-        result = await rule({ context, session: context.session, listKey: list.listKey, fieldKey });
+        result = await rule({
+          context,
+          session: context.session,
+          modelKey: list.modelKey,
+          fieldKey,
+        });
       } catch (error: any) {
-        accessErrors.push({ error, tag: `${list.listKey}.${fieldKey}.${func}` });
+        accessErrors.push({ error, tag: `${list.modelKey}.${fieldKey}.${func}` });
         continue;
       }
       const resultType = typeof result;
@@ -32,9 +37,12 @@ export async function checkFilterOrderAccess(
       // It's important that we don't cast objects to truthy values, as there's a strong chance that the user
       // has made a mistake.
       if (resultType !== 'boolean') {
-        returnTypeErrors.push({ tag: `${list.listKey}.${fieldKey}.${func}`, returned: resultType });
+        returnTypeErrors.push({
+          tag: `${list.modelKey}.${fieldKey}.${func}`,
+          returned: resultType,
+        });
       } else if (!result) {
-        failures.push(`${list.listKey}.${fieldKey}`);
+        failures.push(`${list.modelKey}.${fieldKey}`);
       }
     }
   }

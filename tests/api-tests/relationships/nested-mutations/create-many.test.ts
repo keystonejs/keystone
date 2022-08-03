@@ -10,7 +10,7 @@ type IdType = any;
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: {
+    models: {
       Note: list({
         fields: {
           content: text(),
@@ -58,7 +58,7 @@ let afterOperationWasCalled = false;
 
 const runner2 = setupTestRunner({
   config: apiTestConfig({
-    lists: {
+    models: {
       Note: list({
         fields: {
           content: text(),
@@ -299,7 +299,7 @@ describe('with access control', () => {
         // Assert it throws an access denied error
         expect(data).toEqual({ createUserToNotesNoCreate: null });
         const message =
-          "Access denied: You cannot perform the 'create' operation on the list 'NoteNoCreate'.";
+          "Access denied: You cannot perform the 'create' operation on the model 'NoteNoCreate'.";
         expectSingleRelationshipError(
           errors,
           'createUserToNotesNoCreate',
@@ -348,7 +348,7 @@ describe('with access control', () => {
         // Assert it throws an access denied error
         expect(data).toEqual({ updateUserToNotesNoCreate: null });
         const message =
-          "Access denied: You cannot perform the 'create' operation on the list 'NoteNoCreate'.";
+          "Access denied: You cannot perform the 'create' operation on the model 'NoteNoCreate'.";
         expectSingleRelationshipError(
           errors,
           'updateUserToNotesNoCreate',

@@ -3,7 +3,7 @@ import { BaseItem } from './next-fields';
 
 type GraphQLInput = Record<string, any>;
 
-export type BaseListTypeInfo = {
+type CommonBaseModelTypeInfo = {
   key: string;
   fields: string;
   item: BaseItem;
@@ -11,8 +11,6 @@ export type BaseListTypeInfo = {
     create: GraphQLInput;
     update: GraphQLInput;
     where: GraphQLInput;
-    uniqueWhere: { readonly id?: string | null } & GraphQLInput;
-    orderBy: Record<string, 'asc' | 'desc' | null>;
   };
   /**
    * WARNING: may be renamed in patch
@@ -24,7 +22,21 @@ export type BaseListTypeInfo = {
   all: BaseKeystoneTypeInfo;
 };
 
-export type KeystoneContextFromListTypeInfo<ListTypeInfo extends BaseListTypeInfo> =
-  KeystoneContext<ListTypeInfo['all']>;
+export type BaseListTypeInfo = CommonBaseModelTypeInfo & {
+  inputs: {
+    uniqueWhere: { readonly id?: string | null } & GraphQLInput;
+    orderBy: Record<string, 'asc' | 'desc' | null>;
+  };
+};
 
-export type BaseKeystoneTypeInfo = { lists: Record<string, BaseListTypeInfo>; prisma: any };
+export type BaseSingletonTypeInfo = CommonBaseModelTypeInfo;
+
+export type BaseModelTypeInfo = BaseListTypeInfo | BaseSingletonTypeInfo;
+
+export type KeystoneContextFromModelTypeInfo<ModelTypeInfo extends BaseModelTypeInfo> =
+  KeystoneContext<ModelTypeInfo['all']>;
+
+export type BaseKeystoneTypeInfo = {
+  models: Record<string, BaseModelTypeInfo>;
+  prisma: any;
+};

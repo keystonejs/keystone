@@ -132,10 +132,8 @@ function ItemForm({
           });
         } else {
           toasts.addToast({
-            // title: data.item[list.labelField] || data.item.id,
             tone: 'positive',
             title: 'Saved successfully',
-            // message: 'Saved successfully',
           });
         }
       })
@@ -294,7 +292,7 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
           }
           keystone {
             adminMeta {
-              list(key: $listKey) {
+              model(key: $listKey) {
                 hideCreate
                 hideDelete
                 fields {
@@ -322,7 +320,9 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
       item: ItemData;
       keystone: {
         adminMeta: {
-          list: { fields: { path: string; itemView: { fieldMode: 'edit' | 'read' | 'hidden' } }[] };
+          model: {
+            fields: { path: string; itemView: { fieldMode: 'edit' | 'read' | 'hidden' } }[];
+          };
         };
       };
     }>
@@ -330,13 +330,13 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
 
   let itemViewFieldModesByField = useMemo(() => {
     let itemViewFieldModesByField: Record<string, 'edit' | 'read' | 'hidden'> = {};
-    dataGetter.data?.keystone?.adminMeta?.list?.fields?.forEach(field => {
+    dataGetter.data?.keystone?.adminMeta?.model?.fields?.forEach(field => {
       if (field !== null && field.path !== null && field?.itemView?.fieldMode != null) {
         itemViewFieldModesByField[field.path] = field.itemView.fieldMode;
       }
     });
     return itemViewFieldModesByField;
-  }, [dataGetter.data?.keystone?.adminMeta?.list?.fields]);
+  }, [dataGetter.data?.keystone?.adminMeta?.model?.fields]);
 
   const metaQueryErrors = dataGetter.get('keystone').errors;
 
@@ -386,7 +386,7 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
               <ItemForm
                 fieldModes={itemViewFieldModesByField}
                 selectedFields={selectedFields}
-                showDelete={!data.keystone.adminMeta.list!.hideDelete}
+                showDelete={!data.keystone.adminMeta.model!.hideDelete}
                 listKey={listKey}
                 itemGetter={dataGetter.get('item') as DataGetter<ItemData>}
               />

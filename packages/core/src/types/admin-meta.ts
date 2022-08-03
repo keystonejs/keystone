@@ -4,7 +4,7 @@ import { GqlNames, JSONValue } from './utils';
 
 export type NavigationProps = {
   authenticatedItem: AuthenticatedItem;
-  lists: ListMeta[];
+  models: ModelMeta[];
 };
 
 export type AuthenticatedItem =
@@ -13,13 +13,13 @@ export type AuthenticatedItem =
   | { state: 'loading' }
   | { state: 'error'; error: Error | readonly [GraphQLError, ...GraphQLError[]] };
 
-export type VisibleLists =
-  | { state: 'loaded'; lists: ReadonlySet<string> }
+export type VisibleModels =
+  | { state: 'loaded'; models: ReadonlySet<string> }
   | { state: 'loading' }
   | { state: 'error'; error: Error | readonly [GraphQLError, ...GraphQLError[]] };
 
 export type CreateViewFieldModes =
-  | { state: 'loaded'; lists: Record<string, Record<string, 'edit' | 'hidden'>> }
+  | { state: 'loaded'; models: Record<string, Record<string, 'edit' | 'hidden'>> }
   | { state: 'loading' }
   | { state: 'error'; error: Error | readonly [GraphQLError, ...GraphQLError[]] };
 
@@ -31,7 +31,7 @@ export type AdminConfig = {
 };
 
 export type FieldControllerConfig<FieldMeta extends JSONValue | undefined = undefined> = {
-  listKey: string;
+  modelKey: string;
   path: string;
   label: string;
   description: string | null;
@@ -91,7 +91,7 @@ export type FieldMeta = {
   };
 };
 
-export type ListMeta = {
+export type ModelMeta = {
   key: string;
   path: string;
   label: string;
@@ -109,7 +109,7 @@ export type ListMeta = {
 export type AdminMeta = {
   enableSignout: boolean;
   enableSessionItem: boolean;
-  lists: { [list: string]: ListMeta };
+  models: { [modelKey: string]: ModelMeta };
 };
 
 export type FieldProps<FieldControllerFn extends (...args: any) => FieldController<any, any>> = {
@@ -165,30 +165,41 @@ export type FieldMetaRootVal = {
   fieldMeta: JSONValue | null;
   viewsIndex: number;
   customViewsIndex: number | null;
-  listKey: string;
+  modelKey: string;
   search: 'default' | 'insensitive' | null;
 };
 
-export type ListMetaRootVal = {
+export type { ModelMeta as ListMeta };
+
+export type CommonModelMetaRootVal = {
   key: string;
   path: string;
   label: string;
   singular: string;
+  description: string | null;
+  fields: Array<FieldMetaRootVal>;
+};
+
+export type ListMetaRootVal = CommonModelMetaRootVal & {
   plural: string;
   initialColumns: string[];
   pageSize: number;
   labelField: string;
   initialSort: { field: string; direction: 'ASC' | 'DESC' } | null;
-  fields: Array<FieldMetaRootVal>;
-  itemQueryName: string;
-  listQueryName: string;
-  description: string | null;
+  graphqlPlural: string;
+  kind: 'list';
 };
+
+export type SingletonMetaRootVal = CommonModelMetaRootVal & {
+  kind: 'singleton';
+};
+
+export type ModelMetaRootVal = ListMetaRootVal | SingletonMetaRootVal;
 
 export type AdminMetaRootVal = {
   enableSignout: boolean;
   enableSessionItem: boolean;
-  lists: Array<ListMetaRootVal>;
-  listsByKey: Record<string, ListMetaRootVal>;
+  models: Array<ModelMetaRootVal>;
+  modelByKey: Record<string, ModelMetaRootVal>;
   views: string[];
 };

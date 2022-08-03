@@ -1,19 +1,19 @@
 import inflection from 'inflection';
 import { humanize } from '../../../lib/utils';
 import {
-  BaseListTypeInfo,
   FieldTypeFunc,
   CommonFieldConfig,
   FieldData,
   jsonFieldTypePolyfilledForSQLite,
+  BaseModelTypeInfo,
 } from '../../../types';
 import { graphql } from '../../..';
 import { assertCreateIsNonNullAllowed, assertReadIsNonNullAllowed } from '../../non-null-graphql';
 import { resolveView } from '../../resolve-view';
 import { userInputError } from '../../../lib/core/graphql-errors';
 
-export type MultiselectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> &
+export type MultiselectFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> =
+  CommonFieldConfig<ModelTypeInfo> &
     (
       | {
           /**
@@ -51,11 +51,11 @@ const MAX_INT = 2147483647;
 const MIN_INT = -2147483648;
 
 export const multiselect =
-  <ListTypeInfo extends BaseListTypeInfo>({
+  <ModelTypeInfo extends BaseModelTypeInfo>({
     ui,
     defaultValue = [],
     ...config
-  }: MultiselectFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> =>
+  }: MultiselectFieldConfig<ModelTypeInfo>): FieldTypeFunc<ModelTypeInfo> =>
   meta => {
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type multiselect");
@@ -100,7 +100,7 @@ export const multiselect =
     const possibleValues = new Set(transformedConfig.options.map(x => x.value));
     if (possibleValues.size !== transformedConfig.options.length) {
       throw new Error(
-        `The multiselect field at ${meta.listKey}.${meta.fieldKey} has duplicate options, this is not allowed`
+        `The multiselect field at ${meta.modelKey}.${meta.fieldKey} has duplicate options, this is not allowed`
       );
     }
 
@@ -157,7 +157,7 @@ export const multiselect =
   };
 
 function configToOptionsAndGraphQLType(
-  config: MultiselectFieldConfig<BaseListTypeInfo>,
+  config: MultiselectFieldConfig<BaseModelTypeInfo>,
   meta: FieldData
 ) {
   if (config.type === 'integer') {
@@ -167,7 +167,7 @@ function configToOptionsAndGraphQLType(
       )
     ) {
       throw new Error(
-        `The multiselect field at ${meta.listKey}.${meta.fieldKey} specifies integer values that are outside the range of a 32 bit signed integer`
+        `The multiselect field at ${meta.modelKey}.${meta.fieldKey} specifies integer values that are outside the range of a 32 bit signed integer`
       );
     }
     return {
@@ -188,7 +188,7 @@ function configToOptionsAndGraphQLType(
   });
 
   if (config.type === 'enum') {
-    const enumName = `${meta.listKey}${inflection.classify(meta.fieldKey)}Type`;
+    const enumName = `${meta.modelKey}${inflection.classify(meta.fieldKey)}Type`;
     const graphqlType = graphql.enum({
       name: enumName,
       values: graphql.enumValues(options.map(x => x.value)),

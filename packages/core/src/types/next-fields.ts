@@ -1,6 +1,6 @@
 import Decimal from 'decimal.js';
 import { graphql } from '..';
-import { BaseListTypeInfo } from './type-info';
+import { BaseModelTypeInfo } from './type-info';
 import { CommonFieldConfig } from './config';
 import { DatabaseProvider } from './core';
 import { AdminMetaRootVal, JSONValue, KeystoneContext, MaybePromise, StorageConfig } from '.';
@@ -9,17 +9,17 @@ export { Decimal };
 
 export type BaseItem = { id: { toString(): string }; [key: string]: unknown };
 
-export type ListGraphQLTypes = { types: GraphQLTypesForList };
+export type ModelGraphQLTypes = { types: GraphQLTypesForModel };
 
 export type FieldData = {
-  lists: Record<string, ListGraphQLTypes>;
+  models: Record<string, ModelGraphQLTypes>;
   provider: DatabaseProvider;
   getStorage: (storage: string) => StorageConfig | undefined;
-  listKey: string;
+  modelKey: string;
   fieldKey: string;
 };
 
-export type FieldTypeFunc<ListTypeInfo extends BaseListTypeInfo> = (
+export type FieldTypeFunc<ModelTypeInfo extends BaseModelTypeInfo> = (
   data: FieldData
 ) => NextFieldType<
   DBField,
@@ -28,7 +28,7 @@ export type FieldTypeFunc<ListTypeInfo extends BaseListTypeInfo> = (
   graphql.Arg<graphql.NullableInputType, false>,
   graphql.Arg<graphql.NullableInputType, false>,
   graphql.Arg<graphql.NullableInputType, false>,
-  ListTypeInfo
+  ModelTypeInfo
 >;
 
 export type NextFieldType<
@@ -49,7 +49,7 @@ export type NextFieldType<
     graphql.NullableInputType,
     false
   >,
-  ListTypeInfo extends BaseListTypeInfo = BaseListTypeInfo
+  ModelTypeInfo extends BaseModelTypeInfo = BaseModelTypeInfo
 > = {
   dbField: TDBField;
 } & FieldTypeWithoutDBField<
@@ -59,7 +59,7 @@ export type NextFieldType<
   UniqueWhereArg,
   OrderByArg,
   FilterArg,
-  ListTypeInfo
+  ModelTypeInfo
 >;
 
 type ScalarPrismaTypes = {
@@ -375,7 +375,7 @@ export type FieldTypeWithoutDBField<
     graphql.NullableInputType,
     false
   >,
-  ListTypeInfo extends BaseListTypeInfo = BaseListTypeInfo
+  ModelTypeInfo extends BaseModelTypeInfo = BaseModelTypeInfo
 > = {
   input?: {
     uniqueWhere?: UniqueWhereFieldInputArg<DBFieldUniqueWhere<TDBField>, UniqueWhereArg>;
@@ -389,11 +389,11 @@ export type FieldTypeWithoutDBField<
   extraOutputFields?: Record<string, FieldTypeOutputField<TDBField>>;
   getAdminMeta?: (adminMeta: AdminMetaRootVal) => JSONValue;
   unreferencedConcreteInterfaceImplementations?: readonly graphql.ObjectType<any>[];
-} & CommonFieldConfig<ListTypeInfo>;
+} & CommonFieldConfig<ModelTypeInfo>;
 
 type AnyInputObj = graphql.InputObjectType<Record<string, graphql.Arg<graphql.InputType, any>>>;
 
-export type GraphQLTypesForList = {
+export type GraphQLTypesForModel = {
   update: AnyInputObj;
   create: AnyInputObj;
   uniqueWhere: AnyInputObj;
@@ -410,29 +410,31 @@ export type GraphQLTypesForList = {
       }>;
       create?: graphql.InputObjectType<{
         connect: graphql.Arg<
-          graphql.ListType<graphql.NonNullType<GraphQLTypesForList['uniqueWhere']>>
+          graphql.ListType<graphql.NonNullType<GraphQLTypesForModel['uniqueWhere']>>
         >;
-        create?: graphql.Arg<graphql.ListType<graphql.NonNullType<GraphQLTypesForList['create']>>>;
+        create?: graphql.Arg<graphql.ListType<graphql.NonNullType<GraphQLTypesForModel['create']>>>;
       }>;
       update?: graphql.InputObjectType<{
         disconnect: graphql.Arg<
-          graphql.ListType<graphql.NonNullType<GraphQLTypesForList['uniqueWhere']>>
+          graphql.ListType<graphql.NonNullType<GraphQLTypesForModel['uniqueWhere']>>
         >;
-        set: graphql.Arg<graphql.ListType<graphql.NonNullType<GraphQLTypesForList['uniqueWhere']>>>;
+        set: graphql.Arg<
+          graphql.ListType<graphql.NonNullType<GraphQLTypesForModel['uniqueWhere']>>
+        >;
         connect: graphql.Arg<
-          graphql.ListType<graphql.NonNullType<GraphQLTypesForList['uniqueWhere']>>
+          graphql.ListType<graphql.NonNullType<GraphQLTypesForModel['uniqueWhere']>>
         >;
-        create?: graphql.Arg<graphql.ListType<graphql.NonNullType<GraphQLTypesForList['create']>>>;
+        create?: graphql.Arg<graphql.ListType<graphql.NonNullType<GraphQLTypesForModel['create']>>>;
       }>;
     };
     one: {
       create?: graphql.InputObjectType<{
-        create?: graphql.Arg<GraphQLTypesForList['create']>;
-        connect: graphql.Arg<GraphQLTypesForList['uniqueWhere']>;
+        create?: graphql.Arg<GraphQLTypesForModel['create']>;
+        connect: graphql.Arg<GraphQLTypesForModel['uniqueWhere']>;
       }>;
       update?: graphql.InputObjectType<{
-        create?: graphql.Arg<GraphQLTypesForList['create']>;
-        connect: graphql.Arg<GraphQLTypesForList['uniqueWhere']>;
+        create?: graphql.Arg<GraphQLTypesForModel['create']>;
+        connect: graphql.Arg<GraphQLTypesForModel['uniqueWhere']>;
         disconnect: graphql.Arg<typeof graphql.Boolean>;
       }>;
     };
@@ -440,9 +442,9 @@ export type GraphQLTypesForList = {
 };
 
 export type FindManyArgs = {
-  where: graphql.Arg<graphql.NonNullType<GraphQLTypesForList['where']>, true>;
+  where: graphql.Arg<graphql.NonNullType<GraphQLTypesForModel['where']>, true>;
   orderBy: graphql.Arg<
-    graphql.NonNullType<graphql.ListType<graphql.NonNullType<GraphQLTypesForList['orderBy']>>>,
+    graphql.NonNullType<graphql.ListType<graphql.NonNullType<GraphQLTypesForModel['orderBy']>>>,
     true
   >;
   take: graphql.Arg<typeof graphql.Int>;
@@ -452,7 +454,7 @@ export type FindManyArgs = {
 export type FindManyArgsValue = graphql.InferValueFromArgs<FindManyArgs>;
 
 // fieldType(dbField)(fieldInfo) => { ...fieldInfo, dbField };
-export function fieldType<TDBField extends DBField, ListTypeInfo extends BaseListTypeInfo>(
+export function fieldType<TDBField extends DBField, ModelTypeInfo extends BaseModelTypeInfo>(
   dbField: TDBField
 ) {
   return function <
@@ -477,7 +479,7 @@ export function fieldType<TDBField extends DBField, ListTypeInfo extends BaseLis
     UniqueWhereArg,
     OrderByArg,
     FilterArg,
-    ListTypeInfo
+    ModelTypeInfo
   > {
     return { ...graphQLInfo, dbField };
   };

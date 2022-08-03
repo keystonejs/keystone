@@ -83,7 +83,9 @@ describe(`List access`, () => {
                   data,
                   errors,
                   createMutationName,
-                  `You cannot perform the 'create' operation on the list '${nameFn[mode](access)}'.`
+                  `You cannot perform the 'create' operation on the model '${nameFn[mode](
+                    access
+                  )}'.`
                 );
               } else {
                 expectNoAccess(
@@ -112,7 +114,9 @@ describe(`List access`, () => {
                   data,
                   errors,
                   createMutationName,
-                  `You cannot perform the 'create' operation on the list '${nameFn[mode](access)}'.`
+                  `You cannot perform the 'create' operation on the model '${nameFn[mode](
+                    access
+                  )}'.`
                 );
               } else {
                 expectNoAccessMany(
@@ -288,7 +292,7 @@ describe(`List access`, () => {
                 data,
                 errors,
                 updateMutationName,
-                `You cannot perform the 'update' operation on the list '${nameFn[mode](access)}'.`
+                `You cannot perform the 'update' operation on the model '${nameFn[mode](access)}'.`
               );
             }
           });
@@ -309,7 +313,9 @@ describe(`List access`, () => {
                   data,
                   errors,
                   updateMutationName,
-                  `You cannot perform the 'update' operation on the list '${nameFn[mode](access)}'.`
+                  `You cannot perform the 'update' operation on the model '${nameFn[mode](
+                    access
+                  )}'.`
                 );
               } else {
                 expectNoAccess(
@@ -337,7 +343,9 @@ describe(`List access`, () => {
                   data,
                   errors,
                   updateMutationName,
-                  `You cannot perform the 'update' operation on the list '${nameFn[mode](access)}'.`
+                  `You cannot perform the 'update' operation on the model '${nameFn[mode](
+                    access
+                  )}'.`
                 );
               } else {
                 expectNoAccessMany(
@@ -376,7 +384,7 @@ describe(`List access`, () => {
                 data,
                 errors,
                 updateMutationName,
-                `You cannot perform the 'update' operation on the list '${nameFn[mode](access)}'.`
+                `You cannot perform the 'update' operation on the model '${nameFn[mode](access)}'.`
               );
             } else {
               // Filtered out
@@ -396,7 +404,7 @@ describe(`List access`, () => {
                 result.data,
                 result.errors,
                 updateMutationName,
-                `You cannot perform the 'update' operation on the list '${nameFn[mode](access)}'.`
+                `You cannot perform the 'update' operation on the model '${nameFn[mode](access)}'.`
               );
             } else {
               // Filtered in
@@ -421,7 +429,7 @@ describe(`List access`, () => {
                 data,
                 errors,
                 updateMutationName,
-                `You cannot perform the 'update' operation on the list '${nameFn[mode](access)}'.`
+                `You cannot perform the 'update' operation on the model '${nameFn[mode](access)}'.`
               );
             } else {
               // Filtered out
@@ -441,7 +449,7 @@ describe(`List access`, () => {
                 result.data,
                 result.errors,
                 updateMutationName,
-                `You cannot perform the 'update' operation on the list '${nameFn[mode](access)}'.`
+                `You cannot perform the 'update' operation on the model '${nameFn[mode](access)}'.`
               );
             } else {
               // Filtered in
@@ -475,7 +483,7 @@ describe(`List access`, () => {
                 data,
                 errors,
                 deleteMutationName,
-                `You cannot perform the 'delete' operation on the list '${nameFn[mode](access)}'.`
+                `You cannot perform the 'delete' operation on the model '${nameFn[mode](access)}'.`
               );
             }
           });
@@ -498,13 +506,13 @@ describe(`List access`, () => {
               expectAccessDenied(errors, [
                 {
                   path: [multiDeleteMutationName, 0],
-                  msg: `You cannot perform the 'delete' operation on the list '${nameFn[mode](
+                  msg: `You cannot perform the 'delete' operation on the model '${nameFn[mode](
                     access
                   )}'.`,
                 },
                 {
                   path: [multiDeleteMutationName, 1],
-                  msg: `You cannot perform the 'delete' operation on the list '${nameFn[mode](
+                  msg: `You cannot perform the 'delete' operation on the model '${nameFn[mode](
                     access
                   )}'.`,
                 },
@@ -532,7 +540,9 @@ describe(`List access`, () => {
                   data,
                   errors,
                   deleteMutationName,
-                  `You cannot perform the 'delete' operation on the list '${nameFn[mode](access)}'.`
+                  `You cannot perform the 'delete' operation on the model '${nameFn[mode](
+                    access
+                  )}'.`
                 );
               } else {
                 expectNoAccess(
@@ -566,7 +576,9 @@ describe(`List access`, () => {
                   data,
                   errors,
                   multiDeleteMutationName,
-                  `You cannot perform the 'delete' operation on the list '${nameFn[mode](access)}'.`
+                  `You cannot perform the 'delete' operation on the model '${nameFn[mode](
+                    access
+                  )}'.`
                 );
               } else {
                 expectNoAccessMany(
@@ -609,7 +621,7 @@ describe(`List access`, () => {
                 data,
                 errors,
                 deleteMutationName,
-                `You cannot perform the 'delete' operation on the list '${nameFn[mode](access)}'.`
+                `You cannot perform the 'delete' operation on the model '${nameFn[mode](access)}'.`
               );
             } else {
               // Filtered out
@@ -634,7 +646,7 @@ describe(`List access`, () => {
                 result.data,
                 result.errors,
                 deleteMutationName,
-                `You cannot perform the 'delete' operation on the list '${nameFn[mode](access)}'.`
+                `You cannot perform the 'delete' operation on the model '${nameFn[mode](access)}'.`
               );
             } else {
               // Filtered in
@@ -665,7 +677,7 @@ describe(`List access`, () => {
                 data,
                 errors,
                 multiDeleteMutationName,
-                `You cannot perform the 'delete' operation on the list '${nameFn[mode](access)}'.`
+                `You cannot perform the 'delete' operation on the model '${nameFn[mode](access)}'.`
               );
             } else {
               // Filtered out
@@ -689,7 +701,7 @@ describe(`List access`, () => {
                 result.data,
                 result.errors,
                 multiDeleteMutationName,
-                `You cannot perform the 'delete' operation on the list '${nameFn[mode](access)}'.`
+                `You cannot perform the 'delete' operation on the model '${nameFn[mode](access)}'.`
               );
             } else {
               // Filtered in

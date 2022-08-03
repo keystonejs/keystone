@@ -27,7 +27,7 @@ import { getAdminPath, getConfigPath } from '../utils';
 import { createSessionContext } from '../../session';
 import { AdminMetaRootVal, CreateContext, KeystoneConfig } from '../../types';
 import { serializePathForImport } from '../../admin-ui/utils/serializePathForImport';
-import { initialiseLists } from '../../lib/core/types-for-lists';
+import { initialiseModels } from '../../lib/core/types-for-lists';
 import { printPrismaSchema } from '../../lib/core/prisma-schema';
 
 const devLoadingHTMLFilepath = path.join(
@@ -131,7 +131,7 @@ exports.default = function (req, res) { return res.send(x.toString()) }
     let lastVersion = '';
     let lastError = undefined;
     const originalPrismaSchema = printPrismaSchema(
-      initialiseLists(config),
+      initialiseModels(config),
       config.db.provider,
       config.db.prismaPreviewFeatures,
       config.db.additionalPrismaDatasourceProperties
@@ -168,7 +168,7 @@ exports.default = function (req, res) { return res.send(x.toString()) }
           const newConfigWithHttp = initConfig(uninitializedConfig);
           const newConfig = cleanConfig(newConfigWithHttp);
           const newPrismaSchema = printPrismaSchema(
-            initialiseLists(newConfig),
+            initialiseModels(newConfig),
             newConfig.db.provider,
             newConfig.db.prismaPreviewFeatures,
             newConfig.db.additionalPrismaDatasourceProperties

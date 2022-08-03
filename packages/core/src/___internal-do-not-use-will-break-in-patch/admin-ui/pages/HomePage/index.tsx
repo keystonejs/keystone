@@ -10,26 +10,27 @@ import { LoadingDots } from '@keystone-ui/loading';
 import { makeDataGetter } from '../../../../admin-ui/utils';
 import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/PageContainer';
 import { gql, useQuery } from '../../../../admin-ui/apollo';
-import { useKeystone, useList } from '../../../../admin-ui/context';
+import { useKeystone, useModel } from '../../../../admin-ui/context';
 import { Link, LinkProps } from '../../../../admin-ui/router';
 
-type ListCardProps = {
-  listKey: string;
+type ModelCardProps = {
+  modelKey: string;
   hideCreate: boolean;
   count:
     | { type: 'success'; count: number }
     | { type: 'no-access' }
     | { type: 'error'; message: string }
-    | { type: 'loading' };
+    | { type: 'loading' }
+    | { type: 'none' };
 };
 
-const ListCard = ({ listKey, count, hideCreate }: ListCardProps) => {
+const ModelCard = ({ modelKey, count, hideCreate }: ModelCardProps) => {
   const { colors, palette, radii, spacing } = useTheme();
-  const list = useList(listKey);
+  const model = useModel(modelKey);
   return (
     <div css={{ position: 'relative' }}>
       <Link
-        href={`/${list.path}`}
+        href={`/${model.path}`}
         css={{
           backgroundColor: colors.background,
           borderColor: colors.border,
@@ -49,7 +50,7 @@ const ListCard = ({ listKey, count, hideCreate }: ListCardProps) => {
           },
         }}
       >
-        <h3 css={{ margin: `0 0 ${spacing.small}px 0` }}>{list.label} </h3>
+        <h3 css={{ margin: `0 0 ${spacing.small}px 0` }}>{model.label} </h3>
         {count.type === 'success' ? (
           <span css={{ color: colors.foreground, textDecoration: 'none' }}>
             {count.count} item{count.count !== 1 ? 's' : ''}
@@ -57,15 +58,15 @@ const ListCard = ({ listKey, count, hideCreate }: ListCardProps) => {
         ) : count.type === 'error' ? (
           count.message
         ) : count.type === 'loading' ? (
-          <LoadingDots label={`Loading count of ${list.plural}`} size="small" tone="passive" />
-        ) : (
+          <LoadingDots label={`Loading count of ${model.plural}`} size="small" tone="passive" />
+        ) : count.type === 'none' ? null : (
           'No access'
         )}
       </Link>
       {hideCreate === false && (
-        <CreateButton title={`Create ${list.singular}`} href={`/${list.path}/create`}>
+        <CreateButton title={`Create ${model.singular}`} href={`/${model.path}/create`}>
           <PlusIcon size="large" />
-          <VisuallyHidden>Create {list.singular}</VisuallyHidden>
+          <VisuallyHidden>Create {model.singular}</VisuallyHidden>
         </CreateButton>
       )}
     </div>
@@ -104,25 +105,25 @@ const CreateButton = (props: LinkProps) => {
 
 export const HomePage = () => {
   const {
-    adminMeta: { lists },
-    visibleLists,
+    adminMeta: { models },
+    visibleModels,
   } = useKeystone();
   const query = useMemo(
     () => gql`
     query {
       keystone {
         adminMeta {
-          lists {
+          models {
             key
             hideCreate
           }
         }
       }
-      ${Object.entries(lists)
-        .map(([listKey, list]) => `${listKey}: ${list.gqlNames.listQueryCountName}`)
+      ${Object.entries(models)
+        .map(([modelKey, model]) => `${modelKey}: ${model.gqlNames.listQueryCountName}`)
         .join('\n')}
     }`,
-    [lists]
+    [models]
   );
   let { data, error } = useQuery(query, { errorPolicy: 'all' });
 
@@ -130,9 +131,9 @@ export const HomePage = () => {
 
   return (
     <PageContainer header={<Heading type="h3">Dashboard</Heading>}>
-      {visibleLists.state === 'loading' ? (
+      {visibleModels.state === 'loading' ? (
         <Center css={{ height: `calc(100vh - ${HEADER_HEIGHT}px)` }}>
-          <LoadingDots label="Loading lists" size="large" tone="passive" />
+          <LoadingDots label="Loading models" size="large" tone="passive" />
         </Center>
       ) : (
         <Inline
@@ -145,22 +146,22 @@ export const HomePage = () => {
           }}
         >
           {(() => {
-            if (visibleLists.state === 'error') {
+            if (visibleModels.state === 'error') {
               return (
                 <span css={{ color: 'red' }}>
-                  {visibleLists.error instanceof Error
-                    ? visibleLists.error.message
-                    : visibleLists.error[0].message}
+                  {visibleModels.error instanceof Error
+                    ? visibleModels.error.message
+                    : visibleModels.error[0].message}
                 </span>
               );
             }
-            return Object.keys(lists).map(key => {
-              if (!visibleLists.lists.has(key)) {
+            return Object.keys(models).map(key => {
+              if (!visibleModels.models.has(key)) {
                 return null;
               }
               const result = dataGetter.get(key);
               return (
-                <ListCard
+                <ModelCard
                   count={
                     data
                       ? result.errors
@@ -169,11 +170,11 @@ export const HomePage = () => {
                       : { type: 'loading' }
                   }
                   hideCreate={
-                    data?.keystone.adminMeta.lists.find((list: any) => list.key === key)
+                    data?.keystone.adminMeta.models.find((model: any) => model.key === key)
                       ?.hideCreate ?? false
                   }
                   key={key}
-                  listKey={key}
+                  modelKey={key}
                 />
               );
             });

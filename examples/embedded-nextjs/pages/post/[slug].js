@@ -1,7 +1,7 @@
 import React from 'react';
 
 // eslint-disable-next-line import/no-unresolved
-import { lists } from '.keystone/api';
+import { models } from '.keystone/api';
 
 export default function PostPage({ post }) {
   return (
@@ -13,7 +13,7 @@ export default function PostPage({ post }) {
 }
 
 export async function getStaticPaths() {
-  const posts = await lists.Post.findMany({
+  const posts = await models.Post.findMany({
     query: 'slug',
   });
 
@@ -25,7 +25,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params: { slug } }) {
-  const [post] = await lists.Post.findMany({
+  const [post] = await models.Post.findMany({
     where: { slug: slug },
     query: 'title content',
   });

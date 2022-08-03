@@ -1,7 +1,7 @@
 import { KeystoneContext } from '../../../types';
 import { accessDeniedError, accessReturnError, extensionError } from '../graphql-errors';
 import { mapUniqueWhereToWhere } from '../queries/resolvers';
-import { InitialisedList } from '../types-for-lists';
+import { InitialisedModel } from '../types-for-lists';
 import { runWithPrisma } from '../utils';
 import {
   InputFilter,
@@ -19,7 +19,7 @@ const missingItem = (operation: string, uniqueWhere: UniquePrismaFilter) =>
   );
 
 async function getFilteredItem(
-  list: InitialisedList,
+  model: InitialisedModel,
   context: KeystoneContext,
   uniqueWhere: UniquePrismaFilter,
   accessFilters: boolean | InputFilter,
@@ -28,16 +28,16 @@ async function getFilteredItem(
   if (accessFilters === false) {
     // Early exit if they want to exclude everything
     throw accessDeniedError(
-      `You cannot perform the '${operation}' operation on the list '${list.listKey}'.`
+      `You cannot perform the '${operation}' operation on the model '${model.modelKey}'.`
     );
   }
 
   // Merge the filter access control and try to get the item.
   let where = mapUniqueWhereToWhere(uniqueWhere);
   if (typeof accessFilters === 'object') {
-    where = { AND: [where, await resolveWhereInput(accessFilters, list, context)] };
+    where = { AND: [where, await resolveWhereInput(accessFilters, model, context)] };
   }
-  const item = await runWithPrisma(context, list, model => model.findFirst({ where }));
+  const item = await runWithPrisma(context, model, model => model.findFirst({ where }));
   if (item === null) {
     throw missingItem(operation, uniqueWhere);
   }
@@ -46,7 +46,7 @@ async function getFilteredItem(
 
 export async function checkUniqueItemExists(
   uniqueInput: UniqueInputFilter,
-  foreignList: InitialisedList,
+  foreignList: InitialisedModel,
   context: KeystoneContext,
   operation: string
 ) {
@@ -54,7 +54,7 @@ export async function checkUniqueItemExists(
   const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, foreignList.fields, context);
   // Check whether the item exists (from this users POV).
   try {
-    const item = await context.db[foreignList.listKey].findOne({ where: uniqueInput });
+    const item = await context.db[foreignList.modelKey].findOne({ where: uniqueInput });
     if (item === null) {
       throw missingItem(operation, uniqueWhere);
     }
@@ -65,7 +65,7 @@ export async function checkUniqueItemExists(
 }
 
 export async function getAccessControlledItemForDelete(
-  list: InitialisedList,
+  list: InitialisedModel,
   context: KeystoneContext,
   uniqueWhere: UniquePrismaFilter,
   accessFilters: boolean | InputFilter
@@ -76,7 +76,13 @@ export async function getAccessControlledItemForDelete(
 
   // Apply item level access control
   const access = list.access.item[operation];
-  const args = { operation, session: context.session, listKey: list.listKey, context, item };
+  const args = {
+    operation,
+    session: context.session,
+    modelKey: list.modelKey,
+    context,
+    item,
+  };
 
   // List level 'item' access control
   let result;
@@ -84,7 +90,7 @@ export async function getAccessControlledItemForDelete(
     result = await access(args);
   } catch (error: any) {
     throw extensionError('Access control', [
-      { error, tag: `${args.listKey}.access.item.${args.operation}` },
+      { error, tag: `${args.modelKey}.access.item.${args.operation}` },
     ]);
   }
 
@@ -95,7 +101,7 @@ export async function getAccessControlledItemForDelete(
   if (resultType !== 'boolean') {
     throw accessReturnError([
       {
-        tag: `${args.listKey}.access.item.${args.operation}`,
+        tag: `${args.modelKey}.access.item.${args.operation}`,
         returned: resultType,
       },
     ]);
@@ -115,7 +121,7 @@ export async function getAccessControlledItemForDelete(
 }
 
 export async function getAccessControlledItemForUpdate(
-  list: InitialisedList,
+  model: InitialisedModel,
   context: KeystoneContext,
   uniqueWhere: UniquePrismaFilter,
   accessFilters: boolean | InputFilter,
@@ -123,14 +129,14 @@ export async function getAccessControlledItemForUpdate(
 ) {
   const operation = 'update' as const;
   // Apply the filter access control. Will throw an accessDeniedError if the item isn't found.
-  const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters, operation);
+  const item = await getFilteredItem(model, context, uniqueWhere!, accessFilters, operation);
 
   // Apply item level access control
-  const access = list.access.item[operation];
+  const access = model.access.item[operation];
   const args = {
     operation,
     session: context.session,
-    listKey: list.listKey,
+    modelKey: model.modelKey,
     context,
     item,
     inputData,
@@ -142,7 +148,7 @@ export async function getAccessControlledItemForUpdate(
     result = await access(args);
   } catch (error: any) {
     throw extensionError('Access control', [
-      { error, tag: `${args.listKey}.access.item.${args.operation}` },
+      { error, tag: `${args.modelKey}.access.item.${args.operation}` },
     ]);
   }
   const resultType = typeof result;
@@ -152,7 +158,7 @@ export async function getAccessControlledItemForUpdate(
   if (resultType !== 'boolean') {
     throw accessReturnError([
       {
-        tag: `${args.listKey}.access.item.${args.operation}`,
+        tag: `${args.modelKey}.access.item.${args.operation}`,
         returned: resultType,
       },
     ]);
@@ -175,16 +181,19 @@ export async function getAccessControlledItemForUpdate(
       let result;
       try {
         result =
-          typeof list.fields[fieldKey].access[operation] === 'function'
-            ? await list.fields[fieldKey].access[operation]({ ...args, fieldKey })
+          typeof model.fields[fieldKey].access[operation] === 'function'
+            ? await model.fields[fieldKey].access[operation]({ ...args, fieldKey })
             : access;
       } catch (error: any) {
-        accessErrors.push({ error, tag: `${args.listKey}.${fieldKey}.access.${args.operation}` });
+        accessErrors.push({
+          error,
+          tag: `${args.modelKey}.${fieldKey}.access.${args.operation}`,
+        });
         return;
       }
       if (typeof result !== 'boolean') {
         nonBooleans.push({
-          tag: `${args.listKey}.${fieldKey}.access.${args.operation}`,
+          tag: `${args.modelKey}.${fieldKey}.access.${args.operation}`,
           returned: typeof result,
         });
       } else if (!result) {
@@ -213,7 +222,7 @@ export async function getAccessControlledItemForUpdate(
 }
 
 export async function applyAccessControlForCreate(
-  list: InitialisedList,
+  list: InitialisedModel,
   context: KeystoneContext,
   inputData: Record<string, unknown>
 ) {
@@ -224,7 +233,7 @@ export async function applyAccessControlForCreate(
   const args = {
     operation,
     session: context.session,
-    listKey: list.listKey,
+    modelKey: list.modelKey,
     context,
     inputData,
   };
@@ -235,7 +244,7 @@ export async function applyAccessControlForCreate(
     result = await access(args);
   } catch (error: any) {
     throw extensionError('Access control', [
-      { error, tag: `${args.listKey}.access.item.${args.operation}` },
+      { error, tag: `${args.modelKey}.access.item.${args.operation}` },
     ]);
   }
 
@@ -246,7 +255,7 @@ export async function applyAccessControlForCreate(
   if (resultType !== 'boolean') {
     throw accessReturnError([
       {
-        tag: `${args.listKey}.access.item.${args.operation}`,
+        tag: `${args.modelKey}.access.item.${args.operation}`,
         returned: resultType,
       },
     ]);
@@ -271,12 +280,15 @@ export async function applyAccessControlForCreate(
             ? await list.fields[fieldKey].access[operation]({ ...args, fieldKey })
             : access;
       } catch (error: any) {
-        accessErrors.push({ error, tag: `${args.listKey}.${fieldKey}.access.${args.operation}` });
+        accessErrors.push({
+          error,
+          tag: `${args.modelKey}.${fieldKey}.access.${args.operation}`,
+        });
         return;
       }
       if (typeof result !== 'boolean') {
         nonBooleans.push({
-          tag: `${args.listKey}.${fieldKey}.access.${args.operation}`,
+          tag: `${args.modelKey}.${fieldKey}.access.${args.operation}`,
           returned: typeof result,
         });
       } else if (!result) {

@@ -2,7 +2,7 @@ import { formatISO } from 'date-fns';
 import { FieldControllerConfig } from '../../../../../types';
 import { controller, TimestampFieldMeta } from '../index';
 const STUBCONFIG: FieldControllerConfig<TimestampFieldMeta> = {
-  listKey: 'timestamp',
+  modelKey: 'timestamp',
   path: './timestamp',
   label: 'timestmap',
   customViews: {},

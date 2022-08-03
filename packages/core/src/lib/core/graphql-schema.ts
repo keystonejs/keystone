@@ -1,12 +1,12 @@
 import { GraphQLNamedType, GraphQLSchema } from 'graphql';
 import { graphql } from '../..';
-import { InitialisedList } from './types-for-lists';
+import { InitialisedModel } from './types-for-lists';
 
-import { getMutationsForList } from './mutations';
-import { getQueriesForList } from './queries';
+import { getMutationsForModel } from './mutations';
+import { getQueriesForModel } from './queries';
 
 export function getGraphQLSchema(
-  lists: Record<string, InitialisedList>,
+  models: Record<string, InitialisedModel>,
   extraFields: {
     mutation: Record<string, graphql.Field<unknown, any, graphql.OutputType, string>>;
     query: Record<string, graphql.Field<unknown, any, graphql.OutputType, string>>;
@@ -16,20 +16,20 @@ export function getGraphQLSchema(
     name: 'Query',
     fields: Object.assign(
       {},
-      ...Object.values(lists).map(list => getQueriesForList(list)),
+      ...Object.values(models).map(model => getQueriesForModel(model)),
       extraFields.query
     ),
   });
 
-  const updateManyByList: Record<string, graphql.InputObjectType<any>> = {};
+  const updateManyByModel: Record<string, graphql.InputObjectType<any>> = {};
 
   const mutation = graphql.object()({
     name: 'Mutation',
     fields: Object.assign(
       {},
-      ...Object.values(lists).map(list => {
-        const { mutations, updateManyInput } = getMutationsForList(list);
-        updateManyByList[list.listKey] = updateManyInput;
+      ...Object.values(models).map(model => {
+        const { mutations, updateManyInput } = getMutationsForModel(model);
+        updateManyByModel[model.modelKey] = updateManyInput;
         return mutations;
       }),
       extraFields.mutation
@@ -39,26 +39,26 @@ export function getGraphQLSchema(
     query: query.graphQLType,
     mutation: mutation.graphQLType,
     // not about behaviour, only ordering
-    types: [...collectTypes(lists, updateManyByList), mutation.graphQLType],
+    types: [...collectTypes(models, updateManyByModel), mutation.graphQLType],
   });
   return graphQLSchema;
 }
 
 function collectTypes(
-  lists: Record<string, InitialisedList>,
-  updateManyByList: Record<string, graphql.InputObjectType<any>>
+  models: Record<string, InitialisedModel>,
+  updateManyByModel: Record<string, graphql.InputObjectType<any>>
 ) {
   const collectedTypes: GraphQLNamedType[] = [];
-  for (const list of Object.values(lists)) {
-    const { isEnabled } = list.graphql;
+  for (const model of Object.values(models)) {
+    const { isEnabled } = model.graphql;
     if (!isEnabled.type) continue;
     // adding all of these types explicitly isn't strictly necessary but we do it to create a certain order in the schema
-    collectedTypes.push(list.types.output.graphQLType);
+    collectedTypes.push(model.types.output.graphQLType);
     if (isEnabled.query || isEnabled.update || isEnabled.delete) {
-      collectedTypes.push(list.types.uniqueWhere.graphQLType);
+      collectedTypes.push(model.types.uniqueWhere.graphQLType);
     }
     if (isEnabled.query) {
-      for (const field of Object.values(list.fields)) {
+      for (const field of Object.values(model.fields)) {
         if (
           isEnabled.query &&
           field.graphql.isEnabled.read &&
@@ -70,15 +70,15 @@ function collectTypes(
           );
         }
       }
-      collectedTypes.push(list.types.where.graphQLType);
-      collectedTypes.push(list.types.orderBy.graphQLType);
+      collectedTypes.push(model.types.where.graphQLType);
+      collectedTypes.push(model.types.orderBy.graphQLType);
     }
     if (isEnabled.update) {
-      collectedTypes.push(list.types.update.graphQLType);
-      collectedTypes.push(updateManyByList[list.listKey].graphQLType);
+      collectedTypes.push(model.types.update.graphQLType);
+      collectedTypes.push(updateManyByModel[model.modelKey].graphQLType);
     }
     if (isEnabled.create) {
-      collectedTypes.push(list.types.create.graphQLType);
+      collectedTypes.push(model.types.create.graphQLType);
     }
   }
   // this is not necessary, just about ordering

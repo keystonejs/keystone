@@ -39,34 +39,34 @@ export type GraphQLSchemaExtension<Context extends KeystoneContext> = {
 
 // TODO: don't duplicate this between here and packages/core/ListTypes/list.js
 export function getGqlNames({
-  listKey,
+  modelKey,
   pluralGraphQLName,
 }: {
-  listKey: string;
+  modelKey: string;
   pluralGraphQLName: string;
 }): GqlNames {
   const lowerPluralName = pluralGraphQLName.slice(0, 1).toLowerCase() + pluralGraphQLName.slice(1);
-  const lowerSingularName = listKey.slice(0, 1).toLowerCase() + listKey.slice(1);
+  const lowerSingularName = modelKey.slice(0, 1).toLowerCase() + modelKey.slice(1);
   return {
-    outputTypeName: listKey,
+    outputTypeName: modelKey,
     itemQueryName: lowerSingularName,
     listQueryName: lowerPluralName,
     listQueryCountName: `${lowerPluralName}Count`,
-    listOrderName: `${listKey}OrderByInput`,
-    deleteMutationName: `delete${listKey}`,
-    updateMutationName: `update${listKey}`,
-    createMutationName: `create${listKey}`,
+    listOrderName: `${modelKey}OrderByInput`,
+    deleteMutationName: `delete${modelKey}`,
+    updateMutationName: `update${modelKey}`,
+    createMutationName: `create${modelKey}`,
     deleteManyMutationName: `delete${pluralGraphQLName}`,
     updateManyMutationName: `update${pluralGraphQLName}`,
     createManyMutationName: `create${pluralGraphQLName}`,
-    whereInputName: `${listKey}WhereInput`,
-    whereUniqueInputName: `${listKey}WhereUniqueInput`,
-    updateInputName: `${listKey}UpdateInput`,
-    createInputName: `${listKey}CreateInput`,
-    updateManyInputName: `${listKey}UpdateArgs`,
-    relateToManyForCreateInputName: `${listKey}RelateToManyForCreateInput`,
-    relateToManyForUpdateInputName: `${listKey}RelateToManyForUpdateInput`,
-    relateToOneForCreateInputName: `${listKey}RelateToOneForCreateInput`,
-    relateToOneForUpdateInputName: `${listKey}RelateToOneForUpdateInput`,
+    whereInputName: `${modelKey}WhereInput`,
+    whereUniqueInputName: `${modelKey}WhereUniqueInput`,
+    updateInputName: `${modelKey}UpdateInput`,
+    createInputName: `${modelKey}CreateInput`,
+    updateManyInputName: `${modelKey}UpdateArgs`,
+    relateToManyForCreateInputName: `${modelKey}RelateToManyForCreateInput`,
+    relateToManyForUpdateInputName: `${modelKey}RelateToManyForUpdateInput`,
+    relateToOneForCreateInputName: `${modelKey}RelateToOneForCreateInput`,
+    relateToOneForUpdateInputName: `${modelKey}RelateToOneForUpdateInput`,
   };
 }

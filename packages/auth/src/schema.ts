@@ -90,7 +90,7 @@ export const getSchemaExtension = ({
     let ast;
     let query = `query($id: ID!) { ${
       getGqlNames({
-        listKey,
+        modelKey: listKey,
         // this isn't used to get the itemQueryName and we don't know it here
         pluralGraphQLName: '',
       }).itemQueryName

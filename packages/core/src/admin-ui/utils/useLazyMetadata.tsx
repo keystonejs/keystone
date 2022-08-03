@@ -1,15 +1,15 @@
 import { GraphQLError } from 'graphql';
 import { useMemo } from 'react';
-import type { AuthenticatedItem, VisibleLists, CreateViewFieldModes } from '../../types';
+import type { AuthenticatedItem, VisibleModels, CreateViewFieldModes } from '../../types';
 import { DocumentNode, useQuery, QueryResult, ServerError, ServerParseError } from '../apollo';
 import { DeepNullable, makeDataGetter } from './dataGetter';
 
-export type { AuthenticatedItem, VisibleLists, CreateViewFieldModes };
+export type { AuthenticatedItem, VisibleModels, CreateViewFieldModes };
 
 export function useLazyMetadata(query: DocumentNode): {
   authenticatedItem: AuthenticatedItem;
   refetch: () => void;
-  visibleLists: VisibleLists;
+  visibleModels: VisibleModels;
   createViewFieldModes: CreateViewFieldModes;
 } {
   let result = useQuery(query, { errorPolicy: 'all', fetchPolicy: 'network-only' });
@@ -28,7 +28,7 @@ export function useLazyMetadata(query: DocumentNode): {
           | { __typename: string };
         keystone: {
           adminMeta: {
-            lists: {
+            models: {
               key: string;
               isHidden: boolean;
               fields: { path: string; createView: { fieldMode: 'edit' | 'hidden' } }[];
@@ -46,7 +46,7 @@ export function useLazyMetadata(query: DocumentNode): {
         result,
         authenticatedItemGetter.errors || (result.error?.networkError ?? undefined)
       ),
-      visibleLists: getVisibleLists(
+      visibleModels: getVisibleModels(
         result,
         keystoneMetaGetter.errors || (result.error?.networkError ?? undefined)
       ),
@@ -66,34 +66,34 @@ function getCreateViewFieldModes(
     return { state: 'error', error };
   }
   if (data) {
-    const lists: Record<string, Record<string, 'edit' | 'hidden'>> = {};
-    data.keystone.adminMeta.lists.forEach((list: any) => {
-      lists[list.key] = {};
-      list.fields.forEach((field: any) => {
-        lists[list.key][field.path] = field.createView.fieldMode;
+    const models: Record<string, Record<string, 'edit' | 'hidden'>> = {};
+    data.keystone.adminMeta.models.forEach((model: any) => {
+      models[model.key] = {};
+      model.fields.forEach((field: any) => {
+        models[model.key][field.path] = field.createView.fieldMode;
       });
     });
-    return { state: 'loaded', lists };
+    return { state: 'loaded', models: models };
   }
 
   return { state: 'loading' };
 }
 
-function getVisibleLists(
+function getVisibleModels(
   { data }: QueryResult,
   error?: Error | ServerParseError | ServerError | readonly [GraphQLError, ...GraphQLError[]]
-): VisibleLists {
+): VisibleModels {
   if (error) {
     return { state: 'error', error };
   }
   if (data) {
-    const lists = new Set<string>();
-    data.keystone.adminMeta.lists.forEach((list: any) => {
-      if (!list.isHidden) {
-        lists.add(list.key);
+    const models = new Set<string>();
+    data.keystone.adminMeta.models.forEach((model: any) => {
+      if (!model.isHidden) {
+        models.add(model.key);
       }
     });
-    return { state: 'loaded', lists };
+    return { state: 'loaded', models: models };
   }
 
   return { state: 'loading' };

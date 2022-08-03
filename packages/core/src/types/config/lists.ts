@@ -1,12 +1,12 @@
 import type { CacheHint } from 'apollo-server-types';
 import type { MaybePromise } from '../utils';
-import { BaseListTypeInfo } from '../type-info';
-import { KeystoneContextFromListTypeInfo } from '..';
+import { BaseListTypeInfo, BaseModelTypeInfo } from '../type-info';
+import { KeystoneContextFromModelTypeInfo } from '..';
 import type { ListHooks } from './hooks';
 import type { ListAccessControl } from './access-control';
 import type { BaseFields, FilterOrderArgs } from './fields';
 
-export type ListSchemaConfig = Record<string, ListConfig<any, BaseFields<BaseListTypeInfo>>>;
+export type ModelsConfig = Record<string, ModelConfig>;
 
 export type IdFieldConfig =
   | { kind: 'cuid' | 'uuid' }
@@ -19,17 +19,38 @@ export type IdFieldConfig =
       type?: 'Int' | 'BigInt';
     };
 
+export type ModelConfig = ListConfig<any, any> | SingletonConfig;
+
+type CommonModelConfig<
+  ModelTypeInfo extends BaseModelTypeInfo,
+  Fields extends BaseFields<ModelTypeInfo>
+> = {
+  fields: Fields;
+};
+
+// TODO: make this type use types with good names, generic, doc comments, etc. like the ListConfig
+export type SingletonConfig = CommonModelConfig<
+  BaseModelTypeInfo,
+  BaseFields<BaseModelTypeInfo>
+> & {
+  kind: 'singleton';
+  description?: string;
+  ui?: CommonModelAdminUIConfig<BaseModelTypeInfo, any>;
+  // TODO: this should not be list access control, singletons have a subset of list access control
+  access?: ListAccessControl<BaseListTypeInfo>;
+  // TODO: this should not be list hooks, singletons have a subset of list hooks
+  hooks?: ListHooks<BaseModelTypeInfo>;
+  graphql?: CommonModelGraphQLConfig & {
+    omit?: true | readonly ('query' | 'create' | 'update' | 'delete')[];
+  };
+  db?: CommonModelDBConfig;
+};
+
 export type ListConfig<
   ListTypeInfo extends BaseListTypeInfo,
-  Fields extends BaseFields<ListTypeInfo>
-> = {
-  /*
-      A note on defaults: several options default based on the listKey, including label, path,
-      singular, plural, itemQueryName and listQueryName. All these options default independently, so
-      changing the singular or plural will not change the label or queryName options (and vice-versa)
-      Note from Mitchell: The above is incorrect based on Keystone's current implementation.
-    */
-  fields: Fields;
+  Fields extends BaseFields<BaseListTypeInfo>
+> = CommonModelConfig<ListTypeInfo, Fields> & {
+  kind: 'list';
 
   /**
    * Controls what data users of the Admin UI and GraphQL can access and change
@@ -38,7 +59,7 @@ export type ListConfig<
    */
   access?: ListAccessControl<ListTypeInfo>;
 
-  /** Config for how this list should act in the Admin UI */
+  /** Config for how this model should act in the Admin UI */
   ui?: ListAdminUIConfig<ListTypeInfo, Fields>;
 
   /**
@@ -57,49 +78,87 @@ export type ListConfig<
   description?: string; // defaults both { adminUI: { description }, graphQL: { description } }
 
   // Defaults to apply to all fields.
-  defaultIsFilterable?: false | ((args: FilterOrderArgs<ListTypeInfo>) => MaybePromise<boolean>); // The default value to use for graphql.isEnabled.filter on all fields for this list
-  defaultIsOrderable?: false | ((args: FilterOrderArgs<ListTypeInfo>) => MaybePromise<boolean>); // The default value to use for graphql.isEnabled.orderBy on all fields for this list
+  defaultIsFilterable?: false | ((args: FilterOrderArgs<ListTypeInfo>) => MaybePromise<boolean>); // The default value to use for graphql.isEnabled.filter on all fields for this model
+  defaultIsOrderable?: false | ((args: FilterOrderArgs<ListTypeInfo>) => MaybePromise<boolean>); // The default value to use for graphql.isEnabled.orderBy on all fields for this model
+};
+
+type CommonModelAdminUIConfig<
+  ModelTypeInfo extends BaseModelTypeInfo,
+  Fields extends BaseFields<ModelTypeInfo>
+> = {
+  /**
+   * The label used to identify the model in navigation and etc.
+   * @default modelKey.replace(/([a-z])([A-Z])/g, '$1 $2').split(/\s|_|\-/).filter(i => i).map(upcase).join(' ');
+   */
+  label?: string;
+
+  /**
+   * The singular form of the model key.
+   *
+   * It is used in sentences like `Are you sure you want to delete these {plural}?`
+   * @default pluralize.singular(label)
+   */
+  singular?: string;
+
+  /**
+   * The path segment to identify the model in URLs.
+   *
+   * It must match the pattern `/^[a-z-_][a-z0-9-_]*$/`.
+   * @default label.split(' ').join('-').toLowerCase()
+   */
+  path?: string;
+
+  /**
+   * The description shown on the model page
+   * @default modelConfig.description
+   */
+  description?: string; // the description displayed below the field in the Admin UI
+
+  /**
+   * Configuration specific to the item view in the Admin UI
+   */
+  itemView?: {
+    /**
+     * The default field mode for fields on the item view for this model.
+     * This controls what people can do for fields
+     * Specific field modes on a per-field basis via a field's config.
+     * @default 'edit'
+     */
+    defaultFieldMode?: MaybeItemFunction<'edit' | 'read' | 'hidden', ModelTypeInfo>;
+  };
+
+  /**
+   * Excludes this model from the Admin UI
+   * @default false
+   */
+  isHidden?: MaybeSessionFunction<boolean, ModelTypeInfo>;
 };
 
 export type ListAdminUIConfig<
   ListTypeInfo extends BaseListTypeInfo,
   Fields extends BaseFields<ListTypeInfo>
-> = {
+> = CommonModelAdminUIConfig<ListTypeInfo, Fields> & {
   /**
    * The field to use as a label in the Admin UI. If you want to base the label off more than a single field, use a virtual field and reference that field here.
    * @default 'label', if it exists, falling back to 'name', then 'title', and finally 'id', which is guaranteed to exist.
    */
   labelField?: 'id' | keyof Fields;
   /**
-   * The fields used by the Admin UI when searching this list.
+   * The fields used by the Admin UI when searching this model.
    * It is always possible to search by id and `id` should not be specified in this option.
    * @default The `labelField` if it has a string `contains` filter, otherwise none.
    */
   searchFields?: readonly Extract<keyof Fields, string>[];
 
-  /** The path that the list should be at in the Admin UI */
-  // Not currently used. Should be passed into `keystone.createList()`.
-  // path?: string;
-  /**
-   * The description shown on the list page
-   * @default listConfig.description
-   */
-  description?: string; // the description displayed below the field in the Admin UI
-
-  /**
-   * Excludes this list from the Admin UI
-   * @default false
-   */
-  isHidden?: MaybeSessionFunction<boolean, ListTypeInfo>;
   /**
    * Hides the create button in the Admin UI.
-   * Note that this does **not** disable creating items through the GraphQL API, it only hides the button to create an item for this list in the Admin UI.
+   * Note that this does **not** disable creating items through the GraphQL API, it only hides the button to create an item for this model in the Admin UI.
    * @default false
    */
   hideCreate?: MaybeSessionFunction<boolean, ListTypeInfo>;
   /**
    * Hides the delete button in the Admin UI.
-   * Note that this does **not** disable deleting items through the GraphQL API, it only hides the button to delete an item for this list in the Admin UI.
+   * Note that this does **not** disable deleting items through the GraphQL API, it only hides the button to delete an item for this model in the Admin UI.
    * @default false
    */
   hideDelete?: MaybeSessionFunction<boolean, ListTypeInfo>;
@@ -108,7 +167,7 @@ export type ListAdminUIConfig<
    */
   createView?: {
     /**
-     * The default field mode for fields on the create view for this list.
+     * The default field mode for fields on the create view for this model.
      * Specific field modes on a per-field basis via a field's config.
      * @default 'edit'
      */
@@ -116,24 +175,11 @@ export type ListAdminUIConfig<
   };
 
   /**
-   * Configuration specific to the item view in the Admin UI
-   */
-  itemView?: {
-    /**
-     * The default field mode for fields on the item view for this list.
-     * This controls what people can do for fields
-     * Specific field modes on a per-field basis via a field's config.
-     * @default 'edit'
-     */
-    defaultFieldMode?: MaybeItemFunction<'edit' | 'read' | 'hidden', ListTypeInfo>;
-  };
-
-  /**
    * Configuration specific to the list view in the Admin UI
    */
   listView?: {
     /**
-     * The default field mode for fields on the list view for this list.
+     * The default field mode for fields on the list view for this model.
      * Specific field modes on a per-field basis via a field's config.
      * @default 'read'
      */
@@ -141,7 +187,7 @@ export type ListAdminUIConfig<
     /**
      * The columns(which refer to fields) that should be shown to users of the Admin UI.
      * Users of the Admin UI can select different columns to show in the UI.
-     * @default the first three fields in the list
+     * @default the first three fields in the model
      */
     initialColumns?: readonly ('id' | keyof Fields)[];
     // was previously top-level defaultSort
@@ -152,65 +198,46 @@ export type ListAdminUIConfig<
   };
 
   /**
-   * The label used to identify the list in navigation and etc.
-   * @default listKey.replace(/([a-z])([A-Z])/g, '$1 $2').split(/\s|_|\-/).filter(i => i).map(upcase).join(' ');
-   */
-  label?: string;
-
-  /**
-   * The singular form of the list key.
-   *
-   * It is used in sentences like `Are you sure you want to delete these {plural}?`
-   * @default pluralize.singular(label)
-   */
-  singular?: string;
-
-  /**
-   * The plural form of the list key.
+   * The plural form of the model key.
    *
    * It is used in sentences like `Are you sure you want to delete this {singular}?`.
    * @default pluralize.plural(label)
    */
   plural?: string;
-
-  /**
-   * The path segment to identify the list in URLs.
-   *
-   * It must match the pattern `/^[a-z-_][a-z0-9-_]*$/`.
-   * @default label.split(' ').join('-').toLowerCase()
-   */
-  path?: string;
 };
 
 export type MaybeSessionFunction<
   T extends string | boolean,
-  ListTypeInfo extends BaseListTypeInfo
+  ModelTypeInfo extends BaseModelTypeInfo
 > =
   | T
   | ((args: {
       session: any;
-      context: KeystoneContextFromListTypeInfo<ListTypeInfo>;
+      context: KeystoneContextFromModelTypeInfo<ModelTypeInfo>;
     }) => MaybePromise<T>);
 
-export type MaybeItemFunction<T, ListTypeInfo extends BaseListTypeInfo> =
+export type MaybeItemFunction<T, ModelTypeInfo extends BaseModelTypeInfo> =
   | T
   | ((args: {
       session: any;
-      context: KeystoneContextFromListTypeInfo<ListTypeInfo>;
-      item: ListTypeInfo['item'];
+      context: KeystoneContextFromModelTypeInfo<ModelTypeInfo>;
+      item: ModelTypeInfo['item'];
     }) => MaybePromise<T>);
 
-export type ListGraphQLConfig = {
+export type CommonModelGraphQLConfig = {
   /**
    * The description added to the GraphQL schema
-   * @default listConfig.description
+   * @default modelConfig.description
    */
   description?: string;
+};
+
+export type ListGraphQLConfig = CommonModelGraphQLConfig & {
   /**
-   * The plural form of the list key to use in the generated GraphQL schema.
+   * The plural form of the model key to use in the generated GraphQL schema.
    * Note that there is no singular here because the singular used in the GraphQL schema is the list key.
    */
-  // was previously top-level listQueryName
+  // was previously top-level modelQueryName
   plural?: string;
   // was previously top-level queryLimits
   queryLimits?: {
@@ -224,8 +251,8 @@ export type ListGraphQLConfig = {
   //   'create': Does createItem/createItems exist? Does `create` exist on the RelationshipInput types?
   //   'update': Does updateItem/updateItems exist?
   //   'delete': Does deleteItem/deleteItems exist?
-  // If `true`, then everything will be omitted, including the output type. This makes it a DB only list,
-  // including from the point of view of relationships to this list.
+  // If `true`, then everything will be omitted, including the output type. This makes it a DB only model,
+  // including from the point of view of relationships to this model.
   //
   // Default: undefined
   omit?: true | readonly ('query' | 'create' | 'update' | 'delete')[];
@@ -233,15 +260,18 @@ export type ListGraphQLConfig = {
 
 export type CacheHintArgs = { results: any; operationName?: string; meta: boolean };
 
-export type ListDBConfig = {
+type CommonModelDBConfig = {
+  /**
+   * Specifies an alternative name name for the table to use, if you don't want
+   * the default (derived from the model key)
+   */
+  map?: string;
+};
+
+export type ListDBConfig = CommonModelDBConfig & {
   /**
    * The kind of id to use.
    * @default { kind: "cuid" }
    */
   idField?: IdFieldConfig;
-  /**
-   * Specifies an alternative name name for the table to use, if you don't want
-   * the default (derived from the list key)
-   */
-  map?: string;
 };

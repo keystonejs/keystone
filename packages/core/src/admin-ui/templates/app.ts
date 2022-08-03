@@ -93,7 +93,7 @@ function getLazyMetadataQuery(
     parse(`fragment x on y {
     keystone {
       adminMeta {
-        lists {
+        models {
           key
           isHidden
           fields {
@@ -110,7 +110,7 @@ function getLazyMetadataQuery(
 
   const queryType = graphqlSchema.getQueryType();
   if (queryType) {
-    const getListByKey = (name: string) => adminMeta.lists.find(({ key }: any) => key === name);
+    const getListByKey = (name: string) => adminMeta.models.find(({ key }) => key === name);
     const fields = queryType.getFields();
     if (fields['authenticatedItem'] !== undefined) {
       const authenticatedItemType = fields['authenticatedItem'].type;

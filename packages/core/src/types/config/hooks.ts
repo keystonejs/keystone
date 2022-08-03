@@ -1,35 +1,35 @@
-import type { KeystoneContextFromListTypeInfo, MaybePromise } from '..';
-import { BaseListTypeInfo } from '../type-info';
+import type { KeystoneContextFromModelTypeInfo, MaybePromise } from '..';
+import { BaseModelTypeInfo } from '../type-info';
 
-type CommonArgs<ListTypeInfo extends BaseListTypeInfo> = {
-  context: KeystoneContextFromListTypeInfo<ListTypeInfo>;
+type CommonArgs<ModelTypeInfo extends BaseModelTypeInfo> = {
+  context: KeystoneContextFromModelTypeInfo<ModelTypeInfo>;
   /**
-   * The key of the list that the operation is occurring on
+   * The key of the model that the operation is occurring on
    */
-  listKey: string;
+  modelKey: string;
 };
 
-export type ListHooks<ListTypeInfo extends BaseListTypeInfo> = {
+export type ListHooks<ModelTypeInfo extends BaseModelTypeInfo> = {
   /**
    * Used to **modify the input** for create and update operations after default values and access control have been applied
    */
-  resolveInput?: ResolveInputListHook<ListTypeInfo>;
+  resolveInput?: ResolveInputModelHook<ModelTypeInfo>;
   /**
    * Used to **validate the input** for create and update operations once all resolveInput hooks resolved
    */
-  validateInput?: ValidateInputHook<ListTypeInfo>;
+  validateInput?: ValidateInputHook<ModelTypeInfo>;
   /**
    * Used to **validate** that a delete operation can happen after access control has occurred
    */
-  validateDelete?: ValidateDeleteHook<ListTypeInfo>;
+  validateDelete?: ValidateDeleteHook<ModelTypeInfo>;
   /**
    * Used to **cause side effects** before a create, update, or delete operation once all validateInput hooks have resolved
    */
-  beforeOperation?: BeforeOperationHook<ListTypeInfo>;
+  beforeOperation?: BeforeOperationHook<ModelTypeInfo>;
   /**
    * Used to **cause side effects** after a create, update, or delete operation operation has occurred
    */
-  afterOperation?: AfterOperationHook<ListTypeInfo>;
+  afterOperation?: AfterOperationHook<ModelTypeInfo>;
 };
 
 // TODO: probably maybe don't do this and write it out manually
@@ -42,109 +42,111 @@ type AddFieldPathArgToAllPropsOnObj<T extends Record<string, (arg: any) => any>>
   [Key in keyof T]: AddFieldPathToObj<T[Key]>;
 };
 
-type FieldKeysForList<ListTypeInfo extends BaseListTypeInfo> =
-  | keyof ListTypeInfo['prisma']['create']
-  | keyof ListTypeInfo['prisma']['update'];
+type FieldKeysForModel<ModelTypeInfo extends BaseModelTypeInfo> =
+  | keyof ModelTypeInfo['prisma']['create']
+  | keyof ModelTypeInfo['prisma']['update'];
 
 export type FieldHooks<
-  ListTypeInfo extends BaseListTypeInfo,
-  FieldKey extends FieldKeysForList<ListTypeInfo> = FieldKeysForList<ListTypeInfo>
+  ModelTypeInfo extends BaseModelTypeInfo,
+  FieldKey extends FieldKeysForModel<ModelTypeInfo> = FieldKeysForModel<ModelTypeInfo>
 > = AddFieldPathArgToAllPropsOnObj<{
   /**
    * Used to **modify the input** for create and update operations after default values and access control have been applied
    */
-  resolveInput?: ResolveInputFieldHook<ListTypeInfo, FieldKey>;
+  resolveInput?: ResolveInputFieldHook<ModelTypeInfo, FieldKey>;
   /**
    * Used to **validate the input** for create and update operations once all resolveInput hooks resolved
    */
-  validateInput?: ValidateInputHook<ListTypeInfo>;
+  validateInput?: ValidateInputHook<ModelTypeInfo>;
   /**
    * Used to **validate** that a delete operation can happen after access control has occurred
    */
-  validateDelete?: ValidateDeleteHook<ListTypeInfo>;
+  validateDelete?: ValidateDeleteHook<ModelTypeInfo>;
   /**
    * Used to **cause side effects** before a create, update, or delete operation once all validateInput hooks have resolved
    */
-  beforeOperation?: BeforeOperationHook<ListTypeInfo>;
+  beforeOperation?: BeforeOperationHook<ModelTypeInfo>;
   /**
    * Used to **cause side effects** after a create, update, or delete operation operation has occurred
    */
-  afterOperation?: AfterOperationHook<ListTypeInfo>;
+  afterOperation?: AfterOperationHook<ModelTypeInfo>;
 }>;
 
-type ArgsForCreateOrUpdateOperation<ListTypeInfo extends BaseListTypeInfo> =
+type ArgsForCreateOrUpdateOperation<ModelTypeInfo extends BaseModelTypeInfo> =
   | {
       operation: 'create';
       // technically this will never actually exist for a create
       // but making it optional rather than not here
       // makes for a better experience
       // because then people will see the right type even if they haven't refined the type of operation to 'create'
-      item?: ListTypeInfo['item'];
+      item?: ModelTypeInfo['item'];
       /**
        * The GraphQL input **before** default values are applied
        */
-      inputData: ListTypeInfo['inputs']['create'];
+      inputData: ModelTypeInfo['inputs']['create'];
       /**
        * The GraphQL input **after** being resolved by the field type's input resolver
        */
-      resolvedData: ListTypeInfo['prisma']['create'];
+      resolvedData: ModelTypeInfo['prisma']['create'];
     }
   | {
       operation: 'update';
-      item: ListTypeInfo['item'];
+      item: ModelTypeInfo['item'];
       /**
        * The GraphQL input **before** default values are applied
        */
-      inputData: ListTypeInfo['inputs']['update'];
+      inputData: ModelTypeInfo['inputs']['update'];
       /**
        * The GraphQL input **after** being resolved by the field type's input resolver
        */
-      resolvedData: ListTypeInfo['prisma']['update'];
+      resolvedData: ModelTypeInfo['prisma']['update'];
     };
 
-type ResolveInputListHook<ListTypeInfo extends BaseListTypeInfo> = (
-  args: ArgsForCreateOrUpdateOperation<ListTypeInfo> & CommonArgs<ListTypeInfo>
-) => MaybePromise<ListTypeInfo['prisma']['create'] | ListTypeInfo['prisma']['update']>;
+type ResolveInputModelHook<ModelTypeInfo extends BaseModelTypeInfo> = (
+  args: ArgsForCreateOrUpdateOperation<ModelTypeInfo> & CommonArgs<ModelTypeInfo>
+) => MaybePromise<ModelTypeInfo['prisma']['create'] | ModelTypeInfo['prisma']['update']>;
 
 type ResolveInputFieldHook<
-  ListTypeInfo extends BaseListTypeInfo,
-  FieldKey extends FieldKeysForList<ListTypeInfo>
-> = (args: ArgsForCreateOrUpdateOperation<ListTypeInfo> & CommonArgs<ListTypeInfo>) => MaybePromise<
-  | ListTypeInfo['prisma']['create'][FieldKey]
-  | ListTypeInfo['prisma']['update'][FieldKey]
+  ModelTypeInfo extends BaseModelTypeInfo,
+  FieldKey extends FieldKeysForModel<ModelTypeInfo>
+> = (
+  args: ArgsForCreateOrUpdateOperation<ModelTypeInfo> & CommonArgs<ModelTypeInfo>
+) => MaybePromise<
+  | ModelTypeInfo['prisma']['create'][FieldKey]
+  | ModelTypeInfo['prisma']['update'][FieldKey]
   | undefined // undefined represents 'don't do anything'
 >;
 
-type ValidateInputHook<ListTypeInfo extends BaseListTypeInfo> = (
-  args: ArgsForCreateOrUpdateOperation<ListTypeInfo> & {
+type ValidateInputHook<ModelTypeInfo extends BaseModelTypeInfo> = (
+  args: ArgsForCreateOrUpdateOperation<ModelTypeInfo> & {
     addValidationError: (error: string) => void;
-  } & CommonArgs<ListTypeInfo>
+  } & CommonArgs<ModelTypeInfo>
 ) => Promise<void> | void;
 
-type ValidateDeleteHook<ListTypeInfo extends BaseListTypeInfo> = (
+type ValidateDeleteHook<ModelTypeInfo extends BaseModelTypeInfo> = (
   args: {
     operation: 'delete';
-    item: ListTypeInfo['item'];
+    item: ModelTypeInfo['item'];
     addValidationError: (error: string) => void;
-  } & CommonArgs<ListTypeInfo>
+  } & CommonArgs<ModelTypeInfo>
 ) => Promise<void> | void;
 
-type BeforeOperationHook<ListTypeInfo extends BaseListTypeInfo> = (
+type BeforeOperationHook<ModelTypeInfo extends BaseModelTypeInfo> = (
   args: (
-    | ArgsForCreateOrUpdateOperation<ListTypeInfo>
+    | ArgsForCreateOrUpdateOperation<ModelTypeInfo>
     | {
         operation: 'delete';
-        item: ListTypeInfo['item'];
+        item: ModelTypeInfo['item'];
         inputData: undefined;
         resolvedData: undefined;
       }
   ) &
-    CommonArgs<ListTypeInfo>
+    CommonArgs<ModelTypeInfo>
 ) => Promise<void> | void;
 
-type AfterOperationHook<ListTypeInfo extends BaseListTypeInfo> = (
+type AfterOperationHook<ModelTypeInfo extends BaseModelTypeInfo> = (
   args: (
-    | ArgsForCreateOrUpdateOperation<ListTypeInfo>
+    | ArgsForCreateOrUpdateOperation<ModelTypeInfo>
     | {
         operation: 'delete';
         // technically this will never actually exist for a delete
@@ -156,14 +158,14 @@ type AfterOperationHook<ListTypeInfo extends BaseListTypeInfo> = (
         resolvedData: undefined;
       }
   ) &
-    ({ operation: 'delete' } | { operation: 'create' | 'update'; item: ListTypeInfo['item'] }) &
+    ({ operation: 'delete' } | { operation: 'create' | 'update'; item: ModelTypeInfo['item'] }) &
     (
       | // technically this will never actually exist for a create
       // but making it optional rather than not here
       // makes for a better experience
       // because then people will see the right type even if they haven't refined the type of operation to 'create'
       { operation: 'create'; originalItem: undefined }
-      | { operation: 'delete' | 'update'; originalItem: ListTypeInfo['item'] }
+      | { operation: 'delete' | 'update'; originalItem: ModelTypeInfo['item'] }
     ) &
-    CommonArgs<ListTypeInfo>
+    CommonArgs<ModelTypeInfo>
 ) => Promise<void> | void;

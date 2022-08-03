@@ -10,7 +10,7 @@ import {
   introspectionTypes,
 } from 'graphql';
 import { getGqlNames } from '../types';
-import { InitialisedList } from './core/types-for-lists';
+import { InitialisedModel } from './core/types-for-lists';
 
 const introspectionTypesSet = new Set(introspectionTypes);
 
@@ -77,7 +77,7 @@ function printInputTypesFromSchema(schema: GraphQLSchema, scalars: Record<string
 
 export function printGeneratedTypes(
   graphQLSchema: GraphQLSchema,
-  lists: Record<string, InitialisedList>
+  models: Record<string, InitialisedModel>
 ) {
   let scalars = {
     ID: 'string',
@@ -91,22 +91,22 @@ export function printGeneratedTypes(
 
   const printedTypes = printInputTypesFromSchema(graphQLSchema, scalars);
 
-  let allListsStr = '';
-  let listsNamespaceStr = '\nexport declare namespace Lists {';
+  let allmodelStr = '';
+  let modelsNamespaceStr = '\nexport declare namespace Models {';
 
-  for (const [listKey, list] of Object.entries(lists)) {
-    const gqlNames = getGqlNames(list);
+  for (const [modelKey, model] of Object.entries(models)) {
+    const gqlNames = getGqlNames(model);
 
-    const listTypeInfoName = `Lists.${listKey}.TypeInfo`;
+    const ModelTypeInfoName = `Models.${modelKey}.TypeInfo`;
 
-    allListsStr += `\n  readonly ${listKey}: ${listTypeInfoName};`;
-    listsNamespaceStr += `
-  export type ${listKey} = import('@keystone-6/core').ListConfig<${listTypeInfoName}, any>;
-  namespace ${listKey} {
-    export type Item = import('.prisma/client').${listKey};
+    allmodelStr += `\n  readonly ${modelKey}: ${ModelTypeInfoName};`;
+    modelsNamespaceStr += `
+  export type ${modelKey} = import('@keystone-6/core').ListConfig<${ModelTypeInfoName}, any>;
+  namespace ${modelKey} {
+    export type Item = import('.prisma/client').${modelKey};
     export type TypeInfo = {
-      key: ${JSON.stringify(listKey)};
-      fields: ${Object.keys(list.fields)
+      key: ${JSON.stringify(modelKey)};
+      fields: ${Object.keys(model.fields)
         .map(x => JSON.stringify(x))
         .join(' | ')}
       item: Item;
@@ -125,13 +125,13 @@ export function printGeneratedTypes(
     };
   }`;
   }
-  listsNamespaceStr += '\n}';
+  modelsNamespaceStr += '\n}';
 
   const postlude = `
 export type Context = import('@keystone-6/core/types').KeystoneContext<TypeInfo>;
 
 export type TypeInfo = {
-  lists: {${allListsStr}
+  models: {${allmodelStr}
   };
   prisma: import('.prisma/client').PrismaClient;
 };
@@ -141,9 +141,9 @@ ${
 }
 type __TypeInfo = TypeInfo;
 
-export type Lists = {
-  [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core').ListConfig<TypeInfo['lists'][Key], any>
-} & Record<string, import('@keystone-6/core').ListConfig<any, any>>;
+export type Models = {
+  [Key in keyof TypeInfo['models']]?: import('@keystone-6/core').ModelConfig<TypeInfo['models'][Key], any>
+} & Record<string, import('@keystone-6/core').ModelConfig<any, any>>;
 `;
-  return printedTypes + listsNamespaceStr + postlude;
+  return printedTypes + modelsNamespaceStr + postlude;
 }

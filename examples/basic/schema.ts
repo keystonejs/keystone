@@ -12,7 +12,7 @@ import {
 } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
 import { v4 } from 'uuid';
-import { Context, Lists } from '.keystone/types';
+import { Context, Models } from '.keystone/types';
 
 type AccessArgs = {
   session?: {
@@ -32,7 +32,7 @@ export const access = {
 
 const randomNumber = () => Math.round(Math.random() * 10);
 
-const User: Lists.User = list({
+const User: Models.User = list({
   ui: {
     listView: {
       initialColumns: ['name', 'posts', 'avatar'],
@@ -48,7 +48,7 @@ const User: Lists.User = list({
     attachment: file({ storage: 'my_files' }),
     /** Used to log in. */
     password: password(),
-    /** Administrators have more access to various lists and fields. */
+    /** Administrators have more access to various models and fields. */
     isAdmin: checkbox({
       access: {
         read: access.isAdmin,
@@ -91,7 +91,7 @@ const User: Lists.User = list({
   },
 });
 
-export const lists: Lists = {
+export const models: Models = {
   User,
   PhoneNumber: list({
     ui: {

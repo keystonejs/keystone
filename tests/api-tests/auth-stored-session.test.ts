@@ -36,7 +36,7 @@ function setup(options?: any) {
   return setupTestRunner({
     config: auth.withAuth(
       apiTestConfig({
-        lists: {
+        models: {
           Post: list({
             fields: {
               title: text(),
@@ -114,7 +114,7 @@ describe('Auth testing', () => {
       expectAccessDenied(result.errors, [
         {
           path: ['updateUser'],
-          msg: "You cannot perform the 'update' operation on the list 'User'.",
+          msg: "You cannot perform the 'update' operation on the model 'User'.",
         },
       ]);
     })
@@ -202,7 +202,7 @@ describe('Auth testing', () => {
         expectAccessDenied(errors, [
           {
             path: ['createPost'],
-            msg: "You cannot perform the 'create' operation on the list 'Post'.",
+            msg: "You cannot perform the 'create' operation on the model 'Post'.",
           },
         ]);
       })

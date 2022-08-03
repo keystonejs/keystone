@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 // eslint-disable-next-line import/no-unresolved
-import { lists } from '.keystone/api';
+import { models } from '.keystone/api';
 
 export default function HomePage({ posts }) {
   return (
@@ -21,6 +21,6 @@ export default function HomePage({ posts }) {
 }
 
 export async function getStaticProps() {
-  const posts = await lists.Post.findMany({ query: 'slug title' });
+  const posts = await models.Post.findMany({ query: 'slug title' });
   return { props: { posts } };
 }

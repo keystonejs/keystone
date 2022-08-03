@@ -5,13 +5,13 @@ import { createAdminMeta } from '../admin-ui/system/createAdminMeta';
 import { PrismaModule } from '../artifacts';
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './context/createContext';
-import { initialiseLists } from './core/types-for-lists';
+import { initialiseModels } from './core/types-for-lists';
 import { setPrismaNamespace, setWriteLimit } from './core/utils';
 
 function getSudoGraphQLSchema(config: KeystoneConfig) {
   // This function creates a GraphQLSchema based on a modified version of the provided config.
   // The modifications are:
-  //  * All list level access control is disabled
+  //  * All model level access control is disabled
   //  * All field level access control is disabled
   //  * All graphql.omit configuration is disabled
   //  * All fields are explicitly made filterable and orderable
@@ -26,16 +26,16 @@ function getSudoGraphQLSchema(config: KeystoneConfig) {
       ...config.ui,
       isAccessAllowed: () => true,
     },
-    lists: Object.fromEntries(
-      Object.entries(config.lists).map(([listKey, list]) => {
+    models: Object.fromEntries(
+      Object.entries(config.models).map(([modelKey, model]) => {
         return [
-          listKey,
+          modelKey,
           {
-            ...list,
+            ...model,
             access: { operation: {}, item: {}, filter: {} },
-            graphql: { ...(list.graphql || {}), omit: [] },
+            graphql: { ...(model.graphql || {}), omit: [] },
             fields: Object.fromEntries(
-              Object.entries(list.fields).map(([fieldKey, field]) => {
+              Object.entries(model.fields).map(([fieldKey, field]) => {
                 return [
                   fieldKey,
                   (data: FieldData) => {
@@ -56,17 +56,17 @@ function getSudoGraphQLSchema(config: KeystoneConfig) {
       })
     ),
   };
-  const lists = initialiseLists(transformedConfig);
-  const adminMeta = createAdminMeta(transformedConfig, lists);
-  return createGraphQLSchema(transformedConfig, lists, adminMeta);
+  const models = initialiseModels(transformedConfig);
+  const adminMeta = createAdminMeta(transformedConfig, models);
+  return createGraphQLSchema(transformedConfig, models, adminMeta);
 }
 
 export function createSystem(config: KeystoneConfig, isLiveReload?: boolean) {
-  const lists = initialiseLists(config);
+  const models = initialiseModels(config);
 
-  const adminMeta = createAdminMeta(config, lists);
+  const adminMeta = createAdminMeta(config, models);
 
-  const graphQLSchema = createGraphQLSchema(config, lists, adminMeta);
+  const graphQLSchema = createGraphQLSchema(config, models, adminMeta);
 
   const sudoGraphQLSchema = getSudoGraphQLSchema(config);
 
@@ -93,10 +93,10 @@ export function createSystem(config: KeystoneConfig, isLiveReload?: boolean) {
         sudoGraphQLSchema,
         config,
         prismaClient,
-        gqlNamesByList: Object.fromEntries(
-          Object.entries(lists).map(([listKey, list]) => [listKey, getGqlNames(list)])
+        gqlNamesByModel: Object.fromEntries(
+          Object.entries(models).map(([modelKey, model]) => [modelKey, getGqlNames(model)])
         ),
-        lists,
+        models,
       });
 
       return {
