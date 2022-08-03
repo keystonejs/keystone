@@ -62,7 +62,7 @@ export const Field = ({
         <Fragment>
           <FieldLabel as="legend">{field.label}</FieldLabel>
           <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
-          <Stack gap="small">
+          <Stack gap="small" marginTop={'small'}>
             {field.options.map(option => (
               <Radio
                 css={{ alignItems: 'center' }}
