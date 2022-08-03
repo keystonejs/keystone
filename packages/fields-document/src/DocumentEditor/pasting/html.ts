@@ -80,6 +80,7 @@ const TEXT_TAGS: Record<string, Mark> = {
   U: 'underline',
   SUP: 'superscript',
   SUB: 'subscript',
+  KBD: 'keyboard',
 };
 
 function marksFromElementAttributes(element: Node) {
