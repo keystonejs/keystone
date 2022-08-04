@@ -108,7 +108,7 @@ describe('Auth testing', () => {
       });
     } catch (e) {
       if ((e as Error).message.includes('ECONNREFUSED')) {
-        throw new Error('redis is not running on this computer so this test suite cannot be run');
+        throw new Error('redis not found: ECONNREFUSED');
       }
     }
   });
