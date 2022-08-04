@@ -77,7 +77,7 @@ module.exports = {
     'react/react-in-jsx-scope': 'error',
     'react/self-closing-comp': 'warn',
     'react/sort-prop-types': 'warn',
-    semi: 'off',
+    semi: 'error',
     strict: 'off',
     'no-restricted-syntax': [
       'error',
