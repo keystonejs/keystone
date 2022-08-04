@@ -7,6 +7,7 @@ import { createClient } from '@redis/client';
 import { createAuth } from '@keystone-6/auth';
 import type { KeystoneContext } from '@keystone-6/core/types';
 import { setupTestRunner, TestArgs } from '@keystone-6/core/testing';
+import fetch from 'node-fetch';
 import { apiTestConfig, expectAccessDenied, seed } from './utils';
 
 const initialData = {
@@ -99,6 +100,19 @@ async function login(
 }
 
 describe('Auth testing', () => {
+  beforeAll(async () => {
+    try {
+      await fetch('http:127.0.0.1:6379', {
+        method: 'post',
+        body: 'ping',
+      });
+    } catch (e) {
+      if ((e as Error).message.includes('ECONNREFUSED')) {
+        throw new Error('redis is not running on this computer so this test suite cannot be run');
+      }
+    }
+  });
+
   test(
     'Gives access denied when not logged in',
     setup()(async ({ context }) => {
