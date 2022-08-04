@@ -102,7 +102,7 @@ async function login(
 describe('Auth testing', () => {
   beforeAll(async () => {
     try {
-      await fetch('http:127.0.0.1:6379', {
+      await fetch('http://127.0.0.1:6379', {
         method: 'post',
         body: 'ping',
       });
