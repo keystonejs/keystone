@@ -2,4 +2,4 @@
 '@keystone-6/core': minor
 ---
 
-Adds `multiselect` field
+Adds a new `multiselect` field type
