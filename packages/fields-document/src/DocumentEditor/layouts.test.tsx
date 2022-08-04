@@ -65,16 +65,12 @@ test('layout with not enough layout-area are added', () => {
         </layout-area>
         <layout-area>
           <paragraph>
-            <text>
-              
-            </text>
+            <text />
           </paragraph>
         </layout-area>
       </layout>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -123,9 +119,7 @@ test('layout with extra layout-areas that are empty are removed', () => {
       >
         <layout-area>
           <paragraph>
-            <text>
-              
-            </text>
+            <text />
           </paragraph>
         </layout-area>
         <layout-area>
@@ -137,9 +131,7 @@ test('layout with extra layout-areas that are empty are removed', () => {
         </layout-area>
       </layout>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -198,9 +190,7 @@ test('the content of extra layout-areas are merged into the last layout-area', (
       >
         <layout-area>
           <paragraph>
-            <text>
-              
-            </text>
+            <text />
           </paragraph>
         </layout-area>
         <layout-area>
@@ -229,9 +219,7 @@ test('the content of extra layout-areas are merged into the last layout-area', (
         </layout-area>
       </layout>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -274,24 +262,16 @@ test('enter in layout area never exits layout area', () => {
       >
         <layout-area>
           <paragraph>
-            <text>
-              
-            </text>
+            <text />
           </paragraph>
           <paragraph>
-            <text>
-              
-            </text>
+            <text />
           </paragraph>
           <paragraph>
-            <text>
-              
-            </text>
+            <text />
           </paragraph>
           <paragraph>
-            <text>
-              
-            </text>
+            <text />
           </paragraph>
           <paragraph>
             <text>
@@ -301,9 +281,7 @@ test('enter in layout area never exits layout area', () => {
         </layout-area>
       </layout>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -338,9 +316,7 @@ test('delete backward never deletes or exits in first layout area', () => {
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
       <layout
         layout={
@@ -358,9 +334,7 @@ test('delete backward never deletes or exits in first layout area', () => {
         </layout-area>
       </layout>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -400,9 +374,7 @@ test('delete backward never deletes or exits in second layout area', () => {
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
       <layout
         layout={
@@ -414,9 +386,7 @@ test('delete backward never deletes or exits in second layout area', () => {
       >
         <layout-area>
           <paragraph>
-            <text>
-              
-            </text>
+            <text />
           </paragraph>
         </layout-area>
         <layout-area>
@@ -428,9 +398,7 @@ test('delete backward never deletes or exits in second layout area', () => {
         </layout-area>
       </layout>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);

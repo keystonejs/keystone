@@ -205,9 +205,7 @@ test('label and data in inline relationships are stripped', () => {
           }
           relationship="inline"
         >
-          <text>
-            
-          </text>
+          <text />
         </relationship>
         <text>
           something
@@ -258,15 +256,11 @@ test('label and data in relationship props are stripped', () => {
         }
       >
         <component-inline-prop>
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);

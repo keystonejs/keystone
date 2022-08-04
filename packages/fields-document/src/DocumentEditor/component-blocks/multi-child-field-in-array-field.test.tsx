@@ -139,9 +139,7 @@ test('deleting all child fields in an array field element when there are multipl
             ]
           }
         >
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
         <component-inline-prop
           propPath={
@@ -152,9 +150,7 @@ test('deleting all child fields in an array field element when there are multipl
             ]
           }
         >
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
         <component-inline-prop
           propPath={
@@ -165,9 +161,7 @@ test('deleting all child fields in an array field element when there are multipl
             ]
           }
         >
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
         <component-inline-prop
           propPath={
@@ -184,9 +178,7 @@ test('deleting all child fields in an array field element when there are multipl
         </component-inline-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -248,9 +240,7 @@ test('when the wrong children exist, the children are normalized based on the pr
             ]
           }
         >
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
         <component-inline-prop
           propPath={
@@ -261,9 +251,7 @@ test('when the wrong children exist, the children are normalized based on the pr
             ]
           }
         >
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
         <component-inline-prop
           propPath={
@@ -274,9 +262,7 @@ test('when the wrong children exist, the children are normalized based on the pr
             ]
           }
         >
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
         <component-inline-prop
           propPath={
@@ -287,9 +273,7 @@ test('when the wrong children exist, the children are normalized based on the pr
             ]
           }
         >
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
         <component-inline-prop
           propPath={
@@ -300,9 +284,7 @@ test('when the wrong children exist, the children are normalized based on the pr
             ]
           }
         >
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
         <component-inline-prop
           propPath={
@@ -313,15 +295,11 @@ test('when the wrong children exist, the children are normalized based on the pr
             ]
           }
         >
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);

@@ -20,9 +20,7 @@ test('basic link shortcut', () => {
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
         <link
           @@isInline={true}
           href="https://keystonejs.com"
@@ -112,9 +110,7 @@ test('shortcut with whitespace in the middle of the content works', () => {
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
         <link
           @@isInline={true}
           href="https://keystonejs.com"
@@ -147,9 +143,7 @@ test('link shortcut then typing inserts text outside of the link', () => {
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
         <link
           @@isInline={true}
           href="https://keystonejs.com"
@@ -184,9 +178,7 @@ test('link shortcut with bold in some of the content works', () => {
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
         <link
           @@isInline={true}
           href="https://keystonejs.com"
@@ -296,9 +288,7 @@ test("link shortcut doesn't do anything when inside of a component block with li
         </component-inline-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -346,9 +336,7 @@ test('link shortcut works when inside of a component block with links option inh
             ]
           }
         >
-          <text>
-            
-          </text>
+          <text />
           <link
             @@isInline={true}
             href="https://keystonejs.com"
@@ -363,9 +351,7 @@ test('link shortcut works when inside of a component block with links option inh
         </component-inline-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -386,9 +372,7 @@ test('an undo only reverts to the whole shortcut text', () => {
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
         <link
           @@isInline={true}
           href="https://keystonejs.com"
@@ -431,9 +415,7 @@ test("text after the markdown shortcut isn't included in the link text", () => {
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
         <link
           @@isInline={true}
           href="https://keystonejs.com"

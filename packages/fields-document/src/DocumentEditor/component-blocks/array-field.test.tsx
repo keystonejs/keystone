@@ -146,9 +146,7 @@ test('inserting a break at the end of a child field creates a new item with fres
         </component-inline-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -226,9 +224,7 @@ test('inserting a break splits the text and uses the values from the first entry
         </component-inline-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -297,9 +293,7 @@ test('inserting a break in an empty child removes the element and inserts a para
         </text>
       </paragraph>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -415,9 +409,7 @@ test('deleting a range of nodes removes them', () => {
         </component-inline-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -467,15 +459,11 @@ test('inserting an item from empty works', () => {
             ]
           }
         >
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -512,15 +500,11 @@ test('removing an item using the preview props works', () => {
         }
       >
         <component-inline-prop>
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);

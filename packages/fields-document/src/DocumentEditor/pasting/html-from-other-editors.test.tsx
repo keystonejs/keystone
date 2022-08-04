@@ -137,9 +137,7 @@ test('confluence', () => {
         </text>
       </paragraph>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
         <link
           @@isInline={true}
           href="https://keystonejs.com"
@@ -148,16 +146,12 @@ test('confluence', () => {
             A link
           </text>
         </link>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
       <divider
         @@isVoid={true}
       >
-        <text>
-          
-        </text>
+        <text />
       </divider>
       <unordered-list>
         <list-item>
@@ -247,9 +241,7 @@ test('confluence', () => {
         </text>
       </heading>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -365,9 +357,7 @@ there is a break before this</p>
         </text>
       </paragraph>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
         <link
           @@isInline={true}
           href="https://keystonejs.com/"
@@ -376,16 +366,12 @@ there is a break before this</p>
             A link
           </text>
         </link>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
       <divider
         @@isVoid={true}
       >
-        <text>
-          
-        </text>
+        <text />
       </divider>
       <unordered-list>
         <list-item>
@@ -535,9 +521,7 @@ test('dropbox paper', () => {
         </text>
       </paragraph>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
         <link
           @@isInline={true}
           href="https://keystonejs.com"
@@ -546,16 +530,12 @@ test('dropbox paper', () => {
             A link
           </text>
         </link>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
       <divider
         @@isVoid={true}
       >
-        <text>
-          
-        </text>
+        <text />
       </divider>
       <unordered-list>
         <list-item>
@@ -710,9 +690,7 @@ test('google docs', () => {
         </text>
       </paragraph>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
         <link
           @@isInline={true}
           href="https://keystonejs.com"
@@ -721,26 +699,18 @@ test('google docs', () => {
             A link
           </text>
         </link>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
       <divider
         @@isVoid={true}
       >
-        <text>
-          
-        </text>
+        <text />
       </divider>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
       <unordered-list>
         <list-item>
@@ -826,9 +796,7 @@ test('google docs', () => {
         </text>
       </heading>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);

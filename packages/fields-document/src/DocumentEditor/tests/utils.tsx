@@ -320,7 +320,11 @@ function nodeToReactElement(
         });
       }
     }
-    return createElement('text', { children: text, ...marks });
+    return createElement('text', {
+      // we want to show empty text nodes as <text />
+      children: text === '' ? undefined : text,
+      ...marks,
+    });
   }
   let children = node.children.map((x, i) =>
     nodeToReactElement(editor, x, selection, path.concat(i))
