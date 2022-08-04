@@ -9,8 +9,6 @@ type Options = {
 export const redisSessionStore = ({ client }: Options): SessionStoreFunction => {
   return ({ maxAge }) => ({
     async connect() {
-      client.on('error', err => console.log('Redis Client Error', err));
-
       await client.connect();
     },
     async get(key) {
