@@ -66,7 +66,11 @@ export const Field = ({
   );
 };
 
-function validate(value: Value, fieldMeta: CalendarDayFieldMeta, label: string): string | undefined {
+function validate(
+  value: Value,
+  fieldMeta: CalendarDayFieldMeta,
+  label: string
+): string | undefined {
   // if we recieve null initially on the item view and the current value is null,
   // we should always allow saving it because:
   // - the value might be null in the database and we don't want to prevent saving the whole item because of that

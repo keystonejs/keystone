@@ -168,7 +168,9 @@ const RFC_3339_FULL_DATE_REGEX = /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01]
 
 function validateCalendarDay(input: string) {
   if (!RFC_3339_FULL_DATE_REGEX.test(input)) {
-    throw new GraphQLError('CalendarDay scalars must be in the form of a full-date ISO 8601 string');
+    throw new GraphQLError(
+      'CalendarDay scalars must be in the form of a full-date ISO 8601 string'
+    );
   }
 }
 
