@@ -77,14 +77,14 @@ A `SessionStore` object has the following interface:
 
 ```typescript
 const store = {
-  connect: () => { /* ... */ },
-  disconnect: () => { /* ... */ },
-  set: (sessionId, data) => { /* ... */ },
-  get: sessionId => {
+  connect: async () => { /* ... */ },
+  disconnect: async () => { /* ... */ },
+  set: async (sessionId, data) => { /* ... */ },
+  get: async (sessionId) => {
     /* ... */
     return data;
   },
-  delete: sessionId => { /* ... */ },
+  delete: async (sessionId) => { /* ... */ },
 };
 ```
 
