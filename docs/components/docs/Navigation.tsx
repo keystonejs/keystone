@@ -236,7 +236,9 @@ export function UpdatesNavigation() {
     >
       <PrimaryNavItem href="/updates">Latest News</PrimaryNavItem>
       <PrimaryNavItem href="/updates/roadmap">Roadmap</PrimaryNavItem>
-      <PrimaryNavItem href="https://github.com/keystonejs/keystone/releases">GitHub Releases</PrimaryNavItem>
+      <PrimaryNavItem href="https://github.com/keystonejs/keystone/releases">
+        GitHub Releases
+      </PrimaryNavItem>
       <Section label="Featured News">
         <NavItem href="/docs/guides/images-and-files">
           <Emoji symbol="🖼️" alt="Picture" />
