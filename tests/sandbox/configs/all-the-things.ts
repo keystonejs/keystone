@@ -13,6 +13,7 @@ import {
   image,
   float,
   bigInt,
+  calendarDay,
 } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
 import { componentBlocks } from '../component-blocks';
@@ -55,6 +56,7 @@ export const lists = {
       }),
       text: text({ ui: { description } }),
       timestamp: timestamp({ ui: { description } }),
+      calendarDay: calendarDay({ ui: { description } }),
       randomNumberVirtual: virtual({
         ui: { description },
         field: graphql.field({

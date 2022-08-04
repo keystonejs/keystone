@@ -26,3 +26,5 @@ export { timestamp } from './types/timestamp';
 export type { TimestampFieldConfig } from './types/timestamp';
 export { virtual } from './types/virtual';
 export type { VirtualFieldConfig } from './types/virtual';
+export { calendarDay } from './types/calendarDay';
+export type { CalendarDayFieldConfig } from './types/calendarDay';

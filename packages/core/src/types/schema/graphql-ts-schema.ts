@@ -164,6 +164,43 @@ export const DateTime = graphqlTsSchema.graphql.scalar<Date>(
   })
 );
 
+const RFC_3339_FULL_DATE_REGEX = /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/;
+
+function validateCalendarDay(input: string) {
+  if (!RFC_3339_FULL_DATE_REGEX.test(input)) {
+    throw new GraphQLError(
+      'CalendarDay scalars must be in the form of a full-date ISO 8601 string'
+    );
+  }
+}
+
+export const CalendarDay = graphqlTsSchema.graphql.scalar<string>(
+  new GraphQLScalarType({
+    name: 'CalendarDay',
+    specifiedByUrl: 'https://datatracker.ietf.org/doc/html/rfc3339#section-5.6',
+    serialize(value: unknown) {
+      if (typeof value !== 'string') {
+        throw new GraphQLError(`unexpected value provided to CalendarDay scalar: ${value}`);
+      }
+      return value;
+    },
+    parseLiteral(value) {
+      if (value.kind !== 'StringValue') {
+        throw new GraphQLError('CalendarDay only accepts values as strings');
+      }
+      validateCalendarDay(value.value);
+      return value.value;
+    },
+    parseValue(value: unknown) {
+      if (typeof value !== 'string') {
+        throw new GraphQLError('CalendarDay only accepts values as strings');
+      }
+      validateCalendarDay(value);
+      return value;
+    },
+  })
+);
+
 export type NullableType = graphqlTsSchema.NullableType<Context>;
 export type Type = graphqlTsSchema.Type<Context>;
 export type NullableOutputType = graphqlTsSchema.NullableOutputType<Context>;
