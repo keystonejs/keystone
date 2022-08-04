@@ -95,9 +95,7 @@ test('inserting a void component block', () => {
         </component-inline-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -161,15 +159,11 @@ test('inserting a complex component block', () => {
             ]
           }
         >
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -352,9 +346,7 @@ test('preview props conditional change', () => {
             ]
           }
         >
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
         <component-block-prop
           propPath={
@@ -366,16 +358,12 @@ test('preview props conditional change', () => {
           }
         >
           <paragraph>
-            <text>
-              
-            </text>
+            <text />
           </paragraph>
         </component-block-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);

@@ -540,9 +540,7 @@ test('inserting a break at the end of a block with a mark removes the mark', () 
         </text>
       </paragraph>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -589,9 +587,7 @@ test("inserting a break in the middle of text doesn't remove the mark", () => {
         </text>
       </paragraph>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
