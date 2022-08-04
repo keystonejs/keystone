@@ -162,9 +162,7 @@ there is a break before this
         </text>
       </paragraph>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
         <link
           @@isInline={true}
           href="https://keystonejs.com"
@@ -173,9 +171,7 @@ there is a break before this
             A link
           </text>
         </link>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
       <paragraph>
         <text>
@@ -185,9 +181,7 @@ there is a break before this
       <divider
         @@isVoid={true}
       >
-        <text>
-          
-        </text>
+        <text />
       </divider>
       <unordered-list>
         <list-item>
@@ -303,9 +297,7 @@ test('a link stays in the same block', () => {
   expect(deserializeMarkdown(`[link](https://keystonejs.com)`)).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
         <link
           @@isInline={true}
           href="https://keystonejs.com"
@@ -315,9 +307,7 @@ test('a link stays in the same block', () => {
             <cursor />
           </text>
         </link>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);

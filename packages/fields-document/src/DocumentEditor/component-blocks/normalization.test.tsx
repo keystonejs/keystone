@@ -58,14 +58,10 @@ test('component-inline-prop and component-block-prop outside of component-block 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
       <paragraph>
         <text>
@@ -105,9 +101,7 @@ test('non component block prop in component-block', () => {
         }
       >
         <component-inline-prop>
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
       </component-block>
       <paragraph>
@@ -153,9 +147,7 @@ test('content inside of void child prop', () => {
         }
       >
         <component-inline-prop>
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
       </component-block>
       <paragraph>
@@ -203,9 +195,7 @@ test('prop path for old fake void prop is removed', () => {
         }
       >
         <component-inline-prop>
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
       </component-block>
       <paragraph>
@@ -246,9 +236,7 @@ test('inserting a void component block', () => {
         </component-inline-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -292,9 +280,7 @@ test('extra component props are removed', () => {
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
       <component-block
         component="withChildElements"
@@ -326,15 +312,11 @@ test('extra component props are removed', () => {
             ]
           }
         >
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -390,15 +372,11 @@ test('missing component props are added', () => {
             ]
           }
         >
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -463,9 +441,7 @@ test('prop with wrong type for a given prop path', () => {
         </component-inline-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -518,9 +494,7 @@ test('props in wrong order', () => {
           }
         >
           <paragraph>
-            <text>
-              
-            </text>
+            <text />
           </paragraph>
         </component-block-prop>
         <component-inline-prop
@@ -530,9 +504,7 @@ test('props in wrong order', () => {
             ]
           }
         >
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
         <component-block-prop
           propPath={
@@ -542,16 +514,12 @@ test('props in wrong order', () => {
           }
         >
           <paragraph>
-            <text>
-              
-            </text>
+            <text />
           </paragraph>
         </component-block-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -610,9 +578,7 @@ test('toggling to heading when in an inline prop', () => {
             ]
           }
         >
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
         <component-block-prop
           propPath={
@@ -630,9 +596,7 @@ test('toggling to heading when in an inline prop', () => {
         </component-block-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -718,9 +682,7 @@ test('child field in array field insertBreak', () => {
         </component-inline-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -801,9 +763,7 @@ test('child field in array field deleteBackward at end', () => {
         </component-inline-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -907,9 +867,7 @@ test('child field in array field deleteBackward in middle', () => {
         </component-inline-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -950,15 +908,11 @@ test('normalization adds missing fields on object fields', () => {
         }
       >
         <component-inline-prop>
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
