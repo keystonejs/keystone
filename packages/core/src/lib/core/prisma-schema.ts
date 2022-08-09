@@ -194,10 +194,8 @@ export function printPrismaSchema(
   prismaPreviewFeatures?: readonly string[] | null,
   additionalPrismaDatasourceProperties?: { [key: string]: string; } | null
 ) {
-  let additionalDataSourceString = '';
-  if (additionalPrismaDatasourceProperties && Object.keys(additionalPrismaDatasourceProperties).length) {
-    additionalDataSourceString = Object.keys(additionalPrismaDatasourceProperties).reduce((previousValue, key) => previousValue + `\n    ${key} = "${additionalPrismaDatasourceProperties[key]}"`,'');
-  }
+  const additionalDataSourceString = Object.entries(additionalPrismaDatasourceProperties || {}).map(([key, value]) => `\n    ${key} = "${value}"`).join('');
+
   let prismaFlags = '';
   if (prismaPreviewFeatures && prismaPreviewFeatures.length) {
     prismaFlags = `\n    previewFeatures = ["${prismaPreviewFeatures.join('","')}"]`;
