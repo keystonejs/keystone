@@ -94,7 +94,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       mysql:
-        image: mariadb:10.7
+        image: mariadb:10.8
         env:
           MYSQL_USER: testuser
           MYSQL_PASSWORD: testpass
@@ -189,7 +189,7 @@ jobs:
         ports:
           - 6379:6379
       mysql:
-        image: mariadb:10.7
+        image: mariadb:10.8
         env:
           MYSQL_USER: testuser
           MYSQL_PASSWORD: testpass
@@ -302,7 +302,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       mysql:
-        image: mariadb:10.7
+        image: mariadb:10.8
         env:
           MYSQL_USER: testuser
           MYSQL_PASSWORD: testpass
