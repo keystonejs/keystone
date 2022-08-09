@@ -16,6 +16,7 @@
     "@babel/preset-react": "^7.16.0",
     "@babel/preset-typescript": "^7.16.0",
     "@babel/runtime": "^7.16.3",
+    "@graphql-tools/schema": "^9.0.0",
     "@keystone-6/auth": "^4.0.1",
     "@keystone-6/cloudinary": "^4.0.1",
     "@keystone-6/core": "^2.2.0",
