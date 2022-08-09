@@ -1,6 +1,6 @@
 import { setupTestRunner } from '@keystone-6/core/testing';
 import config from '../keystone';
-import { Context } from '.keystone/types';
+import { Context } from '.keystone';
 
 const FAKE_ID = 'cinjfgbkjnfg';
 

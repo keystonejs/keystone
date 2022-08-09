@@ -1,6 +1,6 @@
 import { setupTestEnv, setupTestRunner, TestEnv } from '@keystone-6/core/testing';
 import config from './keystone';
-import { Context } from '.keystone/types';
+import { Context } from '.keystone';
 
 // Setup a test runner which will provide a clean test environment
 // with access to our GraphQL API for each test.

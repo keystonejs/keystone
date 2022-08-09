@@ -1,7 +1,7 @@
 import { integer, text, relationship, virtual } from '@keystone-6/core/fields';
 import { list, graphql } from '@keystone-6/core';
 import { isSignedIn, rules } from '../access';
-import { Lists } from '.keystone/types';
+import { Lists } from '.keystone';
 
 const formatter = new Intl.NumberFormat('en-US', {
   style: 'currency',

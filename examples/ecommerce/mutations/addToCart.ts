@@ -1,5 +1,5 @@
 import { Session } from '../types';
-import { Context } from '.keystone/types';
+import { Context } from '.keystone';
 
 async function addToCart(
   root: any,

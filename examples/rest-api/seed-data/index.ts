@@ -1,5 +1,5 @@
 import { persons, tasks } from './data';
-import { Context } from '.keystone/types';
+import { Context } from '.keystone';
 
 type PersonProps = {
   name: string;

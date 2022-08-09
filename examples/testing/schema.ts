@@ -1,7 +1,7 @@
 import { list } from '@keystone-6/core';
 import { checkbox, password, relationship, text, timestamp } from '@keystone-6/core/fields';
 import { select } from '@keystone-6/core/fields';
-import { Lists } from '.keystone/types';
+import { Lists } from '.keystone';
 
 export const lists: Lists = {
   Task: list({

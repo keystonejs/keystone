@@ -2,7 +2,7 @@ import { config } from '@keystone-6/core';
 import { lists } from './schema';
 import { insertSeedData } from './seed-data';
 import { getTasks } from './routes/tasks';
-import { Context } from '.keystone/types';
+import { Context } from '.keystone';
 
 /*
   A quick note on types: normally if you're adding custom properties to your

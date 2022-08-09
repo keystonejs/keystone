@@ -1,4 +1,4 @@
-import { Context } from '.keystone/types';
+import { Context } from '.keystone';
 
 // import stripeConfig from '../lib/stripe';
 
