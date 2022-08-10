@@ -39,6 +39,7 @@ test('sibling links with identical hrefs are merged', () => {
 });
 
 test('sibling links with different hrefs are not merged', () => {
+  // throws if merged
   makeEditor(
     <editor>
       <paragraph>
