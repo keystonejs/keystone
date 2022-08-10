@@ -22,7 +22,8 @@ function firstGitCommitOf(path) {
     .toString('utf-8')
     .split(' ', 1)
     .pop()
-    .replace(/[^A-Za-z0-9]/g, '');
+    .replace(/[^A-Za-z0-9]/g, '')
+    .slice(0, 40);
 }
 
 async function fetchData(tag) {
@@ -36,8 +37,10 @@ async function fetchData(tag) {
 
   // tag changesets with their commits
   for (const changeset of changesets) {
-    changeset.commit = firstGitCommitOf(`.changeset/${changeset.id}.md`);
-    if (!revs.includes(changeset.commit)) throw new Error(`Unexpected commit ${changeset.commit}`);
+    const commit = firstGitCommitOf(`.changeset/${changeset.id}.md`);
+
+    if (!revs.includes(commit)) throw new Error(`Unexpected commit ${changeset.commit}`);
+    changeset.commit = commit;
   }
 
   // list all the contributors
