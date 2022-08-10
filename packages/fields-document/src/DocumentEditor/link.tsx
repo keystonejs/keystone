@@ -2,7 +2,7 @@
 /** @jsx jsx */
 
 import { ReactEditor, RenderElementProps, useFocused, useSelected } from 'slate-react';
-import { Editor, Node, Range, Transforms } from 'slate';
+import { Editor, Node, Range, Transforms, Text } from 'slate';
 import { forwardRef, memo, useEffect, useMemo, useState } from 'react';
 
 import { jsx, useTheme } from '@keystone-ui/core';
@@ -25,6 +25,7 @@ import { getAncestorComponentChildFieldDocumentFeatures, useToolbarState } from 
 import { useEventCallback } from './utils';
 import { ComponentBlock } from './component-blocks/api';
 import { isValidURL } from './isValidURL';
+import { isInlineContainer } from '.';
 
 const isLinkActive = (editor: Editor) => {
   return isElementActive(editor, 'link');
@@ -304,9 +305,41 @@ export function withLink(
   }
 
   editor.normalizeNode = ([node, path]) => {
-    if (node.type === 'link' && Node.string(node) === '') {
-      Transforms.unwrapNodes(editor, { at: path });
-      return;
+    if (node.type === 'link') {
+      if (Node.string(node) === '') {
+        Transforms.unwrapNodes(editor, { at: path });
+        return;
+      }
+      for (const [idx, child] of node.children.entries()) {
+        if (child.type === 'link') {
+          // links cannot contain links
+          Transforms.unwrapNodes(editor, { at: [...path, idx] });
+          return;
+        }
+      }
+    }
+    if (isInlineContainer(node)) {
+      let lastMergableLink: { index: number; node: Node & { type: 'link' } } | null = null;
+      for (const [idx, child] of node.children.entries()) {
+        if (child.type === 'link' && child.href === lastMergableLink?.node.href) {
+          const firstLinkPath = [...path, lastMergableLink.index];
+          const secondLinkPath = [...path, idx];
+          const to = [...firstLinkPath, lastMergableLink.node.children.length];
+          // note this is going in reverse, js doesn't have double-ended iterators so it's a for(;;)
+          for (let i = child.children.length - 1; i >= 0; i--) {
+            const childPath = [...secondLinkPath, i];
+            Transforms.moveNodes(editor, { at: childPath, to });
+          }
+          Transforms.removeNodes(editor, { at: secondLinkPath });
+          return;
+        }
+        if (!Text.isText(child) || child.text !== '') {
+          lastMergableLink = null;
+        }
+        if (child.type === 'link') {
+          lastMergableLink = { index: idx, node: child };
+        }
+      }
     }
     normalizeNode([node, path]);
   };

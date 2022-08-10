@@ -439,55 +439,22 @@ while (listDepth--) {
   }
 }
 
-type Block = Exclude<Element, { type: 'relationship' | 'link' }>;
+export type Block = Exclude<Element, { type: 'relationship' | 'link' }>;
 
-type BlockType = Block['type'];
+type BlockContainerSchema = {
+  kind: 'blocks';
+  allowedChildren: ReadonlySet<Element['type']>;
+  blockToWrapInlinesIn: TypesWhichHaveNoExtraRequiredProps;
+  invalidPositionHandleMode: 'unwrap' | 'move';
+};
 
-type EditorSchema = Record<
-  BlockType | 'editor',
-  | {
-      kind: 'blocks';
-      allowedChildren: ReadonlySet<Element['type']>;
-      blockToWrapInlinesIn: TypesWhichHaveNoExtraRequiredProps;
-      invalidPositionHandleMode: 'unwrap' | 'move';
-    }
-  | { kind: 'inlines'; invalidPositionHandleMode: 'unwrap' | 'move' }
->;
+type InlineContainerSchema = { kind: 'inlines'; invalidPositionHandleMode: 'unwrap' | 'move' };
 
 type TypesWhichHaveNoExtraRequiredProps = {
   [Type in Block['type']]: { type: Type; children: Descendant[] } extends Block & { type: Type }
     ? Type
     : never;
 }[Block['type']];
-
-function makeEditorSchema(
-  obj: Record<
-    BlockType | 'editor',
-    | {
-        kind: 'blocks';
-        allowedChildren: readonly [TypesWhichHaveNoExtraRequiredProps, ...BlockType[]];
-        invalidPositionHandleMode: 'unwrap' | 'move';
-      }
-    | { kind: 'inlines'; invalidPositionHandleMode: 'unwrap' | 'move' }
-  >
-) {
-  let ret: EditorSchema = {} as any;
-  (Object.keys(obj) as (keyof typeof obj)[]).forEach(key => {
-    const val = obj[key];
-
-    if (val.kind === 'blocks') {
-      ret[key] = {
-        kind: 'blocks',
-        allowedChildren: new Set(val.allowedChildren),
-        blockToWrapInlinesIn: val.allowedChildren[0],
-        invalidPositionHandleMode: val.invalidPositionHandleMode,
-      };
-    } else {
-      ret[key] = val;
-    }
-  });
-  return ret;
-}
 
 const blockquoteChildren = [
   'paragraph',
@@ -502,58 +469,101 @@ const paragraphLike = [...blockquoteChildren, 'blockquote'] as const;
 
 const insideOfLayouts = [...paragraphLike, 'component-block'] as const;
 
-export const editorSchema = makeEditorSchema({
-  editor: {
+function blockContainer(args: {
+  allowedChildren: readonly [TypesWhichHaveNoExtraRequiredProps, ...Block['type'][]];
+  invalidPositionHandleMode: 'unwrap' | 'move';
+}): BlockContainerSchema {
+  return {
     kind: 'blocks',
+    allowedChildren: new Set(args.allowedChildren),
+    blockToWrapInlinesIn: args.allowedChildren[0],
+    invalidPositionHandleMode: args.invalidPositionHandleMode,
+  };
+}
+
+function inlineContainer(args: {
+  invalidPositionHandleMode: 'unwrap' | 'move';
+}): InlineContainerSchema {
+  return {
+    kind: 'inlines',
+    invalidPositionHandleMode: args.invalidPositionHandleMode,
+  };
+}
+
+// a user land version of https://github.com/microsoft/TypeScript/issues/47920
+function satisfies<Base>() {
+  return function <Specific extends Base>(value: Specific) {
+    return value;
+  };
+}
+
+type EditorSchema = typeof editorSchema;
+
+export const editorSchema = satisfies<
+  Record<Block['type'] | 'editor', BlockContainerSchema | InlineContainerSchema>
+>()({
+  editor: blockContainer({
     allowedChildren: [...insideOfLayouts, 'layout'],
     invalidPositionHandleMode: 'move',
-  },
-  layout: { kind: 'blocks', allowedChildren: ['layout-area'], invalidPositionHandleMode: 'move' },
-  'layout-area': {
-    kind: 'blocks',
+  }),
+  layout: blockContainer({ allowedChildren: ['layout-area'], invalidPositionHandleMode: 'move' }),
+  'layout-area': blockContainer({
     allowedChildren: insideOfLayouts,
     invalidPositionHandleMode: 'unwrap',
-  },
-  blockquote: {
-    kind: 'blocks',
+  }),
+  blockquote: blockContainer({
     allowedChildren: blockquoteChildren,
     invalidPositionHandleMode: 'move',
-  },
-  paragraph: { kind: 'inlines', invalidPositionHandleMode: 'unwrap' },
-  code: { kind: 'inlines', invalidPositionHandleMode: 'move' },
-  divider: { kind: 'inlines', invalidPositionHandleMode: 'move' },
-  heading: {
-    kind: 'inlines',
-    invalidPositionHandleMode: 'unwrap',
-  },
-  'component-block': {
-    kind: 'blocks',
+  }),
+  paragraph: inlineContainer({ invalidPositionHandleMode: 'unwrap' }),
+  code: inlineContainer({ invalidPositionHandleMode: 'move' }),
+  divider: inlineContainer({ invalidPositionHandleMode: 'move' }),
+  heading: inlineContainer({ invalidPositionHandleMode: 'unwrap' }),
+  'component-block': blockContainer({
     allowedChildren: ['component-block-prop', 'component-inline-prop'],
     invalidPositionHandleMode: 'move',
-  },
-  'component-inline-prop': { kind: 'inlines', invalidPositionHandleMode: 'unwrap' },
-  'component-block-prop': {
-    kind: 'blocks',
+  }),
+  'component-inline-prop': inlineContainer({ invalidPositionHandleMode: 'unwrap' }),
+  'component-block-prop': blockContainer({
     allowedChildren: paragraphLike,
     invalidPositionHandleMode: 'unwrap',
-  },
-  'ordered-list': {
-    kind: 'blocks',
+  }),
+  'ordered-list': blockContainer({
     allowedChildren: ['list-item'],
     invalidPositionHandleMode: 'move',
-  },
-  'unordered-list': {
-    kind: 'blocks',
+  }),
+  'unordered-list': blockContainer({
     allowedChildren: ['list-item'],
     invalidPositionHandleMode: 'move',
-  },
-  'list-item': {
-    kind: 'blocks',
+  }),
+  'list-item': blockContainer({
     allowedChildren: ['list-item-content', 'ordered-list', 'unordered-list'],
     invalidPositionHandleMode: 'unwrap',
-  },
-  'list-item-content': { kind: 'inlines', invalidPositionHandleMode: 'unwrap' },
+  }),
+  'list-item-content': inlineContainer({ invalidPositionHandleMode: 'unwrap' }),
 });
+
+type InlineContainingType = {
+  [Key in keyof EditorSchema]: { inlines: Key; blocks: never }[EditorSchema[Key]['kind']];
+}[keyof EditorSchema];
+
+const inlineContainerTypes = new Set(
+  Object.entries(editorSchema)
+    .filter(([, value]) => value.kind === 'inlines')
+    .map(([type]) => type)
+);
+
+export function isInlineContainer(node: Node): node is Block & { type: InlineContainingType } {
+  return node.type !== undefined && inlineContainerTypes.has(node.type);
+}
+
+const blockTypes: Set<string | undefined> = new Set(
+  Object.keys(editorSchema).filter(x => x !== 'editor')
+);
+
+export function isBlock(node: Descendant): node is Block {
+  return blockTypes.has(node.type);
+}
 
 function withBlocksSchema(editor: Editor): Editor {
   const { normalizeNode } = editor;

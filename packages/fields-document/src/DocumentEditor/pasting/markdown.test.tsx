@@ -304,10 +304,11 @@ test('a link stays in the same block', () => {
         >
           <text>
             link
-            <cursor />
           </text>
         </link>
-        <text />
+        <text>
+          <cursor />
+        </text>
       </paragraph>
     </editor>
   `);
