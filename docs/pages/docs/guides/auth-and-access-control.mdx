@@ -136,7 +136,7 @@ You configure it like this:
 ```ts
 const { withAuth } = createAuth({
   // ...
-  sessionData: 'name isAdmin',
+  sessionData: 'isAdmin',
 });
 ```
 
@@ -147,7 +147,7 @@ The equivalent GraphQL query would look like this:
 ```graphql
 query {
   person(where: { id: $session.itemId }) {
-    name
+    id
     isAdmin
   }
 }
