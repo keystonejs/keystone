@@ -99,6 +99,7 @@ const CodeElement = ({ attributes, children }: RenderElementProps) => {
         fontFamily: typography.fontFamily.monospace,
         fontSize: typography.fontSize.small,
         padding: `${spacing.small}px ${spacing.medium}px`,
+        overflowX: 'auto',
       }}
       {...attributes}
     >
