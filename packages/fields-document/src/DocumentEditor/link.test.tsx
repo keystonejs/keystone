@@ -39,7 +39,6 @@ test('sibling links with identical hrefs are merged', () => {
 });
 
 test('sibling links with different hrefs are not merged', () => {
-  // throws if merged
   makeEditor(
     <editor>
       <paragraph>
@@ -53,7 +52,9 @@ test('sibling links with different hrefs are not merged', () => {
         </link>
         <text />
       </paragraph>
-    </editor>
+    </editor>,
+    // this is the default(and that should never change), but just to be explicit:
+    { normalization: 'disallow-non-normalized' }
   );
 });
 
