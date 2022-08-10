@@ -192,9 +192,11 @@ export function printPrismaSchema(
   lists: Record<string, InitialisedList>,
   provider: DatabaseProvider,
   prismaPreviewFeatures?: readonly string[] | null,
-  additionalPrismaDatasourceProperties?: { [key: string]: string; } | null
+  additionalPrismaDatasourceProperties?: { [key: string]: string } | null
 ) {
-  const additionalDataSourceString = Object.entries(additionalPrismaDatasourceProperties || {}).map(([key, value]) => `\n    ${key} = "${value}"`).join('');
+  const additionalDataSourceString = Object.entries(additionalPrismaDatasourceProperties || {})
+    .map(([key, value]) => `\n    ${key} = "${value}"`)
+    .join('');
 
   let prismaFlags = '';
   if (prismaPreviewFeatures && prismaPreviewFeatures.length) {
