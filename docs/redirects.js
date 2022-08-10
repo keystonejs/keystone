@@ -98,6 +98,11 @@ const ORIGINAL_NEXT = [
     destination: '/docs/walkthroughs/getting-started-with-create-keystone-app',
     permanent: true,
   },
+  {
+    source: '/releases',
+    destination: 'https://github.com/keystonejs/keystone/releases',
+    permanent: true,
+  },
   { source: '/roadmap', destination: '/updates/roadmap', permanent: true },
   { source: '/whats-new', destination: '/updates/whats-new-in-v6', permanent: true },
 ];
