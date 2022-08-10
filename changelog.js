@@ -65,7 +65,9 @@ async function fetchData(tag) {
 
     // TODO: move this to CI linting
     const describedType = summary.split(' ')[0];
-    if (!verbs.has(describedType)) console.warn(`  Verb '${describedType}' is non-standard for a changeset`);
+    if (!verbs.has(describedType)) {
+      console.warn(`  Verb '${describedType}' is non-standard for a changeset`);
+    }
 
     // poor semver precedence
     let type;
