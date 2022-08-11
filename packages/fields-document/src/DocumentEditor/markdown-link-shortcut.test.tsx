@@ -269,14 +269,14 @@ test("link shortcut doesn't do anything when inside of a component block with li
       <component-block
         component="comp"
         props={
-          Object {
+          {
             "child": null,
           }
         }
       >
         <component-inline-prop
           propPath={
-            Array [
+            [
               "child",
             ]
           }
@@ -324,14 +324,14 @@ test('link shortcut works when inside of a component block with links option inh
       <component-block
         component="comp"
         props={
-          Object {
+          {
             "child": null,
           }
         }
       >
         <component-inline-prop
           propPath={
-            Array [
+            [
               "child",
             ]
           }

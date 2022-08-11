@@ -18,9 +18,9 @@ test(
   runner(async ({ context }) => {
     const res = await context.exitSudo().graphql.raw({ query: staticAdminMetaQuery });
     expect(res).toMatchInlineSnapshot(`
-      Object {
+      {
         "data": null,
-        "errors": Array [
+        "errors": [
           [GraphQLError: Access denied],
         ],
       }

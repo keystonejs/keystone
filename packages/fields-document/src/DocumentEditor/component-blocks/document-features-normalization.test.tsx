@@ -292,14 +292,14 @@ test('mark disabled in inline prop', () => {
       <component-block
         component="comp"
         props={
-          Object {
+          {
             "child": null,
           }
         }
       >
         <component-inline-prop
           propPath={
-            Array [
+            [
               "child",
             ]
           }
@@ -331,14 +331,14 @@ test('mark enabled in inline prop', () => {
       <component-block
         component="comp"
         props={
-          Object {
+          {
             "child": null,
           }
         }
       >
         <component-inline-prop
           propPath={
-            Array [
+            [
               "child",
             ]
           }
@@ -374,14 +374,14 @@ test('mark disabled in block prop', () => {
       <component-block
         component="comp"
         props={
-          Object {
+          {
             "child": null,
           }
         }
       >
         <component-block-prop
           propPath={
-            Array [
+            [
               "child",
             ]
           }
@@ -417,14 +417,14 @@ test('mark enabled in block prop', () => {
       <component-block
         component="comp"
         props={
-          Object {
+          {
             "child": null,
           }
         }
       >
         <component-block-prop
           propPath={
-            Array [
+            [
               "child",
             ]
           }
@@ -462,14 +462,14 @@ test('heading disabled in block prop', () => {
       <component-block
         component="comp"
         props={
-          Object {
+          {
             "child": null,
           }
         }
       >
         <component-block-prop
           propPath={
-            Array [
+            [
               "child",
             ]
           }
@@ -505,14 +505,14 @@ test('heading enabled in block prop', () => {
       <component-block
         component="comp"
         props={
-          Object {
+          {
             "child": null,
           }
         }
       >
         <component-block-prop
           propPath={
-            Array [
+            [
               "child",
             ]
           }

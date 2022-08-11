@@ -102,7 +102,7 @@ test('marks around blocks turn into marks around text', () => {
   ).toMatchInlineSnapshot(`
     <editor
       marks={
-        Object {
+        {
           "italic": true,
           "keyboard": true,
         }

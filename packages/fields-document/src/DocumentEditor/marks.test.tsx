@@ -565,7 +565,7 @@ test("inserting a break in the middle of text doesn't remove the mark", () => {
   expect(editor).toMatchInlineSnapshot(`
     <editor
       marks={
-        Object {
+        {
           "bold": true,
         }
       }

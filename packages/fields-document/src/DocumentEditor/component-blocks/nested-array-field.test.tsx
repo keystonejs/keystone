@@ -62,10 +62,10 @@ test('child field in nested array', () => {
       <component-block
         component="table"
         props={
-          Object {
-            "children": Array [
-              Array [
-                Object {
+          {
+            "children": [
+              [
+                {
                   "content": null,
                   "something": "1",
                 },
@@ -76,7 +76,7 @@ test('child field in nested array', () => {
       >
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               0,
               0,
@@ -142,24 +142,24 @@ test('multiple in child field in nested array', () => {
       <component-block
         component="table"
         props={
-          Object {
-            "children": Array [
-              Array [
-                Object {
+          {
+            "children": [
+              [
+                {
                   "content": null,
                   "something": "1",
                 },
-                Object {
+                {
                   "content": null,
                   "something": "2",
                 },
               ],
-              Array [
-                Object {
+              [
+                {
                   "content": null,
                   "something": "3",
                 },
-                Object {
+                {
                   "content": null,
                   "something": "4",
                 },
@@ -170,7 +170,7 @@ test('multiple in child field in nested array', () => {
       >
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               0,
               0,
@@ -184,7 +184,7 @@ test('multiple in child field in nested array', () => {
         </component-inline-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               0,
               1,
@@ -198,7 +198,7 @@ test('multiple in child field in nested array', () => {
         </component-inline-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               1,
               0,
@@ -212,7 +212,7 @@ test('multiple in child field in nested array', () => {
         </component-inline-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               1,
               1,
@@ -288,24 +288,24 @@ test('add to multiple in child field in nested array', () => {
       <component-block
         component="table"
         props={
-          Object {
-            "children": Array [
-              Array [
-                Object {
+          {
+            "children": [
+              [
+                {
                   "content": null,
                   "something": "1",
                 },
-                Object {
+                {
                   "content": null,
                   "something": "2",
                 },
               ],
-              Array [
-                Object {
+              [
+                {
                   "content": null,
                   "something": "3",
                 },
-                Object {
+                {
                   "content": null,
                   "something": "4",
                 },
@@ -316,7 +316,7 @@ test('add to multiple in child field in nested array', () => {
       >
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               0,
               0,
@@ -330,7 +330,7 @@ test('add to multiple in child field in nested array', () => {
         </component-inline-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               0,
               1,
@@ -344,7 +344,7 @@ test('add to multiple in child field in nested array', () => {
         </component-inline-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               1,
               0,
@@ -358,7 +358,7 @@ test('add to multiple in child field in nested array', () => {
         </component-inline-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               1,
               1,

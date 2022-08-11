@@ -109,7 +109,7 @@ test('non-text is removed from code blocks', () => {
   expect(editor).toMatchInlineSnapshot(`
     <editor
       marks={
-        Object {
+        {
           "bold": true,
         }
       }

@@ -276,7 +276,7 @@ test('a mark stays in the same block', () => {
   expect(deserializeMarkdown(`__some bold content__`)).toMatchInlineSnapshot(`
     <editor
       marks={
-        Object {
+        {
           "bold": true,
         }
       }
@@ -319,7 +319,7 @@ test('a link nested inside bold', () => {
     .toMatchInlineSnapshot(`
     <editor
       marks={
-        Object {
+        {
           "bold": true,
         }
       }
@@ -365,7 +365,7 @@ test('html in complex inline content', () => {
     .toMatchInlineSnapshot(`
     <editor
       marks={
-        Object {
+        {
           "bold": true,
         }
       }

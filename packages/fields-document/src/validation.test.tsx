@@ -197,7 +197,7 @@ test('label and data in inline relationships are stripped', () => {
           @@isInline={true}
           @@isVoid={true}
           data={
-            Object {
+            {
               "data": undefined,
               "id": "an-id",
               "label": undefined,
@@ -240,16 +240,16 @@ test('label and data in relationship props are stripped', () => {
       <component-block
         component="relationship"
         props={
-          Object {
-            "many": Array [
-              Object {
+          {
+            "many": [
+              {
                 "id": "some-id",
               },
-              Object {
+              {
                 "id": "another-id",
               },
             ],
-            "one": Object {
+            "one": {
               "id": "some-id",
             },
           }
