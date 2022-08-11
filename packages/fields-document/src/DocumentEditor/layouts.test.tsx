@@ -50,7 +50,7 @@ test('layout with not enough layout-area are added', () => {
     <editor>
       <layout
         layout={
-          Array [
+          [
             1,
             1,
           ]
@@ -111,7 +111,7 @@ test('layout with extra layout-areas that are empty are removed', () => {
     <editor>
       <layout
         layout={
-          Array [
+          [
             1,
             1,
           ]
@@ -182,7 +182,7 @@ test('the content of extra layout-areas are merged into the last layout-area', (
     <editor>
       <layout
         layout={
-          Array [
+          [
             1,
             1,
           ]
@@ -255,7 +255,7 @@ test('enter in layout area never exits layout area', () => {
     <editor>
       <layout
         layout={
-          Array [
+          [
             1,
           ]
         }
@@ -320,7 +320,7 @@ test('delete backward never deletes or exits in first layout area', () => {
       </paragraph>
       <layout
         layout={
-          Array [
+          [
             1,
           ]
         }
@@ -378,7 +378,7 @@ test('delete backward never deletes or exits in second layout area', () => {
       </paragraph>
       <layout
         layout={
-          Array [
+          [
             1,
             1,
           ]

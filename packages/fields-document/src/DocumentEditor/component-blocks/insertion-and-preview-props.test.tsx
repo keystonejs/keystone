@@ -83,7 +83,7 @@ test('inserting a void component block', () => {
       <component-block
         component="void"
         props={
-          Object {
+          {
             "text": "",
           }
         }
@@ -118,19 +118,19 @@ test('inserting a complex component block', () => {
       <component-block
         component="complex"
         props={
-          Object {
-            "object": Object {
+          {
+            "object": {
               "block": null,
-              "conditional": Object {
+              "conditional": {
                 "discriminant": false,
                 "value": null,
               },
-              "conditionalSelect": Object {
+              "conditionalSelect": {
                 "discriminant": "a",
                 "value": "",
               },
               "inline": null,
-              "many": Array [],
+              "many": [],
               "prop": "",
               "select": "a",
             },
@@ -139,7 +139,7 @@ test('inserting a complex component block', () => {
       >
         <component-block-prop
           propPath={
-            Array [
+            [
               "object",
               "block",
             ]
@@ -153,7 +153,7 @@ test('inserting a complex component block', () => {
         </component-block-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "object",
               "inline",
             ]
@@ -305,19 +305,19 @@ test('preview props conditional change', () => {
       <component-block
         component="complex"
         props={
-          Object {
-            "object": Object {
+          {
+            "object": {
               "block": null,
-              "conditional": Object {
+              "conditional": {
                 "discriminant": true,
                 "value": null,
               },
-              "conditionalSelect": Object {
+              "conditionalSelect": {
                 "discriminant": "a",
                 "value": "",
               },
               "inline": null,
-              "many": Array [],
+              "many": [],
               "prop": "",
               "select": "a",
             },
@@ -326,7 +326,7 @@ test('preview props conditional change', () => {
       >
         <component-block-prop
           propPath={
-            Array [
+            [
               "object",
               "block",
             ]
@@ -340,7 +340,7 @@ test('preview props conditional change', () => {
         </component-block-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "object",
               "inline",
             ]
@@ -350,7 +350,7 @@ test('preview props conditional change', () => {
         </component-inline-prop>
         <component-block-prop
           propPath={
-            Array [
+            [
               "object",
               "conditional",
               "value",
@@ -431,7 +431,7 @@ test('changing conditional with form inside', () => {
   previewProps.fields.object.fields.conditionalSelect.onChange('b');
 
   expect((editor.children[0] as any).props.object.conditionalSelect).toMatchInlineSnapshot(`
-    Object {
+    {
       "discriminant": "b",
       "value": "B",
     }
@@ -465,7 +465,7 @@ test('changing form inside conditional', () => {
   previewProps.fields.object.fields.conditionalSelect.value.onChange('Some content');
 
   expect((editor.children[0] as any).props.object.conditionalSelect).toMatchInlineSnapshot(`
-    Object {
+    {
       "discriminant": "a",
       "value": "Some content",
     }

@@ -104,13 +104,13 @@ test('inserting a break at the end of a child field creates a new item with fres
       <component-block
         component="list"
         props={
-          Object {
-            "children": Array [
-              Object {
+          {
+            "children": [
+              {
                 "content": null,
                 "done": true,
               },
-              Object {
+              {
                 "content": null,
                 "done": false,
               },
@@ -120,7 +120,7 @@ test('inserting a break at the end of a child field creates a new item with fres
       >
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               0,
               "content",
@@ -133,7 +133,7 @@ test('inserting a break at the end of a child field creates a new item with fres
         </component-inline-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               1,
               "content",
@@ -181,13 +181,13 @@ test('inserting a break splits the text and uses the values from the first entry
       <component-block
         component="list"
         props={
-          Object {
-            "children": Array [
-              Object {
+          {
+            "children": [
+              {
                 "content": null,
                 "done": true,
               },
-              Object {
+              {
                 "content": null,
                 "done": true,
               },
@@ -197,7 +197,7 @@ test('inserting a break splits the text and uses the values from the first entry
       >
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               0,
               "content",
@@ -210,7 +210,7 @@ test('inserting a break splits the text and uses the values from the first entry
         </component-inline-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               1,
               "content",
@@ -263,9 +263,9 @@ test('inserting a break in an empty child removes the element and inserts a para
       <component-block
         component="list"
         props={
-          Object {
-            "children": Array [
-              Object {
+          {
+            "children": [
+              {
                 "content": null,
                 "done": true,
               },
@@ -275,7 +275,7 @@ test('inserting a break in an empty child removes the element and inserts a para
       >
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               0,
               "content",
@@ -350,17 +350,17 @@ test('deleting a range of nodes removes them', () => {
       <component-block
         component="list"
         props={
-          Object {
-            "children": Array [
-              Object {
+          {
+            "children": [
+              {
                 "content": null,
                 "done": true,
               },
-              Object {
+              {
                 "content": null,
                 "done": true,
               },
-              Object {
+              {
                 "content": null,
                 "done": false,
               },
@@ -370,7 +370,7 @@ test('deleting a range of nodes removes them', () => {
       >
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               0,
               "content",
@@ -383,7 +383,7 @@ test('deleting a range of nodes removes them', () => {
         </component-inline-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               1,
               "content",
@@ -396,7 +396,7 @@ test('deleting a range of nodes removes them', () => {
         </component-inline-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               2,
               "content",
@@ -440,9 +440,9 @@ test('inserting an item from empty works', () => {
       <component-block
         component="list"
         props={
-          Object {
-            "children": Array [
-              Object {
+          {
+            "children": [
+              {
                 "content": null,
                 "done": false,
               },
@@ -452,7 +452,7 @@ test('inserting an item from empty works', () => {
       >
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               0,
               "content",
@@ -494,8 +494,8 @@ test('removing an item using the preview props works', () => {
       <component-block
         component="list"
         props={
-          Object {
-            "children": Array [],
+          {
+            "children": [],
           }
         }
       >

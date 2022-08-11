@@ -95,7 +95,7 @@ test('non component block prop in component-block', () => {
       <component-block
         component="basic"
         props={
-          Object {
+          {
             "prop": "",
           }
         }
@@ -141,7 +141,7 @@ test('content inside of void child prop', () => {
       <component-block
         component="basic"
         props={
-          Object {
+          {
             "prop": "",
           }
         }
@@ -189,7 +189,7 @@ test('prop path for old fake void prop is removed', () => {
       <component-block
         component="basic"
         props={
-          Object {
+          {
             "prop": "",
           }
         }
@@ -224,7 +224,7 @@ test('inserting a void component block', () => {
       <component-block
         component="basic"
         props={
-          Object {
+          {
             "prop": "",
           }
         }
@@ -285,7 +285,7 @@ test('extra component props are removed', () => {
       <component-block
         component="withChildElements"
         props={
-          Object {
+          {
             "block": null,
             "inline": null,
             "prop": "",
@@ -294,7 +294,7 @@ test('extra component props are removed', () => {
       >
         <component-block-prop
           propPath={
-            Array [
+            [
               "block",
             ]
           }
@@ -307,7 +307,7 @@ test('extra component props are removed', () => {
         </component-block-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "inline",
             ]
           }
@@ -345,7 +345,7 @@ test('missing component props are added', () => {
       <component-block
         component="withChildElements"
         props={
-          Object {
+          {
             "block": null,
             "inline": null,
             "prop": "",
@@ -354,7 +354,7 @@ test('missing component props are added', () => {
       >
         <component-block-prop
           propPath={
-            Array [
+            [
               "block",
             ]
           }
@@ -367,7 +367,7 @@ test('missing component props are added', () => {
         </component-block-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "inline",
             ]
           }
@@ -407,7 +407,7 @@ test('prop with wrong type for a given prop path', () => {
       <component-block
         component="withChildElements"
         props={
-          Object {
+          {
             "block": null,
             "inline": null,
             "prop": "",
@@ -416,7 +416,7 @@ test('prop with wrong type for a given prop path', () => {
       >
         <component-block-prop
           propPath={
-            Array [
+            [
               "block",
             ]
           }
@@ -430,7 +430,7 @@ test('prop with wrong type for a given prop path', () => {
         </component-block-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "inline",
             ]
           }
@@ -479,7 +479,7 @@ test('props in wrong order', () => {
       <component-block
         component="withLotsOfChildElements"
         props={
-          Object {
+          {
             "block": null,
             "inline": null,
             "last": null,
@@ -488,7 +488,7 @@ test('props in wrong order', () => {
       >
         <component-block-prop
           propPath={
-            Array [
+            [
               "block",
             ]
           }
@@ -499,7 +499,7 @@ test('props in wrong order', () => {
         </component-block-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "inline",
             ]
           }
@@ -508,7 +508,7 @@ test('props in wrong order', () => {
         </component-inline-prop>
         <component-block-prop
           propPath={
-            Array [
+            [
               "last",
             ]
           }
@@ -565,7 +565,7 @@ test('toggling to heading when in an inline prop', () => {
       <component-block
         component="inline"
         props={
-          Object {
+          {
             "child": null,
             "other": null,
           }
@@ -573,7 +573,7 @@ test('toggling to heading when in an inline prop', () => {
       >
         <component-inline-prop
           propPath={
-            Array [
+            [
               "child",
             ]
           }
@@ -582,7 +582,7 @@ test('toggling to heading when in an inline prop', () => {
         </component-inline-prop>
         <component-block-prop
           propPath={
-            Array [
+            [
               "other",
             ]
           }
@@ -640,13 +640,13 @@ test('child field in array field insertBreak', () => {
       <component-block
         component="myList"
         props={
-          Object {
-            "children": Array [
-              Object {
+          {
+            "children": [
+              {
                 "content": null,
                 "done": false,
               },
-              Object {
+              {
                 "content": null,
                 "done": false,
               },
@@ -656,7 +656,7 @@ test('child field in array field insertBreak', () => {
       >
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               0,
               "content",
@@ -669,7 +669,7 @@ test('child field in array field insertBreak', () => {
         </component-inline-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               1,
               "content",
@@ -737,9 +737,9 @@ test('child field in array field deleteBackward at end', () => {
       <component-block
         component="myList"
         props={
-          Object {
-            "children": Array [
-              Object {
+          {
+            "children": [
+              {
                 "content": null,
                 "done": false,
               },
@@ -749,7 +749,7 @@ test('child field in array field deleteBackward at end', () => {
       >
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               0,
               "content",
@@ -823,13 +823,13 @@ test('child field in array field deleteBackward in middle', () => {
       <component-block
         component="myList"
         props={
-          Object {
-            "children": Array [
-              Object {
+          {
+            "children": [
+              {
                 "content": null,
                 "something": "1",
               },
-              Object {
+              {
                 "content": null,
                 "something": "3",
               },
@@ -839,7 +839,7 @@ test('child field in array field deleteBackward in middle', () => {
       >
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               0,
               "content",
@@ -854,7 +854,7 @@ test('child field in array field deleteBackward in middle', () => {
         </component-inline-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               1,
               "content",
@@ -901,7 +901,7 @@ test('normalization adds missing fields on object fields', () => {
       <component-block
         component="basic"
         props={
-          Object {
+          {
             "a": "",
             "b": false,
           }

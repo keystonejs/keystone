@@ -120,7 +120,7 @@ test('insert break in last (inline) child prop', () => {
       <component-block
         component="withChildElements"
         props={
-          Object {
+          {
             "block": null,
             "inline": null,
             "prop": "",
@@ -129,7 +129,7 @@ test('insert break in last (inline) child prop', () => {
       >
         <component-block-prop
           propPath={
-            Array [
+            [
               "block",
             ]
           }
@@ -142,7 +142,7 @@ test('insert break in last (inline) child prop', () => {
         </component-block-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "inline",
             ]
           }
@@ -198,7 +198,7 @@ test('insert break in first (block) child prop in empty paragraph', () => {
       <component-block
         component="withChildElements"
         props={
-          Object {
+          {
             "block": null,
             "inline": null,
             "prop": "",
@@ -207,7 +207,7 @@ test('insert break in first (block) child prop in empty paragraph', () => {
       >
         <component-block-prop
           propPath={
-            Array [
+            [
               "block",
             ]
           }
@@ -220,7 +220,7 @@ test('insert break in first (block) child prop in empty paragraph', () => {
         </component-block-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "inline",
             ]
           }
@@ -271,7 +271,7 @@ test('insert break in last (block) child prop in empty paragraph', () => {
       <component-block
         component="withChildElementsBlockLast"
         props={
-          Object {
+          {
             "block": null,
             "inline": null,
             "prop": "",
@@ -280,7 +280,7 @@ test('insert break in last (block) child prop in empty paragraph', () => {
       >
         <component-inline-prop
           propPath={
-            Array [
+            [
               "inline",
             ]
           }
@@ -291,7 +291,7 @@ test('insert break in last (block) child prop in empty paragraph', () => {
         </component-inline-prop>
         <component-block-prop
           propPath={
-            Array [
+            [
               "block",
             ]
           }
@@ -346,7 +346,7 @@ test('insert break in first (inline) child prop', () => {
       <component-block
         component="withChildElementsBlockLast"
         props={
-          Object {
+          {
             "block": null,
             "inline": null,
             "prop": "",
@@ -355,7 +355,7 @@ test('insert break in first (inline) child prop', () => {
       >
         <component-inline-prop
           propPath={
-            Array [
+            [
               "inline",
             ]
           }
@@ -366,7 +366,7 @@ test('insert break in first (inline) child prop', () => {
         </component-inline-prop>
         <component-block-prop
           propPath={
-            Array [
+            [
               "block",
             ]
           }

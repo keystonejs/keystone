@@ -158,6 +158,9 @@
     "//": "remove when https://github.com/uuidjs/uuid/pull/616 is merged",
     "moduleNameMapper": {
       "^uuid$": "<rootDir>/node_modules/uuid/dist/index.js"
+    },
+    "snapshotFormat": {
+      "printBasicPrototype": false
     }
   },
   "engines": {

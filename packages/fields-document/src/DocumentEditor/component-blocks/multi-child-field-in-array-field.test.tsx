@@ -84,17 +84,17 @@ test('deleting all child fields in an array field element when there are multipl
       <component-block
         component="qAndA"
         props={
-          Object {
-            "children": Array [
-              Object {
+          {
+            "children": [
+              {
                 "answer": null,
                 "question": null,
               },
-              Object {
+              {
                 "answer": null,
                 "question": null,
               },
-              Object {
+              {
                 "answer": null,
                 "question": null,
               },
@@ -104,7 +104,7 @@ test('deleting all child fields in an array field element when there are multipl
       >
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               0,
               "question",
@@ -117,7 +117,7 @@ test('deleting all child fields in an array field element when there are multipl
         </component-inline-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               0,
               "answer",
@@ -132,7 +132,7 @@ test('deleting all child fields in an array field element when there are multipl
         </component-inline-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               1,
               "question",
@@ -143,7 +143,7 @@ test('deleting all child fields in an array field element when there are multipl
         </component-inline-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               1,
               "answer",
@@ -154,7 +154,7 @@ test('deleting all child fields in an array field element when there are multipl
         </component-inline-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               2,
               "question",
@@ -165,7 +165,7 @@ test('deleting all child fields in an array field element when there are multipl
         </component-inline-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               2,
               "answer",
@@ -213,17 +213,17 @@ test('when the wrong children exist, the children are normalized based on the pr
       <component-block
         component="qAndA"
         props={
-          Object {
-            "children": Array [
-              Object {
+          {
+            "children": [
+              {
                 "answer": null,
                 "question": null,
               },
-              Object {
+              {
                 "answer": null,
                 "question": null,
               },
-              Object {
+              {
                 "answer": null,
                 "question": null,
               },
@@ -233,7 +233,7 @@ test('when the wrong children exist, the children are normalized based on the pr
       >
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               0,
               "question",
@@ -244,7 +244,7 @@ test('when the wrong children exist, the children are normalized based on the pr
         </component-inline-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               0,
               "answer",
@@ -255,7 +255,7 @@ test('when the wrong children exist, the children are normalized based on the pr
         </component-inline-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               1,
               "question",
@@ -266,7 +266,7 @@ test('when the wrong children exist, the children are normalized based on the pr
         </component-inline-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               1,
               "answer",
@@ -277,7 +277,7 @@ test('when the wrong children exist, the children are normalized based on the pr
         </component-inline-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               2,
               "question",
@@ -288,7 +288,7 @@ test('when the wrong children exist, the children are normalized based on the pr
         </component-inline-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "children",
               2,
               "answer",
