@@ -1,4 +1,5 @@
 import path from 'path';
+import type { ListenOptions } from 'net';
 import * as fs from 'fs-extra';
 import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/config/initConfig';
@@ -44,9 +45,25 @@ export const start = async (cwd: string) => {
     console.log(`✅ Admin UI ready`);
   }
 
-  const port = config.server?.port || process.env.PORT || 3000;
-  httpServer.listen(port, (err?: any) => {
+  const options: ListenOptions = {
+    port: 3000,
+  };
+
+  if (config?.server && 'port' in config.server) {
+    options.port = config.server.port;
+  }
+
+  if (config?.server && 'options' in config.server && config.server.options) {
+    Object.assign(options, config.server.options);
+  }
+
+  // preference env.PORT if supplied
+  if ('PORT' in process.env) {
+    options.port = parseInt(process.env.PORT || '');
+  }
+
+  httpServer.listen(options, (err?: any) => {
     if (err) throw err;
-    console.log(`⭐️ Server Ready on http://localhost:${port}`);
+    console.log(`⭐️ Server Ready on http://localhost:${options.port}`);
   });
 };
