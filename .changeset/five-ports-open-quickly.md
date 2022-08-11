@@ -2,4 +2,4 @@
 '@keystone-6/core': patch
 ---
 
-Fixes environment variable `PORT=` precedence, now has priority to the configured `server.port` 
+Fixes environment variable `PORT=` precedence; `PORT=` now takes priority over the configured `server.port` 
