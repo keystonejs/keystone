@@ -100,7 +100,8 @@ exports.default = function (req, res) { return res.send(x.toString()) }
     const originalPrismaSchema = printPrismaSchema(
       initialiseLists(config),
       config.db.provider,
-      config.db.prismaPreviewFeatures
+      config.db.prismaPreviewFeatures,
+      config.db.additionalPrismaDatasourceProperties
     );
     let lastPrintedGraphQLSchema = printSchema(graphQLSchema);
     let lastApolloServer = apolloServer;
@@ -135,7 +136,8 @@ exports.default = function (req, res) { return res.send(x.toString()) }
           const newPrismaSchema = printPrismaSchema(
             initialiseLists(newConfig),
             newConfig.db.provider,
-            newConfig.db.prismaPreviewFeatures
+            newConfig.db.prismaPreviewFeatures,
+            newConfig.db.additionalPrismaDatasourceProperties
           );
           if (originalPrismaSchema !== newPrismaSchema) {
             console.log('🔄 Your prisma schema has changed, please restart Keystone');

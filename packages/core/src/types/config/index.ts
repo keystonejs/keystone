@@ -131,6 +131,7 @@ export type DatabaseConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   idField?: IdFieldConfig;
   provider: DatabaseProvider;
   prismaPreviewFeatures?: readonly string[]; // https://www.prisma.io/docs/concepts/components/preview-features
+  additionalPrismaDatasourceProperties?: { [key: string]: string };
 };
 
 // config.ui
