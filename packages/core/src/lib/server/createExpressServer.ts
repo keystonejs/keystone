@@ -100,7 +100,7 @@ export const createExpressServer = async (
           : undefined,
         req,
       });
-    config.server?.extendHttpServer(httpServer, createRequestContext);
+    config.server?.extendHttpServer(httpServer, createRequestContext, graphQLSchema);
   }
 
   if (config.storage) {

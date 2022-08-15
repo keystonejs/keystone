@@ -180,7 +180,11 @@ export type ServerConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
     app: express.Express,
     createContext: CreateRequestContext<TypeInfo>
   ) => void | Promise<void>;
-  extendHttpServer?: (server: Server, createContext: CreateRequestContext<TypeInfo>) => void;
+  extendHttpServer?: (
+    server: Server,
+    createContext: CreateRequestContext<TypeInfo>,
+    graphqlSchema: GraphQLSchema
+  ) => void;
 } & (
   | {
       /** Port number to start the server on. Defaults to process.env.PORT || 3000 */
