@@ -2,6 +2,7 @@ import path from 'path';
 import type { ListenOptions } from 'net';
 import url from 'url';
 import util from 'util';
+import { createServer, IncomingMessage, ServerResponse } from 'http';
 import express from 'express';
 import { GraphQLSchema, printSchema } from 'graphql';
 import fs from 'fs-extra';
@@ -23,6 +24,7 @@ import {
   requirePrismaClient,
 } from '../../artifacts';
 import { getAdminPath, getConfigPath } from '../utils';
+import { createSessionContext } from '../../session';
 import { AdminMetaRootVal, CreateContext, KeystoneConfig } from '../../types';
 import { serializePathForImport } from '../../admin-ui/utils/serializePathForImport';
 import { initialiseLists } from '../../lib/core/types-for-lists';
@@ -36,11 +38,21 @@ const devLoadingHTMLFilepath = path.join(
 
 const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+const cleanConfig = (config: KeystoneConfig): KeystoneConfig => {
+  const { server, ...rest } = config;
+  if (server) {
+    const { extendHttpServer, ...restServer } = server;
+    return { ...rest, server: restServer };
+  }
+  return rest;
+};
+
 export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
   console.log('✨ Starting Keystone');
 
   const app = express();
   let expressServer: express.Express | null = null;
+  const httpServer = createServer(app);
   let hasAddedAdminUIMiddleware = false;
 
   let disconnect: null | (() => Promise<void>) = null;
@@ -51,7 +63,8 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
   // - you have an error in your config after startup -> will keep the last working version until importing the config succeeds
   // also, if you're thinking "why not always use the Next api route to get the config"?
   // this will get the GraphQL API up earlier
-  const config = initConfig(requireSource(getConfigPath(cwd)).default);
+  const configWithHTTP = initConfig(requireSource(getConfigPath(cwd)).default);
+  const config = cleanConfig(configWithHTTP);
 
   const isReady = () =>
     expressServer !== null && (hasAddedAdminUIMiddleware || config.ui?.isDisabled === true);
@@ -63,6 +76,18 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
     );
     const { adminMeta, graphQLSchema, createContext, prismaSchema, apolloServer, ...rest } =
       await setupInitialKeystone(config, cwd, shouldDropDatabase);
+
+    if (configWithHTTP?.server?.extendHttpServer) {
+      const createRequestContext = async (req: IncomingMessage, res: ServerResponse) =>
+        createContext({
+          sessionContext: config.session
+            ? await createSessionContext(config.session, req, res, createContext)
+            : undefined,
+          req,
+        });
+      configWithHTTP.server.extendHttpServer(httpServer, createRequestContext, graphQLSchema);
+    }
+
     const prismaClient = createContext().prisma;
     ({ disconnect, expressServer } = rest);
     // if you've disabled the Admin UI, sorry, no live reloading
@@ -132,7 +157,8 @@ exports.default = function (req, res) { return res.send(x.toString()) }
           // but just in case webpack decides to make it async in the future, this'll still work
           const apiRouteModule = await require(resolved);
           const uninitializedConfig = (await apiRouteModule.getConfig()).default;
-          const newConfig = initConfig(uninitializedConfig);
+          const newConfigWithHttp = initConfig(uninitializedConfig);
+          const newConfig = cleanConfig(newConfigWithHttp);
           const newPrismaSchema = printPrismaSchema(
             initialiseLists(newConfig),
             newConfig.db.provider,
@@ -143,7 +169,6 @@ exports.default = function (req, res) { return res.send(x.toString()) }
             console.log('🔄 Your prisma schema has changed, please restart Keystone');
             process.exit(1);
           }
-
           // we only need to test for the things which influence the prisma client creation
           // and aren't written into the prisma schema since we check whether the prisma schema has changed above
           if (
@@ -258,7 +283,7 @@ exports.default = function (req, res) { return res.send(x.toString()) }
     httpOptions.port = parseInt(process.env.PORT || '');
   }
 
-  const server = app.listen(httpOptions, (err?: any) => {
+  const server = httpServer.listen(httpOptions, (err?: any) => {
     if (err) throw err;
     // We start initialising Keystone after the dev server is ready,
     console.log(`⭐️ Dev Server Starting on http://localhost:${httpOptions.port}`);

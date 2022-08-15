@@ -213,6 +213,7 @@ Options:
 - `maxFileSize` (default: `200 * 1024 * 1024`): The maximum file size allowed for uploads. If left undefined, defaults to `200 MiB`
 - `healthCheck` (default: `undefined`): Allows you to configure a health check endpoint on your server.
 - `extendExpressApp` (default: `undefined`): Allows you to extend the express app that Keystone creates.
+- `extendHttpServer` (default: `undefined`): Allows you to extend the node `http` server that runs Keystone.
 
 ```typescript
 export default config({
@@ -222,6 +223,7 @@ export default config({
     maxFileSize: 200 * 1024 * 1024,
     healthCheck: true,
     extendExpressApp: (app, createContext) => { /* ... */ },
+    extendHttpServer: (httpServer, createContext, graphQLSchema) => { /* ... */ },
   },
   /* ... */
 });
@@ -319,6 +321,38 @@ The created context will be bound to the request, including the current visitor'
 
 _ProTip!_: `extendExpressApp` can be `async`
 
+## extendHttpServer
+
+This lets you interact with the node [http.Server](https://nodejs.org/api/http.html#class-httpserver) that Keystone uses.
+
+The function is passed in 3 arguments:
+
+- `server` - this is the HTTP server that you can then extend
+- `async createContext(req, res)`: A function you can call to create a Keystone Context for the request
+- `graphqlSchema` - this is the keystone graphql schema that can be used in a WebSocket GraphQL server for subscriptions
+
+For example, this function could be used to listen for `'upgrade'` requests for a WebSocket server when adding support for GraphQL subscriptions
+
+```ts
+import { WebSocketServer } from 'ws';
+import { useServer as wsUseServer } from 'graphql-ws/lib/use/ws';
+
+export default config({
+  server: {
+	extendHttpServer: (httpServer, createRequestContext, graphqlSchema) => {
+		const wss = new WebSocketServer({
+			server: httpServer,
+			path: '/api/graphql',
+		});
+
+		wsUseServer({ schema: graphqlSchema }, wss);
+	},
+  },
+});
+```
+
+_Note_: when using `keystone dev`, `extendHttpServer` is only called once on startup - you will need to restart your process for any updates
+
 ## session
 
 ```
@@ -347,7 +381,7 @@ See the [Session API](./session) for more details on how to configure session ma
 import type { GraphQLConfig } from '@keystone-6/core/types';
 ```
 
-The `graphql` config option allows you to configures certain aspects of your GraphQL API.
+The `graphql` config option allows you to configure certain aspects of your GraphQL API.
 It has a TypeScript type of `GraphQLConfig`.
 
 Options:
