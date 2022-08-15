@@ -106,12 +106,7 @@ export default function CustomPage() {
   const { data: updatedPostData, loading: updatedPostLoading } = useSubscription(POST_UPDATED, {
     client: subClient,
     onSubscriptionData: ({ subscriptionData }) => {
-      setUpdatedPostRows([
-        ...updatedPostRows,
-        JSON.stringify(
-          subscriptionData.data.postUpdated
-        )
-      ]);
+      setUpdatedPostRows([...updatedPostRows, JSON.stringify(subscriptionData.data.postUpdated)]);
     },
   });
 
