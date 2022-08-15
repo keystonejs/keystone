@@ -88,7 +88,7 @@
     "cors": "^2.8.5",
     "cuid": "^2.1.8",
     "date-fns": "^2.26.0",
-    "decimal.js": "10.3.1",
+    "decimal.js": "10.4.0",
     "dumb-passwords": "^0.2.1",
     "execa": "^5.1.1",
     "express": "^4.17.1",
