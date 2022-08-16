@@ -45,6 +45,7 @@ export function Well({ grad = 'grad1', heading, badge, href, children, ...props 
             transform: 'translateY(-4px)',
           },
         }}
+        rel={props.target === '_blank' ? 'noopener noreferrer' : undefined}
         {...props}
       >
         <Type
