@@ -28,8 +28,10 @@ test('duplicate headings without disambiguated ids error', () => {
 `;
   expect(() => transformDocContent('content.md', content)).toThrowErrorMatchingInlineSnapshot(`
     "Errors in content.md:
+    ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
     content.md:1: The id for this heading is \\"heading-1\\" which is the same as another heading in this file, disambiguate them with {% #some-id-here %} after a heading
-    content.md:2: The id for this heading is \\"heading-1\\" which is the same as another heading in this file, disambiguate them with {% #some-id-here %} after a heading"
+    content.md:2: The id for this heading is \\"heading-1\\" which is the same as another heading in this file, disambiguate them with {% #some-id-here %} after a heading
+    ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
   `);
 });
 
@@ -59,7 +61,9 @@ test("h1's are not allowed", () => {
   const content = `# Heading 1`;
   expect(() => transformDocContent('content.md', content)).toThrowErrorMatchingInlineSnapshot(`
     "Errors in content.md:
-    content.md:1: H1's are not allowed, specify the title in frontmatter at the top of the file if you're trying to specify the page title, otherwise use a different heading level"
+    ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+    content.md:1: H1's are not allowed, specify the title in frontmatter at the top of the file if you're trying to specify the page title, otherwise use a different heading level
+    ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
   `);
 });
 
@@ -71,8 +75,10 @@ test('empty ids on headings are not allowed', () => {
 `;
   expect(() => transformDocContent('content.md', content)).toThrowErrorMatchingInlineSnapshot(`
     "Errors in content.md:
+    ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
     content.md:1: This heading has an empty id, change the heading content so that a non-empty id is generated or add {% #some-id %} after the heading
     content.md:2: This heading has an empty id, change the heading content so that a non-empty id is generated or add {% #some-id %} after the heading
-    content.md:4: This heading has an empty id, change the heading content so that a non-empty id is generated or add {% #some-id %} after the heading"
+    content.md:4: This heading has an empty id, change the heading content so that a non-empty id is generated or add {% #some-id %} after the heading
+    ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
   `);
 });

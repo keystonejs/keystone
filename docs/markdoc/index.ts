@@ -11,21 +11,22 @@ class MarkdocValidationFailure extends Error {
   constructor(errors: [ValidateError, ...ValidateError[]], errorReportingFilepath: string) {
     super();
     this.name = 'MarkdocValidationFailure';
-    this.message =
-      `Errors in ${errorReportingFilepath}:\n` +
-      errors
-        .map(error => {
-          const location = error.error.location || error.location;
-          // the filepath is intentionally duplicated here so that there is one thing you can copy to refer to the error position
-          return `${errorReportingFilepath}:${
-            // the +1 is because location.start.line is 0-based
-            // but tools generally use 1-based line numbers
-            location?.start.line !== undefined ? location.start.line + 1 : '(unknown line)'
-          }${location?.start.character !== undefined ? `:${location.start.character}` : ''}: ${
-            error.error.message
-          }`;
-        })
-        .join('\n');
+    // you see the stacktrace and a bunch of other stuff from Next when seeing the errors here
+    // so this separator makes it easier to find the actual problem
+    const separator = `⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯`;
+    this.message = `Errors in ${errorReportingFilepath}:\n${separator}\n${errors
+      .map(error => {
+        const location = error.error.location || error.location;
+        // the filepath is intentionally duplicated here so that there is one thing you can copy to refer to the error position
+        return `${errorReportingFilepath}:${
+          // the +1 is because location.start.line is 0-based
+          // but tools generally use 1-based line numbers
+          location?.start.line !== undefined ? location.start.line + 1 : '(unknown line)'
+        }${location?.start.character !== undefined ? `:${location.start.character}` : ''}: ${
+          error.error.message
+        }`;
+      })
+      .join('\n')}\n${separator}`;
   }
 }
 
