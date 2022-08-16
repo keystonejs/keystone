@@ -22,6 +22,17 @@ expect.addSnapshotSerializer({
   },
 });
 
+test('duplicate headings without disambiguated ids error', () => {
+  const content = `## Heading 1
+## Heading 1
+`;
+  expect(() => transformDocContent('content.md', content)).toThrowErrorMatchingInlineSnapshot(`
+    "Errors in content.md:
+    content.md:1: The id for this heading is \\"heading-1\\" which is the same as another heading in this file, disambiguate them with {% #some-id-here %} after a heading
+    content.md:2: The id for this heading is \\"heading-1\\" which is the same as another heading in this file, disambiguate them with {% #some-id-here %} after a heading"
+  `);
+});
+
 test('duplicate headings with disambiguated ids are allowed', () => {
   const content = `## Heading 1
 ## Heading 1 {% #some-heading %}
