@@ -377,8 +377,8 @@ export default config({
 {% details %}
 
 {% summary %}
-  In the [document editor demo](/docs/guides/document-field-demo), the insertable Quote, Notice, Hero and Checkbox List items are
-  implemented as component blocks, see the implementation for Notice, Hero and Checkbox List by expanding this.
+In the [document editor demo](/docs/guides/document-field-demo), the insertable Quote, Notice, Hero and Checkbox List items are
+implemented as component blocks, see the implementation for Notice, Hero and Checkbox List by expanding this.
 {% /summary %}
 
 ```tsx
@@ -807,8 +807,6 @@ fields.array(fields.object({
 }))
 ```
 
-{/* * TBC: ### Preview Props * */}
-
 ### Chromeless
 
 If you want to hide the default UI around your component block, you can set `chromeless: true`. This removes the border, toolbar, and generated form.
@@ -855,13 +853,13 @@ const componentBlockRenderers: InferRenderersForComponentBlocks<typeof component
 ## Related resources
 
 {% related-content %}
-{% well 
+{% well
 heading="Example Project: Document Field"
 href="https://github.com/keystonejs/keystone/tree/main/examples/document-field"
 target="_blank" %}
 Illustrates how to configure `document` fields in your Keystone system and render their data in a frontend application. Builds on the Blog starter project.
 {% /well %}
-{% well 
+{% well
 heading="Document Field Demo"
 href="/docs/guides/document-field-demo" %}
 Test drive the many features of Keystone’s Document field on this website.
