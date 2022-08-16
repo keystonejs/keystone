@@ -74,7 +74,7 @@ const { withAuth } = createAuth({
 });
 ```
 
-#### GraphQL API
+#### GraphQL API {% #graphql-api %}
 
 The following elements will be added to the GraphQL API.
 
@@ -172,7 +172,7 @@ This option adds support for bootstrapping the first user into the system via th
 If this option is enabled and there are no users in the system, the Admin UI will present a form to create an initial user in the system.
 Once the user is created, they will be presented with a Keystone Welcome screen, and prompted to sign up to the Keystone mailing list to receive updates about the project.
 
-#### Options
+#### Options {% #init-first-item-options %}
 
 - `fields` (required): A list of fields to include in the initial user form.
 - `itemData` (default: `{}`): An object containing extra data to add to the initial user.
@@ -194,7 +194,7 @@ const { withAuth } = createAuth({
 });
 ```
 
-#### GraphQL API
+#### GraphQL API {% #init-first-item-graphql-api %}
 
 Enabling `initFirstItem` will add the following elements to the GraphQL API.
 
@@ -217,7 +217,7 @@ If a user already exists an error will be returned.
 The available input fields are based on the `fields` options.
 This mutation is used by the Admin UI's initial user screen and should generally not be called directly.
 
-#### Admin UI
+#### Admin UI {% #init-first-item-admin-ui %}
 
 The initial user screen is added at `/init`, and users are redirected here if there is no active session and no users in the system.
 
@@ -229,7 +229,7 @@ The mutation `redeemUserPasswordResetToken` lets the user reset their password b
 You need to provide a `sendToken` function which can be used by `sendUserPasswordResetLink` to send the generated token to the user.
 It is expected that you will use these mutations as part of a password reset workflow within your frontend application.
 
-#### Options
+#### Options {% #password-reset-link-options %}
 
 - `sendToken`: This function is invoked by the `sendUserPasswordResetLink` mutation.
   It should use an appropriate mechanism (e.g email, Twitter, Slack, carrier pigeon) to provide the user with the password reset token.
@@ -280,7 +280,7 @@ const fields = {
 - `passwordResetIssuedAt` records the time that the token was generated.
 - `passwordResetRedeemedAt` records the time that the token was redeemed.
 
-#### GraphQL API
+#### GraphQL API {% #password-reset-graphql-api %}
 
 Enabling `passwordResetLink` will add the following elements to the GraphQL API.
 
@@ -352,7 +352,7 @@ The mutation `redeemUserMagicAuthToken` lets the user start an authenticated ses
 You need to provide a `sendToken` function which can be used by `sendUserMagicAuthLink` to send the generated token to the user.
 It is expected that you will use these mutations as part of a one-time authentication workflow within your frontend application.
 
-#### Options
+#### Options {% #magic-auth-link-options %}
 
 - `sendToken`: This function is invoked by the `sendUserMagicAuthLink` mutation.
   It should use an appropriate mechanism (e.g email, Twitter, Slack, carrier pigeon) to provide the user with their one-time authentication token.
@@ -379,7 +379,7 @@ const { withAuth } = createAuth({
 });
 ```
 
-#### Additional fields
+#### Additional fields {% #magic-auth-link-additional-fields %}
 
 Enabling `magicAuthLink` will add the following fields to the configuration of the list `listKey`.
 
@@ -457,7 +457,7 @@ The authenticated item will be returned as `item`.
 ## Related resources
 
 {% related-content %}
-{% well 
+{% well
 heading="Example Project: Authentication"
 href="https://github.com/keystonejs/keystone/tree/main/examples/with-auth" %}
 Adds password-based authentication to the Task Manager starter project.

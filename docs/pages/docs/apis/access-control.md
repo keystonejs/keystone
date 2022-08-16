@@ -189,7 +189,7 @@ Item-level access control is not available for `query` operations.
 Applying access control after fetching items would lead to inconsistent pagination behaviour and incorrect `count` results.
 {% /hint %}
 
-### Function Arguments
+### Function Arguments {% #list-level-function-arguments %}
 
 List-level access control functions are passed a collection of arguments which can be used to determine whether the operation is allowed.
 
@@ -253,7 +253,7 @@ export default config({
 Field-level access control is not available for `delete` operations. Restrict `delete` operations at the List-level instead with `access.operation.delete`, `access.filter.delete` or `access.item.delete`.
 {% /hint %}
 
-### Function Arguments
+### Function Arguments {% #field-level-function-arguments %}
 
 Field-level access control functions are passed a collection of arguments which can be used to determine whether the operation is allowed.
 

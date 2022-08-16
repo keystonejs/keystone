@@ -8,8 +8,6 @@ description: "Learn how to add custom pages to the Keystone Admin UI."
 In this guide we'll show you how to add custom pages to the Keystone Admin UI.
 As the Admin UI is built on top of [Next.js](https://nextjs.org/docs/basic-features/pages), it exposes the same pages directory for adding custom pages.
 
-## Getting started
-
 To create a custom page, ensure that the `admin/pages` directory exists in the root of your Keystone Project.
 Much like with Next.js, all files in this directory will be added as routes to the Admin UI.
 The default export of every file in this directory is expected to be a valid React Component rendered out as the contents of the route.
@@ -186,18 +184,18 @@ Using `emotion` for styling is purely a recommendation, if you would prefer to u
 ## Related resources
 
 {% related-content %}
-{% well 
+{% well
 heading="Example: Custom Admin UI Pages"
 href="https://github.com/keystonejs/keystone/tree/main/examples/custom-admin-ui-pages"
 target="_blank" %}
 Adds a custom page in the Admin UI. Builds on the Task Manager starter project.
 {% /well %}
-{% well 
+{% well
 heading="Custom Admin UI Logo Guide"
 href="/docs/guides/custom-admin-ui-logo" %}
 Learn how to add your own custom logo to Keystone’s Admin UI.
 {% /well %}
-{% well 
+{% well
 heading="Custom Admin UI Navigation Guide"
 href="/docs/guides/custom-admin-ui-navigation" %}
 Learn how to create your own custom Navigation components in Keytone’s Admin UI.

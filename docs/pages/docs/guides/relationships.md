@@ -171,8 +171,8 @@ The only relationship configuration not currently supported is having a field re
 
 _Cardinality_ is a term used to describe how many items can exist on either side of a relationship. Each side can have either `one` or `many` related items. Since each relationship can have one and two sides, we have the following options available:
 
-| Relationship type | One to one                               | One to many                          | Many to many                         |
-| ----------------- | ---------------------------------------- | ------------------------------------ | ------------------------------------ |
+| Relationship type | One to one                                   | One to many                              | Many to many                             |
+| ----------------- | -------------------------------------------- | ---------------------------------------- | ---------------------------------------- |
 | One-sided         | {% emoji symbol="❌" alt="Not supported" /%} | {% emoji symbol="✅" alt="Supported" /%} | {% emoji symbol="✅" alt="Supported" /%} |
 | Two-sided         | {% emoji symbol="✅" alt="Supported" /%}     | {% emoji symbol="✅" alt="Supported" /%} | {% emoji symbol="✅" alt="Supported" /%} |
 
@@ -190,7 +190,7 @@ Let’s explore how to set up each type of cardinality in the context of our blo
 
 ### One-sided cardinalities
 
-#### One-to-many
+#### One-to-many {% #one-sided-one-to-many %}
 
 - Posts have a single author
 - Users can have multiple posts
@@ -217,7 +217,7 @@ export default config({
 });
 ```
 
-#### Many-to-many
+#### Many-to-many {% #one-sided-many-to-many %}
 
 - Posts can have multiple authors
 - Users can have multiple posts
@@ -278,7 +278,7 @@ export default config({
 });
 ```
 
-#### One-to-many
+#### One-to-many {% #two-sided-one-to-many %}
 
 - Posts have a single author
 - Users can have multiple posts
@@ -310,7 +310,7 @@ export default config({
 Note that we’ve used `many: false` in the author field and `many: true` in the posts field.
 {% /hint %}
 
-#### Many-to-many
+#### Many-to-many {% #two-sided-many-to-many %}
 
 - Posts can have multiple authors
 - Users can have multiple posts
@@ -349,7 +349,7 @@ Keystone relationships are managed using the [relationship](../apis/fields#relat
 ## Related resources
 
 {% related-content %}
-{% well 
+{% well
 heading="Relationship Field API Reference"
 href="/docs/apis/fields#relationship" %}
 Defines the names, types, and configuration of Keystone fields. See all the fields and the configuration options they accept.
