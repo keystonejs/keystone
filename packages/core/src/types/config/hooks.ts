@@ -42,11 +42,17 @@ type AddFieldPathArgToAllPropsOnObj<T extends Record<string, (arg: any) => any>>
   [Key in keyof T]: AddFieldPathToObj<T[Key]>;
 };
 
-export type FieldHooks<ListTypeInfo extends BaseListTypeInfo> = AddFieldPathArgToAllPropsOnObj<{
+type FieldKeysForList<ListTypeInfo extends BaseListTypeInfo> =
+  keyof ListTypeInfo['inputs']['update']; // TODO: uh
+
+export type FieldHooks<
+  ListTypeInfo extends BaseListTypeInfo,
+  FieldKey extends FieldKeysForList<ListTypeInfo> = FieldKeysForList<ListTypeInfo>
+> = AddFieldPathArgToAllPropsOnObj<{
   /**
    * Used to **modify the input** for create and update operations after default values and access control have been applied
    */
-  resolveInput?: ResolveInputFieldHook<ListTypeInfo>;
+  resolveInput?: ResolveInputFieldHook<ListTypeInfo, FieldKey>;
   /**
    * Used to **validate the input** for create and update operations once all resolveInput hooks resolved
    */
@@ -109,21 +115,16 @@ type ResolveInputListHook<ListTypeInfo extends BaseListTypeInfo> = (
   | boolean
   | null;
 
-type ResolveInputFieldHook<ListTypeInfo extends BaseListTypeInfo> = (
+type ResolveInputFieldHook<
+  ListTypeInfo extends BaseListTypeInfo,
+  FieldKey extends FieldKeysForList<ListTypeInfo>
+> = (
   args: ArgsForCreateOrUpdateOperation<ListTypeInfo> & CommonArgs<ListTypeInfo>
 ) =>
-  | Promise<ListTypeInfo['inputs']['create'] | ListTypeInfo['inputs']['update']>
-  | ListTypeInfo['inputs']['create']
-  | ListTypeInfo['inputs']['update']
-  // TODO: These may or may not be correct, but without them you can't define a
-  // resolveInput hook for a field that returns a simple value (e.g timestamp)
-  | Record<string, any>
-  | string
-  | number
-  | boolean
-  | null
-  // Fields need to be able to return `undefined` to say "don't touch this field"
-  | undefined;
+  | Promise<ListTypeInfo['inputs']['create'][FieldKey] | ListTypeInfo['inputs']['update'][FieldKey]>
+  | ListTypeInfo['inputs']['create'][FieldKey]
+  | ListTypeInfo['inputs']['update'][FieldKey]
+  | undefined; // undefined represents 'don't do anything'
 
 type ValidateInputHook<ListTypeInfo extends BaseListTypeInfo> = (
   args: ArgsForCreateOrUpdateOperation<ListTypeInfo> & {

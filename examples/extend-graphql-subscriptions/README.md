@@ -29,13 +29,12 @@ subscription PublishedPost {
     id
     title
     publishDate
-	 author {
-		name
-	 }
+    author {
+      name
+    }
   }
 }
 ```
-
 
 ### Post Updated
 
@@ -47,9 +46,9 @@ subscription PostUpdated {
     id
     title
     content
-	 author {
-		name
-	 }
+    author {
+      name
+    }
   }
 }
 ```
