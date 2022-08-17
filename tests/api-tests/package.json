@@ -23,7 +23,7 @@
     "fs-extra": "^10.0.0",
     "globby": "^11.0.4",
     "graphql": "^15.8.0",
-    "graphql-upload": "^13.0.0",
+    "graphql-upload": "^15.0.2",
     "memoize-one": "^6.0.0",
     "mime": "^3.0.0",
     "node-fetch": "^2.6.7",

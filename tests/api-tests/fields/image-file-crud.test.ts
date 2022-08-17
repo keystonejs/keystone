@@ -3,7 +3,8 @@ import { createHash } from 'crypto';
 import os from 'os';
 import fs from 'fs-extra';
 import fetch from 'node-fetch';
-import { Upload } from 'graphql-upload';
+// @ts-ignore
+import Upload from 'graphql-upload/Upload.js';
 import mime from 'mime';
 import { file, text, image } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';

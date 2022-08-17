@@ -13,7 +13,6 @@
     "@types/react": "^18.0.9",
     "cloudinary": "^1.27.1",
     "cuid": "^2.1.8",
-    "graphql-upload": "^13.0.0",
     "react": "^18.1.0"
   },
   "peerDependencies": {
@@ -21,6 +20,7 @@
   },
   "devDependencies": {
     "@keystone-6/core": "^2.1.0",
+    "graphql-upload": "^15.0.2",
     "mime": "^3.0.0"
   },
   "engines": {

@@ -1,6 +1,7 @@
 import fs from 'fs';
 import mime from 'mime';
-import { FileUpload, Upload } from 'graphql-upload';
+// @ts-ignore
+import Upload from 'graphql-upload/Upload.js';
 import cloudinary from 'cloudinary';
 import { cloudinaryImage } from './index';
 
@@ -22,7 +23,7 @@ const prepareFile = (_filePath: string) => {
     mimetype: mime.getType(filePath),
     encoding: 'utf-8',
   });
-  return upload as Upload & { file: FileUpload };
+  return upload;
 };
 
 // Configurations

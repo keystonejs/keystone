@@ -1,9 +1,8 @@
+import type { ReadStream } from 'fs';
 import * as graphqlTsSchema from '@graphql-ts/schema';
 import { GraphQLJSON } from 'graphql-type-json';
-// this is imported from a specific path so that we don't import busboy here because webpack doesn't like bundling it
 // @ts-ignore
-import GraphQLUpload from 'graphql-upload/public/GraphQLUpload.js';
-import type { FileUpload } from 'graphql-upload';
+import GraphQLUpload from 'graphql-upload/GraphQLUpload.js';
 import { GraphQLError, GraphQLScalarType } from 'graphql';
 import { Decimal as DecimalValue } from 'decimal.js';
 import { KeystoneContext } from '../context';
@@ -45,6 +44,14 @@ export { field, fields, interface, interfaceField, object, union } from './schem
 export type Context = KeystoneContext;
 
 export const JSON = graphqlTsSchema.graphql.scalar<JSONValue>(GraphQLJSON);
+
+type FileUpload = {
+  filename: string;
+  mimetype: string;
+  encoding: string;
+  createReadStream(): ReadStream;
+};
+
 export const Upload = graphqlTsSchema.graphql.scalar<Promise<FileUpload>>(GraphQLUpload);
 
 // - Decimal.js throws on invalid inputs
