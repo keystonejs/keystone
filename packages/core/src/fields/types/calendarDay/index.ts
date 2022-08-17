@@ -13,7 +13,6 @@ import {
   assertReadIsNonNullAllowed,
   getResolvedIsNullable,
 } from '../../non-null-graphql';
-import { resolveView } from '../../resolve-view';
 import { CalendarDayFieldMeta } from './views';
 
 export type CalendarDayFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
@@ -143,7 +142,7 @@ export const calendarDay =
           return value;
         },
       }),
-      views: resolveView('calendarDay/views'),
+      views: '@keystone-6/core/fields/types/calendarDay/views',
       getAdminMeta(): CalendarDayFieldMeta {
         return {
           defaultValue: defaultValue ?? null,

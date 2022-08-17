@@ -9,7 +9,6 @@ import {
 } from '../../../types';
 import { graphql } from '../../..';
 import { assertCreateIsNonNullAllowed, assertReadIsNonNullAllowed } from '../../non-null-graphql';
-import { resolveView } from '../../resolve-view';
 
 export type CheckboxFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -72,7 +71,7 @@ export const checkbox =
       output: graphql.field({
         type: config.graphql?.read?.isNonNull ? graphql.nonNull(graphql.Boolean) : graphql.Boolean,
       }),
-      views: resolveView('checkbox/views'),
+      views: '@keystone-6/core/fields/types/checkbox/views',
       getAdminMeta: () => ({ defaultValue }),
     });
   };

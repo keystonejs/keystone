@@ -59,7 +59,7 @@ export const myInt =
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
       output: graphql.field({ type: graphql.Int }),
-      views: require.resolve('./view.tsx'),
+      views: './view',
     });
 ```
 
@@ -115,8 +115,10 @@ output: graphql.field({
 
 The frontend portion of a field must be in a seperate file that the backend implementation points to with the `views` option.
 
+The `views` option is resolved as though it is an import from some file in the project directory.
+
 ```
-views: require.resolve('./view.tsx'),
+views: './view',
 ```
 
 #### Controller
@@ -217,7 +219,7 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
 ## Related resources
 
 {% related-content %}
-{% well 
+{% well
 heading="Example Project: Custom Fields"
 href="https://github.com/keystonejs/keystone/tree/main/examples/custom-field"
 target="_blank" %}

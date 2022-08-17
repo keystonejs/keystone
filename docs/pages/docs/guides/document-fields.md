@@ -364,7 +364,7 @@ export default config({
       fields: {
         fieldName: document({
           ui: {
-            views: require.resolve('./component-blocks')
+            views: './component-blocks'
           },
           componentBlocks,
         }),

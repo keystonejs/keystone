@@ -7,7 +7,6 @@ import {
   FileMetadata,
 } from '../../../types';
 import { graphql } from '../../..';
-import { resolveView } from '../../resolve-view';
 
 export type FileFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
   storage: string;
@@ -115,6 +114,6 @@ export const file =
           return { filename, filesize, storage: config.storage };
         },
       }),
-      views: resolveView('file/views'),
+      views: '@keystone-6/core/fields/types/file/views',
     });
   };

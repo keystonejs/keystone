@@ -9,7 +9,6 @@ import {
 } from '../../../types';
 import { graphql } from '../../..';
 import { assertCreateIsNonNullAllowed, assertReadIsNonNullAllowed } from '../../non-null-graphql';
-import { resolveView } from '../../resolve-view';
 import { userInputError } from '../../../lib/core/graphql-errors';
 
 export type MultiselectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
@@ -128,7 +127,7 @@ export const multiselect =
             await config.hooks?.validateInput?.(args);
           },
         },
-        views: resolveView('multiselect/views'),
+        views: '@keystone-6/core/fields/types/multiselect/views',
         getAdminMeta: () => ({
           options: transformedConfig.options,
           type: config.type ?? 'string',

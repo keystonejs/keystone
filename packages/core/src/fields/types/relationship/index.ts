@@ -6,7 +6,6 @@ import {
   AdminMetaRootVal,
 } from '../../../types';
 import { graphql } from '../../..';
-import { resolveView } from '../../resolve-view';
 
 // This is the default display mode for Relationships
 type SelectDisplayConfig = {
@@ -86,7 +85,7 @@ export const relationship =
     const [foreignListKey, foreignFieldKey] = ref.split('.');
     const commonConfig = {
       ...config,
-      views: resolveView('relationship/views'),
+      views: '@keystone-6/core/fields/types/relationship/views',
       getAdminMeta: (
         adminMetaRoot: AdminMetaRootVal
       ): Parameters<typeof import('./views').controller>[0]['fieldMeta'] => {
