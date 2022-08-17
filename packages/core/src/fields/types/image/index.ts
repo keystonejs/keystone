@@ -1,4 +1,3 @@
-import { FileUpload } from 'graphql-upload';
 import {
   BaseListTypeInfo,
   fieldType,
@@ -28,6 +27,8 @@ const ImageFieldInput = graphql.inputObject({
   },
 });
 
+const inputArg = graphql.arg({ type: ImageFieldInput });
+
 const ImageFieldOutput = graphql.object<ImageData & { storage: string }>()({
   name: 'ImageFieldOutput',
   fields: {
@@ -45,9 +46,11 @@ const ImageFieldOutput = graphql.object<ImageData & { storage: string }>()({
   },
 });
 
-type ImageFieldInputType = undefined | null | { upload: Promise<FileUpload> };
-
-async function inputResolver(storage: string, data: ImageFieldInputType, context: KeystoneContext) {
+async function inputResolver(
+  storage: string,
+  data: graphql.InferValueFromArg<typeof inputArg>,
+  context: KeystoneContext
+) {
   if (data === null || data === undefined) {
     return { extension: data, filesize: data, height: data, id: data, width: data };
   }
@@ -118,11 +121,11 @@ export const image =
           },
       input: {
         create: {
-          arg: graphql.arg({ type: ImageFieldInput }),
+          arg: inputArg,
           resolve: (data, context) => inputResolver(config.storage, data, context),
         },
         update: {
-          arg: graphql.arg({ type: ImageFieldInput }),
+          arg: inputArg,
           resolve: (data, context) => inputResolver(config.storage, data, context),
         },
       },

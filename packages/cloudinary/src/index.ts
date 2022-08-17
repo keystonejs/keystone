@@ -6,7 +6,6 @@ import {
   jsonFieldTypePolyfilledForSQLite,
 } from '@keystone-6/core/types';
 import { graphql } from '@keystone-6/core';
-import { FileUpload } from 'graphql-upload';
 import cuid from 'cuid';
 import cloudinary from 'cloudinary';
 import { CloudinaryAdapter } from './cloudinary';
@@ -116,8 +115,9 @@ export const cloudinaryImage =
       throw Error("isIndexed: 'unique' is not a supported option for field type cloudinaryImage");
     }
     const adapter = new CloudinaryAdapter(cloudinary);
+    const inputArg = graphql.arg({ type: graphql.Upload });
     const resolveInput = async (
-      uploadData: Promise<FileUpload> | undefined | null
+      uploadData: graphql.InferValueFromArg<typeof inputArg>
     ): Promise<StoredFile | undefined | null | 'DbNull'> => {
       if (uploadData === null) {
         return meta.provider === 'postgresql' || meta.provider === 'mysql' ? 'DbNull' : null;
@@ -149,8 +149,8 @@ export const cloudinaryImage =
       {
         ...config,
         input: {
-          create: { arg: graphql.arg({ type: graphql.Upload }), resolve: resolveInput },
-          update: { arg: graphql.arg({ type: graphql.Upload }), resolve: resolveInput },
+          create: { arg: inputArg, resolve: resolveInput },
+          update: { arg: inputArg, resolve: resolveInput },
         },
         output: graphql.field({
           type: outputType,

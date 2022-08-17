@@ -1,4 +1,3 @@
-import { FileUpload } from 'graphql-upload';
 import {
   fieldType,
   FieldTypeFunc,
@@ -21,7 +20,7 @@ const FileFieldInput = graphql.inputObject({
   },
 });
 
-type FileFieldInputType = undefined | null | { upload: Promise<FileUpload> };
+const inputArg = graphql.arg({ type: FileFieldInput });
 
 const FileFieldOutput = graphql.object<FileMetadata & { storage: string }>()({
   name: 'FileFieldOutput',
@@ -37,7 +36,11 @@ const FileFieldOutput = graphql.object<FileMetadata & { storage: string }>()({
   },
 });
 
-async function inputResolver(storage: string, data: FileFieldInputType, context: KeystoneContext) {
+async function inputResolver(
+  storage: string,
+  data: graphql.InferValueFromArg<typeof inputArg>,
+  context: KeystoneContext
+) {
   if (data === null || data === undefined) {
     return { filename: data, filesize: data };
   }
@@ -95,11 +98,11 @@ export const file =
           },
       input: {
         create: {
-          arg: graphql.arg({ type: FileFieldInput }),
+          arg: inputArg,
           resolve: (data, context) => inputResolver(config.storage, data, context),
         },
         update: {
-          arg: graphql.arg({ type: FileFieldInput }),
+          arg: inputArg,
           resolve: (data, context) => inputResolver(config.storage, data, context),
         },
       },
