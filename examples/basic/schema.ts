@@ -12,7 +12,7 @@ import {
 } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
 import { v4 } from 'uuid';
-import * as Keystone from '.keystone/types';
+import { Context, Lists } from '.keystone/types';
 
 type AccessArgs = {
   session?: {
@@ -32,7 +32,7 @@ export const access = {
 
 const randomNumber = () => Math.round(Math.random() * 10);
 
-const User: Keystone.Lists.User = list({
+const User: Lists.User = list({
   ui: {
     listView: {
       initialColumns: ['name', 'posts', 'avatar'],
@@ -91,7 +91,7 @@ const User: Keystone.Lists.User = list({
   },
 });
 
-export const lists: Keystone.Lists = {
+export const lists: Lists = {
   User,
   PhoneNumber: list({
     ui: {
@@ -182,7 +182,7 @@ export const lists: Keystone.Lists = {
 };
 
 // note this usage of the type is important because it tests that the generated types work
-export const extendGraphqlSchema = graphQLSchemaExtension<Keystone.Context>({
+export const extendGraphqlSchema = graphQLSchemaExtension<Context>({
   typeDefs: gql`
     type Query {
       randomNumber: RandomNumber
