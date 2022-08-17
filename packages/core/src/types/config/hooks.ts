@@ -1,4 +1,4 @@
-import type { KeystoneContextFromListTypeInfo } from '..';
+import type { KeystoneContextFromListTypeInfo, MaybePromise } from '..';
 import { BaseListTypeInfo } from '../type-info';
 
 type CommonArgs<ListTypeInfo extends BaseListTypeInfo> = {
@@ -43,7 +43,8 @@ type AddFieldPathArgToAllPropsOnObj<T extends Record<string, (arg: any) => any>>
 };
 
 type FieldKeysForList<ListTypeInfo extends BaseListTypeInfo> =
-  keyof ListTypeInfo['inputs']['create'] | keyof ListTypeInfo['inputs']['update'];
+  | keyof ListTypeInfo['inputs']['create']
+  | keyof ListTypeInfo['inputs']['update'];
 
 export type FieldHooks<
   ListTypeInfo extends BaseListTypeInfo,
@@ -104,9 +105,7 @@ type ArgsForCreateOrUpdateOperation<ListTypeInfo extends BaseListTypeInfo> =
 type ResolveInputListHook<ListTypeInfo extends BaseListTypeInfo> = (
   args: ArgsForCreateOrUpdateOperation<ListTypeInfo> & CommonArgs<ListTypeInfo>
 ) =>
-  | Promise<ListTypeInfo['inputs']['create'] | ListTypeInfo['inputs']['update']>
-  | ListTypeInfo['inputs']['create']
-  | ListTypeInfo['inputs']['update']
+  | MaybePromise<ListTypeInfo['inputs']['create'] | ListTypeInfo['inputs']['update']>
   // TODO: These were here to support field hooks before we created a separate type
   // (see ResolveInputFieldHook), check whether they're safe to remove now
   | Record<string, any>
@@ -121,9 +120,9 @@ type ResolveInputFieldHook<
 > = (
   args: ArgsForCreateOrUpdateOperation<ListTypeInfo> & CommonArgs<ListTypeInfo>
 ) =>
-  | Promise<ListTypeInfo['inputs']['create'][FieldKey] | ListTypeInfo['inputs']['update'][FieldKey]>
-  | ListTypeInfo['inputs']['create'][FieldKey]
-  | ListTypeInfo['inputs']['update'][FieldKey]
+  | MaybePromise<
+      ListTypeInfo['inputs']['create'][FieldKey] | ListTypeInfo['inputs']['update'][FieldKey]
+    >
   | undefined; // undefined represents 'don't do anything'
 
 type ValidateInputHook<ListTypeInfo extends BaseListTypeInfo> = (
