@@ -17,9 +17,9 @@ export const lists: Lists = {
             if (resolvedData.version !== item.version) throw new Error('Out of sync');
 
             return item.version + 1;
-          }
+          },
         },
-      })
+      }),
     },
   }),
 };
