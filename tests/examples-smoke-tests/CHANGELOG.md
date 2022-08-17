@@ -1,4 +1,4 @@
-# @keystonejs/examples-smoke-tests
+# @keystone-6/example-smoke-tests
 
 ## 3.0.0
 
