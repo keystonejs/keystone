@@ -11,7 +11,7 @@ import { generateAdminUI } from '../../admin-ui/system';
 import { devMigrations, pushPrismaSchemaToDatabase } from '../../lib/migrations';
 import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/config/initConfig';
-import { requireSource } from '../../lib/config/requireSource';
+import { loadConfig } from '../../lib/config/loadConfig';
 import { defaults } from '../../lib/config/defaults';
 import { createExpressServer } from '../../lib/server/createExpressServer';
 import { createAdminUIMiddleware } from '../../lib/server/createAdminUIMiddleware';
@@ -23,7 +23,7 @@ import {
   getSchemaPaths,
   requirePrismaClient,
 } from '../../artifacts';
-import { getAdminPath, getConfigPath } from '../utils';
+import { getAdminPath } from '../utils';
 import { createSessionContext } from '../../session';
 import { AdminMetaRootVal, CreateContext, KeystoneConfig } from '../../types';
 import { serializePathForImport } from '../../admin-ui/utils/serializePathForImport';
@@ -63,7 +63,7 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
   // - you have an error in your config after startup -> will keep the last working version until importing the config succeeds
   // also, if you're thinking "why not always use the Next api route to get the config"?
   // this will get the GraphQL API up earlier
-  const configWithHTTP = initConfig(requireSource(getConfigPath(cwd)).default);
+  const configWithHTTP = await loadConfig(cwd);
   const config = cleanConfig(configWithHTTP);
 
   const isReady = () =>
