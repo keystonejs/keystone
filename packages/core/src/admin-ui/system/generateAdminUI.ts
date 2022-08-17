@@ -86,14 +86,7 @@ export const generateAdminUI = async (
 
   // Write out the built-in admin UI files. Don't overwrite any user-defined pages.
   const configFileExists = getDoesAdminConfigExist();
-  let adminFiles = writeAdminFiles(
-    config,
-    graphQLSchema,
-    adminMeta,
-    configFileExists,
-    projectAdminPath,
-    isLiveReload
-  );
+  let adminFiles = writeAdminFiles(config, graphQLSchema, adminMeta, configFileExists);
 
   // Add files to pages/ which point to any files which exist in admin/pages
   const adminConfigDir = Path.join(process.cwd(), 'admin');

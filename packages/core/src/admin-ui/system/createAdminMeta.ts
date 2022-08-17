@@ -1,3 +1,4 @@
+import path from 'path';
 import { GraphQLString, isInputObjectType } from 'graphql';
 import { KeystoneConfig, AdminMetaRootVal, QueryMode } from '../../types';
 import { humanize } from '../../lib/utils';
@@ -128,11 +129,19 @@ export function createAdminMeta(
           `The ui.searchFields option on the ${key} list includes '${fieldKey}' but that field doesn't have a contains filter that accepts a GraphQL String`
         );
       }
+      assertValidView(
+        field.views,
+        `The \`views\` on the implementation of the field type at lists.${key}.fields.${fieldKey}`
+      );
       adminMetaRoot.listsByKey[key].fields.push({
         label: field.label ?? humanize(fieldKey),
         description: field.ui?.description ?? null,
         viewsIndex: getViewId(field.views),
-        customViewsIndex: field.ui?.views === undefined ? null : getViewId(field.ui.views),
+        customViewsIndex:
+          field.ui?.views === undefined
+            ? null
+            : (assertValidView(field.views, `lists.${key}.fields.${fieldKey}.ui.views`),
+              getViewId(field.ui.views)),
         fieldMeta: null,
         path: fieldKey,
         listKey: key,
@@ -157,4 +166,18 @@ export function createAdminMeta(
   }
 
   return adminMetaRoot;
+}
+
+function assertValidView(view: string, location: string) {
+  if (view.includes('\\')) {
+    throw new Error(
+      `${location} contains a backslash, which is not allowed. If you're using require.resolve or etc. remove the usage of it and provide a relative path from the root of the project instead.`
+    );
+  }
+
+  if (path.isAbsolute(view)) {
+    throw new Error(
+      `${location} is an absolute path, which is not allowed, provide a path relative to the root of the project instead.`
+    );
+  }
 }
