@@ -27,6 +27,79 @@ KeystoneJS adheres to the [Contributor Covenant Code of Conduct](/CODE-OF-CONDUC
 
 KeystoneJS follows the [Thinkmill Monorepo Style Guide](https://github.com/Thinkmill/monorepo). For more information on the reasoning behind using certain tooling, please refer to it.
 
+### Installation
+
+Cloning and installing keystone:
+```
+git clone https://github.com/keystonejs/keystone.git ./keystone
+cd keystone
+yarn install
+```
+
+Create a config file `touch keystone.ts`, add database setup and a first list:
+```
+//keystone.ts
+import { config, list } from '@keystone-6/core';
+import { text } from '@keystone-6/core/fields';
+
+export default config({
+   db: {
+    provider: 'sqlite',
+    url: 'file:./keystone.db',
+   },
+   lists: {
+      User: list({
+         fields: {
+         name: text({ validation: { isRequired: true } }),
+         email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
+         },
+      }),
+   },
+});
+```
+
+Run `yarn keystone dev`, visit `http://localhost:3000`
+
+
+### Installing and linking a local copy (or fork) of the keystone-6/* monorepo for local development in an external project.
+
+```
+mkdir my-app
+cd my-app
+git clone https://github.com/keystonejs/keystone.git ./keystone
+cd keystone
+yarn install
+```
+
+#### Linking keystone packages to my-app/node_modules:
+```
+cd packages/core && yarn link
+cd ../../../
+yarn link "@keystone-6/core"
+```
+This will symlink `my-app/keystone/packages/core` to `my-app/node_modules/@keystone/core` and give access to the `keystone` command. (You will need to repeat this step for all @keystone-6/[package-name] you'll need)
+
+#### Linking other packages:
+To prevent dependecies conflict, ex: if you need react in your project, you'll have to to link packages from `keystone/node_modules` to `my-app/node_modules`.
+As `yarn add [any-package]` will remove symlinks in the node_modules directory, you may want to create an .sh file that runs after each install. `touch link.sh` and add this lines :
+```
+rm -fr node_modules/react && ln -s $PWD/keystone/node_modules/react node_modules/react 
+rm -fr node_modules/react-dom && ln -s $PWD/keystone/node_modules/react-dom node_modules/react-dom 
+rm -fr node_modules/next && ln -s $PWD/keystone/node_modules/next node_modules/next 
+rm -fr node_modules/graphql && ln -s $PWD/keystone/node_modules/graphql node_modules/graphql
+```
+then in my-app/package.json:
+```
+{
+   "scripts": {
+      "postinstall": "$SHELL link.sh"
+   },
+   ...
+}
+```
+
+Start keystone `keystone dev`, visit `http://localhost:3000`
+
 ### Version management
 
 Keystone uses @noviny's [@changesets/cli](https://github.com/noviny/changesets) to track package versions and publish packages.
