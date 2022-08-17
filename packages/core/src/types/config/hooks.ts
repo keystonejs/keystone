@@ -43,7 +43,7 @@ type AddFieldPathArgToAllPropsOnObj<T extends Record<string, (arg: any) => any>>
 };
 
 type FieldKeysForList<ListTypeInfo extends BaseListTypeInfo> =
-  keyof ListTypeInfo['inputs']['update']; // TODO: uh
+  keyof ListTypeInfo['inputs']['create'] | keyof ListTypeInfo['inputs']['update'];
 
 export type FieldHooks<
   ListTypeInfo extends BaseListTypeInfo,
