@@ -5,9 +5,6 @@
   "version": "0.0.2",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
-  "engines": {
-    "node": "^14.15 || ^16.13"
-  },
   "scripts": {
     "go": "node fixtures/index.js"
   },

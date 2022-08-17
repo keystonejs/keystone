@@ -11,8 +11,5 @@
   "devDependencies": {
     "react": "^18.1.0"
   },
-  "engines": {
-    "node": "^14.15 || ^16.13"
-  },
   "repository": "https://github.com/keystonejs/keystone/tree/main/packages/document-renderer"
 }

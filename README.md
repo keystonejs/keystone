@@ -6,7 +6,7 @@
 </div>
 
 <br>
-<p>Keystone helps you build faster and scale further than any other CMS or App Framework. Just describe your schema, and get a powerful GraphQL API & beautiful Management UI for content and data.</p>
+<p>Keystone helps you build faster and scale further than any other CMS or App Framework. Describe your schema, and get a powerful GraphQL API & beautiful Management UI for your content and data.</p>
 <p>No boilerplate or bootstrapping – just elegant APIs to help you ship the code that matters without sacrificing the flexibility or power of a bespoke back-end.
 </p>
 <br><br>
@@ -19,39 +19,41 @@
 
 ## Contents
 
-- [What's new](#whats-new)
-- [Documentation](#documentation)
+- [Usage & Documentation](#documentation)
 - [Version Control](#version-control)
 - [Code of Conduct](#code-of-conduct)
 - [License](#license)
 
-## What's New
+## Usage & Documentation
 
-[Keystone 6](http://keystonejs.com) is the new major version of KeystoneJS, the most powerful headless content management system around. We've substantially rewritten the CLI, Schema config, and Admin UI to make them more powerful and easier to use than ever before.
+Keystone 6 is published to npm under the `@keystone-6/*` namespace.
 
-Keystone 6 is published on npm under the `@keystone-6` namespace. To learn about where we’re taking Keystone check out our [Roadmap](https://keystonejs.com/updates/roadmap).
+You can find our extended documentation on our [website](https://keystonejs.com/docs), but some quick links that might be helpful:
+
+- Read [Why Keystone](https://keystonejs.com/why-keystone) to learn about our vision and what's in the box.
+- [Getting Started](https://keystonejs.com/docs/walkthroughs/getting-started-with-create-keystone-app) walks you through first steps with the `create-keystone-app` CLI.
+- Our [Examples](./examples) contain a growing collection of projects you can run locally to learn more about a [Keystone feature](https://keystonejs.com/why-keystone#features).
+- An [API Reference](https://keystonejs.com/docs/apis) contains the details on Keystone's foundational building blocks.
+- Some [Guides](https://keystonejs.com/docs/guides) offer practical walkthroughs on how to build with those blocks.
+
+> 💡 While our `API Reference` is generally complete, we are are still working hard on increasing the fidelity of our `guides` and `examples`. If you have an example you'd like see, please [open a GitHub discussion](https://github.com/keystonejs/keystone/discussions/new)!
+
+Our `@keystone-6/*` packages are written for the [Node Maintenance and Active LTS](https://github.com/nodejs/Release) versions of Node; and our continuous integration seamlessly tracks that.
+You may have success with Node versions that are Pending or End-of-Life, but you may have problems too.
 
 ### Looking for Keystone 5?
 
 The [Keystone 5](https://github.com/keystonejs/keystone-5) codebase is now in maintenance mode and lives at [keystonejs/keystone-5](https://github.com/keystonejs/keystone-5). For more information read [Keystone 5 and beyond](https://github.com/keystonejs/keystone-5/issues/21).
-
-## Documentation
-
-Keystone 6 documentation lives on the [website](https://keystonejs.com/docs):
-
-- Read [Why Keystone](https://keystonejs.com/why-keystone) to learn about our vision and what's in the box.
-- [Getting Started](https://keystonejs.com/docs/walkthroughs/getting-started-with-create-keystone-app) walks you through first steps with the `create-keystone-app` CLI.
-- The [Examples](./examples) directory contains a growing collection of projects you can run locally to learn more about a [Keystone feature](https://keystonejs.com/why-keystone#features).
-- [API Reference](https://keystonejs.com/docs/apis) contains the details on Keystone's foundations building blocks.
-- [Guides](https://keystonejs.com/docs/guides) offer practical explainers on how to build with those blocks.
-
-> 💡 `API Docs` are complete. We're working hard on expanding coverage in our `guides` and `walkthroughs`.
 
 ## Enjoying Keystone?
 
 - Star this repo 🌟 ☝️
 - Follow Keystone on [Twitter](https://twitter.com/KeystoneJS)
 - Join the conversation in [Keystone community Slack](http://community.keystonejs.com/).
+
+### Interested in what's new?
+
+For a birds-eye view of what the Keystone project is working towards, check out our [Roadmap](https://keystonejs.com/updates/roadmap).
 
 ### Feedback
 
@@ -77,4 +79,4 @@ For vulnerability reporting, please refer to our [security policy](/SECURITY.md)
 
 ## License
 
-Copyright (c) 2021 Thinkmill Labs Pty Ltd. Licensed under the MIT License.
+Copyright (c) 2022 Thinkmill Labs Pty Ltd. Licensed under the MIT License.

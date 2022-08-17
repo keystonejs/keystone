@@ -14,8 +14,5 @@
     "@keystone-ui/icons": "^6.0.0",
     "react": "^18.1.0"
   },
-  "engines": {
-    "node": "^14.15 || ^16.13"
-  },
   "repository": "https://github.com/keystonejs/keystone/tree/main/design-system/packages/notice"
 }

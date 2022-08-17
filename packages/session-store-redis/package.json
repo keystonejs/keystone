@@ -4,9 +4,6 @@
   "license": "MIT",
   "main": "dist/keystone-6-session-store-redis.cjs.js",
   "module": "dist/keystone-6-session-store-redis.esm.js",
-  "engines": {
-    "node": "^14.15 || ^16.13"
-  },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
     "@redis/client": "^1.1.0"
