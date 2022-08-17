@@ -33,7 +33,7 @@ You can find our extended documentation on our [website](https://keystonejs.com/
 - Read [Why Keystone](https://keystonejs.com/why-keystone) to learn about our vision and what's in the box.
 - [Getting Started](https://keystonejs.com/docs/walkthroughs/getting-started-with-create-keystone-app) walks you through first steps with the `create-keystone-app` CLI.
 - Our [Examples](./examples) contain a growing collection of projects you can run locally to learn more about a [Keystone feature](https://keystonejs.com/why-keystone#features).
-- An [API Reference](https://keystonejs.com/docs/apis) contains the details on Keystone's foundations building blocks.
+- An [API Reference](https://keystonejs.com/docs/apis) contains the details on Keystone's foundational building blocks.
 - Some [Guides](https://keystonejs.com/docs/guides) offer practical walkthroughs on how to build with those blocks.
 
 > 💡 While our `API Reference` is generally complete, we are are still working hard on increasing the fidelity of our `guides` and `examples`. If you have an example you'd like see, please [open a GitHub discussion](https://github.com/keystonejs/keystone/discussions/new)!
