@@ -23,9 +23,6 @@
     "@keystone-6/core": "^2.1.0",
     "mime": "^3.0.0"
   },
-  "engines": {
-    "node": "^14.15 || ^16.13"
-  },
   "preconstruct": {
     "entrypoints": [
       "index.ts",

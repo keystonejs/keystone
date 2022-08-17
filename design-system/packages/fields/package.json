@@ -18,8 +18,5 @@
     "react-focus-lock": "^2.7.1",
     "react-select": "^5.2.1"
   },
-  "engines": {
-    "node": "^14.15 || ^16.13"
-  },
   "repository": "https://github.com/keystonejs/keystone/tree/main/design-system/packages/fields"
 }

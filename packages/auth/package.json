@@ -4,9 +4,6 @@
   "license": "MIT",
   "main": "dist/keystone-6-auth.cjs.js",
   "module": "dist/keystone-6-auth.esm.js",
-  "engines": {
-    "node": "^14.15 || ^16.13"
-  },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
     "@keystone-ui/button": "^7.0.0",

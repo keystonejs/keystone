@@ -20,8 +20,5 @@
   "devDependencies": {
     "typescript": "^4.7.4"
   },
-  "engines": {
-    "node": "^14.15 || ^16.13"
-  },
   "repository": "https://github.com/keystonejs/keystone/tree/main/examples/custom-field-view"
 }

@@ -5,9 +5,6 @@
   "version": "0.0.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
-  "engines": {
-    "node": "^14.15 || ^16.13"
-  },
   "repository": "https://github.com/keystonejs/keystone/tree/main/tests/admin-ui-tests",
   "homepage": "https://github.com/keystonejs/keystone",
   "devDependencies": {
