@@ -118,8 +118,8 @@ export function printGeneratedTypes(
         orderBy: ${gqlNames.listOrderName};
       };
       prisma: {
-        create: import('.prisma/client').${listKey}CreateInput;
-        update: import('.prisma/client').${listKey}UpdateInput;
+        create: Record<string, any>; // TODO: actual types
+        update: Record<string, any>; // TODO: actual types
       };
       all: __TypeInfo;
     };
