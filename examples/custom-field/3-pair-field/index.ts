@@ -66,7 +66,6 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>({
             return resolveInput(value);
           },
         },
-
       },
       output: graphql.field({
         type: graphql.String,
