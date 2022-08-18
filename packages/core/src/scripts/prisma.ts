@@ -1,11 +1,11 @@
 import execa from 'execa';
 import { createSystem } from '../lib/createSystem';
 import { generateNodeModulesArtifacts, validateCommittedArtifacts } from '../artifacts';
-import { loadConfig } from '../lib/config/loadConfig';
+import { loadConfigOnce } from '../lib/config/loadConfig';
 import { ExitError } from './utils';
 
 export async function prisma(cwd: string, args: string[]) {
-  const config = await loadConfig(cwd);
+  const config = await loadConfigOnce(cwd);
 
   const { graphQLSchema } = createSystem(config);
 

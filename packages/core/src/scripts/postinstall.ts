@@ -4,7 +4,7 @@ import {
   generateNodeModulesArtifacts,
   validateCommittedArtifacts,
 } from '../artifacts';
-import { loadConfig } from '../lib/config/loadConfig';
+import { loadConfigOnce } from '../lib/config/loadConfig';
 
 // The postinstall step serves two purposes:
 
@@ -38,7 +38,7 @@ import { loadConfig } from '../lib/config/loadConfig';
 //         * only generated with generateNodeAPI option
 
 export async function postinstall(cwd: string, shouldFix: boolean) {
-  const config = await loadConfig(cwd);
+  const config = await loadConfigOnce(cwd);
 
   const { graphQLSchema } = createSystem(config);
 

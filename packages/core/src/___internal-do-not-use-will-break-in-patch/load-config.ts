@@ -1,1 +1,1 @@
-export { loadConfig } from '../lib/config/loadConfig';
+export { loadConfigOnce as loadConfig } from '../lib/config/loadConfig';

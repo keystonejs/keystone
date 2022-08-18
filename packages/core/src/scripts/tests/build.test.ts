@@ -76,7 +76,6 @@ test('build works with typescript without the user defining a babel config', asy
   ).toMatchInlineSnapshot(`
     "✨ Building Keystone
     ✨ Generating Admin UI code
-    ✨ Generating Keystone config code
     ✨ Building Admin UI
     info  - Skipping validation of types
     info  - Skipping linting
@@ -89,7 +88,6 @@ test('build works with typescript without the user defining a babel config', asy
     info  - Generating static pages (5/7)
     info  - Generating static pages (7/7)
     next build size report
-    λ  (Server)  server-side renders at runtime (uses getInitialProps or getServerSideProps)
     ○  (Static)  automatically rendered as static HTML (uses no initial props)
     "
   `);
