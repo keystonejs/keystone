@@ -15,7 +15,7 @@ export function Field({ field, value, onChange, autoFocus }: FieldProps<typeof c
 
   return (
     <FieldContainer as="fieldset">
-      <FieldLabel as="legend">{field.label}</FieldLabel>
+      <FieldLabel>{field.label}</FieldLabel>
       <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
       <div>
         <TextInput
