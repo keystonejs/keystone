@@ -10,24 +10,26 @@ import {
   FieldProps,
 } from '@keystone-6/core/types';
 
-export function Field ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) {
+export function Field({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) {
   const disabled = onChange === undefined;
 
-  return (<FieldContainer as="fieldset">
-    <FieldLabel as="legend">{field.label}</FieldLabel>
-    <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
-    <div>
-      <TextInput
-        type="text"
-        onChange={event => {
-          onChange?.(event.target.value);
-        }}
-        disabled={disabled}
-        value={value || ''}
-        autoFocus={autoFocus}
-      />
-    </div>
-  </FieldContainer>);
+  return (
+    <FieldContainer as="fieldset">
+      <FieldLabel as="legend">{field.label}</FieldLabel>
+      <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
+      <div>
+        <TextInput
+          type="text"
+          onChange={event => {
+            onChange?.(event.target.value);
+          }}
+          disabled={disabled}
+          value={value || ''}
+          autoFocus={autoFocus}
+        />
+      </div>
+    </FieldContainer>
+  );
 }
 
 export const Cell: CellComponent = ({ item, field, linkTo }) => {

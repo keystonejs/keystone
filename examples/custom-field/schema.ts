@@ -11,25 +11,25 @@ export const lists: Lists = {
     fields: {
       content: text({
         ui: {
-          description: 'A text field, with no null support'
-        }
+          description: 'A text field, with no null support',
+        },
       }),
       rating: stars({
         ui: {
-          description: 'A star rating, with a scale of 5'
-        }
+          description: 'A star rating, with a scale of 5',
+        },
       }),
       pair: pair({
         ui: {
-          description: 'Two words split by a space'
-        }
+          description: 'Two words split by a space',
+        },
       }), // TODO: this example is a bit abstract, should be contextualised
     },
     hooks: {
       // TODO: this is  an example of how hooks interact with custom multiple-column fields,
       //   but it isn't very meaningful in context
       resolveInput: async ({ resolvedData }) => {
-//          console.log('Post.hooks.resolveInput', { resolvedData, operation, inputData, item });
+        //          console.log('Post.hooks.resolveInput', { resolvedData, operation, inputData, item });
         return {
           ...resolvedData,
 
@@ -38,8 +38,8 @@ export const lists: Lists = {
             left: resolvedData?.pair?.left || '<blank>',
             right: resolvedData?.pair?.right || '<blank>',
           },
-        }
+        };
       },
     },
-  })
+  }),
 };
