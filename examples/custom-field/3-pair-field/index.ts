@@ -3,8 +3,6 @@ import {
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
-  orderDirectionEnum,
-  filters,
 } from '@keystone-6/core/types';
 import { graphql } from '@keystone-6/core';
 
@@ -32,6 +30,7 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>({
     return `${left} ${right}`;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   return meta =>
     fieldType({
       kind: 'multi',
@@ -54,6 +53,7 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>({
       input: {
         create: {
           arg: graphql.arg({ type: graphql.String }),
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           resolve(value, context) {
             return resolveInput(value);
           },
@@ -62,6 +62,7 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>({
           arg: graphql.arg({
             type: graphql.String,
           }),
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           resolve(value, context) {
             return resolveInput(value);
           },
@@ -69,6 +70,7 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>({
       },
       output: graphql.field({
         type: graphql.String,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         resolve({ value, item }, args, context, info) {
           return resolveOutput(value);
         },
