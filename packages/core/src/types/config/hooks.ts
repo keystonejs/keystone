@@ -85,7 +85,7 @@ type ArgsForCreateOrUpdateOperation<ListTypeInfo extends BaseListTypeInfo> =
        */
       inputData: ListTypeInfo['inputs']['create'];
       /**
-       * The GraphQL input **after** being resolved by the field type's output resolver
+       * The GraphQL input **after** being resolved by the field type's input resolver
        */
       resolvedData: ListTypeInfo['prisma']['create'];
     }
@@ -97,7 +97,7 @@ type ArgsForCreateOrUpdateOperation<ListTypeInfo extends BaseListTypeInfo> =
        */
       inputData: ListTypeInfo['inputs']['update'];
       /**
-       * The GraphQL input **after** being resolved by the field type's output resolver
+       * The GraphQL input **after** being resolved by the field type's input resolver
        */
       resolvedData: ListTypeInfo['prisma']['update'];
     };
