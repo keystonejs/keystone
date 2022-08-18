@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-extend-graphql-subscriptions",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": true,
   "repository": "https://github.com/keystonejs/keystone/tree/main/examples/extend-graphql-subscriptions",
   "license": "MIT",
@@ -12,10 +12,10 @@
   "dependencies": {
     "@apollo/client": "3.6.9",
     "@emotion/css": "^11.7.1",
-    "@keystone-6/core": "^2.1.0",
-    "@keystone-ui/button": "^7.0.0",
-    "@keystone-ui/core": "^5.0.0",
-    "@keystone-ui/fields": "^7.1.0",
+    "@keystone-6/core": "^2.2.0",
+    "@keystone-ui/button": "^7.0.1",
+    "@keystone-ui/core": "^5.0.1",
+    "@keystone-ui/fields": "^7.1.1",
     "@types/ws": "^8.5.3",
     "graphql": "^15.8.0",
     "graphql-subscriptions": "^2.0.0",

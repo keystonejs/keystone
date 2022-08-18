@@ -1,5 +1,60 @@
 # @keystone-6/core
 
+## 2.2.0
+
+### Minor Changes
+
+- [#5645](https://github.com/keystonejs/keystone/pull/5645) [`d34a1e0bc`](https://github.com/keystonejs/keystone/commit/d34a1e0bc62c2078d0fd77900d865193fea37621) Thanks [@gautamsi](https://github.com/gautamsi)! - Adds `cli` functions as exports to `@keystone-6/core/scripts/cli`, assume to be an experimental unstable export and may change in a patch release.
+
+* [#7747](https://github.com/keystonejs/keystone/pull/7747) [`e322ce122`](https://github.com/keystonejs/keystone/commit/e322ce1223ef00dfb77f22b2f669e05d91b09814) Thanks [@willemmulder](https://github.com/willemmulder)! - Adds the ability to set additional Prisma datasource fields in the `schema.prisma` file, for example, `referentialIntegrity` by adding options to `db.additionalPrismaDatasourceProperties`
+
+- [#7324](https://github.com/keystonejs/keystone/pull/7324) [`3eaab4919`](https://github.com/keystonejs/keystone/commit/3eaab49195cedecf81bd0da05df2710e5486cb2e) Thanks [@dcousens](https://github.com/dcousens)! - Adds http.Server options as configuration `server.options`
+
+* [#7683](https://github.com/keystonejs/keystone/pull/7683) [`9d3e40612`](https://github.com/keystonejs/keystone/commit/9d3e40612ead28e5a8d91f214c24bdbddcae0c0f) Thanks [@Achisingh](https://github.com/Achisingh)! - Adds a new `multiselect` field type
+
+- [#7752](https://github.com/keystonejs/keystone/pull/7752) [`0ea56667f`](https://github.com/keystonejs/keystone/commit/0ea56667f43852db35457de99d4c05833e147a50) Thanks [@Achisingh](https://github.com/Achisingh)! - Adds `ui.displayMode: 'radio'` as an option for the select field.
+
+* [#7722](https://github.com/keystonejs/keystone/pull/7722) [`809f707ff`](https://github.com/keystonejs/keystone/commit/809f707ffa38849ddf15355f9ef6acd18fc02010) Thanks [@borisno2](https://github.com/borisno2)! - Adds 'graphql' schema to `extendHttpServer`.
+
+- [#7658](https://github.com/keystonejs/keystone/pull/7658) [`da0c197c7`](https://github.com/keystonejs/keystone/commit/da0c197c7de32d62083357b0831cba43b447a621) Thanks [@Achisingh](https://github.com/Achisingh)! - Adds `calendarDay` field to store a date without a time or timezone attached
+
+* [#5175](https://github.com/keystonejs/keystone/pull/5175) [`d2483bb4b`](https://github.com/keystonejs/keystone/commit/d2483bb4b1ad58533d86718753c20e0d21d6ee58) Thanks [@MurzNN](https://github.com/MurzNN)! - Adds a new `bigInt` field type, an integer of width 8 bytes (64 bits), analogous with Prisma's `BigInt`.
+
+### Patch Changes
+
+- [#7744](https://github.com/keystonejs/keystone/pull/7744) [`713e0f47e`](https://github.com/keystonejs/keystone/commit/713e0f47e021c7cfc0d7f9585f72840ab3552b5b) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Pins `pirates` to `4.0.4`
+
+* [#7803](https://github.com/keystonejs/keystone/pull/7803) [`a711c46e0`](https://github.com/keystonejs/keystone/commit/a711c46e03229d447cde207b30113198f06e91de) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updates `graphql-upload` to `15.0.2`
+
+- [#7787](https://github.com/keystonejs/keystone/pull/7787) [`721ad00f4`](https://github.com/keystonejs/keystone/commit/721ad00f4b0fd85a5b2716c95b260e6f9e43acaf) Thanks [@dcousens](https://github.com/dcousens)! - Fixes environment variable `PORT=` precedence; `PORT=` now takes priority over the configured `server.port`
+
+* [#7801](https://github.com/keystonejs/keystone/pull/7801) [`0261a5e30`](https://github.com/keystonejs/keystone/commit/0261a5e305ba7b27c034cca733e690e952966bf3) Thanks [@dcousens](https://github.com/dcousens)! - Removes wrong types for `resolveInput` hooks until actual types are provided
+
+- [#7731](https://github.com/keystonejs/keystone/pull/7731) [`bf70aa64d`](https://github.com/keystonejs/keystone/commit/bf70aa64dad1c62672a82ef5be8efc2203a96029) Thanks [@nderkim](https://github.com/nderkim)! - Fixes return type of `findOne` to support `null`, which is returned if no item is found
+
+* [#7804](https://github.com/keystonejs/keystone/pull/7804) [`c93768cab`](https://github.com/keystonejs/keystone/commit/c93768cab52c76384608f1d890b1ba1840be5e7d) Thanks [@dcousens](https://github.com/dcousens)! - Removes node `.engines` restrictions
+
+- [#7722](https://github.com/keystonejs/keystone/pull/7722) [`809f707ff`](https://github.com/keystonejs/keystone/commit/809f707ffa38849ddf15355f9ef6acd18fc02010) Thanks [@borisno2](https://github.com/borisno2)! - Fixes `extendHttpServer` not using the actual `http.Server` when using `keystone dev` - with an added limitation that it is only called once at startup.
+
+* [#7744](https://github.com/keystonejs/keystone/pull/7744) [`713e0f47e`](https://github.com/keystonejs/keystone/commit/713e0f47e021c7cfc0d7f9585f72840ab3552b5b) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updates `@apollo/client` to `3.6.9`
+
+- [#7742](https://github.com/keystonejs/keystone/pull/7742) [`1d24916b8`](https://github.com/keystonejs/keystone/commit/1d24916b828af5e0d1bd49c56cf75b0086fe3414) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updates `@graphql-ts/schema` to `0.5.3`
+
+- Updated dependencies [[`c93768cab`](https://github.com/keystonejs/keystone/commit/c93768cab52c76384608f1d890b1ba1840be5e7d)]:
+  - @keystone-ui/button@7.0.1
+  - @keystone-ui/core@5.0.1
+  - @keystone-ui/fields@7.1.1
+  - @keystone-ui/icons@6.0.1
+  - @keystone-ui/loading@6.0.1
+  - @keystone-ui/modals@6.0.1
+  - @keystone-ui/notice@6.0.1
+  - @keystone-ui/options@6.0.1
+  - @keystone-ui/pill@7.0.1
+  - @keystone-ui/popover@6.0.1
+  - @keystone-ui/segmented-control@7.0.1
+  - @keystone-ui/toast@6.0.1
+  - @keystone-ui/tooltip@6.0.1
+
 ## 2.1.0
 
 ### Minor Changes

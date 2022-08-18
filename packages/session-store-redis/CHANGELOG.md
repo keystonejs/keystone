@@ -1,5 +1,13 @@
 # @keystone-6/session-store-redis
 
+## 4.0.1
+
+### Patch Changes
+
+- [#7771](https://github.com/keystonejs/keystone/pull/7771) [`0ca84f24e`](https://github.com/keystonejs/keystone/commit/0ca84f24e8b2d8d9e6ad7bf7607d59f8cd7ec049) Thanks [@Noviny](https://github.com/Noviny)! - Fixes errors not being thrown by your `@redis/client` on `connect`
+
+* [#7804](https://github.com/keystonejs/keystone/pull/7804) [`c93768cab`](https://github.com/keystonejs/keystone/commit/c93768cab52c76384608f1d890b1ba1840be5e7d) Thanks [@dcousens](https://github.com/dcousens)! - Removes node `.engines` restrictions
+
 ## 4.0.0
 
 ### Patch Changes
