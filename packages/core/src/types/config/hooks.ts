@@ -107,7 +107,6 @@ type ResolveInputListHook<ListTypeInfo extends BaseListTypeInfo> = (
 ) => MaybePromise<
   | ListTypeInfo['prisma']['create']
   | ListTypeInfo['prisma']['update']
-  | undefined // TODO: ????
 >
 
 type ResolveInputFieldHook<
