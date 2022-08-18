@@ -32,6 +32,7 @@ export function text<ListTypeInfo extends BaseListTypeInfo>({
         },
         create: {
           arg: graphql.arg({ type: graphql.String }),
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           resolve(value, context) {
             return value;
           },
@@ -41,6 +42,7 @@ export function text<ListTypeInfo extends BaseListTypeInfo>({
       },
       output: graphql.field({
         type: graphql.String,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         resolve({ value, item }, args, context, info) {
           return value;
         },

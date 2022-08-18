@@ -32,14 +32,7 @@ module.exports = {
     'no-unused-expressions': 'error',
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'error',
-    '@typescript-eslint/no-unused-vars': [
-      'error',
-      {
-        args: 'after-used',
-        ignoreRestSiblings: true,
-        vars: 'all',
-      },
-    ],
+    '@typescript-eslint/no-unused-vars': 'off',
     'import/no-extraneous-dependencies': [
       'error',
       {
