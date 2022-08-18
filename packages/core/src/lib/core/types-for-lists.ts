@@ -137,13 +137,11 @@ function getListsWithInitialisedFields(
 ) {
   const result: Record<string, PartiallyInitialisedList> = {};
 
-  for (const listKey in listsConfig) {
-    const list = listsConfig[listKey];
+  for (const [listKey, list] of Object.entries(listsConfig)) {
     const intermediateList = intermediateLists[listKey];
     const resultFields: Record<string, InitialisedField> = {};
 
-    for (const fieldKey in list.fields) {
-      const fieldFunc = list.fields[fieldKey];
+    for (const [fieldKey, fieldFunc] of Object.entries(list.fields)) {
       if (typeof fieldFunc !== 'function') {
         throw new Error(`The field at ${listKey}.${fieldKey} does not provide a function`);
       }
@@ -493,9 +491,9 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
     Object.entries(intermediateLists).map(([listKey, list]) => {
       const fields: Record<string, InitialisedField> = {};
 
-      for (const fieldKey in list.fields) {
+      for (const [fieldKey, field] of Object.entries(list.fields)) {
         fields[fieldKey] = {
-          ...list.fields[fieldKey],
+          ...field,
           dbField: list.resolvedDbFields[fieldKey],
         };
       }
