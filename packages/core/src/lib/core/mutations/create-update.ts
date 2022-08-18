@@ -363,7 +363,7 @@ async function resolveInputForCreateOrUpdate(
   // Return the full resolved input (ready for prisma level operation),
   // and the afterOperation hook to be applied
   return {
-    data: flattenMultiDbFields(list.fields, hookArgs.resolvedData),
+    data: transformForPrismaClient(list.fields, hookArgs.resolvedData),
     afterOperation: async (updatedItem: BaseItem) => {
       await nestedMutationState.afterOperation();
       await runSideEffectOnlyHook(
@@ -381,7 +381,7 @@ async function resolveInputForCreateOrUpdate(
   };
 }
 
-function flattenMultiDbFields(
+function transformForPrismaClient(
   fields: Record<string, { dbField: ResolvedDBField }>,
   data: Record<string, any>
 ) {
