@@ -9,23 +9,34 @@ import { Lists } from '.keystone/types';
 export const lists: Lists = {
   Post: list({
     fields: {
-      content: text(),
-      rating: stars(),
-      pair: pair(), // TODO: this example is a bit abstract, should be contextualised
+      content: text({
+        ui: {
+          description: 'A text field, with no null support'
+        }
+      }),
+      rating: stars({
+        ui: {
+          description: 'A star rating, with a scale of 5'
+        }
+      }),
+      pair: pair({
+        ui: {
+          description: 'Two words split by a space'
+        }
+      }), // TODO: this example is a bit abstract, should be contextualised
     },
     hooks: {
       // TODO: this is  an example of how hooks interact with custom multiple-column fields,
       //   but it isn't very meaningful in context
-      resolveInput: async ({ resolvedData, operation, item }) => {
-        console.log('Post.hooks.resolveInput', { resolvedData, operation, item });
-
-        if (operation === 'create') return resolvedData;
+      resolveInput: async ({ resolvedData }) => {
+//          console.log('Post.hooks.resolveInput', { resolvedData, operation, inputData, item });
         return {
           ...resolvedData,
 
+          // add some defaults
           pair: {
-            left: resolvedData.left || '<blank>',
-            right: resolvedData.right|| '<blank>',
+            left: resolvedData?.pair?.left || '<blank>',
+            right: resolvedData?.pair?.right || '<blank>',
           },
         }
       },

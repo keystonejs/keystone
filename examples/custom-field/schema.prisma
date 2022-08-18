@@ -13,22 +13,9 @@ generator client {
 }
 
 model Post {
-  id          String    @id @default(cuid())
-  title       String?
-  status      String?
-  content     String?
-  rating      Int?
-  pair_left   String?
-  pair_right  String?
-  publishDate DateTime?
-  author      Author?   @relation("Post_author", fields: [authorId], references: [id])
-  authorId    String?   @map("author")
-
-  @@index([authorId])
-}
-
-model Author {
-  id    String  @id @default(cuid())
-  name  String?
-  posts Post[]  @relation("Post_author")
+  id         String  @id @default(cuid())
+  content    String?
+  rating     Int?
+  pair_left  String?
+  pair_right String?
 }
