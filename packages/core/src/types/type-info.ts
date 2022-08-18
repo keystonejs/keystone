@@ -15,8 +15,8 @@ export type BaseListTypeInfo = {
     orderBy: Record<string, 'asc' | 'desc' | null>;
   };
   prisma: {
-    create: Record<string, unknown>;
-    update: Record<string, unknown>;
+    create: Record<string, any>;
+    update: Record<string, any>;
   };
   all: BaseKeystoneTypeInfo;
 };
