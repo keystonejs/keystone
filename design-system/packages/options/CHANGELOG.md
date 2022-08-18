@@ -1,5 +1,16 @@
 # @keystone-ui/options
 
+## 6.0.1
+
+### Patch Changes
+
+- [#7804](https://github.com/keystonejs/keystone/pull/7804) [`c93768cab`](https://github.com/keystonejs/keystone/commit/c93768cab52c76384608f1d890b1ba1840be5e7d) Thanks [@dcousens](https://github.com/dcousens)! - Removes node `.engines` restrictions
+
+- Updated dependencies [[`c93768cab`](https://github.com/keystonejs/keystone/commit/c93768cab52c76384608f1d890b1ba1840be5e7d)]:
+  - @keystone-ui/core@5.0.1
+  - @keystone-ui/fields@7.1.1
+  - @keystone-ui/icons@6.0.1
+
 ## 6.0.0
 
 ### Major Changes

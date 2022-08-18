@@ -1,5 +1,11 @@
 # @keystonejs/api-tests
 
+## 0.0.3
+
+### Patch Changes
+
+- [#7804](https://github.com/keystonejs/keystone/pull/7804) [`c93768cab`](https://github.com/keystonejs/keystone/commit/c93768cab52c76384608f1d890b1ba1840be5e7d) Thanks [@dcousens](https://github.com/dcousens)! - Removes node `.engines` restrictions
+
 ## 0.0.2
 
 ### Patch Changes

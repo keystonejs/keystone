@@ -8,6 +8,16 @@ const { getInfo } = require('@changesets/get-github-info');
 // TODO: move this to CI linting
 const verbs = new Set(['Adds', 'Changes', 'Fixes', 'Moves', 'Removes', 'Updates']);
 
+// TODO: derived?
+const publicPackages = [
+  '@keystone-6/auth',
+  '@keystone-6/cloudinary',
+  '@keystone-6/core',
+  '@keystone-6/document-renderer',
+  '@keystone-6/fields-document',
+  '@keystone-6/session-store-redis',
+];
+
 function gitCommitsSince(tag) {
   const { stdout } = spawnSync('git', ['rev-list', `^${tag}`, 'HEAD']);
   return stdout
@@ -17,7 +27,14 @@ function gitCommitsSince(tag) {
 }
 
 function firstGitCommitOf(path) {
-  const { stdout } = spawnSync('git', ['rev-list', 'HEAD', '--', path]);
+  const { stdout } = spawnSync('git', [
+    'rev-list',
+    '--date-order',
+    '--reverse',
+    'HEAD',
+    '--',
+    path,
+  ]);
   return stdout
     .toString('utf-8')
     .split(' ', 1)
@@ -45,22 +62,22 @@ async function fetchData(tag) {
   }
 
   // list all the contributors
-  const contributors = JSON.parse(readFileSync('.changeset/contributors.json').toString('utf-8'));
-  const first = []; // first time contributors
-
-  const commits = {};
+  const previousContributors = JSON.parse(
+    readFileSync('.changeset/contributors.json').toString('utf-8')
+  );
+  const changes = {};
   for (const commit of revs) {
     const { user, pull } = await getInfo({ repo: 'keystonejs/keystone', commit });
     console.error(`commit ${commit}, user ${user}, pull #${pull}`);
-    commits[commit] = { commit, user, pull };
 
-    if (contributors.includes(user)) continue;
-    first.push({ user, pull });
-    contributors.push(user);
+    const change = { commit, user, pull };
+    changes[commit] = change;
+
+    if (previousContributors.includes(user)) continue;
+    change.first = true;
   }
 
-  // join some of the changeset data with the GitHub commit information
-  const changes = [];
+  // join some of the changeset data with the commit information
   for (const changeset of changesets) {
     const { releases, summary, commit } = changeset;
 
@@ -79,33 +96,31 @@ async function fetchData(tag) {
     }
     if (!type) throw new Error('Unknown type');
 
-    const { user, pull } = commits[commit];
-    commits[commit].changeset = changeset;
+    const change = changes[commit];
+    change.changeset = changeset.id;
+    change.summary = summary;
+    change.type = type;
 
-    // only include keystone-6 packages, then strip the namespace
-    const publicPackages = releases
-      .filter(x => x.name.startsWith('@keystone-6'))
-      .map(x => x.name.replace('@keystone-6/', ''));
-
-    changes.push({
-      packages: publicPackages,
-      type,
-      commit,
-      summary,
-      user,
-      pull,
-    });
+    // only public packages, then strip the namespace
+    change.packages = releases
+      .filter(x => publicPackages.includes(x.name))
+      .map(x => x.name.replace('@keystone-6/', ''))
+      .sort();
   }
 
-  // only include keystone-6 packages
-  const packages = releases
-    .filter(x => x.name.startsWith('@keystone-6'))
-    .filter(x => x.type !== 'none')
-    .map(x => `${x.name}@${x.newVersion}`);
+  // tally contributions
+  const contributors = [
+    ...new Set([...previousContributors, ...Object.values(changes).map(x => x.user)]),
+  ];
 
-  // unattributed contributions
-  const unattributed = Object.values(commits).filter(x => !x.changeset);
-  return { packages, changes, contributors, first, unattributed };
+  // only public packages
+  const packages = releases
+    .filter(x => publicPackages.includes(x.name))
+    .filter(x => x.type !== 'none')
+    .map(x => `${x.name}@${x.newVersion}`)
+    .sort();
+
+  return { packages, changes: Object.values(changes), contributors };
 }
 
 function formatPackagesChanged(packages) {
@@ -119,12 +134,30 @@ function formatChange({ packages, summary, pull, user }) {
   return `- \`[${packages.join(', ')}]\` ${summary} (#${pull}) @${user}`;
 }
 
+function link(pull) {
+  return `[#${pull}](https://github.com/keystonejs/keystone/pull/${pull})`;
+}
+
+function groupPullsByUser(list) {
+  const result = {};
+  for (const item of list) {
+    if (!item.pull) continue;
+    result[item.user] ||= [];
+    result[item.user].push(item.pull);
+  }
+  return Object.entries(result).map(([user, pulls]) => ({ user, pulls }));
+}
+
 async function generateGitHubReleaseText(previousTag) {
   if (!previousTag) throw new Error('Missing tag');
 
-  const { packages, changes, contributors, first, unattributed } = await fetchData(previousTag);
-  const output = [];
+  const date = new Date().toISOString().slice(0, 10).replace(/\-/g, '_');
+  const { packages, changes, contributors } = await fetchData(previousTag);
+  //    writeFileSync(`./CHANGELOG-${date}.json`, JSON.stringify({ packages, changes, contributors }, null, 2))
+  //    return process.exit(0)
+  //    const { packages, changes, contributors } = JSON.parse(readFileSync(`./CHANGELOG-${date}.json`))
 
+  const output = [];
   output.push(formatPackagesChanged(packages));
   output.push('');
 
@@ -144,40 +177,35 @@ async function generateGitHubReleaseText(previousTag) {
     output.push(...[`#### Bug Fixes`, ...fixes.map(formatChange), ``]);
   }
 
+  const first = changes.filter(x => x.first);
+  const unattributed = changes.filter(x => !x.type && !x.first);
+
   if (first.length || unattributed.length) {
-    const listh = unattributed.map(
-      ({ user, pull }) =>
-        `@${user} ([#${pull}](https://github.com/keystonejs/keystone/pull/${pull}))`
-    );
-    const listf = first.map(
-      ({ user, pull }) =>
-        `@${user} ([#${pull}](https://github.com/keystonejs/keystone/pull/${pull}))`
-    );
+    const listf = groupPullsByUser(first);
 
-    output.push(`#### Acknowledgements :blue_heart:`);
-    if (listh.length && listf.length) {
-      output.push(
-        `Thanks to ${listf.join(
-          ', '
-        )} for their first contributions to the project, and a shoutout to ${listh.join(
-          ', '
-        )} for their help.`
-      );
-    } else if (listh.length) {
-      output.push(`Thanks to ${listh.join(', ')} for their contributions to the project.`);
-    } else if (listf.length) {
-      output.push(
-        `Thanks to ${listf.join(', ')} for making their first contributions to the project!`
-      );
-    }
-
+    output.push(`#### :seedling: New Contributors :seedling:`);
+    output.push(
+      `Thanks to the following developers for making their first contributions to the project!`
+    );
+    output.push(...listf.map(({ user, pulls }) => `- @${user} (${pulls.map(link).join(',')})`));
     output.push(``);
   }
 
-  const date = new Date().toISOString().slice(0, 10);
+  if (unattributed.length) {
+    const listu = groupPullsByUser(unattributed);
+
+    output.push(`#### :blue_heart: Acknowledgements :blue_heart:`);
+    output.push(
+      `Lastly, thanks to ${listu
+        .map(({ user, pulls }) => `@${user} (${pulls.map(link).join(',')})`)
+        .join(', ')} for changes not shown above, but none-the-less appreciated.`
+    );
+    output.push(``);
+  }
+
   writeFileSync('./.changeset/contributors.json', JSON.stringify(contributors.sort(), null, 2));
-  writeFileSync(`./.changeset/release-${date}.md`, output.join('\n'));
-  console.error('files written to .changeset/');
+  writeFileSync(`./CHANGELOG-${date}.md`, output.join('\n'));
+  console.error('files written');
 }
 
 generateGitHubReleaseText(process.argv[2]);

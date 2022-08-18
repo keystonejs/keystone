@@ -1,5 +1,34 @@
 # @keystone-6/fields-document
 
+## 4.1.0
+
+### Minor Changes
+
+- [#7729](https://github.com/keystonejs/keystone/pull/7729) [`36ed1e7e1`](https://github.com/keystonejs/keystone/commit/36ed1e7e14b857a14068685c3eda24b3203379d2) Thanks [@Achisingh](https://github.com/Achisingh)! - Changes the editors default overflow behaviour to align with other multi-line text inputs, supporting scrolling instead of an unbounded height for the field.
+
+### Patch Changes
+
+- [#7783](https://github.com/keystonejs/keystone/pull/7783) [`e6e13158f`](https://github.com/keystonejs/keystone/commit/e6e13158f60d71e8b566286e26769a8bb2bfaf82) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixes long lines in code blocks in the document editor overflowing the editor
+
+* [`6cb00be9a`](https://github.com/keystonejs/keystone/commit/6cb00be9afe8a77aaee9a2ff1d98d42b276889db) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixes pasting plain text in the document editor removing markdown link definition and usages
+
+- [#7764](https://github.com/keystonejs/keystone/pull/7764) [`0f1a487d1`](https://github.com/keystonejs/keystone/commit/0f1a487d142751355009e3f4367dd55925ec0b72) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixes the document editor removing whitespace when pasting from HTML with inline elements that only contain whitespace
+
+* [#7764](https://github.com/keystonejs/keystone/pull/7764) [`0f1a487d1`](https://github.com/keystonejs/keystone/commit/0f1a487d142751355009e3f4367dd55925ec0b72) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixes the document editor erroring when handling HTML in certain cases
+
+- [#7766](https://github.com/keystonejs/keystone/pull/7766) [`99d8f062e`](https://github.com/keystonejs/keystone/commit/99d8f062e5e7d86664d6ab3802a35e2e4c32f61a) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Adds support for pasting a url onto text to create a link
+
+* [#7804](https://github.com/keystonejs/keystone/pull/7804) [`c93768cab`](https://github.com/keystonejs/keystone/commit/c93768cab52c76384608f1d890b1ba1840be5e7d) Thanks [@dcousens](https://github.com/dcousens)! - Removes node `.engines` restrictions
+
+* Updated dependencies [[`c93768cab`](https://github.com/keystonejs/keystone/commit/c93768cab52c76384608f1d890b1ba1840be5e7d)]:
+  - @keystone-6/document-renderer@1.1.1
+  - @keystone-ui/button@7.0.1
+  - @keystone-ui/core@5.0.1
+  - @keystone-ui/fields@7.1.1
+  - @keystone-ui/icons@6.0.1
+  - @keystone-ui/popover@6.0.1
+  - @keystone-ui/tooltip@6.0.1
+
 ## 4.0.1
 
 ### Patch Changes

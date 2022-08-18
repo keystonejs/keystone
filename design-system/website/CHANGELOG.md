@@ -1,5 +1,25 @@
 # @keystone-ui/website
 
+## 5.0.1
+
+### Patch Changes
+
+- [#7804](https://github.com/keystonejs/keystone/pull/7804) [`c93768cab`](https://github.com/keystonejs/keystone/commit/c93768cab52c76384608f1d890b1ba1840be5e7d) Thanks [@dcousens](https://github.com/dcousens)! - Removes node `.engines` restrictions
+
+- Updated dependencies [[`c93768cab`](https://github.com/keystonejs/keystone/commit/c93768cab52c76384608f1d890b1ba1840be5e7d)]:
+  - @keystone-ui/button@7.0.1
+  - @keystone-ui/core@5.0.1
+  - @keystone-ui/fields@7.1.1
+  - @keystone-ui/loading@6.0.1
+  - @keystone-ui/modals@6.0.1
+  - @keystone-ui/notice@6.0.1
+  - @keystone-ui/options@6.0.1
+  - @keystone-ui/pill@7.0.1
+  - @keystone-ui/popover@6.0.1
+  - @keystone-ui/segmented-control@7.0.1
+  - @keystone-ui/toast@6.0.1
+  - @keystone-ui/tooltip@6.0.1
+
 ## 5.0.0
 
 ### Major Changes
