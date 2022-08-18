@@ -28,15 +28,15 @@ export const lists: Lists = {
     hooks: {
       // TODO: this is  an example of how hooks interact with custom multiple-column fields,
       //   but it isn't very meaningful in context
-      resolveInput: async ({ resolvedData }) => {
-        //          console.log('Post.hooks.resolveInput', { resolvedData, operation, inputData, item });
+      resolveInput: async ({ resolvedData, operation, inputData, item }) => {
+        console.log('Post.hooks.resolveInput', { resolvedData, operation, inputData, item });
         return {
           ...resolvedData,
 
           // add some defaults
           pair: {
-            left: resolvedData.pair?.left || '<blank>',
-            right: resolvedData.pair?.right || '<blank>',
+            left: resolvedData.pair?.left,
+            right: resolvedData.pair?.right,
           },
         };
       },
