@@ -18,7 +18,7 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>({
   ...config
 }: PairFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
   function resolveInput(value: string | null | undefined) {
-    if (!value) return { left: null, right: null };
+    if (!value) return { left: value, right: value };
     const [left = '', right = ''] = value.split(' ', 2);
     return {
       left,
