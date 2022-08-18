@@ -2,4 +2,4 @@
 '@keystone-6/core': patch
 ---
 
-Remove wrong types for `resolveInput` hooks until actual types are provided
+Removes wrong types for `resolveInput` hooks until actual types are provided

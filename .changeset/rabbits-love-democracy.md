@@ -6,6 +6,7 @@
 '@keystone-6/cloudinary': patch
 '@keystone-6/core': patch
 '@keystone-6/document-renderer': patch
+'@keystone-6/example-app-basic': patch
 '@keystone-6/example-assets-local': patch
 '@keystone-6/example-assets-s3': patch
 '@keystone-6/example-auth': patch
@@ -33,10 +34,8 @@
 '@keystone-6/example-virtual-field': patch
 '@keystone-6/example-with-auth': patch
 '@keystone-6/example-with-custom-session-validation': patch
-'@keystone-6/examples-app-basic': patch
 '@keystone-6/fields-document': patch
 '@keystone-6/generate-artifacts-for-projects': patch
-'@keystone-6/mono-repo': patch
 '@keystone-6/prisma-utils': patch
 '@keystone-6/sandbox': patch
 '@keystone-6/session-store-redis': patch
@@ -60,4 +59,4 @@
 '@keystone-ui/website': patch
 ---
 
-Remove node `.engines` restrictions
+Removes node `.engines` restrictions

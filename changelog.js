@@ -40,6 +40,7 @@ async function fetchData(tag) {
     const commit = firstGitCommitOf(`.changeset/${changeset.id}.md`);
 
     if (!revs.includes(commit)) throw new Error(`Unexpected commit ${changeset.commit}`);
+    console.error(`commit ${commit} found for changeset ${changeset.id}`);
     changeset.commit = commit;
   }
 
