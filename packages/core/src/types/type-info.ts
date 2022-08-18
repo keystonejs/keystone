@@ -14,6 +14,13 @@ export type BaseListTypeInfo = {
     uniqueWhere: { readonly id?: string | null } & GraphQLInput;
     orderBy: Record<string, 'asc' | 'desc' | null>;
   };
+  /**
+   * WARNING: may be renamed in patch
+   */
+  prisma: {
+    create: Record<string, any>;
+    update: Record<string, any>;
+  };
   all: BaseKeystoneTypeInfo;
 };
 

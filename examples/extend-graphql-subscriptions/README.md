@@ -1,7 +1,7 @@
 ## Feature Example - Extend GraphQL Schema to enable subscriptions
 
 This example demonstrates how to extend the GraphQL API provided by Keystone to add subscriptions.
-For more information on Subscriptions see https://www.apollographql.com/docs/apollo-server/data/subscriptions
+For more information on Subscriptions see <https://www.apollographql.com/docs/apollo-server/data/subscriptions>
 
 The example does not demonstrate authentication as it is highly implementation dependent.
 
@@ -29,13 +29,12 @@ subscription PublishedPost {
     id
     title
     publishDate
-	 author {
-		name
-	 }
+    author {
+      name
+    }
   }
 }
 ```
-
 
 ### Post Updated
 
@@ -47,9 +46,9 @@ subscription PostUpdated {
     id
     title
     content
-	 author {
-		name
-	 }
+    author {
+      name
+    }
   }
 }
 ```

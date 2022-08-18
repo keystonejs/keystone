@@ -128,68 +128,87 @@ function getIsEnabled(listsConfig: KeystoneConfig['lists']) {
   return isEnabled;
 }
 
+type PartiallyInitialisedList = Omit<InitialisedList, 'lists' | 'resolvedDbFields'>;
+
 function getListsWithInitialisedFields(
   { storage: configStorage, lists: listsConfig, db: { provider } }: KeystoneConfig,
   listGraphqlTypes: Record<string, ListGraphQLTypes>,
   intermediateLists: Record<string, { graphql: { isEnabled: IsEnabled } }>
 ) {
-  return Object.fromEntries(
-    Object.entries(listsConfig).map(([listKey, list]) => [
+  const result: Record<string, PartiallyInitialisedList> = {};
+
+  for (const [listKey, list] of Object.entries(listsConfig)) {
+    const intermediateList = intermediateLists[listKey];
+    const resultFields: Record<string, InitialisedField> = {};
+
+    for (const [fieldKey, fieldFunc] of Object.entries(list.fields)) {
+      if (typeof fieldFunc !== 'function') {
+        throw new Error(`The field at ${listKey}.${fieldKey} does not provide a function`);
+      }
+
+      const f = fieldFunc({
+        fieldKey,
+        listKey,
+        lists: listGraphqlTypes,
+        provider,
+        getStorage: storage => configStorage?.[storage],
+      });
+
+      // We explicity check for boolean values here to ensure the dev hasn't made a mistake
+      // when defining these values. We avoid duck-typing here as this is security related
+      // and we want to make it hard to write incorrect code.
+      throwIfNotAFilter(f.isFilterable, listKey, 'isFilterable');
+      throwIfNotAFilter(f.isOrderable, listKey, 'isOrderable');
+
+      const omit = f.graphql?.omit;
+      const read = omit !== true && !omit?.includes('read');
+      const _isEnabled = {
+        read,
+        update: omit !== true && !omit?.includes('update'),
+        create: omit !== true && !omit?.includes('create'),
+        // Filter and orderBy can be defaulted at the list level, otherwise they
+        // default to `false` if no value was set at the list level.
+        filter: read && (f.isFilterable ?? intermediateList.graphql.isEnabled.filter),
+        orderBy: read && (f.isOrderable ?? intermediateList.graphql.isEnabled.orderBy),
+      };
+
+      resultFields[fieldKey] = {
+        ...f,
+        dbField: f.dbField as ResolvedDBField,
+        access: parseFieldAccessControl(f.access),
+        hooks: f.hooks ?? {},
+        graphql: {
+          cacheHint: f.graphql?.cacheHint,
+          isEnabled: _isEnabled,
+        },
+        input: { ...f.input },
+      };
+    }
+
+    result[listKey] = {
+      fields: resultFields,
+      ...intermediateList,
+      ...getNamesFromList(listKey, list),
+      access: parseListAccessControl(list.access),
+      dbMap: list.db?.map,
+      types: listGraphqlTypes[listKey].types,
+
+      hooks: list.hooks || {},
+
+      /** These properties aren't related to any of the above actions but need to be here */
+      maxResults: list.graphql?.queryLimits?.maxResults ?? Infinity,
       listKey,
-      {
-        fields: Object.fromEntries(
-          Object.entries(list.fields).map(([fieldKey, fieldFunc]) => {
-            if (typeof fieldFunc !== 'function') {
-              throw new Error(`The field at ${listKey}.${fieldKey} does not provide a function`);
-            }
-            const f = fieldFunc({
-              fieldKey,
-              listKey,
-              lists: listGraphqlTypes,
-              provider,
-              getStorage: storage => configStorage?.[storage],
-            });
+      cacheHint: (() => {
+        const cacheHint = list.graphql?.cacheHint;
+        if (cacheHint === undefined) {
+          return undefined;
+        }
+        return typeof cacheHint === 'function' ? cacheHint : () => cacheHint;
+      })(),
+    };
+  }
 
-            const omit = f.graphql?.omit;
-            const read = omit !== true && !omit?.includes('read');
-
-            // We explicity check for boolean values here to ensure the dev hasn't made a mistake
-            // when defining these values. We avoid duck-typing here as this is security related
-            // and we want to make it hard to write incorrect code.
-            throwIfNotAFilter(f.isFilterable, listKey, 'isFilterable');
-            throwIfNotAFilter(f.isOrderable, listKey, 'isOrderable');
-
-            const _isEnabled = {
-              read,
-              update: omit !== true && !omit?.includes('update'),
-              create: omit !== true && !omit?.includes('create'),
-              // Filter and orderBy can be defaulted at the list level, otherwise they
-              // default to `false` if no value was set at the list level.
-              filter:
-                read && (f.isFilterable ?? intermediateLists[listKey].graphql.isEnabled.filter),
-              orderBy:
-                read && (f.isOrderable ?? intermediateLists[listKey].graphql.isEnabled.orderBy),
-            };
-            const field = {
-              ...f,
-              access: parseFieldAccessControl(f.access),
-              hooks: f.hooks ?? {},
-              graphql: { cacheHint: f.graphql?.cacheHint, isEnabled: _isEnabled },
-              input: { ...f.input },
-            };
-
-            return [fieldKey, field];
-          })
-        ),
-        ...intermediateLists[listKey],
-        ...getNamesFromList(listKey, list),
-        hooks: list.hooks,
-        access: parseListAccessControl(list.access),
-        dbMap: list.db?.map,
-        types: listGraphqlTypes[listKey].types,
-      },
-    ])
-  );
+  return result;
 }
 
 function getListGraphqlTypes(
@@ -470,12 +489,15 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
 
   intermediateLists = Object.fromEntries(
     Object.entries(intermediateLists).map(([listKey, list]) => {
-      const fields: Record<string, InitialisedField> = Object.fromEntries(
-        Object.entries(list.fields).map(([fieldKey, field]) => [
-          fieldKey,
-          { ...field, dbField: list.resolvedDbFields[fieldKey] },
-        ])
-      );
+      const fields: Record<string, InitialisedField> = {};
+
+      for (const [fieldKey, field] of Object.entries(list.fields)) {
+        fields[fieldKey] = {
+          ...field,
+          dbField: list.resolvedDbFields[fieldKey],
+        };
+      }
+
       return [listKey, { ...list, fields }];
     })
   );
@@ -512,18 +534,6 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
   for (const [listKey, intermediateList] of Object.entries(intermediateLists)) {
     listsRef[listKey] = {
       ...intermediateList,
-      /** These properties weren't related to any of the above actions but need to be here */
-      hooks: intermediateList.hooks || {},
-      cacheHint: (() => {
-        const cacheHint = listsConfig[listKey].graphql?.cacheHint;
-        if (cacheHint === undefined) {
-          return undefined;
-        }
-        return typeof cacheHint === 'function' ? cacheHint : () => cacheHint;
-      })(),
-      maxResults: listsConfig[listKey].graphql?.queryLimits?.maxResults ?? Infinity,
-      listKey,
-      /** Add self-reference */
       lists: listsRef,
     };
   }

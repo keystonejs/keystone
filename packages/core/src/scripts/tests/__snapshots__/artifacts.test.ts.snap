@@ -122,6 +122,10 @@ export declare namespace Lists {
         update: TodoUpdateInput;
         orderBy: TodoOrderByInput;
       };
+      prisma: {
+        create: Record<string, any>; // TODO: actual types
+        update: Record<string, any>; // TODO: actual types
+      };
       all: __TypeInfo;
     };
   }

@@ -117,6 +117,10 @@ export function printGeneratedTypes(
         update: ${gqlNames.updateInputName};
         orderBy: ${gqlNames.listOrderName};
       };
+      prisma: {
+        create: Record<string, any>; // TODO: actual types
+        update: Record<string, any>; // TODO: actual types
+      };
       all: __TypeInfo;
     };
   }`;
