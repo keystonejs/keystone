@@ -104,26 +104,22 @@ type ArgsForCreateOrUpdateOperation<ListTypeInfo extends BaseListTypeInfo> =
 
 type ResolveInputListHook<ListTypeInfo extends BaseListTypeInfo> = (
   args: ArgsForCreateOrUpdateOperation<ListTypeInfo> & CommonArgs<ListTypeInfo>
-) =>
-  | MaybePromise<ListTypeInfo['inputs']['create'] | ListTypeInfo['inputs']['update']>
-  // TODO: These were here to support field hooks before we created a separate type
-  // (see ResolveInputFieldHook), check whether they're safe to remove now
-  | Record<string, any>
-  | string
-  | number
-  | boolean
-  | null;
+) => MaybePromise<
+  | ListTypeInfo['prisma']['create']
+  | ListTypeInfo['prisma']['update']
+  | undefined // TODO: ????
+>
 
 type ResolveInputFieldHook<
   ListTypeInfo extends BaseListTypeInfo,
   FieldKey extends FieldKeysForList<ListTypeInfo>
 > = (
   args: ArgsForCreateOrUpdateOperation<ListTypeInfo> & CommonArgs<ListTypeInfo>
-) =>
-  | MaybePromise<
-      ListTypeInfo['inputs']['create'][FieldKey] | ListTypeInfo['inputs']['update'][FieldKey]
-    >
-  | undefined; // undefined represents 'don't do anything'
+) => MaybePromise<
+  | ListTypeInfo['prisma']['create'][FieldKey]
+  | ListTypeInfo['prisma']['update'][FieldKey]
+  | undefined // undefined represents 'don't do anything'
+>;
 
 type ValidateInputHook<ListTypeInfo extends BaseListTypeInfo> = (
   args: ArgsForCreateOrUpdateOperation<ListTypeInfo> & {

@@ -117,6 +117,10 @@ export function printGeneratedTypes(
         update: ${gqlNames.updateInputName};
         orderBy: ${gqlNames.listOrderName};
       };
+      prisma: {
+        create: import('.prisma/client').${listKey}CreateInput;
+        update: import('.prisma/client').${listKey}UpdateInput;
+      };
       all: __TypeInfo;
     };
   }`;
