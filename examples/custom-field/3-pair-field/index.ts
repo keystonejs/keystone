@@ -52,10 +52,6 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>({
     })({
       ...config,
       input: {
-        where: {
-          arg: graphql.arg({ type: filters[meta.provider].String.optional }),
-          resolve: filters.resolveCommon,
-        },
         create: {
           arg: graphql.arg({ type: graphql.String }),
           resolve(value, context) {
@@ -71,17 +67,6 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>({
           },
         },
 
-        orderBy: {
-          arg: graphql.arg({
-            type: orderDirectionEnum,
-          }),
-          resolve(orderDirection, context) {
-            return {
-              left: orderDirection,
-              right: orderDirection,
-            };
-          },
-        },
       },
       output: graphql.field({
         type: graphql.String,
