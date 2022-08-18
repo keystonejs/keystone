@@ -104,17 +104,12 @@ type ArgsForCreateOrUpdateOperation<ListTypeInfo extends BaseListTypeInfo> =
 
 type ResolveInputListHook<ListTypeInfo extends BaseListTypeInfo> = (
   args: ArgsForCreateOrUpdateOperation<ListTypeInfo> & CommonArgs<ListTypeInfo>
-) => MaybePromise<
-  | ListTypeInfo['prisma']['create']
-  | ListTypeInfo['prisma']['update']
->
+) => MaybePromise<ListTypeInfo['prisma']['create'] | ListTypeInfo['prisma']['update']>;
 
 type ResolveInputFieldHook<
   ListTypeInfo extends BaseListTypeInfo,
   FieldKey extends FieldKeysForList<ListTypeInfo>
-> = (
-  args: ArgsForCreateOrUpdateOperation<ListTypeInfo> & CommonArgs<ListTypeInfo>
-) => MaybePromise<
+> = (args: ArgsForCreateOrUpdateOperation<ListTypeInfo> & CommonArgs<ListTypeInfo>) => MaybePromise<
   | ListTypeInfo['prisma']['create'][FieldKey]
   | ListTypeInfo['prisma']['update'][FieldKey]
   | undefined // undefined represents 'don't do anything'

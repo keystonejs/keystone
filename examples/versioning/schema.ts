@@ -9,7 +9,8 @@ export const lists: Lists = {
         console.log('list.hooks.resolveInput', { resolvedData, operation, item });
 
         if (operation === 'create') return resolvedData;
-        if (resolvedData.version !== item.version + 1) throw new Error(`Expected version ${item.version + 1}`);
+        if (resolvedData.version !== item.version + 1)
+          throw new Error(`Expected version ${item.version + 1}`);
         return resolvedData;
       },
     },
