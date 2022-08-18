@@ -43,8 +43,8 @@ type AddFieldPathArgToAllPropsOnObj<T extends Record<string, (arg: any) => any>>
 };
 
 type FieldKeysForList<ListTypeInfo extends BaseListTypeInfo> =
-  | keyof ListTypeInfo['inputs']['create']
-  | keyof ListTypeInfo['inputs']['update'];
+  | keyof ListTypeInfo['prisma']['create']
+  | keyof ListTypeInfo['prisma']['update'];
 
 export type FieldHooks<
   ListTypeInfo extends BaseListTypeInfo,
@@ -85,9 +85,9 @@ type ArgsForCreateOrUpdateOperation<ListTypeInfo extends BaseListTypeInfo> =
        */
       inputData: ListTypeInfo['inputs']['create'];
       /**
-       * The GraphQL input **after** default values are applied
+       * The GraphQL input **after** being resolved by the field type's output resolver
        */
-      resolvedData: ListTypeInfo['inputs']['create'];
+      resolvedData: ListTypeInfo['prisma']['create'];
     }
   | {
       operation: 'update';
@@ -97,9 +97,9 @@ type ArgsForCreateOrUpdateOperation<ListTypeInfo extends BaseListTypeInfo> =
        */
       inputData: ListTypeInfo['inputs']['update'];
       /**
-       * The GraphQL input **after** default values are applied
+       * The GraphQL input **after** being resolved by the field type's output resolver
        */
-      resolvedData: ListTypeInfo['inputs']['update'];
+      resolvedData: ListTypeInfo['prisma']['update'];
     };
 
 type ResolveInputListHook<ListTypeInfo extends BaseListTypeInfo> = (
