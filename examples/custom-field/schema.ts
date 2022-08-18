@@ -35,8 +35,8 @@ export const lists: Lists = {
 
           // add some defaults
           pair: {
-            left: resolvedData?.pair?.left || '<blank>',
-            right: resolvedData?.pair?.right || '<blank>',
+            left: resolvedData.pair?.left || '<blank>',
+            right: resolvedData.pair?.right || '<blank>',
           },
         };
       },
