@@ -16,7 +16,7 @@ export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
 export function text<ListTypeInfo extends BaseListTypeInfo>({
   isIndexed,
   ...config
-}: AddressFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
+}: TextFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
   return meta =>
     fieldType({
       kind: 'scalar',
