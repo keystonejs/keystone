@@ -44,9 +44,9 @@ async function main() {
           entries.map(async entry => {
             if (entry.isDirectory()) {
               const projectPath = path.join(dir, entry.name);
-              const packageJsonPath = path.join(projectPath, 'package.json');
+              const keystoneConfigPath = path.join(projectPath, 'keystone.ts');
               try {
-                if ((await fs.stat(packageJsonPath)).isFile()) {
+                if ((await fs.stat(keystoneConfigPath)).isFile()) {
                   projectPaths.push(projectPath);
                 }
               } catch (err: any) {
@@ -62,7 +62,10 @@ async function main() {
     )
   )
     .flat()
-    .concat(path.join(repoRoot, 'tests/sandbox'));
+    .concat(
+      path.join(repoRoot, 'tests/sandbox'),
+      path.join(repoRoot, 'examples/e2e-boilerplate/keystone-server')
+    );
 
   // this breaks if we do this entirely in parallel (it only seemed to consistently fail on Vercel though)
   // because of Prisma's loading native libraries and child processes stuff and it seems racey

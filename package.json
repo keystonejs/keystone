@@ -114,6 +114,7 @@
       "design-system/website",
       "docs",
       "examples/*",
+      "examples/*/*",
       "packages/*",
       "tests/admin-ui-tests",
       "tests/api-tests",
