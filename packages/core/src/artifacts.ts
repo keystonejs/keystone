@@ -2,7 +2,7 @@ import path from 'path';
 import { createRequire } from 'module';
 import { printSchema, GraphQLSchema } from 'graphql';
 import * as fs from 'fs-extra';
-import { getGenerator, formatSchema } from '@prisma/sdk';
+import { getGenerator, formatSchema } from '@prisma/internals';
 import { format } from 'prettier';
 import type { KeystoneConfig } from './types';
 import { confirmPrompt, shouldPrompt } from './lib/prompts';
@@ -54,17 +54,17 @@ async function ensurePrismaBinariesExist() {
   // ensureBinariesExist does a bunch of slightly expensive things
   // so if we can avoid running it a bunch in tests, that's ideal
   if (hasEnsuredBinariesExist) return;
-  // we're resolving @prisma/engines from @prisma/sdk
+  // we're resolving @prisma/engines from @prisma/internals
   // because we don't want to depend on @prisma/engines
   // since its version includes a commit hash from https://github.com/prisma/prisma-engines
-  // and we just want to use whatever version @prisma/sdk is using
-  // also note we use an exact version of @prisma/sdk
-  // so if @prisma/sdk suddenly stops depending on @prisma/engines
+  // and we just want to use whatever version @prisma/internals is using
+  // also note we use an exact version of @prisma/internals
+  // so if @prisma/internals suddenly stops depending on @prisma/engines
   // that won't break a released version of Keystone
   // also, we're not just directly importing @prisma/engines
   // since stricter package managers(e.g. pnpm, Yarn Berry)
   // don't allow importing packages that aren't explicitly depended on
-  const requireFromPrismaSdk = createRequire(require.resolve('@prisma/sdk'));
+  const requireFromPrismaSdk = createRequire(require.resolve('@prisma/internals'));
   const prismaEngines = requireFromPrismaSdk('@prisma/engines') as typeof import('@prisma/engines');
   await prismaEngines.ensureBinariesExist();
   hasEnsuredBinariesExist = true;
@@ -248,7 +248,10 @@ export async function generateNodeModulesArtifacts(
 }
 
 async function generatePrismaClient(cwd: string) {
-  const generator = await getGenerator({ schemaPath: getSchemaPaths(cwd).prisma });
+  const generator = await getGenerator({
+    schemaPath: getSchemaPaths(cwd).prisma,
+    dataProxy: false,
+  });
   try {
     await generator.generate();
   } finally {
@@ -264,6 +267,13 @@ async function generatePrismaClient(cwd: string) {
   }
 }
 
-export function requirePrismaClient(cwd: string) {
-  return require(path.join(cwd, 'node_modules/.prisma/client')).PrismaClient;
+export type PrismaModule = {
+  PrismaClient: {
+    new (args: unknown): any;
+  };
+  Prisma: { DbNull: unknown; JsonNull: unknown; [key: string]: unknown };
+};
+
+export function requirePrismaClient(cwd: string): PrismaModule {
+  return require(path.join(cwd, 'node_modules/.prisma/client'));
 }

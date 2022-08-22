@@ -41,7 +41,7 @@ async function setupAndStopDevServerForMigrations(cwd: string, resetDb: boolean 
 }
 
 function getPrismaClient(cwd: string) {
-  const prismaClient = new (requirePrismaClient(cwd))({
+  const prismaClient = new (requirePrismaClient(cwd).PrismaClient)({
     datasources: { sqlite: { url: dbUrl } },
   });
   return prismaClient;

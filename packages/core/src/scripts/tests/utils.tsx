@@ -8,7 +8,7 @@ import fastGlob from 'fast-glob';
 import fixturez from 'fixturez';
 import outdent from 'outdent';
 import { parseArgsStringToArgv } from 'string-argv';
-import { IntrospectionEngine, uriToCredentials } from '@prisma/sdk';
+import { IntrospectionEngine, uriToCredentials } from '@prisma/internals';
 import { KeystoneConfig } from '../../types';
 import { cli } from '../cli';
 import { mockPrompts } from '../../lib/prompts';
