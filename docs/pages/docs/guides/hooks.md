@@ -202,7 +202,7 @@ export default config({
       fields: {
         name: text(),
         email: text({
-          db: { isRequired: true },
+          validation: { isRequired: true },
           hooks: {
             validateInput: ({ addValidationError, resolvedData, fieldKey }) => {
               const email = resolvedData[fieldKey];

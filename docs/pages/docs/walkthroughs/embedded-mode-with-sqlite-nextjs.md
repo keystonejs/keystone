@@ -63,7 +63,7 @@ Delete the `/pages/api` directory. We’ll add a GraphQL API later in the tutori
    └── index.tsx
 ```
 
-It is recommended that you use the same major version of `next` as used internally by [keystone](https://github.com/keystonejs/keystone/blob/main/packages/core/package.json#L107).
+It is recommended that you use the same major version of `next` as used internally by [keystone](https://github.com/keystonejs/keystone/blob/main/packages/core/package.json).
 
 ### Start your local server
 

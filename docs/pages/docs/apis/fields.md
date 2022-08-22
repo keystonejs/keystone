@@ -946,7 +946,7 @@ Options:
 ### document
 
 A highly customizable, [Slate](https://docs.slatejs.org/)-based, rich text editor that lets content creators quickly and easily edit content in your system.
-See the [Document Field guild](https://keystonejs.com/docs/guides/document-fields),
+See the [Document Field guide](https://keystonejs.com/docs/guides/document-fields),
 [demo](https://keystonejs.com/docs/guides/document-field-demo) and
 [example project](https://github.com/keystonejs/keystone/tree/main/examples/document-field) for details.
 
