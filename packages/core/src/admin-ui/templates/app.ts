@@ -8,6 +8,8 @@ import {
   parse,
   FragmentDefinitionNode,
   SelectionNode,
+  ExecutionResult,
+  Kind,
 } from 'graphql';
 import { AdminMetaRootVal } from '../../types';
 import { staticAdminMetaQuery, StaticAdminMetaQuery } from '../admin-meta-graphql';
@@ -24,7 +26,7 @@ export const appTemplate = (
     document: staticAdminMetaQuery,
     schema: graphQLSchema,
     contextValue: { isAdminUIBuildProcess: true },
-  });
+  }) as ExecutionResult<StaticAdminMetaQuery>;
   if (result.errors) {
     throw result.errors[0];
   }
@@ -136,18 +138,21 @@ function getLazyMetadataQuery(
       }
 
       selections.push({
-        kind: 'Field',
-        name: { kind: 'Name', value: 'authenticatedItem' },
+        kind: Kind.FIELD,
+        name: { kind: Kind.NAME, value: 'authenticatedItem' },
         selectionSet: {
-          kind: 'SelectionSet',
+          kind: Kind.SELECTION_SET,
           selections: authenticatedItemType.getTypes().map(({ name }) => ({
-            kind: 'InlineFragment',
-            typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: name } },
+            kind: Kind.INLINE_FRAGMENT,
+            typeCondition: { kind: Kind.NAMED_TYPE, name: { kind: Kind.NAME, value: name } },
             selectionSet: {
-              kind: 'SelectionSet',
+              kind: Kind.SELECTION_SET,
               selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: getListByKey(name)!.labelField } },
+                { kind: Kind.FIELD, name: { kind: Kind.NAME, value: 'id' } },
+                {
+                  kind: Kind.FIELD,
+                  name: { kind: Kind.NAME, value: getListByKey(name)!.labelField },
+                },
               ],
             },
           })),

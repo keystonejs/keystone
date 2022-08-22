@@ -141,7 +141,7 @@ export type KeystoneDbAPI<KeystoneListsTypeInfo extends Record<string, BaseListT
 export type KeystoneGraphQLAPI = {
   schema: GraphQLSchema;
   run: (args: GraphQLExecutionArguments) => Promise<Record<string, any>>;
-  raw: (args: GraphQLExecutionArguments) => Promise<ExecutionResult>;
+  raw: (args: GraphQLExecutionArguments) => Promise<ExecutionResult<Record<string, any>>>;
 };
 
 type GraphQLExecutionArguments = {

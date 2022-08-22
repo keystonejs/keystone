@@ -1,10 +1,13 @@
 import {
+  DocumentNode,
   execute,
   FragmentDefinitionNode,
   GraphQLList,
   GraphQLNonNull,
   GraphQLOutputType,
   GraphQLSchema,
+  Kind,
+  OperationTypeNode,
   parse,
   validate,
 } from 'graphql';
@@ -42,18 +45,19 @@ export function executeGraphQLFieldWithSelection(
       parse(`fragment x on ${rootName} {${query}}`).definitions[0] as FragmentDefinitionNode
     ).selectionSet;
 
-    const document = {
-      kind: 'Document',
+    const document: DocumentNode = {
+      kind: Kind.DOCUMENT,
       definitions: [
         {
-          kind: 'OperationDefinition',
-          operation,
+          kind: Kind.OPERATION_DEFINITION,
+          // OperationTypeNode is an ts enum where the values are 'query' | 'mutation' | 'subscription'
+          operation: operation as OperationTypeNode,
           selectionSet: {
-            kind: 'SelectionSet',
+            kind: Kind.SELECTION_SET,
             selections: [
               {
-                kind: 'Field',
-                name: { kind: 'Name', value: field.name },
+                kind: Kind.FIELD,
+                name: { kind: Kind.NAME, value: field.name },
                 arguments: argumentNodes,
                 selectionSet: selectionSet,
               },
@@ -62,7 +66,7 @@ export function executeGraphQLFieldWithSelection(
           variableDefinitions,
         },
       ],
-    } as const;
+    };
 
     const validationErrors = validate(schema, document);
 
