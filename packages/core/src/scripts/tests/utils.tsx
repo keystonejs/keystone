@@ -26,7 +26,7 @@ export const basicKeystoneConfig = js`
 
                                      export default config({
                                        db: { provider: "sqlite", url: "file:./app.db" },
-                                       lists: {
+                                       models: {
                                          Todo: list({
                                            fields: {
                                              title: text(),

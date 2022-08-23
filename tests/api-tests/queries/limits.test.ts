@@ -6,7 +6,7 @@ import { depthLimit, definitionLimit, fieldLimit } from './validation';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: {
+    models: {
       Post: list({
         fields: {
           title: text(),

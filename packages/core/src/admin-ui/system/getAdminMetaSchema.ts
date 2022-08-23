@@ -111,7 +111,7 @@ export function getAdminMetaSchema({
                   if (!lists[rootVal.listKey].fields[rootVal.fieldPath].graphql.isEnabled.create) {
                     return 'hidden';
                   }
-                  const listConfig = config.lists[rootVal.listKey];
+                  const listConfig = config.models[rootVal.listKey];
                   const sessionFunction =
                     lists[rootVal.listKey].fields[rootVal.fieldPath].ui?.createView?.fieldMode ??
                     listConfig.ui?.createView?.defaultFieldMode;
@@ -149,7 +149,7 @@ export function getAdminMetaSchema({
                   if (!lists[rootVal.listKey].fields[rootVal.fieldPath].graphql.isEnabled.read) {
                     return 'hidden';
                   }
-                  const listConfig = config.lists[rootVal.listKey];
+                  const listConfig = config.models[rootVal.listKey];
                   const sessionFunction =
                     lists[rootVal.listKey].fields[rootVal.fieldPath].ui?.listView?.fieldMode ??
                     listConfig.ui?.listView?.defaultFieldMode;
@@ -193,7 +193,7 @@ export function getAdminMetaSchema({
                 ) {
                   return 'read';
                 }
-                const listConfig = config.lists[rootVal.listKey];
+                const listConfig = config.models[rootVal.listKey];
 
                 const sessionFunction =
                   lists[rootVal.listKey].fields[rootVal.fieldPath].ui?.itemView?.fieldMode ??
@@ -269,7 +269,7 @@ export function getAdminMetaSchema({
               'KeystoneAdminUIListMeta.hideCreate cannot be resolved during the build process'
             );
           }
-          const listConfig = config.lists[rootVal.key];
+          const listConfig = config.models[rootVal.key];
           return runMaybeFunction(listConfig.ui?.hideCreate, false, {
             session: context.session,
             context,
@@ -284,7 +284,7 @@ export function getAdminMetaSchema({
               'KeystoneAdminUIListMeta.hideDelete cannot be resolved during the build process'
             );
           }
-          const listConfig = config.lists[rootVal.key];
+          const listConfig = config.models[rootVal.key];
           return runMaybeFunction(listConfig.ui?.hideDelete, false, {
             session: context.session,
             context,
@@ -313,7 +313,7 @@ export function getAdminMetaSchema({
               'KeystoneAdminUIListMeta.isHidden cannot be resolved during the build process'
             );
           }
-          const listConfig = config.lists[rootVal.key];
+          const listConfig = config.models[rootVal.key];
           return runMaybeFunction(listConfig.ui?.isHidden, false, {
             session: context.session,
             context,

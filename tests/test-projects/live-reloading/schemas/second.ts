@@ -1,7 +1,7 @@
 import { graphql, graphQLSchemaExtension, list } from '@keystone-6/core';
 import { text, virtual } from '@keystone-6/core/fields';
 
-export const lists = {
+export const models = {
   Something: list({
     fields: {
       text: text({ label: 'Very Important Text' }),

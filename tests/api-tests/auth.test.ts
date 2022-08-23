@@ -46,7 +46,7 @@ const auth = createAuth({
 const runner = setupTestRunner({
   config: auth.withAuth(
     apiTestConfig({
-      lists: {
+      models: {
         User: list({
           fields: {
             name: text(),

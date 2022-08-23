@@ -92,12 +92,12 @@ export function printGeneratedTypes(
   const printedTypes = printInputTypesFromSchema(graphQLSchema, scalars);
 
   let allListsStr = '';
-  let listsNamespaceStr = '\nexport declare namespace Lists {';
+  let listsNamespaceStr = '\nexport declare namespace Models {';
 
   for (const [listKey, list] of Object.entries(lists)) {
     const gqlNames = getGqlNames(list);
 
-    const listTypeInfoName = `Lists.${listKey}.TypeInfo`;
+    const listTypeInfoName = `Models.${listKey}.TypeInfo`;
 
     allListsStr += `\n  readonly ${listKey}: ${listTypeInfoName};`;
     listsNamespaceStr += `
@@ -141,7 +141,7 @@ ${
 }
 type __TypeInfo = TypeInfo;
 
-export type Lists = {
+export type Models = {
   [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core').ListConfig<TypeInfo['lists'][Key], any>
 } & Record<string, import('@keystone-6/core').ListConfig<any, any>>;
 `;

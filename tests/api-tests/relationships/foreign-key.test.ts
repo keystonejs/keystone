@@ -5,7 +5,7 @@ import { apiTestConfig, dbProvider, getPrismaSchema } from '../utils';
 test('when not specifying foreignKey in a one to one relationship, the side is picked based on the list key + field key ordering', async () => {
   const prismaSchema = await getPrismaSchema(
     apiTestConfig({
-      lists: {
+      models: {
         A: list({
           fields: {
             b: relationship({ ref: 'B.a' }),
@@ -49,7 +49,7 @@ model B {
 test('when specifying foreignKey: true in a one to one relationship, that side has the foreign key', async () => {
   const prismaSchema = await getPrismaSchema(
     apiTestConfig({
-      lists: {
+      models: {
         A: list({
           fields: {
             b: relationship({ ref: 'B.a' }),
@@ -93,7 +93,7 @@ model B {
 test('when specifying foreignKey: { map } in a one to one relationship, that side has the foreign key with the map', async () => {
   const prismaSchema = await getPrismaSchema(
     apiTestConfig({
-      lists: {
+      models: {
         A: list({
           fields: {
             b: relationship({ ref: 'B.a' }),
@@ -138,7 +138,7 @@ test('when specifying foreignKey: true on both sides of a one to one relationshi
   await expect(
     getPrismaSchema(
       apiTestConfig({
-        lists: {
+        models: {
           A: list({
             fields: {
               b: relationship({ ref: 'B.a', db: { foreignKey: true } }),
@@ -162,7 +162,7 @@ test('when specifying foreignKey: { map } on both sides of a one to one relation
   await expect(
     getPrismaSchema(
       apiTestConfig({
-        lists: {
+        models: {
           A: list({
             fields: {
               b: relationship({ ref: 'B.a', db: { foreignKey: { map: 'blah' } } }),
@@ -186,7 +186,7 @@ test('foreignKey: true in a many to one relationship is the same as not specifyi
   const getPrismaSchemaForForeignKeyVal = (foreignKey: boolean) =>
     getPrismaSchema(
       apiTestConfig({
-        lists: {
+        models: {
           A: list({
             fields: {
               b: relationship({ ref: 'B.a', many: true }),
@@ -209,7 +209,7 @@ test('foreignKey: true in a many to one relationship is the same as not specifyi
 test('foreignKey: { map } in a many to one relationship sets the @map attribute on the foreign key', async () => {
   const prismaSchema = await getPrismaSchema(
     apiTestConfig({
-      lists: {
+      models: {
         A: list({
           fields: {
             b: relationship({ ref: 'B.a', many: true }),

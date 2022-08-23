@@ -56,8 +56,7 @@ export default withAuth(
         }
       },
     },
-    lists: {
-      // Schema items go in here
+    models: {
       User,
       Product,
       ProductImage,
