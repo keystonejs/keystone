@@ -100,7 +100,7 @@ export const multiselect =
     const possibleValues = new Set(transformedConfig.options.map(x => x.value));
     if (possibleValues.size !== transformedConfig.options.length) {
       throw new Error(
-        `The multiselect field at ${meta.listKey}.${meta.fieldKey} has duplicate options, this is not allowed`
+        `The multiselect field at ${meta.modelKey}.${meta.fieldKey} has duplicate options, this is not allowed`
       );
     }
 
@@ -167,7 +167,7 @@ function configToOptionsAndGraphQLType(
       )
     ) {
       throw new Error(
-        `The multiselect field at ${meta.listKey}.${meta.fieldKey} specifies integer values that are outside the range of a 32 bit signed integer`
+        `The multiselect field at ${meta.modelKey}.${meta.fieldKey} specifies integer values that are outside the range of a 32 bit signed integer`
       );
     }
     return {
@@ -188,7 +188,7 @@ function configToOptionsAndGraphQLType(
   });
 
   if (config.type === 'enum') {
-    const enumName = `${meta.listKey}${inflection.classify(meta.fieldKey)}Type`;
+    const enumName = `${meta.modelKey}${inflection.classify(meta.fieldKey)}Type`;
     const graphqlType = graphql.enum({
       name: enumName,
       values: graphql.enumValues(options.map(x => x.value)),

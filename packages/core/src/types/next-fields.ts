@@ -15,7 +15,7 @@ export type FieldData = {
   lists: Record<string, ListGraphQLTypes>;
   provider: DatabaseProvider;
   getStorage: (storage: string) => StorageConfig | undefined;
-  listKey: string;
+  modelKey: string;
   fieldKey: string;
 };
 

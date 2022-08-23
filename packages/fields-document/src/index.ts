@@ -112,7 +112,7 @@ export const document =
         assertValidComponentSchema({ kind: 'object', fields: block.schema }, lists);
       } catch (err) {
         throw new Error(
-          `Component block ${name} in ${meta.listKey}.${meta.fieldKey}: ${(err as any).message}`
+          `Component block ${name} in ${meta.modelKey}.${meta.fieldKey}: ${(err as any).message}`
         );
       }
     }
@@ -135,7 +135,7 @@ export const document =
         },
         output: graphql.field({
           type: graphql.object<{ document: JSONValue }>()({
-            name: `${meta.listKey}_${meta.fieldKey}_Document`,
+            name: `${meta.modelKey}_${meta.fieldKey}_Document`,
             fields: {
               document: graphql.field({
                 args: {
@@ -190,7 +190,7 @@ function normaliseRelationships(
       const relationship = configRelationships[key];
       if (meta.lists[relationship.listKey] === undefined) {
         throw new Error(
-          `An inline relationship ${relationship.label} (${key}) in the field at ${meta.listKey}.${meta.fieldKey} has listKey set to "${relationship.listKey}" but no list named "${relationship.listKey}" exists.`
+          `An inline relationship ${relationship.label} (${key}) in the field at ${meta.modelKey}.${meta.fieldKey} has listKey set to "${relationship.listKey}" but no list named "${relationship.listKey}" exists.`
         );
       }
       relationships[key] = { ...relationship, selection: relationship.selection ?? null };

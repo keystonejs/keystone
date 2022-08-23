@@ -148,7 +148,7 @@ function getListsWithInitialisedFields(
 
       const f = fieldFunc({
         fieldKey,
-        listKey,
+        modelKey: listKey,
         lists: listGraphqlTypes,
         provider,
         getStorage: storage => configStorage?.[storage],

@@ -85,20 +85,20 @@ export const password =
       const val = validation.length[type];
       if (val !== null && (!Number.isInteger(val) || val < 1)) {
         throw new Error(
-          `The password field at ${meta.listKey}.${meta.fieldKey} specifies validation.length.${type}: ${val} but it must be a positive integer >= 1`
+          `The password field at ${meta.modelKey}.${meta.fieldKey} specifies validation.length.${type}: ${val} but it must be a positive integer >= 1`
         );
       }
     }
 
     if (validation.length.max !== null && validation.length.min > validation.length.max) {
       throw new Error(
-        `The password field at ${meta.listKey}.${meta.fieldKey} specifies a validation.length.max that is less than the validation.length.min, and therefore has no valid options`
+        `The password field at ${meta.modelKey}.${meta.fieldKey} specifies a validation.length.max that is less than the validation.length.min, and therefore has no valid options`
       );
     }
 
     if (workFactor < 6 || workFactor > 31 || !Number.isInteger(workFactor)) {
       throw new Error(
-        `The password field at ${meta.listKey}.${meta.fieldKey} specifies workFactor: ${workFactor} but it must be an integer between 6 and 31`
+        `The password field at ${meta.modelKey}.${meta.fieldKey} specifies workFactor: ${workFactor} but it must be an integer between 6 and 31`
       );
     }
 

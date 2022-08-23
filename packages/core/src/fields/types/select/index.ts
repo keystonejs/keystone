@@ -89,7 +89,7 @@ export const select =
       const values = new Set(options.map(x => x.value));
       if (values.size !== options.length) {
         throw new Error(
-          `The select field at ${meta.listKey}.${meta.fieldKey} has duplicate options, this is not allowed`
+          `The select field at ${meta.modelKey}.${meta.fieldKey} has duplicate options, this is not allowed`
         );
       }
       return {
@@ -157,7 +157,7 @@ export const select =
         )
       ) {
         throw new Error(
-          `The select field at ${meta.listKey}.${meta.fieldKey} specifies integer values that are outside the range of a 32 bit signed integer`
+          `The select field at ${meta.modelKey}.${meta.fieldKey} specifies integer values that are outside the range of a 32 bit signed integer`
         );
       }
       return fieldType({
@@ -191,7 +191,7 @@ export const select =
     });
 
     if (config.type === 'enum') {
-      const enumName = `${meta.listKey}${inflection.classify(meta.fieldKey)}Type`;
+      const enumName = `${meta.modelKey}${inflection.classify(meta.fieldKey)}Type`;
       const graphQLType = graphql.enum({
         name: enumName,
         values: graphql.enumValues(options.map(x => x.value)),
