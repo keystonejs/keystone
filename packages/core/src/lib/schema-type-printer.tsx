@@ -75,6 +75,34 @@ function printInputTypesFromSchema(schema: GraphQLSchema, scalars: Record<string
   return typeString + '\n\n';
 }
 
+function printInterimType<L extends InitialisedList>(
+  list: L,
+  listKey: string,
+  typename: string,
+  type: 'Create' | 'Update'
+) {
+  let resolvedTypeString = `type Resolved${typename} = {\n`;
+  for (let [fieldKey, { dbField }] of Object.entries(list.fields)) {
+    if (dbField.kind === 'multi') {
+      resolvedTypeString +=
+        `  ${fieldKey}: {\n` +
+        Object.keys(dbField.fields)
+          .map(
+            key =>
+              `    ${key}?: import('.prisma/client').Prisma.${listKey}${type}Input["${fieldKey}_${key}"];`
+          )
+          .join('\n') +
+        '\n  }\n';
+    } else if (dbField.kind === 'none') {
+      resolvedTypeString += `  ${fieldKey}?: undefined\n`;
+    } else {
+      resolvedTypeString += `  ${fieldKey}?: import('.prisma/client').Prisma.${listKey}${type}Input["${fieldKey}"];\n`;
+    }
+  }
+  resolvedTypeString += '};\n\n';
+  return resolvedTypeString;
+}
+
 export function printGeneratedTypes(
   graphQLSchema: GraphQLSchema,
   lists: Record<string, InitialisedList>
@@ -93,9 +121,14 @@ export function printGeneratedTypes(
 
   let allListsStr = '';
   let listsNamespaceStr = '\nexport declare namespace Lists {';
+  let interimCreateUpdateTypes = '';
 
   for (const [listKey, list] of Object.entries(lists)) {
     const gqlNames = getGqlNames(list);
+
+    interimCreateUpdateTypes +=
+      printInterimType(list, listKey, gqlNames.createInputName, 'Create') +
+      printInterimType(list, listKey, gqlNames.updateInputName, 'Update');
 
     const listTypeInfoName = `Lists.${listKey}.TypeInfo`;
 
@@ -118,8 +151,8 @@ export function printGeneratedTypes(
         orderBy: ${gqlNames.listOrderName};
       };
       prisma: {
-        create: Record<string, any>; // TODO: actual types
-        update: Record<string, any>; // TODO: actual types
+        create: Resolved${gqlNames.createInputName}
+        update: Resolved${gqlNames.updateInputName}
       };
       all: __TypeInfo;
     };
@@ -144,6 +177,8 @@ type __TypeInfo = TypeInfo;
 export type Lists = {
   [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core').ListConfig<TypeInfo['lists'][Key], any>
 } & Record<string, import('@keystone-6/core').ListConfig<any, any>>;
+
+export {}
 `;
-  return printedTypes + listsNamespaceStr + postlude;
+  return printedTypes + interimCreateUpdateTypes + listsNamespaceStr + postlude;
 }
