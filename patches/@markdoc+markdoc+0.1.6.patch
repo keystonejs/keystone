@@ -1,0 +1,22 @@
+diff --git a/node_modules/@markdoc/markdoc/dist/index.d.ts b/node_modules/@markdoc/markdoc/dist/index.d.ts
+index 1e3b3df..33ef53f 100644
+--- a/node_modules/@markdoc/markdoc/dist/index.d.ts
++++ b/node_modules/@markdoc/markdoc/dist/index.d.ts
+@@ -11,7 +11,7 @@ import transformer, { globalAttributes } from './src/transformer';
+ import transforms from './src/transforms';
+ import { parseTags } from './src/utils';
+ import validator from './src/validator';
+-import type { Node } from './src/types';
++import type { Node, Variable } from './src/types';
+ import type Token from 'markdown-it/lib/token';
+ import type { Config, RenderableTreeNode, ValidateError } from './src/types';
+ export * from './src/types';
+@@ -108,7 +108,7 @@ export default class Markdoc {
+         }>>): any;
+         Function: typeof import("./src/ast/function").default;
+         Node: typeof Node;
+-        Variable: typeof import("./src/types").Variable;
++        Variable: typeof Variable;
+     };
+     static Tag: typeof Tag;
+     static Tokenizer: typeof Tokenizer;
