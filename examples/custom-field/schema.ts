@@ -4,9 +4,9 @@ import { text } from './1-text-field';
 import { stars } from './2-stars-field';
 import { pair } from './3-pair-field';
 
-import { Lists } from '.keystone/types';
+import { Models } from '.keystone/types';
 
-export const lists: Lists = {
+export const models: Models = {
   Post: list({
     fields: {
       content: text({

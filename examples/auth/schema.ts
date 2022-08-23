@@ -1,7 +1,7 @@
 import { list } from '@keystone-6/core';
 import { text, checkbox, password } from '@keystone-6/core/fields';
 
-export const lists = {
+export const models = {
   User: list({
     access: {
       operation: {

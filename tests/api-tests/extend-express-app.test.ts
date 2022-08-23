@@ -6,7 +6,7 @@ import { apiTestConfig } from './utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: { User: list({ fields: { name: text() } }) },
+    models: { User: list({ fields: { name: text() } }) },
     server: {
       extendExpressApp: app => {
         app.get('/magic', (req, res) => {

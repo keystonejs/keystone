@@ -2,7 +2,7 @@ import { list } from '@keystone-6/core';
 import { select, relationship, text, timestamp } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
 
-export const lists = {
+export const models = {
   Post: list({
     fields: {
       title: text({ validation: { isRequired: true } }),

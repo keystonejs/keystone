@@ -11,7 +11,7 @@ const listKey = 'Test';
 const filterTestRunner = (field: FieldTypeFunc<BaseListTypeInfo>) =>
   setupTestRunner({
     config: apiTestConfig({
-      lists: {
+      models: {
         [listKey]: list({
           fields: { index: integer(), testField: field },
         }),

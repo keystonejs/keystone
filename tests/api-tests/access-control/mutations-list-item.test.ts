@@ -5,7 +5,7 @@ import { apiTestConfig, expectAccessDenied, expectAccessReturnError } from '../u
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: {
+    models: {
       // Item access control
       User: list({
         fields: { name: text() },

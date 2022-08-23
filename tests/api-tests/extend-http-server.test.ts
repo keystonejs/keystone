@@ -7,7 +7,7 @@ import { apiTestConfig } from './utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: { User: list({ fields: { name: text() } }) },
+    models: { User: list({ fields: { name: text() } }) },
     server: {
       extendHttpServer: server => {
         server.prependListener('request', (req: IncomingMessage, res: ServerResponse) => {
