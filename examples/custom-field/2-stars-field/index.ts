@@ -88,7 +88,7 @@ export const stars =
           return value;
         },
       }),
-      views: require.resolve('./views'),
+      views: require.resolve('./views.tsx'),
       getAdminMeta() {
         return { maxStars };
       },
