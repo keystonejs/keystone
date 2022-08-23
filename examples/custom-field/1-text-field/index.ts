@@ -47,7 +47,7 @@ export function text<ListTypeInfo extends BaseListTypeInfo>({
           return value;
         },
       }),
-      views: require.resolve('./views'),
+      views: require.resolve('./views.tsx'),
       getAdminMeta() {
         return {};
       },

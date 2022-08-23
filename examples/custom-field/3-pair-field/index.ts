@@ -75,7 +75,7 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>({
           return resolveOutput(value);
         },
       }),
-      views: require.resolve('./views'),
+      views: require.resolve('./views.tsx'),
       getAdminMeta() {
         return {};
       },
