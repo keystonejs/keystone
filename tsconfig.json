@@ -13,7 +13,7 @@
     "noUnusedLocals": true,
     "types": ["@types/jest"],
     "typeRoots": [],
-    "skipLibCheck": true
+    "skipLibCheck": false
   },
   "include": ["**/*"],
   "exclude": ["**/node_modules/**/*"]
