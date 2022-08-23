@@ -551,7 +551,7 @@ Options:
 ## Related resources
 
 {% related-content %}
-{% well 
+{% well
 heading="Schema API Reference"
 href="/docs/apis/schema" %}
 The API to configure your  options used with the `list` function.
