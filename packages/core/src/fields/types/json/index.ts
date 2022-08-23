@@ -1,5 +1,5 @@
 import {
-  BaseListTypeInfo,
+  BaseModelTypeInfo,
   JSONValue,
   FieldTypeFunc,
   CommonFieldConfig,
@@ -7,17 +7,17 @@ import {
 } from '../../../types';
 import { graphql } from '../../..';
 
-export type JsonFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
+export type JsonFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> =
+  CommonFieldConfig<ModelTypeInfo> & {
     defaultValue?: JSONValue;
     db?: { map?: string };
   };
 
 export const json =
-  <ListTypeInfo extends BaseListTypeInfo>({
+  <ModelTypeInfo extends BaseModelTypeInfo>({
     defaultValue = null,
     ...config
-  }: JsonFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
+  }: JsonFieldConfig<ModelTypeInfo> = {}): FieldTypeFunc<ModelTypeInfo> =>
   meta => {
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type json");

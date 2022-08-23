@@ -1,6 +1,6 @@
 import { humanize } from '../../../lib/utils';
 import {
-  BaseListTypeInfo,
+  BaseModelTypeInfo,
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
@@ -14,8 +14,8 @@ import {
   getResolvedIsNullable,
 } from '../../non-null-graphql';
 
-export type BigIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
+export type BigIntFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> =
+  CommonFieldConfig<ModelTypeInfo> & {
     isIndexed?: boolean | 'unique';
     defaultValue?: bigint | { kind: 'autoincrement' };
     validation?: {
@@ -42,12 +42,12 @@ const MAX_INT = 9223372036854775807n;
 const MIN_INT = -9223372036854775808n;
 
 export const bigInt =
-  <ListTypeInfo extends BaseListTypeInfo>({
+  <ModelTypeInfo extends BaseModelTypeInfo>({
     isIndexed,
     defaultValue: _defaultValue,
     validation: _validation,
     ...config
-  }: BigIntFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
+  }: BigIntFieldConfig<ModelTypeInfo> = {}): FieldTypeFunc<ModelTypeInfo> =>
   meta => {
     const defaultValue = _defaultValue ?? null;
     const hasAutoIncDefault =

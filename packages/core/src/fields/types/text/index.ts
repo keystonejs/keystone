@@ -1,6 +1,6 @@
 import { humanize } from '../../../lib/utils';
 import {
-  BaseListTypeInfo,
+  BaseModelTypeInfo,
   CommonFieldConfig,
   fieldType,
   orderDirectionEnum,
@@ -10,8 +10,8 @@ import {
 import { graphql } from '../../..';
 import { assertCreateIsNonNullAllowed, assertReadIsNonNullAllowed } from '../../non-null-graphql';
 
-export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
+export type TextFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> =
+  CommonFieldConfig<ModelTypeInfo> & {
     isIndexed?: true | 'unique';
     ui?: {
       displayMode?: 'input' | 'textarea';
@@ -54,12 +54,12 @@ export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   };
 
 export const text =
-  <ListTypeInfo extends BaseListTypeInfo>({
+  <ModelTypeInfo extends BaseModelTypeInfo>({
     isIndexed,
     defaultValue: _defaultValue,
     validation: _validation,
     ...config
-  }: TextFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
+  }: TextFieldConfig<ModelTypeInfo> = {}): FieldTypeFunc<ModelTypeInfo> =>
   meta => {
     for (const type of ['min', 'max'] as const) {
       const val = _validation?.length?.[type];

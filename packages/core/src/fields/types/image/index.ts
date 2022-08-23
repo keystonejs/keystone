@@ -1,5 +1,5 @@
 import {
-  BaseListTypeInfo,
+  BaseModelTypeInfo,
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
@@ -10,9 +10,9 @@ import {
 import { graphql } from '../../..';
 import { SUPPORTED_IMAGE_EXTENSIONS } from './utils';
 
-export type ImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
+export type ImageFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> = {
   storage: string;
-} & CommonFieldConfig<ListTypeInfo>;
+} & CommonFieldConfig<ModelTypeInfo>;
 
 const ImageExtensionEnum = graphql.enum({
   name: 'ImageExtension',
@@ -64,9 +64,9 @@ function isValidImageExtension(extension: string): extension is ImageExtension {
 }
 
 export const image =
-  <ListTypeInfo extends BaseListTypeInfo>(
-    config: ImageFieldConfig<ListTypeInfo>
-  ): FieldTypeFunc<ListTypeInfo> =>
+  <ModelTypeInfo extends BaseModelTypeInfo>(
+    config: ImageFieldConfig<ModelTypeInfo>
+  ): FieldTypeFunc<ModelTypeInfo> =>
   meta => {
     const storage = meta.getStorage(config.storage);
 

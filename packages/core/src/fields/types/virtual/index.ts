@@ -1,6 +1,6 @@
 import { getNamedType, isLeafType } from 'graphql';
 import {
-  BaseListTypeInfo,
+  BaseModelTypeInfo,
   BaseItem,
   CommonFieldConfig,
   FieldTypeFunc,
@@ -17,13 +17,13 @@ type VirtualFieldGraphQLField<Item extends BaseItem> = graphql.Field<
   string
 >;
 
-export type VirtualFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
+export type VirtualFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> =
+  CommonFieldConfig<ModelTypeInfo> & {
     field:
-      | VirtualFieldGraphQLField<ListTypeInfo['item']>
+      | VirtualFieldGraphQLField<ModelTypeInfo['item']>
       | ((
-          lists: Record<string, ListGraphQLTypes>
-        ) => VirtualFieldGraphQLField<ListTypeInfo['item']>);
+          models: Record<string, ListGraphQLTypes>
+        ) => VirtualFieldGraphQLField<ModelTypeInfo['item']>);
     unreferencedConcreteInterfaceImplementations?: readonly graphql.ObjectType<any>[];
     ui?: {
       /**
@@ -44,10 +44,10 @@ export type VirtualFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   };
 
 export const virtual =
-  <ListTypeInfo extends BaseListTypeInfo>({
+  <ModelTypeInfo extends BaseModelTypeInfo>({
     field,
     ...config
-  }: VirtualFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> =>
+  }: VirtualFieldConfig<ModelTypeInfo>): FieldTypeFunc<ModelTypeInfo> =>
   meta => {
     const usableField = typeof field === 'function' ? field(meta.lists) : field;
     const namedType = getNamedType(usableField.type.graphQLType);

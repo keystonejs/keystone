@@ -3,13 +3,13 @@ import bcryptjs from 'bcryptjs';
 import dumbPasswords from 'dumb-passwords';
 import { userInputError } from '../../../lib/core/graphql-errors';
 import { humanize } from '../../../lib/utils';
-import { BaseListTypeInfo, fieldType, FieldTypeFunc, CommonFieldConfig } from '../../../types';
+import { BaseModelTypeInfo, fieldType, FieldTypeFunc, CommonFieldConfig } from '../../../types';
 import { graphql } from '../../..';
 import { getResolvedIsNullable } from '../../non-null-graphql';
 import { PasswordFieldMeta } from './views';
 
-export type PasswordFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
+export type PasswordFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> =
+  CommonFieldConfig<ModelTypeInfo> & {
     /**
      * @default 10
      */
@@ -48,12 +48,12 @@ const PasswordFilter = graphql.inputObject({
 const bcryptHashRegex = /^\$2[aby]?\$\d{1,2}\$[.\/A-Za-z0-9]{53}$/;
 
 export const password =
-  <ListTypeInfo extends BaseListTypeInfo>({
+  <ModelTypeInfo extends BaseModelTypeInfo>({
     bcrypt = bcryptjs,
     workFactor = 10,
     validation: _validation,
     ...config
-  }: PasswordFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
+  }: PasswordFieldConfig<ModelTypeInfo> = {}): FieldTypeFunc<ModelTypeInfo> =>
   meta => {
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type password");

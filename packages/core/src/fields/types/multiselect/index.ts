@@ -1,18 +1,18 @@
 import inflection from 'inflection';
 import { humanize } from '../../../lib/utils';
 import {
-  BaseListTypeInfo,
   FieldTypeFunc,
   CommonFieldConfig,
   FieldData,
   jsonFieldTypePolyfilledForSQLite,
+  BaseModelTypeInfo,
 } from '../../../types';
 import { graphql } from '../../..';
 import { assertCreateIsNonNullAllowed, assertReadIsNonNullAllowed } from '../../non-null-graphql';
 import { userInputError } from '../../../lib/core/graphql-errors';
 
-export type MultiselectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> &
+export type MultiselectFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> =
+  CommonFieldConfig<ModelTypeInfo> &
     (
       | {
           /**
@@ -50,11 +50,11 @@ const MAX_INT = 2147483647;
 const MIN_INT = -2147483648;
 
 export const multiselect =
-  <ListTypeInfo extends BaseListTypeInfo>({
+  <ModelTypeInfo extends BaseModelTypeInfo>({
     ui,
     defaultValue = [],
     ...config
-  }: MultiselectFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> =>
+  }: MultiselectFieldConfig<ModelTypeInfo>): FieldTypeFunc<ModelTypeInfo> =>
   meta => {
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type multiselect");
@@ -156,7 +156,7 @@ export const multiselect =
   };
 
 function configToOptionsAndGraphQLType(
-  config: MultiselectFieldConfig<BaseListTypeInfo>,
+  config: MultiselectFieldConfig<BaseModelTypeInfo>,
   meta: FieldData
 ) {
   if (config.type === 'integer') {
