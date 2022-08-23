@@ -56,7 +56,7 @@ export const file =
 
     if (!storage) {
       throw new Error(
-        `${meta.listKey}.${meta.fieldKey} has storage set to ${config.storage}, but no storage configuration was found for that key`
+        `${meta.modelKey}.${meta.fieldKey} has storage set to ${config.storage}, but no storage configuration was found for that key`
       );
     }
 

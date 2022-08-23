@@ -46,7 +46,7 @@ export const timestamp =
         graphql.DateTime.graphQLType.parseValue(defaultValue);
       } catch (err) {
         throw new Error(
-          `The timestamp field at ${meta.listKey}.${
+          `The timestamp field at ${meta.modelKey}.${
             meta.fieldKey
           } specifies defaultValue: ${defaultValue} but values must be provided as a full ISO8601 date-time string such as ${new Date().toISOString()}`
         );

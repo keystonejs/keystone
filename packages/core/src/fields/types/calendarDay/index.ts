@@ -45,7 +45,7 @@ export const calendarDay =
         graphql.CalendarDay.graphQLType.parseValue(defaultValue);
       } catch (err) {
         throw new Error(
-          `The calendarDay field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: ${defaultValue} but values must be provided as a full-date ISO8601 string such as 1970-01-01`
+          `The calendarDay field at ${meta.modelKey}.${meta.fieldKey} specifies defaultValue: ${defaultValue} but values must be provided as a full-date ISO8601 string such as 1970-01-01`
         );
       }
     }
