@@ -1,7 +1,7 @@
 import path from 'path';
 import { ApolloError } from 'apollo-server-errors';
 import {
-  BaseListTypeInfo,
+  BaseModelTypeInfo,
   CommonFieldConfig,
   FieldData,
   FieldTypeFunc,
@@ -61,8 +61,8 @@ type FormattingConfig = {
   softBreaks?: true;
 };
 
-export type DocumentFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
+export type DocumentFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> =
+  CommonFieldConfig<ModelTypeInfo> & {
     relationships?: RelationshipsConfig;
     componentBlocks?: Record<string, ComponentBlock>;
     formatting?: true | FormattingConfig;
@@ -75,7 +75,7 @@ export type DocumentFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
 const views = path.join(path.dirname(__dirname), 'views');
 
 export const document =
-  <ListTypeInfo extends BaseListTypeInfo>({
+  <ModelTypeInfo extends BaseModelTypeInfo>({
     componentBlocks = {},
     dividers,
     formatting,
@@ -83,7 +83,7 @@ export const document =
     relationships: configRelationships,
     links,
     ...config
-  }: DocumentFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
+  }: DocumentFieldConfig<ModelTypeInfo> = {}): FieldTypeFunc<ModelTypeInfo> =>
   meta => {
     const documentFeatures = normaliseDocumentFeatures({
       dividers,
@@ -181,7 +181,7 @@ export const document =
   };
 
 function normaliseRelationships(
-  configRelationships: DocumentFieldConfig<BaseListTypeInfo>['relationships'],
+  configRelationships: DocumentFieldConfig<BaseModelTypeInfo>['relationships'],
   meta: FieldData
 ) {
   const relationships: Relationships = {};
@@ -201,7 +201,7 @@ function normaliseRelationships(
 
 function normaliseDocumentFeatures(
   config: Pick<
-    DocumentFieldConfig<BaseListTypeInfo>,
+    DocumentFieldConfig<BaseModelTypeInfo>,
     'formatting' | 'dividers' | 'layouts' | 'links'
   >
 ) {
