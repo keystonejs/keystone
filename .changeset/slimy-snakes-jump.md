@@ -2,4 +2,4 @@
 '@keystone-6/core': patch
 ---
 
-Improved types for `resolvedData` for hooks so it properly mirrors prisma types
+Fixes types for `resolvedData`, and the return types for `resolveInput` hooks.
