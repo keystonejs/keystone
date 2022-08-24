@@ -1,3 +1,4 @@
+import { GraphQLResolveInfo } from 'graphql';
 import {
   QueryMode,
   KeystoneContext,
@@ -40,12 +41,9 @@ export function getAdminMetaSchema({
       description: graphql.field({ type: graphql.String }),
       isOrderable: graphql.field({
         type: graphql.nonNull(graphql.Boolean),
-        resolve(rootVal, args, context) {
-          if ('isAdminUIBuildProcess' in context) {
-            throw new Error(
-              'KeystoneAdminUIFieldMeta.isOrderable cannot be resolved during the build process'
-            );
-          }
+        resolve(rootVal, args, context, info) {
+          assertInRuntimeContext(context, info);
+
           if (!lists[rootVal.listKey].fields[rootVal.path].input?.orderBy) {
             return false;
           }
@@ -63,12 +61,9 @@ export function getAdminMetaSchema({
       }),
       isFilterable: graphql.field({
         type: graphql.nonNull(graphql.Boolean),
-        resolve(rootVal, args, context) {
-          if ('isAdminUIBuildProcess' in context) {
-            throw new Error(
-              'KeystoneAdminUIFieldMeta.isOrderable cannot be resolved during the build process'
-            );
-          }
+        resolve(rootVal, args, context, info) {
+          assertInRuntimeContext(context, info);
+
           if (!lists[rootVal.listKey].fields[rootVal.path].input?.where) {
             return false;
           }
@@ -102,12 +97,9 @@ export function getAdminMetaSchema({
                     values: graphql.enumValues(['edit', 'hidden']),
                   })
                 ),
-                async resolve(rootVal, args, context) {
-                  if ('isAdminUIBuildProcess' in context) {
-                    throw new Error(
-                      'KeystoneAdminUIFieldMetaCreateView.fieldMode cannot be resolved during the build process'
-                    );
-                  }
+                async resolve(rootVal, args, context, info) {
+                  assertInRuntimeContext(context, info);
+
                   if (!lists[rootVal.listKey].fields[rootVal.fieldPath].graphql.isEnabled.create) {
                     return 'hidden';
                   }
@@ -140,12 +132,9 @@ export function getAdminMetaSchema({
                     values: graphql.enumValues(['read', 'hidden']),
                   })
                 ),
-                async resolve(rootVal, args, context) {
-                  if ('isAdminUIBuildProcess' in context) {
-                    throw new Error(
-                      'KeystoneAdminUIFieldMetaListView.fieldMode cannot be resolved during the build process'
-                    );
-                  }
+                async resolve(rootVal, args, context, info) {
+                  assertInRuntimeContext(context, info);
+
                   if (!lists[rootVal.listKey].fields[rootVal.fieldPath].graphql.isEnabled.read) {
                     return 'hidden';
                   }
@@ -180,11 +169,9 @@ export function getAdminMetaSchema({
                 name: 'KeystoneAdminUIFieldMetaItemViewFieldMode',
                 values: graphql.enumValues(['edit', 'read', 'hidden']),
               }),
-              resolve(rootVal, args, context) {
-                if ('isAdminUIBuildProcess' in context && rootVal.itemId !== null) {
-                  throw new Error(
-                    'KeystoneAdminUIFieldMetaItemView.fieldMode cannot be resolved during the build process if an id is provided'
-                  );
+              resolve(rootVal, args, context, info) {
+                if (rootVal.itemId !== null) {
+                  assertInRuntimeContext(context, info);
                 }
                 if (!lists[rootVal.listKey].fields[rootVal.fieldPath].graphql.isEnabled.read) {
                   return 'hidden';
@@ -207,7 +194,9 @@ export function getAdminMetaSchema({
                   return null;
                 }
 
-                fakeAssert<KeystoneContext>(context);
+                // we need to re-assert this because typescript doesn't understand the relation between
+                // rootVal.itemId !== null and the context being a runtime context
+                assertInRuntimeContext(context, info);
 
                 // uhhh, for some reason TypeScript only understands this if it's assigned
                 // to a variable and then returned
@@ -263,12 +252,9 @@ export function getAdminMetaSchema({
       }),
       hideCreate: graphql.field({
         type: graphql.nonNull(graphql.Boolean),
-        resolve(rootVal, args, context) {
-          if ('isAdminUIBuildProcess' in context) {
-            throw new Error(
-              'KeystoneAdminUIListMeta.hideCreate cannot be resolved during the build process'
-            );
-          }
+        resolve(rootVal, args, context, info) {
+          assertInRuntimeContext(context, info);
+
           const listConfig = config.lists[rootVal.key];
           return runMaybeFunction(listConfig.ui?.hideCreate, false, {
             session: context.session,
@@ -278,12 +264,9 @@ export function getAdminMetaSchema({
       }),
       hideDelete: graphql.field({
         type: graphql.nonNull(graphql.Boolean),
-        resolve(rootVal, args, context) {
-          if ('isAdminUIBuildProcess' in context) {
-            throw new Error(
-              'KeystoneAdminUIListMeta.hideDelete cannot be resolved during the build process'
-            );
-          }
+        resolve(rootVal, args, context, info) {
+          assertInRuntimeContext(context, info);
+
           const listConfig = config.lists[rootVal.key];
           return runMaybeFunction(listConfig.ui?.hideDelete, false, {
             session: context.session,
@@ -307,12 +290,9 @@ export function getAdminMetaSchema({
       initialSort: graphql.field({ type: KeystoneAdminUISort }),
       isHidden: graphql.field({
         type: graphql.nonNull(graphql.Boolean),
-        resolve(rootVal, args, context) {
-          if ('isAdminUIBuildProcess' in context) {
-            throw new Error(
-              'KeystoneAdminUIListMeta.isHidden cannot be resolved during the build process'
-            );
-          }
+        resolve(rootVal, args, context, info) {
+          assertInRuntimeContext(context, info);
+
           const listConfig = config.lists[rootVal.key];
           return runMaybeFunction(listConfig.ui?.isHidden, false, {
             session: context.session,
@@ -400,8 +380,6 @@ function runMaybeFunction<Return extends string | boolean, T>(
   return sessionFunction;
 }
 
-function fakeAssert<T>(val: any): asserts val is T {}
-
 const fetchItemForItemViewFieldMode = extendContext(context => {
   type ListKey = string;
   type ItemId = string;
@@ -430,4 +408,15 @@ function extendContext<T>(cb: (context: KeystoneContext) => T) {
     cache.set(context, result);
     return result;
   };
+}
+
+function assertInRuntimeContext(
+  context: KeystoneContext | { isAdminUIBuildProcess: true },
+  info: GraphQLResolveInfo
+): asserts context is KeystoneContext {
+  if ('isAdminUIBuildProcess' in context) {
+    throw new Error(
+      `${info.parentType}.${info.fieldName} cannot be resolved during the build process`
+    );
+  }
 }
