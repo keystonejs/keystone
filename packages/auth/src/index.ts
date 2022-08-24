@@ -275,7 +275,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
         getAdditionalFiles: [...(keystoneConfig.ui?.getAdditionalFiles || []), getAdditionalFiles],
         pageMiddleware: async args =>
           (await pageMiddleware(args)) ?? keystoneConfig?.ui?.pageMiddleware?.(args),
-        enableSessionItem: true,
         isAccessAllowed: async (context: KeystoneContext) => {
           // Allow access to the adminMeta data from the /init path to correctly render that page
           // even if the user isn't logged in (which should always be the case if they're seeing /init)
@@ -324,7 +323,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     // In the future we may want to return the following so that developers can
     // roll their own. This is pending a review of the use cases this might be
     // appropriate for, along with documentation and testing.
-    // ui: { enableSessionItem: true, pageMiddleware, getAdditionalFiles, publicPages },
+    // ui: { pageMiddleware, getAdditionalFiles, publicPages },
     // fields,
     // extendGraphqlSchema,
     // validateConfig,
