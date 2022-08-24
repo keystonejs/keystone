@@ -2,10 +2,9 @@ import { text } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
 import { list } from '@keystone-6/core';
 import { setupTestEnv, setupTestRunner } from '@keystone-6/api-tests/test-runner';
-import { KeystoneContext } from '@keystone-6/core/types';
 import { component, fields } from '@keystone-6/fields-document/component-blocks';
 import { allowAll } from '@keystone-6/core/access';
-import { apiTestConfig, expectInternalServerError } from '../../utils';
+import { apiTestConfig, ContextFromRunner, expectInternalServerError } from '../../utils';
 import { withServer } from '../../with-server';
 
 const runner = setupTestRunner({
@@ -56,7 +55,7 @@ const runner = setupTestRunner({
   }),
 });
 
-const initData = async ({ context }: { context: KeystoneContext }) => {
+const initData = async ({ context }: { context: ContextFromRunner<typeof runner> }) => {
   const alice = await context.query.Author.createOne({ data: { name: 'Alice' } });
   const bob = await context.query.Author.createOne({
     data: {

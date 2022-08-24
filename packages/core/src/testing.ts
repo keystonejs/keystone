@@ -2,7 +2,7 @@ import path from 'path';
 import crypto from 'crypto';
 import fs from 'fs';
 import memoizeOne from 'memoize-one';
-import type { CreateContext, KeystoneConfig, KeystoneContext } from './types';
+import type { BaseKeystoneTypeInfo, CreateContext, KeystoneConfig, KeystoneContext } from './types';
 import {
   getCommittedArtifacts,
   writeCommittedArtifacts,
@@ -12,34 +12,34 @@ import {
 import { pushPrismaSchemaToDatabase } from './migrations';
 import { initConfig, createSystem } from './system';
 
-export type TestArgs<Context extends KeystoneContext = KeystoneContext> = {
-  context: Context;
-  createContext: CreateContext;
-  config: KeystoneConfig;
+export type TestArgs<TypeInfo extends BaseKeystoneTypeInfo> = {
+  context: KeystoneContext<TypeInfo>;
+  createContext: CreateContext<KeystoneContext<TypeInfo>>;
+  config: KeystoneConfig<TypeInfo>;
 };
 
-export type TestEnv<Context extends KeystoneContext = KeystoneContext> = {
+export type TestEnv<TypeInfo extends BaseKeystoneTypeInfo> = {
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
-  testArgs: TestArgs<Context>;
+  testArgs: TestArgs<TypeInfo>;
 };
 
 const _hashPrismaSchema = memoizeOne(prismaSchema =>
   crypto.createHash('md5').update(prismaSchema).digest('hex')
 );
 const _alreadyGeneratedProjects = new Set<string>();
-export async function setupTestEnv<Context extends KeystoneContext>({
+
+export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo>({
   config: _config,
 }: {
-  config: KeystoneConfig;
-}): Promise<TestEnv<Context>> {
+  config: KeystoneConfig<TypeInfo>;
+}): Promise<TestEnv<TypeInfo>> {
   // Force the UI to always be disabled.
   const config = initConfig({ ..._config, ui: { ..._config.ui, isDisabled: true } });
   const { graphQLSchema, getKeystone } = createSystem(config);
 
   const artifacts = await getCommittedArtifacts(graphQLSchema, config);
   const hash = _hashPrismaSchema(artifacts.prisma);
-
   const artifactPath = path.resolve('.keystone', 'tests', hash);
 
   if (!_alreadyGeneratedProjects.has(hash)) {
@@ -48,6 +48,7 @@ export async function setupTestEnv<Context extends KeystoneContext>({
     await writeCommittedArtifacts(artifacts, artifactPath);
     await generateNodeModulesArtifacts(graphQLSchema, config, artifactPath);
   }
+
   await pushPrismaSchemaToDatabase(
     config.db.url,
     config.db.shadowDatabaseUrl,
@@ -62,21 +63,21 @@ export async function setupTestEnv<Context extends KeystoneContext>({
     connect,
     disconnect,
     testArgs: {
-      context: createContext() as Context,
+      context: createContext(),
       createContext,
       config,
     },
   };
 }
 
-export function setupTestRunner<Context extends KeystoneContext>({
+export function setupTestRunner<TypeInfo extends BaseKeystoneTypeInfo>({
   config,
 }: {
-  config: KeystoneConfig;
+  config: KeystoneConfig<TypeInfo>;
 }) {
-  return (testFn: (testArgs: TestArgs<Context>) => Promise<void>) => async () => {
+  return (testFn: (testArgs: TestArgs<TypeInfo>) => Promise<void>) => async () => {
     // Reset the database to be empty for every test.
-    const { connect, disconnect, testArgs } = await setupTestEnv<Context>({ config });
+    const { connect, disconnect, testArgs } = await setupTestEnv({ config });
     await connect();
 
     try {

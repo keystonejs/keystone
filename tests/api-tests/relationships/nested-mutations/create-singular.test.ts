@@ -179,14 +179,16 @@ describe('no access control', () => {
 });
 
 describe('with access control', () => {
-  [
-    { name: 'GroupNoRead', allowed: true, func: 'read: () => false' },
-    { name: 'GroupNoReadHard', allowed: true, func: 'query: false' },
-    { name: 'GroupNoCreate', allowed: false, func: 'create: () => false' },
-    { name: 'GroupNoCreateHard', allowed: false, func: 'create: false' },
-    { name: 'GroupNoUpdate', allowed: true, func: 'update: () => false' },
-    { name: 'GroupNoUpdateHard', allowed: true, func: 'update: false' },
-  ].forEach(group => {
+  (
+    [
+      { name: 'GroupNoRead', allowed: true, func: 'read: () => false' },
+      { name: 'GroupNoReadHard', allowed: true, func: 'query: false' },
+      { name: 'GroupNoCreate', allowed: false, func: 'create: () => false' },
+      { name: 'GroupNoCreateHard', allowed: false, func: 'create: false' },
+      { name: 'GroupNoUpdate', allowed: true, func: 'update: () => false' },
+      { name: 'GroupNoUpdateHard', allowed: true, func: 'update: false' },
+    ] as const
+  ).forEach(group => {
     describe(`${group.func} on related list`, () => {
       if (group.allowed) {
         test(

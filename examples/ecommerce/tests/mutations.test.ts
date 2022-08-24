@@ -5,7 +5,7 @@ import { Context } from '.keystone/types';
 const FAKE_ID = 'cinjfgbkjnfg';
 
 const asUser = (context: Context, itemId?: string) => context.withSession({ itemId, data: {} });
-const runner = setupTestRunner<Context>({ config });
+const runner = setupTestRunner({ config });
 
 describe(`Custom mutations`, () => {
   describe('checkout(token)', () => {

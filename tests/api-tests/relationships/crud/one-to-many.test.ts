@@ -4,13 +4,13 @@ import { list } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import type { KeystoneContext } from '@keystone-6/core/types';
 import { allowAll } from '@keystone-6/core/access';
-import { apiTestConfig } from '../../utils';
+import { apiTestConfig, ContextFromRunner } from '../../utils';
 
 type IdType = any;
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
-const createInitialData = async (context: KeystoneContext) => {
+const createInitialData = async (context: ContextFromRunner<typeof runner>) => {
   const companies = await context.query.Company.createMany({
     data: [
       { name: sampleOne(alphanumGenerator) },
@@ -28,7 +28,7 @@ const createInitialData = async (context: KeystoneContext) => {
   return { locations, companies };
 };
 
-const createCompanyAndLocation = async (context: KeystoneContext) => {
+const createCompanyAndLocation = async (context: ContextFromRunner<typeof runner>) => {
   const company = await context.query.Company.createOne({
     data: { locations: { create: [{ name: sampleOne(alphanumGenerator) }] } },
     query: 'id locations { id company { id } }',
@@ -67,7 +67,7 @@ const getCompanyAndLocation = async (
   return data;
 };
 
-const createReadData = async (context: KeystoneContext) => {
+const createReadData = async (context: ContextFromRunner<typeof runner>) => {
   // create locations [A, A, B, B, C, C, D];
   const locations = await context.query.Location.createMany({
     data: ['A', 'A', 'B', 'B', 'C', 'C', 'D'].map(name => ({ name })),

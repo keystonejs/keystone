@@ -1,10 +1,10 @@
 import { setupTestEnv, setupTestRunner, TestEnv } from '@keystone-6/core/testing';
 import config from './keystone';
-import { Context } from '.keystone/types';
+import { Context, TypeInfo } from '.keystone/types';
 
 // Setup a test runner which will provide a clean test environment
 // with access to our GraphQL API for each test.
-const runner = setupTestRunner<Context>({ config });
+const runner = setupTestRunner({ config });
 
 describe('Example tests using test runner', () => {
   test(
@@ -143,19 +143,22 @@ describe('Example tests using test environment', () => {
   //
   // This gives us the opportunity to seed test data once up front and use it in
   // multiple tests.
-  let testEnv: TestEnv<Context>, context: Context;
+  let testEnv: TestEnv<TypeInfo>;
+  let context: Context;
   let person: { id: string };
+
   beforeAll(async () => {
-    testEnv = await setupTestEnv<Context>({ config });
+    testEnv = await setupTestEnv({ config });
     context = testEnv.testArgs.context;
 
     await testEnv.connect();
 
     // Create a person in the database to be used in multiple tests
-    person = (await context.query.Person.createOne({
+    person = await context.db.Person.createOne({
       data: { name: 'Alice', email: 'alice@example.com', password: 'super-secret' },
-    })) as { id: string };
+    });
   });
+
   afterAll(async () => {
     await testEnv.disconnect();
   });

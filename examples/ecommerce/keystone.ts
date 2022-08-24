@@ -13,6 +13,7 @@ import 'dotenv/config';
 import { insertSeedData } from './seed-data';
 import { sendPasswordResetEmail } from './lib/mail';
 import { extendGraphqlSchema } from './mutations';
+import { TypeInfo } from '.keystone/types';
 
 const databaseURL = process.env.DATABASE_URL || 'file:./keystone.db';
 
@@ -27,7 +28,7 @@ const { withAuth } = createAuth({
   secretField: 'password',
   initFirstItem: {
     fields: ['name', 'email', 'password'],
-    // TODO: Add in inital roles here
+    // TODO: Add in initial roles here
   },
   passwordResetLink: {
     async sendToken(args) {
@@ -39,7 +40,7 @@ const { withAuth } = createAuth({
 });
 
 export default withAuth(
-  config({
+  config<TypeInfo>({
     server: {
       cors: {
         origin: [process.env.FRONTEND_URL!],
