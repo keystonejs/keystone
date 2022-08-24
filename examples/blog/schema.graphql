@@ -263,6 +263,7 @@ type KeystoneAdminUIListMeta {
   key: String!
   itemQueryName: String!
   listQueryName: String!
+  enableBasicSearch: Boolean!
   hideCreate: Boolean!
   hideDelete: Boolean!
   path: String!
