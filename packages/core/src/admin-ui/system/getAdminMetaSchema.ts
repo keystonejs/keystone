@@ -251,15 +251,55 @@ export function getAdminMetaSchema({
     },
   });
 
+  const names = {
+    list: 'KeystoneAdminUIList',
+    singleton: 'KeystoneAdminUIField',
+  };
+
+  const commonFields = graphql.fields<ListMetaRootVal>()({
+    key: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    path: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    label: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    singular: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    description: graphql.field({ type: graphql.String }),
+    isHidden: graphql.field({
+      type: graphql.nonNull(graphql.Boolean),
+      resolve(rootVal, args, context, info) {
+        if ('isAdminUIBuildProcess' in context) {
+          throw new Error(
+            `${info.parentType.name}.isHidden cannot be resolved during the build process`
+          );
+        }
+        const listConfig = config.models[rootVal.key];
+        return runMaybeFunction(listConfig.ui?.isHidden, false, {
+          session: context.session,
+          context,
+        });
+      },
+    }),
+  });
+
+  const listViewArgs = {
+    id: graphql.arg({ type: graphql.ID }),
+  };
+
+  const KeystoneAdminUIModelMeta = graphql.interface<ListMetaRootVal>()({
+    name: 'KeystoneAdminUIModelMeta',
+    fields: {
+      ...commonFields,
+      listView: graphql.interfaceField({
+        args: listViewArgs,
+        type: KeystoneAdminUIListView,
+      }),
+    },
+  });
+
   const KeystoneAdminUIListMeta = graphql.object<ListMetaRootVal>()({
     name: 'KeystoneAdminUIListMeta',
     fields: {
-      key: graphql.field({ type: graphql.nonNull(graphql.String) }),
-      itemQueryName: graphql.field({
+      graphqlPlural: graphql.field({
         type: graphql.nonNull(graphql.String),
-      }),
-      listQueryName: graphql.field({
-        type: graphql.nonNull(graphql.String),
+        resolve: list => list.listQueryName,
       }),
       hideCreate: graphql.field({
         type: graphql.nonNull(graphql.Boolean),
@@ -291,34 +331,52 @@ export function getAdminMetaSchema({
           });
         },
       }),
-      path: graphql.field({ type: graphql.nonNull(graphql.String) }),
-      label: graphql.field({ type: graphql.nonNull(graphql.String) }),
-      singular: graphql.field({ type: graphql.nonNull(graphql.String) }),
-      plural: graphql.field({ type: graphql.nonNull(graphql.String) }),
-      description: graphql.field({ type: graphql.String }),
-      initialColumns: graphql.field({
-        type: graphql.nonNull(graphql.list(graphql.nonNull(graphql.String))),
-      }),
-      pageSize: graphql.field({ type: graphql.nonNull(graphql.Int) }),
-      labelField: graphql.field({ type: graphql.nonNull(graphql.String) }),
       fields: graphql.field({
-        type: graphql.nonNull(graphql.list(graphql.nonNull(KeystoneAdminUIFieldMeta))),
+        type: graphql.nonNull(graphql.list(graphql.nonNull(KeystoneAdminUIListFieldMeta))),
       }),
-      initialSort: graphql.field({ type: KeystoneAdminUISort }),
-      isHidden: graphql.field({
+    },
+  });
+
+  const KeystoneAdminUISingletonMeta = graphql.object<ListMetaRootVal>()({
+    name: names.singleton,
+    interfaces: [KeystoneAdminUIModelMeta],
+    fields: {
+      graphqlPlural: graphql.field({
+        type: graphql.nonNull(graphql.String),
+        resolve: list => list.listQueryName,
+      }),
+      hideCreate: graphql.field({
         type: graphql.nonNull(graphql.Boolean),
         resolve(rootVal, args, context) {
           if ('isAdminUIBuildProcess' in context) {
             throw new Error(
-              'KeystoneAdminUIListMeta.isHidden cannot be resolved during the build process'
+              'KeystoneAdminUIListMeta.hideCreate cannot be resolved during the build process'
             );
           }
           const listConfig = config.models[rootVal.key];
-          return runMaybeFunction(listConfig.ui?.isHidden, false, {
+          return runMaybeFunction(listConfig.ui?.hideCreate, false, {
             session: context.session,
             context,
           });
         },
+      }),
+      hideDelete: graphql.field({
+        type: graphql.nonNull(graphql.Boolean),
+        resolve(rootVal, args, context) {
+          if ('isAdminUIBuildProcess' in context) {
+            throw new Error(
+              'KeystoneAdminUIListMeta.hideDelete cannot be resolved during the build process'
+            );
+          }
+          const listConfig = config.models[rootVal.key];
+          return runMaybeFunction(listConfig.ui?.hideDelete, false, {
+            session: context.session,
+            context,
+          });
+        },
+      }),
+      fields: graphql.field({
+        type: graphql.nonNull(graphql.list(graphql.nonNull(KeystoneAdminUIListFieldMeta))),
       }),
     },
   });
@@ -332,10 +390,11 @@ export function getAdminMetaSchema({
       enableSessionItem: graphql.field({
         type: graphql.nonNull(graphql.Boolean),
       }),
-      lists: graphql.field({
-        type: graphql.nonNull(graphql.list(graphql.nonNull(KeystoneAdminUIListMeta))),
+      models: graphql.field({
+        type: graphql.nonNull(graphql.list(graphql.nonNull(KeystoneAdminUIModelMeta))),
+        resolve: source => source.lists,
       }),
-      list: graphql.field({
+      model: graphql.field({
         type: KeystoneAdminUIListMeta,
         args: {
           key: graphql.arg({
@@ -373,12 +432,15 @@ export function getAdminMetaSchema({
     })
   );
   return {
-    keystone: graphql.field({
-      type: KeystoneMeta,
-      resolve() {
-        return {};
-      },
-    }),
+    types: [KeystoneAdminUIListMeta, KeystoneAdminUISingletonMeta],
+    query: {
+      keystone: graphql.field({
+        type: KeystoneMeta,
+        resolve() {
+          return {};
+        },
+      }),
+    },
   };
 }
 
