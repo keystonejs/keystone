@@ -146,7 +146,7 @@ export const getListPage = (props: ListPageProps) => () => <ListPage {...props} 
 const ListPage = ({ listKey }: ListPageProps) => {
   const list = useList(listKey);
 
-  const { query } = useRouter();
+  const { query, push } = useRouter();
 
   const { resetToDefaults } = useQueryParamsFromLocalStorage(listKey);
 
@@ -186,17 +186,17 @@ const ListPage = ({ listKey }: ListPageProps) => {
         .map(([key]) => key)
     : [];
 
-  const [basicSearchString, updateBasicSearchString] = useState('');
+  const [basicSearchString, updateBasicSearchString] = useState(
+    query.OR ? Object.values(JSON.parse(query.OR)[0])[0].contains : ''
+  );
   const debouncedBasicSearchString = useDebouncedValue(basicSearchString, 200);
 
   const combinedWhere = {
     ...filters.where,
     ...(debouncedBasicSearchString
       ? {
-          OR: [
-            ...(filters.where?.OR || []),
-            ...basicSearch.map(key => ({ [key]: { contains: debouncedBasicSearchString } }), {}),
-          ],
+          // NOTE - the way this is written is incompatible if we add OR filters
+          OR: basicSearch.map(key => ({ [key]: { contains: debouncedBasicSearchString } })),
         }
       : {}),
   };
@@ -237,7 +237,9 @@ const ListPage = ({ listKey }: ListPageProps) => {
       errorPolicy: 'all',
       skip: !metaQuery.data,
       variables: {
-        where: combinedWhere,
+        // TODO
+        // where: combinedWhere,
+        where: filters.where,
         take: pageSize,
         skip: (currentPage - 1) * pageSize,
         orderBy: sort ? [{ [sort.field]: sort.direction.toLowerCase() }] : undefined,
@@ -292,6 +294,27 @@ const ListPage = ({ listKey }: ListPageProps) => {
               <TextInput
                 value={basicSearchString}
                 onChange={val => updateBasicSearchString(val.target.value)}
+                onKeyDown={({ keyCode }) => {
+                  if (keyCode === 13) {
+                    if (basicSearchString) {
+                      push({
+                        query: {
+                          ...query,
+                          OR: JSON.stringify(
+                            basicSearch.map(key => ({
+                              [key]: { contains: basicSearchString },
+                            }))
+                          ),
+                        },
+                      });
+                    } else {
+                      const newQuery = { ...query };
+                      delete newQuery.OR;
+                      push({ query: newQuery });
+                      console.log('nope');
+                    }
+                  }
+                }}
                 placeholder="Search..."
               />
             )}
@@ -300,7 +323,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
               <FilterAdd listKey={listKey} filterableFields={filterableFields} />
             ) : null}
             {filters.filters.length ? <FilterList filters={filters.filters} list={list} /> : null}
-            {Boolean(filters.filters.length || query.sortBy || query.fields) && (
+            {Boolean(filters.filters.length || query.sortBy || query.fields || query.OR) && (
               <Button size="small" onClick={resetToDefaults}>
                 Reset to defaults
               </Button>
@@ -418,7 +441,6 @@ const ListPageHeader = ({ listKey }: { listKey: string }) => {
         }}
       >
         <Heading type="h3">{list.label}</Heading>
-        {/* <CreateButton listKey={listKey} /> */}
       </div>
     </Fragment>
   );
