@@ -5,7 +5,7 @@ import { Fragment, HTMLAttributes, ReactNode, useEffect, useMemo, useState } fro
 
 import { Button } from '@keystone-ui/button';
 import { Box, Center, Heading, jsx, Stack, useTheme, VisuallyHidden } from '@keystone-ui/core';
-import { CheckboxControl } from '@keystone-ui/fields';
+import { CheckboxControl, TextInput } from '@keystone-ui/fields';
 import { ArrowRightCircleIcon } from '@keystone-ui/icons/icons/ArrowRightCircleIcon';
 import { LoadingDots } from '@keystone-ui/loading';
 import { AlertDialog } from '@keystone-ui/modals';
@@ -61,6 +61,7 @@ let listMetaGraphqlQuery: TypedDocumentNode<
         list(key: $listKey) {
           hideDelete
           hideCreate
+          enableBasicSearch
           fields {
             path
             isOrderable
@@ -76,6 +77,21 @@ let listMetaGraphqlQuery: TypedDocumentNode<
 `;
 
 const storeableQueries = ['sortBy', 'fields'];
+// copied from packages/core/src/fields/types/relationship/views/RelationshipSelect.tsx
+// there is no real way to share this code
+function useDebouncedValue<T>(value: T, limitMs: number): T {
+  const [debouncedValue, setDebouncedValue] = useState(() => value);
+
+  useEffect(() => {
+    let id = setTimeout(() => {
+      setDebouncedValue(() => value);
+    }, limitMs);
+    return () => {
+      clearTimeout(id);
+    };
+  }, [value, limitMs]);
+  return debouncedValue;
+}
 
 function useQueryParamsFromLocalStorage(listKey: string) {
   const router = useRouter();
@@ -164,6 +180,27 @@ const ListPage = ({ listKey }: ListPageProps) => {
 
   const filters = useFilters(list, filterableFields);
 
+  const basicSearch = list.enableBasicSearch
+    ? Object.entries(list.fields)
+        .filter(([, field]) => field.controller.filter?.types.contains_i)
+        .map(([key]) => key)
+    : [];
+
+  const [basicSearchString, updateBasicSearchString] = useState('');
+  const debouncedBasicSearchString = useDebouncedValue(basicSearchString, 200);
+
+  const combinedWhere = {
+    ...filters.where,
+    ...(debouncedBasicSearchString
+      ? {
+          OR: [
+            ...(filters.where?.OR || []),
+            ...basicSearch.map(key => ({ [key]: { contains: debouncedBasicSearchString } }), {}),
+          ],
+        }
+      : {}),
+  };
+
   let selectedFields = useSelectedFields(list, listViewFieldModesByField);
 
   let {
@@ -200,7 +237,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
       errorPolicy: 'all',
       skip: !metaQuery.data,
       variables: {
-        where: filters.where,
+        where: combinedWhere,
         take: pageSize,
         skip: (currentPage - 1) * pageSize,
         orderBy: sort ? [{ [sort.field]: sort.direction.toLowerCase() }] : undefined,
@@ -251,6 +288,13 @@ const ListPage = ({ listKey }: ListPageProps) => {
             <p css={{ marginTop: '24px', maxWidth: '704px' }}>{list.description}</p>
           )}
           <Stack across gap="medium" align="center" marginTop="xlarge">
+            {basicSearch.length && (
+              <TextInput
+                value={basicSearchString}
+                onChange={val => updateBasicSearchString(val.target.value)}
+                placeholder="Search..."
+              />
+            )}
             {showCreate && <CreateButton listKey={listKey} />}
             {data.count || filters.filters.length ? (
               <FilterAdd listKey={listKey} filterableFields={filterableFields} />
