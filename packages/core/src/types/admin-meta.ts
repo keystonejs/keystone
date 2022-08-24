@@ -1,6 +1,9 @@
 import { GraphQLError } from 'graphql';
 import type { ReactElement } from 'react';
-import { GqlNames, JSONValue } from './utils';
+import { MaybeItemFunction } from './config';
+import { KeystoneContext } from './context';
+import { BaseListTypeInfo } from './type-info';
+import { GqlNames, JSONValue, MaybePromise } from './utils';
 
 export type NavigationProps = {
   authenticatedItem: AuthenticatedItem;
@@ -157,6 +160,8 @@ export type CardValueComponent<
   >
 > = (props: { item: Record<string, any>; field: ReturnType<FieldControllerFn> }) => ReactElement;
 
+export type ContextFunction<Return> = (context: KeystoneContext) => MaybePromise<Return>;
+
 // Types used on the server by the Admin UI schema resolvers
 export type FieldMetaRootVal = {
   path: string;
@@ -167,6 +172,13 @@ export type FieldMetaRootVal = {
   customViewsIndex: number | null;
   listKey: string;
   search: 'default' | 'insensitive' | null;
+  isOrderable: ContextFunction<boolean>;
+  isFilterable: ContextFunction<boolean>;
+  createView: { fieldMode: ContextFunction<'edit' | 'hidden'> };
+  // itemView is intentionally special because static values are special cased
+  // and fetched when fetching the static admin ui
+  itemView: { fieldMode: MaybeItemFunction<'edit' | 'read' | 'hidden', BaseListTypeInfo> };
+  listView: { fieldMode: ContextFunction<'read' | 'hidden'> };
 };
 
 export type ListMetaRootVal = {
@@ -183,6 +195,9 @@ export type ListMetaRootVal = {
   itemQueryName: string;
   listQueryName: string;
   description: string | null;
+  isHidden: ContextFunction<boolean>;
+  hideCreate: ContextFunction<boolean>;
+  hideDelete: ContextFunction<boolean>;
 };
 
 export type AdminMetaRootVal = {
@@ -191,4 +206,5 @@ export type AdminMetaRootVal = {
   lists: Array<ListMetaRootVal>;
   listsByKey: Record<string, ListMetaRootVal>;
   views: string[];
+  isAccessAllowed: undefined | ((context: KeystoneContext) => MaybePromise<boolean>);
 };
