@@ -204,9 +204,11 @@ const document = parse(`
   query {
     keystone {
       adminMeta {
-        lists {
+        models {
           key
-          labelField
+          ... on KeystoneAdminUIListMeta {
+            labelField
+          }
         }
       }
     }
@@ -224,7 +226,10 @@ export const getLabelFieldsForLists = weakMemoize(function getLabelFieldsForList
   if (errors?.length) {
     throw errors[0];
   }
+  type Data = { keystone: { adminMeta: { models: { key: string; labelField?: string }[] } } };
   return Object.fromEntries(
-    data!.keystone.adminMeta.lists.map((x: any) => [x.key, x.labelField as string])
+    (data as Data).keystone.adminMeta.models.flatMap(x =>
+      x.labelField ? [[x.key, x.labelField]] : []
+    )
   );
 });

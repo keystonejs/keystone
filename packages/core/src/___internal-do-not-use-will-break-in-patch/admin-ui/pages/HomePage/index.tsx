@@ -112,9 +112,12 @@ export const HomePage = () => {
     query {
       keystone {
         adminMeta {
-          lists {
+          models {
+            __typename
             key
-            hideCreate
+            ... on KeystoneAdminUIListMeta {
+              hideCreate
+            }
           }
         }
       }
@@ -169,7 +172,7 @@ export const HomePage = () => {
                       : { type: 'loading' }
                   }
                   hideCreate={
-                    data?.keystone.adminMeta.lists.find((list: any) => list.key === key)
+                    data?.keystone.adminMeta.models.find((list: any) => list.key === key)
                       ?.hideCreate ?? false
                   }
                   key={key}

@@ -7,24 +7,25 @@ export const staticAdminMetaQuery = gql`
       __typename
       adminMeta {
         __typename
-        lists {
+        models {
           __typename
           key
-          itemQueryName
-          listQueryName
-          initialSort {
-            __typename
-            field
-            direction
-          }
           path
           label
           singular
-          plural
           description
-          initialColumns
-          pageSize
-          labelField
+          ... on KeystoneAdminUIListMeta {
+            graphqlPlural
+            initialSort {
+              __typename
+              field
+              direction
+            }
+            plural
+            initialColumns
+            pageSize
+            labelField
+          }
           fields {
             __typename
             path
@@ -33,7 +34,9 @@ export const staticAdminMetaQuery = gql`
             fieldMeta
             viewsIndex
             customViewsIndex
-            search
+            ... on KeystoneAdminUIListFieldMeta {
+              search
+            }
             itemView {
               fieldMode
             }
@@ -50,55 +53,78 @@ export const staticAdminMetaQuery = gql`
 //     plugins:
 //       - typescript-operations:
 //           namingConvention: keep
+//           noExport: true
+//           avoidOptionals: true
+//           scalars:
+//             JSON: JSONValue
 //       - typescript:
 //           enumsAsTypes: true
 //           nonOptionalTypename: true
 //           namingConvention: keep
 //           noExport: true
 //           avoidOptionals: true
-//           scalars:
-//             JSON: JSONValue
-
-type Maybe<T> = T | null;
 
 export type StaticAdminMetaQuery = {
+  __typename?: 'Query';
   keystone: {
     __typename: 'KeystoneMeta';
     adminMeta: {
       __typename: 'KeystoneAdminMeta';
-      lists: Array<{
-        __typename: 'KeystoneAdminUIListMeta';
-        key: string;
-        itemQueryName: string;
-        listQueryName: string;
-        path: string;
-        label: string;
-        singular: string;
-        plural: string;
-        description: Maybe<string>;
-        initialColumns: Array<string>;
-        pageSize: number;
-        labelField: string;
-        initialSort: Maybe<{
-          __typename: 'KeystoneAdminUISort';
-          field: string;
-          direction: KeystoneAdminUISortDirection;
-        }>;
-        fields: Array<{
-          __typename: 'KeystoneAdminUIFieldMeta';
-          path: string;
-          label: string;
-          description: Maybe<string>;
-          fieldMeta: Maybe<JSONValue>;
-          viewsIndex: number;
-          customViewsIndex: Maybe<number>;
-          search: Maybe<QueryMode>;
-          itemView: Maybe<{
-            __typename: 'KeystoneAdminUIFieldMetaItemView';
-            fieldMode: Maybe<KeystoneAdminUIFieldMetaItemViewFieldMode>;
-          }>;
-        }>;
-      }>;
+      models: Array<
+        | {
+            __typename: 'KeystoneAdminUIListMeta';
+            graphqlPlural: string;
+            plural: string;
+            initialColumns: Array<string>;
+            pageSize: number;
+            labelField: string;
+            key: string;
+            path: string;
+            label: string;
+            singular: string;
+            description: string | null;
+            initialSort: {
+              __typename: 'KeystoneAdminUISort';
+              field: string;
+              direction: KeystoneAdminUISortDirection;
+            } | null;
+            fields: Array<{
+              __typename: 'KeystoneAdminUIListFieldMeta';
+              search: QueryMode | null;
+              path: string;
+              label: string;
+              description: string | null;
+              fieldMeta: JSONValue | null;
+              viewsIndex: number;
+              customViewsIndex: number | null;
+              itemView: {
+                __typename?: 'KeystoneAdminUIFieldMetaItemView';
+                fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode | null;
+              } | null;
+            }>;
+          }
+        | {
+            __typename: 'KeystoneAdminUISingletonMeta';
+            key: string;
+            path: string;
+            label: string;
+            singular: string;
+            description: string | null;
+            fields: Array<{
+              __typename: 'KeystoneAdminUISingletonFieldMeta';
+              path: string;
+              label: string;
+              description: string | null;
+              fieldMeta: JSONValue | null;
+              viewsIndex: number;
+              customViewsIndex: number | null;
+              itemView: {
+                __typename?: 'KeystoneAdminUIFieldMetaItemView';
+                fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode | null;
+              } | null;
+            }>;
+          }
+      >;
     };
   };
 };

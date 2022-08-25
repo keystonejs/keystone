@@ -11,6 +11,7 @@ import {
 } from 'graphql';
 import { AdminMetaRootVal } from '../../types';
 import { staticAdminMetaQuery, StaticAdminMetaQuery } from '../admin-meta-graphql';
+import { assertUnhandledSingletonCase } from '../../lib/utils';
 
 type AppTemplateOptions = { configFileExists: boolean };
 
@@ -73,13 +74,15 @@ function getLazyMetadataQuery(
     parse(`fragment x on y {
     keystone {
       adminMeta {
-        lists {
+        models {
           key
           isHidden
           fields {
             path
-            createView {
-              fieldMode
+            ... on KeystoneAdminUIListFieldMeta {
+              createView {
+                fieldMode
+              }
             }
           }
         }
@@ -90,7 +93,13 @@ function getLazyMetadataQuery(
 
   const queryType = graphqlSchema.getQueryType();
   if (queryType) {
-    const getListByKey = (name: string) => adminMeta.lists.find(({ key }: any) => key === name);
+    const getListByKey = (name: string) => {
+      const list = adminMeta.models.find(({ key }) => key === name);
+      if (list?.__typename === 'KeystoneAdminUISingletonMeta') {
+        assertUnhandledSingletonCase();
+      }
+      return list;
+    };
     const fields = queryType.getFields();
     if (fields['authenticatedItem'] !== undefined) {
       const authenticatedItemType = fields['authenticatedItem'].type;

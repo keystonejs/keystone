@@ -294,13 +294,15 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
           }
           keystone {
             adminMeta {
-              list(key: $listKey) {
-                hideCreate
-                hideDelete
-                fields {
-                  path
-                  itemView(id: $id) {
-                    fieldMode
+              list: model(key: $listKey) {
+                ... on KeystoneAdminUIListMeta {
+                  hideCreate
+                  hideDelete
+                  fields {
+                    path
+                    itemView(id: $id) {
+                      fieldMode
+                    }
                   }
                 }
               }

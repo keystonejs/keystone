@@ -261,11 +261,13 @@ describe(`Public schema`, () => {
               query q($listName: String!) {
                 keystone {
                   adminMeta {
-                    list(key: $listName) {
-                      fields {
-                        path
-                        isFilterable
-                        isOrderable
+                    model(key: $listName) {
+                      ... on KeystoneAdminUIListMeta {
+                        fields {
+                          path
+                          isFilterable
+                          isOrderable
+                        }
                       }
                     }
                   }
@@ -275,7 +277,7 @@ describe(`Public schema`, () => {
             const { data, errors } = await context.graphql.raw({ query, variables });
             expect(errors).toBe(undefined);
 
-            const field = data!.keystone.adminMeta.list.fields.filter(
+            const field = data!.keystone.adminMeta.model.fields.filter(
               (f: any) => f.path === getFieldName(config)
             )[0];
             if (config.omit === true || config.omit?.includes('read')) {
@@ -315,13 +317,15 @@ describe(`Public schema`, () => {
               query q($listName: String!) {
                 keystone {
                   adminMeta {
-                    list(key: $listName) {
+                    model(key: $listName) {
                       key
-                      fields {
-                        path
-                        createView { fieldMode }
-                        listView { fieldMode }
-                        itemView(id: "blah") { fieldMode }
+                      ... on KeystoneAdminUIListMeta {
+                        fields {
+                          path
+                          createView { fieldMode }
+                          listView { fieldMode }
+                          itemView(id: "blah") { fieldMode }
+                        }
                       }
                     }
                   }
@@ -334,7 +338,7 @@ describe(`Public schema`, () => {
               .graphql.raw({ query, variables });
             expect(errors).toBe(undefined);
 
-            const field = data!.keystone.adminMeta.list.fields.filter(
+            const field = data!.keystone.adminMeta.model.fields.filter(
               (f: any) => f.path === getFieldName(config)
             )[0];
 

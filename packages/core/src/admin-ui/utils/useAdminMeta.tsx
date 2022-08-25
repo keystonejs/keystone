@@ -3,6 +3,7 @@ import hashString from '@emotion/hash';
 import { AdminMeta, FieldViews, getGqlNames } from '../../types';
 import { useLazyQuery } from '../apollo';
 import { StaticAdminMetaQuery, staticAdminMetaQuery } from '../admin-meta-graphql';
+import { assertUnhandledSingletonCase } from '../../lib/utils';
 
 const expectedExports = new Set(['Cell', 'Field', 'controller', 'CardValue']);
 
@@ -66,10 +67,13 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
     const runtimeAdminMeta: AdminMeta = {
       lists: {},
     };
-    adminMeta.lists.forEach(list => {
+    adminMeta.models.forEach(list => {
+      if (list.__typename === 'KeystoneAdminUISingletonMeta') {
+        assertUnhandledSingletonCase();
+      }
       runtimeAdminMeta.lists[list.key] = {
         ...list,
-        gqlNames: getGqlNames({ listKey: list.key, pluralGraphQLName: list.listQueryName }),
+        gqlNames: getGqlNames({ listKey: list.key, pluralGraphQLName: list.graphqlPlural }),
         fields: {},
       };
       list.fields.forEach(field => {

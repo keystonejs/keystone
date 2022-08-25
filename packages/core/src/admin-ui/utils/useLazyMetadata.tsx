@@ -28,7 +28,7 @@ export function useLazyMetadata(query: DocumentNode): {
           | { __typename: string };
         keystone: {
           adminMeta: {
-            lists: {
+            models: {
               key: string;
               isHidden: boolean;
               fields: { path: string; createView: { fieldMode: 'edit' | 'hidden' } }[];
@@ -67,7 +67,7 @@ function getCreateViewFieldModes(
   }
   if (data) {
     const lists: Record<string, Record<string, 'edit' | 'hidden'>> = {};
-    data.keystone.adminMeta.lists.forEach((list: any) => {
+    data.keystone.adminMeta.models.forEach((list: any) => {
       lists[list.key] = {};
       list.fields.forEach((field: any) => {
         lists[list.key][field.path] = field.createView.fieldMode;
@@ -88,7 +88,7 @@ function getVisibleLists(
   }
   if (data) {
     const lists = new Set<string>();
-    data.keystone.adminMeta.lists.forEach((list: any) => {
+    data.keystone.adminMeta.models.forEach((list: any) => {
       if (!list.isHidden) {
         lists.add(list.key);
       }
