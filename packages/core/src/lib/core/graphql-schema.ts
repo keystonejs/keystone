@@ -1,5 +1,6 @@
 import { GraphQLNamedType, GraphQLSchema } from 'graphql';
 import { graphql } from '../..';
+import { adminMetaTypes } from '../../admin-ui/system/adminMetaSchema';
 import { InitialisedList } from './types-for-lists';
 
 import { getMutationsForList } from './mutations';
@@ -38,8 +39,12 @@ export function getGraphQLSchema(
   const graphQLSchema = new GraphQLSchema({
     query: query.graphQLType,
     mutation: mutation.graphQLType,
-    // not about behaviour, only ordering
-    types: [...collectTypes(lists, updateManyByList), mutation.graphQLType],
+    types: [
+      ...collectTypes(lists, updateManyByList),
+      mutation.graphQLType,
+      query.graphQLType,
+      ...adminMetaTypes,
+    ],
   });
   return graphQLSchema;
 }

@@ -19,3 +19,7 @@ export const humanize = (str: string) => {
     .map(upcase)
     .join(' ');
 };
+
+export function assertUnhandledSingletonCase(): never {
+  throw new Error('unhandled singleton case');
+}
