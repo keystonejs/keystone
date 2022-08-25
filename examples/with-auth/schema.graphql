@@ -297,7 +297,6 @@ type KeystoneMeta {
 
 type KeystoneAdminMeta {
   enableSignout: Boolean!
-  enableSessionItem: Boolean!
   lists: [KeystoneAdminUIListMeta!]!
   list(key: String!): KeystoneAdminUIListMeta
 }

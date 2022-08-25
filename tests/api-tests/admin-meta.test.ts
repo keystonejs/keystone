@@ -37,7 +37,6 @@ test(
         __typename: 'KeystoneMeta',
         adminMeta: {
           __typename: 'KeystoneAdminMeta',
-          enableSessionItem: false,
           enableSignout: false,
           lists: [
             {
