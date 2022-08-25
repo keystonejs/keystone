@@ -1,4 +1,5 @@
 import { list } from '@keystone-6/core';
+import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
 import { setupTestRunner } from '@keystone-6/core/testing';
 import stripAnsi from 'strip-ansi';
@@ -9,7 +10,7 @@ const runner = (enableLogging: boolean) =>
     config: apiTestConfig({
       db: { enableLogging },
       lists: {
-        User: list({ fields: { name: text() } }),
+        User: list({ fields: { name: text() }, access: allowAll }),
       },
     }),
   });

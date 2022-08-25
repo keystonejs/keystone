@@ -1,4 +1,5 @@
 import { list } from '@keystone-6/core';
+import { allOperations, allowAll } from '@keystone-6/core/access';
 import { checkbox, password, relationship, text } from '@keystone-6/core/fields';
 
 import { isSignedIn, permissions, rules } from './access';
@@ -32,6 +33,7 @@ export const lists = {
     */
     access: {
       operation: {
+        ...allOperations(allowAll),
         create: permissions.canCreateTodos,
       },
       filter: {
@@ -91,6 +93,7 @@ export const lists = {
     */
     access: {
       operation: {
+        ...allOperations(allowAll),
         create: permissions.canManagePeople,
         delete: permissions.canManagePeople,
       },

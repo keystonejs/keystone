@@ -1,4 +1,5 @@
 import { list } from '@keystone-6/core';
+import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
 import { setupTestRunner } from '@keystone-6/core/testing';
 import { isCuid } from 'cuid';
@@ -21,7 +22,7 @@ describe.each([
         idField: kind === 'bigint' ? { kind: 'autoincrement', type: 'BigInt' } : { kind },
       },
       lists: {
-        User: list({ fields: { name: text() } }),
+        User: list({ fields: { name: text() }, access: allowAll }),
       },
     }),
   });
@@ -167,7 +168,7 @@ describe.each([
     config: apiTestConfig({
       db: { idField: { kind: 'uuid' } },
       lists: {
-        User: list({ fields: { name: text() } }),
+        User: list({ fields: { name: text() }, access: allowAll }),
       },
     }),
   });
@@ -191,7 +192,7 @@ describe.each([
     config: apiTestConfig({
       db: { idField: { kind: 'cuid' } },
       lists: {
-        User: list({ fields: { name: text() } }),
+        User: list({ fields: { name: text() }, access: allowAll }),
       },
     }),
   });

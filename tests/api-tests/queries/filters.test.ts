@@ -2,6 +2,7 @@ import { text, relationship, integer } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/core/testing';
 import { KeystoneContext } from '@keystone-6/core/types';
+import { allowAll } from '@keystone-6/core/access';
 import {
   apiTestConfig,
   expectAccessReturnError,
@@ -15,6 +16,7 @@ const runner = setupTestRunner({
   config: apiTestConfig({
     lists: {
       User: list({
+        access: allowAll,
         fields: {
           noDash: text(),
           single_dash: text(),
@@ -33,6 +35,7 @@ const runner = setupTestRunner({
         },
       }),
       SecondaryList: list({
+        access: allowAll,
         fields: {
           filterFunctionFalse: integer({ isFilterable: () => false }),
           someUser: relationship({ ref: 'User', isFilterable: true }),
@@ -41,9 +44,11 @@ const runner = setupTestRunner({
       }),
 
       DefaultFilterUndefined: list({
+        access: allowAll,
         fields: { a: integer(), b: integer({ isFilterable: true }) },
       }),
       DefaultFilterFalse: list({
+        access: allowAll,
         fields: { a: integer(), b: integer({ isFilterable: true }) },
         defaultIsFilterable: false,
       }),
@@ -53,19 +58,23 @@ const runner = setupTestRunner({
         defaultIsFilterable: true,
       }),
       DefaultFilterFunctionFalse: list({
+        access: allowAll,
         fields: { a: integer(), b: integer({ isFilterable: true }) },
         defaultIsFilterable: () => false,
       }),
       DefaultFilterFunctionTrue: list({
+        access: allowAll,
         fields: { a: integer(), b: integer({ isFilterable: true }) },
         defaultIsFilterable: () => true,
       }),
       DefaultFilterFunctionFalsey: list({
+        access: allowAll,
         fields: { a: integer(), b: integer({ isFilterable: true }) },
         // @ts-ignore
         defaultIsFilterable: () => null,
       }),
       DefaultFilterFunctionTruthy: list({
+        access: allowAll,
         fields: { a: integer(), b: integer({ isFilterable: true }) },
         // @ts-ignore
         defaultIsFilterable: () => ({}),

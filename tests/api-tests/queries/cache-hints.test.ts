@@ -3,6 +3,7 @@ import { text, relationship, integer } from '@keystone-6/core/fields';
 import { list, graphQLSchemaExtension } from '@keystone-6/core';
 import { KeystoneContext } from '@keystone-6/core/types';
 import { setupTestRunner } from '@keystone-6/core/testing';
+import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig } from '../utils';
 import { withServer } from '../with-server';
 
@@ -10,6 +11,7 @@ const runner = setupTestRunner({
   config: apiTestConfig({
     lists: {
       Post: list({
+        access: allowAll,
         fields: {
           title: text(),
           author: relationship({ ref: 'User.posts', many: true }),
@@ -19,6 +21,7 @@ const runner = setupTestRunner({
         },
       }),
       User: list({
+        access: allowAll,
         fields: {
           name: text({ graphql: { cacheHint: { maxAge: 80 } } }),
           favNumber: integer({

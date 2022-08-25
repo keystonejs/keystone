@@ -101,9 +101,23 @@ export type ResolvedFieldAccessControl = {
 };
 
 export function parseListAccessControl(
-  access: ListAccessControl<BaseListTypeInfo> | undefined
+  access: ListAccessControl<BaseListTypeInfo>
 ): ResolvedListAccessControl {
   let item, filter, operation;
+
+  if (typeof access === 'function') {
+    return {
+      operation: {
+        create: access,
+        query: access,
+        update: access,
+        delete: access,
+      },
+
+      filter: { query: access, update: access, delete: access },
+      item: { create: access, update: access, delete: access },
+    };
+  }
 
   if (typeof access?.operation === 'function') {
     operation = {

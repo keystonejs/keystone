@@ -1,10 +1,25 @@
 import { list } from '@keystone-6/core';
 import { checkbox, password, relationship, text, timestamp } from '@keystone-6/core/fields';
 import { select } from '@keystone-6/core/fields';
+import { allowAll } from '@keystone-6/core/access';
 import { Lists } from '.keystone/types';
 
 export const lists: Lists = {
   Task: list({
+    // Add access control so that only the assigned user can update a task
+    // We will write a test to verify that this is working correctly.
+    access: {
+      item: {
+        update: async ({ session, item, context }) => {
+          const task = await context.query.Task.findOne({
+            where: { id: item.id.toString() },
+            query: 'assignedTo { id }',
+          });
+          return !!(session?.itemId && session.itemId === task.assignedTo?.id);
+        },
+      },
+      operation: allowAll,
+    },
     fields: {
       label: text({ validation: { isRequired: true } }),
       priority: select({
@@ -19,21 +34,9 @@ export const lists: Lists = {
       assignedTo: relationship({ ref: 'Person.tasks', many: false }),
       finishBy: timestamp(),
     },
-    // Add access control so that only the assigned user can update a task
-    // We will write a test to verify that this is working correctly.
-    access: {
-      item: {
-        update: async ({ session, item, context }) => {
-          const task = await context.query.Task.findOne({
-            where: { id: item.id.toString() },
-            query: 'assignedTo { id }',
-          });
-          return !!(session?.itemId && session.itemId === task.assignedTo?.id);
-        },
-      },
-    },
   }),
   Person: list({
+    access: allowAll,
     fields: {
       name: text({ validation: { isRequired: true } }),
       email: text({ isIndexed: 'unique', validation: { isRequired: true } }),

@@ -1,6 +1,7 @@
 import { text, integer, relationship } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/core/testing';
+import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig, expectGraphQLValidationError, expectLimitsExceededError } from '../utils';
 import { withServer } from '../with-server';
 import { depthLimit, definitionLimit, fieldLimit } from './validation';
@@ -10,12 +11,14 @@ const runner = withServer(
     config: apiTestConfig({
       lists: {
         Post: list({
+          access: allowAll,
           fields: {
             title: text(),
             author: relationship({ ref: 'User.posts', many: true }),
           },
         }),
         User: list({
+          access: allowAll,
           fields: {
             name: text(),
             favNumber: integer(),

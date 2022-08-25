@@ -4,6 +4,7 @@ import { checkbox, text } from '../../fields';
 import { requirePrismaClient } from '../../artifacts';
 import { config, list } from '../..';
 import { ExitError } from '../utils';
+import { allowAll } from '../../access';
 import {
   getFiles,
   introspectDb,
@@ -15,6 +16,7 @@ import {
 
 const basicLists = {
   Todo: list({
+    access: allowAll,
     fields: {
       title: text(),
     },
@@ -141,6 +143,7 @@ describe('useMigrations: false', () => {
       ...(await getDatabaseFiles(prevCwd)),
       'keystone.js': basicKeystoneConfig(false, {
         Todo: {
+          access: allowAll,
           fields: {},
         },
       }),
@@ -187,6 +190,7 @@ describe('useMigrations: false', () => {
       ...(await getDatabaseFiles(prevCwd)),
       'keystone.js': basicKeystoneConfig(false, {
         Todo: {
+          access: allowAll,
           fields: {},
         },
       }),
@@ -312,6 +316,7 @@ describe('useMigrations: true', () => {
       ...(await getDatabaseFiles(prevCwd)),
       'keystone.js': basicKeystoneConfig(true, {
         Todo: {
+          access: allowAll,
           fields: {
             title: text(),
             isComplete: checkbox(),
@@ -383,6 +388,7 @@ describe('useMigrations: true', () => {
       ...(await getDatabaseFiles(prevCwd)),
       'keystone.js': basicKeystoneConfig(true, {
         Todo: {
+          access: allowAll,
           fields: {},
         },
       }),
@@ -574,6 +580,7 @@ describe('useMigrations: true', () => {
       ...dbFiles,
       'keystone.js': basicKeystoneConfig(true, {
         Todo: {
+          access: allowAll,
           fields: {
             title: text(),
             isComplete: checkbox(),

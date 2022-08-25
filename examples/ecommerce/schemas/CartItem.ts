@@ -1,10 +1,12 @@
 import { integer, relationship } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
+import { allOperations, allowAll } from '@keystone-6/core/access';
 import { rules, isSignedIn } from '../access';
 
 export const CartItem = list({
   access: {
     operation: {
+      ...allOperations(allowAll),
       create: isSignedIn,
     },
     filter: {

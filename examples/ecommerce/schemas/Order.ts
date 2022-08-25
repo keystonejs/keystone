@@ -21,6 +21,7 @@ export const Order: Lists.Order = list({
       create: isSignedIn,
       update: () => false,
       delete: () => false,
+      query: () => true,
     },
     filter: { query: rules.canOrder },
   },

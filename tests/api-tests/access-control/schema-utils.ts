@@ -1,6 +1,7 @@
 import { relationship, text } from '@keystone-6/core/fields';
 import { list, ListSchemaConfig } from '@keystone-6/core';
 import { statelessSessions } from '@keystone-6/core/session';
+import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig } from '../utils';
 
 const COOKIE_SECRET = 'qwertyuiopasdfghjlkzxcvbmnm1234567890';
@@ -111,11 +112,13 @@ listConfigVariables.forEach(config => {
     defaultIsFilterable: config.isFilterable,
     defaultIsOrderable: config.isOrderable,
     graphql: { omit: config.omit },
+    access: allowAll,
   });
 });
 
 lists.RelatedToAll = list({
   fields: Object.assign({}, ...listConfigVariables.map(config => createRelatedFields(config))),
+  access: allowAll,
 });
 
 const config = apiTestConfig({

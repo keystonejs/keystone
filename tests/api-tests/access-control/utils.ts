@@ -2,6 +2,7 @@ import { text, password } from '@keystone-6/core/fields';
 import { list, ListSchemaConfig } from '@keystone-6/core';
 import { statelessSessions } from '@keystone-6/core/session';
 import { createAuth } from '@keystone-6/auth';
+import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig } from '../utils';
 
 const FAKE_ID = 'cdsfasfafafadfasdf';
@@ -112,6 +113,7 @@ const lists: ListSchemaConfig = {
       noRead: text({ access: { read: () => false } }),
       yesRead: text({ access: { read: () => true } }),
     },
+    access: allowAll,
   }),
 };
 
@@ -139,6 +141,7 @@ listAccessVariations.forEach(access => {
         update: () => access.update && { name: { equals: 'Hello' } },
         delete: () => access.delete && { name: { equals: 'Hello' } },
       },
+      operation: allowAll,
     },
   });
   lists[getFilterBoolListName(access)] = list({
@@ -149,6 +152,7 @@ listAccessVariations.forEach(access => {
         update: () => access.update,
         delete: () => access.delete,
       },
+      operation: allowAll,
     },
   });
   lists[getItemListName(access)] = list({
@@ -162,6 +166,7 @@ listAccessVariations.forEach(access => {
         update: () => access.update,
         delete: () => access.delete,
       },
+      operation: allowAll,
     },
   });
 });

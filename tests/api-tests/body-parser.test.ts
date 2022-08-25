@@ -4,6 +4,7 @@ import express from 'express';
 import { setupTestRunner } from '@keystone-6/core/testing';
 import type { Options as BodyParserOptions } from 'body-parser';
 import supertest from 'supertest';
+import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig } from './utils';
 import { withServer } from './with-server';
 
@@ -40,6 +41,7 @@ function setup(options?: BodyParserOptions) {
       config: apiTestConfig({
         lists: {
           Thing: list({
+            access: allowAll,
             fields: {
               value: text(),
             },
