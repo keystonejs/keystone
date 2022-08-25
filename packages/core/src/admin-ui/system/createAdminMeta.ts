@@ -171,13 +171,13 @@ export function createAdminMeta(
 function assertValidView(view: string, location: string) {
   if (view.includes('\\')) {
     throw new Error(
-      `${location} contains a backslash, which is invalid. You need to use a module path that can be resolved at the project's root directory (see https://github.com/keystonejs/keystone/pull/7805)`
+      `${location} contains a backslash, which is invalid. You need to use a module path that is resolved from where 'keystone start' is run (see https://github.com/keystonejs/keystone/pull/7805)`
     );
   }
 
   if (path.isAbsolute(view)) {
     throw new Error(
-      `${location} is an absolute path, which is invalid. You need to use a module path that can be resolved at the project's root directory (see https://github.com/keystonejs/keystone/pull/7805)`
+      `${location} is an absolute path, which is invalid. You need to use a module path that is resolved from where 'keystone start' is run (see https://github.com/keystonejs/keystone/pull/7805)`
     );
   }
 }

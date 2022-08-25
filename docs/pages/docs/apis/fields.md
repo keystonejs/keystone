@@ -77,7 +77,7 @@ Options:
   See the [Hooks API](./hooks) for full details on the available hook options.
 - `label`: The label displayed for this field in the Admin UI. Defaults to a human readable version of the field name.
 - `ui`: Controls how the field is displayed in the Admin UI.
-  - `views`: A module specifier that will be resolved from the Keystone project's directory to a module containing code to replace or extend the default Admin UI components for this field. See the [Custom Field Views](../guides/custom-field-views) guide for details on how to use this option.
+  - `views`: A module path that is resolved from where `keystone start` is run, resolving to a module containing code to replace or extend the Admin UI components for this field. See the [Custom Field Views](../guides/custom-field-views) guide for details on how to use this option.
   - `createView.fieldMode` (default: `'edit'`): Controls the create view page of the Admin UI.
     Can be one of `['edit', 'hidden']`, or an async function with an argument `{ session, context }` that returns one of `['edit', 'hidden']`.
     Defaults to the list's `ui.createView.defaultFieldMode` config if defined.
