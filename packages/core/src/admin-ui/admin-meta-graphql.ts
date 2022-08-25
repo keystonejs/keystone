@@ -25,7 +25,6 @@ export const staticAdminMetaQuery = gql`
           plural
           description
           initialColumns
-          enableBasicSearch
           pageSize
           labelField
           fields {
@@ -76,7 +75,6 @@ export type StaticAdminMetaQuery = {
         key: string;
         itemQueryName: string;
         listQueryName: string;
-        enableBasicSearch: boolean;
         path: string;
         label: string;
         singular: string;

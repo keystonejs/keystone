@@ -56,7 +56,7 @@ function useDebouncedValue<T>(value: T, limitMs: number): T {
   return debouncedValue;
 }
 
-function useFilter(search: string, list: ListMeta) {
+export function useFilter(search: string, list: ListMeta) {
   return useMemo(() => {
     let conditions: Record<string, any>[] = [];
     if (search.length) {

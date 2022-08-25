@@ -3,6 +3,9 @@ import { select, relationship, text, timestamp } from '@keystone-6/core/fields';
 
 export const lists = {
   Post: list({
+    ui: {
+      searchFields: ['title', 'content'],
+    },
     fields: {
       title: text({ validation: { isRequired: true } }),
       status: select({

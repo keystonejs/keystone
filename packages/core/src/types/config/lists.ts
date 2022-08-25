@@ -149,7 +149,6 @@ export type ListAdminUIConfig<
     // was previously defaultPageSize
     pageSize?: number; // default number of items to display per page on the list screen
     // note: we are removing maximumPageSize
-    enableBasicSearch?: boolean;
   };
 
   /**

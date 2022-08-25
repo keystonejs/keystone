@@ -261,9 +261,6 @@ export function getAdminMetaSchema({
       listQueryName: graphql.field({
         type: graphql.nonNull(graphql.String),
       }),
-      enableBasicSearch: graphql.field({
-        type: graphql.nonNull(graphql.Boolean),
-      }),
       hideCreate: graphql.field({
         type: graphql.nonNull(graphql.Boolean),
         resolve(rootVal, args, context) {

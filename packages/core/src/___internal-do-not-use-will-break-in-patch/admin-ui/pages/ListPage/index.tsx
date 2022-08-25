@@ -11,6 +11,7 @@ import { LoadingDots } from '@keystone-ui/loading';
 import { AlertDialog } from '@keystone-ui/modals';
 import { useToasts } from '@keystone-ui/toast';
 
+import { SearchIcon } from '@keystone-ui/icons/icons/SearchIcon';
 import { ListMeta } from '../../../../types';
 import {
   getRootGraphQLFieldsFromFieldController,
@@ -24,6 +25,7 @@ import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/Pa
 import { Pagination, PaginationLabel } from '../../../../admin-ui/components/Pagination';
 import { useList } from '../../../../admin-ui/context';
 import { Link, useRouter } from '../../../../admin-ui/router';
+import { useFilter } from '../../../../fields/types/relationship/views/RelationshipSelect';
 import { FieldSelection } from './FieldSelection';
 import { FilterAdd } from './FilterAdd';
 import { FilterList } from './FilterList';
@@ -61,7 +63,6 @@ let listMetaGraphqlQuery: TypedDocumentNode<
         list(key: $listKey) {
           hideDelete
           hideCreate
-          enableBasicSearch
           fields {
             path
             isOrderable
@@ -77,21 +78,6 @@ let listMetaGraphqlQuery: TypedDocumentNode<
 `;
 
 const storeableQueries = ['sortBy', 'fields'];
-// copied from packages/core/src/fields/types/relationship/views/RelationshipSelect.tsx
-// there is no real way to share this code
-function useDebouncedValue<T>(value: T, limitMs: number): T {
-  const [debouncedValue, setDebouncedValue] = useState(() => value);
-
-  useEffect(() => {
-    let id = setTimeout(() => {
-      setDebouncedValue(() => value);
-    }, limitMs);
-    return () => {
-      clearTimeout(id);
-    };
-  }, [value, limitMs]);
-  return debouncedValue;
-}
 
 function useQueryParamsFromLocalStorage(listKey: string) {
   const router = useRouter();
@@ -177,28 +163,24 @@ const ListPage = ({ listKey }: ListPageProps) => {
   }, [metaQuery.data?.keystone.adminMeta.list?.fields]);
 
   const sort = useSort(list, orderableFields);
-
   const filters = useFilters(list, filterableFields);
 
-  const basicSearch = list.enableBasicSearch
-    ? Object.entries(list.fields)
-        .filter(([, field]) => field.controller.filter?.types.contains_i)
-        .map(([key]) => key)
-    : [];
+  const searchFields = Object.values(list.fields)
+    .filter(({ search }) => search !== null)
+    .map(({ label }) => label);
 
-  const [basicSearchString, updateBasicSearchString] = useState(
-    query.OR ? Object.values(JSON.parse(query.OR)[0])[0].contains : ''
-  );
-  const debouncedBasicSearchString = useDebouncedValue(basicSearchString, 200);
+  const searchParam = query.search ? (query.search as string) : '';
+  const [searchString, updateSearchString] = useState(searchParam);
+  const search = useFilter(searchParam, list);
 
-  const combinedWhere = {
-    ...filters.where,
-    ...(debouncedBasicSearchString
-      ? {
-          // NOTE - the way this is written is incompatible if we add OR filters
-          OR: basicSearch.map(key => ({ [key]: { contains: debouncedBasicSearchString } })),
-        }
-      : {}),
+  const updateSearch = (value: string) => {
+    const { search, ...queries } = query;
+
+    if (value.trim()) {
+      push({ query: { ...queries, search: value } });
+    } else {
+      push({ query: queries });
+    }
   };
 
   let selectedFields = useSelectedFields(list, listViewFieldModesByField);
@@ -237,9 +219,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
       errorPolicy: 'all',
       skip: !metaQuery.data,
       variables: {
-        // TODO
-        // where: combinedWhere,
-        where: filters.where,
+        where: { ...filters.where, ...search },
         take: pageSize,
         skip: (currentPage - 1) * pageSize,
         orderBy: sort ? [{ [sort.field]: sort.direction.toLowerCase() }] : undefined,
@@ -290,40 +270,31 @@ const ListPage = ({ listKey }: ListPageProps) => {
             <p css={{ marginTop: '24px', maxWidth: '704px' }}>{list.description}</p>
           )}
           <Stack across gap="medium" align="center" marginTop="xlarge">
-            {basicSearch.length && (
-              <TextInput
-                value={basicSearchString}
-                onChange={val => updateBasicSearchString(val.target.value)}
-                onKeyDown={({ keyCode }) => {
-                  if (keyCode === 13) {
-                    if (basicSearchString) {
-                      push({
-                        query: {
-                          ...query,
-                          OR: JSON.stringify(
-                            basicSearch.map(key => ({
-                              [key]: { contains: basicSearchString },
-                            }))
-                          ),
-                        },
-                      });
-                    } else {
-                      const newQuery = { ...query };
-                      delete newQuery.OR;
-                      push({ query: newQuery });
-                      console.log('nope');
-                    }
-                  }
-                }}
-                placeholder="Search..."
-              />
-            )}
+            <form
+              onSubmit={e => {
+                e.preventDefault();
+                updateSearch(searchString);
+              }}
+            >
+              <Stack across>
+                <TextInput
+                  css={{ borderRadius: '3px 0px 0px 3px' }}
+                  autoFocus
+                  value={searchString}
+                  onChange={val => updateSearchString(val.target.value)}
+                  placeholder={`Search by ${searchFields.join(', ')}`}
+                />
+                <Button css={{ borderRadius: '0px 3px 3px 0px' }} type="submit">
+                  <SearchIcon />
+                </Button>
+              </Stack>
+            </form>
             {showCreate && <CreateButton listKey={listKey} />}
             {data.count || filters.filters.length ? (
               <FilterAdd listKey={listKey} filterableFields={filterableFields} />
             ) : null}
             {filters.filters.length ? <FilterList filters={filters.filters} list={list} /> : null}
-            {Boolean(filters.filters.length || query.sortBy || query.fields || query.OR) && (
+            {Boolean(filters.filters.length || query.sortBy || query.fields || query.search) && (
               <Button size="small" onClick={resetToDefaults}>
                 Reset to defaults
               </Button>

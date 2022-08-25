@@ -103,7 +103,6 @@ export type ListMeta = {
   pageSize: number;
   labelField: string;
   initialSort: null | { direction: 'ASC' | 'DESC'; field: string };
-  enableBasicSearch: boolean;
   fields: { [path: string]: FieldMeta };
 };
 
@@ -184,7 +183,6 @@ export type ListMetaRootVal = {
   itemQueryName: string;
   listQueryName: string;
   description: string | null;
-  enableBasicSearch: boolean;
 };
 
 export type AdminMetaRootVal = {

@@ -74,8 +74,6 @@ export function createAdminMeta(
       // TODO: probably remove this from the GraphQL schema and here
       itemQueryName: key,
       listQueryName: list.pluralGraphQLName,
-      // TODO defaulting this here feels wrong
-      enableBasicSearch: config.lists[key].ui?.listView?.enableBasicSearch ?? true,
     };
     adminMetaRoot.lists.push(adminMetaRoot.listsByKey[key]);
   }
