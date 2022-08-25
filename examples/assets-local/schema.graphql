@@ -294,14 +294,13 @@ type KeystoneMeta {
 }
 
 type KeystoneAdminMeta {
-  lists: [KeystoneAdminUIListMeta!]!
-  list(key: String!): KeystoneAdminUIListMeta
+  models: [KeystoneAdminUIModelMeta!]!
+  model(key: String!): KeystoneAdminUIModelMeta
 }
 
-type KeystoneAdminUIListMeta {
+type KeystoneAdminUIListMeta implements KeystoneAdminUIModelMeta {
   key: String!
-  itemQueryName: String!
-  listQueryName: String!
+  graphqlPlural: String!
   hideCreate: Boolean!
   hideDelete: Boolean!
   path: String!
@@ -312,12 +311,12 @@ type KeystoneAdminUIListMeta {
   initialColumns: [String!]!
   pageSize: Int!
   labelField: String!
-  fields: [KeystoneAdminUIFieldMeta!]!
+  fields: [KeystoneAdminUIListFieldMeta!]!
   initialSort: KeystoneAdminUISort
   isHidden: Boolean!
 }
 
-type KeystoneAdminUIFieldMeta {
+type KeystoneAdminUIListFieldMeta implements KeystoneAdminUIModelFieldMeta {
   path: String!
   label: String!
   description: String
@@ -373,4 +372,44 @@ type KeystoneAdminUISort {
 enum KeystoneAdminUISortDirection {
   ASC
   DESC
+}
+
+type KeystoneAdminUISingletonMeta implements KeystoneAdminUIModelMeta {
+  key: String!
+  path: String!
+  label: String!
+  singular: String!
+  description: String
+  isHidden: Boolean!
+  fields: [KeystoneAdminUISingletonFieldMeta!]!
+}
+
+type KeystoneAdminUISingletonFieldMeta implements KeystoneAdminUIModelFieldMeta {
+  path: String!
+  label: String!
+  description: String
+  fieldMeta: JSON
+  viewsIndex: Int!
+  customViewsIndex: Int
+  itemView(id: ID): KeystoneAdminUIFieldMetaItemView
+}
+
+interface KeystoneAdminUIModelMeta {
+  key: String!
+  path: String!
+  label: String!
+  singular: String!
+  description: String
+  isHidden: Boolean!
+  fields: [KeystoneAdminUIModelFieldMeta!]!
+}
+
+interface KeystoneAdminUIModelFieldMeta {
+  path: String!
+  label: String!
+  description: String
+  fieldMeta: JSON
+  viewsIndex: Int!
+  customViewsIndex: Int
+  itemView(id: ID): KeystoneAdminUIFieldMetaItemView
 }
