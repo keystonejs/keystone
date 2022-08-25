@@ -9,7 +9,6 @@ import {
   getGqlNames,
 } from '../../../types';
 import { graphql } from '../../..';
-import { resolveView } from '../../resolve-view';
 
 type VirtualFieldGraphQLField<Item extends BaseItem> = graphql.Field<
   Item,
@@ -85,7 +84,7 @@ export const virtual =
           return usableField.resolve!(item as any, ...args);
         },
       }),
-      views: resolveView('virtual/views'),
+      views: '@keystone-6/core/fields/types/virtual/views',
       getAdminMeta: () => ({ query: config.ui?.query || '' }),
     });
   };

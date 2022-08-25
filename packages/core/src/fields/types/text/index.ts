@@ -9,7 +9,6 @@ import {
 } from '../../../types';
 import { graphql } from '../../..';
 import { assertCreateIsNonNullAllowed, assertReadIsNonNullAllowed } from '../../non-null-graphql';
-import { resolveView } from '../../resolve-view';
 
 export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -178,7 +177,7 @@ export const text =
       output: graphql.field({
         type: config.graphql?.read?.isNonNull ? graphql.nonNull(graphql.String) : graphql.String,
       }),
-      views: resolveView('text/views'),
+      views: '@keystone-6/core/fields/types/text/views',
       getAdminMeta(): TextFieldMeta {
         return {
           displayMode: config.ui?.displayMode ?? 'input',

@@ -1,4 +1,3 @@
-import path from 'path';
 import { validate } from 'uuid';
 import { isCuid } from 'cuid';
 import {
@@ -9,13 +8,7 @@ import {
   orderDirectionEnum,
 } from '../types';
 import { graphql } from '..';
-import { packagePath } from '../package-path';
 import { userInputError } from './core/graphql-errors';
-
-const views = path.join(
-  packagePath,
-  '___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view'
-);
 
 const idParsers = {
   autoincrement(val: string | null) {
@@ -145,7 +138,7 @@ export const idFieldType =
           return value.toString();
         },
       }),
-      views,
+      views: '@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view',
       getAdminMeta: () => ({ kind: config.kind }),
       ui: {
         createView: {

@@ -1,4 +1,3 @@
-import path from 'path';
 import {
   CommonFieldConfig,
   BaseListTypeInfo,
@@ -172,7 +171,7 @@ export const cloudinaryImage =
             };
           },
         }),
-        views: path.join(path.dirname(__dirname), 'views'),
+        views: '@keystone-6/cloudinary/views',
       },
       {
         map: config.db?.map,

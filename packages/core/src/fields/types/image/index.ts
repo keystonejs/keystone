@@ -8,7 +8,6 @@ import {
   KeystoneContext,
 } from '../../../types';
 import { graphql } from '../../..';
-import { resolveView } from '../../resolve-view';
 import { SUPPORTED_IMAGE_EXTENSIONS } from './utils';
 
 export type ImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
@@ -152,6 +151,6 @@ export const image =
           };
         },
       }),
-      views: resolveView('image/views'),
+      views: '@keystone-6/core/fields/types/image/views',
     });
   };

@@ -10,7 +10,6 @@ import {
   FieldData,
 } from '../../../types';
 import { graphql } from '../../..';
-import { resolveView } from '../../resolve-view';
 import {
   assertCreateIsNonNullAllowed,
   assertReadIsNonNullAllowed,
@@ -183,7 +182,7 @@ export const decimal =
           return val;
         },
       }),
-      views: resolveView('decimal/views'),
+      views: '@keystone-6/core/fields/types/decimal/views',
       getAdminMeta: (): import('./views').DecimalFieldMeta => ({
         defaultValue: defaultValue ?? null,
         precision,

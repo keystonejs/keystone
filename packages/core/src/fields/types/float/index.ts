@@ -14,7 +14,6 @@ import {
   assertReadIsNonNullAllowed,
   getResolvedIsNullable,
 } from '../../non-null-graphql';
-import { resolveView } from '../../resolve-view';
 
 export type FloatFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -160,7 +159,7 @@ export const float =
       output: graphql.field({
         type: config.graphql?.read?.isNonNull ? graphql.nonNull(graphql.Float) : graphql.Float,
       }),
-      views: resolveView('float/views'),
+      views: '@keystone-6/core/fields/types/float/views',
       getAdminMeta() {
         return {
           validation: {

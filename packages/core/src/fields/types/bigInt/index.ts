@@ -13,7 +13,6 @@ import {
   assertReadIsNonNullAllowed,
   getResolvedIsNullable,
 } from '../../non-null-graphql';
-import { resolveView } from '../../resolve-view';
 
 export type BigIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -173,7 +172,7 @@ export const bigInt =
       output: graphql.field({
         type: config.graphql?.read?.isNonNull ? graphql.nonNull(graphql.BigInt) : graphql.BigInt,
       }),
-      views: resolveView('bigInt/views'),
+      views: '@keystone-6/core/fields/types/bigInt/views',
       getAdminMeta() {
         return {
           validation: {

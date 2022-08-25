@@ -6,7 +6,6 @@ import {
   jsonFieldTypePolyfilledForSQLite,
 } from '../../../types';
 import { graphql } from '../../..';
-import { resolveView } from '../../resolve-view';
 
 export type JsonFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -38,7 +37,7 @@ export const json =
           update: { arg: graphql.arg({ type: graphql.JSON }) },
         },
         output: graphql.field({ type: graphql.JSON }),
-        views: resolveView('json/views'),
+        views: '@keystone-6/core/fields/types/json/views',
         getAdminMeta: () => ({ defaultValue }),
       },
       {

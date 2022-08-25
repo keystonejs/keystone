@@ -13,7 +13,6 @@ import {
   assertReadIsNonNullAllowed,
   getResolvedIsNullable,
 } from '../../non-null-graphql';
-import { resolveView } from '../../resolve-view';
 
 export type IntegerFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -185,7 +184,7 @@ export const integer =
       output: graphql.field({
         type: config.graphql?.read?.isNonNull ? graphql.nonNull(graphql.Int) : graphql.Int,
       }),
-      views: resolveView('integer/views'),
+      views: '@keystone-6/core/fields/types/integer/views',
       getAdminMeta() {
         return {
           validation: {

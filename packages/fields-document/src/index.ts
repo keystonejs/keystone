@@ -1,4 +1,3 @@
-import path from 'path';
 import { ApolloError } from 'apollo-server-errors';
 import {
   BaseListTypeInfo,
@@ -71,8 +70,6 @@ export type DocumentFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     layouts?: readonly (readonly [number, ...number[]])[];
     db?: { map?: string };
   };
-
-const views = path.join(path.dirname(__dirname), 'views');
 
 export const document =
   <ListTypeInfo extends BaseListTypeInfo>({
@@ -160,7 +157,7 @@ export const document =
             return { document: value };
           },
         }),
-        views,
+        views: '@keystone-6/fields-document/views',
         getAdminMeta(): Parameters<typeof import('./views').controller>[0]['fieldMeta'] {
           return {
             relationships,

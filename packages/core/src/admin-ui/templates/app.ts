@@ -1,4 +1,3 @@
-import Path from 'path';
 import hashString from '@emotion/hash';
 import {
   executeSync,
@@ -12,16 +11,14 @@ import {
 } from 'graphql';
 import { AdminMetaRootVal } from '../../types';
 import { staticAdminMetaQuery, StaticAdminMetaQuery } from '../admin-meta-graphql';
-import { serializePathForImport } from '../utils/serializePathForImport';
 
-type AppTemplateOptions = { configFileExists: boolean; projectAdminPath: string };
+type AppTemplateOptions = { configFileExists: boolean };
 
 export const appTemplate = (
   adminMetaRootVal: AdminMetaRootVal,
   graphQLSchema: GraphQLSchema,
-  { configFileExists, projectAdminPath }: AppTemplateOptions,
-  apiPath: string,
-  isLiveReload: boolean
+  { configFileExists }: AppTemplateOptions,
+  apiPath: string
 ) => {
   const result = executeSync({
     document: staticAdminMetaQuery,
@@ -34,34 +31,17 @@ export const appTemplate = (
   const { adminMeta } = result.data!.keystone;
   const adminMetaQueryResultHash = hashString(JSON.stringify(adminMeta));
 
-  const allViews = adminMetaRootVal.views.map(views => {
-    // webpack/next for some reason _sometimes_ adds a query parameter to the return of require.resolve
-    // because it does it _sometimes_, we have to remove it so that during live reloading
-    // we're not constantly doing builds because the query param is there and then it's not and then it is and so on
-    views = views.replace(/\?[A-Za-z0-9]+$/, '');
-    // webpack/next adds (api)/ to the return of require.resolve
-    views = views.replace(/^\(api\)\//, '');
-    // during a live reload, we'll have paths from a webpack compilation which will make the paths
-    // that __dirname/__filename/require.resolve return relative to the webpack's "context" option
-    // which for Next, it's set to the directory of the Next project which is projectAdminPath here.
-    // so to get absolute paths, we need to resolve them relative to the projectAdminPath
-    // generally though, relative paths are problematic because
-    // we don't know where to resolve them from so we disallow them
-    // we're assuming that the relative paths we get
-    // of course, this isn't necessarily true but it's kinda the best we can do
-    // this means that if someone writes a relative path as a view during live reloading
-    // they'll get a more confusing error than they would get at startup
-    if (isLiveReload) {
-      views = Path.resolve(projectAdminPath, views);
-    } else if (!Path.isAbsolute(views)) {
-      throw new Error(
-        `Field views must be absolute paths, but ${JSON.stringify(
-          views
-        )} was provided. Use path.join(__dirname, './relative/path') or require.resolve('./relative/path') to get an absolute path.`
-      );
-    }
-    const viewPath = Path.relative(Path.join(projectAdminPath, 'pages'), views);
-    return serializePathForImport(viewPath);
+  const allViews = adminMetaRootVal.views.map(viewRelativeToProject => {
+    const isRelativeToFile =
+      viewRelativeToProject.startsWith('./') || viewRelativeToProject.startsWith('../');
+    const viewRelativeToAppFile = isRelativeToFile
+      ? '../../../' + viewRelativeToProject
+      : viewRelativeToProject;
+
+    // we're not using serializePathForImport here because we want the thing you write for a view
+    // to be exactly what you would put in an import in the project directory.
+    // we're still using JSON.stringify to escape anything that might need to be though
+    return JSON.stringify(viewRelativeToAppFile);
   });
   // -- TEMPLATE START
   return `import { getApp } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/App';

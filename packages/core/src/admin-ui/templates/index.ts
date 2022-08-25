@@ -15,9 +15,7 @@ export const writeAdminFiles = (
   config: KeystoneConfig,
   graphQLSchema: GraphQLSchema,
   adminMeta: AdminMetaRootVal,
-  configFileExists: boolean,
-  projectAdminPath: string,
-  isLiveReload: boolean
+  configFileExists: boolean
 ): AdminFileToWrite[] => {
   if (
     config.experimental?.enableNextJsGraphqlApiEndpoint &&
@@ -44,9 +42,8 @@ export const writeAdminFiles = (
       src: appTemplate(
         adminMeta,
         graphQLSchema,
-        { configFileExists, projectAdminPath },
-        config.graphql?.path || '/api/graphql',
-        isLiveReload
+        { configFileExists },
+        config.graphql?.path || '/api/graphql'
       ),
       outputPath: 'pages/_app.js',
     },

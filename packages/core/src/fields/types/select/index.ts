@@ -14,7 +14,6 @@ import {
   assertReadIsNonNullAllowed,
   getResolvedIsNullable,
 } from '../../non-null-graphql';
-import { resolveView } from '../../resolve-view';
 
 export type SelectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> &
@@ -111,7 +110,7 @@ export const select =
             await config.hooks?.validateInput?.(args);
           },
         },
-        views: resolveView('select/views'),
+        views: '@keystone-6/core/fields/types/select/views',
         getAdminMeta: () => ({
           options,
           type: config.type ?? 'string',
