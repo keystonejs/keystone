@@ -64,7 +64,9 @@ async function main() {
     .flat()
     .concat(
       path.join(repoRoot, 'tests/sandbox'),
-      path.join(repoRoot, 'examples/e2e-boilerplate/keystone-server')
+      // TODO: This feels wrong. Talk to Mitchell.
+      path.join(repoRoot, 'examples/e2e-boilerplate/keystone-server'),
+      path.join(repoRoot, 'examples/document-field-customisation/keystone-server')
     );
 
   // this breaks if we do this entirely in parallel (it only seemed to consistently fail on Vercel though)

@@ -1,0 +1,29 @@
+{
+  "name": "@keystone-6/example-document-field-customisation-nextjs-frontend",
+  "description": "Frontend example to demonstrate DocumentRenderer customisation",
+  "version": "0.0.1",
+  "private": true,
+  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/document-field-customisation/nextjs-frontend",
+  "scripts": {
+    "dev": "next dev --port 8000",
+    "build": "next build",
+    "export": "next build && next export",
+    "start": "next start --port 8000"
+  },
+  "dependencies": {
+    "@apollo/client": "3.6.9",
+    "@keystone-6/document-renderer": "^1.1.0",
+    "@preconstruct/next": "^4.0.0",
+    "autoprefixer": "^10.4.8",
+    "graphql": "^15.8.0",
+    "next": "^12.2.4",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "18.7.2",
+    "@types/react": "^18.0.9",
+    "@types/react-dom": "^18.0.4",
+    "typescript": "^4.7.4"
+  }
+}
