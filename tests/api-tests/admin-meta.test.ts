@@ -37,13 +37,13 @@ test(
         __typename: 'KeystoneMeta',
         adminMeta: {
           __typename: 'KeystoneAdminMeta',
-          lists: [
+          models: [
             {
               __typename: 'KeystoneAdminUIListMeta',
               description: null,
               fields: [
                 {
-                  __typename: 'KeystoneAdminUIFieldMeta',
+                  __typename: 'KeystoneAdminUIListFieldMeta',
                   customViewsIndex: null,
                   description: null,
                   fieldMeta: {
@@ -58,7 +58,7 @@ test(
                   viewsIndex: 0,
                 },
                 {
-                  __typename: 'KeystoneAdminUIFieldMeta',
+                  __typename: 'KeystoneAdminUIListFieldMeta',
                   customViewsIndex: null,
                   description: null,
                   fieldMeta: {
@@ -84,13 +84,12 @@ test(
                   viewsIndex: 1,
                 },
               ],
+              graphqlPlural: 'Users',
               initialColumns: ['name'],
               initialSort: null,
-              itemQueryName: 'User',
               key: 'User',
               label: 'Users',
               labelField: 'name',
-              listQueryName: 'Users',
               pageSize: 50,
               path: 'users',
               plural: 'Users',
