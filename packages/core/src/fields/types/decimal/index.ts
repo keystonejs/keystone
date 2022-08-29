@@ -2,7 +2,7 @@ import { humanize } from '../../../lib/utils';
 import {
   fieldType,
   FieldTypeFunc,
-  BaseListTypeInfo,
+  BaseModelTypeInfo,
   CommonFieldConfig,
   orderDirectionEnum,
   Decimal,
@@ -16,8 +16,8 @@ import {
   getResolvedIsNullable,
 } from '../../non-null-graphql';
 
-export type DecimalFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
+export type DecimalFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> =
+  CommonFieldConfig<ModelTypeInfo> & {
     validation?: {
       min?: string;
       max?: string;
@@ -37,26 +37,26 @@ function parseDecimalValueOption(meta: FieldData, value: string, name: string) {
     decimal = new Decimal(value);
   } catch (err) {
     throw new Error(
-      `The decimal field at ${meta.listKey}.${meta.fieldKey} specifies ${name}: ${value}, this is not valid decimal value.`
+      `The decimal field at ${meta.modelKey}.${meta.fieldKey} specifies ${name}: ${value}, this is not valid decimal value.`
     );
   }
   if (!decimal.isFinite()) {
     throw new Error(
-      `The decimal field at ${meta.listKey}.${meta.fieldKey} specifies ${name}: ${value} which is not finite but ${name} must be finite.`
+      `The decimal field at ${meta.modelKey}.${meta.fieldKey} specifies ${name}: ${value} which is not finite but ${name} must be finite.`
     );
   }
   return decimal;
 }
 
 export const decimal =
-  <ListTypeInfo extends BaseListTypeInfo>({
+  <ModelTypeInfo extends BaseModelTypeInfo>({
     isIndexed,
     precision = 18,
     scale = 4,
     validation,
     defaultValue,
     ...config
-  }: DecimalFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
+  }: DecimalFieldConfig<ModelTypeInfo> = {}): FieldTypeFunc<ModelTypeInfo> =>
   meta => {
     if (meta.provider === 'sqlite') {
       throw new Error('The decimal field does not support sqlite');
@@ -64,19 +64,19 @@ export const decimal =
 
     if (!Number.isInteger(scale)) {
       throw new Error(
-        `The scale for decimal fields must be an integer but the scale for the decimal field at ${meta.listKey}.${meta.fieldKey} is not an integer`
+        `The scale for decimal fields must be an integer but the scale for the decimal field at ${meta.modelKey}.${meta.fieldKey} is not an integer`
       );
     }
 
     if (!Number.isInteger(precision)) {
       throw new Error(
-        `The precision for decimal fields must be an integer but the precision for the decimal field at ${meta.listKey}.${meta.fieldKey} is not an integer`
+        `The precision for decimal fields must be an integer but the precision for the decimal field at ${meta.modelKey}.${meta.fieldKey} is not an integer`
       );
     }
 
     if (scale > precision) {
       throw new Error(
-        `The scale configured for decimal field at ${meta.listKey}.${meta.fieldKey} (${scale}) ` +
+        `The scale configured for decimal field at ${meta.modelKey}.${meta.fieldKey} (${scale}) ` +
           `must not be larger than the field's precision (${precision})`
       );
     }
@@ -94,7 +94,7 @@ export const decimal =
 
     if (min !== undefined && max !== undefined && max.lessThan(min)) {
       throw new Error(
-        `The decimal field at ${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`
+        `The decimal field at ${meta.modelKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`
       );
     }
 

@@ -2,15 +2,15 @@ import {
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
-  BaseListTypeInfo,
+  BaseModelTypeInfo,
   KeystoneContext,
   FileMetadata,
 } from '../../../types';
 import { graphql } from '../../..';
 
-export type FileFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
+export type FileFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> = {
   storage: string;
-} & CommonFieldConfig<ListTypeInfo>;
+} & CommonFieldConfig<ModelTypeInfo>;
 
 const FileFieldInput = graphql.inputObject({
   name: 'FileFieldInput',
@@ -48,15 +48,15 @@ async function inputResolver(
 }
 
 export const file =
-  <ListTypeInfo extends BaseListTypeInfo>(
-    config: FileFieldConfig<ListTypeInfo>
-  ): FieldTypeFunc<ListTypeInfo> =>
+  <ModelTypeInfo extends BaseModelTypeInfo>(
+    config: FileFieldConfig<ModelTypeInfo>
+  ): FieldTypeFunc<ModelTypeInfo> =>
   meta => {
     const storage = meta.getStorage(config.storage);
 
     if (!storage) {
       throw new Error(
-        `${meta.listKey}.${meta.fieldKey} has storage set to ${config.storage}, but no storage configuration was found for that key`
+        `${meta.modelKey}.${meta.fieldKey} has storage set to ${config.storage}, but no storage configuration was found for that key`
       );
     }
 

@@ -24,6 +24,8 @@ export type BaseListTypeInfo = {
   all: BaseKeystoneTypeInfo;
 };
 
+export type BaseModelTypeInfo = BaseListTypeInfo;
+
 export type KeystoneContextFromListTypeInfo<ListTypeInfo extends BaseListTypeInfo> =
   KeystoneContext<ListTypeInfo['all']>;
 

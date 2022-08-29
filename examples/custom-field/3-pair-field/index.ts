@@ -1,20 +1,20 @@
 import {
-  BaseListTypeInfo,
+  BaseModelTypeInfo,
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
 } from '@keystone-6/core/types';
 import { graphql } from '@keystone-6/core';
 
-export type PairFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
+export type PairFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> =
+  CommonFieldConfig<ModelTypeInfo> & {
     isIndexed?: boolean | 'unique';
   };
 
-export function pair<ListTypeInfo extends BaseListTypeInfo>({
+export function pair<ModelTypeInfo extends BaseModelTypeInfo>({
   isIndexed,
   ...config
-}: PairFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
+}: PairFieldConfig<ModelTypeInfo> = {}): FieldTypeFunc<ModelTypeInfo> {
   function resolveInput(value: string | null | undefined) {
     if (!value) return { left: value, right: value };
     const [left = '', right = ''] = value.split(' ', 2);

@@ -49,13 +49,13 @@ const getRunner = ({
   fields,
 }: {
   storage: Record<string, StorageConfig>;
-  fields: KeystoneConfig['lists'][string]['fields'];
+  fields: KeystoneConfig['models'][string]['fields'];
 }) =>
   setupTestRunner({
     config: apiTestConfig({
       db: {},
       storage,
-      lists: {
+      models: {
         Test: list({
           fields: {
             name: text(),

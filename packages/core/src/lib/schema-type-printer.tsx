@@ -156,7 +156,7 @@ function printListTypeInfo<L extends InitialisedList>(listKey: string, list: L) 
     updateInputName,
     listOrderName,
   } = getGqlNames(list);
-  const listTypeInfoName = `Lists.${listKey}.TypeInfo`;
+  const listTypeInfoName = `Models.${listKey}.TypeInfo`;
 
   // prettier-ignore
   return [
@@ -196,7 +196,7 @@ export function printGeneratedTypes(
 
   for (const [listKey, list] of Object.entries(lists)) {
     const gqlNames = getGqlNames(list);
-    const listTypeInfoName = `Lists.${listKey}.TypeInfo`;
+    const listTypeInfoName = `Models.${listKey}.TypeInfo`;
 
     interimCreateUpdateTypes.push(
       printInterimType(list, listKey, gqlNames.createInputName, 'Create')
@@ -223,7 +223,7 @@ export function printGeneratedTypes(
     interimCreateUpdateTypes.join('\n\n'),
     '',
     '',
-    'export declare namespace Lists {',
+    'export declare namespace Models {',
     ...listsNamespaces,
     '}',
     `export type Context = import('@keystone-6/core/types').KeystoneContext<TypeInfo>;`,
@@ -238,7 +238,7 @@ export function printGeneratedTypes(
     // we need to reference the `TypeInfo` above in another type that is also called `TypeInfo`
     `type __TypeInfo = TypeInfo;`,
     ``,
-    `export type Lists = {`,
+    `export type Models = {`,
     `  [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core').ListConfig<TypeInfo['lists'][Key], any>`,
     `} & Record<string, import('@keystone-6/core').ListConfig<any, any>>;`,
     ``,

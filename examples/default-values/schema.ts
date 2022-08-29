@@ -1,9 +1,9 @@
 import { list } from '@keystone-6/core';
 import { checkbox, relationship, text, timestamp } from '@keystone-6/core/fields';
 import { select } from '@keystone-6/core/fields';
-import { Lists } from '.keystone/types';
+import { Models } from '.keystone/types';
 
-export const lists: Lists = {
+export const models: Models = {
   Task: list({
     fields: {
       label: text({ validation: { isRequired: true } }),

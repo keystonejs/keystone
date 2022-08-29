@@ -1,8 +1,8 @@
 import { list, graphql } from '@keystone-6/core';
 import { select, relationship, text, timestamp, virtual } from '@keystone-6/core/fields';
-import { Lists, Context } from '.keystone/types';
+import { Models, Context } from '.keystone/types';
 
-export const lists: Lists = {
+export const models: Models = {
   Post: list({
     fields: {
       title: text({ validation: { isRequired: true } }),

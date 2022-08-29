@@ -1,5 +1,5 @@
 import { config } from '@keystone-6/core';
-import { lists } from './schema';
+import { models } from './schema';
 import { insertSeedData } from './seed-data';
 import { getTasks } from './routes/tasks';
 import { Context } from '.keystone/types';
@@ -40,5 +40,5 @@ export default config({
       app.get('/rest/tasks', getTasks);
     },
   },
-  lists,
+  models,
 });

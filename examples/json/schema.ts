@@ -1,7 +1,7 @@
 import { list } from '@keystone-6/core';
 import { checkbox, json, relationship, text } from '@keystone-6/core/fields';
 
-export const lists = {
+export const models = {
   Package: list({
     fields: {
       label: text({ validation: { isRequired: true } }),

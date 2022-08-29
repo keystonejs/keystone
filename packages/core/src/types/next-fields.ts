@@ -1,6 +1,6 @@
 import Decimal from 'decimal.js';
 import { graphql } from '..';
-import { BaseListTypeInfo } from './type-info';
+import { BaseModelTypeInfo } from './type-info';
 import { CommonFieldConfig } from './config';
 import { DatabaseProvider } from './core';
 import { AdminMetaRootVal, JSONValue, KeystoneContext, MaybePromise, StorageConfig } from '.';
@@ -15,11 +15,11 @@ export type FieldData = {
   lists: Record<string, ListGraphQLTypes>;
   provider: DatabaseProvider;
   getStorage: (storage: string) => StorageConfig | undefined;
-  listKey: string;
+  modelKey: string;
   fieldKey: string;
 };
 
-export type FieldTypeFunc<ListTypeInfo extends BaseListTypeInfo> = (
+export type FieldTypeFunc<ModelTypeInfo extends BaseModelTypeInfo> = (
   data: FieldData
 ) => NextFieldType<
   DBField,
@@ -28,7 +28,7 @@ export type FieldTypeFunc<ListTypeInfo extends BaseListTypeInfo> = (
   graphql.Arg<graphql.NullableInputType, false>,
   graphql.Arg<graphql.NullableInputType, false>,
   graphql.Arg<graphql.NullableInputType, false>,
-  ListTypeInfo
+  ModelTypeInfo
 >;
 
 export type NextFieldType<
@@ -49,7 +49,7 @@ export type NextFieldType<
     graphql.NullableInputType,
     false
   >,
-  ListTypeInfo extends BaseListTypeInfo = BaseListTypeInfo
+  ModelTypeInfo extends BaseModelTypeInfo = BaseModelTypeInfo
 > = {
   dbField: TDBField;
 } & FieldTypeWithoutDBField<
@@ -59,7 +59,7 @@ export type NextFieldType<
   UniqueWhereArg,
   OrderByArg,
   FilterArg,
-  ListTypeInfo
+  ModelTypeInfo
 >;
 
 type ScalarPrismaTypes = {
@@ -375,7 +375,7 @@ export type FieldTypeWithoutDBField<
     graphql.NullableInputType,
     false
   >,
-  ListTypeInfo extends BaseListTypeInfo = BaseListTypeInfo
+  ModelTypeInfo extends BaseModelTypeInfo = BaseModelTypeInfo
 > = {
   input?: {
     uniqueWhere?: UniqueWhereFieldInputArg<DBFieldUniqueWhere<TDBField>, UniqueWhereArg>;
@@ -389,7 +389,7 @@ export type FieldTypeWithoutDBField<
   extraOutputFields?: Record<string, FieldTypeOutputField<TDBField>>;
   getAdminMeta?: (adminMeta: AdminMetaRootVal) => JSONValue;
   unreferencedConcreteInterfaceImplementations?: readonly graphql.ObjectType<any>[];
-} & CommonFieldConfig<ListTypeInfo>;
+} & CommonFieldConfig<ModelTypeInfo>;
 
 type AnyInputObj = graphql.InputObjectType<Record<string, graphql.Arg<graphql.InputType, any>>>;
 
@@ -452,7 +452,7 @@ export type FindManyArgs = {
 export type FindManyArgsValue = graphql.InferValueFromArgs<FindManyArgs>;
 
 // fieldType(dbField)(fieldInfo) => { ...fieldInfo, dbField };
-export function fieldType<TDBField extends DBField, ListTypeInfo extends BaseListTypeInfo>(
+export function fieldType<TDBField extends DBField, ModelTypeInfo extends BaseModelTypeInfo>(
   dbField: TDBField
 ) {
   return function <
@@ -477,7 +477,7 @@ export function fieldType<TDBField extends DBField, ListTypeInfo extends BaseLis
     UniqueWhereArg,
     OrderByArg,
     FilterArg,
-    ListTypeInfo
+    ModelTypeInfo
   > {
     return { ...graphQLInfo, dbField };
   };

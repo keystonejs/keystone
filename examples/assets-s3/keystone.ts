@@ -1,6 +1,6 @@
 import { config } from '@keystone-6/core';
 import dotenv from 'dotenv';
-import { lists } from './schema';
+import { models } from './schema';
 
 dotenv.config();
 
@@ -16,7 +16,7 @@ export default config({
     provider: 'sqlite',
     url: process.env.DATABASE_URL || 'file:./keystone-example.db',
   },
-  lists,
+  models,
   storage: {
     my_images: {
       kind: 's3',
