@@ -64,7 +64,6 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
       ? adminMetaFromLocalStorage
       : data.keystone.adminMeta;
     const runtimeAdminMeta: AdminMeta = {
-      enableSignout: adminMeta.enableSignout,
       lists: {},
     };
     adminMeta.lists.forEach(list => {

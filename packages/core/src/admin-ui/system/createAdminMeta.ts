@@ -17,9 +17,8 @@ export function createAdminMeta(
   config: KeystoneConfig,
   initialisedLists: Record<string, InitialisedList>
 ) {
-  const { lists, session } = config;
+  const { lists } = config;
   const adminMetaRoot: AdminMetaRootVal = {
-    enableSignout: session !== undefined,
     listsByKey: {},
     lists: [],
     views: [],

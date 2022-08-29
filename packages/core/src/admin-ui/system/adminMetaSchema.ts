@@ -167,7 +167,6 @@ const KeystoneAdminUIListMeta = graphql.object<ListMetaRootVal>()({
 const adminMeta = graphql.object<AdminMetaRootVal>()({
   name: 'KeystoneAdminMeta',
   fields: {
-    enableSignout: graphql.field({ type: graphql.nonNull(graphql.Boolean) }),
     lists: graphql.field({
       type: graphql.nonNull(graphql.list(graphql.nonNull(KeystoneAdminUIListMeta))),
     }),

@@ -7,7 +7,6 @@ export const staticAdminMetaQuery = gql`
       __typename
       adminMeta {
         __typename
-        enableSignout
         lists {
           __typename
           key
@@ -67,7 +66,6 @@ export type StaticAdminMetaQuery = {
     __typename: 'KeystoneMeta';
     adminMeta: {
       __typename: 'KeystoneAdminMeta';
-      enableSignout: boolean;
       lists: Array<{
         __typename: 'KeystoneAdminUIListMeta';
         key: string;

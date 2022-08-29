@@ -110,7 +110,6 @@ export type ListMeta = {
 };
 
 export type AdminMeta = {
-  enableSignout: boolean;
   lists: { [list: string]: ListMeta };
 };
 
@@ -200,7 +199,6 @@ export type ListMetaRootVal = {
 };
 
 export type AdminMetaRootVal = {
-  enableSignout: boolean;
   lists: Array<ListMetaRootVal>;
   listsByKey: Record<string, ListMetaRootVal>;
   views: string[];
