@@ -278,13 +278,13 @@ const ListPage = ({ listKey }: ListPageProps) => {
             >
               <Stack across>
                 <TextInput
-                  css={{ borderRadius: '3px 0px 0px 3px' }}
+                  css={{ borderRadius: '4px 0px 0px 4px' }}
                   autoFocus
                   value={searchString}
-                  onChange={val => updateSearchString(val.target.value)}
-                  placeholder={`Search by ${searchFields.join(', ')}`}
+                  onChange={e => updateSearchString(e.target.value)}
+                  placeholder={`Search by ${searchFields.length ? searchFields.join(', ') : 'ID'}`}
                 />
-                <Button css={{ borderRadius: '0px 3px 3px 0px' }} type="submit">
+                <Button css={{ borderRadius: '0px 4px 4px 0px' }} type="submit">
                   <SearchIcon />
                 </Button>
               </Stack>
@@ -390,7 +390,6 @@ const CreateButton = ({ listKey }: { listKey: string }) => {
         as={Link}
         href={`/${list.path}/create`}
         tone="active"
-        size="small"
         weight="bold"
       >
         Create {list.singular}

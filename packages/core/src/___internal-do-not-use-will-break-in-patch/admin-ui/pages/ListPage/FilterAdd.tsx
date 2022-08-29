@@ -55,13 +55,7 @@ export function FilterAdd({
 
   return (
     <Fragment>
-      <Button
-        tone="active"
-        size="small"
-        {...trigger.props}
-        ref={trigger.ref}
-        onClick={() => setOpen(!isOpen)}
-      >
+      <Button tone="active" {...trigger.props} ref={trigger.ref} onClick={() => setOpen(!isOpen)}>
         <Box as="span" marginRight="xsmall">
           Filter List
         </Box>
