@@ -10,7 +10,7 @@ type IdType = any;
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    lists: {
+    models: {
       Note: list({
         fields: {
           content: text(),
@@ -58,7 +58,7 @@ let afterOperationWasCalled = false;
 
 const runner2 = setupTestRunner({
   config: apiTestConfig({
-    lists: {
+    models: {
       Note: list({
         fields: {
           content: text(),

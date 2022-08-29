@@ -9,7 +9,7 @@ const runner = setupTestRunner({
     ui: {
       isAccessAllowed: () => false,
     },
-    lists: { User: list({ fields: { name: text() } }) },
+    models: { User: list({ fields: { name: text() } }) },
   }),
 });
 
@@ -114,7 +114,7 @@ test(
 
   setupTestRunner({
     config: apiTestConfig({
-      lists: {
+      models: {
         Test: list({
           fields: { name: text() },
           ui: names,

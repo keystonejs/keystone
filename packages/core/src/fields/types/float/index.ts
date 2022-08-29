@@ -1,7 +1,7 @@
 // Float in GQL: A signed double-precision floating-point value.
 import { humanize } from '../../../lib/utils';
 import {
-  BaseListTypeInfo,
+  BaseModelTypeInfo,
   FieldTypeFunc,
   CommonFieldConfig,
   fieldType,
@@ -15,8 +15,8 @@ import {
   getResolvedIsNullable,
 } from '../../non-null-graphql';
 
-export type FloatFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
+export type FloatFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> =
+  CommonFieldConfig<ModelTypeInfo> & {
     defaultValue?: number;
     isIndexed?: boolean | 'unique';
     validation?: {
@@ -39,19 +39,19 @@ export type FloatFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   };
 
 export const float =
-  <ListTypeInfo extends BaseListTypeInfo>({
+  <ModelTypeInfo extends BaseModelTypeInfo>({
     isIndexed,
     validation,
     defaultValue,
     ...config
-  }: FloatFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
+  }: FloatFieldConfig<ModelTypeInfo> = {}): FieldTypeFunc<ModelTypeInfo> =>
   meta => {
     if (
       defaultValue !== undefined &&
       (typeof defaultValue !== 'number' || !Number.isFinite(defaultValue))
     ) {
       throw new Error(
-        `The float field at ${meta.listKey}.${meta.fieldKey} specifies a default value of: ${defaultValue} but it must be a valid finite number`
+        `The float field at ${meta.modelKey}.${meta.fieldKey} specifies a default value of: ${defaultValue} but it must be a valid finite number`
       );
     }
 
@@ -60,7 +60,7 @@ export const float =
       (typeof validation.min !== 'number' || !Number.isFinite(validation.min))
     ) {
       throw new Error(
-        `The float field at ${meta.listKey}.${meta.fieldKey} specifies validation.min: ${validation.min} but it must be a valid finite number`
+        `The float field at ${meta.modelKey}.${meta.fieldKey} specifies validation.min: ${validation.min} but it must be a valid finite number`
       );
     }
 
@@ -69,7 +69,7 @@ export const float =
       (typeof validation.max !== 'number' || !Number.isFinite(validation.max))
     ) {
       throw new Error(
-        `The float field at ${meta.listKey}.${meta.fieldKey} specifies validation.max: ${validation.max} but it must be a valid finite number`
+        `The float field at ${meta.modelKey}.${meta.fieldKey} specifies validation.max: ${validation.max} but it must be a valid finite number`
       );
     }
 
@@ -79,7 +79,7 @@ export const float =
       validation.min > validation.max
     ) {
       throw new Error(
-        `The float field at ${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`
+        `The float field at ${meta.modelKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`
       );
     }
 

@@ -5,7 +5,7 @@ import type { BaseFields } from '@keystone-6/core/types';
 import { apiTestConfig } from '../utils';
 
 const setupList = (fields: BaseFields<any>) =>
-  setupTestRunner({ config: apiTestConfig({ lists: { User: list({ fields }) } }) });
+  setupTestRunner({ config: apiTestConfig({ models: { User: list({ fields }) } }) });
 
 describe('defaultValue field config', () => {
   test(

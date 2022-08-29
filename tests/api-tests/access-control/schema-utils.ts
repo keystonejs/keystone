@@ -100,10 +100,10 @@ const createRelatedFields = (config: ListConfig) => ({
   [`${getListPrefix(config)}many`]: relationship({ ref: getListName(config), many: true }),
 });
 
-const lists: ListSchemaConfig = {};
+const models: ListSchemaConfig = {};
 
 listConfigVariables.forEach(config => {
-  lists[getListName(config)] = list({
+  models[getListName(config)] = list({
     fields: Object.assign(
       { name: text() },
       ...fieldMatrix.map(variation => createFieldStatic(variation))
@@ -114,12 +114,12 @@ listConfigVariables.forEach(config => {
   });
 });
 
-lists.RelatedToAll = list({
+models.RelatedToAll = list({
   fields: Object.assign({}, ...listConfigVariables.map(config => createRelatedFields(config))),
 });
 
 const config = apiTestConfig({
-  lists,
+  models,
   session: statelessSessions({ secret: COOKIE_SECRET }),
   ui: {
     isAccessAllowed: () => true,

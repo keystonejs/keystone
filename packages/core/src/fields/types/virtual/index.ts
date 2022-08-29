@@ -1,6 +1,6 @@
 import { getNamedType, isLeafType } from 'graphql';
 import {
-  BaseListTypeInfo,
+  BaseModelTypeInfo,
   BaseItem,
   CommonFieldConfig,
   FieldTypeFunc,
@@ -17,13 +17,13 @@ type VirtualFieldGraphQLField<Item extends BaseItem> = graphql.Field<
   string
 >;
 
-export type VirtualFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
+export type VirtualFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> =
+  CommonFieldConfig<ModelTypeInfo> & {
     field:
-      | VirtualFieldGraphQLField<ListTypeInfo['item']>
+      | VirtualFieldGraphQLField<ModelTypeInfo['item']>
       | ((
-          lists: Record<string, ListGraphQLTypes>
-        ) => VirtualFieldGraphQLField<ListTypeInfo['item']>);
+          models: Record<string, ListGraphQLTypes>
+        ) => VirtualFieldGraphQLField<ModelTypeInfo['item']>);
     unreferencedConcreteInterfaceImplementations?: readonly graphql.ObjectType<any>[];
     ui?: {
       /**
@@ -44,10 +44,10 @@ export type VirtualFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   };
 
 export const virtual =
-  <ListTypeInfo extends BaseListTypeInfo>({
+  <ModelTypeInfo extends BaseModelTypeInfo>({
     field,
     ...config
-  }: VirtualFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> =>
+  }: VirtualFieldConfig<ModelTypeInfo>): FieldTypeFunc<ModelTypeInfo> =>
   meta => {
     const usableField = typeof field === 'function' ? field(meta.lists) : field;
     const namedType = getNamedType(usableField.type.graphQLType);
@@ -62,12 +62,12 @@ export const virtual =
       (config.ui?.itemView?.fieldMode !== 'hidden' || config.ui?.listView?.fieldMode !== 'hidden')
     ) {
       throw new Error(
-        `The virtual field at ${meta.listKey}.${meta.fieldKey} requires a selection for the Admin UI but ui.query is unspecified and ui.listView.fieldMode and ui.itemView.fieldMode are not both set to 'hidden'.\n` +
+        `The virtual field at ${meta.modelKey}.${meta.fieldKey} requires a selection for the Admin UI but ui.query is unspecified and ui.listView.fieldMode and ui.itemView.fieldMode are not both set to 'hidden'.\n` +
           `Either set ui.query with what the Admin UI should fetch or hide the field from the Admin UI by setting ui.listView.fieldMode and ui.itemView.fieldMode to 'hidden'.\n` +
           `When setting ui.query, it is interpolated into a GraphQL query like this:\n` +
           `query {\n` +
           `  ${
-            getGqlNames({ listKey: meta.listKey, pluralGraphQLName: '' }).itemQueryName
+            getGqlNames({ listKey: meta.modelKey, pluralGraphQLName: '' }).itemQueryName
           }(where: { id: "..." }) {\n` +
           `    ${meta.fieldKey}\${ui.query}\n` +
           `  }\n` +

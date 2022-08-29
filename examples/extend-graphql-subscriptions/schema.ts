@@ -2,9 +2,9 @@ import { list, graphQLSchemaExtension } from '@keystone-6/core';
 import { select, relationship, text, timestamp } from '@keystone-6/core/fields';
 import { pubSub } from './websocket';
 
-import type { Lists } from '.keystone/types';
+import type { Models } from '.keystone/types';
 
-export const lists: Lists = {
+export const models: Models = {
   Post: list({
     hooks: {
       // this hook publishes posts to the 'POST_UPDATED' channel when a post mutated

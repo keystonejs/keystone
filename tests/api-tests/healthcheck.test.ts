@@ -7,7 +7,7 @@ import { apiTestConfig } from './utils';
 const makeRunner = (healthCheck: any) =>
   setupTestRunner({
     config: apiTestConfig({
-      lists: { User: list({ fields: { name: text() } }) },
+      models: { User: list({ fields: { name: text() } }) },
       server: { healthCheck },
     }),
   });

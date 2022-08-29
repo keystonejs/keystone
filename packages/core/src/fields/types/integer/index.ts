@@ -1,6 +1,6 @@
 import { humanize } from '../../../lib/utils';
 import {
-  BaseListTypeInfo,
+  BaseModelTypeInfo,
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
@@ -14,8 +14,8 @@ import {
   getResolvedIsNullable,
 } from '../../non-null-graphql';
 
-export type IntegerFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
+export type IntegerFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> =
+  CommonFieldConfig<ModelTypeInfo> & {
     isIndexed?: boolean | 'unique';
     defaultValue?: number | { kind: 'autoincrement' };
     validation?: {
@@ -42,12 +42,12 @@ const MAX_INT = 2147483647;
 const MIN_INT = -2147483648;
 
 export const integer =
-  <ListTypeInfo extends BaseListTypeInfo>({
+  <ModelTypeInfo extends BaseModelTypeInfo>({
     isIndexed,
     defaultValue: _defaultValue,
     validation,
     ...config
-  }: IntegerFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
+  }: IntegerFieldConfig<ModelTypeInfo> = {}): FieldTypeFunc<ModelTypeInfo> =>
   meta => {
     const defaultValue = _defaultValue ?? null;
     const hasAutoIncDefault =
@@ -60,12 +60,12 @@ export const integer =
     if (hasAutoIncDefault) {
       if (meta.provider === 'sqlite' || meta.provider === 'mysql') {
         throw new Error(
-          `The integer field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' }, this is not supported on ${meta.provider}`
+          `The integer field at ${meta.modelKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' }, this is not supported on ${meta.provider}`
         );
       }
       if (isNullable !== false) {
         throw new Error(
-          `The integer field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' } but doesn't specify db.isNullable: false.\n` +
+          `The integer field at ${meta.modelKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' } but doesn't specify db.isNullable: false.\n` +
             `Having nullable autoincrements on Prisma currently incorrectly creates a non-nullable column so it is not allowed.\n` +
             `https://github.com/prisma/prisma/issues/8663`
         );
@@ -74,23 +74,23 @@ export const integer =
 
     if (validation?.min !== undefined && !Number.isInteger(validation.min)) {
       throw new Error(
-        `The integer field at ${meta.listKey}.${meta.fieldKey} specifies validation.min: ${validation.min} but it must be an integer`
+        `The integer field at ${meta.modelKey}.${meta.fieldKey} specifies validation.min: ${validation.min} but it must be an integer`
       );
     }
     if (validation?.max !== undefined && !Number.isInteger(validation.max)) {
       throw new Error(
-        `The integer field at ${meta.listKey}.${meta.fieldKey} specifies validation.max: ${validation.max} but it must be an integer`
+        `The integer field at ${meta.modelKey}.${meta.fieldKey} specifies validation.max: ${validation.max} but it must be an integer`
       );
     }
 
     if (validation?.min !== undefined && (validation?.min > MAX_INT || validation?.min < MIN_INT)) {
       throw new Error(
-        `The integer field at ${meta.listKey}.${meta.fieldKey} specifies validation.min: ${validation.min} which is outside of the range of a 32bit signed integer(${MIN_INT} - ${MAX_INT}) which is not allowed`
+        `The integer field at ${meta.modelKey}.${meta.fieldKey} specifies validation.min: ${validation.min} which is outside of the range of a 32bit signed integer(${MIN_INT} - ${MAX_INT}) which is not allowed`
       );
     }
     if (validation?.max !== undefined && (validation?.max > MAX_INT || validation?.max < MIN_INT)) {
       throw new Error(
-        `The integer field at ${meta.listKey}.${meta.fieldKey} specifies validation.max: ${validation.max} which is outside of the range of a 32bit signed integer(${MIN_INT} - ${MAX_INT}) which is not allowed`
+        `The integer field at ${meta.modelKey}.${meta.fieldKey} specifies validation.max: ${validation.max} which is outside of the range of a 32bit signed integer(${MIN_INT} - ${MAX_INT}) which is not allowed`
       );
     }
 
@@ -100,7 +100,7 @@ export const integer =
       validation.min > validation.max
     ) {
       throw new Error(
-        `The integer field at ${meta.listKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`
+        `The integer field at ${meta.modelKey}.${meta.fieldKey} specifies a validation.max that is less than the validation.min, and therefore has no valid options`
       );
     }
 
