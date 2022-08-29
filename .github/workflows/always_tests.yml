@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  linting:
+    name: Linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - uses: ./.github/actions/ci-setup
+
+      - name: Prettier
+        run: yarn lint:prettier
+
+      - name: TypeScript
+        run: yarn lint:types
+
+      - name: ESLint
+        run: yarn lint:eslint
+
+      - name: Preconstruct
+        run: yarn build
+
+      - name: Remark
+        run: yarn lint:markdown
+
+      - name: Prisma Filters
+        run: yarn lint:filters
+
+  unit_tests:
+    name: Package Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - uses: ./.github/actions/ci-setup
+
+      - name: Unit tests
+        run: yarn jest --ci --runInBand --testPathIgnorePatterns=admin-ui-tests --testPathIgnorePatterns=api-tests --testPathIgnorePatterns=examples-smoke-tests --testPathIgnorePatterns=examples/testing
