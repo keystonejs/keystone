@@ -63,15 +63,15 @@ export type DeleteListItemAccessControl<ListTypeInfo extends BaseListTypeInfo> =
   args: DeleteItemAccessArgs<ListTypeInfo>
 ) => MaybePromise<boolean>;
 
-type Operations = 'create' | 'query' | 'update' | 'delete';
+export type AccessOperation = 'create' | 'query' | 'update' | 'delete';
 
 export type ListOperationAccessControl<
-  Operation extends Operations,
+  Operation extends AccessOperation,
   ListTypeInfo extends BaseListTypeInfo
 > = (args: BaseAccessArgs<ListTypeInfo> & { operation: Operation }) => MaybePromise<boolean>;
 
 type ListAccessControlFunction<ListTypeInfo extends BaseListTypeInfo> = (
-  args: BaseAccessArgs<ListTypeInfo> & { operation: Operations }
+  args: BaseAccessArgs<ListTypeInfo> & { operation: AccessOperation }
 ) => MaybePromise<boolean>;
 
 type ListAccessControlObject<ListTypeInfo extends BaseListTypeInfo> = {

@@ -1,5 +1,5 @@
 import { BaseListTypeInfo } from '../types';
-import { BaseAccessArgs } from '../types/config/access-control';
+import { AccessOperation, BaseAccessArgs } from '../types/config/access-control';
 
 export function allowAll() {
   return true;
@@ -9,7 +9,7 @@ export function denyAll() {
 }
 
 export function allOperations<ListTypeInfo extends BaseListTypeInfo>(
-  func: (args: BaseAccessArgs<ListTypeInfo>) => boolean
+  func: (args: BaseAccessArgs<ListTypeInfo> & { operation: AccessOperation }) => boolean
 ) {
   return {
     query: func,
