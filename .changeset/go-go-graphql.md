@@ -2,4 +2,4 @@
 '@keystone-6/core': major
 ---
 
-Upgrade to `prisma@4`
+Upgrade to `graphql@16`
