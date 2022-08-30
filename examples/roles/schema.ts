@@ -12,7 +12,7 @@ import { isSignedIn, permissions, rules } from './access';
   - All users can see and manage todo items assigned to themselves
 */
 
-export const models = {
+export const lists = {
   Todo: list({
     /*
       SPEC

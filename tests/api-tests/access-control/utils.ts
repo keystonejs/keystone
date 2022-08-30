@@ -103,7 +103,7 @@ const createFieldImperative = (fieldAccess: BooleanAccess) => ({
   }),
 });
 
-const models: ListSchemaConfig = {
+const lists: ListSchemaConfig = {
   User: list({
     fields: {
       name: text(),
@@ -116,7 +116,7 @@ const models: ListSchemaConfig = {
 };
 
 listAccessVariations.forEach(access => {
-  models[getOperationListName(access)] = list({
+  lists[getOperationListName(access)] = list({
     fields: Object.assign(
       { name: text() },
       ...fieldMatrix.map(variation => createFieldStatic(variation))
@@ -130,7 +130,7 @@ listAccessVariations.forEach(access => {
       },
     },
   });
-  models[getFilterListName(access)] = list({
+  lists[getFilterListName(access)] = list({
     fields: { name: text() },
     access: {
       filter: {
@@ -141,7 +141,7 @@ listAccessVariations.forEach(access => {
       },
     },
   });
-  models[getFilterBoolListName(access)] = list({
+  lists[getFilterBoolListName(access)] = list({
     fields: { name: text() },
     access: {
       filter: {
@@ -151,7 +151,7 @@ listAccessVariations.forEach(access => {
       },
     },
   });
-  models[getItemListName(access)] = list({
+  lists[getItemListName(access)] = list({
     fields: Object.assign(
       { name: text() },
       ...fieldMatrix.map(variation => createFieldImperative(variation))
@@ -174,7 +174,7 @@ const auth = createAuth({
 
 const config = auth.withAuth(
   apiTestConfig({
-    models,
+    lists,
     session: statelessSessions({ secret: COOKIE_SECRET }),
   })
 );

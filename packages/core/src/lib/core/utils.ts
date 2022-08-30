@@ -122,7 +122,7 @@ export async function promiseAllRejectWithAllErrors<T extends unknown[]>(
 
 export function getNamesFromList(
   listKey: string,
-  { graphql, ui }: KeystoneConfig['models'][string]
+  { graphql, ui }: KeystoneConfig['lists'][string]
 ) {
   const computedSingular = humanize(listKey);
   const computedPlural = pluralize.plural(computedSingular);

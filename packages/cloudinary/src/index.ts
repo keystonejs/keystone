@@ -1,6 +1,6 @@
 import {
   CommonFieldConfig,
-  BaseModelTypeInfo,
+  BaseListTypeInfo,
   FieldTypeFunc,
   jsonFieldTypePolyfilledForSQLite,
 } from '@keystone-6/core/types';
@@ -18,8 +18,8 @@ type StoredFile = {
   _meta: cloudinary.UploadApiResponse;
 };
 
-type CloudinaryImageFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> =
-  CommonFieldConfig<ModelTypeInfo> & {
+type CloudinaryImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
+  CommonFieldConfig<ListTypeInfo> & {
     cloudinary: {
       cloudName: string;
       apiKey: string;
@@ -105,10 +105,10 @@ export const outputType = graphql.object<CloudinaryImage_File>()({
 });
 
 export const cloudinaryImage =
-  <ModelTypeInfo extends BaseModelTypeInfo>({
+  <ListTypeInfo extends BaseListTypeInfo>({
     cloudinary,
     ...config
-  }: CloudinaryImageFieldConfig<ModelTypeInfo>): FieldTypeFunc<ModelTypeInfo> =>
+  }: CloudinaryImageFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> =>
   meta => {
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type cloudinaryImage");

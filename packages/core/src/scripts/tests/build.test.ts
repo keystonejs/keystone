@@ -44,7 +44,7 @@ test('build works with typescript without the user defining a babel config', asy
 
                      export default config({
                        db: { provider: "sqlite", url: "file:./app.db" },
-                       models: {
+                       lists: {
                          Todo: list({
                            fields: {
                              title: text(),

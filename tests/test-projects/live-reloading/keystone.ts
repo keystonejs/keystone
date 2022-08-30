@@ -1,12 +1,12 @@
 import { config } from '@keystone-6/core';
-import { models, extendGraphqlSchema } from './schemas';
+import { lists, extendGraphqlSchema } from './schemas';
 
 export default config({
   db: {
     provider: 'sqlite',
     url: process.env.DATABASE_URL || 'file:./test.db',
   },
-  models,
+  lists,
   extendGraphqlSchema,
   ui: {
     getAdditionalFiles: [

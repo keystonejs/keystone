@@ -10,7 +10,7 @@ const postNames = ['Post 1', 'Post 2', 'Post 3'];
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    models: {
+    lists: {
       UserToPostLimitedRead: list({
         fields: {
           username: text(),

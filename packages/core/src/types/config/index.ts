@@ -86,7 +86,7 @@ export type StorageConfig = (
   FileOrImage;
 
 export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
-  models: ListSchemaConfig;
+  lists: ListSchemaConfig;
   db: DatabaseConfig<TypeInfo>;
   ui?: AdminUIConfig<TypeInfo>;
   server?: ServerConfig<TypeInfo>;

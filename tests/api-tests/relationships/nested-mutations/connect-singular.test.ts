@@ -6,7 +6,7 @@ import { apiTestConfig, expectSingleRelationshipError } from '../../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    models: {
+    lists: {
       Group: list({
         fields: {
           name: text(),

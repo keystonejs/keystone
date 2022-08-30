@@ -8,7 +8,7 @@ import { apiTestConfig, expectInternalServerError } from '../../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    models: {
+    lists: {
       Post: list({
         fields: {
           content: document({
@@ -294,7 +294,7 @@ describe('Document field type', () => {
     await expect(
       setupTestEnv({
         config: apiTestConfig({
-          models: {
+          lists: {
             Post: list({
               fields: {
                 content: document({
@@ -319,7 +319,7 @@ describe('Document field type', () => {
     await expect(
       setupTestEnv({
         config: apiTestConfig({
-          models: {
+          lists: {
             Post: list({
               fields: {
                 content: document({

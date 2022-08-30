@@ -93,7 +93,7 @@ const createInitialData = async (context: KeystoneContext) => {
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    models: {
+    lists: {
       Employee: list({
         fields: {
           name: text(),

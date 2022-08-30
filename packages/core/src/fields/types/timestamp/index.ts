@@ -1,6 +1,6 @@
 import { humanize } from '../../../lib/utils';
 import {
-  BaseModelTypeInfo,
+  BaseListTypeInfo,
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
@@ -15,8 +15,8 @@ import {
 } from '../../non-null-graphql';
 import { TimestampFieldMeta } from './views';
 
-export type TimestampFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> =
-  CommonFieldConfig<ModelTypeInfo> & {
+export type TimestampFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
+  CommonFieldConfig<ListTypeInfo> & {
     isIndexed?: boolean | 'unique';
     validation?: {
       isRequired?: boolean;
@@ -34,19 +34,19 @@ export type TimestampFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> =
   };
 
 export const timestamp =
-  <ModelTypeInfo extends BaseModelTypeInfo>({
+  <ListTypeInfo extends BaseListTypeInfo>({
     isIndexed,
     validation,
     defaultValue,
     ...config
-  }: TimestampFieldConfig<ModelTypeInfo> = {}): FieldTypeFunc<ModelTypeInfo> =>
+  }: TimestampFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
   meta => {
     if (typeof defaultValue === 'string') {
       try {
         graphql.DateTime.graphQLType.parseValue(defaultValue);
       } catch (err) {
         throw new Error(
-          `The timestamp field at ${meta.modelKey}.${
+          `The timestamp field at ${meta.listKey}.${
             meta.fieldKey
           } specifies defaultValue: ${defaultValue} but values must be provided as a full ISO8601 date-time string such as ${new Date().toISOString()}`
         );

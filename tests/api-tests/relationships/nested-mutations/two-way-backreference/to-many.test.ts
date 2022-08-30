@@ -13,7 +13,7 @@ const toStr = (items: any[]) => items.map(item => item.toString());
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    models: {
+    lists: {
       Student: list({
         fields: {
           name: text(),

@@ -3,7 +3,7 @@ import { SessionStrategy } from '@keystone-6/core/src/types/session';
 import { config } from '@keystone-6/core';
 import { statelessSessions } from '@keystone-6/core/session';
 import { createAuth } from '@keystone-6/auth';
-import { models } from './schema';
+import { lists } from './schema';
 
 // createAuth configures signin functionality based on the config below. Note this only implements
 // authentication, i.e signing in as an item using identity and secret fields in a list. Session
@@ -93,7 +93,7 @@ export default myAuth(
         provider: 'sqlite',
         url: process.env.DATABASE_URL || 'file:./keystone-example.db',
       },
-      models,
+      lists,
       // We add our session configuration to the system here.
       session,
     })

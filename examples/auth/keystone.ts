@@ -1,7 +1,7 @@
 import { config } from '@keystone-6/core';
 import { statelessSessions } from '@keystone-6/core/session';
 import { createAuth } from '@keystone-6/auth';
-import { models } from './schema';
+import { lists } from './schema';
 
 /**
  * TODO: Implement validateItem. Would be invoked by the getItem() method in
@@ -63,7 +63,7 @@ export default withAuth(
       provider: 'sqlite',
       url: process.env.DATABASE_URL || 'file:./keystone-example.db',
     },
-    models,
+    lists,
     ui: {},
     session:
       // Stateless sessions will store the listKey and itemId of the signed-in user in a cookie

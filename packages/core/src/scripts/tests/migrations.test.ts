@@ -13,7 +13,7 @@ import {
   testdir,
 } from './utils';
 
-const basicModels = {
+const basicLists = {
   Todo: list({
     fields: {
       title: text(),
@@ -23,12 +23,12 @@ const basicModels = {
 
 const dbUrl = 'file:./app.db';
 
-const basicKeystoneConfig = (useMigrations: boolean, models: ListSchemaConfig = basicModels) => ({
+const basicKeystoneConfig = (useMigrations: boolean, lists: ListSchemaConfig = basicLists) => ({
   kind: 'config' as const,
   config: config({
     db: { provider: 'sqlite', url: dbUrl, useMigrations },
     ui: { isDisabled: true },
-    models,
+    lists,
   }),
 });
 

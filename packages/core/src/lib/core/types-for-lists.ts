@@ -79,7 +79,7 @@ function throwIfNotAFilter(x: unknown, listKey: string, fieldKey: string) {
   );
 }
 
-function getIsEnabled(listsConfig: KeystoneConfig['models']) {
+function getIsEnabled(listsConfig: KeystoneConfig['lists']) {
   const isEnabled: Record<string, IsEnabled> = {};
 
   for (const [listKey, listConfig] of Object.entries(listsConfig)) {
@@ -131,7 +131,7 @@ function getIsEnabled(listsConfig: KeystoneConfig['models']) {
 type PartiallyInitialisedList = Omit<InitialisedList, 'lists' | 'resolvedDbFields'>;
 
 function getListsWithInitialisedFields(
-  { storage: configStorage, models: listsConfig, db: { provider } }: KeystoneConfig,
+  { storage: configStorage, lists: listsConfig, db: { provider } }: KeystoneConfig,
   listGraphqlTypes: Record<string, ListGraphQLTypes>,
   intermediateLists: Record<string, { graphql: { isEnabled: IsEnabled } }>
 ) {
@@ -148,7 +148,7 @@ function getListsWithInitialisedFields(
 
       const f = fieldFunc({
         fieldKey,
-        modelKey: listKey,
+        listKey,
         lists: listGraphqlTypes,
         provider,
         getStorage: storage => configStorage?.[storage],
@@ -212,7 +212,7 @@ function getListsWithInitialisedFields(
 }
 
 function getListGraphqlTypes(
-  listsConfig: KeystoneConfig['models'],
+  listsConfig: KeystoneConfig['lists'],
   lists: Record<string, InitialisedList>,
   intermediateLists: Record<string, { graphql: { isEnabled: IsEnabled } }>
 ): Record<string, ListGraphQLTypes> {
@@ -454,7 +454,7 @@ function getListGraphqlTypes(
  * 6.
  */
 export function initialiseLists(config: KeystoneConfig): Record<string, InitialisedList> {
-  const listsConfig = config.models;
+  const listsConfig = config.lists;
 
   let intermediateLists;
   intermediateLists = Object.fromEntries(

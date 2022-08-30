@@ -6,7 +6,7 @@ import { apiTestConfig, dbProvider, getPrismaSchema } from './utils';
 test('db.map at the list level adds @@map with the value to the Prisma schema', async () => {
   const prismaSchema = await getPrismaSchema(
     apiTestConfig({
-      models: {
+      lists: {
         SomeList: list({
           db: {
             map: 'some_table_name',
@@ -55,7 +55,7 @@ testModules
     test(`db.map for the field ${mod.name} adds @map with the value to the Prisma schema`, async () => {
       const prismaSchema = await getPrismaSchema(
         apiTestConfig({
-          models: {
+          lists: {
             SomeList: list({
               fields: {
                 someField: mod.typeFunction({
@@ -79,7 +79,7 @@ testModules
 test(`db.map for the field text field adds @map with the value to the Prisma schema`, async () => {
   const prismaSchema = await getPrismaSchema(
     apiTestConfig({
-      models: {
+      lists: {
         SomeList: list({
           fields: {
             someField: text({

@@ -28,7 +28,7 @@ function setup(options?: any) {
   return setupTestRunner({
     config: auth.withAuth(
       apiTestConfig({
-        models: {
+        lists: {
           Post: list({
             fields: {
               title: text(),
@@ -111,7 +111,7 @@ describe('Auth testing', () => {
       setupTestEnv({
         config: auth.withAuth(
           apiTestConfig({
-            models: {
+            lists: {
               User: list({
                 fields: {
                   name: text(),

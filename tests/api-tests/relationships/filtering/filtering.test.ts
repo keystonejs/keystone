@@ -7,7 +7,7 @@ type IdType = any;
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    models: {
+    lists: {
       User: list({
         fields: {
           company: relationship({ ref: 'Company' }),

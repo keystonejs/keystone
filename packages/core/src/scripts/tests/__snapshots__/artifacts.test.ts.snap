@@ -117,8 +117,8 @@ type ResolvedTodoUpdateInput = {
 };
 
 
-export declare namespace Models {
-  export type Todo = import('@keystone-6/core').ListConfig<Models.Todo.TypeInfo, any>;
+export declare namespace Lists {
+  export type Todo = import('@keystone-6/core').ListConfig<Lists.Todo.TypeInfo, any>;
   namespace Todo {
     export type Item = import('.prisma/client').Todo;
     export type TypeInfo = {
@@ -144,14 +144,14 @@ export type Context = import('@keystone-6/core/types').KeystoneContext<TypeInfo>
 
 export type TypeInfo = {
   lists: {
-  readonly Todo: Models.Todo.TypeInfo;
+  readonly Todo: Lists.Todo.TypeInfo;
   };
   prisma: import('.prisma/client').PrismaClient;
 };
 
 type __TypeInfo = TypeInfo;
 
-export type Models = {
+export type Lists = {
   [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core').ListConfig<TypeInfo['lists'][Key], any>
 } & Record<string, import('@keystone-6/core').ListConfig<any, any>>;
 

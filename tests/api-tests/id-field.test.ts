@@ -20,7 +20,7 @@ describe.each([
       db: {
         idField: kind === 'bigint' ? { kind: 'autoincrement', type: 'BigInt' } : { kind },
       },
-      models: {
+      lists: {
         User: list({ fields: { name: text() } }),
       },
     }),
@@ -166,7 +166,7 @@ describe.each([
   const runner = setupTestRunner({
     config: apiTestConfig({
       db: { idField: { kind: 'uuid' } },
-      models: {
+      lists: {
         User: list({ fields: { name: text() } }),
       },
     }),
@@ -190,7 +190,7 @@ describe.each([
   const runner = setupTestRunner({
     config: apiTestConfig({
       db: { idField: { kind: 'cuid' } },
-      models: {
+      lists: {
         User: list({ fields: { name: text() } }),
       },
     }),

@@ -5,7 +5,7 @@ import { apiTestConfig } from './utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    models: {
+    lists: {
       Post: list({
         fields: {
           title: text(),

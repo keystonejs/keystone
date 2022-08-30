@@ -5,7 +5,7 @@ import { getPrismaSchema, apiTestConfig, dbProvider } from '../utils';
 test('when not specifying relationName in a many to many relationship, the name is picked based on the lexicographic list key + field key ordering', async () => {
   const prismaSchema = await getPrismaSchema(
     apiTestConfig({
-      models: {
+      lists: {
         A: list({
           fields: {
             b: relationship({ ref: 'B.a', many: true }),
@@ -48,7 +48,7 @@ model B {
 test("the ordering of the lists doesn't affect the relation name", async () => {
   const prismaSchema = await getPrismaSchema(
     apiTestConfig({
-      models: {
+      lists: {
         A: list({
           fields: {
             b: relationship({ ref: 'B.a', many: true }),
@@ -91,7 +91,7 @@ model B {
 test('when specifying relationName in a many to many relationship, the relation name is set to that', async () => {
   const prismaSchema = await getPrismaSchema(
     apiTestConfig({
-      models: {
+      lists: {
         A: list({
           fields: {
             b: relationship({ ref: 'B.a', many: true }),
@@ -135,7 +135,7 @@ test('when specifying relationName on both sides of a many to many relationship,
   await expect(
     getPrismaSchema(
       apiTestConfig({
-        models: {
+        lists: {
           A: list({
             fields: {
               b: relationship({ ref: 'B.a', many: true, db: { relationName: 'blah' } }),
@@ -159,7 +159,7 @@ test('when specifying relationName on the many side of a one to many relationshi
   await expect(
     getPrismaSchema(
       apiTestConfig({
-        models: {
+        lists: {
           A: list({
             fields: {
               b: relationship({ ref: 'B.a', many: true, db: { relationName: 'blah' } }),

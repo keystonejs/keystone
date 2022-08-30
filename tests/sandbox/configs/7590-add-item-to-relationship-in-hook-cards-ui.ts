@@ -2,7 +2,7 @@ import { list, config } from '@keystone-6/core';
 import { relationship, text } from '@keystone-6/core/fields';
 import { dbConfig } from '../utils';
 
-export const models = {
+export const lists = {
   User: list({
     fields: {
       name: text(),
@@ -35,4 +35,4 @@ export const models = {
   }),
 };
 
-export default config({ db: dbConfig, models });
+export default config({ db: dbConfig, lists });

@@ -1,6 +1,6 @@
 import { humanize } from '../../../lib/utils';
 import {
-  BaseModelTypeInfo,
+  BaseListTypeInfo,
   CommonFieldConfig,
   fieldType,
   orderDirectionEnum,
@@ -10,8 +10,8 @@ import {
 import { graphql } from '../../..';
 import { assertCreateIsNonNullAllowed, assertReadIsNonNullAllowed } from '../../non-null-graphql';
 
-export type TextFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> =
-  CommonFieldConfig<ModelTypeInfo> & {
+export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
+  CommonFieldConfig<ListTypeInfo> & {
     isIndexed?: true | 'unique';
     ui?: {
       displayMode?: 'input' | 'textarea';
@@ -54,23 +54,23 @@ export type TextFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> =
   };
 
 export const text =
-  <ModelTypeInfo extends BaseModelTypeInfo>({
+  <ListTypeInfo extends BaseListTypeInfo>({
     isIndexed,
     defaultValue: _defaultValue,
     validation: _validation,
     ...config
-  }: TextFieldConfig<ModelTypeInfo> = {}): FieldTypeFunc<ModelTypeInfo> =>
+  }: TextFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
   meta => {
     for (const type of ['min', 'max'] as const) {
       const val = _validation?.length?.[type];
       if (val !== undefined && (!Number.isInteger(val) || val < 0)) {
         throw new Error(
-          `The text field at ${meta.modelKey}.${meta.fieldKey} specifies validation.length.${type}: ${val} but it must be a positive integer`
+          `The text field at ${meta.listKey}.${meta.fieldKey} specifies validation.length.${type}: ${val} but it must be a positive integer`
         );
       }
       if (_validation?.isRequired && val !== undefined && val === 0) {
         throw new Error(
-          `The text field at ${meta.modelKey}.${meta.fieldKey} specifies validation.isRequired: true and validation.length.${type}: 0, this is not allowed because validation.isRequired implies at least a min length of 1`
+          `The text field at ${meta.listKey}.${meta.fieldKey} specifies validation.isRequired: true and validation.length.${type}: 0, this is not allowed because validation.isRequired implies at least a min length of 1`
         );
       }
     }
@@ -81,7 +81,7 @@ export const text =
       _validation?.length?.min > _validation?.length?.max
     ) {
       throw new Error(
-        `The text field at ${meta.modelKey}.${meta.fieldKey} specifies a validation.length.max that is less than the validation.length.min, and therefore has no valid options`
+        `The text field at ${meta.listKey}.${meta.fieldKey} specifies a validation.length.max that is less than the validation.length.min, and therefore has no valid options`
       );
     }
 

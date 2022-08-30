@@ -23,7 +23,7 @@ import { dbConfig, localStorageConfig, trackingFields } from '../utils';
 const description =
   'Some thing to describe to test the length of the text for width, blah blah blah blah blah blah blah blah blah';
 
-export const models = {
+export const lists = {
   Thing: list({
     fields: {
       checkbox: checkbox({ ui: { description } }),
@@ -148,5 +148,5 @@ export const models = {
 export default config({
   db: dbConfig,
   storage: localStorageConfig,
-  models,
+  lists,
 });

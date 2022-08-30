@@ -20,7 +20,7 @@ function makeQuery(size = 0) {
   return `{ ${' '.repeat(padding)} ${query} }`;
 }
 
-export const models = {
+export const lists = {
   Thing: list({
     fields: {
       value: text(),
@@ -60,5 +60,5 @@ export default config({
       limit: '10mb',
     },
   },
-  models,
+  lists,
 });

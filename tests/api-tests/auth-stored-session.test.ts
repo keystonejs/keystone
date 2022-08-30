@@ -36,7 +36,7 @@ function setup(options?: any) {
   return setupTestRunner({
     config: auth.withAuth(
       apiTestConfig({
-        models: {
+        lists: {
           Post: list({
             fields: {
               title: text(),

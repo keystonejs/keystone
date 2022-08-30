@@ -1,5 +1,5 @@
 import {
-  BaseModelTypeInfo,
+  BaseListTypeInfo,
   FieldTypeFunc,
   CommonFieldConfig,
   fieldType,
@@ -65,8 +65,8 @@ type ManyDbConfig = {
   };
 };
 
-export type RelationshipFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> =
-  CommonFieldConfig<ModelTypeInfo> & {
+export type RelationshipFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
+  CommonFieldConfig<ListTypeInfo> & {
     many?: boolean;
     ref: string;
     ui?: {
@@ -76,10 +76,10 @@ export type RelationshipFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> =
     (SelectDisplayConfig | CardsDisplayConfig | CountDisplayConfig);
 
 export const relationship =
-  <ModelTypeInfo extends BaseModelTypeInfo>({
+  <ListTypeInfo extends BaseListTypeInfo>({
     ref,
     ...config
-  }: RelationshipFieldConfig<ModelTypeInfo>): FieldTypeFunc<ModelTypeInfo> =>
+  }: RelationshipFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> =>
   meta => {
     const { many = false } = config;
     const [foreignListKey, foreignFieldKey] = ref.split('.');
@@ -91,7 +91,7 @@ export const relationship =
       ): Parameters<typeof import('./views').controller>[0]['fieldMeta'] => {
         if (!meta.lists[foreignListKey]) {
           throw new Error(
-            `The ref [${ref}] on relationship [${meta.modelKey}.${meta.fieldKey}] is invalid`
+            `The ref [${ref}] on relationship [${meta.listKey}.${meta.fieldKey}] is invalid`
           );
         }
         if (config.ui?.displayMode === 'cards') {
@@ -99,7 +99,7 @@ export const relationship =
           // in newer versions of keystone, it will be there and it will not be there for older versions of keystone.
           // this is so that relationship fields doesn't break in confusing ways
           // if people are using a slightly older version of keystone
-          const currentField = adminMetaRoot.listsByKey[meta.modelKey].fields.find(
+          const currentField = adminMetaRoot.listsByKey[meta.listKey].fields.find(
             x => x.path === meta.fieldKey
           );
           if (currentField) {
@@ -114,7 +114,7 @@ export const relationship =
               for (const foreignField of foreignFields) {
                 if (!allForeignFields.has(foreignField)) {
                   throw new Error(
-                    `The ${configOption} option on the relationship field at ${meta.modelKey}.${meta.fieldKey} includes the "${foreignField}" field but that field does not exist on the "${foreignListKey}" list`
+                    `The ${configOption} option on the relationship field at ${meta.listKey}.${meta.fieldKey} includes the "${foreignField}" field but that field does not exist on the "${foreignListKey}" list`
                   );
                 }
               }
@@ -148,7 +148,7 @@ export const relationship =
     };
     if (!meta.lists[foreignListKey]) {
       throw new Error(
-        `Unable to resolve related list '${foreignListKey}' from ${meta.modelKey}.${meta.fieldKey}`
+        `Unable to resolve related list '${foreignListKey}' from ${meta.listKey}.${meta.fieldKey}`
       );
     }
     const listTypes = meta.lists[foreignListKey].types;

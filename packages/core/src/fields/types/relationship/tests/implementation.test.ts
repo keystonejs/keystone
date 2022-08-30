@@ -11,7 +11,7 @@ const getSchema = (field: any) => {
     initConfig(
       config({
         db: { url: 'file:./thing.db', provider: 'sqlite' },
-        models: {
+        lists: {
           Zip: list({ fields: { thing: text() } }),
           Test: list({
             fields: {

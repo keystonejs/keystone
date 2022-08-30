@@ -12,7 +12,7 @@ import {
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    models: {
+    lists: {
       User: list({
         fields: {
           a: integer(),
