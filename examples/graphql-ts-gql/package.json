@@ -1,0 +1,35 @@
+{
+  "name": "@keystone-6/example-graphql-ts-gql",
+  "version": "0.0.3",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "postinstall": "ts-gql build",
+    "ts-gql:build": "ts-gql build",
+    "ts-gql:watch": "ts-gql watch",
+    "dev": "keystone dev",
+    "start": "keystone start",
+    "build": "keystone build"
+  },
+  "dependencies": {
+    "@keystone-6/core": "^2.2.0",
+    "@ts-gql/compiler": "^0.15.3",
+    "@ts-gql/eslint-plugin": "^0.8.3",
+    "@ts-gql/tag": "^0.7.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.7.4"
+  },
+  "ts-gql": {
+    "schema": "schema.graphql"
+  },
+  "eslintConfig": {
+    "plugins": [
+      "@ts-gql"
+    ],
+    "rules": {
+      "@ts-gql/ts-gql": "error"
+    }
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/graphql-ts-gql"
+}
