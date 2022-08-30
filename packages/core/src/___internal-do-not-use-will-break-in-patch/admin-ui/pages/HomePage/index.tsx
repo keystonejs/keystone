@@ -29,7 +29,7 @@ const ListCard = ({ listKey, count, hideCreate }: ListCardProps) => {
   return (
     <div css={{ position: 'relative' }}>
       <Link
-        href={`/${list.path}`}
+        href={`/${list.path}${list.isSingleton ? '/1' : ''}`}
         css={{
           backgroundColor: colors.background,
           borderColor: colors.border,
@@ -50,7 +50,7 @@ const ListCard = ({ listKey, count, hideCreate }: ListCardProps) => {
         }}
       >
         <h3 css={{ margin: `0 0 ${spacing.small}px 0` }}>{list.label} </h3>
-        {count.type === 'success' ? (
+        {list.isSingleton ? null : count.type === 'success' ? (
           <span css={{ color: colors.foreground, textDecoration: 'none' }}>
             {count.count} item{count.count !== 1 ? 's' : ''}
           </span>
@@ -62,7 +62,7 @@ const ListCard = ({ listKey, count, hideCreate }: ListCardProps) => {
           'No access'
         )}
       </Link>
-      {hideCreate === false && (
+      {hideCreate === false && !list.isSingleton && (
         <CreateButton title={`Create ${list.singular}`} href={`/${list.path}/create`}>
           <PlusIcon size="large" />
           <VisuallyHidden>Create {list.singular}</VisuallyHidden>
@@ -118,8 +118,9 @@ export const HomePage = () => {
           }
         }
       }
-      ${Object.entries(lists)
-        .map(([listKey, list]) => `${listKey}: ${list.gqlNames.listQueryCountName}`)
+      ${Object.values(lists)
+        .filter(list => !list.isSingleton)
+        .map(list => `${list.key}: ${list.gqlNames.listQueryCountName}`)
         .join('\n')}
     }`,
     [lists]

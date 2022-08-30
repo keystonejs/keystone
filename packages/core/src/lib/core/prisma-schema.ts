@@ -216,14 +216,17 @@ generator client {
   output   = "node_modules/.prisma/client"${prismaFlags}
 }
 \n`;
-  for (const [listKey, { resolvedDbFields, dbMap }] of Object.entries(lists)) {
+  for (const [listKey, { resolvedDbFields, dbMap, isSingleton }] of Object.entries(lists)) {
     prismaSchema += `model ${listKey} {`;
     for (const [fieldPath, field] of Object.entries(resolvedDbFields)) {
-      if (field.kind !== 'none') {
+      if (field.kind !== 'none' && !(isSingleton && fieldPath === 'id')) {
         prismaSchema += '\n' + printField(fieldPath, field, provider, lists);
       }
       if (fieldPath === 'id') {
         assertDbFieldIsValidForIdField(listKey, field);
+        if (isSingleton) {
+          prismaSchema += '\nid Int';
+        }
         prismaSchema += ' @id';
       }
     }

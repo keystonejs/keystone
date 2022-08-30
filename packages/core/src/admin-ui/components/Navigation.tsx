@@ -175,7 +175,7 @@ export const ListNavItem = ({ list }: { list: ListMeta }) => {
   return (
     <NavItem
       isSelected={router.pathname.split('/')[1] === `/${list.path}`.split('/')[1]}
-      href={`/${list.path}`}
+      href={`/${list.path}${list.isSingleton ? '/1' : ''}`}
     >
       {list.label}
     </NavItem>

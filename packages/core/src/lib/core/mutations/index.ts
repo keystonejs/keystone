@@ -13,7 +13,7 @@ import * as deletes from './delete';
 function promisesButSettledWhenAllSettledAndInOrder<T extends Promise<unknown>[]>(promises: T): T {
   const resultsPromise = Promise.allSettled(promises);
   return promises.map(async (_, i) => {
-    const result = (await resultsPromise)[i];
+    const result: PromiseSettledResult<Awaited<T>> = (await resultsPromise)[i] as any;
     return result.status === 'fulfilled'
       ? Promise.resolve(result.value)
       : Promise.reject(result.reason);
@@ -23,9 +23,13 @@ function promisesButSettledWhenAllSettledAndInOrder<T extends Promise<unknown>[]
 export function getMutationsForList(list: InitialisedList) {
   const names = getGqlNames(list);
 
+  const defaultUniqueWhereInput = list.isSingleton ? { id: '1' } : undefined;
+
   const createOne = graphql.field({
     type: list.types.output,
-    args: { data: graphql.arg({ type: graphql.nonNull(list.types.create) }) },
+    args: {
+      data: graphql.arg({ type: graphql.nonNull(list.types.create) }),
+    },
     resolve(_rootVal, { data }, context) {
       return createAndUpdate.createOne({ data }, list, context);
     },
@@ -48,7 +52,10 @@ export function getMutationsForList(list: InitialisedList) {
   const updateOne = graphql.field({
     type: list.types.output,
     args: {
-      where: graphql.arg({ type: graphql.nonNull(list.types.uniqueWhere) }),
+      where: graphql.arg({
+        type: graphql.nonNull(list.types.uniqueWhere),
+        defaultValue: defaultUniqueWhereInput,
+      }),
       data: graphql.arg({ type: graphql.nonNull(list.types.update) }),
     },
     resolve(_rootVal, args, context) {
@@ -59,7 +66,10 @@ export function getMutationsForList(list: InitialisedList) {
   const updateManyInput = graphql.inputObject({
     name: names.updateManyInputName,
     fields: {
-      where: graphql.arg({ type: graphql.nonNull(list.types.uniqueWhere) }),
+      where: graphql.arg({
+        type: graphql.nonNull(list.types.uniqueWhere),
+        defaultValue: defaultUniqueWhereInput,
+      }),
       data: graphql.arg({ type: graphql.nonNull(list.types.update) }),
     },
   });
@@ -77,7 +87,12 @@ export function getMutationsForList(list: InitialisedList) {
 
   const deleteOne = graphql.field({
     type: list.types.output,
-    args: { where: graphql.arg({ type: graphql.nonNull(list.types.uniqueWhere) }) },
+    args: {
+      where: graphql.arg({
+        type: graphql.nonNull(list.types.uniqueWhere),
+        defaultValue: defaultUniqueWhereInput,
+      }),
+    },
     resolve(rootVal, { where }, context) {
       return deletes.deleteOne(where, list, context);
     },

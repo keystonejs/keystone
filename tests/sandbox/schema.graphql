@@ -455,6 +455,46 @@ input UserCreateInput {
   updatedAt: DateTime
 }
 
+type Settings {
+  id: ID!
+  websiteName: String
+  copyrightText: String
+}
+
+input SettingsWhereUniqueInput {
+  id: ID
+}
+
+input SettingsWhereInput {
+  AND: [SettingsWhereInput!]
+  OR: [SettingsWhereInput!]
+  NOT: [SettingsWhereInput!]
+  id: IDFilter
+  websiteName: StringFilter
+  copyrightText: StringFilter
+}
+
+input SettingsOrderByInput {
+  id: OrderDirection
+  websiteName: OrderDirection
+  copyrightText: OrderDirection
+}
+
+input SettingsUpdateInput {
+  websiteName: String
+  copyrightText: String
+}
+
+input SettingsUpdateArgs {
+  where: SettingsWhereUniqueInput! = {id: 1}
+  data: SettingsUpdateInput!
+}
+
+input SettingsCreateInput {
+  websiteName: String
+  copyrightText: String
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -479,6 +519,12 @@ type Mutation {
   updateUsers(data: [UserUpdateArgs!]!): [User]
   deleteUser(where: UserWhereUniqueInput!): User
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
+  createSettings(data: SettingsCreateInput!): Settings
+  createManySettings(data: [SettingsCreateInput!]!): [Settings]
+  updateSettings(where: SettingsWhereUniqueInput! = {id: 1}, data: SettingsUpdateInput!): Settings
+  updateManySettings(data: [SettingsUpdateArgs!]!): [Settings]
+  deleteSettings(where: SettingsWhereUniqueInput! = {id: 1}): Settings
+  deleteManySettings(where: [SettingsWhereUniqueInput!]!): [Settings]
 }
 
 type Query {
@@ -491,6 +537,9 @@ type Query {
   users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0): [User!]
   user(where: UserWhereUniqueInput!): User
   usersCount(where: UserWhereInput! = {}): Int
+  manySettings(where: SettingsWhereInput! = {id: {equals: 1}}, orderBy: [SettingsOrderByInput!]! = [], take: Int, skip: Int! = 0): [Settings!]
+  settings(where: SettingsWhereUniqueInput! = {id: 1}): Settings
+  manySettingsCount(where: SettingsWhereInput! = {id: {equals: 1}}): Int
   keystone: KeystoneMeta!
 }
 
@@ -520,6 +569,7 @@ type KeystoneAdminUIListMeta {
   fields: [KeystoneAdminUIFieldMeta!]!
   initialSort: KeystoneAdminUISort
   isHidden: Boolean!
+  isSingleton: Boolean
 }
 
 type KeystoneAdminUIFieldMeta {

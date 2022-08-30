@@ -33,18 +33,16 @@ export function useFilters(list: ListMeta, filterableFields: Set<string>) {
       }
     });
 
-    let where = {};
-
-    filters.forEach(filter => {
-      Object.assign(
-        where,
+    const where = filters.reduce((_where, filter) => {
+      return Object.assign(
+        _where,
         list.fields[filter.field].controller.filter!.graphql({
           type: filter.type,
           value: filter.value,
         })
       );
-    });
-
+    }, {});
+    if (list.isSingleton) return { filters, where: { id: { equals: 1 }, AND: [where] } };
     return { filters, where };
   }, [query, possibleFilters, list]);
   return filters;
