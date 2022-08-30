@@ -140,13 +140,33 @@ export type KeystoneDbAPI<KeystoneListsTypeInfo extends Record<string, BaseListT
 
 export type KeystoneGraphQLAPI = {
   schema: GraphQLSchema;
-  run: (args: GraphQLExecutionArguments) => Promise<Record<string, any>>;
-  raw: (args: GraphQLExecutionArguments) => Promise<ExecutionResult>;
+  run: <TData = any, TVariables = Record<string, any>>(
+    args: GraphQLExecutionArguments<TData, TVariables>
+  ) => Promise<ExecutionResult<TData, TVariables>['data']>;
+  raw: <TData = any, TVariables = Record<string, any>>(
+    args: GraphQLExecutionArguments<TData, TVariables>
+  ) => Promise<ExecutionResult<TData, TVariables>>;
 };
 
-type GraphQLExecutionArguments = {
-  query: string | DocumentNode;
-  variables?: Record<string, any>;
+export interface TypedDocumentNode<
+  Result = {
+    [key: string]: any;
+  },
+  Variables = {
+    [key: string]: any;
+  }
+> extends DocumentNode {
+  /**
+   * This type is used to ensure that the variables you pass in to the query are assignable to Variables
+   * and that the Result is assignable to whatever you pass your result to. The method is never actually
+   * implemented, but the type is valid because we list it as optional
+   */
+  __apiType?: (variables: Variables) => Result;
+}
+
+type GraphQLExecutionArguments<TData, TVariables> = {
+  query: string | DocumentNode | TypedDocumentNode<TData, TVariables>;
+  variables?: TVariables | Record<string, any>;
 };
 
 // Session API
