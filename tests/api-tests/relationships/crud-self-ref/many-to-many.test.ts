@@ -84,7 +84,7 @@ const createReadData = async (context: KeystoneContext) => {
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    models: {
+    lists: {
       User: list({
         fields: {
           name: text(),

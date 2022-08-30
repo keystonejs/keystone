@@ -1,6 +1,6 @@
 import { ApolloError } from 'apollo-server-errors';
 import {
-  BaseModelTypeInfo,
+  BaseListTypeInfo,
   CommonFieldConfig,
   FieldData,
   FieldTypeFunc,
@@ -60,8 +60,8 @@ type FormattingConfig = {
   softBreaks?: true;
 };
 
-export type DocumentFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> =
-  CommonFieldConfig<ModelTypeInfo> & {
+export type DocumentFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
+  CommonFieldConfig<ListTypeInfo> & {
     relationships?: RelationshipsConfig;
     componentBlocks?: Record<string, ComponentBlock>;
     formatting?: true | FormattingConfig;
@@ -72,7 +72,7 @@ export type DocumentFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> =
   };
 
 export const document =
-  <ModelTypeInfo extends BaseModelTypeInfo>({
+  <ListTypeInfo extends BaseListTypeInfo>({
     componentBlocks = {},
     dividers,
     formatting,
@@ -80,7 +80,7 @@ export const document =
     relationships: configRelationships,
     links,
     ...config
-  }: DocumentFieldConfig<ModelTypeInfo> = {}): FieldTypeFunc<ModelTypeInfo> =>
+  }: DocumentFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
   meta => {
     const documentFeatures = normaliseDocumentFeatures({
       dividers,
@@ -109,7 +109,7 @@ export const document =
         assertValidComponentSchema({ kind: 'object', fields: block.schema }, lists);
       } catch (err) {
         throw new Error(
-          `Component block ${name} in ${meta.modelKey}.${meta.fieldKey}: ${(err as any).message}`
+          `Component block ${name} in ${meta.listKey}.${meta.fieldKey}: ${(err as any).message}`
         );
       }
     }
@@ -132,7 +132,7 @@ export const document =
         },
         output: graphql.field({
           type: graphql.object<{ document: JSONValue }>()({
-            name: `${meta.modelKey}_${meta.fieldKey}_Document`,
+            name: `${meta.listKey}_${meta.fieldKey}_Document`,
             fields: {
               document: graphql.field({
                 args: {
@@ -178,7 +178,7 @@ export const document =
   };
 
 function normaliseRelationships(
-  configRelationships: DocumentFieldConfig<BaseModelTypeInfo>['relationships'],
+  configRelationships: DocumentFieldConfig<BaseListTypeInfo>['relationships'],
   meta: FieldData
 ) {
   const relationships: Relationships = {};
@@ -187,7 +187,7 @@ function normaliseRelationships(
       const relationship = configRelationships[key];
       if (meta.lists[relationship.listKey] === undefined) {
         throw new Error(
-          `An inline relationship ${relationship.label} (${key}) in the field at ${meta.modelKey}.${meta.fieldKey} has listKey set to "${relationship.listKey}" but no list named "${relationship.listKey}" exists.`
+          `An inline relationship ${relationship.label} (${key}) in the field at ${meta.listKey}.${meta.fieldKey} has listKey set to "${relationship.listKey}" but no list named "${relationship.listKey}" exists.`
         );
       }
       relationships[key] = { ...relationship, selection: relationship.selection ?? null };
@@ -198,7 +198,7 @@ function normaliseRelationships(
 
 function normaliseDocumentFeatures(
   config: Pick<
-    DocumentFieldConfig<BaseModelTypeInfo>,
+    DocumentFieldConfig<BaseListTypeInfo>,
     'formatting' | 'dividers' | 'layouts' | 'links'
   >
 ) {

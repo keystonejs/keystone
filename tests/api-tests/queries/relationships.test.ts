@@ -9,7 +9,7 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    models: {
+    lists: {
       Post: list({
         fields: {
           title: text(),

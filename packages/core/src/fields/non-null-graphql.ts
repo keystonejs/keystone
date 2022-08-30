@@ -1,7 +1,7 @@
-import { BaseModelTypeInfo, FieldAccessControl, FieldData } from '../types';
+import { BaseListTypeInfo, FieldAccessControl, FieldData } from '../types';
 
-export function hasReadAccessControl<ModelTypeInfo extends BaseModelTypeInfo>(
-  access: FieldAccessControl<ModelTypeInfo> | undefined
+export function hasReadAccessControl<ListTypeInfo extends BaseListTypeInfo>(
+  access: FieldAccessControl<ListTypeInfo> | undefined
 ) {
   if (access === undefined) {
     return false;
@@ -9,8 +9,8 @@ export function hasReadAccessControl<ModelTypeInfo extends BaseModelTypeInfo>(
   return typeof access === 'function' || typeof access.read === 'function';
 }
 
-export function hasCreateAccessControl<ModelTypeInfo extends BaseModelTypeInfo>(
-  access: FieldAccessControl<ModelTypeInfo> | undefined
+export function hasCreateAccessControl<ListTypeInfo extends BaseListTypeInfo>(
+  access: FieldAccessControl<ListTypeInfo> | undefined
 ) {
   if (access === undefined) {
     return false;
@@ -31,10 +31,10 @@ export function getResolvedIsNullable(
   return true;
 }
 
-export function assertReadIsNonNullAllowed<ModelTypeInfo extends BaseModelTypeInfo>(
+export function assertReadIsNonNullAllowed<ListTypeInfo extends BaseListTypeInfo>(
   meta: FieldData,
   config: {
-    access?: FieldAccessControl<ModelTypeInfo> | undefined;
+    access?: FieldAccessControl<ListTypeInfo> | undefined;
     graphql?: { read?: { isNonNull?: boolean } };
   },
   resolvedIsNullable: boolean
@@ -42,29 +42,29 @@ export function assertReadIsNonNullAllowed<ModelTypeInfo extends BaseModelTypeIn
   if (config.graphql?.read?.isNonNull) {
     if (resolvedIsNullable) {
       throw new Error(
-        `The field at ${meta.modelKey}.${meta.fieldKey} sets graphql.read.isNonNull: true but not validation.isRequired: true or db.isNullable: false.\n` +
+        `The field at ${meta.listKey}.${meta.fieldKey} sets graphql.read.isNonNull: true but not validation.isRequired: true or db.isNullable: false.\n` +
           `Set validation.isRequired: true or db.isNullable: false or disable graphql.read.isNonNull`
       );
     }
     if (hasReadAccessControl(config.access)) {
       throw new Error(
-        `The field at ${meta.modelKey}.${meta.fieldKey} sets graphql.read.isNonNull: true and has read access control, this is not allowed.\n` +
+        `The field at ${meta.listKey}.${meta.fieldKey} sets graphql.read.isNonNull: true and has read access control, this is not allowed.\n` +
           'Either disable graphql.read.isNonNull or read access control.'
       );
     }
   }
 }
 
-export function assertCreateIsNonNullAllowed<ModelTypeInfo extends BaseModelTypeInfo>(
+export function assertCreateIsNonNullAllowed<ListTypeInfo extends BaseListTypeInfo>(
   meta: FieldData,
   config: {
-    access?: FieldAccessControl<ModelTypeInfo> | undefined;
+    access?: FieldAccessControl<ListTypeInfo> | undefined;
     graphql?: { create?: { isNonNull?: boolean } };
   }
 ) {
   if (config.graphql?.create?.isNonNull && hasCreateAccessControl(config.access)) {
     throw new Error(
-      `The field at ${meta.modelKey}.${meta.fieldKey} sets graphql.create.isNonNull: true and has create access control, this is not allowed.\n` +
+      `The field at ${meta.listKey}.${meta.fieldKey} sets graphql.create.isNonNull: true and has create access control, this is not allowed.\n` +
         'Either disable graphql.create.isNonNull or create access control.'
     );
   }

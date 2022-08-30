@@ -3,13 +3,13 @@ import bcryptjs from 'bcryptjs';
 import dumbPasswords from 'dumb-passwords';
 import { userInputError } from '../../../lib/core/graphql-errors';
 import { humanize } from '../../../lib/utils';
-import { BaseModelTypeInfo, fieldType, FieldTypeFunc, CommonFieldConfig } from '../../../types';
+import { BaseListTypeInfo, fieldType, FieldTypeFunc, CommonFieldConfig } from '../../../types';
 import { graphql } from '../../..';
 import { getResolvedIsNullable } from '../../non-null-graphql';
 import { PasswordFieldMeta } from './views';
 
-export type PasswordFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> =
-  CommonFieldConfig<ModelTypeInfo> & {
+export type PasswordFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
+  CommonFieldConfig<ListTypeInfo> & {
     /**
      * @default 10
      */
@@ -48,12 +48,12 @@ const PasswordFilter = graphql.inputObject({
 const bcryptHashRegex = /^\$2[aby]?\$\d{1,2}\$[.\/A-Za-z0-9]{53}$/;
 
 export const password =
-  <ModelTypeInfo extends BaseModelTypeInfo>({
+  <ListTypeInfo extends BaseListTypeInfo>({
     bcrypt = bcryptjs,
     workFactor = 10,
     validation: _validation,
     ...config
-  }: PasswordFieldConfig<ModelTypeInfo> = {}): FieldTypeFunc<ModelTypeInfo> =>
+  }: PasswordFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
   meta => {
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type password");
@@ -84,20 +84,20 @@ export const password =
       const val = validation.length[type];
       if (val !== null && (!Number.isInteger(val) || val < 1)) {
         throw new Error(
-          `The password field at ${meta.modelKey}.${meta.fieldKey} specifies validation.length.${type}: ${val} but it must be a positive integer >= 1`
+          `The password field at ${meta.listKey}.${meta.fieldKey} specifies validation.length.${type}: ${val} but it must be a positive integer >= 1`
         );
       }
     }
 
     if (validation.length.max !== null && validation.length.min > validation.length.max) {
       throw new Error(
-        `The password field at ${meta.modelKey}.${meta.fieldKey} specifies a validation.length.max that is less than the validation.length.min, and therefore has no valid options`
+        `The password field at ${meta.listKey}.${meta.fieldKey} specifies a validation.length.max that is less than the validation.length.min, and therefore has no valid options`
       );
     }
 
     if (workFactor < 6 || workFactor > 31 || !Number.isInteger(workFactor)) {
       throw new Error(
-        `The password field at ${meta.modelKey}.${meta.fieldKey} specifies workFactor: ${workFactor} but it must be an integer between 6 and 31`
+        `The password field at ${meta.listKey}.${meta.fieldKey} specifies workFactor: ${workFactor} but it must be an integer between 6 and 31`
       );
     }
 

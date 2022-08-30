@@ -5,7 +5,7 @@ import { apiTestConfig, expectAccessReturnError } from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    models: {
+    lists: {
       BadAccess: list({
         fields: { name: text() },
         access: {

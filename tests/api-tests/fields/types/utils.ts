@@ -4,14 +4,14 @@ import path from 'path';
 import { list } from '@keystone-6/core';
 import { integer } from '@keystone-6/core/fields';
 import { setupTestRunner } from '@keystone-6/core/testing';
-import { FieldTypeFunc, BaseModelTypeInfo } from '@keystone-6/core/types';
+import { FieldTypeFunc, BaseListTypeInfo } from '@keystone-6/core/types';
 import { apiTestConfig } from '../../utils';
 
 const listKey = 'Test';
-const filterTestRunner = (field: FieldTypeFunc<BaseModelTypeInfo>) =>
+const filterTestRunner = (field: FieldTypeFunc<BaseListTypeInfo>) =>
   setupTestRunner({
     config: apiTestConfig({
-      models: {
+      lists: {
         [listKey]: list({
           fields: { index: integer(), testField: field },
         }),
@@ -63,7 +63,7 @@ type Match = (
   expectedIndexes: readonly number[]
 ) => void;
 
-export function filterTests(field: FieldTypeFunc<BaseModelTypeInfo>, cb: (match: Match) => void) {
+export function filterTests(field: FieldTypeFunc<BaseListTypeInfo>, cb: (match: Match) => void) {
   for (const kind of ['without negation', 'with negation'] as const) {
     describe(kind, () => {
       const match: Match = (inputValues, where, expectedIndexes) =>
@@ -131,7 +131,7 @@ export function equalityFilterTests(
 }
 
 export function uniqueEqualityFilterTest(
-  field: FieldTypeFunc<BaseModelTypeInfo>,
+  field: FieldTypeFunc<BaseListTypeInfo>,
   values: readonly unknown[]
 ) {
   test(

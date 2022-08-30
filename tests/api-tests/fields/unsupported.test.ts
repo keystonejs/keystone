@@ -48,7 +48,7 @@ if (unsupportedModules.length > 0) {
             async () =>
               await setupTestEnv({
                 config: apiTestConfig({
-                  models: {
+                  lists: {
                     [listKey]: list({
                       fields: { name: text(), ...mod.getTestFields(matrixValue) },
                     }),

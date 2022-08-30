@@ -14,5 +14,5 @@ export function initConfig(config: KeystoneConfig) {
     );
   }
 
-  return { ...config, models: applyIdFieldDefaults(config) };
+  return { ...config, lists: applyIdFieldDefaults(config) };
 }

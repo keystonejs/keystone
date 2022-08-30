@@ -5,7 +5,7 @@ import { apiTestConfig, expectValidationError } from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    models: {
+    lists: {
       User: list({
         fields: { name: text() },
         hooks: {

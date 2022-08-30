@@ -17,7 +17,7 @@ export function createAdminMeta(
   config: KeystoneConfig,
   initialisedLists: Record<string, InitialisedList>
 ) {
-  const { models: lists } = config;
+  const { lists } = config;
   const adminMetaRoot: AdminMetaRootVal = {
     listsByKey: {},
     lists: [],
@@ -103,7 +103,7 @@ export function createAdminMeta(
   // Populate .fields array
   for (const [key, list] of Object.entries(initialisedLists)) {
     if (omittedLists.includes(key)) continue;
-    const searchFields = new Set(config.models[key].ui?.searchFields ?? []);
+    const searchFields = new Set(config.lists[key].ui?.searchFields ?? []);
     if (searchFields.has('id')) {
       throw new Error(
         `The ui.searchFields option on the ${key} list includes 'id'. Lists can always be searched by an item's id so it must not be specified as a search field`
@@ -122,7 +122,7 @@ export function createAdminMeta(
         );
       }
     }
-    if (config.models[key].ui?.searchFields === undefined) {
+    if (config.lists[key].ui?.searchFields === undefined) {
       const labelField = adminMetaRoot.listsByKey[key].labelField;
       if (possibleSearchFields.has(labelField)) {
         searchFields.add(labelField);

@@ -6,7 +6,7 @@ import { apiTestConfig } from '../../utils';
 function makeRunner(fields: BaseFields<any>) {
   return setupTestRunner({
     config: apiTestConfig({
-      models: {
+      lists: {
         Post: list({
           fields: {
             value: integer(),
@@ -67,7 +67,7 @@ describe('Virtual field type', () => {
     'referencing other list type',
     setupTestRunner({
       config: apiTestConfig({
-        models: {
+        lists: {
           Organisation: list({
             fields: {
               name: text(),
@@ -158,7 +158,7 @@ describe('Virtual field type', () => {
     await expect(
       setupTestEnv({
         config: apiTestConfig({
-          models: {
+          lists: {
             Post: list({
               fields: {
                 virtual: virtual({

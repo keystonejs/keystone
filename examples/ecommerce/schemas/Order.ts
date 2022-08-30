@@ -1,7 +1,7 @@
 import { integer, text, relationship, virtual } from '@keystone-6/core/fields';
 import { list, graphql } from '@keystone-6/core';
 import { isSignedIn, rules } from '../access';
-import { Models } from '.keystone/types';
+import { Lists } from '.keystone/types';
 
 const formatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -15,7 +15,7 @@ export default function formatMoney(cents: number | null) {
 }
 
 // we add the type here, so `item` below is typed
-export const Order: Models.Order = list({
+export const Order: Lists.Order = list({
   access: {
     operation: {
       create: isSignedIn,

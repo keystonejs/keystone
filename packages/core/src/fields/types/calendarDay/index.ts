@@ -1,6 +1,6 @@
 import { humanize } from '../../../lib/utils';
 import {
-  BaseModelTypeInfo,
+  BaseListTypeInfo,
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
@@ -15,8 +15,8 @@ import {
 } from '../../non-null-graphql';
 import { CalendarDayFieldMeta } from './views';
 
-export type CalendarDayFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> =
-  CommonFieldConfig<ModelTypeInfo> & {
+export type CalendarDayFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
+  CommonFieldConfig<ListTypeInfo> & {
     isIndexed?: boolean | 'unique';
     validation?: {
       isRequired?: boolean;
@@ -33,19 +33,19 @@ export type CalendarDayFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> =
   };
 
 export const calendarDay =
-  <ModelTypeInfo extends BaseModelTypeInfo>({
+  <ListTypeInfo extends BaseListTypeInfo>({
     isIndexed,
     validation,
     defaultValue,
     ...config
-  }: CalendarDayFieldConfig<ModelTypeInfo> = {}): FieldTypeFunc<ModelTypeInfo> =>
+  }: CalendarDayFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
   meta => {
     if (typeof defaultValue === 'string') {
       try {
         graphql.CalendarDay.graphQLType.parseValue(defaultValue);
       } catch (err) {
         throw new Error(
-          `The calendarDay field at ${meta.modelKey}.${meta.fieldKey} specifies defaultValue: ${defaultValue} but values must be provided as a full-date ISO8601 string such as 1970-01-01`
+          `The calendarDay field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: ${defaultValue} but values must be provided as a full-date ISO8601 string such as 1970-01-01`
         );
       }
     }

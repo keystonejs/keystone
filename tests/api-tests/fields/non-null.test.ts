@@ -44,7 +44,7 @@ testModules
         const getSchema = async (fieldConfig: any) => {
           const { testArgs } = await setupTestEnv({
             config: apiTestConfig({
-              models: {
+              lists: {
                 Test: list({
                   fields: {
                     name: text(),

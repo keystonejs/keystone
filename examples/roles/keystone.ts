@@ -1,7 +1,7 @@
 import { config } from '@keystone-6/core';
 import { statelessSessions } from '@keystone-6/core/session';
 import { createAuth } from '@keystone-6/auth';
-import { models } from './schema';
+import { lists } from './schema';
 
 import { isSignedIn } from './access';
 
@@ -56,7 +56,7 @@ export default withAuth(
       provider: 'sqlite',
       url: process.env.DATABASE_URL || 'file:./keystone-example.db',
     },
-    models,
+    lists,
     ui: {
       /* Everyone who is signed in can access the Admin UI */
       isAccessAllowed: isSignedIn,

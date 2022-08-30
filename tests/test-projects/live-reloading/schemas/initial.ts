@@ -1,7 +1,7 @@
 import { graphQLSchemaExtension, list } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
 
-export const models = {
+export const lists = {
   Something: list({
     fields: {
       text: text({ label: 'Initial Label For Text' }),

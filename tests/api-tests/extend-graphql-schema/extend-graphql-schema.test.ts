@@ -23,7 +23,7 @@ const withAccessCheck = <T, Args extends unknown[]>(
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    models: {
+    lists: {
       User: list({
         fields: { name: text() },
       }),

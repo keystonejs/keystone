@@ -10,7 +10,7 @@ type IdType = any;
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    models: {
+    lists: {
       Note: list({
         fields: {
           content: text(),

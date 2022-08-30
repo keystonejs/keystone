@@ -10,7 +10,7 @@ import {
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    models: {
+    lists: {
       Group: list({
         fields: {
           name: text(),

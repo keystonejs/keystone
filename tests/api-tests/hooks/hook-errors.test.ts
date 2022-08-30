@@ -7,7 +7,7 @@ import { apiTestConfig, expectExtensionError, unpackErrors } from '../utils';
 const runner = (debug: boolean | undefined) =>
   setupTestRunner({
     config: apiTestConfig({
-      models: {
+      lists: {
         User: list({
           fields: { name: text() },
           hooks: {

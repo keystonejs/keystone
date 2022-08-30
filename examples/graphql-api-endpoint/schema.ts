@@ -2,7 +2,7 @@ import { list } from '@keystone-6/core';
 import { text, relationship, password, timestamp, select } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
 
-export const models = {
+export const lists = {
   User: list({
     ui: {
       listView: {

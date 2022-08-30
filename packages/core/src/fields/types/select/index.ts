@@ -1,7 +1,7 @@
 import inflection from 'inflection';
 import { humanize } from '../../../lib/utils';
 import {
-  BaseModelTypeInfo,
+  BaseListTypeInfo,
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
@@ -15,8 +15,8 @@ import {
   getResolvedIsNullable,
 } from '../../non-null-graphql';
 
-export type SelectFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> =
-  CommonFieldConfig<ModelTypeInfo> &
+export type SelectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
+  CommonFieldConfig<ListTypeInfo> &
     (
       | {
           /**
@@ -66,13 +66,13 @@ const MAX_INT = 2147483647;
 const MIN_INT = -2147483648;
 
 export const select =
-  <ModelTypeInfo extends BaseModelTypeInfo>({
+  <ListTypeInfo extends BaseListTypeInfo>({
     isIndexed,
     ui: { displayMode = 'select', ...ui } = {},
     defaultValue,
     validation,
     ...config
-  }: SelectFieldConfig<ModelTypeInfo>): FieldTypeFunc<ModelTypeInfo> =>
+  }: SelectFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> =>
   meta => {
     const fieldLabel = config.label ?? humanize(meta.fieldKey);
     const resolvedIsNullable = getResolvedIsNullable(validation, config.db);
@@ -81,14 +81,14 @@ export const select =
     assertCreateIsNonNullAllowed(meta, config);
     const commonConfig = (
       options: readonly { value: string | number; label: string }[]
-    ): CommonFieldConfig<ModelTypeInfo> & {
+    ): CommonFieldConfig<ListTypeInfo> & {
       views: string;
       getAdminMeta: () => import('./views').AdminSelectFieldMeta;
     } => {
       const values = new Set(options.map(x => x.value));
       if (values.size !== options.length) {
         throw new Error(
-          `The select field at ${meta.modelKey}.${meta.fieldKey} has duplicate options, this is not allowed`
+          `The select field at ${meta.listKey}.${meta.fieldKey} has duplicate options, this is not allowed`
         );
       }
       return {
@@ -156,7 +156,7 @@ export const select =
         )
       ) {
         throw new Error(
-          `The select field at ${meta.modelKey}.${meta.fieldKey} specifies integer values that are outside the range of a 32 bit signed integer`
+          `The select field at ${meta.listKey}.${meta.fieldKey} specifies integer values that are outside the range of a 32 bit signed integer`
         );
       }
       return fieldType({
@@ -190,7 +190,7 @@ export const select =
     });
 
     if (config.type === 'enum') {
-      const enumName = `${meta.modelKey}${inflection.classify(meta.fieldKey)}Type`;
+      const enumName = `${meta.listKey}${inflection.classify(meta.fieldKey)}Type`;
       const graphQLType = graphql.enum({
         name: enumName,
         values: graphql.enumValues(options.map(x => x.value)),

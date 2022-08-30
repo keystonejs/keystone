@@ -45,7 +45,7 @@ testModules
 
         const runner = setupTestRunner({
           config: apiTestConfig({
-            models: {
+            lists: {
               Test: list({
                 fields: {
                   name: text(),

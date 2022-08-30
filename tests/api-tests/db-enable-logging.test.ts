@@ -8,7 +8,7 @@ const runner = (enableLogging: boolean) =>
   setupTestRunner({
     config: apiTestConfig({
       db: { enableLogging },
-      models: {
+      lists: {
         User: list({ fields: { name: text() } }),
       },
     }),

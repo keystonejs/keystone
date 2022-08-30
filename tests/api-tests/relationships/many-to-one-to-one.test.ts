@@ -83,7 +83,7 @@ const createCompanyAndLocation = async (context: KeystoneContext) => {
 
 const runner = setupTestRunner({
   config: apiTestConfig({
-    models: {
+    lists: {
       Owner: list({
         fields: {
           name: text(),

@@ -21,7 +21,7 @@ testModules
       const listKey = 'Test';
       const runner = setupTestRunner({
         config: apiTestConfig({
-          models: {
+          lists: {
             [listKey]: list({
               fields: {
                 name: text(),

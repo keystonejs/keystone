@@ -8,5 +8,5 @@ export default config({
     generateNextGraphqlAPI: true,
     generateNodeAPI: true,
   },
-  models: { Post },
+  lists: { Post },
 });

@@ -36,7 +36,7 @@ async function tryRequest(app: express.Express, size: number) {
 function setup(options?: BodyParserOptions) {
   return setupTestRunner({
     config: apiTestConfig({
-      models: {
+      lists: {
         Thing: list({
           fields: {
             value: text(),

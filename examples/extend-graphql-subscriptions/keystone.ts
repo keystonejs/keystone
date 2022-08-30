@@ -1,5 +1,5 @@
 import { config } from '@keystone-6/core';
-import { models, extendGraphqlSchema } from './schema';
+import { lists, extendGraphqlSchema } from './schema';
 import { extendHttpServer } from './websocket';
 
 export default config({
@@ -7,7 +7,7 @@ export default config({
     provider: 'sqlite',
     url: process.env.DATABASE_URL || 'file:./keystone-example.db',
   },
-  models,
+  lists,
   server: {
     extendHttpServer,
   },

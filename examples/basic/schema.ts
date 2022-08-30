@@ -12,7 +12,7 @@ import {
 } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
 import { v4 } from 'uuid';
-import { Context, Models } from '.keystone/types';
+import { Context, Lists } from '.keystone/types';
 
 type AccessArgs = {
   session?: {
@@ -32,7 +32,7 @@ export const access = {
 
 const randomNumber = () => Math.round(Math.random() * 10);
 
-const User: Models.User = list({
+const User: Lists.User = list({
   ui: {
     listView: {
       initialColumns: ['name', 'posts', 'avatar'],
@@ -91,7 +91,7 @@ const User: Models.User = list({
   },
 });
 
-export const models: Models = {
+export const lists: Lists = {
   User,
   PhoneNumber: list({
     ui: {

@@ -1,5 +1,5 @@
 import { config } from '@keystone-6/core';
-import { models } from './schema';
+import { lists } from './schema';
 import { insertSeedData } from './seed-data';
 import { Context } from '.keystone/types';
 
@@ -13,5 +13,5 @@ export default config({
       }
     },
   },
-  models,
+  lists,
 });

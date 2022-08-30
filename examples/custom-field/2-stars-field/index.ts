@@ -1,5 +1,5 @@
 import {
-  BaseModelTypeInfo,
+  BaseListTypeInfo,
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
@@ -13,18 +13,18 @@ import { graphql } from '@keystone-6/core';
 // and a different input in the Admin UI
 // https://github.com/keystonejs/keystone/tree/main/packages/core/src/fields/types/integer
 
-export type StarsFieldConfig<ModelTypeInfo extends BaseModelTypeInfo> =
-  CommonFieldConfig<ModelTypeInfo> & {
+export type StarsFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
+  CommonFieldConfig<ListTypeInfo> & {
     isIndexed?: boolean | 'unique';
     maxStars?: number;
   };
 
 export const stars =
-  <ModelTypeInfo extends BaseModelTypeInfo>({
+  <ListTypeInfo extends BaseListTypeInfo>({
     isIndexed,
     maxStars = 5,
     ...config
-  }: StarsFieldConfig<ModelTypeInfo> = {}): FieldTypeFunc<ModelTypeInfo> =>
+  }: StarsFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
   meta =>
     fieldType({
       // this configures what data is stored in the database
