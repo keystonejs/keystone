@@ -3,7 +3,7 @@
 import type { HTMLAttributes } from 'react';
 import { useToasts } from '@keystone-ui/toast';
 import { jsx } from '@emotion/react';
-import copy from 'copy-to-clipboard';
+import copy from 'clipboard-copy';
 
 import { Copy } from '../icons/Copy';
 
@@ -14,25 +14,12 @@ type CodeBoxProps = {
 export function CodeBox({ code, ...props }: CodeBoxProps) {
   const { addToast } = useToasts();
 
-  const handleCopy = () => {
-    if (navigator) {
-      // use the new navigator.clipboard API if it exists
-      navigator.clipboard.writeText(code).then(
-        () => addToast({ title: 'Copied to clipboard', tone: 'positive' }),
-        () => addToast({ title: 'Failed to copy to clipboard', tone: 'negative' })
-      );
-      return;
-    } else {
-      // Fallback to a library that leverages document.execCommand
-      // for browser versions that don't support the navigator object.
-      // As document.execCommand
-      try {
-        copy(code);
-      } catch (e) {
-        addToast({ title: 'Failed to copy to clipboard', tone: 'negative' });
-      }
-
-      return;
+  const handleCopy = async () => {
+    try {
+      await copy(code);
+      addToast({ title: 'Copied to clipboard', tone: 'positive' });
+    } catch (e) {
+      addToast({ title: 'Failed to copy to clipboard', tone: 'negative' });
     }
   };
 
