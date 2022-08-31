@@ -2,4 +2,4 @@
 '@keystone-6/core': minor
 ---
 
-Add 'basic search' that searches text fields - this is a relatively naive search
+Adds a search input to the list view in the Admin UI that uses `ui.searchFields`.
