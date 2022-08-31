@@ -9,6 +9,7 @@ const runner = setupTestRunner({
     lists: {
       BadAccess: list({
         access: {
+          operation: allowAll,
           filter: {
             query: () => {
               return {
@@ -16,18 +17,17 @@ const runner = setupTestRunner({
               };
             },
           },
-          operation: allowAll,
         },
         fields: { name: text() },
       }),
       Coercion: list({
         access: {
+          operation: allowAll,
           filter: {
             query: () => {
               return { NOT: { name: { equals: 'blah' } } };
             },
           },
-          operation: allowAll,
         },
         fields: { name: text() },
       }),

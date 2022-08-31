@@ -17,7 +17,7 @@ const makeRunner = (healthCheck: any) =>
             fields: {
               name: text()
             }
-          })
+          }),
         },
         server: { healthCheck },
       }),

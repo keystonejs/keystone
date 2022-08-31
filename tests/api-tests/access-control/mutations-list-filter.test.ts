@@ -10,12 +10,12 @@ const runner = setupTestRunner({
       // Filter access control
       User: list({
         access: {
+          operation: allowAll,
           filter: {
             query: () => true,
             update: () => ({ name: { not: { equals: 'bad' } } }),
             delete: async () => ({ name: { not: { contains: 'no delete' } } }),
           },
-          operation: allowAll,
         },
         fields: { name: text() },
       }),

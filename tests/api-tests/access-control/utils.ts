@@ -135,24 +135,24 @@ listAccessVariations.forEach(access => {
   lists[getFilterListName(access)] = list({
     fields: { name: text() },
     access: {
+      operation: allowAll,
       filter: {
         // arbitrarily restrict the data to a single item (see data.js)
         query: () => access.query && { name: { equals: 'Hello' } },
         update: () => access.update && { name: { equals: 'Hello' } },
         delete: () => access.delete && { name: { equals: 'Hello' } },
       },
-      operation: allowAll,
     },
   });
   lists[getFilterBoolListName(access)] = list({
     fields: { name: text() },
     access: {
+      operation: allowAll,
       filter: {
         query: () => access.query,
         update: () => access.update,
         delete: () => access.delete,
       },
-      operation: allowAll,
     },
   });
   lists[getItemListName(access)] = list({
@@ -161,12 +161,12 @@ listAccessVariations.forEach(access => {
       ...fieldMatrix.map(variation => createFieldImperative(variation))
     ),
     access: {
+      operation: allowAll,
       item: {
         create: () => access.create,
         update: () => access.update,
         delete: () => access.delete,
       },
-      operation: allowAll,
     },
   });
 });

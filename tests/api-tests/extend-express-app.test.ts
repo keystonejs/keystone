@@ -16,7 +16,7 @@ const runner = withServer(
           fields: {
             name: text()
           }
-        })
+        }),
       },
       server: {
         extendExpressApp: app => {

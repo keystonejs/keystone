@@ -10,6 +10,7 @@ const runner = setupTestRunner({
       // Item access control
       User: list({
         access: {
+          operation: allowAll,
           item: {
             create: ({ inputData }) => {
               return inputData.name !== 'bad';
@@ -21,7 +22,6 @@ const runner = setupTestRunner({
               return !item.name.startsWith('no delete');
             },
           },
-          operation: allowAll,
         },
 
         fields: { name: text() },

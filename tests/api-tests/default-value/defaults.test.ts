@@ -7,7 +7,15 @@ import { apiTestConfig } from '../utils';
 
 const setupList = (fields: BaseFields<any>) =>
   setupTestRunner({
-    config: apiTestConfig({ lists: { User: list({ fields, access: allowAll }) } }),
+    config: apiTestConfig({
+      lists: {
+        // prettier-ignore
+        User: list({
+          access: allowAll,
+          fields,
+        }),
+      },
+    }),
   });
 
 describe('defaultValue field config', () => {

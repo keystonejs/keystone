@@ -97,7 +97,7 @@ const runner = setupTestRunner({
           locations: relationship({ ref: 'Location', many: true }),
         },
       }),
-      Location: list({ fields: { name: text() }, access: allowAll }),
+      Location: list({ access: allowAll, fields: { name: text() } }),
     },
   }),
 });

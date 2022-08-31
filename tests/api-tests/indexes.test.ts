@@ -51,6 +51,7 @@ if (dbProvider === 'postgresql') {
     const config = apiTestConfig({
       lists: {
         Test: list({
+          access: allowAll,
           fields: {
             somethingIndexed: text({ isIndexed: true, db: { map: 'something' } }),
             enumSelectIndexed: select({
@@ -61,7 +62,6 @@ if (dbProvider === 'postgresql') {
             }),
             other: text(),
           },
-          access: allowAll,
         }),
       },
     });

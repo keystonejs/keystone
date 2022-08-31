@@ -7,7 +7,7 @@ import { apiTestConfig } from './utils';
 const runner = setupTestRunner({
   config: apiTestConfig({
     lists: {
-      User: list({ fields: { name: text() }, access: allowAll }),
+      User: list({ access: allowAll, fields: { name: text() } }),
     },
   }),
 });

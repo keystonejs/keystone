@@ -116,12 +116,12 @@ export function parseListAccessControl(
       filter: {
         query: () => true,
         update: () => true,
-        delete: () => true
+        delete: () => true,
       },
       item: {
         create: () => true,
         update: () => true,
-        delete: () => true
+        delete: () => true,
       },
     };
   }

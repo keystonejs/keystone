@@ -105,6 +105,7 @@ const lists: ListSchemaConfig = {};
 
 listConfigVariables.forEach(config => {
   lists[getListName(config)] = list({
+    access: allowAll,
     fields: Object.assign(
       { name: text() },
       ...fieldMatrix.map(variation => createFieldStatic(variation))
@@ -112,13 +113,12 @@ listConfigVariables.forEach(config => {
     defaultIsFilterable: config.isFilterable,
     defaultIsOrderable: config.isOrderable,
     graphql: { omit: config.omit },
-    access: allowAll,
   });
 });
 
 lists.RelatedToAll = list({
-  fields: Object.assign({}, ...listConfigVariables.map(config => createRelatedFields(config))),
   access: allowAll,
+  fields: Object.assign({}, ...listConfigVariables.map(config => createRelatedFields(config))),
 });
 
 const config = apiTestConfig({

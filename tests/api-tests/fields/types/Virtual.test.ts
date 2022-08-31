@@ -9,11 +9,11 @@ function makeRunner(fields: BaseFields<any>) {
     config: apiTestConfig({
       lists: {
         Post: list({
+          access: allowAll,
           fields: {
             value: integer(),
             ...fields,
           },
-          access: allowAll,
         }),
       },
     }),
@@ -71,20 +71,21 @@ describe('Virtual field type', () => {
       config: apiTestConfig({
         lists: {
           Organisation: list({
+            access: allowAll,
             fields: {
               name: text(),
               authoredPosts: relationship({ ref: 'Post.organisationAuthor', many: true }),
             },
-            access: allowAll,
           }),
           Person: list({
+            access: allowAll,
             fields: {
               name: text(),
               authoredPosts: relationship({ ref: 'Post.personAuthor', many: true }),
             },
-            access: allowAll,
           }),
           Post: list({
+            access: allowAll,
             fields: {
               organisationAuthor: relationship({ ref: 'Organisation.authoredPosts' }),
               personAuthor: relationship({ ref: 'Person.authoredPosts' }),
@@ -119,7 +120,6 @@ describe('Virtual field type', () => {
                   }),
               }),
             },
-            access: allowAll,
           }),
         },
       }),

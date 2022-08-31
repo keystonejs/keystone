@@ -10,7 +10,13 @@ const runner = (enableLogging: boolean) =>
     config: apiTestConfig({
       db: { enableLogging },
       lists: {
-        User: list({ fields: { name: text() }, access: allowAll }),
+        // prettier-ignore
+        User: list({
+          access: allowAll,
+          fields: {
+            name: text()
+          },
+        }),
       },
     }),
   });

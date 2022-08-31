@@ -17,7 +17,7 @@ const runner = withServer(
           fields: {
             name: text()
           },
-        })
+        }),
       },
       server: {
         extendHttpServer: server => {

@@ -6,6 +6,7 @@ import type { Lists } from '.keystone/types';
 
 export const lists: Lists = {
   Task: list({
+    access: allowAll,
     fields: {
       label: text({ validation: { isRequired: true } }),
       priority: select({
@@ -20,9 +21,9 @@ export const lists: Lists = {
       assignedTo: relationship({ ref: 'Person.tasks', many: false }),
       finishBy: timestamp(),
     },
-    access: allowAll,
   }),
   Person: list({
+    access: allowAll,
     fields: {
       name: text({ validation: { isRequired: true } }),
       // Added an email and password pair to be used with authentication
@@ -35,6 +36,5 @@ export const lists: Lists = {
       password: password({ validation: { isRequired: true } }),
       tasks: relationship({ ref: 'Task.assignedTo', many: true }),
     },
-    access: allowAll,
   }),
 };

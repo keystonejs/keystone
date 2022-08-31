@@ -10,7 +10,15 @@ const runner = setupTestRunner({
     ui: {
       isAccessAllowed: () => false,
     },
-    lists: { User: list({ fields: { name: text() }, access: allowAll }) },
+    lists: {
+      // prettier-ignore
+      User: list({
+        access: allowAll,
+        fields: {
+          name: text()
+        },
+      }),
+    },
   }),
 });
 

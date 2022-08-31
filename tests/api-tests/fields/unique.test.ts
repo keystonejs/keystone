@@ -58,6 +58,7 @@ testModules
           config: apiTestConfig({
             lists: {
               Test: list({
+                access: allowAll,
                 fields: {
                   name: text(),
                   testField: mod.typeFunction({
@@ -65,7 +66,6 @@ testModules
                     ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
                   }),
                 },
-                access: allowAll,
               }),
             },
             storage: {

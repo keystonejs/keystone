@@ -16,8 +16,8 @@ const runner = setupTestRunner({
         },
         access: allowAll,
       }),
-      Company: list({ fields: { name: text() }, access: allowAll }),
-      Post: list({ fields: { content: text() }, access: allowAll }),
+      Company: list({ access: allowAll, fields: { name: text() } }),
+      Post: list({ access: allowAll, fields: { content: text() } }),
     },
   }),
 });

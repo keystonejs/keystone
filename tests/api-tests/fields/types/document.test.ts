@@ -27,8 +27,8 @@ const runner = setupTestRunner({
       }),
       Author: list({
         access: {
-          filter: { query: () => ({ name: { not: { equals: 'Charlie' } } }) },
           operation: allowAll,
+          filter: { query: () => ({ name: { not: { equals: 'Charlie' } } }) },
         },
         fields: {
           name: text(),
