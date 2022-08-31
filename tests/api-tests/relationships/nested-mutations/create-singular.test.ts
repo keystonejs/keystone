@@ -7,6 +7,7 @@ import {
   expectGraphQLValidationError,
   expectSingleRelationshipError,
 } from '../../utils';
+import { withServer } from '../../with-server';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -230,7 +231,7 @@ describe('with access control', () => {
       } else {
         test(
           'throws error when creating nested within create mutation',
-          runner(async ({ context, graphQLRequest }) => {
+          withServer(runner)(async ({ context, graphQLRequest }) => {
             const alphaNumGenerator = gen.alphaNumString.notEmpty();
             const eventName = sampleOne(alphaNumGenerator);
             const groupName = sampleOne(alphaNumGenerator);
@@ -286,7 +287,7 @@ describe('with access control', () => {
 
         test(
           'throws error when creating nested within update mutation',
-          runner(async ({ context, graphQLRequest }) => {
+          withServer(runner)(async ({ context, graphQLRequest }) => {
             const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
             // Create an item to update

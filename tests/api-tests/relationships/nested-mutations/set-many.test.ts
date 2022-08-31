@@ -7,6 +7,7 @@ import {
   expectGraphQLValidationError,
   expectSingleRelationshipError,
 } from '../../utils';
+import { withServer } from '../../with-server';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -155,7 +156,7 @@ describe('no access control', () => {
 
   test(
     'causes a validation error if used during create',
-    runner(async ({ graphQLRequest }) => {
+    withServer(runner)(async ({ graphQLRequest }) => {
       const { body } = await graphQLRequest({
         query: `
           mutation {

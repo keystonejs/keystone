@@ -23,26 +23,6 @@ describe('Example tests using test runner', () => {
   );
 
   test(
-    'Create a Person using a hand-crafted GraphQL query sent over HTTP',
-    runner(async ({ graphQLRequest }) => {
-      // We can use the graphQLRequest argument provided by the test runner
-      // to execute HTTP requests to our GraphQL API and get a supertest
-      // "Test" object back. https://github.com/visionmedia/supertest
-      const { body } = await graphQLRequest({
-        query: `mutation {
-          createPerson(data: { name: "Alice", email: "alice@example.com", password: "super-secret" }) {
-            id name email password { isSet }
-          }
-        }`,
-      }).expect(200);
-      const person = body.data.createPerson;
-      expect(person.name).toEqual('Alice');
-      expect(person.email).toEqual('alice@example.com');
-      expect(person.password.isSet).toEqual(true);
-    })
-  );
-
-  test(
     'Check that trying to create user with no name (required field) fails',
     runner(async ({ context }) => {
       // The context.graphql.raw API is useful when we expect to recieve an

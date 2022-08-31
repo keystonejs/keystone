@@ -2,6 +2,7 @@ import { list, graphQLSchemaExtension, gql } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
 import { setupTestRunner } from '@keystone-6/core/testing';
 import { apiTestConfig, expectInternalServerError } from '../utils';
+import { withServer } from '../with-server';
 
 const falseFn: (...args: any) => boolean = () => false;
 
@@ -70,7 +71,7 @@ describe('extendGraphqlSchema', () => {
   );
   it(
     'Denies access acording to access control',
-    runner(async ({ graphQLRequest }) => {
+    withServer(runner)(async ({ graphQLRequest }) => {
       const { body } = await graphQLRequest({
         query: `
           query {

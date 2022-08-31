@@ -3,19 +3,22 @@ import { text } from '@keystone-6/core/fields';
 import { setupTestRunner } from '@keystone-6/core/testing';
 import supertest from 'supertest';
 import { apiTestConfig } from './utils';
+import { withServer } from './with-server';
 
-const runner = setupTestRunner({
-  config: apiTestConfig({
-    lists: { User: list({ fields: { name: text() } }) },
-    server: {
-      extendExpressApp: app => {
-        app.get('/magic', (req, res) => {
-          res.json({ magic: true });
-        });
+const runner = withServer(
+  setupTestRunner({
+    config: apiTestConfig({
+      lists: { User: list({ fields: { name: text() } }) },
+      server: {
+        extendExpressApp: app => {
+          app.get('/magic', (req, res) => {
+            res.json({ magic: true });
+          });
+        },
       },
-    },
-  }),
-});
+    }),
+  })
+);
 
 test(
   'basic extension',
