@@ -169,7 +169,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
     .filter(({ search }) => search !== null)
     .map(({ label }) => label);
 
-  const searchParam = query.search ? (query.search as string) : '';
+  const searchParam = typeof query.search === 'string' ? query.search : '';
   const [searchString, updateSearchString] = useState(searchParam);
   const search = useFilter(searchParam, list);
 
