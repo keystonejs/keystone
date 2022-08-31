@@ -5,7 +5,7 @@ runs:
     - name: Setup Node.js LTS
       uses: actions/setup-node@v3
       with:
-        # ideally we would use lts/* but GitHub hits API limits when trying to query that
+        # preferably lts/*, but we hit API limits when querying that
         node-version: 16
 
     - name: Get yarn cache directory path
