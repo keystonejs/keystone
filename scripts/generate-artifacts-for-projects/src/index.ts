@@ -44,14 +44,25 @@ async function main() {
           entries.map(async entry => {
             if (entry.isDirectory()) {
               const projectPath = path.join(dir, entry.name);
-              const keystoneConfigPath = path.join(projectPath, 'keystone.ts');
-              try {
-                if ((await fs.stat(keystoneConfigPath)).isFile()) {
+              const projectDirEntries = await fs.readdir(projectPath, { withFileTypes: true });
+              for (const entry of projectDirEntries) {
+                if (entry.name === 'keystone.ts' && entry.isFile()) {
                   projectPaths.push(projectPath);
+                  break;
                 }
-              } catch (err: any) {
-                if (err.code !== 'ENOENT') {
-                  throw err;
+                if (entry.name === 'keystone-server' && entry.isDirectory()) {
+                  const e2eServerProjectPath = path.join(projectPath, 'keystone-server');
+                  const keystoneConfigPath = path.join(e2eServerProjectPath, 'keystone.ts');
+                  try {
+                    if ((await fs.stat(keystoneConfigPath)).isFile()) {
+                      projectPaths.push(e2eServerProjectPath);
+                      break;
+                    }
+                  } catch (err: any) {
+                    if (err.code !== 'ENOENT') {
+                      throw err;
+                    }
+                  }
                 }
               }
             }
@@ -62,12 +73,7 @@ async function main() {
     )
   )
     .flat()
-    .concat(
-      path.join(repoRoot, 'tests/sandbox'),
-      // TODO: This feels wrong. Talk to Mitchell.
-      path.join(repoRoot, 'examples/e2e-boilerplate/keystone-server'),
-      path.join(repoRoot, 'examples/document-field-customisation/keystone-server')
-    );
+    .concat(path.join(repoRoot, 'tests/sandbox'));
 
   // this breaks if we do this entirely in parallel (it only seemed to consistently fail on Vercel though)
   // because of Prisma's loading native libraries and child processes stuff and it seems racey
