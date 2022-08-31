@@ -43,9 +43,9 @@ import { cloudinaryImage } from '@keystone-6/cloudinary';
 
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       fields: {
-        fieldName: text({ /* ... */ }),
+        someFieldName: text({ /* ... */ }),
         /* ... */
       },
     }),
@@ -100,9 +100,9 @@ Options:
 ```typescript
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       fields: {
-        fieldName: text({
+        someFieldName: text({
           isFilterable: ({ context, session, fieldKey, listKey }) => true,
           isOrderable: ({ context, session, fieldKey, listKey }) => true,
           access: { /* ... */ },
@@ -159,9 +159,9 @@ import { checkbox } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       fields: {
-        fieldName: checkbox({
+        someFieldName: checkbox({
           defaultValue: true,
           db: { map: 'my_checkbox' },
           graphql: {
@@ -217,9 +217,9 @@ import { integer } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       fields: {
-        fieldName: integer({
+        someFieldName: integer({
           defaultValue: 0,
           db: { map: 'my_integer' },
           validation: {
@@ -274,9 +274,9 @@ import { bigInt } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       fields: {
-        fieldName: bigInt({
+        someFieldName: bigInt({
           defaultValue: 0n,
           db: { map: 'my_bigint' },
           validation: {
@@ -308,9 +308,9 @@ import { json } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       fields: {
-        fieldName: json({
+        someFieldName: json({
           defaultValue: { something: true },
           db: { map: 'my_json' },
         }),
@@ -356,9 +356,9 @@ import { float } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       fields: {
-        fieldName: float({
+        someFieldName: float({
           defaultValue: 3.14159,
           db: { map: 'my_float' },
           validation: {
@@ -411,9 +411,9 @@ import { decimal } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       fields: {
-        fieldName: decimal({
+        someFieldName: decimal({
           defaultValue: '3.142',
           precision: 12,
           scale: 3,
@@ -460,9 +460,9 @@ import { password } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       fields: {
-        fieldName: password({
+        someFieldName: password({
           db: { map: 'password_field' },
           validation: {
             length: { min: 10, max: 1000 },
@@ -521,9 +521,9 @@ import { select } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       fields: {
-        fieldName: select({
+        someFieldName: select({
           type: 'enum',
           options: [
             { label: '...', value: '...' },
@@ -576,9 +576,9 @@ import { multiselect } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       fields: {
-        fieldName: multiselect({
+        someFieldName: multiselect({
           type: 'enum',
           options: [
             { label: '...', value: '...' },
@@ -642,9 +642,9 @@ import { text } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       fields: {
-        fieldName: text({
+        someFieldName: text({
           defaultValue: '...',
           db: { map: 'my_text', nativeType: 'VarChar(40)' },
           validation: { isRequired: true },
@@ -694,9 +694,9 @@ import { timestamp } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       fields: {
-        fieldName: timestamp({
+        someFieldName: timestamp({
           defaultValue: '1970-01-01T00:00:00.000Z',
           db: { map: 'my_timestamp' },
           validation: { isRequired: true },
@@ -745,9 +745,9 @@ import { calendarDay } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       fields: {
-        fieldName: calendarDay({
+        someFieldName: calendarDay({
           defaultValue: '1970-01-01',
           db: { map: 'my_date' },
           validation: { isRequired: true },
@@ -794,9 +794,9 @@ import { relationship } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       fields: {
-        fieldName: relationship({
+        someFieldName: relationship({
           ref: '...',
           many: false,
           db: {
@@ -859,9 +859,9 @@ import { virtual } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       fields: {
-        fieldName: virtual({
+        someFieldName: virtual({
           field: graphql.field({
             type: graphql.String,
             args: { something: graphql.arg({ type: graphql.Int }) },
@@ -895,7 +895,7 @@ import { file } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       fields: {
         repo: file({ storage: 'my_file_storage' }),
         /* ... */
@@ -924,7 +924,7 @@ import { image } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       fields: {
         avatar: image({ storage: 'my_image_storage' }),
         /* ... */
@@ -965,9 +965,9 @@ import { document } from '@keystone-6/fields-document';
 
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       fields: {
-        fieldName: document({
+        someFieldName: document({
           relationships: { /* ... */ },
           componentBlocks: {
             block: { /* ... */ },
@@ -1003,9 +1003,9 @@ import { cloudinaryImage } from '@keystone-6/cloudinary';
 
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       fields: {
-        fieldName: cloudinaryImage({
+        someFieldName: cloudinaryImage({
           cloudinary: {
             cloudName: process.env.CLOUDINARY_CLOUD_NAME,
             apiKey: process.env.CLOUDINARY_API_KEY,
