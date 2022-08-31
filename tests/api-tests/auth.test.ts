@@ -2,8 +2,9 @@ import { text, password } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
 import { statelessSessions } from '@keystone-6/core/session';
 import { createAuth } from '@keystone-6/auth';
-import { setupTestRunner, TestArgs } from '@keystone-6/core/testing';
+import { setupTestRunner } from '@keystone-6/core/testing';
 import { apiTestConfig, expectInternalServerError, expectValidationError, seed } from './utils';
+import { GraphQLRequest, withServer } from './with-server';
 
 const initialData = {
   User: [
@@ -43,25 +44,27 @@ const auth = createAuth({
   },
 });
 
-const runner = setupTestRunner({
-  config: auth.withAuth(
-    apiTestConfig({
-      lists: {
-        User: list({
-          fields: {
-            name: text(),
-            email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
-            password: password(),
-          },
-        }),
-      },
-      session: statelessSessions({ secret: COOKIE_SECRET }),
-    })
-  ),
-});
+const runner = withServer(
+  setupTestRunner({
+    config: auth.withAuth(
+      apiTestConfig({
+        lists: {
+          User: list({
+            fields: {
+              name: text(),
+              email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
+              password: password(),
+            },
+          }),
+        },
+        session: statelessSessions({ secret: COOKIE_SECRET }),
+      })
+    ),
+  })
+);
 
 async function authenticateWithPassword(
-  graphQLRequest: TestArgs['graphQLRequest'],
+  graphQLRequest: GraphQLRequest,
   email: string,
   password: string
 ) {

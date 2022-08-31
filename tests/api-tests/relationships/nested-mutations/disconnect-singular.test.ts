@@ -3,6 +3,7 @@ import { text, relationship } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/core/testing';
 import { apiTestConfig, expectGraphQLValidationError } from '../../utils';
+import { withServer } from '../../with-server';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -77,7 +78,7 @@ describe('no access control', () => {
 
   test(
     'causes a validation error if used during create',
-    runner(async ({ graphQLRequest }) => {
+    withServer(runner)(async ({ graphQLRequest }) => {
       const { body } = await graphQLRequest({
         query: `
           mutation {

@@ -5,6 +5,7 @@ import { setupTestEnv, setupTestRunner } from '@keystone-6/core/testing';
 import { KeystoneContext } from '@keystone-6/core/types';
 import { component, fields } from '@keystone-6/fields-document/component-blocks';
 import { apiTestConfig, expectInternalServerError } from '../../utils';
+import { withServer } from '../../with-server';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -252,7 +253,7 @@ describe('Document field type', () => {
 
   test(
     'hydrateRelationships: true - selection has bad fields',
-    runner(async ({ context, graphQLRequest }) => {
+    withServer(runner)(async ({ context, graphQLRequest }) => {
       const { alice } = await initData({ context });
       const badBob = await context.query.Author.createOne({
         data: {

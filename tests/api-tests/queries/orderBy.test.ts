@@ -9,6 +9,7 @@ import {
   expectGraphQLValidationError,
   expectFilterDenied,
 } from '../utils';
+import { withServer } from '../with-server';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -345,7 +346,7 @@ describe('Ordering by Multiple', () => {
 describe('isOrderable', () => {
   test(
     'isOrderable: false',
-    runner(async ({ context, graphQLRequest }) => {
+    withServer(runner)(async ({ context, graphQLRequest }) => {
       await initialiseData({ context });
       const { body } = await graphQLRequest({
         query: '{ users(orderBy: [{orderFalse: asc}]) { id } }',
@@ -470,7 +471,7 @@ describe('defaultIsOrderable', () => {
 
   test(
     'defaultIsOrderable: false',
-    runner(async ({ context, graphQLRequest }) => {
+    withServer(runner)(async ({ context, graphQLRequest }) => {
       await initialiseData({ context });
       const { body } = await graphQLRequest({
         query: '{ defaultOrderFalses(orderBy: [{a: asc}]) { id } }',

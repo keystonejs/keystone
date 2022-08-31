@@ -1,11 +1,8 @@
 import path from 'path';
 import crypto from 'crypto';
 import fs from 'fs';
-import { Server } from 'http';
-import express from 'express';
-import supertest, { Test } from 'supertest';
 import memoizeOne from 'memoize-one';
-import type { KeystoneConfig, KeystoneContext } from './types';
+import type { CreateContext, KeystoneConfig, KeystoneContext } from './types';
 import {
   getCommittedArtifacts,
   writeCommittedArtifacts,
@@ -13,19 +10,12 @@ import {
   generateNodeModulesArtifacts,
 } from './artifacts';
 import { pushPrismaSchemaToDatabase } from './migrations';
-import { initConfig, createSystem, createExpressServer } from './system';
-
-export type GraphQLRequest = (arg: {
-  query: string;
-  variables?: Record<string, any>;
-  operationName?: string;
-}) => Test;
+import { initConfig, createSystem } from './system';
 
 export type TestArgs<Context extends KeystoneContext = KeystoneContext> = {
   context: Context;
-  graphQLRequest: GraphQLRequest;
-  app: express.Express;
-  server: Server;
+  createContext: CreateContext;
+  config: KeystoneConfig;
 };
 
 export type TestEnv<Context extends KeystoneContext = KeystoneContext> = {
@@ -68,28 +58,13 @@ export async function setupTestEnv<Context extends KeystoneContext>({
 
   const { connect, disconnect, createContext } = getKeystone(requirePrismaClient(artifactPath));
 
-  const {
-    expressServer: app,
-    apolloServer,
-    httpServer: server,
-  } = await createExpressServer(config, graphQLSchema, createContext);
-
-  const graphQLRequest: GraphQLRequest = ({ query, variables = undefined, operationName }) =>
-    supertest(app)
-      .post(config.graphql?.path || '/api/graphql')
-      .send({ query, variables, operationName })
-      .set('Accept', 'application/json');
-
   return {
     connect,
-    disconnect: async () => {
-      await Promise.all([disconnect(), apolloServer.stop()]);
-    },
+    disconnect,
     testArgs: {
       context: createContext() as Context,
-      graphQLRequest,
-      app,
-      server,
+      createContext,
+      config,
     },
   };
 }
@@ -99,14 +74,7 @@ export function setupTestRunner<Context extends KeystoneContext>({
 }: {
   config: KeystoneConfig;
 }) {
-  type TestArgs = {
-    context: Context;
-    graphQLRequest: GraphQLRequest;
-    app: express.Express;
-    server: Server;
-  };
-
-  return (testFn: (testArgs: TestArgs) => Promise<void>) => async () => {
+  return (testFn: (testArgs: TestArgs<Context>) => Promise<void>) => async () => {
     // Reset the database to be empty for every test.
     const { connect, disconnect, testArgs } = await setupTestEnv<Context>({ config });
     await connect();

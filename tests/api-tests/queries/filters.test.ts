@@ -9,6 +9,7 @@ import {
   expectGraphQLValidationError,
   expectFilterDenied,
 } from '../utils';
+import { withServer } from '../with-server';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -274,7 +275,7 @@ describe('searching by unique fields', () => {
 describe('isFilterable', () => {
   test(
     'isFilterable: false',
-    runner(async ({ graphQLRequest }) => {
+    withServer(runner)(async ({ graphQLRequest }) => {
       const { body } = await graphQLRequest({
         query: '{ users(where: { filterFalse: { equals: 10 } }) { id } }',
       });
@@ -396,7 +397,7 @@ describe('defaultIsFilterable', () => {
 
   test(
     'defaultIsFilterable: false',
-    runner(async ({ graphQLRequest }) => {
+    withServer(runner)(async ({ graphQLRequest }) => {
       const { body } = await graphQLRequest({
         query: '{ defaultFilterFalses(where: { a: { equals: 10 } }) { id } }',
       });
