@@ -94,6 +94,7 @@ model Test {
 enum TestEnumSelectIndexedType {
   a
   b
-}`);
+}
+`);
   });
 }
