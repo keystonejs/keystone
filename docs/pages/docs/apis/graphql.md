@@ -462,12 +462,12 @@ The following error codes can be returned from the Keystone GraphQL API.
 ## Related resources
 
 {% related-content %}
-{% well 
-heading="Schema API Reference"
+{% well
+heading="Lists API Reference"
 href="/docs/apis/schema" %}
 The API to configure your  options used with the `list()` function.
 {% /well %}
-{% well 
+{% well
 heading="Config API Reference"
 href="/docs/apis/config" %}
 The API to configure all the parts parts of your Keystone system.

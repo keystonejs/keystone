@@ -116,28 +116,28 @@ Read more about the CLI in our [command line guides](/guides/cli).
 ## Where to next?
 
 - Customise Keystone with the [System Configuration API](/apis/config).
-- Add fields and relationships using [Schema API](/apis/schema).
+- Add fields and relationships using [Lists API](/apis/schema).
 - Use a different database with the [Config API](/docs/apis/config#db).
 
 ## Related resources
 
 {% related-content %}
-{% well 
+{% well
 heading="Keystone CLI Guide"
 href="/docs/guides/cli" %}
 Keystone’s CLI helps you develop, build, and deploy projects. This guide explains all you need to standup a new backend in the terminal.
 {% /well %}
-{% well 
-heading="Schema API Reference"
+{% well
+heading="Lists API Reference"
 href="/docs/apis/schema" %}
 The API to configure your options used with the `list()` function.
 {% /well %}
-{% well 
+{% well
 heading="Config API Reference"
 href="/docs/apis/config" %}
 The API to configure all the parts parts of your Keystone system.
 {% /well %}
-{% well 
+{% well
 heading="DB API Reference"
 href="/docs/apis/config#db" %}
 Configure Keystone to use another database to store data in your system.

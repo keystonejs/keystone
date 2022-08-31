@@ -21,7 +21,7 @@ import { text } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       hooks: {
         resolveInput: async args => { /* ... */ },
         validateInput: async args => { /* ... */ },
@@ -30,7 +30,7 @@ export default config({
         afterOperation: async args => { /* ... */ },
       },
       fields: {
-        fieldName: text({
+        someFieldName: text({
           hooks: {
             resolveInput: async args => { /* ... */ },
             validateInput: async args => { /* ... */ },
@@ -71,7 +71,7 @@ import { text } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       hooks: {
         resolveInput: async ({
           listKey,
@@ -86,7 +86,7 @@ export default config({
         },
       },
       fields: {
-        fieldName: text({
+        someFieldName: text({
           hooks: {
             resolveInput: async ({
               listKey,
@@ -134,7 +134,7 @@ import { text } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       hooks: {
         validateInput: async ({
           listKey,
@@ -147,7 +147,7 @@ export default config({
         }) => { /* ... */ },
       },
       fields: {
-        fieldName: text({
+        someFieldName: text({
           hooks: {
             validateInput: async ({
               listKey,
@@ -191,7 +191,7 @@ import { text } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       hooks: {
         validateDelete: async ({
           listKey,
@@ -202,7 +202,7 @@ export default config({
         }) => { /* ... */ },
       },
       fields: {
-        fieldName: text({
+        someFieldName: text({
           hooks: {
             validateDelete: async ({
               listKey,
@@ -242,7 +242,7 @@ import { text } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       hooks: {
         beforeOperation: async ({
           listKey,
@@ -254,7 +254,7 @@ export default config({
         }) => { /* ... */ },
       },
       fields: {
-        fieldName: text({
+        someFieldName: text({
           hooks: {
             beforeOperation: async ({
               listKey,
@@ -294,7 +294,7 @@ import { text } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       hooks: {
         afterOperation: async ({
           listKey,
@@ -307,7 +307,7 @@ export default config({
         }) => { /* ... */ },
       },
       fields: {
-        fieldName: text({
+        someFieldName: text({
           hooks: {
             afterOperation: async ({
               listKey,
@@ -351,7 +351,7 @@ The data resolving steps are applied in the following order:
 ## Related resources
 
 {% related-content %}
-{% well 
+{% well
 heading="Hooks Guide"
 href="/docs/guides/hooks" %}
 Learn how to use Hooks within your schema to extend Keystone’s powerful CRUD GraphQL APIs with your own business logic.
