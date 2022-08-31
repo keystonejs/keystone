@@ -33,7 +33,7 @@ export const lists = {
     */
     access: {
       operation: {
-        ...allOperations(allowAll),
+        ...allOperations(isSignedIn),
         create: permissions.canCreateTodos,
       },
       filter: {
@@ -93,7 +93,7 @@ export const lists = {
     */
     access: {
       operation: {
-        ...allOperations(allowAll),
+        ...allOperations(isSignedIn),
         create: permissions.canManagePeople,
         delete: permissions.canManagePeople,
       },
@@ -182,10 +182,8 @@ export const lists = {
     */
     access: {
       operation: {
-        create: permissions.canManageRoles,
+        ...allOperations(permissions.canManageRoles),
         query: isSignedIn,
-        update: permissions.canManageRoles,
-        delete: permissions.canManageRoles,
       },
     },
     ui: {
