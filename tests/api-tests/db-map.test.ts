@@ -38,7 +38,8 @@ model SomeList {
   someField String @default("")
 
   @@map("some_table_name")
-}`);
+}
+`);
 });
 
 const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
@@ -110,5 +111,6 @@ generator client {
 model SomeList {
   id        String @id @default(cuid())
   someField String @default("") @map("db_map_field")
-}`);
+}
+`);
 });

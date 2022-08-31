@@ -40,7 +40,8 @@ model Test {
   other            String @default("")
 
   @@index([somethingIndexed])
-}`);
+}
+`);
 });
 
 if (dbProvider === 'postgresql') {
