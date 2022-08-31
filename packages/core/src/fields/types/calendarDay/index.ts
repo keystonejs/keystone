@@ -205,6 +205,6 @@ const CalendarDayNullableFilter: CalendarDayFilterType = graphql.inputObject({
 });
 
 const CalendarDayFilter: CalendarDayFilterType = graphql.inputObject({
-  name: 'CalendarDayNullableFilter',
+  name: 'CalendarDayFilter',
   fields: () => filterFields(CalendarDayFilter),
 });
