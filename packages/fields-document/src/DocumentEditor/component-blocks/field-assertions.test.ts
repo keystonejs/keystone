@@ -16,7 +16,7 @@ test('does not allow circular object', () => {
   expect(() => {
     assertValidComponentSchema(easilyCircularObject, new Set());
   }).toThrowErrorMatchingInlineSnapshot(
-    `"The field \\"object.x\\" is the same as it's ancestor. Use an array or conditional field for recursive structures."`
+    `"The field "object.x" is the same as it's ancestor. Use an array or conditional field for recursive structures."`
   );
 });
 
@@ -24,7 +24,7 @@ test('does not allow a circular object within an array', () => {
   expect(() => {
     assertValidComponentSchema(fields.array(easilyCircularObject), new Set());
   }).toThrowErrorMatchingInlineSnapshot(
-    `"The field \\"array.object.x\\" is the same as it's ancestor. Use an array or conditional field for recursive structures."`
+    `"The field "array.object.x" is the same as it's ancestor. Use an array or conditional field for recursive structures."`
   );
 });
 
@@ -35,10 +35,11 @@ test('does not allow a circular object within a value for a default discriminant
         true: fields.empty(),
         false: easilyCircularObject,
       }),
+
       new Set()
     );
   }).toThrowErrorMatchingInlineSnapshot(
-    `"The field \\"conditional.false.object.x\\" is the same as it's ancestor. Use an array or conditional field for recursive structures."`
+    `"The field "conditional.false.object.x" is the same as it's ancestor. Use an array or conditional field for recursive structures."`
   );
 });
 
@@ -49,10 +50,11 @@ test('does not allow a circular object within a value for a non-default discrimi
         true: easilyCircularObject,
         false: fields.empty(),
       }),
+
       new Set()
     );
   }).toThrowErrorMatchingInlineSnapshot(
-    `"The field \\"conditional.true.object.x\\" is the same as it's ancestor. Use an array or conditional field for recursive structures."`
+    `"The field "conditional.true.object.x" is the same as it's ancestor. Use an array or conditional field for recursive structures."`
   );
 });
 
@@ -84,7 +86,7 @@ test("does not allow a circular conditional if it's the default", () => {
   expect(() => {
     assertValidComponentSchema(conditional, new Set());
   }).toThrowErrorMatchingInlineSnapshot(
-    `"The field \\"conditional.false\\" is the same as it's ancestor. Use an array or conditional field for recursive structures."`
+    `"The field "conditional.false" is the same as it's ancestor. Use an array or conditional field for recursive structures."`
   );
 });
 
@@ -121,7 +123,7 @@ test('does not allow a field that returns a different field from a getter each t
   expect(() => {
     assertValidComponentSchema(blah(), new Set());
   }).toThrowErrorMatchingInlineSnapshot(
-    `"Fields on an object field must not change over time but the field at \\"array.object.blah\\" changes between accesses"`
+    `"Fields on an object field must not change over time but the field at "array.object.blah" changes between accesses"`
   );
 });
 
@@ -158,7 +160,7 @@ test('relationship field where no list exists with that name', () => {
       new Set()
     );
   }).toThrowErrorMatchingInlineSnapshot(
-    `"The relationship field at \\"object.a\\" has the listKey \\"Blah\\" but no list named \\"Blah\\" exists."`
+    `"The relationship field at "object.a" has the listKey "Blah" but no list named "Blah" exists."`
   );
 });
 
