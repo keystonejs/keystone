@@ -1,6 +1,7 @@
 import { text } from '../../fields';
 import { config, list } from '../..';
 import { ExitError } from '../utils';
+import { allowAll } from '../../access';
 import {
   getFiles,
   recordConsole,
@@ -16,6 +17,7 @@ const basicKeystoneConfig = {
     db: { provider: 'sqlite', url: 'file:./app.db' },
     lists: {
       Todo: list({
+        access: allowAll,
         fields: {
           title: text(),
         },

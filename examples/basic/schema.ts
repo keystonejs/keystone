@@ -12,6 +12,7 @@ import {
 } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
 import { v4 } from 'uuid';
+import { allowAll } from '@keystone-6/core/access';
 import { Context, Lists } from '.keystone/types';
 
 type AccessArgs = {
@@ -33,6 +34,7 @@ export const access = {
 const randomNumber = () => Math.round(Math.random() * 10);
 
 const User: Lists.User = list({
+  access: allowAll,
   ui: {
     listView: {
       initialColumns: ['name', 'posts', 'avatar'],
@@ -94,6 +96,7 @@ const User: Lists.User = list({
 export const lists: Lists = {
   User,
   PhoneNumber: list({
+    access: allowAll,
     ui: {
       isHidden: true,
       // parentRelationship: 'user',
@@ -130,6 +133,7 @@ export const lists: Lists = {
     },
   }),
   Post: list({
+    access: allowAll,
     fields: {
       title: text({ access: {} }),
       status: select({

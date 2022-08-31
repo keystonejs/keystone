@@ -3,6 +3,7 @@ import { createSystem, initConfig } from '../../../../system';
 import { config, list } from '../../../..';
 import { relationship } from '..';
 import { text } from '../../text';
+import { allowAll } from '../../../../access';
 
 const fieldKey = 'foo';
 
@@ -12,8 +13,9 @@ const getSchema = (field: any) => {
       config({
         db: { url: 'file:./thing.db', provider: 'sqlite' },
         lists: {
-          Zip: list({ fields: { thing: text() } }),
+          Zip: list({ fields: { thing: text() }, access: allowAll }),
           Test: list({
+            access: allowAll,
             fields: {
               [fieldKey]: field,
             },

@@ -2,6 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/core/testing';
+import { allOperations, allowAll } from '@keystone-6/core/access';
 import { apiTestConfig, expectGraphQLValidationError } from '../../utils';
 import { withServer } from '../../with-server';
 
@@ -11,25 +12,28 @@ const runner = setupTestRunner({
   config: apiTestConfig({
     lists: {
       Group: list({
+        access: allowAll,
         fields: {
           name: text(),
         },
       }),
       Event: list({
+        access: allowAll,
         fields: {
           title: text(),
           group: relationship({ ref: 'Group' }),
         },
       }),
       GroupNoRead: list({
+        access: {
+          operation: { ...allOperations(allowAll), query: () => false },
+        },
         fields: {
           name: text(),
         },
-        access: {
-          operation: { query: () => false },
-        },
       }),
       EventToGroupNoRead: list({
+        access: allowAll,
         fields: {
           title: text(),
           group: relationship({ ref: 'GroupNoRead' }),

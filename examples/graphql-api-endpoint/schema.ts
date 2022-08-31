@@ -1,9 +1,11 @@
 import { list } from '@keystone-6/core';
+import { allowAll } from '@keystone-6/core/access';
 import { text, relationship, password, timestamp, select } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
 
 export const lists = {
   User: list({
+    access: allowAll,
     ui: {
       listView: {
         initialColumns: ['name', 'posts'],
@@ -17,6 +19,7 @@ export const lists = {
     },
   }),
   Post: list({
+    access: allowAll,
     fields: {
       title: text(),
       status: select({
@@ -66,6 +69,7 @@ export const lists = {
     },
   }),
   Tag: list({
+    access: allowAll,
     ui: {
       isHidden: true,
     },

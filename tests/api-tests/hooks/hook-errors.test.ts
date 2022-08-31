@@ -2,6 +2,7 @@ import { relationship, text } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/core/testing';
 import { KeystoneContext } from '@keystone-6/core/types';
+import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig, expectExtensionError, unpackErrors } from '../utils';
 import { GraphQLRequest, withServer } from '../with-server';
 
@@ -11,6 +12,7 @@ const runner = (debug: boolean | undefined) =>
       config: apiTestConfig({
         lists: {
           User: list({
+            access: allowAll,
             fields: { name: text() },
             hooks: {
               beforeOperation: ({ resolvedData, operation, item }) => {
@@ -38,6 +40,7 @@ const runner = (debug: boolean | undefined) =>
             },
           }),
           Post: list({
+            access: allowAll,
             fields: {
               title: text({
                 hooks: {
@@ -94,6 +97,7 @@ const runner = (debug: boolean | undefined) =>
             },
           }),
           BadResolveInput: list({
+            access: allowAll,
             fields: {
               badResolveInput: relationship({
                 ref: 'Post',

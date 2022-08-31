@@ -1,6 +1,7 @@
 import http from 'http';
 import { list, config } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
+import { allowAll } from '@keystone-6/core/access';
 import { dbConfig } from '../utils';
 
 function makeQuery(size = 0) {
@@ -22,6 +23,7 @@ function makeQuery(size = 0) {
 
 export const lists = {
   Thing: list({
+    access: allowAll,
     fields: {
       value: text(),
     },

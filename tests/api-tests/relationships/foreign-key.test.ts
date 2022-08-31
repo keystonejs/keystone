@@ -1,4 +1,5 @@
 import { list } from '@keystone-6/core';
+import { allowAll } from '@keystone-6/core/access';
 import { relationship } from '@keystone-6/core/fields';
 import { apiTestConfig, dbProvider, getPrismaSchema } from '../utils';
 
@@ -7,11 +8,13 @@ test('when not specifying foreignKey in a one to one relationship, the side is p
     apiTestConfig({
       lists: {
         A: list({
+          access: allowAll,
           fields: {
             b: relationship({ ref: 'B.a' }),
           },
         }),
         B: list({
+          access: allowAll,
           fields: {
             a: relationship({ ref: 'A.b' }),
           },
@@ -51,11 +54,13 @@ test('when specifying foreignKey: true in a one to one relationship, that side h
     apiTestConfig({
       lists: {
         A: list({
+          access: allowAll,
           fields: {
             b: relationship({ ref: 'B.a' }),
           },
         }),
         B: list({
+          access: allowAll,
           fields: {
             a: relationship({ ref: 'A.b', db: { foreignKey: true } }),
           },
@@ -95,11 +100,13 @@ test('when specifying foreignKey: { map } in a one to one relationship, that sid
     apiTestConfig({
       lists: {
         A: list({
+          access: allowAll,
           fields: {
             b: relationship({ ref: 'B.a' }),
           },
         }),
         B: list({
+          access: allowAll,
           fields: {
             a: relationship({ ref: 'A.b', db: { foreignKey: { map: 'blah' } } }),
           },
@@ -140,12 +147,14 @@ test('when specifying foreignKey: true on both sides of a one to one relationshi
       apiTestConfig({
         lists: {
           A: list({
+            access: allowAll,
             fields: {
               b: relationship({ ref: 'B.a', db: { foreignKey: true } }),
             },
           }),
 
           B: list({
+            access: allowAll,
             fields: {
               a: relationship({ ref: 'A.b', db: { foreignKey: true } }),
             },
@@ -164,12 +173,14 @@ test('when specifying foreignKey: { map } on both sides of a one to one relation
       apiTestConfig({
         lists: {
           A: list({
+            access: allowAll,
             fields: {
               b: relationship({ ref: 'B.a', db: { foreignKey: { map: 'blah' } } }),
             },
           }),
 
           B: list({
+            access: allowAll,
             fields: {
               a: relationship({ ref: 'A.b', db: { foreignKey: { map: 'other' } } }),
             },
@@ -188,11 +199,13 @@ test('foreignKey: true in a many to one relationship is the same as not specifyi
       apiTestConfig({
         lists: {
           A: list({
+            access: allowAll,
             fields: {
               b: relationship({ ref: 'B.a', many: true }),
             },
           }),
           B: list({
+            access: allowAll,
             fields: {
               a: relationship({ ref: 'A.b', db: foreignKey ? { foreignKey: true } : undefined }),
             },
@@ -211,11 +224,13 @@ test('foreignKey: { map } in a many to one relationship sets the @map attribute 
     apiTestConfig({
       lists: {
         A: list({
+          access: allowAll,
           fields: {
             b: relationship({ ref: 'B.a', many: true }),
           },
         }),
         B: list({
+          access: allowAll,
           fields: {
             a: relationship({ ref: 'A.b', db: { foreignKey: { map: 'something' } } }),
           },

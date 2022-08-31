@@ -20,7 +20,8 @@
     "testing",
     "fields",
     "types",
-    "system"
+    "system",
+    "access"
   ],
   "bin": {
     "keystone": "bin/cli.js"
@@ -151,7 +152,8 @@
       "fields/types/*/views/index.tsx",
       "fields/types/relationship/views/RelationshipSelect.tsx",
       "fields/types/{image,file}/utils.ts",
-      "types/index.ts"
+      "types/index.ts",
+      "access/index.ts"
     ]
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/packages/core"

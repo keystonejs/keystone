@@ -1,6 +1,7 @@
 import { text, relationship } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/core/testing';
+import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig } from '../../utils';
 
 type IdType = any;
@@ -9,12 +10,14 @@ const runner = setupTestRunner({
   config: apiTestConfig({
     lists: {
       Note: list({
+        access: allowAll,
         fields: {
           title: text(),
           author: relationship({ ref: 'User.notes' }),
         },
       }),
       User: list({
+        access: allowAll,
         fields: {
           username: text(),
           notes: relationship({ ref: 'Note.author', many: true }),

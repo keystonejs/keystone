@@ -1,4 +1,5 @@
 import { list } from '@keystone-6/core';
+import { allowAll } from '@keystone-6/core/access';
 import { getCommittedArtifacts } from '@keystone-6/core/artifacts';
 import { select, text } from '@keystone-6/core/fields';
 import { createSystem, initConfig } from '@keystone-6/core/system';
@@ -9,6 +10,7 @@ test('isIndexed: true and db.map on a text field generates a valid Prisma schema
   const config = apiTestConfig({
     lists: {
       Test: list({
+        access: allowAll,
         fields: {
           somethingIndexed: text({ isIndexed: true, db: { map: 'something' } }),
           other: text(),
@@ -49,6 +51,7 @@ if (dbProvider === 'postgresql') {
     const config = apiTestConfig({
       lists: {
         Test: list({
+          access: allowAll,
           fields: {
             somethingIndexed: text({ isIndexed: true, db: { map: 'something' } }),
             enumSelectIndexed: select({

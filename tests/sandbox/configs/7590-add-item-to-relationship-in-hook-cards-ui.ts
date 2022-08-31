@@ -1,9 +1,11 @@
 import { list, config } from '@keystone-6/core';
+import { allowAll } from '@keystone-6/core/access';
 import { relationship, text } from '@keystone-6/core/fields';
 import { dbConfig } from '../utils';
 
 export const lists = {
   User: list({
+    access: allowAll,
     fields: {
       name: text(),
       numbers: relationship({
@@ -28,6 +30,7 @@ export const lists = {
     },
   }),
   Number: list({
+    access: allowAll,
     fields: {
       user: relationship({ ref: 'User.numbers' }),
       value: text({ validation: { isRequired: true } }),

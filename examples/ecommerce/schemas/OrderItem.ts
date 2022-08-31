@@ -8,6 +8,7 @@ export const OrderItem = list({
       create: isSignedIn,
       update: () => false,
       delete: () => false,
+      query: () => true,
     },
     filter: {
       query: rules.canManageOrderItems,

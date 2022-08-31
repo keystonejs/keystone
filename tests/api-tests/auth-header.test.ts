@@ -4,6 +4,7 @@ import { statelessSessions } from '@keystone-6/core/session';
 import { createAuth } from '@keystone-6/auth';
 import type { KeystoneContext } from '@keystone-6/core/types';
 import { setupTestRunner, setupTestEnv } from '@keystone-6/core/testing';
+import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig, expectAccessDenied, seed } from './utils';
 import { GraphQLRequest, withServer } from './with-server';
 
@@ -32,24 +33,18 @@ function setup(options?: any) {
         apiTestConfig({
           lists: {
             Post: list({
+              access: allowAll,
               fields: {
                 title: text(),
                 postedAt: timestamp(),
               },
             }),
             User: list({
+              access: defaultAccess,
               fields: {
                 name: text(),
                 email: text({ isIndexed: 'unique' }),
                 password: password(),
-              },
-              access: {
-                operation: {
-                  create: defaultAccess,
-                  query: defaultAccess,
-                  update: defaultAccess,
-                  delete: defaultAccess,
-                },
               },
             }),
           },
@@ -116,6 +111,7 @@ describe('Auth testing', () => {
           apiTestConfig({
             lists: {
               User: list({
+                access: allowAll,
                 fields: {
                   name: text(),
                   email: text(),

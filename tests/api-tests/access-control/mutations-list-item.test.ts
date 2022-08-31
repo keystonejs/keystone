@@ -1,6 +1,7 @@
 import { text } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/core/testing';
+import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig, expectAccessDenied, expectAccessReturnError } from '../utils';
 
 const runner = setupTestRunner({
@@ -8,8 +9,8 @@ const runner = setupTestRunner({
     lists: {
       // Item access control
       User: list({
-        fields: { name: text() },
         access: {
+          operation: allowAll,
           item: {
             create: ({ inputData }) => {
               return inputData.name !== 'bad';
@@ -22,9 +23,10 @@ const runner = setupTestRunner({
             },
           },
         },
+
+        fields: { name: text() },
       }),
       BadAccess: list({
-        fields: { name: text() },
         access: {
           item: {
             // @ts-ignore Intentionally return a filter for testing purposes
@@ -41,6 +43,7 @@ const runner = setupTestRunner({
             },
           },
         },
+        fields: { name: text() },
       }),
     },
   }),
