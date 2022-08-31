@@ -1,6 +1,6 @@
 ---
-title: "Schema API"
-description: "Reference docs for Keystone’s Schema API, which defines the data model of your system."
+title: "Lists API"
+description: "Reference docs for Keystone’s Lists API, which defines the data model of your system."
 ---
 
 The `lists` property of the [system configuration](./config) object is where you define the data model, or schema, of your Keystone system.

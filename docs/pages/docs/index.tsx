@@ -333,7 +333,7 @@ export default function Docs() {
           Keystone’s config function accepts an object representing all the configurable parts of
           your backend system.
         </Well>
-        <Well grad="grad4" heading="Schema API" href="/docs/apis/schema">
+        <Well grad="grad4" heading="Lists API" href="/docs/apis/schema">
           This is where you define the data model, or schema, of your Keystone system.
         </Well>
         <Well grad="grad4" heading="Fields API" href="/docs/apis/fields">
