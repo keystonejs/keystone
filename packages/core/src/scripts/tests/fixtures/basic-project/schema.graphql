@@ -83,10 +83,7 @@ input TodoCreateInput {
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
-scalar JSON
-  @specifiedBy(
-    url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
-  )
+scalar JSON @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
 
 type Mutation {
   createTodo(data: TodoCreateInput!): Todo
@@ -98,12 +95,7 @@ type Mutation {
 }
 
 type Query {
-  todos(
-    where: TodoWhereInput! = {}
-    orderBy: [TodoOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Todo!]
+  todos(where: TodoWhereInput! = {}, orderBy: [TodoOrderByInput!]! = [], take: Int, skip: Int! = 0): [Todo!]
   todo(where: TodoWhereUniqueInput!): Todo
   todosCount(where: TodoWhereInput! = {}): Int
   keystone: KeystoneMeta!

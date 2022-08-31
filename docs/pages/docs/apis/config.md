@@ -37,7 +37,7 @@ This type definition should be considered the source of truth for the available 
 The `lists` config option is where you define the data model, or schema, of the Keystone system.
 It has a TypeScript type of `ListSchemaConfig`.
 This is where you define and configure the `lists` and their `fields` of the data model.
-See the [Schema API](./schema) docs for details on how to use this function.
+See the [Lists API](./schema) docs for details on how to use this function.
 
 ```typescript
 import type { ListSchemaConfig } from '@keystone-6/core/types';
@@ -144,7 +144,7 @@ import type { AdminUIConfig } from '@keystone-6/core/types';
 The `ui` config option configures the Admin UI which is provided by Keystone.
 It has a TypeScript type of `AdminUIConfig`.
 This config option is for top level configuration of the Admin UI.
-Fine grained configuration of how lists and fields behave in the Admin UI is handled in the `lists` definition (see the [Schema API](./schema) for more details).
+Fine grained configuration of how lists and fields behave in the Admin UI is handled in the `lists` definition (see the [Lists API](./schema) for more details).
 
 Options:
 
@@ -387,7 +387,7 @@ Options:
 - `debug` (default: `process.env.NODE_ENV !== 'production'`): If `true`, stacktraces from both Apollo errors and Keystone errors will be included in the errors returned from the GraphQL API.
   These can be filtered out with `apolloConfig.formatError` if you need to process them, but do not want them returned over the GraphQL API.
 - `queryLimits` (default: `undefined`): Allows you to limit the total number of results returned from a query to your GraphQL API.
-  See also the per-list `graphql.queryLimits` option in the [Schema API](./schema).
+  See also the per-list `graphql.queryLimits` option in the [Lists API](./schema).
 - `path` (default: `'/api/graphql'`): The path of the GraphQL API endpoint.
 - `playground` (default: `process.env.NODE_ENV !== 'production'`)
   - `true` - Add `ApolloServerPluginLandingPageGraphQLPlayground` to the Apollo Server plugins
@@ -552,7 +552,7 @@ Options:
 
 {% related-content %}
 {% well
-heading="Schema API Reference"
+heading="Lists API Reference"
 href="/docs/apis/schema" %}
 The API to configure your  options used with the `list` function.
 {% /well %}
