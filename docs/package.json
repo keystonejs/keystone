@@ -32,7 +32,7 @@
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.4",
     "classnames": "^2.3.1",
-    "copy-to-clipboard": "^3.3.1",
+    "clipboard-copy": "^4.0.1",
     "date-fns": "^2.26.0",
     "dedent": "^0.7.0",
     "emery": "^1.4.1",
