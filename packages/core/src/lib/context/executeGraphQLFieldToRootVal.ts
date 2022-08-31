@@ -5,7 +5,6 @@ import {
   GraphQLArgumentConfig,
   GraphQLSchema,
   DocumentNode,
-  validate,
   execute,
   GraphQLField,
   VariableDefinitionNode,
@@ -192,13 +191,9 @@ export function executeGraphQLFieldToRootVal(field: GraphQLField<any, any>) {
         [field.name]: fieldConfig,
       },
     }),
+    assumeValid: true,
   });
 
-  const validationErrors = validate(schema, document);
-
-  if (validationErrors.length > 0) {
-    throw validationErrors[0];
-  }
   return async (
     args: Record<string, any>,
     context: KeystoneContext,
