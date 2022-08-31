@@ -23,6 +23,9 @@ import {
   GraphQLFieldConfig,
   GraphQLOutputType,
   astFromValue,
+  Kind,
+  OperationTypeNode,
+  ConstValueNode,
 } from 'graphql';
 import { KeystoneContext } from '../../types';
 
@@ -37,33 +40,35 @@ function getNamedOrListTypeNodeForType(
     | GraphQLList<any>
 ): NamedTypeNode | ListTypeNode {
   if (type instanceof GraphQLList) {
-    return { kind: 'ListType', type: getTypeNodeForType(type.ofType) };
+    return { kind: Kind.LIST_TYPE, type: getTypeNodeForType(type.ofType) };
   }
-  return { kind: 'NamedType', name: { kind: 'Name', value: type.name } };
+  return { kind: Kind.NAMED_TYPE, name: { kind: Kind.NAME, value: type.name } };
 }
 
 export function getTypeNodeForType(type: GraphQLType): TypeNode {
   if (type instanceof GraphQLNonNull) {
-    return { kind: 'NonNullType', type: getNamedOrListTypeNodeForType(type.ofType) };
+    return { kind: Kind.NON_NULL_TYPE, type: getNamedOrListTypeNodeForType(type.ofType) };
   }
   return getNamedOrListTypeNodeForType(type);
 }
 
 export function getVariablesForGraphQLField(field: GraphQLField<any, any>) {
-  const variableDefinitions: VariableDefinitionNode[] = field.args.map(arg => ({
-    kind: 'VariableDefinition',
-    type: getTypeNodeForType(arg.type),
-    variable: { kind: 'Variable', name: { kind: 'Name', value: arg.name } },
-    defaultValue:
-      arg.defaultValue === undefined
-        ? undefined
-        : astFromValue(arg.defaultValue, arg.type) ?? undefined,
-  }));
+  const variableDefinitions: VariableDefinitionNode[] = field.args.map(
+    (arg): VariableDefinitionNode => ({
+      kind: Kind.VARIABLE_DEFINITION,
+      type: getTypeNodeForType(arg.type),
+      variable: { kind: Kind.VARIABLE, name: { kind: Kind.NAME, value: arg.name } },
+      defaultValue:
+        arg.defaultValue === undefined
+          ? undefined
+          : (astFromValue(arg.defaultValue, arg.type) as ConstValueNode) ?? undefined,
+    })
+  );
 
   const argumentNodes: ArgumentNode[] = field.args.map(arg => ({
-    kind: 'Argument',
-    name: { kind: 'Name', value: arg.name },
-    value: { kind: 'Variable', name: { kind: 'Name', value: arg.name } },
+    kind: Kind.ARGUMENT,
+    name: { kind: Kind.NAME, value: arg.name },
+    value: { kind: Kind.VARIABLE, name: { kind: Kind.NAME, value: arg.name } },
   }));
 
   return { variableDefinitions, argumentNodes };
@@ -97,7 +102,7 @@ type RequiredButStillAllowUndefined<
   [K in Key]: T[K];
 };
 
-function argsToArgsConfig(args: GraphQLArgument[]) {
+function argsToArgsConfig(args: readonly GraphQLArgument[]) {
   return Object.fromEntries(
     args.map(arg => {
       const argConfig: RequiredButStillAllowUndefined<GraphQLArgumentConfig> = {
@@ -144,21 +149,21 @@ function getRootValGivenOutputType(originalType: OutputType, value: any): any {
 export function executeGraphQLFieldToRootVal(field: GraphQLField<any, any>) {
   const { argumentNodes, variableDefinitions } = getVariablesForGraphQLField(field);
   const document: DocumentNode = {
-    kind: 'Document',
+    kind: Kind.DOCUMENT,
     definitions: [
       {
-        kind: 'OperationDefinition',
-        operation: 'query',
+        kind: Kind.OPERATION_DEFINITION,
+        operation: OperationTypeNode.QUERY,
         selectionSet: {
-          kind: 'SelectionSet',
+          kind: Kind.SELECTION_SET,
           selections: [
             {
-              kind: 'Field',
-              name: { kind: 'Name', value: field.name },
+              kind: Kind.FIELD,
+              name: { kind: Kind.NAME, value: field.name },
               arguments: argumentNodes,
               selectionSet: {
-                kind: 'SelectionSet',
-                selections: [{ kind: 'Field', name: { kind: 'Name', value: rawField } }],
+                kind: Kind.SELECTION_SET,
+                selections: [{ kind: Kind.FIELD, name: { kind: Kind.NAME, value: rawField } }],
               },
             },
           ],

@@ -1,6 +1,6 @@
 import { KeystoneContext } from '@keystone-6/core/types';
 import { Descendant } from 'slate';
-import { GraphQLSchema, executeSync, parse } from 'graphql';
+import { GraphQLSchema, executeSync, parse, ExecutionResult } from 'graphql';
 import weakMemoize from '@emotion/weak-memoize';
 import {
   ComponentBlock,
@@ -220,11 +220,11 @@ export const getLabelFieldsForLists = weakMemoize(function getLabelFieldsForList
     schema,
     document,
     contextValue: { isAdminUIBuildProcess: true },
-  });
+  }) as ExecutionResult<{
+    keystone: { adminMeta: { lists: { key: string; labelField: string }[] } };
+  }>;
   if (errors?.length) {
     throw errors[0];
   }
-  return Object.fromEntries(
-    data!.keystone.adminMeta.lists.map((x: any) => [x.key, x.labelField as string])
-  );
+  return Object.fromEntries(data!.keystone.adminMeta.lists.map(x => [x.key, x.labelField]));
 });
