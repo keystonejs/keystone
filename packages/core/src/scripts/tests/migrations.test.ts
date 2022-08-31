@@ -152,8 +152,8 @@ describe('useMigrations: false', () => {
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
-        provider = \\"sqlite\\"
-        url      = \\"file:./app.db\\"
+        provider = "sqlite"
+        url      = "file:./app.db"
       }
 
       model Todo {
@@ -198,13 +198,13 @@ describe('useMigrations: false', () => {
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
-        provider = \\"sqlite\\"
-        url      = \\"file:./app.db\\"
+        provider = "sqlite"
+        url      = "file:./app.db"
       }
 
       model Todo {
         id    String @id
-        title String @default(\\"\\")
+        title String @default("")
       }
       "
     `);
@@ -327,13 +327,13 @@ describe('useMigrations: true', () => {
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
-        provider = \\"sqlite\\"
-        url      = \\"file:./app.db\\"
+        provider = "sqlite"
+        url      = "file:./app.db"
       }
 
       model Todo {
         id         String  @id
-        title      String  @default(\\"\\")
+        title      String  @default("")
         isComplete Boolean @default(false)
       }
       "
@@ -344,14 +344,14 @@ describe('useMigrations: true', () => {
     expect(migration).toMatchInlineSnapshot(`
       "-- RedefineTables
       PRAGMA foreign_keys=OFF;
-      CREATE TABLE \\"new_Todo\\" (
-          \\"id\\" TEXT NOT NULL PRIMARY KEY,
-          \\"title\\" TEXT NOT NULL DEFAULT '',
-          \\"isComplete\\" BOOLEAN NOT NULL DEFAULT false
+      CREATE TABLE "new_Todo" (
+          "id" TEXT NOT NULL PRIMARY KEY,
+          "title" TEXT NOT NULL DEFAULT '',
+          "isComplete" BOOLEAN NOT NULL DEFAULT false
       );
-      INSERT INTO \\"new_Todo\\" (\\"id\\", \\"title\\") SELECT \\"id\\", \\"title\\" FROM \\"Todo\\";
-      DROP TABLE \\"Todo\\";
-      ALTER TABLE \\"new_Todo\\" RENAME TO \\"Todo\\";
+      INSERT INTO "new_Todo" ("id", "title") SELECT "id", "title" FROM "Todo";
+      DROP TABLE "Todo";
+      ALTER TABLE "new_Todo" RENAME TO "Todo";
       PRAGMA foreign_key_check;
       PRAGMA foreign_keys=ON;
       "
@@ -395,8 +395,8 @@ describe('useMigrations: true', () => {
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
-        provider = \\"sqlite\\"
-        url      = \\"file:./app.db\\"
+        provider = "sqlite"
+        url      = "file:./app.db"
       }
 
       model Todo {
@@ -420,12 +420,12 @@ describe('useMigrations: true', () => {
       */
       -- RedefineTables
       PRAGMA foreign_keys=OFF;
-      CREATE TABLE \\"new_Todo\\" (
-          \\"id\\" TEXT NOT NULL PRIMARY KEY
+      CREATE TABLE "new_Todo" (
+          "id" TEXT NOT NULL PRIMARY KEY
       );
-      INSERT INTO \\"new_Todo\\" (\\"id\\") SELECT \\"id\\" FROM \\"Todo\\";
-      DROP TABLE \\"Todo\\";
-      ALTER TABLE \\"new_Todo\\" RENAME TO \\"Todo\\";
+      INSERT INTO "new_Todo" ("id") SELECT "id" FROM "Todo";
+      DROP TABLE "Todo";
+      ALTER TABLE "new_Todo" RENAME TO "Todo";
       PRAGMA foreign_key_check;
       PRAGMA foreign_keys=ON;
       "
@@ -468,13 +468,13 @@ describe('useMigrations: true', () => {
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
-        provider = \\"sqlite\\"
-        url      = \\"file:./app.db\\"
+        provider = "sqlite"
+        url      = "file:./app.db"
       }
 
       model Todo {
         id    String @id
-        title String @default(\\"\\")
+        title String @default("")
       }
       "
     `);
@@ -483,9 +483,9 @@ describe('useMigrations: true', () => {
 
     expect(migration).toMatchInlineSnapshot(`
       "-- CreateTable
-      CREATE TABLE \\"Todo\\" (
-          \\"id\\" TEXT NOT NULL PRIMARY KEY,
-          \\"title\\" TEXT NOT NULL DEFAULT ''
+      CREATE TABLE "Todo" (
+          "id" TEXT NOT NULL PRIMARY KEY,
+          "title" TEXT NOT NULL DEFAULT ''
       );
       "
     `);
@@ -512,7 +512,7 @@ describe('useMigrations: true', () => {
       - The following migration(s) are applied to the database but missing from the local migrations directory: old_migration_name
 
 
-      We need to reset the sqlite database \\"app.db\\" at file:./app.db.
+      We need to reset the sqlite database "app.db" at file:./app.db.
       Prompt: Do you want to continue? All data will be lost. true
 
       ✨ There has been a change to your Keystone schema that requires a migration
@@ -560,7 +560,7 @@ describe('useMigrations: true', () => {
       - The following migration(s) are applied to the database but missing from the local migrations directory: old_migration_name
 
 
-      We need to reset the sqlite database \\"app.db\\" at file:./app.db.
+      We need to reset the sqlite database "app.db" at file:./app.db.
       Prompt: Do you want to continue? All data will be lost. false
 
       Reset cancelled."
@@ -589,13 +589,13 @@ describe('useMigrations: true', () => {
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
-        provider = \\"sqlite\\"
-        url      = \\"file:./app.db\\"
+        provider = "sqlite"
+        url      = "file:./app.db"
       }
 
       model Todo {
         id    String @id
-        title String @default(\\"\\")
+        title String @default("")
       }
       "
     `);
@@ -609,14 +609,14 @@ describe('useMigrations: true', () => {
       .toMatchInlineSnapshot(`
       "-- RedefineTables
       PRAGMA foreign_keys=OFF;
-      CREATE TABLE \\"new_Todo\\" (
-          \\"id\\" TEXT NOT NULL PRIMARY KEY,
-          \\"title\\" TEXT NOT NULL DEFAULT '',
-          \\"isComplete\\" BOOLEAN NOT NULL DEFAULT false
+      CREATE TABLE "new_Todo" (
+          "id" TEXT NOT NULL PRIMARY KEY,
+          "title" TEXT NOT NULL DEFAULT '',
+          "isComplete" BOOLEAN NOT NULL DEFAULT false
       );
-      INSERT INTO \\"new_Todo\\" (\\"id\\", \\"title\\") SELECT \\"id\\", \\"title\\" FROM \\"Todo\\";
-      DROP TABLE \\"Todo\\";
-      ALTER TABLE \\"new_Todo\\" RENAME TO \\"Todo\\";
+      INSERT INTO "new_Todo" ("id", "title") SELECT "id", "title" FROM "Todo";
+      DROP TABLE "Todo";
+      ALTER TABLE "new_Todo" RENAME TO "Todo";
       PRAGMA foreign_key_check;
       PRAGMA foreign_keys=ON;
       "
@@ -648,13 +648,13 @@ describe('useMigrations: true', () => {
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
-        provider = \\"sqlite\\"
-        url      = \\"file:./app.db\\"
+        provider = "sqlite"
+        url      = "file:./app.db"
       }
 
       model Todo {
         id    String @id
-        title String @default(\\"\\")
+        title String @default("")
       }
       "
     `);
@@ -667,7 +667,7 @@ describe('useMigrations: true', () => {
       ⭐️ Dev Server Starting on http://localhost:3000
       ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
-      ✨ sqlite database \\"app.db\\" created at file:./app.db
+      ✨ sqlite database "app.db" created at file:./app.db
       Applying migration \`migration_name\`
       ✨ The following migration(s) have been applied:
 

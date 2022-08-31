@@ -18,7 +18,7 @@ test('keystone prisma exits with the same code as the prisma child process exits
   expect(result.exitCode).toBe(1);
   expect(stripAnsi(result.all!)).toMatchInlineSnapshot(`
     "
-    ! Unknown command \\"bad-thing\\"
+    ! Unknown command "bad-thing"
 
     ◭  Prisma is a modern DB toolkit to query, migrate and model your database (https://prisma.io)
 
@@ -76,7 +76,7 @@ test('keystone prisma uses the db url in the keystone config', async () => {
   expect(result.exitCode).toBe(0);
   expect(stripAnsi(result.all!)).toMatchInlineSnapshot(`
     "Prisma schema loaded from schema.prisma
-    Datasource \\"sqlite\\": SQLite database \\"app.db\\" at \\"file:./app.db\\"
+    Datasource "sqlite": SQLite database "app.db" at "file:./app.db"
 
     Database connection error:
 
