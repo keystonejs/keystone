@@ -19,20 +19,7 @@ export function useFilters(list: ListMeta, filterableFields: Set<string>) {
   }, [list, filterableFields]);
   const filters = useMemo(() => {
     let filters: Filter[] = [];
-    let OR;
     Object.keys(query).forEach(key => {
-      if (key === 'OR') {
-        const val = query[key];
-        if (typeof val === 'string') {
-          let value;
-          try {
-            value = JSON.parse(val);
-          } catch (err) {}
-          if (val !== undefined) {
-            OR = value;
-          }
-        }
-      }
       const filter = possibleFilters[key];
       const val = query[key];
       if (filter && typeof val === 'string') {
@@ -46,7 +33,7 @@ export function useFilters(list: ListMeta, filterableFields: Set<string>) {
       }
     });
 
-    let where = { OR };
+    let where = {};
 
     filters.forEach(filter => {
       Object.assign(
