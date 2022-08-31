@@ -129,6 +129,7 @@ export default config({
       access: {
         operation: {
           ...allOperations(denyAll)
+          // hint: unconditionally returning `true` is equivalent to using allowAll for this operation
           query: ({ session, context, listKey, operation }) => true,
         }
       },
