@@ -3,20 +3,32 @@ import { list } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
 import { setupTestRunner } from '@keystone-6/core/testing';
 import supertest from 'supertest';
+import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig } from './utils';
+import { withServer } from './with-server';
 
-const runner = setupTestRunner({
-  config: apiTestConfig({
-    lists: { User: list({ fields: { name: text() } }) },
-    server: {
-      extendHttpServer: server => {
-        server.prependListener('request', (req: IncomingMessage, res: ServerResponse) => {
-          res.setHeader('test-header', 'test-header-value');
-        });
+const runner = withServer(
+  setupTestRunner({
+    config: apiTestConfig({
+      lists: {
+        // prettier-ignore
+        User: list({
+          access: allowAll,
+          fields: {
+            name: text()
+          },
+        }),
       },
-    },
-  }),
-});
+      server: {
+        extendHttpServer: server => {
+          server.prependListener('request', (req: IncomingMessage, res: ServerResponse) => {
+            res.setHeader('test-header', 'test-header-value');
+          });
+        },
+      },
+    }),
+  })
+);
 
 test(
   'server extension',

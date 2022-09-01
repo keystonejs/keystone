@@ -3,12 +3,15 @@ import { text, relationship, integer } from '@keystone-6/core/fields';
 import { list, graphQLSchemaExtension } from '@keystone-6/core';
 import { KeystoneContext } from '@keystone-6/core/types';
 import { setupTestRunner } from '@keystone-6/core/testing';
+import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig } from '../utils';
+import { withServer } from '../with-server';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
     lists: {
       Post: list({
+        access: allowAll,
         fields: {
           title: text(),
           author: relationship({ ref: 'User.posts', many: true }),
@@ -18,6 +21,7 @@ const runner = setupTestRunner({
         },
       }),
       User: list({
+        access: allowAll,
         fields: {
           name: text({ graphql: { cacheHint: { maxAge: 80 } } }),
           favNumber: integer({
@@ -97,7 +101,7 @@ const addFixtures = async (context: KeystoneContext) => {
 describe('cache hints', () => {
   test(
     'users',
-    runner(async ({ context, graphQLRequest }) => {
+    withServer(runner)(async ({ context, graphQLRequest }) => {
       await addFixtures(context);
 
       // Basic query
@@ -190,7 +194,7 @@ describe('cache hints', () => {
 
   test(
     'posts',
-    runner(async ({ context, graphQLRequest }) => {
+    withServer(runner)(async ({ context, graphQLRequest }) => {
       await addFixtures(context);
       // The Post list has a static cache hint
 
@@ -284,7 +288,7 @@ describe('cache hints', () => {
 
   test(
     'mutations',
-    runner(async ({ context, graphQLRequest }) => {
+    withServer(runner)(async ({ context, graphQLRequest }) => {
       const { posts } = await addFixtures(context);
 
       // Mutation responses shouldn't be cached.
@@ -307,7 +311,7 @@ describe('cache hints', () => {
 
   test(
     'extendGraphQLSchemaQueries',
-    runner(async ({ context, graphQLRequest }) => {
+    withServer(runner)(async ({ context, graphQLRequest }) => {
       await addFixtures(context);
 
       // Basic query
@@ -329,7 +333,7 @@ describe('cache hints', () => {
 
   test(
     'extendGraphQLSchemaMutations',
-    runner(async ({ context, graphQLRequest }) => {
+    withServer(runner)(async ({ context, graphQLRequest }) => {
       await addFixtures(context);
 
       // Mutation responses shouldn't be cached.

@@ -1,39 +1,45 @@
 import { text, integer, relationship } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/core/testing';
+import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig, expectGraphQLValidationError, expectLimitsExceededError } from '../utils';
+import { withServer } from '../with-server';
 import { depthLimit, definitionLimit, fieldLimit } from './validation';
 
-const runner = setupTestRunner({
-  config: apiTestConfig({
-    lists: {
-      Post: list({
-        fields: {
-          title: text(),
-          author: relationship({ ref: 'User.posts', many: true }),
-        },
-      }),
-      User: list({
-        fields: {
-          name: text(),
-          favNumber: integer(),
-          posts: relationship({ ref: 'Post.author', many: true }),
-        },
-        graphql: {
-          queryLimits: {
-            maxResults: 2,
+const runner = withServer(
+  setupTestRunner({
+    config: apiTestConfig({
+      lists: {
+        Post: list({
+          access: allowAll,
+          fields: {
+            title: text(),
+            author: relationship({ ref: 'User.posts', many: true }),
           },
-        },
-      }),
-    },
-    graphql: {
-      queryLimits: { maxTotalResults: 6 },
-      apolloConfig: {
-        validationRules: [depthLimit(3), definitionLimit(3), fieldLimit(8)],
+        }),
+        User: list({
+          access: allowAll,
+          fields: {
+            name: text(),
+            favNumber: integer(),
+            posts: relationship({ ref: 'Post.author', many: true }),
+          },
+          graphql: {
+            queryLimits: {
+              maxResults: 2,
+            },
+          },
+        }),
       },
-    },
-  }),
-});
+      graphql: {
+        queryLimits: { maxTotalResults: 6 },
+        apolloConfig: {
+          validationRules: [depthLimit(3), definitionLimit(3), fieldLimit(8)],
+        },
+      },
+    }),
+  })
+);
 
 describe('maxResults Limit', () => {
   describe('Basic querying', () => {

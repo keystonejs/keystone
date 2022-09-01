@@ -5,6 +5,7 @@ import { list } from '@keystone-6/core';
 import { integer } from '@keystone-6/core/fields';
 import { setupTestRunner } from '@keystone-6/core/testing';
 import { FieldTypeFunc, BaseListTypeInfo } from '@keystone-6/core/types';
+import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig } from '../../utils';
 
 const listKey = 'Test';
@@ -13,6 +14,7 @@ const filterTestRunner = (field: FieldTypeFunc<BaseListTypeInfo>) =>
     config: apiTestConfig({
       lists: {
         [listKey]: list({
+          access: allowAll,
           fields: { index: integer(), testField: field },
         }),
       },

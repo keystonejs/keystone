@@ -3,6 +3,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/core/testing';
+import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig } from '../utils';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
@@ -85,12 +86,14 @@ const runner = setupTestRunner({
   config: apiTestConfig({
     lists: {
       Owner: list({
+        access: allowAll,
         fields: {
           name: text(),
           companies: relationship({ ref: 'Company.owners', many: true }),
         },
       }),
       Company: list({
+        access: allowAll,
         fields: {
           name: text(),
           location: relationship({ ref: 'Location.company' }),
@@ -98,6 +101,7 @@ const runner = setupTestRunner({
         },
       }),
       Location: list({
+        access: allowAll,
         fields: {
           name: text(),
           company: relationship({ ref: 'Company.location' }),
@@ -105,6 +109,7 @@ const runner = setupTestRunner({
         },
       }),
       Custodian: list({
+        access: allowAll,
         fields: {
           name: text(),
           locations: relationship({ ref: 'Location.custodians', many: true }),

@@ -6,7 +6,7 @@ const { default: getReleasePlan } = require('@changesets/get-release-plan');
 const { getInfo } = require('@changesets/get-github-info');
 
 // TODO: move this to CI linting
-const verbs = new Set(['Adds', 'Changes', 'Fixes', 'Moves', 'Removes', 'Updates']);
+const verbs = new Set(['Adds', 'Changes', 'Fixes', 'Moves', 'Removes', 'Updates', 'Upgrade']);
 
 // TODO: derived?
 const publicPackages = [

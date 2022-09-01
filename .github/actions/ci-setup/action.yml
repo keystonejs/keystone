@@ -5,7 +5,8 @@ runs:
     - name: Setup Node.js LTS
       uses: actions/setup-node@v3
       with:
-        node-version: lts/*
+        # preferably lts/*, but we hit API limits when querying that
+        node-version: 16
 
     - name: Get yarn cache directory path
       id: yarn-cache-dir-path

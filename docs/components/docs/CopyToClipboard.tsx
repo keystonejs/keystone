@@ -2,7 +2,7 @@
 /** @jsx jsx */
 import { useToasts } from '@keystone-ui/toast';
 import { jsx } from '@emotion/react';
-import copy from 'copy-to-clipboard';
+import copy from 'clipboard-copy';
 
 import { Link } from '../icons/Link';
 
@@ -15,24 +15,11 @@ export function CopyToClipboard({ value }: { value: string }) {
     const url = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
     const text = `${url}#${value}`;
 
-    if (navigator) {
-      // use the new navigator.clipboard API if it exists
-      navigator.clipboard.writeText(text).then(
-        () => addToast({ title: 'Copied to clipboard', tone: 'positive' }),
-        () => addToast({ title: 'Failed to copy to clipboard', tone: 'negative' })
-      );
-      return;
-    } else {
-      // Fallback to a library that leverages document.execCommand
-      // for browser versions that don't support the navigator object.
-      // As document.execCommand
-      try {
-        copy(text);
-      } catch (e) {
-        addToast({ title: 'Failed to copy to clipboard', tone: 'negative' });
-      }
-
-      return;
+    try {
+      copy(text);
+      addToast({ title: 'Copied to clipboard', tone: 'positive' });
+    } catch (e) {
+      addToast({ title: 'Failed to copy to clipboard', tone: 'negative' });
     }
   };
 

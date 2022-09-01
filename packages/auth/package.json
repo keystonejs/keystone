@@ -13,7 +13,7 @@
     "@keystone-ui/notice": "^6.0.1",
     "cross-fetch": "^3.1.4",
     "fast-deep-equal": "^3.1.3",
-    "graphql": "^15.8.0"
+    "graphql": "^16.6.0"
   },
   "devDependencies": {
     "@keystone-6/core": "^2.2.0",

@@ -1,6 +1,5 @@
 import type { ReadStream } from 'fs';
 import * as graphqlTsSchema from '@graphql-ts/schema';
-import { GraphQLJSON } from 'graphql-type-json';
 // @ts-ignore
 import GraphQLUpload from 'graphql-upload/GraphQLUpload.js';
 import { GraphQLError, GraphQLScalarType } from 'graphql';
@@ -43,7 +42,15 @@ export { field, fields, interface, interfaceField, object, union } from './schem
 
 export type Context = KeystoneContext;
 
-export const JSON = graphqlTsSchema.graphql.scalar<JSONValue>(GraphQLJSON);
+export const JSON = graphqlTsSchema.graphql.scalar<JSONValue>(
+  new GraphQLScalarType({
+    name: 'JSON',
+    description:
+      'The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).',
+    specifiedByURL: 'http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf',
+    // the defaults for serialize, parseValue and parseLiteral do what makes sense for JSON
+  })
+);
 
 type FileUpload = {
   filename: string;
@@ -61,12 +68,13 @@ export const Upload = graphqlTsSchema.graphql.scalar<Promise<FileUpload>>(GraphQ
 export const Decimal = graphqlTsSchema.graphql.scalar<DecimalValue & { scaleToPrint?: number }>(
   new GraphQLScalarType({
     name: 'Decimal',
-    serialize(value: DecimalValue & { scaleToPrint?: number }) {
+    serialize(value) {
       if (!DecimalValue.isDecimal(value)) {
         throw new GraphQLError(`unexpected value provided to Decimal scalar: ${value}`);
       }
-      if (value.scaleToPrint !== undefined) {
-        return value.toFixed(value.scaleToPrint);
+      const cast = value as DecimalValue & { scaleToPrint?: number };
+      if (cast.scaleToPrint !== undefined) {
+        return value.toFixed(cast.scaleToPrint);
       }
       return value.toString();
     },
@@ -102,7 +110,10 @@ export const Decimal = graphqlTsSchema.graphql.scalar<DecimalValue & { scaleToPr
 export const BigInt = graphqlTsSchema.graphql.scalar<bigint>(
   new GraphQLScalarType({
     name: 'BigInt',
-    serialize(value: bigint) {
+    serialize(value) {
+      if (typeof value !== 'bigint') {
+        throw new GraphQLError(`unexpected value provided to BigInt scalar: ${value}`);
+      }
       return value.toString();
     },
     parseLiteral(value) {
@@ -146,7 +157,7 @@ function parseDate(input: string): Date {
 export const DateTime = graphqlTsSchema.graphql.scalar<Date>(
   new GraphQLScalarType({
     name: 'DateTime',
-    specifiedByUrl: 'https://datatracker.ietf.org/doc/html/rfc3339#section-5.6',
+    specifiedByURL: 'https://datatracker.ietf.org/doc/html/rfc3339#section-5.6',
     serialize(value: unknown) {
       if (!(value instanceof Date) || isNaN(value.valueOf())) {
         throw new GraphQLError(`unexpected value provided to DateTime scalar: ${value}`);
@@ -184,7 +195,7 @@ function validateCalendarDay(input: string) {
 export const CalendarDay = graphqlTsSchema.graphql.scalar<string>(
   new GraphQLScalarType({
     name: 'CalendarDay',
-    specifiedByUrl: 'https://datatracker.ietf.org/doc/html/rfc3339#section-5.6',
+    specifiedByURL: 'https://datatracker.ietf.org/doc/html/rfc3339#section-5.6',
     serialize(value: unknown) {
       if (typeof value !== 'string') {
         throw new GraphQLError(`unexpected value provided to CalendarDay scalar: ${value}`);

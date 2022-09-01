@@ -170,7 +170,7 @@ export default function ForDevelopers() {
             </Type>
             <Type as="p" look="body18">
               <Link href="/docs/apis/schema">
-                <a>Schema API reference →</a>
+                <a>Lists API reference →</a>
               </Link>
             </Type>
           </div>

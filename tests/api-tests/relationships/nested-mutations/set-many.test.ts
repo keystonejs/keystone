@@ -2,11 +2,13 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/core/testing';
+import { allOperations, allowAll } from '@keystone-6/core/access';
 import {
   apiTestConfig,
   expectGraphQLValidationError,
   expectSingleRelationshipError,
 } from '../../utils';
+import { withServer } from '../../with-server';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -14,39 +16,43 @@ const runner = setupTestRunner({
   config: apiTestConfig({
     lists: {
       Note: list({
+        access: allowAll,
         fields: {
           content: text(),
         },
       }),
       User: list({
+        access: allowAll,
         fields: {
           username: text(),
           notes: relationship({ ref: 'Note', many: true }),
         },
       }),
       NoteNoRead: list({
+        access: {
+          operation: { ...allOperations(allowAll), query: () => false },
+        },
         fields: {
           content: text(),
         },
-        access: {
-          operation: { query: () => false },
-        },
       }),
       UserToNotesNoRead: list({
+        access: allowAll,
         fields: {
           username: text(),
           notes: relationship({ ref: 'NoteNoRead', many: true }),
         },
       }),
       NoteNoCreate: list({
+        access: {
+          operation: { ...allOperations(allowAll), create: () => false },
+        },
         fields: {
           content: text(),
         },
-        access: {
-          operation: { create: () => false },
-        },
       }),
       UserToNotesNoCreate: list({
+        access: allowAll,
         fields: {
           username: text(),
           notes: relationship({ ref: 'NoteNoCreate', many: true }),
@@ -155,7 +161,7 @@ describe('no access control', () => {
 
   test(
     'causes a validation error if used during create',
-    runner(async ({ graphQLRequest }) => {
+    withServer(runner)(async ({ graphQLRequest }) => {
       const { body } = await graphQLRequest({
         query: `
           mutation {
