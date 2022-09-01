@@ -1,6 +1,6 @@
 import { list, graphql } from '@keystone-6/core';
 import { select, relationship, text, timestamp, virtual } from '@keystone-6/core/fields';
-import { gql } from '@ts-gql/tag';
+import { gql } from '@ts-gql/tag/no-transform';
 import { Lists, Context } from '.keystone/types';
 
 export const lists: Lists = {
