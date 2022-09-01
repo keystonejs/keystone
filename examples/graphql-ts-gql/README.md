@@ -1,6 +1,6 @@
-## Feature Example - virtual field
+## Feature Example - Graphql types with ts-gql
 
-This project demonstrates how to add virtual fields to a Keystone list
+This project demonstrates how to generate GraphQL types using ts-gql for `context.graphql` in a Keystone project
 It builds on the [Virtual Field](../virtual-field) starter project.
 
 ## Instructions
