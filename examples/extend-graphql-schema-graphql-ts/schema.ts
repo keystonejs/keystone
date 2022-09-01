@@ -36,8 +36,7 @@ export const extendGraphqlSchema = graphql.extend(base => {
     fields: {
       draft: graphql.field({
         type: graphql.Int,
-        resolve({ authorId }, args, _context) {
-          const context = _context as Context;
+        resolve({ authorId }, args, context: Context) {
           return context.query.Post.count({
             where: { author: { id: { equals: authorId } }, status: { equals: 'draft' } },
           });
@@ -45,8 +44,7 @@ export const extendGraphqlSchema = graphql.extend(base => {
       }),
       published: graphql.field({
         type: graphql.Int,
-        resolve({ authorId }, args, _context) {
-          const context = _context as Context;
+        resolve({ authorId }, args, context: Context) {
           return context.query.Post.count({
             where: { author: { id: { equals: authorId } }, status: { equals: 'published' } },
           });
@@ -54,8 +52,7 @@ export const extendGraphqlSchema = graphql.extend(base => {
       }),
       latest: graphql.field({
         type: base.object('Post'),
-        async resolve({ authorId }, args, _context) {
-          const context = _context as Context;
+        async resolve({ authorId }, args, context: Context) {
           const [post] = await context.db.Post.findMany({
             take: 1,
             orderBy: { publishDate: 'desc' },
@@ -73,8 +70,7 @@ export const extendGraphqlSchema = graphql.extend(base => {
         // with the name provided or throw if it doesn't exist
         type: base.object('Post'),
         args: { id: graphql.arg({ type: graphql.nonNull(graphql.ID) }) },
-        resolve(source, { id }, _context) {
-          const context = _context as Context;
+        resolve(source, { id }, context: Context) {
           // Note we use `context.db.Post` here as we have a return type
           // of Post, and this API provides results in the correct format.
           // If you accidentally use `context.query.Post` here you can expect problems
@@ -93,8 +89,7 @@ export const extendGraphqlSchema = graphql.extend(base => {
           id: graphql.arg({ type: graphql.nonNull(graphql.ID) }),
           days: graphql.arg({ type: graphql.nonNull(graphql.Int), defaultValue: 7 }),
         },
-        resolve(source, { id, days }, _context) {
-          const context = _context as Context;
+        resolve(source, { id, days }, context: Context) {
           // Create a date string <days> in the past from now()
           const cutoff = new Date(
             new Date().setUTCDate(new Date().getUTCDate() - days)
