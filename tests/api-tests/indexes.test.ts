@@ -42,7 +42,8 @@ model Test {
   other            String @default("")
 
   @@index([somethingIndexed])
-}`);
+}
+`);
 });
 
 if (dbProvider === 'postgresql') {
@@ -96,6 +97,7 @@ model Test {
 enum TestEnumSelectIndexedType {
   a
   b
-}`);
+}
+`);
   });
 }

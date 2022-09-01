@@ -45,7 +45,8 @@ model A {
 model B {
   id String @id @default(cuid())
   a  A[]    @relation("A_b")
-}`);
+}
+`);
 });
 
 test("the ordering of the lists doesn't affect the relation name", async () => {
@@ -90,7 +91,8 @@ model A {
 model B {
   id String @id @default(cuid())
   a  A[]    @relation("A_b")
-}`);
+}
+`);
 });
 
 test('when specifying relationName in a many to many relationship, the relation name is set to that', async () => {
@@ -135,7 +137,8 @@ model A {
 model B {
   id String @id @default(cuid())
   a  A[]    @relation("the_relation_name")
-}`);
+}
+`);
 });
 
 test('when specifying relationName on both sides of a many to many relationship, an error is thrown', async () => {

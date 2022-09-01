@@ -46,7 +46,8 @@ model A {
 model B {
   id String @id @default(cuid())
   a  A?     @relation("A_b")
-}`);
+}
+`);
 });
 
 test('when specifying foreignKey: true in a one to one relationship, that side has the foreign key', async () => {
@@ -92,7 +93,8 @@ model B {
   id  String  @id @default(cuid())
   a   A?      @relation("B_a", fields: [aId], references: [id])
   aId String? @unique @map("a")
-}`);
+}
+`);
 });
 
 test('when specifying foreignKey: { map } in a one to one relationship, that side has the foreign key with the map', async () => {
@@ -138,7 +140,8 @@ model B {
   id  String  @id @default(cuid())
   a   A?      @relation("B_a", fields: [aId], references: [id])
   aId String? @unique @map("blah")
-}`);
+}
+`);
 });
 
 test('when specifying foreignKey: true on both sides of a one to one relationship, an error is thrown', async () => {
@@ -265,5 +268,6 @@ model B {
   aId String? @map("something")
 
   @@index([aId])
-}`);
+}
+`);
 });
