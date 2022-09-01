@@ -1,8 +1,10 @@
 import { list } from '@keystone-6/core';
+import { allowAll } from '@keystone-6/core/access';
 import { select, relationship, text, timestamp } from '@keystone-6/core/fields';
 
 export const lists = {
   Post: list({
+    access: allowAll,
     ui: {
       searchFields: ['title', 'content'],
     },
@@ -21,6 +23,7 @@ export const lists = {
     },
   }),
   Author: list({
+    access: allowAll,
     fields: {
       name: text({ validation: { isRequired: true } }),
       email: text({ isIndexed: 'unique', validation: { isRequired: true } }),

@@ -195,7 +195,7 @@ export function DocsNavigation() {
         <PrimaryNavItem href="/docs/apis">APIs</PrimaryNavItem>
         <SubHeading>Config</SubHeading>
         <NavItem href="/docs/apis/config">Config API</NavItem>
-        <NavItem href="/docs/apis/schema">Schema API</NavItem>
+        <NavItem href="/docs/apis/schema">Lists API</NavItem>
         <NavItem href="/docs/apis/fields">
           Fields API <Badge look="success">Updated</Badge>
         </NavItem>

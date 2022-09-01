@@ -4,7 +4,7 @@ description: "Complete reference docs for Keystone’s Access Control API. Confi
 ---
 
 {% hint kind="warn" %}
-We recently improved this API so it’s easier to program, and makes it harder to introduce security gaps in your system. If you were using it prior to September 6th 2021, [read this guide](/updates/new-access-control) for info on how to upgrade.
+We recently improved this API so it’s easier to program, and makes it harder to introduce security gaps in your system. If you were using it prior to September 1st 2022, you will need to now configure access control for your operations.
 {% /hint %}
 
 The `access` property of the [list configuration](./schema) object configures who can query, create, update, and delete items in your Keystone system.
@@ -29,7 +29,6 @@ export default config({
 ## List Access Control
 
 Keystone provides support for access control and filtering on a per-list basis.
-By default, all lists and fields are public without additional configuration.
 
 There are three types of access control that can be configured on the `access` object:
 
@@ -42,6 +41,21 @@ Each of these types of access control are applied before [hooks](./hooks).
 {% hint kind="warn" %}
 Please note that Keystone does not automatically configure nor leverage database row security policies or row level security
 {% /hint %}
+
+If you are happy to allow all parts of a list to be accessible you can use:
+
+```typescript
+import { config, list } from '@keystone-6/core';
+import { allowAll } from '@keystone-6/core/access';
+
+export default config({
+  lists: {
+    ListKey: list({
+      access: allowAll,
+    }),
+  },
+});
+```
 
 {% hint kind="tip" %}
 **Access denied:** **Mutations** return `null` data with an access denied error. **Queries** never return access denied errors, and instead treat items as if they didn't exist.
@@ -61,11 +75,7 @@ If access is **denied** due to any of the access control methods, the following 
 ### Operation
 
 Operation-level access control lets you control which operations can be accessed by a user based on the `session` and `context`.
-Individual functions can be provided for each of the operations.
-
-{% hint kind="warn" %}
-Each operation type _defaults to public_ unless configured.
-{% /hint %}
+Individual functions can be provided for each of the operations. All operations must be configured.
 
 {% hint kind="tip" %}
 These functions must return `true` if the operation is allowed, or `false` if it is not allowed.
@@ -83,6 +93,44 @@ export default config({
           create: ({ session, context, listKey, operation }) => true,
           update: ({ session, context, listKey, operation }) => true,
           delete: ({ session, context, listKey, operation }) => true,
+        }
+      },
+    }),
+  },
+});
+```
+
+If you are happy setting all of them to true, you can set it for all operations with:
+
+```typescript
+import { config, list } from '@keystone-6/core';
+import { allowAll } from '@keystone-6/core/access';
+
+export default config({
+  lists: {
+    ListKey: list({
+      access: {
+        operation: allowAll
+      },
+    }),
+  },
+});
+```
+
+If you want to set all but one operation to true, you can do so using `allOperations` and `denyAll` from `@keystone-6/core/access` such as:
+
+```typescript
+import { config, list } from '@keystone-6/core';
+import { denyAll, allOperations } from '@keystone-6/core/access';
+
+export default config({
+  lists: {
+    ListKey: list({
+      access: {
+        operation: {
+          ...allOperations(denyAll)
+          // hint: unconditionally returning `true` is equivalent to using allowAll for this operation
+          query: ({ session, context, listKey, operation }) => true,
         }
       },
     }),

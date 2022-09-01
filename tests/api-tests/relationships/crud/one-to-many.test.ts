@@ -3,6 +3,7 @@ import { text, relationship } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/core/testing';
 import type { KeystoneContext } from '@keystone-6/core/types';
+import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig } from '../../utils';
 
 type IdType = any;
@@ -89,12 +90,14 @@ const runner = setupTestRunner({
   config: apiTestConfig({
     lists: {
       Company: list({
+        access: allowAll,
         fields: {
           name: text(),
           locations: relationship({ ref: 'Location.company', many: true }),
         },
       }),
       Location: list({
+        access: allowAll,
         fields: {
           name: text(),
           company: relationship({ ref: 'Company.locations' }),

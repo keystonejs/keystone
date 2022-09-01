@@ -1,3 +1,3 @@
 export { generateAdminUI } from './generateAdminUI';
-export { getAdminMetaSchema } from './getAdminMetaSchema';
+export { KeystoneMeta } from './adminMetaSchema';
 export { buildAdminUI } from './buildAdminUI';

@@ -60,7 +60,7 @@ export function itemAPIForList(
     const exec = executeGraphQLFieldWithSelection(context.graphql.schema, operation, field);
     return ({ query, ...args }: { query?: string } & Record<string, any> = {}) => {
       const returnFields = query ?? 'id';
-      return exec(args, returnFields, context);
+      return exec(args, returnFields, context) as any;
     };
   };
   const gqlNames = context.gqlNames(listKey);

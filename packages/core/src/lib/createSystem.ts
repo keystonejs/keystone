@@ -32,7 +32,7 @@ function getSudoGraphQLSchema(config: KeystoneConfig) {
           listKey,
           {
             ...list,
-            access: { operation: {}, item: {}, filter: {} },
+            access: () => true,
             graphql: { ...(list.graphql || {}), omit: [] },
             fields: Object.fromEntries(
               Object.entries(list.fields).map(([fieldKey, field]) => {

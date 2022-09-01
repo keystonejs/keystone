@@ -1,112 +1,119 @@
 import { relationship, text } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
-import { GraphQLRequest, setupTestRunner } from '@keystone-6/core/testing';
+import { setupTestRunner } from '@keystone-6/core/testing';
 import { KeystoneContext } from '@keystone-6/core/types';
+import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig, expectExtensionError, unpackErrors } from '../utils';
+import { GraphQLRequest, withServer } from '../with-server';
 
 const runner = (debug: boolean | undefined) =>
-  setupTestRunner({
-    config: apiTestConfig({
-      lists: {
-        User: list({
-          fields: { name: text() },
-          hooks: {
-            beforeOperation: ({ resolvedData, operation, item }) => {
-              if (operation === 'delete') {
-                if (item.name === 'trigger before delete') {
-                  throw new Error('Simulated error: beforeOperation');
+  withServer(
+    setupTestRunner({
+      config: apiTestConfig({
+        lists: {
+          User: list({
+            access: allowAll,
+            fields: { name: text() },
+            hooks: {
+              beforeOperation: ({ resolvedData, operation, item }) => {
+                if (operation === 'delete') {
+                  if (item.name === 'trigger before delete') {
+                    throw new Error('Simulated error: beforeOperation');
+                  }
+                } else {
+                  if (resolvedData?.name === 'trigger before') {
+                    throw new Error('Simulated error: beforeOperation');
+                  }
                 }
-              } else {
-                if (resolvedData?.name === 'trigger before') {
-                  throw new Error('Simulated error: beforeOperation');
+              },
+              afterOperation: ({ resolvedData, operation, originalItem }) => {
+                if (operation === 'delete') {
+                  if (originalItem.name === 'trigger after delete') {
+                    throw new Error('Simulated error: afterOperation');
+                  }
+                } else {
+                  if (resolvedData?.name === 'trigger after') {
+                    throw new Error('Simulated error: afterOperation');
+                  }
                 }
-              }
+              },
             },
-            afterOperation: ({ resolvedData, operation, originalItem }) => {
-              if (operation === 'delete') {
-                if (originalItem.name === 'trigger after delete') {
-                  throw new Error('Simulated error: afterOperation');
-                }
-              } else {
-                if (resolvedData?.name === 'trigger after') {
-                  throw new Error('Simulated error: afterOperation');
-                }
-              }
+          }),
+          Post: list({
+            access: allowAll,
+            fields: {
+              title: text({
+                hooks: {
+                  beforeOperation: ({ resolvedData, operation, item }) => {
+                    if (operation === 'delete') {
+                      if (item.title === 'trigger before delete') {
+                        throw new Error('Simulated error: title: beforeOperation');
+                      }
+                    } else {
+                      if (resolvedData?.title === 'trigger before') {
+                        throw new Error('Simulated error: title: beforeOperation');
+                      }
+                    }
+                  },
+                  afterOperation: ({ resolvedData, operation, originalItem }) => {
+                    if (operation === 'delete') {
+                      if (originalItem.title === 'trigger after delete') {
+                        throw new Error('Simulated error: title: afterOperation');
+                      }
+                    } else {
+                      if (resolvedData?.title === 'trigger after') {
+                        throw new Error('Simulated error: title: afterOperation');
+                      }
+                    }
+                  },
+                },
+              }),
+              content: text({
+                hooks: {
+                  beforeOperation: ({ resolvedData, operation, item }) => {
+                    if (operation === 'delete') {
+                      if (item.content === 'trigger before delete') {
+                        throw new Error('Simulated error: content: beforeOperation');
+                      }
+                    } else {
+                      if (resolvedData?.content === 'trigger before') {
+                        throw new Error('Simulated error: content: beforeOperation');
+                      }
+                    }
+                  },
+                  afterOperation: ({ resolvedData, operation, originalItem }) => {
+                    if (operation === 'delete') {
+                      if (originalItem.content === 'trigger after delete') {
+                        throw new Error('Simulated error: content: afterOperation');
+                      }
+                    } else {
+                      if (resolvedData?.content === 'trigger after') {
+                        throw new Error('Simulated error: content: afterOperation');
+                      }
+                    }
+                  },
+                },
+              }),
             },
-          },
-        }),
-        Post: list({
-          fields: {
-            title: text({
-              hooks: {
-                beforeOperation: ({ resolvedData, operation, item }) => {
-                  if (operation === 'delete') {
-                    if (item.title === 'trigger before delete') {
-                      throw new Error('Simulated error: title: beforeOperation');
-                    }
-                  } else {
-                    if (resolvedData?.title === 'trigger before') {
-                      throw new Error('Simulated error: title: beforeOperation');
-                    }
-                  }
+          }),
+          BadResolveInput: list({
+            access: allowAll,
+            fields: {
+              badResolveInput: relationship({
+                ref: 'Post',
+                hooks: {
+                  resolveInput() {
+                    return { blah: true };
+                  },
                 },
-                afterOperation: ({ resolvedData, operation, originalItem }) => {
-                  if (operation === 'delete') {
-                    if (originalItem.title === 'trigger after delete') {
-                      throw new Error('Simulated error: title: afterOperation');
-                    }
-                  } else {
-                    if (resolvedData?.title === 'trigger after') {
-                      throw new Error('Simulated error: title: afterOperation');
-                    }
-                  }
-                },
-              },
-            }),
-            content: text({
-              hooks: {
-                beforeOperation: ({ resolvedData, operation, item }) => {
-                  if (operation === 'delete') {
-                    if (item.content === 'trigger before delete') {
-                      throw new Error('Simulated error: content: beforeOperation');
-                    }
-                  } else {
-                    if (resolvedData?.content === 'trigger before') {
-                      throw new Error('Simulated error: content: beforeOperation');
-                    }
-                  }
-                },
-                afterOperation: ({ resolvedData, operation, originalItem }) => {
-                  if (operation === 'delete') {
-                    if (originalItem.content === 'trigger after delete') {
-                      throw new Error('Simulated error: content: afterOperation');
-                    }
-                  } else {
-                    if (resolvedData?.content === 'trigger after') {
-                      throw new Error('Simulated error: content: afterOperation');
-                    }
-                  }
-                },
-              },
-            }),
-          },
-        }),
-        BadResolveInput: list({
-          fields: {
-            badResolveInput: relationship({
-              ref: 'Post',
-              hooks: {
-                resolveInput() {
-                  return { blah: true };
-                },
-              },
-            }),
-          },
-        }),
-      },
-      graphql: { debug },
-    }),
-  });
+              }),
+            },
+          }),
+        },
+        graphql: { debug },
+      }),
+    })
+  );
 
 [true, false].map(useHttp => {
   const runQuery = async (

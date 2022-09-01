@@ -1,6 +1,6 @@
 ---
-title: "Schema API"
-description: "Reference docs for Keystone’s Schema API, which defines the data model of your system."
+title: "Lists API"
+description: "Reference docs for Keystone’s Lists API, which defines the data model of your system."
 ---
 
 The `lists` property of the [system configuration](./config) object is where you define the data model, or schema, of your Keystone system.
@@ -11,7 +11,7 @@ import { config, list } from '@keystone-6/core';
 
 export default config({
   lists: ({
-    ListName: list({
+    SomeListName: list({
       fields: { /* ... */ },
       access: { /* ... */ },
       ui: { /* ... */ },
@@ -46,9 +46,9 @@ import { text } from '@keystone-6/core/fields';
 
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       fields: {
-        fieldName: text({ /* ... */ }),
+        someFieldName: text({ /* ... */ }),
         /* ... */
       },
     }),
@@ -116,7 +116,7 @@ import { text } from '@keystone-6/core/fields`;
 
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       fields: { name: text({ /* ... */ }) },
       ui: {
         labelField: 'name',
@@ -179,7 +179,7 @@ import { config, list } from '@keystone-6/core';
 
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       graphql: {
         description: '...',
         itemQueryName: '...',
@@ -212,7 +212,7 @@ import { config, list } from '@keystone-6/core';
 
 export default config({
   lists: {
-    ListName: list({
+    SomeListName: list({
       db: {
         idField: { kind: 'uuid' },
         map: 'table_name',

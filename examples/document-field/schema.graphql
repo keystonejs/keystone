@@ -20,8 +20,7 @@ type Post_content_Document {
   document(hydrateRelationships: Boolean! = false): JSON!
 }
 
-scalar DateTime
-  @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
+scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
 
 input PostWhereUniqueInput {
   id: ID
@@ -148,12 +147,7 @@ type Author {
   id: ID!
   name: String
   email: String
-  posts(
-    where: PostWhereInput! = {}
-    orderBy: [PostOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Post!]
+  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
   bio: Author_bio_Document
 }
@@ -223,10 +217,7 @@ input PostRelateToManyForCreateInput {
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
-scalar JSON
-  @specifiedBy(
-    url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
-  )
+scalar JSON @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
 
 type Mutation {
   createPost(data: PostCreateInput!): Post
@@ -244,20 +235,10 @@ type Mutation {
 }
 
 type Query {
-  posts(
-    where: PostWhereInput! = {}
-    orderBy: [PostOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Post!]
+  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0): [Post!]
   post(where: PostWhereUniqueInput!): Post
   postsCount(where: PostWhereInput! = {}): Int
-  authors(
-    where: AuthorWhereInput! = {}
-    orderBy: [AuthorOrderByInput!]! = []
-    take: Int
-    skip: Int! = 0
-  ): [Author!]
+  authors(where: AuthorWhereInput! = {}, orderBy: [AuthorOrderByInput!]! = [], take: Int, skip: Int! = 0): [Author!]
   author(where: AuthorWhereUniqueInput!): Author
   authorsCount(where: AuthorWhereInput! = {}): Int
   keystone: KeystoneMeta!
@@ -268,8 +249,6 @@ type KeystoneMeta {
 }
 
 type KeystoneAdminMeta {
-  enableSignout: Boolean!
-  enableSessionItem: Boolean!
   lists: [KeystoneAdminUIListMeta!]!
   list(key: String!): KeystoneAdminUIListMeta
 }

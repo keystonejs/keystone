@@ -20,7 +20,8 @@
     "testing",
     "fields",
     "types",
-    "system"
+    "system",
+    "access"
   ],
   "bin": {
     "keystone": "bin/cli.js"
@@ -53,9 +54,9 @@
     "@keystone-ui/tooltip": "^6.0.1",
     "@nodelib/fs.walk": "^1.2.8",
     "@preconstruct/next": "^4.0.0",
-    "@prisma/client": "4.2.1",
-    "@prisma/internals": "4.2.1",
-    "@prisma/migrate": "4.2.1",
+    "@prisma/client": "4.3.0",
+    "@prisma/internals": "4.3.0",
+    "@prisma/migrate": "4.3.0",
     "@sindresorhus/slugify": "^1.1.2",
     "@types/apollo-upload-client": "17.0.1",
     "@types/bcryptjs": "^2.4.2",
@@ -65,7 +66,6 @@
     "@types/inflection": "^1.13.0",
     "@types/node-fetch": "^2.5.12",
     "@types/pluralize": "^0.0.29",
-    "@types/prettier": "^2.4.2",
     "@types/prompts": "^2.0.14",
     "@types/react": "^18.0.9",
     "@types/source-map-support": "^0.5.4",
@@ -83,7 +83,6 @@
     "chalk": "^4.1.2",
     "clipboard-copy": "^4.0.1",
     "cookie": "^0.5.0",
-    "copy-to-clipboard": "^3.3.1",
     "cors": "^2.8.5",
     "cuid": "^2.1.8",
     "date-fns": "^2.26.0",
@@ -95,8 +94,7 @@
     "filenamify": "^4.3.0",
     "form-data": "4.0.0",
     "fs-extra": "^10.0.0",
-    "graphql": "^15.8.0",
-    "graphql-type-json": "^0.3.2",
+    "graphql": "^16.6.0",
     "graphql-upload": "^15.0.2",
     "image-size": "^1.0.0",
     "image-type": "^4.1.0",
@@ -107,13 +105,10 @@
     "micro": "^9.3.4",
     "next": "^12.2.4",
     "node-fetch": "^2.6.7",
-    "normalize-path": "^3.0.0",
-    "object-hash": "^3.0.0",
     "p-limit": "^2.3.0",
     "pirates": "4.0.4",
     "pluralize": "^8.0.0",
-    "prettier": "^2.5.0",
-    "prisma": "4.2.1",
+    "prisma": "4.3.0",
     "prompts": "^2.4.2",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
@@ -157,7 +152,8 @@
       "fields/types/*/views/index.tsx",
       "fields/types/relationship/views/RelationshipSelect.tsx",
       "fields/types/{image,file}/utils.ts",
-      "types/index.ts"
+      "types/index.ts",
+      "access/index.ts"
     ]
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/packages/core"

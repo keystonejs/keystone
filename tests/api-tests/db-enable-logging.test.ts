@@ -1,4 +1,5 @@
 import { list } from '@keystone-6/core';
+import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
 import { setupTestRunner } from '@keystone-6/core/testing';
 import stripAnsi from 'strip-ansi';
@@ -9,7 +10,13 @@ const runner = (enableLogging: boolean) =>
     config: apiTestConfig({
       db: { enableLogging },
       lists: {
-        User: list({ fields: { name: text() } }),
+        // prettier-ignore
+        User: list({
+          access: allowAll,
+          fields: {
+            name: text()
+          },
+        }),
       },
     }),
   });
@@ -27,11 +34,12 @@ test(
       expect(logs).toEqual([
         [
           'prisma:query',
-          dbProvider === 'sqlite'
+          (dbProvider === 'sqlite'
             ? 'SELECT `main`.`User`.`id`, `main`.`User`.`name` FROM `main`.`User` WHERE 1=1 LIMIT ? OFFSET ?'
             : dbProvider === 'mysql'
             ? 'SELECT `test_db`.`User`.`id`, `test_db`.`User`.`name` FROM `test_db`.`User` WHERE 1=1'
-            : 'SELECT "public"."User"."id", "public"."User"."name" FROM "public"."User" WHERE 1=1 OFFSET $1',
+            : 'SELECT "public"."User"."id", "public"."User"."name" FROM "public"."User" WHERE 1=1 OFFSET $1') +
+            ' /* traceparent=00-00-00-00 */',
         ],
       ]);
     } finally {

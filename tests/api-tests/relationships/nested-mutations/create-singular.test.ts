@@ -2,22 +2,26 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/core/testing';
+import { allOperations, allowAll } from '@keystone-6/core/access';
 import {
   apiTestConfig,
   expectGraphQLValidationError,
   expectSingleRelationshipError,
 } from '../../utils';
+import { withServer } from '../../with-server';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
     lists: {
       Group: list({
+        access: allowAll,
         fields: {
           name: text(),
         },
       }),
 
       Event: list({
+        access: allowAll,
         fields: {
           title: text(),
           group: relationship({ ref: 'Group' }),
@@ -25,13 +29,14 @@ const runner = setupTestRunner({
       }),
 
       GroupNoRead: list({
+        access: { operation: { ...allOperations(allowAll), query: () => false } },
         fields: {
           name: text(),
         },
-        access: { operation: { query: () => false } },
       }),
 
       EventToGroupNoRead: list({
+        access: allowAll,
         fields: {
           title: text(),
           group: relationship({ ref: 'GroupNoRead' }),
@@ -39,6 +44,7 @@ const runner = setupTestRunner({
       }),
 
       GroupNoReadHard: list({
+        access: allowAll,
         fields: {
           name: text(),
         },
@@ -46,6 +52,7 @@ const runner = setupTestRunner({
       }),
 
       EventToGroupNoReadHard: list({
+        access: allowAll,
         fields: {
           title: text(),
           group: relationship({ ref: 'GroupNoReadHard' }),
@@ -53,13 +60,14 @@ const runner = setupTestRunner({
       }),
 
       GroupNoCreate: list({
+        access: { operation: { ...allOperations(allowAll), create: () => false } },
         fields: {
           name: text(),
         },
-        access: { operation: { create: () => false } },
       }),
 
       EventToGroupNoCreate: list({
+        access: allowAll,
         fields: {
           title: text(),
           group: relationship({ ref: 'GroupNoCreate' }),
@@ -67,6 +75,7 @@ const runner = setupTestRunner({
       }),
 
       GroupNoCreateHard: list({
+        access: allowAll,
         fields: {
           name: text(),
         },
@@ -74,6 +83,7 @@ const runner = setupTestRunner({
       }),
 
       EventToGroupNoCreateHard: list({
+        access: allowAll,
         fields: {
           title: text(),
           group: relationship({ ref: 'GroupNoCreateHard' }),
@@ -81,13 +91,14 @@ const runner = setupTestRunner({
       }),
 
       GroupNoUpdate: list({
+        access: { operation: { ...allOperations(allowAll), update: () => false } },
         fields: {
           name: text(),
         },
-        access: { operation: { update: () => false } },
       }),
 
       EventToGroupNoUpdate: list({
+        access: allowAll,
         fields: {
           title: text(),
           group: relationship({ ref: 'GroupNoUpdate' }),
@@ -95,6 +106,7 @@ const runner = setupTestRunner({
       }),
 
       GroupNoUpdateHard: list({
+        access: allowAll,
         fields: {
           name: text(),
         },
@@ -102,6 +114,7 @@ const runner = setupTestRunner({
       }),
 
       EventToGroupNoUpdateHard: list({
+        access: allowAll,
         fields: {
           title: text(),
           group: relationship({ ref: 'GroupNoUpdateHard' }),
@@ -230,7 +243,7 @@ describe('with access control', () => {
       } else {
         test(
           'throws error when creating nested within create mutation',
-          runner(async ({ context, graphQLRequest }) => {
+          withServer(runner)(async ({ context, graphQLRequest }) => {
             const alphaNumGenerator = gen.alphaNumString.notEmpty();
             const eventName = sampleOne(alphaNumGenerator);
             const groupName = sampleOne(alphaNumGenerator);
@@ -286,7 +299,7 @@ describe('with access control', () => {
 
         test(
           'throws error when creating nested within update mutation',
-          runner(async ({ context, graphQLRequest }) => {
+          withServer(runner)(async ({ context, graphQLRequest }) => {
             const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
             // Create an item to update

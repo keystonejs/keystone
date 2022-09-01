@@ -29,8 +29,8 @@ test('duplicate headings without disambiguated ids error', () => {
   expect(() => transformDocContent('content.md', content)).toThrowErrorMatchingInlineSnapshot(`
     "Errors in content.md:
     ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
-    content.md:1: The id for this heading is \\"heading-1\\" which is the same as another heading in this file, disambiguate them with {% #some-id-here %} after a heading
-    content.md:2: The id for this heading is \\"heading-1\\" which is the same as another heading in this file, disambiguate them with {% #some-id-here %} after a heading
+    content.md:1: The id for this heading is "heading-1" which is the same as another heading in this file, disambiguate them with {% #some-id-here %} after a heading
+    content.md:2: The id for this heading is "heading-1" which is the same as another heading in this file, disambiguate them with {% #some-id-here %} after a heading
     ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
   `);
 });

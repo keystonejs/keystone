@@ -4,7 +4,9 @@ import express from 'express';
 import { setupTestRunner } from '@keystone-6/core/testing';
 import type { Options as BodyParserOptions } from 'body-parser';
 import supertest from 'supertest';
+import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig } from './utils';
+import { withServer } from './with-server';
 
 function makeQuery(size = 0) {
   const query = JSON.stringify({
@@ -34,23 +36,26 @@ async function tryRequest(app: express.Express, size: number) {
 }
 
 function setup(options?: BodyParserOptions) {
-  return setupTestRunner({
-    config: apiTestConfig({
-      lists: {
-        Thing: list({
-          fields: {
-            value: text(),
-          },
-        }),
-      },
-      graphql: {
-        bodyParser: {
-          // limit: '100kb', // the body-parser default
-          ...options,
+  return withServer(
+    setupTestRunner({
+      config: apiTestConfig({
+        lists: {
+          Thing: list({
+            access: allowAll,
+            fields: {
+              value: text(),
+            },
+          }),
         },
-      },
-    }),
-  });
+        graphql: {
+          bodyParser: {
+            // limit: '100kb', // the body-parser default
+            ...options,
+          },
+        },
+      }),
+    })
+  );
 }
 
 describe('Configuring .graphql.bodyParser', () => {

@@ -1,16 +1,28 @@
 import { list } from '@keystone-6/core';
+import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
 import { setupTestRunner } from '@keystone-6/core/testing';
 import supertest from 'supertest';
 import { apiTestConfig } from './utils';
+import { withServer } from './with-server';
 
 const makeRunner = (healthCheck: any) =>
-  setupTestRunner({
-    config: apiTestConfig({
-      lists: { User: list({ fields: { name: text() } }) },
-      server: { healthCheck },
-    }),
-  });
+  withServer(
+    setupTestRunner({
+      config: apiTestConfig({
+        lists: {
+          // prettier-ignore
+          User: list({
+            access: allowAll,
+            fields: {
+              name: text()
+            }
+          }),
+        },
+        server: { healthCheck },
+      }),
+    })
+  );
 
 test(
   'No health check',

@@ -6,8 +6,9 @@ import { redisSessionStore } from '@keystone-6/session-store-redis';
 import { createClient } from '@redis/client';
 import { createAuth } from '@keystone-6/auth';
 import type { KeystoneContext } from '@keystone-6/core/types';
-import { setupTestRunner, TestArgs } from '@keystone-6/core/testing';
+import { setupTestRunner } from '@keystone-6/core/testing';
 import { apiTestConfig, expectAccessDenied, seed } from './utils';
+import { GraphQLRequest, withServer } from './with-server';
 
 const initialData = {
   User: [
@@ -33,52 +34,54 @@ function setup(options?: any) {
     ...options,
   });
 
-  return setupTestRunner({
-    config: auth.withAuth(
-      apiTestConfig({
-        lists: {
-          Post: list({
-            fields: {
-              title: text(),
-              postedAt: timestamp(),
-            },
-            access: {
-              operation: {
-                create: ({ session }) => !!session?.data?.isAdmin,
-                query: defaultAccess,
-                update: defaultAccess,
-                delete: defaultAccess,
+  return withServer(
+    setupTestRunner({
+      config: auth.withAuth(
+        apiTestConfig({
+          lists: {
+            Post: list({
+              fields: {
+                title: text(),
+                postedAt: timestamp(),
               },
-            },
-          }),
-          User: list({
-            fields: {
-              name: text(),
-              email: text({ isIndexed: 'unique' }),
-              isAdmin: checkbox(),
-              password: password(),
-            },
-            access: {
-              operation: {
-                create: defaultAccess,
-                query: defaultAccess,
-                update: defaultAccess,
-                delete: defaultAccess,
+              access: {
+                operation: {
+                  create: ({ session }) => !!session?.data?.isAdmin,
+                  query: defaultAccess,
+                  update: defaultAccess,
+                  delete: defaultAccess,
+                },
               },
-            },
+            }),
+            User: list({
+              fields: {
+                name: text(),
+                email: text({ isIndexed: 'unique' }),
+                isAdmin: checkbox(),
+                password: password(),
+              },
+              access: {
+                operation: {
+                  create: defaultAccess,
+                  query: defaultAccess,
+                  update: defaultAccess,
+                  delete: defaultAccess,
+                },
+              },
+            }),
+          },
+          session: storedSessions({
+            store: redisSessionStore({ client: createClient() }),
+            secret: COOKIE_SECRET,
           }),
-        },
-        session: storedSessions({
-          store: redisSessionStore({ client: createClient() }),
-          secret: COOKIE_SECRET,
-        }),
-      })
-    ),
-  });
+        })
+      ),
+    })
+  );
 }
 
 async function login(
-  graphQLRequest: TestArgs['graphQLRequest'],
+  graphQLRequest: GraphQLRequest,
   email: string,
   password: string
 ): Promise<{ sessionToken: string; item: { id: any } }> {

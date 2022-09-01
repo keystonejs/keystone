@@ -1,4 +1,5 @@
 import { list, graphql, config } from '@keystone-6/core';
+import { allowAll } from '@keystone-6/core/access';
 import {
   checkbox,
   password,
@@ -25,6 +26,7 @@ const description =
 
 export const lists = {
   Thing: list({
+    access: allowAll,
     fields: {
       checkbox: checkbox({ ui: { description } }),
       password: password({ ui: { description } }),
@@ -115,6 +117,7 @@ export const lists = {
     },
   }),
   Todo: list({
+    access: allowAll,
     ui: {
       description,
       listView: { initialColumns: ['label', 'isComplete', 'createdAt', 'updatedAt'] },
@@ -128,6 +131,7 @@ export const lists = {
     },
   }),
   User: list({
+    access: allowAll,
     ui: { listView: { initialColumns: ['name', 'tasks', 'createdAt', 'updatedAt'] } },
     fields: {
       name: text({ validation: { isRequired: true } }),

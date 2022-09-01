@@ -1,10 +1,12 @@
 import { integer, select, text, relationship } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
+import { allOperations, allowAll } from '@keystone-6/core/access';
 import { rules, isSignedIn } from '../access';
 
 export const Product = list({
   access: {
     operation: {
+      ...allOperations(allowAll),
       create: isSignedIn,
     },
     filter: {

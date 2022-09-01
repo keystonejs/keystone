@@ -1,4 +1,5 @@
 import { gql, list } from '@keystone-6/core';
+import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
 import { staticAdminMetaQuery } from '@keystone-6/core/src/admin-ui/admin-meta-graphql';
 import { setupTestRunner } from '@keystone-6/core/testing';
@@ -9,7 +10,15 @@ const runner = setupTestRunner({
     ui: {
       isAccessAllowed: () => false,
     },
-    lists: { User: list({ fields: { name: text() } }) },
+    lists: {
+      // prettier-ignore
+      User: list({
+        access: allowAll,
+        fields: {
+          name: text()
+        },
+      }),
+    },
   }),
 });
 
@@ -37,8 +46,6 @@ test(
         __typename: 'KeystoneMeta',
         adminMeta: {
           __typename: 'KeystoneAdminMeta',
-          enableSessionItem: false,
-          enableSignout: false,
           lists: [
             {
               __typename: 'KeystoneAdminUIListMeta',
@@ -118,6 +125,7 @@ test(
     config: apiTestConfig({
       lists: {
         Test: list({
+          access: allowAll,
           fields: { name: text() },
           ui: names,
         }),

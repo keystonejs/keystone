@@ -1,11 +1,13 @@
 import { list, graphQLSchemaExtension } from '@keystone-6/core';
 import { select, relationship, text, timestamp } from '@keystone-6/core/fields';
+import { allowAll } from '@keystone-6/core/access';
 import { pubSub } from './websocket';
 
 import type { Lists } from '.keystone/types';
 
 export const lists: Lists = {
   Post: list({
+    access: allowAll,
     hooks: {
       // this hook publishes posts to the 'POST_UPDATED' channel when a post mutated
       afterOperation: async ({ item }) => {
@@ -36,6 +38,7 @@ export const lists: Lists = {
   }),
 
   Author: list({
+    access: allowAll,
     fields: {
       name: text({ validation: { isRequired: true } }),
       email: text({ isIndexed: 'unique', validation: { isRequired: true } }),

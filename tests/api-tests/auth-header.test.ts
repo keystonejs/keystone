@@ -3,8 +3,10 @@ import { list } from '@keystone-6/core';
 import { statelessSessions } from '@keystone-6/core/session';
 import { createAuth } from '@keystone-6/auth';
 import type { KeystoneContext } from '@keystone-6/core/types';
-import { setupTestRunner, TestArgs, setupTestEnv } from '@keystone-6/core/testing';
+import { setupTestRunner, setupTestEnv } from '@keystone-6/core/testing';
+import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig, expectAccessDenied, seed } from './utils';
+import { GraphQLRequest, withServer } from './with-server';
 
 const initialData = {
   User: [
@@ -25,40 +27,36 @@ function setup(options?: any) {
     ...options,
   });
 
-  return setupTestRunner({
-    config: auth.withAuth(
-      apiTestConfig({
-        lists: {
-          Post: list({
-            fields: {
-              title: text(),
-              postedAt: timestamp(),
-            },
-          }),
-          User: list({
-            fields: {
-              name: text(),
-              email: text({ isIndexed: 'unique' }),
-              password: password(),
-            },
-            access: {
-              operation: {
-                create: defaultAccess,
-                query: defaultAccess,
-                update: defaultAccess,
-                delete: defaultAccess,
+  return withServer(
+    setupTestRunner({
+      config: auth.withAuth(
+        apiTestConfig({
+          lists: {
+            Post: list({
+              access: allowAll,
+              fields: {
+                title: text(),
+                postedAt: timestamp(),
               },
-            },
-          }),
-        },
-        session: statelessSessions({ secret: COOKIE_SECRET }),
-      })
-    ),
-  });
+            }),
+            User: list({
+              access: defaultAccess,
+              fields: {
+                name: text(),
+                email: text({ isIndexed: 'unique' }),
+                password: password(),
+              },
+            }),
+          },
+          session: statelessSessions({ secret: COOKIE_SECRET }),
+        })
+      ),
+    })
+  );
 }
 
 async function login(
-  graphQLRequest: TestArgs['graphQLRequest'],
+  graphQLRequest: GraphQLRequest,
   email: string,
   password: string
 ): Promise<{ sessionToken: string; item: { id: any } }> {
@@ -113,6 +111,7 @@ describe('Auth testing', () => {
           apiTestConfig({
             lists: {
               User: list({
+                access: allowAll,
                 fields: {
                   name: text(),
                   email: text(),

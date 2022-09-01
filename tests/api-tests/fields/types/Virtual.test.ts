@@ -1,6 +1,7 @@
 import { integer, relationship, text, virtual } from '@keystone-6/core/fields';
 import { BaseFields, list, graphql } from '@keystone-6/core';
 import { setupTestEnv, setupTestRunner } from '@keystone-6/core/testing';
+import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig } from '../../utils';
 
 function makeRunner(fields: BaseFields<any>) {
@@ -8,6 +9,7 @@ function makeRunner(fields: BaseFields<any>) {
     config: apiTestConfig({
       lists: {
         Post: list({
+          access: allowAll,
           fields: {
             value: integer(),
             ...fields,
@@ -69,18 +71,21 @@ describe('Virtual field type', () => {
       config: apiTestConfig({
         lists: {
           Organisation: list({
+            access: allowAll,
             fields: {
               name: text(),
               authoredPosts: relationship({ ref: 'Post.organisationAuthor', many: true }),
             },
           }),
           Person: list({
+            access: allowAll,
             fields: {
               name: text(),
               authoredPosts: relationship({ ref: 'Post.personAuthor', many: true }),
             },
           }),
           Post: list({
+            access: allowAll,
             fields: {
               organisationAuthor: relationship({ ref: 'Organisation.authoredPosts' }),
               personAuthor: relationship({ ref: 'Person.authoredPosts' }),
@@ -160,6 +165,7 @@ describe('Virtual field type', () => {
         config: apiTestConfig({
           lists: {
             Post: list({
+              access: allowAll,
               fields: {
                 virtual: virtual({
                   field: graphql.field({

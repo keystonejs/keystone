@@ -5,6 +5,7 @@ import globby from 'globby';
 import { list } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
 import { setupTestEnv, setupTestRunner } from '@keystone-6/core/testing';
+import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig, expectPrismaError, dbProvider } from '../utils';
 
 const expectedUniqueConstraintError =
@@ -57,6 +58,7 @@ testModules
           config: apiTestConfig({
             lists: {
               Test: list({
+                access: allowAll,
                 fields: {
                   name: text(),
                   testField: mod.typeFunction({
@@ -175,6 +177,7 @@ testModules
               config: apiTestConfig({
                 lists: {
                   Test: list({
+                    access: allowAll,
                     fields: {
                       name: text(),
                       testField: mod.typeFunction({
