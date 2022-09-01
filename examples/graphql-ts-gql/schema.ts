@@ -1,10 +1,12 @@
 import { list, graphql } from '@keystone-6/core';
 import { select, relationship, text, timestamp, virtual } from '@keystone-6/core/fields';
+import { allowAll } from '@keystone-6/core/access';
 import { gql } from '@ts-gql/tag/no-transform';
 import { Lists, Context } from '.keystone/types';
 
 export const lists: Lists = {
   Post: list({
+    access: allowAll,
     fields: {
       title: text({ validation: { isRequired: true } }),
       status: select({
@@ -105,6 +107,7 @@ export const lists: Lists = {
     },
   }),
   Author: list({
+    access: allowAll,
     fields: {
       name: text({ validation: { isRequired: true } }),
       email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
