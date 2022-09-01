@@ -151,7 +151,7 @@ export type KeystoneGraphQLAPI = {
 
 type GraphQLExecutionArguments<TData, TVariables> = {
   query: string | DocumentNode | TypedDocumentNode<TData, TVariables>;
-  variables?: TVariables | Record<string, any>;
+  variables?: TVariables;
 };
 
 // Session API
