@@ -71,7 +71,7 @@ export function makeCreateContext({
       if (result.errors?.length) {
         throw result.errors[0];
       }
-      return result.data as Record<string, any>;
+      return result.data;
     };
     const dbAPI: KeystoneContext['db'] = {};
     const itemAPI: KeystoneContext['query'] = {};
