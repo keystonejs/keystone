@@ -1,6 +1,7 @@
 import { IncomingMessage } from 'http';
 import { Readable } from 'stream';
 import { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql';
+import { TypedDocumentNode } from '@graphql-typed-document-node/core';
 import { InitialisedList } from '../lib/core/types-for-lists';
 import { BaseListTypeInfo } from './type-info';
 import { GqlNames, BaseKeystoneTypeInfo } from '.';
@@ -147,22 +148,6 @@ export type KeystoneGraphQLAPI = {
     args: GraphQLExecutionArguments<TData, TVariables>
   ) => Promise<ExecutionResult<TData, TVariables>>;
 };
-
-export interface TypedDocumentNode<
-  Result = {
-    [key: string]: any;
-  },
-  Variables = {
-    [key: string]: any;
-  }
-> extends DocumentNode {
-  /**
-   * This type is used to ensure that the variables you pass in to the query are assignable to Variables
-   * and that the Result is assignable to whatever you pass your result to. The method is never actually
-   * implemented, but the type is valid because we list it as optional
-   */
-  __apiType?: (variables: Variables) => Result;
-}
 
 type GraphQLExecutionArguments<TData, TVariables> = {
   query: string | DocumentNode | TypedDocumentNode<TData, TVariables>;
