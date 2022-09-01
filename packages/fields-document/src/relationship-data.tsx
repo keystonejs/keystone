@@ -90,14 +90,14 @@ export async function fetchRelationshipData(
   if (!ids.length) return [];
 
   const labelField = getLabelFieldsForLists(context.graphql.schema)[listKey];
-  const val = await context.graphql.run({
+  const val = (await context.graphql.run({
     query: `query($ids: [ID!]!) {items:${
       context.gqlNames(listKey).listQueryName
     }(where: { id: { in: $ids } }) {${idFieldAlias}:id ${labelFieldAlias}:${labelField}\n${
       selection || ''
     }}}`,
     variables: { ids },
-  });
+  })) as { items: { [idFieldAlias]: string | number; [labelFieldAlias]: string }[] };
 
   return Array.isArray(val.items)
     ? val.items.map(({ [labelFieldAlias]: label, [idFieldAlias]: id, ...data }) => {
