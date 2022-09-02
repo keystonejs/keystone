@@ -11,7 +11,6 @@
     "start": "next start --port 8000"
   },
   "dependencies": {
-    "@apollo/client": "3.6.9",
     "@keystone-6/document-renderer": "^1.1.0",
     "@preconstruct/next": "^4.0.0",
     "autoprefixer": "^10.4.8",

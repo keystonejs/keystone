@@ -1,10 +1,9 @@
 import React, { Fragment } from 'react';
 import type { GetStaticPathsResult, GetStaticPropsContext } from 'next';
 import Link from 'next/link';
-import { gql } from '@apollo/client';
 import type { DocumentRendererProps } from '@keystone-6/document-renderer';
 import { CustomRenderer } from '../../components/CustomRenderer/CustomRenderer';
-import { createApolloClient } from '../../apollo';
+import { fetchGraphQL, gql } from '../../graphql';
 
 export type DocumentProp = DocumentRendererProps['document'];
 
@@ -63,19 +62,16 @@ export default function BlogPage({ post, error }: { post: Post | undefined; erro
 }
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
-  const client = createApolloClient();
   try {
-    const res = await client.query({
-      query: gql`
-        query posts {
-          posts {
-            slug
-          }
+    const data = await fetchGraphQL(gql`
+      query posts {
+        posts {
+          slug
         }
-      `,
-    });
+      }
+    `);
 
-    const posts: Array<{ slug: string }> = res?.data?.posts || [];
+    const posts: { slug: string }[] = data?.posts || [];
     const paths = posts.map(({ slug }) => ({
       params: { slug },
     }));
@@ -94,10 +90,9 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
 
 export async function getStaticProps({ params = {} }: GetStaticPropsContext) {
   const slug = params.slug;
-  const client = createApolloClient();
   try {
-    const res = await client.query({
-      query: gql`
+    const data = await fetchGraphQL(
+      gql`
         query post($slug: String!) {
           post(where: { slug: $slug }) {
             id
@@ -113,12 +108,12 @@ export async function getStaticProps({ params = {} }: GetStaticPropsContext) {
           }
         }
       `,
-      variables: {
+      {
         slug,
-      },
-    });
+      }
+    );
 
-    const post = res?.data?.post;
+    const post = data?.post;
     return { props: { post } };
   } catch (e) {
     return {

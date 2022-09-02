@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react';
 import Link from 'next/link';
-import { gql } from '@apollo/client';
-import { createApolloClient } from '../apollo';
+import { fetchGraphQL, gql } from '../graphql';
 
 type Post = {
   id: string;
@@ -69,26 +68,22 @@ export default function Home({ posts, error }: { posts: Post[]; error?: Error })
 }
 
 export async function getStaticProps() {
-  const client = createApolloClient();
-
   try {
-    const res = await client.query({
-      query: gql`
-        query posts {
-          posts {
-            id
-            title
-            slug
-            publishDate
-            author {
-              name
-            }
+    const data = await fetchGraphQL(gql`
+      query posts {
+        posts {
+          id
+          title
+          slug
+          publishDate
+          author {
+            name
           }
         }
-      `,
-    });
+      }
+    `);
 
-    const posts = res?.data?.posts || [];
+    const posts = data?.posts || [];
 
     return {
       props: {
