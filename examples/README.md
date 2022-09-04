@@ -1,35 +1,47 @@
 # Keystone Examples
 
-👋 Welcome to the Keystone Example Projects – a collection of projects that demonstrate Keystone features.
+👋 Welcome to the Keystone Example Projects – a collection of projects that demonstrate how to use Keystone.
 
-You can use these as jumping off point when adding features to your own Keystone project.
+You'll find two types of examples —
 
-## Base Projects
+1. Feature examples
 
-There are two base projects which all other projects build on:
+These are standalone keystone examples that demonstrate specific use cases and can usually be deployed to [codesandbox](https://codesandbox.io) with a single click to take a quick peek at the demo.
 
-- [`task-manager`](./task-manager)
-- [`blog`](./blog)
+2. E2E examples
 
-They have very simple schemas and none of the bells or whistles you'd expect in a complete project. You can use these as a starting point for general experimentation in a clean environment.
+These examples showcase how Keystone works with other tools and frameworks and usually have a separate frontend and keystone setup that need to run simultaneously for the example to work. 
 
-## Feature Projects
+## Feature Examples
 
-Each project below demonstrates a Keystone feature you can learn about and experiment with.
+- [Task Manager](./task-manager): A simple task manager with Keystone
+- [Blog](./blog): A simple blog with Keystone
+- [Authentication](./with-auth): Add password-based authentication.
+- [Role based access control](./roles): Control list access based on user roles.
+- [JSON field](./json): JSON field in schema.
+- [`defaultValue`](./default-values): Default values in schema.
+- [`extendGraphqlSchema`](./extend-graphql-schema): Extending the GraphQL API.
+- [`extendGraphqlSchema` with graphql-ts](./extend-graphql-schema-graphql-ts): Extend the GraphQL API with [graphql-ts](https://github.com/Thinkmill/graphql-ts).
+- [`extendGraphqlSchema` with Nexus](./extend-graphql-schema-nexus): Extend the GraphQL API with [Nexus](https://nexusjs.org/).
+- [`virtual` field](./virtual-field): Virtual field in schema.
+- [`document` field](./document-field): Document field in schema.
+- [Testing](./testing): Add tests with `@keystone-6/core/testing`.
+- [Custom field](./custom-field): Custom field in schema.
+- [Custom field view](./custom-field-view): Add a custom Admin UI view to a `json` field.
+- [Custom Admin UI logo](./custom-admin-ui-logo): Add a custom logo in the Admin UI.
+- [Custom Admin UI navigation](./custom-admin-ui-navigation): Add a custom navigation in the Admin UI.
+- [Custom Admin UI pages](./custom-admin-ui-pages): Add a custom page in the Admin UI.
+- [REST API](./rest-api): Add custom REST API endpoints
+- [Storage config "local"](./assets-local): Store assets locally
+- [Storage config "S3"](./assets-s3): Store assets in S3
+- [Custom session validation](./assets-s3): Customise session validation
+- [GraphQL subscription](./extend-graphql-subscriptions): Extend GraphQL schema to add subscriptions
 
-- [`withAuth()`](./with-auth): Adds password-based authentication to the Task Manager base.
-- [JSON field](./json): Adds a JSON field to the Task Manager base.
-- [`defaultValue`](./default-values): Adds default values to the Blog base.
-- [`extendGraphqlSchema`](./extend-graphql-schema): Extends the GraphQL API of the Blog base.
-- [`extendGraphqlSchema` with graphql-ts](./extend-graphql-schema-graphql-ts): Extends the GraphQL API of the Blog base with [graphql-ts](https://github.com/Thinkmill/graphql-ts).
-- [`extendGraphqlSchema` with Nexus](./extend-graphql-schema-nexus): Extends the GraphQL API of the Blog base with [Nexus](https://nexusjs.org/).
-- [Virtual field](./virtual-field): Adds virtual fields to the Blog base.
-- [Document field](./document-field): Adds document fields to the Blog base.
-- [Testing](./testing): Adds tests with `@keystone-6/core/testing` to the `withAuth()` example.
-- [Custom field](./custom-field): Adds a custom `stars` field to the Blog base.
-- [Custom field view](./custom-field-view): Adds a custom Admin UI view to a `json` field to the Task Manager base.
-- [Custom Admin UI logo](./custom-admin-ui-logo): Adds a custom logo in the Admin UI to the Task Manager base.
-- [Custom Admin UI pages](./custom-admin-ui-pages): Adds a custom page in the Admin UI to the Task Manager base.
+## E2E Examples
+
+- none yet
+
+_Note: Some current feature examples are E2E examples with keystone and next in the same dir. We're gonna update them soon._
 
 ## Running examples
 
@@ -39,7 +51,7 @@ To run an example, clone this repo and run the following commands:
 
 ```shell
 yarn
-cd examples/<feature>
+cd examples/<name>
 yarn dev
 ```
 
@@ -48,7 +60,7 @@ See the README in each example for more specific details.
 
 ### In CodeSandbox
 
-You can also run our examples from your web browser using the free CodeSandbox service. Just look for the "Try it in CodeSandbox" heading in each example project’s README ([example](https://github.com/keystonejs/keystone/tree/main/examples/task-manager#try-it-out-in-codesandbox-)).
+You can also run our examples from your web browser using the free CodeSandbox service. Just look for the "Try it out in CodeSandbox 🧪" heading in each example project’s README ([example](https://github.com/keystonejs/keystone/tree/main/examples/task-manager#try-it-out-in-codesandbox-)).
 
 ## Getting in touch
 

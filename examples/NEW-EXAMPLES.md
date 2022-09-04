@@ -8,26 +8,20 @@ If you're looking for instructions on how to use the examples, please consult th
 
 ### Types of examples
 
-There are three types of example project:
+There are two types of examples:
 
-- Base Projects: We have two of these, a blog and a task manager. We don't need any more of these
-- Feature Projects: Should be built off a base, and be a minimal demonstration of how to use a specific feature.
-  They should only include what is needed to show off the feature, and should not become "kitchen sink" demos.
-- Solution Projects: Should be a complete demonstration of a solution such as an e-commerce project.
-  These projects combine a collection of features in a cohesive way that makes sense for the use case.
+- Feature Examples: Standalone keystone examples that demonstrate specific use cases. These should only include what is needed to show off the feature, and should not become "kitchen sink" demos.
+- E2E Examples: These examples showcase how Keystone works with other tools and frameworks and usually have a separate frontend and keystone setup that need to run simultaneously for the example to work. 
 
-### Feature Example steps
+### Steps to create an example
 
-1. Decide which base project to use. This is up to you, and will depend on what feature you're trying to demonstrate and where it makes most contextual sense to add it.
-2. Create a new project directory: `cd examples; cp -R task-manager <example-name>`.
-3. Add to git; `git add <example-name>`
-4. Edit `package.json` for the new project. You'll need to update `name`, set `version` to `0.0.0`, and edit the `repository` link.
-5. Edit `CHANGELOG.md` for the new project. Clear out everything except the top level heading. Update top level heading to match the package name
-6. Edit `README.md` for the new project. Document what you expect to be showing off here. This will help act as a spec. We will loop back to this once we’re done to make sure it makes sense, but writing it up front helps frame the work.
-7. Make sure your base example runs. `cd <example-name>; yarn dev`.
-8. Add a changeset with the initial major version of the example. `cd ../..; yarn changeset - major “Initial version of the <example-name> example.”`
-9. [Draw the rest of the owl](https://knowyourmeme.com/memes/how-to-draw-an-owl). Write and test your example, making sure that it's clearly commented.
-10. Add a smoke test to ensure your example is executed on CI. You will need to edit the `examples_smoke_tests` block in `tests.yml`
-11. Update the `examples/README.md` with a link to your new example.
-12. Submit a PR for review.
-13. Once your PR is merged, update the branch protection rules on `main` to require the new smoke test.
+1. Copy paste either `examples/feature-boilerplate` or `examples/e2e-boilerplate` and rename the copy into your example name. Eg. `examples/my-new-example`.
+2 .Edit `package.json` for the new project. You'll need to update `name`, set `version` to `0.0.1`, and edit the `repository` link.
+3.  Edit `CHANGELOG.md` for the new project. Clear out everything except the top level heading. Update top level heading to match the package name.
+4. Edit `README.md` for the new project. Document what you expect to be showing off here. This will help act as a spec. We will loop back to this once we’re done to make sure it makes sense, but writing it up front helps frame the work. For feature examples, make sure you update the codesandbox link in the readme _Try it out in CodeSandbox 🧪_ section.
+5. Make sure your example runs. `cd <example-name>; yarn dev`.
+7. Add a smoke test to ensure your example is executed on CI. You will need to edit the `examples_smoke_tests` block in `tests.yml`
+8. Update the `examples/README.md` with a link to your new example.
+9. Submit a PR for review.
+10. Once your PR is merged, update the branch protection rules on `main` to require the new smoke test
+11. (For feature examples only) After merge, make sure your example deploys to codesandbox by clicking the _View in codesandbox_ link in the `README.md` _Try it out in CodeSandbox 🧪_ section.
