@@ -1,7 +1,7 @@
 import { text } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
 import express from 'express';
-import { setupTestRunner } from '@keystone-6/core/testing';
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import type { Options as BodyParserOptions } from 'body-parser';
 import supertest from 'supertest';
 import { allowAll } from '@keystone-6/core/access';

@@ -3,7 +3,7 @@ import { allowAll } from '@keystone-6/core/access';
 import { getCommittedArtifacts } from '@keystone-6/core/artifacts';
 import { select, text } from '@keystone-6/core/fields';
 import { createSystem, initConfig } from '@keystone-6/core/system';
-import { setupTestEnv } from '@keystone-6/core/testing';
+import { setupTestEnv } from '@keystone-6/api-tests/test-runner';
 import { apiTestConfig, dbProvider } from './utils';
 
 test('isIndexed: true and db.map on a text field generates a valid Prisma schema', async () => {

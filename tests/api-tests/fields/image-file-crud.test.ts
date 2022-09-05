@@ -9,7 +9,7 @@ import mime from 'mime';
 import { file, text, image } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
 import { KeystoneConfig, StorageConfig } from '@keystone-6/core/types';
-import { setupTestRunner } from '@keystone-6/core/testing';
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig, expectSingleResolverError } from '../utils';
 
