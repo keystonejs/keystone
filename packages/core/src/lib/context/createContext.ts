@@ -1,5 +1,5 @@
 import type { IncomingMessage } from 'http';
-import { graphql, GraphQLSchema, print } from 'graphql';
+import { ExecutionResult, graphql, GraphQLSchema, print } from 'graphql';
 import {
   SessionContext,
   KeystoneContext,
@@ -63,7 +63,12 @@ export function makeCreateContext({
     const rawGraphQL: KeystoneGraphQLAPI['raw'] = ({ query, variables }) => {
       const source = typeof query === 'string' ? query : print(query);
       return Promise.resolve(
-        graphql({ schema, source, contextValue: contextToReturn, variableValues: variables })
+        graphql({
+          schema,
+          source,
+          contextValue: contextToReturn,
+          variableValues: variables,
+        }) as ExecutionResult<any>
       );
     };
     const runGraphQL: KeystoneGraphQLAPI['run'] = async ({ query, variables }) => {
@@ -71,7 +76,7 @@ export function makeCreateContext({
       if (result.errors?.length) {
         throw result.errors[0];
       }
-      return result.data as Record<string, any>;
+      return result.data as any;
     };
     const dbAPI: KeystoneContext['db'] = {};
     const itemAPI: KeystoneContext['query'] = {};

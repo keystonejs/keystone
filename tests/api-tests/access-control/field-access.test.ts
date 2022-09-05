@@ -1,5 +1,6 @@
 import { KeystoneContext } from '@keystone-6/core/types';
 import { setupTestEnv, TestEnv } from '@keystone-6/core/testing';
+import { ExecutionResult } from 'graphql';
 import { expectAccessDenied } from '../utils';
 import { nameFn, fieldMatrix, getFieldName, getItemListName, config } from './utils';
 
@@ -46,9 +47,11 @@ describe(`Field access`, () => {
         const { data, errors } = await context.graphql.raw({ query });
         expect(errors).toBe(undefined);
         if (!access.query) {
-          expect(data![singleQueryName]).toEqual({ id: item.id, [fieldName]: null });
+          expect(data!).toEqual({
+            [singleQueryName]: { id: item.id, [fieldName]: null },
+          });
         } else {
-          expect(data![singleQueryName]).toEqual({ id: item.id, [fieldName]: 'hello' });
+          expect(data!).toEqual({ [singleQueryName]: { id: item.id, [fieldName]: 'hello' } });
         }
       });
       test(`field allowed - multi: ${JSON.stringify(access)}`, async () => {
@@ -60,7 +63,7 @@ describe(`Field access`, () => {
           data: { [fieldName]: 'hello' },
         });
         const query = `query { ${allQueryName} { id ${fieldName} } }`;
-        const { data, errors } = await context.graphql.raw({ query });
+        const { data, errors } = (await context.graphql.raw({ query })) as ExecutionResult<any>;
         expect(errors).toBe(undefined);
         if (!access.query) {
           expect(data).toEqual({
@@ -96,14 +99,18 @@ describe(`Field access`, () => {
         } else {
           expect(errors).toBe(undefined);
           if (access.query) {
-            expect(data![createMutationName]).toEqual({
-              id: expect.any(String),
-              [fieldName]: 'bar',
+            expect(data!).toEqual({
+              [createMutationName]: {
+                id: expect.any(String),
+                [fieldName]: 'bar',
+              },
             });
           } else {
-            expect(data![createMutationName]).toEqual({
-              id: expect.any(String),
-              [fieldName]: null,
+            expect(data!).toEqual({
+              [createMutationName]: {
+                id: expect.any(String),
+                [fieldName]: null,
+              },
             });
           }
         }
@@ -130,9 +137,9 @@ describe(`Field access`, () => {
         } else {
           expect(errors).toBe(undefined);
           if (access.query) {
-            expect(data![updateMutationName]).toEqual({ id: item.id, [fieldName]: 'bar' });
+            expect(data!).toEqual({ [updateMutationName]: { id: item.id, [fieldName]: 'bar' } });
           } else {
-            expect(data![updateMutationName]).toEqual({ id: item.id, [fieldName]: null });
+            expect(data!).toEqual({ [updateMutationName]: { id: item.id, [fieldName]: null } });
           }
         }
       });

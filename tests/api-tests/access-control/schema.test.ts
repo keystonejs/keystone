@@ -1,5 +1,6 @@
 import { createSystem, initConfig } from '@keystone-6/core/system';
 import { getGqlNames } from '@keystone-6/core/types';
+import { ExecutionResult } from 'graphql';
 import {
   getListName,
   listConfigVariables,
@@ -60,7 +61,7 @@ describe(`Public schema`, () => {
     mutationType: { fields: { name: string }[] };
   };
   beforeAll(async () => {
-    const data = await context.graphql.run({ query: introspectionQuery });
+    const data = (await context.graphql.run({ query: introspectionQuery })) as Record<string, any>;
     __schema = data.__schema;
     queries = __schema.queryType.fields.map(({ name }) => name);
     mutations = __schema.mutationType.fields.map(({ name }) => name);
@@ -272,7 +273,10 @@ describe(`Public schema`, () => {
                 }
               }`;
             const variables = { listName };
-            const { data, errors } = await context.graphql.raw({ query, variables });
+            const { data, errors } = (await context.graphql.raw({
+              query,
+              variables,
+            })) as ExecutionResult<any>;
             expect(errors).toBe(undefined);
 
             const field = data!.keystone.adminMeta.list.fields.filter(
@@ -329,9 +333,9 @@ describe(`Public schema`, () => {
               }`;
             const variables = { listName };
 
-            const { data, errors } = await context
+            const { data, errors } = (await context
               .withSession({})
-              .graphql.raw({ query, variables });
+              .graphql.raw({ query, variables })) as ExecutionResult<any>;
             expect(errors).toBe(undefined);
 
             const field = data!.keystone.adminMeta.list.fields.filter(
@@ -390,7 +394,7 @@ describe(`Sudo schema`, () => {
     mutationType: { fields: { name: string }[] };
   };
   beforeAll(async () => {
-    const data = await context.sudo().graphql.run({ query: introspectionQuery });
+    const data = (await context.sudo().graphql.run({ query: introspectionQuery })) as any;
     __schema = data.__schema;
     queries = __schema.queryType.fields.map(({ name }) => name);
     mutations = __schema.mutationType.fields.map(({ name }) => name);

@@ -70,7 +70,9 @@ export function itemAPIForList(
     async count({ where = {} } = {}) {
       const { listQueryCountName, whereInputName } = context.gqlNames(listKey);
       const query = `query ($where: ${whereInputName}!) { count: ${listQueryCountName}(where: $where)  }`;
-      const response = await context.graphql.run({ query, variables: { where } });
+      const response = (await context.graphql.run({ query, variables: { where } })) as {
+        count: number;
+      };
       return response.count;
     },
     createOne: f('mutation', gqlNames.createMutationName),
