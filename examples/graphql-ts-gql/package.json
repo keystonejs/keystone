@@ -14,7 +14,7 @@
   "dependencies": {
     "@keystone-6/core": "^2.2.0",
     "@ts-gql/compiler": "^0.15.3",
-    "@ts-gql/eslint-plugin": "^0.8.3",
+    "@ts-gql/eslint-plugin": "^0.8.4",
     "@ts-gql/tag": "^0.7.0"
   },
   "devDependencies": {
