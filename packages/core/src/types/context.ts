@@ -1,6 +1,7 @@
 import { IncomingMessage } from 'http';
 import { Readable } from 'stream';
 import { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql';
+import { TypedDocumentNode } from '@graphql-typed-document-node/core';
 import { InitialisedList } from '../lib/core/types-for-lists';
 import { BaseListTypeInfo } from './type-info';
 import { GqlNames, BaseKeystoneTypeInfo } from '.';
@@ -140,13 +141,17 @@ export type KeystoneDbAPI<KeystoneListsTypeInfo extends Record<string, BaseListT
 
 export type KeystoneGraphQLAPI = {
   schema: GraphQLSchema;
-  run: (args: GraphQLExecutionArguments) => Promise<Record<string, any>>;
-  raw: (args: GraphQLExecutionArguments) => Promise<ExecutionResult<Record<string, any>>>;
+  run: <TData, TVariables extends Record<string, any>>(
+    args: GraphQLExecutionArguments<TData, TVariables>
+  ) => Promise<TData>;
+  raw: <TData, TVariables extends Record<string, any>>(
+    args: GraphQLExecutionArguments<TData, TVariables>
+  ) => Promise<ExecutionResult<TData>>;
 };
 
-type GraphQLExecutionArguments = {
-  query: string | DocumentNode;
-  variables?: Record<string, any>;
+type GraphQLExecutionArguments<TData, TVariables> = {
+  query: string | DocumentNode | TypedDocumentNode<TData, TVariables>;
+  variables?: TVariables;
 };
 
 // Session API

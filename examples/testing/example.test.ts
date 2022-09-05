@@ -27,13 +27,13 @@ describe('Example tests using test runner', () => {
     runner(async ({ context }) => {
       // The context.graphql.raw API is useful when we expect to recieve an
       // error from an operation.
-      const { data, errors } = await context.graphql.raw({
+      const { data, errors } = (await context.graphql.raw({
         query: `mutation {
           createPerson(data: { email: "alice@example.com", password: "super-secret" }) {
             id name email password { isSet }
           }
         }`,
-      });
+      })) as any;
       expect(data!.createPerson).toBe(null);
       expect(errors).toHaveLength(1);
       expect(errors![0].path).toEqual(['createPerson']);
@@ -78,14 +78,14 @@ describe('Example tests using test runner', () => {
 
       // Check that we can't update the task (not logged in)
       {
-        const { data, errors } = await context.graphql.raw({
+        const { data, errors } = (await context.graphql.raw({
           query: `mutation update($id: ID!) {
             updateTask(where: { id: $id }, data: { isComplete: true }) {
               id
             }
           }`,
           variables: { id: task.id },
-        });
+        })) as any;
         expect(data!.updateTask).toBe(null);
         expect(errors).toHaveLength(1);
         expect(errors![0].path).toEqual(['updateTask']);
@@ -96,7 +96,7 @@ describe('Example tests using test runner', () => {
 
       {
         // Check that we can update the task when logged in as Alice
-        const { data, errors } = await context
+        const { data, errors } = (await context
           .withSession({ itemId: alice.id, data: {} })
           .graphql.raw({
             query: `mutation update($id: ID!) {
@@ -105,14 +105,14 @@ describe('Example tests using test runner', () => {
               }
             }`,
             variables: { id: task.id },
-          });
+          })) as any;
         expect(data!.updateTask.id).toEqual(task.id);
         expect(errors).toBe(undefined);
       }
 
       // Check that we can't update the task when logged in as Bob
       {
-        const { data, errors } = await context
+        const { data, errors } = (await context
           .withSession({ itemId: bob.id, data: {} })
           .graphql.raw({
             query: `mutation update($id: ID!) {
@@ -121,7 +121,7 @@ describe('Example tests using test runner', () => {
               }
             }`,
             variables: { id: task.id },
-          });
+          })) as any;
         expect(data!.updateTask).toBe(null);
         expect(errors).toHaveLength(1);
         expect(errors![0].path).toEqual(['updateTask']);

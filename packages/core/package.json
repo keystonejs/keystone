@@ -1,9 +1,13 @@
 {
   "name": "@keystone-6/core",
   "version": "2.2.0",
+  "repository": "https://github.com/keystonejs/keystone/tree/main/packages/core",
   "license": "MIT",
   "main": "dist/keystone-6-core.cjs.js",
   "module": "dist/keystone-6-core.esm.js",
+  "bin": {
+    "keystone": "bin/cli.js"
+  },
   "files": [
     "session",
     "bin",
@@ -13,7 +17,6 @@
     "next",
     "schema",
     "scripts",
-    "session",
     "dist",
     "static",
     "admin-ui",
@@ -23,9 +26,6 @@
     "system",
     "access"
   ],
-  "bin": {
-    "keystone": "bin/cli.js"
-  },
   "dependencies": {
     "@apollo/client": "3.6.9",
     "@aws-sdk/client-s3": "^3.83.0",
@@ -38,6 +38,7 @@
     "@graphql-tools/schema": "npm:@graphql-tools/schema@9.0.1",
     "@graphql-ts/extend": "^1.0.0",
     "@graphql-ts/schema": "^0.6.0",
+    "@graphql-typed-document-node/core": "3.1.1",
     "@hapi/iron": "^6.0.0",
     "@keystone-ui/button": "^7.0.1",
     "@keystone-ui/core": "^5.0.1",
@@ -155,6 +156,5 @@
       "types/index.ts",
       "access/index.ts"
     ]
-  },
-  "repository": "https://github.com/keystonejs/keystone/tree/main/packages/core"
+  }
 }
