@@ -70,7 +70,7 @@ describe('maxResults Limit', () => {
         });
 
         expect(data).toHaveProperty('users');
-        expect(data.users).toEqual([{ name: 'Jess' }, { name: 'Johanna' }]);
+        expect(data).toEqual({ users: [{ name: 'Jess' }, { name: 'Johanna' }] });
 
         // No results is okay
         data = await context.graphql.run({
@@ -86,7 +86,7 @@ describe('maxResults Limit', () => {
         });
 
         expect(data).toHaveProperty('users');
-        expect(data.users.length).toEqual(0);
+        expect(data).toEqual({ users: [] });
 
         // Count is still correct
         data = await context.graphql.run({
@@ -94,7 +94,7 @@ describe('maxResults Limit', () => {
         });
 
         expect(data).toHaveProperty('usersCount');
-        expect(data.usersCount).toBe(users.length);
+        expect(data).toBe({ usersCount: [users.length] });
 
         // This query is only okay because of the "take" parameter
         data = await context.graphql.run({
@@ -108,7 +108,7 @@ describe('maxResults Limit', () => {
         });
 
         expect(data).toHaveProperty('users');
-        expect(data.users.length).toEqual(1);
+        expect(data).toEqual({ users: [{ name: 'Jess' }] });
 
         // This query returns too many results
         let errors;

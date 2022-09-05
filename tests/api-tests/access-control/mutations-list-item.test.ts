@@ -2,6 +2,7 @@ import { text } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/core/testing';
 import { allowAll } from '@keystone-6/core/access';
+import { ExecutionResult } from 'graphql';
 import { apiTestConfig, expectAccessDenied, expectAccessReturnError } from '../utils';
 
 const runner = setupTestRunner({
@@ -214,7 +215,7 @@ describe('Access control - Item', () => {
     'createMany',
     runner(async ({ context }) => {
       // Mix of good and bad names
-      const { data, errors } = await context.graphql.raw({
+      const { data, errors } = (await context.graphql.raw({
         query: `mutation ($data: [UserCreateInput!]!) { createUsers(data: $data) { id name } }`,
         variables: {
           data: [
@@ -225,7 +226,7 @@ describe('Access control - Item', () => {
             { name: 'good 3' },
           ],
         },
-      });
+      })) as ExecutionResult<any>;
 
       // Valid users are returned, invalid come back as null
       expect(data).toEqual({
@@ -288,12 +289,14 @@ describe('Access control - Item', () => {
       });
 
       // Valid users are returned, invalid come back as null
-      expect(data!.updateUsers).toEqual([
-        { id: users[0].id, name: 'still good 1' },
-        null,
-        { id: users[2].id, name: 'still good 3' },
-        null,
-      ]);
+      expect(data!).toEqual({
+        updateUsers: [
+          { id: users[0].id, name: 'still good 1' },
+          null,
+          { id: users[2].id, name: 'still good 3' },
+          null,
+        ],
+      });
 
       // The invalid updates should have errors which point to the nulls in their path
       expectAccessDenied(errors, [
@@ -346,12 +349,14 @@ describe('Access control - Item', () => {
       });
 
       // Valid users are returned, invalid come back as null
-      expect(data!.deleteUsers).toEqual([
-        { id: users[0].id, name: 'good 1' },
-        null,
-        { id: users[2].id, name: 'good 3' },
-        null,
-      ]);
+      expect(data!).toEqual({
+        deleteUsers: [
+          { id: users[0].id, name: 'good 1' },
+          null,
+          { id: users[2].id, name: 'good 3' },
+          null,
+        ],
+      });
 
       // The invalid updates should have errors which point to the nulls in their path
       expectAccessDenied(errors, [

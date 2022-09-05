@@ -148,6 +148,8 @@ test(
         }
       `,
     });
-    expect(res.data!.keystone.adminMeta.list).toEqual(names);
+    expect(res.data!).toEqual({
+      keystone: { adminMeta: { list: names } },
+    });
   })
 );

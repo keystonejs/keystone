@@ -98,7 +98,7 @@ describe('extendGraphqlSchema', () => {
             `,
       });
 
-      expect(data.triple).toEqual(30);
+      expect(data).toEqual({ triple: 30 });
     })
   );
   it(
@@ -114,13 +114,13 @@ describe('extendGraphqlSchema', () => {
             `,
       });
 
-      expect(data.createUser.name).toEqual('Real User');
+      expect(data).toEqual({ createUser: { name: 'Real User' } });
     })
   );
   it(
     'Overrides default keystone resolvers with custom resolvers',
     runner(async ({ context }) => {
-      const data = await context.graphql.run({
+      const data = (await context.graphql.run({
         query: `
               query {
                 users {
@@ -128,7 +128,7 @@ describe('extendGraphqlSchema', () => {
                 }
               }
             `,
-      });
+      })) as { users: { name: string }[] };
 
       expect(data.users[0].name).toEqual('foo');
     })
