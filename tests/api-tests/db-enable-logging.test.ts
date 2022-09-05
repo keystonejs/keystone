@@ -3,7 +3,7 @@ import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import stripAnsi from 'strip-ansi';
-import { apiTestConfig, dbProvider } from './utils';
+import { apiTestConfig, dbProvider, dbName } from './utils';
 
 const runner = (enableLogging: boolean) =>
   setupTestRunner({
@@ -37,7 +37,13 @@ test(
           (dbProvider === 'sqlite'
             ? 'SELECT `main`.`User`.`id`, `main`.`User`.`name` FROM `main`.`User` WHERE 1=1 LIMIT ? OFFSET ?'
             : dbProvider === 'mysql'
-            ? 'SELECT `test_db`.`User`.`id`, `test_db`.`User`.`name` FROM `test_db`.`User` WHERE 1=1'
+            ? 'SELECT `' +
+              dbName +
+              '`.`User`.`id`, `' +
+              dbName +
+              '`.`User`.`name` FROM `' +
+              dbName +
+              '`.`User` WHERE 1=1'
             : 'SELECT "public"."User"."id", "public"."User"."name" FROM "public"."User" WHERE 1=1 OFFSET $1') +
             ' /* traceparent=00-00-00-00 */',
         ],
