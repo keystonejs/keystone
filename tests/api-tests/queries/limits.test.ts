@@ -94,7 +94,7 @@ describe('maxResults Limit', () => {
         });
 
         expect(data).toHaveProperty('usersCount');
-        expect(data).toBe({ usersCount: [users.length] });
+        expect(data).toEqual({ usersCount: users.length });
 
         // This query is only okay because of the "take" parameter
         data = await context.graphql.run({
