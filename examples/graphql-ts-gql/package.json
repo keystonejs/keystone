@@ -4,7 +4,6 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "postinstall": "ts-gql build",
     "ts-gql:build": "ts-gql build",
     "ts-gql:watch": "ts-gql watch",
     "dev": "keystone dev",
