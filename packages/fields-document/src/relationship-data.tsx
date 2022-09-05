@@ -121,12 +121,12 @@ async function fetchDataForOne(
   // An exception here indicates something wrong with either the system or the
   // configuration (e.g. a bad selection field). These will surface as system
   // errors from the GraphQL field resolver.
-  const val = await context.graphql.run({
+  const val = (await context.graphql.run({
     query: `query($id: ID!) {item:${
       context.gqlNames(listKey).itemQueryName
     }(where: {id:$id}) {${labelFieldAlias}:${labelField}\n${selection}}}`,
     variables: { id },
-  });
+  })) as { item: Record<string, any> | null };
 
   if (val.item === null) {
     if (!process.env.TEST_ADAPTER) {
