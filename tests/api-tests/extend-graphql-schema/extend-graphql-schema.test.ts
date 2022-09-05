@@ -68,7 +68,7 @@ describe('extendGraphqlSchema', () => {
               }
             `,
       });
-      expect(data.double).toEqual(20);
+      expect(data).toEqual({ double: 20 });
     })
   );
   it(
