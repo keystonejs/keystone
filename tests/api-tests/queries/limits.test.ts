@@ -100,7 +100,9 @@ describe('maxResults Limit', () => {
         data = await context.graphql.run({
           query: `
           query {
-            users(take: 1) {
+            users(take: 1, 
+              orderBy: { name: asc }
+            ) {
               name
             }
           }
