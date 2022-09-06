@@ -1,6 +1,5 @@
 import { config } from '@keystone-6/core';
-import { lists } from './schema';
-import { extendGraphqlSchema } from './custom-schema';
+import { lists, extendGraphqlSchema } from './schema';
 
 export default config({
   db: {
