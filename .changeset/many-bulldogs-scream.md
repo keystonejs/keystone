@@ -2,4 +2,4 @@
 '@keystone-6/core': major
 ---
 
-Adds `cache: "bounded"` and `persistedQueries: false` to default Apollo Server config.
+Changes default Apollo Server configuration to use `cache: "bounded"` and `persistedQueries: false`
