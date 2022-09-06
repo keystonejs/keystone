@@ -7,6 +7,10 @@ on:
   pull_request:
   workflow_dispatch:
 
+concurrency:
+  group: always-tests-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   linting:
     name: Linting
