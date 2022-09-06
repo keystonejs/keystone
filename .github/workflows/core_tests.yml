@@ -12,7 +12,6 @@ on:
 
 concurrency:
   group: core-tests-${{ github.ref }}
-
   cancel-in-progress: true
 
 jobs:
