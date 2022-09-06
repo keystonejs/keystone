@@ -1,6 +1,6 @@
 import { integer, relationship, text, virtual } from '@keystone-6/core/fields';
 import { BaseFields, list, graphql } from '@keystone-6/core';
-import { setupTestEnv, setupTestRunner } from '@keystone-6/core/testing';
+import { setupTestEnv, setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig } from '../../utils';
 

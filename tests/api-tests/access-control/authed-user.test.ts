@@ -1,5 +1,5 @@
 import { KeystoneContext } from '@keystone-6/core/types';
-import { setupTestEnv, TestEnv } from '@keystone-6/core/testing';
+import { setupTestEnv, TestEnv } from '@keystone-6/api-tests/test-runner';
 import {
   getOperationListName,
   listAccessVariations,

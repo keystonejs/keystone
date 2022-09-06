@@ -2,7 +2,7 @@ import { text, password } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
 import { statelessSessions } from '@keystone-6/core/session';
 import { createAuth } from '@keystone-6/auth';
-import { setupTestRunner } from '@keystone-6/core/testing';
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig, expectInternalServerError, expectValidationError, seed } from './utils';
 import { GraphQLRequest, withServer } from './with-server';
