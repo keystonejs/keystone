@@ -7,13 +7,10 @@ let prevConsoleWarn = console.warn;
 console.warn = function (...args: unknown[]) {
   if (
     typeof args[0] === 'string' &&
-    (args[0].endsWith(
+    args[0].endsWith(
       // this is expected
       'There are already 10 instances of Prisma Client actively running.'
-    ) ||
-      // we should really enforce a safe default for this though
-      args[0] ===
-        'Persisted queries are enabled and are using an unbounded cache. Your server is vulnerable to denial of service attacks via memory exhaustion. Set `cache: "bounded"` or `persistedQueries: false` in your ApolloServer constructor, or see https://go.apollo.dev/s/cache-backends for other alternatives.')
+    )
   ) {
     return;
   }

@@ -5,6 +5,7 @@ import { ApolloServer as ApolloServerExpress } from 'apollo-server-express';
 import {
   ApolloServerPluginLandingPageDisabled,
   ApolloServerPluginLandingPageGraphQLPlayground,
+  Config,
 } from 'apollo-server-core';
 import type { CreateContext, GraphQLConfig, SessionStrategy } from '../../types';
 import { createSessionContext } from '../../session';
@@ -63,13 +64,15 @@ const _createApolloServerConfig = ({
 }: {
   graphQLSchema: GraphQLSchema;
   graphqlConfig?: GraphQLConfig;
-}) => {
+}): Config => {
   const apolloConfig = graphqlConfig?.apolloConfig;
   const playgroundOption = graphqlConfig?.playground ?? process.env.NODE_ENV !== 'production';
 
   return {
     schema: graphQLSchema,
     debug: graphqlConfig?.debug, // If undefined, use Apollo default of NODE_ENV !== 'production'
+    cache: 'bounded',
+    persistedQueries: false,
     ...apolloConfig,
     plugins:
       playgroundOption === 'apollo'
