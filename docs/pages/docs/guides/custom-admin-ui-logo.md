@@ -52,8 +52,8 @@ Once you've added your custom logo component you should see it rendered out in t
 {% related-content %}
 {% well
 heading="Example: Custom Admin UI Logo"
-href="<https://github.com/keystonejs/keystone/tree/main/examples/custom-admin-ui-logo>"
-target="\_blank" %}
+href="https://github.com/keystonejs/keystone/tree/main/examples/custom-admin-ui-logo"
+target="_blank" %}
 Adds a custom logo component in the Admin UI. Builds on the Task Manager starter project.
 {% /well %}
 {% well

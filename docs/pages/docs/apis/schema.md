@@ -245,8 +245,8 @@ The API to configure all the parts parts of your Keystone system.
 {% /well %}
 {% well
 heading="Example Project: Blog"
-href="<https://github.com/keystonejs/keystone/tree/main/examples/blog>"
-target="\_blank" %}
+href="https://github.com/keystonejs/keystone/tree/main/examples/blog"
+target="_blank" %}
 A basic Blog schema with Posts and Authors. Use this as a starting place for learning how to use Keystone. It’s also a starter for other feature projects.
 {% /well %}
 {% /related-content %}

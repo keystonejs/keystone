@@ -248,8 +248,8 @@ describe('Example tests using test environment', () => {
 {% related-content %}
 {% well
 heading="Example Project: Testing"
-href="<https://github.com/keystonejs/keystone/tree/main/examples/testing>"
-target="\_blank" %}
+href="https://github.com/keystonejs/keystone/tree/main/examples/testing"
+target="_blank" %}
 Shows you how to write tests against the GraphQL API to your Keystone system. Builds on the Authentication example project.
 {% /well %}
 {% well

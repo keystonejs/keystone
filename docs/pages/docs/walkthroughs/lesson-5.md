@@ -70,7 +70,7 @@ yarn add @keystone-6/fields-document
 
 Next, we add the document field to our `post` list:
 
-```ts{4,28}\[8-14,31-500]
+```ts{4,28}[8-14,31-500]
 // keystone.ts
 import { list, config } from '@keystone-6/core';
 import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields';
@@ -132,7 +132,7 @@ Let’s start by adding four [formatting](docs/guides/document-fields#formatting
 - dividers
 - layouts
 
-```ts{28-39}\[1-6,8-14,17-27,42-500]
+```ts{28-39}[1-6,8-14,17-27,42-500]
 // keystone.ts
 import { list, config } from '@keystone-6/core';
 import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields';

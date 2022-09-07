@@ -12,14 +12,13 @@
     "docs": "manypkg run @keystone-6/website dev",
     "coverage": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --runInBand --coverage",
     "format:file": "prettier --write",
-    "format": "prettier --write \"**/*.{js,json,ts,tsx,md,mdx}\" && remark . --output",
+    "format": "prettier --write \"**/*.{js,json,ts,tsx,md,mdx}\"",
     "fresh": "yarn clean && yarn",
     "clean": "rimraf \"**/node_modules\" \"**/yarn-error.log\" \"**/out.log\" \"**/.DS_Store\" \"**/dist\"",
     "lint:eslint": "eslint . --ext ts,tsx,js",
-    "lint:prettier": "prettier --check \"**/*.{js,json,ts,tsx}\"",
-    "lint:markdown": "remark . --frail --quiet",
+    "lint:prettier": "prettier --check \"**/*.{js,json,ts,tsx,md,mdx}\"",
     "lint:types": "tsc",
-    "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:markdown && yarn lint:types && yarn lint:filters",
+    "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:types && yarn lint:filters",
     "test": "yarn lint && yarn test:unit",
     "test:unit": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --no-watchman --runInBand --logHeapUsage",
     "test:unit:debug": "cross-env NODE_ENV=test node --inspect-brk `which jest` --runInBand",
@@ -73,9 +72,6 @@
     "prettier": "^2.5.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
-    "remark-cli": "^6.0.1",
-    "remark-frontmatter": "^1.3.3",
-    "remark-toc": "^5.1.1",
     "rimraf": "^3.0.2",
     "terminal-link-cli": "^3.0.0",
     "typescript": "^4.7.4"
@@ -93,19 +89,6 @@
           "embeddedLanguageFormatting": "off"
         }
       }
-    ]
-  },
-  "remarkConfig": {
-    "settings": {
-      "commonmark": true,
-      "fences": true,
-      "listItemIndent": "1",
-      "rule": "-",
-      "ruleSpaces": false
-    },
-    "plugins": [
-      "remark-frontmatter",
-      "remark-toc"
     ]
   },
   "workspaces": {
