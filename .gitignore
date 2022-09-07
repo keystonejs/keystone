@@ -4,6 +4,9 @@
 # Keystone build dir
 .keystone
 
+# ts-gql generated files
+__generated__
+
 # Logs
 logs
 *.log

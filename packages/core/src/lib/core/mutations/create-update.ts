@@ -57,7 +57,9 @@ async function createSingle(
   const writeLimit = getWriteLimit(context);
 
   const item = await writeLimit(() =>
-    runWithPrisma(context, list, model => model.create({ data }))
+    runWithPrisma(context, list, model =>
+      model.create({ data: list.isSingleton ? { ...data, id: 1 } : data })
+    )
   );
 
   return { item, afterOperation };
@@ -134,7 +136,7 @@ async function updateSingle(
 
   const { where: uniqueInput, data: rawData } = updateInput;
   // Validate and resolve the input filter
-  const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, list.fields, context);
+  const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, list, context);
 
   // Check filter access
   const fieldKey = Object.keys(uniqueWhere)[0];

@@ -1,7 +1,7 @@
 import { list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
-import { setupTestRunner } from '@keystone-6/core/testing';
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { isCuid } from 'cuid';
 import { validate } from 'uuid';
 import { apiTestConfig, dbProvider, expectBadUserInput } from './utils';

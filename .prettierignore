@@ -6,6 +6,7 @@ coverage
 **/dist
 **/.next
 **/.keystone
+**/__generated__
 docs/public/assets/
 .keystone/tests
 prisma-utils/src/generated

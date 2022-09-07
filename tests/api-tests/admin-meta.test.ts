@@ -2,7 +2,7 @@ import { gql, list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
 import { staticAdminMetaQuery } from '@keystone-6/core/src/admin-ui/admin-meta-graphql';
-import { setupTestRunner } from '@keystone-6/core/testing';
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { apiTestConfig, dbProvider } from './utils';
 
 const runner = setupTestRunner({
@@ -104,6 +104,7 @@ test(
               path: 'users',
               plural: 'Users',
               singular: 'User',
+              isSingleton: false,
             },
           ],
         },
@@ -148,6 +149,8 @@ test(
         }
       `,
     });
-    expect(res.data!.keystone.adminMeta.list).toEqual(names);
+    expect(res.data!).toEqual({
+      keystone: { adminMeta: { list: names } },
+    });
   })
 );

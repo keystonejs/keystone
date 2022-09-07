@@ -6,7 +6,7 @@ import { redisSessionStore } from '@keystone-6/session-store-redis';
 import { createClient } from '@redis/client';
 import { createAuth } from '@keystone-6/auth';
 import type { KeystoneContext } from '@keystone-6/core/types';
-import { setupTestRunner } from '@keystone-6/core/testing';
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { apiTestConfig, expectAccessDenied, seed } from './utils';
 import { GraphQLRequest, withServer } from './with-server';
 

@@ -4,6 +4,7 @@ import * as graphqlTsSchema from '@graphql-ts/schema';
 import GraphQLUpload from 'graphql-upload/GraphQLUpload.js';
 import { GraphQLError, GraphQLScalarType } from 'graphql';
 import { Decimal as DecimalValue } from 'decimal.js';
+import type { GraphQLFieldExtensions, GraphQLResolveInfo } from 'graphql';
 import { KeystoneContext } from '../context';
 import { JSONValue } from '../utils';
 export {
@@ -38,7 +39,87 @@ export type {
 export { bindGraphQLSchemaAPIToContext } from '@graphql-ts/schema';
 export type { BaseSchemaMeta, Extension } from '@graphql-ts/extend';
 export { extend, wrap } from '@graphql-ts/extend';
-export { field, fields, interface, interfaceField, object, union } from './schema-api-with-context';
+import { field as fieldd } from './schema-api-with-context';
+export { fields, interface, interfaceField, object, union } from './schema-api-with-context';
+
+// TODO: remove when we use { graphql } from '.keystone'
+type SomeTypeThatIsntARecordOfArgs = string;
+type FieldFuncResolve<
+  Source,
+  Args extends { [Key in keyof Args]: graphqlTsSchema.Arg<graphqlTsSchema.InputType> },
+  Type extends OutputType,
+  Key extends string,
+  Context extends KeystoneContext<any>
+> =
+  // the tuple is here because we _don't_ want this to be distributive
+  // if this was distributive then it would optional when it should be required e.g.
+  // graphql.object<{ id: string } | { id: boolean }>()({
+  //   name: "Node",
+  //   fields: {
+  //     id: graphql.field({
+  //       type: graphql.nonNull(graphql.ID),
+  //     }),
+  //   },
+  // });
+  [Key] extends [keyof Source]
+    ? Source[Key] extends
+        | graphqlTsSchema.InferValueFromOutputType<Type>
+        | ((
+            args: graphqlTsSchema.InferValueFromArgs<Args>,
+            context: Context,
+            info: GraphQLResolveInfo
+          ) => graphqlTsSchema.InferValueFromOutputType<Type>)
+      ? {
+          resolve?: graphqlTsSchema.FieldResolver<
+            Source,
+            SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args,
+            Type,
+            Context
+          >;
+        }
+      : {
+          resolve: graphqlTsSchema.FieldResolver<
+            Source,
+            SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args,
+            Type,
+            Context
+          >;
+        }
+    : {
+        resolve: graphqlTsSchema.FieldResolver<
+          Source,
+          SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args,
+          Type,
+          Context
+        >;
+      };
+
+type FieldFuncArgs<
+  Source,
+  Args extends { [Key in keyof Args]: graphqlTsSchema.Arg<graphqlTsSchema.InputType> },
+  Type extends OutputType,
+  Key extends string,
+  Context extends KeystoneContext<any>
+> = {
+  args?: Args;
+  type: Type;
+  deprecationReason?: string;
+  description?: string;
+  extensions?: Readonly<GraphQLFieldExtensions<Source, unknown>>;
+} & FieldFuncResolve<Source, Args, Type, Key, Context>;
+
+type FieldFunc = <
+  Source,
+  Type extends OutputType,
+  Key extends string,
+  Context extends KeystoneContext,
+  Args extends { [Key in keyof Args]: graphqlTsSchema.Arg<graphqlTsSchema.InputType> } = {}
+>(
+  field: FieldFuncArgs<Source, Args, Type, Key, Context>
+) => graphqlTsSchema.Field<Source, Args, Type, Key, KeystoneContext>;
+
+export const field = fieldd as FieldFunc;
+// TODO: remove when we use { graphql } from '.keystone'
 
 export type Context = KeystoneContext;
 

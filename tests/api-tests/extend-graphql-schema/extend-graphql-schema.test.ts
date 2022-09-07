@@ -1,7 +1,7 @@
 import { list, graphQLSchemaExtension, gql } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
-import { setupTestRunner } from '@keystone-6/core/testing';
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { apiTestConfig, expectInternalServerError } from '../utils';
 import { withServer } from '../with-server';
 
@@ -68,7 +68,7 @@ describe('extendGraphqlSchema', () => {
               }
             `,
       });
-      expect(data.double).toEqual(20);
+      expect(data).toEqual({ double: 20 });
     })
   );
   it(
@@ -98,7 +98,7 @@ describe('extendGraphqlSchema', () => {
             `,
       });
 
-      expect(data.triple).toEqual(30);
+      expect(data).toEqual({ triple: 30 });
     })
   );
   it(
@@ -114,13 +114,13 @@ describe('extendGraphqlSchema', () => {
             `,
       });
 
-      expect(data.createUser.name).toEqual('Real User');
+      expect(data).toEqual({ createUser: { name: 'Real User' } });
     })
   );
   it(
     'Overrides default keystone resolvers with custom resolvers',
     runner(async ({ context }) => {
-      const data = await context.graphql.run({
+      const data = (await context.graphql.run({
         query: `
               query {
                 users {
@@ -128,7 +128,7 @@ describe('extendGraphqlSchema', () => {
                 }
               }
             `,
-      });
+      })) as { users: { name: string }[] };
 
       expect(data.users[0].name).toEqual('foo');
     })

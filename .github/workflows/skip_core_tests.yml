@@ -10,6 +10,10 @@ on:
       - '!docs/**'
       - '!**/*.md'
 
+concurrency:
+  group: skip-core-tests-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   graphql_api_tests_postgresql:
     name: API Tests PostgreSQL

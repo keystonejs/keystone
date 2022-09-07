@@ -23,12 +23,7 @@ export type ListConfig<
   ListTypeInfo extends BaseListTypeInfo,
   Fields extends BaseFields<ListTypeInfo>
 > = {
-  /*
-      A note on defaults: several options default based on the listKey, including label, path,
-      singular, plural, itemQueryName and listQueryName. All these options default independently, so
-      changing the singular or plural will not change the label or queryName options (and vice-versa)
-      Note from Mitchell: The above is incorrect based on Keystone's current implementation.
-    */
+  isSingleton?: boolean;
   fields: Fields;
 
   /**

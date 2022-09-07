@@ -3,7 +3,7 @@
 
 import { Heading, jsx, useTheme } from '@keystone-ui/core';
 import { ChevronRightIcon } from '@keystone-ui/icons/icons/ChevronRightIcon';
-import { HTMLAttributes, ReactNode } from 'react';
+import { Fragment, HTMLAttributes, ReactNode } from 'react';
 import { Container } from '../../../../admin-ui/components/Container';
 import { Link } from '../../../../admin-ui/router';
 import { ListMeta } from '../../../../types';
@@ -28,34 +28,40 @@ export function ItemPageHeader(props: { list: ListMeta; label: string }) {
           minWidth: 0,
         }}
       >
-        <Heading type="h3">
-          <Link href={`/${props.list.path}`} css={{ textDecoration: 'none' }}>
-            {props.list.label}
-          </Link>
-        </Heading>
-        <div
-          css={{
-            color: palette.neutral500,
-            marginLeft: spacing.xsmall,
-            marginRight: spacing.xsmall,
-          }}
-        >
-          <ChevronRightIcon />
-        </div>
-        <Heading
-          as="h1"
-          type="h3"
-          css={{
-            minWidth: 0,
-            maxWidth: '100%',
-            overflow: 'hidden',
-            flex: 1,
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          {props.label}
-        </Heading>
+        {props.list.isSingleton ? (
+          <Heading type="h3">{props.list.label}</Heading>
+        ) : (
+          <Fragment>
+            <Heading type="h3">
+              <Link href={`/${props.list.path}`} css={{ textDecoration: 'none' }}>
+                {props.list.label}
+              </Link>
+            </Heading>
+            <div
+              css={{
+                color: palette.neutral500,
+                marginLeft: spacing.xsmall,
+                marginRight: spacing.xsmall,
+              }}
+            >
+              <ChevronRightIcon />
+            </div>
+            <Heading
+              as="h1"
+              type="h3"
+              css={{
+                minWidth: 0,
+                maxWidth: '100%',
+                overflow: 'hidden',
+                flex: 1,
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {props.label}
+            </Heading>
+          </Fragment>
+        )}
       </div>
     </Container>
   );

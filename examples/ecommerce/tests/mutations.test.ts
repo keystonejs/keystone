@@ -83,10 +83,10 @@ describe(`Custom mutations`, () => {
         await q2({ query: q, variables: { productId: product2.id } });
 
         // Checkout user 1
-        const result1 = await asUser(context, user1.id).graphql.raw({
+        const result1 = (await asUser(context, user1.id).graphql.raw({
           query,
           variables: { token },
-        });
+        })) as any;
 
         // Confirm that the checkout has worked
         expect(result1.errors).toBe(undefined);
@@ -106,10 +106,10 @@ describe(`Custom mutations`, () => {
         expect(result1.data!.checkout.items[1].photo.id).toEqual(product2.photo.id);
 
         // Checkout user 2
-        const result2 = await asUser(context, user2.id).graphql.raw({
+        const result2 = (await asUser(context, user2.id).graphql.raw({
           query,
           variables: { token },
-        });
+        })) as any;
 
         // Confirm that the checkout has worked
         expect(result2.errors).toBe(undefined);
@@ -244,10 +244,10 @@ describe(`Custom mutations`, () => {
         });
 
         // Add product to cart
-        const { data, errors } = await asUser(context, user.id).graphql.raw({
+        const { data, errors } = (await asUser(context, user.id).graphql.raw({
           query,
           variables: { productId: product.id },
-        });
+        })) as any;
         console.log(errors);
         expect(errors).toBe(undefined);
         expect(data!.addToCart.quantity).toEqual(1);
@@ -279,10 +279,10 @@ describe(`Custom mutations`, () => {
           query,
           variables: { productId: product.id },
         });
-        const { data, errors } = await asUser(context, user.id).graphql.raw({
+        const { data, errors } = (await asUser(context, user.id).graphql.raw({
           query,
           variables: { productId: product.id },
-        });
+        })) as any;
         expect(errors).toBe(undefined);
         expect(data!.addToCart.quantity).toEqual(3);
         expect(data!.addToCart.product.id).toEqual(product.id);

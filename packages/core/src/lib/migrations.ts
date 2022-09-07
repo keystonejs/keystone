@@ -17,7 +17,11 @@ import { confirmPrompt, textPrompt } from './prompts';
 // We also want to silence messages from Prisma about available updates, since the developer is
 // not in control of their Prisma version.
 // https://www.prisma.io/docs/reference/api-reference/environment-variables-reference#prisma_hide_update_message
-function runMigrateWithDbUrl<T>(dbUrl: string, shadowDbUrl: string | undefined, cb: () => T): T {
+export function runMigrateWithDbUrl<T>(
+  dbUrl: string,
+  shadowDbUrl: string | undefined,
+  cb: () => T
+): T {
   let prevDBURLFromEnv = process.env.DATABASE_URL;
   let prevShadowDBURLFromEnv = process.env.SHADOW_DATABASE_URL;
   let prevHiddenUpdateMessage = process.env.PRISMA_HIDE_UPDATE_MESSAGE;
@@ -41,14 +45,8 @@ function setOrRemoveEnvVariable(name: string, value: string | undefined) {
   }
 }
 
-async function withMigrate<T>(
-  dbUrl: string,
-  schemaPath: string,
-  cb: (migrate: Migrate) => Promise<T>
-) {
-  await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
+export async function withMigrate<T>(schemaPath: string, cb: (migrate: Migrate) => Promise<T>) {
   const migrate = new Migrate(schemaPath);
-
   try {
     return await cb(migrate);
   } finally {
@@ -71,8 +69,8 @@ export async function pushPrismaSchemaToDatabase(
   shouldDropDatabase = false
 ) {
   let before = Date.now();
-
-  let migration = await withMigrate(dbUrl, schemaPath, async migrate => {
+  await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
+  let migration = await withMigrate(schemaPath, async migrate => {
     if (shouldDropDatabase) {
       await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () => migrate.engine.reset());
       let migration = await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () =>
@@ -181,7 +179,8 @@ export async function devMigrations(
   schemaPath: string,
   shouldDropDatabase: boolean
 ) {
-  return withMigrate(dbUrl, schemaPath, async migrate => {
+  await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
+  return withMigrate(schemaPath, async migrate => {
     if (!migrate.migrationsDirectoryPath) {
       console.log('No migrations directory provided.');
       throw new ExitError(1);

@@ -93,7 +93,7 @@ export async function findOne(
   }
 
   // Validate and resolve the input filter
-  const uniqueWhere = await resolveUniqueWhereInput(args.where, list.fields, context);
+  const uniqueWhere = await resolveUniqueWhereInput(args.where, list, context);
   const resolvedWhere = mapUniqueWhereToWhere(uniqueWhere);
 
   // Check filter access

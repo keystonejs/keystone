@@ -1,4 +1,4 @@
-import { list, graphql, config } from '@keystone-6/core';
+import { list, singleton, graphql, config } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import {
   checkbox,
@@ -145,6 +145,13 @@ export const lists = {
         },
       }),
       ...trackingFields,
+    },
+  }),
+  Settings: singleton({
+    access: allowAll,
+    fields: {
+      websiteName: text(),
+      copyrightText: text(),
     },
   }),
 };

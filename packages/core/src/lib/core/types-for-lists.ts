@@ -59,6 +59,7 @@ export type InitialisedList = {
   graphql: {
     isEnabled: IsEnabled;
   };
+  isSingleton: boolean;
 };
 
 type IsEnabled = {
@@ -205,6 +206,7 @@ function getListsWithInitialisedFields(
         }
         return typeof cacheHint === 'function' ? cacheHint : () => cacheHint;
       })(),
+      isSingleton: list.isSingleton ?? false,
     };
   }
 
@@ -266,18 +268,23 @@ function getListGraphqlTypes(
       name: names.whereUniqueInputName,
       fields: () => {
         const { fields } = lists[listKey];
-        return Object.fromEntries(
-          Object.entries(fields).flatMap(([key, field]) => {
-            if (
-              !field.input?.uniqueWhere?.arg ||
-              !field.graphql.isEnabled.read ||
-              !field.graphql.isEnabled.filter
-            ) {
-              return [];
-            }
-            return [[key, field.input.uniqueWhere.arg]] as const;
-          })
-        );
+        return {
+          ...Object.fromEntries(
+            Object.entries(fields).flatMap(([key, field]) => {
+              if (
+                !field.input?.uniqueWhere?.arg ||
+                !field.graphql.isEnabled.read ||
+                !field.graphql.isEnabled.filter
+              ) {
+                return [];
+              }
+              return [[key, field.input.uniqueWhere.arg]] as const;
+            })
+          ),
+          // this is exactly what the id field will add
+          // but this does it more explicitly so that typescript understands
+          id: graphql.arg({ type: graphql.ID }),
+        };
       },
     });
 
@@ -347,7 +354,10 @@ function getListGraphqlTypes(
     });
 
     const findManyArgs: FindManyArgs = {
-      where: graphql.arg({ type: graphql.nonNull(where), defaultValue: {} }),
+      where: graphql.arg({
+        type: graphql.nonNull(where),
+        defaultValue: listConfig.isSingleton ? ({ id: { equals: '1' } } as {}) : {},
+      }),
       orderBy: graphql.arg({
         type: graphql.nonNull(graphql.list(graphql.nonNull(orderBy))),
         defaultValue: [],

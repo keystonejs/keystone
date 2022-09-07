@@ -1,6 +1,6 @@
 import { Server } from 'http';
 import express from 'express';
-import { TestArgs } from '@keystone-6/core/testing';
+import { TestArgs } from '@keystone-6/api-tests/test-runner';
 import { createExpressServer } from '@keystone-6/core/system';
 import supertest, { Test } from 'supertest';
 

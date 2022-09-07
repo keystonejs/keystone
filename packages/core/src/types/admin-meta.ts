@@ -107,6 +107,7 @@ export type ListMeta = {
   labelField: string;
   initialSort: null | { direction: 'ASC' | 'DESC'; field: string };
   fields: { [path: string]: FieldMeta };
+  isSingleton: boolean;
 };
 
 export type AdminMeta = {
@@ -196,6 +197,7 @@ export type ListMetaRootVal = {
   isHidden: ContextFunction<boolean>;
   hideCreate: ContextFunction<boolean>;
   hideDelete: ContextFunction<boolean>;
+  isSingleton: boolean;
 };
 
 export type AdminMetaRootVal = {

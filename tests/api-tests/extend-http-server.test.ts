@@ -1,7 +1,7 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { list } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
-import { setupTestRunner } from '@keystone-6/core/testing';
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import supertest from 'supertest';
 import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig } from './utils';

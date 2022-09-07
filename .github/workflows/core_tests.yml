@@ -10,6 +10,10 @@ on:
       - '**/*.md'
   workflow_dispatch:
 
+concurrency:
+  group: core-tests-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   graphql_api_tests_postgresql:
     name: API Tests PostgreSQL
@@ -60,7 +64,6 @@ jobs:
           CI_NODE_TOTAL: 9
           CI_NODE_INDEX: ${{ matrix.index }}
           TEST_ADAPTER: sqlite
-          DATABASE_URL: file:./dev.db
 
   graphql_api_tests_mysql:
     name: API Tests MySQL
@@ -68,11 +71,9 @@ jobs:
     services:
       mysql:
         image: mariadb:10.9
+        # we use the root user because our tests create databases
         env:
-          MYSQL_USER: testuser
-          MYSQL_PASSWORD: testpass
-          MYSQL_DATABASE: test_db
-          MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+          MYSQL_ROOT_PASSWORD: testpass
         ports:
           - 3306:3306
     strategy:
@@ -91,7 +92,7 @@ jobs:
           CI_NODE_TOTAL: 9
           CI_NODE_INDEX: ${{ matrix.index }}
           TEST_ADAPTER: mysql
-          DATABASE_URL: mysql://testuser:testpass@localhost:3306/test_db
+          DATABASE_URL: mysql://root:testpass@localhost:3306/test_db
 
   redis_session_tests_postgresql:
     name: Redis Session Tests PostgreSQL
@@ -139,7 +140,6 @@ jobs:
         run: yarn jest --ci --runInBand tests/api-tests/auth-stored-session.test.ts
         env:
           TEST_ADAPTER: sqlite
-          DATABASE_URL: file:./dev.db
 
   redis_session_tests_mysql:
     name: Redis Session Tests MySQL
@@ -152,10 +152,7 @@ jobs:
       mysql:
         image: mariadb:10.9
         env:
-          MYSQL_USER: testuser
-          MYSQL_PASSWORD: testpass
-          MYSQL_DATABASE: test_db
-          MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+          MYSQL_ROOT_PASSWORD: testpass
         ports:
           - 3306:3306
     steps:
@@ -168,7 +165,7 @@ jobs:
         run: yarn jest --ci --runInBand tests/api-tests/auth-stored-session.test.ts
         env:
           TEST_ADAPTER: mysql
-          DATABASE_URL: mysql://testuser:testpass@localhost:3306/test_db
+          DATABASE_URL: mysql://root:testpass@localhost:3306/test_db
 
   field_crud_tests_postgresql:
     name: Field CRUD Tests PostgreSQL
@@ -236,10 +233,7 @@ jobs:
       mysql:
         image: mariadb:10.9
         env:
-          MYSQL_USER: testuser
-          MYSQL_PASSWORD: testpass
-          MYSQL_DATABASE: test_db
-          MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+          MYSQL_ROOT_PASSWORD: testpass
         ports:
           - 3306:3306
     steps:
@@ -262,7 +256,7 @@ jobs:
           # this doesn't mean anything when we're using a custom s3 endpoint but the sdk wants something so we just give it something
           S3_REGION: us-east-1
           TEST_ADAPTER: mysql
-          DATABASE_URL: mysql://testuser:testpass@localhost:3306/test_db
+          DATABASE_URL: mysql://root:testpass@localhost:3306/test_db
 
   examples_tests:
     name: Testing example project

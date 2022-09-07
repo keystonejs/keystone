@@ -161,6 +161,7 @@ const KeystoneAdminUIListMeta = graphql.object<ListMetaRootVal>()({
     }),
     initialSort: graphql.field({ type: KeystoneAdminUISort }),
     ...contextFunctionField('isHidden', graphql.Boolean),
+    isSingleton: graphql.field({ type: graphql.Boolean }),
   },
 });
 

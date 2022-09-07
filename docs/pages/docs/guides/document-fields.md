@@ -855,8 +855,8 @@ const componentBlockRenderers: InferRenderersForComponentBlocks<typeof component
 {% related-content %}
 {% well
 heading="Example Project: Document Field"
-href="https://github.com/keystonejs/keystone/tree/main/examples/document-field"
-target="_blank" %}
+href="<https://github.com/keystonejs/keystone/tree/main/examples/document-field>"
+target="\_blank" %}
 Illustrates how to configure `document` fields in your Keystone system and render their data in a frontend application. Builds on the Blog starter project.
 {% /well %}
 {% well

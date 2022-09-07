@@ -122,12 +122,13 @@ export async function promiseAllRejectWithAllErrors<T extends unknown[]>(
 
 export function getNamesFromList(
   listKey: string,
-  { graphql, ui }: KeystoneConfig['lists'][string]
+  { graphql, ui, isSingleton }: KeystoneConfig['lists'][string]
 ) {
   const computedSingular = humanize(listKey);
   const computedPlural = pluralize.plural(computedSingular);
+  const computedLabel = isSingleton ? computedSingular : computedPlural;
 
-  const path = ui?.path || labelToPath(computedPlural);
+  const path = ui?.path || labelToPath(computedLabel);
 
   if (ui?.path !== undefined && !/^[a-z-_][a-z0-9-_]*$/.test(ui.path)) {
     throw new Error(
@@ -136,17 +137,21 @@ export function getNamesFromList(
   }
 
   const adminUILabels = {
-    label: ui?.label || computedPlural,
+    label: ui?.label || computedLabel,
     singular: ui?.singular || computedSingular,
     plural: ui?.plural || computedPlural,
     path,
   };
 
-  const pluralGraphQLName = graphql?.plural || labelToClass(computedPlural);
+  let pluralGraphQLName = graphql?.plural || labelToClass(computedPlural);
   if (pluralGraphQLName === listKey) {
-    throw new Error(
-      `The list key and the plural name used in GraphQL must be different but the list key ${listKey} is the same as the plural GraphQL name, please specify graphql.plural`
-    );
+    if (isSingleton) {
+      pluralGraphQLName = 'Many' + listKey;
+    } else {
+      throw new Error(
+        `The list key and the plural name used in GraphQL must be different but the list key ${listKey} is the same as the plural GraphQL name, please specify graphql.plural`
+      );
+    }
   }
   return { pluralGraphQLName, adminUILabels };
 }

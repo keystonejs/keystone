@@ -1,0 +1,8 @@
+{
+  "template": "node",
+  "container": {
+    "startScript": "keystone dev --seed-data",
+    "node": "14"
+  },
+  "hardReloadOnChange": true
+}

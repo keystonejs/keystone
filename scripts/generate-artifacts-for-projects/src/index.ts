@@ -44,14 +44,25 @@ async function main() {
           entries.map(async entry => {
             if (entry.isDirectory()) {
               const projectPath = path.join(dir, entry.name);
-              const packageJsonPath = path.join(projectPath, 'package.json');
-              try {
-                if ((await fs.stat(packageJsonPath)).isFile()) {
+              const projectDirEntries = await fs.readdir(projectPath, { withFileTypes: true });
+              for (const entry of projectDirEntries) {
+                if (entry.name === 'keystone.ts' && entry.isFile()) {
                   projectPaths.push(projectPath);
+                  break;
                 }
-              } catch (err: any) {
-                if (err.code !== 'ENOENT') {
-                  throw err;
+                if (entry.name === 'keystone-server' && entry.isDirectory()) {
+                  const e2eServerProjectPath = path.join(projectPath, 'keystone-server');
+                  const keystoneConfigPath = path.join(e2eServerProjectPath, 'keystone.ts');
+                  try {
+                    if ((await fs.stat(keystoneConfigPath)).isFile()) {
+                      projectPaths.push(e2eServerProjectPath);
+                      break;
+                    }
+                  } catch (err: any) {
+                    if (err.code !== 'ENOENT') {
+                      throw err;
+                    }
+                  }
                 }
               }
             }
