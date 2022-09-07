@@ -123,6 +123,7 @@ export declare namespace Lists {
     export type Item = import('.prisma/client').Todo;
     export type TypeInfo = {
       key: "Todo";
+      isSingleton: false;
       fields: "id" | "title"
       item: Item;
       inputs: {

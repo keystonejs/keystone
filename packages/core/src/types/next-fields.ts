@@ -391,12 +391,15 @@ export type FieldTypeWithoutDBField<
   unreferencedConcreteInterfaceImplementations?: readonly graphql.ObjectType<any>[];
 } & CommonFieldConfig<ListTypeInfo>;
 
-type AnyInputObj = graphql.InputObjectType<Record<string, graphql.Arg<graphql.InputType, any>>>;
+type AnyInputObj = graphql.InputObjectType<Record<string, graphql.Arg<graphql.InputType>>>;
 
 export type GraphQLTypesForList = {
   update: AnyInputObj;
   create: AnyInputObj;
-  uniqueWhere: AnyInputObj;
+  uniqueWhere: graphql.InputObjectType<{
+    id: graphql.Arg<typeof graphql.ID>;
+    [key: string]: graphql.Arg<graphql.NullableInputType>;
+  }>;
   where: AnyInputObj;
   orderBy: AnyInputObj;
   output: graphql.ObjectType<BaseItem>;

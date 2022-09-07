@@ -31,6 +31,16 @@ const idParsers = {
       throw userInputError('Only a bigint can be passed to id filters');
     }
   },
+  singleton(val: string | null) {
+    if (val === null) {
+      throw userInputError('Only an integer can be passed to id filters');
+    }
+    const parsed = parseInt(val);
+    if (Number.isInteger(parsed)) {
+      return parsed;
+    }
+    throw userInputError('Only an integer can be passed to id filters');
+  },
   cuid(val: string | null) {
     // isCuid is just "it's a string and it starts with c"
     // https://github.com/ericelliott/cuid/blob/215b27bdb78d3400d4225a4eeecb3b71891a5f6f/index.js#L69-L73
@@ -104,12 +114,12 @@ function resolveVal(
 }
 
 export const idFieldType =
-  (config: IdFieldConfig): FieldTypeFunc<BaseListTypeInfo> =>
+  (config: IdFieldConfig, isSingleton: boolean): FieldTypeFunc<BaseListTypeInfo> =>
   meta => {
     const parseVal =
       config.kind === 'autoincrement' && config.type === 'BigInt'
         ? idParsers.autoincrementBigInt
-        : idParsers[config.kind];
+        : idParsers[isSingleton ? 'singleton' : config.kind];
     return fieldType({
       kind: 'scalar',
       mode: 'required',

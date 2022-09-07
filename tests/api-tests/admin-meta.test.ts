@@ -104,6 +104,7 @@ test(
               path: 'users',
               plural: 'Users',
               singular: 'User',
+              isSingleton: false,
             },
           ],
         },

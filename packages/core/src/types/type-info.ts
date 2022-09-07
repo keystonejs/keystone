@@ -5,6 +5,7 @@ type GraphQLInput = Record<string, any>;
 
 export type BaseListTypeInfo = {
   key: string;
+  isSingleton: boolean;
   fields: string;
   item: BaseItem;
   inputs: {

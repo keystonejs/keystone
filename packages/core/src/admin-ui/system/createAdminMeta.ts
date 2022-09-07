@@ -86,6 +86,7 @@ export function createAdminMeta(
         list.graphql.isEnabled.delete ? listConfig.ui?.hideDelete ?? false : false
       ),
       isHidden: normalizeMaybeSessionFunction(listConfig.ui?.isHidden ?? false),
+      isSingleton: list.isSingleton,
     };
     adminMetaRoot.lists.push(adminMetaRoot.listsByKey[key]);
   }

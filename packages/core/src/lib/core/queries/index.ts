@@ -9,7 +9,12 @@ export function getQueriesForList(list: InitialisedList) {
 
   const findOne = graphql.field({
     type: list.types.output,
-    args: { where: graphql.arg({ type: graphql.nonNull(list.types.uniqueWhere) }) },
+    args: {
+      where: graphql.arg({
+        type: graphql.nonNull(list.types.uniqueWhere),
+        defaultValue: list.isSingleton ? { id: '1' } : undefined,
+      }),
+    },
     async resolve(_rootVal, args, context) {
       return queries.findOne(args, list, context);
     },
@@ -25,7 +30,12 @@ export function getQueriesForList(list: InitialisedList) {
 
   const countQuery = graphql.field({
     type: graphql.Int,
-    args: { where: graphql.arg({ type: graphql.nonNull(list.types.where), defaultValue: {} }) },
+    args: {
+      where: graphql.arg({
+        type: graphql.nonNull(list.types.where),
+        defaultValue: list.isSingleton ? ({ id: { equals: '1' } } as {}) : {},
+      }),
+    },
     async resolve(_rootVal, args, context, info) {
       return queries.count(args, list, context, info);
     },

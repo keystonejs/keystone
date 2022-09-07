@@ -25,6 +25,7 @@ export const staticAdminMetaQuery = gql`
           initialColumns
           pageSize
           labelField
+          isSingleton
           fields {
             __typename
             path
@@ -84,6 +85,7 @@ export type StaticAdminMetaQuery = {
           field: string;
           direction: KeystoneAdminUISortDirection;
         }>;
+        isSingleton: boolean;
         fields: Array<{
           __typename: 'KeystoneAdminUIFieldMeta';
           path: string;

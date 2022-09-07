@@ -41,6 +41,7 @@ import { useList } from '../../../../admin-ui/context';
 import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/PageContainer';
 import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice';
 import { usePreventNavigation } from '../../../../admin-ui/utils/usePreventNavigation';
+import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink';
 import { BaseToolbar, ColumnLayout, ItemPageHeader } from './common';
 
 type ItemPageProps = {
@@ -143,7 +144,7 @@ function ItemForm({
         toasts.addToast({ title: 'Failed to update item', tone: 'negative', message: err.message });
       });
   });
-  const labelFieldValue = state.item.data?.[list.labelField];
+  const labelFieldValue = list.isSingleton ? list.label : state.item.data?.[list.labelField];
   const itemId = state.item.data?.id!;
   const hasChangedFields = !!changedFields.size;
   usePreventNavigation(useMemo(() => ({ current: hasChangedFields }), [hasChangedFields]));
@@ -243,7 +244,7 @@ function DeleteButton({
                   tone: 'negative',
                 });
               }
-              router.push(`/${list.path}`);
+              router.push(list.isSingleton ? '/' : `/${list.path}`);
               return toasts.addToast({
                 title: itemLabel,
                 message: `Deleted ${list.singular} item successfully`,
@@ -340,7 +341,9 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
 
   const metaQueryErrors = dataGetter.get('keystone').errors;
 
-  const pageTitle: string = loading
+  const pageTitle: string = list.isSingleton
+    ? list.label
+    : loading
     ? undefined
     : (data && data.item && (data.item[list.labelField] || data.item.id)) || id;
 
@@ -375,6 +378,17 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
                   errors={error?.graphQLErrors}
                   networkError={error?.networkError}
                 />
+              ) : list.isSingleton ? (
+                id === '1' ? (
+                  <Stack gap="medium">
+                    <Notice tone="negative">
+                      {list.label} doesn't exist or you don't have access to it.
+                    </Notice>
+                    {!data.keystone.adminMeta.list!.hideCreate && <CreateButtonLink list={list} />}
+                  </Stack>
+                ) : (
+                  <Notice tone="negative">The item with id "{id}" does not exist</Notice>
+                )
               ) : (
                 <Notice tone="negative">
                   The item with id "{id}" could not be found or you don't have access to it.

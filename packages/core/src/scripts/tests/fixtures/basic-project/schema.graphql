@@ -127,6 +127,7 @@ type KeystoneAdminUIListMeta {
   fields: [KeystoneAdminUIFieldMeta!]!
   initialSort: KeystoneAdminUISort
   isHidden: Boolean!
+  isSingleton: Boolean
 }
 
 type KeystoneAdminUIFieldMeta {

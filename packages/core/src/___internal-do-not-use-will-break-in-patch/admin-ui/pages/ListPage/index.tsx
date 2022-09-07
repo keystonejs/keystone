@@ -24,6 +24,7 @@ import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/Pa
 import { Pagination, PaginationLabel } from '../../../../admin-ui/components/Pagination';
 import { useList } from '../../../../admin-ui/context';
 import { Link, useRouter } from '../../../../admin-ui/router';
+import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink';
 import { FieldSelection } from './FieldSelection';
 import { FilterAdd } from './FilterAdd';
 import { FilterList } from './FilterList';
@@ -251,7 +252,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
             <p css={{ marginTop: '24px', maxWidth: '704px' }}>{list.description}</p>
           )}
           <Stack across gap="medium" align="center" marginTop="xlarge">
-            {showCreate && <CreateButton listKey={listKey} />}
+            {showCreate && <CreateButtonLink list={list} />}
             {data.count || filters.filters.length ? (
               <FilterAdd listKey={listKey} filterableFields={filterableFields} />
             ) : null}
@@ -334,30 +335,6 @@ const ListPage = ({ listKey }: ListPageProps) => {
         </Center>
       )}
     </PageContainer>
-  );
-};
-
-const CreateButton = ({ listKey }: { listKey: string }) => {
-  const list = useList(listKey);
-
-  return (
-    <Fragment>
-      <Button
-        css={{
-          textDecoration: 'none',
-          ':hover': {
-            color: 'white',
-          },
-        }}
-        as={Link}
-        href={`/${list.path}/create`}
-        tone="active"
-        size="small"
-        weight="bold"
-      >
-        Create {list.singular}
-      </Button>
-    </Fragment>
   );
 };
 

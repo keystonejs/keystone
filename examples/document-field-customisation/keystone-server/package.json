@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "private": true,
   "repository": "https://github.com/keystonejs/keystone/tree/main/examples/document-field-customisation/keystone-server",
-  "scripts": {  
+  "scripts": {
     "dev": "keystone dev --seed-database",
     "start": "keystone start --seed-database",
     "build": "keystone build"

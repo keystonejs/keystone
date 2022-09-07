@@ -51,7 +51,7 @@ export async function checkUniqueItemExists(
   operation: string
 ) {
   // Validate and resolve the input filter
-  const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, foreignList.fields, context);
+  const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, foreignList, context);
   // Check whether the item exists (from this users POV).
   try {
     const item = await context.db[foreignList.listKey].findOne({ where: uniqueInput });

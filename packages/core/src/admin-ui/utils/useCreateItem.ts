@@ -103,6 +103,16 @@ export function useCreateItem(list: ListMeta): CreateItemHookResult {
           variables: {
             data,
           },
+          update(cache, { data }) {
+            if (typeof data?.item?.id === 'string') {
+              cache.evict({
+                id: 'ROOT_QUERY',
+                fieldName: `${list.gqlNames.itemQueryName}(${JSON.stringify({
+                  where: { id: data.item.id },
+                })})`,
+              });
+            }
+          },
         }).then(x => x.data);
       } catch {
         return undefined;

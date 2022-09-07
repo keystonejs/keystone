@@ -71,3 +71,9 @@ model User {
   from_Thing_toOneRelationship     Thing[]  @relation("Thing_toOneRelationship")
   from_Thing_toOneRelationshipCard Thing[]  @relation("Thing_toOneRelationshipCard")
 }
+
+model Settings {
+  id            Int    @id
+  websiteName   String @default("")
+  copyrightText String @default("")
+}

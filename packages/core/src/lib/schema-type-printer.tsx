@@ -165,6 +165,7 @@ function printListTypeInfo<L extends InitialisedList>(listKey: string, list: L) 
     `  export type Item = import('.prisma/client').${listKey};`,
     `  export type TypeInfo = {`,
     `    key: "${listKey}";`,
+    `    isSingleton: ${list.isSingleton};`,
     `    fields: ${Object.keys(list.fields).map(x => `"${x}"`).join(' | ')}`,
     `    item: Item;`,
     `    inputs: {`,
