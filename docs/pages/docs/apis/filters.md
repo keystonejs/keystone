@@ -153,7 +153,7 @@ The `image` field type does not support filters.
 ## Related resources
 
 {% related-content %}
-{% well 
+{% well
 heading="Query Filters Guide"
 href="/docs/guides/filters" %}
 Query filters are an integral part of Keystone’s powerful GraphQL APIs. This guide will show you how to use filters to get the data you need from your system.

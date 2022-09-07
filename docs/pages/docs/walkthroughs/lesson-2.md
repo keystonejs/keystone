@@ -250,10 +250,10 @@ export default config({
 ## Next lesson
 
 {% related-content %}
-{% well 
+{% well
 heading="Lesson 3: Publishing workflows"
 href="/docs/walkthroughs/lesson-3" %}
-Support publishing needs with Keystone's `select` and 
+Support publishing needs with Keystone's `select` and
 `timestamp` fields
 {% /well %}
 {% /related-content %}

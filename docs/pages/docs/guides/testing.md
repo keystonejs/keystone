@@ -246,18 +246,18 @@ describe('Example tests using test environment', () => {
 ## Related resources
 
 {% related-content %}
-{% well 
+{% well
 heading="Example Project: Testing"
 href="https://github.com/keystonejs/keystone/tree/main/examples/testing"
 target="_blank" %}
 Shows you how to write tests against the GraphQL API to your Keystone system. Builds on the Authentication example project.
 {% /well %}
-{% well 
+{% well
 heading="Context API Reference"
 href="/docs/apis/context" %}
 The API for run-time functionality in your Keystone system. Use it to write business logic for access control, hooks, testing, GraphQL schema extensions, and more.
 {% /well %}
-{% well 
+{% well
 heading="Query API Reference"
 href="/docs/apis/query" %}
 A programmatic API for running CRUD operations against your GraphQL API. For each list in your system you get an API at `context.query.<listName>`.

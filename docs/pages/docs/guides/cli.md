@@ -202,7 +202,7 @@ yarn keystone start
 ## Related resources
 
 {% related-content %}
-{% well 
+{% well
 heading="Getting Started with create-keystone-app"
 href="/docs/walkthroughs/getting-started-with-create-keystone-app" %}
 How to use Keystone's CLI app to standup a new local project with an Admin UI & the GraphQL Playground.
