@@ -326,18 +326,18 @@ Pass in `isSelected` if you have a custom condition or would like more granular 
 ## Related resources
 
 {% related-content %}
-{% well 
+{% well
 heading="Example: Custom Admin UI Navigation"
-href="https://github.com/keystonejs/keystone/tree/main/examples/custom-admin-ui-navigation"
-target="_blank" %}
+href="<https://github.com/keystonejs/keystone/tree/main/examples/custom-admin-ui-navigation>"
+target="\_blank" %}
 Adds a custom navigation component to the Admin UI. Builds on the Task Manager starter project.
 {% /well %}
-{% well 
+{% well
 heading="Custom Admin UI Logo Guide"
 href="/docs/guides/custom-admin-ui-logo" %}
 Learn how to add your own custom logo to Keystone’s Admin UI.
 {% /well %}
-{% well 
+{% well
 heading="Custom Admin UI Pages Guide"
 href="/docs/guides/custom-admin-ui-pages" %}
 Learn how to add your own custom pages to Keystone’s Admin UI.

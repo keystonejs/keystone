@@ -264,10 +264,10 @@ The complete reference for Field configuration
 {% well  heading="Relationship Guide" href="/docs/apis/fields" %}
 Learn how to reason about and configure relationships in Keystone so you can bring value to your project through structured content.
 {% /well %}
-{% well  heading="Example Project: S3 Assets" href="https://github.com/keystonejs/keystone/tree/main/examples/assets-s3" %}
+{% well  heading="Example Project: S3 Assets" href="<https://github.com/keystonejs/keystone/tree/main/examples/assets-s3>" %}
 A full keystone project illustrating how to configure `storage` using `kind: 's3'` and then uses both an `image` and `file` field types within a list.
 {% /well %}
-{% well  heading="Example Project: Local Assets" href="https://github.com/keystonejs/keystone/tree/main/examples/assets-local" %}
+{% well  heading="Example Project: Local Assets" href="<https://github.com/keystonejs/keystone/tree/main/examples/assets-local>" %}
 A full keystone project illustrating how to configure `storage` using `kind: 'local'` and then uses both an `image` and `file` field types within a list.
 {% /well %}
 {% /related-content %}

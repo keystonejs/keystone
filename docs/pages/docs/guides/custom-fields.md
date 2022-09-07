@@ -221,8 +221,8 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
 {% related-content %}
 {% well
 heading="Example Project: Custom Fields"
-href="https://github.com/keystonejs/keystone/tree/main/examples/custom-field"
-target="_blank" %}
+href="<https://github.com/keystonejs/keystone/tree/main/examples/custom-field>"
+target="\_blank" %}
 Adds a custom field type based on the `integer` field type which lets users rate items on a 5-star scale. Builds on the Blog starter project.
 {% /well %}
 {% /related-content %}

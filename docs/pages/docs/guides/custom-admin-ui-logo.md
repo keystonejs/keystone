@@ -50,18 +50,18 @@ Once you've added your custom logo component you should see it rendered out in t
 ## Related resources
 
 {% related-content %}
-{% well 
+{% well
 heading="Example: Custom Admin UI Logo"
-href="https://github.com/keystonejs/keystone/tree/main/examples/custom-admin-ui-logo"
-target="_blank" %}
+href="<https://github.com/keystonejs/keystone/tree/main/examples/custom-admin-ui-logo>"
+target="\_blank" %}
 Adds a custom logo component in the Admin UI. Builds on the Task Manager starter project.
 {% /well %}
-{% well 
+{% well
 heading="Custom Admin UI Navigation Guide"
 href="/docs/guides/custom-admin-ui-navigation" %}
 Learn how to create your own custom Navigation components in Keytone’s Admin UI.
 {% /well %}
-{% well 
+{% well
 heading="Custom Admin UI Pages Guide"
 href="/docs/guides/custom-admin-ui-pages" %}
 Learn how to add your own custom pages to Keystone’s Admin UI.

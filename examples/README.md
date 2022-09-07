@@ -10,7 +10,7 @@ These are standalone keystone examples that demonstrate specific use cases and c
 
 2. E2E examples
 
-These examples showcase how Keystone works with other tools and frameworks and usually have a separate frontend and keystone setup that need to run simultaneously for the example to work. 
+These examples showcase how Keystone works with other tools and frameworks and usually have a separate frontend and keystone setup that need to run simultaneously for the example to work.
 
 ## Feature Examples
 

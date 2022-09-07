@@ -66,7 +66,7 @@ export default config({
 
 To create a post type we add a second `Post` key to the lists object. Let’s add another `text` field for the post’s `title` to begin with:
 
-```js{11-15}[1-3,18-24]
+```js{11-15}\[1-3,18-24]
 import { list, config } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
 
@@ -110,7 +110,7 @@ Now that we have two lists, let's make a relationship between them. When decidin
 
 Let’s say that a post can be associated with only one user, but a user can have many posts. To create this relationship, we will add a [relationship](/docs/guides/relationships) field to each list that defines their connection to one another:
 
-```js{2,9,15}[19-30]
+```js{2,9,15}\[19-30]
 import { list, config } from '@keystone-6/core';
 import { text, relationship } from '@keystone-6/core/fields';
 
@@ -156,7 +156,7 @@ In our current schema, the `author` field provides a `select` input to connect a
 
 In Keystone it's possible to change that display to suit your needs. This is achieved with a field's `ui` option. Each field comes with different `ui` options that you can explore. for the `author` field we’ll make a few changes to improve the editing experience for Admin UI users:
 
-```js{18-24}[2-12,28-35]
+```js{18-24}\[2-12,28-35]
 //keystone.ts
 import { list, config } from '@keystone-6/core';
 import { text, relationship } from '@keystone-6/core/fields';
@@ -250,10 +250,10 @@ export default config({
 ## Next lesson
 
 {% related-content %}
-{% well 
+{% well
 heading="Lesson 3: Publishing workflows"
 href="/docs/walkthroughs/lesson-3" %}
-Support publishing needs with Keystone's `select` and 
+Support publishing needs with Keystone's `select` and
 `timestamp` fields
 {% /well %}
 {% /related-content %}

@@ -144,12 +144,12 @@ const users = await context.db.User.deleteMany({
 ## Related resources
 
 {% related-content %}
-{% well 
+{% well
 heading="Query API Reference"
 href="/docs/apis/query" %}
 A programmatic API for running CRUD operations against your GraphQL API. For each list in your system you get an API at `context.query.<listName>`.
 {% /well %}
-{% well 
+{% well
 heading="Context API Reference"
 href="/docs/apis/context" %}
 The API for run-time functionality in your Keystone system. Use it to write business logic for access control, hooks, testing, GraphQL schema extensions, and more.
