@@ -4,8 +4,7 @@ Boilerplate code to build feature examples
 
 ## Running the example
 
-1. Install dependencies
-
+1. Install dependencies 
 ```shell
 yarn
 ```

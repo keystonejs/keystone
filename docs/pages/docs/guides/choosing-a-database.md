@@ -39,12 +39,12 @@ For supported database provider versions for Postgres and MySQL see [Prisma Supp
 ## Related resources
 
 {% related-content %}
-{% well
+{% well 
 heading="Fields API"
 href="../apis/fields" %}
 Documentation for the Fields API
 {% /well %}
-{% well
+{% well 
 heading="DB Config API"
 href="../apis/config#db" %}
 Documentation for the DB Config API

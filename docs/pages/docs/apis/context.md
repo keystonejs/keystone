@@ -160,12 +160,12 @@ They will be removed in future releases.
 ## Related resources
 
 {% related-content %}
-{% well
+{% well 
 heading="Query API Reference"
 href="/docs/apis/query" %}
 A programmatic API for running CRUD operations against your GraphQL API. For each list in your system you get an API at `context.query.<listName>`
 {% /well %}
-{% well
+{% well 
 heading="DB API Reference"
 href="/docs/apis/db-items" %}
 The API for running CRUD operations against the internal GraphQL resolvers in your system. It returns internal item objects, which can be returned from GraphQL resolvers.

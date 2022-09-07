@@ -465,7 +465,7 @@ The following error codes can be returned from the Keystone GraphQL API.
 {% well
 heading="Lists API Reference"
 href="/docs/apis/schema" %}
-The API to configure your options used with the `list()` function.
+The API to configure your  options used with the `list()` function.
 {% /well %}
 {% well
 heading="Config API Reference"

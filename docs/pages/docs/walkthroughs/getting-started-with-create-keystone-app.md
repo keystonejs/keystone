@@ -2,8 +2,8 @@
 title: "Getting started"
 description: "Learn how to get your first Keystone project up and running using the `create-keystone-app` Command Line Interface."
 ---
-
 ![A terminal with the output of create-keystone-app](/assets/walkthroughs/getting-started/cover.svg)
+
 
 [`create-keystone-app`](https://github.com/keystonejs/create-keystone-app) is a CLI app that makes it easier for you initiate a Keystone project.
 It generates some files for you and installs all the dependencies you need to run the Admin UI and start using the [GraphQL API](/docs/apis/graphql).
@@ -73,12 +73,12 @@ cd my-app
 yarn dev
 ```
 
-This will generate the Admin UI pages via [Next.js](https://nextjs.org/) on <http://localhost:3000>. When you visit the Admin UI for the first time you will be presented with a handy screen that asks you to create a user:
+This will generate the Admin UI pages via [Next.js](https://nextjs.org/) on [http://localhost:3000](http://localhost:3000). When you visit the Admin UI for the first time you will be presented with a handy screen that asks you to create a user:
 
 ![The welcome screen giving you the ability the create a new user to log into the AdminUI](/assets/walkthroughs/getting-started/welcome-screen.png)
 
 Go ahead and create your first user. The email address and password will be used to login to Keystone’s Admin UI. Once you've created your user, you’ll be logged in to a new Keystone Admin UI that comes with two [lists](/docs/apis/config#lists).
-From here you can explore and interact with the data in your system, and understand how Keystone’s schema relates to your GraphQL API which you can explore at <http://localhost:3000/api/graphql>.
+From here you can explore and interact with the data in your system, and understand how Keystone’s schema relates to your GraphQL API which you can explore at [http://localhost:3000/api/graphql](http://localhost:3000/api/graphql).
 
 ![The AdminUI of Keystone showing the two lists: User and Posts](/assets/walkthroughs/getting-started/adminui.png)
 
@@ -104,7 +104,7 @@ Keytone creates the following files in your newly generated folder. The most imp
 
 `package.json` includes the following npm scripts you can run locally:
 
-- [`dev`](/docs/guides/cli#dev) runs Keystone in **development** mode at <http://localhost:3000>.
+- [`dev`](/docs/guides/cli#dev) runs Keystone in **development** mode at [http://localhost:3000](http://localhost:3000).
 - [`start`](/docs/guides/cli#start) runs Keystone in **production** mode.
 - [`build`](/docs/guides/cli#build) will build the project and is required to be run before `start`.
 - [`postinstall`](/docs/guides/cli#postinstall) ensures files that Keystone generates exist and are kept up to date.

@@ -47,6 +47,7 @@ yarn add @keystone-6/core
 Keystone looks for a file named `keystone.ts` (or `keystone.js`) at the project root to handle configuration needs. Let's go ahead and set one up using TypeScript:
 
 ```js
+
 // keystone.ts
 export default {};
 ```
@@ -103,7 +104,7 @@ Now that we have a database configured, let’s connect some content to it!
 
 We’re going to build a simple blog with **users** and **posts**. Let’s start with the `User` list using [`text`](/docs/apis/fields#text) fields for their `name` and `email`:
 
-```js{2,9-15}\[5-8]
+```js{2,9-15}[5-8]
 import { config, list } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
 
@@ -143,11 +144,11 @@ We now have everything we need to start Keystone, so let’s do just that:
 yarn keystone dev
 ```
 
-In a few seconds your terminal will provide you with you a link to the Keystone Admin UI at <http://localhost:3000>
+In a few seconds your terminal will provide you with you a link to the Keystone Admin UI at [http://localhost:3000](http://localhost:3000)
 
 ![Terminal dialog showing successful Keystone startup](https://keystonejs.s3.amazonaws.com/framework-assets/assets/walkthroughs/lesson-1/keystone-startup.png)
 
-Head on over to <http://localhost:3000/users> where you can create your first user with a `name` and `email`:
+Head on over to [http://localhost:3000/users](http://localhost:3000/users) where you can create your first user with a `name` and `email`:
 
 ![Adding a user record in Keystone Admin UI](https://keystonejs.s3.amazonaws.com/framework-assets/assets/walkthroughs/lesson-1/first-user-creation.gif)
 
