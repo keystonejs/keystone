@@ -196,13 +196,13 @@ yarn keystone start
 
 - These examples use `yarn` as the package manager, you can use others like `npm` or `pnpm` if you prefer.
 - The commands above are included in the `package.json` reference at the top of this page. We recommend using package scripts so your build and start commands are centralised in source control.
-- If you promote your build through separate environments in a pipeline (e.g testing &rarr; staging &rarr; production) you should run migrations during the **promote** step and **not** as part of the build script.
+- If you promote your build through separate environments in a pipeline (e.g testing → staging → production) you should run migrations during the **promote** step and **not** as part of the build script.
 - It is important you do **not run migrations against your production database from staging builds**. If you have staging or preview environments set up in production, make sure they are not pointed to your production database.
 
 ## Related resources
 
 {% related-content %}
-{% well 
+{% well
 heading="Getting Started with create-keystone-app"
 href="/docs/walkthroughs/getting-started-with-create-keystone-app" %}
 How to use Keystone's CLI app to standup a new local project with an Admin UI & the GraphQL Playground.
