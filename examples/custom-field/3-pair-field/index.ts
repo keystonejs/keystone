@@ -36,7 +36,8 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>(
     }
     const { left, right } = resolveInput(value.equals);
     return {
-      AND: [{ left: { equals: left } }, { right: { equals: right } }],
+      left: { equals: left },
+      right: { equals: right },
     };
   }
 
