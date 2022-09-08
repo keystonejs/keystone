@@ -19,6 +19,7 @@ input PostWhereInput {
   id: IDFilter
   content: StringNullableFilter
   rating: IntNullableFilter
+  pair: PairFilter
 }
 
 input IDFilter {
@@ -69,6 +70,10 @@ input IntNullableFilter {
   gt: Int
   gte: Int
   not: IntNullableFilter
+}
+
+input PairFilter {
+  equals: String
 }
 
 input PostOrderByInput {
