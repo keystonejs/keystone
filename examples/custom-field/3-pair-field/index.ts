@@ -62,7 +62,10 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>(
       input: {
         where: {
           arg: graphql.arg({ type: PairFilter }),
-          resolve: resolveWhere,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          resolve(value, context) {
+            return resolveWhere(value);
+          },
         },
         create: {
           arg: graphql.arg({ type: graphql.String }),
