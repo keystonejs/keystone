@@ -1,5 +1,6 @@
 import fs from 'fs-extra';
 import { requirePrismaClient } from '../../artifacts';
+import { setSkipWatching } from '../run/dev';
 import { ExitError } from '../utils';
 import {
   getFiles,
@@ -9,6 +10,10 @@ import {
   symlinkKeystoneDeps,
   testdir,
 } from './utils';
+
+// watching with esbuild inside of jest goes _weird_
+// esbuild doesn't seem to let you wait for the cleanup
+setSkipWatching();
 
 const dbUrl = 'file:./app.db';
 

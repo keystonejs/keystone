@@ -56,6 +56,12 @@ function isBuildFailure(err: unknown): err is BuildFailure {
   return err instanceof Error && Array.isArray((err as any).errors);
 }
 
+let shouldWatch = true;
+
+export function setSkipWatching() {
+  shouldWatch = false;
+}
+
 export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
   console.log('✨ Starting Keystone');
 
@@ -81,13 +87,15 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
   const initialBuildResult = await esbuild
     .build({
       ...getEsbuildConfig(cwd),
-      watch: {
-        onRebuild(error, result) {
-          let prev = lastPromise;
-          lastPromise = resolvablePromise();
-          prev.resolve({ value: { error, result }, done: false });
-        },
-      },
+      watch: shouldWatch
+        ? {
+            onRebuild(error, result) {
+              let prev = lastPromise;
+              lastPromise = resolvablePromise();
+              prev.resolve({ value: { error, result }, done: false });
+            },
+          }
+        : undefined,
     })
     .catch(async err => {
       if (isBuildFailure(err)) {
@@ -99,8 +107,7 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
   const configWithHTTP = loadBuiltConfig(cwd);
   const config = cleanConfig(configWithHTTP);
 
-  const isReady = () =>
-    expressServer !== null && (hasAddedAdminUIMiddleware || config.ui?.isDisabled === true);
+  const isReady = () => expressServer !== null && hasAddedAdminUIMiddleware;
 
   const initKeystone = async () => {
     await fs.remove(getAdminPath(cwd));
@@ -127,13 +134,6 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
 
     const prismaClient = createContext().prisma;
     ({ disconnect, expressServer } = rest);
-    // if you've disabled the Admin UI, sorry, no live reloading
-    // the chance that someone is actually using this is probably quite low
-    // and starting Next in tests where we don't care about it would slow things down quite a bit
-    if (config.ui?.isDisabled) {
-      initKeystonePromiseResolve();
-      return;
-    }
     const adminUIMiddleware = await initAdminUI(
       config,
       graphQLSchema,
@@ -244,7 +244,7 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
   // Pass the request the express server, or serve the loading page
   app.use((req, res, next) => {
     // If both the express server and Admin UI Middleware are ready, we're go!
-    if (expressServer && (hasAddedAdminUIMiddleware || config.ui?.isDisabled === true)) {
+    if (expressServer && hasAddedAdminUIMiddleware) {
       return expressServer(req, res, next);
     }
     // Otherwise, we may be able to serve the GraphQL API
@@ -308,13 +308,12 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
       });
     });
   });
-
   await initKeystonePromise;
 
   return () =>
     new Promise<void>((resolve, reject) => {
       server.close(async err => {
-        initialBuildResult.stop!();
+        initialBuildResult.stop?.();
         try {
           await disconnect?.();
         } catch (disconnectionError: any) {
