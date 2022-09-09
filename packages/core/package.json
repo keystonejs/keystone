@@ -120,7 +120,6 @@
     "fast-glob": "^3.2.7",
     "fixturez": "^1.1.0",
     "mime": "^3.0.0",
-    "outdent": "^0.8.0",
     "string-argv": "^0.3.1",
     "strip-ansi": "^6.0.1"
   },

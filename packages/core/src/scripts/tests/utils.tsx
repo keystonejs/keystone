@@ -6,7 +6,6 @@ import * as fs from 'fs-extra';
 import fastGlob from 'fast-glob';
 // @ts-ignore
 import fixturez from 'fixturez';
-import outdent from 'outdent';
 import { parseArgsStringToArgv } from 'string-argv';
 import { IntrospectionEngine, uriToCredentials } from '@prisma/internals';
 import { KeystoneConfig } from '../../types';
@@ -15,26 +14,10 @@ import { mockPrompts } from '../../lib/prompts';
 
 export const cliBinPath = require.resolve('@keystone-6/core/bin/cli.js');
 
-export const js = outdent;
-export const ts = outdent;
-export const tsx = outdent;
-export const graphql = outdent;
-
-export const basicKeystoneConfig = js`
-                                     import { config, list } from "@keystone-6/core";
-                                     import { text } from "@keystone-6/core/fields";
-
-                                     export default config({
-                                       db: { provider: "sqlite", url: "file:./app.db" },
-                                       lists: {
-                                         Todo: list({
-                                           fields: {
-                                             title: text(),
-                                           },
-                                         }),
-                                       },
-                                     });
-                                   `;
+export const basicKeystoneConfig = fs.readFileSync(
+  `${__dirname}/fixtures/basic-project/keystone.ts`,
+  'utf8'
+);
 
 export const schemas = {
   'schema.graphql': fs.readFileSync(`${__dirname}/fixtures/basic-project/schema.graphql`, 'utf8'),

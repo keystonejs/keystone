@@ -1,10 +1,10 @@
 import execa from 'execa';
 import * as fs from 'fs-extra';
+import stripAnsi from 'strip-ansi';
 import { ExitError } from '../utils';
 import {
   basicKeystoneConfig,
   cliBinPath,
-  js,
   recordConsole,
   runCommand,
   schemas,
@@ -36,23 +36,7 @@ test('build works with typescript without the user defining a babel config', asy
   const tmp = await testdir({
     ...symlinkKeystoneDeps,
     ...schemas,
-    'keystone.ts': js`
-                     import { config, list } from "@keystone-6/core";
-                     import { text } from "@keystone-6/core/fields";
-
-                     type x = string;
-
-                     export default config({
-                       db: { provider: "sqlite", url: "file:./app.db" },
-                       lists: {
-                         Todo: list({
-                           fields: {
-                             title: text(),
-                           },
-                         }),
-                       },
-                     });
-                   `,
+    'keystone.ts': await fs.readFile(`${__dirname}/fixtures/with-ts.ts`, 'utf8'),
   });
   const result = await execa('node', [cliBinPath, 'build'], {
     reject: false,
@@ -64,8 +48,8 @@ test('build works with typescript without the user defining a babel config', asy
   });
   expect(await fs.readFile(`${tmp}/node_modules/.keystone/types.js`, 'utf8')).toBe('');
   expect(
-    result
-      .all!.replace(
+    stripAnsi(result.all!)
+      .replace(
         '\nwarn  - No build cache found. Please configure build caching for faster rebuilds. Read more: https://nextjs.org/docs/messages/no-cache',
         ''
       )

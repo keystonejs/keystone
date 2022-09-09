@@ -3490,13 +3490,6 @@
     terser "^5.2.1"
     v8-compile-cache "^2.1.1"
 
-"@preconstruct/eslint-plugin-format-js-tag@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@preconstruct/eslint-plugin-format-js-tag/-/eslint-plugin-format-js-tag-0.2.0.tgz#6727039301087469fc74fa5ddcdc56fc0187e234"
-  integrity sha512-/yXgIoBp8h0MOYOeI55pT5uLCalOLRyM+FSY55HqnbH1ALkr8ttmf7hu/EI3Z6KY8zRso3sXaf6OeFM4tuHIDg==
-  dependencies:
-    "@typescript-eslint/experimental-utils" "^5.4.0"
-
 "@preconstruct/hook@^0.4.0":
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/@preconstruct/hook/-/hook-0.4.0.tgz#c15dfacfc6e60652a6837209c2fd87f0240b099e"
@@ -4774,13 +4767,6 @@
     "@typescript-eslint/typescript-estree" "2.34.0"
     eslint-scope "^5.0.0"
     eslint-utils "^2.0.0"
-
-"@typescript-eslint/experimental-utils@^5.4.0":
-  version "5.33.1"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/experimental-utils/-/experimental-utils-5.33.1.tgz#5fa908addffb82ea8fb0e62cb47c387de1bff536"
-  integrity sha512-wk2o+4wojvKz/x3UCbsgjgXl0lyLPYQsfKP0MdRzj4jtsQr4bVtgWUWck6+N3GzThUTbUFyyKLduWPwePhh0xQ==
-  dependencies:
-    "@typescript-eslint/utils" "5.33.1"
 
 "@typescript-eslint/parser@^5.7.0":
   version "5.33.1"
@@ -11490,11 +11476,6 @@ outdent@^0.5.0:
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/outdent/-/outdent-0.5.0.tgz#9e10982fdc41492bb473ad13840d22f9655be2ff"
   integrity sha512-/jHxFIzoMXdqPzTaCpFzAAWhpkSjZPF4Vsn6jAfNpmbH/ymsmd7Qc6VE9BGn0L6YMj6uwpQLxCECpus4ukKS9Q==
-
-outdent@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/outdent/-/outdent-0.8.0.tgz#2ebc3e77bf49912543f1008100ff8e7f44428eb0"
-  integrity sha512-KiOAIsdpUTcAXuykya5fnVVT+/5uS0Q1mrkRHcF89tpieSmY33O/tmc54CqwA+bfhbtEfZUNLHaPUiB9X3jt1A==
 
 p-cancelable@^1.0.0:
   version "1.1.0"
