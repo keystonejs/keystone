@@ -1,10 +1,7 @@
 import fs from 'fs-extra';
-import { ListSchemaConfig } from '../../types';
-import { checkbox, text } from '../../fields';
 import { requirePrismaClient } from '../../artifacts';
-import { config, list } from '../..';
+import { setSkipWatching } from '../run/dev';
 import { ExitError } from '../utils';
-import { allowAll } from '../../access';
 import {
   getFiles,
   introspectDb,
@@ -14,25 +11,11 @@ import {
   testdir,
 } from './utils';
 
-const basicLists = {
-  Todo: list({
-    access: allowAll,
-    fields: {
-      title: text(),
-    },
-  }),
-};
+// watching with esbuild inside of jest goes _weird_
+// esbuild doesn't seem to let you wait for the cleanup
+setSkipWatching();
 
 const dbUrl = 'file:./app.db';
-
-const basicKeystoneConfig = (useMigrations: boolean, lists: ListSchemaConfig = basicLists) => ({
-  kind: 'config' as const,
-  config: config({
-    db: { provider: 'sqlite', url: dbUrl, useMigrations },
-    ui: { isDisabled: true },
-    lists,
-  }),
-});
 
 async function setupAndStopDevServerForMigrations(cwd: string, resetDb: boolean = false) {
   let stopServer = (await runCommand(
@@ -81,10 +64,12 @@ function cleanOutputForApplyingMigration(output: string, generatedMigrationName:
     .replace('✅ The migration has been applied\n', '');
 }
 
+const basicKeystoneConfig = fs.readFileSync(`${__dirname}/fixtures/basic-with-no-ui.ts`, 'utf8');
+
 async function setupInitialProjectWithoutMigrations() {
   const tmp = await testdir({
     ...symlinkKeystoneDeps,
-    'keystone.js': basicKeystoneConfig(false),
+    'keystone.js': basicKeystoneConfig,
   });
   const recording = recordConsole();
   await setupAndStopDevServerForMigrations(tmp);
@@ -141,12 +126,7 @@ describe('useMigrations: false', () => {
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...(await getDatabaseFiles(prevCwd)),
-      'keystone.js': basicKeystoneConfig(false, {
-        Todo: {
-          access: allowAll,
-          fields: {},
-        },
-      }),
+      'keystone.js': await fs.readFile(`${__dirname}/fixtures/no-fields.ts`, 'utf8'),
     });
     const recording = recordConsole({
       'Do you want to continue? Some data will be lost.': true,
@@ -188,12 +168,7 @@ describe('useMigrations: false', () => {
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...(await getDatabaseFiles(prevCwd)),
-      'keystone.js': basicKeystoneConfig(false, {
-        Todo: {
-          access: allowAll,
-          fields: {},
-        },
-      }),
+      'keystone.js': await fs.readFile(`${__dirname}/fixtures/no-fields.ts`, 'utf8'),
     });
     const recording = recordConsole({
       'Do you want to continue? Some data will be lost.': false,
@@ -254,10 +229,15 @@ describe('useMigrations: false', () => {
   });
 });
 
+const basicWithMigrations = fs.readFileSync(
+  `${__dirname}/fixtures/one-field-with-migrations.ts`,
+  'utf8'
+);
+
 async function setupInitialProjectWithMigrations() {
   const tmp = await testdir({
     ...symlinkKeystoneDeps,
-    'keystone.js': basicKeystoneConfig(true),
+    'keystone.js': basicWithMigrations,
   });
   const recording = recordConsole({
     'Name of migration': 'init',
@@ -314,15 +294,10 @@ describe('useMigrations: true', () => {
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...(await getDatabaseFiles(prevCwd)),
-      'keystone.js': basicKeystoneConfig(true, {
-        Todo: {
-          access: allowAll,
-          fields: {
-            title: text(),
-            isComplete: checkbox(),
-          },
-        },
-      }),
+      'keystone.js': await fs.readFile(
+        `${__dirname}/fixtures/two-fields-with-migrations.ts`,
+        'utf8'
+      ),
     });
     const recording = recordConsole({
       'Name of migration': 'add-is-complete',
@@ -386,12 +361,10 @@ describe('useMigrations: true', () => {
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...(await getDatabaseFiles(prevCwd)),
-      'keystone.js': basicKeystoneConfig(true, {
-        Todo: {
-          access: allowAll,
-          fields: {},
-        },
-      }),
+      'keystone.js': await fs.readFile(
+        `${__dirname}/fixtures/no-fields-with-migrations.ts`,
+        'utf8'
+      ),
     });
     const recording = recordConsole({
       'Name of migration': 'remove all fields except id',
@@ -463,7 +436,7 @@ describe('useMigrations: true', () => {
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       'app.db': await fs.readFile(`${prevCwd}/app.db`),
-      'keystone.js': basicKeystoneConfig(true),
+      'keystone.js': await fs.readFile(`${__dirname}/fixtures/one-field-with-migrations.ts`),
     });
     const recording = recordConsole({
       'Do you want to continue? All data will be lost.': true,
@@ -539,7 +512,7 @@ describe('useMigrations: true', () => {
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       'app.db': dbBuffer,
-      'keystone.js': basicKeystoneConfig(true),
+      'keystone.js': await fs.readFile(`${__dirname}/fixtures/no-fields-with-migrations.ts`),
     });
     const recording = recordConsole({
       'Do you want to continue? All data will be lost.': false,
@@ -578,15 +551,7 @@ describe('useMigrations: true', () => {
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...dbFiles,
-      'keystone.js': basicKeystoneConfig(true, {
-        Todo: {
-          access: allowAll,
-          fields: {
-            title: text(),
-            isComplete: checkbox(),
-          },
-        },
-      }),
+      'keystone.js': await fs.readFile(`${__dirname}/fixtures/two-fields-with-migrations.ts`),
     });
     const recording = recordConsole({
       'Name of migration': 'add-is-complete',
@@ -648,7 +613,7 @@ describe('useMigrations: true', () => {
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...migrations,
-      'keystone.js': basicKeystoneConfig(true),
+      'keystone.js': basicWithMigrations,
     });
     const recording = recordConsole();
     await setupAndStopDevServerForMigrations(tmp);

@@ -1,4 +1,5 @@
 // @ts-ignore
 doesNotExist();
 
-export {};
+export const lists = {};
+export const extendGraphqlSchema = {};

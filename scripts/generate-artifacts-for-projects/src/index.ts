@@ -1,19 +1,19 @@
 import path from 'path';
 import fs from 'fs/promises';
 import { format } from 'util';
-import { createSystem, initConfig } from '@keystone-6/core/system';
+import { createSystem } from '@keystone-6/core/system';
 import {
   validateCommittedArtifacts,
   generateNodeModulesArtifacts,
   generateCommittedArtifacts,
 } from '@keystone-6/core/artifacts';
-import { requireSource } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/require-source';
+import { loadConfig } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/load-config';
 
 const mode = process.env.UPDATE_SCHEMAS ? 'generate' : 'validate';
 
 async function generateArtifactsForProjectDir(projectDir: string) {
   try {
-    const config = initConfig(requireSource(path.join(projectDir, 'keystone')).default);
+    const config = await loadConfig(projectDir);
     const { graphQLSchema } = createSystem(config, false);
     if (mode === 'validate') {
       await validateCommittedArtifacts(graphQLSchema, config, projectDir);
@@ -73,7 +73,10 @@ async function main() {
     )
   )
     .flat()
-    .concat(path.join(repoRoot, 'tests/sandbox'));
+    .concat(
+      path.join(repoRoot, 'tests/sandbox'),
+      path.join(repoRoot, 'packages/core/src/scripts/tests/fixtures/basic-project')
+    );
 
   // this breaks if we do this entirely in parallel (it only seemed to consistently fail on Vercel though)
   // because of Prisma's loading native libraries and child processes stuff and it seems racey
