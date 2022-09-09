@@ -2,4 +2,4 @@
 '@keystone-6/core': patch
 ---
 
-Replaced Next.js for server-side build with [esbuild](https://esbuild.github.io/)
+Changed platform compilation to use [esbuild](https://esbuild.github.io/), previously used next.js 
