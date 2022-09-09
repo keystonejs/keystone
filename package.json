@@ -8,9 +8,8 @@
   "repository": "https://github.com/keystonejs/keystone",
   "homepage": "https://github.com/keystonejs/keystone",
   "scripts": {
-    "prisma": "prisma",
     "docs": "manypkg run @keystone-6/website dev",
-    "coverage": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --runInBand --coverage",
+    "coverage": "jest --coverage",
     "format:file": "prettier --write",
     "format": "prettier --write \"**/*.{js,json,ts,tsx,md,mdx}\"",
     "fresh": "yarn clean && yarn",
@@ -19,10 +18,9 @@
     "lint:prettier": "prettier --check \"**/*.{js,json,ts,tsx,md,mdx}\"",
     "lint:types": "tsc",
     "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:types && yarn lint:filters",
-    "test": "yarn lint && yarn test:unit",
-    "test:unit": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --no-watchman --runInBand --logHeapUsage",
-    "test:unit:debug": "cross-env NODE_ENV=test node --inspect-brk `which jest` --runInBand",
-    "test:admin-ui": "yarn jest tests/admin-ui-tests",
+    "test": "jest",
+    "test:debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand",
+    "test:admin-ui": "jest tests/admin-ui-tests",
     "benchmark": "yarn workspace @keystone-6/benchmarks-legacy go",
     "changeset": "changeset",
     "publish-changed": "yarn build && changeset publish --public",
@@ -30,40 +28,32 @@
     "no-run-version-packages": "echo \"This workflow should not be run when there are changesets on main\" && exit 1",
     "build": "preconstruct build",
     "prepare": "patch-package && manypkg check && preconstruct dev && yarn run --silent contributing-guide && node scripts/generate-artifacts-for-projects && cd examples/graphql-ts-gql && yarn ts-gql build",
-    "contributing-guide": "is-ci && exit 0 || chalk -t \"{bold 📝 Contributing to KeystoneJS?}\" && terminal-link \"🔗 Read the full Contributing Guide\" \"https://github.com/keystonejs/keystone/blob/main/CONTRIBUTING.md\"",
+    "contributing-guide": "echo \"📝 Contributing to KeystoneJS?\" && echo \"🔗 Read the full Contributing Guide at ./CONTRIBUTING.md\"",
     "npm-tag": "manypkg npm-tag",
     "update": "manypkg upgrade",
-    "update-project-schemas": "cross-env UPDATE_SCHEMAS=1 node scripts/generate-artifacts-for-projects",
+    "update-project-schemas": "node scripts/generate-artifacts-for-projects update-schemas",
     "generate-filters": "cd prisma-utils && yarn generate",
     "lint:filters": "cd prisma-utils && yarn verify"
   },
   "dependencies": {
     "@babel/core": "^7.16.0",
-    "@babel/plugin-proposal-class-properties": "^7.16.0",
-    "@babel/plugin-proposal-object-rest-spread": "^7.16.0",
-    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/plugin-transform-runtime": "^7.16.0",
     "@babel/preset-env": "^7.16.0",
     "@babel/preset-react": "^7.16.0",
     "@babel/preset-typescript": "^7.16.0",
     "@changesets/changelog-github": "^0.4.1",
     "@changesets/cli": "^2.18.0",
-    "@jest/test-sequencer": "^29.0.0",
     "@manypkg/cli": "^0.19.1",
     "@preconstruct/cli": "2.2.1",
-    "@testing-library/jest-dom": "^5.15.0",
     "@types/jest": "^29.0.0",
     "@types/node-fetch": "^2.5.12",
     "@typescript-eslint/eslint-plugin": "^5.7.0",
     "@typescript-eslint/parser": "^5.7.0",
-    "chalk-cli": "^5.0.0",
-    "cross-env": "^7.0.3",
     "eslint": "^8.0.0",
     "eslint-plugin-import": "2.25.3",
     "eslint-plugin-jest": "^26.0.0",
     "eslint-plugin-react": "^7.27.0",
     "eslint-plugin-react-hooks": "^4.3.0",
-    "is-ci": "^3.0.1",
     "jest": "^29.0.0",
     "jest-environment-jsdom": "^29.0.0",
     "patch-package": "^6.4.7",
@@ -71,7 +61,6 @@
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "rimraf": "^3.0.2",
-    "terminal-link-cli": "^3.0.0",
     "typescript": "^4.7.4"
   },
   "prettier": {
@@ -119,18 +108,7 @@
     "defaultBranch": "main"
   },
   "jest": {
-    "setupFilesAfterEnv": [
-      "./tests/jest/setup.ts"
-    ],
-    "testSequencer": "./tests/jest/jest-sequencer.js",
     "testEnvironment": "node",
-    "testPathIgnorePatterns": [
-      "/node_modules/"
-    ],
-    "transformIgnorePatterns": [
-      "/node_modules/",
-      "\\.pnp\\.[^\\/]+$"
-    ],
     "collectCoverageFrom": [
       "packages/**/*.{js,ts,tsx}",
       "!**/*.d.ts",

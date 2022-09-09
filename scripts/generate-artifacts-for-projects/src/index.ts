@@ -9,7 +9,7 @@ import {
 } from '@keystone-6/core/artifacts';
 import { loadConfig } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/load-config';
 
-const mode = process.env.UPDATE_SCHEMAS ? 'generate' : 'validate';
+const mode = process.argv.includes('update-schemas') ? 'generate' : 'validate';
 
 async function generateArtifactsForProjectDir(projectDir: string) {
   try {
