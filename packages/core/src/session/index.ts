@@ -1,15 +1,8 @@
-import { IncomingMessage, ServerResponse } from 'http';
 import * as cookie from 'cookie';
 import Iron from '@hapi/iron';
 // uid-safe is what express-session uses so let's just use it
 import { sync as uid } from 'uid-safe';
-import {
-  SessionStrategy,
-  JSONValue,
-  SessionStoreFunction,
-  SessionContext,
-  CreateContext,
-} from '../types';
+import { SessionStrategy, JSONValue, SessionStoreFunction } from '../types';
 
 function generateSessionId() {
   return uid(24);
@@ -175,21 +168,5 @@ export function storedSessions({
         isConnected = false;
       }
     },
-  };
-}
-
-/**
- * This is the function createSystem uses to implement the session strategy provided
- */
-export async function createSessionContext<T>(
-  sessionStrategy: SessionStrategy<T>,
-  req: IncomingMessage,
-  res: ServerResponse,
-  createContext: CreateContext
-): Promise<SessionContext<T>> {
-  return {
-    session: await sessionStrategy.get({ req, createContext }),
-    startSession: (data: T) => sessionStrategy.start({ res, data, createContext }),
-    endSession: () => sessionStrategy.end({ req, res, createContext }),
   };
 }
