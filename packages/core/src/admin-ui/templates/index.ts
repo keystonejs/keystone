@@ -5,7 +5,6 @@ import { appTemplate } from './app';
 import { homeTemplate } from './home';
 import { listTemplate } from './list';
 import { itemTemplate } from './item';
-import { apiTemplate } from './api';
 import { noAccessTemplate } from './no-access';
 import { createItemTemplate } from './create-item';
 
@@ -17,15 +16,6 @@ export const writeAdminFiles = (
   adminMeta: AdminMetaRootVal,
   configFileExists: boolean
 ): AdminFileToWrite[] => {
-  if (
-    config.experimental?.enableNextJsGraphqlApiEndpoint &&
-    config.graphql?.path &&
-    !config.graphql.path.startsWith('/api/')
-  ) {
-    throw new Error(
-      'config.graphql.path must start with "/api/" when using config.experimental.enableNextJsGraphqlApiEndpoint'
-    );
-  }
   return [
     ...['next.config.js', 'tsconfig.json'].map(
       outputPath =>
@@ -53,14 +43,5 @@ export const writeAdminFiles = (
       { mode: 'write', src: itemTemplate(key), outputPath: `pages/${path}/[id].js` },
       { mode: 'write', src: createItemTemplate(key), outputPath: `pages/${path}/create.js` },
     ]),
-    ...(config.experimental?.enableNextJsGraphqlApiEndpoint
-      ? [
-          {
-            mode: 'write' as const,
-            src: apiTemplate,
-            outputPath: `pages/${config.graphql?.path || '/api/graphql'}.js`,
-          },
-        ]
-      : []),
   ];
 };
