@@ -206,12 +206,12 @@ export async function getAccessControlledItemForUpdate(
     })
   );
 
-  if (accessErrors.length) {
-    throw extensionError('Access control', accessErrors);
-  }
-
   if (nonBooleans.length) {
     throw accessReturnError(nonBooleans);
+  }
+
+  if (accessErrors.length) {
+    throw extensionError('Access control', accessErrors);
   }
 
   if (fieldsDenied.length) {
@@ -305,12 +305,12 @@ export async function applyAccessControlForCreate(
     })
   );
 
-  if (accessErrors.length) {
-    throw extensionError('Access control', accessErrors);
-  }
-
   if (nonBooleans.length) {
     throw accessReturnError(nonBooleans);
+  }
+
+  if (accessErrors.length) {
+    throw extensionError('Access control', accessErrors);
   }
 
   if (fieldsDenied.length) {
