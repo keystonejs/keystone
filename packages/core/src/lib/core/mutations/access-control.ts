@@ -76,15 +76,20 @@ export async function getAccessControlledItemForDelete(
 
   // Apply item level access control
   const access = list.access.item[operation];
-  const args = { operation, session: context.session, listKey: list.listKey, context, item };
 
   // List level 'item' access control
   let result;
   try {
-    result = await access(args);
+    result = await access({
+      operation,
+      session: context.session,
+      listKey: list.listKey,
+      context,
+      item
+    });
   } catch (error: any) {
     throw extensionError('Access control', [
-      { error, tag: `${args.listKey}.access.item.${args.operation}` },
+      { error, tag: `${list.listKey}.access.item.${operation}` },
     ]);
   }
 
@@ -95,7 +100,7 @@ export async function getAccessControlledItemForDelete(
   if (resultType !== 'boolean') {
     throw accessReturnError([
       {
-        tag: `${args.listKey}.access.item.${args.operation}`,
+        tag: `${list.listKey}.access.item.${operation}`,
         returned: resultType,
       },
     ]);
@@ -127,22 +132,21 @@ export async function getAccessControlledItemForUpdate(
 
   // Apply item level access control
   const access = list.access.item[operation];
-  const args = {
-    operation,
-    session: context.session,
-    listKey: list.listKey,
-    context,
-    item,
-    inputData,
-  };
 
   // List level 'item' access control
   let result;
   try {
-    result = await access(args);
+    result = await access({
+      operation,
+      session: context.session,
+      listKey: list.listKey,
+      context,
+      item,
+      inputData,
+    });
   } catch (error: any) {
     throw extensionError('Access control', [
-      { error, tag: `${args.listKey}.access.item.${args.operation}` },
+      { error, tag: `${list.listKey}.access.item.${operation}` },
     ]);
   }
   const resultType = typeof result;
@@ -152,7 +156,7 @@ export async function getAccessControlledItemForUpdate(
   if (resultType !== 'boolean') {
     throw accessReturnError([
       {
-        tag: `${args.listKey}.access.item.${args.operation}`,
+        tag: `${list.listKey}.access.item.${operation}`,
         returned: resultType,
       },
     ]);
@@ -172,19 +176,28 @@ export async function getAccessControlledItemForUpdate(
   const accessErrors: { error: Error; tag: string }[] = [];
   await Promise.all(
     Object.keys(inputData).map(async fieldKey => {
+      const fieldAccessControl = list.fields[fieldKey].access[operation];
+
       let result;
       try {
-        result =
-          typeof list.fields[fieldKey].access[operation] === 'function'
-            ? await list.fields[fieldKey].access[operation]({ ...args, fieldKey })
-            : access;
+        result = typeof fieldAccessControl !== 'function'
+            ? fieldAccessControl
+            : await fieldAccessControl({
+              operation,
+              session: context.session,
+              listKey: list.listKey,
+              fieldKey,
+              context,
+              item,
+              inputData, // FIXME
+            });
       } catch (error: any) {
-        accessErrors.push({ error, tag: `${args.listKey}.${fieldKey}.access.${args.operation}` });
+        accessErrors.push({ error, tag: `${list.listKey}.${fieldKey}.access.${operation}` });
         return;
       }
       if (typeof result !== 'boolean') {
         nonBooleans.push({
-          tag: `${args.listKey}.${fieldKey}.access.${args.operation}`,
+          tag: `${list.listKey}.${fieldKey}.access.${operation}`,
           returned: typeof result,
         });
       } else if (!result) {
@@ -221,21 +234,20 @@ export async function applyAccessControlForCreate(
 
   // Apply item level access control
   const access = list.access.item[operation];
-  const args = {
-    operation,
-    session: context.session,
-    listKey: list.listKey,
-    context,
-    inputData,
-  };
 
   // List level 'item' access control
   let result;
   try {
-    result = await access(args);
+    result = await access({
+      operation,
+      session: context.session,
+      listKey: list.listKey,
+      context,
+      inputData,
+    });
   } catch (error: any) {
     throw extensionError('Access control', [
-      { error, tag: `${args.listKey}.access.item.${args.operation}` },
+      { error, tag: `${list.listKey}.access.item.${operation}` },
     ]);
   }
 
@@ -246,7 +258,7 @@ export async function applyAccessControlForCreate(
   if (resultType !== 'boolean') {
     throw accessReturnError([
       {
-        tag: `${args.listKey}.access.item.${args.operation}`,
+        tag: `${list.listKey}.access.item.${operation}`,
         returned: resultType,
       },
     ]);
@@ -264,19 +276,27 @@ export async function applyAccessControlForCreate(
   const accessErrors: { error: Error; tag: string }[] = [];
   await Promise.all(
     Object.keys(inputData).map(async fieldKey => {
+      const fieldAccessControl = list.fields[fieldKey].access[operation];
+
       let result;
       try {
-        result =
-          typeof list.fields[fieldKey].access[operation] === 'function'
-            ? await list.fields[fieldKey].access[operation]({ ...args, fieldKey })
-            : access;
+        result = typeof fieldAccessControl !== 'function'
+            ? fieldAccessControl
+            : await fieldAccessControl({
+              operation,
+              session: context.session,
+              listKey: list.listKey,
+              fieldKey,
+              context,
+              inputData: inputData as any, // FIXME
+            });
       } catch (error: any) {
-        accessErrors.push({ error, tag: `${args.listKey}.${fieldKey}.access.${args.operation}` });
+        accessErrors.push({ error, tag: `${list.listKey}.${fieldKey}.access.${operation}` });
         return;
       }
       if (typeof result !== 'boolean') {
         nonBooleans.push({
-          tag: `${args.listKey}.${fieldKey}.access.${args.operation}`,
+          tag: `${list.listKey}.${fieldKey}.access.${operation}`,
           returned: typeof result,
         });
       } else if (!result) {

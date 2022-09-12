@@ -82,7 +82,7 @@ export async function getAccessFilters(
 export function parseFieldAccessControl(
   access: FieldAccessControl<BaseListTypeInfo> | undefined
 ): ResolvedFieldAccessControl {
-  if (typeof access === 'boolean' || typeof access === 'function') {
+  if (typeof access === 'function') {
     return { read: access, create: access, update: access };
   }
   // note i'm intentionally not using spread here because typescript can't express an optional property which cannot be undefined so spreading would mean there is a possibility that someone could pass {access: undefined} or {access:{read: undefined}} and bad things would happen
@@ -146,7 +146,7 @@ export function parseListAccessControl(
     };
   }
 
-  if (typeof access?.filter === 'boolean' || typeof access?.filter === 'function') {
+  if (typeof access?.filter === 'function') {
     filter = { query: access.filter, update: access.filter, delete: access.filter };
   } else {
     filter = {
@@ -157,7 +157,7 @@ export function parseListAccessControl(
     };
   }
 
-  if (typeof access?.item === 'boolean' || typeof access?.item === 'function') {
+  if (typeof access?.item === 'function') {
     item = { create: access.item, update: access.item, delete: access.item };
   } else {
     item = {
@@ -167,6 +167,7 @@ export function parseListAccessControl(
       delete: access?.item?.delete ?? (() => true),
     };
   }
+
   return { operation, filter, item };
 }
 
