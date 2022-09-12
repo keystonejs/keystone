@@ -8,7 +8,7 @@ import {
   Config,
 } from 'apollo-server-core';
 import type { CreateContext, GraphQLConfig, SessionStrategy } from '../../types';
-import { createSessionContext } from '../../session';
+import { createSessionContext } from '../context/session';
 
 export const createApolloServerMicro = ({
   graphQLSchema,

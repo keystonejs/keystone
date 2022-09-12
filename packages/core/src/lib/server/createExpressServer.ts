@@ -6,7 +6,7 @@ import { GraphQLSchema } from 'graphql';
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js';
 import { ApolloServer } from 'apollo-server-express';
 import type { KeystoneConfig, CreateContext, SessionStrategy, GraphQLConfig } from '../../types';
-import { createSessionContext } from '../../session';
+import { createSessionContext } from '../context/session';
 import { createApolloServerExpress } from './createApolloServer';
 import { addHealthCheck } from './addHealthCheck';
 
