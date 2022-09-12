@@ -155,10 +155,6 @@
       "!**/*.d.ts",
       "!packages/**/dist/**",
       "!packages/core/src/fields/**/test-fixtures.{js,ts}"
-    ],
-    "//": "remove when https://github.com/uuidjs/uuid/pull/616 is merged",
-    "moduleNameMapper": {
-      "^uuid$": "<rootDir>/node_modules/uuid/dist/index.js"
-    }
+    ]
   }
 }
