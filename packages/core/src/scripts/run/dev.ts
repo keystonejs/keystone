@@ -23,10 +23,11 @@ import {
   requirePrismaClient,
 } from '../../artifacts';
 import { ExitError, getAdminPath, getBuiltConfigPath } from '../utils';
-import { AdminMetaRootVal, CreateContext, KeystoneConfig } from '../../types';
+import { CreateContext, KeystoneConfig } from '../../types';
 import { initialiseLists } from '../../lib/core/types-for-lists';
 import { printPrismaSchema } from '../../lib/core/prisma-schema';
 import { createSessionContext } from '../../lib/context/session';
+import { AdminMetaRootVal } from '../../admin-ui/system/createAdminMeta';
 
 const devLoadingHTMLFilepath = path.join(
   path.dirname(require.resolve('@keystone-6/core/package.json')),

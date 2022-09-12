@@ -1,9 +1,6 @@
 import { GraphQLError } from 'graphql';
 import type { ReactElement } from 'react';
-import { MaybeItemFunction } from './config';
-import { KeystoneContext } from './context';
-import { BaseListTypeInfo } from './type-info';
-import { GqlNames, JSONValue, MaybePromise } from './utils';
+import { GqlNames, JSONValue } from './utils';
 
 export type NavigationProps = {
   authenticatedItem: AuthenticatedItem;
@@ -158,51 +155,3 @@ export type CardValueComponent<
     any
   >
 > = (props: { item: Record<string, any>; field: ReturnType<FieldControllerFn> }) => ReactElement;
-
-export type ContextFunction<Return> = (context: KeystoneContext) => MaybePromise<Return>;
-
-// Types used on the server by the Admin UI schema resolvers
-export type FieldMetaRootVal = {
-  path: string;
-  label: string;
-  description: string | null;
-  fieldMeta: JSONValue | null;
-  viewsIndex: number;
-  customViewsIndex: number | null;
-  listKey: string;
-  search: 'default' | 'insensitive' | null;
-  isOrderable: ContextFunction<boolean>;
-  isFilterable: ContextFunction<boolean>;
-  createView: { fieldMode: ContextFunction<'edit' | 'hidden'> };
-  // itemView is intentionally special because static values are special cased
-  // and fetched when fetching the static admin ui
-  itemView: { fieldMode: MaybeItemFunction<'edit' | 'read' | 'hidden', BaseListTypeInfo> };
-  listView: { fieldMode: ContextFunction<'read' | 'hidden'> };
-};
-
-export type ListMetaRootVal = {
-  key: string;
-  path: string;
-  label: string;
-  singular: string;
-  plural: string;
-  initialColumns: string[];
-  pageSize: number;
-  labelField: string;
-  initialSort: { field: string; direction: 'ASC' | 'DESC' } | null;
-  fields: Array<FieldMetaRootVal>;
-  itemQueryName: string;
-  listQueryName: string;
-  description: string | null;
-  isHidden: ContextFunction<boolean>;
-  hideCreate: ContextFunction<boolean>;
-  hideDelete: ContextFunction<boolean>;
-  isSingleton: boolean;
-};
-
-export type AdminMetaRootVal = {
-  lists: Array<ListMetaRootVal>;
-  listsByKey: Record<string, ListMetaRootVal>;
-  views: string[];
-  isAccessAllowed: undefined | ((context: KeystoneContext) => MaybePromise<boolean>);
-};

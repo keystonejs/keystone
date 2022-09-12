@@ -1,15 +1,8 @@
 import { GraphQLResolveInfo } from 'graphql';
 import { ScalarType, EnumType, EnumValue } from '@graphql-ts/schema';
-import {
-  QueryMode,
-  KeystoneContext,
-  AdminMetaRootVal,
-  ListMetaRootVal,
-  FieldMetaRootVal,
-  BaseItem,
-  MaybePromise,
-} from '../../types';
+import { QueryMode, KeystoneContext, BaseItem, MaybePromise } from '../../types';
 import { graphql as graphqlBoundToKeystoneContext } from '../..';
+import { FieldMetaRootVal, ListMetaRootVal, AdminMetaRootVal } from './createAdminMeta';
 
 type Context = KeystoneContext | { isAdminUIBuildProcess: true };
 

@@ -1,11 +1,6 @@
-import {
-  BaseListTypeInfo,
-  FieldTypeFunc,
-  CommonFieldConfig,
-  fieldType,
-  AdminMetaRootVal,
-} from '../../../types';
+import { BaseListTypeInfo, FieldTypeFunc, CommonFieldConfig, fieldType } from '../../../types';
 import { graphql } from '../../..';
+import { getAdminMetaForRelationshipField } from '../../../admin-ui/system/createAdminMeta';
 
 // This is the default display mode for Relationships
 type SelectDisplayConfig = {
@@ -86,9 +81,8 @@ export const relationship =
     const commonConfig = {
       ...config,
       views: '@keystone-6/core/fields/types/relationship/views',
-      getAdminMeta: (
-        adminMetaRoot: AdminMetaRootVal
-      ): Parameters<typeof import('./views').controller>[0]['fieldMeta'] => {
+      getAdminMeta: (): Parameters<typeof import('./views').controller>[0]['fieldMeta'] => {
+        const adminMetaRoot = getAdminMetaForRelationshipField();
         if (!meta.lists[foreignListKey]) {
           throw new Error(
             `The ref [${ref}] on relationship [${meta.listKey}.${meta.fieldKey}] is invalid`
