@@ -168,7 +168,7 @@ export async function getAccessControlledItemForUpdate(
   const fieldsDenied: string[] = [];
   const accessErrors: { error: Error; tag: string }[] = [];
 
-  await Promise.all(
+  await Promise.allSettled(
     Object.keys(inputData).map(async fieldKey => {
       const fieldAccessControl = list.fields[fieldKey].access[operation];
 
@@ -268,7 +268,8 @@ export async function applyAccessControlForCreate(
   const nonBooleans: { tag: string; returned: string }[] = [];
   const fieldsDenied: string[] = [];
   const accessErrors: { error: Error; tag: string }[] = [];
-  await Promise.all(
+
+  await Promise.allSettled(
     Object.keys(inputData).map(async fieldKey => {
       const fieldAccessControl = list.fields[fieldKey].access[operation];
 
