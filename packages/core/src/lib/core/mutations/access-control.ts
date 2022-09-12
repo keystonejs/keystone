@@ -38,10 +38,9 @@ async function getFilteredItem(
     where = { AND: [where, await resolveWhereInput(accessFilters, list, context)] };
   }
   const item = await runWithPrisma(context, list, model => model.findFirst({ where }));
-  if (item === null) {
-    throw missingItem(operation, uniqueWhere);
-  }
-  return item;
+  if (item !== null) return item;
+
+  throw missingItem(operation, uniqueWhere);
 }
 
 export async function checkUniqueItemExists(
@@ -78,7 +77,7 @@ export async function getAccessControlledItemForDelete(
   const access = list.access.item[operation];
 
   // List level 'item' access control
-  let result;
+  let result: unknown; // should be boolean, but dont trust, it might accidentally be a filter
   try {
     result = await access({
       operation,
@@ -93,30 +92,25 @@ export async function getAccessControlledItemForDelete(
     ]);
   }
 
-  const resultType = typeof result;
+  // no field level access control for delete
 
-  // It's important that we don't cast objects to truthy values, as there's a strong chance that the user
-  // has accidentally tried to return a filter.
-  if (resultType !== 'boolean') {
+  // short circuit the safe path
+  if (result === true) return item;
+
+  if (typeof result !== 'boolean') {
     throw accessReturnError([
       {
         tag: `${list.listKey}.access.item.${operation}`,
-        returned: resultType,
+        returned: typeof result,
       },
     ]);
   }
 
-  if (!result) {
-    throw accessDeniedError(
-      `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
-        uniqueWhere
-      )}'. It may not exist.`
-    );
-  }
-
-  // No field level access control for delete
-
-  return item;
+  throw accessDeniedError(
+    `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
+      uniqueWhere
+    )}'. It may not exist.`
+  );
 }
 
 export async function getAccessControlledItemForUpdate(
@@ -134,9 +128,9 @@ export async function getAccessControlledItemForUpdate(
   const access = list.access.item[operation];
 
   // List level 'item' access control
-  let result;
+  let listResult: unknown; // should be boolean, but dont trust
   try {
-    result = await access({
+    listResult = await access({
       operation,
       session: context.session,
       listKey: list.listKey,
@@ -149,20 +143,19 @@ export async function getAccessControlledItemForUpdate(
       { error, tag: `${list.listKey}.access.item.${operation}` },
     ]);
   }
-  const resultType = typeof result;
 
   // It's important that we don't cast objects to truthy values, as there's a strong chance that the user
   // has accidentally tried to return a filter.
-  if (resultType !== 'boolean') {
+  if (typeof listResult !== 'boolean') {
     throw accessReturnError([
       {
         tag: `${list.listKey}.access.item.${operation}`,
-        returned: resultType,
+        returned: typeof listResult,
       },
     ]);
   }
 
-  if (!result) {
+  if (!listResult) {
     throw accessDeniedError(
       `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
         uniqueWhere
@@ -174,34 +167,37 @@ export async function getAccessControlledItemForUpdate(
   const nonBooleans: { tag: string; returned: string }[] = [];
   const fieldsDenied: string[] = [];
   const accessErrors: { error: Error; tag: string }[] = [];
+
   await Promise.all(
     Object.keys(inputData).map(async fieldKey => {
       const fieldAccessControl = list.fields[fieldKey].access[operation];
 
-      let result;
+      let fieldResult: unknown; // should be boolean, but dont trust
       try {
-        result = typeof fieldAccessControl !== 'function'
-            ? fieldAccessControl
-            : await fieldAccessControl({
-              operation,
-              session: context.session,
-              listKey: list.listKey,
-              fieldKey,
-              context,
-              item,
-              inputData, // FIXME
-            });
+        fieldResult = await fieldAccessControl({
+          operation,
+          session: context.session,
+          listKey: list.listKey,
+          fieldKey,
+          context,
+          item,
+          inputData,
+        });
       } catch (error: any) {
         accessErrors.push({ error, tag: `${list.listKey}.${fieldKey}.access.${operation}` });
         return;
       }
-      if (typeof result !== 'boolean') {
+
+      // short circuit the safe path
+      if (fieldResult === true) return;
+      fieldsDenied.push(fieldKey);
+
+      // wrong type?
+      if (typeof fieldResult !== 'boolean') {
         nonBooleans.push({
           tag: `${list.listKey}.${fieldKey}.access.${operation}`,
-          returned: typeof result,
+          returned: typeof fieldResult,
         });
-      } else if (!result) {
-        fieldsDenied.push(fieldKey);
       }
     })
   );
@@ -236,9 +232,9 @@ export async function applyAccessControlForCreate(
   const access = list.access.item[operation];
 
   // List level 'item' access control
-  let result;
+  let listResult: unknown; // be conservative
   try {
-    result = await access({
+    listResult = await access({
       operation,
       session: context.session,
       listKey: list.listKey,
@@ -251,20 +247,18 @@ export async function applyAccessControlForCreate(
     ]);
   }
 
-  const resultType = typeof result;
-
   // It's important that we don't cast objects to truthy values, as there's a strong chance that the user
   // has accidentally tried to return a filter.
-  if (resultType !== 'boolean') {
+  if (typeof listResult !== 'boolean') {
     throw accessReturnError([
       {
         tag: `${list.listKey}.access.item.${operation}`,
-        returned: resultType,
+        returned: typeof listResult,
       },
     ]);
   }
 
-  if (!result) {
+  if (!listResult) {
     throw accessDeniedError(
       `You cannot perform the '${operation}' operation on the item '${JSON.stringify(inputData)}'.`
     );
@@ -278,29 +272,31 @@ export async function applyAccessControlForCreate(
     Object.keys(inputData).map(async fieldKey => {
       const fieldAccessControl = list.fields[fieldKey].access[operation];
 
-      let result;
+      let fieldResult: unknown; // should be boolean, but dont trust
       try {
-        result = typeof fieldAccessControl !== 'function'
-            ? fieldAccessControl
-            : await fieldAccessControl({
-              operation,
-              session: context.session,
-              listKey: list.listKey,
-              fieldKey,
-              context,
-              inputData: inputData as any, // FIXME
-            });
+        fieldResult = await fieldAccessControl({
+          operation,
+          session: context.session,
+          listKey: list.listKey,
+          fieldKey,
+          context,
+          inputData: inputData as any, // FIXME
+        });
       } catch (error: any) {
         accessErrors.push({ error, tag: `${list.listKey}.${fieldKey}.access.${operation}` });
         return;
       }
-      if (typeof result !== 'boolean') {
+
+      // short circuit the safe path
+      if (fieldResult === true) return;
+      fieldsDenied.push(fieldKey);
+
+      // wrong type?
+      if (typeof fieldResult !== 'boolean') {
         nonBooleans.push({
           tag: `${list.listKey}.${fieldKey}.access.${operation}`,
-          returned: typeof result,
+          returned: typeof fieldResult,
         });
-      } else if (!result) {
-        fieldsDenied.push(fieldKey);
       }
     })
   );
