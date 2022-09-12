@@ -20,7 +20,7 @@ const { withAuth } = createAuth({
   secretField: 'password',
 
   // Additional options
-  sessionData: 'id name email`,
+  sessionData: 'id name email',
   initFirstItem: {
     fields: ['email', 'password'],
     itemData: { isAdmin: true },
