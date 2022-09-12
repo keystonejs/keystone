@@ -2,6 +2,9 @@ import execa from 'execa';
 import stripAnsi from 'strip-ansi';
 import { basicKeystoneConfig, cliBinPath, schemas, symlinkKeystoneDeps, testdir } from './utils';
 
+// these tests spawn processes and it's all pretty slow
+jest.setTimeout(1000 * 20);
+
 // testing erroring when the schemas are not up to date is in artifacts.test.ts
 
 test('keystone prisma exits with the same code as the prisma child process exits with', async () => {
