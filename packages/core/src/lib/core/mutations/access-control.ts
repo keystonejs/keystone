@@ -63,18 +63,18 @@ export async function checkUniqueItemExists(
   return uniqueWhere;
 }
 
-async function enforceListLevelAccessControl ({
+async function enforceListLevelAccessControl({
   context,
   operation,
   list,
   item,
   inputData,
 }: {
-  context: KeystoneContext,
-  operation: 'create' | 'update' | 'delete'
-  list: InitialisedList,
-  item: BaseItem | undefined,
-  inputData: Record<string, unknown>
+  context: KeystoneContext;
+  operation: 'create' | 'update' | 'delete';
+  list: InitialisedList;
+  item: BaseItem | undefined;
+  inputData: Record<string, unknown>;
 }) {
   // List level 'item' access control
   let listResult: unknown; // should be boolean, but dont trust, it might accidentally be a filter
@@ -133,18 +133,18 @@ async function enforceListLevelAccessControl ({
   );
 }
 
-async function enforceFieldLevelAccessControl ({
+async function enforceFieldLevelAccessControl({
   context,
   operation,
   list,
   item,
   inputData,
 }: {
-  context: KeystoneContext,
-  operation: 'create' | 'update'
-  list: InitialisedList,
-  item: BaseItem | undefined,
-  inputData: Record<string, unknown>
+  context: KeystoneContext;
+  operation: 'create' | 'update';
+  list: InitialisedList;
+  item: BaseItem | undefined;
+  inputData: Record<string, unknown>;
 }) {
   const nonBooleans: { tag: string; returned: string }[] = [];
   const fieldsDenied: string[] = [];
@@ -227,7 +227,7 @@ export async function getAccessControlledItemForUpdate(
     operation: 'update',
     list,
     inputData,
-    item
+    item,
   });
 
   await enforceFieldLevelAccessControl({
@@ -235,7 +235,7 @@ export async function getAccessControlledItemForUpdate(
     operation: 'update',
     list,
     inputData,
-    item
+    item,
   });
 
   return item;
@@ -251,7 +251,7 @@ export async function applyAccessControlForCreate(
     operation: 'create',
     list,
     inputData,
-    item: undefined
+    item: undefined,
   });
 
   await enforceFieldLevelAccessControl({
@@ -259,7 +259,7 @@ export async function applyAccessControlForCreate(
     operation: 'create',
     list,
     inputData,
-    item: undefined
+    item: undefined,
   });
 }
 
@@ -277,7 +277,7 @@ export async function getAccessControlledItemForDelete(
     operation: 'delete',
     list,
     item,
-    inputData: {}
+    inputData: {},
   });
 
   // no field level access control for delete
