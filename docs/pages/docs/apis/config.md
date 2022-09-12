@@ -534,7 +534,6 @@ import { config } from '@keystone-6/core';
 
 export default config({
   experimental: {
-    enableNextJsGraphqlApiEndpoint: true,
     generateNextGraphqlAPI: true,
     generateNodeAPI: true,
   }
@@ -544,7 +543,6 @@ export default config({
 
 Options:
 
-- `enableNextJsGraphqlApiEndpoint`: (coming soon)
 - `generateNextGraphqlAPI`: Creates a file at `node_modules/.keystone/next/graphql-api` with `default` and `config` exports that can be re-exported in a Next API route
 - `generateNodeAPI`: Creates a file at `node_modules/.keystone/api` with a `lists` export
 
