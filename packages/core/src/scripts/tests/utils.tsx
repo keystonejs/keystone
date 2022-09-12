@@ -12,6 +12,9 @@ import { KeystoneConfig } from '../../types';
 import { cli } from '../cli';
 import { mockPrompts } from '../../lib/prompts';
 
+// these tests spawn processes and it's all pretty slow
+jest.setTimeout(1000 * 20);
+
 export const cliBinPath = require.resolve('@keystone-6/core/bin/cli.js');
 
 export const basicKeystoneConfig = fs.readFileSync(

@@ -1,64 +1,18 @@
-import { KeystoneContext } from '@keystone-6/core/types';
-import { setupTestEnv, TestEnv } from '@keystone-6/api-tests/test-runner';
-import {
-  getOperationListName,
-  listAccessVariations,
-  getItemListName,
-  getFilterListName,
-  config,
-  getFilterBoolListName,
-} from './utils';
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
+import { config } from './utils';
 
-type IdType = any;
+const runner = setupTestRunner({ config });
 
-const afterConnect = async ({ context }: { context: KeystoneContext }) => {
-  context = context.sudo();
-  // ensure every list has at least some data
-  const initialData: Record<string, { name: string }[]> = listAccessVariations.reduce(
-    (acc, access) =>
-      Object.assign(acc, {
-        [getOperationListName(access)]: [{ name: 'Hello' }, { name: 'Hi' }],
-        [getItemListName(access)]: [{ name: 'Hello' }, { name: 'Hi' }],
-        [getFilterListName(access)]: [{ name: 'Hello' }, { name: 'Hi' }],
-        [getFilterBoolListName(access)]: [{ name: 'Hello' }, { name: 'Hi' }],
-      }),
-    {}
-  );
+test(
+  'authenticatedItem',
+  runner(async ({ context }) => {
+    const user = (await context.query.User.createOne({
+      data: { name: 'test', yesRead: 'yes', noRead: 'no' },
+      query: 'id name yesRead noRead',
+    })) as { id: string; name: string; yesRead: string; noRead: string };
 
-  type T = { id: IdType; name: string }[];
-  const items: Record<string, T> = {};
-  for (const [listKey, _items] of Object.entries(initialData)) {
-    items[listKey] = (await context.query[listKey].createMany({
-      data: _items,
-      query: 'id name',
-    })) as T;
-  }
-  const user = (await context.query.User.createOne({
-    data: { name: 'test', yesRead: 'yes', noRead: 'no' },
-    query: 'id name yesRead noRead',
-  })) as { id: IdType; name: string; yesRead: string; noRead: string };
-  return { items, user };
-};
-
-describe('Authed', () => {
-  let testEnv: TestEnv, context: KeystoneContext;
-  let user: { id: IdType; name: string; yesRead: string; noRead: string };
-  beforeAll(async () => {
-    testEnv = await setupTestEnv({ config });
-    context = testEnv.testArgs.context;
-
-    await testEnv.connect();
-
-    const result = await afterConnect({ context });
-    user = result.user;
-  });
-  afterAll(async () => {
-    await testEnv.disconnect();
-  });
-
-  test('authed user', async () => {
     const query = `query { authenticatedItem { ... on User { id yesRead noRead } } }`;
-    const _context = await context.withSession({
+    const _context = context.withSession({
       itemId: user.id,
       listKey: 'User',
       data: user,
@@ -68,5 +22,5 @@ describe('Authed', () => {
       authenticatedItem: { id: user.id, yesRead: user.yesRead, noRead: null },
     });
     expect(errors).toBe(undefined);
-  });
-});
+  })
+);
