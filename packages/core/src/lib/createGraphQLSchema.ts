@@ -1,6 +1,7 @@
-import type { KeystoneConfig, AdminMetaRootVal } from '../types';
+import type { KeystoneConfig } from '../types';
 import { KeystoneMeta } from '../admin-ui/system';
 import { graphql } from '../types/schema';
+import { AdminMetaRootVal } from '../admin-ui/system/createAdminMeta';
 import { InitialisedList } from './core/types-for-lists';
 import { getGraphQLSchema } from './core/graphql-schema';
 

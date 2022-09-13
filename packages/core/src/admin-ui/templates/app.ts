@@ -11,8 +11,8 @@ import {
   ExecutionResult,
   Kind,
 } from 'graphql';
-import { AdminMetaRootVal } from '../../types';
 import { staticAdminMetaQuery, StaticAdminMetaQuery } from '../admin-meta-graphql';
+import { AdminMetaRootVal } from '../system/createAdminMeta';
 
 type AppTemplateOptions = { configFileExists: boolean };
 
