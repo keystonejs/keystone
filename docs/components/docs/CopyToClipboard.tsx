@@ -1,28 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { useToasts } from '@keystone-ui/toast';
 import { jsx } from '@emotion/react';
-import copy from 'clipboard-copy';
 
 import { Link } from '../icons/Link';
 
-export function CopyToClipboard({ value }: { value: string }) {
-  const { addToast } = useToasts();
-
-  const handleCopy = () => {
-    if (typeof value !== 'string' || typeof window === 'undefined') return;
-
-    const url = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
-    const text = `${url}#${value}`;
-
-    try {
-      copy(text);
-      addToast({ title: 'Copied to clipboard', tone: 'positive' });
-    } catch (e) {
-      addToast({ title: 'Failed to copy to clipboard', tone: 'negative' });
-    }
-  };
-
+export function HeadingIdLink({ value }: { value: string }) {
   return (
     <a
       href={`#${value}`}
@@ -48,7 +30,6 @@ export function CopyToClipboard({ value }: { value: string }) {
           color: 'var(--link)',
         },
       }}
-      onClick={handleCopy}
     >
       <Link css={{ height: '1rem' }} />
     </a>

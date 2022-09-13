@@ -1,6 +1,5 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { ToastProvider } from '@keystone-ui/toast';
 import { jsx, Global, css, CacheProvider } from '@emotion/react';
 import type { AppProps } from 'next/app';
 import { cache } from '@emotion/css';
@@ -100,9 +99,7 @@ export default function App({ Component, pageProps }: AppProps) {
         />
       </Head>
       <SkipLinks />
-      <ToastProvider>
-        <Component {...pageProps} />
-      </ToastProvider>
+      <Component {...pageProps} />
     </CacheProvider>
   );
 }
