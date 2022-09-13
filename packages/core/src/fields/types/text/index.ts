@@ -5,10 +5,10 @@ import {
   fieldType,
   orderDirectionEnum,
   FieldTypeFunc,
-  filters,
 } from '../../../types';
 import { graphql } from '../../..';
 import { assertCreateIsNonNullAllowed, assertReadIsNonNullAllowed } from '../../non-null-graphql';
+import { filters } from '../../filters';
 
 export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {

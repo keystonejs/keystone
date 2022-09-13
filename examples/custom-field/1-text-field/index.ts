@@ -4,7 +4,6 @@ import {
   FieldTypeFunc,
   CommonFieldConfig,
   orderDirectionEnum,
-  filters,
 } from '@keystone-6/core/types';
 import { graphql } from '@keystone-6/core';
 
@@ -26,10 +25,6 @@ export function text<ListTypeInfo extends BaseListTypeInfo>({
     })({
       ...config,
       input: {
-        where: {
-          arg: graphql.arg({ type: filters[meta.provider].String.optional }),
-          resolve: filters.resolveCommon,
-        },
         create: {
           arg: graphql.arg({ type: graphql.String }),
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
