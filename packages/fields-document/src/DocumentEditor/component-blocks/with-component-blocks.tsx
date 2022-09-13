@@ -527,7 +527,7 @@ function addMissingFields(value: unknown, schema: ComponentSchema): unknown {
     if (updatedInnerValue === conditionalValue.value) {
       return value;
     }
-    return { discriminant: conditionalValue.value, value: updatedInnerValue };
+    return { discriminant: conditionalValue.discriminant, value: updatedInnerValue };
   }
   if (schema.kind === 'array') {
     const arrValue = value as unknown[];
