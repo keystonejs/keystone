@@ -105,7 +105,7 @@ ${
 import { graphql } from '../../../types/schema'
 
 
-${provider === 'postgresql' ? `import { QueryMode } from '../../next-fields'` : ''}
+${provider === 'postgresql' ? `import { QueryMode } from '../../../types/next-fields'` : ''}
 
 ${[...referencedTypes].map(typeName => printInputTypeForGraphQLTS(typeName, types)).join('\n\n')}
 
