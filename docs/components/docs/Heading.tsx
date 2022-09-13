@@ -4,7 +4,7 @@ import slugify from '@sindresorhus/slugify';
 import { jsx } from '@emotion/react';
 import { ReactNode } from 'react';
 
-import { CopyToClipboard } from './CopyToClipboard';
+import { HeadingIdLink } from './CopyToClipboard';
 
 /*
  * !THIS IS OLD. PLEASE USE THE Type COMPONENT INSTEAD!
@@ -58,7 +58,7 @@ type HeadingProps = BaseHeadingProps & {
 };
 
 export function Heading({ level, id, children, ...props }: HeadingProps) {
-  const hasCopy = level > 1 && level < 5;
+  const hasHeadingIdLink = level > 1 && level < 5;
   const computedId = id === undefined ? getAnchor(children) : id;
   const Tag = `h${level}` as const;
   return (
@@ -84,7 +84,7 @@ export function Heading({ level, id, children, ...props }: HeadingProps) {
           },
         }}
       >
-        {hasCopy && <CopyToClipboard value={computedId} />}
+        {hasHeadingIdLink && <HeadingIdLink value={computedId} />}
         {children}
       </span>
     </Tag>

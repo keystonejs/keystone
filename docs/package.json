@@ -18,7 +18,7 @@
     "@emotion/weak-memoize": "^0.3.0",
     "@keystone-6/fields-document": "^4.1.0",
     "@keystone-ui/core": "^5.0.1",
-    "@keystone-ui/toast": "^6.0.1",
+    "@keystone-ui/icons": "^6.0.1",
     "@markdoc/markdoc": "^0.1.5",
     "@mdx-js/loader": "next",
     "@mdx-js/react": "next",
