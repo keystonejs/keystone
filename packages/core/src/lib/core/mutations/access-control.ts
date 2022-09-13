@@ -11,12 +11,28 @@ import {
   UniquePrismaFilter,
 } from '../where-inputs';
 
-const missingItem = (operation: string, uniqueWhere: UniquePrismaFilter) =>
-  accessDeniedError(
-    `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
-      uniqueWhere
-    )}'. It may not exist.`
+function cannotWithFilter(
+  operation: string,
+  list: InitialisedList,
+  uniqueWhere: UniquePrismaFilter
+) {
+  return `You cannot '${operation}' a ${list.listKey} with the filter ${JSON.stringify(
+    uniqueWhere
+  )} - it may not exist`;
+}
+
+function cannotForItemFields(operation: string, list: InitialisedList, fieldsDenied: string[]) {
+  return `You cannot '${operation}' that ${
+    list.listKey
+  } - you cannot '${operation}' the fields ${JSON.stringify(fieldsDenied)}`;
+}
+
+function cannotForItem(operation: string, list: InitialisedList) {
+  return (
+    `You cannot '${operation}' that ${list.listKey}` +
+    (operation === 'create' ? '' : ' - it may not exist')
   );
+}
 
 async function getFilteredItem(
   list: InitialisedList,
@@ -25,22 +41,21 @@ async function getFilteredItem(
   accessFilters: boolean | InputFilter,
   operation: 'update' | 'delete'
 ) {
+  // early exit if they want to exclude everything
   if (accessFilters === false) {
-    // Early exit if they want to exclude everything
-    throw accessDeniedError(
-      `You cannot perform the '${operation}' operation on the list '${list.listKey}'.`
-    );
+    throw accessDeniedError(cannotWithFilter(operation, list, uniqueWhere));
   }
 
-  // Merge the filter access control and try to get the item.
+  // merge the filter access control and try to get the item
   let where = mapUniqueWhereToWhere(uniqueWhere);
   if (typeof accessFilters === 'object') {
     where = { AND: [where, await resolveWhereInput(accessFilters, list, context)] };
   }
+
   const item = await runWithPrisma(context, list, model => model.findFirst({ where }));
   if (item !== null) return item;
 
-  throw missingItem(operation, uniqueWhere);
+  throw accessDeniedError(cannotWithFilter(operation, list, uniqueWhere));
 }
 
 export async function checkUniqueItemExists(
@@ -51,16 +66,14 @@ export async function checkUniqueItemExists(
 ) {
   // Validate and resolve the input filter
   const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, foreignList, context);
+
   // Check whether the item exists (from this users POV).
   try {
     const item = await context.db[foreignList.listKey].findOne({ where: uniqueInput });
-    if (item === null) {
-      throw missingItem(operation, uniqueWhere);
-    }
-  } catch (err) {
-    throw missingItem(operation, uniqueWhere);
-  }
-  return uniqueWhere;
+    if (item !== null) return uniqueWhere;
+  } catch (err) {}
+
+  throw accessDeniedError(cannotWithFilter(operation, foreignList, uniqueWhere));
 }
 
 async function enforceListLevelAccessControl({
@@ -76,7 +89,6 @@ async function enforceListLevelAccessControl({
   item: BaseItem | undefined;
   inputData: Record<string, unknown>;
 }) {
-  // List level 'item' access control
   let listResult: unknown; // should be boolean, but dont trust, it might accidentally be a filter
   try {
     if (operation === 'create') {
@@ -126,11 +138,7 @@ async function enforceListLevelAccessControl({
     ]);
   }
 
-  throw accessDeniedError(
-    `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
-      inputData
-    )}'. It may not exist.`
-  );
+  throw accessDeniedError(cannotForItem(operation, list));
 }
 
 async function enforceFieldLevelAccessControl({
@@ -204,11 +212,7 @@ async function enforceFieldLevelAccessControl({
   }
 
   if (fieldsDenied.length) {
-    throw accessDeniedError(
-      `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
-        inputData
-      )}'. You cannot '${operation}' the fields ${JSON.stringify(fieldsDenied)}.`
-    );
+    throw accessDeniedError(cannotForItemFields(operation, list, fieldsDenied));
   }
 }
 
