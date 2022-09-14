@@ -18,6 +18,18 @@ const publicPackages = [
   '@keystone-6/session-store-redis',
 ];
 
+const cves = [
+//    {
+//      id: 'CVE-2022-NNNN',
+//      href: 'https://github.com/advisories/GHSA-...',
+//      upstream: true,
+//      description: `
+//        An upstream transitive dependency \`XXX\` is vulnerable to ZZZZZZ.
+//        We have upgraded to a version of \`YYY\` package to a version that doesn't use \`XXX\`.
+//      `
+//    }
+];
+
 function gitCommitsSince(tag) {
   const { stdout } = spawnSync('git', ['rev-list', `^${tag}`, 'HEAD']);
   return stdout
@@ -43,6 +55,19 @@ function firstGitCommitOf(path) {
     .slice(0, 40);
 }
 
+function gitCommitDescription(commit) {
+  const { stdout } = spawnSync('git', [
+    'log',
+    '--oneline',
+    commit,
+  ]);
+  return stdout
+    .toString('utf-8')
+    .split('\n', 1)
+    .pop()
+    .slice(10);
+}
+
 async function fetchData(tag) {
   const { changesets, releases } = await getReleasePlan('.');
 
@@ -50,7 +75,7 @@ async function fetchData(tag) {
   const revs = gitCommitsSince(tag);
   console.error(`${revs.length} commits since ${tag}`);
   if (revs.length === 0) throw new Error('No commits');
-  if (revs.length > 50) throw new Error('Too many commits');
+  if (revs.length > 200) throw new Error('Too many commits');
 
   // tag changesets with their commits
   for (const changeset of changesets) {
@@ -67,9 +92,10 @@ async function fetchData(tag) {
   );
   const changes = {};
   for (const commit of revs) {
-    const { user, pull } = await getInfo({ repo: 'keystonejs/keystone', commit });
-    console.error(`commit ${commit}, user ${user}, pull #${pull}`);
+    let { user, pull } = await getInfo({ repo: 'keystonejs/keystone', commit });
+    pull = pull || gitCommitDescription(commit).match(/#([0-9]+)/)[1];
 
+    console.error(`commit ${commit}, user ${user}, pull #${pull}`);
     const change = { commit, user, pull };
     changes[commit] = change;
 
@@ -134,6 +160,11 @@ function formatChange({ packages, summary, pull, user }) {
   return `- \`[${packages.join(', ')}]\` ${summary} (#${pull}) @${user}`;
 }
 
+function formatCVE ({ id, href, upstream, description }) {
+  description = description.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+  return `- [\`${id}\`](${href}) - ${description}`;
+}
+
 function link(pull) {
   return `[#${pull}](https://github.com/keystonejs/keystone/pull/${pull})`;
 }
@@ -177,13 +208,22 @@ async function generateGitHubReleaseText(previousTag) {
     output.push(...[`#### Bug Fixes`, ...fixes.map(formatChange), ``]);
   }
 
+  if (cves.length) {
+    output.push(...[
+      `#### :rotating_light: Security Updates`,
+      `We have identified and fixed ${cves.length} ${cves.some(x => x.upstream) ? 'upstream ': ''}security vulnerabilities`,
+      ...cves.map(formatCVE),
+      ``
+    ]);
+  }
+
   const first = changes.filter(x => x.first);
   const unattributed = changes.filter(x => !x.type && !x.first);
 
   if (first.length || unattributed.length) {
     const listf = groupPullsByUser(first);
 
-    output.push(`#### :seedling: New Contributors :seedling:`);
+    output.push(`#### :seedling: New Contributors`);
     output.push(
       `Thanks to the following developers for making their first contributions to the project!`
     );
@@ -194,7 +234,7 @@ async function generateGitHubReleaseText(previousTag) {
   if (unattributed.length) {
     const listu = groupPullsByUser(unattributed);
 
-    output.push(`#### :blue_heart: Acknowledgements :blue_heart:`);
+    output.push(`#### :blue_heart: Acknowledgements `);
     output.push(
       `Lastly, thanks to ${listu
         .map(({ user, pulls }) => `@${user} (${pulls.map(link).join(',')})`)
