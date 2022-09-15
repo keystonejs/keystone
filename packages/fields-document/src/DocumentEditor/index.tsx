@@ -194,23 +194,10 @@ export function DocumentEditor({
 
   return (
     <div
-      css={[
-        {
-          border: `1px solid ${colors.border}`,
-          borderRadius: radii.small,
-        },
-        expanded && {
-          border: 'none',
-          background: colors.background,
-          bottom: 0,
-          left: 0,
-          overflowY: 'auto', // required to keep the toolbar stuck in place
-          position: 'absolute',
-          right: 0,
-          top: 0,
-          zIndex: 100,
-        },
-      ]}
+      css={{
+        border: `1px solid ${colors.border}`,
+        borderRadius: radii.small,
+      }}
     >
       <DocumentEditorProvider
         componentBlocks={componentBlocks}
@@ -252,32 +239,17 @@ export function DocumentEditor({
           css={[
             {
               borderRadius: 'inherit',
-              background: fields.inputBackground,
+              background: fields.focus.inputBackground,
               borderColor: fields.inputBorderColor,
               paddingLeft: spacing.medium,
               paddingRight: spacing.medium,
-              ':hover': {
-                background: fields.hover.inputBackground,
-              },
-              ':focus': {
-                background: fields.focus.inputBackground,
-              },
-              ':disabled': {
-                background: fields.disabled.inputBackground,
-              },
+              minHeight: 120,
+              scrollbarGutter: 'stable',
+              // the !important is necessary to override the width set by resizing as an inline style
+              height: expanded ? 'auto !important' : 224,
+              resize: expanded ? undefined : 'vertical',
+              overflowY: 'auto',
             },
-            expanded
-              ? {
-                  height: 'auto !important',
-                  background: fields.focus.inputBackground,
-                }
-              : {
-                  height: 224,
-                  resize: 'vertical',
-                  overflowY: 'auto',
-                  minHeight: 120,
-                  scrollbarGutter: 'stable',
-                },
           ]}
           {...props}
           readOnly={onChange === undefined}
