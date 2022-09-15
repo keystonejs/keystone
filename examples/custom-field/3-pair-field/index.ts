@@ -7,14 +7,11 @@ import {
 import { graphql } from '@keystone-6/core';
 
 export type PairFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
-    isIndexed?: boolean | 'unique';
-  };
+  CommonFieldConfig<ListTypeInfo>;
 
-export function pair<ListTypeInfo extends BaseListTypeInfo>({
-  isIndexed,
-  ...config
-}: PairFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
+export function pair<ListTypeInfo extends BaseListTypeInfo>(
+  config: PairFieldConfig<ListTypeInfo> = {}
+): FieldTypeFunc<ListTypeInfo> {
   function resolveInput(value: string | null | undefined) {
     if (!value) return { left: value, right: value };
     const [left = '', right = ''] = value.split(' ', 2);
@@ -30,6 +27,20 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>({
     return `${left} ${right}`;
   }
 
+  function resolveWhere(value: null | { equals: string | null | undefined }) {
+    if (value === null) {
+      throw new Error('PairFilter cannot be null');
+    }
+    if (value.equals === undefined) {
+      return {};
+    }
+    const { left, right } = resolveInput(value.equals);
+    return {
+      left: { equals: left },
+      right: { equals: right },
+    };
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   return meta =>
     fieldType({
@@ -39,18 +50,23 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>({
           kind: 'scalar',
           mode: 'optional',
           scalar: 'String',
-          index: isIndexed === true ? 'index' : isIndexed || undefined,
         },
         right: {
           kind: 'scalar',
           mode: 'optional',
           scalar: 'String',
-          index: isIndexed === true ? 'index' : isIndexed || undefined,
         },
       },
     })({
       ...config,
       input: {
+        where: {
+          arg: graphql.arg({ type: PairFilter }),
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          resolve(value, context) {
+            return resolveWhere(value);
+          },
+        },
         create: {
           arg: graphql.arg({ type: graphql.String }),
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -59,9 +75,7 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>({
           },
         },
         update: {
-          arg: graphql.arg({
-            type: graphql.String,
-          }),
+          arg: graphql.arg({ type: graphql.String }),
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           resolve(value, context) {
             return resolveInput(value);
@@ -81,3 +95,10 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>({
       },
     });
 }
+
+const PairFilter = graphql.inputObject({
+  name: 'PairFilter',
+  fields: {
+    equals: graphql.arg({ type: graphql.String }),
+  },
+});

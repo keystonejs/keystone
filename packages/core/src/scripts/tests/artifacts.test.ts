@@ -1,8 +1,7 @@
-import { text } from '../../fields';
-import { config, list } from '../..';
+import fs from 'fs/promises';
 import { ExitError } from '../utils';
-import { allowAll } from '../../access';
 import {
+  basicKeystoneConfig,
   getFiles,
   recordConsole,
   runCommand,
@@ -10,21 +9,6 @@ import {
   symlinkKeystoneDeps,
   testdir,
 } from './utils';
-
-const basicKeystoneConfig = {
-  kind: 'config' as const,
-  config: config({
-    db: { provider: 'sqlite', url: 'file:./app.db' },
-    lists: {
-      Todo: list({
-        access: allowAll,
-        fields: {
-          title: text(),
-        },
-      }),
-    },
-  }),
-};
 
 describe.each(['postinstall', 'build', 'prisma migrate status'])('%s', command => {
   test('logs an error and exits with 1 when the schemas do not exist and the terminal is non-interactive', async () => {
@@ -41,6 +25,8 @@ describe.each(['postinstall', 'build', 'prisma migrate status'])('%s', command =
   });
 });
 
+const schemasMatch = ['schema.prisma', 'schema.graphql'];
+
 // a lot of these cases are also the same for prisma and build commands but we don't include them here
 // because when they're slow and then run the same code as the postinstall command
 // (and in the case of the build command we need to spawn a child process which would make each case take a _very_ long time)
@@ -54,12 +40,8 @@ describe('postinstall', () => {
       'Would you like to update your Prisma and GraphQL schemas?': true,
     });
     await runCommand(tmp, 'postinstall');
-    const files = await getFiles(tmp, ['schema.prisma', 'schema.graphql']);
-    // to update them
-    // for (const [file, content] of Object.entries(files)) {
-    //   require('fs').writeFileSync(`${__dirname}/fixtures/basic-project/${file}`, content);
-    // }
-    expect(files).toEqual(await getFiles(`${__dirname}/fixtures/basic-project`));
+    const files = await getFiles(tmp, schemasMatch);
+    expect(files).toEqual(await getFiles(`${__dirname}/fixtures/basic-project`, schemasMatch));
     expect(recording()).toMatchInlineSnapshot(`
       "Your Prisma and GraphQL schemas are not up to date
       Prompt: Would you like to update your Prisma and GraphQL schemas? true
@@ -73,8 +55,8 @@ describe('postinstall', () => {
     });
     const recording = recordConsole();
     await runCommand(tmp, 'postinstall --fix');
-    const files = await getFiles(tmp, ['schema.prisma', 'schema.graphql']);
-    expect(files).toEqual(await getFiles(`${__dirname}/fixtures/basic-project`));
+    const files = await getFiles(tmp, schemasMatch);
+    expect(files).toEqual(await getFiles(`${__dirname}/fixtures/basic-project`, schemasMatch));
     expect(recording()).toMatchInlineSnapshot(`"✨ Generated GraphQL and Prisma schemas"`);
   });
   test("does not prompt, error or modify the schemas if they're already up to date", async () => {
@@ -85,8 +67,8 @@ describe('postinstall', () => {
     });
     const recording = recordConsole();
     await runCommand(tmp, 'postinstall');
-    const files = await getFiles(tmp, ['schema.prisma', 'schema.graphql']);
-    expect(files).toEqual(await getFiles(`${__dirname}/fixtures/basic-project`));
+    const files = await getFiles(tmp, schemasMatch);
+    expect(files).toEqual(await getFiles(`${__dirname}/fixtures/basic-project`, schemasMatch));
     expect(recording()).toMatchInlineSnapshot(`"✨ GraphQL and Prisma schemas are up to date"`);
   });
   test('writes the correct node_modules files', async () => {
@@ -104,10 +86,7 @@ describe('postinstall', () => {
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...schemas,
-      'keystone.js': {
-        kind: 'config',
-        config: { ...basicKeystoneConfig.config, experimental: { generateNodeAPI: true } },
-      },
+      'keystone.js': await fs.readFile(`${__dirname}/fixtures/generate-node-api.ts`, 'utf8'),
     });
     const recording = recordConsole();
     await runCommand(tmp, 'postinstall');
@@ -136,10 +115,10 @@ describe('postinstall', () => {
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...schemas,
-      'keystone.js': {
-        kind: 'config',
-        config: { ...basicKeystoneConfig.config, experimental: { generateNextGraphqlAPI: true } },
-      },
+      'keystone.js': await fs.readFile(
+        `${__dirname}/fixtures/generate-next-graphql-api.ts`,
+        'utf8'
+      ),
     });
     const recording = recordConsole();
     await runCommand(tmp, 'postinstall');

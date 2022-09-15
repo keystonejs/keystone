@@ -11,14 +11,7 @@ module.exports = {
     node: true,
     jest: true,
   },
-  plugins: [
-    'react',
-    'react-hooks',
-    'jest',
-    'import',
-    '@typescript-eslint',
-    '@preconstruct/format-js-tag',
-  ],
+  plugins: ['react', 'react-hooks', 'jest', 'import', '@typescript-eslint'],
   settings: {
     react: {
       version: 'detect',
@@ -103,31 +96,23 @@ module.exports = {
         },
       },
     ],
-    '@preconstruct/format-js-tag/format': 'error',
   },
   extends: ['plugin:jest/recommended'],
 
   // Disable some rules for (code blocks within) Markdown docs
   overrides: [
     {
-      files: ['**/*.md'],
-      rules: {
-        'no-unused-vars': 'off',
-        'no-undef': 'off',
-      },
-    },
-    {
-      files: ['packages/fields/src/**/*.{js,ts,tsx}'],
-      rules: {
-        'import/no-commonjs': 'error',
-      },
-    },
-    {
       files: ['**/*.{ts,tsx}'],
       rules: {
         // TypeScript already checks for the following things and they conflict with TypeScript
         'import/no-unresolved': 'off',
         'no-undef': 'off',
+      },
+    },
+    {
+      files: ['packages/core/src/scripts/tests/fixtures/**/*.{ts,tsx}'],
+      rules: {
+        'import/no-extraneous-dependencies': 'off',
       },
     },
   ],

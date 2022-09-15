@@ -186,8 +186,8 @@ Using `emotion` for styling is purely a recommendation, if you would prefer to u
 {% related-content %}
 {% well
 heading="Example: Custom Admin UI Pages"
-href="<https://github.com/keystonejs/keystone/tree/main/examples/custom-admin-ui-pages>"
-target="\_blank" %}
+href="https://github.com/keystonejs/keystone/tree/main/examples/custom-admin-ui-pages"
+target="_blank" %}
 Adds a custom page in the Admin UI. Builds on the Task Manager starter project.
 {% /well %}
 {% well

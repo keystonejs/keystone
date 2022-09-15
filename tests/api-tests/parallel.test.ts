@@ -17,6 +17,9 @@ const runner = setupTestRunner({
   }),
 });
 
+// creating a large number of items can take a while
+jest.setTimeout(1000 * 20);
+
 test(
   'creating a lot of items with createOne in parallel',
   runner(async ({ context }) => {

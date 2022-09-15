@@ -3,7 +3,7 @@ import { graphql } from '..';
 import { BaseListTypeInfo } from './type-info';
 import { CommonFieldConfig } from './config';
 import { DatabaseProvider } from './core';
-import { AdminMetaRootVal, JSONValue, KeystoneContext, MaybePromise, StorageConfig } from '.';
+import { JSONValue, KeystoneContext, MaybePromise, StorageConfig } from '.';
 
 export { Decimal };
 
@@ -387,7 +387,7 @@ export type FieldTypeWithoutDBField<
   output: FieldTypeOutputField<TDBField>;
   views: string;
   extraOutputFields?: Record<string, FieldTypeOutputField<TDBField>>;
-  getAdminMeta?: (adminMeta: AdminMetaRootVal) => JSONValue;
+  getAdminMeta?: () => JSONValue;
   unreferencedConcreteInterfaceImplementations?: readonly graphql.ObjectType<any>[];
 } & CommonFieldConfig<ListTypeInfo>;
 

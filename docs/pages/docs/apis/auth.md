@@ -20,7 +20,7 @@ const { withAuth } = createAuth({
   secretField: 'password',
 
   // Additional options
-  sessionData: 'id name email`,
+  sessionData: 'id name email',
   initFirstItem: {
     fields: ['email', 'password'],
     itemData: { isAdmin: true },
@@ -459,7 +459,7 @@ The authenticated item will be returned as `item`.
 {% related-content %}
 {% well
 heading="Example Project: Authentication"
-href="<https://github.com/keystonejs/keystone/tree/main/examples/with-auth>" %}
+href="https://github.com/keystonejs/keystone/tree/main/examples/with-auth" %}
 Adds password-based authentication to the Task Manager starter project.
 {% /well %}
 {% /related-content %}

@@ -322,8 +322,8 @@ Using a pre-calculated scalar field is the best solution to use if you need filt
 {% related-content %}
 {% well
 heading="Virtual fields example"
-href="<https://github.com/keystonejs/keystone/tree/main/examples/virtual-field>"
-target="\_blank" %}
+href="https://github.com/keystonejs/keystone/tree/main/examples/virtual-field"
+target="_blank" %}
 A demo project that shows you how to add virtual fields to a Keystone list.
 {% /well %}
 {% well

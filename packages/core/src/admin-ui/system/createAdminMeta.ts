@@ -2,16 +2,64 @@ import path from 'path';
 import { GraphQLString, isInputObjectType } from 'graphql';
 import {
   KeystoneConfig,
-  AdminMetaRootVal,
   QueryMode,
   MaybePromise,
   MaybeSessionFunction,
   BaseListTypeInfo,
-  ContextFunction,
+  KeystoneContext,
+  JSONValue,
+  MaybeItemFunction,
 } from '../../types';
 import { humanize } from '../../lib/utils';
 import { InitialisedList } from '../../lib/core/types-for-lists';
 import { FilterOrderArgs } from '../../types/config/fields';
+
+type ContextFunction<Return> = (context: KeystoneContext) => MaybePromise<Return>;
+
+export type FieldMetaRootVal = {
+  path: string;
+  label: string;
+  description: string | null;
+  fieldMeta: JSONValue | null;
+  viewsIndex: number;
+  customViewsIndex: number | null;
+  listKey: string;
+  search: 'default' | 'insensitive' | null;
+  isOrderable: ContextFunction<boolean>;
+  isFilterable: ContextFunction<boolean>;
+  createView: { fieldMode: ContextFunction<'edit' | 'hidden'> };
+  // itemView is intentionally special because static values are special cased
+  // and fetched when fetching the static admin ui
+  itemView: { fieldMode: MaybeItemFunction<'edit' | 'read' | 'hidden', BaseListTypeInfo> };
+  listView: { fieldMode: ContextFunction<'read' | 'hidden'> };
+};
+
+export type ListMetaRootVal = {
+  key: string;
+  path: string;
+  label: string;
+  singular: string;
+  plural: string;
+  initialColumns: string[];
+  pageSize: number;
+  labelField: string;
+  initialSort: { field: string; direction: 'ASC' | 'DESC' } | null;
+  fields: Array<FieldMetaRootVal>;
+  itemQueryName: string;
+  listQueryName: string;
+  description: string | null;
+  isHidden: ContextFunction<boolean>;
+  hideCreate: ContextFunction<boolean>;
+  hideDelete: ContextFunction<boolean>;
+  isSingleton: boolean;
+};
+
+export type AdminMetaRootVal = {
+  lists: Array<ListMetaRootVal>;
+  listsByKey: Record<string, ListMetaRootVal>;
+  views: string[];
+  isAccessAllowed: undefined | ((context: KeystoneContext) => MaybePromise<boolean>);
+};
 
 export function createAdminMeta(
   config: KeystoneConfig,
@@ -195,12 +243,26 @@ export function createAdminMeta(
       if (dbField.kind === 'relation' && omittedLists.includes(dbField.list)) {
         continue;
       }
-      fieldMetaRootVal.fieldMeta =
-        list.fields[fieldMetaRootVal.path].getAdminMeta?.(adminMetaRoot) ?? null;
+      currentAdminMeta = adminMetaRoot;
+      try {
+        fieldMetaRootVal.fieldMeta = list.fields[fieldMetaRootVal.path].getAdminMeta?.() ?? null;
+      } finally {
+        currentAdminMeta = undefined;
+      }
     }
   }
 
   return adminMetaRoot;
+}
+
+let currentAdminMeta: undefined | AdminMetaRootVal;
+
+export function getAdminMetaForRelationshipField() {
+  if (currentAdminMeta === undefined) {
+    throw new Error('unexpected call to getAdminMetaInRelationshipField');
+  }
+
+  return currentAdminMeta;
 }
 
 function assertValidView(view: string, location: string) {

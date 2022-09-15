@@ -133,8 +133,8 @@ The API to configure all the parts parts of your Keystone system.
 {% /well %}
 {% well
 heading="Example Project: Authentication"
-href="<https://github.com/keystonejs/keystone/tree/main/examples/with-auth>"
-target="\_blank" %}
+href="https://github.com/keystonejs/keystone/tree/main/examples/with-auth"
+target="_blank" %}
 Adds password-based authentication to the Task Manager starter project.
 {% /well %}
 {% /related-content %}

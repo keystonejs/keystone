@@ -63,7 +63,7 @@ These will give us what we need to conditionally display and order posts in a fr
 
 Keystone’s [`timestamp`](/docs/apis/fields#timestamp) field will let editors associate a date and time with the post:
 
-```ts{2,15}\[5-11,17-24,29-500]
+```ts{2,15}[5-11,17-24,29-500]
 import { list, config } from '@keystone-6/core';
 import { text, timestamp, relationship } from '@keystone-6/core/fields';
 
@@ -108,7 +108,7 @@ Keystone’s [`select`](/docs/apis/fields#select) field gives editors the abilit
 
 To set the the field’s desired values we add `options` to the field’s configuration. They will be the only options available to editors in Admin UI and through Keystone’s auto-generated GraphQL types:
 
-```ts{2,26-31}\[5-11,17-24,35-500]
+```ts{2,26-31}[5-11,17-24,35-500]
 import { list, config } from '@keystone-6/core';
 import { text, relationship, timestamp, select } from '@keystone-6/core/fields';
 
@@ -180,7 +180,7 @@ ui: { displayMode: 'segmented-control' },
 
 This now gives us:
 
-```ts{21-22}\[1-3,5-11,13-15,28-500]
+```ts{21-22}[1-3,5-11,13-15,28-500]
 import { list, config } from '@keystone-6/core';
 import { text, timestamp, select, relationship } from '@keystone-6/core/fields';
 

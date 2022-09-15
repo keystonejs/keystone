@@ -108,7 +108,7 @@ test('the generated schema includes schema updates', async () => {
 
 test("a syntax error is shown and doesn't crash the process", async () => {
   await replaceSchema('syntax-error');
-  await expectContentInStdio(process, 'error - ../../schemas/syntax-error.js');
+  await expectContentInStdio(process, '✘ [ERROR] Expected ";" but found "const"');
 });
 
 test("a runtime error is shown and doesn't crash the process", async () => {

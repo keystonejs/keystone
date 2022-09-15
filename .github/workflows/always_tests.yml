@@ -33,9 +33,6 @@ jobs:
       - name: Preconstruct
         run: yarn build
 
-      - name: Remark
-        run: yarn lint:markdown
-
       - name: Prisma Filters
         run: yarn lint:filters
 

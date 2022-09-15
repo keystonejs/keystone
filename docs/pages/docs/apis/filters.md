@@ -74,29 +74,29 @@ The `json` field type does not support filters.
 - If the `type` is `string`(the default), the same filters as `text` will be available.
 - If the `type` is `integer`, the same filters as `integer` will be available.
 - If the `type` is `enum`, the following filters will be available:
-  \| **Filter name** \| **Type** \| **Description** \|
-  \| --------------- \| ---------- \| ------------------- \|
-  \| `equals` \| `ListKeyFieldKeyType` | Equals |
-  \| `in` \| `[ListKeyFieldKeyType!]` | Is in the array |
-  \| `notIn` \| `[ListKeyFieldKeyType!]` | Is not in the array |
-  \| `not` \| `ListKeyFieldKeyTypeNullableFilter` | Does not match the inner filter |
+  | **Filter name** | **Type** | **Description** |
+  | --------------- | ---------- | ------------------- |
+  | `equals` | `ListKeyFieldKeyType` | Equals |
+  | `in` | `[ListKeyFieldKeyType!]` | Is in the array |
+  | `notIn` | `[ListKeyFieldKeyType!]` | Is not in the array |
+  | `not` | `ListKeyFieldKeyTypeNullableFilter` | Does not match the inner filter |
 
 ### text
 
 | **Filter name** | **Type**                                 | **Description**                                       | **Notes** |
 | --------------- | ---------------------------------------- | ----------------------------------------------------- | --------- |
-| `equals`        | `String`                                 | Equals                                                |           |
-| `lt`            | `String`                                 | Less than                                             |           |
-| `lte`           | `String`                                 | Less than or equal                                    |           |
-| `gt`            | `String`                                 | Greater than                                          |           |
-| `gte`           | `String`                                 | Greater than or equal                                 |           |
+| `equals`        | `String`                                 | Equals                                                |
+| `lt`            | `String`                                 | Less than                                             |
+| `lte`           | `String`                                 | Less than or equal                                    |
+| `gt`            | `String`                                 | Greater than                                          |
+| `gte`           | `String`                                 | Greater than or equal                                 |
 | `contains`      | `String`                                 | Contains                                              | [1]       |
 | `startsWith`    | `String`                                 | Starts with                                           | [1]       |
 | `endsWith`      | `String`                                 | Ends with                                             | [1]       |
-| `in`            | `[String!]`                              | Is in the array                                       |           |
-| `notIn`         | `[String!]`                              | Is not in the array                                   |           |
+| `in`            | `[String!]`                              | Is in the array                                       |
+| `notIn`         | `[String!]`                              | Is not in the array                                   |
 | `mode`          | `QueryMode` (`default` or `insensitive`) | Whether the filters should be case insensitive or not | [2]       |
-| `not`           | `NestedStringNullableFilter`             | Does not match the inner filter                       |           |
+| `not`           | `NestedStringNullableFilter`             | Does not match the inner filter                       |
 
 #### Notes
 

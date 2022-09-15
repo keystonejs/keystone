@@ -917,3 +917,74 @@ test('normalization adds missing fields on object fields', () => {
     </editor>
   `);
 });
+
+test('normalization adds missing fields for conditional fields', () => {
+  const editor = makeEditor(
+    <editor>
+      <component-block
+        component="basic"
+        props={{ a: { discriminant: 'a', value: { something: '' } } }}
+      >
+        <component-inline-prop>
+          <text />
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>,
+    {
+      normalization: 'normalize',
+      componentBlocks: {
+        basic: component({
+          preview: () => null,
+          label: 'Basic',
+          schema: {
+            a: fields.conditional(
+              fields.select({
+                defaultValue: 'a',
+                label: '',
+                options: [
+                  { value: 'a', label: 'a' },
+                  { value: 'b', label: 'b' },
+                ],
+              }),
+              {
+                a: fields.object({
+                  something: fields.text({ label: '' }),
+                  new: fields.text({ label: '' }),
+                }),
+                b: fields.object({}),
+              }
+            ),
+          },
+        }),
+      },
+    }
+  );
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <component-block
+        component="basic"
+        props={
+          {
+            "a": {
+              "discriminant": "a",
+              "value": {
+                "new": "",
+                "something": "",
+              },
+            },
+          }
+        }
+      >
+        <component-inline-prop>
+          <text />
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>
+  `);
+});
