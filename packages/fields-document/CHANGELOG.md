@@ -1,5 +1,11 @@
 # @keystone-6/fields-document
 
+## 4.1.1
+
+### Patch Changes
+
+- [#7927](https://github.com/keystonejs/keystone/pull/7927) [`2f17c3ebd`](https://github.com/keystonejs/keystone/commit/2f17c3ebdb4aaaad6f573f89f340422e8a008802) Thanks [@keystonejs-release-bot](https://github.com/keystonejs-release-bot)! - Fixes expand/collapse button in the editor
+
 ## 4.1.0
 
 ### Minor Changes
