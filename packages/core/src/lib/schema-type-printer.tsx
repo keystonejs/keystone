@@ -131,7 +131,7 @@ function printInterimType<L extends InitialisedList>(
   return [
     `type Resolved${typename} = {`,
     ...Object.entries(list.fields).map(([fieldKey, { dbField }]) => {
-      if (dbField.kind === 'none') return `  ${fieldKey}?: undefined\n`;
+      if (dbField.kind === 'none' || fieldKey === 'id') return `  ${fieldKey}?: undefined;`;
       if (dbField.kind === 'multi') {
         return printInterimMultiFieldType({
           listKey,
