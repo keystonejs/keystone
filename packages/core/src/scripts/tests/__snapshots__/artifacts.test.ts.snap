@@ -107,12 +107,12 @@ export type KeystoneAdminUISortDirection =
   | "DESC";
 
 type ResolvedTodoCreateInput = {
-  id?: import('.prisma/client').Prisma.TodoCreateInput["id"];
+  id?: undefined;
   title?: import('.prisma/client').Prisma.TodoCreateInput["title"];
 };
 
 type ResolvedTodoUpdateInput = {
-  id?: import('.prisma/client').Prisma.TodoUpdateInput["id"];
+  id?: undefined;
   title?: import('.prisma/client').Prisma.TodoUpdateInput["title"];
 };
 
