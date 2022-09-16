@@ -18,10 +18,7 @@ export function Walkthroughs() {
           margin: '0 0 var(--space-xlarge) 0',
         })}
       >
-        <Well
-          heading="Keystone Quick Start"
-          href="/docs/walkthroughs/getting-started-with-create-keystone-app"
-        >
+        <Well heading="Keystone Quick Start" href="/docs/getting-started">
           Take a tour of Keystone in minutes with our CLI starter project
         </Well>
       </div>
@@ -56,14 +53,6 @@ export function Walkthroughs() {
         <Well grad="grad2" heading="Lesson 5: Rich Text" href="/docs/walkthroughs/lesson-5">
           Add a powerful <InlineCode>document</InlineCode> field to your app and learn how to
           configure it to meet your needs
-        </Well>
-        <Well
-          grad="grad2"
-          heading="How to embed Keystone + SQLite in a Next.js app"
-          href="/docs/walkthroughs/embedded-mode-with-sqlite-nextjs"
-        >
-          Learn how to run Keystone in the same folder as your frontend code and commit everything
-          to Git. You end up with a queryable GraphQL endpoint running live on Vercel.
         </Well>
       </div>
     </div>

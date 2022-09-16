@@ -1,5 +1,5 @@
 ---
-title: "Database API"
+title: "Database"
 description: "Keystone’s database API is a programmatic API for running CRUD operations against the internal GraphQL resolvers in your system. It bypasses the GraphQL Server itself, invoking resolver functions directly."
 ---
 
@@ -7,10 +7,8 @@ The database API provides a programmatic API for running CRUD operations against
 Importantly, this API bypasses the GraphQL Server itself, instead invoking the resolver functions directly.
 The return values of this API are **internal item** objects, which are suitable to be returned from GraphQL resolvers.
 
-Refer to the [internal items guide](../guides/internal-items) for details on how to work with internal items in Keystone.
-
-This API executes the [`access control`](../guides/auth-and-access-control) rules and [`hooks`](../guides/hooks) defined in your system.
-To bypass these, you can directly use the Prisma Client at [`context.prisma`](./context#database-access).
+This API executes the [`access control`](../guides/auth-and-access-control) rules and [`hooks`](../config/hooks) defined in your system.
+To bypass these, you can directly use the Prisma Client at [`context.prisma`](../context/overview#database-access).
 
 For each list in your system the following API is available at `context.db.<listName>`.
 
@@ -28,7 +26,7 @@ For each list in your system the following API is available at `context.db.<list
 }
 ```
 
-The arguments to these functions closely correspond to their equivalent [GraphQL APIs](./graphql).
+The arguments to these functions closely correspond to their equivalent [GraphQL APIs](../graphql/overview).
 Unless otherwise specified, the arguments to all functions are required.
 
 ### findOne
@@ -146,12 +144,12 @@ const users = await context.db.User.deleteMany({
 {% related-content %}
 {% well
 heading="Query API Reference"
-href="/docs/apis/query" %}
+href="/docs/context/query" %}
 A programmatic API for running CRUD operations against your GraphQL API. For each list in your system you get an API at `context.query.<listName>`.
 {% /well %}
 {% well
 heading="Context API Reference"
-href="/docs/apis/context" %}
+href="/docs/context/overview" %}
 The API for run-time functionality in your Keystone system. Use it to write business logic for access control, hooks, testing, GraphQL schema extensions, and more.
 {% /well %}
 {% /related-content %}

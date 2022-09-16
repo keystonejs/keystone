@@ -58,7 +58,7 @@ export default config({
 });
 ```
 
-For full details on the available field types and their configuration options please see the [Fields API](./fields).
+For full details on the available field types and their configuration options please see the [Fields API](../fields/overview).
 
 ## access
 
@@ -88,17 +88,17 @@ Options:
 - `createView`: Controls the create view page of the Admin UI.
   - `defaultFieldMode` (default: `'edit'`):
     Can be overridden by per-field values in the `field.ui.createView.fieldMode` config.
-    See the [Fields API](./fields#common-configuration) for details.
+    See the [Fields API](../fields/overview#common-configuration) for details.
     Can be one of `['edit', 'hidden']`, or an async function with an argument `{ session, context }` that returns one of `['edit', 'hidden']`.
 - `itemView`: Controls the item view page of the Admin UI.
   - `defaultFieldMode` (default: `'edit'`):
     Can be overridden by per-field values in the `field.ui.itemView.fieldMode` config.
-    See the [Fields API](./fields#common-configuration) for details.
+    See the [Fields API](../fields/overview#common-configuration) for details.
     Can be one of `['edit', 'read', 'hidden']`, or an async function with an argument `{ session, context, item }` that returns one of `['edit', 'read', 'hidden']`.
 - `listView`: Controls the list view page of the Admin UI.
   - `defaultFieldMode` (default: `'read'`): Controls the default mode of fields in the list view.
     Can be overridden by per-field values in the `field.ui.listView.fieldMode` config.
-    See the [Fields API](./fields#common-configuration) for details.
+    See the [Fields API](../fields/overview#common-configuration) for details.
     Can be one of `['read', 'hidden']`, or an async function with an argument `{ session, context }` that returns one of `['read', 'hidden']`.
   - `initialColumns` (default: The first three fields defined in the list). A list of field names to display in columns in the list view. By default only the label column, as determined by `labelField`, is shown.
   - `initialSort` (default: `undefined`): Sets the field and direction to be used to initially sort the data in the list view.
@@ -235,12 +235,12 @@ This option can be individually overridden by the `graphql.description` or `ui.d
 {% related-content %}
 {% well
 heading="Fields API Reference"
-href="/docs/apis/fields" %}
+href="/docs/fields/overview" %}
 Defines the names, types, and configuration of Keystone fields. See all the fields and the configuration options they accept.
 {% /well %}
 {% well
 heading="Config API Reference"
-href="/docs/apis/config" %}
+href="/docs/config/overview" %}
 The API to configure all the parts parts of your Keystone system.
 {% /well %}
 {% well

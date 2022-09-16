@@ -82,7 +82,7 @@ For each test, the runner will connect to the database and drop all the data so 
 
 #### `context`
 
-The test runner provides the test function with a [`KeystoneContext`](https://keystonejs.com/docs/apis/context) argument called `context`. This is the main API for interacting with the Keystone system. It can be used to read and write data to the system and verify that the system is behaving as expected.
+The test runner provides the test function with a [`KeystoneContext`](https://keystonejs.com/docs/context/overview) argument called `context`. This is the main API for interacting with the Keystone system. It can be used to read and write data to the system and verify that the system is behaving as expected.
 
 ```typescript
 test(

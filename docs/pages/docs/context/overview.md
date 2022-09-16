@@ -1,5 +1,5 @@
 ---
-title: "Context API"
+title: "Context Overview"
 description: "The KeystoneContext object is the primary API entry point for all of the run-time functionality of your system. It's APIs can be used to write things like access control, hooks, testing and GraphQL schema extensions."
 ---
 
@@ -93,7 +93,7 @@ See the [schema extension guide](../guides/schema-extension) for examples of usi
 ### Session API
 
 If you configure your Keystone system with session management then you will have access to the following properties.
-See the [session API](./session#session-context) for more details.
+See the [session API](../config/session#session-context) for more details.
 
 `session`: The current session data object.
 
@@ -118,7 +118,7 @@ The `KeystoneContext` object exposes the underlying database driver directly via
 
 ### Images API
 
-If [support for image fields](./config#images) is enabled in the system, then an `images` API will be made available on the `context` object.
+If [support for image fields](../config/config#storage-images-and-files) is enabled in the system, then an `images` API will be made available on the `context` object.
 This API takes advantage of the following types:
 
 ```
@@ -146,9 +146,9 @@ type ImageData = {
 
 These properties are used internally by Keystone and generally do not need to be directly accessed.
 
-`totalResults`: The cumulative total number of results returned by the current request. See [`config.graphql.queryLimits`](./config#graphql).
+`totalResults`: The cumulative total number of results returned by the current request. See [`config.graphql.queryLimits`](../config/config#graphql).
 
-`maxTotalResults`: The maximum number of results which can be returned before a query limit error is triggered. See [`config.graphql.queryLimits`](./config#graphql).
+`maxTotalResults`: The maximum number of results which can be returned before a query limit error is triggered. See [`config.graphql.queryLimits`](../config/config#graphql).
 
 ### Deprecated
 
@@ -162,12 +162,12 @@ They will be removed in future releases.
 {% related-content %}
 {% well
 heading="Query API Reference"
-href="/docs/apis/query" %}
+href="/docs/context/query" %}
 A programmatic API for running CRUD operations against your GraphQL API. For each list in your system you get an API at `context.query.<listName>`
 {% /well %}
 {% well
 heading="DB API Reference"
-href="/docs/apis/db-items" %}
+href="/docs/context/db-items" %}
 The API for running CRUD operations against the internal GraphQL resolvers in your system. It returns internal item objects, which can be returned from GraphQL resolvers.
 {% /well %}
 {% /related-content %}

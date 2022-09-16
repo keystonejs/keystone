@@ -336,7 +336,7 @@ export default function WhyKeystonePage() {
                 Out of the box data ops for every field type. A powerful GraphQL API from day one.
               </Type>
               <Type as="p" look="body18">
-                <Link href="/docs/apis/access-control">
+                <Link href="/docs/config/access-control">
                   <a>Access control API →</a>
                 </Link>
               </Type>
@@ -384,7 +384,7 @@ export default function WhyKeystonePage() {
                 Start and end sessions from the GraphQL API. Secure your data using access control.
               </Type>
               <Type as="p" look="body18">
-                <Link href="/docs/apis/session">
+                <Link href="/docs/config/session">
                   <a>Session API →</a>
                 </Link>
               </Type>
@@ -409,7 +409,7 @@ export default function WhyKeystonePage() {
                 roles you can configure.
               </Type>
               <Type as="p" look="body18">
-                <Link href="/docs/apis/access-control">
+                <Link href="/docs/config/access-control">
                   <a>Access Control API →</a>
                 </Link>
               </Type>
@@ -461,7 +461,7 @@ export default function WhyKeystonePage() {
                 Everything as you make it.
               </Type>
               <Type as="p" look="body18">
-                <Link href="/docs/apis/fields">
+                <Link href="/docs/fields/overview">
                   <a>Fields API →</a>
                 </Link>
               </Type>

@@ -19,7 +19,7 @@ You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://
 ## Features
 
 This project demonstrates how to extend the GraphQL API provided by Keystone with custom queries and mutations.
-Schema extensions are set using the [`extendGraphqlSchema`](https://keystonejs.com/docs/apis/config#extend-graphql-schema) config option.
+Schema extensions are set using the [`extendGraphqlSchema`](https://keystonejs.com/docs/config/config#extend-graphql-schema) config option.
 
 The `graphql.extend` function allows you to extend the existing query and mutation types and define new types or use existing types in your extension.
 

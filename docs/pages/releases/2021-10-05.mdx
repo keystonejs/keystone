@@ -37,12 +37,12 @@ The main things to keep in mind are:
 - `defaultValue` config is now static, if you have dynamic defaults, use the `resolveInput` hook
 - `isRequired` for fields is now `validation: { isRequired }` and we have new validation options such as `min` and `max` for some fields
 - We've made it clearer which fields are nullable in the database and tweaked the defaults, you now have more control but may need to migrate your database (more details below)
-- The `hooks` API has new arguments, and we’ve consolidated update and delete events into `beforeOperation` and `afterOperation`
+- The `hooks` API has new arguments, and we've consolidated update and delete events into `beforeOperation` and `afterOperation`
 - `context.lists` has been renamed to `context.query`
 
 ## Fields Overhaul <Emoji symbol="🚀" alt="Rocket" />
 
-Keystone’s field types have been given a big overhaul - including several breaking changes, read on to understand what has changed.
+Keystone's field types have been given a big overhaul - including several breaking changes, read on to understand what has changed.
 
 ?> Some of these API changes are **breaking** and you will be required to update your project.
 
@@ -266,7 +266,7 @@ Additionaly, we've renamed:
 
 - `updatedItem` for `afterOperation` to `item`
 
-See the [Hooks API docs](https://keystonejs.com/docs/apis/hooks) for a complete reference for the updated API!
+See the [Hooks API docs](https://keystonejs.com/docs/config/hooks) for a complete reference for the updated API!
 
 ## Removals <Emoji symbol="🚫" alt="Removals" />
 
@@ -376,7 +376,7 @@ Apollo Server has had a major upgrade to [Version 3](https://www.apollographql.c
 
 The Apollo documentation contains a full list of breaking changes introduced by this update.
 
-You can configure the Apollo Server provided by Keystone using the [`graphql.apolloConfig`](https://keystonejs.com/docs/apis/config#graphql) configuration option.
+You can configure the Apollo Server provided by Keystone using the [`graphql.apolloConfig`](https://keystonejs.com/docs/config/config#graphql) configuration option.
 
 The most prominent change for most users will be that the **GraphQL Playground** has been replaced by the **Apollo Sandbox**.
 

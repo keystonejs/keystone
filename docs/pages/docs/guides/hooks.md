@@ -7,11 +7,11 @@ Keystone provides a powerful CRUD GraphQL API which lets you perform basic opera
 As your system evolves you'll find that you need to include business logic alongside these operations.
 
 In this guide we'll show you how to use `hooks` to enhance the core operations in different ways.
-For full details of the function signatures, please check out the [Hooks API](../apis/hooks).
+For full details of the function signatures, please check out the [Hooks API](../config/hooks).
 
 ## What is a hook?
 
-A hook is a function you define as part of your [schema configuration](../apis/schema) which is executed when a GraphQL operation is performed.
+A hook is a function you define as part of your [schema configuration](../config/lists) which is executed when a GraphQL operation is performed.
 Let's look at a basic example to log a message to the console whenever a new user is created.
 
 ```typescript
@@ -94,7 +94,7 @@ If you just want to see what the original input was, before the field type resol
 If you're performing an update operation, you might also want to access the current value of the item stored in the database.
 This is available as the `item` argument.
 
-Finally, all hooks are provided with a `context` argument, which gives you access to the full [context API](../apis/context).
+Finally, all hooks are provided with a `context` argument, which gives you access to the full [context API](../context/overview).
 
 ## Validating inputs
 
@@ -139,7 +139,7 @@ Keystone will abort the operation and convert these error messages into GraphQL 
 The `validateInput` hook also receives the `operation`, `inputData`, `item` and `context` arguments if you want to perform more advanced checks.
 
 {% hint kind="warn" %}
-Don't confuse data **validation** with **access control**. If you want to check whether a user is **allowed** to do something, you should set up [access control rules](./access-control).
+Don't confuse data **validation** with **access control**. If you want to check whether a user is **allowed** to do something, you should set up [access control rules](../config/access-control).
 {% /hint %}
 
 ## Triggering side-effects
@@ -218,12 +218,12 @@ export default config({
 });
 ```
 
-See the [Hooks API](../apis/hooks) for the details of all the arguments available for all the different hook functions.
+See the [Hooks API](../config/hooks) for the details of all the arguments available for all the different hook functions.
 
 ## Related resources
 
 {% related-content %}
-{% well  heading="Hooks API Reference" href="/docs/apis/hooks" %}
+{% well  heading="Hooks API Reference" href="/docs/config/hooks" %}
 The complete reference for executing code at different stages of the mutation lifecycle
 {% /well %}
 {% /related-content %}

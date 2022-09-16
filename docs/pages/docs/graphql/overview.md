@@ -1,13 +1,13 @@
 ---
-title: "GraphQL API"
+title: "GraphQL Overview"
 description: "Reference docs for Keystone’s CRUD (create, read, update, delete) GraphQL API. Based on the schema definitions outlined in your system config."
 ---
 
 {% hint kind="warn" %}
-We recently improved this API so it’s easier to program and reason about. If you were using it prior to August 17th 2021, [read this guide](/updates/new-graphql-api) for info on how to upgrade.
+We recently improved this API so it's easier to program and reason about. If you were using it prior to August 17th 2021, [read this guide](/updates/new-graphql-api) for info on how to upgrade.
 {% /hint %}
 
-Keystone generates a CRUD (create, read, update, delete) GraphQL API based on the [schema](./schema) definition provided in the system [config](./config).
+Keystone generates a CRUD (create, read, update, delete) GraphQL API based on the [schema](../config/lists) definition provided in the system [config](../config/config).
 
 ## Using the API
 
@@ -26,7 +26,7 @@ const client = new ApolloClient({
 });
 ```
 
-If you don't like the default path you can control where the GraphQL API and playground are published by setting `config.graphql.path` in the [Keystone configuration](https://keystonejs.com/docs/apis/config#graphql).
+If you don't like the default path you can control where the GraphQL API and playground are published by setting `config.graphql.path` in the [Keystone configuration](https://keystonejs.com/docs/config/config#graphql).
 For security through obscurity, the playground and [introspection](https://graphql.org/learn/introspection/) is disabled when running Keystone with `NODE_ENV=production`.
 
 You can modify this behaviour using the `config.graphql.playground` and `config.graphql.apolloConfig` options.
@@ -447,10 +447,10 @@ These error codes and messages can be used to provide useful feedback to users, 
 The following error codes can be returned from the Keystone GraphQL API.
 
 - `KS_USER_INPUT_ERROR`: The input to the operation is syntactically correct GraphQL, but the values provided are invalid. E.g, an `orderBy` input without any keys.
-- `KS_ACCESS_DENIED`: The operation is not allowed because either an [Access Control](./access-control) rule prevents it, or the item does not exist.
-- `KS_FILTER_DENIED`: The filter or ordering operation is not allowed because of [`isFilterable` or `isOrderable`](fields#common-configuration) rules.
+- `KS_ACCESS_DENIED`: The operation is not allowed because either an [Access Control](../config/access-control) rule prevents it, or the item does not exist.
+- `KS_FILTER_DENIED`: The filter or ordering operation is not allowed because of [`isFilterable` or `isOrderable`](../fields/overview#common-configuration) rules.
 - `KS_VALIDATION_FAILURE`: The operation is not allowed because of a [validation](../guides/hooks#validating-inputs) rule.
-- `KS_LIMITS_EXCEEDED`: The user has exceeded their [query limits](./schema#graphql).
+- `KS_LIMITS_EXCEEDED`: The user has exceeded their [query limits](../config/lists#graphql).
 - `KS_EXTENSION_ERROR`: An error was thrown while excuting a system extension function, such as a hook or an access control function.
 - `KS_ACCESS_RETURN_ERROR`: An invalid value was returned from an access control function.
 - `KS_RESOLVER_ERROR`: An error occured while resolving the input for a field.
@@ -464,12 +464,12 @@ The following error codes can be returned from the Keystone GraphQL API.
 {% related-content %}
 {% well
 heading="Lists API Reference"
-href="/docs/apis/schema" %}
+href="/docs/config/lists" %}
 The API to configure your options used with the `list()` function.
 {% /well %}
 {% well
 heading="Config API Reference"
-href="/docs/apis/config" %}
+href="/docs/config/config" %}
 The API to configure all the parts parts of your Keystone system.
 {% /well %}
 {% /related-content %}

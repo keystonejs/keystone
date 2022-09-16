@@ -5,10 +5,10 @@ description: "Learn how to use Keystone's built-in Authentication and Access Con
 
 Keystone comes with several features that work together to control access to the Admin UI and GraphQL API:
 
-- **Session Management** – a set of APIs for starting and ending user sessions, as well as initialising the session data for each request ([docs](../apis/session))
-- **The `auth` package** – an opinionated implementation of authentication features for Keystone apps ([docs](../apis/auth))
-- **Access Control** – a powerful framework for restricting access to specific lists, operations, and fields ([docs](../apis/access-control))
-- **Dynamic UI Config and Field Modes** – options for the Admin UI that work similarly to Access Control, and let you dyamically configure the Admin UI based on user permissions ([docs](../apis/schema#ui))
+- **Session Management** – a set of APIs for starting and ending user sessions, as well as initialising the session data for each request ([docs](../config/session))
+- **The `auth` package** – an opinionated implementation of authentication features for Keystone apps ([docs](../config/auth))
+- **Access Control** – a powerful framework for restricting access to specific lists, operations, and fields ([docs](../config/access-control))
+- **Dynamic UI Config and Field Modes** – options for the Admin UI that work similarly to Access Control, and let you dyamically configure the Admin UI based on user permissions ([docs](../config/lists#ui))
 
 Session Management and Auth are extremely flexible in Keystone, and it's possible to replace the default implementations we provide with your own (or integrate an entirely separate auth system), but in this guide we'll focus on how all these features are designed to work together.
 
@@ -38,7 +38,7 @@ const Person = list({
 ```
 
 {% hint kind="tip" %}
-Read more about creating lists in the [schema](../apis/schema) and [fields](../apis/schema) API Docs.
+Read more about creating lists in the [schema](../config/lists) and [fields](../fields/overview) API Docs.
 {% /hint %}
 
 ### Configure authentication
@@ -58,7 +58,7 @@ const { withAuth } = createAuth({
 The `createAuth` function returns another function called `withAuth` that will automatically extend Keystone's config to set up everything we need. Behind the scenes, the `auth` package is just using lower-level Keystone APIs to do everything, which means if you want to do something differently, you can fork our implementation of `auth` and build your own (this is true for session management as well)
 
 {% hint kind="tip" %}
-Read more about `createAuth` in the [Auth API Docs](../apis/auth).
+Read more about `createAuth` in the [Auth API Docs](../config/auth).
 {% /hint %}
 
 ### Configure sessions
@@ -74,7 +74,7 @@ const session = statelessSessions({
 Keystone also comes with a Redis session adapter, which uses a cookie to store a session ID that is looked up in a Redis database; or you can use your own session adapter (for example, if you are using OAuth sessions).
 
 {% hint kind="tip" %}
-Read more about [Session Stores in the Session API Docs](../apis/session#session-stores).
+Read more about [Session Stores in the Session API Docs](../config/session#session-stores).
 {% /hint %}
 
 ### Putting it all together
@@ -484,7 +484,7 @@ You can provide field-level rules for:
 If you want to completely block users from setting a field's value, make sure you set both the `create` and `update` rules.
 {% /hint %}
 
-For more information about the arguments provided to field rules, see the [Access Control API Docs](../apis/access-control#field-access-control)
+For more information about the arguments provided to field rules, see the [Access Control API Docs](../config/access-control#field-access-control)
 
 ### People Example
 
@@ -558,12 +558,12 @@ const Person = list({
 {% related-content %}
 {% well
 heading="Authentication"
-href="../apis/auth" %}
+href="../config/auth" %}
 Documentation for the Auth Package API
 {% /well %}
 {% well
 heading="Access Control"
-href="../apis/access-control" %}
+href="../config/access-control" %}
 Documentation for the Access Control API
 {% /well %}
 {% /related-content %}

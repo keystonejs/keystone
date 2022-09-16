@@ -3,11 +3,11 @@ title: "Images and Files"
 description: "Learn how to add Images and Files to your project using Keystone’s Storage configuration"
 ---
 
-Keystone [fields](../apis/fields) include the `image` and `file` types. You can use them to reference and (if required) serve images and/or files from Keystone. This guide will show you how to configure images and files in your Keystone system so you can store assets either locally or [Amazon S3 storage](https://aws.amazon.com/s3/).
+Keystone [fields](../fields/overview) include the `image` and `file` types. You can use them to reference and (if required) serve images and/or files from Keystone. This guide will show you how to configure images and files in your Keystone system so you can store assets either locally or [Amazon S3 storage](https://aws.amazon.com/s3/).
 
 ## How asset storage works in Keystone
 
-Keystone manages file and image assets through a `storage` object you define in Keystone’s [configuration file](/docs/apis/config). Any number of stores can be set up within the `storage` object, and you can mix and match between `local` and `s3` (by [Amazon](https://aws.amazon.com/s3/)) depending on your use case.
+Keystone manages file and image assets through a `storage` object you define in Keystone’s [configuration file](/docs/config/config). Any number of stores can be set up within the `storage` object, and you can mix and match between `local` and `s3` (by [Amazon](https://aws.amazon.com/s3/)) depending on your use case.
 
 The `storage` object defines how and where the assets are stored and accessed by both Keystone and the client frontend. This object defines:
 
@@ -48,7 +48,7 @@ dotenv.config();
 
 We can then add an `s3` `storage` object, the object below is called `my_s3_files` and this is the name that we will use in our `field` config later. This can be called any name that makes sense to your use case.
 
-In the [config](../apis/config) object in your `keystone.ts` file...
+In the [config](../config/config) object in your `keystone.ts` file...
 
 ```typescript
 /** config */
@@ -191,9 +191,9 @@ You can define as many stores as required for your use case
 
 ## Using Images and Files in Lists
 
-Once you have your `storage` configuration in Keystone you can then use the `image` and `file` [field types](../apis/fields).
+Once you have your `storage` configuration in Keystone you can then use the `image` and `file` [field types](../fields/overview).
 
-Within an existing [list](../apis/schema) use the `image` of `file` field as follows:
+Within an existing [list](../config/lists) use the `image` of `file` field as follows:
 
 ```typescript
 lists: {
@@ -255,19 +255,19 @@ This means that for images the extension can be trusted, but for files, it can n
 ## Related Resources
 
 {% related-content %}
-{% well  heading="Config API Reference" href="/docs/apis/config" %}
+{% well  heading="Config API Reference" href="/docs/config/config" %}
 The complete reference for the base keystone configuration
 {% /well %}
-{% well  heading="Fields API Reference" href="/docs/apis/fields" %}
+{% well  heading="Fields API Reference" href="/docs/fields/overview" %}
 The complete reference for Field configuration
 {% /well %}
-{% well  heading="Relationship Guide" href="/docs/apis/fields" %}
+{% well  heading="Relationship Guide" href="/docs/fields/relationship" %}
 Learn how to reason about and configure relationships in Keystone so you can bring value to your project through structured content.
 {% /well %}
-{% well  heading="Example Project: S3 Assets" href="https://github.com/keystonejs/keystone/tree/main/examples/assets-s3" %}
+{% well  heading="Example Project: S3 Assets" href="<https://github.com/keystonejs/keystone/tree/main/examples/assets-s3>" %}
 A full keystone project illustrating how to configure `storage` using `kind: 's3'` and then uses both an `image` and `file` field types within a list.
 {% /well %}
-{% well  heading="Example Project: Local Assets" href="https://github.com/keystonejs/keystone/tree/main/examples/assets-local" %}
+{% well  heading="Example Project: Local Assets" href="<https://github.com/keystonejs/keystone/tree/main/examples/assets-local>" %}
 A full keystone project illustrating how to configure `storage` using `kind: 'local'` and then uses both an `image` and `file` field types within a list.
 {% /well %}
 {% /related-content %}

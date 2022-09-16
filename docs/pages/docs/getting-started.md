@@ -3,10 +3,10 @@ title: "Getting started"
 description: "Learn how to get your first Keystone project up and running using the `create-keystone-app` Command Line Interface."
 ---
 
-![A terminal with the output of create-keystone-app](/assets/walkthroughs/getting-started/cover.svg)
+![A terminal with the output of create-keystone-app](/assets/getting-started/cover.svg)
 
 [`create-keystone-app`](https://github.com/keystonejs/create-keystone-app) is a CLI app that makes it easier for you initiate a Keystone project.
-It generates some files for you and installs all the dependencies you need to run the Admin UI and start using the [GraphQL API](/docs/apis/graphql).
+It generates some files for you and installs all the dependencies you need to run the Admin UI and start using the [GraphQL API](/docs/graphql/overview).
 
 ## Quick Start
 
@@ -61,7 +61,7 @@ npx create-keystone-app
 The CLI will ask you to name your app. Once named, it will create a new SQLite database.
 
 {% hint kind="warn" %}
-You can switch to another database such as PostgreSQL once your project is created, check out the docs on [Database Setup](https://keystonejs.com/docs/apis/config#db).
+You can switch to another database such as PostgreSQL once your project is created, check out the docs on [Database Setup](https://keystonejs.com/docs/config/config#db).
 {% /hint %}
 
 ## Opening your shiny new Admin UI
@@ -73,18 +73,18 @@ cd my-app
 yarn dev
 ```
 
-This will generate the Admin UI pages via [Next.js](https://nextjs.org/) on [http://localhost:3000](http://localhost:3000). When you visit the Admin UI for the first time you will be presented with a handy screen that asks you to create a user:
+This will generate the Admin UI pages via [Next.js](https://nextjs.org/) on <http://localhost:3000>. When you visit the Admin UI for the first time you will be presented with a handy screen that asks you to create a user:
 
-![The welcome screen giving you the ability the create a new user to log into the AdminUI](/assets/walkthroughs/getting-started/welcome-screen.png)
+![The welcome screen giving you the ability the create a new user to log into the AdminUI](/assets/getting-started/welcome-screen.png)
 
-Go ahead and create your first user. The email address and password will be used to login to Keystone’s Admin UI. Once you've created your user, you’ll be logged in to a new Keystone Admin UI that comes with two [lists](/docs/apis/config#lists).
-From here you can explore and interact with the data in your system, and understand how Keystone’s schema relates to your GraphQL API which you can explore at [http://localhost:3000/api/graphql](http://localhost:3000/api/graphql).
+Go ahead and create your first user. The email address and password will be used to login to Keystone’s Admin UI. Once you've created your user, you’ll be logged in to a new Keystone Admin UI that comes with two [lists](/docs/config/config#lists).
+From here you can explore and interact with the data in your system, and understand how Keystone’s schema relates to your GraphQL API which you can explore at <http://localhost:3000/api/graphql>.
 
-![The AdminUI of Keystone showing the two lists: User and Posts](/assets/walkthroughs/getting-started/adminui.png)
+![The AdminUI of Keystone showing the two lists: User and Posts](/assets/getting-started/adminui.png)
 
 ## Output
 
-Keytone creates the following files in your newly generated folder. The most important ones are [`keystone.ts`](/docs/apis/config) and [`schema.ts`](/docs/apis/Schema).
+Keytone creates the following files in your newly generated folder. The most important ones are [`keystone.ts`](/docs/config/config) and [`schema.ts`](/docs/config/lists).
 
 ```sh
 .
@@ -104,20 +104,20 @@ Keytone creates the following files in your newly generated folder. The most imp
 
 `package.json` includes the following npm scripts you can run locally:
 
-- [`dev`](/docs/guides/cli#dev) runs Keystone in **development** mode at [http://localhost:3000](http://localhost:3000).
+- [`dev`](/docs/guides/cli#dev) runs Keystone in **development** mode at <http://localhost:3000>.
 - [`start`](/docs/guides/cli#start) runs Keystone in **production** mode.
 - [`build`](/docs/guides/cli#build) will build the project and is required to be run before `start`.
 - [`postinstall`](/docs/guides/cli#postinstall) ensures files that Keystone generates exist and are kept up to date.
 
 {% hint kind="tip" %}
-Read more about the CLI in our [command line guides](/guides/cli).
+Read more about the CLI in our [command line guides](/docs/guides/cli).
 {% /hint %}
 
 ## Where to next?
 
-- Customise Keystone with the [System Configuration API](/apis/config).
-- Add fields and relationships using [Lists API](/apis/schema).
-- Use a different database with the [Config API](/docs/apis/config#db).
+- Customise Keystone with the [System Configuration API](./config/config).
+- Add fields and relationships using [Lists API](/docs/config/lists).
+- Use a different database with the [Config API](/docs/config/config#db).
 
 ## Related resources
 
@@ -129,17 +129,17 @@ Keystone’s CLI helps you develop, build, and deploy projects. This guide expla
 {% /well %}
 {% well
 heading="Lists API Reference"
-href="/docs/apis/schema" %}
+href="/docs/config/lists" %}
 The API to configure your options used with the `list()` function.
 {% /well %}
 {% well
 heading="Config API Reference"
-href="/docs/apis/config" %}
+href="/docs/config/config" %}
 The API to configure all the parts parts of your Keystone system.
 {% /well %}
 {% well
 heading="DB API Reference"
-href="/docs/apis/config#db" %}
+href="/docs/config/config#db" %}
 Configure Keystone to use another database to store data in your system.
 {% /well %}
 {% /related-content %}

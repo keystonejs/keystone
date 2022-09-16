@@ -1,5 +1,5 @@
 ---
-title: "Query Filter API"
+title: "Query Filters"
 description: "A reference list of every filters available for every Keystone field type. Keystone filters are typically named after the field they are filtering."
 ---
 
@@ -7,7 +7,7 @@ description: "A reference list of every filters available for every Keystone fie
 We recently improved this API so it’s easier to program and reason about. If you were using it prior to August 17th 2021, [read this guide](/updates/new-graphql-api) for info on how to upgrade.
 {% /hint %}
 
-Each field type provides its own set of filters which can be used with [queries](./graphql#all-users).
+Each field type provides its own set of filters which can be used with [queries](./overview#users).
 This page lists all the filters available for each field type.
 For more details on how to use filters in queries please consult to the [GraphQL Queries - Filters](../guides/filters) guide.
 
@@ -74,29 +74,29 @@ The `json` field type does not support filters.
 - If the `type` is `string`(the default), the same filters as `text` will be available.
 - If the `type` is `integer`, the same filters as `integer` will be available.
 - If the `type` is `enum`, the following filters will be available:
-  | **Filter name** | **Type** | **Description** |
-  | --------------- | ---------- | ------------------- |
-  | `equals` | `ListKeyFieldKeyType` | Equals |
-  | `in` | `[ListKeyFieldKeyType!]` | Is in the array |
-  | `notIn` | `[ListKeyFieldKeyType!]` | Is not in the array |
-  | `not` | `ListKeyFieldKeyTypeNullableFilter` | Does not match the inner filter |
+  \| **Filter name** \| **Type** \| **Description** \|
+  \| --------------- \| ---------- \| ------------------- \|
+  \| `equals` \| `ListKeyFieldKeyType` | Equals |
+  \| `in` \| `[ListKeyFieldKeyType!]` | Is in the array |
+  \| `notIn` \| `[ListKeyFieldKeyType!]` | Is not in the array |
+  \| `not` \| `ListKeyFieldKeyTypeNullableFilter` | Does not match the inner filter |
 
 ### text
 
 | **Filter name** | **Type**                                 | **Description**                                       | **Notes** |
 | --------------- | ---------------------------------------- | ----------------------------------------------------- | --------- |
-| `equals`        | `String`                                 | Equals                                                |
-| `lt`            | `String`                                 | Less than                                             |
-| `lte`           | `String`                                 | Less than or equal                                    |
-| `gt`            | `String`                                 | Greater than                                          |
-| `gte`           | `String`                                 | Greater than or equal                                 |
+| `equals`        | `String`                                 | Equals                                                |           |
+| `lt`            | `String`                                 | Less than                                             |           |
+| `lte`           | `String`                                 | Less than or equal                                    |           |
+| `gt`            | `String`                                 | Greater than                                          |           |
+| `gte`           | `String`                                 | Greater than or equal                                 |           |
 | `contains`      | `String`                                 | Contains                                              | [1]       |
 | `startsWith`    | `String`                                 | Starts with                                           | [1]       |
 | `endsWith`      | `String`                                 | Ends with                                             | [1]       |
-| `in`            | `[String!]`                              | Is in the array                                       |
-| `notIn`         | `[String!]`                              | Is not in the array                                   |
+| `in`            | `[String!]`                              | Is in the array                                       |           |
+| `notIn`         | `[String!]`                              | Is not in the array                                   |           |
 | `mode`          | `QueryMode` (`default` or `insensitive`) | Whether the filters should be case insensitive or not | [2]       |
-| `not`           | `NestedStringNullableFilter`             | Does not match the inner filter                       |
+| `not`           | `NestedStringNullableFilter`             | Does not match the inner filter                       |           |
 
 #### Notes
 

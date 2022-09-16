@@ -44,7 +44,7 @@ Access Control is now easier to program, and makes it harder to introduce securi
 ### How to upgrade
 
 1. Follow the instructions in our [Access Control upgrade guide](https://keystonejs.com/updates/new-access-control).
-2. Review our updated [Access Control API](https://keystonejs.com/docs/apis/access-control) docs.
+2. Review our updated [Access Control API](https://keystonejs.com/docs/config/access-control) docs.
 
 !> If you have any questions, please don't hesitate to open a [GitHub discussion](https://github.com/keystonejs/keystone/discussions/new?category=questions).
 
@@ -86,7 +86,7 @@ A long awaited feature, the Express App that Keystone creates is now customisabl
 - Host two apps on separate ports
 - And more...
 
-Check out the [Server Config docs](https://keystonejs.com/docs/apis/config#server) for more information.
+Check out the [Server Config docs](https://keystonejs.com/docs/config/config#server) for more information.
 
 ## Package Shuffle <Emoji symbol="💃" alt="dancer" />
 
@@ -124,7 +124,7 @@ import {
 
 Unique fields marked as `isUnique: true` are now represented as `isIndexed: 'unique'`. This ensures that regular indexes and unique indexes aren't enabled at the same time.
 
-`isIndexed` accepts the following options as per the [Fields API docs](https://keystonejs.com/docs/apis/fields) -
+`isIndexed` accepts the following options as per the [Fields API docs](https://keystonejs.com/docs/fields/overview) -
 
 - If `true` then the field will be indexed by the database.
 - If `'unique'` then all values of the field must be unique.
@@ -141,15 +141,15 @@ If you've using Virtual fields or custom field types, or if constructing GraphQL
 
 Filtering and ordering is no longer enabled by default, as they have the potential to expose data which would otherwise be protected by access control. To enable filtering and ordering you can set `isFilterable: true` and `isOrderable: true` on specific fields, or set `defaultIsFilterable: true` and `defaultIsOrderable: true` at the list level.
 
-Check out our [Fields API docs](https://keystonejs.com/docs/apis/fields#common-configuration) for all field level options.
+Check out our [Fields API docs](https://keystonejs.com/docs/fields/overview#common-configuration) for all field level options.
 
 ## Introspection <Emoji symbol="🔎" alt="magnifying glass" />
 
-You can now enable `introspection` in the Apollo Server config. Introspection enables you to query a GraphQL server for information about the underlying schema. Check out the [GraphQL Config docs](https://keystonejs.com/docs/apis/config#graphql) for more information.
+You can now enable `introspection` in the Apollo Server config. Introspection enables you to query a GraphQL server for information about the underlying schema. Check out the [GraphQL Config docs](https://keystonejs.com/docs/config/config#graphql) for more information.
 
 ## GraphQL Path Customisation <Emoji symbol="🚏" alt="signpost" />
 
-The GraphQL endpoint accessible by default at `/api/graphql` can now be customised with the new option `config.graphql.path`. You can find this and all other options in our [GraphQL API docs](https://keystonejs.com/docs/apis/config#graphql).
+The GraphQL endpoint accessible by default at `/api/graphql` can now be customised with the new option `config.graphql.path`. You can find this and all other options in our [GraphQL API docs](https://keystonejs.com/docs/config/config#graphql).
 
 ## Admin UI Improvements <Emoji symbol="🛠️" alt="tools" />
 

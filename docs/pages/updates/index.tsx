@@ -188,7 +188,7 @@ export default function WhatsNew() {
           />
         </Box>
         <Timeline date="30th June 2022" />
-        <Box heading="MySQL support" link="/docs/apis/config#mysql">
+        <Box heading="MySQL support" link="/docs/config/config#mysql">
           We’ve added support for MySQL to Keystone's list of DB providers, bringing the total
           number of supported DB types to three.
         </Box>
@@ -424,8 +424,8 @@ export default function WhatsNew() {
               </clipPath>
             </defs>
           </svg>
-          Keystone 6 is now in General Availability! Today’s Keystone is faster and more flexible
-          than it’s ever been, and is ready for you to build amazing things with{' '}
+          Keystone 6 is now in General Availability! Today's Keystone is faster and more flexible
+          than it's ever been, and is ready for you to build amazing things with{' '}
           <Emoji symbol="🚀" alt="Rocket" />{' '}
           <a href="/updates/general-availability">Read the full story here</a>.
         </Box>
@@ -571,7 +571,7 @@ export default function WhatsNew() {
         <Box heading="create-keystone-app now uses SQLite">
           Our CLI app now uses <InlineCode>SQLite</InlineCode> under the hood so you don’t have to
           spend time on DB config when trying out new ideas. We also updated the{' '}
-          <Link href="/docs/walkthroughs/getting-started-with-create-keystone-app">
+          <Link href="/docs/getting-started">
             <a>getting started walkthrough</a>
           </Link>{' '}
           to reflect this improvement.
@@ -650,7 +650,7 @@ export default function WhatsNew() {
         <Timeline date="6th September 2021" />
         <Box heading="Customisable Express App">
           A long awaited feature, the Express App that Keystone creates is now{' '}
-          <Link href="/docs/apis/config#server">
+          <Link href="/docs/config/config#server">
             <a>customisable</a>
           </Link>{' '}
           with the new <InlineCode>extendExpressApp</InlineCode> option:
@@ -665,7 +665,7 @@ export default function WhatsNew() {
           The GraphQL endpoint accessible by default at `/api/graphql` can now be customised with
           the new option <InlineCode>config.graphql.path</InlineCode>. You can find this and all
           other options in our{' '}
-          <Link href="/docs/apis/config#graphql">
+          <Link href="/docs/config/config#graphql">
             <a>GraphQL API docs</a>
           </Link>
           .
@@ -718,7 +718,7 @@ export default function WhatsNew() {
           your organisation.
         </Box>
         <Timeline date="29th July 2021" />
-        <Box link="/docs/apis/config#health-check" heading="New Health Check endpoint">
+        <Box link="/docs/config/config#health-check" heading="New Health Check endpoint">
           We've added an optional <InlineCode>/_healthcheck</InlineCode> endpoint to Keystone's
           express server. Use it to ensure your Keystone instance is up and running with website
           monitoring solutions.
@@ -762,14 +762,14 @@ export default function WhatsNew() {
           <ul>
             <li>
               Public{' '}
-              <Link href="/docs/apis/auth">
+              <Link href="/docs/config/auth">
                 <a>auth</a>
               </Link>{' '}
               and signup
             </li>
             <li>
               Role-based{' '}
-              <Link href="/docs/apis/access-control">
+              <Link href="/docs/config/access-control">
                 <a>access control</a>
               </Link>
             </li>
@@ -902,13 +902,13 @@ export default function WhatsNew() {
           A long awaited feature: you can now find an item by unique fields in your schema. It works
           for{' '}
           <InlineCode>
-            <Link href="/docs/apis/fields#text">
+            <Link href="/docs/fields/text">
               <a>text</a>
             </Link>
           </InlineCode>{' '}
           and{' '}
           <InlineCode>
-            <Link href="/docs/apis/fields#integer">
+            <Link href="/docs/fields/integer">
               <a>integer</a>
             </Link>
           </InlineCode>{' '}
@@ -954,16 +954,6 @@ export default function WhatsNew() {
           you can run locally to learn more about a particular feature of Keystone. Each project
           comes with explainers on the how and why. Use them as a reference for best practice, and
           as a jumping off point when adding features to your own Keystone project.
-        </Box>
-        <Timeline date="22nd May 2021" />
-        <Box heading="SQLite support with Prisma">
-          You can now use SQLite to store data via Prisma. It includes support for the{' '}
-          <InlineCode>file</InlineCode> and <InlineCode>cloudinary</InlineCode> field types, and
-          lets you{' '}
-          <Link href="/docs/walkthroughs/embedded-mode-with-sqlite-nextjs">
-            <a>embed Keystone inside a Next.js frontend app</a>
-          </Link>
-          .
         </Box>
         <Timeline date="6th April 2021" />
         <Box link="/releases/2021-04-06" heading="Controlled code demolition">

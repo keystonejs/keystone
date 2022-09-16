@@ -1,5 +1,5 @@
 ---
-title: "Query API"
+title: "Query"
 description: "Reference docs for Keystone‘s Query API: a programmatic API for running CRUD operations against your GraphQL API."
 ---
 
@@ -150,12 +150,12 @@ const users = await context.query.User.deleteMany({
 {% related-content %}
 {% well
 heading="Context API Reference"
-href="/docs/apis/context" %}
+href="/docs/context/overview" %}
 The API for run-time functionality in your Keystone system. Use it to write business logic for access control, hooks, testing, GraphQL schema extensions, and more.
 {% /well %}
 {% well
 heading="DB API Reference"
-href="/docs/apis/db-items" %}
+href="/docs/context/db-items" %}
 The API for running CRUD operations against the internal GraphQL resolvers in your system. It returns internal item objects, which can be returned from GraphQL resolvers.
 {% /well %}
 {% /related-content %}

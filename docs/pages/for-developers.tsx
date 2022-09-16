@@ -164,12 +164,12 @@ export default function ForDevelopers() {
               The APIs you want. <Highlight look="grad3">Because you made them.</Highlight>
             </Type>
             <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
-              You can’t boilerplate your way towards a great user experience. That’s why Keystone
-              doesn’t limit what you can put in an API. It’s flexible by design: tell Keystone what
+              You can't boilerplate your way towards a great user experience. That’s why Keystone
+              doesn't limit what you can put in an API. It’s flexible by design: tell Keystone what
               you want in your schema and get the matching APIs you need in return.
             </Type>
             <Type as="p" look="body18">
-              <Link href="/docs/apis/schema">
+              <Link href="/docs/config/lists">
                 <a>Lists API reference →</a>
               </Link>
             </Type>
@@ -301,7 +301,7 @@ export default function ForDevelopers() {
                 roles you can configure.
               </Type>
               <Type as="p" look="body18">
-                <Link href="/docs/apis/access-control">
+                <Link href="/docs/config/access-control">
                   <a>Access control API →</a>
                 </Link>
               </Type>
@@ -371,11 +371,7 @@ export default function ForDevelopers() {
               </Button>
             </li>
             <li>
-              <Button
-                as="a"
-                href="/docs/walkthroughs/getting-started-with-create-keystone-app"
-                look="soft"
-              >
+              <Button as="a" href="/docs/getting-started" look="soft">
                 Getting started <ArrowR />
               </Button>
             </li>

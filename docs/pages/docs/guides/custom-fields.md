@@ -3,7 +3,7 @@ title: "Custom Fields"
 description: "Learn how to expand Keystone with your own custom fields. Guidance on backend setup, and frontend implementation in Keystone‘s Admin UI."
 ---
 
-Keystone provides a collection of [field types](../apis/fields) which you can use to build your system.
+Keystone provides a collection of [field types](../fields/overview) which you can use to build your system.
 If you need a field type which isn't provided, or you need a specialised version of an existing field type, you can define your own custom field type.
 
 There are two parts to a field type:

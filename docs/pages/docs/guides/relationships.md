@@ -23,7 +23,7 @@ These topics are easier to understand by example. We’ll explore them, as well 
 
 ## How to define a relationship in Keystone
 
-Relationships are made using the [`relationship`](../apis/fields#relationship) field type within a [`list()`](../apis/schema). In our blog example we can connect a blog `post` to some `users` using the relationship field’s `ref` configuration option like so:
+Relationships are made using the [`relationship`](../fields/relationship) field type within a [`list()`](../config/lists). In our blog example we can connect a blog `post` to some `users` using the relationship field’s `ref` configuration option like so:
 
 ```typescript{11}
 import { config, list } from '@keystone-6/core';
@@ -71,7 +71,7 @@ query {
 
 If we can find all the `authors` of a post, we can also find all the posts written by a particular user. To do this we need to configure a two-sided relationship in our schema:
 
-```typescript{9-10,17-18}[1-3]
+```typescript{9-10,17-18}\[1-3]
 import { config, list } from '@keystone-6/core';
 import { text, relationship } from '@keystone-6/core/fields';
 
@@ -128,7 +128,7 @@ Two-sided relationships are declared in two places, but **there is only one rela
 
 Keystone also lets you define one, and two-sided **relationships that refer to the same list**. To make a _one-sided_ Twitter style following relationship we do the following:
 
-```typescript{9}[1-3]
+```typescript{9}\[1-3]
 import { config, list } from '@keystone-6/core';
 import { text, relationship } from '@keystone-6/core/fields';
 
@@ -146,7 +146,7 @@ export default config({
 
 Or change this into a _two-sided_ relationship to also access the followers of every user:
 
-```typescript{9-10}[1-3]
+```typescript{9-10}\[1-3]
 import { config, list } from '@keystone-6/core';
 import { text, relationship } from '@keystone-6/core/fields';
 
@@ -171,8 +171,8 @@ The only relationship configuration not currently supported is having a field re
 
 _Cardinality_ is a term used to describe how many items can exist on either side of a relationship. Each side can have either `one` or `many` related items. Since each relationship can have one and two sides, we have the following options available:
 
-| Relationship type | One to one                                   | One to many                              | Many to many                             |
-| ----------------- | -------------------------------------------- | ---------------------------------------- | ---------------------------------------- |
+| Relationship type | One to one                                  | One to many                             | Many to many                            |
+| ----------------- | ------------------------------------------- | --------------------------------------- | --------------------------------------- |
 | One-sided         | {% emoji symbol="❌" alt="Not supported" /%} | {% emoji symbol="✅" alt="Supported" /%} | {% emoji symbol="✅" alt="Supported" /%} |
 | Two-sided         | {% emoji symbol="✅" alt="Supported" /%}     | {% emoji symbol="✅" alt="Supported" /%} | {% emoji symbol="✅" alt="Supported" /%} |
 
@@ -195,7 +195,7 @@ Let’s explore how to set up each type of cardinality in the context of our blo
 - Posts have a single author
 - Users can have multiple posts
 
-```typescript{15}[1-3]
+```typescript{15}\[1-3]
 import { config, list } from '@keystone-6/core';
 import { text, relationship } from '@keystone-6/core/fields';
 
@@ -222,7 +222,7 @@ export default config({
 - Posts can have multiple authors
 - Users can have multiple posts
 
-```typescript{15}[1-3]
+```typescript{15}\[1-3]
 import { config, list } from '@keystone-6/core';
 import { text, relationship } from '@keystone-6/core/fields';
 
@@ -255,7 +255,7 @@ In two-sided relationships the `many` option on both sides must be considered.
 - Posts have a single author
 - Users can create only one post
 
-```typescript{9,16}[1-3]
+```typescript{9,16}\[1-3]
 import { config, list } from '@keystone-6/core';
 import { text, relationship } from '@keystone-6/core/fields';
 
@@ -283,7 +283,7 @@ export default config({
 - Posts have a single author
 - Users can have multiple posts
 
-```typescript{9,16}[1-3]
+```typescript{9,16}\[1-3]
 import { config, list } from '@keystone-6/core';
 import { text, relationship } from '@keystone-6/core/fields';
 
@@ -315,7 +315,7 @@ Note that we’ve used `many: false` in the author field and `many: true` in the
 - Posts can have multiple authors
 - Users can have multiple posts
 
-```typescript{9,16}[1-3]
+```typescript{9,16}\[1-3]
 import { config, list } from '@keystone-6/core';
 import { text, relationship } from '@keystone-6/core/fields';
 
@@ -344,14 +344,14 @@ Note that we have used `many: true` in both the authors and posts fields.
 
 ## Summary
 
-Keystone relationships are managed using the [relationship](../apis/fields#relationship) field type. They can be configured as one-sided or two-sided by the `ref` config option. Their cardinality can be set using the `many` flag. Keystone gives you the flexibility to choose what you want based on what you need to achieve.
+Keystone relationships are managed using the [relationship](../fields/relationship) field type. They can be configured as one-sided or two-sided by the `ref` config option. Their cardinality can be set using the `many` flag. Keystone gives you the flexibility to choose what you want based on what you need to achieve.
 
 ## Related resources
 
 {% related-content %}
 {% well
 heading="Relationship Field API Reference"
-href="/docs/apis/fields#relationship" %}
+href="/docs/fields/relationship" %}
 Defines the names, types, and configuration of Keystone fields. See all the fields and the configuration options they accept.
 {% /well %}
 {% /related-content %}

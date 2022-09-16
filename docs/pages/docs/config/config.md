@@ -1,5 +1,5 @@
 ---
-title: "System Configuration API"
+title: "System Configuration"
 description: "API reference for configuring your Keystone system: Lists, Database, Admin UI, Server, Sessions, GraphQl, Files, Images, and experimental options."
 ---
 
@@ -37,7 +37,7 @@ This type definition should be considered the source of truth for the available 
 The `lists` config option is where you define the data model, or schema, of the Keystone system.
 It has a TypeScript type of `ListSchemaConfig`.
 This is where you define and configure the `lists` and their `fields` of the data model.
-See the [Lists API](./schema) docs for details on how to use this function.
+See the [Lists API](./lists) docs for details on how to use this function.
 
 ```typescript
 import type { ListSchemaConfig } from '@keystone-6/core/types';
@@ -62,7 +62,7 @@ These database types are powered by their corresponding Prisma database provider
 
 - `provider`: The database provider to use, it can be one of `postgresql`, `mysql` or `sqlite`.
 - `url`: The connection URL for your database
-- `onConnect`: which takes a [`KeystoneContext`](./context) object, and lets perform any actions you might need at startup, such as data seeding
+- `onConnect`: which takes a [`KeystoneContext`](../context/overview) object, and lets perform any actions you might need at startup, such as data seeding
 - `enableLogging` (default: `false`): Enable logging from the Prisma client.
 - `useMigrations` (default: `false`): Determines whether to use migrations or automatically force-update the database with the latest schema and potentially lose data.
 - `idField` (default: `{ kind: "cuid" }`): The kind of id field to use, it can be one of: `cuid`, `uuid` or `autoincrement`.
@@ -144,13 +144,13 @@ import type { AdminUIConfig } from '@keystone-6/core/types';
 The `ui` config option configures the Admin UI which is provided by Keystone.
 It has a TypeScript type of `AdminUIConfig`.
 This config option is for top level configuration of the Admin UI.
-Fine grained configuration of how lists and fields behave in the Admin UI is handled in the `lists` definition (see the [Lists API](./schema) for more details).
+Fine grained configuration of how lists and fields behave in the Admin UI is handled in the `lists` definition (see the [Lists API](./lists) for more details).
 
 Options:
 
 - `isDisabled` (default: `false`): If `isDisabled` is set to `true` then the Admin UI will be completely disabled.
 - `isAccessAllowed` (default: `(context) => !!context.session`): This function controls whether a user is able to access the Admin UI.
-  It takes a [`KeystoneContext`](./context) object as an argument.
+  It takes a [`KeystoneContext`](../context/overview) object as an argument.
 
 Advanced configuration:
 
@@ -387,7 +387,7 @@ Options:
 - `debug` (default: `process.env.NODE_ENV !== 'production'`): If `true`, stacktraces from both Apollo errors and Keystone errors will be included in the errors returned from the GraphQL API.
   These can be filtered out with `apolloConfig.formatError` if you need to process them, but do not want them returned over the GraphQL API.
 - `queryLimits` (default: `undefined`): Allows you to limit the total number of results returned from a query to your GraphQL API.
-  See also the per-list `graphql.queryLimits` option in the [Lists API](./schema).
+  See also the per-list `graphql.queryLimits` option in the [Lists API](./lists).
 - `path` (default: `'/api/graphql'`): The path of the GraphQL API endpoint.
 - `playground` (default: `process.env.NODE_ENV !== 'production'`)
   - `true` - Add `ApolloServerPluginLandingPageGraphQLPlayground` to the Apollo Server plugins
@@ -438,8 +438,8 @@ See the [schema extension guide](../guides/schema-extension) for more details on
 import type { StorageConfig } from '@keystone-6/core/types'
 ```
 
-The `storage` config option provides configuration which is used by the [`file`](./fields#file) field type or the
-[`image`](./fields#image) field type. You provide an object whose property is a `StorageConfig` object, fields then reference this `storage` by the key.
+The `storage` config option provides configuration which is used by the [`file`](../fields/file) field type or the
+[`image`](../fields/image) field type. You provide an object whose property is a `StorageConfig` object, fields then reference this `storage` by the key.
 Each storage is configured separately using the options below.
 
 A single storage may be used by multiple file or image fields, but only for files or images.
@@ -551,7 +551,7 @@ Options:
 {% related-content %}
 {% well
 heading="Lists API Reference"
-href="/docs/apis/schema" %}
+href="/docs/config/lists" %}
 The API to configure your options used with the `list` function.
 {% /well %}
 {% /related-content %}

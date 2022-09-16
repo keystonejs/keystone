@@ -41,7 +41,7 @@ export default function DocumentFieldDemo() {
           <H1 id="title">{title}</H1>
           <p>
             The{' '}
-            <a href="../apis/fields#document">
+            <a href="../fields/overview#document">
               <InlineCode>document</InlineCode>
             </a>{' '}
             field type is a highly customisable rich text editor that lets content creators quickly

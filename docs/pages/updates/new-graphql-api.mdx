@@ -145,7 +145,7 @@ No filter functionality has been removed or added, however the individual filter
 
 !> See the [Filters Guide](/docs/guides/filters) for a detailed walk through the new filtering syntax.
 
-!> See the [API docs](/docs/apis/filters) for a comprehensive list of all the new filters for each field type.
+!> See the [API docs](/docs/graphql/filters) for a comprehensive list of all the new filters for each field type.
 
 ## Mutations
 
@@ -398,7 +398,7 @@ If you have any questions, please don't hesitate to open a [GitHub discussion](h
 3. Update mutation arguments to match the new input types. Make sure you replace `{ id: "..."}` with `{where: { id: "..."} }` in your `update` and `delete` operations.
 4. Update relationship inputs to `create` and `update` operations. Ensure you've replaced usage of `{ disconnectAll: true }` with `{ set: [] }` in to-many relationships, and have used `{ disconnect: true }` rather than `{ disconnect: { id: "..."} }` in to-one relationships.
 
-!> Finally, make sure you apply corresponding changes to filters and input arguments when using the [Query API](/docs/apis/query).
+!> Finally, make sure you apply corresponding changes to filters and input arguments when using the [Query API](/docs/context/query).
 
 ---
 
