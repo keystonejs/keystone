@@ -55,7 +55,7 @@ While Keystone has very granular permissions controls, which you can read about 
 
 Keystone’s [password](/docs/fields/password) field takes care of hashing the password for storing in the database, as well as UI niceties such as making sure the password is obscured. Let’s add it to our `User` list so they can securely log in to Keystone:
 
-```ts{2,10}\[13-27,29-500]
+```ts{2,10}[13-27,29-500]
 import { list, config } from '@keystone-6/core';
 import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields';
 
@@ -137,7 +137,7 @@ This code says:
 
 Having added an authentication method, we need to add a 'session', so that authentication can be kept between refreshes. Also in the auth file, we want to add:
 
-```ts{3,12-500}\[4-11]
+```ts{3,12-500}[4-11]
 // auth.ts
 import { createAuth } from '@keystone-6/auth';
 import { statelessSessions } from '@keystone-6/core/session';
@@ -168,7 +168,7 @@ Back over in our keystone file, we want to import our `withAuth` function, and o
 
 Finally, we need to add an `isAccessAllowed` function to our export so that only users with a valid session can see Admin UI:
 
-```ts{4,32-33,39-42}\[7-29]
+```ts{4,32-33,39-42}[7-29]
 //keystone.ts
 import { list, config } from '@keystone-6/core';
 import { password, text, timestamp, select, relationship } from '@keystone-6/core/fields';

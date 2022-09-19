@@ -171,7 +171,6 @@ export default config({
 - [Document](./document)
 - [Cloudinary Image](./cloudinaryimage)
 
-
 ## Related resources
 
 {% related-content %}

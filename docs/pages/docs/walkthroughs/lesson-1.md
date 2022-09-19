@@ -103,7 +103,7 @@ Now that we have a database configured, let’s connect some content to it!
 
 We’re going to build a simple blog with **users** and **posts**. Let’s start with the `User` list using [`text`](/docs/fields/text) fields for their `name` and `email`:
 
-```js{2,9-15}\[5-8]
+```js{2,9-15}[5-8]
 import { config, list } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
 

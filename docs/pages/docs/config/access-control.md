@@ -244,7 +244,7 @@ List-level access control functions are passed a collection of arguments which c
 | Argument    | Description                                                                                                   |
 | ----------- | ------------------------------------------------------------------------------------------------------------- |
 | `session`   | The current session object. See the [Sessions API](./session) for details.                                    |
-| `context`   | The [`KeystoneContext`](../context/overview) object of the originating GraphQL operation.                               |
+| `context`   | The [`KeystoneContext`](../context/overview) object of the originating GraphQL operation.                     |
 | `listKey`   | The key of the list being operated on.                                                                        |
 | `operation` | The operation being performed (`'query'`, `'create'`, `'update'`, `'delete'`).                                |
 | `inputData` | For `create` and `update` operations, this is the value of `data` passed into the mutation. (Item level only) |
@@ -308,7 +308,7 @@ Field-level access control functions are passed a collection of arguments which 
 | Argument    | Description                                                                                 |
 | ----------- | ------------------------------------------------------------------------------------------- |
 | `session`   | The current session object. See the [Sessions API](./session) for details.                  |
-| `context`   | The [`KeystoneContext`](../context/overview) object of the originating GraphQL operation.             |
+| `context`   | The [`KeystoneContext`](../context/overview) object of the originating GraphQL operation.   |
 | `listKey`   | The key of the list being operated on.                                                      |
 | `fieldKey`  | The key of the field being operated on.                                                     |
 | `operation` | The operation being performed (`'read'`, `'create'`, `'update'`).                           |

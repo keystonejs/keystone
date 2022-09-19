@@ -55,15 +55,15 @@ For field hooks, the return value should be an updated value for that specific f
 For list hooks, the return value should be a [`resolved data`](#resolved-data-stages) object.
 The result of `resolveInput` will be passed as `resolvedData` into the next stages of the operation.
 
-| Argument       | Description                                                                                                                                                                  |
-| :------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `listKey`      | The key of the list being operated on.                                                                                                                                       |
-| `fieldKey`     | The key of the field being operated on (field hooks only).                                                                                                                   |
-| `operation`    | The operation being performed (`'create'` or `'update'`).                                                                                                                    |
-| `inputData`    | The value of `data` passed into the mutation.                                                                                                                                |
+| Argument       | Description                                                                                                                                                                           |
+| :------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `listKey`      | The key of the list being operated on.                                                                                                                                                |
+| `fieldKey`     | The key of the field being operated on (field hooks only).                                                                                                                            |
+| `operation`    | The operation being performed (`'create'` or `'update'`).                                                                                                                             |
+| `inputData`    | The value of `data` passed into the mutation.                                                                                                                                         |
 | `item`         | The currently stored item (`undefined` for `create` operations). This object is an internal database item. [DB API](../context/db-items) for more details on internal database items. |
-| `resolvedData` | A [`resolved data`](#resolved-data-stages) object. The resolved data value after default values, relationship resolvers, and field resolvers have been applied.              |
-| `context`      | The [`KeystoneContext`](../context/overview) object of the originating GraphQL operation.                                                                                              |
+| `resolvedData` | A [`resolved data`](#resolved-data-stages) object. The resolved data value after default values, relationship resolvers, and field resolvers have been applied.                       |
+| `context`      | The [`KeystoneContext`](../context/overview) object of the originating GraphQL operation.                                                                                             |
 
 ```typescript
 import { config, list } from '@keystone-6/core';
@@ -117,16 +117,16 @@ It is invoked after the `resolveInput` hooks have been run.
 If the `resolvedData` is invalid then the function should report validation errors with `addValidationError(msg)`.
 These error messages will be returned as a `ValidationFailureError` from the GraphQL API, and the operation will not be completed.
 
-| Argument                  | Description                                                                                                                                                                                    |
-| :------------------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `listKey`                 | The key of the list being operated on.                                                                                                                                                         |
-| `fieldKey`                | The key of the field being operated on (field hooks only).                                                                                                                                     |
-| `operation`               | The operation being performed (`'create'` or `'update'`).                                                                                                                                      |
-| `inputData`               | The value of `data` passed into the mutation.                                                                                                                                                  |
+| Argument                  | Description                                                                                                                                                                                             |
+| :------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `listKey`                 | The key of the list being operated on.                                                                                                                                                                  |
+| `fieldKey`                | The key of the field being operated on (field hooks only).                                                                                                                                              |
+| `operation`               | The operation being performed (`'create'` or `'update'`).                                                                                                                                               |
+| `inputData`               | The value of `data` passed into the mutation.                                                                                                                                                           |
 | `item`                    | The current value of the item being updated (`undefined` for `create` operations). This object is an internal database item. [DB API](../context/db-items) for more details on internal database items. |
-| `resolvedData`            | A [`resolved data`](#resolved-data-stages) object. The resolved data value after all data resolver stages have been completed.                                                                 |
-| `context`                 | The [`KeystoneContext`](../context/overview) object of the originating GraphQL operation.                                                                                                                |
-| `addValidationError(msg)` | Used to set a validation error.                                                                                                                                                                |
+| `resolvedData`            | A [`resolved data`](#resolved-data-stages) object. The resolved data value after all data resolver stages have been completed.                                                                          |
+| `context`                 | The [`KeystoneContext`](../context/overview) object of the originating GraphQL operation.                                                                                                               |
+| `addValidationError(msg)` | Used to set a validation error.                                                                                                                                                                         |
 
 ```typescript
 import { config, list } from '@keystone-6/core';
@@ -176,14 +176,14 @@ It is invoked after access control has been applied.
 If the delete operation is invalid then the function should report validation errors with `addValidationError(msg)`.
 These error messages will be returned as a `ValidationFailureError` from the GraphQL API.
 
-| Argument                  | Description                                                                                                                                      |
-| :------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `listKey`                 | The key of the list being operated on.                                                                                                           |
-| `fieldKey`                | The key of the field being operated on (field hooks only).                                                                                       |
-| `operation`               | The operation being performed (`'delete'`).                                                                                                      |
+| Argument                  | Description                                                                                                                                               |
+| :------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `listKey`                 | The key of the list being operated on.                                                                                                                    |
+| `fieldKey`                | The key of the field being operated on (field hooks only).                                                                                                |
+| `operation`               | The operation being performed (`'delete'`).                                                                                                               |
 | `item`                    | The value of the item to be deleted. This object is an internal database item. [DB API](../context/db-items) for more details on internal database items. |
-| `context`                 | The [`KeystoneContext`](../context/overview) object of the originating GraphQL operation.                                                                  |
-| `addValidationError(msg)` | Used to set a validation error.                                                                                                                  |
+| `context`                 | The [`KeystoneContext`](../context/overview) object of the originating GraphQL operation.                                                                 |
+| `addValidationError(msg)` | Used to set a validation error.                                                                                                                           |
 
 ```typescript
 import { config, list } from '@keystone-6/core';
@@ -226,15 +226,15 @@ The `beforeOperation` function is used to perform side effects just before the d
 
 It is invoked after all `validateInput`/`validateDelete` hooks have been run, but before the database is updated.
 
-| Argument       | Description                                                                                                                                                                                   |
-| :------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `listKey`      | The key of the list being operated on.                                                                                                                                                        |
-| `fieldKey`     | The key of the field being operated on (field hooks only).                                                                                                                                    |
-| `operation`    | The operation being performed (`'create'`, `'update'`, or `'delete'`).                                                                                                                        |
-| `inputData`    | The value of `data` passed into the mutation. `undefined` for `delete` operations.                                                                                                            |
+| Argument       | Description                                                                                                                                                                                            |
+| :------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `listKey`      | The key of the list being operated on.                                                                                                                                                                 |
+| `fieldKey`     | The key of the field being operated on (field hooks only).                                                                                                                                             |
+| `operation`    | The operation being performed (`'create'`, `'update'`, or `'delete'`).                                                                                                                                 |
+| `inputData`    | The value of `data` passed into the mutation. `undefined` for `delete` operations.                                                                                                                     |
 | `item`         | The current value of the item being updated, `undefined` for `create` operations. This object is an internal database item. [DB API](../context/db-items) for more details on internal database items. |
-| `resolvedData` | A [`resolved data`](#resolved-data-stages) object. The resolved data value after all data resolver stages have been completed. `undefined` for `delete` operations.                           |
-| `context`      | The [`KeystoneContext`](../context/overview) object of the originating GraphQL operation.                                                                                                               |
+| `resolvedData` | A [`resolved data`](#resolved-data-stages) object. The resolved data value after all data resolver stages have been completed. `undefined` for `delete` operations.                                    |
+| `context`      | The [`KeystoneContext`](../context/overview) object of the originating GraphQL operation.                                                                                                              |
 
 ```typescript
 import { config, list } from '@keystone-6/core';
@@ -277,16 +277,16 @@ export default config({
 
 The `afterOperation` function is used to perform side effects after the data has been saved to the database (for a `create` or `update` operation), or deleted from the database (for `delete` operations).
 
-| Argument       | Description                                                                                                                                                                                               |
-| :------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `listKey`      | The key of the list being operated on.                                                                                                                                                                    |
-| `fieldKey`     | The key of the field being operated on (field hooks only).                                                                                                                                                |
-| `operation`    | The operation being performed (`'create'`, `'update'`, or `'delete'`).                                                                                                                                    |
-| `inputData`    | The value of `data` passed into the mutation. `undefined` for `delete` operations.                                                                                                                        |
+| Argument       | Description                                                                                                                                                                                                        |
+| :------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `listKey`      | The key of the list being operated on.                                                                                                                                                                             |
+| `fieldKey`     | The key of the field being operated on (field hooks only).                                                                                                                                                         |
+| `operation`    | The operation being performed (`'create'`, `'update'`, or `'delete'`).                                                                                                                                             |
+| `inputData`    | The value of `data` passed into the mutation. `undefined` for `delete` operations.                                                                                                                                 |
 | `originalItem` | The original value of the item being updated or deleted, `undefined` for `create` operations. This object is an internal database item. [DB API](../context/db-items) for more details on internal database items. |
 | `item`         | The new value of the item being updated or created, `undefined` for `delete` operations. This object is an internal database item. [DB API](../context/db-items) for more details on internal database items.      |
-| `resolvedData` | A [`resolved data`](#resolved-data-stages) object. The resolved data value after all data resolver stages have been completed. `undefined` for `delete` operations.                                       |
-| `context`      | The [`KeystoneContext`](../context/overview) object of the originating GraphQL operation.                                                                                                                           |
+| `resolvedData` | A [`resolved data`](#resolved-data-stages) object. The resolved data value after all data resolver stages have been completed. `undefined` for `delete` operations.                                                |
+| `context`      | The [`KeystoneContext`](../context/overview) object of the originating GraphQL operation.                                                                                                                          |
 
 ```typescript
 import { config, list } from '@keystone-6/core';
