@@ -3,9 +3,11 @@
 import { useKeystone } from '@keystone-6/core/admin-ui/context';
 import { RelationshipSelect } from '@keystone-6/core/fields/types/relationship/views/RelationshipSelect';
 import { Button } from '@keystone-ui/button';
-import { Box, jsx, Stack } from '@keystone-ui/core';
+import { jsx, Stack } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
-import { memo, useMemo } from 'react';
+import { PlusCircleIcon } from '@keystone-ui/icons/icons/PlusCircleIcon';
+import { AlertDialog } from '@keystone-ui/modals';
+import { memo, useCallback, useMemo, useState, MemoExoticComponent, ReactElement } from 'react';
 import { DragHandle, OrderableItem, OrderableList, RemoveButton } from '../primitives/orderable';
 import {
   ArrayField,
@@ -17,6 +19,8 @@ import {
   RelationshipData,
   RelationshipField,
 } from './api';
+import { previewPropsToValue, setValueToPreviewProps } from './get-value';
+import { createGetPreviewProps } from './preview-props';
 import { assertNever } from './utils';
 
 type DefaultFieldProps<Key> = GenericPreviewProps<
@@ -40,8 +44,11 @@ function ArrayFieldPreview(props: DefaultFieldProps<'array'>) {
         onClick={() => {
           props.onChange([...props.elements.map(x => ({ key: x.key })), { key: undefined }]);
         }}
+        tone="active"
       >
-        Add
+        <Stack gap="small" across>
+          <PlusCircleIcon size="smallish" /> <span>Add</span>
+        </Stack>
       </Button>
     </Stack>
   );
@@ -179,12 +186,14 @@ const fieldRenderers = {
   conditional: ConditionalFieldPreview,
 };
 
-export const FormValueContentFromPreviewProps = memo(function FormValueContentFromPreview(
-  props: GenericPreviewProps<NonChildFieldComponentSchema, unknown> & {
-    autoFocus?: boolean;
-    forceValidation?: boolean;
-  }
-) {
+export const FormValueContentFromPreviewProps: MemoExoticComponent<
+  (
+    props: GenericPreviewProps<NonChildFieldComponentSchema, unknown> & {
+      autoFocus?: boolean;
+      forceValidation?: boolean;
+    }
+  ) => ReactElement
+> = memo(function FormValueContentFromPreview(props) {
   const Comp = fieldRenderers[props.schema.kind];
   return <Comp {...(props as any)} />;
 });
@@ -194,18 +203,85 @@ const OrderableItemInForm = memo(function OrderableItemInForm(
     elementKey: string;
   }
 ) {
+  const [modalState, setModalState] = useState<
+    { state: 'open'; value: unknown } | { state: 'closed' }
+  >({ state: 'closed' });
+  const onModalChange = useCallback(
+    (cb: (value: unknown) => unknown) => {
+      setModalState(state => {
+        if (state.state === 'open') {
+          return { state: 'open', value: cb(state.value) };
+        }
+        return state;
+      });
+    },
+    [setModalState]
+  );
   return (
     <OrderableItem elementKey={props.elementKey}>
-      <div css={{ display: 'flex', justifyContent: 'space-between' }}>
-        <DragHandle />
-        <RemoveButton />
-      </div>
-      <Box paddingX="medium" paddingBottom="medium">
-        {isNonChildFieldPreviewProps(props) && <FormValueContentFromPreviewProps {...props} />}
-      </Box>
+      <Stack gap="medium">
+        <div css={{ display: 'flex', gap: 4 }}>
+          <Stack across gap="xsmall" align="center" css={{ cursor: 'pointer' }}>
+            <DragHandle />
+          </Stack>
+          <Button
+            weight="none"
+            onClick={() => {
+              setModalState({ state: 'open', value: previewPropsToValue(props) });
+            }}
+            css={{ flexGrow: 1, justifyContent: 'start' }}
+          >
+            <span css={{ fontSize: 16, fontWeight: 'bold', textAlign: 'start' }}>Item</span>
+          </Button>
+          <RemoveButton />
+        </div>
+        {isNonChildFieldPreviewProps(props) && (
+          <AlertDialog
+            title={`Edit Item`}
+            actions={{
+              confirm: {
+                action: () => {
+                  if (modalState.state === 'open') {
+                    setValueToPreviewProps(modalState.value, props);
+                    setModalState({ state: 'closed' });
+                  }
+                },
+                label: 'Done',
+              },
+              cancel: {
+                action: () => {
+                  setModalState({ state: 'closed' });
+                },
+                label: 'Cancel',
+              },
+            }}
+            isOpen={modalState.state === 'open'}
+          >
+            {modalState.state === 'open' && (
+              <ArrayFieldItemModelContent
+                onChange={onModalChange}
+                schema={props.schema}
+                value={modalState.value}
+              />
+            )}
+          </AlertDialog>
+        )}
+      </Stack>
     </OrderableItem>
   );
 });
+
+function ArrayFieldItemModelContent(props: {
+  schema: NonChildFieldComponentSchema;
+  value: unknown;
+  onChange: (cb: (value: unknown) => unknown) => void;
+}) {
+  const previewProps = useMemo(
+    () => createGetPreviewProps(props.schema, props.onChange, () => undefined),
+    [props.schema, props.onChange]
+  )(props.value);
+  return <FormValueContentFromPreviewProps {...previewProps} />;
+}
 
 function findFocusableObjectFieldKey(schema: ObjectField): string | undefined {
   for (const [key, innerProp] of Object.entries(schema.fields)) {

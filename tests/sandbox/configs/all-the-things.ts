@@ -17,8 +17,9 @@ import {
   calendarDay,
   multiselect,
 } from '@keystone-6/core/fields';
-import { document } from '@keystone-6/fields-document';
+import { document, structure } from '@keystone-6/fields-document';
 import { componentBlocks } from '../component-blocks';
+import { schema } from '../structure';
 import { dbConfig, localStorageConfig, trackingFields } from '../utils';
 
 const description =
@@ -28,6 +29,7 @@ export const lists = {
   Thing: list({
     access: allowAll,
     fields: {
+      structure: structure({ schema, ui: { views: './structure' } }),
       ...group({
         label: 'Some group',
         description: 'Some group description',

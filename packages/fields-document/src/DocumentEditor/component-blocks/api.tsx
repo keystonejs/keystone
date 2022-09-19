@@ -1,5 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import { graphql } from '@keystone-6/core';
 import { jsx } from '@keystone-ui/core';
 import {
   FieldContainer,
@@ -50,6 +51,21 @@ export type FormField<Value extends FormFieldValue, Options> = {
    * a potentially malicious client
    */
   validate(value: unknown): boolean;
+};
+
+export type FormFieldWithGraphQLField<Value extends FormFieldValue, Options> = FormField<
+  Value,
+  Options
+> & {
+  graphql: {
+    output: graphql.Field<
+      { value: Value },
+      Record<string, graphql.Arg<graphql.InputType, boolean>>,
+      graphql.OutputType,
+      'value'
+    >;
+    input: graphql.NullableInputType;
+  };
 };
 
 type InlineMarksConfig =
@@ -137,6 +153,17 @@ export type ComponentSchema =
   // this is written like this rather than ArrayField<ComponentSchema> to avoid TypeScript erroring about circularity
   | { kind: 'array'; element: ComponentSchema };
 
+export type ComponentSchemaForGraphQL =
+  | FormFieldWithGraphQLField<any, any>
+  | ObjectField<Record<string, ComponentSchemaForGraphQL>>
+  | ConditionalField<
+      FormFieldWithGraphQLField<any, any>,
+      { [key: string]: ComponentSchemaForGraphQL }
+    >
+  | RelationshipField<boolean>
+  // this is written like this rather than ArrayField<ComponentSchemaForGraphQL> to avoid TypeScript erroring about circularity
+  | { kind: 'array'; element: ComponentSchemaForGraphQL };
+
 export const fields = {
   text({
     label,
@@ -144,7 +171,7 @@ export const fields = {
   }: {
     label: string;
     defaultValue?: string;
-  }): FormField<string, undefined> {
+  }): FormFieldWithGraphQLField<string, undefined> {
     return {
       kind: 'form',
       Input({ value, onChange, autoFocus }) {
@@ -166,6 +193,10 @@ export const fields = {
       validate(value) {
         return typeof value === 'string';
       },
+      graphql: {
+        input: graphql.String,
+        output: graphql.field({ type: graphql.String }),
+      },
     };
   },
   url({
@@ -174,7 +205,7 @@ export const fields = {
   }: {
     label: string;
     defaultValue?: string;
-  }): FormField<string, undefined> {
+  }): FormFieldWithGraphQLField<string, undefined> {
     const validate = (value: unknown) => {
       return typeof value === 'string' && (value === '' || isValidURL(value));
     };
@@ -203,6 +234,10 @@ export const fields = {
       options: undefined,
       defaultValue,
       validate,
+      graphql: {
+        input: graphql.String,
+        output: graphql.field({ type: graphql.String }),
+      },
     };
   },
   select<Option extends { label: string; value: string }>({
@@ -213,7 +248,7 @@ export const fields = {
     label: string;
     options: readonly Option[];
     defaultValue: Option['value'];
-  }): FormField<Option['value'], readonly Option[]> {
+  }): FormFieldWithGraphQLField<Option['value'], readonly Option[]> {
     const optionValuesSet = new Set(options.map(x => x.value));
     if (!optionValuesSet.has(defaultValue)) {
       throw new Error(
@@ -244,6 +279,16 @@ export const fields = {
       validate(value) {
         return typeof value === 'string' && optionValuesSet.has(value);
       },
+      graphql: {
+        input: graphql.String,
+        output: graphql.field({
+          type: graphql.String,
+          // TODO: investigate why this resolve is required here
+          resolve({ value }) {
+            return value;
+          },
+        }),
+      },
     };
   },
   multiselect<Option extends { label: string; value: string }>({
@@ -254,7 +299,7 @@ export const fields = {
     label: string;
     options: readonly Option[];
     defaultValue: readonly Option['value'][];
-  }): FormField<readonly Option['value'][], readonly Option[]> {
+  }): FormFieldWithGraphQLField<readonly Option['value'][], readonly Option[]> {
     const valuesToOption = new Map(options.map(x => [x.value, x]));
     return {
       kind: 'form',
@@ -281,6 +326,16 @@ export const fields = {
           value.every(value => typeof value === 'string' && valuesToOption.has(value))
         );
       },
+      graphql: {
+        input: graphql.list(graphql.nonNull(graphql.String)),
+        output: graphql.field({
+          type: graphql.list(graphql.nonNull(graphql.String)),
+          // TODO: investigate why this resolve is required here
+          resolve({ value }) {
+            return value;
+          },
+        }),
+      },
     };
   },
   checkbox({
@@ -289,7 +344,7 @@ export const fields = {
   }: {
     label: string;
     defaultValue?: boolean;
-  }): FormField<boolean, undefined> {
+  }): FormFieldWithGraphQLField<boolean, undefined> {
     return {
       kind: 'form',
       Input({ value, onChange, autoFocus }) {
@@ -311,6 +366,10 @@ export const fields = {
       defaultValue,
       validate(value) {
         return typeof value === 'boolean';
+      },
+      graphql: {
+        input: graphql.Boolean,
+        output: graphql.field({ type: graphql.Boolean }),
       },
     };
   },
@@ -463,7 +522,7 @@ type ChildFieldPreviewProps<Schema extends ChildField, ChildFieldElement> = {
 };
 
 type FormFieldPreviewProps<Schema extends FormField<any, any>> = {
-  readonly value: Schema['options'];
+  readonly value: Schema['defaultValue'];
   onChange(value: Schema['defaultValue']): void;
   readonly options: Schema['options'];
   readonly schema: Schema;
@@ -500,15 +559,14 @@ type ConditionalFieldPreviewProps<
   };
 }[keyof Schema['values']];
 
+// this is a separate type so that this is distributive
+type RelationshipDataType<Many extends boolean> = Many extends true
+  ? readonly HydratedRelationshipData[]
+  : HydratedRelationshipData | null;
+
 type RelationshipFieldPreviewProps<Schema extends RelationshipField<boolean>> = {
-  readonly value: Schema['many'] extends true
-    ? readonly HydratedRelationshipData[]
-    : HydratedRelationshipData | null;
-  onChange(
-    relationshipData: Schema['many'] extends true
-      ? readonly HydratedRelationshipData[]
-      : HydratedRelationshipData | null
-  ): void;
+  readonly value: RelationshipDataType<Schema['many']>;
+  onChange(relationshipData: RelationshipDataType<Schema['many']>): void;
   readonly schema: Schema;
 };
 

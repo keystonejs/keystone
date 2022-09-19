@@ -57,13 +57,13 @@ export function OrderableList(props: {
         modifiers={[restrictToVerticalAxis]}
         onDragEnd={({ over, active }) => {
           if (over && over.id !== active.id) {
-            const activeIndex = props.elements.findIndex(
-              x => (typeof x === 'string' ? x : x.key) === active.id
+            const activeIndex = props.elements.findIndex(x => x.key === active.id);
+            const overIndex = props.elements.findIndex(x => x.key === over.id);
+            const newValue = arrayMove(
+              props.elements.map(x => ({ key: x.key })),
+              activeIndex,
+              overIndex
             );
-            const overIndex = props.elements.findIndex(
-              x => (typeof x === 'string' ? x : x.key) === over.id
-            );
-            const newValue = arrayMove(props.elements as { key: string }[], activeIndex, overIndex);
             props.onChange(newValue);
           }
         }}
@@ -156,7 +156,6 @@ export function RemoveButton() {
 
   return (
     <Button
-      size="small"
       weight="none"
       css={{ padding: 7 }}
       onClick={() => onRemove(sortable.index)}
