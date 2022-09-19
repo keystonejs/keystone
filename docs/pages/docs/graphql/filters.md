@@ -1,5 +1,5 @@
 ---
-title: "Query Filters"
+title: "GraphQL Query Filters"
 description: "A reference list of every filters available for every Keystone field type. Keystone filters are typically named after the field they are filtering."
 ---
 

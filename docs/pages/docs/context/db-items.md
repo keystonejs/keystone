@@ -1,6 +1,6 @@
 ---
 title: "Database"
-description: "Keystone’s database API is a programmatic API for running CRUD operations against the internal GraphQL resolvers in your system. It bypasses the GraphQL Server itself, invoking resolver functions directly."
+description: "Keystone's database API is a programmatic API for running CRUD operations against the internal GraphQL resolvers in your system. It bypasses the GraphQL Server itself, invoking resolver functions directly."
 ---
 
 The database API provides a programmatic API for running CRUD operations against the internal GraphQL resolvers in your system.

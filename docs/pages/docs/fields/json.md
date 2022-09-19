@@ -1,6 +1,6 @@
 ---
-title: "Big Int"
-description: "A reference of Keystone's bigInt field type, configuration and options."
+title: "JSON"
+description: "A reference of Keystone's json field type, configuration and options."
 ---
 
 A `json` field represents a JSON blob.
