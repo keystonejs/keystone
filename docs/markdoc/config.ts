@@ -1,4 +1,4 @@
-import { Config, nodes, Tag, ValidationError, Node, ValidateError } from '@markdoc/markdoc';
+import { Config, nodes, Tag, ValidationError, Node } from '@markdoc/markdoc';
 import slugify from '@sindresorhus/slugify';
 
 export type Pages = Map<string, { ids: Set<string> }>;
