@@ -17,7 +17,7 @@
     "@ts-gql/tag": "^0.7.0"
   },
   "devDependencies": {
-    "typescript": "^4.7.4"
+    "typescript": "~4.7.4"
   },
   "ts-gql": {
     "schema": "schema.graphql",
