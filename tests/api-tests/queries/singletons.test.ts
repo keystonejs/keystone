@@ -1,5 +1,5 @@
 import { text } from '@keystone-6/core/fields';
-import { singleton } from '@keystone-6/core';
+import { list } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/core/testing';
 import { KeystoneContext } from '@keystone-6/core/types';
 import { allowAll } from '@keystone-6/core/access';
@@ -8,7 +8,8 @@ import { apiTestConfig, dbProvider } from '../utils';
 const runner = setupTestRunner({
   config: apiTestConfig({
     lists: {
-      Singular: singleton({
+      Singular: list({
+        isSingleton: true,
         access: allowAll,
         fields: {
           field: text(),
