@@ -10,7 +10,7 @@ import { markdocConfig } from './config';
 export function printValidationError(error: ValidateError) {
   const location = error.error.location || error.location;
   // the filepath is intentionally duplicated here so that there is one thing you can copy to refer to the error position
-  return `${error.location?.file ?? '(unknown file)'}:${
+  return `${location?.file ?? '(unknown file)'}:${
     // the +1 is because location.start.line is 0-based
     // but tools generally use 1-based line numbers
     location?.start.line !== undefined ? location.start.line + 1 : '(unknown line)'
