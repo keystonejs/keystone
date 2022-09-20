@@ -84,7 +84,7 @@
     "cors": "^2.8.5",
     "cuid": "^2.1.8",
     "date-fns": "^2.26.0",
-    "decimal.js": "10.4.0",
+    "decimal.js": "^10.4.1",
     "dumb-passwords": "^0.2.1",
     "esbuild": "^0.15.5",
     "execa": "^5.1.1",
