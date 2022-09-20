@@ -1,5 +1,11 @@
 # @keystone-6/fields-document
 
+## 4.1.2
+
+### Patch Changes
+
+- [`4fe98b20d`](https://github.com/keystonejs/keystone/commit/4fe98b20d7e3502d96e44c925e38f769722d86bc) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixes a broken code path for conditional component-blocks when fields are missing - this previously resulted in invalid data structures within the document editor
+
 ## 4.1.1
 
 ### Patch Changes
