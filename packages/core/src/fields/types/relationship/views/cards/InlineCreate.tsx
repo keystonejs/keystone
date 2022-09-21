@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { jsx, Stack } from '@keystone-ui/core';
 import isDeepEqual from 'fast-deep-equal';
 import { useToasts } from '@keystone-ui/toast';
@@ -56,7 +56,8 @@ export function InlineCreate({
 
   const [forceValidation, setForceValidation] = useState(false);
 
-  const onCreateClick = () => {
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     const newForceValidation = invalidFields.size !== 0;
     setForceValidation(newForceValidation);
 
@@ -105,32 +106,28 @@ export function InlineCreate({
   };
 
   return (
-    <Stack gap="xlarge">
-      {error && (
-        <GraphQLErrorNotice networkError={error?.networkError} errors={error?.graphQLErrors} />
-      )}
-      <Fields
-        fieldModes={null}
-        fields={fields}
-        forceValidation={forceValidation}
-        invalidFields={invalidFields}
-        onChange={setValue}
-        value={value}
-      />
-      <Stack gap="small" across>
-        <Button
-          isLoading={loading}
-          size="small"
-          tone="positive"
-          weight="bold"
-          onClick={onCreateClick}
-        >
-          Create {list.singular}
-        </Button>
-        <Button size="small" weight="none" onClick={onCancel}>
-          Cancel
-        </Button>
+    <form onSubmit={onSubmit}>
+      <Stack gap="xlarge">
+        {error && (
+          <GraphQLErrorNotice networkError={error?.networkError} errors={error?.graphQLErrors} />
+        )}
+        <Fields
+          fieldModes={null}
+          fields={fields}
+          forceValidation={forceValidation}
+          invalidFields={invalidFields}
+          onChange={setValue}
+          value={value}
+        />
+        <Stack gap="small" across>
+          <Button isLoading={loading} size="small" tone="positive" weight="bold" type="submit">
+            Create {list.singular}
+          </Button>
+          <Button size="small" weight="none" onClick={onCancel}>
+            Cancel
+          </Button>
+        </Stack>
       </Stack>
-    </Stack>
+    </form>
   );
 }

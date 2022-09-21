@@ -1,4 +1,4 @@
-import type { KeystoneContextFromListTypeInfo } from '..';
+import type { KeystoneContextFromListTypeInfo, MaybePromise } from '..';
 import { BaseListTypeInfo } from '../type-info';
 
 type CommonArgs<ListTypeInfo extends BaseListTypeInfo> = {
@@ -42,11 +42,18 @@ type AddFieldPathArgToAllPropsOnObj<T extends Record<string, (arg: any) => any>>
   [Key in keyof T]: AddFieldPathToObj<T[Key]>;
 };
 
-export type FieldHooks<ListTypeInfo extends BaseListTypeInfo> = AddFieldPathArgToAllPropsOnObj<{
+type FieldKeysForList<ListTypeInfo extends BaseListTypeInfo> =
+  | keyof ListTypeInfo['prisma']['create']
+  | keyof ListTypeInfo['prisma']['update'];
+
+export type FieldHooks<
+  ListTypeInfo extends BaseListTypeInfo,
+  FieldKey extends FieldKeysForList<ListTypeInfo> = FieldKeysForList<ListTypeInfo>
+> = AddFieldPathArgToAllPropsOnObj<{
   /**
    * Used to **modify the input** for create and update operations after default values and access control have been applied
    */
-  resolveInput?: ResolveInputFieldHook<ListTypeInfo>;
+  resolveInput?: ResolveInputFieldHook<ListTypeInfo, FieldKey>;
   /**
    * Used to **validate the input** for create and update operations once all resolveInput hooks resolved
    */
@@ -78,9 +85,9 @@ type ArgsForCreateOrUpdateOperation<ListTypeInfo extends BaseListTypeInfo> =
        */
       inputData: ListTypeInfo['inputs']['create'];
       /**
-       * The GraphQL input **after** default values are applied
+       * The GraphQL input **after** being resolved by the field type's input resolver
        */
-      resolvedData: ListTypeInfo['inputs']['create'];
+      resolvedData: ListTypeInfo['prisma']['create'];
     }
   | {
       operation: 'update';
@@ -90,40 +97,23 @@ type ArgsForCreateOrUpdateOperation<ListTypeInfo extends BaseListTypeInfo> =
        */
       inputData: ListTypeInfo['inputs']['update'];
       /**
-       * The GraphQL input **after** default values are applied
+       * The GraphQL input **after** being resolved by the field type's input resolver
        */
-      resolvedData: ListTypeInfo['inputs']['update'];
+      resolvedData: ListTypeInfo['prisma']['update'];
     };
 
 type ResolveInputListHook<ListTypeInfo extends BaseListTypeInfo> = (
   args: ArgsForCreateOrUpdateOperation<ListTypeInfo> & CommonArgs<ListTypeInfo>
-) =>
-  | Promise<ListTypeInfo['inputs']['create'] | ListTypeInfo['inputs']['update']>
-  | ListTypeInfo['inputs']['create']
-  | ListTypeInfo['inputs']['update']
-  // TODO: These were here to support field hooks before we created a separate type
-  // (see ResolveInputFieldHook), check whether they're safe to remove now
-  | Record<string, any>
-  | string
-  | number
-  | boolean
-  | null;
+) => MaybePromise<ListTypeInfo['prisma']['create'] | ListTypeInfo['prisma']['update']>;
 
-type ResolveInputFieldHook<ListTypeInfo extends BaseListTypeInfo> = (
-  args: ArgsForCreateOrUpdateOperation<ListTypeInfo> & CommonArgs<ListTypeInfo>
-) =>
-  | Promise<ListTypeInfo['inputs']['create'] | ListTypeInfo['inputs']['update']>
-  | ListTypeInfo['inputs']['create']
-  | ListTypeInfo['inputs']['update']
-  // TODO: These may or may not be correct, but without them you can't define a
-  // resolveInput hook for a field that returns a simple value (e.g timestamp)
-  | Record<string, any>
-  | string
-  | number
-  | boolean
-  | null
-  // Fields need to be able to return `undefined` to say "don't touch this field"
-  | undefined;
+type ResolveInputFieldHook<
+  ListTypeInfo extends BaseListTypeInfo,
+  FieldKey extends FieldKeysForList<ListTypeInfo>
+> = (args: ArgsForCreateOrUpdateOperation<ListTypeInfo> & CommonArgs<ListTypeInfo>) => MaybePromise<
+  | ListTypeInfo['prisma']['create'][FieldKey]
+  | ListTypeInfo['prisma']['update'][FieldKey]
+  | undefined // undefined represents 'don't do anything'
+>;
 
 type ValidateInputHook<ListTypeInfo extends BaseListTypeInfo> = (
   args: ArgsForCreateOrUpdateOperation<ListTypeInfo> & {

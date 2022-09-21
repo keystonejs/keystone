@@ -1,8 +1,12 @@
+import fs from 'fs';
+import path from 'path';
+import os from 'os';
 import globby from 'globby';
 import { list } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
-import { setupTestEnv } from '@keystone-6/core/testing';
+import { setupTestEnv } from '@keystone-6/api-tests/test-runner';
 import { assertInputObjectType, assertObjectType, GraphQLNonNull } from 'graphql';
+import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig } from '../utils';
 
 const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
@@ -19,22 +23,22 @@ testModules
       describe(`${mod.name} - ${matrixValue} - graphql.isNonNull`, () => {
         beforeEach(() => {
           if (mod.beforeEach) {
-            mod.beforeEach();
+            mod.beforeEach(matrixValue);
           }
         });
         afterEach(async () => {
           if (mod.afterEach) {
-            await mod.afterEach();
+            await mod.afterEach(matrixValue);
           }
         });
         beforeAll(() => {
           if (mod.beforeAll) {
-            mod.beforeAll();
+            mod.beforeAll(matrixValue);
           }
         });
         afterAll(async () => {
           if (mod.afterAll) {
-            await mod.afterAll();
+            await mod.afterAll(matrixValue);
           }
         });
 
@@ -43,6 +47,7 @@ testModules
             config: apiTestConfig({
               lists: {
                 Test: list({
+                  access: allowAll,
                   fields: {
                     name: text(),
                     testField: mod.typeFunction({
@@ -52,8 +57,26 @@ testModules
                   },
                 }),
               },
-              images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
-              files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
+              storage: {
+                test_image: {
+                  kind: 'local',
+                  type: 'image',
+                  storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_images')),
+                  generateUrl: path => `http://localhost:3000/images${path}`,
+                  serverRoute: {
+                    path: '/images',
+                  },
+                },
+                test_file: {
+                  kind: 'local',
+                  type: 'file',
+                  storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_files')),
+                  generateUrl: path => `http://localhost:3000/files${path}`,
+                  serverRoute: {
+                    path: '/files',
+                  },
+                },
+              },
             }),
           });
           return testArgs.context.graphql.schema;

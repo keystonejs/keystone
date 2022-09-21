@@ -1,10 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import type { HTMLAttributes } from 'react';
-import { useToasts } from 'react-toast-notifications';
+import { HTMLAttributes, useEffect, useState } from 'react';
 import { jsx } from '@emotion/react';
-import copy from 'copy-to-clipboard';
+import copy from 'clipboard-copy';
 
+import { CheckIcon } from '@keystone-ui/icons/icons/CheckIcon';
 import { Copy } from '../icons/Copy';
 
 type CodeBoxProps = {
@@ -12,30 +12,20 @@ type CodeBoxProps = {
 } & HTMLAttributes<HTMLElement>;
 
 export function CodeBox({ code, ...props }: CodeBoxProps) {
-  const { addToast } = useToasts();
-
-  const handleCopy = () => {
-    const toastOpt = { autoDismiss: true, autoDismissTimeout: 2000 };
-
-    if (navigator) {
-      // use the new navigator.clipboard API if it exists
-      navigator.clipboard.writeText(code).then(
-        () => addToast('Copied to clipboard', { appearance: 'success', ...toastOpt }),
-        () => addToast('Failed to copy to clipboard', { appearance: 'error', ...toastOpt })
-      );
-      return;
-    } else {
-      // Fallback to a library that leverages document.execCommand
-      // for browser versions that don't support the navigator object.
-      // As document.execCommand
-      try {
-        copy(code);
-      } catch (e) {
-        addToast('Failed to copy to clipboard', { appearance: 'error', ...toastOpt });
-      }
-
-      return;
+  const [didJustCopy, setDidJustCopy] = useState(false);
+  useEffect(() => {
+    if (didJustCopy) {
+      const timeout = setTimeout(() => setDidJustCopy(false), 1000);
+      return () => clearTimeout(timeout);
     }
+  }, [didJustCopy]);
+
+  const handleCopy = async () => {
+    try {
+      await copy(code);
+      setDidJustCopy(true);
+      // we don't want to do anything if the copy fails
+    } catch {}
   };
 
   return (
@@ -75,7 +65,7 @@ export function CodeBox({ code, ...props }: CodeBoxProps) {
           alignItems: 'center',
         }}
       >
-        <Copy css={{ height: '1.5rem' }} />
+        {didJustCopy ? <CheckIcon color="green" /> : <Copy css={{ height: '1.5rem' }} />}
       </button>
     </div>
   );

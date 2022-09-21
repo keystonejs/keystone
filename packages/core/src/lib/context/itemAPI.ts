@@ -60,7 +60,7 @@ export function itemAPIForList(
     const exec = executeGraphQLFieldWithSelection(context.graphql.schema, operation, field);
     return ({ query, ...args }: { query?: string } & Record<string, any> = {}) => {
       const returnFields = query ?? 'id';
-      return exec(args, returnFields, context);
+      return exec(args, returnFields, context) as any;
     };
   };
   const gqlNames = context.gqlNames(listKey);
@@ -70,7 +70,9 @@ export function itemAPIForList(
     async count({ where = {} } = {}) {
       const { listQueryCountName, whereInputName } = context.gqlNames(listKey);
       const query = `query ($where: ${whereInputName}!) { count: ${listQueryCountName}(where: $where)  }`;
-      const response = await context.graphql.run({ query, variables: { where } });
+      const response = (await context.graphql.run({ query, variables: { where } })) as {
+        count: number;
+      };
       return response.count;
     },
     createOne: f('mutation', gqlNames.createMutationName),

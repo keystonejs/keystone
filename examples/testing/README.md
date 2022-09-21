@@ -154,3 +154,7 @@ describe('Example tests using test environment', () => {
 `setupTestEnv` will connect to the database and drop all the data so that the test can run in a known state, returning a value `testEnv` which contains `{ connect, disconnect, testArgs }`.
 The value `testArgs` contains the same values that are passed into test functions by the test runner.
 The `connect` and `disconnect` functions are used to connect to the database before the tests run, then disconnect once all tests have completed.
+
+## Try it out in CodeSandbox 🧪
+
+You can play with this example online in a web browser using the free [codesandbox.io](https://codesandbox.io/) service. To launch this example, open the URL <https://githubbox.com/keystonejs/keystone/tree/main/examples/testing>. You can also fork this sandbox to make your own changes.

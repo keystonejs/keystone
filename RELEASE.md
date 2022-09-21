@@ -66,10 +66,10 @@ Create a draft release on GitHub based on the above tag (such as 2021-11-02) wit
 
 Update the following:
 
--   Summary headline of what's in the release (can be updated later)
--   The Keystone website link
--   Packages output
--   Verbose release notes link
+- Summary headline of what's in the release (can be updated later)
+- The Keystone website link
+- Packages output
+- Verbose release notes link
 
 ````
 [summary headline]

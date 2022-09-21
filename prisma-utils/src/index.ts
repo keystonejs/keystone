@@ -6,10 +6,10 @@ import { deepStrictEqual } from 'assert';
 import { isDeepStrictEqual } from 'util';
 import fs from 'fs-extra';
 import { DMMF } from '@prisma/generator-helper';
-import { getDMMF } from '@prisma/sdk';
+import { getDMMF } from '@prisma/internals';
 import { format, resolveConfig } from 'prettier';
 
-const providers = ['postgresql', 'sqlite'] as const;
+const providers = ['postgresql', 'sqlite', 'mysql'] as const;
 
 type Provider = typeof providers[number];
 
@@ -18,10 +18,9 @@ type Provider = typeof providers[number];
 // we can add them when we want field types for those scalars
 // the missing ones are:
 // - Bytes
-// - BigInt
 // - Json
 // - Unsupported (this one can't be interacted with in the prisma client (and therefore cannot be filtered) so it's irrelevant here)
-const scalarTypes = ['String', 'Boolean', 'Int', 'Float', 'DateTime', 'Decimal'] as const;
+const scalarTypes = ['String', 'Boolean', 'Int', 'Float', 'DateTime', 'Decimal', 'BigInt'] as const;
 
 const getSchemaForProvider = (provider: Provider) => {
   return `datasource ${provider} {
@@ -91,7 +90,7 @@ ${
     for (const typeName of rootTypes) {
       collectReferencedTypes(types, typeName, referencedTypes);
     }
-    if (provider !== 'sqlite') {
+    if (provider === 'postgresql') {
       deepStrictEqual(
         dmmf.schema.enumTypes.prisma.find(x => x.name === 'QueryMode'),
         { name: 'QueryMode', values: ['default', 'insensitive'] }
@@ -114,7 +113,7 @@ ${
       import { graphql } from '../../schema';
 
 
-${provider !== 'sqlite' ? `import { QueryMode } from '../../next-fields'` : ''}
+${provider === 'postgresql' ? `import { QueryMode } from '../../next-fields'` : ''}
 
 ${[...referencedTypes].map(typeName => printInputTypeForGraphQLTS(typeName, types)).join('\n\n')}
 
@@ -307,4 +306,5 @@ const scalarsToGqlScalars: Record<string, string> = {
   Json: 'graphql.JSON',
   DateTime: 'graphql.DateTime',
   Decimal: 'graphql.Decimal',
+  BigInt: 'graphql.BigInt',
 };

@@ -1,8 +1,25 @@
+import fs from 'fs';
+import path from 'path';
+import os from 'os';
 import globby from 'globby';
 import { list } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
-import { setupTestEnv, setupTestRunner } from '@keystone-6/core/testing';
-import { apiTestConfig, expectPrismaError } from '../utils';
+import { setupTestEnv, setupTestRunner } from '@keystone-6/api-tests/test-runner';
+import { allowAll } from '@keystone-6/core/access';
+import { apiTestConfig, expectPrismaError, dbProvider } from '../utils';
+
+const expectedUniqueConstraintError =
+  dbProvider === 'mysql'
+    ? {
+        message: 'Prisma error: Unique constraint failed on the constraint: `Test_testField_key`',
+        code: 'P2002',
+        target: 'Test_testField_key',
+      }
+    : {
+        message: 'Prisma error: Unique constraint failed on the fields: (`testField`)',
+        code: 'P2002',
+        target: ['testField'],
+      };
 
 const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
@@ -19,28 +36,29 @@ testModules
       describe(`${mod.name} - ${matrixValue} - isIndexed: 'unique'`, () => {
         beforeEach(() => {
           if (mod.beforeEach) {
-            mod.beforeEach();
+            mod.beforeEach(matrixValue);
           }
         });
         afterEach(async () => {
           if (mod.afterEach) {
-            await mod.afterEach();
+            await mod.afterEach(matrixValue);
           }
         });
         beforeAll(() => {
           if (mod.beforeAll) {
-            mod.beforeAll();
+            mod.beforeAll(matrixValue);
           }
         });
         afterAll(async () => {
           if (mod.afterAll) {
-            await mod.afterAll();
+            await mod.afterAll(matrixValue);
           }
         });
         const runner = setupTestRunner({
           config: apiTestConfig({
             lists: {
               Test: list({
+                access: allowAll,
                 fields: {
                   name: text(),
                   testField: mod.typeFunction({
@@ -50,8 +68,26 @@ testModules
                 },
               }),
             },
-            images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
-            files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
+            storage: {
+              test_image: {
+                kind: 'local',
+                type: 'image',
+                storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_images')),
+                generateUrl: path => `http://localhost:3000/images${path}`,
+                serverRoute: {
+                  path: '/images',
+                },
+              },
+              test_file: {
+                kind: 'local',
+                type: 'file',
+                storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_files')),
+                generateUrl: path => `http://localhost:3000/files${path}`,
+                serverRoute: {
+                  path: '/files',
+                },
+              },
+            },
           }),
         });
         test(
@@ -73,11 +109,7 @@ testModules
             expectPrismaError(errors, [
               {
                 path: ['createTest'],
-                message: expect.stringMatching(
-                  /Prisma error: Unique constraint failed on the fields: \(`testField`\)/
-                ),
-                code: 'P2002',
-                target: ['testField'],
+                ...expectedUniqueConstraintError,
               },
             ]);
           })
@@ -103,11 +135,7 @@ testModules
             expectPrismaError(errors, [
               {
                 path: ['bar'],
-                message: expect.stringMatching(
-                  /Prisma error: Unique constraint failed on the fields: \(`testField`\)/
-                ),
-                code: 'P2002',
-                target: ['testField'],
+                ...expectedUniqueConstraintError,
               },
             ]);
           })
@@ -149,6 +177,7 @@ testModules
               config: apiTestConfig({
                 lists: {
                   Test: list({
+                    access: allowAll,
                     fields: {
                       name: text(),
                       testField: mod.typeFunction({
@@ -158,8 +187,26 @@ testModules
                     },
                   }),
                 },
-                images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
-                files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
+                storage: {
+                  test_image: {
+                    kind: 'local',
+                    type: 'image',
+                    storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_images')),
+                    generateUrl: path => `http://localhost:3000/images${path}`,
+                    serverRoute: {
+                      path: '/images',
+                    },
+                  },
+                  test_file: {
+                    kind: 'local',
+                    type: 'file',
+                    storagePath: fs.mkdtempSync(path.join(os.tmpdir(), 'tmp_test_files')),
+                    generateUrl: path => `http://localhost:3000/images${path}`,
+                    serverRoute: {
+                      path: '/images',
+                    },
+                  },
+                },
               }),
             });
           } catch (error: any) {

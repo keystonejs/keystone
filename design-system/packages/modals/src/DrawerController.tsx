@@ -26,7 +26,7 @@ export const useDrawerControllerContext = () => {
 export const DrawerController = ({ isOpen, children }: DrawerControllerProps) => {
   return (
     <Transition appear mountOnEnter unmountOnExit in={isOpen} timeout={150}>
-      {(transitionState: TransitionState) => (
+      {transitionState => (
         <DrawerControllerContextProvider value={transitionState}>
           {children}
         </DrawerControllerContextProvider>

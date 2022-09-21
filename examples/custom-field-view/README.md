@@ -23,7 +23,7 @@ In this project we add a new JSON field to the `Task` list:
 ```typescript
 relatedLinks: json({
   ui: {
-      views: require.resolve('./fields/related-links/components.tsx'),
+      views: './fields/related-links/components',
       createView: { fieldMode: 'edit' },
       listView: { fieldMode: 'hidden' },
       itemView: { fieldMode: 'edit' },
@@ -61,3 +61,7 @@ will be rendered as.
 <div align="center">
   <img src="./custom-field-ui.png" width="445">
 </div>
+
+## Try it out in CodeSandbox 🧪
+
+You can play with this example online in a web browser using the free [codesandbox.io](https://codesandbox.io/) service. To launch this example, open the URL <https://githubbox.com/keystonejs/keystone/tree/main/examples/custom-field-view>. You can also fork this sandbox to make your own changes.

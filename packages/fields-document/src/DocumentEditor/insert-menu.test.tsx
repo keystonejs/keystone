@@ -50,7 +50,7 @@ test('insertMenu mark is not removed when cursor is in the text', () => {
   expect(editor).toMatchInlineSnapshot(`
     <editor
       marks={
-        Object {
+        {
           "insertMenu": true,
         }
       }
@@ -83,7 +83,7 @@ test('insertMenu mark is normalized away when / is not the first character', () 
   expect(editor).toMatchInlineSnapshot(`
     <editor
       marks={
-        Object {
+        {
           "insertMenu": true,
         }
       }
@@ -230,7 +230,7 @@ test('insertMenu mark is added when inserting / at the start of a block', () => 
   expect(editor).toMatchInlineSnapshot(`
     <editor
       marks={
-        Object {
+        {
           "insertMenu": true,
         }
       }
@@ -262,7 +262,7 @@ test('insertMenu mark is added when inserting / after whitespace', () => {
   expect(editor).toMatchInlineSnapshot(`
     <editor
       marks={
-        Object {
+        {
           "insertMenu": true,
         }
       }
@@ -297,7 +297,7 @@ test('insertMenu mark is added when inserting / after whitespace when there is c
   expect(editor).toMatchInlineSnapshot(`
     <editor
       marks={
-        Object {
+        {
           "insertMenu": true,
         }
       }
@@ -337,7 +337,7 @@ test('insertMenu mark is added when inserting / after whitespace when there is c
   expect(editor).toMatchInlineSnapshot(`
     <editor
       marks={
-        Object {
+        {
           "insertMenu": true,
         }
       }
@@ -373,8 +373,7 @@ test('insertMenu thing typing', () => {
       <paragraph>
         <text />
       </paragraph>
-    </editor>,
-    { normalization: 'normalize' }
+    </editor>
   );
   [...'/thing'].forEach(char => {
     editor.insertText(char);
@@ -382,7 +381,7 @@ test('insertMenu thing typing', () => {
   expect(editor).toMatchInlineSnapshot(`
     <editor
       marks={
-        Object {
+        {
           "insertMenu": true,
         }
       }
@@ -399,9 +398,7 @@ test('insertMenu thing typing', () => {
         </text>
       </paragraph>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -421,9 +418,7 @@ test('insertMenu thing typing', () => {
         </text>
       </paragraph>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);

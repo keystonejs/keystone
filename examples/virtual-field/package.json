@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-virtual-field",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -9,13 +9,10 @@
     "build": "keystone build"
   },
   "dependencies": {
-    "@keystone-6/core": "^1.0.0"
+    "@keystone-6/core": "^2.2.0"
   },
   "devDependencies": {
-    "typescript": "^4.4.4"
-  },
-  "engines": {
-    "node": "^14.15 || ^16.13"
+    "typescript": "~4.7.4"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/examples/virtual-field"
 }

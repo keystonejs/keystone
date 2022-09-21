@@ -7,8 +7,6 @@ export const staticAdminMetaQuery = gql`
       __typename
       adminMeta {
         __typename
-        enableSignout
-        enableSessionItem
         lists {
           __typename
           key
@@ -27,10 +25,12 @@ export const staticAdminMetaQuery = gql`
           initialColumns
           pageSize
           labelField
+          isSingleton
           fields {
             __typename
             path
             label
+            description
             fieldMeta
             viewsIndex
             customViewsIndex
@@ -67,8 +67,6 @@ export type StaticAdminMetaQuery = {
     __typename: 'KeystoneMeta';
     adminMeta: {
       __typename: 'KeystoneAdminMeta';
-      enableSignout: boolean;
-      enableSessionItem: boolean;
       lists: Array<{
         __typename: 'KeystoneAdminUIListMeta';
         key: string;
@@ -87,10 +85,12 @@ export type StaticAdminMetaQuery = {
           field: string;
           direction: KeystoneAdminUISortDirection;
         }>;
+        isSingleton: boolean;
         fields: Array<{
           __typename: 'KeystoneAdminUIFieldMeta';
           path: string;
           label: string;
+          description: Maybe<string>;
           fieldMeta: Maybe<JSONValue>;
           viewsIndex: number;
           customViewsIndex: Maybe<number>;

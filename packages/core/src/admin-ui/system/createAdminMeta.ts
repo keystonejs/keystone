@@ -1,19 +1,76 @@
+import path from 'path';
 import { GraphQLString, isInputObjectType } from 'graphql';
-import { KeystoneConfig, AdminMetaRootVal, QueryMode } from '../../types';
+import {
+  KeystoneConfig,
+  QueryMode,
+  MaybePromise,
+  MaybeSessionFunction,
+  BaseListTypeInfo,
+  KeystoneContext,
+  JSONValue,
+  MaybeItemFunction,
+} from '../../types';
 import { humanize } from '../../lib/utils';
 import { InitialisedList } from '../../lib/core/types-for-lists';
+import { FilterOrderArgs } from '../../types/config/fields';
+
+type ContextFunction<Return> = (context: KeystoneContext) => MaybePromise<Return>;
+
+export type FieldMetaRootVal = {
+  path: string;
+  label: string;
+  description: string | null;
+  fieldMeta: JSONValue | null;
+  viewsIndex: number;
+  customViewsIndex: number | null;
+  listKey: string;
+  search: 'default' | 'insensitive' | null;
+  isOrderable: ContextFunction<boolean>;
+  isFilterable: ContextFunction<boolean>;
+  createView: { fieldMode: ContextFunction<'edit' | 'hidden'> };
+  // itemView is intentionally special because static values are special cased
+  // and fetched when fetching the static admin ui
+  itemView: { fieldMode: MaybeItemFunction<'edit' | 'read' | 'hidden', BaseListTypeInfo> };
+  listView: { fieldMode: ContextFunction<'read' | 'hidden'> };
+};
+
+export type ListMetaRootVal = {
+  key: string;
+  path: string;
+  label: string;
+  singular: string;
+  plural: string;
+  initialColumns: string[];
+  pageSize: number;
+  labelField: string;
+  initialSort: { field: string; direction: 'ASC' | 'DESC' } | null;
+  fields: Array<FieldMetaRootVal>;
+  itemQueryName: string;
+  listQueryName: string;
+  description: string | null;
+  isHidden: ContextFunction<boolean>;
+  hideCreate: ContextFunction<boolean>;
+  hideDelete: ContextFunction<boolean>;
+  isSingleton: boolean;
+};
+
+export type AdminMetaRootVal = {
+  lists: Array<ListMetaRootVal>;
+  listsByKey: Record<string, ListMetaRootVal>;
+  views: string[];
+  isAccessAllowed: undefined | ((context: KeystoneContext) => MaybePromise<boolean>);
+};
 
 export function createAdminMeta(
   config: KeystoneConfig,
   initialisedLists: Record<string, InitialisedList>
 ) {
-  const { ui, lists, session } = config;
+  const { lists } = config;
   const adminMetaRoot: AdminMetaRootVal = {
-    enableSessionItem: ui?.enableSessionItem || false,
-    enableSignout: session !== undefined,
     listsByKey: {},
     lists: [],
     views: [],
+    isAccessAllowed: config.ui?.isAccessAllowed,
   };
 
   const omittedLists: string[] = [];
@@ -21,10 +78,7 @@ export function createAdminMeta(
   for (const [key, list] of Object.entries(initialisedLists)) {
     const listConfig = lists[key];
     if (list.graphql.isEnabled.query === false) {
-      // If graphql querying is disabled on the list,
-      // push the key into the ommittedLists array for use further down in the procedure and skip.
       omittedLists.push(key);
-
       continue;
     }
     // Default the labelField to `name`, `label`, or `title` if they exist; otherwise fall back to `id`
@@ -73,6 +127,14 @@ export function createAdminMeta(
       // TODO: probably remove this from the GraphQL schema and here
       itemQueryName: key,
       listQueryName: list.pluralGraphQLName,
+      hideCreate: normalizeMaybeSessionFunction(
+        list.graphql.isEnabled.create ? listConfig.ui?.hideCreate ?? false : false
+      ),
+      hideDelete: normalizeMaybeSessionFunction(
+        list.graphql.isEnabled.delete ? listConfig.ui?.hideDelete ?? false : false
+      ),
+      isHidden: normalizeMaybeSessionFunction(listConfig.ui?.isHidden ?? false),
+      isSingleton: list.isSingleton,
     };
     adminMetaRoot.lists.push(adminMetaRoot.listsByKey[key]);
   }
@@ -119,8 +181,8 @@ export function createAdminMeta(
     for (const [fieldKey, field] of Object.entries(list.fields)) {
       // If the field is a relationship field and is related to an omitted list, skip.
       if (field.dbField.kind === 'relation' && omittedLists.includes(field.dbField.list)) continue;
-      // FIXME: Disabling this entirely for now until the Admin UI can properly
-      // handle `omit: ['read']` correctly.
+      // Disabling this entirely for now until we properly decide what the Admin UI
+      // should do when `omit: ['read']` is used.
       if (field.graphql.isEnabled.read === false) continue;
       let search = searchFields.has(fieldKey) ? possibleSearchFields.get(fieldKey) ?? null : null;
       if (searchFields.has(fieldKey) && search === null) {
@@ -128,14 +190,45 @@ export function createAdminMeta(
           `The ui.searchFields option on the ${key} list includes '${fieldKey}' but that field doesn't have a contains filter that accepts a GraphQL String`
         );
       }
+      assertValidView(
+        field.views,
+        `The \`views\` on the implementation of the field type at lists.${key}.fields.${fieldKey}`
+      );
+      const baseOrderFilterArgs = { fieldKey, listKey: list.listKey };
       adminMetaRoot.listsByKey[key].fields.push({
         label: field.label ?? humanize(fieldKey),
+        description: field.ui?.description ?? null,
         viewsIndex: getViewId(field.views),
-        customViewsIndex: field.ui?.views === undefined ? null : getViewId(field.ui.views),
+        customViewsIndex:
+          field.ui?.views === undefined
+            ? null
+            : (assertValidView(field.views, `lists.${key}.fields.${fieldKey}.ui.views`),
+              getViewId(field.ui.views)),
         fieldMeta: null,
         path: fieldKey,
         listKey: key,
         search,
+        createView: {
+          fieldMode: normalizeMaybeSessionFunction(
+            field.graphql.isEnabled.create ? field.ui?.createView?.fieldMode ?? 'edit' : 'hidden'
+          ),
+        },
+        itemView: {
+          fieldMode: field.graphql.isEnabled.update
+            ? field.ui?.itemView?.fieldMode ?? ('edit' as const)
+            : 'read',
+        },
+        listView: {
+          fieldMode: normalizeMaybeSessionFunction(field.ui?.listView?.fieldMode ?? 'read'),
+        },
+        isFilterable: normalizeIsOrderFilter(
+          field.input?.where ? field.graphql.isEnabled.filter : false,
+          baseOrderFilterArgs
+        ),
+        isOrderable: normalizeIsOrderFilter(
+          field.input?.orderBy ? field.graphql.isEnabled.orderBy : false,
+          baseOrderFilterArgs
+        ),
       });
     }
   }
@@ -150,10 +243,59 @@ export function createAdminMeta(
       if (dbField.kind === 'relation' && omittedLists.includes(dbField.list)) {
         continue;
       }
-      fieldMetaRootVal.fieldMeta =
-        list.fields[fieldMetaRootVal.path].getAdminMeta?.(adminMetaRoot) ?? null;
+      currentAdminMeta = adminMetaRoot;
+      try {
+        fieldMetaRootVal.fieldMeta = list.fields[fieldMetaRootVal.path].getAdminMeta?.() ?? null;
+      } finally {
+        currentAdminMeta = undefined;
+      }
     }
   }
 
   return adminMetaRoot;
+}
+
+let currentAdminMeta: undefined | AdminMetaRootVal;
+
+export function getAdminMetaForRelationshipField() {
+  if (currentAdminMeta === undefined) {
+    throw new Error('unexpected call to getAdminMetaInRelationshipField');
+  }
+
+  return currentAdminMeta;
+}
+
+function assertValidView(view: string, location: string) {
+  if (view.includes('\\')) {
+    throw new Error(
+      `${location} contains a backslash, which is invalid. You need to use a module path that is resolved from where 'keystone start' is run (see https://github.com/keystonejs/keystone/pull/7805)`
+    );
+  }
+
+  if (path.isAbsolute(view)) {
+    throw new Error(
+      `${location} is an absolute path, which is invalid. You need to use a module path that is resolved from where 'keystone start' is run (see https://github.com/keystonejs/keystone/pull/7805)`
+    );
+  }
+}
+
+function normalizeMaybeSessionFunction<Return extends string | boolean>(
+  input: MaybeSessionFunction<Return, BaseListTypeInfo>
+): ContextFunction<Return> {
+  if (typeof input !== 'function') {
+    return () => input;
+  }
+  return context => input({ context, session: context.session });
+}
+
+type BaseOrderFilterArgs = { listKey: string; fieldKey: string };
+
+function normalizeIsOrderFilter(
+  input: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>),
+  baseOrderFilterArgs: BaseOrderFilterArgs
+): ContextFunction<boolean> {
+  if (typeof input !== 'function') {
+    return () => input;
+  }
+  return context => input({ context, session: context.session, ...baseOrderFilterArgs });
 }

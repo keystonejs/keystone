@@ -1,4 +1,5 @@
 import { list } from '@keystone-6/core';
+import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
 import globby from 'globby';
 import { apiTestConfig, dbProvider, getPrismaSchema } from './utils';
@@ -8,6 +9,7 @@ test('db.map at the list level adds @@map with the value to the Prisma schema', 
     apiTestConfig({
       lists: {
         SomeList: list({
+          access: allowAll,
           db: {
             map: 'some_table_name',
           },
@@ -23,8 +25,9 @@ test('db.map at the list level adds @@map with the value to the Prisma schema', 
 // Modify your Keystone config when you want to change this.
 
 datasource ${dbProvider} {
-  url      = env("DATABASE_URL")
-  provider = "${dbProvider}"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  provider          = "${dbProvider}"
 }
 
 generator client {
@@ -37,7 +40,8 @@ model SomeList {
   someField String @default("")
 
   @@map("some_table_name")
-}`);
+}
+`);
 });
 
 const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
@@ -56,6 +60,7 @@ testModules
         apiTestConfig({
           lists: {
             SomeList: list({
+              access: allowAll,
               fields: {
                 someField: mod.typeFunction({
                   ...mod.fieldConfig?.(),
@@ -80,6 +85,7 @@ test(`db.map for the field text field adds @map with the value to the Prisma sch
     apiTestConfig({
       lists: {
         SomeList: list({
+          access: allowAll,
           fields: {
             someField: text({
               db: {
@@ -96,8 +102,9 @@ test(`db.map for the field text field adds @map with the value to the Prisma sch
 // Modify your Keystone config when you want to change this.
 
 datasource ${dbProvider} {
-  url      = env("DATABASE_URL")
-  provider = "${dbProvider}"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  provider          = "${dbProvider}"
 }
 
 generator client {
@@ -108,5 +115,6 @@ generator client {
 model SomeList {
   id        String @id @default(cuid())
   someField String @default("") @map("db_map_field")
-}`);
+}
+`);
 });

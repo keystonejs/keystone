@@ -65,7 +65,7 @@ function TimelineWeAreHere() {
       css={mq({
         position: ['relative', null, null, 'absolute'],
         margin: ['1rem 0', null, null, '-3rem 0 0'],
-        left: ['-0.75rem', null, null, null],
+        left: ['7rem', null, null, null],
         display: 'inline-block',
         borderRadius: '0.4rem',
         backgroundColor: 'var(--text)',
@@ -362,33 +362,25 @@ export default function Roadmap() {
         </span>
       </Alert>
       <Type as="h3" look="heading30">
-        Currently iterating on
-      </Type>
-      <Type as="p" look="body18" margin="1rem 0 2rem">
-        We have the foundations for these in place, and are working on making them better.
+        Current focus
       </Type>
       <RoadmapList>
-        <RoadmapItem title="Image & file management" section="fields and schema">
+        <RoadmapItem title="Singletons" section="fields and schema">
           <Fragment>
-            We have the basics in place and are working towards more seamless end-to-end options.
+            A way to define a single object in schema that’s editable in Admin UI and accessible in
+            the GraphQL API. Handy for storing website & social settings, API keys, and more.
           </Fragment>
         </RoadmapItem>
-        <RoadmapItem title="Back-end APIs for Node.js apps" section="core">
+        <RoadmapItem title="Conditional fields" section="fields and schema">
           <Fragment>
-            Access your GraphQL APIs from Node.js for greater flexibility when writing apps and
-            hybrid use-cases.
+            Dynamically showing fields based on the value of other fields is a great way to improve
+            editing flow and content integrity.
           </Fragment>
         </RoadmapItem>
-        <RoadmapItem title="Build & Deployment options" section="docs">
+        <RoadmapItem title="Field Groups" section="admin ui">
           <Fragment>
-            We’re broadening our list of streamlined scenarios & looking into options for serverless
-            environments.
-          </Fragment>
-        </RoadmapItem>
-        <RoadmapItem title="Onboarding series" section="docs">
-          <Fragment>
-            A step by step tutorial series that takes you from first principles through to a working
-            local Keystone instance.
+            It’s often easier to work with content when the form is grouped into different sections
+            of related fields.
           </Fragment>
         </RoadmapItem>
       </RoadmapList>
@@ -397,29 +389,29 @@ export default function Roadmap() {
         Next up
       </Type>
       <RoadmapList>
-        <RoadmapItem title=" Nested fields" section="fields and schema">
+        <RoadmapItem title="Nested fields" section="fields and schema">
           <Fragment>
             Sometimes you need to manage data in structures that are nested and/or repeating. We’re
             working on a way to define these in schema and have them stored as JSON field in the
             database.
           </Fragment>
         </RoadmapItem>
-        <RoadmapItem title="Singletons" section="fields and schema">
+        <RoadmapItem title="Back-end APIs for Node.js apps" section="core">
           <Fragment>
-            A way to define a single object in schema that’s editable in Admin UI and accessible in
-            the GraphQL API. Handy for storing website & social settings, API keys, and more.
+            Access your GraphQL APIs from Node.js for greater flexibility when writing apps and
+            hybrid use-cases.
           </Fragment>
         </RoadmapItem>
-        <RoadmapItem title="  Sortable lists" section="core">
+        <RoadmapItem title="Sortable lists" section="core">
           <Fragment>
             Certain list types come with a need to order the items they contain. We’re looking in to
             an approach that’s easy to implement in schema.
           </Fragment>
         </RoadmapItem>
-        <RoadmapItem title="  Field Descriptions" section="admin ui">
+        <RoadmapItem title="Build & Deployment options" section="docs">
           <Fragment>
-            A way to give helpful context to your editors when they’re filling out fields. Makes
-            their job easier and improves what goes into your database.
+            We’re broadening our list of streamlined scenarios & looking into options for serverless
+            environments.
           </Fragment>
         </RoadmapItem>
       </RoadmapList>
@@ -427,112 +419,69 @@ export default function Roadmap() {
       <Type as="h3" look="heading30" margin="1rem 0 2rem">
         Further afield
       </Type>
-      <Type as="h2" look="heading24">
-        Admin UI
-      </Type>
       <RoadmapList>
-        <RoadmapItem title="Field Groups">
-          <Fragment>
-            It’s often easier to work with content when the form is grouped into different sections
-            of related fields.
-          </Fragment>
-        </RoadmapItem>
-        <RoadmapItem title="Localisation">
+        <RoadmapItem title="Localisation" section="admin ui">
           <Fragment>
             When an English-language UI doesn’t work for your team there’ll be a way for you to add
             translations to all the strings in Admin UI.
           </Fragment>
         </RoadmapItem>
-        <RoadmapItem title="Conditional fields">
-          <Fragment>
-            Dynamically showing fields based on the value of other fields is a great way to improve
-            editing flow and content integrity.
-          </Fragment>
-        </RoadmapItem>
-        <RoadmapItem title="Responsive Layout">
+        <RoadmapItem title="Responsive Layout" section="admin ui">
           <Fragment>
             An editing interface that’s available for you to use no matter what device you’re on.
           </Fragment>
         </RoadmapItem>
-        <RoadmapItem title="A11y compliance">
+        <RoadmapItem title="A11y compliance" section="admin ui">
           <Fragment>
             Solving accessibility in a customisable editing interface is a hard problem. We’re up
             for the challenge.
           </Fragment>
         </RoadmapItem>
-        <RoadmapItem title="Content preview ">
+        <RoadmapItem title="Content preview" section="admin ui">
           <Fragment>
             Built-in tooling for you to give editors a sense of how their content will be consumed
             by end users.
           </Fragment>
         </RoadmapItem>
-        <RoadmapItem title="Non-destructive editing">
-          <Fragment>
-            Better safeguards for saving changes when you transition in and out of different editing
-            contexts.
-          </Fragment>
-        </RoadmapItem>
-        <RoadmapItem title="Version history">
-          <Fragment>
-            Store content changes over time. Easy rollbacks to earlier versions if you make a
-            mistake or change your mind.
-          </Fragment>
-        </RoadmapItem>
-        <RoadmapItem title="Custom publishing workflows">
+        <RoadmapItem title="Custom publishing workflows" section="admin ui">
           <Fragment>
             Design your own journey from <InlineCode>draft</InlineCode> to{' '}
             <InlineCode>published</InlineCode> to meet the unique needs of your content team.
           </Fragment>
         </RoadmapItem>
-        <RoadmapItem title="Relationship management">
+        <RoadmapItem title="Relationship management" section="admin ui">
           <Fragment>
             More powerful interfaces for managing different scales of related data, from small to
             really really large
           </Fragment>
         </RoadmapItem>
-      </RoadmapList>
-      <Type as="h2" look="heading24">
-        Schema & API
-      </Type>
-      <RoadmapList>
-        <RoadmapItem title="GraphQL Subscriptions">
+        <RoadmapItem title="GraphQL Subscriptions" section="core">
           <Fragment>
             Long lasting server operations that can change their result over time. Handy for
             updating your front-end in real time when important data changes in your backend.
           </Fragment>
         </RoadmapItem>
-        <RoadmapItem title="Field Translations">
+        <RoadmapItem title="Field Translations" section="core">
           <Fragment>
             A built-in schema-driven approach to supporting multilingual content projects.
           </Fragment>
         </RoadmapItem>
-        <RoadmapItem title="Upsert mutations">
+        <RoadmapItem title="Upsert mutations" section="core">
           <Fragment>
             If you want to update an item but aren’t sure if it exists, this will update the item if
             it’s there or create a new item with the data you’ve provided.
           </Fragment>
         </RoadmapItem>
-      </RoadmapList>
-      <Type as="h2" look="heading24">
-        Core
-      </Type>
-      <RoadmapList>
-        <RoadmapItem title="Serverless hosting">
+        <RoadmapItem title="Serverless hosting" section="core">
           <Fragment>
             The future of deployment is serverless, and we're tracking the state of the ecosystem to
             make sure Keystone is ready for it.
           </Fragment>
         </RoadmapItem>
-        <RoadmapItem title="Native full-text search">
+        <RoadmapItem title="Native full-text search" section="core">
           <Fragment>
             A way for you and editors to easily search for strings across your entire dataset. Handy
             for when you need something specific but don’t know where it lives.
-          </Fragment>
-        </RoadmapItem>
-        <RoadmapItem title="MongoDB">
-          <Fragment>
-            Native support for the MongoDB database type. We’ll look at adding this when Prisma’s
-            implementation of MongoDB is battle-tested.
           </Fragment>
         </RoadmapItem>
       </RoadmapList>

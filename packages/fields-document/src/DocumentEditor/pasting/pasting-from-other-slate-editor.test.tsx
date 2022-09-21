@@ -77,7 +77,7 @@ test('pasting from another slate editor works', () => {
   expect(editor).toMatchInlineSnapshot(`
     <editor
       marks={
-        Object {
+        {
           "bold": true,
         }
       }

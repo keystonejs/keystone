@@ -2,7 +2,14 @@
 /** @jsx jsx */
 import { Fragment, useState } from 'react';
 import { jsx, Stack } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel, MultiSelect, Select } from '@keystone-ui/fields';
+import {
+  FieldContainer,
+  FieldDescription,
+  FieldLabel,
+  MultiSelect,
+  Radio,
+  Select,
+} from '@keystone-ui/fields';
 import { SegmentedControl } from '@keystone-ui/segmented-control';
 import { Button } from '@keystone-ui/button';
 import { Text } from '@keystone-ui/core';
@@ -34,6 +41,7 @@ export const Field = ({
       {field.displayMode === 'select' ? (
         <Fragment>
           <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
+          <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
           <Select
             id={field.path}
             isClearable
@@ -45,13 +53,49 @@ export const Field = ({
               setHasChanged(true);
             }}
             value={value.value}
+            aria-describedby={field.description === null ? undefined : `${field.path}-description`}
             portalMenu
           />
+          {validationMessage}
+        </Fragment>
+      ) : field.displayMode === 'radio' ? (
+        <Fragment>
+          <FieldLabel as="legend">{field.label}</FieldLabel>
+          <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
+          <Stack gap="small" marginTop={'small'}>
+            {field.options.map(option => (
+              <Radio
+                css={{ alignItems: 'center' }}
+                key={option.value}
+                value={option.value}
+                checked={value.value?.value === option.value}
+                onChange={event => {
+                  if (event.target.checked) {
+                    onChange?.({ ...value, value: option });
+                    setHasChanged(true);
+                  }
+                }}
+              >
+                {option.label}
+              </Radio>
+            ))}
+            {value.value !== null && onChange !== undefined && !field.isRequired && (
+              <Button
+                onClick={() => {
+                  onChange({ ...value, value: null });
+                  setHasChanged(true);
+                }}
+              >
+                Clear
+              </Button>
+            )}
+          </Stack>
           {validationMessage}
         </Fragment>
       ) : (
         <Fragment>
           <FieldLabel as="legend">{field.label}</FieldLabel>
+          <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
           <Stack across gap="small" align="center">
             <SegmentedControl
               segments={field.options.map(x => x.label)}
@@ -60,12 +104,13 @@ export const Field = ({
                   ? field.options.findIndex(x => x.value === value.value!.value)
                   : undefined
               }
+              isReadOnly={onChange === undefined}
               onChange={index => {
                 onChange?.({ ...value, value: field.options[index] });
                 setHasChanged(true);
               }}
             />
-            {value.value !== null && onChange !== undefined && (
+            {value.value !== null && onChange !== undefined && !field.isRequired && (
               <Button
                 onClick={() => {
                   onChange({ ...value, value: null });
@@ -105,7 +150,7 @@ export const CardValue: CardValueComponent<typeof controller> = ({ item, field }
 export type AdminSelectFieldMeta = {
   options: readonly { label: string; value: string | number }[];
   type: 'string' | 'integer' | 'enum';
-  displayMode: 'select' | 'segmented-control';
+  displayMode: 'select' | 'segmented-control' | 'radio';
   isRequired: boolean;
   defaultValue: string | number | null;
 };
@@ -135,7 +180,7 @@ export const controller = (
 ): FieldController<Value, Option[]> & {
   options: Option[];
   type: 'string' | 'integer' | 'enum';
-  displayMode: 'select' | 'segmented-control';
+  displayMode: 'select' | 'segmented-control' | 'radio';
   isRequired: boolean;
 } => {
   const optionsWithStringValues = config.fieldMeta.options.map(x => ({
@@ -152,6 +197,7 @@ export const controller = (
   return {
     path: config.path,
     label: config.label,
+    description: config.description,
     graphqlSelection: config.path,
     defaultValue: {
       kind: 'create',

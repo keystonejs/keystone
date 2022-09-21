@@ -1,0 +1,300 @@
+---
+title: "Lesson 3: Publishing workflows"
+description: "Learn Keystone: Lesson 3"
+---
+
+Learn how to create a publishing workflow to your app using Keystons’s `select` and `timestamp` fields.
+
+## Where we left off
+
+In the [last lesson](/docs/walkthroughs/lesson-1) we added a `post` list to our blog app and setup our first connection between posts and users with Keystone’s relationship field. Here's the code:
+
+```ts
+// keystone.ts
+import { list, config } from '@keystone-6/core';
+import { text, relationship } from '@keystone-6/core/fields';
+
+const lists = {
+  User: list({
+    fields: {
+      name: text({ validation: { isRequired: true } }),
+      email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
+      posts: relationship({ ref: 'Post.author', many: true }),
+    },
+  }),
+  Post: list({
+    fields: {
+      title: text(),
+      author: relationship({
+        ref: 'User.posts',
+        ui: {
+          displayMode: 'cards',
+          cardFields: ['name', 'email'],
+          inlineEdit: { fields: ['name', 'email'] },
+          linkToItem: true,
+          inlineCreate: { fields: ['name', 'email'] },
+        },
+      }),
+    },
+  }),
+};
+
+export default config({
+  db: {
+    provider: 'sqlite',
+    url: 'file:./keystone.db',
+  },
+  lists,
+});
+```
+
+We’re now going to extend our Keystone schema to support publishing needs.
+
+## Build a publishing workflow
+
+Our publishing workflow needs the ability to reflect:
+
+- **When** the post should be published
+- The post’s **status** – whether it’s still being drafted, or is ready for publishing
+
+These will give us what we need to conditionally display and order posts in a frontend app.
+
+### Add a publish date
+
+Keystone’s [`timestamp`](/docs/apis/fields#timestamp) field will let editors associate a date and time with the post:
+
+```ts{2,15}[5-11,17-24,29-500]
+import { list, config } from '@keystone-6/core';
+import { text, timestamp, relationship } from '@keystone-6/core/fields';
+
+const lists = {
+  User: list({
+    fields: {
+      name: text({ validation: { isRequired: true } }),
+      email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
+      posts: relationship({ ref: 'Post.author', many: true }),
+    },
+  }),
+  Post: list({
+    fields: {
+      title: text(),
+      publishedAt: timestamp(),
+      author: relationship({
+        ref: 'User.posts',
+        ui: {
+          displayMode: 'cards',
+          cardFields: ['name', 'email'],
+          inlineEdit: { fields: ['name', 'email'] },
+          linkToItem: true,
+          inlineCreate: { fields: ['name', 'email'] },
+        },
+      }),
+    },
+  }),
+};
+
+export default config({
+  db: {
+    provider: 'sqlite',
+    url: 'file:./keystone.db',
+  },
+  lists,
+});
+```
+
+### Add a published status
+
+Keystone’s [`select`](/docs/apis/fields#select) field gives editors the ability to choose a value from a predetermined set of options. Let’s use this to capture our post's publish status.
+
+To set the the field’s desired values we add `options` to the field’s configuration. They will be the only options available to editors in Admin UI and through Keystone’s auto-generated GraphQL types:
+
+```ts{2,26-31}[5-11,17-24,35-500]
+import { list, config } from '@keystone-6/core';
+import { text, relationship, timestamp, select } from '@keystone-6/core/fields';
+
+const lists = {
+  User: list({
+    fields: {
+      name: text({ validation: { isRequired: true } }),
+      email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
+      posts: relationship({ ref: 'Post.author', many: true }),
+    },
+  }),
+  Post: list({
+    fields: {
+      title: text(),
+      publishedAt: timestamp(),
+      author: relationship({
+        ref: 'User.posts',
+        ui: {
+          displayMode: 'cards',
+          cardFields: ['name', 'email'],
+          inlineEdit: { fields: ['name', 'email'] },
+          linkToItem: true,
+          inlineCreate: { fields: ['name', 'email'] },
+        },
+      }),
+      status: select({
+        options: [
+          { label: 'Published', value: 'published' },
+          { label: 'Draft', value: 'draft' },
+        ],
+      }),
+    },
+  }),
+};
+
+export default config({
+  db: {
+    provider: 'sqlite',
+    url: 'file:./keystone.db',
+  },
+  lists,
+});
+```
+
+Let’s take a look at how everything comes together in Admin UI:
+
+![Adding a date-time value and sellecting a publsh status in Admin UI](https://keystonejs.s3.amazonaws.com/framework-assets/assets/walkthroughs/lesson-3/timestamp-publish-status-1.gif)
+
+These defaults give us all the basic functionality we need, but there's room for improvement in the select field:
+
+- It would be helpful to present all the `status` options in a way that doesn't make editors click on the input to find out what options are available
+- Setting a default value for new posts could reduce the likelihood of editors accidentally publishing their work before it's done
+
+### Set a default value
+
+Adding a `defaultValue` to the select field’s config will ensure that newly created posts start out with a preferred status. Let's set the default to `draft`:
+
+```js
+defaultValue: 'draft',
+```
+
+### Implement a segmented control input
+
+When a select field only has a few values to choose from, changing the UI's `displayMode` from the default `select` to `segmented-control` will expose all those values in the interface so editor's don't have to click the input in order to know which value to choose. Our limited set of `draft`/`published` options is a perfect fit for this!
+
+```js
+ui: { displayMode: 'segmented-control' },
+```
+
+This now gives us:
+
+```ts{21-22}[1-3,5-11,13-15,28-500]
+import { list, config } from '@keystone-6/core';
+import { text, timestamp, select, relationship } from '@keystone-6/core/fields';
+
+const lists = {
+  User: list({
+    fields: {
+      name: text({ validation: { isRequired: true } }),
+      email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
+      posts: relationship({ ref: 'Post.author', many: true }),
+    },
+  }),
+  Post: list({
+    fields: {
+      title: text(),
+      publishedAt: timestamp(),
+      status: select({
+        options: [
+          { label: 'Published', value: 'published' },
+          { label: 'Draft', value: 'draft' },
+        ],
+        defaultValue: 'draft',
+        ui: { displayMode: 'segmented-control' },
+      }),
+      author: relationship({ ref: 'User.posts' }),
+    },
+  }),
+};
+
+export default config({
+  db: {
+    provider: 'sqlite',
+    url: 'file:./keystone.db',
+  },
+  lists,
+});
+```
+
+Let's put it all together to see the changes:
+
+![Post list type showing "status" select input as segmented control type with default value of "draft"](https://keystonejs.s3.amazonaws.com/framework-assets/assets/walkthroughs/lesson-3/status-segmented-control.png)
+
+{% hint kind="tip" %}
+**Protip**: To take the editing experience even farther you can use [hooks](/docs/apis/hooks) to automatically update `publishedAt` when a post’s status moves from `draft` to `published`.
+{% /hint %}
+
+## Looking at the GraphQL API
+
+We can now query these values using Keystone's [GraphQL API playground](http://localhost:3000/api/graphql) to show all the published posts
+
+```graphql
+query getAllPosts {
+  posts {
+    title
+  }
+}
+```
+
+And/or posts that have a published status, and were published after a certain date:
+
+```graphql
+query getPublishedPosts {
+  posts(where: { status: { equals: "published" } }) {
+    title
+  }
+}
+```
+
+## What we have now
+
+We’ve successfully added two new fields to our `post` type that give us the information our system will need to display posts:
+
+```js
+// keystone.ts
+import { list, config } from '@keystone-6/core';
+import { text, timestamp, select, relationship } from '@keystone-6/core/fields';
+
+const lists = {
+  User: list({
+    fields: {
+      name: text({ validation: { isRequired: true } }),
+      email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
+      posts: relationship({ ref: 'Post.author', many: true }),
+    },
+  }),
+  Post: list({
+    fields: {
+      title: text(),
+      publishedAt: timestamp(),
+      status: select({
+        options: [
+          { label: 'Published', value: 'published' },
+          { label: 'Draft', value: 'draft' },
+        ],
+        defaultValue: 'draft',
+        ui: { displayMode: 'segmented-control' },
+      }),
+      author: relationship({ ref: 'User.posts' }),
+    },
+  }),
+};
+
+export default config({
+  db: {
+    provider: 'sqlite',
+    url: 'file:./keystone.db',
+  },
+  lists,
+});
+```
+
+## Next lesson
+
+{% related-content %}
+{% well  heading="Lesson 4: Auth & Sessions" href="/docs/walkthroughs/lesson-4" %}
+Add sessions, password protection, and a sign-in screen to your Keystone app
+{% /well %}
+{% /related-content %}

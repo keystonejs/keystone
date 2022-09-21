@@ -1,5 +1,134 @@
 # @keystone-6/fields-document
 
+## 4.1.0
+
+### Minor Changes
+
+- [#7729](https://github.com/keystonejs/keystone/pull/7729) [`36ed1e7e1`](https://github.com/keystonejs/keystone/commit/36ed1e7e14b857a14068685c3eda24b3203379d2) Thanks [@Achisingh](https://github.com/Achisingh)! - Changes the editors default overflow behaviour to align with other multi-line text inputs, supporting scrolling instead of an unbounded height for the field.
+
+### Patch Changes
+
+- [#7783](https://github.com/keystonejs/keystone/pull/7783) [`e6e13158f`](https://github.com/keystonejs/keystone/commit/e6e13158f60d71e8b566286e26769a8bb2bfaf82) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixes long lines in code blocks in the document editor overflowing the editor
+
+* [`6cb00be9a`](https://github.com/keystonejs/keystone/commit/6cb00be9afe8a77aaee9a2ff1d98d42b276889db) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixes pasting plain text in the document editor removing markdown link definition and usages
+
+- [#7764](https://github.com/keystonejs/keystone/pull/7764) [`0f1a487d1`](https://github.com/keystonejs/keystone/commit/0f1a487d142751355009e3f4367dd55925ec0b72) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixes the document editor removing whitespace when pasting from HTML with inline elements that only contain whitespace
+
+* [#7764](https://github.com/keystonejs/keystone/pull/7764) [`0f1a487d1`](https://github.com/keystonejs/keystone/commit/0f1a487d142751355009e3f4367dd55925ec0b72) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixes the document editor erroring when handling HTML in certain cases
+
+- [#7766](https://github.com/keystonejs/keystone/pull/7766) [`99d8f062e`](https://github.com/keystonejs/keystone/commit/99d8f062e5e7d86664d6ab3802a35e2e4c32f61a) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Adds support for pasting a url onto text to create a link
+
+* [#7804](https://github.com/keystonejs/keystone/pull/7804) [`c93768cab`](https://github.com/keystonejs/keystone/commit/c93768cab52c76384608f1d890b1ba1840be5e7d) Thanks [@dcousens](https://github.com/dcousens)! - Removes node `.engines` restrictions
+
+* Updated dependencies [[`c93768cab`](https://github.com/keystonejs/keystone/commit/c93768cab52c76384608f1d890b1ba1840be5e7d)]:
+  - @keystone-6/document-renderer@1.1.1
+  - @keystone-ui/button@7.0.1
+  - @keystone-ui/core@5.0.1
+  - @keystone-ui/fields@7.1.1
+  - @keystone-ui/icons@6.0.1
+  - @keystone-ui/popover@6.0.1
+  - @keystone-ui/tooltip@6.0.1
+
+## 4.0.1
+
+### Patch Changes
+
+- [#7701](https://github.com/keystonejs/keystone/pull/7701) [`047a84262`](https://github.com/keystonejs/keystone/commit/047a84262b559dda3bd73d87e0bfd257182bde29) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updates slate and slate-react to ^0.81.1
+
+* [#7700](https://github.com/keystonejs/keystone/pull/7700) [`d3fce3e37`](https://github.com/keystonejs/keystone/commit/d3fce3e37933494d930875cd13a89c008b48ade7) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixes inline relationships being removed when loading/saving an item in the Admin UI (#7685)
+
+## 4.0.0
+
+### Minor Changes
+
+- [#7578](https://github.com/keystonejs/keystone/pull/7578) [`29db9b5de`](https://github.com/keystonejs/keystone/commit/29db9b5de4d4a13150730f797463e3f8bb1c75d8) Thanks [@Achisingh](https://github.com/Achisingh)! - Adds `ui.description` for fields to show a description below the label in the Admin UI
+
+### Patch Changes
+
+- [#7604](https://github.com/keystonejs/keystone/pull/7604) [`d591e31c6`](https://github.com/keystonejs/keystone/commit/d591e31c61297c88ca5b0c24d4b855c3b12324b2) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixes the layout and component block floating toolbars from being shown behind other elements
+
+* [#7626](https://github.com/keystonejs/keystone/pull/7626) [`4ad95f0ef`](https://github.com/keystonejs/keystone/commit/4ad95f0ef8a6223808f47cd9ef2b50c46fd29c5b) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Moves the remove button in component block array fields from inside a menu on the drag handle to the right of the drag handle
+
+- [#7674](https://github.com/keystonejs/keystone/pull/7674) [`8b2194bb1`](https://github.com/keystonejs/keystone/commit/8b2194bb1159227383a58f5553afd6ed5e1c9c85) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixes the document editor from breaking when the underlying schema for a component has a new field added.
+  Please note that new fields will still be missing for existing data when fetched from GraphQL
+- Updated dependencies [[`65382ed80`](https://github.com/keystonejs/keystone/commit/65382ed80a77761fd7b0b7b21990151ab7b3eb30), [`f5fe35573`](https://github.com/keystonejs/keystone/commit/f5fe35573d0e12e9a624a717c464817031cfe760), [`29db9b5de`](https://github.com/keystonejs/keystone/commit/29db9b5de4d4a13150730f797463e3f8bb1c75d8), [`a48fe5e81`](https://github.com/keystonejs/keystone/commit/a48fe5e818421524a6e1f5c52f21431444e003c7), [`c862e876c`](https://github.com/keystonejs/keystone/commit/c862e876c411c26ab5356d155f9c8914663e9654), [`7f83b438b`](https://github.com/keystonejs/keystone/commit/7f83b438b0001c19058b09b0532dc3ef485696bb), [`153eb6778`](https://github.com/keystonejs/keystone/commit/153eb67784cf18417831598715d2689c0173296b), [`c862e876c`](https://github.com/keystonejs/keystone/commit/c862e876c411c26ab5356d155f9c8914663e9654), [`ffb9ab744`](https://github.com/keystonejs/keystone/commit/ffb9ab74442a036f9c6bc7546bf0fa61c770445b), [`29db9b5de`](https://github.com/keystonejs/keystone/commit/29db9b5de4d4a13150730f797463e3f8bb1c75d8), [`86569dd75`](https://github.com/keystonejs/keystone/commit/86569dd751dc63d41103f69509abb882e45f9c54), [`f9ca9eddf`](https://github.com/keystonejs/keystone/commit/f9ca9eddf69864e8f85c5df1ea56a5400c9916e2)]:
+  - @keystone-6/core@2.1.0
+  - @keystone-ui/fields@7.1.0
+
+## 3.0.0
+
+### Major Changes
+
+- [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - Substantial changes to the underlying document-editor component block interfaces, with the new addition of Array Fields.
+  The breaking changes are only for defining components, _no database migration is needed_.
+
+  The primary breaking changes for component blocks are:
+
+  - For the arguments to the `component` function from `@keystone-6/fields-document/component-blocks`, the following properties have been renamed
+    - `component` -> `preview`
+    - `props` -> `schema`
+  - When using the fields within your preview component - as defined by your component `.schema` (previous `.props`) - you now use `props.fields.{innerFieldName}` instead of `props.{innerFieldName}`.
+
+  For example, `props.fields.title` instead of `props.title`.
+  For a nested example, `props.fields.someObject.fields.title` instead of `props.someObject.title`.
+
+  - The React element to render for a child field is now `props.{innerFieldName}.element` instead of `props.{innerFieldName}`.
+
+  See [#7428](https://github.com/keystonejs/keystone/pull/7428) for detailed instructions if you need to upgrade your code.
+
+* [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - upgrade dependancy `"react": "^18.1.0"`
+
+### Minor Changes
+
+- [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - Fixed z-index issues occurring when pop-overs in document editor text-area or the toolbar overlapped other fields and buttons.
+
+### Patch Changes
+
+- [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - Fixed document editor preventing tabbing out of the editor
+
+* [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - The document editor label is now associated with the editable element so the label can be read by screen readers
+
+- [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - Fixed splitting text with marks/inlines into multiple list items when turning a paragraph into a list and splitting a single list item with marks/inlines into multiple paragraphs when turning a list into paragraphs
+
+- Updated dependencies [[`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`8add4212c`](https://github.com/keystonejs/keystone/commit/8add4212cdb9304ebe054763eddd78640db62b42), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`f603859cc`](https://github.com/keystonejs/keystone/commit/f603859cc6607327a45c0a519c7a9b6e58e02d6b), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea)]:
+  - @keystone-6/core@2.0.0
+  - @keystone-ui/popover@6.0.0
+  - @keystone-ui/fields@7.0.0
+  - @keystone-ui/button@7.0.0
+  - @keystone-ui/core@5.0.0
+  - @keystone-ui/icons@6.0.0
+  - @keystone-ui/tooltip@6.0.0
+  - @keystone-6/document-renderer@1.1.0
+
+## 2.0.1
+
+### Patch Changes
+
+- [`d41683d62`](https://github.com/keystonejs/keystone/commit/d41683d623c6eeb863c2bb3bacff4dbdfdd91a8a) Thanks [@Achi06](https://github.com/Achi06)! - Fixed z-index issue for toolbar of the document editor
+
+* [`27cb26bfa`](https://github.com/keystonejs/keystone/commit/27cb26bfaa3d93df9a4e271711c7a75a48359f2d) Thanks [@Achi06](https://github.com/Achi06)! - Updated the document editor to not show the editor toolbar when the field mode is read-only
+
+* Updated dependencies [[`bb60d9a68`](https://github.com/keystonejs/keystone/commit/bb60d9a68ee611011ca0aea2ce45b052ad49517d), [`aced61816`](https://github.com/keystonejs/keystone/commit/aced6181646bd6fc94977ea497801e6d3839f9c0), [`3bb1a5343`](https://github.com/keystonejs/keystone/commit/3bb1a53434b86e8a6294cff01a8699c36dd5df5a), [`0260a30c9`](https://github.com/keystonejs/keystone/commit/0260a30c92a059268cb6bf8de8a077847c7cdd96), [`33fde0a26`](https://github.com/keystonejs/keystone/commit/33fde0a26d23b8ae3b5907abec70704a1c970547), [`d7d27d887`](https://github.com/keystonejs/keystone/commit/d7d27d88778d50c761a2e362327aa26c06976b1c), [`20095f04b`](https://github.com/keystonejs/keystone/commit/20095f04be02592da99503d9b54b726d66040e77), [`06feba78b`](https://github.com/keystonejs/keystone/commit/06feba78bda6743bc4a7d8b56305fb905bc2af95), [`b6f571a73`](https://github.com/keystonejs/keystone/commit/b6f571a7310af480be64af56fdc0732a7ebfe3f4), [`62201dd5f`](https://github.com/keystonejs/keystone/commit/62201dd5fcea0fe4cf95c33527c394ab65ddce7d)]:
+  - @keystone-6/core@1.1.1
+  - @keystone-ui/fields@6.1.0
+
+## 2.0.0
+
+### Major Changes
+
+- [#7264](https://github.com/keystonejs/keystone/pull/7264) [`c9ec91c8d`](https://github.com/keystonejs/keystone/commit/c9ec91c8d971063169c10e94e93e4626c3d52298) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The config for relationships in props on component blocks in the document field has moved so that it's configured at the relationship prop rather than in the `relationships` key on the document field config. The `relationships` key in the document field config now exclusively refers to inline relationships.
+
+### Patch Changes
+
+- [#7202](https://github.com/keystonejs/keystone/pull/7202) [`29c6a45fd`](https://github.com/keystonejs/keystone/commit/29c6a45fd5fef8ea27f5d051b4fb5d660492aad5) Thanks [@Noviny](https://github.com/Noviny)! - Fixes a bug where headings would appear in shortcut menu even when they were disabled
+
+* [#7202](https://github.com/keystonejs/keystone/pull/7202) [`29c6a45fd`](https://github.com/keystonejs/keystone/commit/29c6a45fd5fef8ea27f5d051b4fb5d660492aad5) Thanks [@Noviny](https://github.com/Noviny)! - Fixes a bug where the shortcuts menu would clip behind the styles menu - it is now always above the styles menu
+
+* Updated dependencies [[`5d96ee646`](https://github.com/keystonejs/keystone/commit/5d96ee646b3c6342935464763071ad7c3f0a8b43), [`518bd2e43`](https://github.com/keystonejs/keystone/commit/518bd2e437227fbd1a8f7fb947dcb11c57ffb7dd), [`dfb4aea31`](https://github.com/keystonejs/keystone/commit/dfb4aea3112ed83322a698f177545618275699b7), [`3e538d136`](https://github.com/keystonejs/keystone/commit/3e538d1360add48c37a099de7c9d1621e2c74ddf), [`518bd2e43`](https://github.com/keystonejs/keystone/commit/518bd2e437227fbd1a8f7fb947dcb11c57ffb7dd), [`ec8103a12`](https://github.com/keystonejs/keystone/commit/ec8103a12861a7cd182603b82aa3b1133a43da4e), [`81e663d31`](https://github.com/keystonejs/keystone/commit/81e663d3157b3c49a191aaa1bc1c179dd8cc34d4), [`4f3d0a073`](https://github.com/keystonejs/keystone/commit/4f3d0a073dba50f22505af545402a2f1e38afe0d), [`45c2bbaf3`](https://github.com/keystonejs/keystone/commit/45c2bbaf34594e135ccd09f5c9221eb822ac9965), [`6cea02475`](https://github.com/keystonejs/keystone/commit/6cea02475b02528e5f04f0a5bca641367ca1584d)]:
+  - @keystone-ui/fields@6.0.1
+  - @keystone-ui/popover@5.0.1
+  - @keystone-6/core@1.1.0
+
 ## 1.0.1
 
 ### Patch Changes

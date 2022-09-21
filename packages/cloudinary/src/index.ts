@@ -1,4 +1,3 @@
-import path from 'path';
 import {
   CommonFieldConfig,
   BaseListTypeInfo,
@@ -6,7 +5,6 @@ import {
   jsonFieldTypePolyfilledForSQLite,
 } from '@keystone-6/core/types';
 import { graphql } from '@keystone-6/core';
-import { FileUpload } from 'graphql-upload';
 import cuid from 'cuid';
 import cloudinary from 'cloudinary';
 import { CloudinaryAdapter } from './cloudinary';
@@ -84,7 +82,7 @@ type CloudinaryImage_File = {
   }) => string | null;
 };
 
-const outputType = graphql.object<CloudinaryImage_File>()({
+export const outputType = graphql.object<CloudinaryImage_File>()({
   name: 'CloudinaryImage_File',
   fields: {
     id: graphql.field({ type: graphql.ID }),
@@ -116,11 +114,12 @@ export const cloudinaryImage =
       throw Error("isIndexed: 'unique' is not a supported option for field type cloudinaryImage");
     }
     const adapter = new CloudinaryAdapter(cloudinary);
+    const inputArg = graphql.arg({ type: graphql.Upload });
     const resolveInput = async (
-      uploadData: Promise<FileUpload> | undefined | null
+      uploadData: graphql.InferValueFromArg<typeof inputArg>
     ): Promise<StoredFile | undefined | null | 'DbNull'> => {
       if (uploadData === null) {
-        return meta.provider === 'postgresql' ? 'DbNull' : null;
+        return meta.provider === 'postgresql' || meta.provider === 'mysql' ? 'DbNull' : null;
       }
       if (uploadData === undefined) {
         return undefined;
@@ -149,8 +148,8 @@ export const cloudinaryImage =
       {
         ...config,
         input: {
-          create: { arg: graphql.arg({ type: graphql.Upload }), resolve: resolveInput },
-          update: { arg: graphql.arg({ type: graphql.Upload }), resolve: resolveInput },
+          create: { arg: inputArg, resolve: resolveInput },
+          update: { arg: inputArg, resolve: resolveInput },
         },
         output: graphql.field({
           type: outputType,
@@ -172,7 +171,7 @@ export const cloudinaryImage =
             };
           },
         }),
-        views: path.join(path.dirname(__dirname), 'views'),
+        views: '@keystone-6/cloudinary/views',
       },
       {
         map: config.db?.map,

@@ -1,5 +1,58 @@
 # @keystone-6/cloudinary
 
+## 4.0.1
+
+### Patch Changes
+
+- [#7803](https://github.com/keystonejs/keystone/pull/7803) [`a711c46e0`](https://github.com/keystonejs/keystone/commit/a711c46e03229d447cde207b30113198f06e91de) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updates `graphql-upload` to `15.0.2`
+
+* [#7804](https://github.com/keystonejs/keystone/pull/7804) [`c93768cab`](https://github.com/keystonejs/keystone/commit/c93768cab52c76384608f1d890b1ba1840be5e7d) Thanks [@dcousens](https://github.com/dcousens)! - Removes node `.engines` restrictions
+
+* Updated dependencies [[`c93768cab`](https://github.com/keystonejs/keystone/commit/c93768cab52c76384608f1d890b1ba1840be5e7d)]:
+  - @keystone-ui/button@7.0.1
+  - @keystone-ui/core@5.0.1
+  - @keystone-ui/fields@7.1.1
+  - @keystone-ui/pill@7.0.1
+
+## 4.0.0
+
+### Minor Changes
+
+- [#7578](https://github.com/keystonejs/keystone/pull/7578) [`29db9b5de`](https://github.com/keystonejs/keystone/commit/29db9b5de4d4a13150730f797463e3f8bb1c75d8) Thanks [@Achisingh](https://github.com/Achisingh)! - Adds `ui.description` for fields to show a description below the label in the Admin UI
+
+### Patch Changes
+
+- [#7538](https://github.com/keystonejs/keystone/pull/7538) [`c862e876c`](https://github.com/keystonejs/keystone/commit/c862e876c411c26ab5356d155f9c8914663e9654) Thanks [@borisno2](https://github.com/borisno2)! - Added support for MySQL
+
+* [#7607](https://github.com/keystonejs/keystone/pull/7607) [`52e547748`](https://github.com/keystonejs/keystone/commit/52e547748fcb9a7600a5500d8aabc27693542181) Thanks [@mmachatschek](https://github.com/mmachatschek)! - Changes the `cloudinaryImage` GraphQL output type to be exported for developer usage, for example in virtual fields
+
+* Updated dependencies [[`65382ed80`](https://github.com/keystonejs/keystone/commit/65382ed80a77761fd7b0b7b21990151ab7b3eb30), [`f5fe35573`](https://github.com/keystonejs/keystone/commit/f5fe35573d0e12e9a624a717c464817031cfe760), [`29db9b5de`](https://github.com/keystonejs/keystone/commit/29db9b5de4d4a13150730f797463e3f8bb1c75d8), [`a48fe5e81`](https://github.com/keystonejs/keystone/commit/a48fe5e818421524a6e1f5c52f21431444e003c7), [`c862e876c`](https://github.com/keystonejs/keystone/commit/c862e876c411c26ab5356d155f9c8914663e9654), [`7f83b438b`](https://github.com/keystonejs/keystone/commit/7f83b438b0001c19058b09b0532dc3ef485696bb), [`153eb6778`](https://github.com/keystonejs/keystone/commit/153eb67784cf18417831598715d2689c0173296b), [`c862e876c`](https://github.com/keystonejs/keystone/commit/c862e876c411c26ab5356d155f9c8914663e9654), [`ffb9ab744`](https://github.com/keystonejs/keystone/commit/ffb9ab74442a036f9c6bc7546bf0fa61c770445b), [`29db9b5de`](https://github.com/keystonejs/keystone/commit/29db9b5de4d4a13150730f797463e3f8bb1c75d8), [`86569dd75`](https://github.com/keystonejs/keystone/commit/86569dd751dc63d41103f69509abb882e45f9c54), [`f9ca9eddf`](https://github.com/keystonejs/keystone/commit/f9ca9eddf69864e8f85c5df1ea56a5400c9916e2)]:
+  - @keystone-6/core@2.1.0
+  - @keystone-ui/fields@7.1.0
+
+## 3.0.0
+
+### Major Changes
+
+- [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - upgrade dependancy `"react": "^18.1.0"`
+
+### Patch Changes
+
+- Updated dependencies [[`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`8add4212c`](https://github.com/keystonejs/keystone/commit/8add4212cdb9304ebe054763eddd78640db62b42), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`f603859cc`](https://github.com/keystonejs/keystone/commit/f603859cc6607327a45c0a519c7a9b6e58e02d6b), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea)]:
+  - @keystone-6/core@2.0.0
+  - @keystone-ui/fields@7.0.0
+  - @keystone-ui/button@7.0.0
+  - @keystone-ui/core@5.0.0
+  - @keystone-ui/pill@7.0.0
+
+## 2.0.0
+
+### Patch Changes
+
+- Updated dependencies [[`5d96ee646`](https://github.com/keystonejs/keystone/commit/5d96ee646b3c6342935464763071ad7c3f0a8b43), [`dfb4aea31`](https://github.com/keystonejs/keystone/commit/dfb4aea3112ed83322a698f177545618275699b7), [`3e538d136`](https://github.com/keystonejs/keystone/commit/3e538d1360add48c37a099de7c9d1621e2c74ddf), [`518bd2e43`](https://github.com/keystonejs/keystone/commit/518bd2e437227fbd1a8f7fb947dcb11c57ffb7dd), [`ec8103a12`](https://github.com/keystonejs/keystone/commit/ec8103a12861a7cd182603b82aa3b1133a43da4e), [`81e663d31`](https://github.com/keystonejs/keystone/commit/81e663d3157b3c49a191aaa1bc1c179dd8cc34d4), [`4f3d0a073`](https://github.com/keystonejs/keystone/commit/4f3d0a073dba50f22505af545402a2f1e38afe0d), [`45c2bbaf3`](https://github.com/keystonejs/keystone/commit/45c2bbaf34594e135ccd09f5c9221eb822ac9965), [`6cea02475`](https://github.com/keystonejs/keystone/commit/6cea02475b02528e5f04f0a5bca641367ca1584d)]:
+  - @keystone-ui/fields@6.0.1
+  - @keystone-6/core@1.1.0
+
 ## 1.0.0
 
 ### Major Changes

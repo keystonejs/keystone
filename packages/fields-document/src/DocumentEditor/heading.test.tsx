@@ -26,9 +26,7 @@ test('inserting a heading with a shortcut works', () => {
         </text>
       </heading>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -65,9 +63,7 @@ test('inserting a break at the end of the heading exits the heading', () => {
         </text>
       </paragraph>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -107,9 +103,7 @@ test('inserting a break in the middle of the heading splits the text and does no
         </text>
       </heading>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -134,9 +128,7 @@ test('inserting a break at the start of the heading inserts a paragraph above th
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
       <heading
         level={1}
@@ -147,9 +139,7 @@ test('inserting a break at the start of the heading inserts a paragraph above th
         </text>
       </heading>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);

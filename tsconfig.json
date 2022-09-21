@@ -12,7 +12,9 @@
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
     "noUnusedLocals": true,
     "types": ["@types/jest"],
-    "typeRoots": []
+    "typeRoots": [],
+    "skipLibCheck": false,
+    "resolveJsonModule": true
   },
   "include": ["**/*"],
   "exclude": ["**/node_modules/**/*"]

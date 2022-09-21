@@ -1,7 +1,8 @@
 import { text, relationship, integer } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
-import { setupTestRunner } from '@keystone-6/core/testing';
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { KeystoneContext } from '@keystone-6/core/types';
+import { allowAll } from '@keystone-6/core/access';
 import {
   apiTestConfig,
   expectAccessReturnError,
@@ -9,11 +10,13 @@ import {
   expectGraphQLValidationError,
   expectFilterDenied,
 } from '../utils';
+import { withServer } from '../with-server';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
     lists: {
       User: list({
+        access: allowAll,
         fields: {
           noDash: text(),
           single_dash: text(),
@@ -32,6 +35,7 @@ const runner = setupTestRunner({
         },
       }),
       SecondaryList: list({
+        access: allowAll,
         fields: {
           filterFunctionFalse: integer({ isFilterable: () => false }),
           someUser: relationship({ ref: 'User', isFilterable: true }),
@@ -40,9 +44,11 @@ const runner = setupTestRunner({
       }),
 
       DefaultFilterUndefined: list({
+        access: allowAll,
         fields: { a: integer(), b: integer({ isFilterable: true }) },
       }),
       DefaultFilterFalse: list({
+        access: allowAll,
         fields: { a: integer(), b: integer({ isFilterable: true }) },
         defaultIsFilterable: false,
       }),
@@ -52,19 +58,23 @@ const runner = setupTestRunner({
         defaultIsFilterable: true,
       }),
       DefaultFilterFunctionFalse: list({
+        access: allowAll,
         fields: { a: integer(), b: integer({ isFilterable: true }) },
         defaultIsFilterable: () => false,
       }),
       DefaultFilterFunctionTrue: list({
+        access: allowAll,
         fields: { a: integer(), b: integer({ isFilterable: true }) },
         defaultIsFilterable: () => true,
       }),
       DefaultFilterFunctionFalsey: list({
+        access: allowAll,
         fields: { a: integer(), b: integer({ isFilterable: true }) },
         // @ts-ignore
         defaultIsFilterable: () => null,
       }),
       DefaultFilterFunctionTruthy: list({
+        access: allowAll,
         fields: { a: integer(), b: integer({ isFilterable: true }) },
         // @ts-ignore
         defaultIsFilterable: () => ({}),
@@ -207,6 +217,18 @@ describe('searching by unique fields', () => {
   );
 
   test(
+    'findOne returns null if missing',
+    runner(async ({ context }) => {
+      await context.query.User.createOne({ data: { email: 'test@example.com' } });
+      const { data, errors } = await context.graphql.raw({
+        query: '{ user(where: { email: "unknown@example.com" }) { id email } }',
+      });
+      expect(errors).toBe(undefined);
+      expect(data).toEqual({ user: null });
+    })
+  );
+
+  test(
     'findOne throws error with zero where values',
     runner(async ({ context }) => {
       const { data, errors } = await context.graphql.raw({
@@ -262,7 +284,7 @@ describe('searching by unique fields', () => {
 describe('isFilterable', () => {
   test(
     'isFilterable: false',
-    runner(async ({ graphQLRequest }) => {
+    withServer(runner)(async ({ graphQLRequest }) => {
       const { body } = await graphQLRequest({
         query: '{ users(where: { filterFalse: { equals: 10 } }) { id } }',
       });
@@ -384,7 +406,7 @@ describe('defaultIsFilterable', () => {
 
   test(
     'defaultIsFilterable: false',
-    runner(async ({ graphQLRequest }) => {
+    withServer(runner)(async ({ graphQLRequest }) => {
       const { body } = await graphQLRequest({
         query: '{ defaultFilterFalses(where: { a: { equals: 10 } }) { id } }',
       });

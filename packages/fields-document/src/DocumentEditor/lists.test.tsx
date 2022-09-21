@@ -29,9 +29,7 @@ test('ordered list shortcut', () => {
         </list-item>
       </ordered-list>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -62,9 +60,7 @@ test('unordered list shortcut - ', () => {
         </list-item>
       </unordered-list>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -95,9 +91,7 @@ test('unordered list shortcut * ', () => {
         </list-item>
       </unordered-list>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -214,9 +208,7 @@ test('inserting a break on end of list in empty list item exits list', () => {
         </text>
       </paragraph>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -278,9 +270,7 @@ test('inserting a break in empty list item in the middle of a list splits and ex
         </list-item>
       </unordered-list>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -314,9 +304,7 @@ test('toggle list on empty line', () => {
         </list-item>
       </ordered-list>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -352,9 +340,98 @@ test('toggle list on line with text', () => {
         </list-item>
       </ordered-list>
       <paragraph>
+        <text />
+      </paragraph>
+    </editor>
+  `);
+});
+
+test('toggle list on line with text with marks', () => {
+  let editor = makeEditor(
+    <editor>
+      <paragraph>
         <text>
-          
+          some text. <cursor />
         </text>
+        <text bold>this is bold.</text>
+        <text> this is not bold again</text>
+      </paragraph>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>
+  );
+
+  toggleList(editor, 'ordered-list');
+
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <ordered-list>
+        <list-item>
+          <list-item-content>
+            <text>
+              some text. 
+              <cursor />
+            </text>
+            <text
+              bold={true}
+            >
+              this is bold.
+            </text>
+            <text>
+               this is not bold again
+            </text>
+          </list-item-content>
+        </list-item>
+      </ordered-list>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>
+  `);
+});
+
+test('toggle list on list with text with marks', () => {
+  let editor = makeEditor(
+    <editor>
+      <ordered-list>
+        <list-item>
+          <list-item-content>
+            <text>
+              some text.
+              <cursor />
+            </text>
+            <text bold>this is bold.</text>
+            <text>this is not bold again</text>
+          </list-item-content>
+        </list-item>
+      </ordered-list>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>
+  );
+
+  toggleList(editor, 'ordered-list');
+
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <paragraph>
+        <text>
+          some text.
+          <cursor />
+        </text>
+        <text
+          bold={true}
+        >
+          this is bold.
+        </text>
+        <text>
+          this is not bold again
+        </text>
+      </paragraph>
+      <paragraph>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -390,9 +467,7 @@ test('toggle ordered-list inside of ordered-list', () => {
         </text>
       </paragraph>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -456,9 +531,7 @@ test('toggle ordered-list inside of multi-item ordered-list', () => {
         </list-item>
       </ordered-list>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -526,9 +599,7 @@ test('toggle unordered-list inside of single item in multi-item ordered-list', (
         </list-item>
       </ordered-list>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -596,9 +667,7 @@ test('toggle unordered-list for all items in multi-item ordered-list', () => {
         </list-item>
       </unordered-list>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -660,9 +729,7 @@ test('backspace at start of list only unwraps the first item', () => {
         </list-item>
       </ordered-list>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -713,9 +780,7 @@ test('nested list as direct child of list is moved to last list-item', () => {
         </list-item>
       </unordered-list>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -776,9 +841,7 @@ test('nest list', () => {
         </list-item>
       </unordered-list>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -846,9 +909,7 @@ test('nest list when previous thing is nested', () => {
         </list-item>
       </unordered-list>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -894,9 +955,7 @@ test('inserting a break on end of list non-empty list item adds a new list item'
         </list-item>
       </unordered-list>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -951,9 +1010,7 @@ test('changing the type of a nested list', () => {
         </list-item>
       </unordered-list>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -1024,9 +1081,7 @@ test('changing the type of a nested list to something which it is nested inside'
         </list-item>
       </unordered-list>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -1093,9 +1148,7 @@ test('nesting a list item in an ordered list into an unordered list makes the it
         </list-item>
       </unordered-list>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);

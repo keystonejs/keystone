@@ -27,9 +27,7 @@ test('inserting a code block with a shortcut works', () => {
         </text>
       </code>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -65,9 +63,7 @@ test('insertBreak inserts a soft break', () => {
         </text>
       </code>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -113,7 +109,7 @@ test('non-text is removed from code blocks', () => {
   expect(editor).toMatchInlineSnapshot(`
     <editor
       marks={
-        Object {
+        {
           "bold": true,
         }
       }
@@ -130,14 +126,10 @@ test('non-text is removed from code blocks', () => {
       <divider
         @@isVoid={true}
       >
-        <text>
-          
-        </text>
+        <text />
       </divider>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -161,25 +153,23 @@ test('insertBreak when at end with \n as last character exits code block', () =>
   editor.insertBreak();
 
   expect(editor).toMatchInlineSnapshot(`
-      <editor>
-        <code>
-          <text>
-            asdkjnajsndakjndkjnaksdjn
-      asdasdasd
-          </text>
-        </code>
-        <paragraph>
-          <text>
-            <cursor />
-          </text>
-        </paragraph>
-        <paragraph>
-          <text>
-            
-          </text>
-        </paragraph>
-      </editor>
-    `);
+    <editor>
+      <code>
+        <text>
+          asdkjnajsndakjndkjnaksdjn
+    asdasdasd
+        </text>
+      </code>
+      <paragraph>
+        <text>
+          <cursor />
+        </text>
+      </paragraph>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>
+  `);
 });
 
 test('insertBreak in the middle of the text when there is a break at the end of the text', () => {

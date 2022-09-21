@@ -34,15 +34,6 @@ export const storedValues = () => [
   { name: 'person7', lastOnline: null },
 ];
 
-export const supportedFilters = () => [
-  'null_equality',
-  'equality',
-  'ordering',
-  'in_empty_null',
-  'in_equal',
-  'unique_equality',
-];
-
 export const filterTests = (withKeystone: (args: any) => any) => {
   const match = async (
     context: KeystoneContext,
@@ -61,7 +52,7 @@ export const filterTests = (withKeystone: (args: any) => any) => {
         match(
           context,
           undefined,
-          provider === 'sqlite'
+          provider === 'sqlite' || provider === 'mysql'
             ? [
                 { name: 'person6', lastOnline: null },
                 { name: 'person7', lastOnline: null },
@@ -92,7 +83,7 @@ export const filterTests = (withKeystone: (args: any) => any) => {
         match(
           context,
           undefined,
-          provider === 'sqlite'
+          provider === 'sqlite' || provider === 'mysql'
             ? [
                 { name: 'person5', lastOnline: '2020-06-10T10:20:30.456Z' },
                 { name: 'person4', lastOnline: '2000-01-20T00:08:00.000Z' },

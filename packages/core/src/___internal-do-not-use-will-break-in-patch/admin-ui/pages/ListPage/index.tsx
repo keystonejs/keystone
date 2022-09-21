@@ -5,12 +5,13 @@ import { Fragment, HTMLAttributes, ReactNode, useEffect, useMemo, useState } fro
 
 import { Button } from '@keystone-ui/button';
 import { Box, Center, Heading, jsx, Stack, useTheme, VisuallyHidden } from '@keystone-ui/core';
-import { CheckboxControl } from '@keystone-ui/fields';
+import { CheckboxControl, TextInput } from '@keystone-ui/fields';
 import { ArrowRightCircleIcon } from '@keystone-ui/icons/icons/ArrowRightCircleIcon';
 import { LoadingDots } from '@keystone-ui/loading';
-import { AlertDialog, DrawerController } from '@keystone-ui/modals';
+import { AlertDialog } from '@keystone-ui/modals';
 import { useToasts } from '@keystone-ui/toast';
 
+import { SearchIcon } from '@keystone-ui/icons/icons/SearchIcon';
 import { ListMeta } from '../../../../types';
 import {
   getRootGraphQLFieldsFromFieldController,
@@ -20,11 +21,12 @@ import {
 } from '../../../../admin-ui/utils';
 import { gql, TypedDocumentNode, useMutation, useQuery } from '../../../../admin-ui/apollo';
 import { CellLink } from '../../../../admin-ui/components';
-import { CreateItemDrawer } from '../../../../admin-ui/components/CreateItemDrawer';
 import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/PageContainer';
 import { Pagination, PaginationLabel } from '../../../../admin-ui/components/Pagination';
 import { useList } from '../../../../admin-ui/context';
 import { Link, useRouter } from '../../../../admin-ui/router';
+import { useFilter } from '../../../../fields/types/relationship/views/RelationshipSelect';
+import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink';
 import { FieldSelection } from './FieldSelection';
 import { FilterAdd } from './FilterAdd';
 import { FilterList } from './FilterList';
@@ -131,7 +133,7 @@ export const getListPage = (props: ListPageProps) => () => <ListPage {...props} 
 const ListPage = ({ listKey }: ListPageProps) => {
   const list = useList(listKey);
 
-  const { query } = useRouter();
+  const { query, push } = useRouter();
 
   const { resetToDefaults } = useQueryParamsFromLocalStorage(listKey);
 
@@ -162,8 +164,25 @@ const ListPage = ({ listKey }: ListPageProps) => {
   }, [metaQuery.data?.keystone.adminMeta.list?.fields]);
 
   const sort = useSort(list, orderableFields);
-
   const filters = useFilters(list, filterableFields);
+
+  const searchFields = Object.values(list.fields)
+    .filter(({ search }) => search !== null)
+    .map(({ label }) => label);
+
+  const searchParam = typeof query.search === 'string' ? query.search : '';
+  const [searchString, updateSearchString] = useState(searchParam);
+  const search = useFilter(searchParam, list);
+
+  const updateSearch = (value: string) => {
+    const { search, ...queries } = query;
+
+    if (value.trim()) {
+      push({ query: { ...queries, search: value } });
+    } else {
+      push({ query: queries });
+    }
+  };
 
   let selectedFields = useSelectedFields(list, listViewFieldModesByField);
 
@@ -201,7 +220,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
       errorPolicy: 'all',
       skip: !metaQuery.data,
       variables: {
-        where: filters.where,
+        where: { ...filters.where, ...search },
         take: pageSize,
         skip: (currentPage - 1) * pageSize,
         orderBy: sort ? [{ [sort.field]: sort.direction.toLowerCase() }] : undefined,
@@ -248,13 +267,35 @@ const ListPage = ({ listKey }: ListPageProps) => {
         'Error...'
       ) : data && metaQuery.data ? (
         <Fragment>
+          {list.description !== null && (
+            <p css={{ marginTop: '24px', maxWidth: '704px' }}>{list.description}</p>
+          )}
           <Stack across gap="medium" align="center" marginTop="xlarge">
-            {showCreate && <CreateButton listKey={listKey} />}
+            <form
+              onSubmit={e => {
+                e.preventDefault();
+                updateSearch(searchString);
+              }}
+            >
+              <Stack across>
+                <TextInput
+                  css={{ borderRadius: '4px 0px 0px 4px' }}
+                  autoFocus
+                  value={searchString}
+                  onChange={e => updateSearchString(e.target.value)}
+                  placeholder={`Search by ${searchFields.length ? searchFields.join(', ') : 'ID'}`}
+                />
+                <Button css={{ borderRadius: '0px 4px 4px 0px' }} type="submit">
+                  <SearchIcon />
+                </Button>
+              </Stack>
+            </form>
+            {showCreate && <CreateButtonLink list={list} />}
             {data.count || filters.filters.length ? (
               <FilterAdd listKey={listKey} filterableFields={filterableFields} />
             ) : null}
             {filters.filters.length ? <FilterList filters={filters.filters} list={list} /> : null}
-            {Boolean(Object.keys(query).length) && (
+            {Boolean(filters.filters.length || query.sortBy || query.fields || query.search) && (
               <Button size="small" onClick={resetToDefaults}>
                 Reset to defaults
               </Button>
@@ -335,39 +376,6 @@ const ListPage = ({ listKey }: ListPageProps) => {
   );
 };
 
-const CreateButton = ({ listKey }: { listKey: string }) => {
-  const list = useList(listKey);
-  const router = useRouter();
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-
-  return (
-    <Fragment>
-      <Button
-        disabled={isCreateModalOpen}
-        onClick={() => {
-          setIsCreateModalOpen(true);
-        }}
-        tone="active"
-        size="small"
-        weight="bold"
-      >
-        Create {list.singular}
-      </Button>
-      <DrawerController isOpen={isCreateModalOpen}>
-        <CreateItemDrawer
-          listKey={listKey}
-          onCreate={({ id }) => {
-            router.push(`/${list.path}/[id]`, `/${list.path}/${id}`);
-          }}
-          onClose={() => {
-            setIsCreateModalOpen(false);
-          }}
-        />
-      </DrawerController>
-    </Fragment>
-  );
-};
-
 const ListPageHeader = ({ listKey }: { listKey: string }) => {
   const list = useList(listKey);
   return (
@@ -381,7 +389,6 @@ const ListPageHeader = ({ listKey }: { listKey: string }) => {
         }}
       >
         <Heading type="h3">{list.label}</Heading>
-        {/* <CreateButton listKey={listKey} /> */}
       </div>
     </Fragment>
   );

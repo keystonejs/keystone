@@ -2,11 +2,11 @@ import pLimit from 'p-limit';
 import { FieldData, KeystoneConfig, getGqlNames } from '../types';
 
 import { createAdminMeta } from '../admin-ui/system/createAdminMeta';
+import { PrismaModule } from '../artifacts';
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './context/createContext';
 import { initialiseLists } from './core/types-for-lists';
-import { CloudAssetsAPI, getCloudAssetsAPI } from './cloud/assets';
-import { setWriteLimit } from './core/utils';
+import { setPrismaNamespace, setWriteLimit } from './core/utils';
 
 function getSudoGraphQLSchema(config: KeystoneConfig) {
   // This function creates a GraphQLSchema based on a modified version of the provided config.
@@ -32,7 +32,7 @@ function getSudoGraphQLSchema(config: KeystoneConfig) {
           listKey,
           {
             ...list,
-            access: { operation: {}, item: {}, filter: {} },
+            access: () => true,
             graphql: { ...(list.graphql || {}), omit: [] },
             fields: Object.fromEntries(
               Object.entries(list.fields).map(([fieldKey, field]) => {
@@ -73,12 +73,13 @@ export function createSystem(config: KeystoneConfig, isLiveReload?: boolean) {
   return {
     graphQLSchema,
     adminMeta,
-    getKeystone: (PrismaClient: any) => {
-      const prismaClient = new PrismaClient({
+    getKeystone: (prismaModule: PrismaModule) => {
+      const prismaClient = new prismaModule.PrismaClient({
         log: config.db.enableLogging ? ['query'] : undefined,
         datasources: { [config.db.provider]: { url: config.db.url } },
       });
       setWriteLimit(prismaClient, pLimit(config.db.provider === 'sqlite' ? 1 : Infinity));
+      setPrismaNamespace(prismaClient, prismaModule.Prisma);
       prismaClient.$on('beforeExit', async () => {
         // Prisma is failing to properly clean up its child processes
         // https://github.com/keystonejs/keystone/issues/5477
@@ -86,8 +87,6 @@ export function createSystem(config: KeystoneConfig, isLiveReload?: boolean) {
         // to ensure that the process is cleaned up appropriately.
         prismaClient._engine.child?.kill('SIGINT');
       });
-
-      let cloudAssetsAPI: CloudAssetsAPI | undefined = undefined;
 
       const createContext = makeCreateContext({
         graphQLSchema,
@@ -98,12 +97,6 @@ export function createSystem(config: KeystoneConfig, isLiveReload?: boolean) {
           Object.entries(lists).map(([listKey, list]) => [listKey, getGqlNames(list)])
         ),
         lists,
-        cloudAssetsAPI: () => {
-          if (cloudAssetsAPI === undefined) {
-            throw new Error('Keystone Cloud config was not loaded');
-          }
-          return cloudAssetsAPI;
-        },
       });
 
       return {
@@ -113,17 +106,10 @@ export function createSystem(config: KeystoneConfig, isLiveReload?: boolean) {
             const context = createContext({ sudo: true });
             await config.db.onConnect?.(context);
           }
-          if (config.experimental?.cloud?.apiKey) {
-            try {
-              cloudAssetsAPI = await getCloudAssetsAPI({
-                apiKey: config.experimental.cloud.apiKey,
-              });
-            } catch (err) {
-              console.error('failed to connect to Keystone Cloud', err);
-            }
-          }
         },
         async disconnect() {
+          // Tests that use the stored session won't stop until the store connection is disconnected
+          await config?.session?.disconnect?.();
           await prismaClient.$disconnect();
         },
         createContext,

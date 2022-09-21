@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx, useTheme } from '@keystone-ui/core';
+import { jsx, Portal, useTheme } from '@keystone-ui/core';
 import { HTMLAttributes, forwardRef } from 'react';
 
 type Props = {
@@ -21,7 +21,7 @@ export const InlineDialog = forwardRef<HTMLDivElement, Props>(({ isRelative, ...
       }
     : {};
 
-  return (
+  let dialog = (
     <div
       ref={ref}
       contentEditable={false}
@@ -32,10 +32,15 @@ export const InlineDialog = forwardRef<HTMLDivElement, Props>(({ isRelative, ...
         padding: spacing.small,
         position: 'absolute',
         userSelect: 'none',
-        zIndex: 1,
         ...relativeStyles,
       }}
       {...props}
     />
   );
+
+  if (isRelative) {
+    return dialog;
+  }
+
+  return <Portal>{dialog}</Portal>;
 });

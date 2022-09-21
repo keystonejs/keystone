@@ -8,28 +8,29 @@ import type { BaseFields, FilterOrderArgs } from './fields';
 
 export type ListSchemaConfig = Record<string, ListConfig<any, BaseFields<BaseListTypeInfo>>>;
 
-export type IdFieldConfig = {
-  kind: 'cuid' | 'uuid' | 'autoincrement';
-};
+export type IdFieldConfig =
+  | { kind: 'cuid' | 'uuid' }
+  | {
+      kind: 'autoincrement';
+      /**
+       * Configures the database type of the id field. Only `Int` is supported on SQLite.
+       * @default 'Int'
+       */
+      type?: 'Int' | 'BigInt';
+    };
 
 export type ListConfig<
   ListTypeInfo extends BaseListTypeInfo,
   Fields extends BaseFields<ListTypeInfo>
 > = {
-  /*
-      A note on defaults: several options default based on the listKey, including label, path,
-      singular, plural, itemQueryName and listQueryName. All these options default independently, so
-      changing the singular or plural will not change the label or queryName options (and vice-versa)
-      Note from Mitchell: The above is incorrect based on Keystone's current implementation.
-    */
+  isSingleton?: boolean;
   fields: Fields;
 
   /**
    * Controls what data users of the Admin UI and GraphQL can access and change
-   * @default true
    * @see https://www.keystonejs.com/guides/auth-and-access-control
    */
-  access?: ListAccessControl<ListTypeInfo>;
+  access: ListAccessControl<ListTypeInfo>;
 
   /** Config for how this list should act in the Admin UI */
   ui?: ListAdminUIConfig<ListTypeInfo, Fields>;
@@ -52,30 +53,6 @@ export type ListConfig<
   // Defaults to apply to all fields.
   defaultIsFilterable?: false | ((args: FilterOrderArgs<ListTypeInfo>) => MaybePromise<boolean>); // The default value to use for graphql.isEnabled.filter on all fields for this list
   defaultIsOrderable?: false | ((args: FilterOrderArgs<ListTypeInfo>) => MaybePromise<boolean>); // The default value to use for graphql.isEnabled.orderBy on all fields for this list
-
-  /**
-   * The label used for the list
-   * @default listKey.replace(/([a-z])([A-Z])/g, '$1 $2').split(/\s|_|\-/).filter(i => i).map(upcase).join(' ');
-   */
-  // Not currently supported
-  // label?: string;
-
-  /**
-   * The singular form of the list key
-   * @default pluralize.singular(label)
-   */
-  // Not currently supported
-  // singular?: string;
-
-  /**
-   * The plural form of the list key
-   * @default pluralize.plural(label)
-   */
-  // Not currently supported
-  // plural?: string;
-
-  // TODO: Come back to how we can facilitate unique fields and combinations of fields (for
-  // queries, upserts, etc, in particular follow Prisma's design)
 };
 
 export type ListAdminUIConfig<
@@ -167,6 +144,36 @@ export type ListAdminUIConfig<
     pageSize?: number; // default number of items to display per page on the list screen
     // note: we are removing maximumPageSize
   };
+
+  /**
+   * The label used to identify the list in navigation and etc.
+   * @default listKey.replace(/([a-z])([A-Z])/g, '$1 $2').split(/\s|_|\-/).filter(i => i).map(upcase).join(' ');
+   */
+  label?: string;
+
+  /**
+   * The singular form of the list key.
+   *
+   * It is used in sentences like `Are you sure you want to delete these {plural}?`
+   * @default pluralize.singular(label)
+   */
+  singular?: string;
+
+  /**
+   * The plural form of the list key.
+   *
+   * It is used in sentences like `Are you sure you want to delete this {singular}?`.
+   * @default pluralize.plural(label)
+   */
+  plural?: string;
+
+  /**
+   * The path segment to identify the list in URLs.
+   *
+   * It must match the pattern `/^[a-z-_][a-z0-9-_]*$/`.
+   * @default label.split(' ').join('-').toLowerCase()
+   */
+  path?: string;
 };
 
 export type MaybeSessionFunction<

@@ -2,21 +2,91 @@ import { initConfig, createSystem } from '@keystone-6/core/system';
 import { getCommittedArtifacts } from '@keystone-6/core/artifacts';
 import { KeystoneConfig, KeystoneContext, DatabaseProvider } from '@keystone-6/core/types';
 
-export const dbProvider = process.env.TEST_ADAPTER as DatabaseProvider;
+let prevConsoleWarn = console.warn;
+
+console.warn = function (...args: unknown[]) {
+  if (
+    typeof args[0] === 'string' &&
+    args[0].endsWith(
+      // this is expected
+      'There are already 10 instances of Prisma Client actively running.'
+    )
+  ) {
+    return;
+  }
+  prevConsoleWarn.apply(this, args);
+};
+
+export const dbProvider: DatabaseProvider = (() => {
+  let provider = process.env.TEST_ADAPTER;
+  if (provider === undefined) {
+    if (process.env.CI) {
+      throw new Error('TEST_ADAPTER must be explicitly set in CI');
+    }
+    return 'sqlite';
+  }
+  if (provider === 'sqlite' || provider === 'postgresql' || provider === 'mysql') {
+    return provider;
+  }
+  throw new Error(`Unexpected TEST_ADAPTER value: ${provider}`);
+})();
+
+// TODO: remove usages of TEST_ADAPTER
+process.env.TEST_ADAPTER = dbProvider;
+
+const workerId = process.env.JEST_WORKER_ID;
+
+if (workerId === undefined) {
+  throw new Error('expected JEST_WORKER_ID to be set');
+}
+
+export const SQLITE_DATABASE_FILENAME = `test.db`;
+
+export const { dbUrl, dbName } = ((): { dbUrl: string; dbName: string } => {
+  if (dbProvider === 'sqlite') {
+    return { dbUrl: `file:./${SQLITE_DATABASE_FILENAME}`, dbName: SQLITE_DATABASE_FILENAME };
+  }
+  const dbUrl = process.env.DATABASE_URL;
+
+  if (dbUrl === undefined) {
+    throw new Error(`DATABASE_URL must be set when using TEST_ADAPTER=${dbProvider}`);
+  }
+
+  if (
+    !(
+      dbUrl.startsWith(`${dbProvider}://`) ||
+      (dbProvider === 'postgresql' && dbUrl.startsWith('postgres://'))
+    )
+  ) {
+    throw new Error(
+      `DATABASE_URL must start with ${dbProvider}:// when using TEST_ADAPTER=${dbProvider}`
+    );
+  }
+
+  // the URL constructor puts everything after the protocol for unknown protocols into the pathname which isn't what we want here
+  const url = new URL(dbUrl.replace(/^(mysql|postgres(?:ql)?)/, 'http'));
+
+  url.pathname += `-${workerId}`;
+
+  return {
+    dbUrl: url.toString().replace(/^http/, dbProvider),
+    // the .slice(1) is because pathname includes the `/`
+    dbName: url.pathname.slice(1),
+  };
+})();
+
+export type APITestConfig = Omit<KeystoneConfig, 'db'> & {
+  db?: Omit<KeystoneConfig['db'], 'provider' | 'url'>;
+};
 
 // This function injects the db configuration that we use for testing in CI.
-// This functionality is a keystone repo specific way of doing things, so we don't
-// export it from `@keystone-6/core/testing`.
-export const apiTestConfig = (
-  config: Omit<KeystoneConfig, 'db'> & {
-    db?: Omit<KeystoneConfig['db'], 'provider' | 'url'>;
-  }
-): KeystoneConfig => ({
+// This functionality is a keystone repo specific way of doing things
+export const apiTestConfig = (config: APITestConfig): KeystoneConfig => ({
   ...config,
   db: {
     ...config.db,
     provider: dbProvider,
-    url: process.env.DATABASE_URL as string,
+    url: dbUrl,
   },
 });
 
@@ -129,7 +199,7 @@ export const expectExtensionError = (
 
 export const expectPrismaError = (
   errors: readonly any[] | undefined,
-  args: { path: any[]; message: string; code: string; target: string[] }[]
+  args: { path: (string | number)[]; message: string; code: string; target: string[] | string }[]
 ) => {
   const unpackedErrors = unpackErrors(errors);
   expect(unpackedErrors).toEqual(
@@ -259,7 +329,7 @@ export async function seed<T extends Record<keyof T, Record<string, unknown>[]>>
   initialData: T
 ) {
   const results: any = {};
-  for (const listKey in initialData) {
+  for (const listKey of Object.keys(initialData)) {
     results[listKey as keyof T] = await context.sudo().query[listKey].createMany({
       data: initialData[listKey as keyof T],
     });

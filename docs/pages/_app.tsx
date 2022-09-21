@@ -1,17 +1,17 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { ToastProvider } from 'react-toast-notifications';
-import { jsx, Global, css } from '@emotion/react';
-import { Fragment } from 'react';
+import { jsx, Global, css, CacheProvider } from '@emotion/react';
 import type { AppProps } from 'next/app';
-import Head from 'next/head';
+import { cache } from '@emotion/css';
 
+import Head from 'next/head';
 import { proseStyles } from '../lib/prose-lite';
 import { Theme } from '../components/Theme';
+import { SkipLinks } from '../components/SkipLinks';
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <Fragment>
+    <CacheProvider value={cache}>
       <Global
         styles={css`
         .prose {
@@ -26,6 +26,8 @@ export default function App({ Component, pageProps }: AppProps) {
         }
         body {
           font-size: var(--font-small);
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
         }
         html, body {
           background: var(--app-bg);
@@ -96,9 +98,8 @@ export default function App({ Component, pageProps }: AppProps) {
           content="width=device-width,initial-scale=1,shrink-to-fit=no,viewport-fit=cover"
         />
       </Head>
-      <ToastProvider>
-        <Component {...pageProps} />
-      </ToastProvider>
-    </Fragment>
+      <SkipLinks />
+      <Component {...pageProps} />
+    </CacheProvider>
   );
 }

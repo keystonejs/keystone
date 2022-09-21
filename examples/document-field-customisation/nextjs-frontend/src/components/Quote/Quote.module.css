@@ -1,0 +1,15 @@
+.quote {
+    padding-left: 16px;
+    background-color: #f3f5f6;
+    padding: 4px 12px 16px 48px;
+    position: relative;
+    border-radius: 6px;
+}
+
+.quote::after {
+    content: '\201C';
+    position: absolute;
+    top: 0;
+    left: 16px;
+    font-size: 4rem;
+}

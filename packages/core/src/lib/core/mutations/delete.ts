@@ -24,7 +24,7 @@ async function deleteSingle(
   }
 
   // Validate and resolve the input filter
-  const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, list.fields, context);
+  const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, list, context);
 
   // Check filter access
   const fieldKey = Object.keys(uniqueWhere)[0];

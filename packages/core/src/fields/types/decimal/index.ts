@@ -10,7 +10,6 @@ import {
   FieldData,
 } from '../../../types';
 import { graphql } from '../../..';
-import { resolveView } from '../../resolve-view';
 import {
   assertCreateIsNonNullAllowed,
   assertReadIsNonNullAllowed,
@@ -89,9 +88,9 @@ export const decimal =
         ? undefined
         : parseDecimalValueOption(meta, validation.max, 'validation.max');
     const min =
-      validation?.max === undefined
+      validation?.min === undefined
         ? undefined
-        : parseDecimalValueOption(meta, validation.max, 'validation.max');
+        : parseDecimalValueOption(meta, validation.min, 'validation.min');
 
     if (min !== undefined && max !== undefined && max.lessThan(min)) {
       throw new Error(
@@ -183,7 +182,7 @@ export const decimal =
           return val;
         },
       }),
-      views: resolveView('decimal/views'),
+      views: '@keystone-6/core/fields/types/decimal/views',
       getAdminMeta: (): import('./views').DecimalFieldMeta => ({
         defaultValue: defaultValue ?? null,
         precision,

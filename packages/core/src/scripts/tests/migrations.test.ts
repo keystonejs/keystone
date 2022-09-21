@@ -1,8 +1,6 @@
 import fs from 'fs-extra';
-import { ListSchemaConfig } from '../../types';
-import { checkbox, text } from '../../fields';
 import { requirePrismaClient } from '../../artifacts';
-import { config, list } from '../..';
+import { setSkipWatching } from '../run/dev';
 import { ExitError } from '../utils';
 import {
   getFiles,
@@ -13,24 +11,11 @@ import {
   testdir,
 } from './utils';
 
-const basicLists = {
-  Todo: list({
-    fields: {
-      title: text(),
-    },
-  }),
-};
+// watching with esbuild inside of jest goes _weird_
+// esbuild doesn't seem to let you wait for the cleanup
+setSkipWatching();
 
 const dbUrl = 'file:./app.db';
-
-const basicKeystoneConfig = (useMigrations: boolean, lists: ListSchemaConfig = basicLists) => ({
-  kind: 'config' as const,
-  config: config({
-    db: { provider: 'sqlite', url: dbUrl, useMigrations },
-    ui: { isDisabled: true },
-    lists,
-  }),
-});
 
 async function setupAndStopDevServerForMigrations(cwd: string, resetDb: boolean = false) {
   let stopServer = (await runCommand(
@@ -41,7 +26,7 @@ async function setupAndStopDevServerForMigrations(cwd: string, resetDb: boolean 
 }
 
 function getPrismaClient(cwd: string) {
-  const prismaClient = new (requirePrismaClient(cwd))({
+  const prismaClient = new (requirePrismaClient(cwd).PrismaClient)({
     datasources: { sqlite: { url: dbUrl } },
   });
   return prismaClient;
@@ -79,10 +64,12 @@ function cleanOutputForApplyingMigration(output: string, generatedMigrationName:
     .replace('✅ The migration has been applied\n', '');
 }
 
+const basicKeystoneConfig = fs.readFileSync(`${__dirname}/fixtures/basic-with-no-ui.ts`, 'utf8');
+
 async function setupInitialProjectWithoutMigrations() {
   const tmp = await testdir({
     ...symlinkKeystoneDeps,
-    'keystone.js': basicKeystoneConfig(false),
+    'keystone.js': basicKeystoneConfig,
   });
   const recording = recordConsole();
   await setupAndStopDevServerForMigrations(tmp);
@@ -139,11 +126,7 @@ describe('useMigrations: false', () => {
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...(await getDatabaseFiles(prevCwd)),
-      'keystone.js': basicKeystoneConfig(false, {
-        Todo: {
-          fields: {},
-        },
-      }),
+      'keystone.js': await fs.readFile(`${__dirname}/fixtures/no-fields.ts`, 'utf8'),
     });
     const recording = recordConsole({
       'Do you want to continue? Some data will be lost.': true,
@@ -152,8 +135,8 @@ describe('useMigrations: false', () => {
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
-        provider = \\"sqlite\\"
-        url      = \\"file:./app.db\\"
+        provider = "sqlite"
+        url      = "file:./app.db"
       }
 
       model Todo {
@@ -185,11 +168,7 @@ describe('useMigrations: false', () => {
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...(await getDatabaseFiles(prevCwd)),
-      'keystone.js': basicKeystoneConfig(false, {
-        Todo: {
-          fields: {},
-        },
-      }),
+      'keystone.js': await fs.readFile(`${__dirname}/fixtures/no-fields.ts`, 'utf8'),
     });
     const recording = recordConsole({
       'Do you want to continue? Some data will be lost.': false,
@@ -198,13 +177,13 @@ describe('useMigrations: false', () => {
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
-        provider = \\"sqlite\\"
-        url      = \\"file:./app.db\\"
+        provider = "sqlite"
+        url      = "file:./app.db"
       }
 
       model Todo {
         id    String @id
-        title String @default(\\"\\")
+        title String @default("")
       }
       "
     `);
@@ -250,10 +229,15 @@ describe('useMigrations: false', () => {
   });
 });
 
+const basicWithMigrations = fs.readFileSync(
+  `${__dirname}/fixtures/one-field-with-migrations.ts`,
+  'utf8'
+);
+
 async function setupInitialProjectWithMigrations() {
   const tmp = await testdir({
     ...symlinkKeystoneDeps,
-    'keystone.js': basicKeystoneConfig(true),
+    'keystone.js': basicWithMigrations,
   });
   const recording = recordConsole({
     'Name of migration': 'init',
@@ -310,14 +294,10 @@ describe('useMigrations: true', () => {
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...(await getDatabaseFiles(prevCwd)),
-      'keystone.js': basicKeystoneConfig(true, {
-        Todo: {
-          fields: {
-            title: text(),
-            isComplete: checkbox(),
-          },
-        },
-      }),
+      'keystone.js': await fs.readFile(
+        `${__dirname}/fixtures/two-fields-with-migrations.ts`,
+        'utf8'
+      ),
     });
     const recording = recordConsole({
       'Name of migration': 'add-is-complete',
@@ -327,13 +307,13 @@ describe('useMigrations: true', () => {
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
-        provider = \\"sqlite\\"
-        url      = \\"file:./app.db\\"
+        provider = "sqlite"
+        url      = "file:./app.db"
       }
 
       model Todo {
         id         String  @id
-        title      String  @default(\\"\\")
+        title      String  @default("")
         isComplete Boolean @default(false)
       }
       "
@@ -344,14 +324,14 @@ describe('useMigrations: true', () => {
     expect(migration).toMatchInlineSnapshot(`
       "-- RedefineTables
       PRAGMA foreign_keys=OFF;
-      CREATE TABLE \\"new_Todo\\" (
-          \\"id\\" TEXT NOT NULL PRIMARY KEY,
-          \\"title\\" TEXT NOT NULL DEFAULT '',
-          \\"isComplete\\" BOOLEAN NOT NULL DEFAULT false
+      CREATE TABLE "new_Todo" (
+          "id" TEXT NOT NULL PRIMARY KEY,
+          "title" TEXT NOT NULL DEFAULT '',
+          "isComplete" BOOLEAN NOT NULL DEFAULT false
       );
-      INSERT INTO \\"new_Todo\\" (\\"id\\", \\"title\\") SELECT \\"id\\", \\"title\\" FROM \\"Todo\\";
-      DROP TABLE \\"Todo\\";
-      ALTER TABLE \\"new_Todo\\" RENAME TO \\"Todo\\";
+      INSERT INTO "new_Todo" ("id", "title") SELECT "id", "title" FROM "Todo";
+      DROP TABLE "Todo";
+      ALTER TABLE "new_Todo" RENAME TO "Todo";
       PRAGMA foreign_key_check;
       PRAGMA foreign_keys=ON;
       "
@@ -381,11 +361,10 @@ describe('useMigrations: true', () => {
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...(await getDatabaseFiles(prevCwd)),
-      'keystone.js': basicKeystoneConfig(true, {
-        Todo: {
-          fields: {},
-        },
-      }),
+      'keystone.js': await fs.readFile(
+        `${__dirname}/fixtures/no-fields-with-migrations.ts`,
+        'utf8'
+      ),
     });
     const recording = recordConsole({
       'Name of migration': 'remove all fields except id',
@@ -395,8 +374,8 @@ describe('useMigrations: true', () => {
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
-        provider = \\"sqlite\\"
-        url      = \\"file:./app.db\\"
+        provider = "sqlite"
+        url      = "file:./app.db"
       }
 
       model Todo {
@@ -420,12 +399,12 @@ describe('useMigrations: true', () => {
       */
       -- RedefineTables
       PRAGMA foreign_keys=OFF;
-      CREATE TABLE \\"new_Todo\\" (
-          \\"id\\" TEXT NOT NULL PRIMARY KEY
+      CREATE TABLE "new_Todo" (
+          "id" TEXT NOT NULL PRIMARY KEY
       );
-      INSERT INTO \\"new_Todo\\" (\\"id\\") SELECT \\"id\\" FROM \\"Todo\\";
-      DROP TABLE \\"Todo\\";
-      ALTER TABLE \\"new_Todo\\" RENAME TO \\"Todo\\";
+      INSERT INTO "new_Todo" ("id") SELECT "id" FROM "Todo";
+      DROP TABLE "Todo";
+      ALTER TABLE "new_Todo" RENAME TO "Todo";
       PRAGMA foreign_key_check;
       PRAGMA foreign_keys=ON;
       "
@@ -457,7 +436,7 @@ describe('useMigrations: true', () => {
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       'app.db': await fs.readFile(`${prevCwd}/app.db`),
-      'keystone.js': basicKeystoneConfig(true),
+      'keystone.js': await fs.readFile(`${__dirname}/fixtures/one-field-with-migrations.ts`),
     });
     const recording = recordConsole({
       'Do you want to continue? All data will be lost.': true,
@@ -468,13 +447,13 @@ describe('useMigrations: true', () => {
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
-        provider = \\"sqlite\\"
-        url      = \\"file:./app.db\\"
+        provider = "sqlite"
+        url      = "file:./app.db"
       }
 
       model Todo {
         id    String @id
-        title String @default(\\"\\")
+        title String @default("")
       }
       "
     `);
@@ -483,9 +462,9 @@ describe('useMigrations: true', () => {
 
     expect(migration).toMatchInlineSnapshot(`
       "-- CreateTable
-      CREATE TABLE \\"Todo\\" (
-          \\"id\\" TEXT NOT NULL PRIMARY KEY,
-          \\"title\\" TEXT NOT NULL DEFAULT ''
+      CREATE TABLE "Todo" (
+          "id" TEXT NOT NULL PRIMARY KEY,
+          "title" TEXT NOT NULL DEFAULT ''
       );
       "
     `);
@@ -512,7 +491,7 @@ describe('useMigrations: true', () => {
       - The following migration(s) are applied to the database but missing from the local migrations directory: old_migration_name
 
 
-      We need to reset the sqlite database \\"app.db\\" at file:./app.db.
+      We need to reset the sqlite database "app.db" at file:./app.db.
       Prompt: Do you want to continue? All data will be lost. true
 
       ✨ There has been a change to your Keystone schema that requires a migration
@@ -533,7 +512,7 @@ describe('useMigrations: true', () => {
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       'app.db': dbBuffer,
-      'keystone.js': basicKeystoneConfig(true),
+      'keystone.js': await fs.readFile(`${__dirname}/fixtures/no-fields-with-migrations.ts`),
     });
     const recording = recordConsole({
       'Do you want to continue? All data will be lost.': false,
@@ -560,7 +539,7 @@ describe('useMigrations: true', () => {
       - The following migration(s) are applied to the database but missing from the local migrations directory: old_migration_name
 
 
-      We need to reset the sqlite database \\"app.db\\" at file:./app.db.
+      We need to reset the sqlite database "app.db" at file:./app.db.
       Prompt: Do you want to continue? All data will be lost. false
 
       Reset cancelled."
@@ -572,14 +551,7 @@ describe('useMigrations: true', () => {
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...dbFiles,
-      'keystone.js': basicKeystoneConfig(true, {
-        Todo: {
-          fields: {
-            title: text(),
-            isComplete: checkbox(),
-          },
-        },
-      }),
+      'keystone.js': await fs.readFile(`${__dirname}/fixtures/two-fields-with-migrations.ts`),
     });
     const recording = recordConsole({
       'Name of migration': 'add-is-complete',
@@ -589,13 +561,13 @@ describe('useMigrations: true', () => {
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
-        provider = \\"sqlite\\"
-        url      = \\"file:./app.db\\"
+        provider = "sqlite"
+        url      = "file:./app.db"
       }
 
       model Todo {
         id    String @id
-        title String @default(\\"\\")
+        title String @default("")
       }
       "
     `);
@@ -609,14 +581,14 @@ describe('useMigrations: true', () => {
       .toMatchInlineSnapshot(`
       "-- RedefineTables
       PRAGMA foreign_keys=OFF;
-      CREATE TABLE \\"new_Todo\\" (
-          \\"id\\" TEXT NOT NULL PRIMARY KEY,
-          \\"title\\" TEXT NOT NULL DEFAULT '',
-          \\"isComplete\\" BOOLEAN NOT NULL DEFAULT false
+      CREATE TABLE "new_Todo" (
+          "id" TEXT NOT NULL PRIMARY KEY,
+          "title" TEXT NOT NULL DEFAULT '',
+          "isComplete" BOOLEAN NOT NULL DEFAULT false
       );
-      INSERT INTO \\"new_Todo\\" (\\"id\\", \\"title\\") SELECT \\"id\\", \\"title\\" FROM \\"Todo\\";
-      DROP TABLE \\"Todo\\";
-      ALTER TABLE \\"new_Todo\\" RENAME TO \\"Todo\\";
+      INSERT INTO "new_Todo" ("id", "title") SELECT "id", "title" FROM "Todo";
+      DROP TABLE "Todo";
+      ALTER TABLE "new_Todo" RENAME TO "Todo";
       PRAGMA foreign_key_check;
       PRAGMA foreign_keys=ON;
       "
@@ -641,20 +613,20 @@ describe('useMigrations: true', () => {
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...migrations,
-      'keystone.js': basicKeystoneConfig(true),
+      'keystone.js': basicWithMigrations,
     });
     const recording = recordConsole();
     await setupAndStopDevServerForMigrations(tmp);
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
-        provider = \\"sqlite\\"
-        url      = \\"file:./app.db\\"
+        provider = "sqlite"
+        url      = "file:./app.db"
       }
 
       model Todo {
         id    String @id
-        title String @default(\\"\\")
+        title String @default("")
       }
       "
     `);
@@ -667,7 +639,7 @@ describe('useMigrations: true', () => {
       ⭐️ Dev Server Starting on http://localhost:3000
       ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
       ✨ Generating GraphQL and Prisma schemas
-      ✨ sqlite database \\"app.db\\" created at file:./app.db
+      ✨ sqlite database "app.db" created at file:./app.db
       Applying migration \`migration_name\`
       ✨ The following migration(s) have been applied:
 

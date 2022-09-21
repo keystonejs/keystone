@@ -19,8 +19,10 @@ export function GraphQLErrorNotice({ errors, networkError }: GraphQLErrorNoticeP
   if (errors?.length) {
     return (
       <Stack gap="small" marginBottom="large">
-        {errors.map(err => (
-          <Notice tone="negative">{err.message}</Notice>
+        {errors.map((err, idx) => (
+          <Notice tone="negative" key={idx}>
+            {err.message}
+          </Notice>
         ))}
       </Stack>
     );

@@ -160,3 +160,7 @@ type NavItemProps = {
 By default the `isSelected` value if left undefined, will be evaluated by the condition `router.pathname === href`, pass in `isSelected` if you have a custom condition or would like more granular control over the selected state of Navigation items.
 
 See also the [Custom Navigation guide](httpes://keystonejs.com/docs/guides/custom-admin-ui-navigation).
+
+## Try it out in CodeSandbox 🧪
+
+You can play with this example online in a web browser using the free [codesandbox.io](https://codesandbox.io/) service. To launch this example, open the URL <https://githubbox.com/keystonejs/keystone/tree/main/examples/custom-admin-ui-navigation>. You can also fork this sandbox to make your own changes.

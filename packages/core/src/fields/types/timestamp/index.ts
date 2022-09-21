@@ -13,7 +13,6 @@ import {
   assertReadIsNonNullAllowed,
   getResolvedIsNullable,
 } from '../../non-null-graphql';
-import { resolveView } from '../../resolve-view';
 import { TimestampFieldMeta } from './views';
 
 export type TimestampFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
@@ -136,7 +135,7 @@ export const timestamp =
           ? graphql.nonNull(graphql.DateTime)
           : graphql.DateTime,
       }),
-      views: resolveView('timestamp/views'),
+      views: '@keystone-6/core/fields/types/timestamp/views',
       getAdminMeta(): TimestampFieldMeta {
         return {
           defaultValue: defaultValue ?? null,

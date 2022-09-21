@@ -2,10 +2,10 @@
 /** @jsx jsx */
 
 import { ReactEditor, RenderElementProps, useFocused, useSelected } from 'slate-react';
-import { Editor, Node, Range, Transforms } from 'slate';
+import { Editor, Node, Range, Transforms, Text } from 'slate';
 import { forwardRef, memo, useEffect, useMemo, useState } from 'react';
 
-import { jsx, Portal, useTheme } from '@keystone-ui/core';
+import { jsx, useTheme } from '@keystone-ui/core';
 import { useControlledPopover } from '@keystone-ui/popover';
 import { Tooltip } from '@keystone-ui/tooltip';
 import { LinkIcon } from '@keystone-ui/icons/icons/LinkIcon';
@@ -25,6 +25,7 @@ import { getAncestorComponentChildFieldDocumentFeatures, useToolbarState } from 
 import { useEventCallback } from './utils';
 import { ComponentBlock } from './component-blocks/api';
 import { isValidURL } from './isValidURL';
+import { isInlineContainer } from '.';
 
 const isLinkActive = (editor: Editor) => {
   return isElementActive(editor, 'link');
@@ -123,51 +124,49 @@ export const LinkElement = ({
         {children}
       </a>
       {((selected && delayedFocused) || focusedInInlineDialog) && (
-        <Portal>
-          <InlineDialog
-            {...dialog.props}
-            ref={dialog.ref}
-            onFocus={() => {
-              setFocusedInInlineDialog(true);
-            }}
-            onBlur={() => {
-              setFocusedInInlineDialog(false);
-              setLocalForceValidation(true);
-            }}
-          >
-            <div css={{ display: 'flex', flexDirection: 'column' }}>
-              <ToolbarGroup>
-                <input
-                  css={{ fontSize: typography.fontSize.small, width: 240 }}
-                  value={href}
-                  onChange={event => {
-                    setNode({ href: event.target.value });
-                  }}
-                />
-                <Tooltip content="Open link in new tab" weight="subtle">
-                  {attrs => (
-                    <ToolbarButton
-                      as="a"
-                      onMouseDown={event => {
-                        event.preventDefault();
-                      }}
-                      href={href}
-                      target="_blank"
-                      rel="noreferrer"
-                      variant="action"
-                      {...attrs}
-                    >
-                      {externalLinkIcon}
-                    </ToolbarButton>
-                  )}
-                </Tooltip>
-                {separator}
-                <UnlinkButton onUnlink={unlink} />
-              </ToolbarGroup>
-              {showInvalidState && <span css={{ color: 'red' }}>Please enter a valid URL</span>}
-            </div>
-          </InlineDialog>
-        </Portal>
+        <InlineDialog
+          {...dialog.props}
+          ref={dialog.ref}
+          onFocus={() => {
+            setFocusedInInlineDialog(true);
+          }}
+          onBlur={() => {
+            setFocusedInInlineDialog(false);
+            setLocalForceValidation(true);
+          }}
+        >
+          <div css={{ display: 'flex', flexDirection: 'column' }}>
+            <ToolbarGroup>
+              <input
+                css={{ fontSize: typography.fontSize.small, width: 240 }}
+                value={href}
+                onChange={event => {
+                  setNode({ href: event.target.value });
+                }}
+              />
+              <Tooltip content="Open link in new tab" weight="subtle">
+                {attrs => (
+                  <ToolbarButton
+                    as="a"
+                    onMouseDown={event => {
+                      event.preventDefault();
+                    }}
+                    href={href}
+                    target="_blank"
+                    rel="noreferrer"
+                    variant="action"
+                    {...attrs}
+                  >
+                    {externalLinkIcon}
+                  </ToolbarButton>
+                )}
+              </Tooltip>
+              {separator}
+              <UnlinkButton onUnlink={unlink} />
+            </ToolbarGroup>
+            {showInvalidState && <span css={{ color: 'red' }}>Please enter a valid URL</span>}
+          </div>
+        </InlineDialog>
       )}
     </span>
   );
@@ -306,9 +305,41 @@ export function withLink(
   }
 
   editor.normalizeNode = ([node, path]) => {
-    if (node.type === 'link' && Node.string(node) === '') {
-      Transforms.unwrapNodes(editor, { at: path });
-      return;
+    if (node.type === 'link') {
+      if (Node.string(node) === '') {
+        Transforms.unwrapNodes(editor, { at: path });
+        return;
+      }
+      for (const [idx, child] of node.children.entries()) {
+        if (child.type === 'link') {
+          // links cannot contain links
+          Transforms.unwrapNodes(editor, { at: [...path, idx] });
+          return;
+        }
+      }
+    }
+    if (isInlineContainer(node)) {
+      let lastMergableLink: { index: number; node: Node & { type: 'link' } } | null = null;
+      for (const [idx, child] of node.children.entries()) {
+        if (child.type === 'link' && child.href === lastMergableLink?.node.href) {
+          const firstLinkPath = [...path, lastMergableLink.index];
+          const secondLinkPath = [...path, idx];
+          const to = [...firstLinkPath, lastMergableLink.node.children.length];
+          // note this is going in reverse, js doesn't have double-ended iterators so it's a for(;;)
+          for (let i = child.children.length - 1; i >= 0; i--) {
+            const childPath = [...secondLinkPath, i];
+            Transforms.moveNodes(editor, { at: childPath, to });
+          }
+          Transforms.removeNodes(editor, { at: secondLinkPath });
+          return;
+        }
+        if (!Text.isText(child) || child.text !== '') {
+          lastMergableLink = null;
+        }
+        if (child.type === 'link') {
+          lastMergableLink = { index: idx, node: child };
+        }
+      }
     }
     normalizeNode([node, path]);
   };

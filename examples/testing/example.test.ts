@@ -1,10 +1,10 @@
-import { KeystoneContext } from '@keystone-6/core/types';
 import { setupTestEnv, setupTestRunner, TestEnv } from '@keystone-6/core/testing';
 import config from './keystone';
+import { Context } from '.keystone/types';
 
 // Setup a test runner which will provide a clean test environment
 // with access to our GraphQL API for each test.
-const runner = setupTestRunner({ config });
+const runner = setupTestRunner<Context>({ config });
 
 describe('Example tests using test runner', () => {
   test(
@@ -23,37 +23,17 @@ describe('Example tests using test runner', () => {
   );
 
   test(
-    'Create a Person using a hand-crafted GraphQL query sent over HTTP',
-    runner(async ({ graphQLRequest }) => {
-      // We can use the graphQLRequest argument provided by the test runner
-      // to execute HTTP requests to our GraphQL API and get a supertest
-      // "Test" object back. https://github.com/visionmedia/supertest
-      const { body } = await graphQLRequest({
-        query: `mutation {
-          createPerson(data: { name: "Alice", email: "alice@example.com", password: "super-secret" }) {
-            id name email password { isSet }
-          }
-        }`,
-      }).expect(200);
-      const person = body.data.createPerson;
-      expect(person.name).toEqual('Alice');
-      expect(person.email).toEqual('alice@example.com');
-      expect(person.password.isSet).toEqual(true);
-    })
-  );
-
-  test(
     'Check that trying to create user with no name (required field) fails',
     runner(async ({ context }) => {
       // The context.graphql.raw API is useful when we expect to recieve an
       // error from an operation.
-      const { data, errors } = await context.graphql.raw({
+      const { data, errors } = (await context.graphql.raw({
         query: `mutation {
           createPerson(data: { email: "alice@example.com", password: "super-secret" }) {
             id name email password { isSet }
           }
         }`,
-      });
+      })) as any;
       expect(data!.createPerson).toBe(null);
       expect(errors).toHaveLength(1);
       expect(errors![0].path).toEqual(['createPerson']);
@@ -98,14 +78,14 @@ describe('Example tests using test runner', () => {
 
       // Check that we can't update the task (not logged in)
       {
-        const { data, errors } = await context.graphql.raw({
+        const { data, errors } = (await context.graphql.raw({
           query: `mutation update($id: ID!) {
             updateTask(where: { id: $id }, data: { isComplete: true }) {
               id
             }
           }`,
           variables: { id: task.id },
-        });
+        })) as any;
         expect(data!.updateTask).toBe(null);
         expect(errors).toHaveLength(1);
         expect(errors![0].path).toEqual(['updateTask']);
@@ -116,7 +96,7 @@ describe('Example tests using test runner', () => {
 
       {
         // Check that we can update the task when logged in as Alice
-        const { data, errors } = await context
+        const { data, errors } = (await context
           .withSession({ itemId: alice.id, data: {} })
           .graphql.raw({
             query: `mutation update($id: ID!) {
@@ -125,14 +105,14 @@ describe('Example tests using test runner', () => {
               }
             }`,
             variables: { id: task.id },
-          });
+          })) as any;
         expect(data!.updateTask.id).toEqual(task.id);
         expect(errors).toBe(undefined);
       }
 
       // Check that we can't update the task when logged in as Bob
       {
-        const { data, errors } = await context
+        const { data, errors } = (await context
           .withSession({ itemId: bob.id, data: {} })
           .graphql.raw({
             query: `mutation update($id: ID!) {
@@ -141,7 +121,7 @@ describe('Example tests using test runner', () => {
               }
             }`,
             variables: { id: task.id },
-          });
+          })) as any;
         expect(data!.updateTask).toBe(null);
         expect(errors).toHaveLength(1);
         expect(errors![0].path).toEqual(['updateTask']);
@@ -163,10 +143,10 @@ describe('Example tests using test environment', () => {
   //
   // This gives us the opportunity to seed test data once up front and use it in
   // multiple tests.
-  let testEnv: TestEnv, context: KeystoneContext;
+  let testEnv: TestEnv<Context>, context: Context;
   let person: { id: string };
   beforeAll(async () => {
-    testEnv = await setupTestEnv({ config });
+    testEnv = await setupTestEnv<Context>({ config });
     context = testEnv.testArgs.context;
 
     await testEnv.connect();

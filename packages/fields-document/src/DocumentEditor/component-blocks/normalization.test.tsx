@@ -8,23 +8,23 @@ import { insertComponentBlock } from '.';
 
 const componentBlocks = {
   basic: component({
-    component: () => null,
+    preview: () => null,
     label: 'Basic',
-    props: { prop: fields.text({ label: 'Prop' }) },
+    schema: { prop: fields.text({ label: 'Prop' }) },
   }),
   withChildElements: component({
-    component: () => null,
+    preview: () => null,
     label: 'With Child Elements',
-    props: {
+    schema: {
       prop: fields.text({ label: 'Prop' }),
       block: fields.child({ kind: 'block', placeholder: '' }),
       inline: fields.child({ kind: 'inline', placeholder: '' }),
     },
   }),
   withLotsOfChildElements: component({
-    component: () => null,
+    preview: () => null,
     label: 'With Lots of Child Elements',
-    props: {
+    schema: {
       block: fields.child({ kind: 'block', placeholder: '' }),
       inline: fields.child({ kind: 'inline', placeholder: '' }),
       last: fields.child({ kind: 'block', placeholder: '' }),
@@ -58,14 +58,10 @@ test('component-inline-prop and component-block-prop outside of component-block 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
       <paragraph>
         <text>
@@ -99,15 +95,13 @@ test('non component block prop in component-block', () => {
       <component-block
         component="basic"
         props={
-          Object {
+          {
             "prop": "",
           }
         }
       >
         <component-inline-prop>
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
       </component-block>
       <paragraph>
@@ -147,15 +141,13 @@ test('content inside of void child prop', () => {
       <component-block
         component="basic"
         props={
-          Object {
+          {
             "prop": "",
           }
         }
       >
         <component-inline-prop>
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
       </component-block>
       <paragraph>
@@ -197,15 +189,13 @@ test('prop path for old fake void prop is removed', () => {
       <component-block
         component="basic"
         props={
-          Object {
+          {
             "prop": "",
           }
         }
       >
         <component-inline-prop>
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
       </component-block>
       <paragraph>
@@ -234,7 +224,7 @@ test('inserting a void component block', () => {
       <component-block
         component="basic"
         props={
-          Object {
+          {
             "prop": "",
           }
         }
@@ -246,9 +236,7 @@ test('inserting a void component block', () => {
         </component-inline-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -260,7 +248,10 @@ test('extra component props are removed', () => {
       <paragraph>
         <text />
       </paragraph>
-      <component-block component="withChildElements" props={{ prop: '' }}>
+      <component-block
+        component="withChildElements"
+        props={{ prop: '', block: null, inline: null }}
+      >
         <component-block-prop propPath={['block']}>
           <paragraph>
             <text>
@@ -289,21 +280,21 @@ test('extra component props are removed', () => {
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
       <component-block
         component="withChildElements"
         props={
-          Object {
+          {
+            "block": null,
+            "inline": null,
             "prop": "",
           }
         }
       >
         <component-block-prop
           propPath={
-            Array [
+            [
               "block",
             ]
           }
@@ -316,20 +307,16 @@ test('extra component props are removed', () => {
         </component-block-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "inline",
             ]
           }
         >
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -338,7 +325,7 @@ test('extra component props are removed', () => {
 test('missing component props are added', () => {
   let editor = makeEditor(
     <editor>
-      <component-block component="withChildElements" props={{ prop: '' }}>
+      <component-block component="withChildElements" props={{ prop: '', block: null }}>
         <component-block-prop propPath={['block']}>
           <paragraph>
             <text>
@@ -358,14 +345,16 @@ test('missing component props are added', () => {
       <component-block
         component="withChildElements"
         props={
-          Object {
+          {
+            "block": null,
+            "inline": null,
             "prop": "",
           }
         }
       >
         <component-block-prop
           propPath={
-            Array [
+            [
               "block",
             ]
           }
@@ -378,20 +367,16 @@ test('missing component props are added', () => {
         </component-block-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "inline",
             ]
           }
         >
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -422,14 +407,16 @@ test('prop with wrong type for a given prop path', () => {
       <component-block
         component="withChildElements"
         props={
-          Object {
+          {
+            "block": null,
+            "inline": null,
             "prop": "",
           }
         }
       >
         <component-block-prop
           propPath={
-            Array [
+            [
               "block",
             ]
           }
@@ -443,7 +430,7 @@ test('prop with wrong type for a given prop path', () => {
         </component-block-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "inline",
             ]
           }
@@ -454,9 +441,7 @@ test('prop with wrong type for a given prop path', () => {
         </component-inline-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -465,7 +450,10 @@ test('prop with wrong type for a given prop path', () => {
 test('props in wrong order', () => {
   let editor = makeEditor(
     <editor>
-      <component-block component="withLotsOfChildElements" props={{}}>
+      <component-block
+        component="withLotsOfChildElements"
+        props={{ last: null, block: null, inline: null }}
+      >
         <component-block-prop propPath={['last']}>
           <paragraph>
             <text />
@@ -490,50 +478,48 @@ test('props in wrong order', () => {
     <editor>
       <component-block
         component="withLotsOfChildElements"
-        props={Object {}}
+        props={
+          {
+            "block": null,
+            "inline": null,
+            "last": null,
+          }
+        }
       >
         <component-block-prop
           propPath={
-            Array [
+            [
               "block",
             ]
           }
         >
           <paragraph>
-            <text>
-              
-            </text>
+            <text />
           </paragraph>
         </component-block-prop>
         <component-inline-prop
           propPath={
-            Array [
+            [
               "inline",
             ]
           }
         >
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
         <component-block-prop
           propPath={
-            Array [
+            [
               "last",
             ]
           }
         >
           <paragraph>
-            <text>
-              
-            </text>
+            <text />
           </paragraph>
         </component-block-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -542,7 +528,7 @@ test('props in wrong order', () => {
 test('toggling to heading when in an inline prop', () => {
   const editor = makeEditor(
     <editor>
-      <component-block component="inline" props={{}}>
+      <component-block component="inline" props={{ child: null, other: null }}>
         <component-inline-prop propPath={['child']}>
           <text>
             some
@@ -563,9 +549,9 @@ test('toggling to heading when in an inline prop', () => {
     {
       componentBlocks: {
         inline: component({
-          component: () => null,
+          preview: () => null,
           label: '',
-          props: {
+          schema: {
             child: fields.child({ kind: 'inline', placeholder: '' }),
             other: fields.child({ kind: 'block', placeholder: '' }),
           },
@@ -578,22 +564,25 @@ test('toggling to heading when in an inline prop', () => {
     <editor>
       <component-block
         component="inline"
-        props={Object {}}
+        props={
+          {
+            "child": null,
+            "other": null,
+          }
+        }
       >
         <component-inline-prop
           propPath={
-            Array [
+            [
               "child",
             ]
           }
         >
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
         <component-block-prop
           propPath={
-            Array [
+            [
               "other",
             ]
           }
@@ -607,9 +596,394 @@ test('toggling to heading when in an inline prop', () => {
         </component-block-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
+      </paragraph>
+    </editor>
+  `);
+});
+
+test('child field in array field insertBreak', () => {
+  const editor = makeEditor(
+    <editor>
+      <component-block component="myList" props={{ children: [{ content: null, done: false }] }}>
+        <component-inline-prop propPath={['children', 0, 'content']}>
+          <text>
+            something
+            <cursor />
+          </text>
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>,
+    {
+      componentBlocks: {
+        myList: component({
+          preview: () => null,
+          label: '',
+          schema: {
+            children: fields.array(
+              fields.object({
+                content: fields.child({ kind: 'inline', placeholder: '' }),
+                done: fields.checkbox({ label: '' }),
+              })
+            ),
+          },
+        }),
+      },
+    }
+  );
+  editor.insertBreak();
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <component-block
+        component="myList"
+        props={
+          {
+            "children": [
+              {
+                "content": null,
+                "done": false,
+              },
+              {
+                "content": null,
+                "done": false,
+              },
+            ],
+          }
+        }
+      >
+        <component-inline-prop
+          propPath={
+            [
+              "children",
+              0,
+              "content",
+            ]
+          }
+        >
+          <text>
+            something
+          </text>
+        </component-inline-prop>
+        <component-inline-prop
+          propPath={
+            [
+              "children",
+              1,
+              "content",
+            ]
+          }
+        >
+          <text>
+            <cursor />
+          </text>
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>
+  `);
+});
+
+test('child field in array field deleteBackward at end', () => {
+  const editor = makeEditor(
+    <editor>
+      <component-block
+        component="myList"
+        props={{
+          children: [
+            { content: null, done: false },
+            { content: null, done: true },
+          ],
+        }}
+      >
+        <component-inline-prop propPath={['children', 0, 'content']}>
+          <text>something</text>
+        </component-inline-prop>
+        <component-inline-prop propPath={['children', 1, 'content']}>
+          <text>
+            <cursor />
+          </text>
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>,
+    {
+      skipRenderingDOM: true,
+      componentBlocks: {
+        myList: component({
+          preview: () => null,
+          label: '',
+          schema: {
+            children: fields.array(
+              fields.object({
+                content: fields.child({ kind: 'inline', placeholder: '' }),
+                done: fields.checkbox({ label: '' }),
+              })
+            ),
+          },
+        }),
+      },
+    }
+  );
+  editor.deleteBackward('character');
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <component-block
+        component="myList"
+        props={
+          {
+            "children": [
+              {
+                "content": null,
+                "done": false,
+              },
+            ],
+          }
+        }
+      >
+        <component-inline-prop
+          propPath={
+            [
+              "children",
+              0,
+              "content",
+            ]
+          }
+        >
+          <text>
+            something
+            <cursor />
+          </text>
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>
+  `);
+});
+
+test('child field in array field deleteBackward in middle', () => {
+  const editor = makeEditor(
+    <editor>
+      <component-block
+        component="myList"
+        props={{
+          children: [
+            { content: null, something: '1' },
+            { content: null, something: '2' },
+            { content: null, something: '3' },
+          ],
+        }}
+      >
+        <component-inline-prop propPath={['children', 0, 'content']}>
+          <text>first</text>
+        </component-inline-prop>
+        <component-inline-prop propPath={['children', 1, 'content']}>
+          <text>
+            <cursor />
+            second
+          </text>
+        </component-inline-prop>
+        <component-inline-prop propPath={['children', 2, 'content']}>
+          <text>third</text>
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>,
+    {
+      skipRenderingDOM: true,
+      componentBlocks: {
+        myList: component({
+          preview: () => null,
+          label: '',
+          schema: {
+            children: fields.array(
+              fields.object({
+                content: fields.child({ kind: 'inline', placeholder: '' }),
+                something: fields.text({ label: '' }),
+              })
+            ),
+          },
+        }),
+      },
+    }
+  );
+  editor.deleteBackward('character');
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <component-block
+        component="myList"
+        props={
+          {
+            "children": [
+              {
+                "content": null,
+                "something": "1",
+              },
+              {
+                "content": null,
+                "something": "3",
+              },
+            ],
+          }
+        }
+      >
+        <component-inline-prop
+          propPath={
+            [
+              "children",
+              0,
+              "content",
+            ]
+          }
+        >
+          <text>
+            first
+            <cursor />
+            second
+          </text>
+        </component-inline-prop>
+        <component-inline-prop
+          propPath={
+            [
+              "children",
+              1,
+              "content",
+            ]
+          }
+        >
+          <text>
+            third
+          </text>
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>
+  `);
+});
+
+test('normalization adds missing fields on object fields', () => {
+  const editor = makeEditor(
+    <editor>
+      <component-block component="basic" props={{ a: '' }}>
+        <component-inline-prop>
+          <text />
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>,
+    {
+      normalization: 'normalize',
+      componentBlocks: {
+        basic: component({
+          preview: () => null,
+          label: 'Basic',
+          schema: { a: fields.text({ label: 'A' }), b: fields.checkbox({ label: 'B' }) },
+        }),
+      },
+    }
+  );
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <component-block
+        component="basic"
+        props={
+          {
+            "a": "",
+            "b": false,
+          }
+        }
+      >
+        <component-inline-prop>
+          <text />
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>
+  `);
+});
+
+test('normalization adds missing fields for conditional fields', () => {
+  const editor = makeEditor(
+    <editor>
+      <component-block
+        component="basic"
+        props={{ a: { discriminant: 'a', value: { something: '' } } }}
+      >
+        <component-inline-prop>
+          <text />
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>,
+    {
+      normalization: 'normalize',
+      componentBlocks: {
+        basic: component({
+          preview: () => null,
+          label: 'Basic',
+          schema: {
+            a: fields.conditional(
+              fields.select({
+                defaultValue: 'a',
+                label: '',
+                options: [
+                  { value: 'a', label: 'a' },
+                  { value: 'b', label: 'b' },
+                ],
+              }),
+              {
+                a: fields.object({
+                  something: fields.text({ label: '' }),
+                  new: fields.text({ label: '' }),
+                }),
+                b: fields.object({}),
+              }
+            ),
+          },
+        }),
+      },
+    }
+  );
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <component-block
+        component="basic"
+        props={
+          {
+            "a": {
+              "discriminant": "a",
+              "value": {
+                "new": "",
+                "something": "",
+              },
+            },
+          }
+        }
+      >
+        <component-inline-prop>
+          <text />
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text />
       </paragraph>
     </editor>
   `);

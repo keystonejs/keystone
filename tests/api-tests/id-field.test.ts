@@ -1,20 +1,28 @@
 import { list } from '@keystone-6/core';
+import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
-import { setupTestRunner } from '@keystone-6/core/testing';
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { isCuid } from 'cuid';
 import { validate } from 'uuid';
-import { apiTestConfig, expectBadUserInput } from './utils';
+import { apiTestConfig, dbProvider, expectBadUserInput } from './utils';
 
 export function assertNever(arg: never) {
   throw new Error('expected to never be called but received: ' + JSON.stringify(arg));
 }
 
-describe.each(['autoincrement', 'cuid', 'uuid'] as const)('%s', kind => {
+describe.each([
+  'autoincrement',
+  'cuid',
+  'uuid',
+  ...(dbProvider === 'sqlite' ? [] : (['bigint'] as const)),
+] as const)('%s', kind => {
   const runner = setupTestRunner({
     config: apiTestConfig({
-      db: { idField: { kind } },
+      db: {
+        idField: kind === 'bigint' ? { kind: 'autoincrement', type: 'BigInt' } : { kind },
+      },
       lists: {
-        User: list({ fields: { name: text() } }),
+        User: list({ access: allowAll, fields: { name: text() } }),
       },
     }),
   });
@@ -103,20 +111,48 @@ describe.each(['autoincrement', 'cuid', 'uuid'] as const)('%s', kind => {
     })
   );
   test(
+    'Querying with findOne',
+    runner(async ({ context }) => {
+      const { id } = await context.query.User.createOne({ data: { name: 'something' } });
+      await context.query.User.createOne({ data: { name: 'another' } });
+      const item = await context.query.User.findOne({ where: { id } });
+      expect(item.id).toBe(id);
+    })
+  );
+  test(
+    'Querying with findMany',
+    runner(async ({ context }) => {
+      const { id } = await context.query.User.createOne({ data: { name: 'something' } });
+      await context.query.User.createOne({ data: { name: 'another' } });
+      const items = await context.query.User.findMany({ where: { id: { equals: id } } });
+      expect(items).toHaveLength(1);
+      expect(items[0].id).toBe(id);
+    })
+  );
+  test(
     'Creating an item',
     runner(async ({ context }) => {
       const { id } = await context.query.User.createOne({ data: { name: 'something' } });
+      const dbItem = await context.db.User.findOne({ where: { id } });
       switch (kind) {
         case 'autoincrement': {
-          expect(id).toEqual('1');
+          expect(id).toBe('1');
+          expect(dbItem?.id).toBe(1);
           return;
         }
         case 'cuid': {
           expect(isCuid(id)).toBe(true);
+          expect(dbItem?.id).toBe(id);
           return;
         }
         case 'uuid': {
           expect(validate(id)).toBe(true);
+          expect(dbItem?.id).toBe(id);
+          return;
+        }
+        case 'bigint': {
+          expect(id).toEqual('1');
+          expect(dbItem?.id).toBe(1n);
           return;
         }
         default: {
@@ -132,7 +168,7 @@ describe.each(['autoincrement', 'cuid', 'uuid'] as const)('%s', kind => {
     config: apiTestConfig({
       db: { idField: { kind: 'uuid' } },
       lists: {
-        User: list({ fields: { name: text() } }),
+        User: list({ access: allowAll, fields: { name: text() } }),
       },
     }),
   });
@@ -156,7 +192,7 @@ describe.each(['autoincrement', 'cuid', 'uuid'] as const)('%s', kind => {
     config: apiTestConfig({
       db: { idField: { kind: 'cuid' } },
       lists: {
-        User: list({ fields: { name: text() } }),
+        User: list({ access: allowAll, fields: { name: text() } }),
       },
     }),
   });

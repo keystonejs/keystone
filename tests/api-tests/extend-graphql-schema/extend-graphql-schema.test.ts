@@ -1,7 +1,9 @@
 import { list, graphQLSchemaExtension, gql } from '@keystone-6/core';
+import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
-import { setupTestRunner } from '@keystone-6/core/testing';
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { apiTestConfig, expectInternalServerError } from '../utils';
+import { withServer } from '../with-server';
 
 const falseFn: (...args: any) => boolean = () => false;
 
@@ -25,6 +27,7 @@ const runner = setupTestRunner({
   config: apiTestConfig({
     lists: {
       User: list({
+        access: allowAll,
         fields: { name: text() },
       }),
     },
@@ -42,6 +45,9 @@ const runner = setupTestRunner({
         Query: {
           double: withAccessCheck(true, (_, { x }) => 2 * x),
           quads: withAccessCheck(falseFn, (_, { x }) => 4 * x),
+          users: withAccessCheck(true, () => {
+            return [{ name: 'foo' }];
+          }),
         },
         Mutation: {
           triple: withAccessCheck(true, (_, { x }) => 3 * x),
@@ -62,12 +68,12 @@ describe('extendGraphqlSchema', () => {
               }
             `,
       });
-      expect(data.double).toEqual(20);
+      expect(data).toEqual({ double: 20 });
     })
   );
   it(
     'Denies access acording to access control',
-    runner(async ({ graphQLRequest }) => {
+    withServer(runner)(async ({ graphQLRequest }) => {
       const { body } = await graphQLRequest({
         query: `
           query {
@@ -92,7 +98,39 @@ describe('extendGraphqlSchema', () => {
             `,
       });
 
-      expect(data.triple).toEqual(30);
+      expect(data).toEqual({ triple: 30 });
+    })
+  );
+  it(
+    'Default keystone resolvers remain unchanged',
+    runner(async ({ context }) => {
+      const data = await context.graphql.run({
+        query: `
+              mutation {
+                createUser(data: { name: "Real User" }) {
+                  name
+                }
+              }
+            `,
+      });
+
+      expect(data).toEqual({ createUser: { name: 'Real User' } });
+    })
+  );
+  it(
+    'Overrides default keystone resolvers with custom resolvers',
+    runner(async ({ context }) => {
+      const data = (await context.graphql.run({
+        query: `
+              query {
+                users {
+                  name
+                }
+              }
+            `,
+      })) as { users: { name: string }[] };
+
+      expect(data.users[0].name).toEqual('foo');
     })
   );
 });

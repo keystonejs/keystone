@@ -1,6 +1,5 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
@@ -10,21 +9,14 @@ import { Type } from './primitives/Type';
 type Path = { title: string; href: string };
 
 export function Breadcrumbs() {
-  const [breadcrumbs, setBreadcrumbs] = useState<Path[]>([]);
   const router = useRouter();
 
-  useEffect(() => {
-    if (router) {
-      const linkPath = router.pathname.split('/');
-      linkPath.shift();
+  const linkPath = router.asPath.split('/');
+  linkPath.shift();
 
-      const pathArray = linkPath.map((path, i): Path => {
-        return { title: path.replace(/-/g, ' '), href: '/' + linkPath.slice(0, i + 1).join('/') };
-      });
-
-      setBreadcrumbs(pathArray);
-    }
-  }, [router]);
+  const breadcrumbs = linkPath.map((path, i): Path => {
+    return { title: path.replace(/-/g, ' '), href: '/' + linkPath.slice(0, i + 1).join('/') };
+  });
 
   if (breadcrumbs.length < 2) {
     return null;

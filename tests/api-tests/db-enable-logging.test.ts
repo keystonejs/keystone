@@ -1,15 +1,22 @@
 import { list } from '@keystone-6/core';
+import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
-import { setupTestRunner } from '@keystone-6/core/testing';
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import stripAnsi from 'strip-ansi';
-import { apiTestConfig, dbProvider } from './utils';
+import { apiTestConfig, dbProvider, dbName } from './utils';
 
 const runner = (enableLogging: boolean) =>
   setupTestRunner({
     config: apiTestConfig({
       db: { enableLogging },
       lists: {
-        User: list({ fields: { name: text() } }),
+        // prettier-ignore
+        User: list({
+          access: allowAll,
+          fields: {
+            name: text()
+          },
+        }),
       },
     }),
   });
@@ -27,9 +34,18 @@ test(
       expect(logs).toEqual([
         [
           'prisma:query',
-          dbProvider === 'sqlite'
+          (dbProvider === 'sqlite'
             ? 'SELECT `main`.`User`.`id`, `main`.`User`.`name` FROM `main`.`User` WHERE 1=1 LIMIT ? OFFSET ?'
-            : 'SELECT "public"."User"."id", "public"."User"."name" FROM "public"."User" WHERE 1=1 OFFSET $1',
+            : dbProvider === 'mysql'
+            ? 'SELECT `' +
+              dbName +
+              '`.`User`.`id`, `' +
+              dbName +
+              '`.`User`.`name` FROM `' +
+              dbName +
+              '`.`User` WHERE 1=1'
+            : 'SELECT "public"."User"."id", "public"."User"."name" FROM "public"."User" WHERE 1=1 OFFSET $1') +
+            ' /* traceparent=00-00-00-00 */',
         ],
       ]);
     } finally {

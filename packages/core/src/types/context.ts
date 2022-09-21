@@ -1,6 +1,7 @@
 import { IncomingMessage } from 'http';
 import { Readable } from 'stream';
 import { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql';
+import { TypedDocumentNode } from '@graphql-typed-document-node/core';
 import { InitialisedList } from '../lib/core/types-for-lists';
 import { BaseListTypeInfo } from './type-info';
 import { GqlNames, BaseKeystoneTypeInfo } from '.';
@@ -14,8 +15,8 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
   exitSudo: () => KeystoneContext<TypeInfo>;
   withSession: (session: any) => KeystoneContext<TypeInfo>;
   prisma: TypeInfo['prisma'];
-  files: FilesContext | undefined;
-  images: ImagesContext | undefined;
+  files: FilesContext;
+  images: ImagesContext;
   totalResults: number;
   maxTotalResults: number;
   /** @deprecated */
@@ -33,6 +34,11 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
 // TODO: Work out whether we can generate useful return types based on the GraphQL Query
 // passed to List API functions (see `readonly Record<string, any>` below)
 
+type UniqueWhereInput<ListTypeInfo extends BaseListTypeInfo> =
+  false extends ListTypeInfo['isSingleton']
+    ? { readonly where: ListTypeInfo['inputs']['uniqueWhere'] }
+    : { readonly where?: ListTypeInfo['inputs']['uniqueWhere'] };
+
 export type KeystoneListsAPI<KeystoneListsTypeInfo extends Record<string, BaseListTypeInfo>> = {
   [Key in keyof KeystoneListsTypeInfo]: {
     findMany(
@@ -46,25 +52,21 @@ export type KeystoneListsAPI<KeystoneListsTypeInfo extends Record<string, BaseLi
       } & ResolveFields
     ): Promise<readonly Record<string, any>[]>;
     findOne(
-      args: {
-        readonly where: KeystoneListsTypeInfo[Key]['inputs']['uniqueWhere'];
-      } & ResolveFields
+      args: UniqueWhereInput<KeystoneListsTypeInfo[Key]> & ResolveFields
     ): Promise<Record<string, any>>;
     count(args?: {
       readonly where?: KeystoneListsTypeInfo[Key]['inputs']['where'];
     }): Promise<number>;
     updateOne(
-      args: {
-        readonly where: KeystoneListsTypeInfo[Key]['inputs']['uniqueWhere'];
+      args: UniqueWhereInput<KeystoneListsTypeInfo[Key]> & {
         readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
       } & ResolveFields
     ): Promise<Record<string, any>>;
     updateMany(
       args: {
-        readonly data: readonly {
-          readonly where: KeystoneListsTypeInfo[Key]['inputs']['uniqueWhere'];
+        readonly data: readonly (UniqueWhereInput<KeystoneListsTypeInfo[Key]> & {
           readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
-        }[];
+        })[];
       } & ResolveFields
     ): Promise<Record<string, any>[]>;
     createOne(
@@ -76,9 +78,7 @@ export type KeystoneListsAPI<KeystoneListsTypeInfo extends Record<string, BaseLi
       } & ResolveFields
     ): Promise<Record<string, any>[]>;
     deleteOne(
-      args: {
-        readonly where: KeystoneListsTypeInfo[Key]['inputs']['uniqueWhere'];
-      } & ResolveFields
+      args: UniqueWhereInput<KeystoneListsTypeInfo[Key]> & ResolveFields
     ): Promise<Record<string, any> | null>;
     deleteMany(
       args: {
@@ -105,21 +105,21 @@ export type KeystoneDbAPI<KeystoneListsTypeInfo extends Record<string, BaseListT
         | KeystoneListsTypeInfo[Key]['inputs']['orderBy']
         | readonly KeystoneListsTypeInfo[Key]['inputs']['orderBy'][];
     }): Promise<readonly KeystoneListsTypeInfo[Key]['item'][]>;
-    findOne(args: {
-      readonly where: KeystoneListsTypeInfo[Key]['inputs']['uniqueWhere'];
-    }): Promise<KeystoneListsTypeInfo[Key]['item']>;
+    findOne(
+      args: UniqueWhereInput<KeystoneListsTypeInfo[Key]>
+    ): Promise<KeystoneListsTypeInfo[Key]['item'] | null>;
     count(args?: {
       readonly where?: KeystoneListsTypeInfo[Key]['inputs']['where'];
     }): Promise<number>;
-    updateOne(args: {
-      readonly where: KeystoneListsTypeInfo[Key]['inputs']['uniqueWhere'];
-      readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
-    }): Promise<KeystoneListsTypeInfo[Key]['item']>;
-    updateMany(args: {
-      readonly data: readonly {
-        readonly where: KeystoneListsTypeInfo[Key]['inputs']['uniqueWhere'];
+    updateOne(
+      args: UniqueWhereInput<KeystoneListsTypeInfo[Key]> & {
         readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
-      }[];
+      }
+    ): Promise<KeystoneListsTypeInfo[Key]['item']>;
+    updateMany(args: {
+      readonly data: readonly (UniqueWhereInput<KeystoneListsTypeInfo[Key]> & {
+        readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
+      })[];
     }): Promise<KeystoneListsTypeInfo[Key]['item'][]>;
     createOne(args: {
       readonly data: KeystoneListsTypeInfo[Key]['inputs']['create'];
@@ -127,9 +127,9 @@ export type KeystoneDbAPI<KeystoneListsTypeInfo extends Record<string, BaseListT
     createMany(args: {
       readonly data: readonly KeystoneListsTypeInfo[Key]['inputs']['create'][];
     }): Promise<KeystoneListsTypeInfo[Key]['item'][]>;
-    deleteOne(args: {
-      readonly where: KeystoneListsTypeInfo[Key]['inputs']['uniqueWhere'];
-    }): Promise<KeystoneListsTypeInfo[Key]['item']>;
+    deleteOne(
+      args: UniqueWhereInput<KeystoneListsTypeInfo[Key]>
+    ): Promise<KeystoneListsTypeInfo[Key]['item']>;
     deleteMany(args: {
       readonly where: readonly KeystoneListsTypeInfo[Key]['inputs']['uniqueWhere'][];
     }): Promise<KeystoneListsTypeInfo[Key]['item'][]>;
@@ -140,13 +140,17 @@ export type KeystoneDbAPI<KeystoneListsTypeInfo extends Record<string, BaseListT
 
 export type KeystoneGraphQLAPI = {
   schema: GraphQLSchema;
-  run: (args: GraphQLExecutionArguments) => Promise<Record<string, any>>;
-  raw: (args: GraphQLExecutionArguments) => Promise<ExecutionResult>;
+  run: <TData, TVariables extends Record<string, any>>(
+    args: GraphQLExecutionArguments<TData, TVariables>
+  ) => Promise<TData>;
+  raw: <TData, TVariables extends Record<string, any>>(
+    args: GraphQLExecutionArguments<TData, TVariables>
+  ) => Promise<ExecutionResult<TData>>;
 };
 
-type GraphQLExecutionArguments = {
-  query: string | DocumentNode;
-  variables?: Record<string, any>;
+type GraphQLExecutionArguments<TData, TVariables> = {
+  query: string | DocumentNode | TypedDocumentNode<TData, TVariables>;
+  variables?: TVariables;
 };
 
 // Session API
@@ -160,20 +164,23 @@ export type SessionContext<T> = {
   endSession(): Promise<void>;
 };
 
-export type AssetMode = 'local' | 'cloud';
+export type AssetMode = 'local' | 's3';
 
 // Files API
 
-export type FileData = {
-  mode: AssetMode;
+export type FileMetadata = {
   filename: string;
   filesize: number;
 };
 
-export type FilesContext = {
-  getUrl: (mode: AssetMode, filename: string) => Promise<string>;
-  getDataFromRef: (ref: string) => Promise<FileData>;
+export type FileData = {
+  filename: string;
+} & FileMetadata;
+
+export type FilesContext = (storage: string) => {
+  getUrl: (filename: string) => Promise<string>;
   getDataFromStream: (stream: Readable, filename: string) => Promise<FileData>;
+  deleteAtSource: (filename: string) => Promise<void>;
 };
 
 // Images API
@@ -188,12 +195,11 @@ export type ImageMetadata = {
 };
 
 export type ImageData = {
-  mode: AssetMode;
   id: string;
 } & ImageMetadata;
 
-export type ImagesContext = {
-  getUrl: (mode: AssetMode, id: string, extension: ImageExtension) => Promise<string>;
-  getDataFromRef: (ref: string) => Promise<ImageData>;
-  getDataFromStream: (stream: Readable) => Promise<ImageData>;
+export type ImagesContext = (storage: string) => {
+  getUrl: (id: string, extension: ImageExtension) => Promise<string>;
+  getDataFromStream: (stream: Readable, filename: string) => Promise<ImageData>;
+  deleteAtSource: (id: string, extension: ImageExtension) => Promise<void>;
 };

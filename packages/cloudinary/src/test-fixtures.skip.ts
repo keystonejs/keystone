@@ -1,8 +1,8 @@
 import fs from 'fs';
 import mime from 'mime';
-import { FileUpload, Upload } from 'graphql-upload';
+// @ts-ignore
+import Upload from 'graphql-upload/Upload.js';
 import cloudinary from 'cloudinary';
-import { DatabaseProvider } from '@keystone-6/core/types';
 import { cloudinaryImage } from './index';
 
 const path = require('path');
@@ -23,7 +23,7 @@ const prepareFile = (_filePath: string) => {
     mimetype: mime.getType(filePath),
     encoding: 'utf-8',
   });
-  return upload as Upload & { file: FileUpload };
+  return upload;
 };
 
 // Configurations
@@ -81,9 +81,4 @@ export const storedValues = () => [
   { image: { originalFilename: 'thinkmill1.jpeg' }, name: 'file4' },
   { image: null, name: 'file5' },
   { image: null, name: 'file6' },
-];
-
-export const supportedFilters = (provider: DatabaseProvider) => [
-  'null_equality',
-  !['postgresql', 'sqlite'].includes(provider) && 'in_empty_null',
 ];

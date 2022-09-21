@@ -6,9 +6,13 @@ import autoLinkLiteralMarkdownSyntax from 'micromark-extension-gfm-autolink-lite
 // @ts-ignore
 import gfmStrikethroughFromMarkdownExtension from 'mdast-util-gfm-strikethrough/from-markdown';
 import gfmStrikethroughMarkdownSyntax from 'micromark-extension-gfm-strikethrough';
-import definitions from 'mdast-util-definitions';
-import { Descendant } from 'slate';
-import { getTextNodeForCurrentlyActiveMarks, addMarkToChildren } from './utils';
+import { Block } from '..';
+import {
+  getInlineNodes,
+  addMarkToChildren,
+  setLinkForChildren,
+  InlineFromExternalPaste,
+} from './utils';
 
 const markdownConfig = {
   mdastExtensions: [autoLinkLiteralFromMarkdownExtension, gfmStrikethroughFromMarkdownExtension],
@@ -17,22 +21,19 @@ const markdownConfig = {
 
 export function deserializeMarkdown(markdown: string) {
   const root = mdASTUtilFromMarkdown(markdown, markdownConfig);
-  const getDefinition = definitions(root);
   let nodes = root.children;
   if (nodes.length === 1 && nodes[0].type === 'paragraph') {
     nodes = nodes[0].children;
   }
-  return deserializeChildren(nodes, getDefinition);
+  return deserializeChildren(nodes, markdown);
 }
-
-type GetDefinition = ReturnType<typeof definitions>;
 
 type MDNode = ReturnType<typeof mdASTUtilFromMarkdown>['children'][number];
 
-function deserializeChildren(nodes: MDNode[], getDefinition: GetDefinition) {
-  const outputNodes: Descendant[] = [];
+function deserializeChildren(nodes: MDNode[], input: string) {
+  const outputNodes: (InlineFromExternalPaste | Block)[] = [];
   for (const node of nodes) {
-    const result = deserializeMarkdownNode(node, getDefinition);
+    const result = deserializeMarkdownNode(node, input);
     if (result.length) {
       outputNodes.push(...result);
     }
@@ -43,41 +44,29 @@ function deserializeChildren(nodes: MDNode[], getDefinition: GetDefinition) {
   return outputNodes;
 }
 
-function deserializeMarkdownNode(node: MDNode, getDefinition: GetDefinition): Descendant[] {
+function deserializeMarkdownNode(node: MDNode, input: string): (InlineFromExternalPaste | Block)[] {
   switch (node.type) {
     case 'blockquote': {
-      return [{ type: 'blockquote', children: deserializeChildren(node.children, getDefinition) }];
-    }
-    case 'linkReference': {
-      return [
-        {
-          type: 'link',
-          href: getDefinition(node.identifier)?.url || '',
-          children: deserializeChildren(node.children, getDefinition),
-        },
-      ];
+      return [{ type: 'blockquote', children: deserializeChildren(node.children, input) }];
     }
     case 'link': {
-      return [
-        {
-          type: 'link',
-          href: node.url,
-          children: deserializeChildren(node.children, getDefinition),
-        },
-      ];
+      // arguably this could just return a link node rather than use setLinkForChildren since the children _should_ only be inlines
+      // but rather than relying on the markdown parser we use being correct in this way since it isn't nicely codified in types
+      // let's be safe since we already have the code to do it the safer way because of html pasting
+      return setLinkForChildren(node.url, () => deserializeChildren(node.children, input));
     }
     case 'code': {
       return [{ type: 'code', children: [{ text: node.value }] }];
     }
     case 'paragraph': {
-      return [{ type: 'paragraph', children: deserializeChildren(node.children, getDefinition) }];
+      return [{ type: 'paragraph', children: deserializeChildren(node.children, input) }];
     }
     case 'heading': {
       return [
         {
           type: 'heading',
           level: node.depth,
-          children: deserializeChildren(node.children, getDefinition),
+          children: deserializeChildren(node.children, input),
         },
       ];
     }
@@ -85,52 +74,34 @@ function deserializeMarkdownNode(node: MDNode, getDefinition: GetDefinition): De
       return [
         {
           type: node.ordered ? 'ordered-list' : 'unordered-list',
-          children: deserializeChildren(node.children, getDefinition),
+          children: deserializeChildren(node.children, input),
         },
       ];
     }
-    case 'imageReference': {
-      return [
-        getTextNodeForCurrentlyActiveMarks(
-          `![${node.alt || ''}](${getDefinition(node.identifier)?.url || ''})`
-        ),
-      ];
-    }
-    case 'image': {
-      return [getTextNodeForCurrentlyActiveMarks(`![${node.alt || ''}](${node.url})`)];
-    }
     case 'listItem': {
-      return [{ type: 'list-item', children: deserializeChildren(node.children, getDefinition) }];
+      return [{ type: 'list-item', children: deserializeChildren(node.children, input) }];
     }
     case 'thematicBreak': {
       return [{ type: 'divider', children: [{ text: '' }] }];
     }
     case 'break': {
-      return [getTextNodeForCurrentlyActiveMarks('\n')];
+      return getInlineNodes('\n');
     }
     case 'delete': {
-      return addMarkToChildren('strikethrough', () =>
-        deserializeChildren(node.children, getDefinition)
-      );
+      return addMarkToChildren('strikethrough', () => deserializeChildren(node.children, input));
     }
     case 'strong': {
-      return addMarkToChildren('bold', () => deserializeChildren(node.children, getDefinition));
+      return addMarkToChildren('bold', () => deserializeChildren(node.children, input));
     }
     case 'emphasis': {
-      return addMarkToChildren('italic', () => deserializeChildren(node.children, getDefinition));
+      return addMarkToChildren('italic', () => deserializeChildren(node.children, input));
     }
     case 'inlineCode': {
-      return addMarkToChildren('code', () => [getTextNodeForCurrentlyActiveMarks(node.value)]);
+      return addMarkToChildren('code', () => getInlineNodes(node.value));
     }
-    // while it would be nice if we parsed the html here
-    // it's a bit more complicated than just parsing the html
-    // because an html node might just be an opening/closing node
-    // but we just have an opening/closing node here
-    // not the opening and closing and children
-    case 'html':
     case 'text': {
-      return [getTextNodeForCurrentlyActiveMarks(node.value)];
+      return getInlineNodes(node.value);
     }
   }
-  return [];
+  return getInlineNodes(input.slice(node.position!.start.offset, node.position!.end.offset));
 }

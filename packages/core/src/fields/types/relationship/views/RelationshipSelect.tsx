@@ -56,27 +56,30 @@ function useDebouncedValue<T>(value: T, limitMs: number): T {
   return debouncedValue;
 }
 
-function useFilter(search: string, list: ListMeta) {
+export function useFilter(search: string, list: ListMeta) {
   return useMemo(() => {
-    let conditions: Record<string, any>[] = [];
-    if (search.length) {
-      const idFieldKind: IdFieldConfig['kind'] = (list.fields.id.controller as any).idFieldKind;
-      const trimmedSearch = search.trim();
-      const isValidId = idValidators[idFieldKind](trimmedSearch);
-      if (isValidId) {
-        conditions.push({ id: { equals: trimmedSearch } });
-      }
-      for (const field of Object.values(list.fields)) {
-        if (field.search !== null) {
-          conditions.push({
-            [field.path]: {
-              contains: trimmedSearch,
-              mode: field.search === 'insensitive' ? 'insensitive' : undefined,
-            },
-          });
-        }
-      }
+    if (!search.length) return { OR: [] };
+
+    const idFieldKind: IdFieldConfig['kind'] = (list.fields.id.controller as any).idFieldKind;
+    const trimmedSearch = search.trim();
+    const isValidId = idValidators[idFieldKind](trimmedSearch);
+
+    const conditions: Record<string, any>[] = [];
+    if (isValidId) {
+      conditions.push({ id: { equals: trimmedSearch } });
     }
+
+    for (const field of Object.values(list.fields)) {
+      if (field.search === null) continue; // in ui.searchFields
+
+      conditions.push({
+        [field.path]: {
+          contains: trimmedSearch,
+          mode: field.search === 'insensitive' ? 'insensitive' : undefined,
+        },
+      });
+    }
+
     return { OR: conditions };
   }, [search, list]);
 }

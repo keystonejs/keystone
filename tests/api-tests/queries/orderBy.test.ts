@@ -1,7 +1,9 @@
 import { integer } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
-import { setupTestRunner } from '@keystone-6/core/testing';
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { KeystoneContext } from '@keystone-6/core/types';
+import { allowAll } from '@keystone-6/core/access';
+import { ExecutionResult } from 'graphql';
 import {
   apiTestConfig,
   expectAccessReturnError,
@@ -9,11 +11,13 @@ import {
   expectGraphQLValidationError,
   expectFilterDenied,
 } from '../utils';
+import { withServer } from '../with-server';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
     lists: {
       User: list({
+        access: allowAll,
         fields: {
           a: integer(),
           b: integer(),
@@ -28,30 +32,39 @@ const runner = setupTestRunner({
           orderFunctionFalseToo: integer({ isOrderable: () => false }),
         },
       }),
-      DefaultOrderUndefined: list({ fields: { a: integer(), b: integer({ isOrderable: true }) } }),
+      DefaultOrderUndefined: list({
+        access: allowAll,
+        fields: { a: integer(), b: integer({ isOrderable: true }) },
+      }),
       DefaultOrderFalse: list({
+        access: allowAll,
         fields: { a: integer(), b: integer({ isOrderable: true }) },
         defaultIsOrderable: false,
       }),
       DefaultOrderTrue: list({
+        access: allowAll,
         fields: { a: integer(), b: integer({ isOrderable: true }) },
         // @ts-ignore
         defaultIsOrderable: true,
       }),
       DefaultOrderFunctionFalse: list({
+        access: allowAll,
         fields: { a: integer(), b: integer({ isOrderable: true }) },
         defaultIsOrderable: () => false,
       }),
       DefaultOrderFunctionTrue: list({
+        access: allowAll,
         fields: { a: integer(), b: integer({ isOrderable: true }) },
         defaultIsOrderable: () => true,
       }),
       DefaultOrderFunctionFalsey: list({
+        access: allowAll,
         fields: { a: integer(), b: integer({ isOrderable: true }) },
         // @ts-ignore
         defaultIsOrderable: () => null,
       }),
       DefaultOrderFunctionTruthy: list({
+        access: allowAll,
         fields: { a: integer(), b: integer({ isOrderable: true }) },
         // @ts-ignore
         defaultIsOrderable: () => ({}),
@@ -345,7 +358,7 @@ describe('Ordering by Multiple', () => {
 describe('isOrderable', () => {
   test(
     'isOrderable: false',
-    runner(async ({ context, graphQLRequest }) => {
+    withServer(runner)(async ({ context, graphQLRequest }) => {
       await initialiseData({ context });
       const { body } = await graphQLRequest({
         query: '{ users(orderBy: [{orderFalse: asc}]) { id } }',
@@ -363,9 +376,9 @@ describe('isOrderable', () => {
     'isOrderable: true',
     runner(async ({ context }) => {
       await initialiseData({ context });
-      const { data, errors } = await context.graphql.raw({
+      const { data, errors } = (await context.graphql.raw({
         query: '{ users(orderBy: [{orderTrue: asc}]) { id } }',
-      });
+      })) as ExecutionResult<{ users: { id: number }[] }>;
       expect(data!.users).toHaveLength(9);
       expect(errors).toBe(undefined);
     })
@@ -393,9 +406,9 @@ describe('isOrderable', () => {
     'isOrderable: () => true',
     runner(async ({ context }) => {
       await initialiseData({ context });
-      const { data, errors } = await context.graphql.raw({
+      const { data, errors } = (await context.graphql.raw({
         query: '{ users(orderBy: [{orderFunctionTrue: asc}]) { id } }',
-      });
+      })) as ExecutionResult<{ users: { id: number }[] }>;
       expect(data!.users).toHaveLength(9);
       expect(errors).toBe(undefined);
     })
@@ -460,9 +473,9 @@ describe('defaultIsOrderable', () => {
     'defaultIsOrderable: undefined',
     runner(async ({ context }) => {
       await initialiseData({ context });
-      const { data, errors } = await context.graphql.raw({
+      const { data, errors } = (await context.graphql.raw({
         query: '{ defaultOrderUndefineds(orderBy: [{a: asc}]) { id } }',
-      });
+      })) as ExecutionResult<{ defaultOrderUndefineds: { id: number }[] }>;
       expect(data!.defaultOrderUndefineds).toHaveLength(9);
       expect(errors).toBe(undefined);
     })
@@ -470,7 +483,7 @@ describe('defaultIsOrderable', () => {
 
   test(
     'defaultIsOrderable: false',
-    runner(async ({ context, graphQLRequest }) => {
+    withServer(runner)(async ({ context, graphQLRequest }) => {
       await initialiseData({ context });
       const { body } = await graphQLRequest({
         query: '{ defaultOrderFalses(orderBy: [{a: asc}]) { id } }',
@@ -488,9 +501,9 @@ describe('defaultIsOrderable', () => {
     'defaultIsOrderable: true',
     runner(async ({ context }) => {
       await initialiseData({ context });
-      const { data, errors } = await context.graphql.raw({
+      const { data, errors } = (await context.graphql.raw({
         query: '{ defaultOrderTrues(orderBy: [{a: asc}]) { id } }',
-      });
+      })) as ExecutionResult<{ defaultOrderTrues: { id: number }[] }>;
       expect(data!.defaultOrderTrues).toHaveLength(9);
       expect(errors).toBe(undefined);
     })
@@ -518,9 +531,9 @@ describe('defaultIsOrderable', () => {
     'defaultIsOrderable: () => true',
     runner(async ({ context }) => {
       await initialiseData({ context });
-      const { data, errors } = await context.graphql.raw({
+      const { data, errors } = (await context.graphql.raw({
         query: '{ defaultOrderFunctionTrues(orderBy: [{a: asc}]) { id } }',
-      });
+      })) as ExecutionResult<{ defaultOrderFunctionTrues: { id: number }[] }>;
       expect(data!.defaultOrderFunctionTrues).toHaveLength(9);
       expect(errors).toBe(undefined);
     })

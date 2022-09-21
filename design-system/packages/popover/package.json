@@ -1,26 +1,23 @@
 {
   "name": "@keystone-ui/popover",
-  "version": "5.0.0",
+  "version": "6.0.1",
   "license": "MIT",
   "main": "dist/keystone-ui-popover.cjs.js",
   "module": "dist/keystone-ui-popover.esm.js",
   "peerDependencies": {
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0"
   },
   "devDependencies": {
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
-    "@keystone-ui/core": "^4.0.0",
+    "@keystone-ui/core": "^5.0.1",
     "@popperjs/core": "^2.10.2",
-    "focus-trap": "^6.7.1",
+    "focus-trap": "^7.0.0",
     "react-popper": "^2.2.5"
-  },
-  "engines": {
-    "node": "^14.15 || ^16.13"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/design-system/packages/popover"
 }

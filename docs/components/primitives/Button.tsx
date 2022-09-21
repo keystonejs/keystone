@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { Fragment, FunctionComponent, ReactNode } from 'react';
+import { Fragment, ElementType, ReactNode } from 'react';
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
 
@@ -128,7 +128,7 @@ export const Button = forwardRefWithAs<'button', ButtonProps>(
     },
     ref
   ) => {
-    let Wrapper: FunctionComponent = Fragment;
+    let Wrapper: ElementType<{ children: ReactNode }> = Fragment;
 
     if (Tag === 'a' && !href) {
       Tag = 'button';

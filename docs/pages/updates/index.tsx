@@ -140,11 +140,11 @@ export default function WhatsNew() {
       <Type as="p" look="body18" margin="1rem 0">
         A snapshot of Keystone improvements and community happenings.
         <br />
-        For more on updates see our{' '}
+        For developer changelogs see our{' '}
         <Link href="/releases">
-          <a>release notes</a>
+          <a>releases page</a>
         </Link>
-        , and subscribe to notifications on
+        , and subscribe to our releases on
         <a href="https://github.com/keystonejs/keystone" target="_blank" rel="noopener noreferrer">
           {' '}
           GitHub
@@ -153,17 +153,20 @@ export default function WhatsNew() {
       </Type>
 
       <Alert look="tip" css={{ margin: '2rem 0' }}>
-        <span
+        <div
           css={{
             display: 'inline-block',
             margin: '0 0.8rem 0.5rem 0',
           }}
         >
-          What are we working on next? Check out our
-        </span>
-        <Button as="a" href="/updates/roadmap" rel="noopener noreferrer">
-          Roadmap <ArrowR />
-        </Button>
+          What are we working on next?{' '}
+          <span>
+            See our{' '}
+            <Button as="a" href="/updates/roadmap" rel="noopener noreferrer">
+              Roadmap <ArrowR />
+            </Button>
+          </span>
+        </div>
       </Alert>
 
       <div
@@ -173,7 +176,46 @@ export default function WhatsNew() {
           gap: 0,
         })}
       >
-        <Timeline date="8th February 2022" isLatest />
+        <Timeline date="30th June 2022" isLatest />
+        <Box heading="Field descriptions">
+          Now you can provide additional context to the reader of Admin UI form fields. Use them to
+          provide a better editing experience and improve the quality of what goes in to your
+          system.
+          <img
+            width="100%"
+            alt="Example of field descriptions in use on several Keystone field types"
+            src="/assets/updates/field-descriptions.png"
+          />
+        </Box>
+        <Timeline date="30th June 2022" />
+        <Box heading="MySQL support" link="/docs/apis/config#mysql">
+          We’ve added support for MySQL to Keystone's list of DB providers, bringing the total
+          number of supported DB types to three.
+        </Box>
+        <Timeline date="9th June 2022" />
+        <Box heading="Better Images & Files" link="/docs/guides/images-and-files">
+          It’s now much easier to get Images and Files working with Keystone’s new{' '}
+          <InlineCode>storage</InlineCode> configuration object.{' '}
+        </Box>
+        <Timeline date="9th June 2022" />
+        <Box heading="Array fields in Component Blocks">
+          Document field components now accept re-orderable arrays. Drag and drop your way to
+          carousels, galleries, recipe steps and more. Look for the Carousel component in our{' '}
+          <a href="/docs/guides/document-field-demo">Document Field demo</a>.
+        </Box>
+        <Timeline date="13th May 2022" />
+        <Box heading="Example projects in CodeSandbox">
+          You can now experiment with Keystone{' '}
+          <a href="https://github.com/keystonejs/keystone/tree/main/examples">example projects</a>{' '}
+          in a browser using the free <a href="https://codesandbox.io/">codesandbox.io</a> service.
+          Try the{' '}
+          <a href="https://githubbox.com/keystonejs/keystone/tree/main/examples/blog">
+            blog example
+          </a>{' '}
+          today. Thanks <a href="https://github.com/MurzNN">@murznn</a> for making it happen!{' '}
+          <Emoji symbol="🙌" alt="raised hands" />
+        </Box>
+        <Timeline date="8th February 2022" />
         <Box heading="New learning series">
           Aimed at Keystone beginners, our{' '}
           <a href="/docs/walkthroughs#learn-keystone">new learning series</a> shows you how to turn
@@ -415,8 +457,9 @@ export default function WhatsNew() {
           mutations.
         </Box>
         <Timeline date="15th November 2021" />
-        <Box heading="Expanded Unique Filters" link="releases/2021-11-15#expanded-unique-filters">
-          <InlineCode>select</InlineCode>, <InlineCode>timestamp</InlineCode>,{' '}
+        <Box heading="Expanded Unique Filters" link="/releases/2021-11-15#expanded-unique-filters">
+          The image and files configuration options have been removed from Keystone's configuration,
+          and a new storage configuration object introduced. <InlineCode>timestamp</InlineCode>,{' '}
           <InlineCode>float</InlineCode> and <InlineCode>decimal</InlineCode> fields with{' '}
           <InlineCode>isIndexed: 'unique'</InlineCode> now have unique filters via
           <InlineCode>ListWhereUniqueInput</InlineCode>.

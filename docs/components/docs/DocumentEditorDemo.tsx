@@ -1,15 +1,11 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { getInitialPropsValue } from '@keystone-6/fields-document/src/DocumentEditor/component-blocks/initial-values';
-import { FormValueContent } from '@keystone-6/fields-document/src/DocumentEditor/component-blocks/form';
-import { useKeyDownRef } from '@keystone-6/fields-document/src/DocumentEditor/soft-breaks';
 import React, { ReactNode, useContext, useEffect, useMemo, useState } from 'react';
-import { Toolbar } from '@keystone-6/fields-document/src/DocumentEditor/Toolbar';
 import { DocumentFeatures } from '@keystone-6/fields-document/views';
 import {
   createDocumentEditor,
-  DocumentEditorEditable,
-  DocumentEditorProvider,
+  DocumentEditor,
   Editor,
 } from '@keystone-6/fields-document/src/DocumentEditor';
 import {
@@ -19,7 +15,9 @@ import {
 } from '@keystone-6/fields-document/component-blocks';
 import { Global, jsx } from '@emotion/react';
 
-import { componentBlocks as componentBlocksInExampleProject } from '../../../examples-staging/basic/admin/fieldViews/Content';
+import { FormValueContentFromPreviewProps } from '@keystone-6/fields-document/src/DocumentEditor/component-blocks/form-from-preview';
+import { createGetPreviewProps } from '@keystone-6/fields-document/src/DocumentEditor/component-blocks/preview-props';
+import { componentBlocks as componentBlocksInSandboxProject } from '../../../tests/sandbox/component-blocks';
 import { initialContent } from '../../lib/initialDocumentDemoContent';
 import { Code } from '../primitives/Code';
 
@@ -76,16 +74,18 @@ const documentFeaturesProp = fields.object({
 
 type DocumentFeaturesFormValue = Parameters<
   InferRenderersForComponentBlocks<
-    Record<'documentFeatures', ComponentBlock<typeof documentFeaturesProp['value']>>
+    Record<'documentFeatures', ComponentBlock<typeof documentFeaturesProp['fields']>>
   >['documentFeatures']
 >[0];
 
 const emptyObj = {};
 
 const componentBlocks = {
-  notice: componentBlocksInExampleProject.notice,
-  hero: componentBlocksInExampleProject.hero,
-  quote: componentBlocksInExampleProject.quote,
+  notice: componentBlocksInSandboxProject.notice,
+  hero: componentBlocksInSandboxProject.hero,
+  quote: componentBlocksInSandboxProject.quote,
+  checkboxList: componentBlocksInSandboxProject.checkboxList,
+  carousel: componentBlocksInSandboxProject.carousel,
 };
 
 type DocumentFieldConfig = Parameters<typeof import('@keystone-6/fields-document').document>[0];
@@ -259,13 +259,14 @@ export function DocumentFeaturesFormAndCode() {
   const { formValue, setFormValue } = useContext(DocumentFeaturesContext);
   return (
     <div>
-      <FormValueContent
-        prop={documentFeaturesProp}
-        forceValidation={false}
-        path={[]}
-        stringifiedPropPathToAutoFocus=""
-        value={formValue}
-        onChange={setFormValue}
+      <FormValueContentFromPreviewProps
+        {...createGetPreviewProps(
+          documentFeaturesProp,
+          getNewVal => {
+            setFormValue(getNewVal(formValue));
+          },
+          () => undefined
+        )(formValue)}
       />
     </div>
   );
@@ -273,20 +274,21 @@ export function DocumentFeaturesFormAndCode() {
 
 export const DocumentEditorDemo = () => {
   const [value, setValue] = useState(initialContent as any);
+  const [key, setKey] = useState(0);
   const { documentFeatures, formValue } = useContext(DocumentFeaturesContext);
 
-  const isShiftPressedRef = useKeyDownRef('Shift');
-  const editor = useMemo(
-    () => createDocumentEditor(documentFeatures, componentBlocks, emptyObj, isShiftPressedRef),
-    [documentFeatures, isShiftPressedRef]
-  );
-
-  // this is why we're creating the editor ourselves and not using the DocumentEditor component
   useEffect(() => {
     // we want to force normalize when the document features change so
     // that no invalid things exist after a user changes something
+    const editor = createDocumentEditor(documentFeatures, componentBlocks, emptyObj);
+    editor.children = value;
     Editor.normalize(editor, { force: true });
-  }, [editor, documentFeatures, isShiftPressedRef]);
+    setValue(editor.children);
+    // slate looks like it's a controlled component but it actually isn't
+    // so we need to re-mount it so that it looks at the updated value
+    setKey(x => x + 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [documentFeatures]);
 
   return (
     <div
@@ -305,8 +307,10 @@ export const DocumentEditorDemo = () => {
         h5: { fontSize: 'var(--font-xsmall)' },
         h6: { fontSize: 'var(--font-xxsmall)' },
         'ul, ol': {
-          paddingLeft: 40,
           lineHeight: 1.75,
+        },
+        button: {
+          borderWidth: 0,
         },
       }}
     >
@@ -326,22 +330,14 @@ export const DocumentEditorDemo = () => {
           borderBottom: `1px var(--border) solid`,
         }}
       >
-        <DocumentEditorProvider
+        <DocumentEditor
+          key={key}
           value={value}
           onChange={setValue}
-          editor={editor}
           componentBlocks={componentBlocks}
           documentFeatures={documentFeatures}
           relationships={emptyObj}
-        >
-          {useMemo(
-            () => (
-              <Toolbar documentFeatures={documentFeatures} />
-            ),
-            [documentFeatures]
-          )}
-          <DocumentEditorEditable />
-        </DocumentEditorProvider>
+        />
       </div>
       <details css={{ marginBottom: 'var(--space-xlarge)' }}>
         <summary>View the Field Config</summary>

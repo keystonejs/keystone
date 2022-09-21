@@ -106,6 +106,16 @@ export type KeystoneAdminUISortDirection =
   | "ASC"
   | "DESC";
 
+type ResolvedTodoCreateInput = {
+  id?: undefined;
+  title?: import('.prisma/client').Prisma.TodoCreateInput["title"];
+};
+
+type ResolvedTodoUpdateInput = {
+  id?: undefined;
+  title?: import('.prisma/client').Prisma.TodoUpdateInput["title"];
+};
+
 
 export declare namespace Lists {
   export type Todo = import('@keystone-6/core').ListConfig<Lists.Todo.TypeInfo, any>;
@@ -113,6 +123,7 @@ export declare namespace Lists {
     export type Item = import('.prisma/client').Todo;
     export type TypeInfo = {
       key: "Todo";
+      isSingleton: false;
       fields: "id" | "title"
       item: Item;
       inputs: {
@@ -121,6 +132,10 @@ export declare namespace Lists {
         create: TodoCreateInput;
         update: TodoUpdateInput;
         orderBy: TodoOrderByInput;
+      };
+      prisma: {
+        create: ResolvedTodoCreateInput
+        update: ResolvedTodoUpdateInput
       };
       all: __TypeInfo;
     };
@@ -140,6 +155,8 @@ type __TypeInfo = TypeInfo;
 export type Lists = {
   [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core').ListConfig<TypeInfo['lists'][Key], any>
 } & Record<string, import('@keystone-6/core').ListConfig<any, any>>;
+
+export {}
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/types.js ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 

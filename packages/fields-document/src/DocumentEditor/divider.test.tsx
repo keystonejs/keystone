@@ -21,9 +21,7 @@ test('inserting a divider with a shortcut works', () => {
       <divider
         @@isVoid={true}
       >
-        <text>
-          
-        </text>
+        <text />
       </divider>
       <paragraph>
         <text>
@@ -31,9 +29,7 @@ test('inserting a divider with a shortcut works', () => {
         </text>
       </paragraph>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);

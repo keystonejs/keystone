@@ -1,29 +1,47 @@
 import { list } from '@keystone-6/core';
-import { select, relationship, text, timestamp } from '@keystone-6/core/fields';
-import { stars } from './stars-field';
 
-export const lists = {
+import { allowAll } from '@keystone-6/core/access';
+import { text } from './1-text-field';
+import { stars } from './2-stars-field';
+import { pair } from './3-pair-field';
+
+import { Lists } from '.keystone/types';
+
+export const lists: Lists = {
   Post: list({
+    access: allowAll,
     fields: {
-      title: text({ validation: { isRequired: true } }),
-      status: select({
-        type: 'enum',
-        options: [
-          { label: 'Draft', value: 'draft' },
-          { label: 'Published', value: 'published' },
-        ],
+      content: text({
+        ui: {
+          description: 'A text field, with no null support',
+        },
       }),
-      content: text(),
-      rating: stars(),
-      publishDate: timestamp(),
-      author: relationship({ ref: 'Author.posts', many: false }),
+      rating: stars({
+        ui: {
+          description: 'A star rating, with a scale of 5',
+        },
+      }),
+      pair: pair({
+        ui: {
+          description: 'Two words split by a space',
+        },
+      }), // TODO: this example is a bit abstract, should be contextualised
     },
-  }),
-  Author: list({
-    fields: {
-      name: text({ validation: { isRequired: true } }),
-      email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
-      posts: relationship({ ref: 'Post.author', many: true }),
+    hooks: {
+      // TODO: this is  an example of how hooks interact with custom multiple-column fields,
+      //   but it isn't very meaningful in context
+      resolveInput: async ({ resolvedData, operation, inputData, item }) => {
+        console.log('Post.hooks.resolveInput', { resolvedData, operation, inputData, item });
+        return {
+          ...resolvedData,
+
+          // add some defaults
+          pair: {
+            left: resolvedData.pair?.left,
+            right: resolvedData.pair?.right,
+          },
+        };
+      },
     },
   }),
 };

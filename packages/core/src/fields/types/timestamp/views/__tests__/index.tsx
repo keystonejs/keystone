@@ -7,6 +7,7 @@ const STUBCONFIG: FieldControllerConfig<TimestampFieldMeta> = {
   label: 'timestmap',
   customViews: {},
   fieldMeta: { defaultValue: null, isRequired: false, updatedAt: false },
+  description: null,
 };
 
 describe('controller', () => {

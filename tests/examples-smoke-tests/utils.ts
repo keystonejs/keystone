@@ -75,7 +75,7 @@ export const initFirstItemTest = (getPage: () => playwright.Page) => {
 
 export const exampleProjectTests = (
   exampleName: string,
-  tests: (browser: playwright.BrowserType<playwright.Browser>) => void
+  tests: (browser: playwright.BrowserType<playwright.Browser>, mode: 'dev' | 'prod') => void
 ) => {
   const projectDir = path.join(__dirname, '..', '..', 'examples', exampleName);
   describe.each(['dev', 'prod'] as const)('%s', mode => {
@@ -139,19 +139,11 @@ export const exampleProjectTests = (
       });
     }
 
-    describe.each([
-      'chromium',
-      'firefox',
-      // we don't run the tests on webkit in production
-      // because unlike chromium and firefox
-      // webkit doesn't treat localhost as a secure context
-      // and we enable secure cookies in production
-      ...(mode === 'prod' ? [] : (['webkit'] as const)),
-    ] as const)('%s', browserName => {
+    describe('browser tests', () => {
       beforeAll(async () => {
         await deleteAllData(projectDir);
       });
-      tests(playwright[browserName]);
+      tests(playwright.chromium, mode);
     });
   });
 };

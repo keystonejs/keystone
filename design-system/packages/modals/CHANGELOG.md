@@ -1,5 +1,33 @@
 # @keystone-ui/modals
 
+## 6.0.1
+
+### Patch Changes
+
+- [#7804](https://github.com/keystonejs/keystone/pull/7804) [`c93768cab`](https://github.com/keystonejs/keystone/commit/c93768cab52c76384608f1d890b1ba1840be5e7d) Thanks [@dcousens](https://github.com/dcousens)! - Removes node `.engines` restrictions
+
+- Updated dependencies [[`c93768cab`](https://github.com/keystonejs/keystone/commit/c93768cab52c76384608f1d890b1ba1840be5e7d)]:
+  - @keystone-ui/button@7.0.1
+  - @keystone-ui/core@5.0.1
+
+## 6.0.0
+
+### Major Changes
+
+- [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - upgrade dependancy `"react": "^18.1.0"`
+
+### Minor Changes
+
+- [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - Fixed z-index issues occurring when pop-overs in document editor text-area or the toolbar overlapped other fields and buttons.
+
+### Patch Changes
+
+- [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - Alert dialogs are now centered in the Admin UI.
+
+- Updated dependencies [[`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea)]:
+  - @keystone-ui/button@7.0.0
+  - @keystone-ui/core@5.0.0
+
 ## 5.0.0
 
 ### Major Changes

@@ -1,0 +1,20 @@
+.youtubeVideo {
+    display: grid;
+    grid-template-columns: minmax(auto, 960px);
+    align-items: center;
+    justify-content: center;
+}
+
+.iframePosition {
+    overflow: hidden;
+    padding-bottom: 56.25%;
+    position: relative;
+}
+
+.iframePosition iframe {
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+}

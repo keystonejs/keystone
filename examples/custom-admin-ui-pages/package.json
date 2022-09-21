@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-custom-admin-ui-pages",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -9,15 +9,12 @@
     "build": "keystone build"
   },
   "dependencies": {
-    "@keystone-6/core": "^1.0.0",
-    "@keystone-ui/core": "^4.0.0",
-    "react": "^17.0.2"
+    "@keystone-6/core": "^2.2.0",
+    "@keystone-ui/core": "^5.0.1",
+    "react": "^18.1.0"
   },
   "devDependencies": {
-    "typescript": "^4.4.4"
-  },
-  "engines": {
-    "node": "^14.15 || ^16.13"
+    "typescript": "~4.7.4"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/examples/custom-admin-ui-pages"
 }

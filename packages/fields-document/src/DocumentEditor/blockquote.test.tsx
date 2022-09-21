@@ -27,9 +27,7 @@ test('inserting a blockquote with a shortcut works', () => {
         </paragraph>
       </blockquote>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -62,9 +60,7 @@ test('backspace at start of blockquote', () => {
         </text>
       </paragraph>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -97,9 +93,7 @@ test('enter on empty line at end of blockquote exits blockquote', () => {
         </text>
       </paragraph>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -150,9 +144,7 @@ test('enter on empty line in middle splits the blockquote', () => {
         </paragraph>
       </blockquote>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);

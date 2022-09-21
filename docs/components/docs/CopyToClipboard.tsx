@@ -1,42 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { useToasts } from 'react-toast-notifications';
 import { jsx } from '@emotion/react';
-import copy from 'copy-to-clipboard';
 
 import { Link } from '../icons/Link';
 
-export function CopyToClipboard({ value }: { value: string }) {
-  const { addToast } = useToasts();
-
-  const handleCopy = () => {
-    if (typeof value !== 'string' || typeof window === 'undefined') return;
-
-    const toastOpt = { autoDismiss: true, autoDismissTimeout: 2000 };
-    const url = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
-    const text = `${url}#${value}`;
-
-    if (navigator) {
-      // use the new navigator.clipboard API if it exists
-      navigator.clipboard.writeText(text).then(
-        () => addToast('Copied to clipboard', { appearance: 'success', ...toastOpt }),
-        () => addToast('Failed to copy to clipboard', { appearance: 'error', ...toastOpt })
-      );
-      return;
-    } else {
-      // Fallback to a library that leverages document.execCommand
-      // for browser versions that don't support the navigator object.
-      // As document.execCommand
-      try {
-        copy(text);
-      } catch (e) {
-        addToast('Failed to copy to clipboard', { appearance: 'error', ...toastOpt });
-      }
-
-      return;
-    }
-  };
-
+export function HeadingIdLink({ value }: { value: string }) {
   return (
     <a
       href={`#${value}`}
@@ -62,7 +30,6 @@ export function CopyToClipboard({ value }: { value: string }) {
           color: 'var(--link)',
         },
       }}
-      onClick={handleCopy}
     >
       <Link css={{ height: '1rem' }} />
     </a>

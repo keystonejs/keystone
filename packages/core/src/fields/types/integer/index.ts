@@ -13,7 +13,6 @@ import {
   assertReadIsNonNullAllowed,
   getResolvedIsNullable,
 } from '../../non-null-graphql';
-import { resolveView } from '../../resolve-view';
 
 export type IntegerFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -59,9 +58,9 @@ export const integer =
     const isNullable = getResolvedIsNullable(validation, config.db);
 
     if (hasAutoIncDefault) {
-      if (meta.provider === 'sqlite') {
+      if (meta.provider === 'sqlite' || meta.provider === 'mysql') {
         throw new Error(
-          `The integer field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' }, this is not supported on SQLite`
+          `The integer field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: { kind: 'autoincrement' }, this is not supported on ${meta.provider}`
         );
       }
       if (isNullable !== false) {
@@ -185,7 +184,7 @@ export const integer =
       output: graphql.field({
         type: config.graphql?.read?.isNonNull ? graphql.nonNull(graphql.Int) : graphql.Int,
       }),
-      views: resolveView('integer/views'),
+      views: '@keystone-6/core/fields/types/integer/views',
       getAdminMeta() {
         return {
           validation: {

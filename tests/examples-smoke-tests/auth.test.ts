@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 import { Browser, Page } from 'playwright';
 import { exampleProjectTests, initFirstItemTest, loadIndex } from './utils';
 
-exampleProjectTests('../examples-staging/auth', browserType => {
+exampleProjectTests('../examples/auth', browserType => {
   let browser: Browser = undefined as any;
   let page: Page = undefined as any;
   beforeAll(async () => {

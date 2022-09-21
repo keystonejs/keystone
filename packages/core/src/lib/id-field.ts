@@ -1,4 +1,3 @@
-import path from 'path';
 import { validate } from 'uuid';
 import { isCuid } from 'cuid';
 import {
@@ -9,16 +8,30 @@ import {
   orderDirectionEnum,
 } from '../types';
 import { graphql } from '..';
-import { packagePath } from '../package-path';
 import { userInputError } from './core/graphql-errors';
-
-const views = path.join(
-  packagePath,
-  '___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view'
-);
 
 const idParsers = {
   autoincrement(val: string | null) {
+    if (val === null) {
+      throw userInputError('Only an integer can be passed to id filters');
+    }
+    const parsed = parseInt(val);
+    if (Number.isInteger(parsed)) {
+      return parsed;
+    }
+    throw userInputError('Only an integer can be passed to id filters');
+  },
+  autoincrementBigInt(val: string | null) {
+    if (val === null) {
+      throw userInputError('Only a bigint can be passed to id filters');
+    }
+    try {
+      return BigInt(val);
+    } catch (err) {
+      throw userInputError('Only a bigint can be passed to id filters');
+    }
+  },
+  singleton(val: string | null) {
     if (val === null) {
       throw userInputError('Only an integer can be passed to id filters');
     }
@@ -72,17 +85,16 @@ const filterArg = graphql.arg({ type: IDFilter });
 
 function resolveVal(
   input: Exclude<graphql.InferValueFromArg<typeof filterArg>, undefined>,
-  kind: IdFieldConfig['kind']
+  parseId: (id: string | null) => unknown
 ): any {
   if (input === null) {
     throw userInputError('id filter cannot be null');
   }
-  const idParser = idParsers[kind];
   const obj: any = {};
   for (const key of ['equals', 'gt', 'gte', 'lt', 'lte'] as const) {
     const val = input[key];
     if (val !== undefined) {
-      const parsed = idParser(val);
+      const parsed = parseId(val);
       obj[key] = parsed;
     }
   }
@@ -92,23 +104,27 @@ function resolveVal(
       if (val === null) {
         throw userInputError(`${key} id filter cannot be null`);
       }
-      obj[key] = val.map(x => idParser(x));
+      obj[key] = val.map(x => parseId(x));
     }
   }
   if (input.not !== undefined) {
-    obj.not = resolveVal(input.not, kind);
+    obj.not = resolveVal(input.not, parseId);
   }
   return obj;
 }
 
 export const idFieldType =
-  (config: IdFieldConfig): FieldTypeFunc<BaseListTypeInfo> =>
+  (config: IdFieldConfig, isSingleton: boolean): FieldTypeFunc<BaseListTypeInfo> =>
   meta => {
-    const parseVal = idParsers[config.kind];
+    const parseVal =
+      config.kind === 'autoincrement' && config.type === 'BigInt'
+        ? idParsers.autoincrementBigInt
+        : idParsers[isSingleton ? 'singleton' : config.kind];
     return fieldType({
       kind: 'scalar',
       mode: 'required',
-      scalar: config.kind === 'autoincrement' ? 'Int' : 'String',
+      scalar:
+        config.kind === 'autoincrement' ? (config.type === 'BigInt' ? 'BigInt' : 'Int') : 'String',
       nativeType: meta.provider === 'postgresql' && config.kind === 'uuid' ? 'Uuid' : undefined,
       default: { kind: config.kind },
     })({
@@ -120,7 +136,7 @@ export const idFieldType =
         where: {
           arg: filterArg,
           resolve(val) {
-            return resolveVal(val, config.kind);
+            return resolveVal(val, parseVal);
           },
         },
         uniqueWhere: { arg: graphql.arg({ type: graphql.ID }), resolve: parseVal },
@@ -132,7 +148,7 @@ export const idFieldType =
           return value.toString();
         },
       }),
-      views,
+      views: '@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view',
       getAdminMeta: () => ({ kind: config.kind }),
       ui: {
         createView: {

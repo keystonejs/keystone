@@ -1,0 +1,34 @@
+.callout {
+    padding: 0 8px;
+    border-left: 4px solid;
+    border-radius: 4px;
+    margin: 8px 0;
+    display: grid;
+    grid-template-columns: 48px 1fr;
+}
+
+.icon {
+    display: flex;
+    justify-content: center;
+    padding-top: 16px;
+}
+
+.icon::after {
+    font-size: 24px;
+}
+
+.info::after {
+    content: '\24D8';
+}
+
+.warning::after {
+    content: '\26A0';
+}
+
+.success::after {
+    content: '\2713';
+}
+
+.error::after {
+    content: '\2717';
+}

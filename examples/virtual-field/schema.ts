@@ -1,9 +1,11 @@
 import { list, graphql } from '@keystone-6/core';
 import { select, relationship, text, timestamp, virtual } from '@keystone-6/core/fields';
-import { BaseItem } from '@keystone-6/core/types';
+import { allowAll } from '@keystone-6/core/access';
+import { Lists, Context } from '.keystone/types';
 
-export const lists = {
+export const lists: Lists = {
   Post: list({
+    access: allowAll,
     fields: {
       title: text({ validation: { isRequired: true } }),
       status: select({
@@ -42,7 +44,7 @@ export const lists = {
               paragraphs: graphql.field({ type: graphql.Int }),
             },
           }),
-          resolve(item: any) {
+          resolve(item) {
             const content = item.content || '';
             return {
               words: content.split(' ').length,
@@ -59,11 +61,11 @@ export const lists = {
           args: {
             length: graphql.arg({ type: graphql.nonNull(graphql.Int), defaultValue: 200 }),
           },
-          resolve(item: BaseItem, { length }) {
+          resolve(item, { length }) {
             if (!item.content) {
               return null;
             }
-            const content = item.content as string;
+            const content = item.content;
             if (content.length <= length) {
               return content;
             } else {
@@ -79,7 +81,8 @@ export const lists = {
       authorName: virtual({
         field: graphql.field({
           type: graphql.String,
-          async resolve(item: BaseItem, args, context) {
+          async resolve(item, args, _context) {
+            const context = _context as Context;
             const { author } = await context.query.Post.findOne({
               where: { id: item.id.toString() },
               query: 'author { name }',
@@ -91,6 +94,7 @@ export const lists = {
     },
   }),
   Author: list({
+    access: allowAll,
     fields: {
       name: text({ validation: { isRequired: true } }),
       email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
@@ -100,7 +104,8 @@ export const lists = {
         field: lists =>
           graphql.field({
             type: lists.Post.types.output,
-            async resolve(item: BaseItem, args, context) {
+            async resolve(item, args, _context) {
+              const context = _context as Context;
               const { posts } = await context.query.Author.findOne({
                 where: { id: item.id.toString() },
                 query: `posts(

@@ -3,13 +3,15 @@ import superagent from 'superagent';
 import express from 'express';
 import { list } from '@keystone-6/core';
 import { text, password } from '@keystone-6/core/fields';
-import { setupTestRunner } from '@keystone-6/core/testing';
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
+import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig } from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
     lists: {
       User: list({
+        access: allowAll,
         fields: {
           name: text(),
           email: text(),

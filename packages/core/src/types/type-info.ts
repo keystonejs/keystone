@@ -5,6 +5,7 @@ type GraphQLInput = Record<string, any>;
 
 export type BaseListTypeInfo = {
   key: string;
+  isSingleton: boolean;
   fields: string;
   item: BaseItem;
   inputs: {
@@ -13,6 +14,13 @@ export type BaseListTypeInfo = {
     where: GraphQLInput;
     uniqueWhere: { readonly id?: string | null } & GraphQLInput;
     orderBy: Record<string, 'asc' | 'desc' | null>;
+  };
+  /**
+   * WARNING: may be renamed in patch
+   */
+  prisma: {
+    create: Record<string, any>;
+    update: Record<string, any>;
   };
   all: BaseKeystoneTypeInfo;
 };

@@ -1,10 +1,12 @@
 import { list } from '@keystone-6/core';
+import { allowAll } from '@keystone-6/core/access';
 import { checkbox, relationship, text, timestamp } from '@keystone-6/core/fields';
 import { select } from '@keystone-6/core/fields';
 
 export const lists = {
   Task: list({
     access: {
+      operation: allowAll,
       item: {
         delete: async ({ item }) => {
           const matchString = (item.label as string).replace(/([\d])+/g, '').trim();
@@ -28,6 +30,7 @@ export const lists = {
     },
   }),
   Person: list({
+    access: allowAll,
     fields: {
       name: text({ validation: { isRequired: true } }),
       tasks: relationship({ ref: 'Task.assignedTo', many: true }),

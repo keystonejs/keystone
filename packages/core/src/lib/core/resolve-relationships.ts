@@ -16,10 +16,7 @@ export type ResolvedRelationDBField =
       foreignIdField: { kind: 'none' } | { kind: 'owned' | 'owned-unique'; map: string };
     });
 
-export type ListsWithResolvedRelations = Record<
-  string,
-  { resolvedDbFields: FieldsWithResolvedRelations }
->;
+export type ListsWithResolvedRelations = Record<string, FieldsWithResolvedRelations>;
 
 export type ResolvedDBField =
   | ResolvedRelationDBField
@@ -98,7 +95,7 @@ function sortRelationships(left: Rel, right: Rel): readonly [Rel, RelWithoutFore
 //   (note that this means that there are "fields" in the returned ListsWithResolvedRelations
 //   which are not actually proper Keystone fields, they are just a db field and nothing else)
 export function resolveRelationships(
-  lists: Record<string, { fields: Record<string, { dbField: DBField }> }>
+  lists: Record<string, { fields: Record<string, { dbField: DBField }>; isSingleton: boolean }>
 ): ListsWithResolvedRelations {
   const alreadyResolvedTwoSidedRelationships = new Set<string>();
   const resolvedLists: Record<string, Record<string, ResolvedDBField>> = Object.fromEntries(
@@ -115,6 +112,11 @@ export function resolveRelationships(
       if (!foreignUnresolvedList) {
         throw new Error(
           `The relationship field at ${listKey}.${fieldPath} points to the list ${listKey} which does not exist`
+        );
+      }
+      if (foreignUnresolvedList.isSingleton) {
+        throw new Error(
+          `The relationship field at ${listKey}.${fieldPath} points to a singleton list, ${listKey}, which is not allowed`
         );
       }
       if (field.field) {
@@ -288,7 +290,7 @@ export function resolveRelationships(
       );
       // then we add the opposites to one-sided relations
       Object.assign(resolvedDbFields, outOfOrderDbFields);
-      return [listKey, { resolvedDbFields }];
+      return [listKey, resolvedDbFields];
     })
   );
 }

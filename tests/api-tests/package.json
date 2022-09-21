@@ -1,13 +1,10 @@
 {
-  "name": "@keystone-6/api-tests-legacy",
+  "name": "@keystone-6/api-tests",
   "description": "A set of tests for running against the KeystoneJS API.",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.3",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
-  "engines": {
-    "node": "^14.15 || ^16.13"
-  },
   "repository": "https://github.com/keystonejs/keystone/tree/main/tests/api-tests",
   "homepage": "https://github.com/keystonejs/keystone",
   "devDependencies": {
@@ -15,16 +12,26 @@
     "@keystone-6/auth": "*",
     "@keystone-6/core": "*",
     "@keystone-6/fields-document": "*",
+    "@keystone-6/session-store-redis": "*",
+    "@prisma/client": "4.3.1",
+    "@prisma/internals": "4.3.1",
+    "@prisma/migrate": "4.3.1",
+    "@redis/client": "^1.1.0",
     "apollo-server-types": "^3.4.0",
     "cookie-signature": "^1.1.0",
     "cuid": "^2.1.8",
+    "fs-extra": "^10.0.0",
     "globby": "^11.0.4",
-    "graphql": "^15.8.0",
+    "graphql": "^16.6.0",
+    "graphql-upload": "^15.0.2",
     "memoize-one": "^6.0.0",
+    "mime": "^3.0.0",
+    "node-fetch": "^2.6.7",
+    "prisma": "4.3.1",
     "superagent": "^6.1.0",
     "supertest": "^6.1.6",
     "testcheck": "^1.0.0-rc.2",
-    "uuid": "^8.3.2"
+    "uuid": "^9.0.0"
   },
   "dependencies": {
     "express": "^4.17.1",

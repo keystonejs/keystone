@@ -1,11 +1,10 @@
+import type { ReadStream } from 'fs';
 import * as graphqlTsSchema from '@graphql-ts/schema';
-import { GraphQLJSON } from 'graphql-type-json';
-// this is imported from a specific path so that we don't import busboy here because webpack doesn't like bundling it
 // @ts-ignore
-import GraphQLUpload from 'graphql-upload/public/GraphQLUpload.js';
-import type { FileUpload } from 'graphql-upload';
+import GraphQLUpload from 'graphql-upload/GraphQLUpload.js';
 import { GraphQLError, GraphQLScalarType } from 'graphql';
 import { Decimal as DecimalValue } from 'decimal.js';
+import type { GraphQLFieldExtensions, GraphQLResolveInfo } from 'graphql';
 import { KeystoneContext } from '../context';
 import { JSONValue } from '../utils';
 export {
@@ -40,11 +39,107 @@ export type {
 export { bindGraphQLSchemaAPIToContext } from '@graphql-ts/schema';
 export type { BaseSchemaMeta, Extension } from '@graphql-ts/extend';
 export { extend, wrap } from '@graphql-ts/extend';
-export { field, fields, interface, interfaceField, object, union } from './schema-api-with-context';
+import { field as fieldd } from './schema-api-with-context';
+export { fields, interface, interfaceField, object, union } from './schema-api-with-context';
+
+// TODO: remove when we use { graphql } from '.keystone'
+type SomeTypeThatIsntARecordOfArgs = string;
+type FieldFuncResolve<
+  Source,
+  Args extends { [Key in keyof Args]: graphqlTsSchema.Arg<graphqlTsSchema.InputType> },
+  Type extends OutputType,
+  Key extends string,
+  Context extends KeystoneContext<any>
+> =
+  // the tuple is here because we _don't_ want this to be distributive
+  // if this was distributive then it would optional when it should be required e.g.
+  // graphql.object<{ id: string } | { id: boolean }>()({
+  //   name: "Node",
+  //   fields: {
+  //     id: graphql.field({
+  //       type: graphql.nonNull(graphql.ID),
+  //     }),
+  //   },
+  // });
+  [Key] extends [keyof Source]
+    ? Source[Key] extends
+        | graphqlTsSchema.InferValueFromOutputType<Type>
+        | ((
+            args: graphqlTsSchema.InferValueFromArgs<Args>,
+            context: Context,
+            info: GraphQLResolveInfo
+          ) => graphqlTsSchema.InferValueFromOutputType<Type>)
+      ? {
+          resolve?: graphqlTsSchema.FieldResolver<
+            Source,
+            SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args,
+            Type,
+            Context
+          >;
+        }
+      : {
+          resolve: graphqlTsSchema.FieldResolver<
+            Source,
+            SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args,
+            Type,
+            Context
+          >;
+        }
+    : {
+        resolve: graphqlTsSchema.FieldResolver<
+          Source,
+          SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args,
+          Type,
+          Context
+        >;
+      };
+
+type FieldFuncArgs<
+  Source,
+  Args extends { [Key in keyof Args]: graphqlTsSchema.Arg<graphqlTsSchema.InputType> },
+  Type extends OutputType,
+  Key extends string,
+  Context extends KeystoneContext<any>
+> = {
+  args?: Args;
+  type: Type;
+  deprecationReason?: string;
+  description?: string;
+  extensions?: Readonly<GraphQLFieldExtensions<Source, unknown>>;
+} & FieldFuncResolve<Source, Args, Type, Key, Context>;
+
+type FieldFunc = <
+  Source,
+  Type extends OutputType,
+  Key extends string,
+  Context extends KeystoneContext,
+  Args extends { [Key in keyof Args]: graphqlTsSchema.Arg<graphqlTsSchema.InputType> } = {}
+>(
+  field: FieldFuncArgs<Source, Args, Type, Key, Context>
+) => graphqlTsSchema.Field<Source, Args, Type, Key, KeystoneContext>;
+
+export const field = fieldd as FieldFunc;
+// TODO: remove when we use { graphql } from '.keystone'
 
 export type Context = KeystoneContext;
 
-export const JSON = graphqlTsSchema.graphql.scalar<JSONValue>(GraphQLJSON);
+export const JSON = graphqlTsSchema.graphql.scalar<JSONValue>(
+  new GraphQLScalarType({
+    name: 'JSON',
+    description:
+      'The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).',
+    specifiedByURL: 'http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf',
+    // the defaults for serialize, parseValue and parseLiteral do what makes sense for JSON
+  })
+);
+
+type FileUpload = {
+  filename: string;
+  mimetype: string;
+  encoding: string;
+  createReadStream(): ReadStream;
+};
+
 export const Upload = graphqlTsSchema.graphql.scalar<Promise<FileUpload>>(GraphQLUpload);
 
 // - Decimal.js throws on invalid inputs
@@ -54,12 +149,13 @@ export const Upload = graphqlTsSchema.graphql.scalar<Promise<FileUpload>>(GraphQ
 export const Decimal = graphqlTsSchema.graphql.scalar<DecimalValue & { scaleToPrint?: number }>(
   new GraphQLScalarType({
     name: 'Decimal',
-    serialize(value: DecimalValue & { scaleToPrint?: number }) {
+    serialize(value) {
       if (!DecimalValue.isDecimal(value)) {
         throw new GraphQLError(`unexpected value provided to Decimal scalar: ${value}`);
       }
-      if (value.scaleToPrint !== undefined) {
-        return value.toFixed(value.scaleToPrint);
+      const cast = value as DecimalValue & { scaleToPrint?: number };
+      if (cast.scaleToPrint !== undefined) {
+        return value.toFixed(cast.scaleToPrint);
       }
       return value.toString();
     },
@@ -92,6 +188,33 @@ export const Decimal = graphqlTsSchema.graphql.scalar<DecimalValue & { scaleToPr
   })
 );
 
+export const BigInt = graphqlTsSchema.graphql.scalar<bigint>(
+  new GraphQLScalarType({
+    name: 'BigInt',
+    serialize(value) {
+      if (typeof value !== 'bigint') {
+        throw new GraphQLError(`unexpected value provided to BigInt scalar: ${value}`);
+      }
+      return value.toString();
+    },
+    parseLiteral(value) {
+      if (value.kind !== 'StringValue') {
+        throw new GraphQLError('BigInt only accepts values as strings');
+      }
+      return globalThis.BigInt(value.value);
+    },
+    parseValue(value) {
+      if (typeof value === 'bigint') {
+        return value;
+      }
+      if (typeof value !== 'string') {
+        throw new GraphQLError('BigInt only accepts values as strings');
+      }
+      return globalThis.BigInt(value);
+    },
+  })
+);
+
 // from https://github.com/excitement-engineer/graphql-iso-date/blob/master/src/utils/validator.js#L121
 // this is also what prisma uses https://github.com/prisma/prisma/blob/20b58fe65d581bcb43c0d5c28d4b89cabc2d99b2/packages/client/src/runtime/utils/common.ts#L126-L128
 const RFC_3339_REGEX =
@@ -115,7 +238,7 @@ function parseDate(input: string): Date {
 export const DateTime = graphqlTsSchema.graphql.scalar<Date>(
   new GraphQLScalarType({
     name: 'DateTime',
-    specifiedByUrl: 'https://datatracker.ietf.org/doc/html/rfc3339#section-5.6',
+    specifiedByURL: 'https://datatracker.ietf.org/doc/html/rfc3339#section-5.6',
     serialize(value: unknown) {
       if (!(value instanceof Date) || isNaN(value.valueOf())) {
         throw new GraphQLError(`unexpected value provided to DateTime scalar: ${value}`);
@@ -136,6 +259,43 @@ export const DateTime = graphqlTsSchema.graphql.scalar<Date>(
         throw new GraphQLError('DateTime only accepts values as strings');
       }
       return parseDate(value);
+    },
+  })
+);
+
+const RFC_3339_FULL_DATE_REGEX = /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/;
+
+function validateCalendarDay(input: string) {
+  if (!RFC_3339_FULL_DATE_REGEX.test(input)) {
+    throw new GraphQLError(
+      'CalendarDay scalars must be in the form of a full-date ISO 8601 string'
+    );
+  }
+}
+
+export const CalendarDay = graphqlTsSchema.graphql.scalar<string>(
+  new GraphQLScalarType({
+    name: 'CalendarDay',
+    specifiedByURL: 'https://datatracker.ietf.org/doc/html/rfc3339#section-5.6',
+    serialize(value: unknown) {
+      if (typeof value !== 'string') {
+        throw new GraphQLError(`unexpected value provided to CalendarDay scalar: ${value}`);
+      }
+      return value;
+    },
+    parseLiteral(value) {
+      if (value.kind !== 'StringValue') {
+        throw new GraphQLError('CalendarDay only accepts values as strings');
+      }
+      validateCalendarDay(value.value);
+      return value.value;
+    },
+    parseValue(value: unknown) {
+      if (typeof value !== 'string') {
+        throw new GraphQLError('CalendarDay only accepts values as strings');
+      }
+      validateCalendarDay(value);
+      return value;
     },
   })
 );

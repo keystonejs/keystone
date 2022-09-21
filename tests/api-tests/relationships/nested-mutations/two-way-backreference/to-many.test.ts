@@ -2,7 +2,8 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
 import { KeystoneContext } from '@keystone-6/core/types';
-import { setupTestRunner } from '@keystone-6/core/testing';
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
+import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig } from '../../../utils';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
@@ -15,12 +16,14 @@ const runner = setupTestRunner({
   config: apiTestConfig({
     lists: {
       Student: list({
+        access: allowAll,
         fields: {
           name: text(),
           teachers: relationship({ ref: 'Teacher.students', many: true }),
         },
       }),
       Teacher: list({
+        access: allowAll,
         fields: {
           name: text(),
           students: relationship({ ref: 'Student.teachers', many: true }),

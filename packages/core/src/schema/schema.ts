@@ -20,7 +20,7 @@ export function list<
   Fields extends BaseFields<ListTypeInfo>,
   ListTypeInfo extends BaseListTypeInfo
 >(config: ListConfig<ListTypeInfo, Fields>): ListConfig<ListTypeInfo, any> {
-  return config;
+  return { ...config };
 }
 
 export function gql(strings: TemplateStringsArray) {

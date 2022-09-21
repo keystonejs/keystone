@@ -170,7 +170,7 @@ export default function ForDevelopers() {
             </Type>
             <Type as="p" look="body18">
               <Link href="/docs/apis/schema">
-                <a>Schema API reference →</a>
+                <a>Lists API reference →</a>
               </Link>
             </Type>
           </div>
@@ -474,11 +474,10 @@ export default function ForDevelopers() {
               Update, and Delete operation at both the <strong>model</strong> and{' '}
               <strong>field</strong> level. It’s my favorite way of implementing Auth.
             </TweetBox>
-            <TweetBox user="flexdinesh" img="/assets/flexdinesh.jpg" grad="grad3">
-              Working with Keystone is a very satisfying experience. I wrapped up 50% of my app’s
-              schema, API and seed data in a day <Emoji symbol="😁" alt="Happy" /> The dev
-              experience feels too good to be true <Emoji symbol="✨" alt="Sparkle" />{' '}
-              <Emoji symbol="🚀" alt="Rocket ship" />
+            <TweetBox user="simonswiss" img="/assets/simonswiss.jpg" grad="grad3">
+              As someone who lives on the frontend, I love how Keystone lets me define content
+              models and gives me the backend I need. I get a sweet GraphQL API, and can stay
+              focused on building the UI <Emoji symbol="😍" alt="Love" />
             </TweetBox>
             <TweetBox user="divslingerx" img="/assets/divslingerx.jpg" grad="grad3">
               <a href="https://twitter.com/keystonejs" target="_blank" rel="noopener noreferrer">
@@ -487,15 +486,14 @@ export default function ForDevelopers() {
               is almost too good to be open source. I can’t stress enough how awesome the dev
               experience is. This is what I wish WordPress was.
             </TweetBox>
-            <TweetBox user="_kud" img="/assets/_kud.jpg" grad="grad3">
+            <TweetBox user="_kud" img="/assets/erwann-mest.jpg" grad="grad3">
               I think I'm in love. Keystone‘s just what I needed: a dashboard &amp; GraphQL API that
               works like a charm. As a frontend dev with skills in node and elastic search, Keystone
               + GraphQL just feels so right to me <Emoji symbol="❤️️" alt="Love" />
             </TweetBox>
-            <TweetBox user="simonswiss" img="/assets/simonswiss.jpg" grad="grad3">
-              As someone who lives on the frontend, I love how Keystone lets me define content
-              models and gives me the backend I need. I get a sweet GraphQL API, and can stay
-              focused on building the UI <Emoji symbol="😍" alt="Love" />
+            <TweetBox user="beaulne" img="/assets/matt-beaulne.jpg" grad="grad3">
+              The more I use Keystone, the more I am so impressed. If you have a project and need a
+              quick (and good) backend, I'd look into Keystone for sure.
             </TweetBox>
             <TweetBox user="mxstbr" img="/assets/mxstbr.jpg" grad="grad3">
               The new{' '}

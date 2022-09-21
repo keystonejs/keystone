@@ -84,16 +84,34 @@ export function useElementWithSetNodes<TElement extends Element>(
   if (state.element !== element) {
     setState({ element, elementWithChanges: element });
   }
-  const setNodes = (changes: Partial<Element>) => {
-    Transforms.setNodes(editor, changes, { at: ReactEditor.findPath(editor, element) });
-    setState({ element, elementWithChanges: { ...element, ...changes } as any });
-  };
+
+  const elementRef = useRef(element);
+
+  useEffect(() => {
+    elementRef.current = element;
+  });
+
+  const setNodes = useCallback(
+    (changesOrCallback: Partial<TElement> | ((current: TElement) => Partial<TElement>)) => {
+      const currentElement = elementRef.current;
+      const changes =
+        typeof changesOrCallback === 'function'
+          ? changesOrCallback(currentElement)
+          : changesOrCallback;
+      Transforms.setNodes(editor, changes, { at: ReactEditor.findPath(editor, currentElement) });
+      setState({
+        element: currentElement,
+        elementWithChanges: { ...currentElement, ...changes },
+      });
+    },
+    [editor]
+  );
   return [state.elementWithChanges, setNodes] as const;
 }
 
 export function useEventCallback<Func extends (...args: any) => any>(callback: Func): Func {
   const callbackRef = useRef(callback);
-  const cb = useCallback((...args) => {
+  const cb = useCallback((...args: any[]) => {
     return callbackRef.current(...args);
   }, []);
   useEffect(() => {

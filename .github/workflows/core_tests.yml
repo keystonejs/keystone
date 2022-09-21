@@ -1,0 +1,339 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+  workflow_dispatch:
+
+concurrency:
+  group: core-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  graphql_api_tests_postgresql:
+    name: API Tests PostgreSQL
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+    strategy:
+      fail-fast: false
+      matrix:
+        index: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - uses: ./.github/actions/ci-setup
+
+      - name: Unit tests
+        run: yarn jest --ci --runInBand --shard=${{ matrix.index }}/9 api-tests --testPathIgnorePatterns=examples-smoke-tests  --testPathIgnorePatterns=tests/api-tests/fields/crud --testPathIgnorePatterns=tests/api-tests/auth-stored-session.test.ts
+        env:
+          TEST_ADAPTER: postgresql
+          DATABASE_URL: postgres://testuser:testpass@localhost:5432/test_db
+
+  graphql_api_tests_sqlite:
+    name: API Tests SQLite
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        index: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - uses: ./.github/actions/ci-setup
+
+      - name: Unit tests
+        run: yarn jest --ci --runInBand api-tests --shard=${{ matrix.index }}/9 --testPathIgnorePatterns=examples-smoke-tests  --testPathIgnorePatterns=tests/api-tests/fields/crud --testPathIgnorePatterns=tests/api-tests/auth-stored-session.test.ts
+        env:
+          TEST_ADAPTER: sqlite
+
+  graphql_api_tests_mysql:
+    name: API Tests MySQL
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mariadb:10.9
+        # we use the root user because our tests create databases
+        env:
+          MYSQL_ROOT_PASSWORD: testpass
+        ports:
+          - 3306:3306
+    strategy:
+      fail-fast: false
+      matrix:
+        index: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - uses: ./.github/actions/ci-setup
+
+      - name: Unit tests
+        run: yarn jest --ci --runInBand --shard=${{ matrix.index }}/9 api-tests --testPathIgnorePatterns=examples-smoke-tests  --testPathIgnorePatterns=tests/api-tests/fields/crud --testPathIgnorePatterns=tests/api-tests/auth-stored-session.test.ts
+        env:
+          TEST_ADAPTER: mysql
+          DATABASE_URL: mysql://root:testpass@localhost:3306/test_db
+
+  redis_session_tests_postgresql:
+    name: Redis Session Tests PostgreSQL
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - uses: ./.github/actions/ci-setup
+
+      - name: Unit tests
+        run: yarn jest --ci --runInBand tests/api-tests/auth-stored-session.test.ts
+        env:
+          TEST_ADAPTER: postgresql
+          DATABASE_URL: postgres://testuser:testpass@localhost:5432/test_db
+
+  redis_session_tests_sqlite:
+    name: Redis Session Tests SQLite
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - uses: ./.github/actions/ci-setup
+
+      - name: Unit tests
+        run: yarn jest --ci --runInBand tests/api-tests/auth-stored-session.test.ts
+        env:
+          TEST_ADAPTER: sqlite
+
+  redis_session_tests_mysql:
+    name: Redis Session Tests MySQL
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+      mysql:
+        image: mariadb:10.9
+        env:
+          MYSQL_ROOT_PASSWORD: testpass
+        ports:
+          - 3306:3306
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - uses: ./.github/actions/ci-setup
+
+      - name: Unit tests
+        run: yarn jest --ci --runInBand tests/api-tests/auth-stored-session.test.ts
+        env:
+          TEST_ADAPTER: mysql
+          DATABASE_URL: mysql://root:testpass@localhost:3306/test_db
+
+  field_crud_tests_postgresql:
+    name: Field CRUD Tests PostgreSQL
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - uses: ./.github/actions/ci-setup
+
+      - name: Setup local S3 bucket
+        run: bash ./.github/workflows/s3-bucket.sh
+
+      - name: Unit tests
+        run: yarn jest --ci --runInBand tests/api-tests/fields/crud
+        env:
+          S3_ENDPOINT: http://127.0.0.1:9000/
+          S3_FORCE_PATH_STYLE: true
+          S3_BUCKET_NAME: keystone-test
+          S3_ACCESS_KEY_ID: keystone
+          S3_SECRET_ACCESS_KEY: keystone
+          # this doesn't mean anything when we're using a custom s3 endpoint but the sdk wants something so we just give it something
+          S3_REGION: us-east-1
+          TEST_ADAPTER: postgresql
+          DATABASE_URL: postgres://testuser:testpass@localhost:5432/test_db
+
+  field_crud_tests_sqlite:
+    name: Field CRUD Tests SQLite
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - uses: ./.github/actions/ci-setup
+
+      - name: Setup local S3 bucket
+        run: bash ./.github/workflows/s3-bucket.sh
+
+      - name: Unit tests
+        run: yarn jest --ci --runInBand tests/api-tests/fields/crud
+        env:
+          S3_ENDPOINT: http://127.0.0.1:9000/
+          S3_FORCE_PATH_STYLE: true
+          S3_BUCKET_NAME: keystone-test
+          S3_ACCESS_KEY_ID: keystone
+          S3_SECRET_ACCESS_KEY: keystone
+          # this doesn't mean anything when we're using a custom s3 endpoint but the sdk wants something so we just give it something
+          S3_REGION: us-east-1
+          TEST_ADAPTER: sqlite
+          DATABASE_URL: file:./dev.db
+
+  field_crud_tests_mysql:
+    name: Field CRUD Tests MySQL
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mariadb:10.9
+        env:
+          MYSQL_ROOT_PASSWORD: testpass
+        ports:
+          - 3306:3306
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - uses: ./.github/actions/ci-setup
+
+      - name: Setup local S3 bucket
+        run: bash ./.github/workflows/s3-bucket.sh
+
+      - name: Unit tests
+        run: yarn jest --ci --runInBand tests/api-tests/fields/crud
+        env:
+          S3_ENDPOINT: http://127.0.0.1:9000/
+          S3_FORCE_PATH_STYLE: true
+          S3_BUCKET_NAME: keystone-test
+          S3_ACCESS_KEY_ID: keystone
+          S3_SECRET_ACCESS_KEY: keystone
+          # this doesn't mean anything when we're using a custom s3 endpoint but the sdk wants something so we just give it something
+          S3_REGION: us-east-1
+          TEST_ADAPTER: mysql
+          DATABASE_URL: mysql://root:testpass@localhost:3306/test_db
+
+  examples_tests:
+    name: Testing example project
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+      - uses: ./.github/actions/ci-setup
+      - name: Example unit tests
+        run: cd examples/testing; yarn test
+
+  examples_smoke_tests:
+    name: Smoke Tests For Examples
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: 'file:./test.db'
+    strategy:
+      matrix:
+        test:
+          [
+            'auth.test.ts',
+            'basic.test.ts',
+            'blog.test.ts',
+            'document-field.test.ts',
+            'default-values.test.ts',
+            'extend-graphql-schema.test.ts',
+            'extend-graphql-schema-graphql-ts.test.ts',
+            'extend-graphql-schema-nexus.test.ts',
+            'json.test.ts',
+            'rest-api.test.ts',
+            'roles.test.ts',
+            'task-manager.test.ts',
+            'testing.test.ts',
+            'with-auth.test.ts',
+            'custom-field-view.test.ts',
+            'custom-field.test.ts',
+            'custom-admin-ui-pages.test.ts',
+            'custom-admin-ui-logo.test.ts',
+            'custom-admin-ui-navigation.test.ts',
+          ]
+      fail-fast: false
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - uses: ./.github/actions/ci-setup
+
+      - name: Install Dependencies of Browsers
+        run: yarn playwright install-deps chromium
+
+      - name: Install Browsers
+        run: yarn playwright install chromium
+
+      - name: Unit tests
+        run: yarn jest --ci --runInBand tests/examples-smoke-tests/${{ matrix.test }}
+
+  admin_ui_integration_tests:
+    name: Integration tests for Admin UI
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: 'file:./test.db'
+    strategy:
+      matrix:
+        test:
+          [
+            'init.test.ts',
+            'filters.test.ts',
+            'list-view-crud.test.ts',
+            'navigation.test.ts',
+            'live-reloading.test.ts',
+          ]
+      fail-fast: false
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - uses: ./.github/actions/ci-setup
+
+      - name: Install Dependencies of Browsers
+        run: yarn playwright install-deps chromium
+
+      - name: Install Browsers
+        run: yarn playwright install chromium
+
+      - name: Unit tests
+        run: yarn jest --ci --runInBand tests/admin-ui-tests/${{ matrix.test }}

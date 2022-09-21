@@ -2,7 +2,7 @@ import url from 'url';
 import path from 'path';
 import express from 'express';
 import type { KeystoneConfig, CreateContext } from '../../types';
-import { createSessionContext } from '../../session';
+import { createSessionContext } from '../context/session';
 
 const adminErrorHTMLFilepath = path.join(
   path.dirname(require.resolve('@keystone-6/core/package.json')),

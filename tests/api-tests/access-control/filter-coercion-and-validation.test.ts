@@ -1,14 +1,15 @@
 import { text } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
-import { setupTestRunner } from '@keystone-6/core/testing';
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
+import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig, expectExtensionError } from '../utils';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
     lists: {
       BadAccess: list({
-        fields: { name: text() },
         access: {
+          operation: allowAll,
           filter: {
             query: () => {
               return {
@@ -17,16 +18,18 @@ const runner = setupTestRunner({
             },
           },
         },
+        fields: { name: text() },
       }),
       Coercion: list({
-        fields: { name: text() },
         access: {
+          operation: allowAll,
           filter: {
             query: () => {
               return { NOT: { name: { equals: 'blah' } } };
             },
           },
         },
+        fields: { name: text() },
       }),
     },
   }),

@@ -2,8 +2,9 @@
 // Modify your Keystone config when you want to change this.
 
 datasource sqlite {
-  url      = env("DATABASE_URL")
-  provider = "sqlite"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  provider          = "sqlite"
 }
 
 generator client {

@@ -19,31 +19,31 @@ const relationships: Relationships = {
 
 const componentBlocks: Record<string, ComponentBlock> = {
   basic: component({
-    component: () => null,
+    preview: () => null,
     label: '',
-    props: { prop: fields.text({ label: '' }) },
+    schema: { prop: fields.text({ label: '' }) },
   }),
   relationship: component({
-    component: () => null,
+    preview: () => null,
     label: '',
-    props: {
+    schema: {
       one: fields.relationship({ label: '', listKey: 'Post', selection: 'something' }),
       many: fields.relationship({ label: '', listKey: 'Post', many: true, selection: 'something' }),
     },
   }),
   object: component({
-    component: () => null,
+    preview: () => null,
     label: '',
-    props: {
+    schema: {
       prop: fields.object({
         prop: fields.text({ label: '' }),
       }),
     },
   }),
   conditional: component({
-    component: () => null,
+    preview: () => null,
     label: '',
-    props: {
+    schema: {
       prop: fields.conditional(fields.checkbox({ label: '' }), {
         true: fields.text({ label: '' }),
         false: fields.child({ kind: 'inline', placeholder: '' }),
@@ -197,7 +197,7 @@ test('label and data in inline relationships are stripped', () => {
           @@isInline={true}
           @@isVoid={true}
           data={
-            Object {
+            {
               "data": undefined,
               "id": "an-id",
               "label": undefined,
@@ -205,9 +205,7 @@ test('label and data in inline relationships are stripped', () => {
           }
           relationship="inline"
         >
-          <text>
-            
-          </text>
+          <text />
         </relationship>
         <text>
           something
@@ -242,31 +240,27 @@ test('label and data in relationship props are stripped', () => {
       <component-block
         component="relationship"
         props={
-          Object {
-            "many": Array [
-              Object {
+          {
+            "many": [
+              {
                 "id": "some-id",
               },
-              Object {
+              {
                 "id": "another-id",
               },
             ],
-            "one": Object {
+            "one": {
               "id": "some-id",
             },
           }
         }
       >
         <component-inline-prop>
-          <text>
-            
-          </text>
+          <text />
         </component-inline-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);

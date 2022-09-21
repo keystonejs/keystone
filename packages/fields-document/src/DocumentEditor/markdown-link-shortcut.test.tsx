@@ -20,9 +20,7 @@ test('basic link shortcut', () => {
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
         <link
           @@isInline={true}
           href="https://keystonejs.com"
@@ -112,9 +110,7 @@ test('shortcut with whitespace in the middle of the content works', () => {
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
         <link
           @@isInline={true}
           href="https://keystonejs.com"
@@ -147,9 +143,7 @@ test('link shortcut then typing inserts text outside of the link', () => {
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
         <link
           @@isInline={true}
           href="https://keystonejs.com"
@@ -184,9 +178,7 @@ test('link shortcut with bold in some of the content works', () => {
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
         <link
           @@isInline={true}
           href="https://keystonejs.com"
@@ -249,7 +241,7 @@ test("link shortcut doesn't do anything when links are disabled globally in the 
 test("link shortcut doesn't do anything when inside of a component block with links disabled", () => {
   let editor = makeEditor(
     <editor>
-      <component-block component="comp" props={{}}>
+      <component-block component="comp" props={{ child: null }}>
         <component-inline-prop propPath={['child']}>
           <text>
             [content](https://keystonejs.com
@@ -264,9 +256,9 @@ test("link shortcut doesn't do anything when inside of a component block with li
     {
       componentBlocks: {
         comp: component({
-          component: ({ child }) => React.createElement('div', null, child),
+          preview: props => React.createElement('div', null, props.fields.child.element),
           label: '',
-          props: { child: fields.child({ kind: 'inline', placeholder: '' }) },
+          schema: { child: fields.child({ kind: 'inline', placeholder: '' }) },
         }),
       },
     }
@@ -276,11 +268,15 @@ test("link shortcut doesn't do anything when inside of a component block with li
     <editor>
       <component-block
         component="comp"
-        props={Object {}}
+        props={
+          {
+            "child": null,
+          }
+        }
       >
         <component-inline-prop
           propPath={
-            Array [
+            [
               "child",
             ]
           }
@@ -292,9 +288,7 @@ test("link shortcut doesn't do anything when inside of a component block with li
         </component-inline-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -302,7 +296,7 @@ test("link shortcut doesn't do anything when inside of a component block with li
 test('link shortcut works when inside of a component block with links option inherited', () => {
   let editor = makeEditor(
     <editor>
-      <component-block component="comp" props={{}}>
+      <component-block component="comp" props={{ child: null }}>
         <component-inline-prop propPath={['child']}>
           <text>
             [content](https://keystonejs.com
@@ -317,9 +311,9 @@ test('link shortcut works when inside of a component block with links option inh
     {
       componentBlocks: {
         comp: component({
-          component: ({ child }) => React.createElement('div', null, child),
+          preview: props => React.createElement('div', null, props.fields.child.element),
           label: '',
-          props: { child: fields.child({ kind: 'inline', placeholder: '', links: 'inherit' }) },
+          schema: { child: fields.child({ kind: 'inline', placeholder: '', links: 'inherit' }) },
         }),
       },
     }
@@ -329,18 +323,20 @@ test('link shortcut works when inside of a component block with links option inh
     <editor>
       <component-block
         component="comp"
-        props={Object {}}
+        props={
+          {
+            "child": null,
+          }
+        }
       >
         <component-inline-prop
           propPath={
-            Array [
+            [
               "child",
             ]
           }
         >
-          <text>
-            
-          </text>
+          <text />
           <link
             @@isInline={true}
             href="https://keystonejs.com"
@@ -355,9 +351,7 @@ test('link shortcut works when inside of a component block with links option inh
         </component-inline-prop>
       </component-block>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
       </paragraph>
     </editor>
   `);
@@ -378,9 +372,7 @@ test('an undo only reverts to the whole shortcut text', () => {
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
         <link
           @@isInline={true}
           href="https://keystonejs.com"
@@ -423,9 +415,7 @@ test("text after the markdown shortcut isn't included in the link text", () => {
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
-        <text>
-          
-        </text>
+        <text />
         <link
           @@isInline={true}
           href="https://keystonejs.com"

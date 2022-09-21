@@ -1,0 +1,20 @@
+{
+  "name": "@keystone-6/example-feature-boilerplate",
+  "version": "0.0.1",
+  "private": true,
+  "license": "MIT",
+  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/feature-boilerplate",
+  "scripts": {
+    "dev": "keystone dev --seed-database",
+    "start": "keystone start",
+    "build": "keystone build"
+  },
+  "dependencies": {
+    "@keystone-6/auth": "^4.0.0",
+    "@keystone-6/core": "^2.1.0",
+    "@keystone-6/fields-document": "^4.0.0"
+  },
+  "devDependencies": {
+    "typescript": "~4.7.4"
+  }
+}

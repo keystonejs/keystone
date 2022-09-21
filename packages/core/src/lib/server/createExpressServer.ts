@@ -2,12 +2,11 @@ import { createServer, IncomingMessage, Server, ServerResponse } from 'http';
 import cors, { CorsOptions } from 'cors';
 import express from 'express';
 import { GraphQLSchema } from 'graphql';
-import { graphqlUploadExpress } from 'graphql-upload';
+// @ts-ignore
+import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js';
 import { ApolloServer } from 'apollo-server-express';
 import type { KeystoneConfig, CreateContext, SessionStrategy, GraphQLConfig } from '../../types';
-import { createSessionContext } from '../../session';
-import { DEFAULT_FILES_STORAGE_PATH } from '../context/createFilesContext';
-import { DEFAULT_IMAGES_STORAGE_PATH } from '../context/createImagesContext';
+import { createSessionContext } from '../context/session';
 import { createApolloServerExpress } from './createApolloServer';
 import { addHealthCheck } from './addHealthCheck';
 
@@ -50,6 +49,7 @@ const addApolloServer = async ({
     app: server,
     path: config.graphql?.path || '/api/graphql',
     cors: false,
+    bodyParserConfig: config.graphql?.bodyParser,
   });
   return apolloServer;
 };
@@ -90,7 +90,7 @@ export const createExpressServer = async (
         req,
       });
 
-    config.server?.extendExpressApp(expressServer, createRequestContext);
+    await config.server.extendExpressApp(expressServer, createRequestContext);
   }
 
   if (config.server?.extendHttpServer) {
@@ -101,21 +101,26 @@ export const createExpressServer = async (
           : undefined,
         req,
       });
-    config.server?.extendHttpServer(httpServer, createRequestContext);
+    config.server?.extendHttpServer(httpServer, createRequestContext, graphQLSchema);
   }
 
-  if (config.files) {
-    expressServer.use(
-      '/files',
-      express.static(config.files.local?.storagePath ?? DEFAULT_FILES_STORAGE_PATH)
-    );
-  }
-
-  if (config.images) {
-    expressServer.use(
-      '/images',
-      express.static(config.images.local?.storagePath ?? DEFAULT_IMAGES_STORAGE_PATH)
-    );
+  if (config.storage) {
+    for (const val of Object.values(config.storage)) {
+      if (val.kind !== 'local' || !val.serverRoute) continue;
+      expressServer.use(
+        val.serverRoute.path,
+        express.static(val.storagePath, {
+          setHeaders(res) {
+            if (val.type === 'file') {
+              res.setHeader('Content-Type', 'application/octet-stream');
+            }
+          },
+          index: false,
+          redirect: false,
+          lastModified: false,
+        })
+      );
+    }
   }
 
   const apolloServer = await addApolloServer({

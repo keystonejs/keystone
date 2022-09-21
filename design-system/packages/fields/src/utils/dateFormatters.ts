@@ -1,4 +1,4 @@
-import { formatISO } from 'date-fns';
+import { formatISO, parse } from 'date-fns';
 import { DateType } from '../types';
 
 /**
@@ -8,9 +8,15 @@ export const formatDateType = (date: Date): DateType => {
   return formatISO(date, { representation: 'date' });
 };
 
+export const deserializeDate = (date: string): Date => {
+  return parse(date, 'yyyy-MM-dd', new Date());
+};
+
 // undefined means we'll use the user's locale
 const formatter = new Intl.DateTimeFormat(undefined, {
-  dateStyle: 'short',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
 });
 
 export const formatDate = (date: Date): string => formatter.format(date);

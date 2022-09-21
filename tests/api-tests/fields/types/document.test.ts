@@ -1,15 +1,18 @@
 import { text } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
 import { list } from '@keystone-6/core';
-import { setupTestEnv, setupTestRunner } from '@keystone-6/core/testing';
+import { setupTestEnv, setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { KeystoneContext } from '@keystone-6/core/types';
 import { component, fields } from '@keystone-6/fields-document/component-blocks';
+import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig, expectInternalServerError } from '../../utils';
+import { withServer } from '../../with-server';
 
 const runner = setupTestRunner({
   config: apiTestConfig({
     lists: {
       Post: list({
+        access: allowAll,
         fields: {
           content: document({
             relationships: {
@@ -23,6 +26,10 @@ const runner = setupTestRunner({
         },
       }),
       Author: list({
+        access: {
+          operation: allowAll,
+          filter: { query: () => ({ name: { not: { equals: 'Charlie' } } }) },
+        },
         fields: {
           name: text(),
           bio: document({
@@ -44,7 +51,6 @@ const runner = setupTestRunner({
             },
           }),
         },
-        access: { filter: { query: () => ({ name: { not: { equals: 'Charlie' } } }) } },
       }),
     },
   }),
@@ -252,7 +258,7 @@ describe('Document field type', () => {
 
   test(
     'hydrateRelationships: true - selection has bad fields',
-    runner(async ({ context, graphQLRequest }) => {
+    withServer(runner)(async ({ context, graphQLRequest }) => {
       const { alice } = await initData({ context });
       const badBob = await context.query.Author.createOne({
         data: {
@@ -296,6 +302,7 @@ describe('Document field type', () => {
         config: apiTestConfig({
           lists: {
             Post: list({
+              access: allowAll,
               fields: {
                 content: document({
                   relationships: {
@@ -321,13 +328,14 @@ describe('Document field type', () => {
         config: apiTestConfig({
           lists: {
             Post: list({
+              access: allowAll,
               fields: {
                 content: document({
                   componentBlocks: {
                     someBlock: component({
-                      component: () => null,
+                      preview: () => null,
                       label: 'Some Block',
-                      props: {
+                      schema: {
                         something: fields.object({
                           blah: fields.conditional(fields.checkbox({ label: 'Some conditional' }), {
                             false: fields.empty(),
@@ -347,7 +355,7 @@ describe('Document field type', () => {
         }),
       })
     ).rejects.toMatchInlineSnapshot(
-      `[Error: A component block named Some Block in the field at Post.content has a relationship field at something.blah.true with the listKey "Author" but no list named "Author" exists.]`
+      `[Error: Component block someBlock in Post.content: The relationship field at "object.something.object.blah.conditional.true" has the listKey "Author" but no list named "Author" exists.]`
     );
   });
 });

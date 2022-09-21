@@ -1,10 +1,18 @@
 import type { Server } from 'http';
+import type { ListenOptions } from 'net';
 import type { Config } from 'apollo-server-express';
 import { CorsOptions } from 'cors';
 import express from 'express';
 import type { GraphQLSchema } from 'graphql';
+import type { Options as BodyParserOptions } from 'body-parser';
 
-import type { AssetMode, CreateRequestContext, BaseKeystoneTypeInfo, KeystoneContext } from '..';
+import type {
+  AssetMode,
+  CreateRequestContext,
+  BaseKeystoneTypeInfo,
+  KeystoneContext,
+  DatabaseProvider,
+} from '..';
 
 import { SessionStrategy } from '../session';
 import type { MaybePromise } from '../utils';
@@ -19,6 +27,64 @@ import type { BaseFields } from './fields';
 import type { ListAccessControl, FieldAccessControl } from './access-control';
 import type { ListHooks } from './hooks';
 
+type FileOrImage =
+  // is given full file name, returns file name that will be used at
+  | { type: 'file'; transformName?: (filename: string) => MaybePromise<string> }
+  // return does not include extension, extension is handed over in case they want to use it
+  | {
+      type: 'image';
+      // is given full file name, returns file name that will be used at
+      transformName?: (filename: string, extension: string) => MaybePromise<string>;
+    };
+
+export type StorageConfig = (
+  | {
+      /** The kind of storage being configured */
+      kind: 'local';
+      /** The path to where the asset will be stored on disc, eg 'public/images' */
+      storagePath: string;
+      /** A function that receives a partial url, whose return will be used as the URL in graphql
+       *
+       * For example, a local dev usage of this might be:
+       * ```ts
+       * path => `http://localhost:3000/images${path}`
+       * ```
+       */
+      generateUrl: (path: string) => string;
+      /** The configuration for keystone's hosting of the assets - if set to null, keystone will not host the assets */
+      serverRoute: {
+        /** The partial path that the assets will be hosted at by keystone, eg `/images` or `/our-cool-files` */
+        path: string;
+      } | null;
+      /** Sets whether the assets should be preserved locally on removal from keystone's database */
+      preserve?: boolean;
+      transformName?: (filename: string) => string;
+    }
+  | {
+      /** The kind of storage being configured */
+      kind: 's3';
+      /** Sets signing of the asset - for use when you want private assets */
+      signed?: { expiry: number };
+      generateUrl?: (path: string) => string;
+      /** Sets whether the assets should be preserved locally on removal from keystone's database */
+      preserve?: boolean;
+      pathPrefix?: string;
+      /** Your s3 instance's bucket name */
+      bucketName: string;
+      /** Your s3 instance's region */
+      region: string;
+      /** An access Key ID with write access to your S3 instance */
+      accessKeyId: string;
+      /** The secret access key that gives permissions to your access Key Id */
+      secretAccessKey: string;
+      /** An endpoint to use - to be provided if you are not using AWS as your endpoint */
+      endpoint?: string;
+      /** If true, will force the 'old' S3 path style of putting bucket name at the start of the pathname of the URL  */
+      forcePathStyle?: boolean;
+    }
+) &
+  FileOrImage;
+
 export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   lists: ListSchemaConfig;
   db: DatabaseConfig<TypeInfo>;
@@ -27,18 +93,20 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
   session?: SessionStrategy<any>;
   graphql?: GraphQLConfig;
   extendGraphqlSchema?: ExtendGraphqlSchema;
-  files?: FilesConfig;
-  images?: ImagesConfig;
+  /** An object containing configuration about keystone's various external storages.
+   *
+   * Each entry should be of either `kind: 'local'` or `kind: 's3'`, and follow the configuration of each.
+   *
+   * When configuring a `file` or `image` field that uses the storage, use the key in the storage object
+   * as the `storage` option for that field.
+   */
+  storage?: Record<string, StorageConfig>;
   /** Experimental config options */
   experimental?: {
-    /** Enables nextjs graphql api route mode */
-    enableNextJsGraphqlApiEndpoint?: boolean;
     /** Creates a file at `node_modules/.keystone/api` with a `lists` export */
     generateNodeAPI?: boolean;
     /** Creates a file at `node_modules/.keystone/next/graphql-api` with `default` and `config` exports that can be re-exported in a Next API route */
     generateNextGraphqlAPI?: boolean;
-    /** Options for Keystone Cloud */
-    cloud?: CloudConfig;
     /** Adds the internal data structure `experimental.initialisedLists` to the context object.
      * This is not a stable API and may contain breaking changes in `patch` level releases.
      */
@@ -54,12 +122,14 @@ export type { ListSchemaConfig, ListConfig, BaseFields, MaybeSessionFunction, Ma
 
 export type DatabaseConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   url: string;
+  shadowDatabaseUrl?: string;
   onConnect?: (args: KeystoneContext<TypeInfo>) => Promise<void>;
   useMigrations?: boolean;
   enableLogging?: boolean;
   idField?: IdFieldConfig;
-  provider: 'postgresql' | 'sqlite';
+  provider: DatabaseProvider;
   prismaPreviewFeatures?: readonly string[]; // https://www.prisma.io/docs/concepts/components/preview-features
+  additionalPrismaDatasourceProperties?: { [key: string]: string };
 };
 
 // config.ui
@@ -67,8 +137,6 @@ export type DatabaseConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
 export type AdminUIConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   /** Completely disables the Admin UI */
   isDisabled?: boolean;
-  /** Enables certain functionality in the Admin UI that expects the session to be an item */
-  enableSessionItem?: boolean;
   /** A function that can be run to validate that the current session should have access to the Admin UI */
   isAccessAllowed?: (context: KeystoneContext<TypeInfo>) => MaybePromise<boolean>;
   /** An array of page routes that can be accessed without passing the isAccessAllowed check */
@@ -99,16 +167,30 @@ type HealthCheckConfig = {
 export type ServerConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   /** Configuration options for the cors middleware. Set to `true` to use core Keystone defaults */
   cors?: CorsOptions | true;
-  /** Port number to start the server on. Defaults to process.env.PORT || 3000 */
-  port?: number;
   /** Maximum upload file size allowed (in bytes) */
   maxFileSize?: number;
   /** Health check configuration. Set to `true` to add a basic `/_healthcheck` route, or specify the path and data explicitly */
   healthCheck?: HealthCheckConfig | true;
   /** Hook to extend the Express App that Keystone creates */
-  extendExpressApp?: (app: express.Express, createContext: CreateRequestContext<TypeInfo>) => void;
-  extendHttpServer?: (server: Server, createContext: CreateRequestContext<TypeInfo>) => void;
-};
+  extendExpressApp?: (
+    app: express.Express,
+    createContext: CreateRequestContext<TypeInfo>
+  ) => void | Promise<void>;
+  extendHttpServer?: (
+    server: Server,
+    createContext: CreateRequestContext<TypeInfo>,
+    graphqlSchema: GraphQLSchema
+  ) => void;
+} & (
+  | {
+      /** Port number to start the server on. Defaults to process.env.PORT || 3000 */
+      port?: number;
+    }
+  | {
+      /** node http.Server options */
+      options?: ListenOptions;
+    }
+);
 
 // config.graphql
 
@@ -118,6 +200,7 @@ export type GraphQLConfig = {
   // The CORS configuration to use on the GraphQL API endpoint.
   // Default: { origin: 'https://studio.apollographql.com', credentials: true }
   cors?: CorsOptions;
+  bodyParser?: BodyParserOptions;
   queryLimits?: {
     maxTotalResults?: number;
   };
@@ -173,8 +256,6 @@ export type GraphQLConfig = {
 
 export type ExtendGraphqlSchema = (schema: GraphQLSchema) => GraphQLSchema;
 
-// config.files
-
 export type FilesConfig = {
   upload: AssetMode;
   transformFilename?: (str: string) => string;
@@ -192,8 +273,6 @@ export type FilesConfig = {
   };
 };
 
-// config.images
-
 export type ImagesConfig = {
   upload: AssetMode;
   local?: {
@@ -208,12 +287,6 @@ export type ImagesConfig = {
      */
     baseUrl?: string;
   };
-};
-
-// config.experimental.cloud
-
-export type CloudConfig = {
-  apiKey?: string;
 };
 
 // Exports from sibling packages

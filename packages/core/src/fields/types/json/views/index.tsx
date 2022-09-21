@@ -2,7 +2,7 @@
 /** @jsx jsx */
 
 import { jsx, Stack, Text } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel, TextArea } from '@keystone-ui/fields';
+import { FieldContainer, FieldDescription, FieldLabel, TextArea } from '@keystone-ui/fields';
 import {
   CardValueComponent,
   CellComponent,
@@ -22,26 +22,36 @@ export const Field = ({
 }: FieldProps<typeof controller>) => {
   return (
     <FieldContainer>
-      <FieldLabel>
-        {field.label}
-        {onChange ? (
-          <Stack>
-            <TextArea
-              css={{ fontFamily: 'monospace' }}
-              autoFocus={autoFocus}
-              onChange={event => onChange(event.target.value)}
-              value={value}
-            />
-            {forceValidation && (
-              <Text color="red600" size="small">
-                {'Invalid JSON'}
-              </Text>
-            )}
-          </Stack>
-        ) : (
-          value
+      <FieldLabel htmlFor={field.path}>{field.label}</FieldLabel>
+      <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
+      <Stack>
+        <TextArea
+          id={field.path}
+          aria-describedby={field.description === null ? undefined : `${field.path}-description`}
+          readOnly={onChange === undefined}
+          css={{
+            fontFamily: 'monospace',
+            ...(!onChange && {
+              backgroundColor: '#eff3f6',
+              border: '1px solid transparent',
+              '&:focus-visible': {
+                outline: 0,
+                backgroundColor: '#eff3f6',
+                boxShadow: '0 0 0 2px #e1e5e9',
+                border: '1px solid #b1b5b9',
+              },
+            }),
+          }}
+          autoFocus={autoFocus}
+          onChange={event => onChange?.(event.target.value)}
+          value={value}
+        />
+        {forceValidation && (
+          <Text color="red600" size="small">
+            {'Invalid JSON'}
+          </Text>
         )}
-      </FieldLabel>
+      </Stack>
     </FieldContainer>
   );
 };
@@ -67,6 +77,7 @@ export const controller = (config: Config): FieldController<string, string> => {
   return {
     path: config.path,
     label: config.label,
+    description: config.description,
     graphqlSelection: config.path,
     defaultValue:
       config.fieldMeta.defaultValue === null

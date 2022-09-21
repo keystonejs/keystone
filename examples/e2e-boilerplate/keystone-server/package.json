@@ -1,0 +1,18 @@
+{
+  "name": "@keystone-6/example-e2e-boilerplate-keystone-server",
+  "description": "Keystone boilerplate to build e2e examples",
+  "version": "0.0.1",
+  "private": true,
+  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/e2e-boilerplate/keystone-server",
+  "scripts": {
+    "dev": "keystone dev --seed-database",
+    "start": "keystone start --seed-database",
+    "build": "keystone build"
+  },
+  "dependencies": {
+    "@keystone-6/auth": "^4.0.0",
+    "@keystone-6/core": "^2.1.0",
+    "@keystone-6/fields-document": "^4.0.0",
+    "typescript": "~4.7.4"
+  }
+}

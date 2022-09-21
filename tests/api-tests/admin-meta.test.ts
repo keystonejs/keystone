@@ -1,7 +1,8 @@
-import { list } from '@keystone-6/core';
+import { gql, list } from '@keystone-6/core';
+import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
 import { staticAdminMetaQuery } from '@keystone-6/core/src/admin-ui/admin-meta-graphql';
-import { setupTestRunner } from '@keystone-6/core/testing';
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { apiTestConfig, dbProvider } from './utils';
 
 const runner = setupTestRunner({
@@ -9,7 +10,15 @@ const runner = setupTestRunner({
     ui: {
       isAccessAllowed: () => false,
     },
-    lists: { User: list({ fields: { name: text() } }) },
+    lists: {
+      // prettier-ignore
+      User: list({
+        access: allowAll,
+        fields: {
+          name: text()
+        },
+      }),
+    },
   }),
 });
 
@@ -18,9 +27,9 @@ test(
   runner(async ({ context }) => {
     const res = await context.exitSudo().graphql.raw({ query: staticAdminMetaQuery });
     expect(res).toMatchInlineSnapshot(`
-      Object {
+      {
         "data": null,
-        "errors": Array [
+        "errors": [
           [GraphQLError: Access denied],
         ],
       }
@@ -37,8 +46,6 @@ test(
         __typename: 'KeystoneMeta',
         adminMeta: {
           __typename: 'KeystoneAdminMeta',
-          enableSessionItem: false,
-          enableSignout: false,
           lists: [
             {
               __typename: 'KeystoneAdminUIListMeta',
@@ -47,6 +54,7 @@ test(
                 {
                   __typename: 'KeystoneAdminUIFieldMeta',
                   customViewsIndex: null,
+                  description: null,
                   fieldMeta: {
                     kind: 'cuid',
                   },
@@ -61,6 +69,7 @@ test(
                 {
                   __typename: 'KeystoneAdminUIFieldMeta',
                   customViewsIndex: null,
+                  description: null,
                   fieldMeta: {
                     defaultValue: '',
                     displayMode: 'input',
@@ -95,10 +104,53 @@ test(
               path: 'users',
               plural: 'Users',
               singular: 'User',
+              isSingleton: false,
             },
           ],
         },
       },
+    });
+  })
+);
+
+const names = {
+  label: 'Test Stuff',
+  plural: 'Test Things',
+  singular: 'Test Thing',
+  path: 'thing',
+};
+test(
+  'ui.{label,plural,singular,path} are returned in the admin meta',
+
+  setupTestRunner({
+    config: apiTestConfig({
+      lists: {
+        Test: list({
+          access: allowAll,
+          fields: { name: text() },
+          ui: names,
+        }),
+      },
+    }),
+  })(async ({ context }) => {
+    const res = await context.sudo().graphql.raw({
+      query: gql`
+        query {
+          keystone {
+            adminMeta {
+              list(key: "Test") {
+                label
+                singular
+                plural
+                path
+              }
+            }
+          }
+        }
+      `,
+    });
+    expect(res.data!).toEqual({
+      keystone: { adminMeta: { list: names } },
     });
   })
 );

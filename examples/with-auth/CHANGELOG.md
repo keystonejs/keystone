@@ -1,5 +1,39 @@
 # @keystone-6/example-with-auth
 
+## 0.0.5
+
+### Patch Changes
+
+- [#7804](https://github.com/keystonejs/keystone/pull/7804) [`c93768cab`](https://github.com/keystonejs/keystone/commit/c93768cab52c76384608f1d890b1ba1840be5e7d) Thanks [@dcousens](https://github.com/dcousens)! - Removes node `.engines` restrictions
+
+- Updated dependencies [[`713e0f47e`](https://github.com/keystonejs/keystone/commit/713e0f47e021c7cfc0d7f9585f72840ab3552b5b), [`a711c46e0`](https://github.com/keystonejs/keystone/commit/a711c46e03229d447cde207b30113198f06e91de), [`d34a1e0bc`](https://github.com/keystonejs/keystone/commit/d34a1e0bc62c2078d0fd77900d865193fea37621), [`e322ce122`](https://github.com/keystonejs/keystone/commit/e322ce1223ef00dfb77f22b2f669e05d91b09814), [`721ad00f4`](https://github.com/keystonejs/keystone/commit/721ad00f4b0fd85a5b2716c95b260e6f9e43acaf), [`3eaab4919`](https://github.com/keystonejs/keystone/commit/3eaab49195cedecf81bd0da05df2710e5486cb2e), [`9d3e40612`](https://github.com/keystonejs/keystone/commit/9d3e40612ead28e5a8d91f214c24bdbddcae0c0f), [`0ea56667f`](https://github.com/keystonejs/keystone/commit/0ea56667f43852db35457de99d4c05833e147a50), [`0261a5e30`](https://github.com/keystonejs/keystone/commit/0261a5e305ba7b27c034cca733e690e952966bf3), [`bf70aa64d`](https://github.com/keystonejs/keystone/commit/bf70aa64dad1c62672a82ef5be8efc2203a96029), [`c93768cab`](https://github.com/keystonejs/keystone/commit/c93768cab52c76384608f1d890b1ba1840be5e7d), [`809f707ff`](https://github.com/keystonejs/keystone/commit/809f707ffa38849ddf15355f9ef6acd18fc02010), [`809f707ff`](https://github.com/keystonejs/keystone/commit/809f707ffa38849ddf15355f9ef6acd18fc02010), [`da0c197c7`](https://github.com/keystonejs/keystone/commit/da0c197c7de32d62083357b0831cba43b447a621), [`713e0f47e`](https://github.com/keystonejs/keystone/commit/713e0f47e021c7cfc0d7f9585f72840ab3552b5b), [`d2483bb4b`](https://github.com/keystonejs/keystone/commit/d2483bb4b1ad58533d86718753c20e0d21d6ee58), [`1d24916b8`](https://github.com/keystonejs/keystone/commit/1d24916b828af5e0d1bd49c56cf75b0086fe3414)]:
+  - @keystone-6/core@2.2.0
+  - @keystone-6/auth@4.0.1
+
+## 0.0.4
+
+### Patch Changes
+
+- Updated dependencies [[`65382ed80`](https://github.com/keystonejs/keystone/commit/65382ed80a77761fd7b0b7b21990151ab7b3eb30), [`f5fe35573`](https://github.com/keystonejs/keystone/commit/f5fe35573d0e12e9a624a717c464817031cfe760), [`a48fe5e81`](https://github.com/keystonejs/keystone/commit/a48fe5e818421524a6e1f5c52f21431444e003c7), [`c862e876c`](https://github.com/keystonejs/keystone/commit/c862e876c411c26ab5356d155f9c8914663e9654), [`7f83b438b`](https://github.com/keystonejs/keystone/commit/7f83b438b0001c19058b09b0532dc3ef485696bb), [`153eb6778`](https://github.com/keystonejs/keystone/commit/153eb67784cf18417831598715d2689c0173296b), [`c862e876c`](https://github.com/keystonejs/keystone/commit/c862e876c411c26ab5356d155f9c8914663e9654), [`ffb9ab744`](https://github.com/keystonejs/keystone/commit/ffb9ab74442a036f9c6bc7546bf0fa61c770445b), [`29db9b5de`](https://github.com/keystonejs/keystone/commit/29db9b5de4d4a13150730f797463e3f8bb1c75d8), [`86569dd75`](https://github.com/keystonejs/keystone/commit/86569dd751dc63d41103f69509abb882e45f9c54), [`f9ca9eddf`](https://github.com/keystonejs/keystone/commit/f9ca9eddf69864e8f85c5df1ea56a5400c9916e2)]:
+  - @keystone-6/core@2.1.0
+  - @keystone-6/auth@4.0.0
+
+## 0.0.3
+
+### Patch Changes
+
+- Updated dependencies [[`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`8add4212c`](https://github.com/keystonejs/keystone/commit/8add4212cdb9304ebe054763eddd78640db62b42), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`f603859cc`](https://github.com/keystonejs/keystone/commit/f603859cc6607327a45c0a519c7a9b6e58e02d6b), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea)]:
+  - @keystone-6/core@2.0.0
+  - @keystone-6/auth@3.0.0
+
+## 0.0.2
+
+### Patch Changes
+
+- Updated dependencies [[`dfb4aea31`](https://github.com/keystonejs/keystone/commit/dfb4aea3112ed83322a698f177545618275699b7), [`3e538d136`](https://github.com/keystonejs/keystone/commit/3e538d1360add48c37a099de7c9d1621e2c74ddf), [`518bd2e43`](https://github.com/keystonejs/keystone/commit/518bd2e437227fbd1a8f7fb947dcb11c57ffb7dd), [`ec8103a12`](https://github.com/keystonejs/keystone/commit/ec8103a12861a7cd182603b82aa3b1133a43da4e), [`81e663d31`](https://github.com/keystonejs/keystone/commit/81e663d3157b3c49a191aaa1bc1c179dd8cc34d4), [`4f3d0a073`](https://github.com/keystonejs/keystone/commit/4f3d0a073dba50f22505af545402a2f1e38afe0d), [`45c2bbaf3`](https://github.com/keystonejs/keystone/commit/45c2bbaf34594e135ccd09f5c9221eb822ac9965), [`6cea02475`](https://github.com/keystonejs/keystone/commit/6cea02475b02528e5f04f0a5bca641367ca1584d)]:
+  - @keystone-6/core@1.1.0
+  - @keystone-6/auth@2.0.0
+
 ## 0.0.1
 
 ### Patch Changes

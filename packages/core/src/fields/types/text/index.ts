@@ -9,7 +9,6 @@ import {
 } from '../../../types';
 import { graphql } from '../../..';
 import { assertCreateIsNonNullAllowed, assertReadIsNonNullAllowed } from '../../non-null-graphql';
-import { resolveView } from '../../resolve-view';
 
 export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -27,7 +26,31 @@ export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     };
     defaultValue?: string;
     graphql?: { create?: { isNonNull?: boolean }; read?: { isNonNull?: boolean } };
-    db?: { isNullable?: boolean; map?: string };
+    db?: {
+      isNullable?: boolean;
+      map?: string;
+      /**
+       * The underlying database type.
+       * Only some of the types are supported on PostgreSQL and MySQL.
+       * The native type is not customisable on SQLite.
+       * See Prisma's documentation for more information about the supported types.
+       *
+       * https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+       */
+      nativeType?:
+        | 'Text' // PostgreSQL and MySQL
+        | `VarChar(${number})`
+        | `Char(${number})`
+        | `Bit(${number})` // PostgreSQL
+        | 'VarBit'
+        | 'Uuid'
+        | 'Xml'
+        | 'Inet'
+        | 'Citext'
+        | 'TinyText' // MySQL
+        | 'MediumText'
+        | 'LargeText';
+    };
   };
 
 export const text =
@@ -90,6 +113,7 @@ export const text =
       default: defaultValue === undefined ? undefined : { kind: 'literal', value: defaultValue },
       index: isIndexed === true ? 'index' : isIndexed || undefined,
       map: config.db?.map,
+      nativeType: config.db?.nativeType,
     })({
       ...config,
       hooks: {
@@ -153,7 +177,7 @@ export const text =
       output: graphql.field({
         type: config.graphql?.read?.isNonNull ? graphql.nonNull(graphql.String) : graphql.String,
       }),
-      views: resolveView('text/views'),
+      views: '@keystone-6/core/fields/types/text/views',
       getAdminMeta(): TextFieldMeta {
         return {
           displayMode: config.ui?.displayMode ?? 'input',

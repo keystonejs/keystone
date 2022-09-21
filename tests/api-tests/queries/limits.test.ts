@@ -1,39 +1,45 @@
 import { text, integer, relationship } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
-import { setupTestRunner } from '@keystone-6/core/testing';
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
+import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig, expectGraphQLValidationError, expectLimitsExceededError } from '../utils';
+import { withServer } from '../with-server';
 import { depthLimit, definitionLimit, fieldLimit } from './validation';
 
-const runner = setupTestRunner({
-  config: apiTestConfig({
-    lists: {
-      Post: list({
-        fields: {
-          title: text(),
-          author: relationship({ ref: 'User.posts', many: true }),
-        },
-      }),
-      User: list({
-        fields: {
-          name: text(),
-          favNumber: integer(),
-          posts: relationship({ ref: 'Post.author', many: true }),
-        },
-        graphql: {
-          queryLimits: {
-            maxResults: 2,
+const runner = withServer(
+  setupTestRunner({
+    config: apiTestConfig({
+      lists: {
+        Post: list({
+          access: allowAll,
+          fields: {
+            title: text(),
+            author: relationship({ ref: 'User.posts', many: true }),
           },
-        },
-      }),
-    },
-    graphql: {
-      queryLimits: { maxTotalResults: 6 },
-      apolloConfig: {
-        validationRules: [depthLimit(3), definitionLimit(3), fieldLimit(8)],
+        }),
+        User: list({
+          access: allowAll,
+          fields: {
+            name: text(),
+            favNumber: integer(),
+            posts: relationship({ ref: 'Post.author', many: true }),
+          },
+          graphql: {
+            queryLimits: {
+              maxResults: 2,
+            },
+          },
+        }),
       },
-    },
-  }),
-});
+      graphql: {
+        queryLimits: { maxTotalResults: 6 },
+        apolloConfig: {
+          validationRules: [depthLimit(3), definitionLimit(3), fieldLimit(8)],
+        },
+      },
+    }),
+  })
+);
 
 describe('maxResults Limit', () => {
   describe('Basic querying', () => {
@@ -64,7 +70,7 @@ describe('maxResults Limit', () => {
         });
 
         expect(data).toHaveProperty('users');
-        expect(data.users).toEqual([{ name: 'Jess' }, { name: 'Johanna' }]);
+        expect(data).toEqual({ users: [{ name: 'Jess' }, { name: 'Johanna' }] });
 
         // No results is okay
         data = await context.graphql.run({
@@ -80,7 +86,7 @@ describe('maxResults Limit', () => {
         });
 
         expect(data).toHaveProperty('users');
-        expect(data.users.length).toEqual(0);
+        expect(data).toEqual({ users: [] });
 
         // Count is still correct
         data = await context.graphql.run({
@@ -88,13 +94,15 @@ describe('maxResults Limit', () => {
         });
 
         expect(data).toHaveProperty('usersCount');
-        expect(data.usersCount).toBe(users.length);
+        expect(data).toEqual({ usersCount: users.length });
 
         // This query is only okay because of the "take" parameter
         data = await context.graphql.run({
           query: `
           query {
-            users(take: 1) {
+            users(take: 1, 
+              orderBy: { name: asc }
+            ) {
               name
             }
           }
@@ -102,7 +110,7 @@ describe('maxResults Limit', () => {
         });
 
         expect(data).toHaveProperty('users');
-        expect(data.users.length).toEqual(1);
+        expect(data).toEqual({ users: [{ name: 'Jess' }] });
 
         // This query returns too many results
         let errors;

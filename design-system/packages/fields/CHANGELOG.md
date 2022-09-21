@@ -1,5 +1,52 @@
 # @keystone-ui/fields
 
+## 7.1.1
+
+### Patch Changes
+
+- [#7804](https://github.com/keystonejs/keystone/pull/7804) [`c93768cab`](https://github.com/keystonejs/keystone/commit/c93768cab52c76384608f1d890b1ba1840be5e7d) Thanks [@dcousens](https://github.com/dcousens)! - Removes node `.engines` restrictions
+
+- Updated dependencies [[`c93768cab`](https://github.com/keystonejs/keystone/commit/c93768cab52c76384608f1d890b1ba1840be5e7d)]:
+  - @keystone-ui/core@5.0.1
+  - @keystone-ui/icons@6.0.1
+  - @keystone-ui/popover@6.0.1
+
+## 7.1.0
+
+### Minor Changes
+
+- [#7578](https://github.com/keystonejs/keystone/pull/7578) [`29db9b5de`](https://github.com/keystonejs/keystone/commit/29db9b5de4d4a13150730f797463e3f8bb1c75d8) Thanks [@Achisingh](https://github.com/Achisingh)! - Adds a `FieldDescription` component
+
+## 7.0.0
+
+### Major Changes
+
+- [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - upgrade dependancy `"react": "^18.1.0"`
+
+### Patch Changes
+
+- [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - Fixed the viewport sometimes shifting when opening the date picker in the create drawer.
+
+- Updated dependencies [[`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea)]:
+  - @keystone-ui/popover@6.0.0
+  - @keystone-ui/core@5.0.0
+  - @keystone-ui/icons@6.0.0
+
+## 6.1.0
+
+### Minor Changes
+
+- [`d7d27d887`](https://github.com/keystonejs/keystone/commit/d7d27d88778d50c761a2e362327aa26c06976b1c) Thanks [@borisno2](https://github.com/borisno2)! - Upgrade `react-day-picker` to v8
+
+## 6.0.1
+
+### Patch Changes
+
+- [#7394](https://github.com/keystonejs/keystone/pull/7394) [`5d96ee646`](https://github.com/keystonejs/keystone/commit/5d96ee646b3c6342935464763071ad7c3f0a8b43) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Fixed off by one issue in date selection when using the timestamp field.
+
+- Updated dependencies [[`518bd2e43`](https://github.com/keystonejs/keystone/commit/518bd2e437227fbd1a8f7fb947dcb11c57ffb7dd)]:
+  - @keystone-ui/popover@5.0.1
+
 ## 6.0.0
 
 ### Major Changes

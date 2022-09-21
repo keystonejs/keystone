@@ -162,8 +162,8 @@ export default function WhyKeystonePage() {
 
         <Quote
           name="Erwann Mest"
-          title="Lead frontend engineer @contexte"
-          img="/assets/_kud.jpg"
+          title="Lead Frontend Engineer | Contexte"
+          img="/assets/erwann-mest.jpg"
           grad="grad2"
         >
           I think I'm in love. Keystone’s just what I needed: a dashboard &amp; GraphQL API that
@@ -500,14 +500,13 @@ export default function WhyKeystonePage() {
         </Section>
 
         <Quote
-          name="Dinesh Pandiyan"
-          title="JavaScript Developer | Thinkmill"
-          img="/assets/flexdinesh.jpg"
+          name="Noorullah Ahmadzai"
+          title="Software Engineer | Gamerina"
+          img="/assets/noorullah.jpg"
           grad="grad2"
         >
-          With Keystone I could create a new data type, custom queries and mutations, and access it
-          all in a GraphQL playground in less than 15 mins. It’s so satisfying to make server-side
-          changes without having to spend time on the database. Keystone is magical and I love it!
+          I’m blown away by the amount of time I can save with Keystone. What used to take 30 days
+          in Express now takes 3 or less, not to mention the Database and Admin UI I get for free.
         </Quote>
 
         <Section>
@@ -609,7 +608,7 @@ export default function WhyKeystonePage() {
             </Type>
             <Type as="p" look="body18">
               <a
-                href="https://github.com/keystonejs/keystone/tree/main/examples-staging/ecommerce"
+                href="https://github.com/keystonejs/keystone/tree/main/examples/ecommerce"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -648,7 +647,7 @@ export default function WhyKeystonePage() {
               Multichannel
             </Type>
             <Type as="p" look="body18" color="var(--muted)" margin="1rem 0 0 0">
-              Use an API-first content platform to unlocks the power of multichannel content ops.
+              Use an API-first content platform to unlock the power of multichannel content ops.
               Connect to your audience where they want to be. Ship content to any frontend over
               performant APIs. Use the built-in GraphQL Playground to query with ease.
             </Type>

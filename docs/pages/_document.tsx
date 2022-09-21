@@ -1,37 +1,19 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
 import Document, { Html, Head, Main, NextScript, DocumentContext } from 'next/document';
 import React from 'react';
-import { jsx, CacheProvider } from '@emotion/react';
-import createCache from '@emotion/cache';
-import createEmotionServer, { EmotionCriticalToChunks } from '@emotion/server/create-instance';
+import createEmotionServer from '@emotion/server/create-instance';
+import { cache } from '@emotion/css';
 
-import { SkipLinks } from '../components/SkipLinks';
+const { extractCriticalToChunks } = createEmotionServer(cache);
 
 class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {
-    let originalRenderPage = ctx.renderPage;
-    let data: EmotionCriticalToChunks | undefined;
-    ctx.renderPage = async () => {
-      const cache = createCache({ key: 'css' });
-      const { extractCriticalToChunks } = createEmotionServer(cache);
-      const result = await originalRenderPage({
-        enhanceApp: App => props =>
-          (
-            <CacheProvider value={cache}>
-              <App {...props} />
-            </CacheProvider>
-          ),
-      });
-
-      data = extractCriticalToChunks(result.html);
-      return result;
-    };
     const initialProps = await Document.getInitialProps(ctx);
+    const data = extractCriticalToChunks(initialProps.html);
+
     return {
       ...initialProps,
-      styles: (
-        <React.Fragment>
+      styles: [
+        <React.Fragment key="1">
           {initialProps.styles}
           {data!.styles.map((data, i) => (
             <style
@@ -40,8 +22,8 @@ class MyDocument extends Document {
               dangerouslySetInnerHTML={{ __html: data.css }}
             />
           ))}
-        </React.Fragment>
-      ),
+        </React.Fragment>,
+      ],
     };
   }
 
@@ -71,14 +53,9 @@ class MyDocument extends Document {
             async
             src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"
           />
+          <script data-no-cookie data-respect-dnt async data-api="/_sb" src="/sb.js" />
         </Head>
-        <body
-          css={{
-            WebkitFontSmoothing: 'antialiased',
-            MozOsxFontSmoothing: 'grayscale',
-          }}
-        >
-          <SkipLinks />
+        <body>
           <Main />
           <NextScript />
         </body>

@@ -1,6 +1,7 @@
 import { relationship, text } from '@keystone-6/core/fields';
 import { list, ListSchemaConfig } from '@keystone-6/core';
 import { statelessSessions } from '@keystone-6/core/session';
+import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig } from '../utils';
 
 const COOKIE_SECRET = 'qwertyuiopasdfghjlkzxcvbmnm1234567890';
@@ -104,6 +105,7 @@ const lists: ListSchemaConfig = {};
 
 listConfigVariables.forEach(config => {
   lists[getListName(config)] = list({
+    access: allowAll,
     fields: Object.assign(
       { name: text() },
       ...fieldMatrix.map(variation => createFieldStatic(variation))
@@ -115,6 +117,7 @@ listConfigVariables.forEach(config => {
 });
 
 lists.RelatedToAll = list({
+  access: allowAll,
   fields: Object.assign({}, ...listConfigVariables.map(config => createRelatedFields(config))),
 });
 

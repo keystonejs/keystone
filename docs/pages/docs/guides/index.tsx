@@ -61,16 +61,23 @@ export default function Docs() {
         <Well grad="grad2" heading="Document Field Demo" href="/docs/guides/document-field-demo">
           Test drive the many features of Keystone’s Document field on this website.
         </Well>
-        <Well grad="grad2" heading="Custom Fields Guide" href="/docs/guides/custom-fields">
+        <Well grad="grad2" heading="Custom Fields" href="/docs/guides/custom-fields">
           Learn how to define your own custom field types in Keystone, with customisable backend
           data structure, and Admin UI appearance.
         </Well>
         <Well grad="grad2" heading="Testing Guide" href="/docs/guides/testing">
           Learn how to test the behaviour of your Keystone system to ensure it does what you expect.
         </Well>
-        <Well grad="grad2" heading="Virtual fields Guide" href="/docs/guides/virtual-fields">
+        <Well grad="grad2" heading="Virtual fields" href="/docs/guides/virtual-fields">
           Virtual fields offer a powerful way to extend your GraphQL API. This guide introduces the
           syntax and shows you how start simply and end up with a complex result.
+        </Well>
+        <Well grad="grad2" heading="Choosing a Database" href="/docs/guides/choosing-a-database">
+          Keystone supports Postgres, MySQL and SQLite. This guide explains how to choose the best
+          for your project.
+        </Well>
+        <Well grad="grad2" heading="Images and Files" href="/docs/guides/images-and-files">
+          Learn how to store and manage Images and Files in Keystone.
         </Well>
       </div>
       <Type as="h2" look="heading30" margin="2rem 0 1rem 0">

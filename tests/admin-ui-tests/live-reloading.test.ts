@@ -65,9 +65,6 @@ test('api routes written with getAdditionalFiles containing [...rest] work', asy
 
 test('changing the label of a field updates in the Admin UI', async () => {
   await replaceSchema('second');
-  // Next shows a "we need to do a full reload" message
-  // this is expected because of how _app is written so we need to do the reload
-  page.click('button:has-text("Reload")');
 
   const element = await page.waitForSelector(
     'label:has-text("Very Important Text") >> .. >> input'
@@ -93,25 +90,25 @@ test('the generated schema includes schema updates', async () => {
       (x.name.value === 'Query' || x.name.value === 'Something')
   );
   expect(objectTypes.map(x => print(x)).join('\n\n')).toMatchInlineSnapshot(`
-        "type Query {
-          someNumber: Int!
+        "type Something {
+          id: ID!
+          text: String
+          virtual: String
+        }
+        
+        type Query {
           somethings(where: SomethingWhereInput! = {}, orderBy: [SomethingOrderByInput!]! = [], take: Int, skip: Int! = 0): [Something!]
           something(where: SomethingWhereUniqueInput!): Something
           somethingsCount(where: SomethingWhereInput! = {}): Int
           keystone: KeystoneMeta!
-        }
-
-        type Something {
-          id: ID!
-          text: String
-          virtual: String
+          someNumber: Int!
         }"
       `);
 });
 
 test("a syntax error is shown and doesn't crash the process", async () => {
   await replaceSchema('syntax-error');
-  await expectContentInStdio(process, 'error - ../../schemas/syntax-error.js');
+  await expectContentInStdio(process, '✘ [ERROR] Expected ";" but found "const"');
 });
 
 test("a runtime error is shown and doesn't crash the process", async () => {

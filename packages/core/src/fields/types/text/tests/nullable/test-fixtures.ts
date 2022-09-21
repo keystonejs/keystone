@@ -1,4 +1,3 @@
-import { DatabaseProvider } from '../../../../../types';
 import { text } from '../..';
 
 export const name = 'Text with isNullable: true';
@@ -33,15 +32,4 @@ export const storedValues = () => [
   { name: 'e', testField: 'foobar' },
   { name: 'f', testField: null },
   { name: 'g', testField: null },
-];
-
-export const supportedFilters = (provider: DatabaseProvider) => [
-  'null_equality',
-  'equality',
-  provider !== 'sqlite' && 'equality_case_insensitive',
-  'in_empty_null',
-  'in_value',
-  provider !== 'sqlite' && 'string',
-  provider !== 'sqlite' && 'string_case_insensitive',
-  'unique_equality',
 ];

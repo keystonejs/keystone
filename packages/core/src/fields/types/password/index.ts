@@ -5,7 +5,6 @@ import { userInputError } from '../../../lib/core/graphql-errors';
 import { humanize } from '../../../lib/utils';
 import { BaseListTypeInfo, fieldType, FieldTypeFunc, CommonFieldConfig } from '../../../types';
 import { graphql } from '../../..';
-import { resolveView } from '../../resolve-view';
 import { getResolvedIsNullable } from '../../non-null-graphql';
 import { PasswordFieldMeta } from './views';
 
@@ -184,7 +183,7 @@ export const password =
           resolve: inputResolver,
         },
       },
-      views: resolveView('password/views'),
+      views: '@keystone-6/core/fields/types/password/views',
       getAdminMeta: (): PasswordFieldMeta => ({
         isNullable,
         validation: {

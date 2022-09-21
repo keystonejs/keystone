@@ -30,7 +30,7 @@ export function Markdown({
   title?: string;
 }) {
   const headings = getHeadings(
-    (typeof children.type === 'function' ? children.type() : children).props.children
+    (typeof children.type === 'function' ? children.type({}) : children).props.children
   );
   const firstHeading = title || headings[0]?.label;
 
@@ -51,16 +51,7 @@ export function Markdown({
 }
 
 export async function getStaticProps() {
-  const { readdirSync } = require('fs');
-  const dir = __dirname.replace(/docs.+$/, 'docs/pages/releases');
-  const releases = (readdirSync(dir, 'utf8') as Array<string>)
-    .filter(name => !name.startsWith('.') && !name.startsWith('index'))
-    .map(name => name.replace('.mdx', ''))
-    .reverse();
-
   return {
-    props: {
-      releases,
-    },
+    props: {},
   };
 }

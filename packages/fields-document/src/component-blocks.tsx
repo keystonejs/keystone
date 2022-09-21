@@ -2,11 +2,12 @@ export { NotEditable, component, fields } from './DocumentEditor/component-block
 export type {
   ChildField,
   ComponentBlock,
-  ComponentPropField,
+  ComponentSchema,
   ConditionalField,
   FormField,
   ObjectField,
   RelationshipData,
   RelationshipField,
   InferRenderersForComponentBlocks,
+  ArrayField,
 } from './DocumentEditor/component-blocks/api';

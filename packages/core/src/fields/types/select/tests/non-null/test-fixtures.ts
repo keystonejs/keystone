@@ -16,8 +16,6 @@ export const typeFunction = (config: any) =>
   select({ ...config, db: { ...config?.db, isNullable: false } });
 export const supportsDbMap = true;
 
-export const supportedFilters = () => [];
-
 export const testMatrix = ['enum', 'string', 'integer'] as const;
 
 export const getTestFields = (matrixValue: MatrixValue) => ({

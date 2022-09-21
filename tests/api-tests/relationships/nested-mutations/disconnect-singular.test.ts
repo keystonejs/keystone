@@ -1,8 +1,10 @@
 import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
-import { setupTestRunner } from '@keystone-6/core/testing';
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
+import { allOperations, allowAll } from '@keystone-6/core/access';
 import { apiTestConfig, expectGraphQLValidationError } from '../../utils';
+import { withServer } from '../../with-server';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -10,25 +12,28 @@ const runner = setupTestRunner({
   config: apiTestConfig({
     lists: {
       Group: list({
+        access: allowAll,
         fields: {
           name: text(),
         },
       }),
       Event: list({
+        access: allowAll,
         fields: {
           title: text(),
           group: relationship({ ref: 'Group' }),
         },
       }),
       GroupNoRead: list({
+        access: {
+          operation: { ...allOperations(allowAll), query: () => false },
+        },
         fields: {
           name: text(),
         },
-        access: {
-          operation: { query: () => false },
-        },
       }),
       EventToGroupNoRead: list({
+        access: allowAll,
         fields: {
           title: text(),
           group: relationship({ ref: 'GroupNoRead' }),
@@ -77,7 +82,7 @@ describe('no access control', () => {
 
   test(
     'causes a validation error if used during create',
-    runner(async ({ graphQLRequest }) => {
+    withServer(runner)(async ({ graphQLRequest }) => {
       const { body } = await graphQLRequest({
         query: `
           mutation {

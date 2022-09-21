@@ -98,6 +98,11 @@ const ORIGINAL_NEXT = [
     destination: '/docs/walkthroughs/getting-started-with-create-keystone-app',
     permanent: true,
   },
+  {
+    source: '/releases',
+    destination: 'https://github.com/keystonejs/keystone/releases',
+    permanent: true,
+  },
   { source: '/roadmap', destination: '/updates/roadmap', permanent: true },
   { source: '/whats-new', destination: '/updates/whats-new-in-v6', permanent: true },
 ];
@@ -124,4 +129,18 @@ const CURRENT = [
   },
 ];
 
-module.exports = [...CURRENT, ...ORIGINAL_NEXT, ...KEYSTONE_5, ...KEYSTONE_4];
+/* Splitbee Proxy */
+const SPLITBEE = [
+  {
+    source: '/sb.js',
+    destination: 'https://cdn.splitbee.io/sb.js',
+    permanent: false,
+  },
+  {
+    source: '/_sb/:slug',
+    destination: 'https://hive.splitbee.io/:slug',
+    permanent: false,
+  },
+];
+
+module.exports = [...SPLITBEE, ...CURRENT, ...ORIGINAL_NEXT, ...KEYSTONE_5, ...KEYSTONE_4];

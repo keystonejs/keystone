@@ -1,5 +1,197 @@
 # @keystone-6/core
 
+## 2.2.0
+
+### Minor Changes
+
+- [#5645](https://github.com/keystonejs/keystone/pull/5645) [`d34a1e0bc`](https://github.com/keystonejs/keystone/commit/d34a1e0bc62c2078d0fd77900d865193fea37621) Thanks [@gautamsi](https://github.com/gautamsi)! - Adds `cli` functions as exports to `@keystone-6/core/scripts/cli`, assume to be an experimental unstable export and may change in a patch release.
+
+* [#7747](https://github.com/keystonejs/keystone/pull/7747) [`e322ce122`](https://github.com/keystonejs/keystone/commit/e322ce1223ef00dfb77f22b2f669e05d91b09814) Thanks [@willemmulder](https://github.com/willemmulder)! - Adds the ability to set additional Prisma datasource fields in the `schema.prisma` file, for example, `referentialIntegrity` by adding options to `db.additionalPrismaDatasourceProperties`
+
+- [#7324](https://github.com/keystonejs/keystone/pull/7324) [`3eaab4919`](https://github.com/keystonejs/keystone/commit/3eaab49195cedecf81bd0da05df2710e5486cb2e) Thanks [@dcousens](https://github.com/dcousens)! - Adds http.Server options as configuration `server.options`
+
+* [#7683](https://github.com/keystonejs/keystone/pull/7683) [`9d3e40612`](https://github.com/keystonejs/keystone/commit/9d3e40612ead28e5a8d91f214c24bdbddcae0c0f) Thanks [@Achisingh](https://github.com/Achisingh)! - Adds a new `multiselect` field type
+
+- [#7752](https://github.com/keystonejs/keystone/pull/7752) [`0ea56667f`](https://github.com/keystonejs/keystone/commit/0ea56667f43852db35457de99d4c05833e147a50) Thanks [@Achisingh](https://github.com/Achisingh)! - Adds `ui.displayMode: 'radio'` as an option for the select field.
+
+* [#7722](https://github.com/keystonejs/keystone/pull/7722) [`809f707ff`](https://github.com/keystonejs/keystone/commit/809f707ffa38849ddf15355f9ef6acd18fc02010) Thanks [@borisno2](https://github.com/borisno2)! - Adds 'graphql' schema to `extendHttpServer`.
+
+- [#7658](https://github.com/keystonejs/keystone/pull/7658) [`da0c197c7`](https://github.com/keystonejs/keystone/commit/da0c197c7de32d62083357b0831cba43b447a621) Thanks [@Achisingh](https://github.com/Achisingh)! - Adds `calendarDay` field to store a date without a time or timezone attached
+
+* [#5175](https://github.com/keystonejs/keystone/pull/5175) [`d2483bb4b`](https://github.com/keystonejs/keystone/commit/d2483bb4b1ad58533d86718753c20e0d21d6ee58) Thanks [@MurzNN](https://github.com/MurzNN)! - Adds a new `bigInt` field type, an integer of width 8 bytes (64 bits), analogous with Prisma's `BigInt`.
+
+### Patch Changes
+
+- [#7744](https://github.com/keystonejs/keystone/pull/7744) [`713e0f47e`](https://github.com/keystonejs/keystone/commit/713e0f47e021c7cfc0d7f9585f72840ab3552b5b) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Pins `pirates` to `4.0.4`
+
+* [#7803](https://github.com/keystonejs/keystone/pull/7803) [`a711c46e0`](https://github.com/keystonejs/keystone/commit/a711c46e03229d447cde207b30113198f06e91de) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updates `graphql-upload` to `15.0.2`
+
+- [#7787](https://github.com/keystonejs/keystone/pull/7787) [`721ad00f4`](https://github.com/keystonejs/keystone/commit/721ad00f4b0fd85a5b2716c95b260e6f9e43acaf) Thanks [@dcousens](https://github.com/dcousens)! - Fixes environment variable `PORT=` precedence; `PORT=` now takes priority over the configured `server.port`
+
+* [#7801](https://github.com/keystonejs/keystone/pull/7801) [`0261a5e30`](https://github.com/keystonejs/keystone/commit/0261a5e305ba7b27c034cca733e690e952966bf3) Thanks [@dcousens](https://github.com/dcousens)! - Removes wrong types for `resolveInput` hooks until actual types are provided
+
+- [#7731](https://github.com/keystonejs/keystone/pull/7731) [`bf70aa64d`](https://github.com/keystonejs/keystone/commit/bf70aa64dad1c62672a82ef5be8efc2203a96029) Thanks [@nderkim](https://github.com/nderkim)! - Fixes return type of `findOne` to support `null`, which is returned if no item is found
+
+* [#7804](https://github.com/keystonejs/keystone/pull/7804) [`c93768cab`](https://github.com/keystonejs/keystone/commit/c93768cab52c76384608f1d890b1ba1840be5e7d) Thanks [@dcousens](https://github.com/dcousens)! - Removes node `.engines` restrictions
+
+- [#7722](https://github.com/keystonejs/keystone/pull/7722) [`809f707ff`](https://github.com/keystonejs/keystone/commit/809f707ffa38849ddf15355f9ef6acd18fc02010) Thanks [@borisno2](https://github.com/borisno2)! - Fixes `extendHttpServer` not using the actual `http.Server` when using `keystone dev` - with an added limitation that it is only called once at startup.
+
+* [#7744](https://github.com/keystonejs/keystone/pull/7744) [`713e0f47e`](https://github.com/keystonejs/keystone/commit/713e0f47e021c7cfc0d7f9585f72840ab3552b5b) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updates `@apollo/client` to `3.6.9`
+
+- [#7742](https://github.com/keystonejs/keystone/pull/7742) [`1d24916b8`](https://github.com/keystonejs/keystone/commit/1d24916b828af5e0d1bd49c56cf75b0086fe3414) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updates `@graphql-ts/schema` to `0.5.3`
+
+- Updated dependencies [[`c93768cab`](https://github.com/keystonejs/keystone/commit/c93768cab52c76384608f1d890b1ba1840be5e7d)]:
+  - @keystone-ui/button@7.0.1
+  - @keystone-ui/core@5.0.1
+  - @keystone-ui/fields@7.1.1
+  - @keystone-ui/icons@6.0.1
+  - @keystone-ui/loading@6.0.1
+  - @keystone-ui/modals@6.0.1
+  - @keystone-ui/notice@6.0.1
+  - @keystone-ui/options@6.0.1
+  - @keystone-ui/pill@7.0.1
+  - @keystone-ui/popover@6.0.1
+  - @keystone-ui/segmented-control@7.0.1
+  - @keystone-ui/toast@6.0.1
+  - @keystone-ui/tooltip@6.0.1
+
+## 2.1.0
+
+### Minor Changes
+
+- [#7350](https://github.com/keystonejs/keystone/pull/7350) [`f5fe35573`](https://github.com/keystonejs/keystone/commit/f5fe35573d0e12e9a624a717c464817031cfe760) Thanks [@chelkyl](https://github.com/chelkyl)! - Adds support for Prisma's `shadowDatabaseUrl` option with `db.shadowDatabaseUrl`.
+  Your Prisma schemas will now always include `shadowDatabaseUrl = env("SHADOW_DATABASE_URL")`, though using `db.shadowDatabaseUrl` is optional
+
+* [#7188](https://github.com/keystonejs/keystone/pull/7188) [`7f83b438b`](https://github.com/keystonejs/keystone/commit/7f83b438b0001c19058b09b0532dc3ef485696bb) Thanks [@MurzNN](https://github.com/MurzNN)! - Adds support for BigInt autoincrement id fields with `idField: { kind: 'autoincrement', type: 'BigInt' }`
+
+- [#7644](https://github.com/keystonejs/keystone/pull/7644) [`153eb6778`](https://github.com/keystonejs/keystone/commit/153eb67784cf18417831598715d2689c0173296b) Thanks [@borisno2](https://github.com/borisno2)! - Fixes for `graphQLSchemaExtension`, custom resolvers, if replacing default resolvers, were previously broken
+
+* [#7538](https://github.com/keystonejs/keystone/pull/7538) [`c862e876c`](https://github.com/keystonejs/keystone/commit/c862e876c411c26ab5356d155f9c8914663e9654) Thanks [@borisno2](https://github.com/borisno2)! - Adds `db.nativeType` option to the `text` field to customise the database type
+
+- [#7657](https://github.com/keystonejs/keystone/pull/7657) [`ffb9ab744`](https://github.com/keystonejs/keystone/commit/ffb9ab74442a036f9c6bc7546bf0fa61c770445b) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Adds the ability to set ambiguous plurals - like `Firmware` or `Shrimp` - as list names without receiving an error.
+  This builds on the existing `graphql.plural` configuration by adding the configuration options of `ui.label`, `ui.singular`, `ui.plural` and `ui.path` to change the auto-generated names of lists used in the Admin UI
+
+* [#7578](https://github.com/keystonejs/keystone/pull/7578) [`29db9b5de`](https://github.com/keystonejs/keystone/commit/29db9b5de4d4a13150730f797463e3f8bb1c75d8) Thanks [@Achisingh](https://github.com/Achisingh)! - Adds `ui.description` for fields to show a description below the label in the Admin UI
+
+### Patch Changes
+
+- [#7616](https://github.com/keystonejs/keystone/pull/7616) [`65382ed80`](https://github.com/keystonejs/keystone/commit/65382ed80a77761fd7b0b7b21990151ab7b3eb30) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixes the inconsistent spacing in the Admin UI on relationships fields using the cards display mode
+
+* [#7639](https://github.com/keystonejs/keystone/pull/7639) [`a48fe5e81`](https://github.com/keystonejs/keystone/commit/a48fe5e818421524a6e1f5c52f21431444e003c7) Thanks [@u-ishii](https://github.com/u-ishii)! - Changes segmented control to not show a clear button if `isRequired` is set
+
+- [#7538](https://github.com/keystonejs/keystone/pull/7538) [`c862e876c`](https://github.com/keystonejs/keystone/commit/c862e876c411c26ab5356d155f9c8914663e9654) Thanks [@borisno2](https://github.com/borisno2)! - Added support for MySQL
+
+* [#7666](https://github.com/keystonejs/keystone/pull/7666) [`86569dd75`](https://github.com/keystonejs/keystone/commit/86569dd751dc63d41103f69509abb882e45f9c54) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixes the generation of an invalid Prisma schema when `{field}.isIndexed: true` and `{field}.db.map` are set
+
+- [#7629](https://github.com/keystonejs/keystone/pull/7629) [`f9ca9eddf`](https://github.com/keystonejs/keystone/commit/f9ca9eddf69864e8f85c5df1ea56a5400c9916e2) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixes the semantic-based browser input behaviour for inline create and edit forms on relationship fields when using the cards display mode
+
+- Updated dependencies [[`29db9b5de`](https://github.com/keystonejs/keystone/commit/29db9b5de4d4a13150730f797463e3f8bb1c75d8)]:
+  - @keystone-ui/fields@7.1.0
+
+## 2.0.0
+
+### Major Changes
+
+- [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - upgrade dependancy `"react": "^18.1.0"`
+
+* [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - New support for uploading images and files to Amazon S3 and other compatible providers.
+  This is a _breaking change_, as the `.image` and `.files` configuration options have been removed, and a new storage configuration object introduced.
+
+  See [#7070](https://github.com/keystonejs/keystone/pull/7070) for how to upgrade.
+
+### Minor Changes
+
+- [#7591](https://github.com/keystonejs/keystone/pull/7591) [`8add4212c`](https://github.com/keystonejs/keystone/commit/8add4212cdb9304ebe054763eddd78640db62b42) Thanks [@dcousens](https://github.com/dcousens)! - Add optional `.graphql.bodyParser` options object for changing `body-parser` options when configuring GraphQL
+
+* [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - Added `disconnect` to the `SessionStrategy` API, this allows Keystone to disconnect from the store when using stored sessions. This resolves the testrunner hanging when using stored sessions in automated tests.
+
+- [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - Removed all Keystone Links, i.e. API explorer, GitHub repository and Keystone documentation, from the popover and replacing the popover button with `Sign out` button in production
+
+* [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - Fixed list description from schema to display in the Admin UI
+
+### Patch Changes
+
+- [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - The reset changes button on the item view now presents a confirmation modal before resetting changes and it has been moved to the right of the bottom bar so it is next to the delete button.
+
+* [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - The Prisma binaries are now downloaded just before they're needed if Prisma's install script to download them fails. Note this will never happen in production, they will always be downloaded before.
+
+- [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - Alert dialogs are now centered in the Admin UI.
+
+* [#7594](https://github.com/keystonejs/keystone/pull/7594) [`f603859cc`](https://github.com/keystonejs/keystone/commit/f603859cc6607327a45c0a519c7a9b6e58e02d6b) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Replaced create item drawer with a page when creating an item from the list view or dashboard.
+
+- [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - Fixed the viewport sometimes shifting when opening the date picker in the create drawer.
+
+* [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - The label shown for a text field in the Admin UI is now associated with the input so the label can be read by screen readers
+
+- [#7601](https://github.com/keystonejs/keystone/pull/7601) [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea) Thanks [@dcousens](https://github.com/dcousens)! - Fixed the Admin UI crashing when saving an item with a relationship field using the cards display mode when another item is added to the relationship (e.g. by another user or a hook) since the item was initially loaded
+
+- Updated dependencies [[`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea), [`4234ed488`](https://github.com/keystonejs/keystone/commit/4234ed488377367582e1fb1895f4a581c097fbea)]:
+  - @keystone-ui/modals@6.0.0
+  - @keystone-ui/popover@6.0.0
+  - @keystone-ui/fields@7.0.0
+  - @keystone-ui/button@7.0.0
+  - @keystone-ui/core@5.0.0
+  - @keystone-ui/icons@6.0.0
+  - @keystone-ui/loading@6.0.0
+  - @keystone-ui/notice@6.0.0
+  - @keystone-ui/options@6.0.0
+  - @keystone-ui/pill@7.0.0
+  - @keystone-ui/segmented-control@7.0.0
+  - @keystone-ui/toast@6.0.0
+  - @keystone-ui/tooltip@6.0.0
+
+## 1.1.1
+
+### Patch Changes
+
+- [#7504](https://github.com/keystonejs/keystone/pull/7504) [`bb60d9a68`](https://github.com/keystonejs/keystone/commit/bb60d9a68ee611011ca0aea2ce45b052ad49517d) Thanks [@Achi06](https://github.com/Achi06)! - Fixed read only view for segmented control display mode in the select field. When a `segmented-control` select field is in `read` mode, the values no longer appear editable.
+
+* [#7417](https://github.com/keystonejs/keystone/pull/7417) [`aced61816`](https://github.com/keystonejs/keystone/commit/aced6181646bd6fc94977ea497801e6d3839f9c0) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed decimal `validation.min` not being respected and `validation.max` being used as the min if provided
+
+- [#7453](https://github.com/keystonejs/keystone/pull/7453) [`3bb1a5343`](https://github.com/keystonejs/keystone/commit/3bb1a53434b86e8a6294cff01a8699c36dd5df5a) Thanks [@dcousens](https://github.com/dcousens)! - Fixed Prisma schema mismatch warning accidentally showing a warning that there is a mismatch in the GraphQL schema
+
+* [`0260a30c9`](https://github.com/keystonejs/keystone/commit/0260a30c92a059268cb6bf8de8a077847c7cdd96) Thanks [@renovate[bot]](https://github.com/renovate%5Bbot%5D)! - Updated `@preconstruct/next` to v4
+
+- [`33fde0a26`](https://github.com/keystonejs/keystone/commit/33fde0a26d23b8ae3b5907abec70704a1c970547) Thanks [@Achi06](https://github.com/Achi06)! - Updated the styling for the relationship select to be less confusing when the field mode is read-only
+
+* [`20095f04b`](https://github.com/keystonejs/keystone/commit/20095f04be02592da99503d9b54b726d66040e77) Thanks [@moselhy](https://github.com/moselhy)! - Fixed React key warning when showing GraphQL errors
+
+- [`06feba78b`](https://github.com/keystonejs/keystone/commit/06feba78bda6743bc4a7d8b56305fb905bc2af95) Thanks [@Achi06](https://github.com/Achi06)! - Updated the List page to show the reset to default button when any sorting or other field value filters are provided
+
+* [`b6f571a73`](https://github.com/keystonejs/keystone/commit/b6f571a7310af480be64af56fdc0732a7ebfe3f4) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - The Admin UI now prompts users to confirm they want to navigate away when there are unsaved changes.
+
+- [`62201dd5f`](https://github.com/keystonejs/keystone/commit/62201dd5fcea0fe4cf95c33527c394ab65ddce7d) Thanks [@Achi06](https://github.com/Achi06)! - Fixed the JSON field not showing any formatting when the field mode is read-only
+
+- Updated dependencies [[`d7d27d887`](https://github.com/keystonejs/keystone/commit/d7d27d88778d50c761a2e362327aa26c06976b1c), [`bb60d9a68`](https://github.com/keystonejs/keystone/commit/bb60d9a68ee611011ca0aea2ce45b052ad49517d)]:
+  - @keystone-ui/fields@6.1.0
+  - @keystone-ui/segmented-control@6.1.0
+
+## 1.1.0
+
+### Minor Changes
+
+- [#7268](https://github.com/keystonejs/keystone/pull/7268) [`45c2bbaf3`](https://github.com/keystonejs/keystone/commit/45c2bbaf34594e135ccd09f5c9221eb822ac9965) Thanks [@renovate](https://github.com/apps/renovate)! - Updated Prisma to 3.9.2
+
+### Patch Changes
+
+- [#7289](https://github.com/keystonejs/keystone/pull/7289) [`dfb4aea31`](https://github.com/keystonejs/keystone/commit/dfb4aea3112ed83322a698f177545618275699b7) Thanks [@dependabot](https://github.com/apps/dependabot)! - Fixed using `require.resolve` to get the paths to views not woking with newer versions of Next.
+
+* [#7290](https://github.com/keystonejs/keystone/pull/7290) [`3e538d136`](https://github.com/keystonejs/keystone/commit/3e538d1360add48c37a099de7c9d1621e2c74ddf) Thanks [@gautamsi](https://github.com/gautamsi)! - Fixed issues with float field filtering when the field is required with default value
+
+- [#7253](https://github.com/keystonejs/keystone/pull/7253) [`518bd2e43`](https://github.com/keystonejs/keystone/commit/518bd2e437227fbd1a8f7fb947dcb11c57ffb7dd) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Fixed popover behaviour to accomodate mobile usages.
+
+* [#7340](https://github.com/keystonejs/keystone/pull/7340) [`ec8103a12`](https://github.com/keystonejs/keystone/commit/ec8103a12861a7cd182603b82aa3b1133a43da4e) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Minor a11y improvement to table browsing
+
+- [#7292](https://github.com/keystonejs/keystone/pull/7292) [`81e663d31`](https://github.com/keystonejs/keystone/commit/81e663d3157b3c49a191aaa1bc1c179dd8cc34d4) Thanks [@lachieh](https://github.com/lachieh)! - added support for extending the underlying node http server
+
+* [#7218](https://github.com/keystonejs/keystone/pull/7218) [`4f3d0a073`](https://github.com/keystonejs/keystone/commit/4f3d0a073dba50f22505af545402a2f1e38afe0d) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed cards view in the relationship field not showing up for many relationships in the create view
+
+- [#7221](https://github.com/keystonejs/keystone/pull/7221) [`6cea02475`](https://github.com/keystonejs/keystone/commit/6cea02475b02528e5f04f0a5bca641367ca1584d) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Improved how stacking contexts are organised in the Admin UI
+
+- Updated dependencies [[`5d96ee646`](https://github.com/keystonejs/keystone/commit/5d96ee646b3c6342935464763071ad7c3f0a8b43), [`518bd2e43`](https://github.com/keystonejs/keystone/commit/518bd2e437227fbd1a8f7fb947dcb11c57ffb7dd)]:
+  - @keystone-ui/fields@6.0.1
+  - @keystone-ui/popover@5.0.1
+
 ## 1.0.1
 
 ### Patch Changes
@@ -62,6 +254,7 @@
 - [#7005](https://github.com/keystonejs/keystone/pull/7005) [`fb7844ab5`](https://github.com/keystonejs/keystone/commit/fb7844ab50c1d4a6d14b2ad46a568665f6661921) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Improve console output for when you need to restart the server because of schema changes
 
 # @keystone-next/keystone
+
 ## 29.0.0
 
 ### Major Changes

@@ -7,6 +7,7 @@ import {
   IdType,
   runWithPrisma,
   getWriteLimit,
+  getPrismaNamespace,
 } from '../utils';
 import { InputFilter, resolveUniqueWhereInput, UniqueInputFilter } from '../where-inputs';
 import {
@@ -56,7 +57,9 @@ async function createSingle(
   const writeLimit = getWriteLimit(context);
 
   const item = await writeLimit(() =>
-    runWithPrisma(context, list, model => model.create({ data }))
+    runWithPrisma(context, list, model =>
+      model.create({ data: list.isSingleton ? { ...data, id: 1 } : data })
+    )
   );
 
   return { item, afterOperation };
@@ -133,7 +136,7 @@ async function updateSingle(
 
   const { where: uniqueInput, data: rawData } = updateInput;
   // Validate and resolve the input filter
-  const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, list.fields, context);
+  const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, list, context);
 
   // Check filter access
   const fieldKey = Object.keys(uniqueWhere)[0];
@@ -363,7 +366,7 @@ async function resolveInputForCreateOrUpdate(
   // Return the full resolved input (ready for prisma level operation),
   // and the afterOperation hook to be applied
   return {
-    data: flattenMultiDbFields(list.fields, hookArgs.resolvedData),
+    data: transformForPrismaClient(list.fields, hookArgs.resolvedData, context),
     afterOperation: async (updatedItem: BaseItem) => {
       await nestedMutationState.afterOperation();
       await runSideEffectOnlyHook(
@@ -381,19 +384,36 @@ async function resolveInputForCreateOrUpdate(
   };
 }
 
-function flattenMultiDbFields(
+function transformInnerDBField(
+  dbField: Exclude<ResolvedDBField, { kind: 'multi' }>,
+  context: KeystoneContext,
+  value: unknown
+) {
+  if (dbField.kind === 'scalar' && dbField.scalar === 'Json' && value === null) {
+    const Prisma = getPrismaNamespace(context);
+    return Prisma.DbNull;
+  }
+  return value;
+}
+
+function transformForPrismaClient(
   fields: Record<string, { dbField: ResolvedDBField }>,
-  data: Record<string, any>
+  data: Record<string, any>,
+  context: KeystoneContext
 ) {
   return Object.fromEntries(
     Object.entries(data).flatMap(([fieldKey, value]) => {
       const { dbField } = fields[fieldKey];
       if (dbField.kind === 'multi') {
         return Object.entries(value).map(([innerFieldKey, fieldValue]) => {
-          return [getDBFieldKeyForFieldOnMultiField(fieldKey, innerFieldKey), fieldValue];
+          return [
+            getDBFieldKeyForFieldOnMultiField(fieldKey, innerFieldKey),
+            transformInnerDBField(dbField.fields[innerFieldKey], context, fieldValue),
+          ];
         });
       }
-      return [[fieldKey, value]];
+
+      return [[fieldKey, transformInnerDBField(dbField, context, value)]];
     })
   );
 }

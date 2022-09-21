@@ -184,7 +184,6 @@ export const makeEditor = (
     documentFeatures = defaultDocumentFeatures,
     componentBlocks = {},
     normalization = 'disallow-non-normalized',
-    isShiftPressedRef = { current: false },
     relationships = {},
     skipRenderingDOM,
   }: {
@@ -195,16 +194,13 @@ export const makeEditor = (
     isShiftPressedRef?: MutableRefObject<boolean>;
     skipRenderingDOM?: boolean;
   } = {}
-): Editor => {
+): Editor & { container?: HTMLElement } => {
   if (!Editor.isEditor(node)) {
     throw new Error('Unexpected non-editor passed to makeEditor');
   }
-  let editor = createDocumentEditor(
-    documentFeatures,
-    componentBlocks,
-    relationships,
-    isShiftPressedRef
-  );
+  let editor = createDocumentEditor(documentFeatures, componentBlocks, relationships) as Editor & {
+    container?: HTMLElement;
+  };
   // for validation
   (editor as any).__config = {
     documentFeatures,
@@ -236,29 +232,31 @@ export const makeEditor = (
   if (editor.marks || (marks && Object.keys(marks).length)) {
     expect(marks).toEqual(editor.marks);
   }
-  if (normalization !== 'skip') {
+  // we need to make one of our editors because toEqualEditor expects the __config stuff to exist
+  // and if it fails, the snapshot serializer will be called to diff them which also expects __config
+  const makeEditorForComparison = (node: Node) =>
+    makeEditor(node, {
+      componentBlocks,
+      documentFeatures,
+      isShiftPressedRef: { current: false },
+      normalization: 'skip',
+      relationships,
+      skipRenderingDOM: true,
+    });
+  if (normalization === 'normalize') {
     Editor.normalize(editor, { force: true });
-    if (normalization === 'disallow-non-normalized') {
-      expect(
-        // we need to make one of our editors because toEqualEditor expects the __config stuff to exist
-        // and if it fails, the snapshot serializer will be called to diff them which also expects __config
-        makeEditor(node, {
-          componentBlocks,
-          documentFeatures,
-          isShiftPressedRef,
-          normalization: 'skip',
-          relationships,
-          skipRenderingDOM,
-        })
-      ).toEqualEditor(editor);
-    }
+    expect(editor).not.toEqual(makeEditorForComparison(node));
+  }
+  if (normalization === 'disallow-non-normalized') {
+    Editor.normalize(editor, { force: true });
+    expect(makeEditorForComparison(node)).toEqualEditor(editor);
   }
 
   if (skipRenderingDOM !== true) {
     // this serves two purposes:
     // - a smoke test to make sure the ui doesn't throw from any of the actions in the tests
     // - so that things like ReactEditor.focus and etc. can be called
-    render(
+    const { container } = render(
       <EditorComp
         editor={editor}
         componentBlocks={componentBlocks}
@@ -266,6 +264,7 @@ export const makeEditor = (
         relationships={relationships}
       />
     );
+    editor.container = container;
   }
   return editor;
 };
@@ -321,7 +320,11 @@ function nodeToReactElement(
         });
       }
     }
-    return createElement('text', { children: text, ...marks });
+    return createElement('text', {
+      // we want to show empty text nodes as <text />
+      children: text === '' ? undefined : text,
+      ...marks,
+    });
   }
   let children = node.children.map((x, i) =>
     nodeToReactElement(editor, x, selection, path.concat(i))

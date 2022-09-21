@@ -20,12 +20,7 @@ const redirects = {
 
 module.exports = withPlugins([
   withPreconstruct,
-  [
-    withMDX,
-    {
-      pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
-    },
-  ],
+  [withMDX, { pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'] }],
   nextConfig => {
     nextConfig.env = {
       siteUrl: 'https://keystonejs.com',

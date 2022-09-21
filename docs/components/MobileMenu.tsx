@@ -58,7 +58,9 @@ export function MobileMenu({ handleClose }: MobileMenuProps) {
           >
             <PrimaryNavItem href="/updates">Updates</PrimaryNavItem>
             <PrimaryNavItem href="/updates/roadmap">Roadmap</PrimaryNavItem>
-            <PrimaryNavItem href="/releases">Release Notes</PrimaryNavItem>
+            <PrimaryNavItem href="https://github.com/keystonejs/keystone/releases">
+              GitHub Releases
+            </PrimaryNavItem>
           </div>
           <div css={{ padding: '1rem 2rem 2rem' }}>
             <DocsNavigation />

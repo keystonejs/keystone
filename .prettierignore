@@ -1,4 +1,3 @@
-package.json
 packages/icons/icons/*
 reports
 coverage
@@ -6,9 +5,11 @@ coverage
 **/dist
 **/.next
 **/.keystone
+**/__generated__
 docs/public/assets/
 .keystone/tests
 prisma-utils/src/generated
 nexus-typegen.ts
 tests/test-projects/live-reloading/schemas/syntax-error.js
 *.vscode
+**/schema.graphql

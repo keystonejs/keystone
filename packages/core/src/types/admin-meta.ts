@@ -39,6 +39,7 @@ export type FieldControllerConfig<FieldMeta extends JSONValue | undefined = unde
   listKey: string;
   path: string;
   label: string;
+  description: string | null;
   customViews: Record<string, any>;
   fieldMeta: FieldMeta;
 };
@@ -57,6 +58,7 @@ export type FilterTypeToFormat<Value extends JSONValue> = {
 export type FieldController<FormState, FilterValue extends JSONValue = never> = {
   path: string;
   label: string;
+  description: string | null;
   graphqlSelection: string;
   defaultValue: FormState;
   deserialize: (item: any) => FormState;
@@ -79,6 +81,7 @@ export type FieldController<FormState, FilterValue extends JSONValue = never> = 
 export type FieldMeta = {
   path: string;
   label: string;
+  description: string | null;
   fieldMeta: JSONValue;
   viewsIndex: number;
   customViewsIndex: number | null;
@@ -106,11 +109,10 @@ export type ListMeta = {
   labelField: string;
   initialSort: null | { direction: 'ASC' | 'DESC'; field: string };
   fields: { [path: string]: FieldMeta };
+  isSingleton: boolean;
 };
 
 export type AdminMeta = {
-  enableSignout: boolean;
-  enableSessionItem: boolean;
   lists: { [list: string]: ListMeta };
 };
 
@@ -158,38 +160,3 @@ export type CardValueComponent<
     any
   >
 > = (props: { item: Record<string, any>; field: ReturnType<FieldControllerFn> }) => ReactElement;
-
-// Types used on the server by the Admin UI schema resolvers
-export type FieldMetaRootVal = {
-  path: string;
-  label: string;
-  fieldMeta: JSONValue | null;
-  viewsIndex: number;
-  customViewsIndex: number | null;
-  listKey: string;
-  search: 'default' | 'insensitive' | null;
-};
-
-export type ListMetaRootVal = {
-  key: string;
-  path: string;
-  label: string;
-  singular: string;
-  plural: string;
-  initialColumns: string[];
-  pageSize: number;
-  labelField: string;
-  initialSort: { field: string; direction: 'ASC' | 'DESC' } | null;
-  fields: Array<FieldMetaRootVal>;
-  itemQueryName: string;
-  listQueryName: string;
-  description: string | null;
-};
-
-export type AdminMetaRootVal = {
-  enableSignout: boolean;
-  enableSessionItem: boolean;
-  lists: Array<ListMetaRootVal>;
-  listsByKey: Record<string, ListMetaRootVal>;
-  views: string[];
-};
