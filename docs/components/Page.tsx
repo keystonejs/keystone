@@ -84,7 +84,6 @@ export function DocsPage({
           paddingBottom: 'var(--space-xxlarge)',
         }}
       >
-        {/* <Announcement /> */}
         <Header />
         <Wrapper
           css={mq({
@@ -153,7 +152,6 @@ export function Page({
           paddingBottom: 'var(--space-xxlarge)',
         }}
       >
-        {/* <Announcement /> */}
         <Header />
         <Wrapper as="main" id="skip-link-content" tabIndex={0}>
           {children}
