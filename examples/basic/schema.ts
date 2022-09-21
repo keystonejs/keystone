@@ -13,7 +13,7 @@ import {
 import { document } from '@keystone-6/fields-document';
 import { v4 } from 'uuid';
 import { allowAll } from '@keystone-6/core/access';
-import { Context, Lists } from '.keystone/types';
+import { Lists } from '.keystone/types';
 
 type AccessArgs = {
   session?: {

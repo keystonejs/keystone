@@ -1,9 +1,7 @@
 ---
-title: "Schema Extension"
+title: "GraphQl Schema Extension"
 description: "Learn how to extend your GraphQL Schema using extendGraphqlSchema."
 ---
-
-# GraphQL Schema Extension
 
 Keystone automatically generates a GraphQL Schema based on your [Keystone config](../apis/config). This Schema contains all GraphQL Types, Queries and Mutations based on your models and ends up as the generated `schema.graphql` file found in the root of your Keystone project.
 Generally changing the behavior of Keystone can be performed through [Hooks](../apis/hooks), however, there are times when you need an extra GraphQL Type or want a custom Mutation. For these instances, Keystone has the `extendGraphqlSchema` option.
@@ -121,4 +119,4 @@ A full keystone project illustrating how to extend your GraphQL schema using @gr
 {% well heading="Example Project: Extend GraphQL Schema with Nexus" href="https://github.com/keystonejs/keystone/tree/main/examples/extend-graphql-schema-nexus" %}
 A full keystone project illustrating how to extend your GraphQL schema using Nexus and @graphql-tools/schema.
 {% /well %}
-{% related-content %}
+{% /related-content %}
