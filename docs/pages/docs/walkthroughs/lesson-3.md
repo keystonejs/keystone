@@ -223,7 +223,7 @@ Let's put it all together to see the changes:
 ![Post list type showing "status" select input as segmented control type with default value of "draft"](https://keystonejs.s3.amazonaws.com/framework-assets/assets/walkthroughs/lesson-3/status-segmented-control.png)
 
 {% hint kind="tip" %}
-**Protip**: To take the editing experience even farther you can use [hooks](/docs/config/hooks) to automatically update `publishedAt` when a post’s status moves from `draft` to `published`.
+**Protip**: You can use [hooks](/docs/config/hooks) to automatically update `publishedAt` when a post’s status moves from `draft` to `published`.
 {% /hint %}
 
 ## Looking at the GraphQL API
