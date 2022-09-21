@@ -48,12 +48,13 @@ export default config({
 });
 ```
 
-We’re now going to add auth to our app so that different types of users have access to different types of things.
+We're now going to add auth to our app so that different types of users have access to different types of things.
 While Keystone has very granular permissions controls, which you can read about [here](/docs/guides/auth-and-access-control), this lesson will stay focused on securing our Admin UI behind a password.
 
 ## Add the Password field
 
-Keystone’s [password](/docs/fields/password) field takes care of hashing the password for storing in the database, as well as UI niceties such as making sure the password is obscured. Let’s add it to our `User` list so they can securely log in to Keystone:
+Keystone's [password](/docs/fields/password) field takes care of hashing the password for storing in the database, and masking the password in the Admin UI field.
+Let's add it to our `User` list so they can securely log in to Keystone:
 
 ```ts{2,10}[13-27,29-500]
 import { list, config } from '@keystone-6/core';
