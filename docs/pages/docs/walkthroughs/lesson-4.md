@@ -53,8 +53,9 @@ While Keystone has very granular permissions controls, which you can read about 
 
 ## Add the Password field
 
-Keystone's [password](/docs/fields/password) field takes care of hashing the password for storing in the database, and masking the password in the Admin UI field.
-Let's add it to our `User` list so they can securely log in to Keystone:
+Keystone's [password](/docs/fields/password) field adheres to typical OWASP password security conventions like hashing the password in the database, and masking the password for AdminUI input fields.
+
+Let's add a password field to our `User` list so users can authenticate with Keystone:
 
 ```ts{2,10}[13-27,29-500]
 import { list, config } from '@keystone-6/core';
