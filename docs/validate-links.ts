@@ -4,6 +4,16 @@ import Markdoc from '@markdoc/markdoc';
 import { getIdForHeading, markdocConfig as baseMarkdocConfig, Pages } from './markdoc/config';
 import { printValidationError } from './markdoc';
 
+// for the things that aren't Markdoc that are linked from Markdoc
+const NON_MARKDOWN_PAGES = [
+  '/updates/new-graphql-api',
+  '/docs/guides/document-field-demo',
+  '/releases/2021-10-05',
+  '/docs/examples',
+  '/docs/guides/overview',
+  '/docs/config/overview',
+];
+
 (async () => {
   const files = await globby('pages/docs/**/*.md');
   const parsedFiles = await Promise.all(
@@ -20,16 +30,14 @@ import { printValidationError } from './markdoc';
       return { root, ids, path: file.replace(/\.md$/, '') };
     })
   );
+  
   const pages: Pages = new Map(
     parsedFiles.map(({ path, ids }) => [path.replace(/^pages/, '').replace(/\.md$/, ''), { ids }])
   );
-  // for the things that aren't Markdoc that are linked from Markdoc
-  pages.set('/updates/new-graphql-api', { ids: new Set() });
-  pages.set('/docs/guides/document-field-demo', { ids: new Set() });
-  pages.set('/releases/2021-10-05', { ids: new Set() });
-  pages.set('/docs/examples', { ids: new Set() });
-  pages.set('/docs/guides/overview', { ids: new Set() });
-  pages.set('/docs/config/overview', { ids: new Set() });
+  for (const NON_MARKDOWN_PAGE of NON_MARKDOWN_PAGES) {
+    pages.set(NON_MARKDOWN_PAGE, { ids: new Set() });
+  }
+  
   const markdocConfig = { ...baseMarkdocConfig, pages };
   const errors = parsedFiles.flatMap(({ root }) => Markdoc.validate(root, markdocConfig));
   if (errors.length) {
