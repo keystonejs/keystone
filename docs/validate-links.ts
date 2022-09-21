@@ -30,14 +30,14 @@ const NON_MARKDOWN_PAGES = [
       return { root, ids, path: file.replace(/\.md$/, '') };
     })
   );
-  
+
   const pages: Pages = new Map(
     parsedFiles.map(({ path, ids }) => [path.replace(/^pages/, '').replace(/\.md$/, ''), { ids }])
   );
   for (const NON_MARKDOWN_PAGE of NON_MARKDOWN_PAGES) {
     pages.set(NON_MARKDOWN_PAGE, { ids: new Set() });
   }
-  
+
   const markdocConfig = { ...baseMarkdocConfig, pages };
   const errors = parsedFiles.flatMap(({ root }) => Markdoc.validate(root, markdocConfig));
   if (errors.length) {
