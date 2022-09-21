@@ -1,10 +1,11 @@
-import { list, singleton } from '@keystone-6/core';
+import { list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { select, relationship, text, timestamp } from '@keystone-6/core/fields';
 
 export const lists = {
-  Settings: singleton({
+  Settings: list({
     access: allowAll,
+    isSingleton: true,
     fields: {
       websiteName: text(),
       copyrightText: text(),
