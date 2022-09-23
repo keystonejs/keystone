@@ -4,10 +4,10 @@ description: "Learn how to extend your GraphQL API in powerful ways with the Vir
 ---
 
 Keystone lets you define your data model in terms of `lists`, which have `fields`.
-Most lists will have some [scalar fields](../apis/fields#scalar-types), such as `text` and `integer` fields, which are stored in your database.
+Most lists will have some [scalar fields](../fields/overview#scalar-types), such as `text` and `integer` fields, which are stored in your database.
 
 It can also be helpful to have read-only fields which are computed on the fly when you query them.
-Keystone lets you do this with the [`virtual`](../apis/fields#virtual-type) field type.
+Keystone lets you do this with the [`virtual`](../fields/virtual) field type.
 
 Virtual fields provide a powerful way to extend your GraphQL API.
 In this guide we'll introduce the syntax for adding virtual fields, and show how to build up from a simple to a complex example.
@@ -75,9 +75,8 @@ The `graphql` API provides support for the built in GraphQL scalar types `Int`, 
 The `resolve` function accepts arguments which let you write more sophisticated virtual fields.
 The arguments are `(item, args, context, info)`.
 The `item` argument is the **internal item** representing the list item being queried.
-Refer to the [internal items guide](../guides/internal-items) for details on how to work with internal items in Keystone.
 The `args` argument represents the arguments passed to the field itself in the query.
-The `context` argument is a [`KeystoneContext`](../apis/context) object.
+The `context` argument is a [`KeystoneContext`](../context/overview) object.
 The `info` argument holds field-specific information relevant to the current query as well as the schema details.
 
 We can use the `item` and `context` arguments to query data in our Keystone system.
@@ -312,7 +311,7 @@ Virtual fields provide a powerful way to extend your GraphQL API, however there 
 The virtual field executes its resolver every time the field is requested.
 For trivial calculations this isn't a problem, but for more complex calculations this can lead to performance issues.
 In this case you can consider memoising the value to avoid recalculating it for each query.
-Another way to address this is to use a [scalar field](../apis/fields#scalar-types) and to populate its value each time the item is updated using a [hook](./hooks).
+Another way to address this is to use a [scalar field](../fields/overview#scalar-types) and to populate its value each time the item is updated using a [hook](./hooks).
 
 The other main consideration is that it is not possible to filter on a virtual field, as each item calcutes its value dynamically, rather than having it stored in the database.
 Using a pre-calculated scalar field is the best solution to use if you need filtering for your field.
@@ -328,7 +327,7 @@ A demo project that shows you how to add virtual fields to a Keystone list.
 {% /well %}
 {% well
 heading="Virtual Fields: API Reference"
-href="/docs/apis/fields#virtual-type" %}
+href="/docs/fields/virtual" %}
 A virtual field represents a value which is computed a read time, rather than stored in the database.
 {% /well %}
 {% /related-content %}

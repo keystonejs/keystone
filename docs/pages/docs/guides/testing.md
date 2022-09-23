@@ -53,7 +53,7 @@ This ensures that all tests are run in a known state.
 The test runner then sets up a partial Keystone system for you, including an Apollo server to handle GraphQL requests.
 The system does not include an Admin UI, and does not open a network port to listen for requests.
 
-Finally, the runner sets up three APIs for you to use in your test. The first is a `KeystoneContext` object, which lets you use any of the functions in the [context API](../apis/context).
+Finally, the runner sets up three APIs for you to use in your test. The first is a `KeystoneContext` object, which lets you use any of the functions in the [context API](../context/overview).
 The second is a `graphQLRequest` function, which lets you run GraphQL requests over HTTP using the [`supertest`](https://github.com/visionmedia/supertest) library.
 The third is an [`express.Express`](https://expressjs.com/) value named `app` which lets you access any of the endpoints of the Express server using `supertest`.
 
@@ -68,8 +68,8 @@ This includes things like access control, hooks, virtual fields, and GraphQL API
 
 ### Context API
 
-The [context API](../apis/context) lets you easily manipulate data in your system.
-We can use the [Query API](../apis/query) to ensure that we can do basic CRUD operations.
+The [context API](../context/overview) lets you easily manipulate data in your system.
+We can use the [Query API](../context/query) to ensure that we can do basic CRUD operations.
 
 ```typescript
 runner(async ({ context }) => {
@@ -254,12 +254,12 @@ Shows you how to write tests against the GraphQL API to your Keystone system. Bu
 {% /well %}
 {% well
 heading="Context API Reference"
-href="/docs/apis/context" %}
+href="/docs/context/overview" %}
 The API for run-time functionality in your Keystone system. Use it to write business logic for access control, hooks, testing, GraphQL schema extensions, and more.
 {% /well %}
 {% well
 heading="Query API Reference"
-href="/docs/apis/query" %}
+href="/docs/context/query" %}
 A programmatic API for running CRUD operations against your GraphQL API. For each list in your system you get an API at `context.query.<listName>`.
 {% /well %}
 {% /related-content %}

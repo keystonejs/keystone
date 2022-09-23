@@ -9,7 +9,7 @@ import FocusLock from 'react-focus-lock';
 import { useHeaderContext } from './Header';
 import { Highlight } from './primitives/Highlight';
 
-import { DocsNavigation, NavItem, PrimaryNavItem } from './docs/Navigation';
+import { DocsNavigation, NavItem } from './docs/Navigation';
 import { Keystone } from './icons/Keystone';
 import { Close } from './icons/Close';
 
@@ -44,7 +44,7 @@ export function MobileMenu({ handleClose }: MobileMenuProps) {
               borderBottom: '1px solid var(--border)',
             }}
           >
-            <PrimaryNavItem href="/why-keystone">Why Keystone</PrimaryNavItem>
+            <NavItem href="/why-keystone">Why Keystone</NavItem>
 
             <NavItem href="/for-developers">For Developers</NavItem>
             <NavItem href="/for-organisations">For Organisations</NavItem>
@@ -56,11 +56,11 @@ export function MobileMenu({ handleClose }: MobileMenuProps) {
               borderBottom: '1px solid var(--border)',
             }}
           >
-            <PrimaryNavItem href="/updates">Updates</PrimaryNavItem>
-            <PrimaryNavItem href="/updates/roadmap">Roadmap</PrimaryNavItem>
-            <PrimaryNavItem href="https://github.com/keystonejs/keystone/releases">
+            <NavItem href="/updates">Updates</NavItem>
+            <NavItem href="/updates/roadmap">Roadmap</NavItem>
+            <NavItem href="https://github.com/keystonejs/keystone/releases">
               GitHub Releases
-            </PrimaryNavItem>
+            </NavItem>
           </div>
           <div css={{ padding: '1rem 2rem 2rem' }}>
             <DocsNavigation />

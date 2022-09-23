@@ -99,7 +99,7 @@ export default function ForOrganisations() {
               </li>
             </ul>
             <Type as="p" look="body18">
-              <Link href="/docs/apis/access-control">
+              <Link href="/docs/config/access-control">
                 <a>Access control API →</a>
               </Link>
             </Type>
@@ -168,7 +168,7 @@ export default function ForOrganisations() {
               </li>
             </ul>
             <Type as="p" look="body18">
-              <Link href="/docs/apis/fields">
+              <Link href="/docs/fields/overview">
                 <a>Fields API →</a>
               </Link>
             </Type>

@@ -26,6 +26,13 @@ export function Sidebar({ isUpdatesPage }: SidebarProps) {
           display: ['none', null, 'block'],
           padding: ['0 0 var(--space-large) var(--space-large)', null, 0],
           borderBottom: ['1px solid var(--muted)', null, 'none'],
+          position: 'sticky',
+          top: 16,
+          bottom: 16,
+          alignSelf: 'start',
+          overflow: 'auto',
+          height: '100vh',
+          paddingBottom: '2rem',
         })}
       >
         <Navigation />

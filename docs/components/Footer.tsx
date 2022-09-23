@@ -90,7 +90,7 @@ export function Footer() {
             </Type>
             <List>
               <li>
-                <Link href="/docs/walkthroughs/getting-started-with-create-keystone-app">
+                <Link href="/docs/getting-started">
                   <a>Getting started</a>
                 </Link>
               </li>

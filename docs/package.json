@@ -5,9 +5,10 @@
   "license": "MIT",
   "scripts": {
     "dev": "next -p 8000",
-    "build": "next build && yarn sitemap",
+    "build": "yarn validate-links && next build && yarn sitemap",
     "start": "next start -p 8000",
-    "sitemap": "yarn next-sitemap"
+    "sitemap": "next-sitemap",
+    "validate-links": "tsx validate-links.ts"
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
@@ -48,7 +49,8 @@
     "react-dom": "^18.1.0",
     "react-focus-lock": "^2.7.1",
     "remark-gfm": "^1.0.0",
-    "remark-hint": "^1.0.10"
+    "remark-hint": "^1.0.10",
+    "tsx": "^3.9.0"
   },
   "devDependencies": {
     "@types/lodash.debounce": "^4.0.6",

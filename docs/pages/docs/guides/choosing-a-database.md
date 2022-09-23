@@ -3,7 +3,7 @@ title: "Choosing the right Database"
 description: "How to choose the right database for your Keystone project"
 ---
 
-Keystone supports [Postgres](https://www.postgresql.org), [MySQL](https://www.mysql.com) and [SQLite](https://www.sqlite.org/index.html) database [providers](../apis/config#db). This guide highlights the differences between these providers to help you choose the right one for your project.
+Keystone supports [Postgres](https://www.postgresql.org), [MySQL](https://www.mysql.com) and [SQLite](https://www.sqlite.org/index.html) database [providers](../config/config#db). This guide highlights the differences between these providers to help you choose the right one for your project.
 
 {% hint kind="tip" %}
 **Note:** SQLite is not recommended in production except for scenarios like the [Embedded Keystone](../walkthroughs/embedded-mode-with-sqlite-nextjs) example
@@ -26,11 +26,11 @@ Prisma has different default types for each database used, for example, the Keys
 for Postgres, Prisma uses the `text` column type, and for MySQL, it uses the `varchar(191)` column type. For more details on the `field` type differences
 see [Primsa Schema Reference](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#model-field-scalar-types).
 
-The Keystone `text` field supports the `db.nativeType` option, allowing you to override this - [Fields API](../apis/fields). Over time this option will be added to other field types.
+The Keystone `text` field supports the `db.nativeType` option, allowing you to override this - [Fields API](../fields/overview). Over time this option will be added to other field types.
 
 ## Auto Increment Integer Fields
 
-When using an [Integer field](../apis/fields#integer) with the `defaultValue: { kind: 'autoincrement' }` MySQL also requires this field to be indexed using the `isIndexed: true` or `isIndexed: 'unique'`.
+When using an [Integer field](../fields/integer) with the `defaultValue: { kind: 'autoincrement' }` MySQL also requires this field to be indexed using the `isIndexed: true` or `isIndexed: 'unique'`.
 
 ## Supported Database Versions
 
@@ -41,12 +41,12 @@ For supported database provider versions for Postgres and MySQL see [Prisma Supp
 {% related-content %}
 {% well
 heading="Fields API"
-href="../apis/fields" %}
+href="../fields/overview" %}
 Documentation for the Fields API
 {% /well %}
 {% well
 heading="DB Config API"
-href="../apis/config#db" %}
+href="../config/config#db" %}
 Documentation for the DB Config API
 {% /well %}
 {% /related-content %}

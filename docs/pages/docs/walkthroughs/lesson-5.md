@@ -60,7 +60,7 @@ Back in [Lesson 2](/docs/walkthroughs/lesson-4) we setup a `post` type, but we s
 
 ## Add the Document field
 
-Keystone’s [document](https://keystonejs.com/docs/apis/fields#document) field is a highly customisable Rich Text editor that lets content creators quickly and easily edit content in your system.
+Keystone’s [document](https://keystonejs.com/docs/fields/document) field is a highly customisable Rich Text editor that lets content creators quickly and easily edit content in your system.
 
 To implement the document field we start by adding the package to our project:
 
@@ -125,7 +125,7 @@ good editor experience.
 
 ## Customise the Document field
 
-Let’s start by adding four [formatting](docs/guides/document-fields#formatting) options available in the document field’s config:
+Let’s start by adding four [formatting](/docs/guides/document-fields#formatting) options available in the document field’s config:
 
 - formatting (bold, underline, italics)
 - links
@@ -264,7 +264,7 @@ This lesson marks the end of this learning series. To dive deeper into Keystone'
 {% well  heading="Examples" href="/docs/examples" %}
 A growing collection of projects you can run locally to learn more about Keystone’s capabilities
 {% /well %}
-{% well  heading="Guides" href="/docs/guides/" %}
-Practical explanations of Keystone’s fundamental building blocks
+{% well  heading="Guides" href="/docs/guides/overview" %}
+Practical explanations of Keystone's fundamental building blocks
 {% /well %}
 {% /related-content %}

@@ -1,5 +1,5 @@
 ---
-title: "Session API"
+title: "Session"
 description: "Reference docs for the session property of Keystone’s system configuration object."
 ---
 
@@ -114,7 +114,7 @@ export default config({
 
 ## Session context
 
-If you configure your Keystone session with session management then the [`KeystoneContext`](./context) type will include three session related properties.
+If you configure your Keystone session with session management then the [`KeystoneContext`](../context/overview) type will include three session related properties.
 
 - `session`: An object representing the session data. The value will depend on the value passed into `context.startSession()`.
 - `startSession`: A function `data => {...}` which will start a new session using the provided `data` value.
@@ -128,7 +128,7 @@ These mutations will set the value of `session` to include the values `{ listKey
 {% related-content %}
 {% well
 heading="Config API Reference"
-href="/docs/apis/config" %}
+href="/docs/config/config" %}
 The API to configure all the parts parts of your Keystone system.
 {% /well %}
 {% well

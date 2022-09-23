@@ -1,5 +1,5 @@
 ---
-title: "Access Control API"
+title: "Access Control"
 description: "Complete reference docs for Keystone’s Access Control API. Configure who can read, create, update, and delete items in your Keystone system."
 ---
 
@@ -7,8 +7,8 @@ description: "Complete reference docs for Keystone’s Access Control API. Confi
 We recently improved this API so it’s easier to program, and makes it harder to introduce security gaps in your system. If you were using it prior to September 1st 2022, you will need to now configure access control for your operations.
 {% /hint %}
 
-The `access` property of the [list configuration](./schema) object configures who can query, create, update, and delete items in your Keystone system.
-The `access` property of the [field configuration](./fields) object configures who can read, create, and update specific field values of an item.
+The `access` property of the [list configuration](./lists) object configures who can query, create, update, and delete items in your Keystone system.
+The `access` property of the [field configuration](../fields/overview) object configures who can read, create, and update specific field values of an item.
 
 ```typescript
 import { config, list } from '@keystone-6/core';
@@ -33,7 +33,7 @@ Keystone provides support for access control and filtering on a per-list basis.
 There are three types of access control that can be configured on the `access` object:
 
 - [`operation`](#operation), functions that provide the `context` and `session` to help decide if a request should be granted access to the list; this happens prior to any GraphQL query being executed.
-- [`filter`](#filter), functions which return a [filter](./filters) that is applied to database queries on this list.
+- [`filter`](#filter), functions which return a [filter](../graphql/filters) that is applied to database queries on this list.
 - [`item`](#item-mutations-only), functions that provide the `context` and `session` to determine if a request can execute the respective mutative action.
 
 Each of these types of access control are applied before [hooks](./hooks).
@@ -141,12 +141,12 @@ export default config({
 {% hint kind="warn" %}
 The `query` access control is applied only when running GraphQL query operations.
 A user can still **read** fields as part of a return query when using a mutation `operation` (`create`, `update` or `delete`).
-If you want to limit access to fields, use [field access control](https://keystonejs.com/docs/apis/access-control#field-access-control).
+If you want to limit access to fields, use [field access control](https://keystonejs.com/docs/config/access-control#field-access-control).
 {% /hint %}
 
 ### Filter
 
-Filter-level access control lets you restrict which items can be operated on by providing a function which returns a [GraphQL filter](./filters).
+Filter-level access control lets you restrict which items can be operated on by providing a function which returns a [GraphQL filter](../graphql/filters).
 
 - For **mutations**, the access control filter will be combined with the unique identifier provided to the operation, and access will be denied if no item is found with this combined filter.
 - For **queries**, the access control filter will be combined with the query filter and only items which match both filters will be returned.
@@ -244,7 +244,7 @@ List-level access control functions are passed a collection of arguments which c
 | Argument    | Description                                                                                                   |
 | ----------- | ------------------------------------------------------------------------------------------------------------- |
 | `session`   | The current session object. See the [Sessions API](./session) for details.                                    |
-| `context`   | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                               |
+| `context`   | The [`KeystoneContext`](../context/overview) object of the originating GraphQL operation.                     |
 | `listKey`   | The key of the list being operated on.                                                                        |
 | `operation` | The operation being performed (`'query'`, `'create'`, `'update'`, `'delete'`).                                |
 | `inputData` | For `create` and `update` operations, this is the value of `data` passed into the mutation. (Item level only) |
@@ -308,7 +308,7 @@ Field-level access control functions are passed a collection of arguments which 
 | Argument    | Description                                                                                 |
 | ----------- | ------------------------------------------------------------------------------------------- |
 | `session`   | The current session object. See the [Sessions API](./session) for details.                  |
-| `context`   | The [`KeystoneContext`](./context) object of the originating GraphQL operation.             |
+| `context`   | The [`KeystoneContext`](../context/overview) object of the originating GraphQL operation.   |
 | `listKey`   | The key of the list being operated on.                                                      |
 | `fieldKey`  | The key of the field being operated on.                                                     |
 | `operation` | The operation being performed (`'read'`, `'create'`, `'update'`).                           |

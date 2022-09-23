@@ -23,7 +23,7 @@ These topics are easier to understand by example. We’ll explore them, as well 
 
 ## How to define a relationship in Keystone
 
-Relationships are made using the [`relationship`](../apis/fields#relationship) field type within a [`list()`](../apis/schema). In our blog example we can connect a blog `post` to some `users` using the relationship field’s `ref` configuration option like so:
+Relationships are made using the [`relationship`](../fields/relationship) field type within a [`list()`](../config/lists). In our blog example we can connect a blog `post` to some `users` using the relationship field’s `ref` configuration option like so:
 
 ```typescript{11}
 import { config, list } from '@keystone-6/core';
@@ -344,14 +344,14 @@ Note that we have used `many: true` in both the authors and posts fields.
 
 ## Summary
 
-Keystone relationships are managed using the [relationship](../apis/fields#relationship) field type. They can be configured as one-sided or two-sided by the `ref` config option. Their cardinality can be set using the `many` flag. Keystone gives you the flexibility to choose what you want based on what you need to achieve.
+Keystone relationships are managed using the [relationship](../fields/relationship) field type. They can be configured as one-sided or two-sided by the `ref` config option. Their cardinality can be set using the `many` flag. Keystone gives you the flexibility to choose what you want based on what you need to achieve.
 
 ## Related resources
 
 {% related-content %}
 {% well
 heading="Relationship Field API Reference"
-href="/docs/apis/fields#relationship" %}
+href="/docs/fields/relationship" %}
 Defines the names, types, and configuration of Keystone fields. See all the fields and the configuration options they accept.
 {% /well %}
 {% /related-content %}

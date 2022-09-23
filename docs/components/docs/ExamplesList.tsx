@@ -101,8 +101,7 @@ export function Examples() {
         target="_blank"
         rel="noopener noreferrer"
       >
-        Illustrates how to use the <InlineCode>json</InlineCode> field type. Builds on the Task
-        Manager starter project.
+        Illustrates how to use the <InlineCode>json</InlineCode> field type.
       </Well>
       <Well
         grad="grad3"
@@ -112,7 +111,7 @@ export function Examples() {
         rel="noopener noreferrer"
       >
         Adds a custom Admin UI view to a <InlineCode>json</InlineCode> field which provides a
-        customised editing experience for users. Builds on the Task Manager starter project.
+        customised editing experience for users.
       </Well>
       <Well
         grad="grad3"
@@ -122,7 +121,7 @@ export function Examples() {
         rel="noopener noreferrer"
       >
         Adds a custom field type based on the <InlineCode>integer</InlineCode> field type which lets
-        users rate items on a 5-star scale. Builds on the Blog starter project.
+        users rate items on a 5-star scale.
       </Well>
       <Well
         grad="grad3"
@@ -131,7 +130,7 @@ export function Examples() {
         target="_blank"
         rel="noopener noreferrer"
       >
-        Adds a custom page in the Admin UI. Builds on the Task Manager starter project.
+        Adds a custom page in the Admin UI.
       </Well>
       <Well
         grad="grad3"
@@ -140,15 +139,21 @@ export function Examples() {
         target="_blank"
         rel="noopener noreferrer"
       >
-        Adds a custom logo component in the Admin UI. Builds on the Task Manager starter project.
+        Adds a custom logo component in the Admin UI.
       </Well>
       <Well
         grad="grad3"
         heading="Custom Admin UI Navigation"
-        href="/docs/guides/custom-admin-ui-navigation"
+        href="https://github.com/keystonejs/keystone/tree/main/examples/custom-admin-ui-navigation"
       >
-        Adds a custom Navigation component to the Admin UI. Builds on the Task Manager starter
-        project.
+        Adds a custom Navigation component to the Admin UI.
+      </Well>
+      <Well
+        grad="grad3"
+        heading="Document Field Customisation"
+        href="https://github.com/keystonejs/keystone/tree/main/examples/document-field-customisation"
+      >
+        Example to demonstrate customisation of Keystone's document field and document renderer.
       </Well>
     </div>
   );

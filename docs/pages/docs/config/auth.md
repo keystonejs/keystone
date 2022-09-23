@@ -1,5 +1,5 @@
 ---
-title: "Authentication API"
+title: "Authentication"
 description: "API reference for supporting authentication against a password field using the createAuth() function in the `@keystone-6/auth` package."
 ---
 
@@ -238,7 +238,7 @@ It is expected that you will use these mutations as part of a password reset wor
   - `itemId`: The ID of the user requesting the password reset.
   - `identity`: The identity value provided to the `sendUserPasswordResetLink` mutation.
   - `token`: The token the user must supply to use `redeemUserPasswordResetToken`.
-  - `context`: A [`KeystoneContext`](./context) object.
+  - `context`: A [`KeystoneContext`](../context/overview) object.
 - `tokensValidForMins` (default: `10`, max: `24 * 60` (1 day), min: `0.16` (10 seconds)): The length of time, in minutes, that the token is valid for.
 
 ```typescript
@@ -361,7 +361,7 @@ It is expected that you will use these mutations as part of a one-time authentic
   - `itemId`: The ID of the user requesting the one-time authentication link.
   - `identity`: The identity value provided to the `sendUserMagicAuthLink` mutation.
   - `token`: The token the user must supply to use `redeemUserMagicAuthToken`.
-  - `context`: A [`KeystoneContext`](./context) object.
+  - `context`: A [`KeystoneContext`](../context/overview) object.
 - `tokensValidForMins` (default: `10`, max: `24 * 60` (1 day), min: `0.16` (10 seconds)): The length of time, in minutes, that the token is valid for.
 
 ```typescript
@@ -459,7 +459,7 @@ The authenticated item will be returned as `item`.
 {% related-content %}
 {% well
 heading="Example Project: Authentication"
-href="https://github.com/keystonejs/keystone/tree/main/examples/with-auth" %}
+href="<https://github.com/keystonejs/keystone/tree/main/examples/with-auth>" %}
 Adds password-based authentication to the Task Manager starter project.
 {% /well %}
 {% /related-content %}

@@ -7,6 +7,7 @@ import { cache } from '@emotion/css';
 import Head from 'next/head';
 import { proseStyles } from '../lib/prose-lite';
 import { Theme } from '../components/Theme';
+import { NavContextProvider } from '../components/docs/Navigation';
 import { SkipLinks } from '../components/SkipLinks';
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -99,7 +100,9 @@ export default function App({ Component, pageProps }: AppProps) {
         />
       </Head>
       <SkipLinks />
-      <Component {...pageProps} />
+      <NavContextProvider>
+        <Component {...pageProps} />
+      </NavContextProvider>
     </CacheProvider>
   );
 }
