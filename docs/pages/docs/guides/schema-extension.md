@@ -1,5 +1,5 @@
 ---
-title: "GraphQl Schema Extension"
+title: "GraphQL Schema Extension"
 description: "Learn how to extend your GraphQL Schema using extendGraphqlSchema."
 ---
 
