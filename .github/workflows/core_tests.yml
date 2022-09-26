@@ -276,7 +276,7 @@ jobs:
             'blog.test.ts',
             'document-field.test.ts',
             'default-values.test.ts',
-            'extend-graphql-schema.test.ts',
+            'extend-graphql-schema-graphql-tools.test.ts',
             'extend-graphql-schema-graphql-ts.test.ts',
             'extend-graphql-schema-nexus.test.ts',
             'json.test.ts',

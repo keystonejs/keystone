@@ -1,7 +1,7 @@
 import { Browser, Page } from 'playwright';
 import { exampleProjectTests, loadIndex } from './utils';
 
-exampleProjectTests('extend-graphql-schema', browserType => {
+exampleProjectTests('extend-graphql-schema-graphql-tools', browserType => {
   let browser: Browser = undefined as any;
   let page: Page = undefined as any;
   beforeAll(async () => {
