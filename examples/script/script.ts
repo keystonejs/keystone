@@ -7,8 +7,8 @@ async function main() {
 
   console.log('(script.ts)', 'connect');
 
-  // if you don't call connect, db.onConnect will not be run
-  // but Prisma will automatically connect when Prisma is used
+  // if you don't call connect here, db.onConnect will not be run
+  //   but, Prisma will automatically connect whenever Prisma is used
   await connect();
 
   const run = (Math.random() * 1e5) | 0;

@@ -7,6 +7,8 @@ export default config<TypeInfo>({
   db: {
     provider: 'sqlite',
     url: process.env.DATABASE_URL || 'file:./keystone-example.db',
+
+    // this is called by Keystone on start, or when connect() is called in script.ts
     onConnect: async context => {
       console.log('(keystone.ts)', 'onConnect');
       await context.db.Post.createOne({ data: { title: 'Created in onConnect' } });
