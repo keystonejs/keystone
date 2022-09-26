@@ -1,8 +1,7 @@
-import fs from 'fs/promises';
-import globby from 'globby';
 import Markdoc from '@markdoc/markdoc';
-import { getIdForHeading, markdocConfig as baseMarkdocConfig, Pages } from './markdoc/config';
+import { getIdForHeading, baseMarkdocConfig as baseMarkdocConfig, Pages } from './markdoc/config';
 import { printValidationError } from './markdoc';
+import { loadAllMarkdoc } from './markdoc/load-all';
 
 // for the things that aren't Markdoc that are linked from Markdoc
 const NON_MARKDOWN_PAGES = [
@@ -15,21 +14,16 @@ const NON_MARKDOWN_PAGES = [
 ];
 
 (async () => {
-  const files = await globby('pages/docs/**/*.md');
-  const parsedFiles = await Promise.all(
-    files.map(async file => {
-      const contents = await fs.readFile(file, 'utf8');
-      const root = Markdoc.parse(contents, file);
-      const ids = new Set<string>();
-      for (const node of root.walk()) {
-        if (node.type === 'heading') {
-          const id = getIdForHeading(node);
-          ids.add(id);
-        }
+  const parsedFiles = (await loadAllMarkdoc()).map(({ file, root }) => {
+    const ids = new Set<string>();
+    for (const node of root.walk()) {
+      if (node.type === 'heading') {
+        const id = getIdForHeading(node);
+        ids.add(id);
       }
-      return { root, ids, path: file.replace(/\.md$/, '') };
-    })
-  );
+    }
+    return { root, ids, path: file.replace(/\.md$/, '') };
+  });
 
   const pages: Pages = new Map(
     parsedFiles.map(({ path, ids }) => [path.replace(/^pages/, '').replace(/\.md$/, ''), { ids }])
@@ -38,7 +32,7 @@ const NON_MARKDOWN_PAGES = [
     pages.set(NON_MARKDOWN_PAGE, { ids: new Set() });
   }
 
-  const markdocConfig = { ...baseMarkdocConfig, pages };
+  const markdocConfig = { ...baseMarkdocConfig, pages, variables: { nextRelease: false } };
   const errors = parsedFiles.flatMap(({ root }) => Markdoc.validate(root, markdocConfig));
   if (errors.length) {
     for (const error of errors) {

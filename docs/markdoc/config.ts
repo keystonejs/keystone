@@ -1,9 +1,24 @@
-import { Config, nodes, Tag, ValidationError, Node } from '@markdoc/markdoc';
+import {
+  Config,
+  nodes,
+  Tag,
+  ValidationError,
+  Node,
+  functions,
+  ConfigFunction,
+} from '@markdoc/markdoc';
 import slugify from '@sindresorhus/slugify';
 
 export type Pages = Map<string, { ids: Set<string> }>;
 
-export const markdocConfig: Config = {
+export const baseMarkdocConfig: Config = {
+  // an empty variables object makes Markdoc validate against missing variables
+  variables: {},
+  // we want to disable the built-in functions
+  functions: Object.fromEntries(
+    Object.keys(functions).map(key => [key, undefined as unknown as ConfigFunction])
+  ),
+  validation: { validateFunctions: true },
   tags: {
     emoji: {
       render: 'Emoji',

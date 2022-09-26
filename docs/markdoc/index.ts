@@ -1,11 +1,11 @@
 // @markdoc/markdoc's declaration files depend on these global types
 import type {} from '@markdoc/markdoc/global';
 import fs from 'fs/promises';
-import Markdoc, { Tag, ValidateError } from '@markdoc/markdoc';
+import Markdoc, { Config, Tag, ValidateError, tags } from '@markdoc/markdoc';
 import { isNonEmptyArray } from 'emery/guards';
 import { assert } from 'emery/assertions';
 import { load } from 'js-yaml';
-import { markdocConfig } from './config';
+import { baseMarkdocConfig } from './config';
 
 export function printValidationError(error: ValidateError) {
   const location = error.error.location || error.location;
@@ -43,6 +43,13 @@ export async function readDocContent(filepath: string): Promise<DocContent> {
   const frontmatter = extractFrontmatter(content);
   return { content: transformDocContent(`docs/${filepath}`, content), ...frontmatter };
 }
+
+const markdocConfig: Config = {
+  ...baseMarkdocConfig,
+  variables: {
+    nextRelease: !!process.env.SHOW_NEXT_RELEASE,
+  },
+};
 
 export function transformDocContent(errorReportingFilepath: string, content: string): Tag {
   const node = Markdoc.parse(content, errorReportingFilepath);
