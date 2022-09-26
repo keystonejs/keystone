@@ -3,7 +3,7 @@ import type { GraphQLSchema } from 'graphql';
 import { mergeSchemas } from '@graphql-tools/schema';
 import { allowAll } from '@keystone-6/core/access';
 import { select, relationship, text, timestamp } from '@keystone-6/core/fields';
-import { Lists } from '.keystone/types';
+import { Lists, Context } from '.keystone/types';
 
 export const lists: Lists = {
   Post: list({
@@ -60,7 +60,7 @@ export const extendGraphqlSchema = (schema: GraphQLSchema) =>
     }`,
     resolvers: {
       Mutation: {
-        publishPost: (root, { id }, context) => {
+        publishPost: (root, { id }, context: Context) => {
           // Note we use `context.db.Post` here as we have a return type
           // of Post, and this API provides results in the correct format.
           // If you accidentally use `context.query.Post` here you can expect problems
@@ -70,7 +70,7 @@ export const extendGraphqlSchema = (schema: GraphQLSchema) =>
             data: { status: 'published', publishDate: new Date().toUTCString() },
           });
         },
-        upsertAuthor: async (root, { where, update, create }, context) => {
+        upsertAuthor: async (root, { where, update, create }, context: Context) => {
           try {
             // we need to await the update here so that if an error is thrown, it's caught
             // by the try catch here and not returned through the graphql api
@@ -87,7 +87,7 @@ export const extendGraphqlSchema = (schema: GraphQLSchema) =>
         },
       },
       Query: {
-        recentPosts: (root, { id, days }, context) => {
+        recentPosts: (root, { id, days }, context: Context) => {
           // Create a date string <days> in the past from now()
           const cutoff = new Date(
             new Date().setUTCDate(new Date().getUTCDate() - days)
@@ -111,7 +111,7 @@ export const extendGraphqlSchema = (schema: GraphQLSchema) =>
         // In this case we want to take root.authorId and get the latest post for that author
         //
         // As above we use the context.db.Post API to achieve this.
-        latest: async (val, args, context) => {
+        latest: async (val, args, context: Context) => {
           const [post] = await context.db.Post.findMany({
             take: 1,
             orderBy: { publishDate: 'desc' },
@@ -119,12 +119,12 @@ export const extendGraphqlSchema = (schema: GraphQLSchema) =>
           });
           return post;
         },
-        draft: (val, args, context) => {
+        draft: (val, args, context: Context) => {
           return context.query.Post.count({
             where: { author: { id: { equals: val.authorId } }, status: { equals: 'draft' } },
           });
         },
-        published: (val, args, context) => {
+        published: (val, args, context: Context) => {
           return context.query.Post.count({
             where: { author: { id: { equals: val.authorId } }, status: { equals: 'published' } },
           });
