@@ -7,7 +7,7 @@ export const extendGraphqlSchema = graphql.extend(base => {
     mutation: {
       addToCart: graphql.field({
         type: base.object('CartItem'),
-        args: { productId: graphql.arg({ type: graphql.nonNull(graphql.ID) }) },
+        args: { productId: graphql.arg({ type: graphql.ID }) },
         resolve: addToCart,
       }),
       checkout: graphql.field({

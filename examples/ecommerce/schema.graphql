@@ -769,7 +769,7 @@ type Mutation {
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
   sendUserPasswordResetLink(email: String!): Boolean!
   redeemUserPasswordResetToken(email: String!, token: String!, password: String!): RedeemUserPasswordResetTokenResult
-  addToCart(productId: ID!): CartItem
+  addToCart(productId: ID): CartItem
   checkout(token: String!): Order
 }
 
