@@ -96,10 +96,13 @@ export function getS3AssetsEndpoint(storageConfig: StorageConfig & { kind: 's3' 
 
 function s3AssetsCommon(storageConfig: StorageConfig & { kind: 's3' }) {
   const s3 = new S3({
-    credentials: storageConfig.accessKeyId && storageConfig.secretAccessKey ? {
-      accessKeyId: storageConfig.accessKeyId,
-      secretAccessKey: storageConfig.secretAccessKey,
-    } : undefined,
+    credentials:
+      storageConfig.accessKeyId && storageConfig.secretAccessKey
+        ? {
+            accessKeyId: storageConfig.accessKeyId,
+            secretAccessKey: storageConfig.secretAccessKey,
+          }
+        : undefined,
     region: storageConfig.region,
     endpoint: storageConfig.endpoint,
     forcePathStyle: storageConfig.forcePathStyle,
