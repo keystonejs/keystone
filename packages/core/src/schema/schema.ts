@@ -16,7 +16,3 @@ export function list<
 >(config: ListConfig<ListTypeInfo, Fields>): ListConfig<ListTypeInfo, any> {
   return { ...config };
 }
-
-export function gql(strings: TemplateStringsArray) {
-  return strings[0];
-}
