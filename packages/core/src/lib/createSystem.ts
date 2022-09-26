@@ -78,6 +78,7 @@ export function createSystem(config: KeystoneConfig, isLiveReload?: boolean) {
         log: config.db.enableLogging ? ['query'] : undefined,
         datasources: { [config.db.provider]: { url: config.db.url } },
       });
+
       setWriteLimit(prismaClient, pLimit(config.db.provider === 'sqlite' ? 1 : Infinity));
       setPrismaNamespace(prismaClient, prismaModule.Prisma);
       prismaClient.$on('beforeExit', async () => {
@@ -101,14 +102,13 @@ export function createSystem(config: KeystoneConfig, isLiveReload?: boolean) {
 
       return {
         async connect() {
-          if (!isLiveReload) {
-            await prismaClient.$connect();
-            const context = createContext({ sudo: true });
-            await config.db.onConnect?.(context);
-          }
+          if (isLiveReload) return;
+
+          await prismaClient.$connect();
+          const context = createContext();
+          await config.db.onConnect?.(context);
         },
         async disconnect() {
-          // Tests that use the stored session won't stop until the store connection is disconnected
           await config?.session?.disconnect?.();
           await prismaClient.$disconnect();
         },
