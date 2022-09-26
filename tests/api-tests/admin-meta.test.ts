@@ -133,7 +133,7 @@ test(
       },
     }),
   })(async ({ context }) => {
-    const gql = String.raw;
+    const gql = ([content]: TemplateStringsArray) => content;
     const res = await context.sudo().graphql.raw({
       query: gql`
         query {
