@@ -7,10 +7,10 @@ export default config<TypeInfo>({
   db: {
     provider: 'sqlite',
     url: process.env.DATABASE_URL || 'file:./keystone-example.db',
-    onConnect: async (context) => {
-      console.log('(keystone.ts)', 'onConnect')
+    onConnect: async context => {
+      console.log('(keystone.ts)', 'onConnect');
       await context.db.Post.createOne({ data: { title: 'Created in onConnect' } });
-    }
+    },
   },
   lists: {
     Post: list({
@@ -19,9 +19,9 @@ export default config<TypeInfo>({
         title: text(),
         createdAt: timestamp({
           db: {
-            isNullable: false
+            isNullable: false,
           },
-          defaultValue: { kind: 'now' }
+          defaultValue: { kind: 'now' },
         }),
       },
     }),
