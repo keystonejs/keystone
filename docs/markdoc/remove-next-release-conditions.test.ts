@@ -1,4 +1,3 @@
-import Markdoc from '@markdoc/markdoc';
 import { removeNextReleaseConditions } from './remove-next-release-conditions';
 
 test('removes if', () => {

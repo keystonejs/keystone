@@ -1,6 +1,5 @@
 import fs from 'fs/promises';
 import globby from 'globby';
-import Markdoc from '@markdoc/markdoc';
 
 export async function loadAllMarkdoc() {
   const files = await globby('pages/docs/**/*.md');

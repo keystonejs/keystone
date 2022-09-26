@@ -1,7 +1,7 @@
 // @markdoc/markdoc's declaration files depend on these global types
 import type {} from '@markdoc/markdoc/global';
 import fs from 'fs/promises';
-import Markdoc, { Config, Tag, ValidateError, tags } from '@markdoc/markdoc';
+import Markdoc, { Config, Tag, ValidateError } from '@markdoc/markdoc';
 import { isNonEmptyArray } from 'emery/guards';
 import { assert } from 'emery/assertions';
 import { load } from 'js-yaml';
