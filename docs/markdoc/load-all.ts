@@ -7,8 +7,7 @@ export async function loadAllMarkdoc() {
   return await Promise.all(
     files.map(async file => {
       const contents = await fs.readFile(file, 'utf8');
-      const root = Markdoc.parse(contents, file);
-      return { file, root };
+      return { file, contents };
     })
   );
 }

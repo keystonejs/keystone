@@ -8,8 +8,8 @@ import { removeNextReleaseConditions } from './markdoc/remove-next-release-condi
   const docs = await loadAllMarkdoc();
   const allErrors: ValidateError[] = [];
   await Promise.all(
-    docs.map(({ file, root }) => {
-      const { contents, errors } = removeNextReleaseConditions(root);
+    docs.map(({ file, contents: initialContents }) => {
+      const { contents, errors } = removeNextReleaseConditions(initialContents);
       allErrors.push(...errors);
       return fs.writeFile(file, contents, 'utf8');
     })

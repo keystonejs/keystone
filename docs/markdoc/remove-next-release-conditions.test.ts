@@ -10,14 +10,13 @@ some content
 
 {% /if %}
   `;
-  expect(removeNextReleaseConditions(Markdoc.parse(content))).toMatchInlineSnapshot(`
+  expect(removeNextReleaseConditions(content)).toMatchInlineSnapshot(`
     {
       "contents": "## Heading 1
-
     some content
 
     ## Some heading
-    ",
+      ",
       "errors": [],
     }
   `);
@@ -36,14 +35,13 @@ Content in else
 
 {% /if %}
   `;
-  expect(removeNextReleaseConditions(Markdoc.parse(content))).toMatchInlineSnapshot(`
+  expect(removeNextReleaseConditions(content)).toMatchInlineSnapshot(`
     {
       "contents": "## Heading 1
-
     some content
 
     ## Some heading
-    ",
+      ",
       "errors": [],
     }
   `);
@@ -65,16 +63,16 @@ Content in else
 
 {% /if %}
   `;
-  expect(removeNextReleaseConditions(Markdoc.parse(content))).toMatchInlineSnapshot(`
+  expect(removeNextReleaseConditions(content)).toMatchInlineSnapshot(`
     {
       "contents": "## Heading 1
 
     {% $nextRelease %}
-
+      
     some content
 
     ## Some heading
-    ",
+      ",
       "errors": [
         {
           "error": {

@@ -14,7 +14,8 @@ const NON_MARKDOWN_PAGES = [
 ];
 
 (async () => {
-  const parsedFiles = (await loadAllMarkdoc()).map(({ file, root }) => {
+  const parsedFiles = (await loadAllMarkdoc()).map(({ file, contents }) => {
+    const root = Markdoc.parse(contents, file);
     const ids = new Set<string>();
     for (const node of root.walk()) {
       if (node.type === 'heading') {
