@@ -74,9 +74,9 @@ export type StorageConfig = (
       /** Your s3 instance's region */
       region: string;
       /** An access Key ID with write access to your S3 instance */
-      accessKeyId: string;
+      accessKeyId?: string;
       /** The secret access key that gives permissions to your access Key Id */
-      secretAccessKey: string;
+      secretAccessKey?: string;
       /** An endpoint to use - to be provided if you are not using AWS as your endpoint */
       endpoint?: string;
       /** If true, will force the 'old' S3 path style of putting bucket name at the start of the pathname of the URL  */
