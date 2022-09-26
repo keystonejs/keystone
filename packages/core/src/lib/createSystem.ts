@@ -102,11 +102,11 @@ export function createSystem(config: KeystoneConfig, isLiveReload?: boolean) {
 
       return {
         async connect() {
-          if (!isLiveReload) {
-            await prismaClient.$connect();
-            const context = createContext();
-            await config.db.onConnect?.(context);
-          }
+          if (isLiveReload) return;
+
+          await prismaClient.$connect();
+          const context = createContext();
+          await config.db.onConnect?.(context);
         },
         async disconnect() {
           await config?.session?.disconnect?.();
