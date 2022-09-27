@@ -208,7 +208,7 @@ export type ListGraphQLConfig = {
   plural?: string;
   // was previously top-level queryLimits
   queryLimits?: {
-    maxResults?: number; // maximum number of items that can be returned in a query (or subquery)
+    take?: number; // maximum value for the take parameter when querying this list
   };
   cacheHint?: ((args: CacheHintArgs) => CacheHint) | CacheHint;
   // Setting any of these values will remove the corresponding operations from the GraphQL schema.

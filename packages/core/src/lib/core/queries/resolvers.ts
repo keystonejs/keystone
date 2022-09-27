@@ -9,7 +9,7 @@ import {
   UniqueInputFilter,
   InputFilter,
 } from '../where-inputs';
-import { limitsExceededError, userInputError } from '../graphql-errors';
+import { userInputError } from '../graphql-errors';
 import { InitialisedList } from '../types-for-lists';
 import { getDBFieldKeyForFieldOnMultiField, runWithPrisma } from '../utils';
 import { checkFilterOrderAccess } from '../filter-order-access';
@@ -126,8 +126,6 @@ export async function findMany(
     return [];
   }
 
-  applyEarlyMaxResults(take, list);
-
   let resolvedWhere = await resolveWhereInput(where, list, context);
 
   // Check filter access
@@ -143,8 +141,6 @@ export async function findMany(
       skip,
     })
   );
-
-  applyMaxResults(results, list, context);
 
   if (info.cacheControl && list.cacheHint) {
     info.cacheControl.setCacheHint(
@@ -250,34 +246,4 @@ export async function count(
     );
   }
   return count;
-}
-
-function applyEarlyMaxResults(_take: number | null | undefined, list: InitialisedList) {
-  const take = Math.abs(_take ?? Infinity);
-  // We want to help devs by failing fast and noisily if limits are violated.
-  // Unfortunately, we can't always be sure of intent.
-  // E.g., if the query has a "take: 10", is it bad if more results could come back?
-  // Maybe yes, or maybe the dev is just paginating posts.
-  // But we can be sure there's a problem in two cases:
-  // * The query explicitly has a "take" that exceeds the limit
-  // * The query has no "take", and has more results than the limit
-  if (take < Infinity && take > list.maxResults) {
-    throw limitsExceededError({ list: list.listKey, type: 'maxResults', limit: list.maxResults });
-  }
-}
-
-function applyMaxResults(results: unknown[], list: InitialisedList, context: KeystoneContext) {
-  if (results.length > list.maxResults) {
-    throw limitsExceededError({ list: list.listKey, type: 'maxResults', limit: list.maxResults });
-  }
-  if (context) {
-    context.totalResults += results.length;
-    if (context.totalResults > context.maxTotalResults) {
-      throw limitsExceededError({
-        list: list.listKey,
-        type: 'maxTotalResults',
-        limit: context.maxTotalResults,
-      });
-    }
-  }
 }

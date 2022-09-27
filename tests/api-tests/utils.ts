@@ -236,19 +236,6 @@ export const expectPrismaError = (
   );
 };
 
-export const expectLimitsExceededError = (
-  errors: readonly any[] | undefined,
-  args: { path: (string | number)[] }[]
-) => {
-  const unpackedErrors = (errors || []).map(({ locations, ...unpacked }) => ({
-    ...unpacked,
-  }));
-  const message = 'Your request exceeded server limits';
-  expect(unpackedErrors).toEqual(
-    args.map(({ path }) => ({ extensions: { code: 'KS_LIMITS_EXCEEDED' }, path, message }))
-  );
-};
-
 export const expectBadUserInput = (
   errors: readonly any[] | undefined,
   args: { path: any[]; message: string }[]

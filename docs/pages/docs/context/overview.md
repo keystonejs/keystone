@@ -50,10 +50,6 @@ context = {
     getDataFromStream,
   },
 
-  // Internal state
-  totalResults,
-  maxTotalResults,
-
   // Deprecated
   gqlNames,
 };
@@ -141,14 +137,6 @@ type ImageData = {
 `async images.getDataFromRef(ref)`: Given a `ref` string, taken from the `id` field of an existing image, returns an `ImageData` object.
 
 `async images.getDataFromStream(stream)`: Given a readable data stream, returns an `ImageData` object. The `mode` will be taken from `config.images.mode`, and `id` will be a `uuid` value. The other values will be inferred from the data stream itself. The contents of the stream will be written to the filesystem at `config.images.local.storagePath`.
-
-### Internal state
-
-These properties are used internally by Keystone and generally do not need to be directly accessed.
-
-`totalResults`: The cumulative total number of results returned by the current request. See [`config.graphql.queryLimits`](../config/config#graphql).
-
-`maxTotalResults`: The maximum number of results which can be returned before a query limit error is triggered. See [`config.graphql.queryLimits`](../config/config#graphql).
 
 ### Deprecated
 

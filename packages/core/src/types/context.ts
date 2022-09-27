@@ -17,8 +17,6 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
   prisma: TypeInfo['prisma'];
   files: FilesContext;
   images: ImagesContext;
-  totalResults: number;
-  maxTotalResults: number;
   /** @deprecated */
   gqlNames: (listKey: string) => GqlNames;
   experimental?: {

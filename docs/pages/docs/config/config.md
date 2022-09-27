@@ -399,7 +399,6 @@ Options:
 export default config({
   graphql: {
     debug: process.env.NODE_ENV !== 'production',
-    queryLimits: { maxTotalResults: 100 },
     path: '/api/graphql',
     apolloConfig: {
       debug: true,

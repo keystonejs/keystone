@@ -199,9 +199,6 @@ export type GraphQLConfig = {
   // Default: { origin: 'https://studio.apollographql.com', credentials: true }
   cors?: CorsOptions;
   bodyParser?: BodyParserOptions;
-  queryLimits?: {
-    maxTotalResults?: number;
-  };
   /**
    * - `true` - Add `ApolloServerPluginLandingPageGraphQLPlayground` to the Apollo Server plugins
    * - `false` - Add `ApolloServerPluginLandingPageDisabled` to the Apollo Server plugins
