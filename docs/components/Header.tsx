@@ -149,7 +149,8 @@ export function Header() {
         document.getElementById('search-field').disabled = false;
         // @ts-ignore
         window.docsearch({
-          apiKey: '211e94c001e6b4c6744ae72fb252eaba',
+          appId: 'N3ZF861Q5G',
+          apiKey: 'f52fa93b9068fe8824beab5727ae84a1',
           indexName: 'keystonejs',
           inputSelector: '#search-field',
           algoliaOptions: {
