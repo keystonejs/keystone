@@ -22,6 +22,6 @@ export default function HomePage({ posts }) {
 
 export async function getStaticProps() {
   const context = await withContext();
-  const posts = await context.lists.Post.findMany({ query: 'slug title' });
+  const posts = await context.query.Post.findMany({ query: 'slug title' });
   return { props: { posts } };
 }
