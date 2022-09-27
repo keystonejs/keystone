@@ -1,7 +1,5 @@
-//  import { getContext } from '@keystone-6/core';
-
 // eslint-disable-next-line import/no-unresolved
-import { getContext } from '@keystone-6/core/src/lib/getContext'; // TODO: hmmm
+import { getContext } from '@keystone-6/core/context';
 
 // eslint-disable-next-line import/no-unresolved
 import config from './keystone';
