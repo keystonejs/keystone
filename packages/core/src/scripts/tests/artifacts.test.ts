@@ -82,35 +82,6 @@ describe('postinstall', () => {
     expect(await getFiles(tmp, ['node_modules/.keystone/**/*'])).toMatchSnapshot();
     expect(recording()).toMatchInlineSnapshot(`"✨ GraphQL and Prisma schemas are up to date"`);
   });
-  test('writes the api files when the generateNodeAPI experimental flag is on', async () => {
-    const tmp = await testdir({
-      ...symlinkKeystoneDeps,
-      ...schemas,
-      'keystone.js': await fs.readFile(`${__dirname}/fixtures/generate-node-api.ts`, 'utf8'),
-    });
-    const recording = recordConsole();
-    await runCommand(tmp, 'postinstall');
-    expect(await getFiles(tmp, ['node_modules/.keystone/api.{d.ts,js}'])).toMatchInlineSnapshot(`
-      ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/api.d.ts ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
-      import { KeystoneListsAPI } from '@keystone-6/core/types';
-      import { Context } from './types';
-
-      export const query: Context['query'];
-      ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/api.js ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
-      import keystoneConfig from '../../keystone';
-      import { PrismaClient } from '.prisma/client';
-      import { createQueryAPI } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/node-api';
-      import path from 'path';
-
-          path.join(__dirname, "../../../app.db");
-          path.join(process.cwd(), "app.db");
-          
-
-      export const query = createQueryAPI(keystoneConfig, PrismaClient);
-
-    `);
-    expect(recording()).toMatchInlineSnapshot(`"✨ GraphQL and Prisma schemas are up to date"`);
-  });
   test('writes the next graphql api route files when the generateNextGraphqlAPI experimental flag is on', async () => {
     const tmp = await testdir({
       ...symlinkKeystoneDeps,

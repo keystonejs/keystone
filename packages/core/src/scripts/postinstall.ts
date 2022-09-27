@@ -34,8 +34,6 @@ import { loadConfigOnce } from '../lib/config/loadConfig';
 //     - types.{js,.ts}: .d.ts will be the same as current .keystone/schema-types.ts, the .js will be empty
 //     - next/graphql-api.js: to be imported into a next app as an api route
 //         * only generated with generateNextGraphqlAPI option
-//     - api.js:  includes the lists API (full exports to be decided elsewhere
-//         * only generated with generateNodeAPI option
 
 export async function postinstall(cwd: string, shouldFix: boolean) {
   const config = await loadConfigOnce(cwd);

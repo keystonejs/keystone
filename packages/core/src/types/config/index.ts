@@ -103,8 +103,6 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
   storage?: Record<string, StorageConfig>;
   /** Experimental config options */
   experimental?: {
-    /** Creates a file at `node_modules/.keystone/api` with a `lists` export */
-    generateNodeAPI?: boolean;
     /** Creates a file at `node_modules/.keystone/next/graphql-api` with `default` and `config` exports that can be re-exported in a Next API route */
     generateNextGraphqlAPI?: boolean;
     /** Adds the internal data structure `experimental.initialisedLists` to the context object.
