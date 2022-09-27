@@ -2,9 +2,9 @@ const { withKeystone } = require('@keystone-6/core/next');
 
 module.exports = withKeystone({
   typescript: {
-    ignoreBuildErrors: true
+    ignoreBuildErrors: true,
   },
   eslint: {
-    ignoreDuringBuilds: true
-  }
+    ignoreDuringBuilds: true,
+  },
 });
