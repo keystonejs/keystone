@@ -1,4 +1,4 @@
-import { getContext } from '@keystone-6/core/system';
+import { getContext } from '@keystone-6/core/context';
 import config from './keystone';
 import * as PrismaModule from '.prisma/client';
 

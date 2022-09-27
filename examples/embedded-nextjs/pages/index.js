@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 // eslint-disable-next-line import/no-unresolved
-import { lists } from '.keystone/api';
+import { withContext } from '../with';
 
 export default function HomePage({ posts }) {
   return (
@@ -21,6 +21,7 @@ export default function HomePage({ posts }) {
 }
 
 export async function getStaticProps() {
-  const posts = await lists.Post.findMany({ query: 'slug title' });
+  const context = await withContext();
+  const posts = await context.query.Post.findMany({ query: 'slug title' });
   return { props: { posts } };
 }
