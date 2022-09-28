@@ -79,9 +79,7 @@ export async function pushPrismaSchemaToDatabase(
           schema,
         })
       );
-      if (!process.env.TEST_ADAPTER) {
-        console.log('✨ Your database has been reset');
-      }
+      console.log('✨ Your database has been reset');
       return migration;
     }
     // what does force on migrate.engine.schemaPush mean?
@@ -146,14 +144,12 @@ export async function pushPrismaSchemaToDatabase(
     return migration;
   });
 
-  if (!process.env.TEST_ADAPTER) {
-    if (migration.warnings.length === 0 && migration.executedSteps === 0) {
-      console.info(`✨ The database is already in sync with the Prisma schema.`);
-    } else {
-      console.info(
-        `✨ Your database is now in sync with your schema. Done in ${formatms(Date.now() - before)}`
-      );
-    }
+  if (migration.warnings.length === 0 && migration.executedSteps === 0) {
+    console.info(`✨ The database is already in sync with the Prisma schema.`);
+  } else {
+    console.info(
+      `✨ Your database is now in sync with your schema. Done in ${formatms(Date.now() - before)}`
+    );
   }
 }
 
@@ -189,9 +185,7 @@ export async function devMigrations(
 
     if (shouldDropDatabase) {
       await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () => migrate.reset());
-      if (!process.env.TEST_ADAPTER) {
-        console.log('✨ Your database has been reset');
-      }
+      console.log('✨ Your database has been reset');
     } else {
       // see if we need to reset the database
       // note that the other action devDiagnostic can return is createMigration
@@ -324,13 +318,11 @@ async function ensureDatabaseExists(dbUrl: string, schemaDir: string) {
   const created = await createDatabase(dbUrl, schemaDir);
   if (created) {
     const credentials = uriToCredentials(dbUrl);
-    if (!process.env.TEST_ADAPTER) {
-      console.log(
-        `✨ ${credentials.type} database "${credentials.database}" created at ${getDbLocation(
-          credentials
-        )}`
-      );
-    }
+    console.log(
+      `✨ ${credentials.type} database "${credentials.database}" created at ${getDbLocation(
+        credentials
+      )}`
+    );
   }
   // TODO: handle createDatabase returning a failure (prisma's cli does not handle it though so not super worried)
 }

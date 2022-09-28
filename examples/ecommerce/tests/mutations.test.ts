@@ -1,12 +1,31 @@
-import { setupTestRunner } from '@keystone-6/core/testing';
-import config from '../keystone';
+import path from 'path';
+import { resetDatabase } from '@keystone-6/core/testing';
+import { getContext } from '@keystone-6/core/context';
+import baseConfig from '../keystone';
 import { Context } from '.keystone/types';
+import * as PrismaModule from '.prisma/client';
 
 const FAKE_ID = 'cinjfgbkjnfg';
 
 const asUser = (context: Context, itemId?: string) => context.withSession({ itemId, data: {} });
-const runner = setupTestRunner({ config });
 
+const dbUrl = `file:./test-${process.env.JEST_WORKER_ID}.db`;
+const prismaSchemaPath = path.resolve(__dirname, '..', 'schema.prisma');
+const config = { ...baseConfig, db: { ...baseConfig.db, url: dbUrl } };
+// Setup a test runner which will provide a clean test environment
+// with access to our GraphQL API for each test.
+const runner = (fn: (args: { context: Context }) => Promise<void>) => {
+  return async () => {
+    await resetDatabase(dbUrl, prismaSchemaPath);
+    const { connect, context, disconnect } = getContext(config, PrismaModule);
+    await connect();
+    try {
+      return fn({ context });
+    } finally {
+      await disconnect();
+    }
+  };
+};
 describe(`Custom mutations`, () => {
   describe('checkout(token)', () => {
     const token = 'TOKEN'; // This is not currently used by the mutation

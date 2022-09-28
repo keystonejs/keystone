@@ -1,10 +1,27 @@
-import { setupTestEnv, setupTestRunner, TestEnv } from '@keystone-6/core/testing';
-import config from './keystone';
-import { Context, TypeInfo } from '.keystone/types';
+import path from 'path';
+import { resetDatabase } from '@keystone-6/core/testing';
+import { getContext } from '@keystone-6/core/context';
+import baseConfig from './keystone';
+import { Context } from '.keystone/types';
+import * as PrismaModule from '.prisma/client';
 
+const dbUrl = `file:./test-${process.env.JEST_WORKER_ID}.db`;
+const prismaSchemaPath = path.join(__dirname, 'schema.prisma');
+const config = { ...baseConfig, db: { ...baseConfig.db, url: dbUrl } };
 // Setup a test runner which will provide a clean test environment
 // with access to our GraphQL API for each test.
-const runner = setupTestRunner({ config });
+const runner = (fn: (args: { context: Context }) => Promise<void>) => {
+  return async () => {
+    await resetDatabase(dbUrl, prismaSchemaPath);
+    const { connect, context, disconnect } = getContext(config, PrismaModule);
+    await connect();
+    try {
+      return fn({ context });
+    } finally {
+      await disconnect();
+    }
+  };
+};
 
 describe('Example tests using test runner', () => {
   test(
@@ -143,15 +160,12 @@ describe('Example tests using test environment', () => {
   //
   // This gives us the opportunity to seed test data once up front and use it in
   // multiple tests.
-  let testEnv: TestEnv<TypeInfo>;
-  let context: Context;
+  const { connect, disconnect, context } = getContext(config, PrismaModule);
   let person: { id: string };
 
   beforeAll(async () => {
-    testEnv = await setupTestEnv({ config });
-    context = testEnv.testArgs.context;
-
-    await testEnv.connect();
+    await resetDatabase(dbUrl, prismaSchemaPath);
+    await connect();
 
     // Create a person in the database to be used in multiple tests
     person = await context.db.Person.createOne({
@@ -160,7 +174,7 @@ describe('Example tests using test environment', () => {
   });
 
   afterAll(async () => {
-    await testEnv.disconnect();
+    await disconnect();
   });
 
   test('Check that the persons password is set', async () => {
