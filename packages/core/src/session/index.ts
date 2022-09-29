@@ -127,26 +127,17 @@ export function storedSessions({
   ...statelessSessionsOptions
 }: { store: SessionStoreFunction } & StatelessSessionsOptions): SessionStrategy<JSONValue> {
   let { get, start, end } = statelessSessions({ ...statelessSessionsOptions, maxAge });
-  let store = typeof storeOption === 'function' ? storeOption({ maxAge }) : storeOption;
-  let isConnected = false;
+  let store = storeOption({ maxAge });
   return {
     async get({ req, createContext }) {
       const data = (await get({ req, createContext })) as { sessionId: string } | undefined;
       const sessionId = data?.sessionId;
       if (typeof sessionId === 'string') {
-        if (!isConnected) {
-          await store.connect?.();
-          isConnected = true;
-        }
         return store.get(sessionId);
       }
     },
     async start({ res, data, createContext }) {
       let sessionId = generateSessionId();
-      if (!isConnected) {
-        await store.connect?.();
-        isConnected = true;
-      }
       await store.set(sessionId, data);
       return start?.({ res, data: { sessionId }, createContext }) || '';
     },
@@ -154,19 +145,9 @@ export function storedSessions({
       const data = (await get({ req, createContext })) as { sessionId: string } | undefined;
       const sessionId = data?.sessionId;
       if (typeof sessionId === 'string') {
-        if (!isConnected) {
-          await store.connect?.();
-          isConnected = true;
-        }
         await store.delete(sessionId);
       }
       await end?.({ req, res, createContext });
-    },
-    async disconnect() {
-      if (isConnected) {
-        await store.disconnect?.();
-        isConnected = false;
-      }
     },
   };
 }
