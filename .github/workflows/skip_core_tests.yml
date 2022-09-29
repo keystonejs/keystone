@@ -48,27 +48,6 @@ jobs:
       - name: Skipped tests
         run: echo "Skipped tests"
 
-  redis_session_tests_postgresql:
-    name: Redis Session Tests PostgreSQL
-    runs-on: ubuntu-latest
-    steps:
-      - name: Skipped tests
-        run: echo "Skipped tests"
-
-  redis_session_tests_sqlite:
-    name: Redis Session Tests SQLite
-    runs-on: ubuntu-latest
-    steps:
-      - name: Skipped tests
-        run: echo "Skipped tests"
-
-  redis_session_tests_mysql:
-    name: Redis Session Tests MySQL
-    runs-on: ubuntu-latest
-    steps:
-      - name: Skipped tests
-        run: echo "Skipped tests"
-
   field_crud_tests_postgresql:
     name: Field CRUD Tests PostgreSQL
     runs-on: ubuntu-latest
