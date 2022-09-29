@@ -1,6 +1,6 @@
 import { CacheScope } from 'apollo-server-types';
 import { text, relationship, integer } from '@keystone-6/core/fields';
-import { list, graphQLSchemaExtension } from '@keystone-6/core';
+import { list, graphql } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig, ContextFromRunner } from '../utils';
@@ -44,32 +44,33 @@ const runner = setupTestRunner({
         },
       }),
     },
-    extendGraphqlSchema: graphQLSchemaExtension({
-      typeDefs: `
-        type MyType {
-          original: Int
-          double: Float
-        }
-
-        type Mutation {
-          triple(x: Int): Int
-        }
-
-        type Query {
-          double(x: Int): MyType
-        }
-      `,
-      resolvers: {
-        Query: {
-          double: (root, { x }, context, info) => {
-            info.cacheControl.setCacheHint({ scope: CacheScope.Public, maxAge: 100 });
-            return { original: x, double: 2.0 * x };
-          },
+    extendGraphqlSchema: graphql.extend(() => {
+      const MyType = graphql.object<{ original: number }>()({
+        name: 'MyType',
+        fields: {
+          original: graphql.field({ type: graphql.Int }),
+          double: graphql.field({ type: graphql.Int, resolve: ({ original }) => original * 2 }),
         },
-        Mutation: {
-          triple: (root, { x }) => 3 * x,
+      });
+      return {
+        query: {
+          double: graphql.field({
+            type: MyType,
+            args: { x: graphql.arg({ type: graphql.nonNull(graphql.Int) }) },
+            resolve: (_, { x }, context, info) => {
+              info.cacheControl.setCacheHint({ maxAge: 100, scope: CacheScope.Public });
+              return { original: x, double: x * 2 };
+            },
+          }),
         },
-      },
+        mutation: {
+          triple: graphql.field({
+            type: graphql.Int,
+            args: { x: graphql.arg({ type: graphql.nonNull(graphql.Int) }) },
+            resolve: (_, { x }) => x * 3,
+          }),
+        },
+      };
     }),
   }),
 });

@@ -222,10 +222,9 @@ export function DocsNavigation() {
         <NavItem href="/docs/guides/images-and-files">
           Images & Files <Badge look="success">New</Badge>
         </NavItem>
-        {/* Disable placeholder for now */}
-        {/* <NavItem href="/docs/guides/schema-extension" isPlaceholder>
-          Schema Extension
-        </NavItem> */}
+        <NavItem href="/docs/guides/schema-extension">
+          GraphQL Schema Extension<Badge look="success">New</Badge>
+        </NavItem>
         <NavItem href="/docs/guides/testing">Testing</NavItem>
         <NavItem href="/docs/guides/document-fields">Document Fields</NavItem>
         <NavItem href="/docs/guides/document-field-demo">Document Field Demo</NavItem>
