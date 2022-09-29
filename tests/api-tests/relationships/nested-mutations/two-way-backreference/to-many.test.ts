@@ -1,10 +1,9 @@
 import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
-import { KeystoneContext } from '@keystone-6/core/types';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { allowAll } from '@keystone-6/core/access';
-import { apiTestConfig } from '../../../utils';
+import { apiTestConfig, ContextFromRunner } from '../../../utils';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -33,13 +32,13 @@ const runner = setupTestRunner({
   }),
 });
 
-const getTeacher = async (context: KeystoneContext, teacherId: IdType) =>
+const getTeacher = async (context: ContextFromRunner<typeof runner>, teacherId: IdType) =>
   context.query.Teacher.findOne({
     where: { id: teacherId },
     query: 'id students { id }',
   });
 
-const getStudent = async (context: KeystoneContext, studentId: IdType) => {
+const getStudent = async (context: ContextFromRunner<typeof runner>, studentId: IdType) => {
   type T = { data: { student: { id: IdType; teachers: { id: IdType }[] } } };
   const { data } = (await context.graphql.raw({
     query: `

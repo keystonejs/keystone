@@ -1,7 +1,6 @@
 import { integer } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
-import { KeystoneContext } from '@keystone-6/core/types';
 import { allowAll } from '@keystone-6/core/access';
 import { ExecutionResult } from 'graphql';
 import {
@@ -10,6 +9,7 @@ import {
   expectBadUserInput,
   expectGraphQLValidationError,
   expectFilterDenied,
+  ContextFromRunner,
 } from '../utils';
 import { withServer } from '../with-server';
 
@@ -73,9 +73,9 @@ const runner = setupTestRunner({
   }),
 });
 
-const initialiseData = async ({ context }: { context: KeystoneContext }) => {
+const initialiseData = async ({ context }: { context: ContextFromRunner<typeof runner> }) => {
   // Use shuffled data to ensure that ordering is actually happening.
-  for (const listKey of Object.keys(context.query)) {
+  for (const listKey of Object.keys(context.query) as Array<keyof typeof context['query']>) {
     await context.query[listKey].createMany({
       data: [
         { a: 1, b: 10 },

@@ -17,7 +17,7 @@ const runner = setupTestRunner({
             }
           },
           validateDelete: ({ item, addValidationError }) => {
-            if (item.name.startsWith('no delete')) {
+            if (typeof item.name === 'string' && item.name.startsWith('no delete')) {
               addValidationError('Deleting this item would be bad');
             }
           },

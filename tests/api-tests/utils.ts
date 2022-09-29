@@ -1,6 +1,7 @@
 import { initConfig, createSystem } from '@keystone-6/core/system';
 import { getCommittedArtifacts } from '@keystone-6/core/artifacts';
 import { KeystoneConfig, KeystoneContext, DatabaseProvider } from '@keystone-6/core/types';
+import { setupTestRunner } from '@keystone-6/core/testing';
 
 let prevConsoleWarn = console.warn;
 
@@ -89,6 +90,23 @@ export const apiTestConfig = (config: APITestConfig): KeystoneConfig => ({
     url: dbUrl,
   },
 });
+
+export type TypeInfoFromConfig<Config extends KeystoneConfig<any>> = Config extends KeystoneConfig<
+  infer TypeInfo
+>
+  ? TypeInfo
+  : never;
+
+export type ContextFromConfig<Config extends KeystoneConfig<any>> = KeystoneContext<
+  TypeInfoFromConfig<Config>
+>;
+
+export type ContextFromRunner<Runner extends ReturnType<typeof setupTestRunner>> = Parameters<
+  Parameters<Runner>[0]
+>[0]['context'];
+
+export type ListKeyFromRunner<Runner extends ReturnType<typeof setupTestRunner>> =
+  keyof ContextFromRunner<Runner>['db'];
 
 export const unpackErrors = (errors: readonly any[] | undefined) =>
   (errors || []).map(({ locations, ...unpacked }) => unpacked);

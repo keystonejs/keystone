@@ -116,7 +116,6 @@ type ResolvedTodoUpdateInput = {
   title?: import('.prisma/client').Prisma.TodoUpdateInput["title"];
 };
 
-
 export declare namespace Lists {
   export type Todo = import('@keystone-6/core').ListConfig<Lists.Todo.TypeInfo, any>;
   namespace Todo {
@@ -145,7 +144,7 @@ export type Context = import('@keystone-6/core/types').KeystoneContext<TypeInfo>
 
 export type TypeInfo = {
   lists: {
-  readonly Todo: Lists.Todo.TypeInfo;
+    readonly Todo: Lists.Todo.TypeInfo;
   };
   prisma: import('.prisma/client').PrismaClient;
 };

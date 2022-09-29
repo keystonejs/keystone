@@ -11,11 +11,11 @@ export type CreateRequestContext<TypeInfo extends BaseKeystoneTypeInfo> = (
   res: ServerResponse
 ) => Promise<KeystoneContext<TypeInfo>>;
 
-export type CreateContext = (args: {
+export type CreateContext<Context extends KeystoneContext = KeystoneContext> = (args: {
   sessionContext?: SessionContext<any>;
   sudo?: boolean;
   req?: IncomingMessage;
-}) => KeystoneContext;
+}) => Context;
 
 export type SessionImplementation = {
   createSessionContext(
