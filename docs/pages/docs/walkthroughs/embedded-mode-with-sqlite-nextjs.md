@@ -121,7 +121,6 @@ export default config({
   db: { provider: 'sqlite', url: 'file:./app.db' },
   experimental: {
     generateNextGraphqlAPI: true,
-    generateNodeAPI: true,
   },
   lists: { Post },
 });
@@ -193,7 +192,6 @@ import { InferGetStaticPropsType } from 'next';
 import Link from 'next/link';
 
 // Import the generated Lists API and types from Keystone
-import { query } from '.keystone/api';
 import { Lists } from '.keystone/types';
 
 type Post = {
@@ -226,7 +224,7 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
 // Here we use the Lists API to load all the posts we want to display
 // The return of this function is provided to the `Home` component
 export async function getStaticProps() {
-  const posts = (await query.Post.findMany({ query: 'id title slug' })) as Post[];
+  const posts = (await context.query.Post.findMany({ query: 'id title slug' })) as Post[];
   return {
     props: {
       posts,

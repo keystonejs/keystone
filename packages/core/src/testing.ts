@@ -1,8 +1,7 @@
 import path from 'path';
-import crypto from 'crypto';
-import fs from 'fs';
-import memoizeOne from 'memoize-one';
-import type { CreateContext, KeystoneConfig, KeystoneContext } from './types';
+import { createHash } from 'crypto';
+import { mkdirSync } from 'fs';
+import type { BaseKeystoneTypeInfo, KeystoneConfig, KeystoneContext } from './types';
 import {
   getCommittedArtifacts,
   writeCommittedArtifacts,
@@ -11,43 +10,41 @@ import {
 } from './artifacts';
 import { pushPrismaSchemaToDatabase } from './migrations';
 import { initConfig, createSystem } from './system';
+import { getContext } from './context';
 
-export type TestArgs<Context extends KeystoneContext = KeystoneContext> = {
-  context: Context;
-  createContext: CreateContext;
-  config: KeystoneConfig;
+export type TestArgs<TypeInfo extends BaseKeystoneTypeInfo> = {
+  context: KeystoneContext<TypeInfo>;
+  config: KeystoneConfig<TypeInfo>;
 };
 
-export type TestEnv<Context extends KeystoneContext = KeystoneContext> = {
+export type TestEnv<TypeInfo extends BaseKeystoneTypeInfo> = {
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
-  testArgs: TestArgs<Context>;
+  testArgs: TestArgs<TypeInfo>;
 };
 
-const _hashPrismaSchema = memoizeOne(prismaSchema =>
-  crypto.createHash('md5').update(prismaSchema).digest('hex')
-);
+function sha1(text: string) {
+  return createHash('sha1').update(text).digest('hex');
+}
+
 const _alreadyGeneratedProjects = new Set<string>();
-export async function setupTestEnv<Context extends KeystoneContext>({
-  config: _config,
-}: {
-  config: KeystoneConfig;
-}): Promise<TestEnv<Context>> {
+async function generateSchemas<TypeInfo extends BaseKeystoneTypeInfo>(
+  _config: KeystoneConfig<TypeInfo>
+) {
   // Force the UI to always be disabled.
   const config = initConfig({ ..._config, ui: { ..._config.ui, isDisabled: true } });
-  const { graphQLSchema, getKeystone } = createSystem(config);
-
+  const { graphQLSchema } = createSystem(config);
   const artifacts = await getCommittedArtifacts(graphQLSchema, config);
-  const hash = _hashPrismaSchema(artifacts.prisma);
-
+  const hash = sha1(artifacts.prisma);
   const artifactPath = path.resolve('.keystone', 'tests', hash);
 
   if (!_alreadyGeneratedProjects.has(hash)) {
     _alreadyGeneratedProjects.add(hash);
-    fs.mkdirSync(artifactPath, { recursive: true });
+    mkdirSync(artifactPath, { recursive: true });
     await writeCommittedArtifacts(artifacts, artifactPath);
     await generateNodeModulesArtifacts(graphQLSchema, config, artifactPath);
   }
+
   await pushPrismaSchemaToDatabase(
     config.db.url,
     config.db.shadowDatabaseUrl,
@@ -56,27 +53,35 @@ export async function setupTestEnv<Context extends KeystoneContext>({
     true // shouldDropDatabase
   );
 
-  const { connect, disconnect, createContext } = getKeystone(requirePrismaClient(artifactPath));
+  return artifactPath;
+}
+
+export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo>({
+  config,
+}: {
+  config: KeystoneConfig<TypeInfo>;
+}): Promise<TestEnv<TypeInfo>> {
+  const artifactPath = await generateSchemas<TypeInfo>(config);
+  const { connect, context, disconnect } = getContext(config, requirePrismaClient(artifactPath));
 
   return {
     connect,
     disconnect,
     testArgs: {
-      context: createContext() as Context,
-      createContext,
+      context,
       config,
     },
   };
 }
 
-export function setupTestRunner<Context extends KeystoneContext>({
+export function setupTestRunner<TypeInfo extends BaseKeystoneTypeInfo>({
   config,
 }: {
-  config: KeystoneConfig;
+  config: KeystoneConfig<TypeInfo>;
 }) {
-  return (testFn: (testArgs: TestArgs<Context>) => Promise<void>) => async () => {
+  return (testFn: (testArgs: TestArgs<TypeInfo>) => Promise<void>) => async () => {
     // Reset the database to be empty for every test.
-    const { connect, disconnect, testArgs } = await setupTestEnv<Context>({ config });
+    const { connect, disconnect, testArgs } = await setupTestEnv({ config });
     await connect();
 
     try {

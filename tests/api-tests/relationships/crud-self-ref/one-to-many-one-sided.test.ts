@@ -4,13 +4,13 @@ import { list } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import type { KeystoneContext } from '@keystone-6/core/types';
 import { allowAll } from '@keystone-6/core/access';
-import { apiTestConfig } from '../../utils';
+import { apiTestConfig, ContextFromRunner } from '../../utils';
 
 type IdType = any;
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
-const createInitialData = async (context: KeystoneContext) => {
+const createInitialData = async (context: ContextFromRunner<typeof runner>) => {
   const users = await context.query.User.createMany({
     data: [
       { name: sampleOne(alphanumGenerator) },
@@ -22,7 +22,7 @@ const createInitialData = async (context: KeystoneContext) => {
   return { users };
 };
 
-const createUserAndFriend = async (context: KeystoneContext) => {
+const createUserAndFriend = async (context: ContextFromRunner<typeof runner>) => {
   const user = await context.query.User.createOne({
     data: { friend: { create: { name: sampleOne(alphanumGenerator) } } },
     query: 'id friend { id }',
@@ -36,7 +36,7 @@ const createUserAndFriend = async (context: KeystoneContext) => {
   return { user, friend: user.friend };
 };
 
-const createComplexData = async (context: KeystoneContext) => {
+const createComplexData = async (context: ContextFromRunner<typeof runner>) => {
   const users = await context.query.User.createMany({
     data: [
       { name: 'A', friend: { create: { name: 'A1' } } },

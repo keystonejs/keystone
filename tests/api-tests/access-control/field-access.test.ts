@@ -1,7 +1,6 @@
-import { KeystoneContext } from '@keystone-6/core/types';
 import { setupTestEnv, TestEnv } from '@keystone-6/api-tests/test-runner';
 import { ExecutionResult } from 'graphql';
-import { expectAccessDenied } from '../utils';
+import { expectAccessDenied, ContextFromConfig, TypeInfoFromConfig } from '../utils';
 import { nameFn, fieldMatrix, getFieldName, getItemListName, config } from './utils';
 
 type IdType = any;
@@ -11,8 +10,10 @@ describe(`Field access`, () => {
   const mode = 'item';
   const listKey = nameFn[mode](listAccess);
 
-  let testEnv: TestEnv, context: KeystoneContext;
+  let testEnv: TestEnv<TypeInfoFromConfig<typeof config>>;
+  let context: ContextFromConfig<typeof config>;
   let items: Record<string, { id: IdType; name: string }[]>;
+
   beforeAll(async () => {
     testEnv = await setupTestEnv({ config });
     context = testEnv.testArgs.context;
@@ -29,6 +30,7 @@ describe(`Field access`, () => {
       })) as { id: IdType; name: string }[];
     }
   });
+
   afterAll(async () => {
     await testEnv.disconnect();
   });

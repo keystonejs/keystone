@@ -4,7 +4,6 @@ import {
   FieldTypeFunc,
   CommonFieldConfig,
   orderDirectionEnum,
-  filters,
 } from '@keystone-6/core/types';
 import { graphql } from '@keystone-6/core';
 
@@ -49,10 +48,6 @@ export const stars =
       },
       // all of these inputs are optional if they don't make sense for a particular field type
       input: {
-        where: {
-          arg: graphql.arg({ type: filters[meta.provider].Int.optional }),
-          resolve: filters.resolveCommon,
-        },
         create: {
           arg: graphql.arg({ type: graphql.Int }),
           // this field type doesn't need to do anything special

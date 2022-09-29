@@ -4,11 +4,13 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "dev": "next -p 8000",
+    "dev": "SHOW_NEXT_RELEASE=1 next -p 8000",
+    "dev:live": "next -p 8000",
     "build": "yarn validate-links && next build && yarn sitemap",
     "start": "next start -p 8000",
     "sitemap": "next-sitemap",
-    "validate-links": "tsx validate-links.ts"
+    "validate-links": "tsx validate-links.ts",
+    "remove-conditionals": "tsx remove-conditionals.ts"
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",

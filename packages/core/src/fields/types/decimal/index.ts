@@ -6,7 +6,6 @@ import {
   CommonFieldConfig,
   orderDirectionEnum,
   Decimal,
-  filters,
   FieldData,
 } from '../../../types';
 import { graphql } from '../../..';
@@ -15,6 +14,7 @@ import {
   assertReadIsNonNullAllowed,
   getResolvedIsNullable,
 } from '../../non-null-graphql';
+import { filters } from '../../filters';
 
 export type DecimalFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {

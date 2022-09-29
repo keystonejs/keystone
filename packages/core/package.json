@@ -24,6 +24,7 @@
     "fields",
     "types",
     "system",
+    "context",
     "access"
   ],
   "dependencies": {
@@ -98,7 +99,6 @@
     "image-type": "^4.1.0",
     "inflection": "^1.13.1",
     "intersection-observer": "^0.12.0",
-    "memoize-one": "^6.0.0",
     "meow": "^9.0.0",
     "micro": "^9.3.4",
     "next": "^12.2.4",
@@ -131,6 +131,7 @@
       "___internal-do-not-use-will-break-in-patch/admin-ui/pages/*/index.tsx",
       "___internal-do-not-use-will-break-in-patch/admin-ui/{next-config.ts,id-field-view.tsx}",
       "artifacts.ts",
+      "context.ts",
       "migrations.ts",
       "testing.ts",
       "session/index.ts",

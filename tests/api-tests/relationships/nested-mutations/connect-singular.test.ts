@@ -229,14 +229,16 @@ describe('non-matching filter', () => {
 });
 
 describe('with access control', () => {
-  [
-    { name: 'GroupNoRead', allowed: false, func: 'read: () => false' },
-    { name: 'GroupNoReadHard', allowed: false, func: 'read: false' },
-    { name: 'GroupNoCreate', allowed: true, func: 'create: () => false' },
-    { name: 'GroupNoCreateHard', allowed: true, func: 'create: false' },
-    { name: 'GroupNoUpdate', allowed: true, func: 'update: () => false' },
-    { name: 'GroupNoUpdateHard', allowed: true, func: 'update: false' },
-  ].forEach(group => {
+  (
+    [
+      { name: 'GroupNoRead', allowed: false, func: 'read: () => false' },
+      { name: 'GroupNoReadHard', allowed: false, func: 'read: false' },
+      { name: 'GroupNoCreate', allowed: true, func: 'create: () => false' },
+      { name: 'GroupNoCreateHard', allowed: true, func: 'create: false' },
+      { name: 'GroupNoUpdate', allowed: true, func: 'update: () => false' },
+      { name: 'GroupNoUpdateHard', allowed: true, func: 'update: false' },
+    ] as const
+  ).forEach(group => {
     describe(`${group.func} on related list`, () => {
       if (group.allowed) {
         test(

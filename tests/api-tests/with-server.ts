@@ -3,6 +3,7 @@ import express from 'express';
 import { TestArgs } from '@keystone-6/api-tests/test-runner';
 import { createExpressServer } from '@keystone-6/core/system';
 import supertest, { Test } from 'supertest';
+import { BaseKeystoneTypeInfo } from '@keystone-6/core/types';
 
 export type GraphQLRequest = (arg: {
   query: string;
@@ -10,15 +11,17 @@ export type GraphQLRequest = (arg: {
   operationName?: string;
 }) => Test;
 
-type TestArgsWithServer = TestArgs & {
+type TestArgsWithServer<TypeInfo extends BaseKeystoneTypeInfo> = TestArgs<TypeInfo> & {
   graphQLRequest: GraphQLRequest;
   app: express.Express;
   server: Server;
 };
 
-async function getTestArgsWithServer(testArgs: TestArgs): Promise<{
+async function getTestArgsWithServer<TypeInfo extends BaseKeystoneTypeInfo>(
+  testArgs: TestArgs<TypeInfo>
+): Promise<{
   disconnect: () => Promise<void>;
-  args: TestArgsWithServer;
+  args: TestArgsWithServer<TypeInfo>;
 }> {
   const {
     expressServer: app,
@@ -47,10 +50,10 @@ async function getTestArgsWithServer(testArgs: TestArgs): Promise<{
   };
 }
 
-export function withServer(
-  runner: (testFn: (testArgs: TestArgs) => Promise<void>) => () => Promise<void>
+export function withServer<TypeInfo extends BaseKeystoneTypeInfo>(
+  runner: (testFn: (testArgs: TestArgs<TypeInfo>) => Promise<void>) => () => Promise<void>
 ) {
-  return (testFn: (testArgs: TestArgsWithServer) => Promise<void>) => () => {
+  return (testFn: (testArgs: TestArgsWithServer<TypeInfo>) => Promise<void>) => () => {
     return runner(async baseTestArgs => {
       const { disconnect, args } = await getTestArgsWithServer(baseTestArgs);
       try {
