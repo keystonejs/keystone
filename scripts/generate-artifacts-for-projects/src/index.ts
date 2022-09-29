@@ -14,7 +14,7 @@ const mode = process.argv.includes('update-schemas') ? 'generate' : 'validate';
 async function generateArtifactsForProjectDir(projectDir: string) {
   try {
     const config = await loadConfig(projectDir);
-    const { graphQLSchema } = createSystem(config, false);
+    const { graphQLSchema } = createSystem(config);
     if (mode === 'validate') {
       await validateCommittedArtifacts(graphQLSchema, config, projectDir);
     } else {

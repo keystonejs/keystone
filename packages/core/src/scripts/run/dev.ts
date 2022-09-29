@@ -186,7 +186,7 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
           console.log('Your db config has changed, please restart Keystone');
           process.exit(1);
         }
-        const { graphQLSchema, getKeystone, adminMeta } = createSystem(newConfig, true);
+        const { graphQLSchema, getKeystone, adminMeta } = createSystem(newConfig);
         // we're not using generateCommittedArtifacts or any of the similar functions
         // because we will never need to write a new prisma schema here
         // and formatting the prisma schema leaves some listeners on the process
@@ -208,7 +208,6 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
           } as unknown as new (args: unknown) => any,
           Prisma: prismaClientModule.Prisma,
         });
-        await keystone.connect();
         const servers = await createExpressServer(newConfig, graphQLSchema, keystone.createContext);
 
         servers.expressServer.use(adminUIMiddleware);
