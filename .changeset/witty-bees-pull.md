@@ -2,4 +2,4 @@
 '@keystone-6/core': major
 ---
 
-Removes `graphQLSchemaExtension` export in favour of using `@graphql-tool/schema` directly if required, also removes `gql` export from `@keystone-6/core`
+Removes the `@graphql-tools/schema` wrapping functions `graphQLSchemaExtension` and `gql`.  Developers should import `@graphql-tools/schema` themselves, or use `graphql` (as exported by `@keystone-6/core`).
