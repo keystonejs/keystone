@@ -61,7 +61,7 @@ function getSudoGraphQLSchema(config: KeystoneConfig) {
   return createGraphQLSchema(transformedConfig, lists, adminMeta);
 }
 
-export function createSystem(config: KeystoneConfig, isLiveReload?: boolean) {
+export function createSystem(config: KeystoneConfig) {
   const lists = initialiseLists(config);
 
   const adminMeta = createAdminMeta(config, lists);
@@ -102,8 +102,6 @@ export function createSystem(config: KeystoneConfig, isLiveReload?: boolean) {
 
       return {
         async connect() {
-          if (isLiveReload) return;
-
           await prismaClient.$connect();
           const context = createContext();
           await config.db.onConnect?.(context);
