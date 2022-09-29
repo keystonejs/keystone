@@ -9,7 +9,8 @@ import {
   generateNodeModulesArtifacts,
 } from './artifacts';
 import { pushPrismaSchemaToDatabase } from './migrations';
-import { initConfig, createSystem, getContext } from './system';
+import { initConfig, createSystem } from './system';
+import { getContext } from './context';
 
 export type TestArgs<TypeInfo extends BaseKeystoneTypeInfo> = {
   context: KeystoneContext<TypeInfo>;
