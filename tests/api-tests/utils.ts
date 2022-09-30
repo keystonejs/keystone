@@ -1,7 +1,7 @@
 import { initConfig, createSystem } from '@keystone-6/core/system';
 import { getCommittedArtifacts } from '@keystone-6/core/artifacts';
 import { KeystoneConfig, KeystoneContext, DatabaseProvider } from '@keystone-6/core/types';
-import { setupTestRunner } from '@keystone-6/core/testing';
+import { setupTestRunner } from './test-runner';
 
 let prevConsoleWarn = console.warn;
 
