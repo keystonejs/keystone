@@ -17,7 +17,7 @@ These examples showcase how Keystone works with other tools and frameworks and u
 - [Task Manager](./task-manager): A simple task manager with Keystone
 - [Blog](./blog): A simple blog with Keystone
 - [Authentication](./with-auth): Add password-based authentication.
-- [Authentication](./with-auth): Add password-based authentication with a Redis session store.
+- [Redis session store](./redis-session-store): Add password-based authentication with a Redis session store.
 - [Role based access control](./roles): Control list access based on user roles.
 - [JSON field](./json): JSON field in schema.
 - [`defaultValue`](./default-values): Default values in schema.
