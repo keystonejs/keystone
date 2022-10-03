@@ -12,7 +12,6 @@
     "@keystone-6/auth": "*",
     "@keystone-6/core": "*",
     "@keystone-6/fields-document": "*",
-    "@keystone-6/session-store-redis": "*",
     "@prisma/client": "4.3.1",
     "@prisma/internals": "4.3.1",
     "@prisma/migrate": "4.3.1",

@@ -76,8 +76,6 @@ A `SessionStore` object has the following interface:
 
 ```typescript
 const store = {
-  connect: async () => { /* ... */ },
-  disconnect: async () => { /* ... */ },
   set: async (sessionId, data) => { /* ... */ },
   get: async (sessionId) => {
     /* ... */
@@ -89,28 +87,9 @@ const store = {
 
 Interface:
 
-- `connect`: Connect to the session store.
-- `disconnect`: Disconnect from the session store.
 - `set`: Set a value `data` for the key `sessionId`.
 - `get`: Get the `data` value associated with `sessionId`.
 - `delete`: Delete the entry associated with `sessionId` from the session store.
-
-Keystone provides a [Redis](https://redis.io/) based session store in the package `@keystone-6/session-store-redis`.
-
-```typescript
-import redis from 'redis';
-import { redisSessionStore } from '@keystone-6/session-store-redis';
-import { config } from '@keystone-6/core';
-import { storedSessions } from '@keystone-6/core/session';
-
-export default config({
-  session: storedSessions({
-    store: redisSessionStore({ client: redis.createClient() }),
-    /* ... */,
-    }),
-  /* ... */
-});
-```
 
 ## Session context
 
