@@ -94,6 +94,7 @@ export const controller = (config: Config): FieldController<string, string> => {
     },
     deserialize: data => {
       const value = data[config.path];
+      // null is equivalent to Prisma.DbNull, and we show that as an empty input
       if (value === null) return '';
       return JSON.stringify(value, null, 2);
     },
