@@ -10,17 +10,33 @@ In this guide we'll show you how to use `@keystone-6/core/testing` and [Jest](ht
 
 In order to run tests using `@keystone-6/core/testing`, we recommend adding the following script to your `package.json` file.
 
+{% if $nextRelease %}
+
+```json
+"scripts": {
+  "test": "jest"
+}
+```
+
+{% else /%}
+
 ```json
 "scripts": {
   "test": "jest --runInBand --testTimeout=60000"
 }
 ```
 
+{% /if %}
+
 This will let you run your tests with the command
 
 ```shell
 yarn test
 ```
+
+{% if $nextRelease %}
+
+{% else /%}
 
 {% hint kind="warn" %}
 It is important to use [`--runInBand`](https://jestjs.io/docs/cli#--runinband) when running your tests. This tells Jest not to run your tests in parallel.
@@ -61,10 +77,42 @@ The third is an [`express.Express`](https://expressjs.com/) value named `app` wh
 The test runner will drop all data in your database on each run. Make sure you do not run your tests against a system with live data.
 {% /hint %}
 
+{% /if %}
+
 ## Writing tests
 
 In general you will want to run tests which check the behaviour of any custom code that you write as part of your Keystone system.
 This includes things like access control, hooks, virtual fields, and GraphQL API extensions.
+
+{% if $nextRelease %}
+
+```typescript
+import { getContext } from '@keystone-6/core/context';
+import { resetDatabase } from '@keystone-6/core/testing';
+import * as PrismaModule from '.prisma/client';
+import config from './keystone';
+
+const dbUrl = `file:./test-${process.env.JEST_WORKER_ID}.db`;
+const prismaSchemaPath = path.join(__dirname, 'schema.prisma');
+const config = { ...baseConfig, db: { ...baseConfig.db, url: dbUrl } };
+
+beforeEach(async () => {
+  await resetDatabase(dbUrl, prismaSchemaPath);
+});
+
+const context = getContext(config, PrismaModule);
+
+
+test('Keystone test', async () => {
+  // Write your test here using `context`
+});
+```
+
+{% hint kind="tip" %}
+We're setting the database url as `file:./test-${process.env.JEST_WORKER_ID}.db` so that our tests can use one database per Jest worker thread and run each test suite in parallel
+{% /hint %}
+
+{% /if %}
 
 ### Context API
 
@@ -72,82 +120,80 @@ The [context API](../context/overview) lets you easily manipulate data in your s
 We can use the [Query API](../context/query) to ensure that we can do basic CRUD operations.
 
 ```typescript
-runner(async ({ context }) => {
-  const person = await context.query.Person.createOne({
-    data: { name: 'Alice', email: 'alice@example.com', password: 'super-secret' },
-    query: 'id name email password { isSet }',
-  });
-  expect(person.name).toEqual('Alice');
-  expect(person.email).toEqual('alice@example.com');
-  expect(person.password.isSet).toEqual(true);
-})
+const person = await context.query.Person.createOne({
+  data: { name: 'Alice', email: 'alice@example.com', password: 'super-secret' },
+  query: 'id name email password { isSet }',
+});
+expect(person.name).toEqual('Alice');
+expect(person.email).toEqual('alice@example.com');
+expect(person.password.isSet).toEqual(true);
 ```
 
 This API works well when we expect an operation to succeed.
 If we expect an operation to fail we can use the `context.graphql.raw` operation to check that both the `data` and `errors` returned by a query are what we expect.
 
 ```typescript
-runner(async ({ context }) => {
-  // Create user without the required `name` field
-  const { data, errors } = await context.graphql.raw({
-    query: `mutation {
-      createPerson(data: { email: "alice@example.com", password: "super-secret" }) {
-        id name email password { isSet }
-      }
-    }`,
-  });
-  expect(data.createPerson).toBe(null);
-  expect(errors).toHaveLength(1);
-  expect(errors[0].path).toEqual(['createPerson']);
-  expect(errors[0].message).toEqual(
-    'You provided invalid data for this operation.\n  - Person.name: Name must not be empty'
-  );
-})
+// Create user without the required `name` field
+const { data, errors } = await context.graphql.raw({
+  query: `mutation {
+    createPerson(data: { email: "alice@example.com", password: "super-secret" }) {
+      id name email password { isSet }
+    }
+  }`,
+});
+expect(data.createPerson).toBe(null);
+expect(errors).toHaveLength(1);
+expect(errors[0].path).toEqual(['createPerson']);
+expect(errors[0].message).toEqual(
+  'You provided invalid data for this operation.\n  - Person.name: Name must not be empty'
+);
 ```
 
 The `context.withSession()` function can be used to run queries as if you were logged in as a particular user.
 This can be useful for testing the behaviour of your access control rules.
 In the example below, the access control only allows users to update their own tasks.
 
-```
-runner(async ({ context }) => {
-  // Create some users
-  const [alice, bob] = await context.query.Person.createMany({
-    data: [
-      { name: 'Alice', email: 'alice@example.com', password: 'super-secret' },
-      { name: 'Bob', email: 'bob@example.com', password: 'super-secret' },
-    ],
-  });
+```typescript
+// Create some users
+const [alice, bob] = await context.query.Person.createMany({
+  data: [
+    { name: 'Alice', email: 'alice@example.com', password: 'super-secret' },
+    { name: 'Bob', email: 'bob@example.com', password: 'super-secret' },
+  ],
+});
 
-  // Create a task assigned to Alice
-  const task = await context.query.Task.createOne({
-    data: {
-      label: 'Experiment with Keystone',
-      priority: 'high',
-      isComplete: false,
-      assignedTo: { connect: { id: alice.id } },
-    },
-  });
+// Create a task assigned to Alice
+const task = await context.query.Task.createOne({
+  data: {
+    label: 'Experiment with Keystone',
+    priority: 'high',
+    isComplete: false,
+    assignedTo: { connect: { id: alice.id } },
+  },
+});
 
-  // Check that we can't update the task when logged in as Bob
-  const { data, errors } = await context
-    .withSession({ itemId: bob.id, data: {} })
-    .graphql.raw({
-      query: `mutation update($id: ID!) {
-        updateTask(where: { id: $id }, data: { isComplete: true }) {
-          id
-        }
-      }`,
-      variables: { id: task.id },
-    });
-  expect(data!.updateTask).toBe(null);
-  expect(errors).toHaveLength(1);
-  expect(errors![0].path).toEqual(['updateTask']);
-  expect(errors![0].message).toEqual(
-    `Access denied: You cannot perform the 'update' operation on the item '{"id":"${task.id}"}'. It may not exist.`
-  );
-})
+// Check that we can't update the task when logged in as Bob
+const { data, errors } = await context
+  .withSession({ itemId: bob.id, data: {} })
+  .graphql.raw({
+    query: `mutation update($id: ID!) {
+      updateTask(where: { id: $id }, data: { isComplete: true }) {
+        id
+      }
+    }`,
+    variables: { id: task.id },
+  });
+expect(data!.updateTask).toBe(null);
+expect(errors).toHaveLength(1);
+expect(errors![0].path).toEqual(['updateTask']);
+expect(errors![0].message).toEqual(
+  `Access denied: You cannot perform the 'update' operation on the item '{"id":"${task.id}"}'. It may not exist.`
+);
 ```
+
+{% if $nextRelease %}
+
+{% else /%}
 
 ### graphQLRequest API
 
@@ -242,6 +288,8 @@ describe('Example tests using test environment', () => {
   });
 });
 ```
+
+{% /if %}
 
 ## Related resources
 
