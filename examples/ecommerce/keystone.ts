@@ -51,7 +51,6 @@ export default withAuth(
       provider: 'sqlite',
       url: databaseURL,
       async onConnect(context) {
-        console.log('Connected to the database!');
         if (process.argv.includes('--seed-data')) {
           await insertSeedData(context);
         }
