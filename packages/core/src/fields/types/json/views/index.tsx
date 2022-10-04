@@ -94,7 +94,7 @@ export const controller = (config: Config): FieldController<string, string> => {
     },
     deserialize: data => {
       const value = data[config.path];
-      if (!value) return '';
+      if (value === null) return '';
       return JSON.stringify(value, null, 2);
     },
     serialize: value => {
