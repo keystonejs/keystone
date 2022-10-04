@@ -1,5 +1,17 @@
 # @keystone-6/fields-document
 
+## 4.1.2
+
+### Patch Changes
+
+- [`4fe98b20d`](https://github.com/keystonejs/keystone/commit/4fe98b20d7e3502d96e44c925e38f769722d86bc) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixes a broken code path for conditional component-blocks when fields are missing - this previously resulted in invalid data structures within the document editor
+
+## 4.1.1
+
+### Patch Changes
+
+- [#7927](https://github.com/keystonejs/keystone/pull/7927) [`2f17c3ebd`](https://github.com/keystonejs/keystone/commit/2f17c3ebdb4aaaad6f573f89f340422e8a008802) Thanks [@keystonejs-release-bot](https://github.com/keystonejs-release-bot)! - Fixes expand/collapse button in the editor
+
 ## 4.1.0
 
 ### Minor Changes

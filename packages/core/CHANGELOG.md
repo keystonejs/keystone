@@ -1,5 +1,19 @@
 # @keystone-6/core
 
+## 2.3.0
+
+### Minor Changes
+
+- [#7927](https://github.com/keystonejs/keystone/pull/7927) [`1edfbd516`](https://github.com/keystonejs/keystone/commit/1edfbd5162895af0ae66d32e36fa98a56604d80a) Thanks [@keystonejs-release-bot](https://github.com/keystonejs-release-bot)! - Fixes return types for `context.graphql` so that correct types are returned when using a `TypedDocumentNode`
+
+### Patch Changes
+
+- [#7927](https://github.com/keystonejs/keystone/pull/7927) [`59238990e`](https://github.com/keystonejs/keystone/commit/59238990e7e701a5d1a99d8ee829ee780d347d6f) Thanks [@keystonejs-release-bot](https://github.com/keystonejs-release-bot)! - Adds contextualised types when using the `graphql` export for GraphQL schema extensions
+
+* [#7927](https://github.com/keystonejs/keystone/pull/7927) [`9ad15484c`](https://github.com/keystonejs/keystone/commit/9ad15484c3e2f7534c8aab4714fa032dea9404fb) Thanks [@keystonejs-release-bot](https://github.com/keystonejs-release-bot)! - Fixes types for `resolvedData`, and the return types for `resolveInput` hooks.
+
+- [#7927](https://github.com/keystonejs/keystone/pull/7927) [`b7df30e92`](https://github.com/keystonejs/keystone/commit/b7df30e92c32064201c44e633630af438c9dca33) Thanks [@keystonejs-release-bot](https://github.com/keystonejs-release-bot)! - Fixes nullable and non-nullable calendarDay fields existing in the same schema creating a GraphQL schema with two different types with the same name
+
 ## 2.2.0
 
 ### Minor Changes
