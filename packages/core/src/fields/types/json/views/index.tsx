@@ -98,14 +98,12 @@ export const controller = (config: Config): FieldController<string, string> => {
       return JSON.stringify(value, null, 2);
     },
     serialize: value => {
-      let parsedValue;
-      if (!value) {
-        return { [config.path]: null };
-      }
+      if (!value) return { [config.path]: null };
       try {
-        parsedValue = JSON.parse(value);
-      } catch (e) {}
-      return { [config.path]: parsedValue };
+        return { [config.path]: JSON.parse(value) };
+      } catch (e) {
+        return { [config.path]: undefined };
+      }
     },
   };
 };
