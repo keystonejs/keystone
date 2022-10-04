@@ -107,7 +107,6 @@ export function createSystem(config: KeystoneConfig) {
           await config.db.onConnect?.(context);
         },
         async disconnect() {
-          await config?.session?.disconnect?.();
           await prismaClient.$disconnect();
         },
         createContext,
