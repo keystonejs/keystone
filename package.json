@@ -44,7 +44,7 @@
     "@changesets/changelog-github": "^0.4.1",
     "@changesets/cli": "^2.18.0",
     "@manypkg/cli": "^0.19.1",
-    "@preconstruct/cli": "2.2.1",
+    "@preconstruct/cli": "2.2.2",
     "@types/jest": "^29.0.0",
     "@types/node-fetch": "^2.5.12",
     "@typescript-eslint/eslint-plugin": "^5.7.0",

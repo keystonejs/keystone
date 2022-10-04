@@ -1,4 +1,4 @@
-import { gql, list } from '@keystone-6/core';
+import { list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
 import { staticAdminMetaQuery } from '@keystone-6/core/src/admin-ui/admin-meta-graphql';
@@ -133,6 +133,7 @@ test(
       },
     }),
   })(async ({ context }) => {
+    const gql = ([content]: TemplateStringsArray) => content;
     const res = await context.sudo().graphql.raw({
       query: gql`
         query {

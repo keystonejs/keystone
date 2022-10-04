@@ -1,20 +1,20 @@
-import { graphQLSchemaExtension } from '@keystone-6/core';
+import { graphql } from '@keystone-6/core';
 import addToCart from './addToCart';
 import checkout from './checkout';
 
-// make a fake graphql tagged template literal
-const graphql = String.raw;
-export const extendGraphqlSchema = graphQLSchemaExtension({
-  typeDefs: graphql`
-    type Mutation {
-      addToCart(productId: ID): CartItem
-      checkout(token: String!): Order
-    }
-  `,
-  resolvers: {
-    Mutation: {
-      addToCart,
-      checkout,
+export const extendGraphqlSchema = graphql.extend(base => {
+  return {
+    mutation: {
+      addToCart: graphql.field({
+        type: base.object('CartItem'),
+        args: { productId: graphql.arg({ type: graphql.ID }) },
+        resolve: addToCart,
+      }),
+      checkout: graphql.field({
+        type: base.object('Order'),
+        args: { token: graphql.arg({ type: graphql.nonNull(graphql.String) }) },
+        resolve: checkout,
+      }),
     },
-  },
+  };
 });

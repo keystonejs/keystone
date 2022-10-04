@@ -6,7 +6,7 @@ import {
   validateCommittedArtifacts,
   generateNodeModulesArtifacts,
   generateCommittedArtifacts,
-} from '@keystone-6/core/artifacts';
+} from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts';
 import { loadConfig } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/load-config';
 
 const mode = process.argv.includes('update-schemas') ? 'generate' : 'validate';
@@ -14,7 +14,7 @@ const mode = process.argv.includes('update-schemas') ? 'generate' : 'validate';
 async function generateArtifactsForProjectDir(projectDir: string) {
   try {
     const config = await loadConfig(projectDir);
-    const { graphQLSchema } = createSystem(config, false);
+    const { graphQLSchema } = createSystem(config);
     if (mode === 'validate') {
       await validateCommittedArtifacts(graphQLSchema, config, projectDir);
     } else {

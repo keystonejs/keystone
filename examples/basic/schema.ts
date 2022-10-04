@@ -1,4 +1,4 @@
-import { list, graphQLSchemaExtension, gql, graphql } from '@keystone-6/core';
+import { list, graphql } from '@keystone-6/core';
 import {
   text,
   relationship,
@@ -13,7 +13,7 @@ import {
 import { document } from '@keystone-6/fields-document';
 import { v4 } from 'uuid';
 import { allowAll } from '@keystone-6/core/access';
-import { Context, Lists } from '.keystone/types';
+import { Lists } from '.keystone/types';
 
 type AccessArgs = {
   session?: {
@@ -182,39 +182,39 @@ export const lists: Lists = {
   }),
 };
 
-// note this usage of the type is important because it tests that the generated types work
-export const extendGraphqlSchema = graphQLSchemaExtension<Context>({
-  typeDefs: gql`
-    type Query {
-      randomNumber: RandomNumber
-      uuid: ID!
-    }
-    type RandomNumber {
-      number: Int
-      generatedAt: Int
-    }
-    type Mutation {
-      createRandomPosts: [Post!]!
-    }
-  `,
-  resolvers: {
-    RandomNumber: {
-      number(rootVal: { number: number }) {
-        return rootVal.number * 1000;
-      },
-    },
-    Mutation: {
-      createRandomPosts(root, args, context) {
-        const data = Array.from({ length: 238 }).map((x, i) => ({ title: `Post ${i}` }));
-        return context.db.Post.createMany({ data });
-      },
-    },
-    Query: {
-      randomNumber: () => ({
-        number: randomNumber(),
-        generatedAt: Date.now(),
+export const extendGraphqlSchema = graphql.extend(base => {
+  const RandomNumber = graphql.object<{ number: number }>()({
+    name: 'RandomNumber',
+    fields: {
+      number: graphql.field({ type: graphql.Int }),
+      generatedAt: graphql.field({
+        type: graphql.Int,
+        resolve() {
+          return Date.now();
+        },
       }),
-      uuid: () => v4(),
     },
-  },
+  });
+
+  return {
+    mutation: {
+      createRandomPosts: graphql.field({
+        type: graphql.nonNull(graphql.list(graphql.nonNull(base.object('Post')))),
+        resolve: async (rootVal, args, context) => {
+          const data = Array.from({ length: 238 }).map((x, i) => ({ title: `Post ${i}` }));
+          return context.db.Post.createMany({ data });
+        },
+      }),
+    },
+    query: {
+      randomNumber: graphql.field({
+        type: RandomNumber,
+        resolve: () => ({ number: randomNumber() }),
+      }),
+      uuid: graphql.field({
+        type: graphql.nonNull(graphql.ID),
+        resolve: () => v4(),
+      }),
+    },
+  };
 });

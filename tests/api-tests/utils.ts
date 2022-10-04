@@ -1,5 +1,5 @@
 import { initConfig, createSystem } from '@keystone-6/core/system';
-import { getCommittedArtifacts } from '@keystone-6/core/artifacts';
+import { getCommittedArtifacts } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts';
 import { KeystoneConfig, KeystoneContext, DatabaseProvider } from '@keystone-6/core/types';
 import { setupTestRunner } from './test-runner';
 

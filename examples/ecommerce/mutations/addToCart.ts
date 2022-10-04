@@ -3,7 +3,7 @@ import { Context } from '.keystone/types';
 
 async function addToCart(
   root: any,
-  { productId }: { productId: string },
+  { productId }: { productId?: string | null },
   context: Context
 ): Promise<any> {
   console.log('ADDING TO CART!');

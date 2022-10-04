@@ -1,6 +1,6 @@
 import { list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
-import { getCommittedArtifacts } from '@keystone-6/core/artifacts';
+import { getCommittedArtifacts } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts';
 import { select, text } from '@keystone-6/core/fields';
 import { createSystem, initConfig } from '@keystone-6/core/system';
 import { setupTestEnv } from '@keystone-6/api-tests/test-runner';
