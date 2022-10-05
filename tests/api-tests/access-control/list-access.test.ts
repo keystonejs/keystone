@@ -78,12 +78,7 @@ describe(`List access`, () => {
             const query = `mutation { ${createMutationName}(data: { name: "bar" }) { id } }`;
             const { data, errors } = (await context.graphql.raw({ query })) as ExecutionResult<any>;
             if (!access.create) {
-              expectNoAccess(
-                data,
-                errors,
-                createMutationName,
-                `You cannot 'create' that ${listKey}`
-              );
+              expectNoAccess(data, errors, createMutationName, `You cannot create that ${listKey}`);
             } else {
               expect(errors).toBe(undefined);
               expect(data![createMutationName]).not.toEqual(null);
@@ -102,7 +97,7 @@ describe(`List access`, () => {
                 data,
                 errors,
                 createMutationName,
-                `You cannot 'create' that ${listKey}`
+                `You cannot create that ${listKey}`
               );
             } else {
               expect(errors).toBe(undefined);
@@ -265,7 +260,7 @@ describe(`List access`, () => {
               data,
               errors,
               updateMutationName,
-              `You cannot 'update' that ${listKey} - it may not exist`
+              `You cannot update that ${listKey} - it may not exist`
             );
           });
         });
@@ -285,7 +280,7 @@ describe(`List access`, () => {
                 data,
                 errors,
                 updateMutationName,
-                `You cannot 'update' that ${listKey} - it may not exist`
+                `You cannot update that ${listKey} - it may not exist`
               );
             } else {
               expect(errors).toBe(undefined);
@@ -305,7 +300,7 @@ describe(`List access`, () => {
                 data,
                 errors,
                 updateMutationName,
-                `You cannot 'update' that ${listKey} - it may not exist`
+                `You cannot update that ${listKey} - it may not exist`
               );
             } else {
               expect(errors).toBe(undefined);
@@ -334,7 +329,7 @@ describe(`List access`, () => {
               data,
               errors,
               updateMutationName,
-              `You cannot 'update' that ${listKey} - it may not exist`
+              `You cannot update that ${listKey} - it may not exist`
             );
             await context.sudo().query[listKey].deleteOne({ where: { id: item1.id } });
 
@@ -345,7 +340,7 @@ describe(`List access`, () => {
                 result.data,
                 result.errors,
                 updateMutationName,
-                `You cannot 'update' that ${listKey} - it may not exist`
+                `You cannot update that ${listKey} - it may not exist`
               );
             } else {
               // Filtered in
@@ -369,7 +364,7 @@ describe(`List access`, () => {
               data,
               errors,
               updateMutationName,
-              `You cannot 'update' that ${listKey} - it may not exist`
+              `You cannot update that ${listKey} - it may not exist`
             );
             await context.sudo().query[listKey].deleteOne({ where: { id: item1.id } });
 
@@ -380,7 +375,7 @@ describe(`List access`, () => {
                 result.data,
                 result.errors,
                 updateMutationName,
-                `You cannot 'update' that ${listKey} - it may not exist`
+                `You cannot update that ${listKey} - it may not exist`
               );
             } else {
               // Filtered in
@@ -407,7 +402,7 @@ describe(`List access`, () => {
               data,
               errors,
               deleteMutationName,
-              `You cannot 'delete' that ${listKey} - it may not exist`
+              `You cannot delete that ${listKey} - it may not exist`
             );
           });
 
@@ -420,22 +415,22 @@ describe(`List access`, () => {
               expectAccessDenied(errors, [
                 {
                   path: [multiDeleteMutationName, 0],
-                  msg: `You cannot 'delete' that ${listKey} - it may not exist`,
+                  msg: `You cannot delete that ${listKey} - it may not exist`,
                 },
                 {
                   path: [multiDeleteMutationName, 1],
-                  msg: `You cannot 'delete' that ${listKey} - it may not exist`,
+                  msg: `You cannot delete that ${listKey} - it may not exist`,
                 },
               ]);
             } else {
               expectAccessDenied(errors, [
                 {
                   path: [multiDeleteMutationName, 0],
-                  msg: `You cannot 'delete' that ${listKey} - it may not exist`,
+                  msg: `You cannot delete that ${listKey} - it may not exist`,
                 },
                 {
                   path: [multiDeleteMutationName, 1],
-                  msg: `You cannot 'delete' that ${listKey} - it may not exist`,
+                  msg: `You cannot delete that ${listKey} - it may not exist`,
                 },
               ]);
             }
@@ -461,7 +456,7 @@ describe(`List access`, () => {
                 data,
                 errors,
                 deleteMutationName,
-                `You cannot 'delete' that ${listKey} - it may not exist`
+                `You cannot delete that ${listKey} - it may not exist`
               );
             } else {
               expect(errors).toBe(undefined);
@@ -485,7 +480,7 @@ describe(`List access`, () => {
                 data,
                 errors,
                 multiDeleteMutationName,
-                `You cannot 'delete' that ${listKey} - it may not exist`
+                `You cannot delete that ${listKey} - it may not exist`
               );
             } else {
               expect(errors).toBe(undefined);
@@ -516,7 +511,7 @@ describe(`List access`, () => {
               data,
               errors,
               deleteMutationName,
-              `You cannot 'delete' that ${listKey} - it may not exist`
+              `You cannot delete that ${listKey} - it may not exist`
             );
 
             if (!access.delete) {
@@ -530,7 +525,7 @@ describe(`List access`, () => {
                 result.data,
                 result.errors,
                 deleteMutationName,
-                `You cannot 'delete' that ${listKey} - it may not exist`
+                `You cannot delete that ${listKey} - it may not exist`
               );
             } else {
               // Filtered in
@@ -557,7 +552,7 @@ describe(`List access`, () => {
               data,
               errors,
               multiDeleteMutationName,
-              `You cannot 'delete' that ${listKey} - it may not exist`
+              `You cannot delete that ${listKey} - it may not exist`
             );
             if (!access.delete) {
               await context.sudo().query[listKey].deleteOne({ where: { id: item1.id } });
@@ -570,7 +565,7 @@ describe(`List access`, () => {
                 result.data,
                 result.errors,
                 multiDeleteMutationName,
-                `You cannot 'delete' that ${listKey} - it may not exist`
+                `You cannot delete that ${listKey} - it may not exist`
               );
             } else {
               // Filtered in

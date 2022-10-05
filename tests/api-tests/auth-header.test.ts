@@ -92,7 +92,7 @@ describe('Auth testing', () => {
       expectAccessDenied(result.errors, [
         {
           path: ['updateUser'],
-          msg: "You cannot 'update' that User - it may not exist",
+          msg: 'You cannot update that User - it may not exist',
         },
       ]);
     })

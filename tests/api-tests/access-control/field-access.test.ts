@@ -96,7 +96,7 @@ describe(`Field access`, () => {
           expectAccessDenied(errors, [
             {
               path: [createMutationName],
-              msg: `You cannot 'create' that ${listKey} - you cannot 'create' the fields ["${fieldName}"]`,
+              msg: `You cannot create that ${listKey} - you cannot create the fields ["${fieldName}"]`,
             },
           ]);
         } else {
@@ -135,7 +135,7 @@ describe(`Field access`, () => {
           expectAccessDenied(errors, [
             {
               path: [updateMutationName],
-              msg: `You cannot 'update' that ${listKey} - you cannot 'update' the fields ["${fieldName}"]`,
+              msg: `You cannot update that ${listKey} - you cannot update the fields ["${fieldName}"]`,
             },
           ]);
         } else {

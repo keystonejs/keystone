@@ -167,7 +167,7 @@ describe('non-matching filter', () => {
       });
 
       expect(data).toEqual({ createEvent: null });
-      const message = `Access denied: You cannot 'connect' that Group - it may not exist`;
+      const message = `Access denied: You cannot connect that Group - it may not exist`;
       expectSingleRelationshipError(errors, 'createEvent', 'Event.group', message);
     })
   );
@@ -197,7 +197,7 @@ describe('non-matching filter', () => {
               }`,
       });
       expect(data).toEqual({ updateEvent: null });
-      const message = `Access denied: You cannot 'connect' that Group - it may not exist`;
+      const message = `Access denied: You cannot connect that Group - it may not exist`;
       expectSingleRelationshipError(errors, 'updateEvent', 'Event.group', message);
     })
   );
@@ -335,7 +335,7 @@ describe('with access control', () => {
                     }`,
             });
             expect(data).toEqual({ [`updateEventTo${group.name}`]: null });
-            const message = `Access denied: You cannot 'connect' that ${group.name} - it may not exist`;
+            const message = `Access denied: You cannot connect that ${group.name} - it may not exist`;
             expectSingleRelationshipError(
               errors,
               `updateEventTo${group.name}`,
@@ -370,7 +370,7 @@ describe('with access control', () => {
             });
 
             expect(data).toEqual({ [`createEventTo${group.name}`]: null });
-            const message = `Access denied: You cannot 'connect' that ${group.name} - it may not exist`;
+            const message = `Access denied: You cannot connect that ${group.name} - it may not exist`;
             expectSingleRelationshipError(
               errors,
               `createEventTo${group.name}`,

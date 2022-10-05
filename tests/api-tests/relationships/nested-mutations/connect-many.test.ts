@@ -262,7 +262,7 @@ describe('non-matching filter', () => {
               }`,
       });
       expect(data).toEqual({ createUser: null });
-      const message = `Access denied: You cannot 'connect' that Note - it may not exist`;
+      const message = `Access denied: You cannot connect that Note - it may not exist`;
       expectSingleRelationshipError(errors, 'createUser', 'User.notes', message);
     })
   );
@@ -293,7 +293,7 @@ describe('non-matching filter', () => {
       });
 
       expect(data).toEqual({ updateUser: null });
-      const message = `Access denied: You cannot 'connect' that Note - it may not exist`;
+      const message = `Access denied: You cannot connect that Note - it may not exist`;
       expectSingleRelationshipError(errors, 'updateUser', 'User.notes', message);
     })
   );
@@ -350,7 +350,7 @@ describe('with access control', () => {
         });
 
         expect(data).toEqual({ createUserToNotesNoRead: null });
-        const message = `Access denied: You cannot 'connect' that NoteNoRead - it may not exist`;
+        const message = `Access denied: You cannot connect that NoteNoRead - it may not exist`;
         expectSingleRelationshipError(
           errors,
           'createUserToNotesNoRead',
@@ -391,7 +391,7 @@ describe('with access control', () => {
                 }`,
         });
         expect(data).toEqual({ updateUserToNotesNoRead: null });
-        const message = `Access denied: You cannot 'connect' that NoteNoRead - it may not exist`;
+        const message = `Access denied: You cannot connect that NoteNoRead - it may not exist`;
         expectSingleRelationshipError(
           errors,
           'updateUserToNotesNoRead',

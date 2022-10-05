@@ -45,7 +45,7 @@ describe('Access control - Filter', () => {
       expectAccessDenied(errors, [
         {
           path: ['updateUser'],
-          msg: `You cannot 'update' that User - it may not exist`,
+          msg: `You cannot update that User - it may not exist`,
         },
       ]);
 
@@ -74,7 +74,7 @@ describe('Access control - Filter', () => {
       expectAccessDenied(errors, [
         {
           path: ['deleteUser'],
-          msg: `You cannot 'delete' that User - it may not exist`,
+          msg: `You cannot delete that User - it may not exist`,
         },
       ]);
 
@@ -133,11 +133,11 @@ describe('Access control - Filter', () => {
       expectAccessDenied(errors, [
         {
           path: ['updateUsers', 1],
-          msg: `You cannot 'update' that User - it may not exist`,
+          msg: `You cannot update that User - it may not exist`,
         },
         {
           path: ['updateUsers', 3],
-          msg: `You cannot 'update' that User - it may not exist`,
+          msg: `You cannot update that User - it may not exist`,
         },
       ]);
 
@@ -182,11 +182,11 @@ describe('Access control - Filter', () => {
       expectAccessDenied(errors, [
         {
           path: ['deleteUsers', 1],
-          msg: `You cannot 'delete' that User - it may not exist`,
+          msg: `You cannot delete that User - it may not exist`,
         },
         {
           path: ['deleteUsers', 3],
-          msg: `You cannot 'delete' that User - it may not exist`,
+          msg: `You cannot delete that User - it may not exist`,
         },
       ]);
 
