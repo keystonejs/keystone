@@ -12,6 +12,11 @@ const runner = setupTestRunner({
       User: list({
         access: {
           operation: allowAll,
+          filter: () => {
+            return {
+              name: { not: { equals: 'hidden' }  }
+            }
+          },
           item: {
             create: ({ inputData }) => {
               return inputData.name !== 'bad';
@@ -127,6 +132,31 @@ describe('Access control - Item', () => {
       // User should have its original name
       const _users = await context.query.User.findMany({ query: 'id name' });
       expect(_users.map(({ name }) => name)).toEqual(['better']);
+    })
+  );
+
+  test(
+    'updateOne - Missing item',
+    runner(async ({ context }) => {
+      const user = await context.query.User.createOne({ data: { name: 'hidden' } });
+      const { data, errors } = await context.graphql.raw({
+        query: `mutation ($id: ID! $data: UserUpdateInput!) { updateUser(where: { id: $id }, data: $data) { id } }`,
+        variables: { id: user.id, data: { name: 'something else' } },
+      });
+
+      // Returns null and throws an error
+      expect(data).toEqual({ updateUser: null });
+      expectAccessDenied(errors, [
+        {
+          path: ['updateUser'],
+          msg: `You cannot 'update' that User - it may not exist`,
+        },
+      ]);
+
+      // should be unchanged
+      const userAgain = await context.sudo().db.User.findOne({ where: { id: user.id } });
+      expect(userAgain).not.toEqual(null);
+      expect(userAgain!.name).toEqual('hidden');
     })
   );
 

@@ -11,16 +11,6 @@ import {
   UniquePrismaFilter,
 } from '../where-inputs';
 
-function cannotWithFilter(
-  operation: string,
-  list: InitialisedList,
-  uniqueWhere: UniquePrismaFilter
-) {
-  return `You cannot '${operation}' a ${list.listKey} with the filter ${JSON.stringify(
-    uniqueWhere
-  )} - it may not exist`;
-}
-
 function cannotForItemFields(operation: string, list: InitialisedList, fieldsDenied: string[]) {
   return `You cannot '${operation}' that ${
     list.listKey
@@ -43,7 +33,7 @@ async function getFilteredItem(
 ) {
   // early exit if they want to exclude everything
   if (accessFilters === false) {
-    throw accessDeniedError(cannotWithFilter(operation, list, uniqueWhere));
+    throw accessDeniedError(cannotForItem(operation, list));
   }
 
   // merge the filter access control and try to get the item
@@ -55,7 +45,7 @@ async function getFilteredItem(
   const item = await runWithPrisma(context, list, model => model.findFirst({ where }));
   if (item !== null) return item;
 
-  throw accessDeniedError(cannotWithFilter(operation, list, uniqueWhere));
+  throw accessDeniedError(cannotForItem(operation, list));
 }
 
 export async function checkUniqueItemExists(
@@ -73,7 +63,7 @@ export async function checkUniqueItemExists(
     if (item !== null) return uniqueWhere;
   } catch (err) {}
 
-  throw accessDeniedError(cannotWithFilter(operation, foreignList, uniqueWhere));
+  throw accessDeniedError(cannotForItem(operation, foreignList));
 }
 
 async function enforceListLevelAccessControl({
