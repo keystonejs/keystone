@@ -20,6 +20,19 @@ import { accessReturnError, extensionError } from './graphql-errors';
 import { InitialisedList } from './types-for-lists';
 import { InputFilter } from './where-inputs';
 
+export function cannotForItem(operation: string, list: InitialisedList) {
+  return (
+    `You cannot '${operation}' that ${list.listKey}` +
+    (operation === 'create' ? '' : ' - it may not exist')
+  );
+}
+
+export function cannotForItemFields(operation: string, list: InitialisedList, fieldsDenied: string[]) {
+  return `You cannot '${operation}' that ${
+    list.listKey
+  } - you cannot '${operation}' the fields ${JSON.stringify(fieldsDenied)}`;
+}
+
 export async function getOperationAccess(
   list: InitialisedList,
   context: KeystoneContext,

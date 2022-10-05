@@ -3,6 +3,7 @@ import { accessDeniedError, accessReturnError, extensionError } from '../graphql
 import { mapUniqueWhereToWhere } from '../queries/resolvers';
 import { InitialisedList } from '../types-for-lists';
 import { runWithPrisma } from '../utils';
+import { cannotForItem, cannotForItemFields } from '../access-control';
 import {
   InputFilter,
   resolveUniqueWhereInput,
@@ -10,19 +11,6 @@ import {
   UniqueInputFilter,
   UniquePrismaFilter,
 } from '../where-inputs';
-
-function cannotForItemFields(operation: string, list: InitialisedList, fieldsDenied: string[]) {
-  return `You cannot '${operation}' that ${
-    list.listKey
-  } - you cannot '${operation}' the fields ${JSON.stringify(fieldsDenied)}`;
-}
-
-function cannotForItem(operation: string, list: InitialisedList) {
-  return (
-    `You cannot '${operation}' that ${list.listKey}` +
-    (operation === 'create' ? '' : ' - it may not exist')
-  );
-}
 
 async function getFilteredItem(
   list: InitialisedList,
@@ -213,7 +201,7 @@ export async function getAccessControlledItemForUpdate(
   accessFilters: boolean | InputFilter,
   inputData: Record<string, any>
 ) {
-  // apply filter access control - throws accessDeniedError on item not found
+  // apply access.filter.* controls
   const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters, 'update');
 
   await enforceListLevelAccessControl({
@@ -263,7 +251,7 @@ export async function getAccessControlledItemForDelete(
   uniqueWhere: UniquePrismaFilter,
   accessFilters: boolean | InputFilter
 ) {
-  // apply filter access control - throws accessDeniedError on item not found
+  // apply access.filter.* controls
   const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters, 'delete');
 
   await enforceListLevelAccessControl({
