@@ -14,8 +14,8 @@ const runner = setupTestRunner({
           operation: allowAll,
           filter: () => {
             return {
-              name: { not: { equals: 'hidden' }  }
-            }
+              name: { not: { equals: 'hidden' } },
+            };
           },
           item: {
             create: ({ inputData }) => {

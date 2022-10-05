@@ -86,7 +86,7 @@ describe('Access control', () => {
       expectAccessDenied(errors, [
         {
           path: ['createUser'],
-          msg: `You cannot perform the 'create' operation on the item '{"other":"b","name":"bad"}'. You cannot create the fields ["name"].`,
+          msg: `You cannot 'create' that User - you cannot 'create' the fields ["name"]`,
         },
       ]);
 
@@ -146,7 +146,7 @@ describe('Access control', () => {
       expectAccessDenied(errors, [
         {
           path: ['updateUser'],
-          msg: `You cannot perform the 'update' operation on the item '{"id":"${user.id}"}'. You cannot update the fields ["name"].`,
+          msg: `You cannot 'update' that User - you cannot 'update' the fields ["name"]`,
         },
       ]);
 
@@ -221,11 +221,11 @@ describe('Access control', () => {
       expectAccessDenied(errors, [
         {
           path: ['createUsers', 1],
-          msg: `You cannot perform the 'create' operation on the item '{"other":"a","name":"bad"}'. You cannot create the fields [\"name\"].`,
+          msg: `You cannot 'create' that User - you cannot 'create' the fields ["name"]`,
         },
         {
           path: ['createUsers', 3],
-          msg: `You cannot perform the 'create' operation on the item '{"other":"a","name":"bad"}'. You cannot create the fields [\"name\"].`,
+          msg: `You cannot 'create' that User - you cannot 'create' the fields ["name"]`,
         },
       ]);
 
@@ -283,11 +283,11 @@ describe('Access control', () => {
       expectAccessDenied(errors, [
         {
           path: ['updateUsers', 1],
-          msg: `You cannot perform the 'update' operation on the item '{"id":"${users[1].id}"}'. You cannot update the fields [\"name\"].`,
+          msg: `You cannot 'update' that User - you cannot 'update' the fields ["name"]`,
         },
         {
           path: ['updateUsers', 3],
-          msg: `You cannot perform the 'update' operation on the item '{"id":"${users[3].id}"}'. You cannot update the fields [\"name\"].`,
+          msg: `You cannot 'update' that User - you cannot 'update' the fields ["name"]`,
         },
       ]);
 

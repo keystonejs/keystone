@@ -191,7 +191,7 @@ describe('with access control', () => {
         });
 
         expect(data).toEqual({ createUserToNotesNoRead: null });
-        const message = `Access denied: You cannot perform the 'connect' operation on the item '{\"id\":\"${createNoteNoRead.id}\"}'. It may not exist.`;
+        const message = `Access denied: You cannot 'connect' that NoteNoRead - it may not exist`;
         expectSingleRelationshipError(
           errors,
           'createUserToNotesNoRead',
@@ -237,7 +237,7 @@ describe('with access control', () => {
         });
 
         expect(data).toEqual({ updateUserToNotesNoRead: null });
-        const message = `Access denied: You cannot perform the 'connect' operation on the item '{\"id\":\"${createNote.id}\"}'. It may not exist.`;
+        const message = `Access denied: You cannot 'connect' that NoteNoRead - it may not exist`;
         expectSingleRelationshipError(
           errors,
           'updateUserToNotesNoRead',

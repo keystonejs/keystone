@@ -275,7 +275,7 @@ describe('with access control', () => {
 
               // Assert it throws an access denied error
               expect(data).toEqual({ [`createEventTo${group.name}`]: null });
-              const message = `Access denied: You cannot perform the 'create' operation on the list 'GroupNoCreate'.`;
+              const message = `Access denied: You cannot 'create' that GroupNoCreate`;
               expectSingleRelationshipError(
                 errors,
                 `createEventTo${group.name}`,
@@ -336,7 +336,7 @@ describe('with access control', () => {
             } else {
               const { data, errors } = await context.graphql.raw({ query });
               expect(data).toEqual({ [`updateEventTo${group.name}`]: null });
-              const message = `Access denied: You cannot perform the 'create' operation on the list 'GroupNoCreate'.`;
+              const message = `Access denied: You cannot 'create' that GroupNoCreate`;
               expectSingleRelationshipError(
                 errors,
                 `updateEventTo${group.name}`,
