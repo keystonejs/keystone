@@ -81,13 +81,11 @@ type ListAccessControlObject<ListTypeInfo extends BaseListTypeInfo> = {
   // - a filter. In this case, the operation can proceed, but the filter will be additionally applied when updating/reading/deleting
   //   which may make it appear that some of the items don't exist.
   // - boolean true/false. If false, treated as a filter that never matches.
-  filter?:
-    | ListFilterAccessControl<FilterOperation, ListTypeInfo>
-    | {
-        query?: ListFilterAccessControl<'query', ListTypeInfo>;
-        update?: ListFilterAccessControl<'update', ListTypeInfo>;
-        delete?: ListFilterAccessControl<'delete', ListTypeInfo>;
-      };
+  filter?: {
+    query?: ListFilterAccessControl<'query', ListTypeInfo>;
+    update?: ListFilterAccessControl<'update', ListTypeInfo>;
+    delete?: ListFilterAccessControl<'delete', ListTypeInfo>;
+  };
 
   // These rules are applied to each item being operated on individually. They return `true` or `false`,
   // and if false, an access denied error will be returned for the individual operation.

@@ -119,8 +119,6 @@ export type ResolvedFieldAccessControl = {
 export function parseListAccessControl(
   access: ListAccessControl<BaseListTypeInfo>
 ): ResolvedListAccessControl {
-  let item, filter, operation;
-
   if (typeof access === 'function') {
     return {
       operation: {
@@ -142,49 +140,36 @@ export function parseListAccessControl(
     };
   }
 
-  if (typeof access?.operation === 'function') {
+  let { operation, filter, item } = access;
+  if (typeof operation === 'function') {
     operation = {
-      create: access.operation,
-      query: access.operation,
-      update: access.operation,
-      delete: access.operation,
-    };
-  } else {
-    // Note I'm intentionally not using spread here because typescript can't express
-    // an optional property which cannot be undefined so spreading would mean there
-    // is a possibility that someone could pass { access: undefined } or
-    // { access: { read: undefined } } and bad things would happen.
-    operation = {
-      create: access?.operation?.create ?? (() => true),
-      query: access?.operation?.query ?? (() => true),
-      update: access?.operation?.update ?? (() => true),
-      delete: access?.operation?.delete ?? (() => true),
+      create: operation,
+      query: operation,
+      update: operation,
+      delete: operation,
     };
   }
 
-  if (typeof access?.filter === 'function') {
-    filter = { query: access.filter, update: access.filter, delete: access.filter };
-  } else {
-    filter = {
+  return {
+    operation: {
+      create: operation.create ?? (() => true),
+      query: operation.query ?? (() => true),
+      update: operation.update ?? (() => true),
+      delete: operation.delete ?? (() => true),
+    },
+    filter: {
       // create: not supported
-      query: access?.filter?.query ?? (() => true),
-      update: access?.filter?.update ?? (() => true),
-      delete: access?.filter?.delete ?? (() => true),
-    };
-  }
-
-  if (typeof access?.item === 'function') {
-    item = { create: access.item, update: access.item, delete: access.item };
-  } else {
-    item = {
-      create: access?.item?.create ?? (() => true),
-      // read: not supported
-      update: access?.item?.update ?? (() => true),
-      delete: access?.item?.delete ?? (() => true),
-    };
-  }
-
-  return { operation, filter, item };
+      query: filter?.query ?? (() => true),
+      update: filter?.update ?? (() => true),
+      delete: filter?.delete ?? (() => true),
+    },
+    item: {
+      create: item?.create ?? (() => true),
+      // query: not supported
+      update: item?.update ?? (() => true),
+      delete: item?.delete ?? (() => true),
+    },
+  };
 }
 
 export type ResolvedListAccessControl = {
