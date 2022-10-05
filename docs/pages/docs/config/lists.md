@@ -19,6 +19,7 @@ export default config({
       graphql: { /* ... */ },
       db: { /* ... */ },
       description: '...',
+      isSingleton: false,
       defaultIsFilterable: false,
       defaultIsOrderable: false,
     }),
@@ -32,6 +33,7 @@ This document will explain the configuration options which can be used with the 
 
 Options:
 
+- `isSingleton`: Setting this to `true` will make the list a single object list. Read more [here](#singleton).
 - `defaultIsFilterable`: This value sets the default value to use for `isFilterable` for fields on this list.
 - `defaultIsOrderable`: This value sets the default value to use for `isOrderable` for fields on this list.
 
@@ -254,6 +256,32 @@ export default config({
 
 The `description` option defines a string that will be used as a description in the Admin UI and GraphQL API docs.
 This option can be individually overridden by the `graphql.description` or `ui.description` options.
+
+## singleton
+
+`isSingleton` option converts a list into a single object list. It gives you a convenient syntax to work with entities that will always only have one item. Eg. website configuration, system settings, etc.
+
+In singleton lists, Keystone makes sure when an item for the list is created, it is created with the `ID: '1'`. And when an item is queried from a list, a default where clause `where: { id: '1' }` is inserted into the query. This gives a convenient syntax sugar to work with.
+
+Eg. In GraphQL, to query a singleton list named `config`, you would just write
+
+```
+query {
+  config {
+    seoTitle
+    seoDescription
+  }
+}
+```
+
+In the Admin UI, singleton lists don't have a list view and instead take you directly to the item view page.
+
+Please remember that `isSingleton` is only a syntax sugar to conveniently work with single object entities. You will have to keep these things in mind when working with a singleton list —
+
+- Using `context` API, if you try to create a list item with `context.query` or `context.db` while an entry already exists, you will get a _unique constraint error_ because Keystone defaults the id to `1`.
+- You cannot have a relationship **to** a singleton. However you can have relationships **from** a singleton.
+- In the Admin UI, singleton lists don't have a _count_ because the list is limited to only one entry.
+- The plural query will still be available in the GraphQL API.
 
 ## Related resources
 
