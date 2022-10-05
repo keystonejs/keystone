@@ -8,14 +8,19 @@ import { apiTestConfig, expectAccessDenied, expectAccessReturnError } from '../u
 const runner = setupTestRunner({
   config: apiTestConfig({
     lists: {
-      // Item access control
       User: list({
         access: {
           operation: allowAll,
-          filter: () => {
-            return {
+          filter: {
+            query: () => ({
               name: { not: { equals: 'hidden' } },
-            };
+            }),
+            update: () => ({
+              name: { not: { equals: 'hidden' } },
+            }),
+            delete: () => ({
+              name: { not: { equals: 'hidden' } },
+            }),
           },
           item: {
             create: ({ inputData }) => {
@@ -34,18 +39,17 @@ const runner = setupTestRunner({
       }),
       BadAccess: list({
         access: {
+          operation: allowAll,
+          // intentionally returns filters for testing purposes
           item: {
-            // @ts-ignore Intentionally return a filter for testing purposes
             create: () => {
-              return { name: { not: { equals: 'bad' } } };
+              return { name: { not: { equals: 'bad' } } } as any;
             },
-            // @ts-ignore Intentionally return a filter for testing purposes
             update: () => {
-              return { name: { not: { equals: 'bad' } } };
+              return { name: { not: { equals: 'bad' } } } as any;
             },
-            // @ts-ignore Intentionally return a filter for testing purposes
             delete: async () => {
-              return { name: { not: { startsWtih: 'no delete' } } };
+              return { name: { not: { startsWtih: 'no delete' } } } as any;
             },
           },
         },
