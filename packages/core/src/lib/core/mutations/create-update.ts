@@ -181,7 +181,7 @@ export async function updateMany(
     // throw for each attempt
     if (!operationAccess) throw accessDeniedError(cannotForItem('update', list));
 
-    return updateSingle(updateInput, list, context, accessFilters)
+    return updateSingle(updateInput, list, context, accessFilters);
   });
 }
 

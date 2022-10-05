@@ -27,7 +27,11 @@ export function cannotForItem(operation: string, list: InitialisedList) {
   );
 }
 
-export function cannotForItemFields(operation: string, list: InitialisedList, fieldsDenied: string[]) {
+export function cannotForItemFields(
+  operation: string,
+  list: InitialisedList,
+  fieldsDenied: string[]
+) {
   return `You cannot '${operation}' that ${
     list.listKey
   } - you cannot '${operation}' the fields ${JSON.stringify(fieldsDenied)}`;
@@ -69,25 +73,24 @@ export async function getAccessFilters(
   context: KeystoneContext,
   operation: 'update' | 'query' | 'delete'
 ): Promise<boolean | InputFilter> {
-  const args = { operation, session: context.session, listKey: list.listKey, context };
-  // Check the mutation access
   const access = list.access.filter[operation];
   try {
-    // @ts-ignore
-    let filters = typeof access === 'function' ? await access(args) : access;
-    if (typeof filters === 'boolean') {
-      return filters;
-    }
+    const filters = await access({
+      operation,
+      session: context.session,
+      list: list.listKey,
+      context,
+    } as any); // TODO: FIXME
+    if (typeof filters === 'boolean') return filters;
+
     const schema = context.sudo().graphql.schema;
     const whereInput = assertInputObjectType(schema.getType(getGqlNames(list).whereInputName));
     const result = coerceAndValidateForGraphQLInput(schema, whereInput, filters);
-    if (result.kind === 'valid') {
-      return result.value;
-    }
+    if (result.kind === 'valid') return result.value;
     throw result.error;
   } catch (error: any) {
     throw extensionError('Access control', [
-      { error, tag: `${args.listKey}.access.filter.${args.operation}` },
+      { error, tag: `${list.listKey}.access.filter.${operation}` },
     ]);
   }
 }

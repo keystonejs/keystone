@@ -67,11 +67,12 @@ async function enforceListLevelAccessControl({
   item: BaseItem | undefined;
   inputData: Record<string, unknown>;
 }) {
-  let listResult: unknown; // should be boolean, but dont trust, it might accidentally be a filter
+  let accepted: unknown; // should be boolean, but dont trust, it might accidentally be a filter
   try {
+    // apply access.item.* controls
     if (operation === 'create') {
-      const listAccessControl = list.access.item[operation];
-      listResult = await listAccessControl({
+      const itemAccessControl = list.access.item[operation];
+      accepted = await itemAccessControl({
         operation,
         session: context.session,
         listKey: list.listKey,
@@ -79,8 +80,8 @@ async function enforceListLevelAccessControl({
         inputData,
       });
     } else if (operation === 'update' && item !== undefined) {
-      const listAccessControl = list.access.item[operation];
-      listResult = await listAccessControl({
+      const itemAccessControl = list.access.item[operation];
+      accepted = await itemAccessControl({
         operation,
         session: context.session,
         listKey: list.listKey,
@@ -89,8 +90,8 @@ async function enforceListLevelAccessControl({
         inputData,
       });
     } else if (operation === 'delete' && item !== undefined) {
-      const listAccessControl = list.access.item[operation];
-      listResult = await listAccessControl({
+      const itemAccessControl = list.access.item[operation];
+      accepted = await itemAccessControl({
         operation,
         session: context.session,
         listKey: list.listKey,
@@ -105,13 +106,13 @@ async function enforceListLevelAccessControl({
   }
 
   // short circuit the safe path
-  if (listResult === true) return;
+  if (accepted === true) return;
 
-  if (typeof listResult !== 'boolean') {
+  if (typeof accepted !== 'boolean') {
     throw accessReturnError([
       {
         tag: `${list.listKey}.access.item.${operation}`,
-        returned: typeof listResult,
+        returned: typeof accepted,
       },
     ]);
   }
@@ -138,11 +139,12 @@ async function enforceFieldLevelAccessControl({
 
   await Promise.allSettled(
     Object.keys(inputData).map(async fieldKey => {
-      let fieldResult: unknown; // should be boolean, but dont trust
+      let accepted: unknown; // should be boolean, but dont trust
       try {
+        // apply fields.[fieldKey].access.* controls
         if (operation === 'create') {
           const fieldAccessControl = list.fields[fieldKey].access[operation];
-          fieldResult = await fieldAccessControl({
+          accepted = await fieldAccessControl({
             operation,
             session: context.session,
             listKey: list.listKey,
@@ -152,7 +154,7 @@ async function enforceFieldLevelAccessControl({
           });
         } else if (operation === 'update' && item !== undefined) {
           const fieldAccessControl = list.fields[fieldKey].access[operation];
-          fieldResult = await fieldAccessControl({
+          accepted = await fieldAccessControl({
             operation,
             session: context.session,
             listKey: list.listKey,
@@ -168,14 +170,14 @@ async function enforceFieldLevelAccessControl({
       }
 
       // short circuit the safe path
-      if (fieldResult === true) return;
+      if (accepted === true) return;
       fieldsDenied.push(fieldKey);
 
       // wrong type?
-      if (typeof fieldResult !== 'boolean') {
+      if (typeof accepted !== 'boolean') {
         nonBooleans.push({
           tag: `${list.listKey}.${fieldKey}.access.${operation}`,
-          returned: typeof fieldResult,
+          returned: typeof accepted,
         });
       }
     })
@@ -192,6 +194,28 @@ async function enforceFieldLevelAccessControl({
   if (fieldsDenied.length) {
     throw accessDeniedError(cannotForItemFields(operation, list, fieldsDenied));
   }
+}
+
+export async function applyAccessControlForCreate(
+  list: InitialisedList,
+  context: KeystoneContext,
+  inputData: Record<string, unknown>
+) {
+  await enforceListLevelAccessControl({
+    context,
+    operation: 'create',
+    list,
+    inputData,
+    item: undefined,
+  });
+
+  await enforceFieldLevelAccessControl({
+    context,
+    operation: 'create',
+    list,
+    inputData,
+    item: undefined,
+  });
 }
 
 export async function getAccessControlledItemForUpdate(
@@ -221,28 +245,6 @@ export async function getAccessControlledItemForUpdate(
   });
 
   return item;
-}
-
-export async function applyAccessControlForCreate(
-  list: InitialisedList,
-  context: KeystoneContext,
-  inputData: Record<string, unknown>
-) {
-  await enforceListLevelAccessControl({
-    context,
-    operation: 'create',
-    list,
-    inputData,
-    item: undefined,
-  });
-
-  await enforceFieldLevelAccessControl({
-    context,
-    operation: 'create',
-    list,
-    inputData,
-    item: undefined,
-  });
 }
 
 export async function getAccessControlledItemForDelete(
