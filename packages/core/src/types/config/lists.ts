@@ -204,12 +204,11 @@ export type ListGraphQLConfig = {
    * The plural form of the list key to use in the generated GraphQL schema.
    * Note that there is no singular here because the singular used in the GraphQL schema is the list key.
    */
-  // was previously top-level listQueryName
   plural?: string;
-  // was previously top-level queryLimits
-  queryLimits?: {
-    take?: number; // maximum value for the take parameter when querying this list
-  };
+  /**
+   * The maximum value for the take parameter when querying this list
+   */
+  maximumTake?: number;
   cacheHint?: ((args: CacheHintArgs) => CacheHint) | CacheHint;
   // Setting any of these values will remove the corresponding operations from the GraphQL schema.
   // Queries:

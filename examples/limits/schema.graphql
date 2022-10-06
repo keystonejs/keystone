@@ -95,7 +95,7 @@ type Mutation {
 }
 
 type Query {
-  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0): [Post!]
+  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int! = 20, skip: Int! = 0): [Post!]
   post(where: PostWhereUniqueInput!): Post
   postsCount(where: PostWhereInput! = {}): Int
   keystone: KeystoneMeta!

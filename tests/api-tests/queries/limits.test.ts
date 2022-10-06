@@ -2,7 +2,7 @@ import { text, integer, relationship } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { allowAll } from '@keystone-6/core/access';
-import { apiTestConfig, expectGraphQLValidationError } from '../utils';
+import { apiTestConfig, expectGraphQLValidationError, expectLimitsExceededError } from '../utils';
 import { withServer } from '../with-server';
 import { depthLimit, definitionLimit, fieldLimit } from './validation';
 
@@ -16,6 +16,9 @@ const runner = withServer(
             title: text(),
             author: relationship({ ref: 'User.posts', many: true }),
           },
+          graphql: {
+            maximumTake: 3,
+          },
         }),
         User: list({
           access: allowAll,
@@ -23,11 +26,6 @@ const runner = withServer(
             name: text(),
             favNumber: integer(),
             posts: relationship({ ref: 'Post.author', many: true }),
-          },
-          graphql: {
-            queryLimits: {
-              take: 10,
-            },
           },
         }),
       },
@@ -39,6 +37,60 @@ const runner = withServer(
     }),
   })
 );
+
+describe('graphql.maximumTake', () => {
+  test(
+    'uses the default when querying',
+    runner(async ({ context, graphQLRequest }) => {
+      await context.db.Post.createMany({
+        data: [
+          {
+            title: 'Hello',
+          },
+          {
+            title: 'World',
+          },
+        ],
+      });
+
+      const { body } = await graphQLRequest({
+        query: `
+          query {
+            posts {
+              title
+            }
+          }
+        `,
+      });
+
+      expect(body.data.posts).toEqual([
+        {
+          title: 'Hello',
+        },
+        {
+          title: 'World',
+        },
+      ]);
+    })
+  );
+
+  test(
+    'enforces the default',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        query: `
+          query {
+            posts(take: 5) {
+              id
+            }
+          }
+        `,
+      });
+
+      expectLimitsExceededError(body.errors, [{ path: ['posts'] }]);
+    })
+  );
+});
 
 // FIXME: we need upstream support in the graphql package to make KS validation rules work for internal requests
 // (Low priority, but makes the API less surprising if rules work everywhere by default.)

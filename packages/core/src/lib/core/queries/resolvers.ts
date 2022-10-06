@@ -9,7 +9,7 @@ import {
   UniqueInputFilter,
   InputFilter,
 } from '../where-inputs';
-import { userInputError } from '../graphql-errors';
+import { limitsExceededError, userInputError } from '../graphql-errors';
 import { InitialisedList } from '../types-for-lists';
 import { getDBFieldKeyForFieldOnMultiField, runWithPrisma } from '../utils';
 import { checkFilterOrderAccess } from '../filter-order-access';
@@ -113,6 +113,11 @@ export async function findMany(
   info: GraphQLResolveInfo,
   extraFilter?: PrismaFilter
 ): Promise<BaseItem[]> {
+  const maximumTake = (list.types.findManyArgs.take?.defaultValue ?? Infinity) as number;
+  if ((take ?? Infinity) > maximumTake) {
+    throw limitsExceededError({ list: list.listKey, type: 'maximumTake', limit: maximumTake });
+  }
+
   const orderBy = await resolveOrderBy(rawOrderBy, list, context);
 
   // Check operation permission, throw access denied if not allowed

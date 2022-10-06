@@ -8,5 +8,8 @@ export const lists = {
     fields: {
       title: text({ validation: { isRequired: true } }),
     },
-  })
+    graphql: {
+      maximumTake: 20,
+    },
+  }),
 };

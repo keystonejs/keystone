@@ -133,6 +133,25 @@ export const expectInternalServerError = (
   );
 };
 
+export function expectLimitsExceededError(
+  errors: readonly any[] | undefined,
+  args: { path: string[] }[]
+) {
+  expect(
+    errors?.map(({ path, extensions, message }) => ({
+      path,
+      extensions,
+      message,
+    }))
+  ).toEqual(
+    args.map(({ path }) => ({
+      path,
+      extensions: { code: 'KS_LIMITS_EXCEEDED' },
+      message: 'Your request exceeded server limits',
+    }))
+  );
+}
+
 export const expectGraphQLValidationError = (
   errors: readonly any[] | undefined,
   args: { message: string }[]
