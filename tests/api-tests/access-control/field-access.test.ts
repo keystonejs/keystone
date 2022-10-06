@@ -86,7 +86,8 @@ describe(`Field access`, () => {
   describe('create', () => {
     fieldMatrix.forEach(access => {
       test(`field not allowed: ${JSON.stringify(access)}`, async () => {
-        const createMutationName = `create${nameFn[mode](listAccess)}`;
+        const listKey = nameFn[mode](listAccess);
+        const createMutationName = `create${listKey}`;
         const fieldName = getFieldName(access);
         const query = `mutation { ${createMutationName}(data: { ${fieldName}: "bar" }) { id ${fieldName} } }`;
         const { data, errors } = await context.graphql.raw({ query });
@@ -95,7 +96,7 @@ describe(`Field access`, () => {
           expectAccessDenied(errors, [
             {
               path: [createMutationName],
-              msg: `You cannot perform the 'create' operation on the item '{"${fieldName}":"bar"}'. You cannot create the fields ["${fieldName}"].`,
+              msg: `You cannot create that ${listKey} - you cannot create the fields ["${fieldName}"]`,
             },
           ]);
         } else {
@@ -123,9 +124,10 @@ describe(`Field access`, () => {
   describe('update', () => {
     fieldMatrix.forEach(access => {
       test(`field not allowed: ${JSON.stringify(access)}`, async () => {
+        const listKey = nameFn[mode](listAccess);
         const item = items[listKey][0];
         const fieldName = getFieldName(access);
-        const updateMutationName = `update${nameFn[mode](listAccess)}`;
+        const updateMutationName = `update${listKey}`;
         const query = `mutation { ${updateMutationName}(where: { id: "${item.id}" }, data: { ${fieldName}: "bar" }) { id ${fieldName} } }`;
         const { data, errors } = await context.graphql.raw({ query });
         if (!access.update) {
@@ -133,7 +135,7 @@ describe(`Field access`, () => {
           expectAccessDenied(errors, [
             {
               path: [updateMutationName],
-              msg: `You cannot perform the 'update' operation on the item '{"id":"${item.id}"}'. You cannot update the fields ["${fieldName}"].`,
+              msg: `You cannot update that ${listKey} - you cannot update the fields ["${fieldName}"]`,
             },
           ]);
         } else {

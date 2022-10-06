@@ -78,21 +78,7 @@ describe(`List access`, () => {
             const query = `mutation { ${createMutationName}(data: { name: "bar" }) { id } }`;
             const { data, errors } = (await context.graphql.raw({ query })) as ExecutionResult<any>;
             if (!access.create) {
-              if (mode === 'operation') {
-                expectNoAccess(
-                  data,
-                  errors,
-                  createMutationName,
-                  `You cannot perform the 'create' operation on the list '${nameFn[mode](access)}'.`
-                );
-              } else {
-                expectNoAccess(
-                  data,
-                  errors,
-                  createMutationName,
-                  `You cannot perform the 'create' operation on the item '{"name":"bar"}'.`
-                );
-              }
+              expectNoAccess(data, errors, createMutationName, `You cannot create that ${listKey}`);
             } else {
               expect(errors).toBe(undefined);
               expect(data![createMutationName]).not.toEqual(null);
@@ -107,21 +93,12 @@ describe(`List access`, () => {
             const query = `mutation { ${createMutationName}(data: [{ name: "bar" }]) { id } }`;
             const { data, errors } = (await context.graphql.raw({ query })) as ExecutionResult<any>;
             if (!access.create) {
-              if (mode === 'operation') {
-                expectNoAccessMany(
-                  data,
-                  errors,
-                  createMutationName,
-                  `You cannot perform the 'create' operation on the list '${nameFn[mode](access)}'.`
-                );
-              } else {
-                expectNoAccessMany(
-                  data,
-                  errors,
-                  createMutationName,
-                  `You cannot perform the 'create' operation on the item '{"name":"bar"}'.`
-                );
-              }
+              expectNoAccessMany(
+                data,
+                errors,
+                createMutationName,
+                `You cannot create that ${listKey}`
+              );
             } else {
               expect(errors).toBe(undefined);
               expect(data![createMutationName]).not.toEqual(null);
@@ -140,14 +117,16 @@ describe(`List access`, () => {
       describe(mode, () => {
         listAccessVariations.forEach(access => {
           test(`single not existing: ${JSON.stringify(access)}`, async () => {
-            const { itemQueryName } = context.gqlNames(nameFn[mode](access));
+            const listKey = nameFn[mode](access);
+            const { itemQueryName } = context.gqlNames(listKey);
             const query = `query { ${itemQueryName}(where: { id: "${FAKE_ID}" }) { id } }`;
             const { data, errors } = (await context.graphql.raw({ query })) as ExecutionResult<any>;
             expect(errors).toBe(undefined);
             expect(data![itemQueryName]).toBe(null);
           });
           test(`multiple not existing: ${JSON.stringify(access)}`, async () => {
-            const _items = await context.query[nameFn[mode](access)].findMany({
+            const listKey = nameFn[mode](access);
+            const _items = await context.query[listKey].findMany({
               where: { id: { in: [FAKE_ID, FAKE_ID_2] } },
             });
             expect(_items).toHaveLength(0);
@@ -160,7 +139,8 @@ describe(`List access`, () => {
       describe(mode, () => {
         listAccessVariations.forEach(access => {
           test(`'all' denied: ${JSON.stringify(access)}`, async () => {
-            const allQueryName = context.gqlNames(nameFn[mode](access)).listQueryName;
+            const listKey = nameFn[mode](access);
+            const allQueryName = context.gqlNames(listKey).listQueryName;
             const query = `query { ${allQueryName} { id } }`;
             const { data, errors } = (await context.graphql.raw({ query })) as ExecutionResult<any>;
             expect(errors).toBe(undefined);
@@ -172,9 +152,8 @@ describe(`List access`, () => {
           });
 
           test(`count denied: ${JSON.stringify(access)}`, async () => {
-            const countName = `${
-              nameFn[mode](access).slice(0, 1).toLowerCase() + nameFn[mode](access).slice(1)
-            }sCount`;
+            const listKey = nameFn[mode](access);
+            const countName = `${listKey.slice(0, 1).toLowerCase() + listKey.slice(1)}sCount`;
             const query = `query { ${countName} }`;
             const { data, errors } = (await context.graphql.raw({ query })) as ExecutionResult<any>;
             expect(errors).toBe(undefined);
@@ -186,8 +165,9 @@ describe(`List access`, () => {
           });
 
           test(`single denied: ${JSON.stringify(access)}`, async () => {
-            const item = await context.sudo().query[nameFn[mode](access)].createOne({ data: {} });
-            const singleQueryName = context.gqlNames(nameFn[mode](access)).itemQueryName;
+            const listKey = nameFn[mode](access);
+            const item = await context.sudo().query[listKey].createOne({ data: {} });
+            const singleQueryName = context.gqlNames(listKey).itemQueryName;
             const query = `query { ${singleQueryName}(where: { id: "${item.id}" }) { id } }`;
             const { data, errors } = (await context.graphql.raw({ query })) as ExecutionResult<any>;
             expect(errors).toBe(undefined);
@@ -196,7 +176,7 @@ describe(`List access`, () => {
             } else {
               expect(data![singleQueryName]).toEqual({ id: item.id });
             }
-            await context.sudo().query[nameFn[mode](access)].deleteOne({ where: { id: item.id } });
+            await context.sudo().query[listKey].deleteOne({ where: { id: item.id } });
           });
         });
       });
@@ -205,7 +185,8 @@ describe(`List access`, () => {
       describe(mode, () => {
         listAccessVariations.forEach(access => {
           test(`'all' denied: ${JSON.stringify(access)}`, async () => {
-            const allQueryName = context.gqlNames(nameFn[mode](access)).listQueryName;
+            const listKey = nameFn[mode](access);
+            const allQueryName = context.gqlNames(listKey).listQueryName;
             const query = `query { ${allQueryName} { id } }`;
             const { data, errors } = (await context.graphql.raw({ query })) as ExecutionResult<any>;
             expect(errors).toBe(undefined);
@@ -217,9 +198,8 @@ describe(`List access`, () => {
           });
 
           test(`count denied: ${JSON.stringify(access)}`, async () => {
-            const countName = `${
-              nameFn[mode](access).slice(0, 1).toLowerCase() + nameFn[mode](access).slice(1)
-            }sCount`;
+            const listKey = nameFn[mode](access);
+            const countName = `${listKey.slice(0, 1).toLowerCase() + listKey.slice(1)}sCount`;
             const query = `query { ${countName} }`;
             const { data, errors } = (await context.graphql.raw({ query })) as ExecutionResult<any>;
             expect(errors).toBe(undefined);
@@ -231,13 +211,12 @@ describe(`List access`, () => {
           });
 
           test(`single denied: ${JSON.stringify(access)}`, async () => {
-            const item1 = await context
-              .sudo()
-              .query[nameFn[mode](access)].createOne({ data: { name: 'foo' } });
+            const listKey = nameFn[mode](access);
+            const item1 = await context.sudo().query[listKey].createOne({ data: { name: 'foo' } });
             const item2 = await context
               .sudo()
-              .query[nameFn[mode](access)].createOne({ data: { name: 'Hello' } });
-            const singleQueryName = context.gqlNames(nameFn[mode](access)).itemQueryName;
+              .query[listKey].createOne({ data: { name: 'Hello' } });
+            const singleQueryName = context.gqlNames(listKey).itemQueryName;
 
             // Run a query where we expect a filter miss
             const query = `query { ${singleQueryName}(where: { id: "${item1.id}" }) { id } }`;
@@ -249,7 +228,7 @@ describe(`List access`, () => {
               // Filtered out
               expect(data![singleQueryName]).toBe(null);
             }
-            await context.sudo().query[nameFn[mode](access)].deleteOne({ where: { id: item1.id } });
+            await context.sudo().query[listKey].deleteOne({ where: { id: item1.id } });
 
             // Run a query where we expect a filter match
             const _query = `query { ${singleQueryName}(where: { id: "${item2.id}" }) { id } }`;
@@ -261,7 +240,7 @@ describe(`List access`, () => {
               // Filtered in
               expect(result.data![singleQueryName]).toEqual({ id: item2.id });
             }
-            await context.sudo().query[nameFn[mode](access)].deleteOne({ where: { id: item2.id } });
+            await context.sudo().query[listKey].deleteOne({ where: { id: item2.id } });
           });
         });
       });
@@ -273,24 +252,16 @@ describe(`List access`, () => {
       describe(mode, () => {
         listAccessVariations.forEach(access => {
           test(`denies missing: ${JSON.stringify(access)}`, async () => {
-            const updateMutationName = `update${nameFn[mode](access)}`;
+            const listKey = nameFn[mode](access);
+            const updateMutationName = `update${listKey}`;
             const query = `mutation { ${updateMutationName}(where: { id: "${FAKE_ID}" }, data: { name: "bar" }) { id } }`;
             const { data, errors } = await context.graphql.raw({ query });
-            if (access.update || mode === 'item') {
-              expectNoAccess(
-                data,
-                errors,
-                updateMutationName,
-                `You cannot perform the 'update' operation on the item '{"id":"${FAKE_ID}"}'. It may not exist.`
-              );
-            } else {
-              expectNoAccess(
-                data,
-                errors,
-                updateMutationName,
-                `You cannot perform the 'update' operation on the list '${nameFn[mode](access)}'.`
-              );
-            }
+            expectNoAccess(
+              data,
+              errors,
+              updateMutationName,
+              `You cannot update that ${listKey} - it may not exist`
+            );
           });
         });
       });
@@ -299,59 +270,43 @@ describe(`List access`, () => {
       describe(mode, () => {
         listAccessVariations.forEach(access => {
           test(`denies: - single - ${JSON.stringify(access)}`, async () => {
-            const item = await context.sudo().query[nameFn[mode](access)].createOne({ data: {} });
-            const updateMutationName = `update${nameFn[mode](access)}`;
+            const listKey = nameFn[mode](access);
+            const item = await context.sudo().query[listKey].createOne({ data: {} });
+            const updateMutationName = `update${listKey}`;
             const query = `mutation { ${updateMutationName}(where: { id: "${item.id}" }, data: { name: "bar" }) { id name } }`;
             const { data, errors } = (await context.graphql.raw({ query })) as ExecutionResult<any>;
             if (!access.update) {
-              if (mode === 'filterBool' || mode === 'operation') {
-                expectNoAccess(
-                  data,
-                  errors,
-                  updateMutationName,
-                  `You cannot perform the 'update' operation on the list '${nameFn[mode](access)}'.`
-                );
-              } else {
-                expectNoAccess(
-                  data,
-                  errors,
-                  updateMutationName,
-                  `You cannot perform the 'update' operation on the item '{"id":"${item.id}"}'. It may not exist.`
-                );
-              }
+              expectNoAccess(
+                data,
+                errors,
+                updateMutationName,
+                `You cannot update that ${listKey} - it may not exist`
+              );
             } else {
               expect(errors).toBe(undefined);
               expect(data![updateMutationName]).toEqual({ id: item.id, name: 'bar' });
             }
 
-            await context.sudo().query[nameFn[mode](access)].deleteOne({ where: { id: item.id } });
+            await context.sudo().query[listKey].deleteOne({ where: { id: item.id } });
           });
           test(`denies: - many - ${JSON.stringify(access)}`, async () => {
-            const item = await context.sudo().query[nameFn[mode](access)].createOne({ data: {} });
-            const updateMutationName = `update${nameFn[mode](access)}s`;
+            const listKey = nameFn[mode](access);
+            const item = await context.sudo().query[listKey].createOne({ data: {} });
+            const updateMutationName = `update${listKey}s`;
             const query = `mutation { ${updateMutationName}(data: [{ where: { id: "${item.id}" }, data: { name: "bar" } }]) { id name } }`;
             const { data, errors } = (await context.graphql.raw({ query })) as ExecutionResult<any>;
             if (!access.update) {
-              if (mode === 'filterBool' || mode === 'operation') {
-                expectNoAccessMany(
-                  data,
-                  errors,
-                  updateMutationName,
-                  `You cannot perform the 'update' operation on the list '${nameFn[mode](access)}'.`
-                );
-              } else {
-                expectNoAccessMany(
-                  data,
-                  errors,
-                  updateMutationName,
-                  `You cannot perform the 'update' operation on the item '{"id":"${item.id}"}'. It may not exist.`
-                );
-              }
+              expectNoAccessMany(
+                data,
+                errors,
+                updateMutationName,
+                `You cannot update that ${listKey} - it may not exist`
+              );
             } else {
               expect(errors).toBe(undefined);
               expect(data![updateMutationName]).toEqual([{ id: item.id, name: 'bar' }]);
             }
-            await context.sudo().query[nameFn[mode](access)].deleteOne({ where: { id: item.id } });
+            await context.sudo().query[listKey].deleteOne({ where: { id: item.id } });
           });
         });
       });
@@ -360,34 +315,23 @@ describe(`List access`, () => {
       describe(mode, () => {
         listAccessVariations.forEach(access => {
           test(`denies: - single - ${JSON.stringify(access)}`, async () => {
-            const item1 = await context
-              .sudo()
-              .query[nameFn[mode](access)].createOne({ data: { name: 'foo' } });
+            const listKey = nameFn[mode](access);
+            const item1 = await context.sudo().query[listKey].createOne({ data: { name: 'foo' } });
             const item2 = await context
               .sudo()
-              .query[nameFn[mode](access)].createOne({ data: { name: 'Hello' } });
+              .query[listKey].createOne({ data: { name: 'Hello' } });
 
-            const updateMutationName = `update${nameFn[mode](access)}`;
+            const updateMutationName = `update${listKey}`;
 
             const query = `mutation { ${updateMutationName}(where: { id: "${item1.id}" }, data: { name: "bar" }) { id } }`;
             const { data, errors } = await context.graphql.raw({ query });
-            if (!access.update) {
-              expectNoAccess(
-                data,
-                errors,
-                updateMutationName,
-                `You cannot perform the 'update' operation on the list '${nameFn[mode](access)}'.`
-              );
-            } else {
-              // Filtered out
-              expectNoAccess(
-                data,
-                errors,
-                updateMutationName,
-                `You cannot perform the 'update' operation on the item '{"id":"${item1.id}"}'. It may not exist.`
-              );
-            }
-            await context.sudo().query[nameFn[mode](access)].deleteOne({ where: { id: item1.id } });
+            expectNoAccess(
+              data,
+              errors,
+              updateMutationName,
+              `You cannot update that ${listKey} - it may not exist`
+            );
+            await context.sudo().query[listKey].deleteOne({ where: { id: item1.id } });
 
             const _query = `mutation { ${updateMutationName}(where: { id: "${item2.id}" }, data: { name: "bar" }) { id } }`;
             const result = (await context.graphql.raw({ query: _query })) as ExecutionResult<any>;
@@ -396,43 +340,33 @@ describe(`List access`, () => {
                 result.data,
                 result.errors,
                 updateMutationName,
-                `You cannot perform the 'update' operation on the list '${nameFn[mode](access)}'.`
+                `You cannot update that ${listKey} - it may not exist`
               );
             } else {
               // Filtered in
               expect(result.errors).toBe(undefined);
               expect(result.data![updateMutationName]).not.toEqual(null);
             }
-            await context.sudo().query[nameFn[mode](access)].deleteOne({ where: { id: item2.id } });
+            await context.sudo().query[listKey].deleteOne({ where: { id: item2.id } });
           });
+
           test(`denies: - many - ${JSON.stringify(access)}`, async () => {
-            const item1 = await context
-              .sudo()
-              .query[nameFn[mode](access)].createOne({ data: { name: 'foo' } });
+            const listKey = nameFn[mode](access);
+            const item1 = await context.sudo().query[listKey].createOne({ data: { name: 'foo' } });
             const item2 = await context
               .sudo()
-              .query[nameFn[mode](access)].createOne({ data: { name: 'Hello' } });
+              .query[listKey].createOne({ data: { name: 'Hello' } });
 
-            const updateMutationName = `update${nameFn[mode](access)}s`;
+            const updateMutationName = `update${listKey}s`;
             const query = `mutation { ${updateMutationName}(data: [{ where: { id: "${item1.id}" }, data: { name: "bar" } }]) { id } }`;
             const { data, errors } = await context.graphql.raw({ query });
-            if (!access.update) {
-              expectNoAccessMany(
-                data,
-                errors,
-                updateMutationName,
-                `You cannot perform the 'update' operation on the list '${nameFn[mode](access)}'.`
-              );
-            } else {
-              // Filtered out
-              expectNoAccessMany(
-                data,
-                errors,
-                updateMutationName,
-                `You cannot perform the 'update' operation on the item '{"id":"${item1.id}"}'. It may not exist.`
-              );
-            }
-            await context.sudo().query[nameFn[mode](access)].deleteOne({ where: { id: item1.id } });
+            expectNoAccessMany(
+              data,
+              errors,
+              updateMutationName,
+              `You cannot update that ${listKey} - it may not exist`
+            );
+            await context.sudo().query[listKey].deleteOne({ where: { id: item1.id } });
 
             const _query = `mutation { ${updateMutationName}(data: [{ where: { id: "${item2.id}" }, data: { name: "bar" } }]) { id } }`;
             const result = (await context.graphql.raw({ query: _query })) as ExecutionResult<any>;
@@ -441,14 +375,14 @@ describe(`List access`, () => {
                 result.data,
                 result.errors,
                 updateMutationName,
-                `You cannot perform the 'update' operation on the list '${nameFn[mode](access)}'.`
+                `You cannot update that ${listKey} - it may not exist`
               );
             } else {
               // Filtered in
               expect(result.errors).toBe(undefined);
               expect(result.data![updateMutationName][0]).not.toEqual(null);
             }
-            await context.sudo().query[nameFn[mode](access)].deleteOne({ where: { id: item2.id } });
+            await context.sudo().query[listKey].deleteOne({ where: { id: item2.id } });
           });
         });
       });
@@ -460,53 +394,43 @@ describe(`List access`, () => {
       describe(mode, () => {
         listAccessVariations.forEach(access => {
           test(`single denies missing: ${JSON.stringify(access)}`, async () => {
-            const deleteMutationName = `delete${nameFn[mode](access)}`;
+            const listKey = nameFn[mode](access);
+            const deleteMutationName = `delete${listKey}`;
             const query = `mutation { ${deleteMutationName}(where: { id: "${FAKE_ID}" }) { id } }`;
             const { data, errors } = await context.graphql.raw({ query });
-            if (access.delete || mode === 'item') {
-              expectNoAccess(
-                data,
-                errors,
-                deleteMutationName,
-                `You cannot perform the 'delete' operation on the item '{"id":"${FAKE_ID}"}'. It may not exist.`
-              );
-            } else {
-              expectNoAccess(
-                data,
-                errors,
-                deleteMutationName,
-                `You cannot perform the 'delete' operation on the list '${nameFn[mode](access)}'.`
-              );
-            }
+            expectNoAccess(
+              data,
+              errors,
+              deleteMutationName,
+              `You cannot delete that ${listKey} - it may not exist`
+            );
           });
+
           test(`multi denies missing: ${JSON.stringify(access)}`, async () => {
-            const multiDeleteMutationName = `delete${nameFn[mode](access)}s`;
+            const listKey = nameFn[mode](access);
+            const multiDeleteMutationName = `delete${listKey}s`;
             const query = `mutation { ${multiDeleteMutationName}(where: [{ id: "${FAKE_ID}" }, { id: "${FAKE_ID_2}" }]) { id } }`;
             const { data, errors } = await context.graphql.raw({ query });
             if (access.delete || mode === 'item') {
               expectAccessDenied(errors, [
                 {
                   path: [multiDeleteMutationName, 0],
-                  msg: `You cannot perform the 'delete' operation on the item '{"id":"${FAKE_ID}"}'. It may not exist.`,
+                  msg: `You cannot delete that ${listKey} - it may not exist`,
                 },
                 {
                   path: [multiDeleteMutationName, 1],
-                  msg: `You cannot perform the 'delete' operation on the item '{"id":"${FAKE_ID_2}"}'. It may not exist.`,
+                  msg: `You cannot delete that ${listKey} - it may not exist`,
                 },
               ]);
             } else {
               expectAccessDenied(errors, [
                 {
                   path: [multiDeleteMutationName, 0],
-                  msg: `You cannot perform the 'delete' operation on the list '${nameFn[mode](
-                    access
-                  )}'.`,
+                  msg: `You cannot delete that ${listKey} - it may not exist`,
                 },
                 {
                   path: [multiDeleteMutationName, 1],
-                  msg: `You cannot perform the 'delete' operation on the list '${nameFn[mode](
-                    access
-                  )}'.`,
+                  msg: `You cannot delete that ${listKey} - it may not exist`,
                 },
               ]);
             }
@@ -520,71 +444,51 @@ describe(`List access`, () => {
       describe(mode, () => {
         listAccessVariations.forEach(access => {
           test(`single denied: ${JSON.stringify(access)}`, async () => {
-            const item = await context.sudo().query[nameFn[mode](access)].createOne({ data: {} });
+            const listKey = nameFn[mode](access);
+            const item = await context.sudo().query[listKey].createOne({ data: {} });
 
-            const deleteMutationName = `delete${nameFn[mode](access)}`;
+            const deleteMutationName = `delete${listKey}`;
             const query = `mutation { ${deleteMutationName}(where: {id: "${item.id}" }) { id } }`;
             const { data, errors } = (await context.graphql.raw({ query })) as ExecutionResult<any>;
 
             if (!access.delete) {
-              if (mode === 'filterBool' || mode === 'operation') {
-                expectNoAccess(
-                  data,
-                  errors,
-                  deleteMutationName,
-                  `You cannot perform the 'delete' operation on the list '${nameFn[mode](access)}'.`
-                );
-              } else {
-                expectNoAccess(
-                  data,
-                  errors,
-                  deleteMutationName,
-                  `You cannot perform the 'delete' operation on the item '{"id":"${item.id}"}'. It may not exist.`
-                );
-              }
+              expectNoAccess(
+                data,
+                errors,
+                deleteMutationName,
+                `You cannot delete that ${listKey} - it may not exist`
+              );
             } else {
               expect(errors).toBe(undefined);
               expect(data![deleteMutationName]).not.toEqual(null);
             }
             if (!access.delete) {
-              await context
-                .sudo()
-                .query[nameFn[mode](access)].deleteOne({ where: { id: item.id } });
+              await context.sudo().query[listKey].deleteOne({ where: { id: item.id } });
             }
           });
 
           test(`multi denied: ${JSON.stringify(access)}`, async () => {
-            const item = await context.sudo().query[nameFn[mode](access)].createOne({ data: {} });
+            const listKey = nameFn[mode](access);
+            const item = await context.sudo().query[listKey].createOne({ data: {} });
 
-            const multiDeleteMutationName = `delete${nameFn[mode](access)}s`;
+            const multiDeleteMutationName = `delete${listKey}s`;
             const query = `mutation { ${multiDeleteMutationName}(where: [{ id: "${item.id}" }]) { id } }`;
             const { data, errors } = (await context.graphql.raw({ query })) as ExecutionResult<any>;
 
             if (!access.delete) {
-              if (mode === 'filterBool' || mode === 'operation') {
-                expectNoAccessMany(
-                  data,
-                  errors,
-                  multiDeleteMutationName,
-                  `You cannot perform the 'delete' operation on the list '${nameFn[mode](access)}'.`
-                );
-              } else {
-                expectNoAccessMany(
-                  data,
-                  errors,
-                  multiDeleteMutationName,
-                  `You cannot perform the 'delete' operation on the item '{"id":"${item.id}"}'. It may not exist.`
-                );
-              }
+              expectNoAccessMany(
+                data,
+                errors,
+                multiDeleteMutationName,
+                `You cannot delete that ${listKey} - it may not exist`
+              );
             } else {
               expect(errors).toBe(undefined);
               expect(data![multiDeleteMutationName]).not.toEqual(null);
             }
 
             if (!access.delete) {
-              await context
-                .sudo()
-                .query[nameFn[mode](access)].deleteOne({ where: { id: item.id } });
+              await context.sudo().query[listKey].deleteOne({ where: { id: item.id } });
             }
           });
         });
@@ -594,37 +498,24 @@ describe(`List access`, () => {
       describe(mode, () => {
         listAccessVariations.forEach(access => {
           test(`single denied: ${JSON.stringify(access)}`, async () => {
-            const item1 = await context
-              .sudo()
-              .query[nameFn[mode](access)].createOne({ data: { name: 'foo' } });
+            const listKey = nameFn[mode](access);
+            const item1 = await context.sudo().query[listKey].createOne({ data: { name: 'foo' } });
             const item2 = await context
               .sudo()
-              .query[nameFn[mode](access)].createOne({ data: { name: 'Hello' } });
+              .query[listKey].createOne({ data: { name: 'Hello' } });
 
-            const deleteMutationName = `delete${nameFn[mode](access)}`;
+            const deleteMutationName = `delete${listKey}`;
             const query = `mutation { ${deleteMutationName}(where: {id: "${item1.id}" }) { id } }`;
             const { data, errors } = await context.graphql.raw({ query });
-            if (!access.delete) {
-              expectNoAccess(
-                data,
-                errors,
-                deleteMutationName,
-                `You cannot perform the 'delete' operation on the list '${nameFn[mode](access)}'.`
-              );
-            } else {
-              // Filtered out
-              expectNoAccess(
-                data,
-                errors,
-                deleteMutationName,
-                `You cannot perform the 'delete' operation on the item '{"id":"${item1.id}"}'. It may not exist.`
-              );
-            }
+            expectNoAccess(
+              data,
+              errors,
+              deleteMutationName,
+              `You cannot delete that ${listKey} - it may not exist`
+            );
 
             if (!access.delete) {
-              await context
-                .sudo()
-                .query[nameFn[mode](access)].deleteOne({ where: { id: item1.id } });
+              await context.sudo().query[listKey].deleteOne({ where: { id: item1.id } });
             }
 
             const _query = `mutation { ${deleteMutationName}(where: {id: "${item2.id}" }) { id } }`;
@@ -634,7 +525,7 @@ describe(`List access`, () => {
                 result.data,
                 result.errors,
                 deleteMutationName,
-                `You cannot perform the 'delete' operation on the list '${nameFn[mode](access)}'.`
+                `You cannot delete that ${listKey} - it may not exist`
               );
             } else {
               // Filtered in
@@ -643,43 +534,28 @@ describe(`List access`, () => {
             }
 
             if (!access.delete) {
-              await context
-                .sudo()
-                .query[nameFn[mode](access)].deleteOne({ where: { id: item2.id } });
+              await context.sudo().query[listKey].deleteOne({ where: { id: item2.id } });
             }
           });
 
           test(`multi denied: ${JSON.stringify(access)}`, async () => {
-            const item1 = await context
-              .sudo()
-              .query[nameFn[mode](access)].createOne({ data: { name: 'foo' } });
+            const listKey = nameFn[mode](access);
+            const item1 = await context.sudo().query[listKey].createOne({ data: { name: 'foo' } });
             const item2 = await context
               .sudo()
-              .query[nameFn[mode](access)].createOne({ data: { name: 'Hello' } });
+              .query[listKey].createOne({ data: { name: 'Hello' } });
 
-            const multiDeleteMutationName = `delete${nameFn[mode](access)}s`;
+            const multiDeleteMutationName = `delete${listKey}s`;
             const query = `mutation { ${multiDeleteMutationName}(where: [{ id: "${item1.id}" }]) { id } }`;
             const { data, errors } = await context.graphql.raw({ query });
+            expectNoAccessMany(
+              data,
+              errors,
+              multiDeleteMutationName,
+              `You cannot delete that ${listKey} - it may not exist`
+            );
             if (!access.delete) {
-              expectNoAccessMany(
-                data,
-                errors,
-                multiDeleteMutationName,
-                `You cannot perform the 'delete' operation on the list '${nameFn[mode](access)}'.`
-              );
-            } else {
-              // Filtered out
-              expectNoAccessMany(
-                data,
-                errors,
-                multiDeleteMutationName,
-                `You cannot perform the 'delete' operation on the item '{"id":"${item1.id}"}'. It may not exist.`
-              );
-            }
-            if (!access.delete) {
-              await context
-                .sudo()
-                .query[nameFn[mode](access)].deleteOne({ where: { id: item1.id } });
+              await context.sudo().query[listKey].deleteOne({ where: { id: item1.id } });
             }
 
             const _query = `mutation { ${multiDeleteMutationName}(where: [{ id: "${item2.id}" }]) { id } }`;
@@ -689,7 +565,7 @@ describe(`List access`, () => {
                 result.data,
                 result.errors,
                 multiDeleteMutationName,
-                `You cannot perform the 'delete' operation on the list '${nameFn[mode](access)}'.`
+                `You cannot delete that ${listKey} - it may not exist`
               );
             } else {
               // Filtered in
@@ -697,9 +573,7 @@ describe(`List access`, () => {
               expect(result.data![multiDeleteMutationName]).not.toEqual(null);
             }
             if (!access.delete) {
-              await context
-                .sudo()
-                .query[nameFn[mode](access)].deleteOne({ where: { id: item2.id } });
+              await context.sudo().query[listKey].deleteOne({ where: { id: item2.id } });
             }
           });
         });

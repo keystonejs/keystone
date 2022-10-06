@@ -28,10 +28,8 @@ const runner = setupTestRunner({
           filterTrue: integer({ isFilterable: true }),
           filterFunctionFalse: integer({ isFilterable: () => false }),
           filterFunctionTrue: integer({ isFilterable: () => true }),
-          // @ts-ignore
-          filterFunctionOtherFalsey: integer({ isFilterable: () => null }),
-          // @ts-ignore
-          filterFunctionOtherTruthy: integer({ isFilterable: () => ({}) }),
+          filterFunctionOtherFalsey: integer({ isFilterable: () => null } as any), // as any for tests
+          filterFunctionOtherTruthy: integer({ isFilterable: () => ({}) } as any), // as any for tests
         },
       }),
       SecondaryList: list({
@@ -53,9 +51,9 @@ const runner = setupTestRunner({
         defaultIsFilterable: false,
       }),
       DefaultFilterTrue: list({
+        access: allowAll,
         fields: { a: integer(), b: integer({ isFilterable: true }) },
-        // @ts-ignore
-        defaultIsFilterable: true,
+        defaultIsFilterable: true as any, // not actually allowed
       }),
       DefaultFilterFunctionFalse: list({
         access: allowAll,
@@ -70,14 +68,12 @@ const runner = setupTestRunner({
       DefaultFilterFunctionFalsey: list({
         access: allowAll,
         fields: { a: integer(), b: integer({ isFilterable: true }) },
-        // @ts-ignore
-        defaultIsFilterable: () => null,
+        defaultIsFilterable: (() => null) as any, // not actually allowed
       }),
       DefaultFilterFunctionTruthy: list({
         access: allowAll,
         fields: { a: integer(), b: integer({ isFilterable: true }) },
-        // @ts-ignore
-        defaultIsFilterable: () => ({}),
+        defaultIsFilterable: () => ({} as any), // not actually allowed
       }),
     },
   }),

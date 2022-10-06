@@ -8,10 +8,20 @@ import { apiTestConfig, expectAccessDenied, expectAccessReturnError } from '../u
 const runner = setupTestRunner({
   config: apiTestConfig({
     lists: {
-      // Item access control
       User: list({
         access: {
           operation: allowAll,
+          filter: {
+            query: () => ({
+              name: { not: { equals: 'hidden' } },
+            }),
+            update: () => ({
+              name: { not: { equals: 'hidden' } },
+            }),
+            delete: () => ({
+              name: { not: { equals: 'hidden' } },
+            }),
+          },
           item: {
             create: ({ inputData }) => {
               return inputData.name !== 'bad';
@@ -29,18 +39,17 @@ const runner = setupTestRunner({
       }),
       BadAccess: list({
         access: {
+          operation: allowAll,
+          // intentionally returns filters for testing purposes
           item: {
-            // @ts-ignore Intentionally return a filter for testing purposes
             create: () => {
-              return { name: { not: { equals: 'bad' } } };
+              return { name: { not: { equals: 'bad' } } } as any;
             },
-            // @ts-ignore Intentionally return a filter for testing purposes
             update: () => {
-              return { name: { not: { equals: 'bad' } } };
+              return { name: { not: { equals: 'bad' } } } as any;
             },
-            // @ts-ignore Intentionally return a filter for testing purposes
             delete: async () => {
-              return { name: { not: { startsWtih: 'no delete' } } };
+              return { name: { not: { startsWtih: 'no delete' } } } as any;
             },
           },
         },
@@ -68,7 +77,7 @@ describe('Access control - Item', () => {
       expectAccessDenied(errors, [
         {
           path: ['createUser'],
-          msg: `You cannot perform the 'create' operation on the item '{"name":"bad"}'.`,
+          msg: `You cannot create that User`,
         },
       ]);
 
@@ -120,13 +129,38 @@ describe('Access control - Item', () => {
       expectAccessDenied(errors, [
         {
           path: ['updateUser'],
-          msg: `You cannot perform the 'update' operation on the item '{"id":"${user.id}"}'. It may not exist.`,
+          msg: `You cannot update that User - it may not exist`,
         },
       ]);
 
       // User should have its original name
       const _users = await context.query.User.findMany({ query: 'id name' });
       expect(_users.map(({ name }) => name)).toEqual(['better']);
+    })
+  );
+
+  test(
+    'updateOne - Missing item',
+    runner(async ({ context }) => {
+      const user = await context.query.User.createOne({ data: { name: 'hidden' } });
+      const { data, errors } = await context.graphql.raw({
+        query: `mutation ($id: ID! $data: UserUpdateInput!) { updateUser(where: { id: $id }, data: $data) { id } }`,
+        variables: { id: user.id, data: { name: 'something else' } },
+      });
+
+      // Returns null and throws an error
+      expect(data).toEqual({ updateUser: null });
+      expectAccessDenied(errors, [
+        {
+          path: ['updateUser'],
+          msg: `You cannot update that User - it may not exist`,
+        },
+      ]);
+
+      // should be unchanged
+      const userAgain = await context.sudo().db.User.findOne({ where: { id: user.id } });
+      expect(userAgain).not.toEqual(null);
+      expect(userAgain!.name).toEqual('hidden');
     })
   );
 
@@ -175,7 +209,7 @@ describe('Access control - Item', () => {
       expectAccessDenied(errors, [
         {
           path: ['deleteUser'],
-          msg: `You cannot perform the 'delete' operation on the item '{"id":"${user2.id}"}'. It may not exist.`,
+          msg: `You cannot delete that User - it may not exist`,
         },
       ]);
 
@@ -243,11 +277,11 @@ describe('Access control - Item', () => {
       expectAccessDenied(errors, [
         {
           path: ['createUsers', 1],
-          msg: `You cannot perform the 'create' operation on the item '{"name":"bad"}'.`,
+          msg: `You cannot create that User`,
         },
         {
           path: ['createUsers', 3],
-          msg: `You cannot perform the 'create' operation on the item '{"name":"bad"}'.`,
+          msg: `You cannot create that User`,
         },
       ]);
 
@@ -302,11 +336,11 @@ describe('Access control - Item', () => {
       expectAccessDenied(errors, [
         {
           path: ['updateUsers', 1],
-          msg: `You cannot perform the 'update' operation on the item '{"id":"${users[1].id}"}'. It may not exist.`,
+          msg: `You cannot update that User - it may not exist`,
         },
         {
           path: ['updateUsers', 3],
-          msg: `You cannot perform the 'update' operation on the item '{"id":"${users[3].id}"}'. It may not exist.`,
+          msg: `You cannot update that User - it may not exist`,
         },
       ]);
 
@@ -362,11 +396,11 @@ describe('Access control - Item', () => {
       expectAccessDenied(errors, [
         {
           path: ['deleteUsers', 1],
-          msg: `You cannot perform the 'delete' operation on the item '{"id":"${users[1].id}"}'. It may not exist.`,
+          msg: `You cannot delete that User - it may not exist`,
         },
         {
           path: ['deleteUsers', 3],
-          msg: `You cannot perform the 'delete' operation on the item '{"id":"${users[3].id}"}'. It may not exist.`,
+          msg: `You cannot delete that User - it may not exist`,
         },
       ]);
 

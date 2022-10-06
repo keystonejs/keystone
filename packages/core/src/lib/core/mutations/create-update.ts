@@ -16,7 +16,7 @@ import {
   relationshipError,
   resolverError,
 } from '../graphql-errors';
-import { getOperationAccess, getAccessFilters } from '../access-control';
+import { cannotForItem, getOperationAccess, getAccessFilters } from '../access-control';
 import { checkFilterOrderAccess } from '../filter-order-access';
 import {
   RelationshipErrors,
@@ -34,16 +34,8 @@ import { validateUpdateCreate } from './validation';
 async function createSingle(
   { data: rawData }: { data: Record<string, any> },
   list: InitialisedList,
-  context: KeystoneContext,
-  operationAccess: boolean
+  context: KeystoneContext
 ) {
-  // Operation level access control
-  if (!operationAccess) {
-    throw accessDeniedError(
-      `You cannot perform the 'create' operation on the list '${list.listKey}'.`
-    );
-  }
-
   //  Item access control. Will throw an accessDeniedError if not allowed.
   await applyAccessControlForCreate(list, context, rawData);
 
@@ -74,10 +66,10 @@ export class NestedMutationState {
   async create(data: Record<string, any>, list: InitialisedList) {
     const context = this.#context;
 
-    // Check operation permission to pass into single operation
     const operationAccess = await getOperationAccess(list, context, 'create');
+    if (!operationAccess) throw accessDeniedError(cannotForItem('create', list));
 
-    const { item, afterOperation } = await createSingle({ data }, list, context, operationAccess);
+    const { item, afterOperation } = await createSingle({ data }, list, context);
 
     this.#afterOperations.push(() => afterOperation(item));
     return { id: item.id as IdType };
@@ -93,10 +85,10 @@ export async function createOne(
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  // Check operation permission to pass into single operation
   const operationAccess = await getOperationAccess(list, context, 'create');
+  if (!operationAccess) throw accessDeniedError(cannotForItem('create', list));
 
-  const { item, afterOperation } = await createSingle(createInput, list, context, operationAccess);
+  const { item, afterOperation } = await createSingle(createInput, list, context);
 
   await afterOperation(item);
 
@@ -108,14 +100,14 @@ export async function createMany(
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  // Check operation permission to pass into single operation
   const operationAccess = await getOperationAccess(list, context, 'create');
 
   return createInputs.data.map(async data => {
-    const { item, afterOperation } = await createSingle({ data }, list, context, operationAccess);
+    // throw for each attempt
+    if (!operationAccess) throw accessDeniedError(cannotForItem('create', list));
 
+    const { item, afterOperation } = await createSingle({ data }, list, context);
     await afterOperation(item);
-
     return item;
   });
 }
@@ -124,16 +116,8 @@ async function updateSingle(
   updateInput: { where: UniqueInputFilter; data: Record<string, any> },
   list: InitialisedList,
   context: KeystoneContext,
-  accessFilters: boolean | InputFilter,
-  operationAccess: boolean
+  accessFilters: boolean | InputFilter
 ) {
-  // Operation level access control
-  if (!operationAccess) {
-    throw accessDeniedError(
-      `You cannot perform the 'update' operation on the list '${list.listKey}'.`
-    );
-  }
-
   const { where: uniqueInput, data: rawData } = updateInput;
   // Validate and resolve the input filter
   const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, list, context);
@@ -174,13 +158,13 @@ export async function updateOne(
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  // Check operation permission to pass into single operation
   const operationAccess = await getOperationAccess(list, context, 'update');
+  if (!operationAccess) throw accessDeniedError(cannotForItem('update', list));
 
   // Get list-level access control filters
   const accessFilters = await getAccessFilters(list, context, 'update');
 
-  return updateSingle(updateInput, list, context, accessFilters, operationAccess);
+  return updateSingle(updateInput, list, context, accessFilters);
 }
 
 export async function updateMany(
@@ -188,15 +172,17 @@ export async function updateMany(
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  // Check operation permission to pass into single operation
   const operationAccess = await getOperationAccess(list, context, 'update');
 
   // Get list-level access control filters
   const accessFilters = await getAccessFilters(list, context, 'update');
 
-  return data.map(async updateInput =>
-    updateSingle(updateInput, list, context, accessFilters, operationAccess)
-  );
+  return data.map(async updateInput => {
+    // throw for each attempt
+    if (!operationAccess) throw accessDeniedError(cannotForItem('update', list));
+
+    return updateSingle(updateInput, list, context, accessFilters);
+  });
 }
 
 async function getResolvedData(

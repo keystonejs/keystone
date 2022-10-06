@@ -8,67 +8,59 @@ export type BaseAccessArgs<ListTypeInfo extends BaseListTypeInfo> = {
   context: KeystoneContextFromListTypeInfo<ListTypeInfo>;
 };
 
-// List Filter Access
-
-type FilterOutput<ListTypeInfo extends BaseListTypeInfo> =
-  | boolean
-  | ListTypeInfo['inputs']['where'];
-
-export type ListFilterAccessControl<
-  Operation extends 'query' | 'update' | 'delete',
-  ListTypeInfo extends BaseListTypeInfo
-> = (
-  args: BaseAccessArgs<ListTypeInfo> & { operation: Operation }
-) => MaybePromise<FilterOutput<ListTypeInfo>>;
-
-// List Item Access
-
-type CreateItemAccessArgs<ListTypeInfo extends BaseListTypeInfo> = BaseAccessArgs<ListTypeInfo> & {
-  operation: 'create';
-  /**
-   * The input passed in from the GraphQL API
-   */
-  inputData: ListTypeInfo['inputs']['create'];
-};
-
-export type CreateListItemAccessControl<ListTypeInfo extends BaseListTypeInfo> = (
-  args: CreateItemAccessArgs<ListTypeInfo>
-) => MaybePromise<boolean>;
-
-type UpdateItemAccessArgs<ListTypeInfo extends BaseListTypeInfo> = BaseAccessArgs<ListTypeInfo> & {
-  operation: 'update';
-  /**
-   * The item being updated
-   */
-  item: ListTypeInfo['item'];
-  /**
-   * The input passed in from the GraphQL API
-   */
-  inputData: ListTypeInfo['inputs']['update'];
-};
-
-export type UpdateListItemAccessControl<ListTypeInfo extends BaseListTypeInfo> = (
-  args: UpdateItemAccessArgs<ListTypeInfo>
-) => MaybePromise<boolean>;
-
-type DeleteItemAccessArgs<ListTypeInfo extends BaseListTypeInfo> = BaseAccessArgs<ListTypeInfo> & {
-  operation: 'delete';
-  /**
-   * The item being deleted
-   */
-  item: ListTypeInfo['item'];
-};
-
-export type DeleteListItemAccessControl<ListTypeInfo extends BaseListTypeInfo> = (
-  args: DeleteItemAccessArgs<ListTypeInfo>
-) => MaybePromise<boolean>;
-
 export type AccessOperation = 'create' | 'query' | 'update' | 'delete';
+export type FilterOperation = 'query' | 'update' | 'delete';
+export type ItemOperation = 'create' | 'update' | 'delete';
 
 export type ListOperationAccessControl<
   Operation extends AccessOperation,
   ListTypeInfo extends BaseListTypeInfo
 > = (args: BaseAccessArgs<ListTypeInfo> & { operation: Operation }) => MaybePromise<boolean>;
+
+export type ListFilterAccessControl<
+  Operation extends FilterOperation,
+  ListTypeInfo extends BaseListTypeInfo
+> = (
+  args: BaseAccessArgs<ListTypeInfo> & { operation: Operation }
+) => MaybePromise<boolean | ListTypeInfo['inputs']['where']>;
+
+export type CreateListItemAccessControl<ListTypeInfo extends BaseListTypeInfo> = (
+  args: BaseAccessArgs<ListTypeInfo> & {
+    operation: 'create';
+
+    /**
+     * The input passed in from the GraphQL API
+     */
+    inputData: ListTypeInfo['inputs']['create'];
+  }
+) => MaybePromise<boolean>;
+
+export type UpdateListItemAccessControl<ListTypeInfo extends BaseListTypeInfo> = (
+  args: BaseAccessArgs<ListTypeInfo> & {
+    operation: 'update';
+
+    /**
+     * The item being updated
+     */
+    item: ListTypeInfo['item'];
+
+    /**
+     * The input passed in from the GraphQL API
+     */
+    inputData: ListTypeInfo['inputs']['update'];
+  }
+) => MaybePromise<boolean>;
+
+export type DeleteListItemAccessControl<ListTypeInfo extends BaseListTypeInfo> = (
+  args: BaseAccessArgs<ListTypeInfo> & {
+    operation: 'delete';
+
+    /**
+     * The item being deleted
+     */
+    item: ListTypeInfo['item'];
+  }
+) => MaybePromise<boolean>;
 
 type ListAccessControlFunction<ListTypeInfo extends BaseListTypeInfo> = (
   args: BaseAccessArgs<ListTypeInfo> & { operation: AccessOperation }
@@ -77,7 +69,7 @@ type ListAccessControlFunction<ListTypeInfo extends BaseListTypeInfo> = (
 type ListAccessControlObject<ListTypeInfo extends BaseListTypeInfo> = {
   // These functions should return `true` if access is allowed or `false` if access is denied.
   operation:
-    | ListOperationAccessControl<any, ListTypeInfo>
+    | ListOperationAccessControl<AccessOperation, ListTypeInfo>
     | {
         query: ListOperationAccessControl<'query', ListTypeInfo>;
         create: ListOperationAccessControl<'create', ListTypeInfo>;
@@ -91,16 +83,15 @@ type ListAccessControlObject<ListTypeInfo extends BaseListTypeInfo> = {
   // - boolean true/false. If false, treated as a filter that never matches.
   filter?: {
     query?: ListFilterAccessControl<'query', ListTypeInfo>;
+    // create?: not supported
     update?: ListFilterAccessControl<'update', ListTypeInfo>;
     delete?: ListFilterAccessControl<'delete', ListTypeInfo>;
-    // create: not supported: FIXME: Add explicit check that people don't try this.
-    // FIXME: Write tests for parseAccessControl.
   };
 
   // These rules are applied to each item being operated on individually. They return `true` or `false`,
   // and if false, an access denied error will be returned for the individual operation.
   item?: {
-    // query: not supported
+    // read?: not supported
     create?: CreateListItemAccessControl<ListTypeInfo>;
     update?: UpdateListItemAccessControl<ListTypeInfo>;
     delete?: DeleteListItemAccessControl<ListTypeInfo>;
@@ -133,28 +124,49 @@ export type ListAccessControl<ListTypeInfo extends BaseListTypeInfo> =
 export type IndividualFieldAccessControl<Args> = (args: Args) => MaybePromise<boolean>;
 
 export type FieldCreateItemAccessArgs<ListTypeInfo extends BaseListTypeInfo> =
-  CreateItemAccessArgs<ListTypeInfo> & { fieldKey: string };
+  BaseAccessArgs<ListTypeInfo> & {
+    operation: 'create';
+    fieldKey: string;
+    /**
+     * The input passed in from the GraphQL API
+     */
+    inputData: ListTypeInfo['item'];
+  };
 
 export type FieldReadItemAccessArgs<ListTypeInfo extends BaseListTypeInfo> =
   BaseAccessArgs<ListTypeInfo> & {
     operation: 'read';
     fieldKey: string;
+    /**
+     * The item being read
+     */
     item: ListTypeInfo['item'];
   };
 
 export type FieldUpdateItemAccessArgs<ListTypeInfo extends BaseListTypeInfo> =
-  UpdateItemAccessArgs<ListTypeInfo> & { fieldKey: string };
+  BaseAccessArgs<ListTypeInfo> & {
+    operation: 'update';
+    fieldKey: string;
+    /**
+     * The item being updated
+     */
+    item: ListTypeInfo['item'];
+    /**
+     * The input passed in from the GraphQL API
+     */
+    inputData: ListTypeInfo['inputs']['update'];
+  };
 
 export type FieldAccessControl<ListTypeInfo extends BaseListTypeInfo> =
+  | IndividualFieldAccessControl<
+      | FieldReadItemAccessArgs<ListTypeInfo>
+      | FieldCreateItemAccessArgs<ListTypeInfo>
+      | FieldUpdateItemAccessArgs<ListTypeInfo>
+      // delete: not supported
+    >
   | {
       read?: IndividualFieldAccessControl<FieldReadItemAccessArgs<ListTypeInfo>>;
       create?: IndividualFieldAccessControl<FieldCreateItemAccessArgs<ListTypeInfo>>;
       update?: IndividualFieldAccessControl<FieldUpdateItemAccessArgs<ListTypeInfo>>;
-      // filter?: COMING SOON
-      // orderBy?: COMING SOON
-    }
-  | IndividualFieldAccessControl<
-      | FieldCreateItemAccessArgs<ListTypeInfo>
-      | FieldReadItemAccessArgs<ListTypeInfo>
-      | FieldUpdateItemAccessArgs<ListTypeInfo>
-    >;
+      // delete: not supported
+    };
