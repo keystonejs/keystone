@@ -83,6 +83,7 @@ type ListAccessControlObject<ListTypeInfo extends BaseListTypeInfo> = {
   // - boolean true/false. If false, treated as a filter that never matches.
   filter?: {
     query?: ListFilterAccessControl<'query', ListTypeInfo>;
+    // create?: not supported
     update?: ListFilterAccessControl<'update', ListTypeInfo>;
     delete?: ListFilterAccessControl<'delete', ListTypeInfo>;
   };
@@ -90,6 +91,7 @@ type ListAccessControlObject<ListTypeInfo extends BaseListTypeInfo> = {
   // These rules are applied to each item being operated on individually. They return `true` or `false`,
   // and if false, an access denied error will be returned for the individual operation.
   item?: {
+    // read?: not supported
     create?: CreateListItemAccessControl<ListTypeInfo>;
     update?: UpdateListItemAccessControl<ListTypeInfo>;
     delete?: DeleteListItemAccessControl<ListTypeInfo>;
@@ -156,13 +158,15 @@ export type FieldUpdateItemAccessArgs<ListTypeInfo extends BaseListTypeInfo> =
   };
 
 export type FieldAccessControl<ListTypeInfo extends BaseListTypeInfo> =
-  | {
-      create?: IndividualFieldAccessControl<FieldCreateItemAccessArgs<ListTypeInfo>>;
-      read?: IndividualFieldAccessControl<FieldReadItemAccessArgs<ListTypeInfo>>;
-      update?: IndividualFieldAccessControl<FieldUpdateItemAccessArgs<ListTypeInfo>>;
-    }
   | IndividualFieldAccessControl<
-      | FieldCreateItemAccessArgs<ListTypeInfo>
       | FieldReadItemAccessArgs<ListTypeInfo>
+      | FieldCreateItemAccessArgs<ListTypeInfo>
       | FieldUpdateItemAccessArgs<ListTypeInfo>
-    >;
+      // delete: not supported
+    >
+  | {
+      read?: IndividualFieldAccessControl<FieldReadItemAccessArgs<ListTypeInfo>>;
+      create?: IndividualFieldAccessControl<FieldCreateItemAccessArgs<ListTypeInfo>>;
+      update?: IndividualFieldAccessControl<FieldUpdateItemAccessArgs<ListTypeInfo>>;
+      // delete: not supported
+    };

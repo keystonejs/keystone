@@ -95,25 +95,45 @@ export async function getAccessFilters(
   }
 }
 
+export type ResolvedFieldAccessControl = {
+  create: IndividualFieldAccessControl<FieldCreateItemAccessArgs<BaseListTypeInfo>>;
+  read: IndividualFieldAccessControl<FieldReadItemAccessArgs<BaseListTypeInfo>>;
+  update: IndividualFieldAccessControl<FieldUpdateItemAccessArgs<BaseListTypeInfo>>;
+};
+
 export function parseFieldAccessControl(
   access: FieldAccessControl<BaseListTypeInfo> | undefined
 ): ResolvedFieldAccessControl {
   if (typeof access === 'function') {
     return { read: access, create: access, update: access };
   }
-  // note i'm intentionally not using spread here because typescript can't express an optional property which cannot be undefined so spreading would mean there is a possibility that someone could pass {access: undefined} or {access:{read: undefined}} and bad things would happen
+
   return {
     read: access?.read ?? (() => true),
     create: access?.create ?? (() => true),
     update: access?.update ?? (() => true),
-    // delete: not supported
   };
 }
 
-export type ResolvedFieldAccessControl = {
-  read: IndividualFieldAccessControl<FieldReadItemAccessArgs<BaseListTypeInfo>>;
-  create: IndividualFieldAccessControl<FieldCreateItemAccessArgs<BaseListTypeInfo>>;
-  update: IndividualFieldAccessControl<FieldUpdateItemAccessArgs<BaseListTypeInfo>>;
+export type ResolvedListAccessControl = {
+  operation: {
+    query: ListOperationAccessControl<'query', BaseListTypeInfo>;
+    create: ListOperationAccessControl<'create', BaseListTypeInfo>;
+    update: ListOperationAccessControl<'update', BaseListTypeInfo>;
+    delete: ListOperationAccessControl<'delete', BaseListTypeInfo>;
+  };
+  filter: {
+    query: ListFilterAccessControl<'query', BaseListTypeInfo>;
+    // create: not supported
+    update: ListFilterAccessControl<'update', BaseListTypeInfo>;
+    delete: ListFilterAccessControl<'delete', BaseListTypeInfo>;
+  };
+  item: {
+    // query: not supported
+    create: CreateListItemAccessControl<BaseListTypeInfo>;
+    update: UpdateListItemAccessControl<BaseListTypeInfo>;
+    delete: DeleteListItemAccessControl<BaseListTypeInfo>;
+  };
 };
 
 export function parseListAccessControl(
@@ -122,8 +142,8 @@ export function parseListAccessControl(
   if (typeof access === 'function') {
     return {
       operation: {
-        create: access,
         query: access,
+        create: access,
         update: access,
         delete: access,
       },
@@ -143,8 +163,8 @@ export function parseListAccessControl(
   let { operation, filter, item } = access;
   if (typeof operation === 'function') {
     operation = {
-      create: operation,
       query: operation,
+      create: operation,
       update: operation,
       delete: operation,
     };
@@ -152,43 +172,22 @@ export function parseListAccessControl(
 
   return {
     operation: {
-      create: operation.create ?? (() => true),
       query: operation.query ?? (() => true),
+      create: operation.create ?? (() => true),
       update: operation.update ?? (() => true),
       delete: operation.delete ?? (() => true),
     },
     filter: {
-      // create: not supported
       query: filter?.query ?? (() => true),
+      // create: not supported
       update: filter?.update ?? (() => true),
       delete: filter?.delete ?? (() => true),
     },
     item: {
-      create: item?.create ?? (() => true),
       // query: not supported
+      create: item?.create ?? (() => true),
       update: item?.update ?? (() => true),
       delete: item?.delete ?? (() => true),
     },
   };
 }
-
-export type ResolvedListAccessControl = {
-  operation: {
-    create: ListOperationAccessControl<'create', BaseListTypeInfo>;
-    query: ListOperationAccessControl<'query', BaseListTypeInfo>;
-    update: ListOperationAccessControl<'update', BaseListTypeInfo>;
-    delete: ListOperationAccessControl<'delete', BaseListTypeInfo>;
-  };
-  filter: {
-    // create: not supported
-    query: ListFilterAccessControl<'query', BaseListTypeInfo>;
-    update: ListFilterAccessControl<'update', BaseListTypeInfo>;
-    delete: ListFilterAccessControl<'delete', BaseListTypeInfo>;
-  };
-  item: {
-    create: CreateListItemAccessControl<BaseListTypeInfo>;
-    // query: not supported
-    update: UpdateListItemAccessControl<BaseListTypeInfo>;
-    delete: DeleteListItemAccessControl<BaseListTypeInfo>;
-  };
-};
