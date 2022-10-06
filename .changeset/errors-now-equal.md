@@ -2,4 +2,4 @@
 '@keystone-6/core': major
 ---
 
-Errors are now mostly context free - only list and field access-control is differentiable by the error message now
+Changes access-control error messages to only show the list key and operation
