@@ -230,13 +230,12 @@ export function Header() {
           ],
           justifyItems: 'start',
           alignItems: 'center',
-          paddingTop: 'var(--space-xlarge)',
-          paddingBottom: 'var(--space-xlarge)',
+          paddingTop: 'var(--space-large)',
+          paddingBottom: 'var(--space-large)',
           color: 'var(--muted)',
           '& a:hover': {
             color: 'var(--link)',
           },
-          marginBottom: '2rem',
         })}
       >
         <Logo />
