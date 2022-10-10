@@ -109,7 +109,10 @@ export function createAdminMeta(
       ].slice(0, 3);
     }
 
-    const maximumPageSize = Math.min(listConfig.ui?.listView?.pageSize ?? 50, (list.types.findManyArgs.take.defaultValue ?? Infinity) as number);
+    const maximumPageSize = Math.min(
+      listConfig.ui?.listView?.pageSize ?? 50,
+      (list.types.findManyArgs.take.defaultValue ?? Infinity) as number
+    );
     adminMetaRoot.listsByKey[key] = {
       key,
       labelField,

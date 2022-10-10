@@ -63,14 +63,7 @@ describe('graphql.maxTake', () => {
         `,
       });
 
-      expect(body.data.posts).toEqual([
-        {
-          title: 'Hello',
-        },
-        {
-          title: 'World',
-        },
-      ]);
+      expect(body.data.posts.length).toEqual(2);
     })
   );
 
