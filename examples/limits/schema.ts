@@ -9,7 +9,7 @@ export const lists = {
       title: text({ validation: { isRequired: true } }),
     },
     graphql: {
-      maximumTake: 20,
+      maxTake: 20,
     },
   }),
 };

@@ -351,11 +351,11 @@ function getListGraphqlTypes(
     });
 
     let take: any = graphql.arg({ type: graphql.Int });
-    if (listConfig.graphql?.maximumTake !== undefined) {
+    if (listConfig.graphql?.maxTake !== undefined) {
       take = graphql.arg({
         type: graphql.nonNull(graphql.Int),
         // warning: this is used by queries/resolvers.ts to enforce the limit
-        defaultValue: listConfig.graphql.maximumTake,
+        defaultValue: listConfig.graphql.maxTake,
       });
     }
 

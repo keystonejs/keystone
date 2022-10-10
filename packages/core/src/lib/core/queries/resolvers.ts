@@ -113,9 +113,9 @@ export async function findMany(
   info: GraphQLResolveInfo,
   extraFilter?: PrismaFilter
 ): Promise<BaseItem[]> {
-  const maximumTake = (list.types.findManyArgs.take.defaultValue ?? Infinity) as number;
-  if ((take ?? Infinity) > maximumTake) {
-    throw limitsExceededError({ list: list.listKey, type: 'maximumTake', limit: maximumTake });
+  const maxTake = (list.types.findManyArgs.take.defaultValue ?? Infinity) as number;
+  if ((take ?? Infinity) > maxTake) {
+    throw limitsExceededError({ list: list.listKey, type: 'maxTake', limit: maxTake });
   }
 
   const orderBy = await resolveOrderBy(rawOrderBy, list, context);

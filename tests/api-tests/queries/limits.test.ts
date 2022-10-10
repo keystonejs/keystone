@@ -17,7 +17,7 @@ const runner = withServer(
             author: relationship({ ref: 'User.posts', many: true }),
           },
           graphql: {
-            maximumTake: 3,
+            maxTake: 3,
           },
         }),
         User: list({
@@ -38,7 +38,7 @@ const runner = withServer(
   })
 );
 
-describe('graphql.maximumTake', () => {
+describe('graphql.maxTake', () => {
   test(
     'uses the default when querying',
     runner(async ({ context, graphQLRequest }) => {
