@@ -16,6 +16,9 @@ const runner = withServer(
             title: text(),
             author: relationship({ ref: 'User.posts', many: true }),
           },
+          graphql: {
+            maxTake: 3,
+          },
         }),
         User: list({
           access: allowAll,
@@ -24,15 +27,9 @@ const runner = withServer(
             favNumber: integer(),
             posts: relationship({ ref: 'Post.author', many: true }),
           },
-          graphql: {
-            queryLimits: {
-              maxResults: 2,
-            },
-          },
         }),
       },
       graphql: {
-        queryLimits: { maxTotalResults: 6 },
         apolloConfig: {
           validationRules: [depthLimit(3), definitionLimit(3), fieldLimit(8)],
         },
@@ -41,250 +38,51 @@ const runner = withServer(
   })
 );
 
-describe('maxResults Limit', () => {
-  describe('Basic querying', () => {
-    test(
-      'users',
-      runner(async ({ context }) => {
-        const users = await context.query.User.createMany({
-          data: [
-            { name: 'Jess', favNumber: 1 },
-            { name: 'Johanna', favNumber: 8 },
-            { name: 'Sam', favNumber: 5 },
-            { name: 'Theo', favNumber: 2 },
-          ],
-        });
-
-        // 2 results is okay
-        let data = await context.graphql.run({
-          query: `
-          query {
-            users(
-              where: { name: { contains: "J" } },
-              orderBy: { name: asc },
-            ) {
-              name
-            }
-          }
-      `,
-        });
-
-        expect(data).toHaveProperty('users');
-        expect(data).toEqual({ users: [{ name: 'Jess' }, { name: 'Johanna' }] });
-
-        // No results is okay
-        data = await context.graphql.run({
-          query: `
-          query {
-            users(
-              where: { name: { equals: "Nope" } }
-            ) {
-              name
-            }
-          }
-      `,
-        });
-
-        expect(data).toHaveProperty('users');
-        expect(data).toEqual({ users: [] });
-
-        // Count is still correct
-        data = await context.graphql.run({
-          query: `query { usersCount }`,
-        });
-
-        expect(data).toHaveProperty('usersCount');
-        expect(data).toEqual({ usersCount: users.length });
-
-        // This query is only okay because of the "take" parameter
-        data = await context.graphql.run({
-          query: `
-          query {
-            users(take: 1, 
-              orderBy: { name: asc }
-            ) {
-              name
-            }
-          }
-      `,
-        });
-
-        expect(data).toHaveProperty('users');
-        expect(data).toEqual({ users: [{ name: 'Jess' }] });
-
-        // This query returns too many results
-        let errors;
-        ({ errors } = await context.graphql.raw({
-          query: `
-          query {
-            users {
-              name
-            }
-          }
-      `,
-        }));
-
-        expectLimitsExceededError(errors, [{ path: ['users'] }]);
-
-        // The query results don't break the limits, but the "take" parameter does
-        ({ errors } = await context.graphql.raw({
-          query: `
-          query {
-            users(
-              where: { name: { equals: "Nope" } },
-              take: 100000
-            ) {
-              name
-            }
-          }
-      `,
-        }));
-
-        expectLimitsExceededError(errors, [{ path: ['users'] }]);
-      })
-    );
-    test(
-      'negative take still causes the early error',
-      runner(async ({ context }) => {
-        // there are no users so this will never hit the late error so if it errors
-        // it must be the early error
-        let { errors } = await context.graphql.raw({
-          query: `
-          query {
-            users(take: -10) {
-              name
-            }
-          }
-      `,
-        });
-
-        expectLimitsExceededError(errors, [{ path: ['users'] }]);
-      })
-    );
-  });
-
-  describe('Relationship querying', () => {
-    test(
-      'posts by user',
-      runner(async ({ context }) => {
-        const users = await context.query.User.createMany({
-          data: [
-            { name: 'Jess', favNumber: 1 },
-            { name: 'Johanna', favNumber: 8 },
-            { name: 'Sam', favNumber: 5 },
-          ],
-        });
-        await context.query.Post.createMany({
-          data: [
-            { author: { connect: [{ id: users[0].id }] }, title: 'One author' },
-            {
-              author: { connect: [{ id: users[0].id }, { id: users[1].id }] },
-              title: 'Two authors',
-            },
-            {
-              author: { connect: [{ id: users[0].id }, { id: users[1].id }, { id: users[2].id }] },
-              title: 'Three authors',
-            },
-          ],
-        });
-        // Reset the count for each query
-        context.totalResults = 0;
-        // A basic query that should work
-        let posts = await context.query.Post.findMany({
-          where: { title: { equals: 'One author' } },
-          query: 'title author { name }',
-        });
-
-        expect(posts).toEqual([{ title: 'One author', author: [{ name: 'Jess' }] }]);
-
-        // Reset the count for each query
-        context.totalResults = 0;
-        // Each subquery is within the limit (even though the total isn't)
-        posts = await context.query.Post.findMany({
-          where: {
-            OR: [{ title: { equals: 'One author' } }, { title: { equals: 'Two authors' } }],
+describe('graphql.maxTake', () => {
+  test(
+    'uses the default when querying',
+    runner(async ({ context, graphQLRequest }) => {
+      await context.db.Post.createMany({
+        data: [
+          {
+            title: 'Hello',
           },
-          orderBy: { title: 'asc' },
-          query: 'title author(orderBy: { name: asc }) { name }',
-        });
-        expect(posts).toEqual([
-          { title: 'One author', author: [{ name: 'Jess' }] },
-          { title: 'Two authors', author: [{ name: 'Jess' }, { name: 'Johanna' }] },
-        ]);
+          {
+            title: 'World',
+          },
+        ],
+      });
 
-        // Reset the count for each query
-        context.totalResults = 0;
-        // This post has too many authors
-        let errors;
-        ({ errors } = await context.graphql.raw({
-          query: `
-          query {
-            posts(
-              where: { title: { equals: "Three authors" } },
-            ) {
-              title
-              author {
-                name
-              }
-            }
-          }
-      `,
-        }));
-
-        expectLimitsExceededError(errors, [{ path: ['posts', expect.any(Number), 'author'] }]);
-
-        // Requesting the too-many-authors post is okay as long as the authors aren't returned
-        // Reset the count for each query
-        context.totalResults = 0;
-        posts = await context.query.Post.findMany({
-          where: { title: { equals: 'Three authors' } },
-          query: 'title',
-        });
-
-        expect(posts).toEqual([{ title: 'Three authors' }]);
-
-        // Some posts are okay, but one breaks the limit
-        // Reset the count for each query
-        context.totalResults = 0;
-        ({ errors } = await context.graphql.raw({
-          query: `
+      const { body } = await graphQLRequest({
+        query: `
           query {
             posts {
               title
-              author {
-                name
-              }
             }
           }
-      `,
-        }));
+        `,
+      });
 
-        expectLimitsExceededError(errors, [{ path: ['posts', expect.any(Number), 'author'] }]);
+      expect(body.data.posts.length).toEqual(2);
+    })
+  );
 
-        // All subqueries are within limits, but the total isn't
-        // Reset the count for each query
-        context.totalResults = 0;
-        ({ errors } = await context.graphql.raw({
-          query: `
+  test(
+    'enforces the default',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        query: `
           query {
-            posts(where: { title: { equals: "Two authors" } }) {
-              title
-              author {
-                posts {
-                  title
-                }
-              }
+            posts(take: 5) {
+              id
             }
           }
-      `,
-        }));
+        `,
+      });
 
-        expectLimitsExceededError(errors, [
-          { path: ['posts', 0, 'author', expect.any(Number), 'posts'] },
-        ]);
-      })
-    );
-  });
+      expectLimitsExceededError(body.errors, [{ path: ['posts'] }]);
+    })
+  );
 });
 
 // FIXME: we need upstream support in the graphql package to make KS validation rules work for internal requests
@@ -292,99 +90,69 @@ describe('maxResults Limit', () => {
 
 describe('maxDepth Limit', () => {
   test(
-    'script kiddie',
-    runner(async ({ graphQLRequest }) => {
-      // Block a script-kiddie attempt to DoS the server with nested queries
-      const { body } = await graphQLRequest({
-        query: `
-            query {
-              posts {
-                author {
-                  posts {
-                    author {
-                      name
-                    }
-                  }
-                }
-              }
-            }
-          `,
-      }).expect(400);
-
-      expectGraphQLValidationError(body.errors, [{ message: 'Operation has depth 5 (max: 3)' }]);
-    })
-  );
-
-  test(
-    'mutation script kiddie',
+    'nested query',
     runner(async ({ graphQLRequest }) => {
       const { body } = await graphQLRequest({
         query: `
-            mutation {
-              updatePost(where: { id: "foo" }, data: { title: "bar" }) {
-                author {
-                  posts {
-                    author {
-                      name
-                    }
-                  }
-                }
-              }
-            }
-          `,
-      }).expect(400);
-
-      expectGraphQLValidationError(body.errors, [{ message: 'Operation has depth 5 (max: 3)' }]);
-    })
-  );
-
-  test(
-    'one fragment',
-    runner(async ({ graphQLRequest }) => {
-      // Slightly sneakier depth violation using a fragment
-      const { body } = await graphQLRequest({
-        query: `
-            query nestingbomb {
-              posts {
-                ...f
-              }
-            }
-            fragment f on Post {
+          query {
+            posts {
               author {
                 posts {
-                  title
+                  author {
+                    name
+                  }
                 }
               }
             }
-            `,
+          }
+        `,
       }).expect(400);
 
-      expectGraphQLValidationError(body.errors, [{ message: 'Operation has depth 4 (max: 3)' }]);
+      expectGraphQLValidationError(body.errors, [{ message: 'Operation has depth 5 (max: 3)' }]);
     })
   );
 
   test(
-    'multiple fragments',
+    'nested mutation',
     runner(async ({ graphQLRequest }) => {
-      // Sneakier violation using multiple fragments
       const { body } = await graphQLRequest({
         query: `
-            query nestingbomb {
-              posts {
-                ...f1
-              }
-            }
-            fragment f1 on Post {
+          mutation {
+            updatePost(where: { id: "foo" }, data: { title: "bar" }) {
               author {
-                ...f2
+                posts {
+                  author {
+                    name
+                  }
+                }
               }
             }
-            fragment f2 on User {
-              posts {
-                title
-              }
+          }
+        `,
+      }).expect(400);
+
+      expectGraphQLValidationError(body.errors, [{ message: 'Operation has depth 5 (max: 3)' }]);
+    })
+  );
+
+  test(
+    'nested query (1 fragment)',
+    runner(async ({ graphQLRequest }) => {
+      const { body } = await graphQLRequest({
+        query: `
+        query nestingbomb {
+          posts {
+            ...f
+          }
+        }
+        fragment f on Post {
+          author {
+            posts {
+              title
             }
-            `,
+          }
+        }
+        `,
       }).expect(400);
 
       expectGraphQLValidationError(body.errors, [{ message: 'Operation has depth 4 (max: 3)' }]);
@@ -392,9 +160,36 @@ describe('maxDepth Limit', () => {
   );
 
   test(
-    'mutual fragment reference',
+    'nested query (3 fragments)',
     runner(async ({ graphQLRequest }) => {
-      // Infinite loop (illegal as GraphQL, but needs to be handled)
+      const { body } = await graphQLRequest({
+        query: `
+        query nestingbomb {
+          posts {
+            ...f1
+          }
+        }
+        fragment f1 on Post {
+          author {
+            ...f2
+          }
+        }
+        fragment f2 on User {
+          posts {
+            title
+          }
+        }
+        `,
+      }).expect(400);
+
+      expectGraphQLValidationError(body.errors, [{ message: 'Operation has depth 4 (max: 3)' }]);
+    })
+  );
+
+  // disallowed by GraphQL, but needs to be handled
+  test(
+    'circular fragments',
+    runner(async ({ graphQLRequest }) => {
       const { body } = await graphQLRequest({
         query: `
             query nestingbomb {
@@ -425,10 +220,10 @@ describe('maxDepth Limit', () => {
     })
   );
 
+  // disallowed by GraphQL, but needs to be handled
   test(
     'undefined fragment',
     runner(async ({ graphQLRequest }) => {
-      // (also illegal as GraphQL, but needs to be handled)
       const { body } = await graphQLRequest({
         query: `
             query {
@@ -450,9 +245,8 @@ describe('maxDepth Limit', () => {
 
 describe('maxDefinitions Limit', () => {
   test(
-    'queries',
+    'too many queries',
     runner(async ({ graphQLRequest }) => {
-      // Too many queries
       const { body } = await graphQLRequest({
         operationName: 'a',
         query: `
@@ -486,7 +280,7 @@ describe('maxDefinitions Limit', () => {
   );
 
   test(
-    'fragments',
+    'too many fragments',
     runner(async ({ graphQLRequest }) => {
       const { body } = await graphQLRequest({
         operationName: 'q1',
@@ -517,7 +311,7 @@ describe('maxDefinitions Limit', () => {
   );
 
   test(
-    'mutations',
+    'too many mutations',
     runner(async ({ graphQLRequest }) => {
       const { body } = await graphQLRequest({
         operationName: 'm1',

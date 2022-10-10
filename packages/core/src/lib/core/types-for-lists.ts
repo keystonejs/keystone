@@ -52,7 +52,6 @@ export type InitialisedList = {
   hooks: ListHooks<BaseListTypeInfo>;
   adminUILabels: { label: string; singular: string; plural: string; path: string };
   cacheHint: ((args: CacheHintArgs) => CacheHint) | undefined;
-  maxResults: number;
   listKey: string;
   lists: Record<string, InitialisedList>;
   dbMap: string | undefined;
@@ -196,8 +195,6 @@ function getListsWithInitialisedFields(
 
       hooks: list.hooks || {},
 
-      /** These properties aren't related to any of the above actions but need to be here */
-      maxResults: list.graphql?.queryLimits?.maxResults ?? Infinity,
       listKey,
       cacheHint: (() => {
         const cacheHint = list.graphql?.cacheHint;
@@ -353,6 +350,15 @@ function getListGraphqlTypes(
       },
     });
 
+    let take: any = graphql.arg({ type: graphql.Int });
+    if (listConfig.graphql?.maxTake !== undefined) {
+      take = graphql.arg({
+        type: graphql.nonNull(graphql.Int),
+        // warning: this is used by queries/resolvers.ts to enforce the limit
+        defaultValue: listConfig.graphql.maxTake,
+      });
+    }
+
     const findManyArgs: FindManyArgs = {
       where: graphql.arg({
         type: graphql.nonNull(where),
@@ -362,8 +368,7 @@ function getListGraphqlTypes(
         type: graphql.nonNull(graphql.list(graphql.nonNull(orderBy))),
         defaultValue: [],
       }),
-      // TODO: non-nullable when max results is specified in the list with the default of max results
-      take: graphql.arg({ type: graphql.Int }),
+      take,
       skip: graphql.arg({ type: graphql.nonNull(graphql.Int), defaultValue: 0 }),
     };
 

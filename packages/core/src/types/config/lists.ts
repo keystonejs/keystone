@@ -142,7 +142,6 @@ export type ListAdminUIConfig<
     initialSort?: { field: 'id' | keyof Fields; direction: 'ASC' | 'DESC' };
     // was previously defaultPageSize
     pageSize?: number; // default number of items to display per page on the list screen
-    // note: we are removing maximumPageSize
   };
 
   /**
@@ -204,12 +203,11 @@ export type ListGraphQLConfig = {
    * The plural form of the list key to use in the generated GraphQL schema.
    * Note that there is no singular here because the singular used in the GraphQL schema is the list key.
    */
-  // was previously top-level listQueryName
   plural?: string;
-  // was previously top-level queryLimits
-  queryLimits?: {
-    maxResults?: number; // maximum number of items that can be returned in a query (or subquery)
-  };
+  /**
+   * The maximum value for the take parameter when querying this list
+   */
+  maxTake?: number;
   cacheHint?: ((args: CacheHintArgs) => CacheHint) | CacheHint;
   // Setting any of these values will remove the corresponding operations from the GraphQL schema.
   // Queries:

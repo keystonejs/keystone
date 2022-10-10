@@ -450,7 +450,7 @@ The following error codes can be returned from the Keystone GraphQL API.
 - `KS_ACCESS_DENIED`: The operation is not allowed because either an [Access Control](../config/access-control) rule prevents it, or the item does not exist.
 - `KS_FILTER_DENIED`: The filter or ordering operation is not allowed because of [`isFilterable` or `isOrderable`](../fields/overview#common-configuration) rules.
 - `KS_VALIDATION_FAILURE`: The operation is not allowed because of a [validation](../guides/hooks#validating-inputs) rule.
-- `KS_LIMITS_EXCEEDED`: The user has exceeded their [query limits](../config/lists#graphql).
+- `KS_LIMITS_EXCEEDED`: The user has exceeded some query limits. E.g, a `take` input [that is too high](../config/lists#graphql).
 - `KS_EXTENSION_ERROR`: An error was thrown while excuting a system extension function, such as a hook or an access control function.
 - `KS_ACCESS_RETURN_ERROR`: An invalid value was returned from an access control function.
 - `KS_RESOLVER_ERROR`: An error occured while resolving the input for a field.

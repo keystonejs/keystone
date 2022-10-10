@@ -83,10 +83,8 @@ export function makeCreateContext({
     const contextToReturn: KeystoneContext = {
       db: dbAPI,
       query: itemAPI,
-      totalResults: 0,
       prisma: prismaClient,
       graphql: { raw: rawGraphQL, run: runGraphQL, schema },
-      maxTotalResults: config.graphql?.queryLimits?.maxTotalResults ?? Infinity,
       sudo: () => createContext({ sessionContext, sudo: true, req }),
       exitSudo: () => createContext({ sessionContext, sudo: false, req }),
       withSession: session =>
