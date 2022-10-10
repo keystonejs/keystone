@@ -386,8 +386,6 @@ Options:
 
 - `debug` (default: `process.env.NODE_ENV !== 'production'`): If `true`, stacktraces from both Apollo errors and Keystone errors will be included in the errors returned from the GraphQL API.
   These can be filtered out with `apolloConfig.formatError` if you need to process them, but do not want them returned over the GraphQL API.
-- `queryLimits` (default: `undefined`): Allows you to limit the total number of results returned from a query to your GraphQL API.
-  See also the per-list `graphql.queryLimits` option in the [Lists API](./lists).
 - `path` (default: `'/api/graphql'`): The path of the GraphQL API endpoint.
 - `playground` (default: `process.env.NODE_ENV !== 'production'`)
   - `true` - Add `ApolloServerPluginLandingPageGraphQLPlayground` to the Apollo Server plugins
