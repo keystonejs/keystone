@@ -117,8 +117,6 @@ export function DocsPage({
               className={noProse ? '' : 'prose'}
               css={{
                 paddingTop: '2rem',
-                // to prevent default grid item min-width: auto behaviour
-                // it makes pre tags looooooong
               }}
             >
               <Stack
