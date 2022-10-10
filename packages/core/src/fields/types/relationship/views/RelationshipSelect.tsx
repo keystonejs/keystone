@@ -84,9 +84,6 @@ export function useFilter(search: string, list: ListMeta) {
   }, [search, list]);
 }
 
-const initialItemsToLoad = 10;
-const subsequentItemsToLoad = 50;
-
 const idField = '____id____';
 
 const labelField = '____label____';
@@ -184,6 +181,8 @@ export const RelationshipSelect = ({
     [link, list.gqlNames.listQueryName]
   );
 
+  const initialItemsToLoad = Math.min(list.pageSize, 10);
+  const subsequentItemsToLoad = Math.min(list.pageSize, 50);
   const { data, error, loading, fetchMore } = useQuery(QUERY, {
     fetchPolicy: 'network-only',
     variables: { where, take: initialItemsToLoad, skip: 0 },
