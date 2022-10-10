@@ -104,7 +104,7 @@ Options:
   - `initialSort` (default: `undefined`): Sets the field and direction to be used to initially sort the data in the list view.
     Option `field` is the name of the field to sort by, and `direction` is either `'ASC'` or `'DESC'` for ascending and descending sorting respectively.
     If undefined then data will be unsorted.
-  - `pageSize` (default: lower of `50` or [`graphql.maxTake`](./#graphql)): Sets the number of items to show per page in the list view.
+  - `pageSize` (default: lower of `50` or [`graphql.maxTake`](#graphql)): Sets the number of items to show per page in the list view.
 - `label`: The label used to identify the list in navigation etc.
 - `singular`: The singular form of the list key. It is used in sentences like `Are you sure you want to delete this {singular}?`
 - `plural`: The plural form of the list key. It is used in sentences like `Are you sure you want to delete these {plural}?`
