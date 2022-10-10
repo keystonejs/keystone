@@ -94,7 +94,7 @@ export default function Docs() {
 
       <Type as="p" look="body18" margin=".25rem 0 1.5rem 0">
         If you’re new to Keystone begin here. These walkthroughs introduce the system, key concepts,
-        and show you how to getup and running with schema-driven development the Keystone way.
+        and show you how to get up and running with schema-driven development the Keystone way.
       </Type>
 
       <QuickStart />
