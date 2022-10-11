@@ -1,14 +1,14 @@
 import { replaceShowNextRelease } from './typescript';
 test('no usage', async () => {
   expect(await replaceShowNextRelease('a.ts', "const a = 'something';")).toMatchInlineSnapshot(`
-    "const a = "something";
+    "const a = 'something';
     "
   `);
 });
 test('assignment to variable', async () => {
   expect(await replaceShowNextRelease('a.ts', 'const a = process.env.SHOW_NEXT_RELEASE;'))
     .toMatchInlineSnapshot(`
-    "const a = "1";
+    "const a = '1';
     "
   `);
 });
@@ -28,7 +28,7 @@ function a() {
     )
   ).toMatchInlineSnapshot(`
     "function a() {
-      console.log("yes");
+      console.log('yes');
     }
     "
   `);
@@ -45,7 +45,7 @@ function a() {
     )
   ).toMatchInlineSnapshot(`
     "function a() {
-      const a = "new release";
+      const a = 'new release';
     }
     "
   `);
@@ -62,7 +62,7 @@ function MyThing() {
     )
   ).toMatchInlineSnapshot(`
     "function MyThing() {
-      return <div>something {"next release"} other</div>;
+      return <div>something {'next release'} other</div>;
     }
     "
   `);
@@ -74,6 +74,28 @@ test('conditional expression in jsx with jsx in consequent', async () => {
       `
 function MyThing() {
   return <div>something {process.env.SHOW_NEXT_RELEASE ? <div>new release</div>: 'previous release'} other</div>
+}
+`
+    )
+  ).toMatchInlineSnapshot(`
+    "function MyThing() {
+      return (
+        <div>
+          something <div>new release</div> other
+        </div>
+      );
+    }
+    "
+  `);
+});
+
+test('&&', async () => {
+  expect(
+    await replaceShowNextRelease(
+      'a.tsx',
+      `
+function MyThing() {
+  return <div>something {process.env.SHOW_NEXT_RELEASE && <div>new release</div>} other</div>
 }
 `
     )
