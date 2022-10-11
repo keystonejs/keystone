@@ -33,7 +33,7 @@ This document will explain the configuration options which can be used with the 
 
 Options:
 
-- `isSingleton`: This flag, when `true` changes the list to default to only supporting a single row. See [Singletons](#singleton) for details.
+- `isSingleton`: This flag, when `true` changes the list to default to only supporting a single row. See [Singletons](#isSingleton) for details.
 - `defaultIsFilterable`: This value sets the default value to use for `isFilterable` for fields on this list.
 - `defaultIsOrderable`: This value sets the default value to use for `isOrderable` for fields on this list.
 
@@ -257,7 +257,7 @@ export default config({
 The `description` option defines a string that will be used as a description in the Admin UI and GraphQL API docs.
 This option can be individually overridden by the `graphql.description` or `ui.description` options.
 
-## Singleton
+## isSingleton
 
 The `isSingleton` flag changes a list to only have support for a single row with an `id` of `1`.
 The flag provides the developer with a convenient syntax and defaults when working with lists that should only have zero or one items.
