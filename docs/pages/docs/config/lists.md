@@ -33,7 +33,7 @@ This document will explain the configuration options which can be used with the 
 
 Options:
 
-- `isSingleton`: Setting this to `true` will make the list a single object list. Read more [here](#singleton).
+- `isSingleton`: This flag, when `true` changes the list to default to only supporting a single row. See [Singletons](#singleton) for details.
 - `defaultIsFilterable`: This value sets the default value to use for `isFilterable` for fields on this list.
 - `defaultIsOrderable`: This value sets the default value to use for `isOrderable` for fields on this list.
 
@@ -257,31 +257,34 @@ export default config({
 The `description` option defines a string that will be used as a description in the Admin UI and GraphQL API docs.
 This option can be individually overridden by the `graphql.description` or `ui.description` options.
 
-## singleton
+## Singleton
 
-`isSingleton` option converts a list into a single object list. It gives you a convenient syntax to work with entities that will always only have one item. Eg. website configuration, system settings, etc.
+The `isSingleton` flag changes a list to only have support for a single row with an `id` of `1`.
+The flag provides the developer with a convenient syntax and defaults when working with lists that should only have zero or one items.
+With this flag set, when an item is created it is given an `id` of `1`, and when an item is queried from a list, the GraphQL `where` filter defaults to `{ id: '1' }`.
 
-In singleton lists, Keystone makes sure when an item for the list is created, it is created with the `ID: '1'`. And when an item is queried from a list, a default where clause `where: { id: '1' }` is inserted into the query. This gives a convenient syntax sugar to work with.
+An example of when this might helpful is for editable data like your configuration options when it isn't suitable to be stored on the filesystem.
 
-Eg. In GraphQL, to query a singleton list named `config`, you would just write
+Abstracting singletons as a behavioural trait of lists instead of a distinct type helps developers build functions for lists without needing to know the underlying constraints, effectively ensuring that lists remain as functors.
+
+Using GraphQL, to query a list named `settings`, with `isSingleton` set, you can write the following
 
 ```
 query {
-  config {
+  settings {
     seoTitle
     seoDescription
   }
 }
 ```
 
-In the Admin UI, singleton lists don't have a list view and instead take you directly to the item view page.
+In the Admin UI, lists with `isSingleton` set do not have a list view, instead redirecting you to the item view page of the item with an `id` of `1`.
 
-Please remember that `isSingleton` is only a syntax sugar to conveniently work with single object entities. You will have to keep these things in mind when working with a singleton list —
+The following additional constraints should be kept in mind when lists that have `isSingleton` set —
 
-- Using `context` API, if you try to create a list item with `context.query` or `context.db` while an entry already exists, you will get a _unique constraint error_ because Keystone defaults the id to `1`.
-- You cannot have a relationship **to** a singleton. However you can have relationships **from** a singleton.
-- In the Admin UI, singleton lists don't have a _count_ because the list is limited to only one entry.
-- The plural query will still be available in the GraphQL API.
+- With `id: 1` injected into respective filters, the `id` unique constraint will fail for create operations if an item already exists
+- You cannot have relationships (`ref: 'Settings'`), if `Settings` is a list with `isSingleton` set
+- You can however, have relationship fields in the `Settings` list, like normal
 
 ## Related resources
 
