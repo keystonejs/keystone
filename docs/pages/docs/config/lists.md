@@ -267,11 +267,18 @@ An example of when this might helpful is for editable data like your configurati
 
 Abstracting singletons as a behavioural trait of lists instead of a distinct type helps developers build functions for lists without needing to know the underlying constraints, effectively ensuring that lists remain as functors.
 
-Using GraphQL, to query a list named `settings`, with `isSingleton` set, you can write the following
+Using GraphQL, to query a list named `settings`, with `isSingleton` set, you can write any of the following queries
 
-```
+```graphql
 query {
+  # singular (null or an item)
   settings {
+    seoTitle
+    seoDescription
+  }
+
+  # plural (0 or 1 items)
+  settingsMany {
     seoTitle
     seoDescription
   }
