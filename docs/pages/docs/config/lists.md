@@ -19,7 +19,9 @@ export default config({
       graphql: { /* ... */ },
       db: { /* ... */ },
       description: '...',
+      {% if $nextRelease %}
       isSingleton: false,
+      {% /if %}
       defaultIsFilterable: false,
       defaultIsOrderable: false,
     }),
@@ -33,7 +35,9 @@ This document will explain the configuration options which can be used with the 
 
 Options:
 
+{% if $nextRelease %}
 - `isSingleton`: This flag, when `true` changes the list to default to only supporting a single row. See [Singletons](#isSingleton) for details.
+{% /if %}
 - `defaultIsFilterable`: This value sets the default value to use for `isFilterable` for fields on this list.
 - `defaultIsOrderable`: This value sets the default value to use for `isOrderable` for fields on this list.
 
@@ -257,6 +261,7 @@ export default config({
 The `description` option defines a string that will be used as a description in the Admin UI and GraphQL API docs.
 This option can be individually overridden by the `graphql.description` or `ui.description` options.
 
+{% if $nextRelease %}
 ## isSingleton
 
 The `isSingleton` flag changes a list to only have support for a single row with an `id` of `1`.
@@ -292,6 +297,7 @@ The following additional constraints should be kept in mind when lists that have
 - With `id: 1` injected into respective filters, the `id` unique constraint will fail for create operations if an item already exists
 - You cannot have relationships (`ref: 'Settings'`), if `Settings` is a list with `isSingleton` set
 - You can however, have relationship fields in the `Settings` list, like normal
+{% /if %}
 
 ## Related resources
 
