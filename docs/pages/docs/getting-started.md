@@ -75,12 +75,12 @@ yarn dev
 
 This will generate the Admin UI pages via [Next.js](https://nextjs.org/) on <http://localhost:3000>. When you visit the Admin UI for the first time you will be presented with a handy screen that asks you to create a user:
 
-![The welcome screen giving you the ability the create a new user to log into the AdminUI](/assets/getting-started/welcome-screen.png)
+![The welcome screen giving you the ability the create a new user to log into the Admin UI](/assets/getting-started/welcome-screen.png)
 
 Go ahead and create your first user. The email address and password will be used to login to Keystone’s Admin UI. Once you've created your user, you’ll be logged in to a new Keystone Admin UI that comes with two [lists](/docs/config/config#lists).
 From here you can explore and interact with the data in your system, and understand how Keystone’s schema relates to your GraphQL API which you can explore at <http://localhost:3000/api/graphql>.
 
-![The AdminUI of Keystone showing the two lists: User and Posts](/assets/getting-started/adminui.png)
+![The Admin UI of Keystone showing the two lists: User and Posts](/assets/getting-started/adminui.png)
 
 ## Output
 

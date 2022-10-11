@@ -19,6 +19,9 @@ export default config({
       graphql: { /* ... */ },
       db: { /* ... */ },
       description: '...',
+      {% if $nextRelease %}
+      isSingleton: false,
+      {% /if %}
       defaultIsFilterable: false,
       defaultIsOrderable: false,
     }),
@@ -32,6 +35,9 @@ This document will explain the configuration options which can be used with the 
 
 Options:
 
+{% if $nextRelease %}
+- `isSingleton`: This flag, when `true` changes the list to default to only supporting a single row. See [Singletons](#isSingleton) for details.
+{% /if %}
 - `defaultIsFilterable`: This value sets the default value to use for `isFilterable` for fields on this list.
 - `defaultIsOrderable`: This value sets the default value to use for `isOrderable` for fields on this list.
 
@@ -254,6 +260,44 @@ export default config({
 
 The `description` option defines a string that will be used as a description in the Admin UI and GraphQL API docs.
 This option can be individually overridden by the `graphql.description` or `ui.description` options.
+
+{% if $nextRelease %}
+## isSingleton
+
+The `isSingleton` flag changes a list to only have support for a single row with an `id` of `1`.
+The flag provides the developer with a convenient syntax and defaults when working with lists that should only have zero or one items.
+With this flag set, when an item is created it is given an `id` of `1`, and when an item is queried from a list, the GraphQL `where` filter defaults to `{ id: '1' }`.
+
+An example of when this might helpful is for editable data like your configuration options when it isn't suitable to be stored on the filesystem.
+
+Abstracting singletons as a behavioural trait of lists instead of a distinct type helps developers build functions for lists without needing to know the underlying constraints, effectively ensuring that lists remain as functors.
+
+Using GraphQL, to query a list named `settings`, with `isSingleton` set, you can write any of the following queries
+
+```graphql
+query {
+  # singular (null or an item)
+  settings {
+    seoTitle
+    seoDescription
+  }
+
+  # plural (0 or 1 items)
+  settingsMany {
+    seoTitle
+    seoDescription
+  }
+}
+```
+
+In the Admin UI, lists with `isSingleton` set do not have a list view, instead redirecting you to the item view page of the item with an `id` of `1`.
+
+The following additional constraints should be kept in mind when lists that have `isSingleton` set —
+
+- With `id: 1` injected into respective filters, the `id` unique constraint will fail for create operations if an item already exists
+- You cannot have relationships (`ref: 'Settings'`), if `Settings` is a list with `isSingleton` set
+- You can however, have relationship fields in the `Settings` list, like normal
+{% /if %}
 
 ## Related resources
 

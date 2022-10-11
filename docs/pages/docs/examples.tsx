@@ -213,6 +213,15 @@ export default function Docs() {
         >
           Implements virtual fields in a Keystone list.
         </Well>
+        <Well
+          grad="grad1"
+          heading="Singleton"
+          href="https://github.com/keystonejs/keystone/tree/main/examples/singleton"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Demonstrates how to use singleton lists with Keystone.
+        </Well>
       </div>
 
       <Type as="h2" look="heading30" margin="2rem 0 1rem 0" id="end-to-end-examples">
