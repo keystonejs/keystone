@@ -36,7 +36,7 @@ This document will explain the configuration options which can be used with the 
 Options:
 
 {% if $nextRelease %}
-- `isSingleton`: This flag, when `true` changes the list to default to only supporting a single row. See [Singletons](#isSingleton) for details.
+- `isSingleton`: This flag, when `true` changes the list to default to only supporting a single row. See [Singletons](#is-singleton) for details.
 {% /if %}
 - `defaultIsFilterable`: This value sets the default value to use for `isFilterable` for fields on this list.
 - `defaultIsOrderable`: This value sets the default value to use for `isOrderable` for fields on this list.

@@ -92,16 +92,16 @@ export const baseMarkdocConfig: Config = {
         // we want good stable ids so we require documentation authors write ids
         // when they could be ambiguous rather than just adding an index
         const seenHeadings = new Map<string, Node | 'reported'>();
-        for (const child of document.children) {
-          if (child.type === 'heading') {
-            const id = getIdForHeading(child);
+        for (const node of document.walk()) {
+          if (node.type === 'heading') {
+            const id = getIdForHeading(node);
             // we report an error for this in the heading validation
             if (id.length === 0) {
               continue;
             }
             const existingHeading = seenHeadings.get(id);
             if (!existingHeading) {
-              seenHeadings.set(id, child);
+              seenHeadings.set(id, node);
               continue;
             }
             const ambiguousHeadingError = (node: Node): ValidationError => ({
@@ -114,7 +114,7 @@ export const baseMarkdocConfig: Config = {
               errors.push(ambiguousHeadingError(existingHeading));
               seenHeadings.set(id, 'reported');
             }
-            errors.push(ambiguousHeadingError(child));
+            errors.push(ambiguousHeadingError(node));
           }
         }
         for (const node of document.walk()) {
@@ -140,6 +140,18 @@ export const baseMarkdocConfig: Config = {
         language: { type: String, default: 'typescript' },
         // process determines whether or not markdoc processes tags inside the content of the code block
         process: { type: Boolean, render: false, default: false },
+      },
+      transform(node, config) {
+        const attributes = node.transformAttributes(config);
+        const children = node.transformChildren(config);
+        if (children.some(child => typeof child !== 'string')) {
+          throw new Error(
+            `unexpected non-string child of code block from ${
+              node.location?.file ?? '(unknown file)'
+            }:${node.location?.start.line ?? '(unknown line)'}`
+          );
+        }
+        return new Tag(this.render, { ...attributes, content: children.join('') }, []);
       },
     },
     heading: {
