@@ -53,7 +53,7 @@ While Keystone has very granular permissions controls, which you can read about 
 
 ## Add the Password field
 
-Keystone's [password](/docs/fields/password) field adheres to typical password security recommendations like hashing the password in the database, and masking the password for AdminUI input fields.
+Keystone's [password](/docs/fields/password) field adheres to typical password security recommendations like hashing the password in the database, and masking the password for Admin UI input fields.
 
 Let's add a password field to our `User` list so users can authenticate with Keystone:
 
