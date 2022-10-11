@@ -6,6 +6,7 @@ import { isNonEmptyArray } from 'emery/guards';
 import { assert } from 'emery/assertions';
 import { load } from 'js-yaml';
 import { baseMarkdocConfig } from './config';
+import { showNextReleaseWithoutReplacement } from './show-next-release';
 
 export function printValidationError(error: ValidateError) {
   const location = error.error.location || error.location;
@@ -47,7 +48,7 @@ export async function readDocContent(filepath: string): Promise<DocContent> {
 const markdocConfig: Config = {
   ...baseMarkdocConfig,
   variables: {
-    nextRelease: !!process.env.SHOW_NEXT_RELEASE,
+    nextRelease: showNextReleaseWithoutReplacement,
   },
 };
 

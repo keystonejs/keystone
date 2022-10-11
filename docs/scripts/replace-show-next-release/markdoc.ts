@@ -1,5 +1,5 @@
 import Markdoc from '@markdoc/markdoc';
-import { baseMarkdocConfig } from './config';
+import { baseMarkdocConfig } from '../../markdoc/config';
 
 const pattern =
   /{%\s+if\s+\$nextRelease\s+%}\s*([^]+?)\s*(?:{%\s+else\s+\/%}[^]*?)?{%\s+\/if\s+%}/g;

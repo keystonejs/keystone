@@ -1,4 +1,4 @@
-import { removeNextReleaseConditions } from './remove-next-release-conditions';
+import { removeNextReleaseConditions } from './markdoc';
 
 test('removes if', () => {
   const content = `## Heading 1

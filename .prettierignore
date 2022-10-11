@@ -6,7 +6,8 @@ coverage
 **/.next
 **/.keystone
 **/__generated__
-docs/
+docs/**/*.md
+docs/public/assets/*.js
 .keystone/tests
 prisma-utils/src/generated
 nexus-typegen.ts

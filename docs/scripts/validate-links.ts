@@ -1,7 +1,7 @@
 import Markdoc from '@markdoc/markdoc';
-import { getIdForHeading, baseMarkdocConfig, Pages } from './markdoc/config';
-import { printValidationError } from './markdoc';
-import { loadAllMarkdoc } from './markdoc/load-all';
+import { getIdForHeading, baseMarkdocConfig, Pages } from '../markdoc/config';
+import { printValidationError } from '../markdoc';
+import { loadAllMarkdoc } from '../markdoc/load-all';
 
 // for the things that aren't Markdoc that are linked from Markdoc
 const NON_MARKDOWN_PAGES = [

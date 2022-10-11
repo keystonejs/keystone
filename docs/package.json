@@ -9,11 +9,13 @@
     "build": "yarn validate-links && next build && yarn sitemap",
     "start": "next start -p 8000",
     "sitemap": "next-sitemap",
-    "validate-links": "tsx validate-links.ts",
-    "remove-conditionals": "tsx remove-conditionals.ts"
+    "validate-links": "tsx scripts/validate-links.ts",
+    "remove-conditionals": "tsx scripts/replace-show-next-release/index.ts"
   },
   "dependencies": {
+    "@babel/core": "^7.16.0",
     "@babel/runtime": "^7.16.3",
+    "@codemod/core": "^2.0.1",
     "@emotion/cache": "11.10.3",
     "@emotion/css": "^11.7.1",
     "@emotion/react": "^11.7.1",
@@ -46,6 +48,7 @@
     "markdown-it": "^13.0.1",
     "next": "^12.2.4",
     "next-compose-plugins": "^2.2.1",
+    "prettier": "^2.5.0",
     "prism-react-renderer": "^1.2.1",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
