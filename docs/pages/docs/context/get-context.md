@@ -25,7 +25,7 @@ const context = getContext(config, PrismaModule);
 For inspiration, see [the script example project](https://github.com/keystonejs/keystone/tree/main/examples/script-field), and how we use [`tsx`](https://github.com/esbuild-kit/tsx) to seed the database with some data.
 {% /hint %}
 
-A context created in this way does not have a `session`, and is not a `.sudo()` context.
+A context created in this way does not have an implicit `session`, nor is it a `sudo()` context.
 For more information about how to use a context, please see the [overview](./overview).
 
 {% hint kind="warn" %}
