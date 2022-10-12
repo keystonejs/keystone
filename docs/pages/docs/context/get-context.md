@@ -4,12 +4,12 @@ description: "getContext is a function exported by @keystone-6/core/context to s
 ---
 
 Keystone's command line interface is helpful, but sometimes you don't want to startup the HTTP server, or kickoff any build processes.
-Maybe you need to insert data into the database, maybe you only want Keystone for your internal schema management behind a custom protocol or tiny REST API.
+Maybe you need to insert data into the database, maybe you want to use Keystone with a custom protocol or a tiny REST API.
 *Or maybe you want to write unit tests.*
 
 If you have previously built Keystone using `keystone build` or used `keystone dev`, then you can use `getContext`.
 
-Using the `getContext` function does not need the adhere to the typical Keystone entry point - it only and requires that your Prisma client has been built and can be provided as a parameter with your Keystone configuration.
+Using the `getContext` function does not use the typical Keystone entry point - it is a function and only requires that your Prisma client has been built and can be provided as a parameter with your Keystone configuration.
 
 ```typescript
 import { getContext } from '@keystone-6/core/context';
