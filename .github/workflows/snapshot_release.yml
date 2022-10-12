@@ -1,0 +1,36 @@
+name: Publish Snapshot Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'The npm tag to publish to'
+        required: true
+
+jobs:
+  publish_snapshot_release:
+    name: Publish Snapshot Release
+    runs-on: ubuntu-latest
+    environment: release
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: ./.github/actions/ci-setup
+
+      - name: Configure npm
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Version packages
+        run: yarn changeset version --snapshot ${{ inputs.tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.KEYSTONE_RELEASE_BOT_GITHUB_TOKEN }}
+
+      - name: Publish to npm
+        run: yarn build && yarn changeset publish --tag ${{ inputs.tag }}
