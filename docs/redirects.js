@@ -147,6 +147,11 @@ const CURRENT = [
     permanent: false,
   },
   {
+    source: '/docs/apis',
+    destination: '/docs/config/overview',
+    permanent: false,
+  },
+  {
     source: '/docs/apis/config',
     destination: '/docs/config/config',
     permanent: false,
