@@ -277,15 +277,15 @@ Using GraphQL, to query a list named `settings`, with `isSingleton` set, you can
 ```graphql
 query {
   # singular (null or an item)
-  settings {
-    seoTitle
-    seoDescription
+  seoConfiguration {
+    title
+    description
   }
 
   # plural (0 or 1 items)
-  settingsMany {
-    seoTitle
-    seoDescription
+  seoConfigurations {
+    title
+    description
   }
 }
 ```
