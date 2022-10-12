@@ -8,7 +8,7 @@ Maybe you need to insert data into the database, maybe you want to use Keystone 
 *Or maybe you want to write unit tests.*
 
 If you have previously run `keystone build` or `keystone dev`, then you can use `getContext`.
-If you change your configuration, you should [rebuild your project](../docs/guides/cli) before using `getContext`.
+If you change your configuration, you should [rebuild your project](../guides/cli) before using `getContext`.
 
 Using the `getContext` function does not use the typical Keystone entry point - it is a function and only requires that your Prisma client has been built and can be provided as a parameter with your Keystone configuration.
 
