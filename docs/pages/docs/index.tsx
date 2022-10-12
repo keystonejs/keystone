@@ -264,14 +264,6 @@ export default function Docs() {
           gap: 'var(--space-xlarge)',
         })}
       >
-        <Well
-          grad="grad2"
-          heading="Keystone 5 vs Next. Which should you use?"
-          href="/updates/keystone-5-vs-keystone-6-preview"
-        >
-          We’re graduating Keystone 6 soon. If you’re wondering which version to start a new project
-          with today, this guide is for you.
-        </Well>
         <Well grad="grad2" heading="Command line foundations" href="/docs/guides/cli">
           Keystone’s CLI helps you develop, build, and deploy projects. This guide explains all you
           need to standup a new backend in the terminal.
@@ -284,14 +276,35 @@ export default function Docs() {
           Query filters are an integral part of Keystone’s powerful GraphQL APIs. This guide will
           show you how to use filters to get the data you need from your system.
         </Well>
+        <Well grad="grad2" heading="Understanding Hooks" href="/docs/guides/hooks">
+          Learn how to use Hooks within your schema to extend Keystone’s powerful CRUD GraphQL APIs
+          with your own business logic.
+        </Well>
         <Well grad="grad2" heading="How To Use Document Fields" href="/docs/guides/document-fields">
           Keystone’s document field is a highly customisable rich text editor that stores content as
           structured JSON. Learn how to configure it and incorporate your own custom React
           components.
         </Well>
-        <Well grad="grad2" heading="Understanding Hooks" href="/docs/guides/hooks">
-          Learn how to use Hooks within your schema to extend Keystone’s powerful CRUD GraphQL APIs
-          with your own business logic.
+        <Well grad="grad2" heading="Document Field Demo" href="/docs/guides/document-field-demo">
+          Test drive the many features of Keystone’s Document field on this website.
+        </Well>
+        <Well grad="grad2" heading="Custom Fields" href="/docs/guides/custom-fields">
+          Learn how to define your own custom field types in Keystone, with customisable backend
+          data structure, and Admin UI appearance.
+        </Well>
+        <Well grad="grad2" heading="Testing Guide" href="/docs/guides/testing">
+          Learn how to test the behaviour of your Keystone system to ensure it does what you expect.
+        </Well>
+        <Well grad="grad2" heading="Virtual fields" href="/docs/guides/virtual-fields">
+          Virtual fields offer a powerful way to extend your GraphQL API. This guide introduces the
+          syntax and shows you how start simply and end up with a complex result.
+        </Well>
+        <Well grad="grad2" heading="Choosing a Database" href="/docs/guides/choosing-a-database">
+          Keystone supports Postgres, MySQL and SQLite. This guide explains how to choose the best
+          for your project.
+        </Well>
+        <Well grad="grad2" heading="Images and Files" href="/docs/guides/images-and-files">
+          Learn how to store and manage Images and Files in Keystone.
         </Well>
       </div>
 
