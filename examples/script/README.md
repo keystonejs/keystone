@@ -1,6 +1,8 @@
-## Base Project - Limits
+## Base Project - Script
 
-This project demonstrates usage of different limits you can add to your GraphQL schema in Keystone.
+This project demonstrates how to write code to interact with Keystone without using the standard `@keystone-6/core/scripts/cli` tools.
+
+The `getContext` function does not ahdere to the typical Keystone entry-point and requires that your Prisma schema has been previously built by Keystone.
 
 ## Instructions
 
@@ -17,17 +19,9 @@ You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://
 
 Congratulations, you're now up and running with Keystone! 🚀
 
-### Optional: add sample data
-
-This example includes sample data. To add it to your database:
-
-1. Ensure you’ve initialised your project with `yarn dev` at least once.
-2. Run `yarn seed-data`. This will populate your database with sample content.
-3. Run `yarn dev` again to startup Admin UI with sample data in place.
-
 ## Try it out in CodeSandbox 🧪
 
-You can play with this example online in a web browser using the free [codesandbox.io](https://codesandbox.io/) service. To launch this example, open the URL <https://githubbox.com/keystonejs/keystone/tree/main/examples/limits>. You can also fork this sandbox to make your own changes.
+You can play with this example online in a web browser using the free [codesandbox.io](https://codesandbox.io/) service. To launch this example, open the URL <https://githubbox.com/keystonejs/keystone/tree/main/examples/script>. You can also fork this sandbox to make your own changes.
 
 ## Next steps
 
