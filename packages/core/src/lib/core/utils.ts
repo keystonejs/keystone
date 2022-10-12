@@ -145,13 +145,9 @@ export function getNamesFromList(
 
   let pluralGraphQLName = graphql?.plural || labelToClass(computedPlural);
   if (pluralGraphQLName === listKey) {
-    if (isSingleton) {
-      pluralGraphQLName = 'Many' + listKey;
-    } else {
-      throw new Error(
-        `The list key and the plural name used in GraphQL must be different but the list key ${listKey} is the same as the plural GraphQL name, please specify graphql.plural`
-      );
-    }
+    throw new Error(
+      `The list key and the plural name used in GraphQL must be different but the list key ${listKey} is the same as the plural GraphQL name, please specify graphql.plural`
+    );
   }
   return { pluralGraphQLName, adminUILabels };
 }
