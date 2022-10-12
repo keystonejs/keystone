@@ -154,6 +154,9 @@ export const lists = {
       websiteName: text(),
       copyrightText: text(),
     },
+    graphql: {
+      plural: 'ManySettings',
+    },
   }),
 };
 
