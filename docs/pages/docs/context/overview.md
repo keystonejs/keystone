@@ -1,17 +1,17 @@
 ---
 title: "Context Overview"
-description: "The KeystoneContext object is the primary API entry point for all of the run-time functionality of your system. It's APIs can be used to write things like access control, hooks, testing and GraphQL schema extensions."
+description: "The Context object is the primary API entry point for all of the run-time functionality of your system. It's APIs can be used to write things like access control, hooks, testing and GraphQL schema extensions."
 ---
 
-The `KeystoneContext` object is the primary API entry point for all of the run-time functionality of your Keystone system.
+The `Context` object is the primary API entry point for all of the run-time functionality of your Keystone system.
 In GraphQL, a [`context`](https://graphql.org/learn/execution/#root-fields-resolvers) is a value which is provided to every resolver and holds important contextual information such as the currently logged in user, or access to a database.
-Keystone makes a `KeystoneContext` object available as the context of all resolvers in the system.
-The APIs provided by the `KeystoneContext` object can be used to write the business logic for things like [access control](../guides/auth-and-access-control), [hooks](../guides/hooks), [testing](../guides/testing) and GraphQL [schema extensions](../guides/schema-extension).
+Keystone makes a `Context` object available as the context of all resolvers in the system.
+The APIs provided by the `Context` object can be used to write the business logic for things like [access control](../guides/auth-and-access-control), [hooks](../guides/hooks), [testing](../guides/testing) and GraphQL [schema extensions](../guides/schema-extension).
 
-The `KeystoneContext` object has the following properties, which are documented below.
+The `Context` object has the following properties, which are documented below.
 
 ```typescript
-import type { KeystoneContext } from '@keystone-6/core/types';
+import type { Context } from '.keystone/types';
 
 context = {
   // HTTP request object
@@ -100,17 +100,17 @@ See the [session API](../config/session#session-context) for more details.
 ### New context creators
 
 When using the `context.query`, `context.graphql.run`, and `context.graphql.raw` APIs, access control and session information is passed through to these calls from the `context` object.
-The following functions will create a new `KeystoneContext` object with this behaviour modified.
+The following functions will create a new `Context` object with this behaviour modified.
 
-`sudo()`: A function which returns a new `KeystoneContext` object with all access control disabled and all filters enabled for subsequent API calls.
+`sudo()`: A function which returns a new `Context` object with all access control disabled and all filters enabled for subsequent API calls.
 
-`exitSudo()`: A function which returns a new `KeystoneContext` object with all access control re-enabled for subsequent API calls.
+`exitSudo()`: A function which returns a new `Context` object with all access control re-enabled for subsequent API calls.
 
-`withSession(newSession)`: A function which returns a new `KeystoneContext` object with the `.session` object replaced with `newSession`.
+`withSession(newSession)`: A function which returns a new `Context` object with the `.session` object replaced with `newSession`.
 
 ### Database access
 
-The `KeystoneContext` object exposes the underlying database driver directly via `context.prisma`, which is a [Prisma Client](https://www.prisma.io/docs/reference/api-reference/prisma-client-reference) object.
+The `Context` object exposes the underlying database driver directly via `context.prisma`, which is a [Prisma Client](https://www.prisma.io/docs/reference/api-reference/prisma-client-reference) object.
 
 ### Images API
 

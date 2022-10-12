@@ -276,6 +276,7 @@ export function DocsNavigation() {
 
       <NavSection title="Context">
         <NavItem href="/docs/context/overview">Overview</NavItem>
+        <NavItem href="/docs/context/get-context">getContext</NavItem>
         <NavItem href="/docs/context/query">Query</NavItem>
         <NavItem href="/docs/context/db-items">DB</NavItem>
       </NavSection>

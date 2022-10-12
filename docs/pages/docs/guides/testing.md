@@ -102,9 +102,8 @@ beforeEach(async () => {
 
 const context = getContext(config, PrismaModule);
 
-
-test('Keystone test', async () => {
-  // Write your test here using `context`
+test('Your unit test', async () => {
+  // ...
 });
 ```
 
