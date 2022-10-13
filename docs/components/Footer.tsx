@@ -300,7 +300,7 @@ export function DocsFooter() {
           <a href="https://www.thinkmill.com.au" target="_blank" rel="noopener noreferrer">
             Thinkmill
           </a>
-          . Contributed to around the world <Emoji symbol="🌏" alt="Globe" />
+          , with contributions from around the world <Emoji symbol="🌏" alt="Globe" />
         </Type>
         <Socials
           css={mq({
