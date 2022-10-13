@@ -1,0 +1,45 @@
+name: Publish (Snapshot)
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'The npm tag to publish to'
+        required: true
+
+jobs:
+  publish_snapshot:
+    name: Publish (Snapshot)
+    runs-on: ubuntu-latest
+    environment: release
+    steps:
+      - uses: actions/checkout@main
+        with:
+          fetch-depth: 0
+          persist-credentials: true # needed for git push
+
+      - uses: ./.github/actions/ci-setup
+
+      - name: version packages
+        run: yarn changeset version --snapshot ${{ inputs.tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.KEYSTONE_RELEASE_BOT_GITHUB_TOKEN }}
+
+      - name: git commit
+        run: |
+          git config --global user.name 'Keystonejs Release Bot'
+          git config --global user.email 'automation+keystonejs@thinkmill.com.au'
+          git commit -a -m 'rc'
+
+      - run: yarn build
+
+      - name: npm publish, git tag
+        run: yarn changeset publish --tag ${{ inputs.tag }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # reset, then push the dangling commit
+      - name: git push
+        run: |
+          git reset HEAD~1 --hard
+          git push origin --tags
