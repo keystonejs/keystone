@@ -28,7 +28,7 @@ jobs:
       - name: git commit
         run: |
           git config --global user.name 'Keystonejs Release Bot'
-          git config --global user.email 'github@keystonejs.com'
+          git config --global user.email 'automation+keystonejs@thinkmill.com.au'
           git commit -a -m 'rc'
 
       - name: npm publish, git tag
