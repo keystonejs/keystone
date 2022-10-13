@@ -24,7 +24,7 @@
     "test:admin-ui": "jest tests/admin-ui-tests",
     "benchmark": "yarn workspace @keystone-6/benchmarks-legacy go",
     "build": "preconstruct build",
-    "prepare": "patch-package && manypkg check && preconstruct dev && yarn run --silent contributing-guide && node scripts/generate-artifacts-for-projects && cd examples/graphql-ts-gql && yarn ts-gql build",
+    "prepare": "patch-package && manypkg check && preconstruct dev && node scripts/generate-artifacts-for-projects && cd examples/graphql-ts-gql && yarn ts-gql build",
     "update": "manypkg upgrade",
     "update-project-schemas": "node scripts/generate-artifacts-for-projects update-schemas",
     "generate-filters": "cd prisma-utils && yarn generate",
