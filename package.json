@@ -14,7 +14,6 @@
     "format": "prettier --write \"**/*.{js,json,ts,tsx,md,mdx}\"",
     "fresh": "yarn clean && yarn",
     "ci:version-packages": "yarn changeset version && cd docs && yarn remove-conditionals",
-    "clean": "rimraf \"**/node_modules\" \"**/yarn-error.log\" \"**/out.log\" \"**/.DS_Store\" \"**/dist\"",
     "lint:eslint": "eslint . --ext ts,tsx,js",
     "lint:prettier": "prettier --check \"**/*.{js,json,ts,tsx,md,mdx}\"",
     "lint:types": "tsc",
@@ -55,7 +54,6 @@
     "prettier": "^2.5.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
-    "rimraf": "^3.0.2",
     "typescript": "~4.7.4"
   },
   "prettier": {
