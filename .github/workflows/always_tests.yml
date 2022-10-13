@@ -16,9 +16,7 @@ jobs:
     name: Linting
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
-
+      - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup
 
       - name: Prettier
@@ -40,9 +38,7 @@ jobs:
     name: Package Unit Tests
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
-
+      - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
