@@ -13,6 +13,7 @@
     "format:file": "prettier --write",
     "format": "prettier --write \"**/*.{js,json,ts,tsx,md,mdx}\"",
     "fresh": "yarn clean && yarn",
+    "ci:version-packages": "yarn changeset version && cd docs && yarn remove-conditionals",
     "clean": "rimraf \"**/node_modules\" \"**/yarn-error.log\" \"**/out.log\" \"**/.DS_Store\" \"**/dist\"",
     "lint:eslint": "eslint . --ext ts,tsx,js",
     "lint:prettier": "prettier --check \"**/*.{js,json,ts,tsx,md,mdx}\"",

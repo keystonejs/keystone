@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  release_pr:
+  versioning:
     name: Pull Request
     runs-on: ubuntu-latest
     steps:
@@ -20,7 +20,7 @@ jobs:
 
       - uses: changesets/action@v1
         with:
-          version: changeset version && cd docs && yarn remove-conditionals
+          version: yarn ci:version-packages
         env:
           # use a different GitHub account to have the CI run on push
           GITHUB_TOKEN: ${{ secrets.KEYSTONE_RELEASE_BOT_GITHUB_TOKEN }}
