@@ -7,6 +7,7 @@ runs:
       with:
         # preferably lts/*, but we hit API limits when querying that
         node-version: 16
+        registry-url: 'https://registry.npmjs.org'
 
     - name: Get yarn cache directory path
       id: yarn-cache-dir-path

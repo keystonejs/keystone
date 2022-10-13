@@ -16,20 +16,28 @@ jobs:
       - uses: actions/checkout@main
         with:
           fetch-depth: 0
-          persist-credentials: false
+          persist-credentials: true # needed for git push
 
       - uses: ./.github/actions/ci-setup
 
-      - name: Configure npm
-        run: |
-          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Version packages
+      - name: version packages
         run: yarn changeset version --snapshot ${{ inputs.tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.KEYSTONE_RELEASE_BOT_GITHUB_TOKEN }}
 
-      - name: Publish to npm
+      - name: git commit
+        run: |
+          git config --global user.name 'Keystonejs Release Bot'
+          git config --global user.email 'github@keystonejs.com'
+          git commit -a -m 'rc'
+
+      - name: npm publish, git tag
         run: yarn build && yarn changeset publish --tag ${{ inputs.tag }}
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # reset, then push the dangling commit
+      - name: git push
+        run: |
+          git reset HEAD~1 --hard
+          git push origin --tags-only
