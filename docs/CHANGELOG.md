@@ -1,5 +1,12 @@
 # @keystone-6/website
 
+## 0.0.0-rc-20221013033655
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @keystone-6/fields-document@0.0.0-rc-20221013033655
+
 ## 0.0.5
 
 ### Patch Changes

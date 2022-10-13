@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-embedded-nextjs",
-  "version": "0.0.4",
+  "version": "0.0.0-rc-20221013033655",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -9,7 +9,7 @@
     "build": "next build"
   },
   "dependencies": {
-    "@keystone-6/core": "^2.2.0",
+    "@keystone-6/core": "0.0.0-rc-20221013033655",
     "dotenv": "^16.0.0",
     "next": "^12.2.4",
     "react": "^18.1.0",

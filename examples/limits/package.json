@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-limits",
-  "version": "0.0.1",
+  "version": "0.0.0-rc-20221013033655",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -10,7 +10,7 @@
     "seed-data": "tsx seed-data.ts"
   },
   "dependencies": {
-    "@keystone-6/core": "^2.2.0"
+    "@keystone-6/core": "0.0.0-rc-20221013033655"
   },
   "devDependencies": {
     "tsx": "^3.9.0",
