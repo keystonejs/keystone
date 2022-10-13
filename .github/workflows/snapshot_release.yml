@@ -34,7 +34,7 @@ jobs:
       - name: npm publish, git tag
         run: yarn build && yarn changeset publish --tag ${{ inputs.tag }}
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # reset, then push the dangling commit
       - name: git push
