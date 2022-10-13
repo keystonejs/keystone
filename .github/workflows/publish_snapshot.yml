@@ -1,4 +1,4 @@
-name: Publish Snapshot Release
+name: Publish (Snapshot)
 
 on:
   workflow_dispatch:
@@ -8,8 +8,8 @@ on:
         required: true
 
 jobs:
-  publish_snapshot_release:
-    name: Publish Snapshot Release
+  publish_snapshot:
+    name: Publish (Snapshot)
     runs-on: ubuntu-latest
     environment: release
     steps:
@@ -31,8 +31,10 @@ jobs:
           git config --global user.email 'automation+keystonejs@thinkmill.com.au'
           git commit -a -m 'rc'
 
+      - run: yarn build
+
       - name: npm publish, git tag
-        run: yarn build && yarn changeset publish --tag ${{ inputs.tag }}
+        run: yarn changeset publish --tag ${{ inputs.tag }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
