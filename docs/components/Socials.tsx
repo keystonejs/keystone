@@ -12,7 +12,7 @@ export function Socials(props: HTMLAttributes<HTMLElement>) {
     <div
       css={{
         display: 'inline-grid',
-        gridTemplateColumns: '1fr 1fr 1fr',
+        gridTemplateColumns: '1fr 1fr',
         gap: 'var(--space-large)',
         alignItems: 'center',
         marginLeft: 'auto',

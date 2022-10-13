@@ -64,17 +64,15 @@ export function TableOfContents({
   let activeId = visibleIds[0] || lastVisibleId;
 
   return (
-    <div>
+    <div id="toc">
       <div
         css={mq({
           position: 'sticky',
           display: ['none', null, null, 'block'],
           boxSizing: 'border-box',
           overflowY: 'auto',
-          top: '1rem',
+          top: '2rem',
           WebkitOverflowScrolling: 'touch',
-
-          // [media.sm]: { display: 'block' },
         })}
       >
         <Type
