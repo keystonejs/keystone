@@ -19,15 +19,15 @@ const publicPackages = [
 ];
 
 const cves = [
-//    {
-//      id: 'CVE-2022-NNNN',
-//      href: 'https://github.com/advisories/GHSA-...',
-//      upstream: true,
-//      description: `
-//        An upstream transitive dependency \`XXX\` is vulnerable to ZZZZZZ.
-//        We have upgraded to a version of \`YYY\` package to a version that doesn't use \`XXX\`.
-//      `
-//    }
+  //    {
+  //      id: 'CVE-2022-NNNN',
+  //      href: 'https://github.com/advisories/GHSA-...',
+  //      upstream: true,
+  //      description: `
+  //        An upstream transitive dependency \`XXX\` is vulnerable to ZZZZZZ.
+  //        We have upgraded to a version of \`YYY\` package to a version that doesn't use \`XXX\`.
+  //      `
+  //    }
 ];
 
 function gitCommitsSince(tag) {
@@ -56,16 +56,8 @@ function firstGitCommitOf(path) {
 }
 
 function gitCommitDescription(commit) {
-  const { stdout } = spawnSync('git', [
-    'log',
-    '--oneline',
-    commit,
-  ]);
-  return stdout
-    .toString('utf-8')
-    .split('\n', 1)
-    .pop()
-    .slice(10);
+  const { stdout } = spawnSync('git', ['log', '--oneline', commit]);
+  return stdout.toString('utf-8').split('\n', 1).pop().slice(10);
 }
 
 async function fetchData(tag) {
@@ -160,7 +152,7 @@ function formatChange({ packages, summary, pull, user }) {
   return `- \`[${packages.join(', ')}]\` ${summary} (#${pull}) @${user}`;
 }
 
-function formatCVE ({ id, href, upstream, description }) {
+function formatCVE({ id, href, upstream, description }) {
   description = description.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
   return `- [\`${id}\`](${href}) - ${description}`;
 }
@@ -209,12 +201,16 @@ async function generateGitHubReleaseText(previousTag) {
   }
 
   if (cves.length) {
-    output.push(...[
-      `#### :rotating_light: Security Updates`,
-      `We have identified and fixed ${cves.length} ${cves.some(x => x.upstream) ? 'upstream ': ''}security vulnerabilities`,
-      ...cves.map(formatCVE),
-      ``
-    ]);
+    output.push(
+      ...[
+        `#### :rotating_light: Security Updates`,
+        `We have identified and fixed ${cves.length}${
+          cves.some(x => x.upstream) ? ' upstream' : ''
+        } security vulnerabilities`,
+        ...cves.map(formatCVE),
+        ``,
+      ]
+    );
   }
 
   const first = changes.filter(x => x.first);
