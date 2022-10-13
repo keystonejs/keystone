@@ -40,4 +40,4 @@ jobs:
       - name: git push
         run: |
           git reset HEAD~1 --hard
-          git push origin --tags-only
+          git push origin --tags
