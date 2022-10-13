@@ -558,12 +558,12 @@ const Person = list({
 {% related-content %}
 {% well
 heading="Authentication"
-href="../config/auth" %}
+href="/docs/config/auth" %}
 Documentation for the Auth Package API
 {% /well %}
 {% well
 heading="Access Control"
-href="../config/access-control" %}
+href="/docs/config/access-control" %}
 Documentation for the Access Control API
 {% /well %}
 {% /related-content %}
