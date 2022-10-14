@@ -1,5 +1,4 @@
 import Document, { Html, Head, Main, NextScript, DocumentContext } from 'next/document';
-import Script from 'next/script';
 import React from 'react';
 import createEmotionServer from '@emotion/server/create-instance';
 import { cache } from '@emotion/css';
@@ -63,10 +62,26 @@ class MyDocument extends Document {
             All this to avoid a flash of default light theme when user either prefers dark theme or has previously
             saved dark theme to their local storage. ¯\_(ツ)_/¯ React is hard sometimes.
          */}
-          <Script
-            id="set-default-mode-script"
-            strategy="beforeInteractive"
-            src="/assets/init-theme.js"
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                (function () {
+                  if (typeof window !== 'undefined') {
+                    const isSystemColorSchemeDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    const localStorageTheme = localStorage.theme;
+                    if (!localStorageTheme && isSystemColorSchemeDark) {
+                      document.documentElement.setAttribute('data-theme', 'dark');
+                    } else if (localStorageTheme === 'dark') {
+                      document.documentElement.setAttribute('data-theme', 'dark');
+                    } else {
+                      // we already server render light theme
+                      // so this is just ensuring that
+                      document.documentElement.setAttribute('data-theme', 'light');
+                    }
+                  }
+                })();
+              `,
+            }}
           />
         </Head>
         <body>
