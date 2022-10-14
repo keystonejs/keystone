@@ -22,7 +22,7 @@ import { Wrapper } from './primitives/Wrapper';
 import { Hamburger } from './icons/Hamburger';
 import { Button } from './primitives/Button';
 import { NavItem } from './docs/Navigation';
-import { DarkModeBtn } from './DarkModeBtn';
+import { ThemeToggle } from './ThemeToggle';
 import { Keystone } from './icons/Keystone';
 import { MobileMenu } from './MobileMenu';
 import { GitHub } from './icons/GitHub';
@@ -293,7 +293,7 @@ export function Header() {
         >
           Documentation
         </Button>
-        <DarkModeBtn />
+        <ThemeToggle />
         <a
           href="https://github.com/keystonejs/keystone"
           target="_blank"
