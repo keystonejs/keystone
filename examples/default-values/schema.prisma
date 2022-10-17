@@ -20,6 +20,7 @@ model Task {
   assignedTo   Person?   @relation("Task_assignedTo", fields: [assignedToId], references: [id])
   assignedToId String?   @map("assignedTo")
   finishBy     DateTime?
+  viewCount    BigInt?   @default(0)
 
   @@index([assignedToId])
 }

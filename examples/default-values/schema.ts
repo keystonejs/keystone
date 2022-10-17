@@ -1,5 +1,5 @@
 import { list } from '@keystone-6/core';
-import { checkbox, relationship, text, timestamp } from '@keystone-6/core/fields';
+import { bigInt, checkbox, relationship, text, timestamp } from '@keystone-6/core/fields';
 import { select } from '@keystone-6/core/fields';
 import { allowAll } from '@keystone-6/core/access';
 import { Lists } from '.keystone/types';
@@ -19,6 +19,7 @@ export const lists: Lists = {
         hooks: {
           resolveInput({ resolvedData, inputData }) {
             if (inputData.priority === undefined) {
+              //  default to high if "urgent" is in the label
               if (inputData.label && inputData.label.toLowerCase().includes('urgent')) {
                 return 'high';
               } else {
@@ -64,6 +65,10 @@ export const lists: Lists = {
           },
         },
       }),
+      // Static default: When a task is first created, it has been viewed zero times
+      viewCount: bigInt({
+        defaultValue: 0n
+      })
     },
   }),
   Person: list({

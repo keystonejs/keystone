@@ -14,6 +14,16 @@ import {
 import { CellLink, CellContainer } from '../../../../admin-ui/components';
 import { useFormattedInput } from '../../integer/views/utils';
 
+type Validation = {
+  isRequired: boolean;
+  min: bigint;
+  max: bigint;
+};
+
+type Value =
+  | { kind: 'create'; value: string | bigint | null }
+  | { kind: 'update'; value: string | bigint | null; initial: bigint | null; };
+
 function BigIntInput({
   value,
   onChange,
@@ -138,7 +148,7 @@ function validate(
 ): string | undefined {
   const val = value.value;
   if (typeof val === 'string') {
-    return `${label} must be a whole number`;
+    return `${label} must be a BigInt`;
   }
 
   // if we recieve null initially on the item view and the current value is null,
@@ -167,16 +177,6 @@ function validate(
 
   return undefined;
 }
-
-type Validation = {
-  isRequired: boolean;
-  min: bigint;
-  max: bigint;
-};
-
-type Value =
-  | { kind: 'update'; initial: bigint | null; value: string | bigint | null }
-  | { kind: 'create'; value: string | bigint | null };
 
 export const controller = (
   config: FieldControllerConfig<{
@@ -214,7 +214,7 @@ export const controller = (
           ? BigInt(config.fieldMeta.defaultValue)
           : null,
     },
-    deserialize: data => ({ kind: 'update', value: data[config.path], initial: data[config.path] }),
+    deserialize: data => ({ kind: 'update', value: BigInt(data[config.path]), initial: data[config.path] }),
     serialize: value => ({ [config.path]: value.value === null ? null : value.value.toString() }),
     hasAutoIncrementDefault,
     validate: value =>
