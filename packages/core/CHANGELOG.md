@@ -1,5 +1,13 @@
 # @keystone-6/core
 
+## 2.3.1
+
+### Patch Changes
+
+- [`03061416c`](https://github.com/keystonejs/keystone/commit/03061416c36e0d97cc5fefc08a29e5e2294af58b) Thanks [@dcousens](https://github.com/dcousens)! - Fixes BigInt values throwing on deserialisation in the item view
+
+* [`65c6ee3de`](https://github.com/keystonejs/keystone/commit/65c6ee3deef23605fc72b80230908696a7a65e7c) Thanks [@marekryb](https://github.com/marekryb)! - Fixes the multiselect field type not using the provided `label`, `access`, `graphql`, `isFilterable` or `isOrderable` configuration options
+
 ## 2.3.0
 
 ### Minor Changes
