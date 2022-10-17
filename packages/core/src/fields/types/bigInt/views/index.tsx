@@ -22,7 +22,7 @@ type Validation = {
 
 type Value =
   | { kind: 'create'; value: string | bigint | null }
-  | { kind: 'update'; value: string | bigint | null; initial: bigint | null };
+  | { kind: 'update'; value: string | bigint | null; initial: unknown | null };
 
 function BigIntInput({
   value,
@@ -141,36 +141,36 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
 };
 
 function validate(
-  value: Value,
+  state: Value,
   validation: Validation,
   label: string,
   hasAutoIncrementDefault: boolean
 ): string | undefined {
-  const val = value.value;
-  if (typeof val === 'string') {
+  const { kind, value } = state;
+  if (typeof value === 'string') {
     return `${label} must be a BigInt`;
   }
 
-  // if we recieve null initially on the item view and the current value is null,
+  // if we receive null initially on the item view and the current value is null,
   // we should always allow saving it because:
   // - the value might be null in the database and we don't want to prevent saving the whole item because of that
   // - we might have null because of an access control error
-  if (value.kind === 'update' && value.initial === null && val === null) {
+  if (kind === 'update' && state.initial === null && value === null) {
     return undefined;
   }
 
-  if (value.kind === 'create' && value.value === null && hasAutoIncrementDefault) {
+  if (kind === 'create' && value === null && hasAutoIncrementDefault) {
     return undefined;
   }
 
-  if (validation.isRequired && val === null) {
+  if (validation.isRequired && value === null) {
     return `${label} is required`;
   }
-  if (typeof val === 'bigint') {
-    if (val < validation.min) {
+  if (typeof value === 'bigint') {
+    if (value < validation.min) {
       return `${label} must be greater than or equal to ${validation.min}`;
     }
-    if (val > validation.max) {
+    if (value > validation.max) {
       return `${label} must be less than or equal to ${validation.max}`;
     }
   }
