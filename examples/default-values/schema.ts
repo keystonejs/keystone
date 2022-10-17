@@ -67,8 +67,8 @@ export const lists: Lists = {
       }),
       // Static default: When a task is first created, it has been viewed zero times
       viewCount: bigInt({
-        defaultValue: 0n
-      })
+        defaultValue: 0n,
+      }),
     },
   }),
   Person: list({

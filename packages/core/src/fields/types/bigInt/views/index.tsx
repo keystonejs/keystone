@@ -22,7 +22,7 @@ type Validation = {
 
 type Value =
   | { kind: 'create'; value: string | bigint | null }
-  | { kind: 'update'; value: string | bigint | null; initial: bigint | null; };
+  | { kind: 'update'; value: string | bigint | null; initial: bigint | null };
 
 function BigIntInput({
   value,
@@ -214,7 +214,11 @@ export const controller = (
           ? BigInt(config.fieldMeta.defaultValue)
           : null,
     },
-    deserialize: data => ({ kind: 'update', value: BigInt(data[config.path]), initial: data[config.path] }),
+    deserialize: data => ({
+      kind: 'update',
+      value: BigInt(data[config.path]),
+      initial: data[config.path],
+    }),
     serialize: value => ({ [config.path]: value.value === null ? null : value.value.toString() }),
     hasAutoIncrementDefault,
     validate: value =>
