@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/sandbox",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -8,9 +8,9 @@
     "sandbox": "yarn && yarn dev"
   },
   "dependencies": {
-    "@keystone-6/auth": "^4.0.1",
-    "@keystone-6/core": "^2.2.0",
-    "@keystone-6/fields-document": "^4.1.0",
+    "@keystone-6/auth": "^5.0.0",
+    "@keystone-6/core": "^3.0.0",
+    "@keystone-6/fields-document": "^5.0.0",
     "@keystone-ui/button": "^7.0.1",
     "@keystone-ui/core": "^5.0.1",
     "@keystone-ui/fields": "^7.1.1",

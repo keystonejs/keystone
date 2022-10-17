@@ -10,31 +10,17 @@ In this guide we'll show you how to use `@keystone-6/core/testing` and [Jest](ht
 
 In order to run tests using `@keystone-6/core/testing`, we recommend adding the following script to your `package.json` file.
 
-{% if $nextRelease %}
-
 ```json
 "scripts": {
   "test": "jest"
 }
 ```
 
-{% else /%}
-
-```json
-"scripts": {
-  "test": "jest --runInBand --testTimeout=60000"
-}
-```
-
-{% /if %}
-
 This will let you run your tests with the command
 
 ```shell
 yarn test
 ```
-
-{% if $nextRelease %}
 
 {% else /%}
 
@@ -77,14 +63,10 @@ The third is an [`express.Express`](https://expressjs.com/) value named `app` wh
 The test runner will drop all data in your database on each run. Make sure you do not run your tests against a system with live data.
 {% /hint %}
 
-{% /if %}
-
 ## Writing tests
 
 In general you will want to run tests which check the behaviour of any custom code that you write as part of your Keystone system.
 This includes things like access control, hooks, virtual fields, and GraphQL API extensions.
-
-{% if $nextRelease %}
 
 ```typescript
 import { getContext } from '@keystone-6/core/context';
@@ -110,8 +92,6 @@ test('Your unit test', async () => {
 {% hint kind="tip" %}
 We're setting the database url as `file:./test-${process.env.JEST_WORKER_ID}.db` so that our tests can use one database per Jest worker thread and run each test suite in parallel
 {% /hint %}
-
-{% /if %}
 
 ### Context API
 
@@ -189,8 +169,6 @@ expect(errors![0].message).toEqual(
   `Access denied: You cannot perform the 'update' operation on the item '{"id":"${task.id}"}'. It may not exist.`
 );
 ```
-
-{% if $nextRelease %}
 
 {% else /%}
 
@@ -287,8 +265,6 @@ describe('Example tests using test environment', () => {
   });
 });
 ```
-
-{% /if %}
 
 ## Related resources
 

@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-graphql-ts-gql",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -11,7 +11,7 @@
     "build": "keystone build"
   },
   "dependencies": {
-    "@keystone-6/core": "^2.2.0",
+    "@keystone-6/core": "^3.0.0",
     "@ts-gql/compiler": "^0.15.3",
     "@ts-gql/eslint-plugin": "^0.8.4",
     "@ts-gql/tag": "^0.7.0"
