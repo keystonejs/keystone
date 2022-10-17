@@ -14,7 +14,7 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
   sudo: () => KeystoneContext<TypeInfo>;
   exitSudo: () => KeystoneContext<TypeInfo>;
   withSession: (session: any) => KeystoneContext<TypeInfo>;
-  withRequest: (req: IncomingMessage, res: ServerResponse) => Promise<KeystoneContext<TypeInfo>>;
+  withRequest: (req: IncomingMessage, res?: ServerResponse) => Promise<KeystoneContext<TypeInfo>>;
   prisma: TypeInfo['prisma'];
   files: FilesContext;
   images: ImagesContext;
@@ -159,8 +159,8 @@ export type SessionContext<T> = {
   // if you're using keystone's built-in session implementation, but we don't
   // actually know what it will look like.
   session?: { itemId: string; listKey: string; data?: Record<string, any> } | any;
-  startSession(data: T): Promise<string>;
-  endSession(): Promise<void>;
+  startSession?(data: T): Promise<string>;
+  endSession?(): Promise<void>;
 };
 
 export type AssetMode = 'local' | 's3';

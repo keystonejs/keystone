@@ -43,7 +43,7 @@ export function createAdminUIMiddlewareWithNextApp(
     try {
       const context = createContext({
         sessionContext: session
-          ? await createSessionContext(session, req, res, createContext)
+          ? await createSessionContext(session, createContext, req, res)
           : undefined,
         req,
       });

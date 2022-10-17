@@ -1,4 +1,4 @@
-import type { IncomingMessage } from 'http';
+import type { IncomingMessage, ServerResponse } from 'http';
 import { ExecutionResult, graphql, GraphQLSchema, print } from 'graphql';
 import {
   SessionContext,
@@ -79,6 +79,15 @@ export function makeCreateContext({
       }
       return result.data as any;
     };
+
+    async function withRequest(req: IncomingMessage, res?: ServerResponse) {
+      contextToReturn.req = req;
+      const sessionContext = config.session
+        ? await createSessionContext(config.session, createContext, req, res)
+        : undefined;
+      return { ...contextToReturn, ...sessionContext };
+    }
+
     const dbAPI: KeystoneContext['db'] = {};
     const itemAPI: KeystoneContext['query'] = {};
     const contextToReturn: KeystoneContext = {
@@ -94,14 +103,8 @@ export function makeCreateContext({
           sudo,
           req,
         }),
-      withRequest: async (req, res) =>
-        createContext({
-          sessionContext: config.session
-            ? await createSessionContext(config.session, req, res, createContext)
-            : undefined,
-          req,
-        }),
       req,
+      withRequest,
       ...sessionContext,
       // Note: This field lets us use the server-side-graphql-client library.
       // We may want to remove it once the updated itemAPI w/ query is available.
@@ -121,5 +124,5 @@ export function makeCreateContext({
     return contextToReturn;
   };
 
-  return createContext;
+  return createContext();
 }

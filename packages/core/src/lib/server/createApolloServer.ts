@@ -27,7 +27,7 @@ export const createApolloServerMicro = ({
     await connectionPromise;
     return createContext({
       sessionContext: sessionStrategy
-        ? await createSessionContext(sessionStrategy, req, res, createContext)
+        ? await createSessionContext(sessionStrategy, createContext, req, res)
         : undefined,
       req,
     });
@@ -50,7 +50,7 @@ export const createApolloServerExpress = ({
   const context = async ({ req, res }: { req: IncomingMessage; res: ServerResponse }) =>
     createContext({
       sessionContext: sessionStrategy
-        ? await createSessionContext(sessionStrategy, req, res, createContext)
+        ? await createSessionContext(sessionStrategy, createContext, req, res)
         : undefined,
       req,
     });
