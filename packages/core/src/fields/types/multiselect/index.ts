@@ -52,7 +52,6 @@ const MIN_INT = -2147483648;
 
 export const multiselect =
   <ListTypeInfo extends BaseListTypeInfo>({
-    ui,
     defaultValue = [],
     ...config
   }: MultiselectFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> =>
@@ -107,7 +106,7 @@ export const multiselect =
     return jsonFieldTypePolyfilledForSQLite(
       meta.provider,
       {
-        ui,
+        ...config,
         hooks: {
           ...config.hooks,
           async validateInput(args) {
