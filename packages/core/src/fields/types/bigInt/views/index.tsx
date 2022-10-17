@@ -214,11 +214,14 @@ export const controller = (
           ? BigInt(config.fieldMeta.defaultValue)
           : null,
     },
-    deserialize: data => ({
-      kind: 'update',
-      value: BigInt(data[config.path]),
-      initial: data[config.path],
-    }),
+    deserialize: data => {
+      const raw = data[config.path];
+      return {
+        kind: 'update',
+        value: raw === null ? null : BigInt(raw),
+        initial: raw,
+      };
+    },
     serialize: value => ({ [config.path]: value.value === null ? null : value.value.toString() }),
     hasAutoIncrementDefault,
     validate: value =>
