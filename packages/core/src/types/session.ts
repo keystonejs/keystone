@@ -8,13 +8,13 @@ export type SessionStrategy<StoredSessionData, StartSessionData = never> = {
     res: ServerResponse;
     data: StoredSessionData | StartSessionData;
     createContext: CreateContext;
-  }) => Promise<string>;
+  }) => Promise<any>;
   // resets the cookie via res
   end: (args: {
     req: IncomingMessage;
     res: ServerResponse;
     createContext: CreateContext;
-  }) => Promise<void>;
+  }) => Promise<any>;
   // -- this one is invoked at the start of every request
   // reads the token, gets the data, returns it
   get: (args: {

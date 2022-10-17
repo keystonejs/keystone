@@ -6,7 +6,6 @@ import { GraphQLSchema } from 'graphql';
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js';
 import { ApolloServer } from 'apollo-server-express';
 import type { KeystoneConfig, CreateContext, SessionStrategy, GraphQLConfig } from '../../types';
-import { createSessionContext } from '../context/session';
 import { createApolloServerExpress } from './createApolloServer';
 import { addHealthCheck } from './addHealthCheck';
 
@@ -82,26 +81,11 @@ export const createExpressServer = async (
   addHealthCheck({ config, server: expressServer });
 
   if (config.server?.extendExpressApp) {
-    const createRequestContext = async (req: IncomingMessage, res: ServerResponse) =>
-      createContext({
-        sessionContext: config.session
-          ? await createSessionContext(config.session, req, res, createContext)
-          : undefined,
-        req,
-      });
-
-    await config.server.extendExpressApp(expressServer, createRequestContext);
+    await config.server.extendExpressApp(expressServer, createContext({}));
   }
 
   if (config.server?.extendHttpServer) {
-    const createRequestContext = async (req: IncomingMessage, res: ServerResponse) =>
-      createContext({
-        sessionContext: config.session
-          ? await createSessionContext(config.session, req, res, createContext)
-          : undefined,
-        req,
-      });
-    config.server?.extendHttpServer(httpServer, createRequestContext, graphQLSchema);
+    config.server?.extendHttpServer(httpServer, createContext({}), graphQLSchema);
   }
 
   if (config.storage) {

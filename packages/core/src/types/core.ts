@@ -2,14 +2,8 @@ import { IncomingMessage, ServerResponse } from 'http';
 import type { GraphQLResolveInfo } from 'graphql';
 import type { GqlNames } from './utils';
 import type { KeystoneContext, SessionContext } from './context';
-import { BaseKeystoneTypeInfo } from '.';
 
 export type DatabaseProvider = 'sqlite' | 'postgresql' | 'mysql';
-
-export type CreateRequestContext<TypeInfo extends BaseKeystoneTypeInfo> = (
-  req: IncomingMessage,
-  res: ServerResponse
-) => Promise<KeystoneContext<TypeInfo>>;
 
 export type CreateContext<Context extends KeystoneContext = KeystoneContext> = (args: {
   sessionContext?: SessionContext<any>;
