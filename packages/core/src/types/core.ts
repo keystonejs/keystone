@@ -5,7 +5,7 @@ import type { KeystoneContext, SessionContext } from './context';
 
 export type DatabaseProvider = 'sqlite' | 'postgresql' | 'mysql';
 
-export type CreateContext<Context extends KeystoneContext = KeystoneContext> = (args: {
+export type CreateContext<Context extends KeystoneContext = KeystoneContext> = (args?: {
   sessionContext?: SessionContext<any>;
   sudo?: boolean;
   req?: IncomingMessage;

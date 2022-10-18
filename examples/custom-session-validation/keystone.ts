@@ -37,9 +37,9 @@ const withTimeData = (
   const { get, start, ...sessionStrategy } = _sessionStrategy;
   return {
     ...sessionStrategy,
-    get: async ({ req, createContext }) => {
+    get: async ({ req, context }) => {
       // Get the session from the cookie stored by keystone
-      const session = await get({ req, createContext });
+      const session = await get({ req, context });
       // If there is no session returned from keystone or there is no startTime on the session return an invalid session
       // If session.startTime is null session.data.passwordChangedAt > session.startTime will always be true and therefore
       // the session will never be invalid until the maxSessionAge is reached.
@@ -57,14 +57,14 @@ const withTimeData = (
 
       return session;
     },
-    start: async ({ res, data, createContext }) => {
+    start: async ({ res, data, context }) => {
       // Add the current time to the session data
       const withTimeData = {
         ...data,
         startTime: new Date(),
       };
       // Start the keystone session and include the startTime
-      return await start({ res, data: withTimeData, createContext });
+      return await start({ res, data: withTimeData, context });
     },
   };
 };
