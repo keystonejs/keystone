@@ -101,15 +101,9 @@ export default config({
 });
 ```
 
-{% if $nextRelease %}
 {% hint kind="tip" %}
 Note - Before version `3.0.0` of `@keystone-6/core`, `@graphql-tools/schema` was exported from `@keystone/core` as `graphQLSchemaExtension` this was removed in favor of using the tool directly if required
 {% /hint %}
-{% else /%}
-{% hint kind="tip" %}
-Note - `@graphql-tools/schema` is currently exported from `@keystone/core` as `graphQLSchemaExtension` this will be removed in the next major version of `@keystone-6/core` in favor of using the tool directly if required
-{% /hint %}
-{% /if %}
 
 A full example project using `@graphql-tools/schema` can be found in [examples/extend-graphql-schema-graphql-tools](https://github.com/keystonejs/keystone/tree/main/examples/extend-graphql-schema-graphql-tools) on the Keystone GitHub repo.
 

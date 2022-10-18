@@ -1,5 +1,70 @@
 # @keystone-6/core
 
+## 3.0.0
+
+### Major Changes
+
+- [#7955](https://github.com/keystonejs/keystone/pull/7955) [`6497e1c7e`](https://github.com/keystonejs/keystone/commit/6497e1c7e314afeae231d0dac0b03eaf145413ed) Thanks [@dcousens](https://github.com/dcousens)! - `db.onConnect` is now called with an unprivileged context, **not sudo**. Use `context.sudo()` if you need to bypass access control
+
+- [#7914](https://github.com/keystonejs/keystone/pull/7914) [`c740ba630`](https://github.com/keystonejs/keystone/commit/c740ba630cafbf1417dab0358b901cbfb850df49) Thanks [@dcousens](https://github.com/dcousens)! - Changes access-control error messages to only show the list key and operation
+
+- [#7968](https://github.com/keystonejs/keystone/pull/7968) [`6c60565c9`](https://github.com/keystonejs/keystone/commit/6c60565c940a9e27b8bb9b3e3e61260f22ee1e1a) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removes `@keystone-6/core/migrations`
+
+- [#7848](https://github.com/keystonejs/keystone/pull/7848) [`7ae3bb706`](https://github.com/keystonejs/keystone/commit/7ae3bb7064f54d5d94e55de07339336faff57a0f) Thanks [@Noviny](https://github.com/Noviny)! - Changes `.access` control on `list` to required, with new `allowAll` and `denyAll` functions for easy shorthand.
+
+- [#7817](https://github.com/keystonejs/keystone/pull/7817) [`0530069b6`](https://github.com/keystonejs/keystone/commit/0530069b6d3a459f41a77a6b014cdb2178649eef) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Upgrade to `graphql@16`
+
+- [#7671](https://github.com/keystonejs/keystone/pull/7671) [`c06c5d60c`](https://github.com/keystonejs/keystone/commit/c06c5d60c8a4d0f05eb3b1e84f97b5611f07005a) Thanks [@renovate](https://github.com/apps/renovate)! - Upgrade to `prisma@4`
+
+- [#7963](https://github.com/keystonejs/keystone/pull/7963) [`25b5bb605`](https://github.com/keystonejs/keystone/commit/25b5bb6057a9dfba50bf7e3bbb454a24ff30820b) Thanks [@dcousens](https://github.com/dcousens)! - Removes `context.totalResults` and `context.maxTotalResults`
+
+- [#7957](https://github.com/keystonejs/keystone/pull/7957) [`2a7bc608b`](https://github.com/keystonejs/keystone/commit/2a7bc608b9d9a4c1296dadc6ae9d81d834c435cb) Thanks [@dcousens](https://github.com/dcousens)! - Removes `experimental.generateNodeAPI`, use `getContext` instead
+
+- [#7969](https://github.com/keystonejs/keystone/pull/7969) [`411663ae7`](https://github.com/keystonejs/keystone/commit/411663ae7f7cf172d3ea429a90e2e28a3ff63cfb) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removes `isLiveReload` flag from `createSystem`
+
+- [#7888](https://github.com/keystonejs/keystone/pull/7888) [`ed3d97874`](https://github.com/keystonejs/keystone/commit/ed3d97874e93470cccac67ac2e43dbd268e7e929) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Changes default Apollo Server configuration to use `cache: "bounded"` and `persistedQueries: false`
+
+- [#7912](https://github.com/keystonejs/keystone/pull/7912) [`c3a3789c6`](https://github.com/keystonejs/keystone/commit/c3a3789c6e4a1761a24cd02904b7549a62113363) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removes `createSessionContext` export from `@keystone-6/core/session`
+
+- [#7972](https://github.com/keystonejs/keystone/pull/7972) [`81f33eed3`](https://github.com/keystonejs/keystone/commit/81f33eed3570057be9bc8df1f29de12886dfceea) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removes `@keystone-6/core/artifacts` from our exports
+
+- [#7913](https://github.com/keystonejs/keystone/pull/7913) [`267d8c1f3`](https://github.com/keystonejs/keystone/commit/267d8c1f39ed2209d4d497f6041d85f5ebb29dbc) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removes the parameters for `getAdminMeta` when writing field types, and the respective types `AdminMetaRootVal`, `ListMetaRootVal` and `FieldMetaRootVal` therein.
+
+- [#7971](https://github.com/keystonejs/keystone/pull/7971) [`a8a5f1fae`](https://github.com/keystonejs/keystone/commit/a8a5f1faed31e63e948323bed8e6edf193f54866) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removes `connect` and `disconnect` from `SessionStore`
+
+- [#7919](https://github.com/keystonejs/keystone/pull/7919) [`51ab28615`](https://github.com/keystonejs/keystone/commit/51ab28615a706012150bedde914b8f9cdf71c9d6) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removes `filters` export from `@keystone-6/core/types`
+
+- [#7671](https://github.com/keystonejs/keystone/pull/7671) [`c06c5d60c`](https://github.com/keystonejs/keystone/commit/c06c5d60c8a4d0f05eb3b1e84f97b5611f07005a) Thanks [@renovate](https://github.com/apps/renovate)! - Changes the return type for the `resolveInput` hook with `json` fields. Previously you may have used `'DbNull'` or `'JsonNull'` as respective null magic values - you can now always use a Javascript `null` value.
+  Unlike previous behaviour, a null value will now consistently map to a `Prisma.DbNull`.
+
+- [#7971](https://github.com/keystonejs/keystone/pull/7971) [`a8a5f1fae`](https://github.com/keystonejs/keystone/commit/a8a5f1faed31e63e948323bed8e6edf193f54866) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removes `disconnect` from `SessionStrategy`
+
+- [#7805](https://github.com/keystonejs/keystone/pull/7805) [`c2275621d`](https://github.com/keystonejs/keystone/commit/c2275621d7e96576acd59de7636095c432b3570e) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Changes field `.views` module resolution, from a path, to a module path that is resolved from where `keystone start` is run
+
+- [#7968](https://github.com/keystonejs/keystone/pull/7968) [`6c60565c9`](https://github.com/keystonejs/keystone/commit/6c60565c940a9e27b8bb9b3e3e61260f22ee1e1a) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Replaces `@keystone-6/core/testing` exports with `{ resetDatabase }`, for a `context` use `getContext` instead
+
+- [#7943](https://github.com/keystonejs/keystone/pull/7943) [`494cdefb1`](https://github.com/keystonejs/keystone/commit/494cdefb1d08a6f3518fbc4946cdf0ffcb1aa6dd) Thanks [@borisno2](https://github.com/borisno2)! - Removes the `@graphql-tools/schema` wrapping functions `graphQLSchemaExtension` and `gql`. Developers should import `@graphql-tools/schema` themselves, or use `graphql` (as exported by `@keystone-6/core`).
+
+### Minor Changes
+
+- [#7954](https://github.com/keystonejs/keystone/pull/7954) [`c75340fc4`](https://github.com/keystonejs/keystone/commit/c75340fc44757044049712fd6910010ac2029390) Thanks [@dcousens](https://github.com/dcousens)! - Adds new `getContext` function (from `@keystone-6/core/context`) for working with a Keystone configuration directly
+
+- [#7841](https://github.com/keystonejs/keystone/pull/7841) [`d7cfada36`](https://github.com/keystonejs/keystone/commit/d7cfada36baf0a9b94576bc004a747ddd2fa127c) Thanks [@Noviny](https://github.com/Noviny)! - Adds a search input field to the list view, resulting in a `contains` query across `ui.searchFields` joined with the list view filters
+
+- [#7863](https://github.com/keystonejs/keystone/pull/7863) [`524431be6`](https://github.com/keystonejs/keystone/commit/524431be6795421b3b1bf6e42276cc81979e5255) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Adds a new `isSingleton` property for configuring Singleton lists
+
+- [#7963](https://github.com/keystonejs/keystone/pull/7963) [`25b5bb605`](https://github.com/keystonejs/keystone/commit/25b5bb6057a9dfba50bf7e3bbb454a24ff30820b) Thanks [@dcousens](https://github.com/dcousens)! - Adds `[list].graphql.maxTake`, a list configuration option to enforce the maximum `take` value in findMany queries for that list
+
+### Patch Changes
+
+- [#7982](https://github.com/keystonejs/keystone/pull/7982) [`138a015ba`](https://github.com/keystonejs/keystone/commit/138a015ba030c46f483a773c032f6748dc71ca66) Thanks [@dcousens](https://github.com/dcousens)! - Fixes JSON field type view assuming the empty string is equivalent to `null`
+
+- [#7809](https://github.com/keystonejs/keystone/pull/7809) [`309786f7b`](https://github.com/keystonejs/keystone/commit/309786f7bfe9d32a25726b156a20be79123dc236) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Changed platform compilation to use [esbuild](https://esbuild.github.io/), previously used next.js
+
+- [#7910](https://github.com/keystonejs/keystone/pull/7910) [`2317d0bf5`](https://github.com/keystonejs/keystone/commit/2317d0bf5f9c9ce17a5d5106a12e408586e0cef6) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removes `experimental.enableNextJsGraphqlApiEndpoint`
+
+- [#7874](https://github.com/keystonejs/keystone/pull/7874) [`824dafa2e`](https://github.com/keystonejs/keystone/commit/824dafa2ecb9a28561879d8e38ba5cc0753d6e42) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removes `prettier` from formatting the generated `schema.graphql`
+
 ## 2.3.1
 
 ### Patch Changes
