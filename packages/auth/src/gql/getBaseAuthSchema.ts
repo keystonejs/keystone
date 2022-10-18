@@ -69,7 +69,7 @@ export function getBaseAuthSchema<I extends string, S extends string>({
           [secretField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
         },
         async resolve(root, { [identityField]: identity, [secretField]: secret }, context) {
-          if (!context.startSession) {
+          if (!context.sessionStrategy) {
             throw new Error('No session implementation available on context');
           }
 
@@ -88,10 +88,13 @@ export function getBaseAuthSchema<I extends string, S extends string>({
           }
 
           // Update system state
-          const sessionToken = await context.startSession({
-            listKey,
-            itemId: result.item.id.toString(),
-          });
+          const sessionToken = (await context.sessionStrategy.start({
+            data: {
+              listKey,
+              itemId: result.item.id,
+            },
+            context,
+          })) as string;
           return { sessionToken, item: result.item };
         },
       }),

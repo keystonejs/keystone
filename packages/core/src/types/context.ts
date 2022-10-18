@@ -4,10 +4,11 @@ import { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql';
 import { TypedDocumentNode } from '@graphql-typed-document-node/core';
 import { InitialisedList } from '../lib/core/types-for-lists';
 import { BaseListTypeInfo } from './type-info';
-import { GqlNames, BaseKeystoneTypeInfo } from '.';
+import { GqlNames, BaseKeystoneTypeInfo, SessionStrategy } from '.';
 
 export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   req?: IncomingMessage;
+  res?: ServerResponse;
   db: KeystoneDbAPI<TypeInfo['lists']>;
   query: KeystoneListsAPI<TypeInfo['lists']>;
   graphql: KeystoneGraphQLAPI;
@@ -26,7 +27,9 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
      */
     initialisedLists: Record<string, InitialisedList>;
   };
-} & Partial<SessionContext<any>>;
+  sessionStrategy?: SessionStrategy<any>;
+  session?: any;
+};
 
 // List item API
 

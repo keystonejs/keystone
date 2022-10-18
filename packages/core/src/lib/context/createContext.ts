@@ -1,18 +1,11 @@
 import type { IncomingMessage, ServerResponse } from 'http';
 import { ExecutionResult, graphql, GraphQLSchema, print } from 'graphql';
-import {
-  SessionContext,
-  KeystoneContext,
-  KeystoneGraphQLAPI,
-  GqlNames,
-  KeystoneConfig,
-} from '../../types';
+import { KeystoneContext, KeystoneGraphQLAPI, GqlNames, KeystoneConfig } from '../../types';
 
 import { PrismaClient } from '../core/utils';
 import { InitialisedList } from '../core/types-for-lists';
 import { createImagesContext } from '../assets/createImagesContext';
 import { createFilesContext } from '../assets/createFilesContext';
-import { createSessionContext } from './session';
 import { getDbAPIFactory, itemAPIForList } from './itemAPI';
 
 export function makeCreateContext({
@@ -51,13 +44,15 @@ export function makeCreateContext({
   }
 
   const createContext = ({
-    sessionContext,
+    session,
     sudo = false,
     req,
+    res,
   }: {
-    sessionContext?: SessionContext<any>;
     sudo?: Boolean;
     req?: IncomingMessage;
+    res?: ServerResponse;
+    session?: any;
   } = {}): KeystoneContext => {
     const schema = sudo ? sudoGraphQLSchema : graphQLSchema;
 
@@ -82,12 +77,13 @@ export function makeCreateContext({
 
     async function withRequest(req: IncomingMessage, res?: ServerResponse) {
       contextToReturn.req = req;
-      const sessionContext = config.session
-        ? await createSessionContext(config.session, createContext, req, res)
-        : undefined;
-      return { ...contextToReturn, ...sessionContext };
+      contextToReturn.res = res;
+      if (!config.session) {
+        return contextToReturn;
+      }
+      contextToReturn.session = await config.session.get({ context: contextToReturn });
+      return createContext({ session: contextToReturn.session, sudo, req, res });
     }
-
     const dbAPI: KeystoneContext['db'] = {};
     const itemAPI: KeystoneContext['query'] = {};
     const contextToReturn: KeystoneContext = {
@@ -95,17 +91,16 @@ export function makeCreateContext({
       query: itemAPI,
       prisma: prismaClient,
       graphql: { raw: rawGraphQL, run: runGraphQL, schema },
-      sudo: () => createContext({ sessionContext, sudo: true, req }),
-      exitSudo: () => createContext({ sessionContext, sudo: false, req }),
-      withSession: session =>
-        createContext({
-          sessionContext: { ...sessionContext, session } as SessionContext<any>,
-          sudo,
-          req,
-        }),
+      sessionStrategy: config.session,
+      sudo: () => createContext({ sudo: true, req, res }),
+      exitSudo: () => createContext({ sudo: false, req, res }),
+      withSession: session => {
+        return createContext({ session, sudo, req, res });
+      },
       req,
+      res,
+      session,
       withRequest,
-      ...sessionContext,
       // Note: This field lets us use the server-side-graphql-client library.
       // We may want to remove it once the updated itemAPI w/ query is available.
       gqlNames: (listKey: string) => gqlNamesByList[listKey],
