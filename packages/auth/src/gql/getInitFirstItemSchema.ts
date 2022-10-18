@@ -56,7 +56,10 @@ export function getInitFirstItemSchema({
           // (this is also mostly fine, the chance that people are using things where
           // the input value can't round-trip like the Upload scalar here is quite low)
           const item = await dbItemAPI.createOne({ data: { ...data, ...itemData } });
-          const sessionToken = await context.startSession({ listKey, itemId: item.id.toString() });
+          const sessionToken = (await context.startSession({
+            listKey,
+            itemId: item.id.toString(),
+          })) as string;
           return { item, sessionToken };
         },
       }),

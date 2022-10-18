@@ -117,10 +117,10 @@ export function getMagicAuthLinkSchema<I extends string>({
             data: { [`${tokenType}RedeemedAt`]: new Date().toISOString() },
           });
 
-          const sessionToken = await context.startSession({
+          const sessionToken = (await context.startSession({
             listKey,
             itemId: result.item.id.toString(),
-          });
+          })) as string;
           return { token: sessionToken, item: result.item };
         },
       }),
