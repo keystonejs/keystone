@@ -130,7 +130,7 @@ export type FieldCreateItemAccessArgs<ListTypeInfo extends BaseListTypeInfo> =
     /**
      * The input passed in from the GraphQL API
      */
-    inputData: ListTypeInfo['item'];
+    inputData: ListTypeInfo['inputs']['create'];
   };
 
 export type FieldReadItemAccessArgs<ListTypeInfo extends BaseListTypeInfo> =
