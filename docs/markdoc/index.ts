@@ -33,16 +33,29 @@ class MarkdocValidationFailure extends Error {
   }
 }
 
-export type DocContent = {
+export type DocsContent = {
   content: Tag;
   title: string;
   description: string;
 };
 
-export async function readDocContent(filepath: string): Promise<DocContent> {
+export type BlogContent = {
+  content: Tag;
+  title: string;
+  description: string;
+  publishDate: string;
+};
+
+export async function readBlogContent(filepath: string): Promise<BlogContent> {
   let content = await fs.readFile(filepath, 'utf8');
-  const frontmatter = extractFrontmatter(content);
-  return { content: transformDocContent(`docs/${filepath}`, content), ...frontmatter };
+  const frontmatter = extractBlogFrontmatter(content);
+  return { content: transformContent(`blog/${filepath}`, content), ...frontmatter };
+}
+
+export async function readDocsContent(filepath: string): Promise<DocsContent> {
+  let content = await fs.readFile(filepath, 'utf8');
+  const frontmatter = extractDocsFrontmatter(content);
+  return { content: transformContent(`docs/${filepath}`, content), ...frontmatter };
 }
 
 const markdocConfig: Config = {
@@ -52,7 +65,7 @@ const markdocConfig: Config = {
   },
 };
 
-export function transformDocContent(errorReportingFilepath: string, content: string): Tag {
+export function transformContent(errorReportingFilepath: string, content: string): Tag {
   const node = Markdoc.parse(content, errorReportingFilepath);
   const errors = Markdoc.validate(node, markdocConfig);
   if (isNonEmptyArray(errors)) {
@@ -68,7 +81,7 @@ export function transformDocContent(errorReportingFilepath: string, content: str
 
 const frontMatterPattern = /^---[\s]+([\s\S]*?)[\s]+---/;
 
-export function extractFrontmatter(content: string): {
+export function extractDocsFrontmatter(content: string): {
   title: string;
   description: string;
 } {
@@ -99,5 +112,46 @@ export function extractFrontmatter(content: string): {
   return {
     title: obj.title,
     description: obj.description,
+  };
+}
+
+export function extractBlogFrontmatter(content: string): {
+  title: string;
+  description: string;
+  publishDate: string;
+} {
+  const match = frontMatterPattern.exec(content);
+  if (!match) {
+    throw new Error(
+      'Expected post to contain frontmatter with a title, description and publishDate'
+    );
+  }
+  const frontmatter = match[1];
+  let parsed;
+  try {
+    parsed = load(frontmatter);
+  } catch (err) {
+    throw new Error(`Failed to parse frontmatter as yaml: ${err}`);
+  }
+  if (typeof parsed !== 'object' || parsed === null) {
+    throw new Error(
+      `Expected frontmatter yaml to be an object but found:\n${JSON.stringify(parsed)}`
+    );
+  }
+  let obj = parsed as Record<string, unknown>;
+  if (typeof obj.title !== 'string') {
+    throw new Error(`Expected frontmatter to contain a title`);
+  }
+  if (typeof obj.description !== 'string') {
+    throw new Error(`Expected frontmatter to contain a description`);
+  }
+  if (typeof obj.publishDate !== 'string') {
+    throw new Error(`Expected frontmatter to contain a publishDate`);
+  }
+
+  return {
+    title: obj.title,
+    description: obj.description,
+    publishDate: obj.publishDate,
   };
 }

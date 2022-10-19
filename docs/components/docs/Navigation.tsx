@@ -309,14 +309,6 @@ export function UpdatesNavigation() {
           GitHub Releases
         </PrimaryNavItem>
         <NavSection title="Featured News">
-          <NavItem href="/docs/guides/images-and-files">
-            <Emoji symbol="🖼️" alt="Picture" />
-            &nbsp; Better Images & Files
-          </NavItem>
-          <NavItem href="/updates/general-availability">
-            <Emoji symbol="🎉" alt="Party Popper" />
-            &nbsp; General Availability Release
-          </NavItem>
           <NavItem href="/updates/new-access-control">
             <Emoji symbol="🔐" alt="Padlock" />
             &nbsp; New Access Control API

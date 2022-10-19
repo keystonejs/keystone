@@ -40,11 +40,6 @@ const KEYSTONE_5 = [
     permanent: true,
   },
   {
-    source: '/blog/:slug*',
-    destination: 'https://v5.keystonejs.com/blog/:slug*',
-    permanent: true,
-  },
-  {
     source: '/discussions/:slug*',
     destination: 'https://v5.keystonejs.com/discussions/:slug*',
     permanent: true,
