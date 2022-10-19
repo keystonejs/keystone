@@ -18,12 +18,14 @@ jobs:
 
       - run: yarn build
 
-      - name: npm publish, git tag, git push
-        uses: changesets/action@v1
-        with:
-          version: exit 1
-          publish: yarn changeset publish
-          createGithubReleases: false
+      - name: git config
+        run: |
+          git config --global user.name 'Keystonejs Release Bot'
+          git config --global user.email 'automation+keystonejs@thinkmill.com.au'
+
+      - name: npm publish, git tag
+        run: yarn changeset publish --tag latest
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - run: git push origin --follow-tags
