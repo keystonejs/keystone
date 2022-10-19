@@ -18,6 +18,10 @@ jobs:
 
       - run: yarn build
 
+      - run: |
+          git config --global user.name 'Keystonejs Release Bot'
+          git config --global user.email 'automation+keystonejs@thinkmill.com.au'
+
       - name: npm publish, git tag
         run: yarn changeset publish --tag latest
         env:
