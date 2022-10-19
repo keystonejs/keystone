@@ -427,7 +427,7 @@ export default function WhatsNew() {
           Keystone 6 is now in General Availability! Today's Keystone is faster and more flexible
           than it's ever been, and is ready for you to build amazing things with{' '}
           <Emoji symbol="🚀" alt="Rocket" />{' '}
-          <a href="/updates/general-availability">Read the full story here</a>.
+          <a href="/blog/general-availability">Read the full story here</a>.
         </Box>
         <Timeline date="24th November 2021" />
         <Box heading="Improved performance with Prisma’s Node Engine">
