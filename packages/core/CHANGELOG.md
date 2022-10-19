@@ -1,5 +1,11 @@
 # @keystone-6/core
 
+## 3.0.1
+
+### Patch Changes
+
+- [#8017](https://github.com/keystonejs/keystone/pull/8017) [`958d7c0bd`](https://github.com/keystonejs/keystone/commit/958d7c0bd64e78960a82ccbf76b79203243a3aa3) Thanks [@acburdine](https://github.com/acburdine)! - Fixes the inputData field type for FieldCreateItemAccessArgs
+
 ## 3.0.0
 
 ### Major Changes
