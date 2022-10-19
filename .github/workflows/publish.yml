@@ -18,7 +18,8 @@ jobs:
 
       - run: yarn build
 
-      - run: |
+      - name: git config
+        run: |
           git config --global user.name 'Keystonejs Release Bot'
           git config --global user.email 'automation+keystonejs@thinkmill.com.au'
 
