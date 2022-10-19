@@ -234,14 +234,14 @@ This option can be individually overridden by the `graphql.description` or `ui.d
 ## isSingleton
 
 The `isSingleton` flag changes a list to only have support for a single row with an `id` of `1`.
-The flag provides the developer with a convenient syntax and defaults when working with lists that should only have zero or one items.
-With this flag set, when an item is created it is given an `id` of `1`, and when an item is queried from a list, the GraphQL `where` filter defaults to `{ id: '1' }`.
 
-An example of when this might helpful is for editable data like your configuration options when it isn't suitable to be stored on the filesystem.
+With the flag set, when an item is created it is given an `id` of `1`, and when an item is queried from a list, the GraphQL `where` filter defaults to `{ id: '1' }`.
+
+An example of when this might helpful is for editing data like your frontend configuration, when it wouldn't otherwise be checked into source control.
 
 Abstracting singletons as a behavioural trait of lists instead of a distinct type helps developers build functions for lists without needing to know the underlying constraints, effectively ensuring that lists remain as functors.
 
-Using GraphQL, to query a list named `settings`, with `isSingleton` set, you can write any of the following queries
+Using GraphQL, to query a list named `seoConfiguration`, with `isSingleton` set, you can write any of the following queries
 
 ```graphql
 query {
