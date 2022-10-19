@@ -237,7 +237,7 @@ The `isSingleton` flag changes a list to only have support for a single row with
 
 With the flag set, when an item is created it is given an `id` of `1`, and when an item is queried from a list, the GraphQL `where` filter defaults to `{ id: '1' }`.
 
-An example of when this might helpful is for editing data like your frontend configuration in the event it isn't suitable for the filesystem or source control.
+An example of when this might helpful is for editing data like your frontend configuration in the event it isn't suitable for the filesystem nor suitable for checking into source control.
 
 Abstracting singletons as a behavioural trait of lists instead of a distinct type helps developers build functions for lists without needing to know the underlying constraints, effectively ensuring that lists remain as functors.
 
