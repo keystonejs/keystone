@@ -56,7 +56,8 @@ export function MobileMenu({ handleClose }: MobileMenuProps) {
               borderBottom: '1px solid var(--border)',
             }}
           >
-            <NavItem href="/updates">Updates</NavItem>
+            {/* <NavItem href="/updates">Updates</NavItem> */}
+            <NavItem href="/blog">Blog</NavItem>
             <NavItem href="/updates/roadmap">Roadmap</NavItem>
             <NavItem href="https://github.com/keystonejs/keystone/releases">
               GitHub Releases

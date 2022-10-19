@@ -8,6 +8,7 @@ import {
   useState,
   useRef,
   ReactNode,
+  RefObject,
 } from 'react';
 import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
@@ -26,6 +27,7 @@ import { ThemeToggle } from './ThemeToggle';
 import { Keystone } from './icons/Keystone';
 import { MobileMenu } from './MobileMenu';
 import { GitHub } from './icons/GitHub';
+import { ArrowR } from './icons/ArrowR';
 // TODO: Add in search for mobile via this button
 // import { Search } from './icons/Search';
 
@@ -102,6 +104,130 @@ function LinkItem({ children, href }: { children: ReactNode; href: string }) {
   );
 }
 
+function useClickOutside(ref: RefObject<HTMLElement>, cb: () => void) {
+  useEffect(() => {
+    /**
+     * Alert if clicked on outside of element
+     */
+    function handleClickOutside(event: MouseEvent) {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        cb();
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [ref, cb]);
+}
+
+function FlatMenu({
+  label,
+  items = [],
+}: {
+  label: string;
+  items: Array<{ label: string; href: string }>;
+}) {
+  const mq = useMediaQuery();
+  const menuRef = useRef(null);
+  const [showContent, setShowContent] = useState(false);
+
+  const onClickHandler = useCallback(() => {
+    setShowContent(b => !b);
+  }, [setShowContent]);
+
+  const closeMenu = useCallback(() => {
+    if (showContent === true) {
+      setShowContent(false);
+    }
+  }, [showContent, setShowContent]);
+
+  useClickOutside(menuRef, closeMenu);
+
+  return (
+    <div
+      ref={menuRef}
+      onClick={onClickHandler}
+      css={{
+        position: 'relative',
+        display: 'inline-block',
+        // ':hover [data-menu-content]': {
+        //   display: 'block',
+        // },
+      }}
+    >
+      <button
+        aria-haspopup
+        aria-expanded={showContent}
+        css={{
+          display: 'flex',
+          alignItems: 'center',
+          height: 'auto',
+          padding: 0,
+          border: 'none',
+          background: 'transparent',
+          fontSize: '1rem',
+          fontWeight: 600,
+          cursor: 'pointer',
+          color: 'var(--text)',
+          ':hover': {
+            color: 'var(--link)',
+          },
+        }}
+      >
+        {label}
+        <ArrowR
+          css={{
+            marginLeft: '0.25rem',
+            width: '14px',
+            transition: 'transform 150ms',
+            ...(showContent ? { transform: 'rotate(-90deg)' } : { transform: 'rotate(90deg)' }),
+
+            path: { strokeWidth: '0.125em' },
+          }}
+        />
+      </button>
+      <div
+        data-menu-content
+        css={{
+          zIndex: 2,
+          display: showContent ? 'flex' : 'none',
+          flexDirection: 'column',
+          position: 'absolute',
+          width: 'max-content',
+          padding: '1rem 1.5rem',
+          marginTop: '1rem',
+          border: '1px solid var(--border)',
+          borderRadius: '0.25rem',
+          background: 'var(--app-bg)',
+          gap: '1rem',
+        }}
+      >
+        {items.map(({ href, label }) => {
+          return (
+            <span role="menu-item" key={href}>
+              <span css={mq({ display: ['none', 'inline'], fontWeight: 600 })}>
+                <NavItem
+                  isActive={false}
+                  alwaysVisible
+                  href={href}
+                  css={{
+                    padding: '0 !important',
+                  }}
+                >
+                  {label}
+                </NavItem>
+              </span>
+              {/* <LinkItem href={href} key={href}>
+                {label}
+              </LinkItem> */}
+            </span>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 export function Header() {
   const mq = useMediaQuery();
   const router = useRouter();
@@ -172,6 +298,7 @@ export function Header() {
         setTimeout(() => loadSearch(searchAttempt++), 500);
       }
     };
+    // yoo hooo
     loadSearch(searchAttempt);
     // search - keyboard shortcut
     let keysPressed = {};
@@ -216,15 +343,15 @@ export function Header() {
           display: 'grid',
           gridTemplateColumns: [
             'auto max-content max-content max-content',
-            'auto max-content max-content max-content max-content max-content max-content',
-            'max-content auto max-content max-content max-content max-content max-content',
+            'auto max-content max-content max-content max-content max-content max-content max-content',
             'max-content auto max-content max-content max-content max-content max-content max-content',
-            '15rem auto max-content max-content max-content max-content max-content max-content',
+            'max-content auto max-content max-content max-content max-content max-content max-content max-content',
+            '15rem auto max-content max-content max-content max-content max-content max-content max-content',
           ],
           gap: [
             'var(--space-medium)',
             'var(--space-large)',
-            'var(--space-medium)',
+            'var(--space-large)',
             'var(--space-large)',
             'var(--space-xlarge)',
           ],
@@ -254,14 +381,17 @@ export function Header() {
             display: ['none', null, 'inline-block'],
           })}
         >
-          <LinkItem href="/why-keystone">Why Keystone</LinkItem>
-        </span>
-        <span
-          css={mq({
-            display: ['none', null, 'inline-block'],
-          })}
-        >
-          <LinkItem href="/updates">Updates</LinkItem>
+          <FlatMenu
+            label="About"
+            items={[
+              { label: 'Why Keystone', href: '/why-keystone' },
+              { label: 'For Developers', href: '/for-developers' },
+              { label: 'For Organisations', href: '/for-organisations' },
+              { label: 'For Content Management', href: '/for-content-management' },
+              { label: 'Our Roadmap', href: '/updates/roadmap' },
+              { label: 'GitHub Releases', href: 'https://github.com/keystonejs/keystone/releases' },
+            ]}
+          />
         </span>
 
         {/* TODO: Add in search for mobile via this button */}
@@ -281,6 +411,22 @@ export function Header() {
           <Search css={{ height: '1.4rem', marginTop: '0.2rem' }} />
         </button>
         */}
+        {/* TODO: This will be docs link once we add demo */}
+        {/* <span
+          css={mq({
+            display: ['none', null, 'inline-block'],
+          })}
+        >
+          <LinkItem href="/docs">Docs</LinkItem>
+        </span> */}
+        {/* TODO: Add once we launch blog */}
+        <span
+          css={mq({
+            display: ['none', null, 'inline-block'],
+          })}
+        >
+          <LinkItem href="/blog">Blog</LinkItem>
+        </span>
         <Button
           as="a"
           href="/docs"
@@ -291,7 +437,7 @@ export function Header() {
             },
           })}
         >
-          Documentation
+          Docs
         </Button>
         <ThemeToggle />
         <a

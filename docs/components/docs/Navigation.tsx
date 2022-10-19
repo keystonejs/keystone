@@ -94,8 +94,9 @@ function NavSection({ title, children }: NavSectionProps) {
         {title}
         <ArrowR
           css={{
-            marginLeft: '0.5rem',
-            width: '1rem',
+            marginLeft: '0.25rem',
+            width: '14px',
+            transition: 'transform 150ms',
             ...(isCollapsed ? {} : { transform: 'rotate(90deg)' }),
 
             path: { strokeWidth: '0.125em' },
@@ -131,7 +132,7 @@ export function NavItem({
 }: NavItemProps) {
   const { asPath } = useRouter();
   const mq = useMediaQuery();
-  const isActive = _isActive || asPath === href;
+  const isActive = typeof _isActive !== 'undefined' ? _isActive : asPath === href;
   const ctx = useHeaderContext();
   const isMobileNavOpen = ctx ? ctx.mobileNavIsOpen : true;
   const desktopOpenState = ctx ? ctx.desktopOpenState : -1;
