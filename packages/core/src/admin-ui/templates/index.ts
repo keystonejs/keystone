@@ -15,7 +15,8 @@ export const writeAdminFiles = (
   config: KeystoneConfig,
   graphQLSchema: GraphQLSchema,
   adminMeta: AdminMetaRootVal,
-  configFileExists: boolean
+  configFileExists: boolean,
+  appFileExists: boolean
 ): AdminFileToWrite[] => {
   return [
     ...['next.config.js', 'tsconfig.json'].map(
@@ -33,7 +34,7 @@ export const writeAdminFiles = (
       src: appTemplate(
         adminMeta,
         graphQLSchema,
-        { configFileExists },
+        { configFileExists, appFileExists },
         config.graphql?.path || '/api/graphql'
       ),
       outputPath: 'pages/_app.js',

@@ -14,12 +14,12 @@ import {
 import { staticAdminMetaQuery, StaticAdminMetaQuery } from '../admin-meta-graphql';
 import { AdminMetaRootVal } from '../system/createAdminMeta';
 
-type AppTemplateOptions = { configFileExists: boolean };
+type AppTemplateOptions = { configFileExists: boolean; appFileExists: boolean };
 
 export const appTemplate = (
   adminMetaRootVal: AdminMetaRootVal,
   graphQLSchema: GraphQLSchema,
-  { configFileExists }: AppTemplateOptions,
+  { configFileExists, appFileExists }: AppTemplateOptions,
   apiPath: string
 ) => {
   const result = executeSync({
@@ -46,15 +46,17 @@ export const appTemplate = (
     return JSON.stringify(viewRelativeToAppFile);
   });
   // -- TEMPLATE START
-  return `import { getApp } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/App';
+  return `import { getApp } from ${appFileExists
+    ? `'../../../admin/app'`
+    : `'@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/pages/App';`
+    }
 
 ${allViews.map((views, i) => `import * as view${i} from ${views};`).join('\n')}
 
-${
-  configFileExists
-    ? `import * as adminConfig from "../../../admin/config";`
-    : 'var adminConfig = {};'
-}
+${configFileExists
+      ? `import * as adminConfig from "../../../admin/config";`
+      : 'var adminConfig = {};'
+    }
 
 export default getApp({
   lazyMetadataQuery: ${JSON.stringify(getLazyMetadataQuery(graphQLSchema, adminMeta))},
