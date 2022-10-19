@@ -4,7 +4,7 @@ import { jsx, useTheme } from '@keystone-ui/core';
 import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
 import { Tooltip } from '@keystone-ui/tooltip';
 import { ReactNode, useMemo, useState, useCallback, Fragment } from 'react';
-import { RenderElementProps } from 'slate-react';
+import { RenderElementProps, useSelected } from 'slate-react';
 import { Stack } from '@keystone-ui/core';
 import { Button as KeystoneUIButton } from '@keystone-ui/button';
 import { ToolbarGroup, ToolbarButton, ToolbarSeparator } from '../primitives';
@@ -31,6 +31,7 @@ export function ChromefulComponentBlockElement(props: {
   onRemove: () => void;
   attributes: RenderElementProps['attributes'];
 }) {
+  const selected = useSelected();
   const { colors, fields, spacing, typography } = useTheme();
 
   const isValid = useMemo(
@@ -62,7 +63,11 @@ export function ChromefulComponentBlockElement(props: {
         position: 'relative',
         ':before': {
           content: '" "',
-          backgroundColor: editMode ? colors.linkColor : colors.border,
+          backgroundColor: selected
+            ? colors.focusRing
+            : editMode
+            ? colors.linkColor
+            : colors.border,
           borderRadius: 4,
           width: 4,
           position: 'absolute',
@@ -89,7 +94,11 @@ export function ChromefulComponentBlockElement(props: {
       {editMode ? (
         <Fragment>
           <FormValue isValid={isValid} props={props.previewProps} onClose={onCloseEditMode} />
-          <div css={{ display: 'none' }}>{props.children}</div>
+          <div
+            css={{ caretColor: 'transparent', '& ::selection': { backgroundColor: 'transparent' } }}
+          >
+            {props.children}
+          </div>
         </Fragment>
       ) : (
         <Fragment>
