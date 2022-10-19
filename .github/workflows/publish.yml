@@ -23,4 +23,4 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - run: git push origin --tags
+      - run: git push origin --follow-tags
