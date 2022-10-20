@@ -1,33 +1,12 @@
-import { Markdown, getStaticProps } from '../../components/Markdown';
-
-# Prisma Day 2021 Talk
+---
+title: "Prisma Day 2021 Talk"
+description: "Jed Watson shared Keystone 6 with the world at Prisma Day conference in July 2021. His talk is a great way learn how Keystones combination of features and flexibility set it apart from other backend frameworks and Content Management Systems."
+publishDate: "2021-7-16"
+---
 
 Jed Watson shared Keystone 6 with the world at Prisma Day conference in July 2021. His talk is a great way learn how Keystones combination of features and flexibility set it apart from other backend frameworks and Content Management Systems.
 
-<div
-  style={{
-    position: 'relative',
-    paddingBottom: '56.25%',
-    height: '0',
-  }}
->
-  <iframe
-    style={{
-      position: 'absolute',
-      top: '0',
-      left: '0',
-      width: '100%',
-      height: '100%',
-    }}
-    width="560"
-    height="315"
-    src="https://www.youtube-nocookie.com/embed/fPWRlmedCbo?rel=0"
-    title="YouTube video player"
-    frameborder="0"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    allowfullscreen
-  ></iframe>
-</div>
+{% youtube url="https://www.youtube-nocookie.com/embed/fPWRlmedCbo?rel=0" label="Next-gen CMS and GraphQL API with KeystoneJS and Prisma - Jed Watson | Prisma Day 2021" /%}
 
 ## Video Transcript
 
@@ -38,6 +17,7 @@ I'm from an Australian consultancy called [Thinkmill](https://thinkmill.com.au) 
 It's hard to start that without going back to what is a CMS originally. And I think CMS is one of those things on the internet that was kinda the original problem that we solved – there's a lot of content and we needed to manage it.
 
 And back in the day, that meant that you have to handle a huge amount of things. Everything from database to access APIs, pages and modules, it was really quite comprehensive. While that was really good because if you picked up a CMS, you didn't have to build a lot of those things yourself; over time, we realized that it's actually very restrictive having one system doing all these things and CMS, well, it kinda became a dirty word for a while. And eventually, when front-end development in particular moved on, it got so restrictive that front-end developers called a revolution. They said:
+
 
 > You know what? We don't want this. Just give us the content over an API. We're gonna program the front-end ourselves.
 
@@ -108,6 +88,3 @@ And I think that is really for me, **what a Next-Gen CMS is all about. It's all 
 So this is our take on what that looks like. I'd love you to check it out, let us know what you think and enjoy the rest of the conference.
 
 Thanks for having me.
-
-export default ({ children, ...props }) => <Markdown description="Watch Jed Watson’s Keystone 6 talk from Prisma Day 2021. Full transcript available." {...props}>{children}</Markdown>;
-export { getStaticProps }

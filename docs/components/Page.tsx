@@ -146,10 +146,10 @@ export function DocsPage({
 export function BlogPage({
   children,
   headings = [],
-  noProse,
   noRightNav,
   title,
   description,
+  publishDate,
   ogImage,
   isIndexPage,
   editPath,
@@ -160,6 +160,7 @@ export function BlogPage({
   noRightNav?: boolean;
   title: string;
   description: string;
+  publishDate: string;
   ogImage?: string;
   isIndexPage?: boolean;
   editPath?: string;
@@ -210,7 +211,7 @@ export function BlogPage({
               id="skip-link-content"
               tabIndex={0}
               ref={contentRef}
-              className={noProse ? '' : 'prose'}
+              className={'prose'}
               css={{
                 paddingTop: '2rem',
               }}

@@ -1,17 +1,20 @@
-import { Markdown, getServerSideProps } from '../../components/Markdown';
-import { Emoji } from '../../components/primitives/Emoji';
+---
+title: "A new & improved GraphQL API"
+description: "Keystone 6 has an improved GraphQL API that's easier to work with and reason about."
+publishDate: "2021-8-17"
+---
 
-# A new & improved GraphQL API
-
-As we move closer to a _General Availability_ release for Keystone 6, we've taken the opportunity to make the experience of working with Keystone’s GraphQL API easier to program and reason about.
+As we move closer to a _General Availability_ release for Keystone 6, we've taken the opportunity to make the experience of working with Keystone's GraphQL API easier to program and reason about.
 
 This guide describes the improvements we've made, and walks you through the steps you need to take to upgrade your Keystone projects.
 
-!> If you have any questions, please don't hesitate to open a [GitHub discussion](https://github.com/keystonejs/keystone/discussions/new?category=questions).
+{% hint kind="tip" %}
+If you have any questions, please don't hesitate to open a [GitHub discussion](https://github.com/keystonejs/keystone/discussions/new?category=questions).
+{% /hint %}
 
 ## Example Schema
 
-To illustrate the changes, we’ll refer to the `Task` list in the following schema, from our [Task Manager](https://github.com/keystonejs/keystone/tree/main/examples/task-manager) example project.
+To illustrate the changes, we'll refer to the `Task` list in the following schema, from our [Task Manager](https://github.com/keystonejs/keystone/tree/main/examples/task-manager) example project.
 
 ```ts
 export const lists = {
@@ -48,23 +51,25 @@ export const lists = {
 
 ## Query
 
-We’ve changed the names of our top-level queries so they’re easier to understand.
+We've changed the names of our top-level queries so they're easier to understand.
 We also took this opportunity to remove deprecated and unused legacy features.
 
 ### Changes
 
 | Action                                               | Item                                                           | Before            | After          |
 | ---------------------------------------------------- | -------------------------------------------------------------- | ----------------- | -------------- |
-| <Emoji symbol="🔁" alt="Swap"/> &nbsp; Renamed       | Generated query for a single item                              | `Task()`          | `task()`       |
-| <Emoji symbol="🔁" alt="Swap"/> &nbsp; Renamed       | Generated query for multiple items                             | `allTasks()`      | `tasks()`      |
-| <Emoji symbol="🔁" alt="Swap"/> &nbsp; Renamed       | Pagination argument to align with arguments provided by Prisma | `first`           | `take`         |
-| <Emoji symbol="❌" alt="Cross mark"/> &nbsp; Removed | Legacy `search` argument                                       | `search`          | `where`        |
-| <Emoji symbol="❌" alt="Cross mark"/> &nbsp; Removed | Deprecated `sortBy` argument                                   | `sortBy`          | `orderBy`      |
-| <Emoji symbol="❌" alt="Cross mark"/> &nbsp; Removed | Deprecated `_allTasksMeta` query                               | `_allTasksMeta()` | `tasksCount()` |
+| 🔁 &nbsp; Renamed       | Generated query for a single item                              | `Task()`          | `task()`       |
+| 🔁 &nbsp; Renamed       | Generated query for multiple items                             | `allTasks()`      | `tasks()`      |
+| 🔁 &nbsp; Renamed       | Pagination argument to align with arguments provided by Prisma | `first`           | `take`         |
+| ❌ &nbsp; Removed | Legacy `search` argument                                       | `search`          | `where`        |
+| ❌ &nbsp; Removed | Deprecated `sortBy` argument                                   | `sortBy`          | `orderBy`      |
+| ❌ &nbsp; Removed | Deprecated `_allTasksMeta` query                               | `_allTasksMeta()` | `tasksCount()` |
 
-!> We’ve also changed the format of filters used in `TaskWhereInput`. See [Filter changes](#filters) for more details.
+{% hint kind="tip" %}
+We've also changed the format of filters used in `TaskWhereInput`. See [Filter changes](#filters) for more details.
+{% /hint %}
 
-### Example
+### Example {% #query-example %}
 
 ```graphql
 // Before
@@ -141,11 +146,17 @@ tasks(
 There is a one-to-one correspondence between the old filters and the new filters.
 No filter functionality has been removed or added, however the individual filters are now in a nested object, and the names have changed from `snake_case` to `camelCase`.
 
-?> **Note:** The old filter syntax used `{ fieldName: value }` to test for equality. The new syntax requires you to make this explicit, and write `{ fieldName: { equals: value} }`.
+{% hint kind="warn" %}
+**Note:** The old filter syntax used `{ fieldName: value }` to test for equality. The new syntax requires you to make this explicit, and write `{ fieldName: { equals: value} }`.
+{% /hint %}
 
-!> See the [Filters Guide](/docs/guides/filters) for a detailed walk through the new filtering syntax.
+{% hint kind="tip" %}
+See the [Filters Guide](/docs/guides/filters) for a detailed walk through the new filtering syntax.
+{% /hint %}
 
-!> See the [API docs](/docs/graphql/filters) for a comprehensive list of all the new filters for each field type.
+{% hint kind="tip" %}
+See the [API docs](/docs/graphql/filters) for a comprehensive list of all the new filters for each field type.
+{% /hint %}
 
 ## Mutations
 
@@ -282,7 +293,7 @@ mutation {
 
 ## Input Types
 
-We’ve updated the input types used for relationship fields in `update` and `create` operations, removing obsolete options and making the syntax between the two operations easier to differentiate.
+We've updated the input types used for relationship fields in `update` and `create` operations, removing obsolete options and making the syntax between the two operations easier to differentiate.
 
 - There are now separate types for `create` and `update` operations.
 - Inputs for `create` operations no longer support the `disconnect` or `disconnectAll` options. These options didn't do anything during a `create` operation in the previous API.
@@ -290,7 +301,7 @@ We’ve updated the input types used for relationship fields in `update` and `cr
 - For to-many relationships, the `disconnectAll` operation has been removed in favour of a new `set` operation, which allows you to explicitly set the connected items.
   You can use `{ set: [] }` to achieve the same results as the old `{ disconnectAll: true }`.
 
-### Example
+### Example {% #input-types-example %}
 
 ```graphql
 // Before
@@ -391,18 +402,19 @@ While there are a lot of changes to this API, we've put a lot of effort into mak
 
 If you have any questions, please don't hesitate to open a [GitHub discussion](https://github.com/keystonejs/keystone/discussions/new?category=questions).
 
-?> Before you begin: check that your project doesn't rely on any of the features we've marked as deprecated in this document, or the `search` argument to filters. If you do, apply the recommended substitute.
+{% hint kind="tip" %}
+Before you begin: check that your project doesn't rely on any of the features we've marked as deprecated in this document, or the `search` argument to filters. If you do, apply the recommended substitute.
+{% /hint %}
 
 1. Update top level queries. Be sure to rename `Task` to `task` and `allTasks` to `tasks` for all your queries.
 2. Update filters. Find and replace all the old Keystone filters with their new equivalent.
 3. Update mutation arguments to match the new input types. Make sure you replace `{ id: "..."}` with `{where: { id: "..."} }` in your `update` and `delete` operations.
 4. Update relationship inputs to `create` and `update` operations. Ensure you've replaced usage of `{ disconnectAll: true }` with `{ set: [] }` in to-many relationships, and have used `{ disconnect: true }` rather than `{ disconnect: { id: "..."} }` in to-one relationships.
 
-!> Finally, make sure you apply corresponding changes to filters and input arguments when using the [Query API](/docs/context/query).
+{% hint kind="tip" %}
+Finally, make sure you apply corresponding changes to filters and input arguments when using the [Query API](/docs/context/query).
+{% /hint %}
 
 ---
 
 That's everything! While we acknowledge that API changes are an inconvenience, we believe the time spent navigating these upgrades will be offset many times over by a more fun and productive developer experience going forward.
-
-export default ({ children, ...props }) => <Markdown description="A Fresh New GraphQL API" {...props}>{children}</Markdown>;
-export { getServerSideProps }

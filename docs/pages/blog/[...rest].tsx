@@ -24,6 +24,7 @@ export default function Page(props: InferGetStaticPropsType<typeof getStaticProp
       headings={headings}
       title={props.title}
       description={props.description}
+      publishDate={props.publishDate}
       editPath={`docs/pages/docs/${(router.query.rest as string[]).join('/')}.md`}
     >
       <Heading level={1} id="title">

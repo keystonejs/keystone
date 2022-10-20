@@ -190,6 +190,12 @@ export const proseStyles = {
     marginTop: '1.25em',
     marginBottom: '1.25em',
   },
+  'p + p': {
+    marginTop: '1.25em',
+  },
+  'p + div': {
+    marginTop: '1.25em',
+  },
   img: {
     marginTop: '2em',
     marginBottom: '2em',

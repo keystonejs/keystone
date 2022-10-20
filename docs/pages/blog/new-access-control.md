@@ -1,9 +1,11 @@
-import { Markdown, getServerSideProps } from '../../components/Markdown';
-import { Emoji } from '../../components/primitives/Emoji';
-
-# A new & improved Access Control API
+---
+title: "A new & improved Access Control API"
+description: "Keystone 6 has an improved Access Control API to secure your data."
+publishDate: "2021-9-6"
+---
 
 Securing the data in your Keystone sytem is one of the most important steps in preparing your application for a production deployment.
+
 To make this process simpler and safer, we've made some important changes to the [Access Control APIs](/docs/config/access-control) from previous versions.
 This document outlines the motivation behind the changes, and shows you how to update your existing Access Control functions to use the new APIs.
 
@@ -45,7 +47,9 @@ export default config({
 });
 ```
 
-!> If you have used static access control to exclude operations from you GraphQL API, update those lists to use the `graphql.omit` configuration option instead.
+{% hint kind="tip" %}
+If you have used static access control to exclude operations from you GraphQL API, update those lists to use the `graphql.omit` configuration option instead.
+{% /hint %}
 
 ## Queries never throw Access Denied
 
@@ -57,7 +61,9 @@ When querying for a single item, if the item is missing, or access is denied, th
 If querying for multiple items, or for a count of items, any items which are excluded due to access control will be filtered out of the result, and removed from the count.
 The query will never return an Access Denied error.
 
-!> If you have client-side code which checks for Access Denied errors on queries, update it to check for `null` return values instead.
+{% hint kind="tip" %}
+If you have client-side code which checks for Access Denied errors on queries, update it to check for `null` return values instead.
+{% /hint %}
 
 ## More flexible access control definitions
 
@@ -112,7 +118,9 @@ export default config({
 });
 ```
 
-!> Note that that `read` operation has been renamed to `query`.
+{% hint kind="tip" %}
+Note that that `read` operation has been renamed to `query`.
+{% /hint %}
 
 ### Updating declarative access control
 
@@ -165,7 +173,9 @@ The following rules will help you decide how to update you system.
 - Does your function depend on the `item` or `originalInput` arguments? If so, you should move it into the `item` access control block.
 - If the function returns a boolean value and does not depend on the `item` or `originalInput` arguments, you should move it into the `operation` access control block.
 
-!> You can define separate functions for an operation in more than one access control block. Items must pass all access control rules for an operation to be successful.
+{% hint kind="tip" %}
+You can define separate functions for an operation in more than one access control block. Items must pass all access control rules for an operation to be successful.
+{% /hint %}
 
 ## Getting help
 
@@ -175,8 +185,7 @@ While large changes like this can be daunting, we hope that the long term benefi
 If you get stuck or have questions about access control, please ask by posting a GitHub discussion [here](https://github.com/keystonejs/keystone/discussions/new?category=questions).
 Alternatively, if you aren't confident in what to ask, you can ask in the [Keystone community slack](https://community.keystonejs.com) to find the help you need.
 
-?> The security of the data in your Keystone system should be a high priority.
+{% hint kind="warn" %}
+The security of the data in your Keystone system should be a high priority.
 We strongly encourage you to [write tests](/docs/guides/testing) to verify the behaviour of your access control definitions before upgrading.
-
-export default ({ children, ...props }) => <Markdown description="A new & improved Access Control API" {...props}>{children}</Markdown>;
-export { getServerSideProps }
+{% /hint %}
