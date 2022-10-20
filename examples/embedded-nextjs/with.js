@@ -12,9 +12,7 @@ let globalContext = null;
 export async function withContext() {
   if (globalContext) return globalContext;
 
-  const { connect, context } = getContext(config, PrismaModule);
-  await connect();
-
+  const context = getContext(config, PrismaModule);
   globalContext = context;
   return globalContext;
 }
