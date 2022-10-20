@@ -94,11 +94,7 @@ export function ChromefulComponentBlockElement(props: {
       {editMode ? (
         <Fragment>
           <FormValue isValid={isValid} props={props.previewProps} onClose={onCloseEditMode} />
-          <div
-            css={{ caretColor: 'transparent', '& ::selection': { backgroundColor: 'transparent' } }}
-          >
-            {props.children}
-          </div>
+          <div css={{ display: 'none' }}>{props.children}</div>
         </Fragment>
       ) : (
         <Fragment>
