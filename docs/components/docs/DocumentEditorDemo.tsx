@@ -327,7 +327,6 @@ export const DocumentEditorDemo = () => {
         css={{
           marginTop: 'var(--space-xlarge)',
           marginBottom: 'var(--space-xlarge)',
-          borderBottom: `1px var(--border) solid`,
         }}
       >
         <DocumentEditor
@@ -337,6 +336,7 @@ export const DocumentEditorDemo = () => {
           componentBlocks={componentBlocks}
           documentFeatures={documentFeatures}
           relationships={emptyObj}
+          initialExpanded
         />
       </div>
       <details css={{ marginBottom: 'var(--space-xlarge)' }}>
