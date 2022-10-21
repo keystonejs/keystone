@@ -2,28 +2,18 @@ name: 'CI setup'
 runs:
   using: 'composite'
   steps:
+    - run: corepack enable
+      shell: bash
     - name: Setup Node.js LTS
       uses: actions/setup-node@v3
       with:
         # preferably lts/*, but we hit API limits when querying that
         node-version: 18
         registry-url: 'https://registry.npmjs.org'
-
-    - name: Get yarn cache directory path
-      id: yarn-cache-dir-path
-      run: echo "::set-output name=dir::$(yarn cache dir)"
-      shell: bash
-
-    - uses: actions/cache@main
-      id: yarn-cache
-      with:
-        path: |
-          ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          node_modules
-        key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-yarn-
+        cache: pnpm
 
     - name: Install Dependencies
-      run: yarn --frozen-lockfile
+      run: pnpm install
       shell: bash
+      env:
+        PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'

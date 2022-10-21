@@ -6,7 +6,7 @@
   "author": "Dinesh Pandiyan <flexdinesh@gmail.com>",
   "repository": "https://github.com/keystonejs/keystone/tree/main/examples/document-field-customisation",
   "scripts": {
-    "dev": "concurrently \"cd keystone-server && yarn dev\" \"cd nextjs-frontend && yarn dev\""
+    "dev": "concurrently \"cd keystone-server && pnpm dev\" \"cd nextjs-frontend && pnpm dev\""
   },
   "devDependencies": {
     "concurrently": "^7.3.0"

@@ -8,7 +8,7 @@ import { setupTestEnv } from '@keystone-6/api-tests/test-runner';
 import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig } from '../utils';
 
-const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
+const testModules = globby.sync(`packages/*/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
 });
 

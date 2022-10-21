@@ -14,7 +14,9 @@
     "@keystone-6/core": "^3.0.0",
     "@ts-gql/compiler": "^0.15.3",
     "@ts-gql/eslint-plugin": "^0.8.4",
-    "@ts-gql/tag": "^0.7.0"
+    "@ts-gql/tag": "^0.7.0",
+    "eslint": "^8.0.0",
+    "graphql": "^16.6.0"
   },
   "devDependencies": {
     "typescript": "~4.7.4"

@@ -20,19 +20,19 @@ jobs:
       - uses: ./.github/actions/ci-setup
 
       - name: Prettier
-        run: yarn lint:prettier
+        run: pnpm lint:prettier
 
       - name: TypeScript
-        run: yarn lint:types
+        run: pnpm lint:types
 
       - name: ESLint
-        run: yarn lint:eslint
+        run: pnpm lint:eslint
 
       - name: Preconstruct
-        run: yarn build
+        run: pnpm build
 
       - name: Prisma Filters
-        run: yarn lint:filters
+        run: pnpm lint:filters
 
   unit_tests:
     name: Package Unit Tests
@@ -42,4 +42,4 @@ jobs:
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
-        run: yarn jest --ci --runInBand --testPathIgnorePatterns=admin-ui-tests --testPathIgnorePatterns=api-tests --testPathIgnorePatterns=examples-smoke-tests --testPathIgnorePatterns=examples/testing
+        run: pnpm jest --ci --runInBand --testPathIgnorePatterns=admin-ui-tests --testPathIgnorePatterns=api-tests --testPathIgnorePatterns=examples-smoke-tests --testPathIgnorePatterns=examples/testing

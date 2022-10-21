@@ -9,17 +9,12 @@
 
   "settings": {},
 
-  "extensions": [
-    "dbaeumer.vscode-eslint",
-    "esbenp.prettier-vscode",
-    "gamunu.vscode-yarn",
-    "prisma.prisma"
-  ],
+  "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode", "prisma.prisma"],
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],
 
-  "postCreateCommand": "yarn install",
+  "postCreateCommand": "pnpm install",
 
   "remoteUser": "node"
 }

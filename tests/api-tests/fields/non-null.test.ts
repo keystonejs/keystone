@@ -9,7 +9,7 @@ import { assertInputObjectType, assertObjectType, GraphQLNonNull } from 'graphql
 import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig } from '../utils';
 
-const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
+const testModules = globby.sync(`packages/*/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
 });
 testModules

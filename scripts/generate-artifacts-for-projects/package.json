@@ -4,6 +4,7 @@
   "private": true,
   "main": "dist/keystone-6-generate-artifacts-for-projects.cjs.js",
   "dependencies": {
+    "@babel/runtime": "^7.16.3",
     "@keystone-6/core": "^3.0.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/scripts/generate-artifacts-for-projects"

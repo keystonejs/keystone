@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "keystone dev",
-    "sandbox": "yarn && yarn dev"
+    "sandbox": "yarn && keystone dev"
   },
   "dependencies": {
     "@keystone-6/auth": "^5.0.0",

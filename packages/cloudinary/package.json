@@ -20,6 +20,8 @@
   },
   "devDependencies": {
     "@keystone-6/core": "^3.0.0",
+    "@types/express": "^4.17.14",
+    "graphql": "^16.6.0",
     "graphql-upload": "^15.0.2",
     "mime": "^3.0.0"
   },

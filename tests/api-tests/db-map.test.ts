@@ -44,7 +44,7 @@ model SomeList {
 `);
 });
 
-const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
+const testModules = globby.sync(`packages/*/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
 });
 

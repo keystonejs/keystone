@@ -13,14 +13,13 @@
   "dependencies": {
     "@keystone-6/document-renderer": "^1.1.0",
     "@preconstruct/next": "^4.0.0",
-    "autoprefixer": "^10.4.8",
     "graphql": "^16.6.0",
     "next": "^12.2.4",
     "react": "^18.1.0",
     "react-dom": "^18.1.0"
   },
   "devDependencies": {
-    "@types/node": "18.7.2",
+    "@types/node": "^18.11.7",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.4",
     "typescript": "~4.7.4"
