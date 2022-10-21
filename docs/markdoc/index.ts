@@ -115,11 +115,15 @@ export function extractDocsFrontmatter(content: string): {
   };
 }
 
-export function extractBlogFrontmatter(content: string): {
+export type BlogFrontmatter = {
   title: string;
   description: string;
   publishDate: string;
-} {
+  authorName: string;
+  authorHandle: string;
+};
+
+export function extractBlogFrontmatter(content: string): BlogFrontmatter {
   const match = frontMatterPattern.exec(content);
   if (!match) {
     throw new Error(
@@ -140,18 +144,27 @@ export function extractBlogFrontmatter(content: string): {
   }
   let obj = parsed as Record<string, unknown>;
   if (typeof obj.title !== 'string') {
-    throw new Error(`Expected frontmatter to contain a title`);
+    throw new Error(`Expected frontmatter to contain title`);
   }
   if (typeof obj.description !== 'string') {
-    throw new Error(`Expected frontmatter to contain a description`);
+    throw new Error(`Expected frontmatter to contain description`);
   }
   if (typeof obj.publishDate !== 'string') {
-    throw new Error(`Expected frontmatter to contain a publishDate`);
+    throw new Error(`Expected frontmatter to contain publishDate`);
+  }
+  if (typeof obj.authorName !== 'string') {
+    throw new Error(`Expected frontmatter to contain authorName`);
+  }
+
+  if (typeof obj.authorHandle !== 'string') {
+    throw new Error(`Expected frontmatter to contain authorName`);
   }
 
   return {
     title: obj.title,
     description: obj.description,
     publishDate: obj.publishDate,
+    authorName: obj.authorName,
+    authorHandle: obj.authorHandle,
   };
 }

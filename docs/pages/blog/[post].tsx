@@ -25,7 +25,7 @@ export default function Page(props: InferGetStaticPropsType<typeof getStaticProp
       title={props.title}
       description={props.description}
       publishDate={props.publishDate}
-      editPath={`docs/pages/docs/${(router.query.rest as string[]).join('/')}.md`}
+      editPath={`docs/pages/docs/${router.query.post}.md`}
     >
       <Heading level={1} id="title">
         {props.title}
@@ -42,13 +42,13 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
     cwd: path.join(process.cwd(), 'pages/blog'),
   });
   return {
-    paths: files.map(file => ({ params: { rest: file.replace(/\.md$/, '').split('/') } })),
+    paths: files.map(file => ({ params: { post: file.replace(/\.md$/, '') } })),
     fallback: false,
   };
 }
 
 export async function getStaticProps(
-  args: GetStaticPropsContext<{ rest: string[] }>
+  args: GetStaticPropsContext<{ post: string }>
 ): Promise<GetStaticPropsResult<BlogContent>> {
-  return { props: await readBlogContent(`pages/blog/${args.params!.rest.join('/')}.md`) };
+  return { props: await readBlogContent(`pages/blog/${args.params!.post}.md`) };
 }

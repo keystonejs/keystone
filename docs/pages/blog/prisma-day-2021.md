@@ -2,6 +2,8 @@
 title: "Prisma Day 2021 Talk"
 description: "Jed Watson shared Keystone 6 with the world at Prisma Day conference in July 2021. His talk is a great way learn how Keystones combination of features and flexibility set it apart from other backend frameworks and Content Management Systems."
 publishDate: "2021-7-16"
+authorName: "Ronald Aveling"
+authorHandle: "https://twitter.com/ronaldaveling"
 ---
 
 Jed Watson shared Keystone 6 with the world at Prisma Day conference in July 2021. His talk is a great way learn how Keystones combination of features and flexibility set it apart from other backend frameworks and Content Management Systems.

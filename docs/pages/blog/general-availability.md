@@ -2,6 +2,8 @@
 title: "General Availability has arrived"
 description: "We're proud to announce that Keystone 6 is now in General Availability! Today's Keystone is faster and more flexible than it's ever been, and is ready for you to build amazing things with."
 publishDate: "2021-12-21"
+authorName: "Ronald Aveling"
+authorHandle: "https://twitter.com/ronaldaveling"
 ---
 
 We're proud to announce that Keystone 6 is now in General Availability! Today's Keystone is faster and more flexible than it's ever been, and is ready for you to build amazing things with.
@@ -55,7 +57,7 @@ This release completes a body of work that make **Keystone 6 our best developer 
 
 ## What's Next
 
-While we're really happy with what we achieved this year, one of the most important benefits of our work to date is the foundations we've put in place for 2022 and beyond. [Check out our roadmap](/updates/roadmap) to understand where we're taking Keystone next year.
+While we're really happy with what we achieved this year, one of the most important benefits of our work to date is the foundations we've put in place for 2022 and beyond. [Check out our roadmap](/roadmap) to understand where we're taking Keystone next year.
 
 To talk about this release and share your thoughts about the road ahead, be sure to join the conversation in [Slack](https://community.keystonejs.com/), [GitHub](https://github.com/keystonejs/keystone/discussions) and [Twitter](https://twitter.com/keystonejs).
 

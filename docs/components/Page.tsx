@@ -46,6 +46,7 @@ function OpenGraph({
   );
 }
 
+const pagesWithUpdatesSidebar = ['/updates'];
 export function DocsPage({
   children,
   headings = [],
@@ -70,7 +71,7 @@ export function DocsPage({
   const contentRef = useRef<HTMLDivElement | null>(null);
   const mq = useMediaQuery();
   const { pathname } = useRouter();
-  const isUpdatesPage = pathname.startsWith('/releases') || pathname.startsWith('/updates');
+  const isUpdatesPage = pagesWithUpdatesSidebar.some(p => pathname.startsWith(p));
 
   const metaTitle = title ? `${title} - Keystone 6 Documentation` : `Keystone 6 Documentation`;
 

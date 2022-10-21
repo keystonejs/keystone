@@ -305,39 +305,6 @@ export function UpdatesNavigation() {
       >
         <PrimaryNavItem href="/updates">Latest News</PrimaryNavItem>
         <PrimaryNavItem href="/updates/roadmap">Roadmap</PrimaryNavItem>
-        <PrimaryNavItem href="https://github.com/keystonejs/keystone/releases">
-          GitHub Releases
-        </PrimaryNavItem>
-        <NavSection title="Featured News">
-          <NavItem href="/updates/new-access-control">
-            <Emoji symbol="🔐" alt="Padlock" />
-            &nbsp; New Access Control API
-          </NavItem>
-          <NavItem href="/updates/new-graphql-api">
-            <Emoji symbol="💎" alt="Gemstone" />
-            &nbsp; New GraphQL API
-          </NavItem>
-          <NavItem href="/releases/2021-07-29">
-            <Emoji symbol="🎛️" alt="Control knobs" />
-            &nbsp; Customisable Admin UI
-          </NavItem>
-          <NavItem href="/updates/prisma-day-2021">
-            <Emoji symbol="🍿" alt="TV" />
-            &nbsp; Jed's Prisma Day Talk
-          </NavItem>
-          <NavItem href="/releases/2021-06-15">
-            <Emoji symbol="⚙️" alt="Gear" />
-            &nbsp; New Core
-          </NavItem>
-          <NavItem
-            href="https://github.com/keystonejs/keystone/tree/main/examples"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Emoji symbol="🧪" alt="Test Tube" />
-            &nbsp; New Examples Collection
-          </NavItem>
-        </NavSection>
       </nav>
     </NavContextProvider>
   );

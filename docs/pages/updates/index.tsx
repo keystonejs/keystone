@@ -141,14 +141,9 @@ export default function WhatsNew() {
         A snapshot of Keystone improvements and community happenings.
         <br />
         For developer changelogs see our{' '}
-        <Link href="/releases">
-          <a>releases page</a>
+        <Link href="https://github.com/keystonejs/keystone/releases">
+          <a>GitHub Releases</a>
         </Link>
-        , and subscribe to our releases on
-        <a href="https://github.com/keystonejs/keystone" target="_blank" rel="noopener noreferrer">
-          {' '}
-          GitHub
-        </a>
         .
       </Type>
 
@@ -156,13 +151,12 @@ export default function WhatsNew() {
         <div
           css={{
             display: 'inline-block',
-            margin: '0 0.8rem 0.5rem 0',
           }}
         >
           What are we working on next?{' '}
           <span>
             See our{' '}
-            <Button as="a" href="/updates/roadmap" rel="noopener noreferrer">
+            <Button as="a" href="/roadmap" rel="noopener noreferrer">
               Roadmap <ArrowR />
             </Button>
           </span>

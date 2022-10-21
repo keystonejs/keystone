@@ -212,6 +212,33 @@ const CURRENT = [
     destination: '/docs/fields/overview',
     permanent: false,
   },
+
+  /* Move updates to blog posts */
+  {
+    source: '/updates/general-availability',
+    destination: '/blog/general-availability',
+    permanent: true,
+  },
+  {
+    source: '/updates/new-access-control',
+    destination: '/blog/new-access-control',
+    permanent: true,
+  },
+  {
+    source: '/updates/new-graphql-api',
+    destination: '/blog/new-graphql-api',
+    permanent: true,
+  },
+  {
+    source: '/updates/prisma-day-2021',
+    destination: '/blog/prisma-day-2021',
+    permanent: true,
+  },
+  {
+    source: '/releases/2021-07-29',
+    destination: 'https://github.com/keystonejs/keystone/releases/tag/2021-07-29',
+    permanent: false,
+  },
 ];
 
 module.exports = [...SPLITBEE, ...CURRENT, ...ORIGINAL_NEXT, ...KEYSTONE_5, ...KEYSTONE_4];
