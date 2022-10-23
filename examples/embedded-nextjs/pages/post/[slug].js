@@ -26,7 +26,7 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params: { slug } }) {
   const context = await withContext();
   const [post] = await context.query.Post.findMany({
-    where: { slug: slug },
+    where: { slug: { equals: slug } },
     query: 'title content',
   });
   return { props: { post } };
