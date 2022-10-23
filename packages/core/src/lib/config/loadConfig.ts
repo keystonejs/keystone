@@ -10,6 +10,7 @@ export function getEsbuildConfig(cwd: string): BuildOptions {
     bundle: true,
     outfile: '.keystone/config.js',
     format: 'cjs',
+    platform: 'node',
     plugins: [
       {
         name: 'external-node_modules',
