@@ -13,7 +13,10 @@ import { createSystem } from '../../lib/createSystem';
 import { getEsbuildConfig, loadBuiltConfig } from '../../lib/config/loadConfig';
 import { defaults } from '../../lib/config/defaults';
 import { createExpressServer } from '../../lib/server/createExpressServer';
-import { createAdminUIMiddleware } from '../../lib/server/createAdminUIMiddleware';
+import {
+  createAdminUIMiddlewareWithNextApp,
+  getNextApp,
+} from '../../lib/server/createAdminUIMiddleware';
 import {
   generateCommittedArtifacts,
   generateNodeModulesArtifacts,
@@ -23,7 +26,7 @@ import {
   requirePrismaClient,
 } from '../../artifacts';
 import { ExitError, getAdminPath, getBuiltConfigPath } from '../utils';
-import { CreateContext, KeystoneConfig } from '../../types';
+import { KeystoneConfig } from '../../types';
 import { initialiseLists } from '../../lib/core/types-for-lists';
 import { printPrismaSchema } from '../../lib/core/prisma-schema';
 import { createSessionContext } from '../../lib/context/session';
@@ -135,14 +138,10 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
 
     const prismaClient = createContext().prisma;
     ({ disconnect, expressServer } = rest);
-    const adminUIMiddleware = await initAdminUI(
-      config,
-      graphQLSchema,
-      adminMeta,
-      cwd,
-      createContext
-    );
-    expressServer.use(adminUIMiddleware);
+    const nextApp = await initAdminUI(config, graphQLSchema, adminMeta, cwd);
+    if (nextApp) {
+      expressServer.use(createAdminUIMiddlewareWithNextApp(config, createContext, nextApp));
+    }
     hasAddedAdminUIMiddleware = true;
     initKeystonePromiseResolve();
     const originalPrismaSchema = printPrismaSchema(
@@ -209,8 +208,11 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
           Prisma: prismaClientModule.Prisma,
         });
         const servers = await createExpressServer(newConfig, graphQLSchema, keystone.createContext);
-
-        servers.expressServer.use(adminUIMiddleware);
+        if (nextApp) {
+          servers.expressServer.use(
+            createAdminUIMiddlewareWithNextApp(newConfig, keystone.createContext, nextApp)
+          );
+        }
         expressServer = servers.expressServer;
         let prevApolloServer = lastApolloServer;
         lastApolloServer = servers.apolloServer;
@@ -408,17 +410,16 @@ async function initAdminUI(
   config: KeystoneConfig,
   graphQLSchema: GraphQLSchema,
   adminMeta: AdminMetaRootVal,
-  cwd: string,
-  createContext: CreateContext
+  cwd: string
 ) {
   if (config.ui?.isDisabled) {
-    return express();
+    return;
   }
   console.log('✨ Generating Admin UI code');
   await generateAdminUI(config, graphQLSchema, adminMeta, getAdminPath(cwd), false);
 
   console.log('✨ Preparing Admin UI app');
-  const middleware = await createAdminUIMiddleware(config, createContext, true, getAdminPath(cwd));
+  const nextApp = await getNextApp(true, getAdminPath(cwd));
   console.log(`✅ Admin UI ready`);
-  return middleware;
+  return nextApp;
 }

@@ -10,28 +10,33 @@ const adminErrorHTMLFilepath = path.join(
   'admin-error.html'
 );
 
-export const createAdminUIMiddleware = async (
-  config: KeystoneConfig,
-  createContext: CreateContext,
-  dev: boolean,
-  projectAdminPath: string
-) => {
+type NextApp = {
+  prepare(): Promise<void>;
+  getRequestHandler(): express.Application;
+  render(req: express.Request, res: express.Response, url: string): void;
+};
+
+export async function getNextApp(dev: boolean, projectAdminPath: string): Promise<NextApp> {
   /** We do this to stop webpack from bundling next inside of next */
-  const { ui, graphql, session } = config;
   const _next = 'next';
   const next = require(_next);
-  const app = next({ dev, dir: projectAdminPath });
-  const handle = app.getRequestHandler();
+  const app = next({ dev, dir: projectAdminPath }) as NextApp;
   await app.prepare();
+  return app;
+}
 
+export function createAdminUIMiddlewareWithNextApp(
+  config: KeystoneConfig,
+  createContext: CreateContext,
+  nextApp: NextApp
+) {
+  const handle = nextApp.getRequestHandler();
+
+  const { ui, session } = config;
   const publicPages = ui?.publicPages ?? [];
   return async (req: express.Request, res: express.Response) => {
     const { pathname } = url.parse(req.url);
-    if (
-      pathname?.startsWith('/_next') ||
-      pathname === (graphql?.path || '/api/graphql') ||
-      pathname === '/api/__keystone_api_build'
-    ) {
+    if (pathname?.startsWith('/_next')) {
       handle(req, res);
       return;
     }
@@ -56,7 +61,7 @@ export const createAdminUIMiddleware = async (
         return;
       }
       if (!isValidSession && !publicPages.includes(url.parse(req.url).pathname!)) {
-        app.render(req, res, '/no-access');
+        nextApp.render(req, res, '/no-access');
       } else {
         handle(req, res);
       }
@@ -76,4 +81,14 @@ export const createAdminUIMiddleware = async (
       });
     }
   };
-};
+}
+
+export async function createAdminUIMiddleware(
+  config: KeystoneConfig,
+  createContext: CreateContext,
+  dev: boolean,
+  projectAdminPath: string
+) {
+  const nextApp = await getNextApp(dev, projectAdminPath);
+  return createAdminUIMiddlewareWithNextApp(config, createContext, nextApp);
+}
