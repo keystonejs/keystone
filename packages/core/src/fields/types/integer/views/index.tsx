@@ -214,7 +214,7 @@ export const controller = (
             // filters work but really the whole filtering UI needs to be fixed and just removing type=number
             // while doing nothing else would probably make it worse since anything would be allowed in the input
             // so when a user applies the filter, the query would return an error
-            type="number"
+            type={['in', 'not_in'].includes(props.type) ? 'text' : 'number'}
             onChange={event => {
               props.onChange(event.target.value.replace(/[^\d,\s-]/g, ''));
             }}
