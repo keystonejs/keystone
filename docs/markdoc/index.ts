@@ -46,7 +46,7 @@ export type BlogContent = BlogFrontmatter & {
 export async function readBlogContent(filepath: string): Promise<BlogContent> {
   let content = await fs.readFile(filepath, 'utf8');
   const frontmatter = extractBlogFrontmatter(content);
-  return { content: transformContent(`blog/${filepath}`, content), ...frontmatter };
+  return { content: transformContent(`docs/${filepath}`, content), ...frontmatter };
 }
 
 export async function readDocsContent(filepath: string): Promise<DocsContent> {

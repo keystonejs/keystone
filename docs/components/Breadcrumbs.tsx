@@ -12,7 +12,7 @@ export function Breadcrumbs() {
   const router = useRouter();
 
   // remove anchor and split path
-  const linkPath = router.asPath.replace(/#(.*)/g, '').split('/');
+  const linkPath = new URL(router.asPath, 'https://keystonejs.com').pathname.split('/');
   linkPath.shift();
 
   const breadcrumbs = linkPath.map((path, i): Path => {
