@@ -457,69 +457,89 @@ export type ComponentBlock<
     }
 );
 
+type ChildFieldPreviewProps<Schema extends ChildField, ChildFieldElement> = {
+  readonly element: ChildFieldElement;
+  readonly schema: Schema;
+};
+
+type FormFieldPreviewProps<Schema extends FormField<any, any>> = {
+  readonly value: Schema['options'];
+  onChange(value: Schema['defaultValue']): void;
+  readonly options: Schema['options'];
+  readonly schema: Schema;
+};
+
+type ObjectFieldPreviewProps<Schema extends ObjectField<any>, ChildFieldElement> = {
+  readonly fields: {
+    readonly [Key in keyof Schema['fields']]: GenericPreviewProps<
+      Schema['fields'][Key],
+      ChildFieldElement
+    >;
+  };
+  onChange(value: {
+    readonly [Key in keyof Schema['fields']]?: InitialOrUpdateValueFromComponentPropField<
+      Schema['fields'][Key]
+    >;
+  }): void;
+  readonly schema: Schema;
+};
+
+type ConditionalFieldPreviewProps<
+  Schema extends ConditionalField<FormField<string | boolean, any>, any>,
+  ChildFieldElement
+> = {
+  readonly [Key in keyof Schema['values']]: {
+    readonly discriminant: DiscriminantStringToDiscriminantValue<Schema['discriminant'], Key>;
+    onChange<Discriminant extends Schema['discriminant']['defaultValue']>(
+      discriminant: Discriminant,
+      value?: InitialOrUpdateValueFromComponentPropField<Schema['values'][`${Discriminant}`]>
+    ): void;
+    readonly options: Schema['discriminant']['options'];
+    readonly value: GenericPreviewProps<Schema['values'][Key], ChildFieldElement>;
+    readonly schema: Schema;
+  };
+}[keyof Schema['values']];
+
+type RelationshipFieldPreviewProps<Schema extends RelationshipField<boolean>> = {
+  readonly value: Schema['many'] extends true
+    ? readonly HydratedRelationshipData[]
+    : HydratedRelationshipData | null;
+  onChange(
+    relationshipData: Schema['many'] extends true
+      ? readonly HydratedRelationshipData[]
+      : HydratedRelationshipData | null
+  ): void;
+  readonly schema: Schema;
+};
+
+type ArrayFieldPreviewProps<Schema extends ArrayField<ComponentSchema>, ChildFieldElement> = {
+  readonly elements: readonly (GenericPreviewProps<Schema['element'], ChildFieldElement> & {
+    readonly key: string;
+  })[];
+  readonly onChange: (
+    value: readonly {
+      key: string | undefined;
+      value?: InitialOrUpdateValueFromComponentPropField<Schema['element']>;
+    }[]
+  ) => void;
+  readonly schema: Schema;
+};
+
 export type GenericPreviewProps<
   Schema extends ComponentSchema,
   ChildFieldElement
 > = Schema extends ChildField
-  ? {
-      readonly element: ChildFieldElement;
-      readonly schema: Schema;
-    }
+  ? ChildFieldPreviewProps<Schema, ChildFieldElement>
   : Schema extends FormField<infer Value, infer Options>
-  ? {
-      readonly value: Value;
-      onChange(value: Value): void;
-      readonly options: Options;
-      readonly schema: Schema;
-    }
+  ? FormFieldPreviewProps<Schema>
   : Schema extends ObjectField<infer Value>
-  ? {
-      readonly fields: {
-        readonly [Key in keyof Value]: GenericPreviewProps<Value[Key], ChildFieldElement>;
-      };
-      onChange(value: {
-        readonly [Key in keyof Value]?: InitialOrUpdateValueFromComponentPropField<Value[Key]>;
-      }): void;
-      readonly schema: Schema;
-    }
+  ? ObjectFieldPreviewProps<Schema, ChildFieldElement>
   : Schema extends ConditionalField<infer DiscriminantField, infer Values>
-  ? {
-      readonly [Key in keyof Values]: {
-        readonly discriminant: DiscriminantStringToDiscriminantValue<DiscriminantField, Key>;
-        onChange<Discriminant extends DiscriminantField['defaultValue']>(
-          discriminant: Discriminant,
-          value?: InitialOrUpdateValueFromComponentPropField<Values[`${Discriminant}`]>
-        ): void;
-        readonly options: DiscriminantField['options'];
-        readonly value: GenericPreviewProps<Values[Key], ChildFieldElement>;
-        readonly schema: Schema;
-      };
-    }[keyof Values]
+  ? ConditionalFieldPreviewProps<Schema, ChildFieldElement>
   : Schema extends RelationshipField<infer Many>
-  ? {
-      readonly value: Many extends true
-        ? readonly HydratedRelationshipData[]
-        : HydratedRelationshipData | null;
-      onChange(
-        relationshipData: Many extends true
-          ? readonly HydratedRelationshipData[]
-          : HydratedRelationshipData | null
-      ): void;
-      readonly schema: Schema;
-    }
+  ? RelationshipFieldPreviewProps<Schema>
   : Schema extends ArrayField<infer ElementField>
-  ? {
-      readonly elements: readonly (GenericPreviewProps<ElementField, ChildFieldElement> & {
-        readonly key: string;
-      })[];
-      readonly onChange: (
-        value: readonly {
-          key: string | undefined;
-          value?: InitialOrUpdateValueFromComponentPropField<ElementField>;
-        }[]
-      ) => void;
-      readonly schema: Schema;
-    }
+  ? ArrayFieldPreviewProps<Schema, ChildFieldElement>
   : never;
 
 export type PreviewProps<Schema extends ComponentSchema> = GenericPreviewProps<Schema, ReactNode>;
