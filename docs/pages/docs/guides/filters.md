@@ -4,7 +4,7 @@ description: "Learn how to use query filters get the data you need from Keystone
 ---
 
 {% hint kind="warn" %}
-We recently improved our GraphQL API so it’s easier to program and reason about. If you were using it prior to August 17th 2021, [read this guide](/updates/new-graphql-api) for info on how to upgrade.
+We recently improved our GraphQL API so it’s easier to program and reason about. If you were using it prior to August 17th 2021, [read this guide](/blog/new-graphql-api) for info on how to upgrade.
 {% /hint %}
 
 Keystone provides a powerful GraphQL API for querying the data in your system.

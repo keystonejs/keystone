@@ -18,25 +18,25 @@ We extended Keystone's foundations in Node, Express, and JavaScript, by adding P
 
 ## Automatic migrations
 
-With Prisma under the hood, Keystone can now generate database migrations every time you update schema so you can stay focused on building awesome apps instead of wasting time with DB admin chores. Keystone migrations are now 100% automated in local, and in production you have total control over what goes where with our [new CLI](../docs/guides/cli#command-line).
+With Prisma under the hood, Keystone can now generate database migrations every time you update schema so you can stay focused on building awesome apps instead of wasting time with DB admin chores. Keystone migrations are now 100% automated in local, and in production you have total control over what goes where with our [new CLI](/docs/guides/cli).
 
 ## Next-generation Rich Text editor
 
-Our new [Document field](../docs/guides/document-fields) takes the experience of creating rich content to new levels. It's highly customisable and stores JSON-structured data so you can do things like:
+Our new [Document field](/docs/guides/document-fields) takes the experience of creating rich content to new levels. It's highly customisable and stores JSON-structured data so you can do things like:
 
 - insert relationships to other items in your database
-- define your own [custom editor blocks](../docs/guides/document-fields#component-blocks) based on React Components
+- define your own [custom editor blocks](/docs/guides/document-fields#component-blocks) based on React Components
 - add formatting and custom blocks from your keyboard using slash / commands
 
-This field gives you the control you need to set your editors up for success without compromising your DX or the integrity of the data in your system. [Try the demo](../docs/guides/document-field-demo).
+This field gives you the control you need to set your editors up for success without compromising your DX or the integrity of the data in your system. [Try the demo](/docs/guides/document-field-demo).
 
 ## More powerful APIs
 
-Our [Fields](../docs/fields/overview), [Hooks](../docs/config/hooks), [Access Control](../docs/config/access-control), [GraphQL](../docs/graphql/overview), and [Query Filter](../docs/graphql/filters) APIs are better than ever. They're now much easier to program and have better naming parameters and more consistent authoring patterns in place so you're less likely to need our docs the every time you use that one API.
+Our [Fields](/docs/fields/overview), [Hooks](/docs/config/hooks), [Access Control](/docs/config/access-control), [GraphQL](/docs/graphql/overview), and [Query Filter](/docs/graphql/filters) APIs are better than ever. They're now much easier to program and have better naming parameters and more consistent authoring patterns in place so you're less likely to need our docs the every time you use that one API.
 
 ## Admin UI
 
-Is faster and more accessible. We also made our first steps towards delivering a next-level Admin UI customisation story with the introduction of features for custom [pages](../docs/guides/custom-admin-ui-pages), [logos](../docs/guides/custom-admin-ui-logo), and [navigation](../docs/guides/custom-admin-ui-navigation).
+Is faster and more accessible. We also made our first steps towards delivering a next-level Admin UI customisation story with the introduction of features for custom [pages](/docs/guides/custom-admin-ui-pages), [logos](/docs/guides/custom-admin-ui-logo), and [navigation](/docs/guides/custom-admin-ui-navigation).
 
 ## And much more
 
@@ -48,16 +48,16 @@ Here's a few of the other cool things we shipped in Keystone this year:
 - Schema extension API
 - More powerful Virtual Fields
 - New CLI and dev experience
-- [Server-side live reloading](/releases/2021-11-02#server-side-live-reloading)
-- [JSON field](../docs/fields/json)
-- [Health check server endpoints](../docs/config/config#health-check)
-- [17 example projects](../docs/examples) to explore Keystone's many features and get you up and running on the web
+- [Server-side live reloading](https://github.com/keystonejs/keystone/releases/tag/2021-11-02)
+- [JSON field](/docs/fields/json)
+- [Health check server endpoints](/docs/config/config#health-check)
+- [17 example projects](/docs/examples) to explore Keystone's many features and get you up and running on the web
 
-This release completes a body of work that make **Keystone 6 our best developer experience yet**. If you've been waiting to tryout Keystone 6 **there's never been a better time**. Just `yarn create keystone-app` or read our [getting started guide](../docs/getting-started) to take your first steps.
+This release completes a body of work that make **Keystone 6 our best developer experience yet**. If you've been waiting to tryout Keystone 6 **there's never been a better time**. Just `yarn create keystone-app` or read our [getting started guide](/docs/getting-started) to take your first steps.
 
 ## What's Next
 
-While we're really happy with what we achieved this year, one of the most important benefits of our work to date is the foundations we've put in place for 2022 and beyond. [Check out our roadmap](/roadmap) to understand where we're taking Keystone next year.
+While we're really happy with what we achieved this year, one of the most important benefits of our work to date is the foundations we've put in place for 2022 and beyond. [Check out our roadmap](/updates/roadmap) to understand where we're taking Keystone next year.
 
 To talk about this release and share your thoughts about the road ahead, be sure to join the conversation in [Slack](https://community.keystonejs.com/), [GitHub](https://github.com/keystonejs/keystone/discussions) and [Twitter](https://twitter.com/keystonejs).
 

@@ -36,7 +36,7 @@ Here's what we're going to do:
 
 - Create a Next.js app
 - Embed Keystone, and run an Admin UI you can read and write to locally
-- Add a simple Keystone [Schema](../config/lists) with a `Post` List
+- Add a simple Keystone [Schema](/docs/config/lists) with a `Post` List
 - Setup a secure read-only GraphQL API endpoint (and GraphQL Playground) that you can access in production
 - Deploy the app to Vercel 🚀
 
@@ -95,7 +95,7 @@ Add the `.keystone` directory to your `.gitignore` file. The contents of `.keyst
 
 ### Create your Keystone config
 
-To create and edit blog records in Keystone's Admin UI, add a `keystone.ts` [configuration file](../config/config) to your project root with a simple `Post` [list](../config/lists) containing fields for a Title, Slug, and some Content.
+To create and edit blog records in Keystone's Admin UI, add a `keystone.ts` [configuration file](/docs/config/config) to your project root with a simple `Post` [list](/docs/config/lists) containing fields for a Title, Slug, and some Content.
 
 {% hint kind="warn" %}
 **Note:** We're enabling experimental features to generate the APIs that make embedded mode work. These may change in future versions.
@@ -126,7 +126,7 @@ export default config({
 ```
 
 {% hint kind="tip" %}
-For simplicity we set all Post fields as [`text`](../fields/text) above. For a highly customisable rich text editor use the [`document`](../guides/document-fields) field type.
+For simplicity we set all Post fields as [`text`](/docs/fields/text) above. For a highly customisable rich text editor use the [`document`](/docs/guides/document-fields) field type.
 {% /hint %}
 
 ### Add Keystone to Next.js config

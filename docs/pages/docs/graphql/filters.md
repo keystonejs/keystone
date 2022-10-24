@@ -4,7 +4,7 @@ description: "A reference list of every filters available for every Keystone fie
 ---
 
 {% hint kind="warn" %}
-We recently improved this API so it’s easier to program and reason about. If you were using it prior to August 17th 2021, [read this guide](/updates/new-graphql-api) for info on how to upgrade.
+We recently improved this API so it’s easier to program and reason about. If you were using it prior to August 17th 2021, [read our blog post](/blog/new-graphql-api) for info on how to upgrade.
 {% /hint %}
 
 Each field type provides its own set of filters which can be used with [queries](./overview#users).

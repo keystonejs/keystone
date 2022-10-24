@@ -239,6 +239,16 @@ const CURRENT = [
     destination: 'https://github.com/keystonejs/keystone/releases/tag/2021-07-29',
     permanent: false,
   },
+  {
+    source: '/releases/2021-11-02',
+    destination: 'https://github.com/keystonejs/keystone/releases/tag/2021-11-02',
+    permanent: false,
+  },
+  {
+    source: '/docs/walkthroughs/embedded-mode-with-sqlite-nextjs',
+    destination: '/blog/embedded-mode-with-sqlite-nextjs',
+    permanent: true,
+  },
 ];
 
 module.exports = [...SPLITBEE, ...CURRENT, ...ORIGINAL_NEXT, ...KEYSTONE_5, ...KEYSTONE_4];

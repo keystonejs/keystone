@@ -5,7 +5,7 @@ import { loadAllMarkdoc } from '../markdoc/load-all';
 
 // for the things that aren't Markdoc that are linked from Markdoc
 const NON_MARKDOWN_PAGES = [
-  '/updates/new-graphql-api',
+  '/updates/roadmap',
   '/docs/guides/document-field-demo',
   '/releases/2021-10-05',
   '/docs/examples',
