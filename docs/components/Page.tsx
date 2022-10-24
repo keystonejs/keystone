@@ -150,7 +150,6 @@ export function BlogPage({
   noRightNav,
   title,
   description,
-  publishDate,
   ogImage,
   isIndexPage,
   editPath,
@@ -161,7 +160,6 @@ export function BlogPage({
   noRightNav?: boolean;
   title: string;
   description: string;
-  publishDate: string;
   ogImage?: string;
   isIndexPage?: boolean;
   editPath?: string;
@@ -189,13 +187,13 @@ export function BlogPage({
             borderTop: '1px solid var(--border)',
             overflowY: 'auto',
             display: ['block', null, 'grid'],
-            marginTop: '0rem',
-            gridTemplateColumns: '15rem minmax(0, 1fr)',
+            margin: '0 auto 0',
+            paddingLeft: ['var(--space-xlarge)', 'var(--space-xlarge)', null, '7.5rem'],
+            paddingRight: ['var(--space-xlarge)', 'var(--space-xlarge)', null, '7.5rem'],
             gridTemplateRows: '1fr auto',
             gap: ['var(--space-medium)', null, null, 'var(--space-large)', 'var(--space-xlarge)'],
           })}
         >
-          <span />
           <div
             id="content-and-toc"
             css={mq({
@@ -234,7 +232,7 @@ export function BlogPage({
               <TableOfContents container={contentRef} headings={headings} />
             )}
           </div>
-          <DocsFooter />
+          <Footer />
         </Wrapper>
       </div>
     </Fragment>

@@ -49,6 +49,7 @@ export default function Docs(props: InferGetStaticPropsType<typeof getStaticProp
             flexDirection: 'column',
             paddingTop: ['3rem', '5rem'],
             paddingBottom: ['3rem', '5rem'],
+            borderBottom: '1px solid var(--border)',
           })}
         >
           <Type
@@ -80,6 +81,7 @@ export default function Docs(props: InferGetStaticPropsType<typeof getStaticProp
             css={{
               listStyle: 'none',
               padding: 0,
+              marginBottom: 0,
             }}
           >
             {posts.map(post => {
@@ -88,6 +90,9 @@ export default function Docs(props: InferGetStaticPropsType<typeof getStaticProp
                   css={mq({
                     paddingTop: ['1rem', '2rem'],
                     paddingBottom: ['2rem', '3rem'],
+                    ':last-child': {
+                      paddingBottom: 0,
+                    },
                     borderTop: '1px solid var(--border)',
                     ':first-child': {
                       paddingTop: 0,

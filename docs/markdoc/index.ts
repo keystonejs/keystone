@@ -39,11 +39,8 @@ export type DocsContent = {
   description: string;
 };
 
-export type BlogContent = {
+export type BlogContent = BlogFrontmatter & {
   content: Tag;
-  title: string;
-  description: string;
-  publishDate: string;
 };
 
 export async function readBlogContent(filepath: string): Promise<BlogContent> {

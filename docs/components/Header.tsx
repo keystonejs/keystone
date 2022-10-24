@@ -151,9 +151,6 @@ function FlatMenu({
       css={{
         position: 'relative',
         display: 'inline-block',
-        // ':hover [data-menu-content]': {
-        //   display: 'block',
-        // },
       }}
     >
       <button
@@ -182,7 +179,6 @@ function FlatMenu({
             width: '14px',
             transition: 'transform 150ms',
             ...(showContent ? { transform: 'rotate(-90deg)' } : { transform: 'rotate(90deg)' }),
-
             path: { strokeWidth: '0.125em' },
           }}
         />
@@ -200,7 +196,7 @@ function FlatMenu({
           border: '1px solid var(--border)',
           borderRadius: '0.25rem',
           background: 'var(--app-bg)',
-          gap: '1rem',
+          gap: '1.25rem',
         }}
       >
         {items.map(({ href, label }) => {
@@ -218,9 +214,6 @@ function FlatMenu({
                   {label}
                 </NavItem>
               </span>
-              {/* <LinkItem href={href} key={href}>
-                {label}
-              </LinkItem> */}
             </span>
           );
         })}
