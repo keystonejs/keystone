@@ -11,7 +11,8 @@ type Path = { title: string; href: string };
 export function Breadcrumbs() {
   const router = useRouter();
 
-  const linkPath = router.asPath.split('/');
+  // remove anchor and split path
+  const linkPath = router.asPath.replace(/#(.*)/g, '').split('/');
   linkPath.shift();
 
   const breadcrumbs = linkPath.map((path, i): Path => {
