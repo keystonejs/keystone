@@ -81,6 +81,7 @@ function useCurrentSection() {
   if (['/updates', '/releases'].some(check)) return '/updates';
   if (['/why-keystone', '/for-'].some(check)) return '/why-keystone';
   if (['/docs'].some(check)) return '/docs';
+  if (['/blog'].some(check)) return '/blog';
 }
 
 function LinkItem({ children, href }: { children: ReactNode; href: string }) {
@@ -412,7 +413,6 @@ export function Header() {
         >
           <LinkItem href="/docs">Docs</LinkItem>
         </span> */}
-        {/* TODO: Add once we launch blog */}
         <span
           css={mq({
             display: ['none', null, 'inline-block'],
