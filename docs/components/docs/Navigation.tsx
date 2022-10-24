@@ -16,7 +16,6 @@ import { useMediaQuery } from '../../lib/media';
 import { useHeaderContext } from '../Header';
 import { Badge } from '../primitives/Badge';
 import { ArrowR } from '../icons/ArrowR';
-import { Emoji } from '../primitives/Emoji';
 
 type NavContext = {
   isSectionCollapsed: (title: string) => boolean;

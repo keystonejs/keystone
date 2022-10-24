@@ -198,15 +198,15 @@ export default function Roadmap() {
       noRightNav
       noProse
       title={'Roadmap'}
-      description={'Discover where KeystoneJS is headed, and why we\'re going there.'}
+      description={"Discover where KeystoneJS is headed, and why we're going there."}
     >
       <Type as="h1" look="heading64">
         Roadmap
       </Type>
       <Type as="p" look="body18" margin="1rem 0">
         After a year of intensive development Keystone 6 has achieved a{' '}
-        <Link href="/blog/general-availability">General Availability release</Link>! We've
-        graduated to the
+        <Link href="/blog/general-availability">General Availability release</Link>! We've graduated
+        to the
         <InlineCode>@keystone-6</InlineCode> namespace on npm and have a stable set of APIs that you
         can confidently build on <Emoji symbol="🚀" alt="Rocket" />
       </Type>

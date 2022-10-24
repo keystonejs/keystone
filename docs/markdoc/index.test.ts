@@ -1,6 +1,6 @@
 import { RenderableTreeNode } from '@markdoc/markdoc';
 import React, { ReactNode } from 'react';
-import { transformDocContent } from '.';
+import { transformContent } from '.';
 
 function renderableToReactElement(node: RenderableTreeNode, key = 1): ReactNode {
   if (typeof node === 'string' || node === null) {
@@ -26,7 +26,7 @@ test('duplicate headings without disambiguated ids error', () => {
   const content = `## Heading 1
 ## Heading 1
 `;
-  expect(() => transformDocContent('content.md', content)).toThrowErrorMatchingInlineSnapshot(`
+  expect(() => transformContent('content.md', content)).toThrowErrorMatchingInlineSnapshot(`
     "Errors in content.md:
     ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
     content.md:1: The id for this heading is "heading-1" which is the same as another heading in this file, disambiguate them with {% #some-id-here %} after a heading
@@ -39,7 +39,7 @@ test('duplicate headings with disambiguated ids are allowed', () => {
   const content = `## Heading 1
 ## Heading 1 {% #some-heading %}
 `;
-  expect(transformDocContent('content.md', content)).toMatchInlineSnapshot(`
+  expect(transformContent('content.md', content)).toMatchInlineSnapshot(`
     <article>
       <Heading
         id="heading-1"
@@ -59,7 +59,7 @@ test('duplicate headings with disambiguated ids are allowed', () => {
 
 test("h1's are not allowed", () => {
   const content = `# Heading 1`;
-  expect(() => transformDocContent('content.md', content)).toThrowErrorMatchingInlineSnapshot(`
+  expect(() => transformContent('content.md', content)).toThrowErrorMatchingInlineSnapshot(`
     "Errors in content.md:
     ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
     content.md:1: H1's are not allowed, specify the title in frontmatter at the top of the file if you're trying to specify the page title, otherwise use a different heading level
@@ -73,7 +73,7 @@ test('empty ids on headings are not allowed', () => {
 
 #### Blah {% id="" %}
 `;
-  expect(() => transformDocContent('content.md', content)).toThrowErrorMatchingInlineSnapshot(`
+  expect(() => transformContent('content.md', content)).toThrowErrorMatchingInlineSnapshot(`
     "Errors in content.md:
     ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
     content.md:1: This heading has an empty id, change the heading content so that a non-empty id is generated or add {% #some-id %} after the heading
@@ -92,7 +92,7 @@ something
 {% /if %}
 
 `;
-  expect(() => transformDocContent('content.md', content)).toThrowErrorMatchingInlineSnapshot(`
+  expect(() => transformContent('content.md', content)).toThrowErrorMatchingInlineSnapshot(`
     "Errors in content.md:
     ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
     content.md:2: Undefined function: 'or'

@@ -2,7 +2,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 
-
 type YouTubeEmbedProps = {
   url: string;
   label: string;
