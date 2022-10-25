@@ -17,7 +17,11 @@ Commands
   postinstall   generate client APIs and types (optional)
   build         build the project (must be done before using start)
   start         start the project in production mode
+  {% if $nextRelease %}
+  migrate       setup and run database migrations
+  {% /if %}
   prisma        run Prisma CLI commands safely
+  telemetry     sets telemetry preference (enable/disable/status)
 ```
 
 {% hint kind="tip" %}
@@ -31,17 +35,31 @@ We recommend adding the following scripts to your project's `package.json` file:
 ```json
 {
   "scripts": {
+    {% if $nextRelease %}
+    "build": "keystone build",
+    "dev": "keystone dev",
+    "postinstall": "keystone postinstall",
+    "generate": "keystone migrate generate",
+    "start": "keystone migrate deploy && keystone start",
+    {% else / %}
     "deploy": "keystone build && keystone prisma migrate deploy",
     "dev": "keystone dev",
     "postinstall": "keystone postinstall",
     "start": "keystone start"
+    {% /if %}
   }
 }
 ```
 
+{% if $nextRelease %}
+{% hint kind="tip" %}
+Note: Depending on where you are deploying the `migrate deploy` step might be better in the `build` or as a separate step altogether.
+{% /hint %}
+{% else /%}
 {% hint kind="tip" %}
 Note: the deploy script above assumes you are using migrations
 {% /hint %}
+{% /if %}
 
 Read on below for more details about each command, and see [bringing it all together](#bringing-it-all-together) for more details (including some important caveats) about how that "deploy" command works.
 
@@ -57,12 +75,20 @@ This is the command you use to start Keystone for local development. It will:
 - Generate and apply database migrations based on your Keystone Schema
 - Start the local dev server, which hosts the GraphQL API and Admin UI
 
-{% hint kind="warn" %}
-Keystone does not currently watch your local files for changes. If you update the config, schema or any other files in your keystone project you'll need to restart the server.
-{% /hint %}
-
 ### About database migrations
 
+{% if $nextRelease %}
+When using `keystone dev` the default behaviour is for Keystone to update your database to match your schema using Prisma Migrate. This behaviour is great for the rapid iteration of a schema, but can be modified in the following ways:
+
+- Setting `db.useMigrations` to `true` in your Keystone config - Keystone will use Prisma Migrate to apply any existing migrations and prompt you to create a migration if there was a change to your schema.
+- Running `keystone dev --skip-db-push` - This will skip the dev migration step and not perform any checks on your database to ensure it matches your schema. This can be useful if you have an existing database or want to handle all migrations yourself. Be aware that this may lead to GraphQL runtime errors if a table or table column is unavailable. This flag has no effect if `db.useMigrations` is set to `true`
+
+See [`migrate` command](#migrate) below for more information on database migrations.
+
+{% hint kind="tip" %}
+Be careful of running `keystone dev` while pointing to a production database as this can cause data loss.
+{% /hint %}
+{% else /%}
 In development, Keystone will migrate the structure of your database for you in one of two ways depending on how you have configured `db.useMigrations`:
 
 - If `db.useMigrations` is `false` (the default), Keystone will use Prisma Migrate to update your database so that it matches your schema. It may lose data while updating your database so you should only use this mode in initial development.
@@ -75,6 +101,7 @@ Commit the migration files to source control, then when you are hosting your app
 {% hint kind="tip" %}
 We strongly recommend enabling migrations if you are going to run your app in production. Not doing so risks data loss.
 {% /hint %}
+{% /if %}
 
 ### Resetting the database
 
@@ -129,6 +156,20 @@ $ keystone start
 This command starts Keystone in **production** mode. It requires a build to have been generated (see `build` above).
 
 It will not generate or apply any database migrations - these should be run during the **build** or **release** phase of your production deployment.
+{% if $nextRelease %}
+
+## migrate
+
+```
+$ keystone migrate [command]
+```
+
+This command helps with [database migrations](#working-with-migrations) and can perform the following actions:
+
+- `generate` - Generates the migration files to run to set up your production database - these files should be committed to source control and accessible by the `deploy` step.
+- `deploy` - Runs the generated migrations - this can only be run after a `build` step
+- `check` - Runs a check between the generated migrations and your schema, command will return an Error Code 1 if your migrations are not up to date - this needs to be run after a build step, and requires access to a non-production database.
+{% /if %}
 
 ## prisma
 
@@ -140,6 +181,8 @@ Keystone's CLI includes a `prisma` command which allows you to run any [Prisma C
 
 It will ensure your generated files (importantly, the Prisma Schema) are in sync with your Keystone Schema, and pass the configured database connection string through to Prisma as well.
 
+{% if $nextRelease %}
+{% else / %}
 ### Working with Migrations
 
 The primary reason you'll need to use the Prisma CLI in your Keystone project is to work with Prisma Migrate. For example, to deploy your migrations in production, you would run:
@@ -153,6 +196,7 @@ This will run the Prisma [`migrate deploy`](https://www.prisma.io/docs/reference
 As you start working with more sophisticated migration scenarios, you'll probably also need to use the [`migrate resolve`](https://www.prisma.io/docs/reference/api-reference/command-reference/#migrate-resolve) and [`migrate status`](https://www.prisma.io/docs/reference/api-reference/command-reference/#migrate-status) commands.
 
 While Keystone abstracts much of the Prisma workflow for you, we strongly recommend you familiarise yourself with the Prisma Migrate CLI commands when you are managing your application in production.
+{% /if %}
 
 ## Bringing it all together
 

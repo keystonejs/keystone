@@ -6,8 +6,9 @@ import { prisma } from './prisma';
 import { postinstall } from './postinstall';
 import { telemetry } from './telemetry';
 import { ExitError } from './utils';
+import { migrate } from './migrate';
 
-const commands = { dev, start, build, prisma, postinstall, telemetry };
+const commands = { dev, start, build, prisma, postinstall, telemetry, migrate };
 
 export async function cli(cwd: string, argv: string[]) {
   const { input, help, flags } = meow(
@@ -19,6 +20,7 @@ export async function cli(cwd: string, argv: string[]) {
         postinstall   generate client APIs and types (optional)
         build         build the project (must be done before using start)
         start         start the project in production mode
+        migrate       setup and run database migrations
         prisma        run Prisma CLI commands safely
         telemetry     sets telemetry preference (enable/disable/status)
     `,
@@ -26,6 +28,7 @@ export async function cli(cwd: string, argv: string[]) {
       flags: {
         fix: { default: false, type: 'boolean' },
         resetDb: { default: false, type: 'boolean' },
+        skipDbPush: { default: false, type: 'boolean' },
       },
       argv,
     }
@@ -42,7 +45,9 @@ export async function cli(cwd: string, argv: string[]) {
   } else if (command === 'postinstall') {
     return postinstall(cwd, flags.fix);
   } else if (command === 'dev') {
-    return dev(cwd, flags.resetDb);
+    return dev(cwd, flags.resetDb, flags.skipDbPush);
+  } else if (command === 'migrate') {
+    return migrate(cwd, input, flags.resetDb);
   } else if (command === 'telemetry') {
     return telemetry(cwd, argv[1]);
   } else {

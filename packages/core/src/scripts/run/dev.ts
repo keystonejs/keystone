@@ -66,7 +66,7 @@ export function setSkipWatching() {
   shouldWatch = false;
 }
 
-export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
+export const dev = async (cwd: string, shouldDropDatabase: boolean, skipDbPush: boolean) => {
   console.log('✨ Starting Keystone');
   const app = express();
   let expressServer: express.Express | null = null;
@@ -122,7 +122,7 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
       apolloServer,
       prismaClientModule,
       ...rest
-    } = await setupInitialKeystone(config, cwd, shouldDropDatabase);
+    } = await setupInitialKeystone(config, cwd, shouldDropDatabase, skipDbPush);
 
     if (configWithHTTP?.server?.extendHttpServer) {
       configWithHTTP.server.extendHttpServer(httpServer, context, graphQLSchema);
@@ -346,7 +346,8 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
 async function setupInitialKeystone(
   config: KeystoneConfig,
   cwd: string,
-  shouldDropDatabase: boolean
+  shouldDropDatabase: boolean,
+  skipDbPush: boolean
 ) {
   const { graphQLSchema, adminMeta, getKeystone } = createSystem(config);
 
@@ -367,6 +368,10 @@ async function setupInitialKeystone(
       getSchemaPaths(cwd).prisma,
       shouldDropDatabase
     );
+  } else if (skipDbPush) {
+    migrationPromise = async () => {
+      console.log('⚠️ Skipping database schema push');
+    };
   } else {
     migrationPromise = pushPrismaSchemaToDatabase(
       config.db.url,
