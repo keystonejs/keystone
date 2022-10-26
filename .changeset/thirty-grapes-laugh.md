@@ -2,4 +2,4 @@
 '@keystone-6/core': patch
 ---
 
-Change input type to `text` instead of `number` in `number` and `bigInt` fields to allow for comma in fields filtering
+Fix `in` and `not_in` filter views for `integer`, `bigInt`, `decimal` and `float` fields
