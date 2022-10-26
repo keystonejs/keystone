@@ -198,7 +198,7 @@ export const controller = (
         return (
           <TextInput
             onChange={event => {
-              if (type in ['in', 'not_in']) {
+              if (type === 'in' || type === 'not_in') {
                 onChange(event.target.value.replace(/[^\d\.,\s-]/g, ''));
                 return;
               }
