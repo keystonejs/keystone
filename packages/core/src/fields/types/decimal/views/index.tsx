@@ -197,14 +197,19 @@ export const controller = (
     }),
     validate: val => validate(val, validation, config.label) === undefined,
     filter: {
-      Filter(props) {
+      Filter({ autoFocus, type, onChange, value }) {
         return (
           <TextInput
             onChange={event => {
-              props.onChange(event.target.value.replace(/[^\d\.,\s-]/g, ''));
+              if (type === 'in' || type === 'not_in') {
+                onChange(event.target.value.replace(/[^\d,\s-]/g, ''));
+                return;
+              }
+
+              onChange(event.target.value.replace(/[^\d\s-]/g, ''));
             }}
-            value={props.value}
-            autoFocus={props.autoFocus}
+            value={value}
+            autoFocus={autoFocus}
           />
         );
       },
