@@ -48,10 +48,14 @@ function getRelationVal(
         // since we know the related item doesn't exist.
         return null;
       }
-      const ownsForeignKey = fk !== undefined;
-      return fetchRelatedItem(context)(foreignList)(ownsForeignKey ? 'id' : `${dbField.field}Id`)(
-        ownsForeignKey ? fk : id
-      );
+      // for one-to-many relationships, the one side always owns the foreign key
+      // so that means we have the id for the related item and we're fetching it by _its_ id.
+      // for the a one-to-one relationship though, the id might be on the related item
+      // so we need to fetch the related item by the id of the current item on the foreign key field
+      const currentItemOwnsForeignKey = fk !== undefined;
+      return fetchRelatedItem(context)(foreignList)(
+        currentItemOwnsForeignKey ? 'id' : `${dbField.field}Id`
+      )(currentItemOwnsForeignKey ? fk : id);
     };
   }
 }
