@@ -31,6 +31,7 @@ export default function Page(props: InferGetStaticPropsType<typeof getStaticProp
   return (
     <BlogPage
       headings={headings}
+      ogImage={props.metaImageUrl}
       title={props.title}
       description={props.description}
       editPath={`docs/pages/docs/${router.query.post}.md`}

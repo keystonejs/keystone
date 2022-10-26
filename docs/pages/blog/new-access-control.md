@@ -4,6 +4,7 @@ description: "Keystone 6 has an improved Access Control API to secure your data.
 publishDate: "2021-9-6"
 authorName: "Ronald Aveling"
 authorHandle: "https://twitter.com/ronaldaveling"
+metaImageUrl: ""
 ---
 
 Securing the data in your Keystone sytem is one of the most important steps in preparing your application for a production deployment.

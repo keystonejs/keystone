@@ -117,7 +117,8 @@ export type BlogFrontmatter = {
   description: string;
   publishDate: string;
   authorName: string;
-  authorHandle: string;
+  authorHandle?: string;
+  metaImageUrl?: string;
 };
 
 export function extractBlogFrontmatter(content: string): BlogFrontmatter {
@@ -153,8 +154,12 @@ export function extractBlogFrontmatter(content: string): BlogFrontmatter {
     throw new Error(`Expected frontmatter to contain authorName`);
   }
 
-  if (typeof obj.authorHandle !== 'string') {
-    throw new Error(`Expected frontmatter to contain authorName`);
+  if (typeof obj.authorHandle !== 'string' && typeof obj.authorHandle !== 'undefined') {
+    throw new Error(`Expected frontmatter to contain authorHandle`);
+  }
+
+  if (typeof obj.metaImageUrl !== 'string' && typeof obj.metaImageUrl !== 'undefined') {
+    throw new Error(`Expected frontmatter to contain metaImageUrl`);
   }
 
   return {
@@ -163,5 +168,6 @@ export function extractBlogFrontmatter(content: string): BlogFrontmatter {
     publishDate: obj.publishDate,
     authorName: obj.authorName,
     authorHandle: obj.authorHandle,
+    metaImageUrl: obj.metaImageUrl,
   };
 }

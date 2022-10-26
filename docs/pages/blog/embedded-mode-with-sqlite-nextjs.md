@@ -4,6 +4,7 @@ description: "Learn how to embed Keystone and an SQLite database into a Next.js 
 publishDate: "2021-05-21"
 authorName: "Ronald Aveling"
 authorHandle: "https://twitter.com/ronaldaveling"
+metaImageUrl: ""
 ---
 
 In this tutorial, we're going to show you how to embed Keystone and an SQLite database into a **Next.js app**.

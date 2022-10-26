@@ -4,6 +4,7 @@ description: "Keystone 6 has an improved GraphQL API that's easier to work with 
 publishDate: "2021-8-17"
 authorName: "Ronald Aveling"
 authorHandle: "https://twitter.com/ronaldaveling"
+metaImageUrl: ""
 ---
 
 As we move closer to a _General Availability_ release for Keystone 6, we've taken the opportunity to make the experience of working with Keystone's GraphQL API easier to program and reason about.

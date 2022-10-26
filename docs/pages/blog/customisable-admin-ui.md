@@ -4,6 +4,7 @@ description: "Custom navigation, pages and logo in this big Admin UI themed rele
 publishDate: "2021-7-29"
 authorName: "Ronald Aveling"
 authorHandle: "https://twitter.com/ronaldaveling"
+metaImageUrl: ""
 ---
 
 ## Custom Admin UI Navigation 🚏

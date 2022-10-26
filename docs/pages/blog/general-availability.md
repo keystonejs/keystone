@@ -4,6 +4,7 @@ description: "We're proud to announce that Keystone 6 is now in General Availabi
 publishDate: "2021-12-21"
 authorName: "Ronald Aveling"
 authorHandle: "https://twitter.com/ronaldaveling"
+metaImageUrl: ""
 ---
 
 We're proud to announce that Keystone 6 is now in General Availability! Today's Keystone is faster and more flexible than it's ever been, and is ready for you to build amazing things with.
