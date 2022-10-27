@@ -267,6 +267,8 @@ The following additional constraints should be kept in mind when lists that have
 - You cannot have relationships (`ref: 'Settings'`), if `Settings` is a list with `isSingleton` set
 - You can however, have relationship fields in the `Settings` list, like normal
 
+Try out our [Singleton Example](https://github.com/keystonejs/keystone/blob/main/examples/singleton/schema.ts) to see it in action.
+
 ## Related resources
 
 {% related-content %}
