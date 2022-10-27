@@ -1,3 +1,4 @@
+import { isDeepStrictEqual } from 'util';
 import { list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { relationship, text } from '@keystone-6/core/fields';
@@ -37,10 +38,7 @@ test(
   'to-one relationship query batching',
   runner(async ({ context }) => {
     let prevConsoleLog = console.log;
-    let logs: unknown[][] = [];
-    console.log = (...args) => {
-      logs.push(args.map(x => (typeof x === 'string' ? stripAnsi(x) : x)));
-    };
+    console.log = () => {};
     try {
       await context.query.User.createMany({
         data: Array.from({ length: 10 }, (_, i) => ({
@@ -50,8 +48,16 @@ test(
           },
         })),
       });
-      logs = [];
+    } finally {
+      console.log = prevConsoleLog;
+    }
 
+    let logs: unknown[][] = [];
+    console.log = (...args) => {
+      logs.push(args.map(x => (typeof x === 'string' ? stripAnsi(x) : x)));
+    };
+
+    try {
       expect(
         await context.query.Post.findMany({
           query: 'title author { name }',
@@ -63,6 +69,17 @@ test(
           author: { name: `User ${i}` },
         }))
       );
+      // the logs from the createMany are sometimes (it only seems to happen on postgres on ci)
+      // logged after the createMany resolves
+      // so we just ignore those queries (they always end in with a `COMMIT`)
+      // ideally would be findLastIndex but that's not in node 16
+      const commitLog = logs // this would ideally just be a findLastIndex but that's not in node 16
+        .map((val, index) => ({ val, index }))
+        .reverse()
+        .find(({ val }) => isDeepStrictEqual(val, ['prisma:query', 'COMMIT']));
+      if (commitLog) {
+        logs = logs.slice(commitLog.index + 1);
+      }
       expect(logs).toEqual([
         ['prisma:query', expect.stringContaining('SELECT')],
         ['prisma:query', expect.stringContaining('SELECT')],
