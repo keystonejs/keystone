@@ -672,15 +672,11 @@ export default function WhatsNew() {
           <br />
           <br />
           We’ve made the experience of working with Keystone’s GraphQL API easier to program and
-          reason about: We've{' '}
-          <Link href="/blog/new-graphql-api">
-            <a>written a complete guide</a>
-          </Link>{' '}
-          to the improvements we've made, and it includes a{' '}
-          <Link href="/blog/new-graphql-api#upgrade-checklist">
-            <a>checklist of the steps you need to take to upgrade your Keystone projects</a>
+          reason about. Be sure to check our{' '}
+          <Link href="/docs/graphql/overview">
+            <a>GraphQL API docs</a>
           </Link>
-          . Be sure to check it out!
+          .
         </Box>
         <Timeline date="29th July 2021" />
         <Box heading="Admin UI Customizations">

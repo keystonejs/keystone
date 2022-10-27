@@ -3,10 +3,6 @@ title: "GraphQL Overview"
 description: "Reference docs for Keystone’s CRUD (create, read, update, delete) GraphQL API. Based on the schema definitions outlined in your system config."
 ---
 
-{% hint kind="warn" %}
-We recently improved this API so it's easier to program and reason about. If you were using it prior to August 17th 2021, [read our blog post](/blog/new-graphql-api) for info on how to upgrade.
-{% /hint %}
-
 Keystone generates a CRUD (create, read, update, delete) GraphQL API based on the [schema](../config/lists) definition provided in the system [config](../config/config).
 
 ## Using the API

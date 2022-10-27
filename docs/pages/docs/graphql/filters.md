@@ -3,10 +3,6 @@ title: "GraphQL Query Filters"
 description: "A reference list of every filters available for every Keystone field type. Keystone filters are typically named after the field they are filtering."
 ---
 
-{% hint kind="warn" %}
-We recently improved this API so it’s easier to program and reason about. If you were using it prior to August 17th 2021, [read our blog post](/blog/new-graphql-api) for info on how to upgrade.
-{% /hint %}
-
 Each field type provides its own set of filters which can be used with [queries](./overview#users).
 This page lists all the filters available for each field type.
 For more details on how to use filters in queries please consult to the [GraphQL Queries - Filters](../guides/filters) guide.
