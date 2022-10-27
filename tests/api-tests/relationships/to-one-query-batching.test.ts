@@ -69,16 +69,16 @@ test(
           author: { name: `User ${i}` },
         }))
       );
+
       // the logs from the createMany are sometimes (it only seems to happen on postgres on ci)
       // logged after the createMany resolves
       // so we just ignore those queries (they always end in with a `COMMIT`)
       // ideally would be findLastIndex but that's not in node 16
-      const commitLog = logs // this would ideally just be a findLastIndex but that's not in node 16
-        .map((val, index) => ({ val, index }))
-        .reverse()
-        .find(({ val }) => isDeepStrictEqual(val, ['prisma:query', 'COMMIT']));
-      if (commitLog) {
-        logs = logs.slice(commitLog.index + 1);
+      const commitIndex = logs.findLastIndex(val =>
+        isDeepStrictEqual(val, ['prisma:query', 'COMMIT'])
+      );
+      if (commitIndex !== -1) {
+        logs = logs.slice(commitIndex + 1);
       }
       expect(logs).toEqual([
         ['prisma:query', expect.stringContaining('SELECT')],
@@ -105,3 +105,10 @@ test(
     }
   })
 );
+
+// TODO: remove this when it's added to TS's lib files
+declare global {
+  interface Array<T> {
+    findLastIndex(predicate: (value: T, index: number, obj: T[]) => unknown, thisArg?: any): number;
+  }
+}
