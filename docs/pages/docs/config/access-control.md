@@ -193,10 +193,6 @@ Filter based access control cannot be used for `create` operations.
 If you want to limit `create` operations, use either `access.operation.create` or `access.item.create`.
 {% /hint %}
 
-{% hint kind="warn" %}
-Filter based access control can impact the performance of your database queries.
-{% /hint %}
-
 ### Item (mutations only)
 
 Item-level access control lets you control which mutative operations can be applied to a list item.
