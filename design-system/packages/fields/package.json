@@ -4,6 +4,13 @@
   "license": "MIT",
   "main": "dist/keystone-ui-fields.cjs.js",
   "module": "dist/keystone-ui-fields.esm.js",
+  "exports": {
+    ".": {
+      "module": "./dist/keystone-ui-fields.esm.js",
+      "default": "./dist/keystone-ui-fields.cjs.js"
+    },
+    "./package.json": "./package.json"
+  },
   "devDependencies": {
     "@types/react": "^18.0.9"
   },

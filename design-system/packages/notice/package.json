@@ -4,6 +4,13 @@
   "license": "MIT",
   "main": "dist/keystone-ui-notice.cjs.js",
   "module": "dist/keystone-ui-notice.esm.js",
+  "exports": {
+    ".": {
+      "module": "./dist/keystone-ui-notice.esm.js",
+      "default": "./dist/keystone-ui-notice.cjs.js"
+    },
+    "./package.json": "./package.json"
+  },
   "devDependencies": {
     "@types/react": "^18.0.9"
   },

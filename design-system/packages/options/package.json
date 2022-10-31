@@ -4,6 +4,13 @@
   "license": "MIT",
   "main": "dist/keystone-ui-options.cjs.js",
   "module": "dist/keystone-ui-options.esm.js",
+  "exports": {
+    ".": {
+      "module": "./dist/keystone-ui-options.esm.js",
+      "default": "./dist/keystone-ui-options.cjs.js"
+    },
+    "./package.json": "./package.json"
+  },
   "peerDependencies": {
     "react": "^18.1.0"
   },
