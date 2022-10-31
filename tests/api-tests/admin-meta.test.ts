@@ -1,8 +1,8 @@
 import { list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
-import { staticAdminMetaQuery } from '@keystone-6/core/src/admin-ui/admin-meta-graphql';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
+import { staticAdminMetaQuery } from '../../packages/core/src/admin-ui/admin-meta-graphql';
 import { apiTestConfig, dbProvider } from './utils';
 
 const runner = setupTestRunner({

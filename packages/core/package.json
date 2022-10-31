@@ -190,7 +190,8 @@
       "module": "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/CreateItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-CreateItemPage.esm.js",
       "default": "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/CreateItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-CreateItemPage.cjs.js"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./bin/cli.js": "./bin/cli.js"
   },
   "bin": {
     "keystone": "bin/cli.js"
@@ -335,6 +336,11 @@
       "fields/types/{image,file}/utils.ts",
       "types/index.ts",
       "access/index.ts"
-    ]
+    ],
+    "exports": {
+      "extra": {
+        "./bin/cli.js": "./bin/cli.js"
+      }
+    }
   }
 }

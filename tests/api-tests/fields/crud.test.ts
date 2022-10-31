@@ -3,8 +3,8 @@ import { list } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
 import { KeystoneContext } from '@keystone-6/core/types';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
-import { humanize } from '@keystone-6/core/src/lib/utils';
 import { allowAll } from '@keystone-6/core/access';
+import { humanize } from '../../../packages/core/src/lib/utils';
 import { apiTestConfig, expectSingleResolverError, expectValidationError } from '../utils';
 
 const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
