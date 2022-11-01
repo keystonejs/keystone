@@ -1,7 +1,24 @@
-import { Config, nodes, Tag, ValidationError, Node } from '@markdoc/markdoc';
+import {
+  Config,
+  nodes,
+  Tag,
+  ValidationError,
+  Node,
+  functions,
+  ConfigFunction,
+} from '@markdoc/markdoc';
 import slugify from '@sindresorhus/slugify';
 
-export const markdocConfig: Config = {
+export type Pages = Map<string, { ids: Set<string> }>;
+
+export const baseMarkdocConfig: Config = {
+  // an empty variables object makes Markdoc validate against missing variables
+  variables: {},
+  // we want to disable the built-in functions
+  functions: Object.fromEntries(
+    Object.keys(functions).map(key => [key, undefined as unknown as ConfigFunction])
+  ),
+  validation: { validateFunctions: true },
   tags: {
     emoji: {
       render: 'Emoji',
@@ -64,26 +81,27 @@ export const markdocConfig: Config = {
         href: { type: String },
         target: { type: String, matches: ['_blank'] },
       },
+      validate: validateLink,
     },
   },
   nodes: {
     document: {
       ...nodes.document,
-      validate(node) {
+      validate(document) {
         const errors: ValidationError[] = [];
         // we want good stable ids so we require documentation authors write ids
         // when they could be ambiguous rather than just adding an index
         const seenHeadings = new Map<string, Node | 'reported'>();
-        for (const child of node.children) {
-          if (child.type === 'heading') {
-            const id = getIdForHeading(child);
+        for (const node of document.walk()) {
+          if (node.type === 'heading') {
+            const id = getIdForHeading(node);
             // we report an error for this in the heading validation
             if (id.length === 0) {
               continue;
             }
             const existingHeading = seenHeadings.get(id);
             if (!existingHeading) {
-              seenHeadings.set(id, child);
+              seenHeadings.set(id, node);
               continue;
             }
             const ambiguousHeadingError = (node: Node): ValidationError => ({
@@ -96,7 +114,20 @@ export const markdocConfig: Config = {
               errors.push(ambiguousHeadingError(existingHeading));
               seenHeadings.set(id, 'reported');
             }
-            errors.push(ambiguousHeadingError(child));
+            errors.push(ambiguousHeadingError(node));
+          }
+        }
+        for (const node of document.walk()) {
+          if (node.type === 'link' && node.attributes.href.startsWith('#')) {
+            const id = node.attributes.href.slice(1);
+            if (!seenHeadings.has(id)) {
+              errors.push({
+                id: 'missing-heading-id',
+                level: 'error',
+                message: `The link "${node.attributes.href}" doesn't point to an id in this file`,
+                location: node.location,
+              });
+            }
           }
         }
         return errors;
@@ -109,6 +140,18 @@ export const markdocConfig: Config = {
         language: { type: String, default: 'typescript' },
         // process determines whether or not markdoc processes tags inside the content of the code block
         process: { type: Boolean, render: false, default: false },
+      },
+      transform(node, config) {
+        const attributes = node.transformAttributes(config);
+        const children = node.transformChildren(config);
+        if (children.some(child => typeof child !== 'string')) {
+          throw new Error(
+            `unexpected non-string child of code block from ${
+              node.location?.file ?? '(unknown file)'
+            }:${node.location?.start.line ?? '(unknown line)'}`
+          );
+        }
+        return new Tag(this.render, { ...attributes, content: children.join('') }, []);
       },
     },
     heading: {
@@ -144,6 +187,10 @@ export const markdocConfig: Config = {
         return new Tag(this.render, { ...attributes, id: getIdForHeading(node) }, children);
       },
     },
+    link: {
+      ...nodes.link,
+      validate: validateLink,
+    },
     image: {
       ...nodes.image,
       attributes: {
@@ -155,7 +202,45 @@ export const markdocConfig: Config = {
   },
 };
 
-function getIdForHeading(node: Node): string {
+function validateLink(node: Node, config: Config): ValidationError[] {
+  const link = node.attributes.href;
+  if (
+    /https?:\/\//.test(link) ||
+    // local # is validated in the document validation
+    link.startsWith('#')
+  ) {
+    return [];
+  }
+  const pages: Pages | undefined = (config as any).pages;
+  if (/\.?\.?\//.test(link)) {
+    if (!pages) return [];
+    const url = new URL(
+      link,
+      `https://example.com${node.location!.file!.replace(/^pages/, '').replace(/\.md$/, '')}`
+    );
+    const id = url.hash ? url.hash.slice(1) : undefined;
+    if (!pages.has(url.pathname)) {
+      return [
+        {
+          id: 'invalid-link',
+          level: 'error',
+          message: `${link} points to a page that does not exist`,
+        },
+      ];
+    }
+    if (id === undefined || pages.get(url.pathname)!.ids.has(id)) return [];
+    return [
+      {
+        id: 'invalid-link',
+        level: 'error',
+        message: `${link} points to an id that does not exist`,
+      },
+    ];
+  }
+  return [{ id: 'invalid-link', level: 'error', message: 'Unknown link type' }];
+}
+
+export function getIdForHeading(node: Node): string {
   if (typeof node.attributes.id === 'string') {
     return node.attributes.id;
   }

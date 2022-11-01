@@ -11,6 +11,9 @@ export const lists = {
       copyrightText: text(),
       highlightedPosts: relationship({ ref: 'Post', many: true }),
     },
+    graphql: {
+      plural: 'ManySettings',
+    },
   }),
   Post: list({
     access: allowAll,

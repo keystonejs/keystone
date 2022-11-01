@@ -111,7 +111,7 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
             fieldMode: field.itemView?.fieldMode ?? null,
           },
           views,
-          controller: fieldViews[field.viewsIndex].controller({
+          controller: views.controller({
             listKey: list.key,
             fieldMeta: field.fieldMeta,
             label: field.label,

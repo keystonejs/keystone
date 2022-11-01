@@ -1,5 +1,5 @@
-import React, { ReactNode } from 'react';
 import { RenderableTreeNode } from '@markdoc/markdoc';
+import React, { ReactNode } from 'react';
 import { transformDocContent } from '.';
 
 function renderableToReactElement(node: RenderableTreeNode, key = 1): ReactNode {
@@ -79,6 +79,23 @@ test('empty ids on headings are not allowed', () => {
     content.md:1: This heading has an empty id, change the heading content so that a non-empty id is generated or add {% #some-id %} after the heading
     content.md:2: This heading has an empty id, change the heading content so that a non-empty id is generated or add {% #some-id %} after the heading
     content.md:4: This heading has an empty id, change the heading content so that a non-empty id is generated or add {% #some-id %} after the heading
+    ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
+  `);
+});
+
+test('built-in Markdoc functions are not allowed', () => {
+  const content = `
+{% if or(true, false) %}
+
+something
+
+{% /if %}
+
+`;
+  expect(() => transformDocContent('content.md', content)).toThrowErrorMatchingInlineSnapshot(`
+    "Errors in content.md:
+    ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+    content.md:2: Undefined function: 'or'
     ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
   `);
 });

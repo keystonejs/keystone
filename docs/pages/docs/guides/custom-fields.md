@@ -3,7 +3,7 @@ title: "Custom Fields"
 description: "Learn how to expand Keystone with your own custom fields. Guidance on backend setup, and frontend implementation in Keystone‘s Admin UI."
 ---
 
-Keystone provides a collection of [field types](../apis/fields) which you can use to build your system.
+Keystone provides a collection of [field types](../fields/overview) which you can use to build your system.
 If you need a field type which isn't provided, or you need a specialised version of an existing field type, you can define your own custom field type.
 
 There are two parts to a field type:
@@ -30,7 +30,6 @@ import {
   CommonFieldConfig,
   fieldType,
   orderDirectionEnum,
-  filters,
 } from '@keystone-6/core/types';
 import { graphql } from '@keystone-6/core';
 
@@ -53,7 +52,6 @@ export const myInt =
     })({
       ...config,
       input: {
-        where: { arg: graphql.arg({ type: filters[meta.provider].Int.optional }), resolve: filters.resolveCommon },
         create: { arg: graphql.arg({ type: graphql.Int }) },
         update: { arg: graphql.arg({ type: graphql.Int }) },
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
@@ -74,7 +72,6 @@ The `input` object defines the GraphQL inputs for the field type.
 
 ```ts
 input: {
-  where: { arg: graphql.arg({ type: filters[meta.provider].Int.optional }), resolve: filters.resolveCommon },
   create: { arg: graphql.arg({ type: graphql.Int }) },
   update: { arg: graphql.arg({ type: graphql.Int }) },
   orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
@@ -85,7 +82,6 @@ You can also provide resolvers to transform the value coming from GraphQL into t
 
 ```ts
 input: {
-  where: { arg: graphql.arg({ type: filters[meta.provider].Int.optional }), resolve: filters.resolveCommon },
   create: { arg: graphql.arg({ type: graphql.Int }), resolve: (val, context) => val },
   update: { arg: graphql.arg({ type: graphql.Int }), resolve: (val, context) => val },
   orderBy: { arg: graphql.arg({ type: orderDirectionEnum }), resolve: (val, context) => val },
@@ -139,10 +135,6 @@ export const controller = (config: FieldControllerConfig): FieldController<strin
       return typeof value === 'number' ? value + '' : '';
     },
     serialize: value => ({ [config.path]: value === '' ? null : parseInt(value, 10) }),
-    filter: {
-      // the filters section is omitted for brevity
-      // see what this looks like for the integer field at https://github.com/keystonejs/keystone/blob/e0d1b2068de2ea3b6770c58af91221b01e6a20cf/packages-next/fields/src/types/integer/views/index.tsx#L60-L128
-    }
   };
 };
 ```

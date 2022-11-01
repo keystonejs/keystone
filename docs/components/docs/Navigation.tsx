@@ -1,6 +1,13 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { AnchorHTMLAttributes, HTMLAttributes, ReactNode } from 'react';
+import {
+  AnchorHTMLAttributes,
+  ReactNode,
+  useState,
+  createContext,
+  useContext,
+  useMemo,
+} from 'react';
 import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
@@ -8,34 +15,103 @@ import Link from 'next/link';
 import { useMediaQuery } from '../../lib/media';
 import { useHeaderContext } from '../Header';
 import { Badge } from '../primitives/Badge';
-import { Type } from '../primitives/Type';
+import { ArrowR } from '../icons/ArrowR';
 import { Emoji } from '../primitives/Emoji';
 
-type SectionProps = { label?: string; children: ReactNode };
-export function Section({ label, children }: SectionProps) {
+type NavContext = {
+  isSectionCollapsed: (title: string) => boolean;
+  collapseSection: (title: string) => void;
+  expandSection: (title: string) => void;
+};
+
+const NavContext = createContext<NavContext | undefined>(undefined);
+
+/* Save section collapse/expand states */
+export const NavContextProvider = ({ children }: { children: ReactNode }) => {
+  const [collapsedSections, setCollapsedSections] = useState<string[]>([]);
+
+  const contextValue = useMemo(() => {
+    const collapseSection = (title: string) => {
+      const isSectionAlreadyCollapsed = collapsedSections.includes(title);
+      if (!isSectionAlreadyCollapsed) {
+        setCollapsedSections([...collapsedSections, title]);
+      }
+    };
+    const expandSection = (title: string) => {
+      const isSectionAlreadyExpanded = !collapsedSections.includes(title);
+      if (!isSectionAlreadyExpanded) {
+        setCollapsedSections(collapsedSections.filter(cs => cs !== title));
+      }
+    };
+    const isSectionCollapsed = (title: string) => {
+      return collapsedSections.some(cs => cs === title);
+    };
+
+    return { isSectionCollapsed, collapseSection, expandSection };
+  }, [collapsedSections, setCollapsedSections]);
+
+  return <NavContext.Provider value={contextValue}>{children}</NavContext.Provider>;
+};
+
+const useNavContext = () => {
+  const navContext = useContext(NavContext);
+  if (navContext === undefined) {
+    throw new Error('NavContextProvider is not wrapped in the tree');
+  }
+
+  return navContext;
+};
+
+type NavSectionProps = {
+  title: string;
+  children: ReactNode;
+};
+
+function NavSection({ title, children }: NavSectionProps) {
+  const { isSectionCollapsed, collapseSection, expandSection } = useNavContext();
+  const isCollapsed = isSectionCollapsed(title);
   return (
-    <div
-      css={{
-        marginBottom: 'var(--space-xlarge)',
-        marginTop: 'var(--space-xlarge)',
-      }}
-    >
-      {label && (
-        <Type
-          as="h3"
-          look="body16bold"
-          margin="var(--space-xlarge) 0 var(--space-large) 0"
-          color="var(--text-heading)"
+    <section>
+      <button
+        css={{
+          display: 'inline-flex',
+          height: 'auto',
+          padding: 0,
+          border: 'none',
+          background: 'transparent',
+          fontSize: '1rem',
+          marginBottom: '1rem',
+          alignItems: 'center',
+          fontWeight: 700,
+          cursor: 'pointer',
+          color: 'var(--text-heading)',
+          ':hover': {
+            color: 'var(--link)',
+          },
+        }}
+        onClick={() => (isCollapsed ? expandSection(title) : collapseSection(title))}
+      >
+        {title}
+        <ArrowR
           css={{
-            textTransform: 'uppercase',
-            fontWeight: 700,
+            marginLeft: '0.5rem',
+            width: '1rem',
+            ...(isCollapsed ? {} : { transform: 'rotate(90deg)' }),
+
+            path: { strokeWidth: '0.125em' },
           }}
-        >
-          {label}
-        </Type>
-      )}
-      {children}
-    </div>
+        />
+      </button>
+
+      <div
+        css={{
+          paddingLeft: 'var(--space-medium)',
+          ...(isCollapsed ? { height: 0, overflow: 'hidden' } : { height: '100%' }),
+        }}
+      >
+        {children}
+      </div>
+    </section>
   );
 }
 
@@ -53,9 +129,9 @@ export function NavItem({
   alwaysVisible,
   ...props
 }: NavItemProps) {
-  const { pathname } = useRouter();
+  const { asPath } = useRouter();
   const mq = useMediaQuery();
-  const isActive = _isActive || pathname === href;
+  const isActive = _isActive || asPath === href;
   const ctx = useHeaderContext();
   const isMobileNavOpen = ctx ? ctx.mobileNavIsOpen : true;
   const desktopOpenState = ctx ? ctx.desktopOpenState : -1;
@@ -67,12 +143,7 @@ export function NavItem({
         css={mq({
           display: 'block',
           textDecoration: 'none',
-          padding: [
-            '0 0 var(--space-medium) 0 var(--space-medium)',
-            '0 0 var(--space-medium) var(--space-medium)',
-            null,
-            '0 0 var(--space-large) var(--space-medium)',
-          ],
+          paddingBottom: '1rem',
           color: isActive
             ? 'var(--link)'
             : `${isPlaceholder ? 'var(--text-disabled)' : 'var(--text)'}`,
@@ -92,8 +163,8 @@ type PrimaryNavItemProps = {
 } & AnchorHTMLAttributes<HTMLAnchorElement>;
 
 export function PrimaryNavItem({ href, children }: PrimaryNavItemProps) {
-  const { pathname } = useRouter();
-  const isActive = pathname === href;
+  const { asPath } = useRouter();
+  const isActive = asPath === href;
   const ctx = useHeaderContext();
   const isMobileNavOpen = ctx ? ctx.mobileNavIsOpen : true;
   const desktopOpenState = ctx ? ctx.desktopOpenState : -1;
@@ -108,7 +179,7 @@ export function PrimaryNavItem({ href, children }: PrimaryNavItemProps) {
           color: isActive ? 'var(--link)' : 'var(--text-heading)',
           marginBottom: '1rem',
           alignItems: 'center',
-          fontWeight: 700,
+          fontWeight: 400,
           ':hover': {
             color: 'var(--link)',
           },
@@ -120,43 +191,20 @@ export function PrimaryNavItem({ href, children }: PrimaryNavItemProps) {
   );
 }
 
-function SubHeading(props: HTMLAttributes<HTMLElement>) {
-  return (
-    <Type
-      as="h4"
-      look="body14bold"
-      color="var(--muted)"
-      margin="1.5rem 0 1rem 0"
-      css={{ textTransform: 'uppercase' }}
-      {...props}
-    />
-  );
-}
-
 export function DocsNavigation() {
   return (
+    // <NavContextProvider>
     <nav
       css={{
         fontWeight: 500,
       }}
     >
-      <PrimaryNavItem href="/docs">Docs Home</PrimaryNavItem>
-      <Section>
-        <PrimaryNavItem href="/docs/walkthroughs">Walkthroughs</PrimaryNavItem>
-        <NavItem href="/docs/walkthroughs/getting-started-with-create-keystone-app">
-          Quick start
-        </NavItem>
-        <NavItem href="/docs/walkthroughs#learn-keystone">Learn Keystone</NavItem>
-        <NavItem href="/docs/walkthroughs#extended-learning">Extended learning</NavItem>
-      </Section>
-      <Section>
-        <PrimaryNavItem href="/docs/examples">Examples</PrimaryNavItem>
-        <NavItem href="/docs/examples/#base-projects">Basic</NavItem>
-        <NavItem href="/docs/examples/#feature-projects">Feature</NavItem>
-        <NavItem href="/docs/examples/#deployment-projects">Deployment</NavItem>
-      </Section>
-      <Section>
-        <PrimaryNavItem href="/docs/guides">Guides</PrimaryNavItem>
+      <NavItem href="/docs">Docs Home</NavItem>
+      <NavItem href="/docs/getting-started">Getting Started</NavItem>
+      <NavItem href="/docs/walkthroughs">Walkthroughs</NavItem>
+      <NavItem href="/docs/examples">Examples</NavItem>
+      <NavSection title="Guides">
+        <NavItem href="/docs/guides/overview">Overview</NavItem>
         <NavItem href="/docs/guides/cli">Command Line</NavItem>
         <NavItem href="/docs/guides/relationships">Relationships</NavItem>
         <NavItem href="/docs/guides/choosing-a-database">
@@ -174,10 +222,9 @@ export function DocsNavigation() {
         <NavItem href="/docs/guides/images-and-files">
           Images & Files <Badge look="success">New</Badge>
         </NavItem>
-        {/* Disable placeholder for now */}
-        {/* <NavItem href="/docs/guides/schema-extension" isPlaceholder>
-          Schema Extension
-        </NavItem> */}
+        <NavItem href="/docs/guides/schema-extension">
+          GraphQL Schema Extension<Badge look="success">New</Badge>
+        </NavItem>
         <NavItem href="/docs/guides/testing">Testing</NavItem>
         <NavItem href="/docs/guides/document-fields">Document Fields</NavItem>
         <NavItem href="/docs/guides/document-field-demo">Document Field Demo</NavItem>
@@ -190,91 +237,115 @@ export function DocsNavigation() {
         <NavItem href="/docs/guides/custom-admin-ui-logo">Custom Admin UI Logo</NavItem>
         <NavItem href="/docs/guides/custom-admin-ui-pages">Custom Admin UI Pages</NavItem>
         <NavItem href="/docs/guides/custom-admin-ui-navigation">Custom Admin UI Navigation</NavItem>
-      </Section>
-      <Section>
-        <PrimaryNavItem href="/docs/apis">APIs</PrimaryNavItem>
-        <SubHeading>Config</SubHeading>
-        <NavItem href="/docs/apis/config">Config API</NavItem>
-        <NavItem href="/docs/apis/schema">Lists API</NavItem>
-        <NavItem href="/docs/apis/fields">
-          Fields API <Badge look="success">Updated</Badge>
+      </NavSection>
+      <NavSection title="Configuration">
+        <NavItem href="/docs/config/overview">Overview</NavItem>
+        <NavItem href="/docs/config/config">Config</NavItem>
+        <NavItem href="/docs/config/lists">Lists</NavItem>
+        <NavItem href="/docs/config/auth">Authentication</NavItem>
+        <NavItem href="/docs/config/access-control">
+          Access Control <Badge look="success">Updated</Badge>
         </NavItem>
-        <NavItem href="/docs/apis/auth">Authentication API</NavItem>
-        <NavItem href="/docs/apis/access-control">
-          Access Control API <Badge look="success">Updated</Badge>
+        <NavItem href="/docs/config/hooks">
+          Hooks <Badge look="success">Updated</Badge>
         </NavItem>
-        <NavItem href="/docs/apis/hooks">
-          Hooks API <Badge look="success">Updated</Badge>
-        </NavItem>
-        <NavItem href="/docs/apis/session">Session API</NavItem>
+        <NavItem href="/docs/config/session">Session</NavItem>
+      </NavSection>
 
-        <SubHeading>Context</SubHeading>
-        <NavItem href="/docs/apis/context">Context API</NavItem>
-        <NavItem href="/docs/apis/query">Query API</NavItem>
-        <NavItem href="/docs/apis/db-items">DB API</NavItem>
+      <NavSection title="Fields">
+        <NavItem href="/docs/fields/overview">Overview</NavItem>
+        <NavItem href="/docs/fields/bigint">BigInt</NavItem>
+        <NavItem href="/docs/fields/calendarday">Calendar Day</NavItem>
+        <NavItem href="/docs/fields/checkbox">Checkbox</NavItem>
+        <NavItem href="/docs/fields/cloudinaryimage">Cloudinary Image</NavItem>
+        <NavItem href="/docs/fields/decimal">Decimal</NavItem>
+        <NavItem href="/docs/fields/document">Document</NavItem>
+        <NavItem href="/docs/fields/file">File</NavItem>
+        <NavItem href="/docs/fields/float">Float</NavItem>
+        <NavItem href="/docs/fields/image">Image</NavItem>
+        <NavItem href="/docs/fields/integer">Integer</NavItem>
+        <NavItem href="/docs/fields/json">JSON</NavItem>
+        <NavItem href="/docs/fields/multiselect">Multiselect</NavItem>
+        <NavItem href="/docs/fields/password">Password</NavItem>
+        <NavItem href="/docs/fields/relationship">Relationship</NavItem>
+        <NavItem href="/docs/fields/select">Select</NavItem>
+        <NavItem href="/docs/fields/text">Text</NavItem>
+        <NavItem href="/docs/fields/timestamp">Timestamp</NavItem>
+        <NavItem href="/docs/fields/virtual">Virtual</NavItem>
+      </NavSection>
 
-        <SubHeading>GraphQL</SubHeading>
-        <NavItem href="/docs/apis/graphql">
-          GraphQL API <Badge look="success">Updated</Badge>
+      <NavSection title="Context">
+        <NavItem href="/docs/context/overview">Overview</NavItem>
+        <NavItem href="/docs/context/get-context">getContext</NavItem>
+        <NavItem href="/docs/context/query">Query</NavItem>
+        <NavItem href="/docs/context/db-items">DB</NavItem>
+      </NavSection>
+
+      <NavSection title="GraphQL">
+        <NavItem href="/docs/graphql/overview">
+          Overview <Badge look="success">Updated</Badge>
         </NavItem>
-        <NavItem href="/docs/apis/filters">
-          Query Filter API <Badge look="success">Updated</Badge>
+        <NavItem href="/docs/graphql/filters">
+          Query Filters <Badge look="success">Updated</Badge>
         </NavItem>
-      </Section>
+      </NavSection>
     </nav>
+    // </NavContextProvider>
   );
 }
 
 export function UpdatesNavigation() {
   return (
-    <nav
-      css={{
-        fontWeight: 500,
-      }}
-    >
-      <PrimaryNavItem href="/updates">Latest News</PrimaryNavItem>
-      <PrimaryNavItem href="/updates/roadmap">Roadmap</PrimaryNavItem>
-      <PrimaryNavItem href="https://github.com/keystonejs/keystone/releases">
-        GitHub Releases
-      </PrimaryNavItem>
-      <Section label="Featured News">
-        <NavItem href="/docs/guides/images-and-files">
-          <Emoji symbol="🖼️" alt="Picture" />
-          &nbsp; Better Images & Files
-        </NavItem>
-        <NavItem href="/updates/general-availability">
-          <Emoji symbol="🎉" alt="Party Popper" />
-          &nbsp; General Availability Release
-        </NavItem>
-        <NavItem href="/updates/new-access-control">
-          <Emoji symbol="🔐" alt="Padlock" />
-          &nbsp; New Access Control API
-        </NavItem>
-        <NavItem href="/updates/new-graphql-api">
-          <Emoji symbol="💎" alt="Gemstone" />
-          &nbsp; New GraphQL API
-        </NavItem>
-        <NavItem href="/releases/2021-07-29">
-          <Emoji symbol="🎛️" alt="Control knobs" />
-          &nbsp; Customisable Admin UI
-        </NavItem>
-        <NavItem href="/updates/prisma-day-2021">
-          <Emoji symbol="🍿" alt="TV" />
-          &nbsp; Jed’s Prisma Day Talk
-        </NavItem>
-        <NavItem href="/releases/2021-06-15">
-          <Emoji symbol="⚙️" alt="Gear" />
-          &nbsp; New Core
-        </NavItem>
-        <NavItem
-          href="https://github.com/keystonejs/keystone/tree/main/examples"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Emoji symbol="🧪" alt="Test Tube" />
-          &nbsp; New Examples Collection
-        </NavItem>
-      </Section>
-    </nav>
+    <NavContextProvider>
+      <nav
+        css={{
+          fontWeight: 500,
+        }}
+      >
+        <PrimaryNavItem href="/updates">Latest News</PrimaryNavItem>
+        <PrimaryNavItem href="/updates/roadmap">Roadmap</PrimaryNavItem>
+        <PrimaryNavItem href="https://github.com/keystonejs/keystone/releases">
+          GitHub Releases
+        </PrimaryNavItem>
+        <NavSection title="Featured News">
+          <NavItem href="/docs/guides/images-and-files">
+            <Emoji symbol="🖼️" alt="Picture" />
+            &nbsp; Better Images & Files
+          </NavItem>
+          <NavItem href="/updates/general-availability">
+            <Emoji symbol="🎉" alt="Party Popper" />
+            &nbsp; General Availability Release
+          </NavItem>
+          <NavItem href="/updates/new-access-control">
+            <Emoji symbol="🔐" alt="Padlock" />
+            &nbsp; New Access Control API
+          </NavItem>
+          <NavItem href="/updates/new-graphql-api">
+            <Emoji symbol="💎" alt="Gemstone" />
+            &nbsp; New GraphQL API
+          </NavItem>
+          <NavItem href="/releases/2021-07-29">
+            <Emoji symbol="🎛️" alt="Control knobs" />
+            &nbsp; Customisable Admin UI
+          </NavItem>
+          <NavItem href="/updates/prisma-day-2021">
+            <Emoji symbol="🍿" alt="TV" />
+            &nbsp; Jed's Prisma Day Talk
+          </NavItem>
+          <NavItem href="/releases/2021-06-15">
+            <Emoji symbol="⚙️" alt="Gear" />
+            &nbsp; New Core
+          </NavItem>
+          <NavItem
+            href="https://github.com/keystonejs/keystone/tree/main/examples"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Emoji symbol="🧪" alt="Test Tube" />
+            &nbsp; New Examples Collection
+          </NavItem>
+        </NavSection>
+      </nav>
+    </NavContextProvider>
   );
 }

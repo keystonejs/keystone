@@ -1,7 +1,5 @@
 import React from 'react';
-
-// eslint-disable-next-line import/no-unresolved
-import { lists } from '.keystone/api';
+import { withContext } from '../../with';
 
 export default function PostPage({ post }) {
   return (
@@ -13,7 +11,8 @@ export default function PostPage({ post }) {
 }
 
 export async function getStaticPaths() {
-  const posts = await lists.Post.findMany({
+  const context = await withContext();
+  const posts = await context.query.Post.findMany({
     query: 'slug',
   });
 
@@ -25,8 +24,9 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params: { slug } }) {
-  const [post] = await lists.Post.findMany({
-    where: { slug: slug },
+  const context = await withContext();
+  const [post] = await context.query.Post.findMany({
+    where: { slug: { equals: slug } },
     query: 'title content',
   });
   return { props: { post } };

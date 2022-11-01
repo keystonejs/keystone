@@ -7,11 +7,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  release_pr:
+  versioning:
     name: Pull Request
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@main
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -20,9 +20,7 @@ jobs:
 
       - uses: changesets/action@v1
         with:
-          version: yarn version-packages
+          version: yarn ci:version-packages
         env:
-          # note that we're not using the GH token provided by Actions here because Actions has a rule that Actions
-          # will not run as the result of another Action so CI wouldn't run on the release PRs then
-          # we can get around it by using a personal access token from a GH account
+          # use a different GitHub account to have the CI run on push
           GITHUB_TOKEN: ${{ secrets.KEYSTONE_RELEASE_BOT_GITHUB_TOKEN }}

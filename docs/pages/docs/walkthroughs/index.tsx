@@ -19,10 +19,7 @@ export function QuickStart() {
           gap: 'var(--space-xlarge)',
         })}
       >
-        <Well
-          heading="Keystone Quick Start"
-          href="/docs/walkthroughs/getting-started-with-create-keystone-app"
-        >
+        <Well heading="Keystone Quick Start" href="/docs/getting-started">
           Take a tour of Keystone in minutes with our CLI starter project
         </Well>
       </div>
@@ -72,28 +69,6 @@ export function Foundations() {
   );
 }
 
-export function ExtendedLearning() {
-  const mq = useMediaQuery();
-  return (
-    <div
-      css={mq({
-        display: 'grid',
-        gridTemplateColumns: ['1fr', '1fr', '1fr', '1fr 1fr'],
-        gap: 'var(--space-xlarge)',
-      })}
-    >
-      <Well
-        grad="grad4"
-        heading="How to embed Keystone + SQLite in a Next.js app"
-        href="/docs/walkthroughs/embedded-mode-with-sqlite-nextjs"
-      >
-        Learn how to run Keystone in the same folder as your frontend code and commit everything to
-        Git. You end up with a queryable GraphQL endpoint running live on Vercel.
-      </Well>
-    </div>
-  );
-}
-
 export default function Docs() {
   return (
     <DocsPage
@@ -119,7 +94,7 @@ export default function Docs() {
 
       <Type as="p" look="body18" margin=".25rem 0 1.5rem 0">
         If you’re new to Keystone begin here. These walkthroughs introduce the system, key concepts,
-        and show you how to getup and running with schema-driven development the Keystone way.
+        and show you how to get up and running with schema-driven development the Keystone way.
       </Type>
 
       <QuickStart />
@@ -134,12 +109,6 @@ export default function Docs() {
       </Type>
 
       <Foundations />
-
-      <Type as="h2" look="heading30" margin="2rem 0 1rem 0" id="extended-learning">
-        Extended learning
-      </Type>
-
-      <ExtendedLearning />
     </DocsPage>
   );
 }

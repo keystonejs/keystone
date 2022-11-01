@@ -61,7 +61,11 @@ export function ComponentBlockRender({
         ),
         [previewProps, ComponentBlockPreview]
       )}
-      <span css={{ display: 'none' }}>{maybeChild}</span>
+      <span
+        css={{ caretColor: 'transparent', '& ::selection': { backgroundColor: 'transparent' } }}
+      >
+        {maybeChild}
+      </span>
     </ChildrenByPathContext.Provider>
   );
 }

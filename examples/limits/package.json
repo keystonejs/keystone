@@ -1,0 +1,20 @@
+{
+  "name": "@keystone-6/example-limits",
+  "version": "0.0.2",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "keystone dev",
+    "start": "keystone start",
+    "build": "keystone build",
+    "seed-data": "tsx seed-data.ts"
+  },
+  "dependencies": {
+    "@keystone-6/core": "^3.0.0"
+  },
+  "devDependencies": {
+    "tsx": "^3.9.0",
+    "typescript": "~4.7.4"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/limits"
+}

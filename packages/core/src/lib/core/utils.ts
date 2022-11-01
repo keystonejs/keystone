@@ -124,36 +124,33 @@ export function getNamesFromList(
   listKey: string,
   { graphql, ui, isSingleton }: KeystoneConfig['lists'][string]
 ) {
-  const computedSingular = humanize(listKey);
-  const computedPlural = pluralize.plural(computedSingular);
-  const computedLabel = isSingleton ? computedSingular : computedPlural;
-
-  const path = ui?.path || labelToPath(computedLabel);
-
   if (ui?.path !== undefined && !/^[a-z-_][a-z0-9-_]*$/.test(ui.path)) {
     throw new Error(
       `ui.path for ${listKey} is ${ui.path} but it must only contain lowercase letters, numbers, dashes, and underscores and not start with a number`
     );
   }
 
-  const adminUILabels = {
-    label: ui?.label || computedLabel,
-    singular: ui?.singular || computedSingular,
-    plural: ui?.plural || computedPlural,
-    path,
-  };
+  const computedSingular = humanize(listKey);
+  const computedPlural = pluralize.plural(computedSingular);
+  const computedLabel = isSingleton ? computedSingular : computedPlural;
+  const path = ui?.path || labelToPath(computedLabel);
 
-  let pluralGraphQLName = graphql?.plural || labelToClass(computedPlural);
+  const pluralGraphQLName = graphql?.plural || labelToClass(computedPlural);
   if (pluralGraphQLName === listKey) {
-    if (isSingleton) {
-      pluralGraphQLName = 'Many' + listKey;
-    } else {
-      throw new Error(
-        `The list key and the plural name used in GraphQL must be different but the list key ${listKey} is the same as the plural GraphQL name, please specify graphql.plural`
-      );
-    }
+    throw new Error(
+      `The list key and the plural name used in GraphQL must be different but the list key ${listKey} is the same as the plural GraphQL name, please specify graphql.plural`
+    );
   }
-  return { pluralGraphQLName, adminUILabels };
+
+  return {
+    pluralGraphQLName,
+    adminUILabels: {
+      label: ui?.label || computedLabel,
+      singular: ui?.singular || computedSingular,
+      plural: ui?.plural || computedPlural,
+      path,
+    },
+  };
 }
 
 const labelToPath = (str: string) => str.split(' ').join('-').toLowerCase();

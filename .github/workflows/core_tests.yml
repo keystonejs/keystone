@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:14
+        image: postgres:15
         env:
           POSTGRES_USER: testuser
           POSTGRES_PASSWORD: testpass
@@ -32,13 +32,11 @@ jobs:
       matrix:
         index: [1, 2, 3, 4, 5, 6, 7, 8, 9]
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
-
+      - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
-        run: yarn jest --ci --runInBand --shard=${{ matrix.index }}/9 api-tests --testPathIgnorePatterns=examples-smoke-tests  --testPathIgnorePatterns=tests/api-tests/fields/crud --testPathIgnorePatterns=tests/api-tests/auth-stored-session.test.ts
+        run: yarn jest --ci --runInBand --shard=${{ matrix.index }}/9 api-tests --testPathIgnorePatterns=tests/api-tests/fields/crud
         env:
           TEST_ADAPTER: postgresql
           DATABASE_URL: postgres://testuser:testpass@localhost:5432/test_db
@@ -51,13 +49,11 @@ jobs:
       matrix:
         index: [1, 2, 3, 4, 5, 6, 7, 8, 9]
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
-
+      - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
-        run: yarn jest --ci --runInBand api-tests --shard=${{ matrix.index }}/9 --testPathIgnorePatterns=examples-smoke-tests  --testPathIgnorePatterns=tests/api-tests/fields/crud --testPathIgnorePatterns=tests/api-tests/auth-stored-session.test.ts
+        run: yarn jest --ci --runInBand --shard=${{ matrix.index }}/9 api-tests --testPathIgnorePatterns=tests/api-tests/fields/crud
         env:
           TEST_ADAPTER: sqlite
 
@@ -77,86 +73,11 @@ jobs:
       matrix:
         index: [1, 2, 3, 4, 5, 6, 7, 8, 9]
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
-
+      - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup
 
       - name: Unit tests
-        run: yarn jest --ci --runInBand --shard=${{ matrix.index }}/9 api-tests --testPathIgnorePatterns=examples-smoke-tests  --testPathIgnorePatterns=tests/api-tests/fields/crud --testPathIgnorePatterns=tests/api-tests/auth-stored-session.test.ts
-        env:
-          TEST_ADAPTER: mysql
-          DATABASE_URL: mysql://root:testpass@localhost:3306/test_db
-
-  redis_session_tests_postgresql:
-    name: Redis Session Tests PostgreSQL
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:14
-        env:
-          POSTGRES_USER: testuser
-          POSTGRES_PASSWORD: testpass
-          POSTGRES_DB: test_db
-        ports:
-          - 5432:5432
-      redis:
-        image: redis:7
-        ports:
-          - 6379:6379
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
-
-      - uses: ./.github/actions/ci-setup
-
-      - name: Unit tests
-        run: yarn jest --ci --runInBand tests/api-tests/auth-stored-session.test.ts
-        env:
-          TEST_ADAPTER: postgresql
-          DATABASE_URL: postgres://testuser:testpass@localhost:5432/test_db
-
-  redis_session_tests_sqlite:
-    name: Redis Session Tests SQLite
-    runs-on: ubuntu-latest
-    services:
-      redis:
-        image: redis:7
-        ports:
-          - 6379:6379
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
-
-      - uses: ./.github/actions/ci-setup
-
-      - name: Unit tests
-        run: yarn jest --ci --runInBand tests/api-tests/auth-stored-session.test.ts
-        env:
-          TEST_ADAPTER: sqlite
-
-  redis_session_tests_mysql:
-    name: Redis Session Tests MySQL
-    runs-on: ubuntu-latest
-    services:
-      redis:
-        image: redis:7
-        ports:
-          - 6379:6379
-      mysql:
-        image: mariadb:10.9
-        env:
-          MYSQL_ROOT_PASSWORD: testpass
-        ports:
-          - 3306:3306
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
-
-      - uses: ./.github/actions/ci-setup
-
-      - name: Unit tests
-        run: yarn jest --ci --runInBand tests/api-tests/auth-stored-session.test.ts
+        run: yarn jest --ci --runInBand --shard=${{ matrix.index }}/9 api-tests --testPathIgnorePatterns=tests/api-tests/fields/crud
         env:
           TEST_ADAPTER: mysql
           DATABASE_URL: mysql://root:testpass@localhost:3306/test_db
@@ -166,7 +87,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:14
+        image: postgres:15
         env:
           POSTGRES_USER: testuser
           POSTGRES_PASSWORD: testpass
@@ -174,9 +95,7 @@ jobs:
         ports:
           - 5432:5432
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
-
+      - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup
 
       - name: Setup local S3 bucket
@@ -199,9 +118,7 @@ jobs:
     name: Field CRUD Tests SQLite
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
-
+      - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup
 
       - name: Setup local S3 bucket
@@ -231,9 +148,7 @@ jobs:
         ports:
           - 3306:3306
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
-
+      - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup
 
       - name: Setup local S3 bucket
@@ -256,9 +171,9 @@ jobs:
     name: Testing example project
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
+      - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup
+
       - name: Example unit tests
         run: cd examples/testing; yarn test
 
@@ -276,7 +191,7 @@ jobs:
             'blog.test.ts',
             'document-field.test.ts',
             'default-values.test.ts',
-            'extend-graphql-schema.test.ts',
+            'extend-graphql-schema-graphql-tools.test.ts',
             'extend-graphql-schema-graphql-ts.test.ts',
             'extend-graphql-schema-nexus.test.ts',
             'json.test.ts',
@@ -293,9 +208,7 @@ jobs:
           ]
       fail-fast: false
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
-
+      - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup
 
       - name: Install Dependencies of Browsers
@@ -324,9 +237,7 @@ jobs:
           ]
       fail-fast: false
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
-
+      - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup
 
       - name: Install Dependencies of Browsers

@@ -9,23 +9,23 @@ jobs:
     runs-on: ubuntu-latest
     environment: release
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@master
+      - uses: actions/checkout@main
         with:
           fetch-depth: 0
-          persist-credentials: false
+          persist-credentials: true # needed for git push
 
       - uses: ./.github/actions/ci-setup
 
-      - name: Publish to npm
-        uses: changesets/action@v1
-        with:
-          version: yarn no-run-version-packages
-          publish: yarn publish-changed
-          createGithubReleases: false
+      - run: yarn build
+
+      - name: git config
+        run: |
+          git config --global user.name 'Keystonejs Release Bot'
+          git config --global user.email 'automation+keystonejs@thinkmill.com.au'
+
+      - name: npm publish, git tag
+        run: yarn changeset publish --tag latest
         env:
-          # note that we're not using the GH token provided by Actions here because Actions has a rule that Actions
-          # will not run as the result of another Action so CI wouldn't run on the release PRs then
-          # we can get around it by using a personal access token from a GH account
-          GITHUB_TOKEN: ${{ secrets.KEYSTONE_RELEASE_BOT_GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - run: git push origin --follow-tags

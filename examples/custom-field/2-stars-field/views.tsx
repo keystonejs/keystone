@@ -1,5 +1,5 @@
 import React from 'react';
-import { FieldContainer, FieldDescription, FieldLabel, TextInput } from '@keystone-ui/fields';
+import { FieldContainer, FieldDescription, FieldLabel } from '@keystone-ui/fields';
 import { CellLink, CellContainer } from '@keystone-6/core/admin-ui/components';
 
 import {
@@ -57,74 +57,5 @@ export const controller = (
       return typeof value === 'number' ? value : null;
     },
     serialize: value => ({ [config.path]: value }),
-    filter: {
-      Filter(props) {
-        return (
-          <TextInput
-            type="number"
-            onChange={event => {
-              props.onChange(event.target.value.replace(/[^\d,\s-]/g, ''));
-            }}
-            value={props.value}
-            autoFocus={props.autoFocus}
-          />
-        );
-      },
-
-      graphql: ({ type, value }) => {
-        const key = type === 'is' ? config.path : `${config.path}_${type}`;
-        const valueWithoutWhitespace = value.replace(/\s/g, '');
-
-        return {
-          [key]: ['in', 'not_in'].includes(type)
-            ? valueWithoutWhitespace.split(',').map(i => parseInt(i))
-            : parseInt(valueWithoutWhitespace),
-        };
-      },
-      Label({ label, value, type }) {
-        let renderedValue = value;
-        if (['in', 'not_in'].includes(type)) {
-          renderedValue = value
-            .split(',')
-            .map(value => value.trim())
-            .join(', ');
-        }
-        return `${label.toLowerCase()}: ${renderedValue}`;
-      },
-      types: {
-        is: {
-          label: 'Is exactly',
-          initialValue: '',
-        },
-        not: {
-          label: 'Is not exactly',
-          initialValue: '',
-        },
-        gt: {
-          label: 'Is greater than',
-          initialValue: '',
-        },
-        lt: {
-          label: 'Is less than',
-          initialValue: '',
-        },
-        gte: {
-          label: 'Is greater than or equal to',
-          initialValue: '',
-        },
-        lte: {
-          label: 'Is less than or equal to',
-          initialValue: '',
-        },
-        in: {
-          label: 'Is one of',
-          initialValue: '',
-        },
-        not_in: {
-          label: 'Is not one of',
-          initialValue: '',
-        },
-      },
-    },
   };
 };

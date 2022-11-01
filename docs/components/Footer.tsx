@@ -90,7 +90,7 @@ export function Footer() {
             </Type>
             <List>
               <li>
-                <Link href="/docs/walkthroughs/getting-started-with-create-keystone-app">
+                <Link href="/docs/getting-started">
                   <a>Getting started</a>
                 </Link>
               </li>
@@ -261,6 +261,57 @@ export function Footer() {
           <GitHubButton repo="keystonejs/keystone" />
         </div>
       </Wrapper>
+    </footer>
+  );
+}
+
+export function DocsFooter() {
+  const mq = useMediaQuery();
+
+  return (
+    <footer
+      css={{
+        borderTop: '1px solid var(--border)',
+        gridArea: 'footer',
+        padding: '1rem 0',
+        zIndex: 2,
+        color: 'var(--muted)',
+        gridColumn: '2 / 3',
+        gridRow: '2 / 3',
+      }}
+    >
+      <div
+        css={mq({
+          display: 'grid',
+          gridTemplateColumns: ['1fr', '1fr 4.375rem auto'],
+          gap: '1rem',
+          alignItems: 'center',
+          justifyItems: ['center', 'end'],
+          margin: '1rem 0 1rem 0',
+          '& p': {
+            display: 'inline-block',
+            margin: ['0 auto', 0],
+            // textAlign: 'center',
+          },
+        })}
+      >
+        <Type look="body14" as="p" css={{ justifySelf: 'start' }}>
+          Made in Australia <Emoji symbol="🇦🇺" alt="Australia" /> by{' '}
+          <a href="https://www.thinkmill.com.au" target="_blank" rel="noopener noreferrer">
+            Thinkmill
+          </a>
+          , with contributions from around the world <Emoji symbol="🌏" alt="Globe" />
+        </Type>
+        <Socials
+          css={mq({
+            fontSize: '0.75rem',
+            gap: '0.5rem',
+            color: 'var(--muted)',
+            margin: ['0 auto', 0],
+          })}
+        />
+        <GitHubButton repo="keystonejs/keystone" />
+      </div>
     </footer>
   );
 }

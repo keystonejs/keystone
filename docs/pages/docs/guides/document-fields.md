@@ -3,7 +3,7 @@ title: "How To Use Document Fields"
 description: "Learn how to configure Keystone’s highly customizable Rich Text editor. The Document field is built with Slate and stores your content as JSON-structured data."
 ---
 
-The [`document`](../apis/fields#document) field type is a highly customizable rich text editor that lets content creators quickly and easily edit content in your system.
+The [`document`](../fields/document) field type is a highly customizable rich text editor that lets content creators quickly and easily edit content in your system.
 
 It's built with [Slate](https://docs.slatejs.org/), stores your content as JSON-structured data, and lets you do things like:
 
@@ -201,7 +201,7 @@ You can then select an item from the list specified by `listKey` from the inline
 ![The Admin UI showing the select field used to choose a related item](/assets/guides/document-fields/inline-relationship-select.png)
 
 {% hint kind="tip" %}
-**Tip**: The select component will use the [`ui.labelField`](../apis/schema#ui) of the related list in its options list.
+**Tip**: The select component will use the [`ui.labelField`](../config/lists#ui) of the related list in its options list.
 Make sure you have this value configured to make finding related items easier for your users.
 {% /hint %}
 
@@ -854,10 +854,15 @@ const componentBlockRenderers: InferRenderersForComponentBlocks<typeof component
 
 {% related-content %}
 {% well
-heading="Example Project: Document Field"
+heading="Example: Document Field"
 href="https://github.com/keystonejs/keystone/tree/main/examples/document-field"
 target="_blank" %}
 Illustrates how to configure `document` fields in your Keystone system and render their data in a frontend application. Builds on the Blog starter project.
+{% /well %}
+{% well
+heading="Example: Document Field Customisation"
+href="https://github.com/keystonejs/keystone/tree/main/examples/document-field-customisation" %}
+Example to demonstrate customisation of Keystone's document field and document renderer.
 {% /well %}
 {% well
 heading="Document Field Demo"

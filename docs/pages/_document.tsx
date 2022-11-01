@@ -29,7 +29,7 @@ class MyDocument extends Document {
 
   render() {
     return (
-      <Html>
+      <Html data-theme="light">
         <Head>
           <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
           <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
@@ -54,6 +54,35 @@ class MyDocument extends Document {
             src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"
           />
           <script data-no-cookie data-respect-dnt async data-api="/_sb" src="/sb.js" />
+          {/*
+            The page is server rendered and hydrated on the browser client.
+            While server rendering we do not know what the user's preferred/saved theme is and default to light theme.
+            So we run this script in the browser before the page is rendered (not the react render but the browser render)
+            and set the theme class in html element so our styles would know which theme to paint on first paint.
+            All this to avoid a flash of default light theme when user either prefers dark theme or has previously
+            saved dark theme to their local storage. ¯\_(ツ)_/¯ React is hard sometimes.
+         */}
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                (function () {
+                  if (typeof window !== 'undefined') {
+                    const isSystemColorSchemeDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    const localStorageTheme = localStorage.theme;
+                    if (!localStorageTheme && isSystemColorSchemeDark) {
+                      document.documentElement.setAttribute('data-theme', 'dark');
+                    } else if (localStorageTheme === 'dark') {
+                      document.documentElement.setAttribute('data-theme', 'dark');
+                    } else {
+                      // we already server render light theme
+                      // so this is just ensuring that
+                      document.documentElement.setAttribute('data-theme', 'light');
+                    }
+                  }
+                })();
+              `,
+            }}
+          />
         </Head>
         <body>
           <Main />

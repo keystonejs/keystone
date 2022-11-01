@@ -10,10 +10,10 @@ import { ComingSoon } from './docs/ComingSoon';
 
 const renderers: Record<string, ElementType> = {
   code: InlineCode,
-  CodeBlock(props: { children: string; language: string }) {
+  CodeBlock(props: { content: string; language: string }) {
     return (
       <pre>
-        <Code className={`language-${props.language}`}>{props.children}</Code>
+        <Code className={`language-${props.language}`}>{props.content}</Code>
       </pre>
     );
   },

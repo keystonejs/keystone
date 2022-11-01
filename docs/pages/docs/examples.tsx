@@ -36,17 +36,13 @@ export default function Docs() {
 
       <GitHubExamplesCTA />
 
-      <Type as="h2" look="heading30" margin="2rem 0 1rem 0" id="base-projects">
-        Base Projects
+      <Type as="h2" look="heading30" margin="2rem 0 1rem 0" id="standalone-examples">
+        Standalone Examples
       </Type>
 
       <Type as="p" look="body18" margin="1.25rem 0 1.5rem 0">
-        Simple starters to get you up and running with a local Keystone instance and understand the
-        basics of designing a{' '}
-        <Link href="/docs/apis/schema" passHref>
-          <a>schema</a>
-        </Link>{' '}
-        .
+        Standalone examples demonstrate how a particular feature works or how to solve a problem
+        with Keystone.
       </Type>
 
       <div
@@ -64,7 +60,7 @@ export default function Docs() {
           rel="noopener noreferrer"
         >
           A basic Blog schema with Posts and Authors. Use this as a starting place for learning how
-          to use Keystone. It’s also a starter for other feature projects.
+          to use Keystone.
         </Well>
         <Well
           grad="grad1"
@@ -74,17 +70,167 @@ export default function Docs() {
           rel="noopener noreferrer"
         >
           A basic Task Management app, with Tasks and People who can be assigned to tasks. Great for
-          learning how to use Keystone. It’s also a starter for other feature projects.
+          learning how to use Keystone.
+        </Well>
+
+        <Well
+          grad="grad1"
+          heading="Authentication"
+          href="https://github.com/keystonejs/keystone/tree/main/examples/with-auth"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Adds password-based authentication to the Task Manager starter project.
+        </Well>
+        <Well
+          grad="grad1"
+          heading="Custom Admin UI Logo"
+          href="https://github.com/keystonejs/keystone/blob/main/examples/custom-admin-ui-logo"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Adds a custom logo component in the Admin UI.
+        </Well>
+        <Well
+          grad="grad1"
+          heading="Custom Admin UI Navigation"
+          href="/docs/guides/custom-admin-ui-navigation"
+        >
+          Adds a custom Navigation component to the Admin UI.
+        </Well>
+        <Well
+          grad="grad1"
+          heading="Custom Admin UI Pages"
+          href="https://github.com/keystonejs/keystone/blob/main/examples/custom-admin-ui-pages"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Adds a custom page in the Admin UI.
+        </Well>
+        <Well
+          grad="grad1"
+          heading="Custom Field Type"
+          href="https://github.com/keystonejs/keystone/blob/main/examples/custom-field"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Adds a custom field type based on the <InlineCode>integer</InlineCode> field type which
+          lets users rate items on a 5-star scale.
+        </Well>
+        <Well
+          grad="grad1"
+          heading="Custom Field View"
+          href="https://github.com/keystonejs/keystone/blob/main/examples/custom-field-view"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Adds a custom Admin UI view to a <InlineCode>json</InlineCode> field which provides a
+          customised editing experience for users.
+        </Well>
+        <Well
+          grad="grad1"
+          heading="Default Values"
+          href="https://github.com/keystonejs/keystone/blob/main/examples/default-values"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Demonstrates how to use default values for fields.
+        </Well>
+        <Well
+          grad="grad1"
+          heading="Document field"
+          href="https://github.com/keystonejs/keystone/tree/main/examples/document-field"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Illustrates how to configure <InlineCode>document</InlineCode> fields in your Keystone
+          system and render their data in a frontend application.
+        </Well>
+        <Well
+          grad="grad1"
+          heading="Extend GraphQL Schema"
+          href="https://github.com/keystonejs/keystone/blob/main/examples/extend-graphql-schema"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Shows you how to extend the Keystone GraphQL API with custom queries and mutations.
+        </Well>
+        <Well
+          grad="grad1"
+          heading="Extend GraphQL Schema with GraphQL TS"
+          href="https://github.com/keystonejs/keystone/tree/main/examples/extend-graphql-schema-graphql-ts"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Demonstrates how to extend the GraphQL API provided by Keystone with custom queries and
+          mutations using graphql-ts.
+        </Well>
+        <Well
+          grad="grad1"
+          heading="Extend GraphQL API with Nexus"
+          href="https://github.com/keystonejs/keystone/tree/main/examples/extend-graphql-schema-nexus"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Shows you how to use <strong>Nexus</strong> to extend the GraphQL API provided by Keystone
+          with custom queries and mutations.
+        </Well>
+
+        <Well
+          grad="grad1"
+          heading="JSON Field"
+          href="https://github.com/keystonejs/keystone/tree/main/examples/json"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Illustrates how to use the <InlineCode>json</InlineCode> field type. Builds on the Task
+          Manager starter project.
+        </Well>
+
+        <Well
+          grad="grad1"
+          heading="REST API endpoint"
+          href="https://github.com/keystonejs/keystone/tree/main/examples/rest-api"
+        >
+          Demonstrates how to create REST endpoints by extending Keystone's express app and using
+          the Query API to execute queries against the schema.
+        </Well>
+        <Well
+          grad="grad1"
+          heading="Testing"
+          href="https://github.com/keystonejs/keystone/tree/main/examples/testing"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Shows you how to write tests against the GraphQL API to your Keystone system.
+        </Well>
+        <Well
+          grad="grad1"
+          heading="Virtual fields"
+          href="https://github.com/keystonejs/keystone/tree/main/examples/virtual-field"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Implements virtual fields in a Keystone list.
+        </Well>
+        <Well
+          grad="grad1"
+          heading="Singleton"
+          href="https://github.com/keystonejs/keystone/tree/main/examples/singleton"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Demonstrates how to use singleton lists with Keystone.
         </Well>
       </div>
 
-      <Type as="h2" look="heading30" margin="2rem 0 1rem 0" id="feature-projects">
-        Feature Projects
+      <Type as="h2" look="heading30" margin="2rem 0 1rem 0" id="end-to-end-examples">
+        End-to-End Examples
       </Type>
 
       <Type as="p" look="body18" margin="1.25rem 0 1.5rem 0">
-        Derived from the Base Projects, these examples demonstrate a particular feature of Keystone,
-        and show you best practice for implementing it.
+        End to end examples demonstrate how a feature works or how to solve a problem with an
+        independent frontend application and a Keystone server.
       </Type>
 
       <div
@@ -96,153 +242,17 @@ export default function Docs() {
       >
         <Well
           grad="grad2"
-          heading="Authentication"
-          href="https://github.com/keystonejs/keystone/tree/main/examples/with-auth"
+          heading="Document Field Customisation"
+          href="https://github.com/keystonejs/keystone/blob/main/examples/blog"
           target="_blank"
           rel="noopener noreferrer"
         >
-          Adds password-based authentication to the Task Manager starter project.
-        </Well>
-        <Well
-          grad="grad2"
-          heading="Custom Admin UI Logo"
-          href="https://github.com/keystonejs/keystone/blob/main/examples/custom-admin-ui-logo"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Adds a custom logo component in the Admin UI. Builds on the Task Manager starter project.
-        </Well>
-        <Well
-          grad="grad2"
-          heading="Custom Admin UI Navigation"
-          href="/docs/guides/custom-admin-ui-navigation"
-        >
-          Adds a custom Navigation component to the Admin UI. Builds on the Task Manager starter
-          project.
-        </Well>
-        <Well
-          grad="grad2"
-          heading="Custom Admin UI Pages"
-          href="https://github.com/keystonejs/keystone/blob/main/examples/custom-admin-ui-pages"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Adds a custom page in the Admin UI. Builds on the Task Manager starter project.
-        </Well>
-        <Well
-          grad="grad2"
-          heading="Custom Field Type"
-          href="https://github.com/keystonejs/keystone/blob/main/examples/custom-field"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Adds a custom field type based on the <InlineCode>integer</InlineCode> field type which
-          lets users rate items on a 5-star scale. Builds on the Blog starter project.
-        </Well>
-        <Well
-          grad="grad2"
-          heading="Custom Field View"
-          href="https://github.com/keystonejs/keystone/blob/main/examples/custom-field-view"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Adds a custom Admin UI view to a <InlineCode>json</InlineCode> field which provides a
-          customised editing experience for users. Builds on the Task Manager starter project.
-        </Well>
-        <Well
-          grad="grad2"
-          heading="Default Values"
-          href="https://github.com/keystonejs/keystone/blob/main/examples/default-values"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Demonstrates how to use default values for fields. Builds upon the Task Manager starter
-          project.
-        </Well>
-        <Well
-          grad="grad2"
-          heading="Document field"
-          href="https://github.com/keystonejs/keystone/tree/main/examples/document-field"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Illustrates how to configure <InlineCode>document</InlineCode> fields in your Keystone
-          system and render their data in a frontend application. Builds on the Blog starter
-          project.
-        </Well>
-        <Well
-          grad="grad2"
-          heading="Extend GraphQL Schema"
-          href="https://github.com/keystonejs/keystone/blob/main/examples/extend-graphql-schema"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Shows you how to extend the Keystone GraphQL API with custom queries and mutations. Builds
-          upon the Blog starter project.
-        </Well>
-        <Well
-          grad="grad2"
-          heading="Extend GraphQL Schema with GraphQL TS"
-          href="https://github.com/keystonejs/keystone/tree/main/examples/extend-graphql-schema-graphql-ts"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Demonstrates how to extend the GraphQL API provided by Keystone with custom queries and
-          mutations using graphql-ts.
-        </Well>
-        <Well
-          grad="grad2"
-          heading="Extend GraphQL API with Nexus"
-          href="https://github.com/keystonejs/keystone/tree/main/examples/extend-graphql-schema-nexus"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Shows you how to use <strong>Nexus</strong> to extend the GraphQL API provided by Keystone
-          with custom queries and mutations.
-        </Well>
-
-        <Well
-          grad="grad2"
-          heading="JSON Field"
-          href="https://github.com/keystonejs/keystone/tree/main/examples/json"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Illustrates how to use the <InlineCode>json</InlineCode> field type. Builds on the Task
-          Manager starter project.
-        </Well>
-
-        <Well
-          grad="grad2"
-          heading="REST API endpoint"
-          href="https://github.com/keystonejs/keystone/tree/main/examples/rest-api"
-        >
-          Demonstrates how to create REST endpoints by extending Keystone's express app and using
-          the Query API to execute queries against the schema.
-        </Well>
-        <Well
-          grad="grad2"
-          heading="Testing"
-          href="https://github.com/keystonejs/keystone/tree/main/examples/testing"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Shows you how to write tests against the GraphQL API to your Keystone system. Builds on
-          the Authentication example project.
-        </Well>
-        <Well
-          grad="grad2"
-          heading="Virtual fields"
-          href="https://github.com/keystonejs/keystone/tree/main/examples/virtual-field"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Implements virtual fields in a Keystone list. Builds on the Blog starter project.
+          Example to demonstrate customisation of Keystone's document field and document renderer.
         </Well>
       </div>
 
-      <Type as="h2" look="heading30" margin="2rem 0 1rem 0" id="deployment-projects">
-        Deployment Projects
+      <Type as="h2" look="heading30" margin="2rem 0 1rem 0" id="deployment-examples">
+        Deployment Examples
       </Type>
 
       <Type as="p" look="body18" margin="1.25rem 0 1.5rem 0">
@@ -275,7 +285,7 @@ export default function Docs() {
         <Well
           grad="grad4"
           heading="Microsoft Azure"
-          badge="Third Party"
+          badge="Community"
           href="https://github.com/aaronpowell/keystone-6-azure-example"
           target="_blank"
           rel="noopener noreferrer"

@@ -4,7 +4,7 @@ import { Emoji } from '../../components/primitives/Emoji';
 # A new & improved Access Control API
 
 Securing the data in your Keystone sytem is one of the most important steps in preparing your application for a production deployment.
-To make this process simpler and safer, we've made some important changes to the [Access Control APIs](/docs/apis/access-control) from previous versions.
+To make this process simpler and safer, we've made some important changes to the [Access Control APIs](/docs/config/access-control) from previous versions.
 This document outlines the motivation behind the changes, and shows you how to update your existing Access Control functions to use the new APIs.
 
 ## Control your GraphQL API
@@ -28,7 +28,7 @@ export default config({
 
 With the new API, access control will never have any effect on which operations are in your GraphQL API.
 
-If you would like to exclude an operation from the GraphQL API, you can use the new [`config.graphql.omit`](/docs/apis/schema#graphql) API.
+If you would like to exclude an operation from the GraphQL API, you can use the new [`config.graphql.omit`](/docs/config/lists#graphql) API.
 To exclude all `delete` operations, you would write:
 
 ```typescript
@@ -67,7 +67,7 @@ In practice, these alternatives were not very intuitive to use, and often lead t
 The new API makes each rule much more explicit and supports fewer variations, making it easier to read, write, and maintain your access control rules.
 This in turn will reduce the risk of introducing security gaps in your system.
 
-Before moving on, be sure to [read the docs](/docs/apis/access-control) for the new API.
+Before moving on, be sure to [read the docs](/docs/config/access-control) for the new API.
 
 ### Updating static access control
 

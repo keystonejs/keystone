@@ -11,11 +11,6 @@ const KEYSTONE_4 = [
     permanent: true,
   },
   {
-    source: '/docs/getting-started',
-    destination: 'https://v4.keystonejs.com/getting-started',
-    permanent: true,
-  },
-  {
     source: '/documentation/configuration/project-options',
     destination: 'https://v4.keystonejs.com/documentation/configuration/project-options',
     permanent: true,
@@ -25,11 +20,11 @@ const KEYSTONE_4 = [
     destination: 'https://v4.keystonejs.com/documentation/database',
     permanent: true,
   },
-  {
-    source: '/getting-started',
-    destination: 'https://v4.keystonejs.com/getting-started',
-    permanent: true,
-  },
+  // {
+  //   source: '/getting-started',
+  //   destination: 'https://v4.keystonejs.com/getting-started',
+  //   permanent: true,
+  // },
 ];
 
 /* URLs from v5.keystonejs.com */
@@ -95,7 +90,7 @@ const ORIGINAL_NEXT = [
   },
   {
     source: '/tutorials/getting-started-with-create-keystone-app',
-    destination: '/docs/walkthroughs/getting-started-with-create-keystone-app',
+    destination: '/docs/getting-started',
     permanent: true,
   },
   {
@@ -107,7 +102,21 @@ const ORIGINAL_NEXT = [
   { source: '/whats-new', destination: '/updates/whats-new-in-v6', permanent: true },
 ];
 
-/* URLs from the current website */
+/* Splitbee Proxy */
+const SPLITBEE = [
+  {
+    source: '/sb.js',
+    destination: 'https://cdn.splitbee.io/sb.js',
+    permanent: false,
+  },
+  {
+    source: '/_sb/:slug',
+    destination: 'https://hive.splitbee.io/:slug',
+    permanent: false,
+  },
+];
+
+/* Current website redirections */
 const CURRENT = [
   {
     source: '/docs/guides/keystone-5-vs-keystone-next',
@@ -127,18 +136,85 @@ const CURRENT = [
     destination: '/docs/guides/keystone-5-vs-keystone-next',
     permanent: true,
   },
-];
-
-/* Splitbee Proxy */
-const SPLITBEE = [
   {
-    source: '/sb.js',
-    destination: 'https://cdn.splitbee.io/sb.js',
+    source: '/docs/walkthroughs/getting-started-with-create-keystone-app',
+    destination: '/docs/getting-started',
+    permanent: true,
+  },
+  {
+    source: '/docs/guides',
+    destination: '/docs/guides/overview',
     permanent: false,
   },
   {
-    source: '/_sb/:slug',
-    destination: 'https://hive.splitbee.io/:slug',
+    source: '/docs/apis',
+    destination: '/docs/config/overview',
+    permanent: false,
+  },
+  {
+    source: '/docs/apis/config',
+    destination: '/docs/config/config',
+    permanent: false,
+  },
+  {
+    source: '/docs/apis/schema',
+    destination: '/docs/config/lists',
+    permanent: false,
+  },
+  {
+    source: '/docs/apis/fields',
+    destination: '/docs/config/fields',
+    permanent: false,
+  },
+  {
+    source: '/docs/apis/auth',
+    destination: '/docs/config/auth',
+    permanent: false,
+  },
+  {
+    source: '/docs/apis/access-control',
+    destination: '/docs/config/access-control',
+    permanent: false,
+  },
+  {
+    source: '/docs/apis/hooks',
+    destination: '/docs/config/hooks',
+    permanent: false,
+  },
+  {
+    source: '/docs/apis/session',
+    destination: '/docs/config/session',
+    permanent: false,
+  },
+  {
+    source: '/docs/apis/context',
+    destination: '/docs/context/overview',
+    permanent: false,
+  },
+  {
+    source: '/docs/apis/query',
+    destination: '/docs/context/query',
+    permanent: false,
+  },
+  {
+    source: '/docs/apis/db-items',
+    destination: '/docs/context/db-items',
+    permanent: false,
+  },
+
+  {
+    source: '/docs/apis/graphql',
+    destination: '/docs/graphql/overview',
+    permanent: false,
+  },
+  {
+    source: '/docs/apis/filters',
+    destination: '/docs/graphql/filters',
+    permanent: false,
+  },
+  {
+    source: '/docs/apis/fields',
+    destination: '/docs/fields/overview',
     permanent: false,
   },
 ];

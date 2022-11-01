@@ -14,6 +14,16 @@ import {
 import { CellLink, CellContainer } from '../../../../admin-ui/components';
 import { useFormattedInput } from '../../integer/views/utils';
 
+type Validation = {
+  isRequired: boolean;
+  min: bigint;
+  max: bigint;
+};
+
+type Value =
+  | { kind: 'create'; value: string | bigint | null }
+  | { kind: 'update'; value: string | bigint | null; initial: unknown | null };
+
 function BigIntInput({
   value,
   onChange,
@@ -131,52 +141,42 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
 };
 
 function validate(
-  value: Value,
+  state: Value,
   validation: Validation,
   label: string,
   hasAutoIncrementDefault: boolean
 ): string | undefined {
-  const val = value.value;
-  if (typeof val === 'string') {
-    return `${label} must be a whole number`;
+  const { kind, value } = state;
+  if (typeof value === 'string') {
+    return `${label} must be a BigInt`;
   }
 
-  // if we recieve null initially on the item view and the current value is null,
+  // if we receive null initially on the item view and the current value is null,
   // we should always allow saving it because:
   // - the value might be null in the database and we don't want to prevent saving the whole item because of that
   // - we might have null because of an access control error
-  if (value.kind === 'update' && value.initial === null && val === null) {
+  if (kind === 'update' && state.initial === null && value === null) {
     return undefined;
   }
 
-  if (value.kind === 'create' && value.value === null && hasAutoIncrementDefault) {
+  if (kind === 'create' && value === null && hasAutoIncrementDefault) {
     return undefined;
   }
 
-  if (validation.isRequired && val === null) {
+  if (validation.isRequired && value === null) {
     return `${label} is required`;
   }
-  if (typeof val === 'bigint') {
-    if (val < validation.min) {
+  if (typeof value === 'bigint') {
+    if (value < validation.min) {
       return `${label} must be greater than or equal to ${validation.min}`;
     }
-    if (val > validation.max) {
+    if (value > validation.max) {
       return `${label} must be less than or equal to ${validation.max}`;
     }
   }
 
   return undefined;
 }
-
-type Validation = {
-  isRequired: boolean;
-  min: bigint;
-  max: bigint;
-};
-
-type Value =
-  | { kind: 'update'; initial: bigint | null; value: string | bigint | null }
-  | { kind: 'create'; value: string | bigint | null };
 
 export const controller = (
   config: FieldControllerConfig<{
@@ -214,25 +214,31 @@ export const controller = (
           ? BigInt(config.fieldMeta.defaultValue)
           : null,
     },
-    deserialize: data => ({ kind: 'update', value: data[config.path], initial: data[config.path] }),
+    deserialize: data => {
+      const raw = data[config.path];
+      return {
+        kind: 'update',
+        value: raw === null ? null : BigInt(raw),
+        initial: raw,
+      };
+    },
     serialize: value => ({ [config.path]: value.value === null ? null : value.value.toString() }),
     hasAutoIncrementDefault,
     validate: value =>
       validate(value, validation, config.label, hasAutoIncrementDefault) === undefined,
     filter: {
-      Filter(props) {
+      Filter({ autoFocus, type, onChange, value }) {
         return (
           <TextInput
-            // this should not be type=number since it shoud allow commas so the one of/not one of
-            // filters work but really the whole filtering UI needs to be fixed and just removing type=number
-            // while doing nothing else would probably make it worse since anything would be allowed in the input
-            // so when a user applies the filter, the query would return an error
-            type="number"
             onChange={event => {
-              props.onChange(event.target.value.replace(/[^\d,\s-]/g, ''));
+              if (type === 'in' || type === 'not_in') {
+                onChange(event.target.value.replace(/[^\d,\s-]/g, ''));
+                return;
+              }
+              onChange(event.target.value.replace(/[^\d\s-]/g, ''));
             }}
-            value={props.value}
-            autoFocus={props.autoFocus}
+            value={value}
+            autoFocus={autoFocus}
           />
         );
       },
@@ -241,8 +247,8 @@ export const controller = (
         const valueWithoutWhitespace = value.replace(/\s/g, '');
         const parsed =
           type === 'in' || type === 'not_in'
-            ? valueWithoutWhitespace.split(',').map(x => BigInt(x))
-            : BigInt(valueWithoutWhitespace);
+            ? valueWithoutWhitespace.split(',')
+            : valueWithoutWhitespace;
         if (type === 'not') {
           return { [config.path]: { not: { equals: parsed } } };
         }

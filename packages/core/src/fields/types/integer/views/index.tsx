@@ -207,19 +207,20 @@ export const controller = (
         config.fieldMeta.defaultValue === 'autoincrement'
       ) === undefined,
     filter: {
-      Filter(props) {
+      Filter({ autoFocus, type, onChange, value }) {
         return (
           <TextInput
-            // this should not be type=number since it shoud allow commas so the one of/not one of
-            // filters work but really the whole filtering UI needs to be fixed and just removing type=number
-            // while doing nothing else would probably make it worse since anything would be allowed in the input
-            // so when a user applies the filter, the query would return an error
-            type="number"
+            type="text"
             onChange={event => {
-              props.onChange(event.target.value.replace(/[^\d,\s-]/g, ''));
+              if (type === 'in' || type === 'not_in') {
+                onChange(event.target.value.replace(/[^\d,\s-]/g, ''));
+                return;
+              }
+
+              onChange(event.target.value.replace(/[^\d\s-]/g, ''));
             }}
-            value={props.value}
-            autoFocus={props.autoFocus}
+            value={value}
+            autoFocus={autoFocus}
           />
         );
       },

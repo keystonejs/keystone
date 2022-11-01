@@ -12,7 +12,7 @@ Welcome to the Keystone getting started series!
 Together we’ll learn how to turn an empty folder into a database-backed Keystone instance with related content types, publishing workflows, password protection, an editing interface, and more.
 
 {% hint kind="tip" %}
-Looking to demo Keystone in under 5 minutes? [Try the quick-start CLI](/docs/walkthroughs/getting-started-with-create-keystone-app)
+Looking to demo Keystone in under 5 minutes? [Try the quick-start CLI](/docs/getting-started)
 {% /hint %}
 
 This series assumes you have some basic familiarity with:
@@ -47,7 +47,6 @@ yarn add @keystone-6/core
 Keystone looks for a file named `keystone.ts` (or `keystone.js`) at the project root to handle configuration needs. Let's go ahead and set one up using TypeScript:
 
 ```js
-
 // keystone.ts
 export default {};
 ```
@@ -74,12 +73,12 @@ Your folder structure should now look like this:
 
 We now need to configure `keystone.ts` with two parts to get our project running:
 
-- [`db`](/docs/apis/config#db) to define a database configuration
-- [`list`](/docs/apis/schema) to define the shape of the information we put in that database
+- [`db`](/docs/config/config#db) to define a database configuration
+- [`list`](/docs/config/lists) to define the shape of the information we put in that database
 
 ### Add a Database
 
-We’ll use [SQLite](/docs/apis/config#sqlite) in this project to keep things simple, but you can also use [Postgres](/docs/apis/config#postgresql). The minimum config for SQLite looks like this:
+We’ll use [SQLite](/docs/config/config#sqlite) in this project to keep things simple, but you can also use [Postgres](/docs/config/config#postgresql). The minimum config for SQLite looks like this:
 
 ```ts
 import { config } from '@keystone-6/core';
@@ -102,7 +101,7 @@ Keystone uses [Prisma](https://www.prisma.io/) to take care of database admin in
 
 Now that we have a database configured, let’s connect some content to it!
 
-We’re going to build a simple blog with **users** and **posts**. Let’s start with the `User` list using [`text`](/docs/apis/fields#text) fields for their `name` and `email`:
+We’re going to build a simple blog with **users** and **posts**. Let’s start with the `User` list using [`text`](/docs/fields/text) fields for their `name` and `email`:
 
 ```js{2,9-15}[5-8]
 import { config, list } from '@keystone-6/core';
@@ -128,7 +127,7 @@ export default config({
 For example, the `User` key becomes the name for the respective `User` list.
 This key will be used in Admin UI for the list’s default display name, and in Keystone’s auto-generated GraphQL API.
 
-**Field** names are derived from the keys in the [`fields`](/docs/apis/fields#fields-api) object.
+**Field** names are derived from the keys in the [`fields`](/docs/fields/overview) object.
 Like lists, they’ll be used in Admin UI for field label defaults, and in the GraphQL API. We've added validation to both our fields to say that they
 are required, and declared that emails must be unique, so there can only be one user with each email.
 
@@ -144,11 +143,11 @@ We now have everything we need to start Keystone, so let’s do just that:
 yarn keystone dev
 ```
 
-In a few seconds your terminal will provide you with you a link to the Keystone Admin UI at [http://localhost:3000](http://localhost:3000)
+In a few seconds your terminal will provide you with you a link to the Keystone Admin UI at <http://localhost:3000>
 
 ![Terminal dialog showing successful Keystone startup](https://keystonejs.s3.amazonaws.com/framework-assets/assets/walkthroughs/lesson-1/keystone-startup.png)
 
-Head on over to [http://localhost:3000/users](http://localhost:3000/users) where you can create your first user with a `name` and `email`:
+Head on over to <http://localhost:3000/users> where you can create your first user with a `name` and `email`:
 
 ![Adding a user record in Keystone Admin UI](https://keystonejs.s3.amazonaws.com/framework-assets/assets/walkthroughs/lesson-1/first-user-creation.gif)
 

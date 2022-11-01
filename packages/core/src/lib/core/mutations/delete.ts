@@ -1,5 +1,5 @@
 import { KeystoneContext } from '../../../types';
-import { getOperationAccess, getAccessFilters } from '../access-control';
+import { cannotForItem, getOperationAccess, getAccessFilters } from '../access-control';
 import { checkFilterOrderAccess } from '../filter-order-access';
 import { accessDeniedError } from '../graphql-errors';
 import { InitialisedList } from '../types-for-lists';
@@ -13,16 +13,8 @@ async function deleteSingle(
   uniqueInput: UniqueInputFilter,
   list: InitialisedList,
   context: KeystoneContext,
-  accessFilters: boolean | InputFilter,
-  operationAccess: boolean
+  accessFilters: boolean | InputFilter
 ) {
-  // Operation level access control
-  if (!operationAccess) {
-    throw accessDeniedError(
-      `You cannot perform the 'delete' operation on the list '${list.listKey}'.`
-    );
-  }
-
   // Validate and resolve the input filter
   const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, list, context);
 
@@ -68,15 +60,17 @@ export async function deleteMany(
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  // Check operation permission to pass into single operation
   const operationAccess = await getOperationAccess(list, context, 'delete');
 
   // Check filter permission to pass into single operation
   const accessFilters = await getAccessFilters(list, context, 'delete');
 
-  return uniqueInputs.map(async uniqueInput =>
-    deleteSingle(uniqueInput, list, context, accessFilters, operationAccess)
-  );
+  return uniqueInputs.map(async uniqueInput => {
+    // throw for each item
+    if (!operationAccess) throw accessDeniedError(cannotForItem('delete', list));
+
+    return deleteSingle(uniqueInput, list, context, accessFilters);
+  });
 }
 
 export async function deleteOne(
@@ -84,11 +78,11 @@ export async function deleteOne(
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  // Check operation permission to pass into single operation
   const operationAccess = await getOperationAccess(list, context, 'delete');
+  if (!operationAccess) throw accessDeniedError(cannotForItem('delete', list));
 
   // Check filter permission to pass into single operation
   const accessFilters = await getAccessFilters(list, context, 'delete');
 
-  return deleteSingle(uniqueInput, list, context, accessFilters, operationAccess);
+  return deleteSingle(uniqueInput, list, context, accessFilters);
 }

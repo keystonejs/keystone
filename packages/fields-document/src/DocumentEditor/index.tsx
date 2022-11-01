@@ -177,6 +177,7 @@ export function DocumentEditor({
   componentBlocks,
   relationships,
   documentFeatures,
+  initialExpanded = false,
   ...props
 }: {
   onChange: undefined | ((value: Descendant[]) => void);
@@ -184,9 +185,10 @@ export function DocumentEditor({
   componentBlocks: Record<string, ComponentBlock>;
   relationships: Relationships;
   documentFeatures: DocumentFeatures;
+  initialExpanded?: boolean;
 } & Omit<EditableProps, 'value' | 'onChange'>) {
   const { radii, colors, spacing, fields } = useTheme();
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(initialExpanded);
   const editor = useMemo(
     () => createDocumentEditor(documentFeatures, componentBlocks, relationships),
     [documentFeatures, componentBlocks, relationships]

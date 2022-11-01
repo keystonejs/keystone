@@ -1,8 +1,9 @@
-import { KeystoneContext } from '../../../types';
+import { BaseItem, KeystoneContext } from '../../../types';
 import { accessDeniedError, accessReturnError, extensionError } from '../graphql-errors';
 import { mapUniqueWhereToWhere } from '../queries/resolvers';
 import { InitialisedList } from '../types-for-lists';
 import { runWithPrisma } from '../utils';
+import { cannotForItem, cannotForItemFields } from '../access-control';
 import {
   InputFilter,
   resolveUniqueWhereInput,
@@ -11,13 +12,6 @@ import {
   UniquePrismaFilter,
 } from '../where-inputs';
 
-const missingItem = (operation: string, uniqueWhere: UniquePrismaFilter) =>
-  accessDeniedError(
-    `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
-      uniqueWhere
-    )}'. It may not exist.`
-  );
-
 async function getFilteredItem(
   list: InitialisedList,
   context: KeystoneContext,
@@ -25,23 +19,21 @@ async function getFilteredItem(
   accessFilters: boolean | InputFilter,
   operation: 'update' | 'delete'
 ) {
+  // early exit if they want to exclude everything
   if (accessFilters === false) {
-    // Early exit if they want to exclude everything
-    throw accessDeniedError(
-      `You cannot perform the '${operation}' operation on the list '${list.listKey}'.`
-    );
+    throw accessDeniedError(cannotForItem(operation, list));
   }
 
-  // Merge the filter access control and try to get the item.
+  // merge the filter access control and try to get the item
   let where = mapUniqueWhereToWhere(uniqueWhere);
   if (typeof accessFilters === 'object') {
     where = { AND: [where, await resolveWhereInput(accessFilters, list, context)] };
   }
+
   const item = await runWithPrisma(context, list, model => model.findFirst({ where }));
-  if (item === null) {
-    throw missingItem(operation, uniqueWhere);
-  }
-  return item;
+  if (item !== null) return item;
+
+  throw accessDeniedError(cannotForItem(operation, list));
 }
 
 export async function checkUniqueItemExists(
@@ -52,66 +44,178 @@ export async function checkUniqueItemExists(
 ) {
   // Validate and resolve the input filter
   const uniqueWhere = await resolveUniqueWhereInput(uniqueInput, foreignList, context);
+
   // Check whether the item exists (from this users POV).
   try {
     const item = await context.db[foreignList.listKey].findOne({ where: uniqueInput });
-    if (item === null) {
-      throw missingItem(operation, uniqueWhere);
-    }
-  } catch (err) {
-    throw missingItem(operation, uniqueWhere);
-  }
-  return uniqueWhere;
+    if (item !== null) return uniqueWhere;
+  } catch (err) {}
+
+  throw accessDeniedError(cannotForItem(operation, foreignList));
 }
 
-export async function getAccessControlledItemForDelete(
-  list: InitialisedList,
-  context: KeystoneContext,
-  uniqueWhere: UniquePrismaFilter,
-  accessFilters: boolean | InputFilter
-) {
-  const operation = 'delete' as const;
-  // Apply the filter access control. Will throw an accessDeniedError if the item isn't found.
-  const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters, operation);
-
-  // Apply item level access control
-  const access = list.access.item[operation];
-  const args = { operation, session: context.session, listKey: list.listKey, context, item };
-
-  // List level 'item' access control
-  let result;
+async function enforceListLevelAccessControl({
+  context,
+  operation,
+  list,
+  item,
+  inputData,
+}: {
+  context: KeystoneContext;
+  operation: 'create' | 'update' | 'delete';
+  list: InitialisedList;
+  item: BaseItem | undefined;
+  inputData: Record<string, unknown>;
+}) {
+  let accepted: unknown; // should be boolean, but dont trust, it might accidentally be a filter
   try {
-    result = await access(args);
+    // apply access.item.* controls
+    if (operation === 'create') {
+      const itemAccessControl = list.access.item[operation];
+      accepted = await itemAccessControl({
+        operation,
+        session: context.session,
+        listKey: list.listKey,
+        context,
+        inputData,
+      });
+    } else if (operation === 'update' && item !== undefined) {
+      const itemAccessControl = list.access.item[operation];
+      accepted = await itemAccessControl({
+        operation,
+        session: context.session,
+        listKey: list.listKey,
+        context,
+        item,
+        inputData,
+      });
+    } else if (operation === 'delete' && item !== undefined) {
+      const itemAccessControl = list.access.item[operation];
+      accepted = await itemAccessControl({
+        operation,
+        session: context.session,
+        listKey: list.listKey,
+        context,
+        item,
+      });
+    }
   } catch (error: any) {
     throw extensionError('Access control', [
-      { error, tag: `${args.listKey}.access.item.${args.operation}` },
+      { error, tag: `${list.listKey}.access.item.${operation}` },
     ]);
   }
 
-  const resultType = typeof result;
+  // short circuit the safe path
+  if (accepted === true) return;
 
-  // It's important that we don't cast objects to truthy values, as there's a strong chance that the user
-  // has accidentally tried to return a filter.
-  if (resultType !== 'boolean') {
+  if (typeof accepted !== 'boolean') {
     throw accessReturnError([
       {
-        tag: `${args.listKey}.access.item.${args.operation}`,
-        returned: resultType,
+        tag: `${list.listKey}.access.item.${operation}`,
+        returned: typeof accepted,
       },
     ]);
   }
 
-  if (!result) {
-    throw accessDeniedError(
-      `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
-        uniqueWhere
-      )}'. It may not exist.`
-    );
+  throw accessDeniedError(cannotForItem(operation, list));
+}
+
+async function enforceFieldLevelAccessControl({
+  context,
+  operation,
+  list,
+  item,
+  inputData,
+}: {
+  context: KeystoneContext;
+  operation: 'create' | 'update';
+  list: InitialisedList;
+  item: BaseItem | undefined;
+  inputData: Record<string, unknown>;
+}) {
+  const nonBooleans: { tag: string; returned: string }[] = [];
+  const fieldsDenied: string[] = [];
+  const accessErrors: { error: Error; tag: string }[] = [];
+
+  await Promise.allSettled(
+    Object.keys(inputData).map(async fieldKey => {
+      let accepted: unknown; // should be boolean, but dont trust
+      try {
+        // apply fields.[fieldKey].access.* controls
+        if (operation === 'create') {
+          const fieldAccessControl = list.fields[fieldKey].access[operation];
+          accepted = await fieldAccessControl({
+            operation,
+            session: context.session,
+            listKey: list.listKey,
+            fieldKey,
+            context,
+            inputData: inputData as any, // FIXME
+          });
+        } else if (operation === 'update' && item !== undefined) {
+          const fieldAccessControl = list.fields[fieldKey].access[operation];
+          accepted = await fieldAccessControl({
+            operation,
+            session: context.session,
+            listKey: list.listKey,
+            fieldKey,
+            context,
+            item,
+            inputData,
+          });
+        }
+      } catch (error: any) {
+        accessErrors.push({ error, tag: `${list.listKey}.${fieldKey}.access.${operation}` });
+        return;
+      }
+
+      // short circuit the safe path
+      if (accepted === true) return;
+      fieldsDenied.push(fieldKey);
+
+      // wrong type?
+      if (typeof accepted !== 'boolean') {
+        nonBooleans.push({
+          tag: `${list.listKey}.${fieldKey}.access.${operation}`,
+          returned: typeof accepted,
+        });
+      }
+    })
+  );
+
+  if (nonBooleans.length) {
+    throw accessReturnError(nonBooleans);
   }
 
-  // No field level access control for delete
+  if (accessErrors.length) {
+    throw extensionError('Access control', accessErrors);
+  }
 
-  return item;
+  if (fieldsDenied.length) {
+    throw accessDeniedError(cannotForItemFields(operation, list, fieldsDenied));
+  }
+}
+
+export async function applyAccessControlForCreate(
+  list: InitialisedList,
+  context: KeystoneContext,
+  inputData: Record<string, unknown>
+) {
+  await enforceListLevelAccessControl({
+    context,
+    operation: 'create',
+    list,
+    inputData,
+    item: undefined,
+  });
+
+  await enforceFieldLevelAccessControl({
+    context,
+    operation: 'create',
+    list,
+    inputData,
+    item: undefined,
+  });
 }
 
 export async function getAccessControlledItemForUpdate(
@@ -121,183 +225,46 @@ export async function getAccessControlledItemForUpdate(
   accessFilters: boolean | InputFilter,
   inputData: Record<string, any>
 ) {
-  const operation = 'update' as const;
-  // Apply the filter access control. Will throw an accessDeniedError if the item isn't found.
-  const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters, operation);
+  // apply access.filter.* controls
+  const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters, 'update');
 
-  // Apply item level access control
-  const access = list.access.item[operation];
-  const args = {
-    operation,
-    session: context.session,
-    listKey: list.listKey,
+  await enforceListLevelAccessControl({
     context,
-    item,
+    operation: 'update',
+    list,
     inputData,
-  };
+    item,
+  });
 
-  // List level 'item' access control
-  let result;
-  try {
-    result = await access(args);
-  } catch (error: any) {
-    throw extensionError('Access control', [
-      { error, tag: `${args.listKey}.access.item.${args.operation}` },
-    ]);
-  }
-  const resultType = typeof result;
-
-  // It's important that we don't cast objects to truthy values, as there's a strong chance that the user
-  // has accidentally tried to return a filter.
-  if (resultType !== 'boolean') {
-    throw accessReturnError([
-      {
-        tag: `${args.listKey}.access.item.${args.operation}`,
-        returned: resultType,
-      },
-    ]);
-  }
-
-  if (!result) {
-    throw accessDeniedError(
-      `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
-        uniqueWhere
-      )}'. It may not exist.`
-    );
-  }
-
-  // Field level 'item' access control
-  const nonBooleans: { tag: string; returned: string }[] = [];
-  const fieldsDenied: string[] = [];
-  const accessErrors: { error: Error; tag: string }[] = [];
-  await Promise.all(
-    Object.keys(inputData).map(async fieldKey => {
-      let result;
-      try {
-        result =
-          typeof list.fields[fieldKey].access[operation] === 'function'
-            ? await list.fields[fieldKey].access[operation]({ ...args, fieldKey })
-            : access;
-      } catch (error: any) {
-        accessErrors.push({ error, tag: `${args.listKey}.${fieldKey}.access.${args.operation}` });
-        return;
-      }
-      if (typeof result !== 'boolean') {
-        nonBooleans.push({
-          tag: `${args.listKey}.${fieldKey}.access.${args.operation}`,
-          returned: typeof result,
-        });
-      } else if (!result) {
-        fieldsDenied.push(fieldKey);
-      }
-    })
-  );
-
-  if (accessErrors.length) {
-    throw extensionError('Access control', accessErrors);
-  }
-
-  if (nonBooleans.length) {
-    throw accessReturnError(nonBooleans);
-  }
-
-  if (fieldsDenied.length) {
-    throw accessDeniedError(
-      `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
-        uniqueWhere
-      )}'. You cannot ${operation} the fields ${JSON.stringify(fieldsDenied)}.`
-    );
-  }
+  await enforceFieldLevelAccessControl({
+    context,
+    operation: 'update',
+    list,
+    inputData,
+    item,
+  });
 
   return item;
 }
 
-export async function applyAccessControlForCreate(
+export async function getAccessControlledItemForDelete(
   list: InitialisedList,
   context: KeystoneContext,
-  inputData: Record<string, unknown>
+  uniqueWhere: UniquePrismaFilter,
+  accessFilters: boolean | InputFilter
 ) {
-  const operation = 'create' as const;
+  // apply access.filter.* controls
+  const item = await getFilteredItem(list, context, uniqueWhere!, accessFilters, 'delete');
 
-  // Apply item level access control
-  const access = list.access.item[operation];
-  const args = {
-    operation,
-    session: context.session,
-    listKey: list.listKey,
+  await enforceListLevelAccessControl({
     context,
-    inputData,
-  };
+    operation: 'delete',
+    list,
+    item,
+    inputData: {},
+  });
 
-  // List level 'item' access control
-  let result;
-  try {
-    result = await access(args);
-  } catch (error: any) {
-    throw extensionError('Access control', [
-      { error, tag: `${args.listKey}.access.item.${args.operation}` },
-    ]);
-  }
+  // no field level access control for delete
 
-  const resultType = typeof result;
-
-  // It's important that we don't cast objects to truthy values, as there's a strong chance that the user
-  // has accidentally tried to return a filter.
-  if (resultType !== 'boolean') {
-    throw accessReturnError([
-      {
-        tag: `${args.listKey}.access.item.${args.operation}`,
-        returned: resultType,
-      },
-    ]);
-  }
-
-  if (!result) {
-    throw accessDeniedError(
-      `You cannot perform the '${operation}' operation on the item '${JSON.stringify(inputData)}'.`
-    );
-  }
-
-  // Field level 'item' access control
-  const nonBooleans: { tag: string; returned: string }[] = [];
-  const fieldsDenied: string[] = [];
-  const accessErrors: { error: Error; tag: string }[] = [];
-  await Promise.all(
-    Object.keys(inputData).map(async fieldKey => {
-      let result;
-      try {
-        result =
-          typeof list.fields[fieldKey].access[operation] === 'function'
-            ? await list.fields[fieldKey].access[operation]({ ...args, fieldKey })
-            : access;
-      } catch (error: any) {
-        accessErrors.push({ error, tag: `${args.listKey}.${fieldKey}.access.${args.operation}` });
-        return;
-      }
-      if (typeof result !== 'boolean') {
-        nonBooleans.push({
-          tag: `${args.listKey}.${fieldKey}.access.${args.operation}`,
-          returned: typeof result,
-        });
-      } else if (!result) {
-        fieldsDenied.push(fieldKey);
-      }
-    })
-  );
-
-  if (accessErrors.length) {
-    throw extensionError('Access control', accessErrors);
-  }
-
-  if (nonBooleans.length) {
-    throw accessReturnError(nonBooleans);
-  }
-
-  if (fieldsDenied.length) {
-    throw accessDeniedError(
-      `You cannot perform the '${operation}' operation on the item '${JSON.stringify(
-        inputData
-      )}'. You cannot ${operation} the fields ${JSON.stringify(fieldsDenied)}.`
-    );
-  }
+  return item;
 }

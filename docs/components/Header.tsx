@@ -22,7 +22,7 @@ import { Wrapper } from './primitives/Wrapper';
 import { Hamburger } from './icons/Hamburger';
 import { Button } from './primitives/Button';
 import { NavItem } from './docs/Navigation';
-import { DarkModeBtn } from './DarkModeBtn';
+import { ThemeToggle } from './ThemeToggle';
 import { Keystone } from './icons/Keystone';
 import { MobileMenu } from './MobileMenu';
 import { GitHub } from './icons/GitHub';
@@ -149,7 +149,8 @@ export function Header() {
         document.getElementById('search-field').disabled = false;
         // @ts-ignore
         window.docsearch({
-          apiKey: '211e94c001e6b4c6744ae72fb252eaba',
+          appId: 'N3ZF861Q5G',
+          apiKey: 'f52fa93b9068fe8824beab5727ae84a1',
           indexName: 'keystonejs',
           inputSelector: '#search-field',
           algoliaOptions: {
@@ -229,13 +230,12 @@ export function Header() {
           ],
           justifyItems: 'start',
           alignItems: 'center',
-          paddingTop: 'var(--space-xlarge)',
-          paddingBottom: 'var(--space-xlarge)',
+          paddingTop: 'var(--space-large)',
+          paddingBottom: 'var(--space-large)',
           color: 'var(--muted)',
           '& a:hover': {
             color: 'var(--link)',
           },
-          marginBottom: '2rem',
         })}
       >
         <Logo />
@@ -293,7 +293,7 @@ export function Header() {
         >
           Documentation
         </Button>
-        <DarkModeBtn />
+        <ThemeToggle />
         <a
           href="https://github.com/keystonejs/keystone"
           target="_blank"

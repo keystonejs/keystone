@@ -4,54 +4,17 @@ import { useRef, Fragment, ReactNode } from 'react';
 import { useRouter } from 'next/router';
 import { jsx } from '@emotion/react';
 import Head from 'next/head';
-import Link from 'next/link';
 
 import { useMediaQuery } from '../lib/media';
 import type { Heading } from '../lib/getHeadings';
-import { Announce } from '../components/Announce';
 import { TableOfContents } from './docs/TableOfContents';
 import { Wrapper } from './primitives/Wrapper';
 import { EditButton } from './primitives/EditButton';
-// import { Emoji } from './primitives/Emoji';
 import { Breadcrumbs } from './Breadcrumbs';
 import { Sidebar } from './docs/Sidebar';
 import { Stack } from './primitives/Stack';
 import { Header } from './Header';
-import { Footer } from './Footer';
-
-function Announcement() {
-  // special announcement
-  // return (
-  //   <Announce>
-  //     <Emoji symbol="🎤" alt="Microphone" />{' '}
-  //     <a
-  //       href="https://306ucv95ugh.typeform.com/to/TbFERbep"
-  //       rel="noopener noreferrer"
-  //       target="_blank"
-  //     >
-  //       Join us
-  //     </a>{' '}
-  //     for our first <strong>Community Q&A</strong> next{' '}
-  //     <strong>Tuesday Sep 21st @ 3–4pm AEST</strong> –{' '}
-  //     <a
-  //       href="https://306ucv95ugh.typeform.com/to/TbFERbep"
-  //       rel="noopener noreferrer"
-  //       target="_blank"
-  //     >
-  //       Register now
-  //     </a>
-  //     !
-  //   </Announce>
-  // );
-  // standard announcement
-  return (
-    <Announce>
-      <strong>
-        Keystone 6 is now in <Link href="/updates/general-availability">General Availability</Link>!
-      </strong>
-    </Announce>
-  );
-}
+import { Footer, DocsFooter } from './Footer';
 
 function OpenGraph({
   title,
@@ -118,52 +81,64 @@ export function DocsPage({
         css={{
           gridArea: 'main',
           position: 'relative',
-          paddingBottom: 'var(--space-xxlarge)',
+          display: 'grid',
+          gridTemplateRows: '4.5rem calc(100vh - 4.5rem)',
         }}
       >
-        <Announcement />
         <Header />
         <Wrapper
           css={mq({
+            borderTop: '1px solid var(--border)',
+            overflowY: 'auto',
             display: ['block', null, 'grid'],
-            marginTop: '2.5rem',
-            gridTemplateColumns: noRightNav
-              ? '15rem minmax(0, auto)'
-              : [
-                  '15rem minmax(0, auto)',
-                  null,
-                  null,
-                  '10rem minmax(0, auto) 10rem',
-                  '15rem minmax(0, auto) 15rem',
-                ],
+            marginTop: '0rem',
+            gridTemplateColumns: '15rem minmax(0, 1fr)',
+            gridTemplateRows: '1fr auto',
             gap: ['var(--space-medium)', null, null, 'var(--space-large)', 'var(--space-xlarge)'],
           })}
         >
           <Sidebar isUpdatesPage={isUpdatesPage} />
-
-          <main
-            id="skip-link-content"
-            tabIndex={0}
-            ref={contentRef}
-            className={noProse ? '' : 'prose'}
+          <div
+            id="content-and-toc"
+            css={mq({
+              gridColumn: '2 / 3',
+              gridRow: '1 / 2',
+              display: ['block', null, 'grid'],
+              gridTemplateColumns: noRightNav
+                ? 'minmax(0, 1fr)'
+                : ['minmax(0, 1fr)', null, null, 'minmax(0, 1fr) 10rem', 'minmax(0, 1fr) 15rem'],
+              gap: ['var(--space-medium)', null, null, 'var(--space-large)', 'var(--space-xlarge)'],
+            })}
           >
-            <Stack
-              orientation="horizontal"
-              block
-              css={{ justifyContent: 'space-between', alignItems: 'baseline' }}
+            <main
+              id="skip-link-content"
+              tabIndex={0}
+              ref={contentRef}
+              className={noProse ? '' : 'prose'}
+              css={{
+                paddingTop: '2rem',
+              }}
             >
-              <Breadcrumbs />
+              <Stack
+                orientation="horizontal"
+                block
+                css={{ justifyContent: 'space-between', alignItems: 'baseline' }}
+              >
+                <Breadcrumbs />
 
-              <EditButton pathName={pathname} isIndexPage={isIndexPage} editPath={editPath} />
-            </Stack>
-            {children}
-          </main>
-          {!!headings.length && !noRightNav && (
-            <TableOfContents container={contentRef} headings={headings} />
-          )}
+                <EditButton pathName={pathname} isIndexPage={isIndexPage} editPath={editPath} />
+              </Stack>
+              <div id="content" css={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)' }}>
+                {children}
+              </div>
+            </main>
+            {!!headings.length && !noRightNav && (
+              <TableOfContents container={contentRef} headings={headings} />
+            )}
+          </div>
+          <DocsFooter />
         </Wrapper>
       </div>
-      <Footer />
     </Fragment>
   );
 }
@@ -190,7 +165,6 @@ export function Page({
           paddingBottom: 'var(--space-xxlarge)',
         }}
       >
-        <Announcement />
         <Header />
         <Wrapper as="main" id="skip-link-content" tabIndex={0}>
           {children}

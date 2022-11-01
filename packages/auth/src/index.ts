@@ -265,7 +265,9 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
    * It validates the auth config against the provided keystone config, and preserves existing
    * config by composing existing extendGraphqlSchema functions and ui config.
    */
-  const withAuth = (keystoneConfig: KeystoneConfig): KeystoneConfig => {
+  const withAuth = <TypeInfo extends BaseKeystoneTypeInfo>(
+    keystoneConfig: KeystoneConfig<TypeInfo>
+  ): KeystoneConfig<TypeInfo> => {
     validateConfig(keystoneConfig);
     let ui = keystoneConfig.ui;
     if (!keystoneConfig.ui?.isDisabled) {

@@ -6,7 +6,6 @@ import {
   FieldTypeFunc,
   CommonFieldConfig,
   orderDirectionEnum,
-  filters,
 } from '../../../types';
 import { graphql } from '../../..';
 import {
@@ -14,6 +13,7 @@ import {
   assertReadIsNonNullAllowed,
   getResolvedIsNullable,
 } from '../../non-null-graphql';
+import { filters } from '../../filters';
 
 export type SelectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> &

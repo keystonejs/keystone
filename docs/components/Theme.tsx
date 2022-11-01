@@ -1,33 +1,16 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, Global } from '@emotion/react';
-import { useState, useEffect } from 'react';
 
 import { COLORS, SPACE, TYPE, TYPESCALE } from '../lib/TOKENS';
 
 export function Theme() {
-  const [theme, setTheme] = useState<keyof typeof COLORS>('light');
-
-  useEffect(() => {
-    // we duplicate the logic of DarkModeBtn here so the flash is shorter
-    const detectedTheme =
-      (localStorage.getItem('theme') ||
-        window.matchMedia('(prefers-color-scheme: dark)').matches ||
-        'light') === 'dark'
-        ? 'dark'
-        : 'light';
-    localStorage.setItem('theme', detectedTheme);
-
-    if (detectedTheme !== 'light') {
-      setTheme(detectedTheme);
-    }
-  }, []);
-
   return (
     <Global
       styles={{
+        '[data-theme="light"]': { ...COLORS['light'] },
+        '[data-theme="dark"]': { ...COLORS['dark'] },
         ':root': {
-          ...COLORS[theme],
           ...SPACE,
           ...TYPE,
           ...TYPESCALE,

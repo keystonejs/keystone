@@ -19,7 +19,7 @@ You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://
 ## Features
 
 Based on the [Authentication example](../with-auth/), this project demonstrates how to customize the keystone session configuration in order to invalidate a session when a user's password is changed.
-It uses the [`@keystone-6/auth`](https://keystonejs.com/docs/apis/auth) package, along with Keystone's [session management API](https://keystonejs.com/docs/apis/session), to add the following features:
+It uses the [`@keystone-6/auth`](https://keystonejs.com/docs/config/auth) package, along with Keystone's [session management API](https://keystonejs.com/docs/config/session), to add the following features:
 
 - Adds a hook to the `password` field to set a timestamp field when the user changes their password
 - Changes the stateless session handling to set the time a session starts

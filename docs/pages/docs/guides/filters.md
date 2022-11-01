@@ -75,7 +75,7 @@ Different field types support different filters. The field `finishBy: timestamp(
 }
 ```
 
-For a full list of the different filters provided by each field type, please check the [Query Filter API](../apis/filters).
+For a full list of the different filters provided by each field type, please check the [Query Filter API](../graphql/filters).
 
 For more complex queries, you can combine multiple filters, and only those items which match all conditions will be returned.
 
@@ -340,7 +340,7 @@ that should be
 {% related-content %}
 {% well
 heading="Query Filters API Reference"
-href="/docs/apis/filters" %}
+href="/docs/graphql/filters" %}
 The complete list of filters available to Keystone field types.
 {% /well %}
 {% /related-content %}

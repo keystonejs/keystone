@@ -13,22 +13,30 @@ import { getPrismaClient, objectEnumValues } from '@prisma/client/runtime';
 // @ts-ignore
 import { externalToInternalDmmf } from '@prisma/client/generator-build';
 import { initConfig, createSystem } from '@keystone-6/core/system';
-import type { CreateContext, KeystoneConfig, KeystoneContext } from '@keystone-6/core/types';
-import { getCommittedArtifacts, PrismaModule } from '@keystone-6/core/artifacts';
+import type {
+  BaseKeystoneTypeInfo,
+  CreateContext,
+  KeystoneConfig,
+  KeystoneContext,
+} from '@keystone-6/core/types';
+import {
+  getCommittedArtifacts,
+  PrismaModule,
+} from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts';
 import prismaClientPackageJson from '@prisma/client/package.json';
 import { runMigrateWithDbUrl, withMigrate } from '@keystone-6/core/src/lib/migrations';
 import { dbProvider, dbUrl, SQLITE_DATABASE_FILENAME } from './utils';
 
-export type TestArgs<Context extends KeystoneContext = KeystoneContext> = {
-  context: Context;
-  createContext: CreateContext;
-  config: KeystoneConfig;
+export type TestArgs<TypeInfo extends BaseKeystoneTypeInfo> = {
+  context: KeystoneContext<TypeInfo>;
+  createContext: CreateContext<KeystoneContext<TypeInfo>>;
+  config: KeystoneConfig<TypeInfo>;
 };
 
-export type TestEnv<Context extends KeystoneContext = KeystoneContext> = {
+export type TestEnv<TypeInfo extends BaseKeystoneTypeInfo> = {
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
-  testArgs: TestArgs<Context>;
+  testArgs: TestArgs<TypeInfo>;
 };
 
 // you could call this a memory leak but it ends up being fine
@@ -140,11 +148,11 @@ async function pushSchemaToDatabase(schema: string) {
 
 let lastWrittenSchema = '';
 
-export async function setupTestEnv<Context extends KeystoneContext>({
+export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo>({
   config: _config,
 }: {
-  config: KeystoneConfig;
-}): Promise<TestEnv<Context>> {
+  config: KeystoneConfig<TypeInfo>;
+}): Promise<TestEnv<TypeInfo>> {
   // Force the UI to always be disabled.
   const config = initConfig({
     ..._config,
@@ -169,21 +177,21 @@ export async function setupTestEnv<Context extends KeystoneContext>({
     connect,
     disconnect,
     testArgs: {
-      context: createContext() as Context,
+      context: createContext(),
       createContext,
       config,
     },
   };
 }
 
-export function setupTestRunner<Context extends KeystoneContext>({
+export function setupTestRunner<TypeInfo extends BaseKeystoneTypeInfo>({
   config,
 }: {
-  config: KeystoneConfig;
+  config: KeystoneConfig<TypeInfo>;
 }) {
-  return (testFn: (testArgs: TestArgs<Context>) => Promise<void>) => async () => {
+  return (testFn: (testArgs: TestArgs<TypeInfo>) => Promise<void>) => async () => {
     // Reset the database to be empty for every test.
-    const { connect, disconnect, testArgs } = await setupTestEnv<Context>({ config });
+    const { connect, disconnect, testArgs } = await setupTestEnv({ config });
     await connect();
 
     try {

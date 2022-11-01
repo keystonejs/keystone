@@ -179,14 +179,16 @@ describe('no access control', () => {
 });
 
 describe('with access control', () => {
-  [
-    { name: 'GroupNoRead', allowed: true, func: 'read: () => false' },
-    { name: 'GroupNoReadHard', allowed: true, func: 'query: false' },
-    { name: 'GroupNoCreate', allowed: false, func: 'create: () => false' },
-    { name: 'GroupNoCreateHard', allowed: false, func: 'create: false' },
-    { name: 'GroupNoUpdate', allowed: true, func: 'update: () => false' },
-    { name: 'GroupNoUpdateHard', allowed: true, func: 'update: false' },
-  ].forEach(group => {
+  (
+    [
+      { name: 'GroupNoRead', allowed: true, func: 'read: () => false' },
+      { name: 'GroupNoReadHard', allowed: true, func: 'query: false' },
+      { name: 'GroupNoCreate', allowed: false, func: 'create: () => false' },
+      { name: 'GroupNoCreateHard', allowed: false, func: 'create: false' },
+      { name: 'GroupNoUpdate', allowed: true, func: 'update: () => false' },
+      { name: 'GroupNoUpdateHard', allowed: true, func: 'update: false' },
+    ] as const
+  ).forEach(group => {
     describe(`${group.func} on related list`, () => {
       if (group.allowed) {
         test(
@@ -273,7 +275,7 @@ describe('with access control', () => {
 
               // Assert it throws an access denied error
               expect(data).toEqual({ [`createEventTo${group.name}`]: null });
-              const message = `Access denied: You cannot perform the 'create' operation on the list 'GroupNoCreate'.`;
+              const message = `Access denied: You cannot create that GroupNoCreate`;
               expectSingleRelationshipError(
                 errors,
                 `createEventTo${group.name}`,
@@ -334,7 +336,7 @@ describe('with access control', () => {
             } else {
               const { data, errors } = await context.graphql.raw({ query });
               expect(data).toEqual({ [`updateEventTo${group.name}`]: null });
-              const message = `Access denied: You cannot perform the 'create' operation on the list 'GroupNoCreate'.`;
+              const message = `Access denied: You cannot create that GroupNoCreate`;
               expectSingleRelationshipError(
                 errors,
                 `updateEventTo${group.name}`,

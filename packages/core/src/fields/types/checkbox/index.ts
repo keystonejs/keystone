@@ -5,10 +5,10 @@ import {
   fieldType,
   FieldTypeFunc,
   orderDirectionEnum,
-  filters,
 } from '../../../types';
 import { graphql } from '../../..';
 import { assertCreateIsNonNullAllowed, assertReadIsNonNullAllowed } from '../../non-null-graphql';
+import { filters } from '../../filters';
 
 export type CheckboxFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {

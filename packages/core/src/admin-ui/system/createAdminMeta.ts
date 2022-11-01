@@ -109,6 +109,10 @@ export function createAdminMeta(
       ].slice(0, 3);
     }
 
+    const maximumPageSize = Math.min(
+      listConfig.ui?.listView?.pageSize ?? 50,
+      (list.types.findManyArgs.take.defaultValue ?? Infinity) as number
+    );
     adminMetaRoot.listsByKey[key] = {
       key,
       labelField,
@@ -118,7 +122,7 @@ export function createAdminMeta(
       plural: list.adminUILabels.plural,
       path: list.adminUILabels.path,
       fields: [],
-      pageSize: listConfig.ui?.listView?.pageSize ?? 50,
+      pageSize: maximumPageSize,
       initialColumns,
       initialSort:
         (listConfig.ui?.listView?.initialSort as

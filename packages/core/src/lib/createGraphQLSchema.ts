@@ -1,5 +1,5 @@
 import type { KeystoneConfig } from '../types';
-import { KeystoneMeta } from '../admin-ui/system';
+import { KeystoneMeta } from '../admin-ui/system/adminMetaSchema';
 import { graphql } from '../types/schema';
 import { AdminMetaRootVal } from '../admin-ui/system/createAdminMeta';
 import { InitialisedList } from './core/types-for-lists';

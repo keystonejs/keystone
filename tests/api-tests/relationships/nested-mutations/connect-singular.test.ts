@@ -167,7 +167,7 @@ describe('non-matching filter', () => {
       });
 
       expect(data).toEqual({ createEvent: null });
-      const message = `Access denied: You cannot perform the 'connect' operation on the item '{"id":"${FAKE_ID}"}'. It may not exist.`;
+      const message = `Access denied: You cannot connect that Group - it may not exist`;
       expectSingleRelationshipError(errors, 'createEvent', 'Event.group', message);
     })
   );
@@ -197,7 +197,7 @@ describe('non-matching filter', () => {
               }`,
       });
       expect(data).toEqual({ updateEvent: null });
-      const message = `Access denied: You cannot perform the 'connect' operation on the item '{"id":"${FAKE_ID}"}'. It may not exist.`;
+      const message = `Access denied: You cannot connect that Group - it may not exist`;
       expectSingleRelationshipError(errors, 'updateEvent', 'Event.group', message);
     })
   );
@@ -229,14 +229,16 @@ describe('non-matching filter', () => {
 });
 
 describe('with access control', () => {
-  [
-    { name: 'GroupNoRead', allowed: false, func: 'read: () => false' },
-    { name: 'GroupNoReadHard', allowed: false, func: 'read: false' },
-    { name: 'GroupNoCreate', allowed: true, func: 'create: () => false' },
-    { name: 'GroupNoCreateHard', allowed: true, func: 'create: false' },
-    { name: 'GroupNoUpdate', allowed: true, func: 'update: () => false' },
-    { name: 'GroupNoUpdateHard', allowed: true, func: 'update: false' },
-  ].forEach(group => {
+  (
+    [
+      { name: 'GroupNoRead', allowed: false, func: 'read: () => false' },
+      { name: 'GroupNoReadHard', allowed: false, func: 'read: false' },
+      { name: 'GroupNoCreate', allowed: true, func: 'create: () => false' },
+      { name: 'GroupNoCreateHard', allowed: true, func: 'create: false' },
+      { name: 'GroupNoUpdate', allowed: true, func: 'update: () => false' },
+      { name: 'GroupNoUpdateHard', allowed: true, func: 'update: false' },
+    ] as const
+  ).forEach(group => {
     describe(`${group.func} on related list`, () => {
       if (group.allowed) {
         test(
@@ -333,7 +335,7 @@ describe('with access control', () => {
                     }`,
             });
             expect(data).toEqual({ [`updateEventTo${group.name}`]: null });
-            const message = `Access denied: You cannot perform the 'connect' operation on the item '{"id":"${groupModel.id}"}'. It may not exist.`;
+            const message = `Access denied: You cannot connect that ${group.name} - it may not exist`;
             expectSingleRelationshipError(
               errors,
               `updateEventTo${group.name}`,
@@ -368,7 +370,7 @@ describe('with access control', () => {
             });
 
             expect(data).toEqual({ [`createEventTo${group.name}`]: null });
-            const message = `Access denied: You cannot perform the 'connect' operation on the item '{"id":"${id}"}'. It may not exist.`;
+            const message = `Access denied: You cannot connect that ${group.name} - it may not exist`;
             expectSingleRelationshipError(
               errors,
               `createEventTo${group.name}`,

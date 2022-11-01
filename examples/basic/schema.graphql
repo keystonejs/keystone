@@ -415,6 +415,11 @@ type Query {
   uuid: ID!
 }
 
+type RandomNumber {
+  number: Int
+  generatedAt: Int
+}
+
 union AuthenticatedItem = User
 
 type KeystoneMeta {
@@ -502,9 +507,4 @@ type KeystoneAdminUISort {
 enum KeystoneAdminUISortDirection {
   ASC
   DESC
-}
-
-type RandomNumber {
-  number: Int
-  generatedAt: Int
 }

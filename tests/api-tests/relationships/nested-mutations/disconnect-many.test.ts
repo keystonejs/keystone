@@ -140,8 +140,7 @@ describe('non-matching filter', () => {
         variables: { id: createUser.id },
       });
       expect(data).toEqual({ updateUser: null });
-      const message =
-        'Access denied: You cannot perform the \'disconnect\' operation on the item \'{"id":"c5b84f38256d3c2df59a0d9bf"}\'. It may not exist.';
+      const message = 'Access denied: You cannot disconnect that Note - it may not exist';
       expectSingleRelationshipError(errors, 'updateUser', 'User.notes', message);
     })
   );
@@ -181,7 +180,7 @@ describe('with access control', () => {
             variables: { id: createUser.id, idToDisconnect: createNote.id },
           });
           expect(data).toEqual({ updateUserToNotesNoRead: null });
-          const message = `Access denied: You cannot perform the 'disconnect' operation on the item '{\"id\":\"${createNote.id}\"}'. It may not exist.`;
+          const message = `Access denied: You cannot disconnect that NoteNoRead - it may not exist`;
           expectSingleRelationshipError(
             errors,
             'updateUserToNotesNoRead',
