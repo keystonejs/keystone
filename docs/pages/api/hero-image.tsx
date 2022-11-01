@@ -52,7 +52,6 @@ const HeroImage = ({
       >
         <div
           style={{
-            letterSpacing: -2,
             color: '#FFF',
             display: 'flex',
             alignItems: 'center',
@@ -74,7 +73,7 @@ const HeroImage = ({
           <div
             style={{
               fontSize: titleFontSize,
-              fontWeight: 700,
+              fontWeight: 900,
               paddingTop: 16,
               paddingBottom: 64,
               borderTop: type ? '1px solid white' : '1px solid transparent',
@@ -83,7 +82,7 @@ const HeroImage = ({
             {title}
           </div>
           {shortenedDescription ? (
-            <div style={{ fontSize: 40, fontWeight: 400, lineHeight: 1.4 }}>
+            <div style={{ fontSize: 40, fontWeight: 400, lineHeight: 1.4, letterSpacing: -1 }}>
               {shortenedDescription}
             </div>
           ) : null}
@@ -92,19 +91,26 @@ const HeroImage = ({
     </div>
   );
 };
-// Make sure the font exists in the specified path:
-const interBold = fetch(new URL('../../public/font/Inter-Bold.ttf', import.meta.url)).then(res =>
-  res.arrayBuffer()
-);
 
 const interRegular = fetch(new URL('../../public/font/Inter-Regular.ttf', import.meta.url)).then(
   res => res.arrayBuffer()
 );
+const interSemiBold = fetch(new URL('../../public/font/Inter-SemiBold.ttf', import.meta.url)).then(
+  res => res.arrayBuffer()
+);
+const interBold = fetch(new URL('../../public/font/Inter-Bold.ttf', import.meta.url)).then(res =>
+  res.arrayBuffer()
+);
+const interBlack = fetch(new URL('../../public/font/Inter-Black.ttf', import.meta.url)).then(res =>
+  res.arrayBuffer()
+);
 
 // vercel API route that generates the OG image
 export default async function handler(req: NextRequest) {
-  const interBoldData = await interBold;
   const interRegularData = await interRegular;
+  const interSemiBoldData = await interSemiBold;
+  const interBoldData = await interBold;
+  const interBlackData = await interBlack;
 
   try {
     const { searchParams } = new URL(req.url);
@@ -129,15 +135,27 @@ export default async function handler(req: NextRequest) {
       fonts: [
         {
           name: 'Inter',
+          data: interRegularData,
+          style: 'normal',
+          weight: 400,
+        },
+        {
+          name: 'Inter',
+          data: interSemiBoldData,
+          style: 'normal',
+          weight: 600,
+        },
+        {
+          name: 'Inter',
           data: interBoldData,
           style: 'normal',
           weight: 700,
         },
         {
           name: 'Inter',
-          data: interRegularData,
+          data: interBlackData,
           style: 'normal',
-          weight: 400,
+          weight: 900,
         },
       ],
     });
