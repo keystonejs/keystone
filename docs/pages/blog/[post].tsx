@@ -18,6 +18,7 @@ import { extractHeadings, Markdoc } from '../../components/Markdoc';
 import { BlogPage } from '../../components/Page';
 import { Heading } from '../../components/docs/Heading';
 import { Type } from '../../components/primitives/Type';
+import { getOgAbsoluteUrl } from '../../lib/og-util';
 
 export default function Page(props: InferGetStaticPropsType<typeof getStaticProps>) {
   const router = useRouter();
@@ -28,10 +29,20 @@ export default function Page(props: InferGetStaticPropsType<typeof getStaticProp
   const publishedDate = props.publishDate;
   const parsedDate = parse(publishedDate, 'yyyy-M-d', new Date());
   const formattedDateStr = format(parsedDate, 'MMMM do, yyyy');
+
+  let ogImageUrl = props.metaImageUrl;
+  if (!ogImageUrl) {
+    ogImageUrl = getOgAbsoluteUrl({
+      title: props.title,
+      description: props.description,
+      type: 'blog',
+    });
+  }
+
   return (
     <BlogPage
       headings={headings}
-      ogImage={props.metaImageUrl}
+      ogImage={ogImageUrl}
       title={props.title}
       description={props.description}
       editPath={`docs/pages/docs/${router.query.post}.md`}

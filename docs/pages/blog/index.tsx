@@ -15,6 +15,7 @@ import { Type } from '../../components/primitives/Type';
 import { Highlight } from '../../components/primitives/Highlight';
 import { useMediaQuery } from '../../lib/media';
 import { BlogFrontmatter, extractBlogFrontmatter } from '../../markdoc';
+import { getOgAbsoluteUrl } from '../../lib/og-util';
 
 const today = new Date();
 export default function Docs(props: InferGetStaticPropsType<typeof getStaticProps>) {
@@ -35,10 +36,16 @@ export default function Docs(props: InferGetStaticPropsType<typeof getStaticProp
     })
     .sort((a, b) => (a.parsedDate < b.parsedDate ? 1 : -1));
 
+  const ogImageUrl = getOgAbsoluteUrl({
+    title: 'The Keystone Blog',
+    description: 'Latest news and announcements from the Keystone team.',
+  });
+
   return (
     <Page
       title={'The Keystone Blog'}
       description={'Blog posts from the team maintaining KeystoneJS.'}
+      ogImage={ogImageUrl}
     >
       <MWrapper css={{ marginTop: 0 }}>
         <section
