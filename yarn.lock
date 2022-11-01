@@ -3327,10 +3327,12 @@
     globby "^11.0.0"
     read-yaml-file "^1.1.0"
 
-"@markdoc/markdoc@^0.1.5":
-  version "0.1.13"
-  resolved "https://registry.yarnpkg.com/@markdoc/markdoc/-/markdoc-0.1.13.tgz#358408d3b4edf5dae90b51c2d8d89d51743dbd18"
-  integrity sha512-zUdUpr2U3tf0uBQKr1aAiNDvwtZChAjCw3WPVv4PMKcPjYYlVHE0lizIS3NjChruRPJ2FvVQAI4ceyNpJWobiw==
+"@markdoc/markdoc@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@markdoc/markdoc/-/markdoc-0.2.0.tgz#1b7b4aaa55cb7246237c6520cbab877e2081da26"
+  integrity sha512-g5aqMY7uf3pmP50Ol7SyxT3iGD5cUwLEqMzCu5RTrOpllsrmamk1XAbsXY5rcPFPuc9m25peFOKEHfksrnPrXg==
+  optionalDependencies:
+    "@types/markdown-it" "12.2.3"
 
 "@next/env@12.3.2":
   version "12.3.2"
@@ -4446,7 +4448,7 @@
   resolved "https://registry.yarnpkg.com/@types/long/-/long-4.0.2.tgz#b74129719fc8d11c01868010082d483b7545591a"
   integrity sha512-MqTGEo5bj5t157U6fA/BiDynNkn0YknVdh48CMPkTSpFTVmvao5UQmm7uEF6xBEo7qIMAlY/JSleYaE6VOdpaA==
 
-"@types/markdown-it@^12.2.3":
+"@types/markdown-it@12.2.3", "@types/markdown-it@^12.2.3":
   version "12.2.3"
   resolved "https://registry.yarnpkg.com/@types/markdown-it/-/markdown-it-12.2.3.tgz#0d6f6e5e413f8daaa26522904597be3d6cd93b51"
   integrity sha512-GKMHFfv3458yYy+v/N8gjufHO6MSZKCOXpZc5GXIWWy8uldwfmPn98vp81gZ5f9SVw8YYBctgfJ22a2d7AOMeQ==
