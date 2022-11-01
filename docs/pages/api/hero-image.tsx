@@ -57,6 +57,7 @@ const HeroImage = ({
             alignItems: 'center',
             justifyContent: 'center',
             flexDirection: 'column',
+            fontWeight: 400,
           }}
         >
           {type ? (
@@ -82,7 +83,7 @@ const HeroImage = ({
             {title}
           </div>
           {shortenedDescription ? (
-            <div style={{ fontSize: 40, fontWeight: 400, lineHeight: 1.4, letterSpacing: -1 }}>
+            <div style={{ fontSize: 40, lineHeight: 1.4, letterSpacing: -1 }}>
               {shortenedDescription}
             </div>
           ) : null}
@@ -95,12 +96,6 @@ const HeroImage = ({
 const interRegular = fetch(new URL('../../public/font/Inter-Regular.ttf', import.meta.url)).then(
   res => res.arrayBuffer()
 );
-const interSemiBold = fetch(new URL('../../public/font/Inter-SemiBold.ttf', import.meta.url)).then(
-  res => res.arrayBuffer()
-);
-const interBold = fetch(new URL('../../public/font/Inter-Bold.ttf', import.meta.url)).then(res =>
-  res.arrayBuffer()
-);
 const interBlack = fetch(new URL('../../public/font/Inter-Black.ttf', import.meta.url)).then(res =>
   res.arrayBuffer()
 );
@@ -108,8 +103,6 @@ const interBlack = fetch(new URL('../../public/font/Inter-Black.ttf', import.met
 // vercel API route that generates the OG image
 export default async function handler(req: NextRequest) {
   const interRegularData = await interRegular;
-  const interSemiBoldData = await interSemiBold;
-  const interBoldData = await interBold;
   const interBlackData = await interBlack;
 
   try {
@@ -138,18 +131,6 @@ export default async function handler(req: NextRequest) {
           data: interRegularData,
           style: 'normal',
           weight: 400,
-        },
-        {
-          name: 'Inter',
-          data: interSemiBoldData,
-          style: 'normal',
-          weight: 600,
-        },
-        {
-          name: 'Inter',
-          data: interBoldData,
-          style: 'normal',
-          weight: 700,
         },
         {
           name: 'Inter',
