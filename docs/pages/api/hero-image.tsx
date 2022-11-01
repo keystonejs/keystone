@@ -76,7 +76,7 @@ const HeroImage = ({
               fontSize: titleFontSize,
               fontWeight: 900,
               paddingTop: 16,
-              paddingBottom: 64,
+              paddingBottom: 48,
               borderTop: type ? '1px solid white' : '1px solid transparent',
             }}
           >
