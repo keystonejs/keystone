@@ -71,3 +71,5 @@ config({
 ```
 
 You can view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-07-29) on GitHub.
+
+If you like using Keystone, we'd appreciate a shout out in [Twitter](https://twitter.com/KeystoneJS) and a star in [GitHub](https://github.com/keystonejs/keystone).

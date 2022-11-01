@@ -17,3 +17,5 @@ At the end of the series you'll have learnt how these core concepts work in Keys
 - GraphQL API work in Keystone 
 
 Check out our [Keystone Learning series](/docs/walkthroughs).
+
+If you like using Keystone, we'd appreciate a shout out in [Twitter](https://twitter.com/KeystoneJS) and a star in [GitHub](https://github.com/keystonejs/keystone).

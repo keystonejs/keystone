@@ -26,3 +26,5 @@ export default config({
 There are some differences in how Postgres and MySQL operate so be sure to checkout our new [choosing the right database guide](https://keystonejs.com/docs/guides/choosing-a-database).
 
 For more info, check out our [Pull Request - Add support for MySQL](https://github.com/keystonejs/keystone/pull/7538).
+
+If you like using Keystone, we'd appreciate a shout out in [Twitter](https://twitter.com/KeystoneJS) and a star in [GitHub](https://github.com/keystonejs/keystone).

@@ -75,3 +75,5 @@ context.query.WebsiteConfiguration.updateOne({
 ```
 
 Read our [API docs](/docs/config/lists#is-singleton) or refer to our [Singleton example](https://github.com/keystonejs/keystone/blob/main/examples/singleton) to learn more about Singleton.
+
+If you like using Keystone, we'd appreciate a shout out in [Twitter](https://twitter.com/KeystoneJS) and a star in [GitHub](https://github.com/keystonejs/keystone).

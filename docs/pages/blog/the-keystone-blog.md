@@ -7,4 +7,18 @@ authorHandle: "https://twitter.com/flexdinesh"
 metaImageUrl: ""
 ---
 
-WIP
+We're happy to introduce **The Keystone Blog**, a buzzing corner for all the latest news and announcements about Keystone, brought to you by the Keystone team.
+
+Our _Updates_ page is going away and we are not one to let good content slip away. So some of the useful and important content in _Updates_ have been repurposed into blog posts. Woot!
+
+Here are few interesting tidbits that you might notices with the launch of Keystone blog:
+
+- Sparkly new header layout. ✨
+
+- _Updates_ page has been replaced with the blog with some of its content ported over.
+
+- Blog page has a nice _Table of contents_ section to help quickly scan and navigate between the headings.
+
+Stay tuned for more blog posts!
+
+If you like using Keystone, we'd appreciate a shout out in [Twitter](https://twitter.com/KeystoneJS) and a star in [GitHub](https://github.com/keystonejs/keystone).

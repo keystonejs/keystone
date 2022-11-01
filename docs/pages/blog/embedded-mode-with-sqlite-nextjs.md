@@ -344,3 +344,5 @@ Embedded mode is a great way to operate a personal Next.js blog or portfolio wit
 ## Summary
 
 Keystone's Embedded mode and SQLite support gives you the option to run a self contained CMS from the same place you keep your frontend code. While this option restricts read-write access to people who can run the project in local development, it has advantages with ease of setup, security, and web deployment. This is also a great way to deploy a read-only API on the web for content you manage on your computer.
+
+If you like using Keystone, we'd appreciate a shout out in [Twitter](https://twitter.com/KeystoneJS) and a star in [GitHub](https://github.com/keystonejs/keystone).

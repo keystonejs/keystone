@@ -91,3 +91,7 @@ And I think that is really for me, **what a Next-Gen CMS is all about. It's all 
 So this is our take on what that looks like. I'd love you to check it out, let us know what you think and enjoy the rest of the conference.
 
 Thanks for having me.
+
+---
+
+If you like using Keystone, we'd appreciate a shout out in [Twitter](https://twitter.com/KeystoneJS) and a star in [GitHub](https://github.com/keystonejs/keystone).

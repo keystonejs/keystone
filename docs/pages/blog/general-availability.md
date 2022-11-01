@@ -65,3 +65,5 @@ To talk about this release and share your thoughts about the road ahead, be sure
 ## Thank you
 
 This release would not have been possible without the support and feedback of such an awesome developer community. We're grateful for the ideas you bring, the help you give others, and the code contributions you've made to get Keystone to where it is today. Thank you, and here's to a feature rich 2022!
+
+If you like using Keystone, we'd appreciate a shout out in [Twitter](https://twitter.com/KeystoneJS) and a star in [GitHub](https://github.com/keystonejs/keystone).
