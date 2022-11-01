@@ -258,7 +258,7 @@ const OrderableItemInForm = memo(function OrderableItemInForm(
             isOpen={modalState.state === 'open'}
           >
             {modalState.state === 'open' && (
-              <ArrayFieldItemModelContent
+              <ArrayFieldItemModalContent
                 onChange={onModalChange}
                 schema={props.schema}
                 value={modalState.value}
@@ -271,7 +271,7 @@ const OrderableItemInForm = memo(function OrderableItemInForm(
   );
 });
 
-function ArrayFieldItemModelContent(props: {
+function ArrayFieldItemModalContent(props: {
   schema: NonChildFieldComponentSchema;
   value: unknown;
   onChange: (cb: (value: unknown) => unknown) => void;
