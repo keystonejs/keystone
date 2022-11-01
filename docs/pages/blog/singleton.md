@@ -11,7 +11,7 @@ Singleton is one of the most popular community requested features and it is an e
 
 You describe the list (Eg. _WebsiteConfiguration_) like you describe any other list and add the property `isSingleton: true` to it.
 
-```
+```ts
 // schema.ts
 export default config({
   lists: ({
@@ -29,7 +29,7 @@ export default config({
 
 In GraphQL, you can read and write from this list without needing an identifier.
 
-```
+```graphql
 query {
   websiteConfiguration {
     websiteName
@@ -58,7 +58,7 @@ mutation updateExisting {
 
 Within the server environment, you can read and write from this list using the default identifier `1`.
 
-```
+```ts
 // read
 context.query.WebsiteConfiguration.findOne({ where: { id: '1' } });
 
