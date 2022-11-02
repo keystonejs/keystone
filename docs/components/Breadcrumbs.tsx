@@ -67,17 +67,15 @@ export function Breadcrumbs() {
         {breadcrumbs.map(({ title, href }) => (
           <li key={href}>
             <Link href={href}>
-              <a>
-                <Type
-                  look="body12"
-                  css={{
-                    textTransform: 'uppercase',
-                    color: 'var(--muted)',
-                  }}
-                >
-                  {title}
-                </Type>
-              </a>
+              <Type
+                look="body12"
+                css={{
+                  textTransform: 'uppercase',
+                  color: 'var(--muted)',
+                }}
+              >
+                {title}
+              </Type>
             </Link>
           </li>
         ))}

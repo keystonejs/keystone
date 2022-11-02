@@ -14,11 +14,13 @@ The default export of every file in this directory is expected to be a valid Rea
 
 ```tsx
 // admin/pages/custom-page.tsx
+import Link from 'next/link';
+
 export default function CustomPage () {
     return (
         <>
             <h1>This is a custom Admin UI Page</h1>
-            <p>It can be accessed via the route <a href="/custom-page">/custom-page</a></p>
+            <p>It can be accessed via the route <Link href="/custom-page">/custom-page</Link></p>
         </>
     )
 }
@@ -41,12 +43,14 @@ This `header` prop is rendered out as the page title at the top of the page.
 
 ```tsx
 // admin/pages/custom-page.tsx
+import Link from 'next/link';
 import { PageContainer } from '@keystone-6/core/admin-ui/components';
+
 export default function CustomPage () {
     return (
         <PageContainer header="Custom Page">
             <h1>This is a custom Admin UI Page</h1>
-            <p>It can be accessed via the route <a href="/custom-page">/custom-page</a></p>
+            <p>It can be accessed via the route <Link href="/custom-page">/custom-page</Link></p>
         </PageContainer>
     )
 }
@@ -61,7 +65,7 @@ There's still a problem though, the header doesn't look right. If we compare the
 Keystone pages leverage the `Heading` component from the `@keystone-ui/core` package to style the header, so let's use this to give our header the same styling.
 
 ```tsx
-// admin/pages/custom-page.tsx
+// admin/pages/custom-page.tsx.
 import { PageContainer } from '@keystone-6/core/admin-ui/components';
 import { Heading } from '@keystone-ui/core';
 
@@ -153,6 +157,7 @@ The snippet below uses the emotion `jsx` runtime exported from `@keystone-ui/cor
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
+import Link from 'next/link';
 import { jsx } from '@keystone-ui/core';
 import { PageContainer } from '@keystone-6/core/admin-ui/components';
 import { Heading } from '@keystone-ui/core';
@@ -172,7 +177,7 @@ export default function CustomPage () {
                 This is a custom Admin UI Page
             </h1>
             <p css={{ textAlign: 'center' }}>
-                It can be accessed via the route <a href="/custom-page">/custom-page</a>
+                It can be accessed via the route <Link href="/custom-page">/custom-page</Link>
             </p>
         </PageContainer>
     )

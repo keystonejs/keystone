@@ -15,9 +15,7 @@ export default function Post({ author }: { author: any }) {
       <h2>Posts</h2>
       {author.posts.map((post: any) => (
         <li key={post.id}>
-          <Link href={`/post/${post.slug}`}>
-            <a>{post.title}</a>
-          </Link>
+          <Link href={`/post/${post.slug}`}>{post.title}</Link>
         </li>
       ))}
     </article>

@@ -10,16 +10,15 @@ const Brand = () => {
   const { palette } = useTheme();
   return (
     <h2>
-      <Link href="/" passHref>
-        <a
-          css={{
-            color: palette.neutral700,
-            textDecoration: 'none',
-            display: 'block',
-          }}
-        >
-          Keystone UI
-        </a>
+      <Link
+        href="/"
+        css={{
+          color: palette.neutral700,
+          textDecoration: 'none',
+          display: 'block',
+        }}
+      >
+        Keystone UI
       </Link>
     </h2>
   );
@@ -48,23 +47,22 @@ const NavItem = ({ href, children }: NavItemProps) => {
         paddingLeft: 0,
       }}
     >
-      <Link href={href} passHref>
-        <a
-          css={{
-            color: isSelected ? palette.neutral800 : palette.neutral700,
-            backgroundColor: isSelected ? palette.white : undefined,
-            borderRadius: radii.medium,
-            padding: spacing.small,
-            display: 'block',
-            textDecoration: 'none',
-            ':hover': {
-              color: isSelected ? undefined : palette.blue500,
-              backgroundColor: isSelected ? undefined : palette.white,
-            },
-          }}
-        >
-          {children}
-        </a>
+      <Link
+        href={href}
+        css={{
+          color: isSelected ? palette.neutral800 : palette.neutral700,
+          backgroundColor: isSelected ? palette.white : undefined,
+          borderRadius: radii.medium,
+          padding: spacing.small,
+          display: 'block',
+          textDecoration: 'none',
+          ':hover': {
+            color: isSelected ? undefined : palette.blue500,
+            backgroundColor: isSelected ? undefined : palette.white,
+          },
+        }}
+      >
+        {children}
       </Link>
     </li>
   );

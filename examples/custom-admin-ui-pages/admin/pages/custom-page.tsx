@@ -1,5 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import Link from 'next/link';
 import { PageContainer } from '@keystone-6/core/admin-ui/components';
 import { jsx, Heading } from '@keystone-ui/core';
 // Please note that while this capability is driven by Next.js's pages directory
@@ -21,7 +22,7 @@ export default function CustomPage() {
           textAlign: 'center',
         }}
       >
-        It can be accessed via the route <a href="/custom-page">/custom-page</a>
+        It can be accessed via the route <Link href="/custom-page">/custom-page</Link>
       </p>
     </PageContainer>
   );

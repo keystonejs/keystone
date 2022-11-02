@@ -27,8 +27,7 @@ export const Link = ({ href, as, replace, scroll, shallow, prefetch, ...props }:
       scroll={scroll}
       shallow={shallow}
       prefetch={prefetch}
-    >
-      <a {...props} />
-    </NextLink>
+      {...props}
+      />
   );
 };

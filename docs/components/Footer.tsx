@@ -63,24 +63,16 @@ export function Footer() {
             </Type>
             <List>
               <li>
-                <Link href="/why-keystone">
-                  <a>Our Story</a>
-                </Link>
+                <Link href="/why-keystone">Our Story</Link>
               </li>
               <li>
-                <Link href="/for-developers">
-                  <a>For Developers</a>
-                </Link>
+                <Link href="/for-developers">For Developers</Link>
               </li>
               <li>
-                <Link href="/for-organisations">
-                  <a>For Organisations</a>
-                </Link>
+                <Link href="/for-organisations">For Organisations</Link>
               </li>
               <li>
-                <Link href="/for-content-management">
-                  <a>For Content management</a>
-                </Link>
+                <Link href="/for-content-management">For Content management</Link>
               </li>
             </List>
           </div>
@@ -90,29 +82,19 @@ export function Footer() {
             </Type>
             <List>
               <li>
-                <Link href="/docs/getting-started">
-                  <a>Getting started</a>
-                </Link>
+                <Link href="/docs/getting-started">Getting started</Link>
               </li>
               <li>
-                <Link href="/docs">
-                  <a>Docs</a>
-                </Link>
+                <Link href="/docs">Docs</Link>
               </li>
               <li>
-                <Link href="/docs/guides">
-                  <a>Guides</a>
-                </Link>
+                <Link href="/docs/guides">Guides</Link>
               </li>
               <li>
-                <Link href="/docs/apis">
-                  <a>API reference</a>
-                </Link>
+                <Link href="/docs/apis">API reference</Link>
               </li>
               <li>
-                <Link href="/branding">
-                  <a>Branding</a>
-                </Link>
+                <Link href="/branding">Branding</Link>
               </li>
             </List>
           </div>
@@ -165,19 +147,13 @@ export function Footer() {
             </Type>
             <List>
               <li>
-                <Link href="/updates">
-                  <a>Latest News</a>
-                </Link>
+                <Link href="/updates">Latest News</Link>
               </li>
               <li>
-                <Link href="/updates/roadmap">
-                  <a>Roadmap</a>
-                </Link>
+                <Link href="/updates/roadmap">Roadmap</Link>
               </li>
               <li>
-                <Link href="/releases">
-                  <a>Release Notes</a>
-                </Link>
+                <Link href="/releases">Release Notes</Link>
               </li>
             </List>
           </div>

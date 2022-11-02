@@ -21,10 +21,10 @@
     "@keystone-6/core": "^3.0.0",
     "@types/nodemailer": "^6.4.4",
     "dotenv": "^16.0.0",
-    "next": "^12.2.4",
+    "next": "^13.0.1",
     "nodemailer": "^6.7.1",
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "stripe": "^9.0.0"
   },
   "devDependencies": {

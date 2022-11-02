@@ -11,8 +11,8 @@
   "dependencies": {
     "@keystone-6/core": "^3.0.0",
     "@keystone-ui/core": "^5.0.1",
-    "next": "^12.2.4",
-    "react": "^18.1.0"
+    "next": "^13.0.1",
+    "react": "^18.2.0"
   },
   "devDependencies": {
     "typescript": "~4.7.4"

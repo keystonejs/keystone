@@ -208,89 +208,86 @@ export default function WhyKeystonePage() {
               },
             })}
           >
-            <Link href="/for-developers" passHref>
-              <a
+            <Link
+              href="/for-developers"
+              css={{
+                backgroundImage: `linear-gradient(116.01deg, var(--grad3-2), var(--grad3-1))`,
+              }}
+            >
+              <Code />
+              <Type
+                as="h2"
+                look="heading20bold"
                 css={{
-                  backgroundImage: `linear-gradient(116.01deg, var(--grad3-2), var(--grad3-1))`,
+                  margin: '.5rem 0 .5rem 0 !important',
+                  color: 'inherit',
                 }}
               >
-                <Code />
-                <Type
-                  as="h2"
-                  look="heading20bold"
-                  css={{
-                    margin: '.5rem 0 .5rem 0 !important',
-                    color: 'inherit',
-                  }}
-                >
-                  Developer Experience →
-                </Type>
-                <Type
-                  as="p"
-                  look="body18"
-                  css={{
-                    color: 'inherit',
-                  }}
-                >
-                  Built the way you’d want it made. Keystone fits with the tools you know and love.
-                </Type>
-              </a>
+                Developer Experience →
+              </Type>
+              <Type
+                as="p"
+                look="body18"
+                css={{
+                  color: 'inherit',
+                }}
+              >
+                Built the way you’d want it made. Keystone fits with the tools you know and love.
+              </Type>
             </Link>
-            <Link href="/for-content-management" passHref>
-              <a
+            <Link
+              href="/for-content-management"
+              css={{
+                backgroundImage: `linear-gradient(116.01deg, var(--grad5-2), var(--grad5-1))`,
+              }}
+            >
+              <Content />
+              <Type
+                as="h2"
+                look="heading20bold"
                 css={{
-                  backgroundImage: `linear-gradient(116.01deg, var(--grad5-2), var(--grad5-1))`,
+                  margin: '.5rem 0 .5rem 0 !important',
+                  color: 'inherit',
                 }}
               >
-                <Content />
-                <Type
-                  as="h2"
-                  look="heading20bold"
-                  css={{
-                    margin: '.5rem 0 .5rem 0 !important',
-                    color: 'inherit',
-                  }}
-                >
-                  Editor Experience →
-                </Type>
-                <Type
-                  as="p"
-                  look="body18"
-                  css={{
-                    color: 'inherit',
-                  }}
-                >
-                  The configurable editing environment you need to do your best work.
-                </Type>
-              </a>
+                Editor Experience →
+              </Type>
+              <Type
+                as="p"
+                look="body18"
+                css={{
+                  color: 'inherit',
+                }}
+              >
+                The configurable editing environment you need to do your best work.
+              </Type>
             </Link>
-            <Link href="/for-organisations" passHref>
-              <a
+            <Link
+              href="/for-organisations"
+              css={{
+                backgroundImage: `linear-gradient(116.01deg, var(--grad4-2), var(--grad4-1))`,
+              }}
+            >
+              <Organization />
+              <Type
+                as="h2"
+                look="heading20bold"
                 css={{
-                  backgroundImage: `linear-gradient(116.01deg, var(--grad4-2), var(--grad4-1))`,
+                  margin: '.5rem 0 .5rem 0 !important',
+                  color: 'inherit',
                 }}
               >
-                <Organization />
-                <Type
-                  as="h2"
-                  look="heading20bold"
-                  css={{
-                    margin: '.5rem 0 .5rem 0 !important',
-                    color: 'inherit',
-                  }}
-                >
-                  For Organisations →
-                </Type>
-                <Type
-                  as="p"
-                  look="body18"
-                  css={{
-                    color: 'inherit',
-                  }}
-                >
-                  Own your data. Start fast. Find your audience anywhere. Scale on your terms.
-                </Type>
-              </a>
+                For Organisations →
+              </Type>
+              <Type
+                as="p"
+                look="body18"
+                css={{
+                  color: 'inherit',
+                }}
+              >
+                Own your data. Start fast. Find your audience anywhere. Scale on your terms.
+              </Type>
             </Link>
           </div>
         </Section>
@@ -336,9 +333,7 @@ export default function WhyKeystonePage() {
                 Out of the box data ops for every field type. A powerful GraphQL API from day one.
               </Type>
               <Type as="p" look="body18">
-                <Link href="/docs/config/access-control">
-                  <a>Access control API →</a>
-                </Link>
+                <Link href="/docs/config/access-control">Access control API →</Link>
               </Type>
             </li>
             <li>
@@ -370,9 +365,7 @@ export default function WhyKeystonePage() {
                 Structured JSON output.
               </Type>
               <Type as="p" look="body18">
-                <Link href="/docs/guides/document-field-demo">
-                  <a>Try the editor →</a>
-                </Link>
+                <Link href="/docs/guides/document-field-demo">Try the editor →</Link>
               </Type>
             </li>
             <li>
@@ -384,9 +377,7 @@ export default function WhyKeystonePage() {
                 Start and end sessions from the GraphQL API. Secure your data using access control.
               </Type>
               <Type as="p" look="body18">
-                <Link href="/docs/config/session">
-                  <a>Session API →</a>
-                </Link>
+                <Link href="/docs/config/session">Session API →</Link>
               </Type>
             </li>
             <li>
@@ -409,9 +400,7 @@ export default function WhyKeystonePage() {
                 roles you can configure.
               </Type>
               <Type as="p" look="body18">
-                <Link href="/docs/config/access-control">
-                  <a>Access Control API →</a>
-                </Link>
+                <Link href="/docs/config/access-control">Access Control API →</Link>
               </Type>
             </li>
             <li>
@@ -423,9 +412,7 @@ export default function WhyKeystonePage() {
                 One to one. One to many. Many to many. Self referential. It’s all there.
               </Type>
               <Type as="p" look="body18">
-                <Link href="/docs/guides/relationships">
-                  <a>Relationships guide →</a>
-                </Link>
+                <Link href="/docs/guides/relationships">Relationships guide →</Link>
               </Type>
             </li>
             <li>
@@ -437,9 +424,7 @@ export default function WhyKeystonePage() {
                 Find what you need when you need it with intuitive filters.
               </Type>
               <Type as="p" look="body18">
-                <Link href="/docs/guides/filters">
-                  <a>Query Filters guide →</a>
-                </Link>
+                <Link href="/docs/guides/filters">Query Filters guide →</Link>
               </Type>
             </li>
             <li>
@@ -461,9 +446,7 @@ export default function WhyKeystonePage() {
                 Everything as you make it.
               </Type>
               <Type as="p" look="body18">
-                <Link href="/docs/fields/overview">
-                  <a>Fields API →</a>
-                </Link>
+                <Link href="/docs/fields/overview">Fields API →</Link>
               </Type>
             </li>
             <li>
@@ -476,9 +459,7 @@ export default function WhyKeystonePage() {
                 it’s up to you.
               </Type>
               <Type as="p" look="body18">
-                <Link href="/docs/guides/hooks">
-                  <a>Hooks guide →</a>
-                </Link>
+                <Link href="/docs/guides/hooks">Hooks guide →</Link>
               </Type>
             </li>
             <li>
@@ -491,9 +472,7 @@ export default function WhyKeystonePage() {
                 terminal.
               </Type>
               <Type as="p" look="body18">
-                <Link href="/docs/guides/cli">
-                  <a>CLI guide →</a>
-                </Link>
+                <Link href="/docs/guides/cli">CLI guide →</Link>
               </Type>
             </li>
           </ul>
