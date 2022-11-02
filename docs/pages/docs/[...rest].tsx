@@ -24,7 +24,7 @@ export default function DocPage(props: InferGetStaticPropsType<typeof getStaticP
       headings={headings}
       title={props.title}
       description={props.description}
-      editPath={`docs/pages/docs/${(router.query.rest as string[]).join('/')}.md`}
+      editPath={`docs/${(router.query.rest as string[]).join('/')}.md`}
     >
       <Heading level={1} id="title">
         {props.title}

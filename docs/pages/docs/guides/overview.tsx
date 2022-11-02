@@ -20,6 +20,7 @@ export default function Docs() {
         'Practical explanations of Keystone’s fundamental building blocks. Learn how to think about, and get the most out of Keystone’s many features.'
       }
       isIndexPage
+      editPath="docs/guides/overview.tsx"
     >
       <Type as="h1" look="heading64">
         Keystone Guides

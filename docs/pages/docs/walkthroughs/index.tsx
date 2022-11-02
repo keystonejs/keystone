@@ -79,6 +79,7 @@ export default function Docs() {
         'Explore tutorials with step-by-step instruction on building solutions with Keystone.'
       }
       isIndexPage
+      editPath="docs/walkthroughs/index.tsx"
     >
       <Type as="h1" look="heading64">
         Walkthroughs

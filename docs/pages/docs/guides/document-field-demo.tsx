@@ -35,6 +35,7 @@ export default function DocumentFieldDemo() {
           id: 'related-resources',
         },
       ]}
+      editPath="docs/guides/document-field-demo.tsx"
     >
       <DocumentFeaturesProvider>
         <div className="prose">
