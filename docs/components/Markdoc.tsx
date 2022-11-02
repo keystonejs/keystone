@@ -1,6 +1,5 @@
 import React, { ElementType, ReactNode } from 'react';
 import { RenderableTreeNodes, Scalar, RenderableTreeNode, Tag } from '@markdoc/markdoc';
-import { Heading as HeadingType } from '../lib/getHeadings';
 import { Code, InlineCode } from './primitives/Code';
 import { Heading } from './docs/Heading';
 import { RelatedContent } from './RelatedContent';
@@ -75,6 +74,12 @@ export function Markdoc(props: { content: RenderableTreeNodes }) {
 
   return render(props.content) as JSX.Element;
 }
+
+export type HeadingType = {
+  id: string;
+  depth: number;
+  label: string;
+};
 
 export function extractHeadings(content: Tag): HeadingType[] {
   const headings: HeadingType[] = [];

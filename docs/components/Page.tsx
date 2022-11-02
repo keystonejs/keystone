@@ -6,7 +6,6 @@ import { jsx } from '@emotion/react';
 import Head from 'next/head';
 
 import { useMediaQuery } from '../lib/media';
-import type { Heading } from '../lib/getHeadings';
 import { TableOfContents } from './docs/TableOfContents';
 import { Wrapper } from './primitives/Wrapper';
 import { EditButton } from './primitives/EditButton';
@@ -15,6 +14,7 @@ import { Sidebar } from './docs/Sidebar';
 import { Stack } from './primitives/Stack';
 import { Header } from './Header';
 import { Footer, DocsFooter } from './Footer';
+import { HeadingType } from './Markdoc';
 
 function OpenGraph({
   title,
@@ -59,7 +59,7 @@ export function DocsPage({
   editPath,
 }: {
   children: ReactNode;
-  headings?: Heading[];
+  headings?: HeadingType[];
   noProse?: boolean;
   noRightNav?: boolean;
   title: string;
@@ -155,7 +155,7 @@ export function BlogPage({
   editPath,
 }: {
   children: ReactNode;
-  headings?: Heading[];
+  headings?: HeadingType[];
   noRightNav?: boolean;
   title: string;
   description: string;

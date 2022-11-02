@@ -55,8 +55,8 @@ export const HeroImage = ({ title, type }: { title: string; type?: string }) => 
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
+              fillRule="evenodd"
+              clipRule="evenodd"
               d="M15 0C6.71573 0 0 6.71573 0 15V65C0 73.2843 6.71573 80 15 80H65C73.2843 80 80 73.2843 80 65V15C80 6.71573 73.2843 0 65 0H15ZM33.2324 49.2969V61.25H22.4805V18.9746H33.2324V37.1387H33.7891L47.8516 18.9746H59.3945L44.7754 37.6367L60.2441 61.25H47.6172L36.9531 44.5801L33.2324 49.2969Z"
               fill="white"
             />

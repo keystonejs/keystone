@@ -18,6 +18,7 @@ export default function Docs() {
       title={'APIs'}
       description={'Index for Keystone’s API reference docs.'}
       isIndexPage
+      editPath="docs/config/overview.tsx"
     >
       <Type as="h1" look="heading64">
         Configuration Overview

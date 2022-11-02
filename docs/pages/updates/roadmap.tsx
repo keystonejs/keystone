@@ -4,7 +4,6 @@ import { ComponentProps, Fragment, ReactNode } from 'react';
 import { jsx } from '@emotion/react';
 import Link from 'next/link';
 
-import { getStaticProps } from '../../components/Markdown';
 import { InlineCode } from '../../components/primitives/Code';
 import { Highlight } from '../../components/primitives/Highlight';
 import { Gradient } from '../../components/primitives/Gradient';
@@ -512,5 +511,3 @@ export default function Roadmap() {
     </DocsPage>
   );
 }
-
-export { getStaticProps };
