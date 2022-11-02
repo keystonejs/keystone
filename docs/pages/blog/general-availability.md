@@ -9,7 +9,7 @@ metaImageUrl: ""
 
 We're proud to announce that Keystone 6 is now in General Availability! Today's Keystone is faster and more flexible than it's ever been, and is ready for you to build amazing things with.
 
-![Keystone 6 is now in General Availability](/assets/blog-images/k6-ga.svg)
+![Keystone 6 is now in General Availability](/assets/blog/k6-ga.svg)
 
 We've come a long way on the road from v5 to v6. Looking back on the journey from early concepts to a complete core, there's a great deal to be proud of. Here's an overview of the most noteworthy improvements we've shipped on our way to GA.
 

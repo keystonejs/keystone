@@ -34,8 +34,7 @@ export default function Page(props: InferGetStaticPropsType<typeof getStaticProp
   if (!ogImageUrl) {
     ogImageUrl = getOgAbsoluteUrl({
       title: props.title,
-      description: props.description,
-      type: 'blog',
+      type: 'Blog',
     });
   }
 

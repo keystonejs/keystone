@@ -1,142 +1,154 @@
 import React from 'react';
 import { ImageResponse } from '@vercel/og';
 import type { NextRequest } from 'next/server';
+import { siteBaseUrl } from '../../lib/og-util';
 
 export const config = {
   runtime: 'experimental-edge',
 };
 
-const HeroImage = ({
-  title,
-  description,
-  type,
-}: {
-  title: string;
-  description?: string;
-  type?: string;
-}) => {
+const bgImgUrl = `url(${siteBaseUrl}/assets/blog/blog-cover-bg.png)`;
+
+export const HeroImage = ({ title, type }: { title: string; type?: string }) => {
+  const clippedTitle = title.length > 100 ? title.substring(0, 100) + '...' : title;
   let titleFontSize = 96;
-  if (title.length > 20) {
+  if (clippedTitle.length > 35) {
     titleFontSize = 80;
-  } else if (title.length > 30) {
+  } else if (clippedTitle.length > 60) {
     titleFontSize = 72;
-  } else if (title.length > 100) {
+  } else if (title.length > 80) {
     titleFontSize = 60;
   }
 
-  const shortenedDescription =
-    typeof description === 'string' && description?.length > 110
-      ? description?.substring(0, 110) + '...'
-      : description || '';
   return (
     <div
+      id="wrap-everything-and-bg"
       style={{
         display: 'flex',
         backgroundColor: 'white',
-        backgroundImage: 'linear-gradient(135deg, #1476FF, #00ABDA)',
+        // backgroundImage: 'linear-gradient(115.92deg, #1476FF 22.53%, #00ABDA 88.23%)',
+        backgroundImage: bgImgUrl,
         height: '100%',
         width: '100%',
       }}
     >
       <div
-        style={{
-          position: 'relative',
-          padding: '40px 80px',
-          height: '100%',
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexDirection: 'column',
-        }}
+        id="wrap-first-and-second-rows"
+        style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
       >
         <div
+          id="first-row"
           style={{
-            color: '#FFF',
             display: 'flex',
+            padding: '80px 80px 0',
             alignItems: 'center',
-            justifyContent: 'center',
-            flexDirection: 'column',
-            fontWeight: 400,
+            justifyContent: 'space-between',
+            width: '100%',
           }}
         >
+          <svg
+            id="white-logo"
+            width="80"
+            height="80"
+            viewBox="0 0 80 80"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M15 0C6.71573 0 0 6.71573 0 15V65C0 73.2843 6.71573 80 15 80H65C73.2843 80 80 73.2843 80 65V15C80 6.71573 73.2843 0 65 0H15ZM33.2324 49.2969V61.25H22.4805V18.9746H33.2324V37.1387H33.7891L47.8516 18.9746H59.3945L44.7754 37.6367L60.2441 61.25H47.6172L36.9531 44.5801L33.2324 49.2969Z"
+              fill="white"
+            />
+          </svg>
           {type ? (
             <div
+              id="type-label"
               style={{
+                display: 'flex',
+                backgroundColor: 'white',
+                borderRadius: 8,
+                padding: '12px 24px',
                 fontSize: 32,
-                paddingBottom: 8,
-                alignSelf: 'flex-start',
+                fontWeight: 600,
+                color: '#166BFF',
               }}
             >
               {type}
             </div>
           ) : null}
+        </div>
+        <div
+          id="second-row"
+          style={{
+            flex: 1,
+            padding: '80px 80px 80px',
+            height: '100%',
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
           <div
             style={{
+              color: '#FFF',
               fontSize: titleFontSize,
-              fontWeight: 900,
-              paddingTop: 16,
-              paddingBottom: 48,
-              borderTop: type ? '1px solid white' : '1px solid transparent',
+              lineHeight: '115px',
+              fontWeight: 800,
             }}
           >
-            {title}
+            {clippedTitle}
           </div>
-          {shortenedDescription ? (
-            <div style={{ fontSize: 40, lineHeight: 1.4, letterSpacing: -1 }}>
-              {shortenedDescription}
-            </div>
-          ) : null}
         </div>
       </div>
     </div>
   );
 };
 
-const interRegular = fetch(new URL('../../public/font/Inter-Regular.ttf', import.meta.url)).then(
-  res => res.arrayBuffer()
-);
-const interBlack = fetch(new URL('../../public/font/Inter-Black.ttf', import.meta.url)).then(res =>
-  res.arrayBuffer()
-);
+const interSemiBold = fetch(
+  new URL('../../public/assets/blog/font/Inter-SemiBold.ttf', import.meta.url)
+).then(res => res.arrayBuffer());
+const interExtraBold = fetch(
+  new URL('../../public/assets/blog/font/Inter-ExtraBold.ttf', import.meta.url)
+).then(res => res.arrayBuffer());
 
 // vercel API route that generates the OG image
 export default async function handler(req: NextRequest) {
-  const interRegularData = await interRegular;
-  const interBlackData = await interBlack;
+  const interSemiBoldData = await interSemiBold;
+  const interExtraBoldData = await interExtraBold;
 
   try {
     const { searchParams } = new URL(req.url);
     const title = searchParams.has('title') ? searchParams.get('title') || '' : '';
-    const description = searchParams.get('description') || undefined;
     const type = searchParams.get('type') || undefined;
 
-    if (title?.length > 100 || (typeof description === 'string' && description?.length > 300)) {
+    if (title?.length > 100) {
       return new Response(
         JSON.stringify({
           code: 'INVALID_PARAMS',
-          message: 'Param title/description too long',
+          message: 'Param title too long',
         }),
         { status: 400 }
       );
     }
 
-    return new ImageResponse(<HeroImage title={title} description={description} type={type} />, {
+    return new ImageResponse(<HeroImage title={title} type={type} />, {
       width: 1200,
       height: 630,
       emoji: 'twemoji',
       fonts: [
         {
           name: 'Inter',
-          data: interRegularData,
+          data: interSemiBoldData,
           style: 'normal',
-          weight: 400,
+          weight: 600,
         },
         {
           name: 'Inter',
-          data: interBlackData,
+          data: interExtraBoldData,
           style: 'normal',
-          weight: 900,
+          weight: 800,
         },
       ],
     });
