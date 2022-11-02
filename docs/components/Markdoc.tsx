@@ -5,6 +5,7 @@ import { Code, InlineCode } from './primitives/Code';
 import { Heading } from './docs/Heading';
 import { RelatedContent } from './RelatedContent';
 import { Well } from './primitives/Well';
+import { YouTubeEmbed } from './primitives/YouTubeEmbed';
 import { Emoji } from './primitives/Emoji';
 import { ComingSoon } from './docs/ComingSoon';
 
@@ -20,6 +21,7 @@ const renderers: Record<string, ElementType> = {
   ComingSoon,
   Emoji,
   Well,
+  YouTubeEmbed,
   RelatedContent,
   Heading(props: { children: ReactNode; level: 1 | 2 | 3 | 4 | 5 | 6; id: string }) {
     return <Heading {...props} />;

@@ -46,6 +46,7 @@ function OpenGraph({
   );
 }
 
+const pagesWithUpdatesSidebar = ['/updates'];
 export function DocsPage({
   children,
   headings = [],
@@ -70,7 +71,7 @@ export function DocsPage({
   const contentRef = useRef<HTMLDivElement | null>(null);
   const mq = useMediaQuery();
   const { pathname } = useRouter();
-  const isUpdatesPage = pathname.startsWith('/releases') || pathname.startsWith('/updates');
+  const isUpdatesPage = pagesWithUpdatesSidebar.some(p => pathname.startsWith(p));
 
   const metaTitle = title ? `${title} - Keystone 6 Documentation` : `Keystone 6 Documentation`;
 
@@ -137,6 +138,100 @@ export function DocsPage({
             )}
           </div>
           <DocsFooter />
+        </Wrapper>
+      </div>
+    </Fragment>
+  );
+}
+
+export function BlogPage({
+  children,
+  headings = [],
+  noRightNav,
+  title,
+  description,
+  ogImage,
+  isIndexPage,
+  editPath,
+}: {
+  children: ReactNode;
+  headings?: Heading[];
+  noRightNav?: boolean;
+  title: string;
+  description: string;
+  ogImage?: string;
+  isIndexPage?: boolean;
+  editPath?: string;
+}) {
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const mq = useMediaQuery();
+  const { pathname } = useRouter();
+
+  const metaTitle = title ? `${title} | Keystone Blog` : `Keystone Blog`;
+
+  return (
+    <Fragment>
+      <OpenGraph title={metaTitle} description={description} ogImage={ogImage} />
+      <div
+        css={{
+          gridArea: 'main',
+          position: 'relative',
+          display: 'grid',
+          gridTemplateRows: '4.5rem calc(100vh - 4.5rem)',
+        }}
+      >
+        <Header />
+        <Wrapper
+          css={mq({
+            borderTop: '1px solid var(--border)',
+            overflowY: 'auto',
+            display: ['block', null, 'grid'],
+            margin: '0 auto 0',
+            paddingLeft: ['var(--space-xlarge)', 'var(--space-xlarge)', null, '7.5rem'],
+            paddingRight: ['var(--space-xlarge)', 'var(--space-xlarge)', null, '7.5rem'],
+            gridTemplateRows: '1fr auto',
+            gap: ['var(--space-medium)', null, null, 'var(--space-large)', 'var(--space-xlarge)'],
+          })}
+        >
+          <div
+            id="content-and-toc"
+            css={mq({
+              gridColumn: '2 / 3',
+              gridRow: '1 / 2',
+              display: ['block', null, 'grid'],
+              gridTemplateColumns: noRightNav
+                ? 'minmax(0, 1fr)'
+                : ['minmax(0, 1fr)', null, null, 'minmax(0, 1fr) 10rem', 'minmax(0, 1fr) 15rem'],
+              gap: ['var(--space-medium)', null, null, 'var(--space-large)', 'var(--space-xlarge)'],
+            })}
+          >
+            <main
+              id="skip-link-content"
+              tabIndex={0}
+              ref={contentRef}
+              className={'prose'}
+              css={{
+                paddingTop: '2rem',
+              }}
+            >
+              <Stack
+                orientation="horizontal"
+                block
+                css={{ justifyContent: 'space-between', alignItems: 'baseline' }}
+              >
+                <Breadcrumbs />
+
+                <EditButton pathName={pathname} isIndexPage={isIndexPage} editPath={editPath} />
+              </Stack>
+              <div id="content" css={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)' }}>
+                {children}
+              </div>
+            </main>
+            {!!headings.length && !noRightNav && (
+              <TableOfContents container={contentRef} headings={headings} />
+            )}
+          </div>
+          <Footer />
         </Wrapper>
       </div>
     </Fragment>

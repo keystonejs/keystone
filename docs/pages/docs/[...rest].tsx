@@ -8,7 +8,7 @@ import {
 } from 'next';
 import { useRouter } from 'next/router';
 import globby from 'globby';
-import { DocContent, readDocContent } from '../../markdoc';
+import { DocsContent, readDocsContent } from '../../markdoc';
 import { extractHeadings, Markdoc } from '../../components/Markdoc';
 import { DocsPage } from '../../components/Page';
 import { Heading } from '../../components/docs/Heading';
@@ -48,6 +48,6 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
 
 export async function getStaticProps(
   args: GetStaticPropsContext<{ rest: string[] }>
-): Promise<GetStaticPropsResult<DocContent>> {
-  return { props: await readDocContent(`pages/docs/${args.params!.rest.join('/')}.md`) };
+): Promise<GetStaticPropsResult<DocsContent>> {
+  return { props: await readDocsContent(`pages/docs/${args.params!.rest.join('/')}.md`) };
 }
