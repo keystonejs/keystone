@@ -83,6 +83,14 @@ export const baseMarkdocConfig: Config = {
       },
       validate: validateLink,
     },
+    youtube: {
+      render: 'YouTubeEmbed',
+      attributes: {
+        url: { type: String, required: true },
+        label: { type: String, required: true },
+      },
+      selfClosing: true,
+    },
   },
   nodes: {
     document: {

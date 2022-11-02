@@ -198,15 +198,15 @@ export default function Roadmap() {
       noRightNav
       noProse
       title={'Roadmap'}
-      description={'Discover where KeystoneJS is headed, and why we’re going there.'}
+      description={"Discover where KeystoneJS is headed, and why we're going there."}
     >
       <Type as="h1" look="heading64">
         Roadmap
       </Type>
       <Type as="p" look="body18" margin="1rem 0">
         After a year of intensive development Keystone 6 has achieved a{' '}
-        <Link href="/updates/general-availability">General Availability release</Link>! We’ve
-        graduated to the
+        <Link href="/blog/general-availability">General Availability release</Link>! We've graduated
+        to the
         <InlineCode>@keystone-6</InlineCode> namespace on npm and have a stable set of APIs that you
         can confidently build on <Emoji symbol="🚀" alt="Rocket" />
       </Type>
@@ -252,7 +252,7 @@ export default function Roadmap() {
         What's Next
       </Type>
       <Type as="p" look="body18" margin="1rem 0">
-        We’re using the foundations we shipped in 2021 as a springboard to bring{' '}
+        We're using the foundations we shipped in 2021 as a springboard to bring{' '}
         <Link href="/for-developers">developers</Link>,{' '}
         <Link href="/for-organisations">project owners</Link>, and{' '}
         <Link href="/for-content-management">editors</Link> into more productive ways of working
@@ -280,27 +280,27 @@ export default function Roadmap() {
       <Type as="p" look="body18">
         Our design team spent much of the second half of 2021 defining a new vision for Admin UI
         that gives you more capabilities to support content editors in ways that matter most to
-        them. We’ve already shipped quick wins for customisable{' '}
+        them. We've already shipped quick wins for customisable{' '}
         <Link href="/docs/guides/custom-admin-ui-logo">logos</Link>,{' '}
         <Link href="/docs/guides/custom-admin-ui-pages">pages</Link>, and{' '}
         <Link href="/docs/guides/custom-admin-ui-navigation">navigation</Link>, but the really
         transformative features (that rely on more extensive customisation) are still in the works.
         This body of work will elevate the experience of authoring content in Keystone to the same
-        high standards we have for authoring with Keystone’s core APIs.
+        high standards we have for authoring with Keystone's core APIs.
       </Type>
       <Type as="h3" look="heading20bold" margin="1rem 0">
         Maturing the Developer Experience
       </Type>
       <Type as="p" look="body18">
-        We’ll continue to iterate on making Keystone the easiest way to design and standup a GraphQL
+        We'll continue to iterate on making Keystone the easiest way to design and standup a GraphQL
         API on the web. Going all-in on Typescript has made the DX so sweet, but we want to take it{' '}
-        <em>further</em> so that Keystone’s the best Typescript &gt; GraphQL developer experience in
+        <em>further</em> so that Keystone's the best Typescript &gt; GraphQL developer experience in
         the ecosystem. <Emoji symbol="✨" alt="Sparkles" />
       </Type>
       <Type as="p" look="body18" margin="1rem 0">
-        We’ll also focus on making better pathways for you to integrate Keystone with the deployment
+        We'll also focus on making better pathways for you to integrate Keystone with the deployment
         services you use most, so you can get the most out of where the modern web is going. Image
-        and file management is an area we’re actively iterating on, and we’ll have more to share
+        and file management is an area we're actively iterating on, and we'll have more to share
         soon.
       </Type>
       <Type as="h3" look="heading20bold" margin="1rem 0">
@@ -320,7 +320,7 @@ export default function Roadmap() {
           classnames
         </a>
         , and of course Keystone <Emoji symbol="🙂" alt="Smile" />. Now that Keystone 6 is stable
-        enough to develop features and integrations around, we’ll put better processes in place for
+        enough to develop features and integrations around, we'll put better processes in place for
         you to collaborate around the Keystone project and showcase your awesome work with others in
         the community.
       </Type>
@@ -334,7 +334,7 @@ export default function Roadmap() {
             margin: '0.5rem 0.8rem 0.5rem 0',
           }}
         >
-          To see what we’ve recently shipped, checkout our <Link href="/updates">updates </Link> and{' '}
+          To see what we've recently shipped, checkout our <Link href="/updates">updates</Link> and{' '}
           <Link href="/releases">release notes</Link> <Emoji symbol="🚀" alt="Rocket" />
         </span>
       </Alert>
@@ -344,7 +344,7 @@ export default function Roadmap() {
       <RoadmapList>
         <RoadmapItem title="Singletons" section="fields and schema">
           <Fragment>
-            A way to define a single object in schema that’s editable in Admin UI and accessible in
+            A way to define a single object in schema that's editable in Admin UI and accessible in
             the GraphQL API. Handy for storing website & social settings, API keys, and more.
           </Fragment>
         </RoadmapItem>
@@ -356,7 +356,7 @@ export default function Roadmap() {
         </RoadmapItem>
         <RoadmapItem title="Field Groups" section="admin ui">
           <Fragment>
-            It’s often easier to work with content when the form is grouped into different sections
+            It's often easier to work with content when the form is grouped into different sections
             of related fields.
           </Fragment>
         </RoadmapItem>
@@ -368,7 +368,7 @@ export default function Roadmap() {
       <RoadmapList>
         <RoadmapItem title="Nested fields" section="fields and schema">
           <Fragment>
-            Sometimes you need to manage data in structures that are nested and/or repeating. We’re
+            Sometimes you need to manage data in structures that are nested and/or repeating. We're
             working on a way to define these in schema and have them stored as JSON field in the
             database.
           </Fragment>
@@ -381,13 +381,13 @@ export default function Roadmap() {
         </RoadmapItem>
         <RoadmapItem title="Sortable lists" section="core">
           <Fragment>
-            Certain list types come with a need to order the items they contain. We’re looking in to
-            an approach that’s easy to implement in schema.
+            Certain list types come with a need to order the items they contain. We're looking in to
+            an approach that's easy to implement in schema.
           </Fragment>
         </RoadmapItem>
         <RoadmapItem title="Build & Deployment options" section="docs">
           <Fragment>
-            We’re broadening our list of streamlined scenarios & looking into options for serverless
+            We're broadening our list of streamlined scenarios & looking into options for serverless
             environments.
           </Fragment>
         </RoadmapItem>
@@ -399,18 +399,18 @@ export default function Roadmap() {
       <RoadmapList>
         <RoadmapItem title="Localisation" section="admin ui">
           <Fragment>
-            When an English-language UI doesn’t work for your team there’ll be a way for you to add
+            When an English-language UI doesn't work for your team there'll be a way for you to add
             translations to all the strings in Admin UI.
           </Fragment>
         </RoadmapItem>
         <RoadmapItem title="Responsive Layout" section="admin ui">
           <Fragment>
-            An editing interface that’s available for you to use no matter what device you’re on.
+            An editing interface that's available for you to use no matter what device you're on.
           </Fragment>
         </RoadmapItem>
         <RoadmapItem title="A11y compliance" section="admin ui">
           <Fragment>
-            Solving accessibility in a customisable editing interface is a hard problem. We’re up
+            Solving accessibility in a customisable editing interface is a hard problem. We're up
             for the challenge.
           </Fragment>
         </RoadmapItem>
@@ -445,8 +445,8 @@ export default function Roadmap() {
         </RoadmapItem>
         <RoadmapItem title="Upsert mutations" section="core">
           <Fragment>
-            If you want to update an item but aren’t sure if it exists, this will update the item if
-            it’s there or create a new item with the data you’ve provided.
+            If you want to update an item but aren't sure if it exists, this will update the item if
+            it's there or create a new item with the data you've provided.
           </Fragment>
         </RoadmapItem>
         <RoadmapItem title="Serverless hosting" section="core">
@@ -458,13 +458,13 @@ export default function Roadmap() {
         <RoadmapItem title="Native full-text search" section="core">
           <Fragment>
             A way for you and editors to easily search for strings across your entire dataset. Handy
-            for when you need something specific but don’t know where it lives.
+            for when you need something specific but don't know where it lives.
           </Fragment>
         </RoadmapItem>
       </RoadmapList>
       <Alert look="tip" css={{ margin: '2rem 0 2rem' }}>
         <Type as="p">
-          <strong>Got a feature you’re after, or want to know more about the future?</strong>
+          <strong>Got a feature you're after, or want to know more about the future?</strong>
         </Type>
         <Type as="p" margin=".5rem 0 0">
           Join the Keystone conversation on{' '}

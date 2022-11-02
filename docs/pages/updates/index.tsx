@@ -141,26 +141,20 @@ export default function WhatsNew() {
       <Type as="p" look="body18" margin="1rem 0">
         A snapshot of Keystone improvements and community happenings.
         <br />
-        For developer changelogs see our <Link href="/releases">releases page</Link>, and subscribe
-        to our releases on
-        <a href="https://github.com/keystonejs/keystone" target="_blank" rel="noopener noreferrer">
-          {' '}
-          GitHub
-        </a>
-        .
+        For developer changelogs see our{' '}
+        <a href="https://github.com/keystonejs/keystone/releases">GitHub Releases</a>.
       </Type>
 
       <Alert look="tip" css={{ margin: '2rem 0' }}>
         <div
           css={{
             display: 'inline-block',
-            margin: '0 0.8rem 0.5rem 0',
           }}
         >
           What are we working on next?{' '}
           <span>
             See our{' '}
-            <Button as="a" href="/updates/roadmap" rel="noopener noreferrer">
+            <Button as="a" href="/roadmap" rel="noopener noreferrer">
               Roadmap <ArrowR />
             </Button>
           </span>
@@ -425,7 +419,7 @@ export default function WhatsNew() {
           Keystone 6 is now in General Availability! Today's Keystone is faster and more flexible
           than it's ever been, and is ready for you to build amazing things with{' '}
           <Emoji symbol="🚀" alt="Rocket" />{' '}
-          <Link href="/updates/general-availability">Read the full story here</Link>.
+          <Link href="/blog/general-availability">Read the full story here</Link>.
         </Box>
         <Timeline date="24th November 2021" />
         <Box heading="Improved performance with Prisma’s Node Engine">
@@ -662,14 +656,8 @@ export default function WhatsNew() {
           <br />
           <br />
           We’ve made the experience of working with Keystone’s GraphQL API easier to program and
-          reason about: We've <Link href="/updates/new-graphql-api">
-            written a complete guide
-          </Link>{' '}
-          to the improvements we've made, and it includes a{' '}
-          <Link href="/updates/new-graphql-api#upgrade-checklist">
-            checklist of the steps you need to take to upgrade your Keystone projects
-          </Link>
-          . Be sure to check it out!
+          reason about. Be sure to check our{' '}
+          <Link href="/docs/graphql/overview">GraphQL API docs</Link>.
         </Box>
         <Timeline date="29th July 2021" />
         <Box heading="Admin UI Customizations">
