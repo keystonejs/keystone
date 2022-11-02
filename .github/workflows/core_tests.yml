@@ -212,10 +212,10 @@ jobs:
       - uses: ./.github/actions/ci-setup
 
       - name: Install Dependencies of Browsers
-        run: pnpm playwright install-deps chromium
+        run: cd tests/examples-smoke-tests && pnpm playwright install-deps chromium
 
       - name: Install Browsers
-        run: pnpm playwright install chromium
+        run: cd tests/examples-smoke-tests && pnpm playwright install chromium
 
       - name: Unit tests
         run: pnpm jest --ci --runInBand tests/examples-smoke-tests/${{ matrix.test }}
@@ -241,10 +241,10 @@ jobs:
       - uses: ./.github/actions/ci-setup
 
       - name: Install Dependencies of Browsers
-        run: pnpm playwright install-deps chromium
+        run: cd tests/admin-ui-tests && pnpm playwright install-deps chromium
 
       - name: Install Browsers
-        run: pnpm playwright install chromium
+        run: cd tests/admin-ui-tests && pnpm playwright install chromium
 
       - name: Unit tests
         run: pnpm jest --ci --runInBand tests/admin-ui-tests/${{ matrix.test }}
