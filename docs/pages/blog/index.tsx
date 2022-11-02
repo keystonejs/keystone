@@ -43,7 +43,7 @@ export default function Docs(props: InferGetStaticPropsType<typeof getStaticProp
 
   return (
     <Page
-      title={'The Keystone Blog'}
+      title={'Keystone Blog'}
       description={'Blog posts from the team maintaining Keystone.'}
       ogImage={ogImageUrl}
     >

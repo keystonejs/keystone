@@ -168,7 +168,7 @@ export function BlogPage({
   const mq = useMediaQuery();
   const { pathname } = useRouter();
 
-  const metaTitle = title ? `${title} | The Keystone Blog` : `The Keystone Blog`;
+  const metaTitle = title ? `${title} | Keystone Blog` : `Keystone Blog`;
 
   return (
     <Fragment>
