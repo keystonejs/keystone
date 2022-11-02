@@ -156,7 +156,6 @@ export function BlogPage({
 }: {
   children: ReactNode;
   headings?: Heading[];
-  noProse?: boolean;
   noRightNav?: boolean;
   title: string;
   description: string;

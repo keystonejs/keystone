@@ -5,13 +5,7 @@ if (process.env.NEXT_PUBLIC_VERCEL_ENV === 'production') {
   baseUrl = `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`;
 }
 
-export const getOgAbsoluteUrl = ({
-  title,
-  type,
-}: {
-  title: string;
-  type?: string;
-}) => {
+export const getOgAbsoluteUrl = ({ title, type }: { title: string; type?: string }) => {
   const ogUrl = new URL(`${baseUrl}/api/hero-image`);
 
   ogUrl.searchParams.append('title', title);
