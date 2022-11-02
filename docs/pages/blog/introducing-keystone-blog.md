@@ -7,11 +7,11 @@ authorHandle: "https://twitter.com/flexdinesh"
 metaImageUrl: ""
 ---
 
-We're happy to introduce **Keystone Blog**, a buzzing corner for all the latest news and announcements about Keystone, brought to you by the Keystone team.
+We're happy to introduce the **Keystone Blog**, a buzzing corner for all the latest news and announcements about Keystone, brought to you by the Keystone team.
 
 Our _Updates_ page is going away and we are not one to let good content slip away. So some of the useful and important content in _Updates_ have been repurposed into blog posts. Woot!
 
-Here are few interesting tidbits that you might notices with the launch of Keystone blog:
+Here are few interesting tidbits that you might notice with the launch of Keystone Blog:
 
 - Sparkly new header layout. ✨
 
