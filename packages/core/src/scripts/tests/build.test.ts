@@ -77,3 +77,49 @@ test('build works with typescript without the user defining a babel config', asy
   `);
   expect(result.exitCode).toBe(0);
 });
+
+test('process.env.NODE_ENV is production in production', async () => {
+  const tmp = await testdir({
+    ...symlinkKeystoneDeps,
+    ...schemas,
+    'keystone.ts': await fs.readFile(`${__dirname}/fixtures/log-node-env.ts`, 'utf8'),
+  });
+  const result = await execa('node', [cliBinPath, 'build'], {
+    reject: false,
+    all: true,
+    cwd: tmp,
+    buffer: true,
+    env: {
+      NEXT_TELEMETRY_DISABLED: '1',
+    } as any,
+  });
+  expect(result.exitCode).toBe(0);
+  const startResult = execa('node', [cliBinPath, 'start'], {
+    reject: false,
+    all: true,
+    cwd: tmp,
+
+    env: {
+      NODE_ENV: 'production',
+      NEXT_TELEMETRY_DISABLED: '1',
+    } as any,
+  });
+  let output = '';
+  try {
+    await Promise.race([
+      new Promise((resolve, reject) =>
+        setTimeout(() => reject(new Error(`timed out. output:\n${output}`)), 10000)
+      ),
+      new Promise<void>(resolve => {
+        startResult.all!.on('data', data => {
+          output += data;
+          if (output.includes('the env is: production')) {
+            resolve();
+          }
+        });
+      }),
+    ]);
+  } finally {
+    startResult.kill();
+  }
+});
