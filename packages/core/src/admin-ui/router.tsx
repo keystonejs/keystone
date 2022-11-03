@@ -12,22 +12,5 @@
 export { Router, useRouter, withRouter } from 'next/router';
 export type { NextRouter } from 'next/router';
 
-import NextLink, { LinkProps as NextLinkProps } from 'next/link';
-import React, { AnchorHTMLAttributes } from 'react';
-
-export type LinkProps = Omit<NextLinkProps, 'passHref'> &
-  Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href'>;
-
-export const Link = ({ href, as, replace, scroll, shallow, prefetch, ...props }: LinkProps) => {
-  return (
-    <NextLink
-      href={href}
-      as={as}
-      replace={replace}
-      scroll={scroll}
-      shallow={shallow}
-      prefetch={prefetch}
-      {...props}
-      />
-  );
-};
+import NextLink from 'next/link';
+export const Link = NextLink;
