@@ -32,7 +32,9 @@ const Option: typeof OptionPrimitive = props => {
   );
 };
 
-export const fieldSelectionOptionsComponents = { Option };
+export const fieldSelectionOptionsComponents: Parameters<typeof Options>[0]['components'] = {
+  Option,
+};
 
 export function FieldSelection({
   list,

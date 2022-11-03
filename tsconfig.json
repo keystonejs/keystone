@@ -14,7 +14,8 @@
     "types": ["@types/jest"],
     "typeRoots": [],
     "skipLibCheck": false,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "declaration": true
   },
   "include": ["**/*"],
   "exclude": ["**/node_modules/**/*"]

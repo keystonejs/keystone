@@ -13,7 +13,7 @@ export const ThemeProvider = ({ theme, children }: { theme: Theme; children: Rea
   return <ThemeContext.Provider value={{ theme }}>{children}</ThemeContext.Provider>;
 };
 
-export const useTheme = () => {
+export const useTheme = (): Theme => {
   const { theme } = useContext(ThemeContext);
   return theme;
 };

@@ -82,27 +82,28 @@ type CloudinaryImage_File = {
   }) => string | null;
 };
 
-export const outputType = graphql.object<CloudinaryImage_File>()({
-  name: 'CloudinaryImage_File',
-  fields: {
-    id: graphql.field({ type: graphql.ID }),
-    // path: types.field({ type: types.String }),
-    filename: graphql.field({ type: graphql.String }),
-    originalFilename: graphql.field({ type: graphql.String }),
-    mimetype: graphql.field({ type: graphql.String }),
-    encoding: graphql.field({ type: graphql.String }),
-    publicUrl: graphql.field({ type: graphql.String }),
-    publicUrlTransformed: graphql.field({
-      args: {
-        transformation: graphql.arg({ type: CloudinaryImageFormat }),
-      },
-      type: graphql.String,
-      resolve(rootVal, args) {
-        return rootVal.publicUrlTransformed(args);
-      },
-    }),
-  },
-});
+export const outputType: graphql.ObjectType<CloudinaryImage_File> =
+  graphql.object<CloudinaryImage_File>()({
+    name: 'CloudinaryImage_File',
+    fields: {
+      id: graphql.field({ type: graphql.ID }),
+      // path: types.field({ type: types.String }),
+      filename: graphql.field({ type: graphql.String }),
+      originalFilename: graphql.field({ type: graphql.String }),
+      mimetype: graphql.field({ type: graphql.String }),
+      encoding: graphql.field({ type: graphql.String }),
+      publicUrl: graphql.field({ type: graphql.String }),
+      publicUrlTransformed: graphql.field({
+        args: {
+          transformation: graphql.arg({ type: CloudinaryImageFormat }),
+        },
+        type: graphql.String,
+        resolve(rootVal, args) {
+          return rootVal.publicUrlTransformed(args);
+        },
+      }),
+    },
+  });
 
 export const cloudinaryImage =
   <ListTypeInfo extends BaseListTypeInfo>({

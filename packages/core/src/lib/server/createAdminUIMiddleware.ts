@@ -85,7 +85,7 @@ export async function createAdminUIMiddleware(
   createContext: CreateContext,
   dev: boolean,
   projectAdminPath: string
-) {
+): Promise<(req: express.Request, res: express.Response) => void> {
   const nextApp = await getNextApp(dev, projectAdminPath);
   return createAdminUIMiddlewareWithNextApp(config, createContext, nextApp);
 }
