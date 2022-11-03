@@ -45,6 +45,8 @@
     "@types/jest": "^29.0.0",
     "@types/node": "^18.11.7",
     "@types/node-fetch": "^2.5.12",
+    "@types/react": "^18.0.9",
+    "@types/react-dom": "^18.0.4",
     "@typescript-eslint/eslint-plugin": "^5.7.0",
     "@typescript-eslint/parser": "^5.7.0",
     "eslint": "^8.0.0",

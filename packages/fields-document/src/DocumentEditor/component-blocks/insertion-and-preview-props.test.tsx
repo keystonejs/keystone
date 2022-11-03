@@ -239,25 +239,25 @@ test('preview props api', () => {
           conditional: {
             discriminant: false,
             schema: componentBlocks.complex.schema.object.fields.conditional,
-            onChange: expect.any(Function),
+            onChange: expect.any(Function) as any,
             options: undefined,
             value: {
               schema: componentBlocks.complex.schema.object.fields.conditional.values.false,
-              onChange: expect.any(Function),
+              onChange: expect.any(Function) as any,
               value: null,
             },
           },
           conditionalSelect: {
             discriminant: 'a',
             schema: componentBlocks.complex.schema.object.fields.conditionalSelect,
-            onChange: expect.any(Function),
+            onChange: expect.any(Function) as any,
             options: [
               { label: 'A', value: 'a' },
               { label: 'B', value: 'b' },
             ],
             value: {
               schema: componentBlocks.complex.schema.object.fields.conditionalSelect.values.a,
-              onChange: expect.any(Function),
+              onChange: expect.any(Function) as any,
               options: undefined,
               value: '',
             },
@@ -269,17 +269,17 @@ test('preview props api', () => {
           many: {
             schema: componentBlocks.complex.schema.object.fields.many,
             value: [],
-            onChange: expect.any(Function),
+            onChange: expect.any(Function) as any,
           },
           prop: {
             schema: componentBlocks.complex.schema.object.fields.prop,
-            onChange: expect.any(Function),
+            onChange: expect.any(Function) as any,
             options: undefined,
             value: '',
           },
           select: {
             schema: componentBlocks.complex.schema.object.fields.select,
-            onChange: expect.any(Function),
+            onChange: expect.any(Function) as any,
             options: [
               { label: 'A', value: 'a' },
               { label: 'B', value: 'b' },
@@ -287,10 +287,10 @@ test('preview props api', () => {
             value: 'a',
           },
         },
-        onChange: expect.any(Function),
+        onChange: expect.any(Function) as any,
       },
     },
-    onChange: expect.any(Function),
+    onChange: expect.any(Function) as any,
   };
   expect(previewProps).toEqual(expectedPreviewProps);
 });
