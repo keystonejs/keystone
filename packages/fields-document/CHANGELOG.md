@@ -1,5 +1,11 @@
 # @keystone-6/fields-document
 
+## 5.0.1
+
+### Patch Changes
+
+- [#8021](https://github.com/keystonejs/keystone/pull/8021) [`8502b356c`](https://github.com/keystonejs/keystone/commit/8502b356c309aad7855bde445c96eb56e100aed3) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixes selection for component blocks without child fields
+
 ## 5.0.0
 
 ### Patch Changes

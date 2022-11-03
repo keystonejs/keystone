@@ -1,5 +1,19 @@
 # @keystone-6/core
 
+## 3.0.2
+
+### Patch Changes
+
+- [#8031](https://github.com/keystonejs/keystone/pull/8031) [`4ec75f388`](https://github.com/keystonejs/keystone/commit/4ec75f388db8157f757307b828354caabd3bb669) Thanks [@mmachatschek](https://github.com/mmachatschek)! - Use platform node in esbuild config
+
+- [#8038](https://github.com/keystonejs/keystone/pull/8038) [`4542c1fd5`](https://github.com/keystonejs/keystone/commit/4542c1fd571b33f1a8c6d87cb0f58145d5ba5f30) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixes changes to `session`/`ui.publicPages`/`ui.isValidSession`/`ui.pageMiddleware` not being updated in live reloads
+
+- [#8034](https://github.com/keystonejs/keystone/pull/8034) [`4c08c1120`](https://github.com/keystonejs/keystone/commit/4c08c1120a51eee0cd363c20c2fadbacaba9814a) Thanks [@gautamsi](https://github.com/gautamsi)! - Fixed issue where the custom field view `controller` was not being used. You should be able to override field `controller` when setting `ui.views` parameter in fields.
+
+- [#8000](https://github.com/keystonejs/keystone/pull/8000) [`a229856df`](https://github.com/keystonejs/keystone/commit/a229856df94cff2d4132d5c466cc8ebea44f4846) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Improves performance of querying to-one relationships
+
+- [#7930](https://github.com/keystonejs/keystone/pull/7930) [`109db894d`](https://github.com/keystonejs/keystone/commit/109db894dee4fc00fae4d0afc85f60fa53177199) Thanks [@nya1](https://github.com/nya1)! - Fix `in` and `not_in` filter views for `integer`, `bigInt`, `decimal` and `float` fields
+
 ## 3.0.1
 
 ### Patch Changes
