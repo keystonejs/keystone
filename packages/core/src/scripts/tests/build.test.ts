@@ -108,7 +108,7 @@ test('process.env.NODE_ENV is production in production', async () => {
   try {
     await Promise.race([
       new Promise((resolve, reject) =>
-        setTimeout(() => reject(new Error(`timed out. output:\n${output}`)), 5000)
+        setTimeout(() => reject(new Error(`timed out. output:\n${output}`)), 10000)
       ),
       new Promise<void>(resolve => {
         startResult.all!.on('data', data => {
