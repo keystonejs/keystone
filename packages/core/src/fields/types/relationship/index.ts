@@ -115,9 +115,7 @@ export const relationship =
             }
           }
         }
-        
-        const refLabelField = config.ui?.labelField || adminMetaRoot.listsByKey[foreignListKey].labelField;
-        
+
         return {
           refFieldKey: foreignFieldKey,
           refListKey: foreignListKey,
@@ -132,13 +130,13 @@ export const relationship =
                 inlineCreate: config.ui.inlineCreate ?? null,
                 inlineEdit: config.ui.inlineEdit ?? null,
                 inlineConnect: config.ui.inlineConnect ?? false,
-                refLabelField,
+                refLabelField: adminMetaRoot.listsByKey[foreignListKey].labelField,
               }
             : config.ui?.displayMode === 'count'
             ? { displayMode: 'count' }
             : {
                 displayMode: 'select',
-                refLabelField,
+                refLabelField: config.ui?.labelField || adminMetaRoot.listsByKey[foreignListKey].labelField,
               }),
         };
       },
