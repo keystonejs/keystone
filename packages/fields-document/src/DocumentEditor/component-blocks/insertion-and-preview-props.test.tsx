@@ -371,7 +371,7 @@ test('preview props conditional change', () => {
   const expectedConditionalPreviewProps: typeof conditionalPreviewProps = {
     schema: componentBlocks.complex.schema.object.fields.conditional,
     discriminant: true,
-    onChange: expect.any(Function),
+    onChange: expect.any(Function) as any,
     options: undefined,
     value: {
       element: React.createElement(ChildFieldEditable, {
@@ -441,14 +441,14 @@ test('changing conditional with form inside', () => {
   const expectedConditionalSelectPreviewProps: typeof conditionalSelectPreviewProps = {
     discriminant: 'b',
     schema: componentBlocks.complex.schema.object.fields.conditionalSelect,
-    onChange: expect.any(Function),
+    onChange: expect.any(Function) as any,
     options: [
       { label: 'A', value: 'a' },
       { label: 'B', value: 'b' },
     ],
     value: {
       schema: componentBlocks.complex.schema.object.fields.conditionalSelect.values.b,
-      onChange: expect.any(Function),
+      onChange: expect.any(Function) as any,
       options: undefined,
       value: 'B',
     },
@@ -475,14 +475,14 @@ test('changing form inside conditional', () => {
   const expectedConditionalSelectPreviewProps: typeof conditionalSelectPreviewProps = {
     discriminant: 'a',
     schema: componentBlocks.complex.schema.object.fields.conditionalSelect,
-    onChange: expect.any(Function),
+    onChange: expect.any(Function) as any,
     options: [
       { label: 'A', value: 'a' },
       { label: 'B', value: 'b' },
     ],
     value: {
       schema: componentBlocks.complex.schema.object.fields.conditionalSelect.values.a,
-      onChange: expect.any(Function),
+      onChange: expect.any(Function) as any,
       options: undefined,
       value: 'Some content',
     },

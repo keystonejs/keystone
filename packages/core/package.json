@@ -117,6 +117,8 @@
   "devDependencies": {
     "@keystone-6/core": "3.0.1",
     "@types/bytes": "^3.1.1",
+    "@types/mime": "^2.0.3",
+    "@types/resolve": "^1.20.2",
     "fast-glob": "^3.2.7",
     "fixturez": "^1.1.0",
     "mime": "^3.0.0",

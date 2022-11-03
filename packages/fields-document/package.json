@@ -61,6 +61,7 @@
   "devDependencies": {
     "@keystone-6/core": "*",
     "@testing-library/react": "^13.2.0",
+    "@types/is-hotkey": "^0.1.7",
     "array.prototype.flat": "^1.2.5",
     "jest-diff": "^29.0.0",
     "pretty-format": "^29.0.0",
