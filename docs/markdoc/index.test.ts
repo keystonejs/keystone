@@ -1,16 +1,28 @@
 import { RenderableTreeNode } from '@markdoc/markdoc';
 import React, { ReactNode } from 'react';
+import { isTag } from './isTag';
 import { transformContent } from '.';
 
 function renderableToReactElement(node: RenderableTreeNode, key = 1): ReactNode {
-  if (typeof node === 'string' || node === null) {
+  if (
+    typeof node === 'string' ||
+    typeof node === 'number' ||
+    typeof node === 'boolean' ||
+    node === null
+  ) {
     return node;
   }
-  return React.createElement(
-    node.name,
-    { ...node.attributes, key },
-    node.children.map((child, i) => renderableToReactElement(child, i))
-  );
+  if (Array.isArray(node)) {
+    return node.map(renderableToReactElement);
+  }
+  if (isTag(node)) {
+    return React.createElement(
+      node.name,
+      { ...node.attributes, key },
+      node.children.map((child, i) => renderableToReactElement(child, i))
+    );
+  }
+  return null;
 }
 
 expect.addSnapshotSerializer({

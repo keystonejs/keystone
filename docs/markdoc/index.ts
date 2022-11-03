@@ -7,6 +7,7 @@ import { assert } from 'emery/assertions';
 import { load } from 'js-yaml';
 import { baseMarkdocConfig } from './config';
 import { showNextReleaseWithoutReplacement } from './show-next-release';
+import { isTag } from './isTag';
 
 export function printValidationError(error: ValidateError) {
   const location = error.error.location || error.location;
@@ -70,10 +71,10 @@ export function transformContent(errorReportingFilepath: string, content: string
   }
   const renderableNode = Markdoc.transform(node, markdocConfig);
 
-  assert(renderableNode !== null && typeof renderableNode !== 'string');
+  assert(isTag(renderableNode));
 
   // Next is annoying about not plain objects
-  return JSON.parse(JSON.stringify(renderableNode)) as typeof renderableNode;
+  return JSON.parse(JSON.stringify(renderableNode)) as Tag;
 }
 
 const frontMatterPattern = /^---[\s]+([\s\S]*?)[\s]+---/;
