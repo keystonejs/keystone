@@ -8,8 +8,8 @@ export function Thinkmill({ grad, ...props }: IconProps) {
   return (
     <svg aria-label="Thinkmill" role="img" viewBox="0 0 400 400" {...props}>
       <Gradients name="Thinkmill" />
-      <g clip-path="url(#a)">
-        <g fill-rule="evenodd" clip-path="url(#b)" clip-rule="evenodd">
+      <g clipPath="url(#a)">
+        <g fillRule="evenodd" clipPath="url(#b)" clipRule="evenodd">
           <path
             fill="#FF3838"
             d="M200 400c110.46 0 200-89.54 200-200S310.46 0 200 0 0 89.54 0 200s89.54 200 200 200Z"

@@ -24,7 +24,7 @@ import {
   PrismaModule,
 } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts';
 import prismaClientPackageJson from '@prisma/client/package.json';
-import { runMigrateWithDbUrl, withMigrate } from '@keystone-6/core/src/lib/migrations';
+import { runMigrateWithDbUrl, withMigrate } from '../../packages/core/src/lib/migrations';
 import { dbProvider, dbUrl, SQLITE_DATABASE_FILENAME } from './utils';
 
 export type TestArgs<TypeInfo extends BaseKeystoneTypeInfo> = {

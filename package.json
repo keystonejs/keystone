@@ -93,7 +93,11 @@
       "design-system/packages/*",
       "prisma-utils",
       "scripts/*"
-    ]
+    ],
+    "exports": true,
+    "___experimentalFlags_WILL_CHANGE_IN_PATCH": {
+      "exports": true
+    }
   },
   "manypkg": {
     "defaultBranch": "main"

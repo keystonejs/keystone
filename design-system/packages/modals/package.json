@@ -4,6 +4,13 @@
   "license": "MIT",
   "main": "dist/keystone-ui-modals.cjs.js",
   "module": "dist/keystone-ui-modals.esm.js",
+  "exports": {
+    ".": {
+      "module": "./dist/keystone-ui-modals.esm.js",
+      "default": "./dist/keystone-ui-modals.cjs.js"
+    },
+    "./package.json": "./package.json"
+  },
   "devDependencies": {
     "@types/react": "^18.0.9"
   },

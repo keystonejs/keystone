@@ -1,15 +1,5 @@
 const withPreconstruct = require('@preconstruct/next');
 const withPlugins = require('next-compose-plugins');
-const mdxHints = require('remark-hint');
-const gfm = require('remark-gfm');
-
-const withMDX = require('@next/mdx')({
-  extension: /\.mdx?$/,
-  options: {
-    providerImportSource: '@mdx-js/react',
-    remarkPlugins: [mdxHints, gfm],
-  },
-});
 
 const redirectRoutes = require('./redirects.js');
 const redirects = {
@@ -20,7 +10,6 @@ const redirects = {
 
 module.exports = withPlugins([
   withPreconstruct,
-  [withMDX, { pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'] }],
   nextConfig => {
     nextConfig.env = {
       siteUrl: 'https://keystonejs.com',

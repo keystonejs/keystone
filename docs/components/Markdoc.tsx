@@ -1,6 +1,6 @@
 import React, { ElementType, ReactNode } from 'react';
-import { RenderableTreeNodes, Scalar, RenderableTreeNode, Tag } from '@markdoc/markdoc';
-import { Heading as HeadingType } from '../lib/getHeadings';
+import type { RenderableTreeNodes, Scalar, RenderableTreeNode, Tag } from '@markdoc/markdoc';
+import { isTag } from '../markdoc/isTag';
 import { Code, InlineCode } from './primitives/Code';
 import { Heading } from './docs/Heading';
 import { RelatedContent } from './RelatedContent';
@@ -52,7 +52,15 @@ export function Markdoc(props: { content: RenderableTreeNodes }) {
       return React.createElement(React.Fragment, null, ...node.map(render));
     }
 
-    if (node === null || typeof node !== 'object') return node;
+    if (
+      typeof node === 'string' ||
+      typeof node === 'number' ||
+      typeof node === 'boolean' ||
+      node === null
+    ) {
+      return node;
+    }
+    if (!isTag(node)) return null;
 
     const { name, attributes: { class: className, ...attrs } = {}, children = [] } = node;
 
@@ -76,10 +84,16 @@ export function Markdoc(props: { content: RenderableTreeNodes }) {
   return render(props.content) as JSX.Element;
 }
 
+export type HeadingType = {
+  id: string;
+  depth: number;
+  label: string;
+};
+
 export function extractHeadings(content: Tag): HeadingType[] {
   const headings: HeadingType[] = [];
   for (const child of content.children) {
-    if (typeof child !== 'string' && child !== null && child.name === 'Heading') {
+    if (isTag(child) && child.name === 'Heading') {
       headings.push({
         id: child.attributes.id,
         depth: child.attributes.level,
@@ -94,7 +108,10 @@ function stringifyDocContent(node: RenderableTreeNode): string {
   if (typeof node === 'string') {
     return node;
   }
-  if (node === null) {
+  if (Array.isArray(node)) {
+    return node.map(stringifyDocContent).join('');
+  }
+  if (!isTag(node)) {
     return '';
   }
   return node.children.map(stringifyDocContent).join('');

@@ -44,7 +44,7 @@ export default function Page(props: InferGetStaticPropsType<typeof getStaticProp
       ogImage={ogImageUrl}
       title={props.title}
       description={props.description}
-      editPath={`docs/pages/docs/${router.query.post}.md`}
+      editPath={`docs/${router.query.post}.md`}
     >
       <Heading level={1} id="title" css={{ marginBottom: 0 }}>
         {props.title}

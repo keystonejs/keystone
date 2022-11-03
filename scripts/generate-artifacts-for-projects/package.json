@@ -3,6 +3,14 @@
   "version": "0.0.3",
   "private": true,
   "main": "dist/keystone-6-generate-artifacts-for-projects.cjs.js",
+  "module": "dist/keystone-6-generate-artifacts-for-projects.esm.js",
+  "exports": {
+    ".": {
+      "module": "./dist/keystone-6-generate-artifacts-for-projects.esm.js",
+      "default": "./dist/keystone-6-generate-artifacts-for-projects.cjs.js"
+    },
+    "./package.json": "./package.json"
+  },
   "dependencies": {
     "@keystone-6/core": "^3.0.0"
   },
