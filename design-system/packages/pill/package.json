@@ -4,6 +4,13 @@
   "license": "MIT",
   "main": "dist/keystone-ui-pill.cjs.js",
   "module": "dist/keystone-ui-pill.esm.js",
+  "exports": {
+    ".": {
+      "module": "./dist/keystone-ui-pill.esm.js",
+      "default": "./dist/keystone-ui-pill.cjs.js"
+    },
+    "./package.json": "./package.json"
+  },
   "peerDependencies": {
     "react": "^18.1.0"
   },

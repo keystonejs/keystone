@@ -1,5 +1,4 @@
-import { KeystoneConfig } from '@keystone-6/core/types';
-import { SessionStrategy } from '@keystone-6/core/src/types/session';
+import { KeystoneConfig, SessionStrategy } from '@keystone-6/core/types';
 import { config } from '@keystone-6/core';
 import { statelessSessions } from '@keystone-6/core/session';
 import { createAuth } from '@keystone-6/auth';

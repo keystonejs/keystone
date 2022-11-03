@@ -4,6 +4,21 @@
   "license": "MIT",
   "main": "dist/keystone-6-auth.cjs.js",
   "module": "dist/keystone-6-auth.esm.js",
+  "exports": {
+    ".": {
+      "module": "./dist/keystone-6-auth.esm.js",
+      "default": "./dist/keystone-6-auth.cjs.js"
+    },
+    "./pages/InitPage": {
+      "module": "./pages/InitPage/dist/keystone-6-auth-pages-InitPage.esm.js",
+      "default": "./pages/InitPage/dist/keystone-6-auth-pages-InitPage.cjs.js"
+    },
+    "./pages/SigninPage": {
+      "module": "./pages/SigninPage/dist/keystone-6-auth-pages-SigninPage.esm.js",
+      "default": "./pages/SigninPage/dist/keystone-6-auth-pages-SigninPage.cjs.js"
+    },
+    "./package.json": "./package.json"
+  },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
     "@keystone-ui/button": "^7.0.1",

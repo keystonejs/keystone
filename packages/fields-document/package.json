@@ -5,6 +5,25 @@
   "license": "MIT",
   "main": "dist/keystone-6-fields-document.cjs.js",
   "module": "dist/keystone-6-fields-document.esm.js",
+  "exports": {
+    ".": {
+      "module": "./dist/keystone-6-fields-document.esm.js",
+      "default": "./dist/keystone-6-fields-document.cjs.js"
+    },
+    "./views": {
+      "module": "./views/dist/keystone-6-fields-document-views.esm.js",
+      "default": "./views/dist/keystone-6-fields-document-views.cjs.js"
+    },
+    "./primitives": {
+      "module": "./primitives/dist/keystone-6-fields-document-primitives.esm.js",
+      "default": "./primitives/dist/keystone-6-fields-document-primitives.cjs.js"
+    },
+    "./component-blocks": {
+      "module": "./component-blocks/dist/keystone-6-fields-document-component-blocks.esm.js",
+      "default": "./component-blocks/dist/keystone-6-fields-document-component-blocks.cjs.js"
+    },
+    "./package.json": "./package.json"
+  },
   "files": [
     "dist",
     "component-blocks",

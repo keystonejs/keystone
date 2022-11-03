@@ -4,6 +4,13 @@
   "license": "MIT",
   "main": "dist/keystone-ui-popover.cjs.js",
   "module": "dist/keystone-ui-popover.esm.js",
+  "exports": {
+    ".": {
+      "module": "./dist/keystone-ui-popover.esm.js",
+      "default": "./dist/keystone-ui-popover.cjs.js"
+    },
+    "./package.json": "./package.json"
+  },
   "peerDependencies": {
     "react": "^18.1.0",
     "react-dom": "^18.1.0"

@@ -5,6 +5,194 @@
   "license": "MIT",
   "main": "dist/keystone-6-core.cjs.js",
   "module": "dist/keystone-6-core.esm.js",
+  "exports": {
+    "./next": {
+      "module": "./next/dist/keystone-6-core-next.esm.js",
+      "default": "./next/dist/keystone-6-core-next.cjs.js"
+    },
+    ".": {
+      "module": "./dist/keystone-6-core.esm.js",
+      "default": "./dist/keystone-6-core.cjs.js"
+    },
+    "./system": {
+      "module": "./system/dist/keystone-6-core-system.esm.js",
+      "default": "./system/dist/keystone-6-core-system.cjs.js"
+    },
+    "./context": {
+      "module": "./context/dist/keystone-6-core-context.esm.js",
+      "default": "./context/dist/keystone-6-core-context.cjs.js"
+    },
+    "./testing": {
+      "module": "./testing/dist/keystone-6-core-testing.esm.js",
+      "default": "./testing/dist/keystone-6-core-testing.cjs.js"
+    },
+    "./scripts/cli": {
+      "module": "./scripts/cli/dist/keystone-6-core-scripts-cli.esm.js",
+      "default": "./scripts/cli/dist/keystone-6-core-scripts-cli.cjs.js"
+    },
+    "./types": {
+      "module": "./types/dist/keystone-6-core-types.esm.js",
+      "default": "./types/dist/keystone-6-core-types.cjs.js"
+    },
+    "./access": {
+      "module": "./access/dist/keystone-6-core-access.esm.js",
+      "default": "./access/dist/keystone-6-core-access.cjs.js"
+    },
+    "./fields": {
+      "module": "./fields/dist/keystone-6-core-fields.esm.js",
+      "default": "./fields/dist/keystone-6-core-fields.cjs.js"
+    },
+    "./scripts": {
+      "module": "./scripts/dist/keystone-6-core-scripts.esm.js",
+      "default": "./scripts/dist/keystone-6-core-scripts.cjs.js"
+    },
+    "./session": {
+      "module": "./session/dist/keystone-6-core-session.esm.js",
+      "default": "./session/dist/keystone-6-core-session.cjs.js"
+    },
+    "./admin-ui/image": {
+      "module": "./admin-ui/image/dist/keystone-6-core-admin-ui-image.esm.js",
+      "default": "./admin-ui/image/dist/keystone-6-core-admin-ui-image.cjs.js"
+    },
+    "./admin-ui/apollo": {
+      "module": "./admin-ui/apollo/dist/keystone-6-core-admin-ui-apollo.esm.js",
+      "default": "./admin-ui/apollo/dist/keystone-6-core-admin-ui-apollo.cjs.js"
+    },
+    "./admin-ui/router": {
+      "module": "./admin-ui/router/dist/keystone-6-core-admin-ui-router.esm.js",
+      "default": "./admin-ui/router/dist/keystone-6-core-admin-ui-router.cjs.js"
+    },
+    "./admin-ui/context": {
+      "module": "./admin-ui/context/dist/keystone-6-core-admin-ui-context.esm.js",
+      "default": "./admin-ui/context/dist/keystone-6-core-admin-ui-context.cjs.js"
+    },
+    "./admin-ui/utils": {
+      "module": "./admin-ui/utils/dist/keystone-6-core-admin-ui-utils.esm.js",
+      "default": "./admin-ui/utils/dist/keystone-6-core-admin-ui-utils.cjs.js"
+    },
+    "./fields/types/image/utils": {
+      "module": "./fields/types/image/utils/dist/keystone-6-core-fields-types-image-utils.esm.js",
+      "default": "./fields/types/image/utils/dist/keystone-6-core-fields-types-image-utils.cjs.js"
+    },
+    "./admin-ui/components": {
+      "module": "./admin-ui/components/dist/keystone-6-core-admin-ui-components.esm.js",
+      "default": "./admin-ui/components/dist/keystone-6-core-admin-ui-components.cjs.js"
+    },
+    "./fields/types/file/views": {
+      "module": "./fields/types/file/views/dist/keystone-6-core-fields-types-file-views.esm.js",
+      "default": "./fields/types/file/views/dist/keystone-6-core-fields-types-file-views.cjs.js"
+    },
+    "./fields/types/json/views": {
+      "module": "./fields/types/json/views/dist/keystone-6-core-fields-types-json-views.esm.js",
+      "default": "./fields/types/json/views/dist/keystone-6-core-fields-types-json-views.cjs.js"
+    },
+    "./fields/types/text/views": {
+      "module": "./fields/types/text/views/dist/keystone-6-core-fields-types-text-views.esm.js",
+      "default": "./fields/types/text/views/dist/keystone-6-core-fields-types-text-views.cjs.js"
+    },
+    "./fields/types/float/views": {
+      "module": "./fields/types/float/views/dist/keystone-6-core-fields-types-float-views.esm.js",
+      "default": "./fields/types/float/views/dist/keystone-6-core-fields-types-float-views.cjs.js"
+    },
+    "./fields/types/image/views": {
+      "module": "./fields/types/image/views/dist/keystone-6-core-fields-types-image-views.esm.js",
+      "default": "./fields/types/image/views/dist/keystone-6-core-fields-types-image-views.cjs.js"
+    },
+    "./fields/types/bigInt/views": {
+      "module": "./fields/types/bigInt/views/dist/keystone-6-core-fields-types-bigInt-views.esm.js",
+      "default": "./fields/types/bigInt/views/dist/keystone-6-core-fields-types-bigInt-views.cjs.js"
+    },
+    "./fields/types/select/views": {
+      "module": "./fields/types/select/views/dist/keystone-6-core-fields-types-select-views.esm.js",
+      "default": "./fields/types/select/views/dist/keystone-6-core-fields-types-select-views.cjs.js"
+    },
+    "./fields/types/decimal/views": {
+      "module": "./fields/types/decimal/views/dist/keystone-6-core-fields-types-decimal-views.esm.js",
+      "default": "./fields/types/decimal/views/dist/keystone-6-core-fields-types-decimal-views.cjs.js"
+    },
+    "./fields/types/integer/views": {
+      "module": "./fields/types/integer/views/dist/keystone-6-core-fields-types-integer-views.esm.js",
+      "default": "./fields/types/integer/views/dist/keystone-6-core-fields-types-integer-views.cjs.js"
+    },
+    "./fields/types/virtual/views": {
+      "module": "./fields/types/virtual/views/dist/keystone-6-core-fields-types-virtual-views.esm.js",
+      "default": "./fields/types/virtual/views/dist/keystone-6-core-fields-types-virtual-views.cjs.js"
+    },
+    "./fields/types/checkbox/views": {
+      "module": "./fields/types/checkbox/views/dist/keystone-6-core-fields-types-checkbox-views.esm.js",
+      "default": "./fields/types/checkbox/views/dist/keystone-6-core-fields-types-checkbox-views.cjs.js"
+    },
+    "./fields/types/password/views": {
+      "module": "./fields/types/password/views/dist/keystone-6-core-fields-types-password-views.esm.js",
+      "default": "./fields/types/password/views/dist/keystone-6-core-fields-types-password-views.cjs.js"
+    },
+    "./fields/types/timestamp/views": {
+      "module": "./fields/types/timestamp/views/dist/keystone-6-core-fields-types-timestamp-views.esm.js",
+      "default": "./fields/types/timestamp/views/dist/keystone-6-core-fields-types-timestamp-views.cjs.js"
+    },
+    "./fields/types/calendarDay/views": {
+      "module": "./fields/types/calendarDay/views/dist/keystone-6-core-fields-types-calendarDay-views.esm.js",
+      "default": "./fields/types/calendarDay/views/dist/keystone-6-core-fields-types-calendarDay-views.cjs.js"
+    },
+    "./fields/types/multiselect/views": {
+      "module": "./fields/types/multiselect/views/dist/keystone-6-core-fields-types-multiselect-views.esm.js",
+      "default": "./fields/types/multiselect/views/dist/keystone-6-core-fields-types-multiselect-views.cjs.js"
+    },
+    "./fields/types/relationship/views": {
+      "module": "./fields/types/relationship/views/dist/keystone-6-core-fields-types-relationship-views.esm.js",
+      "default": "./fields/types/relationship/views/dist/keystone-6-core-fields-types-relationship-views.cjs.js"
+    },
+    "./fields/types/relationship/views/RelationshipSelect": {
+      "module": "./fields/types/relationship/views/RelationshipSelect/dist/keystone-6-core-fields-types-relationship-views-RelationshipSelect.esm.js",
+      "default": "./fields/types/relationship/views/RelationshipSelect/dist/keystone-6-core-fields-types-relationship-views-RelationshipSelect.cjs.js"
+    },
+    "./___internal-do-not-use-will-break-in-patch/artifacts": {
+      "module": "./___internal-do-not-use-will-break-in-patch/artifacts/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-artifacts.esm.js",
+      "default": "./___internal-do-not-use-will-break-in-patch/artifacts/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-artifacts.cjs.js"
+    },
+    "./___internal-do-not-use-will-break-in-patch/load-config": {
+      "module": "./___internal-do-not-use-will-break-in-patch/load-config/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-load-config.esm.js",
+      "default": "./___internal-do-not-use-will-break-in-patch/load-config/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-load-config.cjs.js"
+    },
+    "./___internal-do-not-use-will-break-in-patch/next-graphql": {
+      "module": "./___internal-do-not-use-will-break-in-patch/next-graphql/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-next-graphql.esm.js",
+      "default": "./___internal-do-not-use-will-break-in-patch/next-graphql/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-next-graphql.cjs.js"
+    },
+    "./___internal-do-not-use-will-break-in-patch/admin-ui/next-config": {
+      "module": "./___internal-do-not-use-will-break-in-patch/admin-ui/next-config/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-next-config.esm.js",
+      "default": "./___internal-do-not-use-will-break-in-patch/admin-ui/next-config/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-next-config.cjs.js"
+    },
+    "./___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view": {
+      "module": "./___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-id-field-view.esm.js",
+      "default": "./___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-id-field-view.cjs.js"
+    },
+    "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/App": {
+      "module": "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/App/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-App.esm.js",
+      "default": "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/App/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-App.cjs.js"
+    },
+    "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/HomePage": {
+      "module": "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/HomePage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-HomePage.esm.js",
+      "default": "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/HomePage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-HomePage.cjs.js"
+    },
+    "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/ItemPage": {
+      "module": "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/ItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-ItemPage.esm.js",
+      "default": "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/ItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-ItemPage.cjs.js"
+    },
+    "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/ListPage": {
+      "module": "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/ListPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-ListPage.esm.js",
+      "default": "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/ListPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-ListPage.cjs.js"
+    },
+    "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/NoAccessPage": {
+      "module": "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/NoAccessPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-NoAccessPage.esm.js",
+      "default": "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/NoAccessPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-NoAccessPage.cjs.js"
+    },
+    "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/CreateItemPage": {
+      "module": "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/CreateItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-CreateItemPage.esm.js",
+      "default": "./___internal-do-not-use-will-break-in-patch/admin-ui/pages/CreateItemPage/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-pages-CreateItemPage.cjs.js"
+    },
+    "./package.json": "./package.json",
+    "./bin/cli.js": "./bin/cli.js"
+  },
   "bin": {
     "keystone": "bin/cli.js"
   },
@@ -148,6 +336,11 @@
       "fields/types/{image,file}/utils.ts",
       "types/index.ts",
       "access/index.ts"
-    ]
+    ],
+    "exports": {
+      "extra": {
+        "./bin/cli.js": "./bin/cli.js"
+      }
+    }
   }
 }

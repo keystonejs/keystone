@@ -5,6 +5,13 @@
   "license": "MIT",
   "main": "dist/keystone-6-document-renderer.cjs.js",
   "module": "dist/keystone-6-document-renderer.esm.js",
+  "exports": {
+    ".": {
+      "module": "./dist/keystone-6-document-renderer.esm.js",
+      "default": "./dist/keystone-6-document-renderer.cjs.js"
+    },
+    "./package.json": "./package.json"
+  },
   "peerDependencies": {
     "react": "^16.14.0 || 17 || 18"
   },
