@@ -30,8 +30,14 @@ export const lists = {
     fields: {
       checkbox: checkbox({ ui: { description } }),
       password: password({ ui: { description } }),
-      toOneRelationship: relationship({ ui: { description }, ref: 'User' }),
-      toManyRelationship: relationship({ ui: { description }, ref: 'Todo', many: true }),
+      toOneRelationship: relationship({
+        ref: 'User',
+        ui: {
+          description,
+          labelField: 'email',
+        },
+      }),
+      toManyRelationship: relationship({ ref: 'Todo', many: true, ui: { description } }),
       toOneRelationshipCard: relationship({
         ref: 'User',
         ui: {
