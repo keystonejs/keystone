@@ -1,6 +1,10 @@
-import { ComponentSchemaForGraphQL, fields } from '@keystone-6/fields-document/component-blocks';
+import {
+  ArrayField,
+  ComponentSchemaForGraphQL,
+  fields,
+} from '@keystone-6/fields-document/component-blocks';
 
-export const schema: ComponentSchemaForGraphQL = fields.array(
+export const schema: ArrayField<ComponentSchemaForGraphQL> = fields.array(
   fields.conditional(
     fields.select({
       defaultValue: 'leaf',
@@ -23,5 +27,14 @@ export const schema: ComponentSchemaForGraphQL = fields.array(
       }),
     }
   ),
-  { label: props => props.value.fields.label.value }
+  {
+    label: props =>
+      `${
+        props.schema.discriminant.options.find(option => props.discriminant === option.value)?.label
+      } - ${props.value.fields.label.value}${
+        props.discriminant === 'group'
+          ? ` (${props.value.fields.children.elements.length} Items)`
+          : ''
+      }`,
+  }
 );
