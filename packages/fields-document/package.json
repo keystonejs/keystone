@@ -18,6 +18,10 @@
       "module": "./primitives/dist/keystone-6-fields-document-primitives.esm.js",
       "default": "./primitives/dist/keystone-6-fields-document-primitives.cjs.js"
     },
+    "./structure-views": {
+      "module": "./structure-views/dist/keystone-6-fields-document-structure-views.esm.js",
+      "default": "./structure-views/dist/keystone-6-fields-document-structure-views.cjs.js"
+    },
     "./component-blocks": {
       "module": "./component-blocks/dist/keystone-6-fields-document-component-blocks.esm.js",
       "default": "./component-blocks/dist/keystone-6-fields-document-component-blocks.cjs.js"
