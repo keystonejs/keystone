@@ -36,7 +36,13 @@ function ArrayFieldPreview(props: DefaultFieldProps<'array'>) {
     <Stack gap="medium">
       <OrderableList {...props}>
         {props.elements.map(val => {
-          return <OrderableItemInForm elementKey={val.key} {...val} />;
+          return (
+            <OrderableItemInForm
+              elementKey={val.key}
+              label={props.schema.label?.(val) ?? 'Item'}
+              {...val}
+            />
+          );
         })}
       </OrderableList>
       <Button
@@ -201,6 +207,7 @@ export const FormValueContentFromPreviewProps: MemoExoticComponent<
 const OrderableItemInForm = memo(function OrderableItemInForm(
   props: GenericPreviewProps<ComponentSchema, unknown> & {
     elementKey: string;
+    label: string;
   }
 ) {
   const [modalState, setModalState] = useState<
@@ -231,7 +238,9 @@ const OrderableItemInForm = memo(function OrderableItemInForm(
             }}
             css={{ flexGrow: 1, justifyContent: 'start' }}
           >
-            <span css={{ fontSize: 16, fontWeight: 'bold', textAlign: 'start' }}>Item</span>
+            <span css={{ fontSize: 16, fontWeight: 'bold', textAlign: 'start' }}>
+              {props.label}
+            </span>
           </Button>
           <RemoveButton />
         </div>

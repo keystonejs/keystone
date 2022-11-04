@@ -22,5 +22,6 @@ export const schema: ComponentSchemaForGraphQL = fields.array(
         },
       }),
     }
-  )
+  ),
+  { label: props => props.value.fields.label.value }
 );

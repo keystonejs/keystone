@@ -116,6 +116,8 @@ export type ChildField = {
 export type ArrayField<ElementField extends ComponentSchema> = {
   kind: 'array';
   element: ElementField;
+  // this is written with unknown to avoid typescript being annoying about circularity or variance things
+  label?(props: unknown): string;
 };
 
 export type RelationshipField<Many extends boolean> = {
@@ -144,14 +146,29 @@ export type ConditionalField<
   values: ConditionalValues;
 };
 
+// this is written like this rather than ArrayField<ComponentSchema> to avoid TypeScript erroring about circularity
+type ArrayFieldInComponentSchema = {
+  kind: 'array';
+  element: ComponentSchema;
+  // this is written with unknown to avoid typescript being annoying about circularity or variance things
+  label?(props: unknown): string;
+};
+
 export type ComponentSchema =
   | ChildField
   | FormField<any, any>
   | ObjectField
   | ConditionalField<FormField<any, any>, { [key: string]: ComponentSchema }>
   | RelationshipField<boolean>
-  // this is written like this rather than ArrayField<ComponentSchema> to avoid TypeScript erroring about circularity
-  | { kind: 'array'; element: ComponentSchema };
+  | ArrayFieldInComponentSchema;
+
+// this is written like this rather than ArrayField<ComponentSchemaForGraphQL> to avoid TypeScript erroring about circularity
+type ArrayFieldInComponentSchemaForGraphQL = {
+  kind: 'array';
+  element: ComponentSchemaForGraphQL;
+  // this is written with unknown to avoid typescript being annoying about circularity or variance things
+  label?(props: unknown): string;
+};
 
 export type ComponentSchemaForGraphQL =
   | FormFieldWithGraphQLField<any, any>
@@ -161,8 +178,7 @@ export type ComponentSchemaForGraphQL =
       { [key: string]: ComponentSchemaForGraphQL }
     >
   | RelationshipField<boolean>
-  // this is written like this rather than ArrayField<ComponentSchemaForGraphQL> to avoid TypeScript erroring about circularity
-  | { kind: 'array'; element: ComponentSchemaForGraphQL };
+  | ArrayFieldInComponentSchemaForGraphQL;
 
 export const fields = {
   text({
@@ -489,8 +505,11 @@ export const fields = {
       many: (many ? true : false) as any,
     };
   },
-  array<ElementField extends ComponentSchema>(element: ElementField): ArrayField<ElementField> {
-    return { kind: 'array', element };
+  array<ElementField extends ComponentSchema>(
+    element: ElementField,
+    opts?: { label?: (props: GenericPreviewProps<ElementField, unknown>) => string }
+  ): ArrayField<ElementField> {
+    return { kind: 'array', element, label: opts?.label };
   },
 };
 
