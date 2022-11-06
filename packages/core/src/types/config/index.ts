@@ -84,7 +84,7 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
   db: DatabaseConfig<TypeInfo>;
   ui?: AdminUIConfig<TypeInfo>;
   server?: ServerConfig<TypeInfo>;
-  session?: SessionStrategy<any>;
+  session?: SessionStrategy<TypeInfo['sessionData']>;
   graphql?: GraphQLConfig;
   extendGraphqlSchema?: ExtendGraphqlSchema;
   /** An object containing configuration about keystone's various external storages.
