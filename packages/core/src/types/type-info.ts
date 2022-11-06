@@ -28,8 +28,4 @@ export type BaseListTypeInfo = {
 export type KeystoneContextFromListTypeInfo<ListTypeInfo extends BaseListTypeInfo> =
   KeystoneContext<ListTypeInfo['all']>;
 
-export type BaseKeystoneTypeInfo = {
-  lists: Record<string, BaseListTypeInfo>;
-  prisma: any;
-  sessionData: { itemId: string; listKey: string; data?: Record<string, any> };
-};
+export type BaseKeystoneTypeInfo = { lists: Record<string, BaseListTypeInfo>; prisma: any };

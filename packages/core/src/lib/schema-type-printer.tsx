@@ -233,7 +233,6 @@ export function printGeneratedTypes(
     ...listsTypeInfo,
     `  };`,
     `  prisma: import('.prisma/client').PrismaClient;`,
-    `  sessionData: { itemId: string; listKey: string; data?: Record<string, any> }`,
     `};`,
     ``,
     // we need to reference the `TypeInfo` above in another type that is also called `TypeInfo`

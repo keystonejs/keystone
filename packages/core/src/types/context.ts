@@ -26,7 +26,7 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
      */
     initialisedLists: Record<string, InitialisedList>;
   };
-} & Partial<SessionContext<TypeInfo['sessionData']>>;
+} & Partial<SessionContext<any>>;
 
 // List item API
 
@@ -158,9 +158,9 @@ export type SessionContext<T> = {
   // Note: session is typed like this to acknowledge the default session shape
   // if you're using keystone's built-in session implementation, but we don't
   // actually know what it will look like.
-  session?: T;
+  session?: { itemId: string; listKey: string; data?: Record<string, any> } | any;
   startSession?(data: T): Promise<unknown>;
-  endSession?(data?: Partial<T>): Promise<unknown>;
+  endSession?(data?: T): Promise<unknown>;
 };
 
 export type AssetMode = 'local' | 's3';
