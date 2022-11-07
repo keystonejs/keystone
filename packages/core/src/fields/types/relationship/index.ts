@@ -136,7 +136,8 @@ export const relationship =
             ? { displayMode: 'count' }
             : {
                 displayMode: 'select',
-                refLabelField: config.ui?.labelField || adminMetaRoot.listsByKey[foreignListKey].labelField,
+                refLabelField:
+                  config.ui?.labelField || adminMetaRoot.listsByKey[foreignListKey].labelField,
               }),
         };
       },
