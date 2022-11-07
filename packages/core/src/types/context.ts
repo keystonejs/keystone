@@ -1,4 +1,4 @@
-import { IncomingMessage } from 'http';
+import { IncomingMessage, ServerResponse } from 'http';
 import { Readable } from 'stream';
 import { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql';
 import { TypedDocumentNode } from '@graphql-typed-document-node/core';
@@ -14,6 +14,7 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
   sudo: () => KeystoneContext<TypeInfo>;
   exitSudo: () => KeystoneContext<TypeInfo>;
   withSession: (session: any) => KeystoneContext<TypeInfo>;
+  withRequest: (req: IncomingMessage, res: ServerResponse) => Promise<KeystoneContext<TypeInfo>>;
   prisma: TypeInfo['prisma'];
   files: FilesContext;
   images: ImagesContext;
