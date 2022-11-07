@@ -288,7 +288,7 @@
     "intersection-observer": "^0.12.0",
     "meow": "^9.0.0",
     "micro": "^9.3.4",
-    "next": "^12.2.4",
+    "next": "^13.0.0",
     "p-limit": "^2.3.0",
     "pluralize": "^8.0.0",
     "prisma": "4.3.1",
