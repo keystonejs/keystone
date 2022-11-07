@@ -159,8 +159,8 @@ export type SessionContext<T> = {
   // if you're using keystone's built-in session implementation, but we don't
   // actually know what it will look like.
   session?: { itemId: string; listKey: string; data?: Record<string, any> } | any;
-  startSession?(data: T): Promise<unknown>;
-  endSession?(data?: T): Promise<unknown>;
+  startSession?(data: T): Promise<string>;
+  endSession?(): Promise<void>;
 };
 
 export type AssetMode = 'local' | 's3';

@@ -88,10 +88,10 @@ export function getBaseAuthSchema<I extends string, S extends string>({
           }
 
           // Update system state
-          const sessionToken = (await context.startSession({
+          const sessionToken = await context.startSession({
             listKey,
             itemId: result.item.id.toString(),
-          })) as string;
+          });
           return { sessionToken, item: result.item };
         },
       }),
