@@ -1,7 +1,7 @@
 import path from 'path';
 import type { ListenOptions } from 'net';
 import url from 'url';
-import { createServer } from 'http';
+import { createServer, IncomingMessage, ServerResponse } from 'http';
 import express from 'express';
 import { GraphQLSchema, printSchema } from 'graphql';
 import fs from 'fs-extra';
@@ -26,6 +26,7 @@ import { ExitError, getAdminPath, getBuiltConfigPath } from '../utils';
 import { CreateContext, KeystoneConfig } from '../../types';
 import { initialiseLists } from '../../lib/core/types-for-lists';
 import { printPrismaSchema } from '../../lib/core/prisma-schema';
+import { createSessionContext } from '../../lib/context/session';
 import { AdminMetaRootVal } from '../../admin-ui/system/createAdminMeta';
 
 const devLoadingHTMLFilepath = path.join(
@@ -122,7 +123,14 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
     } = await setupInitialKeystone(config, cwd, shouldDropDatabase);
 
     if (configWithHTTP?.server?.extendHttpServer) {
-      configWithHTTP.server.extendHttpServer(httpServer, createContext(), graphQLSchema);
+      const createRequestContext = async (req: IncomingMessage, res: ServerResponse) =>
+        createContext({
+          sessionContext: config.session
+            ? await createSessionContext(config.session, req, res, createContext)
+            : undefined,
+          req,
+        });
+      configWithHTTP.server.extendHttpServer(httpServer, createRequestContext, graphQLSchema);
     }
 
     const prismaClient = createContext().prisma;

@@ -12,7 +12,6 @@ import { PrismaClient } from '../core/utils';
 import { InitialisedList } from '../core/types-for-lists';
 import { createImagesContext } from '../assets/createImagesContext';
 import { createFilesContext } from '../assets/createFilesContext';
-import { createSessionContext } from './session';
 import { getDbAPIFactory, itemAPIForList } from './itemAPI';
 
 export function makeCreateContext({
@@ -95,13 +94,6 @@ export function makeCreateContext({
           req,
         }),
       req,
-      withRequest: async (req, res) =>
-        createContext({
-          sessionContext: config.session
-            ? await createSessionContext(config.session, createContext, req, res)
-            : undefined,
-          req,
-        }),
       ...sessionContext,
       // Note: This field lets us use the server-side-graphql-client library.
       // We may want to remove it once the updated itemAPI w/ query is available.

@@ -6,7 +6,13 @@ import express from 'express';
 import type { GraphQLSchema } from 'graphql';
 import type { Options as BodyParserOptions } from 'body-parser';
 
-import type { AssetMode, BaseKeystoneTypeInfo, KeystoneContext, DatabaseProvider } from '..';
+import type {
+  AssetMode,
+  CreateRequestContext,
+  BaseKeystoneTypeInfo,
+  KeystoneContext,
+  DatabaseProvider,
+} from '..';
 
 import { SessionStrategy } from '../session';
 import type { MaybePromise } from '../utils';
@@ -166,11 +172,11 @@ export type ServerConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   /** Hook to extend the Express App that Keystone creates */
   extendExpressApp?: (
     app: express.Express,
-    context: KeystoneContext<TypeInfo>
+    createContext: CreateRequestContext<TypeInfo>
   ) => void | Promise<void>;
   extendHttpServer?: (
     server: Server,
-    context: KeystoneContext<TypeInfo>,
+    createContext: CreateRequestContext<TypeInfo>,
     graphqlSchema: GraphQLSchema
   ) => void;
 } & (

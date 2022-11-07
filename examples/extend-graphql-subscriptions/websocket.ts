@@ -4,8 +4,11 @@ import { WebSocketServer } from 'ws';
 import { PubSub } from 'graphql-subscriptions';
 import { parse } from 'graphql';
 
-import { KeystoneGraphQLAPI } from '@keystone-6/core/types';
-import { Context } from '.keystone/types';
+import {
+  CreateRequestContext,
+  KeystoneGraphQLAPI,
+  BaseKeystoneTypeInfo,
+} from '@keystone-6/core/types';
 
 // Setup pubsub as a Global variable in dev so it survives Hot Reloads.
 declare global {
@@ -19,7 +22,7 @@ globalThis.graphqlSubscriptionPubSub = pubSub;
 
 export const extendHttpServer = (
   httpServer: http.Server,
-  _context: Context,
+  createRequestContext: CreateRequestContext<BaseKeystoneTypeInfo>,
   graphqlSchema: KeystoneGraphQLAPI['schema']
 ): void => {
   // Setup WebSocket server using 'ws'
@@ -34,7 +37,8 @@ export const extendHttpServer = (
       schema: graphqlSchema,
       // run these onSubscribe functions as needed or remove them if you don't need them
       onSubscribe: async (ctx: any, msg) => {
-        const context = await _context.withRequest(ctx.extra.request);
+        // @ts-expect-error CreateRequestContext requires `req` and `res` but only `req` is available here
+        const context = await createRequestContext(ctx.extra.request);
         // Return the execution args for this subscription passing through the Keystone Context
         return {
           schema: graphqlSchema,
