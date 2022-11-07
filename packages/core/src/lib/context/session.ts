@@ -1,16 +1,16 @@
 import { IncomingMessage, ServerResponse } from 'http';
-import { SessionStrategy, KeystoneContext, SessionContext } from '../../types';
+import { SessionStrategy, CreateContext, SessionContext } from '../../types';
 
 export async function createSessionContext<T>(
   sessionStrategy: SessionStrategy<T>,
-  context: KeystoneContext,
+  createContext: CreateContext,
   req: IncomingMessage,
   res?: ServerResponse
 ): Promise<SessionContext<T>> {
-  if (!res) return { session: await sessionStrategy.get({ req, context }) };
+  if (!res) return { session: await sessionStrategy.get({ req, createContext }) };
   return {
-    session: await sessionStrategy.get({ req, context }),
-    startSession: (data: T) => sessionStrategy.start({ res, data, context }),
-    endSession: () => sessionStrategy.end({ req, res, context }),
+    session: await sessionStrategy.get({ req, createContext }),
+    startSession: (data: T) => sessionStrategy.start({ res, data, createContext }),
+    endSession: () => sessionStrategy.end({ req, res, createContext }),
   };
 }

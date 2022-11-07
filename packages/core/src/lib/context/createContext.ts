@@ -98,7 +98,7 @@ export function makeCreateContext({
       withRequest: async (req, res) =>
         createContext({
           sessionContext: config.session
-            ? await createSessionContext(config.session, createContext(), req, res)
+            ? await createSessionContext(config.session, createContext, req, res)
             : undefined,
           req,
         }),

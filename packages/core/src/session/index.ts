@@ -129,25 +129,25 @@ export function storedSessions({
   let { get, start, end } = statelessSessions({ ...statelessSessionsOptions, maxAge });
   let store = storeOption({ maxAge });
   return {
-    async get({ req, context }) {
-      const data = (await get({ req, context })) as { sessionId: string } | undefined;
+    async get({ req, createContext }) {
+      const data = (await get({ req, createContext })) as { sessionId: string } | undefined;
       const sessionId = data?.sessionId;
       if (typeof sessionId === 'string') {
         return store.get(sessionId);
       }
     },
-    async start({ res, data, context }) {
+    async start({ res, data, createContext }) {
       let sessionId = generateSessionId();
       await store.set(sessionId, data);
-      return start?.({ res, data: { sessionId }, context }) || '';
+      return start?.({ res, data: { sessionId }, createContext }) || '';
     },
-    async end({ req, res, context }) {
-      const data = (await get({ req, context })) as { sessionId: string } | undefined;
+    async end({ req, res, createContext }) {
+      const data = (await get({ req, createContext })) as { sessionId: string } | undefined;
       const sessionId = data?.sessionId;
       if (typeof sessionId === 'string') {
         await store.delete(sessionId);
       }
-      await end?.({ req, res, context });
+      await end?.({ req, res, createContext });
     },
   };
 }

@@ -38,7 +38,7 @@ export const createAdminUIMiddleware = async (
     try {
       const context = createContext({
         sessionContext: session
-          ? await createSessionContext(session, createContext(), req, res)
+          ? await createSessionContext(session, createContext, req, res)
           : undefined,
         req,
       });
