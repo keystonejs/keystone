@@ -44,7 +44,15 @@ const User: Lists.User = list({
     /** The user's first and last name. */
     name: text({ validation: { isRequired: true } }),
     /** Email is used to log into the system. */
-    email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
+    email: text({
+      isIndexed: 'unique',
+      validation: { isRequired: true },
+      ui: {
+        itemView: {
+          fieldPosition: 'sidebar',
+        },
+      },
+    }),
     /** Avatar upload for the users profile, stored locally */
     avatar: image({ storage: 'my_images' }),
     attachment: file({ storage: 'my_files' }),
