@@ -2,4 +2,4 @@
 '@keystone-6/core': patch
 ---
 
-Log the configured host instead of localhost when starting Keystone.
+Fix the startup message to use the configured `http.options` host instead of assuming `localhost`
