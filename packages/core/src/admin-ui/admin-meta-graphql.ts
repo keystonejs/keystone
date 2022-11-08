@@ -98,7 +98,7 @@ export type StaticAdminMetaQuery = {
           itemView: Maybe<{
             __typename: 'KeystoneAdminUIFieldMetaItemView';
             fieldMode: Maybe<KeystoneAdminUIFieldMetaItemViewFieldMode>;
-            fieldposition: Maybe<KeystoneAdminUIFieldMetaItemViewFieldPosition>;
+            fieldPosition: Maybe<KeystoneAdminUIFieldMetaItemViewFieldPosition>;
           }>;
         }>;
       }>;
