@@ -42,6 +42,7 @@ export const start = async (cwd: string) => {
   }
 
   const options: ListenOptions = {
+    host: 'localhost',
     port: 3000,
   };
 
@@ -60,6 +61,6 @@ export const start = async (cwd: string) => {
 
   httpServer.listen(options, (err?: any) => {
     if (err) throw err;
-    console.log(`⭐️ Server Ready on http://localhost:${options.port}`);
+    console.log(`⭐️ Server Ready on http://${options.host}:${options.port}`);
   });
 };

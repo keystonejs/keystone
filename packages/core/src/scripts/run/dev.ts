@@ -266,6 +266,7 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
   });
 
   const httpOptions: ListenOptions = {
+    host: 'localhost',
     port: 3000,
   };
 
@@ -285,9 +286,9 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
   const server = httpServer.listen(httpOptions, (err?: any) => {
     if (err) throw err;
     // We start initialising Keystone after the dev server is ready,
-    console.log(`⭐️ Dev Server Starting on http://localhost:${httpOptions.port}`);
+    console.log(`⭐️ Dev Server Starting on http://${httpOptions.host}:${httpOptions.port}`);
     console.log(
-      `⭐️ GraphQL API Starting on http://localhost:${httpOptions.port}${
+      `⭐️ GraphQL API Starting on http://${httpOptions.host}:${httpOptions.port}${
         config.graphql?.path || '/api/graphql'
       }`
     );
