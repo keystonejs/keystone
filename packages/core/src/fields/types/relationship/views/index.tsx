@@ -348,8 +348,8 @@ type RelationshipController = FieldController<
   listKey: string;
   refListKey: string;
   refFieldKey?: string;
-  refLabelField: string | null;
-  refSearchFields: string[] | null;
+  refLabelField: string;
+  refSearchFields: string[];
   hideCreate: boolean;
   many: boolean;
 };
@@ -361,11 +361,11 @@ export const controller = (
       refListKey: string;
       many: boolean;
       hideCreate: boolean;
+      refLabelField: string;
+      refSearchFields: string[];
     } & (
       | {
           displayMode: 'select';
-          refLabelField: string | null;
-          refSearchFields: string[] | null;
         }
       | {
           displayMode: 'cards';
@@ -375,10 +375,10 @@ export const controller = (
           inlineCreate: { fields: readonly string[] } | null;
           inlineEdit: { fields: readonly string[] } | null;
           inlineConnect: boolean;
-          refLabelField: string | null;
-          refSearchFields: string[] | null;
         }
-      | { displayMode: 'count' }
+      | {
+          displayMode: 'count';
+        }
     )
   >
 ): RelationshipController => {
@@ -394,6 +394,9 @@ export const controller = (
         }
       : undefined;
 
+  const refLabelField = config.fieldMeta.refLabelField;
+  const refSearchFields = config.fieldMeta.refSearchFields;
+
   return {
     refFieldKey: config.fieldMeta.refFieldKey,
     many: config.fieldMeta.many,
@@ -402,16 +405,15 @@ export const controller = (
     label: config.label,
     description: config.description,
     display: config.fieldMeta.displayMode === 'count' ? 'count' : 'cards-or-select',
-    refLabelField: config.fieldMeta.displayMode === 'count' ? null : config.fieldMeta.refLabelField,
-    refSearchFields:
-      config.fieldMeta.displayMode === 'count' ? null : config.fieldMeta.refSearchFields,
+    refLabelField,
+    refSearchFields,
     refListKey: config.fieldMeta.refListKey,
     graphqlSelection:
       config.fieldMeta.displayMode === 'count'
         ? `${config.path}Count`
         : `${config.path} {
               id
-              label: ${config.fieldMeta.refLabelField}
+              label: ${refLabelField}
             }`,
     hideCreate: config.fieldMeta.hideCreate,
     // note we're not making the state kind: 'count' when ui.displayMode is set to 'count'.
@@ -508,6 +510,8 @@ export const controller = (
           <RelationshipSelect
             controlShouldRenderValue
             list={foreignList}
+            labelField={refLabelField}
+            searchFields={refSearchFields}
             isLoading={loading}
             isDisabled={onChange === undefined}
             state={state}

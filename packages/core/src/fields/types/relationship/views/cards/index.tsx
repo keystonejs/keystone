@@ -294,8 +294,9 @@ export function Cards({
               autoFocus
               controlShouldRenderValue={isLoadingLazyItems}
               isDisabled={onChange === undefined}
-              labelField={field.refLabelField}
               list={foreignList}
+              labelField={field.refLabelField}
+              searchFields={field.refSearchFields}
               isLoading={isLoadingLazyItems}
               placeholder={`Select a ${foreignList.singular}`}
               portalMenu

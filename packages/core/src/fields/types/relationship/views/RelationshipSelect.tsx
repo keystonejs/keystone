@@ -56,7 +56,7 @@ function useDebouncedValue<T>(value: T, limitMs: number): T {
   return debouncedValue;
 }
 
-export function useFilter(search: string, list: ListMeta, searchFields: string[] | null) {
+export function useFilter(search: string, list: ListMeta, searchFields: string[]) {
   return useMemo(() => {
     if (!search.length) return { OR: [] };
 
@@ -69,12 +69,8 @@ export function useFilter(search: string, list: ListMeta, searchFields: string[]
       conditions.push({ id: { equals: trimmedSearch } });
     }
 
-    // prefer the relationship field's ui.searchFields before defaulting to the list definition
-    const _fields = searchFields
-      ? searchFields.map(x => list.fields[x])
-      : Object.values(list.fields).filter(x => x.search);
-
-    for (const field of _fields) {
+    for (const fieldKey of searchFields) {
+      const field = list.fields[fieldKey];
       conditions.push({
         [field.path]: {
           contains: trimmedSearch,
@@ -104,8 +100,8 @@ export const RelationshipSelect = ({
   controlShouldRenderValue,
   isDisabled,
   isLoading,
-  labelField = null,
-  searchFields = null,
+  labelField,
+  searchFields,
   list,
   placeholder,
   portalMenu,
@@ -116,8 +112,8 @@ export const RelationshipSelect = ({
   controlShouldRenderValue: boolean;
   isDisabled: boolean;
   isLoading?: boolean;
-  labelField?: string | null;
-  searchFields?: string[] | null;
+  labelField: string;
+  searchFields: string[];
   list: ListMeta;
   placeholder?: string;
   portalMenu?: true | undefined;

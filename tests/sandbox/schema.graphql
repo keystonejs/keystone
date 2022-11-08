@@ -6,6 +6,7 @@ type Thing {
   checkbox: Boolean
   password: PasswordState
   toOneRelationship: User
+  toOneRelationshipAlternateLabel: User
   toManyRelationship(where: TodoWhereInput! = {}, orderBy: [TodoOrderByInput!]! = [], take: Int, skip: Int! = 0): [Todo!]
   toManyRelationshipCount(where: TodoWhereInput! = {}): Int
   toOneRelationshipCard: User
@@ -77,6 +78,7 @@ input ThingWhereInput {
   checkbox: BooleanFilter
   password: PasswordFilter
   toOneRelationship: UserWhereInput
+  toOneRelationshipAlternateLabel: UserWhereInput
   toManyRelationship: TodoManyRelationFilter
   toOneRelationshipCard: UserWhereInput
   toManyRelationshipCard: TodoManyRelationFilter
@@ -253,6 +255,7 @@ input ThingUpdateInput {
   checkbox: Boolean
   password: String
   toOneRelationship: UserRelateToOneForUpdateInput
+  toOneRelationshipAlternateLabel: UserRelateToOneForUpdateInput
   toManyRelationship: TodoRelateToManyForUpdateInput
   toOneRelationshipCard: UserRelateToOneForUpdateInput
   toManyRelationshipCard: TodoRelateToManyForUpdateInput
@@ -306,6 +309,7 @@ input ThingCreateInput {
   checkbox: Boolean
   password: String
   toOneRelationship: UserRelateToOneForCreateInput
+  toOneRelationshipAlternateLabel: UserRelateToOneForCreateInput
   toManyRelationship: TodoRelateToManyForCreateInput
   toOneRelationshipCard: UserRelateToOneForCreateInput
   toManyRelationshipCard: TodoRelateToManyForCreateInput

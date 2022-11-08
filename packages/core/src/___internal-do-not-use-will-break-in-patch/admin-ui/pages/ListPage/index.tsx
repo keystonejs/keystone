@@ -137,14 +137,14 @@ const ListPage = ({ listKey }: ListPageProps) => {
 
   const { resetToDefaults } = useQueryParamsFromLocalStorage(listKey);
 
-  let currentPage =
+  const currentPage =
     typeof query.page === 'string' && !Number.isNaN(parseInt(query.page)) ? Number(query.page) : 1;
-  let pageSize =
+  const pageSize =
     typeof query.pageSize === 'string' && !Number.isNaN(parseInt(query.pageSize))
       ? parseInt(query.pageSize)
       : list.pageSize;
 
-  let metaQuery = useQuery(listMetaGraphqlQuery, { variables: { listKey } });
+  const metaQuery = useQuery(listMetaGraphqlQuery, { variables: { listKey } });
 
   let { listViewFieldModesByField, filterableFields, orderableFields } = useMemo(() => {
     const listViewFieldModesByField: Record<string, 'read' | 'hidden'> = {};
@@ -166,13 +166,12 @@ const ListPage = ({ listKey }: ListPageProps) => {
   const sort = useSort(list, orderableFields);
   const filters = useFilters(list, filterableFields);
 
-  const searchFields = Object.values(list.fields)
-    .filter(({ search }) => search !== null)
-    .map(({ label }) => label);
+  const searchFields = Object.keys(list.fields).filter(key => list.fields[key].search);
+  const searchLabels = searchFields.map(key => list.fields[key].label);
 
   const searchParam = typeof query.search === 'string' ? query.search : '';
   const [searchString, updateSearchString] = useState(searchParam);
-  const search = useFilter(searchParam, list);
+  const search = useFilter(searchParam, list, searchFields);
 
   const updateSearch = (value: string) => {
     const { search, ...queries } = query;
@@ -283,7 +282,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
                   autoFocus
                   value={searchString}
                   onChange={e => updateSearchString(e.target.value)}
-                  placeholder={`Search by ${searchFields.length ? searchFields.join(', ') : 'ID'}`}
+                  placeholder={`Search by ${searchLabels.length ? searchLabels.join(', ') : 'ID'}`}
                 />
                 <Button css={{ borderRadius: '0px 4px 4px 0px' }} type="submit">
                   <SearchIcon />

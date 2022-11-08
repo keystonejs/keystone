@@ -126,36 +126,62 @@ export const relationship =
           }
         }
 
+        const foreignList = adminMetaRoot.listsByKey[foreignListKey];
+        const hideCreate = config.ui?.hideCreate ?? false;
+        const refLabelField: typeof foreignFieldKey = foreignList.labelField;
+        const refSearchFields: typeof foreignFieldKey[] = foreignList.fields
+          .filter(x => x.search)
+          .map(x => x.path);
+
+        if (config.ui?.displayMode === 'select') {
+          return {
+            refFieldKey: foreignFieldKey,
+            refListKey: foreignListKey,
+            many,
+            hideCreate,
+            displayMode: 'select',
+
+            // prefer the local definition to the foreign list, if provided
+            refLabelField: config.ui.labelField || refLabelField,
+            refSearchFields: config.ui.searchFields || refSearchFields,
+          };
+        }
+
+        if (config.ui?.displayMode === 'cards') {
+          return {
+            refFieldKey: foreignFieldKey,
+            refListKey: foreignListKey,
+            many,
+            hideCreate,
+            displayMode: 'cards',
+            cardFields: config.ui.cardFields,
+            linkToItem: config.ui.linkToItem ?? false,
+            removeMode: config.ui.removeMode ?? 'disconnect',
+            inlineCreate: config.ui.inlineCreate ?? null,
+            inlineEdit: config.ui.inlineEdit ?? null,
+            inlineConnect: config.ui.inlineConnect ? true : false,
+
+            // prefer the local definition to the foreign list, if provided
+            ...(typeof config.ui.inlineConnect === 'object'
+              ? {
+                  refLabelField: config.ui.inlineConnect.labelField ?? refLabelField,
+                  refSearchFields: config.ui.inlineConnect?.searchFields ?? refSearchFields,
+                }
+              : {
+                  refLabelField,
+                  refSearchFields,
+                }),
+          };
+        }
+
         return {
           refFieldKey: foreignFieldKey,
           refListKey: foreignListKey,
           many,
-          hideCreate: config.ui?.hideCreate ?? false,
-          ...(config.ui?.displayMode === 'cards'
-            ? {
-                displayMode: 'cards',
-                cardFields: config.ui.cardFields,
-                linkToItem: config.ui.linkToItem ?? false,
-                removeMode: config.ui.removeMode ?? 'disconnect',
-                inlineCreate: config.ui.inlineCreate ?? null,
-                inlineEdit: config.ui.inlineEdit ?? null,
-                inlineConnect: config.ui.inlineConnect ? true : false,
-                refLabelField:
-                  typeof config.ui.inlineConnect === 'object'
-                    ? config.ui.inlineConnect.labelField
-                    : null,
-                refSearchFields:
-                  typeof config.ui.inlineConnect === 'object'
-                    ? config.ui.inlineConnect.searchFields ?? null
-                    : null,
-              }
-            : config.ui?.displayMode === 'count'
-            ? { displayMode: 'count' }
-            : {
-                displayMode: 'select',
-                refLabelField: config.ui?.labelField ?? null,
-                refSearchFields: config.ui?.searchFields ?? null,
-              }),
+          hideCreate,
+          displayMode: 'count',
+          refLabelField,
+          refSearchFields,
         };
       },
     };

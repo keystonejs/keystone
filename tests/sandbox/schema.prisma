@@ -13,37 +13,40 @@ generator client {
 }
 
 model Thing {
-  id                       String    @id @default(cuid())
-  checkbox                 Boolean   @default(false)
-  password                 String?
-  toOneRelationship        User?     @relation("Thing_toOneRelationship", fields: [toOneRelationshipId], references: [id])
-  toOneRelationshipId      String?   @map("toOneRelationship")
-  toManyRelationship       Todo[]    @relation("Thing_toManyRelationship")
-  toOneRelationshipCard    User?     @relation("Thing_toOneRelationshipCard", fields: [toOneRelationshipCardId], references: [id])
-  toOneRelationshipCardId  String?   @map("toOneRelationshipCard")
-  toManyRelationshipCard   Todo[]    @relation("Thing_toManyRelationshipCard")
-  text                     String    @default("")
-  timestamp                DateTime?
-  calendarDay              String?
-  select                   String?
-  selectOnSide             String?
-  selectOnSideItemViewOnly String?
-  selectSegmentedControl   String?
-  multiselect              String    @default("[]")
-  json                     String?
-  integer                  Int?
-  bigInt                   BigInt?
-  float                    Float?
-  image_filesize           Int?
-  image_extension          String?
-  image_width              Int?
-  image_height             Int?
-  image_id                 String?
-  file_filesize            Int?
-  file_filename            String?
-  document                 String    @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  id                                String    @id @default(cuid())
+  checkbox                          Boolean   @default(false)
+  password                          String?
+  toOneRelationship                 User?     @relation("Thing_toOneRelationship", fields: [toOneRelationshipId], references: [id])
+  toOneRelationshipId               String?   @map("toOneRelationship")
+  toOneRelationshipAlternateLabel   User?     @relation("Thing_toOneRelationshipAlternateLabel", fields: [toOneRelationshipAlternateLabelId], references: [id])
+  toOneRelationshipAlternateLabelId String?   @map("toOneRelationshipAlternateLabel")
+  toManyRelationship                Todo[]    @relation("Thing_toManyRelationship")
+  toOneRelationshipCard             User?     @relation("Thing_toOneRelationshipCard", fields: [toOneRelationshipCardId], references: [id])
+  toOneRelationshipCardId           String?   @map("toOneRelationshipCard")
+  toManyRelationshipCard            Todo[]    @relation("Thing_toManyRelationshipCard")
+  text                              String    @default("")
+  timestamp                         DateTime?
+  calendarDay                       String?
+  select                            String?
+  selectOnSide                      String?
+  selectOnSideItemViewOnly          String?
+  selectSegmentedControl            String?
+  multiselect                       String    @default("[]")
+  json                              String?
+  integer                           Int?
+  bigInt                            BigInt?
+  float                             Float?
+  image_filesize                    Int?
+  image_extension                   String?
+  image_width                       Int?
+  image_height                      Int?
+  image_id                          String?
+  file_filesize                     Int?
+  file_filename                     String?
+  document                          String    @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
 
   @@index([toOneRelationshipId])
+  @@index([toOneRelationshipAlternateLabelId])
   @@index([toOneRelationshipCardId])
 }
 
@@ -63,15 +66,16 @@ model Todo {
 }
 
 model User {
-  id                               String   @id @default(cuid())
-  name                             String   @default("")
-  email                            String   @default("")
-  password                         String?
-  tasks                            Todo[]   @relation("Todo_assignedTo")
-  createdAt                        DateTime @default(now())
-  updatedAt                        DateTime @updatedAt
-  from_Thing_toOneRelationship     Thing[]  @relation("Thing_toOneRelationship")
-  from_Thing_toOneRelationshipCard Thing[]  @relation("Thing_toOneRelationshipCard")
+  id                                         String   @id @default(cuid())
+  name                                       String   @default("")
+  email                                      String   @default("")
+  password                                   String?
+  tasks                                      Todo[]   @relation("Todo_assignedTo")
+  createdAt                                  DateTime @default(now())
+  updatedAt                                  DateTime @updatedAt
+  from_Thing_toOneRelationship               Thing[]  @relation("Thing_toOneRelationship")
+  from_Thing_toOneRelationshipAlternateLabel Thing[]  @relation("Thing_toOneRelationshipAlternateLabel")
+  from_Thing_toOneRelationshipCard           Thing[]  @relation("Thing_toOneRelationshipCard")
 }
 
 model Settings {
