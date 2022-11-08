@@ -266,6 +266,7 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
   });
 
   const httpOptions: ListenOptions = {
+    host: 'localhost',
     port: 3000,
   };
 

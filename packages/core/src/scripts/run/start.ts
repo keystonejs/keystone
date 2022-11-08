@@ -42,6 +42,7 @@ export const start = async (cwd: string) => {
   }
 
   const options: ListenOptions = {
+    host: 'localhost',
     port: 3000,
   };
 
