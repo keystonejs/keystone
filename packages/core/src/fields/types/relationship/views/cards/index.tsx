@@ -294,6 +294,7 @@ export function Cards({
               autoFocus
               controlShouldRenderValue={isLoadingLazyItems}
               isDisabled={onChange === undefined}
+              labelField={field.refLabelField}
               list={foreignList}
               isLoading={isLoadingLazyItems}
               placeholder={`Select a ${foreignList.singular}`}

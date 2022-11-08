@@ -84,9 +84,9 @@ export function useFilter(search: string, list: ListMeta) {
   }, [search, list]);
 }
 
-const idField = '____id____';
+const idFieldAlias = '____id____';
 
-const labelField = '____label____';
+const labelFieldAlias = '____label____';
 
 const LoadingIndicatorContext = createContext<{
   count: number;
@@ -101,6 +101,7 @@ export const RelationshipSelect = ({
   controlShouldRenderValue,
   isDisabled,
   isLoading,
+  labelField,
   list,
   placeholder,
   portalMenu,
@@ -111,6 +112,7 @@ export const RelationshipSelect = ({
   controlShouldRenderValue: boolean;
   isDisabled: boolean;
   isLoading?: boolean;
+  labelField: string | null;
   list: ListMeta;
   placeholder?: string;
   portalMenu?: true | undefined;
@@ -135,13 +137,13 @@ export const RelationshipSelect = ({
   const [loadingIndicatorElement, setLoadingIndicatorElement] = useState<null | HTMLElement>(null);
 
   const QUERY: TypedDocumentNode<
-    { items: { [idField]: string; [labelField]: string | null }[]; count: number },
+    { items: { [idFieldAlias]: string; [labelFieldAlias]: string | null }[]; count: number },
     { where: Record<string, any>; take: number; skip: number }
   > = gql`
     query RelationshipSelect($where: ${list.gqlNames.whereInputName}!, $take: Int!, $skip: Int!) {
       items: ${list.gqlNames.listQueryName}(where: $where, take: $take, skip: $skip) {
-        ${idField}: id
-        ${labelField}: ${list.labelField}
+        ${idFieldAlias}: id
+        ${labelFieldAlias}: ${labelField}
         ${extraSelection}
       }
       count: ${list.gqlNames.listQueryCountName}(where: $where)
@@ -192,7 +194,7 @@ export const RelationshipSelect = ({
   const count = data?.count || 0;
 
   const options =
-    data?.items?.map(({ [idField]: value, [labelField]: label, ...data }) => ({
+    data?.items?.map(({ [idFieldAlias]: value, [labelFieldAlias]: label, ...data }) => ({
       value,
       label: label || value,
       data,
@@ -229,13 +231,13 @@ export const RelationshipSelect = ({
           lastFetchMore?.skip !== skip)
       ) {
         const QUERY: TypedDocumentNode<
-          { items: { [idField]: string; [labelField]: string | null }[] },
+          { items: { [idFieldAlias]: string; [labelFieldAlias]: string | null }[] },
           { where: Record<string, any>; take: number; skip: number }
         > = gql`
               query RelationshipSelectMore($where: ${list.gqlNames.whereInputName}!, $take: Int!, $skip: Int!) {
                 items: ${list.gqlNames.listQueryName}(where: $where, take: $take, skip: $skip) {
-                  ${labelField}: ${list.labelField}
-                  ${idField}: id
+                  ${labelFieldAlias}: ${labelField}
+                  ${idFieldAlias}: id
                   ${extraSelection}
                 }
               }

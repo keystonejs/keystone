@@ -131,6 +131,7 @@ export const Field = ({
             aria-describedby={field.description === null ? undefined : `${field.path}-description`}
             autoFocus={autoFocus}
             isDisabled={onChange === undefined}
+            labelField={field.refLabelField}
             list={foreignList}
             portalMenu
             state={
@@ -344,6 +345,7 @@ type RelationshipController = FieldController<
 > & {
   display: 'count' | 'cards-or-select';
   listKey: string;
+  refLabelField: string | null;
   refListKey: string;
   refFieldKey?: string;
   hideCreate: boolean;
@@ -396,6 +398,7 @@ export const controller = (
     label: config.label,
     description: config.description,
     display: config.fieldMeta.displayMode === 'count' ? 'count' : 'cards-or-select',
+    refLabelField: config.fieldMeta.displayMode === 'count' ? null : config.fieldMeta.refLabelField,
     refListKey: config.fieldMeta.refListKey,
     graphqlSelection:
       config.fieldMeta.displayMode === 'count'
@@ -630,7 +633,7 @@ function useRelationshipFilterValues({ value, list }: { value: string; list: Lis
   const query = gql`
     query FOREIGNLIST_QUERY($where: ${list.gqlNames.whereInputName}!) {
       items: ${list.gqlNames.listQueryName}(where: $where) {
-        id 
+        id
         ${list.labelField}
       }
     }

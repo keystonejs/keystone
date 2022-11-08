@@ -30,7 +30,15 @@ type CardsDisplayConfig = {
     /** Configures inline edit mode for cards */
     inlineEdit?: { fields: readonly string[] };
     /** Configures whether a select to add existing items should be shown or not */
-    inlineConnect?: boolean;
+    inlineConnect?:
+      | boolean
+      | {
+          /**
+           * The path of the field to use from the related list for item labels in the inline connect
+           * Defaults to the labelField configured on the related list.
+           */
+          labelField: string;
+        };
   };
 };
 
@@ -129,8 +137,11 @@ export const relationship =
                 removeMode: config.ui.removeMode ?? 'disconnect',
                 inlineCreate: config.ui.inlineCreate ?? null,
                 inlineEdit: config.ui.inlineEdit ?? null,
-                inlineConnect: config.ui.inlineConnect ?? false,
-                refLabelField: adminMetaRoot.listsByKey[foreignListKey].labelField,
+                inlineConnect: config.ui.inlineConnect ? true : false,
+                refLabelField:
+                  typeof config.ui.inlineConnect === 'object'
+                    ? config.ui.inlineConnect.labelField
+                    : adminMetaRoot.listsByKey[foreignListKey].labelField,
               }
             : config.ui?.displayMode === 'count'
             ? { displayMode: 'count' }

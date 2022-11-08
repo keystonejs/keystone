@@ -44,7 +44,9 @@ export const lists = {
           description,
           displayMode: 'cards',
           cardFields: ['name', 'email'],
-          inlineConnect: true,
+          inlineConnect: {
+            labelField: 'email',
+          },
           inlineCreate: { fields: ['name', 'email'] },
           linkToItem: true,
           inlineEdit: { fields: ['name', 'email'] },
