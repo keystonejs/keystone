@@ -40,8 +40,8 @@ type FieldsProps = {
   fields: Record<string, FieldMeta>;
   value: Value;
   forceValidation: boolean;
-  fieldPositions: Record<string, 'form' | 'sidebar'> | null;
-  position: 'form' | 'sidebar';
+  fieldPositions?: Record<string, 'form' | 'sidebar'> | null;
+  position?: 'form' | 'sidebar';
   invalidFields: ReadonlySet<string>;
   fieldModes: Record<string, 'hidden' | 'edit' | 'read'> | null;
   onChange(value: (value: Value) => Value): void;
@@ -59,9 +59,7 @@ export function Fields({
 }: FieldsProps) {
   const renderedFields = Object.keys(fields)
     .filter(fieldPath => fieldModes === null || fieldModes[fieldPath] !== 'hidden')
-    .filter(
-      fieldPath => fieldPositions === null || !position || fieldPositions[fieldPath] === position
-    )
+    .filter(fieldPath => !fieldPositions || !position || fieldPositions[fieldPath] === position)
     .map((fieldPath, index) => {
       const field = fields[fieldPath];
       const val = value[fieldPath];
