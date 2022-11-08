@@ -132,6 +132,7 @@ export const Field = ({
             autoFocus={autoFocus}
             isDisabled={onChange === undefined}
             labelField={field.refLabelField}
+            searchFields={field.refSearchFields}
             list={foreignList}
             portalMenu
             state={
@@ -345,9 +346,10 @@ type RelationshipController = FieldController<
 > & {
   display: 'count' | 'cards-or-select';
   listKey: string;
-  refLabelField: string | null;
   refListKey: string;
   refFieldKey?: string;
+  refLabelField: string | null;
+  refSearchFields: string[] | null;
   hideCreate: boolean;
   many: boolean;
 };
@@ -362,7 +364,8 @@ export const controller = (
     } & (
       | {
           displayMode: 'select';
-          refLabelField: string;
+          refLabelField: string | null;
+          refSearchFields: string[] | null;
         }
       | {
           displayMode: 'cards';
@@ -372,7 +375,8 @@ export const controller = (
           inlineCreate: { fields: readonly string[] } | null;
           inlineEdit: { fields: readonly string[] } | null;
           inlineConnect: boolean;
-          refLabelField: string;
+          refLabelField: string | null;
+          refSearchFields: string[] | null;
         }
       | { displayMode: 'count' }
     )
@@ -399,6 +403,8 @@ export const controller = (
     description: config.description,
     display: config.fieldMeta.displayMode === 'count' ? 'count' : 'cards-or-select',
     refLabelField: config.fieldMeta.displayMode === 'count' ? null : config.fieldMeta.refLabelField,
+    refSearchFields:
+      config.fieldMeta.displayMode === 'count' ? null : config.fieldMeta.refSearchFields,
     refListKey: config.fieldMeta.refListKey,
     graphqlSelection:
       config.fieldMeta.displayMode === 'count'

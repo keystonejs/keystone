@@ -32,9 +32,14 @@ export const lists = {
       password: password({ ui: { description } }),
       toOneRelationship: relationship({
         ref: 'User',
+        ui: { description },
+      }),
+      toOneRelationshipAlternateLabel: relationship({
+        ref: 'User',
         ui: {
           description,
           labelField: 'email',
+          searchFields: ['email', 'name'],
         },
       }),
       toManyRelationship: relationship({ ref: 'Todo', many: true, ui: { description } }),

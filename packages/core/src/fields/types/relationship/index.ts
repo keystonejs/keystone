@@ -12,6 +12,7 @@ type SelectDisplayConfig = {
      * Defaults to the labelField configured on the related list.
      */
     labelField?: string;
+    searchFields?: string[];
   };
 };
 
@@ -38,6 +39,7 @@ type CardsDisplayConfig = {
            * Defaults to the labelField configured on the related list.
            */
           labelField: string;
+          searchFields?: string[];
         };
   };
 };
@@ -141,14 +143,18 @@ export const relationship =
                 refLabelField:
                   typeof config.ui.inlineConnect === 'object'
                     ? config.ui.inlineConnect.labelField
-                    : adminMetaRoot.listsByKey[foreignListKey].labelField,
+                    : null,
+                refSearchFields:
+                  typeof config.ui.inlineConnect === 'object'
+                    ? config.ui.inlineConnect.searchFields ?? null
+                    : null,
               }
             : config.ui?.displayMode === 'count'
             ? { displayMode: 'count' }
             : {
                 displayMode: 'select',
-                refLabelField:
-                  config.ui?.labelField || adminMetaRoot.listsByKey[foreignListKey].labelField,
+                refLabelField: config.ui?.labelField ?? null,
+                refSearchFields: config.ui?.searchFields ?? null,
               }),
         };
       },

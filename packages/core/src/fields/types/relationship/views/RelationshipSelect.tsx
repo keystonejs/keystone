@@ -56,7 +56,7 @@ function useDebouncedValue<T>(value: T, limitMs: number): T {
   return debouncedValue;
 }
 
-export function useFilter(search: string, list: ListMeta) {
+export function useFilter(search: string, list: ListMeta, searchFields: string[] | null) {
   return useMemo(() => {
     if (!search.length) return { OR: [] };
 
@@ -69,9 +69,12 @@ export function useFilter(search: string, list: ListMeta) {
       conditions.push({ id: { equals: trimmedSearch } });
     }
 
-    for (const field of Object.values(list.fields)) {
-      if (field.search === null) continue; // in ui.searchFields
+    // prefer the relationship field's ui.searchFields before defaulting to the list definition
+    const _fields = searchFields
+      ? searchFields.map(x => list.fields[x])
+      : Object.values(list.fields).filter(x => x.search);
 
+    for (const field of _fields) {
       conditions.push({
         [field.path]: {
           contains: trimmedSearch,
@@ -81,7 +84,7 @@ export function useFilter(search: string, list: ListMeta) {
     }
 
     return { OR: conditions };
-  }, [search, list]);
+  }, [search, list, searchFields]);
 }
 
 const idFieldAlias = '____id____';
@@ -101,7 +104,8 @@ export const RelationshipSelect = ({
   controlShouldRenderValue,
   isDisabled,
   isLoading,
-  labelField,
+  labelField = null,
+  searchFields = null,
   list,
   placeholder,
   portalMenu,
@@ -112,7 +116,8 @@ export const RelationshipSelect = ({
   controlShouldRenderValue: boolean;
   isDisabled: boolean;
   isLoading?: boolean;
-  labelField: string | null;
+  labelField?: string | null;
+  searchFields?: string[] | null;
   list: ListMeta;
   placeholder?: string;
   portalMenu?: true | undefined;
@@ -151,7 +156,7 @@ export const RelationshipSelect = ({
   `;
 
   const debouncedSearch = useDebouncedValue(search, 200);
-  const where = useFilter(debouncedSearch, list);
+  const where = useFilter(debouncedSearch, list, searchFields);
 
   const link = useApolloClient().link;
   // we're using a local apollo client here because writing a global implementation of the typePolicies
