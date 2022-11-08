@@ -3,4 +3,4 @@
 '@keystone-6/fields-document': patch
 ---
 
-Fix relationship fields not respecting their `ui.labelField` configuration
+Fix relationship fields not using their `ui.labelField` configuration
