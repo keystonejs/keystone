@@ -19,7 +19,8 @@ import {
 } from '@keystone-6/core/fields';
 import { document, structure } from '@keystone-6/fields-document';
 import { componentBlocks } from '../component-blocks';
-import { schema } from '../structure';
+import { schema as structureSchema } from '../structure';
+import { schema as structureNestedSchema } from '../structure-nested';
 import { dbConfig, localStorageConfig, trackingFields } from '../utils';
 
 const description =
@@ -29,7 +30,11 @@ export const lists = {
   Thing: list({
     access: allowAll,
     fields: {
-      structure: structure({ schema, ui: { views: './structure' } }),
+      structure: structure({ schema: structureSchema, ui: { views: './structure' } }),
+      structureNested: structure({
+        schema: structureNestedSchema,
+        ui: { views: './structure-nested' },
+      }),
       ...group({
         label: 'Some group',
         description: 'Some group description',
