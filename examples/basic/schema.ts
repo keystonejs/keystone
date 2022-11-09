@@ -47,11 +47,6 @@ const User: Lists.User = list({
     email: text({
       isIndexed: 'unique',
       validation: { isRequired: true },
-      ui: {
-        itemView: {
-          fieldPosition: 'sidebar',
-        },
-      },
     }),
     /** Avatar upload for the users profile, stored locally */
     avatar: image({ storage: 'my_images' }),
