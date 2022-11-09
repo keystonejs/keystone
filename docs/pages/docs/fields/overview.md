@@ -90,6 +90,10 @@ Options:
     Can be one of `['edit', 'read', 'hidden']`, or an async function with an argument `{ session, context, item }` that returns one of `['edit', 'read', 'hidden']`.
     Defaults to the list's `ui.itemView.defaultFieldMode` config if defined.
     See the [Lists API](../config/lists#ui) for details.
+    {% if $nextRelease %}
+  - `listView.fieldPosition` (default: `form`): Controls which side of the page the field is placed in the Admin UI.
+    Can be either `form` or `sidebar`. `form` or blank places the field on the left hand side of the item view. `sidebar` places the field on the right hand side under the ID field
+    {% /if %}
   - `listView.fieldMode` (default: `'read'`): Controls the list view page of the Admin UI.
     Can be one of `['read', 'hidden']`, or an async function with an argument `{ session, context }` that returns one of `['read', 'hidden']`.
     Defaults to the list's `ui.listView.defaultFieldMode` config if defined.
