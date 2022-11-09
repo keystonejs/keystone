@@ -14,7 +14,7 @@ import {
 import { useEffect, useMemo, useRef } from 'react';
 import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values';
 import { ComponentSchemaForGraphQL } from './DocumentEditor/component-blocks/api';
-import { assertNever } from './DocumentEditor/component-blocks/utils';
+import { assertNever, clientSideValidateProp } from './DocumentEditor/component-blocks/utils';
 import { FormValueContentFromPreviewProps } from './DocumentEditor/component-blocks/form-from-preview';
 import { createGetPreviewProps } from './DocumentEditor/component-blocks/preview-props';
 
@@ -77,6 +77,7 @@ export const controller = (
     graphqlSelection: `${config.path} { json(hydrateRelationships: true) }`,
     schema: config.customViews.schema,
     defaultValue: { kind: 'create', value: getInitialPropsValue(config.customViews.schema) },
+    validate: value => clientSideValidateProp(config.customViews.schema, value.value),
     deserialize: data => {
       return {
         kind: 'update',

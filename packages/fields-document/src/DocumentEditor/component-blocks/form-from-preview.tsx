@@ -21,7 +21,7 @@ import {
 } from './api';
 import { previewPropsToValue, setValueToPreviewProps } from './get-value';
 import { createGetPreviewProps } from './preview-props';
-import { assertNever } from './utils';
+import { assertNever, clientSideValidateProp } from './utils';
 
 type DefaultFieldProps<Key> = GenericPreviewProps<
   Extract<ComponentSchema, { kind: Key }>,
@@ -211,13 +211,13 @@ const OrderableItemInForm = memo(function OrderableItemInForm(
   }
 ) {
   const [modalState, setModalState] = useState<
-    { state: 'open'; value: unknown } | { state: 'closed' }
+    { state: 'open'; value: unknown; forceValidation: boolean } | { state: 'closed' }
   >({ state: 'closed' });
   const onModalChange = useCallback(
     (cb: (value: unknown) => unknown) => {
       setModalState(state => {
         if (state.state === 'open') {
-          return { state: 'open', value: cb(state.value) };
+          return { state: 'open', forceValidation: state.forceValidation, value: cb(state.value) };
         }
         return state;
       });
@@ -234,7 +234,11 @@ const OrderableItemInForm = memo(function OrderableItemInForm(
           <Button
             weight="none"
             onClick={() => {
-              setModalState({ state: 'open', value: previewPropsToValue(props) });
+              setModalState({
+                state: 'open',
+                value: previewPropsToValue(props),
+                forceValidation: false,
+              });
             }}
             css={{ flexGrow: 1, justifyContent: 'start' }}
           >
@@ -250,10 +254,13 @@ const OrderableItemInForm = memo(function OrderableItemInForm(
             actions={{
               confirm: {
                 action: () => {
-                  if (modalState.state === 'open') {
-                    setValueToPreviewProps(modalState.value, props);
-                    setModalState({ state: 'closed' });
+                  if (modalState.state !== 'open') return;
+                  if (!clientSideValidateProp(props.schema, modalState.value)) {
+                    setModalState(state => ({ ...state, forceValidation: true }));
+                    return;
                   }
+                  setValueToPreviewProps(modalState.value, props);
+                  setModalState({ state: 'closed' });
                 },
                 label: 'Done',
               },
