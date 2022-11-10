@@ -332,7 +332,7 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
   const id = useRouter().query.id as string;
 
   const { query, selectedFields } = useMemo(() => {
-    let selectedFields = Object.entries(list.fields)
+    const selectedFields = Object.entries(list.fields)
       .filter(
         ([fieldKey, field]) =>
           field.itemView.fieldMode !== 'hidden' ||
@@ -395,8 +395,8 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
     }>
   >(data, error?.graphQLErrors);
 
-  let itemViewFieldModesByField = useMemo(() => {
-    let itemViewFieldModesByField: Record<string, 'edit' | 'read' | 'hidden'> = {};
+  const itemViewFieldModesByField = useMemo(() => {
+    const itemViewFieldModesByField: Record<string, 'edit' | 'read' | 'hidden'> = {};
     dataGetter.data?.keystone?.adminMeta?.list?.fields?.forEach(field => {
       if (field !== null && field.path !== null && field?.itemView?.fieldMode != null) {
         itemViewFieldModesByField[field.path] = field.itemView.fieldMode;
@@ -405,8 +405,8 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
     return itemViewFieldModesByField;
   }, [dataGetter.data?.keystone?.adminMeta?.list?.fields]);
 
-  let itemViewFieldPositionsByField = useMemo(() => {
-    let itemViewFieldPositionsByField: Record<string, 'form' | 'sidebar'> = {};
+  const itemViewFieldPositionsByField = useMemo(() => {
+    const itemViewFieldPositionsByField: Record<string, 'form' | 'sidebar'> = {};
     dataGetter.data?.keystone?.adminMeta?.list?.fields?.forEach(field => {
       if (field !== null && field.path !== null && field?.itemView?.fieldPosition != null) {
         itemViewFieldPositionsByField[field.path] = field.itemView.fieldPosition;
