@@ -1,8 +1,6 @@
 import path from 'path';
-import { GraphQLString, isInputObjectType } from 'graphql';
 import {
   KeystoneConfig,
-  QueryMode,
   MaybePromise,
   MaybeSessionFunction,
   BaseListTypeInfo,
@@ -89,16 +87,6 @@ export function createAdminMeta(
       omittedLists.push(listKey);
       continue;
     }
-    // Default the labelField to `name`, `label`, or `title` if they exist; otherwise fall back to `id`
-    const labelField =
-      (listConfig.ui?.labelField as string | undefined) ??
-      (listConfig.fields.label
-        ? 'label'
-        : listConfig.fields.name
-        ? 'name'
-        : listConfig.fields.title
-        ? 'title'
-        : 'id');
 
     let initialColumns: string[];
     if (listConfig.ui?.listView?.initialColumns) {
@@ -109,10 +97,10 @@ export function createAdminMeta(
       // 2 more fields to the right of that. We don't include the 'id' field
       // unless it happened to be the labelField
       initialColumns = [
-        labelField,
+        list.ui.labelField,
         ...Object.keys(list.fields)
           .filter(fieldKey => list.fields[fieldKey].graphql.isEnabled.read)
-          .filter(fieldKey => fieldKey !== labelField)
+          .filter(fieldKey => fieldKey !== list.ui.labelField)
           .filter(fieldKey => fieldKey !== 'id'),
       ].slice(0, 3);
     }
@@ -124,7 +112,7 @@ export function createAdminMeta(
 
     adminMetaRoot.listsByKey[listKey] = {
       key: listKey,
-      labelField,
+      labelField: list.ui.labelField,
       description: listConfig.ui?.description ?? listConfig.description ?? null,
       label: list.adminUILabels.label,
       singular: list.adminUILabels.singular,
@@ -167,31 +155,6 @@ export function createAdminMeta(
   // populate .fields array
   for (const [listKey, list] of Object.entries(initialisedLists)) {
     if (omittedLists.includes(listKey)) continue;
-    const searchFields = new Set(config.lists[listKey].ui?.searchFields ?? []);
-    if (searchFields.has('id')) {
-      throw new Error(
-        `The ui.searchFields option on the ${listKey} list includes 'id'. Lists can always be searched by an item's id so it must not be specified as a search field`
-      );
-    }
-    const whereInputFields = list.types.where.graphQLType.getFields();
-    const possibleSearchFields = new Map<string, 'default' | 'insensitive' | null>();
-
-    for (const fieldKey of Object.keys(list.fields)) {
-      const filterType = whereInputFields[fieldKey]?.type;
-      const fieldFilterFields = isInputObjectType(filterType) ? filterType.getFields() : undefined;
-      if (fieldFilterFields?.contains?.type === GraphQLString) {
-        possibleSearchFields.set(
-          fieldKey,
-          fieldFilterFields?.mode?.type === QueryMode.graphQLType ? 'insensitive' : 'default'
-        );
-      }
-    }
-    if (config.lists[listKey].ui?.searchFields === undefined) {
-      const labelField = adminMetaRoot.listsByKey[listKey].labelField;
-      if (possibleSearchFields.has(labelField)) {
-        searchFields.add(labelField);
-      }
-    }
 
     for (const [fieldKey, field] of Object.entries(list.fields)) {
       // If the field is a relationship field and is related to an omitted list, skip.
@@ -199,13 +162,6 @@ export function createAdminMeta(
       // Disabling this entirely for now until we properly decide what the Admin UI
       // should do when `omit: ['read']` is used.
       if (field.graphql.isEnabled.read === false) continue;
-
-      const search = searchFields.has(fieldKey) ? possibleSearchFields.get(fieldKey) ?? null : null;
-      if (searchFields.has(fieldKey) && search === null) {
-        throw new Error(
-          `The ui.searchFields option on the ${listKey} list includes '${fieldKey}' but that field doesn't have a contains filter that accepts a GraphQL String`
-        );
-      }
 
       assertValidView(
         field.views,
@@ -225,7 +181,7 @@ export function createAdminMeta(
               getViewId(field.ui.views)),
         fieldMeta: null,
         listKey: listKey,
-        search,
+        search: list.ui.searchableFields.get(fieldKey) ?? null,
         createView: {
           fieldMode: normalizeMaybeSessionFunction(
             field.graphql.isEnabled.create ? field.ui?.createView?.fieldMode ?? 'edit' : 'hidden'

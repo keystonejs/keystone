@@ -63,7 +63,7 @@ export type ListAdminUIConfig<
    * The field to use as a label in the Admin UI. If you want to base the label off more than a single field, use a virtual field and reference that field here.
    * @default 'label', if it exists, falling back to 'name', then 'title', and finally 'id', which is guaranteed to exist.
    */
-  labelField?: 'id' | keyof Fields;
+  labelField?: 'id' | Exclude<keyof Fields, number>;
   /**
    * The fields used by the Admin UI when searching this list.
    * It is always possible to search by id and `id` should not be specified in this option.
