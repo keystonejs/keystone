@@ -191,16 +191,19 @@ export function createAdminMeta(
       // Disabling this entirely for now until we properly decide what the Admin UI
       // should do when `omit: ['read']` is used.
       if (field.graphql.isEnabled.read === false) continue;
-      let search = searchFields.has(fieldKey) ? possibleSearchFields.get(fieldKey) ?? null : null;
+
+      const search = searchFields.has(fieldKey) ? possibleSearchFields.get(fieldKey) ?? null : null;
       if (searchFields.has(fieldKey) && search === null) {
         throw new Error(
           `The ui.searchFields option on the ${key} list includes '${fieldKey}' but that field doesn't have a contains filter that accepts a GraphQL String`
         );
       }
+
       assertValidView(
         field.views,
         `The \`views\` on the implementation of the field type at lists.${key}.fields.${fieldKey}`
       );
+
       const baseOrderFilterArgs = { fieldKey, listKey: list.listKey };
       adminMetaRoot.listsByKey[key].fields.push({
         label: field.label ?? humanize(fieldKey),

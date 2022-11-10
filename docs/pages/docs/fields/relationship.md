@@ -16,6 +16,9 @@ Read our [relationships guide](../guides/relationships) for details on Keystoneâ
   - `displayMode` (default: `'select'`): Controls the mode used to display the field in the item view. The mode `'select'` displays related items in a select component, while `'cards'` displays the related items in a card layout. Each display mode supports further configuration.
 - `ui.displayMode === 'select'` options:
   - `labelField`: The field path from the related list to use for item labels in the select. Defaults to the `labelField` configured on the related list.
+{% if $nextRelease %}
+  - `searchFields`: The fields used by the UI to search for this item, in context of this relationship field. Defaults to `searchFields` configured on the related list.
+{% /if %}
 - `ui.displayMode === 'cards'` options:
   - `cardFields`: A list of field paths from the related list to render in the card component. Defaults to `'id'` and the `labelField` configured on the related list.
   - `linkToItem` (default `false`): If `true`, the default card component will render as a link to navigate to the related item.
@@ -23,6 +26,11 @@ Read our [relationships guide](../guides/relationships) for details on Keystoneâ
   - `inlineCreate` (default: `null`): If not `null`, an object of the form `{ fields: [...] }`, where `fields` is a list of field paths from the related list should be provided. An inline `Create` button will be included in the cards allowing a new related item to be created based on the configured field paths.
   - `inlineEdit` (default: `null`): If not `null`, an object of the form `{ fields: [...] }`, where `fields` is a list of field paths from the related list should be provided. An `Edit` button will be included in each card, allowing the configured fields to be edited for each related item.
   - `inlineConnect` (default: `false`): If `true`, an inline `Link existing item` button will be present, allowing existing items of the related list to be connected in this field.
+{% if $nextRelease %}
+  Alternatively this can be an object with the properties:
+	- `labelField`: The field path from the related list to use for item labels in select. Defaults to the `labelField` configured on the related list.
+	- `searchFields`: The fields used by the UI to search for this item, in context of this relationship field. Defaults to `searchFields` configured on the related list.
+{% /if %}
 - `ui.displayMode === 'count'` only supports `many` relationships
 
 ```typescript
