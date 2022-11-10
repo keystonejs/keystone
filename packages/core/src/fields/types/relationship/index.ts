@@ -86,6 +86,7 @@ export const relationship =
     ...config
   }: RelationshipFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> =>
   meta => {
+    const { fieldKey } = meta;
     const { many = false } = config;
     const [foreignListKey, foreignFieldKey] = ref.split('.');
     const commonConfig = {
@@ -173,6 +174,27 @@ export const relationship =
                   refSearchFields,
                 }),
           };
+        }
+
+        if (!(refLabelField in foreignList.fieldsByKey)) {
+          throw new Error(
+            `The ui.labelField option for field '${fieldKey}' uses '${refLabelField}' but that field doesn't exist.`
+          );
+        }
+
+        for (const searchFieldKey of refSearchFields) {
+          if (!(searchFieldKey in foreignList.fieldsByKey)) {
+            throw new Error(
+              `The ui.searchFields option for relationship field '${fieldKey}' includes '${searchFieldKey}' but that field doesn't exist.`
+            );
+          }
+
+          const field = foreignList.fieldsByKey[searchFieldKey];
+          if (field.search) continue;
+
+          throw new Error(
+            `The ui.searchFields option for field '${fieldKey}' includes '${searchFieldKey}' but that field doesn't have a contains filter that accepts a GraphQL String`
+          );
         }
 
         return {
