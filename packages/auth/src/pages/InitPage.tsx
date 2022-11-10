@@ -28,7 +28,7 @@ import { useRedirect } from '../lib/useFromRedirect';
 
 const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup';
 
-const Welcome = ({ value }: { value: any }) => {
+function Welcome({ value }: { value: any }) {
   const [subscribe, setSubscribe] = useState<boolean>(false);
   const [email, setEmail] = useState<string>(guessEmailFromValue(value));
   const [error, setError] = useState<string | null>(null);
@@ -152,7 +152,7 @@ const Welcome = ({ value }: { value: any }) => {
       </form>
     </Stack>
   );
-};
+}
 
 type InitPageProps = {
   listKey: string;
@@ -160,9 +160,7 @@ type InitPageProps = {
   enableWelcome: boolean;
 };
 
-export const getInitPage = (props: InitPageProps) => () => <InitPage {...props} />;
-
-const InitPage = ({ fieldPaths, listKey, enableWelcome }: InitPageProps) => {
+function InitPage({ fieldPaths, listKey, enableWelcome }: InitPageProps) {
   const { adminMeta } = useKeystone();
   const fields = useMemo(() => {
     const fields: Record<string, FieldMeta> = {};
@@ -298,4 +296,6 @@ const InitPage = ({ fieldPaths, listKey, enableWelcome }: InitPageProps) => {
       <Welcome value={value} />
     </SigninContainer>
   );
-};
+}
+
+export const getInitPage = (props: InitPageProps) => () => <InitPage {...props} />;
