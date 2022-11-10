@@ -271,7 +271,6 @@ function InitPage({ fieldPaths, listKey, enableWelcome }: InitPageProps) {
           )}
           <Fields
             fields={fields}
-            fieldModes={null}
             forceValidation={forceValidation}
             invalidFields={invalidFields}
             onChange={setValue}

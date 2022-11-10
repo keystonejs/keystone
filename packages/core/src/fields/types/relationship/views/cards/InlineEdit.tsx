@@ -122,7 +122,6 @@ export function InlineEdit({
           />
         )}
         <Fields
-          fieldModes={null}
           fields={fieldsObj}
           forceValidation={forceValidation}
           invalidFields={invalidFields}
