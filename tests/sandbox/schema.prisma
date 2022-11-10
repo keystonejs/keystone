@@ -14,8 +14,8 @@ generator client {
 
 model Thing {
   id                                String    @id @default(cuid())
-  structure               String    @default("[]")
-  structureNested         String    @default("[]")
+  structure                         String    @default("[]")
+  structureNested                   String    @default("[]")
   checkbox                          Boolean   @default(false)
   password                          String?
   toOneRelationship                 User?     @relation("Thing_toOneRelationship", fields: [toOneRelationshipId], references: [id])
