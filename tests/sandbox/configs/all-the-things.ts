@@ -83,6 +83,35 @@ export const lists = {
           { value: 'three', label: 'Three' },
         ],
       }),
+      selectOnSide: select({
+        ui: {
+          description,
+          itemView: {
+            fieldPosition: 'sidebar',
+          },
+        },
+        options: [
+          { value: 'one', label: 'One' },
+          { value: 'two', label: 'Two' },
+          { value: 'three', label: 'Three' },
+        ],
+      }),
+      selectOnSideItemViewOnly: select({
+        ui: {
+          description,
+          createView: {
+            fieldMode: 'hidden',
+          },
+          itemView: {
+            fieldPosition: 'sidebar',
+          },
+        },
+        options: [
+          { value: 'one', label: 'One' },
+          { value: 'two', label: 'Two' },
+          { value: 'three', label: 'Three' },
+        ],
+      }),
       selectSegmentedControl: select({
         options: [
           { value: 'one', label: 'One' },
