@@ -398,9 +398,8 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
   const itemViewFieldModesByField = useMemo(() => {
     const itemViewFieldModesByField: Record<string, 'edit' | 'read' | 'hidden'> = {};
     dataGetter.data?.keystone?.adminMeta?.list?.fields?.forEach(field => {
-      if (field !== null && field.path !== null && field?.itemView?.fieldMode != null) {
-        itemViewFieldModesByField[field.path] = field.itemView.fieldMode;
-      }
+      if (field === null || field.path === null || field?.itemView?.fieldMode == null) return;
+      itemViewFieldModesByField[field.path] = field.itemView.fieldMode;
     });
     return itemViewFieldModesByField;
   }, [dataGetter.data?.keystone?.adminMeta?.list?.fields]);
@@ -408,14 +407,13 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
   const itemViewFieldPositionsByField = useMemo(() => {
     const itemViewFieldPositionsByField: Record<string, 'form' | 'sidebar'> = {};
     dataGetter.data?.keystone?.adminMeta?.list?.fields?.forEach(field => {
-      if (field !== null && field.path !== null && field?.itemView?.fieldPosition != null) {
-        itemViewFieldPositionsByField[field.path] = field.itemView.fieldPosition;
-      }
+      if (field === null || field.path === null || field?.itemView?.fieldPosition == null) return;
+      itemViewFieldPositionsByField[field.path] = field.itemView.fieldPosition;
     });
     return itemViewFieldPositionsByField;
   }, [dataGetter.data?.keystone?.adminMeta?.list?.fields]);
-  const metaQueryErrors = dataGetter.get('keystone').errors;
 
+  const metaQueryErrors = dataGetter.get('keystone').errors;
   const pageTitle: string = list.isSingleton
     ? list.label
     : loading
