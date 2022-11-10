@@ -39,27 +39,33 @@ const RenderField = memo(function RenderField({
 type FieldsProps = {
   fields: Record<string, FieldMeta>;
   value: Value;
+  fieldModes?: Record<string, 'hidden' | 'edit' | 'read'> | null;
+  fieldPositions?: Record<string, 'form' | 'sidebar'> | null;
   forceValidation: boolean;
+  position?: 'form' | 'sidebar';
   invalidFields: ReadonlySet<string>;
-  fieldModes: Record<string, 'hidden' | 'edit' | 'read'> | null;
   onChange(value: (value: Value) => Value): void;
 };
 
 export function Fields({
   fields,
   value,
-  fieldModes,
+  fieldModes = null,
+  fieldPositions = null,
   forceValidation,
   invalidFields,
+  position = 'form',
   onChange,
 }: FieldsProps) {
   const renderedFields = Object.keys(fields)
-    .filter(fieldPath => fieldModes === null || fieldModes[fieldPath] !== 'hidden')
     .map((fieldPath, index) => {
       const field = fields[fieldPath];
       const val = value[fieldPath];
       const fieldMode = fieldModes === null ? 'edit' : fieldModes[fieldPath];
+      const fieldPosition = fieldPositions === null ? 'form' : fieldPositions[fieldPath];
 
+      if (fieldMode === 'hidden') return null;
+      if (fieldPosition !== position) return null;
       if (val.kind === 'error') {
         return (
           <div>
@@ -67,6 +73,7 @@ export function Fields({
           </div>
         );
       }
+
       return (
         <RenderField
           key={fieldPath}
@@ -77,7 +84,9 @@ export function Fields({
           autoFocus={index === 0}
         />
       );
-    });
+    })
+    .filter(Boolean);
+
   return (
     <Stack gap="xlarge">
       {renderedFields}

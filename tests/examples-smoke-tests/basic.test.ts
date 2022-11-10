@@ -10,24 +10,27 @@ exampleProjectTests('../examples/basic', (browserType, mode) => {
     page = await browser.newPage();
     await loadIndex(page);
   });
+
   initFirstItemTest(() => page);
+
   test('sign out and sign in', async () => {
     if (mode === 'dev') {
       await page.click('[aria-label="Links and signout"]');
     }
-    await Promise.all([page.waitForNavigation(), page.click('button:has-text("Sign out")')]);
+    await page.click('button:has-text("Sign out")');
     await page.fill('[placeholder="email"]', 'admin@keystonejs.com');
     await page.fill('[placeholder="password"]', 'password');
-    await Promise.all([page.waitForNavigation(), page.click('button:has-text("Sign In")')]);
+    await page.click('button:has-text("Sign In")');
   });
+
   test('update user', async () => {
     try {
       await page.goto('http://localhost:3000/users');
     } catch {
       await page.goto('http://localhost:3000/users');
     }
-    await Promise.all([page.waitForNavigation(), page.click('a:has-text("Admin")')]);
-    await page.type('label:has-text("Name") >> .. >> input', '1');
+    await page.click('a:has-text("Admin")');
+    await page.fill('label:has-text("Name") >> .. >> input', 'Admin2');
     await page.click('button:has-text("Save changes")');
     await page.waitForSelector('text=No changes');
   });
@@ -51,7 +54,7 @@ exampleProjectTests('../examples/basic', (browserType, mode) => {
     }).then(res => res.json());
     expect(usersResponse).toEqual({
       data: {
-        users: [{ id: expect.stringMatching(/\d+/), name: 'Admin1' }],
+        users: [{ id: expect.stringMatching(/\d+/), name: 'Admin2' }],
       },
     });
   });

@@ -98,6 +98,7 @@ export type StaticAdminMetaQuery = {
           itemView: Maybe<{
             __typename: 'KeystoneAdminUIFieldMetaItemView';
             fieldMode: Maybe<KeystoneAdminUIFieldMetaItemViewFieldMode>;
+            fieldPosition: Maybe<KeystoneAdminUIFieldMetaItemViewFieldPosition>;
           }>;
         }>;
       }>;
@@ -108,5 +109,7 @@ export type StaticAdminMetaQuery = {
 type QueryMode = 'default' | 'insensitive';
 
 type KeystoneAdminUIFieldMetaItemViewFieldMode = 'edit' | 'read' | 'hidden';
+
+type KeystoneAdminUIFieldMetaItemViewFieldPosition = 'form' | 'sidebar';
 
 type KeystoneAdminUISortDirection = 'ASC' | 'DESC';

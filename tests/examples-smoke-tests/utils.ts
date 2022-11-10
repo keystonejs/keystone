@@ -68,7 +68,7 @@ export const initFirstItemTest = (getPage: () => playwright.Page) => {
     await page.fill('[placeholder="Confirm Password"]', 'password');
     await page.click('button:has-text("Get started")');
     await page.uncheck('input[type="checkbox"]', { force: true });
-    await Promise.all([page.waitForNavigation(), page.click('text=Continue')]);
+    await page.click('text=Continue');
     await page.waitForSelector('text=Signed in as Admin');
   });
 };
@@ -143,6 +143,7 @@ export const exampleProjectTests = (
       beforeAll(async () => {
         await deleteAllData(projectDir);
       });
+
       tests(playwright.chromium, mode);
     });
   });
