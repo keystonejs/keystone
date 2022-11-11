@@ -60,10 +60,12 @@ const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
         listKey,
         fieldMode: itemView.fieldMode,
         itemId: id ?? null,
+        fieldPosition: itemView.fieldPosition,
       }),
       type: graphql.object<{
         listKey: string;
         fieldMode: FieldMetaRootVal['itemView']['fieldMode'];
+        fieldPosition: FieldMetaRootVal['itemView']['fieldPosition'];
         itemId: string | null;
       }>()({
         name: 'KeystoneAdminUIFieldMetaItemView',
@@ -100,6 +102,39 @@ const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
                   return 'hidden' as const;
                 }
                 return fieldMode({
+                  session: context.session,
+                  context,
+                  item,
+                });
+              });
+            },
+          }),
+          fieldPosition: graphql.field({
+            type: graphql.enum({
+              name: 'KeystoneAdminUIFieldMetaItemViewFieldPosition',
+              values: graphql.enumValues(['form', 'sidebar']),
+            }),
+            resolve(
+              { fieldPosition, itemId, listKey },
+              args,
+              context,
+              info
+            ): MaybePromise<'form' | 'sidebar' | null> {
+              if (itemId !== null) {
+                assertInRuntimeContext(context, info);
+              }
+              if (typeof fieldPosition === 'string') {
+                return fieldPosition;
+              }
+              if (itemId === null) {
+                return null;
+              }
+              assertInRuntimeContext(context, info);
+              return fetchItemForItemViewFieldMode(context)(listKey, itemId).then(item => {
+                if (item === null) {
+                  return 'form' as const;
+                }
+                return fieldPosition({
                   session: context.session,
                   context,
                   item,

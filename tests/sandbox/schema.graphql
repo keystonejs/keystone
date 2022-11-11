@@ -16,6 +16,8 @@ type Thing {
   calendarDay: CalendarDay
   randomNumberVirtual: Float
   select: String
+  selectOnSide: String
+  selectOnSideItemViewOnly: String
   selectSegmentedControl: String
   multiselect: [String!]
   json: JSON
@@ -82,6 +84,8 @@ input ThingWhereInput {
   timestamp: DateTimeNullableFilter
   calendarDay: CalendarDayNullableFilter
   select: StringNullableFilter
+  selectOnSide: StringNullableFilter
+  selectOnSideItemViewOnly: StringNullableFilter
   selectSegmentedControl: StringNullableFilter
   integer: IntNullableFilter
   bigInt: BigIntNullableFilter
@@ -232,6 +236,8 @@ input ThingOrderByInput {
   timestamp: OrderDirection
   calendarDay: OrderDirection
   select: OrderDirection
+  selectOnSide: OrderDirection
+  selectOnSideItemViewOnly: OrderDirection
   selectSegmentedControl: OrderDirection
   integer: OrderDirection
   bigInt: OrderDirection
@@ -254,6 +260,8 @@ input ThingUpdateInput {
   timestamp: DateTime
   calendarDay: CalendarDay
   select: String
+  selectOnSide: String
+  selectOnSideItemViewOnly: String
   selectSegmentedControl: String
   multiselect: [String!]
   json: JSON
@@ -305,6 +313,8 @@ input ThingCreateInput {
   timestamp: DateTime
   calendarDay: CalendarDay
   select: String
+  selectOnSide: String
+  selectOnSideItemViewOnly: String
   selectSegmentedControl: String
   multiselect: [String!]
   json: JSON
@@ -607,12 +617,18 @@ enum KeystoneAdminUIFieldMetaListViewFieldMode {
 
 type KeystoneAdminUIFieldMetaItemView {
   fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode
+  fieldPosition: KeystoneAdminUIFieldMetaItemViewFieldPosition
 }
 
 enum KeystoneAdminUIFieldMetaItemViewFieldMode {
   edit
   read
   hidden
+}
+
+enum KeystoneAdminUIFieldMetaItemViewFieldPosition {
+  form
+  sidebar
 }
 
 enum QueryMode {

@@ -30,8 +30,14 @@ export const lists = {
     fields: {
       checkbox: checkbox({ ui: { description } }),
       password: password({ ui: { description } }),
-      toOneRelationship: relationship({ ui: { description }, ref: 'User' }),
-      toManyRelationship: relationship({ ui: { description }, ref: 'Todo', many: true }),
+      toOneRelationship: relationship({
+        ref: 'User',
+        ui: {
+          description,
+          labelField: 'email',
+        },
+      }),
+      toManyRelationship: relationship({ ref: 'Todo', many: true, ui: { description } }),
       toOneRelationshipCard: relationship({
         ref: 'User',
         ui: {
@@ -71,6 +77,35 @@ export const lists = {
       }),
       select: select({
         ui: { description },
+        options: [
+          { value: 'one', label: 'One' },
+          { value: 'two', label: 'Two' },
+          { value: 'three', label: 'Three' },
+        ],
+      }),
+      selectOnSide: select({
+        ui: {
+          description,
+          itemView: {
+            fieldPosition: 'sidebar',
+          },
+        },
+        options: [
+          { value: 'one', label: 'One' },
+          { value: 'two', label: 'Two' },
+          { value: 'three', label: 'Three' },
+        ],
+      }),
+      selectOnSideItemViewOnly: select({
+        ui: {
+          description,
+          createView: {
+            fieldMode: 'hidden',
+          },
+          itemView: {
+            fieldPosition: 'sidebar',
+          },
+        },
         options: [
           { value: 'one', label: 'One' },
           { value: 'two', label: 'Two' },

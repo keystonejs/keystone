@@ -112,7 +112,6 @@ export function InlineCreate({
           <GraphQLErrorNotice networkError={error?.networkError} errors={error?.graphQLErrors} />
         )}
         <Fields
-          fieldModes={null}
           fields={fields}
           forceValidation={forceValidation}
           invalidFields={invalidFields}

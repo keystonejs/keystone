@@ -30,7 +30,10 @@ export type FieldMetaRootVal = {
   createView: { fieldMode: ContextFunction<'edit' | 'hidden'> };
   // itemView is intentionally special because static values are special cased
   // and fetched when fetching the static admin ui
-  itemView: { fieldMode: MaybeItemFunction<'edit' | 'read' | 'hidden', BaseListTypeInfo> };
+  itemView: {
+    fieldMode: MaybeItemFunction<'edit' | 'read' | 'hidden', BaseListTypeInfo>;
+    fieldPosition: MaybeItemFunction<'form' | 'sidebar', BaseListTypeInfo>;
+  };
   listView: { fieldMode: ContextFunction<'read' | 'hidden'> };
 };
 
@@ -221,6 +224,7 @@ export function createAdminMeta(
           fieldMode: field.graphql.isEnabled.update
             ? field.ui?.itemView?.fieldMode ?? ('edit' as const)
             : 'read',
+          fieldPosition: field.ui?.itemView?.fieldPosition || 'form',
         },
         listView: {
           fieldMode: normalizeMaybeSessionFunction(field.ui?.listView?.fieldMode ?? 'read'),

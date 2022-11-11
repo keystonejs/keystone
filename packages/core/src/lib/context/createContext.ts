@@ -12,6 +12,7 @@ import { PrismaClient } from '../core/utils';
 import { InitialisedList } from '../core/types-for-lists';
 import { createImagesContext } from '../assets/createImagesContext';
 import { createFilesContext } from '../assets/createFilesContext';
+import { createSessionContext } from './session';
 import { getDbAPIFactory, itemAPIForList } from './itemAPI';
 
 export function makeCreateContext({
@@ -91,6 +92,13 @@ export function makeCreateContext({
         createContext({
           sessionContext: { ...sessionContext, session } as SessionContext<any>,
           sudo,
+          req,
+        }),
+      withRequest: async (req, res) =>
+        createContext({
+          sessionContext: config.session
+            ? await createSessionContext(config.session, req, res, createContext)
+            : undefined,
           req,
         }),
       req,

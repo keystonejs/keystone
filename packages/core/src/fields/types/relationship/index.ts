@@ -115,6 +115,7 @@ export const relationship =
             }
           }
         }
+
         return {
           refFieldKey: foreignFieldKey,
           refListKey: foreignListKey,
@@ -135,7 +136,8 @@ export const relationship =
             ? { displayMode: 'count' }
             : {
                 displayMode: 'select',
-                refLabelField: adminMetaRoot.listsByKey[foreignListKey].labelField,
+                refLabelField:
+                  config.ui?.labelField || adminMetaRoot.listsByKey[foreignListKey].labelField,
               }),
         };
       },

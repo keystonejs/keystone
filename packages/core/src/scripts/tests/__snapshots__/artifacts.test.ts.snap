@@ -98,6 +98,10 @@ export type KeystoneAdminUIFieldMetaItemViewFieldMode =
   | "read"
   | "hidden";
 
+export type KeystoneAdminUIFieldMetaItemViewFieldPosition =
+  | "form"
+  | "sidebar";
+
 export type QueryMode =
   | "default"
   | "insensitive";
