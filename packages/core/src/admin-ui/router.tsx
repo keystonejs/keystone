@@ -12,5 +12,9 @@
 export { Router, useRouter, withRouter } from 'next/router';
 export type { NextRouter } from 'next/router';
 
-import NextLink from 'next/link';
+import NextLink, { LinkProps as NextLinkProps } from 'next/link';
+import { AnchorHTMLAttributes } from 'react';
+
+export type LinkProps = NextLinkProps & AnchorHTMLAttributes<HTMLAnchorElement>;
+
 export const Link = NextLink;
