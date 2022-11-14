@@ -3,6 +3,7 @@ import {
   executeSync,
   GraphQLNonNull,
   GraphQLScalarType,
+  GraphQLList,
   GraphQLSchema,
   GraphQLUnionType,
   parse,
@@ -119,6 +120,12 @@ function getLazyMetadataQuery(
           );
         }
         let labelGraphQLFieldType = labelGraphQLField.type;
+        // dongwenxiao 2022.11.11 fix
+        // fix ui.labelField use multiselect type throw label must be scalar types bug.
+        if(labelGraphQLFieldType instanceof GraphQLList){
+          labelGraphQLFieldType = labelGraphQLFieldType.ofType;
+        }
+        // 
         if (labelGraphQLFieldType instanceof GraphQLNonNull) {
           labelGraphQLFieldType = labelGraphQLFieldType.ofType;
         }
