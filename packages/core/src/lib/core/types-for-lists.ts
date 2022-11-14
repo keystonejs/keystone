@@ -194,7 +194,7 @@ function getListsWithInitialisedFields(
 
     // Default the labelField to `name`, `label`, or `title` if they exist; otherwise fall back to `id`
     const labelField =
-      (list.ui?.labelField as string | undefined) ??
+      list.ui?.labelField ??
       (list.fields.label
         ? 'label'
         : list.fields.name
