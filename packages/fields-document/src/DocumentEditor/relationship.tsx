@@ -83,6 +83,9 @@ export function RelationshipElement({
   const editor = useStaticEditor();
   const relationships = useContext(DocumentFieldRelationshipsContext)!;
   const relationship = relationships[element.relationship];
+  const list = keystone.adminMeta.lists[relationship.listKey];
+  const searchFields = Object.keys(list.fields).filter(key => list.fields[key].search);
+
   return (
     <span
       {...attributes}
@@ -106,7 +109,9 @@ export function RelationshipElement({
           <RelationshipSelect
             controlShouldRenderValue
             isDisabled={false}
-            list={keystone.adminMeta.lists[relationship.listKey]}
+            list={list}
+            labelField={list.labelField}
+            searchFields={searchFields}
             portalMenu
             state={{
               kind: 'one',

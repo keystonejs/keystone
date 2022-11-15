@@ -135,7 +135,7 @@ describe('Type Generation', () => {
 describe('Referenced list errors', () => {
   test('throws when list not found', async () => {
     expect(() => getSchema(relationship({ ref: 'DoesNotExist' }))).toThrow(
-      "Unable to resolve related list 'DoesNotExist' from Test.foo"
+      "Unable to resolve list 'DoesNotExist' for field Test.foo"
     );
   });
 

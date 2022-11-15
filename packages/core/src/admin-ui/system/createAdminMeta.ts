@@ -1,8 +1,6 @@
 import path from 'path';
-import { GraphQLString, isInputObjectType } from 'graphql';
 import {
   KeystoneConfig,
-  QueryMode,
   MaybePromise,
   MaybeSessionFunction,
   BaseListTypeInfo,
@@ -17,6 +15,10 @@ import { FilterOrderArgs } from '../../types/config/fields';
 type ContextFunction<Return> = (context: KeystoneContext) => MaybePromise<Return>;
 
 export type FieldMetaRootVal = {
+  key: string;
+  /**
+   * @deprecated use .key, not .path
+   */
   path: string;
   label: string;
   description: string | null;
@@ -47,7 +49,8 @@ export type ListMetaRootVal = {
   pageSize: number;
   labelField: string;
   initialSort: { field: string; direction: 'ASC' | 'DESC' } | null;
-  fields: Array<FieldMetaRootVal>;
+  fields: FieldMetaRootVal[];
+  fieldsByKey: Record<string, FieldMetaRootVal>;
   itemQueryName: string;
   listQueryName: string;
   description: string | null;
@@ -58,7 +61,7 @@ export type ListMetaRootVal = {
 };
 
 export type AdminMetaRootVal = {
-  lists: Array<ListMetaRootVal>;
+  lists: ListMetaRootVal[];
   listsByKey: Record<string, ListMetaRootVal>;
   views: string[];
   isAccessAllowed: undefined | ((context: KeystoneContext) => MaybePromise<boolean>);
@@ -78,22 +81,12 @@ export function createAdminMeta(
 
   const omittedLists: string[] = [];
 
-  for (const [key, list] of Object.entries(initialisedLists)) {
-    const listConfig = lists[key];
+  for (const [listKey, list] of Object.entries(initialisedLists)) {
+    const listConfig = lists[listKey];
     if (list.graphql.isEnabled.query === false) {
-      omittedLists.push(key);
+      omittedLists.push(listKey);
       continue;
     }
-    // Default the labelField to `name`, `label`, or `title` if they exist; otherwise fall back to `id`
-    const labelField =
-      (listConfig.ui?.labelField as string | undefined) ??
-      (listConfig.fields.label
-        ? 'label'
-        : listConfig.fields.name
-        ? 'name'
-        : listConfig.fields.title
-        ? 'title'
-        : 'id');
 
     let initialColumns: string[];
     if (listConfig.ui?.listView?.initialColumns) {
@@ -104,10 +97,10 @@ export function createAdminMeta(
       // 2 more fields to the right of that. We don't include the 'id' field
       // unless it happened to be the labelField
       initialColumns = [
-        labelField,
+        list.ui.labelField,
         ...Object.keys(list.fields)
           .filter(fieldKey => list.fields[fieldKey].graphql.isEnabled.read)
-          .filter(fieldKey => fieldKey !== labelField)
+          .filter(fieldKey => fieldKey !== list.ui.labelField)
           .filter(fieldKey => fieldKey !== 'id'),
       ].slice(0, 3);
     }
@@ -116,15 +109,17 @@ export function createAdminMeta(
       listConfig.ui?.listView?.pageSize ?? 50,
       (list.types.findManyArgs.take.defaultValue ?? Infinity) as number
     );
-    adminMetaRoot.listsByKey[key] = {
-      key,
-      labelField,
+
+    adminMetaRoot.listsByKey[listKey] = {
+      key: listKey,
+      labelField: list.ui.labelField,
       description: listConfig.ui?.description ?? listConfig.description ?? null,
       label: list.adminUILabels.label,
       singular: list.adminUILabels.singular,
       plural: list.adminUILabels.plural,
       path: list.adminUILabels.path,
       fields: [],
+      fieldsByKey: {},
       pageSize: maximumPageSize,
       initialColumns,
       initialSort:
@@ -132,7 +127,7 @@ export function createAdminMeta(
           | { field: string; direction: 'ASC' | 'DESC' }
           | undefined) ?? null,
       // TODO: probably remove this from the GraphQL schema and here
-      itemQueryName: key,
+      itemQueryName: listKey,
       listQueryName: list.pluralGraphQLName,
       hideCreate: normalizeMaybeSessionFunction(
         list.graphql.isEnabled.create ? listConfig.ui?.hideCreate ?? false : false
@@ -143,7 +138,7 @@ export function createAdminMeta(
       isHidden: normalizeMaybeSessionFunction(listConfig.ui?.isHidden ?? false),
       isSingleton: list.isSingleton,
     };
-    adminMetaRoot.lists.push(adminMetaRoot.listsByKey[key]);
+    adminMetaRoot.lists.push(adminMetaRoot.listsByKey[listKey]);
   }
   let uniqueViewCount = -1;
   const stringViewsToIndex: Record<string, number> = {};
@@ -156,34 +151,10 @@ export function createAdminMeta(
     adminMetaRoot.views.push(view);
     return uniqueViewCount;
   }
-  // Populate .fields array
-  for (const [key, list] of Object.entries(initialisedLists)) {
-    if (omittedLists.includes(key)) continue;
-    const searchFields = new Set(config.lists[key].ui?.searchFields ?? []);
-    if (searchFields.has('id')) {
-      throw new Error(
-        `The ui.searchFields option on the ${key} list includes 'id'. Lists can always be searched by an item's id so it must not be specified as a search field`
-      );
-    }
-    const whereInputFields = list.types.where.graphQLType.getFields();
-    const possibleSearchFields = new Map<string, 'default' | 'insensitive' | null>();
 
-    for (const fieldKey of Object.keys(list.fields)) {
-      const filterType = whereInputFields[fieldKey]?.type;
-      const fieldFilterFields = isInputObjectType(filterType) ? filterType.getFields() : undefined;
-      if (fieldFilterFields?.contains?.type === GraphQLString) {
-        possibleSearchFields.set(
-          fieldKey,
-          fieldFilterFields?.mode?.type === QueryMode.graphQLType ? 'insensitive' : 'default'
-        );
-      }
-    }
-    if (config.lists[key].ui?.searchFields === undefined) {
-      const labelField = adminMetaRoot.listsByKey[key].labelField;
-      if (possibleSearchFields.has(labelField)) {
-        searchFields.add(labelField);
-      }
-    }
+  // populate .fields array
+  for (const [listKey, list] of Object.entries(initialisedLists)) {
+    if (omittedLists.includes(listKey)) continue;
 
     for (const [fieldKey, field] of Object.entries(list.fields)) {
       // If the field is a relationship field and is related to an omitted list, skip.
@@ -191,30 +162,26 @@ export function createAdminMeta(
       // Disabling this entirely for now until we properly decide what the Admin UI
       // should do when `omit: ['read']` is used.
       if (field.graphql.isEnabled.read === false) continue;
-      let search = searchFields.has(fieldKey) ? possibleSearchFields.get(fieldKey) ?? null : null;
-      if (searchFields.has(fieldKey) && search === null) {
-        throw new Error(
-          `The ui.searchFields option on the ${key} list includes '${fieldKey}' but that field doesn't have a contains filter that accepts a GraphQL String`
-        );
-      }
+
       assertValidView(
         field.views,
-        `The \`views\` on the implementation of the field type at lists.${key}.fields.${fieldKey}`
+        `The \`views\` on the implementation of the field type at lists.${listKey}.fields.${fieldKey}`
       );
+
       const baseOrderFilterArgs = { fieldKey, listKey: list.listKey };
-      adminMetaRoot.listsByKey[key].fields.push({
+      const fieldMeta = {
+        key: fieldKey,
         label: field.label ?? humanize(fieldKey),
         description: field.ui?.description ?? null,
         viewsIndex: getViewId(field.views),
         customViewsIndex:
           field.ui?.views === undefined
             ? null
-            : (assertValidView(field.views, `lists.${key}.fields.${fieldKey}.ui.views`),
+            : (assertValidView(field.views, `lists.${listKey}.fields.${fieldKey}.ui.views`),
               getViewId(field.ui.views)),
         fieldMeta: null,
-        path: fieldKey,
-        listKey: key,
-        search,
+        listKey: listKey,
+        search: list.ui.searchableFields.get(fieldKey) ?? null,
         createView: {
           fieldMode: normalizeMaybeSessionFunction(
             field.graphql.isEnabled.create ? field.ui?.createView?.fieldMode ?? 'edit' : 'hidden'
@@ -237,7 +204,13 @@ export function createAdminMeta(
           field.input?.orderBy ? field.graphql.isEnabled.orderBy : false,
           baseOrderFilterArgs
         ),
-      });
+
+        // DEPRECATED
+        path: fieldKey,
+      };
+
+      adminMetaRoot.listsByKey[listKey].fields.push(fieldMeta);
+      adminMetaRoot.listsByKey[listKey].fieldsByKey[fieldKey] = fieldMeta;
     }
   }
 

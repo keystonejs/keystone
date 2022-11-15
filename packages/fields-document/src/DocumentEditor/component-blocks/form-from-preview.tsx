@@ -54,6 +54,9 @@ function RelationshipFieldPreview({
   value,
 }: DefaultFieldProps<'relationship'>) {
   const keystone = useKeystone();
+  const list = keystone.adminMeta.lists[schema.listKey];
+  const searchFields = Object.keys(list.fields).filter(key => list.fields[key].search);
+
   return (
     <FieldContainer>
       <FieldLabel>{schema.label}</FieldLabel>
@@ -61,7 +64,9 @@ function RelationshipFieldPreview({
         autoFocus={autoFocus}
         controlShouldRenderValue
         isDisabled={false}
-        list={keystone.adminMeta.lists[schema.listKey]}
+        list={list}
+        labelField={list.labelField}
+        searchFields={searchFields}
         extraSelection={schema.selection || ''}
         portalMenu
         state={

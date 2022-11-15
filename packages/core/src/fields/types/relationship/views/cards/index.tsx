@@ -295,6 +295,8 @@ export function Cards({
               controlShouldRenderValue={isLoadingLazyItems}
               isDisabled={onChange === undefined}
               list={foreignList}
+              labelField={field.refLabelField}
+              searchFields={field.refSearchFields}
               isLoading={isLoadingLazyItems}
               placeholder={`Select a ${foreignList.singular}`}
               portalMenu

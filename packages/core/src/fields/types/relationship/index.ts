@@ -12,6 +12,7 @@ type SelectDisplayConfig = {
      * Defaults to the labelField configured on the related list.
      */
     labelField?: string;
+    searchFields?: string[];
   };
 };
 
@@ -30,7 +31,16 @@ type CardsDisplayConfig = {
     /** Configures inline edit mode for cards */
     inlineEdit?: { fields: readonly string[] };
     /** Configures whether a select to add existing items should be shown or not */
-    inlineConnect?: boolean;
+    inlineConnect?:
+      | boolean
+      | {
+          /**
+           * The path of the field to use from the related list for item labels in the inline connect
+           * Defaults to the labelField configured on the related list.
+           */
+          labelField: string;
+          searchFields?: string[];
+        };
   };
 };
 
@@ -75,31 +85,37 @@ export const relationship =
     ref,
     ...config
   }: RelationshipFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> =>
-  meta => {
+  ({ fieldKey, listKey, lists }) => {
     const { many = false } = config;
     const [foreignListKey, foreignFieldKey] = ref.split('.');
+    const foreignList = lists[foreignListKey];
+    if (!foreignList) {
+      throw new Error(
+        `Unable to resolve list '${foreignListKey}' for field ${listKey}.${fieldKey}`
+      );
+    }
+    const foreignListTypes = foreignList.types;
+
     const commonConfig = {
       ...config,
       views: '@keystone-6/core/fields/types/relationship/views',
       getAdminMeta: (): Parameters<typeof import('./views').controller>[0]['fieldMeta'] => {
         const adminMetaRoot = getAdminMetaForRelationshipField();
-        if (!meta.lists[foreignListKey]) {
-          throw new Error(
-            `The ref [${ref}] on relationship [${meta.listKey}.${meta.fieldKey}] is invalid`
-          );
+        const localListMeta = adminMetaRoot.listsByKey[listKey];
+        const foreignListMeta = adminMetaRoot.listsByKey[foreignListKey];
+
+        if (!foreignListMeta) {
+          throw new Error(`The ref [${ref}] on relationship [${listKey}.${fieldKey}] is invalid`);
         }
+
         if (config.ui?.displayMode === 'cards') {
           // we're checking whether the field which will be in the admin meta at the time that getAdminMeta is called.
           // in newer versions of keystone, it will be there and it will not be there for older versions of keystone.
           // this is so that relationship fields doesn't break in confusing ways
           // if people are using a slightly older version of keystone
-          const currentField = adminMetaRoot.listsByKey[meta.listKey].fields.find(
-            x => x.path === meta.fieldKey
-          );
+          const currentField = localListMeta.fields.find(x => x.key === fieldKey);
           if (currentField) {
-            const allForeignFields = new Set(
-              adminMetaRoot.listsByKey[foreignListKey].fields.map(x => x.path)
-            );
+            const allForeignFields = new Set(foreignListMeta.fields.map(x => x.key));
             for (const [configOption, foreignFields] of [
               ['ui.cardFields', config.ui.cardFields],
               ['ui.inlineCreate.fields', config.ui.inlineCreate?.fields ?? []],
@@ -108,7 +124,7 @@ export const relationship =
               for (const foreignField of foreignFields) {
                 if (!allForeignFields.has(foreignField)) {
                   throw new Error(
-                    `The ${configOption} option on the relationship field at ${meta.listKey}.${meta.fieldKey} includes the "${foreignField}" field but that field does not exist on the "${foreignListKey}" list`
+                    `The ${configOption} option on the relationship field at ${listKey}.${fieldKey} includes the "${foreignField}" field but that field does not exist on the "${foreignListKey}" list`
                   );
                 }
               }
@@ -116,38 +132,86 @@ export const relationship =
           }
         }
 
+        const hideCreate = config.ui?.hideCreate ?? false;
+        const refLabelField: typeof foreignFieldKey = foreignListMeta.labelField;
+        const refSearchFields: typeof foreignFieldKey[] = foreignListMeta.fields
+          .filter(x => x.search)
+          .map(x => x.key);
+
+        if (config.ui?.displayMode === 'select') {
+          return {
+            refFieldKey: foreignFieldKey,
+            refListKey: foreignListKey,
+            many,
+            hideCreate,
+            displayMode: 'select',
+
+            // prefer the local definition to the foreign list, if provided
+            refLabelField: config.ui.labelField || refLabelField,
+            refSearchFields: config.ui.searchFields || refSearchFields,
+          };
+        }
+
+        if (config.ui?.displayMode === 'cards') {
+          return {
+            refFieldKey: foreignFieldKey,
+            refListKey: foreignListKey,
+            many,
+            hideCreate,
+            displayMode: 'cards',
+            cardFields: config.ui.cardFields,
+            linkToItem: config.ui.linkToItem ?? false,
+            removeMode: config.ui.removeMode ?? 'disconnect',
+            inlineCreate: config.ui.inlineCreate ?? null,
+            inlineEdit: config.ui.inlineEdit ?? null,
+            inlineConnect: config.ui.inlineConnect ? true : false,
+
+            // prefer the local definition to the foreign list, if provided
+            ...(typeof config.ui.inlineConnect === 'object'
+              ? {
+                  refLabelField: config.ui.inlineConnect.labelField ?? refLabelField,
+                  refSearchFields: config.ui.inlineConnect?.searchFields ?? refSearchFields,
+                }
+              : {
+                  refLabelField,
+                  refSearchFields,
+                }),
+          };
+        }
+
+        if (!(refLabelField in foreignListMeta.fieldsByKey)) {
+          throw new Error(
+            `The ui.labelField option for field '${fieldKey}' uses '${refLabelField}' but that field doesn't exist.`
+          );
+        }
+
+        for (const searchFieldKey of refSearchFields) {
+          if (!(searchFieldKey in foreignListMeta.fieldsByKey)) {
+            throw new Error(
+              `The ui.searchFields option for relationship field '${fieldKey}' includes '${searchFieldKey}' but that field doesn't exist.`
+            );
+          }
+
+          const field = foreignListMeta.fieldsByKey[searchFieldKey];
+          if (field.search) continue;
+
+          throw new Error(
+            `The ui.searchFields option for field '${fieldKey}' includes '${searchFieldKey}' but that field doesn't have a contains filter that accepts a GraphQL String`
+          );
+        }
+
         return {
           refFieldKey: foreignFieldKey,
           refListKey: foreignListKey,
           many,
-          hideCreate: config.ui?.hideCreate ?? false,
-          ...(config.ui?.displayMode === 'cards'
-            ? {
-                displayMode: 'cards',
-                cardFields: config.ui.cardFields,
-                linkToItem: config.ui.linkToItem ?? false,
-                removeMode: config.ui.removeMode ?? 'disconnect',
-                inlineCreate: config.ui.inlineCreate ?? null,
-                inlineEdit: config.ui.inlineEdit ?? null,
-                inlineConnect: config.ui.inlineConnect ?? false,
-                refLabelField: adminMetaRoot.listsByKey[foreignListKey].labelField,
-              }
-            : config.ui?.displayMode === 'count'
-            ? { displayMode: 'count' }
-            : {
-                displayMode: 'select',
-                refLabelField:
-                  config.ui?.labelField || adminMetaRoot.listsByKey[foreignListKey].labelField,
-              }),
+          hideCreate,
+          displayMode: 'count',
+          refLabelField,
+          refSearchFields,
         };
       },
     };
-    if (!meta.lists[foreignListKey]) {
-      throw new Error(
-        `Unable to resolve related list '${foreignListKey}' from ${meta.listKey}.${meta.fieldKey}`
-      );
-    }
-    const listTypes = meta.lists[foreignListKey].types;
+
     if (config.many) {
       return fieldType({
         kind: 'relation',
@@ -159,36 +223,39 @@ export const relationship =
         ...commonConfig,
         input: {
           where: {
-            arg: graphql.arg({ type: listTypes.relateTo.many.where }),
+            arg: graphql.arg({ type: foreignListTypes.relateTo.many.where }),
             resolve(value, context, resolve) {
               return resolve(value);
             },
           },
-          create: listTypes.relateTo.many.create && {
-            arg: graphql.arg({ type: listTypes.relateTo.many.create }),
+          create: foreignListTypes.relateTo.many.create && {
+            arg: graphql.arg({ type: foreignListTypes.relateTo.many.create }),
             async resolve(value, context, resolve) {
               return resolve(value);
             },
           },
-          update: listTypes.relateTo.many.update && {
-            arg: graphql.arg({ type: listTypes.relateTo.many.update }),
+          update: foreignListTypes.relateTo.many.update && {
+            arg: graphql.arg({ type: foreignListTypes.relateTo.many.update }),
             async resolve(value, context, resolve) {
               return resolve(value);
             },
           },
         },
         output: graphql.field({
-          args: listTypes.findManyArgs,
-          type: graphql.list(graphql.nonNull(listTypes.output)),
+          args: foreignListTypes.findManyArgs,
+          type: graphql.list(graphql.nonNull(foreignListTypes.output)),
           resolve({ value }, args) {
             return value.findMany(args);
           },
         }),
         extraOutputFields: {
-          [`${meta.fieldKey}Count`]: graphql.field({
+          [`${fieldKey}Count`]: graphql.field({
             type: graphql.Int,
             args: {
-              where: graphql.arg({ type: graphql.nonNull(listTypes.where), defaultValue: {} }),
+              where: graphql.arg({
+                type: graphql.nonNull(foreignListTypes.where),
+                defaultValue: {},
+              }),
             },
             resolve({ value }, args) {
               return value.count({
@@ -199,6 +266,7 @@ export const relationship =
         },
       });
     }
+
     return fieldType({
       kind: 'relation',
       mode: 'one',
@@ -209,27 +277,27 @@ export const relationship =
       ...commonConfig,
       input: {
         where: {
-          arg: graphql.arg({ type: listTypes.where }),
+          arg: graphql.arg({ type: foreignListTypes.where }),
           resolve(value, context, resolve) {
             return resolve(value);
           },
         },
-        create: listTypes.relateTo.one.create && {
-          arg: graphql.arg({ type: listTypes.relateTo.one.create }),
+        create: foreignListTypes.relateTo.one.create && {
+          arg: graphql.arg({ type: foreignListTypes.relateTo.one.create }),
           async resolve(value, context, resolve) {
             return resolve(value);
           },
         },
 
-        update: listTypes.relateTo.one.update && {
-          arg: graphql.arg({ type: listTypes.relateTo.one.update }),
+        update: foreignListTypes.relateTo.one.update && {
+          arg: graphql.arg({ type: foreignListTypes.relateTo.one.update }),
           async resolve(value, context, resolve) {
             return resolve(value);
           },
         },
       },
       output: graphql.field({
-        type: listTypes.output,
+        type: foreignListTypes.output,
         resolve({ value }) {
           return value();
         },
