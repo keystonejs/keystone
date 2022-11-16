@@ -1,8 +1,9 @@
 import { list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { select, relationship, text, timestamp } from '@keystone-6/core/fields';
+import { Lists } from '.keystone/types';
 
-export const lists = {
+export const lists: Lists = {
   Post: list({
     access: allowAll,
     ui: {
