@@ -146,7 +146,7 @@ export default config({
 
 ## Groups
 
-Fields can be grouped together in the Admin UI using the `group` function with a `label` and optionally `description`.
+Fields can be grouped together in the Admin UI using the `group` function, with a customisable `label` and `description`.
 
 ```typescript
 import { config, list, group } from '@keystone-6/core';
