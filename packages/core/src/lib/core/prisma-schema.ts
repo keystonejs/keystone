@@ -1,11 +1,7 @@
 import { ScalarDBField, ScalarDBFieldDefault, DatabaseProvider } from '../../types';
 import { ResolvedDBField } from './resolve-relationships';
 import { InitialisedList } from './types-for-lists';
-import { getDBFieldKeyForFieldOnMultiField } from './utils';
-
-function areArraysEqual(a: readonly unknown[], b: readonly unknown[]) {
-  return a.length === b.length && a.every((x, i) => x === b[i]);
-}
+import { areArraysEqual, getDBFieldKeyForFieldOnMultiField } from './utils';
 
 const modifiers = {
   required: '',

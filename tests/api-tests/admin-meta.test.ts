@@ -93,6 +93,7 @@ test(
                   viewsIndex: 1,
                 },
               ],
+              groups: [],
               initialColumns: ['name'],
               initialSort: null,
               itemQueryName: 'User',

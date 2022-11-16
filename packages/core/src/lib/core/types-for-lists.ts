@@ -23,7 +23,7 @@ import {
   parseListAccessControl,
   parseFieldAccessControl,
 } from './access-control';
-import { getNamesFromList } from './utils';
+import { areArraysEqual, getNamesFromList } from './utils';
 import { ResolvedDBField, resolveRelationships } from './resolve-relationships';
 import { outputTypeField } from './queries/output-field';
 import { assertFieldsValid } from './field-assertions';
@@ -44,10 +44,17 @@ export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access' | 'graph
   };
 };
 
+export type FieldGroupConfig = {
+  fields: string[];
+  label: string;
+  description: string | null;
+};
+
 export type InitialisedList = {
   fields: Record<string, InitialisedField>;
   /** This will include the opposites to one-sided relationships */
   resolvedDbFields: Record<string, ResolvedDBField>;
+  groups: FieldGroupConfig[];
   pluralGraphQLName: string;
   types: GraphQLTypesForList;
   access: ResolvedListAccessControl;
@@ -148,7 +155,26 @@ function getListsWithInitialisedFields(
     const intermediateList = intermediateLists[listKey];
     const resultFields: Record<string, InitialisedField> = {};
 
-    for (const [fieldKey, fieldFunc] of Object.entries(list.fields)) {
+    const groups: FieldGroupConfig[] = [];
+
+    const fieldKeys = Object.keys(list.fields);
+    for (const [idx, [fieldKey, fieldFunc]] of Object.entries(list.fields).entries()) {
+      if (fieldKey.startsWith('__group')) {
+        const group = fieldFunc as any;
+        if (
+          typeof group === 'object' &&
+          group !== null &&
+          typeof group.label === 'string' &&
+          (group.description === null || typeof group.description === 'string') &&
+          Array.isArray(group.fields) &&
+          areArraysEqual(group.fields, fieldKeys.slice(idx + 1, idx + 1 + group.fields.length))
+        ) {
+          groups.push(group);
+          continue;
+        }
+        throw new Error(`unexpected value for a group at ${listKey}.${fieldKey}`);
+      }
+
       if (typeof fieldFunc !== 'function') {
         throw new Error(`The field at ${listKey}.${fieldKey} does not provide a function`);
       }
@@ -215,12 +241,12 @@ function getListsWithInitialisedFields(
       access: parseListAccessControl(list.access),
       dbMap: list.db?.map,
       types: listGraphqlTypes[listKey].types,
-
       ui: {
         labelField,
         searchFields,
         searchableFields: new Map<string, 'default' | 'insensitive' | null>(),
       },
+      groups,
       hooks: list.hooks || {},
 
       listKey,

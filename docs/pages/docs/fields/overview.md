@@ -142,6 +142,39 @@ export default config({
 });
 ```
 
+{% if $nextRelease %}
+
+## Groups
+
+Fields can be grouped together in the Admin UI using the `group` function, with a customisable `label` and `description`.
+
+```typescript
+import { config, list, group } from '@keystone-6/core';
+import { text } from '@keystone-6/core/fields';
+
+export default config({
+  lists: {
+    SomeListName: list({
+      fields: {
+        ...group({
+          label: 'Group label',
+          description: 'Group description',
+          fields: {
+            someFieldName: text({ /* ... */ }),
+            /* ... */
+          },
+        }),
+        /* ... */
+      },
+    }),
+    /* ... */
+  },
+  /* ... */
+});
+```
+
+{% /if %}
+
 ## Scalar types
 
 - [BigInt](./bigint)

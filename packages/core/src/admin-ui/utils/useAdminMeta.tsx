@@ -69,6 +69,7 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
     adminMeta.lists.forEach(list => {
       runtimeAdminMeta.lists[list.key] = {
         ...list,
+        groups: [],
         gqlNames: getGqlNames({ listKey: list.key, pluralGraphQLName: list.listQueryName }),
         fields: {},
       };
@@ -121,6 +122,13 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
           }),
         };
       });
+      for (const group of list.groups) {
+        runtimeAdminMeta.lists[list.key].groups.push({
+          label: group.label,
+          description: group.description,
+          fields: group.fields.map(field => runtimeAdminMeta.lists[list.key].fields[field.path]),
+        });
+      }
     });
     if (typeof window !== 'undefined' && !adminMetaFromLocalStorage) {
       localStorage.setItem(
