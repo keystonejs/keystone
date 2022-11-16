@@ -1,5 +1,11 @@
 # @keystone-6/document-renderer
 
+## 1.1.2
+
+### Patch Changes
+
+- [#8054](https://github.com/keystonejs/keystone/pull/8054) [`f72a3d94c`](https://github.com/keystonejs/keystone/commit/f72a3d94c31e6e6fd738ba7b0a7f8821b680b9f8) Thanks [@emmatown](https://github.com/emmatown)! - Adds `exports` field to `package.json`
+
 ## 1.1.1
 
 ### Patch Changes

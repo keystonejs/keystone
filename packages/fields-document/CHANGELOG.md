@@ -1,5 +1,22 @@
 # @keystone-6/fields-document
 
+## 5.0.2
+
+### Patch Changes
+
+- [#8049](https://github.com/keystonejs/keystone/pull/8049) [`5525800c8`](https://github.com/keystonejs/keystone/commit/5525800c8568a2d093fd6103bc5147363e66814d) Thanks [@georgekrax](https://github.com/georgekrax)! - Fix relationship fields not using their `ui.labelField` configuration
+
+- [#8054](https://github.com/keystonejs/keystone/pull/8054) [`f72a3d94c`](https://github.com/keystonejs/keystone/commit/f72a3d94c31e6e6fd738ba7b0a7f8821b680b9f8) Thanks [@emmatown](https://github.com/emmatown)! - Adds `exports` field to `package.json`
+
+- Updated dependencies [[`f72a3d94c`](https://github.com/keystonejs/keystone/commit/f72a3d94c31e6e6fd738ba7b0a7f8821b680b9f8)]:
+  - @keystone-ui/button@7.0.2
+  - @keystone-ui/core@5.0.2
+  - @keystone-ui/fields@7.1.2
+  - @keystone-ui/icons@6.0.2
+  - @keystone-ui/popover@6.0.2
+  - @keystone-ui/tooltip@6.0.2
+  - @keystone-6/document-renderer@1.1.2
+
 ## 5.0.1
 
 ### Patch Changes

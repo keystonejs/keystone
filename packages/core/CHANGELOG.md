@@ -1,5 +1,40 @@
 # @keystone-6/core
 
+## 3.1.0
+
+### Minor Changes
+
+- [#8075](https://github.com/keystonejs/keystone/pull/8075) [`7543136e3`](https://github.com/keystonejs/keystone/commit/7543136e383b3605841f800112ce6a6159ab8294) Thanks [@borisno2](https://github.com/borisno2)! - Adds `fieldPosition` to field `ui.itemView`, for moving a field to the sidebar
+
+- [#8013](https://github.com/keystonejs/keystone/pull/8013) [`d29de5413`](https://github.com/keystonejs/keystone/commit/d29de54138781cb38e5b81848750eb57b4ef3b4e) Thanks [@borisno2](https://github.com/borisno2)! - Adds `context.withRequest`, a method to derive an updated context from an incoming request and response
+
+- [#8074](https://github.com/keystonejs/keystone/pull/8074) [`2a03de46f`](https://github.com/keystonejs/keystone/commit/2a03de46fcd2345163dd360048defde27d56f917) Thanks [@dcousens](https://github.com/dcousens)! - Adds `ui.searchFields` for the relationship field
+
+- [#8088](https://github.com/keystonejs/keystone/pull/8088) [`c1a69e265`](https://github.com/keystonejs/keystone/commit/c1a69e265c511c3c1ea8232050e035d6c73a8f2b) Thanks [@emmatown](https://github.com/emmatown)! - Adds a new `group` function for grouping fields in the Admin UI
+
+### Patch Changes
+
+- [#8078](https://github.com/keystonejs/keystone/pull/8078) [`b3633c108`](https://github.com/keystonejs/keystone/commit/b3633c1080500dc2b9243f319cba490dd3c34222) Thanks [@u-ishii](https://github.com/u-ishii)! - Fix the startup message to use the configured `http.options` host instead of assuming `localhost`
+
+- [#8049](https://github.com/keystonejs/keystone/pull/8049) [`5525800c8`](https://github.com/keystonejs/keystone/commit/5525800c8568a2d093fd6103bc5147363e66814d) Thanks [@georgekrax](https://github.com/georgekrax)! - Fix relationship fields not using their `ui.labelField` configuration
+
+- [#8054](https://github.com/keystonejs/keystone/pull/8054) [`f72a3d94c`](https://github.com/keystonejs/keystone/commit/f72a3d94c31e6e6fd738ba7b0a7f8821b680b9f8) Thanks [@emmatown](https://github.com/emmatown)! - Adds `exports` field to `package.json`
+
+- Updated dependencies [[`f72a3d94c`](https://github.com/keystonejs/keystone/commit/f72a3d94c31e6e6fd738ba7b0a7f8821b680b9f8)]:
+  - @keystone-ui/button@7.0.2
+  - @keystone-ui/core@5.0.2
+  - @keystone-ui/fields@7.1.2
+  - @keystone-ui/icons@6.0.2
+  - @keystone-ui/loading@6.0.2
+  - @keystone-ui/modals@6.0.2
+  - @keystone-ui/notice@6.0.2
+  - @keystone-ui/options@6.0.2
+  - @keystone-ui/pill@7.0.2
+  - @keystone-ui/popover@6.0.2
+  - @keystone-ui/segmented-control@7.0.2
+  - @keystone-ui/toast@6.0.2
+  - @keystone-ui/tooltip@6.0.2
+
 ## 3.0.2
 
 ### Patch Changes
