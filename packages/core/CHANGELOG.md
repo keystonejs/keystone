@@ -1,18 +1,53 @@
 # @keystone-6/core
 
+## 3.1.0
+
+### Minor Changes
+
+- [#8075](https://github.com/keystonejs/keystone/pull/8075) [`7543136e3`](https://github.com/keystonejs/keystone/commit/7543136e383b3605841f800112ce6a6159ab8294) Thanks [@borisno2](https://github.com/borisno2)! - Adds `fieldPosition` to field `ui.itemView`, for moving a field to the sidebar
+
+- [#8013](https://github.com/keystonejs/keystone/pull/8013) [`d29de5413`](https://github.com/keystonejs/keystone/commit/d29de54138781cb38e5b81848750eb57b4ef3b4e) Thanks [@borisno2](https://github.com/borisno2)! - Adds `context.withRequest`, a method to derive an updated context from an incoming request and response
+
+- [#8074](https://github.com/keystonejs/keystone/pull/8074) [`2a03de46f`](https://github.com/keystonejs/keystone/commit/2a03de46fcd2345163dd360048defde27d56f917) Thanks [@dcousens](https://github.com/dcousens)! - Adds `ui.searchFields` for the relationship field
+
+- [#8088](https://github.com/keystonejs/keystone/pull/8088) [`c1a69e265`](https://github.com/keystonejs/keystone/commit/c1a69e265c511c3c1ea8232050e035d6c73a8f2b) Thanks [@emmatown](https://github.com/emmatown)! - Adds a new `group` function for grouping fields in the Admin UI
+
+### Patch Changes
+
+- [#8078](https://github.com/keystonejs/keystone/pull/8078) [`b3633c108`](https://github.com/keystonejs/keystone/commit/b3633c1080500dc2b9243f319cba490dd3c34222) Thanks [@u-ishii](https://github.com/u-ishii)! - Fix the startup message to use the configured `http.options` host instead of assuming `localhost`
+
+- [#8049](https://github.com/keystonejs/keystone/pull/8049) [`5525800c8`](https://github.com/keystonejs/keystone/commit/5525800c8568a2d093fd6103bc5147363e66814d) Thanks [@georgekrax](https://github.com/georgekrax)! - Fix relationship fields not using their `ui.labelField` configuration
+
+- [#8054](https://github.com/keystonejs/keystone/pull/8054) [`f72a3d94c`](https://github.com/keystonejs/keystone/commit/f72a3d94c31e6e6fd738ba7b0a7f8821b680b9f8) Thanks [@emmatown](https://github.com/emmatown)! - Adds `exports` field to `package.json`
+
+- Updated dependencies [[`f72a3d94c`](https://github.com/keystonejs/keystone/commit/f72a3d94c31e6e6fd738ba7b0a7f8821b680b9f8)]:
+  - @keystone-ui/button@7.0.2
+  - @keystone-ui/core@5.0.2
+  - @keystone-ui/fields@7.1.2
+  - @keystone-ui/icons@6.0.2
+  - @keystone-ui/loading@6.0.2
+  - @keystone-ui/modals@6.0.2
+  - @keystone-ui/notice@6.0.2
+  - @keystone-ui/options@6.0.2
+  - @keystone-ui/pill@7.0.2
+  - @keystone-ui/popover@6.0.2
+  - @keystone-ui/segmented-control@7.0.2
+  - @keystone-ui/toast@6.0.2
+  - @keystone-ui/tooltip@6.0.2
+
 ## 3.0.2
 
 ### Patch Changes
 
-- [#8031](https://github.com/keystonejs/keystone/pull/8031) [`4ec75f388`](https://github.com/keystonejs/keystone/commit/4ec75f388db8157f757307b828354caabd3bb669) Thanks [@mmachatschek](https://github.com/mmachatschek)! - Use platform node in esbuild config
+- [#8031](https://github.com/keystonejs/keystone/pull/8031) [`4ec75f388`](https://github.com/keystonejs/keystone/commit/4ec75f388db8157f757307b828354caabd3bb669) Thanks [@mmachatschek](https://github.com/mmachatschek)! - Fixes platform configuration for esbuild
 
 - [#8038](https://github.com/keystonejs/keystone/pull/8038) [`4542c1fd5`](https://github.com/keystonejs/keystone/commit/4542c1fd571b33f1a8c6d87cb0f58145d5ba5f30) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixes changes to `session`/`ui.publicPages`/`ui.isValidSession`/`ui.pageMiddleware` not being updated in live reloads
 
-- [#8034](https://github.com/keystonejs/keystone/pull/8034) [`4c08c1120`](https://github.com/keystonejs/keystone/commit/4c08c1120a51eee0cd363c20c2fadbacaba9814a) Thanks [@gautamsi](https://github.com/gautamsi)! - Fixed issue where the custom field view `controller` was not being used. You should be able to override field `controller` when setting `ui.views` parameter in fields.
+- [#8034](https://github.com/keystonejs/keystone/pull/8034) [`4c08c1120`](https://github.com/keystonejs/keystone/commit/4c08c1120a51eee0cd363c20c2fadbacaba9814a) Thanks [@gautamsi](https://github.com/gautamsi)! - Fixes issue where the custom field view `controller` was not being used. You should be able to override field `controller` when setting `ui.views` parameter in fields.
 
 - [#8000](https://github.com/keystonejs/keystone/pull/8000) [`a229856df`](https://github.com/keystonejs/keystone/commit/a229856df94cff2d4132d5c466cc8ebea44f4846) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Improves performance of querying to-one relationships
 
-- [#7930](https://github.com/keystonejs/keystone/pull/7930) [`109db894d`](https://github.com/keystonejs/keystone/commit/109db894dee4fc00fae4d0afc85f60fa53177199) Thanks [@nya1](https://github.com/nya1)! - Fix `in` and `not_in` filter views for `integer`, `bigInt`, `decimal` and `float` fields
+- [#7930](https://github.com/keystonejs/keystone/pull/7930) [`109db894d`](https://github.com/keystonejs/keystone/commit/109db894dee4fc00fae4d0afc85f60fa53177199) Thanks [@nya1](https://github.com/nya1)! - Fixes `in` and `not_in` filter views for `integer`, `bigInt`, `decimal` and `float` fields
 
 ## 3.0.1
 

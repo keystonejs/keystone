@@ -1,5 +1,15 @@
 # @keystone-ui/toast
 
+## 6.0.2
+
+### Patch Changes
+
+- [#8054](https://github.com/keystonejs/keystone/pull/8054) [`f72a3d94c`](https://github.com/keystonejs/keystone/commit/f72a3d94c31e6e6fd738ba7b0a7f8821b680b9f8) Thanks [@emmatown](https://github.com/emmatown)! - Adds `exports` field to `package.json`
+
+- Updated dependencies [[`f72a3d94c`](https://github.com/keystonejs/keystone/commit/f72a3d94c31e6e6fd738ba7b0a7f8821b680b9f8)]:
+  - @keystone-ui/core@5.0.2
+  - @keystone-ui/icons@6.0.2
+
 ## 6.0.1
 
 ### Patch Changes

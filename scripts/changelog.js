@@ -21,7 +21,7 @@ const publicPackages = [
 const cves = [
   //    {
   //      id: 'CVE-2022-NNNN',
-  //      href: 'https://github.com/advisories/GHSA-...',
+  //      href: 'https://github.com/keystonejs/keystone/security/advisories/GHSA-...',
   //      upstream: true,
   //      description: `
   //        An upstream transitive dependency \`XXX\` is vulnerable to ZZZZZZ.
