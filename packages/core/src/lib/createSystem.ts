@@ -36,6 +36,7 @@ function getSudoGraphQLSchema(config: KeystoneConfig) {
             graphql: { ...(list.graphql || {}), omit: [] },
             fields: Object.fromEntries(
               Object.entries(list.fields).map(([fieldKey, field]) => {
+                if (fieldKey.startsWith('__group')) return [fieldKey, field];
                 return [
                   fieldKey,
                   (data: FieldData) => {

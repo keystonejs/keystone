@@ -1,4 +1,4 @@
-import { list, graphql, config } from '@keystone-6/core';
+import { list, graphql, config, group } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import {
   checkbox,
@@ -28,11 +28,14 @@ export const lists = {
   Thing: list({
     access: allowAll,
     fields: {
-      checkbox: checkbox({ ui: { description } }),
-      password: password({ ui: { description } }),
-      toOneRelationship: relationship({
-        ref: 'User',
-        ui: { description },
+      ...group({
+        label: 'Some group',
+        description: 'Some group description',
+        fields: {
+          checkbox: checkbox({ ui: { description } }),
+          password: password({ ui: { description } }),
+          toOneRelationship: relationship({ ref: 'User', ui: { description } }),
+        },
       }),
       toOneRelationshipAlternateLabel: relationship({
         ref: 'User',

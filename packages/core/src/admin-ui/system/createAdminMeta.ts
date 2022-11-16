@@ -39,6 +39,12 @@ export type FieldMetaRootVal = {
   listView: { fieldMode: ContextFunction<'read' | 'hidden'> };
 };
 
+export type FieldGroupMeta = {
+  label: string;
+  description: string | null;
+  fields: Array<FieldMetaRootVal>;
+};
+
 export type ListMetaRootVal = {
   key: string;
   path: string;
@@ -51,6 +57,7 @@ export type ListMetaRootVal = {
   initialSort: { field: string; direction: 'ASC' | 'DESC' } | null;
   fields: FieldMetaRootVal[];
   fieldsByKey: Record<string, FieldMetaRootVal>;
+  groups: Array<FieldGroupMeta>;
   itemQueryName: string;
   listQueryName: string;
   description: string | null;
@@ -120,6 +127,7 @@ export function createAdminMeta(
       path: list.adminUILabels.path,
       fields: [],
       fieldsByKey: {},
+      groups: [],
       pageSize: maximumPageSize,
       initialColumns,
       initialSort:
@@ -211,6 +219,15 @@ export function createAdminMeta(
 
       adminMetaRoot.listsByKey[listKey].fields.push(fieldMeta);
       adminMetaRoot.listsByKey[listKey].fieldsByKey[fieldKey] = fieldMeta;
+    }
+    for (const group of list.groups) {
+      adminMetaRoot.listsByKey[listKey].groups.push({
+        label: group.label,
+        description: group.description,
+        fields: group.fields.map(
+          fieldKey => adminMetaRoot.listsByKey[listKey].fieldsByKey[fieldKey]
+        ),
+      });
     }
   }
 

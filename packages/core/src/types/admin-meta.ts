@@ -91,6 +91,12 @@ export type FieldMeta = {
   };
 };
 
+export type FieldGroupMeta = {
+  label: string;
+  description: string | null;
+  fields: FieldMeta[];
+};
+
 export type ListMeta = {
   key: string;
   path: string;
@@ -104,6 +110,7 @@ export type ListMeta = {
   labelField: string;
   initialSort: null | { direction: 'ASC' | 'DESC'; field: string };
   fields: { [path: string]: FieldMeta };
+  groups: FieldGroupMeta[];
   isSingleton: boolean;
 };
 

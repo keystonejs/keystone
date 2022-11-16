@@ -2,7 +2,12 @@ import { GraphQLResolveInfo } from 'graphql';
 import { ScalarType, EnumType, EnumValue } from '@graphql-ts/schema';
 import { QueryMode, KeystoneContext, BaseItem, MaybePromise } from '../../types';
 import { graphql as graphqlBoundToKeystoneContext } from '../..';
-import { FieldMetaRootVal, ListMetaRootVal, AdminMetaRootVal } from './createAdminMeta';
+import {
+  FieldMetaRootVal,
+  ListMetaRootVal,
+  AdminMetaRootVal,
+  FieldGroupMeta,
+} from './createAdminMeta';
 
 type Context = KeystoneContext | { isAdminUIBuildProcess: true };
 
@@ -151,6 +156,17 @@ const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
   },
 });
 
+const KeystoneAdminUIFieldGroupMeta = graphql.object<FieldGroupMeta>()({
+  name: 'KeystoneAdminUIFieldGroupMeta',
+  fields: {
+    label: graphql.field({ type: graphql.nonNull(graphql.String) }),
+    description: graphql.field({ type: graphql.String }),
+    fields: graphql.field({
+      type: graphql.nonNull(graphql.list(graphql.nonNull(KeystoneAdminUIFieldMeta))),
+    }),
+  },
+});
+
 const KeystoneAdminUISort = graphql.object<NonNullable<ListMetaRootVal['initialSort']>>()({
   name: 'KeystoneAdminUISort',
   fields: {
@@ -187,9 +203,12 @@ const KeystoneAdminUIListMeta = graphql.object<ListMetaRootVal>()({
     fields: graphql.field({
       type: graphql.nonNull(graphql.list(graphql.nonNull(KeystoneAdminUIFieldMeta))),
     }),
+    groups: graphql.field({
+      type: graphql.nonNull(graphql.list(graphql.nonNull(KeystoneAdminUIFieldGroupMeta))),
+    }),
     initialSort: graphql.field({ type: KeystoneAdminUISort }),
     ...contextFunctionField('isHidden', graphql.Boolean),
-    isSingleton: graphql.field({ type: graphql.Boolean }),
+    isSingleton: graphql.field({ type: graphql.nonNull(graphql.Boolean) }),
   },
 });
 
