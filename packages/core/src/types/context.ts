@@ -155,20 +155,9 @@ type GraphQLExecutionArguments<TData, TVariables> = {
   variables?: TVariables;
 };
 
-// Session API
-
-export type SessionContext<T> = {
-  // Note: session is typed like this to acknowledge the default session shape
-  // if you're using keystone's built-in session implementation, but we don't
-  // actually know what it will look like.
-  session?: { itemId: string; listKey: string; data?: Record<string, any> } | any;
-  startSession?(data: T): Promise<string>;
-  endSession?(): Promise<void>;
-};
+// Files API
 
 export type AssetMode = 'local' | 's3';
-
-// Files API
 
 export type FileMetadata = {
   filename: string;
