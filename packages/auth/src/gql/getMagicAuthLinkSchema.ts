@@ -90,7 +90,7 @@ export function getMagicAuthLinkSchema<I extends string>({
           token: graphql.arg({ type: graphql.nonNull(graphql.String) }),
         },
         async resolve(rootVal, { [identityField]: identity, token }, context) {
-          if (!context.startSession) {
+          if (!context.sessionStrategy) {
             throw new Error('No session implementation available on context');
           }
 
@@ -117,10 +117,13 @@ export function getMagicAuthLinkSchema<I extends string>({
             data: { [`${tokenType}RedeemedAt`]: new Date().toISOString() },
           });
 
-          const sessionToken = await context.startSession({
-            listKey,
-            itemId: result.item.id.toString(),
-          });
+          const sessionToken = (await context.sessionStrategy.start({
+            data: {
+              listKey,
+              itemId: result.item.id.toString(),
+            },
+            context,
+          })) as string;
           return { token: sessionToken, item: result.item };
         },
       }),

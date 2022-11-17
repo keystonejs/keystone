@@ -30,13 +30,13 @@ export const start = async (cwd: string) => {
   const { expressServer, httpServer } = await createExpressServer(
     config,
     graphQLSchema,
-    keystone.createContext
+    keystone.context
   );
   console.log(`✅ GraphQL API ready`);
   if (!config.ui?.isDisabled) {
     console.log('✨ Preparing Admin UI Next.js app');
     expressServer.use(
-      await createAdminUIMiddleware(config, keystone.createContext, false, getAdminPath(cwd))
+      await createAdminUIMiddleware(config, keystone.context, false, getAdminPath(cwd))
     );
     console.log(`✅ Admin UI ready`);
   }

@@ -42,9 +42,7 @@ class FakePrismaClient {
 
 const { getKeystone } = createSystem(initConfig(config));
 
-const { createContext } = getKeystone({ PrismaClient: FakePrismaClient, Prisma: {} as any });
-
-const context = createContext();
+const { context } = getKeystone({ PrismaClient: FakePrismaClient, Prisma: {} as any });
 
 describe(`Public schema`, () => {
   let queries: string[],

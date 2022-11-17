@@ -10,16 +10,16 @@ export function nextGraphQLAPIRoute(keystoneConfig: KeystoneConfig, prismaClient
   const initializedKeystoneConfig = initConfig(keystoneConfig);
   const { graphQLSchema, getKeystone } = createSystem(initializedKeystoneConfig);
 
-  const keystone = getKeystone(prismaClient);
+  const { connect, context } = getKeystone(prismaClient);
 
-  keystone.connect();
+  connect();
 
   const apolloServer = createApolloServerMicro({
     graphQLSchema,
-    createContext: keystone.createContext,
+    context,
     sessionStrategy: initializedKeystoneConfig.session,
     graphqlConfig: initializedKeystoneConfig.graphql,
-    connectionPromise: keystone.connect(),
+    connectionPromise: connect(),
   });
 
   let startPromise = apolloServer.start();

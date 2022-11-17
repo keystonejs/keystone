@@ -7,55 +7,44 @@ import {
   ApolloServerPluginLandingPageGraphQLPlayground,
   Config,
 } from 'apollo-server-core';
-import type { CreateContext, GraphQLConfig, SessionStrategy } from '../../types';
-import { createSessionContext } from '../context/session';
+import type { KeystoneContext, GraphQLConfig, SessionStrategy } from '../../types';
 
 export const createApolloServerMicro = ({
   graphQLSchema,
-  createContext,
+  context,
   sessionStrategy,
   graphqlConfig,
   connectionPromise,
 }: {
   graphQLSchema: GraphQLSchema;
-  createContext: CreateContext;
+  context: KeystoneContext;
   sessionStrategy?: SessionStrategy<any>;
   graphqlConfig?: GraphQLConfig;
   connectionPromise: Promise<any>;
 }) => {
-  const context = async ({ req, res }: { req: IncomingMessage; res: ServerResponse }) => {
+  const userContext = async ({ req, res }: { req: IncomingMessage; res: ServerResponse }) => {
     await connectionPromise;
-    return createContext({
-      sessionContext: sessionStrategy
-        ? await createSessionContext(sessionStrategy, req, res, createContext)
-        : undefined,
-      req,
-    });
+    return context.withRequest(req, res);
   };
   const serverConfig = _createApolloServerConfig({ graphQLSchema, graphqlConfig });
-  return new ApolloServerMicro({ ...serverConfig, context });
+  return new ApolloServerMicro({ ...serverConfig, context: userContext });
 };
 
 export const createApolloServerExpress = ({
   graphQLSchema,
-  createContext,
+  context,
   sessionStrategy,
   graphqlConfig,
 }: {
   graphQLSchema: GraphQLSchema;
-  createContext: CreateContext;
+  context: KeystoneContext;
   sessionStrategy?: SessionStrategy<any>;
   graphqlConfig?: GraphQLConfig;
 }) => {
-  const context = async ({ req, res }: { req: IncomingMessage; res: ServerResponse }) =>
-    createContext({
-      sessionContext: sessionStrategy
-        ? await createSessionContext(sessionStrategy, req, res, createContext)
-        : undefined,
-      req,
-    });
+  const userContext = async ({ req, res }: { req: IncomingMessage; res: ServerResponse }) =>
+    context.withRequest(req, res);
   const serverConfig = _createApolloServerConfig({ graphQLSchema, graphqlConfig });
-  return new ApolloServerExpress({ ...serverConfig, context });
+  return new ApolloServerExpress({ ...serverConfig, context: userContext });
 };
 
 const _createApolloServerConfig = ({

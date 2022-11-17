@@ -5,8 +5,7 @@ import { GraphQLSchema } from 'graphql';
 // @ts-ignore
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js';
 import { ApolloServer } from 'apollo-server-express';
-import type { KeystoneConfig, CreateContext, SessionStrategy, GraphQLConfig } from '../../types';
-import { createSessionContext } from '../context/session';
+import type { KeystoneConfig, KeystoneContext, SessionStrategy, GraphQLConfig } from '../../types';
 import { createApolloServerExpress } from './createApolloServer';
 import { addHealthCheck } from './addHealthCheck';
 
@@ -24,20 +23,20 @@ const addApolloServer = async ({
   server,
   config,
   graphQLSchema,
-  createContext,
+  context,
   sessionStrategy,
   graphqlConfig,
 }: {
   server: express.Express;
   config: KeystoneConfig;
   graphQLSchema: GraphQLSchema;
-  createContext: CreateContext;
+  context: KeystoneContext;
   sessionStrategy?: SessionStrategy<any>;
   graphqlConfig?: GraphQLConfig;
 }) => {
   const apolloServer = createApolloServerExpress({
     graphQLSchema,
-    createContext,
+    context,
     sessionStrategy,
     graphqlConfig,
   });
@@ -57,7 +56,7 @@ const addApolloServer = async ({
 export const createExpressServer = async (
   config: KeystoneConfig,
   graphQLSchema: GraphQLSchema,
-  createContext: CreateContext
+  context: KeystoneContext
 ): Promise<{
   expressServer: express.Express;
   apolloServer: ApolloServer<{
@@ -82,26 +81,11 @@ export const createExpressServer = async (
   addHealthCheck({ config, server: expressServer });
 
   if (config.server?.extendExpressApp) {
-    const createRequestContext = async (req: IncomingMessage, res: ServerResponse) =>
-      createContext({
-        sessionContext: config.session
-          ? await createSessionContext(config.session, req, res, createContext)
-          : undefined,
-        req,
-      });
-
-    await config.server.extendExpressApp(expressServer, createRequestContext);
+    await config.server.extendExpressApp(expressServer, context);
   }
 
   if (config.server?.extendHttpServer) {
-    const createRequestContext = async (req: IncomingMessage, res: ServerResponse) =>
-      createContext({
-        sessionContext: config.session
-          ? await createSessionContext(config.session, req, res, createContext)
-          : undefined,
-        req,
-      });
-    config.server?.extendHttpServer(httpServer, createRequestContext, graphQLSchema);
+    config.server?.extendHttpServer(httpServer, context, graphQLSchema);
   }
 
   if (config.storage) {
@@ -127,7 +111,7 @@ export const createExpressServer = async (
     server: expressServer,
     config,
     graphQLSchema,
-    createContext,
+    context,
     sessionStrategy: config.session,
     graphqlConfig: config.graphql,
   });

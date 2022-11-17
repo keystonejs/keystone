@@ -13,12 +13,7 @@ import { getPrismaClient, objectEnumValues } from '@prisma/client/runtime';
 // @ts-ignore
 import { externalToInternalDmmf } from '@prisma/client/generator-build';
 import { initConfig, createSystem } from '@keystone-6/core/system';
-import type {
-  BaseKeystoneTypeInfo,
-  CreateContext,
-  KeystoneConfig,
-  KeystoneContext,
-} from '@keystone-6/core/types';
+import type { BaseKeystoneTypeInfo, KeystoneConfig, KeystoneContext } from '@keystone-6/core/types';
 import {
   getCommittedArtifacts,
   PrismaModule,
@@ -29,7 +24,6 @@ import { dbProvider, dbUrl, SQLITE_DATABASE_FILENAME } from './utils';
 
 export type TestArgs<TypeInfo extends BaseKeystoneTypeInfo> = {
   context: KeystoneContext<TypeInfo>;
-  createContext: CreateContext<KeystoneContext<TypeInfo>>;
   config: KeystoneConfig<TypeInfo>;
 };
 
@@ -170,15 +164,12 @@ export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo>({
   }
   await pushSchemaToDatabase(artifacts.prisma);
 
-  const { connect, disconnect, createContext } = getKeystone(
-    await getTestPrismaModule(artifacts.prisma)
-  );
+  const { connect, disconnect, context } = getKeystone(await getTestPrismaModule(artifacts.prisma));
   return {
     connect,
     disconnect,
     testArgs: {
-      context: createContext(),
-      createContext,
+      context,
       config,
     },
   };
