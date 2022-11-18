@@ -1,5 +1,11 @@
 # @keystone-6/core
 
+## 3.1.1
+
+### Patch Changes
+
+- [`32e200fa7`](https://github.com/keystonejs/keystone/commit/32e200fa72b06091746791f1f1b9d3e6027840b4) Thanks [@emmatown](https://github.com/emmatown)! - Fixes `ui.displayMode` in the `relationship` field incorrectly defaulting to `count` instead of `select`
+
 ## 3.1.0
 
 ### Minor Changes
