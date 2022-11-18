@@ -138,21 +138,52 @@ export const relationship =
           .filter(x => x.search)
           .map(x => x.key);
 
-        if (config.ui?.displayMode === 'select') {
+        if (config.ui?.displayMode === 'count') {
           return {
             refFieldKey: foreignFieldKey,
             refListKey: foreignListKey,
             many,
             hideCreate,
-            displayMode: 'select',
-
-            // prefer the local definition to the foreign list, if provided
-            refLabelField: config.ui.labelField || refLabelField,
-            refSearchFields: config.ui.searchFields || refSearchFields,
+            displayMode: 'count',
+            refLabelField,
+            refSearchFields,
           };
         }
 
         if (config.ui?.displayMode === 'cards') {
+          // prefer the local definition to the foreign list, if provided
+          const inlineConnectConfig =
+            typeof config.ui.inlineConnect === 'object'
+              ? {
+                  refLabelField: config.ui.inlineConnect.labelField ?? refLabelField,
+                  refSearchFields: config.ui.inlineConnect?.searchFields ?? refSearchFields,
+                }
+              : {
+                  refLabelField,
+                  refSearchFields,
+                };
+
+          if (!(inlineConnectConfig.refLabelField in foreignListMeta.fieldsByKey)) {
+            throw new Error(
+              `The ui.inlineConnect.labelField option for field '${listKey}.${fieldKey}' uses '${inlineConnectConfig.refLabelField}' but that field doesn't exist.`
+            );
+          }
+
+          for (const searchFieldKey of inlineConnectConfig.refSearchFields) {
+            if (!(searchFieldKey in foreignListMeta.fieldsByKey)) {
+              throw new Error(
+                `The ui.inlineConnect.searchFields option for relationship field '${listKey}.${fieldKey}' includes '${searchFieldKey}' but that field doesn't exist.`
+              );
+            }
+
+            const field = foreignListMeta.fieldsByKey[searchFieldKey];
+            if (field.search) continue;
+
+            throw new Error(
+              `The ui.searchFields option for field '${listKey}.${fieldKey}' includes '${searchFieldKey}' but that field doesn't have a contains filter that accepts a GraphQL String`
+            );
+          }
+
           return {
             refFieldKey: foreignFieldKey,
             refListKey: foreignListKey,
@@ -166,29 +197,24 @@ export const relationship =
             inlineEdit: config.ui.inlineEdit ?? null,
             inlineConnect: config.ui.inlineConnect ? true : false,
 
-            // prefer the local definition to the foreign list, if provided
-            ...(typeof config.ui.inlineConnect === 'object'
-              ? {
-                  refLabelField: config.ui.inlineConnect.labelField ?? refLabelField,
-                  refSearchFields: config.ui.inlineConnect?.searchFields ?? refSearchFields,
-                }
-              : {
-                  refLabelField,
-                  refSearchFields,
-                }),
+            ...inlineConnectConfig,
           };
         }
 
-        if (!(refLabelField in foreignListMeta.fieldsByKey)) {
+        // prefer the local definition to the foreign list, if provided
+        const specificRefLabelField = config.ui?.labelField || refLabelField;
+        const specificRefSearchFields = config.ui?.searchFields || refSearchFields;
+
+        if (!(specificRefLabelField in foreignListMeta.fieldsByKey)) {
           throw new Error(
-            `The ui.labelField option for field '${fieldKey}' uses '${refLabelField}' but that field doesn't exist.`
+            `The ui.labelField option for field '${listKey}.${fieldKey}' uses '${specificRefLabelField}' but that field doesn't exist.`
           );
         }
 
-        for (const searchFieldKey of refSearchFields) {
+        for (const searchFieldKey of specificRefSearchFields) {
           if (!(searchFieldKey in foreignListMeta.fieldsByKey)) {
             throw new Error(
-              `The ui.searchFields option for relationship field '${fieldKey}' includes '${searchFieldKey}' but that field doesn't exist.`
+              `The ui.searchFields option for relationship field '${listKey}.${fieldKey}' includes '${searchFieldKey}' but that field doesn't exist.`
             );
           }
 
@@ -196,7 +222,7 @@ export const relationship =
           if (field.search) continue;
 
           throw new Error(
-            `The ui.searchFields option for field '${fieldKey}' includes '${searchFieldKey}' but that field doesn't have a contains filter that accepts a GraphQL String`
+            `The ui.searchFields option for field '${listKey}.${fieldKey}' includes '${searchFieldKey}' but that field doesn't have a contains filter that accepts a GraphQL String`
           );
         }
 
@@ -205,9 +231,9 @@ export const relationship =
           refListKey: foreignListKey,
           many,
           hideCreate,
-          displayMode: 'count',
-          refLabelField,
-          refSearchFields,
+          displayMode: 'select',
+          refLabelField: specificRefLabelField,
+          refSearchFields: specificRefSearchFields,
         };
       },
     };
