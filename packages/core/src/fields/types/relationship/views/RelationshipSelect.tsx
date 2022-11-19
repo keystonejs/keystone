@@ -56,7 +56,7 @@ function useDebouncedValue<T>(value: T, limitMs: number): T {
   return debouncedValue;
 }
 
-export function useFilter(search: string, list: ListMeta) {
+export function useFilter(search: string, list: ListMeta, searchFields: string[]) {
   return useMemo(() => {
     if (!search.length) return { OR: [] };
 
@@ -69,9 +69,8 @@ export function useFilter(search: string, list: ListMeta) {
       conditions.push({ id: { equals: trimmedSearch } });
     }
 
-    for (const field of Object.values(list.fields)) {
-      if (field.search === null) continue; // in ui.searchFields
-
+    for (const fieldKey of searchFields) {
+      const field = list.fields[fieldKey];
       conditions.push({
         [field.path]: {
           contains: trimmedSearch,
@@ -81,12 +80,12 @@ export function useFilter(search: string, list: ListMeta) {
     }
 
     return { OR: conditions };
-  }, [search, list]);
+  }, [search, list, searchFields]);
 }
 
-const idField = '____id____';
+const idFieldAlias = '____id____';
 
-const labelField = '____label____';
+const labelFieldAlias = '____label____';
 
 const LoadingIndicatorContext = createContext<{
   count: number;
@@ -101,6 +100,8 @@ export const RelationshipSelect = ({
   controlShouldRenderValue,
   isDisabled,
   isLoading,
+  labelField,
+  searchFields,
   list,
   placeholder,
   portalMenu,
@@ -111,6 +112,8 @@ export const RelationshipSelect = ({
   controlShouldRenderValue: boolean;
   isDisabled: boolean;
   isLoading?: boolean;
+  labelField: string;
+  searchFields: string[];
   list: ListMeta;
   placeholder?: string;
   portalMenu?: true | undefined;
@@ -135,13 +138,13 @@ export const RelationshipSelect = ({
   const [loadingIndicatorElement, setLoadingIndicatorElement] = useState<null | HTMLElement>(null);
 
   const QUERY: TypedDocumentNode<
-    { items: { [idField]: string; [labelField]: string | null }[]; count: number },
+    { items: { [idFieldAlias]: string; [labelFieldAlias]: string | null }[]; count: number },
     { where: Record<string, any>; take: number; skip: number }
   > = gql`
     query RelationshipSelect($where: ${list.gqlNames.whereInputName}!, $take: Int!, $skip: Int!) {
       items: ${list.gqlNames.listQueryName}(where: $where, take: $take, skip: $skip) {
-        ${idField}: id
-        ${labelField}: ${list.labelField}
+        ${idFieldAlias}: id
+        ${labelFieldAlias}: ${labelField}
         ${extraSelection}
       }
       count: ${list.gqlNames.listQueryCountName}(where: $where)
@@ -149,7 +152,7 @@ export const RelationshipSelect = ({
   `;
 
   const debouncedSearch = useDebouncedValue(search, 200);
-  const where = useFilter(debouncedSearch, list);
+  const where = useFilter(debouncedSearch, list, searchFields);
 
   const link = useApolloClient().link;
   // we're using a local apollo client here because writing a global implementation of the typePolicies
@@ -192,7 +195,7 @@ export const RelationshipSelect = ({
   const count = data?.count || 0;
 
   const options =
-    data?.items?.map(({ [idField]: value, [labelField]: label, ...data }) => ({
+    data?.items?.map(({ [idFieldAlias]: value, [labelFieldAlias]: label, ...data }) => ({
       value,
       label: label || value,
       data,
@@ -229,13 +232,13 @@ export const RelationshipSelect = ({
           lastFetchMore?.skip !== skip)
       ) {
         const QUERY: TypedDocumentNode<
-          { items: { [idField]: string; [labelField]: string | null }[] },
+          { items: { [idFieldAlias]: string; [labelFieldAlias]: string | null }[] },
           { where: Record<string, any>; take: number; skip: number }
         > = gql`
               query RelationshipSelectMore($where: ${list.gqlNames.whereInputName}!, $take: Int!, $skip: Int!) {
                 items: ${list.gqlNames.listQueryName}(where: $where, take: $take, skip: $skip) {
-                  ${labelField}: ${list.labelField}
-                  ${idField}: id
+                  ${labelFieldAlias}: ${labelField}
+                  ${idFieldAlias}: id
                   ${extraSelection}
                 }
               }

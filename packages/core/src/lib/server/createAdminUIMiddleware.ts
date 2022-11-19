@@ -1,8 +1,7 @@
 import url from 'url';
 import path from 'path';
 import express from 'express';
-import type { KeystoneConfig, CreateContext } from '../../types';
-import { createSessionContext } from '../context/session';
+import type { KeystoneConfig, KeystoneContext } from '../../types';
 
 const adminErrorHTMLFilepath = path.join(
   path.dirname(require.resolve('@keystone-6/core/package.json')),
@@ -27,7 +26,7 @@ export async function getNextApp(dev: boolean, projectAdminPath: string): Promis
 
 export function createAdminUIMiddlewareWithNextApp(
   config: KeystoneConfig,
-  createContext: CreateContext,
+  context: KeystoneContext,
   nextApp: NextApp
 ) {
   const handle = nextApp.getRequestHandler();
@@ -41,14 +40,9 @@ export function createAdminUIMiddlewareWithNextApp(
       return;
     }
     try {
-      const context = createContext({
-        sessionContext: session
-          ? await createSessionContext(session, req, res, createContext)
-          : undefined,
-        req,
-      });
+      const userContext = await context.withRequest(req, res);
       const isValidSession = ui?.isAccessAllowed
-        ? await ui.isAccessAllowed(context)
+        ? await ui.isAccessAllowed(userContext)
         : session
         ? context.session !== undefined
         : true;
@@ -85,10 +79,10 @@ export function createAdminUIMiddlewareWithNextApp(
 
 export async function createAdminUIMiddleware(
   config: KeystoneConfig,
-  createContext: CreateContext,
+  context: KeystoneContext,
   dev: boolean,
   projectAdminPath: string
 ) {
   const nextApp = await getNextApp(dev, projectAdminPath);
-  return createAdminUIMiddlewareWithNextApp(config, createContext, nextApp);
+  return createAdminUIMiddlewareWithNextApp(config, context, nextApp);
 }

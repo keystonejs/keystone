@@ -27,11 +27,7 @@ async function getTestArgsWithServer<TypeInfo extends BaseKeystoneTypeInfo>(
     expressServer: app,
     apolloServer,
     httpServer: server,
-  } = await createExpressServer(
-    testArgs.config,
-    testArgs.context.graphql.schema,
-    testArgs.createContext
-  );
+  } = await createExpressServer(testArgs.config, testArgs.context.graphql.schema, testArgs.context);
 
   const graphQLRequest: GraphQLRequest = ({ query, variables = undefined, operationName }) =>
     supertest(app)

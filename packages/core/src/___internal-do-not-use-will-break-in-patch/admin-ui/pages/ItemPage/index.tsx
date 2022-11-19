@@ -163,6 +163,7 @@ function ItemForm({
           errors={error?.graphQLErrors.filter(x => x.path?.length === 1)}
         />
         <Fields
+          groups={list.groups}
           fieldModes={fieldModes}
           fields={list.fields}
           forceValidation={forceValidation}
@@ -233,6 +234,7 @@ function ItemForm({
         </div>
         <Box marginTop="xlarge">
           <Fields
+            groups={list.groups}
             fieldModes={fieldModes}
             fields={list.fields}
             forceValidation={forceValidation}

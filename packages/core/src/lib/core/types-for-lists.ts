@@ -1,7 +1,9 @@
 import { CacheHint } from 'apollo-server-types';
+import { GraphQLString, isInputObjectType } from 'graphql';
 import {
   BaseItem,
   GraphQLTypesForList,
+  QueryMode,
   getGqlNames,
   NextFieldType,
   BaseListTypeInfo,
@@ -21,7 +23,7 @@ import {
   parseListAccessControl,
   parseFieldAccessControl,
 } from './access-control';
-import { getNamesFromList } from './utils';
+import { areArraysEqual, getNamesFromList } from './utils';
 import { ResolvedDBField, resolveRelationships } from './resolve-relationships';
 import { outputTypeField } from './queries/output-field';
 import { assertFieldsValid } from './field-assertions';
@@ -42,10 +44,17 @@ export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access' | 'graph
   };
 };
 
+export type FieldGroupConfig = {
+  fields: string[];
+  label: string;
+  description: string | null;
+};
+
 export type InitialisedList = {
   fields: Record<string, InitialisedField>;
   /** This will include the opposites to one-sided relationships */
   resolvedDbFields: Record<string, ResolvedDBField>;
+  groups: FieldGroupConfig[];
   pluralGraphQLName: string;
   types: GraphQLTypesForList;
   access: ResolvedListAccessControl;
@@ -53,6 +62,11 @@ export type InitialisedList = {
   adminUILabels: { label: string; singular: string; plural: string; path: string };
   cacheHint: ((args: CacheHintArgs) => CacheHint) | undefined;
   listKey: string;
+  ui: {
+    labelField: string;
+    searchFields: Set<string>;
+    searchableFields: Map<string, 'default' | 'insensitive' | null>;
+  };
   lists: Record<string, InitialisedList>;
   dbMap: string | undefined;
   graphql: {
@@ -141,7 +155,26 @@ function getListsWithInitialisedFields(
     const intermediateList = intermediateLists[listKey];
     const resultFields: Record<string, InitialisedField> = {};
 
-    for (const [fieldKey, fieldFunc] of Object.entries(list.fields)) {
+    const groups: FieldGroupConfig[] = [];
+
+    const fieldKeys = Object.keys(list.fields);
+    for (const [idx, [fieldKey, fieldFunc]] of Object.entries(list.fields).entries()) {
+      if (fieldKey.startsWith('__group')) {
+        const group = fieldFunc as any;
+        if (
+          typeof group === 'object' &&
+          group !== null &&
+          typeof group.label === 'string' &&
+          (group.description === null || typeof group.description === 'string') &&
+          Array.isArray(group.fields) &&
+          areArraysEqual(group.fields, fieldKeys.slice(idx + 1, idx + 1 + group.fields.length))
+        ) {
+          groups.push(group);
+          continue;
+        }
+        throw new Error(`unexpected value for a group at ${listKey}.${fieldKey}`);
+      }
+
       if (typeof fieldFunc !== 'function') {
         throw new Error(`The field at ${listKey}.${fieldKey} does not provide a function`);
       }
@@ -185,6 +218,22 @@ function getListsWithInitialisedFields(
       };
     }
 
+    // Default the labelField to `name`, `label`, or `title` if they exist; otherwise fall back to `id`
+    const labelField =
+      list.ui?.labelField ??
+      (list.fields.label
+        ? 'label'
+        : list.fields.name
+        ? 'name'
+        : list.fields.title
+        ? 'title'
+        : 'id');
+
+    const searchFields = new Set(list.ui?.searchFields ?? []);
+    if (searchFields.has('id')) {
+      throw new Error(`${listKey}.ui.searchFields cannot include 'id'`);
+    }
+
     result[listKey] = {
       fields: resultFields,
       ...intermediateList,
@@ -192,7 +241,12 @@ function getListsWithInitialisedFields(
       access: parseListAccessControl(list.access),
       dbMap: list.db?.map,
       types: listGraphqlTypes[listKey].types,
-
+      ui: {
+        labelField,
+        searchFields,
+        searchableFields: new Map<string, 'default' | 'insensitive' | null>(),
+      },
+      groups,
       hooks: list.hooks || {},
 
       listKey,
@@ -208,6 +262,38 @@ function getListsWithInitialisedFields(
   }
 
   return result;
+}
+
+function introspectGraphQLTypes(lists: Record<string, InitialisedList>) {
+  for (const [listKey, list] of Object.entries(lists)) {
+    const {
+      ui: { searchFields, searchableFields },
+    } = list;
+
+    if (searchFields.has('id')) {
+      throw new Error(
+        `The ui.searchFields option on the ${listKey} list includes 'id'. Lists can always be searched by an item's id so it must not be specified as a search field`
+      );
+    }
+
+    const whereInputFields = list.types.where.graphQLType.getFields();
+    for (const fieldKey of Object.keys(list.fields)) {
+      const filterType = whereInputFields[fieldKey]?.type;
+      const fieldFilterFields = isInputObjectType(filterType) ? filterType.getFields() : undefined;
+      if (fieldFilterFields?.contains?.type === GraphQLString) {
+        searchableFields.set(
+          fieldKey,
+          fieldFilterFields?.mode?.type === QueryMode.graphQLType ? 'insensitive' : 'default'
+        );
+      }
+    }
+
+    if (searchFields.size === 0) {
+      if (searchableFields.has(list.ui.labelField)) {
+        searchFields.add(list.ui.labelField);
+      }
+    }
+  }
 }
 
 function getListGraphqlTypes(
@@ -481,7 +567,7 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
 
   /**
    * Lists is instantiated here so that it can be passed into the `getListGraphqlTypes` function
-   * This function attaches this list object to the various graphql functions
+   * This function binds the listsRef object to the various graphql functions
    *
    * The object will be populated at the end of this function, and the reference will be maintained
    */
@@ -495,9 +581,12 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
   {
     const resolvedDBFieldsForLists = resolveRelationships(intermediateLists);
     intermediateLists = Object.fromEntries(
-      Object.entries(intermediateLists).map(([listKey, blah]) => [
+      Object.entries(intermediateLists).map(([listKey, list]) => [
         listKey,
-        { ...blah, resolvedDbFields: resolvedDBFieldsForLists[listKey] },
+        {
+          ...list,
+          resolvedDbFields: resolvedDBFieldsForLists[listKey],
+        },
       ])
     );
   }
@@ -539,19 +628,21 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
     }
   }
 
-  /*
-    Error checking
-    */
+  // Error checking
   for (const [listKey, { fields }] of Object.entries(intermediateLists)) {
     assertFieldsValid({ listKey, fields });
   }
 
+  // Fixup the GraphQL refs
   for (const [listKey, intermediateList] of Object.entries(intermediateLists)) {
     listsRef[listKey] = {
       ...intermediateList,
       lists: listsRef,
     };
   }
+
+  // Do some introspection
+  introspectGraphQLTypes(listsRef);
 
   return listsRef;
 }

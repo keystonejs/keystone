@@ -196,3 +196,7 @@ export function getPrismaNamespace(context: KeystoneContext) {
   }
   return limit;
 }
+
+export function areArraysEqual(a: readonly unknown[], b: readonly unknown[]) {
+  return a.length === b.length && a.every((x, i) => x === b[i]);
+}

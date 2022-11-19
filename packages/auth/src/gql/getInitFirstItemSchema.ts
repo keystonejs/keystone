@@ -41,7 +41,7 @@ export function getInitFirstItemSchema({
         type: graphql.nonNull(ItemAuthenticationWithPasswordSuccess),
         args: { data: graphql.arg({ type: graphql.nonNull(initialCreateInput) }) },
         async resolve(rootVal, { data }, context) {
-          if (!context.startSession) {
+          if (!context.sessionStrategy) {
             throw new Error('No session implementation available on context');
           }
 
@@ -56,7 +56,10 @@ export function getInitFirstItemSchema({
           // (this is also mostly fine, the chance that people are using things where
           // the input value can't round-trip like the Upload scalar here is quite low)
           const item = await dbItemAPI.createOne({ data: { ...data, ...itemData } });
-          const sessionToken = await context.startSession({ listKey, itemId: item.id.toString() });
+          const sessionToken = (await context.sessionStrategy.start({
+            data: { listKey, itemId: item.id.toString() },
+            context,
+          })) as string;
           return { item, sessionToken };
         },
       }),

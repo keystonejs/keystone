@@ -1,7 +1,7 @@
 import path from 'path';
 import type { ListenOptions } from 'net';
 import url from 'url';
-import { createServer, IncomingMessage, ServerResponse } from 'http';
+import { createServer } from 'http';
 import express from 'express';
 import { GraphQLSchema, printSchema } from 'graphql';
 import fs from 'fs-extra';
@@ -29,7 +29,6 @@ import { ExitError, getAdminPath, getBuiltConfigPath } from '../utils';
 import { KeystoneConfig } from '../../types';
 import { initialiseLists } from '../../lib/core/types-for-lists';
 import { printPrismaSchema } from '../../lib/core/prisma-schema';
-import { createSessionContext } from '../../lib/context/session';
 import { AdminMetaRootVal } from '../../admin-ui/system/createAdminMeta';
 
 const devLoadingHTMLFilepath = path.join(
@@ -118,7 +117,7 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
     const {
       adminMeta,
       graphQLSchema,
-      createContext,
+      context,
       prismaSchema,
       apolloServer,
       prismaClientModule,
@@ -126,21 +125,14 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
     } = await setupInitialKeystone(config, cwd, shouldDropDatabase);
 
     if (configWithHTTP?.server?.extendHttpServer) {
-      const createRequestContext = async (req: IncomingMessage, res: ServerResponse) =>
-        createContext({
-          sessionContext: config.session
-            ? await createSessionContext(config.session, req, res, createContext)
-            : undefined,
-          req,
-        });
-      configWithHTTP.server.extendHttpServer(httpServer, createRequestContext, graphQLSchema);
+      configWithHTTP.server.extendHttpServer(httpServer, context, graphQLSchema);
     }
 
-    const prismaClient = createContext().prisma;
+    const prismaClient = context.prisma;
     ({ disconnect, expressServer } = rest);
     const nextApp = await initAdminUI(config, graphQLSchema, adminMeta, cwd);
     if (nextApp) {
-      expressServer.use(createAdminUIMiddlewareWithNextApp(config, createContext, nextApp));
+      expressServer.use(createAdminUIMiddlewareWithNextApp(config, context, nextApp));
     }
     hasAddedAdminUIMiddleware = true;
     initKeystonePromiseResolve();
@@ -207,10 +199,10 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
           } as unknown as new (args: unknown) => any,
           Prisma: prismaClientModule.Prisma,
         });
-        const servers = await createExpressServer(newConfig, graphQLSchema, keystone.createContext);
+        const servers = await createExpressServer(newConfig, graphQLSchema, keystone.context);
         if (nextApp) {
           servers.expressServer.use(
-            createAdminUIMiddlewareWithNextApp(newConfig, keystone.createContext, nextApp)
+            createAdminUIMiddlewareWithNextApp(newConfig, keystone.context, nextApp)
           );
         }
         expressServer = servers.expressServer;
@@ -383,7 +375,7 @@ async function setupInitialKeystone(
   const { apolloServer, expressServer } = await createExpressServer(
     config,
     graphQLSchema,
-    keystone.createContext
+    keystone.context
   );
   console.log(`✅ GraphQL API ready`);
 
@@ -401,7 +393,7 @@ async function setupInitialKeystone(
     expressServer,
     apolloServer,
     graphQLSchema,
-    createContext: keystone.createContext,
+    context: keystone.context,
     prismaSchema,
     prismaClientModule,
   };

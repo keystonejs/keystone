@@ -4,17 +4,18 @@ import { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql';
 import { TypedDocumentNode } from '@graphql-typed-document-node/core';
 import { InitialisedList } from '../lib/core/types-for-lists';
 import { BaseListTypeInfo } from './type-info';
-import { GqlNames, BaseKeystoneTypeInfo } from '.';
+import { GqlNames, BaseKeystoneTypeInfo, SessionStrategy } from '.';
 
 export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   req?: IncomingMessage;
+  res?: ServerResponse;
   db: KeystoneDbAPI<TypeInfo['lists']>;
   query: KeystoneListsAPI<TypeInfo['lists']>;
   graphql: KeystoneGraphQLAPI;
   sudo: () => KeystoneContext<TypeInfo>;
   exitSudo: () => KeystoneContext<TypeInfo>;
   withSession: (session: any) => KeystoneContext<TypeInfo>;
-  withRequest: (req: IncomingMessage, res: ServerResponse) => Promise<KeystoneContext<TypeInfo>>;
+  withRequest: (req: IncomingMessage, res?: ServerResponse) => Promise<KeystoneContext<TypeInfo>>;
   prisma: TypeInfo['prisma'];
   files: FilesContext;
   images: ImagesContext;
@@ -26,7 +27,9 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
      */
     initialisedLists: Record<string, InitialisedList>;
   };
-} & Partial<SessionContext<any>>;
+  sessionStrategy?: SessionStrategy<any>;
+  session?: any;
+};
 
 // List item API
 
@@ -152,20 +155,9 @@ type GraphQLExecutionArguments<TData, TVariables> = {
   variables?: TVariables;
 };
 
-// Session API
-
-export type SessionContext<T> = {
-  // Note: session is typed like this to acknowledge the default session shape
-  // if you're using keystone's built-in session implementation, but we don't
-  // actually know what it will look like.
-  session?: { itemId: string; listKey: string; data?: Record<string, any> } | any;
-  startSession(data: T): Promise<string>;
-  endSession(): Promise<void>;
-};
+// Files API
 
 export type AssetMode = 'local' | 's3';
-
-// Files API
 
 export type FileMetadata = {
   filename: string;

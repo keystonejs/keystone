@@ -77,17 +77,21 @@ export function statelessSessions<T>({
     throw new Error('The session secret must be at least 32 characters long');
   }
   return {
-    async get({ req }) {
-      const cookies = cookie.parse(req.headers.cookie || '');
-      const bearer = req.headers.authorization?.replace('Bearer ', '');
+    async get({ context }) {
+      if (!context?.req) {
+        return;
+      }
+      const cookies = cookie.parse(context.req.headers.cookie || '');
+      const bearer = context.req.headers.authorization?.replace('Bearer ', '');
       const token = bearer || cookies[TOKEN_NAME];
       if (!token) return;
       try {
         return await Iron.unseal(token, secret, ironOptions);
       } catch (err) {}
     },
-    async end({ res }) {
-      res.setHeader(
+    async end({ context }) {
+      if (!context?.res) return;
+      context.res.setHeader(
         'Set-Cookie',
         cookie.serialize(TOKEN_NAME, '', {
           maxAge: 0,
@@ -100,10 +104,11 @@ export function statelessSessions<T>({
         })
       );
     },
-    async start({ res, data }) {
+    async start({ context, data }) {
+      if (!context?.res) return;
       const sealedData = await Iron.seal(data, secret, { ...ironOptions, ttl: maxAge * 1000 });
 
-      res.setHeader(
+      context.res.setHeader(
         'Set-Cookie',
         cookie.serialize(TOKEN_NAME, sealedData, {
           maxAge,
@@ -129,25 +134,25 @@ export function storedSessions({
   let { get, start, end } = statelessSessions({ ...statelessSessionsOptions, maxAge });
   let store = storeOption({ maxAge });
   return {
-    async get({ req, createContext }) {
-      const data = (await get({ req, createContext })) as { sessionId: string } | undefined;
+    async get({ context }) {
+      const data = (await get({ context })) as { sessionId: string } | undefined;
       const sessionId = data?.sessionId;
       if (typeof sessionId === 'string') {
         return store.get(sessionId);
       }
     },
-    async start({ res, data, createContext }) {
+    async start({ data, context }) {
       let sessionId = generateSessionId();
       await store.set(sessionId, data);
-      return start?.({ res, data: { sessionId }, createContext }) || '';
+      return start?.({ data: { sessionId }, context }) || '';
     },
-    async end({ req, res, createContext }) {
-      const data = (await get({ req, createContext })) as { sessionId: string } | undefined;
+    async end({ context }) {
+      const data = (await get({ context })) as { sessionId: string } | undefined;
       const sessionId = data?.sessionId;
       if (typeof sessionId === 'string') {
         await store.delete(sessionId);
       }
-      await end?.({ req, res, createContext });
+      await end?.({ context });
     },
   };
 }

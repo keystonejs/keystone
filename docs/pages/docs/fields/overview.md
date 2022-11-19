@@ -90,10 +90,8 @@ Options:
     Can be one of `['edit', 'read', 'hidden']`, or an async function with an argument `{ session, context, item }` that returns one of `['edit', 'read', 'hidden']`.
     Defaults to the list's `ui.itemView.defaultFieldMode` config if defined.
     See the [Lists API](../config/lists#ui) for details.
-{% if $nextRelease %}
-  - `itemView.fieldPosition` (default: `form`): Controls which side of the page the field is placed in the Admin UI.
+- `itemView.fieldPosition` (default: `form`): Controls which side of the page the field is placed in the Admin UI.
     Can be either `form` or `sidebar`. `form` or blank places the field on the left hand side of the item view. `sidebar` places the field on the right hand side under the ID field
-{% /if %}
   - `listView.fieldMode` (default: `'read'`): Controls the list view page of the Admin UI.
     Can be one of `['read', 'hidden']`, or an async function with an argument `{ session, context }` that returns one of `['read', 'hidden']`.
     Defaults to the list's `ui.listView.defaultFieldMode` config if defined.
@@ -132,6 +130,35 @@ export default config({
             cacheHint: { maxAge: 60, scope: CacheScope.Private },
             omit: ['read', 'create', 'update'],
           }
+        }),
+        /* ... */
+      },
+    }),
+    /* ... */
+  },
+  /* ... */
+});
+```
+
+## Groups
+
+Fields can be grouped together in the Admin UI using the `group` function, with a customisable `label` and `description`.
+
+```typescript
+import { config, list, group } from '@keystone-6/core';
+import { text } from '@keystone-6/core/fields';
+
+export default config({
+  lists: {
+    SomeListName: list({
+      fields: {
+        ...group({
+          label: 'Group label',
+          description: 'Group description',
+          fields: {
+            someFieldName: text({ /* ... */ }),
+            /* ... */
+          },
         }),
         /* ... */
       },

@@ -82,6 +82,7 @@ export function useCreateItem(list: ListMeta): CreateItemHookResult {
     error,
     props: {
       fields: list.fields,
+      groups: list.groups,
       fieldModes:
         createViewFieldModes.state === 'loaded' ? createViewFieldModes.lists[list.key] : null,
       forceValidation,

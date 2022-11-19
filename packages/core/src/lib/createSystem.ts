@@ -36,6 +36,7 @@ function getSudoGraphQLSchema(config: KeystoneConfig) {
             graphql: { ...(list.graphql || {}), omit: [] },
             fields: Object.fromEntries(
               Object.entries(list.fields).map(([fieldKey, field]) => {
+                if (fieldKey.startsWith('__group')) return [fieldKey, field];
                 return [
                   fieldKey,
                   (data: FieldData) => {
@@ -89,7 +90,7 @@ export function createSystem(config: KeystoneConfig) {
         prismaClient._engine.child?.kill('SIGINT');
       });
 
-      const createContext = makeCreateContext({
+      const context = makeCreateContext({
         graphQLSchema,
         sudoGraphQLSchema,
         config,
@@ -103,13 +104,12 @@ export function createSystem(config: KeystoneConfig) {
       return {
         async connect() {
           await prismaClient.$connect();
-          const context = createContext();
           await config.db.onConnect?.(context);
         },
         async disconnect() {
           await prismaClient.$disconnect();
         },
-        createContext,
+        context,
       };
     },
   };

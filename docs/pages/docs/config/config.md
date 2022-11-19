@@ -220,8 +220,13 @@ export default config({
     port: 3000,
     maxFileSize: 200 * 1024 * 1024,
     healthCheck: true,
+{% if $nextRelease %}
+    extendExpressApp: (app, context) => { /* ... */ },
+    extendHttpServer: (httpServer, context, graphQLSchema) => { /* ... */ },
+{% else /%}
     extendExpressApp: (app, createContext) => { /* ... */ },
     extendHttpServer: (httpServer, createContext, graphQLSchema) => { /* ... */ },
+{% /if %}
   },
   /* ... */
 });
@@ -268,7 +273,11 @@ This lets you modify the express app that Keystone creates _before_ the Apollo S
 The function is passed two arguments:
 
 - `app`: The express app keystone has created
+{% if $nextRelease %}
+- `context`: A Keystone Context
+{% else /%}
 - `async createContext(req, res)`: A function you can call to create a Keystone Context for the request
+{% /if %}
 
 For example, you could add your own request logging middleware:
 
@@ -304,6 +313,15 @@ You could also use it to add custom REST endpoints to your server, by creating a
 ```ts
 export default config({
   server: {
+{% if $nextRelease %}
+    extendExpressApp: (app, _context) => {
+      app.get('/api/users', async (req, res) => {
+        const context = _context.withRequest(req, res);
+        const users = await context.query.User.findMany();
+        res.json(users);
+      });
+    },
+{% else /%}
     extendExpressApp: (app, createContext) => {
       app.get('/api/users', async (req, res) => {
         const context = await createContext(req, res);
@@ -311,6 +329,7 @@ export default config({
         res.json(users);
       });
     },
+{% /if %}
   },
 });
 ```
@@ -326,7 +345,11 @@ This lets you interact with the node [http.Server](https://nodejs.org/api/http.h
 The function is passed in 3 arguments:
 
 - `server` - this is the HTTP server that you can then extend
-- `async createContext(req, res)`: A function you can call to create a Keystone Context for the request
+{% if $nextRelease %}
+- `context`: A Keystone Context
+{% else /%}
+- `async createRequestContext(req, res)`: A function you can call to create a Keystone Context for the request
+{% /if %}
 - `graphqlSchema` - this is the keystone graphql schema that can be used in a WebSocket GraphQL server for subscriptions
 
 For example, this function could be used to listen for `'upgrade'` requests for a WebSocket server when adding support for GraphQL subscriptions
@@ -337,6 +360,16 @@ import { useServer as wsUseServer } from 'graphql-ws/lib/use/ws';
 
 export default config({
   server: {
+{% if $nextRelease %}
+	extendHttpServer: (httpServer, context, graphqlSchema) => {
+		const wss = new WebSocketServer({
+			server: httpServer,
+			path: '/api/graphql',
+		});
+
+		wsUseServer({ schema: graphqlSchema }, wss);
+	},
+{% else /%}
 	extendHttpServer: (httpServer, createRequestContext, graphqlSchema) => {
 		const wss = new WebSocketServer({
 			server: httpServer,
@@ -345,6 +378,7 @@ export default config({
 
 		wsUseServer({ schema: graphqlSchema }, wss);
 	},
+{% /if %}
   },
 });
 ```
@@ -360,10 +394,18 @@ import type { SessionStrategy } from '@keystone-6/core/types';
 The `session` config option allows you to configure session management of your Keystone system.
 It has a TypeScript type of `SessionStrategy<any>`.
 
+{% if $nextRelease %}
+In general you will use `SessionStrategy` objects from the `@keystone-6/auth/session` package, rather than writing this yourself.
+{% else /%}
 In general you will use `SessionStrategy` objects from the `@keystone-6/core/session` package, rather than writing this yourself.
+{% /if %}
 
 ```typescript
+{% if $nextRelease %}
+import { statelessSessions } from '@keystone-6/auth/session';
+{% else /%}
 import { statelessSessions } from '@keystone-6/core/session';
+{% /if %}
 
 export default config({
   session: statelessSessions({ /* ... */ }),

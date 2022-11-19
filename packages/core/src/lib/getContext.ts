@@ -7,6 +7,6 @@ export function getContext<TypeInfo extends BaseKeystoneTypeInfo>(
   PrismaModule: unknown
 ): KeystoneContext<TypeInfo> {
   const system = createSystem(initConfig(config));
-  const { createContext } = system.getKeystone(PrismaModule as any);
-  return createContext();
+  const { context } = system.getKeystone(PrismaModule as any);
+  return context;
 }
