@@ -276,7 +276,7 @@ The function is passed two arguments:
 {% if $nextRelease %}
 - `context`: A Keystone Context
 {% else /%}
-- `async createContext(req, res)`: A function you can call to create a Keystone Context for the request
+- `async createRequestContext(req, res)`: A function you can call to create a Keystone Context for the request
 {% /if %}
 
 For example, you could add your own request logging middleware:
@@ -314,17 +314,17 @@ You could also use it to add custom REST endpoints to your server, by creating a
 export default config({
   server: {
 {% if $nextRelease %}
-    extendExpressApp: (app, _context) => {
+    extendExpressApp: (app, commonContext) => {
       app.get('/api/users', async (req, res) => {
-        const context = _context.withRequest(req, res);
+        const context = commonContext.withRequest(req, res);
         const users = await context.query.User.findMany();
         res.json(users);
       });
     },
 {% else /%}
-    extendExpressApp: (app, createContext) => {
+    extendExpressApp: (app, createRequestContext) => {
       app.get('/api/users', async (req, res) => {
-        const context = await createContext(req, res);
+        const context = await createRequestContext(req, res);
         const users = await context.query.User.findMany();
         res.json(users);
       });
@@ -361,7 +361,7 @@ import { useServer as wsUseServer } from 'graphql-ws/lib/use/ws';
 export default config({
   server: {
 {% if $nextRelease %}
-	extendHttpServer: (httpServer, context, graphqlSchema) => {
+	extendHttpServer: (httpServer, commonContext, graphqlSchema) => {
 		const wss = new WebSocketServer({
 			server: httpServer,
 			path: '/api/graphql',
