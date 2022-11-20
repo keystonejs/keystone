@@ -137,18 +137,6 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
     hasAddedAdminUIMiddleware = true;
     initKeystonePromiseResolve();
 
-    // this exports a function which dynamically requires the config rather than directly importing it.
-    // this allows us to control exactly _when_ the gets evaluated so that we can handle errors ourselves.
-    // note this is intentionally using CommonJS and not ESM because by doing a dynamic import, webpack
-    // will generate a separate chunk for that whereas a require will be in the same bundle but the execution can still be delayed.
-    // dynamic importing didn't work on windows because it couldn't get the path to require the chunk for some reason
-    await fs.outputFile(
-      `${getAdminPath(cwd)}/pages/api/__keystone_api_build.js`,
-      `exports.getConfig = () => require(${p});
-const x = Math.random();
-exports.default = function (req, res) { return res.send(x.toString()) }
-`
-    );
     const initialisedLists = initialiseLists(config);
     const originalPrismaSchema = printPrismaSchema(
       initialisedLists,
