@@ -86,8 +86,8 @@ model Todo {
 `);
 
   expect(recording()).toEqual(`✨ Starting Keystone
-⭐️ Dev Server Starting on http://localhost:3000
-⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
+⭐️ Server listening on ::, port 3000
+⭐️ GraphQL API available at /api/graphql
 ✨ Generating GraphQL and Prisma schemas
 ✨ sqlite database "app.db" created at file:./app.db
 ✨ Your database is now in sync with your schema. Done in 0ms
@@ -109,8 +109,8 @@ describe('useMigrations: false', () => {
 
     expect(recording()).toMatchInlineSnapshot(`
       "✨ Starting Keystone
-      ⭐️ Dev Server Starting on http://localhost:3000
-      ⭐️ GraphQL API Starting on http://localhost:3000/api/graphql
+      ⭐️ Server listening on ::, port 3000
+      ⭐️ GraphQL API available at /api/graphql
       ✨ Generating GraphQL and Prisma schemas
       ✨ The database is already in sync with the Prisma schema.
       ✨ Connecting to the database
