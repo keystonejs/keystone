@@ -41,26 +41,30 @@ export const start = async (cwd: string) => {
     console.log(`✅ Admin UI ready`);
   }
 
-  const options: ListenOptions = {
-    host: 'localhost',
+  const httpOptions: ListenOptions = {
+    host: '::', // the default for nodejs httpServer
     port: 3000,
   };
 
   if (config?.server && 'port' in config.server) {
-    options.port = config.server.port;
+    httpOptions.port = config.server.port;
   }
 
   if (config?.server && 'options' in config.server && config.server.options) {
-    Object.assign(options, config.server.options);
+    Object.assign(httpOptions, config.server.options);
   }
 
   // preference env.PORT if supplied
   if ('PORT' in process.env) {
-    options.port = parseInt(process.env.PORT || '');
+    httpOptions.port = parseInt(process.env.PORT || '');
   }
 
-  httpServer.listen(options, (err?: any) => {
+  httpServer.listen(httpOptions, (err?: any) => {
     if (err) throw err;
-    console.log(`⭐️ Server Ready on http://${options.host}:${options.port}`);
+
+    const easyHost = httpOptions.host === '::' ? 'localhost' : httpOptions.host;
+    console.log(
+      `⭐️ Server listening on ${httpOptions.host}:${httpOptions.port} (http://${easyHost}:${httpOptions.port}/)`
+    );
   });
 };
