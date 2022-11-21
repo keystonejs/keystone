@@ -249,6 +249,11 @@ const CURRENT = [
     destination: '/blog/embedded-mode-with-sqlite-nextjs',
     permanent: true,
   },
+  {
+    source: '/docs/fields',
+    destination: '/docs/fields/overview#title',
+    permanent: true,
+  },
 ];
 
 module.exports = [...SPLITBEE, ...CURRENT, ...ORIGINAL_NEXT, ...KEYSTONE_5, ...KEYSTONE_4];
