@@ -62,7 +62,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       mysql:
-        image: mariadb:10.9
+        image: mariadb:10.10
         # we use the root user because our tests create databases
         env:
           MYSQL_ROOT_PASSWORD: testpass
@@ -142,7 +142,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       mysql:
-        image: mariadb:10.9
+        image: mariadb:10.10
         env:
           MYSQL_ROOT_PASSWORD: testpass
         ports:
