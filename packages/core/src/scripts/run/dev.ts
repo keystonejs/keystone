@@ -266,7 +266,7 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
   });
 
   const httpOptions: ListenOptions = {
-    host: 'localhost',
+    host: '::', // the default for nodejs httpServer
     port: 3000,
   };
 

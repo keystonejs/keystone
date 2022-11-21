@@ -42,7 +42,7 @@ export const start = async (cwd: string) => {
   }
 
   const options: ListenOptions = {
-    host: 'localhost',
+    host: '::', // the default for nodejs httpServer
     port: 3000,
   };
 
