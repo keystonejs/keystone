@@ -1,5 +1,11 @@
 # @keystone-6/core
 
+## 3.1.2
+
+### Patch Changes
+
+- [#8105](https://github.com/keystonejs/keystone/pull/8105) [`3d5ff29a0`](https://github.com/keystonejs/keystone/commit/3d5ff29a07825aacf225a73539ceef8246825c76) Thanks [@dcousens](https://github.com/dcousens)! - Fix `http` server not binding to '::' by default (regression introduced by [#8078](https://github.com/keystonejs/keystone/pull/8078))
+
 ## 3.1.1
 
 ### Patch Changes
