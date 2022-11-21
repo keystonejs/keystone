@@ -31,9 +31,9 @@ export default config({
       - Adds a GET handler for tasks, which will query for tasks in the
         Keystone schema and return the results as JSON
     */
-    extendExpressApp: (app, context) => {
+    extendExpressApp: (app, commonContext) => {
       app.use('/rest', async (req, res, next) => {
-        (req as any).context = await context.withRequest(req, res);
+        (req as any).context = await commonContext.withRequest(req, res);
         next();
       });
 
