@@ -64,7 +64,7 @@ export const start = async (cwd: string) => {
 
     const easyHost = httpOptions.host === '::' ? 'localhost' : httpOptions.host;
     console.log(
-      `⭐️ Server listening on ${httpOptions.host}, port ${httpOptions.port} (http://${easyHost}:${httpOptions.port})`
+      `⭐️ Server listening on ${httpOptions.host}, port ${httpOptions.port} (http://${easyHost}:${httpOptions.port}/)`
     );
   });
 };

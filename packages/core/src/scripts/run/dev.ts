@@ -288,7 +288,7 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
 
     const easyHost = httpOptions.host === '::' ? 'localhost' : httpOptions.host;
     console.log(
-      `⭐️ Server listening on ${httpOptions.host}, port ${httpOptions.port} (http://${easyHost}:${httpOptions.port})`
+      `⭐️ Server listening on ${httpOptions.host}, port ${httpOptions.port} (http://${easyHost}:${httpOptions.port}/)`
     );
     console.log(`⭐️ GraphQL API available at ${config.graphql?.path || '/api/graphql'}`);
 
