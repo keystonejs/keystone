@@ -285,9 +285,12 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
 
   const server = httpServer.listen(httpOptions, (err?: any) => {
     if (err) throw err;
-    // We start initialising Keystone after the dev server is ready,
-    console.log(`⭐️ Server listening on ${httpOptions.host}, port ${httpOptions.port}`);
-    console.log(`⭐️ GraphQL API available at ${config.graphql?.path || '/api/graphql' }`);
+
+    const easyHost = httpOptions.host === '::' ? 'localhost' : httpOptions.host;
+    console.log(
+      `⭐️ Server listening on ${httpOptions.host}, port ${httpOptions.port} (http://${easyHost}:${httpOptions.port})`
+    );
+    console.log(`⭐️ GraphQL API available at ${config.graphql?.path || '/api/graphql'}`);
 
     // Don't start initialising Keystone until the dev server is ready,
     // otherwise it slows down the first response significantly
