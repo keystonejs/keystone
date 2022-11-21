@@ -221,8 +221,8 @@ export default config({
     maxFileSize: 200 * 1024 * 1024,
     healthCheck: true,
 {% if $nextRelease %}
-    extendExpressApp: (app, context) => { /* ... */ },
-    extendHttpServer: (httpServer, context, graphQLSchema) => { /* ... */ },
+    extendExpressApp: (app, commonContext) => { /* ... */ },
+    extendHttpServer: (httpServer, commonContext, graphQLSchema) => { /* ... */ },
 {% else /%}
     extendExpressApp: (app, createContext) => { /* ... */ },
     extendHttpServer: (httpServer, createContext, graphQLSchema) => { /* ... */ },
@@ -338,7 +338,7 @@ The created context will be bound to the request, including the current visitor'
 
 _ProTip!_: `extendExpressApp` can be `async`
 
-## extendHttpServer
+### extendHttpServer
 
 This lets you interact with the node [http.Server](https://nodejs.org/api/http.html#class-httpserver) that Keystone uses.
 
@@ -394,18 +394,11 @@ import type { SessionStrategy } from '@keystone-6/core/types';
 The `session` config option allows you to configure session management of your Keystone system.
 It has a TypeScript type of `SessionStrategy<any>`.
 
-{% if $nextRelease %}
-In general you will use `SessionStrategy` objects from the `@keystone-6/auth/session` package, rather than writing this yourself.
-{% else /%}
 In general you will use `SessionStrategy` objects from the `@keystone-6/core/session` package, rather than writing this yourself.
-{% /if %}
+
 
 ```typescript
-{% if $nextRelease %}
-import { statelessSessions } from '@keystone-6/auth/session';
-{% else /%}
 import { statelessSessions } from '@keystone-6/core/session';
-{% /if %}
 
 export default config({
   session: statelessSessions({ /* ... */ }),
