@@ -102,9 +102,9 @@ See the [session API](../config/session#session-context) for more details.
 When using the `context.query`, `context.graphql.run`, and `context.graphql.raw` APIs, access control and session information is passed through to these calls from the `context` object.
 The following functions will create a new `Context` object with this behaviour modified.
 
-`sudo()`: A function which returns a new `Context` object with all access control disabled and all filters enabled for subsequent API calls.
+`sudo()`: A function which returns a new elevated `Context` object with all access control disabled and all filters enabled for subsequent API calls.
 
-`exitSudo()`: A function which returns a new `Context` object with all access control re-enabled for subsequent API calls.
+`withRequest(req, res)`: A function which returns a new user `Context` object with a session and access control based on the `req` given.
 
 `withSession(newSession)`: A function which returns a new `Context` object with the `.session` object replaced with `newSession`.
 
