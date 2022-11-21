@@ -16,19 +16,22 @@ import type { Context } from '.keystone/types';
 context = {
   // HTTP request object
   req,
+{% if $nextRelease %}
+  res,
+{% /if %}
 
   // Query API
   query,
 
   // Internal DB object API
-  db
+  db,
 
   // GraphQL helpers
   graphql: {
     schema,
     run,
     raw,
-  };
+  },
 
   // Session API
   session,
@@ -62,8 +65,10 @@ context = {
 
 ### HTTP request object
 
-`req`: The [IncomingMessage](https://nodejs.org/api/http.html#http_class_http_incomingmessage) object from the HTTP request which called the GraphQL API.
-
+`req`: The [IncomingMessage](https://nodejs.org/api/http.html#class-httpincomingmessage) object from the HTTP request.
+{% if $nextRelease %}
+`res`: The [ServerResonse](https://nodejs.org/api/http.html#class-httpserverresponse) object for HTTP request.
+{% /if %}
 ### Query API
 
 `query`: The [Query API](./query), which can be used to perform CRUD operations against your GraphQL API and return a queried value.
