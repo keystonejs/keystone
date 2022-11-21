@@ -32,13 +32,18 @@ context = {
 
   // Session API
   session,
+  {% if $nextRelease %}
+  sessionStrategy
+  {% else /%}
   startSession,
   endSession,
+  {% /if %}
 
   // New context creators
   sudo,
   exitSudo,
   withSession,
+  withRequest,
 
   // Database access
   prisma,
@@ -93,9 +98,13 @@ See the [session API](../config/session#session-context) for more details.
 
 `session`: The current session data object.
 
+{% if $nextRelease %}
+`sessionStrategy`: an object containing functions(`get`, `start` and `end`) that manipulate a session. See the [session API](../config/session#session-context) for more details.
+{% else /%}
 `startSession`: An internal helper function used by authentication mutations to start a session on a successful login. This should not be called directly.
 
 `endSession`: An internal helper function used by authentication mutations to end a session on logout. This should not be called directly.
+{% /if %}
 
 ### New context creators
 
