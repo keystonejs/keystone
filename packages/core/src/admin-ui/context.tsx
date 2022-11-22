@@ -113,13 +113,6 @@ export const useKeystone = (): {
     throw new Error('useKeystone must be called inside a KeystoneProvider component');
   }
   if (value.adminMeta.state === 'error') {
-    // If we get an "Access denied" error, it probably means the user doesn't have access to the
-    // adminMeta but has navigated (probably client-side) to a page that requires it. We reload
-    // the page so the server-side access control can run which should bounce them to the right
-    // place (or display the no-access page)
-    if (value.adminMeta.error.message === 'Access denied') {
-      window.location.reload();
-    }
     throw new Error('An error occurred when loading Admin Metadata');
   }
   return {
