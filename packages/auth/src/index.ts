@@ -213,7 +213,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
   async function hasInitFirstItemConditions(context: KeystoneContext) {
     if (!initFirstItem) return false;
 
-    const count = await context.sudo().query[listKey].count({});
+    const count = await context.sudo().db[listKey].count({});
     return count === 0;
   }
 
