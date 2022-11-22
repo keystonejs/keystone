@@ -137,11 +137,6 @@ const CURRENT = [
     permanent: true,
   },
   {
-    source: '/docs/guides',
-    destination: '/docs/guides/overview',
-    permanent: false,
-  },
-  {
     source: '/docs/apis',
     destination: '/docs/config/overview',
     permanent: false,
@@ -212,6 +207,31 @@ const CURRENT = [
     destination: '/docs/fields/overview',
     permanent: false,
   },
+  {
+    source: '/docs/guides',
+    destination: '/docs/guides/overview',
+    permanent: false,
+  },
+  {
+    source: '/docs/fields',
+    destination: '/docs/fields/overview',
+    permanent: false,
+  },
+  {
+    source: '/docs/config',
+    destination: '/docs/config/overview',
+    permanent: false,
+  },
+  {
+    source: '/docs/context',
+    destination: '/docs/context/overview',
+    permanent: false,
+  },
+  {
+    source: '/docs/graphql',
+    destination: '/docs/graphql/overview',
+    permanent: false,
+  },
 
   /* Move updates to blog posts */
   {
@@ -248,12 +268,7 @@ const CURRENT = [
     source: '/docs/walkthroughs/embedded-mode-with-sqlite-nextjs',
     destination: '/blog/embedded-mode-with-sqlite-nextjs',
     permanent: true,
-  },
-  {
-    source: '/docs/fields',
-    destination: '/docs/fields/overview#title',
-    permanent: true,
-  },
+  }
 ];
 
 module.exports = [...SPLITBEE, ...CURRENT, ...ORIGINAL_NEXT, ...KEYSTONE_5, ...KEYSTONE_4];
