@@ -8,14 +8,6 @@ import { DatabaseProvider } from '../types';
 import { defaults } from './config/defaults';
 import { InitialisedList } from './core/types-for-lists';
 
-const isDebugging = () => {
-  return (
-    !!process.env.KEYSTONE_TELEMETRY_DEBUG &&
-    process.env.KEYSTONE_TELEMETRY_DEBUG !== '0' &&
-    process.env.KEYSTONE_TELEMETRY_DEBUG !== 'false'
-  );
-};
-
 const packageNames: PackageName[] = [
   '@keystone-6/core',
   '@keystone-6/auth',
@@ -25,27 +17,30 @@ const packageNames: PackageName[] = [
   '@opensaas/keystone-nextjs-auth',
 ];
 
-let userConfig: Conf<Configuration>;
-let telemetry: Configuration['telemetry'];
-try {
-  // Load global telemetry config settings (if set)
-  userConfig = new Conf<Configuration>({ projectName: 'keystonejs' });
-  telemetry = userConfig.get('telemetry');
-} catch (err) {
-  // Fail silently unless KEYSTONE_TELEMETRY_DEBUG is set to 1
-  if (isDebugging()) {
-    console.log(err);
-  }
-}
-const todaysDate = new Date().toISOString().slice(0, 10);
-
-const telemetryDisabled = () => {
+function isDebugging() {
   return (
-    ci.isCI || // Don't run in CI
-    process.env.NODE_ENV === 'production' || // Don't run in production
-    telemetry === false // Don't run if the user has opted out
+    !!process.env.KEYSTONE_TELEMETRY_DEBUG &&
+    process.env.KEYSTONE_TELEMETRY_DEBUG !== '0' &&
+    process.env.KEYSTONE_TELEMETRY_DEBUG !== 'false'
   );
-};
+}
+
+function getTelemetryConfig() {
+  const userConfig = new Conf<Configuration>({ projectName: 'keystonejs' });
+  let telemetry: Configuration['telemetry'];
+  try {
+    // Load global telemetry config settings (if set)
+    telemetry = userConfig.get('telemetry');
+  } catch (err) {
+    // Fail silently unless KEYSTONE_TELEMETRY_DEBUG is set to 1
+    if (isDebugging()) {
+      console.log(err);
+    }
+  }
+  return { telemetry, userConfig };
+}
+
+const todaysDate = new Date().toISOString().slice(0, 10);
 
 const notifyText = `
 ${chalk.bold('Keystone Telemetry')}
@@ -67,7 +62,13 @@ export function runTelemetry(
   dbProviderName: DatabaseProvider
 ) {
   try {
-    if (telemetryDisabled()) {
+    const userConfig = getTelemetryConfig().userConfig;
+    const telemetry = getTelemetryConfig().telemetry;
+    if (
+      ci.isCI || // Don't run in CI
+      process.env.NODE_ENV === 'production' || // Don't run in production
+      telemetry === false // Don't run if the user has opted out
+    ) {
       return;
     }
     if (telemetry === undefined) {
@@ -180,6 +181,7 @@ function sendProjectTelemetryEvent(
   projectConfig: Consent
 ) {
   try {
+    const userConfig = getTelemetryConfig().userConfig;
     if (projectConfig === false) {
       return;
     }
@@ -221,6 +223,7 @@ function sendProjectTelemetryEvent(
 
 function sendDeviceTelemetryEvent(deviceConsent: Consent) {
   try {
+    const userConfig = getTelemetryConfig().userConfig;
     if (deviceConsent === false) return;
     if (!!deviceConsent.lastSentDate && deviceConsent.lastSentDate >= todaysDate) {
       if (isDebugging()) {
