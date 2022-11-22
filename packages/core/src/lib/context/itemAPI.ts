@@ -9,12 +9,6 @@ import {
 import { executeGraphQLFieldToRootVal } from './executeGraphQLFieldToRootVal';
 import { executeGraphQLFieldWithSelection } from './executeGraphQLFieldWithSelection';
 
-// this is generally incorrect because types are open in TS but is correct in the specific usage here.
-// (i mean it's not really any more incorrect than TS is generally is but let's ignore that)
-const objectEntriesButUsingKeyof: <T extends Record<string, any>>(
-  obj: T
-) => [keyof T, T[keyof T]][] = Object.entries as any;
-
 export function getDbAPIFactory(
   gqlNames: GqlNames,
   schema: GraphQLSchema
@@ -32,7 +26,8 @@ export function getDbAPIFactory(
     }
     return executeGraphQLFieldToRootVal(field);
   };
-  const api = {
+
+  const fcache = {
     findOne: f('query', gqlNames.itemQueryName),
     findMany: f('query', gqlNames.listQueryName),
     count: f('query', gqlNames.listQueryCountName),
@@ -43,13 +38,20 @@ export function getDbAPIFactory(
     deleteOne: f('mutation', gqlNames.deleteMutationName),
     deleteMany: f('mutation', gqlNames.deleteManyMutationName),
   };
-  return (context: KeystoneContext) =>
-    Object.fromEntries(
-      objectEntriesButUsingKeyof(api).map(([key, impl]) => [
-        key,
-        (args: Record<string, any>) => impl(args, context),
-      ])
-    ) as Record<keyof typeof api, any>;
+
+  return (context: KeystoneContext) => {
+    return {
+      findOne: (args: Record<string, any>) => fcache.findOne(args, context),
+      findMany: (args: Record<string, any>) => fcache.findMany(args, context),
+      count: (args: Record<string, any>) => fcache.count(args, context),
+      createOne: (args: Record<string, any>) => fcache.createOne(args, context),
+      createMany: (args: Record<string, any>) => fcache.createMany(args, context),
+      updateOne: (args: Record<string, any>) => fcache.updateOne(args, context),
+      updateMany: (args: Record<string, any>) => fcache.updateMany(args, context),
+      deleteOne: (args: Record<string, any>) => fcache.deleteOne(args, context),
+      deleteMany: (args: Record<string, any>) => fcache.deleteMany(args, context),
+    };
+  };
 }
 
 export function itemAPIForList(
