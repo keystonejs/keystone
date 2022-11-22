@@ -268,7 +268,7 @@ const CURRENT = [
     source: '/docs/walkthroughs/embedded-mode-with-sqlite-nextjs',
     destination: '/blog/embedded-mode-with-sqlite-nextjs',
     permanent: true,
-  }
+  },
 ];
 
 module.exports = [...SPLITBEE, ...CURRENT, ...ORIGINAL_NEXT, ...KEYSTONE_5, ...KEYSTONE_4];
