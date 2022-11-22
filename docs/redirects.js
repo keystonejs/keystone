@@ -137,11 +137,6 @@ const CURRENT = [
     permanent: true,
   },
   {
-    source: '/docs/guides',
-    destination: '/docs/guides/overview',
-    permanent: false,
-  },
-  {
     source: '/docs/apis',
     destination: '/docs/config/overview',
     permanent: false,
@@ -210,6 +205,31 @@ const CURRENT = [
   {
     source: '/docs/apis/fields',
     destination: '/docs/fields/overview',
+    permanent: false,
+  },
+  {
+    source: '/docs/guides',
+    destination: '/docs/guides/overview',
+    permanent: false,
+  },
+  {
+    source: '/docs/fields',
+    destination: '/docs/fields/overview',
+    permanent: false,
+  },
+  {
+    source: '/docs/config',
+    destination: '/docs/config/overview',
+    permanent: false,
+  },
+  {
+    source: '/docs/context',
+    destination: '/docs/context/overview',
+    permanent: false,
+  },
+  {
+    source: '/docs/graphql',
+    destination: '/docs/graphql/overview',
     permanent: false,
   },
 
