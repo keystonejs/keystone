@@ -60,7 +60,7 @@ const promiseSignal = (): Promise<void> & { resolve: () => void } => {
 
 export const initFirstItemTest = (getPage: () => playwright.Page) => {
   test('init first item', async () => {
-    let page = getPage();
+    const page = getPage();
     await page.fill('label:has-text("Name") >> .. >> input', 'Admin');
     await page.fill('label:has-text("Email") >> .. >> input', 'admin@keystonejs.com');
     await page.click('button:has-text("Set Password")');

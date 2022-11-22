@@ -87,14 +87,15 @@ export const getSchemaExtension = ({
     // technically this will incorrectly error if someone has a schema extension that adds a field to the list output type
     // and then wants to fetch that field with `sessionData` but it's extremely unlikely someone will do that since if
     // they want to add a GraphQL field, they'll probably use a virtual field
-    let ast;
-    let query = `query($id: ID!) { ${
+    const query = `query($id: ID!) { ${
       getGqlNames({
         listKey,
         // this isn't used to get the itemQueryName and we don't know it here
         pluralGraphQLName: '',
       }).itemQueryName
     }(where: { id: $id }) { ${sessionData} } }`;
+
+    let ast;
     try {
       ast = parse(query);
     } catch (err) {
