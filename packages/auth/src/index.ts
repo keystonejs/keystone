@@ -173,7 +173,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
    * withItemData
    *
    * Automatically injects a session.data value with the authenticated item
-  */
+   */
   const withItemData = (
     _sessionStrategy: SessionStrategy<Record<string, any>>
   ): SessionStrategy<{ listKey: string; itemId: string; data: any }> => {
@@ -210,21 +210,21 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     };
   };
 
-  async function hasInitFirstItemConditions (context: KeystoneContext) {
+  async function hasInitFirstItemConditions(context: KeystoneContext) {
     if (!initFirstItem) return false;
 
     const count = await context.sudo().query[listKey].count({});
     return count === 0;
   }
 
-  async function attemptRedirects ({
+  async function attemptRedirects({
     context,
     isAccessAllowed,
     publicPages,
   }: {
-    context: KeystoneContext,
-    isAccessAllowed: boolean,
-    publicPages: string[]
+    context: KeystoneContext;
+    isAccessAllowed: boolean;
+    publicPages: string[];
   }): Promise<{ kind: 'redirect'; to: string } | void> {
     const { req, session } = context;
     const { pathname } = new URL(req!.url!, 'http://_');
@@ -233,7 +233,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     if (pathname === '/__nextjs_original-stack-frame') return;
 
     // redirect to init if initFirstItem conditions are met
-    if (pathname !== '/init' && await hasInitFirstItemConditions(context)) {
+    if (pathname !== '/init' && (await hasInitFirstItemConditions(context))) {
       return { kind: 'redirect', to: '/init' };
     }
 
@@ -255,11 +255,11 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     if (pathname === '/') return { kind: 'redirect', to: '/signin' };
     return {
       kind: 'redirect',
-      to: `/signin?from=${encodeURIComponent(req!.url!)}`
+      to: `/signin?from=${encodeURIComponent(req!.url!)}`,
     };
-  };
+  }
 
-  function defaultAccessAllowed ({ session }: KeystoneContext) {
+  function defaultAccessAllowed({ session }: KeystoneContext) {
     return session !== undefined;
   }
 
@@ -279,25 +279,25 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
         getAdditionalFiles = [],
         isAccessAllowed = defaultAccessAllowed,
         pageMiddleware,
-        publicPages = []
+        publicPages = [],
       } = ui;
       ui = {
         ...ui,
         publicPages: [...publicPages, ...defaultPublicPages],
         getAdditionalFiles: [...getAdditionalFiles, defaultGetAdditionalFiles],
-        pageMiddleware: async (args) => {
+        pageMiddleware: async args => {
           const shouldRedirect = await attemptRedirects({
             ...args,
             isAccessAllowed: args.isValidSession,
-            publicPages: [...publicPages, ...defaultPublicPages]
-          })
+            publicPages: [...publicPages, ...defaultPublicPages],
+          });
           if (shouldRedirect) return shouldRedirect;
           return pageMiddleware?.(args);
         },
         isAccessAllowed: async (context: KeystoneContext) => {
           if (await hasInitFirstItemConditions(context)) return true;
           return isAccessAllowed(context);
-        }
+        },
       };
     }
 
