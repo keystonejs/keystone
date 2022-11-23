@@ -102,6 +102,7 @@ jest.mock('conf', () => {
   }));
 });
 jest.mock('os');
+jest.mock('ci-info', () => ({ isCI: false }));
 
 jest.mock('node-fetch', () => jest.fn());
 
@@ -142,7 +143,6 @@ describe('Inital Telemetry tests', () => {
   beforeEach(() => {
     process.env = { ...env };
     mockTelemetryConfig = undefined;
-    jest.mock('ci-info', () => ({ isCI: false }));
     os.platform = jest.fn().mockReturnValue('keystone-os');
   });
   afterEach(() => {
