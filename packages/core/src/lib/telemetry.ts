@@ -133,31 +133,25 @@ function sendEvent(eventType: 'project' | 'device', eventData: Project | Device)
   try {
     const telemetryEndpoint = process.env.KEYSTONE_TELEMETRY_ENDPOINT || defaults.telemetryEndpoint;
     const telemetryUrl = `${telemetryEndpoint}/v1/event/${eventType}`;
-
-    if (process.env.KEYSTONE_TELEMETRY_DISPLAY) {
-      console.log(`[Telemetry]: ${telemetryUrl}`);
-      console.log(eventData);
-    } else {
-      // Do not `await` to keep non-blocking
-      fetch(telemetryUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(eventData),
-      })
-        .then(
-          () => {},
-          () => {}
-        )
-        // Catch silently
-        .catch(err => {
-          // Fail silently unless KEYSTONE_TELEMETRY_DEBUG is set to '1'
-          if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {
-            console.log(err);
-          }
-        });
-    }
+    // Do not `await` to keep non-blocking
+    fetch(telemetryUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(eventData),
+    })
+      .then(
+        () => {},
+        () => {}
+      )
+      // Catch silently
+      .catch(err => {
+        // Fail silently unless KEYSTONE_TELEMETRY_DEBUG is set to '1'
+        if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {
+          console.log(err);
+        }
+      });
   } catch (err) {
     // Fail silently unless KEYSTONE_TELEMETRY_DEBUG is set to '1'
     if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {

@@ -147,7 +147,6 @@ describe('Inital Telemetry tests', () => {
   });
   afterEach(() => {
     // Reset env variables
-    delete process.env.KEYSTONE_TELEMETRY_DISABLED;
     delete process.env.KEYSTONE_TELEMETRY_ENDPOINT;
     delete process.env.NOW_BUILDER;
     // clear mocks (fetch specifically)
@@ -186,20 +185,6 @@ describe('Inital Telemetry tests', () => {
     expect(mockTelemetryConfig?.projects.default.informedAt).toBeDefined();
     expect(mockTelemetryConfig?.projects[mockProjectDir]).toBeDefined();
     expect(mockTelemetryConfig?.projects[mockProjectDir].lastSentDate).toBeDefined();
-    expect(mockTelemetryConfig?.device.lastSentDate).toBeDefined();
-  });
-  test('Telemetry Does not send when env KEYSTONE_TELEMETRY_DISPLAY is set', async () => {
-    defaultFetchMock();
-    process.env.KEYSTONE_TELEMETRY_DISPLAY = '1';
-
-    runTelemetry(mockProjectDir, lists, 'sqlite');
-    runTelemetry(mockProjectDir, lists, 'sqlite');
-
-    expect(mockFetch).toHaveBeenCalledTimes(0);
-    expect(mockTelemetryConfig?.device?.informedAt).toBeDefined();
-    expect(mockTelemetryConfig?.projects?.default.informedAt).toBeDefined();
-    expect(mockTelemetryConfig?.projects?.[mockProjectDir]).toBeDefined();
-    expect(mockTelemetryConfig?.projects?.[mockProjectDir].lastSentDate).toBeDefined();
     expect(mockTelemetryConfig?.device.lastSentDate).toBeDefined();
   });
   test('Telemetry Does not send when env NODE_ENV is set to production', async () => {
