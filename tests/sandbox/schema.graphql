@@ -3,6 +3,8 @@
 
 type Thing {
   id: ID!
+  structure: ThingStructureOutput
+  structureNested: ThingStructureNestedOutput
   checkbox: Boolean
   password: PasswordState
   toOneRelationship: User
@@ -28,6 +30,20 @@ type Thing {
   image: ImageFieldOutput
   file: FileFieldOutput
   document: Thing_document_Document
+}
+
+type ThingStructureOutput {
+  structure: [Int]
+  json(hydrateRelationships: Boolean! = false): JSON
+}
+
+type ThingStructureNestedOutput {
+  structure: [ThingStructureNested]
+  json(hydrateRelationships: Boolean! = false): JSON
+}
+
+interface ThingStructureNested {
+  discriminant: String
 }
 
 type PasswordState {
@@ -68,6 +84,26 @@ type Thing_document_Document {
 
 input ThingWhereUniqueInput {
   id: ID
+}
+
+type ThingStructureNestedLeaf implements ThingStructureNested {
+  discriminant: String
+  value: ThingStructureNestedLeafValue
+}
+
+type ThingStructureNestedLeafValue {
+  label: String
+  url: String
+}
+
+type ThingStructureNestedGroup implements ThingStructureNested {
+  discriminant: String
+  value: ThingStructureNestedGroupValue
+}
+
+type ThingStructureNestedGroupValue {
+  label: String
+  children: [ThingStructureNested]
 }
 
 input ThingWhereInput {
@@ -252,6 +288,8 @@ enum OrderDirection {
 }
 
 input ThingUpdateInput {
+  structure: [Int]
+  structureNested: [ThingStructureNestedUpdateInput]
   checkbox: Boolean
   password: String
   toOneRelationship: UserRelateToOneForUpdateInput
@@ -274,6 +312,21 @@ input ThingUpdateInput {
   image: ImageFieldInput
   file: FileFieldInput
   document: JSON
+}
+
+input ThingStructureNestedUpdateInput {
+  leaf: ThingStructureNestedLeafUpdateInput
+  group: ThingStructureNestedGroupUpdateInput
+}
+
+input ThingStructureNestedLeafUpdateInput {
+  label: String
+  url: String
+}
+
+input ThingStructureNestedGroupUpdateInput {
+  label: String
+  children: [ThingStructureNestedUpdateInput]
 }
 
 input UserRelateToOneForUpdateInput {
@@ -306,6 +359,8 @@ input ThingUpdateArgs {
 }
 
 input ThingCreateInput {
+  structure: [Int]
+  structureNested: [ThingStructureNestedCreateInput]
   checkbox: Boolean
   password: String
   toOneRelationship: UserRelateToOneForCreateInput
@@ -328,6 +383,21 @@ input ThingCreateInput {
   image: ImageFieldInput
   file: FileFieldInput
   document: JSON
+}
+
+input ThingStructureNestedCreateInput {
+  leaf: ThingStructureNestedLeafCreateInput
+  group: ThingStructureNestedGroupCreateInput
+}
+
+input ThingStructureNestedLeafCreateInput {
+  label: String
+  url: String
+}
+
+input ThingStructureNestedGroupCreateInput {
+  label: String
+  children: [ThingStructureNestedCreateInput]
 }
 
 input UserRelateToOneForCreateInput {

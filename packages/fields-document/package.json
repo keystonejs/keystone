@@ -18,6 +18,10 @@
       "module": "./primitives/dist/keystone-6-fields-document-primitives.esm.js",
       "default": "./primitives/dist/keystone-6-fields-document-primitives.cjs.js"
     },
+    "./structure-views": {
+      "module": "./structure-views/dist/keystone-6-fields-document-structure-views.esm.js",
+      "default": "./structure-views/dist/keystone-6-fields-document-structure-views.cjs.js"
+    },
     "./component-blocks": {
       "module": "./component-blocks/dist/keystone-6-fields-document-component-blocks.esm.js",
       "default": "./component-blocks/dist/keystone-6-fields-document-component-blocks.cjs.js"
@@ -28,14 +32,16 @@
     "dist",
     "component-blocks",
     "primitives",
-    "views"
+    "views",
+    "structure-views"
   ],
   "preconstruct": {
     "entrypoints": [
       "component-blocks.tsx",
       "index.ts",
       "primitives.ts",
-      "views.tsx"
+      "views.tsx",
+      "structure-views.tsx"
     ]
   },
   "peerDependencies": {
@@ -53,6 +59,7 @@
     "@keystone-ui/core": "^5.0.2",
     "@keystone-ui/fields": "^7.1.2",
     "@keystone-ui/icons": "^6.0.2",
+    "@keystone-ui/modals": "^6.0.2",
     "@keystone-ui/popover": "^6.0.2",
     "@keystone-ui/tooltip": "^6.0.2",
     "@types/react": "^18.0.9",
