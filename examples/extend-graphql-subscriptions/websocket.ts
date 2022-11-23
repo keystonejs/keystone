@@ -19,7 +19,7 @@ globalThis.graphqlSubscriptionPubSub = pubSub;
 
 export const extendHttpServer = (
   httpServer: http.Server,
-  _context: Context,
+  commonContext: Context,
   graphqlSchema: KeystoneGraphQLAPI['schema']
 ): void => {
   // Setup WebSocket server using 'ws'
@@ -34,7 +34,7 @@ export const extendHttpServer = (
       schema: graphqlSchema,
       // run these onSubscribe functions as needed or remove them if you don't need them
       onSubscribe: async (ctx: any, msg) => {
-        const context = await _context.withRequest(ctx.extra.request);
+        const context = await commonContext.withRequest(ctx.extra.request);
         // Return the execution args for this subscription passing through the Keystone Context
         return {
           schema: graphqlSchema,
