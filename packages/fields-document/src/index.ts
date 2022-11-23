@@ -275,3 +275,5 @@ function normaliseDocumentFeatures(
   };
   return documentFeatures;
 }
+
+export { structure } from './structure';
