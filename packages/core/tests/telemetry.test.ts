@@ -16,7 +16,7 @@ const packageVersions = {
 };
 
 const projectData = {
-  lastSentDate: null,
+  previous: null,
   fields: {
     unknown: 0,
     id: 5,
@@ -26,7 +26,7 @@ const projectData = {
   database: 'sqlite',
 };
 const deviceData = {
-  lastSentDate: null,
+  previous: null,
   os: 'keystone-os',
   node: process.versions.node.split('.')[0],
 };

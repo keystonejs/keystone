@@ -1,14 +1,14 @@
 import { DatabaseProvider } from './core';
 
-export type Consent = false | { lastSentDate?: string; informedAt: string };
+export type Status = false | { lastSentDate?: string; informedAt: string };
 
 export type Configuration = {
   telemetry:
     | {
-        device: Consent;
+        device: Status;
         projects: {
-          default: Consent;
-          [key: string]: Consent;
+          default: Status;
+          [projectPath: string]: Status;
         };
       }
     | false
@@ -16,7 +16,7 @@ export type Configuration = {
 };
 
 export type Device = {
-  lastSentDate: string | null; // new Date().toISOString().slice(0, 10)
+  previous: string | null; // new Date().toISOString().slice(0, 10)
   os: string; // `linux` | `darwin` | `windows` | ... // os.platform()
   node: string; // `14` | ... | `18` // process.version.split('.').shift().slice(1)
 };
@@ -29,7 +29,7 @@ export type PackageName =
   | '@opensaas/keystone-nextjs-auth';
 
 export type Project = {
-  lastSentDate: string | null; // new Date().toISOString().slice(0, 10)
+  previous: string | null; // new Date().toISOString().slice(0, 10)
   // omitted uuid for <BII
   // omitted anything GraphQL related <BII
 

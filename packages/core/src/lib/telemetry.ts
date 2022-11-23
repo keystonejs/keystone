@@ -3,7 +3,7 @@ import ci from 'ci-info';
 import Conf from 'conf';
 import fetch from 'node-fetch';
 import chalk from 'chalk';
-import { Configuration, Project, Device, Consent, PackageName } from '../types/telemetry';
+import { Configuration, Project, Device, Status, PackageName } from '../types/telemetry';
 import { DatabaseProvider } from '../types';
 import { defaults } from './config/defaults';
 import { InitialisedList } from './core/types-for-lists';
@@ -170,7 +170,7 @@ function sendProjectTelemetryEvent(
   cwd: string,
   lists: Record<string, InitialisedList>,
   dbProviderName: DatabaseProvider,
-  projectConfig: Consent
+  projectConfig: Status
 ) {
   try {
     const userConfig = getTelemetryConfig().userConfig;
@@ -197,7 +197,7 @@ function sendProjectTelemetryEvent(
       }
     });
     const projectInfo: Project = {
-      lastSentDate: projectConfig.lastSentDate || null,
+      previous: projectConfig.lastSentDate || null,
       fields: fieldCount(lists),
       lists: !lists ? 0 : Object.keys(lists).length,
       versions,
@@ -213,7 +213,7 @@ function sendProjectTelemetryEvent(
   }
 }
 
-function sendDeviceTelemetryEvent(deviceConsent: Consent) {
+function sendDeviceTelemetryEvent(deviceConsent: Status) {
   try {
     const userConfig = getTelemetryConfig().userConfig;
     if (deviceConsent === false) return;
@@ -225,7 +225,7 @@ function sendDeviceTelemetryEvent(deviceConsent: Consent) {
       }
     }
     const deviceInfo: Device = {
-      lastSentDate: deviceConsent.lastSentDate || null,
+      previous: deviceConsent.lastSentDate || null,
       os: os.platform(),
       node: process.versions.node.split('.')[0],
     };
