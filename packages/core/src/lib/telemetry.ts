@@ -24,8 +24,8 @@ function getTelemetryConfig() {
     // Load global telemetry config settings (if set)
     telemetry = userConfig.get('telemetry');
   } catch (err) {
-    // Fail silently unless KEYSTONE_TELEMETRY_DEBUG is set
-    if (!!process.env.KEYSTONE_TELEMETRY_DEBUG) {
+    // Fail silently unless KEYSTONE_TELEMETRY_DEBUG is set to '1'
+    if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {
       console.log(err);
     }
   }
@@ -90,8 +90,8 @@ export function runTelemetry(
       sendDeviceTelemetryEvent(telemetry.device);
     }
   } catch (err) {
-    // Fail silently unless KEYSTONE_TELEMETRY_DEBUG is set
-    if (!!process.env.KEYSTONE_TELEMETRY_DEBUG) {
+    // Fail silently unless KEYSTONE_TELEMETRY_DEBUG is set to '1'
+    if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {
       console.log(err);
     }
   }
@@ -152,15 +152,15 @@ function sendEvent(eventType: 'project' | 'device', eventData: Project | Device)
         )
         // Catch silently
         .catch(err => {
-          // Fail silently unless KEYSTONE_TELEMETRY_DEBUG is set
-          if (!!process.env.KEYSTONE_TELEMETRY_DEBUG) {
+          // Fail silently unless KEYSTONE_TELEMETRY_DEBUG is set to '1'
+          if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {
             console.log(err);
           }
         });
     }
   } catch (err) {
-    // Fail silently unless KEYSTONE_TELEMETRY_DEBUG is set
-    if (!!process.env.KEYSTONE_TELEMETRY_DEBUG) {
+    // Fail silently unless KEYSTONE_TELEMETRY_DEBUG is set to '1'
+    if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {
       console.log(err);
     }
   }
@@ -178,7 +178,7 @@ function sendProjectTelemetryEvent(
       return;
     }
     if (!!projectConfig.lastSentDate && projectConfig.lastSentDate >= todaysDate) {
-      if (!!process.env.KEYSTONE_TELEMETRY_DEBUG) {
+      if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {
         console.log('Project telemetry already sent but debugging is enabled');
       } else {
         return;
@@ -206,8 +206,8 @@ function sendProjectTelemetryEvent(
     sendEvent('project', projectInfo);
     userConfig.set(`telemetry.projects.${cwd}.lastSentDate`, todaysDate);
   } catch (err) {
-    // Fail silently unless KEYSTONE_TELEMETRY_DEBUG is set
-    if (!!process.env.KEYSTONE_TELEMETRY_DEBUG) {
+    // Fail silently unless KEYSTONE_TELEMETRY_DEBUG is set to '1'
+    if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {
       console.log(err);
     }
   }
@@ -218,7 +218,7 @@ function sendDeviceTelemetryEvent(deviceConsent: Status) {
     const userConfig = getTelemetryConfig().userConfig;
     if (deviceConsent === false) return;
     if (!!deviceConsent.lastSentDate && deviceConsent.lastSentDate >= todaysDate) {
-      if (!!process.env.KEYSTONE_TELEMETRY_DEBUG) {
+      if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {
         console.log('Device telemetry already sent but debugging is enabled');
       } else {
         return;
@@ -232,8 +232,8 @@ function sendDeviceTelemetryEvent(deviceConsent: Status) {
     sendEvent('device', deviceInfo);
     userConfig.set(`telemetry.device.lastSentDate`, todaysDate);
   } catch (err) {
-    // Fail silently unless KEYSTONE_TELEMETRY_DEBUG is set to 1
-    if (!!process.env.KEYSTONE_TELEMETRY_DEBUG) {
+    // Fail silently unless KEYSTONE_TELEMETRY_DEBUG is set to '1' to 1
+    if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {
       console.log(err);
     }
   }
