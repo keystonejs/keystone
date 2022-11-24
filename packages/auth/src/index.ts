@@ -220,7 +220,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
 
   async function authMiddleware({
     context,
-    isValidSession,
+    isValidSession: wasAccessAllowed,
   }: {
     context: KeystoneContext;
     isValidSession: boolean; // TODO: rename "isValidSession" to "wasAccessAllowed"?
@@ -239,7 +239,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     }
 
     // don't redirect if we have access
-    if (isValidSession) return;
+    if (wasAccessAllowed) return;
 
     // otherwise, redirect to signin
     if (pathname === '/') return { kind: 'redirect', to: '/signin' };

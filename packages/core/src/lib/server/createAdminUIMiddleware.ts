@@ -75,7 +75,6 @@ export function createAdminUIMiddlewareWithNextApp(
       } else {
         nextApp.render(req, res, '/no-access');
       }
-
     } catch (e) {
       console.error('An error occurred handling a request for the Admin UI:', e);
       res.status(500);
