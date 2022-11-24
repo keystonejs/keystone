@@ -24,6 +24,11 @@ export async function getNextApp(dev: boolean, projectAdminPath: string): Promis
   return app;
 }
 
+function defaultIsAccessAllowed ({ session, sessionStrategy }: KeystoneContext) {
+  if (!sessionStrategy) return true;
+  return session !== undefined;
+}
+
 export function createAdminUIMiddlewareWithNextApp(
   config: KeystoneConfig,
   context: KeystoneContext,
@@ -31,23 +36,30 @@ export function createAdminUIMiddlewareWithNextApp(
 ) {
   const handle = nextApp.getRequestHandler();
 
-  const { ui, session } = config;
-  const publicPages = ui?.publicPages ?? [];
+  const {
+    ui: {
+      isAccessAllowed = defaultIsAccessAllowed,
+      pageMiddleware,
+      publicPages = [],
+    } = {}
+  } = config;
+
   return async (req: express.Request, res: express.Response) => {
     const { pathname } = url.parse(req.url);
-    if (pathname?.startsWith('/_next')) {
+
+    if (pathname?.startsWith('/_next') || pathname?.startsWith('/__next')) {
       handle(req, res);
       return;
     }
+
     try {
       const userContext = await context.withRequest(req, res);
-      const isValidSession = ui?.isAccessAllowed
-        ? await ui.isAccessAllowed(userContext)
-        : session
-        ? context.session !== undefined
-        : true;
+      const isValidSession = await isAccessAllowed(userContext);
+      const shouldRedirect = await pageMiddleware?.({
+        context,
+        isValidSession
+      });
 
-      const shouldRedirect = await ui?.pageMiddleware?.({ context, isValidSession });
       if (shouldRedirect) {
         res.header('Cache-Control', 'no-cache, max-age=0');
         res.header('Location', shouldRedirect.to);
@@ -55,7 +67,8 @@ export function createAdminUIMiddlewareWithNextApp(
         res.send();
         return;
       }
-      if (!isValidSession && !publicPages.includes(url.parse(req.url).pathname!)) {
+
+      if (!isValidSession && !publicPages.includes(pathname!)) {
         nextApp.render(req, res, '/no-access');
       } else {
         handle(req, res);

@@ -85,7 +85,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
    *
    * The signin page is always included, and the init page is included when initFirstItem is set
    */
-  const defaultGetAdditionalFiles = () => {
+  const authGetAdditionalFiles = () => {
     const filesToWrite: AdminFileToWrite[] = [
       {
         mode: 'write',
@@ -108,9 +108,9 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
    *
    * Must be added to the ui.publicPages config
    */
-  const defaultPublicPages = ['/signin'];
+  const authPublicPages = ['/signin'];
   if (initFirstItem) {
-    defaultPublicPages.push('/init');
+    authPublicPages.push('/init');
   }
 
   /**
@@ -219,18 +219,15 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
 
   async function attemptRedirects({
     context,
-    isAccessAllowed,
+    isValidSession,
     publicPages,
   }: {
     context: KeystoneContext;
-    isAccessAllowed: boolean;
+    isValidSession: boolean;
     publicPages: string[];
   }): Promise<{ kind: 'redirect'; to: string } | void> {
-    const { req, session } = context;
+    const { req } = context;
     const { pathname } = new URL(req!.url!, 'http://_');
-
-    // nextjs things
-    if (pathname === '/__nextjs_original-stack-frame') return;
 
     // redirect to init if initFirstItem conditions are met
     if (pathname !== '/init' && (await hasInitFirstItemConditions(context))) {
@@ -242,14 +239,11 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
       return { kind: 'redirect', to: '/' };
     }
 
-    // don't redirect if this is a public page
+    // don't redirect if we are on a public page
     if (publicPages.includes(pathname)) return;
 
-    // don't redirect if we have a session
-    if (session) return;
-
-    // don't redirect if we are attempting to signin
-    if (pathname === '/signin') return;
+    // don't redirect if we have access
+    if (isValidSession) return;
 
     // otherwise, redirect to signin
     if (pathname === '/') return { kind: 'redirect', to: '/signin' };
@@ -259,7 +253,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     };
   }
 
-  function defaultAccessAllowed({ session }: KeystoneContext) {
+  function defaultIsAccessAllowed ({ session, sessionStrategy }: KeystoneContext) {
     return session !== undefined;
   }
 
@@ -274,29 +268,30 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     validateConfig(keystoneConfig);
 
     let { ui } = keystoneConfig;
-    if (ui && !ui?.isDisabled) {
+    if (!ui?.isDisabled) {
       const {
         getAdditionalFiles = [],
-        isAccessAllowed = defaultAccessAllowed,
+        isAccessAllowed = defaultIsAccessAllowed,
         pageMiddleware,
         publicPages = [],
-      } = ui;
+      } = ui || {};
       ui = {
         ...ui,
-        publicPages: [...publicPages, ...defaultPublicPages],
-        getAdditionalFiles: [...getAdditionalFiles, defaultGetAdditionalFiles],
-        pageMiddleware: async args => {
-          const shouldRedirect = await attemptRedirects({
-            ...args,
-            isAccessAllowed: args.isValidSession,
-            publicPages: [...publicPages, ...defaultPublicPages],
-          });
-          if (shouldRedirect) return shouldRedirect;
-          return pageMiddleware?.(args);
-        },
+        publicPages: [...publicPages, ...authPublicPages],
+        getAdditionalFiles: [...getAdditionalFiles, authGetAdditionalFiles],
+
         isAccessAllowed: async (context: KeystoneContext) => {
           if (await hasInitFirstItemConditions(context)) return true;
           return isAccessAllowed(context);
+        },
+
+        pageMiddleware: async args => {
+          const shouldRedirect = await attemptRedirects({
+            ...args,
+            publicPages: [...publicPages, ...authPublicPages],
+          });
+          if (shouldRedirect) return shouldRedirect;
+          return pageMiddleware?.(args);
         },
       };
     }
