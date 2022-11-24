@@ -31,14 +31,13 @@ async function getPosts() {
 }
 export default async function generateRssFeed() {
   const feedOptions = {
-    title: 'Keystone Blog | RSS Feed',
+    title: 'Keystone Blog',
     description: 'Blog posts from the team maintaining Keystone.',
     site_url: `${siteBaseUrl}/blog`,
     feed_url: `${siteBaseUrl}/rss.xml`,
-    image_url: `${siteBaseUrl}/assets/blog/the-keystone-blog-cover.png`,
+    image_url: `${siteBaseUrl}/favicon-32x32.png`,
     pubDate: new Date(),
-    // TODO:
-    // copyright: `All rights reserved ${new Date().getFullYear()}, Thinkmill Labs`,
+    copyright: `Thinkmill Labs Pty Ltd`,
   };
 
   const feed = new RSS(feedOptions);
@@ -49,6 +48,8 @@ export default async function generateRssFeed() {
       description: post.frontmatter.description,
       url: `${siteBaseUrl}/blog/${post.slug}`,
       date: post.frontmatter.publishDate,
+      // TODO: Render post as HTML for <content:encoded>
+      // custom_elements: [{'content:encoded': ''}]
     });
   });
 
