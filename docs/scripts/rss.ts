@@ -1,6 +1,5 @@
 import path from 'path';
 import fs from 'fs/promises';
-import parse from 'date-fns/parse';
 import RSS from 'rss';
 import globby from 'globby';
 import { extractBlogFrontmatter } from '../markdoc';
@@ -21,12 +20,8 @@ async function getPosts() {
     })
   );
 
-  const today = new Date();
   const reverseChronologicallySortedPosts = posts.sort((a, b) => {
-    const parsedA = parse(a.frontmatter.publishDate, 'yyyy-M-d', today);
-    const parsedB = parse(b.frontmatter.publishDate, 'yyyy-M-d', today);
-
-    return parsedA < parsedB ? 1 : -1;
+    return a.frontmatter.publishDate < b.frontmatter.publishDate ? 1 : -1;
   });
 
   return reverseChronologicallySortedPosts;

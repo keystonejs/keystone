@@ -34,7 +34,7 @@ export default function Docs(props: InferGetStaticPropsType<typeof getStaticProp
         formattedDateStr: formattedDateStr,
       };
     })
-    .sort((a, b) => (a.parsedDate < b.parsedDate ? 1 : -1));
+    .sort((a, b) => (a.frontmatter.publishDate < b.frontmatter.publishDate ? 1 : -1));
 
   return (
     <Page

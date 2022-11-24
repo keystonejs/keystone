@@ -1,7 +1,7 @@
 ---
 title: "Introducing the Keystone Blog"
 description: "We are launching the Keystone Blog, a one stop shop to all the latest news and announcements from the team."
-publishDate: "2022-11-2"
+publishDate: "2022-11-02"
 authorName: "Dinesh Pandiyan"
 authorHandle: "https://twitter.com/flexdinesh"
 metaImageUrl: ""

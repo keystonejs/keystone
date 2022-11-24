@@ -1,7 +1,7 @@
 ---
 title: "Keystone now supports MySQL"
 description: "We've added support for MySQL to Keystone's list of DB providers, bringing the total number of supported DB types to three."
-publishDate: "2022-6-30"
+publishDate: "2022-06-30"
 authorName: "Dinesh Pandiyan"
 authorHandle: "https://twitter.com/flexdinesh"
 metaImageUrl: ""
