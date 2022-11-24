@@ -6,9 +6,10 @@
   "scripts": {
     "dev": "SHOW_NEXT_RELEASE=1 next -p 8000",
     "dev:live": "next -p 8000",
-    "build": "yarn validate-links && next build && yarn sitemap",
+    "build": "yarn validate-links && next build && yarn sitemap && yarn build:rss",
     "start": "next start -p 8000",
     "sitemap": "next-sitemap",
+    "build:rss": "tsx scripts/rss.ts",
     "validate-links": "tsx scripts/validate-links.ts",
     "remove-conditionals": "tsx scripts/replace-show-next-release/index.ts"
   },
@@ -50,10 +51,12 @@
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-focus-lock": "^2.7.1",
+    "rss": "^1.2.2",
     "tsx": "^3.9.0"
   },
   "devDependencies": {
     "@types/lodash.debounce": "^4.0.6",
+    "@types/rss": "^0.0.29",
     "next-sitemap": "^3.0.0",
     "start-server-and-test": "^1.14.0",
     "typescript": "~4.7.4"
