@@ -21,7 +21,10 @@ async function getPosts() {
   );
 
   const reverseChronologicallySortedPosts = posts.sort((a, b) => {
-    return a.frontmatter.publishDate < b.frontmatter.publishDate ? 1 : -1;
+    if (a.frontmatter.publishDate === b.frontmatter.publishDate) {
+      return a.frontmatter.title.localeCompare(b.frontmatter.title);
+    }
+    return a.frontmatter.publishDate.localeCompare(b.frontmatter.publishDate);
   });
 
   return reverseChronologicallySortedPosts;
