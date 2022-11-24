@@ -35,6 +35,7 @@ export function getInitFirstItemSchema({
       name: gqlNames.CreateInitialInput,
     })
   );
+
   return {
     mutation: {
       [gqlNames.createInitialItem]: graphql.field({
@@ -46,6 +47,8 @@ export function getInitFirstItemSchema({
           }
 
           const dbItemAPI = context.sudo().db[listKey];
+
+          // should approximate hasInitFirstItemConditions
           const count = await dbItemAPI.count({});
           if (count !== 0) {
             throw new Error('Initial items can only be created when no items exist in that list');

@@ -129,19 +129,20 @@ export type DatabaseConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
 export type AdminUIConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   /** Completely disables the Admin UI */
   isDisabled?: boolean;
+
   /** A function that can be run to validate that the current session should have access to the Admin UI */
   isAccessAllowed?: (context: KeystoneContext<TypeInfo>) => MaybePromise<boolean>;
+
   /** An array of page routes that can be accessed without passing the isAccessAllowed check */
   publicPages?: readonly string[];
-  /** The basePath for the Admin UI App */
-  // FIXME: currently unused
-  // path?: string;
+
   getAdditionalFiles?: readonly ((
     config: KeystoneConfig<TypeInfo>
   ) => MaybePromise<readonly AdminFileToWrite[]>)[];
+
   pageMiddleware?: (args: {
     context: KeystoneContext<TypeInfo>;
-    isValidSession: boolean;
+    isValidSession: boolean; // TODO: rename "isValidSession" to "wasAccessAllowed"?
   }) => MaybePromise<{ kind: 'redirect'; to: string } | void>;
 };
 
