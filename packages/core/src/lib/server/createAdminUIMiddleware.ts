@@ -24,7 +24,7 @@ export async function getNextApp(dev: boolean, projectAdminPath: string): Promis
   return app;
 }
 
-function defaultIsAccessAllowed ({ session, sessionStrategy }: KeystoneContext) {
+function defaultIsAccessAllowed({ session, sessionStrategy }: KeystoneContext) {
   if (!sessionStrategy) return true;
   return session !== undefined;
 }
@@ -37,11 +37,7 @@ export function createAdminUIMiddlewareWithNextApp(
   const handle = nextApp.getRequestHandler();
 
   const {
-    ui: {
-      isAccessAllowed = defaultIsAccessAllowed,
-      pageMiddleware,
-      publicPages = [],
-    } = {}
+    ui: { isAccessAllowed = defaultIsAccessAllowed, pageMiddleware, publicPages = [] } = {},
   } = config;
 
   return async (req: express.Request, res: express.Response) => {
@@ -57,7 +53,7 @@ export function createAdminUIMiddlewareWithNextApp(
       const isValidSession = await isAccessAllowed(userContext);
       const shouldRedirect = await pageMiddleware?.({
         context,
-        isValidSession
+        isValidSession,
       });
 
       if (shouldRedirect) {

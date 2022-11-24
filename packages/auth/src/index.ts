@@ -253,7 +253,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     };
   }
 
-  function defaultIsAccessAllowed ({ session, sessionStrategy }: KeystoneContext) {
+  function defaultIsAccessAllowed({ session, sessionStrategy }: KeystoneContext) {
     return session !== undefined;
   }
 
