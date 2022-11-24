@@ -71,17 +71,35 @@ export async function getOperationAccess(
 export async function getAccessFilters(
   list: InitialisedList,
   context: KeystoneContext,
-  operation: 'update' | 'query' | 'delete'
+  operation: keyof typeof list.access.filter
 ): Promise<boolean | InputFilter> {
-  const access = list.access.filter[operation];
   try {
-    const filters = await access({
-      operation,
-      session: context.session,
-      list: list.listKey,
-      context,
-    } as any); // TODO: FIXME
+    let filters;
+    if (operation === 'query') {
+      filters = await list.access.filter.query({
+        operation,
+        session: context.session,
+        listKey: list.listKey,
+        context,
+      });
+    } else if (operation === 'update') {
+      filters = await list.access.filter.update({
+        operation,
+        session: context.session,
+        listKey: list.listKey,
+        context,
+      });
+    } else if (operation === 'delete') {
+      filters = await list.access.filter.delete({
+        operation,
+        session: context.session,
+        listKey: list.listKey,
+        context,
+      });
+    }
+
     if (typeof filters === 'boolean') return filters;
+    if (!filters) return false; // shouldn't happen, but, Typescript
 
     const schema = context.sudo().graphql.schema;
     const whereInput = assertInputObjectType(schema.getType(getGqlNames(list).whereInputName));
