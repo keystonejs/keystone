@@ -14,8 +14,8 @@
     "@keystone-6/document-renderer": "^1.1.1",
     "@keystone-6/fields-document": "^5.0.0",
     "@preconstruct/next": "^4.0.0",
-    "next": "^12.2.4",
-    "react": "^18.1.0"
+    "next": "^13.0.3",
+    "react": "^18.2.0"
   },
   "devDependencies": {
     "typescript": "~4.7.4"

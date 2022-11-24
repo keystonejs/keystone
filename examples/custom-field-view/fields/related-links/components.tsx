@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import { FieldProps } from '@keystone-6/core/types';
 import { css } from '@emotion/css';
 import { Button } from '@keystone-ui/button';
@@ -161,9 +162,9 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
               <div className={styles.list.data}>
                 <div className={styles.list.dataLabel}>{relatedLink.label}</div>
                 <div className={styles.list.dataHref}>
-                  <a href={relatedLink.href} target="_blank">
+                  <Link href={relatedLink.href} target="_blank">
                     {relatedLink.href}
-                  </a>
+                  </Link>
                 </div>
               </div>
               {onChange && (

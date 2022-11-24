@@ -210,9 +210,7 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
           {/* Render each post with a link to the content page */}
           {posts.map(post => (
             <li key={post.id}>
-              <Link href={`/post/${post.slug}`}>
-                <a>{post.title}</a>
-              </Link>
+              <Link href={`/post/${post.slug}`}>{post.title}</Link>
             </li>
           ))}
         </ul>
@@ -256,7 +254,7 @@ export default function PostPage({ post }: { post: Post }) {
       <main style={{ margin: '3rem' }}>
         <div>
           <Link href="/">
-            <a>&larr; back home</a>
+            &larr; back home
           </Link>
         </div>
         <h1>{post.title}</h1>

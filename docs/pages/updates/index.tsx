@@ -111,10 +111,11 @@ function Box({ link, heading, children, ...props }: BoxProps) {
         {children}
       </Type>
       {link && (
-        <Link href={link} passHref>
-          <a css={{ display: 'inline-flex', alignItems: 'center', marginTop: '0.5rem' }}>
-            Read more <ArrowR css={{ height: '1.2rem' }} />
-          </a>
+        <Link
+          href={link}
+          css={{ display: 'inline-flex', alignItems: 'center', marginTop: '0.5rem' }}
+        >
+          Read more <ArrowR css={{ height: '1.2rem' }} />
         </Link>
       )}
     </Type>
@@ -140,10 +141,7 @@ export default function WhatsNew() {
         A snapshot of Keystone improvements and community happenings.
         <br />
         For developer changelogs see our{' '}
-        <Link href="https://github.com/keystonejs/keystone/releases">
-          <a>GitHub Releases</a>
-        </Link>
-        .
+        <a href="https://github.com/keystonejs/keystone/releases">GitHub Releases</a>.
       </Type>
 
       <Alert look="tip" css={{ margin: '2rem 0' }}>
@@ -194,7 +192,7 @@ export default function WhatsNew() {
         <Box heading="Array fields in Component Blocks">
           Document field components now accept re-orderable arrays. Drag and drop your way to
           carousels, galleries, recipe steps and more. Look for the Carousel component in our{' '}
-          <a href="/docs/guides/document-field-demo">Document Field demo</a>.
+          <Link href="/docs/guides/document-field-demo">Document Field demo</Link>.
         </Box>
         <Timeline date="13th May 2022" />
         <Box heading="Example projects in CodeSandbox">
@@ -211,8 +209,8 @@ export default function WhatsNew() {
         <Timeline date="8th February 2022" />
         <Box heading="New learning series">
           Aimed at Keystone beginners, our{' '}
-          <a href="/docs/walkthroughs#learn-keystone">new learning series</a> shows you how to turn
-          an empty folder into a functioning blog backend with relationships, auth, and session
+          <Link href="/docs/walkthroughs#learn-keystone">new learning series</Link> shows you how to
+          turn an empty folder into a functioning blog backend with relationships, auth, and session
           data.
         </Box>
         <Timeline date="29th November 2021" />
@@ -420,7 +418,7 @@ export default function WhatsNew() {
           Keystone 6 is now in General Availability! Today's Keystone is faster and more flexible
           than it's ever been, and is ready for you to build amazing things with{' '}
           <Emoji symbol="🚀" alt="Rocket" />{' '}
-          <a href="/blog/general-availability">Read the full story here</a>.
+          <Link href="/blog/general-availability">Read the full story here</Link>.
         </Box>
         <Timeline date="24th November 2021" />
         <Box heading="Improved performance with Prisma’s Node Engine">
@@ -429,8 +427,8 @@ export default function WhatsNew() {
         </Box>
         <Timeline date="23rd November 2021" />
         <Box heading="Keystone Brand Portal">
-          We now have a <a href="/branding">brand portal</a> full of logos, monograms and assets.
-          Perfect for your blog posts, plugins and more.
+          We now have a <Link href="/branding">brand portal</Link> full of logos, monograms and
+          assets. Perfect for your blog posts, plugins and more.
         </Box>
         <Timeline date="15th November 2021" />
         <Box heading="New example: Nexus">
@@ -564,10 +562,8 @@ export default function WhatsNew() {
         <Box heading="create-keystone-app now uses SQLite">
           Our CLI app now uses <InlineCode>SQLite</InlineCode> under the hood so you don’t have to
           spend time on DB config when trying out new ideas. We also updated the{' '}
-          <Link href="/docs/getting-started">
-            <a>getting started walkthrough</a>
-          </Link>{' '}
-          to reflect this improvement.
+          <Link href="/docs/getting-started">getting started walkthrough</Link> to reflect this
+          improvement.
         </Box>
         <Timeline date="15th September 2021" />
         <Box heading="Deployment examples for Heroku and Railway">
@@ -603,10 +599,7 @@ export default function WhatsNew() {
           Major release #2 of #3 planned ahead of Keystone 6 General Availability includes:
           <ul>
             <li>
-              A better{' '}
-              <Link href="/updates/new-access-control">
-                <a>Access Control API</a>
-              </Link>
+              A better <Link href="/updates/new-access-control">Access Control API</Link>
             </li>
             <li>Customisable Express + GraphQL API paths</li>
             <li>Apollo Server introspection</li>
@@ -635,18 +628,13 @@ export default function WhatsNew() {
             </li>
           </ul>
           To securely upgrade your system, follow the instructions in our{' '}
-          <Link href="/updates/new-access-control">
-            <a>Access Control upgrade guide</a>
-          </Link>
-          .
+          <Link href="/updates/new-access-control">Access Control upgrade guide</Link>.
         </Box>
         <Timeline date="6th September 2021" />
         <Box heading="Customisable Express App">
           A long awaited feature, the Express App that Keystone creates is now{' '}
-          <Link href="/docs/config/config#server">
-            <a>customisable</a>
-          </Link>{' '}
-          with the new <InlineCode>extendExpressApp</InlineCode> option:
+          <Link href="/docs/config/config#server">customisable</Link> with the new{' '}
+          <InlineCode>extendExpressApp</InlineCode> option:
           <ul>
             <li>Add your own custom server routes</li>
             <li>Host two apps on separate ports</li>
@@ -657,11 +645,7 @@ export default function WhatsNew() {
         <Box heading="GraphQL Path Customisation">
           The GraphQL endpoint accessible by default at `/api/graphql` can now be customised with
           the new option <InlineCode>config.graphql.path</InlineCode>. You can find this and all
-          other options in our{' '}
-          <Link href="/docs/config/config#graphql">
-            <a>GraphQL API docs</a>
-          </Link>
-          .
+          other options in our <Link href="/docs/config/config#graphql">GraphQL API docs</Link>.
         </Box>
         <Timeline date="17th August 2021" />
         <Box heading="New & improved GraphQL API">
@@ -672,35 +656,22 @@ export default function WhatsNew() {
           <br />
           We’ve made the experience of working with Keystone’s GraphQL API easier to program and
           reason about. Be sure to check our{' '}
-          <Link href="/docs/graphql/overview">
-            <a>GraphQL API docs</a>
-          </Link>
-          .
+          <Link href="/docs/graphql/overview">GraphQL API docs</Link>.
         </Box>
         <Timeline date="29th July 2021" />
         <Box heading="Admin UI Customizations">
           We're opening Admin UI up to support a more personal content experience. Now you can:
           <ul>
             <li>
-              embed your own{' '}
-              <Link href="/docs/guides/custom-admin-ui-logo">
-                <a>custom logo</a>
-              </Link>
-              ,
+              embed your own <Link href="/docs/guides/custom-admin-ui-logo">custom logo</Link>,
             </li>
             <li>
-              add{' '}
-              <Link href="/docs/guides/custom-admin-ui-pages">
-                <a>custom pages</a>
-              </Link>{' '}
-              with Admin UI routes, and
+              add <Link href="/docs/guides/custom-admin-ui-pages">custom pages</Link> with Admin UI
+              routes, and
             </li>
             <li>
               link to them (and elsewhere) with{' '}
-              <Link href="/docs/guides/custom-admin-ui-navigation">
-                <a>custom navigation</a>
-              </Link>
-              .
+              <Link href="/docs/guides/custom-admin-ui-navigation">custom navigation</Link>.
             </li>
           </ul>
           To deliver a more productive editor experience that's aligned with the needs and brand of
@@ -750,23 +721,14 @@ export default function WhatsNew() {
           Next.js and Tailwind, that gives you:
           <ul>
             <li>
-              Public{' '}
-              <Link href="/docs/config/auth">
-                <a>auth</a>
-              </Link>{' '}
-              and signup
+              Public <Link href="/docs/config/auth">auth</Link> and signup
             </li>
             <li>
-              Role-based{' '}
-              <Link href="/docs/config/access-control">
-                <a>access control</a>
-              </Link>
+              Role-based <Link href="/docs/config/access-control">access control</Link>
             </li>
             <li>
               Custom components in the{' '}
-              <Link href="/docs/guides/document-field-demo">
-                <a>document field</a>
-              </Link>
+              <Link href="/docs/guides/document-field-demo">document field</Link>
             </li>
           </ul>
           Editors can embed audience Polls in post content, and authenticated visitors can make
@@ -788,11 +750,7 @@ export default function WhatsNew() {
         <Timeline date="10th July 2021" />
         <Box heading="Watch Jed's Prisma Day talk">
           Jed's talk at Prisma Day 2021 is a great overview into what makes Keystone special. Watch
-          below, or{' '}
-          <Link href="/updates/prisma-day-2021">
-            <a>read the full transcript</a>
-          </Link>
-          .
+          below, or <Link href="/updates/prisma-day-2021">read the full transcript</Link>.
           <div
             css={{
               position: 'relative',
@@ -822,23 +780,10 @@ export default function WhatsNew() {
         <Timeline date="29th June 2021" />
         <Box heading="New website">
           We've launched our new website for <strong>Keystone 6</strong>! There’s a new home page,
-          and background on{' '}
-          <Link href="/why-keystone">
-            <a>why Keystone</a>
-          </Link>{' '}
-          is built for projects that need to scale on their own terms. Navigating the docs is easier
-          with breadcrumbs, index pages for{' '}
-          <Link href="/docs/walkthroughs">
-            <a>Walkthroughs</a>
-          </Link>
-          ,{' '}
-          <Link href="/docs/guides">
-            <a>Guides</a>
-          </Link>
-          , and{' '}
-          <Link href="/docs/apis">
-            <a>APIs</a>
-          </Link>
+          and background on <Link href="/why-keystone">why Keystone</Link> is built for projects
+          that need to scale on their own terms. Navigating the docs is easier with breadcrumbs,
+          index pages for <Link href="/docs/walkthroughs">Walkthroughs</Link>,{' '}
+          <Link href="/docs/guides">Guides</Link>, and <Link href="/docs/apis">APIs</Link>
           , and a better mobile experience. We hope you like it <Emoji symbol="❤️" alt="Love" />
         </Box>
         <Timeline date="21st June 2021" />
@@ -847,29 +792,19 @@ export default function WhatsNew() {
           written the following guides:
           <ul>
             <li>
-              <Link href="/docs/guides/virtual-fields">
-                <a>Virtual fields</a>
-              </Link>
+              <Link href="/docs/guides/virtual-fields">Virtual fields</Link>
             </li>
             <li>
-              <Link href="/docs/guides/relationships">
-                <a>Relationships</a>
-              </Link>
+              <Link href="/docs/guides/relationships">Relationships</Link>
             </li>
             <li>
-              <Link href="/docs/guides/hooks">
-                <a>Hooks</a>
-              </Link>
+              <Link href="/docs/guides/hooks">Hooks</Link>
             </li>
             <li>
-              <Link href="/docs/guides/filters">
-                <a>Query Filters</a>
-              </Link>
+              <Link href="/docs/guides/filters">Query Filters</Link>
             </li>
             <li>
-              <Link href="/docs/guides/testing">
-                <a>Testing</a>
-              </Link>
+              <Link href="/docs/guides/testing">Testing</Link>
             </li>
           </ul>
         </Box>
@@ -891,15 +826,11 @@ export default function WhatsNew() {
           A long awaited feature: you can now find an item by unique fields in your schema. It works
           for{' '}
           <InlineCode>
-            <Link href="/docs/fields/text">
-              <a>text</a>
-            </Link>
+            <Link href="/docs/fields/text">text</Link>
           </InlineCode>{' '}
           and{' '}
           <InlineCode>
-            <Link href="/docs/fields/integer">
-              <a>integer</a>
-            </Link>
+            <Link href="/docs/fields/integer">integer</Link>
           </InlineCode>{' '}
           fields that have <InlineCode>isUnique: true</InlineCode> set.
         </Box>

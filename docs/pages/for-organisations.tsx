@@ -111,14 +111,10 @@ export default function ForOrganisations() {
               </li>
             </ul>
             <Type as="p" look="body18">
-              <Link href="/for-developers" passHref>
-                <a>Keystone for developers →</a>
-              </Link>
+              <Link href="/for-developers">Keystone for developers →</Link>
             </Type>
             <Type as="p" look="body18">
-              <Link href="/for-content-management">
-                <a>Keystone for content management →</a>
-              </Link>
+              <Link href="/for-content-management">Keystone for content management →</Link>
             </Type>
           </div>
           <div>
@@ -160,9 +156,7 @@ export default function ForOrganisations() {
               from a single source of truth and expose it to any frontend application.
             </Type>
             <Type as="p" look="body18">
-              <Link href="/why-keystone#solutions">
-                <a>See all solutions →</a>
-              </Link>
+              <Link href="/why-keystone#solutions">See all solutions →</Link>
             </Type>
           </div>
           <TweetBox user="jvredbrown" img="/assets/jvredbrown.jpg" grad="grad4">

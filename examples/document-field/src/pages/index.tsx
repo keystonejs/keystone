@@ -11,16 +11,12 @@ export default function Index({ authors }: { authors: Author[] }) {
       {authors.map(author => (
         <li key={author.id}>
           <h2>
-            <Link href={`/author/${author.id}`}>
-              <a>{author.name}</a>
-            </Link>
+            <Link href={`/author/${author.id}`}>{author.name}</Link>
           </h2>
           <ul>
             {author.posts.map(post => (
               <li key={post.id}>
-                <Link href={`/post/${post.slug}`}>
-                  <a>{post.title}</a>
-                </Link>
+                <Link href={`/post/${post.slug}`}>{post.title}</Link>
               </li>
             ))}
           </ul>

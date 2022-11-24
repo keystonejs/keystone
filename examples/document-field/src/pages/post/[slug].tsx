@@ -45,10 +45,7 @@ export default function Post({ post }: { post: any }) {
       <h1>{post.title}</h1>
       {post.author?.name && (
         <address>
-          By{' '}
-          <Link href={`/author/${post.author.id}`}>
-            <a>{post.author.name}</a>
-          </Link>
+          By <Link href={`/author/${post.author.id}`}>{post.author.name}</Link>
         </address>
       )}
       {post.publishDate && (

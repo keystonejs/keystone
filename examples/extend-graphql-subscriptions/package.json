@@ -21,7 +21,7 @@
     "graphql": "^16.6.0",
     "graphql-subscriptions": "^2.0.0",
     "graphql-ws": "^5.9.1",
-    "react": "^18.1.0",
+    "react": "^18.2.0",
     "ws": "^8.8.0"
   },
   "devDependencies": {

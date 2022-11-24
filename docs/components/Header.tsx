@@ -49,27 +49,26 @@ function Logo() {
         whiteSpace: 'nowrap',
       })}
     >
-      <Link href="/" passHref>
-        <a
+      <Link
+        href="/"
+        css={{
+          fontSize: 'var(--font-medium)',
+          fontWeight: 600,
+          verticalAlign: 'middle',
+          transition: 'color 0.3s ease',
+        }}
+      >
+        <Keystone
+          grad="logo"
           css={{
-            fontSize: 'var(--font-medium)',
-            fontWeight: 600,
+            display: 'inline-block',
+            width: '2rem',
+            height: '2rem',
+            margin: '0 var(--space-medium) var(--space-xsmall) 0',
             verticalAlign: 'middle',
-            transition: 'color 0.3s ease',
           }}
-        >
-          <Keystone
-            grad="logo"
-            css={{
-              display: 'inline-block',
-              width: '2rem',
-              height: '2rem',
-              margin: '0 var(--space-medium) var(--space-xsmall) 0',
-              verticalAlign: 'middle',
-            }}
-          />
-          <Highlight>Keystone 6</Highlight>
-        </a>
+        />
+        <Highlight>Keystone 6</Highlight>
       </Link>
     </div>
   );

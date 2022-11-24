@@ -37,9 +37,7 @@ export default function BlogPage({ post, error }: { post: Post | undefined; erro
   return (
     <main style={{ maxWidth: 960, margin: '0 auto' }}>
       <div>
-        <Link href="/">
-          <a>&larr; back home</a>
-        </Link>
+        <Link href="/">&larr; back home</Link>
       </div>
       <article>
         <h1>{post.title}</h1>

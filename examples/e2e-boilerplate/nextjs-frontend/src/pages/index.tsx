@@ -54,9 +54,7 @@ export default function Home({ posts, error }: { posts: Post[]; error?: Error })
         {posts.map(post => {
           return (
             <li key={post.id}>
-              <Link href={`/blog/${post.slug}`}>
-                <a>{post.title}</a>
-              </Link>
+              <Link href={`/blog/${post.slug}`}>{post.title}</Link>
               <PublishDate publishDate={post.publishDate} />
               <AuthorInfo author={post.author} />
             </li>

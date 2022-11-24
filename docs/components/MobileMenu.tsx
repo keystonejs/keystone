@@ -126,20 +126,19 @@ function NavHeader({ handleClose, mobileNavIsOpen }: NavHeaderProps) {
         alignItems: 'center',
       }}
     >
-      <Link href="/" passHref>
-        <a
-          tabIndex={mobileNavIsOpen ? 0 : -1}
-          css={{
-            fontSize: 'var(--font-medium)',
-            fontWeight: 600,
-            transition: 'color 0.3s ease',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          <Keystone grad="logo" css={{ height: '2rem', marginRight: '0.4em' }} />
-          <Highlight>Keystone 6</Highlight>
-        </a>
+      <Link
+        href="/"
+        tabIndex={mobileNavIsOpen ? 0 : -1}
+        css={{
+          fontSize: 'var(--font-medium)',
+          fontWeight: 600,
+          transition: 'color 0.3s ease',
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        <Keystone grad="logo" css={{ height: '2rem', marginRight: '0.4em' }} />
+        <Highlight>Keystone 6</Highlight>
       </Link>
       <button
         id="mobile-menu-close-btn"

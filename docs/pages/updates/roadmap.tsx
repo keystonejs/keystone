@@ -252,18 +252,10 @@ export default function Roadmap() {
       </Type>
       <Type as="p" look="body18" margin="1rem 0">
         We're using the foundations we shipped in 2021 as a springboard to bring{' '}
-        <Link href="/for-developers" passHref>
-          <a>developers</a>
-        </Link>
-        ,{' '}
-        <Link href="/for-organisations" passHref>
-          <a>project owners</a>
-        </Link>
-        , and{' '}
-        <Link href="/for-content-management" passHref>
-          <a>editors</a>
-        </Link>{' '}
-        into more productive ways of working together. Our key areas of focus for 2022 are:
+        <Link href="/for-developers">developers</Link>,{' '}
+        <Link href="/for-organisations">project owners</Link>, and{' '}
+        <Link href="/for-content-management">editors</Link> into more productive ways of working
+        together. Our key areas of focus for 2022 are:
       </Type>
       <div className="prose" css={{ li: { fontSize: '1.125rem' } }}>
         <ul>
@@ -288,20 +280,12 @@ export default function Roadmap() {
         Our design team spent much of the second half of 2021 defining a new vision for Admin UI
         that gives you more capabilities to support content editors in ways that matter most to
         them. We've already shipped quick wins for customisable{' '}
-        <Link href="/docs/guides/custom-admin-ui-logo" passHref>
-          <a>logos</a>
-        </Link>
-        ,{' '}
-        <Link href="/docs/guides/custom-admin-ui-pages" passHref>
-          <a>pages</a>
-        </Link>
-        , and{' '}
-        <Link href="/docs/guides/custom-admin-ui-navigation" passHref>
-          <a>navigation</a>
-        </Link>
-        , but the really transformative features (that rely on more extensive customisation) are
-        still in the works. This body of work will elevate the experience of authoring content in
-        Keystone to the same high standards we have for authoring with Keystone's core APIs.
+        <Link href="/docs/guides/custom-admin-ui-logo">logos</Link>,{' '}
+        <Link href="/docs/guides/custom-admin-ui-pages">pages</Link>, and{' '}
+        <Link href="/docs/guides/custom-admin-ui-navigation">navigation</Link>, but the really
+        transformative features (that rely on more extensive customisation) are still in the works.
+        This body of work will elevate the experience of authoring content in Keystone to the same
+        high standards we have for authoring with Keystone's core APIs.
       </Type>
       <Type as="h3" look="heading20bold" margin="1rem 0">
         Maturing the Developer Experience
@@ -349,15 +333,8 @@ export default function Roadmap() {
             margin: '0.5rem 0.8rem 0.5rem 0',
           }}
         >
-          To see what we've recently shipped, checkout our{' '}
-          <Link href="/updates" passHref>
-            <a>updates</a>
-          </Link>{' '}
-          and{' '}
-          <Link href="/releases" passHref>
-            <a>release notes</a>
-          </Link>{' '}
-          <Emoji symbol="🚀" alt="Rocket" />
+          To see what we've recently shipped, checkout our <Link href="/updates">updates</Link> and{' '}
+          <Link href="/releases">release notes</Link> <Emoji symbol="🚀" alt="Rocket" />
         </span>
       </Alert>
       <Type as="h3" look="heading30">

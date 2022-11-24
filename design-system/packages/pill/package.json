@@ -12,10 +12,10 @@
     "./package.json": "./package.json"
   },
   "peerDependencies": {
-    "react": "^18.1.0"
+    "react": "^18.2.0"
   },
   "devDependencies": {
-    "react": "^18.1.0"
+    "react": "^18.2.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",

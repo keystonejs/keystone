@@ -99,9 +99,7 @@ export default function ForOrganisations() {
               </li>
             </ul>
             <Type as="p" look="body18">
-              <Link href="/docs/config/access-control">
-                <a>Access control API →</a>
-              </Link>
+              <Link href="/docs/config/access-control">Access control API →</Link>
             </Type>
           </div>
           <div>
@@ -168,9 +166,7 @@ export default function ForOrganisations() {
               </li>
             </ul>
             <Type as="p" look="body18">
-              <Link href="/docs/fields/overview">
-                <a>Fields API →</a>
-              </Link>
+              <Link href="/docs/fields/overview">Fields API →</Link>
             </Type>
           </div>
           <div>
@@ -212,9 +208,7 @@ export default function ForOrganisations() {
                 Try the demo <ArrowR />
               </Button>
               <Type look="body18">
-                <Link href="/docs/guides/document-fields">
-                  <a>Read the guide →</a>
-                </Link>
+                <Link href="/docs/guides/document-fields">Read the guide →</Link>
               </Type>
             </div>
             <div>
@@ -334,9 +328,7 @@ export default function ForOrganisations() {
               </li>
             </ul>
             <Type as="p" look="body18">
-              <Link href="/docs/guides/relationships">
-                <a>Relationships guide →</a>
-              </Link>
+              <Link href="/docs/guides/relationships">Relationships guide →</Link>
             </Type>
           </div>
           <div>
