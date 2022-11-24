@@ -109,6 +109,9 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
    * Must be added to the ui.publicPages config
    */
   const authPublicPages = ['/signin'];
+  if (initFirstItem) {
+    authPublicPages.push('/init');
+  }
 
   /**
    * extendGraphqlSchema
@@ -214,14 +217,12 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     return count === 0;
   }
 
-  async function attemptRedirects({
+  async function authMiddleware({
     context,
     isValidSession,
-    publicPages,
   }: {
     context: KeystoneContext;
     isValidSession: boolean; // TODO: rename "isValidSession" to "wasAccessAllowed"?
-    publicPages: string[];
   }): Promise<{ kind: 'redirect'; to: string } | void> {
     const { req } = context;
     const { pathname } = new URL(req!.url!, 'http://_');
@@ -235,9 +236,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     if (pathname === '/init' && !(await hasInitFirstItemConditions(context))) {
       return { kind: 'redirect', to: '/' };
     }
-
-    // don't redirect if we are on a public page
-    if (publicPages.includes(pathname)) return;
 
     // don't redirect if we have access
     if (isValidSession) return;
@@ -283,10 +281,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
         },
 
         pageMiddleware: async args => {
-          const shouldRedirect = await attemptRedirects({
-            ...args,
-            publicPages: [...publicPages, ...authPublicPages],
-          });
+          const shouldRedirect = await authMiddleware(args);
           if (shouldRedirect) return shouldRedirect;
           return pageMiddleware?.(args);
         },
