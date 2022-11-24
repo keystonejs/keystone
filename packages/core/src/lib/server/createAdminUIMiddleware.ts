@@ -49,6 +49,12 @@ export function createAdminUIMiddlewareWithNextApp(
     }
 
     try {
+      // do nothing if this is a public page
+      if (publicPages.includes(pathname!)) {
+        handle(req, res);
+        return;
+      }
+
       const userContext = await context.withRequest(req, res);
       const isValidSession = await isAccessAllowed(userContext); // TODO: rename "isValidSession" to "wasAccessAllowed"?
       const shouldRedirect = await pageMiddleware?.({
@@ -64,10 +70,10 @@ export function createAdminUIMiddlewareWithNextApp(
         return;
       }
 
-      if (!isValidSession && !publicPages.includes(pathname!)) {
-        nextApp.render(req, res, '/no-access');
-      } else {
+      if (isValidSession) {
         handle(req, res);
+      } else {
+        nextApp.render(req, res, '/no-access');
       }
     } catch (e) {
       console.error('An error occurred handling a request for the Admin UI:', e);

@@ -208,20 +208,22 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
   };
 
   async function hasInitFirstItemConditions(context: KeystoneContext) {
+    // do nothing if they aren't using this feature
     if (!initFirstItem) return false;
+
+    // if they have a session, there is no initialisation necessary
+    if (context.session) return false;
 
     const count = await context.sudo().db[listKey].count({});
     return count === 0;
   }
 
-  async function attemptRedirects({
+  async function authMiddleware({
     context,
-    isValidSession,
-    publicPages,
+    isValidSession: wasAccessAllowed,
   }: {
     context: KeystoneContext;
     isValidSession: boolean; // TODO: rename "isValidSession" to "wasAccessAllowed"?
-    publicPages: string[];
   }): Promise<{ kind: 'redirect'; to: string } | void> {
     const { req } = context;
     const { pathname } = new URL(req!.url!, 'http://_');
@@ -236,11 +238,8 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
       return { kind: 'redirect', to: '/' };
     }
 
-    // don't redirect if we are on a public page
-    if (publicPages.includes(pathname)) return;
-
     // don't redirect if we have access
-    if (isValidSession) return;
+    if (wasAccessAllowed) return;
 
     // otherwise, redirect to signin
     if (pathname === '/') return { kind: 'redirect', to: '/signin' };
@@ -283,10 +282,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
         },
 
         pageMiddleware: async args => {
-          const shouldRedirect = await attemptRedirects({
-            ...args,
-            publicPages: [...publicPages, ...authPublicPages],
-          });
+          const shouldRedirect = await authMiddleware(args);
           if (shouldRedirect) return shouldRedirect;
           return pageMiddleware?.(args);
         },
