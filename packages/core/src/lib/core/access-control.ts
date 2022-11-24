@@ -82,7 +82,6 @@ export async function getAccessFilters(
         listKey: list.listKey,
         context,
       });
-
     } else if (operation === 'update') {
       filters = await list.access.filter.update({
         operation,
@@ -90,7 +89,6 @@ export async function getAccessFilters(
         listKey: list.listKey,
         context,
       });
-
     } else if (operation === 'delete') {
       filters = await list.access.filter.delete({
         operation,
