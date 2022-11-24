@@ -38,7 +38,7 @@ export default function Docs(props: InferGetStaticPropsType<typeof getStaticProp
       if (a.frontmatter.publishDate === b.frontmatter.publishDate) {
         return a.frontmatter.title.localeCompare(b.frontmatter.title);
       }
-      return a.frontmatter.publishDate.localeCompare(b.frontmatter.publishDate);
+      return b.frontmatter.publishDate.localeCompare(a.frontmatter.publishDate);
     });
 
   return (
