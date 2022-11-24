@@ -12,12 +12,21 @@ export type WellGradient = 'grad1' | 'grad2' | 'grad3' | 'grad4';
 type WellProps = {
   grad?: WellGradient;
   heading?: ReactNode;
+  subheading?: ReactNode;
   badge?: string;
   href: string;
   children: ReactNode;
 } & AnchorHTMLAttributes<HTMLAnchorElement>;
 
-export function Well({ grad = 'grad1', heading, badge, href, children, ...props }: WellProps) {
+export function Well({
+  grad = 'grad1',
+  heading,
+  subheading,
+  badge,
+  href,
+  children,
+  ...props
+}: WellProps) {
   return (
     <Link href={href} passHref>
       <a
@@ -52,13 +61,25 @@ export function Well({ grad = 'grad1', heading, badge, href, children, ...props 
           as="h2"
           look="heading20bold"
           css={{
-            margin: '0 0 1rem 0 !important',
+            margin: subheading ? '0 0 0.25rem 0 !important' : '0 0 1rem 0 !important',
             paddingRight: badge ? '6rem' : '2rem',
             fontSize: '1.25rem !important',
           }}
         >
           {heading} →
         </Type>
+        {subheading && (
+          <Type
+            look="body14"
+            css={{
+              display: 'block',
+              color: 'var(--muted)',
+              margin: '0 0 1rem 0 !important',
+            }}
+          >
+            {subheading}
+          </Type>
+        )}
         {badge && (
           <Badge
             look="info"
