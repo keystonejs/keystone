@@ -223,7 +223,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     publicPages,
   }: {
     context: KeystoneContext;
-    isValidSession: boolean;
+    isValidSession: boolean; // TODO: rename "isValidSession" to "wasAccessAllowed"?
     publicPages: string[];
   }): Promise<{ kind: 'redirect'; to: string } | void> {
     const { req } = context;

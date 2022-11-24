@@ -50,7 +50,7 @@ export function createAdminUIMiddlewareWithNextApp(
 
     try {
       const userContext = await context.withRequest(req, res);
-      const isValidSession = await isAccessAllowed(userContext);
+      const isValidSession = await isAccessAllowed(userContext); // TODO: rename "isValidSession" to "wasAccessAllowed"?
       const shouldRedirect = await pageMiddleware?.({
         context,
         isValidSession,
