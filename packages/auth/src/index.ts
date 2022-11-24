@@ -109,9 +109,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
    * Must be added to the ui.publicPages config
    */
   const authPublicPages = ['/signin'];
-  if (initFirstItem) {
-    authPublicPages.push('/init');
-  }
 
   /**
    * extendGraphqlSchema
