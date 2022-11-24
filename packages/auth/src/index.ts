@@ -211,7 +211,11 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
   };
 
   async function hasInitFirstItemConditions(context: KeystoneContext) {
+    // do nothing if they aren't using this feature
     if (!initFirstItem) return false;
+
+    // if they have a session, there is no initialisation necessary
+    if (context.session) return false;
 
     const count = await context.sudo().db[listKey].count({});
     return count === 0;
