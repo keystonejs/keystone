@@ -76,6 +76,7 @@ export const DrawerBase = ({
     onSubmit = (event: any) => {
       if (!event.defaultPrevented) {
         event.preventDefault();
+        event.stopPropagation();
         oldOnSubmit();
       }
     };
