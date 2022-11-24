@@ -1,6 +1,7 @@
 // @markdoc/markdoc's declaration files depend on these global types
 import type {} from '@markdoc/markdoc/global';
 import fs from 'fs/promises';
+import isMatch from 'date-fns/isMatch';
 import Markdoc, { Config, Tag, ValidateError } from '@markdoc/markdoc';
 import { isNonEmptyArray } from 'emery/guards';
 import { assert } from 'emery/assertions';
@@ -150,6 +151,19 @@ export function extractBlogFrontmatter(content: string): BlogFrontmatter {
   }
   if (typeof obj.publishDate !== 'string') {
     throw new Error(`Expected frontmatter to contain publishDate`);
+  } else {
+    const publishDate = obj.publishDate;
+    // making sure months are always MM and not M, same with dd and d
+    // Eg. 2022-04-01 is correct
+    // 2022-4-1 is incorrect
+    // why do we do this manually? because date-fns isMatch doesn't validate this
+    if (publishDate.split('-').some(s => s.length < 2)) {
+      throw new Error(`Frontmatter publishDate format should be yyyy-MM-dd`);
+    }
+    const isValidDateFormat = isMatch(publishDate, 'yyyy-MM-dd');
+    if (!isValidDateFormat) {
+      throw new Error(`Frontmatter publishDate format should be yyyy-MM-dd`);
+    }
   }
   if (typeof obj.authorName !== 'string') {
     throw new Error(`Expected frontmatter to contain authorName`);

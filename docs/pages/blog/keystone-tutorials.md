@@ -1,7 +1,7 @@
 ---
 title: "Keystone learning series"
 description: "To help learn how Keystone works, we're introducing a new learning series that shows you how to turn an empty folder into a functioning blog backend with relationships, auth, and session data."
-publishDate: "2022-2-8"
+publishDate: "2022-02-08"
 authorName: "Ronald Aveling"
 authorHandle: "https://twitter.com/ronaldaveling"
 metaImageUrl: ""

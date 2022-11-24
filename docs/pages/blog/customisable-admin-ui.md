@@ -1,7 +1,7 @@
 ---
 title: "Customisable Admin UI"
 description: "Custom navigation, pages and logo in this big Admin UI themed release."
-publishDate: "2021-7-29"
+publishDate: "2021-07-29"
 authorName: "Ronald Aveling"
 authorHandle: "https://twitter.com/ronaldaveling"
 metaImageUrl: ""

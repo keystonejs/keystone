@@ -34,7 +34,12 @@ export default function Docs(props: InferGetStaticPropsType<typeof getStaticProp
         formattedDateStr: formattedDateStr,
       };
     })
-    .sort((a, b) => (a.parsedDate < b.parsedDate ? 1 : -1));
+    .sort((a, b) => {
+      if (a.frontmatter.publishDate === b.frontmatter.publishDate) {
+        return a.frontmatter.title.localeCompare(b.frontmatter.title);
+      }
+      return a.frontmatter.publishDate.localeCompare(b.frontmatter.publishDate);
+    });
 
   return (
     <Page
