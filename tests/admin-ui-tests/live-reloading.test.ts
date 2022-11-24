@@ -124,7 +124,6 @@ test('errors can be recovered from', async () => {
   );
   const value = await element.inputValue();
   expect(value).toBe('blah');
-  await exit();
 });
 
 afterAll(async () => {
