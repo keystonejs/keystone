@@ -101,7 +101,7 @@ export async function getAccessFilters(
     }
 
     if (typeof filters === 'boolean') return filters;
-    if (filters === undefined) return false; // shouldn't happen, but, Typescript
+    if (!filters) return false; // shouldn't happen, but, Typescript
 
     const schema = context.sudo().graphql.schema;
     const whereInput = assertInputObjectType(schema.getType(getGqlNames(list).whereInputName));
