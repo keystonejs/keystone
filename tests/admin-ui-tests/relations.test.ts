@@ -15,9 +15,9 @@ adminUITests('./tests/test-projects/basic', browserType => {
     await page.fill('label:has-text("Label")', 'Buy beer');
     await page.click('button:has-text("Create related Person")');
     await page.waitForSelector('h1:has-text("Create Person")');
-    await page.fill('label:has-text("Name")', 'Max');
+    await page.fill('label:has-text("Name")', 'Geralt');
     await page.click('button:has-text("Create Person")');
-    await page.waitForSelector('legend:has-text("Assigned To") ~ div:has-text("Max")');
+    await page.waitForSelector('legend:has-text("Assigned To") ~ div:has-text("Geralt")');
     expect(page.url()).toBe('http://localhost:3000/tasks/create');
   });
 
