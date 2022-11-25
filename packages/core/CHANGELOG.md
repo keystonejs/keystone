@@ -1,5 +1,11 @@
 # @keystone-6/core
 
+## 3.1.3
+
+### Patch Changes
+
+- [`a84106345`](https://github.com/keystonejs/keystone/commit/a8410634550b29b4dbaf196f23a71428878e24fe) Thanks [@dcousens](https://github.com/dcousens)! - Fixes `access.filter.*` passing `listKey: undefined`
+
 ## 3.1.2
 
 ### Patch Changes
