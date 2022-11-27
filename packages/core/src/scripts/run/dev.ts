@@ -282,7 +282,7 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
   const server = httpServer.listen(httpOptions, (err?: any) => {
     if (err) throw err;
 
-    const easyHost = [undefined, '', '::', '0.0.0.0'].indexOf(httpOptions.host) !== -1 ? 'localhost' : httpOptions.host;
+    const easyHost = [undefined, '', '::', '0.0.0.0'].includes(httpOptions.host) ? 'localhost' : httpOptions.host;
     console.log(
       `⭐️ Server listening on ${httpOptions.host || ''}:${httpOptions.port} (http://${easyHost}:${httpOptions.port}/)`
     );
