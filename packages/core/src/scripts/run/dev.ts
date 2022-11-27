@@ -282,9 +282,13 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
   const server = httpServer.listen(httpOptions, (err?: any) => {
     if (err) throw err;
 
-    const easyHost = [undefined, '', '::', '0.0.0.0'].includes(httpOptions.host) ? 'localhost' : httpOptions.host;
+    const easyHost = [undefined, '', '::', '0.0.0.0'].includes(httpOptions.host)
+      ? 'localhost'
+      : httpOptions.host;
     console.log(
-      `⭐️ Server listening on ${httpOptions.host || ''}:${httpOptions.port} (http://${easyHost}:${httpOptions.port}/)`
+      `⭐️ Server listening on ${httpOptions.host || ''}:${httpOptions.port} (http://${easyHost}:${
+        httpOptions.port
+      }/)`
     );
     console.log(`⭐️ GraphQL API available at ${config.graphql?.path || '/api/graphql'}`);
 
