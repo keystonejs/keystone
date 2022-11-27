@@ -2,4 +2,4 @@
 '@keystone-6/core': minor
 ---
 
-Host can be configured via the HOST environment variable
+Adds `HOST` as an environment variable for `keystone dev` and `keystone start`, with higher precedence than `config.server.options.host` 
