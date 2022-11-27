@@ -31,7 +31,7 @@ function defaultIsAccessAllowed({ session, sessionStrategy }: KeystoneContext) {
 
 export function createAdminUIMiddlewareWithNextApp(
   config: KeystoneConfig,
-  context: KeystoneContext,
+  commonContext: KeystoneContext,
   nextApp: NextApp
 ) {
   const handle = nextApp.getRequestHandler();
@@ -55,8 +55,8 @@ export function createAdminUIMiddlewareWithNextApp(
         return;
       }
 
-      const userContext = await context.withRequest(req, res);
-      const isValidSession = await isAccessAllowed(userContext); // TODO: rename "isValidSession" to "wasAccessAllowed"?
+      const context = await commonContext.withRequest(req, res);
+      const isValidSession = await isAccessAllowed(context); // TODO: rename "isValidSession" to "wasAccessAllowed"?
       const shouldRedirect = await pageMiddleware?.({
         context,
         isValidSession,
