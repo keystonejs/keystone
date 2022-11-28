@@ -18,7 +18,7 @@ const packageNames: PackageName[] = [
 ];
 
 function getTelemetryConfig() {
-  const userConfig = new Conf<Configuration>({ projectName: 'keystonejs' });
+  const userConfig = new Conf<Configuration>({ projectName: 'keystonejs', projectSuffix: '' });
   let telemetry: Configuration['telemetry'];
   try {
     // Load global telemetry config settings (if set)
