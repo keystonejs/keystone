@@ -117,7 +117,6 @@ export const Button = forwardRefWithAs<'button', ButtonProps>(
   (
     {
       as: Tag = 'button',
-      href,
       look = 'default',
       size = 'default',
       shadow,
@@ -128,19 +127,13 @@ export const Button = forwardRefWithAs<'button', ButtonProps>(
     },
     ref
   ) => {
-    let Wrapper: ElementType<{ children: ReactNode }> = Fragment;
-
-    if (Tag === 'a' && !href) {
+    if (Tag === 'a' && !props.href) {
       Tag = 'button';
     }
 
-    if (Tag === 'a' && href) {
+    if (Tag === 'a' && props.href) {
       disabled = undefined;
-      Wrapper = ({ children }) => (
-        <Link legacyBehavior href={href}>
-          {children}
-        </Link>
-      );
+      Tag = Link;
     }
 
     if (look === 'text') {
@@ -149,107 +142,105 @@ export const Button = forwardRefWithAs<'button', ButtonProps>(
     }
 
     return (
-      <Wrapper>
-        <Tag
-          ref={ref}
-          css={{
-            '&&': {
-              // silly prose styles
-              '--button-bg': 'var(--brand-bg)',
-              '--button-bg-hover': 'var(--brand-bg-90)',
-              '--button-bg-active': 'var(--brand-bg-90)',
-              '--button-bg-disabled': 'var(--brand-bg--40)',
-              '--button-border': '0 none',
-              '--button-border-hover': 'var(--button-border)',
-              '--button-border-active': 'var(--button-border)',
-              '--button-border-disabled': 'var(--button-border)',
-              '--button-color': 'var(--brand-text)',
-              '--button-color-hover': 'var(--button-color)',
-              '--button-color-active': 'var(--button-color)',
-              '--button-color-disabled': 'var(--button-color)',
-              '--button-decoration-hover': 'none',
-              '--button-shadow': 'none',
-              '--button-shadow-hover': 'none',
-              '--button-shadow-active': 'none',
-              '--button-transform-active': 'translateY(1px)',
-              position: 'relative',
-              display: 'inline-flex',
-              flexShrink: '0',
-              letterSpacing: '-.2px',
-              color: 'var(--button-color)',
-              mozBoxAlign: 'center',
-              alignItems: 'center',
-              boxShadow: 'var(--button-shadow)',
-              background: 'var(--button-bg)',
-              border: 'var(--button-border)',
-              fontWeight: '600',
-              mozBoxPack: 'center',
-              justifyContent: 'center',
-              outline: 'currentcolor none 0',
-              textDecoration: 'none',
-              userSelect: 'none',
-              whiteSpace: 'nowrap',
-              cursor: 'pointer',
-              transition: 'all 0.1s ease',
-              ':hover': {
-                boxShadow: 'var(--button-shadow-hover)',
-                background: 'var(--button-bg-hover)',
-                textDecoration: 'var(--button-decoration-hover)',
-                color: 'var(--button-color-hover)',
-                border: 'var(--button-border-hover)',
-              },
-              ':active': {
-                boxShadow: 'var(--button-shadow-active)',
-                transform: 'var(--button-transform-active)',
-                background: 'var(--button-bg-active)',
-                color: 'var(--button-color-active)',
-                border: 'var(--button-border-active)',
-              },
-              ':disabled': {
-                boxShadow: 'none',
-                cursor: 'not-allowed',
-                background: 'var(--button-bg-disabled)',
-                opacity: '0.9',
-                color: 'var(--button-color-disabled)',
-                border: 'var(--button-border-disabled)',
-                pointerEvents: 'none',
-              },
-              ':focus-visible': {
-                outline: '1px dashed var(--focus)',
-                outlineOffset: '3px',
-              },
-              '& svg': {
-                display: 'inline-block',
-                height: '1em',
-                width: 'auto',
-                verticalAlign: 'middle',
-                marginLeft: '0',
-              },
-              ...styleMap[look],
-              ...sizeMap[size],
-              ...(shadow ? shadowMap[look] : {}),
+      <Tag
+        ref={ref}
+        css={{
+          '&&': {
+            // silly prose styles
+            '--button-bg': 'var(--brand-bg)',
+            '--button-bg-hover': 'var(--brand-bg-90)',
+            '--button-bg-active': 'var(--brand-bg-90)',
+            '--button-bg-disabled': 'var(--brand-bg--40)',
+            '--button-border': '0 none',
+            '--button-border-hover': 'var(--button-border)',
+            '--button-border-active': 'var(--button-border)',
+            '--button-border-disabled': 'var(--button-border)',
+            '--button-color': 'var(--brand-text)',
+            '--button-color-hover': 'var(--button-color)',
+            '--button-color-active': 'var(--button-color)',
+            '--button-color-disabled': 'var(--button-color)',
+            '--button-decoration-hover': 'none',
+            '--button-shadow': 'none',
+            '--button-shadow-hover': 'none',
+            '--button-shadow-active': 'none',
+            '--button-transform-active': 'translateY(1px)',
+            position: 'relative',
+            display: 'inline-flex',
+            flexShrink: '0',
+            letterSpacing: '-.2px',
+            color: 'var(--button-color)',
+            mozBoxAlign: 'center',
+            alignItems: 'center',
+            boxShadow: 'var(--button-shadow)',
+            background: 'var(--button-bg)',
+            border: 'var(--button-border)',
+            fontWeight: '600',
+            mozBoxPack: 'center',
+            justifyContent: 'center',
+            outline: 'currentcolor none 0',
+            textDecoration: 'none',
+            userSelect: 'none',
+            whiteSpace: 'nowrap',
+            cursor: 'pointer',
+            transition: 'all 0.1s ease',
+            ':hover': {
+              boxShadow: 'var(--button-shadow-hover)',
+              background: 'var(--button-bg-hover)',
+              textDecoration: 'var(--button-decoration-hover)',
+              color: 'var(--button-color-hover)',
+              border: 'var(--button-border-hover)',
             },
+            ':active': {
+              boxShadow: 'var(--button-shadow-active)',
+              transform: 'var(--button-transform-active)',
+              background: 'var(--button-bg-active)',
+              color: 'var(--button-color-active)',
+              border: 'var(--button-border-active)',
+            },
+            ':disabled': {
+              boxShadow: 'none',
+              cursor: 'not-allowed',
+              background: 'var(--button-bg-disabled)',
+              opacity: '0.9',
+              color: 'var(--button-color-disabled)',
+              border: 'var(--button-border-disabled)',
+              pointerEvents: 'none',
+            },
+            ':focus-visible': {
+              outline: '1px dashed var(--focus)',
+              outlineOffset: '3px',
+            },
+            '& svg': {
+              display: 'inline-block',
+              height: '1em',
+              width: 'auto',
+              verticalAlign: 'middle',
+              marginLeft: '0',
+            },
+            ...styleMap[look],
+            ...sizeMap[size],
+            ...(shadow ? shadowMap[look] : {}),
+          },
+        }}
+        aria-disabled={disabled ? true : undefined}
+        disabled={loading || disabled}
+        {...props}
+      >
+        <span
+          css={{
+            opacity: loading ? 0 : 1,
           }}
-          aria-disabled={disabled ? true : undefined}
-          disabled={loading || disabled}
-          {...props}
         >
-          <span
+          {children}
+        </span>
+        {loading ? (
+          <Loading
             css={{
-              opacity: loading ? 0 : 1,
+              position: 'absolute',
             }}
-          >
-            {children}
-          </span>
-          {loading ? (
-            <Loading
-              css={{
-                position: 'absolute',
-              }}
-            />
-          ) : null}
-        </Tag>
-      </Wrapper>
+          />
+        ) : null}
+      </Tag>
     );
   }
 );
