@@ -42,7 +42,6 @@ export const start = async (cwd: string) => {
   }
 
   const httpOptions: ListenOptions = {
-    host: '::', // the default for nodejs httpServer
     port: 3000,
   };
 
@@ -59,12 +58,21 @@ export const start = async (cwd: string) => {
     httpOptions.port = parseInt(process.env.PORT || '');
   }
 
+  // preference env.HOST if supplied
+  if ('HOST' in process.env) {
+    httpOptions.host = process.env.HOST || '';
+  }
+
   httpServer.listen(httpOptions, (err?: any) => {
     if (err) throw err;
 
-    const easyHost = httpOptions.host === '::' ? 'localhost' : httpOptions.host;
+    const easyHost = [undefined, '', '::', '0.0.0.0'].includes(httpOptions.host)
+      ? 'localhost'
+      : httpOptions.host;
     console.log(
-      `⭐️ Server listening on ${httpOptions.host}:${httpOptions.port} (http://${easyHost}:${httpOptions.port}/)`
+      `⭐️ Server listening on ${httpOptions.host || ''}:${httpOptions.port} (http://${easyHost}:${
+        httpOptions.port
+      }/)`
     );
   });
 };
