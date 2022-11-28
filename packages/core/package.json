@@ -287,7 +287,7 @@
     "inflection": "^1.13.1",
     "intersection-observer": "^0.12.0",
     "meow": "^9.0.0",
-    "micro": "^9.3.4",
+    "micro": "^10.0.0",
     "next": "^13.0.3",
     "p-limit": "^2.3.0",
     "pluralize": "^8.0.0",
