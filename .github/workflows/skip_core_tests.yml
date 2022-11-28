@@ -122,6 +122,7 @@ jobs:
             'list-view-crud.test.ts',
             'navigation.test.ts',
             'live-reloading.test.ts',
+            'relations.test.ts',
           ]
       fail-fast: false
     steps:
