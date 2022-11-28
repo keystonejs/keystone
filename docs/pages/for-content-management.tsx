@@ -106,8 +106,7 @@ export default function ForOrganisations() {
             <Image
               src={contentManagement1}
               alt="Dropdown selector from Keystone’s Admin UI showing different user roles: Administrator, Editor, Content Manager, Author"
-              width={2034}
-              height={1300}
+              width={500}
             />
           </div>
         </SideBySideSection>
@@ -173,8 +172,7 @@ export default function ForOrganisations() {
             <Image
               src={contentManagement2}
               alt="Overlay of Admin UI field panes showing fields for a Post content type. Promotional text overlays show: custom and virtual fields; flexible relationships; powerful sort & filtering."
-              width={1254}
-              height={1107}
+              width={500}
             />
           </div>
         </SideBySideSection>
@@ -215,8 +213,7 @@ export default function ForOrganisations() {
               <Image
                 src={dsGeneration}
                 alt="Keystone Document field containing Rich Text content including Twitter embed components, and syntax highlighted code block"
-                width={1854}
-                height={1535}
+                width={500}
               />
             </div>
           </div>
@@ -335,8 +332,7 @@ export default function ForOrganisations() {
             <Image
               src={contentManagement3}
               alt="2 Admin UI panes showing creation of relationships in place. Author window opens up a Create Post window where Post categories can be selected."
-              width={2007}
-              height={1727}
+              width={500}
             />
           </div>
         </SideBySideSection>
@@ -391,8 +387,7 @@ export default function ForOrganisations() {
             <Image
               src={contentManagement4}
               alt="Admin UI browser window showing a tabular a list of Articles with filtration applied to the list. Filter by published status."
-              width={1827}
-              height={1516}
+              width={400}
             />
           </div>
         </SideBySideSection>

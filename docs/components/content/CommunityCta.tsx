@@ -40,12 +40,7 @@ export function CommunityCta(props: HTMLAttributes<HTMLElement>) {
           },
         }}
       >
-        <Image
-          src={communityMap}
-          alt="A map of our awesome contributors"
-          width={1518}
-          height={928}
-        />
+        <Image src={communityMap} alt="A map of our awesome contributors" width={500} />
       </div>
       <div
         css={{

@@ -136,7 +136,11 @@ export const Button = forwardRefWithAs<'button', ButtonProps>(
 
     if (Tag === 'a' && href) {
       disabled = undefined;
-      Wrapper = ({ children }) => <Link href={href}>{children}</Link>;
+      Wrapper = ({ children }) => (
+        <Link legacyBehavior href={href}>
+          {children}
+        </Link>
+      );
     }
 
     if (look === 'text') {
