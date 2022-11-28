@@ -487,8 +487,7 @@ export const lists = {
               <Image
                 src={contentEditorMockui}
                 alt="Overlay of Admin UI field panes showing fields for a Post content type. Promotional text overlays show: custom & virtual fields; flexible relationships; powerful sort & filtering."
-                width={1130}
-                height={997}
+                width={500}
               />
             </div>
           </li>
@@ -623,8 +622,7 @@ export const lists = {
               <Image
                 src={deployTargets}
                 alt="Deploy targets for Keystone are any and all services you've heard of like Digital Ocean, Render, Heroku, Vercel, Google Cloud, AWS, Azure etc"
-                width={1896}
-                height={1339}
+                width={500}
               />
             </div>
           </li>
@@ -856,8 +854,7 @@ export const lists = {
             <Image
               src={docEditorHome}
               alt="Browser window of the Keystone Document Field showing demo text explaining how the field can be used."
-              width={3183}
-              height={731}
+              width={1000}
             />
           </div>
         </Section>

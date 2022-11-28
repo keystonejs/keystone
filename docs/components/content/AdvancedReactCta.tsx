@@ -42,8 +42,7 @@ export function AdvancedReactCta(props: HTMLAttributes<HTMLElement>) {
         <Image
           src={wesBosCta}
           alt="Wes Bos Avatar"
-          width={675}
-          height={900}
+          width={275}
           css={{
             objectFit: 'cover',
             borderRadius: '1rem',

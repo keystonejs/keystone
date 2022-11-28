@@ -196,8 +196,7 @@ export default function ForDevelopers() {
             <Image
               src={editorStorytelling}
               alt="Overlay of Admin UI field panes showing fields for a Post content type. Promotional text overlays show: extensive field options; flexible relationships; powerful sort & filtering."
-              width={1975}
-              height={1572}
+              width={500}
             />
           </div>
         </SideBySideSection>
@@ -255,8 +254,7 @@ export default function ForDevelopers() {
             <Image
               src={richTextEditor}
               alt="Keystone Document field containing Rich Text content including Twitter embed component, and syntax highlighted code block."
-              width={1901}
-              height={1629}
+              width={500}
             />
           </div>
         </SideBySideSection>
