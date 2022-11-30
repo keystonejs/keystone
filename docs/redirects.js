@@ -232,7 +232,12 @@ const CURRENT = [
     destination: '/docs/graphql/overview',
     permanent: false,
   },
-
+  /* Telemetry */
+  {
+    source: '/telemetry',
+    destination: '/docs/telemetry',
+    permanent: true,
+  },
   /* Move updates to blog posts */
   {
     source: '/updates/general-availability',

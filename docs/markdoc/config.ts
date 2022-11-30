@@ -215,7 +215,8 @@ function validateLink(node: Node, config: Config): ValidationError[] {
   if (
     /https?:\/\//.test(link) ||
     // local # is validated in the document validation
-    link.startsWith('#')
+    link.startsWith('#') ||
+    link.startsWith('mailto:')
   ) {
     return [];
   }
