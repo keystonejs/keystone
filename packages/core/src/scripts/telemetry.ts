@@ -46,7 +46,7 @@ ${JSON.stringify(telemetryData, null, 2)}
   For more details visit: https://keystonejs.com/telemetry`;
 
   const setupText = `
-KeystoneJS telemetry: ${chalk.red('Not Inilialized')}
+KeystoneJS telemetry: ${chalk.red('Not Initialized')}
 
   Please run ${chalk.green(
     'keystone telemetry setup'
@@ -76,11 +76,11 @@ KeystoneJS telemetry: ${chalk.red('Not Inilialized')}
       config.delete('telemetry');
       console.log(setupText);
       break;
-    case 'disable' || 'disabled':
+    case 'disable':
       config.set('telemetry', false);
       console.log(disabledText);
       break;
-    case 'enable' || 'enabled':
+    case 'enable':
       await enableGlobalTelemetry(config, cwd);
       break;
     case '--help':

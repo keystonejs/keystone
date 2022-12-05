@@ -54,8 +54,7 @@ export function runTelemetry(
   dbProviderName: DatabaseProvider
 ) {
   try {
-    const userConfig = getTelemetryConfig().userConfig;
-    const telemetry = getTelemetryConfig().telemetry;
+    const { userConfig, telemetry } = getTelemetryConfig();
     if (
       ci.isCI || // Don't run in CI
       process.env.NODE_ENV === 'production' || // Don't run in production

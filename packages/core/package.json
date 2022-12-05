@@ -292,8 +292,6 @@
     "micro": "^9.3.4",
     "next": "^13.0.3",
     "node-fetch": "^2.6.7",
-    "normalize-path": "^3.0.0",
-    "object-hash": "^3.0.0",
     "p-limit": "^2.3.0",
     "pluralize": "^8.0.0",
     "prisma": "4.3.1",

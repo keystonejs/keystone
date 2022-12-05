@@ -35,7 +35,6 @@ export type Project = {
 
   // filtered to packages with the prefixes
   // - `@keystone-6`
-  // - `@k6-contrib`
   // - `@opensaas`
   // - ...
   versions: Partial<Record<PackageName, string>>;
@@ -45,16 +44,4 @@ export type Project = {
   fields: {
     [key: string]: number;
   };
-};
-
-// [also] when running `keystone dev`
-export type ShareDeviceEvent = {
-  reportedAt: Date & // Date.now(), added by server
-    Device;
-};
-
-// [also] when running `keystone dev`
-export type ShareProjectEvent = {
-  reportedAt: Date & // Date.now(), added by server
-    Project;
 };
