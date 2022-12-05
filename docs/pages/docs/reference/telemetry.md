@@ -23,7 +23,7 @@ Keystone only collects telemetry that we reasonably require for the continued de
 Telemetry helps us learn about how Keystone is being used by developers and projects that may not be actively participating on our GitHub, Twitter and Slack.
 The questions we want to currently answer using telemetry are the following:
 
-- How many active developers are using Keystone, compared to how many are active in the community
+- How many active developers are using Keystone, compared to how many are active in the community,
 - How complex are projects that use Keystone,
 - What field types and `@keystone-6` or community packages are being used by developers, and
 - What operating systems and node versions are being used by the community?
