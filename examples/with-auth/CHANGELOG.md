@@ -1,5 +1,13 @@
 # @keystone-6/example-with-auth
 
+## 0.0.7
+
+### Patch Changes
+
+- Updated dependencies [[`9dec7455b`](https://github.com/keystonejs/keystone/commit/9dec7455b1a8f557f8d5744731a0a40b1d837295), [`628f58872`](https://github.com/keystonejs/keystone/commit/628f58872ab8b71249307639922e5a4796fc42d2), [`94e12b408`](https://github.com/keystonejs/keystone/commit/94e12b40872cd5814fe6d980b68070906f0a9307), [`94e12b408`](https://github.com/keystonejs/keystone/commit/94e12b40872cd5814fe6d980b68070906f0a9307), [`9dec7455b`](https://github.com/keystonejs/keystone/commit/9dec7455b1a8f557f8d5744731a0a40b1d837295), [`39cc3cc53`](https://github.com/keystonejs/keystone/commit/39cc3cc53849418ace354f86792e87956c263afa), [`5989672e3`](https://github.com/keystonejs/keystone/commit/5989672e3b7d1fc844a4f0a596f8e449abef1351)]:
+  - @keystone-6/core@4.0.0
+  - @keystone-6/auth@6.0.0
+
 ## 0.0.6
 
 ### Patch Changes

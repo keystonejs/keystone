@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/modals",
-  "version": "6.0.2",
+  "version": "6.0.3",
   "license": "MIT",
   "main": "dist/keystone-ui-modals.cjs.js",
   "module": "dist/keystone-ui-modals.esm.js",

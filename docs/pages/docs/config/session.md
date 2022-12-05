@@ -5,19 +5,11 @@ description: "Reference docs for the session property of Keystone’s system con
 
 The `session` property of the [system configuration](./config) object allows you to configure session management of your Keystone system.
 It has a TypeScript type of `SessionStrategy<any>`.
-{% if $nextRelease %}
 In general you will use `SessionStrategy` objects from the `@keystone-6/auth/session` package, rather than writing this yourself.
-{% else /%}
-In general you will use `SessionStrategy` objects from the `@keystone-6/core/session` package, rather than writing this yourself.
-{% /if %}
 
 ```typescript
 import { config } from '@keystone-6/core';
-{% if $nextRelease %}
 import { statelessSessions } from '@keystone-6/auth/session';
-{% else /%}
-import { statelessSessions } from '@keystone-6/core/session';
-{% /if %}
 
 export default config({
   session: statelessSessions({
@@ -45,11 +37,7 @@ Both `statelessSessions()` and `storedSessions()` accept a common set of argumen
 
 ```typescript
 import { config } from '@keystone-6/core';
-{% if $nextRelease %}
 import { statelessSessions, storedSessions } from '@keystone-6/auth/session';
-{% else /%}
-import { statelessSessions, storedSessions } from '@keystone-6/core/session';
-{% /if %}
 
 export default config({
   // Stateless
@@ -107,7 +95,6 @@ Interface:
 
 If you configure your Keystone session with session management then the [`KeystoneContext`](../context/overview) type will include the following session related properties.
 
-{% if $nextRelease %}
 - `session`: An object representing the session data. The value will depend on the value passed into `context.sessionStrategy.start()`.
 - `sessionStrategy`: an object that, when using `statelessSessions` or `storedSessions` from `@keystone-6/core/session` includes the following functions:
   - `get({context})`: a function that returns a `session` object based on `context` - this needs to be a `context` with a valid `req` (using `context.withRequest`). This function is called by Keystone to get the value of `context.session`
@@ -116,14 +103,6 @@ If you configure your Keystone session with session management then the [`Keysto
 
 The `start` and `end` functions will be used by [authentication mutations](./auth) to start and end authenticated sessions.
 These mutations will set the value of `session` to include the values `{ listKey, itemId }`.
-{% else /%}
-- `session`: An object representing the session data. The value will depend on the value passed into `context.startSession()`.
-- `startSession`: A function `data => {...}` which will start a new session using the provided `data` value.
-- `endSession`: A function `() => {...}` which will end the current session.
-
-The `startSession` and `endSession` functions will be used by [authentication mutations](./auth) to start and end authenticated sessions.
-These mutations will set the value of `session` to include the values `{ listKey, itemId }`.
-{% /if %}
 
 ## Related resources
 

@@ -1,5 +1,11 @@
 # @keystone-ui/modals
 
+## 6.0.3
+
+### Patch Changes
+
+- [#8123](https://github.com/keystonejs/keystone/pull/8123) [`cf18ee7c5`](https://github.com/keystonejs/keystone/commit/cf18ee7c5e173fd9cb05e918293dcc4e71a93d96) Thanks [@januzis](https://github.com/januzis)! - Fixes inline related item form submitting the parent form
+
 ## 6.0.2
 
 ### Patch Changes

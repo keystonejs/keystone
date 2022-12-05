@@ -1,5 +1,16 @@
 # @keystone-6/website
 
+## 0.1.0
+
+### Minor Changes
+
+- [#8061](https://github.com/keystonejs/keystone/pull/8061) [`5989672e3`](https://github.com/keystonejs/keystone/commit/5989672e3b7d1fc844a4f0a596f8e449abef1351) Thanks [@AliceRossa](https://github.com/AliceRossa)! - Next.js 13 Upgrade
+
+### Patch Changes
+
+- Updated dependencies [[`57e9527c3`](https://github.com/keystonejs/keystone/commit/57e9527c39771ce8bbd0bed960fddfe6b3ee01a2), [`57e9527c3`](https://github.com/keystonejs/keystone/commit/57e9527c39771ce8bbd0bed960fddfe6b3ee01a2), [`39cc3cc53`](https://github.com/keystonejs/keystone/commit/39cc3cc53849418ace354f86792e87956c263afa)]:
+  - @keystone-6/fields-document@6.0.0
+
 ## 0.0.6
 
 ### Patch Changes
