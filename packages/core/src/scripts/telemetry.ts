@@ -48,11 +48,7 @@ ${JSON.stringify(telemetryData, null, 2)}
   const setupText = `
 KeystoneJS telemetry: ${chalk.red('Not Initialized')}
 
-  Please run ${chalk.green(
-    'keystone telemetry setup'
-  )} to customize the telemetry configuration, or ${chalk.green(
-    'keystone dev'
-  )} to use the default configuration.
+  Please run ${chalk.green('keystone dev')} to use the default configuration.
 
 
   Telemetry is completely anonymous and helps us make Keystone better.
