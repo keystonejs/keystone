@@ -128,18 +128,10 @@ function sendEvent(eventType: 'project' | 'device', eventData: Project | Device)
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(eventData),
-    })
-      .then(
-        () => {},
-        () => {}
-      )
-      // Catch silently
-      .catch(err => {
-        // Fail silently unless KEYSTONE_TELEMETRY_DEBUG is set to '1'
-        if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {
-          console.log(err);
-        }
-      });
+    }).then(
+      () => {},
+      () => {}
+    );
   } catch (err) {
     // Fail silently unless KEYSTONE_TELEMETRY_DEBUG is set to '1'
     if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {
