@@ -1,9 +1,8 @@
 ---
 title: "Privacy Policy (Telemetry)"
-description: "Keystone Collects anonymous telemetry events when running `keystone dev` - Learn what is sent, what the information is used for, and how to opt-out"
+description: "Keystone collects anonymous telemetry events when running `keystone dev` - Learn what is sent, what the information is used for, and how to opt-out"
 ---
 
-## Summary
 
 Keystone 6 is software developed and maintained by Thinkmill Labs Pty Ltd and the open source community, and this privacy policy is on behalf of Thinkmill Labs and in relation to Keystone, and to the extent applicable, similar software under the Keystone GitHub organisation.
 
@@ -21,13 +20,13 @@ You can learn more about them by visiting the following:
 
 Keystone only collects telemetry that we reasonably require for the continued development of the software, and, to the extent applicable, we do so in accordance with the Australian Privacy Principles.
 
-Telemetry helps us learn about how Keystone is being used by developers and projects that may not be actively participating on our GitHub, Twitter and slack.
+Telemetry helps us learn about how Keystone is being used by developers and projects that may not be actively participating on our GitHub, Twitter and Slack.
 The questions we want to currently answer using telemetry are the following:
 
 - How many active developers are using Keystone, compared to how many are active in the community
 - How complex are projects that use Keystone,
 - What field types and `@keystone-6` or community packages are being used by developers, and
-- What operating systems and node versions are being used by the community
+- What operating systems and node versions are being used by the community?
 
 This information will help Thinkmill Labs prioritise future features or maintenance efforts for ongoing development.
 
