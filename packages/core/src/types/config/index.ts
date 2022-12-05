@@ -95,6 +95,8 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
    * as the `storage` option for that field.
    */
   storage?: Record<string, StorageConfig>;
+  /** Telemetry boolean to disable telemetry for this project */
+  telemetry?: boolean;
   /** Experimental config options */
   experimental?: {
     /** Creates a file at `node_modules/.keystone/next/graphql-api` with `default` and `config` exports that can be re-exported in a Next API route */

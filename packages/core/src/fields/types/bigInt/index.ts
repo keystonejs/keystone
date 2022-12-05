@@ -172,6 +172,7 @@ export const bigInt =
       output: graphql.field({
         type: config.graphql?.read?.isNonNull ? graphql.nonNull(graphql.BigInt) : graphql.BigInt,
       }),
+      __ksTelemetryFieldTypeName: '@keystone-6/bigInt',
       views: '@keystone-6/core/fields/types/bigInt/views',
       getAdminMeta() {
         return {

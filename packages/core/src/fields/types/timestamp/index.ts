@@ -135,6 +135,7 @@ export const timestamp =
           ? graphql.nonNull(graphql.DateTime)
           : graphql.DateTime,
       }),
+      __ksTelemetryFieldTypeName: '@keystone-6/timestamp',
       views: '@keystone-6/core/fields/types/timestamp/views',
       getAdminMeta(): TimestampFieldMeta {
         return {

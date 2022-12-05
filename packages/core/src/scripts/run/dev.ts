@@ -17,6 +17,7 @@ import {
   createAdminUIMiddlewareWithNextApp,
   getNextApp,
 } from '../../lib/server/createAdminUIMiddleware';
+import { runTelemetry } from '../../lib/telemetry';
 import {
   generateCommittedArtifacts,
   generateNodeModulesArtifacts,
@@ -67,7 +68,6 @@ export function setSkipWatching() {
 
 export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
   console.log('✨ Starting Keystone');
-
   const app = express();
   let expressServer: express.Express | null = null;
   const httpServer = createServer(app);
@@ -136,8 +136,10 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
     }
     hasAddedAdminUIMiddleware = true;
     initKeystonePromiseResolve();
+
+    const initialisedLists = initialiseLists(config);
     const originalPrismaSchema = printPrismaSchema(
-      initialiseLists(config),
+      initialisedLists,
       config.db.provider,
       config.db.prismaPreviewFeatures,
       config.db.additionalPrismaDatasourceProperties
@@ -145,13 +147,16 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
     let lastPrintedGraphQLSchema = printSchema(graphQLSchema);
     let lastApolloServer = apolloServer;
 
+    if (!config.telemetry) {
+      runTelemetry(cwd, initialisedLists, config.db.provider);
+    }
+
     for await (const buildResult of builds) {
       if (buildResult.error) {
         // esbuild will have printed the error already
         continue;
       }
       console.log('compiled successfully');
-
       try {
         const resolved = require.resolve(getBuiltConfigPath(cwd));
         delete require.cache[resolved];

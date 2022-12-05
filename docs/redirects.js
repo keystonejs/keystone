@@ -232,7 +232,12 @@ const CURRENT = [
     destination: '/docs/graphql/overview',
     permanent: false,
   },
-
+  /* Telemetry - used to shorten the URL for CLI message */
+  {
+    source: '/telemetry',
+    destination: '/docs/reference/telemetry',
+    permanent: true,
+  },
   /* Move updates to blog posts */
   {
     source: '/updates/general-availability',

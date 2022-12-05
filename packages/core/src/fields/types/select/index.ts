@@ -82,6 +82,7 @@ export const select =
     const commonConfig = (
       options: readonly { value: string | number; label: string }[]
     ): CommonFieldConfig<ListTypeInfo> & {
+      __ksTelemetryFieldTypeName: string;
       views: string;
       getAdminMeta: () => import('./views').AdminSelectFieldMeta;
     } => {
@@ -110,6 +111,7 @@ export const select =
             await config.hooks?.validateInput?.(args);
           },
         },
+        __ksTelemetryFieldTypeName: '@keystone-6/select',
         views: '@keystone-6/core/fields/types/select/views',
         getAdminMeta: () => ({
           options,

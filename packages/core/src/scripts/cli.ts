@@ -4,9 +4,10 @@ import { start } from './run/start';
 import { build } from './build/build';
 import { prisma } from './prisma';
 import { postinstall } from './postinstall';
+import { telemetry } from './telemetry';
 import { ExitError } from './utils';
 
-const commands = { dev, start, build, prisma, postinstall };
+const commands = { dev, start, build, prisma, postinstall, telemetry };
 
 export async function cli(cwd: string, argv: string[]) {
   const { input, help, flags } = meow(
@@ -19,6 +20,7 @@ export async function cli(cwd: string, argv: string[]) {
         build         build the project (must be done before using start)
         start         start the project in production mode
         prisma        run Prisma CLI commands safely
+        telemetry     sets telemetry preference (enable/disable/status)
     `,
     {
       flags: {
@@ -41,6 +43,8 @@ export async function cli(cwd: string, argv: string[]) {
     return postinstall(cwd, flags.fix);
   } else if (command === 'dev') {
     return dev(cwd, flags.resetDb);
+  } else if (command === 'telemetry') {
+    return telemetry(cwd, argv[1]);
   } else {
     return commands[command](cwd);
   }

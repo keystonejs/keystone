@@ -287,6 +287,9 @@ export function DocsNavigation() {
           Query Filters <Badge look="success">Updated</Badge>
         </NavItem>
       </NavSection>
+      <NavSection title="Reference">
+        <NavItem href="/docs/reference/telemetry">Telemetry</NavItem>
+      </NavSection>
     </nav>
     // </NavContextProvider>
   );

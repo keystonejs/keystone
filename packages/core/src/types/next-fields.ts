@@ -389,6 +389,7 @@ export type FieldTypeWithoutDBField<
   extraOutputFields?: Record<string, FieldTypeOutputField<TDBField>>;
   getAdminMeta?: () => JSONValue;
   unreferencedConcreteInterfaceImplementations?: readonly graphql.ObjectType<any>[];
+  __ksTelemetryFieldTypeName?: string;
 } & CommonFieldConfig<ListTypeInfo>;
 
 type AnyInputObj = graphql.InputObjectType<Record<string, graphql.Arg<graphql.InputType>>>;

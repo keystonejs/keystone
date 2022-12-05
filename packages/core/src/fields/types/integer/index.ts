@@ -184,6 +184,7 @@ export const integer =
       output: graphql.field({
         type: config.graphql?.read?.isNonNull ? graphql.nonNull(graphql.Int) : graphql.Int,
       }),
+      __ksTelemetryFieldTypeName: '@keystone-6/integer',
       views: '@keystone-6/core/fields/types/integer/views',
       getAdminMeta() {
         return {

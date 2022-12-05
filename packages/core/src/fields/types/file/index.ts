@@ -114,6 +114,7 @@ export const file =
           return { filename, filesize, storage: config.storage };
         },
       }),
+      __ksTelemetryFieldTypeName: '@keystone-6/file',
       views: '@keystone-6/core/fields/types/file/views',
     });
   };

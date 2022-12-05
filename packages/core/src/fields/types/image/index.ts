@@ -151,6 +151,7 @@ export const image =
           };
         },
       }),
+      __ksTelemetryFieldTypeName: '@keystone-6/image',
       views: '@keystone-6/core/fields/types/image/views',
     });
   };

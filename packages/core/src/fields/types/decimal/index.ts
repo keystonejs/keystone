@@ -182,6 +182,7 @@ export const decimal =
           return val;
         },
       }),
+      __ksTelemetryFieldTypeName: '@keystone-6/decimal',
       views: '@keystone-6/core/fields/types/decimal/views',
       getAdminMeta: (): import('./views').DecimalFieldMeta => ({
         defaultValue: defaultValue ?? null,

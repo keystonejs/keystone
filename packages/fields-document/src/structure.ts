@@ -127,6 +127,7 @@ export const structure =
             return source;
           },
         }),
+        __ksTelemetryFieldTypeName: '@keystone-6/structure',
         views: '@keystone-6/fields-document/structure-views',
         getAdminMeta: () => ({}),
         unreferencedConcreteInterfaceImplementations,
