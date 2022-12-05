@@ -95,7 +95,6 @@ export const float =
 
     return fieldType({
       kind: 'scalar',
-      __ksTelemetryFieldTypeName: '@keystone-6/float',
       mode,
       scalar: 'Float',
       index: isIndexed === true ? 'index' : isIndexed || undefined,
@@ -160,6 +159,7 @@ export const float =
       output: graphql.field({
         type: config.graphql?.read?.isNonNull ? graphql.nonNull(graphql.Float) : graphql.Float,
       }),
+      __ksTelemetryFieldTypeName: '@keystone-6/float',
       views: '@keystone-6/core/fields/types/float/views',
       getAdminMeta() {
         return {

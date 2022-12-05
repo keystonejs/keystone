@@ -114,7 +114,6 @@ export const integer =
 
     return fieldType({
       kind: 'scalar',
-      __ksTelemetryFieldTypeName: '@keystone-6/integer',
       mode,
       scalar: 'Int',
       // This will resolve to 'index' if the boolean is true, otherwise other values - false will be converted to undefined
@@ -185,6 +184,7 @@ export const integer =
       output: graphql.field({
         type: config.graphql?.read?.isNonNull ? graphql.nonNull(graphql.Int) : graphql.Int,
       }),
+      __ksTelemetryFieldTypeName: '@keystone-6/integer',
       views: '@keystone-6/core/fields/types/integer/views',
       getAdminMeta() {
         return {

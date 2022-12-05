@@ -35,7 +35,6 @@ export const checkbox =
 
     return fieldType({
       kind: 'scalar',
-      __ksTelemetryFieldTypeName: '@keystone-6/checkbox',
       mode: 'required',
       scalar: 'Boolean',
       default: { kind: 'literal', value: defaultValue },
@@ -72,6 +71,7 @@ export const checkbox =
       output: graphql.field({
         type: config.graphql?.read?.isNonNull ? graphql.nonNull(graphql.Boolean) : graphql.Boolean,
       }),
+      __ksTelemetryFieldTypeName: '@keystone-6/checkbox',
       views: '@keystone-6/core/fields/types/checkbox/views',
       getAdminMeta: () => ({ defaultValue }),
     });

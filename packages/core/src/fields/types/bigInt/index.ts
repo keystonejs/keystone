@@ -100,7 +100,6 @@ export const bigInt =
 
     return fieldType({
       kind: 'scalar',
-      __ksTelemetryFieldTypeName: '@keystone-6/bigInt',
       mode,
       scalar: 'BigInt',
       // This will resolve to 'index' if the boolean is true, otherwise other values - false will be converted to undefined
@@ -173,6 +172,7 @@ export const bigInt =
       output: graphql.field({
         type: config.graphql?.read?.isNonNull ? graphql.nonNull(graphql.BigInt) : graphql.BigInt,
       }),
+      __ksTelemetryFieldTypeName: '@keystone-6/bigInt',
       views: '@keystone-6/core/fields/types/bigInt/views',
       getAdminMeta() {
         return {

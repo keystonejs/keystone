@@ -66,7 +66,6 @@ export const file =
 
     return fieldType({
       kind: 'multi',
-      __ksTelemetryFieldTypeName: '@keystone-6/file',
       fields: {
         filesize: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
         filename: { kind: 'scalar', scalar: 'String', mode: 'optional' },
@@ -115,6 +114,7 @@ export const file =
           return { filename, filesize, storage: config.storage };
         },
       }),
+      __ksTelemetryFieldTypeName: '@keystone-6/file',
       views: '@keystone-6/core/fields/types/file/views',
     });
   };

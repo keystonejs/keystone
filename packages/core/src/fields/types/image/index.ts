@@ -81,7 +81,6 @@ export const image =
     }
 
     return fieldType({
-      __ksTelemetryFieldTypeName: '@keystone-6/image',
       kind: 'multi',
       fields: {
         filesize: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
@@ -152,6 +151,7 @@ export const image =
           };
         },
       }),
+      __ksTelemetryFieldTypeName: '@keystone-6/image',
       views: '@keystone-6/core/fields/types/image/views',
     });
   };

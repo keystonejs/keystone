@@ -73,7 +73,6 @@ export const calendarDay =
 
     return fieldType({
       kind: 'scalar',
-      __ksTelemetryFieldTypeName: '@keystone-6/calendarDay',
       mode,
       scalar: usesNativeDateType ? 'DateTime' : 'String',
       index: isIndexed === true ? 'index' : isIndexed || undefined,
@@ -143,6 +142,7 @@ export const calendarDay =
           return value;
         },
       }),
+      __ksTelemetryFieldTypeName: '@keystone-6/calendarDay',
       views: '@keystone-6/core/fields/types/calendarDay/views',
       getAdminMeta(): CalendarDayFieldMeta {
         return {

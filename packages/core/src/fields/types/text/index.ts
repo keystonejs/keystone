@@ -109,7 +109,6 @@ export const text =
     return fieldType({
       kind: 'scalar',
       mode,
-      __ksTelemetryFieldTypeName: '@keystone-6/text',
       scalar: 'String',
       default: defaultValue === undefined ? undefined : { kind: 'literal', value: defaultValue },
       index: isIndexed === true ? 'index' : isIndexed || undefined,
@@ -178,6 +177,7 @@ export const text =
       output: graphql.field({
         type: config.graphql?.read?.isNonNull ? graphql.nonNull(graphql.String) : graphql.String,
       }),
+      __ksTelemetryFieldTypeName: '@keystone-6/text',
       views: '@keystone-6/core/fields/types/text/views',
       getAdminMeta(): TextFieldMeta {
         return {

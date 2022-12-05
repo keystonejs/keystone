@@ -46,9 +46,10 @@ const defaultProjectFetchParam = {
   ...fetchOptions,
   body: JSON.stringify(projectData),
 };
+
 const lists: Record<string, InitialisedList> = {
   Thing: {
-    resolvedDbFields: {
+    fields: {
       // @ts-ignore
       id: {
         __ksTelemetryFieldTypeName: 'id',
@@ -64,7 +65,7 @@ const lists: Record<string, InitialisedList> = {
     },
   },
   Stuff: {
-    resolvedDbFields: {
+    fields: {
       // @ts-ignore
       id: {
         __ksTelemetryFieldTypeName: 'id',

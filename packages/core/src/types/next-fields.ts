@@ -117,7 +117,6 @@ export type ScalarDBField<
   index?: 'unique' | 'index';
   map?: string;
   updatedAt?: Scalar extends 'DateTime' ? boolean : undefined;
-  __ksTelemetryFieldTypeName?: string;
 };
 
 export const orderDirectionEnum = graphql.enum({
@@ -137,7 +136,6 @@ export type RelationDBField<Mode extends 'many' | 'one'> = {
   mode: Mode;
   foreignKey?: { one: true | { map: string }; many: undefined }[Mode];
   relationName?: { one: undefined; many: string }[Mode];
-  __ksTelemetryFieldTypeName?: string;
 };
 
 export type EnumDBField<Value extends string, Mode extends 'required' | 'many' | 'optional'> = {
@@ -148,10 +146,9 @@ export type EnumDBField<Value extends string, Mode extends 'required' | 'many' |
   default?: { kind: 'literal'; value: Value };
   index?: 'unique' | 'index';
   map?: string;
-  __ksTelemetryFieldTypeName?: string;
 };
 
-export type NoDBField = { kind: 'none'; __ksTelemetryFieldTypeName?: string };
+export type NoDBField = { kind: 'none' };
 
 export type ScalarishDBField =
   | ScalarDBField<keyof ScalarPrismaTypes, 'required' | 'many' | 'optional'>
@@ -162,7 +159,6 @@ export type RealDBField = ScalarishDBField | RelationDBField<'many' | 'one'>;
 export type MultiDBField<Fields extends Record<string, ScalarishDBField>> = {
   kind: 'multi';
   fields: Fields;
-  __ksTelemetryFieldTypeName?: string;
 };
 
 export type DBField = RealDBField | NoDBField | MultiDBField<Record<string, ScalarishDBField>>;
@@ -393,6 +389,7 @@ export type FieldTypeWithoutDBField<
   extraOutputFields?: Record<string, FieldTypeOutputField<TDBField>>;
   getAdminMeta?: () => JSONValue;
   unreferencedConcreteInterfaceImplementations?: readonly graphql.ObjectType<any>[];
+  __ksTelemetryFieldTypeName?: string;
 } & CommonFieldConfig<ListTypeInfo>;
 
 type AnyInputObj = graphql.InputObjectType<Record<string, graphql.Arg<graphql.InputType>>>;

@@ -97,26 +97,15 @@ export function runTelemetry(
   }
 }
 
-const fieldCount = (lists?: Record<string, InitialisedList>): Project['fields'] => {
-  if (!lists) {
-    return { unknown: 0 };
-  }
+const fieldCount = (lists: Record<string, InitialisedList>): Project['fields'] => {
   const fields: Project['fields'] = { unknown: 0 };
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  for (const [_listKey, { resolvedDbFields }] of Object.entries(lists)) {
-    for (const [fieldPath, field] of Object.entries(resolvedDbFields)) {
+  for (const list of Object.values(lists)) {
+    for (const [fieldPath, field] of Object.entries(list.fields)) {
       const fieldType = field.__ksTelemetryFieldTypeName;
 
       if (!fieldType) {
         // skip id fields
         if (fieldPath.endsWith('id')) continue;
-
-        //skip from relationship fields
-        if (fieldPath.startsWith('from')) continue;
-        if (field.kind === 'relation') {
-          fields['@keystone-6/relationship'] = (fields['@keystone-6/relationship'] || 0) + 1;
-          continue;
-        }
         fields.unknown++;
         continue;
       }
@@ -193,7 +182,7 @@ function sendProjectTelemetryEvent(
     const projectInfo: Project = {
       previous: projectConfig.lastSentDate || null,
       fields: fieldCount(lists),
-      lists: !lists ? 0 : Object.keys(lists).length,
+      lists: Object.keys(lists).length,
       versions,
       database: dbProviderName,
     };

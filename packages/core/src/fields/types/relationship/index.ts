@@ -98,6 +98,7 @@ export const relationship =
 
     const commonConfig = {
       ...config,
+      __ksTelemetryFieldTypeName: '@keystone-6/relationship',
       views: '@keystone-6/core/fields/types/relationship/views',
       getAdminMeta: (): Parameters<typeof import('./views').controller>[0]['fieldMeta'] => {
         const adminMetaRoot = getAdminMetaForRelationshipField();
@@ -245,7 +246,6 @@ export const relationship =
         list: foreignListKey,
         field: foreignFieldKey,
         relationName: config.db?.relationName,
-        __ksTelemetryFieldTypeName: '@keystone-6/relationship',
       })({
         ...commonConfig,
         input: {
@@ -297,7 +297,6 @@ export const relationship =
     return fieldType({
       kind: 'relation',
       mode: 'one',
-      __ksTelemetryFieldTypeName: '@keystone-6/relationship',
       list: foreignListKey,
       field: foreignFieldKey,
       foreignKey: config.db?.foreignKey,

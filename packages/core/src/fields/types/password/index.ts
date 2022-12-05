@@ -113,7 +113,6 @@ export const password =
       scalar: 'String',
       mode: isNullable === false ? 'required' : 'optional',
       map: config.db?.map,
-      __ksTelemetryFieldTypeName: '@keystone-6/password',
     })({
       ...config,
       hooks: {
@@ -184,6 +183,7 @@ export const password =
           resolve: inputResolver,
         },
       },
+      __ksTelemetryFieldTypeName: '@keystone-6/password',
       views: '@keystone-6/core/fields/types/password/views',
       getAdminMeta: (): PasswordFieldMeta => ({
         isNullable,

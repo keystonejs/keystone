@@ -5,7 +5,6 @@ type BaseResolvedRelationDBField = {
   list: string;
   field: string;
   relationName: string;
-  __ksTelemetryFieldTypeName?: string;
 };
 
 export type ResolvedRelationDBField =
