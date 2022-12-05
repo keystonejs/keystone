@@ -235,7 +235,7 @@ const CURRENT = [
   /* Telemetry */
   {
     source: '/telemetry',
-    destination: '/docs/telemetry',
+    destination: '/docs/reference/telemetry',
     permanent: true,
   },
   /* Move updates to blog posts */
