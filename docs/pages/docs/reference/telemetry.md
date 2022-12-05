@@ -3,7 +3,7 @@ title: "Privacy Policy (Telemetry)"
 description: "Keystone Collects anonymous telemetry events when running `keystone dev` - Learn what is sent, what the information is used for, and how to opt-out"
 ---
 
-### Summary
+## Summary
 
 Keystone 6 is software developed and maintained by Thinkmill Labs Pty Ltd and the open source community, and this privacy policy is on behalf of Thinkmill Labs and in relation to Keystone, and to the extent applicable, similar software under the Keystone GitHub organisation.
 
@@ -17,7 +17,7 @@ You can learn more about them by visiting the following:
 
 ---
 
-### Why do we collect and hold telemetry?
+## Why do we collect and hold telemetry?
 
 Keystone only collects telemetry that we reasonably require for the continued development of the software, and, to the extent applicable, we do so in accordance with the Australian Privacy Principles.
 
@@ -33,7 +33,7 @@ This information will help Thinkmill Labs prioritise future features or maintena
 
 ---
 
-### When is telemetry collected?
+## When is telemetry collected?
 
 Keystone only collects telemetry when you, the developer, explicitly start the software using `keystone dev`, or by using the `cli` function with an `argv` value of `dev`, as exposed by our `@keystone-6/core/scripts/cli` export.
 
@@ -48,7 +48,7 @@ In any of these scenarios, telemetry will be disabled and prevented from sending
 
 ---
 
-### What information is collected?
+## What information is collected?
 
 {% hint kind="warn" %}
 ⚠️ The exact structure and contents of the telemetry information collected may be subject to change when the software is updated.
@@ -117,7 +117,7 @@ A project telemetry report is formatted as JSON and currently looks like:
 
 ---
 
-### Will we share this information?
+## Will we share this information?
 
 The telemetry information as collected will be used and analysed by Thinkmill Labs to answer the aforementioned questions. For these purposes, we might use 3rd party services.
 
@@ -129,14 +129,14 @@ Thinkmill Labs will make its best effort to remove any outliers, even in aggrega
 
 ---
 
-### How long will we keep this information?
+## How long will we keep this information?
 
 Thinkmill Labs will only keep this information until it can be reduced down to aggregate form to answer the aforementioned questions.
 For that purpose, **we currently only retain telemetry reports and their respective timestamps for 1 year**. After that period, singular telemetry reports are deleted and only the analysed, aggregate form of the respective data is retained.
 
 ---
 
-### How to opt-out?
+## How to opt-out?
 
 To opt-out of Keystone device and project telemetry for your user profile, in 1 command, you can use the following:
 
