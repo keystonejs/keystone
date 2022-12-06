@@ -54,14 +54,15 @@ export function runTelemetry(
   dbProviderName: DatabaseProvider
 ) {
   try {
-    const { userConfig, telemetry } = getTelemetryConfig();
     if (
       ci.isCI || // Don't run in CI
       process.env.NODE_ENV === 'production' || // Don't run in production
-      telemetry === false // Don't run if the user has opted out
+      process.env.KEYSTONE_TELEMETRY_DISABLED === '1' // Don't run if the user has disabled it
     ) {
       return;
     }
+    const { userConfig, telemetry } = getTelemetryConfig();
+    if (telemetry === false) return; // Don't run if the user has opted out
     if (telemetry === undefined) {
       const newTelemetry: Configuration['telemetry'] = {
         device: { informedAt: new Date().toISOString() },
