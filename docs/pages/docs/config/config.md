@@ -306,7 +306,7 @@ export default config({
   server: {
 extendExpressApp: (app, commonContext) => {
       app.get('/api/users', async (req, res) => {
-        const context = commonContext.withRequest(req, res);
+        const context = await commonContext.withRequest(req, res);
         const users = await context.query.User.findMany();
         res.json(users);
       });
