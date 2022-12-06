@@ -1,5 +1,11 @@
 # @keystone-6/core
 
+## 4.0.1
+
+### Patch Changes
+
+- [#8155](https://github.com/keystonejs/keystone/pull/8155) [`93c2d5dcf`](https://github.com/keystonejs/keystone/commit/93c2d5dcf814213202bb229e0ac2d351a78c241f) Thanks [@borisno2](https://github.com/borisno2)! - Resolve `config.telemetry` check issue
+
 ## 4.0.0
 
 ### Major Changes
