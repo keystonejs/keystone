@@ -1,5 +1,21 @@
 # @keystone-6/fields-document
 
+## 6.0.0
+
+### Minor Changes
+
+- [#7936](https://github.com/keystonejs/keystone/pull/7936) [`57e9527c3`](https://github.com/keystonejs/keystone/commit/57e9527c39771ce8bbd0bed960fddfe6b3ee01a2) Thanks [@emmatown](https://github.com/emmatown)! - Adds a new `integer` component field type
+
+- [#7936](https://github.com/keystonejs/keystone/pull/7936) [`57e9527c3`](https://github.com/keystonejs/keystone/commit/57e9527c39771ce8bbd0bed960fddfe6b3ee01a2) Thanks [@emmatown](https://github.com/emmatown)! - Adds a new `structure` field type, a composable JSON data structure with a powerful GraphQL API
+
+### Patch Changes
+
+- [#8118](https://github.com/keystonejs/keystone/pull/8118) [`39cc3cc53`](https://github.com/keystonejs/keystone/commit/39cc3cc53849418ace354f86792e87956c263afa) Thanks [@borisno2](https://github.com/borisno2)! - Adds Project and Device Telemetry events to the `keystone dev` script
+
+- Updated dependencies [[`cf18ee7c5`](https://github.com/keystonejs/keystone/commit/cf18ee7c5e173fd9cb05e918293dcc4e71a93d96), [`9dec7455b`](https://github.com/keystonejs/keystone/commit/9dec7455b1a8f557f8d5744731a0a40b1d837295), [`94e12b408`](https://github.com/keystonejs/keystone/commit/94e12b40872cd5814fe6d980b68070906f0a9307), [`94e12b408`](https://github.com/keystonejs/keystone/commit/94e12b40872cd5814fe6d980b68070906f0a9307), [`9dec7455b`](https://github.com/keystonejs/keystone/commit/9dec7455b1a8f557f8d5744731a0a40b1d837295), [`39cc3cc53`](https://github.com/keystonejs/keystone/commit/39cc3cc53849418ace354f86792e87956c263afa), [`5989672e3`](https://github.com/keystonejs/keystone/commit/5989672e3b7d1fc844a4f0a596f8e449abef1351)]:
+  - @keystone-ui/modals@6.0.3
+  - @keystone-6/core@4.0.0
+
 ## 5.0.2
 
 ### Patch Changes

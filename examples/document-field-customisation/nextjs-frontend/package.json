@@ -1,7 +1,7 @@
 {
   "name": "@keystone-6/example-document-field-customisation-nextjs-frontend",
   "description": "Frontend example to demonstrate DocumentRenderer customisation",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "repository": "https://github.com/keystonejs/keystone/tree/main/examples/document-field-customisation/nextjs-frontend",
   "scripts": {

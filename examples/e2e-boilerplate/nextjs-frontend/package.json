@@ -1,7 +1,7 @@
 {
   "name": "@keystone-6/example-e2e-boilerplate-nextjs-frontend",
   "description": "Frontend boilerplate to build e2e examples",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "repository": "https://github.com/keystonejs/keystone/tree/main/examples/e2e-boilerplate/nextjs-frontend",
   "scripts": {

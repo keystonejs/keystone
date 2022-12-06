@@ -1,5 +1,16 @@
 # @keystone-ui/website
 
+## 5.1.0
+
+### Minor Changes
+
+- [#8061](https://github.com/keystonejs/keystone/pull/8061) [`5989672e3`](https://github.com/keystonejs/keystone/commit/5989672e3b7d1fc844a4f0a596f8e449abef1351) Thanks [@AliceRossa](https://github.com/AliceRossa)! - Next.js 13 Upgrade
+
+### Patch Changes
+
+- Updated dependencies [[`cf18ee7c5`](https://github.com/keystonejs/keystone/commit/cf18ee7c5e173fd9cb05e918293dcc4e71a93d96)]:
+  - @keystone-ui/modals@6.0.3
+
 ## 5.0.1
 
 ### Patch Changes
