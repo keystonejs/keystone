@@ -147,7 +147,7 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
     let lastPrintedGraphQLSchema = printSchema(graphQLSchema);
     let lastApolloServer = apolloServer;
 
-    if (!config.telemetry) {
+    if (config.telemetry !== false) {
       runTelemetry(cwd, initialisedLists, config.db.provider);
     }
 
