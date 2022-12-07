@@ -3,6 +3,7 @@ import path from 'path';
 import fetch, { Response } from 'node-fetch';
 import { InitialisedList } from '../src/lib/core/types-for-lists';
 import { runTelemetry } from '../src/lib/telemetry';
+import { telemetry } from '../src/scripts/telemetry';
 
 var mockProjectRoot = path.resolve(__dirname, '..', '..', '..');
 var mockProjectDir = path.join(mockProjectRoot, './tests/test-projects/basic');
@@ -149,6 +150,7 @@ describe('Inital Telemetry tests', () => {
   afterEach(() => {
     // Reset env variables
     delete process.env.KEYSTONE_TELEMETRY_ENDPOINT;
+    delete process.env.KEYSTONE_TELEMETRY_DISABLED;
     delete process.env.NOW_BUILDER;
     // clear mocks (fetch specifically)
     jest.clearAllMocks();
@@ -192,6 +194,30 @@ describe('Inital Telemetry tests', () => {
     defaultFetchMock();
     // @ts-ignore
     process.env.NODE_ENV = 'production';
+
+    runTelemetry(mockProjectDir, lists, 'sqlite');
+    runTelemetry(mockProjectDir, lists, 'sqlite');
+    expect(mockFetch).toHaveBeenCalledTimes(0);
+    expect(mockTelemetryConfig?.device).toBeUndefined();
+    expect(mockTelemetryConfig?.projects).toBeUndefined();
+  });
+
+  test('Telemetry Does not send when the user has opted out using keystone telemetry disable', async () => {
+    defaultFetchMock();
+
+    telemetry(mockProjectDir, 'disable');
+    expect(mockTelemetryConfig).toBe(false);
+    runTelemetry(mockProjectDir, lists, 'sqlite');
+    runTelemetry(mockProjectDir, lists, 'sqlite');
+    expect(mockFetch).toHaveBeenCalledTimes(0);
+    expect(mockTelemetryConfig?.device).toBeUndefined();
+    expect(mockTelemetryConfig?.projects).toBeUndefined();
+  });
+
+  test('Telemetry Does not send when env KEYSTONE_TELEMETRY_DISABLED is set to 1', async () => {
+    defaultFetchMock();
+    // @ts-ignore
+    process.env.KEYSTONE_TELEMETRY_DISABLED = '1';
 
     runTelemetry(mockProjectDir, lists, 'sqlite');
     runTelemetry(mockProjectDir, lists, 'sqlite');
