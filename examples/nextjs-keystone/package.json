@@ -1,0 +1,33 @@
+{
+  "name": "@keystone-6/example-nextjs-keystone",
+  "version": "0.0.1",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "keystone:dev": "keystone dev",
+    "keystone:build": "keystone build",
+    "keystone:start": "keystone start",
+    "next:dev": "next dev -p 4000",
+    "next:build": "next build",
+    "build": "yarn keystone:build && yarn next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@keystone-6/auth": "^6.0.0",
+    "@keystone-6/core": "^4.0.0",
+    "@keystone-6/fields-document": "^6.0.0",
+    "@preconstruct/next": "^4.0.0",
+    "graphql-request": "^5.0.0",
+    "graphql-yoga": "^3.1.0",
+    "next": "^13.0.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "18.7.2",
+    "@types/react": "^18.0.9",
+    "@types/react-dom": "^18.0.4",
+    "typescript": "~4.7.4"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/nextjs-keystone"
+}

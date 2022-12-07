@@ -22,7 +22,7 @@
     "test:admin-ui": "jest tests/admin-ui-tests",
     "benchmark": "yarn workspace @keystone-6/benchmarks-legacy go",
     "build": "preconstruct build",
-    "prepare": "manypkg check && preconstruct dev && node scripts/generate-artifacts-for-projects && cd examples/graphql-ts-gql && yarn ts-gql build",
+    "prepare": "patch-package && manypkg check && preconstruct dev && node scripts/generate-artifacts-for-projects && cd examples/graphql-ts-gql && yarn ts-gql build",
     "update": "manypkg upgrade",
     "update-project-schemas": "node scripts/generate-artifacts-for-projects update-schemas",
     "generate-filters": "cd prisma-utils && yarn generate",
@@ -49,6 +49,7 @@
     "eslint-plugin-react-hooks": "^4.3.0",
     "jest": "^29.0.0",
     "jest-environment-jsdom": "^29.0.0",
+    "patch-package": "^6.5.0",
     "prettier": "^2.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -110,5 +111,8 @@
       "!packages/**/dist/**",
       "!packages/core/src/fields/**/test-fixtures.{js,ts}"
     ]
+  },
+  "resolutions": {
+    "**/@types/node": "^18.11.9"
   }
 }
