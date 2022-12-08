@@ -14,7 +14,7 @@
     "express": "^4.17.1"
   },
   "devDependencies": {
-    "typescript": "~4.7.4"
+    "typescript": "~4.9.4"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/examples/rest-api"
 }

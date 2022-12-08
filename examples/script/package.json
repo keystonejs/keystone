@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "tsx": "^3.9.0",
-    "typescript": "~4.7.4"
+    "typescript": "~4.9.4"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/examples/script"
 }
