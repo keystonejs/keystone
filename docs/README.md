@@ -16,13 +16,13 @@ This website uses prism, with slight modifications to code blocks for code highl
 
 To add line highlights, you can use curly braces `{}` containing numbers or ranges separated by commas after the language.
 
-So a base JS format would look like
+So a base JS format would look like this
 
 ```
 \`\`\`js{5}
 ```
 
-if you want to highlight line 5.
+if you want to highlight line number 5.
 
 To highlight lines 5-10 you would write
 
@@ -42,13 +42,13 @@ You should use code highlighting to highlight new code, or the most relevant cod
 
 Sometimes you want to include only part of a code snippet. For this, you can collapse code blocks.
 
-The syntax for this is
+Syntax : 
 
 ```
 \`\`\`js[4-7]
 ```
 
-For collapsing, you must specify a range, you cannot just specify a line.
+For collapsing just specifying a line is not enough you  have to specify range as well. 
 
 You can specify multiple ranges to collapse
 
