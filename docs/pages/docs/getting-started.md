@@ -36,7 +36,7 @@ Use [`npm init`](https://docs.npmjs.com/cli/v7/commands/npm-init):
 
 ```sh
 cd your/path/
-npm init keystone-app
+npm init keystone-app@latest
 ```
 
 {% hint kind="warn" %}
@@ -49,7 +49,7 @@ Use npm's [`npx`](https://docs.npmjs.com/cli/v7/commands/npx):
 
 ```sh
 cd your/path/
-npx create-keystone-app
+npx create-keystone-app@latest
 ```
 
 {% hint kind="warn" %}
