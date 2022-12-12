@@ -5,11 +5,11 @@ description: "Reference docs for the session property of Keystone’s system con
 
 The `session` property of the [system configuration](./config) object allows you to configure session management of your Keystone system.
 It has a TypeScript type of `SessionStrategy<any>`.
-In general you will use `SessionStrategy` objects from the `@keystone-6/auth/session` package, rather than writing this yourself.
+In general you will use `SessionStrategy` objects from the `@keystone-6/core/session` package, rather than writing this yourself.
 
 ```typescript
 import { config } from '@keystone-6/core';
-import { statelessSessions } from '@keystone-6/auth/session';
+import { statelessSessions } from '@keystone-6/core/session';
 
 export default config({
   session: statelessSessions({
@@ -37,7 +37,7 @@ Both `statelessSessions()` and `storedSessions()` accept a common set of argumen
 
 ```typescript
 import { config } from '@keystone-6/core';
-import { statelessSessions, storedSessions } from '@keystone-6/auth/session';
+import { statelessSessions, storedSessions } from '@keystone-6/core/session';
 
 export default config({
   // Stateless
