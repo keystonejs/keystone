@@ -42,8 +42,10 @@ export function AdvancedReactCta(props: HTMLAttributes<HTMLElement>) {
         <Image
           src={wesBosCta}
           alt="Wes Bos Avatar"
-          width={275}
+          height={900}
           css={{
+            maxWidth: '100%',
+            height: 'auto',
             objectFit: 'cover',
             borderRadius: '1rem',
           }}

@@ -121,7 +121,12 @@ export default function ForOrganisations() {
             <Image
               src={editor}
               alt="Two application windows. One shows an IDE with Keystone schema code to configure fields. The other shows content fields in Keystone Admin UI"
-              width={500}
+              width={1956}
+              height={1845}
+              css={{
+                maxWidth: '100%',
+                height: 'auto',
+              }}
             />
           </div>
         </Section>
@@ -282,7 +287,12 @@ export default function ForOrganisations() {
             <Image
               src={dataIntegrity}
               alt="2 application panes. One displays a database configuration app with DB columns and rows containing content. The other displays the same column and row content in Keystone Admin UI."
-              width={500}
+              width={2044}
+              height={1557}
+              css={{
+                maxWidth: '100%',
+                height: 'auto',
+              }}
             />
           </div>
         </Section>
