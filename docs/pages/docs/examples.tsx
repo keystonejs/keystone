@@ -248,6 +248,16 @@ export default function Docs() {
         >
           Example to demonstrate customisation of Keystone's document field and document renderer.
         </Well>
+
+        <Well
+          grad="grad2"
+          heading="Next.js + Keystone"
+          href="https://github.com/keystonejs/keystone/blob/main/examples/nextjs-keystone"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Shows you how to use Keystone as a data engine within Next.js applications.
+        </Well>
       </div>
 
       <Type as="h2" look="heading30" margin="2rem 0 1rem 0" id="deployment-examples">
