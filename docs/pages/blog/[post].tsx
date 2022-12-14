@@ -65,8 +65,8 @@ export default function Page(props: InferGetStaticPropsType<typeof getStaticProp
             <span>
               {' '}
               by{' '}
-              <Link href={props.authorHandle}>
-                <a target={'_blank'}>{props.authorName}</a>
+              <Link href={props.authorHandle} target="_blank">
+                {props.authorName}
               </Link>
             </span>
           ) : (
