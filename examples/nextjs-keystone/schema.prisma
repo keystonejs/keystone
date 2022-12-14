@@ -13,9 +13,14 @@ generator client {
 }
 
 model User {
-  id        String    @id @default(cuid())
-  name      String    @default("")
-  email     String    @unique @default("")
-  password  String
-  createdAt DateTime? @default(now())
+  id               String    @id @default(cuid())
+  name             String    @default("")
+  email            String    @unique @default("")
+  password         String
+  createdAt        DateTime? @default(now())
+  avatar_filesize  Int?
+  avatar_extension String?
+  avatar_width     Int?
+  avatar_height    Int?
+  avatar_id        String?
 }
