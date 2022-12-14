@@ -7,7 +7,7 @@ authorHandle: "https://twitter.com/flexdinesh"
 metaImageUrl: ""
 ---
 
-Keystone is an excellent headless CMS that provides a GraphQL API to access your data. But did you also know that you could use **Keystone as a data layer within Next.js applications**? Yes, you don't need to host Keystone on a separate server. Keystone's entire data layer is so well abstracted that you could just import the `context` API in a Next.js application and CRUD your data. In other words, Keystone can be imported and used in serverless environments like Next.js routes, `getStaticProps`, `getServerSideProps` and `next@13` server components.
+Keystone is an excellent headless CMS that provides a GraphQL API to access your data. But did you also know that you could use **Keystone as a data layer within Next.js applications**? Yes, you don't need to host Keystone on a separate server. Keystone's entire data layer is so well abstracted that you could just import the `context` API in a Next.js application and CRUD your data. In other words, Keystone can be imported and used in serverless environments like Next.js routes, `getStaticProps` and `getServerSideProps`.
 
 If you want to browse through the example code to understand how Keystone works within a Next.js application, we have built an example here [examples/nextjs-keystone](https://github.com/keystonejs/keystone/tree/main/examples/nextjs-keystone).
 
@@ -20,7 +20,7 @@ To understand how Keystone works within a Next.js application, let's first take 
 This is how a standalone keystone server works:
 
 - You deploy a separate frontend and a separate keystone server.
-- Your frontend will send network requests to Keystone server's GraphQL API to CRUD data. Eg. During server rendering, in `getStaticProps`, `getServerSideProps` or in `next@13` server components, you will send http requests to Keystone server's GraphQL API to query or mutate your data. 
+- Your frontend will send network requests to Keystone server's GraphQL API to CRUD data. Eg. During server rendering, in `getStaticProps` or `getServerSideProps`, you will send http requests to Keystone server's GraphQL API to query or mutate your data. 
 
 With the release of [core v3](https://github.com/keystonejs/keystone/releases/tag/2022-10-19), **Keystone can now be used within other servers**. Keystone's data layer is well abstracted and exported as node APIs that you could import and use in node based servers like Next.js and deploy to [Vercel](https://vercel.com). 
 
@@ -29,7 +29,7 @@ With the release of [core v3](https://github.com/keystonejs/keystone/releases/ta
 This is how Keystone works within a Next.js application:
 
 - You import Keystone's `getContext` in your Next.js application. It is a wrapper around Keystone's data layer.
-- You can CRUD your data in `getStaticProps`, `getServerSideProps` or in `next@13` server components using the Keystone `context` object. 
+- You can CRUD your data in `getStaticProps` or `getServerSideProps` using the Keystone `context` object. 
 - You can also setup your own GraphQL server in a Next.js route using Keystone's generated GraphQL schema and send GraphQL requests from your browser.
 
 Importing Keystone's `getContext`
@@ -132,6 +132,6 @@ To sum it all up,
 
 That's all folks. 
 
-If you like using Keystone, we'd appreciate a shout out in [Twitter](https://twitter.com/KeystoneJS) and a star in [GitHub](https://github.com/keystonejs/keystone). We also have a friendly slack community, [Come say hi](https://community.keystonejs.com)! 
+If you like using Keystone, we'd appreciate a shout out in [Twitter](https://twitter.com/KeystoneJS) and a star in [GitHub](https://github.com/keystonejs/keystone). We also have a friendly slack community, [come say hi](https://community.keystonejs.com)! 
 
 To stay updated on the latest news and announcements about Keystone, subscribe to our [RSS feed](https://keystonejs.com/feed.xml).
