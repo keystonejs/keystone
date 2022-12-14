@@ -77,7 +77,13 @@ const Home: NextPage = ({ users }: InferGetServerSidePropsType<typeof getServerS
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  // keystone session cookie is automatically unwrapped
+  /*
+    `keystoneContext` object doesn't have user's session information.
+    You need an authenticated context to CRUD data behind access control.
+    keystoneContext.withRequest(req, res) automatically unwraps the session cookie
+    in the request object and gives you a `context` object with session info
+    and an elevated sudo context to bypass access control if needed (context.sudo()).
+  */
   const context = await keystoneContext.withRequest(req, res);
   const users = await context.query.User.findMany({
     query: 'id name email',

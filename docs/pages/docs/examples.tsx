@@ -256,7 +256,7 @@ export default function Docs() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Shows you how to use Keystone as a data engine withing Next.js applications.
+          Shows you how to use Keystone as a data engine within Next.js applications.
         </Well>
       </div>
 
