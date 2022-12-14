@@ -95,7 +95,16 @@ export default function WhyKeystonePage() {
             margin: '1rem 0',
           }}
         >
-          <Image src={adminUi} alt="Depiction of Keystone’s Admin UI" width={900} />
+          <Image
+            src={adminUi}
+            alt="Depiction of Keystone’s Admin UI"
+            width={3710}
+            height={2195}
+            css={{
+              maxWidth: '100%',
+              height: 'auto',
+            }}
+          />
         </div>
 
         <ul
