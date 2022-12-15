@@ -146,7 +146,7 @@ export const SegmentedControl = ({
           <VisuallyHidden
             as="input"
             type="radio"
-            onChange={() => ''}
+            onChange={() => {}}
             checked={nothingIsSelected}
             disabled={actuallyDisabled}
             value="none"
