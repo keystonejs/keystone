@@ -25,27 +25,22 @@ function CreatePageForm(props: { list: ListMeta }) {
         />
       )}
 
-      <form
-        onSubmit={async event => {
-          event.preventDefault();
-          const item = await createItem.create();
-          if (item) {
-            router.push(`/${props.list.path}/${item.id}`);
-          }
-        }}
-      >
-        <Fields {...createItem.props} />
-        <BaseToolbar>
-          <Button
-            isLoading={createItem.state === 'loading'}
-            type="submit"
-            weight="bold"
-            tone="active"
-          >
-            Create {props.list.singular}
-          </Button>
-        </BaseToolbar>
-      </form>
+      <Fields {...createItem.props} />
+      <BaseToolbar>
+        <Button
+          isLoading={createItem.state === 'loading'}
+          weight="bold"
+          tone="active"
+          onClick={async () => {
+            const item = await createItem.create();
+            if (item) {
+              router.push(`/${props.list.path}/${item.id}`);
+            }
+          }}
+        >
+          Create {props.list.singular}
+        </Button>
+      </BaseToolbar>
     </Box>
   );
 }
