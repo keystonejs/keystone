@@ -54,7 +54,10 @@ export function getBaseAuthSchema<I extends string, S extends string>({
           resolveType: (root, context) => context.session?.listKey,
         }),
         resolve(root, args, { session, db }) {
-          if (typeof session?.itemId === 'string' && typeof session.listKey === 'string') {
+          if (
+            (typeof session?.itemId === 'string' || typeof session.itemId === 'number') &&
+            typeof session.listKey === 'string'
+          ) {
             return db[session.listKey].findOne({ where: { id: session.itemId } });
           }
           return null;
