@@ -32,7 +32,8 @@ test('keystone prisma exits with the same code as the prisma child process exits
                   db   Manage your database schema and lifecycle
              migrate   Migrate your database
               studio   Browse your data with Prisma Studio
-              format   Format your schema
+            validate   Validate your Prisma schema
+              format   Format your Prisma schema
 
     Flags
 
@@ -57,6 +58,12 @@ test('keystone prisma exits with the same code as the prisma child process exits
 
       Push the Prisma schema state to the database
       $ prisma db push
+
+      Validate your Prisma schema
+      $ prisma validate
+
+      Format your Prisma schema
+      $ prisma format
     "
   `);
   expect(result.exitCode).toBe(1);
