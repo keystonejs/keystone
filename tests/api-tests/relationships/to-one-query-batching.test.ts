@@ -86,16 +86,16 @@ test(
       ]);
       const expectedSql = {
         sqlite: [
-          'SELECT `main`.`Post`.`id`, `main`.`Post`.`title`, `main`.`Post`.`author` FROM `main`.`Post` WHERE `main`.`Post`.`title` NOT LIKE ? ORDER BY `main`.`Post`.`title` ASC LIMIT ? OFFSET ? /* traceparent=00-00-00-00 */',
-          'SELECT `main`.`User`.`id`, `main`.`User`.`name` FROM `main`.`User` WHERE (`main`.`User`.`id` IN (?,?,?,?,?,?,?,?,?,?) AND `main`.`User`.`name` LIKE ?) LIMIT ? OFFSET ? /* traceparent=00-00-00-00 */',
+          'SELECT `main`.`Post`.`id`, `main`.`Post`.`title`, `main`.`Post`.`author` FROM `main`.`Post` WHERE `main`.`Post`.`title` NOT LIKE ? ORDER BY `main`.`Post`.`title` ASC LIMIT ? OFFSET ?',
+          'SELECT `main`.`User`.`id`, `main`.`User`.`name` FROM `main`.`User` WHERE (`main`.`User`.`id` IN (?,?,?,?,?,?,?,?,?,?) AND `main`.`User`.`name` LIKE ?) LIMIT ? OFFSET ?',
         ],
         postgresql: [
-          `SELECT "public"."Post"."id", "public"."Post"."title", "public"."Post"."author" FROM "public"."Post" WHERE "public"."Post"."title"::text NOT LIKE $1 ORDER BY "public"."Post"."title" ASC OFFSET $2 /* traceparent=00-00-00-00 */`,
-          `SELECT "public"."User"."id", "public"."User"."name" FROM "public"."User" WHERE ("public"."User"."id" IN ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) AND "public"."User"."name"::text LIKE $11) OFFSET $12 /* traceparent=00-00-00-00 */`,
+          `SELECT "public"."Post"."id", "public"."Post"."title", "public"."Post"."author" FROM "public"."Post" WHERE "public"."Post"."title"::text NOT LIKE $1 ORDER BY "public"."Post"."title" ASC OFFSET $2`,
+          `SELECT "public"."User"."id", "public"."User"."name" FROM "public"."User" WHERE ("public"."User"."id" IN ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) AND "public"."User"."name"::text LIKE $11) OFFSET $12`,
         ],
         mysql: [
-          `SELECT \`${dbName}\`.\`Post\`.\`id\`, \`${dbName}\`.\`Post\`.\`title\`, \`${dbName}\`.\`Post\`.\`author\` FROM \`${dbName}\`.\`Post\` WHERE \`${dbName}\`.\`Post\`.\`title\` NOT LIKE ? ORDER BY \`${dbName}\`.\`Post\`.\`title\` ASC /* traceparent=00-00-00-00 */`,
-          `SELECT \`${dbName}\`.\`User\`.\`id\`, \`${dbName}\`.\`User\`.\`name\` FROM \`${dbName}\`.\`User\` WHERE (\`${dbName}\`.\`User\`.\`id\` IN (?,?,?,?,?,?,?,?,?,?) AND \`${dbName}\`.\`User\`.\`name\` LIKE ?) /* traceparent=00-00-00-00 */`,
+          `SELECT \`${dbName}\`.\`Post\`.\`id\`, \`${dbName}\`.\`Post\`.\`title\`, \`${dbName}\`.\`Post\`.\`author\` FROM \`${dbName}\`.\`Post\` WHERE \`${dbName}\`.\`Post\`.\`title\` NOT LIKE ? ORDER BY \`${dbName}\`.\`Post\`.\`title\` ASC`,
+          `SELECT \`${dbName}\`.\`User\`.\`id\`, \`${dbName}\`.\`User\`.\`name\` FROM \`${dbName}\`.\`User\` WHERE (\`${dbName}\`.\`User\`.\`id\` IN (?,?,?,?,?,?,?,?,?,?) AND \`${dbName}\`.\`User\`.\`name\` LIKE ?)`,
         ],
       }[dbProvider];
       const sql = logs.map(([, query]) => query);

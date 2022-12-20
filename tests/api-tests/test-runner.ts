@@ -113,6 +113,7 @@ async function pushSchemaToDatabase(schema: string) {
         throw err;
       }
     }
+    await fs.writeFile(path.join(prismaSchemaDirectory, SQLITE_DATABASE_FILENAME), '');
     await withMigrate(prismaSchemaPath, migrate =>
       runMigrateWithDbUrl(dbUrl, undefined, () =>
         migrate.engine.schemaPush({
