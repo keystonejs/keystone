@@ -499,7 +499,8 @@ export const componentBlocks = {
                 {attrs => (
                   <ToolbarButton
                     isSelected={props.fields.intent.value === opt.value}
-                    onClick={() => {
+                    onMouseDown={event => {
+                      event.preventDefault();
                       props.fields.intent.onChange(opt.value);
                     }}
                     {...attrs}
@@ -515,7 +516,14 @@ export const componentBlocks = {
 
           <Tooltip content="Remove" weight="subtle">
             {attrs => (
-              <ToolbarButton variant="destructive" onClick={onRemove} {...attrs}>
+              <ToolbarButton
+                variant="destructive"
+                onMouseDown={event => {
+                  event.preventDefault();
+                  onRemove();
+                }}
+                {...attrs}
+              >
                 <Trash2Icon size="small" />
               </ToolbarButton>
             )}
