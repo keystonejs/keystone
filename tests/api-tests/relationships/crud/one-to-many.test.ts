@@ -3,7 +3,7 @@ import { text, relationship } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import type { KeystoneContext } from '@keystone-6/core/types';
-import { allowAll } from '@keystone-6/core/access';
+import { allowAll, denyAll } from '@keystone-6/core/access';
 import { apiTestConfig, ContextFromRunner } from '../../utils';
 
 type IdType = any;
@@ -91,6 +91,27 @@ const runner = setupTestRunner({
     lists: {
       Company: list({
         access: allowAll,
+        fields: {
+          name: text(),
+          locations: relationship({ ref: 'Location.company', many: true }),
+        },
+      }),
+      Location: list({
+        access: allowAll,
+        fields: {
+          name: text(),
+          company: relationship({ ref: 'Company.locations' }),
+        },
+      }),
+    },
+  }),
+});
+
+const runnerWithDeny = setupTestRunner({
+  config: apiTestConfig({
+    lists: {
+      Company: list({
+        access: denyAll,
         fields: {
           name: text(),
           locations: relationship({ ref: 'Location.company', many: true }),
@@ -203,6 +224,22 @@ describe(`One-to-many relationships`, () => {
             expect(companies.length).toEqual(count);
           })
         );
+      })
+    );
+
+    test(
+      'Deny access to related items returns null',
+      runnerWithDeny(async ({ context }) => {
+        await createReadData(context.sudo());
+        const companies = await context.query.Company.findMany({
+          query: 'id name',
+        });
+        expect(companies.toString()).toBe('');
+
+        const locations = await context.query.Location.findMany({
+          query: 'id name company { id name }',
+        });
+        expect(locations[0].company).toBeNull();
       })
     );
   });
