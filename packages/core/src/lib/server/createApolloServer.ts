@@ -1,50 +1,18 @@
-import type { IncomingMessage, ServerResponse } from 'http';
-import { GraphQLError, GraphQLSchema } from 'graphql';
-import { ApolloServer as ApolloServerMicro } from 'apollo-server-micro';
-import { ApolloServer as ApolloServerExpress } from 'apollo-server-express';
-import {
-  ApolloServerPluginLandingPageDisabled,
-  ApolloServerPluginLandingPageGraphQLPlayground,
-  Config,
-} from 'apollo-server-core';
-import type { KeystoneContext, GraphQLConfig, SessionStrategy } from '../../types';
-
-export const createApolloServerMicro = ({
-  graphQLSchema,
-  context,
-  sessionStrategy,
-  graphqlConfig,
-  connectionPromise,
-}: {
-  graphQLSchema: GraphQLSchema;
-  context: KeystoneContext;
-  sessionStrategy?: SessionStrategy<any>;
-  graphqlConfig?: GraphQLConfig;
-  connectionPromise: Promise<any>;
-}) => {
-  const userContext = async ({ req, res }: { req: IncomingMessage; res: ServerResponse }) => {
-    await connectionPromise;
-    return context.withRequest(req, res);
-  };
-  const serverConfig = _createApolloServerConfig({ graphQLSchema, graphqlConfig });
-  return new ApolloServerMicro({ ...serverConfig, context: userContext });
-};
+import { GraphQLFormattedError, GraphQLSchema } from 'graphql';
+import { ApolloServer, ApolloServerOptions } from '@apollo/server';
+import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled';
+import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
+import type { KeystoneContext, GraphQLConfig } from '../../types';
 
 export const createApolloServerExpress = ({
   graphQLSchema,
-  context,
-  sessionStrategy,
   graphqlConfig,
 }: {
   graphQLSchema: GraphQLSchema;
-  context: KeystoneContext;
-  sessionStrategy?: SessionStrategy<any>;
   graphqlConfig?: GraphQLConfig;
 }) => {
-  const userContext = async ({ req, res }: { req: IncomingMessage; res: ServerResponse }) =>
-    context.withRequest(req, res);
   const serverConfig = _createApolloServerConfig({ graphQLSchema, graphqlConfig });
-  return new ApolloServerExpress({ ...serverConfig, context: userContext });
+  return new ApolloServer({ ...serverConfig });
 };
 
 const _createApolloServerConfig = ({
@@ -53,48 +21,44 @@ const _createApolloServerConfig = ({
 }: {
   graphQLSchema: GraphQLSchema;
   graphqlConfig?: GraphQLConfig;
-}): Config => {
+}): ApolloServerOptions<KeystoneContext> => {
   const apolloConfig = graphqlConfig?.apolloConfig;
   const playgroundOption = graphqlConfig?.playground ?? process.env.NODE_ENV !== 'production';
 
   return {
-    schema: graphQLSchema,
-    debug: graphqlConfig?.debug, // If undefined, use Apollo default of NODE_ENV !== 'production'
-    cache: 'bounded',
-    persistedQueries: false,
+    formatError: formatError(graphqlConfig),
+    includeStacktraceInErrorResponses: graphqlConfig?.debug, // If undefined, use Apollo default of NODE_ENV !== 'production'
     ...apolloConfig,
+    schema: graphQLSchema,
     plugins:
       playgroundOption === 'apollo'
         ? apolloConfig?.plugins
         : [
             playgroundOption
-              ? ApolloServerPluginLandingPageGraphQLPlayground({
-                  settings: { 'request.credentials': 'same-origin' },
-                })
+              ? ApolloServerPluginLandingPageLocalDefault()
               : ApolloServerPluginLandingPageDisabled(),
             ...(apolloConfig?.plugins || []),
           ],
-    formatError: formatError(graphqlConfig),
-  };
+  } as ApolloServerOptions<KeystoneContext>;
 };
 
 const formatError = (graphqlConfig: GraphQLConfig | undefined) => {
-  return (err: GraphQLError) => {
+  return (formattedError: GraphQLFormattedError, error: unknown) => {
     let debug = graphqlConfig?.debug;
     if (debug === undefined) {
       debug = process.env.NODE_ENV !== 'production';
     }
 
-    if (!debug && err.extensions) {
+    if (!debug && formattedError.extensions) {
       // Strip out any `debug` extensions
-      delete err.extensions.debug;
-      delete err.extensions.exception;
+      delete formattedError.extensions.debug;
+      delete formattedError.extensions.exception;
     }
 
     if (graphqlConfig?.apolloConfig?.formatError) {
-      return graphqlConfig.apolloConfig.formatError(err);
+      return graphqlConfig.apolloConfig.formatError(formattedError, error);
     } else {
-      return err;
+      return formattedError;
     }
   };
 };

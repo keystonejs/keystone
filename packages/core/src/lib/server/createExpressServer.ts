@@ -1,11 +1,13 @@
-import { createServer, IncomingMessage, Server, ServerResponse } from 'http';
+import { createServer, Server } from 'http';
 import cors, { CorsOptions } from 'cors';
+import { json } from 'body-parser';
+import { expressMiddleware } from '@apollo/server/express4';
 import express from 'express';
 import { GraphQLSchema } from 'graphql';
 // @ts-ignore
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js';
-import { ApolloServer } from 'apollo-server-express';
-import type { KeystoneConfig, KeystoneContext, SessionStrategy, GraphQLConfig } from '../../types';
+import { ApolloServer } from '@apollo/server';
+import type { KeystoneConfig, KeystoneContext, GraphQLConfig } from '../../types';
 import { createApolloServerExpress } from './createApolloServer';
 import { addHealthCheck } from './addHealthCheck';
 
@@ -24,32 +26,31 @@ const addApolloServer = async ({
   config,
   graphQLSchema,
   context,
-  sessionStrategy,
   graphqlConfig,
 }: {
   server: express.Express;
   config: KeystoneConfig;
   graphQLSchema: GraphQLSchema;
   context: KeystoneContext;
-  sessionStrategy?: SessionStrategy<any>;
   graphqlConfig?: GraphQLConfig;
 }) => {
   const apolloServer = createApolloServerExpress({
     graphQLSchema,
-    context,
-    sessionStrategy,
     graphqlConfig,
   });
 
   const maxFileSize = config.server?.maxFileSize || DEFAULT_MAX_FILE_SIZE;
   server.use(graphqlUploadExpress({ maxFileSize }));
   await apolloServer.start();
-  apolloServer.applyMiddleware({
-    app: server,
-    path: config.graphql?.path || '/api/graphql',
-    cors: false,
-    bodyParserConfig: config.graphql?.bodyParser,
-  });
+  server.use(
+    config.graphql?.path || '/api/graphql',
+    json(config.graphql?.bodyParser),
+    expressMiddleware(apolloServer, {
+      context: async ({ req, res }) => {
+        return await context.withRequest(req, res);
+      },
+    })
+  );
   return apolloServer;
 };
 
@@ -59,10 +60,7 @@ export const createExpressServer = async (
   context: KeystoneContext
 ): Promise<{
   expressServer: express.Express;
-  apolloServer: ApolloServer<{
-    req: IncomingMessage;
-    res: ServerResponse;
-  }>;
+  apolloServer: ApolloServer<KeystoneContext>;
   httpServer: Server;
 }> => {
   const expressServer = express();
@@ -112,7 +110,6 @@ export const createExpressServer = async (
     config,
     graphQLSchema,
     context,
-    sessionStrategy: config.session,
     graphqlConfig: config.graphql,
   });
 

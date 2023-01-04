@@ -1,4 +1,4 @@
-import type { CacheHint } from 'apollo-server-types';
+import type { CacheHint } from '@apollo/cache-control-types';
 import type { MaybePromise } from '../utils';
 import { BaseListTypeInfo } from '../type-info';
 import { KeystoneContextFromListTypeInfo } from '..';

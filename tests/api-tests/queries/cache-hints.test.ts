@@ -1,4 +1,4 @@
-import { CacheScope } from 'apollo-server-types';
+import { cacheControlFromInfo } from '@apollo/cache-control-types';
 import { text, relationship, integer } from '@keystone-6/core/fields';
 import { list, graphql } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
@@ -16,7 +16,7 @@ const runner = setupTestRunner({
           author: relationship({ ref: 'User.posts', many: true }),
         },
         graphql: {
-          cacheHint: { scope: CacheScope.Public, maxAge: 100 },
+          cacheHint: { scope: 'PUBLIC', maxAge: 100 },
         },
       }),
       User: list({
@@ -24,14 +24,14 @@ const runner = setupTestRunner({
         fields: {
           name: text({ graphql: { cacheHint: { maxAge: 80 } } }),
           favNumber: integer({
-            graphql: { cacheHint: { maxAge: 10, scope: CacheScope.Private } },
+            graphql: { cacheHint: { maxAge: 10, scope: 'PRIVATE' } },
           }),
           posts: relationship({ ref: 'Post.author', many: true }),
         },
         graphql: {
           cacheHint: ({ results, operationName, meta }) => {
             if (meta) {
-              return { scope: CacheScope.Public, maxAge: 90 };
+              return { scope: 'PUBLIC', maxAge: 90 };
             }
             if (operationName === 'complexQuery') {
               return { maxAge: 1 };
@@ -58,7 +58,7 @@ const runner = setupTestRunner({
             type: MyType,
             args: { x: graphql.arg({ type: graphql.nonNull(graphql.Int) }) },
             resolve: (_, { x }, context, info) => {
-              info.cacheControl.setCacheHint({ maxAge: 100, scope: CacheScope.Public });
+              cacheControlFromInfo(info).setCacheHint({ maxAge: 100, scope: 'PUBLIC' });
               return { original: x, double: x * 2 };
             },
           }),
