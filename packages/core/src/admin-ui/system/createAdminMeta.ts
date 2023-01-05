@@ -164,6 +164,8 @@ export function createAdminMeta(
   for (const [listKey, list] of Object.entries(initialisedLists)) {
     if (omittedLists.includes(listKey)) continue;
 
+    const listConfig = lists[listKey];
+
     for (const [fieldKey, field] of Object.entries(list.fields)) {
       // If the field is a relationship field and is related to an omitted list, skip.
       if (field.dbField.kind === 'relation' && omittedLists.includes(field.dbField.list)) continue;
@@ -192,17 +194,25 @@ export function createAdminMeta(
         search: list.ui.searchableFields.get(fieldKey) ?? null,
         createView: {
           fieldMode: normalizeMaybeSessionFunction(
-            field.graphql.isEnabled.create ? field.ui?.createView?.fieldMode ?? 'edit' : 'hidden'
+            field.graphql.isEnabled.create
+              ? field.ui?.createView?.fieldMode ??
+                  listConfig.ui?.createView?.defaultFieldMode ??
+                  'edit'
+              : 'hidden'
           ),
         },
         itemView: {
           fieldMode: field.graphql.isEnabled.update
-            ? field.ui?.itemView?.fieldMode ?? ('edit' as const)
+            ? field.ui?.itemView?.fieldMode ??
+              listConfig.ui?.itemView?.defaultFieldMode ??
+              ('edit' as const)
             : 'read',
           fieldPosition: field.ui?.itemView?.fieldPosition || 'form',
         },
         listView: {
-          fieldMode: normalizeMaybeSessionFunction(field.ui?.listView?.fieldMode ?? 'read'),
+          fieldMode: normalizeMaybeSessionFunction(
+            field.ui?.listView?.fieldMode ?? listConfig.ui?.listView?.defaultFieldMode ?? 'read'
+          ),
         },
         isFilterable: normalizeIsOrderFilter(
           field.input?.where ? field.graphql.isEnabled.filter : false,
