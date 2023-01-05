@@ -207,7 +207,7 @@ export const expectExtensionError = (
     args.map(({ path, messages, debug }) => {
       const message = `An error occured while running "${extensionName}".\n${j(messages)}`;
       const stacktrace = message.split('\n');
-      stacktrace[0] = `Error: ${stacktrace[0]}`;
+      stacktrace[0] = `GraphQLError: ${stacktrace[0]}`;
 
       // We expect to see debug details if:
       //   - httpQuery is false
@@ -222,9 +222,7 @@ export const expectExtensionError = (
       return {
         extensions: {
           code: 'KS_EXTENSION_ERROR',
-          ...(expectException
-            ? { exception: { stacktrace: expect.arrayContaining(stacktrace) } }
-            : {}),
+          ...(expectException ? { stacktrace: expect.arrayContaining(stacktrace) } : {}),
           ...(expectDebug ? { debug } : {}),
         },
         path,

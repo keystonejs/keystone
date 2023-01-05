@@ -287,7 +287,7 @@ describe('Document field type', () => {
       });
       // FIXME: The path doesn't match the null field here!
       expect(body.data).toEqual({ author: { badBio: null } });
-      expectInternalServerError(body.errors, true, [
+      expectInternalServerError(body.errors, false, [
         {
           path: ['author', 'badBio', 'document'],
           message: 'Cannot query field "bad" on type "Author". Did you mean "bio" or "id"?',
