@@ -1,9 +1,10 @@
 diff --git a/node_modules/@whatwg-node/fetch/dist/index.d.ts b/node_modules/@whatwg-node/fetch/dist/index.d.ts
-index 1f3d361..4286a02 100644
+index 8daf7fc..b9c6927 100644
 --- a/node_modules/@whatwg-node/fetch/dist/index.d.ts
 +++ b/node_modules/@whatwg-node/fetch/dist/index.d.ts
-@@ -1,37 +1,21 @@
+@@ -1,39 +1,23 @@
  /// <reference lib="dom" />
+ /// <reference types="urlpattern-polyfill" />
  
 -declare const _fetch: typeof fetch;
 -declare const _Request: typeof Request;
@@ -20,6 +21,7 @@ index 1f3d361..4286a02 100644
 -declare const _btoa: typeof btoa;
 -declare const _TextEncoder: typeof TextEncoder;
 -declare const _TextDecoder: typeof TextDecoder;
+-declare const _URLPattern: typeof URLPattern;
 -
  declare module "@whatwg-node/fetch" {
 -  export const fetch: typeof _fetch;
@@ -37,6 +39,7 @@ index 1f3d361..4286a02 100644
 -  export const btoa: typeof _btoa;
 -  export const TextDecoder: typeof _TextDecoder;
 -  export const TextEncoder: typeof _TextEncoder;
++  import { URLPattern as _URLPattern } from "urlpattern-polyfill";
 +  export const fetch: typeof globalThis.fetch;
 +  export const Request: typeof globalThis.Request;
 +  export const Response: typeof globalThis.Response;
@@ -52,10 +55,10 @@ index 1f3d361..4286a02 100644
 +  export const btoa: typeof globalThis.btoa;
 +  export const TextDecoder: typeof globalThis.TextDecoder;
 +  export const TextEncoder: typeof globalThis.TextEncoder;
+   export const URLPattern: typeof _URLPattern;
    export interface FormDataLimits {
      /* Max field name size (in bytes). Default: 100. */
-     fieldNameSize?: number;
-@@ -49,21 +33,21 @@ declare module "@whatwg-node/fetch" {
+@@ -52,21 +36,21 @@ declare module "@whatwg-node/fetch" {
      headerSize?: number;
    }
    export const createFetch: (opts?: { useNodeFetch?: boolean; formDataLimits?: FormDataLimits }) => ({
@@ -73,7 +76,7 @@ index 1f3d361..4286a02 100644
 -    crypto: typeof _crypto,
 -    btoa: typeof _btoa,
 -    TextEncoder: typeof _TextEncoder,
--    TextDecoder: typeof _TextDecoder
+-    TextDecoder: typeof _TextDecoder,
 +    fetch: typeof globalThis.fetch,
 +    Request: typeof globalThis.Request,
 +    Response: typeof globalThis.Response,
@@ -88,7 +91,7 @@ index 1f3d361..4286a02 100644
 +    crypto: typeof globalThis.crypto,
 +    btoa: typeof globalThis.btoa,
 +    TextEncoder: typeof globalThis.TextEncoder,
-+    TextDecoder: typeof globalThis.TextDecoder
++    TextDecoder: typeof globalThis.TextDecoder,
+     URLPattern: typeof _URLPattern,
    });
  }
- 
