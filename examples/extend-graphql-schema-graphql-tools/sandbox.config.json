@@ -2,6 +2,6 @@
   "template": "node",
   "container": {
     "startScript": "keystone dev",
-    "node": "14"
+    "node": "16"
   }
 }
