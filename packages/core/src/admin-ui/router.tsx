@@ -18,3 +18,7 @@ import { AnchorHTMLAttributes } from 'react';
 export type LinkProps = NextLinkProps & AnchorHTMLAttributes<HTMLAnchorElement>;
 
 export const Link = NextLink;
+
+import NextHead from 'next/head';
+
+export const Head = NextHead;

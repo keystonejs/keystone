@@ -99,7 +99,6 @@ export const SigninPage = ({
               return;
             }
             reinitContext();
-            router.push(redirect);
           }
         }}
       >
