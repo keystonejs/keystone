@@ -4,6 +4,7 @@
 import { ReactNode } from 'react';
 
 import { jsx, Box, Center, useTheme } from '@keystone-ui/core';
+import { Head } from '@keystone-6/core/admin-ui/router';
 
 type SigninContainerProps = {
   children: ReactNode;
@@ -14,9 +15,9 @@ export const SigninContainer = ({ children, title }: SigninContainerProps) => {
   const { colors, shadow } = useTheme();
   return (
     <div>
-      <head>
+      <Head>
         <title>{title || 'Keystone'}</title>
-      </head>
+      </Head>
       <Center
         css={{
           minWidth: '100vw',
