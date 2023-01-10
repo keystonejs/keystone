@@ -189,7 +189,6 @@ const ListPage = ({ listKey }: ListPageProps) => {
     data: newData,
     error: newError,
     refetch,
-    loading,
   } = useQuery(
     useMemo(() => {
       let selectedGqlFields = [...selectedFields]
@@ -337,9 +336,6 @@ const ListPage = ({ listKey }: ListPageProps) => {
                         list={list}
                         fieldModesByFieldPath={listViewFieldModesByField}
                       />{' '}
-                      {loading && (
-                        <LoadingDots label="Loading item data" size="small" tone="active" />
-                      )}
                     </Fragment>
                   );
                 })()}
