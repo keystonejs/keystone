@@ -19,7 +19,15 @@ export function localImageAssetsAPI(
       await fs.writeFile(path.join(storageConfig.storagePath, `${id}.${extension}`), buffer);
     },
     async delete(id, extension) {
-      await fs.unlink(path.join(storageConfig.storagePath, `${id}.${extension}`));
+      try {
+        await fs.unlink(path.join(storageConfig.storagePath, `${id}.${extension}`));
+      } catch (e) {
+        const error = e as NodeJS.ErrnoException;
+        // If the file doesn't exist, we don't care
+        if (error.code !== 'ENOENT') {
+          throw e;
+        }
+      }
     },
   };
 }
@@ -51,7 +59,15 @@ export function localFileAssetsAPI(storageConfig: StorageConfig & { kind: 'local
       }
     },
     async delete(filename) {
-      await fs.unlink(path.join(storageConfig.storagePath, filename));
+      try {
+        await fs.unlink(path.join(storageConfig.storagePath, filename));
+      } catch (e) {
+        const error = e as NodeJS.ErrnoException;
+        // If the file doesn't exist, we don't care
+        if (error.code !== 'ENOENT') {
+          throw e;
+        }
+      }
     },
   };
 }
