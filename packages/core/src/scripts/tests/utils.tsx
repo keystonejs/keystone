@@ -154,7 +154,7 @@ export async function testdir(dir: Fixture): Promise<string> {
       const output = dir[filename];
       const fullPath = path.join(temp, filename);
       if (typeof output === 'string' || Buffer.isBuffer(output)) {
-        await fs.outputFile(fullPath, dir[filename]);
+        await fs.outputFile(fullPath, output);
       } else if (output.kind === 'config') {
         // note this is sync so that it doesn't conflict with any other `kind: 'config'`
         fs.outputFileSync(
