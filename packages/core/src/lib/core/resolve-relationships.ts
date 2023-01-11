@@ -5,6 +5,7 @@ type BaseResolvedRelationDBField = {
   list: string;
   field: string;
   relationName: string;
+  extendPrismaField?: (field: string) => string;
 };
 
 export type ResolvedRelationDBField =

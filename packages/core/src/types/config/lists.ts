@@ -236,4 +236,10 @@ export type ListDBConfig = {
    * the default (derived from the list key)
    */
   map?: string;
+  /**
+   * Customise the Prisma Schema for this list. This function is passed the
+   * Prisma Model for this list and should return a string containing the valid
+   * Prisma Model definition.
+   */
+  extendPrismaList?: (schema: string) => string;
 };

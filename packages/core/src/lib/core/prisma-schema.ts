@@ -188,7 +188,8 @@ export function printPrismaSchema(
   lists: Record<string, InitialisedList>,
   provider: DatabaseProvider,
   prismaPreviewFeatures?: readonly string[] | null,
-  additionalPrismaDatasourceProperties?: { [key: string]: string } | null
+  additionalPrismaDatasourceProperties?: { [key: string]: string } | null,
+  extendPrismaSchema?: (schema: string) => string
 ) {
   const additionalDataSourceString = Object.entries(additionalPrismaDatasourceProperties || {})
     .map(([key, value]) => `\n    ${key} = "${value}"`)
@@ -212,26 +213,31 @@ generator client {
   output   = "node_modules/.prisma/client"${prismaFlags}
 }
 \n`;
-  for (const [listKey, { resolvedDbFields, dbMap, isSingleton }] of Object.entries(lists)) {
-    prismaSchema += `model ${listKey} {`;
+  for (const [
+    listKey,
+    { resolvedDbFields, dbMap, isSingleton, extendPrismaList },
+  ] of Object.entries(lists)) {
+    let listPrisma = `model ${listKey} {`;
     for (const [fieldPath, field] of Object.entries(resolvedDbFields)) {
       if (field.kind !== 'none' && !(isSingleton && fieldPath === 'id')) {
-        prismaSchema += '\n' + printField(fieldPath, field, provider, lists);
+        const fieldPrisma = '\n' + printField(fieldPath, field, provider, lists);
+        listPrisma += field.extendPrismaField ? field.extendPrismaField(fieldPrisma) : fieldPrisma;
       }
       if (fieldPath === 'id') {
         assertDbFieldIsValidForIdField(listKey, field);
         if (isSingleton) {
-          prismaSchema += '\nid Int';
+          listPrisma += '\nid Int';
         }
-        prismaSchema += ' @id';
+        listPrisma += ' @id';
       }
     }
     if (dbMap !== undefined) {
-      prismaSchema += `\n@@map(${JSON.stringify(dbMap)})`;
+      listPrisma += `\n@@map(${JSON.stringify(dbMap)})`;
     }
-    prismaSchema += `\n}\n`;
+    listPrisma += `\n}\n`;
+    prismaSchema += extendPrismaList ? extendPrismaList(listPrisma) : listPrisma;
   }
   prismaSchema += `\n${collectEnums(lists)}\n`;
 
-  return prismaSchema;
+  return extendPrismaSchema ? extendPrismaSchema(prismaSchema) : prismaSchema;
 }

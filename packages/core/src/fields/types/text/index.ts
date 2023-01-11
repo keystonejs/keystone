@@ -28,6 +28,7 @@ export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     graphql?: { create?: { isNonNull?: boolean }; read?: { isNonNull?: boolean } };
     db?: {
       isNullable?: boolean;
+      extendPrismaField?: (field: string) => string;
       map?: string;
       /**
        * The underlying database type.
@@ -114,6 +115,7 @@ export const text =
       index: isIndexed === true ? 'index' : isIndexed || undefined,
       map: config.db?.map,
       nativeType: config.db?.nativeType,
+      extendPrismaField: config.db?.extendPrismaField,
     })({
       ...config,
       hooks: {

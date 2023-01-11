@@ -122,6 +122,7 @@ export type DatabaseConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   provider: DatabaseProvider;
   prismaPreviewFeatures?: readonly string[]; // https://www.prisma.io/docs/concepts/components/preview-features
   additionalPrismaDatasourceProperties?: { [key: string]: string };
+  extendPrismaSchema?: (originalSchema: string) => string;
 };
 
 // config.ui
