@@ -18,7 +18,7 @@
     "apollo-server-types": "^3.4.0",
     "cookie-signature": "^1.1.0",
     "cuid": "^2.1.8",
-    "fs-extra": "^10.0.0",
+    "fs-extra": "^11.0.0",
     "globby": "^11.0.4",
     "graphql": "^16.6.0",
     "graphql-upload": "^15.0.2",
