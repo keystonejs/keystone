@@ -27,6 +27,7 @@ export type PasswordFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     db?: {
       isNullable?: boolean;
       map?: string;
+      extendPrismaField?: (field: string) => string;
     };
     bcrypt?: Pick<typeof import('bcryptjs'), 'compare' | 'hash'>;
   };
@@ -113,6 +114,7 @@ export const password =
       scalar: 'String',
       mode: isNullable === false ? 'required' : 'optional',
       map: config.db?.map,
+      extendPrismaField: config.db?.extendPrismaField,
     })({
       ...config,
       hooks: {

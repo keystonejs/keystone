@@ -159,7 +159,8 @@ input PostRelateToManyForCreateInput {
 type PhoneNumber {
   id: ID!
   label: String
-  user: User
+  user(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0): [User!]
+  userCount(where: UserWhereInput! = {}): Int
   type: String
   value: String
 }
@@ -173,9 +174,15 @@ input PhoneNumberWhereInput {
   OR: [PhoneNumberWhereInput!]
   NOT: [PhoneNumberWhereInput!]
   id: IDFilter
-  user: UserWhereInput
+  user: UserManyRelationFilter
   type: StringNullableFilter
   value: StringFilter
+}
+
+input UserManyRelationFilter {
+  every: UserWhereInput
+  some: UserWhereInput
+  none: UserWhereInput
 }
 
 input StringNullableFilter {
@@ -214,15 +221,16 @@ input PhoneNumberOrderByInput {
 }
 
 input PhoneNumberUpdateInput {
-  user: UserRelateToOneForUpdateInput
+  user: UserRelateToManyForUpdateInput
   type: String
   value: String
 }
 
-input UserRelateToOneForUpdateInput {
-  create: UserCreateInput
-  connect: UserWhereUniqueInput
-  disconnect: Boolean
+input UserRelateToManyForUpdateInput {
+  disconnect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  create: [UserCreateInput!]
+  connect: [UserWhereUniqueInput!]
 }
 
 input PhoneNumberUpdateArgs {
@@ -231,14 +239,14 @@ input PhoneNumberUpdateArgs {
 }
 
 input PhoneNumberCreateInput {
-  user: UserRelateToOneForCreateInput
+  user: UserRelateToManyForCreateInput
   type: String
   value: String
 }
 
-input UserRelateToOneForCreateInput {
-  create: UserCreateInput
-  connect: UserWhereUniqueInput
+input UserRelateToManyForCreateInput {
+  create: [UserCreateInput!]
+  connect: [UserWhereUniqueInput!]
 }
 
 type Post {
@@ -297,6 +305,12 @@ input PostUpdateInput {
   author: UserRelateToOneForUpdateInput
 }
 
+input UserRelateToOneForUpdateInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+  disconnect: Boolean
+}
+
 input PostUpdateArgs {
   where: PostWhereUniqueInput!
   data: PostUpdateInput!
@@ -308,6 +322,11 @@ input PostCreateInput {
   content: JSON
   publishDate: DateTime
   author: UserRelateToOneForCreateInput
+}
+
+input UserRelateToOneForCreateInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
 }
 
 """

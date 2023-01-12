@@ -170,6 +170,7 @@ export function resolveRelationships(
             mode: 'one',
             field: rightRel.fieldPath,
             list: rightRel.listKey,
+            extendPrismaField: leftRel.field.extendPrismaField,
             foreignIdField: {
               kind: 'owned-unique',
               map:
@@ -184,6 +185,7 @@ export function resolveRelationships(
             mode: 'one',
             field: leftRel.fieldPath,
             list: leftRel.listKey,
+            extendPrismaField: rightRel.field.extendPrismaField,
             foreignIdField: { kind: 'none' },
             relationName,
           };
@@ -195,6 +197,7 @@ export function resolveRelationships(
           resolvedLists[leftRel.listKey][leftRel.fieldPath] = {
             kind: 'relation',
             mode: 'many',
+            extendPrismaField: leftRel.field.extendPrismaField,
             field: rightRel.fieldPath,
             list: rightRel.listKey,
             relationName,
@@ -202,6 +205,7 @@ export function resolveRelationships(
           resolvedLists[rightRel.listKey][rightRel.fieldPath] = {
             kind: 'relation',
             mode: 'many',
+            extendPrismaField: rightRel.field.extendPrismaField,
             field: leftRel.fieldPath,
             list: leftRel.listKey,
             relationName,
@@ -213,6 +217,7 @@ export function resolveRelationships(
           kind: 'relation',
           mode: 'one',
           field: rightRel.fieldPath,
+          extendPrismaField: leftRel.field.extendPrismaField,
           list: rightRel.listKey,
           foreignIdField: {
             kind: 'owned',
@@ -226,6 +231,7 @@ export function resolveRelationships(
         resolvedLists[rightRel.listKey][rightRel.fieldPath] = {
           kind: 'relation',
           mode: 'many',
+          extendPrismaField: rightRel.field.extendPrismaField,
           field: leftRel.fieldPath,
           list: leftRel.listKey,
           relationName,
@@ -244,6 +250,7 @@ export function resolveRelationships(
         resolvedLists[field.list][foreignFieldPath] = {
           kind: 'relation',
           mode: 'many',
+          extendPrismaField: field.extendPrismaField,
           list: listKey,
           field: fieldPath,
           relationName,
@@ -251,6 +258,7 @@ export function resolveRelationships(
         resolvedList[fieldPath] = {
           kind: 'relation',
           mode: 'many',
+          extendPrismaField: field.extendPrismaField,
           list: field.list,
           field: foreignFieldPath,
           relationName,
@@ -260,6 +268,7 @@ export function resolveRelationships(
         resolvedLists[field.list][foreignFieldPath] = {
           kind: 'relation',
           mode: 'many',
+          extendPrismaField: field.extendPrismaField,
           list: listKey,
           field: fieldPath,
           relationName,
@@ -267,6 +276,7 @@ export function resolveRelationships(
         resolvedList[fieldPath] = {
           kind: 'relation',
           list: field.list,
+          extendPrismaField: field.extendPrismaField,
           field: foreignFieldPath,
           foreignIdField: {
             kind: 'owned',

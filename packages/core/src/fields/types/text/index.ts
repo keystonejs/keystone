@@ -28,8 +28,8 @@ export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     graphql?: { create?: { isNonNull?: boolean }; read?: { isNonNull?: boolean } };
     db?: {
       isNullable?: boolean;
-      extendPrismaField?: (field: string) => string;
       map?: string;
+      extendPrismaField?: (field: string) => string;
       /**
        * The underlying database type.
        * Only some of the types are supported on PostgreSQL and MySQL.

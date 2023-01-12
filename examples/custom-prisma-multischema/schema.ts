@@ -25,10 +25,16 @@ const User: Lists.User = list({
       isIndexed: 'unique',
       validation: { isRequired: true },
     }),
-    password: password(),
+    password: password({ db: { extendPrismaField: list => list + ' @map("Password")' } }),
     roles: text({}),
     phoneNumbers: relationship({
       ref: 'PhoneNumber.user',
+      db: {
+        extendPrismaField: field => {
+          console.log('Phone Number - User: ', field);
+          return field;
+        },
+      },
       many: true,
       ui: {
         displayMode: 'cards',
@@ -38,7 +44,10 @@ const User: Lists.User = list({
         linkToItem: true,
       },
     }),
-    posts: relationship({ ref: 'Post.author', many: true }),
+    posts: relationship({
+      ref: 'Post.author',
+      many: true,
+    }),
     randomNumber: virtual({
       field: graphql.field({
         type: graphql.Float,
@@ -78,7 +87,16 @@ export const lists: Lists = {
           },
         },
       }),
-      user: relationship({ ref: 'User.phoneNumbers' }),
+      user: relationship({
+        ref: 'User.phoneNumbers',
+        many: true,
+        db: {
+          extendPrismaField: field => {
+            console.log('Phone Number: ', field);
+            return field;
+          },
+        },
+      }),
       type: select({
         options: [
           { label: 'Home', value: 'home' },
@@ -87,6 +105,9 @@ export const lists: Lists = {
         ],
         ui: {
           displayMode: 'segmented-control',
+        },
+        db: {
+          extendPrismaField: list => list + ' @map("Type")',
         },
       }),
       value: text({}),
@@ -129,9 +150,19 @@ export const lists: Lists = {
         ],
         links: true,
         dividers: true,
+        db: {
+          extendPrismaField: list => list + ' @map("Content")',
+        },
       }),
       publishDate: timestamp(),
       author: relationship({
+        db: {
+          extendPrismaField: () =>
+            `\nauthor User? @relation("Post_author", fields: [authorId], references: [id], onUpdate: Cascade, onDelete: Cascade) 
+            authorId String? @map("author")
+            
+            @@index([authorId])`,
+        },
         ref: 'User.posts',
         ui: {
           displayMode: 'cards',
