@@ -1,12 +1,5 @@
 import { list, graphql } from '@keystone-6/core';
-import {
-  text,
-  relationship,
-  password,
-  timestamp,
-  select,
-  virtual,
-} from '@keystone-6/core/fields';
+import { text, relationship, password, timestamp, select, virtual } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
 import { allowAll } from '@keystone-6/core/access';
 import { Lists } from '.keystone/types';
