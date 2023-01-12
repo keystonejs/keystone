@@ -5,6 +5,7 @@ import {
   recordConsole,
   runCommand,
   schemas,
+  customPrismaKeystoneConfig,
   symlinkKeystoneDeps,
   testdir,
 } from './utils';
@@ -56,6 +57,19 @@ describe('postinstall', () => {
     await runCommand(tmp, 'postinstall --fix');
     const files = await getFiles(tmp, schemasMatch);
     expect(files).toEqual(await getFiles(`${__dirname}/fixtures/basic-project`, schemasMatch));
+    expect(recording()).toMatchInlineSnapshot(`"✨ Generated GraphQL and Prisma schemas"`);
+  });
+  test('customising primsa schema through extendPrisma works', async () => {
+    const tmp = await testdir({
+      ...symlinkKeystoneDeps,
+      'keystone.js': customPrismaKeystoneConfig,
+    });
+    const recording = recordConsole();
+    await runCommand(tmp, 'postinstall --fix');
+    const files = await getFiles(tmp, ['schema.prisma']);
+    expect(files).toEqual(
+      await getFiles(`${__dirname}/fixtures/custom-prisma-project`, ['schema.prisma'])
+    );
     expect(recording()).toMatchInlineSnapshot(`"✨ Generated GraphQL and Prisma schemas"`);
   });
   test("does not prompt, error or modify the schemas if they're already up to date", async () => {
