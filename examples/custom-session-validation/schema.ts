@@ -41,6 +41,7 @@ export const lists = {
       passwordChangedAt: timestamp({
         // Don't allow the passwordChangedAt field to be set by the user.
         access: () => false,
+        isFilterable: false,
         hooks: {
           resolveInput: ({ resolvedData }) => {
             // If the password has been changed, update the passwordChangedAt field to the current time.

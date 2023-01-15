@@ -60,6 +60,7 @@ const User: Lists.User = list({
         create: access.isAdmin,
         update: access.isAdmin,
       },
+      isFilterable: false,
       ui: {
         createView: {
           fieldMode: args => (access.isAdmin(args) ? 'edit' : 'hidden'),
