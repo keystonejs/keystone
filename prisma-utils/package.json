@@ -12,8 +12,8 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@prisma/generator-helper": "4.8.0",
-    "@prisma/internals": "4.8.0",
+    "@prisma/generator-helper": "4.9.0",
+    "@prisma/internals": "4.9.0",
     "fs-extra": "^11.0.0",
     "prettier": "^2.5.0"
   },
