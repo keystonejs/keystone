@@ -111,21 +111,19 @@ export type ListKeyFromRunner<Runner extends ReturnType<typeof setupTestRunner>>
 export const unpackErrors = (errors: readonly any[] | undefined) =>
   (errors || []).map(({ locations, ...unpacked }) => unpacked);
 
-const j = (messages: string[]) => messages.map(m => `  - ${m}`).join('\n');
+function j (messages: string[]) {
+  return messages.map(m => `  - ${m}`).join('\n');
+}
 
-// FIXME: It's not clear to me right now why sometimes
-// we get an expcetion, and other times we don't - TL
 export const expectInternalServerError = (
   errors: readonly any[] | undefined,
-  expectException: boolean,
   args: { path: any[]; message: string }[]
 ) => {
   const unpackedErrors = unpackErrors(errors);
   expect(unpackedErrors).toEqual(
     args.map(({ path, message }) => ({
       extensions: {
-        code: 'INTERNAL_SERVER_ERROR',
-        ...(expectException ? { exception: { locations: [expect.any(Object)], message } } : {}),
+        code: 'INTERNAL_SERVER_ERROR'
       },
       path,
       message,
