@@ -63,7 +63,6 @@
     "@keystone-ui/popover": "^6.0.2",
     "@keystone-ui/tooltip": "^6.0.2",
     "@types/react": "^18.0.9",
-    "apollo-server-errors": "^3.3.0",
     "apply-ref": "^1.0.0",
     "fp-ts": "^2.11.5",
     "graphql": "^16.6.0",

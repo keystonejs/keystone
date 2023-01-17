@@ -111,13 +111,12 @@ export type ListKeyFromRunner<Runner extends ReturnType<typeof setupTestRunner>>
 export const unpackErrors = (errors: readonly any[] | undefined) =>
   (errors || []).map(({ locations, ...unpacked }) => unpacked);
 
-const j = (messages: string[]) => messages.map(m => `  - ${m}`).join('\n');
+function j(messages: string[]) {
+  return messages.map(m => `  - ${m}`).join('\n');
+}
 
-// FIXME: It's not clear to me right now why sometimes
-// we get an expcetion, and other times we don't - TL
 export const expectInternalServerError = (
   errors: readonly any[] | undefined,
-  expectException: boolean,
   args: { path: any[]; message: string }[]
 ) => {
   const unpackedErrors = unpackErrors(errors);
@@ -125,7 +124,6 @@ export const expectInternalServerError = (
     args.map(({ path, message }) => ({
       extensions: {
         code: 'INTERNAL_SERVER_ERROR',
-        ...(expectException ? { exception: { locations: [expect.any(Object)], message } } : {}),
       },
       path,
       message,
@@ -207,7 +205,7 @@ export const expectExtensionError = (
     args.map(({ path, messages, debug }) => {
       const message = `An error occured while running "${extensionName}".\n${j(messages)}`;
       const stacktrace = message.split('\n');
-      stacktrace[0] = `Error: ${stacktrace[0]}`;
+      stacktrace[0] = `GraphQLError: ${stacktrace[0]}`;
 
       // We expect to see debug details if:
       //   - httpQuery is false
@@ -222,9 +220,7 @@ export const expectExtensionError = (
       return {
         extensions: {
           code: 'KS_EXTENSION_ERROR',
-          ...(expectException
-            ? { exception: { stacktrace: expect.arrayContaining(stacktrace) } }
-            : {}),
+          ...(expectException ? { stacktrace: expect.arrayContaining(stacktrace) } : {}),
           ...(expectDebug ? { debug } : {}),
         },
         path,

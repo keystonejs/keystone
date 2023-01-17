@@ -175,7 +175,6 @@ Options:
   If you provide an array of `query`, `create`, `update`, or `delete` options, the corresponding operations will be omitted from the GraphQL API.
 
 ```typescript
-import { CacheScope } from 'apollo-cache-control';
 import { config, list } from '@keystone-6/core';
 
 export default config({
@@ -186,7 +185,7 @@ export default config({
         itemQueryName: '...',
         listQueryName: '...',
         maxTake: 100,
-        cacheHint: { maxAge: 60, scope: CacheScope.Private },
+        cacheHint: { maxAge: 60, scope: 'PRIVATE' },
         omit: ['query', 'create', 'update', 'delete'],
       },
       /* ... */

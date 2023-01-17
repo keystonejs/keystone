@@ -154,10 +154,6 @@
       "module": "./___internal-do-not-use-will-break-in-patch/load-config/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-load-config.esm.js",
       "default": "./___internal-do-not-use-will-break-in-patch/load-config/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-load-config.cjs.js"
     },
-    "./___internal-do-not-use-will-break-in-patch/next-graphql": {
-      "module": "./___internal-do-not-use-will-break-in-patch/next-graphql/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-next-graphql.esm.js",
-      "default": "./___internal-do-not-use-will-break-in-patch/next-graphql/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-next-graphql.cjs.js"
-    },
     "./___internal-do-not-use-will-break-in-patch/admin-ui/next-config": {
       "module": "./___internal-do-not-use-will-break-in-patch/admin-ui/next-config/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-next-config.esm.js",
       "default": "./___internal-do-not-use-will-break-in-patch/admin-ui/next-config/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-next-config.cjs.js"
@@ -214,7 +210,9 @@
     "access"
   ],
   "dependencies": {
+    "@apollo/cache-control-types": "^1.0.2",
     "@apollo/client": "^3.7.0",
+    "@apollo/server": "^4.3.0",
     "@aws-sdk/client-s3": "^3.83.0",
     "@aws-sdk/lib-storage": "^3.83.0",
     "@aws-sdk/s3-request-presigner": "^3.83.0",
@@ -247,6 +245,7 @@
     "@types/apollo-upload-client": "17.0.2",
     "@types/bcryptjs": "^2.4.2",
     "@types/cookie": "^0.5.0",
+    "@types/cors": "^2.8.13",
     "@types/express": "^4.17.13",
     "@types/fs-extra": "^11.0.0",
     "@types/inflection": "^1.13.0",
@@ -256,13 +255,9 @@
     "@types/supertest": "^2.0.11",
     "@types/uid-safe": "^2.1.2",
     "@types/uuid": "^8.3.1",
-    "apollo-server-core": "^3.5.0",
-    "apollo-server-errors": "^3.3.0",
-    "apollo-server-express": "^3.5.0",
-    "apollo-server-micro": "^3.5.0",
-    "apollo-server-types": "^3.4.0",
     "apollo-upload-client": "^17.0.0",
     "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.1",
     "bytes": "^3.1.1",
     "chalk": "^4.1.2",
     "ci-info": "^3.2.0",
@@ -289,7 +284,6 @@
     "inflection": "^1.13.1",
     "intersection-observer": "^0.12.0",
     "meow": "^9.0.0",
-    "micro": "^9.3.4",
     "next": "^13.0.3",
     "node-fetch": "^2.6.7",
     "p-limit": "^2.3.0",
@@ -317,7 +311,6 @@
       "index.ts",
       "system.ts",
       "next.ts",
-      "___internal-do-not-use-will-break-in-patch/next-graphql.ts",
       "___internal-do-not-use-will-break-in-patch/load-config.ts",
       "___internal-do-not-use-will-break-in-patch/artifacts.ts",
       "___internal-do-not-use-will-break-in-patch/admin-ui/pages/*/index.tsx",
