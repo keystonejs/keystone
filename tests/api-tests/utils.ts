@@ -111,7 +111,7 @@ export type ListKeyFromRunner<Runner extends ReturnType<typeof setupTestRunner>>
 export const unpackErrors = (errors: readonly any[] | undefined) =>
   (errors || []).map(({ locations, ...unpacked }) => unpacked);
 
-function j (messages: string[]) {
+function j(messages: string[]) {
   return messages.map(m => `  - ${m}`).join('\n');
 }
 
@@ -123,7 +123,7 @@ export const expectInternalServerError = (
   expect(unpackedErrors).toEqual(
     args.map(({ path, message }) => ({
       extensions: {
-        code: 'INTERNAL_SERVER_ERROR'
+        code: 'INTERNAL_SERVER_ERROR',
       },
       path,
       message,
