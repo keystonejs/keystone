@@ -87,7 +87,7 @@ export default config({
   db: {
     provider: 'sqlite',
     url: 'file:./keystone.db',
-  },
+  }
 });
 ```
 
@@ -105,6 +105,7 @@ We’re going to build a simple blog with **users** and **posts**. Let’s start
 
 ```js{2,9-15}[5-8]
 import { config, list } from '@keystone-6/core';
+import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
 
 export default config({
@@ -114,6 +115,7 @@ export default config({
   },
   lists: {
     User: list({
+      access: allowAll,
       fields: {
         name: text({ validation: { isRequired: true } }),
         email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
