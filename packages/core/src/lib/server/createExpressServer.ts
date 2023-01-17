@@ -3,12 +3,13 @@ import cors, { CorsOptions } from 'cors';
 import { json } from 'body-parser';
 import { expressMiddleware } from '@apollo/server/express4';
 import express from 'express';
-import { GraphQLSchema } from 'graphql';
+import { GraphQLFormattedError, GraphQLSchema } from 'graphql';
+import { ApolloServer, ApolloServerOptions } from '@apollo/server';
+import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled';
+import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 // @ts-ignore
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js';
-import { ApolloServer } from '@apollo/server';
 import type { KeystoneConfig, KeystoneContext, GraphQLConfig } from '../../types';
-import { createApolloServerExpress } from './createApolloServer';
 import { addHealthCheck } from './addHealthCheck';
 
 /*
@@ -21,37 +22,25 @@ so the CLI can bring up the dev server early to handle GraphQL requests.
 
 const DEFAULT_MAX_FILE_SIZE = 200 * 1024 * 1024; // 200 MiB
 
-const addApolloServer = async ({
-  server,
-  config,
-  graphQLSchema,
-  context,
-  graphqlConfig,
-}: {
-  server: express.Express;
-  config: KeystoneConfig;
-  graphQLSchema: GraphQLSchema;
-  context: KeystoneContext;
-  graphqlConfig?: GraphQLConfig;
-}) => {
-  const apolloServer = createApolloServerExpress({
-    graphQLSchema,
-    graphqlConfig,
-  });
+const formatError = (graphqlConfig: GraphQLConfig | undefined) => {
+  return (formattedError: GraphQLFormattedError, error: unknown) => {
+    let debug = graphqlConfig?.debug;
+    if (debug === undefined) {
+      debug = process.env.NODE_ENV !== 'production';
+    }
 
-  const maxFileSize = config.server?.maxFileSize || DEFAULT_MAX_FILE_SIZE;
-  server.use(graphqlUploadExpress({ maxFileSize }));
-  await apolloServer.start();
-  server.use(
-    config.graphql?.path || '/api/graphql',
-    json(config.graphql?.bodyParser),
-    expressMiddleware(apolloServer, {
-      context: async ({ req, res }) => {
-        return await context.withRequest(req, res);
-      },
-    })
-  );
-  return apolloServer;
+    if (!debug && formattedError.extensions) {
+      // Strip out any `debug` extensions
+      delete formattedError.extensions.debug;
+      delete formattedError.extensions.exception;
+    }
+
+    if (graphqlConfig?.apolloConfig?.formatError) {
+      return graphqlConfig.apolloConfig.formatError(formattedError, error);
+    } else {
+      return formattedError;
+    }
+  };
 };
 
 export const createExpressServer = async (
@@ -105,13 +94,38 @@ export const createExpressServer = async (
     }
   }
 
-  const apolloServer = await addApolloServer({
-    server: expressServer,
-    config,
-    graphQLSchema,
-    context,
-    graphqlConfig: config.graphql,
-  });
+  const apolloConfig = config.graphql?.apolloConfig;
+  const playgroundOption = config.graphql?.playground ?? process.env.NODE_ENV !== 'production';
+  const serverConfig = {
+    formatError: formatError(config.graphql),
+    includeStacktraceInErrorResponses: config.graphql?.debug, // If undefined, use Apollo default of NODE_ENV !== 'production'
+    ...apolloConfig,
+    schema: graphQLSchema,
+    plugins:
+      playgroundOption === 'apollo'
+        ? apolloConfig?.plugins
+        : [
+            playgroundOption
+              ? ApolloServerPluginLandingPageLocalDefault()
+              : ApolloServerPluginLandingPageDisabled(),
+            ...(apolloConfig?.plugins || []),
+          ],
+  } as ApolloServerOptions<KeystoneContext>;
+
+  const apolloServer = new ApolloServer({ ...serverConfig });
+
+  const maxFileSize = config.server?.maxFileSize || DEFAULT_MAX_FILE_SIZE;
+  expressServer.use(graphqlUploadExpress({ maxFileSize }));
+  await apolloServer.start();
+  expressServer.use(
+    config.graphql?.path || '/api/graphql',
+    json(config.graphql?.bodyParser),
+    expressMiddleware(apolloServer, {
+      context: async ({ req, res }) => {
+        return await context.withRequest(req, res);
+      },
+    })
+  );
 
   return { expressServer, apolloServer, httpServer };
 };
