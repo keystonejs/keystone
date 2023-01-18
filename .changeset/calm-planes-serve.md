@@ -2,4 +2,4 @@
 '@keystone-6/cloudinary': patch
 ---
 
-Fix Cloudinary Telemetry Field Name
+Add telemetry field type name for `cloudinaryImage` field
