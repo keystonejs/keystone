@@ -3,11 +3,11 @@ title: "Images and Files"
 description: "Learn how to add Images and Files to your project using Keystone’s Storage configuration"
 ---
 
-Keystone [fields](../fields/overview) include the `image` and `file` types. You can use them to reference and (if required) serve images and/or files from Keystone. This guide will show you how to configure images and files in your Keystone system so you can store assets either locally or [Amazon S3 storage](https://aws.amazon.com/s3/).
+Keystone [fields](../fields/overview) include the `image` and `file` types. You can use them to reference and (if required) serve images and/or files from Keystone. This guide will show you how to configure images and files in your Keystone system so you can store assets either locally or [Amazon S3 storage](https://aws.amazon.com/s3/) or DigitalOcean Spaces (https://www.digitalocean.com/products/spaces).
 
 ## How asset storage works in Keystone
 
-Keystone manages file and image assets through a `storage` object you define in Keystone’s [configuration file](/docs/config/config). Any number of stores can be set up within the `storage` object, and you can mix and match between `local` and `s3` (by [Amazon](https://aws.amazon.com/s3/)) depending on your use case.
+Keystone manages file and image assets through a `storage` object you define in Keystone’s [configuration file](/docs/config/config). Any number of stores can be set up within the `storage` object, and you can mix and match between `local` and `s3` (by [Amazon](https://aws.amazon.com/s3/)) and `S3-Compatible Cloud Object Storage` (by [DigitalOcean Spaces](https://www.digitalocean.com/products/spaces)) depending on your use case.
 
 The `storage` object defines how and where the assets are stored and accessed by both Keystone and the client frontend. This object defines:
 
@@ -44,6 +44,34 @@ dotenv.config();
 /** ... */
 ```
 
+If you want to use DigitalOcean Spaces for S3-Compatible Cloud Object Storage services, you should use `endpoint` 
+
+```typescript{24-54}
+import { config } from '@keystone-6/core';
+import dotenv from 'dotenv';
+import { lists } from './schema';
+
+dotenv.config();
+
+ const {
+  // The S3 Bucket Name used to store assets
+  S3_BUCKET_NAME: bucketName = 'keystone-test',
+  // The region of the S3 bucket
+  S3_REGION: region = 'ap-southeast-2',
+  // The Access Key ID and Secret that has read/write access to the S3 bucket
+  S3_ACCESS_KEY_ID: accessKeyId = 'keystone',
+  S3_SECRET_ACCESS_KEY: secretAccessKey = 'keystone',
+  // The base URL to serve assets from
+  ASSET_BASE_URL: baseUrl = 'http://localhost:3000',
+  // An endpoint to use - to be provided if you are not using AWS as your endpoint
+  // For example if you use DigitalOcean Spaces it looks like 
+  // https://keystone-test-bucket.ap-southeast-2-region.digitaloceanspaces.com
+  // here end point should be https://ap-southeast-2-region.digitaloceanspaces.com
+  S3_ENDPOINT:endpoint = 'https://ap-southeast-2-region.digitaloceanspaces.com'
+ } = process.env;
+/** ... */
+```
+
 ### Storing assets in `s3`
 
 We can then add an `s3` `storage` object, the object below is called `my_s3_files` and this is the name that we will use in our `field` config later. This can be called any name that makes sense to your use case.
@@ -66,6 +94,8 @@ storage: {
     accessKeyId,
     // The S3 Secret pulled from the S3_SECRET_ACCESS_KEY environment variable
     secretAccessKey,
+    // the S3 endpoint pulled from S3_ENDPOINT environment variable
+    endpoint,
     // The S3 links will be signed so they remain private
     signed: { expiry: 5000 },
   },
