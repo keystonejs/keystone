@@ -27,6 +27,7 @@ export function s3ImageAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }):
             gif: 'image/gif',
             jpg: 'image/jpeg',
           }[extension],
+          ACL: storageConfig.acl,
         },
       });
       await upload.done();
@@ -63,6 +64,7 @@ export function s3FileAssetsAPI(storageConfig: StorageConfig & { kind: 's3' }): 
           Key: (storageConfig.pathPrefix || '') + filename,
           Body: stream,
           ContentType: 'application/octet-stream',
+          ACL: storageConfig.acl,
         },
       });
 
