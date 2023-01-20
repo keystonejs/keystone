@@ -94,7 +94,7 @@ storage: {
     accessKeyId,
     // The S3 Secret pulled from the S3_SECRET_ACCESS_KEY environment variable
     secretAccessKey,
-    // the S3 endpoint pulled from S3_ENDPOINT environment variable
+    // the S3 endpoint pulled from S3_ENDPOINT environment variable (if defined)
     endpoint,
     // The S3 links will be signed so they remain private
     signed: { expiry: 5000 },
