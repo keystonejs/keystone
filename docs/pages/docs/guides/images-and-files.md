@@ -7,7 +7,7 @@ Keystone [fields](../fields/overview) include the `image` and `file` types. You 
 
 ## How asset storage works in Keystone
 
-Keystone manages file and image assets through a `storage` object you define in Keystone’s [configuration file](/docs/config/config). Any number of stores can be set up within the `storage` object, and you can mix and match between `local` and `s3` (by [Amazon](https://aws.amazon.com/s3/)) and `S3-Compatible Cloud Object Storage` (by [DigitalOcean Spaces](https://www.digitalocean.com/products/spaces)) depending on your use case.
+Keystone manages file and image assets through a `storage` object you define in Keystone’s [configuration file](/docs/config/config). Any number of stores can be set up within the `storage` object, and you can mix and match between `local` and `s3` compatible providers (akin to [Amazon S3](https://aws.amazon.com/s3/, or [DigitalOcean Spaces](https://www.digitalocean.com/products/spaces)).
 
 The `storage` object defines how and where the assets are stored and accessed by both Keystone and the client frontend. This object defines:
 
