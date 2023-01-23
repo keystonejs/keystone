@@ -69,7 +69,7 @@ These database types are powered by their corresponding Prisma database provider
   This can also be customised at the list level `db.idField`.
   If you are using `autoincrement`, you can also specify `type: 'BigInt'` on PostgreSQL and MySQL to use BigInts.
 - `prismaPreviewFeatures` (default: `[]`): Enable [Prisma preview features](https://www.prisma.io/docs/concepts/components/preview-features) by providing an array of strings.
-- `additionalPrismaDatasourceProperties` (default: `{}`): Set additional datasource properties like `referentialIntegrity = "prisma"` (required for e.g. PlanetScale) by providing an object with key-value pairs.
+- `additionalPrismaDatasourceProperties` (default: `{}`): Set additional datasource properties like `relationMode = "prisma"` (required for e.g. PlanetScale) by providing an object with key-value pairs.
 - `shadowDatabaseUrl` (default: `undefined`): Enable [shadow databases](https://www.prisma.io/docs/concepts/components/prisma-migrate/shadow-database#cloud-hosted-shadow-databases-must-be-created-manually) for some cloud providers.
 
 ### postgresql
