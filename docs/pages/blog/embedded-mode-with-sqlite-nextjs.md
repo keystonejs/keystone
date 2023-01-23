@@ -111,6 +111,7 @@ To create and edit blog records in Keystone's Admin UI, add a `keystone.ts` [con
 
 import { config, list } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
+import { allowAll } from '@keystone-6/core/access';
 import { Lists } from '.keystone/types';
 
 const Post: Lists.Post = list({
@@ -119,6 +120,7 @@ const Post: Lists.Post = list({
     slug: text({ isIndexed: 'unique', isFilterable: true }),
     content: text(),
   },
+  access: allowAll
 });
 
 export default config({
