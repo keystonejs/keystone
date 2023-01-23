@@ -157,11 +157,11 @@ export const lists: Lists = {
       publishDate: timestamp(),
       author: relationship({
         db: {
-          extendPrismaField: () =>
-            `\nauthor User? @relation("Post_author", fields: [authorId], references: [id], onUpdate: Cascade, onDelete: Cascade) 
-            authorId String? @map("author")
-            
-            @@index([authorId])`,
+          extendPrismaField: () => [
+            `author User? @relation("Post_author", fields: [authorId], references: [id], onUpdate: Cascade, onDelete: Cascade)`,
+            `authorId String? @map("author")`,
+            `@@index([authorId])`,
+          ].join('\n')
         },
         ref: 'User.posts',
         ui: {
