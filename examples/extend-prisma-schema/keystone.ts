@@ -6,7 +6,7 @@ export default config({
     provider: 'sqlite',
     url: process.env.DATABASE_URL || 'file:./keystone-example.db',
     extendPrismaSchema: schema => {
-      // we want to force binary to be linux-musl
+      // as an example, we will change the Prisma binary to be linux-musl
       return schema.replace(/(generator [^}]+)}/g, '$1binaryTargets = ["linux-musl"]\n}');
     },
   },
