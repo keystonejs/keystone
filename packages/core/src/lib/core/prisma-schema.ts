@@ -91,8 +91,11 @@ function printField(
     }
     const relationIdFieldPath = `${fieldPath}Id`;
     const relationField = `${fieldPath} ${field.list}? @relation("${field.relationName}", fields: [${relationIdFieldPath}], references: [id])`;
-    const foreignIdField = lists[field.list].resolvedDbFields.id;
-    assertDbFieldIsValidForIdField(field.list, foreignIdField);
+
+    const foreignList = lists[field.list];
+    const foreignIdField = foreignList.resolvedDbFields.id;
+
+    assertDbFieldIsValidForIdField(foreignList.listKey, foreignList.isSingleton, foreignIdField);
     const nativeType = printNativeType(foreignIdField.nativeType, datasourceName);
     const index = printIndex(
       relationIdFieldPath,
@@ -151,6 +154,7 @@ function collectEnums(lists: Record<string, InitialisedList>) {
 
 function assertDbFieldIsValidForIdField(
   listKey: string,
+  isSingleton: boolean,
   field: ResolvedDBField
 ): asserts field is ScalarDBField<'Int' | 'String', 'required'> {
   if (field.kind !== 'scalar') {
@@ -177,7 +181,7 @@ function assertDbFieldIsValidForIdField(
     );
   }
   // this will likely be loosened in the future
-  if (field.default === undefined) {
+  if (field.default === undefined && !isSingleton) {
     throw new Error(
       `id fields must specify a Prisma/database level default value but the id field for the ${listKey} list does not`
     );
@@ -222,21 +226,19 @@ export function printPrismaSchema(
     const listPrisma = [`model ${listKey} {`];
 
     for (const [fieldPath, field] of Object.entries(resolvedDbFields)) {
-      if (field.kind !== 'none' && !(isSingleton && fieldPath === 'id')) {
+      if (fieldPath === 'id') {
+        assertDbFieldIsValidForIdField(listKey, isSingleton, field);
+      }
+
+      if (field.kind !== 'none') {
         let fieldPrisma = printField(fieldPath, field, provider, lists);
         if (fieldPath === 'id') {
-          assertDbFieldIsValidForIdField(listKey, field);
           fieldPrisma += ' @id';
         }
 
         listPrisma.push(
           field.extendPrismaSchema ? field.extendPrismaSchema(fieldPrisma) : fieldPrisma
         );
-      }
-
-      if (isSingleton && fieldPath === 'id') {
-        assertDbFieldIsValidForIdField(listKey, field);
-        listPrisma.push('id Int @id');
       }
     }
 
