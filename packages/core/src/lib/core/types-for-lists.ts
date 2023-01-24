@@ -155,10 +155,9 @@ function getListsWithInitialisedFields(
   for (const [listKey, list] of Object.entries(listsConfig)) {
     const intermediateList = intermediateLists[listKey];
     const resultFields: Record<string, InitialisedField> = {};
-
     const groups: FieldGroupConfig[] = [];
-
     const fieldKeys = Object.keys(list.fields);
+
     for (const [idx, [fieldKey, fieldFunc]] of Object.entries(list.fields).entries()) {
       if (fieldKey.startsWith('__group')) {
         const group = fieldFunc as any;

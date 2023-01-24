@@ -209,7 +209,7 @@ export function printPrismaSchema(
     `generator client {`,
     `provider = "prisma-client-js"`,
     `output = "node_modules/.prisma/client"`,
-    ...(prismaPreviewFeatures && prismaPreviewFeatures.length
+    ...(prismaPreviewFeatures?.length
       ? [`previewFeatures = ["${prismaPreviewFeatures.join('","')}"]`]
       : []),
     '}',
@@ -251,7 +251,7 @@ export function printPrismaSchema(
       extendPrismaListSchema ? extendPrismaListSchema(listPrismaStr) : listPrismaStr
     );
   }
-  prismaSchema.push(...collectEnums(lists));
+  prismaSchema.push(collectEnums(lists));
 
   const prismaSchemaStr = prismaSchema.join('\n');
   return extendPrismaCompleteSchema ? extendPrismaCompleteSchema(prismaSchemaStr) : prismaSchemaStr;
