@@ -1,12 +1,16 @@
 import { KeystoneConfig, IdFieldConfig } from '../../types';
 import { idFieldType } from '../id-field';
 
-function getIdField ({ kind, type }: IdFieldConfig): Required<IdFieldConfig> {
-  return (kind === 'cuid') ? { kind: 'cuid', type: 'String' } :
-      (kind === 'uuid') ? { kind: 'uuid', type: 'String' } :
-      (type === 'BigInt') ? { kind: 'autoincrement', type: 'BigInt' } :
-      (type === 'Int') ? { kind: 'autoincrement', type: 'Int' } :
-      { kind: 'cuid', type: 'String' };
+function getIdField({ kind, type }: IdFieldConfig): Required<IdFieldConfig> {
+  return kind === 'cuid'
+    ? { kind: 'cuid', type: 'String' }
+    : kind === 'uuid'
+    ? { kind: 'uuid', type: 'String' }
+    : type === 'BigInt'
+    ? { kind: 'autoincrement', type: 'BigInt' }
+    : type === 'Int'
+    ? { kind: 'autoincrement', type: 'Int' }
+    : { kind: 'cuid', type: 'String' };
 }
 
 /* Validate lists config and default the id field */
@@ -58,23 +62,26 @@ function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['lists'] {
       listsWithIds[listKey] = {
         ...list,
         fields: {
-          id: idFieldType({
-            kind: 'autoincrement',
-            type: 'Int',
-          }, true),
-          ...list.fields
-        }
+          id: idFieldType(
+            {
+              kind: 'autoincrement',
+              type: 'Int',
+            },
+            true
+          ),
+          ...list.fields,
+        },
       };
 
-      continue
+      continue;
     }
 
     listsWithIds[listKey] = {
       ...list,
       fields: {
         id: idFieldType(getIdField(list.db?.idField ?? defaultIdField), false),
-        ...list.fields
-      }
+        ...list.fields,
+      },
     };
   }
 

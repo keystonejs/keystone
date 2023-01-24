@@ -117,8 +117,9 @@ export const idFieldType =
   (config: Required<IdFieldConfig>, isSingleton: boolean): FieldTypeFunc<BaseListTypeInfo> =>
   meta => {
     const parseVal =
-      (config.kind === 'autoincrement' && config.type === 'BigInt') ? idParsers.autoincrementBigInt :
-      idParsers[isSingleton ? 'singleton' : config.kind]
+      config.kind === 'autoincrement' && config.type === 'BigInt'
+        ? idParsers.autoincrementBigInt
+        : idParsers[isSingleton ? 'singleton' : config.kind];
 
     return fieldType({
       kind: 'scalar',
