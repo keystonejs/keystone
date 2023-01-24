@@ -9,7 +9,7 @@ import type { BaseFields, FilterOrderArgs } from './fields';
 export type ListSchemaConfig = Record<string, ListConfig<any, BaseFields<BaseListTypeInfo>>>;
 
 export type IdFieldConfig =
-  | { kind: 'cuid' | 'uuid' }
+  | { kind: 'cuid' | 'uuid'; type?: 'String' }
   | {
       kind: 'autoincrement';
       /**
