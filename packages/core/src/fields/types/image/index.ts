@@ -13,7 +13,7 @@ import { SUPPORTED_IMAGE_EXTENSIONS } from './utils';
 export type ImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
   storage: string;
   db?: {
-    extendPrisma?: (field: string) => string;
+    extendPrismaSchema?: (field: string) => string;
   };
 } & CommonFieldConfig<ListTypeInfo>;
 
@@ -85,7 +85,7 @@ export const image =
 
     return fieldType({
       kind: 'multi',
-      extendPrisma: config.db?.extendPrisma,
+      extendPrismaSchema: config.db?.extendPrismaSchema,
       fields: {
         filesize: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
         extension: { kind: 'scalar', scalar: 'String', mode: 'optional' },

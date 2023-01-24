@@ -6,7 +6,7 @@ export default config({
   db: {
     provider: 'postgresql',
     url: 'file:./app.db',
-    extendPrisma: schema =>
+    extendPrismaSchema: schema =>
       schema
         .replace(/(\ngenerator[^\n]+\{[^\}]+)\}/, '$1  previewFeatures = ["multiSchema"]\n}')
         .replace(/(datasource[^\n]+\{[^\}]+)\}/, '$1  schemas = ["first", "second"]\n}'),
@@ -15,7 +15,7 @@ export default config({
     Todo: list({
       access: allowAll,
       db: {
-        extendPrisma: model => model.replace('}', '@@schema("first")' + '\n}'),
+        extendPrismaSchema: model => model.replace('}', '@@schema("first")' + '\n}'),
       },
       fields: {
         title: text(),
@@ -24,7 +24,7 @@ export default config({
     SecondTodo: list({
       access: allowAll,
       db: {
-        extendPrisma: model => model.replace('}', '@@schema("second")' + '\n}'),
+        extendPrismaSchema: model => model.replace('}', '@@schema("second")' + '\n}'),
       },
       fields: {
         title: text(),

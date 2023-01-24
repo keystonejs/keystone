@@ -110,7 +110,7 @@ export function jsonFieldTypePolyfilledForSQLite<
     map?: string;
     mode?: 'required' | 'optional';
     default?: ScalarDBField<'Json', 'optional'>['default'];
-    extendPrisma?: (field: string) => string;
+    extendPrismaSchema?: (field: string) => string;
   }
 ) {
   if (provider === 'sqlite') {
@@ -120,7 +120,7 @@ export function jsonFieldTypePolyfilledForSQLite<
       scalar: 'String',
       default: dbFieldConfig?.default,
       map: dbFieldConfig?.map,
-      extendPrisma: dbFieldConfig?.extendPrisma,
+      extendPrismaSchema: dbFieldConfig?.extendPrismaSchema,
     })({
       ...config,
       input: {
@@ -142,6 +142,6 @@ export function jsonFieldTypePolyfilledForSQLite<
     scalar: 'Json',
     default: dbFieldConfig?.default,
     map: dbFieldConfig?.map,
-    extendPrisma: dbFieldConfig?.extendPrisma,
+    extendPrismaSchema: dbFieldConfig?.extendPrismaSchema,
   })(config);
 }

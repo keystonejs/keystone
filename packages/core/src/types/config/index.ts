@@ -126,7 +126,7 @@ export type DatabaseConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   /** @deprecated use extendPrismaSchema */
   additionalPrismaDatasourceProperties?: { [key: string]: string };
 
-  extendPrisma?: (schema: string) => string;
+  extendPrismaSchema?: (schema: string) => string;
 };
 
 // config.ui

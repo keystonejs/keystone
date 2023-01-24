@@ -28,7 +28,7 @@ export type CalendarDayFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     };
     db?: {
       isNullable?: boolean;
-      extendPrisma?: (field: string) => string;
+      extendPrismaSchema?: (field: string) => string;
       map?: string;
     };
   };
@@ -85,7 +85,7 @@ export const calendarDay =
             }
           : undefined,
       map: config.db?.map,
-      extendPrisma: config.db?.extendPrisma,
+      extendPrismaSchema: config.db?.extendPrismaSchema,
       nativeType: usesNativeDateType ? 'Date' : undefined,
     })({
       ...config,

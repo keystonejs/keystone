@@ -189,7 +189,7 @@ export function printPrismaSchema(
   provider: DatabaseProvider,
   prismaPreviewFeatures?: readonly string[] | null,
   additionalPrismaDatasourceProperties?: { [key: string]: string } | null,
-  extendPrismaEntireSchema?: (schema: string) => string
+  extendPrismaCompleteSchema?: (schema: string) => string
 ) {
   const additionalDataSources = Object.entries(additionalPrismaDatasourceProperties || {})
     .map(([key, value]) => `${key} = "${value}"`)
@@ -215,7 +215,12 @@ export function printPrismaSchema(
 
   for (const [
     listKey,
-    { resolvedDbFields, dbMap, isSingleton, extendPrisma },
+    {
+      resolvedDbFields,
+      dbMap,
+      isSingleton,
+      extendPrismaSchema: extendPrismaListSchema
+    },
   ] of Object.entries(lists)) {
     const listPrisma = [
       `model ${listKey} {`,
@@ -229,7 +234,7 @@ export function printPrismaSchema(
           fieldPrisma += ' @id';
         }
 
-        listPrisma.push(field.extendPrisma ? field.extendPrisma(fieldPrisma) : fieldPrisma);
+        listPrisma.push(field.extendPrismaSchema ? field.extendPrismaSchema(fieldPrisma) : fieldPrisma);
       }
 
       if (isSingleton && fieldPath === 'id') {
@@ -245,10 +250,10 @@ export function printPrismaSchema(
     listPrisma.push('}');
     const listPrismaStr = listPrisma.join('\n');
 
-    prismaSchema.push(extendPrisma ? extendPrisma(listPrismaStr) : listPrismaStr);
+    prismaSchema.push(extendPrismaListSchema ? extendPrismaListSchema(listPrismaStr) : listPrismaStr);
   }
   prismaSchema.push(...collectEnums(lists));
 
   const prismaSchemaStr = prismaSchema.join('\n');
-  return extendPrismaEntireSchema ? extendPrismaEntireSchema(prismaSchemaStr) : prismaSchemaStr;
+  return extendPrismaCompleteSchema ? extendPrismaCompleteSchema(prismaSchemaStr) : prismaSchemaStr;
 }

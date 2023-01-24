@@ -35,7 +35,7 @@ export type FloatFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     db?: {
       isNullable?: boolean;
       map?: string;
-      extendPrisma?: (field: string) => string;
+      extendPrismaSchema?: (field: string) => string;
     };
   };
 
@@ -102,7 +102,7 @@ export const float =
       default:
         typeof defaultValue === 'number' ? { kind: 'literal', value: defaultValue } : undefined,
       map: config.db?.map,
-      extendPrisma: config.db?.extendPrisma,
+      extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
       hooks: {

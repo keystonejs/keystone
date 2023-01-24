@@ -69,7 +69,7 @@ export type InitialisedList = {
   };
   lists: Record<string, InitialisedList>;
   dbMap: string | undefined;
-  extendPrisma: ((schema: string) => string) | undefined;
+  extendPrismaSchema: ((schema: string) => string) | undefined;
   graphql: {
     isEnabled: IsEnabled;
   };
@@ -241,7 +241,7 @@ function getListsWithInitialisedFields(
       ...getNamesFromList(listKey, list),
       access: parseListAccessControl(list.access),
       dbMap: list.db?.map,
-      extendPrisma: list.db?.extendPrisma,
+      extendPrismaSchema: list.db?.extendPrismaSchema,
       types: listGraphqlTypes[listKey].types,
       ui: {
         labelField,

@@ -68,7 +68,7 @@ export type DocumentFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     links?: true;
     dividers?: true;
     layouts?: readonly (readonly [number, ...number[]])[];
-    db?: { map?: string; extendPrismaField?: (field: string) => string };
+    db?: { map?: string; extendPrismaSchema?: (field: string) => string };
   };
 
 export const document =
@@ -174,7 +174,7 @@ export const document =
           value: JSON.stringify([{ type: 'paragraph', children: [{ text: '' }] }]),
         },
         map: config.db?.map,
-        extendPrismaField: config.db?.extendPrismaField,
+        extendPrismaSchema: config.db?.extendPrismaSchema,
       }
     );
   };

@@ -30,7 +30,7 @@ export type TimestampFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
       updatedAt?: boolean;
       isNullable?: boolean;
       map?: string;
-      extendPrisma?: (field: string) => string;
+      extendPrismaSchema?: (field: string) => string;
     };
   };
 
@@ -84,7 +84,7 @@ export const timestamp =
           : { kind: 'now' },
       updatedAt: config.db?.updatedAt,
       map: config.db?.map,
-      extendPrisma: config.db?.extendPrisma,
+      extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
       hooks: {
