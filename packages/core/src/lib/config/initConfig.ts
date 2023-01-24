@@ -2,17 +2,15 @@ import { KeystoneConfig, IdFieldConfig } from '../../types';
 import { idFieldType } from '../id-field';
 
 function getIdField({ kind, type }: IdFieldConfig): Required<IdFieldConfig> {
-  return kind === 'cuid'
-    ? { kind: 'cuid', type: 'String' }
-    : kind === 'uuid'
-    ? { kind: 'uuid', type: 'String' }
-    : type === 'BigInt'
-    ? { kind: 'autoincrement', type: 'BigInt' }
-    : type === 'Int'
-    ? { kind: 'autoincrement', type: 'Int' }
-    : kind === 'autoincrement' && type === undefined
-    ? { kind: 'autoincrement', type: 'Int' }
-    : { kind: 'cuid', type: 'String' };
+  if (kind === 'cuid') return { kind: 'cuid', type: 'String' };
+  if (kind === 'uuid') return { kind: 'uuid', type: 'String' };
+  if (kind === 'autoincrement') {
+    if (type === 'BigInt') return { kind: 'autoincrement', type: 'BigInt' };
+    return { kind: 'autoincrement', type: 'Int' };
+  }
+
+  // the default idFieldType
+  return { kind: 'cuid', type: 'String' };
 }
 
 /* Validate lists config and default the id field */
