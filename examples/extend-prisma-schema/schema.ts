@@ -11,7 +11,7 @@ export const lists: Lists = {
       lastName: text(),
     },
     db: {
-      extendPrismaList: (schema) => {
+      extendPrisma: (schema) => {
         // add a bad example of a multi-column unique constraint
         return schema
           .replace(/(model [^}]+)}/g, '$1@@unique([firstName, lastName])\n}')
@@ -27,7 +27,7 @@ export const lists: Lists = {
       tags: relationship({
         ref: 'Tag.posts',
         db: {
-          extendPrismaField: (field) => {
+          extendPrisma: (field) => {
             // change relationship to enforce NOT NULL
             //   WARNING: this won't be easy to use, but this is nice if you know what you're doing
             return field

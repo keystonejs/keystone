@@ -19,7 +19,7 @@ export type CheckboxFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     };
     db?: {
       map?: string;
-      extendPrismaField?: (field: string) => string;
+      extendPrisma?: (field: string) => string;
     };
   };
 
@@ -42,7 +42,7 @@ export const checkbox =
       scalar: 'Boolean',
       default: { kind: 'literal', value: defaultValue },
       map: config.db?.map,
-      extendPrismaField: config.db?.extendPrismaField,
+      extendPrisma: config.db?.extendPrisma,
     })({
       ...config,
       input: {

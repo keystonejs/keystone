@@ -241,5 +241,5 @@ export type ListDBConfig = {
    * Prisma Model for this list and should return a string containing the valid
    * Prisma Model definition.
    */
-  extendPrismaList?: (schema: string) => string;
+  extendPrisma?: (schema: string) => string;
 };

@@ -31,7 +31,7 @@ export type DecimalFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     db?: {
       isNullable?: boolean;
       map?: string;
-      extendPrismaField?: (field: string) => string;
+      extendPrisma?: (field: string) => string;
     };
   };
 
@@ -125,7 +125,7 @@ export const decimal =
       default:
         defaultValue === undefined ? undefined : { kind: 'literal' as const, value: defaultValue },
       map: config.db?.map,
-      extendPrismaField: config.db?.extendPrismaField,
+      extendPrisma: config.db?.extendPrisma,
     } as const;
     return fieldType(dbField)({
       ...config,

@@ -42,7 +42,7 @@ export type MultiselectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
       };
       db?: {
         map?: string;
-        extendPrismaField?: (field: string) => string;
+        extendPrisma?: (field: string) => string;
       };
     };
 
@@ -151,7 +151,7 @@ export const multiselect =
       {
         mode: 'required',
         map: config?.db?.map,
-        extendPrismaField: config.db?.extendPrismaField,
+        extendPrisma: config.db?.extendPrisma,
         default: { kind: 'literal', value: JSON.stringify(defaultValue) },
       }
     );
