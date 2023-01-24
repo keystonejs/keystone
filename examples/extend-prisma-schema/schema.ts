@@ -11,12 +11,11 @@ export const lists: Lists = {
       lastName: text(),
     },
     db: {
-      extendPrismaSchema: (schema) => {
+      extendPrismaSchema: schema => {
         // add a bad example of a multi-column unique constraint
-        return schema
-          .replace(/(model [^}]+)}/g, '$1@@unique([firstName, lastName])\n}')
-      }
-    }
+        return schema.replace(/(model [^}]+)}/g, '$1@@unique([firstName, lastName])\n}');
+      },
+    },
   }),
   Post: list({
     access: allowAll,
@@ -27,16 +26,16 @@ export const lists: Lists = {
       tags: relationship({
         ref: 'Tag.posts',
         db: {
-          extendPrismaSchema: (field) => {
+          extendPrismaSchema: field => {
             // change relationship to enforce NOT NULL
             //   WARNING: this won't be easy to use, but this is nice if you know what you're doing
             return field
               .replace(/tags Tag\?/g, 'tags Tag')
-              .replace(/tagsId String\?/g, 'tagsId String')
-          }
-        }
-      })
-    }
+              .replace(/tagsId String\?/g, 'tagsId String');
+          },
+        },
+      }),
+    },
   }),
   Tag: list({
     access: allowAll,

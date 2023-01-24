@@ -3,4 +3,4 @@
 '@keystone-6/core': minor
 ---
 
-Adds an `extendPrisma` option on `config` lists and fields to customise the generated prisma schema
+Adds an experimental `extendPrismaSchema` configuration option for lists and fields to mutate the prisma schema
