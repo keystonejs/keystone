@@ -483,6 +483,7 @@ S3 options:
 - `endpoint`: The endpoint to use - if provided, this endpoint will be used instead of the default amazon s3 endpoint
 - `forcePathStyle`: Force the old pathstyle of using the bucket name after the host
 - `signed.expiry`: Use S3 URL signing to keep S3 assets private. `expiry` is in seconds
+{% if $nextRelease %}
 - `acl`: Set the permissions for the uploaded asset. If not set, the permissions of the asset will depend on your S3 provider's default settings.
 These values are supported:
   - `'private'` No public assess.
@@ -494,6 +495,7 @@ These values are supported:
   - `'bucket-owner-full-control'` Bucket owner gets full control.
 
   See https://docs.aws.amazon.com/AmazonS3/latest/userguide/acl-overview.html#canned-acl for more details.
+{% /if %}
 
 ```typescript
 import { config } from '@keystone-6/core';
