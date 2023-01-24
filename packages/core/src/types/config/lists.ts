@@ -9,7 +9,7 @@ import type { BaseFields, FilterOrderArgs } from './fields';
 export type ListSchemaConfig = Record<string, ListConfig<any, BaseFields<BaseListTypeInfo>>>;
 
 export type IdFieldConfig =
-  | { kind: 'cuid' | 'uuid' }
+  | { kind: 'cuid' | 'uuid'; type?: 'String' }
   | {
       kind: 'autoincrement';
       /**
@@ -236,4 +236,10 @@ export type ListDBConfig = {
    * the default (derived from the list key)
    */
   map?: string;
+  /**
+   * Customise the Prisma Schema for this list. This function is passed the
+   * Prisma Model for this list and should return a string containing the valid
+   * Prisma Model definition.
+   */
+  extendPrismaSchema?: (schema: string) => string;
 };

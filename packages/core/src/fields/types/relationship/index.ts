@@ -55,6 +55,7 @@ type CountDisplayConfig = {
 type OneDbConfig = {
   many?: false;
   db?: {
+    extendPrismaSchema?: (field: string) => string;
     foreignKey?:
       | true
       | {
@@ -67,6 +68,7 @@ type ManyDbConfig = {
   many: true;
   db?: {
     relationName?: string;
+    extendPrismaSchema?: (field: string) => string;
   };
 };
 
@@ -246,6 +248,7 @@ export const relationship =
         list: foreignListKey,
         field: foreignFieldKey,
         relationName: config.db?.relationName,
+        extendPrismaSchema: config.db?.extendPrismaSchema,
       })({
         ...commonConfig,
         input: {
@@ -300,6 +303,7 @@ export const relationship =
       list: foreignListKey,
       field: foreignFieldKey,
       foreignKey: config.db?.foreignKey,
+      extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...commonConfig,
       input: {

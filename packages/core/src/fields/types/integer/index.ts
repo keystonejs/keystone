@@ -34,6 +34,7 @@ export type IntegerFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     db?: {
       isNullable?: boolean;
       map?: string;
+      extendPrismaSchema?: (field: string) => string;
     };
   };
 
@@ -125,6 +126,7 @@ export const integer =
           ? { kind: 'autoincrement' }
           : undefined,
       map: config.db?.map,
+      extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
       hooks: {

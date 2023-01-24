@@ -142,7 +142,8 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
       initialisedLists,
       config.db.provider,
       config.db.prismaPreviewFeatures,
-      config.db.additionalPrismaDatasourceProperties
+      config.db.additionalPrismaDatasourceProperties,
+      config.db.extendPrismaSchema
     );
     let lastPrintedGraphQLSchema = printSchema(graphQLSchema);
     let lastApolloServer = apolloServer;
@@ -166,7 +167,8 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
           initialiseLists(newConfig),
           newConfig.db.provider,
           newConfig.db.prismaPreviewFeatures,
-          newConfig.db.additionalPrismaDatasourceProperties
+          newConfig.db.additionalPrismaDatasourceProperties,
+          newConfig.db.extendPrismaSchema
         );
         if (originalPrismaSchema !== newPrismaSchema) {
           console.log('🔄 Your prisma schema has changed, please restart Keystone');

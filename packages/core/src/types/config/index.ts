@@ -120,8 +120,13 @@ export type DatabaseConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   enableLogging?: boolean;
   idField?: IdFieldConfig;
   provider: DatabaseProvider;
+
+  /** @deprecated use extendPrismaSchema */
   prismaPreviewFeatures?: readonly string[]; // https://www.prisma.io/docs/concepts/components/preview-features
+  /** @deprecated use extendPrismaSchema */
   additionalPrismaDatasourceProperties?: { [key: string]: string };
+
+  extendPrismaSchema?: (schema: string) => string;
 };
 
 // config.ui

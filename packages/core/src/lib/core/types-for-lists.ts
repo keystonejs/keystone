@@ -69,6 +69,7 @@ export type InitialisedList = {
   };
   lists: Record<string, InitialisedList>;
   dbMap: string | undefined;
+  extendPrismaSchema: ((schema: string) => string) | undefined;
   graphql: {
     isEnabled: IsEnabled;
   };
@@ -154,10 +155,9 @@ function getListsWithInitialisedFields(
   for (const [listKey, list] of Object.entries(listsConfig)) {
     const intermediateList = intermediateLists[listKey];
     const resultFields: Record<string, InitialisedField> = {};
-
     const groups: FieldGroupConfig[] = [];
-
     const fieldKeys = Object.keys(list.fields);
+
     for (const [idx, [fieldKey, fieldFunc]] of Object.entries(list.fields).entries()) {
       if (fieldKey.startsWith('__group')) {
         const group = fieldFunc as any;
@@ -240,6 +240,7 @@ function getListsWithInitialisedFields(
       ...getNamesFromList(listKey, list),
       access: parseListAccessControl(list.access),
       dbMap: list.db?.map,
+      extendPrismaSchema: list.db?.extendPrismaSchema,
       types: listGraphqlTypes[listKey].types,
       ui: {
         labelField,
