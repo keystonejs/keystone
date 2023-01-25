@@ -486,7 +486,7 @@ S3 options:
 {% if $nextRelease %}
 - `acl`: Set the permissions for the uploaded asset. If not set, the permissions of the asset will depend on your S3 provider's default settings.
 These values are supported:
-  - `'private'` No public assess.
+  - `'private'` No public access.
   - `'public-read'` Public read access.
   - `'public-read-write'` Public read and write access.
   - `'aws-exec-read'` Amazon EC2 gets read access.
