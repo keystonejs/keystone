@@ -75,6 +75,20 @@ export type StorageConfig = (
       endpoint?: string;
       /** If true, will force the 'old' S3 path style of putting bucket name at the start of the pathname of the URL  */
       forcePathStyle?: boolean;
+      /** A string that sets permissions for the uploaded assets. Default is 'private'.
+       *
+       * Amazon S3 supports a set of predefined grants, known as canned ACLs.
+       * See https://docs.aws.amazon.com/AmazonS3/latest/userguide/acl-overview.html#canned-acl
+       * for more details.
+       */
+      acl?:
+        | 'private'
+        | 'public-read'
+        | 'public-read-write'
+        | 'aws-exec-read'
+        | 'authenticated-read'
+        | 'bucket-owner-read'
+        | 'bucket-owner-full-control';
     }
 ) &
   FileOrImage;
