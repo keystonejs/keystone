@@ -1,5 +1,6 @@
 import { createYoga } from 'graphql-yoga';
 import type { NextApiRequest, NextApiResponse } from 'next';
+// @ts-ignore
 import processRequest from 'graphql-upload/processRequest.js';
 import { keystoneContext } from '../../keystone/context';
 
@@ -35,8 +36,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     */
     context: ({ req, res }) => keystoneContext.withRequest(req, res),
     /*
-      For some reason graphql-yoga upload implementation does not work with keystone
-      out-of-the-box. Need to process request manually with graphql-upload
+      Graphql-yoga file upload implementation is not compatible with
+      graphql-upload that keystone is using. Need to process request manually.
     */
     multipart: false,
   })(req, res);
