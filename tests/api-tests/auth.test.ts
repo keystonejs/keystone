@@ -207,7 +207,7 @@ describe('Auth testing', () => {
           h.startsWith('keystonejs-session')
         );
         expect(sessionHeader).toBe(undefined);
-        expectInternalServerError(body.errors, false, [
+        expectInternalServerError(body.errors, [
           {
             path: ['createInitialUser'],
             message: 'Initial items can only be created when no items exist in that list',
@@ -317,7 +317,7 @@ describe('Auth testing', () => {
           variables: { email: 'bad@keystonejs.com' },
         });
         expect(body.data).toEqual(null);
-        expectInternalServerError(body.errors, false, [
+        expectInternalServerError(body.errors, [
           { path: ['sendUserMagicAuthLink'], message: 'Error in sendToken' },
         ]);
 
@@ -665,7 +665,7 @@ describe('Auth testing', () => {
           variables: { email: 'bad@keystonejs.com' },
         });
         expect(body.data).toEqual(null);
-        expectInternalServerError(body.errors, false, [
+        expectInternalServerError(body.errors, [
           { path: ['sendUserPasswordResetLink'], message: 'Error in sendToken' },
         ]);
 

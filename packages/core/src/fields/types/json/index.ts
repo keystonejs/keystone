@@ -10,7 +10,7 @@ import { graphql } from '../../..';
 export type JsonFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
     defaultValue?: JSONValue;
-    db?: { map?: string };
+    db?: { map?: string; extendPrismaSchema?: (field: string) => string };
   };
 
 export const json =
@@ -47,6 +47,7 @@ export const json =
             ? undefined
             : { kind: 'literal', value: JSON.stringify(defaultValue) },
         map: config.db?.map,
+        extendPrismaSchema: config.db?.extendPrismaSchema,
       }
     );
   };

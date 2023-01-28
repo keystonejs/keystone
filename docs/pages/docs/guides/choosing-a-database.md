@@ -24,7 +24,7 @@ See the [Case Sensitivity Prisma Docs](https://www.prisma.io/docs/concepts/compo
 
 Prisma has different default types for each database used, for example, the Keystone `text` field type uses the Prisma type of `String`,
 for Postgres, Prisma uses the `text` column type, and for MySQL, it uses the `varchar(191)` column type. For more details on the `field` type differences
-see [Primsa Schema Reference](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#model-field-scalar-types).
+see [Prisma Schema Reference](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#model-field-scalar-types).
 
 The Keystone `text` field supports the `db.nativeType` option, allowing you to override this - [Fields API](/docs/fields/overview). Over time this option will be added to other field types.
 

@@ -28,7 +28,11 @@ export type DecimalFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     defaultValue?: string;
     isIndexed?: boolean | 'unique';
     graphql?: { create?: { isNonNull?: boolean }; read?: { isNonNull?: boolean } };
-    db?: { isNullable?: boolean; map?: string };
+    db?: {
+      isNullable?: boolean;
+      map?: string;
+      extendPrismaSchema?: (field: string) => string;
+    };
   };
 
 function parseDecimalValueOption(meta: FieldData, value: string, name: string) {
@@ -121,6 +125,7 @@ export const decimal =
       default:
         defaultValue === undefined ? undefined : { kind: 'literal' as const, value: defaultValue },
       map: config.db?.map,
+      extendPrismaSchema: config.db?.extendPrismaSchema,
     } as const;
     return fieldType(dbField)({
       ...config,

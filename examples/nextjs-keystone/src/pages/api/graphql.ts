@@ -1,7 +1,7 @@
 import { createYoga } from 'graphql-yoga';
 import type { NextApiRequest, NextApiResponse } from 'next';
 // @ts-ignore
-import processRequest from 'graphql-upload/processRequest';
+import processRequest from 'graphql-upload/processRequest.js';
 import { keystoneContext } from '../../keystone/context';
 
 /*

@@ -116,6 +116,7 @@ export type ScalarDBField<
   default?: ScalarDBFieldDefault<Scalar, Mode>;
   index?: 'unique' | 'index';
   map?: string;
+  extendPrismaSchema?: (field: string) => string;
   updatedAt?: Scalar extends 'DateTime' ? boolean : undefined;
 };
 
@@ -136,6 +137,7 @@ export type RelationDBField<Mode extends 'many' | 'one'> = {
   mode: Mode;
   foreignKey?: { one: true | { map: string }; many: undefined }[Mode];
   relationName?: { one: undefined; many: string }[Mode];
+  extendPrismaSchema?: (field: string) => string;
 };
 
 export type EnumDBField<Value extends string, Mode extends 'required' | 'many' | 'optional'> = {
@@ -145,6 +147,7 @@ export type EnumDBField<Value extends string, Mode extends 'required' | 'many' |
   mode: Mode;
   default?: { kind: 'literal'; value: Value };
   index?: 'unique' | 'index';
+  extendPrismaSchema?: (field: string) => string;
   map?: string;
 };
 
@@ -159,6 +162,7 @@ export type RealDBField = ScalarishDBField | RelationDBField<'many' | 'one'>;
 export type MultiDBField<Fields extends Record<string, ScalarishDBField>> = {
   kind: 'multi';
   fields: Fields;
+  extendPrismaSchema?: (field: string) => string;
 };
 
 export type DBField = RealDBField | NoDBField | MultiDBField<Record<string, ScalarishDBField>>;

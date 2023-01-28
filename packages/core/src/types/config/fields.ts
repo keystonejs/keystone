@@ -1,4 +1,4 @@
-import { CacheHint } from 'apollo-server-types';
+import { CacheHint } from '@apollo/cache-control-types';
 import { FieldTypeFunc } from '../next-fields';
 import { BaseListTypeInfo } from '../type-info';
 import { KeystoneContextFromListTypeInfo, MaybePromise } from '..';

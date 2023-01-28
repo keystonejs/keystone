@@ -29,6 +29,7 @@ export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     db?: {
       isNullable?: boolean;
       map?: string;
+      extendPrismaSchema?: (field: string) => string;
       /**
        * The underlying database type.
        * Only some of the types are supported on PostgreSQL and MySQL.
@@ -114,6 +115,7 @@ export const text =
       index: isIndexed === true ? 'index' : isIndexed || undefined,
       map: config.db?.map,
       nativeType: config.db?.nativeType,
+      extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
       hooks: {

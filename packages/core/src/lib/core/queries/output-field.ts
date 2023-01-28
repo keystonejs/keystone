@@ -1,4 +1,4 @@
-import { CacheHint } from 'apollo-server-types';
+import { CacheHint, maybeCacheControlFromInfo } from '@apollo/cache-control-types';
 import { GraphQLResolveInfo } from 'graphql';
 import DataLoader from 'dataloader';
 import {
@@ -102,12 +102,12 @@ async function fetchRelatedItems(
 ) {
   const operationAccess = await getOperationAccess(foreignList, context, 'query');
   if (!operationAccess) {
-    return [];
+    return toFetch.map(() => undefined);
   }
 
   const accessFilters = await getAccessFilters(foreignList, context, 'query');
   if (accessFilters === false) {
-    return [];
+    return toFetch.map(() => undefined);
   }
 
   const resolvedWhere = await accessControlledFilter(
@@ -204,8 +204,8 @@ export function outputTypeField(
       }
 
       // Only static cache hints are supported at the field level until a use-case makes it clear what parameters a dynamic hint would take
-      if (cacheHint && info && info.cacheControl) {
-        info.cacheControl.setCacheHint(cacheHint);
+      if (cacheHint && info) {
+        maybeCacheControlFromInfo(info)?.setCacheHint(cacheHint);
       }
 
       const value = getValueForDBField(rootVal, dbField, id, fieldKey, context, lists, info);

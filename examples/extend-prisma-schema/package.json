@@ -1,0 +1,19 @@
+{
+  "name": "@keystone-6/example-extend-prisma-schema",
+  "version": "0.0.8",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "keystone dev",
+    "start": "keystone start",
+    "build": "keystone build"
+  },
+  "dependencies": {
+    "@keystone-6/core": "^4.0.0",
+    "@keystone-6/fields-document": "^6.0.0"
+  },
+  "devDependencies": {
+    "typescript": "~4.9.4"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/extend-prisma-schema"
+}

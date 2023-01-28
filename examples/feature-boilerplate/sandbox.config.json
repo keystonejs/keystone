@@ -2,7 +2,7 @@
   "template": "node",
   "container": {
     "startScript": "keystone dev --seed-data",
-    "node": "14"
+    "node": "16"
   },
   "hardReloadOnChange": true
 }

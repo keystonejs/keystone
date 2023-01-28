@@ -69,7 +69,7 @@ These database types are powered by their corresponding Prisma database provider
   This can also be customised at the list level `db.idField`.
   If you are using `autoincrement`, you can also specify `type: 'BigInt'` on PostgreSQL and MySQL to use BigInts.
 - `prismaPreviewFeatures` (default: `[]`): Enable [Prisma preview features](https://www.prisma.io/docs/concepts/components/preview-features) by providing an array of strings.
-- `additionalPrismaDatasourceProperties` (default: `{}`): Set additional datasource properties like `referentialIntegrity = "prisma"` (required for e.g. PlanetScale) by providing an object with key-value pairs.
+- `additionalPrismaDatasourceProperties` (default: `{}`): Set additional datasource properties like `relationMode = "prisma"` (required for e.g. PlanetScale) by providing an object with key-value pairs.
 - `shadowDatabaseUrl` (default: `undefined`): Enable [shadow databases](https://www.prisma.io/docs/concepts/components/prisma-migrate/shadow-database#cloud-hosted-shadow-databases-must-be-created-manually) for some cloud providers.
 
 ### postgresql
@@ -208,6 +208,7 @@ Options:
 - `cors` (default: `undefined`): Allows you to configure the [cors middleware](https://www.npmjs.com/package/cors#configuration-options) for your Express server.
   If left undefined `cors` will not be used.
 - `port` (default: `3000` ): The port your Express server will listen on.
+- `options` (default: `undefined`): The [`http.createServer`](https://nodejs.org/api/http.html#httpcreateserveroptions-requestlistener) options used by Node.
 - `maxFileSize` (default: `200 * 1024 * 1024`): The maximum file size allowed for uploads. If left undefined, defaults to `200 MiB`
 - `healthCheck` (default: `undefined`): Allows you to configure a health check endpoint on your server.
 - `extendExpressApp` (default: `undefined`): Allows you to extend the express app that Keystone creates.
@@ -482,6 +483,19 @@ S3 options:
 - `endpoint`: The endpoint to use - if provided, this endpoint will be used instead of the default amazon s3 endpoint
 - `forcePathStyle`: Force the old pathstyle of using the bucket name after the host
 - `signed.expiry`: Use S3 URL signing to keep S3 assets private. `expiry` is in seconds
+{% if $nextRelease %}
+- `acl`: Set the permissions for the uploaded asset. If not set, the permissions of the asset will depend on your S3 provider's default settings.
+These values are supported:
+  - `'private'` No public access.
+  - `'public-read'` Public read access.
+  - `'public-read-write'` Public read and write access.
+  - `'aws-exec-read'` Amazon EC2 gets read access.
+  - `'authenticated-read'` Authenticated users get access.
+  - `'bucket-owner-read'` Bucket owner gets read access.
+  - `'bucket-owner-full-control'` Bucket owner gets full control.
+
+  See https://docs.aws.amazon.com/AmazonS3/latest/userguide/acl-overview.html#canned-acl for more details.
+{% /if %}
 
 ```typescript
 import { config } from '@keystone-6/core';

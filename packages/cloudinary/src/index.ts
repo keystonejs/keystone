@@ -147,6 +147,7 @@ export const cloudinaryImage =
       meta.provider,
       {
         ...config,
+        __ksTelemetryFieldTypeName: '@keystone-6/cloudinary',
         input: {
           create: { arg: inputArg, resolve: resolveInput },
           update: { arg: inputArg, resolve: resolveInput },

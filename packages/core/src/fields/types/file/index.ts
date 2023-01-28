@@ -10,6 +10,9 @@ import { graphql } from '../../..';
 
 export type FileFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
   storage: string;
+  db?: {
+    extendPrismaSchema?: (field: string) => string;
+  };
 } & CommonFieldConfig<ListTypeInfo>;
 
 const FileFieldInput = graphql.inputObject({
@@ -70,6 +73,7 @@ export const file =
         filesize: { kind: 'scalar', scalar: 'Int', mode: 'optional' },
         filename: { kind: 'scalar', scalar: 'String', mode: 'optional' },
       },
+      extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
       hooks: storage.preserve

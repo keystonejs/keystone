@@ -34,6 +34,7 @@ export type BigIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     db?: {
       isNullable?: boolean;
       map?: string;
+      extendPrismaSchema?: (field: string) => string;
     };
   };
 
@@ -111,6 +112,7 @@ export const bigInt =
           ? { kind: 'autoincrement' }
           : undefined,
       map: config.db?.map,
+      extendPrismaSchema: config.db?.extendPrismaSchema,
     })({
       ...config,
       hooks: {
