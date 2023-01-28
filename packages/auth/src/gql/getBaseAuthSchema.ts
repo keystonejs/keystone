@@ -54,7 +54,10 @@ export function getBaseAuthSchema<I extends string, S extends string>({
           resolveType: (root, context) => context.session?.listKey,
         }),
         resolve(root, args, { session, db }) {
-          if (typeof session?.itemId === 'string' && typeof session.listKey === 'string') {
+          if (
+            (typeof session?.itemId === 'string' || typeof session.itemId === 'number') &&
+            typeof session.listKey === 'string'
+          ) {
             return db[session.listKey].findOne({ where: { id: session.itemId } });
           }
           return null;
@@ -88,13 +91,17 @@ export function getBaseAuthSchema<I extends string, S extends string>({
           }
 
           // Update system state
-          const sessionToken = (await context.sessionStrategy.start({
+          const sessionToken = await context.sessionStrategy.start({
             data: {
               listKey,
               itemId: result.item.id,
             },
             context,
-          })) as string;
+          });
+          // return Failure if sessionStrategy.start() returns null
+          if (typeof sessionToken !== 'string' || sessionToken.length === 0) {
+            return { code: 'FAILURE', message: 'Failed to start session.' };
+          }
           return { sessionToken, item: result.item };
         },
       }),

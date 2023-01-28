@@ -1,4 +1,4 @@
-import { ApolloError } from 'apollo-server-errors';
+import { GraphQLError } from 'graphql';
 import {
   BaseListTypeInfo,
   CommonFieldConfig,
@@ -68,7 +68,7 @@ export type DocumentFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     links?: true;
     dividers?: true;
     layouts?: readonly (readonly [number, ...number[]])[];
-    db?: { map?: string };
+    db?: { map?: string; extendPrismaSchema?: (field: string) => string };
   };
 
 export const document =
@@ -92,7 +92,7 @@ export const document =
 
     const inputResolver = (data: JSONValue | null | undefined): any => {
       if (data === null) {
-        throw new ApolloError('Input error: Document fields cannot be set to null');
+        throw new GraphQLError('Input error: Document fields cannot be set to null');
       }
       if (data === undefined) {
         return data;
@@ -174,6 +174,7 @@ export const document =
           value: JSON.stringify([{ type: 'paragraph', children: [{ text: '' }] }]),
         },
         map: config.db?.map,
+        extendPrismaSchema: config.db?.extendPrismaSchema,
       }
     );
   };

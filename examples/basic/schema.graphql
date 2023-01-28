@@ -56,7 +56,6 @@ input UserWhereInput {
   name: StringFilter
   email: StringFilter
   password: PasswordFilter
-  isAdmin: BooleanFilter
   roles: StringFilter
   phoneNumbers: PhoneNumberManyRelationFilter
   posts: PostManyRelationFilter
@@ -103,11 +102,6 @@ input NestedStringFilter {
 
 input PasswordFilter {
   isSet: Boolean!
-}
-
-input BooleanFilter {
-  equals: Boolean
-  not: BooleanFilter
 }
 
 input PhoneNumberManyRelationFilter {

@@ -167,7 +167,6 @@ input PersonWhereInput {
   id: IDFilter
   name: StringFilter
   email: StringFilter
-  passwordChangedAt: DateTimeNullableFilter
   tasks: TaskManyRelationFilter
 }
 

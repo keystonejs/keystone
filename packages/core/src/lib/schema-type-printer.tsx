@@ -199,12 +199,17 @@ export function printGeneratedTypes(
     const gqlNames = getGqlNames(list);
     const listTypeInfoName = `Lists.${listKey}.TypeInfo`;
 
-    interimCreateUpdateTypes.push(
-      printInterimType(list, listKey, gqlNames.createInputName, 'Create')
-    );
-    interimCreateUpdateTypes.push(
-      printInterimType(list, listKey, gqlNames.updateInputName, 'Update')
-    );
+    if (list.graphql.isEnabled.create) {
+      interimCreateUpdateTypes.push(
+        printInterimType(list, listKey, gqlNames.createInputName, 'Create')
+      );
+    }
+
+    if (list.graphql.isEnabled.update) {
+      interimCreateUpdateTypes.push(
+        printInterimType(list, listKey, gqlNames.updateInputName, 'Update')
+      );
+    }
 
     listsTypeInfo.push(`    readonly ${listKey}: ${listTypeInfoName};`);
     listsNamespaces.push(printListTypeInfo(listKey, list));

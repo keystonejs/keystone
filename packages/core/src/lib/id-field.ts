@@ -114,19 +114,19 @@ function resolveVal(
 }
 
 export const idFieldType =
-  (config: IdFieldConfig, isSingleton: boolean): FieldTypeFunc<BaseListTypeInfo> =>
+  (config: Required<IdFieldConfig>, isSingleton: boolean): FieldTypeFunc<BaseListTypeInfo> =>
   meta => {
     const parseVal =
       config.kind === 'autoincrement' && config.type === 'BigInt'
         ? idParsers.autoincrementBigInt
         : idParsers[isSingleton ? 'singleton' : config.kind];
+
     return fieldType({
       kind: 'scalar',
       mode: 'required',
-      scalar:
-        config.kind === 'autoincrement' ? (config.type === 'BigInt' ? 'BigInt' : 'Int') : 'String',
+      scalar: config.type,
       nativeType: meta.provider === 'postgresql' && config.kind === 'uuid' ? 'Uuid' : undefined,
-      default: { kind: config.kind },
+      default: isSingleton ? undefined : { kind: config.kind },
     })({
       ...config,
       // The ID field is always filterable and orderable.

@@ -58,6 +58,7 @@ export type SelectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
       db?: {
         isNullable?: boolean;
         map?: string;
+        extendPrismaSchema?: (field: string) => string;
       };
     };
 
@@ -131,6 +132,7 @@ export const select =
           ? undefined
           : { kind: 'literal' as const, value: defaultValue as any },
       map: config.db?.map,
+      extendPrismaSchema: config.db?.extendPrismaSchema,
     } as const;
 
     const resolveCreate = <T extends string | number>(val: T | null | undefined): T | null => {

@@ -84,9 +84,7 @@ describe('extendGraphqlSchema', () => {
         `,
       });
       expect(body.data).toEqual({ quads: null });
-      expectInternalServerError(body.errors, false, [
-        { path: ['quads'], message: 'Access denied' },
-      ]);
+      expectInternalServerError(body.errors, [{ path: ['quads'], message: 'Access denied' }]);
     })
   );
   it(
