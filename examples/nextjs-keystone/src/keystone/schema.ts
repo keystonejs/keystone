@@ -19,7 +19,7 @@ const permissions = {
 export const lists: Lists = {
   User: list({
     // readonly for demo purpose
-    access: allowAll,
+    access: permissions.readOnly,
     fields: {
       name: text({ validation: { isRequired: true } }),
       email: text({
