@@ -220,10 +220,10 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
 
   async function authMiddleware({
     context,
-    isValidSession: wasAccessAllowed,
+    wasAccessAllowed,
   }: {
     context: KeystoneContext;
-    isValidSession: boolean; // TODO: rename "isValidSession" to "wasAccessAllowed"?
+    wasAccessAllowed: boolean;
   }): Promise<{ kind: 'redirect'; to: string } | void> {
     const { req } = context;
     const { pathname } = new URL(req!.url!, 'http://_');

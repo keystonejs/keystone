@@ -161,7 +161,7 @@ export type AdminUIConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
 
   pageMiddleware?: (args: {
     context: KeystoneContext<TypeInfo>;
-    isValidSession: boolean; // TODO: rename "isValidSession" to "wasAccessAllowed"?
+    wasAccessAllowed: boolean;
   }) => MaybePromise<{ kind: 'redirect'; to: string } | void>;
 };
 
