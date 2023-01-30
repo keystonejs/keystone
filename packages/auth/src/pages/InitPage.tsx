@@ -252,7 +252,7 @@ function InitPage({ fieldPaths, listKey, enableWelcome }: InitPageProps) {
             }
           });
 
-          // // Create the first item in the database.
+          // Create the first item in the database.
           createFirstItem({
             variables: {
               data,
