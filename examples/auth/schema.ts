@@ -1,8 +1,9 @@
 import { list } from '@keystone-6/core';
 import { allOperations, allowAll } from '@keystone-6/core/access';
 import { text, checkbox, password } from '@keystone-6/core/fields';
+import type { Lists } from '.keystone/types';
 
-export const lists = {
+export const lists: Lists = {
   User: list({
     access: {
       operation: {
@@ -43,7 +44,7 @@ export const lists = {
               session && (session.data.isAdmin || session.itemId === item.id) ? 'edit' : 'hidden',
           },
           listView: {
-            fieldMode: ({ session }) => (session?.item?.isAdmin ? 'read' : 'hidden'),
+            fieldMode: ({ session }) => (session?.data?.isAdmin ? 'read' : 'hidden'),
           },
         },
       }),
@@ -64,22 +65,6 @@ export const lists = {
           },
         },
       }),
-      /* TODO: Come back to this when we review how to restrict signin to valid users
-      // This controls whether users can sign in or not
-      isEnabled: checkbox({
-        access: {
-          // Only Admins can change the isEnabled flag for any users
-          // create: ({ session }) => session?.data.isAdmin,
-          update: ({ session }) => session?.data.isAdmin,
-        },
-        ui: {
-          // All users can see the isEnabled status, only admins can change it
-          itemView: {
-            fieldMode: ({ session }) => (session?.data.isAdmin ? 'edit' : 'read'),
-          },
-        },
-      }),
-      */
     },
   }),
 };

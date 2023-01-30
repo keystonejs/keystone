@@ -61,7 +61,7 @@ export const SigninPage = ({
   const rawKeystone = useRawKeystone();
   const redirect = useRedirect();
 
-  // This useEffect specifically handles ending up on the signin page from a SPA navigation
+  // if we are signed in, redirect immediately
   useEffect(() => {
     if (rawKeystone.authenticatedItem.state === 'authenticated') {
       router.push(redirect);
@@ -76,32 +76,41 @@ export const SigninPage = ({
     );
   }
 
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (mode !== 'signin') return;
+
+    try {
+      const { data } = await mutate({
+        variables: {
+          identity: state.identity,
+          secret: state.secret,
+        },
+      });
+      if (data.authenticate?.__typename !== successTypename) return;
+    } catch (e) {
+      console.error(e);
+      return;
+    }
+
+    reinitContext();
+
+    // @ts-ignore
+    //   if "Access denied" error, user may not have access to the adminMeta
+    //     but authenticateUser didn't have an error
+    if (rawKeystone.adminMeta?.error?.message === 'Access denied') {
+      // TODO: this is horrible, error handling needs a revamp
+      router.push('/no-access');
+      return;
+    }
+
+    router.push(redirect);
+  };
+
   return (
     <SigninContainer title="Keystone - Sign In">
-      <Stack
-        gap="xlarge"
-        as="form"
-        onSubmit={async (event: FormEvent<HTMLFormElement>) => {
-          event.preventDefault();
-
-          if (mode === 'signin') {
-            try {
-              let result = await mutate({
-                variables: {
-                  identity: state.identity,
-                  secret: state.secret,
-                },
-              });
-              if (result.data.authenticate?.__typename !== successTypename) {
-                return;
-              }
-            } catch (err) {
-              return;
-            }
-            reinitContext();
-          }
-        }}
-      >
+      <Stack gap="xlarge" as="form" onSubmit={onSubmit}>
         <H1>Sign In</H1>
         {error && (
           <Notice title="Error" tone="negative">

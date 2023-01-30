@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import fetch from 'cross-fetch';
 
 import { jsx, H1, Stack, Inline, VisuallyHidden, Center } from '@keystone-ui/core';
@@ -35,56 +35,58 @@ function Welcome({ value }: { value: any }) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const redirect = useRedirect();
+  const rawKeystone = useRawKeystone();
 
-  const onSubmit = (event: React.FormEvent) => {
+  const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError(null);
-    // Check if user wants to subscribe.
-    // and there's a valid email address.
+
+    // Check if user wants to subscribe and a valid email address
     if (subscribe) {
-      // Basic validation check on the email?
       setLoading(true);
-      if (validEmail(email)) {
-        // if good add email to mailing list
-        // and redirect to dashboard.
-        return fetch(signupURL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            name: value.username,
-            email,
-            source: '@keystone-6/auth InitPage',
-          }),
-        })
-          .then(res => {
-            if (res.status !== 200) {
-              // We explicitly set the status in our endpoint
-              // any status that isn't 200 we assume is a failure
-              // which we want to surface to the user
-              res.json().then(({ error }) => {
-                setError(error);
-                setLoading(false);
-              });
-            } else {
-              router.push(redirect);
-            }
-          })
-          .catch(err => {
-            // network errors or failed parse
-            setError(err.toString());
-            setLoading(false);
-          });
-      } else {
-        setLoading(false);
-        // if email fails validation set error message
+
+      if (!validEmail(email)) {
         setError('Email is invalid');
         return;
       }
+
+      const res = await fetch(signupURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: value.username,
+          email,
+          source: '@keystone-6/auth InitPage',
+        }),
+      });
+
+      try {
+        if (res.status !== 200) {
+          const { error } = await res.json();
+          setError(error);
+        }
+      } catch (e: any) {
+        // network errors or failed parse
+        setError(e.message.toString());
+      }
+
+      setLoading(false);
     }
-    return router.push(redirect);
+
+    // @ts-ignore
+    //   if "Access denied" error, user may not have access to the adminMeta
+    //     but authenticateUser didn't have an error
+    if (rawKeystone.adminMeta?.error?.message === 'Access denied') {
+      // TODO: this is horrible, error handling needs a revamp
+      router.push('/no-access');
+      return;
+    }
+
+    router.push(redirect);
   };
+
   return (
     <Stack gap="large">
       <Stack
@@ -179,9 +181,7 @@ function InitPage({ fieldPaths, listKey, enableWelcome }: InitPageProps) {
   });
 
   const invalidFields = useInvalidFields(fields, value);
-
   const [forceValidation, setForceValidation] = useState(false);
-
   const [mode, setMode] = useState<'init' | 'welcome'>('init');
 
   const [createFirstItem, { loading, error, data }] =
@@ -199,24 +199,6 @@ function InitPage({ fieldPaths, listKey, enableWelcome }: InitPageProps) {
   const redirect = useRedirect();
   const rawKeystone = useRawKeystone();
 
-  useEffect(() => {
-    // This effect handles both cases:
-    // a ) Our form submission is complete with new data
-    // b ) User lands in init page due to a client side SPA redirect
-    // Either way we check for an authenticated item
-    if (rawKeystone.authenticatedItem.state === 'authenticated') {
-      // If it exists we then check if enableWelcome is true
-      // if it is then we set the mode to welcome first.
-      // To tell the component to render the Welcome screen
-      if (enableWelcome) {
-        setMode('welcome');
-      } else {
-        // otherwise we route them through to the admin dashboard
-        router.push(redirect);
-      }
-    }
-  }, [rawKeystone.authenticatedItem, enableWelcome, router, redirect]);
-
   if (rawKeystone.authenticatedItem.state === 'authenticated' && !enableWelcome) {
     return (
       <Center fillView>
@@ -225,46 +207,60 @@ function InitPage({ fieldPaths, listKey, enableWelcome }: InitPageProps) {
     );
   }
 
+  const onSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    // Check if there are any invalidFields
+    const newForceValidation = invalidFields.size !== 0;
+    setForceValidation(newForceValidation);
+
+    // if yes, don't submit the form
+    if (newForceValidation) return;
+
+    // If not we serialize the data
+    const data: Record<string, any> = {};
+    const allSerializedValues = serializeValueToObjByFieldKey(fields, value);
+
+    for (const fieldPath of Object.keys(allSerializedValues)) {
+      const { controller } = fields[fieldPath];
+      const serialized = allSerializedValues[fieldPath];
+      // we check the serialized values against the default values on the controller
+      if (!isDeepEqual(serialized, controller.serialize(controller.defaultValue))) {
+        // if they're different add them to the data object.
+        Object.assign(data, serialized);
+      }
+    }
+
+    try {
+      await createFirstItem({
+        variables: {
+          data,
+        },
+      });
+    } catch (e) {
+      console.error(e);
+      return;
+    }
+
+    reinitContext();
+    if (enableWelcome) return setMode('welcome');
+
+    // @ts-ignore
+    //   if "Access denied" error, user may not have access to the adminMeta
+    //     but authenticateUser didn't have an error
+    if (rawKeystone.adminMeta?.error?.message === 'Access denied') {
+      // TODO: this is horrible, error handling needs a revamp
+      router.push('/no-access');
+      return;
+    }
+
+    router.push(redirect);
+  };
+
   return mode === 'init' ? (
     <SigninContainer title="Welcome to KeystoneJS">
       <H1>Welcome to KeystoneJS</H1>
       <p>Create your first user to get started</p>
-      <form
-        onSubmit={event => {
-          event.preventDefault();
-          // Check if there are any invalidFields
-          const newForceValidation = invalidFields.size !== 0;
-          setForceValidation(newForceValidation);
-
-          // if yes, don't submit the form
-          if (newForceValidation) return;
-
-          // If not we serialize the data
-          const data: Record<string, any> = {};
-          const allSerializedValues = serializeValueToObjByFieldKey(fields, value);
-          Object.keys(allSerializedValues).forEach(fieldPath => {
-            const { controller } = fields[fieldPath];
-            const serialized = allSerializedValues[fieldPath];
-            // we check the serialized values against the default values on the controller
-            if (!isDeepEqual(serialized, controller.serialize(controller.defaultValue))) {
-              // if they're different add them to the data object.
-              Object.assign(data, serialized);
-            }
-          });
-
-          // Create the first item in the database.
-          createFirstItem({
-            variables: {
-              data,
-            },
-          })
-            .then(() => {
-              // refetch admin meta
-              reinitContext();
-            })
-            .catch(() => {});
-        }}
-      >
+      <form onSubmit={onSubmit}>
         <Stack gap="large">
           {error && (
             <GraphQLErrorNotice errors={error?.graphQLErrors} networkError={error?.networkError} />
