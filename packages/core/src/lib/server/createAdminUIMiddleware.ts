@@ -51,7 +51,7 @@ export function createAdminUIMiddlewareWithNextApp(
       // do nothing if this is a public page
       const isPublicPage = publicPages.includes(pathname!);
       const context = await commonContext.withRequest(req, res);
-      const wasAccessAllowed = isPublicPage ? true : (await isAccessAllowed(context));
+      const wasAccessAllowed = isPublicPage ? true : await isAccessAllowed(context);
       const shouldRedirect = await pageMiddleware?.({
         context,
         wasAccessAllowed,
@@ -68,7 +68,6 @@ export function createAdminUIMiddlewareWithNextApp(
       if (!wasAccessAllowed) return nextApp.render(req, res, '/no-access');
 
       handle(req, res);
-
     } catch (e) {
       console.error('An error occurred handling a request for the Admin UI:', e);
       res.status(500);

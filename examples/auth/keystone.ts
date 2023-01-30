@@ -77,8 +77,8 @@ export default withAuth(
     ui: {
       // only admins can view the AdminUI
       isAccessAllowed: ({ session }) => {
-        return session?.isAdmin
-      }
-    }
+        return session?.isAdmin;
+      },
+    },
   })
 );
