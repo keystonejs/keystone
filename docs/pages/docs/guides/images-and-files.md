@@ -21,7 +21,7 @@ The `storage` object defines how and where the assets are stored and accessed by
 
 First, we are going to use [dotenv](https://www.npmjs.com/package/dotenv) to retrieve the S3 bucket and URL details from a `.env` file or set environment variables.
 
-In your Keystone Config file, pull in your environment variables and maps them to some easy to use names
+Before your configuration file, you can map your environment variables to some easy to use names:
 
 ```typescript{24-54}
 import { config } from '@keystone-6/core';
@@ -30,76 +30,46 @@ import { lists } from './schema';
 
 dotenv.config();
 
- const {
-  // The S3 Bucket Name used to store assets
+const {
   S3_BUCKET_NAME: bucketName = 'keystone-test',
-  // The region of the S3 bucket
   S3_REGION: region = 'ap-southeast-2',
-  // The Access Key ID and Secret that has read/write access to the S3 bucket
   S3_ACCESS_KEY_ID: accessKeyId = 'keystone',
   S3_SECRET_ACCESS_KEY: secretAccessKey = 'keystone',
-  // The base URL to serve assets from
   ASSET_BASE_URL: baseUrl = 'http://localhost:3000',
- } = process.env;
-/** ... */
-```
-
-If you want to use DigitalOcean Spaces for S3-Compatible Cloud Object Storage services, you should use `endpoint` 
-
-```typescript{24-54}
-import { config } from '@keystone-6/core';
-import dotenv from 'dotenv';
-import { lists } from './schema';
-
-dotenv.config();
-
- const {
-  // The S3 Bucket Name used to store assets
-  S3_BUCKET_NAME: bucketName = 'keystone-test',
-  // The region of the S3 bucket
-  S3_REGION: region = 'ap-southeast-2',
-  // The Access Key ID and Secret that has read/write access to the S3 bucket
-  S3_ACCESS_KEY_ID: accessKeyId = 'keystone',
-  S3_SECRET_ACCESS_KEY: secretAccessKey = 'keystone',
-  // The base URL to serve assets from
-  ASSET_BASE_URL: baseUrl = 'http://localhost:3000',
-  // An endpoint to use - to be provided if you are not using AWS as your endpoint
-  // For example if you use DigitalOcean Spaces it looks like 
-  // https://keystone-test-bucket.ap-southeast-2-region.digitaloceanspaces.com
-  // here end point should be https://ap-southeast-2-region.digitaloceanspaces.com
-  S3_ENDPOINT:endpoint = 'https://ap-southeast-2-region.digitaloceanspaces.com'
- } = process.env;
+} = process.env;
 /** ... */
 ```
 
 ### Storing assets in `s3`
 
-We can then add an `s3` `storage` object, the object below is called `my_s3_files` and this is the name that we will use in our `field` config later. This can be called any name that makes sense to your use case.
+We can then add an `s3` `storage` object, the object below is called `my_s3_files` and this is the name that we will use in our `field` config later.
+The name is not important, and can be adjusted to any name that makes sense for you.
 
-In the [config](../config/config) object in your `keystone.ts` file...
-
+Within the [config](../config/config) object in your `keystone.ts` file, add the following configuration:
 ```typescript
-/** config */
 storage: {
   my_s3_files: {
-    // Files that use this store will be stored in an s3 bucket
-    kind: 's3',
-    // This store is used for the file field type
-    type: 'file',
-    // The S3 bucket name pulled from the S3_BUCKET_NAME environment variable
-    bucketName,
-    // The S3 bucket region pulled from the S3_REGION environment variable
-    region,
-    // The S3 Access Key ID pulled from the S3_ACCESS_KEY_ID environment variable
-    accessKeyId,
-    // The S3 Secret pulled from the S3_SECRET_ACCESS_KEY environment variable
-    secretAccessKey,
-    // the S3 endpoint pulled from S3_ENDPOINT environment variable (if defined)
-    endpoint,
-    // The S3 links will be signed so they remain private
-    signed: { expiry: 5000 },
+    kind: 's3', // this storage uses S3
+    type: 'file', // only for files
+    bucketName, // from your S3_BUCKET_NAME environment variable
+    region, // from your S3_REGION environment variable
+    accessKeyId, // from your S3_ACCESS_KEY_ID environment variable
+    secretAccessKey, // from your S3_SECRET_ACCESS_KEY environment variable
+    signed: { expiry: 3600 }, // (optional) links will be signed with an expiry of 3600 seconds (an hour) 
   },
-  /** more storage */
+  // ...
+},
+```
+
+
+If you are using an S3 compatible provider, such as DigitalOcean Spaces, you need to additionally provide an `endpoint`:
+```typescript
+storage: {
+  my_s3_files: {
+    // ...
+    endpoint: 'https://ap-southeast-2-region.digitaloceanspaces.com' // or et cetera,
+  },
+  // ...
 },
 ```
 
