@@ -46,7 +46,7 @@ function dataGetterWithErrors(
       const newItem = data?.[field] ?? null;
       const errorsForField = errors.filter(error => {
         if (error.path === undefined) return true;
-        const errorPath = error.path // needed for Typescript
+        const errorPath = error.path; // needed for Typescript
         return newPath.every(
           (newSubPath, i) => errorPath[i] === undefined || errorPath[i] === newSubPath
         );

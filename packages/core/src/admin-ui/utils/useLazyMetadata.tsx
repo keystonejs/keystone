@@ -16,7 +16,7 @@ export function useLazyMetadata(query: DocumentNode): {
   return useMemo(() => {
     const refetch = async () => {
       await result.refetch();
-    }
+    };
 
     const dataGetter = makeDataGetter<
       DeepNullable<{

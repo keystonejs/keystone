@@ -50,7 +50,7 @@ function InternalKeystoneProvider({
   const { authenticatedItem, visibleLists, createViewFieldModes, refetch } =
     useLazyMetadata(lazyMetadataQuery);
   const reinitContext = async () => {
-    await (adminMeta?.refetch?.());
+    await adminMeta?.refetch?.();
     await refetch();
   };
 
