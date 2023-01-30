@@ -18,12 +18,12 @@ type KeystoneContextType = {
   adminConfig: AdminConfig;
   adminMeta:
     | { state: 'loaded'; value: AdminMeta }
-    | { state: 'error'; error: ApolloError; refetch: () => void };
+    | { state: 'error'; error: ApolloError; refetch: () => Promise<void> };
   fieldViews: FieldViews;
   authenticatedItem: AuthenticatedItem;
   visibleLists: VisibleLists;
   createViewFieldModes: CreateViewFieldModes;
-  reinitContext: () => void;
+  reinitContext: () => Promise<void>;
   apiPath: string;
 };
 
@@ -49,9 +49,9 @@ function InternalKeystoneProvider({
   const adminMeta = useAdminMeta(adminMetaHash, fieldViews);
   const { authenticatedItem, visibleLists, createViewFieldModes, refetch } =
     useLazyMetadata(lazyMetadataQuery);
-  const reinitContext = () => {
-    adminMeta?.refetch?.();
-    refetch();
+  const reinitContext = async () => {
+    await adminMeta?.refetch?.();
+    await refetch();
   };
 
   if (adminMeta.state === 'loading') {

@@ -44,13 +44,11 @@ function dataGetterWithErrors(
     get(field) {
       const newPath = path.concat(field);
       const newItem = data?.[field] ?? null;
-      let errorsForField = errors.filter(error => {
-        if (error.path === undefined) {
-          return true;
-        }
-        const errorPath = error.path;
+      const errorsForField = errors.filter(error => {
+        if (error.path === undefined) return true;
+        const errorPath = error.path; // needed for Typescript
         return newPath.every(
-          (value, index) => errorPath[index] === undefined || errorPath[index] === value
+          (newSubPath, i) => errorPath[i] === undefined || errorPath[i] === newSubPath
         );
       });
       if (errorsForField.length) {

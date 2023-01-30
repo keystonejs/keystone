@@ -17,6 +17,7 @@ export const permissions = {
   canManageAllTodos: ({ session }: ListAccessArgs) => !!session?.data.role?.canManageAllTodos,
   canManagePeople: ({ session }: ListAccessArgs) => !!session?.data.role?.canManagePeople,
   canManageRoles: ({ session }: ListAccessArgs) => !!session?.data.role?.canManageRoles,
+  // TODO: add canViewAdminUI
 };
 
 /*

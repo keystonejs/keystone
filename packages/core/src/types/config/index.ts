@@ -152,16 +152,17 @@ export type AdminUIConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   /** A function that can be run to validate that the current session should have access to the Admin UI */
   isAccessAllowed?: (context: KeystoneContext<TypeInfo>) => MaybePromise<boolean>;
 
-  /** An array of page routes that can be accessed without passing the isAccessAllowed check */
+  /** An array of page routes that bypass the isAccessAllowed function */
   publicPages?: readonly string[];
 
   getAdditionalFiles?: readonly ((
     config: KeystoneConfig<TypeInfo>
   ) => MaybePromise<readonly AdminFileToWrite[]>)[];
 
+  /** An async middleware function that can optionally return a redirect */
   pageMiddleware?: (args: {
     context: KeystoneContext<TypeInfo>;
-    isValidSession: boolean; // TODO: rename "isValidSession" to "wasAccessAllowed"?
+    wasAccessAllowed: boolean;
   }) => MaybePromise<{ kind: 'redirect'; to: string } | void>;
 };
 

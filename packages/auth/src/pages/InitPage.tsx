@@ -1,13 +1,12 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import fetch from 'cross-fetch';
 
-import { jsx, H1, Stack, Inline, VisuallyHidden, Center } from '@keystone-ui/core';
+import { jsx, H1, Stack, Inline, VisuallyHidden } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
 import { Checkbox, TextInput } from '@keystone-ui/fields';
-import { useRawKeystone } from '@keystone-6/core/admin-ui/context';
 import { FieldMeta } from '@keystone-6/core/types';
 import isDeepEqual from 'fast-deep-equal';
 
@@ -20,7 +19,6 @@ import {
   serializeValueToObjByFieldKey,
   useInvalidFields,
 } from '@keystone-6/core/admin-ui/utils';
-import { LoadingDots } from '@keystone-ui/loading';
 import { guessEmailFromValue, validEmail } from '../lib/emailHeuristics';
 import { IconTwitter, IconGithub } from '../components/Icons';
 import { SigninContainer } from '../components/SigninContainer';
@@ -28,63 +26,55 @@ import { useRedirect } from '../lib/useFromRedirect';
 
 const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup';
 
-function Welcome({ value }: { value: any }) {
-  const [subscribe, setSubscribe] = useState<boolean>(false);
+function Welcome({ value, onContinue }: { value: any; onContinue: () => void }) {
+  const [subscribe, setSubscribe] = useState(false);
   const [email, setEmail] = useState<string>(guessEmailFromValue(value));
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
-  const redirect = useRedirect();
 
-  const onSubmit = (event: React.FormEvent) => {
+  const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError(null);
-    // Check if user wants to subscribe.
-    // and there's a valid email address.
+
+    // Check if user wants to subscribe and a valid email address
     if (subscribe) {
-      // Basic validation check on the email?
       setLoading(true);
-      if (validEmail(email)) {
-        // if good add email to mailing list
-        // and redirect to dashboard.
-        return fetch(signupURL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            name: value.username,
-            email,
-            source: '@keystone-6/auth InitPage',
-          }),
-        })
-          .then(res => {
-            if (res.status !== 200) {
-              // We explicitly set the status in our endpoint
-              // any status that isn't 200 we assume is a failure
-              // which we want to surface to the user
-              res.json().then(({ error }) => {
-                setError(error);
-                setLoading(false);
-              });
-            } else {
-              router.push(redirect);
-            }
-          })
-          .catch(err => {
-            // network errors or failed parse
-            setError(err.toString());
-            setLoading(false);
-          });
-      } else {
-        setLoading(false);
-        // if email fails validation set error message
+
+      if (!validEmail(email)) {
         setError('Email is invalid');
         return;
       }
+
+      const res = await fetch(signupURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: value.username,
+          email,
+          source: '@keystone-6/auth InitPage',
+        }),
+      });
+
+      try {
+        if (res.status !== 200) {
+          const { error } = await res.json();
+          setError(error);
+          return;
+        }
+      } catch (e: any) {
+        // network errors or failed parse
+        setError(e.message.toString());
+        return;
+      }
+
+      setLoading(false);
     }
-    return router.push(redirect);
+
+    onContinue();
   };
+
   return (
     <Stack gap="large">
       <Stack
@@ -179,9 +169,7 @@ function InitPage({ fieldPaths, listKey, enableWelcome }: InitPageProps) {
   });
 
   const invalidFields = useInvalidFields(fields, value);
-
   const [forceValidation, setForceValidation] = useState(false);
-
   const [mode, setMode] = useState<'init' | 'welcome'>('init');
 
   const [createFirstItem, { loading, error, data }] =
@@ -197,74 +185,56 @@ function InitPage({ fieldPaths, listKey, enableWelcome }: InitPageProps) {
   const reinitContext = useReinitContext();
   const router = useRouter();
   const redirect = useRedirect();
-  const rawKeystone = useRawKeystone();
 
-  useEffect(() => {
-    // This effect handles both cases:
-    // a ) Our form submission is complete with new data
-    // b ) User lands in init page due to a client side SPA redirect
-    // Either way we check for an authenticated item
-    if (rawKeystone.authenticatedItem.state === 'authenticated') {
-      // If it exists we then check if enableWelcome is true
-      // if it is then we set the mode to welcome first.
-      // To tell the component to render the Welcome screen
-      if (enableWelcome) {
-        setMode('welcome');
-      } else {
-        // otherwise we route them through to the admin dashboard
-        router.push(redirect);
+  const onSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    // Check if there are any invalidFields
+    const newForceValidation = invalidFields.size !== 0;
+    setForceValidation(newForceValidation);
+
+    // if yes, don't submit the form
+    if (newForceValidation) return;
+
+    // If not we serialize the data
+    const data: Record<string, any> = {};
+    const allSerializedValues = serializeValueToObjByFieldKey(fields, value);
+
+    for (const fieldPath of Object.keys(allSerializedValues)) {
+      const { controller } = fields[fieldPath];
+      const serialized = allSerializedValues[fieldPath];
+      // we check the serialized values against the default values on the controller
+      if (!isDeepEqual(serialized, controller.serialize(controller.defaultValue))) {
+        // if they're different add them to the data object.
+        Object.assign(data, serialized);
       }
     }
-  }, [rawKeystone.authenticatedItem, enableWelcome, router, redirect]);
 
-  if (rawKeystone.authenticatedItem.state === 'authenticated' && !enableWelcome) {
-    return (
-      <Center fillView>
-        <LoadingDots label="Loading page" size="large" />
-      </Center>
-    );
-  }
+    try {
+      await createFirstItem({
+        variables: {
+          data,
+        },
+      });
+    } catch (e) {
+      console.error(e);
+      return;
+    }
+
+    await reinitContext();
+
+    if (enableWelcome) return setMode('welcome');
+    router.push(redirect);
+  };
+
+  const onComplete = () => {
+    router.push(redirect);
+  };
 
   return mode === 'init' ? (
     <SigninContainer title="Welcome to KeystoneJS">
       <H1>Welcome to KeystoneJS</H1>
       <p>Create your first user to get started</p>
-      <form
-        onSubmit={event => {
-          event.preventDefault();
-          // Check if there are any invalidFields
-          const newForceValidation = invalidFields.size !== 0;
-          setForceValidation(newForceValidation);
-
-          // if yes, don't submit the form
-          if (newForceValidation) return;
-
-          // If not we serialize the data
-          const data: Record<string, any> = {};
-          const allSerializedValues = serializeValueToObjByFieldKey(fields, value);
-          Object.keys(allSerializedValues).forEach(fieldPath => {
-            const { controller } = fields[fieldPath];
-            const serialized = allSerializedValues[fieldPath];
-            // we check the serialized values against the default values on the controller
-            if (!isDeepEqual(serialized, controller.serialize(controller.defaultValue))) {
-              // if they're different add them to the data object.
-              Object.assign(data, serialized);
-            }
-          });
-
-          // // Create the first item in the database.
-          createFirstItem({
-            variables: {
-              data,
-            },
-          })
-            .then(() => {
-              // refetch admin meta
-              reinitContext();
-            })
-            .catch(() => {});
-        }}
-      >
+      <form onSubmit={onSubmit}>
         <Stack gap="large">
           {error && (
             <GraphQLErrorNotice errors={error?.graphQLErrors} networkError={error?.networkError} />
@@ -292,7 +262,7 @@ function InitPage({ fieldPaths, listKey, enableWelcome }: InitPageProps) {
     </SigninContainer>
   ) : (
     <SigninContainer>
-      <Welcome value={value} />
+      <Welcome value={value} onContinue={onComplete} />
     </SigninContainer>
   );
 }

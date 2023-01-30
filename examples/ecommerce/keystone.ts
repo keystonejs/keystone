@@ -67,10 +67,6 @@ export default withAuth(
       Role,
     },
     extendGraphqlSchema,
-    ui: {
-      // Show the UI only for poeple who pass this test
-      isAccessAllowed: ({ session }) => !!session,
-    },
     session: statelessSessions(sessionConfig),
   })
 );

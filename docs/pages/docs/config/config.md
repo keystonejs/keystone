@@ -149,12 +149,13 @@ Fine grained configuration of how lists and fields behave in the Admin UI is han
 Options:
 
 - `isDisabled` (default: `false`): If `isDisabled` is set to `true` then the Admin UI will be completely disabled.
-- `isAccessAllowed` (default: `(context) => !!context.session`): This function controls whether a user is able to access the Admin UI.
+- `isAccessAllowed` (default: `(context) => context.session !== undefined`): This function controls whether a user can view the Admin UI.
   It takes a [`KeystoneContext`](../context/overview) object as an argument.
 
 Advanced configuration:
 
-- `publicPages` (default: `[]`): An array of page routes that can be accessed without passing the `isAccessAllowed` check.
+- `publicPages` (default: `[]`): An array of page routes that bypass the `isAccessAllowed` function.
+- `pageMiddleware` (default: `undefined`): An async middleware function that can optionally return a redirect
 - `getAdditionalFiles` (default: `[]`): An async function returns an array of `AdminFileToWrite` objects indicating files to be added to the system at `build` time.
   If the `mode` is `'write'`, then the code to be written to the file should be provided as the `src` argument.
   If the `mode` is `'copy'` then an `inputPath` value should be provided.
@@ -166,8 +167,9 @@ Advanced configuration:
 export default config({
   ui: {
     isDisabled: false,
-    isAccessAllowed: async context => true,
-    // Optional advanced configuration
+    isAccessAllowed: async (context) => context.session !== undefined,
+
+    // advanced configuration
     publicPages: ['/welcome'],
     getAdditionalFiles: [
       async (config: KeystoneConfig) => [
