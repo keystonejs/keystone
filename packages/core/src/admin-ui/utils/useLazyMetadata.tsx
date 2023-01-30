@@ -12,12 +12,10 @@ export function useLazyMetadata(query: DocumentNode): {
   visibleLists: VisibleLists;
   createViewFieldModes: CreateViewFieldModes;
 } {
-  let result = useQuery(query, { errorPolicy: 'all', fetchPolicy: 'network-only' });
+  const result = useQuery(query, { errorPolicy: 'all', fetchPolicy: 'network-only' });
   return useMemo(() => {
-    let refetch = () => {
-      result.refetch();
-    };
-    let dataGetter = makeDataGetter<
+    const refetch = () => result.refetch();
+    const dataGetter = makeDataGetter<
       DeepNullable<{
         authenticatedItem:
           | {
