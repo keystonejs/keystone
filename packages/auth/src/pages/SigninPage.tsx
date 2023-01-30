@@ -3,7 +3,7 @@
 
 import { useState, Fragment, FormEvent, useRef, useEffect } from 'react';
 
-import { jsx, H1, Stack, VisuallyHidden, Center } from '@keystone-ui/core';
+import { jsx, H1, Stack, VisuallyHidden } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
 import { TextInput } from '@keystone-ui/fields';
 import { Notice } from '@keystone-ui/notice';
@@ -11,7 +11,6 @@ import { Notice } from '@keystone-ui/notice';
 import { useMutation, gql } from '@keystone-6/core/admin-ui/apollo';
 import { useRawKeystone, useReinitContext } from '@keystone-6/core/admin-ui/context';
 import { useRouter } from '@keystone-6/core/admin-ui/router';
-import { LoadingDots } from '@keystone-ui/loading';
 import { SigninContainer } from '../components/SigninContainer';
 import { useRedirect } from '../lib/useFromRedirect';
 
@@ -49,6 +48,7 @@ export const SigninPage = ({
 
   const [mode, setMode] = useState<'signin' | 'forgot password'>('signin');
   const [state, setState] = useState({ identity: '', secret: '' });
+  const [submitted, setSubmitted] = useState(false);
 
   const identityFieldRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
@@ -63,18 +63,24 @@ export const SigninPage = ({
 
   // if we are signed in, redirect immediately
   useEffect(() => {
+    if (submitted) return;
     if (rawKeystone.authenticatedItem.state === 'authenticated') {
       router.push(redirect);
     }
-  }, [rawKeystone.authenticatedItem, router, redirect]);
+  }, [rawKeystone.authenticatedItem, router, redirect, submitted]);
 
-  if (rawKeystone.authenticatedItem.state === 'authenticated') {
-    return (
-      <Center fillView>
-        <LoadingDots label="Loading page" size="large" />
-      </Center>
-    );
-  }
+  useEffect(() => {
+    if (!submitted) return;
+
+    // TODO: this is horrible, we need to resolve this mess
+    // @ts-ignore
+    if (rawKeystone.adminMeta?.error?.message === 'Access denied') {
+      router.push('/no-access');
+      return;
+    }
+
+    router.push(redirect);
+  }, [rawKeystone.adminMeta, router, redirect, submitted]);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -94,18 +100,8 @@ export const SigninPage = ({
       return;
     }
 
-    reinitContext();
-
-    // @ts-ignore
-    //   if "Access denied" error, user may not have access to the adminMeta
-    //     but authenticateUser didn't have an error
-    if (rawKeystone.adminMeta?.error?.message === 'Access denied') {
-      // TODO: this is horrible, error handling needs a revamp
-      router.push('/no-access');
-      return;
-    }
-
-    router.push(redirect);
+    await reinitContext();
+    setSubmitted(true);
   };
 
   return (

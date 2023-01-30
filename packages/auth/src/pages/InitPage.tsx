@@ -4,10 +4,9 @@
 import { useMemo, useState } from 'react';
 import fetch from 'cross-fetch';
 
-import { jsx, H1, Stack, Inline, VisuallyHidden, Center } from '@keystone-ui/core';
+import { jsx, H1, Stack, Inline, VisuallyHidden } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
 import { Checkbox, TextInput } from '@keystone-ui/fields';
-import { useRawKeystone } from '@keystone-6/core/admin-ui/context';
 import { FieldMeta } from '@keystone-6/core/types';
 import isDeepEqual from 'fast-deep-equal';
 
@@ -20,7 +19,6 @@ import {
   serializeValueToObjByFieldKey,
   useInvalidFields,
 } from '@keystone-6/core/admin-ui/utils';
-import { LoadingDots } from '@keystone-ui/loading';
 import { guessEmailFromValue, validEmail } from '../lib/emailHeuristics';
 import { IconTwitter, IconGithub } from '../components/Icons';
 import { SigninContainer } from '../components/SigninContainer';
@@ -28,14 +26,11 @@ import { useRedirect } from '../lib/useFromRedirect';
 
 const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup';
 
-function Welcome({ value }: { value: any }) {
-  const [subscribe, setSubscribe] = useState<boolean>(false);
+function Welcome({ value, onContinue }: { value: any; onContinue: () => void }) {
+  const [subscribe, setSubscribe] = useState(false);
   const [email, setEmail] = useState<string>(guessEmailFromValue(value));
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
-  const redirect = useRedirect();
-  const rawKeystone = useRawKeystone();
 
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -66,25 +61,18 @@ function Welcome({ value }: { value: any }) {
         if (res.status !== 200) {
           const { error } = await res.json();
           setError(error);
+          return;
         }
       } catch (e: any) {
         // network errors or failed parse
         setError(e.message.toString());
+        return;
       }
 
       setLoading(false);
     }
 
-    // @ts-ignore
-    //   if "Access denied" error, user may not have access to the adminMeta
-    //     but authenticateUser didn't have an error
-    if (rawKeystone.adminMeta?.error?.message === 'Access denied') {
-      // TODO: this is horrible, error handling needs a revamp
-      router.push('/no-access');
-      return;
-    }
-
-    router.push(redirect);
+    onContinue();
   };
 
   return (
@@ -197,15 +185,6 @@ function InitPage({ fieldPaths, listKey, enableWelcome }: InitPageProps) {
   const reinitContext = useReinitContext();
   const router = useRouter();
   const redirect = useRedirect();
-  const rawKeystone = useRawKeystone();
-
-  if (rawKeystone.authenticatedItem.state === 'authenticated' && !enableWelcome) {
-    return (
-      <Center fillView>
-        <LoadingDots label="Loading page" size="large" />
-      </Center>
-    );
-  }
 
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -241,18 +220,13 @@ function InitPage({ fieldPaths, listKey, enableWelcome }: InitPageProps) {
       return;
     }
 
-    reinitContext();
+    await reinitContext();
+
     if (enableWelcome) return setMode('welcome');
+    router.push(redirect);
+  };
 
-    // @ts-ignore
-    //   if "Access denied" error, user may not have access to the adminMeta
-    //     but authenticateUser didn't have an error
-    if (rawKeystone.adminMeta?.error?.message === 'Access denied') {
-      // TODO: this is horrible, error handling needs a revamp
-      router.push('/no-access');
-      return;
-    }
-
+  const onComplete = () => {
     router.push(redirect);
   };
 
@@ -288,7 +262,7 @@ function InitPage({ fieldPaths, listKey, enableWelcome }: InitPageProps) {
     </SigninContainer>
   ) : (
     <SigninContainer>
-      <Welcome value={value} />
+      <Welcome value={value} onContinue={onComplete} />
     </SigninContainer>
   );
 }

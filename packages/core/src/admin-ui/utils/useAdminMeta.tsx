@@ -156,8 +156,8 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
     return {
       state: 'error' as const,
       error,
-      refetch: () => {
-        fetchStaticAdminMeta();
+      refetch: async () => {
+        await fetchStaticAdminMeta();
       },
     };
   }

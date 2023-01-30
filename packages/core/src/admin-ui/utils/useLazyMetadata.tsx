@@ -8,13 +8,16 @@ export type { AuthenticatedItem, VisibleLists, CreateViewFieldModes };
 
 export function useLazyMetadata(query: DocumentNode): {
   authenticatedItem: AuthenticatedItem;
-  refetch: () => void;
+  refetch: () => Promise<void>;
   visibleLists: VisibleLists;
   createViewFieldModes: CreateViewFieldModes;
 } {
   const result = useQuery(query, { errorPolicy: 'all', fetchPolicy: 'network-only' });
   return useMemo(() => {
-    const refetch = () => result.refetch();
+    const refetch = async () => {
+      await result.refetch();
+    }
+
     const dataGetter = makeDataGetter<
       DeepNullable<{
         authenticatedItem:
