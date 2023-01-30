@@ -8,8 +8,8 @@ import { lists } from './schema';
  * packages/auth/src/getExtendGraphQLSchema.ts
  */
 
-let sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
-let sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
+const sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
+const sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
 
 // createAuth configures signin functionality based on the config below. Note this only implements
 // authentication, i.e signing in as an item using identity and secret fields in a list. Session
@@ -17,31 +17,33 @@ let sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
 const { withAuth } = createAuth({
   // This is the list that contains items people can sign in as
   listKey: 'User',
+
   // The identity field is typically a username or email address
   identityField: 'email',
+
   // The secret field must be a password type field
   secretField: 'password',
+
   /* TODO -- review this later, it's not implemented yet and not fully designed (e.g error cases)
   // This ensures than an item is actually able to sign in
   validateItem: ({ item }) => item.isEnabled,
   */
+
   // initFirstItem turns on the "First User" experience, which prompts you to create a new user
-  // when there are no items in the list yet
+  // when there are no items in the list
   initFirstItem: {
     // These fields are collected in the "Create First User" form
     fields: ['name', 'email', 'password'],
-    // This is additional data that will be set when creating the first item
+    // This is additional data that will always be set for the first item
     itemData: {
-      // We need to specify that isAdmin is true for the first item, so the user can access the
-      // Admin UI (see isAccessAllowed in the admin config below)
+      // isAdmin is true, so the admin can pass isAccessAllowed (see below)
       isAdmin: true,
-      // Only enabled users can sign in, so we need to set this as well
-      // TODO: Come back to this when we review how to restrict signin to valid users
-      // isEnabled: true,
     },
   },
-  // Populate session.data based on the authed user
-  sessionData: 'name isAdmin',
+
+  // add isAdmin for the authed user (required by isAccessAllowed)
+  sessionData: 'isAdmin',
+
   /* TODO -- complete the UI for these features and enable them
   passwordResetLink: {
     sendToken(args) {
@@ -72,5 +74,11 @@ export default withAuth(
         // The session secret is used to encrypt cookie data (should be an environment variable)
         secret: sessionSecret,
       }),
+    ui: {
+      // only admins can view the AdminUI
+      isAccessAllowed: ({ session }) => {
+        return session?.isAdmin
+      }
+    }
   })
 );

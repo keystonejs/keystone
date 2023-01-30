@@ -58,6 +58,9 @@ export default withAuth(
     },
     lists,
     ui: {
+      // TODO: isSignedIn is the default, a better example would be limiting users
+      // isAccessAllowed: canViewAdminUI,
+
       /* Everyone who is signed in can access the Admin UI */
       isAccessAllowed: isSignedIn,
     },

@@ -20,19 +20,11 @@ const auth = createAuth({
   sessionData: 'name isAdmin',
 });
 
-// TODO -- Create a separate example for access control in the Admin UI
-// const isAccessAllowed = ({ session }: { session: any }) => !!session?.item?.isAdmin;
-
 export default auth.withAuth(
   config({
     db: {
       provider: 'sqlite',
       url: process.env.DATABASE_URL || 'file:./keystone-example.db',
-    },
-    ui: {
-      // NOTE -- this is not implemented, keystone currently always provides an admin ui at /
-      // path: '/admin',
-      // isAccessAllowed,
     },
     storage: {
       my_images: {
@@ -57,11 +49,5 @@ export default auth.withAuth(
     lists,
     extendGraphqlSchema,
     session: statelessSessions({ maxAge: sessionMaxAge, secret: sessionSecret }),
-    // TODO -- Create a separate example for stored/redis sessions
-    // session: storedSessions({
-    //   store: new Map(),
-    //   // store: redisSessionStore({ client: redis.createClient() }),
-    //   secret: sessionSecret,
-    // }),
   })
 );
