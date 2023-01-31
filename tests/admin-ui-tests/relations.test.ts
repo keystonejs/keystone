@@ -10,7 +10,7 @@ adminUITests('./tests/test-projects/basic', browserType => {
     page = await browser.newPage();
   });
 
-  test('Creating relation items inline does not submit main form', async () => {
+  test('Creating relation items using the drawer does not submit main form', async () => {
     await page.goto('http://localhost:3000/tasks/create');
     await page.fill('label:has-text("Label")', 'Buy beer');
     await page.click('button:has-text("Create related Person")');
@@ -19,6 +19,23 @@ adminUITests('./tests/test-projects/basic', browserType => {
     await page.click('button:has-text("Create Person")');
     await page.waitForSelector('legend:has-text("Assigned To") ~ div:has-text("Geralt")');
     expect(page.url()).toBe('http://localhost:3000/tasks/create');
+  });
+
+  test('Creating/Editing relation items inline does not submit main form', async () => {
+    await page.goto('http://localhost:3000/cats/create');
+    await page.fill('name:has-text("Name")', 'Whiskers');
+    await page.click('button:has-text("Create related Person")');
+    await page.waitForSelector('h1:has-text("Create Person")');
+    await page.fill('label:has-text("Name")', 'Geralt');
+    await page.click('button:has-text("Create Person")');
+
+    expect(page.url()).toBe('http://localhost:3000/cats/create');
+
+    await page.click('button:has-text("Edit")');
+    await page.fill('label:has-text("Name")', 'John');
+    await page.click('button:has-text("Save")');
+
+    expect(page.url()).toBe('http://localhost:3000/cats/create');
   });
 
   afterAll(async () => {
