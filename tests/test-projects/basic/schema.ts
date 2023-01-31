@@ -21,11 +21,29 @@ export const lists = {
       finishBy: timestamp(),
     },
   }),
+  Cat: list({
+    access: allowAll,
+    fields: {
+      name: text({ validation: { isRequired: true } }),
+      owner: relationship({
+        ref: 'Person.cat',
+        many: false ,
+        ui: {
+          displayMode: 'cards',
+          cardFields: ['name'],
+          inlineEdit: { fields: ['name'] },
+          inlineCreate: { fields: ['name'] },
+          linkToItem: true,
+        }
+      }),
+    },
+  }),
   Person: list({
     access: allowAll,
     fields: {
       name: text({ validation: { isRequired: true } }),
       tasks: relationship({ ref: 'Task.assignedTo', many: true }),
+      cat: relationship({ ref: 'Cat.owner', many: true, })
     },
   }),
   SecretPlan: list({

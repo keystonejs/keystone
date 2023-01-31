@@ -141,11 +141,52 @@ input PersonRelateToOneForCreateInput {
   connect: PersonWhereUniqueInput
 }
 
+type Cat {
+  id: ID!
+  name: String
+  owner: Person
+}
+
+input CatWhereUniqueInput {
+  id: ID
+}
+
+input CatWhereInput {
+  AND: [CatWhereInput!]
+  OR: [CatWhereInput!]
+  NOT: [CatWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  owner: PersonWhereInput
+}
+
+input CatOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+}
+
+input CatUpdateInput {
+  name: String
+  owner: PersonRelateToOneForUpdateInput
+}
+
+input CatUpdateArgs {
+  where: CatWhereUniqueInput!
+  data: CatUpdateInput!
+}
+
+input CatCreateInput {
+  name: String
+  owner: PersonRelateToOneForCreateInput
+}
+
 type Person {
   id: ID!
   name: String
   tasks(where: TaskWhereInput! = {}, orderBy: [TaskOrderByInput!]! = [], take: Int, skip: Int! = 0): [Task!]
   tasksCount(where: TaskWhereInput! = {}): Int
+  cat(where: CatWhereInput! = {}, orderBy: [CatOrderByInput!]! = [], take: Int, skip: Int! = 0): [Cat!]
+  catCount(where: CatWhereInput! = {}): Int
 }
 
 input PersonWhereUniqueInput {
@@ -159,12 +200,19 @@ input PersonWhereInput {
   id: IDFilter
   name: StringFilter
   tasks: TaskManyRelationFilter
+  cat: CatManyRelationFilter
 }
 
 input TaskManyRelationFilter {
   every: TaskWhereInput
   some: TaskWhereInput
   none: TaskWhereInput
+}
+
+input CatManyRelationFilter {
+  every: CatWhereInput
+  some: CatWhereInput
+  none: CatWhereInput
 }
 
 input PersonOrderByInput {
@@ -175,6 +223,7 @@ input PersonOrderByInput {
 input PersonUpdateInput {
   name: String
   tasks: TaskRelateToManyForUpdateInput
+  cat: CatRelateToManyForUpdateInput
 }
 
 input TaskRelateToManyForUpdateInput {
@@ -182,6 +231,13 @@ input TaskRelateToManyForUpdateInput {
   set: [TaskWhereUniqueInput!]
   create: [TaskCreateInput!]
   connect: [TaskWhereUniqueInput!]
+}
+
+input CatRelateToManyForUpdateInput {
+  disconnect: [CatWhereUniqueInput!]
+  set: [CatWhereUniqueInput!]
+  create: [CatCreateInput!]
+  connect: [CatWhereUniqueInput!]
 }
 
 input PersonUpdateArgs {
@@ -192,11 +248,17 @@ input PersonUpdateArgs {
 input PersonCreateInput {
   name: String
   tasks: TaskRelateToManyForCreateInput
+  cat: CatRelateToManyForCreateInput
 }
 
 input TaskRelateToManyForCreateInput {
   create: [TaskCreateInput!]
   connect: [TaskWhereUniqueInput!]
+}
+
+input CatRelateToManyForCreateInput {
+  create: [CatCreateInput!]
+  connect: [CatWhereUniqueInput!]
 }
 
 type SecretPlan {
@@ -251,6 +313,12 @@ type Mutation {
   updateTasks(data: [TaskUpdateArgs!]!): [Task]
   deleteTask(where: TaskWhereUniqueInput!): Task
   deleteTasks(where: [TaskWhereUniqueInput!]!): [Task]
+  createCat(data: CatCreateInput!): Cat
+  createCats(data: [CatCreateInput!]!): [Cat]
+  updateCat(where: CatWhereUniqueInput!, data: CatUpdateInput!): Cat
+  updateCats(data: [CatUpdateArgs!]!): [Cat]
+  deleteCat(where: CatWhereUniqueInput!): Cat
+  deleteCats(where: [CatWhereUniqueInput!]!): [Cat]
   createPerson(data: PersonCreateInput!): Person
   createPeople(data: [PersonCreateInput!]!): [Person]
   updatePerson(where: PersonWhereUniqueInput!, data: PersonUpdateInput!): Person
@@ -269,6 +337,9 @@ type Query {
   tasks(where: TaskWhereInput! = {}, orderBy: [TaskOrderByInput!]! = [], take: Int, skip: Int! = 0): [Task!]
   task(where: TaskWhereUniqueInput!): Task
   tasksCount(where: TaskWhereInput! = {}): Int
+  cats(where: CatWhereInput! = {}, orderBy: [CatOrderByInput!]! = [], take: Int, skip: Int! = 0): [Cat!]
+  cat(where: CatWhereUniqueInput!): Cat
+  catsCount(where: CatWhereInput! = {}): Int
   people(where: PersonWhereInput! = {}, orderBy: [PersonOrderByInput!]! = [], take: Int, skip: Int! = 0): [Person!]
   person(where: PersonWhereUniqueInput!): Person
   peopleCount(where: PersonWhereInput! = {}): Int

@@ -24,10 +24,20 @@ model Task {
   @@index([assignedToId])
 }
 
+model Cat {
+  id      String  @id @default(cuid())
+  name    String  @default("")
+  owner   Person? @relation("Cat_owner", fields: [ownerId], references: [id])
+  ownerId String? @map("owner")
+
+  @@index([ownerId])
+}
+
 model Person {
   id    String @id @default(cuid())
   name  String @default("")
   tasks Task[] @relation("Task_assignedTo")
+  cat   Cat[]  @relation("Cat_owner")
 }
 
 model SecretPlan {
