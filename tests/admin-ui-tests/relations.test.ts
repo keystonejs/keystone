@@ -10,7 +10,7 @@ adminUITests('./tests/test-projects/basic', browserType => {
     page = await browser.newPage();
   });
 
-  test('Creating relation items using the drawer does not submit main form', async () => {
+  test('Creating relation items using the inline drawer does not submit main form', async () => {
     await page.goto('http://localhost:3000/tasks/create');
     await page.fill('label:has-text("Label")', 'Buy beer');
     await page.click('button:has-text("Create related Person")');
@@ -21,7 +21,7 @@ adminUITests('./tests/test-projects/basic', browserType => {
     expect(page.url()).toBe('http://localhost:3000/tasks/create');
   });
 
-  test('Creating/Editing relation items inline does not submit main form', async () => {
+  test('Creating/Editing relation items using the inline card does not submit main form', async () => {
     await page.goto('http://localhost:3000/cats/create');
     await page.fill('name:has-text("Name")', 'Whiskers');
     await page.click('button:has-text("Create related Person")');
