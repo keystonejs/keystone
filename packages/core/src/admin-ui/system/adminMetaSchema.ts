@@ -80,12 +80,7 @@ const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
               name: 'KeystoneAdminUIFieldMetaItemViewFieldMode',
               values: graphql.enumValues(['edit', 'read', 'hidden']),
             }),
-            resolve(
-              { fieldMode, itemId, listKey },
-              args,
-              context,
-              info
-            ): MaybePromise<'edit' | 'read' | 'hidden' | null> {
+            resolve({ fieldMode, itemId, listKey }, args, context, info) {
               if (itemId !== null) {
                 assertInRuntimeContext(context, info);
               }
@@ -119,12 +114,7 @@ const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
               name: 'KeystoneAdminUIFieldMetaItemViewFieldPosition',
               values: graphql.enumValues(['form', 'sidebar']),
             }),
-            resolve(
-              { fieldPosition, itemId, listKey },
-              args,
-              context,
-              info
-            ): MaybePromise<'form' | 'sidebar' | null> {
+            resolve({ fieldPosition, itemId, listKey }, args, context, info) {
               if (itemId !== null) {
                 assertInRuntimeContext(context, info);
               }

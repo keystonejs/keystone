@@ -88,6 +88,7 @@ export type FieldMeta = {
      * `null` indicates that the value is dynamic and must be fetched for any given item
      */
     fieldMode: 'edit' | 'read' | 'hidden' | null;
+    fieldPosition: 'form' | 'sidebar' | null;
   };
 };
 
