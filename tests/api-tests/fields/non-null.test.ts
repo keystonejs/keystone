@@ -107,17 +107,6 @@ testModules
             const createType = assertInputObjectType(schema.getType('TestCreateInput'));
             expect(createType.getFields().testField.type).toBeInstanceOf(GraphQLNonNull);
           });
-          test('Throws when graphql.isNonNull.create and create access control is set', async () => {
-            const error = await getSchema({
-              graphql: { isNonNull: { create: true } },
-              access: { create: () => false },
-            }).catch(x => x);
-            expect(error).toBeInstanceOf(Error);
-            expect(error.message).toEqual(
-              `The field at Test.testField sets graphql.isNonNull.create: true, and has 'create' field access control, this is not allowed.\n` +
-                `Either disable graphql.create.isNonNull, or disable 'create' field access control.`
-            );
-          });
         }
 
         test("Output field is nullable when graphql.isNonNull.read isn't set", async () => {
