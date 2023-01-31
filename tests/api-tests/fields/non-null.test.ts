@@ -9,9 +9,11 @@ import { assertInputObjectType, assertObjectType, GraphQLNonNull } from 'graphql
 import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig } from '../utils';
 
+type TextFieldConfig = Parameters<typeof text>[0];
 const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
 });
+
 testModules
   .map(require)
   .filter(
@@ -42,7 +44,7 @@ testModules
           }
         });
 
-        const getSchema = async (fieldConfig: any) => {
+        const getSchema = async (fieldConfig: TextFieldConfig) => {
           const { testArgs } = await setupTestEnv({
             config: apiTestConfig({
               lists: {
