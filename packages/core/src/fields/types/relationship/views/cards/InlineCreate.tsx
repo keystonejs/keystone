@@ -58,6 +58,7 @@ export function InlineCreate({
 
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    event.stopPropagation();
     const newForceValidation = invalidFields.size !== 0;
     setForceValidation(newForceValidation);
 

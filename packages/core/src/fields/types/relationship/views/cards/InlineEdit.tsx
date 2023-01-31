@@ -70,6 +70,7 @@ export function InlineEdit({
     <form
       onSubmit={event => {
         event.preventDefault();
+        event.stopPropagation();
         if (changedFields.size === 0) {
           onCancel();
           return;
