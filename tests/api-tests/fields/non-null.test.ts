@@ -98,8 +98,8 @@ testModules
             }).catch(x => x);
             expect(error).toBeInstanceOf(Error);
             expect(error.message).toEqual(
-              `The field at Test.testField sets graphql.isNonNull.read: true, and has 'read' access control, this is not allowed.\n` +
-                `Either disable graphql.isNonNull.read, or disable 'read' access control.`
+              `The field at Test.testField sets graphql.isNonNull.read: true, and has 'read' field access control, this is not allowed.\n` +
+                `Either disable graphql.read.isNonNull, or disable 'read' field access control.`
             );
           });
           test('Sets the create field as non-null when graphql.isNonNull.create is set', async () => {
@@ -114,8 +114,8 @@ testModules
             }).catch(x => x);
             expect(error).toBeInstanceOf(Error);
             expect(error.message).toEqual(
-              `The field at Test.testField sets graphql.isNonNull.create: true, and has 'create' access control, this is not allowed.\n` +
-                `Either disable graphql.isNonNull.create, or disable 'create' access control.`
+              `The field at Test.testField sets graphql.isNonNull.create: true, and has 'create' field access control, this is not allowed.\n` +
+                `Either disable graphql.create.isNonNull, or disable 'create' field access control.`
             );
           });
         }
