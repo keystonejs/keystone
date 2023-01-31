@@ -10,12 +10,13 @@ import {
 import { graphql } from '../../..';
 import { SUPPORTED_IMAGE_EXTENSIONS } from './utils';
 
-export type ImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
-  storage: string;
-  db?: {
-    extendPrismaSchema?: (field: string) => string;
+export type ImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
+  CommonFieldConfig<ListTypeInfo> & {
+    storage: string;
+    db?: {
+      extendPrismaSchema?: (field: string) => string;
+    };
   };
-} & CommonFieldConfig<ListTypeInfo>;
 
 const ImageExtensionEnum = graphql.enum({
   name: 'ImageExtension',

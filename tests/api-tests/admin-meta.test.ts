@@ -71,6 +71,7 @@ test(
                   fieldMeta: {
                     kind: 'cuid',
                   },
+                  isNonNull: [],
                   itemView: {
                     fieldMode: 'hidden',
                   },
@@ -97,6 +98,7 @@ test(
                       match: null,
                     },
                   },
+                  isNonNull: [],
                   itemView: {
                     fieldMode: 'hidden',
                   },
@@ -117,6 +119,7 @@ test(
                       min: -2147483648,
                     },
                   },
+                  isNonNull: [],
                   itemView: {
                     fieldMode: 'read',
                   },

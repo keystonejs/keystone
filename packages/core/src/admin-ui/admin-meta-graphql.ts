@@ -43,6 +43,7 @@ export const staticAdminMetaQuery = gql`
             viewsIndex
             customViewsIndex
             search
+            isNonNull
             itemView {
               fieldMode
             }
@@ -108,6 +109,7 @@ export type StaticAdminMetaQuery = {
           viewsIndex: number;
           customViewsIndex: number | null;
           search: QueryMode | null;
+          isNonNull: ('read' | 'create' | 'update')[];
           itemView: {
             __typename: 'KeystoneAdminUIFieldMetaItemView';
             fieldPosition: KeystoneAdminUIFieldMetaItemViewFieldPosition | null;

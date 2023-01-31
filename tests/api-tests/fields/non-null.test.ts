@@ -85,47 +85,47 @@ testModules
         };
 
         if (mod.supportsGraphQLIsNonNull) {
-          test('Sets the output field as non-null when graphql.read.isNonNull is set', async () => {
-            const schema = await getSchema({ graphql: { read: { isNonNull: true } } });
+          test('Sets the output field as non-null when graphql.isNonNull.read is set', async () => {
+            const schema = await getSchema({ graphql: { isNonNull: { read: true } } });
 
             const outputType = assertObjectType(schema.getType('Test'));
             expect(outputType.getFields().testField.type).toBeInstanceOf(GraphQLNonNull);
           });
-          test('Throws when graphql.read.isNonNull and read access control is set', async () => {
+          test('Throws when graphql.isNonNull.read and read access control is set', async () => {
             const error = await getSchema({
-              graphql: { read: { isNonNull: true } },
+              graphql: { isNonNull: { read: true } },
               access: { read: () => false },
             }).catch(x => x);
             expect(error).toBeInstanceOf(Error);
             expect(error.message).toEqual(
-              `The field at Test.testField sets graphql.read.isNonNull: true and has read access control, this is not allowed.\n` +
-                `Either disable graphql.read.isNonNull or read access control.`
+              `The field at Test.testField sets graphql.isNonNull.read: true, and has 'read' access control, this is not allowed.\n` +
+                `Either disable graphql.isNonNull.read, or disable 'read' access control.`
             );
           });
-          test('Sets the create field as non-null when graphql.create.isNonNull is set', async () => {
-            const schema = await getSchema({ graphql: { create: { isNonNull: true } } });
+          test('Sets the create field as non-null when graphql.isNonNull.create is set', async () => {
+            const schema = await getSchema({ graphql: { isNonNull: { create: true } } });
             const createType = assertInputObjectType(schema.getType('TestCreateInput'));
             expect(createType.getFields().testField.type).toBeInstanceOf(GraphQLNonNull);
           });
-          test('Throws when graphql.create.isNonNull and create access control is set', async () => {
+          test('Throws when graphql.isNonNull.create and create access control is set', async () => {
             const error = await getSchema({
-              graphql: { create: { isNonNull: true } },
+              graphql: { isNonNull: { create: true } },
               access: { create: () => false },
             }).catch(x => x);
             expect(error).toBeInstanceOf(Error);
             expect(error.message).toEqual(
-              `The field at Test.testField sets graphql.create.isNonNull: true and has create access control, this is not allowed.\n` +
-                `Either disable graphql.create.isNonNull or create access control.`
+              `The field at Test.testField sets graphql.isNonNull.create: true, and has 'create' access control, this is not allowed.\n` +
+                `Either disable graphql.isNonNull.create, or disable 'create' access control.`
             );
           });
         }
 
-        test("Output field is nullable when graphql.read.isNonNull isn't set", async () => {
+        test("Output field is nullable when graphql.isNonNull.read isn't set", async () => {
           const schema = await getSchema({});
           const outputType = assertObjectType(schema.getType('Test'));
           expect(outputType.getFields().testField.type).not.toBeInstanceOf(GraphQLNonNull);
         });
-        test("Create field is nullable when graphql.create.isNonNull isn't set", async () => {
+        test("Create field is nullable when graphql.isNonNull.create isn't set", async () => {
           const schema = await getSchema({});
           const createType = assertInputObjectType(schema.getType('TestCreateInput'));
           expect(createType.getFields().testField.type).not.toBeInstanceOf(GraphQLNonNull);

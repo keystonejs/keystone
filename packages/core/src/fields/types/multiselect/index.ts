@@ -8,7 +8,7 @@ import {
   jsonFieldTypePolyfilledForSQLite,
 } from '../../../types';
 import { graphql } from '../../..';
-import { assertCreateIsNonNullAllowed, assertReadIsNonNullAllowed } from '../../non-null-graphql';
+import { assertReadIsNonNullAllowed } from '../../non-null-graphql';
 import { userInputError } from '../../../lib/core/graphql-errors';
 
 export type MultiselectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
@@ -32,14 +32,6 @@ export type MultiselectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
           defaultValue?: readonly number[];
         }
     ) & {
-      graphql?: {
-        create?: {
-          isNonNull?: boolean;
-        };
-        read?: {
-          isNonNull?: boolean;
-        };
-      };
       db?: {
         map?: string;
         extendPrismaSchema?: (field: string) => string;
@@ -62,20 +54,9 @@ export const multiselect =
     const fieldLabel = config.label ?? humanize(meta.fieldKey);
     assertReadIsNonNullAllowed(meta, config, false);
 
-    assertCreateIsNonNullAllowed(meta, config);
-
-    const output = <T extends graphql.NullableOutputType>(type: T) =>
-      config.graphql?.read?.isNonNull ? graphql.nonNull(nonNullList(type)) : nonNullList(type);
-
+    const output = <T extends graphql.NullableOutputType>(type: T) => nonNullList(type);
     const create = <T extends graphql.NullableInputType>(type: T) => {
-      const list = nonNullList(type);
-      if (config.graphql?.read?.isNonNull) {
-        return graphql.arg({
-          type: graphql.nonNull(list),
-          defaultValue: defaultValue as any,
-        });
-      }
-      return graphql.arg({ type: list });
+      return graphql.arg({ type: nonNullList(type) });
     };
 
     const resolveCreate = <T extends string | number>(val: T[] | null | undefined): T[] => {

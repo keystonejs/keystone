@@ -100,8 +100,8 @@ input TodoUpdateArgs {
 
 input TodoCreateInput {
   label: String
-  isComplete: Boolean
-  isPrivate: Boolean
+  isComplete: Boolean = false
+  isPrivate: Boolean = false
   assignedTo: PersonRelateToOneForCreateInput
 }
 
@@ -270,12 +270,12 @@ input RoleUpdateArgs {
 
 input RoleCreateInput {
   name: String
-  canCreateTodos: Boolean
-  canManageAllTodos: Boolean
-  canSeeOtherPeople: Boolean
-  canEditOtherPeople: Boolean
-  canManagePeople: Boolean
-  canManageRoles: Boolean
+  canCreateTodos: Boolean = false
+  canManageAllTodos: Boolean = false
+  canSeeOtherPeople: Boolean = false
+  canEditOtherPeople: Boolean = false
+  canManagePeople: Boolean = false
+  canManageRoles: Boolean = false
   assignedTo: PersonRelateToManyForCreateInput
 }
 
@@ -382,6 +382,7 @@ type KeystoneAdminUIFieldMeta {
   description: String
   isOrderable: Boolean!
   isFilterable: Boolean!
+  isNonNull: [KeystoneAdminUIFieldMetaIsNonNull!]
   fieldMeta: JSON
   viewsIndex: Int!
   customViewsIndex: Int
@@ -389,6 +390,12 @@ type KeystoneAdminUIFieldMeta {
   listView: KeystoneAdminUIFieldMetaListView!
   itemView(id: ID): KeystoneAdminUIFieldMetaItemView
   search: QueryMode
+}
+
+enum KeystoneAdminUIFieldMetaIsNonNull {
+  read
+  create
+  update
 }
 
 type KeystoneAdminUIFieldMetaCreateView {

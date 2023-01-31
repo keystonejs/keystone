@@ -1,5 +1,6 @@
 import { graphql } from '../..';
 import { InitialisedField } from './types-for-lists';
+import { defaultAllowAccessControlFunction } from './access-control';
 
 export type ListForValidation = { listKey: string; fields: Record<string, InitialisedField> };
 
@@ -8,6 +9,41 @@ export function assertFieldsValid(list: ListForValidation) {
   assertIdFieldGraphQLTypesCorrect(list);
   assertNoFieldKeysThatConflictWithFilterCombinators(list);
   assertUniqueWhereInputsValid(list);
+  assertFieldsIsNonNullAllowed(list);
+}
+
+function assertFieldOperationIsNonNullAllowed(
+  { listKey }: ListForValidation,
+  fieldKey: string,
+  field: InitialisedField,
+  operation: 'read' | 'create' | 'update'
+) {
+  if (field.access[operation] !== defaultAllowAccessControlFunction) {
+    if (field.graphql.isNonNull[operation]) {
+      throw new Error(
+        `The field at ${listKey}.${fieldKey} sets graphql.isNonNull.${operation}: true, and has '${operation}' field access control, this is not allowed.\n` +
+          `Either disable graphql.${operation}.isNonNull, or disable '${operation}' field access control.`
+      );
+    }
+  }
+
+  // TODO: hmmm
+  //    if (!field.graphql?.isNonNull[operation]) {
+  //      if (field.validation.isRequired || db.isNullable) {
+  //        throw new Error(
+  //          `The field at ${listKey}.${fieldKey} sets graphql.isNonNull.${operation}: true, but not validation.isRequired: true or db.isNullable: false.\n` +
+  //            `Set validation.isRequired: true, or db.isNullable: false, or disable graphql.isNonNull.${operation}`
+  //        );
+  //      }
+  //    }
+}
+
+function assertFieldsIsNonNullAllowed(list: ListForValidation) {
+  for (const [fieldKey, field] of Object.entries(list.fields)) {
+    assertFieldOperationIsNonNullAllowed(list, fieldKey, field, 'read');
+    assertFieldOperationIsNonNullAllowed(list, fieldKey, field, 'create');
+    assertFieldOperationIsNonNullAllowed(list, fieldKey, field, 'update');
+  }
 }
 
 function assertUniqueWhereInputsValid(list: ListForValidation) {

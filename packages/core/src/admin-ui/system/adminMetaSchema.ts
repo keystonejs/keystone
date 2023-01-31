@@ -24,6 +24,16 @@ const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
     description: graphql.field({ type: graphql.String }),
     ...contextFunctionField('isOrderable', graphql.Boolean),
     ...contextFunctionField('isFilterable', graphql.Boolean),
+    isNonNull: graphql.field({
+      type: graphql.list(
+        graphql.nonNull(
+          graphql.enum({
+            name: 'KeystoneAdminUIFieldMetaIsNonNull',
+            values: graphql.enumValues(['read', 'create', 'update']),
+          })
+        )
+      ),
+    }),
     fieldMeta: graphql.field({ type: graphql.JSON }),
     viewsIndex: graphql.field({ type: graphql.nonNull(graphql.Int) }),
     customViewsIndex: graphql.field({ type: graphql.Int }),
@@ -252,7 +262,7 @@ const fetchItemForItemViewFieldMode = extendContext(context => {
     if (items.has(id)) {
       return items.get(id)!;
     }
-    let promise = context.db[listKey].findOne({ where: { id } });
+    const promise = context.db[listKey].findOne({ where: { id } });
     items.set(id, promise);
     return promise;
   };

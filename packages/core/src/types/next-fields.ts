@@ -463,7 +463,7 @@ export type FindManyArgsValue = graphql.InferValueFromArgs<FindManyArgs>;
 export function fieldType<TDBField extends DBField, ListTypeInfo extends BaseListTypeInfo>(
   dbField: TDBField
 ) {
-  return function <
+  return function fieldTypeWrapper<
     CreateArg extends graphql.Arg<graphql.InputType> | undefined,
     UpdateArg extends graphql.Arg<graphql.InputType>,
     UniqueWhereArg extends graphql.Arg<graphql.NullableInputType, false>,

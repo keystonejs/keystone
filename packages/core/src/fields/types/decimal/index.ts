@@ -9,11 +9,7 @@ import {
   FieldData,
 } from '../../../types';
 import { graphql } from '../../..';
-import {
-  assertCreateIsNonNullAllowed,
-  assertReadIsNonNullAllowed,
-  getResolvedIsNullable,
-} from '../../non-null-graphql';
+import { assertReadIsNonNullAllowed, getResolvedIsNullable } from '../../non-null-graphql';
 import { filters } from '../../filters';
 
 export type DecimalFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
@@ -27,7 +23,6 @@ export type DecimalFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     scale?: number;
     defaultValue?: string;
     isIndexed?: boolean | 'unique';
-    graphql?: { create?: { isNonNull?: boolean }; read?: { isNonNull?: boolean } };
     db?: {
       isNullable?: boolean;
       map?: string;
@@ -111,10 +106,7 @@ export const decimal =
 
     assertReadIsNonNullAllowed(meta, config, isNullable);
 
-    assertCreateIsNonNullAllowed(meta, config);
-
     const mode = isNullable === false ? 'required' : 'optional';
-
     const index = isIndexed === true ? 'index' : isIndexed || undefined;
     const dbField = {
       kind: 'scalar',
@@ -159,10 +151,8 @@ export const decimal =
         },
         create: {
           arg: graphql.arg({
-            type: config.graphql?.create?.isNonNull
-              ? graphql.nonNull(graphql.Decimal)
-              : graphql.Decimal,
-            defaultValue: config.graphql?.create?.isNonNull ? parsedDefaultValue : undefined,
+            type: graphql.Decimal,
+            defaultValue: parsedDefaultValue,
           }),
           resolve(val) {
             if (val === undefined) {
@@ -177,7 +167,7 @@ export const decimal =
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
       output: graphql.field({
-        type: config.graphql?.read?.isNonNull ? graphql.nonNull(graphql.Decimal) : graphql.Decimal,
+        type: graphql.Decimal,
         resolve({ value }) {
           if (value === null) {
             return null;

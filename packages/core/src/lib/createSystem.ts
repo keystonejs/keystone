@@ -7,6 +7,7 @@ import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './context/createContext';
 import { initialiseLists } from './core/types-for-lists';
 import { setPrismaNamespace, setWriteLimit } from './core/utils';
+import { defaultAllowAccessControlFunction } from './core/access-control';
 
 function getSudoGraphQLSchema(config: KeystoneConfig) {
   // This function creates a GraphQLSchema based on a modified version of the provided config.
@@ -24,7 +25,7 @@ function getSudoGraphQLSchema(config: KeystoneConfig) {
     ...config,
     ui: {
       ...config.ui,
-      isAccessAllowed: () => true,
+      isAccessAllowed: defaultAllowAccessControlFunction,
     },
     lists: Object.fromEntries(
       Object.entries(config.lists).map(([listKey, list]) => {
@@ -32,7 +33,7 @@ function getSudoGraphQLSchema(config: KeystoneConfig) {
           listKey,
           {
             ...list,
-            access: () => true,
+            access: defaultAllowAccessControlFunction, // default
             graphql: { ...(list.graphql || {}), omit: [] },
             fields: Object.fromEntries(
               Object.entries(list.fields).map(([fieldKey, field]) => {
@@ -43,7 +44,7 @@ function getSudoGraphQLSchema(config: KeystoneConfig) {
                     const f = field(data);
                     return {
                       ...f,
-                      access: () => true,
+                      access: defaultAllowAccessControlFunction, // default
                       isFilterable: true,
                       isOrderable: true,
                       graphql: { ...(f.graphql || {}), omit: [] },
@@ -64,11 +65,8 @@ function getSudoGraphQLSchema(config: KeystoneConfig) {
 
 export function createSystem(config: KeystoneConfig) {
   const lists = initialiseLists(config);
-
   const adminMeta = createAdminMeta(config, lists);
-
   const graphQLSchema = createGraphQLSchema(config, lists, adminMeta);
-
   const sudoGraphQLSchema = getSudoGraphQLSchema(config);
 
   return {

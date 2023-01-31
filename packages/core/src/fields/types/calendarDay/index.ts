@@ -7,11 +7,7 @@ import {
   orderDirectionEnum,
 } from '../../../types';
 import { graphql } from '../../..';
-import {
-  assertCreateIsNonNullAllowed,
-  assertReadIsNonNullAllowed,
-  getResolvedIsNullable,
-} from '../../non-null-graphql';
+import { assertReadIsNonNullAllowed, getResolvedIsNullable } from '../../non-null-graphql';
 import { filters } from '../../filters';
 import { CalendarDayFieldMeta } from './views';
 
@@ -22,10 +18,6 @@ export type CalendarDayFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
       isRequired?: boolean;
     };
     defaultValue?: string;
-    graphql?: {
-      create?: { isNonNull?: boolean };
-      read?: { isNonNull?: boolean };
-    };
     db?: {
       isNullable?: boolean;
       extendPrismaSchema?: (field: string) => string;
@@ -55,12 +47,8 @@ export const calendarDay =
 
     assertReadIsNonNullAllowed(meta, config, resolvedIsNullable);
 
-    assertCreateIsNonNullAllowed(meta, config);
-
     const mode = resolvedIsNullable === false ? 'required' : 'optional';
-
     const fieldLabel = config.label ?? humanize(meta.fieldKey);
-
     const usesNativeDateType = meta.provider === 'postgresql' || meta.provider === 'mysql';
 
     const resolveInput = (value: null | undefined | string) => {
@@ -118,10 +106,8 @@ export const calendarDay =
         },
         create: {
           arg: graphql.arg({
-            type: config.graphql?.create?.isNonNull
-              ? graphql.nonNull(graphql.CalendarDay)
-              : graphql.CalendarDay,
-            defaultValue: config.graphql?.create?.isNonNull ? defaultValue : undefined,
+            type: graphql.CalendarDay,
+            defaultValue,
           }),
           resolve(val: string | null | undefined) {
             if (val === undefined) {
@@ -134,9 +120,7 @@ export const calendarDay =
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
       output: graphql.field({
-        type: config.graphql?.read?.isNonNull
-          ? graphql.nonNull(graphql.CalendarDay)
-          : graphql.CalendarDay,
+        type: graphql.CalendarDay,
         resolve({ value }) {
           if (value instanceof Date) {
             return value.toISOString().slice(0, 10);

@@ -119,6 +119,11 @@ export type ResolvedFieldAccessControl = {
   update: IndividualFieldAccessControl<FieldUpdateItemAccessArgs<BaseListTypeInfo>>;
 };
 
+// internal only, don't rely on this
+export function defaultAllowAccessControlFunction() {
+  return true;
+}
+
 export function parseFieldAccessControl(
   access: FieldAccessControl<BaseListTypeInfo> | undefined
 ): ResolvedFieldAccessControl {
@@ -127,9 +132,9 @@ export function parseFieldAccessControl(
   }
 
   return {
-    read: access?.read ?? (() => true),
-    create: access?.create ?? (() => true),
-    update: access?.update ?? (() => true),
+    read: access?.read ?? defaultAllowAccessControlFunction,
+    create: access?.create ?? defaultAllowAccessControlFunction,
+    update: access?.update ?? defaultAllowAccessControlFunction,
   };
 }
 
@@ -166,14 +171,14 @@ export function parseListAccessControl(
         delete: access,
       },
       filter: {
-        query: () => true,
-        update: () => true,
-        delete: () => true,
+        query: defaultAllowAccessControlFunction,
+        update: defaultAllowAccessControlFunction,
+        delete: defaultAllowAccessControlFunction,
       },
       item: {
-        create: () => true,
-        update: () => true,
-        delete: () => true,
+        create: defaultAllowAccessControlFunction,
+        update: defaultAllowAccessControlFunction,
+        delete: defaultAllowAccessControlFunction,
       },
     };
   }
@@ -190,22 +195,22 @@ export function parseListAccessControl(
 
   return {
     operation: {
-      query: operation.query ?? (() => true),
-      create: operation.create ?? (() => true),
-      update: operation.update ?? (() => true),
-      delete: operation.delete ?? (() => true),
+      query: operation.query ?? defaultAllowAccessControlFunction,
+      create: operation.create ?? defaultAllowAccessControlFunction,
+      update: operation.update ?? defaultAllowAccessControlFunction,
+      delete: operation.delete ?? defaultAllowAccessControlFunction,
     },
     filter: {
-      query: filter?.query ?? (() => true),
+      query: filter?.query ?? defaultAllowAccessControlFunction,
       // create: not supported
-      update: filter?.update ?? (() => true),
-      delete: filter?.delete ?? (() => true),
+      update: filter?.update ?? defaultAllowAccessControlFunction,
+      delete: filter?.delete ?? defaultAllowAccessControlFunction,
     },
     item: {
       // query: not supported
-      create: item?.create ?? (() => true),
-      update: item?.update ?? (() => true),
-      delete: item?.delete ?? (() => true),
+      create: item?.create ?? defaultAllowAccessControlFunction,
+      update: item?.update ?? defaultAllowAccessControlFunction,
+      delete: item?.delete ?? defaultAllowAccessControlFunction,
     },
   };
 }

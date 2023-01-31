@@ -7,11 +7,7 @@ import {
   orderDirectionEnum,
 } from '../../../types';
 import { graphql } from '../../..';
-import {
-  assertCreateIsNonNullAllowed,
-  assertReadIsNonNullAllowed,
-  getResolvedIsNullable,
-} from '../../non-null-graphql';
+import { assertReadIsNonNullAllowed, getResolvedIsNullable } from '../../non-null-graphql';
 import { filters } from '../../filters';
 
 export type IntegerFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
@@ -22,14 +18,6 @@ export type IntegerFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
       isRequired?: boolean;
       min?: number;
       max?: number;
-    };
-    graphql?: {
-      create?: {
-        isNonNull?: boolean;
-      };
-      read?: {
-        isNonNull?: boolean;
-      };
     };
     db?: {
       isNullable?: boolean;
@@ -107,8 +95,6 @@ export const integer =
 
     assertReadIsNonNullAllowed(meta, config, isNullable);
 
-    assertCreateIsNonNullAllowed(meta, config);
-
     const mode = isNullable === false ? 'required' : 'optional';
 
     const fieldLabel = config.label ?? humanize(meta.fieldKey);
@@ -167,11 +153,8 @@ export const integer =
         },
         create: {
           arg: graphql.arg({
-            type: config.graphql?.create?.isNonNull ? graphql.nonNull(graphql.Int) : graphql.Int,
-            defaultValue:
-              config.graphql?.create?.isNonNull && typeof defaultValue === 'number'
-                ? defaultValue
-                : undefined,
+            type: graphql.Int,
+            defaultValue: typeof defaultValue === 'number' ? defaultValue : undefined,
           }),
           resolve(value) {
             if (value === undefined && typeof defaultValue === 'number') {
@@ -184,7 +167,7 @@ export const integer =
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
       output: graphql.field({
-        type: config.graphql?.read?.isNonNull ? graphql.nonNull(graphql.Int) : graphql.Int,
+        type: graphql.Int,
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/integer',
       views: '@keystone-6/core/fields/types/integer/views',

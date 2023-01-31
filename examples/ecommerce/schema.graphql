@@ -481,7 +481,7 @@ input CartItemUpdateArgs {
 }
 
 input CartItemCreateInput {
-  quantity: Int
+  quantity: Int = 1
   product: ProductRelateToOneForCreateInput
   user: UserRelateToOneForCreateInput
 }
@@ -702,12 +702,12 @@ input RoleUpdateArgs {
 
 input RoleCreateInput {
   name: String
-  canManageProducts: Boolean
-  canSeeOtherUsers: Boolean
-  canManageUsers: Boolean
-  canManageRoles: Boolean
-  canManageCart: Boolean
-  canManageOrders: Boolean
+  canManageProducts: Boolean = false
+  canSeeOtherUsers: Boolean = false
+  canManageUsers: Boolean = false
+  canManageRoles: Boolean = false
+  canManageCart: Boolean = false
+  canManageOrders: Boolean = false
   assignedTo: UserRelateToManyForCreateInput
 }
 
@@ -871,6 +871,7 @@ type KeystoneAdminUIFieldMeta {
   description: String
   isOrderable: Boolean!
   isFilterable: Boolean!
+  isNonNull: [KeystoneAdminUIFieldMetaIsNonNull!]
   fieldMeta: JSON
   viewsIndex: Int!
   customViewsIndex: Int
@@ -878,6 +879,12 @@ type KeystoneAdminUIFieldMeta {
   listView: KeystoneAdminUIFieldMetaListView!
   itemView(id: ID): KeystoneAdminUIFieldMetaItemView
   search: QueryMode
+}
+
+enum KeystoneAdminUIFieldMetaIsNonNull {
+  read
+  create
+  update
 }
 
 type KeystoneAdminUIFieldMetaCreateView {

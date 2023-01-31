@@ -83,6 +83,9 @@ export type FieldMeta = {
   views: FieldViews[number];
   controller: FieldController<unknown, JSONValue>;
   search: 'default' | 'insensitive' | null;
+  graphql: {
+    isNonNull: ('read' | 'create' | 'update')[];
+  };
   itemView: {
     /**
      * `null` indicates that the value is dynamic and must be fetched for any given item

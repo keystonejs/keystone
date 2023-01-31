@@ -195,10 +195,7 @@ describe(`Public schema`, () => {
 
             expect(fieldTypes[listName].fields).not.toBe(null);
             const fields = fieldTypes[listName].fields;
-            if (
-              config.omit !== true &&
-              (config.omit === undefined || !config.omit.includes('read'))
-            ) {
+            if (config.omit !== true && (config.omit === undefined || !config.omit.read)) {
               expect(fields[name]).not.toBe(undefined);
             } else {
               expect(fields[name]).toBe(undefined);
@@ -208,7 +205,7 @@ describe(`Public schema`, () => {
             expect(fieldTypes[`${listName}WhereInput`].inputFields).not.toBe(undefined);
             if (
               config.omit !== true && // Not excluded
-              (config.omit === undefined || !config.omit.includes('read')) && // Can read
+              (config.omit === undefined || !config.omit.read) && // Can read
               isFilterable !== false &&
               config.isFilterable !== false // Can filter
             ) {
@@ -221,7 +218,7 @@ describe(`Public schema`, () => {
             expect(fieldTypes[`${listName}OrderByInput`].inputFields).not.toBe(undefined);
             if (
               config.omit !== true && // Not excluded
-              (config.omit === undefined || !config.omit.includes('read')) && // Can read
+              (config.omit === undefined || !config.omit.read) && // Can read
               isOrderable !== false &&
               config.isOrderable !== false // Can orderBy
             ) {
@@ -235,7 +232,7 @@ describe(`Public schema`, () => {
 
             if (
               config.omit !== true && // Not excluded
-              (config.omit === undefined || !config.omit.includes('create')) // Can create
+              (config.omit === undefined || !config.omit.create) // Can create
             ) {
               expect(fieldTypes[`${listName}CreateInput`].inputFields[name]).not.toBe(undefined);
             } else {
@@ -246,7 +243,7 @@ describe(`Public schema`, () => {
             expect(fieldTypes[`${listName}UpdateInput`].inputFields).not.toBe(undefined);
             if (
               config.omit !== true && // Not excluded
-              (config.omit === undefined || !config.omit.includes('update')) // Can update
+              (config.omit === undefined || !config.omit.update) // Can update
             ) {
               expect(fieldTypes[`${listName}UpdateInput`].inputFields[name]).not.toBe(undefined);
             } else {
@@ -280,7 +277,7 @@ describe(`Public schema`, () => {
             const field = data!.keystone.adminMeta.list.fields.filter(
               (f: any) => f.path === getFieldName(config)
             )[0];
-            if (config.omit === true || config.omit?.includes('read')) {
+            if (config.omit === true || config.omit?.read) {
               // FIXME: This code path will go away once the Admin UI supports `omit: ['read']` properly.
               expect(field).toBe(undefined);
             } else {
@@ -288,7 +285,7 @@ describe(`Public schema`, () => {
               if (
                 // @ts-ignore
                 config.omit !== true && // Not excluded
-                (config.omit === undefined || !config.omit.includes('read')) && // Can read
+                (config.omit === undefined || !config.omit.read) && // Can read
                 isFilterable !== false &&
                 config.isFilterable !== false // Can filter
               ) {
@@ -301,7 +298,7 @@ describe(`Public schema`, () => {
               if (
                 // @ts-ignore
                 config.omit !== true && // Not excluded
-                (config.omit === undefined || !config.omit.includes('read')) && // Can read
+                (config.omit === undefined || !config.omit.read) && // Can read
                 isOrderable !== false &&
                 config.isOrderable !== false // Can orderBy
               ) {
@@ -340,13 +337,13 @@ describe(`Public schema`, () => {
               (f: any) => f.path === getFieldName(config)
             )[0];
 
-            if (config.omit === true || config.omit?.includes('read')) {
+            if (config.omit === true || config.omit?.read) {
               // FIXME: This code path will go away once the Admin UI supports `omit: ['read']` properly.
               expect(field).toBe(undefined);
             } else {
               // createView - edit/hidden (hidden if omit.create)
               // @ts-ignore
-              if (config.omit === true || config.omit?.includes('create')) {
+              if (config.omit === true || config.omit?.create) {
                 expect(field.createView.fieldMode).toEqual('hidden');
               } else {
                 expect(field.createView.fieldMode).toEqual('edit');
@@ -354,7 +351,7 @@ describe(`Public schema`, () => {
 
               // listView - read/hidden (hidden if omit.read)
               // @ts-ignore
-              if (config.omit === true || config.omit?.includes('read')) {
+              if (config.omit === true || config.omit?.read) {
                 expect(field.listView.fieldMode).toEqual('hidden');
               } else {
                 expect(field.listView.fieldMode).toEqual('read');
@@ -362,9 +359,9 @@ describe(`Public schema`, () => {
 
               // itemView - edit/read/hidden (read if omit.update, hidden if omit.read)
               // @ts-ignore
-              if (config.omit === true || config.omit?.includes('read')) {
+              if (config.omit === true || config.omit?.read) {
                 expect(field.itemView.fieldMode).toEqual('hidden');
-              } else if (config.omit?.includes('update')) {
+              } else if (config.omit?.update) {
                 expect(field.itemView.fieldMode).toEqual('read');
               } else {
                 expect(field.itemView.fieldMode).toEqual('edit');
