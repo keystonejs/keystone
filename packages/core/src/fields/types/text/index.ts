@@ -159,7 +159,7 @@ export const text =
         create: {
           arg: graphql.arg({
             type: graphql.String,
-            defaultValue: typeof defaultValue === 'number' ? defaultValue : undefined,
+            defaultValue: typeof defaultValue === 'string' ? defaultValue : undefined,
           }),
           resolve(val) {
             if (val === undefined) {
