@@ -155,9 +155,7 @@ export const select =
           create: {
             arg: graphql.arg({
               type: graphql.Int,
-              // TODO: uh
-              defaultValue: defaultValue as any,
-              //                defaultValue: typeof defaultValue === 'number' ? defaultValue : undefined,
+              defaultValue: typeof defaultValue === 'number' ? defaultValue : undefined,
             }),
             resolve: resolveCreate,
           },
@@ -201,7 +199,13 @@ export const select =
             arg: graphql.arg({ type: filters[meta.provider].enum(graphQLType).optional }),
             resolve: mode === 'required' ? undefined : filters.resolveCommon,
           },
-          create: { arg: graphql.arg({ type: graphQLType }), resolve: resolveCreate },
+          create: {
+            arg: graphql.arg({
+              type: graphQLType,
+              defaultValue: typeof defaultValue === 'string' ? defaultValue : undefined,
+            }),
+            resolve: resolveCreate,
+          },
           update: { arg: graphql.arg({ type: graphQLType }) },
           orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
         },
@@ -217,7 +221,13 @@ export const select =
           arg: graphql.arg({ type: filters[meta.provider].String[mode] }),
           resolve: mode === 'required' ? undefined : filters.resolveString,
         },
-        create: { arg: graphql.arg({ type: graphql.String }), resolve: resolveCreate },
+        create: {
+          arg: graphql.arg({
+            type: graphql.String,
+            defaultValue: typeof defaultValue === 'string' ? defaultValue : undefined,
+          }),
+          resolve: resolveCreate,
+        },
         update: { arg: graphql.arg({ type: graphql.String }) },
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
