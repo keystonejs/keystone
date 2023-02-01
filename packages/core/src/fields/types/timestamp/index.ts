@@ -19,6 +19,7 @@ export type TimestampFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     };
     defaultValue?: string | { kind: 'now' };
     db?: {
+      // this is @updatedAt in Prisma
       updatedAt?: boolean;
       isNullable?: boolean;
       map?: string;
@@ -97,6 +98,7 @@ export const timestamp =
         create: {
           arg: graphql.arg({
             type: graphql.DateTime,
+            // TODO: add support for defaultValue of { kind: 'now' } in the GraphQL API
             defaultValue: parsedDefaultValue instanceof Date ? parsedDefaultValue : undefined,
           }),
           resolve(val) {

@@ -368,7 +368,7 @@ input ThingCreateInput {
   toManyRelationship: TodoRelateToManyForCreateInput
   toOneRelationshipCard: UserRelateToOneForCreateInput
   toManyRelationshipCard: TodoRelateToManyForCreateInput
-  text: String
+  text: String = ""
   timestamp: DateTime
   calendarDay: CalendarDay
   select: String
@@ -470,7 +470,7 @@ input TodoUpdateArgs {
 }
 
 input TodoCreateInput {
-  label: String
+  label: String = ""
   isComplete: Boolean = false
   assignedTo: UserRelateToOneForCreateInput
   finishBy: DateTime
@@ -525,8 +525,8 @@ input UserUpdateArgs {
 }
 
 input UserCreateInput {
-  name: String
-  email: String
+  name: String = ""
+  email: String = ""
   password: String
   tasks: TodoRelateToManyForCreateInput
 }
@@ -567,8 +567,8 @@ input SettingsUpdateArgs {
 }
 
 input SettingsCreateInput {
-  websiteName: String
-  copyrightText: String
+  websiteName: String = ""
+  copyrightText: String = ""
 }
 
 """
