@@ -26,6 +26,7 @@ export const dbConfig: DatabaseConfig<BaseKeystoneTypeInfo> = {
 export const trackingFields = {
   createdAt: timestamp({
     access: { read: () => true, create: () => false, update: () => false },
+    graphql: { omit: { create: true, update: true } },
     validation: { isRequired: true },
     defaultValue: { kind: 'now' },
     ui: {
@@ -35,6 +36,7 @@ export const trackingFields = {
   }),
   updatedAt: timestamp({
     access: { read: () => true, create: () => false, update: () => false },
+    graphql: { omit: { create: true, update: true } },
     db: { updatedAt: true },
     validation: { isRequired: true },
     ui: {
