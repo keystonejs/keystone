@@ -129,10 +129,10 @@ function ItemForm({
       // TODO -- Experimenting with less detail in the toasts, so the data lines are commented
       // out below. If we're happy with this, clean up the unused lines.
       .then(({ /* data, */ errors }) => {
-        // we're checking for path.length === 1 because errors with a path larger than 1 will
+        // we're checking for path being undefined OR path.length === 1 because errors with a path larger than 1 will
         // be field level errors which are handled seperately and do not indicate a failure to
-        // update the item
-        const error = errors?.find(x => x.path?.length === 1);
+        // update the item, path being undefined generally indicates a failure in the graphql mutation itself - ie a type error
+        const error = errors?.find(x => x.path === undefined || x.path?.length === 1);
         if (error) {
           toasts.addToast({
             title: 'Failed to update item',
