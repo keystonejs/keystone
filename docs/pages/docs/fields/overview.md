@@ -102,6 +102,7 @@ Options:
     - `isNonNull.read` (default: `false`): Changing this to `true` will change the GraphQL output type to be non-nullable.
     If you have 'read' field access control, this will be rejected with a runtime `Error` as `null` may be returned if the access control returns false.
     - `isNonNull.create` (default: `false`): Enforce that this field is non-nullable in the \*CreateInput for the respective list item.
+    Fields that have a `defaultValue` only have that default value included in the GraphQL if this field is `true`.
     - `isNonNull.update` (default: `false`): Enforce that this field is non-nullable in the \*UpdateInput for the respective list item.
     This field additionally results in the AdminUI always sending this particular field in updates, including when it has not changed.
 {% /if %}
