@@ -81,8 +81,8 @@ input AuthorUpdateArgs {
 }
 
 input AuthorCreateInput {
-  firstName: String = ""
-  lastName: String = ""
+  firstName: String
+  lastName: String
 }
 
 type Post {
@@ -139,8 +139,8 @@ input PostUpdateArgs {
 }
 
 input PostCreateInput {
-  title: String = ""
-  content: String = ""
+  title: String
+  content: String
   author: AuthorRelateToOneForCreateInput
   tags: TagRelateToOneForCreateInput
 }
@@ -204,7 +204,7 @@ input TagUpdateArgs {
 }
 
 input TagCreateInput {
-  name: String = ""
+  name: String
   posts: PostRelateToManyForCreateInput
 }
 

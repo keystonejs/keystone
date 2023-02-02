@@ -172,13 +172,13 @@ input UserUpdateArgs {
 }
 
 input UserCreateInput {
-  name: String = ""
-  email: String = ""
+  name: String
+  email: String
   avatar: ImageFieldInput
   attachment: FileFieldInput
   password: String
-  isAdmin: Boolean = false
-  roles: String = ""
+  isAdmin: Boolean
+  roles: String
   phoneNumbers: PhoneNumberRelateToManyForCreateInput
   posts: PostRelateToManyForCreateInput
 }
@@ -269,7 +269,7 @@ input PhoneNumberUpdateArgs {
 input PhoneNumberCreateInput {
   user: UserRelateToOneForCreateInput
   type: String
-  value: String = ""
+  value: String
 }
 
 input UserRelateToOneForCreateInput {
@@ -339,8 +339,8 @@ input PostUpdateArgs {
 }
 
 input PostCreateInput {
-  title: String = ""
-  status: String = "draft"
+  title: String
+  status: String
   content: JSON
   publishDate: DateTime
   author: UserRelateToOneForCreateInput
@@ -388,8 +388,8 @@ type UserAuthenticationWithPasswordFailure {
 }
 
 input CreateInitialUserInput {
-  name: String = ""
-  email: String = ""
+  name: String
+  email: String
   password: String
 }
 

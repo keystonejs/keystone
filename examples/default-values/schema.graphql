@@ -146,12 +146,12 @@ input TaskUpdateArgs {
 }
 
 input TaskCreateInput {
-  label: String = ""
+  label: String
   priority: TaskPriorityType
-  isComplete: Boolean = false
+  isComplete: Boolean
   assignedTo: PersonRelateToOneForCreateInput
   finishBy: DateTime
-  viewCount: BigInt = "0"
+  viewCount: BigInt
 }
 
 input PersonRelateToOneForCreateInput {
@@ -208,7 +208,7 @@ input PersonUpdateArgs {
 }
 
 input PersonCreateInput {
-  name: String = ""
+  name: String
   tasks: TaskRelateToManyForCreateInput
 }
 

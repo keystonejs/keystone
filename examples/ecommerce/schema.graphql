@@ -177,8 +177,8 @@ input UserUpdateArgs {
 }
 
 input UserCreateInput {
-  name: String = ""
-  email: String = ""
+  name: String
+  email: String
   password: String
   cart: CartItemRelateToManyForCreateInput
   orders: OrderRelateToManyForCreateInput
@@ -310,10 +310,10 @@ input ProductUpdateArgs {
 }
 
 input ProductCreateInput {
-  name: String = ""
-  description: String = ""
+  name: String
+  description: String
   photo: ProductImageRelateToOneForCreateInput
-  status: String = "DRAFT"
+  status: String
   price: Int
   user: UserRelateToOneForCreateInput
 }
@@ -423,7 +423,7 @@ input ProductImageUpdateArgs {
 
 input ProductImageCreateInput {
   image: Upload
-  altText: String = ""
+  altText: String
   product: ProductRelateToOneForCreateInput
 }
 
@@ -481,7 +481,7 @@ input CartItemUpdateArgs {
 }
 
 input CartItemCreateInput {
-  quantity: Int = 1
+  quantity: Int
   product: ProductRelateToOneForCreateInput
   user: UserRelateToOneForCreateInput
 }
@@ -542,8 +542,8 @@ input OrderItemUpdateArgs {
 }
 
 input OrderItemCreateInput {
-  name: String = ""
-  description: String = ""
+  name: String
+  description: String
   photo: ProductImageRelateToOneForCreateInput
   price: Int
   quantity: Int
@@ -615,7 +615,7 @@ input OrderCreateInput {
   total: Int
   items: OrderItemRelateToManyForCreateInput
   user: UserRelateToOneForCreateInput
-  charge: String = ""
+  charge: String
 }
 
 input OrderItemRelateToManyForCreateInput {
@@ -701,13 +701,13 @@ input RoleUpdateArgs {
 }
 
 input RoleCreateInput {
-  name: String = ""
-  canManageProducts: Boolean = false
-  canSeeOtherUsers: Boolean = false
-  canManageUsers: Boolean = false
-  canManageRoles: Boolean = false
-  canManageCart: Boolean = false
-  canManageOrders: Boolean = false
+  name: String
+  canManageProducts: Boolean
+  canSeeOtherUsers: Boolean
+  canManageUsers: Boolean
+  canManageRoles: Boolean
+  canManageCart: Boolean
+  canManageOrders: Boolean
   assignedTo: UserRelateToManyForCreateInput
 }
 
@@ -785,8 +785,8 @@ type UserAuthenticationWithPasswordFailure {
 }
 
 input CreateInitialUserInput {
-  name: String = ""
-  email: String = ""
+  name: String
+  email: String
   password: String
 }
 

@@ -307,10 +307,17 @@ function introspectGraphQLTypes(lists: Record<string, InitialisedList>) {
   }
 }
 
+function stripDefaultValue(thing: graphql.Arg<graphql.InputType, boolean>) {
+  return graphql.arg({
+    ...thing,
+    defaultValue: undefined
+  });
+}
+
 function graphqlArgForInputField(field: InitialisedField, operation: 'create' | 'update') {
   const input = field.input?.[operation];
   if (!input?.arg || !field.graphql.isEnabled[operation]) return;
-  if (!field.graphql.isNonNull[operation]) return input.arg;
+  if (!field.graphql.isNonNull[operation]) return stripDefaultValue(input.arg);
   if (input.arg.type.kind === 'non-null') return;
 
   return graphql.arg({

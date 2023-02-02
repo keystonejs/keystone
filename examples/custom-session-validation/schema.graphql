@@ -129,9 +129,9 @@ input TaskUpdateArgs {
 }
 
 input TaskCreateInput {
-  label: String = ""
+  label: String
   priority: TaskPriorityType
-  isComplete: Boolean = false
+  isComplete: Boolean
   assignedTo: PersonRelateToOneForCreateInput
   finishBy: DateTime
 }
@@ -204,8 +204,8 @@ input PersonUpdateArgs {
 }
 
 input PersonCreateInput {
-  name: String = ""
-  email: String = ""
+  name: String
+  email: String
   password: String
   passwordChangedAt: DateTime
   tasks: TaskRelateToManyForCreateInput
@@ -251,8 +251,8 @@ type PersonAuthenticationWithPasswordFailure {
 }
 
 input CreateInitialPersonInput {
-  name: String = ""
-  email: String = ""
+  name: String
+  email: String
   password: String
 }
 

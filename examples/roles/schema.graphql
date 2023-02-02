@@ -99,9 +99,9 @@ input TodoUpdateArgs {
 }
 
 input TodoCreateInput {
-  label: String = ""
-  isComplete: Boolean = false
-  isPrivate: Boolean = false
+  label: String
+  isComplete: Boolean
+  isPrivate: Boolean
   assignedTo: PersonRelateToOneForCreateInput
 }
 
@@ -179,8 +179,8 @@ input PersonUpdateArgs {
 }
 
 input PersonCreateInput {
-  name: String = ""
-  email: String = ""
+  name: String
+  email: String
   password: String
   role: RoleRelateToOneForCreateInput
   tasks: TodoRelateToManyForCreateInput
@@ -269,13 +269,13 @@ input RoleUpdateArgs {
 }
 
 input RoleCreateInput {
-  name: String = ""
-  canCreateTodos: Boolean = false
-  canManageAllTodos: Boolean = false
-  canSeeOtherPeople: Boolean = false
-  canEditOtherPeople: Boolean = false
-  canManagePeople: Boolean = false
-  canManageRoles: Boolean = false
+  name: String
+  canCreateTodos: Boolean
+  canManageAllTodos: Boolean
+  canSeeOtherPeople: Boolean
+  canEditOtherPeople: Boolean
+  canManagePeople: Boolean
+  canManageRoles: Boolean
   assignedTo: PersonRelateToManyForCreateInput
 }
 
@@ -325,8 +325,8 @@ type PersonAuthenticationWithPasswordFailure {
 }
 
 input CreateInitialPersonInput {
-  name: String = ""
-  email: String = ""
+  name: String
+  email: String
   password: String
 }
 

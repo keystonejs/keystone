@@ -77,7 +77,7 @@ input PostUpdateArgs {
 }
 
 input PostCreateInput {
-  title: String = ""
+  title: String
 }
 
 """

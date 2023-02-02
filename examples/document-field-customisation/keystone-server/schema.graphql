@@ -99,8 +99,8 @@ input UserUpdateArgs {
 }
 
 input UserCreateInput {
-  email: String = ""
-  name: String = ""
+  email: String
+  name: String
   posts: PostRelateToManyForCreateInput
 }
 
@@ -178,8 +178,8 @@ input PostUpdateArgs {
 }
 
 input PostCreateInput {
-  title: String = ""
-  slug: String = ""
+  title: String
+  slug: String
   content: JSON
   publishDate: DateTime
   author: UserRelateToOneForCreateInput

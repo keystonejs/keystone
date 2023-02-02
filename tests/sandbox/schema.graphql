@@ -361,14 +361,14 @@ input ThingUpdateArgs {
 input ThingCreateInput {
   structure: [Int]
   structureNested: [ThingStructureNestedCreateInput]
-  checkbox: Boolean = false
+  checkbox: Boolean
   password: String
   toOneRelationship: UserRelateToOneForCreateInput
   toOneRelationshipAlternateLabel: UserRelateToOneForCreateInput
   toManyRelationship: TodoRelateToManyForCreateInput
   toOneRelationshipCard: UserRelateToOneForCreateInput
   toManyRelationshipCard: TodoRelateToManyForCreateInput
-  text: String = ""
+  text: String
   timestamp: DateTime
   calendarDay: CalendarDay
   select: String
@@ -470,8 +470,8 @@ input TodoUpdateArgs {
 }
 
 input TodoCreateInput {
-  label: String = ""
-  isComplete: Boolean = false
+  label: String
+  isComplete: Boolean
   assignedTo: UserRelateToOneForCreateInput
   finishBy: DateTime
 }
@@ -525,8 +525,8 @@ input UserUpdateArgs {
 }
 
 input UserCreateInput {
-  name: String = ""
-  email: String = ""
+  name: String
+  email: String
   password: String
   tasks: TodoRelateToManyForCreateInput
 }
@@ -567,8 +567,8 @@ input SettingsUpdateArgs {
 }
 
 input SettingsCreateInput {
-  websiteName: String = ""
-  copyrightText: String = ""
+  websiteName: String
+  copyrightText: String
 }
 
 """

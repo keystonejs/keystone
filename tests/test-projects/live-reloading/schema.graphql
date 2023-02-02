@@ -77,7 +77,7 @@ input SomethingUpdateArgs {
 }
 
 input SomethingCreateInput {
-  text: String = ""
+  text: String
 }
 
 """
