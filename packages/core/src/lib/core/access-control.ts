@@ -16,6 +16,7 @@ import {
   getGqlNames,
 } from '../../types';
 import { coerceAndValidateForGraphQLInput } from '../coerceAndValidateForGraphQLInput';
+import { allowAll } from '../../access';
 import { accessReturnError, extensionError } from './graphql-errors';
 import { InitialisedList } from './types-for-lists';
 import { InputFilter } from './where-inputs';
@@ -119,11 +120,6 @@ export type ResolvedFieldAccessControl = {
   update: IndividualFieldAccessControl<FieldUpdateItemAccessArgs<BaseListTypeInfo>>;
 };
 
-// internal only, don't rely on this
-export function defaultAllowAccessControlFunction() {
-  return true;
-}
-
 export function parseFieldAccessControl(
   access: FieldAccessControl<BaseListTypeInfo> | undefined
 ): ResolvedFieldAccessControl {
@@ -132,9 +128,9 @@ export function parseFieldAccessControl(
   }
 
   return {
-    read: access?.read ?? defaultAllowAccessControlFunction,
-    create: access?.create ?? defaultAllowAccessControlFunction,
-    update: access?.update ?? defaultAllowAccessControlFunction,
+    read: access?.read ?? allowAll,
+    create: access?.create ?? allowAll,
+    update: access?.update ?? allowAll,
   };
 }
 
@@ -171,14 +167,14 @@ export function parseListAccessControl(
         delete: access,
       },
       filter: {
-        query: defaultAllowAccessControlFunction,
-        update: defaultAllowAccessControlFunction,
-        delete: defaultAllowAccessControlFunction,
+        query: allowAll,
+        update: allowAll,
+        delete: allowAll,
       },
       item: {
-        create: defaultAllowAccessControlFunction,
-        update: defaultAllowAccessControlFunction,
-        delete: defaultAllowAccessControlFunction,
+        create: allowAll,
+        update: allowAll,
+        delete: allowAll,
       },
     };
   }
@@ -195,22 +191,22 @@ export function parseListAccessControl(
 
   return {
     operation: {
-      query: operation.query ?? defaultAllowAccessControlFunction,
-      create: operation.create ?? defaultAllowAccessControlFunction,
-      update: operation.update ?? defaultAllowAccessControlFunction,
-      delete: operation.delete ?? defaultAllowAccessControlFunction,
+      query: operation.query ?? allowAll,
+      create: operation.create ?? allowAll,
+      update: operation.update ?? allowAll,
+      delete: operation.delete ?? allowAll,
     },
     filter: {
-      query: filter?.query ?? defaultAllowAccessControlFunction,
+      query: filter?.query ?? allowAll,
       // create: not supported
-      update: filter?.update ?? defaultAllowAccessControlFunction,
-      delete: filter?.delete ?? defaultAllowAccessControlFunction,
+      update: filter?.update ?? allowAll,
+      delete: filter?.delete ?? allowAll,
     },
     item: {
       // query: not supported
-      create: item?.create ?? defaultAllowAccessControlFunction,
-      update: item?.update ?? defaultAllowAccessControlFunction,
-      delete: item?.delete ?? defaultAllowAccessControlFunction,
+      create: item?.create ?? allowAll,
+      update: item?.update ?? allowAll,
+      delete: item?.delete ?? allowAll,
     },
   };
 }

@@ -1,6 +1,6 @@
 import { graphql } from '../..';
+import { allowAll } from '../../access';
 import { InitialisedField } from './types-for-lists';
-import { defaultAllowAccessControlFunction } from './access-control';
 
 export type ListForValidation = { listKey: string; fields: Record<string, InitialisedField> };
 
@@ -14,7 +14,7 @@ export function assertFieldsValid(list: ListForValidation) {
 
 function assertFieldsIsNonNullAllowed(list: ListForValidation) {
   for (const [fieldKey, field] of Object.entries(list.fields)) {
-    if (field.access.read !== defaultAllowAccessControlFunction) {
+    if (field.access.read !== allowAll) {
       if (field.graphql.isNonNull.read) {
         throw new Error(
           `The field at ${list.listKey}.${fieldKey} sets graphql.isNonNull.read: true, and has 'read' field access control, this is not allowed.\n` +

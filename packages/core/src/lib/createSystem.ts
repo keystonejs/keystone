@@ -3,11 +3,11 @@ import { FieldData, KeystoneConfig, getGqlNames } from '../types';
 
 import { createAdminMeta } from '../admin-ui/system/createAdminMeta';
 import { PrismaModule } from '../artifacts';
+import { allowAll } from '../access';
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './context/createContext';
 import { initialiseLists } from './core/types-for-lists';
 import { setPrismaNamespace, setWriteLimit } from './core/utils';
-import { defaultAllowAccessControlFunction } from './core/access-control';
 
 function getSudoGraphQLSchema(config: KeystoneConfig) {
   // This function creates a GraphQLSchema based on a modified version of the provided config.
@@ -25,7 +25,7 @@ function getSudoGraphQLSchema(config: KeystoneConfig) {
     ...config,
     ui: {
       ...config.ui,
-      isAccessAllowed: defaultAllowAccessControlFunction,
+      isAccessAllowed: allowAll,
     },
     lists: Object.fromEntries(
       Object.entries(config.lists).map(([listKey, list]) => {
@@ -33,7 +33,7 @@ function getSudoGraphQLSchema(config: KeystoneConfig) {
           listKey,
           {
             ...list,
-            access: defaultAllowAccessControlFunction, // default
+            access: allowAll,
             graphql: { ...(list.graphql || {}), omit: [] },
             fields: Object.fromEntries(
               Object.entries(list.fields).map(([fieldKey, field]) => {
@@ -44,7 +44,7 @@ function getSudoGraphQLSchema(config: KeystoneConfig) {
                     const f = field(data);
                     return {
                       ...f,
-                      access: defaultAllowAccessControlFunction, // default
+                      access: allowAll,
                       isFilterable: true,
                       isOrderable: true,
                       graphql: { ...(f.graphql || {}), omit: [] },

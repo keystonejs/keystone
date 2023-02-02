@@ -1,8 +1,9 @@
 import { BaseListTypeInfo } from '../types';
 import { AccessOperation, BaseAccessArgs } from '../types/config/access-control';
-import { defaultAllowAccessControlFunction } from '../lib/core/access-control';
 
-export { defaultAllowAccessControlFunction as allowAll };
+export function allowAll() {
+  return true;
+}
 
 export function denyAll() {
   return false;
