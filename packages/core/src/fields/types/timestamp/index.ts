@@ -7,11 +7,7 @@ import {
   orderDirectionEnum,
 } from '../../../types';
 import { graphql } from '../../..';
-import {
-  assertCreateIsNonNullAllowed,
-  assertReadIsNonNullAllowed,
-  getResolvedIsNullable,
-} from '../../non-null-graphql';
+import { assertReadIsNonNullAllowed, getResolvedIsNullable } from '../../non-null-graphql';
 import { filters } from '../../filters';
 import { TimestampFieldMeta } from './views';
 
@@ -22,11 +18,8 @@ export type TimestampFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
       isRequired?: boolean;
     };
     defaultValue?: string | { kind: 'now' };
-    graphql?: {
-      create?: { isNonNull?: boolean };
-      read?: { isNonNull?: boolean };
-    };
     db?: {
+      // this is @updatedAt in Prisma
       updatedAt?: boolean;
       isNullable?: boolean;
       map?: string;
@@ -62,10 +55,7 @@ export const timestamp =
 
     assertReadIsNonNullAllowed(meta, config, resolvedIsNullable);
 
-    assertCreateIsNonNullAllowed(meta, config);
-
     const mode = resolvedIsNullable === false ? 'required' : 'optional';
-
     const fieldLabel = config.label ?? humanize(meta.fieldKey);
 
     return fieldType({
@@ -107,13 +97,9 @@ export const timestamp =
         },
         create: {
           arg: graphql.arg({
-            type: config.graphql?.create?.isNonNull
-              ? graphql.nonNull(graphql.DateTime)
-              : graphql.DateTime,
-            defaultValue:
-              config.graphql?.create?.isNonNull && parsedDefaultValue instanceof Date
-                ? parsedDefaultValue
-                : undefined,
+            type: graphql.DateTime,
+            // TODO: add support for defaultValue of { kind: 'now' } in the GraphQL API
+            defaultValue: parsedDefaultValue instanceof Date ? parsedDefaultValue : undefined,
           }),
           resolve(val) {
             if (val === undefined) {
@@ -133,9 +119,7 @@ export const timestamp =
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
       output: graphql.field({
-        type: config.graphql?.read?.isNonNull
-          ? graphql.nonNull(graphql.DateTime)
-          : graphql.DateTime,
+        type: graphql.DateTime,
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/timestamp',
       views: '@keystone-6/core/fields/types/timestamp/views',

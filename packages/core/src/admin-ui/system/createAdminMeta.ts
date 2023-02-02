@@ -29,6 +29,7 @@ export type FieldMetaRootVal = {
   search: 'default' | 'insensitive' | null;
   isOrderable: ContextFunction<boolean>;
   isFilterable: ContextFunction<boolean>;
+  isNonNull: ('read' | 'create' | 'update')[];
   createView: { fieldMode: ContextFunction<'edit' | 'hidden'> };
   // itemView is intentionally special because static values are special cased
   // and fetched when fetching the static admin ui
@@ -179,6 +180,9 @@ export function createAdminMeta(
       );
 
       const baseOrderFilterArgs = { fieldKey, listKey: list.listKey };
+      const isNonNull = (['read', 'create', 'update'] as const).filter(
+        operation => field.graphql.isNonNull[operation]
+      );
       const fieldMeta = {
         key: fieldKey,
         label: field.label ?? humanize(fieldKey),
@@ -222,6 +226,7 @@ export function createAdminMeta(
           field.input?.orderBy ? field.graphql.isEnabled.orderBy : false,
           baseOrderFilterArgs
         ),
+        isNonNull,
 
         // DEPRECATED
         path: fieldKey,

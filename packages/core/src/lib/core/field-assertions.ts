@@ -1,4 +1,5 @@
 import { graphql } from '../..';
+import { allowAll } from '../../access';
 import { InitialisedField } from './types-for-lists';
 
 export type ListForValidation = { listKey: string; fields: Record<string, InitialisedField> };
@@ -8,6 +9,20 @@ export function assertFieldsValid(list: ListForValidation) {
   assertIdFieldGraphQLTypesCorrect(list);
   assertNoFieldKeysThatConflictWithFilterCombinators(list);
   assertUniqueWhereInputsValid(list);
+  assertFieldsIsNonNullAllowed(list);
+}
+
+function assertFieldsIsNonNullAllowed(list: ListForValidation) {
+  for (const [fieldKey, field] of Object.entries(list.fields)) {
+    if (field.access.read !== allowAll) {
+      if (field.graphql.isNonNull.read) {
+        throw new Error(
+          `The field at ${list.listKey}.${fieldKey} sets graphql.isNonNull.read: true, and has 'read' field access control, this is not allowed.\n` +
+            `Either disable graphql.read.isNonNull, or disable 'read' field access control.`
+        );
+      }
+    }
+  }
 }
 
 function assertUniqueWhereInputsValid(list: ListForValidation) {

@@ -17,7 +17,13 @@ type ListConfig = {
 type FieldConfig = {
   isFilterable?: false;
   isOrderable?: false;
-  omit?: true | ('read' | 'create' | 'update')[];
+  omit?:
+    | true
+    | {
+        read: boolean;
+        create: boolean;
+        update: boolean;
+      };
 };
 
 const getListPrefix = ({ isFilterable, isOrderable, omit }: ListConfig) => {
@@ -39,7 +45,7 @@ const getFieldPrefix = ({ isFilterable, isOrderable, omit }: FieldConfig) => {
     return `${s}True`;
   } else {
     // prettier-ignore
-    return `${s}${yesNo(omit.includes('read'))}Read${yesNo(omit.includes('create'))}Create${yesNo(omit.includes('update'))}Update`;
+    return `${s}${yesNo(omit.read)}Read${yesNo(omit.create)}Create${yesNo(omit.update)}Update`;
   }
 };
 
@@ -75,11 +81,18 @@ for (const isFilterable of [undefined, false as const]) {
       if (flag === undefined || flag === true) {
         fieldMatrix.push({ isFilterable, isOrderable, omit: flag });
       } else {
-        for (const query of [undefined, 'read']) {
-          for (const create of [undefined, 'create']) {
-            for (const update of [undefined, 'update']) {
-              const omit = [query, create, update].filter(x => x) as FieldConfig['omit'];
-              fieldMatrix.push({ isFilterable, isOrderable, omit });
+        for (const read of [false, true]) {
+          for (const create of [false, true]) {
+            for (const update of [false, true]) {
+              fieldMatrix.push({
+                isFilterable,
+                isOrderable,
+                omit: {
+                  read,
+                  create,
+                  update,
+                },
+              });
             }
           }
         }

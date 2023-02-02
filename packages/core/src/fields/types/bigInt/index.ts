@@ -7,11 +7,7 @@ import {
   orderDirectionEnum,
 } from '../../../types';
 import { graphql } from '../../..';
-import {
-  assertCreateIsNonNullAllowed,
-  assertReadIsNonNullAllowed,
-  getResolvedIsNullable,
-} from '../../non-null-graphql';
+import { assertReadIsNonNullAllowed, getResolvedIsNullable } from '../../non-null-graphql';
 import { filters } from '../../filters';
 
 export type BigIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
@@ -22,14 +18,6 @@ export type BigIntFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
       isRequired?: boolean;
       min?: bigint;
       max?: bigint;
-    };
-    graphql?: {
-      create?: {
-        isNonNull?: boolean;
-      };
-      read?: {
-        isNonNull?: boolean;
-      };
     };
     db?: {
       isNullable?: boolean;
@@ -93,10 +81,8 @@ export const bigInt =
     }
 
     assertReadIsNonNullAllowed(meta, config, isNullable);
-    assertCreateIsNonNullAllowed(meta, config);
 
     const mode = isNullable === false ? 'required' : 'optional';
-
     const fieldLabel = config.label ?? humanize(meta.fieldKey);
 
     return fieldType({
@@ -153,13 +139,8 @@ export const bigInt =
         },
         create: {
           arg: graphql.arg({
-            type: config.graphql?.create?.isNonNull
-              ? graphql.nonNull(graphql.BigInt)
-              : graphql.BigInt,
-            defaultValue:
-              config.graphql?.create?.isNonNull && typeof defaultValue === 'bigint'
-                ? defaultValue
-                : undefined,
+            type: graphql.BigInt,
+            defaultValue: typeof defaultValue === 'bigint' ? defaultValue : undefined,
           }),
           resolve(value) {
             if (value === undefined && typeof defaultValue === 'bigint') {
@@ -172,7 +153,7 @@ export const bigInt =
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
       output: graphql.field({
-        type: config.graphql?.read?.isNonNull ? graphql.nonNull(graphql.BigInt) : graphql.BigInt,
+        type: graphql.BigInt,
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/bigInt',
       views: '@keystone-6/core/fields/types/bigInt/views',

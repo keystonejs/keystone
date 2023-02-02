@@ -32,17 +32,25 @@ export type CommonFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
   };
   graphql?: {
     cacheHint?: CacheHint;
-    // Setting any of these values will remove the corresponding input/output types from the GraphQL schema.
-    // Output Types
-    //   'read': Does this field exist on the Item type? Will also disable filtering/ordering/admimMeta
-    // Input Types
-    //   'create': Does this field exist in the create Input type?
-    //   'update': Does this field exist in the update Input type?
-    //
-    // If `true` then the field will be completely removed from all types.
-    //
-    // Default: undefined
-    omit?: true | readonly ('read' | 'create' | 'update')[];
+    isNonNull?: {
+      // should this field be non-nullable on the {List} GraphQL type?
+      read?: boolean;
+      // should this field be non-nullable on the {List}CreateInput GraphQL type?
+      create?: boolean;
+      // should this field be non-nullable on the {List}UpdateInput GraphQL type?
+      update?: boolean;
+    };
+
+    omit?:
+      | true
+      | {
+          // should this field be omitted from the {List} GraphQL type?
+          read?: boolean;
+          // should this field be omitted from the {List}CreateInput GraphQL type?
+          create?: boolean;
+          // should this field be omitted from the {List}UpdateInput GraphQL type?
+          update?: boolean;
+        };
   };
   // Disabled by default...
   isFilterable?: boolean | ((args: FilterOrderArgs<ListTypeInfo>) => MaybePromise<boolean>);

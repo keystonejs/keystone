@@ -24,7 +24,7 @@ import { Notice } from '@keystone-ui/notice';
 import { useToasts } from '@keystone-ui/toast';
 import { Tooltip } from '@keystone-ui/tooltip';
 import { FieldLabel, TextInput } from '@keystone-ui/fields';
-import { ListMeta } from '../../../../types';
+import type { ListMeta, FieldMeta } from '../../../../types';
 import {
   DataGetter,
   DeepNullable,
@@ -59,6 +59,9 @@ function useEventCallback<Func extends (...args: any) => any>(callback: Func): F
   return cb as any;
 }
 
+type ItemViewFieldModes = NonNullable<FieldMeta['itemView']['fieldMode']>;
+type ItemViewFieldPositions = NonNullable<FieldMeta['itemView']['fieldPosition']>;
+
 function ItemForm({
   listKey,
   itemGetter,
@@ -71,7 +74,7 @@ function ItemForm({
   listKey: string;
   itemGetter: DataGetter<ItemData>;
   selectedFields: string;
-  fieldModes: Record<string, 'edit' | 'read' | 'hidden'>;
+  fieldModes: Record<string, ItemViewFieldModes>;
   fieldPositions: Record<string, 'form' | 'sidebar'>;
   showDelete: boolean;
   item: ItemData;
@@ -126,10 +129,10 @@ function ItemForm({
       // TODO -- Experimenting with less detail in the toasts, so the data lines are commented
       // out below. If we're happy with this, clean up the unused lines.
       .then(({ /* data, */ errors }) => {
-        // we're checking for path.length === 1 because errors with a path larger than 1 will
+        // we're checking for path being undefined OR path.length === 1 because errors with a path larger than 1 will
         // be field level errors which are handled seperately and do not indicate a failure to
-        // update the item
-        const error = errors?.find(x => x.path?.length === 1);
+        // update the item, path being undefined generally indicates a failure in the graphql mutation itself - ie a type error
+        const error = errors?.find(x => x.path === undefined || x.path?.length === 1);
         if (error) {
           toasts.addToast({
             title: 'Failed to update item',
@@ -387,8 +390,8 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
             fields: {
               path: string;
               itemView: {
-                fieldMode: 'edit' | 'read' | 'hidden';
-                fieldPosition: 'form' | 'sidebar';
+                fieldMode: ItemViewFieldModes;
+                fieldPosition: ItemViewFieldPositions;
               };
             }[];
           };
@@ -398,7 +401,7 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
   >(data, error?.graphQLErrors);
 
   const itemViewFieldModesByField = useMemo(() => {
-    const itemViewFieldModesByField: Record<string, 'edit' | 'read' | 'hidden'> = {};
+    const itemViewFieldModesByField: Record<string, ItemViewFieldModes> = {};
     dataGetter.data?.keystone?.adminMeta?.list?.fields?.forEach(field => {
       if (field === null || field.path === null || field?.itemView?.fieldMode == null) return;
       itemViewFieldModesByField[field.path] = field.itemView.fieldMode;
@@ -407,7 +410,7 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
   }, [dataGetter.data?.keystone?.adminMeta?.list?.fields]);
 
   const itemViewFieldPositionsByField = useMemo(() => {
-    const itemViewFieldPositionsByField: Record<string, 'form' | 'sidebar'> = {};
+    const itemViewFieldPositionsByField: Record<string, ItemViewFieldPositions> = {};
     dataGetter.data?.keystone?.adminMeta?.list?.fields?.forEach(field => {
       if (field === null || field.path === null || field?.itemView?.fieldPosition == null) return;
       itemViewFieldPositionsByField[field.path] = field.itemView.fieldPosition;

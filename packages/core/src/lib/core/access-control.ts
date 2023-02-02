@@ -16,6 +16,7 @@ import {
   getGqlNames,
 } from '../../types';
 import { coerceAndValidateForGraphQLInput } from '../coerceAndValidateForGraphQLInput';
+import { allowAll } from '../../access';
 import { accessReturnError, extensionError } from './graphql-errors';
 import { InitialisedList } from './types-for-lists';
 import { InputFilter } from './where-inputs';
@@ -127,9 +128,9 @@ export function parseFieldAccessControl(
   }
 
   return {
-    read: access?.read ?? (() => true),
-    create: access?.create ?? (() => true),
-    update: access?.update ?? (() => true),
+    read: access?.read ?? allowAll,
+    create: access?.create ?? allowAll,
+    update: access?.update ?? allowAll,
   };
 }
 
@@ -166,14 +167,14 @@ export function parseListAccessControl(
         delete: access,
       },
       filter: {
-        query: () => true,
-        update: () => true,
-        delete: () => true,
+        query: allowAll,
+        update: allowAll,
+        delete: allowAll,
       },
       item: {
-        create: () => true,
-        update: () => true,
-        delete: () => true,
+        create: allowAll,
+        update: allowAll,
+        delete: allowAll,
       },
     };
   }
@@ -190,22 +191,22 @@ export function parseListAccessControl(
 
   return {
     operation: {
-      query: operation.query ?? (() => true),
-      create: operation.create ?? (() => true),
-      update: operation.update ?? (() => true),
-      delete: operation.delete ?? (() => true),
+      query: operation.query ?? allowAll,
+      create: operation.create ?? allowAll,
+      update: operation.update ?? allowAll,
+      delete: operation.delete ?? allowAll,
     },
     filter: {
-      query: filter?.query ?? (() => true),
+      query: filter?.query ?? allowAll,
       // create: not supported
-      update: filter?.update ?? (() => true),
-      delete: filter?.delete ?? (() => true),
+      update: filter?.update ?? allowAll,
+      delete: filter?.delete ?? allowAll,
     },
     item: {
       // query: not supported
-      create: item?.create ?? (() => true),
-      update: item?.update ?? (() => true),
-      delete: item?.delete ?? (() => true),
+      create: item?.create ?? allowAll,
+      update: item?.update ?? allowAll,
+      delete: item?.delete ?? allowAll,
     },
   };
 }

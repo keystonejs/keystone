@@ -25,7 +25,7 @@ export function useChangedFieldsAndDataForUpdate(
   }, [value, fields]);
 
   return useMemo(() => {
-    let changedFields = new Set<string>();
+    const changedFields = new Set<string>();
     Object.keys(serializedFieldValues).forEach(fieldKey => {
       let isEqual = isDeepEqual(
         serializedFieldValues[fieldKey],
@@ -35,11 +35,19 @@ export function useChangedFieldsAndDataForUpdate(
         changedFields.add(fieldKey);
       }
     });
-    const dataForUpdate: Record<string, any> = {};
 
+    const dataForUpdate: Record<string, any> = {};
     changedFields.forEach(fieldKey => {
       Object.assign(dataForUpdate, serializedFieldValues[fieldKey]);
     });
+
+    Object.keys(serializedFieldValues)
+      .filter(fieldKey => fields[fieldKey].graphql.isNonNull?.includes('update'))
+      .filter(fieldKey => !changedFields.has(fieldKey))
+      .forEach(fieldKey => {
+        Object.assign(dataForUpdate, serializedFieldValues[fieldKey]);
+      });
+
     return { changedFields: changedFields as ReadonlySet<string>, dataForUpdate };
-  }, [serializedFieldValues, serializedValuesFromItem]);
+  }, [serializedFieldValues, serializedValuesFromItem, fields]);
 }

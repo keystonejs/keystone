@@ -4,6 +4,7 @@ import { AccessOperation, BaseAccessArgs } from '../types/config/access-control'
 export function allowAll() {
   return true;
 }
+
 export function denyAll() {
   return false;
 }

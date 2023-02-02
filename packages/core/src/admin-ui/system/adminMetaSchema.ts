@@ -24,6 +24,16 @@ const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
     description: graphql.field({ type: graphql.String }),
     ...contextFunctionField('isOrderable', graphql.Boolean),
     ...contextFunctionField('isFilterable', graphql.Boolean),
+    isNonNull: graphql.field({
+      type: graphql.list(
+        graphql.nonNull(
+          graphql.enum({
+            name: 'KeystoneAdminUIFieldMetaIsNonNull',
+            values: graphql.enumValues(['read', 'create', 'update']),
+          })
+        )
+      ),
+    }),
     fieldMeta: graphql.field({ type: graphql.JSON }),
     viewsIndex: graphql.field({ type: graphql.nonNull(graphql.Int) }),
     customViewsIndex: graphql.field({ type: graphql.Int }),
@@ -80,12 +90,7 @@ const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
               name: 'KeystoneAdminUIFieldMetaItemViewFieldMode',
               values: graphql.enumValues(['edit', 'read', 'hidden']),
             }),
-            resolve(
-              { fieldMode, itemId, listKey },
-              args,
-              context,
-              info
-            ): MaybePromise<'edit' | 'read' | 'hidden' | null> {
+            resolve({ fieldMode, itemId, listKey }, args, context, info) {
               if (itemId !== null) {
                 assertInRuntimeContext(context, info);
               }
@@ -119,12 +124,7 @@ const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
               name: 'KeystoneAdminUIFieldMetaItemViewFieldPosition',
               values: graphql.enumValues(['form', 'sidebar']),
             }),
-            resolve(
-              { fieldPosition, itemId, listKey },
-              args,
-              context,
-              info
-            ): MaybePromise<'form' | 'sidebar' | null> {
+            resolve({ fieldPosition, itemId, listKey }, args, context, info) {
               if (itemId !== null) {
                 assertInRuntimeContext(context, info);
               }
@@ -262,7 +262,7 @@ const fetchItemForItemViewFieldMode = extendContext(context => {
     if (items.has(id)) {
       return items.get(id)!;
     }
-    let promise = context.db[listKey].findOne({ where: { id } });
+    const promise = context.db[listKey].findOne({ where: { id } });
     items.set(id, promise);
     return promise;
   };
