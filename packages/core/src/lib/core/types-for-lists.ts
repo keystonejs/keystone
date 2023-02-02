@@ -310,7 +310,7 @@ function introspectGraphQLTypes(lists: Record<string, InitialisedList>) {
 function stripDefaultValue(thing: graphql.Arg<graphql.InputType, boolean>) {
   return graphql.arg({
     ...thing,
-    defaultValue: undefined
+    defaultValue: undefined,
   });
 }
 
