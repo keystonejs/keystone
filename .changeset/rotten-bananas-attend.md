@@ -2,4 +2,4 @@
 '@keystone-6/core': major
 ---
 
-Adds `graphql.isNonNull.*` support for non-nullable input types, enabling optimistic locking usecases
+Changes `graphql.*.isNonNull` to `graphql.isNonNull.*`, and adds `graphql.isNonNull.update` for optimistic locking usecases
