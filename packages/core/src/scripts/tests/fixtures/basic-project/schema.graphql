@@ -77,7 +77,7 @@ input TodoUpdateArgs {
 }
 
 input TodoCreateInput {
-  title: String
+  title: String = ""
 }
 
 """

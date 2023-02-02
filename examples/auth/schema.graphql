@@ -102,8 +102,8 @@ input UserUpdateArgs {
 }
 
 input UserCreateInput {
-  name: String
-  email: String
+  name: String = ""
+  email: String = ""
   password: String
   isAdmin: Boolean = false
 }
@@ -137,8 +137,8 @@ type UserAuthenticationWithPasswordFailure {
 }
 
 input CreateInitialUserInput {
-  name: String
-  email: String
+  name: String = ""
+  email: String = ""
   password: String
 }
 

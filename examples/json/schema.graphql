@@ -97,7 +97,7 @@ input PackageUpdateArgs {
 }
 
 input PackageCreateInput {
-  label: String
+  label: String = ""
   pkgjson: JSON
   isPrivate: Boolean = false
   ownedBy: PersonRelateToOneForCreateInput
@@ -157,7 +157,7 @@ input PersonUpdateArgs {
 }
 
 input PersonCreateInput {
-  name: String
+  name: String = ""
   packages: PackageRelateToManyForCreateInput
 }
 

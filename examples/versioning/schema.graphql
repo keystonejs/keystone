@@ -96,8 +96,8 @@ input PostUpdateArgs {
 }
 
 input PostCreateInput {
-  title: String
-  content: String
+  title: String = ""
+  content: String = ""
   version: Int = 0
 }
 
