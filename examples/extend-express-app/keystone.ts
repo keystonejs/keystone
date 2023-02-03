@@ -1,25 +1,11 @@
 import { config } from '@keystone-6/core';
 import { lists } from './schema';
-import { insertSeedData } from './seed-data';
 import { getTasks } from './routes/tasks';
-import { Context } from '.keystone/types';
-
-/*
-  A quick note on types: normally if you're adding custom properties to your
-  express request you'd extend the global Express namespace, but we're not
-  doing that here because we're in the keystone monorepo; so we're casting
-  the request and keystone context with `as` instead to keep this local.
-*/
 
 export default config({
   db: {
     provider: 'sqlite',
     url: process.env.DATABASE_URL || 'file:./keystone-example.db',
-    async onConnect(context: Context) {
-      if (process.argv.includes('--seed-data')) {
-        await insertSeedData(context);
-      }
-    },
   },
   server: {
     /*
@@ -33,6 +19,12 @@ export default config({
     */
     extendExpressApp: (app, commonContext) => {
       app.use('/rest', async (req, res, next) => {
+        /*
+          WARNING: normally if you're adding custom properties to an
+          express request type, you might extend the global Express namespace...
+          ... we're not doing that here because we're in a Typescript monorepo
+          so we're casting the request instead :)
+        */
         (req as any).context = await commonContext.withRequest(req, res);
         next();
       });
