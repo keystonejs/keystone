@@ -5,7 +5,37 @@ import { Lists } from '.keystone/types';
 
 export const lists: Lists = {
   Post: list({
-    access: allowAll,
+    access: {
+      operation: allowAll,
+      filter: {
+        query: ({ operation }) => {
+          console.log('filter', { operation });
+          return false;
+        },
+        update: ({ operation }) => {
+          console.log('filter', { operation });
+          return true;
+        },
+        delete: ({ operation }) => {
+          console.log('filter', { operation });
+          return true;
+        },
+      },
+      item: {
+        create: ({ operation }) => {
+          console.log('item', { operation });
+          return true;
+        },
+        update: ({ operation }) => {
+          console.log('item', { operation });
+          return true;
+        },
+        delete: ({ operation }) => {
+          console.log('item', { operation });
+          return true;
+        },
+      },
+    },
     ui: {
       searchFields: ['title', 'content'],
     },
