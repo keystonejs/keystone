@@ -10,7 +10,6 @@ import { ProductImage } from './schemas/ProductImage';
 import { Product } from './schemas/Product';
 import { User } from './schemas/User';
 import 'dotenv/config';
-import { insertSeedData } from './seed-data';
 import { sendPasswordResetEmail } from './lib/mail';
 import { extendGraphqlSchema } from './mutations';
 import { TypeInfo } from '.keystone/types';
@@ -50,11 +49,6 @@ export default withAuth(
     db: {
       provider: 'sqlite',
       url: databaseURL,
-      async onConnect(context) {
-        if (process.argv.includes('--seed-data')) {
-          await insertSeedData(context);
-        }
-      },
     },
     lists: {
       // Schema items go in here

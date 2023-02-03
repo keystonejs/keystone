@@ -1,5 +1,7 @@
-import { persons, tasks } from './data';
-import { Context } from '.keystone/types';
+import { getContext } from '@keystone-6/core/context';
+import { persons, tasks } from '../example-data';
+import config from './keystone';
+import * as PrismaModule from '.prisma/client';
 
 type PersonProps = {
   name: string;
@@ -12,9 +14,10 @@ type TaskProps = {
   assignedTo: string;
 };
 
-export async function insertSeedData(context: Context) {
-  console.log(`🌱 Inserting seed data`);
+export async function main() {
+  const context = getContext(config, PrismaModule);
 
+  console.log(`🌱 Inserting seed data`);
   const createPerson = async (personData: PersonProps) => {
     let person = await context.query.Person.findOne({
       where: { name: personData.name },
@@ -52,5 +55,6 @@ export async function insertSeedData(context: Context) {
 
   console.log(`✅ Seed data inserted`);
   console.log(`👋 Please start the process with \`yarn dev\` or \`npm run dev\``);
-  process.exit();
 }
+
+main();
