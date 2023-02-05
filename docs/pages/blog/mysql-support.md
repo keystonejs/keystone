@@ -7,7 +7,7 @@ authorHandle: "https://twitter.com/flexdinesh"
 metaImageUrl: ""
 ---
 
-We've added support for MySQL to Keystone's list of database providers, bringing the total number of supported database types to three. 
+We've added support for MySQL to Keystone's list of database providers, bringing the total number of supported database types to three.
 
 Here's an example `db.config` to work with MySQL database.
 
@@ -16,7 +16,6 @@ export default config({
   db: {
     provider: 'mysql',
     url: 'mysql://dbuser:dbpass@localhost:5432/keystone',
-    useMigrations: true,
     idField: { kind: 'uuid' },
   },
   ...

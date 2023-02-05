@@ -80,8 +80,7 @@ This is the command you use to start Keystone for local development. It will:
 {% if $nextRelease %}
 When using `keystone dev` the default behaviour is for Keystone to update your database to match your schema using Prisma Migrate. This behaviour is great for the rapid iteration of a schema, but can be modified in the following ways:
 
-- Setting `db.useMigrations` to `true` in your Keystone config - Keystone will use Prisma Migrate to apply any existing migrations and prompt you to create a migration if there was a change to your schema.
-- Running `keystone dev --skip-db-push` - This will skip the dev migration step and not perform any checks on your database to ensure it matches your schema. This can be useful if you have an existing database or want to handle all migrations yourself. Be aware that this may lead to GraphQL runtime errors if a table or table column is unavailable. This flag has no effect if `db.useMigrations` is set to `true`
+- Running `keystone dev --skip-db-push` - This will skip the dev migration step and not perform any checks on your database to ensure it matches your schema. This can be useful if you have an existing database or want to handle all migrations yourself. Be aware that this may lead to GraphQL runtime errors if a table or table column is unavailable.
 
 See [`migrate` command](#migrate) below for more information on database migrations.
 

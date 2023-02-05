@@ -102,9 +102,6 @@ export async function pushPrismaSchemaToDatabase(
         logWarnings(migration.warnings);
       }
       console.log('\nTo apply this migration, we need to reset the database.');
-      console.log(
-        'If you want to keep the data in your database, set db.useMigrations to true in your config or change the data in your database so the migration can be applied'
-      );
       if (
         !(await confirmPrompt(
           `Do you want to continue? ${chalk.red('All data will be lost')}.`,

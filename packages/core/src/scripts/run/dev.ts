@@ -354,14 +354,10 @@ async function setupInitialKeystone(
   // Generate the Artifacts
   console.log('✨ Generating GraphQL and Prisma schemas');
   const prismaSchema = (await generateCommittedArtifacts(graphQLSchema, config, cwd)).prisma;
+  const prismaClientGenerationPromise = generateNodeModulesArtifacts(graphQLSchema, config, cwd);
 
-  let prismaClientGenerationPromise = generateNodeModulesArtifacts(graphQLSchema, config, cwd);
-
-  let migrationPromise: Promise<void>;
-
-  // Set up the Database
   if (config.db.useMigrations) {
-    migrationPromise = devMigrations(
+    await devMigrations(
       config.db.url,
       config.db.shadowDatabaseUrl,
       prismaSchema,
@@ -369,11 +365,10 @@ async function setupInitialKeystone(
       shouldDropDatabase
     );
   } else if (skipDbPush) {
-    migrationPromise = async () => {
-      console.log('⚠️ Skipping database schema push');
-    };
+    console.log('⚠️ Skipping database schema push');
+
   } else {
-    migrationPromise = pushPrismaSchemaToDatabase(
+    await pushPrismaSchemaToDatabase(
       config.db.url,
       config.db.shadowDatabaseUrl,
       prismaSchema,
@@ -382,7 +377,7 @@ async function setupInitialKeystone(
     );
   }
 
-  await Promise.all([prismaClientGenerationPromise, migrationPromise]);
+  await prismaClientGenerationPromise;
   const prismaClientModule = requirePrismaClient(cwd);
   const keystone = getKeystone(prismaClientModule);
 

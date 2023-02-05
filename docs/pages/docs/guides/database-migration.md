@@ -11,12 +11,12 @@ Keystone uses Prisma's built-in migration feature, this works by generating `.sq
 
 ## Running `keystone dev`
 
-By default running `keystone dev` will force push your schema to the database set using `db.url` in your `keystone.ts` file. You can change the behaviour of `keystone dev` by setting `db.useMigrations` to `true`, this will automatically generate your migrations if your schema has changed each time you run `keystone dev`.
+By default running `keystone dev` will force push your schema to the database set using `db.url` in your `keystone.ts` file.
 
 {% if $nextRelease %}
 ## Skipping dev DB push
 
-If you want to look after all migrations, including in dev, yourself you can run `keystone dev --skip-db-push` this will not perform the default force push in dev leaving you to perform migrations as you like. This flag has no effect if `db.useMigrations` is set to `true`.
+If you want to look after all migrations, including in dev, yourself you can run `keystone dev --skip-db-push` this will not perform the default force push in dev leaving you to perform migrations as you like.
 
 {% hint kind="tip" %}
 Running `keystone dev --skip-db-push` will return GraphQL runtime errors if tables and/or columns that Keystone requires are not present in the database.  

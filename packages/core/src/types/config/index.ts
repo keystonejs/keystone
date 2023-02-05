@@ -130,6 +130,7 @@ export type DatabaseConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   url: string;
   shadowDatabaseUrl?: string;
   onConnect?: (args: KeystoneContext<TypeInfo>) => Promise<void>;
+  /** @deprecated */
   useMigrations?: boolean;
   enableLogging?: boolean;
   idField?: IdFieldConfig;
