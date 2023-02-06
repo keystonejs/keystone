@@ -48,13 +48,14 @@ export async function cli(cwd: string, argv: string[]) {
       --no-server (dev)
         don't start the express server
 
-      --no-ui (build, dev)
+      --no-ui (build, dev, start)
         don't build and serve the AdminUI
 
       --with-migrations (start)
         trigger prisma to run migrations as part of startup
     `,
     {
+      allowUnknownFlags: false,
       flags: {
         dbPush: { default: true, type: 'boolean' },
         frozen: { default: false, type: 'boolean' },

@@ -114,7 +114,6 @@ export const dev = async (
     });
   const configWithHTTP = loadBuiltConfig(cwd);
   const config = cleanConfig(configWithHTTP);
-
   const isReady = () => !server || (expressServer !== null && hasAddedAdminUIMiddleware);
 
   const initKeystone = async () => {
