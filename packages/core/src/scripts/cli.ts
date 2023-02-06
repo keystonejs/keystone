@@ -3,19 +3,18 @@ import { ExitError } from './utils';
 import { build } from './build/build';
 import { dev } from './run/dev';
 import { migrate } from './migrate';
-import { postinstall } from './postinstall';
 import { prisma } from './prisma';
 import { start } from './run/start';
 import { telemetry } from './telemetry';
 
 export type Flags = {
-  fix: boolean;
-  resetDb: boolean;
-  dbPush?: boolean;
-  server?: boolean;
-  prisma?: boolean;
-  ui?: boolean;
+  dbPush: boolean;
+  fix?: boolean; // TODO: remove
   frozen: boolean;
+  prisma: boolean;
+  resetDb: boolean;
+  server: boolean;
+  ui: boolean;
   withMigrations: boolean;
 };
 
@@ -35,9 +34,12 @@ export async function cli(cwd: string, argv: string[]) {
     `,
     {
       flags: {
-        fix: { default: false, type: 'boolean' },
-        resetDb: { default: false, type: 'boolean' },
+        dbPush: { default: true, type: 'boolean' },
         frozen: { default: false, type: 'boolean' },
+        prisma: { default: true, type: 'boolean' },
+        resetDb: { default: false, type: 'boolean' },
+        server: { default: true, type: 'boolean' },
+        ui: { default: true, type: 'boolean' },
         withMigrations: { default: false, type: 'boolean' },
       },
       argv,
@@ -46,12 +48,18 @@ export async function cli(cwd: string, argv: string[]) {
 
   const command = input[0] || 'dev';
   if (command === 'dev') return dev(cwd, flags);
-  if (command === 'postinstall') return postinstall(cwd, flags.fix)
   if (command === 'build') return build(cwd, flags);
   if (command === 'start') return start(cwd, flags);
   if (command === 'migrate') return migrate(cwd, input, flags.resetDb);
   if (command === 'prisma') return prisma(cwd, argv.slice(1));
   if (command === 'telemetry') return telemetry(cwd, argv[1]);
+
+  // WARNING: postinstall is an alias for `build --no-ui`
+  if (command === 'postinstall') {
+    flags.ui = false
+    flags.frozen = !('fix' in flags)
+    return build(cwd, flags);
+  }
 
   console.log(`${command} is an unknown command`);
   console.log(help);
