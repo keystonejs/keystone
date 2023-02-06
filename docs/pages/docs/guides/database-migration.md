@@ -16,10 +16,10 @@ By default running `keystone dev` will force push your schema to the database se
 {% if $nextRelease %}
 ## Skipping dev DB push
 
-If you want to look after all migrations, including in dev, yourself you can run `keystone dev --skip-db-push` this will not perform the default force push in dev leaving you to perform migrations as you like.
+If you want to look after all migrations, including in dev, yourself you can run `keystone dev --no-db-push` this will not perform the default force push in dev leaving you to perform migrations as you like.
 
 {% hint kind="tip" %}
-Running `keystone dev --skip-db-push` will return GraphQL runtime errors if tables and/or columns that Keystone requires are not present in the database.  
+Running `keystone dev --no-db-push` will return GraphQL runtime errors if tables and/or columns that Keystone requires are not present in the database.  
 {% /hint %}
 
 ## Keystone Migrate CLI
