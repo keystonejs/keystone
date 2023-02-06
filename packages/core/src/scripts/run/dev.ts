@@ -411,7 +411,7 @@ async function setupInitialKeystone(
 
     // Connect to the Database
     console.log('✨ Connecting to the database');
-    await keystone.connect();
+    await keystone.connect(); // TODO: remove, replace with server.onStart
     if (!server) {
       return {
         adminMeta,
