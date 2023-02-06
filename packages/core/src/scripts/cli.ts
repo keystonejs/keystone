@@ -22,7 +22,7 @@ export async function cli(cwd: string, argv: string[]) {
   const { input, help, flags } = meow(
     `
     Usage
-      $ keystone [command]
+      $ keystone [command] [options]
     Commands
         dev           start the project in development mode (default)
         postinstall   build the project (for development, optional)
@@ -31,6 +31,28 @@ export async function cli(cwd: string, argv: string[]) {
         migrate       setup and run database migrations
         prisma        run Prisma CLI commands safely
         telemetry     sets telemetry preference (enable/disable/status)
+
+    Options
+      --fix (postinstall) @deprecated
+        do build the graphql or prisma schemas, don't validate them
+
+      --frozen (build)
+        don't build the graphql or prisma schemas, only validate them
+
+      --no-db-push (dev)
+        don't push non-destructive updates of your Prisma schema to your database
+
+      --no-prisma (build, dev)
+        don't build or validate the prisma schema
+
+      --no-server (dev)
+        don't start the express server
+
+      --no-ui (build, dev)
+        don't build and serve the AdminUI
+
+      --with-migrations (start)
+        trigger prisma to run migrations as part of startup
     `,
     {
       flags: {
