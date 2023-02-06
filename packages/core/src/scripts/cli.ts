@@ -8,6 +8,17 @@ import { prisma } from './prisma';
 import { start } from './run/start';
 import { telemetry } from './telemetry';
 
+export type Flags = {
+  fix: boolean;
+  resetDb: boolean;
+  dbPush?: boolean;
+  server?: boolean;
+  prisma?: boolean;
+  ui?: boolean;
+  frozen: boolean;
+  withMigrations: boolean;
+};
+
 export async function cli(cwd: string, argv: string[]) {
   const { input, help, flags } = meow(
     `
@@ -26,17 +37,18 @@ export async function cli(cwd: string, argv: string[]) {
       flags: {
         fix: { default: false, type: 'boolean' },
         resetDb: { default: false, type: 'boolean' },
-        skipDbPush: { default: false, type: 'boolean' },
+        frozen: { default: false, type: 'boolean' },
+        withMigrations: { default: false, type: 'boolean' },
       },
       argv,
     }
   );
 
   const command = input[0] || 'dev';
-  if (command === 'dev') return dev(cwd, flags.resetDb, flags.skipDbPush);
+  if (command === 'dev') return dev(cwd, flags);
   if (command === 'postinstall') return postinstall(cwd, flags.fix)
-  if (command === 'build') return build(cwd);
-  if (command === 'start') return start(cwd);
+  if (command === 'build') return build(cwd, flags);
+  if (command === 'start') return start(cwd, flags);
   if (command === 'migrate') return migrate(cwd, input, flags.resetDb);
   if (command === 'prisma') return prisma(cwd, argv.slice(1));
   if (command === 'telemetry') return telemetry(cwd, argv[1]);

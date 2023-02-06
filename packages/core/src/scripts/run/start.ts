@@ -6,8 +6,10 @@ import { createAdminUIMiddleware } from '../../lib/server/createAdminUIMiddlewar
 import { requirePrismaClient } from '../../artifacts';
 import { ExitError, getAdminPath, getBuiltConfigPath } from '../utils';
 import { loadBuiltConfig } from '../../lib/config/loadConfig';
+import { Flags } from '../cli';
+import { deployMigrations } from '../../lib/migrations';
 
-export const start = async (cwd: string) => {
+export const start = async (cwd: string, { withMigrations }: Flags) => {
   console.log('✨ Starting Keystone');
 
   // This is the compiled version of the configuration which was generated during the build step.
@@ -26,6 +28,10 @@ export const start = async (cwd: string) => {
   console.log('✨ Connecting to the database');
   await keystone.connect();
 
+  if (withMigrations) {
+    console.log('✨ Applying database migrations');
+    await deployMigrations(config.db.url);
+  }
   console.log('✨ Creating server');
   const { expressServer, httpServer } = await createExpressServer(
     config,
