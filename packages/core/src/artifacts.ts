@@ -108,7 +108,7 @@ export async function validateCommittedArtifacts(
       return 'prisma';
     }
   })();
-  if (!outOfDateSchemas) return
+  if (!outOfDateSchemas) return;
 
   const message = {
     both: 'Your Prisma and GraphQL schemas are not up to date',
@@ -125,7 +125,7 @@ export async function validateCommittedArtifacts(
 
   if (shouldPrompt && (await confirmPrompt(`Replace the ${which}?`))) {
     await writeCommittedArtifacts(artifacts, cwd);
-    return
+    return;
   }
 
   console.log(`Use keystone dev to update the ${which}`);

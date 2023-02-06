@@ -67,28 +67,24 @@ export function setSkipWatching() {
   shouldWatch = false;
 }
 
-export const dev = async (
-  cwd: string,
-  { server, prisma, dbPush, resetDb, ui }: Flags
-) => {
+// note that because we don't catch this throwing, if this fails it'll crash the process
+// so that means if
+// - you have an error in your config on startup -> will fail to start and you have to start the process manually after fixing the problem
+// - you have an error in your config after startup -> will keep the last working version until importing the config succeeds
+// also, if you're thinking "why not always use the Next api route to get the config"?
+// this will get the GraphQL API up earlier
+type WatchBuildResult = { error: BuildFailure | null; result: BuildResult | null };
+
+export async function dev(cwd: string, { server, prisma, dbPush, resetDb, ui }: Flags) {
   console.log('✨ Starting Keystone');
-
   const app = server ? express() : null;
-  let expressServer: express.Express | null = null;
   const httpServer = app ? createServer(app) : null;
+
+  let expressServer: express.Express | null = null;
   let hasAddedAdminUIMiddleware = false;
-
   let disconnect: null | (() => Promise<void>) = null;
-
-  // note that because we don't catch this throwing, if this fails it'll crash the process
-  // so that means if
-  // - you have an error in your config on startup -> will fail to start and you have to start the process manually after fixing the problem
-  // - you have an error in your config after startup -> will keep the last working version until importing the config succeeds
-  // also, if you're thinking "why not always use the Next api route to get the config"?
-  // this will get the GraphQL API up earlier
-  type WatchBuildResult = { error: BuildFailure | null; result: BuildResult | null };
-
   let lastPromise = resolvablePromise<IteratorResult<WatchBuildResult>>();
+
   const builds: AsyncIterable<WatchBuildResult> = {
     [Symbol.asyncIterator]: () => ({ next: () => lastPromise }),
   };
@@ -159,10 +155,9 @@ export const dev = async (
     }
 
     for await (const buildResult of builds) {
-      if (buildResult.error) {
-        // esbuild will have printed the error already
-        continue;
-      }
+      // esbuild will have printed any errors already
+      if (buildResult.error) continue;
+
       console.log('compiled successfully');
       try {
         const resolved = require.resolve(getBuiltConfigPath(cwd));
@@ -251,17 +246,18 @@ export const dev = async (
   }
 
   // Serve the dev status page for the Admin UI
-
   let initKeystonePromiseResolve: () => void | undefined;
   let initKeystonePromiseReject: (err: any) => void | undefined;
   let initKeystonePromise = new Promise<void>((resolve, reject) => {
     initKeystonePromiseResolve = resolve;
     initKeystonePromiseReject = reject;
   });
+
   if (app && httpServer) {
     app.use('/__keystone_dev_status', (req, res) => {
       res.json({ ready: isReady() ? true : false });
     });
+
     // Pass the request the express server, or serve the loading page
     app.use((req, res, next) => {
       // If both the express server and Admin UI Middleware are ready, we're go!
@@ -331,8 +327,8 @@ export const dev = async (
         });
       });
     });
-    await initKeystonePromise;
 
+    await initKeystonePromise;
     return () =>
       new Promise<void>((resolve, reject) => {
         server.close(async err => {
@@ -358,7 +354,7 @@ export const dev = async (
     await initKeystone();
     return () => Promise.resolve();
   }
-};
+}
 
 async function setupInitialKeystone(
   config: KeystoneConfig,
@@ -390,7 +386,6 @@ async function setupInitialKeystone(
         getSchemaPaths(cwd).prisma,
         resetDb
       );
-
     } else if (dbPush) {
       await pushPrismaSchemaToDatabase(
         config.db.url,
@@ -399,7 +394,6 @@ async function setupInitialKeystone(
         getSchemaPaths(cwd).prisma,
         resetDb
       );
-
     } else {
       console.log('⚠️ Skipping database schema push');
     }

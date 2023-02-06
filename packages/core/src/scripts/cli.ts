@@ -79,8 +79,8 @@ export async function cli(cwd: string, argv: string[]) {
 
   // WARNING: postinstall is an alias for `build --no-ui`
   if (command === 'postinstall') {
-    flags.ui = false
-    flags.frozen = !('fix' in flags)
+    flags.ui = false;
+    flags.frozen = !('fix' in flags);
     return build(cwd, flags);
   }
 

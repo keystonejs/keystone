@@ -47,7 +47,7 @@ export const start = async (cwd: string, { ui, withMigrations }: Flags) => {
     console.log(`✅ Admin UI ready`);
   }
 
-  const httpOptions: ListenOptions = { port: 3000, };
+  const httpOptions: ListenOptions = { port: 3000 };
   if (config?.server && 'port' in config.server) {
     httpOptions.port = config.server.port;
   }
