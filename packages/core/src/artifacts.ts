@@ -108,25 +108,28 @@ export async function validateCommittedArtifacts(
       return 'prisma';
     }
   })();
-  if (outOfDateSchemas) {
-    const message = {
-      both: 'Your Prisma and GraphQL schemas are not up to date',
-      graphql: 'Your GraphQL schema is not up to date',
-      prisma: 'Your Prisma schema is not up to date',
-    }[outOfDateSchemas];
-    console.log(message);
-    const term = {
-      both: 'Prisma and GraphQL schemas',
-      prisma: 'Prisma schema',
-      graphql: 'GraphQL schema',
-    }[outOfDateSchemas];
-    if (shouldPrompt && (await confirmPrompt(`Would you like to update your ${term}?`))) {
-      await writeCommittedArtifacts(artifacts, cwd);
-    } else {
-      console.log(`Please run keystone postinstall --fix to update your ${term}`);
-      throw new ExitError(1);
-    }
+  if (!outOfDateSchemas) return
+
+  const message = {
+    both: 'Your Prisma and GraphQL schemas are not up to date',
+    graphql: 'Your GraphQL schema is not up to date',
+    prisma: 'Your Prisma schema is not up to date',
+  }[outOfDateSchemas];
+  console.log(message);
+
+  const which = {
+    both: 'Prisma and GraphQL schemas',
+    prisma: 'Prisma schema',
+    graphql: 'GraphQL schema',
+  }[outOfDateSchemas];
+
+  if (shouldPrompt && (await confirmPrompt(`Replace the ${which}?`))) {
+    await writeCommittedArtifacts(artifacts, cwd);
+    return
   }
+
+  console.log(`Use keystone dev to update the ${which}`);
+  throw new ExitError(1);
 }
 
 export async function writeCommittedArtifacts(artifacts: CommittedArtifacts, cwd: string) {
