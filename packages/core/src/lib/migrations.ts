@@ -66,12 +66,12 @@ export async function pushPrismaSchemaToDatabase(
   shadowDbUrl: string | undefined,
   schema: string,
   schemaPath: string,
-  shouldDropDatabase = false
+  resetDb = false
 ) {
   const before = Date.now();
   await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
   const migration = await withMigrate(schemaPath, async migrate => {
-    if (shouldDropDatabase) {
+    if (resetDb) {
       await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () => migrate.engine.reset());
       let migration = await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () =>
         migrate.engine.schemaPush({
@@ -187,7 +187,7 @@ export async function devMigrations(
   shadowDbUrl: string | undefined,
   prismaSchema: string,
   schemaPath: string,
-  shouldDropDatabase: boolean
+  resetDb: boolean
 ) {
   await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
   return withMigrate(schemaPath, async migrate => {
@@ -197,7 +197,7 @@ export async function devMigrations(
     }
     const { migrationsDirectoryPath } = migrate;
 
-    if (shouldDropDatabase) {
+    if (resetDb) {
       await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () => migrate.reset());
       console.log('✨ Your database has been reset');
     } else {

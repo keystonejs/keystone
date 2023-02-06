@@ -64,6 +64,7 @@ export async function cli(cwd: string, argv: string[]) {
         server: { default: true, type: 'boolean' },
         ui: { default: true, type: 'boolean' },
         withMigrations: { default: false, type: 'boolean' },
+        fix: { default: false, type: 'boolean' },
       },
       argv,
     }
@@ -80,7 +81,7 @@ export async function cli(cwd: string, argv: string[]) {
   // WARNING: postinstall is an alias for `build --no-ui`
   if (command === 'postinstall') {
     flags.ui = false;
-    flags.frozen = !('fix' in flags);
+    flags.frozen = !flags.fix;
     return build(cwd, flags);
   }
 
