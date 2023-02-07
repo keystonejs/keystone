@@ -8,7 +8,7 @@ import { telemetry } from './telemetry';
 
 export type Flags = {
   dbPush: boolean;
-  fix?: boolean; // TODO: remove
+  fix: boolean; // TODO: remove
   frozen: boolean;
   prisma: boolean;
   resetDb: boolean;
@@ -38,7 +38,7 @@ export async function cli(cwd: string, argv: string[]) {
         don't build the graphql or prisma schemas, only validate them
 
       --no-db-push (dev)
-        don't push non-destructive updates of your Prisma schema to your database
+        don't push any updates of your Prisma schema to your database
 
       --no-prisma (build, dev)
         don't build or validate the prisma schema

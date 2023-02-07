@@ -22,12 +22,12 @@ If you want to look after all migrations, including in dev, yourself you can run
 Running `keystone dev --no-db-push` will return GraphQL runtime errors if tables and/or columns that Keystone requires are not present in the database.  
 {% /hint %}
 
-## Keystone Migrate CLI
+## Keystone Prisma Migrate CLI
 
-Keystone offers the following three commonly used commands to help manage your migrations.
-- `keystone migrate generate` - Generates the migration files to run to set up your production database - these files should be committed to source control and accessible by the `deploy` step. This command is helpful if you want to either leave `keystone dev` as the default behaviour for rapid schema iteration and generate the migrations once you are ready to submit a PR.
-- `keystone migrate deploy` - Runs the generated migrations - this command can only be run after a `build` step, and is generally run in the deploy step of your app or before running `keystone start`.
-- `keystone migrate check` - Runs a check between the generated migrations and your schema, command will return an Error Code 1 if your migrations are not up to date - this needs to be run after a build step, and requires access to a non-production database.
+Keystone offers the following three commonly used commands through Prisma to help manage your migrations.
+- `keystone prisma migrate generate` - Generates the migration files to run to set up your production database - these files should be committed to source control and accessible by the `deploy` step. This command is helpful if you want to either leave `keystone dev` as the default behaviour for rapid schema iteration and generate the migrations once you are ready to submit a PR.
+- `keystone prisma migrate deploy` - Runs the generated migrations - this command can only be run after a `build` step, and is generally run in the deploy step of your app or before running `keystone start`.
+- `keystone start --with-migrations` - Runs the generated migrations then starts Keystone.  
 {% /if %}
 ## Prisma CLI
 
