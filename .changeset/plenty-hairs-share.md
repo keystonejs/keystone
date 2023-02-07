@@ -2,4 +2,4 @@
 '@keystone-6/core': major
 ---
 
-Removes `useMigrations` and adds manual migrate scripts with the ability to opt-out of migrations when using `keystone dev`
+Adds additional flags to the `keystone dev`, `keystone build` and `keystone start` CLI commands 
