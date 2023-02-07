@@ -58,7 +58,8 @@ test('build works with typescript without the user defining a babel config', asy
       // because the code size can change so we don't include it in the snapshot
       .replace(/info  - Finalizing page optimization\.\.\.[^]+\n\n/, 'next build size report\n')
   ).toMatchInlineSnapshot(`
-    "✨ Building Keystone
+    "✨ Generated GraphQL and Prisma schemas
+    ✨ Building Keystone
     ✨ Generating Admin UI code
     ✨ Building Admin UI
     info  - Skipping validation of types

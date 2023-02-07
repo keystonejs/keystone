@@ -142,7 +142,7 @@ export async function runCommand(cwd: string, args: string) {
 
 let dirsToRemove: string[] = [];
 
-afterEach(async () => {
+afterAll(async () => {
   await Promise.all(
     dirsToRemove.map(filepath => {
       return fs.remove(filepath);

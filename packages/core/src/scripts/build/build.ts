@@ -16,10 +16,10 @@ export async function build(cwd: string, { ui, prisma, frozen }: Flags) {
   if (prisma) {
     if (frozen) {
       await validateCommittedArtifacts(graphQLSchema, config, cwd);
-      console.log('✨ Generated GraphQL and Prisma schemas');
+      console.log('✨ GraphQL and Prisma schemas are up to date');
     } else {
       await generateCommittedArtifacts(graphQLSchema, config, cwd);
-      console.log('✨ GraphQL and Prisma schemas are up to date');
+      console.log('✨ Generated GraphQL and Prisma schemas');
     }
 
     console.log('✨ Building Keystone');
