@@ -122,7 +122,12 @@ export async function dev(cwd: string, { server, prisma, dbPush, resetDb, ui }: 
       prismaClientModule,
       apolloServer,
       ...rest
-    } = await setupInitialKeystone(config, cwd, { server, prisma, dbPush, resetDb });
+    } = await setupInitialKeystone(config, cwd, {
+      server,
+      prisma,
+      dbPush,
+      resetDb,
+    });
 
     if (configWithHTTP?.server?.extendHttpServer && httpServer && context) {
       configWithHTTP.server.extendHttpServer(httpServer, context, graphQLSchema);
@@ -359,7 +364,12 @@ export async function dev(cwd: string, { server, prisma, dbPush, resetDb, ui }: 
 async function setupInitialKeystone(
   config: KeystoneConfig,
   cwd: string,
-  options: { dbPush: boolean; resetDb: boolean; prisma: boolean; server: boolean }
+  options: {
+    dbPush: boolean;
+    resetDb: boolean;
+    prisma: boolean;
+    server: boolean;
+  }
 ) {
   const { dbPush, resetDb, prisma, server } = options;
   const { graphQLSchema, adminMeta, getKeystone } = createSystem(config);
