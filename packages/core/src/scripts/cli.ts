@@ -62,7 +62,7 @@ export async function cli(cwd: string, argv: string[]) {
         server: { default: true, type: 'boolean' },
         ui: { default: true, type: 'boolean' },
         withMigrations: { default: false, type: 'boolean' },
-        fix: { default: false, type: 'boolean' },
+        fix: { default: false, type: 'boolean' }, // TODO: remove - deprecated
       },
       argv,
     }
@@ -75,10 +75,10 @@ export async function cli(cwd: string, argv: string[]) {
   if (command === 'prisma') return prisma(cwd, argv.slice(1));
   if (command === 'telemetry') return telemetry(cwd, argv[1]);
 
-  // WARNING: postinstall is an alias for `build --no-ui`
+  // WARNING: postinstall is an alias for `build --no-ui --frozen`
   if (command === 'postinstall') {
     flags.ui = false;
-    flags.frozen = !flags.fix;
+    flags.frozen = !flags.fix; // TODO: remove - unfortunate, but `fix` needs to take precedence until it's removed
     return build(cwd, flags);
   }
 
