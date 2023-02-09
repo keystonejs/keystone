@@ -6,9 +6,10 @@ import { KeystoneConfig } from './../types/config/index';
 
 import { ExitError } from './utils';
 
-export async function prisma(cwd: string, args: string[]) {
+export async function prisma(cwd: string, args: string[], frozen: boolean) {
   let config: KeystoneConfig;
-  if (process.env.NODE_ENV === 'production') {
+  if (frozen) {
+    args = args.filter(arg => arg !== '--frozen');
     config = loadBuiltConfig(cwd);
   } else {
     config = await loadConfigOnce(cwd);
