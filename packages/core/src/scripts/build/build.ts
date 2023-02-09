@@ -21,13 +21,10 @@ export async function build(cwd: string, { ui, prisma, frozen }: Flags) {
       await generateCommittedArtifacts(graphQLSchema, config, cwd);
       console.log('✨ Generated GraphQL and Prisma schemas');
     }
-
-    console.log('✨ Building Keystone');
     // FIXME: This needs to generate clients for the correct build target using binaryTarget
     // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#binarytargets-options
     await generateNodeModulesArtifacts(graphQLSchema, config, cwd);
   } else {
-    console.log('✨ Skipping Prisma Client code generation');
   }
 
   if (config.ui?.isDisabled) return;
@@ -39,6 +36,5 @@ export async function build(cwd: string, { ui, prisma, frozen }: Flags) {
     console.log('✨ Building Admin UI');
     await buildAdminUI(getAdminPath(cwd));
   } else {
-    console.log('✨ Skipping Admin UI code generation');
   }
 }

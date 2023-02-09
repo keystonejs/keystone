@@ -45,9 +45,7 @@ describe('postinstall', () => {
     expect(recording()).toMatchInlineSnapshot(`
       "Your Prisma and GraphQL schemas are not up to date
       Prompt: Replace the Prisma and GraphQL schemas? true
-      ✨ GraphQL and Prisma schemas are up to date
-      ✨ Building Keystone
-      ✨ Skipping Admin UI code generation"
+      ✨ GraphQL and Prisma schemas are up to date"
     `);
   });
   test('updates the schemas without prompting when --fix is passed', async () => {
@@ -59,11 +57,7 @@ describe('postinstall', () => {
     await runCommand(tmp, 'postinstall --fix');
     const files = await getFiles(tmp, schemasMatch);
     expect(files).toEqual(await getFiles(`${__dirname}/fixtures/basic-project`, schemasMatch));
-    expect(recording()).toMatchInlineSnapshot(`
-      "✨ Generated GraphQL and Prisma schemas
-      ✨ Building Keystone
-      ✨ Skipping Admin UI code generation"
-    `);
+    expect(recording()).toMatchInlineSnapshot(`"✨ Generated GraphQL and Prisma schemas"`);
   });
   test('customising primsa schema through extendPrisma works', async () => {
     const tmp = await testdir({
@@ -76,11 +70,7 @@ describe('postinstall', () => {
     expect(files).toEqual(
       await getFiles(`${__dirname}/fixtures/custom-prisma-project`, ['schema.prisma'])
     );
-    expect(recording()).toMatchInlineSnapshot(`
-      "✨ Generated GraphQL and Prisma schemas
-      ✨ Building Keystone
-      ✨ Skipping Admin UI code generation"
-    `);
+    expect(recording()).toMatchInlineSnapshot(`"✨ Generated GraphQL and Prisma schemas"`);
   });
   test("does not prompt, error or modify the schemas if they're already up to date", async () => {
     const tmp = await testdir({
@@ -92,11 +82,7 @@ describe('postinstall', () => {
     await runCommand(tmp, 'postinstall');
     const files = await getFiles(tmp, schemasMatch);
     expect(files).toEqual(await getFiles(`${__dirname}/fixtures/basic-project`, schemasMatch));
-    expect(recording()).toMatchInlineSnapshot(`
-      "✨ GraphQL and Prisma schemas are up to date
-      ✨ Building Keystone
-      ✨ Skipping Admin UI code generation"
-    `);
+    expect(recording()).toMatchInlineSnapshot(`"✨ GraphQL and Prisma schemas are up to date"`);
   });
   test('writes the correct node_modules files', async () => {
     const tmp = await testdir({
@@ -107,10 +93,6 @@ describe('postinstall', () => {
     const recording = recordConsole();
     await runCommand(tmp, 'postinstall');
     expect(await getFiles(tmp, ['node_modules/.keystone/**/*'])).toMatchSnapshot();
-    expect(recording()).toMatchInlineSnapshot(`
-      "✨ GraphQL and Prisma schemas are up to date
-      ✨ Building Keystone
-      ✨ Skipping Admin UI code generation"
-    `);
+    expect(recording()).toMatchInlineSnapshot(`"✨ GraphQL and Prisma schemas are up to date"`);
   });
 });
