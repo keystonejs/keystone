@@ -59,7 +59,6 @@ test('build works with typescript without the user defining a babel config', asy
       .replace(/info  - Finalizing page optimization\.\.\.[^]+\n\n/, 'next build size report\n')
   ).toMatchInlineSnapshot(`
     "✨ Generated GraphQL and Prisma schemas
-    ✨ Building Keystone
     ✨ Generating Admin UI code
     ✨ Building Admin UI
     info  - Skipping validation of types
