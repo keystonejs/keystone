@@ -18,10 +18,11 @@ export const writeAdminFiles = (
   configFileExists: boolean
 ): AdminFileToWrite[] => {
   return [
-    ...['next.config.js', 'tsconfig.json'].map(
-      outputPath =>
-        ({ mode: 'copy', inputPath: Path.join(pkgDir, 'static', outputPath), outputPath } as const)
-    ),
+    {
+      mode: 'copy',
+      inputPath: Path.join(pkgDir, 'static', 'next.config.js'),
+      outputPath: 'next.config.js',
+    },
     {
       mode: 'copy',
       inputPath: Path.join(pkgDir, 'static', 'favicon.ico'),
