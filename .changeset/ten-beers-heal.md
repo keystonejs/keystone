@@ -1,5 +1,5 @@
 ---
-'@keystone-6/core': minor
+'@keystone-6/core': patch
 ---
 
-Allow Keystone to be run without installing Typescript by removing `tsconfig.json` from the generated output
+Fixes `keystone start` requiring Typescript by removing `tsconfig.json` from the generated AdminUI output
