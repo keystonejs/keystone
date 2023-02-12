@@ -1,5 +1,5 @@
 {
-  "name": "@keystone-6/example-app-basic",
+  "name": "@keystone-6/example-usecase-basic",
   "version": "0.0.8",
   "private": true,
   "license": "MIT",
@@ -29,5 +29,5 @@
   "devDependencies": {
     "typescript": "~4.9.4"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/basic"
+  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/usecase-basic"
 }

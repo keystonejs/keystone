@@ -1,6 +1,6 @@
-## Base Project - Versioning
+## Base Project - Blog
 
-This project demonstrates a Posts list where a particular field is always required to be sent in a GraphQL request; this can useful for optimistic locking and versioning.
+This project implements a basic **Blog**, with `Posts` and `Authors`.
 
 Use it as a starting place for learning how to use Keystone.
 
@@ -29,7 +29,7 @@ This example includes sample data. To add it to your database:
 
 ## Try it out in CodeSandbox 🧪
 
-You can play with this example online in a web browser using the free [codesandbox.io](https://codesandbox.io/) service. To launch this example, open the URL <https://githubbox.com/keystonejs/keystone/tree/main/examples/versioning>. You can also fork this sandbox to make your own changes.
+You can play with this example online in a web browser using the free [codesandbox.io](https://codesandbox.io/) service. To launch this example, open the URL <https://githubbox.com/keystonejs/keystone/tree/main/examples/usecase-blog>. You can also fork this sandbox to make your own changes.
 
 ## Next steps
 

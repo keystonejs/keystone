@@ -18,5 +18,5 @@
   "devDependencies": {
     "typescript": "~4.9.4"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/roles"
+  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/usecase-roles"
 }

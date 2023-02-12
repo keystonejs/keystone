@@ -1,5 +1,5 @@
 {
-  "name": "@keystone-6/example-ecommerce",
+  "name": "@keystone-6/example-usecase-ecommerce",
   "version": "0.1.0",
   "private": true,
   "author": "Wes Bos & Jed Watson",
@@ -30,5 +30,5 @@
   "devDependencies": {
     "typescript": "~4.9.4"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/ecommerce"
+  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/usecase-ecommerce"
 }

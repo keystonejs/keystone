@@ -8,7 +8,7 @@ At the core of this API are **query filters**.
 This guide will show you how to use filters to get data you need.
 
 {% hint kind="tip" %}
-The filter references in this guide are based on the schema defined in the [Task Manager](https://github.com/keystonejs/keystone/tree/main/examples/task-manager) example project.
+The filter references in this guide are based on the schema defined in the [Task Manager](https://github.com/keystonejs/keystone/tree/main/examples/usecase-task-manager) example project.
 {% /hint %}
 
 ## Scalar Filters

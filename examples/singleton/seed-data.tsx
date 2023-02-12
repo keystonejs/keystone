@@ -1,12 +1,7 @@
 import { getContext } from '@keystone-6/core/context';
-import { authors, posts } from '../example-data';
+import { posts } from '../example-data';
 import config from './keystone';
 import * as PrismaModule from '.prisma/client';
-
-type AuthorProps = {
-  name: string;
-  email: string;
-};
 
 type PostProps = {
   title: string;
@@ -20,36 +15,12 @@ async function main() {
   const context = getContext(config, PrismaModule);
 
   console.log(`🌱 Inserting seed data`);
-  const createAuthor = async (authorData: AuthorProps) => {
-    const author = await context.query.Author.findOne({
-      where: { email: authorData.email },
-      query: 'id',
-    });
-
-    if (!author) {
-      await context.query.Author.createOne({
-        data: authorData,
-        query: 'id',
-      });
-    }
-  };
-
   const createPost = async (postData: PostProps) => {
-    const authors = await context.query.Author.findMany({
-      where: { name: { equals: postData.author } },
-      query: 'id',
-    });
-
     await context.query.Post.createOne({
-      data: { ...postData, author: { connect: { id: authors[0].id } } },
+      data: postData,
       query: 'id',
     });
   };
-
-  for (const author of authors) {
-    console.log(`👩 Adding author: ${author.name}`);
-    await createAuthor(author);
-  }
 
   for (const post of posts) {
     console.log(`📝 Adding post: ${post.title}`);
