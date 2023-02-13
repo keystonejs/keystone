@@ -17,13 +17,6 @@ setSkipWatching();
 
 const dbUrl = 'file:./app.db';
 
-async function setupAndStopDevServerForMigrations(cwd: string, resetDb: boolean = false) {
-  if (resetDb) {
-    await runCommand(cwd, 'prisma db push --force-reset');
-  }
-  await runCommand(cwd, 'dev');
-}
-
 function getPrismaClient(cwd: string) {
   return new (requirePrismaClient(cwd).PrismaClient)({
     datasources: { sqlite: { url: dbUrl } },
@@ -71,8 +64,8 @@ async function setupInitialProjectWithoutMigrations() {
     'keystone.js': basicKeystoneConfig,
   });
   const recording = recordConsole();
-  await setupAndStopDevServerForMigrations(tmp);
 
+  await runCommand(tmp, 'dev');
   expect(await introspectDb(tmp, dbUrl)).toEqual(`datasource db {
   provider = "sqlite"
   url      = "file:./app.db"
@@ -104,7 +97,7 @@ describe('useMigrations: false', () => {
   test('logs correctly when things are already up to date', async () => {
     const tmp = await setupInitialProjectWithoutMigrations();
     const recording = recordConsole();
-    await setupAndStopDevServerForMigrations(tmp);
+    await runCommand(tmp, 'dev');
 
     expect(recording()).toMatchInlineSnapshot(`
       "✨ Starting Keystone
@@ -130,7 +123,7 @@ describe('useMigrations: false', () => {
     const recording = recordConsole({
       'Do you want to continue? Some data will be lost.': true,
     });
-    await setupAndStopDevServerForMigrations(tmp);
+    await runCommand(tmp, 'dev');
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
@@ -172,7 +165,7 @@ describe('useMigrations: false', () => {
     const recording = recordConsole({
       'Do you want to continue? Some data will be lost.': false,
     });
-    await expect(setupAndStopDevServerForMigrations(tmp)).rejects.toEqual(new ExitError(0));
+    await expect(runCommand(tmp, 'dev')).rejects.toEqual(new ExitError(0));
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
@@ -202,14 +195,16 @@ describe('useMigrations: false', () => {
   test('prisma db push --force-reset works', async () => {
     const tmp = await setupInitialProjectWithoutMigrations();
     {
-      const prismaClient = await getPrismaClient(tmp);
+      const prismaClient = getPrismaClient(tmp);
       await prismaClient.todo.create({ data: { title: 'something' } });
       await prismaClient.$disconnect();
     }
     const recording = recordConsole();
-    await setupAndStopDevServerForMigrations(tmp, true);
+
+    await runCommand(tmp, 'prisma db push --force-reset');
+    await runCommand(tmp, 'dev');
     {
-      const prismaClient = await getPrismaClient(tmp);
+      const prismaClient = getPrismaClient(tmp);
       expect(await prismaClient.todo.findMany()).toHaveLength(0);
       await prismaClient.$disconnect();
     }
@@ -241,7 +236,7 @@ async function setupInitialProjectWithMigrations() {
     'Name of migration': 'init',
     'Would you like to apply this migration?': true,
   });
-  await setupAndStopDevServerForMigrations(tmp);
+  await runCommand(tmp, 'dev');
 
   expect(await introspectDb(tmp, dbUrl)).toEqual(`datasource db {
   provider = "sqlite"
@@ -301,7 +296,7 @@ describe('useMigrations: true', () => {
       'Name of migration': 'add-is-complete',
       'Would you like to apply this migration?': true,
     });
-    await setupAndStopDevServerForMigrations(tmp);
+    await runCommand(tmp, 'dev');
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
@@ -368,7 +363,7 @@ describe('useMigrations: true', () => {
       'Name of migration': 'remove all fields except id',
       'Would you like to apply this migration?': true,
     });
-    await setupAndStopDevServerForMigrations(tmp);
+    await runCommand(tmp, 'dev');
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
@@ -441,7 +436,7 @@ describe('useMigrations: true', () => {
       'Name of migration': 'init',
       'Would you like to apply this migration?': true,
     });
-    await setupAndStopDevServerForMigrations(tmp);
+    await runCommand(tmp, 'dev');
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
@@ -516,7 +511,7 @@ describe('useMigrations: true', () => {
       'Do you want to continue? All data will be lost.': false,
     });
 
-    await expect(setupAndStopDevServerForMigrations(tmp)).rejects.toEqual(new ExitError(0));
+    await expect(runCommand(tmp, 'dev')).rejects.toEqual(new ExitError(0));
 
     expect(await fs.readFile(`${prevCwd}/app.db`)).toEqual(dbBuffer);
 
@@ -555,7 +550,7 @@ describe('useMigrations: true', () => {
       'Name of migration': 'add-is-complete',
       'Would you like to apply this migration?': false,
     });
-    await expect(setupAndStopDevServerForMigrations(tmp)).rejects.toEqual(new ExitError(0));
+    await expect(runCommand(tmp, 'dev')).rejects.toEqual(new ExitError(0));
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
@@ -614,7 +609,7 @@ describe('useMigrations: true', () => {
       'keystone.js': basicWithMigrations,
     });
     const recording = recordConsole();
-    await setupAndStopDevServerForMigrations(tmp);
+    await runCommand(tmp, 'dev');
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
@@ -653,7 +648,7 @@ describe('useMigrations: true', () => {
   test('logs correctly when no migrations need to be created or applied', async () => {
     const tmp = await setupInitialProjectWithMigrations();
     const recording = recordConsole();
-    await setupAndStopDevServerForMigrations(tmp);
+    await runCommand(tmp, 'dev');
 
     expect(recording()).toMatchInlineSnapshot(`
       "✨ Starting Keystone
