@@ -18,18 +18,16 @@ setSkipWatching();
 const dbUrl = 'file:./app.db';
 
 async function setupAndStopDevServerForMigrations(cwd: string, resetDb: boolean = false) {
-  const stopServer = (await runCommand(
-    cwd,
-    `dev${resetDb ? ' --reset-db' : ''}`
-  )) as () => Promise<void>;
-  await stopServer();
+  if (resetDb) {
+    await ((await runCommand(cwd, 'prisma db push --force-reset')) as () => Promise<void>)();
+  }
+  await (((await runCommand(cwd, 'dev')) as () => Promise<void>)());
 }
 
 function getPrismaClient(cwd: string) {
-  const prismaClient = new (requirePrismaClient(cwd).PrismaClient)({
+  return new (requirePrismaClient(cwd).PrismaClient)({
     datasources: { sqlite: { url: dbUrl } },
   });
-  return prismaClient;
 }
 
 async function getGeneratedMigration(

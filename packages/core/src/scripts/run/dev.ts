@@ -80,10 +80,9 @@ export async function dev(
   {
     dbPush,
     prisma,
-    resetDb,
     server,
     ui,
-  }: Pick<Flags, 'dbPush' | 'prisma' | 'resetDb' | 'server' | 'ui'>
+  }: Pick<Flags, 'dbPush' | 'prisma' | 'server' | 'ui'>
 ) {
   console.log('✨ Starting Keystone');
   const app = server ? express() : null;
@@ -135,7 +134,6 @@ export async function dev(
       server,
       prisma,
       dbPush,
-      resetDb,
     });
 
     if (configWithHTTP?.server?.extendHttpServer && httpServer && context) {
@@ -375,12 +373,11 @@ async function setupInitialKeystone(
   cwd: string,
   options: {
     dbPush: boolean;
-    resetDb: boolean;
     prisma: boolean;
     server: boolean;
   }
 ) {
-  const { dbPush, resetDb, prisma, server } = options;
+  const { dbPush, prisma, server } = options;
   const { graphQLSchema, adminMeta, getKeystone } = createSystem(config);
 
   // Make local storage folders if used
@@ -403,7 +400,7 @@ async function setupInitialKeystone(
         config.db.shadowDatabaseUrl,
         prismaSchema,
         getSchemaPaths(cwd).prisma,
-        resetDb
+        false
       );
     } else if (dbPush) {
       await pushPrismaSchemaToDatabase(
@@ -411,7 +408,7 @@ async function setupInitialKeystone(
         config.db.shadowDatabaseUrl,
         prismaSchema,
         getSchemaPaths(cwd).prisma,
-        resetDb
+        false
       );
     } else {
       console.log('⚠️ Skipping database schema push');

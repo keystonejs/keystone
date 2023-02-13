@@ -11,7 +11,6 @@ export type Flags = {
   fix: boolean; // TODO: remove, deprecated
   frozen: boolean;
   prisma: boolean;
-  resetDb: boolean;
   server: boolean;
   ui: boolean;
   withMigrations: boolean;
@@ -82,7 +81,7 @@ export async function cli(cwd: string, argv: string[]) {
   if (command === 'dev') {
     return dev(
       cwd,
-      defaultFlags(flags, { dbPush: true, prisma: true, resetDb: false, server: true, ui: true })
+      defaultFlags(flags, { dbPush: true, prisma: true, server: true, ui: true })
     );
   }
 

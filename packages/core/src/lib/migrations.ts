@@ -66,7 +66,7 @@ export async function pushPrismaSchemaToDatabase(
   shadowDbUrl: string | undefined,
   schema: string,
   schemaPath: string,
-  resetDb = false
+  resetDb: boolean
 ) {
   const before = Date.now();
   await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
@@ -181,7 +181,6 @@ export async function deployMigrations(dbUrl: string) {
   });
 }
 
-// TODO: don't have process.exit calls here
 export async function devMigrations(
   dbUrl: string,
   shadowDbUrl: string | undefined,
