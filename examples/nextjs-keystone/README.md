@@ -1,6 +1,7 @@
 # Next.js + Keystone
 
-Keystone can be used as a data engine in Next.js applications without having to host a separate Keystone server. This is made possible by Keystone's `getContext` API.
+Keystone can be used as a data engine in Next.js applications without having to host a separate Keystone server.
+This is made possible by Keystone's `getContext` API.
 
 - **CRUD data within your Next.js server**: You can use Keystone data APIs directly in Next.js `getStaticProps` or `getServerSideProps` to CRUD data. ⚡️
 - **CRUD data from browser**: You can use the generated Keystone GraphQL schema to setup your own GraphQL server in a Next.js route. This enables you to send GraphQL requests from the browser. 🤯 (refer to [/pages/api/graphql.ts](/pages/api/graphql.ts) for implementation details)

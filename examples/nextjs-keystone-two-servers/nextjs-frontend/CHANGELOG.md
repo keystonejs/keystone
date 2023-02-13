@@ -1,4 +1,4 @@
-# @keystone-6/example-e2e-boilerplate-nextjs-frontend
+# @keystone-6/example-nextjs-keystone-two-servers-frontend
 
 ## 0.1.0
 

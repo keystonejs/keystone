@@ -1,4 +1,4 @@
-# @keystone-6/example-e2e-boilerplate-keystone-server
+# @keystone-6/example-nextjs-keystone-two-servers
 
 ## 0.0.3
 

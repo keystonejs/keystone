@@ -1,9 +1,9 @@
 {
-  "name": "@keystone-6/example-e2e-boilerplate-keystone-server",
-  "description": "Keystone boilerplate to build e2e examples",
+  "name": "@keystone-6/example-nextjs-keystone-two-servers-backend",
+  "description": "An example of a Keystone backend API server",
   "version": "0.0.3",
   "private": true,
-  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/e2e-boilerplate/keystone-server",
+  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/nextjs-keystone-two-servers/keystone-server",
   "scripts": {
     "dev": "keystone dev --seed-database",
     "start": "keystone start --seed-database",

@@ -1,9 +1,9 @@
 {
-  "name": "@keystone-6/example-e2e-boilerplate-nextjs-frontend",
-  "description": "Frontend boilerplate to build e2e examples",
+  "name": "@keystone-6/example-nextjs-keystone-two-servers-frontend",
+  "description": "An example nextjs frontend",
   "version": "0.1.0",
   "private": true,
-  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/e2e-boilerplate/nextjs-frontend",
+  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/nextjs-keystone-two-servers/nextjs-frontend",
   "scripts": {
     "dev": "next dev --port 8000",
     "build": "next build",
