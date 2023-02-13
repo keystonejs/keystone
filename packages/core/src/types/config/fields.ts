@@ -52,7 +52,6 @@ export type CommonFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
           update?: boolean;
         };
   };
-  // Disabled by default...
   isFilterable?: boolean | ((args: FilterOrderArgs<ListTypeInfo>) => MaybePromise<boolean>);
   isOrderable?: boolean | ((args: FilterOrderArgs<ListTypeInfo>) => MaybePromise<boolean>);
 };
