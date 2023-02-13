@@ -1,4 +1,4 @@
-import { ExtendGraphqlSchema, getGqlNames } from '@keystone-6/core/types';
+import { getGqlNames } from '@keystone-6/core/types';
 
 import {
   assertObjectType,

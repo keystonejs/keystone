@@ -253,7 +253,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     return session !== undefined;
   }
 
-  function defaultExtendGraphqlSchema(schema: any, sudo: boolean) {
+  function defaultExtendGraphqlSchema<T>(schema: T) {
     return schema;
   }
 
