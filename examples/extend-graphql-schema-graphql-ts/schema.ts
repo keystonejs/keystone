@@ -13,6 +13,7 @@ export const lists: Lists = {
         options: [
           { label: 'Draft', value: 'draft' },
           { label: 'Published', value: 'published' },
+          { label: 'Banned', value: 'banned' },
         ],
       }),
       content: text(),
@@ -63,6 +64,7 @@ export const extendGraphqlSchema = graphql.extend(base => {
       }),
     },
   });
+
   return {
     mutation: {
       publishPost: graphql.field({
@@ -81,6 +83,22 @@ export const extendGraphqlSchema = graphql.extend(base => {
           });
         },
       }),
+
+      // only add this mutation for a sudo Context (this is not usable from the API)
+      ...(base.schema.extensions.sudo
+        ? {
+            banPost: graphql.field({
+              type: base.object('Post'),
+              args: { id: graphql.arg({ type: graphql.nonNull(graphql.ID) }) },
+              resolve(source, { id }, context: Context) {
+                return context.db.Post.updateOne({
+                  where: { id },
+                  data: { status: 'banned' },
+                });
+              },
+            }),
+          }
+        : {}),
     },
     query: {
       recentPosts: graphql.field({

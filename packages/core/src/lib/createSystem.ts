@@ -58,15 +58,16 @@ function getSudoGraphQLSchema(config: KeystoneConfig) {
       })
     ),
   };
+
   const lists = initialiseLists(transformedConfig);
   const adminMeta = createAdminMeta(transformedConfig, lists);
-  return createGraphQLSchema(transformedConfig, lists, adminMeta);
+  return createGraphQLSchema(transformedConfig, lists, adminMeta, true);
 }
 
 export function createSystem(config: KeystoneConfig) {
   const lists = initialiseLists(config);
   const adminMeta = createAdminMeta(config, lists);
-  const graphQLSchema = createGraphQLSchema(config, lists, adminMeta);
+  const graphQLSchema = createGraphQLSchema(config, lists, adminMeta, false);
   const sudoGraphQLSchema = getSudoGraphQLSchema(config);
 
   return {
