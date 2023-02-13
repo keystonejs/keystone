@@ -20,7 +20,7 @@ exampleProjectTests('../examples/basic', (browserType, mode) => {
     await page.click('button:has-text("Sign out")');
     await page.fill('[placeholder="email"]', 'admin@keystonejs.com');
     await page.fill('[placeholder="password"]', 'password');
-    await page.click('button:has-text("Sign In")');
+    await page.click('button:has-text("Sign in")');
   });
 
   test('update user', async () => {

@@ -105,7 +105,7 @@ export const SigninPage = ({
   };
 
   return (
-    <SigninContainer title="Keystone - Sign In">
+    <SigninContainer title="Keystone - Sign in">
       <Stack gap="xlarge" as="form" onSubmit={onSubmit}>
         <H1>Sign In</H1>
         {error && (
@@ -168,7 +168,7 @@ export const SigninPage = ({
               }
               type="submit"
             >
-              Sign In
+              Sign in
             </Button>
             {/* Disabled until we come up with a complete password reset workflow */}
             {/* <Button weight="none" tone="active" onClick={() => setMode('forgot password')}>
