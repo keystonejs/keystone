@@ -171,13 +171,21 @@ function printListTypeInfo<L extends InitialisedList>(listKey: string, list: L) 
     `    inputs: {`,
     `      where: ${whereInputName};`,
     `      uniqueWhere: ${whereUniqueInputName};`,
+    ...(list.graphql.isEnabled.create ? [
     `      create: ${createInputName};`,
+    ] : []),
+    ...(list.graphql.isEnabled.update ? [
     `      update: ${updateInputName};`,
+    ] : []),
     `      orderBy: ${listOrderName};`,
     `    };`,
     `    prisma: {`,
+    ...(list.graphql.isEnabled.create ? [
     `      create: Resolved${createInputName}`,
+    ] : []),
+    ...(list.graphql.isEnabled.update ? [
     `      update: Resolved${updateInputName}`,
+    ] : []),
     `    };`,
     `    all: __TypeInfo;`,
     `  };`,
