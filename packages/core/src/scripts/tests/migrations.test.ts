@@ -19,9 +19,9 @@ const dbUrl = 'file:./app.db';
 
 async function setupAndStopDevServerForMigrations(cwd: string, resetDb: boolean = false) {
   if (resetDb) {
-    await ((await runCommand(cwd, 'prisma db push --force-reset')) as () => Promise<void>)();
+    await runCommand(cwd, 'prisma db push --force-reset');
   }
-  await (((await runCommand(cwd, 'dev')) as () => Promise<void>)());
+  await ((await runCommand(cwd, 'dev')) as () => Promise<void>)();
 }
 
 function getPrismaClient(cwd: string) {
@@ -199,7 +199,7 @@ describe('useMigrations: false', () => {
       Push cancelled."
     `);
   });
-  test('--reset-db flag', async () => {
+  test('prisma db push --force-reset works', async () => {
     const tmp = await setupInitialProjectWithoutMigrations();
     {
       const prismaClient = await getPrismaClient(tmp);
@@ -219,8 +219,7 @@ describe('useMigrations: false', () => {
       ⭐️ Server listening on :3000 (http://localhost:3000/)
       ⭐️ GraphQL API available at /api/graphql
       ✨ Generating GraphQL and Prisma schemas
-      ✨ Your database has been reset
-      ✨ Your database is now in sync with your schema. Done in 0ms
+      ✨ The database is already in sync with the Prisma schema.
       ✨ Connecting to the database
       ✨ Creating server
       ✅ GraphQL API ready"
@@ -639,42 +638,6 @@ describe('useMigrations: true', () => {
       ⭐️ GraphQL API available at /api/graphql
       ✨ Generating GraphQL and Prisma schemas
       ✨ sqlite database "app.db" created at file:./app.db
-      Applying migration \`migration_name\`
-      ✨ The following migration(s) have been applied:
-
-      migrations/
-        └─ migration_name/
-          └─ migration.sql
-      ✨ Your migrations are up to date, no new migrations need to be created
-      ✨ Connecting to the database
-      ✨ Creating server
-      ✅ GraphQL API ready"
-    `);
-  });
-  test('--reset-db flag', async () => {
-    const tmp = await setupInitialProjectWithMigrations();
-    {
-      const prismaClient = await getPrismaClient(tmp);
-      await prismaClient.todo.create({ data: { title: 'something' } });
-      await prismaClient.$disconnect();
-    }
-    const recording = recordConsole();
-    await setupAndStopDevServerForMigrations(tmp, true);
-    {
-      const prismaClient = await getPrismaClient(tmp);
-      expect(await prismaClient.todo.findMany()).toHaveLength(0);
-      await prismaClient.$disconnect();
-    }
-
-    const { migrationName } = await getGeneratedMigration(tmp, 1, 'init');
-
-    expect(recording().replace(new RegExp(migrationName, 'g'), 'migration_name'))
-      .toMatchInlineSnapshot(`
-      "✨ Starting Keystone
-      ⭐️ Server listening on :3000 (http://localhost:3000/)
-      ⭐️ GraphQL API available at /api/graphql
-      ✨ Generating GraphQL and Prisma schemas
-      ✨ Your database has been reset
       Applying migration \`migration_name\`
       ✨ The following migration(s) have been applied:
 

@@ -94,7 +94,7 @@ export async function cli(cwd: string, argv: string[]) {
   }
 
   if (command === 'prisma') {
-    return prisma(cwd, argv.slice(1), defaultFlags(flags, { frozen: false }).frozen);
+    return prisma(cwd, argv.slice(1), !!flags.frozen);
   }
 
   if (command === 'telemetry') return telemetry(cwd, argv[1]);
