@@ -18,7 +18,7 @@ yarn
 
 2. Start Keystone and Next.js servers
 
-Navigate from repo root to `examples/e2e-boilerplate` and start the servers.
+Navigate from repo root to `examples/document-field-customisation` and start the servers.
 
 ```shell
 yarn dev
@@ -27,5 +27,3 @@ yarn dev
 The GraphQL Server and Admin UI will start on [localhost:3000](http://localhost:3000).
 
 The Next.js server will start and the homepage will be served at [localhost:8000](http://localhost:8000).
-
-_You can alternatively open two terminals and navigate to `examples/e2e-boilerplate/keystone-server` and `examples/e2e-boilerplate/nextjs-frontend` and run `yarn dev` separately._
