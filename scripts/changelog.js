@@ -85,7 +85,7 @@ async function fetchData(tag) {
   const changes = {};
   for (const commit of revs) {
     let { user, pull } = await getInfo({ repo: 'keystonejs/keystone', commit });
-    pull = pull || gitCommitDescription(commit).match(/#([0-9]+)/)?.[1]
+    pull = pull || gitCommitDescription(commit).match(/#([0-9]+)/)?.[1];
 
     console.error(`commit ${commit}, user ${user}, pull #${pull}`);
     const change = { commit, user, pull };
