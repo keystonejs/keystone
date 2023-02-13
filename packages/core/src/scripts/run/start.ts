@@ -9,7 +9,10 @@ import { loadBuiltConfig } from '../../lib/config/loadConfig';
 import { Flags } from '../cli';
 import { deployMigrations } from '../../lib/migrations';
 
-export const start = async (cwd: string, { ui, withMigrations }: Flags) => {
+export const start = async (
+  cwd: string,
+  { ui, withMigrations }: Pick<Flags, 'ui' | 'withMigrations'>
+) => {
   console.log('✨ Starting Keystone');
 
   // This is the compiled version of the configuration which was generated during the build step

@@ -9,7 +9,10 @@ import { getAdminPath } from '../utils';
 import { loadConfigOnce } from '../../lib/config/loadConfig';
 import { Flags } from '../cli';
 
-export async function build(cwd: string, { ui, prisma, frozen }: Flags) {
+export async function build(
+  cwd: string,
+  { frozen, prisma, ui }: Pick<Flags, 'frozen' | 'prisma' | 'ui'>
+) {
   const config = await loadConfigOnce(cwd);
   const { graphQLSchema, adminMeta } = createSystem(config);
 

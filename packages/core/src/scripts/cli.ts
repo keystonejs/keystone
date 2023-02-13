@@ -8,7 +8,7 @@ import { telemetry } from './telemetry';
 
 export type Flags = {
   dbPush: boolean;
-  fix: boolean; // TODO: remove
+  fix: boolean; // TODO: remove, deprecated
   frozen: boolean;
   prisma: boolean;
   resetDb: boolean;
@@ -16,6 +16,27 @@ export type Flags = {
   ui: boolean;
   withMigrations: boolean;
 };
+
+function defaultFlags(flags: Partial<Flags>, defaults: Partial<Flags>) {
+  flags = { ...defaults, ...flags };
+
+  for (const [key, value] of Object.entries(flags)) {
+    if (value !== undefined && !(key in defaults)) {
+      throw new Error(`Option '${key}' is unsupported for this command`);
+    }
+
+    const defaultValue = defaults[key as keyof Flags];
+    // should we default the flag?
+    if (value === undefined) {
+      flags[key as keyof Flags] = defaultValue;
+    }
+
+    if (typeof value !== typeof defaultValue) {
+      throw new Error(`Option '${key}' should be of type ${typeof defaultValue}`);
+    }
+  }
+  return flags as Flags;
+}
 
 export async function cli(cwd: string, argv: string[]) {
   const { input, help, flags } = meow(
@@ -34,7 +55,7 @@ export async function cli(cwd: string, argv: string[]) {
       --fix (postinstall) @deprecated
         do build the graphql or prisma schemas, don't validate them
 
-      --frozen (build)
+      --frozen (build, prisma)
         don't build the graphql or prisma schemas, only validate them
 
       --no-db-push (dev)
@@ -53,33 +74,36 @@ export async function cli(cwd: string, argv: string[]) {
         trigger prisma to run migrations as part of startup
     `,
     {
-      allowUnknownFlags: false,
-      flags: {
-        dbPush: { default: true, type: 'boolean' },
-        frozen: { default: false, type: 'boolean' },
-        prisma: { default: true, type: 'boolean' },
-        resetDb: { default: false, type: 'boolean' },
-        server: { default: true, type: 'boolean' },
-        ui: { default: true, type: 'boolean' },
-        withMigrations: { default: false, type: 'boolean' },
-        fix: { default: false, type: 'boolean' }, // TODO: remove - deprecated
-      },
       argv,
     }
   );
 
   const command = input[0] || 'dev';
-  if (command === 'dev') return dev(cwd, flags);
-  if (command === 'build') return build(cwd, flags);
-  if (command === 'start') return start(cwd, flags);
-  if (command === 'prisma') return prisma(cwd, argv.slice(1), flags.frozen);
+  if (command === 'dev') {
+    return dev(cwd, defaultFlags(flags, { dbPush: true, prisma: true, resetDb: false, server: true, ui: true }));
+  }
+
+  if (command === 'build') {
+    return build(cwd, defaultFlags(flags, { frozen: false, prisma: true, ui: true }));
+  }
+
+  if (command === 'start') {
+    return start(cwd, defaultFlags(flags, { ui: true, withMigrations: false }));
+  }
+
+  if (command === 'prisma') {
+    return prisma(cwd, argv.slice(1), defaultFlags(flags, { frozen: false }).frozen);
+  }
+
   if (command === 'telemetry') return telemetry(cwd, argv[1]);
 
-  // WARNING: postinstall is an alias for `build --no-ui --frozen`
+  // WARNING: postinstall is an alias for `build --frozen --no-ui`
   if (command === 'postinstall') {
-    flags.ui = false;
-    flags.frozen = !flags.fix; // TODO: remove - unfortunate, but `fix` needs to take precedence until it's removed
-    return build(cwd, flags);
+    return build(cwd, {
+      frozen: !defaultFlags(flags, { fix: false }).fix,
+      prisma: true,
+      ui: false,
+    });
   }
 
   console.log(`${command} is an unknown command`);

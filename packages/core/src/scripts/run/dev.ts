@@ -75,7 +75,10 @@ export function setSkipWatching() {
 // this will get the GraphQL API up earlier
 type WatchBuildResult = { error: BuildFailure | null; result: BuildResult | null };
 
-export async function dev(cwd: string, { server, prisma, dbPush, resetDb, ui }: Flags) {
+export async function dev(
+  cwd: string,
+  { dbPush, prisma, resetDb, server, ui }: Pick<Flags, 'dbPush' | 'prisma' | 'resetDb' | 'server' | 'ui'>
+) {
   console.log('✨ Starting Keystone');
   const app = server ? express() : null;
   const httpServer = app ? createServer(app) : null;
