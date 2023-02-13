@@ -79,10 +79,7 @@ export async function cli(cwd: string, argv: string[]) {
 
   const command = input[0] || 'dev';
   if (command === 'dev') {
-    return dev(
-      cwd,
-      defaultFlags(flags, { dbPush: true, prisma: true, server: true, ui: true })
-    );
+    return dev(cwd, defaultFlags(flags, { dbPush: true, prisma: true, server: true, ui: true }));
   }
 
   if (command === 'build') {

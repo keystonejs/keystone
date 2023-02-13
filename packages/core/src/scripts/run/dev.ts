@@ -77,12 +77,7 @@ type WatchBuildResult = { error: BuildFailure | null; result: BuildResult | null
 
 export async function dev(
   cwd: string,
-  {
-    dbPush,
-    prisma,
-    server,
-    ui,
-  }: Pick<Flags, 'dbPush' | 'prisma' | 'server' | 'ui'>
+  { dbPush, prisma, server, ui }: Pick<Flags, 'dbPush' | 'prisma' | 'server' | 'ui'>
 ) {
   console.log('✨ Starting Keystone');
   const app = server ? express() : null;
