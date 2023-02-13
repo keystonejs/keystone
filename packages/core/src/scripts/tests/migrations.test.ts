@@ -21,7 +21,7 @@ async function setupAndStopDevServerForMigrations(cwd: string, resetDb: boolean 
   if (resetDb) {
     await runCommand(cwd, 'prisma db push --force-reset');
   }
-  await ((await runCommand(cwd, 'dev')) as () => Promise<void>)();
+  await runCommand(cwd, 'dev');
 }
 
 function getPrismaClient(cwd: string) {

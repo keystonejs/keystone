@@ -137,7 +137,10 @@ async function getSymlinkType(targetPath: string): Promise<'dir' | 'file'> {
 
 export async function runCommand(cwd: string, args: string) {
   const argv = parseArgsStringToArgv(args);
-  return cli(cwd, argv);
+  const proc = await cli(cwd, argv);
+  if (typeof proc === 'function') {
+    await proc();
+  }
 }
 
 let dirsToRemove: string[] = [];
