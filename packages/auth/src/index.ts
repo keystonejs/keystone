@@ -115,7 +115,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
    *
    * Must be added to the extendGraphqlSchema config. Can be composed.
    */
-  const extendGraphqlSchema = getSchemaExtension({
+  const authExtendGraphqlSchema = getSchemaExtension({
     identityField,
     listKey,
     secretField,
@@ -253,6 +253,10 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     return session !== undefined;
   }
 
+  function defaultExtendGraphqlSchema(schema: any, sudo: boolean) {
+    return schema;
+  }
+
   /**
    * withAuth
    *
@@ -292,8 +296,9 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     if (!keystoneConfig.session) throw new TypeError('Missing .session configuration');
     const session = withItemData(keystoneConfig.session);
 
-    const existingExtendGraphQLSchema = keystoneConfig.extendGraphqlSchema;
+    const { extendGraphqlSchema = defaultExtendGraphqlSchema } = keystoneConfig;
     const listConfig = keystoneConfig.lists[listKey];
+
     return {
       ...keystoneConfig,
       ui,
@@ -302,9 +307,9 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
         ...keystoneConfig.lists,
         [listKey]: { ...listConfig, fields: { ...listConfig.fields, ...fields } },
       },
-      extendGraphqlSchema: existingExtendGraphQLSchema
-        ? schema => existingExtendGraphQLSchema(extendGraphqlSchema(schema))
-        : extendGraphqlSchema,
+      extendGraphqlSchema: schema => {
+        return extendGraphqlSchema(authExtendGraphqlSchema(schema));
+      },
     };
   };
 

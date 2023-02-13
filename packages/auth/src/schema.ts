@@ -58,13 +58,14 @@ export const getSchemaExtension = ({
   passwordResetLink?: AuthTokenTypeConfig;
   magicAuthLink?: AuthTokenTypeConfig;
   sessionData: string;
-}): ExtendGraphqlSchema =>
+}) =>
   graphql.extend(base => {
     const uniqueWhereInputType = assertInputObjectType(
       base.schema.getType(`${listKey}WhereUniqueInput`)
     );
     const identityFieldOnUniqueWhere = uniqueWhereInputType.getFields()[identityField];
     if (
+      base.schema.extensions.sudo &&
       identityFieldOnUniqueWhere?.type !== GraphQLString &&
       identityFieldOnUniqueWhere?.type !== GraphQLID
     ) {
@@ -75,6 +76,7 @@ export const getSchemaExtension = ({
           `to the field at ${listKey}.${identityField}`
       );
     }
+
     const baseSchema = getBaseAuthSchema({
       identityField,
       listKey,
