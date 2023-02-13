@@ -22,19 +22,7 @@ model Settings {
 model Post {
   id                             String     @id @default(cuid())
   title                          String     @default("")
-  status                         String?
   content                        String     @default("")
   publishDate                    DateTime?
-  author                         Author?    @relation("Post_author", fields: [authorId], references: [id])
-  authorId                       String?    @map("author")
   from_Settings_highlightedPosts Settings[] @relation("Settings_highlightedPosts")
-
-  @@index([authorId])
-}
-
-model Author {
-  id    String @id @default(cuid())
-  name  String @default("")
-  email String @unique @default("")
-  posts Post[] @relation("Post_author")
 }
