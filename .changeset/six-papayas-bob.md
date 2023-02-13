@@ -2,4 +2,4 @@
 '@keystone-6/core': minor
 ---
 
-Adds a `sudo` parameter for `extendGraphqlSchema`, to indicate whether you are extending the sudo GraphQL schema or not
+Adds a `sudo` GraphQL extension for the `GraphQLSchema` passed to `extendGraphqlSchema`; enabling developers to determine if they are extending the sudo GraphQL schema
