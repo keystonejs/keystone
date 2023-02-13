@@ -12,13 +12,19 @@ type Session = {
   data?: {
     isAdmin: boolean;
   };
-}
+};
 
 function hasSession({ session }: { session: Session | undefined }) {
-  return Boolean(session)
+  return Boolean(session);
 }
 
-function isAdminOrSameUser({ session, item }: { session: Session | undefined; item: Lists.User.Item }) {
+function isAdminOrSameUser({
+  session,
+  item,
+}: {
+  session: Session | undefined;
+  item: Lists.User.Item;
+}) {
   // you need to have a session to do this
   if (!session) return false;
 
@@ -29,7 +35,7 @@ function isAdminOrSameUser({ session, item }: { session: Session | undefined; it
   return session.itemId === item.id;
 }
 
-function isAdminOrSameUserFilter({ session }: { session: Session | undefined; }) {
+function isAdminOrSameUserFilter({ session }: { session: Session | undefined }) {
   // you need to have a session to do this
   if (!session) return false;
 
@@ -39,9 +45,9 @@ function isAdminOrSameUserFilter({ session }: { session: Session | undefined; })
   // the authenticated user can only see themselves
   return {
     id: {
-      equals: session.itemId
-    }
-  }
+      equals: session.itemId,
+    },
+  };
 }
 
 function isAdmin({ session }: { session: any }) {
@@ -67,18 +73,18 @@ export const lists: Lists = {
         update: hasSession,
 
         // only allow admins to delete users
-        delete: isAdmin
+        delete: isAdmin,
       },
       filter: {
-        update: isAdminOrSameUserFilter
+        update: isAdminOrSameUserFilter,
       },
       item: {
-        update: isAdminOrSameUser
-      }
+        update: isAdminOrSameUser,
+      },
     },
     ui: {
       // only show deletion options for admins
-      hideDelete: (args) => !isAdmin(args),
+      hideDelete: args => !isAdmin(args),
       listView: {
         // the default columns that will be displayed in the list view
         initialColumns: ['name', 'email', 'isAdmin'],
@@ -98,14 +104,14 @@ export const lists: Lists = {
           read: isAdminOrSameUser,
 
           // only admins can update this field
-          update: isAdmin
+          update: isAdmin,
         },
         isFilterable: false,
         isOrderable: false,
         isIndexed: 'unique',
         validation: {
-          isRequired: true
-        }
+          isRequired: true,
+        },
       }),
 
       // the user's password, used as the secret field for authentication
@@ -118,11 +124,11 @@ export const lists: Lists = {
         ui: {
           itemView: {
             // don't show this field if it isn't relevant
-            fieldMode: (args) => (isAdminOrSameUser(args) ? 'edit' : 'hidden'),
+            fieldMode: args => (isAdminOrSameUser(args) ? 'edit' : 'hidden'),
           },
           listView: {
             // TODO: ?
-            fieldMode: (args) => (isAdmin(args) ? 'read' : 'hidden'),
+            fieldMode: args => (isAdmin(args) ? 'read' : 'hidden'),
           },
         },
       }),
@@ -142,10 +148,10 @@ export const lists: Lists = {
         ui: {
           // only admins can edit this field
           createView: {
-            fieldMode: (args) => (isAdmin(args) ? 'edit' : 'hidden'),
+            fieldMode: args => (isAdmin(args) ? 'edit' : 'hidden'),
           },
           itemView: {
-            fieldMode: (args) => (isAdmin(args) ? 'edit' : 'read'),
+            fieldMode: args => (isAdmin(args) ? 'edit' : 'read'),
           },
         },
       }),

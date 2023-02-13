@@ -20,7 +20,7 @@ export const lists = {
     fields: {
       title: text({ validation: { isRequired: true } }),
       content: text(),
-      publishDate: timestamp()
+      publishDate: timestamp(),
     },
-  })
+  }),
 };
