@@ -6,25 +6,33 @@ import { createAdminUIMiddleware } from '../../lib/server/createAdminUIMiddlewar
 import { requirePrismaClient } from '../../artifacts';
 import { ExitError, getAdminPath, getBuiltConfigPath } from '../utils';
 import { loadBuiltConfig } from '../../lib/config/loadConfig';
+import { Flags } from '../cli';
+import { deployMigrations } from '../../lib/migrations';
 
-export const start = async (cwd: string) => {
+export const start = async (
+  cwd: string,
+  { ui, withMigrations }: Pick<Flags, 'ui' | 'withMigrations'>
+) => {
   console.log('✨ Starting Keystone');
 
-  // This is the compiled version of the configuration which was generated during the build step.
+  // This is the compiled version of the configuration which was generated during the build step
   const apiFile = getBuiltConfigPath(cwd);
   if (!fs.existsSync(apiFile)) {
     console.log('🚨 keystone build must be run before running keystone start');
     throw new ExitError(1);
   }
+
   const config = loadBuiltConfig(cwd);
   const { getKeystone, graphQLSchema } = createSystem(config);
-
   const prismaClient = requirePrismaClient(cwd);
-
   const keystone = getKeystone(prismaClient);
 
   console.log('✨ Connecting to the database');
   await keystone.connect();
+  if (withMigrations) {
+    console.log('✨ Applying database migrations');
+    await deployMigrations(config.db.url);
+  }
 
   console.log('✨ Creating server');
   const { expressServer, httpServer } = await createExpressServer(
@@ -32,8 +40,9 @@ export const start = async (cwd: string) => {
     graphQLSchema,
     keystone.context
   );
+
   console.log(`✅ GraphQL API ready`);
-  if (!config.ui?.isDisabled) {
+  if (!config.ui?.isDisabled || ui) {
     console.log('✨ Preparing Admin UI Next.js app');
     expressServer.use(
       await createAdminUIMiddleware(config, keystone.context, false, getAdminPath(cwd))
@@ -41,10 +50,7 @@ export const start = async (cwd: string) => {
     console.log(`✅ Admin UI ready`);
   }
 
-  const httpOptions: ListenOptions = {
-    port: 3000,
-  };
-
+  const httpOptions: ListenOptions = { port: 3000 };
   if (config?.server && 'port' in config.server) {
     httpOptions.port = config.server.port;
   }

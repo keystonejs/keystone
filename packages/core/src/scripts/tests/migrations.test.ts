@@ -18,7 +18,7 @@ setSkipWatching();
 const dbUrl = 'file:./app.db';
 
 async function setupAndStopDevServerForMigrations(cwd: string, resetDb: boolean = false) {
-  let stopServer = (await runCommand(
+  const stopServer = (await runCommand(
     cwd,
     `dev${resetDb ? ' --reset-db' : ''}`
   )) as () => Promise<void>;

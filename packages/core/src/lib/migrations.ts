@@ -22,9 +22,9 @@ export function runMigrateWithDbUrl<T>(
   shadowDbUrl: string | undefined,
   cb: () => T
 ): T {
-  let prevDBURLFromEnv = process.env.DATABASE_URL;
-  let prevShadowDBURLFromEnv = process.env.SHADOW_DATABASE_URL;
-  let prevHiddenUpdateMessage = process.env.PRISMA_HIDE_UPDATE_MESSAGE;
+  const prevDBURLFromEnv = process.env.DATABASE_URL;
+  const prevShadowDBURLFromEnv = process.env.SHADOW_DATABASE_URL;
+  const prevHiddenUpdateMessage = process.env.PRISMA_HIDE_UPDATE_MESSAGE;
   try {
     process.env.DATABASE_URL = dbUrl;
     setOrRemoveEnvVariable('SHADOW_DATABASE_URL', shadowDbUrl);
@@ -50,7 +50,7 @@ export async function withMigrate<T>(schemaPath: string, cb: (migrate: Migrate) 
   try {
     return await cb(migrate);
   } finally {
-    let closePromise = new Promise<void>(resolve => {
+    const closePromise = new Promise<void>(resolve => {
       const child = (migrate.engine as any).child as import('child_process').ChildProcess;
       child.once('exit', () => {
         resolve();
@@ -66,12 +66,12 @@ export async function pushPrismaSchemaToDatabase(
   shadowDbUrl: string | undefined,
   schema: string,
   schemaPath: string,
-  shouldDropDatabase = false
+  resetDb = false
 ) {
-  let before = Date.now();
+  const before = Date.now();
   await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
-  let migration = await withMigrate(schemaPath, async migrate => {
-    if (shouldDropDatabase) {
+  const migration = await withMigrate(schemaPath, async migrate => {
+    if (resetDb) {
       await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () => migrate.engine.reset());
       let migration = await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () =>
         migrate.engine.schemaPush({
@@ -86,7 +86,7 @@ export async function pushPrismaSchemaToDatabase(
     // - true: ignore warnings but will not run anything if there are unexecutable steps(so the database needs to be reset before)
     // - false: if there are warnings or unexecutable steps, don't run the migration
     // https://github.com/prisma/prisma-engines/blob/a2de6b71267b45669d25c3a27ad30998862a275c/migration-engine/core/src/commands/schema_push.rs
-    let migration = await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () =>
+    const migration = await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () =>
       migrate.engine.schemaPush({
         force: false,
         schema,
@@ -102,9 +102,6 @@ export async function pushPrismaSchemaToDatabase(
         logWarnings(migration.warnings);
       }
       console.log('\nTo apply this migration, we need to reset the database.');
-      console.log(
-        'If you want to keep the data in your database, set db.useMigrations to true in your config or change the data in your database so the migration can be applied'
-      );
       if (
         !(await confirmPrompt(
           `Do you want to continue? ${chalk.red('All data will be lost')}.`,
@@ -122,6 +119,7 @@ export async function pushPrismaSchemaToDatabase(
         })
       );
     }
+
     if (migration.warnings.length) {
       logWarnings(migration.warnings);
       if (
@@ -167,13 +165,29 @@ function logWarnings(warnings: string[]) {
   }
 }
 
+export async function deployMigrations(dbUrl: string) {
+  return withMigrate(process.cwd(), async migrate => {
+    const before = Date.now();
+    const migration = await runMigrateWithDbUrl(dbUrl, undefined, () => migrate.applyMigrations());
+    if (migration.appliedMigrationNames.length === 0) {
+      console.info(`✨ The database is already in sync with your Generated Migrations.`);
+    } else {
+      console.info(
+        `✨ Your database is now in sync with your Generated Migrations. Done in ${formatms(
+          Date.now() - before
+        )}`
+      );
+    }
+  });
+}
+
 // TODO: don't have process.exit calls here
 export async function devMigrations(
   dbUrl: string,
   shadowDbUrl: string | undefined,
   prismaSchema: string,
   schemaPath: string,
-  shouldDropDatabase: boolean
+  resetDb: boolean
 ) {
   await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
   return withMigrate(schemaPath, async migrate => {
@@ -183,7 +197,7 @@ export async function devMigrations(
     }
     const { migrationsDirectoryPath } = migrate;
 
-    if (shouldDropDatabase) {
+    if (resetDb) {
       await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () => migrate.reset());
       console.log('✨ Your database has been reset');
     } else {
@@ -217,7 +231,7 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
         await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () => migrate.reset());
       }
     }
-    let { appliedMigrationNames } = await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () =>
+    const { appliedMigrationNames } = await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () =>
       migrate.applyMigrations()
     );
     // Inform user about applied migrations now
@@ -256,7 +270,7 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
       const migrationName = await getMigrationName();
 
       // note this only creates the migration, it does not apply it
-      let { generatedMigrationName } = await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () =>
+      const { generatedMigrationName } = await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () =>
         migrate.createMigration({
           migrationsDirectoryPath,
           // https://github.com/prisma/prisma-engines/blob/11dfcc85d7f9b55235e31630cd87da7da3aed8cc/migration-engine/core/src/commands/create_migration.rs#L16-L17

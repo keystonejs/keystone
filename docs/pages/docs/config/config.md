@@ -64,7 +64,6 @@ These database types are powered by their corresponding Prisma database provider
 - `url`: The connection URL for your database
 - `onConnect`: which takes a [`KeystoneContext`](../context/overview) object, and lets perform any actions you might need at startup, such as data seeding
 - `enableLogging` (default: `false`): Enable logging from the Prisma client.
-- `useMigrations` (default: `false`): Determines whether to use migrations or automatically force-update the database with the latest schema and potentially lose data.
 - `idField` (default: `{ kind: "cuid" }`): The kind of id field to use, it can be one of: `cuid`, `uuid` or `autoincrement`.
   This can also be customised at the list level `db.idField`.
   If you are using `autoincrement`, you can also specify `type: 'BigInt'` on PostgreSQL and MySQL to use BigInts.
@@ -82,7 +81,6 @@ export default config({
     onConnect: async context => { /* ... */ },
     // Optional advanced configuration
     enableLogging: true,
-    useMigrations: true,
     idField: { kind: 'uuid' },
     shadowDatabaseUrl: 'postgres://dbuser:dbpass@localhost:5432/shadowdb'
   },
@@ -100,7 +98,6 @@ export default config({
     onConnect: async context => { /* ... */ },
     // Optional advanced configuration
     enableLogging: true,
-    useMigrations: true,
     idField: { kind: 'uuid' },
   },
   /* ... */
@@ -117,7 +114,6 @@ export default config({
     onConnect: async context => { /* ... */ },
     // Optional advanced configuration
     enableLogging: true,
-    useMigrations: true,
     idField: { kind: 'uuid' },
   },
   /* ... */

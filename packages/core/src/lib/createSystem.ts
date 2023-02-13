@@ -100,6 +100,7 @@ export function createSystem(config: KeystoneConfig) {
       });
 
       return {
+        // TODO: remove, replace with server.onStart
         async connect() {
           await prismaClient.$connect();
           await config.db.onConnect?.(context);
