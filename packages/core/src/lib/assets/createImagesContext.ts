@@ -1,28 +1,35 @@
 import { v4 as uuid } from 'uuid';
-import fromBuffer from 'image-type';
 import imageSize from 'image-size';
-import { KeystoneConfig, ImageMetadata, ImagesContext } from '../../types';
+import type { ImageTypeResult } from 'image-type';
+import { KeystoneConfig, ImagesContext } from '../../types';
 import { ImageAdapter } from './types';
 import { localImageAssetsAPI } from './local';
 import { s3ImageAssetsAPI } from './s3';
 import { streamToBuffer } from './utils';
 
-export function getImageMetadataFromBuffer(buffer: Buffer): ImageMetadata {
-  const fileType = fromBuffer(buffer);
+let imageTypeFn: ((input: Buffer | Uint8Array) => Promise<ImageTypeResult | undefined>) | null = null
+
+async function getImageMetadataFromBuffer(buffer: Buffer)  {
+  // TODO: ESM support
+  if (imageTypeFn === null) {
+    imageTypeFn = (await import('image-type')).default;
+  }
+
+  const fileType = await imageTypeFn(buffer);
   if (!fileType) {
     throw new Error('File type not found');
   }
 
-  const extension = fileType.ext;
+  const { ext: extension } = await fileType;
   if (extension !== 'jpg' && extension !== 'png' && extension !== 'webp' && extension !== 'gif') {
     throw new Error(`${extension} is not a supported image type`);
   }
 
   const { height, width } = imageSize(buffer);
-
   if (width === undefined || height === undefined) {
     throw new Error('Height and width could not be found for image');
   }
+
   return { width, height, filesize: buffer.length, extension };
 }
 
@@ -54,7 +61,7 @@ export function createImagesContext(config: KeystoneConfig): ImagesContext {
         const { transformName = () => uuid() } = storageConfig;
 
         const buffer = await streamToBuffer(stream);
-        const { extension, ...rest } = getImageMetadataFromBuffer(buffer);
+        const { extension, ...rest } = await getImageMetadataFromBuffer(buffer);
 
         const id = await transformName(originalFilename, extension);
 
