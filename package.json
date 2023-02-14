@@ -42,6 +42,7 @@
     "@types/node-fetch": "^2.5.12",
     "@typescript-eslint/eslint-plugin": "^5.7.0",
     "@typescript-eslint/parser": "^5.7.0",
+    "esbuild-jest": "^0.5.0",
     "eslint": "^8.0.0",
     "eslint-plugin-import": "2.25.3",
     "eslint-plugin-jest": "^26.0.0",
@@ -110,7 +111,15 @@
       "!**/*.d.ts",
       "!packages/**/dist/**",
       "!packages/core/src/fields/**/test-fixtures.{js,ts}"
-    ]
+    ],
+    "transform": {
+      "^.+\\.[tj]sx?$": [
+        "esbuild-jest",
+        {
+          "target": "esnext"
+        }
+      ]
+    }
   },
   "resolutions": {
     "**/@types/node": "^18.11.14"
