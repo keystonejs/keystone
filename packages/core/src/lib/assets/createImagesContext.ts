@@ -1,21 +1,14 @@
 import { v4 as uuid } from 'uuid';
 import imageSize from 'image-size';
-import type { ImageTypeResult } from 'image-type';
+import { fileTypeFromBuffer } from 'file-type';
 import { KeystoneConfig, ImagesContext } from '../../types';
 import { ImageAdapter } from './types';
 import { localImageAssetsAPI } from './local';
 import { s3ImageAssetsAPI } from './s3';
 import { streamToBuffer } from './utils';
 
-let imageTypeFn: ((input: Buffer | Uint8Array) => Promise<ImageTypeResult | undefined>) | null = null
-
 async function getImageMetadataFromBuffer(buffer: Buffer)  {
-  // TODO: ESM support
-  if (imageTypeFn === null) {
-    imageTypeFn = (await import('image-type')).default;
-  }
-
-  const fileType = await imageTypeFn(buffer);
+  const fileType = await fileTypeFromBuffer(buffer);
   if (!fileType) {
     throw new Error('File type not found');
   }
