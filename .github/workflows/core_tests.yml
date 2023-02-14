@@ -40,6 +40,7 @@ jobs:
         env:
           TEST_ADAPTER: postgresql
           DATABASE_URL: postgres://testuser:testpass@localhost:5432/test_db
+          NODE_OPTIONS: --experimental-vm-modules
 
   graphql_api_tests_sqlite:
     name: API Tests SQLite
@@ -56,6 +57,7 @@ jobs:
         run: yarn jest --ci --runInBand --shard=${{ matrix.index }}/9 api-tests --testPathIgnorePatterns=tests/api-tests/fields/crud
         env:
           TEST_ADAPTER: sqlite
+          NODE_OPTIONS: --experimental-vm-modules
 
   graphql_api_tests_mysql:
     name: API Tests MySQL
@@ -81,6 +83,7 @@ jobs:
         env:
           TEST_ADAPTER: mysql
           DATABASE_URL: mysql://root:testpass@localhost:3306/test_db
+          NODE_OPTIONS: --experimental-vm-modules
 
   field_crud_tests_postgresql:
     name: Field CRUD Tests PostgreSQL
@@ -113,6 +116,7 @@ jobs:
           S3_REGION: us-east-1
           TEST_ADAPTER: postgresql
           DATABASE_URL: postgres://testuser:testpass@localhost:5432/test_db
+          NODE_OPTIONS: --experimental-vm-modules
 
   field_crud_tests_sqlite:
     name: Field CRUD Tests SQLite
@@ -136,6 +140,7 @@ jobs:
           S3_REGION: us-east-1
           TEST_ADAPTER: sqlite
           DATABASE_URL: file:./dev.db
+          NODE_OPTIONS: --experimental-vm-modules
 
   field_crud_tests_mysql:
     name: Field CRUD Tests MySQL
@@ -166,6 +171,7 @@ jobs:
           S3_REGION: us-east-1
           TEST_ADAPTER: mysql
           DATABASE_URL: mysql://root:testpass@localhost:3306/test_db
+          NODE_OPTIONS: --experimental-vm-modules
 
   examples_tests:
     name: Testing example project
