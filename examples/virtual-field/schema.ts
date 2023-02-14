@@ -19,7 +19,7 @@ export const lists: Lists = {
       isPublished: virtual({
         field: graphql.field({
           type: graphql.Boolean,
-          resolve(item: any) {
+          resolve(item) {
             return item.status === 'published';
           },
         }),

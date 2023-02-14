@@ -544,7 +544,7 @@ export default function WhyKeystonePage() {
               </Type>
               <Type as="p" look="body18">
                 <a
-                  href="https://github.com/keystonejs/keystone/tree/main/examples/task-manager"
+                  href="https://github.com/keystonejs/keystone/tree/main/examples/usecase-task-manager"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -567,7 +567,7 @@ export default function WhyKeystonePage() {
               </Type>
               <Type as="p" look="body18">
                 <a
-                  href="https://github.com/keystonejs/keystone/tree/main/examples/blog"
+                  href="https://github.com/keystonejs/keystone/tree/main/examples/usecase-blog"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -596,7 +596,7 @@ export default function WhyKeystonePage() {
             </Type>
             <Type as="p" look="body18">
               <a
-                href="https://github.com/keystonejs/keystone/tree/main/examples/ecommerce"
+                href="https://github.com/keystonejs/keystone/tree/main/examples/usecase-ecommerce"
                 target="_blank"
                 rel="noopener noreferrer"
               >

@@ -392,7 +392,7 @@ export default function ForDevelopers() {
             <li>
               <Button
                 as="a"
-                href="https://github.com/keystonejs/keystone/tree/main/examples/blog"
+                href="https://github.com/keystonejs/keystone/tree/main/examples/usecase-blog"
                 target="_blank"
                 rel="noopener noreferrer"
                 look="soft"
@@ -403,7 +403,7 @@ export default function ForDevelopers() {
             <li>
               <Button
                 as="a"
-                href="https://github.com/keystonejs/keystone/tree/main/examples/task-manager"
+                href="https://github.com/keystonejs/keystone/tree/main/examples/usecase-task-manager"
                 target="_blank"
                 rel="noopener noreferrer"
                 look="soft"

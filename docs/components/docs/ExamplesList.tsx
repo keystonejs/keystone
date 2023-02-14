@@ -19,7 +19,7 @@ export function Examples() {
       <Well
         grad="grad3"
         heading="Blog"
-        href="https://github.com/keystonejs/keystone/blob/main/examples/blog"
+        href="https://github.com/keystonejs/keystone/blob/main/examples/usecase-blog"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -29,7 +29,7 @@ export function Examples() {
       <Well
         grad="grad3"
         heading="Task Manager"
-        href="https://github.com/keystonejs/keystone/blob/main/examples/task-manager"
+        href="https://github.com/keystonejs/keystone/blob/main/examples/usecase-task-manager"
         target="_blank"
         rel="noopener noreferrer"
       >

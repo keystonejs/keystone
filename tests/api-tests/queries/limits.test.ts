@@ -88,7 +88,7 @@ describe('graphql.maxTake', () => {
 // FIXME: we need upstream support in the graphql package to make KS validation rules work for internal requests
 // (Low priority, but makes the API less surprising if rules work everywhere by default.)
 
-describe('maxDepth Limit', () => {
+describe('maximum depth limit', () => {
   test(
     'nested query',
     runner(async ({ graphQLRequest }) => {
@@ -243,7 +243,7 @@ describe('maxDepth Limit', () => {
   );
 });
 
-describe('maxDefinitions Limit', () => {
+describe('maximum definitions limit', () => {
   test(
     'too many queries',
     runner(async ({ graphQLRequest }) => {
@@ -347,7 +347,7 @@ describe('maxDefinitions Limit', () => {
   );
 });
 
-describe('maxFields Limit', () => {
+describe('maximum fields limit', () => {
   test(
     'one operation',
     runner(async ({ graphQLRequest }) => {

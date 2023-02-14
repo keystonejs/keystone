@@ -200,7 +200,7 @@ export default function WhatsNew() {
           <a href="https://github.com/keystonejs/keystone/tree/main/examples">example projects</a>{' '}
           in a browser using the free <a href="https://codesandbox.io/">codesandbox.io</a> service.
           Try the{' '}
-          <a href="https://githubbox.com/keystonejs/keystone/tree/main/examples/blog">
+          <a href="https://githubbox.com/keystonejs/keystone/tree/main/examples/usecase-blog">
             blog example
           </a>{' '}
           today. Thanks <a href="https://github.com/MurzNN">@murznn</a> for making it happen!{' '}

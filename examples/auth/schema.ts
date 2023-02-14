@@ -1,67 +1,159 @@
 import { list } from '@keystone-6/core';
-import { allOperations, allowAll } from '@keystone-6/core/access';
+import { allowAll } from '@keystone-6/core/access';
 import { text, checkbox, password } from '@keystone-6/core/fields';
 import type { Lists } from '.keystone/types';
+
+// WARNING: this example is for demonstration purposes only
+//   as with each of our examples, it has not been vetted
+//   or tested for any particular usage
+
+type Session = {
+  itemId: string;
+  data?: {
+    isAdmin: boolean;
+  };
+};
+
+function hasSession({ session }: { session: Session | undefined }) {
+  return Boolean(session);
+}
+
+function isAdminOrSameUser({
+  session,
+  item,
+}: {
+  session: Session | undefined;
+  item: Lists.User.Item;
+}) {
+  // you need to have a session to do this
+  if (!session) return false;
+
+  // admins can do anything
+  if (session.data?.isAdmin) return true;
+
+  // the authenticated user needs to be equal to the user we are updating
+  return session.itemId === item.id;
+}
+
+function isAdminOrSameUserFilter({ session }: { session: Session | undefined }) {
+  // you need to have a session to do this
+  if (!session) return false;
+
+  // admins can see everything
+  if (session.data?.isAdmin) return {};
+
+  // the authenticated user can only see themselves
+  return {
+    id: {
+      equals: session.itemId,
+    },
+  };
+}
+
+function isAdmin({ session }: { session: any }) {
+  // you need to have a session to do this
+  if (!session) return false;
+
+  // admins can do anything
+  if (session.data.isAdmin) return true;
+
+  // otherwise, no
+  return false;
+}
 
 export const lists: Lists = {
   User: list({
     access: {
       operation: {
-        ...allOperations(allowAll),
-        // Only allow admins to delete users
-        delete: ({ session }) => session?.data.isAdmin,
+        create: allowAll,
+        query: allowAll,
+
+        // only allow users to update _anything_, but what they can update is limited by
+        //   the access.filter.* and access.item.* access controls
+        update: hasSession,
+
+        // only allow admins to delete users
+        delete: isAdmin,
+      },
+      filter: {
+        update: isAdminOrSameUserFilter,
+      },
+      item: {
+        // this is redundant as ^filter.update should prevent unauthorised updates
+        //   we include it anyway as a demonstration
+        update: isAdminOrSameUser,
       },
     },
     ui: {
-      // Since you can't delete users unless you're an admin, we hide the UI for it
-      hideDelete: ({ session }) => !session?.data.isAdmin,
+      // only show deletion options for admins
+      hideDelete: args => !isAdmin(args),
       listView: {
-        // These are the default columns that will be displayed in the list view
+        // the default columns that will be displayed in the list view
         initialColumns: ['name', 'email', 'isAdmin'],
       },
     },
     fields: {
-      // The user's name
+      // the user's name, publicly visible
       name: text({ validation: { isRequired: true } }),
-      // The user's email address, used as the identity field for auth
-      email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
-      // The user's password, used as the secret field for auth
+
+      // the user's email address, used as the identity field for authentication
+      //   should not be publicly visible
+      //
+      //   we use isIndexed to enforce this email is unique
+      email: text({
+        access: {
+          // only the respective user, or an admin can read this field
+          read: isAdminOrSameUser,
+
+          // only admins can update this field
+          update: isAdmin,
+        },
+        isFilterable: false,
+        isOrderable: false,
+        isIndexed: 'unique',
+        validation: {
+          isRequired: true,
+        },
+      }),
+
+      // the user's password, used as the secret field for authentication
+      //   should not be publicly visible
       password: password({
         access: {
-          // Passwords can always be set when creating items
-          // Users can change their own passwords, and Admins can change anyone's password
-          update: ({ session, item }) =>
-            session && (session.data.isAdmin || session.itemId === item.id),
+          read: isAdminOrSameUser, // TODO: is this required?
+          update: isAdminOrSameUser,
         },
         ui: {
-          // Based on the same logic as update access, the password field is editable.
-          // The password field is hidden from non-Admin users (except for themselves)
-          // createView: {
-          //   fieldMode: ({ session }) => (session?.data.isAdmin ? 'edit' : 'hidden'),
-          // },
           itemView: {
-            fieldMode: ({ session, item }) =>
-              session && (session.data.isAdmin || session.itemId === item.id) ? 'edit' : 'hidden',
+            // don't show this field if it isn't relevant
+            fieldMode: args => (isAdminOrSameUser(args) ? 'edit' : 'hidden'),
           },
           listView: {
-            fieldMode: ({ session }) => (session?.data?.isAdmin ? 'read' : 'hidden'),
+            // TODO: ?
+            fieldMode: args => (isAdmin(args) ? 'read' : 'hidden'),
           },
         },
       }),
-      // This is used for access control, both in the schema and for the Admin UI
+
+      // a flag to indicate if this user is an admin
+      //  should not be publicly visible
       isAdmin: checkbox({
         access: {
-          // Only Admins can set the isAdmin flag for any users
-          create: ({ session }) => session?.data.isAdmin,
-          update: ({ session }) => session?.data.isAdmin,
+          // only the respective user, or an admin can read this field
+          read: isAdminOrSameUser,
+
+          // only admins can create, or update this field
+          create: isAdmin,
+          update: isAdmin,
         },
+        defaultValue: false,
         ui: {
-          // All users can see the isAdmin status, only admins can change it
+          // only admins can edit this field
           createView: {
-            fieldMode: ({ session }) => (session?.data.isAdmin ? 'edit' : 'hidden'),
+            fieldMode: args => (isAdmin(args) ? 'edit' : 'hidden'),
           },
           itemView: {
-            fieldMode: ({ session }) => (session?.data.isAdmin ? 'edit' : 'read'),
+            fieldMode: args => (isAdmin(args) ? 'edit' : 'read'),
           },
         },
       }),

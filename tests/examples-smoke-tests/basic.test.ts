@@ -2,7 +2,7 @@ import { Browser, Page } from 'playwright';
 import fetch from 'node-fetch';
 import { exampleProjectTests, initFirstItemTest, loadIndex } from './utils';
 
-exampleProjectTests('../examples/basic', (browserType, mode) => {
+exampleProjectTests('../examples/usecase-basic', (browserType, mode) => {
   let browser: Browser = undefined as any;
   let page: Page = undefined as any;
   beforeAll(async () => {

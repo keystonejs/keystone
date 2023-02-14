@@ -9,6 +9,8 @@ export const lists = {
       title: text({ validation: { isRequired: true } }),
     },
     graphql: {
+      // enforce that only 20 posts can be retrieved in a Query
+      //   this additionally defaults the GraphQL schema 'take' value to 20
       maxTake: 20,
     },
   }),
