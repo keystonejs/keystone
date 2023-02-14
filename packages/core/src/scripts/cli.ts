@@ -11,7 +11,6 @@ export type Flags = {
   fix: boolean; // TODO: remove, deprecated
   frozen: boolean;
   prisma: boolean;
-  resetDb: boolean;
   server: boolean;
   ui: boolean;
   withMigrations: boolean;
@@ -80,10 +79,7 @@ export async function cli(cwd: string, argv: string[]) {
 
   const command = input[0] || 'dev';
   if (command === 'dev') {
-    return dev(
-      cwd,
-      defaultFlags(flags, { dbPush: true, prisma: true, resetDb: false, server: true, ui: true })
-    );
+    return dev(cwd, defaultFlags(flags, { dbPush: true, prisma: true, server: true, ui: true }));
   }
 
   if (command === 'build') {
@@ -95,7 +91,7 @@ export async function cli(cwd: string, argv: string[]) {
   }
 
   if (command === 'prisma') {
-    return prisma(cwd, argv.slice(1), defaultFlags(flags, { frozen: false }).frozen);
+    return prisma(cwd, argv.slice(1), Boolean(flags.frozen));
   }
 
   if (command === 'telemetry') return telemetry(cwd, argv[1]);

@@ -129,17 +129,18 @@ We strongly recommend enabling migrations if you are going to run your app in pr
 
 ### Resetting the database
 
-From time to time, in development you may want to reset the database and recreate it from scratch. You can do this by passing the `--reset-db` flag:
+From time to time, in development you may want to reset the database and recreate it from scratch.
+You can do this by using Prisma:
 
 ```bash
-$ keystone dev --reset-db
+$ keystone prisma db push --force-reset
 ```
 
 {% hint kind="error" %}
 Doing this will destroy your database, including all data
 {% /hint %}
 
-This is mainly useful early in a project's development lifecycle, when you want to test database initialisation scripts or create a fresh set of test data.
+This is typically useful early in a project's development lifecycle, when you want to test database initialisation scripts or create a fresh set of test data.
 
 ## postinstall
 
