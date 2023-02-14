@@ -79,6 +79,8 @@ export const lists: Lists = {
         update: isAdminOrSameUserFilter,
       },
       item: {
+        // this is redundant as ^filter.update should prevent unauthorised updates
+        //   we include it anyway as a demonstration
         update: isAdminOrSameUser,
       },
     },
