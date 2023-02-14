@@ -6,13 +6,13 @@ import { localImageAssetsAPI } from './local';
 import { s3ImageAssetsAPI } from './s3';
 import { streamToBuffer } from './utils';
 
-async function getImageMetadataFromBuffer(buffer: Buffer)  {
-  const fileType = await ((await import('file-type')).fileTypeFromBuffer)(buffer);
+async function getImageMetadataFromBuffer(buffer: Buffer) {
+  const fileType = await (await import('file-type')).fileTypeFromBuffer(buffer);
   if (!fileType) {
     throw new Error('File type not found');
   }
 
-  const { ext: extension } = await fileType;
+  const { ext: extension } = fileType;
   if (extension !== 'jpg' && extension !== 'png' && extension !== 'webp' && extension !== 'gif') {
     throw new Error(`${extension} is not a supported image type`);
   }
