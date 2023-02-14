@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/test-projects-crud-notifications",
-  "version": "1.0.5",
+  "version": "0.0.0-rc-20230214225011",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -9,7 +9,7 @@
     "build": "keystone build"
   },
   "dependencies": {
-    "@keystone-6/core": "^4.0.0"
+    "@keystone-6/core": "0.0.0-rc-20230214225011"
   },
   "devDependencies": {
     "typescript": "~4.9.4"
