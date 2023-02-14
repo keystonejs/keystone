@@ -95,7 +95,10 @@
       "prisma-utils",
       "scripts/*"
     ],
-    "exports": true
+    "exports": true,
+    "___experimentalFlags_WILL_CHANGE_IN_PATCH": {
+      "keepDynamicImportAsDynamicImportInCommonJS": true
+    }
   },
   "manypkg": {
     "defaultBranch": "main"
