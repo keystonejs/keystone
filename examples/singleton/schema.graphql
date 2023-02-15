@@ -5,7 +5,7 @@ type Settings {
   id: ID!
   websiteName: String
   copyrightText: String
-  highlightedPosts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0): [Post!]
+  highlightedPosts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   highlightedPostsCount(where: PostWhereInput! = {}): Int
 }
 
@@ -187,10 +187,10 @@ type Mutation {
 }
 
 type Query {
-  manySettings(where: SettingsWhereInput! = {id: {equals: 1}}, orderBy: [SettingsOrderByInput!]! = [], take: Int, skip: Int! = 0): [Settings!]
+  manySettings(where: SettingsWhereInput! = {id: {equals: 1}}, orderBy: [SettingsOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SettingsWhereUniqueInput): [Settings!]
   settings(where: SettingsWhereUniqueInput! = {id: 1}): Settings
   manySettingsCount(where: SettingsWhereInput! = {id: {equals: 1}}): Int
-  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0): [Post!]
+  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   post(where: PostWhereUniqueInput!): Post
   postsCount(where: PostWhereInput! = {}): Int
   keystone: KeystoneMeta!

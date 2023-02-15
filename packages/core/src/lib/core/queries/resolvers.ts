@@ -108,7 +108,7 @@ export async function findOne(
 }
 
 export async function findMany(
-  { where, take, skip, orderBy: rawOrderBy }: FindManyArgsValue,
+  { where, take, skip, orderBy: rawOrderBy, cursor }: FindManyArgsValue,
   list: InitialisedList,
   context: KeystoneContext,
   info: GraphQLResolveInfo,
@@ -145,6 +145,7 @@ export async function findMany(
       orderBy,
       take: take ?? undefined,
       skip,
+      cursor: cursor ?? undefined,
     })
   );
 
