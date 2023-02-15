@@ -152,9 +152,9 @@ export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo>({
     ..._config,
     ui: { ..._config.ui, isDisabled: true },
   });
-  const { graphQLSchema, getKeystone } = createSystem(config);
 
-  const artifacts = await getCommittedArtifacts(graphQLSchema, config);
+  const { graphQLSchema, getKeystone } = createSystem(config);
+  const artifacts = await getCommittedArtifacts(config, graphQLSchema);
 
   if (lastWrittenSchema !== artifacts.prisma) {
     if (!lastWrittenSchema) {

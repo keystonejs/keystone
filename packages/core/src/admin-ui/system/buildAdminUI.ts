@@ -2,7 +2,7 @@
 const { env } = process;
 
 export async function buildAdminUI(projectAdminPath: string) {
-  let prevNodeEnv = env.NODE_ENV;
+  const prevNodeEnv = env.NODE_ENV;
   // Next does a broken build unless we set NODE_ENV to production
   // @ts-ignore
   env.NODE_ENV = 'production';

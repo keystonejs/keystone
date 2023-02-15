@@ -1,13 +1,14 @@
 import esbuild, { BuildOptions } from 'esbuild';
+import { getBuiltKeystoneConfigurationPath } from '../../artifacts';
 import { KeystoneConfig } from '../../types';
-import { getBuiltConfigPath } from '../../scripts/utils';
 import { initConfig } from './initConfig';
 
 export function getEsbuildConfig(cwd: string): BuildOptions {
   return {
-    entryPoints: ['./keystone'],
+    entryPoints: ['./keystone.ts'],
     absWorkingDir: cwd,
     bundle: true,
+    // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
     outfile: '.keystone/config.js',
     format: 'cjs',
     platform: 'node',
@@ -35,11 +36,13 @@ export function getEsbuildConfig(cwd: string): BuildOptions {
   };
 }
 
-export function loadBuiltConfig(cwd: string): KeystoneConfig {
-  return initConfig(require(getBuiltConfigPath(cwd)).default);
+export function loadBuiltConfig(path: string): KeystoneConfig {
+  return initConfig(require(path).default);
 }
 
 export async function loadConfigOnce(cwd: string): Promise<KeystoneConfig> {
   await esbuild.build(getEsbuildConfig(cwd));
-  return loadBuiltConfig(cwd);
+  // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
+  const builtConfigPath = getBuiltKeystoneConfigurationPath(cwd);
+  return loadBuiltConfig(builtConfigPath);
 }

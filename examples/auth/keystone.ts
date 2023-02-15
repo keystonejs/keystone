@@ -1,3 +1,4 @@
+import { join } from 'path';
 import { config } from '@keystone-6/core';
 import { statelessSessions } from '@keystone-6/core/session';
 import { createAuth } from '@keystone-6/auth';
@@ -59,6 +60,12 @@ export default withAuth(
     db: {
       provider: 'sqlite',
       url: process.env.DATABASE_URL || 'file:./keystone-example.db',
+
+      // WARNING: this is only needed for examples, dont do this
+      prismaPath: (cwd) => join(cwd, 'node_modules/.prisma/client/'),
+      extendPrismaSchema: (schema: any) => {
+        return schema.replace(/(generator [^}]+)}/g, '$1output = "node_modules/.prisma/client"\n}');
+      }
     },
     lists,
     session,

@@ -361,7 +361,6 @@ export async function seed<T extends Record<keyof T, Record<string, unknown>[]>>
 export const getPrismaSchema = async (_config: KeystoneConfig) => {
   const config = initConfig(_config);
   const { graphQLSchema } = createSystem(config);
-
-  const artifacts = await getCommittedArtifacts(graphQLSchema, config);
+  const artifacts = await getCommittedArtifacts(config, graphQLSchema);
   return artifacts.prisma;
 };

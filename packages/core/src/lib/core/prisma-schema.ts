@@ -212,7 +212,6 @@ export function printPrismaSchema(
     ``,
     `generator client {`,
     `provider = "prisma-client-js"`,
-    `output = "node_modules/.prisma/client"`,
     ...(prismaPreviewFeatures?.length
       ? [`previewFeatures = ["${prismaPreviewFeatures.join('","')}"]`]
       : []),

@@ -15,12 +15,13 @@ async function generateArtifactsForProjectDir(projectDir: string) {
   try {
     const config = await loadConfig(projectDir);
     const { graphQLSchema } = createSystem(config);
+
     if (mode === 'validate') {
-      await validateCommittedArtifacts(graphQLSchema, config, projectDir);
+      await validateCommittedArtifacts(projectDir, config, graphQLSchema);
     } else {
-      await generateCommittedArtifacts(graphQLSchema, config, projectDir);
+      await generateCommittedArtifacts(projectDir, config, graphQLSchema);
     }
-    await generateNodeModulesArtifacts(graphQLSchema, config, projectDir);
+    await generateNodeModulesArtifacts(projectDir, config, graphQLSchema);
   } catch (err) {
     throw new Error(
       `An error occurred generating/validating the artifacts for the project at ${projectDir}:\n${format(
