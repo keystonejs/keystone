@@ -97,7 +97,7 @@ test('the generated schema includes schema updates', async () => {
         }
         
         type Query {
-          somethings(where: SomethingWhereInput! = {}, orderBy: [SomethingOrderByInput!]! = [], take: Int, skip: Int! = 0): [Something!]
+          somethings(where: SomethingWhereInput! = {}, orderBy: [SomethingOrderByInput!]! = [], take: Int, skip: Int! = 0,  cursor: SomethingWhereUniqueInput): [Something!]
           something(where: SomethingWhereUniqueInput!): Something
           somethingsCount(where: SomethingWhereInput! = {}): Int
           keystone: KeystoneMeta!
