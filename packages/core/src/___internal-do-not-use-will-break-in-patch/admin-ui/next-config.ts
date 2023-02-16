@@ -20,7 +20,6 @@ export const config = withPreconstruct({
       config.externals = [
         ...config.externals,
         /@keystone-6\/core(?!\/___internal-do-not-use-will-break-in-patch\/admin-ui\/id-field-view|\/fields\/types\/[^\/]+\/views)/,
-        '.prisma/client',
       ];
       // we need to set these to true so that when __dirname/__filename is used
       // to resolve the location of field views, we will get a path that we can use
