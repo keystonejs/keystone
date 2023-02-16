@@ -1,3 +1,8 @@
+<a href="https://keystonejs.com/">
+  <img src="assets/banner.svg" alt="Keystone: The superpowered CMS for developers">
+  </br>
+  </br>
+</a>
 <p>
   <a aria-label="NPM version" href="https://www.npmjs.com/package/@keystone-6/core">
     <img alt="" src="https://img.shields.io/npm/v/@keystone-6/core.svg?style=for-the-badge&labelColor=0869B8">
