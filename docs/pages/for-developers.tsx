@@ -425,7 +425,7 @@ export default function ForDevelopers() {
             <li>
               <Button
                 as="a"
-                href="https://github.com/keystonejs/keystone/tree/main/examples/extend-graphql-schema"
+                href="https://github.com/keystonejs/keystone/tree/main/examples/extend-graphql-schema-graphql-tools"
                 target="_blank"
                 rel="noopener noreferrer"
                 look="soft"
