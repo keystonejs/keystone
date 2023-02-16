@@ -44,8 +44,7 @@ describe('cursor pagination basic tests', () => {
       },
       query: 'id posts { id order }',
     });
-    // sort posts just to be safe - maybe they are created concurrently
-    posts = result.posts.sort((a: { order: number }, b: { order: number }) => a.order - b.order);
+    posts = result.posts;
   });
   afterAll(async () => {
     await testEnv.disconnect();
@@ -55,6 +54,7 @@ describe('cursor pagination basic tests', () => {
     const { errors: errors1, data: data1 } = await context.graphql.raw({
       query: `query { posts(
           take: 6,\
+          orderBy: { order: asc }\
         ) { id order }\
       }`,
     });
@@ -71,6 +71,7 @@ describe('cursor pagination basic tests', () => {
           take: 6,\
           skip: 1,\
           cursor: { id: "${posts[5].id}"}\
+          orderBy: { order: asc }\
         ) { id order }\
       }`,
     });
@@ -85,6 +86,7 @@ describe('cursor pagination basic tests', () => {
           take: 6,\
           skip: 1,\
           cursor: { id: "${posts[11].id}"}\
+          orderBy: { order: asc }\
         ) { id order }\
       }`,
     });
@@ -116,8 +118,7 @@ describe('cursor pagination stability', () => {
       },
       query: 'id posts { id order }',
     });
-    // sort posts just to be safe - maybe they are created concurrently
-    posts = result.posts.sort((a: { id: string }, b: { id: string }) => a.id.localeCompare(b.id));
+    posts = result.posts;
   });
   afterEach(async () => {
     await testEnv.disconnect();
@@ -127,7 +128,7 @@ describe('cursor pagination stability', () => {
     const { errors: errors1, data: data1 } = await context.graphql.raw({
       query: `query { posts(\
           take: 6,\
-          orderBy: { id: desc }\
+          orderBy: { order: desc }\
         ) { id order }\
       }`,
     });
