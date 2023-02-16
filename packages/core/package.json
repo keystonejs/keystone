@@ -6,10 +6,6 @@
   "main": "dist/keystone-6-core.cjs.js",
   "module": "dist/keystone-6-core.esm.js",
   "exports": {
-    "./next": {
-      "module": "./next/dist/keystone-6-core-next.esm.js",
-      "default": "./next/dist/keystone-6-core-next.cjs.js"
-    },
     ".": {
       "module": "./dist/keystone-6-core.esm.js",
       "default": "./dist/keystone-6-core.cjs.js"
@@ -310,7 +306,6 @@
     "entrypoints": [
       "index.ts",
       "system.ts",
-      "next.ts",
       "___internal-do-not-use-will-break-in-patch/load-config.ts",
       "___internal-do-not-use-will-break-in-patch/artifacts.ts",
       "___internal-do-not-use-will-break-in-patch/admin-ui/pages/*/index.tsx",
