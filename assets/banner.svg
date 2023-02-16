@@ -1,0 +1,103 @@
+<svg fill="none" viewBox="0 0 830 265" xmlns="http://www.w3.org/2000/svg">
+  <foreignObject width="100%" height="100%">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>
+        .container {
+          font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica,
+            Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+          display: flex;
+          flex-direction: column;
+          height: 265px;
+          width: 100%;
+          margin: 0;
+          background: #111827;
+          border-radius: 12px;
+          color: white;
+          justify-content: space-between;
+          position: absolute;
+        }
+
+        h1 {
+          font-size: 52px;
+          line-height: 1;
+          margin: 0;
+          font-weight: 600;
+          letter-spacing: 1px;
+        }
+
+        p {
+          margin: 0;
+        }
+
+        .top {
+          margin-top: 40px;
+          margin-left: 40px;
+        }
+
+        .bottom {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 40px;
+          margin-left: 40px;
+          margin-right: 40px;
+        }
+
+        .tagline {
+          margin-top: 16px;
+          color: #b8babe;
+          font-weight: 300;
+          font-size: 17px;
+        }
+
+        .emoji {
+          font-size: 80px;
+          margin-bottom: -20px;
+        }
+      </style>
+      <div class="container">
+        <div class="top">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="102"
+            height="32"
+            fill="none"
+          >
+            <title>Thinkmill</title>
+            <path
+              fill="#ED0000"
+              fill-rule="evenodd"
+              d="M15.95 31.95c8.81 0 15.95-7.16 15.95-15.98a15.96 15.96 0 1 0-15.95 15.98Z"
+              clip-rule="evenodd" /><path
+              fill="#fff"
+              fill-rule="evenodd"
+              d="M10.93 17.99c0 .77.25 1.08.93 1.08.18 0 .37-.03.47-.07v1.2c-.23.08-.58.13-.86.13-1.45 0-2.08-.6-2.08-2.11v-3.67H8.24v-1.18h1.15v-1.71h1.54v1.71h1.34v1.18h-1.34V18Zm8.19-3.53a2.42 2.42 0 0 1 2.2-1.25c1.46 0 2.35.95 2.35 2.8v4.24h-1.54v-4.09c0-1.22-.47-1.7-1.24-1.7-.9 0-1.45.77-1.45 2.08v3.7H17.9V16c0-.97-.43-1.54-1.23-1.54-.92 0-1.44.78-1.44 2.1v3.69h-1.54v-6.88h1.47v.83h.03c.48-.66 1.1-.99 1.9-.99.95 0 1.68.44 2.03 1.25ZM48.6 12.08v-1.6h-9.05v1.6h3.6v9.39H45v-9.39h3.61Zm2.88 2.47v-4.07h-1.76v10.99h1.76v-4.35c0-1.5.79-2.26 1.79-2.26.99 0 1.59.56 1.59 1.96v4.65h1.76v-4.8c0-2.15-1.08-3.23-2.86-3.23-.88 0-1.7.36-2.25 1.11h-.03Zm8.9-2.39v-1.68h-1.75v1.68h1.76Zm0 9.3v-7.83h-1.75v7.84h1.76Zm6.14-8.02a2.8 2.8 0 0 0-2.34 1.2h-.03v-1.01h-1.67v7.84h1.76v-4.35c0-1.5.79-2.26 1.79-2.26.99 0 1.59.56 1.59 1.96v4.65h1.76v-4.8c0-2.15-1.08-3.23-2.86-3.23Zm11.93 8.03-3.6-4.26 3.23-3.58h-2.05l-2.85 3.2h-.03v-6.35h-1.76v10.99h1.76v-3.8h.03l3.05 3.8h2.22Zm9.39-8.03c-1.19 0-1.94.53-2.51 1.42-.4-.92-1.24-1.42-2.32-1.42-.92 0-1.62.37-2.17 1.13h-.03v-.94h-1.68v7.84h1.76v-4.2c0-1.51.6-2.4 1.65-2.4.9 0 1.4.64 1.4 1.75v4.85h1.76v-4.23c0-1.5.61-2.38 1.64-2.38.88 0 1.42.56 1.42 1.95v4.66h1.76v-4.83c0-2.12-1.02-3.2-2.68-3.2Zm6.46-1.28v-1.68h-1.76v1.68h1.76Zm0 9.3v-7.83h-1.76v7.84h1.76Zm3.85 0V10.49h-1.76v10.99h1.76Zm3.85 0V10.49h-1.76v10.99H102Z"
+              clip-rule="evenodd"
+          /></svg>
+        </div>
+        <div class="bottom">
+          <div class="left">
+            <h1>Keystone</h1>
+            <p class="tagline">The superpowered CMS for developers</p>
+          </div>
+          <div class="right">
+            <p class="emoji">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="85"
+                height="86"
+                fill="none"
+                ><path fill="#fff" d="M12.14 11.77h57.91v60.71H12.14z" /><path
+                  fill="#166BFF"
+                  fill-rule="evenodd"
+                  d="M15.94.56C7.14.56 0 7.7 0 16.5v53.12c0 8.8 7.14 15.94 15.94 15.94h53.12c8.8 0 15.94-7.13 15.94-15.94V16.5C85 7.7 77.86.56 69.06.56H15.94ZM35.3 52.94v12.7H23.89V20.72H35.3v19.3h.6l14.93-19.3h12.27L47.57 40.55l16.44 25.09H50.59L39.26 47.93l-3.95 5Z"
+                  clip-rule="evenodd"
+              /></svg>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </foreignObject>
+</svg>
