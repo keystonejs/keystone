@@ -1,12 +1,11 @@
 import { getContext } from '@keystone-6/core/context';
 import config from './keystone';
-import * as PrismaModule from '.prisma/client';
+import * as PrismaModule from '.myprisma/client';
 
 async function main() {
   const context = getContext(config, PrismaModule);
 
   console.log('(script.ts)', 'connect');
-
   await config.db.onConnect?.(context);
 
   const run = (Math.random() * 1e5) | 0;

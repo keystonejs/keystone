@@ -1,6 +1,10 @@
 import execa from 'execa';
 import { createSystem } from '../lib/createSystem';
-import { getBuiltKeystoneConfigurationPath, generateNodeModulesArtifacts, validateCommittedArtifacts } from '../artifacts';
+import {
+  getBuiltKeystoneConfigurationPath,
+  generateNodeModulesArtifacts,
+  validateCommittedArtifacts,
+} from '../artifacts';
 import { loadConfigOnce, loadBuiltConfig } from '../lib/config/loadConfig';
 import { KeystoneConfig } from './../types/config/index';
 

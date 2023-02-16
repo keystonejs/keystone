@@ -3,7 +3,7 @@ import { resetDatabase } from '@keystone-6/core/testing';
 import { getContext } from '@keystone-6/core/context';
 import baseConfig from '../keystone';
 import { Context } from '.keystone/types';
-import * as PrismaModule from '.prisma/client';
+import * as PrismaModule from '.myprisma/client';
 
 const FAKE_ID = 'cinjfgbkjnfg';
 

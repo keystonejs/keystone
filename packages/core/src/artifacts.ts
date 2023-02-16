@@ -8,12 +8,7 @@ import { confirmPrompt, shouldPrompt } from './lib/prompts';
 import { printGeneratedTypes } from './lib/schema-type-printer';
 import { ExitError } from './scripts/utils';
 import { initialiseLists } from './lib/core/types-for-lists';
-import { printPrismaSchema } from './lib/core/prisma-schema';
-
-type CommittedArtifacts = {
-  graphql: string;
-  prisma: string;
-};
+import { printPrismaSchema } from './lib/core/prisma-schema-printer';
 
 export function getFormattedGraphQLSchema(schema: string) {
   return (
@@ -24,18 +19,17 @@ export function getFormattedGraphQLSchema(schema: string) {
   );
 }
 
-export async function getCommittedArtifacts(
-  config: KeystoneConfig,
-  graphQLSchema: GraphQLSchema,
-): Promise<CommittedArtifacts> {
+export async function getCommittedArtifacts(config: KeystoneConfig, graphQLSchema: GraphQLSchema) {
   const lists = initialiseLists(config);
   const prismaSchema = printPrismaSchema(
     lists,
+    config.db.prismaPath,
     config.db.provider,
     config.db.prismaPreviewFeatures,
     config.db.additionalPrismaDatasourceProperties,
     config.db.extendPrismaSchema
   );
+
   return {
     graphql: getFormattedGraphQLSchema(printSchema(graphQLSchema)),
     prisma: await formatPrismaSchema(prismaSchema),
@@ -81,7 +75,7 @@ async function readFileButReturnNothingIfDoesNotExist(filename: string) {
 
 // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
 export function getBuiltKeystoneConfigurationPath(cwd: string) {
-  return path.join(cwd, '.keystone/config.js')
+  return path.join(cwd, '.keystone/config.js');
 }
 
 export function getSystemPaths(cwd: string, config: KeystoneConfig) {
@@ -89,19 +83,19 @@ export function getSystemPaths(cwd: string, config: KeystoneConfig) {
     config: getBuiltKeystoneConfigurationPath(cwd),
     admin: path.join(cwd, '.keystone/admin'),
     keystone: path.join(cwd, 'node_modules/.keystone'),
-    prisma: config.db.prismaPath?.(cwd) ?? '@prisma/client',
+    prisma: config.db.prismaPath ? path.join(cwd, config.db.prismaPath) : '@prisma/client',
     schema: {
       // types: // TODO
       prisma: path.join(cwd, 'schema.prisma'),
       graphql: path.join(cwd, 'schema.graphql'),
-    }
+    },
   };
 }
 
 export async function validateCommittedArtifacts(
   cwd: string,
   config: KeystoneConfig,
-  graphQLSchema: GraphQLSchema,
+  graphQLSchema: GraphQLSchema
 ) {
   const paths = getSystemPaths(cwd, config);
   const artifacts = await getCommittedArtifacts(config, graphQLSchema);
@@ -150,7 +144,7 @@ export async function validateCommittedArtifacts(
 export async function generateCommittedArtifacts(
   cwd: string,
   config: KeystoneConfig,
-  graphQLSchema: GraphQLSchema,
+  graphQLSchema: GraphQLSchema
 ) {
   const paths = getSystemPaths(cwd, config);
   const artifacts = await getCommittedArtifacts(config, graphQLSchema);
@@ -165,7 +159,7 @@ export async function generateCommittedArtifacts(
 export async function generateNodeModulesArtifactsWithoutPrismaClient(
   cwd: string,
   config: KeystoneConfig,
-  graphQLSchema: GraphQLSchema,
+  graphQLSchema: GraphQLSchema
 ) {
   const paths = getSystemPaths(cwd, config);
   const lists = initialiseLists(config);
@@ -182,7 +176,7 @@ export async function generateNodeModulesArtifactsWithoutPrismaClient(
 export async function generateNodeModulesArtifacts(
   cwd: string,
   config: KeystoneConfig,
-  graphQLSchema: GraphQLSchema,
+  graphQLSchema: GraphQLSchema
 ) {
   const paths = getSystemPaths(cwd, config);
 

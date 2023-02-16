@@ -1,6 +1,7 @@
 import { createAuth } from '@keystone-6/auth';
 import { config } from '@keystone-6/core';
 import { statelessSessions } from '@keystone-6/core/session';
+import { fixPrismaPath } from '../example-utils';
 import { permissionsList } from './schemas/fields';
 import { Role } from './schemas/Role';
 import { OrderItem } from './schemas/OrderItem';
@@ -49,6 +50,9 @@ export default withAuth(
     db: {
       provider: 'sqlite',
       url: databaseURL,
+
+      // WARNING: this is only needed for our monorepo examples, dont do this
+      ...fixPrismaPath,
     },
     lists: {
       // Schema items go in here

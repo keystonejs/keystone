@@ -47,9 +47,7 @@ export const start = async (
   console.log(`✅ GraphQL API ready`);
   if (!config.ui?.isDisabled || ui) {
     console.log('✨ Preparing Admin UI Next.js app');
-    expressServer.use(
-      await createAdminUIMiddleware(config, keystone.context, false, paths.admin)
-    );
+    expressServer.use(await createAdminUIMiddleware(config, keystone.context, false, paths.admin));
     console.log(`✅ Admin UI ready`);
   }
 

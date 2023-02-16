@@ -29,7 +29,7 @@ import {
 import { ExitError } from '../utils';
 import { KeystoneConfig } from '../../types';
 import { initialiseLists } from '../../lib/core/types-for-lists';
-import { printPrismaSchema } from '../../lib/core/prisma-schema';
+import { printPrismaSchema } from '../../lib/core/prisma-schema-printer';
 import { AdminMetaRootVal } from '../../admin-ui/system/createAdminMeta';
 import { Flags } from './../cli';
 
@@ -153,6 +153,7 @@ export async function dev(
     const initialisedLists = initialiseLists(config);
     const originalPrismaSchema = printPrismaSchema(
       initialisedLists,
+      config.db.prismaPath,
       config.db.provider,
       config.db.prismaPreviewFeatures,
       config.db.additionalPrismaDatasourceProperties,
@@ -178,6 +179,7 @@ export async function dev(
         if (prisma) {
           const newPrismaSchema = printPrismaSchema(
             initialiseLists(newConfig),
+            config.db.prismaPath,
             newConfig.db.provider,
             newConfig.db.prismaPreviewFeatures,
             newConfig.db.additionalPrismaDatasourceProperties,

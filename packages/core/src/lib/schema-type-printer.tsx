@@ -120,7 +120,10 @@ function printInterimMultiFieldType({
     `  ${fieldKey}: {`,
     ...Object.keys(fields).map(subFieldKey => {
       const prismaKey = `${fieldKey}_${subFieldKey}`;
-      return '  ' + printInterimFieldType({ prismaPath, listKey, fieldKey: subFieldKey, prismaKey, operation });
+      return (
+        '  ' +
+        printInterimFieldType({ prismaPath, listKey, fieldKey: subFieldKey, prismaKey, operation })
+      );
     }),
     `  };`,
   ].join('\n');
@@ -147,13 +150,23 @@ function printInterimType<L extends InitialisedList>(
         });
       }
 
-      return printInterimFieldType({ prismaPath, listKey, fieldKey, prismaKey: fieldKey, operation });
+      return printInterimFieldType({
+        prismaPath,
+        listKey,
+        fieldKey,
+        prismaKey: fieldKey,
+        operation,
+      });
     }),
     `};`,
   ].join('\n');
 }
 
-function printListTypeInfo<L extends InitialisedList>(prismaPath: string, listKey: string, list: L) {
+function printListTypeInfo<L extends InitialisedList>(
+  prismaPath: string,
+  listKey: string,
+  list: L
+) {
   // prettier-ignore
   const {
     whereInputName,

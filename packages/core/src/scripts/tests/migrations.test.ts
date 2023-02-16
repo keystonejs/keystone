@@ -18,7 +18,7 @@ setSkipWatching();
 const dbUrl = 'file:./app.db';
 
 function getPrismaClient(cwd: string) {
-  return new (require(path.join(cwd, 'node_modules/.prisma/client/')).PrismaClient)({
+  return new (require(path.join(cwd, 'node_modules/.testprisma/client')).PrismaClient)({
     datasources: { sqlite: { url: dbUrl } },
   });
 }

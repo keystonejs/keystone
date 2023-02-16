@@ -5,7 +5,7 @@ import { initConfig } from './initConfig';
 
 export function getEsbuildConfig(cwd: string): BuildOptions {
   return {
-    entryPoints: ['./keystone.ts'],
+    entryPoints: ['./keystone'],
     absWorkingDir: cwd,
     bundle: true,
     // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig

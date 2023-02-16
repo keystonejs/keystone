@@ -1,7 +1,7 @@
 import { getContext } from '@keystone-6/core/context';
 import config from '../../keystone';
 import { Context } from '.keystone/types';
-import * as PrismaModule from '.prisma/client';
+import * as PrismaModule from '.myprisma/client';
 
 // Making sure multiple prisma clients are not created during hot reloading
 export const keystoneContext: Context =

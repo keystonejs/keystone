@@ -2,6 +2,7 @@ import { config } from '@keystone-6/core';
 import { storedSessions } from '@keystone-6/core/session';
 import { createAuth } from '@keystone-6/auth';
 import { createClient } from '@redis/client';
+import { fixPrismaPath } from '../example-utils';
 import { lists } from './schema';
 
 // createAuth configures signin functionality based on the config below. Note this only implements
@@ -54,6 +55,9 @@ export default withAuth(
       async onConnect() {
         await redis.connect();
       },
+
+      // WARNING: this is only needed for our monorepo examples, dont do this
+      ...fixPrismaPath,
     },
     lists,
     // We add our session configuration to the system here.

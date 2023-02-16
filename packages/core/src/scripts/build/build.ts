@@ -16,6 +16,7 @@ export async function build(
   const config = await loadConfigOnce(cwd);
   const { graphQLSchema, adminMeta } = createSystem(config);
 
+  const paths = getSystemPaths(cwd, config);
   if (prisma) {
     if (frozen) {
       await validateCommittedArtifacts(cwd, config, graphQLSchema);
@@ -26,12 +27,11 @@ export async function build(
     }
     // FIXME: This needs to generate clients for the correct build target using binaryTarget
     // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#binarytargets-options
+
     await generateNodeModulesArtifacts(cwd, config, graphQLSchema);
   }
 
   if (config.ui?.isDisabled || !ui) return;
-
-  const paths = getSystemPaths(cwd, config);
 
   console.log('✨ Generating Admin UI code');
   await generateAdminUI(config, graphQLSchema, adminMeta, paths.admin, false);

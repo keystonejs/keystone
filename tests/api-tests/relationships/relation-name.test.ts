@@ -34,7 +34,6 @@ datasource ${dbProvider} {
 
 generator client {
   provider = "prisma-client-js"
-  output   = "node_modules/.prisma/client"
 }
 
 model A {
@@ -80,7 +79,6 @@ datasource ${dbProvider} {
 
 generator client {
   provider = "prisma-client-js"
-  output   = "node_modules/.prisma/client"
 }
 
 model A {
@@ -126,7 +124,6 @@ datasource ${dbProvider} {
 
 generator client {
   provider = "prisma-client-js"
-  output   = "node_modules/.prisma/client"
 }
 
 model A {
