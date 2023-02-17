@@ -75,14 +75,19 @@ export function makeCreateContext({
       return result.data as any;
     };
 
-    async function withRequest(req: IncomingMessage, res?: ServerResponse) {
-      contextToReturn.req = req;
-      contextToReturn.res = res;
-      if (!config.session) {
-        return contextToReturn;
+    async function withRequest(newReq: IncomingMessage, newRes?: ServerResponse) {
+      const newContext = createContext({
+        session,
+        sudo,
+        req: newReq,
+        res: newRes,
+      });
+
+      if (config.session) {
+        newContext.session = await config.session.get({ context: newContext });
       }
-      contextToReturn.session = await config.session.get({ context: contextToReturn });
-      return createContext({ session: contextToReturn.session, sudo, req, res });
+
+      return newContext;
     }
     const dbAPI: KeystoneContext['db'] = {};
     const itemAPI: KeystoneContext['query'] = {};
