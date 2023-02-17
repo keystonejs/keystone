@@ -44,7 +44,8 @@ describe('cursor pagination basic tests', () => {
       },
       query: 'id posts { id order }',
     });
-    posts = result.posts;
+    // posts will be added in random sequence, so need to sort by order
+    posts = result.posts.sort((a: { order: number }, b: { order: number }) => a.order - b.order);
   });
   afterAll(async () => {
     await testEnv.disconnect();
@@ -118,7 +119,8 @@ describe('cursor pagination stability', () => {
       },
       query: 'id posts { id order }',
     });
-    posts = result.posts;
+    // posts will be added in random sequence, so need to sort by order
+    posts = result.posts.sort((a: { order: number }, b: { order: number }) => a.order - b.order);
   });
   afterEach(async () => {
     await testEnv.disconnect();
@@ -149,7 +151,7 @@ describe('cursor pagination stability', () => {
           take: 6,\
           skip: 1,\
           cursor: { id: "${posts[9].id}"},\
-          orderBy: { id: desc }\
+          orderBy: { order: desc }\
         ) { id order }\
       }`,
     });
@@ -168,7 +170,7 @@ describe('cursor pagination stability', () => {
         take: 6,\
         skip: 1,\
         cursor: { id: "${posts[3].id}"},\
-        orderBy: { id: desc }\
+        orderBy: { order: desc }\
         ) { id order }\
       }`,
     });
