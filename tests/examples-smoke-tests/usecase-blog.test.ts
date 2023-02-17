@@ -1,9 +1,7 @@
 import { Browser, Page } from 'playwright';
-import { exampleProjectTests, initFirstItemTest, loadIndex } from './utils';
+import { exampleProjectTests, loadIndex } from './utils';
 
-// this is disabled currently because it's currently failing and we want to get the tests in without being blocked on this
-
-exampleProjectTests('ecommerce', browserType => {
+exampleProjectTests('usecase-blog', browserType => {
   let browser: Browser = undefined as any;
   let page: Page = undefined as any;
   beforeAll(async () => {
@@ -11,7 +9,10 @@ exampleProjectTests('ecommerce', browserType => {
     page = await browser.newPage();
     await loadIndex(page);
   });
-  initFirstItemTest(() => page);
+  test('Load list', async () => {
+    await Promise.all([page.waitForNavigation(), page.click('h3:has-text("Authors")')]);
+    await page.waitForSelector('a:has-text("Create Author")');
+  });
   afterAll(async () => {
     await browser.close();
   });

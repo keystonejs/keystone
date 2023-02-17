@@ -1,7 +1,7 @@
 import { Browser, Page } from 'playwright';
-import { exampleProjectTests, loadIndex } from './utils';
+import { exampleProjectTests, initFirstItemTest, loadIndex } from './utils';
 
-exampleProjectTests('blog', browserType => {
+exampleProjectTests('usecase-roles', browserType => {
   let browser: Browser = undefined as any;
   let page: Page = undefined as any;
   beforeAll(async () => {
@@ -9,10 +9,7 @@ exampleProjectTests('blog', browserType => {
     page = await browser.newPage();
     await loadIndex(page);
   });
-  test('Load list', async () => {
-    await Promise.all([page.waitForNavigation(), page.click('h3:has-text("Authors")')]);
-    await page.waitForSelector('a:has-text("Create Author")');
-  });
+  initFirstItemTest(() => page);
   afterAll(async () => {
     await browser.close();
   });
