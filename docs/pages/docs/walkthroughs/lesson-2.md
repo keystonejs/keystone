@@ -3,7 +3,7 @@ title: "Lesson 2: Creating relationships"
 description: "Learn Keystone: Lesson 2"
 ---
 
-Learn how to connect two content types to each another and configure how you make those connections in Admin UI.
+Learn how to connect two content types to each other and configure how you make those connections in Admin UI.
 
 ## Where we left off
 
