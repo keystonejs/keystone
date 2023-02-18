@@ -187,24 +187,22 @@ jobs:
         test:
           [
             'auth.test.ts',
-            'basic.test.ts',
-            'blog.test.ts',
-            'document-field.test.ts',
+            'custom-admin-ui-logo.test.ts',
+            'custom-admin-ui-navigation.test.ts',
+            'custom-admin-ui-pages.test.ts',
+            'custom-field-view.test.ts',
+            'custom-field.test.ts',
             'default-values.test.ts',
+            'document-field.test.ts',
+            'extend-express-app.test.ts',
             'extend-graphql-schema-graphql-tools.test.ts',
             'extend-graphql-schema-graphql-ts.test.ts',
             'extend-graphql-schema-nexus.test.ts',
-            'json.test.ts',
-            'rest-api.test.ts',
-            'roles.test.ts',
-            'task-manager.test.ts',
             'testing.test.ts',
-            'with-auth.test.ts',
-            'custom-field-view.test.ts',
-            'custom-field.test.ts',
-            'custom-admin-ui-pages.test.ts',
-            'custom-admin-ui-logo.test.ts',
-            'custom-admin-ui-navigation.test.ts',
+            'usecase-blog.test.ts',
+            'usecase-roles.test.ts',
+            'usecase-task-manager.test.ts',
+            'virtual-field.test.ts'
           ]
       fail-fast: false
     steps:
