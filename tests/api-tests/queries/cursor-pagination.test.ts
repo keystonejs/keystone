@@ -10,7 +10,7 @@ const config = apiTestConfig({
     Post: list({
       access: allowAll,
       fields: {
-        order: integer(),
+        order: integer({ isIndexed: 'unique' }),
         author: relationship({ ref: 'User.posts', many: true }),
       },
     }),
@@ -51,51 +51,115 @@ describe('cursor pagination basic tests', () => {
     await testEnv.disconnect();
   });
 
-  test('basic cursor pagination forward', async () => {
-    const { errors: errors1, data: data1 } = await context.graphql.raw({
+  test('basic cursor pagination test (graphql api)', async () => {
+    const { errors, data } = await context.graphql.raw({
       query: `query { posts(
           take: 6,\
+          skip: 1,\
+          cursor: { order: 5 }\
           orderBy: { order: asc }\
         ) { id order }\
       }`,
     });
+    expect(errors).toEqual(undefined);
+    let currentOrder = 6;
+    expect(data).toEqual({
+      posts: Array.from(Array(6).keys()).map(_ => posts[currentOrder++]),
+    });
+  });
 
+  test('basic cursor pagination test (query api)', async () => {
+    const result1 = await context.query.Post.findMany({
+      take: 6,
+      skip: 1,
+      cursor: { order: 5 },
+      orderBy: { order: 'asc' },
+      query: 'id order',
+    });
+    expect(result1).toBeDefined();
+    expect(result1.length).toBe(6);
+    let currentOrder = 6;
+    expect(result1).toEqual(Array.from(Array(6).keys()).map(_ => posts[currentOrder++]));
+  });
+
+  test('basic cursor pagination test (db api)', async () => {
+    const result1 = await context.db.Post.findMany({
+      take: 6,
+      skip: 1,
+      cursor: { order: 5 },
+      orderBy: { order: 'asc' },
+    });
+    expect(result1).toBeDefined();
+    expect(result1.length).toBe(6);
+    let currentOrder = 6;
+    expect(result1).toEqual(Array.from(Array(6).keys()).map(_ => posts[currentOrder++]));
+  });
+
+  test('cursor pagination forward', async () => {
+    const result1 = await context.query.Post.findMany({
+      take: 6,
+      orderBy: { order: 'asc' },
+      query: 'id order',
+    });
+    expect(result1).toBeDefined();
     let currentOrder = 0;
+    expect(result1).toEqual(Array.from(Array(6).keys()).map(_ => posts[currentOrder++]));
 
-    expect(errors1).toEqual(undefined);
-    expect(data1).toEqual({
-      posts: Array.from(Array(6).keys()).map(_ => posts[currentOrder++]),
+    const result2 = await context.query.Post.findMany({
+      take: 6,
+      skip: 1,
+      cursor: { order: result1[result1.length - 1].order },
+      orderBy: { order: 'asc' },
+      query: 'id order',
     });
 
-    const { errors: errors2, data: data2 } = await context.graphql.raw({
-      query: `query { posts(
-          take: 6,\
-          skip: 1,\
-          cursor: { id: "${posts[5].id}"}\
-          orderBy: { order: asc }\
-        ) { id order }\
-      }`,
+    expect(result2).toBeDefined();
+    expect(result2).toEqual(Array.from(Array(6).keys()).map(_ => posts[currentOrder++]));
+
+    const result3 = await context.query.Post.findMany({
+      take: 6,
+      skip: 1,
+      cursor: { order: result2[result2.length - 1].order },
+      orderBy: { order: 'asc' },
+      query: 'id order',
     });
 
-    expect(errors2).toEqual(undefined);
-    expect(data2).toEqual({
-      posts: Array.from(Array(6).keys()).map(_ => posts[currentOrder++]),
+    expect(result3).toBeDefined();
+    expect(result3).toEqual(Array.from(Array(3).keys()).map(_ => posts[currentOrder++]));
+  });
+  test('cursor pagination backwards', async () => {
+    const result1 = await context.query.Post.findMany({
+      take: -6,
+      orderBy: { order: 'desc' },
+      query: 'id order',
+    });
+    expect(result1).toBeDefined();
+    let currentOrder = 5;
+    expect(result1).toEqual(Array.from(Array(6).keys()).map(_ => posts[currentOrder--]));
+
+    const result2 = await context.query.Post.findMany({
+      take: -6,
+      skip: 1,
+      cursor: { order: result1[0].order },
+      orderBy: { order: 'desc' },
+      query: 'id order',
     });
 
-    const { errors: errors3, data: data3 } = await context.graphql.raw({
-      query: `query { posts(
-          take: 6,\
-          skip: 1,\
-          cursor: { id: "${posts[11].id}"}\
-          orderBy: { order: asc }\
-        ) { id order }\
-      }`,
+    expect(result2).toBeDefined();
+    currentOrder = 11;
+    expect(result2).toEqual(Array.from(Array(6).keys()).map(_ => posts[currentOrder--]));
+
+    const result3 = await context.query.Post.findMany({
+      take: -6,
+      skip: 1,
+      cursor: { order: result2[0].order },
+      orderBy: { order: 'desc' },
+      query: 'id order',
     });
 
-    expect(errors3).toEqual(undefined);
-    expect(data3).toEqual({
-      posts: Array.from(Array(3).keys()).map(_ => posts[currentOrder++]),
-    });
+    expect(result3).toBeDefined();
+    currentOrder = 14;
+    expect(result3).toEqual(Array.from(Array(3).keys()).map(_ => posts[currentOrder--]));
   });
 });
 
@@ -127,57 +191,30 @@ describe('cursor pagination stability', () => {
   });
 
   test('insert rows in the middle of pagination and check stability', async () => {
-    const { errors: errors1, data: data1 } = await context.graphql.raw({
-      query: `query { posts(\
-          take: 6,\
-          orderBy: { order: desc }\
-        ) { id order }\
-      }`,
+    const result1 = await context.query.Post.findMany({
+      take: 3,
+      skip: 1,
+      cursor: { order: 13 },
+      orderBy: { order: 'desc' },
+      query: 'id order',
     });
-
-    let currentOrder = 14;
-
-    expect(errors1).toEqual(undefined);
-    expect(data1).toEqual({
-      posts: Array.from(Array(6).keys()).map(_ => posts[currentOrder--]),
-    });
+    expect(result1).toBeDefined();
+    let currentOrder = 12;
+    expect(result1).toEqual(Array.from(Array(3).keys()).map(_ => posts[currentOrder--]));
 
     await context.query.Post.createMany({
       data: [{ order: 15 }, { order: 16 }, { order: 17 }, { order: 18 }],
     });
 
-    const { errors: errors2, data: data2 } = await context.graphql.raw({
-      query: `query { posts(\
-          take: 6,\
-          skip: 1,\
-          cursor: { id: "${posts[9].id}"},\
-          orderBy: { order: desc }\
-        ) { id order }\
-      }`,
+    const result2 = await context.query.Post.findMany({
+      take: 3,
+      skip: 1,
+      cursor: { order: result1[result1.length - 1].order },
+      orderBy: { order: 'desc' },
+      query: 'id order',
     });
-
-    expect(errors2).toEqual(undefined);
-    expect(data2).toEqual({
-      posts: Array.from(Array(6).keys()).map(_ => posts[currentOrder--]),
-    });
-
-    await context.query.Post.createMany({
-      data: [{ order: 19 }, { order: 20 }, { order: 21 }, { order: 22 }],
-    });
-
-    const { errors: errors3, data: data3 } = await context.graphql.raw({
-      query: `query { posts(\
-        take: 6,\
-        skip: 1,\
-        cursor: { id: "${posts[3].id}"},\
-        orderBy: { order: desc }\
-        ) { id order }\
-      }`,
-    });
-
-    expect(errors3).toEqual(undefined);
-    expect(data3).toEqual({
-      posts: Array.from(Array(3).keys()).map(_ => posts[currentOrder--]),
-    });
+    expect(result2).toBeDefined();
+    currentOrder = 9;
+    expect(result2).toEqual(Array.from(Array(3).keys()).map(_ => posts[currentOrder--]));
   });
 });
