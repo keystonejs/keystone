@@ -28,6 +28,7 @@ describe('cursor pagination basic tests', () => {
   let testEnv: TestEnv<TypeInfoFromConfig<typeof config>>;
   let context: KeystoneContext;
   let posts: { id: string }[];
+  let userId: string;
 
   beforeAll(async () => {
     testEnv = await setupTestEnv({ config });
@@ -44,6 +45,7 @@ describe('cursor pagination basic tests', () => {
       },
       query: 'id posts { id order }',
     });
+    userId = result.id;
     // posts will be added in random sequence, so need to sort by order
     posts = result.posts.sort((a: { order: number }, b: { order: number }) => a.order - b.order);
   });
@@ -95,6 +97,25 @@ describe('cursor pagination basic tests', () => {
     expect(result1).toEqual(Array.from(Array(6).keys()).map(_ => posts[currentOrder++]));
   });
 
+  test('basic cursor pagination through relation', async () => {
+    const { errors, data } = await context.graphql.raw({
+      query: `query {\
+        user(where: { id: "${userId}"}) {\
+        posts(\
+          take: 6,\
+          skip: 1,\
+          cursor: { order: 5 }\
+          orderBy: { order: asc }\
+        ) { id order }\
+      } }`,
+    });
+    expect(errors).toEqual(undefined);
+    let currentOrder = 6;
+    expect(data).toEqual({
+      user: { posts: Array.from(Array(6).keys()).map(_ => posts[currentOrder++]) },
+    });
+  });
+
   test('cursor pagination forward', async () => {
     const result1 = await context.query.Post.findMany({
       take: 6,
@@ -127,6 +148,7 @@ describe('cursor pagination basic tests', () => {
     expect(result3).toBeDefined();
     expect(result3).toEqual(Array.from(Array(3).keys()).map(_ => posts[currentOrder++]));
   });
+
   test('cursor pagination backwards', async () => {
     const result1 = await context.query.Post.findMany({
       take: -6,
