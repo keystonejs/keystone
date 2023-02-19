@@ -53,7 +53,7 @@ describe('cursor pagination basic tests', () => {
     await testEnv.disconnect();
   });
 
-  test('basic cursor pagination test (graphql api)', async () => {
+  test('cursor pagination test (graphql api)', async () => {
     const { errors, data } = await context.graphql.raw({
       query: `query { posts(
           take: 6,\
@@ -70,7 +70,7 @@ describe('cursor pagination basic tests', () => {
     });
   });
 
-  test('basic cursor pagination test (query api)', async () => {
+  test('cursor pagination test (query api)', async () => {
     const result1 = await context.query.Post.findMany({
       take: 6,
       skip: 1,
@@ -84,7 +84,7 @@ describe('cursor pagination basic tests', () => {
     expect(result1).toEqual(Array.from(Array(6).keys()).map(_ => posts[currentOrder++]));
   });
 
-  test('basic cursor pagination test (db api)', async () => {
+  test('cursor pagination test (db api)', async () => {
     const result1 = await context.db.Post.findMany({
       take: 6,
       skip: 1,
@@ -97,17 +97,18 @@ describe('cursor pagination basic tests', () => {
     expect(result1).toEqual(Array.from(Array(6).keys()).map(_ => posts[currentOrder++]));
   });
 
-  test('basic cursor pagination through relation', async () => {
+  test('cursor pagination through relation', async () => {
     const { errors, data } = await context.graphql.raw({
       query: `query {\
         user(where: { id: "${userId}"}) {\
-        posts(\
-          take: 6,\
-          skip: 1,\
-          cursor: { order: 5 }\
-          orderBy: { order: asc }\
-        ) { id order }\
-      } }`,
+          posts(\
+            take: 6,\
+            skip: 1,\
+            cursor: { order: 5 }\
+            orderBy: { order: asc }\
+          ) { id order }\
+        }\
+      }`,
     });
     expect(errors).toEqual(undefined);
     let currentOrder = 6;
