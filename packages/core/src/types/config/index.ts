@@ -141,7 +141,7 @@ export type DatabaseConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   /** @deprecated use extendPrismaSchema */
   additionalPrismaDatasourceProperties?: { [key: string]: string };
 
-  prismaPath?: string;
+  prismaClientPath?: string;
   extendPrismaSchema?: (schema: string) => string;
 };
 

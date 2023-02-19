@@ -23,7 +23,7 @@ export async function getCommittedArtifacts(config: KeystoneConfig, graphQLSchem
   const lists = initialiseLists(config);
   const prismaSchema = printPrismaSchema(
     lists,
-    config.db.prismaPath,
+    config.db.prismaClientPath,
     config.db.provider,
     config.db.prismaPreviewFeatures,
     config.db.additionalPrismaDatasourceProperties,
@@ -83,7 +83,9 @@ export function getSystemPaths(cwd: string, config: KeystoneConfig) {
     config: getBuiltKeystoneConfigurationPath(cwd),
     admin: path.join(cwd, '.keystone/admin'),
     keystone: path.join(cwd, 'node_modules/.keystone'),
-    prisma: config.db.prismaPath ? path.join(cwd, config.db.prismaPath) : '@prisma/client',
+    prisma: config.db.prismaClientPath
+      ? path.join(cwd, config.db.prismaClientPath)
+      : '@prisma/client',
     schema: {
       // types: // TODO
       prisma: path.join(cwd, 'schema.prisma'),
