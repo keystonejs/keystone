@@ -122,7 +122,13 @@ function printInterimMultiFieldType({
       const prismaKey = `${fieldKey}_${subFieldKey}`;
       return (
         '  ' +
-        printInterimFieldType({ prismaClientPath, listKey, fieldKey: subFieldKey, prismaKey, operation })
+        printInterimFieldType({
+          prismaClientPath,
+          listKey,
+          fieldKey: subFieldKey,
+          prismaKey,
+          operation,
+        })
       );
     }),
     `  };`,

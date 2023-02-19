@@ -83,7 +83,9 @@ export function getSystemPaths(cwd: string, config: KeystoneConfig) {
     config: getBuiltKeystoneConfigurationPath(cwd),
     admin: path.join(cwd, '.keystone/admin'),
     keystone: path.join(cwd, 'node_modules/.keystone'),
-    prisma: config.db.prismaClientPath ? path.join(cwd, config.db.prismaClientPath) : '@prisma/client',
+    prisma: config.db.prismaClientPath
+      ? path.join(cwd, config.db.prismaClientPath)
+      : '@prisma/client',
     schema: {
       // types: // TODO
       prisma: path.join(cwd, 'schema.prisma'),
