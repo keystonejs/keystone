@@ -18,9 +18,21 @@ export const localStorageConfig: Record<string, StorageConfig> = {
   },
 };
 
+// our monorepo tests have their @prisma/client dependencies hoisted
+//   to build them and use them without conflict, we need to ensure .prisma/client
+//   resolves to somewhere else
+//
+//   we use node_modules/.testprisma to differentiate from node_modules/.prisma, but
+//   still use node_modules/... to skip the painful experience that is jest/babel
+//   transforms
+export const fixPrismaPath = {
+  prismaPath: 'node_modules/.testprisma/client',
+};
+
 export const dbConfig: DatabaseConfig<BaseKeystoneTypeInfo> = {
   provider: 'sqlite',
   url: process.env.DATABASE_URL || 'file:./dev.db',
+  ...fixPrismaPath,
 };
 
 export const trackingFields = {

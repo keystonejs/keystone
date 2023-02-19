@@ -1,11 +1,11 @@
 import { buildAdminUI, generateAdminUI } from '../../admin-ui/system';
 import { createSystem } from '../../lib/createSystem';
 import {
+  getSystemPaths,
   generateCommittedArtifacts,
   generateNodeModulesArtifacts,
   validateCommittedArtifacts,
 } from '../../artifacts';
-import { getAdminPath } from '../utils';
 import { loadConfigOnce } from '../../lib/config/loadConfig';
 import { Flags } from '../cli';
 
@@ -16,28 +16,26 @@ export async function build(
   const config = await loadConfigOnce(cwd);
   const { graphQLSchema, adminMeta } = createSystem(config);
 
+  const paths = getSystemPaths(cwd, config);
   if (prisma) {
     if (frozen) {
-      await validateCommittedArtifacts(graphQLSchema, config, cwd);
+      await validateCommittedArtifacts(cwd, config, graphQLSchema);
       console.log('✨ GraphQL and Prisma schemas are up to date');
     } else {
-      await generateCommittedArtifacts(graphQLSchema, config, cwd);
+      await generateCommittedArtifacts(cwd, config, graphQLSchema);
       console.log('✨ Generated GraphQL and Prisma schemas');
     }
     // FIXME: This needs to generate clients for the correct build target using binaryTarget
     // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#binarytargets-options
-    await generateNodeModulesArtifacts(graphQLSchema, config, cwd);
-  } else {
+
+    await generateNodeModulesArtifacts(cwd, config, graphQLSchema);
   }
 
-  if (config.ui?.isDisabled) return;
+  if (config.ui?.isDisabled || !ui) return;
 
-  if (ui) {
-    console.log('✨ Generating Admin UI code');
-    await generateAdminUI(config, graphQLSchema, adminMeta, getAdminPath(cwd), false);
+  console.log('✨ Generating Admin UI code');
+  await generateAdminUI(config, graphQLSchema, adminMeta, paths.admin, false);
 
-    console.log('✨ Building Admin UI');
-    await buildAdminUI(getAdminPath(cwd));
-  } else {
-  }
+  console.log('✨ Building Admin UI');
+  await buildAdminUI(paths.admin);
 }

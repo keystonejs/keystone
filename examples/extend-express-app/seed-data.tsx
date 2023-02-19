@@ -1,7 +1,7 @@
 import { getContext } from '@keystone-6/core/context';
 import { persons, tasks } from '../example-data';
 import config from './keystone';
-import * as PrismaModule from '.prisma/client';
+import * as PrismaModule from '.myprisma/client';
 
 type PersonProps = {
   name: string;

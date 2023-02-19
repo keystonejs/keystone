@@ -1,6 +1,7 @@
 import { config } from '@keystone-6/core';
 import { statelessSessions } from '@keystone-6/core/session';
 import { createAuth } from '@keystone-6/auth';
+import { fixPrismaPath } from './../example-utils';
 import { lists } from './schema';
 import { TypeInfo } from '.keystone/types';
 
@@ -38,6 +39,9 @@ export default withAuth(
     db: {
       provider: 'sqlite',
       url: process.env.DATABASE_URL || 'file:./keystone-example.db',
+
+      // WARNING: this is only needed for our monorepo examples, dont do this
+      ...fixPrismaPath,
     },
     lists,
     // We add our session configuration to the system here.

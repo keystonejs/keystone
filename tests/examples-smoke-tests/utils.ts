@@ -26,12 +26,9 @@ async function deleteAllData(projectDir: string) {
    */
   const prevCwd = process.cwd;
   try {
-    process.cwd = () => {
-      return projectDir;
-    };
-    const { PrismaClient } = require(path.join(projectDir, 'node_modules/.prisma/client'));
-
-    let prisma = new PrismaClient();
+    process.cwd = () => projectDir;
+    const { PrismaClient } = require(path.join(projectDir, 'node_modules/.myprisma/client'));
+    const prisma = new PrismaClient();
 
     await prisma.$transaction(
       Object.values(prisma)
@@ -52,7 +49,7 @@ jest.setTimeout(10000000);
 
 const promiseSignal = (): Promise<void> & { resolve: () => void } => {
   let resolve;
-  let promise = new Promise<void>(_resolve => {
+  const promise = new Promise<void>(_resolve => {
     resolve = _resolve;
   });
   return Object.assign(promise, { resolve: resolve as any });
@@ -86,13 +83,13 @@ export const exampleProjectTests = (
     });
 
     async function startKeystone(command: 'start' | 'dev') {
-      let keystoneProcess = execa('yarn', ['keystone', command], {
+      const keystoneProcess = execa('yarn', ['keystone', command], {
         cwd: projectDir,
         env: process.env,
       });
-      let adminUIReady = promiseSignal();
-      let listener = (chunk: any) => {
-        let stringified = chunk.toString('utf8');
+      const adminUIReady = promiseSignal();
+      const listener = (chunk: any) => {
+        const stringified = chunk.toString('utf8');
         if (process.env.VERBOSE) {
           console.log(stringified);
         }
@@ -121,7 +118,7 @@ export const exampleProjectTests = (
 
     if (mode === 'prod') {
       test('build keystone', async () => {
-        let keystoneBuildProcess = execa('yarn', ['build'], {
+        const keystoneBuildProcess = execa('yarn', ['build'], {
           cwd: projectDir,
           env: process.env,
         });

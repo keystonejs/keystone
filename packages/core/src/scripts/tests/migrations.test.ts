@@ -1,5 +1,5 @@
+import path from 'path';
 import fs from 'fs-extra';
-import { requirePrismaClient } from '../../artifacts';
 import { setSkipWatching } from '../run/dev';
 import { ExitError } from '../utils';
 import {
@@ -18,7 +18,7 @@ setSkipWatching();
 const dbUrl = 'file:./app.db';
 
 function getPrismaClient(cwd: string) {
-  return new (requirePrismaClient(cwd).PrismaClient)({
+  return new (require(path.join(cwd, 'node_modules/.testprisma/client')).PrismaClient)({
     datasources: { sqlite: { url: dbUrl } },
   });
 }

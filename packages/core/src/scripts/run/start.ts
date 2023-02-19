@@ -3,8 +3,8 @@ import * as fs from 'fs-extra';
 import { createSystem } from '../../lib/createSystem';
 import { createExpressServer } from '../../lib/server/createExpressServer';
 import { createAdminUIMiddleware } from '../../lib/server/createAdminUIMiddleware';
-import { requirePrismaClient } from '../../artifacts';
-import { ExitError, getAdminPath, getBuiltConfigPath } from '../utils';
+import { getBuiltKeystoneConfigurationPath, getSystemPaths } from '../../artifacts';
+import { ExitError } from '../utils';
 import { loadBuiltConfig } from '../../lib/config/loadConfig';
 import { Flags } from '../cli';
 import { deployMigrations } from '../../lib/migrations';
@@ -15,16 +15,19 @@ export const start = async (
 ) => {
   console.log('✨ Starting Keystone');
 
+  // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
+  const builtConfigPath = getBuiltKeystoneConfigurationPath(cwd);
+
   // This is the compiled version of the configuration which was generated during the build step
-  const apiFile = getBuiltConfigPath(cwd);
-  if (!fs.existsSync(apiFile)) {
+  if (!fs.existsSync(builtConfigPath)) {
     console.log('🚨 keystone build must be run before running keystone start');
     throw new ExitError(1);
   }
 
-  const config = loadBuiltConfig(cwd);
+  const config = loadBuiltConfig(builtConfigPath);
+  const paths = getSystemPaths(cwd, config);
   const { getKeystone, graphQLSchema } = createSystem(config);
-  const prismaClient = requirePrismaClient(cwd);
+  const prismaClient = require(paths.prisma);
   const keystone = getKeystone(prismaClient);
 
   console.log('✨ Connecting to the database');
@@ -44,9 +47,7 @@ export const start = async (
   console.log(`✅ GraphQL API ready`);
   if (!config.ui?.isDisabled || ui) {
     console.log('✨ Preparing Admin UI Next.js app');
-    expressServer.use(
-      await createAdminUIMiddleware(config, keystone.context, false, getAdminPath(cwd))
-    );
+    expressServer.use(await createAdminUIMiddleware(config, keystone.context, false, paths.admin));
     console.log(`✅ Admin UI ready`);
   }
 

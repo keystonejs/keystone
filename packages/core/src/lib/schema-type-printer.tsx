@@ -88,25 +88,29 @@ function printInputTypesFromSchema(schema: GraphQLSchema, scalars: Record<string
 }
 
 function printInterimFieldType({
+  prismaPath,
   listKey,
   fieldKey,
   prismaKey,
   operation,
 }: {
+  prismaPath: string;
   listKey: string;
   fieldKey: string;
   prismaKey: string;
   operation: string;
 }) {
-  return `  ${fieldKey}?: import('.prisma/client').Prisma.${listKey}${operation}Input["${prismaKey}"];`;
+  return `  ${fieldKey}?: import('${prismaPath}').Prisma.${listKey}${operation}Input["${prismaKey}"];`;
 }
 
 function printInterimMultiFieldType({
+  prismaPath,
   listKey,
   fieldKey,
   operation,
   fields,
 }: {
+  prismaPath: string;
   listKey: string;
   fieldKey: string;
   operation: string;
@@ -116,13 +120,17 @@ function printInterimMultiFieldType({
     `  ${fieldKey}: {`,
     ...Object.keys(fields).map(subFieldKey => {
       const prismaKey = `${fieldKey}_${subFieldKey}`;
-      return '  ' + printInterimFieldType({ listKey, fieldKey: subFieldKey, prismaKey, operation });
+      return (
+        '  ' +
+        printInterimFieldType({ prismaPath, listKey, fieldKey: subFieldKey, prismaKey, operation })
+      );
     }),
     `  };`,
   ].join('\n');
 }
 
 function printInterimType<L extends InitialisedList>(
+  prismaPath: string,
   list: L,
   listKey: string,
   typename: string,
@@ -134,6 +142,7 @@ function printInterimType<L extends InitialisedList>(
       if (dbField.kind === 'none' || fieldKey === 'id') return `  ${fieldKey}?: undefined;`;
       if (dbField.kind === 'multi') {
         return printInterimMultiFieldType({
+          prismaPath,
           listKey,
           fieldKey,
           operation,
@@ -141,13 +150,23 @@ function printInterimType<L extends InitialisedList>(
         });
       }
 
-      return printInterimFieldType({ listKey, fieldKey, prismaKey: fieldKey, operation });
+      return printInterimFieldType({
+        prismaPath,
+        listKey,
+        fieldKey,
+        prismaKey: fieldKey,
+        operation,
+      });
     }),
     `};`,
   ].join('\n');
 }
 
-function printListTypeInfo<L extends InitialisedList>(listKey: string, list: L) {
+function printListTypeInfo<L extends InitialisedList>(
+  prismaPath: string,
+  listKey: string,
+  list: L
+) {
   // prettier-ignore
   const {
     whereInputName,
@@ -162,7 +181,7 @@ function printListTypeInfo<L extends InitialisedList>(listKey: string, list: L) 
   return [
     `export type ${listKey} = import('@keystone-6/core').ListConfig<${listTypeInfoName}, any>;`,
     `namespace ${listKey} {`,
-    `  export type Item = import('.prisma/client').${listKey};`,
+    `  export type Item = import('${prismaPath}').${listKey};`,
     `  export type TypeInfo = {`,
     `    key: "${listKey}";`,
     `    isSingleton: ${list.isSingleton};`,
@@ -196,6 +215,7 @@ function printListTypeInfo<L extends InitialisedList>(listKey: string, list: L) 
 }
 
 export function printGeneratedTypes(
+  prismaPath: string,
   graphQLSchema: GraphQLSchema,
   lists: Record<string, InitialisedList>
 ) {
@@ -209,18 +229,18 @@ export function printGeneratedTypes(
 
     if (list.graphql.isEnabled.create) {
       interimCreateUpdateTypes.push(
-        printInterimType(list, listKey, gqlNames.createInputName, 'Create')
+        printInterimType(prismaPath, list, listKey, gqlNames.createInputName, 'Create')
       );
     }
 
     if (list.graphql.isEnabled.update) {
       interimCreateUpdateTypes.push(
-        printInterimType(list, listKey, gqlNames.updateInputName, 'Update')
+        printInterimType(prismaPath, list, listKey, gqlNames.updateInputName, 'Update')
       );
     }
 
     listsTypeInfo.push(`    readonly ${listKey}: ${listTypeInfoName};`);
-    listsNamespaces.push(printListTypeInfo(listKey, list));
+    listsNamespaces.push(printListTypeInfo(prismaPath, listKey, list));
   }
 
   return [
@@ -245,7 +265,7 @@ export function printGeneratedTypes(
     `  lists: {`,
     ...listsTypeInfo,
     `  };`,
-    `  prisma: import('.prisma/client').PrismaClient;`,
+    `  prisma: import('${prismaPath}').PrismaClient;`,
     `};`,
     ``,
     // we need to reference the `TypeInfo` above in another type that is also called `TypeInfo`

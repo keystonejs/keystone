@@ -59,7 +59,7 @@ export function generateDataArray(map: (key: number) => any, range: number) {
   return Array.from(Array(range).keys()).map(map);
 }
 
-export const deleteAllData: (projectDir: string) => Promise<void> = async (projectDir: string) => {
+export async function deleteAllData(projectDir: string) {
   const resolvedProjectDir = path.resolve(projectRoot, projectDir);
   /**
    * As of @prisma/client@3.1.1 it appears that the prisma client runtime tries to resolve the path to the prisma schema
@@ -69,12 +69,12 @@ export const deleteAllData: (projectDir: string) => Promise<void> = async (proje
    */
   const prevCwd = process.cwd;
   try {
-    process.cwd = () => {
-      return resolvedProjectDir;
-    };
-    const { PrismaClient } = require(path.join(resolvedProjectDir, 'node_modules/.prisma/client'));
-
-    let prisma = new PrismaClient();
+    process.cwd = () => resolvedProjectDir;
+    const { PrismaClient } = require(path.join(
+      resolvedProjectDir,
+      'node_modules/.testprisma/client'
+    ));
+    const prisma = new PrismaClient();
 
     await prisma.$transaction(
       Object.values(prisma)
@@ -86,7 +86,7 @@ export const deleteAllData: (projectDir: string) => Promise<void> = async (proje
   } finally {
     process.cwd = prevCwd;
   }
-};
+}
 
 export const adminUITests = (
   pathToTest: string,

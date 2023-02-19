@@ -6,6 +6,7 @@ export default config({
   db: {
     provider: 'sqlite',
     url: 'file:./app.db',
+    prismaPath: 'node_modules/.testprisma/client',
   },
   ui: { isDisabled: true },
   lists: {

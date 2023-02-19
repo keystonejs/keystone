@@ -1,6 +1,7 @@
 import { config, list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { text, timestamp } from '@keystone-6/core/fields';
+import { fixPrismaPath } from '../example-utils';
 import { TypeInfo } from '.keystone/types';
 
 export default config<TypeInfo>({
@@ -13,6 +14,9 @@ export default config<TypeInfo>({
       console.log('(keystone.ts)', 'onConnect');
       await context.db.Post.createOne({ data: { title: 'Created in onConnect' } });
     },
+
+    // WARNING: this is only needed for our monorepo examples, dont do this
+    ...fixPrismaPath,
   },
   lists: {
     Post: list({

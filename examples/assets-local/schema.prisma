@@ -9,7 +9,7 @@ datasource sqlite {
 
 generator client {
   provider = "prisma-client-js"
-  output   = "node_modules/.prisma/client"
+  output   = "node_modules/.myprisma/client"
 }
 
 model Post {

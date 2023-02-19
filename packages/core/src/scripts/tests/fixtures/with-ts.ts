@@ -5,7 +5,11 @@ import { allowAll } from '@keystone-6/core/access';
 export type something = string;
 
 export default config({
-  db: { provider: 'sqlite', url: 'file:./app.db' },
+  db: {
+    provider: 'sqlite',
+    url: 'file:./app.db',
+    prismaPath: 'node_modules/.testprisma/client',
+  },
   lists: {
     Todo: list({
       access: allowAll,

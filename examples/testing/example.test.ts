@@ -2,7 +2,7 @@ import path from 'path';
 import { resetDatabase } from '@keystone-6/core/testing';
 import { getContext } from '@keystone-6/core/context';
 import baseConfig from './keystone';
-import * as PrismaModule from '.prisma/client';
+import * as PrismaModule from '.myprisma/client';
 
 const dbUrl = `file:./test-${process.env.JEST_WORKER_ID}.db`;
 const prismaSchemaPath = path.join(__dirname, 'schema.prisma');

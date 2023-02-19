@@ -2,6 +2,7 @@ import { config } from '@keystone-6/core';
 import { statelessSessions } from '@keystone-6/core/session';
 import { createAuth } from '@keystone-6/auth';
 
+import { fixPrismaPath } from '../example-utils';
 import { lists, extendGraphqlSchema } from './schema';
 
 let sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
@@ -25,6 +26,9 @@ export default auth.withAuth(
     db: {
       provider: 'sqlite',
       url: process.env.DATABASE_URL || 'file:./keystone-example.db',
+
+      // WARNING: this is only needed for our monorepo examples, dont do this
+      ...fixPrismaPath,
     },
     storage: {
       my_images: {

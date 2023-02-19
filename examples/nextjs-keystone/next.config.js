@@ -11,7 +11,7 @@ const nextConfig = {
       More here: https://beta.nextjs.org/docs/api-reference/next.config.js#servercomponentsexternalpackages
     */
   webpack: config => {
-    config.externals = [...(config.externals || []), '.prisma/client'];
+    config.externals = [...(config.externals || []), '.myprisma/client'];
     // Important: return the modified config
     return config;
   },

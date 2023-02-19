@@ -190,6 +190,7 @@ function assertDbFieldIsValidForIdField(
 
 export function printPrismaSchema(
   lists: Record<string, InitialisedList>,
+  prismaClientPath: string | undefined,
   provider: DatabaseProvider,
   prismaPreviewFeatures?: readonly string[] | null,
   additionalPrismaDatasourceProperties?: { [key: string]: string } | null,
@@ -212,7 +213,7 @@ export function printPrismaSchema(
     ``,
     `generator client {`,
     `provider = "prisma-client-js"`,
-    `output = "node_modules/.prisma/client"`,
+    ...(prismaClientPath ? [`output = "${prismaClientPath}"`] : []),
     ...(prismaPreviewFeatures?.length
       ? [`previewFeatures = ["${prismaPreviewFeatures.join('","')}"]`]
       : []),

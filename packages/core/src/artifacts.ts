@@ -8,19 +8,7 @@ import { confirmPrompt, shouldPrompt } from './lib/prompts';
 import { printGeneratedTypes } from './lib/schema-type-printer';
 import { ExitError } from './scripts/utils';
 import { initialiseLists } from './lib/core/types-for-lists';
-import { printPrismaSchema } from './lib/core/prisma-schema';
-
-export function getSchemaPaths(cwd: string) {
-  return {
-    prisma: path.join(cwd, 'schema.prisma'),
-    graphql: path.join(cwd, 'schema.graphql'),
-  };
-}
-
-type CommittedArtifacts = {
-  graphql: string;
-  prisma: string;
-};
+import { printPrismaSchema } from './lib/core/prisma-schema-printer';
 
 export function getFormattedGraphQLSchema(schema: string) {
   return (
@@ -31,18 +19,17 @@ export function getFormattedGraphQLSchema(schema: string) {
   );
 }
 
-export async function getCommittedArtifacts(
-  graphQLSchema: GraphQLSchema,
-  config: KeystoneConfig
-): Promise<CommittedArtifacts> {
+export async function getCommittedArtifacts(config: KeystoneConfig, graphQLSchema: GraphQLSchema) {
   const lists = initialiseLists(config);
   const prismaSchema = printPrismaSchema(
     lists,
+    config.db.prismaPath,
     config.db.provider,
     config.db.prismaPreviewFeatures,
     config.db.additionalPrismaDatasourceProperties,
     config.db.extendPrismaSchema
   );
+
   return {
     graphql: getFormattedGraphQLSchema(printSchema(graphQLSchema)),
     prisma: await formatPrismaSchema(prismaSchema),
@@ -86,16 +73,35 @@ async function readFileButReturnNothingIfDoesNotExist(filename: string) {
   }
 }
 
+// TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
+export function getBuiltKeystoneConfigurationPath(cwd: string) {
+  return path.join(cwd, '.keystone/config.js');
+}
+
+export function getSystemPaths(cwd: string, config: KeystoneConfig) {
+  return {
+    config: getBuiltKeystoneConfigurationPath(cwd),
+    admin: path.join(cwd, '.keystone/admin'),
+    keystone: path.join(cwd, 'node_modules/.keystone'),
+    prisma: config.db.prismaPath ? path.join(cwd, config.db.prismaPath) : '@prisma/client',
+    schema: {
+      // types: // TODO
+      prisma: path.join(cwd, 'schema.prisma'),
+      graphql: path.join(cwd, 'schema.graphql'),
+    },
+  };
+}
+
 export async function validateCommittedArtifacts(
-  graphQLSchema: GraphQLSchema,
+  cwd: string,
   config: KeystoneConfig,
-  cwd: string
+  graphQLSchema: GraphQLSchema
 ) {
-  const artifacts = await getCommittedArtifacts(graphQLSchema, config);
-  const schemaPaths = getSchemaPaths(cwd);
+  const paths = getSystemPaths(cwd, config);
+  const artifacts = await getCommittedArtifacts(config, graphQLSchema);
   const [writtenGraphQLSchema, writtenPrismaSchema] = await Promise.all([
-    readFileButReturnNothingIfDoesNotExist(schemaPaths.graphql),
-    readFileButReturnNothingIfDoesNotExist(schemaPaths.prisma),
+    readFileButReturnNothingIfDoesNotExist(paths.schema.graphql),
+    readFileButReturnNothingIfDoesNotExist(paths.schema.prisma),
   ]);
   const outOfDateSchemas = (() => {
     if (writtenGraphQLSchema !== artifacts.graphql && writtenPrismaSchema !== artifacts.prisma) {
@@ -124,7 +130,10 @@ export async function validateCommittedArtifacts(
   }[outOfDateSchemas];
 
   if (shouldPrompt && (await confirmPrompt(`Replace the ${which}?`))) {
-    await writeCommittedArtifacts(artifacts, cwd);
+    await Promise.all([
+      fs.writeFile(paths.schema.graphql, artifacts.graphql),
+      fs.writeFile(paths.schema.prisma, artifacts.prisma),
+    ]);
     return;
   }
 
@@ -132,61 +141,60 @@ export async function validateCommittedArtifacts(
   throw new ExitError(1);
 }
 
-export async function writeCommittedArtifacts(artifacts: CommittedArtifacts, cwd: string) {
-  const schemaPaths = getSchemaPaths(cwd);
-  await Promise.all([
-    fs.writeFile(schemaPaths.graphql, artifacts.graphql),
-    fs.writeFile(schemaPaths.prisma, artifacts.prisma),
-  ]);
-}
-
 export async function generateCommittedArtifacts(
-  graphQLSchema: GraphQLSchema,
+  cwd: string,
   config: KeystoneConfig,
-  cwd: string
+  graphQLSchema: GraphQLSchema
 ) {
-  const artifacts = await getCommittedArtifacts(graphQLSchema, config);
-  await writeCommittedArtifacts(artifacts, cwd);
+  const paths = getSystemPaths(cwd, config);
+  const artifacts = await getCommittedArtifacts(config, graphQLSchema);
+
+  await Promise.all([
+    fs.writeFile(paths.schema.graphql, artifacts.graphql),
+    fs.writeFile(paths.schema.prisma, artifacts.prisma),
+  ]);
   return artifacts;
 }
 
 export async function generateNodeModulesArtifactsWithoutPrismaClient(
-  graphQLSchema: GraphQLSchema,
+  cwd: string,
   config: KeystoneConfig,
-  cwd: string
+  graphQLSchema: GraphQLSchema
 ) {
+  const paths = getSystemPaths(cwd, config);
   const lists = initialiseLists(config);
 
-  const dotKeystoneDir = path.join(cwd, 'node_modules/.keystone');
   await Promise.all([
     fs.outputFile(
-      path.join(dotKeystoneDir, 'types.d.ts'),
-      printGeneratedTypes(graphQLSchema, lists)
+      path.join(paths.keystone, 'types.d.ts'),
+      printGeneratedTypes(paths.prisma, graphQLSchema, lists)
     ),
-    fs.outputFile(path.join(dotKeystoneDir, 'types.js'), ''),
+    fs.outputFile(path.join(paths.keystone, 'types.js'), ''),
   ]);
 }
 
 export async function generateNodeModulesArtifacts(
-  graphQLSchema: GraphQLSchema,
+  cwd: string,
   config: KeystoneConfig,
-  cwd: string
+  graphQLSchema: GraphQLSchema
 ) {
+  const paths = getSystemPaths(cwd, config);
+
   await Promise.all([
-    generatePrismaClient(cwd),
-    generateNodeModulesArtifactsWithoutPrismaClient(graphQLSchema, config, cwd),
+    generatePrismaClient(paths.schema.prisma),
+    generateNodeModulesArtifactsWithoutPrismaClient(cwd, config, graphQLSchema),
   ]);
 }
 
-async function generatePrismaClient(cwd: string) {
+async function generatePrismaClient(prismaSchemaPath: string) {
   const generator = await getGenerator({
-    schemaPath: getSchemaPaths(cwd).prisma,
+    schemaPath: prismaSchemaPath,
     dataProxy: false,
   });
   try {
     await generator.generate();
   } finally {
-    let closePromise = new Promise<void>(resolve => {
+    const closePromise = new Promise<void>(resolve => {
       const child = (generator as any).generatorProcess
         .child as import('child_process').ChildProcess;
       child.once('exit', () => {
@@ -204,7 +212,3 @@ export type PrismaModule = {
   };
   Prisma: { DbNull: unknown; JsonNull: unknown; [key: string]: unknown };
 };
-
-export function requirePrismaClient(cwd: string): PrismaModule {
-  return require(path.join(cwd, 'node_modules/.prisma/client'));
-}
