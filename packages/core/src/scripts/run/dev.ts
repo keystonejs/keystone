@@ -153,7 +153,7 @@ export async function dev(
     const initialisedLists = initialiseLists(config);
     const originalPrismaSchema = printPrismaSchema(
       initialisedLists,
-      config.db.prismaPath,
+      config.db.prismaClientPath,
       config.db.provider,
       config.db.prismaPreviewFeatures,
       config.db.additionalPrismaDatasourceProperties,
@@ -179,7 +179,7 @@ export async function dev(
         if (prisma) {
           const newPrismaSchema = printPrismaSchema(
             initialiseLists(newConfig),
-            config.db.prismaPath,
+            config.db.prismaClientPath,
             newConfig.db.provider,
             newConfig.db.prismaPreviewFeatures,
             newConfig.db.additionalPrismaDatasourceProperties,

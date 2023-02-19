@@ -6,5 +6,5 @@
 //   still use node_modules/... to skip the painful experience that is jest/babel
 //   transforms
 export const fixPrismaPath = {
-  prismaPath: 'node_modules/.myprisma/client',
+  prismaClientPath: 'node_modules/.myprisma/client',
 };

@@ -26,7 +26,7 @@ export const localStorageConfig: Record<string, StorageConfig> = {
 //   still use node_modules/... to skip the painful experience that is jest/babel
 //   transforms
 export const fixPrismaPath = {
-  prismaPath: 'node_modules/.testprisma/client',
+  prismaClientPath: 'node_modules/.testprisma/client',
 };
 
 export const dbConfig: DatabaseConfig<BaseKeystoneTypeInfo> = {
