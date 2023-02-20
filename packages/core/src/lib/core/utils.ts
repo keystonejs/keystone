@@ -25,6 +25,7 @@ type PrismaModel = {
     where?: PrismaFilter;
     take?: number;
     skip?: number;
+    cursor?: UniquePrismaFilter;
     // this is technically wrong because relation orderBy but we're not doing that yet so it's fine
     orderBy?: readonly Record<string, 'asc' | 'desc'>[];
     include?: Record<string, boolean>;

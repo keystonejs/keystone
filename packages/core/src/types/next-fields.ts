@@ -455,6 +455,7 @@ export type FindManyArgs = {
   >;
   take: graphql.Arg<typeof graphql.Int>;
   skip: graphql.Arg<graphql.NonNullType<typeof graphql.Int>, true>;
+  cursor: graphql.Arg<GraphQLTypesForList['uniqueWhere']>;
 };
 
 export type FindManyArgsValue = graphql.InferValueFromArgs<FindManyArgs>;

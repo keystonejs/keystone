@@ -144,7 +144,7 @@ input PersonRelateToOneForCreateInput {
 type Person {
   id: ID!
   name: String
-  tasks(where: TaskWhereInput! = {}, orderBy: [TaskOrderByInput!]! = [], take: Int, skip: Int! = 0): [Task!]
+  tasks(where: TaskWhereInput! = {}, orderBy: [TaskOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TaskWhereUniqueInput): [Task!]
   tasksCount(where: TaskWhereInput! = {}): Int
 }
 
@@ -266,13 +266,13 @@ type Mutation {
 }
 
 type Query {
-  tasks(where: TaskWhereInput! = {}, orderBy: [TaskOrderByInput!]! = [], take: Int, skip: Int! = 0): [Task!]
+  tasks(where: TaskWhereInput! = {}, orderBy: [TaskOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TaskWhereUniqueInput): [Task!]
   task(where: TaskWhereUniqueInput!): Task
   tasksCount(where: TaskWhereInput! = {}): Int
-  people(where: PersonWhereInput! = {}, orderBy: [PersonOrderByInput!]! = [], take: Int, skip: Int! = 0): [Person!]
+  people(where: PersonWhereInput! = {}, orderBy: [PersonOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PersonWhereUniqueInput): [Person!]
   person(where: PersonWhereUniqueInput!): Person
   peopleCount(where: PersonWhereInput! = {}): Int
-  secretPlans(where: SecretPlanWhereInput! = {}, orderBy: [SecretPlanOrderByInput!]! = [], take: Int, skip: Int! = 0): [SecretPlan!]
+  secretPlans(where: SecretPlanWhereInput! = {}, orderBy: [SecretPlanOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SecretPlanWhereUniqueInput): [SecretPlan!]
   secretPlan(where: SecretPlanWhereUniqueInput!): SecretPlan
   secretPlansCount(where: SecretPlanWhereInput! = {}): Int
   keystone: KeystoneMeta!

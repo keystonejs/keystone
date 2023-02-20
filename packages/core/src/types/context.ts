@@ -51,6 +51,7 @@ export type KeystoneListsAPI<KeystoneListsTypeInfo extends Record<string, BaseLi
         readonly orderBy?:
           | KeystoneListsTypeInfo[Key]['inputs']['orderBy']
           | readonly KeystoneListsTypeInfo[Key]['inputs']['orderBy'][];
+        readonly cursor?: KeystoneListsTypeInfo[Key]['inputs']['uniqueWhere'];
       } & ResolveFields
     ): Promise<readonly Record<string, any>[]>;
     findOne(
@@ -106,6 +107,7 @@ export type KeystoneDbAPI<KeystoneListsTypeInfo extends Record<string, BaseListT
       readonly orderBy?:
         | KeystoneListsTypeInfo[Key]['inputs']['orderBy']
         | readonly KeystoneListsTypeInfo[Key]['inputs']['orderBy'][];
+      readonly cursor?: KeystoneListsTypeInfo[Key]['inputs']['uniqueWhere'];
     }): Promise<readonly KeystoneListsTypeInfo[Key]['item'][]>;
     findOne(
       args: UniqueWhereInput<KeystoneListsTypeInfo[Key]>

@@ -506,6 +506,7 @@ function getListGraphqlTypes(
       }),
       take,
       skip: graphql.arg({ type: graphql.nonNull(graphql.Int), defaultValue: 0 }),
+      cursor: graphql.arg({ type: uniqueWhere }),
     };
 
     const isEnabled = intermediateLists[listKey].graphql.isEnabled;
