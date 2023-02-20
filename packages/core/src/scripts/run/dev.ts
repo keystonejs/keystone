@@ -74,6 +74,7 @@ export async function dev(
   let expressServer: express.Express | null = null;
   let hasAddedAdminUIMiddleware = false;
   let lastPromise = resolvablePromise<IteratorResult<BuildResult>>();
+  let prismaClient: any = null;
 
   const builds: AsyncIterable<BuildResult> = {
     [Symbol.asyncIterator]: () => ({ next: () => lastPromise }),
@@ -85,21 +86,19 @@ export async function dev(
     prev.resolve({ value: build, done: false });
   }
 
-  const esbuildDevPlugins = [];
-  if (shouldWatch) {
-    esbuildDevPlugins.push({
-      name: 'esbuildWatchPlugin',
-      setup(build: any) {
-        // TODO: no any
-        build.onEnd(addBuildResult);
-      },
-    });
-  }
-
   const esbuildConfig = getEsbuildConfig(cwd);
   const esbuildContext = await esbuild.context({
     ...esbuildConfig,
-    plugins: [...(esbuildConfig.plugins ?? []), ...esbuildDevPlugins],
+    plugins: [
+      ...(esbuildConfig.plugins ?? []),
+      {
+        name: 'esbuildWatchPlugin',
+        setup(build: any) {
+          // TODO: no any
+          build.onEnd(addBuildResult);
+        },
+      }
+    ]
   });
 
   try {
@@ -109,10 +108,40 @@ export async function dev(
     // esbuild prints everything we want users to see
   }
 
-  await esbuildContext.watch();
+  if (shouldWatch) {
+    await esbuildContext.watch();
+  }
 
-  async function stop(server: any, exit = false) {
+  async function stop(httpServer: any, exit = false) {
     await esbuildContext.dispose();
+
+    //   WARNING: this is only actually required for tests
+    // stop httpServer
+    if (httpServer) {
+      await new Promise(async (resolve, reject) => {
+        httpServer.close(async (serverError: any) => {
+          if (serverError) {
+            console.log('There was an error while closing the server');
+            console.log(serverError);
+            return reject(serverError);
+          }
+
+          resolve(null);
+        });
+      });
+    }
+
+    //   WARNING: this is only actually required for tests
+    // stop Prisma
+    try {
+      await prismaClient?.disconnect?.();
+
+    } catch (disconnectionError) {
+      console.log('There was an error while disconnecting from the database');
+      console.log(disconnectionError);
+      throw disconnectionError;
+    }
+
     if (exit) {
       process.exit(1);
     }
@@ -145,7 +174,7 @@ export async function dev(
       configWithExtendHttp.server.extendHttpServer(httpServer, context, graphQLSchema);
     }
 
-    const prismaClient = context?.prisma;
+    prismaClient = context?.prisma;
     if (rest.expressServer) {
       ({ expressServer } = rest);
     }
