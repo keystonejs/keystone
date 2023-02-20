@@ -18,7 +18,37 @@ const packageNames: PackageName[] = [
 ];
 
 function getTelemetryConfig() {
-  const userConfig = new Conf<Configuration>({ projectName: 'keystonejs', projectSuffix: '' });
+  const userConfig = new Conf<Configuration>({
+    projectName: 'keystonejs',
+    projectSuffix: '',
+    projectVersion: '2.0.0',
+    migrations: {
+      '^2.0.0': (store: Conf<Configuration>) => {
+        const oldTelemetry = store.get('telemetry');
+        if (!oldTelemetry) return;
+        const newTelemetry = {
+          device: oldTelemetry.device,
+          projects: oldTelemetry.projects,
+        };
+        for (const key of Object.keys(oldTelemetry)) {
+          if (key === 'device' || key === 'projects') continue;
+          const projectKey = key.replace('projects', '');
+          // @ts-expect-error -- we're just copying the old data into the new format
+          if (oldTelemetry[key].informedAt === undefined) {
+            delete newTelemetry.projects[projectKey];
+            continue;
+          }
+          newTelemetry.projects[projectKey] = {
+            ...newTelemetry.projects[projectKey],
+            // @ts-expect-error -- we're just copying the old data into the new format
+            ...oldTelemetry[key],
+          };
+        }
+        store.set('telemetry', newTelemetry);
+      },
+    },
+  });
+
   let telemetry: Configuration['telemetry'];
   try {
     // Load global telemetry config settings (if set)
@@ -80,8 +110,8 @@ export function runTelemetry(
       return;
     }
     if (telemetry.projects[cwd] === undefined) {
-      userConfig.set(`telemetry.projects${cwd}`, telemetry.projects.default);
       telemetry.projects[cwd] = telemetry.projects.default;
+      userConfig.set('telemetry', telemetry);
     }
     if (!!telemetry.projects[cwd]) {
       sendProjectTelemetryEvent(cwd, lists, dbProviderName, telemetry.projects[cwd]);
@@ -148,7 +178,7 @@ function sendProjectTelemetryEvent(
   projectConfig: Status
 ) {
   try {
-    const userConfig = getTelemetryConfig().userConfig;
+    const { userConfig, telemetry } = getTelemetryConfig();
     if (projectConfig === false) {
       return;
     }
@@ -179,7 +209,8 @@ function sendProjectTelemetryEvent(
       database: dbProviderName,
     };
     sendEvent('project', projectInfo);
-    userConfig.set(`telemetry.projects.${cwd}.lastSentDate`, todaysDate);
+    telemetry.projects[cwd].lastSentDate = todaysDate;
+    userConfig.set('telemetry', telemetry);
   } catch (err) {
     // Fail silently unless KEYSTONE_TELEMETRY_DEBUG is set to '1'
     if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {
