@@ -79,7 +79,7 @@ export async function dev(
     [Symbol.asyncIterator]: () => ({ next: () => lastPromise }),
   };
 
-  function addBuildResult (build: BuildResult) {
+  function addBuildResult(build: BuildResult) {
     const prev = lastPromise;
     lastPromise = resolvablePromise();
     prev.resolve({ value: build, done: false });
@@ -89,16 +89,17 @@ export async function dev(
   if (shouldWatch) {
     esbuildDevPlugins.push({
       name: 'esbuildWatchPlugin',
-      setup(build: any) { // TODO: no any
+      setup(build: any) {
+        // TODO: no any
         build.onEnd(addBuildResult);
-      }
+      },
     });
   }
 
   const esbuildConfig = getEsbuildConfig(cwd);
   const esbuildContext = await esbuild.context({
     ...esbuildConfig,
-    plugins: [...(esbuildConfig.plugins ?? []), ...esbuildDevPlugins]
+    plugins: [...(esbuildConfig.plugins ?? []), ...esbuildDevPlugins],
   });
 
   try {
@@ -110,7 +111,7 @@ export async function dev(
 
   await esbuildContext.watch();
 
-  async function stop (server: any, exit = false) {
+  async function stop(server: any, exit = false) {
     await esbuildContext.dispose();
     if (exit) {
       process.exit(1);
@@ -327,7 +328,7 @@ export async function dev(
 
       // Don't start initialising Keystone until the dev server is ready,
       // otherwise it slows down the first response significantly
-      initKeystone().catch(async (err) => {
+      initKeystone().catch(async err => {
         await stop(server);
         initKeystonePromiseReject(err);
       });
@@ -335,7 +336,6 @@ export async function dev(
 
     await initKeystonePromise;
     return async () => await stop(server);
-
   } else {
     await initKeystone();
     return () => Promise.resolve();
