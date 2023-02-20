@@ -1,7 +1,7 @@
 {
   "name": "@keystone-6/fields-document",
   "description": "KeystoneJS Document Field Type",
-  "version": "6.0.0",
+  "version": "0.0.0-rc-20230220024700",
   "license": "MIT",
   "main": "dist/keystone-6-fields-document.cjs.js",
   "module": "dist/keystone-6-fields-document.esm.js",
@@ -45,7 +45,7 @@
     ]
   },
   "peerDependencies": {
-    "@keystone-6/core": "^4.0.0"
+    "@keystone-6/core": "0.0.0-rc-20230220024700"
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
@@ -83,7 +83,7 @@
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/packages/fields-document",
   "devDependencies": {
-    "@keystone-6/core": "*",
+    "@keystone-6/core": "0.0.0-rc-20230220024700",
     "@testing-library/react": "^13.2.0",
     "array.prototype.flat": "^1.2.5",
     "jest-diff": "^29.0.0",

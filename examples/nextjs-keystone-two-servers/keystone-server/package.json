@@ -1,7 +1,7 @@
 {
   "name": "@keystone-6/example-nextjs-keystone-two-servers-backend",
   "description": "An example of a Keystone backend API server",
-  "version": "0.0.3",
+  "version": "0.0.0-rc-20230220024700",
   "private": true,
   "repository": "https://github.com/keystonejs/keystone/tree/main/examples/nextjs-keystone-two-servers/keystone-server",
   "scripts": {
@@ -10,9 +10,9 @@
     "build": "keystone build"
   },
   "dependencies": {
-    "@keystone-6/auth": "^6.0.0",
-    "@keystone-6/core": "^4.0.0",
-    "@keystone-6/fields-document": "^6.0.0",
+    "@keystone-6/auth": "0.0.0-rc-20230220024700",
+    "@keystone-6/core": "0.0.0-rc-20230220024700",
+    "@keystone-6/fields-document": "0.0.0-rc-20230220024700",
     "typescript": "~4.9.4"
   }
 }
