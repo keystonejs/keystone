@@ -97,8 +97,8 @@ export async function dev(
           // TODO: no any
           build.onEnd(addBuildResult);
         },
-      }
-    ]
+      },
+    ],
   });
 
   try {
@@ -135,7 +135,6 @@ export async function dev(
     // stop Prisma
     try {
       await prismaClient?.disconnect?.();
-
     } catch (disconnectionError) {
       console.log('There was an error while disconnecting from the database');
       console.log(disconnectionError);
