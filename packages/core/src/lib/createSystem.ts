@@ -106,6 +106,7 @@ export function createSystem(config: KeystoneConfig) {
           await prismaClient.$connect();
           await config.db.onConnect?.(context);
         },
+        // TODO: remove, only used by tests
         async disconnect() {
           await prismaClient.$disconnect();
         },

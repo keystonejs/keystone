@@ -6,7 +6,7 @@ import express from 'express';
 import { GraphQLSchema, printSchema } from 'graphql';
 import fs from 'fs-extra';
 import chalk from 'chalk';
-import esbuild, { BuildFailure, BuildResult } from 'esbuild';
+import esbuild, { BuildResult } from 'esbuild';
 import { generateAdminUI } from '../../admin-ui/system';
 import { devMigrations, pushPrismaSchemaToDatabase } from '../../lib/migrations';
 import { createSystem } from '../../lib/createSystem';
@@ -26,7 +26,6 @@ import {
   getBuiltKeystoneConfigurationPath,
   getSystemPaths,
 } from '../../artifacts';
-import { ExitError } from '../utils';
 import { KeystoneConfig } from '../../types';
 import { initialiseLists } from '../../lib/core/types-for-lists';
 import { printPrismaSchema } from '../../lib/core/prisma-schema-printer';
@@ -48,7 +47,7 @@ const stripExtendHttpServer = (config: KeystoneConfig): KeystoneConfig => {
   return rest;
 };
 
-function resolvablePromise<T>(): Promise<T> & { resolve: (value: T) => void } {
+function resolvablePromise<T>() {
   let _resolve!: (value: T) => void;
   const promise: any = new Promise<T>(resolve => {
     _resolve = resolve;
@@ -57,23 +56,12 @@ function resolvablePromise<T>(): Promise<T> & { resolve: (value: T) => void } {
   return promise;
 }
 
-function isBuildFailure(err: unknown): err is BuildFailure {
-  return err instanceof Error && Array.isArray((err as any).errors);
-}
-
 let shouldWatch = true;
 
+// don't use this, its for tests only
 export function setSkipWatching() {
   shouldWatch = false;
 }
-
-// note that because we don't catch this throwing, if this fails it'll crash the process
-// so that means if
-// - you have an error in your config on startup -> will fail to start and you have to start the process manually after fixing the problem
-// - you have an error in your config after startup -> will keep the last working version until importing the config succeeds
-// also, if you're thinking "why not always use the Next api route to get the config"?
-// this will get the GraphQL API up earlier
-type WatchBuildResult = { error: BuildFailure | null; result: BuildResult | null };
 
 export async function dev(
   cwd: string,
@@ -85,32 +73,78 @@ export async function dev(
 
   let expressServer: express.Express | null = null;
   let hasAddedAdminUIMiddleware = false;
-  let disconnect: null | (() => Promise<void>) = null;
-  let lastPromise = resolvablePromise<IteratorResult<WatchBuildResult>>();
+  let lastPromise = resolvablePromise<IteratorResult<BuildResult>>();
+  let prismaClient: any = null;
 
-  const builds: AsyncIterable<WatchBuildResult> = {
+  const builds: AsyncIterable<BuildResult> = {
     [Symbol.asyncIterator]: () => ({ next: () => lastPromise }),
   };
-  const initialBuildResult = await esbuild
-    .build({
-      ...getEsbuildConfig(cwd),
-      watch: shouldWatch
-        ? {
-            onRebuild(error, result) {
-              let prev = lastPromise;
-              lastPromise = resolvablePromise();
-              prev.resolve({ value: { error, result }, done: false });
-            },
+
+  function addBuildResult(build: BuildResult) {
+    const prev = lastPromise;
+    lastPromise = resolvablePromise();
+    prev.resolve({ value: build, done: false });
+  }
+
+  const esbuildConfig = getEsbuildConfig(cwd);
+  const esbuildContext = await esbuild.context({
+    ...esbuildConfig,
+    plugins: [
+      ...(esbuildConfig.plugins ?? []),
+      {
+        name: 'esbuildWatchPlugin',
+        setup(build: any) {
+          // TODO: no any
+          build.onEnd(addBuildResult);
+        },
+      },
+    ],
+  });
+
+  try {
+    const firstBuild = await esbuildContext.rebuild();
+    addBuildResult(firstBuild);
+  } catch (e) {
+    // esbuild prints everything we want users to see
+  }
+
+  if (shouldWatch) {
+    await esbuildContext.watch();
+  }
+
+  async function stop(httpServer: any, exit = false) {
+    await esbuildContext.dispose();
+
+    //   WARNING: this is only actually required for tests
+    // stop httpServer
+    if (httpServer) {
+      await new Promise(async (resolve, reject) => {
+        httpServer.close(async (serverError: any) => {
+          if (serverError) {
+            console.log('There was an error while closing the server');
+            console.log(serverError);
+            return reject(serverError);
           }
-        : undefined,
-    })
-    .catch(async err => {
-      if (isBuildFailure(err)) {
-        // when a build failure happens, esbuild will have printed the error already
-        throw new ExitError(1);
-      }
-      throw err;
-    });
+
+          resolve(null);
+        });
+      });
+    }
+
+    //   WARNING: this is only actually required for tests
+    // stop Prisma
+    try {
+      await prismaClient?.disconnect?.();
+    } catch (disconnectionError) {
+      console.log('There was an error while disconnecting from the database');
+      console.log(disconnectionError);
+      throw disconnectionError;
+    }
+
+    if (exit) {
+      process.exit(1);
+    }
+  }
 
   // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
   const builtConfigPath = getBuiltKeystoneConfigurationPath(cwd);
@@ -139,9 +173,9 @@ export async function dev(
       configWithExtendHttp.server.extendHttpServer(httpServer, context, graphQLSchema);
     }
 
-    const prismaClient = context?.prisma;
-    if (rest.disconnect && rest.expressServer) {
-      ({ disconnect, expressServer } = rest);
+    prismaClient = context?.prisma;
+    if (rest.expressServer) {
+      ({ expressServer } = rest);
     }
     const nextApp = await initAdminUI(cwd, config, graphQLSchema, adminMeta, ui);
     if (nextApp && expressServer && context) {
@@ -167,8 +201,7 @@ export async function dev(
     }
 
     for await (const buildResult of builds) {
-      // esbuild will have printed any errors already
-      if (buildResult.error) continue;
+      if (buildResult.errors.length) continue;
 
       console.log('compiled successfully');
       try {
@@ -187,7 +220,7 @@ export async function dev(
           );
           if (originalPrismaSchema !== newPrismaSchema) {
             console.log('🔄 Your prisma schema has changed, please restart Keystone');
-            process.exit(1);
+            return stop(null, true);
           }
           // we only need to test for the things which influence the prisma client creation
           // and aren't written into the prisma schema since we check whether the prisma schema has changed above
@@ -197,7 +230,7 @@ export async function dev(
             newConfig.db.useMigrations !== config.db.useMigrations
           ) {
             console.log('Your db config has changed, please restart Keystone');
-            process.exit(1);
+            return stop(null, true);
           }
         }
         const { graphQLSchema, getKeystone, adminMeta } = createSystem(newConfig);
@@ -323,46 +356,14 @@ export async function dev(
 
       // Don't start initialising Keystone until the dev server is ready,
       // otherwise it slows down the first response significantly
-      initKeystone().catch(err => {
-        server.close(async closeErr => {
-          if (closeErr) {
-            console.log('There was an error while closing the server');
-            console.log(closeErr);
-          }
-          try {
-            await disconnect?.();
-          } catch (err) {
-            console.log('There was an error while disconnecting from the database');
-            console.log(err);
-          }
-
-          initKeystonePromiseReject(err);
-        });
+      initKeystone().catch(async err => {
+        await stop(server);
+        initKeystonePromiseReject(err);
       });
     });
 
     await initKeystonePromise;
-    return () =>
-      new Promise<void>((resolve, reject) => {
-        server.close(async err => {
-          initialBuildResult.stop?.();
-          try {
-            await disconnect?.();
-          } catch (disconnectionError: any) {
-            if (!err) {
-              err = disconnectionError;
-            } else {
-              console.log('There was an error while disconnecting from the database');
-              console.log(disconnectionError);
-            }
-          }
-          if (err) {
-            reject(err);
-          } else {
-            resolve();
-          }
-        });
-      });
+    return async () => await stop(server);
   } else {
     await initKeystone();
     return () => Promise.resolve();
@@ -427,7 +428,6 @@ async function setupInitialKeystone(
     if (!server) {
       return {
         adminMeta,
-        disconnect: () => keystone.disconnect(),
         graphQLSchema,
         context: keystone.context,
         prismaSchema,
@@ -445,7 +445,6 @@ async function setupInitialKeystone(
 
     return {
       adminMeta,
-      disconnect: () => keystone.disconnect(),
       expressServer,
       apolloServer,
       graphQLSchema,
