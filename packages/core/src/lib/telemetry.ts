@@ -119,37 +119,41 @@ function collectPackageVersions() {
 }
 
 function printAbout() {
-  console.log(`
-${chalk.yellow('Keystone collects anonymous data when you run')} ${chalk.green('"keystone dev"')}
-
-For more information, including how to opt-out see https://keystonejs.com/telemetry
-`);
+  console.log(
+    `${chalk.yellow('Keystone collects anonymous data when you run')} ${chalk.green(
+      '"keystone dev"'
+    )}`
+  );
+  console.log();
+  console.log(
+    `For more information, including how to opt-out see https://keystonejs.com/telemetry`
+  );
 }
 
 export function printTelemetryStatus() {
   const { telemetry } = getTelemetryConfig();
 
   if (telemetry === undefined) {
-    console.log(`
-Keystone telemetry has been reset to ${chalk.yellow('uninitialized')}
-
-Telemetry will be sent the next time you run ${chalk.green('"keystone dev"')}, unless you opt-out
-`);
+    console.log(`Keystone telemetry has been reset to ${chalk.yellow('uninitialized')}`);
+    console.log();
+    console.log(
+      `Telemetry will be sent the next time you run ${chalk.green(
+        '"keystone dev"'
+      )}, unless you opt-out`
+    );
   } else if (telemetry === false) {
-    console.log(`
-Keystone telemetry is {chalk.red('disabled')}
-
-No Keystone device or project telemetry will be sent by this system user
-`);
+    console.log(`Keystone telemetry is ${chalk.red('disabled')}`);
+    console.log();
+    console.log(`Telemetry will ${chalk.red('not')} be sent by this system user`);
   } else if (typeof telemetry === 'object') {
-    console.log(`
-Keystone telemetry is ${chalk.green('enabled')}
-
-Telemetry will be sent the next time you run ${chalk.green('"keystone dev"')}, unless you opt-out
-`);
+    console.log(`Keystone telemetry is ${chalk.green('enabled')}`);
+    console.log();
+    console.log(
+      `Telemetry will be sent the next time you run ${chalk.green(
+        '"keystone dev"'
+      )}, unless you opt-out`
+    );
   }
-
-  printAbout();
 }
 
 function inform() {
@@ -158,14 +162,21 @@ function inform() {
   // no telemetry? somehow our earlier checks missed an opt out, do nothing
   if (!telemetry) return;
 
+  console.log(); // gap to help visiblity
   console.log(`${chalk.bold('Keystone Telemetry')}`);
   printAbout();
-  console.log(`
-You can use ${chalk.green('"keystone telemetry --help"')} to update your preferences at any time
-
-No telemetry data has been sent yet, but telemetry will be sent the next time you run ${chalk.green('"keystone dev"')}, unless you opt-out
-
-`);
+  console.log(
+    `You can use ${chalk.green(
+      '"keystone telemetry --help"'
+    )} to update your preferences at any time`
+  );
+  console.log();
+  console.log(
+    `No telemetry data has been sent yet, but telemetry will be sent the next time you run ${chalk.green(
+      '"keystone dev"'
+    )}, unless you opt-out`
+  );
+  console.log(); // gap to help visiblity
 
   // update the informedAt
   telemetry.informedAt = new Date().toJSON();

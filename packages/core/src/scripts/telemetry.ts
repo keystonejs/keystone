@@ -3,12 +3,11 @@ import {
   printTelemetryStatus,
   enableTelemetry,
   disableTelemetry,
-  resetTelemetry
+  resetTelemetry,
 } from '../lib/telemetry';
 
-export async function telemetry(cwd: string, option?: string) {
-  const usageText =
-    `
+export async function telemetry(cwd: string, command?: string) {
+  const usageText = `
     Usage
       $ keystone telemetry [command]
     Commands
@@ -20,18 +19,16 @@ export async function telemetry(cwd: string, option?: string) {
 For more details visit: https://keystonejs.com/telemetry
     `;
 
-  switch (option) {
-    case 'status': printTelemetryStatus(); break;
-    case 'reset': resetTelemetry(); break;
-    case 'disable': disableTelemetry(); break;
-    case 'enable': enableTelemetry(); break;
-    case '--help':
-      console.log(`${chalk.bold('Keystone Telemetry')}`);
-      console.log(usageText);
-      break;
-    default:
-      console.log(option ? `Invalid option: ${option}` : '');
-      console.log(usageText);
+  if (command === 'disable') return disableTelemetry();
+  if (command === 'enable') return enableTelemetry();
+  if (command === 'reset') return resetTelemetry();
+  if (command === 'status') return printTelemetryStatus();
+  if (command === '--help') {
+    console.log(`${chalk.bold('Keystone Telemetry')}`);
+    console.log(usageText);
+    return;
   }
-  return;
+
+  console.log(command ? `Invalid option: ${command}` : '');
+  console.log(usageText);
 }
