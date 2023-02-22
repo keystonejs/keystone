@@ -148,6 +148,13 @@ export function printTelemetryStatus() {
   } else if (typeof telemetry === 'object') {
     console.log(`Keystone telemetry is ${chalk.green('enabled')}`);
     console.log();
+
+    console.log(`  Device telemetry was last sent on ${telemetry.device.lastSentDate}`);
+    for (const [projectPath, project] of Object.entries(telemetry.projects)) {
+      console.log(`  Project telemetry for "${chalk.yellow(projectPath)}" was last sent on ${project?.lastSentDate}`);
+    }
+
+    console.log();
     console.log(
       `Telemetry will be sent the next time you run ${chalk.green(
         '"keystone dev"'

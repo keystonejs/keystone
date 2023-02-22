@@ -8,13 +8,12 @@ export type Configuration = {
         device: {
           lastSentDate?: string;
         };
-        projects: {
+        projects: Partial<{
           [projectPath: string]:
-            | undefined
             | {
                 lastSentDate?: string;
               };
-        };
+        }>;
       };
 };
 
