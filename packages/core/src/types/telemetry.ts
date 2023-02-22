@@ -9,10 +9,9 @@ export type Configuration = {
           lastSentDate?: string;
         };
         projects: Partial<{
-          [projectPath: string]:
-            | {
-                lastSentDate?: string;
-              };
+          [projectPath: string]: {
+            lastSentDate?: string;
+          };
         }>;
       };
 };

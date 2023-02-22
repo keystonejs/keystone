@@ -151,7 +151,11 @@ export function printTelemetryStatus() {
 
     console.log(`  Device telemetry was last sent on ${telemetry.device.lastSentDate}`);
     for (const [projectPath, project] of Object.entries(telemetry.projects)) {
-      console.log(`  Project telemetry for "${chalk.yellow(projectPath)}" was last sent on ${project?.lastSentDate}`);
+      console.log(
+        `  Project telemetry for "${chalk.yellow(projectPath)}" was last sent on ${
+          project?.lastSentDate
+        }`
+      );
     }
 
     console.log();
