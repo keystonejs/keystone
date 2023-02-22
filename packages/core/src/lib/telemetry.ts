@@ -121,6 +121,7 @@ function collectPackageVersions() {
 function printAbout() {
   console.log(`
 ${chalk.yellow('Keystone collects anonymous data when you run')} ${chalk.green('"keystone dev"')}
+
 For more information, including how to opt-out see https://keystonejs.com/telemetry
 `);
 }
@@ -130,23 +131,21 @@ export function printTelemetryStatus() {
 
   if (telemetry === undefined) {
     console.log(`
-Keystone telemetry has been reset to ${chalk.yellow('uninitialized')}.
+Keystone telemetry has been reset to ${chalk.yellow('uninitialized')}
 
-Telemetry will be sent the next time you run ${chalk.green('"keystone dev"')}, unless you opt-out.
-
+Telemetry will be sent the next time you run ${chalk.green('"keystone dev"')}, unless you opt-out
 `);
   } else if (telemetry === false) {
     console.log(`
-Keystone telemetry is {chalk.red('disabled')}.
+Keystone telemetry is {chalk.red('disabled')}
 
-No Keystone device or project telemetry will be sent by this user account.
+No Keystone device or project telemetry will be sent by this system user
 `);
   } else if (typeof telemetry === 'object') {
     console.log(`
-Keystone telemetry is ${chalk.green('enabled')}.
+Keystone telemetry is ${chalk.green('enabled')}
 
-Telemetry will be sent the next time you run ${chalk.green('"keystone dev"')}, unless you opt-out.
-
+Telemetry will be sent the next time you run ${chalk.green('"keystone dev"')}, unless you opt-out
 `);
   }
 
@@ -162,11 +161,10 @@ function inform() {
   console.log(`${chalk.bold('Keystone Telemetry')}`);
   printAbout();
   console.log(`
-You can use ${chalk.green('"keystone telemetry --help"')} to update your preferences at any time.
+You can use ${chalk.green('"keystone telemetry --help"')} to update your preferences at any time
 
-No telemetry data has been sent yet, but telemetry will be sent the next time you run ${chalk.green(
-    '"keystone dev"'
-  )}, unless you opt-out.
+No telemetry data has been sent yet, but telemetry will be sent the next time you run ${chalk.green('"keystone dev"')}, unless you opt-out
+
 `);
 
   // update the informedAt

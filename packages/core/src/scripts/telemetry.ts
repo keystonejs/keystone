@@ -7,31 +7,18 @@ import {
 } from '../lib/telemetry';
 
 export async function telemetry(cwd: string, option?: string) {
-  const usageText = `
-  The telemetry command requires a valid option
+  const usageText =
+    `
+    Usage
+      $ keystone telemetry [command]
+    Commands
+      disable     opt-out of telemetry, disabled for this system user
+      enable      opt-in to telemetry
+      reset       resets your telemetry configuration (if any)
+      status      show if telemetry is enabled, disabled or uninitialised
 
-      Usage
-        $ keystone telemetry [option]
-      Options
-        status      displays the current telemetry configuration
-        reset       resets the current telemetry configuration (if any)
-        enable      enables telemetry for the current user
-        disable     resets the current telemetry configuration (if any) and disables all telemetry for the current user
-      `;
-
-  const helpText = `
-  ${chalk.bold('KeystoneJS Telemetry')}
-
-      Usage
-        $ keystone telemetry [option]
-      Options
-        status      displays the current telemetry configuration
-        reset       resets the current telemetry configuration (if any)
-        enable      enables telemetry for the current user
-        disable     resets the current telemetry configuration (if any) and disables all telemetry for the current user
-
-  For more details visit: https://keystonejs.com/telemetry
-        `;
+For more details visit: https://keystonejs.com/telemetry
+    `;
 
   switch (option) {
     case 'status': printTelemetryStatus(); break;
@@ -39,7 +26,8 @@ export async function telemetry(cwd: string, option?: string) {
     case 'disable': disableTelemetry(); break;
     case 'enable': enableTelemetry(); break;
     case '--help':
-      console.log(helpText);
+      console.log(`${chalk.bold('Keystone Telemetry')}`);
+      console.log(usageText);
       break;
     default:
       console.log(option ? `Invalid option: ${option}` : '');
