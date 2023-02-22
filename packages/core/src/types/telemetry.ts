@@ -1,11 +1,10 @@
 import { DatabaseProvider } from './core';
 
 export type Configuration = {
-  telemetry:
+  telemetry?:
     | false
-    | undefined
     | {
-        informedAt?: string;
+        informedAt: string | null;
         device: {
           lastSentDate?: string;
         };

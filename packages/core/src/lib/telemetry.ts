@@ -80,53 +80,6 @@ function getTelemetryConfig() {
 
 const todaysDate = new Date().toISOString().slice(0, 10);
 
-export function runTelemetry(
-  cwd: string,
-  lists: Record<string, InitialisedList>,
-  dbProviderName: DatabaseProvider
-) {
-  try {
-    if (
-      ci.isCI || // don't run in CI
-      process.env.NODE_ENV === 'production' || // don't run in production
-      process.env.KEYSTONE_TELEMETRY_DISABLED === '1' // don't run if the user has disabled it
-    ) {
-      return;
-    }
-
-    let { userConfig, telemetry } = getTelemetryConfig();
-
-    // if telemetry has been opted out, stop now
-    if (telemetry === false) return; // don't run if the user has opted out
-
-    // if the user hasn't opted out, but nothing is here, we are new
-    if (telemetry === undefined) {
-      telemetry = {
-        device: {},
-        projects: {
-          [cwd]: {},
-        },
-      };
-      userConfig.set('telemetry', telemetry);
-    }
-
-    // don't send telemetry before the user has been informed, allowing opt out
-    if (!telemetry.informedAt) {
-      inform();
-      return;
-    }
-
-    // is something awry?
-    if (typeof telemetry !== 'object') return;
-
-    // is the project new?
-    sendProjectTelemetryEvent(cwd, lists, dbProviderName);
-    sendDeviceTelemetryEvent();
-  } catch (err) {
-    log(err);
-  }
-}
-
 function collectFieldCount(lists: Record<string, InitialisedList>) {
   const fields: Project['fields'] = { unknown: 0 };
 
@@ -174,10 +127,10 @@ function inform() {
   console.log(`
 ${chalk.bold('Keystone Telemetry')}
 
-${chalk.yellow('Keystone collects anonymous data about how you run "keystone dev".')}
-For more information, including how to opt-out see: https://keystonejs.com/telemetry
+${chalk.yellow('Keystone collects anonymous data when you run')} ${chalk.green('"keystone dev"')}
+For more information, including how to opt-out see https://keystonejs.com/telemetry
 
-You can run ${chalk.green('"keystone telemetry --help"')} to change your preference at any time.
+You can use ${chalk.green('"keystone telemetry --help"')} to update your preferences at any time.
 
 No telemetry data has been sent yet, but telemetry will be sent the next time you run ${chalk.green(
     '"keystone dev"'
@@ -258,4 +211,52 @@ function sendDeviceTelemetryEvent() {
   device.lastSentDate = todaysDate;
   telemetry.device = device;
   userConfig.set('telemetry', telemetry);
+}
+
+export function runTelemetry(
+  cwd: string,
+  lists: Record<string, InitialisedList>,
+  dbProviderName: DatabaseProvider
+) {
+  try {
+    if (
+      ci.isCI || // don't run in CI
+      process.env.NODE_ENV === 'production' || // don't run in production
+      process.env.KEYSTONE_TELEMETRY_DISABLED === '1' // don't run if the user has disabled it
+    ) {
+      return;
+    }
+
+    let { userConfig, telemetry } = getTelemetryConfig();
+
+    // if telemetry has been opted out, stop now
+    if (telemetry === false) return; // don't run if the user has opted out
+
+    // if undefined, we are new
+    if (telemetry === undefined) {
+      telemetry = {
+        informedAt: null,
+        device: {},
+        projects: {
+          [cwd]: {},
+        },
+      };
+      userConfig.set('telemetry', telemetry);
+    }
+
+    // is something awry?
+    if (typeof telemetry !== 'object') return;
+
+    // don't send telemetry before we inform the user, allowing opt-out
+    if (!telemetry.informedAt) {
+      inform();
+      return;
+    }
+
+    // is the project new?
+    sendProjectTelemetryEvent(cwd, lists, dbProviderName);
+    sendDeviceTelemetryEvent();
+  } catch (err) {
+    log(err);
+  }
 }
