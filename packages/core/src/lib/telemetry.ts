@@ -28,6 +28,11 @@ type TelemetryVersion1 =
       };
     };
 
+function log(message: unknown) {
+  if (process.env.KEYSTONE_TELEMETRY_DEBUG !== '1') return;
+  console.log(`telemetry: ${message}`);
+}
+
 function getTelemetryConfig() {
   const userConfig = new Conf<Configuration>({
     projectName: 'keystonejs',
@@ -118,10 +123,7 @@ export function runTelemetry(
     sendProjectTelemetryEvent(cwd, lists, dbProviderName);
     sendDeviceTelemetryEvent();
   } catch (err) {
-    // fail silently unless KEYSTONE_TELEMETRY_DEBUG is set to '1'
-    if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {
-      console.log(err);
-    }
+    log(err);
   }
 }
 
@@ -198,6 +200,8 @@ async function sendEvent(eventType: 'project' | 'device', eventData: Project | D
     },
     body: JSON.stringify(eventData),
   });
+
+  log(`sent ${eventType} report`);
 }
 
 function sendProjectTelemetryEvent(
@@ -213,10 +217,7 @@ function sendProjectTelemetryEvent(
   const project = telemetry.projects[cwd] ?? {};
   const { lastSentDate = null } = project;
   if (lastSentDate && lastSentDate >= todaysDate) {
-    if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {
-      console.log('Project telemetry already sent but debugging is enabled');
-    }
-
+    log('project telemetry already sent today');
     return;
   }
 
@@ -243,10 +244,7 @@ function sendDeviceTelemetryEvent() {
   const device = telemetry.device ?? {};
   const { lastSentDate = null } = device;
   if (lastSentDate && lastSentDate >= todaysDate) {
-    if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {
-      console.log('Device telemetry already sent but debugging is enabled');
-    }
-
+    log('device telemetry already sent today');
     return;
   }
 
