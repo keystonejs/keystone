@@ -118,18 +118,50 @@ function collectPackageVersions() {
   return versions;
 }
 
+function printAbout() {
+  console.log(`
+${chalk.yellow('Keystone collects anonymous data when you run')} ${chalk.green('"keystone dev"')}
+For more information, including how to opt-out see https://keystonejs.com/telemetry
+`);
+}
+
+export function printTelemetryStatus() {
+  const { telemetry } = getTelemetryConfig();
+
+  if (telemetry === undefined) {
+    console.log(`
+Keystone telemetry has been reset to ${chalk.yellow('uninitialized')}.
+
+Telemetry will be sent the next time you run ${chalk.green('"keystone dev"')}, unless you opt-out.
+
+`);
+  } else if (telemetry === false) {
+    console.log(`
+Keystone telemetry is {chalk.red('disabled')}.
+
+No Keystone device or project telemetry will be sent by this user account.
+`);
+  } else if (typeof telemetry === 'object') {
+    console.log(`
+Keystone telemetry is ${chalk.green('enabled')}.
+
+Telemetry will be sent the next time you run ${chalk.green('"keystone dev"')}, unless you opt-out.
+
+`);
+  }
+
+  printAbout();
+}
+
 function inform() {
   const { telemetry, userConfig } = getTelemetryConfig();
 
   // no telemetry? somehow our earlier checks missed an opt out, do nothing
   if (!telemetry) return;
 
+  console.log(`${chalk.bold('Keystone Telemetry')}`);
+  printAbout();
   console.log(`
-${chalk.bold('Keystone Telemetry')}
-
-${chalk.yellow('Keystone collects anonymous data when you run')} ${chalk.green('"keystone dev"')}
-For more information, including how to opt-out see https://keystonejs.com/telemetry
-
 You can use ${chalk.green('"keystone telemetry --help"')} to update your preferences at any time.
 
 No telemetry data has been sent yet, but telemetry will be sent the next time you run ${chalk.green(
@@ -259,4 +291,24 @@ export function runTelemetry(
   } catch (err) {
     log(err);
   }
+}
+
+export function enableTelemetry() {
+  const { telemetry, userConfig } = getTelemetryConfig();
+  if (telemetry === false) {
+    userConfig.delete('telemetry');
+  }
+  printTelemetryStatus();
+}
+
+export function disableTelemetry() {
+  const { userConfig } = getTelemetryConfig();
+  userConfig.set('telemetry', false);
+  printTelemetryStatus();
+}
+
+export function resetTelemetry() {
+  const { userConfig } = getTelemetryConfig();
+  userConfig.delete('telemetry');
+  printTelemetryStatus();
 }
