@@ -126,13 +126,21 @@ export type { ListSchemaConfig, ListConfig, BaseFields, MaybeSessionFunction, Ma
 
 // config.db
 
+// Copy of the Prisma's LogLevel types from `src/runtime/getLogLevel.ts`,
+// because they are not exported by Prisma.
+type PrismaLogLevel = 'info' | 'query' | 'warn' | 'error';
+type PrismaLogDefinition = {
+  level: PrismaLogLevel;
+  emit: 'stdout' | 'event';
+};
+
 export type DatabaseConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   url: string;
   shadowDatabaseUrl?: string;
   onConnect?: (args: KeystoneContext<TypeInfo>) => Promise<void>;
   /** @deprecated */
   useMigrations?: boolean;
-  enableLogging?: boolean;
+  enableLogging?: boolean | PrismaLogLevel | Array<PrismaLogLevel | PrismaLogDefinition>;
   idField?: IdFieldConfig;
   provider: DatabaseProvider;
 
