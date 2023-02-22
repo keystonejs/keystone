@@ -3,7 +3,7 @@ import ci from 'ci-info';
 import Conf from 'conf';
 import fetch from 'node-fetch';
 import chalk from 'chalk';
-import { Configuration, Project, Device, Status, PackageName } from '../types/telemetry';
+import { Configuration, Project, Device, PackageName } from '../types/telemetry';
 import { DatabaseProvider } from '../types';
 import { defaults } from './config/defaults';
 import { InitialisedList } from './core/types-for-lists';
@@ -17,6 +17,17 @@ const packageNames: PackageName[] = [
   '@opensaas/keystone-nextjs-auth',
 ];
 
+type TelemetryVersion1 =
+  | false
+  | undefined
+  | {
+      device: { lastSentDate?: string; informedAt: string };
+      projects: {
+        default: { lastSentDate?: string; informedAt: string };
+        [projectPath: string]: { lastSentDate?: string; informedAt: string };
+      };
+    };
+
 function getTelemetryConfig() {
   const userConfig = new Conf<Configuration>({
     projectName: 'keystonejs',
@@ -24,59 +35,45 @@ function getTelemetryConfig() {
     projectVersion: '2.0.0',
     migrations: {
       '^2.0.0': (store: Conf<Configuration>) => {
-        const oldTelemetry = store.get('telemetry');
-        if (!oldTelemetry) return;
-        const newTelemetry = {
-          device: oldTelemetry.device,
-          projects: oldTelemetry.projects,
+        const existing = store.get('telemetry') as unknown as TelemetryVersion1;
+        if (!existing) return;
+
+        const replacement: Configuration['telemetry'] = {
+          // every informedAt was a copy of device.informedAt, it was copied everywhere
+          informedAt: existing.device.informedAt,
+          device: {
+            lastSentDate: existing.device.lastSentDate,
+          },
+          projects: {}, // manually copying this below
         };
-        for (const key of Object.keys(oldTelemetry)) {
-          if (key === 'device' || key === 'projects') continue;
-          const projectKey = key.replace('projects', '');
-          // @ts-expect-error -- we're just copying the old data into the new format
-          if (oldTelemetry[key].informedAt === undefined) {
-            delete newTelemetry.projects[projectKey];
-            continue;
-          }
-          newTelemetry.projects[projectKey] = {
-            ...newTelemetry.projects[projectKey],
-            // @ts-expect-error -- we're just copying the old data into the new format
-            ...oldTelemetry[key],
+
+        // copy existing project lastSentDate's
+        for (const [projectPath, project] of Object.entries(existing.projects)) {
+          if (projectPath === 'default') continue; // informedAt moved to root
+
+          // dont copy garbage
+          if (typeof project !== 'object') continue;
+          if (typeof project.lastSentDate !== 'string') continue;
+          if (new Date(project.lastSentDate).toString() === 'Invalid Date') continue;
+
+          // only lastSentDate is retained
+          replacement.projects[projectPath] = {
+            lastSentDate: project.lastSentDate,
           };
         }
-        store.set('telemetry', newTelemetry);
+
+        store.set('telemetry', replacement);
       },
     },
   });
 
-  let telemetry: Configuration['telemetry'];
-  try {
-    // Load global telemetry config settings (if set)
-    telemetry = userConfig.get('telemetry');
-  } catch (err) {
-    // Fail silently unless KEYSTONE_TELEMETRY_DEBUG is set to '1'
-    if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {
-      console.log(err);
-    }
-  }
-  return { telemetry, userConfig };
+  return {
+    telemetry: userConfig.get('telemetry'),
+    userConfig,
+  };
 }
 
 const todaysDate = new Date().toISOString().slice(0, 10);
-
-const notifyText = `
-${chalk.bold('Keystone Telemetry')}
-
-Keystone collects anonymous data about how you use it. 
-For more information including how to opt-out see: https://keystonejs.com/telemetry
-
-Or run: ${chalk.green('keystone telemetry --help')} to change your preference at any time.
-
-No telemetry data has been sent yet, but will be sent the next time you run ${chalk.green(
-  'keystone dev'
-)} unless you first opt-out.
-
-`;
 
 export function runTelemetry(
   cwd: string,
@@ -85,162 +82,182 @@ export function runTelemetry(
 ) {
   try {
     if (
-      ci.isCI || // Don't run in CI
-      process.env.NODE_ENV === 'production' || // Don't run in production
-      process.env.KEYSTONE_TELEMETRY_DISABLED === '1' // Don't run if the user has disabled it
+      ci.isCI || // don't run in CI
+      process.env.NODE_ENV === 'production' || // don't run in production
+      process.env.KEYSTONE_TELEMETRY_DISABLED === '1' // don't run if the user has disabled it
     ) {
       return;
     }
-    const { userConfig, telemetry } = getTelemetryConfig();
-    if (telemetry === false) return; // Don't run if the user has opted out
+
+    let { userConfig, telemetry } = getTelemetryConfig();
+
+    // if telemetry has been opted out, stop now
+    if (telemetry === false) return; // don't run if the user has opted out
+
+    // if the user hasn't opted out, but nothing is here, we are new
     if (telemetry === undefined) {
-      const newTelemetry: Configuration['telemetry'] = {
-        device: { informedAt: new Date().toISOString() },
+      telemetry = {
+        device: {},
         projects: {
-          default: { informedAt: new Date().toISOString() },
-          [cwd]: { informedAt: new Date().toISOString() },
+          [cwd]: {},
         },
       };
-      userConfig.set('telemetry', newTelemetry);
-      console.log(notifyText);
-      // Don't run telemetry on first run, give the user a chance to opt out
-      return;
-    }
-    if (!telemetry) {
-      return;
-    }
-    if (telemetry.projects[cwd] === undefined) {
-      telemetry.projects[cwd] = telemetry.projects.default;
       userConfig.set('telemetry', telemetry);
     }
-    if (!!telemetry.projects[cwd]) {
-      sendProjectTelemetryEvent(cwd, lists, dbProviderName, telemetry.projects[cwd]);
+
+    // don't send telemetry before the user has been informed, allowing opt out
+    if (!telemetry.informedAt) {
+      inform();
+      return;
     }
-    if (!!telemetry.device) {
-      sendDeviceTelemetryEvent(telemetry.device);
-    }
+
+    // is something awry?
+    if (typeof telemetry !== 'object') return;
+
+    // is the project new?
+    sendProjectTelemetryEvent(cwd, lists, dbProviderName);
+    sendDeviceTelemetryEvent();
   } catch (err) {
-    // Fail silently unless KEYSTONE_TELEMETRY_DEBUG is set to '1'
+    // fail silently unless KEYSTONE_TELEMETRY_DEBUG is set to '1'
     if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {
       console.log(err);
     }
   }
 }
 
-const fieldCount = (lists: Record<string, InitialisedList>): Project['fields'] => {
+function collectFieldCount(lists: Record<string, InitialisedList>) {
   const fields: Project['fields'] = { unknown: 0 };
+
   for (const list of Object.values(lists)) {
     for (const [fieldPath, field] of Object.entries(list.fields)) {
       const fieldType = field.__ksTelemetryFieldTypeName;
-
       if (!fieldType) {
         // skip id fields
         if (fieldPath.endsWith('id')) continue;
         fields.unknown++;
         continue;
       }
-      if (!fields[fieldType]) {
-        fields[fieldType] = 0;
-      }
+
+      fields[fieldType] ||= 0;
       fields[fieldType] += 1;
     }
   }
-  return fields;
-};
 
-function sendEvent(eventType: 'project' | 'device', eventData: Project | Device) {
-  try {
-    const telemetryEndpoint = process.env.KEYSTONE_TELEMETRY_ENDPOINT || defaults.telemetryEndpoint;
-    const telemetryUrl = `${telemetryEndpoint}/v1/event/${eventType}`;
-    // Do not `await` to keep non-blocking
-    fetch(telemetryUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(eventData),
-    }).then(
-      () => {},
-      () => {}
-    );
-  } catch (err) {
-    // Fail silently unless KEYSTONE_TELEMETRY_DEBUG is set to '1'
-    if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {
-      console.log(err);
+  return fields;
+}
+
+function collectPackageVersions() {
+  const versions: Project['versions'] = {
+    '@keystone-6/core': '0.0.0', // effectively unknown
+  };
+
+  for (const packageName of packageNames) {
+    try {
+      const packageJson = require(`${packageName}/package.json`);
+      versions[packageName] = packageJson.version;
+    } catch {
+      // do nothing, most likely because the package is not installed
     }
   }
+
+  return versions;
+}
+
+function inform() {
+  const { telemetry, userConfig } = getTelemetryConfig();
+
+  // no telemetry? somehow our earlier checks missed an opt out, do nothing
+  if (!telemetry) return;
+
+  console.log(`
+${chalk.bold('Keystone Telemetry')}
+
+${chalk.yellow('Keystone collects anonymous data about how you run "keystone dev".')}
+For more information, including how to opt-out see: https://keystonejs.com/telemetry
+
+You can run ${chalk.green('"keystone telemetry --help"')} to change your preference at any time.
+
+No telemetry data has been sent yet, but telemetry will be sent the next time you run ${chalk.green(
+    '"keystone dev"'
+  )}, unless you opt-out.
+`);
+
+  // update the informedAt
+  telemetry.informedAt = new Date().toJSON();
+  userConfig.set('telemetry', telemetry);
+}
+
+async function sendEvent(eventType: 'project' | 'device', eventData: Project | Device) {
+  const telemetryEndpoint = process.env.KEYSTONE_TELEMETRY_ENDPOINT || defaults.telemetryEndpoint;
+  const telemetryUrl = `${telemetryEndpoint}/v1/event/${eventType}`;
+
+  await fetch(telemetryUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(eventData),
+  });
 }
 
 function sendProjectTelemetryEvent(
   cwd: string,
   lists: Record<string, InitialisedList>,
-  dbProviderName: DatabaseProvider,
-  projectConfig: Status
+  dbProviderName: DatabaseProvider
 ) {
-  try {
-    const { userConfig, telemetry } = getTelemetryConfig();
-    if (projectConfig === false) {
-      return;
-    }
-    if (!!projectConfig.lastSentDate && projectConfig.lastSentDate >= todaysDate) {
-      if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {
-        console.log('Project telemetry already sent but debugging is enabled');
-      } else {
-        return;
-      }
-    }
-    // get installed keystone package versions
-    const versions: Project['versions'] = {
-      '@keystone-6/core': '0.0.0',
-    };
-    packageNames.forEach(packageName => {
-      try {
-        const packageJson = require(`${packageName}/package.json`);
-        versions[packageName] = packageJson.version;
-      } catch {
-        // Fail silently most likely because the package is not installed
-      }
-    });
-    const projectInfo: Project = {
-      previous: projectConfig.lastSentDate || null,
-      fields: fieldCount(lists),
-      lists: Object.keys(lists).length,
-      versions,
-      database: dbProviderName,
-    };
-    sendEvent('project', projectInfo);
-    telemetry.projects[cwd].lastSentDate = todaysDate;
-    userConfig.set('telemetry', telemetry);
-  } catch (err) {
-    // Fail silently unless KEYSTONE_TELEMETRY_DEBUG is set to '1'
+  const { telemetry, userConfig } = getTelemetryConfig();
+
+  // no telemetry? somehow our earlier checks missed an opt out, do nothing
+  if (!telemetry) return;
+
+  const project = telemetry.projects[cwd] ?? {};
+  const { lastSentDate = null } = project;
+  if (lastSentDate && lastSentDate >= todaysDate) {
     if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {
-      console.log(err);
+      console.log('Project telemetry already sent but debugging is enabled');
     }
+
+    return;
   }
+
+  sendEvent('project', {
+    previous: lastSentDate,
+    fields: collectFieldCount(lists),
+    lists: Object.keys(lists).length,
+    versions: collectPackageVersions(),
+    database: dbProviderName,
+  });
+
+  // update the project lastSentDate
+  project.lastSentDate = todaysDate;
+  telemetry.projects[cwd] = project;
+  userConfig.set('telemetry', telemetry);
 }
 
-function sendDeviceTelemetryEvent(deviceConsent: Status) {
-  try {
-    const userConfig = getTelemetryConfig().userConfig;
-    if (deviceConsent === false) return;
-    if (!!deviceConsent.lastSentDate && deviceConsent.lastSentDate >= todaysDate) {
-      if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {
-        console.log('Device telemetry already sent but debugging is enabled');
-      } else {
-        return;
-      }
-    }
-    const deviceInfo: Device = {
-      previous: deviceConsent.lastSentDate || null,
-      os: os.platform(),
-      node: process.versions.node.split('.')[0],
-    };
-    sendEvent('device', deviceInfo);
-    userConfig.set(`telemetry.device.lastSentDate`, todaysDate);
-  } catch (err) {
-    // Fail silently unless KEYSTONE_TELEMETRY_DEBUG is set to '1' to 1
+function sendDeviceTelemetryEvent() {
+  const { telemetry, userConfig } = getTelemetryConfig();
+
+  // no telemetry? somehow our earlier checks missed an opt out, do nothing
+  if (!telemetry) return;
+
+  const device = telemetry.device ?? {};
+  const { lastSentDate = null } = device;
+  if (lastSentDate && lastSentDate >= todaysDate) {
     if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {
-      console.log(err);
+      console.log('Device telemetry already sent but debugging is enabled');
     }
+
+    return;
   }
+
+  sendEvent('device', {
+    previous: lastSentDate,
+    os: os.platform(),
+    node: process.versions.node.split('.')[0],
+  });
+
+  // update the device lastSentDate
+  device.lastSentDate = todaysDate;
+  telemetry.device = device;
+  userConfig.set('telemetry', telemetry);
 }

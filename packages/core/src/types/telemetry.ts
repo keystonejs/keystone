@@ -1,18 +1,22 @@
 import { DatabaseProvider } from './core';
 
-export type Status = false | { lastSentDate?: string; informedAt: string };
-
 export type Configuration = {
   telemetry:
-    | {
-        device: Status;
-        projects: {
-          default: Status;
-          [projectPath: string]: Status;
-        };
-      }
     | false
-    | undefined;
+    | undefined
+    | {
+        informedAt?: string;
+        device: {
+          lastSentDate?: string;
+        };
+        projects: {
+          [projectPath: string]:
+            | undefined
+            | {
+                lastSentDate?: string;
+              };
+        };
+      };
 };
 
 export type Device = {
@@ -20,6 +24,7 @@ export type Device = {
   os: string; // `linux` | `darwin` | `windows` | ... // os.platform()
   node: string; // `14` | ... | `18` // process.version.split('.').shift().slice(1)
 };
+
 export type PackageName =
   | '@keystone-6/core'
   | '@keystone-6/auth'
