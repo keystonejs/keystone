@@ -209,7 +209,7 @@ describe('Telemetry tests', () => {
     expect(mockTelemetryConfig).toBe(false);
   });
 
-  test(`Telemetry is not sent telemetry if disabled`, async () => {
+  test(`Telemetry is not sent if telemetry is disabled`, async () => {
     mockTelemetryConfig = false;
 
     await runTelemetry(mockProjectDir, lists, 'sqlite'); // inform
