@@ -1,53 +1,77 @@
-import os from 'os';
 import path from 'path';
-import fetch, { Response } from 'node-fetch';
 import { InitialisedList } from '../src/lib/core/types-for-lists';
-import { runTelemetry } from '../src/lib/telemetry';
-import { telemetry } from '../src/scripts/telemetry';
+import { runTelemetry, disableTelemetry } from '../src/lib/telemetry';
 
-var mockProjectRoot = path.resolve(__dirname, '..', '..', '..');
-var mockProjectDir = path.join(mockProjectRoot, './tests/test-projects/basic');
-var mockTelemetryConfig: any;
-
-const packageVersions = {
+const mockProjectRoot = path.resolve(__dirname, '..', '..', '..');
+const mockProjectDir = path.join(mockProjectRoot, './tests/test-projects/basic');
+const mockPackageVersions = {
   '@keystone-6/core': '3.1.0',
   '@keystone-6/auth': '5.0.1',
   '@keystone-6/fields-document': '5.0.2',
   '@keystone-6/cloudinary': '5.0.1',
 };
 
-const projectData = {
-  previous: null,
-  fields: {
-    unknown: 0,
-    id: 5,
+jest.mock(
+  '@keystone-6/core/package.json',
+  () => {
+    return { version: mockPackageVersions['@keystone-6/core'] };
   },
-  lists: 2,
-  versions: packageVersions,
-  database: 'sqlite',
-};
-const deviceData = {
-  previous: null,
-  os: 'keystone-os',
-  node: process.versions.node.split('.')[0],
-};
-
-const fetchOptions = {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
+  { virtual: true }
+);
+jest.mock(
+  '@keystone-6/auth/package.json',
+  () => {
+    return { version: mockPackageVersions['@keystone-6/auth'] };
   },
-};
+  { virtual: true }
+);
+jest.mock(
+  '@keystone-6/fields-document/package.json',
+  () => {
+    return { version: mockPackageVersions['@keystone-6/fields-document'] };
+  },
+  { virtual: true }
+);
+jest.mock(
+  '@keystone-6/cloudinary/package.json',
+  () => {
+    return { version: mockPackageVersions['@keystone-6/cloudinary'] };
+  },
+  { virtual: true }
+);
 
-const defaultDeviceFetchParam = {
-  ...fetchOptions,
-  body: JSON.stringify(deviceData),
-};
-const defaultProjectFetchParam = {
-  ...fetchOptions,
-  body: JSON.stringify(projectData),
-};
+let mockTelemetryConfig: any = undefined;
+jest.mock('conf', () => {
+  return function Conf() {
+    return {
+      get: () => mockTelemetryConfig,
+      set: (_name: string, newState: any) => {
+        mockTelemetryConfig = newState;
+      },
+      delete: () => {
+        mockTelemetryConfig = undefined;
+      },
+    };
+  };
+});
 
+jest.mock('node-fetch', () => {
+  return jest.fn().mockImplementation(async () => ({} as Response));
+});
+
+jest.mock('os', () => {
+  return {
+    ...jest.requireActual('os'),
+    platform: () => 'keystone-os',
+  };
+});
+
+// required as CI is set for tests
+jest.mock('ci-info', () => {
+  return { isCI: false };
+});
+
+///////////////////////
 const lists: Record<string, InitialisedList> = {
   Thing: {
     fields: {
@@ -78,214 +102,217 @@ const lists: Record<string, InitialisedList> = {
     },
   },
 };
-//jest.mock('conf', () => jest.fn());
-jest.mock('conf', () => {
-  return jest.fn().mockImplementation(() => ({
-    get: () => {
-      return mockTelemetryConfig;
-    },
-    set: (name: string, telemetryConfig: any) => {
-      if (name === 'telemetry') {
-        mockTelemetryConfig = telemetryConfig;
-      } else {
-        const locationName = name.split('.')[1];
-        if (locationName === 'device') {
-          mockTelemetryConfig.device.lastSentDate = telemetryConfig;
-        } else if (locationName === 'projects') {
-          mockTelemetryConfig.projects[mockProjectDir].lastSentDate = telemetryConfig;
-        } else {
-          throw new Error('Invalid name');
-        }
-      }
-    },
-    delete: () => {
-      mockTelemetryConfig = undefined;
-    },
-  }));
-});
-jest.mock('os');
-jest.mock('ci-info', () => ({ isCI: false }));
 
-jest.mock('node-fetch', () => jest.fn());
-
-jest.mock(
-  '@keystone-6/core/package.json',
-  () => {
-    return { version: packageVersions['@keystone-6/core'] };
-  },
-  { virtual: true }
-);
-jest.mock(
-  '@keystone-6/auth/package.json',
-  () => {
-    return { version: packageVersions['@keystone-6/auth'] };
-  },
-  { virtual: true }
-);
-jest.mock(
-  '@keystone-6/fields-document/package.json',
-  () => {
-    return { version: packageVersions['@keystone-6/fields-document'] };
-  },
-  { virtual: true }
-);
-jest.mock(
-  '@keystone-6/cloudinary/package.json',
-  () => {
-    return { version: packageVersions['@keystone-6/cloudinary'] };
-  },
-  { virtual: true }
-);
-
-describe('Inital Telemetry tests', () => {
-  const mockFetch = fetch as jest.MockedFunction<typeof fetch>;
-  const defaultFetchMock = () => mockFetch.mockImplementationOnce(async () => ({} as Response));
-
-  const env = process.env;
+describe('Telemetry tests', () => {
   beforeEach(() => {
-    process.env = { ...env };
-    mockTelemetryConfig = undefined;
-    os.platform = jest.fn().mockReturnValue('keystone-os');
-  });
-  afterEach(() => {
-    // Reset env variables
-    delete process.env.KEYSTONE_TELEMETRY_ENDPOINT;
-    delete process.env.KEYSTONE_TELEMETRY_DISABLED;
-    delete process.env.NOW_BUILDER;
-    // clear mocks (fetch specifically)
-    jest.clearAllMocks();
+    jest.resetAllMocks();
+    mockTelemetryConfig = undefined; // reset state
   });
 
-  test('Telemetry writes config but does not run on first go', async () => {
-    defaultFetchMock();
+  afterAll(() => {
+    jest.restoreAllMocks();
+  });
 
-    runTelemetry(mockProjectDir, lists, 'sqlite');
+  const mockFetch = require('node-fetch');
+  const today = new Date().toJSON().slice(0, 10);
+  const mockYesterday = '2023-01-01';
+  const mockTelemetryConfigInitialised = {
+    informedAt: `${mockYesterday}T01:11:11.111Z`,
+    device: { lastSentDate: mockYesterday },
+    projects: {
+      [mockProjectDir]: {
+        lastSentDate: mockYesterday,
+      },
+    },
+  };
+
+  function expectDidSend(lastSentDate: string | null) {
+    expect(mockFetch).toHaveBeenCalledWith(`https://telemetry.keystonejs.com/v1/event/project`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        previous: lastSentDate,
+        fields: {
+          unknown: 0,
+          id: 5,
+        },
+        lists: 2,
+        versions: mockPackageVersions,
+        database: 'sqlite',
+      }),
+    });
+
+    expect(mockFetch).toHaveBeenCalledWith(`https://telemetry.keystonejs.com/v1/event/device`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        previous: lastSentDate,
+        os: 'keystone-os',
+        node: process.versions.node.split('.')[0],
+      }),
+    });
+  }
+
+  test('Telemetry writes out an empty configuration, and sends nothing on first run', async () => {
+    await runTelemetry(mockProjectDir, lists, 'sqlite'); // inform
 
     expect(mockFetch).toHaveBeenCalledTimes(0);
-    expect(mockTelemetryConfig?.device.informedAt).toBeDefined();
-    expect(mockTelemetryConfig?.projects.default.informedAt).toBeDefined();
-    expect(mockTelemetryConfig?.projects[mockProjectDir]).toBeDefined();
-    expect(mockTelemetryConfig?.projects[mockProjectDir].lastSentDate).toBeUndefined();
-    expect(mockTelemetryConfig?.device.lastSentDate).toBeUndefined();
+    expect(mockTelemetryConfig).toBeDefined();
+    expect(mockTelemetryConfig?.device.lastSentDate).toBe(null);
+    expect(mockTelemetryConfig?.projects).toBeDefined();
+    expect(Object.keys(mockTelemetryConfig?.projects).length).toBe(0);
   });
-  test('Telemetry runs on second go', async () => {
-    defaultFetchMock();
-    runTelemetry(mockProjectDir, lists, 'sqlite');
-    runTelemetry(mockProjectDir, lists, 'sqlite');
 
-    expect(mockFetch).toHaveBeenCalledWith(
-      `https://telemetry.keystonejs.com/v1/event/project`,
-      defaultProjectFetchParam
-    );
-    expect(mockFetch).toHaveBeenCalledWith(
-      `https://telemetry.keystonejs.com/v1/event/device`,
-      defaultDeviceFetchParam
-    );
-    console.log(mockFetch.mock.calls);
+  test('Telemetry is sent on second run', async () => {
+    await runTelemetry(mockProjectDir, lists, 'sqlite'); // inform
+    await runTelemetry(mockProjectDir, lists, 'sqlite'); // send
 
+    expectDidSend(null);
     expect(mockFetch).toHaveBeenCalledTimes(2);
-    expect(mockTelemetryConfig?.device.informedAt).toBeDefined();
-    expect(mockTelemetryConfig?.projects.default.informedAt).toBeDefined();
+    expect(mockTelemetryConfig).toBeDefined();
+    expect(mockTelemetryConfig?.device.lastSentDate).toBe(today);
+    expect(mockTelemetryConfig?.projects).toBeDefined();
     expect(mockTelemetryConfig?.projects[mockProjectDir]).toBeDefined();
-    expect(mockTelemetryConfig?.projects[mockProjectDir].lastSentDate).toBeDefined();
-    expect(mockTelemetryConfig?.device.lastSentDate).toBeDefined();
-  });
-  test('Telemetry Does not send when env NODE_ENV is set to production', async () => {
-    defaultFetchMock();
-    // @ts-ignore
-    process.env.NODE_ENV = 'production';
-
-    runTelemetry(mockProjectDir, lists, 'sqlite');
-    runTelemetry(mockProjectDir, lists, 'sqlite');
-    expect(mockFetch).toHaveBeenCalledTimes(0);
-    expect(mockTelemetryConfig?.device).toBeUndefined();
-    expect(mockTelemetryConfig?.projects).toBeUndefined();
+    expect(mockTelemetryConfig?.projects[mockProjectDir].lastSentDate).toBe(today);
   });
 
-  test('Telemetry Does not send when the user has opted out using keystone telemetry disable', async () => {
-    defaultFetchMock();
+  test('Telemetry is not sent twice in one day', async () => {
+    await runTelemetry(mockProjectDir, lists, 'sqlite'); // inform
+    await runTelemetry(mockProjectDir, lists, 'sqlite'); // send
+    await runTelemetry(mockProjectDir, lists, 'sqlite'); // send, same day
 
-    telemetry(mockProjectDir, 'disable');
+    expectDidSend(null);
+    expect(mockFetch).toHaveBeenCalledTimes(2); // would be 4 if sent twice
+  });
+
+  test('Telemetry sends a lastSentDate on the third run, second day', async () => {
+    mockTelemetryConfig = mockTelemetryConfigInitialised;
+
+    await runTelemetry(mockProjectDir, lists, 'sqlite'); // send, different day
+
+    expectDidSend(mockYesterday);
+    expect(mockFetch).toHaveBeenCalledTimes(2);
+    expect(mockTelemetryConfig).toBeDefined();
+    expect(mockTelemetryConfig?.device.lastSentDate).toBe(today);
+    expect(mockTelemetryConfig?.projects).toBeDefined();
+    expect(mockTelemetryConfig?.projects[mockProjectDir]).toBeDefined();
+    expect(mockTelemetryConfig?.projects[mockProjectDir].lastSentDate).toBe(today);
+  });
+
+  test(`Telemetry is reset when using "keystone telemetry disable"`, () => {
+    disableTelemetry();
+
     expect(mockTelemetryConfig).toBe(false);
-    runTelemetry(mockProjectDir, lists, 'sqlite');
-    runTelemetry(mockProjectDir, lists, 'sqlite');
-    expect(mockFetch).toHaveBeenCalledTimes(0);
-    expect(mockTelemetryConfig?.device).toBeUndefined();
-    expect(mockTelemetryConfig?.projects).toBeUndefined();
   });
 
-  test('Telemetry Does not send when env KEYSTONE_TELEMETRY_DISABLED is set to 1', async () => {
-    defaultFetchMock();
-    // @ts-ignore
-    process.env.KEYSTONE_TELEMETRY_DISABLED = '1';
+  test(`Telemetry is not sent if telemetry is disabled`, async () => {
+    mockTelemetryConfig = false;
 
-    runTelemetry(mockProjectDir, lists, 'sqlite');
-    runTelemetry(mockProjectDir, lists, 'sqlite');
+    await runTelemetry(mockProjectDir, lists, 'sqlite'); // inform
+    await runTelemetry(mockProjectDir, lists, 'sqlite'); // send
+    await runTelemetry(mockProjectDir, lists, 'sqlite'); // send, same day
+
     expect(mockFetch).toHaveBeenCalledTimes(0);
-    expect(mockTelemetryConfig?.device).toBeUndefined();
-    expect(mockTelemetryConfig?.projects).toBeUndefined();
+    expect(mockTelemetryConfig).toBe(false);
   });
-});
 
-describe('Test isCI being set', () => {
-  beforeEach(() => {
-    jest.resetModules();
-    os.platform = jest.fn().mockReturnValue('keystone-os');
-    jest.mock('conf', () => {
-      return jest.fn().mockImplementation(() => ({
-        get: () => {
-          return mockTelemetryConfig;
-        },
-        set: (_name: string, telemetryConfig: any) => {
-          mockTelemetryConfig = telemetryConfig;
-        },
-        delete: () => {
-          mockTelemetryConfig = undefined;
-        },
-      }));
+  // easy opt-out tests
+  for (const [key, value] of Object.entries({
+    NODE_ENV: 'production',
+    KEYSTONE_TELEMETRY_DISABLED: '1',
+  })) {
+    describe(`when process.env.${key} is set to ${value}`, () => {
+      const envBefore = process.env[key];
+
+      beforeEach(() => {
+        // @ts-ignore
+        process.env[key] = value;
+      });
+
+      afterEach(() => {
+        // @ts-ignore
+        process.env[key] = envBefore;
+      });
+
+      test(`when initialised, nothing is sent`, async () => {
+        mockTelemetryConfig = mockTelemetryConfigInitialised;
+
+        await runTelemetry(mockProjectDir, lists, 'sqlite'); // try send again
+
+        expect(mockFetch).toHaveBeenCalledTimes(0);
+        expect(mockTelemetryConfig).toBe(mockTelemetryConfigInitialised); // unchanged
+      });
+
+      test(`if not initialised, we do nothing`, async () => {
+        expect(mockTelemetryConfig).toBe(undefined);
+        expect(mockFetch).toHaveBeenCalledTimes(0);
+
+        await runTelemetry(mockProjectDir, lists, 'sqlite'); // try inform
+        await runTelemetry(mockProjectDir, lists, 'sqlite'); // try send
+
+        expect(mockFetch).toHaveBeenCalledTimes(0);
+        expect(mockTelemetryConfig).toBe(undefined); // nothing changed
+      });
+    });
+  }
+
+  describe('when something throws internally', () => {
+    let runTelemetryThrows: any;
+    beforeEach(() => {
+      jest.resetAllMocks();
+      jest.resetModules();
+      jest.mock('node-fetch', () => {
+        return jest.fn().mockImplementation(async () => {
+          throw new Error('Uh oh');
+        });
+      });
+      runTelemetryThrows = require('../src/lib/telemetry').runTelemetry;
+    });
+
+    test(`nothing actually throws`, async () => {
+      mockTelemetryConfig = mockTelemetryConfigInitialised;
+
+      await runTelemetryThrows(mockProjectDir, lists, 'sqlite'); // send
+
+      expect(mockFetch).toHaveBeenCalledTimes(0);
+      expect(mockTelemetryConfig).toBe(mockTelemetryConfigInitialised); // unchanged
     });
   });
-  const mockFetch = fetch as jest.MockedFunction<typeof fetch>;
-  const defaultFetchMock = () => mockFetch.mockImplementation(async () => ({} as Response));
-  it('Telemetry Does not send when env CI is set', async () => {
-    jest.mock('ci-info', () => ({ isCI: true }));
-    const runTelemetry = require('../src/lib/telemetry').runTelemetry;
-    defaultFetchMock();
-    runTelemetry(mockProjectDir, lists, 'sqlite');
-    runTelemetry(mockProjectDir, lists, 'sqlite');
-    expect(mockFetch).toHaveBeenCalledTimes(0);
-    expect(mockTelemetryConfig?.device).toBeUndefined();
-    expect(mockTelemetryConfig?.projects).toBeUndefined();
-  });
-});
 
-describe('Telemetry does not throw any errors', () => {
-  beforeEach(() => {
-    jest.resetModules();
+  describe('when running in CI', () => {
+    let runTelemetryCI: any;
+    beforeEach(() => {
+      // this is a nightmare, don't touch it
+      jest.resetAllMocks();
+      jest.resetModules();
+      jest.mock('ci-info', () => {
+        return { isCI: true };
+      });
+      runTelemetryCI = require('../src/lib/telemetry').runTelemetry;
+    });
 
-    jest.mock('ci-info', () => ({ isCI: false }));
-    os.platform = jest.fn().mockImplementation(() => {
-      throw new Error('os.platform() threw an error');
+    test(`when initialised, nothing is sent`, async () => {
+      mockTelemetryConfig = mockTelemetryConfigInitialised;
+
+      await runTelemetryCI(mockProjectDir, lists, 'sqlite'); // try send again
+
+      expect(mockFetch).toHaveBeenCalledTimes(0);
+      expect(mockTelemetryConfig).toBe(mockTelemetryConfigInitialised); // unchanged
     });
-    jest.mock('conf', () => {
-      return jest.fn().mockImplementation(() => ({
-        get: () => {
-          throw new Error('Error getting config');
-        },
-        set: (_name: string, telemetryConfig: any) => {
-          throw new Error('Error setting config');
-        },
-        delete: () => {
-          mockTelemetryConfig = undefined;
-        },
-      }));
+
+    test(`if not initialised, we do nothing`, async () => {
+      expect(mockTelemetryConfig).toBe(undefined);
+      expect(mockFetch).toHaveBeenCalledTimes(0);
+
+      await runTelemetryCI(mockProjectDir, lists, 'sqlite'); // try inform
+      await runTelemetryCI(mockProjectDir, lists, 'sqlite'); // try send
+
+      expect(mockFetch).toHaveBeenCalledTimes(0);
+      expect(mockTelemetryConfig).toBe(undefined); // nothing changed
     });
-  });
-  const mockFetch = fetch as jest.MockedFunction<typeof fetch>;
-  const defaultFetchMock = () => mockFetch.mockImplementation(async () => ({} as Response));
-  it('Telemetry does not throw', async () => {
-    const runTelemetry = require('../src/lib/telemetry').runTelemetry;
-    defaultFetchMock();
-    expect(() => runTelemetry(mockProjectDir, lists, 'sqlite')).not.toThrow();
   });
 });

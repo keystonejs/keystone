@@ -6317,7 +6317,7 @@ concurrently@^7.3.0:
     tree-kill "^1.2.2"
     yargs "^17.3.1"
 
-conf@^10.0.3:
+conf@^10.2.0:
   version "10.2.0"
   resolved "https://registry.yarnpkg.com/conf/-/conf-10.2.0.tgz#838e757be963f1a2386dfe048a98f8f69f7b55d6"
   integrity sha512-8fLl9F04EJqjSqH+QjITQfJF8BrOVaYr1jewVgSRAEWePfxT0sku4w2hrGQ60BC/TNLGQ2pgxNlTbWQmMPFvXg==
