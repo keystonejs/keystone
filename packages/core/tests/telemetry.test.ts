@@ -1,6 +1,6 @@
 import path from 'path';
 import { InitialisedList } from '../src/lib/core/types-for-lists';
-import { disableTelemetry } from '../src/lib/telemetry';
+import { runTelemetry, disableTelemetry } from '../src/lib/telemetry';
 
 const mockProjectRoot = path.resolve(__dirname, '..', '..', '..');
 const mockProjectDir = path.join(mockProjectRoot, './tests/test-projects/basic');
@@ -104,16 +104,9 @@ const lists: Record<string, InitialisedList> = {
 };
 
 describe('Telemetry tests', () => {
-  let runTelemetry: any;
-
   beforeEach(() => {
     jest.resetAllMocks();
-    runTelemetry = require('../src/lib/telemetry').runTelemetry;
     mockTelemetryConfig = undefined; // reset state
-
-    jest.mock('ci-info', () => {
-      return { isCI: false };
-    });
   });
 
   afterAll(() => {
@@ -271,6 +264,7 @@ describe('Telemetry tests', () => {
   }
 
   describe('when something throws internally', () => {
+    let runTelemetryThrows: any;
     beforeEach(() => {
       jest.resetAllMocks();
       jest.resetModules();
@@ -279,19 +273,19 @@ describe('Telemetry tests', () => {
           throw new Error('Uh oh');
         });
       });
-
-      runTelemetry = require('../src/lib/telemetry').runTelemetry;
+      runTelemetryThrows = require('../src/lib/telemetry').runTelemetry;
     });
 
     test(`nothing actually throws`, async () => {
       mockTelemetryConfig = mockTelemetryConfigInitialised;
-      await runTelemetry(mockProjectDir, lists, 'sqlite'); // send
+      await runTelemetryThrows(mockProjectDir, lists, 'sqlite'); // send
       expect(mockFetch).toHaveBeenCalledTimes(0);
       expect(mockTelemetryConfig).toBe(mockTelemetryConfigInitialised); // unchanged
     });
   });
 
   describe('when running in CI', () => {
+    let runTelemetryCI: any;
     beforeEach(() => {
       // this is a nightmare, don't touch it
       jest.resetAllMocks();
@@ -299,12 +293,12 @@ describe('Telemetry tests', () => {
       jest.mock('ci-info', () => {
         return { isCI: true };
       });
-      runTelemetry = require('../src/lib/telemetry').runTelemetry;
+      runTelemetryCI = require('../src/lib/telemetry').runTelemetry;
     });
 
-    test(`when initialised, nothing is sent`, () => {
+    test(`when initialised, nothing is sent`, async () => {
       mockTelemetryConfig = mockTelemetryConfigInitialised;
-      runTelemetry(mockProjectDir, lists, 'sqlite'); // try send again
+      await runTelemetryCI(mockProjectDir, lists, 'sqlite'); // try send again
       expect(mockFetch).toHaveBeenCalledTimes(0);
       expect(mockTelemetryConfig).toBe(mockTelemetryConfigInitialised); // unchanged
     });
@@ -313,8 +307,8 @@ describe('Telemetry tests', () => {
       expect(mockTelemetryConfig).toBe(undefined);
       expect(mockFetch).toHaveBeenCalledTimes(0);
 
-      await runTelemetry(mockProjectDir, lists, 'sqlite'); // try inform
-      await runTelemetry(mockProjectDir, lists, 'sqlite'); // try send
+      await runTelemetryCI(mockProjectDir, lists, 'sqlite'); // try inform
+      await runTelemetryCI(mockProjectDir, lists, 'sqlite'); // try send
 
       expect(mockFetch).toHaveBeenCalledTimes(0);
       expect(mockTelemetryConfig).toBe(undefined); // nothing changed
