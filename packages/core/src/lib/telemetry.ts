@@ -73,17 +73,17 @@ function getTelemetryConfig() {
     },
   });
 
-  const telemetry = userConfig.get('telemetry')
+  const telemetry = userConfig.get('telemetry');
   if (telemetry === undefined) {
     return {
       telemetry: {
         informedAt: null,
         device: {
-          lastSentDate: null
+          lastSentDate: null,
         },
         projects: {},
       },
-      userConfig
+      userConfig,
     };
   }
 
@@ -156,12 +156,10 @@ export function printTelemetryStatus() {
         '"keystone dev"'
       )}, unless you opt-out`
     );
-
   } else if (telemetry === false) {
     console.log(`Keystone telemetry is ${chalk.red('disabled')}`);
     console.log();
     console.log(`Telemetry will ${chalk.red('not')} be sent by this system user`);
-
   } else if (typeof telemetry === 'object') {
     console.log(`Keystone telemetry is ${chalk.green('enabled')}`);
     console.log();

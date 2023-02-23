@@ -40,9 +40,9 @@ jest.mock(
   { virtual: true }
 );
 
-let mockTelemetryConfig : any = undefined;
+let mockTelemetryConfig: any = undefined;
 jest.mock('conf', () => {
-  return function Conf () {
+  return function Conf() {
     return {
       get: () => mockTelemetryConfig,
       set: (_name: string, newState: any) => {
@@ -50,9 +50,9 @@ jest.mock('conf', () => {
       },
       delete: () => {
         mockTelemetryConfig = undefined;
-      }
-    }
-  }
+      },
+    };
+  };
 });
 
 jest.mock('node-fetch', () => {
@@ -62,12 +62,14 @@ jest.mock('node-fetch', () => {
 jest.mock('os', () => {
   return {
     ...jest.requireActual('os'),
-    platform: () => 'keystone-os'
-  }
-})
+    platform: () => 'keystone-os',
+  };
+});
 
 // required as CI is set for tests
-jest.mock('ci-info', () => { return { isCI: false } });
+jest.mock('ci-info', () => {
+  return { isCI: false };
+});
 
 ///////////////////////
 const lists: Record<string, InitialisedList> = {
@@ -109,7 +111,9 @@ describe('Telemetry tests', () => {
     runTelemetry = require('../src/lib/telemetry').runTelemetry;
     mockTelemetryConfig = undefined; // reset state
 
-    jest.mock('ci-info', () => { return { isCI: false } });
+    jest.mock('ci-info', () => {
+      return { isCI: false };
+    });
   });
 
   afterAll(() => {
@@ -120,50 +124,44 @@ describe('Telemetry tests', () => {
   const today = new Date().toJSON().slice(0, 10);
   const mockYesterday = '2023-01-01';
   const mockTelemetryConfigInitialised = {
-    'informedAt': `${mockYesterday}T01:11:11.111Z`,
-    'device': { 'lastSentDate': mockYesterday },
-    'projects':{
+    informedAt: `${mockYesterday}T01:11:11.111Z`,
+    device: { lastSentDate: mockYesterday },
+    projects: {
       [mockProjectDir]: {
-        'lastSentDate': mockYesterday
-      }
-    }
+        lastSentDate: mockYesterday,
+      },
+    },
   };
 
   function expectDidSend(lastSentDate: string | null) {
-    expect(mockFetch).toHaveBeenCalledWith(
-      `https://telemetry.keystonejs.com/v1/event/project`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+    expect(mockFetch).toHaveBeenCalledWith(`https://telemetry.keystonejs.com/v1/event/project`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        previous: lastSentDate,
+        fields: {
+          unknown: 0,
+          id: 5,
         },
-        body: JSON.stringify({
-          previous: lastSentDate,
-          fields: {
-            unknown: 0,
-            id: 5,
-          },
-          lists: 2,
-          versions: mockPackageVersions,
-          database: 'sqlite',
-        })
-      }
-    );
+        lists: 2,
+        versions: mockPackageVersions,
+        database: 'sqlite',
+      }),
+    });
 
-    expect(mockFetch).toHaveBeenCalledWith(
-      `https://telemetry.keystonejs.com/v1/event/device`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          previous: lastSentDate,
-          os: 'keystone-os',
-          node: process.versions.node.split('.')[0],
-        })
-      }
-    );
+    expect(mockFetch).toHaveBeenCalledWith(`https://telemetry.keystonejs.com/v1/event/device`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        previous: lastSentDate,
+        os: 'keystone-os',
+        node: process.versions.node.split('.')[0],
+      }),
+    });
   }
 
   test('Telemetry writes out an empty configuration, and sends nothing on first run', async () => {
@@ -205,8 +203,8 @@ describe('Telemetry tests', () => {
     expect(mockFetch).toHaveBeenCalledTimes(2);
 
     // mock the dates so we can send again
-    mockTelemetryConfig.device.lastSentDate = mockYesterday
-    mockTelemetryConfig.projects[mockProjectDir].lastSentDate = mockYesterday
+    mockTelemetryConfig.device.lastSentDate = mockYesterday;
+    mockTelemetryConfig.projects[mockProjectDir].lastSentDate = mockYesterday;
     await runTelemetry(mockProjectDir, lists, 'sqlite'); // send again
 
     expectDidSend(mockYesterday);
@@ -236,21 +234,21 @@ describe('Telemetry tests', () => {
 
   // easy opt-out tests
   for (const [key, value] of Object.entries({
-    'NODE_ENV': 'production',
-    'KEYSTONE_TELEMETRY_DISABLED': '1',
+    NODE_ENV: 'production',
+    KEYSTONE_TELEMETRY_DISABLED: '1',
   })) {
     describe(`when process.env.${key} is set to ${value}`, () => {
-      const envBefore = process.env[key]
+      const envBefore = process.env[key];
 
       beforeEach(() => {
         // @ts-ignore
         process.env[key] = value;
-      })
+      });
 
       afterEach(() => {
         // @ts-ignore
-        process.env[key] = envBefore
-      })
+        process.env[key] = envBefore;
+      });
 
       test(`when initialised, nothing is sent`, async () => {
         mockTelemetryConfig = mockTelemetryConfigInitialised;
@@ -269,7 +267,7 @@ describe('Telemetry tests', () => {
         expect(mockFetch).toHaveBeenCalledTimes(0);
         expect(mockTelemetryConfig).toBe(undefined); // nothing changed
       });
-    })
+    });
   }
 
   describe('when something throws internally', () => {
@@ -278,12 +276,12 @@ describe('Telemetry tests', () => {
       jest.resetModules();
       jest.mock('node-fetch', () => {
         return jest.fn().mockImplementation(async () => {
-          throw new Error('Uh oh')
+          throw new Error('Uh oh');
         });
       });
 
       runTelemetry = require('../src/lib/telemetry').runTelemetry;
-    })
+    });
 
     test(`nothing actually throws`, async () => {
       mockTelemetryConfig = mockTelemetryConfigInitialised;
@@ -298,9 +296,11 @@ describe('Telemetry tests', () => {
       // this is a nightmare, don't touch it
       jest.resetAllMocks();
       jest.resetModules();
-      jest.mock('ci-info', () => { return { isCI: true } });
+      jest.mock('ci-info', () => {
+        return { isCI: true };
+      });
       runTelemetry = require('../src/lib/telemetry').runTelemetry;
-    })
+    });
 
     test(`when initialised, nothing is sent`, () => {
       mockTelemetryConfig = mockTelemetryConfigInitialised;
