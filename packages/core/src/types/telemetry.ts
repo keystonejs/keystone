@@ -2,15 +2,16 @@ import { DatabaseProvider } from './core';
 
 export type Configuration = {
   telemetry?:
+    | undefined
     | false
     | {
         informedAt: string | null;
         device: {
-          lastSentDate?: string;
+          lastSentDate: string | null;
         };
         projects: Partial<{
           [projectPath: string]: {
-            lastSentDate?: string;
+            lastSentDate: string;
           };
         }>;
       };

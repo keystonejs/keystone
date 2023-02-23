@@ -47,7 +47,7 @@ function getTelemetryConfig() {
           // every informedAt was a copy of device.informedAt, it was copied everywhere
           informedAt: existing.device.informedAt,
           device: {
-            lastSentDate: existing.device.lastSentDate,
+            lastSentDate: existing.device.lastSentDate ?? null,
           },
           projects: {}, // manually copying this below
         };
@@ -72,8 +72,22 @@ function getTelemetryConfig() {
     },
   });
 
+  const telemetry = userConfig.get('telemetry')
+  if (telemetry === undefined) {
+    return {
+      telemetry: {
+        informedAt: null,
+        device: {
+          lastSentDate: null
+        },
+        projects: {},
+      },
+      userConfig
+    };
+  }
+
   return {
-    telemetry: userConfig.get('telemetry'),
+    telemetry,
     userConfig,
   };
 }
@@ -219,8 +233,8 @@ function sendProjectTelemetryEvent(
   // no telemetry? somehow our earlier checks missed an opt out, do nothing
   if (!telemetry) return;
 
-  const project = telemetry.projects[cwd] ?? {};
-  const { lastSentDate = null } = project;
+  const project = telemetry.projects[cwd] ?? { lastSentDate: null };
+  const { lastSentDate } = project;
   if (lastSentDate && lastSentDate >= todaysDate) {
     log('project telemetry already sent today');
     return;
@@ -235,8 +249,7 @@ function sendProjectTelemetryEvent(
   });
 
   // update the project lastSentDate
-  project.lastSentDate = todaysDate;
-  telemetry.projects[cwd] = project;
+  telemetry.projects[cwd] = { lastSentDate: todaysDate };
   userConfig.set('telemetry', telemetry);
 }
 
@@ -246,8 +259,7 @@ function sendDeviceTelemetryEvent() {
   // no telemetry? somehow our earlier checks missed an opt out, do nothing
   if (!telemetry) return;
 
-  const device = telemetry.device ?? {};
-  const { lastSentDate = null } = device;
+  const { lastSentDate } = telemetry.device;
   if (lastSentDate && lastSentDate >= todaysDate) {
     log('device telemetry already sent today');
     return;
@@ -260,8 +272,7 @@ function sendDeviceTelemetryEvent() {
   });
 
   // update the device lastSentDate
-  device.lastSentDate = todaysDate;
-  telemetry.device = device;
+  telemetry.device = { lastSentDate: todaysDate };
   userConfig.set('telemetry', telemetry);
 }
 
@@ -279,33 +290,14 @@ export function runTelemetry(
       return;
     }
 
-    let { userConfig, telemetry } = getTelemetryConfig();
+    const { telemetry } = getTelemetryConfig();
 
-    // if telemetry has been opted out, stop now
-    if (telemetry === false) return; // don't run if the user has opted out
-
-    // if undefined, we are new
-    if (telemetry === undefined) {
-      telemetry = {
-        informedAt: null,
-        device: {},
-        projects: {
-          [cwd]: {},
-        },
-      };
-      userConfig.set('telemetry', telemetry);
-    }
-
-    // is something awry?
-    if (typeof telemetry !== 'object') return;
+    // don't run if the user has opted out
+    if (telemetry === false) return;
 
     // don't send telemetry before we inform the user, allowing opt-out
-    if (!telemetry.informedAt) {
-      inform();
-      return;
-    }
+    if (!telemetry.informedAt) return inform();
 
-    // is the project new?
     sendProjectTelemetryEvent(cwd, lists, dbProviderName);
     sendDeviceTelemetryEvent();
   } catch (err) {
