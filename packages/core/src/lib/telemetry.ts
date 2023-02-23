@@ -29,8 +29,9 @@ type TelemetryVersion1 =
     };
 
 function log(message: unknown) {
-  if (process.env.KEYSTONE_TELEMETRY_DEBUG !== '1') return;
-  console.log(`telemetry: ${message}`);
+  if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {
+    console.log(`${message}`);
+  }
 }
 
 function getTelemetryConfig() {
@@ -155,10 +156,12 @@ export function printTelemetryStatus() {
         '"keystone dev"'
       )}, unless you opt-out`
     );
+
   } else if (telemetry === false) {
     console.log(`Keystone telemetry is ${chalk.red('disabled')}`);
     console.log();
     console.log(`Telemetry will ${chalk.red('not')} be sent by this system user`);
+
   } else if (typeof telemetry === 'object') {
     console.log(`Keystone telemetry is ${chalk.green('enabled')}`);
     console.log();
@@ -223,7 +226,7 @@ async function sendEvent(eventType: 'project' | 'device', eventData: Project | D
   log(`sent ${eventType} report`);
 }
 
-function sendProjectTelemetryEvent(
+async function sendProjectTelemetryEvent(
   cwd: string,
   lists: Record<string, InitialisedList>,
   dbProviderName: DatabaseProvider
@@ -240,7 +243,7 @@ function sendProjectTelemetryEvent(
     return;
   }
 
-  sendEvent('project', {
+  await sendEvent('project', {
     previous: lastSentDate,
     fields: collectFieldCount(lists),
     lists: Object.keys(lists).length,
@@ -253,7 +256,7 @@ function sendProjectTelemetryEvent(
   userConfig.set('telemetry', telemetry);
 }
 
-function sendDeviceTelemetryEvent() {
+async function sendDeviceTelemetryEvent() {
   const { telemetry, userConfig } = getTelemetryConfig();
 
   // no telemetry? somehow our earlier checks missed an opt out, do nothing
@@ -265,7 +268,7 @@ function sendDeviceTelemetryEvent() {
     return;
   }
 
-  sendEvent('device', {
+  await sendEvent('device', {
     previous: lastSentDate,
     os: os.platform(),
     node: process.versions.node.split('.')[0],
@@ -276,7 +279,7 @@ function sendDeviceTelemetryEvent() {
   userConfig.set('telemetry', telemetry);
 }
 
-export function runTelemetry(
+export async function runTelemetry(
   cwd: string,
   lists: Record<string, InitialisedList>,
   dbProviderName: DatabaseProvider
@@ -298,8 +301,8 @@ export function runTelemetry(
     // don't send telemetry before we inform the user, allowing opt-out
     if (!telemetry.informedAt) return inform();
 
-    sendProjectTelemetryEvent(cwd, lists, dbProviderName);
-    sendDeviceTelemetryEvent();
+    await sendProjectTelemetryEvent(cwd, lists, dbProviderName);
+    await sendDeviceTelemetryEvent();
   } catch (err) {
     log(err);
   }
