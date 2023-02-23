@@ -25,7 +25,6 @@ Options:
   - If `'unique'` then all values of this field must be unique.
 - `ui` (default: `{ displayMode: 'input' }`): Configures the display mode of the field in the Admin UI.
   Can be one of `['input', 'textarea']`.
-{% if $nextRelease %}
 {% else /%}
 - `graphql.read.isNonNull` (default: `false`): If you have no read access control and you don't intend to add any in the future,
   you can set this to true and the output field will be non-nullable. This is only allowed when you have no read access control because otherwise,
@@ -35,7 +34,6 @@ Options:
   you can set this to true and the create field will be non-nullable and have a default value at the GraphQL level.
   This is only allowed when you have no create access control because otherwise, the item will always fail access control
   if a user doesn't have access to create the particular field regardless of whether or not they specify the field in the create.
-{% /if %}
 
 {% hint kind="tip" %}
 **\*Warning** Unlike with other `keystone` fields, `db.isNullable` is defaulted to `false` for the text field.

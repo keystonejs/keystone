@@ -1,7 +1,7 @@
 {
   "name": "@keystone-6/fields-document",
   "description": "KeystoneJS Document Field Type",
-  "version": "6.0.0",
+  "version": "7.0.0",
   "license": "MIT",
   "main": "dist/keystone-6-fields-document.cjs.js",
   "module": "dist/keystone-6-fields-document.esm.js",
@@ -45,7 +45,7 @@
     ]
   },
   "peerDependencies": {
-    "@keystone-6/core": "^4.0.0"
+    "@keystone-6/core": "^5.0.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",

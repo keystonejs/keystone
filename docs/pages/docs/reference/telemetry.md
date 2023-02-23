@@ -169,11 +169,8 @@ Keystone stores your telemetry preferences in a location defined by [env-paths](
 | Linux | ~/.config/keystonejs (or $XDG_CONFIG_HOME/keystonejs) |
 | Windows | %APPDATA%\keystonejs\Config (for example C:\Users\YOUR_USERNAME\AppData\Roaming\keystonejs\Config) |
 
-{% if $nextRelease %}
 **Environment Variable**
 You can opt-out of all telemetry by setting the `KEYSTONE_TELEMETRY_DISABLED` environment variable to `'1'`
-
-{% /if %}
 **Network-wide opt-out**
 
 If you have a network-wide firewall, you can opt-out of Keystone telemetry by not resolving the following domain: [telemetry.keystonejs.com](https://telemetry.keystonejs.com)

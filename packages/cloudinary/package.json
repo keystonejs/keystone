@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/cloudinary",
-  "version": "6.0.0",
+  "version": "7.0.0",
   "license": "MIT",
   "main": "dist/keystone-6-cloudinary.cjs.js",
   "module": "dist/keystone-6-cloudinary.esm.js",
@@ -27,10 +27,10 @@
     "react": "^18.2.0"
   },
   "peerDependencies": {
-    "@keystone-6/core": "^4.0.0"
+    "@keystone-6/core": "^5.0.0"
   },
   "devDependencies": {
-    "@keystone-6/core": "^4.0.0",
+    "@keystone-6/core": "^5.0.0",
     "graphql-upload": "^15.0.2",
     "mime": "^3.0.0"
   },

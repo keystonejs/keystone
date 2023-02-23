@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/core",
-  "version": "4.0.1",
+  "version": "5.0.0",
   "repository": "https://github.com/keystonejs/keystone/tree/main/packages/core",
   "license": "MIT",
   "main": "dist/keystone-6-core.cjs.js",
@@ -229,7 +229,7 @@
     "@keystone-ui/options": "^6.0.2",
     "@keystone-ui/pill": "^7.0.2",
     "@keystone-ui/popover": "^6.0.2",
-    "@keystone-ui/segmented-control": "^7.0.2",
+    "@keystone-ui/segmented-control": "^7.0.3",
     "@keystone-ui/toast": "^6.0.2",
     "@keystone-ui/tooltip": "^6.0.2",
     "@nodelib/fs.walk": "^1.2.8",

@@ -1,7 +1,7 @@
 {
   "name": "@keystone-6/example-document-field-customisation-keystone-server",
   "description": "Keystone example demonstrating document field customisation",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": true,
   "repository": "https://github.com/keystonejs/keystone/tree/main/examples/document-field-customisation/keystone-server",
   "scripts": {
@@ -10,9 +10,9 @@
     "build": "keystone build"
   },
   "dependencies": {
-    "@keystone-6/auth": "^6.0.0",
-    "@keystone-6/core": "^4.0.0",
-    "@keystone-6/fields-document": "^6.0.0",
+    "@keystone-6/auth": "^7.0.0",
+    "@keystone-6/core": "^5.0.0",
+    "@keystone-6/fields-document": "^7.0.0",
     "@keystone-ui/button": "^7.0.1",
     "@keystone-ui/core": "^5.0.1",
     "@keystone-ui/fields": "^7.1.1",

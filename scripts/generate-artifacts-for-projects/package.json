@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/generate-artifacts-for-projects",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "private": true,
   "main": "dist/keystone-6-generate-artifacts-for-projects.cjs.js",
   "module": "dist/keystone-6-generate-artifacts-for-projects.esm.js",
@@ -12,7 +12,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@keystone-6/core": "^4.0.0"
+    "@keystone-6/core": "^5.0.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/scripts/generate-artifacts-for-projects"
 }

@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/test-projects-basic",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -9,7 +9,7 @@
     "build": "keystone build"
   },
   "dependencies": {
-    "@keystone-6/core": "^4.0.0"
+    "@keystone-6/core": "^5.0.0"
   },
   "devDependencies": {
     "typescript": "~4.9.4"

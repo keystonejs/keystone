@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/test-projects-live-reloading",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -9,7 +9,7 @@
     "build": "keystone build"
   },
   "dependencies": {
-    "@keystone-6/core": "^4.0.0"
+    "@keystone-6/core": "^5.0.0"
   },
   "devDependencies": {
     "typescript": "~4.9.4"

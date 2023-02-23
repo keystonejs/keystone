@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-script",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -10,7 +10,7 @@
     "go": "tsx script.ts"
   },
   "dependencies": {
-    "@keystone-6/core": "^4.0.0"
+    "@keystone-6/core": "^5.0.0"
   },
   "devDependencies": {
     "tsx": "^3.9.0",
