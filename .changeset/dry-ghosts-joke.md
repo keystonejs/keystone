@@ -2,4 +2,4 @@
 '@keystone-6/core': patch
 ---
 
-Adds the ability to pass custom log level settings to Prisma Client
+Extend `db.enableLogging` to support other Prisma log levels
