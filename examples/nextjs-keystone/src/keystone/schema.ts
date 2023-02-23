@@ -1,6 +1,6 @@
 import { list } from '@keystone-6/core';
 import { allowAll, denyAll, allOperations } from '@keystone-6/core/access';
-import { text, password, timestamp } from '@keystone-6/core/fields';
+import { text, password, timestamp, image } from '@keystone-6/core/fields';
 import type { Lists } from '.keystone/types';
 
 const permissions = {
@@ -34,6 +34,7 @@ export const lists: Lists = {
       createdAt: timestamp({
         defaultValue: { kind: 'now' },
       }),
+      avatar: image({ storage: 'my_images' }),
     },
   }),
 };

@@ -7,6 +7,7 @@ type User {
   email: String
   password: PasswordState
   createdAt: DateTime
+  avatar: ImageFieldOutput
 }
 
 type PasswordState {
@@ -14,6 +15,22 @@ type PasswordState {
 }
 
 scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
+
+type ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  url: String!
+}
+
+enum ImageExtension {
+  jpg
+  png
+  webp
+  gif
+}
 
 input UserWhereUniqueInput {
   id: ID
@@ -97,7 +114,15 @@ input UserUpdateInput {
   email: String
   password: String
   createdAt: DateTime
+  avatar: ImageFieldInput
 }
+
+input ImageFieldInput {
+  upload: Upload!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
 
 input UserUpdateArgs {
   where: UserWhereUniqueInput!
@@ -109,6 +134,7 @@ input UserCreateInput {
   email: String
   password: String
   createdAt: DateTime
+  avatar: ImageFieldInput
 }
 
 """
