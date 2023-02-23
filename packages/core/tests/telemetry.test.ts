@@ -113,7 +113,7 @@ describe('Telemetry tests', () => {
     jest.restoreAllMocks();
   });
 
-  let mockFetch = require('node-fetch');
+  const mockFetch = require('node-fetch');
   const today = new Date().toJSON().slice(0, 10);
   const mockYesterday = '2023-01-01';
   const mockTelemetryConfigInitialised = {
@@ -183,25 +183,19 @@ describe('Telemetry tests', () => {
   test('Telemetry is not sent twice in one day', async () => {
     await runTelemetry(mockProjectDir, lists, 'sqlite'); // inform
     await runTelemetry(mockProjectDir, lists, 'sqlite'); // send
-    await runTelemetry(mockProjectDir, lists, 'sqlite'); // send, without mocking
+    await runTelemetry(mockProjectDir, lists, 'sqlite'); // send, same day
 
     expectDidSend(null);
     expect(mockFetch).toHaveBeenCalledTimes(2); // would be 4 if sent twice
   });
 
-  test('Telemetry sends a lastSentDate on third run', async () => {
-    await runTelemetry(mockProjectDir, lists, 'sqlite'); // inform
-    await runTelemetry(mockProjectDir, lists, 'sqlite'); // send
-    expectDidSend(null);
-    expect(mockFetch).toHaveBeenCalledTimes(2);
+  test('Telemetry sends a lastSentDate on the third run, second day', async () => {
+    mockTelemetryConfig = mockTelemetryConfigInitialised;
 
-    // mock the dates so we can send again
-    mockTelemetryConfig.device.lastSentDate = mockYesterday;
-    mockTelemetryConfig.projects[mockProjectDir].lastSentDate = mockYesterday;
-    await runTelemetry(mockProjectDir, lists, 'sqlite'); // send again
+    await runTelemetry(mockProjectDir, lists, 'sqlite'); // send, different day
 
     expectDidSend(mockYesterday);
-    expect(mockFetch).toHaveBeenCalledTimes(4);
+    expect(mockFetch).toHaveBeenCalledTimes(2);
     expect(mockTelemetryConfig).toBeDefined();
     expect(mockTelemetryConfig?.device.lastSentDate).toBe(today);
     expect(mockTelemetryConfig?.projects).toBeDefined();
@@ -211,15 +205,16 @@ describe('Telemetry tests', () => {
 
   test(`Telemetry is reset when using "keystone telemetry disable"`, () => {
     disableTelemetry();
+
     expect(mockTelemetryConfig).toBe(false);
   });
 
-  test(`Telemetry is not sent telemetry is disabled`, async () => {
+  test(`Telemetry is not sent telemetry if disabled`, async () => {
     mockTelemetryConfig = false;
 
     await runTelemetry(mockProjectDir, lists, 'sqlite'); // inform
     await runTelemetry(mockProjectDir, lists, 'sqlite'); // send
-    await runTelemetry(mockProjectDir, lists, 'sqlite'); // send again
+    await runTelemetry(mockProjectDir, lists, 'sqlite'); // send, same day
 
     expect(mockFetch).toHaveBeenCalledTimes(0);
     expect(mockTelemetryConfig).toBe(false);
@@ -245,7 +240,9 @@ describe('Telemetry tests', () => {
 
       test(`when initialised, nothing is sent`, async () => {
         mockTelemetryConfig = mockTelemetryConfigInitialised;
+
         await runTelemetry(mockProjectDir, lists, 'sqlite'); // try send again
+
         expect(mockFetch).toHaveBeenCalledTimes(0);
         expect(mockTelemetryConfig).toBe(mockTelemetryConfigInitialised); // unchanged
       });
@@ -278,7 +275,9 @@ describe('Telemetry tests', () => {
 
     test(`nothing actually throws`, async () => {
       mockTelemetryConfig = mockTelemetryConfigInitialised;
+
       await runTelemetryThrows(mockProjectDir, lists, 'sqlite'); // send
+
       expect(mockFetch).toHaveBeenCalledTimes(0);
       expect(mockTelemetryConfig).toBe(mockTelemetryConfigInitialised); // unchanged
     });
@@ -298,7 +297,9 @@ describe('Telemetry tests', () => {
 
     test(`when initialised, nothing is sent`, async () => {
       mockTelemetryConfig = mockTelemetryConfigInitialised;
+
       await runTelemetryCI(mockProjectDir, lists, 'sqlite'); // try send again
+
       expect(mockFetch).toHaveBeenCalledTimes(0);
       expect(mockTelemetryConfig).toBe(mockTelemetryConfigInitialised); // unchanged
     });
