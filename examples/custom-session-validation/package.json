@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-with-custom-session-validation",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -9,8 +9,8 @@
     "build": "keystone build"
   },
   "dependencies": {
-    "@keystone-6/auth": "^6.0.0",
-    "@keystone-6/core": "^4.0.0"
+    "@keystone-6/auth": "^7.0.0",
+    "@keystone-6/core": "^5.0.0"
   },
   "devDependencies": {
     "typescript": "~4.9.4"

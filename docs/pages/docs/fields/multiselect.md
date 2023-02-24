@@ -18,7 +18,6 @@ Options:
   The `value` will be used in the GraphQL API and stored in the database.
 - `defaultValue` (default: `[]`): This value will be used for the field when creating items if no explicit value is set.
 - `db.map`: Adds a [Prisma `@map`](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#map) attribute to this field which changes the column name in the database
-{% if $nextRelease %}
 {% else /%}
 - `graphql.read.isNonNull` (default: `false`): If you have no read access control and you don't intend to add any in the future,
   you can set this to true and the output field will be non-nullable. This is only allowed when you have no read access control because otherwise,
@@ -28,7 +27,6 @@ Options:
   you can set this to true and the create field will be non-nullable and have a default value at the GraphQL level.
   This is only allowed when you have no create access control because otherwise, the item will always fail access control
   if a user doesn't have access to create the particular field regardless of whether or not they specify the field in the create.
-{% /if %}
 
 ```typescript
 import { config, list } from '@keystone-6/core';

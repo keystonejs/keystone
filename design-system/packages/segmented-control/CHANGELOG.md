@@ -1,5 +1,11 @@
 # @keystone-ui/segmented-control
 
+## 7.0.3
+
+### Patch Changes
+
+- [#8177](https://github.com/keystonejs/keystone/pull/8177) [`3ef0d9d7d`](https://github.com/keystonejs/keystone/commit/3ef0d9d7d857c622cec95b702ea717fa920f8fc0) Thanks [@borisno2](https://github.com/borisno2)! - Fixes creating new relationships in card view on create item page
+
 ## 7.0.2
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-extend-graphql-schema-nexus",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@graphql-tools/schema": "^9.0.0",
-    "@keystone-6/core": "^4.0.0",
+    "@keystone-6/core": "^5.0.0",
     "graphql": "^16.6.0",
     "nexus": "1.3.0"
   },

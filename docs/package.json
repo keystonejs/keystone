@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/website",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -22,7 +22,7 @@
     "@emotion/react": "^11.7.1",
     "@emotion/server": "11.10.0",
     "@emotion/weak-memoize": "^0.3.0",
-    "@keystone-6/fields-document": "^6.0.0",
+    "@keystone-6/fields-document": "^7.0.0",
     "@keystone-ui/core": "^5.0.1",
     "@keystone-ui/icons": "^6.0.1",
     "@markdoc/markdoc": "^0.2.0",

@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-extend-graphql-schema-graphql-tools",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "private": true,
   "repository": "https://github.com/keystonejs/keystone/tree/main/examples/extend-graphql-schema-graphql-tools",
   "license": "MIT",
@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@graphql-tools/schema": "^9.0.0",
-    "@keystone-6/core": "^4.0.0"
+    "@keystone-6/core": "^5.0.0"
   },
   "devDependencies": {
     "typescript": "~4.9.4"
