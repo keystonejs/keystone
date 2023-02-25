@@ -5,7 +5,7 @@ description: "Learn how to get your first Keystone project up and running using 
 
 ![A terminal with the output of create-keystone-app](/assets/getting-started/cover.svg)
 
-[`create-keystone-app`](https://github.com/keystonejs/create-keystone-app) is a CLI app that makes it easier for you initiate a Keystone project.
+[`create-keystone-app`](https://github.com/keystonejs/create-keystone-app) is a CLI app that makes it easier for you to initiate a Keystone project.
 It generates some files for you and installs all the dependencies you need to run the Admin UI and start using the [GraphQL API](/docs/graphql/overview).
 
 ## Quick Start
