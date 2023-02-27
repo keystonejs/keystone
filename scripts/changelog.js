@@ -82,20 +82,19 @@ async function fetchData(tag) {
   const previousContributors = JSON.parse(
     readFileSync('.changeset/contributors.json').toString('utf-8')
   );
-  const changes = {};
+
+  const githubCommits = {};
   for (const commit of revs) {
     let { user, pull } = await getInfo({ repo: 'keystonejs/keystone', commit });
     pull = pull || gitCommitDescription(commit).match(/#([0-9]+)/)?.[1];
 
     console.error(`commit ${commit}, user ${user}, pull #${pull}`);
-    const change = { commit, user, pull };
-    changes[commit] = change;
-
-    if (previousContributors.includes(user)) continue;
-    change.first = true;
+    const first = !previousContributors.includes(user);
+    githubCommits[commit] = { commit, user, pull, first };
   }
 
-  // join some of the changeset data with the commit information
+  // augment changesets with git information
+  const changes = [];
   for (const changeset of changesets) {
     const { releases, summary, commit } = changeset;
 
@@ -114,21 +113,30 @@ async function fetchData(tag) {
     }
     if (!type) throw new Error('Unknown type');
 
-    const change = changes[commit];
-    change.changeset = changeset.id;
-    change.summary = summary;
-    change.type = type;
-
     // only public packages, then strip the namespace
-    change.packages = releases
+    const packages = releases
       .filter(x => publicPackages.includes(x.name))
       .map(x => x.name.replace('@keystone-6/', ''))
       .sort();
+
+    const githubCommit = githubCommits[commit];
+    changes.push({
+      ...githubCommit,
+      summary,
+      type,
+      packages
+    });
   }
 
-  // tally contributions
+  // if no changeset was associated with a commit, we still want to acknowledge the work
+  for (const [commit, githubCommit] of Object.entries(githubCommits)) {
+    if (changes.find(x => x.commit === commit)) continue;
+    changes.push(githubCommit);
+  }
+
+  // find the set of our contributors
   const contributors = [
-    ...new Set([...previousContributors, ...Object.values(changes).map(x => x.user)]),
+    ...new Set([...previousContributors, ...changes.map(x => x.user)]),
   ];
 
   // only public packages
@@ -138,7 +146,7 @@ async function fetchData(tag) {
     .map(x => `${x.name}@${x.newVersion}`)
     .sort();
 
-  return { packages, changes: Object.values(changes), contributors };
+  return { packages, changes, contributors };
 }
 
 function formatPackagesChanged(packages) {
@@ -157,8 +165,12 @@ function formatCVE({ id, href, upstream, description }) {
   return `- [\`${id}\`](${href}) - ${description}`;
 }
 
-function link(pull) {
+function formatLink(pull) {
   return `[#${pull}](https://github.com/keystonejs/keystone/pull/${pull})`;
+}
+
+function sortByCommit(a, b) {
+  return a.commit.localeCompare(b.commit);
 }
 
 function groupPullsByUser(list) {
@@ -168,7 +180,9 @@ function groupPullsByUser(list) {
     result[item.user] ||= [];
     result[item.user].push(item.pull);
   }
-  return Object.entries(result).map(([user, pulls]) => ({ user, pulls }));
+  return Object.entries(result)
+    .map(([user, pulls]) => ({ user, pulls }))
+    .sort((a, b) => a.user.localeCompare(b.user));
 }
 
 async function generateGitHubReleaseText(previousTag) {
@@ -184,9 +198,9 @@ async function generateGitHubReleaseText(previousTag) {
   output.push(formatPackagesChanged(packages));
   output.push('');
 
-  const breaking = changes.filter(x => x.type === 'major');
-  const features = changes.filter(x => x.type === 'minor');
-  const fixes = changes.filter(x => x.type === 'patch');
+  const breaking = changes.filter(x => x.type === 'major').sort(sortByCommit);
+  const features = changes.filter(x => x.type === 'minor').sort(sortByCommit);
+  const fixes = changes.filter(x => x.type === 'patch').sort(sortByCommit);
 
   if (breaking.length) {
     output.push(...[`#### Breaking Changes`, ...breaking.map(formatChange), ``]);
@@ -216,14 +230,14 @@ async function generateGitHubReleaseText(previousTag) {
   const first = changes.filter(x => x.first);
   const unattributed = changes.filter(x => !x.type && !x.first);
 
-  if (first.length || unattributed.length) {
+  if (first.length) {
     const listf = groupPullsByUser(first);
 
     output.push(`#### :seedling: New Contributors`);
     output.push(
       `Thanks to the following developers for making their first contributions to the project!`
     );
-    output.push(...listf.map(({ user, pulls }) => `- @${user} (${pulls.map(link).join(',')})`));
+    output.push(...listf.map(({ user, pulls }) => `- @${user} (${pulls.map(formatLink).join(',')})`));
     output.push(``);
   }
 
@@ -233,7 +247,7 @@ async function generateGitHubReleaseText(previousTag) {
     output.push(`#### :blue_heart: Acknowledgements `);
     output.push(
       `Lastly, thanks to ${listu
-        .map(({ user, pulls }) => `@${user} (${pulls.map(link).join(',')})`)
+        .map(({ user, pulls }) => `@${user} (${pulls.map(formatLink).join(',')})`)
         .join(', ')} for changes not shown above, but none-the-less appreciated.`
     );
     output.push(``);
