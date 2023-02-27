@@ -7,6 +7,7 @@
   "license": "MIT",
   "repository": "https://github.com/keystonejs/keystone",
   "homepage": "https://github.com/keystonejs/keystone",
+  "packageManager": "^yarn@1.22.19",
   "scripts": {
     "docs": "manypkg run @keystone-6/website dev",
     "coverage": "jest --coverage",
