@@ -20,7 +20,11 @@
 
 - [#8280](https://github.com/keystonejs/keystone/pull/8280) [`384748d85`](https://github.com/keystonejs/keystone/commit/384748d85f06755ee7c8aa6f74f0ffae486b82c1) Thanks [@dcousens](https://github.com/dcousens)! - Renames `isValidSession` on `pageMiddleware` to `wasAccessAllowed`, which is what it actually is
 
+- [#8221](https://github.com/keystonejs/keystone/pull/8221) [`88a7c6986`](https://github.com/keystonejs/keystone/commit/88a7c6986fd421be2080cb29ca9c86e8bbc40ae5) Thanks [@borisno2](https://github.com/borisno2)! - Remove experimental `generateNextGraphqlAPI` - use `getContext` instead
+
 ### Minor Changes
+
+- [#8321](https://github.com/keystonejs/keystone/pull/8321) [`8e7729880`](https://github.com/keystonejs/keystone/commit/8e7729880606363203d91b1c74a61e58295dadca) Thanks [@MurzNN](https://github.com/MurzNN)! - Extend `db.enableLogging` to support other Prisma log levels
 
 - [#8264](https://github.com/keystonejs/keystone/pull/8264) [`5a9ca539f`](https://github.com/keystonejs/keystone/commit/5a9ca539f714f9dd3b70886710410c28d977045a) Thanks [@jhohlfeld](https://github.com/jhohlfeld)! - Add `acl` option for s3 storage configuration
 
@@ -32,13 +36,9 @@
 
 - [#8313](https://github.com/keystonejs/keystone/pull/8313) [`75add09c7`](https://github.com/keystonejs/keystone/commit/75add09c7b136ca3f2920fc1d85ffdf10499b3b2) Thanks [@marekryb](https://github.com/marekryb)! - Add a `cursor` argument for `findMany` queries, enabling cursor-based pagination (see [Prisma.io documentation](https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination) for how this works)
 
-- [#8221](https://github.com/keystonejs/keystone/pull/8221) [`88a7c6986`](https://github.com/keystonejs/keystone/commit/88a7c6986fd421be2080cb29ca9c86e8bbc40ae5) Thanks [@borisno2](https://github.com/borisno2)! - Remove experimental `generateNextGraphqlAPI` - use `getContext` instead
-
 ### Patch Changes
 
 - [#8177](https://github.com/keystonejs/keystone/pull/8177) [`3ef0d9d7d`](https://github.com/keystonejs/keystone/commit/3ef0d9d7d857c622cec95b702ea717fa920f8fc0) Thanks [@borisno2](https://github.com/borisno2)! - Fixes creating new relationships in card view on create item page
-
-- [#8321](https://github.com/keystonejs/keystone/pull/8321) [`8e7729880`](https://github.com/keystonejs/keystone/commit/8e7729880606363203d91b1c74a61e58295dadca) Thanks [@MurzNN](https://github.com/MurzNN)! - Extend `db.enableLogging` to support other Prisma log levels
 
 - [#8239](https://github.com/keystonejs/keystone/pull/8239) [`ebd725938`](https://github.com/keystonejs/keystone/commit/ebd7259383161225c9fcc8597d2e5a13eb2de015) Thanks [@borisno2](https://github.com/borisno2)! - Fixes error when deleting an item that has a file or image that is no longer on the filesystem
 
