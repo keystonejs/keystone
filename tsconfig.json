@@ -13,7 +13,7 @@
     "noUnusedLocals": true,
     "types": ["@types/jest"],
     "typeRoots": [],
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "resolveJsonModule": true
   },
   "include": ["**/*"],
