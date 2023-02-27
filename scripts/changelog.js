@@ -124,7 +124,7 @@ async function fetchData(tag) {
       ...githubCommit,
       summary,
       type,
-      packages
+      packages,
     });
   }
 
@@ -135,9 +135,7 @@ async function fetchData(tag) {
   }
 
   // find the set of our contributors
-  const contributors = [
-    ...new Set([...previousContributors, ...changes.map(x => x.user)]),
-  ];
+  const contributors = [...new Set([...previousContributors, ...changes.map(x => x.user)])];
 
   // only public packages
   const packages = releases
@@ -237,7 +235,9 @@ async function generateGitHubReleaseText(previousTag) {
     output.push(
       `Thanks to the following developers for making their first contributions to the project!`
     );
-    output.push(...listf.map(({ user, pulls }) => `- @${user} (${pulls.map(formatLink).join(',')})`));
+    output.push(
+      ...listf.map(({ user, pulls }) => `- @${user} (${pulls.map(formatLink).join(',')})`)
+    );
     output.push(``);
   }
 
