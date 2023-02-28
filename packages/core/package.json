@@ -217,7 +217,7 @@
     "@emotion/weak-memoize": "^0.3.0",
     "@graphql-ts/extend": "^1.0.0",
     "@graphql-ts/schema": "^0.6.0",
-    "@graphql-typed-document-node/core": "3.1.1",
+    "@graphql-typed-document-node/core": "^3.1.2",
     "@hapi/iron": "^6.0.0",
     "@keystone-ui/button": "^7.0.2",
     "@keystone-ui/core": "^5.0.2",
