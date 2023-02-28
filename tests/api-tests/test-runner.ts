@@ -102,17 +102,8 @@ let hasCreatedDatabase = false;
 
 async function pushSchemaToDatabase(schema: string) {
   if (dbProvider === 'sqlite') {
-    // we can be more efficient on sqlite because the schema push will implicitly create the database
-    // on create so if we just remove the database file (if it exists)
-    // we can avoid calling `createDatabase` and `migrate.reset()`
-    // which is expensive since they go to a child process
-    try {
-      await fs.unlink(path.join(prismaSchemaDirectory, SQLITE_DATABASE_FILENAME));
-    } catch (err: any) {
-      if (err.code !== 'ENOENT') {
-        throw err;
-      }
-    }
+    // touch the file (or truncate it), easiest way to start from scratch
+    await fs.writeFile(path.join(prismaSchemaDirectory, SQLITE_DATABASE_FILENAME), '');
     await withMigrate(prismaSchemaPath, migrate =>
       runMigrateWithDbUrl(dbUrl, undefined, () =>
         migrate.engine.schemaPush({

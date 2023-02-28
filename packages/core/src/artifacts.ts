@@ -52,7 +52,7 @@ async function ensurePrismaBinariesExist() {
   // since stricter package managers(e.g. pnpm, Yarn Berry)
   // don't allow importing packages that aren't explicitly depended on
   const requireFromPrismaSdk = createRequire(require.resolve('@prisma/internals'));
-  const prismaEngines = requireFromPrismaSdk('@prisma/engines') as typeof import('@prisma/engines');
+  const prismaEngines = requireFromPrismaSdk('@prisma/engines');
   await prismaEngines.ensureBinariesExist();
   hasEnsuredBinariesExist = true;
 }

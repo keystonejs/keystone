@@ -398,19 +398,40 @@ describe(`One-to-many relationships`, () => {
 
   describe('Update', () => {
     test(
-      'With connect',
+      'With connect on existing relationship',
       runner(async ({ context }) => {
         // Manually setup a connected Company <-> Location
         const { location, company } = await createCompanyAndLocation(context);
 
-        // Sanity check the links don't yet exist
-        // `...not.toBe(expect.anything())` allows null and undefined values
-        expect(company.locations).not.toBe(expect.anything());
-        expect(location.company).not.toBe(expect.anything());
+        // check that the links exist
+        expect(company.locations[0].id).toBe(location.id);
 
         await context.query.Company.updateOne({
           where: { id: company.id },
-          data: { locations: { connect: [{ id: location.id }] } },
+          data: { locations: { connect: { id: location.id } } },
+        });
+
+        const { Company, Location } = await getCompanyAndLocation(context, company.id, location.id);
+        // Everything should still be connected
+        expect(Company.locations.map(({ id }) => id.toString())).toEqual([Location.id.toString()]);
+        expect(Location.company.id.toString()).toBe(Company.id.toString());
+      })
+    );
+
+    test(
+      'With connect on new relationship',
+      runner(async ({ context }) => {
+        // Manually setup a connected Company <-> Location
+        const { locations, companies } = await createInitialData(context);
+        const company = companies[0];
+        const location = locations[0];
+        // Sanity check the links don't exist yet
+        expect(company.locations).toBeUndefined();
+        expect(location.company).toBeUndefined();
+
+        await context.query.Company.updateOne({
+          where: { id: company.id },
+          data: { locations: { connect: { id: location.id } } },
         });
 
         const { Company, Location } = await getCompanyAndLocation(context, company.id, location.id);
