@@ -18,28 +18,16 @@ export async function loadIndex(page: playwright.Page) {
 }
 
 async function deleteAllData(projectDir: string) {
-  /**
-   * As of @prisma/client@3.1.1 it appears that the prisma client runtime tries to resolve the path to the prisma schema
-   * from process.cwd(). This is not always the project directory we want to run keystone from.
-   * Here we mutate the process.cwd global with a fn that returns the project directory we expect, such that prisma
-   * can retrieve the correct schema file.
-   */
-  const prevCwd = process.cwd;
-  try {
-    process.cwd = () => projectDir;
-    const { PrismaClient } = require(path.join(projectDir, 'node_modules/.myprisma/client'));
-    const prisma = new PrismaClient();
+  const { PrismaClient } = require(path.join(projectDir, 'node_modules/.myprisma/client'));
+  const prisma = new PrismaClient();
 
-    await prisma.$transaction(
-      Object.values(prisma)
-        .filter((x: any) => x?.deleteMany)
-        .map((x: any) => x?.deleteMany?.({}))
-    );
+  await prisma.$transaction(
+    Object.values(prisma)
+      .filter((x: any) => x?.deleteMany)
+      .map((x: any) => x?.deleteMany?.({}))
+  );
 
-    await prisma.$disconnect();
-  } finally {
-    process.cwd = prevCwd;
-  }
+  await prisma.$disconnect();
 }
 
 const treeKill = promisify(_treeKill);
