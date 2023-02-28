@@ -403,7 +403,7 @@ describe(`One-to-many relationships`, () => {
         // Manually setup a connected Company <-> Location
         const { location, company } = await createCompanyAndLocation(context);
 
-        // Sanity check the links exist
+        // check that the links exist
         expect(company.locations[0].id).toBe(location.id);
 
         await context.query.Company.updateOne({
