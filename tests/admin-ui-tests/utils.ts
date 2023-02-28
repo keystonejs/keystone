@@ -61,31 +61,20 @@ export function generateDataArray(map: (key: number) => any, range: number) {
 
 export async function deleteAllData(projectDir: string) {
   const resolvedProjectDir = path.resolve(projectRoot, projectDir);
-  /**
-   * As of @prisma/client@3.1.1 it appears that the prisma client runtime tries to resolve the path to the prisma schema
-   * from process.cwd(). This is not always the project directory we want to run keystone from.
-   * Here we mutate the process.cwd global with a fn that returns the project directory we expect, such that prisma
-   * can retrieve the correct schema file.
-   */
-  const prevCwd = process.cwd;
-  try {
-    process.cwd = () => resolvedProjectDir;
-    const { PrismaClient } = require(path.join(
-      resolvedProjectDir,
-      'node_modules/.testprisma/client'
-    ));
-    const prisma = new PrismaClient();
 
-    await prisma.$transaction(
-      Object.values(prisma)
-        .filter((x: any) => x?.deleteMany)
-        .map((x: any) => x?.deleteMany?.({}))
-    );
+  const { PrismaClient } = require(path.join(
+    resolvedProjectDir,
+    'node_modules/.testprisma/client'
+  ));
+  const prisma = new PrismaClient();
 
-    await prisma.$disconnect();
-  } finally {
-    process.cwd = prevCwd;
-  }
+  await prisma.$transaction(
+    Object.values(prisma)
+      .filter((x: any) => x?.deleteMany)
+      .map((x: any) => x?.deleteMany?.({}))
+  );
+
+  await prisma.$disconnect();
 }
 
 export const adminUITests = (
