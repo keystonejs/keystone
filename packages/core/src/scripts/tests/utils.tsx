@@ -8,7 +8,8 @@ import fastGlob from 'fast-glob';
 // @ts-ignore
 import fixturez from 'fixturez';
 import { parseArgsStringToArgv } from 'string-argv';
-import { IntrospectionEngine, uriToCredentials } from '@prisma/internals';
+import { MigrateEngine } from '@prisma/migrate';
+import { uriToCredentials } from '@prisma/internals';
 import { KeystoneConfig } from '../../types';
 import { cli } from '../cli';
 import { mockPrompts } from '../../lib/prompts';
@@ -235,12 +236,14 @@ export async function getFiles(
 }
 
 export async function introspectDb(cwd: string, url: string) {
-  const engine = new IntrospectionEngine({ cwd });
+  const engine = new MigrateEngine({ projectDir: cwd });
   try {
-    const { datamodel } = await engine.introspect(`datasource db {
+    const { datamodel } = await engine.introspect({
+      schema: `datasource db {
   url = ${JSON.stringify(url)}
   provider = ${JSON.stringify(uriToCredentials(url).type)}
-}`);
+}`,
+    });
     return datamodel;
   } finally {
     engine.stop();
