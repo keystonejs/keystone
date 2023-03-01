@@ -24,7 +24,6 @@ Options:
 - `isIndexed` (default: `false`)
   - If `true` then this field will be indexed by the database.
   - If `'unique'` then all values of this field must be unique.
-{% else /%}
 - `graphql.read.isNonNull` (default: `false`): If you have no read access control and you don't intend to add any in the future,
   you can set this to true and the output field will be non-nullable. This is only allowed when you have no read access control because otherwise,
   when access is denied, `null` will be returned which will cause an error since the field is non-nullable and the error
