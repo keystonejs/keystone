@@ -142,8 +142,8 @@ export declare namespace Lists {
         orderBy: TodoOrderByInput;
       };
       prisma: {
-        create: ResolvedTodoCreateInput
-        update: ResolvedTodoUpdateInput
+        create: ResolvedTodoCreateInput;
+        update: ResolvedTodoUpdateInput;
       };
       all: __TypeInfo;
     };

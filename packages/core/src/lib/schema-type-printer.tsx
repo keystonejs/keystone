@@ -196,21 +196,13 @@ function printListTypeInfo<L extends InitialisedList>(
     `    inputs: {`,
     `      where: ${whereInputName};`,
     `      uniqueWhere: ${whereUniqueInputName};`,
-    ...(list.graphql.isEnabled.create ? [
-    `      create: ${createInputName};`,
-    ] : []),
-    ...(list.graphql.isEnabled.update ? [
-    `      update: ${updateInputName};`,
-    ] : []),
+    `      create: ${list.graphql.isEnabled.create ? createInputName : 'never'};`,
+    `      update: ${list.graphql.isEnabled.update ? updateInputName : 'never'};`,
     `      orderBy: ${listOrderName};`,
     `    };`,
     `    prisma: {`,
-    ...(list.graphql.isEnabled.create ? [
-    `      create: Resolved${createInputName}`,
-    ] : []),
-    ...(list.graphql.isEnabled.update ? [
-    `      update: Resolved${updateInputName}`,
-    ] : []),
+    `      create: ${list.graphql.isEnabled.create ? `Resolved${createInputName}` : 'never'};`,
+    `      update: ${list.graphql.isEnabled.update ? `Resolved${updateInputName}` : 'never'};`,
     `    };`,
     `    all: __TypeInfo;`,
     `  };`,
