@@ -29,6 +29,7 @@ test('when not specifying foreignKey in a one to one relationship, the side is p
 datasource ${dbProvider} {
   url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  directUrl         = env("DIRECT_URL")
   provider          = "${dbProvider}"
 }
 
@@ -75,6 +76,7 @@ test('when specifying foreignKey: true in a one to one relationship, that side h
 datasource ${dbProvider} {
   url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  directUrl         = env("DIRECT_URL")
   provider          = "${dbProvider}"
 }
 
@@ -121,6 +123,7 @@ test('when specifying foreignKey: { map } in a one to one relationship, that sid
 datasource ${dbProvider} {
   url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  directUrl         = env("DIRECT_URL")
   provider          = "${dbProvider}"
 }
 
@@ -246,6 +249,7 @@ test('foreignKey: { map } in a many to one relationship sets the @map attribute 
 datasource ${dbProvider} {
   url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  directUrl         = env("DIRECT_URL")
   provider          = "${dbProvider}"
 }
 

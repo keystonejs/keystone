@@ -4,6 +4,7 @@
 datasource postgresql {
   url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  directUrl         = env("DIRECT_URL")
   provider          = "postgresql"
   schemas           = ["first", "second"]
 }

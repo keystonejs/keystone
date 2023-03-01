@@ -27,6 +27,7 @@ test('db.map at the list level adds @@map with the value to the Prisma schema', 
 datasource ${dbProvider} {
   url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  directUrl         = env("DIRECT_URL")
   provider          = "${dbProvider}"
 }
 
@@ -103,6 +104,7 @@ test(`db.map for the field text field adds @map with the value to the Prisma sch
 datasource ${dbProvider} {
   url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  directUrl         = env("DIRECT_URL")
   provider          = "${dbProvider}"
 }
 

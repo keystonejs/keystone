@@ -28,6 +28,7 @@ test('isIndexed: true and db.map on a text field generates a valid Prisma schema
 datasource ${dbProvider} {
   url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  directUrl         = env("DIRECT_URL")
   provider          = "${dbProvider}"
 }
 
@@ -76,6 +77,7 @@ if (dbProvider === 'postgresql') {
 datasource postgresql {
   url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  directUrl         = env("DIRECT_URL")
   provider          = "postgresql"
 }
 

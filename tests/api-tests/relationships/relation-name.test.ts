@@ -29,6 +29,7 @@ test('when not specifying relationName in a many to many relationship, the name 
 datasource ${dbProvider} {
   url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  directUrl         = env("DIRECT_URL")
   provider          = "${dbProvider}"
 }
 
@@ -74,6 +75,7 @@ test("the ordering of the lists doesn't affect the relation name", async () => {
 datasource ${dbProvider} {
   url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  directUrl         = env("DIRECT_URL")
   provider          = "${dbProvider}"
 }
 
@@ -119,6 +121,7 @@ test('when specifying relationName in a many to many relationship, the relation 
 datasource ${dbProvider} {
   url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  directUrl         = env("DIRECT_URL")
   provider          = "${dbProvider}"
 }
 
