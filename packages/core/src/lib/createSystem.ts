@@ -86,13 +86,6 @@ export function createSystem(config: KeystoneConfig) {
 
       setWriteLimit(prismaClient, pLimit(config.db.provider === 'sqlite' ? 1 : Infinity));
       setPrismaNamespace(prismaClient, prismaModule.Prisma);
-      prismaClient.$on('beforeExit', async () => {
-        // Prisma is failing to properly clean up its child processes
-        // https://github.com/keystonejs/keystone/issues/5477
-        // We explicitly send a SIGINT signal to the prisma child process on exit
-        // to ensure that the process is cleaned up appropriately.
-        prismaClient._engine.child?.kill('SIGINT');
-      });
 
       const context = makeCreateContext({
         graphQLSchema,
