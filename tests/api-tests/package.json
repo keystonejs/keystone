@@ -9,7 +9,7 @@
   "homepage": "https://github.com/keystonejs/keystone",
   "devDependencies": {
     "@apollo/cache-control-types": "^1.0.2",
-    "@hapi/iron": "^6.0.0",
+    "@hapi/iron": "^7.0.0",
     "@keystone-6/auth": "*",
     "@keystone-6/core": "*",
     "@keystone-6/fields-document": "*",
