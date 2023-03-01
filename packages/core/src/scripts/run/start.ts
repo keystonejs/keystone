@@ -34,7 +34,7 @@ export const start = async (
   await keystone.connect();
   if (withMigrations) {
     console.log('✨ Applying database migrations');
-    await deployMigrations(config.db.url);
+    await deployMigrations(config.db.url, config.db.directUrl);
   }
 
   console.log('✨ Creating server');

@@ -207,6 +207,7 @@ export function printPrismaSchema(
     `datasource ${provider} {`,
     `url = env("DATABASE_URL")`,
     `shadowDatabaseUrl = env("SHADOW_DATABASE_URL")`,
+    `directUrl = env("DIRECT_URL")`,
     `provider = "${provider}"`,
     ...additionalDataSources,
     `}`,

@@ -105,7 +105,7 @@ async function pushSchemaToDatabase(schema: string) {
     // touch the file (or truncate it), easiest way to start from scratch
     await fs.writeFile(path.join(prismaSchemaDirectory, SQLITE_DATABASE_FILENAME), '');
     await withMigrate(prismaSchemaPath, migrate =>
-      runMigrateWithDbUrl(dbUrl, undefined, () =>
+      runMigrateWithDbUrl(dbUrl, undefined, undefined, () =>
         migrate.engine.schemaPush({
           force: true,
           schema,
@@ -119,9 +119,9 @@ async function pushSchemaToDatabase(schema: string) {
     : await createDatabase(dbUrl, prismaSchemaDirectory);
   await withMigrate(prismaSchemaPath, async migrate => {
     if (!justCreatedDatabase) {
-      await runMigrateWithDbUrl(dbUrl, undefined, () => migrate.reset());
+      await runMigrateWithDbUrl(dbUrl, undefined, undefined, () => migrate.reset());
     }
-    await runMigrateWithDbUrl(dbUrl, undefined, () =>
+    await runMigrateWithDbUrl(dbUrl, undefined, undefined, () =>
       migrate.engine.schemaPush({
         force: true,
         schema,

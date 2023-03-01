@@ -4,6 +4,7 @@
 datasource sqlite {
   url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  directUrl         = env("DIRECT_URL")
   provider          = "sqlite"
 }
 

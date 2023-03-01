@@ -70,6 +70,7 @@ These database types are powered by their corresponding Prisma database provider
 - `prismaPreviewFeatures` (default: `[]`): Enable [Prisma preview features](https://www.prisma.io/docs/concepts/components/preview-features) by providing an array of strings.
 - `additionalPrismaDatasourceProperties` (default: `{}`): Set additional datasource properties like `relationMode = "prisma"` (required for e.g. PlanetScale) by providing an object with key-value pairs.
 - `shadowDatabaseUrl` (default: `undefined`): Enable [shadow databases](https://www.prisma.io/docs/concepts/components/prisma-migrate/shadow-database#cloud-hosted-shadow-databases-must-be-created-manually) for some cloud providers.
+- `directUrl` (default: `undefined`): Enable [directUrl](https://www.prisma.io/docs/data-platform/data-proxy/prisma-cli-with-data-proxy#set-a-direct-database-connection-url-in-your-prisma-schema) support for pooled database connections (e.g. pgbouncer, Prisma Data Proxy).
 
 ### postgresql
 
@@ -83,6 +84,8 @@ export default config({
     enableLogging: true,
     idField: { kind: 'uuid' },
     shadowDatabaseUrl: 'postgres://dbuser:dbpass@localhost:5432/shadowdb'
+    // This may reflect a non-pooled database url
+    directUrl: 'postgres://dbuser:dbpass@localhost:5432/keystone',
   },
   /* ... */
 });

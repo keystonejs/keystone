@@ -137,6 +137,7 @@ type PrismaLogDefinition = {
 export type DatabaseConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   url: string;
   shadowDatabaseUrl?: string;
+  directUrl?: string;
   onConnect?: (args: KeystoneContext<TypeInfo>) => Promise<void>;
   /** @deprecated */
   useMigrations?: boolean;

@@ -402,6 +402,7 @@ async function setupInitialKeystone(
       await devMigrations(
         config.db.url,
         config.db.shadowDatabaseUrl,
+        config.db.directUrl,
         prismaSchema,
         paths.schema.prisma,
         false
@@ -410,6 +411,7 @@ async function setupInitialKeystone(
       await pushPrismaSchemaToDatabase(
         config.db.url,
         config.db.shadowDatabaseUrl,
+        config.db.directUrl,
         prismaSchema,
         paths.schema.prisma,
         false
