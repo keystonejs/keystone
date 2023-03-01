@@ -11,7 +11,14 @@ const yesNo = (x: boolean | undefined) => (x === true ? 'Y' : x === false ? 'N' 
 type ListConfig = {
   isFilterable?: false;
   isOrderable?: false;
-  omit?: true | ('query' | 'create' | 'update' | 'delete')[];
+  omit?:
+    | true
+    | {
+        query?: boolean;
+        create?: boolean;
+        update?: boolean;
+        delete?: boolean;
+      };
 };
 
 type FieldConfig = {
@@ -34,7 +41,7 @@ const getListPrefix = ({ isFilterable, isOrderable, omit }: ListConfig) => {
     return `${s}True`;
   } else {
     // prettier-ignore
-    return `${s}${yesNo(omit.includes('create'))}C${yesNo(omit.includes('query'))}Q${yesNo(omit.includes('update'))}U${yesNo(omit.includes('delete'))}D`;
+    return `${s}${yesNo(omit.create)}C${yesNo(omit.query)}Q${yesNo(omit.update)}U${yesNo(omit.delete)}D`;
   }
 };
 const getFieldPrefix = ({ isFilterable, isOrderable, omit }: FieldConfig) => {

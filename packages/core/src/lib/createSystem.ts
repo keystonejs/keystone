@@ -34,7 +34,7 @@ function getSudoGraphQLSchema(config: KeystoneConfig) {
           {
             ...list,
             access: allowAll,
-            graphql: { ...(list.graphql || {}), omit: [] },
+            graphql: { ...(list.graphql || {}), omit: {} },
             fields: Object.fromEntries(
               Object.entries(list.fields).map(([fieldKey, field]) => {
                 if (fieldKey.startsWith('__group')) return [fieldKey, field];
@@ -47,7 +47,7 @@ function getSudoGraphQLSchema(config: KeystoneConfig) {
                       access: allowAll,
                       isFilterable: true,
                       isOrderable: true,
-                      graphql: { ...(f.graphql || {}), omit: [] },
+                      graphql: { ...(f.graphql || {}), omit: {} },
                     };
                   },
                 ];
