@@ -33,7 +33,7 @@ export async function main() {
   };
 
   const createTask = async (taskData: TaskProps) => {
-    let persons = await context.query.Person.findMany({
+    const persons = await context.query.Person.findMany({
       where: { name: { equals: taskData.assignedTo } },
       query: 'id',
     });
