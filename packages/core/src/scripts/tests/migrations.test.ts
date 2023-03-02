@@ -1,8 +1,10 @@
 import path from 'path';
 import fs from 'fs-extra';
+import execa from 'execa';
 import { setSkipWatching } from '../run/dev';
 import { ExitError } from '../utils';
 import {
+  cliBinPath,
   getFiles,
   introspectDb,
   recordConsole,
@@ -659,6 +661,92 @@ describe('useMigrations: true', () => {
       ✨ Connecting to the database
       ✨ Creating server
       ✅ GraphQL API ready"
+    `);
+  });
+});
+
+describe('start --with-migrations', () => {
+  async function startAndStopServer(tmp: string) {
+    const startResult = execa('node', [cliBinPath, 'start', '--no-ui', '--with-migrations'], {
+      reject: false,
+      all: true,
+      cwd: tmp,
+    });
+
+    let output = '';
+    try {
+      await Promise.race([
+        new Promise((resolve, reject) =>
+          setTimeout(() => reject(new Error(`timed out. output:\n${output}`)), 10000)
+        ),
+        new Promise<void>(resolve => {
+          startResult.all!.on('data', data => {
+            output += data;
+            if (output.includes('Server listening on :3000 (http://localhost:3000/)')) {
+              resolve();
+            }
+          });
+        }),
+      ]);
+    } finally {
+      startResult.kill();
+    }
+    return output;
+  }
+  test('apply existing migrations', async () => {
+    const prevCwd = await setupInitialProjectWithMigrations();
+    const { 'app.db': _ignore, ...migrations } = await getDatabaseFiles(prevCwd);
+    const tmp = await testdir({
+      ...symlinkKeystoneDeps,
+      ...migrations,
+      'keystone.js': basicWithMigrations,
+    });
+
+    await runCommand(tmp, 'build --no-ui');
+    const output = await startAndStopServer(tmp);
+    expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
+      "datasource db {
+        provider = "sqlite"
+        url      = "file:./app.db"
+      }
+
+      model Todo {
+        id    String @id
+        title String @default("")
+      }
+      "
+    `);
+
+    const { migrationName } = await getGeneratedMigration(tmp, 1, 'init');
+
+    expect(
+      output.replace(new RegExp(migrationName, 'g'), 'migration_name').replace(/\d+ms/g, '0ms')
+    ).toMatchInlineSnapshot(`
+      "✨ Starting Keystone
+      ✨ Connecting to the database
+      ✨ Applying database migrations
+      Applying migration \`migration_name\`
+      ✨ Your database is now in sync with your Generated Migrations. Done in 0ms
+      ✨ Creating server
+      ✅ GraphQL API ready
+      ⭐️ Server listening on :3000 (http://localhost:3000/)
+      "
+    `);
+  });
+  test('logs correctly when no migrations need applied', async () => {
+    const tmp = await setupInitialProjectWithMigrations();
+    await runCommand(tmp, 'build --no-ui');
+    const output = await startAndStopServer(tmp);
+
+    expect(output).toMatchInlineSnapshot(`
+      "✨ Starting Keystone
+      ✨ Connecting to the database
+      ✨ Applying database migrations
+      ✨ The database is already in sync with your Generated Migrations.
+      ✨ Creating server
+      ✅ GraphQL API ready
+      ⭐️ Server listening on :3000 (http://localhost:3000/)
+      "
     `);
   });
 });
