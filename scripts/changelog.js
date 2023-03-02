@@ -19,15 +19,33 @@ const publicPackages = [
 ];
 
 const cves = [
-  //    {
-  //      id: 'CVE-2022-NNNN',
-  //      href: 'https://github.com/keystonejs/keystone/security/advisories/GHSA-...',
-  //      upstream: true,
-  //      description: `
-  //        An upstream transitive dependency \`XXX\` is vulnerable to ZZZZZZ.
-  //        We have upgraded to a version of \`YYY\` package to a version that doesn't use \`XXX\`.
-  //      `
-  //    }
+  {
+    id: 'CVE-2022-36313',
+    href: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-36313',
+    upstream: true,
+    description: `
+      An upstream transitive dependency \`file-type\` is vulnerable to a ReDoS.
+      We have upgraded to a version of \`file-type\` that is fixed.
+    `,
+  },
+  {
+    id: 'CVE-2023-23936',
+    href: 'https://github.com/advisories/GHSA-5r9g-qh6m-jxff',
+    upstream: true,
+    description: `
+      An upstream transitive dependency \`undici\` is vulnerable to a HTTP header CRLF injection vulnerability.
+      We have upgraded to a version of \`@prisma/core\` that uses a fixed \`undici\`.
+    `,
+  },
+  {
+    id: 'CVE-2023-24807',
+    href: 'https://github.com/advisories/GHSA-r6ch-mqf9-qc9w',
+    upstream: true,
+    description: `
+      An upstream transitive dependency \`undici\` is vulnerable to a ReDoS.
+      We have upgraded to a version of \`@prisma/core\` that uses a fixed \`undici\`.
+    `,
+  },
 ];
 
 function gitCommitsSince(tag) {

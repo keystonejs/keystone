@@ -2,4 +2,4 @@
 '@keystone-6/core': patch
 ---
 
-Fixes behavior of `keystone start --with-migrations`
+Fixes `keystone start --with-migrations` exiting after a migration

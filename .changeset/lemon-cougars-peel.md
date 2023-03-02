@@ -2,4 +2,4 @@
 '@keystone-6/core': patch
 ---
 
-Fixes schema type printer to output `never` for omitted types.
+Fixes Typescript types to use `never` for omitted types
