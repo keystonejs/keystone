@@ -448,7 +448,7 @@ export default function WhatsNew() {
           mutations.
         </Box>
         <Timeline date="15th November 2021" />
-        <Box heading="Expanded Unique Filters" link="/releases/2021-11-15#expanded-unique-filters">
+        <Box heading="Expanded Unique Filters">
           The image and files configuration options have been removed from Keystone's configuration,
           and a new storage configuration object introduced. <InlineCode>timestamp</InlineCode>,{' '}
           <InlineCode>float</InlineCode> and <InlineCode>decimal</InlineCode> fields with{' '}
