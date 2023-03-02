@@ -122,23 +122,13 @@ function getIsEnabled(listsConfig: KeystoneConfig['lists']) {
         filter: false,
         orderBy: false,
       };
-    } else if (omit === undefined) {
-      isEnabled[listKey] = {
-        type: true,
-        query: true,
-        create: true,
-        update: true,
-        delete: true,
-        filter: defaultIsFilterable ?? true,
-        orderBy: defaultIsOrderable ?? true,
-      };
     } else {
       isEnabled[listKey] = {
         type: true,
-        query: !omit.includes('query'),
-        create: !omit.includes('create'),
-        update: !omit.includes('update'),
-        delete: !omit.includes('delete'),
+        query: !omit?.query,
+        create: !omit?.create,
+        update: !omit?.update,
+        delete: !omit?.delete,
         filter: defaultIsFilterable ?? true,
         orderBy: defaultIsOrderable ?? true,
       };

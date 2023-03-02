@@ -171,7 +171,7 @@ export function createAdminMeta(
       // If the field is a relationship field and is related to an omitted list, skip.
       if (field.dbField.kind === 'relation' && omittedLists.includes(field.dbField.list)) continue;
       // Disabling this entirely for now until we properly decide what the Admin UI
-      // should do when `omit: ['read']` is used.
+      // should do when `omit.read` is set to `true`.
       if (field.graphql.isEnabled.read === false) continue;
 
       assertValidView(

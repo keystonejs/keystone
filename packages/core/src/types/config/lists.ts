@@ -220,7 +220,14 @@ export type ListGraphQLConfig = {
   // including from the point of view of relationships to this list.
   //
   // Default: undefined
-  omit?: true | readonly ('query' | 'create' | 'update' | 'delete')[];
+  omit?:
+    | true
+    | {
+        query?: boolean;
+        create?: boolean;
+        update?: boolean;
+        delete?: boolean;
+      };
 };
 
 export type CacheHintArgs = { results: any; operationName?: string; meta: boolean };

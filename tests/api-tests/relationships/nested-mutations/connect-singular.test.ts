@@ -39,7 +39,7 @@ const runner = setupTestRunner({
       GroupNoReadHard: list({
         access: allowAll,
         fields: { name: text() },
-        graphql: { omit: ['query'] },
+        graphql: { omit: { query: true } },
       }),
       EventToGroupNoReadHard: list({
         access: allowAll,
@@ -66,7 +66,7 @@ const runner = setupTestRunner({
       GroupNoCreateHard: list({
         access: allowAll,
         fields: { name: text() },
-        graphql: { omit: ['create'] },
+        graphql: { omit: { create: true } },
       }),
       EventToGroupNoCreateHard: list({
         access: allowAll,
@@ -89,7 +89,7 @@ const runner = setupTestRunner({
       GroupNoUpdateHard: list({
         access: allowAll,
         fields: { name: text() },
-        graphql: { omit: ['update'] },
+        graphql: { omit: { update: true } },
       }),
       EventToGroupNoUpdateHard: list({
         access: allowAll,

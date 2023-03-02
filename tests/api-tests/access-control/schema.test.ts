@@ -123,7 +123,7 @@ describe(`Public schema`, () => {
 
           expect(createFromMany).not.toContain('unusedPlaceholder');
 
-          if (config.omit === undefined || !config.omit.includes('create')) {
+          if (config.omit === undefined || !config.omit.create) {
             expect(createFromMany).toContain('create');
             expect(createFromOne).toContain('create');
             expect(updateFromMany).toContain('create');
@@ -147,7 +147,7 @@ describe(`Public schema`, () => {
         expect(types).toContain(gqlNames.whereInputName);
 
         // Queries are only accessible when reading
-        if (config.omit !== true && (config.omit === undefined || !config.omit.includes('query'))) {
+        if (config.omit !== true && (config.omit === undefined || !config.omit.query)) {
           expect(queries).toContain(gqlNames.itemQueryName);
           expect(queries).toContain(gqlNames.listQueryName);
           expect(queries).toContain(gqlNames.listQueryCountName);
@@ -157,28 +157,19 @@ describe(`Public schema`, () => {
           expect(queries).not.toContain(gqlNames.listQueryCountName);
         }
 
-        if (
-          config.omit !== true &&
-          (config.omit === undefined || !config.omit.includes('create'))
-        ) {
+        if (config.omit !== true && (config.omit === undefined || !config.omit.create)) {
           expect(mutations).toContain(gqlNames.createMutationName);
         } else {
           expect(mutations).not.toContain(gqlNames.createMutationName);
         }
 
-        if (
-          config.omit !== true &&
-          (config.omit === undefined || !config.omit.includes('update'))
-        ) {
+        if (config.omit !== true && (config.omit === undefined || !config.omit.update)) {
           expect(mutations).toContain(gqlNames.updateMutationName);
         } else {
           expect(mutations).not.toContain(gqlNames.updateMutationName);
         }
 
-        if (
-          config.omit !== true &&
-          (config.omit === undefined || !config.omit.includes('delete'))
-        ) {
+        if (config.omit !== true && (config.omit === undefined || !config.omit.delete)) {
           expect(mutations).toContain(gqlNames.deleteMutationName);
         } else {
           expect(mutations).not.toContain(gqlNames.deleteMutationName);

@@ -48,7 +48,7 @@ const runner = setupTestRunner({
         fields: {
           name: text(),
         },
-        graphql: { omit: ['query'] },
+        graphql: { omit: { query: true } },
       }),
 
       EventToGroupNoReadHard: list({
@@ -79,7 +79,7 @@ const runner = setupTestRunner({
         fields: {
           name: text(),
         },
-        graphql: { omit: ['create'] },
+        graphql: { omit: { create: true } },
       }),
 
       EventToGroupNoCreateHard: list({
@@ -110,7 +110,7 @@ const runner = setupTestRunner({
         fields: {
           name: text(),
         },
-        graphql: { omit: ['update'] },
+        graphql: { omit: { update: true } },
       }),
 
       EventToGroupNoUpdateHard: list({
