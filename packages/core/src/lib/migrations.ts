@@ -165,8 +165,8 @@ function logWarnings(warnings: string[]) {
   }
 }
 
-export async function deployMigrations(dbUrl: string) {
-  return withMigrate(process.cwd(), async migrate => {
+export async function deployMigrations(schemaPath: string, dbUrl: string) {
+  return withMigrate(schemaPath, async migrate => {
     const before = Date.now();
     const migration = await runMigrateWithDbUrl(dbUrl, undefined, () => migrate.applyMigrations());
     if (migration.appliedMigrationNames.length === 0) {
