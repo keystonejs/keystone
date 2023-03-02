@@ -1,5 +1,23 @@
 # @keystone-6/core
 
+## 5.1.0
+
+### Minor Changes
+
+- [#7964](https://github.com/keystonejs/keystone/pull/7964) [`33ec1fc01`](https://github.com/keystonejs/keystone/commit/33ec1fc01ef2e01848fb190d881c4b6ad316daf3) Thanks [@renovate](https://github.com/apps/renovate)! - Updates Prisma to v4.11.0
+
+### Patch Changes
+
+- [#8304](https://github.com/keystonejs/keystone/pull/8304) [`aad631483`](https://github.com/keystonejs/keystone/commit/aad6314837aac048683f52213de2bcdfcba8f2b1) Thanks [@dcousens](https://github.com/dcousens)! - Updates `image-size` to `5.0.0` to mitigate [CVE-2022-36313](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-36313)
+
+- [#8352](https://github.com/keystonejs/keystone/pull/8352) [`f4d4f5c48`](https://github.com/keystonejs/keystone/commit/f4d4f5c485861618d225d75e2c7496319703b936) Thanks [@acburdine](https://github.com/acburdine)! - Fixes list-level `graphql.omit` syntax to match the field-level `graphql.omit`
+
+- [#8355](https://github.com/keystonejs/keystone/pull/8355) [`ce600cf44`](https://github.com/keystonejs/keystone/commit/ce600cf444a9295be210cae4e2962fa2625e712a) Thanks [@acburdine](https://github.com/acburdine)! - Fixes Typescript types to use `never` for omitted types
+
+- [#8347](https://github.com/keystonejs/keystone/pull/8347) [`5051e5a72`](https://github.com/keystonejs/keystone/commit/5051e5a724f13008ce1b606858b565830f349b98) Thanks [@borisno2](https://github.com/borisno2)! - Removes outdated Prisma `prismaClient.$on('beforeExit'...` work-around that blocked Prisma Data Proxy support
+
+- [#8354](https://github.com/keystonejs/keystone/pull/8354) [`c3ce0da37`](https://github.com/keystonejs/keystone/commit/c3ce0da37c78c4e1174a13e8d34d00a4f6079dcb) Thanks [@acburdine](https://github.com/acburdine)! - Fixes `keystone start --with-migrations` exiting after a migration
+
 ## 5.0.0
 
 ### Major Changes
