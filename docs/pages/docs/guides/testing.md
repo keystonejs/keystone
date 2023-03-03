@@ -72,7 +72,7 @@ This includes things like access control, hooks, virtual fields, and GraphQL API
 import { getContext } from '@keystone-6/core/context';
 import { resetDatabase } from '@keystone-6/core/testing';
 import * as PrismaModule from '.prisma/client';
-import config from './keystone';
+import baseConfig from './keystone';
 
 const dbUrl = `file:./test-${process.env.JEST_WORKER_ID}.db`;
 const prismaSchemaPath = path.join(__dirname, 'schema.prisma');
