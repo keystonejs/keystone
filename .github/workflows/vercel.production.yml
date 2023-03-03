@@ -1,4 +1,4 @@
-name: Production Vercel
+name: Vercel - Production
 
 on:
   push:
