@@ -1,5 +1,5 @@
 name: Vercel - Preview
-
+  
 on:
   workflow_dispatch:
 
@@ -8,6 +8,9 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     environment: vercel
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
     steps:
       - uses: actions/checkout@main
       
