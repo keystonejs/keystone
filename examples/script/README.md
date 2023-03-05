@@ -2,7 +2,7 @@
 
 This project demonstrates how to write code to interact with Keystone without using the standard `@keystone-6/core/scripts/cli` tools.
 
-The `getContext` function does not ahdere to the typical Keystone entry-point and requires that your Prisma schema has been previously built by Keystone.
+The `getContext` function does not adhere to the typical Keystone entry-point and requires that your Prisma schema has been previously built by Keystone.
 
 ## Instructions
 

@@ -21,7 +21,7 @@
 - [ ] Check in on custom pages
 - [ ] Add an option to hide the GitHub and GraphQL links in the nav
 - [ ] Generate Nav, and allow overrides in client-side config
-- [ ] Add a SignOut page, as an esacape hatch if you need to sign out and don't have a button
+- [ ] Add a SignOut page, as an escape hatch if you need to sign out and don't have a button
 - [ ] Validate the user can access the admin when you sign in, for a smoother error experience
 
 ## Design System Components

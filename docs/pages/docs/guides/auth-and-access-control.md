@@ -8,7 +8,7 @@ Keystone comes with several features that work together to control access to the
 - **Session Management** – a set of APIs for starting and ending user sessions, as well as initialising the session data for each request ([docs](../config/session))
 - **The `auth` package** – an opinionated implementation of authentication features for Keystone apps ([docs](../config/auth))
 - **Access Control** – a powerful framework for restricting access to specific lists, operations, and fields ([docs](../config/access-control))
-- **Dynamic UI Config and Field Modes** – options for the Admin UI that work similarly to Access Control, and let you dyamically configure the Admin UI based on user permissions ([docs](../config/lists#ui))
+- **Dynamic UI Config and Field Modes** – options for the Admin UI that work similarly to Access Control, and let you dynamically configure the Admin UI based on user permissions ([docs](../config/lists#ui))
 
 Session Management and Auth are extremely flexible in Keystone, and it's possible to replace the default implementations we provide with your own (or integrate an entirely separate auth system), but in this guide we'll focus on how all these features are designed to work together.
 
