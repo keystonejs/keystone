@@ -19,6 +19,7 @@ export const FieldDescription = (props: FieldDescriptionProps) => {
         color: palette.neutral700,
         marginBottom: spacing.small,
         minWidth: 120,
+        whiteSpace: 'pre-wrap'
       }}
       {...props}
     />
