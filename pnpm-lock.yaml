@@ -1274,6 +1274,61 @@ importers:
         specifier: ~5.0.0
         version: 5.0.2
 
+  examples/nextjs-keystone-app-directory:
+    dependencies:
+      '@keystone-6/auth':
+        specifier: ^7.0.0
+        version: link:../../packages/auth
+      '@keystone-6/core':
+        specifier: ^5.0.0
+        version: link:../../packages/core
+      '@keystone-6/document-renderer':
+        specifier: ^1.0.0
+        version: link:../../packages/document-renderer
+      '@keystone-6/fields-document':
+        specifier: ^7.0.0
+        version: link:../../packages/fields-document
+      '@preconstruct/next':
+        specifier: ^4.0.0
+        version: 4.0.0
+      '@prisma/client':
+        specifier: ^4.12.0
+        version: 4.12.0(prisma@4.12.0)
+      graphql:
+        specifier: ^16.6.0
+        version: 16.6.0
+      graphql-request:
+        specifier: ^5.0.0
+        version: 5.2.0(graphql@16.6.0)
+      graphql-yoga:
+        specifier: ^3.1.0
+        version: 3.7.3(graphql@16.6.0)
+      next:
+        specifier: ^13.3.0
+        version: 13.3.0(@babel/core@7.21.3)(@opentelemetry/api@1.4.1)(react-dom@18.2.0)(react@18.2.0)
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      '@types/node':
+        specifier: ^18.11.14
+        version: 18.15.10
+      '@types/react':
+        specifier: ^18.0.9
+        version: 18.0.29
+      '@types/react-dom':
+        specifier: ^18.0.4
+        version: 18.0.11
+      prisma:
+        specifier: ^4.12.0
+        version: 4.12.0
+      typescript:
+        specifier: ~5.0.0
+        version: 5.0.2
+
   examples/nextjs-keystone-two-servers:
     devDependencies:
       concurrently:
