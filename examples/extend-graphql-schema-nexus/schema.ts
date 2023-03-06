@@ -87,17 +87,20 @@ export function extendGraphqlSchema(baseSchema: GraphQLSchema) {
     mergeSchema: {
       schema: baseSchema,
     },
+    types: {
+      NexusThing,
+      NexusPostQuery,
+      NexusThingQuery,
+    },
+
+    // Typescript output settings, probably something you might commit in dev
+    shouldGenerateArtifacts: process.env.NODE_ENV !== 'production',
     outputs: {
       typegen: path.join(process.cwd(), 'nexus-types.ts'),
     },
     contextType: {
       module: path.join(process.cwd(), 'node_modules', '.keystone', 'types.d.ts'),
       export: 'Context',
-    },
-    types: {
-      NexusThing,
-      NexusPostQuery,
-      NexusThingQuery,
     },
   });
 }
