@@ -229,7 +229,7 @@ type Query {
   author(where: AuthorWhereUniqueInput!): Author
   authorsCount(where: AuthorWhereInput! = {}): Int
   keystone: KeystoneMeta!
-  recentPosts(id: ID!, days: Int! = 7): [Post!]
+  recentPosts(id: ID!, seconds: Int! = 600): [Post!]
   stats(id: ID!): Statistics
 }
 

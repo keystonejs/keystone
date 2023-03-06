@@ -32,9 +32,9 @@ export const lists: Lists = {
   }),
 };
 
-export const extendGraphqlSchema = (schema: GraphQLSchema) =>
-  mergeSchemas({
-    schemas: [schema],
+export function extendGraphqlSchema(baseSchema: GraphQLSchema) {
+  return mergeSchemas({
+    schemas: [baseSchema],
     typeDefs: `
     type Mutation {
       """ Publish a post """
@@ -45,8 +45,8 @@ export const extendGraphqlSchema = (schema: GraphQLSchema) =>
     }
 
     type Query {
-      """ Return all posts for a user from the last <days> days """
-      recentPosts(id: ID!, days: Int! = 7): [Post]
+      """ Return all posts for a user from the last <seconds> seconds """
+      recentPosts(id: ID!, seconds: Int! = 600): [Post]
 
       """ Compute statistics for a user """
       stats(id: ID!): Statistics
@@ -87,11 +87,8 @@ export const extendGraphqlSchema = (schema: GraphQLSchema) =>
         },
       },
       Query: {
-        recentPosts: (root, { id, days }, context: Context) => {
-          // Create a date string <days> in the past from now()
-          const cutoff = new Date(
-            new Date().setUTCDate(new Date().getUTCDate() - days)
-          ).toUTCString();
+        recentPosts: (root, { id, seconds }, context: Context) => {
+          const cutoff = new Date(Date.now() - seconds * 1000);
 
           // Note we use `context.db.Post` here as we have a return type
           // of [Post], and this API provides results in the correct format.
@@ -132,3 +129,4 @@ export const extendGraphqlSchema = (schema: GraphQLSchema) =>
       },
     },
   });
+}
