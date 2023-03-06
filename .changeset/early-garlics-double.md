@@ -2,4 +2,4 @@
 '@keystone-6/core': patch
 ---
 
-Fixes generated types when usins `db.prismaSchemaPath` on Windows
+Fixes the `.keystone/types` import paths when using `db.prismaSchemaPath` on Windows
