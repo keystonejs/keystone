@@ -227,7 +227,7 @@ type Query {
   author(where: AuthorWhereUniqueInput!): Author
   authorsCount(where: AuthorWhereInput! = {}): Int
   keystone: KeystoneMeta!
-  nexusPosts(authorId: String, seconds: Int! = 600): [Post]!
+  nexusPosts(id: String!, seconds: Int! = 600): [Post]!
   things: [NexusThing]!
 }
 

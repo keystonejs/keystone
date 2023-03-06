@@ -1,10 +1,10 @@
+import path from 'path';
 import type { GraphQLSchema } from 'graphql';
 import { list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { select, relationship, text, timestamp } from '@keystone-6/core/fields';
-import { mergeSchemas } from '@graphql-tools/schema';
 import * as nexus from 'nexus';
-import type { Context, Lists } from '.keystone/types';
+import type { Lists } from '.keystone/types';
 
 export const lists: Lists = {
   Post: list({
@@ -40,18 +40,20 @@ export function extendGraphqlSchema(baseSchema: GraphQLSchema) {
       t.field('nexusPosts', {
         type: nexus.nonNull(nexus.list('Post')),
         args: {
-          authorId: nexus.stringArg(),
+          id: nexus.nonNull(nexus.stringArg()),
           seconds: nexus.nonNull(nexus.intArg({ default: 600 })),
         },
-        async resolve(root, { authorId, seconds }, context: Context) {
+
+        async resolve(root, { id, seconds }, context) {
           const cutoff = new Date(Date.now() - seconds * 1000);
 
-          return await context.db.Post.findMany({
-            where: {
-              ...(authorId ? { author: { id: authorId } } : null),
-              publishDate: { gt: cutoff },
-            },
-          });
+          // Note we use `context.db.Post` here as we have a return type
+          // of [Post], and this API provides results in the correct format.
+          // If you accidentally use `context.query.Post` here you can expect problems
+          // when accessing the fields in your GraphQL client.
+          return context.db.Post.findMany({
+            where: { author: { id: { equals: id } }, publishDate: { gt: cutoff } },
+          }) as Promise<Lists.Post.Item[]>; // TODO: nexus doesn't like <readonly Post[]>
         },
       });
     },
@@ -84,6 +86,13 @@ export function extendGraphqlSchema(baseSchema: GraphQLSchema) {
   return nexus.makeSchema({
     mergeSchema: {
       schema: baseSchema,
+    },
+    outputs: {
+      typegen: path.join(process.cwd(), 'nexus-types.ts'),
+    },
+    contextType: {
+      module: path.join(process.cwd(), 'node_modules', '.keystone', 'types.d.ts'),
+      export: 'Context',
     },
     types: {
       NexusThing,
