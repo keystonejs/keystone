@@ -227,8 +227,8 @@ type Query {
   author(where: AuthorWhereUniqueInput!): Author
   authorsCount(where: AuthorWhereInput! = {}): Int
   keystone: KeystoneMeta!
-  nexusPosts(authorId: String, days: Int! = 7): [NexusPost]!
-  things: [Thing]!
+  nexusPosts(authorId: String, seconds: Int! = 600): [Post]!
+  things: [NexusThing]!
 }
 
 type KeystoneMeta {
@@ -338,14 +338,7 @@ enum KeystoneAdminUISortDirection {
   DESC
 }
 
-type NexusPost {
-  id: String
-  title: String
-  status: String
-  content: String
-}
-
-type Thing {
+type NexusThing {
   id: Int
   title: String
 }
