@@ -220,6 +220,7 @@ export function printGeneratedTypes(
   const interimCreateUpdateTypes = [];
   const listsTypeInfo = [];
   const listsNamespaces = [];
+  prismaClientPath = JSON.stringify(prismaClientPath).slice(1, -1);
 
   for (const [listKey, list] of Object.entries(lists)) {
     const gqlNames = getGqlNames(list);
