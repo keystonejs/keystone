@@ -105,13 +105,10 @@ export const extendGraphqlSchema = graphql.extend(base => {
         type: graphql.list(graphql.nonNull(base.object('Post'))),
         args: {
           id: graphql.arg({ type: graphql.nonNull(graphql.ID) }),
-          days: graphql.arg({ type: graphql.nonNull(graphql.Int), defaultValue: 7 }),
+          seconds: graphql.arg({ type: graphql.nonNull(graphql.Int), defaultValue: 600 }),
         },
-        resolve(source, { id, days }, context: Context) {
-          // Create a date string <days> in the past from now()
-          const cutoff = new Date(
-            new Date().setUTCDate(new Date().getUTCDate() - days)
-          ).toISOString();
+        resolve(source, { id, seconds }, context: Context) {
+          const cutoff = new Date(Date.now() - seconds * 1000);
 
           // Note we use `context.db.Post` here as we have a return type
           // of [Post], and this API provides results in the correct format.
