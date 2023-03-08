@@ -181,17 +181,20 @@ export async function generateNodeModulesArtifacts(
   graphQLSchema: GraphQLSchema
 ) {
   const paths = getSystemPaths(cwd, config);
-
+  const dataProxy = config.db.url.startsWith('prisma:');
+  if (dataProxy === true) {
+    console.log('✨ Generating Prisma Client (data proxy)');
+  }
   await Promise.all([
-    generatePrismaClient(paths.schema.prisma),
+    generatePrismaClient(paths.schema.prisma, dataProxy),
     generateNodeModulesArtifactsWithoutPrismaClient(cwd, config, graphQLSchema),
   ]);
 }
 
-async function generatePrismaClient(prismaSchemaPath: string) {
+async function generatePrismaClient(prismaSchemaPath: string, dataProxy: boolean) {
   const generator = await getGenerator({
     schemaPath: prismaSchemaPath,
-    dataProxy: false,
+    dataProxy,
   });
   try {
     await generator.generate();
