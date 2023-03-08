@@ -191,8 +191,7 @@ export async function generateNodeModulesArtifacts(
   ]);
 }
 
-async function generatePrismaClient(prismaSchemaPath: string, dataProxyFlag: boolean) {
-  const dataProxy = dataProxyFlag || process.env.PRISMA_GENERATE_DATAPROXY === 'true';
+async function generatePrismaClient(prismaSchemaPath: string, dataProxy: boolean) {
   const generator = await getGenerator({
     schemaPath: prismaSchemaPath,
     dataProxy,
