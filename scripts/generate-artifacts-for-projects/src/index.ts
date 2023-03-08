@@ -21,7 +21,7 @@ async function generateArtifactsForProjectDir(projectDir: string) {
     } else {
       await generateCommittedArtifacts(projectDir, config, graphQLSchema);
     }
-    await generateNodeModulesArtifacts(projectDir, config, graphQLSchema, false);
+    await generateNodeModulesArtifacts(projectDir, config, graphQLSchema);
   } catch (err) {
     throw new Error(
       `An error occurred generating/validating the artifacts for the project at ${projectDir}:\n${format(
