@@ -2,4 +2,4 @@
 '@keystone-6/core': minor
 ---
 
-Adds `--data-proxy` flag to `dev`,`build` and `prisma` commands to allow generating the Prisma client for the Prisma Data Proxy
+Generates the Prisma client for the Prisma Data Proxy if a URL starting with `prisma:` is provided to `db.url`
