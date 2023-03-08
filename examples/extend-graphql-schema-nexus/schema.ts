@@ -94,7 +94,7 @@ export function extendGraphqlSchema(baseSchema: GraphQLSchema) {
     },
 
     // Typescript output settings, probably something you might commit in dev
-    shouldGenerateArtifacts: process.env.NODE_ENV !== 'production',
+    shouldGenerateArtifacts: false ?? process.env.NODE_ENV !== 'production',
     outputs: {
       typegen: path.join(process.cwd(), 'nexus-types.ts'),
     },

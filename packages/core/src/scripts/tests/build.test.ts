@@ -46,7 +46,6 @@ test('build works with typescript without the user defining a babel config', asy
       NEXT_TELEMETRY_DISABLED: '1',
     } as any,
   });
-  expect(await fs.readFile(`${tmp}/node_modules/.keystone/types.js`, 'utf8')).toBe('');
   expect(
     stripAnsi(result.all!)
       .replace(

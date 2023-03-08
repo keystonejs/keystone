@@ -1,19 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
-
 exports[`postinstall writes the correct node_modules files 1`] = `
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/types.d.ts ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/types.ts ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+/* eslint-disable */
+
 type Scalars = {
   readonly ID: string;
   readonly Boolean: boolean;
   readonly String: string;
   readonly Int: number;
   readonly Float: number;
-  readonly JSON: import("@keystone-6/core/types").JSONValue;
-  readonly Decimal: import("@keystone-6/core/types").Decimal | string;
+  readonly JSON: import('@keystone-6/core/types').JSONValue;
+  readonly Decimal: import('@keystone-6/core/types').Decimal | string;
 };
 
 export type TodoWhereUniqueInput = {
-  readonly id?: Scalars["ID"] | null;
+  readonly id?: Scalars['ID'] | null;
 };
 
 export type TodoWhereInput = {
@@ -25,41 +26,41 @@ export type TodoWhereInput = {
 };
 
 export type IDFilter = {
-  readonly equals?: Scalars["ID"] | null;
-  readonly in?: ReadonlyArray<Scalars["ID"]> | Scalars["ID"] | null;
-  readonly notIn?: ReadonlyArray<Scalars["ID"]> | Scalars["ID"] | null;
-  readonly lt?: Scalars["ID"] | null;
-  readonly lte?: Scalars["ID"] | null;
-  readonly gt?: Scalars["ID"] | null;
-  readonly gte?: Scalars["ID"] | null;
+  readonly equals?: Scalars['ID'] | null;
+  readonly in?: ReadonlyArray<Scalars['ID']> | Scalars['ID'] | null;
+  readonly notIn?: ReadonlyArray<Scalars['ID']> | Scalars['ID'] | null;
+  readonly lt?: Scalars['ID'] | null;
+  readonly lte?: Scalars['ID'] | null;
+  readonly gt?: Scalars['ID'] | null;
+  readonly gte?: Scalars['ID'] | null;
   readonly not?: IDFilter | null;
 };
 
 export type StringFilter = {
-  readonly equals?: Scalars["String"] | null;
-  readonly in?: ReadonlyArray<Scalars["String"]> | Scalars["String"] | null;
-  readonly notIn?: ReadonlyArray<Scalars["String"]> | Scalars["String"] | null;
-  readonly lt?: Scalars["String"] | null;
-  readonly lte?: Scalars["String"] | null;
-  readonly gt?: Scalars["String"] | null;
-  readonly gte?: Scalars["String"] | null;
-  readonly contains?: Scalars["String"] | null;
-  readonly startsWith?: Scalars["String"] | null;
-  readonly endsWith?: Scalars["String"] | null;
+  readonly equals?: Scalars['String'] | null;
+  readonly in?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null;
+  readonly notIn?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null;
+  readonly lt?: Scalars['String'] | null;
+  readonly lte?: Scalars['String'] | null;
+  readonly gt?: Scalars['String'] | null;
+  readonly gte?: Scalars['String'] | null;
+  readonly contains?: Scalars['String'] | null;
+  readonly startsWith?: Scalars['String'] | null;
+  readonly endsWith?: Scalars['String'] | null;
   readonly not?: NestedStringFilter | null;
 };
 
 export type NestedStringFilter = {
-  readonly equals?: Scalars["String"] | null;
-  readonly in?: ReadonlyArray<Scalars["String"]> | Scalars["String"] | null;
-  readonly notIn?: ReadonlyArray<Scalars["String"]> | Scalars["String"] | null;
-  readonly lt?: Scalars["String"] | null;
-  readonly lte?: Scalars["String"] | null;
-  readonly gt?: Scalars["String"] | null;
-  readonly gte?: Scalars["String"] | null;
-  readonly contains?: Scalars["String"] | null;
-  readonly startsWith?: Scalars["String"] | null;
-  readonly endsWith?: Scalars["String"] | null;
+  readonly equals?: Scalars['String'] | null;
+  readonly in?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null;
+  readonly notIn?: ReadonlyArray<Scalars['String']> | Scalars['String'] | null;
+  readonly lt?: Scalars['String'] | null;
+  readonly lte?: Scalars['String'] | null;
+  readonly gt?: Scalars['String'] | null;
+  readonly gte?: Scalars['String'] | null;
+  readonly contains?: Scalars['String'] | null;
+  readonly startsWith?: Scalars['String'] | null;
+  readonly endsWith?: Scalars['String'] | null;
   readonly not?: NestedStringFilter | null;
 };
 
@@ -69,11 +70,11 @@ export type TodoOrderByInput = {
 };
 
 export type OrderDirection =
-  | "asc"
-  | "desc";
+  | 'asc'
+  | 'desc';
 
 export type TodoUpdateInput = {
-  readonly title?: Scalars["String"] | null;
+  readonly title?: Scalars['String'] | null;
 };
 
 export type TodoUpdateArgs = {
@@ -82,47 +83,47 @@ export type TodoUpdateArgs = {
 };
 
 export type TodoCreateInput = {
-  readonly title?: Scalars["String"] | null;
+  readonly title?: Scalars['String'] | null;
 };
 
 export type KeystoneAdminUIFieldMetaIsNonNull =
-  | "read"
-  | "create"
-  | "update";
+  | 'read'
+  | 'create'
+  | 'update';
 
 export type KeystoneAdminUIFieldMetaCreateViewFieldMode =
-  | "edit"
-  | "hidden";
+  | 'edit'
+  | 'hidden';
 
 export type KeystoneAdminUIFieldMetaListViewFieldMode =
-  | "read"
-  | "hidden";
+  | 'read'
+  | 'hidden';
 
 export type KeystoneAdminUIFieldMetaItemViewFieldMode =
-  | "edit"
-  | "read"
-  | "hidden";
+  | 'edit'
+  | 'read'
+  | 'hidden';
 
 export type KeystoneAdminUIFieldMetaItemViewFieldPosition =
-  | "form"
-  | "sidebar";
+  | 'form'
+  | 'sidebar';
 
 export type QueryMode =
-  | "default"
-  | "insensitive";
+  | 'default'
+  | 'insensitive';
 
 export type KeystoneAdminUISortDirection =
-  | "ASC"
-  | "DESC";
+  | 'ASC'
+  | 'DESC';
 
 type ResolvedTodoCreateInput = {
   id?: undefined;
-  title?: import('@prisma/client').Prisma.TodoCreateInput["title"];
+  title?: import('@prisma/client').Prisma.TodoCreateInput['title'];
 };
 
 type ResolvedTodoUpdateInput = {
   id?: undefined;
-  title?: import('@prisma/client').Prisma.TodoUpdateInput["title"];
+  title?: import('@prisma/client').Prisma.TodoUpdateInput['title'];
 };
 
 export declare namespace Lists {
@@ -130,9 +131,9 @@ export declare namespace Lists {
   namespace Todo {
     export type Item = import('@prisma/client').Todo;
     export type TypeInfo = {
-      key: "Todo";
+      key: 'Todo';
       isSingleton: false;
-      fields: "id" | "title"
+      fields: 'id' | 'title'
       item: Item;
       inputs: {
         where: TodoWhereInput;
@@ -165,7 +166,5 @@ export type Lists = {
 } & Record<string, import('@keystone-6/core').ListConfig<any, any>>;
 
 export {}
-
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/types.js ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 
 `;

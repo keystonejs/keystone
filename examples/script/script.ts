@@ -1,6 +1,11 @@
 import { getContext } from '@keystone-6/core/context';
 import config from './keystone';
+
+// WARNING: this is only needed for our monorepo examples, dont do this
 import * as PrismaModule from '.myprisma/client';
+
+//   do this instead
+// import * as PrismaModule from '@prisma/client';
 
 async function main() {
   const context = getContext(config, PrismaModule);
