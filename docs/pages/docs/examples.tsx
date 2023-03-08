@@ -75,7 +75,7 @@ export default function Docs() {
         <Well
           grad="grad1"
           heading="Authentication"
-          href="https://github.com/keystonejs/keystone/tree/main/examples/with-auth"
+          href="https://github.com/keystonejs/keystone/tree/main/examples/auth"
           target="_blank"
           rel="noopener noreferrer"
         >
