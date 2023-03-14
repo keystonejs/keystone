@@ -67,6 +67,9 @@ export type InitialisedList = {
   adminUILabels: { label: string; singular: string; plural: string; path: string };
   cacheHint: ((args: CacheHintArgs) => CacheHint) | undefined;
   listKey: string;
+  prisma: {
+    listKey: string;
+  };
   ui: {
     labelField: string;
     searchFields: Set<string>;
@@ -240,7 +243,12 @@ function getListsWithInitialisedFields(
       ...getNamesFromList(listKey, list),
       access: parseListAccessControl(list.access),
       dbMap: list.db?.map,
+
+      prisma: {
+        listKey: listKey[0].toLowerCase() + listKey.slice(1),
+      },
       extendPrismaSchema: list.db?.extendPrismaSchema,
+
       types: listGraphqlTypes[listKey].types,
       ui: {
         labelField,
