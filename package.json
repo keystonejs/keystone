@@ -17,7 +17,7 @@
     "lint:eslint": "eslint . --ext ts,tsx,js",
     "lint:prettier": "prettier --check \"**/*.{js,json,ts,tsx,md,mdx}\"",
     "lint:types": "tsc",
-    "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:types && yarn lint:filters",
+    "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:types",
     "test": "jest",
     "test:debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand",
     "test:admin-ui": "jest tests/admin-ui-tests",
@@ -25,9 +25,7 @@
     "build": "preconstruct build",
     "prepare": "patch-package && manypkg check && preconstruct dev && node scripts/generate-artifacts-for-projects && cd examples/graphql-ts-gql && yarn ts-gql build",
     "update": "manypkg upgrade",
-    "update-project-schemas": "node scripts/generate-artifacts-for-projects update-schemas",
-    "generate-filters": "cd prisma-utils && yarn generate",
-    "lint:filters": "cd prisma-utils && yarn verify"
+    "update-project-schemas": "node scripts/generate-artifacts-for-projects update-schemas"
   },
   "dependencies": {
     "@babel/core": "^7.16.0",
