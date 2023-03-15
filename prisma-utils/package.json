@@ -1,25 +1,16 @@
 {
   "name": "@keystone-6/prisma-utils",
-  "version": "0.0.2",
   "private": true,
-  "main": "dist/keystone-6-prisma-utils.cjs.js",
-  "module": "dist/keystone-6-prisma-utils.esm.js",
-  "exports": {
-    ".": {
-      "module": "./dist/keystone-6-prisma-utils.esm.js",
-      "default": "./dist/keystone-6-prisma-utils.cjs.js"
-    },
-    "./package.json": "./package.json"
-  },
   "dependencies": {
     "@prisma/generator-helper": "4.11.0",
     "@prisma/internals": "4.11.0",
     "fs-extra": "^11.0.0",
-    "prettier": "^2.5.0"
+    "prettier": "^2.5.0",
+    "tsx": "^3.9.0"
   },
   "scripts": {
-    "generate": "node .",
-    "verify": "VERIFY=1 node ."
+    "generate": "tsx generate.ts",
+    "verify": "VERIFY=1 tsx generate.ts"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/prisma-utils"
 }
