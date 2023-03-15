@@ -62,9 +62,9 @@ async function formatPrismaSchema(schema: string) {
   return formatSchema({ schema });
 }
 
-async function readFileButReturnNothingIfDoesNotExist(filename: string) {
+async function readFileButReturnNothingIfDoesNotExist(path: string) {
   try {
-    return await fs.readFile(filename, 'utf8');
+    return await fs.readFile(path, 'utf8');
   } catch (err: any) {
     if (err.code === 'ENOENT') {
       return;
@@ -79,15 +79,27 @@ export function getBuiltKeystoneConfigurationPath(cwd: string) {
 }
 
 export function getSystemPaths(cwd: string, config: KeystoneConfig) {
+  const prismaClientPath = config.db.prismaClientPath
+    ? path.join(cwd, config.db.prismaClientPath)
+    : null;
+
+  const builtTypesPath = config.types?.path
+    ? path.join(cwd, config.types.path)
+    : path.join(cwd, 'node_modules/.keystone/types.ts');
+
+  const relativePrismaPath = prismaClientPath
+    ? `./${path.relative(path.dirname(builtTypesPath), prismaClientPath)}`
+    : '@prisma/client';
+
   return {
     config: getBuiltKeystoneConfigurationPath(cwd),
     admin: path.join(cwd, '.keystone/admin'),
-    keystone: path.join(cwd, 'node_modules/.keystone'),
-    prisma: config.db.prismaClientPath
-      ? path.join(cwd, config.db.prismaClientPath)
-      : '@prisma/client',
+    prisma: prismaClientPath ?? '@prisma/client',
+    types: {
+      relativePrismaPath,
+    },
     schema: {
-      // types: // TODO
+      types: builtTypesPath,
       prisma: path.join(cwd, 'schema.prisma'),
       graphql: path.join(cwd, 'schema.graphql'),
     },
@@ -163,16 +175,12 @@ export async function generateNodeModulesArtifactsWithoutPrismaClient(
   config: KeystoneConfig,
   graphQLSchema: GraphQLSchema
 ) {
-  const paths = getSystemPaths(cwd, config);
   const lists = initialiseLists(config);
-
-  await Promise.all([
-    fs.outputFile(
-      path.join(paths.keystone, 'types.d.ts'),
-      printGeneratedTypes(paths.prisma, graphQLSchema, lists)
-    ),
-    fs.outputFile(path.join(paths.keystone, 'types.js'), ''),
-  ]);
+  const paths = getSystemPaths(cwd, config);
+  await fs.outputFile(
+    paths.schema.types,
+    printGeneratedTypes(paths.types.relativePrismaPath, graphQLSchema, lists)
+  );
 }
 
 export async function generateNodeModulesArtifacts(

@@ -1,6 +1,3 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-exports[`postinstall writes the correct node_modules files 1`] = `
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/types.ts ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 /* eslint-disable */
 
 type Scalars = {
@@ -13,16 +10,18 @@ type Scalars = {
   readonly Decimal: import('@keystone-6/core/types').Decimal | string;
 };
 
-export type TodoWhereUniqueInput = {
+export type PostWhereUniqueInput = {
   readonly id?: Scalars['ID'] | null;
 };
 
-export type TodoWhereInput = {
-  readonly AND?: ReadonlyArray<TodoWhereInput> | TodoWhereInput | null;
-  readonly OR?: ReadonlyArray<TodoWhereInput> | TodoWhereInput | null;
-  readonly NOT?: ReadonlyArray<TodoWhereInput> | TodoWhereInput | null;
+export type PostWhereInput = {
+  readonly AND?: ReadonlyArray<PostWhereInput> | PostWhereInput | null;
+  readonly OR?: ReadonlyArray<PostWhereInput> | PostWhereInput | null;
+  readonly NOT?: ReadonlyArray<PostWhereInput> | PostWhereInput | null;
   readonly id?: IDFilter | null;
   readonly title?: StringFilter | null;
+  readonly content?: StringFilter | null;
+  readonly publishDate?: DateTimeNullableFilter | null;
 };
 
 export type IDFilter = {
@@ -64,26 +63,43 @@ export type NestedStringFilter = {
   readonly not?: NestedStringFilter | null;
 };
 
-export type TodoOrderByInput = {
+export type DateTimeNullableFilter = {
+  readonly equals?: any | null;
+  readonly in?: ReadonlyArray<any> | any | null;
+  readonly notIn?: ReadonlyArray<any> | any | null;
+  readonly lt?: any | null;
+  readonly lte?: any | null;
+  readonly gt?: any | null;
+  readonly gte?: any | null;
+  readonly not?: DateTimeNullableFilter | null;
+};
+
+export type PostOrderByInput = {
   readonly id?: OrderDirection | null;
   readonly title?: OrderDirection | null;
+  readonly content?: OrderDirection | null;
+  readonly publishDate?: OrderDirection | null;
 };
 
 export type OrderDirection =
   | 'asc'
   | 'desc';
 
-export type TodoUpdateInput = {
+export type PostUpdateInput = {
   readonly title?: Scalars['String'] | null;
+  readonly content?: Scalars['String'] | null;
+  readonly publishDate?: any | null;
 };
 
-export type TodoUpdateArgs = {
-  readonly where: TodoWhereUniqueInput;
-  readonly data: TodoUpdateInput;
+export type PostUpdateArgs = {
+  readonly where: PostWhereUniqueInput;
+  readonly data: PostUpdateInput;
 };
 
-export type TodoCreateInput = {
+export type PostCreateInput = {
   readonly title?: Scalars['String'] | null;
+  readonly content?: Scalars['String'] | null;
+  readonly publishDate?: any | null;
 };
 
 export type KeystoneAdminUIFieldMetaIsNonNull =
@@ -116,35 +132,39 @@ export type KeystoneAdminUISortDirection =
   | 'ASC'
   | 'DESC';
 
-type ResolvedTodoCreateInput = {
+type ResolvedPostCreateInput = {
   id?: undefined;
-  title?: import('@prisma/client').Prisma.TodoCreateInput['title'];
+  title?: import('./node_modules/.myprisma/client').Prisma.PostCreateInput['title'];
+  content?: import('./node_modules/.myprisma/client').Prisma.PostCreateInput['content'];
+  publishDate?: import('./node_modules/.myprisma/client').Prisma.PostCreateInput['publishDate'];
 };
 
-type ResolvedTodoUpdateInput = {
+type ResolvedPostUpdateInput = {
   id?: undefined;
-  title?: import('@prisma/client').Prisma.TodoUpdateInput['title'];
+  title?: import('./node_modules/.myprisma/client').Prisma.PostUpdateInput['title'];
+  content?: import('./node_modules/.myprisma/client').Prisma.PostUpdateInput['content'];
+  publishDate?: import('./node_modules/.myprisma/client').Prisma.PostUpdateInput['publishDate'];
 };
 
 export declare namespace Lists {
-  export type Todo = import('@keystone-6/core').ListConfig<Lists.Todo.TypeInfo, any>;
-  namespace Todo {
-    export type Item = import('@prisma/client').Todo;
+  export type Post = import('@keystone-6/core').ListConfig<Lists.Post.TypeInfo, any>;
+  namespace Post {
+    export type Item = import('./node_modules/.myprisma/client').Post;
     export type TypeInfo = {
-      key: 'Todo';
+      key: 'Post';
       isSingleton: false;
-      fields: 'id' | 'title'
+      fields: 'id' | 'title' | 'content' | 'publishDate'
       item: Item;
       inputs: {
-        where: TodoWhereInput;
-        uniqueWhere: TodoWhereUniqueInput;
-        create: TodoCreateInput;
-        update: TodoUpdateInput;
-        orderBy: TodoOrderByInput;
+        where: PostWhereInput;
+        uniqueWhere: PostWhereUniqueInput;
+        create: PostCreateInput;
+        update: PostUpdateInput;
+        orderBy: PostOrderByInput;
       };
       prisma: {
-        create: ResolvedTodoCreateInput;
-        update: ResolvedTodoUpdateInput;
+        create: ResolvedPostCreateInput;
+        update: ResolvedPostUpdateInput;
       };
       all: __TypeInfo;
     };
@@ -154,9 +174,9 @@ export type Context = import('@keystone-6/core/types').KeystoneContext<TypeInfo>
 
 export type TypeInfo = {
   lists: {
-    readonly Todo: Lists.Todo.TypeInfo;
+    readonly Post: Lists.Post.TypeInfo;
   };
-  prisma: import('@prisma/client').PrismaClient;
+  prisma: import('./node_modules/.myprisma/client').PrismaClient;
 };
 
 type __TypeInfo = TypeInfo;
@@ -166,5 +186,3 @@ export type Lists = {
 } & Record<string, import('@keystone-6/core').ListConfig<any, any>>;
 
 export {}
-
-`;

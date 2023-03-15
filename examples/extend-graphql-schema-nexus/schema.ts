@@ -4,7 +4,7 @@ import { list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { select, relationship, text, timestamp } from '@keystone-6/core/fields';
 import * as nexus from 'nexus';
-import type { Lists } from '.keystone/types';
+import type { Lists } from './keystone-types';
 
 export const lists: Lists = {
   Post: list({
@@ -99,7 +99,7 @@ export function extendGraphqlSchema(baseSchema: GraphQLSchema) {
       typegen: path.join(process.cwd(), 'nexus-types.ts'),
     },
     contextType: {
-      module: path.join(process.cwd(), 'node_modules', '.keystone', 'types.d.ts'),
+      module: path.join(process.cwd(), 'keystone-types.ts'),
       export: 'Context',
     },
   });

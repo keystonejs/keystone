@@ -14,12 +14,16 @@ import { InitialisedList } from './core/types-for-lists';
 
 const introspectionTypesSet = new Set(introspectionTypes);
 
+function stringify(x: string) {
+  return JSON.stringify(x).slice(1, -1);
+}
+
 function printEnumTypeDefinition(type: GraphQLEnumType) {
   return [
     `export type ${type.name} =`,
     type
       .getValues()
-      .map(x => `  | ${JSON.stringify(x.name)}`)
+      .map(x => `  | '${stringify(x.name)}'`)
       .join('\n') + ';',
   ].join('\n');
 }
@@ -45,7 +49,7 @@ function printTypeReferenceWithoutNullable(
   const name = type.name;
   if (type instanceof GraphQLScalarType) {
     if (scalars[name] === undefined) return 'any';
-    return `Scalars[${JSON.stringify(name)}]`;
+    return `Scalars['${stringify(name)}']`;
   }
 
   return name;
@@ -100,7 +104,7 @@ function printInterimFieldType({
   prismaKey: string;
   operation: string;
 }) {
-  return `  ${fieldKey}?: import('${prismaClientPath}').Prisma.${listKey}${operation}Input["${prismaKey}"];`;
+  return `  ${fieldKey}?: import('${prismaClientPath}').Prisma.${listKey}${operation}Input['${prismaKey}'];`;
 }
 
 function printInterimMultiFieldType({
@@ -189,9 +193,9 @@ function printListTypeInfo<L extends InitialisedList>(
     `namespace ${listKey} {`,
     `  export type Item = import('${prismaClientPath}').${listKey};`,
     `  export type TypeInfo = {`,
-    `    key: "${listKey}";`,
+    `    key: '${listKey}';`,
     `    isSingleton: ${list.isSingleton};`,
-    `    fields: ${Object.keys(list.fields).map(x => `"${x}"`).join(' | ')}`,
+    `    fields: ${Object.keys(list.fields).map(x => `'${x}'`).join(' | ')}`,
     `    item: Item;`,
     `    inputs: {`,
     `      where: ${whereInputName};`,
@@ -220,7 +224,7 @@ export function printGeneratedTypes(
   const interimCreateUpdateTypes = [];
   const listsTypeInfo = [];
   const listsNamespaces = [];
-  prismaClientPath = JSON.stringify(prismaClientPath).slice(1, -1);
+  prismaClientPath = stringify(prismaClientPath).replace(/'/g, `\\'`);
 
   for (const [listKey, list] of Object.entries(lists)) {
     const gqlNames = getGqlNames(list);
@@ -243,14 +247,16 @@ export function printGeneratedTypes(
   }
 
   return [
+    '/* eslint-disable */',
+    '',
     printInputTypesFromSchema(graphQLSchema, {
       ID: 'string',
       Boolean: 'boolean',
       String: 'string',
       Int: 'number',
       Float: 'number',
-      JSON: 'import("@keystone-6/core/types").JSONValue',
-      Decimal: 'import("@keystone-6/core/types").Decimal | string',
+      JSON: `import('@keystone-6/core/types').JSONValue`,
+      Decimal: `import('@keystone-6/core/types').Decimal | string`,
     }),
     '',
     interimCreateUpdateTypes.join('\n\n'),

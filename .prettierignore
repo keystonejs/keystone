@@ -6,6 +6,9 @@ coverage
 **/.next
 **/.keystone
 **/__generated__
+examples/custom-output-paths/my-types.ts
+examples/extend-graphql-schema-nexus/keystone-types.ts
+examples/extend-graphql-schema-nexus/nexus-types.ts
 docs/**/*.md
 docs/public/assets/*.js
 .keystone/tests

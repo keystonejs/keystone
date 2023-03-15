@@ -9,7 +9,7 @@ import type { Lists } from '.keystone/types';
 
 type Session = {
   itemId: string;
-  data?: {
+  data: {
     isAdmin: boolean;
   };
 };
@@ -29,7 +29,7 @@ function isAdminOrSameUser({
   if (!session) return false;
 
   // admins can do anything
-  if (session.data?.isAdmin) return true;
+  if (session.data.isAdmin) return true;
 
   // the authenticated user needs to be equal to the user we are updating
   return session.itemId === item.id;
@@ -50,7 +50,7 @@ function isAdminOrSameUserFilter({ session }: { session: Session | undefined }) 
   };
 }
 
-function isAdmin({ session }: { session: any }) {
+function isAdmin({ session }: { session: Session | undefined }) {
   // you need to have a session to do this
   if (!session) return false;
 

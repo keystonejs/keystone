@@ -94,12 +94,17 @@ export type StorageConfig = (
   FileOrImage;
 
 export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
-  lists: ListSchemaConfig;
   db: DatabaseConfig<TypeInfo>;
+  graphql?: GraphQLConfig;
+  lists: ListSchemaConfig;
   ui?: AdminUIConfig<TypeInfo>;
   server?: ServerConfig<TypeInfo>;
   session?: SessionStrategy<any>;
-  graphql?: GraphQLConfig;
+  types?: {
+    path?: string;
+  };
+
+  // TODO: why isn't this within .graphql?
   extendGraphqlSchema?: ExtendGraphqlSchema;
   /** An object containing configuration about keystone's various external storages.
    *
