@@ -12,4 +12,9 @@ export default config({
   },
   lists,
   extendGraphqlSchema,
+
+  // we use a custom types path for easy integration with nexus
+  types: {
+    path: 'keystone-types.ts',
+  },
 });
