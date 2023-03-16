@@ -3,7 +3,6 @@ title: "Privacy Policy (Telemetry)"
 description: "Keystone collects anonymous telemetry events when running `keystone dev` - Learn what is sent, what the information is used for, and how to opt-out"
 ---
 
-
 Keystone 6 is software developed and maintained by Thinkmill Labs Pty Ltd and the open source community, and this privacy policy is on behalf of Thinkmill Labs and in relation to Keystone, and to the extent applicable, similar software under the Keystone GitHub organisation.
 
 This page describes how we collect and hold **anonymous** telemetry data, the rationale for why we are collecting this information, when it is collected, and how **you can opt-out**. Unless you opt out, you consent to us collecting, holding, analysing and using the telemetry data in accordance with this policy, which may be updated from time to time.
@@ -67,7 +66,8 @@ These reports are forwarded to [https://telemetry.keystonejs.com/](https://telem
 
 We additionally record a timestamp of the time that the report is received by the server at [https://telemetry.keystonejs.com](https://telemetry.keystonejs.com/).
 
-**Device Telemetry**
+#### Device Telemetry
+
 The type of information contained within a device telemetry report is currently:
 
 - The last date you used `keystone dev`, and
@@ -84,7 +84,7 @@ A device telemetry report is formatted as JSON and currently looks like:
 }
 ```
 
-**Project Telemetry**
+#### Project Telemetry
 
 The type of information contained within a project telemetry report is currently:
 
@@ -169,10 +169,12 @@ Keystone stores your telemetry preferences in a location defined by [env-paths](
 | Linux | ~/.config/keystonejs (or $XDG_CONFIG_HOME/keystonejs) |
 | Windows | %APPDATA%\keystonejs\Config (for example C:\Users\YOUR_USERNAME\AppData\Roaming\keystonejs\Config) |
 
-**Environment Variable**
+#### Environment Variable
+
 You can opt-out of all telemetry by setting the `KEYSTONE_TELEMETRY_DISABLED` environment variable to `'1'`
 
-**Network-wide opt-out**
+#### Network-wide opt-out
+
 If you have a network-wide firewall, you can opt-out of Keystone telemetry by not resolving the following domain: [telemetry.keystonejs.com](https://telemetry.keystonejs.com)
 
 ---
