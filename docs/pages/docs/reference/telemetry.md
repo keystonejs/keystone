@@ -171,8 +171,8 @@ Keystone stores your telemetry preferences in a location defined by [env-paths](
 
 **Environment Variable**
 You can opt-out of all telemetry by setting the `KEYSTONE_TELEMETRY_DISABLED` environment variable to `'1'`
-**Network-wide opt-out**
 
+**Network-wide opt-out**
 If you have a network-wide firewall, you can opt-out of Keystone telemetry by not resolving the following domain: [telemetry.keystonejs.com](https://telemetry.keystonejs.com)
 
 ---
