@@ -31,12 +31,9 @@ import { initialiseLists } from '../../lib/core/types-for-lists';
 import { printPrismaSchema } from '../../lib/core/prisma-schema-printer';
 import { AdminMetaRootVal } from '../../admin-ui/system/createAdminMeta';
 import { Flags } from './../cli';
+import { pkgDir } from '../../pkg-dir';
 
-const devLoadingHTMLFilepath = path.join(
-  path.dirname(require.resolve('@keystone-6/core/package.json')),
-  'static',
-  'dev-loading.html'
-);
+const devLoadingHTMLFilepath = path.join(pkgDir, 'static', 'dev-loading.html');
 
 const stripExtendHttpServer = (config: KeystoneConfig): KeystoneConfig => {
   const { server, ...rest } = config;

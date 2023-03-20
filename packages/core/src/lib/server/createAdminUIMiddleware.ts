@@ -2,12 +2,9 @@ import url from 'url';
 import path from 'path';
 import express from 'express';
 import type { KeystoneConfig, KeystoneContext } from '../../types';
+import { pkgDir } from '../../pkg-dir';
 
-const adminErrorHTMLFilepath = path.join(
-  path.dirname(require.resolve('@keystone-6/core/package.json')),
-  'static',
-  'admin-error.html'
-);
+const adminErrorHTMLFilepath = path.join(pkgDir, 'static', 'admin-error.html');
 
 type NextApp = {
   prepare(): Promise<void>;

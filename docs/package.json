@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "SHOW_NEXT_RELEASE=1 next -p 8000",
     "dev:live": "next -p 8000",
-    "build": "yarn validate-links && next build && yarn sitemap && yarn build:rss",
+    "build": "pnpm validate-links && next build && pnpm sitemap",
     "start": "next start -p 8000",
     "sitemap": "next-sitemap",
     "build:rss": "tsx scripts/rss.ts",
@@ -28,6 +28,8 @@
     "@markdoc/markdoc": "^0.2.0",
     "@preconstruct/next": "^4.0.0",
     "@sindresorhus/slugify": "^1.1.2",
+    "@types/babel__core": "7.1.19",
+    "@types/facepaint": "^1.2.2",
     "@types/gtag.js": "^0.0.12",
     "@types/js-yaml": "^4.0.5",
     "@types/markdown-it": "^12.2.3",

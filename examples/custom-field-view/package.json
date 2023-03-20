@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "keystone dev",
     "start": "keystone start",
-    "build": "keystone build"
+    "build": "keystone build",
+    "postinstall": "keystone postinstall"
   },
   "dependencies": {
     "@emotion/css": "^11.7.1",

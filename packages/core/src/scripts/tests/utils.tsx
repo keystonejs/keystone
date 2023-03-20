@@ -107,7 +107,6 @@ let f = fixturez(__dirname);
 export const symlinkKeystoneDeps = Object.fromEntries(
   [
     '@keystone-6/core',
-    '@keystone-6/auth',
     '@prisma/engines',
     '@prisma/client',
     'typescript',

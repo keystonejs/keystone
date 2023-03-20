@@ -5,9 +5,10 @@
   "repository": "https://github.com/keystonejs/keystone/tree/main/examples/extend-graphql-subscriptions",
   "license": "MIT",
   "scripts": {
-    "build": "keystone build",
     "dev": "keystone dev",
-    "start": "keystone start"
+    "start": "keystone start",
+    "build": "keystone build",
+    "postinstall": "keystone postinstall"
   },
   "dependencies": {
     "@apollo/client": "^3.7.0",

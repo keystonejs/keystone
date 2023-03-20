@@ -7,27 +7,24 @@
   "license": "MIT",
   "repository": "https://github.com/keystonejs/keystone",
   "homepage": "https://github.com/keystonejs/keystone",
-  "packageManager": "yarn@1.22.19",
+  "packageManager": "pnpm@7.30.0",
   "scripts": {
-    "docs": "manypkg run @keystone-6/website dev",
     "coverage": "jest --coverage",
     "format:file": "prettier --write",
     "format": "prettier --write \"**/*.{js,json,ts,tsx,md,mdx}\"",
-    "ci:version-packages": "yarn changeset version && cd docs && yarn remove-conditionals",
+    "ci:version-packages": "pnpm changeset version && cd docs && pnpm remove-conditionals",
     "lint:eslint": "eslint . --ext ts,tsx,js",
     "lint:prettier": "prettier --check \"**/*.{js,json,ts,tsx,md,mdx}\"",
     "lint:types": "tsc",
-    "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:types && yarn lint:filters",
+    "lint": "pnpm lint:prettier && pnpm lint:eslint && pnpm lint:types && pnpm lint:filters",
     "test": "jest",
     "test:debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand",
     "test:admin-ui": "jest tests/admin-ui-tests",
-    "benchmark": "yarn workspace @keystone-6/benchmarks-legacy go",
     "build": "preconstruct build",
-    "prepare": "patch-package && manypkg check && preconstruct dev && node scripts/generate-artifacts-for-projects && cd examples/graphql-ts-gql && yarn ts-gql build",
-    "update": "manypkg upgrade",
-    "update-project-schemas": "node scripts/generate-artifacts-for-projects update-schemas",
-    "generate-filters": "cd prisma-utils && yarn generate",
-    "lint:filters": "cd prisma-utils && yarn verify"
+    "prepare": "preconstruct dev",
+    "update-schemas": "pnpm --filter @keystone-6/example-* --filter @keystone-6/test-project* exec keystone build --no-ui",
+    "generate-filters": "cd prisma-utils && pnpm generate",
+    "lint:filters": "cd prisma-utils && pnpm verify"
   },
   "dependencies": {
     "@babel/core": "^7.16.0",
@@ -37,10 +34,16 @@
     "@babel/preset-typescript": "^7.16.0",
     "@changesets/changelog-github": "^0.4.1",
     "@changesets/cli": "^2.18.0",
-    "@manypkg/cli": "^0.20.0",
     "@preconstruct/cli": "2.3.0",
+    "@prisma/client": "4.11.0",
+    "@prisma/generator-helper": "4.11.0",
+    "@prisma/internals": "4.11.0",
+    "@prisma/migrate": "4.11.0",
     "@types/jest": "^29.0.0",
+    "@types/node": "^18.11.14",
     "@types/node-fetch": "^2.5.12",
+    "@types/react": "^18.0.9",
+    "@types/react-dom": "^18.0.4",
     "@typescript-eslint/eslint-plugin": "^5.7.0",
     "@typescript-eslint/parser": "^5.7.0",
     "esbuild-jest": "^0.5.0",
@@ -53,6 +56,7 @@
     "jest-environment-jsdom": "^29.0.0",
     "patch-package": "^6.5.0",
     "prettier": "^2.5.0",
+    "prisma": "4.11.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "~5.0.0"
@@ -72,24 +76,6 @@
       }
     ]
   },
-  "workspaces": {
-    "packages": [
-      "design-system/packages/*",
-      "design-system/website",
-      "docs",
-      "examples/*",
-      "examples/*/*",
-      "packages/*",
-      "tests/admin-ui-tests",
-      "tests/api-tests",
-      "tests/benchmarks",
-      "tests/examples-smoke-tests",
-      "tests/test-projects/*",
-      "tests/sandbox",
-      "prisma-utils",
-      "scripts/*"
-    ]
-  },
   "preconstruct": {
     "packages": [
       "packages/*",
@@ -101,9 +87,6 @@
     "___experimentalFlags_WILL_CHANGE_IN_PATCH": {
       "keepDynamicImportAsDynamicImportInCommonJS": true
     }
-  },
-  "manypkg": {
-    "defaultBranch": "main"
   },
   "jest": {
     "testEnvironment": "node",
@@ -121,8 +104,5 @@
         }
       ]
     }
-  },
-  "resolutions": {
-    "**/@types/node": "^18.11.14"
   }
 }

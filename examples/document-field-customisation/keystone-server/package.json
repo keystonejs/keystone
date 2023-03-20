@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "keystone dev --seed-database",
     "start": "keystone start --seed-database",
-    "build": "keystone build"
+    "build": "keystone build",
+    "postinstall": "keystone postinstall"
   },
   "dependencies": {
     "@keystone-6/auth": "^7.0.0",

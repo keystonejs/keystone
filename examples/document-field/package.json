@@ -7,7 +7,8 @@
     "dev": "keystone dev",
     "dev:site": "next dev -p 3001",
     "start": "keystone start",
-    "build": "keystone build"
+    "build": "keystone build",
+    "postinstall": "keystone postinstall"
   },
   "dependencies": {
     "@keystone-6/core": "^5.0.0",
@@ -15,7 +16,8 @@
     "@keystone-6/fields-document": "^7.0.0",
     "@preconstruct/next": "^4.0.0",
     "next": "^13.0.3",
-    "react": "^18.2.0"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "typescript": "~5.0.0"
