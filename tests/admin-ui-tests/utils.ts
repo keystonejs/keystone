@@ -103,7 +103,7 @@ export const adminUITests = (
 
     if (mode === 'prod') {
       test('build keystone', async () => {
-        let keystoneBuildProcess = execa('yarn', ['build'], {
+        let keystoneBuildProcess = execa('pnpm', ['build'], {
           cwd: projectDir,
           env: process.env,
         });

@@ -30,8 +30,8 @@ import { KeystoneConfig } from '../../types';
 import { initialiseLists } from '../../lib/core/types-for-lists';
 import { printPrismaSchema } from '../../lib/core/prisma-schema-printer';
 import { AdminMetaRootVal } from '../../admin-ui/system/createAdminMeta';
-import { Flags } from './../cli';
 import { pkgDir } from '../../pkg-dir';
+import { Flags } from './../cli';
 
 const devLoadingHTMLFilepath = path.join(pkgDir, 'static', 'dev-loading.html');
 

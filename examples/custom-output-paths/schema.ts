@@ -24,6 +24,7 @@ export const lists: Lists = {
           //
           //   it is helpful for us to check that the example is not
           //   broken by code changes
+          //
         })) satisfies readonly { title: string; content: string }[];
 
         console.log(posts);
