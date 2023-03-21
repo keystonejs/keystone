@@ -1,4 +1,4 @@
-"use client"
+'use client';
 import React, { useCallback, useEffect, useRef, useState, useContext } from 'react';
 import {
   Editor,

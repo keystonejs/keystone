@@ -1,4 +1,4 @@
-"use client"
+'use client';
 import { Text, Editor } from 'slate';
 import { createDocumentEditor } from './DocumentEditor';
 import { ComponentBlock, ComponentSchema } from './DocumentEditor/component-blocks/api';
