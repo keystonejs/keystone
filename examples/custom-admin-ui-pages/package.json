@@ -14,8 +14,5 @@
     "next": "^13.0.3",
     "react": "^18.2.0"
   },
-  "devDependencies": {
-    "typescript": "~5.0.0"
-  },
   "repository": "https://github.com/keystonejs/keystone/tree/main/examples/custom-admin-ui-pages"
 }

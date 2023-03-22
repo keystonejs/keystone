@@ -13,8 +13,7 @@
     "@keystone-6/core": "^5.0.0"
   },
   "devDependencies": {
-    "tsx": "^3.9.0",
-    "typescript": "~5.0.0"
+    "tsx": "^3.9.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/examples/script"
 }

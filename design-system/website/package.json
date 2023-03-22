@@ -29,8 +29,5 @@
     "react-dom": "^18.2.0",
     "tinycolor2": "^1.4.2"
   },
-  "devDependencies": {
-    "typescript": "~5.0.0"
-  },
   "repository": "https://github.com/keystonejs/keystone/tree/main/design-system/website"
 }
