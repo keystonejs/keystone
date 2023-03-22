@@ -12,7 +12,8 @@ runs:
         registry-url: 'https://registry.npmjs.org'
         cache: pnpm
 
-    - run: pnpm install
+    # limited to 1 child process, preventing Prisma postinstall races
+    - run: pnpm install --child-concurrency 1
       shell: bash
       env:
         PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
