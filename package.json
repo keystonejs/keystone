@@ -3,7 +3,7 @@
   "description": "KeystoneJS monorepo for all the @keystone-6 packages",
   "private": true,
   "version": "0.0.0",
-  "author": "The KeystoneJS Development Team",
+  "author": "Thinkmill Labs Pty Ltd",
   "license": "MIT",
   "repository": "https://github.com/keystonejs/keystone",
   "homepage": "https://github.com/keystonejs/keystone",
