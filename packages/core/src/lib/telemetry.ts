@@ -3,7 +3,7 @@ import ci from 'ci-info';
 import Conf from 'conf';
 import fetch from 'node-fetch';
 import chalk from 'chalk';
-import { Configuration, Project, Device, PackageName } from '../types/telemetry';
+import { Configuration, Telemetry, Project, Device, PackageName } from '../types/telemetry';
 import { DatabaseProvider } from '../types';
 import { defaults } from './config/defaults';
 import { InitialisedList } from './core/types-for-lists';
@@ -18,8 +18,8 @@ const packageNames: PackageName[] = [
 ];
 
 type TelemetryVersion1 =
-  | false
   | undefined
+  | false
   | {
       device: { lastSentDate?: string; informedAt: string };
       projects: {
@@ -44,7 +44,7 @@ function getTelemetryConfig() {
         const existing = store.get('telemetry') as unknown as TelemetryVersion1;
         if (!existing) return;
 
-        const replacement: Configuration['telemetry'] = {
+        const replacement: Telemetry = {
           // every informedAt was a copy of device.informedAt, it was copied everywhere
           informedAt: existing.device.informedAt,
           device: {
@@ -73,7 +73,15 @@ function getTelemetryConfig() {
     },
   });
 
-  const telemetry = userConfig.get('telemetry');
+  return {
+    telemetry: userConfig.get('telemetry'),
+    userConfig,
+  };
+}
+
+function getDefaultedTelemetryConfig() {
+  const { telemetry, userConfig } = getTelemetryConfig();
+
   if (telemetry === undefined) {
     return {
       telemetry: {
@@ -81,16 +89,13 @@ function getTelemetryConfig() {
         device: {
           lastSentDate: null,
         },
-        projects: {},
+        projects: {} as Telemetry['projects'], // help Typescript infer the type
       },
       userConfig,
     };
   }
 
-  return {
-    telemetry,
-    userConfig,
-  };
+  return { telemetry, userConfig };
 }
 
 const todaysDate = new Date().toISOString().slice(0, 10);
@@ -183,10 +188,10 @@ export function printTelemetryStatus() {
 }
 
 function inform() {
-  const { telemetry, userConfig } = getTelemetryConfig();
+  const { telemetry, userConfig } = getDefaultedTelemetryConfig();
 
   // no telemetry? somehow our earlier checks missed an opt out, do nothing
-  if (!telemetry) return;
+  if (telemetry === false) return;
 
   console.log(); // gap to help visiblity
   console.log(`${chalk.bold('Keystone Telemetry')}`);
@@ -229,10 +234,10 @@ async function sendProjectTelemetryEvent(
   lists: Record<string, InitialisedList>,
   dbProviderName: DatabaseProvider
 ) {
-  const { telemetry, userConfig } = getTelemetryConfig();
+  const { telemetry, userConfig } = getDefaultedTelemetryConfig();
 
   // no telemetry? somehow our earlier checks missed an opt out, do nothing
-  if (!telemetry) return;
+  if (telemetry === false) return;
 
   const project = telemetry.projects[cwd] ?? { lastSentDate: null };
   const { lastSentDate } = project;
@@ -255,10 +260,10 @@ async function sendProjectTelemetryEvent(
 }
 
 async function sendDeviceTelemetryEvent() {
-  const { telemetry, userConfig } = getTelemetryConfig();
+  const { telemetry, userConfig } = getDefaultedTelemetryConfig();
 
   // no telemetry? somehow our earlier checks missed an opt out, do nothing
-  if (!telemetry) return;
+  if (telemetry === false) return;
 
   const { lastSentDate } = telemetry.device;
   if (lastSentDate && lastSentDate >= todaysDate) {
@@ -291,7 +296,7 @@ export async function runTelemetry(
       return;
     }
 
-    const { telemetry } = getTelemetryConfig();
+    const { telemetry } = getDefaultedTelemetryConfig();
 
     // don't run if the user has opted out
     if (telemetry === false) return;
