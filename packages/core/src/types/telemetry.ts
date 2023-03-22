@@ -1,20 +1,19 @@
 import { DatabaseProvider } from './core';
 
+export type Telemetry = {
+  informedAt: string | null;
+  device: {
+    lastSentDate: string | null;
+  };
+  projects: Partial<{
+    [projectPath: string]: {
+      lastSentDate: string;
+    };
+  }>;
+};
+
 export type Configuration = {
-  telemetry?:
-    | undefined
-    | false
-    | {
-        informedAt: string | null;
-        device: {
-          lastSentDate: string | null;
-        };
-        projects: Partial<{
-          [projectPath: string]: {
-            lastSentDate: string;
-          };
-        }>;
-      };
+  telemetry?: undefined | false | Telemetry;
 };
 
 export type Device = {

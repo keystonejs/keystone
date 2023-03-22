@@ -13,7 +13,7 @@
     "@keystone-6/fields-document": "^7.0.0"
   },
   "devDependencies": {
-    "typescript": "~4.9.4"
+    "typescript": "~5.0.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/examples/extend-prisma-schema"
 }

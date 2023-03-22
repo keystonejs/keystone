@@ -25,6 +25,6 @@
     "ws": "^8.8.0"
   },
   "devDependencies": {
-    "typescript": "~4.9.4"
+    "typescript": "~5.0.0"
   }
 }
