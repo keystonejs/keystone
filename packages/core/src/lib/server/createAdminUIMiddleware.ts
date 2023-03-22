@@ -88,7 +88,8 @@ export async function createAdminUIMiddleware(
   context: KeystoneContext,
   dev: boolean,
   projectAdminPath: string
-) {
+  // TODO: return type required by pnpm
+): Promise<(req: express.Request, res: express.Response) => void> {
   const nextApp = await getNextApp(dev, projectAdminPath);
   return createAdminUIMiddlewareWithNextApp(config, context, nextApp);
 }

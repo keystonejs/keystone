@@ -21,7 +21,8 @@ export function getInitFirstItemSchema({
     item: BaseItem;
     sessionToken: string;
   }>;
-}) {
+  // TODO: return type required by pnpm :(
+}): graphql.Extension {
   const createInputConfig = assertInputObjectType(
     graphQLSchema.getType(`${listKey}CreateInput`)
   ).toConfig();

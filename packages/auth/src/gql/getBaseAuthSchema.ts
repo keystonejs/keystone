@@ -18,7 +18,15 @@ export function getBaseAuthSchema<I extends string, S extends string>({
   gqlNames: AuthGqlNames;
   secretFieldImpl: SecretFieldImpl;
   base: graphql.BaseSchemaMeta;
-}) {
+
+  // TODO: return type required by pnpm :(
+}): {
+  extension: graphql.Extension;
+  ItemAuthenticationWithPasswordSuccess: graphql.ObjectType<{
+    sessionToken: string;
+    item: BaseItem;
+  }>;
+} {
   const ItemAuthenticationWithPasswordSuccess = graphql.object<{
     sessionToken: string;
     item: BaseItem;

@@ -27,7 +27,8 @@ export function getMagicAuthLinkSchema<I extends string>({
   magicAuthLink: AuthTokenTypeConfig;
   magicAuthTokenSecretFieldImpl: SecretFieldImpl;
   base: graphql.BaseSchemaMeta;
-}) {
+  // TODO: type required by pnpm :(
+}): graphql.Extension {
   const RedeemItemMagicAuthTokenFailure = graphql.object<{
     code: typeof errorCodes[number];
     message: string;

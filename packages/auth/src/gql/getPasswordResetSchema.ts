@@ -26,7 +26,8 @@ export function getPasswordResetSchema<I extends string, S extends string>({
   gqlNames: AuthGqlNames;
   passwordResetLink: AuthTokenTypeConfig;
   passwordResetTokenSecretFieldImpl: SecretFieldImpl;
-}) {
+  // TODO: return type required by pnpm :(
+}): graphql.Extension {
   const getResult = (name: string) =>
     graphql.object<{ code: typeof errorCodes[number]; message: string }>()({
       name,
