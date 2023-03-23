@@ -1,5 +1,5 @@
 {
-  "name": "@keystone-6/example-nextjs-keystone-two-servers-frontend",
+  "name": "@keystone-6/frontend-example-nextjs-keystone-two-servers-frontend",
   "description": "An example nextjs frontend",
   "version": "0.1.0",
   "private": true,
@@ -13,14 +13,13 @@
   "dependencies": {
     "@keystone-6/document-renderer": "^1.1.0",
     "@preconstruct/next": "^4.0.0",
-    "autoprefixer": "^10.4.8",
     "graphql": "^16.6.0",
-    "next": "^13.0.3",
+    "next": "13.2.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@types/node": "18.11.14",
+    "@types/node": "^18.11.14",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.4",
     "typescript": "~5.0.0"

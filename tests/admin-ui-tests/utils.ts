@@ -103,7 +103,7 @@ export const adminUITests = (
 
     if (mode === 'prod') {
       test('build keystone', async () => {
-        let keystoneBuildProcess = execa('yarn', ['build'], {
+        let keystoneBuildProcess = execa('pnpm', ['build'], {
           cwd: projectDir,
           env: process.env,
         });
@@ -135,7 +135,7 @@ export async function generalStartKeystone(projectDir: string, command: 'start' 
     throw new Error(`No such file or directory ${projectDir}`);
   }
 
-  let keystoneProcess = execa('yarn', ['keystone', command], {
+  let keystoneProcess = execa('pnpm', ['keystone', command], {
     cwd: projectDir,
     env: process.env,
   });

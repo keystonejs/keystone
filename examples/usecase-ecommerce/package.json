@@ -8,26 +8,25 @@
     "dev": "keystone dev",
     "start": "keystone start",
     "build": "keystone build",
+    "postinstall": "keystone postinstall",
     "seed-data": "keystone --seed-data"
   },
   "dependencies": {
-    "@babel/plugin-transform-runtime": "^7.16.0",
-    "@babel/preset-env": "^7.16.0",
-    "@babel/preset-react": "^7.16.0",
-    "@babel/preset-typescript": "^7.16.0",
     "@babel/runtime": "^7.16.3",
     "@keystone-6/auth": "^7.0.0",
     "@keystone-6/cloudinary": "^7.0.0",
     "@keystone-6/core": "^5.0.0",
+    "@prisma/client": "^4.11.0",
     "@types/nodemailer": "^6.4.4",
     "dotenv": "^16.0.0",
-    "next": "^13.0.3",
+    "next": "13.2.2",
     "nodemailer": "^6.7.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "stripe": "^9.0.0"
   },
   "devDependencies": {
+    "prisma": "^4.11.0",
     "typescript": "~5.0.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/examples/usecase-ecommerce"

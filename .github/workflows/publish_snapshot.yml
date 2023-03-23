@@ -21,7 +21,7 @@ jobs:
       - uses: ./.github/actions/ci-setup
 
       - name: version packages
-        run: yarn changeset version --snapshot ${{ inputs.tag }}
+        run: pnpm changeset version --snapshot ${{ inputs.tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.KEYSTONE_RELEASE_BOT_GITHUB_TOKEN }}
 
@@ -31,10 +31,10 @@ jobs:
           git config --global user.email 'automation+keystonejs@thinkmill.com.au'
           git commit -a -m 'rc'
 
-      - run: yarn build
+      - run: pnpm build
 
       - name: npm publish, git tag
-        run: yarn changeset publish --tag ${{ inputs.tag }}
+        run: pnpm changeset publish --tag ${{ inputs.tag }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 

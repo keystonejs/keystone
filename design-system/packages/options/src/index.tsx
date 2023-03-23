@@ -5,7 +5,6 @@ import { useIndicatorTokens } from '@keystone-ui/fields';
 import { CheckIcon } from '@keystone-ui/icons/icons/CheckIcon';
 import { useMemo } from 'react';
 import ReactSelect, {
-  OptionProps,
   StylesConfig,
   components as reactSelectComponents,
   Props,
@@ -76,14 +75,14 @@ export const CheckMark = ({
   );
 };
 
-export const OptionPrimitive = <OptionType, IsMulti extends boolean>({
+export const OptionPrimitive: typeof reactSelectComponents['Option'] = ({
   children,
   isDisabled,
   isFocused,
   innerProps,
   innerRef,
   className,
-}: OptionProps<OptionType, IsMulti>) => {
+}) => {
   const theme = useTheme();
   return (
     <div

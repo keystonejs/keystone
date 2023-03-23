@@ -6,14 +6,15 @@ import { theme } from './themes/default';
 export const ThemeContext = createContext<{
   theme: Theme;
 }>({
-  theme: theme,
+  theme,
 });
 
 export const ThemeProvider = ({ theme, children }: { theme: Theme; children: ReactNode }) => {
   return <ThemeContext.Provider value={{ theme }}>{children}</ThemeContext.Provider>;
 };
 
-export const useTheme = () => {
+// TODO: return type required by pnpm :(
+export const useTheme = (): Theme => {
   const { theme } = useContext(ThemeContext);
   return theme;
 };

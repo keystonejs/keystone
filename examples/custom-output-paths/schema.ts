@@ -24,7 +24,11 @@ export const lists: Lists = {
           //
           //   it is helpful for us to check that the example is not
           //   broken by code changes
-        })) satisfies readonly { title: string; content: string }[];
+          //
+
+          // TODO: FIXME, babel and pnpm issues
+        })) as readonly { title: string; content: string }[];
+        // })) satisfies readonly { title: string; content: string }[];
 
         console.log(posts);
       },

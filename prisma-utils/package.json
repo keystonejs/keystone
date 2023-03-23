@@ -21,5 +21,8 @@
     "generate": "node .",
     "verify": "VERIFY=1 node ."
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/main/prisma-utils"
+  "repository": "https://github.com/keystonejs/keystone/tree/main/prisma-utils",
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.1"
+  }
 }

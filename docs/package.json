@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "SHOW_NEXT_RELEASE=1 next -p 8000",
     "dev:live": "next -p 8000",
-    "build": "yarn validate-links && next build && yarn sitemap && yarn build:rss",
+    "build": "pnpm validate-links && next build && pnpm sitemap",
     "start": "next start -p 8000",
     "sitemap": "next-sitemap",
     "build:rss": "tsx scripts/rss.ts",
@@ -14,7 +14,7 @@
     "remove-conditionals": "tsx scripts/replace-show-next-release/index.ts"
   },
   "dependencies": {
-    "@babel/core": "^7.16.0",
+    "@babel/core": "^7.21.0",
     "@babel/runtime": "^7.16.3",
     "@codemod/core": "^2.0.1",
     "@emotion/cache": "11.10.5",
@@ -28,6 +28,8 @@
     "@markdoc/markdoc": "^0.2.0",
     "@preconstruct/next": "^4.0.0",
     "@sindresorhus/slugify": "^1.1.2",
+    "@types/babel__core": "7.1.19",
+    "@types/facepaint": "^1.2.2",
     "@types/gtag.js": "^0.0.12",
     "@types/js-yaml": "^4.0.5",
     "@types/markdown-it": "^12.2.3",
@@ -44,7 +46,7 @@
     "js-yaml": "^4.1.0",
     "lodash.debounce": "^4.0.8",
     "markdown-it": "^13.0.1",
-    "next": "^13.0.3",
+    "next": "13.2.2",
     "next-compose-plugins": "^2.2.1",
     "prettier": "^2.5.0",
     "prism-react-renderer": "^1.2.1",

@@ -9,7 +9,7 @@ import { allowAll } from '@keystone-6/core/access';
 import { humanize } from '../../../packages/core/src/lib/utils';
 import { apiTestConfig, expectValidationError } from '../utils';
 
-const testModules = globby.sync(`packages/**/src/**/test-fixtures.{js,ts}`, {
+const testModules = globby.sync(`packages/*/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
 });
 testModules

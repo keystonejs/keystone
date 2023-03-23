@@ -71,7 +71,7 @@ export const exampleProjectTests = (
     });
 
     async function startKeystone(command: 'start' | 'dev') {
-      const keystoneProcess = execa('yarn', ['keystone', command], {
+      const keystoneProcess = execa('pnpm', ['keystone', command], {
         cwd: projectDir,
         env: process.env,
       });
@@ -106,7 +106,7 @@ export const exampleProjectTests = (
 
     if (mode === 'prod') {
       test('build keystone', async () => {
-        const keystoneBuildProcess = execa('yarn', ['build'], {
+        const keystoneBuildProcess = execa('pnpm', ['build'], {
           cwd: projectDir,
           env: process.env,
         });
