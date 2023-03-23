@@ -273,7 +273,7 @@ Applying migration \`migration_name\`
 ✨ Connecting to the database
 ✨ Creating server
 ✅ GraphQL API ready`);
-  return tmp;
+  return { migrationName, prevCwd: tmp };
 }
 
 async function getDatabaseFiles(cwd: string) {
@@ -285,7 +285,7 @@ describe('useMigrations: true', () => {
     await setupInitialProjectWithMigrations();
   });
   test('adding a field', async () => {
-    const prevCwd = await setupInitialProjectWithMigrations();
+    const { prevCwd } = await setupInitialProjectWithMigrations();
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...(await getDatabaseFiles(prevCwd)),
@@ -349,7 +349,7 @@ describe('useMigrations: true', () => {
     `);
   });
   test('warns when dropping field that has data in it', async () => {
-    const prevCwd = await setupInitialProjectWithMigrations();
+    const { prevCwd } = await setupInitialProjectWithMigrations();
     const prismaClient = getPrismaClient(prevCwd);
     await prismaClient.todo.create({ data: { title: 'todo' } });
     await prismaClient.$disconnect();
@@ -426,8 +426,7 @@ describe('useMigrations: true', () => {
     `);
   });
   test('prompts to drop database when database is out of sync with migrations directory', async () => {
-    const prevCwd = await setupInitialProjectWithMigrations();
-    const { migrationName: oldMigrationName } = await getGeneratedMigration(prevCwd, 1, 'init');
+    const { migrationName: oldMigrationName, prevCwd } = await setupInitialProjectWithMigrations();
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       'app.db': await fs.readFile(`${prevCwd}/app.db`),
@@ -501,8 +500,7 @@ describe('useMigrations: true', () => {
     `);
   });
   test("doesn't drop when prompt denied", async () => {
-    const prevCwd = await setupInitialProjectWithMigrations();
-    const { migrationName: oldMigrationName } = await getGeneratedMigration(prevCwd, 1, 'init');
+    const { migrationName: oldMigrationName, prevCwd } = await setupInitialProjectWithMigrations();
     const dbBuffer = await fs.readFile(`${prevCwd}/app.db`);
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
@@ -541,7 +539,7 @@ describe('useMigrations: true', () => {
     `);
   });
   test('create migration but do not apply', async () => {
-    const prevCwd = await setupInitialProjectWithMigrations();
+    const { prevCwd } = await setupInitialProjectWithMigrations();
     const dbFiles = await getDatabaseFiles(prevCwd);
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
@@ -603,7 +601,7 @@ describe('useMigrations: true', () => {
     `);
   });
   test('apply already existing migrations', async () => {
-    const prevCwd = await setupInitialProjectWithMigrations();
+    const { prevCwd } = await setupInitialProjectWithMigrations();
     const { 'app.db': _ignore, ...migrations } = await getDatabaseFiles(prevCwd);
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
@@ -648,9 +646,9 @@ describe('useMigrations: true', () => {
     `);
   });
   test('logs correctly when no migrations need to be created or applied', async () => {
-    const tmp = await setupInitialProjectWithMigrations();
+    const { prevCwd } = await setupInitialProjectWithMigrations();
     const recording = recordConsole();
-    await runCommand(tmp, 'dev');
+    await runCommand(prevCwd, 'dev');
 
     expect(recording()).toMatchInlineSnapshot(`
       "✨ Starting Keystone
@@ -694,7 +692,7 @@ describe('start --with-migrations', () => {
     return output;
   }
   test('apply existing migrations', async () => {
-    const prevCwd = await setupInitialProjectWithMigrations();
+    const { prevCwd } = await setupInitialProjectWithMigrations();
     const { 'app.db': _ignore, ...migrations } = await getDatabaseFiles(prevCwd);
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
@@ -734,9 +732,9 @@ describe('start --with-migrations', () => {
     `);
   });
   test('logs correctly when no migrations need applied', async () => {
-    const tmp = await setupInitialProjectWithMigrations();
-    await runCommand(tmp, 'build --no-ui');
-    const output = await startAndStopServer(tmp);
+    const { prevCwd } = await setupInitialProjectWithMigrations();
+    await runCommand(prevCwd, 'build --no-ui');
+    const output = await startAndStopServer(prevCwd);
 
     expect(output).toMatchInlineSnapshot(`
       "✨ Starting Keystone
