@@ -14,7 +14,8 @@
     "@keystone-ui/core": "^5.0.1",
     "@prisma/client": "^4.11.0",
     "next": "13.2.2",
-    "react": "^18.2.0"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "prisma": "^4.11.0",
