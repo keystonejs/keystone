@@ -1,5 +1,22 @@
 # @keystone-6/core
 
+## 5.2.0
+
+### Minor Changes
+
+- [#8370](https://github.com/keystonejs/keystone/pull/8370) [`730ee7948`](https://github.com/keystonejs/keystone/commit/730ee79489cd5c7cf74553a86d5de8433d32ebeb) Thanks [@borisno2](https://github.com/borisno2)! - Adds support for Prisma Data Proxy client generation, automatically enabled for `db.url`'s with a `prisma:` prefix
+
+- [#8381](https://github.com/keystonejs/keystone/pull/8381) [`6b338c46a`](https://github.com/keystonejs/keystone/commit/6b338c46a5f9c4ab71939f3632dfccae27ffb56e) Thanks [@dcousens](https://github.com/dcousens)! - Adds a new `.types.path` configuration option, for specifying where your Keystone types are built
+
+### Patch Changes
+
+- [#8373](https://github.com/keystonejs/keystone/pull/8373) [`c6c9078d5`](https://github.com/keystonejs/keystone/commit/c6c9078d5cdeab968d563c340904717ebc36b1a3) Thanks [@borisno2](https://github.com/borisno2)! - Fixes the `.keystone/types` import paths when using `db.prismaSchemaPath` on Windows
+
+- [#8400](https://github.com/keystonejs/keystone/pull/8400) [`7cfe118bb`](https://github.com/keystonejs/keystone/commit/7cfe118bb68b0a2420a82fe78849ee9f7b9f6fb2) Thanks [@renovate](https://github.com/apps/renovate)! - Fixes the printed output when using `keystone telemetry reset`
+
+- Updated dependencies [[`1af39b913`](https://github.com/keystonejs/keystone/commit/1af39b9133ef6a8d48c55f09c79a7d2f853346ad)]:
+  - @keystone-ui/fields@7.2.0
+
 ## 5.1.0
 
 ### Minor Changes
