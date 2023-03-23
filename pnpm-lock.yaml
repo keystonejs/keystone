@@ -454,94 +454,122 @@ importers:
   examples/assets-local:
     specifiers:
       '@keystone-6/core': ^5.0.0
+      '@prisma/client': ^4.11.0
+      prisma: ^4.11.0
       typescript: ~5.0.0
     dependencies:
       '@keystone-6/core': link:../../packages/core
+      '@prisma/client': 4.11.0_prisma@4.11.0
     devDependencies:
+      prisma: 4.11.0
       typescript: 5.0.2
 
   examples/assets-s3:
     specifiers:
       '@keystone-6/core': ^5.0.0
+      '@prisma/client': ^4.11.0
       dotenv: ^16.0.0
+      prisma: ^4.11.0
       typescript: ~5.0.0
     dependencies:
       '@keystone-6/core': link:../../packages/core
+      '@prisma/client': 4.11.0_prisma@4.11.0
       dotenv: 16.0.3
     devDependencies:
+      prisma: 4.11.0
       typescript: 5.0.2
 
   examples/auth:
     specifiers:
       '@keystone-6/auth': ^7.0.0
       '@keystone-6/core': ^5.0.0
+      '@prisma/client': ^4.11.0
       next: 13.2.2
+      prisma: ^4.11.0
       react: ^18.2.0
       react-dom: ^18.2.0
       typescript: ~5.0.0
     dependencies:
       '@keystone-6/auth': link:../../packages/auth
       '@keystone-6/core': link:../../packages/core
+      '@prisma/client': 4.11.0_prisma@4.11.0
       next: 13.2.2_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     devDependencies:
+      prisma: 4.11.0
       typescript: 5.0.2
 
   examples/custom-admin-ui-logo:
     specifiers:
       '@keystone-6/core': ^5.0.0
       '@keystone-ui/core': ^5.0.1
+      '@prisma/client': ^4.11.0
       next: 13.2.2
+      prisma: ^4.11.0
       react: ^18.2.0
       react-dom: ^18.2.0
       typescript: ~5.0.0
     dependencies:
       '@keystone-6/core': link:../../packages/core
       '@keystone-ui/core': link:../../design-system/packages/core
+      '@prisma/client': 4.11.0_prisma@4.11.0
       next: 13.2.2_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     devDependencies:
+      prisma: 4.11.0
       typescript: 5.0.2
 
   examples/custom-admin-ui-navigation:
     specifiers:
       '@keystone-6/core': ^5.0.0
+      '@prisma/client': ^4.11.0
+      prisma: ^4.11.0
       react: ^18.2.0
       typescript: ~5.0.0
     dependencies:
       '@keystone-6/core': link:../../packages/core
+      '@prisma/client': 4.11.0_prisma@4.11.0
       react: 18.2.0
     devDependencies:
+      prisma: 4.11.0
       typescript: 5.0.2
 
   examples/custom-admin-ui-pages:
     specifiers:
       '@keystone-6/core': ^5.0.0
       '@keystone-ui/core': ^5.0.1
+      '@prisma/client': ^4.11.0
       next: 13.2.2
+      prisma: ^4.11.0
       react: ^18.2.0
       typescript: ~5.0.0
     dependencies:
       '@keystone-6/core': link:../../packages/core
       '@keystone-ui/core': link:../../design-system/packages/core
+      '@prisma/client': 4.11.0_prisma@4.11.0
       next: 13.2.2_react@18.2.0
       react: 18.2.0
     devDependencies:
+      prisma: 4.11.0
       typescript: 5.0.2
 
   examples/custom-field:
     specifiers:
       '@keystone-6/core': ^5.0.0
       '@keystone-ui/fields': ^7.1.1
+      '@prisma/client': ^4.11.0
+      prisma: ^4.11.0
       react: ^18.2.0
       typescript: ~5.0.0
     dependencies:
       '@keystone-6/core': link:../../packages/core
       '@keystone-ui/fields': link:../../design-system/packages/fields
+      '@prisma/client': 4.11.0_prisma@4.11.0
       react: 18.2.0
     devDependencies:
+      prisma: 4.11.0
       typescript: 5.0.2
 
   examples/custom-field-view:
@@ -552,7 +580,9 @@ importers:
       '@keystone-ui/core': ^5.0.1
       '@keystone-ui/fields': ^7.1.1
       '@keystone-ui/icons': ^6.0.1
+      '@prisma/client': ^4.11.0
       next: 13.2.2
+      prisma: ^4.11.0
       react: ^18.2.0
       typescript: ~5.0.0
     dependencies:
@@ -562,44 +592,58 @@ importers:
       '@keystone-ui/core': link:../../design-system/packages/core
       '@keystone-ui/fields': link:../../design-system/packages/fields
       '@keystone-ui/icons': link:../../design-system/packages/icons
+      '@prisma/client': 4.11.0_prisma@4.11.0
       next: 13.2.2_react@18.2.0
       react: 18.2.0
     devDependencies:
+      prisma: 4.11.0
       typescript: 5.0.2
 
   examples/custom-output-paths:
     specifiers:
       '@keystone-6/core': ^5.0.0
+      '@prisma/client': ^4.11.0
       next: 13.2.2
+      prisma: ^4.11.0
       react: ^18.2.0
       react-dom: ^18.2.0
       typescript: ~5.0.0
     dependencies:
       '@keystone-6/core': link:../../packages/core
+      '@prisma/client': 4.11.0_prisma@4.11.0
       next: 13.2.2_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     devDependencies:
+      prisma: 4.11.0
       typescript: 5.0.2
 
   examples/custom-session-validation:
     specifiers:
       '@keystone-6/auth': ^7.0.0
       '@keystone-6/core': ^5.0.0
+      '@prisma/client': ^4.11.0
+      prisma: ^4.11.0
       typescript: ~5.0.0
     dependencies:
       '@keystone-6/auth': link:../../packages/auth
       '@keystone-6/core': link:../../packages/core
+      '@prisma/client': 4.11.0_prisma@4.11.0
     devDependencies:
+      prisma: 4.11.0
       typescript: 5.0.2
 
   examples/default-values:
     specifiers:
       '@keystone-6/core': ^5.0.0
+      '@prisma/client': ^4.11.0
+      prisma: ^4.11.0
       typescript: ~5.0.0
     dependencies:
       '@keystone-6/core': link:../../packages/core
+      '@prisma/client': 4.11.0_prisma@4.11.0
     devDependencies:
+      prisma: 4.11.0
       typescript: 5.0.2
 
   examples/document-field:
@@ -608,7 +652,9 @@ importers:
       '@keystone-6/document-renderer': ^1.1.1
       '@keystone-6/fields-document': ^7.0.0
       '@preconstruct/next': ^4.0.0
+      '@prisma/client': ^4.11.0
       next: 13.1.1
+      prisma: ^4.11.0
       react: ^18.2.0
       react-dom: ^18.2.0
       typescript: ~5.0.0
@@ -617,10 +663,12 @@ importers:
       '@keystone-6/document-renderer': link:../../packages/document-renderer
       '@keystone-6/fields-document': link:../../packages/fields-document
       '@preconstruct/next': 4.0.0
+      '@prisma/client': 4.11.0_prisma@4.11.0
       next: 13.1.1_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     devDependencies:
+      prisma: 4.11.0
       typescript: 5.0.2
 
   examples/document-field-customisation:
@@ -639,6 +687,8 @@ importers:
       '@keystone-ui/fields': ^7.1.1
       '@keystone-ui/icons': ^6.0.1
       '@keystone-ui/tooltip': ^6.0.1
+      '@prisma/client': ^4.11.0
+      prisma: ^4.11.0
       react: ^18.2.0
       typescript: ~5.0.0
     dependencies:
@@ -650,8 +700,11 @@ importers:
       '@keystone-ui/fields': link:../../../design-system/packages/fields
       '@keystone-ui/icons': link:../../../design-system/packages/icons
       '@keystone-ui/tooltip': link:../../../design-system/packages/tooltip
+      '@prisma/client': 4.11.0_prisma@4.11.0
       react: 18.2.0
       typescript: 5.0.2
+    devDependencies:
+      prisma: 4.11.0
 
   examples/document-field-customisation/nextjs-frontend:
     specifiers:
@@ -681,15 +734,19 @@ importers:
   examples/extend-express-app:
     specifiers:
       '@keystone-6/core': ^5.0.0
+      '@prisma/client': ^4.11.0
       '@types/express': ^4.17.14
       express: ^4.17.1
+      prisma: ^4.11.0
       tsx: ^3.9.0
       typescript: ~5.0.0
     dependencies:
       '@keystone-6/core': link:../../packages/core
+      '@prisma/client': 4.11.0_prisma@4.11.0
       '@types/express': 4.17.14
       express: 4.18.2
     devDependencies:
+      prisma: 4.11.0
       tsx: 3.11.0
       typescript: 5.0.2
 
@@ -697,35 +754,48 @@ importers:
     specifiers:
       '@graphql-tools/schema': ^9.0.0
       '@keystone-6/core': ^5.0.0
+      '@prisma/client': ^4.11.0
       graphql: ^16.6.0
+      prisma: ^4.11.0
       typescript: ~5.0.0
     dependencies:
       '@graphql-tools/schema': 9.0.6_graphql@16.6.0
       '@keystone-6/core': link:../../packages/core
+      '@prisma/client': 4.11.0_prisma@4.11.0
       graphql: 16.6.0
     devDependencies:
+      prisma: 4.11.0
       typescript: 5.0.2
 
   examples/extend-graphql-schema-graphql-ts:
     specifiers:
       '@keystone-6/core': ^5.0.0
+      '@prisma/client': ^4.11.0
+      prisma: ^4.11.0
       typescript: ~5.0.0
     dependencies:
       '@keystone-6/core': link:../../packages/core
+      '@prisma/client': 4.11.0_prisma@4.11.0
     devDependencies:
+      prisma: 4.11.0
       typescript: 5.0.2
 
   examples/extend-graphql-schema-nexus:
     specifiers:
       '@graphql-tools/schema': ^9.0.0
       '@keystone-6/core': ^5.0.0
+      '@prisma/client': ^4.11.0
       graphql: ^16.6.0
       nexus: ^1.3.0
+      prisma: ^4.11.0
     dependencies:
       '@graphql-tools/schema': 9.0.6_graphql@16.6.0
       '@keystone-6/core': link:../../packages/core
+      '@prisma/client': 4.11.0_prisma@4.11.0
       graphql: 16.6.0
       nexus: 1.3.0_graphql@16.6.0
+    devDependencies:
+      prisma: 4.11.0
 
   examples/extend-graphql-subscriptions:
     specifiers:
@@ -736,10 +806,12 @@ importers:
       '@keystone-ui/button': ^7.0.1
       '@keystone-ui/core': ^5.0.1
       '@keystone-ui/fields': ^7.1.1
+      '@prisma/client': ^4.11.0
       '@types/ws': ^8.5.3
       graphql: ^16.6.0
       graphql-subscriptions: ^2.0.0
       graphql-ws: ^5.9.1
+      prisma: ^4.11.0
       react: ^18.2.0
       typescript: ~5.0.0
       ws: ^8.8.0
@@ -751,53 +823,67 @@ importers:
       '@keystone-ui/button': link:../../design-system/packages/button
       '@keystone-ui/core': link:../../design-system/packages/core
       '@keystone-ui/fields': link:../../design-system/packages/fields
-      '@types/ws': 8.5.3
+      '@prisma/client': 4.11.0_prisma@4.11.0
       graphql: 16.6.0
       graphql-subscriptions: 2.0.0_graphql@16.6.0
       graphql-ws: 5.11.2_graphql@16.6.0
       react: 18.2.0
       ws: 8.10.0
     devDependencies:
+      '@types/ws': 8.5.3
+      prisma: 4.11.0
       typescript: 5.0.2
 
   examples/extend-prisma-schema:
     specifiers:
       '@keystone-6/core': ^5.0.0
       '@keystone-6/fields-document': ^7.0.0
+      '@prisma/client': ^4.11.0
+      prisma: ^4.11.0
       typescript: ~5.0.0
     dependencies:
       '@keystone-6/core': link:../../packages/core
       '@keystone-6/fields-document': link:../../packages/fields-document
+      '@prisma/client': 4.11.0_prisma@4.11.0
     devDependencies:
+      prisma: 4.11.0
       typescript: 5.0.2
 
   examples/graphql-ts-gql:
     specifiers:
       '@keystone-6/core': ^5.0.0
+      '@prisma/client': ^4.11.0
       '@ts-gql/compiler': ^0.15.3
       '@ts-gql/eslint-plugin': ^0.8.4
       '@ts-gql/tag': ^0.7.0
       eslint: ^8.0.0
       graphql: ^16.6.0
+      prisma: ^4.11.0
       typescript: ~5.0.0
     dependencies:
       '@keystone-6/core': link:../../packages/core
+      '@prisma/client': 4.11.0_prisma@4.11.0
       '@ts-gql/compiler': 0.15.3_graphql@16.6.0
       '@ts-gql/eslint-plugin': 0.8.4_em2ekywkpo3o2x47f3k66bodhi
       '@ts-gql/tag': 0.7.0_graphql@16.6.0
       eslint: 8.26.0
       graphql: 16.6.0
     devDependencies:
+      prisma: 4.11.0
       typescript: 5.0.2
 
   examples/limits:
     specifiers:
       '@keystone-6/core': ^5.0.0
+      '@prisma/client': ^4.11.0
+      prisma: ^4.11.0
       tsx: ^3.9.0
       typescript: ~5.0.0
     dependencies:
       '@keystone-6/core': link:../../packages/core
+      '@prisma/client': 4.11.0_prisma@4.11.0
     devDependencies:
+      prisma: 4.11.0
       tsx: 3.11.0
       typescript: 5.0.2
 
@@ -807,12 +893,14 @@ importers:
       '@keystone-6/core': ^5.0.0
       '@keystone-6/fields-document': ^7.0.0
       '@preconstruct/next': ^4.0.0
+      '@prisma/client': ^4.11.0
       '@types/node': ^18.11.14
       '@types/react': ^18.0.9
       '@types/react-dom': ^18.0.4
       graphql-request: ^5.0.0
       graphql-yoga: ^3.1.0
       next: 13.2.2
+      prisma: ^4.11.0
       react: ^18.2.0
       react-dom: ^18.2.0
       typescript: ~5.0.0
@@ -821,6 +909,7 @@ importers:
       '@keystone-6/core': link:../../packages/core
       '@keystone-6/fields-document': link:../../packages/fields-document
       '@preconstruct/next': 4.0.0
+      '@prisma/client': 4.11.0_prisma@4.11.0
       graphql-request: 5.1.0
       graphql-yoga: 3.7.3_@types+node@18.11.14
       next: 13.2.2_biqbaboplfbrettd7655fr4n2y
@@ -830,6 +919,7 @@ importers:
       '@types/node': 18.11.14
       '@types/react': 18.0.24
       '@types/react-dom': 18.0.8
+      prisma: 4.11.0
       typescript: 5.0.2
 
   examples/nextjs-keystone-two-servers:
@@ -843,11 +933,16 @@ importers:
       '@keystone-6/auth': ^7.0.0
       '@keystone-6/core': ^5.0.0
       '@keystone-6/fields-document': ^7.0.0
+      '@prisma/client': ^4.11.0
+      prisma: ^4.11.0
       typescript: ~5.0.0
     dependencies:
       '@keystone-6/auth': link:../../../packages/auth
       '@keystone-6/core': link:../../../packages/core
       '@keystone-6/fields-document': link:../../../packages/fields-document
+      '@prisma/client': 4.11.0_prisma@4.11.0
+    devDependencies:
+      prisma: 4.11.0
       typescript: 5.0.2
 
   examples/nextjs-keystone-two-servers/nextjs-frontend:
@@ -879,34 +974,46 @@ importers:
     specifiers:
       '@keystone-6/auth': ^7.0.0
       '@keystone-6/core': ^5.0.0
+      '@prisma/client': ^4.11.0
       '@redis/client': ^1.3.0
+      prisma: ^4.11.0
       typescript: ~5.0.0
     dependencies:
       '@keystone-6/auth': link:../../packages/auth
       '@keystone-6/core': link:../../packages/core
+      '@prisma/client': 4.11.0_prisma@4.11.0
       '@redis/client': 1.3.0
     devDependencies:
+      prisma: 4.11.0
       typescript: 5.0.2
 
   examples/script:
     specifiers:
       '@keystone-6/core': ^5.0.0
+      '@prisma/client': ^4.11.0
+      prisma: ^4.11.0
       tsx: ^3.9.0
       typescript: ~5.0.0
     dependencies:
       '@keystone-6/core': link:../../packages/core
+      '@prisma/client': 4.11.0_prisma@4.11.0
     devDependencies:
+      prisma: 4.11.0
       tsx: 3.11.0
       typescript: 5.0.2
 
   examples/singleton:
     specifiers:
       '@keystone-6/core': ^5.0.0
+      '@prisma/client': ^4.11.0
+      prisma: ^4.11.0
       tsx: ^3.9.0
       typescript: ~5.0.0
     dependencies:
       '@keystone-6/core': link:../../packages/core
+      '@prisma/client': 4.11.0_prisma@4.11.0
     devDependencies:
+      prisma: 4.11.0
       tsx: 3.11.0
       typescript: 5.0.2
 
@@ -917,9 +1024,11 @@ importers:
       '@babel/preset-typescript': ^7.21.0
       '@keystone-6/auth': ^7.0.0
       '@keystone-6/core': ^5.0.0
+      '@prisma/client': ^4.11.0
       '@types/node': ^18.11.14
       babel-jest: ^29.0.1
       jest: ^29.0.0
+      prisma: ^4.11.0
       typescript: ~5.0.0
     dependencies:
       '@babel/core': 7.21.3
@@ -927,10 +1036,12 @@ importers:
       '@babel/preset-typescript': 7.21.0_@babel+core@7.21.3
       '@keystone-6/auth': link:../../packages/auth
       '@keystone-6/core': link:../../packages/core
+      '@prisma/client': 4.11.0_prisma@4.11.0
     devDependencies:
       '@types/node': 18.11.14
       babel-jest: 29.2.2_@babel+core@7.21.3
       jest: 29.2.2_@types+node@18.11.14
+      prisma: 4.11.0
       typescript: 5.0.2
 
   examples/usecase-basic:
@@ -945,6 +1056,7 @@ importers:
       '@keystone-ui/fields': ^7.1.1
       '@keystone-ui/icons': ^6.0.1
       '@keystone-ui/tooltip': ^6.0.1
+      '@prisma/client': ^4.11.0
       '@types/react': ^18.0.9
       '@types/uuid': ^8.3.1
       graphql: ^16.6.0
@@ -964,6 +1076,7 @@ importers:
       '@keystone-ui/fields': link:../../design-system/packages/fields
       '@keystone-ui/icons': link:../../design-system/packages/icons
       '@keystone-ui/tooltip': link:../../design-system/packages/tooltip
+      '@prisma/client': 4.11.0
       '@types/react': 18.0.24
       '@types/uuid': 8.3.4
       graphql: 16.6.0
@@ -977,11 +1090,15 @@ importers:
   examples/usecase-blog:
     specifiers:
       '@keystone-6/core': ^5.0.0
+      '@prisma/client': ^4.11.0
+      prisma: ^4.11.0
       tsx: ^3.9.0
       typescript: ~5.0.0
     dependencies:
       '@keystone-6/core': link:../../packages/core
+      '@prisma/client': 4.11.0_prisma@4.11.0
     devDependencies:
+      prisma: 4.11.0
       tsx: 3.11.0
       typescript: 5.0.2
 
@@ -991,10 +1108,12 @@ importers:
       '@keystone-6/auth': ^7.0.0
       '@keystone-6/cloudinary': ^7.0.0
       '@keystone-6/core': ^5.0.0
+      '@prisma/client': ^4.11.0
       '@types/nodemailer': ^6.4.4
       dotenv: ^16.0.0
       next: 13.2.2
       nodemailer: ^6.7.1
+      prisma: ^4.11.0
       react: ^18.2.0
       react-dom: ^18.2.0
       stripe: ^9.0.0
@@ -1004,6 +1123,7 @@ importers:
       '@keystone-6/auth': link:../../packages/auth
       '@keystone-6/cloudinary': link:../../packages/cloudinary
       '@keystone-6/core': link:../../packages/core
+      '@prisma/client': 4.11.0_prisma@4.11.0
       '@types/nodemailer': 6.4.6
       dotenv: 16.0.3
       next: 13.2.2_biqbaboplfbrettd7655fr4n2y
@@ -1012,54 +1132,71 @@ importers:
       react-dom: 18.2.0_react@18.2.0
       stripe: 9.16.0
     devDependencies:
+      prisma: 4.11.0
       typescript: 5.0.2
 
   examples/usecase-roles:
     specifiers:
       '@keystone-6/auth': ^7.0.0
       '@keystone-6/core': ^5.0.0
+      '@prisma/client': ^4.11.0
       next: 13.2.2
+      prisma: ^4.11.0
       react: ^18.2.0
       react-dom: ^18.2.0
       typescript: ~5.0.0
     dependencies:
       '@keystone-6/auth': link:../../packages/auth
       '@keystone-6/core': link:../../packages/core
+      '@prisma/client': 4.11.0_prisma@4.11.0
       next: 13.2.2_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     devDependencies:
+      prisma: 4.11.0
       typescript: 5.0.2
 
   examples/usecase-task-manager:
     specifiers:
       '@keystone-6/core': ^5.0.0
+      '@prisma/client': ^4.11.0
+      prisma: ^4.11.0
       tsx: ^3.9.0
       typescript: ~5.0.0
     dependencies:
       '@keystone-6/core': link:../../packages/core
+      '@prisma/client': 4.11.0_prisma@4.11.0
     devDependencies:
+      prisma: 4.11.0
       tsx: 3.11.0
       typescript: 5.0.2
 
   examples/usecase-versioning:
     specifiers:
       '@keystone-6/core': ^5.0.0
+      '@prisma/client': ^4.11.0
+      prisma: ^4.11.0
       tsx: ^3.9.0
       typescript: ~5.0.0
     dependencies:
       '@keystone-6/core': link:../../packages/core
+      '@prisma/client': 4.11.0_prisma@4.11.0
     devDependencies:
+      prisma: 4.11.0
       tsx: 3.11.0
       typescript: 5.0.2
 
   examples/virtual-field:
     specifiers:
       '@keystone-6/core': ^5.0.0
+      '@prisma/client': ^4.11.0
+      prisma: ^4.11.0
       typescript: ~5.0.0
     dependencies:
       '@keystone-6/core': link:../../packages/core
+      '@prisma/client': 4.11.0_prisma@4.11.0
     devDependencies:
+      prisma: 4.11.0
       typescript: 5.0.2
 
   packages/auth:
@@ -1563,6 +1700,8 @@ importers:
       '@keystone-ui/fields': ^7.1.1
       '@keystone-ui/icons': ^6.0.1
       '@keystone-ui/tooltip': ^6.0.1
+      '@prisma/client': ^4.11.0
+      prisma: ^4.11.0
       react: ^18.2.0
       typescript: ~5.0.0
     dependencies:
@@ -1574,34 +1713,49 @@ importers:
       '@keystone-ui/fields': link:../../design-system/packages/fields
       '@keystone-ui/icons': link:../../design-system/packages/icons
       '@keystone-ui/tooltip': link:../../design-system/packages/tooltip
+      '@prisma/client': 4.11.0_prisma@4.11.0
       react: 18.2.0
+    devDependencies:
+      prisma: 4.11.0
       typescript: 5.0.2
 
   tests/test-projects/basic:
     specifiers:
       '@keystone-6/core': ^5.0.0
+      '@prisma/client': ^4.11.0
+      prisma: ^4.11.0
       typescript: ~5.0.0
     dependencies:
       '@keystone-6/core': link:../../../packages/core
+      '@prisma/client': 4.11.0_prisma@4.11.0
     devDependencies:
+      prisma: 4.11.0
       typescript: 5.0.2
 
   tests/test-projects/crud-notifications:
     specifiers:
       '@keystone-6/core': ^5.0.0
+      '@prisma/client': ^4.11.0
+      prisma: ^4.11.0
       typescript: ~5.0.0
     dependencies:
       '@keystone-6/core': link:../../../packages/core
+      '@prisma/client': 4.11.0_prisma@4.11.0
     devDependencies:
+      prisma: 4.11.0
       typescript: 5.0.2
 
   tests/test-projects/live-reloading:
     specifiers:
       '@keystone-6/core': ^5.0.0
+      '@prisma/client': ^4.11.0
+      prisma: ^4.11.0
       typescript: ~5.0.0
     dependencies:
       '@keystone-6/core': link:../../../packages/core
+      '@prisma/client': 4.11.0_prisma@4.11.0
     devDependencies:
+      prisma: 4.11.0
       typescript: 5.0.2
 
 packages:
@@ -6125,6 +6279,19 @@ packages:
     resolution: {integrity: sha512-vSrc8wFQgBErU7dKTKSQtr/DLWPHcN9jMoiWOAQodB1+B4Kpqqry6QhGYoRm0DQU5gNL+Rcp+Xb350O1E/gjsg==}
     dev: false
 
+  /@prisma/client/4.11.0:
+    resolution: {integrity: sha512-0INHYkQIqgAjrt7NzhYpeDQi8x3Nvylc2uDngKyFDDj1tTRQ4uV1HnVmd1sQEraeVAN63SOK0dgCKQHlvjL0KA==}
+    engines: {node: '>=14.17'}
+    requiresBuild: true
+    peerDependencies:
+      prisma: '*'
+    peerDependenciesMeta:
+      prisma:
+        optional: true
+    dependencies:
+      '@prisma/engines-version': 4.11.0-57.8fde8fef4033376662cad983758335009d522acb
+    dev: false
+
   /@prisma/client/4.11.0_prisma@4.11.0:
     resolution: {integrity: sha512-0INHYkQIqgAjrt7NzhYpeDQi8x3Nvylc2uDngKyFDDj1tTRQ4uV1HnVmd1sQEraeVAN63SOK0dgCKQHlvjL0KA==}
     engines: {node: '>=14.17'}
@@ -7247,7 +7414,7 @@ packages:
     resolution: {integrity: sha512-6YOoWjruKj1uLf3INHH7D3qTXwFfEsg1kf3c0uDdSBJwfa/llkwIjrAGV7j7mVgGNbzTQ3HiHKKDXl6bJPD97w==}
     dependencies:
       '@types/node': 18.11.14
-    dev: false
+    dev: true
 
   /@types/yargs-parser/21.0.0:
     resolution: {integrity: sha512-iO9ZQHkZxHn4mSakYV0vFHAVDyEOIJQrV2uZ06HxEPcx+mt8swXoZHIbaaJ2crJYFfErySgktuTZ3BeLz+XmFA==}

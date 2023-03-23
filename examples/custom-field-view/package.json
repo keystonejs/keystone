@@ -16,10 +16,12 @@
     "@keystone-ui/core": "^5.0.1",
     "@keystone-ui/fields": "^7.1.1",
     "@keystone-ui/icons": "^6.0.1",
+    "@prisma/client": "^4.11.0",
     "next": "13.2.2",
     "react": "^18.2.0"
   },
   "devDependencies": {
+    "prisma": "^4.11.0",
     "typescript": "~5.0.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/examples/custom-field-view"
