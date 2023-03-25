@@ -98,7 +98,7 @@ export default config({
               context,
             }) => {
               /* ... */
-              return resolvedData[fieldName];
+              return resolvedData[fieldKey];
             },
           },
         }),
