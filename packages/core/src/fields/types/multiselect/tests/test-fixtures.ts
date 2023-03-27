@@ -1,6 +1,6 @@
 import { multiselect } from '..';
 
-type MatrixValue = typeof testMatrix[number];
+type MatrixValue = (typeof testMatrix)[number];
 
 export const name = 'multiselect';
 export const typeFunction = multiselect;

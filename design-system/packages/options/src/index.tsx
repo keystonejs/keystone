@@ -75,7 +75,7 @@ export const CheckMark = ({
   );
 };
 
-export const OptionPrimitive: typeof reactSelectComponents['Option'] = ({
+export const OptionPrimitive: (typeof reactSelectComponents)['Option'] = ({
   children,
   isDisabled,
   isFocused,
@@ -120,7 +120,7 @@ export const OptionPrimitive: typeof reactSelectComponents['Option'] = ({
   );
 };
 
-const Control: typeof reactSelectComponents['Control'] = ({ selectProps, ...props }) => {
+const Control: (typeof reactSelectComponents)['Control'] = ({ selectProps, ...props }) => {
   return <reactSelectComponents.Control selectProps={selectProps} {...props} />;
 };
 
