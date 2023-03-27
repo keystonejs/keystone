@@ -219,7 +219,7 @@ export default config({
     port: 3000,
     maxFileSize: 200 * 1024 * 1024,
     healthCheck: true,
-extendExpressApp: (app, commonContext) => { /* ... */ },
+    extendExpressApp: (app, commonContext) => { /* ... */ },
     extendHttpServer: (httpServer, commonContext, graphQLSchema) => { /* ... */ },
   },
   /* ... */
@@ -336,14 +336,14 @@ import { useServer as wsUseServer } from 'graphql-ws/lib/use/ws';
 
 export default config({
   server: {
-extendHttpServer: (httpServer, commonContext, graphqlSchema) => {
-		const wss = new WebSocketServer({
-			server: httpServer,
-			path: '/api/graphql',
-		});
+    extendHttpServer: (httpServer, commonContext, graphqlSchema) => {
+      const wss = new WebSocketServer({
+        server: httpServer,
+        path: '/api/graphql',
+      });
 
-		wsUseServer({ schema: graphqlSchema }, wss);
-	},
+      wsUseServer({ schema: graphqlSchema }, wss);
+    },
   },
 });
 ```
