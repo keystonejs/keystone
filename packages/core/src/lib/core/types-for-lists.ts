@@ -69,6 +69,7 @@ export type InitialisedList = {
   listKey: string;
   prisma: {
     listKey: string;
+    mapping: string | undefined;
   };
   ui: {
     labelField: string;
@@ -76,7 +77,6 @@ export type InitialisedList = {
     searchableFields: Map<string, 'default' | 'insensitive' | null>;
   };
   lists: Record<string, InitialisedList>;
-  dbMap: string | undefined;
   extendPrismaSchema: ((schema: string) => string) | undefined;
   graphql: {
     isEnabled: IsEnabled;
@@ -242,10 +242,10 @@ function getListsWithInitialisedFields(
       ...intermediateList,
       ...getNamesFromList(listKey, list),
       access: parseListAccessControl(list.access),
-      dbMap: list.db?.map,
 
       prisma: {
         listKey: listKey[0].toLowerCase() + listKey.slice(1),
+        mapping: list.db?.map,
       },
       extendPrismaSchema: list.db?.extendPrismaSchema,
 

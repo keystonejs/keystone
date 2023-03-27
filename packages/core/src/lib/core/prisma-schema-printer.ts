@@ -222,7 +222,12 @@ export function printPrismaSchema(
 
   for (const [
     listKey,
-    { resolvedDbFields, dbMap, isSingleton, extendPrismaSchema: extendPrismaListSchema },
+    {
+      resolvedDbFields,
+      prisma: { mapping },
+      isSingleton,
+      extendPrismaSchema: extendPrismaListSchema,
+    },
   ] of Object.entries(lists)) {
     const listPrisma = [`model ${listKey} {`];
 
@@ -243,8 +248,8 @@ export function printPrismaSchema(
       }
     }
 
-    if (dbMap !== undefined) {
-      listPrisma.push(`@@map(${JSON.stringify(dbMap)})`);
+    if (mapping !== undefined) {
+      listPrisma.push(`@@map(${JSON.stringify(mapping)})`);
     }
 
     listPrisma.push('}');
