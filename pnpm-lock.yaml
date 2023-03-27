@@ -129,7 +129,7 @@ importers:
       '@keystone-ui/core': ^5.0.2
       '@svgr/core': ^6.5.1
       '@svgr/plugin-jsx': ^6.5.1
-      '@svgr/plugin-prettier': ^6.5.1
+      '@svgr/plugin-prettier': ^7.0.0
       '@svgr/plugin-svgo': ^6.5.1
       '@types/react': ^18.0.9
       chalk: ^4.1.2
@@ -144,7 +144,7 @@ importers:
     devDependencies:
       '@svgr/core': 6.5.1
       '@svgr/plugin-jsx': 6.5.1_@svgr+core@6.5.1
-      '@svgr/plugin-prettier': 6.5.1_@svgr+core@6.5.1
+      '@svgr/plugin-prettier': 7.0.0_@svgr+core@6.5.1
       '@svgr/plugin-svgo': 6.5.1_@svgr+core@6.5.1
       '@types/react': 18.0.29
       chalk: 4.1.2
@@ -6613,9 +6613,9 @@ packages:
       - supports-color
     dev: true
 
-  /@svgr/plugin-prettier/6.5.1_@svgr+core@6.5.1:
-    resolution: {integrity: sha512-nJTtamrxQjsHcP9vb5PVBiaVW9kEtAt0hzGK8e4+zbaIUHq6RPeR8+SvYaAbIIn1TExFszFuZSz1U08UX7kz7w==}
-    engines: {node: '>=10'}
+  /@svgr/plugin-prettier/7.0.0_@svgr+core@6.5.1:
+    resolution: {integrity: sha512-ptHxDExQjxmMeHwgMYGDVuWVrdfd9DF2fSyQAUK8SeqEFfzcErEHTPK7MmzXbnCbxvXiSzymZXc/qqh8Wy/ARw==}
+    engines: {node: '>=14'}
     peerDependencies:
       '@svgr/core': '*'
     dependencies:
