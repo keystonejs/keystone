@@ -81,7 +81,7 @@ describe(`Public schema`, () => {
     listConfigVariables.forEach(config => {
       test(JSON.stringify(config), async () => {
         const name = getListName(config);
-        const gqlNames = getGqlNames({ listKey: name, pluralGraphQLName: `${name}s` });
+        const gqlNames = getGqlNames(name, `${name}s`);
         // The type is used in all the queries and mutations as a return type.
         if (config.omit === true) {
           expect(types).not.toContain(gqlNames.outputTypeName);
@@ -402,7 +402,7 @@ describe(`Sudo schema`, () => {
     listConfigVariables.forEach(config => {
       test(JSON.stringify(config), async () => {
         const name = getListName(config);
-        const gqlNames = getGqlNames({ listKey: name, pluralGraphQLName: `${name}s` });
+        const gqlNames = getGqlNames(name, `${name}s`);
         expect(types).toContain(gqlNames.outputTypeName);
         expect(types).toContain(gqlNames.whereUniqueInputName);
         expect(types).toContain(gqlNames.relateToManyForCreateInputName);

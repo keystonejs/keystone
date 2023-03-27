@@ -13,7 +13,6 @@ import {
   ListOperationAccessControl,
   ListFilterAccessControl,
   KeystoneContext,
-  getGqlNames,
 } from '../../types';
 import { coerceAndValidateForGraphQLInput } from '../coerceAndValidateForGraphQLInput';
 import { allowAll } from '../../access';
@@ -103,7 +102,7 @@ export async function getAccessFilters(
     if (!filters) return false; // shouldn't happen, but, Typescript
 
     const schema = context.sudo().graphql.schema;
-    const whereInput = assertInputObjectType(schema.getType(getGqlNames(list).whereInputName));
+    const whereInput = assertInputObjectType(schema.getType(list.graphql.names.whereInputName));
     const result = coerceAndValidateForGraphQLInput(schema, whereInput, filters);
     if (result.kind === 'valid') return result.value;
     throw result.error;

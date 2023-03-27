@@ -114,7 +114,7 @@ export async function findMany(
   info: GraphQLResolveInfo,
   extraFilter?: PrismaFilter
 ): Promise<BaseItem[]> {
-  const maxTake = (list.types.findManyArgs.take.defaultValue ?? Infinity) as number;
+  const maxTake = (list.graphql.types.findManyArgs.take.defaultValue ?? Infinity) as number;
   if ((take ?? Infinity) > maxTake) {
     throw limitsExceededError({ list: list.listKey, type: 'maxTake', limit: maxTake });
   }
@@ -167,7 +167,7 @@ async function resolveOrderBy(
     const keys = Object.keys(orderBySelection);
     if (keys.length !== 1) {
       throw userInputError(
-        `Only a single key must be passed to ${list.types.orderBy.graphQLType.name}`
+        `Only a single key must be passed to ${list.graphql.types.orderBy.graphQLType.name}`
       );
     }
 

@@ -115,7 +115,7 @@ export function createAdminMeta(
 
     const maximumPageSize = Math.min(
       listConfig.ui?.listView?.pageSize ?? 50,
-      (list.types.findManyArgs.take.defaultValue ?? Infinity) as number
+      (list.graphql.types.findManyArgs.take.defaultValue ?? Infinity) as number
     );
 
     adminMetaRoot.listsByKey[listKey] = {
@@ -135,9 +135,11 @@ export function createAdminMeta(
         (listConfig.ui?.listView?.initialSort as
           | { field: string; direction: 'ASC' | 'DESC' }
           | undefined) ?? null,
+
       // TODO: probably remove this from the GraphQL schema and here
       itemQueryName: listKey,
-      listQueryName: list.pluralGraphQLName,
+      listQueryName: list.graphql.namePlural, // TODO: remove
+
       hideCreate: normalizeMaybeSessionFunction(
         list.graphql.isEnabled.create ? listConfig.ui?.hideCreate ?? false : false
       ),

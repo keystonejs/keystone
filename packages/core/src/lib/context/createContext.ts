@@ -1,6 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'http';
 import { ExecutionResult, graphql, GraphQLSchema, print } from 'graphql';
-import { KeystoneContext, KeystoneGraphQLAPI, GqlNames, KeystoneConfig } from '../../types';
+import { KeystoneContext, KeystoneGraphQLAPI, KeystoneConfig } from '../../types';
 
 import { PrismaClient } from '../core/utils';
 import { InitialisedList } from '../core/types-for-lists';
@@ -12,7 +12,6 @@ export function makeCreateContext({
   graphQLSchema,
   sudoGraphQLSchema,
   prismaClient,
-  gqlNamesByList,
   config,
   lists,
 }: {
@@ -20,7 +19,6 @@ export function makeCreateContext({
   sudoGraphQLSchema: GraphQLSchema;
   config: KeystoneConfig;
   prismaClient: PrismaClient;
-  gqlNamesByList: Record<string, GqlNames>;
   lists: Record<string, InitialisedList>;
 }) {
   const images = createImagesContext(config);
@@ -34,13 +32,13 @@ export function makeCreateContext({
   // doing is more obvious(even though in reality it's much smaller than the alternative)
 
   const publicDbApiFactories: Record<string, ReturnType<typeof getDbAPIFactory>> = {};
-  for (const [listKey, gqlNames] of Object.entries(gqlNamesByList)) {
-    publicDbApiFactories[listKey] = getDbAPIFactory(gqlNames, graphQLSchema);
+  for (const [listKey, list] of Object.entries(lists)) {
+    publicDbApiFactories[listKey] = getDbAPIFactory(list, graphQLSchema);
   }
 
   const sudoDbApiFactories: Record<string, ReturnType<typeof getDbAPIFactory>> = {};
-  for (const [listKey, gqlNames] of Object.entries(gqlNamesByList)) {
-    sudoDbApiFactories[listKey] = getDbAPIFactory(gqlNames, sudoGraphQLSchema);
+  for (const [listKey, list] of Object.entries(lists)) {
+    sudoDbApiFactories[listKey] = getDbAPIFactory(list, sudoGraphQLSchema);
   }
 
   const createContext = ({
@@ -106,9 +104,8 @@ export function makeCreateContext({
       res,
       session,
       withRequest,
-      // Note: This field lets us use the server-side-graphql-client library.
-      // We may want to remove it once the updated itemAPI w/ query is available.
-      gqlNames: (listKey: string) => gqlNamesByList[listKey],
+      // TODO: remove, deprecated
+      gqlNames: (listKey: string) => lists[listKey].graphql.names,
       images,
       files,
     };
@@ -117,9 +114,9 @@ export function makeCreateContext({
     }
 
     const dbAPIFactories = sudo ? sudoDbApiFactories : publicDbApiFactories;
-    for (const listKey of Object.keys(gqlNamesByList)) {
+    for (const [listKey, list] of Object.entries(lists)) {
       dbAPI[listKey] = dbAPIFactories[listKey](contextToReturn);
-      itemAPI[listKey] = itemAPIForList(listKey, contextToReturn);
+      itemAPI[listKey] = itemAPIForList(list, contextToReturn);
     }
     return contextToReturn;
   };

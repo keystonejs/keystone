@@ -1,16 +1,11 @@
 import { GraphQLSchema } from 'graphql';
-import {
-  BaseListTypeInfo,
-  KeystoneDbAPI,
-  KeystoneListsAPI,
-  KeystoneContext,
-  GqlNames,
-} from '../../types';
+import type { InitialisedList } from '../core/types-for-lists';
+import { BaseListTypeInfo, KeystoneDbAPI, KeystoneListsAPI, KeystoneContext } from '../../types';
 import { executeGraphQLFieldToRootVal } from './executeGraphQLFieldToRootVal';
 import { executeGraphQLFieldWithSelection } from './executeGraphQLFieldWithSelection';
 
 export function getDbAPIFactory(
-  gqlNames: GqlNames,
+  list: InitialisedList,
   schema: GraphQLSchema
 ): (context: KeystoneContext) => KeystoneDbAPI<Record<string, BaseListTypeInfo>>[string] {
   const f = (operation: 'query' | 'mutation', fieldName: string) => {
@@ -28,15 +23,15 @@ export function getDbAPIFactory(
   };
 
   const fcache = {
-    findOne: f('query', gqlNames.itemQueryName),
-    findMany: f('query', gqlNames.listQueryName),
-    count: f('query', gqlNames.listQueryCountName),
-    createOne: f('mutation', gqlNames.createMutationName),
-    createMany: f('mutation', gqlNames.createManyMutationName),
-    updateOne: f('mutation', gqlNames.updateMutationName),
-    updateMany: f('mutation', gqlNames.updateManyMutationName),
-    deleteOne: f('mutation', gqlNames.deleteMutationName),
-    deleteMany: f('mutation', gqlNames.deleteManyMutationName),
+    findOne: f('query', list.graphql.names.itemQueryName),
+    findMany: f('query', list.graphql.names.listQueryName),
+    count: f('query', list.graphql.names.listQueryCountName),
+    createOne: f('mutation', list.graphql.names.createMutationName),
+    createMany: f('mutation', list.graphql.names.createManyMutationName),
+    updateOne: f('mutation', list.graphql.names.updateMutationName),
+    updateMany: f('mutation', list.graphql.names.updateManyMutationName),
+    deleteOne: f('mutation', list.graphql.names.deleteMutationName),
+    deleteMany: f('mutation', list.graphql.names.deleteManyMutationName),
   };
 
   return (context: KeystoneContext) => {
@@ -55,7 +50,7 @@ export function getDbAPIFactory(
 }
 
 export function itemAPIForList(
-  listKey: string,
+  list: InitialisedList,
   context: KeystoneContext
 ): KeystoneListsAPI<Record<string, BaseListTypeInfo>>[string] {
   const f = (operation: 'query' | 'mutation', field: string) => {
@@ -65,23 +60,23 @@ export function itemAPIForList(
       return exec(args, returnFields, context) as any;
     };
   };
-  const gqlNames = context.gqlNames(listKey);
+
   return {
-    findOne: f('query', gqlNames.itemQueryName),
-    findMany: f('query', gqlNames.listQueryName),
+    findOne: f('query', list.graphql.names.itemQueryName),
+    findMany: f('query', list.graphql.names.listQueryName),
     async count({ where = {} } = {}) {
-      const { listQueryCountName, whereInputName } = context.gqlNames(listKey);
+      const { listQueryCountName, whereInputName } = list.graphql.names;
       const query = `query ($where: ${whereInputName}!) { count: ${listQueryCountName}(where: $where)  }`;
       const response = (await context.graphql.run({ query, variables: { where } })) as {
         count: number;
       };
       return response.count;
     },
-    createOne: f('mutation', gqlNames.createMutationName),
-    createMany: f('mutation', gqlNames.createManyMutationName),
-    updateOne: f('mutation', gqlNames.updateMutationName),
-    updateMany: f('mutation', gqlNames.updateManyMutationName),
-    deleteOne: f('mutation', gqlNames.deleteMutationName),
-    deleteMany: f('mutation', gqlNames.deleteManyMutationName),
+    createOne: f('mutation', list.graphql.names.createMutationName),
+    createMany: f('mutation', list.graphql.names.createManyMutationName),
+    updateOne: f('mutation', list.graphql.names.updateMutationName),
+    updateMany: f('mutation', list.graphql.names.updateManyMutationName),
+    deleteOne: f('mutation', list.graphql.names.deleteMutationName),
+    deleteMany: f('mutation', list.graphql.names.deleteManyMutationName),
   };
 }

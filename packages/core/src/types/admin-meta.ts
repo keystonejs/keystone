@@ -1,6 +1,7 @@
 import { GraphQLError } from 'graphql';
 import type { ReactElement } from 'react';
-import { GqlNames, JSONValue } from './utils';
+import type { InitialisedList } from '../lib/core/types-for-lists';
+import type { JSONValue } from './utils';
 
 export type NavigationProps = {
   authenticatedItem: AuthenticatedItem;
@@ -108,7 +109,8 @@ export type ListMeta = {
   singular: string;
   plural: string;
   description: string | null;
-  gqlNames: GqlNames;
+  /** @deprecated */
+  gqlNames: InitialisedList['graphql']['names'];
   initialColumns: string[];
   pageSize: number;
   labelField: string;

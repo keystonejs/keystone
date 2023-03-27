@@ -2,6 +2,7 @@ import { Limit } from 'p-limit';
 import pluralize from 'pluralize';
 import { PrismaModule } from '../../artifacts';
 import { BaseItem, KeystoneConfig, KeystoneContext } from '../../types';
+import { getGqlNames } from '../../types/utils';
 import { humanize } from '../utils';
 import { prismaError } from './graphql-errors';
 import { InitialisedList } from './types-for-lists';
@@ -144,7 +145,10 @@ export function getNamesFromList(
   }
 
   return {
-    pluralGraphQLName,
+    graphql: {
+      names: getGqlNames(listKey, pluralGraphQLName),
+      namePlural: pluralGraphQLName,
+    },
     adminUILabels: {
       label: ui?.label || computedLabel,
       singular: ui?.singular || computedSingular,

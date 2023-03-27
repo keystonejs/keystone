@@ -9,7 +9,6 @@ import {
   GraphQLInputObjectType,
   introspectionTypes,
 } from 'graphql';
-import { getGqlNames } from '../types';
 import { InitialisedList } from './core/types-for-lists';
 
 const introspectionTypesSet = new Set(introspectionTypes);
@@ -184,7 +183,7 @@ function printListTypeInfo<L extends InitialisedList>(
     createInputName,
     updateInputName,
     listOrderName,
-  } = getGqlNames(list);
+  } = list.graphql.names;
   const listTypeInfoName = `Lists.${listKey}.TypeInfo`;
 
   // prettier-ignore
@@ -227,18 +226,29 @@ export function printGeneratedTypes(
   prismaClientPath = stringify(prismaClientPath).replace(/'/g, `\\'`);
 
   for (const [listKey, list] of Object.entries(lists)) {
-    const gqlNames = getGqlNames(list);
     const listTypeInfoName = `Lists.${listKey}.TypeInfo`;
 
     if (list.graphql.isEnabled.create) {
       interimCreateUpdateTypes.push(
-        printInterimType(prismaClientPath, list, listKey, gqlNames.createInputName, 'Create')
+        printInterimType(
+          prismaClientPath,
+          list,
+          listKey,
+          list.graphql.names.createInputName,
+          'Create'
+        )
       );
     }
 
     if (list.graphql.isEnabled.update) {
       interimCreateUpdateTypes.push(
-        printInterimType(prismaClientPath, list, listKey, gqlNames.updateInputName, 'Update')
+        printInterimType(
+          prismaClientPath,
+          list,
+          listKey,
+          list.graphql.names.updateInputName,
+          'Update'
+        )
       );
     }
 

@@ -1,5 +1,5 @@
 import pLimit from 'p-limit';
-import { FieldData, KeystoneConfig, getGqlNames } from '../types';
+import { FieldData, KeystoneConfig } from '../types';
 
 import { createAdminMeta } from '../admin-ui/system/createAdminMeta';
 import { PrismaModule } from '../artifacts';
@@ -92,9 +92,6 @@ export function createSystem(config: KeystoneConfig) {
         sudoGraphQLSchema,
         config,
         prismaClient,
-        gqlNamesByList: Object.fromEntries(
-          Object.entries(lists).map(([listKey, list]) => [listKey, getGqlNames(list)])
-        ),
         lists,
       });
 

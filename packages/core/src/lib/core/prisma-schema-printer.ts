@@ -224,9 +224,8 @@ export function printPrismaSchema(
     listKey,
     {
       resolvedDbFields,
-      prisma: { mapping },
+      prisma: { mapping, extendPrismaSchema: extendPrismaListSchema },
       isSingleton,
-      extendPrismaSchema: extendPrismaListSchema,
     },
   ] of Object.entries(lists)) {
     const listPrisma = [`model ${listKey} {`];

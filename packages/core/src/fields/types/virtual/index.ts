@@ -66,9 +66,7 @@ export const virtual =
           `Either set ui.query with what the Admin UI should fetch or hide the field from the Admin UI by setting ui.listView.fieldMode and ui.itemView.fieldMode to 'hidden'.\n` +
           `When setting ui.query, it is interpolated into a GraphQL query like this:\n` +
           `query {\n` +
-          `  ${
-            getGqlNames({ listKey: meta.listKey, pluralGraphQLName: '' }).itemQueryName
-          }(where: { id: "..." }) {\n` +
+          `  ${getGqlNames(meta.listKey, '').itemQueryName}(where: { id: "..." }) {\n` +
           `    ${meta.fieldKey}\${ui.query}\n` +
           `  }\n` +
           `}`
