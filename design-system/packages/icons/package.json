@@ -1160,7 +1160,7 @@
   },
   "devDependencies": {
     "@svgr/core": "^6.5.1",
-    "@svgr/plugin-jsx": "^6.5.1",
+    "@svgr/plugin-jsx": "^7.0.0",
     "@svgr/plugin-prettier": "^7.0.0",
     "@svgr/plugin-svgo": "^7.0.0",
     "@types/react": "^18.0.9",
