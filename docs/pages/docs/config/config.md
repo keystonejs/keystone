@@ -219,7 +219,7 @@ export default config({
     port: 3000,
     maxFileSize: 200 * 1024 * 1024,
     healthCheck: true,
-extendExpressApp: (app, commonContext) => { /* ... */ },
+    extendExpressApp: (app, commonContext) => { /* ... */ },
     extendHttpServer: (httpServer, commonContext, graphQLSchema) => { /* ... */ },
   },
   /* ... */
@@ -336,14 +336,14 @@ import { useServer as wsUseServer } from 'graphql-ws/lib/use/ws';
 
 export default config({
   server: {
-extendHttpServer: (httpServer, commonContext, graphqlSchema) => {
-		const wss = new WebSocketServer({
-			server: httpServer,
-			path: '/api/graphql',
-		});
+    extendHttpServer: (httpServer, commonContext, graphqlSchema) => {
+      const wss = new WebSocketServer({
+        server: httpServer,
+        path: '/api/graphql',
+      });
 
-		wsUseServer({ schema: graphqlSchema }, wss);
-	},
+      wsUseServer({ schema: graphqlSchema }, wss);
+    },
   },
 });
 ```
@@ -534,26 +534,6 @@ export default config({
   },
 });
 ```
-
-## Experimental Options
-
-The following flags allow you to enable features which are still in preview.
-These features are not guaranteed to work, and should be used with caution.
-
-```typescript
-import { config } from '@keystone-6/core';
-
-export default config({
-  experimental: {
-    generateNextGraphqlAPI: true,
-  }
-  /* ... */
-});
-```
-
-Options:
-
-- `generateNextGraphqlAPI`: Creates a file at `node_modules/.keystone/next/graphql-api` with `default` and `config` exports that can be re-exported in a Next API route
 
 ## Related resources
 

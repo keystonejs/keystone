@@ -9,27 +9,27 @@ export function Header() {
   const passwordRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
-    getCurrentLoggedInUser()
-      .then(data => {
-        if (data?.authenticatedItem?.id) {
-          setUser(data.authenticatedItem);
+    (async function () {
+      try {
+        const user = await getCurrentLoggedInUser();
+        if (user?.authenticatedItem?.id) {
+          setUser(user.authenticatedItem);
         }
-      })
-      .finally(() => {
+      } finally {
         setLoading(false);
-      });
+      }
+    })();
   }, []);
 
-  const login = () => {
+  const login = async () => {
     if (emailRef.current && passwordRef.current) {
       const email = emailRef.current.value;
       const password = passwordRef.current.value;
 
-      authenticateUser({ email, password }).then(data => {
-        if (data?.authenticateUserWithPassword?.item?.id) {
-          window.location.reload();
-        }
-      });
+      const user = await authenticateUser({ email, password });
+      if (user?.authenticateUserWithPassword?.item?.id) {
+        window.location.reload();
+      }
     }
   };
 
@@ -67,7 +67,7 @@ export function Header() {
   );
 }
 
-function authenticateUser({ email, password }: { email: string; password: string }) {
+function authenticateUser({ email, password }: { email: string; password: string }): Promise<any> {
   const mutation = gql`
     mutation authenticate($email: String!, $password: String!) {
       authenticateUserWithPassword(email: $email, password: $password) {
@@ -101,7 +101,7 @@ function endUserSession() {
   return client.request(mutation);
 }
 
-function getCurrentLoggedInUser() {
+function getCurrentLoggedInUser(): Promise<any> {
   const query = gql`
     query authenticate {
       authenticatedItem {

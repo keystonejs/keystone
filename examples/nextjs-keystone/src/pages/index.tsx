@@ -122,19 +122,21 @@ function ClientRenderedContent() {
 
   // Fetch users from REST api route
   useEffect(() => {
-    const query = gql`
-      {
-        users {
-          id
-          name
-          email
-        }
-      }
-    `;
-
-    client.request(query).then(data => {
-      setUsers(data.users);
-    });
+    client
+      .request(
+        gql`
+          {
+            users {
+              id
+              name
+              email
+            }
+          }
+        `
+      )
+      .then((data: any) => {
+        setUsers(data.users);
+      });
   }, []);
 
   return (

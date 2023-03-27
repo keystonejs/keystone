@@ -13,8 +13,8 @@ export const loadingToneValues = [
   'help',
 ] as const;
 
-export type SizeKey = typeof loadingSizeValues[number];
-export type ToneKey = typeof loadingToneValues[number];
+export type SizeKey = (typeof loadingSizeValues)[number];
+export type ToneKey = (typeof loadingToneValues)[number];
 
 // NOTE: a more accurate implementation might use `aria-busy="true|false"` on
 // the wrapping element, but it's difficult to abstract

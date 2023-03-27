@@ -75,7 +75,7 @@ const runner = setupTestRunner({
 
 const initialiseData = async ({ context }: { context: ContextFromRunner<typeof runner> }) => {
   // Use shuffled data to ensure that ordering is actually happening.
-  for (const listKey of Object.keys(context.query) as Array<keyof typeof context['query']>) {
+  for (const listKey of Object.keys(context.query) as Array<keyof (typeof context)['query']>) {
     await context.query[listKey].createMany({
       data: [
         { a: 1, b: 10 },
