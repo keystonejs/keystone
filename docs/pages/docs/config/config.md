@@ -535,26 +535,6 @@ export default config({
 });
 ```
 
-## Experimental Options
-
-The following flags allow you to enable features which are still in preview.
-These features are not guaranteed to work, and should be used with caution.
-
-```typescript
-import { config } from '@keystone-6/core';
-
-export default config({
-  experimental: {
-    generateNextGraphqlAPI: true,
-  }
-  /* ... */
-});
-```
-
-Options:
-
-- `generateNextGraphqlAPI`: Creates a file at `node_modules/.keystone/next/graphql-api` with `default` and `config` exports that can be re-exported in a Next API route
-
 ## Related resources
 
 {% related-content %}
