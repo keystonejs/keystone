@@ -1239,7 +1239,7 @@ importers:
       '@keystone-ui/fields': ^7.1.2
       '@keystone-ui/pill': ^7.0.2
       '@types/express': ^4.17.14
-      '@types/mime': ^2.0.3
+      '@types/mime': ^3.0.0
       '@types/react': ^18.0.9
       cloudinary: ^1.27.1
       cuid: ^2.1.8
@@ -1260,7 +1260,7 @@ importers:
     devDependencies:
       '@keystone-6/core': link:../core
       '@types/express': 4.17.17
-      '@types/mime': 2.0.3
+      '@types/mime': 3.0.1
       graphql: 16.6.0
       graphql-upload: 15.0.2_s2bwejlqjlbyleadwj4sbanjha
       mime: 3.0.0
@@ -1309,7 +1309,7 @@ importers:
       '@types/express': ^4.17.14
       '@types/fs-extra': ^11.0.0
       '@types/inflection': ^1.13.0
-      '@types/mime': ^2.0.3
+      '@types/mime': ^3.0.0
       '@types/pluralize': ^0.0.29
       '@types/prompts': ^2.0.14
       '@types/react': ^18.0.9
@@ -1452,7 +1452,7 @@ importers:
     devDependencies:
       '@keystone-6/core': 'link:'
       '@types/bytes': 3.1.1
-      '@types/mime': 2.0.3
+      '@types/mime': 3.0.1
       '@types/resolve': 1.20.2
       fast-glob: 3.2.12
       fixturez: 1.1.0
@@ -7025,6 +7025,10 @@ packages:
 
   /@types/mime/2.0.3:
     resolution: {integrity: sha512-Jus9s4CDbqwocc5pOAnh8ShfrnMcPHuJYzVcSUU7lrh8Ni5HuIqX3oilL86p3dlTrk0LzHRCgA/GQ7uNCw6l2Q==}
+    dev: false
+
+  /@types/mime/3.0.1:
+    resolution: {integrity: sha512-Y4XFY5VJAuw0FgAqPNd6NNoV44jbq9Bz2L7Rh/J6jLTiHBSBJa9fxqQIvkIld4GsoDOcCbvzOUAbLPsSKKg+uA==}
 
   /@types/minimist/1.2.2:
     resolution: {integrity: sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==}
@@ -7144,7 +7148,7 @@ packages:
   /@types/serve-static/1.15.1:
     resolution: {integrity: sha512-NUo5XNiAdULrJENtJXZZ3fHtfMolzZwczzBbnAeBbqBwG+LaG6YaJtuwzwGSQZ2wsCrxjEhNNjAkKigy3n8teQ==}
     dependencies:
-      '@types/mime': 2.0.3
+      '@types/mime': 3.0.1
       '@types/node': 18.15.10
 
   /@types/stack-utils/2.0.1:
