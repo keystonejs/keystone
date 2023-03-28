@@ -16,7 +16,7 @@ jobs:
 
       - uses: ./.github/actions/ci-setup
 
-      - run: yarn build
+      - run: pnpm build
 
       - name: git config
         run: |
@@ -24,7 +24,7 @@ jobs:
           git config --global user.email 'automation+keystonejs@thinkmill.com.au'
 
       - name: npm publish, git tag
-        run: yarn changeset publish --tag latest
+        run: pnpm changeset publish --tag latest
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 

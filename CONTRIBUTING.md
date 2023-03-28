@@ -30,14 +30,14 @@ For more information on the reasoning behind using certain tooling, please refer
 
 ### Version management
 
-Keystone uses @noviny's [@changesets/cli](https://github.com/noviny/changesets) to track package versions and publish packages.
+Keystone uses @noviny's [@changesets/cli](https://github.com/changesets/changesets) to track package versions and publish packages.
 This tool allows each PR to indicate which packages need a version bump along with a changelog snippet.
 This information is then collated when performing a release to update package versions and `CHANGELOG.md` files.
 
 #### What all contributors need to do
 
 - Make your changes (as per usual)
-- Before you make a Pull Request, run the `yarn changeset` command and answer the questions that are asked. It will want to know:
+- Before you make a Pull Request, run the `pnpm changeset` command and answer the questions that are asked. It will want to know:
   - which packages you want to publish
   - what version you are releasing them at
   - a message to summarise the changes (this message will be written to the changelog of bumped packages)
