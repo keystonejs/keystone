@@ -12,7 +12,7 @@ importers:
       '@changesets/changelog-github': ^0.4.1
       '@changesets/cli': ^2.18.0
       '@manypkg/cli': ^0.20.0
-      '@preconstruct/cli': 2.3.0
+      '@preconstruct/cli': 2.4.1
       '@types/jest': ^29.0.0
       '@types/node': ^18.11.14
       '@types/node-fetch': ^2.5.12
@@ -40,7 +40,7 @@ importers:
       '@changesets/changelog-github': 0.4.8
       '@changesets/cli': 2.26.1
       '@manypkg/cli': 0.20.0
-      '@preconstruct/cli': 2.3.0
+      '@preconstruct/cli': 2.4.1
       '@types/jest': 29.5.0
       '@types/node': 18.15.10
       '@types/node-fetch': 2.6.2
@@ -6008,8 +6008,8 @@ packages:
     resolution: {integrity: sha512-Cr4OjIkipTtcXKjAsm8agyleBuDHvxzeBoa1v543lbv1YaIwQjESsVcmjiWiPEbC1FIeHOG/Op9kdCmAmiS3Kw==}
     dev: false
 
-  /@preconstruct/cli/2.3.0:
-    resolution: {integrity: sha512-us4qOb1ocxGyvCj9vIg4Nc9Ylz2EKetFuxWyuFmuW+jg9NSdr3j9tUKQcNbPAW53jtslYdEKrRepDUoGK5oGFA==}
+  /@preconstruct/cli/2.4.1:
+    resolution: {integrity: sha512-5/UCz6JwFjDpJsZrONsmsD++xIZ0pLYG0heh8DVXs9/F2vxmmZaKwBrswH78+Js5ZHkjDiWNH6vQlWVMxRhYow==}
     hasBin: true
     dependencies:
       '@babel/code-frame': 7.18.6
