@@ -20,7 +20,7 @@ jobs:
 
       - uses: changesets/action@v1
         with:
-          version: yarn ci:version-packages
+          version: pnpm ci:version-packages
         env:
           # use a different GitHub account to have the CI run on push
           GITHUB_TOKEN: ${{ secrets.KEYSTONE_RELEASE_BOT_GITHUB_TOKEN }}
