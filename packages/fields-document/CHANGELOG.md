@@ -1,5 +1,15 @@
 # @keystone-6/fields-document
 
+## 0.0.0-rc-20230329060432
+
+### Patch Changes
+
+- [#8403](https://github.com/keystonejs/keystone/pull/8403) [`07da6c157`](https://github.com/keystonejs/keystone/commit/07da6c157622ee89ae61dc4c445b26de46e91e3e) Thanks [@borisno2](https://github.com/borisno2)! - Adds `"use client"` to Document field files that allow it to be used in the Next App Dorectory
+
+- Updated dependencies [[`730ee7948`](https://github.com/keystonejs/keystone/commit/730ee79489cd5c7cf74553a86d5de8433d32ebeb), [`c6c9078d5`](https://github.com/keystonejs/keystone/commit/c6c9078d5cdeab968d563c340904717ebc36b1a3), [`1af39b913`](https://github.com/keystonejs/keystone/commit/1af39b9133ef6a8d48c55f09c79a7d2f853346ad), [`753f479f7`](https://github.com/keystonejs/keystone/commit/753f479f75e5a540da78862a1553a82cd62750b4), [`7cfe118bb`](https://github.com/keystonejs/keystone/commit/7cfe118bb68b0a2420a82fe78849ee9f7b9f6fb2), [`6b338c46a`](https://github.com/keystonejs/keystone/commit/6b338c46a5f9c4ab71939f3632dfccae27ffb56e)]:
+  - @keystone-6/core@0.0.0-rc-20230329060432
+  - @keystone-ui/fields@0.0.0-rc-20230329060432
+
 ## 7.0.0
 
 ### Minor Changes
