@@ -845,6 +845,28 @@ importers:
         specifier: ~5.0.0
         version: 5.0.2
 
+  examples/custom-session-redis:
+    dependencies:
+      '@keystone-6/auth':
+        specifier: ^7.0.0
+        version: link:../../packages/auth
+      '@keystone-6/core':
+        specifier: ^5.0.0
+        version: link:../../packages/core
+      '@prisma/client':
+        specifier: ^4.12.0
+        version: 4.12.0(prisma@4.12.0)
+      '@redis/client':
+        specifier: ^1.3.0
+        version: 1.5.6
+    devDependencies:
+      prisma:
+        specifier: ^4.12.0
+        version: 4.12.0
+      typescript:
+        specifier: ~5.0.0
+        version: 5.0.2
+
   examples/custom-session-validation:
     dependencies:
       '@keystone-6/auth':
@@ -1311,28 +1333,6 @@ importers:
         specifier: ~5.0.0
         version: 5.0.2
 
-  examples/redis-session-store:
-    dependencies:
-      '@keystone-6/auth':
-        specifier: ^7.0.0
-        version: link:../../packages/auth
-      '@keystone-6/core':
-        specifier: ^5.0.0
-        version: link:../../packages/core
-      '@prisma/client':
-        specifier: ^4.12.0
-        version: 4.12.0(prisma@4.12.0)
-      '@redis/client':
-        specifier: ^1.3.0
-        version: 1.5.6
-    devDependencies:
-      prisma:
-        specifier: ^4.12.0
-        version: 4.12.0
-      typescript:
-        specifier: ~5.0.0
-        version: 5.0.2
-
   examples/script:
     dependencies:
       '@keystone-6/core':
@@ -1408,67 +1408,6 @@ importers:
         specifier: ~5.0.0
         version: 5.0.2
 
-  examples/usecase-basic:
-    dependencies:
-      '@babel/runtime':
-        specifier: ^7.16.3
-        version: 7.21.0
-      '@keystone-6/auth':
-        specifier: ^7.0.0
-        version: link:../../packages/auth
-      '@keystone-6/core':
-        specifier: ^5.0.0
-        version: link:../../packages/core
-      '@keystone-6/document-renderer':
-        specifier: ^1.1.1
-        version: link:../../packages/document-renderer
-      '@keystone-6/fields-document':
-        specifier: ^7.0.0
-        version: link:../../packages/fields-document
-      '@keystone-ui/button':
-        specifier: ^7.0.1
-        version: link:../../design-system/packages/button
-      '@keystone-ui/core':
-        specifier: ^5.0.1
-        version: link:../../design-system/packages/core
-      '@keystone-ui/fields':
-        specifier: ^7.1.1
-        version: link:../../design-system/packages/fields
-      '@keystone-ui/icons':
-        specifier: ^6.0.1
-        version: link:../../design-system/packages/icons
-      '@keystone-ui/tooltip':
-        specifier: ^6.0.1
-        version: link:../../design-system/packages/tooltip
-      '@prisma/client':
-        specifier: ^4.12.0
-        version: 4.12.0(prisma@4.12.0)
-      '@types/react':
-        specifier: ^18.0.9
-        version: 18.0.29
-      '@types/uuid':
-        specifier: ^8.3.1
-        version: 8.3.4
-      graphql:
-        specifier: ^16.6.0
-        version: 16.6.0
-      graphql-tag:
-        specifier: ^2.12.6
-        version: 2.12.6(graphql@16.6.0)
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-      uuid:
-        specifier: ^9.0.0
-        version: 9.0.0
-    devDependencies:
-      typescript:
-        specifier: ~5.0.0
-        version: 5.0.2
-
   examples/usecase-blog:
     dependencies:
       '@keystone-6/core':
@@ -1484,52 +1423,6 @@ importers:
       tsx:
         specifier: ^3.9.0
         version: 3.12.6
-      typescript:
-        specifier: ~5.0.0
-        version: 5.0.2
-
-  examples/usecase-ecommerce:
-    dependencies:
-      '@babel/runtime':
-        specifier: ^7.16.3
-        version: 7.21.0
-      '@keystone-6/auth':
-        specifier: ^7.0.0
-        version: link:../../packages/auth
-      '@keystone-6/cloudinary':
-        specifier: ^7.0.0
-        version: link:../../packages/cloudinary
-      '@keystone-6/core':
-        specifier: ^5.0.0
-        version: link:../../packages/core
-      '@prisma/client':
-        specifier: ^4.12.0
-        version: 4.12.0(prisma@4.12.0)
-      '@types/nodemailer':
-        specifier: ^6.4.4
-        version: 6.4.7
-      dotenv:
-        specifier: ^16.0.0
-        version: 16.0.3
-      next:
-        specifier: 13.2.2
-        version: 13.2.2(@babel/core@7.21.3)(@opentelemetry/api@1.4.1)(react-dom@18.2.0)(react@18.2.0)
-      nodemailer:
-        specifier: ^6.7.1
-        version: 6.9.1
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-      stripe:
-        specifier: ^9.0.0
-        version: 9.16.0
-    devDependencies:
-      prisma:
-        specifier: ^4.12.0
-        version: 4.12.0
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -1562,7 +1455,7 @@ importers:
         specifier: ~5.0.0
         version: 5.0.2
 
-  examples/usecase-task-manager:
+  examples/usecase-todo:
     dependencies:
       '@keystone-6/core':
         specifier: ^5.0.0
@@ -7597,12 +7490,6 @@ packages:
   /@types/node@18.15.10:
     resolution: {integrity: sha512-9avDaQJczATcXgfmMAW3MIWArOO7A+m90vuCFLr8AotWf8igO/mRoYukrk2cqZVtv38tHs33retzHEilM7FpeQ==}
 
-  /@types/nodemailer@6.4.7:
-    resolution: {integrity: sha512-f5qCBGAn/f0qtRcd4SEn88c8Fp3Swct1731X4ryPKqS61/A3LmmzN8zaEz7hneJvpjFbUUgY7lru/B/7ODTazg==}
-    dependencies:
-      '@types/node': 18.15.10
-    dev: false
-
   /@types/normalize-package-data@2.4.1:
     resolution: {integrity: sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==}
 
@@ -13494,11 +13381,6 @@ packages:
   /node-releases@2.0.10:
     resolution: {integrity: sha512-5GFldHPXVG/YZmFzJvKK2zDSzPKhEp0+ZR5SVaoSag9fsL5YgHbUHDfnG5494ISANDcK4KwPXAx2xqVEydmd7w==}
 
-  /nodemailer@6.9.1:
-    resolution: {integrity: sha512-qHw7dOiU5UKNnQpXktdgQ1d3OFgRAekuvbJLcdG5dnEo/GtcTHRYM7+UfJARdOFU9WUQO8OiIamgWPmiSFHYAA==}
-    engines: {node: '>=6.0.0'}
-    dev: false
-
   /normalize-package-data@2.5.0:
     resolution: {integrity: sha512-/5CMN3T0R4XTj4DcGaexo+roZSdSFW/0AOOTROrjxzCG1wrWXEsGbRKevjlIL+ZDE4sZlJr5ED4YW0yqmkK+eA==}
     dependencies:
@@ -14360,6 +14242,7 @@ packages:
     engines: {node: '>=0.6'}
     dependencies:
       side-channel: 1.0.4
+    dev: true
 
   /querystringify@2.2.0:
     resolution: {integrity: sha512-FIqgj2EUvTa7R50u0rGsyTftzjYmv/a3hO345bZNrqabNqjtgiDMgmo4mkUjd+nzU5oF3dClKqFIPUKybUyqoQ==}
@@ -15587,14 +15470,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       escape-string-regexp: 1.0.5
-    dev: false
-
-  /stripe@9.16.0:
-    resolution: {integrity: sha512-Dn8K+jSoQcXjxCobRI4HXUdHjOXsiF/KszK49fJnkbeCFjZ3EZxLG2JiM/CX+Hcq27NBDtv/Sxhvy+HhTmvyaQ==}
-    engines: {node: ^8.1 || >=10.*}
-    dependencies:
-      '@types/node': 18.15.10
-      qs: 6.11.1
     dev: false
 
   /strnum@1.0.5:
