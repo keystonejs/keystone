@@ -82,8 +82,8 @@ export type InitialisedList = {
     extendPrismaSchema: ((schema: string) => string) | undefined;
   };
 
-  adminUILabels: { label: string; singular: string; plural: string; path: string };
   ui: {
+    labels: { label: string; singular: string; plural: string; path: string };
     labelField: string;
     searchFields: Set<string>;
     searchableFields: Map<string, 'default' | 'insensitive' | null>;
@@ -266,8 +266,8 @@ function getListsWithInitialisedFields(
         extendPrismaSchema: list.db?.extendPrismaSchema,
       },
 
-      adminUILabels: names.adminUILabels,
       ui: {
+        labels: names.ui.labels,
         labelField,
         searchFields,
         searchableFields: new Map<string, 'default' | 'insensitive' | null>(),

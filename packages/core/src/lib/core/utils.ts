@@ -149,17 +149,18 @@ export function getNamesFromList(
       names: getGqlNames(listKey, pluralGraphQLName),
       namePlural: pluralGraphQLName,
     },
-    adminUILabels: {
-      label: ui?.label || computedLabel,
-      singular: ui?.singular || computedSingular,
-      plural: ui?.plural || computedPlural,
-      path,
+    ui: {
+      labels: {
+        label: ui?.label || computedLabel,
+        singular: ui?.singular || computedSingular,
+        plural: ui?.plural || computedPlural,
+        path,
+      }
     },
   };
 }
 
 const labelToPath = (str: string) => str.split(' ').join('-').toLowerCase();
-
 const labelToClass = (str: string) => str.replace(/\s+/g, '');
 
 export function getDBFieldKeyForFieldOnMultiField(fieldKey: string, subField: string) {
