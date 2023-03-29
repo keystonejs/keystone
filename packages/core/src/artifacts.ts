@@ -110,7 +110,7 @@ export function getSystemPaths(cwd: string, config: KeystoneConfig) {
   };
 }
 
-export async function validateCommittedArtifacts(
+export async function validatePrismaAndGraphQLSchemas(
   cwd: string,
   config: KeystoneConfig,
   graphQLSchema: GraphQLSchema
@@ -159,7 +159,7 @@ export async function validateCommittedArtifacts(
   throw new ExitError(1);
 }
 
-export async function generateCommittedArtifacts(
+export async function generatePrismaAndGraphQLSchemas(
   cwd: string,
   config: KeystoneConfig,
   graphQLSchema: GraphQLSchema
@@ -174,7 +174,7 @@ export async function generateCommittedArtifacts(
   return artifacts;
 }
 
-export async function generateNodeModulesArtifactsWithoutPrismaClient(
+export async function generateTypescriptTypes(
   cwd: string,
   config: KeystoneConfig,
   graphQLSchema: GraphQLSchema
@@ -187,7 +187,7 @@ export async function generateNodeModulesArtifactsWithoutPrismaClient(
   );
 }
 
-export async function generateNodeModulesArtifacts(
+export async function generateTypescriptTypesAndPrisma(
   cwd: string,
   config: KeystoneConfig,
   graphQLSchema: GraphQLSchema
@@ -199,7 +199,7 @@ export async function generateNodeModulesArtifacts(
   }
   await Promise.all([
     generatePrismaClient(paths.schema.prisma, dataProxy),
-    generateNodeModulesArtifactsWithoutPrismaClient(cwd, config, graphQLSchema),
+    generateTypescriptTypes(cwd, config, graphQLSchema),
   ]);
 }
 

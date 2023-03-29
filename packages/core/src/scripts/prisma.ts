@@ -2,8 +2,8 @@ import execa from 'execa';
 import { createSystem } from '../lib/createSystem';
 import {
   getBuiltKeystoneConfigurationPath,
-  generateNodeModulesArtifacts,
-  validateCommittedArtifacts,
+  generateTypescriptTypesAndPrisma,
+  validatePrismaAndGraphQLSchemas,
 } from '../artifacts';
 import { loadConfigOnce, loadBuiltConfig } from '../lib/config/loadConfig';
 import { KeystoneConfig } from './../types/config/index';
@@ -23,8 +23,8 @@ export async function prisma(cwd: string, args: string[], frozen: boolean) {
   }
 
   const { graphQLSchema } = createSystem(config);
-  await validateCommittedArtifacts(cwd, config, graphQLSchema);
-  await generateNodeModulesArtifacts(cwd, config, graphQLSchema);
+  await validatePrismaAndGraphQLSchemas(cwd, config, graphQLSchema);
+  await generateTypescriptTypesAndPrisma(cwd, config, graphQLSchema);
 
   const result = await execa('node', [require.resolve('prisma'), ...args], {
     cwd,
