@@ -5,7 +5,7 @@ import { createAdminMeta } from '../admin-ui/system/createAdminMeta';
 import { PrismaModule } from '../artifacts';
 import { allowAll } from '../access';
 import { createGraphQLSchema } from './createGraphQLSchema';
-import { makeCreateContext } from './context/createContext';
+import { createContext } from './context/createContext';
 import { initialiseLists } from './core/types-for-lists';
 import { setPrismaNamespace, setWriteLimit } from './core/utils';
 
@@ -68,7 +68,7 @@ export function createSystem(config: KeystoneConfig) {
   const lists = initialiseLists(config);
   const adminMeta = createAdminMeta(config, lists);
   const graphQLSchema = createGraphQLSchema(config, lists, adminMeta, false);
-  const sudoGraphQLSchema = getSudoGraphQLSchema(config);
+  const graphQLSchemaSudo = getSudoGraphQLSchema(config);
 
   return {
     graphQLSchema,
@@ -87,9 +87,9 @@ export function createSystem(config: KeystoneConfig) {
       setWriteLimit(prismaClient, pLimit(config.db.provider === 'sqlite' ? 1 : Infinity));
       setPrismaNamespace(prismaClient, prismaModule.Prisma);
 
-      const context = makeCreateContext({
+      const context = createContext({
         graphQLSchema,
-        sudoGraphQLSchema,
+        graphQLSchemaSudo,
         config,
         prismaClient,
         lists,
