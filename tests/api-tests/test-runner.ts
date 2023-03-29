@@ -9,7 +9,7 @@ import {
   parseEnvValue,
   printConfigWarnings,
 } from '@prisma/internals';
-import { getPrismaClient, objectEnumValues } from '@prisma/client/runtime';
+import { getPrismaClient, objectEnumValues } from '@prisma/client/runtime/library';
 // @ts-ignore
 import { externalToInternalDmmf } from '@prisma/client/generator-build';
 import { initConfig, createSystem } from '@keystone-6/core/system';
