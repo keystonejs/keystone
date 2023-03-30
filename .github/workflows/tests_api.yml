@@ -202,7 +202,7 @@ jobs:
             'usecase-blog.test.ts',
             'usecase-roles.test.ts',
             'usecase-task-manager.test.ts',
-            'virtual-field.test.ts'
+            'virtual-field.test.ts',
           ]
       fail-fast: false
     steps:
