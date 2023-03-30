@@ -92,7 +92,7 @@ export function createContext({
       prisma: prismaClient,
 
       sudo: () => construct({ sudo: true, req, res }),
-      exitSudo: () => construct({ sudo: false, req, res }),
+      exitSudo: () => construct({ sudo: false, req, res }), // TODO: remove, deprecated
 
       req,
       res,
