@@ -5,8 +5,8 @@ import { executeGraphQLFieldToRootVal } from './executeGraphQLFieldToRootVal';
 import { executeGraphQLFieldWithSelection } from './executeGraphQLFieldWithSelection';
 
 export function getQueryFactory(list: InitialisedList, schema: GraphQLSchema) {
-  function f(operation: 'query' | 'mutation', field: string) {
-    const exec = executeGraphQLFieldWithSelection(schema, operation, field);
+  function f(operation: 'query' | 'mutation', fieldName: string) {
+    const exec = executeGraphQLFieldWithSelection(schema, operation, fieldName);
     return (
       _args: {
         query?: string
