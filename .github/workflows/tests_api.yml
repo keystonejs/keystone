@@ -201,7 +201,7 @@ jobs:
             'testing.test.ts',
             'usecase-blog.test.ts',
             'usecase-roles.test.ts',
-            'usecase-task-manager.test.ts',
+            'usecase-todo.test.ts',
             'virtual-field.test.ts',
           ]
       fail-fast: false
