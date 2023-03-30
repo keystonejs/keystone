@@ -6,7 +6,7 @@
 
 You can run our examples from your web browser using the free CodeSandbox service.
 
-Just look for the "Try it out in CodeSandbox 🧪" heading in each example project’s README ([example](https://github.com/keystonejs/keystone/tree/main/examples/usecase-task-manager#try-it-out-in-codesandbox-)).
+Just look for the "Try it out in CodeSandbox 🧪" heading in each example project’s README ([example](https://github.com/keystonejs/keystone/tree/main/examples/usecase-todo#try-it-out-in-codesandbox-)).
 
 ## Getting in touch
 

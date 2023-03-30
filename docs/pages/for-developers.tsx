@@ -403,7 +403,7 @@ export default function ForDevelopers() {
             <li>
               <Button
                 as="a"
-                href="https://github.com/keystonejs/keystone/tree/main/examples/usecase-task-manager"
+                href="https://github.com/keystonejs/keystone/tree/main/examples/usecase-todo"
                 target="_blank"
                 rel="noopener noreferrer"
                 look="soft"

@@ -544,7 +544,7 @@ export default function WhyKeystonePage() {
               </Type>
               <Type as="p" look="body18">
                 <a
-                  href="https://github.com/keystonejs/keystone/tree/main/examples/usecase-task-manager"
+                  href="https://github.com/keystonejs/keystone/tree/main/examples/usecase-todo"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -576,49 +576,6 @@ export default function WhyKeystonePage() {
               </Type>
             </li>
           </ul>
-        </Section>
-
-        <Section
-          css={mq({
-            display: 'grid',
-            gridTemplateColumns: ['1fr', null, '1fr 1fr'],
-            gap: '3rem',
-          })}
-        >
-          <div>
-            <Type as="h3" look="heading36" id="ecommerce">
-              eCommerce
-            </Type>
-            <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
-              Keystone gives you the power and control you need to build a complete backend for
-              eCommerce, while making it easy to integrate platforms like Shopify and Stripe to get
-              things done. API first, make Keystone a key player in your eCommerce content mesh.
-            </Type>
-            <Type as="p" look="body18">
-              <a
-                href="https://github.com/keystonejs/keystone/tree/main/examples/usecase-ecommerce"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Try the eCommerce example →
-              </a>
-            </Type>
-          </div>
-          <div>
-            <TweetBox user="wesbos" img="/assets/wesbos-square.jpg" grad="grad2">
-              I use Keystone in my{' '}
-              <a
-                href="https://advancedreact.com/friend/KEYSTONE"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Advanced React
-              </a>{' '}
-              course because it’s super quick to get my content types up and running, add custom
-              server-side cart & checkout logic, and the fine grain access control is just
-              fantastic!
-            </TweetBox>
-          </div>
         </Section>
 
         <AdvancedReactCta />
