@@ -80,15 +80,9 @@ export function createContext({
         req: newReq,
         res: newRes,
       });
-
-      return {
-        ...newContext,
-        ...(config.session
-          ? {
-              session: await config.session.get({ context: newContext }),
-            }
-          : {}),
-      };
+      return newContext.withSession(
+        config.session ? await config.session.get({ context: newContext }) : undefined
+      );
     }
 
     const context: KeystoneContext = {
