@@ -1,4 +1,3 @@
-import { getGqlNames } from '../../../types';
 import { graphql } from '../../..';
 import { InitialisedList } from '../types-for-lists';
 import * as createAndUpdate from './create-update';
@@ -21,14 +20,12 @@ function promisesButSettledWhenAllSettledAndInOrder<T extends Promise<unknown>[]
 }
 
 export function getMutationsForList(list: InitialisedList) {
-  const names = getGqlNames(list);
-
   const defaultUniqueWhereInput = list.isSingleton ? { id: '1' } : undefined;
 
   const createOne = graphql.field({
-    type: list.types.output,
+    type: list.graphql.types.output,
     args: {
-      data: graphql.arg({ type: graphql.nonNull(list.types.create) }),
+      data: graphql.arg({ type: graphql.nonNull(list.graphql.types.create) }),
     },
     resolve(_rootVal, { data }, context) {
       return createAndUpdate.createOne({ data }, list, context);
@@ -36,10 +33,10 @@ export function getMutationsForList(list: InitialisedList) {
   });
 
   const createMany = graphql.field({
-    type: graphql.list(list.types.output),
+    type: graphql.list(list.graphql.types.output),
     args: {
       data: graphql.arg({
-        type: graphql.nonNull(graphql.list(graphql.nonNull(list.types.create))),
+        type: graphql.nonNull(graphql.list(graphql.nonNull(list.graphql.types.create))),
       }),
     },
     async resolve(_rootVal, args, context) {
@@ -50,13 +47,13 @@ export function getMutationsForList(list: InitialisedList) {
   });
 
   const updateOne = graphql.field({
-    type: list.types.output,
+    type: list.graphql.types.output,
     args: {
       where: graphql.arg({
-        type: graphql.nonNull(list.types.uniqueWhere),
+        type: graphql.nonNull(list.graphql.types.uniqueWhere),
         defaultValue: defaultUniqueWhereInput,
       }),
-      data: graphql.arg({ type: graphql.nonNull(list.types.update) }),
+      data: graphql.arg({ type: graphql.nonNull(list.graphql.types.update) }),
     },
     resolve(_rootVal, args, context) {
       return createAndUpdate.updateOne(args, list, context);
@@ -64,17 +61,17 @@ export function getMutationsForList(list: InitialisedList) {
   });
 
   const updateManyInput = graphql.inputObject({
-    name: names.updateManyInputName,
+    name: list.graphql.names.updateManyInputName,
     fields: {
       where: graphql.arg({
-        type: graphql.nonNull(list.types.uniqueWhere),
+        type: graphql.nonNull(list.graphql.types.uniqueWhere),
         defaultValue: defaultUniqueWhereInput,
       }),
-      data: graphql.arg({ type: graphql.nonNull(list.types.update) }),
+      data: graphql.arg({ type: graphql.nonNull(list.graphql.types.update) }),
     },
   });
   const updateMany = graphql.field({
-    type: graphql.list(list.types.output),
+    type: graphql.list(list.graphql.types.output),
     args: {
       data: graphql.arg({ type: graphql.nonNull(graphql.list(graphql.nonNull(updateManyInput))) }),
     },
@@ -86,10 +83,10 @@ export function getMutationsForList(list: InitialisedList) {
   });
 
   const deleteOne = graphql.field({
-    type: list.types.output,
+    type: list.graphql.types.output,
     args: {
       where: graphql.arg({
-        type: graphql.nonNull(list.types.uniqueWhere),
+        type: graphql.nonNull(list.graphql.types.uniqueWhere),
         defaultValue: defaultUniqueWhereInput,
       }),
     },
@@ -99,10 +96,10 @@ export function getMutationsForList(list: InitialisedList) {
   });
 
   const deleteMany = graphql.field({
-    type: graphql.list(list.types.output),
+    type: graphql.list(list.graphql.types.output),
     args: {
       where: graphql.arg({
-        type: graphql.nonNull(graphql.list(graphql.nonNull(list.types.uniqueWhere))),
+        type: graphql.nonNull(graphql.list(graphql.nonNull(list.graphql.types.uniqueWhere))),
       }),
     },
     async resolve(rootVal, { where }, context) {
@@ -115,16 +112,16 @@ export function getMutationsForList(list: InitialisedList) {
   return {
     mutations: {
       ...(list.graphql.isEnabled.create && {
-        [names.createMutationName]: createOne,
-        [names.createManyMutationName]: createMany,
+        [list.graphql.names.createMutationName]: createOne,
+        [list.graphql.names.createManyMutationName]: createMany,
       }),
       ...(list.graphql.isEnabled.update && {
-        [names.updateMutationName]: updateOne,
-        [names.updateManyMutationName]: updateMany,
+        [list.graphql.names.updateMutationName]: updateOne,
+        [list.graphql.names.updateManyMutationName]: updateMany,
       }),
       ...(list.graphql.isEnabled.delete && {
-        [names.deleteMutationName]: deleteOne,
-        [names.deleteManyMutationName]: deleteMany,
+        [list.graphql.names.deleteMutationName]: deleteOne,
+        [list.graphql.names.deleteManyMutationName]: deleteMany,
       }),
     },
     updateManyInput,

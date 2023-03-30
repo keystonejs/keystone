@@ -19,9 +19,9 @@ import {
 } from '../../lib/server/createAdminUIMiddleware';
 import { runTelemetry } from '../../lib/telemetry';
 import {
-  generateCommittedArtifacts,
-  generateNodeModulesArtifacts,
-  generateNodeModulesArtifactsWithoutPrismaClient,
+  generatePrismaAndGraphQLSchemas,
+  generateTypescriptTypesAndPrisma,
+  generateTypescriptTypes,
   getFormattedGraphQLSchema,
   getBuiltKeystoneConfigurationPath,
   getSystemPaths,
@@ -244,7 +244,7 @@ export async function dev(
           lastPrintedGraphQLSchema = newPrintedGraphQLSchema;
         }
 
-        await generateNodeModulesArtifactsWithoutPrismaClient(cwd, newConfig, graphQLSchema);
+        await generateTypescriptTypes(cwd, newConfig, graphQLSchema);
         await generateAdminUI(newConfig, graphQLSchema, adminMeta, paths.admin, true);
         if (prismaClientModule) {
           if (server && lastApolloServer) {
@@ -392,8 +392,12 @@ async function setupInitialKeystone(
   // Generate the Artifacts
   if (prisma) {
     console.log('✨ Generating GraphQL and Prisma schemas');
-    const prismaSchema = (await generateCommittedArtifacts(cwd, config, graphQLSchema)).prisma;
-    const prismaClientGenerationPromise = generateNodeModulesArtifacts(cwd, config, graphQLSchema);
+    const prismaSchema = (await generatePrismaAndGraphQLSchemas(cwd, config, graphQLSchema)).prisma;
+    const prismaClientGenerationPromise = generateTypescriptTypesAndPrisma(
+      cwd,
+      config,
+      graphQLSchema
+    );
 
     if (config.db.useMigrations) {
       await devMigrations(

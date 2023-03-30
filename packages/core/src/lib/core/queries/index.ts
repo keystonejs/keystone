@@ -1,17 +1,15 @@
-import { getGqlNames } from '../../../types';
 import { graphql } from '../../..';
 import { InitialisedList } from '../types-for-lists';
 import * as queries from './resolvers';
 
 export function getQueriesForList(list: InitialisedList) {
   if (!list.graphql.isEnabled.query) return {};
-  const names = getGqlNames(list);
 
   const findOne = graphql.field({
-    type: list.types.output,
+    type: list.graphql.types.output,
     args: {
       where: graphql.arg({
-        type: graphql.nonNull(list.types.uniqueWhere),
+        type: graphql.nonNull(list.graphql.types.uniqueWhere),
         defaultValue: list.isSingleton ? { id: '1' } : undefined,
       }),
     },
@@ -21,8 +19,8 @@ export function getQueriesForList(list: InitialisedList) {
   });
 
   const findMany = graphql.field({
-    type: graphql.list(graphql.nonNull(list.types.output)),
-    args: list.types.findManyArgs,
+    type: graphql.list(graphql.nonNull(list.graphql.types.output)),
+    args: list.graphql.types.findManyArgs,
     async resolve(_rootVal, args, context, info) {
       return queries.findMany(args, list, context, info);
     },
@@ -32,7 +30,7 @@ export function getQueriesForList(list: InitialisedList) {
     type: graphql.Int,
     args: {
       where: graphql.arg({
-        type: graphql.nonNull(list.types.where),
+        type: graphql.nonNull(list.graphql.types.where),
         defaultValue: list.isSingleton ? ({ id: { equals: '1' } } as {}) : {},
       }),
     },
@@ -42,8 +40,8 @@ export function getQueriesForList(list: InitialisedList) {
   });
 
   return {
-    [names.listQueryName]: findMany,
-    [names.itemQueryName]: findOne,
-    [names.listQueryCountName]: countQuery,
+    [list.graphql.names.listQueryName]: findMany,
+    [list.graphql.names.itemQueryName]: findOne,
+    [list.graphql.names.listQueryCountName]: countQuery,
   };
 }

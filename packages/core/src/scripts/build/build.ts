@@ -2,9 +2,9 @@ import { buildAdminUI, generateAdminUI } from '../../admin-ui/system';
 import { createSystem } from '../../lib/createSystem';
 import {
   getSystemPaths,
-  generateCommittedArtifacts,
-  generateNodeModulesArtifacts,
-  validateCommittedArtifacts,
+  generatePrismaAndGraphQLSchemas,
+  generateTypescriptTypesAndPrisma,
+  validatePrismaAndGraphQLSchemas,
 } from '../../artifacts';
 import { loadConfigOnce } from '../../lib/config/loadConfig';
 import { Flags } from '../cli';
@@ -19,16 +19,14 @@ export async function build(
   const paths = getSystemPaths(cwd, config);
   if (prisma) {
     if (frozen) {
-      await validateCommittedArtifacts(cwd, config, graphQLSchema);
+      await validatePrismaAndGraphQLSchemas(cwd, config, graphQLSchema);
       console.log('✨ GraphQL and Prisma schemas are up to date');
     } else {
-      await generateCommittedArtifacts(cwd, config, graphQLSchema);
+      await generatePrismaAndGraphQLSchemas(cwd, config, graphQLSchema);
       console.log('✨ Generated GraphQL and Prisma schemas');
     }
-    // FIXME: This needs to generate clients for the correct build target using binaryTarget
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#binarytargets-options
 
-    await generateNodeModulesArtifacts(cwd, config, graphQLSchema);
+    await generateTypescriptTypesAndPrisma(cwd, config, graphQLSchema);
   }
 
   if (config.ui?.isDisabled || !ui) return;

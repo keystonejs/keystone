@@ -29,7 +29,7 @@ export function Examples() {
       <Well
         grad="grad3"
         heading="Task Manager"
-        href="https://github.com/keystonejs/keystone/blob/main/examples/usecase-task-manager"
+        href="https://github.com/keystonejs/keystone/blob/main/examples/usecase-todo"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -88,7 +88,7 @@ export function Examples() {
       <Well
         grad="grad3"
         heading="Authentication"
-        href="https://github.com/keystonejs/keystone/tree/main/examples/with-auth"
+        href="https://github.com/keystonejs/keystone/tree/main/examples/auth"
         target="_blank"
         rel="noopener noreferrer"
       >

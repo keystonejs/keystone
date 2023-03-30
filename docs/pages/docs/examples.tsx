@@ -64,7 +64,7 @@ export default function Docs() {
         <Well
           grad="grad1"
           heading="Task Manager"
-          href="https://github.com/keystonejs/keystone/blob/main/examples/usecase-task-manager"
+          href="https://github.com/keystonejs/keystone/blob/main/examples/usecase-todo"
           target="_blank"
           rel="noopener noreferrer"
         >

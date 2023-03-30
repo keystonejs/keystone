@@ -90,11 +90,7 @@ export const getSchemaExtension = ({
     // and then wants to fetch that field with `sessionData` but it's extremely unlikely someone will do that since if
     // they want to add a GraphQL field, they'll probably use a virtual field
     const query = `query($id: ID!) { ${
-      getGqlNames({
-        listKey,
-        // this isn't used to get the itemQueryName and we don't know it here
-        pluralGraphQLName: '',
-      }).itemQueryName
+      getGqlNames(listKey, '').itemQueryName
     }(where: { id: $id }) { ${sessionData} } }`;
 
     let ast;

@@ -294,7 +294,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     }
 
     if (!keystoneConfig.session) throw new TypeError('Missing .session configuration');
-    const session = withItemData(keystoneConfig.session);
 
     const { extendGraphqlSchema = defaultExtendGraphqlSchema } = keystoneConfig;
     const listConfig = keystoneConfig.lists[listKey];
@@ -302,7 +301,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     return {
       ...keystoneConfig,
       ui,
-      session,
+      session: withItemData(keystoneConfig.session),
       lists: {
         ...keystoneConfig.lists,
         [listKey]: { ...listConfig, fields: { ...listConfig.fields, ...fields } },

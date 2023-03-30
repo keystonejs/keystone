@@ -2,6 +2,7 @@ import { Limit } from 'p-limit';
 import pluralize from 'pluralize';
 import { PrismaModule } from '../../artifacts';
 import { BaseItem, KeystoneConfig, KeystoneContext } from '../../types';
+import { getGqlNames } from '../../types/utils';
 import { humanize } from '../utils';
 import { prismaError } from './graphql-errors';
 import { InitialisedList } from './types-for-lists';
@@ -144,18 +145,22 @@ export function getNamesFromList(
   }
 
   return {
-    pluralGraphQLName,
-    adminUILabels: {
-      label: ui?.label || computedLabel,
-      singular: ui?.singular || computedSingular,
-      plural: ui?.plural || computedPlural,
-      path,
+    graphql: {
+      names: getGqlNames(listKey, pluralGraphQLName),
+      namePlural: pluralGraphQLName,
+    },
+    ui: {
+      labels: {
+        label: ui?.label || computedLabel,
+        singular: ui?.singular || computedSingular,
+        plural: ui?.plural || computedPlural,
+        path,
+      },
     },
   };
 }
 
 const labelToPath = (str: string) => str.split(' ').join('-').toLowerCase();
-
 const labelToClass = (str: string) => str.replace(/\s+/g, '');
 
 export function getDBFieldKeyForFieldOnMultiField(fieldKey: string, subField: string) {

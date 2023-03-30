@@ -1,10 +1,9 @@
 import { CacheHint } from '@apollo/cache-control-types';
 import { GraphQLString, isInputObjectType } from 'graphql';
-import {
+import { getGqlNames, QueryMode } from '../../types';
+import type {
   BaseItem,
   GraphQLTypesForList,
-  QueryMode,
-  getGqlNames,
   NextFieldType,
   BaseListTypeInfo,
   ListGraphQLTypes,
@@ -56,31 +55,40 @@ export type FieldGroupConfig = {
 };
 
 export type InitialisedList = {
+  access: ResolvedListAccessControl;
+
   fields: Record<string, InitialisedField>;
+  groups: FieldGroupConfig[];
+
+  hooks: ListHooks<BaseListTypeInfo>;
+
   /** This will include the opposites to one-sided relationships */
   resolvedDbFields: Record<string, ResolvedDBField>;
-  groups: FieldGroupConfig[];
-  pluralGraphQLName: string;
-  types: GraphQLTypesForList;
-  access: ResolvedListAccessControl;
-  hooks: ListHooks<BaseListTypeInfo>;
-  adminUILabels: { label: string; singular: string; plural: string; path: string };
+  lists: Record<string, InitialisedList>;
+
   cacheHint: ((args: CacheHintArgs) => CacheHint) | undefined;
   listKey: string;
+
+  graphql: {
+    types: GraphQLTypesForList;
+    names: ReturnType<typeof getGqlNames>;
+    namePlural: string; // TODO: remove
+    isEnabled: IsEnabled;
+  };
+
   prisma: {
     listKey: string;
+    mapping: string | undefined;
+    extendPrismaSchema: ((schema: string) => string) | undefined;
   };
+
   ui: {
+    labels: { label: string; singular: string; plural: string; path: string };
     labelField: string;
     searchFields: Set<string>;
     searchableFields: Map<string, 'default' | 'insensitive' | null>;
   };
-  lists: Record<string, InitialisedList>;
-  dbMap: string | undefined;
-  extendPrismaSchema: ((schema: string) => string) | undefined;
-  graphql: {
-    isEnabled: IsEnabled;
-  };
+
   isSingleton: boolean;
 };
 
@@ -237,25 +245,33 @@ function getListsWithInitialisedFields(
       throw new Error(`${listKey}.ui.searchFields cannot include 'id'`);
     }
 
+    const names = getNamesFromList(listKey, list);
+
     result[listKey] = {
-      fields: resultFields,
-      ...intermediateList,
-      ...getNamesFromList(listKey, list),
       access: parseListAccessControl(list.access),
-      dbMap: list.db?.map,
+
+      fields: resultFields,
+      groups,
+
+      graphql: {
+        types: listGraphqlTypes[listKey].types,
+        names: names.graphql.names,
+        namePlural: names.graphql.namePlural, // TODO: remove
+        ...intermediateList.graphql,
+      },
 
       prisma: {
         listKey: listKey[0].toLowerCase() + listKey.slice(1),
+        mapping: list.db?.map,
+        extendPrismaSchema: list.db?.extendPrismaSchema,
       },
-      extendPrismaSchema: list.db?.extendPrismaSchema,
 
-      types: listGraphqlTypes[listKey].types,
       ui: {
+        labels: names.ui.labels,
         labelField,
         searchFields,
         searchableFields: new Map<string, 'default' | 'insensitive' | null>(),
       },
-      groups,
       hooks: list.hooks || {},
 
       listKey,
@@ -285,7 +301,7 @@ function introspectGraphQLTypes(lists: Record<string, InitialisedList>) {
       );
     }
 
-    const whereInputFields = list.types.where.graphQLType.getFields();
+    const whereInputFields = list.graphql.types.where.graphQLType.getFields();
     for (const fieldKey of Object.keys(list.fields)) {
       const filterType = whereInputFields[fieldKey]?.type;
       const fieldFilterFields = isInputObjectType(filterType) ? filterType.getFields() : undefined;
@@ -344,10 +360,9 @@ function getListGraphqlTypes(
   const graphQLTypes: Record<string, ListGraphQLTypes> = {};
 
   for (const [listKey, listConfig] of Object.entries(listsConfig)) {
-    const names = getGqlNames({
-      listKey,
-      pluralGraphQLName: getNamesFromList(listKey, listConfig).pluralGraphQLName,
-    });
+    const {
+      graphql: { names },
+    } = getNamesFromList(listKey, listConfig);
 
     const output = graphql.object<BaseItem>()({
       name: names.outputTypeName,

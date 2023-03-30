@@ -61,9 +61,9 @@ function collectTypes(
     const { isEnabled } = list.graphql;
     if (!isEnabled.type) continue;
     // adding all of these types explicitly isn't strictly necessary but we do it to create a certain order in the schema
-    collectedTypes.push(list.types.output.graphQLType);
+    collectedTypes.push(list.graphql.types.output.graphQLType);
     if (isEnabled.query || isEnabled.update || isEnabled.delete) {
-      collectedTypes.push(list.types.uniqueWhere.graphQLType);
+      collectedTypes.push(list.graphql.types.uniqueWhere.graphQLType);
     }
     if (isEnabled.query) {
       for (const field of Object.values(list.fields)) {
@@ -78,15 +78,15 @@ function collectTypes(
           );
         }
       }
-      collectedTypes.push(list.types.where.graphQLType);
-      collectedTypes.push(list.types.orderBy.graphQLType);
+      collectedTypes.push(list.graphql.types.where.graphQLType);
+      collectedTypes.push(list.graphql.types.orderBy.graphQLType);
     }
     if (isEnabled.update) {
-      collectedTypes.push(list.types.update.graphQLType);
+      collectedTypes.push(list.graphql.types.update.graphQLType);
       collectedTypes.push(updateManyByList[list.listKey].graphQLType);
     }
     if (isEnabled.create) {
-      collectedTypes.push(list.types.create.graphQLType);
+      collectedTypes.push(list.graphql.types.create.graphQLType);
     }
   }
   // this is not necessary, just about ordering

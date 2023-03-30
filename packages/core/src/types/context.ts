@@ -4,7 +4,7 @@ import { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql';
 import { TypedDocumentNode } from '@graphql-typed-document-node/core';
 import { InitialisedList } from '../lib/core/types-for-lists';
 import { BaseListTypeInfo } from './type-info';
-import { GqlNames, BaseKeystoneTypeInfo, SessionStrategy } from '.';
+import { BaseKeystoneTypeInfo, SessionStrategy } from '.';
 
 export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   req?: IncomingMessage;
@@ -20,7 +20,7 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
   files: FilesContext;
   images: ImagesContext;
   /** @deprecated */
-  gqlNames: (listKey: string) => GqlNames;
+  gqlNames: (listKey: string) => InitialisedList['graphql']['names'];
   experimental?: {
     /** @deprecated This value is only available if you have config.experimental.contextInitialisedLists = true.
      * This is not a stable API and may contain breaking changes in `patch` level releases.

@@ -1,49 +1,49 @@
 import type { IncomingMessage, ServerResponse } from 'http';
 import { ExecutionResult, graphql, GraphQLSchema, print } from 'graphql';
-import { KeystoneContext, KeystoneGraphQLAPI, GqlNames, KeystoneConfig } from '../../types';
+import { KeystoneContext, KeystoneGraphQLAPI, KeystoneConfig } from '../../types';
 
 import { PrismaClient } from '../core/utils';
 import { InitialisedList } from '../core/types-for-lists';
 import { createImagesContext } from '../assets/createImagesContext';
 import { createFilesContext } from '../assets/createFilesContext';
-import { getDbAPIFactory, itemAPIForList } from './itemAPI';
+import { getDbFactory, getQueryFactory } from './api';
 
-export function makeCreateContext({
-  graphQLSchema,
-  sudoGraphQLSchema,
-  prismaClient,
-  gqlNamesByList,
+export function createContext({
   config,
   lists,
+  graphQLSchema,
+  graphQLSchemaSudo,
+  prismaClient,
 }: {
-  graphQLSchema: GraphQLSchema;
-  sudoGraphQLSchema: GraphQLSchema;
   config: KeystoneConfig;
-  prismaClient: PrismaClient;
-  gqlNamesByList: Record<string, GqlNames>;
   lists: Record<string, InitialisedList>;
+  graphQLSchema: GraphQLSchema;
+  graphQLSchemaSudo: GraphQLSchema;
+  prismaClient: PrismaClient;
 }) {
+  const dbFactories: Record<string, ReturnType<typeof getDbFactory>> = {};
+  for (const [listKey, list] of Object.entries(lists)) {
+    dbFactories[listKey] = getDbFactory(list, graphQLSchema);
+  }
+
+  const dbFactoriesSudo: Record<string, ReturnType<typeof getDbFactory>> = {};
+  for (const [listKey, list] of Object.entries(lists)) {
+    dbFactoriesSudo[listKey] = getDbFactory(list, graphQLSchemaSudo);
+  }
+
+  const queryFactories: Record<string, ReturnType<typeof getQueryFactory>> = {};
+  for (const [listKey, list] of Object.entries(lists)) {
+    queryFactories[listKey] = getQueryFactory(list, graphQLSchema);
+  }
+
+  const queryFactoriesSudo: Record<string, ReturnType<typeof getQueryFactory>> = {};
+  for (const [listKey, list] of Object.entries(lists)) {
+    queryFactoriesSudo[listKey] = getQueryFactory(list, graphQLSchemaSudo);
+  }
+
   const images = createImagesContext(config);
   const files = createFilesContext(config);
-  // We precompute these helpers here rather than every time createContext is called
-  // because they involve creating a new GraphQLSchema, creating a GraphQL document AST(programmatically, not by parsing) and validating the
-  // note this isn't as big of an optimisation as you would imagine(at least in comparison with the rest of the system),
-  // the regular non-db lists api does more expensive things on every call
-  // like parsing the generated GraphQL document, and validating it against the schema on _every_ call
-  // is that really that bad? no not really. this has just been more optimised because the cost of what it's
-  // doing is more obvious(even though in reality it's much smaller than the alternative)
-
-  const publicDbApiFactories: Record<string, ReturnType<typeof getDbAPIFactory>> = {};
-  for (const [listKey, gqlNames] of Object.entries(gqlNamesByList)) {
-    publicDbApiFactories[listKey] = getDbAPIFactory(gqlNames, graphQLSchema);
-  }
-
-  const sudoDbApiFactories: Record<string, ReturnType<typeof getDbAPIFactory>> = {};
-  for (const [listKey, gqlNames] of Object.entries(gqlNamesByList)) {
-    sudoDbApiFactories[listKey] = getDbAPIFactory(gqlNames, sudoGraphQLSchema);
-  }
-
-  const createContext = ({
+  const construct = ({
     session,
     sudo = false,
     req,
@@ -54,75 +54,79 @@ export function makeCreateContext({
     res?: ServerResponse;
     session?: any;
   } = {}): KeystoneContext => {
-    const schema = sudo ? sudoGraphQLSchema : graphQLSchema;
-
+    const schema = sudo ? graphQLSchemaSudo : graphQLSchema;
     const rawGraphQL: KeystoneGraphQLAPI['raw'] = ({ query, variables }) => {
       const source = typeof query === 'string' ? query : print(query);
       return Promise.resolve(
         graphql({
           schema,
           source,
-          contextValue: contextToReturn,
+          contextValue: context,
           variableValues: variables,
         }) as ExecutionResult<any>
       );
     };
+
     const runGraphQL: KeystoneGraphQLAPI['run'] = async ({ query, variables }) => {
-      let result = await rawGraphQL({ query, variables });
-      if (result.errors?.length) {
-        throw result.errors[0];
-      }
+      const result = await rawGraphQL({ query, variables });
+      if (result.errors?.length) throw result.errors[0];
       return result.data as any;
     };
 
     async function withRequest(newReq: IncomingMessage, newRes?: ServerResponse) {
-      const newContext = createContext({
+      const newContext = construct({
         session,
         sudo,
         req: newReq,
         res: newRes,
       });
-
-      if (config.session) {
-        newContext.session = await config.session.get({ context: newContext });
-      }
-
-      return newContext;
+      return newContext.withSession(
+        config.session ? await config.session.get({ context: newContext }) : undefined
+      );
     }
-    const dbAPI: KeystoneContext['db'] = {};
-    const itemAPI: KeystoneContext['query'] = {};
-    const contextToReturn: KeystoneContext = {
-      db: dbAPI,
-      query: itemAPI,
-      prisma: prismaClient,
+
+    const context: KeystoneContext = {
+      db: {},
+      query: {},
       graphql: { raw: rawGraphQL, run: runGraphQL, schema },
-      sessionStrategy: config.session,
-      sudo: () => createContext({ sudo: true, req, res }),
-      exitSudo: () => createContext({ sudo: false, req, res }),
-      withSession: session => {
-        return createContext({ session, sudo, req, res });
-      },
+      prisma: prismaClient,
+
+      sudo: () => construct({ sudo: true, req, res }),
+      exitSudo: () => construct({ sudo: false, req, res }), // TODO: remove, deprecated
+
       req,
       res,
+      sessionStrategy: config.session,
       session,
+
       withRequest,
-      // Note: This field lets us use the server-side-graphql-client library.
-      // We may want to remove it once the updated itemAPI w/ query is available.
-      gqlNames: (listKey: string) => gqlNamesByList[listKey],
+      withSession: session => {
+        return construct({ session, sudo, req, res });
+      },
+
       images,
       files,
+
+      // TODO: remove, deprecated
+      gqlNames: (listKey: string) => lists[listKey].graphql.names,
+
+      ...(config.experimental?.contextInitialisedLists
+        ? {
+            experimental: { initialisedLists: lists },
+          }
+        : {}),
     };
-    if (config.experimental?.contextInitialisedLists) {
-      contextToReturn.experimental = { initialisedLists: lists };
+
+    const _dbFactories = sudo ? dbFactoriesSudo : dbFactories;
+    const _queryFactories = sudo ? queryFactoriesSudo : queryFactories;
+
+    for (const listKey of Object.keys(lists)) {
+      context.db[listKey] = _dbFactories[listKey](context);
+      context.query[listKey] = _queryFactories[listKey](context);
     }
 
-    const dbAPIFactories = sudo ? sudoDbApiFactories : publicDbApiFactories;
-    for (const listKey of Object.keys(gqlNamesByList)) {
-      dbAPI[listKey] = dbAPIFactories[listKey](contextToReturn);
-      itemAPI[listKey] = itemAPIForList(listKey, contextToReturn);
-    }
-    return contextToReturn;
+    return context;
   };
 
-  return createContext();
+  return construct();
 }
