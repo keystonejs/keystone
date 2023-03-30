@@ -9,7 +9,7 @@ export function getQueryFactory(list: InitialisedList, schema: GraphQLSchema) {
     const exec = executeGraphQLFieldWithSelection(schema, operation, fieldName);
     return (
       _args: {
-        query?: string
+        query?: string;
       } & Record<string, any> = {},
       context: KeystoneContext
     ) => {
