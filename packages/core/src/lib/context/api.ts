@@ -8,14 +8,12 @@ export function getQueryFactory(list: InitialisedList, schema: GraphQLSchema) {
   function f(operation: 'query' | 'mutation', field: string) {
     const exec = executeGraphQLFieldWithSelection(schema, operation, field);
     return (
-      {
-        query,
-        ...args
-      }: {
-        query?: string;
-      },
+      _args: {
+        query?: string
+      } & Record<string, any> = {},
       context: KeystoneContext
     ) => {
+      const { query, ...args } = _args;
       return exec(args, query ?? 'id', context) as Promise<any>;
     };
   }
@@ -24,7 +22,7 @@ export function getQueryFactory(list: InitialisedList, schema: GraphQLSchema) {
   const fcache = {
     findOne: f('query', list.graphql.names.itemQueryName),
     findMany: f('query', list.graphql.names.listQueryName),
-    count: async (args: Record<string, any>, context: KeystoneContext) => {
+    count: async (args: Record<string, any> = {}, context: KeystoneContext) => {
       const { where = {} } = args;
       const { count } = (await context.graphql.run({
         query: `query ($where: ${whereInputName}!) { count: ${listQueryCountName}(where: $where) }`,
