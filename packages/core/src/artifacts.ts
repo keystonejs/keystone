@@ -78,6 +78,10 @@ export function getBuiltKeystoneConfigurationPath(cwd: string) {
   return path.join(cwd, '.keystone/config.js');
 }
 
+function posixify(s: string) {
+  return s.split(path.sep).join('/');
+}
+
 export function getSystemPaths(cwd: string, config: KeystoneConfig) {
   const prismaClientPath = config.db.prismaClientPath
     ? path.join(cwd, config.db.prismaClientPath)
@@ -88,7 +92,7 @@ export function getSystemPaths(cwd: string, config: KeystoneConfig) {
     : path.join(cwd, 'node_modules/.keystone/types.ts');
 
   const relativePrismaPath = prismaClientPath
-    ? `./${path.relative(path.dirname(builtTypesPath), prismaClientPath)}`
+    ? `./${posixify(path.relative(path.dirname(builtTypesPath), prismaClientPath))}`
     : '@prisma/client';
 
   return {

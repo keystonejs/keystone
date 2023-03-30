@@ -1,0 +1,29 @@
+name: CI - Windows
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: always-tests-windows-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  linting:
+    name: Linting
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@main
+      - uses: ./.github/actions/ci-setup
+
+      - name: TypeScript
+        run: pnpm lint:types
+
+  unit_tests:
+    name: Package Unit Tests
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@main
+      - uses: ./.github/actions/ci-setup
+
+      - name: Unit tests
+        run: pnpm jest --ci --runInBand --testPathIgnorePatterns=admin-ui-tests --testPathIgnorePatterns=api-tests --testPathIgnorePatterns=examples-smoke-tests --testPathIgnorePatterns=examples/testing
