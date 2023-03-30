@@ -91,8 +91,8 @@ export function createContext({
       graphql: { raw: rawGraphQL, run: runGraphQL, schema },
       prisma: prismaClient,
 
-      sudo: () => construct({ sudo: true, req, res }),
-      exitSudo: () => construct({ sudo: false, req, res }), // TODO: remove, deprecated
+      sudo: () => construct({ session, sudo: true, req, res }),
+      exitSudo: () => construct({ session, sudo: false, req, res }), // TODO: remove, deprecated
 
       req,
       res,
