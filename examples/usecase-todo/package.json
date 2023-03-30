@@ -1,5 +1,5 @@
 {
-  "name": "@keystone-6/example-usecase-task-manager",
+  "name": "@keystone-6/example-usecase-todo",
   "version": "0.0.6",
   "private": true,
   "license": "MIT",
@@ -19,5 +19,5 @@
     "tsx": "^3.9.0",
     "typescript": "~5.0.0"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/usecase-task-manager"
+  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/usecase-todo"
 }
