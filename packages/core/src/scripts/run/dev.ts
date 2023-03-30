@@ -393,7 +393,11 @@ async function setupInitialKeystone(
   if (prisma) {
     console.log('✨ Generating GraphQL and Prisma schemas');
     const prismaSchema = (await generatePrismaAndGraphQLSchemas(cwd, config, graphQLSchema)).prisma;
-    const prismaClientGenerationPromise = generateTypescriptTypesAndPrisma(cwd, config, graphQLSchema);
+    const prismaClientGenerationPromise = generateTypescriptTypesAndPrisma(
+      cwd,
+      config,
+      graphQLSchema
+    );
 
     if (config.db.useMigrations) {
       await devMigrations(

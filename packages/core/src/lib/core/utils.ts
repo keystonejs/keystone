@@ -155,7 +155,7 @@ export function getNamesFromList(
         singular: ui?.singular || computedSingular,
         plural: ui?.plural || computedPlural,
         path,
-      }
+      },
     },
   };
 }
