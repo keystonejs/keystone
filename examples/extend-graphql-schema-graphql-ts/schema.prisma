@@ -20,6 +20,7 @@ model Post {
   publishDate DateTime?
   author      Author?   @relation("Post_author", fields: [authorId], references: [id])
   authorId    String?   @map("author")
+  views       Int?      @default(0)
 
   @@index([authorId])
 }

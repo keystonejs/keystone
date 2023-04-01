@@ -8,6 +8,7 @@ type Post {
   content: String
   publishDate: DateTime
   author: Author
+  views: Int
 }
 
 enum PostStatusType {
@@ -32,6 +33,7 @@ input PostWhereInput {
   content: StringFilter
   publishDate: DateTimeNullableFilter
   author: AuthorWhereInput
+  views: IntNullableFilter
 }
 
 input IDFilter {
@@ -91,12 +93,24 @@ input DateTimeNullableFilter {
   not: DateTimeNullableFilter
 }
 
+input IntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntNullableFilter
+}
+
 input PostOrderByInput {
   id: OrderDirection
   title: OrderDirection
   status: OrderDirection
   content: OrderDirection
   publishDate: OrderDirection
+  views: OrderDirection
 }
 
 enum OrderDirection {
@@ -110,6 +124,7 @@ input PostUpdateInput {
   content: String
   publishDate: DateTime
   author: AuthorRelateToOneForUpdateInput
+  views: Int
 }
 
 input AuthorRelateToOneForUpdateInput {
@@ -129,6 +144,7 @@ input PostCreateInput {
   content: String
   publishDate: DateTime
   author: AuthorRelateToOneForCreateInput
+  views: Int
 }
 
 input AuthorRelateToOneForCreateInput {
@@ -219,6 +235,7 @@ type Mutation {
   deleteAuthor(where: AuthorWhereUniqueInput!): Author
   deleteAuthors(where: [AuthorWhereUniqueInput!]!): [Author]
   publishPost(id: ID!): Post
+  addViewCount(id: ID!): Post
 }
 
 type Query {

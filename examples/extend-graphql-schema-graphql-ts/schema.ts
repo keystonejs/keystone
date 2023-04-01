@@ -1,6 +1,6 @@
 import { graphql, list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
-import { select, relationship, text, timestamp } from '@keystone-6/core/fields';
+import { select, relationship, text, timestamp, integer } from '@keystone-6/core/fields';
 import { Context, Lists } from '.keystone/types';
 
 export const lists: Lists = {
@@ -19,6 +19,7 @@ export const lists: Lists = {
       content: text(),
       publishDate: timestamp(),
       author: relationship({ ref: 'Author.posts', many: false }),
+      views: integer( { defaultValue: 0 } ),
     },
   }),
   Author: list({
@@ -82,6 +83,19 @@ export const extendGraphqlSchema = graphql.extend(base => {
             data: { status: 'published', publishDate: new Date().toISOString() },
           });
         },
+      }),
+
+      addViewCount: graphql.field({
+        type: base.object('Post'),
+        args: { id: graphql.arg({ type: graphql.nonNull(graphql.ID) }),  },
+        async resolve(source, { id }, context: Context){
+          const currPost = await context.query.Post.findOne({ where: { id: id }, query: `views` })
+          // console.log(currPost.id, currPost.views)
+          return context.db.Post.updateOne({
+            where: { id },
+            data: { views: currPost.views+1 },
+          })
+        }
       }),
 
       // only add this mutation for a sudo Context (this is not usable from the API)
