@@ -13,7 +13,7 @@ A Monorepo with a Keytone server and a Next.js frontend demonstrating three cust
 Make sure you are at the root of the repo and install dependencies.
 
 ```shell
-yarn
+pnpm
 ```
 
 2. Start Keystone and Next.js servers
@@ -21,7 +21,7 @@ yarn
 Navigate from repo root to `examples/document-field-customisation` and start the servers.
 
 ```shell
-yarn dev
+pnpm dev
 ```
 
 The GraphQL Server and Admin UI will start on [localhost:3000](http://localhost:3000).

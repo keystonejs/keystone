@@ -6,8 +6,8 @@ All integration tests in this repo are run using [playwright](https://playwright
 
 # How to run
 
-To run these tests locally please run the `DATABASE_URL=file:./test.db yarn test:admin-ui` script from the root of the Keystone monorepo.
-If you would like more explicit logging from playwright, please run `DEBUG=pw:api DATABASE_URL=file:./test.db yarn test:admin-ui`.
+To run these tests locally please run the `DATABASE_URL=file:./test.db pnpm test:admin-ui` script from the root of the Keystone monorepo.
+If you would like more explicit logging from playwright, please run `DEBUG=pw:api DATABASE_URL=file:./test.db pnpm test:admin-ui`.
 
 # How to write
 

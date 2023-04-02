@@ -7,13 +7,13 @@ E2E example boilerplate code for the web frontend.
 1. Install dependencies
 
 ```shell
-yarn
+pnpm
 ```
 
 2. Start the server
 
 ```shell
-yarn dev
+pnpm dev
 ```
 
 If everything works 🤞 the homepage will be served at [localhost:3000](http://localhost:3000).

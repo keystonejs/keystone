@@ -12,15 +12,15 @@ _Note: Since you are not starting the keystone server, the Admin UI will not be 
 ## Notes
 
 - This example is setup with seed data. Demo user email is `bruce@email.com`, password is `passw0rd`.
-- `yarn next:dev` is all you need to develop your Next.js app. You don't need to start the keystone server since `getContext` will work without starting the Keystone server.
-- However when you make changes to your keystone lists, the schema files need to be regenerated. So you'll either have to run `yarn keystone:dev` or `yarn keystone:build` just once after making changes to your lists. Alternatively you can open two terminal tabs and run both `yarn keystone:dev` and `yarn next:dev` concurrently during development.
-- When you deploy your Next.js app, remember to run `yarn keystone:build` once to make sure you have the latest schema files built for `getContext` API.
+- `pnpm next:dev` is all you need to develop your Next.js app. You don't need to start the keystone server since `getContext` will work without starting the Keystone server.
+- However when you make changes to your keystone lists, the schema files need to be regenerated. So you'll either have to run `pnpm keystone:dev` or `pnpm keystone:build` just once after making changes to your lists. Alternatively you can open two terminal tabs and run both `pnpm keystone:dev` and `pnpm next:dev` concurrently during development.
+- When you deploy your Next.js app, remember to run `pnpm keystone:build` once to make sure you have the latest schema files built for `getContext` API.
 
 ## FAQ
 
 ### 1. Why won't Admin UI work?
 
-Admin UI needs the Keystone server to run. Your Next.js app runs on a Next.js server. Keystone's Admin UI runs on Keystone server. You can't have two servers running in a Next.js production environment. Since we are not starting the Keystone server in production builds, we won't have access to Keystone's Admin UI. You can access it in local (use the command `yarn keystone:dev`) because you can easily start two servers in your local but once you deploy your Next.js app you won't have access to the Admin UI.
+Admin UI needs the Keystone server to run. Your Next.js app runs on a Next.js server. Keystone's Admin UI runs on Keystone server. You can't have two servers running in a Next.js production environment. Since we are not starting the Keystone server in production builds, we won't have access to Keystone's Admin UI. You can access it in local (use the command `pnpm keystone:dev`) because you can easily start two servers in your local but once you deploy your Next.js app you won't have access to the Admin UI.
 
 ### 2. What should I do to both use Keystone in my Next.js app and have a fully functioning Admin UI?
 

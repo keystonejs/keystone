@@ -5,10 +5,10 @@ It builds on the [Virtual Field](../virtual-field) starter project.
 
 ## Instructions
 
-To run this project, clone the Keystone repository locally, run `yarn` at the root of the repository then navigate to this directory and run:
+To run this project, clone the Keystone repository locally, run `pnpm` at the root of the repository then navigate to this directory and run:
 
 ```shell
-yarn dev
+pnpm dev
 ```
 
 This will start the Admin UI at [localhost:3000](http://localhost:3000).
