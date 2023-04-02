@@ -5,10 +5,10 @@ It builds on the [Blog](../blog) starter project.
 
 ## Instructions
 
-To run this project, clone the Keystone repository locally, run `yarn` at the root of the repository then navigate to this directory and run:
+To run this project, clone the Keystone repository locally, run `pnpm` at the root of the repository then navigate to this directory and run:
 
 ```shell
-yarn dev
+pnpm dev
 ```
 
 This will start the Admin UI at [localhost:3000](http://localhost:3000).
@@ -19,7 +19,7 @@ You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://
 In a separate terminal, start the frontend dev server:
 
 ```
-yarn dev:site
+pnpm dev:site
 ```
 
 This will start the frontend at [localhost:3001](http://localhost:3001).

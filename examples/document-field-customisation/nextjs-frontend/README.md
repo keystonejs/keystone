@@ -7,13 +7,13 @@ A Next.js frontend example to customise document renderer to render custom compo
 1. Install dependencies
 
 ```shell
-yarn
+pnpm
 ```
 
 2. Start the server
 
 ```shell
-yarn dev
+pnpm dev
 ```
 
 If everything works 🤞 the homepage will be served at [localhost:8000](http://localhost:8000).
