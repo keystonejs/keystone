@@ -29,8 +29,8 @@ importers:
         specifier: ^0.20.0
         version: 0.20.0
       '@preconstruct/cli':
-        specifier: 2.4.1
-        version: 2.4.1
+        specifier: 2.4.3
+        version: 2.4.3
       '@types/jest':
         specifier: ^29.0.0
         version: 29.5.0
@@ -6496,8 +6496,8 @@ packages:
     resolution: {integrity: sha512-Cr4OjIkipTtcXKjAsm8agyleBuDHvxzeBoa1v543lbv1YaIwQjESsVcmjiWiPEbC1FIeHOG/Op9kdCmAmiS3Kw==}
     dev: false
 
-  /@preconstruct/cli@2.4.1:
-    resolution: {integrity: sha512-5/UCz6JwFjDpJsZrONsmsD++xIZ0pLYG0heh8DVXs9/F2vxmmZaKwBrswH78+Js5ZHkjDiWNH6vQlWVMxRhYow==}
+  /@preconstruct/cli@2.4.3:
+    resolution: {integrity: sha512-f9Yrf9T7sbqN8spoa45rWmWIZsK+BKG34iWjWpSDuJ2Lm8mY9Y+dx7RCYqrFQFUA67IC37unCjhdRbYQq+g8Yg==}
     hasBin: true
     dependencies:
       '@babel/code-frame': 7.18.6
