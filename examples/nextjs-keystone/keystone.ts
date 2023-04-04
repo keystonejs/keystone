@@ -1,5 +1,4 @@
 import { config } from '@keystone-6/core';
-import { fixPrismaPath } from './../example-utils';
 import { lists } from './src/keystone/schema';
 import { withAuth, session } from './src/keystone/auth';
 import { seedDemoData } from './src/keystone/seed';
@@ -17,7 +16,7 @@ export default withAuth(
       },
 
       // WARNING: this is only needed for our monorepo examples, dont do this
-      ...fixPrismaPath,
+      prismaClientPath: 'node_modules/.myprisma/client',
     },
     lists,
     session,
