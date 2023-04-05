@@ -21,7 +21,7 @@ function defaultFlags(flags: Partial<Flags>, defaults: Partial<Flags>) {
 
   for (const [key, value] of Object.entries(flags)) {
     if (value !== undefined && !(key in defaults)) {
-      // Readd support for extra CLI flags for now
+      // TODO: maybe we should prevent other flags?
       //throw new Error(`Option '${key}' is unsupported for this command`);
       continue;
     }
