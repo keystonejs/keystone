@@ -2,4 +2,4 @@
 '@keystone-6/core': patch
 ---
 
-Fixes regression in supplying extra flags to the CLI
+Fixes #8046 regression which prevented other command line arguments from being used
