@@ -2,4 +2,4 @@
 '@keystone-6/fields-document': patch
 ---
 
-Fixes structured JSON output types when using `structure`
+Fixes the JSON output type values for the structure field
