@@ -62,7 +62,7 @@ function getOutputGraphQLFieldInner(
   meta: FieldData
 ): OutputField {
   if (schema.kind === 'form') {
-    return wrapGraphQLFieldInResolver(schema.graphql.output, x => x);
+    return wrapGraphQLFieldInResolver(schema.graphql.output, x => x.value);
   }
   if (schema.kind === 'object') {
     return graphql.field({
