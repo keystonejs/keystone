@@ -9,7 +9,7 @@
     "keystone:start": "keystone start",
     "next:dev": "next dev -p 4000",
     "next:build": "next build",
-    "build": "keystone build && next build",
+    "build": "keystone build --no-ui && next build",
     "postinstall": "keystone postinstall",
     "start": "next start"
   },
@@ -19,6 +19,7 @@
     "@keystone-6/fields-document": "^7.0.0",
     "@preconstruct/next": "^4.0.0",
     "@prisma/client": "^4.12.0",
+    "graphql": "^16.6.0",
     "graphql-request": "^5.0.0",
     "graphql-yoga": "^3.1.0",
     "next": "13.2.2",
