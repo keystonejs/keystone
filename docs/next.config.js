@@ -1,37 +1,16 @@
+// you don't need this if you're building something outside of the Keystone repo
 const withPreconstruct = require('@preconstruct/next');
-const withPlugins = require('next-compose-plugins');
 
-const redirectRoutes = require('./redirects.js');
-const redirects = {
-  async redirects() {
-    return redirectRoutes;
+module.exports = withPreconstruct({
+  env: {
+    siteUrl: 'https://keystonejs.com',
   },
-};
-
-module.exports = withPlugins([
-  withPreconstruct,
-  nextConfig => {
-    nextConfig.env = {
-      siteUrl: 'https://keystonejs.com',
-    };
-    nextConfig.eslint = { ignoreDuringBuilds: true };
-    nextConfig.typescript = {
-      ...nextConfig.typescript,
-      // we run TS elsewhere, Next runs against a different TS config which it insists on existing
-      // this is easier than making this the local TS config correct
-      // + type checking slows down vercel deploys
-      ignoreBuildErrors: true,
-    };
-    const webpack = nextConfig.webpack;
-    nextConfig.webpack = (_config, args) => {
-      const config = webpack ? webpack(_config, args) : _config;
-      const { isServer } = args;
-      if (!isServer) {
-        config.resolve.fallback.fs = false;
-      }
-      return config;
-    };
-    return nextConfig;
+  eslint: {
+    ignoreDuringBuilds: true,
   },
-  redirects,
-]);
+  typescript: {
+    // next attempts to use Typescript, but it's not using our configuration
+    //   we check Typescript elsewhere
+    ignoreBuildErrors: true,
+  },
+});
