@@ -1239,6 +1239,9 @@ importers:
       '@prisma/client':
         specifier: ^4.12.0
         version: 4.12.0(prisma@4.12.0)
+      graphql:
+        specifier: ^16.6.0
+        version: 16.6.0
       graphql-request:
         specifier: ^5.0.0
         version: 5.2.0(graphql@16.6.0)
