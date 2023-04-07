@@ -30,7 +30,7 @@
 
 ## Contents
 
-- [Usage & Documentation](#documentation)
+- [Usage & Documentation](#usage--documentation)
 - [Version Control](#version-control)
 - [Code of Conduct](#code-of-conduct)
 - [License](#license)
