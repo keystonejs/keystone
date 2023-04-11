@@ -1,0 +1,32 @@
+{
+  "name": "@keystone-6/example-nextjs-keystone-supabase",
+  "scripts": {
+    "build": "keystone build --no-ui && next build",
+    "build:keystone": "keystone build",
+    "build:next": "next build",
+    "dev": "next dev",
+    "postinstall": "keystone postinstall",
+    "start:keystone": "keystone start",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@keystone-6/core": "^5.0.0",
+    "@preconstruct/next": "^4.0.0",
+    "@prisma/client": "^4.12.0",
+    "@supabase/auth-helpers-nextjs": "^0.6.0",
+    "@supabase/supabase-js": "^2.17.0",
+    "dotenv": "^16.0.3",
+    "graphql": "^16.6.0",
+    "next": "^13.3.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.14",
+    "@types/react": "^18.0.9",
+    "@types/react-dom": "^18.0.4",
+    "prisma": "^4.12.0",
+    "typescript": "~5.0.0"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/nextjs-keystone-supabase-auth"
+}
