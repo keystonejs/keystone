@@ -1,7 +1,6 @@
 name: Website (Preview)
 
 on:
-  push:
   pull_request:
     paths:
       - 'docs/**'
