@@ -11,7 +11,7 @@ import { format, resolveConfig } from 'prettier';
 
 const providers = ['postgresql', 'sqlite', 'mysql'] as const;
 
-type Provider = (typeof providers)[number];
+type Provider = typeof providers[number];
 
 // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#model-field-scalar-types
 // only the prisma scalars that we currently use are here because adding one requires choosing a graphql scalar

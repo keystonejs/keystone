@@ -34,8 +34,7 @@ async function getGeneratedMigration(
   const migrations: {
     migration_name: string;
     finished_at: string;
-  }[] =
-    await prismaClient.$queryRaw`SELECT migration_name,finished_at FROM _prisma_migrations ORDER BY finished_at DESC`;
+  }[] = await prismaClient.$queryRaw`SELECT migration_name,finished_at FROM _prisma_migrations ORDER BY finished_at DESC`;
   await prismaClient.$disconnect();
   expect(migrations).toHaveLength(expectedNumberOfMigrations);
   expect(migrations.every(x => !!x.finished_at)).toBeTruthy();
