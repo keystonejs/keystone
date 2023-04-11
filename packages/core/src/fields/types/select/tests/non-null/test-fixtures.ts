@@ -9,7 +9,7 @@ export {
   fieldName,
 } from '../test-fixtures';
 
-type MatrixValue = (typeof testMatrix)[number];
+type MatrixValue = typeof testMatrix[number];
 
 export const name = 'Select with isNullable: false';
 export const typeFunction = (config: any) =>
