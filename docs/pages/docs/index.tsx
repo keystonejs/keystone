@@ -17,6 +17,9 @@ import { Code } from '../../components/icons/Code';
 import { Bulb } from '../../components/icons/Bulb';
 import { Video } from '../../components/icons/Video';
 import { Organization } from '../../components/icons/Organization';
+import { Alert } from '../../components/primitives/Alert';
+import { Button } from '../../components/primitives/Button';
+import { ArrowR } from '../../components/icons';
 
 export default function Docs() {
   const mq = useMediaQuery();
@@ -35,6 +38,19 @@ export default function Docs() {
 
       <Keystone5DocsCTA />
       <CommunitySlackCTA />
+      <Alert look="neutral" css={{ margin: '2rem 0' }}>
+        <span
+          css={{
+            display: 'inline-block',
+            margin: '0 1rem 0.5rem 0',
+          }}
+        >
+          Looking for enterprise-grade consulting & support?
+        </span>
+        <Button as="a" href="/enterprise" look="secondary">
+          Learn more <ArrowR />
+        </Button>
+      </Alert>
 
       <Type as="h2" look="heading30" margin="0 0 1rem 0">
         The Keystone Experience

@@ -12,7 +12,7 @@ type QuoteProps = {
   name: string;
   title?: string;
   img: any;
-  grad?: 'grad1' | 'grad2' | 'grad3' | 'grad4' | 'grad5';
+  grad?: 'grad1' | 'grad2' | 'grad3' | 'grad4' | 'grad5' | 'grad6';
 } & HTMLAttributes<HTMLElement>;
 
 export function Quote({ name, title, img, grad, children, ...props }: QuoteProps) {
