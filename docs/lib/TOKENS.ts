@@ -71,6 +71,8 @@ export const COLORS = {
     '--grad4-2': '#F68B27',
     '--grad5-1': '#EC4899',
     '--grad5-2': '#F87171',
+    '--grad6-1': '#FA5555',
+    '--grad6-2': '#ED0000',
   },
   dark: {
     '--theme': 'dark',
@@ -115,5 +117,7 @@ export const COLORS = {
     '--grad4-2': '#F7F9FC ',
     '--grad5-1': '#F7F9FC',
     '--grad5-2': '#F7F9FC',
+    '--grad6-1': '#F7F9FC',
+    '--grad6-2': '#F7F9FC',
   },
 } as const;
