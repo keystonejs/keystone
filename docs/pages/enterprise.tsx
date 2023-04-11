@@ -37,7 +37,77 @@ export default function ForOrganisations() {
     >
       <MWrapper>
         <Pill grad="grad6">Keystone for Enterprise</Pill>
-        <IntroWrapper>
+        <div
+          css={mq({
+            display: 'grid',
+            gridTemplateColumns: ['1fr', null, '1fr 1fr'],
+            gap: '4rem',
+            alignItems: 'center',
+            paddingTop: '2rem',
+            paddingBottom: '2rem',
+          })}
+        >
+          <div>
+            <Type as="h" look="heading64">
+              Scale Keystone <Highlight look="grad6">with the people who built it</Highlight>
+            </Type>
+            <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
+              Lorem ipsum dolor sit amet fames turpis eget euismod dolore viverra fames enim. Justo
+              mauris nisl dolore sodales ut adipiscing dui aenean nisi maecenas odio. A etiam
+              interdum auctor in adipiscing velit facilisis dapibus libero erat sagittis.
+            </Type>
+            <ul
+              css={{
+                listStyle: 'none',
+                margin: '1rem 0',
+                padding: 0,
+                '& li': {
+                  display: 'flex',
+                  alignItems: 'center',
+                },
+                '& svg': {
+                  height: '1.25rem',
+                  marginRight: '0.75rem',
+                },
+              }}
+            >
+              <li>
+                <Tick grad="grad6" />
+                <Type look="body18" color="var(--muted)">
+                  [something something]
+                </Type>
+              </li>
+              <li>
+                <Tick grad="grad6" />
+                <Type look="body18" color="var(--muted)">
+                  [something something]
+                </Type>
+              </li>
+              <li>
+                <Tick grad="grad6" />
+                <Type look="body18" color="var(--muted)">
+                  [something something]
+                </Type>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <ContactForm
+              stacked
+              css={mq({
+                '& button': {
+                  justifySelf: ['center', 'auto'],
+                },
+              })}
+            >
+              <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
+                Speak to the makers today
+              </Type>
+            </ContactForm>
+          </div>
+        </div>
+
+        {/* <IntroWrapper>
           <IntroHeading look="heading64">
             Scale Keystone with the people who <Highlight look="grad6">built it</Highlight>
           </IntroHeading>
@@ -46,7 +116,7 @@ export default function ForOrganisations() {
             mauris nisl dolore sodales ut adipiscing dui aenean nisi maecenas odio. A etiam interdum
             auctor in adipiscing velit facilisis dapibus libero erat sagittis.
           </IntroLead>
-        </IntroWrapper>
+        </IntroWrapper> */}
         {/* <Button
           as="a"
           href="/docs/guides/document-fields"
@@ -57,20 +127,10 @@ export default function ForOrganisations() {
           Try the Rich Text demo <ArrowR />
         </Button> */}
 
-        <ContactForm
-          stacked
-          css={mq({
-            '& button': {
-              justifySelf: ['center', 'auto'],
-            },
-          })}
-        >
-          <p css={{ marginBottom: '1rem' }}>Subscribe to our mailing list to stay in the loop!</p>
-        </ContactForm>
         <SideBySideSection reverse>
           <div>
             <Type as="h2" look="heading48">
-              Scaling from a hunch to a{' '}
+              Transforming a hunch into a{' '}
               <Highlight look="grad6">multi-million user platform</Highlight> with Keystone.
             </Type>
             <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
@@ -145,12 +205,11 @@ export default function ForOrganisations() {
         <SideBySideSection>
           <div>
             <Type as="h2" look="heading48">
-              Replatforming from Salesforce with{' '}
-              <Highlight look="grad6">Sungage Financial.</Highlight>
+              Growing <Highlight look="grad6">beyond Salesforce</Highlight> with Sungage Financial
             </Type>
             <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
-              Keystone comes with an extensive fields API out of the box, and an easy GraphQL
-              endpoint for every field you make.
+              Replatformed Sungage away from Salesforce’s opinionated & inflexible APIs to a
+              fit-for-purpose Keystone + GraphQL API architecture that they own & control.
             </Type>
             <ul
               css={{
@@ -170,25 +229,25 @@ export default function ForOrganisations() {
               <li>
                 <Tick grad="grad6" />
                 <Type look="body18" color="var(--muted)">
-                  Easy labels & descriptions
+                  [something something]
                 </Type>
               </li>
               <li>
                 <Tick grad="grad6" />
                 <Type look="body18" color="var(--muted)">
-                  Extensive Scalar types
+                  [something something]
                 </Type>
               </li>
               <li>
                 <Tick grad="grad6" />
                 <Type look="body18" color="var(--muted)">
-                  Custom & virtual options
+                  [something something]
                 </Type>
               </li>
             </ul>
-            <Type as="p" look="body18">
+            {/* <Type as="p" look="body18">
               <Link href="/docs/fields/overview">Fields API →</Link>
-            </Type>
+            </Type> */}
           </div>
           <div>
             <Image
@@ -204,105 +263,6 @@ export default function ForOrganisations() {
           </div>
         </SideBySideSection>
 
-        <Section>
-          <div
-            css={mq({
-              display: 'grid',
-              gridTemplateColumns: ['1fr', null, '1fr 1fr'],
-              gap: '2rem',
-              alignItems: 'center',
-            })}
-          >
-            <div>
-              <Type as="h2" look="heading48">
-                A rich text experience for the{' '}
-                <Highlight look="grad6">design system generation.</Highlight>
-              </Type>
-              <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
-                Keystone’s Document field is the first of its kind: intuitive, customisable, and
-                works with your design system components. Make it as lean or full-featured as you
-                like. It‘s up to you.
-              </Type>
-              <Button
-                as="a"
-                // look="soft"
-                size="large"
-                href="/docs/guides/document-field-demo"
-                css={{ margin: '1.5rem 1rem 1rem 0' }}
-              >
-                Try the demo <ArrowR />
-              </Button>
-              <Type look="body18">
-                <Link href="/docs/guides/document-fields">Read the guide →</Link>
-              </Type>
-            </div>
-            <div>
-              <Image
-                src={dsGeneration}
-                alt="Keystone Document field containing Rich Text content including Twitter embed components, and syntax highlighted code block"
-                width={1854}
-                height={1535}
-                css={{
-                  maxWidth: '100%',
-                  height: 'auto',
-                }}
-              />
-            </div>
-          </div>
-          <ul
-            css={mq({
-              listStyle: 'none',
-              padding: 0,
-              margin: 0,
-              display: 'grid',
-              marginTop: '5rem',
-              gridTemplateColumns: ['1fr', '1fr 1fr', null, '1fr 1fr 1fr 1fr'],
-              gap: '3rem',
-              '& li': {
-                maxWidth: '27rem',
-                margin: '0 auto',
-              },
-            })}
-          >
-            <li>
-              <Type as="h2" look="heading20bold">
-                Customisable interface
-              </Type>
-              <Type as="p" look="body18" margin="1rem 0" color="var(--muted)">
-                Every rich text field instance is what you make it. Control what's possible
-                depending on what you need to do.
-              </Type>
-            </li>
-            <li>
-              <Type as="h2" look="heading20bold">
-                BYO Design System components
-              </Type>
-              <Type as="p" look="body18" margin="1rem 0" color="var(--muted)">
-                Embed layout components, social cards, and relationships to other content with your
-                own React components.
-              </Type>
-            </li>
-            <li>
-              <Type as="h2" look="heading20bold">
-                Preview embeds
-              </Type>
-              <Type as="p" look="body18" margin="1rem 0" color="var(--muted)">
-                Give your editors a sense of how things will look with preview functionality in
-                place as they write.
-              </Type>
-            </li>
-            <li>
-              <Type as="h2" look="heading20bold">
-                Structured JSON output
-              </Type>
-              <Type as="p" look="body18" margin="1rem 0" color="var(--muted)">
-                Access the storytelling capabilities of a WYSIWYG without losing content integrity.
-                It's queryable JSON all the way down.
-              </Type>
-            </li>
-          </ul>
-        </Section>
-
         <Quote
           name="Kevin Stafford"
           img="https://thinkmill.com.au/_astro/kevin-stafford-rugby-au@1280w.24c4530d.webp"
@@ -313,129 +273,25 @@ export default function ForOrganisations() {
           website network and development practices. Thinkmill are exceptional at what they do, and
           generous with their time and expertise.
         </Quote>
-
-        <SideBySideSection>
-          <div>
-            <Type as="h2" look="heading48">
-              Relate while <Highlight look="grad6">you create.</Highlight>
+        <div
+          css={mq({
+            maxWidth: '40rem',
+            margin: '5rem auto 0',
+          })}
+        >
+          <ContactForm
+            stacked
+            css={mq({
+              '& button': {
+                justifySelf: ['center', 'auto'],
+              },
+            })}
+          >
+            <Type as="h2" look="heading48" margin="3rem 0">
+              Speak to the makers today
             </Type>
-            <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
-              Create relationships as you write to get your stories to market faster. No more
-              context switching when designing structured content.
-            </Type>
-            <ul
-              css={{
-                listStyle: 'none',
-                margin: '1rem 0',
-                padding: 0,
-                '& li': {
-                  display: 'flex',
-                  alignItems: 'center',
-                },
-                '& svg': {
-                  height: '1.25rem',
-                  marginRight: '0.75rem',
-                },
-              }}
-            >
-              <li>
-                <Tick grad="grad6" />
-                <Type look="body18" color="var(--muted)">
-                  Extensive relationships & cardinalities
-                </Type>
-              </li>
-              <li>
-                <Tick grad="grad6" />
-                <Type look="body18" color="var(--muted)">
-                  Self referencing options
-                </Type>
-              </li>
-              <li>
-                <Tick grad="grad6" />
-                <Type look="body18" color="var(--muted)">
-                  Design for queries as you code
-                </Type>
-              </li>
-            </ul>
-            <Type as="p" look="body18">
-              <Link href="/docs/guides/relationships">Relationships guide →</Link>
-            </Type>
-          </div>
-          <div>
-            <Image
-              src={contentManagement3}
-              alt="2 Admin UI panes showing creation of relationships in place. Author window opens up a Create Post window where Post categories can be selected."
-              width={2007}
-              height={1727}
-              css={{
-                maxWidth: '100%',
-                height: 'auto',
-              }}
-            />
-          </div>
-        </SideBySideSection>
-
-        <SideBySideSection reverse>
-          <div>
-            <Type as="h2" look="heading48">
-              Manage complexity
-              <br /> {/* This <br /> needs to be there to fix a horrible safari bug, sadface */}
-              <Highlight look="grad6">on your terms.</Highlight>
-            </Type>
-            <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
-              The Keystone Admin UI has great tooling for managing complex sets of content, so
-              editors can intuitively understand the data they're editing.
-            </Type>
-            <ul
-              css={{
-                listStyle: 'none',
-                margin: '1rem 0',
-                padding: 0,
-                '& li': {
-                  display: 'flex',
-                  alignItems: 'center',
-                },
-                '& svg': {
-                  height: '1.25rem',
-                  marginRight: '0.75rem',
-                },
-              }}
-            >
-              <li>
-                <Tick grad="grad6" />
-                <Type look="body18" color="var(--muted)">
-                  Only see what’s most relevant
-                </Type>
-              </li>
-              <li>
-                <Tick grad="grad6" />
-                <Type look="body18" color="var(--muted)">
-                  Default sort & filtering
-                </Type>
-              </li>
-              <li>
-                <Tick grad="grad6" />
-                <Type look="body18" color="var(--muted)">
-                  Custom views for fields
-                </Type>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <Image
-              src={contentManagement4}
-              alt="Admin UI browser window showing a tabular a list of Articles with filtration applied to the list. Filter by published status."
-              width={1827}
-              height={1516}
-              css={{
-                maxWidth: '100%',
-                height: 'auto',
-              }}
-            />
-          </div>
-        </SideBySideSection>
-
-        <EndCta grad="grad6" />
+          </ContactForm>
+        </div>
       </MWrapper>
     </Page>
   );

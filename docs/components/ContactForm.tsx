@@ -83,6 +83,7 @@ export function ContactForm({ autoFocus, stacked, children, ...props }: ContactF
           block={stacked}
           css={{
             justifyItems: stacked ? 'baseline' : undefined,
+            gap: '1rem',
           }}
         >
           <Field
@@ -93,7 +94,6 @@ export function ContactForm({ autoFocus, stacked, children, ...props }: ContactF
             value={email}
             onChange={e => setEmail(e.target.value)}
             css={mq({
-              maxWidth: '25rem',
               margin: ['0 auto', 0],
             })}
           />
@@ -105,7 +105,6 @@ export function ContactForm({ autoFocus, stacked, children, ...props }: ContactF
             value={email}
             onChange={e => setEmail(e.target.value)}
             css={mq({
-              maxWidth: '25rem',
               margin: ['0 auto', 0],
             })}
           />
@@ -117,7 +116,6 @@ export function ContactForm({ autoFocus, stacked, children, ...props }: ContactF
             value={email}
             onChange={e => setEmail(e.target.value)}
             css={mq({
-              maxWidth: '25rem',
               margin: ['0 auto', 0],
             })}
           />
