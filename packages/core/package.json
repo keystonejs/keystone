@@ -280,7 +280,7 @@
     "inflection": "^1.13.1",
     "intersection-observer": "^0.12.0",
     "meow": "^9.0.0",
-    "next": "13.2.2",
+    "next": "^13.3.0",
     "node-fetch": "^2.6.7",
     "p-limit": "^2.3.0",
     "pluralize": "^8.0.0",
