@@ -1,6 +1,6 @@
 # Keystone in NextJS with Supabase and Supabase Auth
 
-This is a example of using KeystoneJS with NextJS and Supabase Auth.
+This is an example of using KeystoneJS with NextJS and Supabase Auth.
 
 ## Features
 

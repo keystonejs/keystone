@@ -13,7 +13,7 @@ export default async function Page() {
 
       <div>
         <p>
-          <strong>Users fetched from the server (in getServerSideProps)</strong>
+          <strong>Users fetched from the server (in app directory)</strong>
         </p>
         <ol>
           {users.map(u => {
