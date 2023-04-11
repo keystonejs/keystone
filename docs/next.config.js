@@ -13,4 +13,5 @@ module.exports = withPreconstruct({
     //   we check Typescript elsewhere
     ignoreBuildErrors: true,
   },
+  redirects: require('./redirects.js'),
 });
