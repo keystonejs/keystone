@@ -12,21 +12,28 @@ generator client {
   output   = "node_modules/.myprisma/client"
 }
 
+model Author {
+  id        String    @id @default(cuid())
+  name      String    @default("")
+  email     String    @unique @default("")
+  password  String
+  posts     Post[]    @relation("Post_author")
+  createdAt DateTime? @default(now())
+}
+
 model Post {
-  id          String    @id @default(cuid())
-  title       String    @default("")
-  status      String?
-  content     String    @default("")
-  publishDate DateTime?
-  author      Author?   @relation("Post_author", fields: [authorId], references: [id])
-  authorId    String?   @map("author")
+  id       String  @id @default(cuid())
+  title    String  @default("")
+  content  String  @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  author   Author? @relation("Post_author", fields: [authorId], references: [id])
+  authorId String? @map("author")
+  tags     Tag[]   @relation("Post_tags")
 
   @@index([authorId])
 }
 
-model Author {
+model Tag {
   id    String @id @default(cuid())
   name  String @default("")
-  email String @unique @default("")
-  posts Post[] @relation("Post_author")
+  posts Post[] @relation("Post_tags")
 }
