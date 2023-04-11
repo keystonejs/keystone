@@ -3,7 +3,7 @@
 import { jsx } from '@emotion/react';
 import { SVGAttributes } from 'react';
 
-export type IconGradient = 'grad1' | 'grad2' | 'grad3' | 'grad4' | 'grad5' | 'logo';
+export type IconGradient = 'grad1' | 'grad2' | 'grad3' | 'grad4' | 'grad5' | 'grad6' | 'logo';
 export type IconProps = { grad?: IconGradient | null } & SVGAttributes<SVGElement>;
 
 export function Gradients({ name }: { name: string }) {
@@ -28,6 +28,10 @@ export function Gradients({ name }: { name: string }) {
       <linearGradient id={`${name}-grad5`} x1="0%" x2="50%" y1="0%" y2="71.9%">
         <stop offset="0%" stopColor="var(--grad5-2)" />
         <stop offset="100%" stopColor="var(--grad5-1)" />
+      </linearGradient>
+      <linearGradient id={`${name}-grad6`} x1="0%" x2="50%" y1="0%" y2="71.9%">
+        <stop offset="0%" stopColor="var(--grad6-2)" />
+        <stop offset="100%" stopColor="var(--grad6-1)" />
       </linearGradient>
       <linearGradient id={`${name}-logo`} x1="0%" x2="50%" y1="0%" y2="71.9%">
         <stop offset="0%" stopColor="var(--grad1-2)" />

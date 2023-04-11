@@ -19,7 +19,7 @@ import { Page } from '../components/Page';
 import { ContactForm } from '../components/ContactForm';
 
 import dsGeneration from '../public/assets/ds-generation.png';
-import contentManagement1 from '../public/assets/content-management-1.png';
+import vocal from '../public/assets/vocal-4.png';
 import contentManagement2 from '../public/assets/content-management-2.png';
 import contentManagement3 from '../public/assets/content-management-3.png';
 import contentManagement4 from '../public/assets/content-management-4.png';
@@ -74,10 +74,13 @@ export default function ForOrganisations() {
               <Highlight look="grad6">multi-million user platform</Highlight> with Keystone.
             </Type>
             <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
-              No compromises when it comes to user access. Keystone lets you control 100% of your
-              CRUD ops in all the places where you need them.
+              Vocal came to Thinkmill with a great idea and a fast growing community. They needed a
+              smart and scalable backend architecture approach to support rapid growth over a five
+              year horizon, while delivering immediate value — at the same time. We deployed a
+              React, KeystoneJS, and GraphQL stack so they could start fast and scale without
+              sacrificing multichannel reach over the long run.
             </Type>
-            <ul
+            {/* <ul
               css={{
                 listStyle: 'none',
                 margin: '1rem 0',
@@ -110,14 +113,14 @@ export default function ForOrganisations() {
                   Secure your content ops
                 </Type>
               </li>
-            </ul>
+            </ul> */}
             <Type as="p" look="body18">
-              <Link href="/docs/config/access-control">Access control API →</Link>
+              <Link href="https://www.thinkmill.com.au/work/vocal">Read the Case Study →</Link>
             </Type>
           </div>
           <div>
             <Image
-              src={contentManagement1}
+              src={vocal}
               alt="Dropdown selector from Keystone’s Admin UI showing different user roles: Administrator, Editor, Content Manager, Author"
               width={2034}
               height={1300}
@@ -129,20 +132,21 @@ export default function ForOrganisations() {
           </div>
         </SideBySideSection>
         <Quote
-          name="Kevin Stafford"
-          img="https://thinkmill.com.au/_astro/kevin-stafford-rugby-au@1280w.24c4530d.webp"
-          title="CTO, Rugby Australia"
+          name="Justin Maury"
+          img="https://www.thinkmill.com.au/_astro/vocal-justin-maury@1280w.5316de23.webp"
+          title="Chief Operating Officer, Vocal Media"
           grad="grad6"
         >
-          Keystone & Thinkmill have played a crucial role in our transformation of Rugby Australia’s
-          website network and development practices. Thinkmill are exceptional at what they do, and
-          generous with their time and expertise.
+          Vocal wouldn’t be what it is today without Thinkmill & Keystone. The team shaped the
+          product visually, technically, and ethically, as we grew from a hunch to a multi-million
+          user network.
         </Quote>
 
         <SideBySideSection>
           <div>
             <Type as="h2" look="heading48">
-              Fields fit for <Highlight look="grad6">purpose.</Highlight>
+              Replatforming from Salesforce with{' '}
+              <Highlight look="grad6">Sungage Financial.</Highlight>
             </Type>
             <Type as="p" look="body18" color="var(--muted)" margin="1rem 0">
               Keystone comes with an extensive fields API out of the box, and an easy GraphQL
@@ -188,7 +192,7 @@ export default function ForOrganisations() {
           </div>
           <div>
             <Image
-              src={contentManagement2}
+              src={vocal}
               alt="Overlay of Admin UI field panes showing fields for a Post content type. Promotional text overlays show: custom and virtual fields; flexible relationships; powerful sort & filtering."
               width={1254}
               height={1107}
@@ -300,13 +304,14 @@ export default function ForOrganisations() {
         </Section>
 
         <Quote
-          name="Max Stoiber"
-          img="/assets/mxstbr.jpg"
-          title="Co-Founder Graph CDN. Formerly GatsbyJS & Github."
+          name="Kevin Stafford"
+          img="https://thinkmill.com.au/_astro/kevin-stafford-rugby-au@1280w.24c4530d.webp"
+          title="CTO, Rugby Australia"
           grad="grad6"
         >
-          The new @KeystoneJS rich text editor has incredible inline React component support,
-          including editing props and everything!
+          Keystone & Thinkmill have played a crucial role in our transformation of Rugby Australia’s
+          website network and development practices. Thinkmill are exceptional at what they do, and
+          generous with their time and expertise.
         </Quote>
 
         <SideBySideSection>
