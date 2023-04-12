@@ -17,9 +17,22 @@ import {
 import { assertValidComponentSchema } from './DocumentEditor/component-blocks/field-assertions';
 import { addRelationshipDataToComponentProps, fetchRelationshipData } from './relationship-data';
 
+const globalStructureTypes: Record<
+  string,
+  graphql.Field<
+    { value: unknown },
+    Record<string, graphql.Arg<graphql.InputType, boolean>>,
+    graphql.OutputType,
+    string
+  >
+> = {};
+
 export type StructureFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
     db?: { map?: string };
+    graphql?: CommonFieldConfig<ListTypeInfo>['graphql'] & {
+      typeName?: string;
+    };
     schema: ComponentSchemaForGraphQL;
   };
 
@@ -38,12 +51,23 @@ export const structure =
     } catch (err) {
       throw new Error(`${meta.listKey}.${meta.fieldKey}: ${(err as any).message}`);
     }
+    const name = meta.listKey + meta.fieldKey[0].toUpperCase() + meta.fieldKey.slice(1);
 
     const defaultValue = getInitialPropsValue(schema);
-
     const unreferencedConcreteInterfaceImplementations: graphql.ObjectType<any>[] = [];
 
-    const name = meta.listKey + meta.fieldKey[0].toUpperCase() + meta.fieldKey.slice(1);
+    if (config.graphql?.typeName) {
+      if (!globalStructureTypes[config.graphql.typeName]) {
+        globalStructureTypes[config.graphql.typeName] = getOutputGraphQLField(
+          config.graphql.typeName,
+          schema,
+          unreferencedConcreteInterfaceImplementations,
+          new Map(),
+          meta
+        );
+      }
+    }
+
     return jsonFieldTypePolyfilledForSQLite(
       meta.provider,
       {
@@ -91,13 +115,15 @@ export const structure =
           type: graphql.object<{ value: JSONValue }>()({
             name: `${name}Output`,
             fields: {
-              structure: getOutputGraphQLField(
-                name,
-                schema,
-                unreferencedConcreteInterfaceImplementations,
-                new Map(),
-                meta
-              ),
+              structure: config.graphql?.typeName
+                ? globalStructureTypes[config.graphql?.typeName]
+                : getOutputGraphQLField(
+                    name,
+                    schema,
+                    unreferencedConcreteInterfaceImplementations,
+                    new Map(),
+                    meta
+                  ),
               json: graphql.field({
                 type: graphql.JSON,
                 args: {
