@@ -1,7 +1,7 @@
 {
   "name": "@keystone-6/fields-document",
   "description": "KeystoneJS Document Field Type",
-  "version": "7.0.0",
+  "version": "0.0.0-rc-20230412063326",
   "license": "MIT",
   "main": "dist/keystone-6-fields-document.cjs.js",
   "module": "dist/keystone-6-fields-document.esm.js",
@@ -45,7 +45,7 @@
     ]
   },
   "peerDependencies": {
-    "@keystone-6/core": "^5.0.0"
+    "@keystone-6/core": "^0.0.0-rc-20230412063326"
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
@@ -57,7 +57,7 @@
     "@keystone-6/document-renderer": "^1.1.2",
     "@keystone-ui/button": "^7.0.2",
     "@keystone-ui/core": "^5.0.2",
-    "@keystone-ui/fields": "^7.1.2",
+    "@keystone-ui/fields": "^0.0.0-rc-20230412063326",
     "@keystone-ui/icons": "^6.0.2",
     "@keystone-ui/modals": "^6.0.3",
     "@keystone-ui/popover": "^6.0.2",
@@ -84,7 +84,7 @@
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/packages/fields-document",
   "devDependencies": {
-    "@keystone-6/core": "*",
+    "@keystone-6/core": "0.0.0-rc-20230412063326",
     "@testing-library/react": "^14.0.0",
     "@types/is-hotkey": "^0.1.7",
     "array.prototype.flat": "^1.2.5",

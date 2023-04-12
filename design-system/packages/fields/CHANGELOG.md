@@ -1,5 +1,11 @@
 # @keystone-ui/fields
 
+## 0.0.0-rc-20230412063326
+
+### Minor Changes
+
+- [#8369](https://github.com/keystonejs/keystone/pull/8369) [`1af39b913`](https://github.com/keystonejs/keystone/commit/1af39b9133ef6a8d48c55f09c79a7d2f853346ad) Thanks [@DiesIrae](https://github.com/DiesIrae)! - Add newline compatibility to description text in admin ui
+
 ## 7.1.2
 
 ### Patch Changes
