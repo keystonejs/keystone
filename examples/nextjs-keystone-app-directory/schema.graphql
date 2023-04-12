@@ -4,7 +4,6 @@
 type User {
   id: ID!
   name: String
-  email: String
   about: User_about_Document
   createdAt: DateTime
 }
@@ -17,7 +16,6 @@ scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339
 
 input UserWhereUniqueInput {
   id: ID
-  email: String
 }
 
 input UserWhereInput {
@@ -26,7 +24,6 @@ input UserWhereInput {
   NOT: [UserWhereInput!]
   id: IDFilter
   name: StringFilter
-  email: StringFilter
   createdAt: DateTimeNullableFilter
 }
 
@@ -83,7 +80,6 @@ input DateTimeNullableFilter {
 input UserOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  email: OrderDirection
   createdAt: OrderDirection
 }
 
@@ -94,7 +90,6 @@ enum OrderDirection {
 
 input UserUpdateInput {
   name: String
-  email: String
   about: JSON
   createdAt: DateTime
 }
@@ -106,7 +101,6 @@ input UserUpdateArgs {
 
 input UserCreateInput {
   name: String
-  email: String
   about: JSON
   createdAt: DateTime
 }

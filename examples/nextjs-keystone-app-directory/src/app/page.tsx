@@ -11,20 +11,14 @@ export default async function HomePage() {
     session info and an elevated sudo context to bypass access control if needed (context.sudo()).
   */
   const users = await keystoneContext.query.User.findMany({
-    query: 'id name email about { document }',
+    query: 'id name about { document }',
   });
   return (
     <section>
       <h1>Keystone 🤝 Next.js</h1>
       <ul>
         <li>
-          If you are <strong>not logged in</strong>, you can <strong>only see the name</strong> of
-          all users in the database.
-        </li>
-        <li>
-          User.email is behind access control and only visible for logged in users. Once you{' '}
-          <strong>log in</strong>, you can <strong>see both the name and email</strong> of all users
-          in the database.
+          Below you can see the names of users in the database.
         </li>
       </ul>
 
@@ -37,7 +31,6 @@ export default async function HomePage() {
             return (
               <li key={u.id}>
                 <span>{u.name} </span>
-                <span>(email: {u.email})</span>
                 {u.about?.document.length > 1 && (
                   <>
                     <hr />
