@@ -49,23 +49,28 @@ export type FieldGroupMeta = {
 export type ListMetaRootVal = {
   key: string;
   path: string;
+  description: string | null;
+
   label: string;
+  labelField: string;
   singular: string;
   plural: string;
-  initialColumns: string[];
-  pageSize: number;
-  labelField: string;
-  initialSort: { field: string; direction: 'ASC' | 'DESC' } | null;
+
   fields: FieldMetaRootVal[];
   fieldsByKey: Record<string, FieldMetaRootVal>;
   groups: Array<FieldGroupMeta>;
+
+  pageSize: number;
+  initialColumns: string[];
+  initialSort: { field: string; direction: 'ASC' | 'DESC' } | null;
+  isSingleton: boolean;
+
+  // TODO: probably remove this
   itemQueryName: string;
   listQueryName: string;
-  description: string | null;
   isHidden: ContextFunction<boolean>;
   hideCreate: ContextFunction<boolean>;
   hideDelete: ContextFunction<boolean>;
-  isSingleton: boolean;
 };
 
 export type AdminMetaRootVal = {
@@ -120,26 +125,29 @@ export function createAdminMeta(
 
     adminMetaRoot.listsByKey[listKey] = {
       key: listKey,
-      labelField: list.ui.labelField,
+      path: list.ui.labels.path,
       description: listConfig.ui?.description ?? listConfig.description ?? null,
+
       label: list.ui.labels.label,
+      labelField: list.ui.labelField,
       singular: list.ui.labels.singular,
       plural: list.ui.labels.plural,
-      path: list.ui.labels.path,
+
       fields: [],
       fieldsByKey: {},
       groups: [],
+
       pageSize: maximumPageSize,
       initialColumns,
       initialSort:
         (listConfig.ui?.listView?.initialSort as
           | { field: string; direction: 'ASC' | 'DESC' }
           | undefined) ?? null,
+      isSingleton: list.isSingleton,
 
-      // TODO: probably remove this from the GraphQL schema and here
+      // TODO: probably remove this
       itemQueryName: listKey,
       listQueryName: list.graphql.namePlural, // TODO: remove
-
       hideCreate: normalizeMaybeSessionFunction(
         list.graphql.isEnabled.create ? listConfig.ui?.hideCreate ?? false : false
       ),
@@ -147,10 +155,11 @@ export function createAdminMeta(
         list.graphql.isEnabled.delete ? listConfig.ui?.hideDelete ?? false : false
       ),
       isHidden: normalizeMaybeSessionFunction(listConfig.ui?.isHidden ?? false),
-      isSingleton: list.isSingleton,
     };
+
     adminMetaRoot.lists.push(adminMetaRoot.listsByKey[listKey]);
   }
+
   let uniqueViewCount = -1;
   const stringViewsToIndex: Record<string, number> = {};
   function getViewId(view: string) {
