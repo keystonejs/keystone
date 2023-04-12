@@ -75,31 +75,14 @@ export type StaticAdminMetaQuery = {
       lists: Array<{
         __typename: 'KeystoneAdminUIListMeta';
         key: string;
-        itemQueryName: string;
-        listQueryName: string;
         path: string;
+        description: string | null;
+
         label: string;
+        labelField: string;
         singular: string;
         plural: string;
-        description: string | null;
-        initialColumns: Array<string>;
-        pageSize: number;
-        labelField: string;
-        isSingleton: boolean;
-        initialSort: {
-          __typename: 'KeystoneAdminUISort';
-          field: string;
-          direction: KeystoneAdminUISortDirection;
-        } | null;
-        groups: Array<{
-          __typename: 'KeystoneAdminUIFieldGroupMeta';
-          label: string;
-          description: string | null;
-          fields: Array<{
-            __typename: 'KeystoneAdminUIFieldMeta';
-            path: string;
-          }>;
-        }>;
+
         fields: Array<{
           __typename: 'KeystoneAdminUIFieldMeta';
           path: string;
@@ -116,6 +99,28 @@ export type StaticAdminMetaQuery = {
             fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode | null;
           } | null;
         }>;
+        groups: Array<{
+          __typename: 'KeystoneAdminUIFieldGroupMeta';
+          label: string;
+          description: string | null;
+          fields: Array<{
+            __typename: 'KeystoneAdminUIFieldMeta';
+            path: string;
+          }>;
+        }>;
+
+        pageSize: number;
+        initialColumns: Array<string>;
+        initialSort: {
+          __typename: 'KeystoneAdminUISort';
+          field: string;
+          direction: KeystoneAdminUISortDirection;
+        } | null;
+        isSingleton: boolean;
+
+        // TODO: probably remove this
+        itemQueryName: string;
+        listQueryName: string;
       }>;
     };
   };

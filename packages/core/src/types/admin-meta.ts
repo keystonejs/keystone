@@ -105,18 +105,22 @@ export type FieldGroupMeta = {
 export type ListMeta = {
   key: string;
   path: string;
+  description: string | null;
+
   label: string;
+  labelField: string;
   singular: string;
   plural: string;
-  description: string | null;
+
   /** @deprecated */
   gqlNames: InitialisedList['graphql']['names'];
-  initialColumns: string[];
-  pageSize: number;
-  labelField: string;
-  initialSort: null | { direction: 'ASC' | 'DESC'; field: string };
+
   fields: { [path: string]: FieldMeta };
   groups: FieldGroupMeta[];
+
+  pageSize: number;
+  initialColumns: string[];
+  initialSort: null | { direction: 'ASC' | 'DESC'; field: string };
   isSingleton: boolean;
 };
 
