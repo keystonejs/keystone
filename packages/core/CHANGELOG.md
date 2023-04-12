@@ -1,5 +1,30 @@
 # @keystone-6/core
 
+## 0.0.0-rc-20230412064346
+
+### Minor Changes
+
+- [#8370](https://github.com/keystonejs/keystone/pull/8370) [`730ee7948`](https://github.com/keystonejs/keystone/commit/730ee79489cd5c7cf74553a86d5de8433d32ebeb) Thanks [@borisno2](https://github.com/borisno2)! - Adds support for Prisma Data Proxy client generation, automatically enabled for `db.url`'s with a `prisma:` prefix
+
+* [#8432](https://github.com/keystonejs/keystone/pull/8432) [`753f479f7`](https://github.com/keystonejs/keystone/commit/753f479f75e5a540da78862a1553a82cd62750b4) Thanks [@renovate](https://github.com/apps/renovate)! - Update Prisma version to `4.12.0`
+
+- [#8381](https://github.com/keystonejs/keystone/pull/8381) [`6b338c46a`](https://github.com/keystonejs/keystone/commit/6b338c46a5f9c4ab71939f3632dfccae27ffb56e) Thanks [@dcousens](https://github.com/dcousens)! - Adds a new `.types.path` configuration option, for specifying where your Keystone types are built
+
+### Patch Changes
+
+- [#8373](https://github.com/keystonejs/keystone/pull/8373) [`c6c9078d5`](https://github.com/keystonejs/keystone/commit/c6c9078d5cdeab968d563c340904717ebc36b1a3) Thanks [@borisno2](https://github.com/borisno2)! - Fixes the `.keystone/types` import paths when using `db.prismaSchemaPath` on Windows
+
+* [#8455](https://github.com/keystonejs/keystone/pull/8455) [`7cc1a9f6c`](https://github.com/keystonejs/keystone/commit/7cc1a9f6cf57995b33d41709739379f397e2789f) Thanks [@borisno2](https://github.com/borisno2)! - Fixes #8046 regression which prevented other command line arguments from being used
+
+- [#8441](https://github.com/keystonejs/keystone/pull/8441) [`23d01f3d8`](https://github.com/keystonejs/keystone/commit/23d01f3d8f0e3470ba7c7dce61c6e141b2d0aabd) Thanks [@dcousens](https://github.com/dcousens)! - Fixes regression from #8073, `.sudo` now retains the `context.session`
+
+* [#8438](https://github.com/keystonejs/keystone/pull/8438) [`ea3c2d443`](https://github.com/keystonejs/keystone/commit/ea3c2d4439db2d1bead8ccd829d89063098e8cbc) Thanks [@dcousens](https://github.com/dcousens)! - `.exitSudo` is now deprecated and will be removed in the next major version
+
+- [#8400](https://github.com/keystonejs/keystone/pull/8400) [`7cfe118bb`](https://github.com/keystonejs/keystone/commit/7cfe118bb68b0a2420a82fe78849ee9f7b9f6fb2) Thanks [@renovate](https://github.com/apps/renovate)! - Fixes the printed output when using `keystone telemetry reset`
+
+- Updated dependencies [[`1af39b913`](https://github.com/keystonejs/keystone/commit/1af39b9133ef6a8d48c55f09c79a7d2f853346ad)]:
+  - @keystone-ui/fields@0.0.0-rc-20230412064346
+
 ## 5.1.0
 
 ### Minor Changes
