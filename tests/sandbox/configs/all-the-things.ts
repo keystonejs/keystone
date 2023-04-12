@@ -35,6 +35,12 @@ export const lists = {
       timestamp: timestamp({ ui: { description } }),
       structure: structure({ schema: structureSchema, ui: { views: './structure' } }),
       structureNested: structure({
+        graphql: { typeName: 'StructureNested' },
+        schema: structureNestedSchema,
+        ui: { views: './structure-nested' },
+      }),
+      structureNested2: structure({
+        graphql: { typeName: 'StructureNested' },
         schema: structureNestedSchema,
         ui: { views: './structure-nested' },
       }),
