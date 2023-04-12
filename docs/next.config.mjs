@@ -1,7 +1,8 @@
 // you don't need this if you're building something outside of the Keystone repo
-const withPreconstruct = require('@preconstruct/next');
+import withPreconstruct from '@preconstruct/next';
+import redirects from './redirects.mjs';
 
-module.exports = withPreconstruct({
+export default withPreconstruct({
   env: {
     siteUrl: 'https://keystonejs.com',
   },
@@ -13,4 +14,5 @@ module.exports = withPreconstruct({
     //   we check Typescript elsewhere
     ignoreBuildErrors: true,
   },
+  redirects,
 });
