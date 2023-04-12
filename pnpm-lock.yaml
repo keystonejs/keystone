@@ -1416,6 +1416,9 @@ importers:
       '@keystone-6/core':
         specifier: ^5.0.0
         version: link:../../packages/core
+      '@keystone-6/fields-document':
+        specifier: ^7.0.0
+        version: link:../../packages/fields-document
       '@prisma/client':
         specifier: ^4.12.0
         version: 4.12.0(prisma@4.12.0)
