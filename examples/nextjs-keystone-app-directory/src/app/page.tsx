@@ -17,9 +17,7 @@ export default async function HomePage() {
     <section>
       <h1>Keystone 🤝 Next.js</h1>
       <ul>
-        <li>
-          Below you can see the names of users in the database.
-        </li>
+        <li>Below you can see the names of users in the database.</li>
       </ul>
 
       <div>
