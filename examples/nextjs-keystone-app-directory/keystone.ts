@@ -3,12 +3,10 @@ import { lists } from './src/keystone/schema';
 import { seedDemoData } from './src/keystone/seed';
 import type { Context } from '.keystone/types';
 
-// Next.js deploys need absolute path to sqlite db file
-const dbFilePath = `${process.cwd()}/keystone.db`;
 export default config({
   db: {
     provider: 'sqlite',
-    url: `file:${dbFilePath}`,
+    url: `file:${process.cwd()}/keystone.db`, // next.js requires an absolute path for sqlite
     onConnect: async (context: Context) => {
       await seedDemoData(context);
     },
