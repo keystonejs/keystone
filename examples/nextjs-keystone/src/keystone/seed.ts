@@ -17,4 +17,3 @@ export async function seedDemoData(context: Context) {
     await context.db.User.createOne({ data: user });
   }
 }
-

@@ -138,7 +138,7 @@ function ClientRenderedContent() {
             return (
               <li key={u.id}>
                 <span>{u.name} </span>
-                {!!u.about && (
+                {u.about && (
                   <>
                     <hr />
                     {u.about}

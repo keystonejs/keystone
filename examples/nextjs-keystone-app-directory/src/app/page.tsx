@@ -6,7 +6,7 @@ export default async function HomePage() {
   // WARNING: this does nothing for now
   //   you will probably use getServerSession from 'next/auth'
   //   https://next-auth.js.org/configuration/nextjs#in-app-directory
-  const session = {}
+  const session = {};
   const users = await keystoneContext.withSession(session).query.User.findMany({
     query: 'id name about { document }',
   });
@@ -27,7 +27,7 @@ export default async function HomePage() {
             return (
               <li key={u.id}>
                 <span>{u.name} </span>
-                {u.about?.document.length > 1 && (
+                {u.about && (
                   <>
                     <hr />
                     <DocumentRender document={u.about?.document} />
