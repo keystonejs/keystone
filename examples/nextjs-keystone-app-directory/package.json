@@ -1,0 +1,38 @@
+{
+  "name": "@keystone-6/example-nextjs-keystone-app-directory",
+  "version": "0.0.2",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "keystone:dev": "keystone dev",
+    "keystone:build": "keystone build",
+    "keystone:start": "keystone start",
+    "next:dev": "next dev -p 4000",
+    "next:build": "next build",
+    "build": "pnpm keystone build --no-ui && pnpm next build",
+    "postinstall": "keystone postinstall",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@keystone-6/auth": "^7.0.0",
+    "@keystone-6/core": "^5.0.0",
+    "@keystone-6/document-renderer": "^1.0.0",
+    "@keystone-6/fields-document": "^7.0.0",
+    "@preconstruct/next": "^4.0.0",
+    "@prisma/client": "^4.12.0",
+    "graphql": "^16.6.0",
+    "graphql-request": "^5.0.0",
+    "graphql-yoga": "^3.1.0",
+    "next": "^13.3.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.14",
+    "@types/react": "^18.0.9",
+    "@types/react-dom": "^18.0.4",
+    "prisma": "^4.12.0",
+    "typescript": "~5.0.0"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/nextjs-keystone-app-directory"
+}

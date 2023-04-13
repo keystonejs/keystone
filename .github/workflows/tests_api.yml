@@ -177,6 +177,16 @@ jobs:
       - name: Example unit tests
         run: cd examples/testing; pnpm test
 
+  examples_next_app_build:
+    name: Ensure Nest in App directory builds
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+      - uses: ./.github/actions/ci-setup
+
+      - name: Example Next in app direcroty build
+        run: cd examples/nextjs-keystone-app-directory; pnpm build
+
   examples_smoke_tests:
     name: Smoke Tests For Examples
     runs-on: ubuntu-latest
