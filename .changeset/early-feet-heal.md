@@ -2,4 +2,4 @@
 '@keystone-6/fields-document': minor
 ---
 
-Allow the global Graphql Types for Structured JSON
+Add a new `graphql.typeName` for the `structure` field to support deduplication of GraphQL types
