@@ -79,7 +79,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 function ServerRenderedContent({
   users,
 }: {
-  users: { id: string; name: string; email: string | null }[];
+  users: { id: string; name: string; about: string | null }[];
 }) {
   return (
     <div>
