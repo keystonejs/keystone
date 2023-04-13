@@ -4,20 +4,14 @@
 type User {
   id: ID!
   name: String
-  email: String
-  password: PasswordState
+  about: String
   createdAt: DateTime
-}
-
-type PasswordState {
-  isSet: Boolean!
 }
 
 scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
 
 input UserWhereUniqueInput {
   id: ID
-  email: String
 }
 
 input UserWhereInput {
@@ -26,7 +20,7 @@ input UserWhereInput {
   NOT: [UserWhereInput!]
   id: IDFilter
   name: StringFilter
-  email: StringFilter
+  about: StringFilter
   createdAt: DateTimeNullableFilter
 }
 
@@ -83,7 +77,7 @@ input DateTimeNullableFilter {
 input UserOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  email: OrderDirection
+  about: OrderDirection
   createdAt: OrderDirection
 }
 
@@ -94,8 +88,7 @@ enum OrderDirection {
 
 input UserUpdateInput {
   name: String
-  email: String
-  password: String
+  about: String
   createdAt: DateTime
 }
 
@@ -106,8 +99,7 @@ input UserUpdateArgs {
 
 input UserCreateInput {
   name: String
-  email: String
-  password: String
+  about: String
   createdAt: DateTime
 }
 
@@ -123,26 +115,6 @@ type Mutation {
   updateUsers(data: [UserUpdateArgs!]!): [User]
   deleteUser(where: UserWhereUniqueInput!): User
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
-  endSession: Boolean!
-  authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
-  createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
-}
-
-union UserAuthenticationWithPasswordResult = UserAuthenticationWithPasswordSuccess | UserAuthenticationWithPasswordFailure
-
-type UserAuthenticationWithPasswordSuccess {
-  sessionToken: String!
-  item: User!
-}
-
-type UserAuthenticationWithPasswordFailure {
-  message: String!
-}
-
-input CreateInitialUserInput {
-  name: String
-  email: String
-  password: String
 }
 
 type Query {
@@ -150,10 +122,7 @@ type Query {
   user(where: UserWhereUniqueInput!): User
   usersCount(where: UserWhereInput! = {}): Int
   keystone: KeystoneMeta!
-  authenticatedItem: AuthenticatedItem
 }
-
-union AuthenticatedItem = User
 
 type KeystoneMeta {
   adminMeta: KeystoneAdminMeta!
