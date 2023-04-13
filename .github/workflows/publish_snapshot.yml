@@ -15,7 +15,6 @@ jobs:
     steps:
       - uses: actions/checkout@main
         with:
-          fetch-depth: 0
           persist-credentials: true # needed for git push
 
       - uses: ./.github/actions/ci-setup
