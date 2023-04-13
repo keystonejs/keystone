@@ -91,7 +91,7 @@ function ServerRenderedContent({
           return (
             <li key={u.id}>
               <span>{u.name} </span>
-              {u.about?.length > 1 && (
+              {u.about && (
                 <>
                   <hr />
                   {u.about}
