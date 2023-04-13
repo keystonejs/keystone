@@ -3,8 +3,11 @@
 
 type Thing {
   id: ID!
+  text: String
+  timestamp: DateTime
   structure: ThingStructureOutput
   structureNested: ThingStructureNestedOutput
+  structureRelationships: ThingStructureRelationshipsOutput
   checkbox: Boolean
   password: PasswordState
   toOneRelationship: User
@@ -14,8 +17,6 @@ type Thing {
   toOneRelationshipCard: User
   toManyRelationshipCard(where: TodoWhereInput! = {}, orderBy: [TodoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TodoWhereUniqueInput): [Todo!]
   toManyRelationshipCardCount(where: TodoWhereInput! = {}): Int
-  text: String
-  timestamp: DateTime
   calendarDay: CalendarDay
   randomNumberVirtual: Float
   select: String
@@ -32,6 +33,8 @@ type Thing {
   document: Thing_document_Document
 }
 
+scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
+
 type ThingStructureOutput {
   structure: [Int]
   json(hydrateRelationships: Boolean! = false): JSON
@@ -46,11 +49,14 @@ interface ThingStructureNested {
   discriminant: String
 }
 
+type ThingStructureRelationshipsOutput {
+  structure: [Thing]
+  json(hydrateRelationships: Boolean! = false): JSON
+}
+
 type PasswordState {
   isSet: Boolean!
 }
-
-scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
 
 scalar CalendarDay @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
 
@@ -111,6 +117,8 @@ input ThingWhereInput {
   OR: [ThingWhereInput!]
   NOT: [ThingWhereInput!]
   id: IDFilter
+  text: StringFilter
+  timestamp: DateTimeNullableFilter
   checkbox: BooleanFilter
   password: PasswordFilter
   toOneRelationship: UserWhereInput
@@ -118,8 +126,6 @@ input ThingWhereInput {
   toManyRelationship: TodoManyRelationFilter
   toOneRelationshipCard: UserWhereInput
   toManyRelationshipCard: TodoManyRelationFilter
-  text: StringFilter
-  timestamp: DateTimeNullableFilter
   calendarDay: CalendarDayNullableFilter
   select: StringNullableFilter
   selectOnSide: StringNullableFilter
@@ -139,21 +145,6 @@ input IDFilter {
   gt: ID
   gte: ID
   not: IDFilter
-}
-
-input BooleanFilter {
-  equals: Boolean
-  not: BooleanFilter
-}
-
-input PasswordFilter {
-  isSet: Boolean!
-}
-
-input TodoManyRelationFilter {
-  every: TodoWhereInput
-  some: TodoWhereInput
-  none: TodoWhereInput
 }
 
 input StringFilter {
@@ -193,6 +184,21 @@ input DateTimeNullableFilter {
   gt: DateTime
   gte: DateTime
   not: DateTimeNullableFilter
+}
+
+input BooleanFilter {
+  equals: Boolean
+  not: BooleanFilter
+}
+
+input PasswordFilter {
+  isSet: Boolean!
+}
+
+input TodoManyRelationFilter {
+  every: TodoWhereInput
+  some: TodoWhereInput
+  none: TodoWhereInput
 }
 
 input CalendarDayNullableFilter {
@@ -269,9 +275,9 @@ input FloatNullableFilter {
 
 input ThingOrderByInput {
   id: OrderDirection
-  checkbox: OrderDirection
   text: OrderDirection
   timestamp: OrderDirection
+  checkbox: OrderDirection
   calendarDay: OrderDirection
   select: OrderDirection
   selectOnSide: OrderDirection
@@ -288,8 +294,11 @@ enum OrderDirection {
 }
 
 input ThingUpdateInput {
+  text: String
+  timestamp: DateTime
   structure: [Int]
   structureNested: [ThingStructureNestedUpdateInput]
+  structureRelationships: [ThingRelateToOneForUpdateInput]
   checkbox: Boolean
   password: String
   toOneRelationship: UserRelateToOneForUpdateInput
@@ -297,8 +306,6 @@ input ThingUpdateInput {
   toManyRelationship: TodoRelateToManyForUpdateInput
   toOneRelationshipCard: UserRelateToOneForUpdateInput
   toManyRelationshipCard: TodoRelateToManyForUpdateInput
-  text: String
-  timestamp: DateTime
   calendarDay: CalendarDay
   select: String
   selectOnSide: String
@@ -327,6 +334,12 @@ input ThingStructureNestedLeafUpdateInput {
 input ThingStructureNestedGroupUpdateInput {
   label: String
   children: [ThingStructureNestedUpdateInput]
+}
+
+input ThingRelateToOneForUpdateInput {
+  create: ThingCreateInput
+  connect: ThingWhereUniqueInput
+  disconnect: Boolean
 }
 
 input UserRelateToOneForUpdateInput {
@@ -359,8 +372,11 @@ input ThingUpdateArgs {
 }
 
 input ThingCreateInput {
+  text: String
+  timestamp: DateTime
   structure: [Int]
   structureNested: [ThingStructureNestedCreateInput]
+  structureRelationships: [ThingRelateToOneForCreateInput]
   checkbox: Boolean
   password: String
   toOneRelationship: UserRelateToOneForCreateInput
@@ -368,8 +384,6 @@ input ThingCreateInput {
   toManyRelationship: TodoRelateToManyForCreateInput
   toOneRelationshipCard: UserRelateToOneForCreateInput
   toManyRelationshipCard: TodoRelateToManyForCreateInput
-  text: String
-  timestamp: DateTime
   calendarDay: CalendarDay
   select: String
   selectOnSide: String
@@ -398,6 +412,11 @@ input ThingStructureNestedLeafCreateInput {
 input ThingStructureNestedGroupCreateInput {
   label: String
   children: [ThingStructureNestedCreateInput]
+}
+
+input ThingRelateToOneForCreateInput {
+  create: ThingCreateInput
+  connect: ThingWhereUniqueInput
 }
 
 input UserRelateToOneForCreateInput {
