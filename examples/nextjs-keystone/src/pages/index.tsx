@@ -4,7 +4,6 @@ import Head from 'next/head';
 import { gql } from 'graphql-request';
 import { client } from '../util/request';
 import { keystoneContext } from '../keystone/context';
-import { Header } from '../components/Header';
 
 const Home: NextPage = ({ users }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
@@ -22,7 +21,6 @@ const Home: NextPage = ({ users }: InferGetServerSidePropsType<typeof getServerS
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Header />
       <main style={{ display: 'flex', justifyContent: 'center' }}>
         <section>
           <h1>Keystone 🤝 Next.js</h1>
@@ -89,26 +87,26 @@ function ServerRenderedContent({
         <strong>Users fetched from the server (in getServerSideProps)</strong>
       </p>
       <ol>
-      {users.map(u => {
-        return (
-          <li key={u.id}>
-            <span>{u.name} </span>
-            {u.about?.length > 1 && (
-              <>
-                <hr />
-                {u.about}
-              </>
-            )}
-          </li>
-        );
-      })}
+        {users.map(u => {
+          return (
+            <li key={u.id}>
+              <span>{u.name} </span>
+              {u.about?.length > 1 && (
+                <>
+                  <hr />
+                  {u.about}
+                </>
+              )}
+            </li>
+          );
+        })}
       </ol>
     </div>
   );
 }
 
 function ClientRenderedContent() {
-  const [users, setUsers] = useState<Array<{ id: string; name: string; email: string | null }>>([]);
+  const [users, setUsers] = useState<Array<{ id: string; name: string; about: string | null }>>([]);
 
   // Fetch users from REST api route
   useEffect(() => {
@@ -140,7 +138,7 @@ function ClientRenderedContent() {
             return (
               <li key={u.id}>
                 <span>{u.name} </span>
-                {u.about?.length > 1 && (
+                {!!u.about && (
                   <>
                     <hr />
                     {u.about}
