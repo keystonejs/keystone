@@ -3,16 +3,14 @@ import { keystoneContext } from '../keystone/context';
 import { DocumentRender } from './DocumentRender';
 
 export default async function HomePage() {
-  /*
-    `keystoneContext` object doesn't have user's session information.
-    You need an authenticated context to CRUD data behind access control.
-    keystoneContext.withSession(session) - passing in a session object that
-    aligns with your access control - gives you a `context` object with
-    session info and an elevated sudo context to bypass access control if needed (context.sudo()).
-  */
-  const users = await keystoneContext.query.User.findMany({
+  // WARNING: this does nothing for now
+  //   you will probably use getServerSession from 'next/auth'
+  //   https://next-auth.js.org/configuration/nextjs#in-app-directory
+  const session = {}
+  const users = await keystoneContext.withSession(session).query.User.findMany({
     query: 'id name about { document }',
   });
+
   return (
     <section>
       <h1>Keystone 🤝 Next.js</h1>

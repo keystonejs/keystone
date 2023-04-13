@@ -1,24 +1,18 @@
 import { config } from '@keystone-6/core';
 import { lists } from './src/keystone/schema';
-import { withAuth, session } from './src/keystone/auth';
 import { seedDemoData } from './src/keystone/seed';
 import type { Context } from '.keystone/types';
 
-// Next.js deploys need absolute path to sqlite db file
-const dbFilePath = `${process.cwd()}/keystone.db`;
-export default withAuth(
-  config({
-    db: {
-      provider: 'sqlite',
-      url: `file:${dbFilePath}`,
-      onConnect: async (context: Context) => {
-        await seedDemoData(context);
-      },
-
-      // WARNING: this is only needed for our monorepo examples, dont do this
-      prismaClientPath: 'node_modules/.myprisma/client',
+export default config({
+  db: {
+    provider: 'sqlite',
+    url: `file:${process.cwd()}/keystone.db`, // next.js requires an absolute path for sqlite
+    onConnect: async (context: Context) => {
+      await seedDemoData(context);
     },
-    lists,
-    session,
-  })
-);
+
+    // WARNING: this is only needed for our monorepo examples, dont do this
+    prismaClientPath: 'node_modules/.myprisma/client',
+  },
+  lists,
+});
