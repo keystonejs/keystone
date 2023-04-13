@@ -9,16 +9,34 @@ import { graphql } from '@keystone-6/core';
 export type PairFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo>;
 
-type PairInput = string;
-type PairOutput = string;
+type PairInput = {
+  left: string | null | undefined;
+  right: string | null | undefined;
+};
+type PairOutput = PairInput;
 
-const PairInput = graphql.String;
-const PairOutput = graphql.String;
+const PairInput = graphql.inputObject({
+  name: 'PairJsonInput',
+  fields: {
+    left: graphql.arg({ type: graphql.String }),
+    right: graphql.arg({ type: graphql.String }),
+  },
+});
+
+const PairOutput = graphql.object<PairOutput>()({
+  name: 'PairJsonOutput',
+  fields: {
+    left: graphql.field({ type: graphql.String }),
+    right: graphql.field({ type: graphql.String }),
+  },
+});
 
 const PairFilter = graphql.inputObject({
-  name: 'PairFilter',
+  name: 'PairJsonFilter',
   fields: {
-    equals: graphql.arg({ type: graphql.String }),
+    equals: graphql.arg({
+      type: PairInput,
+    }),
   },
 });
 
@@ -26,50 +44,34 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>(
   config: PairFieldConfig<ListTypeInfo> = {}
 ): FieldTypeFunc<ListTypeInfo> {
   function resolveInput(value: PairInput | null | undefined) {
-    if (!value) return { left: value, right: value };
-    const [left = '', right = ''] = value.split(' ', 2);
-    return {
-      left,
-      right,
-    };
+    const { left = null, right = null } = value ?? {};
+    return JSON.stringify({ left, right });
   }
 
-  function resolveOutput(value: { left: string | null; right: string | null }) {
-    const { left, right } = value;
-    if (left === null || right === null) return null;
-    return `${left} ${right}`;
+  function resolveOutput(value: string | null) {
+    if (value === null) return { left: null, right: null };
+    return JSON.parse(value) as PairOutput;
   }
 
-  function resolveWhere(value: null | { equals: string | null | undefined }) {
+  function resolveWhere(value: null | { equals: PairInput | null | undefined }) {
     if (value === null) {
       throw new Error('PairFilter cannot be null');
     }
     if (value.equals === undefined) {
       return {};
     }
-    const { left, right } = resolveInput(value.equals);
-    return {
-      left: { equals: left },
-      right: { equals: right },
-    };
+    const json = resolveInput(value.equals);
+    return { equals: json };
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   return meta =>
     fieldType({
-      kind: 'multi',
-      fields: {
-        left: {
-          kind: 'scalar',
-          mode: 'optional',
-          scalar: 'String',
-        },
-        right: {
-          kind: 'scalar',
-          mode: 'optional',
-          scalar: 'String',
-        },
-      },
+      kind: 'scalar',
+      mode: 'optional',
+      // we should use 'Json', but it's complicated with sqlite
+      //   we are using String for the example
+      scalar: 'String',
     })({
       ...config,
       input: {
@@ -102,7 +104,7 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>(
           return resolveOutput(value);
         },
       }),
-      views: './3-pair-field/views',
+      views: './3-pair-field-json/views',
       getAdminMeta() {
         return {};
       },

@@ -6,6 +6,18 @@ type Post {
   content: String
   rating: Int
   pair: String
+  pairNested: PairNestedOutput
+  pairJson: PairJsonOutput
+}
+
+type PairNestedOutput {
+  left: String
+  right: String
+}
+
+type PairJsonOutput {
+  left: String
+  right: String
 }
 
 input PostWhereUniqueInput {
@@ -18,6 +30,8 @@ input PostWhereInput {
   NOT: [PostWhereInput!]
   id: IDFilter
   pair: PairFilter
+  pairNested: PairNestedFilter
+  pairJson: PairJsonFilter
 }
 
 input IDFilter {
@@ -35,6 +49,24 @@ input PairFilter {
   equals: String
 }
 
+input PairNestedFilter {
+  equals: PairNestedInput
+}
+
+input PairNestedInput {
+  left: String
+  right: String
+}
+
+input PairJsonFilter {
+  equals: PairJsonInput
+}
+
+input PairJsonInput {
+  left: String
+  right: String
+}
+
 input PostOrderByInput {
   id: OrderDirection
   content: OrderDirection
@@ -50,6 +82,8 @@ input PostUpdateInput {
   content: String
   rating: Int
   pair: String
+  pairNested: PairNestedInput
+  pairJson: PairJsonInput
 }
 
 input PostUpdateArgs {
@@ -61,6 +95,8 @@ input PostCreateInput {
   content: String
   rating: Int
   pair: String
+  pairNested: PairNestedInput
+  pairJson: PairJsonInput
 }
 
 """
