@@ -204,8 +204,8 @@ importers:
         specifier: ^11.0.0
         version: 11.0.0
       globby:
-        specifier: ^11.0.4
-        version: 11.0.4
+        specifier: ^13.0.0
+        version: 13.0.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -565,8 +565,8 @@ importers:
         specifier: ^1.2.1
         version: 1.2.1
       globby:
-        specifier: ^11.0.4
-        version: 11.0.4
+        specifier: ^13.0.0
+        version: 13.0.0
       js-yaml:
         specifier: ^4.1.0
         version: 4.1.0
@@ -7214,7 +7214,7 @@ packages:
       '@changesets/types': 4.1.0
       '@manypkg/find-root': 1.1.0
       fs-extra: 8.1.0
-      globby: 11.0.4
+      globby: 11.1.0
       read-yaml-file: 1.1.0
     dev: true
 
@@ -7231,7 +7231,7 @@ packages:
     engines: {node: '>=14.18.0'}
     dependencies:
       fs-extra: 8.1.0
-      globby: 11.0.4
+      globby: 11.1.0
       jju: 1.4.0
       read-yaml-file: 1.1.0
     dev: true
@@ -8757,7 +8757,7 @@ packages:
       '@typescript-eslint/types': 5.7.0
       '@typescript-eslint/visitor-keys': 5.7.0
       debug: 4.3.4
-      globby: 11.0.4
+      globby: 11.1.0
       is-glob: 4.0.3
       semver: 7.4.0
       tsutils: 3.21.0(typescript@5.0.2)
@@ -10576,7 +10576,7 @@ packages:
     resolution: {integrity: sha512-ua8BhapfP0JUJKC/zV9yHHDW/rDoDxP4Zhn3AkA6/xT6gY7jYXJiaeyBZznYVujhZZET+UgcbZiQ7sN3WqcImg==}
     engines: {node: '>=10'}
     dependencies:
-      globby: 11.0.4
+      globby: 11.1.0
       graceful-fs: 4.2.11
       is-glob: 4.0.3
       is-path-cwd: 2.2.0
@@ -12227,6 +12227,7 @@ packages:
       ignore: 5.2.4
       merge2: 1.4.1
       slash: 3.0.0
+    dev: true
 
   /globby@11.1.0:
     resolution: {integrity: sha512-jhIXaOzy1sb8IyocaruWSn1TjmnBVs8Ayhcy83rmxNJ8q2uWKCAj3CnJY+KpGSXCueAPc0i05kVvVKtP1t9S3g==}
@@ -12238,6 +12239,16 @@ packages:
       ignore: 5.2.4
       merge2: 1.4.1
       slash: 3.0.0
+
+  /globby@13.0.0:
+    resolution: {integrity: sha512-peWsS6/uJ4lRXg7qK11lnkMTIdoDp35bpJzpR3vpRNFkP1qMNsM7OQvUqwe6r+9RCT6VpEAhL9DDrK/jD0PGvw==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+    dependencies:
+      dir-glob: 3.0.1
+      fast-glob: 3.2.12
+      ignore: 5.2.4
+      merge2: 1.4.1
+      slash: 4.0.0
 
   /globby@7.1.1:
     resolution: {integrity: sha512-yANWAN2DUcBtuus5Cpd+SKROzXHs2iVXFZt/Ykrfz6SAXqacLX25NZpltE+39ceMexYF4TtEadjuSTw8+3wX4g==}
@@ -16369,6 +16380,10 @@ packages:
   /slash@3.0.0:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
     engines: {node: '>=8'}
+
+  /slash@4.0.0:
+    resolution: {integrity: sha512-3dOsAHXXUkQTpOYcoAxLIorMTp4gIQr5IW3iVb7A7lFIp0VHhnynm9izx6TssdrIcVIESAlVjtnO2K8bg+Coew==}
+    engines: {node: '>=12'}
 
   /slate-history@0.66.0(slate@0.81.1):
     resolution: {integrity: sha512-6MWpxGQZiMvSINlCbMW43E2YBSVMCMCIwQfBzGssjWw4kb0qfvj0pIdblWNRQZD0hR6WHP+dHHgGSeVdMWzfng==}
