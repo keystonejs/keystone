@@ -188,23 +188,6 @@
   "bin": {
     "keystone": "bin/cli.js"
   },
-  "files": [
-    "session",
-    "bin",
-    "___internal-do-not-use-will-break-in-patch",
-    "next",
-    "schema",
-    "scripts",
-    "dist",
-    "static",
-    "admin-ui",
-    "testing",
-    "fields",
-    "types",
-    "system",
-    "context",
-    "access"
-  ],
   "dependencies": {
     "@apollo/cache-control-types": "^1.0.2",
     "@apollo/client": "^3.7.0",
