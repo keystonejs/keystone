@@ -6,9 +6,9 @@ type Thing {
   text: String
   timestamp: DateTime
   structure: ThingStructureOutput
-  structureRelationships: ThingStructureRelationshipsOutput
   structureNested: StructureNestedOutput
   structureNested2: StructureNestedOutput
+  structureRelationships: ThingStructureRelationshipsOutput
   checkbox: Boolean
   password: PasswordState
   toOneRelationship: User
@@ -46,8 +46,8 @@ type ThingStructure {
   array: [Int]
 }
 
-type ThingStructureNestedOutput {
-  structure: [ThingStructureNested]
+type StructureNestedOutput {
+  structure: [StructureNested]
   json(hydrateRelationships: Boolean! = false): JSON
 }
 
@@ -303,10 +303,9 @@ input ThingUpdateInput {
   text: String
   timestamp: DateTime
   structure: ThingStructureUpdateInput
-  structureNested: [ThingStructureNestedUpdateInput]
-  structureRelationships: [ThingRelateToOneForUpdateInput]
   structureNested: [StructureNestedUpdateInput]
   structureNested2: [StructureNestedUpdateInput]
+  structureRelationships: [ThingRelateToOneForUpdateInput]
   checkbox: Boolean
   password: String
   toOneRelationship: UserRelateToOneForUpdateInput
@@ -334,9 +333,9 @@ input ThingStructureUpdateInput {
   array: [Int]
 }
 
-input ThingStructureNestedUpdateInput {
-  leaf: ThingStructureNestedLeafUpdateInput
-  group: ThingStructureNestedGroupUpdateInput
+input StructureNestedUpdateInput {
+  leaf: StructureNestedLeafUpdateInput
+  group: StructureNestedGroupUpdateInput
 }
 
 input StructureNestedLeafUpdateInput {
@@ -388,10 +387,9 @@ input ThingCreateInput {
   text: String
   timestamp: DateTime
   structure: ThingStructureCreateInput
-  structureNested: [ThingStructureNestedCreateInput]
-  structureRelationships: [ThingRelateToOneForCreateInput]
   structureNested: [StructureNestedCreateInput]
   structureNested2: [StructureNestedCreateInput]
+  structureRelationships: [ThingRelateToOneForCreateInput]
   checkbox: Boolean
   password: String
   toOneRelationship: UserRelateToOneForCreateInput
@@ -419,9 +417,9 @@ input ThingStructureCreateInput {
   array: [Int]
 }
 
-input ThingStructureNestedCreateInput {
-  leaf: ThingStructureNestedLeafCreateInput
-  group: ThingStructureNestedGroupCreateInput
+input StructureNestedCreateInput {
+  leaf: StructureNestedLeafCreateInput
+  group: StructureNestedGroupCreateInput
 }
 
 input StructureNestedLeafCreateInput {

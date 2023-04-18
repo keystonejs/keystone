@@ -52,46 +52,47 @@ export const structure =
 
     const defaultValue = getInitialPropsValue(schema);
     const unreferencedConcreteInterfaceImplementations: graphql.ObjectType<any>[] = [];
-    if (!globalStructureTypes[name]) {
-      globalStructureTypes[name] = {
-        output: graphql.object<{ value: JSONValue }>()({
-          name: `${name}Output`,
-          fields: {
-            structure: getOutputGraphQLField(
-              name,
-              schema,
-              unreferencedConcreteInterfaceImplementations,
-              new Map(),
-              meta
-            ),
-            json: graphql.field({
-              type: graphql.JSON,
-              args: {
-                hydrateRelationships: graphql.arg({
-                  type: graphql.nonNull(graphql.Boolean),
-                  defaultValue: false,
-                }),
-              },
-              resolve({ value }, args, context) {
-                if (args.hydrateRelationships) {
-                  return addRelationshipDataToComponentProps(schema, value, (schema, value) =>
-                    fetchRelationshipData(
-                      context,
-                      schema.listKey,
-                      schema.many,
-                      schema.selection || '',
-                      value
-                    )
-                  );
-                }
-                return value;
-              },
-            }),
-          },
-        }),
-        update: getGraphQLInputType(name, schema, 'update', new Map(), meta),
-        create: getGraphQLInputType(name, schema, 'create', new Map(), meta),
-      };
+    const graphqlTypes = globalStructureTypes[name] || {
+      output: graphql.object<{ value: JSONValue }>()({
+        name: `${name}Output`,
+        fields: {
+          structure: getOutputGraphQLField(
+            name,
+            schema,
+            unreferencedConcreteInterfaceImplementations,
+            new Map(),
+            meta
+          ),
+          json: graphql.field({
+            type: graphql.JSON,
+            args: {
+              hydrateRelationships: graphql.arg({
+                type: graphql.nonNull(graphql.Boolean),
+                defaultValue: false,
+              }),
+            },
+            resolve({ value }, args, context) {
+              if (args.hydrateRelationships) {
+                return addRelationshipDataToComponentProps(schema, value, (schema, value) =>
+                  fetchRelationshipData(
+                    context,
+                    schema.listKey,
+                    schema.many,
+                    schema.selection || '',
+                    value
+                  )
+                );
+              }
+              return value;
+            },
+          }),
+        },
+      }),
+      update: getGraphQLInputType(name, schema, 'update', new Map(), meta),
+      create: getGraphQLInputType(name, schema, 'create', new Map(), meta),
+    };
+    if (config.graphql?.typeName) {
+      globalStructureTypes[name] = graphqlTypes;
     }
 
     return jsonFieldTypePolyfilledForSQLite(
@@ -125,7 +126,7 @@ export const structure =
         input: {
           create: {
             arg: graphql.arg({
-              type: globalStructureTypes[name].create,
+              type: graphqlTypes.create,
             }),
             async resolve(val, context) {
               return await getValueForCreate(schema, val, context, []);
@@ -133,12 +134,12 @@ export const structure =
           },
           update: {
             arg: graphql.arg({
-              type: globalStructureTypes[name].update,
+              type: graphqlTypes.update,
             }),
           },
         },
         output: graphql.field({
-          type: globalStructureTypes[name].output,
+          type: graphqlTypes.output,
           resolve(source) {
             return source;
           },
