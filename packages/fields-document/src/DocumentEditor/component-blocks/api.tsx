@@ -118,6 +118,7 @@ export type ArrayField<ElementField extends ComponentSchema> = {
   element: ElementField;
   // this is written with unknown to avoid typescript being annoying about circularity or variance things
   label?(props: unknown): string;
+  fieldLabel?: string;
 };
 
 export type RelationshipField<Many extends boolean> = {
@@ -152,6 +153,7 @@ type ArrayFieldInComponentSchema = {
   element: ComponentSchema;
   // this is written with unknown to avoid typescript being annoying about circularity or variance things
   label?(props: unknown): string;
+  fieldLabel?: string;
 };
 
 export type ComponentSchema =
@@ -168,6 +170,7 @@ type ArrayFieldInComponentSchemaForGraphQL = {
   element: ComponentSchemaForGraphQL;
   // this is written with unknown to avoid typescript being annoying about circularity or variance things
   label?(props: unknown): string;
+  fieldLabel?: string;
 };
 
 export type ComponentSchemaForGraphQL =
@@ -552,9 +555,12 @@ export const fields = {
   },
   array<ElementField extends ComponentSchema>(
     element: ElementField,
-    opts?: { label?: (props: GenericPreviewProps<ElementField, unknown>) => string }
+    opts?: {
+      label?: (props: GenericPreviewProps<ElementField, unknown>) => string;
+      fieldLabel?: string;
+    }
   ): ArrayField<ElementField> {
-    return { kind: 'array', element, label: opts?.label };
+    return { kind: 'array', element, label: opts?.label, fieldLabel: opts?.fieldLabel };
   },
 };
 

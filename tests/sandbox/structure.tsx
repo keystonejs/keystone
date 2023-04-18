@@ -1,14 +1,11 @@
-import {
-  ArrayField,
-  ComponentSchemaForGraphQL,
-  fields,
-} from '@keystone-6/fields-document/component-blocks';
+import { fields } from '@keystone-6/fields-document/component-blocks';
 
-export const schema: ArrayField<ComponentSchemaForGraphQL> = fields.array(
-  fields.integer({ label: 'My integer units' }),
-  {
+export const schema = fields.object({
+  integer: fields.integer({ label: 'My integer units' }),
+  array: fields.array(fields.integer({ label: 'My integer units' }), {
+    fieldLabel: 'My array of integers',
     label: props => {
       return `${props.value} units`;
     },
-  }
-);
+  }),
+});
