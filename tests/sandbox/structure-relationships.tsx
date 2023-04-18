@@ -11,7 +11,7 @@ export const schema: ArrayField<ComponentSchemaForGraphQL> = fields.array(
     many: false,
   }),
   {
-    label: props => {
+    itemLabel: props => {
       return `${props.value?.label}`;
     },
   }
