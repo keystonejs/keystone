@@ -12,7 +12,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import parse from 'date-fns/parse';
 import format from 'date-fns/format';
-import globby from 'globby';
+import { globby } from 'globby';
 import { BlogContent, readBlogContent } from '../../markdoc';
 import { extractHeadings, Markdoc } from '../../components/Markdoc';
 import { BlogPage } from '../../components/Page';

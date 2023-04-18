@@ -7,7 +7,7 @@ import {
   InferGetStaticPropsType,
 } from 'next';
 import { useRouter } from 'next/router';
-import globby from 'globby';
+import { globby } from 'globby';
 import { DocsContent, readDocsContent } from '../../markdoc';
 import { extractHeadings, Markdoc } from '../../components/Markdoc';
 import { DocsPage } from '../../components/Page';
