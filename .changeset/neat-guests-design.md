@@ -2,4 +2,4 @@
 '@keystone-6/fields-document': major
 ---
 
-Adds `fieldLabel` to array field for Structured JSON
+Changes `fields.array({ label: ...` to `fields.array({ itemLabel: ...`, and adds `fields.array({ label: string`, aligned with other document fields
