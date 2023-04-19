@@ -16,7 +16,7 @@ model Thing {
   id                                String    @id @default(cuid())
   text                              String    @default("")
   timestamp                         DateTime?
-  structure                         String    @default("[]")
+  structure                         String    @default("{\"integer\":0,\"array\":[]}")
   structureNested                   String    @default("[]")
   structureRelationships            String    @default("[]")
   checkbox                          Boolean   @default(false)

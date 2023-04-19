@@ -34,12 +34,13 @@ type DefaultFieldProps<Key> = GenericPreviewProps<
 function ArrayFieldPreview(props: DefaultFieldProps<'array'>) {
   return (
     <Stack gap="medium">
+      {props.schema.label && <FieldLabel>{props.schema.label}</FieldLabel>}
       <OrderableList {...props}>
         {props.elements.map(val => {
           return (
             <OrderableItemInForm
               elementKey={val.key}
-              label={props.schema.label?.(val) ?? 'Item'}
+              label={props.schema.itemLabel?.(val) ?? 'Item'}
               {...val}
             />
           );

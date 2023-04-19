@@ -36,8 +36,13 @@ type Thing {
 scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
 
 type ThingStructureOutput {
-  structure: [Int]
+  structure: ThingStructure
   json(hydrateRelationships: Boolean! = false): JSON
+}
+
+type ThingStructure {
+  integer: Int
+  array: [Int]
 }
 
 type ThingStructureNestedOutput {
@@ -296,7 +301,7 @@ enum OrderDirection {
 input ThingUpdateInput {
   text: String
   timestamp: DateTime
-  structure: [Int]
+  structure: ThingStructureUpdateInput
   structureNested: [ThingStructureNestedUpdateInput]
   structureRelationships: [ThingRelateToOneForUpdateInput]
   checkbox: Boolean
@@ -319,6 +324,11 @@ input ThingUpdateInput {
   image: ImageFieldInput
   file: FileFieldInput
   document: JSON
+}
+
+input ThingStructureUpdateInput {
+  integer: Int
+  array: [Int]
 }
 
 input ThingStructureNestedUpdateInput {
@@ -374,7 +384,7 @@ input ThingUpdateArgs {
 input ThingCreateInput {
   text: String
   timestamp: DateTime
-  structure: [Int]
+  structure: ThingStructureCreateInput
   structureNested: [ThingStructureNestedCreateInput]
   structureRelationships: [ThingRelateToOneForCreateInput]
   checkbox: Boolean
@@ -397,6 +407,11 @@ input ThingCreateInput {
   image: ImageFieldInput
   file: FileFieldInput
   document: JSON
+}
+
+input ThingStructureCreateInput {
+  integer: Int
+  array: [Int]
 }
 
 input ThingStructureNestedCreateInput {
