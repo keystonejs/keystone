@@ -26,7 +26,6 @@
     "mime": "^3.0.0",
     "node-fetch": "^2.6.7",
     "prisma": "^4.13.0",
-    "superagent": "^6.1.0",
     "supertest": "^6.1.6",
     "testcheck": "^1.0.0-rc.2",
     "uuid": "^9.0.0"
