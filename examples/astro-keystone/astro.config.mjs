@@ -3,7 +3,7 @@ import { defineConfig } from 'astro/config';
 // https://astro.build/config
 export default defineConfig({
   output: 'server',
-  // This vite config is only required to make astro work within the Keystone Monorepo, you should not need these settings in your own project
+  // WARNING: this is only needed for our monorepo examples, dont do this
   vite: {
     ssr: {
       external: [
