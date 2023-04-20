@@ -13,7 +13,7 @@ const validEmail = (email: string) =>
     email
   );
 
-const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup';
+const enquiryUrl = 'https://endpoints.thinkmill.com.au/enquiry';
 
 type ContactFormProps = {
   autoFocus?: boolean;
@@ -23,6 +23,8 @@ type ContactFormProps = {
 
 export function ContactForm({ autoFocus, stacked, children, ...props }: ContactFormProps) {
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -31,20 +33,20 @@ export function ContactForm({ autoFocus, stacked, children, ...props }: ContactF
   const onSubmit = (event: SyntheticEvent) => {
     event.preventDefault();
     setError(null);
-    // Check if user wants to subscribe.
-    // and there's a valid email address.
     // Basic validation check on the email?
     setLoading(true);
     if (validEmail(email)) {
-      // if good add email to mailing list
-      // and redirect to dashboard.
-      return fetch(signupURL, {
+      // if good post to Thinkmill endpoint
+      return fetch(enquiryUrl, {
         method: 'POST',
+        mode: 'cors',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           email,
+          name,
+          message,
           source: '@keystone-6/website',
         }),
       })
@@ -91,8 +93,8 @@ export function ContactForm({ autoFocus, stacked, children, ...props }: ContactF
             autoComplete="off"
             autoFocus={autoFocus}
             placeholder="Your name"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
+            value={name}
+            onChange={e => setName(e.target.value)}
             css={mq({
               margin: ['0 auto', 0],
             })}
@@ -113,8 +115,8 @@ export function ContactForm({ autoFocus, stacked, children, ...props }: ContactF
             autoComplete="off"
             autoFocus={autoFocus}
             placeholder="Tell us a bit about your needs"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
+            value={message}
+            onChange={e => setMessage(e.target.value)}
             css={mq({
               margin: ['0 auto', 0],
             })}
@@ -127,6 +129,6 @@ export function ContactForm({ autoFocus, stacked, children, ...props }: ContactF
       </form>
     </Fragment>
   ) : (
-    <p>❤️ Thank you for subscribing!</p>
+    <p>❤️ Thank you for contacting us</p>
   );
 }

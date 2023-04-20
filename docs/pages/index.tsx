@@ -834,6 +834,9 @@ export const lists = {
           </div>
         </Section>
 
+        <Section css={{ textAlign: 'center' }}>
+          <Type as="h2" look="heading30" margin="2rem auto" css={{ maxWidth: '41.875rem' }} />
+        </Section>
         <Section
           css={{
             textAlign: 'center',
