@@ -1,47 +1,30 @@
-# Astro Starter Kit: Minimal
+# Keystone + Astro
 
-```
-npm create astro@latest -- --template minimal
-```
+Keystone can be used as a data engine in Astro applications without having to host a separate Keystone server.
+This is made possible by Keystone's `getContext` API.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/minimal)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/minimal)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/minimal/devcontainer.json)
+This example shows how this can be achieved with [Astro SSR](https://docs.astro.build/en/guides/server-side-rendering/). It shows how to pass through a session to Keystone using `withSession()` to filter posts based on the browser used - this example is purely for the demonstration of session and access control when using `getContext` in Astro.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+# Running the Example
 
-## 🚀 Project Structure
+To run the example for yourself you will perform the following step:
 
-Inside of your Astro project, you'll see the following folders and files:
+- Clone the Repo
+- Run `pnpm install`
+- cd into the examples/astro-keystone folder (`cd exmaples/astro-keystone`)
+- Run the Keystone Server to set up some posts:
+  - Run `pnpm keystone dev`
+  - Open a web browser at `http://localhost:4000`
+  - Create some posts
+- Run Astro to see your posts:
+  - Run `pnpm dev`
+  - Open a web browser at `http://localhost:3000`
+  - See you posts as they are created
 
-```
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+# Notes
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+The `astro.config.mjs` file contains a `vite` configuration object, this should not be required outside of the Keystone Monorepo
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Try it out in CodeSandbox 🧪
 
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                | Action                                           |
-| :--------------------- | :----------------------------------------------- |
-| `npm install`          | Installs dependencies                            |
-| `npm run dev`          | Starts local dev server at `localhost:3000`      |
-| `npm run build`        | Build your production site to `./dist/`          |
-| `npm run preview`      | Preview your build locally, before deploying     |
-| `npm run astro ...`    | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+You can play with this example online in a web browser using the free [codesandbox.io](https://codesandbox.io/) service. To launch this example, open the URL <https://githubbox.com/keystonejs/keystone/tree/main/examples/astro-keystone>. You can also fork this sandbox to make your own changes.

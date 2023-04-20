@@ -20,5 +20,9 @@ export default config({
     // Using myprisma/client as vite does not like .
     prismaClientPath: 'node_modules/myprisma/client',
   },
+  server: {
+    // We're using a custom port for this example so Astro and Keystone can run at the same time
+    port: 4000,
+  },
   lists,
 });
