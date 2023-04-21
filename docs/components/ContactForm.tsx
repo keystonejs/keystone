@@ -48,7 +48,7 @@ export function ContactForm({ autoFocus, stacked, children, ...props }: ContactF
           email,
           name,
           message,
-          source: '@keystone-6/website',
+          campaignId: '@keystone-6/website',
         }),
       })
         .then(res => {
