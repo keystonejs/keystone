@@ -194,7 +194,7 @@ export default function IndexPage() {
         </Section>
 
         <Section>
-          <PillCta grad="grad5">
+          <PillCta grad="grad6">
             <div
               css={mq({
                 display: 'grid',

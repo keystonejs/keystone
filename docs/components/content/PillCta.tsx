@@ -5,7 +5,7 @@ import { HTMLAttributes } from 'react';
 import { useMediaQuery } from '../../lib/media';
 
 type PillCtaProps = {
-  grad?: 'grad1' | 'grad2' | 'grad3' | 'grad4' | 'grad5';
+  grad?: 'grad1' | 'grad2' | 'grad3' | 'grad4' | 'grad5' | 'grad6';
 } & HTMLAttributes<HTMLElement>;
 
 export function PillCta({ grad = 'grad1', children, ...props }: PillCtaProps) {

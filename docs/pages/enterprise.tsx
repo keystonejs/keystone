@@ -69,7 +69,7 @@ export default function ForOrganisations() {
       }
     >
       <MWrapper>
-        <Pill grad="grad5">Keystone for Enterprise</Pill>
+        <Pill grad="grad6">Keystone for Enterprise</Pill>
 
         <IntroWrapper>
           <IntroHeading>
