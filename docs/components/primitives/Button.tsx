@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { ReactNode } from 'react';
-import { jsx } from '@emotion/react';
+import { CSSObject, jsx } from '@emotion/react';
 import Link from 'next/link';
 
 import { forwardRefWithAs } from '../../lib/forwardRefWithAs';
@@ -111,6 +111,7 @@ type ButtonProps = {
   look?: keyof typeof styleMap;
   shadow?: boolean;
   size?: keyof typeof sizeMap;
+  styleOverrides?: CSSObject;
 };
 
 export const Button = forwardRefWithAs<'button', ButtonProps>(
@@ -123,6 +124,7 @@ export const Button = forwardRefWithAs<'button', ButtonProps>(
       disabled,
       loading,
       children,
+      styleOverrides,
       ...props
     },
     ref
@@ -183,12 +185,14 @@ export const Button = forwardRefWithAs<'button', ButtonProps>(
             whiteSpace: 'nowrap',
             cursor: 'pointer',
             transition: 'all 0.1s ease',
+            ...styleOverrides,
             ':hover': {
               boxShadow: 'var(--button-shadow-hover)',
               background: 'var(--button-bg-hover)',
               textDecoration: 'var(--button-decoration-hover)',
               color: 'var(--button-color-hover)',
               border: 'var(--button-border-hover)',
+              ...styleOverrides?.[':hover'],
             },
             ':active': {
               boxShadow: 'var(--button-shadow-active)',
@@ -196,6 +200,7 @@ export const Button = forwardRefWithAs<'button', ButtonProps>(
               background: 'var(--button-bg-active)',
               color: 'var(--button-color-active)',
               border: 'var(--button-border-active)',
+              ...styleOverrides?.[':active'],
             },
             ':disabled': {
               boxShadow: 'none',
@@ -205,6 +210,7 @@ export const Button = forwardRefWithAs<'button', ButtonProps>(
               color: 'var(--button-color-disabled)',
               border: 'var(--button-border-disabled)',
               pointerEvents: 'none',
+              ...styleOverrides?.[':disabled'],
             },
             ':focus-visible': {
               outline: '1px dashed var(--focus)',

@@ -20,6 +20,7 @@ import { Automated } from '../components/icons/Automated';
 import { Section } from '../components/content/Section';
 import { Thinkmill } from '../components/icons/Thinkmill';
 import { CodeBox } from '../components/content/CodeBox';
+import { PillCta } from '../components/content/PillCta';
 import { Migration } from '../components/icons/Migration';
 import { Button } from '../components/primitives/Button';
 import { EndCta } from '../components/content/EndCta';
@@ -190,6 +191,48 @@ export default function IndexPage() {
             and gives me the backend I need. I get a sweet GraphQL API, and can stay focused on
             building the UI <Emoji symbol="😍" alt="Love" />
           </TweetBox>
+        </Section>
+
+        <Section>
+          <PillCta grad="grad6">
+            <div
+              css={mq({
+                display: 'grid',
+                gridTemplateColumns: ['1fr', '3fr 1fr'],
+                gridTemplateRows: 'min-content 1fr',
+                alignItems: 'center',
+                rowGap: ['1rem', '0.5rem'],
+                columnGap: '2.5rem',
+              })}
+            >
+              <Type as="h2" look="heading24">
+                Keystone for <Highlight look="grad6">enterprises.</Highlight>
+              </Type>
+
+              <Type look="body16">
+                Need enterprise level support? Get tailored Keystone support from the people who
+                built it.
+              </Type>
+
+              <Button
+                as="a"
+                href="/enterprise"
+                size="large"
+                look="secondary"
+                css={mq({
+                  gridRow: ['3', '1 / -1'],
+                  gridColumn: ['1', '2'],
+                  justifySelf: 'start',
+                })}
+                styleOverrides={{
+                  background: 'transparent',
+                  ':hover': { background: 'transparent' },
+                }}
+              >
+                Learn more
+              </Button>
+            </div>
+          </PillCta>
         </Section>
 
         <Section>
@@ -834,6 +877,9 @@ export const lists = {
           </div>
         </Section>
 
+        <Section css={{ textAlign: 'center' }}>
+          <Type as="h2" look="heading30" margin="2rem auto" css={{ maxWidth: '41.875rem' }} />
+        </Section>
         <Section
           css={{
             textAlign: 'center',

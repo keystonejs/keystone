@@ -383,6 +383,7 @@ export function Header() {
               { label: 'For Content Management', href: '/for-content-management' },
               { label: 'Our Roadmap', href: '/updates/roadmap' },
               { label: 'GitHub Releases', href: 'https://github.com/keystonejs/keystone/releases' },
+              { label: 'Enterprise', href: '#' },
             ]}
           />
         </span>
@@ -418,6 +419,13 @@ export function Header() {
           })}
         >
           <LinkItem href="/blog">Blog</LinkItem>
+        </span>
+        <span
+          css={mq({
+            display: ['none', null, 'inline-block'],
+          })}
+        >
+          <LinkItem href="/enterprise">Enterprise</LinkItem>
         </span>
         <Button
           as="a"
