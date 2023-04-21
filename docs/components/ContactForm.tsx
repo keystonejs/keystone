@@ -79,7 +79,7 @@ export function ContactForm({ autoFocus, stacked, children, ...props }: ContactF
   return !formSubmitted ? (
     <Fragment>
       {children}
-      <form onSubmit={onSubmit} {...props}>
+      <form onSubmit={onSubmit} {...props} aria-label="Contact us">
         <Stack
           orientation={stacked ? 'vertical' : 'horizontal'}
           block={stacked}
@@ -90,28 +90,36 @@ export function ContactForm({ autoFocus, stacked, children, ...props }: ContactF
         >
           <Field
             type="name"
+            label="Name"
+            id="contact-us-name"
             autoComplete="off"
             autoFocus={autoFocus}
-            placeholder="Your name"
+            placeholder="Enter your name"
             value={name}
             onChange={e => setName(e.target.value)}
             css={mq({
               margin: ['0 auto', 0],
             })}
           />
+
           <Field
             type="email"
+            label="Email"
+            id="contact-us-email"
             autoComplete="off"
             autoFocus={autoFocus}
-            placeholder="Your email address"
+            placeholder="Enter your email address"
             value={email}
             onChange={e => setEmail(e.target.value)}
             css={mq({
               margin: ['0 auto', 0],
             })}
           />
+
           <Field
             type="comments"
+            label="Message"
+            id="contact-us-message"
             autoComplete="off"
             autoFocus={autoFocus}
             placeholder="Tell us a bit about your needs"
@@ -121,7 +129,8 @@ export function ContactForm({ autoFocus, stacked, children, ...props }: ContactF
               margin: ['0 auto', 0],
             })}
           />
-          <Button look="primary" size="small" loading={loading} type={'submit'}>
+
+          <Button size="small" loading={loading} type={'submit'} css={{ margin: '0.5rem 0 0' }}>
             {error ? 'Try again' : 'Get in touch'}
           </Button>
         </Stack>

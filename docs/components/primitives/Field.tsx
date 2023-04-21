@@ -1,16 +1,38 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
-import { forwardRef, InputHTMLAttributes } from 'react';
+import { InputHTMLAttributes } from 'react';
+import { Stack } from './Stack';
+import { Type } from './Type';
 
-type Ref = HTMLInputElement;
+export const Field = ({
+  label,
+  id,
+  disabled,
+  type = 'text',
+  ...props
+}: InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> & {
+  label?: string;
+  id?: string;
+}) => {
+  const isTextarea = type === 'comments';
+  const TextInput = isTextarea ? 'textarea' : 'input';
 
-export const Field = forwardRef<Ref, InputHTMLAttributes<HTMLInputElement>>(
-  ({ disabled, type = 'text', ...props }, ref) => {
-    return (
-      <input
-        ref={ref}
+  return (
+    <Stack
+      css={{
+        width: '100%',
+      }}
+    >
+      {label && (
+        <Type look="body14" as="label" htmlFor={id}>
+          {label}
+        </Type>
+      )}
+
+      <TextInput
         type={type}
+        id={id}
         css={{
           appearance: 'none',
           backgroundColor: 'var(--app-bg)',
@@ -30,6 +52,11 @@ export const Field = forwardRef<Ref, InputHTMLAttributes<HTMLInputElement>>(
           paddingTop: 0,
           boxShadow: '0 0 0 2px transparent',
           transition: 'border 0.1s ease, box-shadow 0.1s ease',
+          ...(isTextarea && {
+            fontFamily: 'inherit',
+            paddingTop: '0.75rem',
+            height: '8rem',
+          }),
           ':hover': {
             borderColor: 'var(--brand-bg)',
           },
@@ -48,8 +75,8 @@ export const Field = forwardRef<Ref, InputHTMLAttributes<HTMLInputElement>>(
         disabled={disabled}
         {...props}
       />
-    );
-  }
-);
+    </Stack>
+  );
+};
 
 Field.displayName = 'Field';
