@@ -4,7 +4,6 @@ import Head from 'next/head';
 import { gql } from 'graphql-request';
 import { client } from '../util/request';
 import { keystoneContext } from '../keystone/context';
-import { Header } from '../components/Header';
 
 const Home: NextPage = ({ users }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
@@ -22,20 +21,11 @@ const Home: NextPage = ({ users }: InferGetServerSidePropsType<typeof getServerS
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Header />
       <main style={{ display: 'flex', justifyContent: 'center' }}>
         <section>
           <h1>Keystone 🤝 Next.js</h1>
           <ul>
-            <li>
-              If you are <strong>not logged in</strong>, you can <strong>only see the name</strong>{' '}
-              of all users in the database.
-            </li>
-            <li>
-              User.email is behind access control and only visible for logged in users. Once you{' '}
-              <strong>log in</strong>, you can <strong>see both the name and email</strong> of all
-              users in the database.
-            </li>
+            <li>Below you can see the names of users in the database.</li>
           </ul>
 
           <ServerRenderedContent users={users} />
@@ -77,16 +67,9 @@ const Home: NextPage = ({ users }: InferGetServerSidePropsType<typeof getServerS
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  /*
-    `keystoneContext` object doesn't have user's session information.
-    You need an authenticated context to CRUD data behind access control.
-    keystoneContext.withRequest(req, res) automatically unwraps the session cookie
-    in the request object and gives you a `context` object with session info
-    and an elevated sudo context to bypass access control if needed (context.sudo()).
-  */
   const context = await keystoneContext.withRequest(req, res);
   const users = await context.query.User.findMany({
-    query: 'id name email',
+    query: 'id name about',
   });
   return {
     props: { users: users }, // will be passed to the page component as props
@@ -96,7 +79,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 function ServerRenderedContent({
   users,
 }: {
-  users: { id: string; name: string; email: string | null }[];
+  users: { id: string; name: string; about: string | null }[];
 }) {
   return (
     <div>
@@ -108,7 +91,12 @@ function ServerRenderedContent({
           return (
             <li key={u.id}>
               <span>{u.name} </span>
-              {u.email ? <span>(email: {u.email})</span> : <span>(email: not authenticated)</span>}
+              {u.about && (
+                <>
+                  <hr />
+                  {u.about}
+                </>
+              )}
             </li>
           );
         })}
@@ -118,7 +106,7 @@ function ServerRenderedContent({
 }
 
 function ClientRenderedContent() {
-  const [users, setUsers] = useState<Array<{ id: string; name: string; email: string | null }>>([]);
+  const [users, setUsers] = useState<Array<{ id: string; name: string; about: string | null }>>([]);
 
   // Fetch users from REST api route
   useEffect(() => {
@@ -129,7 +117,7 @@ function ClientRenderedContent() {
             users {
               id
               name
-              email
+              about
             }
           }
         `
@@ -150,11 +138,11 @@ function ClientRenderedContent() {
             return (
               <li key={u.id}>
                 <span>{u.name} </span>
-
-                {u.email ? (
-                  <span>(email: {u.email})</span>
-                ) : (
-                  <span>(email: not authenticated)</span>
+                {u.about && (
+                  <>
+                    <hr />
+                    {u.about}
+                  </>
                 )}
               </li>
             );

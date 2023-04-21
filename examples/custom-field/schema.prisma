@@ -13,9 +13,12 @@ generator client {
 }
 
 model Post {
-  id         String  @id @default(cuid())
-  content    String?
-  rating     Int?
-  pair_left  String?
-  pair_right String?
+  id               String  @id @default(cuid())
+  content          String?
+  rating           Int?
+  pair_left        String?
+  pair_right       String?
+  pairNested_left  String?
+  pairNested_right String?
+  pairJson         String?
 }

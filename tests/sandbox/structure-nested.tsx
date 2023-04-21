@@ -28,7 +28,7 @@ export const schema: ArrayField<ComponentSchemaForGraphQL> = fields.array(
     }
   ),
   {
-    label: props =>
+    itemLabel: props =>
       `${
         props.schema.discriminant.options.find(option => props.discriminant === option.value)?.label
       } - ${props.value.fields.label.value}${

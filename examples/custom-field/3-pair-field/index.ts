@@ -9,10 +9,23 @@ import { graphql } from '@keystone-6/core';
 export type PairFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo>;
 
+type PairInput = string;
+type PairOutput = string;
+
+const PairInput = graphql.String;
+const PairOutput = graphql.String;
+
+const PairFilter = graphql.inputObject({
+  name: 'PairFilter',
+  fields: {
+    equals: graphql.arg({ type: graphql.String }),
+  },
+});
+
 export function pair<ListTypeInfo extends BaseListTypeInfo>(
   config: PairFieldConfig<ListTypeInfo> = {}
 ): FieldTypeFunc<ListTypeInfo> {
-  function resolveInput(value: string | null | undefined) {
+  function resolveInput(value: PairInput | null | undefined) {
     if (!value) return { left: value, right: value };
     const [left = '', right = ''] = value.split(' ', 2);
     return {
@@ -68,14 +81,14 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>(
           },
         },
         create: {
-          arg: graphql.arg({ type: graphql.String }),
+          arg: graphql.arg({ type: PairInput }),
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           resolve(value, context) {
             return resolveInput(value);
           },
         },
         update: {
-          arg: graphql.arg({ type: graphql.String }),
+          arg: graphql.arg({ type: PairInput }),
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           resolve(value, context) {
             return resolveInput(value);
@@ -83,7 +96,7 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>(
         },
       },
       output: graphql.field({
-        type: graphql.String,
+        type: PairOutput,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         resolve({ value, item }, args, context, info) {
           return resolveOutput(value);
@@ -95,10 +108,3 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>(
       },
     });
 }
-
-const PairFilter = graphql.inputObject({
-  name: 'PairFilter',
-  fields: {
-    equals: graphql.arg({ type: graphql.String }),
-  },
-});

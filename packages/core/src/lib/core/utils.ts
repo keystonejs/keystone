@@ -146,7 +146,7 @@ export function getNamesFromList(
 
   return {
     graphql: {
-      names: getGqlNames(listKey, pluralGraphQLName),
+      names: getGqlNames({ listKey, pluralGraphQLName }),
       namePlural: pluralGraphQLName,
     },
     ui: {

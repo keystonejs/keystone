@@ -21,6 +21,7 @@ import { document, structure } from '@keystone-6/fields-document';
 import { componentBlocks } from '../component-blocks';
 import { schema as structureSchema } from '../structure';
 import { schema as structureNestedSchema } from '../structure-nested';
+import { schema as structureRelationshipsSchema } from '../structure-relationships';
 import { dbConfig, localStorageConfig, trackingFields } from '../utils';
 
 const description =
@@ -30,10 +31,16 @@ export const lists = {
   Thing: list({
     access: allowAll,
     fields: {
+      text: text({ ui: { description } }),
+      timestamp: timestamp({ ui: { description } }),
       structure: structure({ schema: structureSchema, ui: { views: './structure' } }),
       structureNested: structure({
         schema: structureNestedSchema,
         ui: { views: './structure-nested' },
+      }),
+      structureRelationships: structure({
+        schema: structureRelationshipsSchema,
+        ui: { views: './structure-relationships' },
       }),
       ...group({
         label: 'Some group',
@@ -80,8 +87,6 @@ export const lists = {
         },
         many: true,
       }),
-      text: text({ ui: { description } }),
-      timestamp: timestamp({ ui: { description } }),
       calendarDay: calendarDay({ ui: { description } }),
       randomNumberVirtual: virtual({
         ui: { description },
@@ -166,6 +171,9 @@ export const lists = {
         dividers: true,
         componentBlocks,
       }),
+    },
+    ui: {
+      labelField: 'text',
     },
   }),
   Todo: list({

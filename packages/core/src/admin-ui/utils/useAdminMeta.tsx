@@ -71,7 +71,7 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
       runtimeAdminMeta.lists[list.key] = {
         ...list,
         groups: [],
-        gqlNames: getGqlNames(list.key, list.listQueryName), // TODO: remove
+        gqlNames: getGqlNames({ listKey: list.key, pluralGraphQLName: list.listQueryName }), // TODO: replace with an object
         fields: {},
       };
 

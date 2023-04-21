@@ -98,7 +98,7 @@ export function useItemState({
     setItems: useCallback(
       (items: Items) => {
         setItemsState(state => {
-          let itemsForState: (typeof state)['items'] = {};
+          let itemsForState: typeof state['items'] = {};
           Object.keys(items).forEach(id => {
             if (items[id] === state.items[id]?.current) {
               itemsForState[id] = state.items[id];

@@ -2,7 +2,7 @@
 /** @jsx jsx */
 import path from 'path';
 import fs from 'fs/promises';
-import globby from 'globby';
+import { globby } from 'globby';
 import { InferGetStaticPropsType, GetStaticPropsResult } from 'next';
 import Link from 'next/link';
 import parse from 'date-fns/parse';

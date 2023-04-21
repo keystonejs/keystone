@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import { ValidateError } from '@markdoc/markdoc';
-import globby from 'globby';
+import { globby } from 'globby';
 import { loadAllMarkdoc } from '../../markdoc/load-all';
 import { printValidationError } from '../../markdoc';
 import { removeNextReleaseConditions } from './markdoc';

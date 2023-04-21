@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs/promises';
 import RSS from 'rss';
-import globby from 'globby';
+import { globby } from 'globby';
 import { extractBlogFrontmatter } from '../markdoc';
 import { siteBaseUrl } from '../lib/og-util';
 

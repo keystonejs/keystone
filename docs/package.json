@@ -42,7 +42,7 @@
     "dedent": "^0.7.0",
     "emery": "^1.4.1",
     "facepaint": "^1.2.1",
-    "globby": "^11.0.4",
+    "globby": "^13.0.0",
     "js-yaml": "^4.1.0",
     "lodash.debounce": "^4.0.8",
     "markdown-it": "^13.0.1",

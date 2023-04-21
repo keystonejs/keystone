@@ -7,7 +7,7 @@
   "license": "MIT",
   "repository": "https://github.com/keystonejs/keystone",
   "homepage": "https://github.com/keystonejs/keystone",
-  "packageManager": "pnpm@8.2.0",
+  "packageManager": "pnpm@8.3.0",
   "scripts": {
     "coverage": "jest --coverage",
     "format:file": "prettier --write",
@@ -35,7 +35,7 @@
     "@changesets/changelog-github": "^0.4.1",
     "@changesets/cli": "^2.18.0",
     "@manypkg/cli": "^0.20.0",
-    "@preconstruct/cli": "2.4.4",
+    "@preconstruct/cli": "2.5.0",
     "@types/jest": "^29.0.0",
     "@types/node": "^18.11.14",
     "@types/node-fetch": "^2.5.12",

@@ -1,9 +1,6 @@
 name: Website (Preview)
 
 on:
-  pull_request:
-    paths:
-      - 'docs/**'
   workflow_dispatch:
 
 jobs:

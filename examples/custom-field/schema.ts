@@ -4,6 +4,8 @@ import { allowAll } from '@keystone-6/core/access';
 import { text } from './1-text-field';
 import { stars } from './2-stars-field';
 import { pair } from './3-pair-field';
+import { pair as pairNested } from './3-pair-field-nested';
+import { pair as pairJson } from './3-pair-field-json';
 
 import { Lists } from '.keystone/types';
 
@@ -23,9 +25,19 @@ export const lists: Lists = {
       }),
       pair: pair({
         ui: {
-          description: 'Two words split by a space',
+          description: 'One string, two database string fields',
         },
-      }), // TODO: this example is a bit abstract, should be contextualised
+      }),
+      pairNested: pairNested({
+        ui: {
+          description: 'Two strings, two database string fields',
+        },
+      }),
+      pairJson: pairJson({
+        ui: {
+          description: 'Two strings, one database JSON field',
+        },
+      }),
     },
     hooks: {
       // TODO: this is  an example of how hooks interact with custom multiple-column fields,
@@ -41,6 +53,14 @@ export const lists: Lists = {
             right: resolvedData.pair?.right,
           },
         };
+      },
+
+      validateInput: async ({ resolvedData, operation, inputData, item, addValidationError }) => {
+        console.log('Post.hooks.validateInput', { resolvedData, operation, inputData, item });
+
+        if (Math.random() > 0.95) {
+          addValidationError('oh oh, try again, this is part of the example');
+        }
       },
     },
   }),
