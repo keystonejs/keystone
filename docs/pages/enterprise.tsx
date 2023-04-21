@@ -23,23 +23,23 @@ const customers = [
   {
     icon: VocalLogo,
     title: 'Vocal',
-    copy: 'Large scale creator and content platform.',
+    copy: 'Large scale creator and content platform on web and mobile.',
   },
   {
     icon: PJohnsonLogo,
     title: 'PJohnson Tailors',
-    copy: 'Powering PJT’s custom order and delivery business system',
+    copy: 'PJT’s custom order and production management system',
   },
   {
     icon: DFATLogo,
     title: `Dep't of Foreign Affairs & Trade`,
     accessibleTitle: 'Department of Foreign Affairs and Trade',
-    copy: 'Powering the Australian Free Trade Agreements website',
+    copy: 'Australian Free Trade Agreements website',
   },
   {
     icon: EnliticLogo,
     title: 'Enlitic',
-    copy: 'Supporting Enlitic’s Medical Annotation Platform and PACS.',
+    copy: 'Powering Enlitic’s Medical Annotation Platform and PACS.',
   },
   {
     icon: RugbyAuLogo,
@@ -49,7 +49,7 @@ const customers = [
   {
     icon: WestpacLogo,
     title: 'Westpac',
-    copy: 'Providing content management for Westpac’s GEL',
+    copy: 'Content management for Westpac’s GEL system',
   },
   {
     icon: PrintBarLogo,
