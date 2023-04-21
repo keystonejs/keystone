@@ -23,38 +23,38 @@ const customers = [
   {
     icon: VocalLogo,
     title: 'Vocal',
-    copy: 'We architected this publishing platform to use Keystone for...',
+    copy: 'Large scale creator and content platform.',
   },
   {
     icon: PJohnsonLogo,
     title: 'PJohnson Tailors',
-    copy: 'Fast growing creator network in no more than three lines.',
+    copy: 'Powering PJT’s custom order and delivery business system',
   },
   {
     icon: DFATLogo,
     title: `Dep't of Foreign Affairs & Trade`,
     accessibleTitle: 'Department of Foreign Affairs and Trade',
-    copy: 'Fast growing creator network in short.',
+    copy: 'Powering the Australian Free Trade Agreements website',
   },
   {
     icon: EnliticLogo,
     title: 'Enlitic',
-    copy: 'Fast growing creator network in no more than three lines.',
+    copy: 'Supporting Enlitic’s Medical Annotation Platform and PACS.',
   },
   {
     icon: RugbyAuLogo,
     title: 'Rugby Australia',
-    copy: 'Fast growing creator network in no more than three lines.',
+    copy: 'The home of the latest Rugby news, teams, fixtures & results',
   },
   {
     icon: WestpacLogo,
     title: 'Westpac',
-    copy: 'Fast growing creator network in no more than three lines.',
+    copy: 'Providing content management for Westpac’s GEL',
   },
   {
     icon: PrintBarLogo,
     title: 'The Print Bar',
-    copy: 'Fast growing creator network in no more than three lines.',
+    copy: 'Powering The Print Bar’s custom design and ordering platform.',
   },
 ];
 
