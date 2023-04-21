@@ -7,6 +7,7 @@ import { useMediaQuery } from '../lib/media';
 import { Button } from './primitives/Button';
 import { Field } from './primitives/Field';
 import { Stack } from './primitives/Stack';
+import { Type } from './primitives/Type';
 
 const validEmail = (email: string) =>
   /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(
@@ -134,7 +135,12 @@ export function ContactForm({ autoFocus, stacked, children, ...props }: ContactF
             {error ? 'Try again' : 'Get in touch'}
           </Button>
         </Stack>
-        {error ? <p css={{ margin: '0.5rem, 0', color: 'red' }}>{error}</p> : null}
+
+        {error && (
+          <Type as="p" margin="1rem 0 0" color="red">
+            {error}
+          </Type>
+        )}
       </form>
     </Fragment>
   ) : (
