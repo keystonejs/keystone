@@ -90,6 +90,7 @@ export function ContactForm({ autoFocus, stacked, children, ...props }: ContactF
           }}
         >
           <Field
+            size="large"
             type="name"
             label="Name"
             id="contact-us-name"
@@ -104,6 +105,7 @@ export function ContactForm({ autoFocus, stacked, children, ...props }: ContactF
           />
 
           <Field
+            size="large"
             type="email"
             label="Email"
             id="contact-us-email"
@@ -118,6 +120,7 @@ export function ContactForm({ autoFocus, stacked, children, ...props }: ContactF
           />
 
           <Field
+            size="large"
             type="comments"
             label="Message"
             id="contact-us-message"
@@ -131,7 +134,7 @@ export function ContactForm({ autoFocus, stacked, children, ...props }: ContactF
             })}
           />
 
-          <Button size="small" loading={loading} type={'submit'} css={{ margin: '0.5rem 0 0' }}>
+          <Button size="large" loading={loading} type={'submit'} css={{ margin: '0.5rem 0 0' }}>
             {error ? 'Try again' : 'Get in touch'}
           </Button>
         </Stack>
@@ -144,6 +147,6 @@ export function ContactForm({ autoFocus, stacked, children, ...props }: ContactF
       </form>
     </Fragment>
   ) : (
-    <p>❤️ Thank you for contacting us</p>
+    <p css={{ textAlign: 'center' }}>❤️ Thank you for contacting us</p>
   );
 }

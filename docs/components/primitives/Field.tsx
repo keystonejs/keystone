@@ -10,13 +10,16 @@ export const Field = ({
   id,
   disabled,
   type = 'text',
+  size = 'medium',
   ...props
-}: InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> & {
+}: Omit<InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement>, 'size'> & {
   label?: string;
   id?: string;
+  size?: 'medium' | 'large';
 }) => {
   const isTextarea = type === 'comments';
   const TextInput = isTextarea ? 'textarea' : 'input';
+  const isMedium = size === 'medium';
 
   return (
     <Stack
@@ -39,14 +42,14 @@ export const Field = ({
           border: '1px solid var(--border)',
           borderRadius: '6px',
           color: 'var(--text)',
-          fontSize: '1rem',
+          fontSize: isMedium ? '1rem' : '1.125rem',
           fontWeight: 400,
           outline: 0,
           paddingLeft: '1rem',
           paddingRight: '1rem',
           textAlign: 'inherit',
           width: '100%',
-          height: '2.5rem',
+          height: isMedium ? '2.5rem' : '3.125rem',
           lineHeight: 1,
           paddingBottom: 0,
           paddingTop: 0,
@@ -54,7 +57,7 @@ export const Field = ({
           transition: 'border 0.1s ease, box-shadow 0.1s ease',
           ...(isTextarea && {
             fontFamily: 'inherit',
-            paddingTop: '0.75rem',
+            paddingTop: isMedium ? '0.75rem' : '1rem',
             height: '8rem',
           }),
           ':hover': {

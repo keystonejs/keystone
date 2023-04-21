@@ -17,6 +17,7 @@ import { EnliticLogo } from '../components/icons/EnliticLogo';
 import { RugbyAuLogo } from '../components/icons/RugbyAuLogo';
 import { WestpacLogo } from '../components/icons/WestpacLogo';
 import { PrintBarLogo } from '../components/icons/PrintBarLogo';
+import { IntroHeading, IntroLead, IntroWrapper } from '../components/content/Intro';
 
 const customers = [
   {
@@ -70,9 +71,16 @@ export default function ForOrganisations() {
       <MWrapper>
         <Pill grad="grad5">Keystone for Enterprise</Pill>
 
-        <Type as="h1" look="heading64" padding="2rem 0 0">
-          Keystone support <Highlight look="grad6">from the people who built it</Highlight>
-        </Type>
+        <IntroWrapper>
+          <IntroHeading>
+            Keystone support <Highlight look="grad6">from the people who built it</Highlight>{' '}
+          </IntroHeading>
+          <IntroLead>
+            Keystone is developed and maintained by Thinkmill, an Australian software design and
+            development consultancy. Thinkmill has been building and scaling Keystone apps since
+            2013 and can provide flexible, tailored, and hands-on support for your Keystone project.
+          </IntroLead>
+        </IntroWrapper>
 
         <div
           css={mq({
@@ -80,15 +88,9 @@ export default function ForOrganisations() {
             flexDirection: 'column',
             gap: '5rem',
             alignItems: 'center',
-            paddingTop: '2.5rem',
+            paddingTop: '5rem',
           })}
         >
-          <Type as="p" look="body18" color="var(--muted)" css={{ alignSelf: 'start' }}>
-            Keystone is developed and maintained by Thinkmill, an Australian software design and
-            development consultancy. Thinkmill has been building and scaling Keystone apps since
-            2013 and can provide flexible, tailored, and hands-on support for your Keystone project.
-          </Type>
-
           <div
             css={{
               display: 'flex',
@@ -104,6 +106,7 @@ export default function ForOrganisations() {
               css={{
                 display: 'flex',
                 flexWrap: 'wrap',
+                gap: '2rem',
                 listStyle: 'none',
                 padding: 0,
                 margin: 0,

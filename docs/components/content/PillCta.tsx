@@ -19,7 +19,7 @@ export function PillCta({ grad = 'grad1', children, ...props }: PillCtaProps) {
         position: 'relative',
         fontSize: 'var(--font-xxsmall)',
         fontWeight: 700,
-        borderRadius: '3px',
+        borderRadius: '1rem',
         padding: ['1.5rem 2rem', '2rem 4rem'],
         zIndex: 1,
         '::before': {
@@ -29,6 +29,7 @@ export function PillCta({ grad = 'grad1', children, ...props }: PillCtaProps) {
           right: 0,
           bottom: 0,
           left: 0,
+          borderRadius: '1rem',
           background: `linear-gradient(135deg, var(--${grad}-1), var(--${grad}-2))`,
           opacity: 0.1,
         },
