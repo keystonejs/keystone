@@ -11,7 +11,7 @@ To run the example for yourself you will perform the following step:
 
 - Clone the Repo
 - Run `pnpm install`
-- cd into the examples/astro-keystone folder (`cd exmaples/astro-keystone`)
+- cd into the examples/framework-astro folder (`cd exmaples/framework-astro`)
 - Run the Keystone Server to set up some posts:
   - Run `pnpm keystone dev`
   - Open a web browser at `http://localhost:4000`
@@ -27,4 +27,4 @@ The `astro.config.mjs` file contains a `vite` configuration object, this should 
 
 ## Try it out in CodeSandbox 🧪
 
-You can play with this example online in a web browser using the free [codesandbox.io](https://codesandbox.io/) service. To launch this example, open the URL <https://githubbox.com/keystonejs/keystone/tree/main/examples/astro-keystone>. You can also fork this sandbox to make your own changes.
+You can play with this example online in a web browser using the free [codesandbox.io](https://codesandbox.io/) service. To launch this example, open the URL <https://githubbox.com/keystonejs/keystone/tree/main/examples/framework-astro>. You can also fork this sandbox to make your own changes.
