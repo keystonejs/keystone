@@ -53,7 +53,7 @@ export default async function HomePage() {
         </em>
       </p>
       <p>
-        <a href="https://github.com/keystonejs/keystone/tree/main/examples/nextjs-keystone-app-directory">
+        <a href="https://github.com/keystonejs/keystone/tree/main/examples/framework-nextjs-app-directory">
           Check out the example in the repo more info.
         </a>
       </p>

@@ -9,7 +9,7 @@ metaImageUrl: ""
 
 Keystone is an excellent headless CMS that provides a GraphQL API to access your data. But did you also know that you could use **Keystone as a data layer within Next.js applications**? Yes, you don't need to host Keystone on a separate server. Keystone's entire data layer is so well abstracted that you could just import the `context` API in a Next.js application and CRUD your data. In other words, Keystone can be imported and used in serverless environments like Next.js routes, `getStaticProps` and `getServerSideProps`.
 
-If you want to browse through the example code to understand how Keystone works within a Next.js application, we have built an example here [examples/nextjs-keystone](https://github.com/keystonejs/keystone/tree/main/examples/nextjs-keystone).
+If you want to browse through the example code to understand how Keystone works within a Next.js application, we have built an example here [examples/framework-nextjs-pages-directory](https://github.com/keystonejs/keystone/tree/main/examples/framework-nextjs-pages-directory).
 
 **Live Demo**: [Keystone + Next.js example in Vercel](https://nextjs-keystone-demo.vercel.app)
 
@@ -108,7 +108,7 @@ The entire application is just a **single Next.js application and can be deploye
 
 This becomes useful in a handful of situations:
 
-- **Demos**. When you're building a demo or a proof-of-concept, you can quickly prototype and build your application using [SQLite database](http://localhost:8000/docs/config/config#sqlite) and setup access control to be readonly. You will have a fully functioning demo with data without having to connect to an external database or a server. That's what we did with our [example](https://github.com/keystonejs/keystone/tree/main/examples/nextjs-keystone). Try clicking the [**Deploy to Vercel** button](https://github.com/keystonejs/keystone/tree/main/examples/nextjs-keystone) in the README and see it for yourself.
+- **Demos**. When you're building a demo or a proof-of-concept, you can quickly prototype and build your application using [SQLite database](http://localhost:8000/docs/config/config#sqlite) and setup access control to be readonly. You will have a fully functioning demo with data without having to connect to an external database or a server. That's what we did with our [example](https://github.com/keystonejs/keystone/tree/main/examples/framework-nextjs-pages-directory). Try clicking the [**Deploy to Vercel** button](https://github.com/keystonejs/keystone/tree/main/examples/framework-nextjs-pages-directory) in the README and see it for yourself.
 - **Serverless scale**. For production-grade applications, you don't have to worry about the scale or the infra of your application. You write the code and Vercel will automatically take care of scale for you.
 - **Build fast user experiences**. Since you're directly querying your database from your Next.js server APIs (Eg. `getServerSideProps`) using Keystone's `context` API instead of making a http request, you can send your response faster to the browser.
 
@@ -121,7 +121,7 @@ That said, during development in your local machine, you will have access to the
 
 ## An example to get started
 
-To make it easy to get started, we have built an example showing how you could use Keystone in Next.js applications. Check it out here [examples/nextjs-keystone](https://github.com/keystonejs/keystone/tree/main/examples/nextjs-keystone). It is setup with auth, server rendering, custom GraphQL server in a Next.js route and everything you need to get started.
+To make it easy to get started, we have built an example showing how you could use Keystone in Next.js applications. Check it out here [examples/framework-nextjs-pages-directory](https://github.com/keystonejs/keystone/tree/main/examples/framework-nextjs-pages-directory). It is setup with auth, server rendering, custom GraphQL server in a Next.js route and everything you need to get started.
 
 **Live Demo**: [Keystone + Next.js example in Vercel](https://nextjs-keystone-demo.vercel.app)
 
@@ -133,7 +133,7 @@ To sum it all up,
 - **BYO GraphQL server**. You could setup your own GraphQL server using the generated Keystone GraphQL schema. This allows you to use Keystone with light weight serverless friendly GraphQL servers like [GraphQL Yoga](https://the-guild.dev/graphql/yoga-server).
 - **No need to deploy or maintain a separate infra for your API**. Keystone can be used within Next.js applications just like any other package.
 - **Serverless friendly**. The path to serverless Keystone for us was abstracting our data layer with composable exports that would work with any serverless friendly node frameworks like Next.js.
-- **Boilerplate example**. [examples/nextjs-keystone](https://github.com/keystonejs/keystone/tree/main/examples/nextjs-keystone) is setup with auth, custom GraphQL server and server rendering to get started quickly.
+- **Boilerplate example**. [examples/framework-nextjs-pages-directory](https://github.com/keystonejs/keystone/tree/main/examples/framework-nextjs-pages-directory) is setup with auth, custom GraphQL server and server rendering to get started quickly.
 - **No Admin UI**. Admin UI won't work when using Keystone within Next.js applications but the Keystone team is hard at work and we will soon have both the Keystone `context` API and Admin UI work within a single Next.js application. Until then, if having an Admin UI is not one of your top priorities, Keystone + Next.js is a great stack for what you're building.
 
 That's all folks. 

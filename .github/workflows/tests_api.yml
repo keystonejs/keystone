@@ -185,7 +185,7 @@ jobs:
       - uses: ./.github/actions/ci-setup
 
       - name: Example Next in app direcroty build
-        run: cd examples/nextjs-keystone-app-directory; pnpm build
+        run: cd examples/framework-nextjs-app-directory; pnpm build
 
   examples_smoke_tests:
     name: Smoke Tests For Examples
