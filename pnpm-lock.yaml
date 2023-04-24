@@ -655,40 +655,6 @@ importers:
         specifier: ~5.0.0
         version: 5.0.2
 
-  examples/astro-keystone:
-    dependencies:
-      '@keystone-6/core':
-        specifier: ^5.0.0
-        version: link:../../packages/core
-      '@prisma/client':
-        specifier: ^4.13.0
-        version: 4.13.0(prisma@4.13.0)
-      astro:
-        specifier: ^2.2.1
-        version: 2.2.1(@types/node@18.11.14)
-    devDependencies:
-      '@types/node':
-        specifier: ^18.11.14
-        version: 18.11.14
-      '@types/react':
-        specifier: ^18.0.9
-        version: 18.0.9
-      '@types/react-dom':
-        specifier: ^18.0.4
-        version: 18.0.4
-      graphql:
-        specifier: ^16.6.0
-        version: 16.6.0
-      graphql-upload:
-        specifier: ^15.0.2
-        version: 15.0.2(@types/express@4.17.14)(graphql@16.6.0)
-      prisma:
-        specifier: ^4.13.0
-        version: 4.13.0
-      typescript:
-        specifier: ~5.0.0
-        version: 5.0.2
-
   examples/auth:
     dependencies:
       '@keystone-6/auth':
@@ -1199,6 +1165,40 @@ importers:
         specifier: ^4.13.0
         version: 4.13.0(prisma@4.13.0)
     devDependencies:
+      prisma:
+        specifier: ^4.13.0
+        version: 4.13.0
+      typescript:
+        specifier: ~5.0.0
+        version: 5.0.2
+
+  examples/framework-astro:
+    dependencies:
+      '@keystone-6/core':
+        specifier: ^5.0.0
+        version: link:../../packages/core
+      '@prisma/client':
+        specifier: ^4.13.0
+        version: 4.13.0(prisma@4.13.0)
+      astro:
+        specifier: ^2.2.1
+        version: 2.2.1(@types/node@18.11.14)
+    devDependencies:
+      '@types/node':
+        specifier: ^18.11.14
+        version: 18.11.14
+      '@types/react':
+        specifier: ^18.0.9
+        version: 18.0.9
+      '@types/react-dom':
+        specifier: ^18.0.4
+        version: 18.0.4
+      graphql:
+        specifier: ^16.6.0
+        version: 16.6.0
+      graphql-upload:
+        specifier: ^15.0.2
+        version: 15.0.2(@types/express@4.17.14)(graphql@16.6.0)
       prisma:
         specifier: ^4.13.0
         version: 4.13.0
@@ -2689,7 +2689,7 @@ packages:
     dependencies:
       '@vscode/emmet-helper': 2.8.6
       events: 3.3.0
-      prettier: 2.8.7
+      prettier: 2.8.8
       prettier-plugin-astro: 0.7.2
       source-map: 0.7.4
       vscode-css-languageservice: 6.2.4
@@ -2741,7 +2741,7 @@ packages:
       dset: 3.1.2
       is-docker: 3.0.0
       is-wsl: 2.2.0
-      undici: 5.21.2
+      undici: 5.22.0
       which-pm-runs: 1.1.0
     transitivePeerDependencies:
       - supports-color
@@ -8897,7 +8897,6 @@ packages:
 
   /@types/estree@1.0.1:
     resolution: {integrity: sha512-LG4opVs2ANWZ1TJoKc937iMmNstM/d0ae1vNbnBvBhqCSezgVUOzcLCqbI5elV8Vy6WKwKjaqR+zO9VKirBBCA==}
-    dev: true
 
   /@types/express-serve-static-core@4.17.33:
     resolution: {integrity: sha512-TPBqmR/HRYI3eC2E5hmiivIzv+bidAfXofM+sbonAGvyDhySGw9/PQZFt2BLOrjUUR++4eJVpx6KnLQK1Fk9tA==}
@@ -9921,7 +9920,7 @@ packages:
       preferred-pm: 3.0.3
       prompts: 2.4.2
       rehype: 12.0.1
-      semver: 7.4.0
+      semver: 7.5.0
       server-destroy: 1.0.1
       shiki: 0.11.1
       slash: 4.0.0
@@ -12391,7 +12390,7 @@ packages:
   /estree-walker@3.0.3:
     resolution: {integrity: sha512-7RUKfXgSMMkzt6ZuXmqapOurLGPPfgj6l9uRZ7lRGolvk0y2yocc35LdcxKC5PQZdn2DMqioAQ2NoWcrTKmm6g==}
     dependencies:
-      '@types/estree': 1.0.0
+      '@types/estree': 1.0.1
     dev: false
 
   /esutils@2.0.3:
@@ -17057,7 +17056,7 @@ packages:
     engines: {node: ^14.15.0 || >=16.0.0, pnpm: '>=7.14.0'}
     dependencies:
       '@astrojs/compiler': 0.31.4
-      prettier: 2.8.7
+      prettier: 2.8.8
       sass-formatter: 0.7.6
       synckit: 0.8.5
     dev: false
@@ -19707,7 +19706,7 @@ packages:
         optional: true
     dependencies:
       '@types/node': 18.11.14
-      esbuild: 0.17.16
+      esbuild: 0.17.18
       postcss: 8.4.22
       resolve: 1.22.1
       rollup: 3.20.6
