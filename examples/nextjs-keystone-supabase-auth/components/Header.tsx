@@ -8,38 +8,14 @@ export function Header({ user }: { user: { name: string } | null }) {
   const { supabase } = useSupabase();
   const emailRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
-  const regEmailRef = useRef<HTMLInputElement | null>(null);
-  const regPasswordRef = useRef<HTMLInputElement | null>(null);
 
+  // We are using the supabase client to manage users
   const login = async () => {
     if (emailRef.current && passwordRef.current) {
       const email = emailRef.current.value;
       const password = passwordRef.current.value;
 
       const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      if (error) {
-        console.log('error', error);
-      }
-      if (data?.user?.email) {
-        router.refresh();
-      }
-    }
-  };
-  // register not added to UI, but here for reference.
-  // A proper registration flow would be to send an email to the user with a link to confirm their email address
-  // and add the user to keystone.
-  // This is not implemented in this example.
-  // See https://supabase.io/docs/guides/auth
-  // @ts-ignore
-  const register = async () => {
-    if (regEmailRef.current && regPasswordRef.current) {
-      const email = regEmailRef.current.value;
-      const password = regPasswordRef.current.value;
-
-      const { data, error } = await supabase.auth.signUp({
         email,
         password,
       });

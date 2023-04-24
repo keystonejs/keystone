@@ -1,9 +1,5 @@
 import { getContext } from '@keystone-6/core/context';
-import {
-  createServerComponentSupabaseClient,
-  createServerSupabaseClient,
-} from '@supabase/auth-helpers-nextjs';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { createServerComponentSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import config from '../keystone';
 import { Context } from '.keystone/types';
 import * as PrismaModule from '.myprisma/client';
@@ -14,19 +10,14 @@ export const keystoneContext: Context =
 
 if (process.env.NODE_ENV !== 'production') (globalThis as any).keystoneContext = keystoneContext;
 
-export async function getKeystoneSessionContext(props?: {
-  req: NextApiRequest;
-  res: NextApiResponse;
-}) {
-  if (props) {
-    const { data: rawSession } = await createServerSupabaseClient(props).auth.getSession();
-    return keystoneContext.withSession(rawSession.session?.user.app_metadata?.keystone);
-  } else {
-    const { headers, cookies } = require('next/headers');
-    const { data: rawSession } = await createServerComponentSupabaseClient({
-      headers,
-      cookies,
-    }).auth.getSession();
-    return keystoneContext.withSession(rawSession.session?.user.app_metadata?.keystone);
-  }
+export async function getKeystoneSessionContext() {
+  // This is how you would do session context in pages directory
+  //const { data: rawSession } = await createServerSupabaseClient({req,res}).auth.getSession();
+  //return keystoneContext.withSession(rawSession.session?.user);
+  const { headers, cookies } = require('next/headers');
+  const { data: rawSession } = await createServerComponentSupabaseClient({
+    headers,
+    cookies,
+  }).auth.getSession();
+  return keystoneContext.withSession(rawSession.session?.user);
 }
