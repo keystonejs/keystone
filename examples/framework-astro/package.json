@@ -1,0 +1,27 @@
+{
+  "name": "@keystone-6/example-framework-astro",
+  "version": "0.0.1",
+  "private": true,
+  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/framework-astro",
+  "license": "MIT",
+  "scripts": {
+    "astro": "astro",
+    "build": "astro build",
+    "dev": "astro dev",
+    "postinstall": "keystone postinstall",
+    "preview": "astro preview",
+    "start": "astro dev"
+  },
+  "dependencies": {
+    "@keystone-6/core": "^5.0.0",
+    "@prisma/client": "^4.13.0",
+    "astro": "^2.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.14",
+    "@types/react": "^18.0.9",
+    "@types/react-dom": "^18.0.4",
+    "prisma": "^4.13.0",
+    "typescript": "~5.0.0"
+  }
+}
