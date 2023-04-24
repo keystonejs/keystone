@@ -1,9 +1,9 @@
 {
-  "name": "@keystone-6/frontend-example-nextjs-keystone-two-servers-frontend",
+  "name": "@keystone-6/frontend-example-framework-nextjs-two-servers-frontend",
   "description": "An example nextjs frontend",
   "version": "0.1.0",
   "private": true,
-  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/nextjs-keystone-two-servers/nextjs-frontend",
+  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/framework-nextjs-two-servers/nextjs-frontend",
   "scripts": {
     "dev": "next dev --port 8000",
     "build": "next build",

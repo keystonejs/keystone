@@ -56,7 +56,7 @@ const Home: NextPage = ({ users }: InferGetServerSidePropsType<typeof getServerS
             </em>
           </p>
           <p>
-            <a href="https://github.com/keystonejs/keystone/tree/main/examples/nextjs-keystone">
+            <a href="https://github.com/keystonejs/keystone/tree/main/examples/framework-nextjs-app-directory">
               Check out the example in the repo more info.
             </a>
           </p>

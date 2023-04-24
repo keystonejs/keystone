@@ -1,5 +1,5 @@
 {
-  "name": "@keystone-6/example-nextjs-keystone-app-directory",
+  "name": "@keystone-6/example-framework-nextjs-app-directory",
   "version": "0.0.2",
   "private": true,
   "license": "MIT",
@@ -34,5 +34,5 @@
     "prisma": "^4.13.0",
     "typescript": "~5.0.0"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/nextjs-keystone-app-directory"
+  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/framework-nextjs-app-directory"
 }
