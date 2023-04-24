@@ -26,6 +26,14 @@ const posts = await context.query.Post.findMany({
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
+    <style>
+      body {
+        font: 100% system-ui;
+      }
+      html {
+        color-scheme: light dark;
+      }
+    </style>
     <title>Astro</title>
   </head>
   <body>
