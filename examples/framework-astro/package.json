@@ -1,8 +1,8 @@
 {
-  "name": "@keystone-6/example-astro-keystone",
+  "name": "@keystone-6/example-framework-astro",
   "version": "0.0.1",
   "private": true,
-  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/astro-keystone",
+  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/framework-astro",
   "license": "MIT",
   "scripts": {
     "astro": "astro",
@@ -21,8 +21,6 @@
     "@types/node": "^18.11.14",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.4",
-    "graphql": "^16.6.0",
-    "graphql-upload": "^15.0.2",
     "prisma": "^4.13.0",
     "typescript": "~5.0.0"
   }
