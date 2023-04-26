@@ -15,7 +15,6 @@ export function DFATLogo(props: IconProps) {
       aria-label="Department of Foreign Affairs and Trade logo"
       {...props}
     >
-      <path fill="#fff" d="M0 0h48v48H0z" />
       <circle cx="24" cy="24" r="24" fill="#fff" />
       <path
         fill="#000"
