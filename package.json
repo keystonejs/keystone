@@ -34,6 +34,8 @@
     "@babel/preset-typescript": "^7.21.0",
     "@changesets/changelog-github": "^0.4.1",
     "@changesets/cli": "^2.18.0",
+    "@changesets/get-github-info": "^0.5.2",
+    "@changesets/get-release-plan": "^3.0.16",
     "@manypkg/cli": "^0.20.0",
     "@preconstruct/cli": "2.5.0",
     "@types/jest": "^29.0.0",
