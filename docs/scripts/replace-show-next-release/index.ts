@@ -7,24 +7,26 @@ import { removeNextReleaseConditions } from './markdoc';
 import { replaceShowNextRelease } from './typescript';
 
 async function updateTsFiles() {
-  const files = await globby('**/*.{ts,tsx}');
+  const paths = await globby('pages/**/*.{ts,tsx}');
+
+  console.log(`updating ${paths.length} typescript files`);
   await Promise.all(
-    files.map(async file => {
-      const source = await fs.readFile(file, 'utf8');
-      if (
-        !source.includes('process.env.SHOW_NEXT_RELEASE') ||
-        source.includes('// @skipShowNextReleaseReplacement')
-      ) {
-        return;
-      }
-      const newSource = await replaceShowNextRelease(file, source);
-      await fs.writeFile(file, newSource);
+    paths.map(async path => {
+      const source = await fs.readFile(path, 'utf8');
+
+      if (!source.includes('process.env.SHOW_NEXT_RELEASE')) return;
+      if (source.includes('// @skipShowNextReleaseReplacement')) return;
+
+      console.log(`  updating ${path}`);
+      await fs.writeFile(path, await replaceShowNextRelease(path, source));
     })
   );
 }
 
 async function updateMarkdocFiles() {
   const docs = await loadAllMarkdoc();
+  console.log(`updating ${docs.length} markdoc files`);
+
   const allErrors: ValidateError[] = [];
   await Promise.all(
     docs.map(({ file, contents: initialContents }) => {
