@@ -511,7 +511,7 @@ importers:
         specifier: ^0.3.0
         version: 0.3.0
       '@keystone-6/fields-document':
-        specifier: ^7.0.0
+        specifier: ^8.0.0
         version: link:../packages/fields-document
       '@keystone-ui/core':
         specifier: ^5.0.1
@@ -911,13 +911,13 @@ importers:
   examples/document-field:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.2.0
         version: link:../../packages/core
       '@keystone-6/document-renderer':
         specifier: ^1.1.1
         version: link:../../packages/document-renderer
       '@keystone-6/fields-document':
-        specifier: ^7.0.0
+        specifier: ^8.0.0
         version: link:../../packages/fields-document
       '@preconstruct/next':
         specifier: ^4.0.0
@@ -954,10 +954,10 @@ importers:
         specifier: ^7.0.0
         version: link:../../../packages/auth
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.2.0
         version: link:../../../packages/core
       '@keystone-6/fields-document':
-        specifier: ^7.0.0
+        specifier: ^8.0.0
         version: link:../../../packages/fields-document
       '@keystone-ui/button':
         specifier: ^7.0.1
@@ -966,7 +966,7 @@ importers:
         specifier: ^5.0.1
         version: link:../../../design-system/packages/core
       '@keystone-ui/fields':
-        specifier: ^7.1.1
+        specifier: ^7.2.0
         version: link:../../../design-system/packages/fields
       '@keystone-ui/icons':
         specifier: ^6.0.1
@@ -1162,10 +1162,10 @@ importers:
   examples/extend-prisma-schema:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.2.0
         version: link:../../packages/core
       '@keystone-6/fields-document':
-        specifier: ^7.0.0
+        specifier: ^8.0.0
         version: link:../../packages/fields-document
       '@prisma/client':
         specifier: ^4.13.0
@@ -1212,13 +1212,13 @@ importers:
         specifier: ^7.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.2.0
         version: link:../../packages/core
       '@keystone-6/document-renderer':
         specifier: ^1.0.0
         version: link:../../packages/document-renderer
       '@keystone-6/fields-document':
-        specifier: ^7.0.0
+        specifier: ^8.0.0
         version: link:../../packages/fields-document
       '@preconstruct/next':
         specifier: ^4.0.0
@@ -1267,10 +1267,10 @@ importers:
         specifier: ^7.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.2.0
         version: link:../../packages/core
       '@keystone-6/fields-document':
-        specifier: ^7.0.0
+        specifier: ^8.0.0
         version: link:../../packages/fields-document
       '@preconstruct/next':
         specifier: ^4.0.0
@@ -1325,10 +1325,10 @@ importers:
         specifier: ^7.0.0
         version: link:../../../packages/auth
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.2.0
         version: link:../../../packages/core
       '@keystone-6/fields-document':
-        specifier: ^7.0.0
+        specifier: ^8.0.0
         version: link:../../../packages/fields-document
       '@prisma/client':
         specifier: ^4.13.0
@@ -1503,10 +1503,10 @@ importers:
   examples/usecase-blog:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.2.0
         version: link:../../packages/core
       '@keystone-6/fields-document':
-        specifier: ^7.0.0
+        specifier: ^8.0.0
         version: link:../../packages/fields-document
       '@prisma/client':
         specifier: ^4.13.0
@@ -1738,7 +1738,7 @@ importers:
         specifier: ^5.0.2
         version: link:../../design-system/packages/core
       '@keystone-ui/fields':
-        specifier: ^7.1.2
+        specifier: ^7.2.0
         version: link:../../design-system/packages/fields
       '@keystone-ui/icons':
         specifier: ^6.0.2
@@ -1952,7 +1952,7 @@ importers:
         version: 9.0.0
     devDependencies:
       '@keystone-6/core':
-        specifier: 5.1.0
+        specifier: 5.2.0
         version: 'link:'
       '@types/bytes':
         specifier: ^3.1.1
@@ -2015,7 +2015,7 @@ importers:
         specifier: ^5.0.2
         version: link:../../design-system/packages/core
       '@keystone-ui/fields':
-        specifier: ^7.1.2
+        specifier: ^7.2.0
         version: link:../../design-system/packages/fields
       '@keystone-ui/icons':
         specifier: ^6.0.2
@@ -2304,10 +2304,10 @@ importers:
         specifier: ^7.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.2.0
         version: link:../../packages/core
       '@keystone-6/fields-document':
-        specifier: ^7.0.0
+        specifier: ^8.0.0
         version: link:../../packages/fields-document
       '@keystone-ui/button':
         specifier: ^7.0.1
@@ -2316,7 +2316,7 @@ importers:
         specifier: ^5.0.1
         version: link:../../design-system/packages/core
       '@keystone-ui/fields':
-        specifier: ^7.1.1
+        specifier: ^7.2.0
         version: link:../../design-system/packages/fields
       '@keystone-ui/icons':
         specifier: ^6.0.1
