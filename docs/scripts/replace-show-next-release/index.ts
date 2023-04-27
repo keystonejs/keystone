@@ -9,7 +9,7 @@ import { replaceShowNextRelease } from './typescript';
 async function updateTsFiles() {
   const paths = await globby('pages/**/*.{ts,tsx}');
 
-  console.log(`updating ${paths.length} typescript files`);
+  console.log(`updating ${paths.length} Typescript files`);
   await Promise.all(
     paths.map(async path => {
       const source = await fs.readFile(path, 'utf8');
@@ -25,7 +25,7 @@ async function updateTsFiles() {
 
 async function updateMarkdocFiles() {
   const docs = await loadAllMarkdoc();
-  console.log(`updating ${docs.length} markdoc files`);
+  console.log(`updating ${docs.length} Markdoc files`);
 
   const allErrors: ValidateError[] = [];
   await Promise.all(
