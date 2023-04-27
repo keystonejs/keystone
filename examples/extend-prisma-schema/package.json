@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/example-extend-prisma-schema",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -10,8 +10,8 @@
     "postinstall": "keystone postinstall"
   },
   "dependencies": {
-    "@keystone-6/core": "^5.0.0",
-    "@keystone-6/fields-document": "^7.0.0",
+    "@keystone-6/core": "^5.2.0",
+    "@keystone-6/fields-document": "^8.0.0",
     "@prisma/client": "^4.13.0"
   },
   "devDependencies": {
