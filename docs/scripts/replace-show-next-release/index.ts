@@ -15,7 +15,6 @@ async function updateTsFiles() {
       const source = await fs.readFile(path, 'utf8');
 
       if (!source.includes('process.env.SHOW_NEXT_RELEASE')) return;
-      if (source.includes('// @skipShowNextReleaseReplacement')) return;
 
       console.log(`  updating ${path}`);
       await fs.writeFile(path, await replaceShowNextRelease(path, source));
