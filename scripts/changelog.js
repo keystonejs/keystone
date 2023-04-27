@@ -18,15 +18,15 @@ const publicPackages = [
 ];
 
 const cves = [
-//    {
-//      id: 'CVE-2023-23936',
-//      href: 'https://github.com/advisories/GHSA-5r9g-qh6m-jxff',
-//      upstream: true,
-//      description: `
-//        An upstream transitive dependency \`undici\` is vulnerable to a HTTP header CRLF injection vulnerability.
-//        We have upgraded to a version of \`@prisma/core\` that uses a fixed \`undici\`.
-//      `,
-//    },
+  //    {
+  //      id: 'CVE-2023-23936',
+  //      href: 'https://github.com/advisories/GHSA-5r9g-qh6m-jxff',
+  //      upstream: true,
+  //      description: `
+  //        An upstream transitive dependency \`undici\` is vulnerable to a HTTP header CRLF injection vulnerability.
+  //        We have upgraded to a version of \`@prisma/core\` that uses a fixed \`undici\`.
+  //      `,
+  //    },
 ];
 
 function gitCommitsSince(tag) {
