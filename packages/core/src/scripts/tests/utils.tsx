@@ -67,7 +67,6 @@ export function recordConsole(promptResponses?: Record<string, string | boolean>
 
     return answer;
   };
-
   mockPrompts({
     confirm: async message => {
       const answer = getPromptAnswer(message);
