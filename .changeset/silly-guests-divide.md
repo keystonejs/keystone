@@ -2,4 +2,4 @@
 '@keystone-6/core': patch
 ---
 
-Fix type generation for query-omitted lists
+Fixes type generation for lists with `omit.query: true`
