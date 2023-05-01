@@ -496,8 +496,8 @@ importers:
         specifier: ^2.0.1
         version: 2.0.1
       '@emotion/cache':
-        specifier: 11.10.7
-        version: 11.10.7
+        specifier: 11.10.8
+        version: 11.10.8
       '@emotion/css':
         specifier: ^11.7.1
         version: 11.7.1(@babel/core@7.21.0)
@@ -7190,6 +7190,16 @@ packages:
       stylis: 4.1.3
     dev: false
 
+  /@emotion/cache@11.10.8:
+    resolution: {integrity: sha512-5fyqGHi51LU95o7qQ/vD1jyvC4uCY5GcBT+UgP4LHdpO9jPDlXqhrRr9/wCKmfoAvh5G/F7aOh4MwQa+8uEqhA==}
+    dependencies:
+      '@emotion/memoize': 0.8.0
+      '@emotion/sheet': 1.2.1
+      '@emotion/utils': 1.2.0
+      '@emotion/weak-memoize': 0.3.0
+      stylis: 4.1.4
+    dev: false
+
   /@emotion/css@11.7.1(@babel/core@7.21.0):
     resolution: {integrity: sha512-RUUgPlMZunlc7SE5A6Hg+VWRzb2cU6O9xlV78KCFgcnl25s7Qz/20oQg71iKudpLqk7xj0vhbJlwcJJMT0BOZg==}
     peerDependencies:
@@ -7200,7 +7210,7 @@ packages:
     dependencies:
       '@babel/core': 7.21.0
       '@emotion/babel-plugin': 11.10.8
-      '@emotion/cache': 11.10.7
+      '@emotion/cache': 11.10.8
       '@emotion/serialize': 1.1.1
       '@emotion/sheet': 1.2.1
       '@emotion/utils': 1.2.0
