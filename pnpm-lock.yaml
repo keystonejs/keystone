@@ -1846,9 +1846,6 @@ importers:
       '@nodelib/fs.walk':
         specifier: ^1.2.8
         version: 1.2.8
-      '@preconstruct/next':
-        specifier: ^4.0.0
-        version: 4.0.0
       '@prisma/client':
         specifier: 4.14.0
         version: 4.14.0(prisma@4.14.0)
@@ -8162,7 +8159,6 @@ packages:
 
   /@preconstruct/next@4.0.0:
     resolution: {integrity: sha512-vSrc8wFQgBErU7dKTKSQtr/DLWPHcN9jMoiWOAQodB1+B4Kpqqry6QhGYoRm0DQU5gNL+Rcp+Xb350O1E/gjsg==}
-    dev: false
 
   /@prisma/client@4.14.0(prisma@4.14.0):
     resolution: {integrity: sha512-MK/XaA2sFdfaOa7I9MjNKz6dxeIEdeZlnpNRoF2w3JuRLlFJLkpp6cD3yaqw2nUUhbrn3Iqe3ZpVV+VuGGil7Q==}
