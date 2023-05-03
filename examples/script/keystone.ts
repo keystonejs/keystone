@@ -1,7 +1,7 @@
 import { config, list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { text, timestamp } from '@keystone-6/core/fields';
-import { fixPrismaPath } from '../example-utils';
+import { fixNextConfig, fixPrismaPath } from '../example-utils';
 import { TypeInfo } from '.keystone/types';
 
 export default config<TypeInfo>({
@@ -17,6 +17,10 @@ export default config<TypeInfo>({
 
     // WARNING: this is only needed for our monorepo examples, dont do this
     ...fixPrismaPath,
+  },
+  ui: {
+    // WARNING: this is only needed for our monorepo examples, dont do this
+    ...fixNextConfig,
   },
   lists: {
     Post: list({

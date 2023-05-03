@@ -1,7 +1,7 @@
 import { config } from '@keystone-6/core';
 import { statelessSessions } from '@keystone-6/core/session';
 import { createAuth } from '@keystone-6/auth';
-import { fixPrismaPath } from '../example-utils';
+import { fixNextConfig, fixPrismaPath } from '../example-utils';
 import { lists } from './schema';
 
 import { isSignedIn } from './access';
@@ -67,6 +67,9 @@ export default withAuth(
 
       /* Everyone who is signed in can access the Admin UI */
       isAccessAllowed: isSignedIn,
+
+      // WARNING: this is only needed for our monorepo examples, dont do this
+      ...fixNextConfig,
     },
     session: statelessSessions(sessionConfig),
   })

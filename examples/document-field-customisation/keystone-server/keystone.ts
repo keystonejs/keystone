@@ -1,6 +1,6 @@
 import { config } from '@keystone-6/core';
 import type { KeystoneConfig } from '@keystone-6/core/types';
-import { fixPrismaPath } from '../../example-utils';
+import { fixNextConfig, fixPrismaPath } from '../../example-utils';
 import { seedDatabase } from './src/seed';
 import { lists } from './src/schema';
 import { Context, TypeInfo } from '.keystone/types';
@@ -21,4 +21,8 @@ const db: KeystoneConfig<TypeInfo>['db'] = {
 export default config({
   db,
   lists,
+  ui: {
+    // WARNING: this is only needed for our monorepo examples, dont do this
+    ...fixNextConfig,
+  },
 });

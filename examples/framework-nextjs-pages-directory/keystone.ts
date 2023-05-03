@@ -14,5 +14,8 @@ export default config({
     // WARNING: this is only needed for our monorepo examples, dont do this
     prismaClientPath: 'node_modules/.myprisma/client',
   },
+  ui: {
+    basePath: '/admin',
+  },
   lists,
 });

@@ -1,5 +1,5 @@
 import { config } from '@keystone-6/core';
-import { fixPrismaPath } from '../example-utils';
+import { fixNextConfig, fixPrismaPath } from '../example-utils';
 import { lists } from './schema';
 
 export default config({
@@ -11,5 +11,8 @@ export default config({
     ...fixPrismaPath,
   },
   lists,
-  ui: {},
+  ui: {
+    // WARNING: this is only needed for our monorepo examples, dont do this
+    ...fixNextConfig,
+  },
 });

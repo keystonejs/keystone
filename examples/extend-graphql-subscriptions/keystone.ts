@@ -1,5 +1,5 @@
 import { config } from '@keystone-6/core';
-import { fixPrismaPath } from '../example-utils';
+import { fixNextConfig, fixPrismaPath } from '../example-utils';
 import { lists, extendGraphqlSchema } from './schema';
 import { extendHttpServer } from './websocket';
 
@@ -10,6 +10,10 @@ export default config({
 
     // WARNING: this is only needed for our monorepo examples, dont do this
     ...fixPrismaPath,
+  },
+  ui: {
+    // WARNING: this is only needed for our monorepo examples, dont do this
+    ...fixNextConfig,
   },
   lists,
   server: {

@@ -1,7 +1,7 @@
 import { config } from '@keystone-6/core';
 import { statelessSessions } from '@keystone-6/core/session';
 import { createAuth } from '@keystone-6/auth';
-import { fixPrismaPath } from '../example-utils';
+import { fixNextConfig, fixPrismaPath } from '../example-utils';
 import { lists } from './schema';
 
 // WARNING: this example is for demonstration purposes only
@@ -71,6 +71,8 @@ export default withAuth(
       isAccessAllowed: ({ session }) => {
         return session?.data?.isAdmin;
       },
+      // WARNING: this is only needed for our monorepo examples, dont do this
+      ...fixNextConfig,
     },
   })
 );

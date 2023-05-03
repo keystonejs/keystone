@@ -2,7 +2,7 @@ import { KeystoneConfig, SessionStrategy } from '@keystone-6/core/types';
 import { config } from '@keystone-6/core';
 import { statelessSessions } from '@keystone-6/core/session';
 import { createAuth } from '@keystone-6/auth';
-import { fixPrismaPath } from '../example-utils';
+import { fixNextConfig, fixPrismaPath } from '../example-utils';
 import { lists } from './schema';
 
 // createAuth configures signin functionality based on the config below. Note this only implements
@@ -95,6 +95,10 @@ export default myAuth(
 
         // WARNING: this is only needed for our monorepo examples, dont do this
         ...fixPrismaPath,
+      },
+      ui: {
+        // WARNING: this is only needed for our monorepo examples, dont do this
+        ...fixNextConfig,
       },
       lists,
       // We add our session configuration to the system here.
