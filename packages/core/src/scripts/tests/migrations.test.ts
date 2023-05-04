@@ -49,12 +49,12 @@ async function getGeneratedMigration(
 Date.now = () => 0;
 
 function cleanOutputForApplyingMigration(output: string, generatedMigrationName: string) {
-  // sometimes "✅ The migration has been applied" is printed in a different order which messes up the snapshots
+  // sometimes "? The migration has been applied" is printed in a different order which messes up the snapshots
   // so we just assert the text exists somewhere and remove it from what we snapshot
-  expect(output).toContain('✅ The migration has been applied\n');
+  expect(output).toContain('? The migration has been applied\n');
   return output
     .replace(new RegExp(generatedMigrationName, 'g'), 'migration_name')
-    .replace('✅ The migration has been applied\n', '');
+    .replace('? The migration has been applied\n', '');
 }
 
 const basicKeystoneConfig = fs.readFileSync(`${__dirname}/fixtures/basic-with-no-ui.ts`, 'utf8');
@@ -78,15 +78,15 @@ model Todo {
 }
 `);
 
-  expect(recording()).toEqual(`✨ Starting Keystone
-⭐️ Server listening on :3000 (http://localhost:3000/)
-⭐️ GraphQL API available at /api/graphql
-✨ Generating GraphQL and Prisma schemas
-✨ sqlite database "app.db" created at file:./app.db
-✨ Your database is now in sync with your schema. Done in 0ms
-✨ Connecting to the database
-✨ Creating server
-✅ GraphQL API ready`);
+  expect(recording()).toEqual(`? Starting Keystone
+? Server listening on :3000 (http://localhost:3000/)
+? GraphQL API available at /api/graphql
+? Generating GraphQL and Prisma schemas
+? sqlite database "app.db" created at file:./app.db
+? Your database is now in sync with your schema. Done in 0ms
+? Connecting to the database
+? Creating server
+? GraphQL API ready`);
   return tmp;
 }
 
@@ -101,14 +101,14 @@ describe('useMigrations: false', () => {
     await runCommand(tmp, 'dev');
 
     expect(recording()).toMatchInlineSnapshot(`
-      "✨ Starting Keystone
-      ⭐️ Server listening on :3000 (http://localhost:3000/)
-      ⭐️ GraphQL API available at /api/graphql
-      ✨ Generating GraphQL and Prisma schemas
-      ✨ The database is already in sync with the Prisma schema.
-      ✨ Connecting to the database
-      ✨ Creating server
-      ✅ GraphQL API ready"
+      "? Starting Keystone
+      ? Server listening on :3000 (http://localhost:3000/)
+      ? GraphQL API available at /api/graphql
+      ? Generating GraphQL and Prisma schemas
+      ? The database is already in sync with the Prisma schema.
+      ? Connecting to the database
+      ? Creating server
+      ? GraphQL API ready"
     `);
   });
   test('warns when dropping field that has data in it', async () => {
@@ -138,19 +138,19 @@ describe('useMigrations: false', () => {
       "
     `);
     expect(recording()).toMatchInlineSnapshot(`
-      "✨ Starting Keystone
-      ⭐️ Server listening on :3000 (http://localhost:3000/)
-      ⭐️ GraphQL API available at /api/graphql
-      ✨ Generating GraphQL and Prisma schemas
+      "? Starting Keystone
+      ? Server listening on :3000 (http://localhost:3000/)
+      ? GraphQL API available at /api/graphql
+      ? Generating GraphQL and Prisma schemas
 
-      ⚠️  Warnings:
+      ?  Warnings:
 
-        • You are about to drop the column \`title\` on the \`Todo\` table, which still contains 1 non-null values.
+        ? You are about to drop the column \`title\` on the \`Todo\` table, which still contains 1 non-null values.
       Prompt: Do you want to continue? Some data will be lost. true
-      ✨ Your database is now in sync with your schema. Done in 0ms
-      ✨ Connecting to the database
-      ✨ Creating server
-      ✅ GraphQL API ready"
+      ? Your database is now in sync with your schema. Done in 0ms
+      ? Connecting to the database
+      ? Creating server
+      ? GraphQL API ready"
     `);
   });
   test('exits when refusing data loss prompt', async () => {
@@ -181,14 +181,14 @@ describe('useMigrations: false', () => {
       "
     `);
     expect(recording()).toMatchInlineSnapshot(`
-      "✨ Starting Keystone
-      ⭐️ Server listening on :3000 (http://localhost:3000/)
-      ⭐️ GraphQL API available at /api/graphql
-      ✨ Generating GraphQL and Prisma schemas
+      "? Starting Keystone
+      ? Server listening on :3000 (http://localhost:3000/)
+      ? GraphQL API available at /api/graphql
+      ? Generating GraphQL and Prisma schemas
 
-      ⚠️  Warnings:
+      ?  Warnings:
 
-        • You are about to drop the column \`title\` on the \`Todo\` table, which still contains 1 non-null values.
+        ? You are about to drop the column \`title\` on the \`Todo\` table, which still contains 1 non-null values.
       Prompt: Do you want to continue? Some data will be lost. false
       Push cancelled."
     `);
@@ -202,7 +202,7 @@ describe('useMigrations: false', () => {
     }
     const recording = recordConsole();
 
-    await runCommand(tmp, 'prisma db push --force-reset');
+    await runCommand(tmp, ['prisma', 'db', 'push', '--force-reset']);
     await runCommand(tmp, 'dev');
     {
       const prismaClient = getPrismaClient(tmp);
@@ -211,14 +211,14 @@ describe('useMigrations: false', () => {
     }
 
     expect(recording()).toMatchInlineSnapshot(`
-      "✨ Starting Keystone
-      ⭐️ Server listening on :3000 (http://localhost:3000/)
-      ⭐️ GraphQL API available at /api/graphql
-      ✨ Generating GraphQL and Prisma schemas
-      ✨ The database is already in sync with the Prisma schema.
-      ✨ Connecting to the database
-      ✨ Creating server
-      ✅ GraphQL API ready"
+      "? Starting Keystone
+      ? Server listening on :3000 (http://localhost:3000/)
+      ? GraphQL API available at /api/graphql
+      ? Generating GraphQL and Prisma schemas
+      ? The database is already in sync with the Prisma schema.
+      ? Connecting to the database
+      ? Creating server
+      ? GraphQL API ready"
     `);
   });
 });
@@ -258,20 +258,20 @@ CREATE TABLE "Todo" (
 );
 `);
 
-  expect(cleanOutputForApplyingMigration(recording(), migrationName)).toEqual(`✨ Starting Keystone
-⭐️ Server listening on :3000 (http://localhost:3000/)
-⭐️ GraphQL API available at /api/graphql
-✨ Generating GraphQL and Prisma schemas
-✨ sqlite database "app.db" created at file:./app.db
-✨ There has been a change to your Keystone schema that requires a migration
+  expect(cleanOutputForApplyingMigration(recording(), migrationName)).toEqual(`? Starting Keystone
+? Server listening on :3000 (http://localhost:3000/)
+? GraphQL API available at /api/graphql
+? Generating GraphQL and Prisma schemas
+? sqlite database "app.db" created at file:./app.db
+? There has been a change to your Keystone schema that requires a migration
 
 Prompt: Name of migration init
-✨ A migration has been created at migrations/migration_name
+? A migration has been created at migrations/migration_name
 Prompt: Would you like to apply this migration? true
 Applying migration \`migration_name\`
-✨ Connecting to the database
-✨ Creating server
-✅ GraphQL API ready`);
+? Connecting to the database
+? Creating server
+? GraphQL API ready`);
   return { migrationName, prevCwd: tmp };
 }
 
@@ -332,19 +332,19 @@ describe('useMigrations: true', () => {
     `);
 
     expect(cleanOutputForApplyingMigration(recording(), migrationName)).toMatchInlineSnapshot(`
-      "✨ Starting Keystone
-      ⭐️ Server listening on :3000 (http://localhost:3000/)
-      ⭐️ GraphQL API available at /api/graphql
-      ✨ Generating GraphQL and Prisma schemas
-      ✨ There has been a change to your Keystone schema that requires a migration
+      "? Starting Keystone
+      ? Server listening on :3000 (http://localhost:3000/)
+      ? GraphQL API available at /api/graphql
+      ? Generating GraphQL and Prisma schemas
+      ? There has been a change to your Keystone schema that requires a migration
 
       Prompt: Name of migration add-is-complete
-      ✨ A migration has been created at migrations/migration_name
+      ? A migration has been created at migrations/migration_name
       Prompt: Would you like to apply this migration? true
       Applying migration \`migration_name\`
-      ✨ Connecting to the database
-      ✨ Creating server
-      ✅ GraphQL API ready"
+      ? Connecting to the database
+      ? Creating server
+      ? GraphQL API ready"
     `);
   });
   test('warns when dropping field that has data in it', async () => {
@@ -405,23 +405,23 @@ describe('useMigrations: true', () => {
     `);
 
     expect(cleanOutputForApplyingMigration(recording(), migrationName)).toMatchInlineSnapshot(`
-      "✨ Starting Keystone
-      ⭐️ Server listening on :3000 (http://localhost:3000/)
-      ⭐️ GraphQL API available at /api/graphql
-      ✨ Generating GraphQL and Prisma schemas
-      ✨ There has been a change to your Keystone schema that requires a migration
+      "? Starting Keystone
+      ? Server listening on :3000 (http://localhost:3000/)
+      ? GraphQL API available at /api/graphql
+      ? Generating GraphQL and Prisma schemas
+      ? There has been a change to your Keystone schema that requires a migration
 
-      ⚠️  Warnings:
+      ?  Warnings:
 
-        • You are about to drop the column \`title\` on the \`Todo\` table, which still contains 1 non-null values.
+        ? You are about to drop the column \`title\` on the \`Todo\` table, which still contains 1 non-null values.
 
       Prompt: Name of migration remove all fields except id
-      ✨ A migration has been created at migrations/migration_name
+      ? A migration has been created at migrations/migration_name
       Prompt: Would you like to apply this migration? true
       Applying migration \`migration_name\`
-      ✨ Connecting to the database
-      ✨ Creating server
-      ✅ GraphQL API ready"
+      ? Connecting to the database
+      ? Creating server
+      ? GraphQL API ready"
     `);
   });
   test('prompts to drop database when database is out of sync with migrations directory', async () => {
@@ -468,10 +468,10 @@ describe('useMigrations: true', () => {
         'old_migration_name'
       )
     ).toMatchInlineSnapshot(`
-      "✨ Starting Keystone
-      ⭐️ Server listening on :3000 (http://localhost:3000/)
-      ⭐️ GraphQL API available at /api/graphql
-      ✨ Generating GraphQL and Prisma schemas
+      "? Starting Keystone
+      ? Server listening on :3000 (http://localhost:3000/)
+      ? GraphQL API available at /api/graphql
+      ? Generating GraphQL and Prisma schemas
       - Drift detected: Your database schema is not in sync with your migration history.
 
       The following is a summary of the differences between the expected database schema given your migrations files, and the actual schema of the database.
@@ -487,15 +487,15 @@ describe('useMigrations: true', () => {
       We need to reset the sqlite database "app.db" at file:./app.db.
       Prompt: Do you want to continue? All data will be lost. true
 
-      ✨ There has been a change to your Keystone schema that requires a migration
+      ? There has been a change to your Keystone schema that requires a migration
 
       Prompt: Name of migration init
-      ✨ A migration has been created at migrations/migration_name
+      ? A migration has been created at migrations/migration_name
       Prompt: Would you like to apply this migration? true
       Applying migration \`migration_name\`
-      ✨ Connecting to the database
-      ✨ Creating server
-      ✅ GraphQL API ready"
+      ? Connecting to the database
+      ? Creating server
+      ? GraphQL API ready"
     `);
   });
   test("doesn't drop when prompt denied", async () => {
@@ -515,10 +515,10 @@ describe('useMigrations: true', () => {
     expect(await fs.readFile(`${prevCwd}/app.db`)).toEqual(dbBuffer);
 
     expect(recording().replace(oldMigrationName, 'old_migration_name')).toMatchInlineSnapshot(`
-      "✨ Starting Keystone
-      ⭐️ Server listening on :3000 (http://localhost:3000/)
-      ⭐️ GraphQL API available at /api/graphql
-      ✨ Generating GraphQL and Prisma schemas
+      "? Starting Keystone
+      ? Server listening on :3000 (http://localhost:3000/)
+      ? GraphQL API available at /api/graphql
+      ? Generating GraphQL and Prisma schemas
       - Drift detected: Your database schema is not in sync with your migration history.
 
       The following is a summary of the differences between the expected database schema given your migrations files, and the actual schema of the database.
@@ -587,14 +587,14 @@ describe('useMigrations: true', () => {
     `);
 
     expect(recording().replace(migrationName!, 'migration_name')).toMatchInlineSnapshot(`
-      "✨ Starting Keystone
-      ⭐️ Server listening on :3000 (http://localhost:3000/)
-      ⭐️ GraphQL API available at /api/graphql
-      ✨ Generating GraphQL and Prisma schemas
-      ✨ There has been a change to your Keystone schema that requires a migration
+      "? Starting Keystone
+      ? Server listening on :3000 (http://localhost:3000/)
+      ? GraphQL API available at /api/graphql
+      ? Generating GraphQL and Prisma schemas
+      ? There has been a change to your Keystone schema that requires a migration
 
       Prompt: Name of migration add-is-complete
-      ✨ A migration has been created at migrations/migration_name
+      ? A migration has been created at migrations/migration_name
       Prompt: Would you like to apply this migration? false
       Please edit the migration and run keystone dev again to apply the migration"
     `);
@@ -627,21 +627,18 @@ describe('useMigrations: true', () => {
 
     expect(recording().replace(new RegExp(migrationName, 'g'), 'migration_name'))
       .toMatchInlineSnapshot(`
-      "✨ Starting Keystone
-      ⭐️ Server listening on :3000 (http://localhost:3000/)
-      ⭐️ GraphQL API available at /api/graphql
-      ✨ Generating GraphQL and Prisma schemas
-      ✨ sqlite database "app.db" created at file:./app.db
+      "? Starting Keystone
+      ? Server listening on :3000 (http://localhost:3000/)
+      ? GraphQL API available at /api/graphql
+      ? Generating GraphQL and Prisma schemas
+      ? sqlite database "app.db" created at file:./app.db
       Applying migration \`migration_name\`
-      ✨ The following migration(s) have been applied:
-
-      migrations/
-        └─ migration_name/
-          └─ migration.sql
-      ✨ Your migrations are up to date, no new migrations need to be created
-      ✨ Connecting to the database
-      ✨ Creating server
-      ✅ GraphQL API ready"
+      ? The following migration(s) have been applied:
+        - migration_name
+      ? Your migrations are up to date, no new migrations need to be created
+      ? Connecting to the database
+      ? Creating server
+      ? GraphQL API ready"
     `);
   });
   test('logs correctly when no migrations need to be created or applied', async () => {
@@ -650,14 +647,14 @@ describe('useMigrations: true', () => {
     await runCommand(prevCwd, 'dev');
 
     expect(recording()).toMatchInlineSnapshot(`
-      "✨ Starting Keystone
-      ⭐️ Server listening on :3000 (http://localhost:3000/)
-      ⭐️ GraphQL API available at /api/graphql
-      ✨ Generating GraphQL and Prisma schemas
-      ✨ Your database is up to date, no migrations need to be created or applied
-      ✨ Connecting to the database
-      ✨ Creating server
-      ✅ GraphQL API ready"
+      "? Starting Keystone
+      ? Server listening on :3000 (http://localhost:3000/)
+      ? GraphQL API available at /api/graphql
+      ? Generating GraphQL and Prisma schemas
+      ? Your database is up to date, no migrations need to be created or applied
+      ? Connecting to the database
+      ? Creating server
+      ? GraphQL API ready"
     `);
   });
 });
@@ -672,19 +669,17 @@ describe('start --with-migrations', () => {
 
     let output = '';
     try {
-      await Promise.race([
-        new Promise((resolve, reject) =>
-          setTimeout(() => reject(new Error(`timed out. output:\n${output}`)), 10000)
-        ),
-        new Promise<void>(resolve => {
-          startResult.all!.on('data', data => {
-            output += data;
-            if (output.includes('Server listening on :3000 (http://localhost:3000/)')) {
-              resolve();
-            }
-          });
-        }),
-      ]);
+      await new Promise<void>((resolve, reject) => {
+        const timeout = setTimeout(() => reject(new Error(`timed out. output:\n${output}`)), 10000);
+
+        startResult.all!.on('data', data => {
+          output += data;
+          if (output.includes('Server listening on :3000 (http://localhost:3000/)')) {
+            clearTimeout(timeout);
+            resolve();
+          }
+        });
+      });
     } finally {
       startResult.kill();
     }
@@ -699,7 +694,7 @@ describe('start --with-migrations', () => {
       'keystone.js': basicWithMigrations,
     });
 
-    await runCommand(tmp, 'build --no-ui');
+    await runCommand(tmp, ['build', '--no-ui']);
     const output = await startAndStopServer(tmp);
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
       "datasource db {
@@ -717,32 +712,35 @@ describe('start --with-migrations', () => {
     const { migrationName } = await getGeneratedMigration(tmp, 1, 'init');
 
     expect(
-      output.replace(new RegExp(migrationName, 'g'), 'migration_name').replace(/\d+ms/g, '0ms')
+      output
+        .replace(new RegExp(migrationName, 'g'), 'migration_name')
+        .replace(/\d+ms/g, '0ms')
+        .replace(/[^ -~\n]+/g, '?')
     ).toMatchInlineSnapshot(`
-      "✨ Starting Keystone
-      ✨ Connecting to the database
-      ✨ Applying database migrations
+      "? Starting Keystone
+      ? Connecting to the database
+      ? Applying database migrations
       Applying migration \`migration_name\`
-      ✨ Your database is now in sync with your Generated Migrations. Done in 0ms
-      ✨ Creating server
-      ✅ GraphQL API ready
-      ⭐️ Server listening on :3000 (http://localhost:3000/)
+      ? Your database is now in sync with your migrations. Done in 0ms
+      ? Creating server
+      ? GraphQL API ready
+      ? Server listening on :3000 (http://localhost:3000/)
       "
     `);
   });
   test('logs correctly when no migrations need applied', async () => {
     const { prevCwd } = await setupInitialProjectWithMigrations();
-    await runCommand(prevCwd, 'build --no-ui');
+    await runCommand(prevCwd, ['build', '--no-ui']);
     const output = await startAndStopServer(prevCwd);
 
-    expect(output).toMatchInlineSnapshot(`
-      "✨ Starting Keystone
-      ✨ Connecting to the database
-      ✨ Applying database migrations
-      ✨ The database is already in sync with your Generated Migrations.
-      ✨ Creating server
-      ✅ GraphQL API ready
-      ⭐️ Server listening on :3000 (http://localhost:3000/)
+    expect(output.replace(/[^ -~\n]+/g, '?')).toMatchInlineSnapshot(`
+      "? Starting Keystone
+      ? Connecting to the database
+      ? Applying database migrations
+      ? The database is already in sync with your migrations.
+      ? Creating server
+      ? GraphQL API ready
+      ? Server listening on :3000 (http://localhost:3000/)
       "
     `);
   });

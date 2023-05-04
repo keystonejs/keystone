@@ -1,6 +1,5 @@
 import execa from 'execa';
 import * as fs from 'fs-extra';
-import stripAnsi from 'strip-ansi';
 import { ExitError } from '../utils';
 import {
   basicKeystoneConfig,
@@ -23,8 +22,8 @@ test("start errors when a build hasn't happened", async () => {
   const recording = recordConsole();
   await expect(runCommand(tmp, 'start')).rejects.toEqual(new ExitError(1));
   expect(recording()).toMatchInlineSnapshot(`
-    "✨ Starting Keystone
-    🚨 keystone build must be run before running keystone start"
+    "? Starting Keystone
+    ? keystone build must be run before running keystone start"
   `);
 });
 
@@ -47,7 +46,8 @@ test('build works with typescript without the user defining a babel config', asy
     } as any,
   });
   expect(
-    stripAnsi(result.all!)
+    result
+      .all!.replace(/[^ -~\n]/g, '?')
       .replace(
         '\nwarn  - No build cache found. Please configure build caching for faster rebuilds. Read more: https://nextjs.org/docs/messages/no-cache',
         ''
@@ -57,9 +57,9 @@ test('build works with typescript without the user defining a babel config', asy
       // because the code size can change so we don't include it in the snapshot
       .replace(/info  - Finalizing page optimization\.\.\.[^]+\n\n/, 'next build size report\n')
   ).toMatchInlineSnapshot(`
-    "✨ Generated GraphQL and Prisma schemas
-    ✨ Generating Admin UI code
-    ✨ Building Admin UI
+    "? Generated GraphQL and Prisma schemas
+    ? Generating Admin UI code
+    ? Building Admin UI
     info  - Skipping validation of types
     info  - Skipping linting
     info  - Creating an optimized production build...
@@ -71,7 +71,7 @@ test('build works with typescript without the user defining a babel config', asy
     info  - Generating static pages (5/7)
     info  - Generating static pages (7/7)
     next build size report
-    ○  (Static)  automatically rendered as static HTML (uses no initial props)
+    ?  (Static)  automatically rendered as static HTML (uses no initial props)
     "
   `);
   expect(result.exitCode).toBe(0);

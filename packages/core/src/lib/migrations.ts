@@ -170,10 +170,10 @@ export async function deployMigrations(schemaPath: string, dbUrl: string) {
     const before = Date.now();
     const migration = await runMigrateWithDbUrl(dbUrl, undefined, () => migrate.applyMigrations());
     if (migration.appliedMigrationNames.length === 0) {
-      console.info(`✨ The database is already in sync with your Generated Migrations.`);
+      console.info(`✨ The database is already in sync with your migrations.`);
     } else {
       console.info(
-        `✨ Your database is now in sync with your Generated Migrations. Done in ${formatms(
+        `✨ Your database is now in sync with your migrations. Done in ${formatms(
           Date.now() - before
         )}`
       );
@@ -235,11 +235,10 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
     );
     // Inform user about applied migrations now
     if (appliedMigrationNames.length) {
-      console.info(
-        `✨ The following migration(s) have been applied:\n\n${printFilesFromMigrationIds(
-          appliedMigrationNames
-        )}`
-      );
+      console.info(`✨ The following migration(s) have been applied:`);
+      for (const id of appliedMigrationNames) {
+        console.info(`  - ${chalk.cyan.bold(id)}`);
+      }
     }
     // evaluateDataLoss basically means "try to create a migration but don't write it"
     // so we can tell the user whether it can be executed and if there will be data loss
@@ -266,7 +265,7 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
 
       console.log(); // for an empty line
 
-      const migrationName = await getMigrationName();
+      const migrationName = await askForMigrationName();
 
       // note this only creates the migration, it does not apply it
       const { generatedMigrationName } = await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () =>
@@ -305,25 +304,12 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
   });
 }
 
-// based on https://github.com/prisma/prisma/blob/3fed5919545bfae0a82d35134a4f1d21359118cb/src/packages/migrate/src/utils/promptForMigrationName.ts
-const MAX_MIGRATION_NAME_LENGTH = 200;
-async function getMigrationName() {
-  let migrationName = await textPrompt('Name of migration');
-  return slugify(migrationName, { separator: '_' }).substring(0, MAX_MIGRATION_NAME_LENGTH);
-}
+async function askForMigrationName() {
+  const migrationName = await textPrompt('Name of migration');
 
-function printFilesFromMigrationIds(migrationIds: string[]) {
-  return `migrations/\n${migrationIds
-    .map(migrationId => `  └─ ${printMigrationId(migrationId)}/\n    └─ migration.sql`)
-    .join('\n')}`;
-}
-
-function printMigrationId(migrationId: string): string {
-  const words = migrationId.split('_');
-  if (words.length === 1) {
-    return chalk.cyan.bold(migrationId);
-  }
-  return `${words[0]}_${chalk.cyan.bold(words.slice(1).join('_'))}`;
+  // 200 characters is the limit from Prisma
+  //   see https://github.com/prisma/prisma/blob/c6995ebb6f23996d3b48dfdd1b841e0b5cf549b3/packages/migrate/src/utils/promptForMigrationName.ts#L12
+  return slugify(migrationName, { separator: '_' }).slice(0, 200);
 }
 
 async function ensureDatabaseExists(dbUrl: string, schemaDir: string) {

@@ -1,13 +1,12 @@
 // most of these utilities come from https://github.com/preconstruct/preconstruct/blob/07a24f73f17980c121382bb00ae1c05355294fe4/packages/cli/test-utils/index.ts
 import path from 'path';
 import { format } from 'util';
-import stripAnsi from 'strip-ansi';
 import * as fs from 'fs-extra';
 import fastGlob from 'fast-glob';
+import chalk from 'chalk';
 
 // @ts-ignore
 import fixturez from 'fixturez';
-import { parseArgsStringToArgv } from 'string-argv';
 import { MigrateEngine } from '@prisma/migrate';
 import { uriToCredentials } from '@prisma/internals';
 import { KeystoneConfig } from '../../types';
@@ -36,21 +35,21 @@ export const customPrismaKeystoneConfig = fs.readFileSync(
 
 export function recordConsole(promptResponses?: Record<string, string | boolean>) {
   let oldConsole = { ...console };
-  let contents = '';
+  const contents: string[] = [];
   const log = (...args: any[]) => {
-    contents += '\n' + stripAnsi(format(...args));
+    contents.push(format(...args).replace(/[^ -~\n]+/g, '?'));
   };
 
   Object.assign(console, { log, error: log, warn: log, info: log });
 
   const debugOutput = () =>
-    `\nConsole output:\n${contents.trim()}\n\nPrompts left:\n${JSON.stringify(
+    `\nConsole output:\n${contents.join('\n')}\n\nPrompts left:\n${JSON.stringify(
       promptResponseEntries
     )}`;
 
   const promptResponseEntries = Object.entries(promptResponses || {});
   const getPromptAnswer = (message: string) => {
-    message = stripAnsi(message);
+    message = message.replace(/[^ -~]+/g, '?');
     const response = promptResponseEntries.shift()!;
     if (!response) {
       throw new Error(
@@ -63,10 +62,11 @@ export function recordConsole(promptResponses?: Record<string, string | boolean>
         `The expected prompt question was "${expectedMessage}" but the actual question was "${message}"${debugOutput()}`
       );
     }
-    contents += `\nPrompt: ${message} ${answer}`;
+    contents.push(`Prompt: ${message} ${answer}`);
 
     return answer;
   };
+
   mockPrompts({
     confirm: async message => {
       const answer = getPromptAnswer(message);
@@ -98,7 +98,7 @@ export function recordConsole(promptResponses?: Record<string, string | boolean>
       );
     }
     Object.assign(console, oldConsole);
-    return contents.trim();
+    return contents.join('\n');
   };
 }
 
@@ -136,8 +136,9 @@ async function getSymlinkType(targetPath: string): Promise<'dir' | 'file'> {
   return stat.isDirectory() ? 'dir' : 'file';
 }
 
-export async function runCommand(cwd: string, args: string) {
-  const argv = parseArgsStringToArgv(args);
+export async function runCommand(cwd: string, args: string | string[]) {
+  const argv = typeof args === 'string' ? [args] : args;
+  chalk.level = 0; // disable ANSI colouring for this
   const proc = await cli(cwd, argv);
   if (typeof proc === 'function') {
     await proc();
