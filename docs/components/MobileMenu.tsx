@@ -49,6 +49,7 @@ export function MobileMenu({ handleClose }: MobileMenuProps) {
             <NavItem href="/for-developers">For Developers</NavItem>
             <NavItem href="/for-organisations">For Organisations</NavItem>
             <NavItem href="/for-content-management">For Content Management</NavItem>
+            <NavItem href="/enterprise">Enterprise</NavItem>
           </div>
           <div
             css={{
