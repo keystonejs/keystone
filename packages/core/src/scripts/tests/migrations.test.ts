@@ -429,11 +429,11 @@ describe('useMigrations: true', () => {
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       'app.db': await fs.readFile(`${prevCwd}/app.db`),
-      'keystone.js': await fs.readFile(`${__dirname}/fixtures/one-field-with-migrations.ts`),
+      'keystone.js': await fs.readFile(`${__dirname}/fixtures/one-field-with-migrations-2.ts`),
     });
     const recording = recordConsole({
       'Do you want to continue? All data will be lost.': true,
-      'Name of migration': 'init',
+      'Name of migration': 'init2',
       'Would you like to apply this migration?': true,
     });
     await runCommand(tmp, 'dev');
@@ -444,20 +444,19 @@ describe('useMigrations: true', () => {
         url      = "file:./app.db"
       }
 
-      model Todo {
-        id    String @id
-        title String @default("")
+      model Post {
+        id      String @id
+        content String @default("")
       }
       "
     `);
 
-    const { migration, migrationName } = await getGeneratedMigration(tmp, 1, 'init');
-
+    const { migration, migrationName } = await getGeneratedMigration(tmp, 1, 'init2');
     expect(migration).toMatchInlineSnapshot(`
       "-- CreateTable
-      CREATE TABLE "Todo" (
+      CREATE TABLE "Post" (
           "id" TEXT NOT NULL PRIMARY KEY,
-          "title" TEXT NOT NULL DEFAULT ''
+          "content" TEXT NOT NULL DEFAULT ''
       );
       "
     `);
@@ -489,7 +488,7 @@ describe('useMigrations: true', () => {
 
       ? There has been a change to your Keystone schema that requires a migration
 
-      Prompt: Name of migration init
+      Prompt: Name of migration init2
       ? A migration has been created at migrations/migration_name
       Prompt: Would you like to apply this migration? true
       Applying migration \`migration_name\`
