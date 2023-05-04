@@ -1,5 +1,11 @@
+import * as Path from 'path';
 import { timestamp } from '@keystone-6/core/fields';
-import { BaseKeystoneTypeInfo, DatabaseConfig, StorageConfig } from '@keystone-6/core/types';
+import {
+  BaseKeystoneTypeInfo,
+  DatabaseConfig,
+  StorageConfig,
+  AdminUIConfig,
+} from '@keystone-6/core/types';
 
 export const localStorageConfig: Record<string, StorageConfig> = {
   images: {
@@ -27,6 +33,30 @@ export const localStorageConfig: Record<string, StorageConfig> = {
 //   transforms
 export const fixPrismaPath = {
   prismaClientPath: 'node_modules/.testprisma/client',
+};
+// we use preconstruct to build our packages, for our monorepo examples we need to use @preconstruct/next
+export const fixNextConfig = {
+  getAdditionalFiles: [
+    () => [
+      {
+        mode: 'copy' as const,
+        inputPath: Path.resolve('../../sandbox/test-next-config-fix.js'),
+        outputPath: 'next.config.js',
+      },
+    ],
+  ],
+};
+
+export const uiConfig: AdminUIConfig<BaseKeystoneTypeInfo> = {
+  getAdditionalFiles: [
+    () => [
+      {
+        mode: 'copy' as const,
+        inputPath: Path.resolve('./test-next-config-fix.js'),
+        outputPath: 'next.config.js',
+      },
+    ],
+  ],
 };
 
 export const dbConfig: DatabaseConfig<BaseKeystoneTypeInfo> = {

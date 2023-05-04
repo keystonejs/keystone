@@ -22,7 +22,7 @@ import { componentBlocks } from '../component-blocks';
 import { schema as structureSchema } from '../structure';
 import { schema as structureNestedSchema } from '../structure-nested';
 import { schema as structureRelationshipsSchema } from '../structure-relationships';
-import { dbConfig, localStorageConfig, trackingFields } from '../utils';
+import { dbConfig, localStorageConfig, trackingFields, uiConfig } from '../utils';
 
 const description =
   'Some thing to describe to test the length of the text for width, blah blah blah blah blah blah blah blah blah';
@@ -222,6 +222,7 @@ export const lists = {
 
 export default config({
   db: dbConfig,
+  ui: uiConfig,
   storage: localStorageConfig,
   lists,
 });
