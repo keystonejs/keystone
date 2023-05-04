@@ -426,10 +426,12 @@ describe('useMigrations: true', () => {
   });
   test('prompts to drop database when database is out of sync with migrations directory', async () => {
     const { migrationName: oldMigrationName, prevCwd } = await setupInitialProjectWithMigrations();
+
+    // we copy the database, but the previous *_init.sql migration will be lost
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       'app.db': await fs.readFile(`${prevCwd}/app.db`),
-      'keystone.js': await fs.readFile(`${__dirname}/fixtures/one-field-with-migrations-2.ts`),
+      'keystone.js': await fs.readFile(`${__dirname}/fixtures/one-field-with-migrations.ts`),
     });
     const recording = recordConsole({
       'Do you want to continue? All data will be lost.': true,
@@ -444,9 +446,9 @@ describe('useMigrations: true', () => {
         url      = "file:./app.db"
       }
 
-      model Post {
-        id      String @id
-        content String @default("")
+      model Todo {
+        id    String @id
+        title String @default("")
       }
       "
     `);
@@ -454,9 +456,9 @@ describe('useMigrations: true', () => {
     const { migration, migrationName } = await getGeneratedMigration(tmp, 1, 'init2');
     expect(migration).toMatchInlineSnapshot(`
       "-- CreateTable
-      CREATE TABLE "Post" (
+      CREATE TABLE "Todo" (
           "id" TEXT NOT NULL PRIMARY KEY,
-          "content" TEXT NOT NULL DEFAULT ''
+          "title" TEXT NOT NULL DEFAULT ''
       );
       "
     `);
