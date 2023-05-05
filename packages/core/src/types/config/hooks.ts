@@ -96,16 +96,11 @@ export type ResolvedListHooks<ListTypeInfo extends BaseListTypeInfo> = {
   afterOperation?: AfterOperationHook<ListTypeInfo>;
 };
 
-type FieldKeysForList<
-  ListTypeInfo extends BaseListTypeInfo,
-  Operation extends 'create' | 'update'
-> = keyof ListTypeInfo['prisma'][Operation];
-
 export type FieldHooks<ListTypeInfo extends BaseListTypeInfo> = {
   /**
    * Used to **modify the input** for create and update operations after default values and access control have been applied
    */
-  resolveInput?: ResolveInputFieldHook<ListTypeInfo, 'create' | 'update'>;
+  resolveInput?: ResolveInputFieldHook<ListTypeInfo>;
   /**
    * Used to **validate the input** for create and update operations once all resolveInput hooks resolved
    */
@@ -159,13 +154,12 @@ type ArgsForCreateOrUpdateOperation<ListTypeInfo extends BaseListTypeInfo> =
 
 type ResolveInputFieldHook<
   ListTypeInfo extends BaseListTypeInfo,
-  Operation extends 'create' | 'update',
-  FieldKey extends FieldKeysForList<ListTypeInfo, Operation> = string
+  FieldKey extends ListTypeInfo['fields'] = ListTypeInfo['fields']
 > = (
   args: ArgsForCreateOrUpdateOperation<ListTypeInfo> &
-    CommonArgs<ListTypeInfo> & { fieldKey: string }
+    CommonArgs<ListTypeInfo> & { fieldKey: FieldKey }
 ) => MaybePromise<
-  ListTypeInfo['prisma'][Operation][FieldKey] | undefined // undefined represents 'don't do anything'
+  ListTypeInfo['prisma']['create' | 'update'][FieldKey] | undefined // undefined represents 'don't do anything'
 >;
 
 type ValidateInputHook<ListTypeInfo extends BaseListTypeInfo> = (
@@ -174,10 +168,13 @@ type ValidateInputHook<ListTypeInfo extends BaseListTypeInfo> = (
   } & CommonArgs<ListTypeInfo>
 ) => Promise<void> | void;
 
-type ValidateInputFieldHook<ListTypeInfo extends BaseListTypeInfo> = (
+type ValidateInputFieldHook<
+  ListTypeInfo extends BaseListTypeInfo,
+  FieldKey extends ListTypeInfo['fields'] = ListTypeInfo['fields']
+> = (
   args: ArgsForCreateOrUpdateOperation<ListTypeInfo> & {
     addValidationError: (error: string) => void;
-  } & CommonArgs<ListTypeInfo> & { fieldKey: string }
+  } & CommonArgs<ListTypeInfo> & { fieldKey: FieldKey }
 ) => Promise<void> | void;
 
 type ValidateDeleteHook<ListTypeInfo extends BaseListTypeInfo> = (
@@ -188,12 +185,15 @@ type ValidateDeleteHook<ListTypeInfo extends BaseListTypeInfo> = (
   } & CommonArgs<ListTypeInfo>
 ) => Promise<void> | void;
 
-type ValidateDeleteFieldHook<ListTypeInfo extends BaseListTypeInfo> = (
+type ValidateDeleteFieldHook<
+  ListTypeInfo extends BaseListTypeInfo,
+  FieldKey extends ListTypeInfo['fields'] = ListTypeInfo['fields']
+> = (
   args: {
     operation: 'delete';
     item: ListTypeInfo['item'];
     addValidationError: (error: string) => void;
-  } & CommonArgs<ListTypeInfo> & { fieldKey: string }
+  } & CommonArgs<ListTypeInfo> & { fieldKey: FieldKey }
 ) => Promise<void> | void;
 
 type BeforeOperationHook<ListTypeInfo extends BaseListTypeInfo> = (
@@ -209,7 +209,10 @@ type BeforeOperationHook<ListTypeInfo extends BaseListTypeInfo> = (
     CommonArgs<ListTypeInfo>
 ) => Promise<void> | void;
 
-type BeforeOperationFieldHook<ListTypeInfo extends BaseListTypeInfo> = (
+type BeforeOperationFieldHook<
+  ListTypeInfo extends BaseListTypeInfo,
+  FieldKey extends ListTypeInfo['fields'] = ListTypeInfo['fields']
+> = (
   args: (
     | ArgsForCreateOrUpdateOperation<ListTypeInfo>
     | {
@@ -219,7 +222,7 @@ type BeforeOperationFieldHook<ListTypeInfo extends BaseListTypeInfo> = (
         resolvedData: undefined;
       }
   ) &
-    CommonArgs<ListTypeInfo> & { fieldKey: string }
+    CommonArgs<ListTypeInfo> & { fieldKey: FieldKey }
 ) => Promise<void> | void;
 
 type AfterOperationHook<ListTypeInfo extends BaseListTypeInfo> = (
@@ -269,7 +272,10 @@ type AfterOperationHook<ListTypeInfo extends BaseListTypeInfo> = (
     CommonArgs<ListTypeInfo>
 ) => Promise<void> | void;
 
-type AfterOperationFieldHook<ListTypeInfo extends BaseListTypeInfo> = (
+type AfterOperationFieldHook<
+  ListTypeInfo extends BaseListTypeInfo,
+  FieldKey extends ListTypeInfo['fields'] = ListTypeInfo['fields']
+> = (
   args: (
     | {
         operation: 'create';
@@ -313,5 +319,5 @@ type AfterOperationFieldHook<ListTypeInfo extends BaseListTypeInfo> = (
         resolvedData: undefined;
       }
   ) &
-    CommonArgs<ListTypeInfo> & { fieldKey: string }
+    CommonArgs<ListTypeInfo> & { fieldKey: FieldKey }
 ) => Promise<void> | void;
