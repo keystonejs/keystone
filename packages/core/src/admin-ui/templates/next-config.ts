@@ -8,7 +8,7 @@ export const nextConfigTemplate = (basePath?: string) =>
     eslint: {
       ignoreDuringBuilds: true,
     },
-    ${basePath && `basePath: '${basePath}',`}
+    ${basePath ? `basePath: '${basePath}',` : ''}
     webpack(config, { isServer }) {
       config.resolve.alias = {
         ...config.resolve.alias,
