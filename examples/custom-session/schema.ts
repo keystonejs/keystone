@@ -8,20 +8,20 @@ export type Session = {
   admin: boolean;
 };
 
-function hasSession ({ session }: { session: Session | undefined }) {
+function hasSession({ session }: { session: Session | undefined }) {
   return Boolean(session);
 }
 
-function isAdmin ({ session }: { session: Session | undefined }) {
+function isAdmin({ session }: { session: Session | undefined }) {
   if (!session) return false;
   return session.admin;
 }
 
-function isAdminOrOnlySameUser ({ session }: { session: Session | undefined }) {
+function isAdminOrOnlySameUser({ session }: { session: Session | undefined }) {
   if (!session) return false;
   if (session.admin) return {}; // unfiltered for admins
   return {
-    id: { equals: session.id }
+    id: { equals: session.id },
   };
 }
 
@@ -37,8 +37,8 @@ export const lists: Lists = {
       filter: {
         // this is redundant as it is the default
         //   but it may help readability
-        query: unfiltered
-      }
+        query: unfiltered,
+      },
     },
     fields: {
       title: text(),
@@ -56,11 +56,11 @@ export const lists: Lists = {
       },
       filter: {
         query: isAdminOrOnlySameUser,
-      }
+      },
     },
     fields: {
       name: text(),
-      admin: checkbox()
-    }
-  })
+      admin: checkbox(),
+    },
+  }),
 };

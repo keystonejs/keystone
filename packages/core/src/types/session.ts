@@ -1,7 +1,11 @@
 import type { JSONValue } from './utils';
 import { KeystoneContext } from '.';
 
-export type SessionStrategy<StoredSessionData, StartSessionData = never, Context extends KeystoneContext = KeystoneContext> = {
+export type SessionStrategy<
+  StoredSessionData,
+  StartSessionData = never,
+  Context extends KeystoneContext = KeystoneContext
+> = {
   get: (args: { context: Context }) => Promise<StoredSessionData | undefined>;
 
   start: (args: {

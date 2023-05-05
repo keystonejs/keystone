@@ -4,7 +4,7 @@ import { lists, Session } from './schema';
 import type { Context, TypeInfo } from '.keystone/types';
 
 const sillySessionStrategy = {
-  async get ({ context }: { context: Context }): Promise<Session | undefined> {
+  async get({ context }: { context: Context }): Promise<Session | undefined> {
     if (!context.req) return;
 
     // WARNING: for demonstrative purposes only, this has no authentication
@@ -20,7 +20,7 @@ const sillySessionStrategy = {
     if (!who) return;
     return {
       id,
-      admin: who.admin
+      admin: who.admin,
     };
   },
 
@@ -28,8 +28,8 @@ const sillySessionStrategy = {
   //   context.sessionStrategy.start
   //   context.sessionStrategy.end
   //
-  async start () {},
-  async end () {}
+  async start() {},
+  async end() {},
 };
 
 export default config<TypeInfo>({
