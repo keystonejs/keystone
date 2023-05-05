@@ -9,6 +9,10 @@ export function denyAll() {
   return false;
 }
 
+export function unfiltered() {
+  return true;
+}
+
 export function allOperations<ListTypeInfo extends BaseListTypeInfo>(
   func: (args: BaseAccessArgs<ListTypeInfo> & { operation: AccessOperation }) => boolean
 ) {
