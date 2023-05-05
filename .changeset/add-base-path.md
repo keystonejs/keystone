@@ -2,4 +2,4 @@
 '@keystone-6/core': minor
 ---
 
-Adds the ability to set Admin UI URL base path through `ui.basePath` 
+Adds a new `ui.basePath` for changing the AdminUI's by changing to a dynamic `next.config.js`
