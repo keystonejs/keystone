@@ -245,21 +245,37 @@ async function getResolvedData(
                   return () => undefined;
                 }
                 const foreignList = list.lists[field.dbField.list];
-                let resolver;
-                if (field.dbField.mode === 'many') {
-                  if (operation === 'create') {
-                    resolver = resolveRelateToManyForCreateInput;
-                  } else {
-                    resolver = resolveRelateToManyForUpdateInput;
-                  }
-                } else {
-                  if (operation === 'create') {
-                    resolver = resolveRelateToOneForCreateInput;
-                  } else {
-                    resolver = resolveRelateToOneForUpdateInput;
-                  }
+                if (field.dbField.mode === 'many' && operation === 'create') {
+                  return resolveRelateToManyForCreateInput(
+                    nestedMutationState,
+                    context,
+                    foreignList,
+                    tag
+                  );
                 }
-                return resolver(nestedMutationState, context, foreignList, tag);
+                if (field.dbField.mode === 'many' && operation === 'update') {
+                  return resolveRelateToManyForUpdateInput(
+                    nestedMutationState,
+                    context,
+                    foreignList,
+                    tag
+                  );
+                }
+                if (field.dbField.mode === 'one' && operation === 'create') {
+                  return resolveRelateToOneForCreateInput(
+                    nestedMutationState,
+                    context,
+                    foreignList
+                  );
+                }
+                if (field.dbField.mode === 'one' && operation === 'update') {
+                  return resolveRelateToOneForUpdateInput(
+                    nestedMutationState,
+                    context,
+                    foreignList
+                  );
+                }
+                throw new Error('Unknown relationship field type input mode or operation');
               })()
             );
           } catch (error: any) {
