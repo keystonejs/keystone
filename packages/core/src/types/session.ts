@@ -1,15 +1,15 @@
 import type { JSONValue } from './utils';
 import { KeystoneContext } from '.';
 
-export type SessionStrategy<StoredSessionData, StartSessionData = never> = {
-  get: (args: { context: KeystoneContext }) => Promise<StoredSessionData | undefined>;
+export type SessionStrategy<StoredSessionData, StartSessionData = never, Context extends KeystoneContext = KeystoneContext> = {
+  get: (args: { context: Context }) => Promise<StoredSessionData | undefined>;
 
   start: (args: {
     data: StoredSessionData | StartSessionData;
-    context: KeystoneContext;
+    context: Context;
   }) => Promise<unknown>;
 
-  end: (args: { context: KeystoneContext }) => Promise<unknown>;
+  end: (args: { context: Context }) => Promise<unknown>;
 };
 
 export type SessionStore = {
