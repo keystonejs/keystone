@@ -27,8 +27,8 @@ const sillySessionStrategy = {
   //   context.sessionStrategy.start
   //   context.sessionStrategy.end
   //
-  async start (): Promise<Session | undefined> { return; },
-  async end (): Promise<Session | undefined> { return; }
+  async start () {},
+  async end () {}
 };
 
 export default config<TypeInfo>({
