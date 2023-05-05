@@ -1,5 +1,4 @@
 import execa from 'execa';
-import stripAnsi from 'strip-ansi';
 import { basicKeystoneConfig, cliBinPath, schemas, symlinkKeystoneDeps, testdir } from './utils';
 
 // testing erroring when the schemas are not up to date is in artifacts.test.ts
@@ -15,11 +14,11 @@ test('keystone prisma exits with the same code as the prisma child process exits
     all: true,
     cwd: tmp,
   });
-  expect(stripAnsi(result.all!)).toMatchInlineSnapshot(`
+  expect(result.all!.replace(/[^ -~\n]/g, '?')).toMatchInlineSnapshot(`
     "
     ! Unknown command "bad-thing"
 
-    ◭  Prisma is a modern DB toolkit to query, migrate and model your database (https://prisma.io)
+    ?  Prisma is a modern DB toolkit to query, migrate and model your database (https://prisma.io)
 
     Usage
 
@@ -34,7 +33,7 @@ test('keystone prisma exits with the same code as the prisma child process exits
               studio   Browse your data with Prisma Studio
             validate   Validate your Prisma schema
               format   Format your Prisma schema
-
+    
     Flags
 
          --preview-feature   Run Preview Prisma commands
@@ -80,7 +79,7 @@ test('keystone prisma uses the db url in the keystone config', async () => {
     all: true,
     cwd: tmp,
   });
-  expect(stripAnsi(result.all!)).toMatchInlineSnapshot(`
+  expect(result.all).toMatchInlineSnapshot(`
     "Prisma schema loaded from schema.prisma
     Datasource "sqlite": SQLite database "app.db" at "file:./app.db"
     Error: P1003: Database app.db does not exist at ./app.db"

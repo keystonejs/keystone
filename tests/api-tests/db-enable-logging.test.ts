@@ -2,7 +2,6 @@ import { list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
-import stripAnsi from 'strip-ansi';
 import { apiTestConfig, dbProvider, dbName } from './utils';
 
 const runner = (enableLogging: boolean) =>
@@ -25,15 +24,15 @@ test(
   'enableLogging: true enables logging',
   runner(true)(async ({ context }) => {
     let prevConsoleLog = console.log;
-    let logs: unknown[][] = [];
+    const logs: unknown[][] = [];
     console.log = (...args) => {
-      logs.push(args.map(x => (typeof x === 'string' ? stripAnsi(x) : x)));
+      logs.push(args.map(x => (typeof x === 'string' ? x.replace(/[^ -~]/g, '^') : x)));
     };
     try {
       expect(await context.query.User.findMany()).toEqual([]);
       expect(logs).toEqual([
         [
-          'prisma:query',
+          expect.stringContaining('prisma:query'),
           dbProvider === 'sqlite'
             ? 'SELECT `main`.`User`.`id`, `main`.`User`.`name` FROM `main`.`User` WHERE 1=1 LIMIT ? OFFSET ?'
             : dbProvider === 'mysql'

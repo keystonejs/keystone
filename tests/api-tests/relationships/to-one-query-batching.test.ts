@@ -2,7 +2,6 @@ import { isDeepStrictEqual } from 'util';
 import { list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { relationship, text } from '@keystone-6/core/fields';
-import stripAnsi from 'strip-ansi';
 import { setupTestRunner } from '../test-runner';
 import { apiTestConfig, dbProvider, dbName } from '../utils';
 
@@ -54,7 +53,7 @@ test(
 
     let logs: unknown[][] = [];
     console.log = (...args) => {
-      logs.push(args.map(x => (typeof x === 'string' ? stripAnsi(x) : x)));
+      logs.push(args.map(x => (typeof x === 'string' ? x.replace(/[^ -~]/g, ' ') : x)));
     };
 
     try {
@@ -81,8 +80,8 @@ test(
         logs = logs.slice(commitIndex + 1);
       }
       expect(logs).toEqual([
-        ['prisma:query', expect.stringContaining('SELECT')],
-        ['prisma:query', expect.stringContaining('SELECT')],
+        [expect.stringContaining('prisma:query'), expect.stringContaining('SELECT')],
+        [expect.stringContaining('prisma:query'), expect.stringContaining('SELECT')],
       ]);
       const expectedSql = {
         sqlite: [
