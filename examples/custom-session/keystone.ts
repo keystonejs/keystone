@@ -11,6 +11,7 @@ const sillySessionStrategy = {
     //   use `Cookie:user=clh9v6pcn0000sbhm9u0j6in0` for Alice (admin)
     //   use `Cookie:user=clh9v762w0002sbhmhhyc0340` for Bob
     //
+    // in practice, you should use authentication for your sessions, such as OAuth or JWT
     const { cookie = '' } = context.req.headers;
     const [user, id] = cookie.split('=');
     if (user !== 'user') return;
