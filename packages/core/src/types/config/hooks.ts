@@ -9,11 +9,49 @@ type CommonArgs<ListTypeInfo extends BaseListTypeInfo> = {
   listKey: string;
 };
 
+type ResolveInputListHook<
+  ListTypeInfo extends BaseListTypeInfo,
+  Operation extends 'create' | 'update'
+> = (
+  args: {
+    create: {
+      operation: 'create';
+      item: undefined;
+      /**
+       * The GraphQL input **before** default values are applied
+       */
+      inputData: ListTypeInfo['inputs']['create'];
+      /**
+       * The GraphQL input **after** being resolved by the field type's input resolver
+       */
+      resolvedData: ListTypeInfo['prisma']['create'];
+    };
+    update: {
+      operation: 'update';
+      item: ListTypeInfo['item'];
+      /**
+       * The GraphQL input **before** default values are applied
+       */
+      inputData: ListTypeInfo['inputs']['update'];
+      /**
+       * The GraphQL input **after** being resolved by the field type's input resolver
+       */
+      resolvedData: ListTypeInfo['prisma']['update'];
+    };
+  }[Operation] &
+    CommonArgs<ListTypeInfo>
+) => MaybePromise<ListTypeInfo['prisma'][Operation]>;
+
 export type ListHooks<ListTypeInfo extends BaseListTypeInfo> = {
   /**
    * Used to **modify the input** for create and update operations after default values and access control have been applied
    */
-  resolveInput?: ResolveInputListHook<ListTypeInfo>;
+  resolveInput?:
+    | ResolveInputListHook<ListTypeInfo, 'create' | 'update'>
+    | {
+        create?: ResolveInputListHook<ListTypeInfo, 'create'>;
+        update?: ResolveInputListHook<ListTypeInfo, 'update'>;
+      };
   /**
    * Used to **validate the input** for create and update operations once all resolveInput hooks resolved
    */
@@ -32,28 +70,14 @@ export type ListHooks<ListTypeInfo extends BaseListTypeInfo> = {
   afterOperation?: AfterOperationHook<ListTypeInfo>;
 };
 
-// TODO: probably maybe don't do this and write it out manually
-// (this is also incorrect because the return value is wrong for many of them)
-type AddFieldPathToObj<T extends (arg: any) => any> = T extends (args: infer Args) => infer Result
-  ? (args: Args & { fieldKey: string }) => Result
-  : never;
-
-type AddFieldPathArgToAllPropsOnObj<T extends Record<string, (arg: any) => any>> = {
-  [Key in keyof T]: AddFieldPathToObj<T[Key]>;
-};
-
-type FieldKeysForList<ListTypeInfo extends BaseListTypeInfo> =
-  | keyof ListTypeInfo['prisma']['create']
-  | keyof ListTypeInfo['prisma']['update'];
-
-export type FieldHooks<
-  ListTypeInfo extends BaseListTypeInfo,
-  FieldKey extends FieldKeysForList<ListTypeInfo> = FieldKeysForList<ListTypeInfo>
-> = AddFieldPathArgToAllPropsOnObj<{
+export type ResolvedListHooks<ListTypeInfo extends BaseListTypeInfo> = {
   /**
    * Used to **modify the input** for create and update operations after default values and access control have been applied
    */
-  resolveInput?: ResolveInputFieldHook<ListTypeInfo, FieldKey>;
+  resolveInput: {
+    create: ResolveInputListHook<ListTypeInfo, 'create'>;
+    update: ResolveInputListHook<ListTypeInfo, 'update'>;
+  };
   /**
    * Used to **validate the input** for create and update operations once all resolveInput hooks resolved
    */
@@ -70,7 +94,38 @@ export type FieldHooks<
    * Used to **cause side effects** after a create, update, or delete operation operation has occurred
    */
   afterOperation?: AfterOperationHook<ListTypeInfo>;
-}>;
+};
+
+type FieldKeysForList<
+  ListTypeInfo extends BaseListTypeInfo,
+  Operation extends 'create' | 'update'
+> = keyof ListTypeInfo['prisma'][Operation];
+
+export type FieldHooks<ListTypeInfo extends BaseListTypeInfo> = {
+  /**
+   * Used to **modify the input** for create and update operations after default values and access control have been applied
+   */
+  resolveInput?: ResolveInputFieldHook<ListTypeInfo, 'create' | 'update'>;
+  /**
+   * Used to **validate the input** for create and update operations once all resolveInput hooks resolved
+   */
+  validateInput?: ValidateInputFieldHook<ListTypeInfo>;
+  /**
+   * Used to **validate** that a delete operation can happen after access control has occurred
+   */
+  validateDelete?: ValidateDeleteFieldHook<ListTypeInfo>;
+  /**
+   * Used to **cause side effects** before a create, update, or delete operation once all validateInput hooks have resolved
+   */
+  beforeOperation?: BeforeOperationFieldHook<ListTypeInfo>;
+  /**
+   * Used to **cause side effects** after a create, update, or delete operation operation has occurred
+   */
+  afterOperation?: AfterOperationFieldHook<ListTypeInfo>;
+};
+
+// TODO: one day
+export type ResolvedFieldHooks<ListTypeInfo extends BaseListTypeInfo> = FieldHooks<ListTypeInfo>;
 
 type ArgsForCreateOrUpdateOperation<ListTypeInfo extends BaseListTypeInfo> =
   | {
@@ -102,17 +157,15 @@ type ArgsForCreateOrUpdateOperation<ListTypeInfo extends BaseListTypeInfo> =
       resolvedData: ListTypeInfo['prisma']['update'];
     };
 
-type ResolveInputListHook<ListTypeInfo extends BaseListTypeInfo> = (
-  args: ArgsForCreateOrUpdateOperation<ListTypeInfo> & CommonArgs<ListTypeInfo>
-) => MaybePromise<ListTypeInfo['prisma']['create'] | ListTypeInfo['prisma']['update']>;
-
 type ResolveInputFieldHook<
   ListTypeInfo extends BaseListTypeInfo,
-  FieldKey extends FieldKeysForList<ListTypeInfo>
-> = (args: ArgsForCreateOrUpdateOperation<ListTypeInfo> & CommonArgs<ListTypeInfo>) => MaybePromise<
-  | ListTypeInfo['prisma']['create'][FieldKey]
-  | ListTypeInfo['prisma']['update'][FieldKey]
-  | undefined // undefined represents 'don't do anything'
+  Operation extends 'create' | 'update',
+  FieldKey extends FieldKeysForList<ListTypeInfo, Operation> = string
+> = (
+  args: ArgsForCreateOrUpdateOperation<ListTypeInfo> &
+    CommonArgs<ListTypeInfo> & { fieldKey: string }
+) => MaybePromise<
+  ListTypeInfo['prisma'][Operation][FieldKey] | undefined // undefined represents 'don't do anything'
 >;
 
 type ValidateInputHook<ListTypeInfo extends BaseListTypeInfo> = (
@@ -121,12 +174,26 @@ type ValidateInputHook<ListTypeInfo extends BaseListTypeInfo> = (
   } & CommonArgs<ListTypeInfo>
 ) => Promise<void> | void;
 
+type ValidateInputFieldHook<ListTypeInfo extends BaseListTypeInfo> = (
+  args: ArgsForCreateOrUpdateOperation<ListTypeInfo> & {
+    addValidationError: (error: string) => void;
+  } & CommonArgs<ListTypeInfo> & { fieldKey: string }
+) => Promise<void> | void;
+
 type ValidateDeleteHook<ListTypeInfo extends BaseListTypeInfo> = (
   args: {
     operation: 'delete';
     item: ListTypeInfo['item'];
     addValidationError: (error: string) => void;
   } & CommonArgs<ListTypeInfo>
+) => Promise<void> | void;
+
+type ValidateDeleteFieldHook<ListTypeInfo extends BaseListTypeInfo> = (
+  args: {
+    operation: 'delete';
+    item: ListTypeInfo['item'];
+    addValidationError: (error: string) => void;
+  } & CommonArgs<ListTypeInfo> & { fieldKey: string }
 ) => Promise<void> | void;
 
 type BeforeOperationHook<ListTypeInfo extends BaseListTypeInfo> = (
@@ -142,9 +209,51 @@ type BeforeOperationHook<ListTypeInfo extends BaseListTypeInfo> = (
     CommonArgs<ListTypeInfo>
 ) => Promise<void> | void;
 
-type AfterOperationHook<ListTypeInfo extends BaseListTypeInfo> = (
+type BeforeOperationFieldHook<ListTypeInfo extends BaseListTypeInfo> = (
   args: (
     | ArgsForCreateOrUpdateOperation<ListTypeInfo>
+    | {
+        operation: 'delete';
+        item: ListTypeInfo['item'];
+        inputData: undefined;
+        resolvedData: undefined;
+      }
+  ) &
+    CommonArgs<ListTypeInfo> & { fieldKey: string }
+) => Promise<void> | void;
+
+type AfterOperationHook<ListTypeInfo extends BaseListTypeInfo> = (
+  args: (
+    | {
+        operation: 'create';
+        originalItem: undefined;
+        // technically this will never actually exist for a create
+        // but making it optional rather than not here
+        // makes for a better experience
+        // because then people will see the right type even if they haven't refined the type of operation to 'create'
+        item?: ListTypeInfo['item'];
+        /**
+         * The GraphQL input **before** default values are applied
+         */
+        inputData: ListTypeInfo['inputs']['create'];
+        /**
+         * The GraphQL input **after** being resolved by the field type's input resolver
+         */
+        resolvedData: ListTypeInfo['prisma']['create'];
+      }
+    | {
+        operation: 'update';
+        item: ListTypeInfo['item'];
+        originalItem: ListTypeInfo['item'];
+        /**
+         * The GraphQL input **before** default values are applied
+         */
+        inputData: ListTypeInfo['inputs']['update'];
+        /**
+         * The GraphQL input **after** being resolved by the field type's input resolver
+         */
+        resolvedData: ListTypeInfo['prisma']['update'];
+      }
     | {
         operation: 'delete';
         // technically this will never actually exist for a delete
@@ -152,18 +261,57 @@ type AfterOperationHook<ListTypeInfo extends BaseListTypeInfo> = (
         // makes for a better experience
         // because then people will see the right type even if they haven't refined the type of operation to 'delete'
         item: undefined;
+        originalItem: ListTypeInfo['item'];
         inputData: undefined;
         resolvedData: undefined;
       }
   ) &
-    ({ operation: 'delete' } | { operation: 'create' | 'update'; item: ListTypeInfo['item'] }) &
-    (
-      | // technically this will never actually exist for a create
-      // but making it optional rather than not here
-      // makes for a better experience
-      // because then people will see the right type even if they haven't refined the type of operation to 'create'
-      { operation: 'create'; originalItem: undefined }
-      | { operation: 'delete' | 'update'; originalItem: ListTypeInfo['item'] }
-    ) &
     CommonArgs<ListTypeInfo>
+) => Promise<void> | void;
+
+type AfterOperationFieldHook<ListTypeInfo extends BaseListTypeInfo> = (
+  args: (
+    | {
+        operation: 'create';
+        originalItem: undefined;
+        // technically this will never actually exist for a create
+        // but making it optional rather than not here
+        // makes for a better experience
+        // because then people will see the right type even if they haven't refined the type of operation to 'create'
+        item?: ListTypeInfo['item'];
+        /**
+         * The GraphQL input **before** default values are applied
+         */
+        inputData: ListTypeInfo['inputs']['create'];
+        /**
+         * The GraphQL input **after** being resolved by the field type's input resolver
+         */
+        resolvedData: ListTypeInfo['prisma']['create'];
+      }
+    | {
+        operation: 'update';
+        item: ListTypeInfo['item'];
+        originalItem: ListTypeInfo['item'];
+        /**
+         * The GraphQL input **before** default values are applied
+         */
+        inputData: ListTypeInfo['inputs']['update'];
+        /**
+         * The GraphQL input **after** being resolved by the field type's input resolver
+         */
+        resolvedData: ListTypeInfo['prisma']['update'];
+      }
+    | {
+        operation: 'delete';
+        // technically this will never actually exist for a delete
+        // but making it optional rather than not here
+        // makes for a better experience
+        // because then people will see the right type even if they haven't refined the type of operation to 'delete'
+        item: undefined;
+        originalItem: ListTypeInfo['item'];
+        inputData: undefined;
+        resolvedData: undefined;
+      }
+  ) &
+    CommonArgs<ListTypeInfo> & { fieldKey: string }
 ) => Promise<void> | void;

@@ -7,14 +7,14 @@ import type {
   NextFieldType,
   BaseListTypeInfo,
   ListGraphQLTypes,
-  ListHooks,
   KeystoneConfig,
   FindManyArgs,
+  ListHooks,
   CacheHintArgs,
   MaybePromise,
 } from '../../types';
 import { graphql } from '../..';
-import { FieldHooks } from '../../types/config/hooks';
+import { FieldHooks, ResolvedListHooks, ResolvedFieldHooks } from '../../types/config/hooks';
 import { FilterOrderArgs } from '../../types/config/fields';
 import {
   ResolvedFieldAccessControl,
@@ -30,7 +30,7 @@ import { assertFieldsValid } from './field-assertions';
 export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access' | 'graphql'> & {
   dbField: ResolvedDBField;
   access: ResolvedFieldAccessControl;
-  hooks: FieldHooks<BaseListTypeInfo>;
+  hooks: ResolvedFieldHooks<BaseListTypeInfo>;
   graphql: {
     isEnabled: {
       read: boolean;
@@ -60,7 +60,7 @@ export type InitialisedList = {
   fields: Record<string, InitialisedField>;
   groups: FieldGroupConfig[];
 
-  hooks: ListHooks<BaseListTypeInfo>;
+  hooks: ResolvedListHooks<BaseListTypeInfo>;
 
   /** This will include the opposites to one-sided relationships */
   resolvedDbFields: Record<string, ResolvedDBField>;
@@ -149,6 +149,68 @@ function getIsEnabled(listsConfig: KeystoneConfig['lists']) {
   return isEnabled;
 }
 
+function defaultListHooksResolveInput({ resolvedData }: { resolvedData: any }) {
+  return resolvedData;
+}
+
+function parseListHooksResolveInput(f: ListHooks<BaseListTypeInfo>['resolveInput']) {
+  if (typeof f === 'function') {
+    return {
+      create: f,
+      update: f,
+    };
+  }
+
+  const { create, update } = f ?? {};
+  return {
+    create: create ?? defaultListHooksResolveInput,
+    update: update ?? defaultListHooksResolveInput,
+  };
+}
+
+function parseListHooks(hooks: ListHooks<BaseListTypeInfo>): ResolvedListHooks<BaseListTypeInfo> {
+  return {
+    ...hooks,
+    resolveInput: parseListHooksResolveInput(hooks.resolveInput),
+  };
+}
+
+function defaultFieldHooksResolveInput({
+  resolvedData,
+  fieldKey,
+}: {
+  resolvedData: any;
+  fieldKey: string;
+}) {
+  return resolvedData[fieldKey];
+}
+
+function parseFieldHooksResolveInput(f: FieldHooks<BaseListTypeInfo>['resolveInput']) {
+  return f ?? defaultFieldHooksResolveInput;
+  // TODO: one day
+  //    if (typeof f === 'function') {
+  //      return {
+  //        create: f,
+  //        update: f,
+  //      };
+  //    }
+  //
+  //    const { create, update } = f ?? {};
+  //    return {
+  //      create: create ?? defaultFieldHooksResolveInput,
+  //      update: update ?? defaultFieldHooksResolveInput,
+  //    };
+}
+
+function parseFieldHooks(
+  hooks: FieldHooks<BaseListTypeInfo>
+): ResolvedFieldHooks<BaseListTypeInfo> {
+  return {
+    ...hooks,
+    resolveInput: parseFieldHooksResolveInput(hooks.resolveInput),
+  };
+}
+
 type PartiallyInitialisedList = Omit<InitialisedList, 'lists' | 'resolvedDbFields'>;
 
 function getListsWithInitialisedFields(
@@ -215,7 +277,7 @@ function getListsWithInitialisedFields(
         ...f,
         dbField: f.dbField as ResolvedDBField,
         access: parseFieldAccessControl(f.access),
-        hooks: f.hooks ?? {},
+        hooks: parseFieldHooks(f.hooks ?? {}),
         graphql: {
           cacheHint: f.graphql?.cacheHint,
           isEnabled: _isEnabled,
@@ -272,8 +334,7 @@ function getListsWithInitialisedFields(
         searchFields,
         searchableFields: new Map<string, 'default' | 'insensitive' | null>(),
       },
-      hooks: list.hooks || {},
-
+      hooks: parseListHooks(list.hooks ?? {}),
       listKey,
       cacheHint: (() => {
         const cacheHint = list.graphql?.cacheHint;

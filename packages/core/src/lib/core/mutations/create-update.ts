@@ -322,13 +322,19 @@ async function getResolvedData(
     )
   );
 
+  if (fieldsErrors.length) throw extensionError('resolveInput', fieldsErrors);
+
   // list hooks
-  if (list.hooks.resolveInput) {
-    try {
-      resolvedData = (await list.hooks.resolveInput({ ...hookArgs, resolvedData })) as any;
-    } catch (error: any) {
-      throw extensionError('resolveInput', [{ error, tag: `${list.listKey}.hooks.resolveInput` }]);
+  try {
+    if (operation === 'create') {
+      resolvedData = await list.hooks.resolveInput.create({ ...hookArgs, resolvedData });
+    } else if (operation === 'update') {
+      resolvedData = await list.hooks.resolveInput.update({ ...hookArgs, resolvedData });
     }
+  } catch (error: any) {
+    throw extensionError('resolveInput', [
+      { error, tag: `${list.listKey}.hooks.resolveInput.${operation}` },
+    ]);
   }
 
   return resolvedData;
