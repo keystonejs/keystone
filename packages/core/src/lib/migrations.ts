@@ -108,7 +108,7 @@ export async function pushPrismaSchemaToDatabase(
           false
         ))
       ) {
-        console.log('Reset cancelled');
+        console.error('Reset cancelled');
         throw new ExitError(0);
       }
       await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () => migrate.reset());
@@ -128,7 +128,7 @@ export async function pushPrismaSchemaToDatabase(
           false
         ))
       ) {
-        console.log('Push cancelled.');
+        console.error('Push cancelled');
         throw new ExitError(0);
       }
       return runMigrateWithDbUrl(dbUrl, shadowDbUrl, () =>

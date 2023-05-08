@@ -65,13 +65,7 @@ export async function dev(
   { dbPush, prisma, server, ui }: Pick<Flags, 'dbPush' | 'prisma' | 'server' | 'ui'>
 ) {
   console.log('✨ Starting Keystone');
-  const app = server ? express() : null;
-  const httpServer = app ? createServer(app) : null;
-
-  let expressServer: express.Express | null = null;
-  let hasAddedAdminUIMiddleware = false;
   let lastPromise = resolvablePromise<IteratorResult<BuildResult>>();
-  let prismaClient: any = null;
 
   const builds: AsyncIterable<BuildResult> = {
     [Symbol.asyncIterator]: () => ({ next: () => lastPromise }),
@@ -109,18 +103,30 @@ export async function dev(
     await esbuildContext.watch();
   }
 
-  async function stop(httpServer: any, exit = false) {
+  // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
+  const app = server ? express() : null;
+  const httpServer = app ? createServer(app) : null;
+  let expressServer: express.Express | null = null;
+  let hasAddedAdminUIMiddleware = false;
+  const builtConfigPath = getBuiltKeystoneConfigurationPath(cwd);
+  const configWithExtendHttp = loadBuiltConfig(builtConfigPath);
+  const config = stripExtendHttpServer(configWithExtendHttp);
+  const paths = getSystemPaths(cwd, config);
+
+  const isReady = () => !server || (expressServer !== null && hasAddedAdminUIMiddleware);
+
+  let prismaClient: any = null;
+  async function stop(aHttpServer: any, exit = false) {
     await esbuildContext.dispose();
 
     //   WARNING: this is only actually required for tests
     // stop httpServer
-    if (httpServer) {
+    if (aHttpServer) {
       await new Promise(async (resolve, reject) => {
-        httpServer.close(async (serverError: any) => {
-          if (serverError) {
-            console.error('There was an error while closing the server');
-            console.error(serverError);
-            return reject(serverError);
+        aHttpServer.close(async (err: any) => {
+          if (err) {
+            console.error('Error closing the server', err);
+            return reject(err);
           }
 
           resolve(null);
@@ -132,23 +138,15 @@ export async function dev(
     // stop Prisma
     try {
       await prismaClient?.disconnect?.();
-    } catch (disconnectionError) {
-      console.error('There was an error while disconnecting from the database');
-      console.error(disconnectionError);
-      throw disconnectionError;
+    } catch (err) {
+      console.error('Error disconnecting from the database', err);
+      throw err;
     }
 
     if (exit) {
       process.exit(1);
     }
   }
-
-  // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
-  const builtConfigPath = getBuiltKeystoneConfigurationPath(cwd);
-  const configWithExtendHttp = loadBuiltConfig(builtConfigPath);
-  const config = stripExtendHttpServer(configWithExtendHttp);
-  const paths = getSystemPaths(cwd, config);
-  const isReady = () => !server || (expressServer !== null && hasAddedAdminUIMiddleware);
 
   const initKeystone = async () => {
     await fs.remove(paths.admin);
