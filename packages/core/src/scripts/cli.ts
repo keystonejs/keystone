@@ -1,9 +1,9 @@
 import meow from 'meow';
 import { ExitError } from './utils';
-import { build } from './build/build';
-import { dev } from './run/dev';
+import { build } from './build';
+import { dev } from './dev';
 import { prisma } from './prisma';
-import { start } from './run/start';
+import { start } from './start';
 import { telemetry } from './telemetry';
 
 export type Flags = {

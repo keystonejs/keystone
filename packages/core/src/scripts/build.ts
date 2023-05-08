@@ -1,13 +1,13 @@
-import { buildAdminUI, generateAdminUI } from '../../admin-ui/system';
-import { createSystem } from '../../lib/createSystem';
+import { buildAdminUI, generateAdminUI } from '../admin-ui/system';
+import { createSystem } from '../lib/createSystem';
 import {
   getSystemPaths,
   generatePrismaAndGraphQLSchemas,
   generateTypescriptTypesAndPrisma,
   validatePrismaAndGraphQLSchemas,
-} from '../../artifacts';
-import { loadConfigOnce } from '../../lib/config/loadConfig';
-import { Flags } from '../cli';
+} from '../artifacts';
+import { loadConfigOnce } from '../lib/config/loadConfig';
+import { Flags } from './cli';
 
 export async function build(
   cwd: string,

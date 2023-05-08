@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs-extra';
 import execa from 'execa';
-import { setSkipWatching } from '../run/dev';
+import { setSkipWatching } from '../dev';
 import { ExitError } from '../utils';
 import {
   cliBinPath,

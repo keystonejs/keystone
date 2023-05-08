@@ -7,17 +7,17 @@ import { GraphQLSchema, printSchema } from 'graphql';
 import fs from 'fs-extra';
 import chalk from 'chalk';
 import esbuild, { BuildResult } from 'esbuild';
-import { generateAdminUI } from '../../admin-ui/system';
-import { devMigrations, pushPrismaSchemaToDatabase } from '../../lib/migrations';
-import { createSystem } from '../../lib/createSystem';
-import { getEsbuildConfig, loadBuiltConfig } from '../../lib/config/loadConfig';
-import { defaults } from '../../lib/config/defaults';
-import { createExpressServer } from '../../lib/server/createExpressServer';
+import { generateAdminUI } from '../admin-ui/system';
+import { devMigrations, pushPrismaSchemaToDatabase } from '../lib/migrations';
+import { createSystem } from '../lib/createSystem';
+import { getEsbuildConfig, loadBuiltConfig } from '../lib/config/loadConfig';
+import { defaults } from '../lib/config/defaults';
+import { createExpressServer } from '../lib/server/createExpressServer';
 import {
   createAdminUIMiddlewareWithNextApp,
   getNextApp,
-} from '../../lib/server/createAdminUIMiddleware';
-import { runTelemetry } from '../../lib/telemetry';
+} from '../lib/server/createAdminUIMiddleware';
+import { runTelemetry } from '../lib/telemetry';
 import {
   generatePrismaAndGraphQLSchemas,
   generateTypescriptTypesAndPrisma,
@@ -25,13 +25,13 @@ import {
   getFormattedGraphQLSchema,
   getBuiltKeystoneConfigurationPath,
   getSystemPaths,
-} from '../../artifacts';
-import { KeystoneConfig } from '../../types';
-import { initialiseLists } from '../../lib/core/types-for-lists';
-import { printPrismaSchema } from '../../lib/core/prisma-schema-printer';
-import { AdminMetaRootVal } from '../../admin-ui/system/createAdminMeta';
-import { pkgDir } from '../../pkg-dir';
-import { Flags } from './../cli';
+} from '../artifacts';
+import { KeystoneConfig } from '../types';
+import { initialiseLists } from '../lib/core/types-for-lists';
+import { printPrismaSchema } from '../lib/core/prisma-schema-printer';
+import { AdminMetaRootVal } from '../admin-ui/system/createAdminMeta';
+import { pkgDir } from '../pkg-dir';
+import { Flags } from './cli';
 
 const devLoadingHTMLFilepath = path.join(pkgDir, 'static', 'dev-loading.html');
 
