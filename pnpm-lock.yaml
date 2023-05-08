@@ -496,8 +496,8 @@ importers:
         specifier: ^2.0.1
         version: 2.0.1
       '@emotion/cache':
-        specifier: 11.10.7
-        version: 11.10.7
+        specifier: 11.11.0
+        version: 11.11.0
       '@emotion/css':
         specifier: ^11.7.1
         version: 11.7.1(@babel/core@7.21.0)
@@ -505,8 +505,8 @@ importers:
         specifier: ^11.7.1
         version: 11.7.1(@babel/core@7.21.0)(@types/react@18.0.25)(react@18.2.0)
       '@emotion/server':
-        specifier: 11.10.0
-        version: 11.10.0(@emotion/css@11.7.1)
+        specifier: 11.11.0
+        version: 11.11.0(@emotion/css@11.7.1)
       '@emotion/weak-memoize':
         specifier: ^0.3.0
         version: 0.3.0
@@ -6268,8 +6268,18 @@ packages:
       '@emotion/memoize': 0.8.1
       '@emotion/sheet': 1.2.2
       '@emotion/utils': 1.2.1
-      '@emotion/weak-memoize': 0.3.0
+      '@emotion/weak-memoize': 0.3.1
       stylis: 4.1.3
+    dev: false
+
+  /@emotion/cache@11.11.0:
+    resolution: {integrity: sha512-P34z9ssTCBi3e9EI1ZsWpNHcfY1r09ZO0rZbRO2ob3ZQMnFI35jB536qoXbkdesr5EUhYi22anuEJuyxifaqAQ==}
+    dependencies:
+      '@emotion/memoize': 0.8.1
+      '@emotion/sheet': 1.2.2
+      '@emotion/utils': 1.2.1
+      '@emotion/weak-memoize': 0.3.1
+      stylis: 4.2.0
     dev: false
 
   /@emotion/css@11.7.1(@babel/core@7.21.0):
@@ -6282,7 +6292,7 @@ packages:
     dependencies:
       '@babel/core': 7.21.0
       '@emotion/babel-plugin': 11.11.0
-      '@emotion/cache': 11.10.7
+      '@emotion/cache': 11.11.0
       '@emotion/serialize': 1.1.2
       '@emotion/sheet': 1.2.2
       '@emotion/utils': 1.2.1
@@ -6333,8 +6343,8 @@ packages:
       csstype: 3.1.2
     dev: false
 
-  /@emotion/server@11.10.0(@emotion/css@11.7.1):
-    resolution: {integrity: sha512-MTvJ21JPo9aS02GdjFW4nhdwOi2tNNpMmAM/YED0pkxzjDNi5WbiTwXqaCnvLc2Lr8NFtjhT0az1vTJyLIHYcw==}
+  /@emotion/server@11.11.0(@emotion/css@11.7.1):
+    resolution: {integrity: sha512-6q89fj2z8VBTx9w93kJ5n51hsmtYuFPtZgnc1L8VzRx9ti4EU6EyvF6Nn1H1x3vcCQCF7u2dB2lY4AYJwUW4PA==}
     peerDependencies:
       '@emotion/css': ^11.0.0-rc.0
     peerDependenciesMeta:
@@ -6366,6 +6376,10 @@ packages:
 
   /@emotion/weak-memoize@0.3.0:
     resolution: {integrity: sha512-AHPmaAx+RYfZz0eYu6Gviiagpmiyw98ySSlQvCUhVGDRtDFe4DBS0x1bSjdF3gqUDYOczB+yYvBTtEylYSdRhg==}
+    dev: false
+
+  /@emotion/weak-memoize@0.3.1:
+    resolution: {integrity: sha512-EsBwpc7hBUJWAsNPBmJy4hxWx12v6bshQsldrVmjxJoc3isbxhOrF2IcCpaXxfvq03NwkI7sbsOLXbYuqF/8Ww==}
     dev: false
 
   /@envelop/core@3.0.4:
