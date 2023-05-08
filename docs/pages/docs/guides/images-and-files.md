@@ -228,7 +228,7 @@ export const lists = {
     fields: {
       name: text({
         validation: {
-	  isRequired: true,
+          isRequired: true,
         },
       }),
       altText: text(),
