@@ -3,15 +3,11 @@ import { KeystoneContext } from '.';
 
 export type SessionStrategy<
   StoredSessionData,
-  StartSessionData = never,
   Context extends KeystoneContext = KeystoneContext
 > = {
   get: (args: { context: Context }) => Promise<StoredSessionData | undefined>;
 
-  start: (args: {
-    data: StoredSessionData | StartSessionData;
-    context: Context;
-  }) => Promise<unknown>;
+  start: (args: { data: StoredSessionData; context: Context }) => Promise<unknown>;
 
   end: (args: { context: Context }) => Promise<unknown>;
 };
