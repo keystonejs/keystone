@@ -69,7 +69,16 @@ export async function pushPrismaSchemaToDatabase(
   resetDb: boolean
 ) {
   const before = Date.now();
-  await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
+  const created = await createDatabase(dbUrl, path.dirname(schemaPath));
+  if (created) {
+    const credentials = uriToCredentials(dbUrl);
+    console.log(
+      `✨ ${credentials.type} database "${credentials.database}" created at ${getDbLocation(
+        credentials
+      )}`
+    );
+  }
+
   const migration = await withMigrate(schemaPath, async migrate => {
     if (resetDb) {
       await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () => migrate.engine.reset());
@@ -188,7 +197,16 @@ export async function devMigrations(
   schemaPath: string,
   resetDb: boolean
 ) {
-  await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
+  const created = await createDatabase(dbUrl, path.dirname(schemaPath));
+  if (created) {
+    const credentials = uriToCredentials(dbUrl);
+    console.log(
+      `✨ ${credentials.type} database "${credentials.database}" created at ${getDbLocation(
+        credentials
+      )}`
+    );
+  }
+
   return withMigrate(schemaPath, async migrate => {
     if (!migrate.migrationsDirectoryPath) {
       console.log('No migrations directory provided.');
@@ -305,20 +323,6 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
       }
     }
   });
-}
-
-async function ensureDatabaseExists(dbUrl: string, schemaDir: string) {
-  // createDatabase will return false when the database already exists
-  const created = await createDatabase(dbUrl, schemaDir);
-  if (created) {
-    const credentials = uriToCredentials(dbUrl);
-    console.log(
-      `✨ ${credentials.type} database "${credentials.database}" created at ${getDbLocation(
-        credentials
-      )}`
-    );
-  }
-  // TODO: handle createDatabase returning a failure (prisma's cli does not handle it though so not super worried)
 }
 
 function getDbLocation(credentials: DatabaseCredentials): string {
