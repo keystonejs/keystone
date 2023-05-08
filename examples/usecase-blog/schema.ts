@@ -3,7 +3,7 @@ import { allowAll } from '@keystone-6/core/access';
 
 // see https://keystonejs.com/docs/fields/overview for the full list of fields
 //   this is a few common fields for an example
-import { text, relationship, password, timestamp } from '@keystone-6/core/fields';
+import { text, relationship, timestamp } from '@keystone-6/core/fields';
 
 // the document field is a more complicated field, so it has it's own package
 import { document } from '@keystone-6/fields-document';
@@ -34,8 +34,6 @@ export const lists: Lists = {
         // email as another author - this may or may not be a good idea for your project
         isIndexed: 'unique',
       }),
-
-      password: password({ validation: { isRequired: true } }),
 
       // we can use this field to see what Posts this Author has authored
       //   more on that in the Post list below

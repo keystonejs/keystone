@@ -1,6 +1,6 @@
 {
-  "name": "@keystone-6/example-omit",
-  "version": "0.1.0",
+  "name": "@keystone-6/custom-session",
+  "version": "0.0.1",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -10,12 +10,12 @@
     "postinstall": "keystone postinstall"
   },
   "dependencies": {
+    "@keystone-6/auth": "^7.0.0",
     "@keystone-6/core": "^5.0.0",
     "@prisma/client": "^4.13.0"
   },
   "devDependencies": {
     "prisma": "^4.13.0",
     "typescript": "~5.0.0"
-  },
-  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/omit"
+  }
 }
