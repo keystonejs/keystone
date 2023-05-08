@@ -220,7 +220,7 @@ export async function dev(
           // we only need to test for the things which influence the prisma client creation
           // and aren't written into the prisma schema since we check whether the prisma schema has changed above
           if (
-            newConfig.db.enableLogging !== config.db.enableLogging ||
+            JSON.stringify(newConfig.db.enableLogging) !== JSON.stringify(config.db.enableLogging) ||
             newConfig.db.url !== config.db.url ||
             newConfig.db.useMigrations !== config.db.useMigrations
           ) {
