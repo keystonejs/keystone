@@ -99,7 +99,7 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
   lists: ListSchemaConfig;
   ui?: AdminUIConfig<TypeInfo>;
   server?: ServerConfig<TypeInfo>;
-  session?: SessionStrategy<any, any, any>;
+  session?: SessionStrategy<any>;
   types?: {
     path?: string;
   };
