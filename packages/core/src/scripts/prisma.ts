@@ -5,7 +5,7 @@ import {
   generateTypescriptTypesAndPrisma,
   validatePrismaAndGraphQLSchemas,
 } from '../artifacts';
-import { loadConfigOnce, loadBuiltConfig } from '../lib/config/loadConfig';
+import { loadConfigOnce, loadBuiltConfig } from '../lib/config';
 import { KeystoneConfig } from './../types/config/index';
 
 import { ExitError } from './utils';

@@ -1,5 +1,5 @@
 import { BaseKeystoneTypeInfo, KeystoneConfig, KeystoneContext } from '../types';
-import { initConfig } from './config/initConfig';
+import { initConfig } from './config';
 import { createSystem } from './createSystem';
 
 export function getContext<TypeInfo extends BaseKeystoneTypeInfo>(

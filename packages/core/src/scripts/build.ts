@@ -6,7 +6,7 @@ import {
   generateTypescriptTypesAndPrisma,
   validatePrismaAndGraphQLSchemas,
 } from '../artifacts';
-import { loadConfigOnce } from '../lib/config/loadConfig';
+import { loadConfigOnce } from '../lib/config';
 import { Flags } from './cli';
 
 export async function build(

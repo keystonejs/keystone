@@ -4,8 +4,8 @@ import { createSystem } from '../lib/createSystem';
 import { createExpressServer } from '../lib/server/createExpressServer';
 import { createAdminUIMiddleware } from '../lib/server/createAdminUIMiddleware';
 import { getBuiltKeystoneConfigurationPath, getSystemPaths } from '../artifacts';
-import { loadBuiltConfig } from '..lib/config/loadConfig';
-import { deployMigrations } from '..lib/migrations';
+import { loadBuiltConfig } from '../lib/config';
+import { deployMigrations } from '../lib/migrations';
 import { ExitError } from './utils';
 import { Flags } from './cli';
 

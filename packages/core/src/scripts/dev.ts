@@ -10,7 +10,7 @@ import esbuild, { BuildResult } from 'esbuild';
 import { generateAdminUI } from '../admin-ui/system';
 import { devMigrations, pushPrismaSchemaToDatabase } from '../lib/migrations';
 import { createSystem } from '../lib/createSystem';
-import { getEsbuildConfig, loadBuiltConfig } from '../lib/config/loadConfig';
+import { getEsbuildConfig, loadBuiltConfig } from '../lib/config';
 import { defaults } from '../lib/config/defaults';
 import { createExpressServer } from '../lib/server/createExpressServer';
 import {
