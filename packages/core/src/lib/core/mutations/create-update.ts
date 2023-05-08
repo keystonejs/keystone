@@ -314,7 +314,7 @@ async function getResolvedData(
         } catch (error: any) {
           fieldsErrors.push({
             error,
-            tag: `${list.listKey}.${fieldKey}.hooks.resolveInput.${operation}`,
+            tag: `${list.listKey}.${fieldKey}.hooks.resolveInput`,
           });
           return [fieldKey, undefined];
         }
@@ -333,7 +333,7 @@ async function getResolvedData(
     }
   } catch (error: any) {
     throw extensionError('resolveInput', [
-      { error, tag: `${list.listKey}.hooks.resolveInput.${operation}` },
+      { error, tag: `${list.listKey}.hooks.resolveInput` },
     ]);
   }
 
