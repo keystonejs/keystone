@@ -264,8 +264,11 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
       }
 
       console.log(); // for an empty line
+      const migrationNameInput = await textPrompt('Name of migration');
 
-      const migrationName = await askForMigrationName();
+      // 200 characters is the limit from Prisma
+      //   see https://github.com/prisma/prisma/blob/c6995ebb6f23996d3b48dfdd1b841e0b5cf549b3/packages/migrate/src/utils/promptForMigrationName.ts#L12
+      const migrationName = slugify(migrationNameInput, { separator: '_' }).slice(0, 200);
 
       // note this only creates the migration, it does not apply it
       const { generatedMigrationName } = await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () =>
@@ -302,14 +305,6 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
       }
     }
   });
-}
-
-async function askForMigrationName() {
-  const migrationName = await textPrompt('Name of migration');
-
-  // 200 characters is the limit from Prisma
-  //   see https://github.com/prisma/prisma/blob/c6995ebb6f23996d3b48dfdd1b841e0b5cf549b3/packages/migrate/src/utils/promptForMigrationName.ts#L12
-  return slugify(migrationName, { separator: '_' }).slice(0, 200);
 }
 
 async function ensureDatabaseExists(dbUrl: string, schemaDir: string) {
