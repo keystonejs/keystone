@@ -152,10 +152,10 @@ export async function pushPrismaSchemaToDatabase(
   });
 
   if (migration.warnings.length === 0 && migration.executedSteps === 0) {
-    console.info(`✨ The database is already in sync with the Prisma schema.`);
+    console.info(`✨ The database is already in sync with the Prisma schema`);
   } else {
     console.info(
-      `✨ Your database is now in sync with your schema. Done in ${formatms(Date.now() - before)}`
+      `✨ Your database is now in sync with your schema`
     );
   }
 }
@@ -176,16 +176,11 @@ function logWarnings(warnings: string[]) {
 
 export async function deployMigrations(schemaPath: string, dbUrl: string) {
   return withMigrate(schemaPath, async migrate => {
-    const before = Date.now();
     const migration = await runMigrateWithDbUrl(dbUrl, undefined, () => migrate.applyMigrations());
     if (migration.appliedMigrationNames.length === 0) {
       console.info(`✨ The database is already in sync with your migrations.`);
     } else {
-      console.info(
-        `✨ Your database is now in sync with your migrations. Done in ${formatms(
-          Date.now() - before
-        )}`
-      );
+      console.info(`✨ Your database is now in sync with your migrations`);
     }
   });
 }
@@ -331,12 +326,4 @@ function getDbLocation(credentials: DatabaseCredentials): string {
   }
 
   return `${credentials.host}${credentials.port === undefined ? '' : `:${credentials.port}`}`;
-}
-
-function formatms(ms: number): string {
-  if (ms < 1000) {
-    return `${ms}ms`;
-  }
-
-  return (ms / 1000).toFixed(2) + 's';
 }
