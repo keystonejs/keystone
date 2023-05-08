@@ -252,7 +252,7 @@ export default function Docs() {
         <Well
           grad="grad2"
           heading="Next.js + Keystone"
-          href="https://github.com/keystonejs/keystone/blob/main/examples/example-framework-nextjs-app-directory"
+          href="https://github.com/keystonejs/keystone/tree/main/examples/framework-nextjs-app-directory"
           target="_blank"
           rel="noopener noreferrer"
         >
