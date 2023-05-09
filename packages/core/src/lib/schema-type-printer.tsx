@@ -61,7 +61,7 @@ function printInputObjectTypeDefinition(
   return [
     `export type ${type.name} = {`,
     ...Object.values(type.getFields()).map(({ type, defaultValue, name }) => {
-      const maybe = type instanceof GraphQLNonNull && defaultValue === undefined ? '' : '?';
+      const maybe = type instanceof GraphQLNonNull ? '' : '?';
       return `  readonly ${name}${maybe}: ${printTypeReference(type, scalars)};`;
     }),
     '};',

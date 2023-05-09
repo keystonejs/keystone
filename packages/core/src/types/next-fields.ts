@@ -477,7 +477,8 @@ export function fieldType<TDBField extends DBField, ListTypeInfo extends BaseLis
       UpdateArg,
       UniqueWhereArg,
       OrderByArg,
-      FilterArg
+      FilterArg,
+      ListTypeInfo
     >
   ): NextFieldType<
     TDBField,

@@ -17,6 +17,34 @@ export const lists: Lists = {
         ui: {
           description: 'A text field, with no null support',
         },
+
+        hooks: {
+          resolveInput: async ({ resolvedData, operation, inputData, item, fieldKey }) => {
+            console.log('Post.content.hooks.resolveInput', {
+              resolvedData,
+              operation,
+              inputData,
+              item,
+              fieldKey,
+            });
+            return resolvedData[fieldKey];
+          },
+
+          validateInput: async ({
+            resolvedData,
+            inputData,
+            item,
+            addValidationError,
+            fieldKey,
+          }) => {
+            console.log('Post.content.hooks.validateInput', {
+              resolvedData,
+              inputData,
+              item,
+              fieldKey,
+            });
+          },
+        },
       }),
       rating: stars({
         ui: {

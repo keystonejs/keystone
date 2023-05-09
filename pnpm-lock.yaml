@@ -1456,6 +1456,22 @@ importers:
         specifier: ~5.0.0
         version: 5.0.2
 
+  examples/hooks:
+    dependencies:
+      '@keystone-6/core':
+        specifier: ^5.0.0
+        version: link:../../packages/core
+      '@prisma/client':
+        specifier: ^4.13.0
+        version: 4.13.0(prisma@4.13.0)
+    devDependencies:
+      prisma:
+        specifier: ^4.13.0
+        version: 4.13.0
+      typescript:
+        specifier: ~5.0.0
+        version: 5.0.2
+
   examples/limits:
     dependencies:
       '@keystone-6/core':

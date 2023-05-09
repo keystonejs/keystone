@@ -23,6 +23,34 @@ export const lists: Lists = {
             return item.status === 'published';
           },
         }),
+
+        hooks: {
+          resolveInput: async ({ resolvedData, operation, inputData, item, fieldKey }) => {
+            console.log('Post.isPublished.hooks.resolveInput', {
+              resolvedData,
+              operation,
+              inputData,
+              item,
+              fieldKey,
+            });
+            return resolvedData[fieldKey];
+          },
+
+          validateInput: async ({
+            resolvedData,
+            inputData,
+            item,
+            addValidationError,
+            fieldKey,
+          }) => {
+            console.log('Post.isPublished.hooks.validateInput', {
+              resolvedData,
+              inputData,
+              item,
+              fieldKey,
+            });
+          },
+        },
       }),
       content: text({ ui: { displayMode: 'textarea' } }),
       // A virtual field returning a custom GraphQL object type.
