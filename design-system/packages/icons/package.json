@@ -1162,7 +1162,7 @@
     "@svgr/core": "^7.0.0",
     "@svgr/plugin-jsx": "^7.0.0",
     "@svgr/plugin-prettier": "^7.0.0",
-    "@svgr/plugin-svgo": "^7.0.0",
+    "@svgr/plugin-svgo": "^8.0.0",
     "@types/react": "^18.0.9",
     "chalk": "^4.1.2",
     "feather-icons": "^4.28.0",
