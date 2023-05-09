@@ -2199,6 +2199,9 @@ importers:
       prettier:
         specifier: ^2.5.0
         version: 2.5.0
+      tsx:
+        specifier: ^3.9.0
+        version: 3.9.0
     devDependencies:
       '@types/fs-extra':
         specifier: ^11.0.1
