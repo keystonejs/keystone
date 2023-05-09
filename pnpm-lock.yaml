@@ -195,8 +195,8 @@ importers:
         specifier: ^7.0.0
         version: 7.0.0(@svgr/core@7.0.0)
       '@svgr/plugin-svgo':
-        specifier: ^7.0.0
-        version: 7.0.0(@svgr/core@7.0.0)
+        specifier: ^8.0.0
+        version: 8.0.0(@svgr/core@7.0.0)
       '@types/react':
         specifier: ^18.0.9
         version: 18.0.25
@@ -9448,11 +9448,11 @@ packages:
       prettier: 2.8.8
     dev: true
 
-  /@svgr/plugin-svgo@7.0.0(@svgr/core@7.0.0):
-    resolution: {integrity: sha512-263znzlu3qTKj71/ot5G9l2vpL4CW+pr2IexBFIwwB+fRAXE9Xnw2rUFgE6P4+37N9siOuC4lKkgBfUCOLFRKQ==}
+  /@svgr/plugin-svgo@8.0.0(@svgr/core@7.0.0):
+    resolution: {integrity: sha512-c2C8zdRXEbPvULpnXBEEg+j3agpUh2SoJUBhPOENPef6+uoORfPQdymGBeOV4lMsuJQDDtG+83W10DgfwVC15A==}
     engines: {node: '>=14'}
     peerDependencies:
-      '@svgr/core': '*'
+      '@svgr/core': workspace:*
     dependencies:
       '@svgr/core': 7.0.0
       cosmiconfig: 8.1.3
