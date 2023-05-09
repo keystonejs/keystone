@@ -17,3 +17,6 @@ runs:
       shell: bash
       env:
         PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
+
+    - run: pnpm run build
+      shell: bash
