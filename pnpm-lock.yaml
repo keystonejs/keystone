@@ -192,8 +192,8 @@ importers:
         specifier: ^8.0.0
         version: 8.0.0(@svgr/core@8.0.0)
       '@svgr/plugin-prettier':
-        specifier: ^7.0.0
-        version: 7.0.0(@svgr/core@8.0.0)
+        specifier: ^8.0.0
+        version: 8.0.0(@svgr/core@8.0.0)
       '@svgr/plugin-svgo':
         specifier: ^8.0.0
         version: 8.0.0(@svgr/core@8.0.0)
@@ -9349,11 +9349,11 @@ packages:
       - supports-color
     dev: true
 
-  /@svgr/plugin-prettier@7.0.0(@svgr/core@8.0.0):
-    resolution: {integrity: sha512-ptHxDExQjxmMeHwgMYGDVuWVrdfd9DF2fSyQAUK8SeqEFfzcErEHTPK7MmzXbnCbxvXiSzymZXc/qqh8Wy/ARw==}
+  /@svgr/plugin-prettier@8.0.0(@svgr/core@8.0.0):
+    resolution: {integrity: sha512-9NnlyW8o/MAdY9HPWYDGSNQcwtA81punYWnWSWhrs6H/Ej4IHMlLS5I7oSKyfBBNYLn1HCGhlD+b+Z2j1Hy3sQ==}
     engines: {node: '>=14'}
     peerDependencies:
-      '@svgr/core': '*'
+      '@svgr/core': workspace:*
     dependencies:
       '@svgr/core': 8.0.0
       deepmerge: 4.3.1
