@@ -75,9 +75,7 @@
   "preconstruct": {
     "packages": [
       "packages/*",
-      "design-system/packages/*",
-      "prisma-utils",
-      "scripts/*"
+      "design-system/packages/*"
     ],
     "exports": true,
     "___experimentalFlags_WILL_CHANGE_IN_PATCH": {
