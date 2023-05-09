@@ -13,11 +13,12 @@ generator client {
 }
 
 model Post {
-  id        String    @id @default(cuid())
-  title     String    @default("")
-  content   String    @default("")
-  createdBy String    @default("")
-  createdAt DateTime?
-  updatedBy String    @default("")
-  updatedAt DateTime?
+  id            String    @id @default(cuid())
+  title         String    @default("")
+  content       String    @default("")
+  preventDelete Boolean   @default(false)
+  createdBy     String    @default("")
+  createdAt     DateTime?
+  updatedBy     String    @default("")
+  updatedAt     DateTime?
 }

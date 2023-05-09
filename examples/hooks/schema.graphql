@@ -5,6 +5,7 @@ type Post {
   id: ID!
   title: String
   content: String
+  preventDelete: Boolean
   createdBy: String
   createdAt: DateTime
   updatedBy: String
@@ -24,6 +25,7 @@ input PostWhereInput {
   id: IDFilter
   title: StringFilter
   content: StringFilter
+  preventDelete: BooleanFilter
   createdBy: StringFilter
   createdAt: DateTimeNullableFilter
   updatedBy: StringFilter
@@ -69,6 +71,11 @@ input NestedStringFilter {
   not: NestedStringFilter
 }
 
+input BooleanFilter {
+  equals: Boolean
+  not: BooleanFilter
+}
+
 input DateTimeNullableFilter {
   equals: DateTime
   in: [DateTime!]
@@ -84,6 +91,7 @@ input PostOrderByInput {
   id: OrderDirection
   title: OrderDirection
   content: OrderDirection
+  preventDelete: OrderDirection
   createdBy: OrderDirection
   createdAt: OrderDirection
   updatedBy: OrderDirection
@@ -98,6 +106,7 @@ enum OrderDirection {
 input PostUpdateInput {
   title: String!
   content: String!
+  preventDelete: Boolean
   createdBy: String
   createdAt: DateTime
   updatedBy: String
@@ -112,6 +121,7 @@ input PostUpdateArgs {
 input PostCreateInput {
   title: String! = ""
   content: String! = ""
+  preventDelete: Boolean
   createdBy: String
   createdAt: DateTime
   updatedBy: String

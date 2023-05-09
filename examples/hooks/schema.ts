@@ -1,6 +1,6 @@
 import { list } from '@keystone-6/core';
 import { allowAll, denyAll } from '@keystone-6/core/access';
-import { text, timestamp } from '@keystone-6/core/fields';
+import { checkbox, text, timestamp } from '@keystone-6/core/fields';
 import type { Lists } from '.keystone/types';
 
 // WARNING: this example is for demonstration purposes only
@@ -33,6 +33,7 @@ export const lists: Lists = {
       // we use isNonNull for these fields to enforce that they are always provided, and validated against a content filter
       title: text({ validation: { isRequired: true }, graphql: { isNonNull: { create: true, update: true } } }),
       content: text({ validation: { isRequired: true }, graphql: { isNonNull: { create: true, update: true } } }),
+      preventDelete: checkbox(),
 
       createdBy: text({ ...readOnly }),
       createdAt: timestamp({ ...readOnly, }),
@@ -40,13 +41,6 @@ export const lists: Lists = {
       updatedAt: timestamp({ ...readOnly, }),
     },
     hooks: {
-      validateInput: ({ context, inputData, addValidationError }) => {
-        const { title, content } = inputData
-
-        // an example of a content filter, the prevents the title or content containing the word "Profanity"
-        if (/profanity/i.test(title)) return addValidationError('Unacceptable title')
-        if (/profanity/i.test(content)) return addValidationError('Unacceptable content')
-      },
       resolveInput: {
         create: ({ context, resolvedData }) => {
           resolvedData.createdAt = new Date()
@@ -58,7 +52,26 @@ export const lists: Lists = {
           resolvedData.updatedBy = `${context.req?.socket.remoteAddress} (${context.req?.headers['user-agent']})`
           return resolvedData;
         }
-      }
+      },
+      validateInput: ({ context, inputData, addValidationError }) => {
+        const { title, content } = inputData
+
+        // an example of a content filter, the prevents the title or content containing the word "Profanity"
+        if (/profanity/i.test(title)) return addValidationError('Unacceptable title')
+        if (/profanity/i.test(content)) return addValidationError('Unacceptable content')
+      },
+      validateDelete: ({ context, item, addValidationError }) => {
+        const { preventDelete } = item;
+
+        // an example of a content filter, the prevents the title or content containing the word "Profanity"
+        if (preventDelete) return addValidationError('Cannot delete Post, preventDelete is true')
+      },
+      beforeOperation: ({ resolvedData, operation }) => {
+        console.log(`Post ${operation}`, resolvedData)
+      },
+      afterOperation: ({ resolvedData, operation }) => {
+        console.log(`Post ${operation}`, resolvedData)
+      },
     }
   }),
 };
