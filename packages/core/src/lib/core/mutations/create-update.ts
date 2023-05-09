@@ -332,9 +332,7 @@ async function getResolvedData(
       resolvedData = await list.hooks.resolveInput.update({ ...hookArgs, resolvedData });
     }
   } catch (error: any) {
-    throw extensionError('resolveInput', [
-      { error, tag: `${list.listKey}.hooks.resolveInput` },
-    ]);
+    throw extensionError('resolveInput', [{ error, tag: `${list.listKey}.hooks.resolveInput` }]);
   }
 
   return resolvedData;

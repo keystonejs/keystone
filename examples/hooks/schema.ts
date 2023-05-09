@@ -15,63 +15,69 @@ const readOnly = {
   },
   ui: {
     createView: {
-      fieldMode: (args: unknown) => 'hidden' as const
+      fieldMode: (args: unknown) => 'hidden' as const,
     },
     itemView: {
-      fieldMode: (args: unknown) => 'read' as const
+      fieldMode: (args: unknown) => 'read' as const,
     },
     listView: {
-      fieldMode: (args: unknown) => 'read' as const
-    }
-  }
-}
+      fieldMode: (args: unknown) => 'read' as const,
+    },
+  },
+};
 
 export const lists: Lists = {
   Post: list({
     access: allowAll, // WARNING: public
     fields: {
       // we use isNonNull for these fields to enforce that they are always provided, and validated against a content filter
-      title: text({ validation: { isRequired: true }, graphql: { isNonNull: { create: true, update: true } } }),
-      content: text({ validation: { isRequired: true }, graphql: { isNonNull: { create: true, update: true } } }),
+      title: text({
+        validation: { isRequired: true },
+        graphql: { isNonNull: { create: true, update: true } },
+      }),
+      content: text({
+        validation: { isRequired: true },
+        graphql: { isNonNull: { create: true, update: true } },
+      }),
       preventDelete: checkbox(),
 
       createdBy: text({ ...readOnly }),
-      createdAt: timestamp({ ...readOnly, }),
+      createdAt: timestamp({ ...readOnly }),
       updatedBy: text({ ...readOnly }),
-      updatedAt: timestamp({ ...readOnly, }),
+      updatedAt: timestamp({ ...readOnly }),
     },
     hooks: {
       resolveInput: {
         create: ({ context, resolvedData }) => {
-          resolvedData.createdAt = new Date()
-          resolvedData.createdBy = `${context.req?.socket.remoteAddress} (${context.req?.headers['user-agent']})`
-          return resolvedData
+          resolvedData.createdAt = new Date();
+          resolvedData.createdBy = `${context.req?.socket.remoteAddress} (${context.req?.headers['user-agent']})`;
+          return resolvedData;
         },
         update: ({ context, resolvedData }) => {
-          resolvedData.updatedAt = new Date()
-          resolvedData.updatedBy = `${context.req?.socket.remoteAddress} (${context.req?.headers['user-agent']})`
+          resolvedData.updatedAt = new Date();
+          resolvedData.updatedBy = `${context.req?.socket.remoteAddress} (${context.req?.headers['user-agent']})`;
           return resolvedData;
-        }
+        },
       },
       validateInput: ({ context, inputData, addValidationError }) => {
-        const { title, content } = inputData
+        const { title, content } = inputData;
 
         // an example of a content filter, the prevents the title or content containing the word "Profanity"
-        if (/profanity/i.test(title)) return addValidationError('Unacceptable title')
-        if (/profanity/i.test(content)) return addValidationError('Unacceptable content')
+        if (/profanity/i.test(title)) return addValidationError('Unacceptable title');
+        if (/profanity/i.test(content)) return addValidationError('Unacceptable content');
       },
       validateDelete: ({ context, item, addValidationError }) => {
         const { preventDelete } = item;
 
         // an example of a content filter, the prevents the title or content containing the word "Profanity"
-        if (preventDelete) return addValidationError('Cannot delete Post, preventDelete is true')
+        if (preventDelete) return addValidationError('Cannot delete Post, preventDelete is true');
       },
       beforeOperation: ({ resolvedData, operation }) => {
-        console.log(`Post ${operation}`, resolvedData)
+        console.log(`Post ${operation}`, resolvedData);
       },
       afterOperation: ({ resolvedData, operation }) => {
-        console.log(`Post ${operation}`, resolvedData)
+        console.log(`Post ${operation}`, resolvedData);
       },
-    }
+    },
   }),
 };
