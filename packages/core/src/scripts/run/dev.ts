@@ -118,8 +118,8 @@ export async function dev(
       await new Promise(async (resolve, reject) => {
         httpServer.close(async (serverError: any) => {
           if (serverError) {
-            console.log('There was an error while closing the server');
-            console.log(serverError);
+            console.error('There was an error while closing the server');
+            console.error(serverError);
             return reject(serverError);
           }
 
@@ -133,8 +133,8 @@ export async function dev(
     try {
       await prismaClient?.disconnect?.();
     } catch (disconnectionError) {
-      console.log('There was an error while disconnecting from the database');
-      console.log(disconnectionError);
+      console.error('There was an error while disconnecting from the database');
+      console.error(disconnectionError);
       throw disconnectionError;
     }
 
