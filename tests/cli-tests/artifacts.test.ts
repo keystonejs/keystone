@@ -1,5 +1,5 @@
-import { ExitError } from '../utils';
 import {
+  ExitError,
   basicKeystoneConfig,
   getFiles,
   recordConsole,

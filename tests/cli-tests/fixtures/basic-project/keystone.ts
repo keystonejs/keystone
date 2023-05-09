@@ -7,6 +7,7 @@ export default config({
     provider: 'sqlite',
     url: 'file:./app.db',
   },
+  ui: { isDisabled: true },
   lists: {
     Todo: list({
       access: allowAll,

@@ -1,0 +1,31 @@
+{
+  "name": "@keystone-6/cli-tests",
+  "description": "A set of tests for running against the KeystoneJS CLI.",
+  "private": true,
+  "version": "0.0.3",
+  "author": "The KeystoneJS Development Team",
+  "license": "MIT",
+  "repository": "https://github.com/keystonejs/keystone/tree/main/tests/api-tests",
+  "homepage": "https://github.com/keystonejs/keystone",
+  "devDependencies": {
+    "@apollo/cache-control-types": "^1.0.2",
+    "@hapi/iron": "^7.0.0",
+    "@keystone-6/auth": "*",
+    "@keystone-6/core": "*",
+    "@keystone-6/fields-document": "*",
+    "@prisma/client": "^4.13.0",
+    "@prisma/internals": "^4.13.0",
+    "chalk": "^5.2.0",
+    "execa": "^5.1.1",
+    "fast-glob": "^3.2.12",
+    "fixturez": "^1.1.0",
+    "fs-extra": "^11.0.0",
+    "mime": "^3.0.0",
+    "node-fetch": "^2.6.7",
+    "prisma": "^4.13.0"
+  },
+  "dependencies": {
+    "@types/fs-extra": "^11.0.0",
+    "express": "^4.17.1"
+  }
+}

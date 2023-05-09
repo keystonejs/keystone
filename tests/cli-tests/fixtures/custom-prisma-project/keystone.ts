@@ -11,6 +11,7 @@ export default config({
         .replace(/(\ngenerator[^\n]+\{[^\}]+)\}/, '$1  previewFeatures = ["multiSchema"]\n}')
         .replace(/(datasource[^\n]+\{[^\}]+)\}/, '$1  schemas = ["first", "second"]\n}'),
   },
+  ui: { isDisabled: true },
   lists: {
     Todo: list({
       access: allowAll,

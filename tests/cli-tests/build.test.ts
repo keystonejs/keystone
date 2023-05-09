@@ -1,7 +1,7 @@
 import execa from 'execa';
 import * as fs from 'fs-extra';
-import { ExitError } from '../utils';
 import {
+  ExitError,
   basicKeystoneConfig,
   cliBinPath,
   recordConsole,

@@ -3,18 +3,25 @@ import path from 'path';
 import { format } from 'util';
 import * as fs from 'fs-extra';
 import fastGlob from 'fast-glob';
-import chalk from 'chalk';
 
 // @ts-ignore
 import fixturez from 'fixturez';
 import { MigrateEngine } from '@prisma/migrate';
 import { uriToCredentials } from '@prisma/internals';
-import { KeystoneConfig } from '../../types';
-import { cli } from '../cli';
-import { mockPrompts } from '../../lib/prompts';
+import { KeystoneConfig } from '@keystone-6/core/types';
+import { cli } from '@keystone-6/core/scripts/cli';
+//import { mockPrompts } from '@keystone-6/core/src/lib/prompts';
 
 // these tests spawn processes and it's all pretty slow
 jest.setTimeout(1000 * 20);
+
+export class ExitError extends Error {
+  code: number;
+  constructor(code: number) {
+    super(`The process should exit with ${code}`);
+    this.code = code;
+  }
+}
 
 export const cliBinPath = require.resolve('@keystone-6/core/bin/cli.js');
 
@@ -67,29 +74,29 @@ export function recordConsole(promptResponses?: Record<string, string | boolean>
     return answer;
   };
 
-  mockPrompts({
-    confirm: async message => {
-      const answer = getPromptAnswer(message);
-      if (typeof answer === 'string') {
-        throw new Error(
-          `The answer to "${message}" is a string but the question is a confirm prompt that should return a boolean${debugOutput()}`
-        );
-      }
-
-      return answer;
-    },
-    text: async message => {
-      const answer = getPromptAnswer(message);
-      if (typeof answer === 'boolean') {
-        throw new Error(
-          `The answer to "${message}" is a boolean but the question is a text prompt that should return a string${debugOutput()}`
-        );
-      }
-
-      return answer;
-    },
-    shouldPrompt: promptResponses !== undefined,
-  });
+  //mockPrompts({
+  //  confirm: async message => {
+  //    const answer = getPromptAnswer(message);
+  //    if (typeof answer === 'string') {
+  //      throw new Error(
+  //        `The answer to "${message}" is a string but the question is a confirm prompt that should return a boolean${debugOutput()}`
+  //      );
+  //    }
+  //
+  //    return answer;
+  //  },
+  //  text: async message => {
+  //    const answer = getPromptAnswer(message);
+  //    if (typeof answer === 'boolean') {
+  //      throw new Error(
+  //        `The answer to "${message}" is a boolean but the question is a text prompt that should return a string${debugOutput()}`
+  //      );
+  //    }
+  //
+  //    return answer;
+  //  },
+  //  shouldPrompt: promptResponses !== undefined,
+  //});
 
   return () => {
     if (promptResponseEntries.length) {
@@ -138,7 +145,7 @@ async function getSymlinkType(targetPath: string): Promise<'dir' | 'file'> {
 
 export async function runCommand(cwd: string, args: string | string[]) {
   const argv = typeof args === 'string' ? [args] : args;
-  chalk.level = 0; // disable ANSI colouring for this
+  //chalk.level = 0; // disable ANSI colouring for this
   const proc = await cli(cwd, argv);
   if (typeof proc === 'function') {
     await proc();

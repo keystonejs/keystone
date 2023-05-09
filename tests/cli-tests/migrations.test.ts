@@ -1,8 +1,7 @@
 import path from 'path';
 import fs from 'fs-extra';
 import execa from 'execa';
-import { setSkipWatching } from '../dev';
-import { ExitError } from '../utils';
+import { ExitError } from './utils';
 import {
   cliBinPath,
   getFiles,
@@ -15,7 +14,7 @@ import {
 
 // watching with esbuild inside of jest goes _weird_
 // esbuild doesn't seem to let you wait for the cleanup
-setSkipWatching();
+//setSkipWatching();
 
 const dbUrl = 'file:./app.db';
 
