@@ -66,7 +66,7 @@ function internalResolveFilter(
       return {
         AND: [
           {
-            NOT: [internalResolveFilter(objectEntriesButAssumeNoExtraProperties(val) as any, mode)],
+            NOT: [internalResolveFilter(objectEntriesButAssumeNoExtraProperties(val), mode)],
           },
           internalResolveFilter(entries, mode),
         ],

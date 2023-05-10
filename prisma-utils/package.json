@@ -10,8 +10,8 @@
     "prettier": "^2.5.0"
   },
   "scripts": {
-    "generate": "tsx generate.ts",
-    "verify": "VERIFY=1 tsx generate.ts"
+    "generate": "tsx main.ts",
+    "verify": "tsx main.ts --verify"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.1"
