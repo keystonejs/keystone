@@ -57,7 +57,7 @@ ${
 `;
 }
 
-function generateTSType(scalar: Scalar, filter: DMMF.InputType) {
+function generateTSType(scalar: Scalar, filter: DMMF.InputType, nesting: boolean = false) {
   const gqlType = GRAPHQL_SCALARS[scalar];
 
   // we use Boolean, Prisma uses Bool, oh well
@@ -69,6 +69,7 @@ function generateTSType(scalar: Scalar, filter: DMMF.InputType) {
       const suffix = field.isNullable ? ` // can be null` : ``;
 
       if (field.name === 'not') {
+        if (nesting) return `  ${field.name}: graphql.Arg<Nested${filterName}Type>;${suffix}`;
         return `  ${field.name}: graphql.Arg<${filterName}Type>;${suffix}`;
       }
 
@@ -86,7 +87,7 @@ function generateTSType(scalar: Scalar, filter: DMMF.InputType) {
   ].join('\n');
 }
 
-function generateGQLType(scalar: Scalar, filter: DMMF.InputType) {
+function generateGQLType(scalar: Scalar, filter: DMMF.InputType, nesting: boolean = false) {
   const gqlType = GRAPHQL_SCALARS[scalar];
 
   // we use Boolean, Prisma uses Bool, oh well
@@ -104,6 +105,9 @@ function generateGQLType(scalar: Scalar, filter: DMMF.InputType) {
       }
 
       if (field.name === 'not') {
+        if (nesting) {
+          return `    ${field.name}: graphql.arg({ type: Nested${filterName} }),${suffix}`;
+        }
         return `    ${field.name}: graphql.arg({ type: ${filterName} }),${suffix}`;
       }
 
@@ -130,14 +134,29 @@ async function generate(provider: Provider) {
     const prismaScalar = scalar === 'Boolean' ? 'Bool' : scalar;
 
     for (const filter of prismaFilterTypes) {
+      // why? for String, the case insensitivity mode argument is not recursively supported
+      const nesting = scalar === 'String';
+
       if (filter.name === `${prismaScalar}Filter`) {
-        filters.push(generateTSType(scalar, filter));
-        filters.push(generateGQLType(scalar, filter));
+        filters.push(generateTSType(scalar, filter, nesting));
+        filters.push(generateGQLType(scalar, filter, nesting));
       }
 
       if (filter.name === `${prismaScalar}NullableFilter`) {
         filters.push(generateTSType(scalar, filter));
         filters.push(generateGQLType(scalar, filter));
+      }
+
+      if (nesting) {
+        if (filter.name === `Nested${prismaScalar}Filter`) {
+          filters.push(generateTSType(scalar, filter));
+          filters.push(generateGQLType(scalar, filter));
+        }
+
+        if (filter.name === `Nested${prismaScalar}NullableFilter`) {
+          filters.push(generateTSType(scalar, filter));
+          filters.push(generateGQLType(scalar, filter));
+        }
       }
     }
 
@@ -156,9 +175,9 @@ async function generate(provider: Provider) {
     `import { graphql } from '../../../types/schema';`,
 
     // case sensitivity is only supported for POSTGRES
-    ...(provider === 'postgresql' ? [
-      `import { QueryMode } from '../../../types/next-fields';`,
-    ] : []),
+    ...(provider === 'postgresql'
+      ? [`import { QueryMode } from '../../../types/next-fields';`]
+      : []),
 
     ...filters,
     ...exports_,

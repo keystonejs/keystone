@@ -49,7 +49,7 @@ type StringFilterType = graphql.InputObjectType<{
   startsWith: graphql.Arg<typeof graphql.String>;
   endsWith: graphql.Arg<typeof graphql.String>;
   mode: graphql.Arg<typeof QueryMode>;
-  not: graphql.Arg<StringFilterType>;
+  not: graphql.Arg<NestedStringFilterType>;
 }>;
 
 const StringFilter: StringFilterType = graphql.inputObject({
@@ -66,7 +66,69 @@ const StringFilter: StringFilterType = graphql.inputObject({
     startsWith: graphql.arg({ type: graphql.String }),
     endsWith: graphql.arg({ type: graphql.String }),
     mode: graphql.arg({ type: QueryMode }),
-    not: graphql.arg({ type: StringFilter }),
+    not: graphql.arg({ type: NestedStringFilter }),
+  }),
+});
+
+type NestedStringNullableFilterType = graphql.InputObjectType<{
+  equals: graphql.Arg<typeof graphql.String>; // can be null
+  in: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.String>>>; // can be null
+  notIn: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.String>>>; // can be null
+  lt: graphql.Arg<typeof graphql.String>;
+  lte: graphql.Arg<typeof graphql.String>;
+  gt: graphql.Arg<typeof graphql.String>;
+  gte: graphql.Arg<typeof graphql.String>;
+  contains: graphql.Arg<typeof graphql.String>;
+  startsWith: graphql.Arg<typeof graphql.String>;
+  endsWith: graphql.Arg<typeof graphql.String>;
+  not: graphql.Arg<NestedStringNullableFilterType>; // can be null
+}>;
+
+const NestedStringNullableFilter: NestedStringNullableFilterType = graphql.inputObject({
+  name: 'NestedStringNullableFilter',
+  fields: () => ({
+    equals: graphql.arg({ type: graphql.String }), // can be null
+    in: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.String)) }), // can be null
+    notIn: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.String)) }), // can be null
+    lt: graphql.arg({ type: graphql.String }),
+    lte: graphql.arg({ type: graphql.String }),
+    gt: graphql.arg({ type: graphql.String }),
+    gte: graphql.arg({ type: graphql.String }),
+    contains: graphql.arg({ type: graphql.String }),
+    startsWith: graphql.arg({ type: graphql.String }),
+    endsWith: graphql.arg({ type: graphql.String }),
+    not: graphql.arg({ type: NestedStringNullableFilter }), // can be null
+  }),
+});
+
+type NestedStringFilterType = graphql.InputObjectType<{
+  equals: graphql.Arg<typeof graphql.String>;
+  in: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.String>>>;
+  notIn: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.String>>>;
+  lt: graphql.Arg<typeof graphql.String>;
+  lte: graphql.Arg<typeof graphql.String>;
+  gt: graphql.Arg<typeof graphql.String>;
+  gte: graphql.Arg<typeof graphql.String>;
+  contains: graphql.Arg<typeof graphql.String>;
+  startsWith: graphql.Arg<typeof graphql.String>;
+  endsWith: graphql.Arg<typeof graphql.String>;
+  not: graphql.Arg<NestedStringFilterType>;
+}>;
+
+const NestedStringFilter: NestedStringFilterType = graphql.inputObject({
+  name: 'NestedStringFilter',
+  fields: () => ({
+    equals: graphql.arg({ type: graphql.String }),
+    in: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.String)) }),
+    notIn: graphql.arg({ type: graphql.list(graphql.nonNull(graphql.String)) }),
+    lt: graphql.arg({ type: graphql.String }),
+    lte: graphql.arg({ type: graphql.String }),
+    gt: graphql.arg({ type: graphql.String }),
+    gte: graphql.arg({ type: graphql.String }),
+    contains: graphql.arg({ type: graphql.String }),
+    startsWith: graphql.arg({ type: graphql.String }),
+    endsWith: graphql.arg({ type: graphql.String }),
+    not: graphql.arg({ type: NestedStringFilter }),
   }),
 });
 
