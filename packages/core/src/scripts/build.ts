@@ -1,4 +1,5 @@
-import { buildAdminUI, generateAdminUI } from '../admin-ui/system';
+import nextBuild from 'next/dist/build';
+import { generateAdminUI } from '../admin-ui/system';
 import { createSystem } from '../lib/createSystem';
 import {
   getSystemPaths,
@@ -35,5 +36,5 @@ export async function build(
   await generateAdminUI(config, graphQLSchema, adminMeta, paths.admin, false);
 
   console.log('✨ Building Admin UI');
-  await buildAdminUI(paths.admin);
+  await nextBuild(paths.admin);
 }

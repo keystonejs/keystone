@@ -1615,15 +1615,6 @@ importers:
       '@prisma/client':
         specifier: ^4.14.0
         version: 4.14.0(prisma@4.14.0)
-      next:
-        specifier: ^13.3.0
-        version: 13.3.0(@babel/core@7.21.0)(react-dom@18.2.0)(react@18.2.0)
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
     devDependencies:
       prisma:
         specifier: ^4.14.0

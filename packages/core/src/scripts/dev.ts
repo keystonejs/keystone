@@ -1,6 +1,5 @@
 import path from 'path';
 import type { ListenOptions } from 'net';
-import next from 'next';
 import url from 'url';
 import { createServer } from 'http';
 import next from 'next';
