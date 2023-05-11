@@ -4,7 +4,7 @@ import type {
   GraphQLInputType,
   GraphQLError,
 } from 'graphql';
-import { Kind, } from 'graphql';
+import { Kind } from 'graphql';
 import { getVariableValues } from 'graphql/execution/values';
 import { getTypeNodeForType } from './context/executeGraphQLFieldToRootVal';
 

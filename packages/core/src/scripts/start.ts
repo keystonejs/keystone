@@ -7,7 +7,8 @@ import { createAdminUIMiddlewareWithNextApp } from '../lib/server/createAdminUIM
 import {
   getBuiltKeystoneConfigurationPath,
   getBuiltKeystoneConfiguration,
-  getSystemPaths } from '../artifacts';
+  getSystemPaths,
+} from '../artifacts';
 import { deployMigrations } from '../lib/migrations';
 import { ExitError } from './utils';
 import type { Flags } from './cli';

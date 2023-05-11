@@ -5,7 +5,7 @@ import { healthCheckPath as defaultHealthCheckPath } from '../defaults';
 
 type AddHealthCheckArgs = { config: KeystoneConfig; server: Application };
 
-export async function addHealthCheck ({ config, server }: AddHealthCheckArgs) {
+export async function addHealthCheck({ config, server }: AddHealthCheckArgs) {
   if (!config.server?.healthCheck) return;
 
   const healthCheck = config.server.healthCheck === true ? {} : config.server.healthCheck;
