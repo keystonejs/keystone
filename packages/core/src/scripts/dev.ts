@@ -2,6 +2,7 @@ import path from 'path';
 import type { ListenOptions } from 'net';
 import url from 'url';
 import { createServer } from 'http';
+import next from 'next';
 import express from 'express';
 import { GraphQLSchema, printSchema } from 'graphql';
 import fs from 'fs-extra';
@@ -30,6 +31,7 @@ import { initialiseLists } from '../lib/core/types-for-lists';
 import { printPrismaSchema } from '../lib/core/prisma-schema-printer';
 import { AdminMetaRootVal } from '../admin-ui/system/createAdminMeta';
 import { pkgDir } from '../pkg-dir';
+import { ExitError } from './utils';
 import { Flags } from './cli';
 
 const devLoadingHTMLFilepath = path.join(pkgDir, 'static', 'dev-loading.html');
@@ -133,7 +135,7 @@ export async function dev(
       });
     }
 
-    //   WARNING: this is only actually required for tests
+    //   WARNING: this is only required for tests
     // stop Prisma
     try {
       await prismaClient?.disconnect?.();
@@ -142,9 +144,7 @@ export async function dev(
       throw err;
     }
 
-    if (exit) {
-      process.exit(1);
-    }
+    if (exit) throw new ExitError(1);
   }
 
   const initKeystone = async () => {
