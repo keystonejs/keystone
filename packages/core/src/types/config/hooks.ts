@@ -1,5 +1,5 @@
 import type { KeystoneContextFromListTypeInfo, MaybePromise } from '..';
-import { BaseListTypeInfo } from '../type-info';
+import type { BaseListTypeInfo } from '../type-info';
 
 type CommonArgs<ListTypeInfo extends BaseListTypeInfo> = {
   context: KeystoneContextFromListTypeInfo<ListTypeInfo>;

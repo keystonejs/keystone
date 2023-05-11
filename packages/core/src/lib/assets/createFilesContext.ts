@@ -2,10 +2,10 @@ import crypto from 'crypto';
 import filenamify from 'filenamify';
 
 import slugify from '@sindresorhus/slugify';
-import { KeystoneConfig, FilesContext } from '../../types';
+import type { KeystoneConfig, FilesContext } from '../../types';
 import { localFileAssetsAPI } from './local';
 import { s3FileAssetsAPI } from './s3';
-import { FileAdapter } from './types';
+import type { FileAdapter } from './types';
 
 const defaultTransformName = (filename: string) => {
   // Appends a UUID to the filename so that people can't brute-force guess stored filenames

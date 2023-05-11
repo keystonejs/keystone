@@ -1,4 +1,4 @@
-import { DatabaseProvider } from './core';
+import type { DatabaseProvider } from './core';
 
 export type Telemetry = {
   informedAt: string | null;

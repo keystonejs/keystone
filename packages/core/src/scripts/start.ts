@@ -10,7 +10,7 @@ import {
   getSystemPaths } from '../artifacts';
 import { deployMigrations } from '../lib/migrations';
 import { ExitError } from './utils';
-import { Flags } from './cli';
+import type { Flags } from './cli';
 
 export const start = async (
   cwd: string,

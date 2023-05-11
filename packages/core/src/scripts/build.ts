@@ -10,7 +10,7 @@ import {
   validatePrismaAndGraphQLSchemas,
 } from '../artifacts';
 import { getEsbuildConfig } from '../lib/esbuild';
-import { Flags } from './cli';
+import type { Flags } from './cli';
 
 export async function build(
   cwd: string,

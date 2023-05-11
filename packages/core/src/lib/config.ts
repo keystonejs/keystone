@@ -1,4 +1,4 @@
-import { KeystoneConfig, IdFieldConfig } from '../../types';
+import type { KeystoneConfig, IdFieldConfig } from '../types';
 import { idFieldType } from './id-field';
 
 // TODO: move to system/initialisation

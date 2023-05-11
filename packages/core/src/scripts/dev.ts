@@ -23,13 +23,13 @@ import {
   getBuiltKeystoneConfiguration,
   getSystemPaths,
 } from '../artifacts';
-import { KeystoneConfig } from '../types';
+import type { KeystoneConfig } from '../types';
 import { initialiseLists } from '../lib/core/types-for-lists';
 import { printPrismaSchema } from '../lib/core/prisma-schema-printer';
-import { AdminMetaRootVal } from '../admin-ui/system/createAdminMeta';
+import type { AdminMetaRootVal } from '../admin-ui/system/createAdminMeta';
 import { pkgDir } from '../pkg-dir';
 import { ExitError } from './utils';
-import { Flags } from './cli';
+import type { Flags } from './cli';
 
 const devLoadingHTMLFilepath = path.join(pkgDir, 'static', 'dev-loading.html');
 
