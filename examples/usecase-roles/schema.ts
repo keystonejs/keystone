@@ -1,5 +1,5 @@
 import { list } from '@keystone-6/core';
-import { allOperations } from '@keystone-6/core/access';
+import { allOperations, denyAll } from '@keystone-6/core/access';
 import { checkbox, password, relationship, text } from '@keystone-6/core/fields';
 
 import { isSignedIn, permissions, rules } from './access';
@@ -57,7 +57,7 @@ export const lists = {
       isPrivate: checkbox({ defaultValue: false }),
       /* The person the todo item is assigned to */
       assignedTo: relationship({
-        ref: 'Person.tasks',
+        ref: 'User.tasks',
         ui: {
           createView: {
             fieldMode: args => (permissions.canManageAllTodos(args) ? 'edit' : 'hidden'),
@@ -79,7 +79,7 @@ export const lists = {
       }),
     },
   }),
-  Person: list({
+  User: list({
     /*
       SPEC
       - [x] Block all public access
@@ -120,17 +120,29 @@ export const lists = {
       },
     },
     fields: {
-      /* The name of the user */
-      name: text({ validation: { isRequired: true } }),
-      /* The email of the user, used to sign in */
-      email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
-      /* The password of the user */
+      // the user's name, used as the identity field for authentication
+      //   should not be publicly visible
+      //
+      //   we use isIndexed to enforce names are unique
+      //     that may not suitable for your application
+      name: text({
+        isFilterable: false,
+        isOrderable: false,
+        isIndexed: 'unique',
+        validation: {
+          isRequired: true,
+        },
+      }),
+      // the user's password, used as the secret field for authentication
+      //   should not be publicly visible
       password: password({
         validation: { isRequired: true },
         access: {
+          read: denyAll, // TODO: is this required?
           update: ({ session, item }) =>
             permissions.canManagePeople({ session }) || session.itemId === item.id,
         },
+        // TODO: is anything else required
       }),
       /* The role assigned to the user */
       role: relationship({
@@ -224,7 +236,7 @@ export const lists = {
       canUseAdminUI: checkbox({ defaultValue: false }),
       /* This list of People assigned to this role */
       assignedTo: relationship({
-        ref: 'Person.role',
+        ref: 'User.role',
         many: true,
         ui: {
           itemView: { fieldMode: 'read' },

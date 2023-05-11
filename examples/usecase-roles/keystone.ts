@@ -3,21 +3,40 @@ import { statelessSessions } from '@keystone-6/core/session';
 import { createAuth } from '@keystone-6/auth';
 import { fixPrismaPath } from '../example-utils';
 import { lists } from './schema';
-import type { Session } from './access';
 
+// WARNING: this example is for demonstration purposes only
+//   as with each of our examples, it has not been vetted
+//   or tested for any particular usage
+
+// WARNING: you need to change this
 const sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
-const sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
-const sessionConfig = {
-  maxAge: sessionMaxAge,
-  secret: sessionSecret,
-};
 
+// statelessSessions uses cookies for session tracking
+//   these cookies have an expiry, in seconds
+//   we use an expiry of 30 days for this example
+const sessionMaxAge = 60 * 60 * 24 * 30;
+
+// withAuth is a function we can use to wrap our base configuration
 const { withAuth } = createAuth({
-  listKey: 'Person',
-  identityField: 'email',
+  // this is the list that contains our users
+  listKey: 'User',
+
+  // an identity field, typically a username or an email address
+  identityField: 'name',
+
+  // a secret field must be a password field type
   secretField: 'password',
+
+  // initFirstItem enables the "First User" experience, this will add an interface form
+  //   adding a new User item if the database is empty
+  //
+  // WARNING: do not use initFirstItem in production
+  //   see https://keystonejs.com/docs/config/auth#init-first-item for more
   initFirstItem: {
-    fields: ['name', 'email', 'password'],
+    // the following fields are used by the "Create First User" form
+    fields: ['name', 'password'],
+
+    // the following fields are configured by default for this item
     itemData: {
       /*
         This creates a related role with full permissions, so that when the first user signs in
@@ -32,12 +51,12 @@ const { withAuth } = createAuth({
           canEditOtherPeople: true,
           canManagePeople: true,
           canManageRoles: true,
-          canUseAdminUI: true
+          canUseAdminUI: true,
         },
       },
     },
   },
-  /* This loads the related role for the current user, including all permissions */
+
   sessionData: `
     name
     role {
@@ -66,9 +85,14 @@ export default withAuth(
     ui: {
       isAccessAllowed: ({ session }) => {
         return session?.data.role?.canUseAdminUI ?? false;
-
       },
     },
-    session: statelessSessions<Session>(sessionConfig),
+    // you can find out more at https://keystonejs.com/docs/apis/session#session-api
+    session: statelessSessions({
+      // the maxAge option controls how long session cookies are valid for before they expire
+      maxAge: sessionMaxAge,
+      // the session secret is used to encrypt cookie data
+      secret: sessionSecret,
+    }),
   })
 );

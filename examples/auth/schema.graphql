@@ -4,7 +4,6 @@
 type User {
   id: ID!
   name: String
-  email: String
   password: PasswordState
   isAdmin: Boolean
 }
@@ -22,8 +21,6 @@ input UserWhereInput {
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
   id: IDFilter
-  name: StringFilter
-  password: PasswordFilter
   isAdmin: BooleanFilter
 }
 
@@ -38,38 +35,6 @@ input IDFilter {
   not: IDFilter
 }
 
-input StringFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-  not: NestedStringFilter
-}
-
-input NestedStringFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-  not: NestedStringFilter
-}
-
-input PasswordFilter {
-  isSet: Boolean!
-}
-
 input BooleanFilter {
   equals: Boolean
   not: BooleanFilter
@@ -77,7 +42,6 @@ input BooleanFilter {
 
 input UserOrderByInput {
   id: OrderDirection
-  name: OrderDirection
   isAdmin: OrderDirection
 }
 
@@ -88,7 +52,6 @@ enum OrderDirection {
 
 input UserUpdateInput {
   name: String
-  email: String
   password: String
   isAdmin: Boolean
 }
@@ -100,7 +63,6 @@ input UserUpdateArgs {
 
 input UserCreateInput {
   name: String
-  email: String
   password: String
   isAdmin: Boolean
 }
@@ -118,7 +80,7 @@ type Mutation {
   deleteUser(where: UserWhereUniqueInput!): User
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
   endSession: Boolean!
-  authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
+  authenticateUserWithPassword(name: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
 }
 
@@ -135,7 +97,6 @@ type UserAuthenticationWithPasswordFailure {
 
 input CreateInitialUserInput {
   name: String
-  email: String
   password: String
 }
 

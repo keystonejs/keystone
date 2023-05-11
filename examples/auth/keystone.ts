@@ -1,6 +1,6 @@
 import { config } from '@keystone-6/core';
 import { statelessSessions } from '@keystone-6/core/session';
-import { createAuth, AuthSession } from '@keystone-6/auth';
+import { createAuth } from '@keystone-6/auth';
 import { fixPrismaPath } from '../example-utils';
 import { lists } from './schema';
 
@@ -21,8 +21,8 @@ const { withAuth } = createAuth({
   // this is the list that contains our users
   listKey: 'User',
 
-  // an identity field is typically a username or email address
-  identityField: 'email',
+  // an identity field, typically a username or an email address
+  identityField: 'name',
 
   // a secret field must be a password field type
   secretField: 'password',
@@ -34,7 +34,7 @@ const { withAuth } = createAuth({
   //   see https://keystonejs.com/docs/config/auth#init-first-item for more
   initFirstItem: {
     // the following fields are used by the "Create First User" form
-    fields: ['name', 'email', 'password'],
+    fields: ['name', 'password'],
 
     // the following fields are configured by default for this item
     itemData: {
@@ -47,18 +47,6 @@ const { withAuth } = createAuth({
   sessionData: 'isAdmin',
 });
 
-// you can find out more at https://keystonejs.com/docs/apis/session#session-api
-const session = statelessSessions<AuthSession & {
-  data: {
-    isAdmin: boolean
-  }
-}>({
-  // an maxAge option controls how long session cookies are valid for before they expire
-  maxAge: sessionMaxAge,
-  // a session secret is used to encrypt cookie data
-  secret: sessionSecret,
-});
-
 export default withAuth(
   config({
     db: {
@@ -69,12 +57,18 @@ export default withAuth(
       ...fixPrismaPath,
     },
     lists,
-    session,
     ui: {
       // only admins can view the AdminUI
       isAccessAllowed: ({ session }) => {
         return session?.data?.isAdmin ?? false;
       },
     },
+    // you can find out more at https://keystonejs.com/docs/apis/session#session-api
+    session: statelessSessions({
+      // the maxAge option controls how long session cookies are valid for before they expire
+      maxAge: sessionMaxAge,
+      // the session secret is used to encrypt cookie data
+      secret: sessionSecret,
+    }),
   })
 );

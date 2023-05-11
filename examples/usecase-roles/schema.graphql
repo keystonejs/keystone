@@ -6,7 +6,7 @@ type Todo {
   label: String
   isComplete: Boolean
   isPrivate: Boolean
-  assignedTo: Person
+  assignedTo: User
 }
 
 input TodoWhereUniqueInput {
@@ -21,7 +21,7 @@ input TodoWhereInput {
   label: StringFilter
   isComplete: BooleanFilter
   isPrivate: BooleanFilter
-  assignedTo: PersonWhereInput
+  assignedTo: UserWhereInput
 }
 
 input IDFilter {
@@ -84,12 +84,12 @@ input TodoUpdateInput {
   label: String
   isComplete: Boolean
   isPrivate: Boolean
-  assignedTo: PersonRelateToOneForUpdateInput
+  assignedTo: UserRelateToOneForUpdateInput
 }
 
-input PersonRelateToOneForUpdateInput {
-  create: PersonCreateInput
-  connect: PersonWhereUniqueInput
+input UserRelateToOneForUpdateInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
   disconnect: Boolean
 }
 
@@ -102,18 +102,17 @@ input TodoCreateInput {
   label: String
   isComplete: Boolean
   isPrivate: Boolean
-  assignedTo: PersonRelateToOneForCreateInput
+  assignedTo: UserRelateToOneForCreateInput
 }
 
-input PersonRelateToOneForCreateInput {
-  create: PersonCreateInput
-  connect: PersonWhereUniqueInput
+input UserRelateToOneForCreateInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
 }
 
-type Person {
+type User {
   id: ID!
   name: String
-  email: String
   password: PasswordState
   role: Role
   tasks(where: TodoWhereInput! = {}, orderBy: [TodoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TodoWhereUniqueInput): [Todo!]
@@ -124,18 +123,15 @@ type PasswordState {
   isSet: Boolean!
 }
 
-input PersonWhereUniqueInput {
+input UserWhereUniqueInput {
   id: ID
-  email: String
 }
 
-input PersonWhereInput {
-  AND: [PersonWhereInput!]
-  OR: [PersonWhereInput!]
-  NOT: [PersonWhereInput!]
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  NOT: [UserWhereInput!]
   id: IDFilter
-  name: StringFilter
-  email: StringFilter
   role: RoleWhereInput
   tasks: TodoManyRelationFilter
 }
@@ -146,15 +142,12 @@ input TodoManyRelationFilter {
   none: TodoWhereInput
 }
 
-input PersonOrderByInput {
+input UserOrderByInput {
   id: OrderDirection
-  name: OrderDirection
-  email: OrderDirection
 }
 
-input PersonUpdateInput {
+input UserUpdateInput {
   name: String
-  email: String
   password: String
   role: RoleRelateToOneForUpdateInput
   tasks: TodoRelateToManyForUpdateInput
@@ -173,14 +166,13 @@ input TodoRelateToManyForUpdateInput {
   connect: [TodoWhereUniqueInput!]
 }
 
-input PersonUpdateArgs {
-  where: PersonWhereUniqueInput!
-  data: PersonUpdateInput!
+input UserUpdateArgs {
+  where: UserWhereUniqueInput!
+  data: UserUpdateInput!
 }
 
-input PersonCreateInput {
+input UserCreateInput {
   name: String
-  email: String
   password: String
   role: RoleRelateToOneForCreateInput
   tasks: TodoRelateToManyForCreateInput
@@ -206,8 +198,8 @@ type Role {
   canManagePeople: Boolean
   canManageRoles: Boolean
   canUseAdminUI: Boolean
-  assignedTo(where: PersonWhereInput! = {}, orderBy: [PersonOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PersonWhereUniqueInput): [Person!]
-  assignedToCount(where: PersonWhereInput! = {}): Int
+  assignedTo(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
+  assignedToCount(where: UserWhereInput! = {}): Int
 }
 
 input RoleWhereUniqueInput {
@@ -227,13 +219,13 @@ input RoleWhereInput {
   canManagePeople: BooleanFilter
   canManageRoles: BooleanFilter
   canUseAdminUI: BooleanFilter
-  assignedTo: PersonManyRelationFilter
+  assignedTo: UserManyRelationFilter
 }
 
-input PersonManyRelationFilter {
-  every: PersonWhereInput
-  some: PersonWhereInput
-  none: PersonWhereInput
+input UserManyRelationFilter {
+  every: UserWhereInput
+  some: UserWhereInput
+  none: UserWhereInput
 }
 
 input RoleOrderByInput {
@@ -257,14 +249,14 @@ input RoleUpdateInput {
   canManagePeople: Boolean
   canManageRoles: Boolean
   canUseAdminUI: Boolean
-  assignedTo: PersonRelateToManyForUpdateInput
+  assignedTo: UserRelateToManyForUpdateInput
 }
 
-input PersonRelateToManyForUpdateInput {
-  disconnect: [PersonWhereUniqueInput!]
-  set: [PersonWhereUniqueInput!]
-  create: [PersonCreateInput!]
-  connect: [PersonWhereUniqueInput!]
+input UserRelateToManyForUpdateInput {
+  disconnect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  create: [UserCreateInput!]
+  connect: [UserWhereUniqueInput!]
 }
 
 input RoleUpdateArgs {
@@ -281,12 +273,12 @@ input RoleCreateInput {
   canManagePeople: Boolean
   canManageRoles: Boolean
   canUseAdminUI: Boolean
-  assignedTo: PersonRelateToManyForCreateInput
+  assignedTo: UserRelateToManyForCreateInput
 }
 
-input PersonRelateToManyForCreateInput {
-  create: [PersonCreateInput!]
-  connect: [PersonWhereUniqueInput!]
+input UserRelateToManyForCreateInput {
+  create: [UserCreateInput!]
+  connect: [UserWhereUniqueInput!]
 }
 
 """
@@ -301,12 +293,12 @@ type Mutation {
   updateTodos(data: [TodoUpdateArgs!]!): [Todo]
   deleteTodo(where: TodoWhereUniqueInput!): Todo
   deleteTodos(where: [TodoWhereUniqueInput!]!): [Todo]
-  createPerson(data: PersonCreateInput!): Person
-  createPeople(data: [PersonCreateInput!]!): [Person]
-  updatePerson(where: PersonWhereUniqueInput!, data: PersonUpdateInput!): Person
-  updatePeople(data: [PersonUpdateArgs!]!): [Person]
-  deletePerson(where: PersonWhereUniqueInput!): Person
-  deletePeople(where: [PersonWhereUniqueInput!]!): [Person]
+  createUser(data: UserCreateInput!): User
+  createUsers(data: [UserCreateInput!]!): [User]
+  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
+  updateUsers(data: [UserUpdateArgs!]!): [User]
+  deleteUser(where: UserWhereUniqueInput!): User
+  deleteUsers(where: [UserWhereUniqueInput!]!): [User]
   createRole(data: RoleCreateInput!): Role
   createRoles(data: [RoleCreateInput!]!): [Role]
   updateRole(where: RoleWhereUniqueInput!, data: RoleUpdateInput!): Role
@@ -314,24 +306,23 @@ type Mutation {
   deleteRole(where: RoleWhereUniqueInput!): Role
   deleteRoles(where: [RoleWhereUniqueInput!]!): [Role]
   endSession: Boolean!
-  authenticatePersonWithPassword(email: String!, password: String!): PersonAuthenticationWithPasswordResult
-  createInitialPerson(data: CreateInitialPersonInput!): PersonAuthenticationWithPasswordSuccess!
+  authenticateUserWithPassword(name: String!, password: String!): UserAuthenticationWithPasswordResult
+  createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
 }
 
-union PersonAuthenticationWithPasswordResult = PersonAuthenticationWithPasswordSuccess | PersonAuthenticationWithPasswordFailure
+union UserAuthenticationWithPasswordResult = UserAuthenticationWithPasswordSuccess | UserAuthenticationWithPasswordFailure
 
-type PersonAuthenticationWithPasswordSuccess {
+type UserAuthenticationWithPasswordSuccess {
   sessionToken: String!
-  item: Person!
+  item: User!
 }
 
-type PersonAuthenticationWithPasswordFailure {
+type UserAuthenticationWithPasswordFailure {
   message: String!
 }
 
-input CreateInitialPersonInput {
+input CreateInitialUserInput {
   name: String
-  email: String
   password: String
 }
 
@@ -339,9 +330,9 @@ type Query {
   todos(where: TodoWhereInput! = {}, orderBy: [TodoOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TodoWhereUniqueInput): [Todo!]
   todo(where: TodoWhereUniqueInput!): Todo
   todosCount(where: TodoWhereInput! = {}): Int
-  people(where: PersonWhereInput! = {}, orderBy: [PersonOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PersonWhereUniqueInput): [Person!]
-  person(where: PersonWhereUniqueInput!): Person
-  peopleCount(where: PersonWhereInput! = {}): Int
+  users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
+  user(where: UserWhereUniqueInput!): User
+  usersCount(where: UserWhereInput! = {}): Int
   roles(where: RoleWhereInput! = {}, orderBy: [RoleOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: RoleWhereUniqueInput): [Role!]
   role(where: RoleWhereUniqueInput!): Role
   rolesCount(where: RoleWhereInput! = {}): Int
@@ -349,7 +340,7 @@ type Query {
   authenticatedItem: AuthenticatedItem
 }
 
-union AuthenticatedItem = Person
+union AuthenticatedItem = User
 
 type KeystoneMeta {
   adminMeta: KeystoneAdminMeta!

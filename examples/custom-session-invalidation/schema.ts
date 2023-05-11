@@ -59,6 +59,7 @@ export const lists: Lists = {
         validation: {
           isRequired: true,
         },
+        // TODO: is anything else required
       }),
 
       // a passwordChangedAt field, invalidates a session if changed

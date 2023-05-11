@@ -1,5 +1,5 @@
 import { list } from '@keystone-6/core';
-import { unfiltered } from '@keystone-6/core/access';
+import { denyAll, unfiltered } from '@keystone-6/core/access';
 import { text, password } from '@keystone-6/core/fields';
 import type { Lists } from '.keystone/types';
 
@@ -55,7 +55,10 @@ export const lists: Lists = {
 
       // the user's password, used as the secret field for authentication
       password: password({
-        // TODO: is access required?
+        validation: {
+          isRequired: true,
+        },
+        // TODO: is anything else required
       }),
     },
   }),

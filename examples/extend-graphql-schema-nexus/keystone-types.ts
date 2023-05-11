@@ -133,7 +133,6 @@ export type AuthorRelateToOneForCreateInput = {
 
 export type AuthorWhereUniqueInput = {
   readonly id?: Scalars['ID'] | null;
-  readonly email?: Scalars['String'] | null;
 };
 
 export type AuthorWhereInput = {
@@ -142,7 +141,6 @@ export type AuthorWhereInput = {
   readonly NOT?: ReadonlyArray<AuthorWhereInput> | AuthorWhereInput | null;
   readonly id?: IDFilter | null;
   readonly name?: StringFilter | null;
-  readonly email?: StringFilter | null;
   readonly posts?: PostManyRelationFilter | null;
 };
 
@@ -155,12 +153,10 @@ export type PostManyRelationFilter = {
 export type AuthorOrderByInput = {
   readonly id?: OrderDirection | null;
   readonly name?: OrderDirection | null;
-  readonly email?: OrderDirection | null;
 };
 
 export type AuthorUpdateInput = {
   readonly name?: Scalars['String'] | null;
-  readonly email?: Scalars['String'] | null;
   readonly posts?: PostRelateToManyForUpdateInput | null;
 };
 
@@ -178,7 +174,6 @@ export type AuthorUpdateArgs = {
 
 export type AuthorCreateInput = {
   readonly name?: Scalars['String'] | null;
-  readonly email?: Scalars['String'] | null;
   readonly posts?: PostRelateToManyForCreateInput | null;
 };
 
@@ -238,14 +233,12 @@ type ResolvedPostUpdateInput = {
 type ResolvedAuthorCreateInput = {
   id?: undefined;
   name?: import('./node_modules/.myprisma/client').Prisma.AuthorCreateInput['name'];
-  email?: import('./node_modules/.myprisma/client').Prisma.AuthorCreateInput['email'];
   posts?: import('./node_modules/.myprisma/client').Prisma.AuthorCreateInput['posts'];
 };
 
 type ResolvedAuthorUpdateInput = {
   id?: undefined;
   name?: import('./node_modules/.myprisma/client').Prisma.AuthorUpdateInput['name'];
-  email?: import('./node_modules/.myprisma/client').Prisma.AuthorUpdateInput['email'];
   posts?: import('./node_modules/.myprisma/client').Prisma.AuthorUpdateInput['posts'];
 };
 
@@ -278,7 +271,7 @@ export declare namespace Lists {
     export type TypeInfo = {
       key: 'Author';
       isSingleton: false;
-      fields: 'id' | 'name' | 'email' | 'posts'
+      fields: 'id' | 'name' | 'posts'
       item: Item;
       inputs: {
         where: AuthorWhereInput;
