@@ -1,15 +1,11 @@
 import * as cookie from 'cookie';
 import Iron from '@hapi/iron';
-// uid-safe is what express-session uses so let's just use it
 import { sync as uid } from 'uid-safe';
 import { SessionStrategy, JSONValue, SessionStoreFunction } from '../types';
 
 function generateSessionId() {
   return uid(24);
 }
-
-const TOKEN_NAME = 'keystonejs-session';
-const MAX_AGE = 60 * 60 * 8; // 8 hours
 
 // should we also accept httpOnly?
 type StatelessSessionsOptions = {
@@ -31,6 +27,12 @@ type StatelessSessionsOptions = {
    * @default 60 * 60 * 8 // 8 hours
    */
   maxAge?: number;
+  /**
+   * The name of the cookie used by `Set-Cookie`.
+   *
+   * @default keystonejs-session
+   */
+  cookieName?: string;
   /**
    * Specifies the boolean value for the [`Secure` `Set-Cookie` attribute](https://tools.ietf.org/html/rfc6265#section-5.2.5).
    *
@@ -61,9 +63,12 @@ type StatelessSessionsOptions = {
   sameSite?: true | false | 'lax' | 'strict' | 'none';
 };
 
+const MAX_AGE = 60 * 60 * 8; // 8 hours
+
 export function statelessSessions<T>({
   secret,
   maxAge = MAX_AGE,
+  cookieName = 'keystonejs-session',
   path = '/',
   secure = process.env.NODE_ENV === 'production',
   ironOptions = Iron.defaults,
@@ -78,12 +83,11 @@ export function statelessSessions<T>({
   }
   return {
     async get({ context }) {
-      if (!context?.req) {
-        return;
-      }
+      if (!context?.req) return;
+
       const cookies = cookie.parse(context.req.headers.cookie || '');
       const bearer = context.req.headers.authorization?.replace('Bearer ', '');
-      const token = bearer || cookies[TOKEN_NAME];
+      const token = bearer || cookies[cookieName];
       if (!token) return;
       try {
         return await Iron.unseal(token, secret, ironOptions);
@@ -91,9 +95,10 @@ export function statelessSessions<T>({
     },
     async end({ context }) {
       if (!context?.res) return;
+
       context.res.setHeader(
         'Set-Cookie',
-        cookie.serialize(TOKEN_NAME, '', {
+        cookie.serialize(cookieName, '', {
           maxAge: 0,
           expires: new Date(),
           httpOnly: true,
@@ -106,11 +111,11 @@ export function statelessSessions<T>({
     },
     async start({ context, data }) {
       if (!context?.res) return;
-      const sealedData = await Iron.seal(data, secret, { ...ironOptions, ttl: maxAge * 1000 });
 
+      const sealedData = await Iron.seal(data, secret, { ...ironOptions, ttl: maxAge * 1000 });
       context.res.setHeader(
         'Set-Cookie',
-        cookie.serialize(TOKEN_NAME, sealedData, {
+        cookie.serialize(cookieName, sealedData, {
           maxAge,
           expires: new Date(Date.now() + maxAge * 1000),
           httpOnly: true,
