@@ -10,7 +10,9 @@ export function denyAll() {
   return false;
 }
 
-export function unfiltered<ListTypeInfo extends BaseListTypeInfo>(): MaybePromise<boolean | ListTypeInfo['inputs']['where']> {
+export function unfiltered<ListTypeInfo extends BaseListTypeInfo>(): MaybePromise<
+  boolean | ListTypeInfo['inputs']['where']
+> {
   return true;
 }
 

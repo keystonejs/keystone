@@ -137,7 +137,7 @@ export function initConfig(config: KeystoneConfig) {
 
   return {
     ...config,
-    lists: applyIdFieldDefaults(config)
+    lists: applyIdFieldDefaults(config),
   };
 }
 

@@ -40,7 +40,7 @@ function stripExtendHttpServer(config: KeystoneConfig): KeystoneConfig {
     return { ...rest, server: restServer };
   }
   return rest;
-};
+}
 
 function resolvablePromise<T>() {
   let _resolve!: (value: T) => void;
@@ -216,7 +216,8 @@ export async function dev(
           // we only need to test for the things which influence the prisma client creation
           // and aren't written into the prisma schema since we check whether the prisma schema has changed above
           if (
-            JSON.stringify(newConfig.db.enableLogging) !== JSON.stringify(config.db.enableLogging) ||
+            JSON.stringify(newConfig.db.enableLogging) !==
+              JSON.stringify(config.db.enableLogging) ||
             newConfig.db.url !== config.db.url ||
             newConfig.db.useMigrations !== config.db.useMigrations
           ) {

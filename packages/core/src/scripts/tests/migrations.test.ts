@@ -45,9 +45,6 @@ async function getGeneratedMigration(
   return { migration, migrationFilepath, migrationName };
 }
 
-// so that the timestamps in the logs are all 0ms
-Date.now = () => 0;
-
 function cleanOutputForApplyingMigration(output: string, generatedMigrationName: string) {
   // sometimes "? The migration has been applied" is printed in a different order which messes up the snapshots
   // so we just assert the text exists somewhere and remove it from what we snapshot
@@ -83,7 +80,7 @@ model Todo {
 ? GraphQL API available at /api/graphql
 ? Generating GraphQL and Prisma schemas
 ? sqlite database "app.db" created at file:./app.db
-? Your database is now in sync with your schema. Done in 0ms
+? Your database is now in sync with your schema
 ? Connecting to the database
 ? Creating server
 ? GraphQL API ready`);
@@ -105,7 +102,7 @@ describe('useMigrations: false', () => {
       ? Server listening on :3000 (http://localhost:3000/)
       ? GraphQL API available at /api/graphql
       ? Generating GraphQL and Prisma schemas
-      ? The database is already in sync with the Prisma schema.
+      ? The database is already in sync with the Prisma schema
       ? Connecting to the database
       ? Creating server
       ? GraphQL API ready"
@@ -122,7 +119,7 @@ describe('useMigrations: false', () => {
       'keystone.js': await fs.readFile(`${__dirname}/fixtures/no-fields.ts`, 'utf8'),
     });
     const recording = recordConsole({
-      'Do you want to continue? Some data will be lost.': true,
+      'Do you want to continue? Some data will be lost': true,
     });
     await runCommand(tmp, 'dev');
 
@@ -146,8 +143,8 @@ describe('useMigrations: false', () => {
       ?  Warnings:
 
         ? You are about to drop the column \`title\` on the \`Todo\` table, which still contains 1 non-null values.
-      Prompt: Do you want to continue? Some data will be lost. true
-      ? Your database is now in sync with your schema. Done in 0ms
+      Prompt: Do you want to continue? Some data will be lost true
+      ? Your database is now in sync with your schema
       ? Connecting to the database
       ? Creating server
       ? GraphQL API ready"
@@ -164,7 +161,7 @@ describe('useMigrations: false', () => {
       'keystone.js': await fs.readFile(`${__dirname}/fixtures/no-fields.ts`, 'utf8'),
     });
     const recording = recordConsole({
-      'Do you want to continue? Some data will be lost.': false,
+      'Do you want to continue? Some data will be lost': false,
     });
     await expect(runCommand(tmp, 'dev')).rejects.toEqual(new ExitError(0));
 
@@ -189,8 +186,8 @@ describe('useMigrations: false', () => {
       ?  Warnings:
 
         ? You are about to drop the column \`title\` on the \`Todo\` table, which still contains 1 non-null values.
-      Prompt: Do you want to continue? Some data will be lost. false
-      Push cancelled."
+      Prompt: Do you want to continue? Some data will be lost false
+      Push cancelled"
     `);
   });
   test('prisma db push --force-reset works', async () => {
@@ -215,7 +212,7 @@ describe('useMigrations: false', () => {
       ? Server listening on :3000 (http://localhost:3000/)
       ? GraphQL API available at /api/graphql
       ? Generating GraphQL and Prisma schemas
-      ? The database is already in sync with the Prisma schema.
+      ? The database is already in sync with the Prisma schema
       ? Connecting to the database
       ? Creating server
       ? GraphQL API ready"
@@ -434,7 +431,7 @@ describe('useMigrations: true', () => {
       'keystone.js': await fs.readFile(`${__dirname}/fixtures/one-field-with-migrations.ts`),
     });
     const recording = recordConsole({
-      'Do you want to continue? All data will be lost.': true,
+      'Do you want to continue? All data will be lost': true,
       'Name of migration': 'init2',
       'Would you like to apply this migration?': true,
     });
@@ -486,7 +483,7 @@ describe('useMigrations: true', () => {
 
 
       We need to reset the sqlite database "app.db" at file:./app.db.
-      Prompt: Do you want to continue? All data will be lost. true
+      Prompt: Do you want to continue? All data will be lost true
 
       ? There has been a change to your Keystone schema that requires a migration
 
@@ -508,7 +505,7 @@ describe('useMigrations: true', () => {
       'keystone.js': await fs.readFile(`${__dirname}/fixtures/no-fields-with-migrations.ts`),
     });
     const recording = recordConsole({
-      'Do you want to continue? All data will be lost.': false,
+      'Do you want to continue? All data will be lost': false,
     });
 
     await expect(runCommand(tmp, 'dev')).rejects.toEqual(new ExitError(0));
@@ -533,9 +530,9 @@ describe('useMigrations: true', () => {
 
 
       We need to reset the sqlite database "app.db" at file:./app.db.
-      Prompt: Do you want to continue? All data will be lost. false
+      Prompt: Do you want to continue? All data will be lost false
 
-      Reset cancelled."
+      Reset cancelled"
     `);
   });
   test('create migration but do not apply', async () => {
@@ -597,7 +594,7 @@ describe('useMigrations: true', () => {
       Prompt: Name of migration add-is-complete
       ? A migration has been created at migrations/migration_name
       Prompt: Would you like to apply this migration? false
-      Please edit the migration and run keystone dev again to apply the migration"
+      Please edit the migration and try again"
     `);
   });
   test('apply already existing migrations', async () => {
@@ -722,7 +719,7 @@ describe('start --with-migrations', () => {
       ? Connecting to the database
       ? Applying database migrations
       Applying migration \`migration_name\`
-      ? Your database is now in sync with your migrations. Done in 0ms
+      ? Your database is now in sync with your migrations
       ? Creating server
       ? GraphQL API ready
       ? Server listening on :3000 (http://localhost:3000/)
@@ -738,7 +735,7 @@ describe('start --with-migrations', () => {
       "? Starting Keystone
       ? Connecting to the database
       ? Applying database migrations
-      ? The database is already in sync with your migrations.
+      ? The database is already in sync with your migrations
       ? Creating server
       ? GraphQL API ready
       ? Server listening on :3000 (http://localhost:3000/)

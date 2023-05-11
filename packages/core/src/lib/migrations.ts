@@ -68,7 +68,6 @@ export async function pushPrismaSchemaToDatabase(
   schemaPath: string,
   resetDb: boolean
 ) {
-  const before = Date.now();
   const created = await createDatabase(dbUrl, path.dirname(schemaPath));
   if (created) {
     const credentials = uriToCredentials(dbUrl);
@@ -110,10 +109,10 @@ export async function pushPrismaSchemaToDatabase(
       if (migration.warnings.length) {
         logWarnings(migration.warnings);
       }
-      console.log('\nTo apply this migration, we need to reset the database.');
+      console.log('\nTo apply this migration, we need to reset the database');
       if (
         !(await confirmPrompt(
-          `Do you want to continue? ${chalk.red('All data will be lost')}.`,
+          `Do you want to continue? ${chalk.red('All data will be lost')}`,
           false
         ))
       ) {
@@ -133,7 +132,7 @@ export async function pushPrismaSchemaToDatabase(
       logWarnings(migration.warnings);
       if (
         !(await confirmPrompt(
-          `Do you want to continue? ${chalk.red('Some data will be lost')}.`,
+          `Do you want to continue? ${chalk.red('Some data will be lost')}`,
           false
         ))
       ) {
@@ -154,9 +153,7 @@ export async function pushPrismaSchemaToDatabase(
   if (migration.warnings.length === 0 && migration.executedSteps === 0) {
     console.info(`✨ The database is already in sync with the Prisma schema`);
   } else {
-    console.info(
-      `✨ Your database is now in sync with your schema`
-    );
+    console.info(`✨ Your database is now in sync with your schema`);
   }
 }
 
@@ -178,7 +175,7 @@ export async function deployMigrations(schemaPath: string, dbUrl: string) {
   return withMigrate(schemaPath, async migrate => {
     const migration = await runMigrateWithDbUrl(dbUrl, undefined, () => migrate.applyMigrations());
     if (migration.appliedMigrationNames.length === 0) {
-      console.info(`✨ The database is already in sync with your migrations.`);
+      console.info(`✨ The database is already in sync with your migrations`);
     } else {
       console.info(`✨ Your database is now in sync with your migrations`);
     }
@@ -204,9 +201,10 @@ export async function devMigrations(
 
   return withMigrate(schemaPath, async migrate => {
     if (!migrate.migrationsDirectoryPath) {
-      console.log('No migrations directory provided.');
+      console.error('No migrations directory path');
       throw new ExitError(1);
     }
+
     const { migrationsDirectoryPath } = migrate;
 
     if (resetDb) {
@@ -230,12 +228,12 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
           credentials
         )}.`);
         const confirmedReset = await confirmPrompt(
-          `Do you want to continue? ${chalk.red('All data will be lost')}.`
+          `Do you want to continue? ${chalk.red('All data will be lost')}`
         );
         console.info(); // empty line
 
         if (!confirmedReset) {
-          console.info('Reset cancelled.');
+          console.error('Reset cancelled');
           throw new ExitError(0);
         }
 
@@ -307,7 +305,9 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
         await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () => migrate.applyMigrations());
         console.log('✅ The migration has been applied');
       } else {
-        console.log('Please edit the migration and run keystone dev again to apply the migration');
+        console.error(
+          'Please edit the migration and try again'
+        );
         throw new ExitError(0);
       }
     } else {
