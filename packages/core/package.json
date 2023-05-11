@@ -146,10 +146,6 @@
       "module": "./___internal-do-not-use-will-break-in-patch/artifacts/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-artifacts.esm.js",
       "default": "./___internal-do-not-use-will-break-in-patch/artifacts/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-artifacts.cjs.js"
     },
-    "./___internal-do-not-use-will-break-in-patch/load-config": {
-      "module": "./___internal-do-not-use-will-break-in-patch/load-config/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-load-config.esm.js",
-      "default": "./___internal-do-not-use-will-break-in-patch/load-config/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-load-config.cjs.js"
-    },
     "./___internal-do-not-use-will-break-in-patch/admin-ui/next-config": {
       "module": "./___internal-do-not-use-will-break-in-patch/admin-ui/next-config/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-next-config.esm.js",
       "default": "./___internal-do-not-use-will-break-in-patch/admin-ui/next-config/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-next-config.cjs.js"
@@ -290,7 +286,6 @@
       "index.ts",
       "access.ts",
       "system.ts",
-      "___internal-do-not-use-will-break-in-patch/load-config.ts",
       "___internal-do-not-use-will-break-in-patch/artifacts.ts",
       "___internal-do-not-use-will-break-in-patch/admin-ui/pages/*/index.tsx",
       "___internal-do-not-use-will-break-in-patch/admin-ui/{next-config.ts,id-field-view.tsx}",

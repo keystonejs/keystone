@@ -4,8 +4,10 @@ import * as fs from 'fs-extra';
 import { createSystem } from '../lib/createSystem';
 import { createExpressServer } from '../lib/server/createExpressServer';
 import { createAdminUIMiddlewareWithNextApp } from '../lib/server/createAdminUIMiddleware';
-import { getBuiltKeystoneConfigurationPath, getSystemPaths } from '../artifacts';
-import { loadBuiltConfig } from '../lib/config';
+import {
+  getBuiltKeystoneConfigurationPath,
+  getBuiltKeystoneConfiguration,
+  getSystemPaths } from '../artifacts';
 import { deployMigrations } from '../lib/migrations';
 import { ExitError } from './utils';
 import { Flags } from './cli';
@@ -25,7 +27,7 @@ export const start = async (
     throw new ExitError(1);
   }
 
-  const config = loadBuiltConfig(builtConfigPath);
+  const config = getBuiltKeystoneConfiguration(cwd);
   const paths = getSystemPaths(cwd, config);
   const { getKeystone, graphQLSchema } = createSystem(config);
   const prismaClient = require(paths.prisma);

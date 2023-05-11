@@ -10,7 +10,7 @@ import esbuild, { BuildResult } from 'esbuild';
 import { generateAdminUI } from '../admin-ui/system';
 import { devMigrations, pushPrismaSchemaToDatabase } from '../lib/migrations';
 import { createSystem } from '../lib/createSystem';
-import { getEsbuildConfig, loadBuiltConfig } from '../lib/config';
+import { getEsbuildConfig } from '../lib/esbuild';
 import { healthCheckPath as defaultHealthCheckPath } from '../lib/defaults';
 import { createExpressServer } from '../lib/server/createExpressServer';
 import { createAdminUIMiddlewareWithNextApp } from '../lib/server/createAdminUIMiddleware';
@@ -20,7 +20,7 @@ import {
   generateTypescriptTypesAndPrisma,
   generateTypescriptTypes,
   getFormattedGraphQLSchema,
-  getBuiltKeystoneConfigurationPath,
+  getBuiltKeystoneConfiguration,
   getSystemPaths,
 } from '../artifacts';
 import { KeystoneConfig } from '../types';
@@ -106,11 +106,9 @@ export async function dev(
   const httpServer = app ? createServer(app) : null;
   let expressServer: express.Express | null = null;
   let hasAddedAdminUIMiddleware = false;
-  const builtConfigPath = getBuiltKeystoneConfigurationPath(cwd);
-  const configWithExtendHttp = loadBuiltConfig(builtConfigPath);
+  const configWithExtendHttp = getBuiltKeystoneConfiguration(cwd);
   const config = stripExtendHttpServer(configWithExtendHttp);
   const paths = getSystemPaths(cwd, config);
-
   const isReady = () => !server || (expressServer !== null && hasAddedAdminUIMiddleware);
 
   let prismaClient: any = null;
@@ -196,9 +194,13 @@ export async function dev(
 
       console.log('compiled successfully');
       try {
-        const resolved = require.resolve(paths.config);
-        delete require.cache[resolved];
-        const newConfigWithHttp = loadBuiltConfig(paths.config);
+        // wipe the require cache
+        {
+          const resolved = require.resolve(paths.config);
+          delete require.cache[resolved];
+        }
+
+        const newConfigWithHttp = getBuiltKeystoneConfiguration(cwd);
         const newConfig = stripExtendHttpServer(newConfigWithHttp);
         if (prisma) {
           const newPrismaSchema = printPrismaSchema(
@@ -225,6 +227,7 @@ export async function dev(
             return stop(null, true);
           }
         }
+
         const { graphQLSchema, getKeystone, adminMeta } = createSystem(newConfig);
         // we're not using generateCommittedArtifacts or any of the similar functions
         // because we will never need to write a new prisma schema here
