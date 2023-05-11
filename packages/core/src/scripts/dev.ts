@@ -5,7 +5,6 @@ import { createServer } from 'http';
 import express from 'express';
 import { GraphQLSchema, printSchema } from 'graphql';
 import fs from 'fs-extra';
-import chalk from 'chalk';
 import esbuild, { BuildResult } from 'esbuild';
 import { generateAdminUI } from '../admin-ui/system';
 import { devMigrations, pushPrismaSchemaToDatabase } from '../lib/migrations';
@@ -214,7 +213,7 @@ export async function dev(
             newConfig.db.extendPrismaSchema
           );
           if (originalPrismaSchema !== newPrismaSchema) {
-            console.log('🔄 Your prisma schema has changed, please restart Keystone');
+            console.error('🔄 Your prisma schema has changed, please restart Keystone');
             return stop(null, true);
           }
           // we only need to test for the things which influence the prisma client creation
@@ -224,7 +223,7 @@ export async function dev(
             newConfig.db.url !== config.db.url ||
             newConfig.db.useMigrations !== config.db.useMigrations
           ) {
-            console.log('Your db config has changed, please restart Keystone');
+            console.error('Your database configuration has changed, please restart Keystone');
             return stop(null, true);
           }
         }
@@ -265,8 +264,7 @@ export async function dev(
           }
         }
       } catch (err) {
-        console.log('🚨', chalk.red('There was an error loading your Keystone config'));
-        console.log(err);
+        console.error(`Error loading your Keystone config`, err);
       }
     }
   };
@@ -377,7 +375,7 @@ async function setupInitialKeystone(
   const { dbPush, prisma, server } = options;
   const { graphQLSchema, adminMeta, getKeystone } = createSystem(config);
 
-  // Make local storage folders if used
+  // mkdir's for local storage
   for (const val of Object.values(config.storage || {})) {
     if (val.kind !== 'local') continue;
 
@@ -414,14 +412,13 @@ async function setupInitialKeystone(
         false
       );
     } else {
-      console.log('⚠️ Skipping database schema push');
+      console.warn('⚠️ Skipping database schema push');
     }
 
     await prismaClientGenerationPromise;
     const prismaClientModule = require(paths.prisma);
     const keystone = getKeystone(prismaClientModule);
 
-    // Connect to the Database
     console.log('✨ Connecting to the database');
     await keystone.connect(); // TODO: remove, replace with server.onStart
     if (!server) {
@@ -433,7 +430,7 @@ async function setupInitialKeystone(
         prismaClientModule,
       };
     }
-    // Set up the Express Server
+
     console.log('✨ Creating server');
     const { apolloServer, expressServer } = await createExpressServer(
       config,

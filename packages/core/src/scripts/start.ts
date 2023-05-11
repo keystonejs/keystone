@@ -20,7 +20,7 @@ export const start = async (
 
   // This is the compiled version of the configuration which was generated during the build step
   if (!fs.existsSync(builtConfigPath)) {
-    console.log('🚨 keystone build must be run before running keystone start');
+    console.error('🚨 keystone build must be run before running keystone start');
     throw new ExitError(1);
   }
 
