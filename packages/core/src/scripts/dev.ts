@@ -1,5 +1,6 @@
 import path from 'path';
 import type { ListenOptions } from 'net';
+import next from 'next';
 import url from 'url';
 import { createServer } from 'http';
 import next from 'next';
@@ -13,10 +14,7 @@ import { createSystem } from '../lib/createSystem';
 import { getEsbuildConfig, loadBuiltConfig } from '../lib/config';
 import { defaults } from '../lib/config/defaults';
 import { createExpressServer } from '../lib/server/createExpressServer';
-import {
-  createAdminUIMiddlewareWithNextApp,
-  getNextApp,
-} from '../lib/server/createAdminUIMiddleware';
+import { createAdminUIMiddlewareWithNextApp } from '../lib/server/createAdminUIMiddleware';
 import { runTelemetry } from '../lib/telemetry';
 import {
   generatePrismaAndGraphQLSchemas,
@@ -36,7 +34,7 @@ import { Flags } from './cli';
 
 const devLoadingHTMLFilepath = path.join(pkgDir, 'static', 'dev-loading.html');
 
-const stripExtendHttpServer = (config: KeystoneConfig): KeystoneConfig => {
+function stripExtendHttpServer(config: KeystoneConfig): KeystoneConfig {
   const { server, ...rest } = config;
   if (server) {
     const { extendHttpServer, ...restServer } = server;
@@ -470,7 +468,8 @@ async function initAdminUI(
   await generateAdminUI(config, graphQLSchema, adminMeta, paths.admin, false);
 
   console.log('✨ Preparing Admin UI app');
-  const nextApp = await getNextApp(true, paths.admin);
+  const nextApp = next({ dev: true, dir: paths.admin });
+  await nextApp.prepare();
 
   console.log(`✅ Admin UI ready`);
   return nextApp;

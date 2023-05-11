@@ -1,8 +1,9 @@
 import type { ListenOptions } from 'net';
+import next from 'next';
 import * as fs from 'fs-extra';
 import { createSystem } from '../lib/createSystem';
 import { createExpressServer } from '../lib/server/createExpressServer';
-import { createAdminUIMiddleware } from '../lib/server/createAdminUIMiddleware';
+import { createAdminUIMiddlewareWithNextApp } from '../lib/server/createAdminUIMiddleware';
 import { getBuiltKeystoneConfigurationPath, getSystemPaths } from '../artifacts';
 import { loadBuiltConfig } from '../lib/config';
 import { deployMigrations } from '../lib/migrations';
@@ -47,7 +48,10 @@ export const start = async (
   console.log(`✅ GraphQL API ready`);
   if (!config.ui?.isDisabled || ui) {
     console.log('✨ Preparing Admin UI Next.js app');
-    expressServer.use(await createAdminUIMiddleware(config, keystone.context, false, paths.admin));
+    const nextApp = next({ dev: false, dir: paths.admin });
+    await nextApp.prepare();
+
+    expressServer.use(await createAdminUIMiddlewareWithNextApp(config, keystone.context, nextApp));
     console.log(`✅ Admin UI ready`);
   }
 
