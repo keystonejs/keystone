@@ -3,6 +3,9 @@ import Path from 'path';
 import withPreconstruct from '@preconstruct/next';
 
 export const config = withPreconstruct({
+  experimental: {
+    appDir: false,
+  },
   typescript: {
     ignoreBuildErrors: true,
   },
