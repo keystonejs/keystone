@@ -1,7 +1,7 @@
 import type { CacheHint } from '@apollo/cache-control-types';
 import type { FieldTypeFunc } from '../next-fields';
 import type { BaseListTypeInfo } from '../type-info';
-import type { KeystoneContextFromListTypeInfo, MaybePromise } from '..';
+import type { KeystoneContext, MaybePromise } from '..';
 import type { MaybeItemFunction, MaybeSessionFunction } from './lists';
 import type { FieldHooks } from './hooks';
 import type { FieldAccessControl } from './access-control';
@@ -11,14 +11,15 @@ export type BaseFields<ListTypeInfo extends BaseListTypeInfo> = {
 };
 
 export type FilterOrderArgs<ListTypeInfo extends BaseListTypeInfo> = {
-  context: KeystoneContextFromListTypeInfo<ListTypeInfo>;
-  session: KeystoneContextFromListTypeInfo<ListTypeInfo>['session'];
+  context: KeystoneContext<ListTypeInfo['all']>;
+  session?: ListTypeInfo['all']['session'];
   listKey: string;
   fieldKey: string;
 };
+
 export type CommonFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
   access?: FieldAccessControl<ListTypeInfo>;
-  hooks?: FieldHooks<ListTypeInfo>;
+  hooks?: FieldHooks<ListTypeInfo, ListTypeInfo['fields']>;
   label?: string;
   ui?: {
     description?: string;

@@ -3,52 +3,75 @@ import { storedSessions } from '@keystone-6/core/session';
 import { createAuth } from '@keystone-6/auth';
 import { createClient } from '@redis/client';
 import { fixPrismaPath } from '../example-utils';
-import { lists } from './schema';
+import { lists, Session } from './schema';
+import type { TypeInfo } from '.keystone/types';
 
-// createAuth configures signin functionality based on the config below. Note this only implements
-// authentication, i.e signing in as an item using identity and secret fields in a list. Session
-// management and access control are controlled independently in the main keystone config.
+// WARNING: this example is for demonstration purposes only
+//   as with each of our examples, it has not been vetted
+//   or tested for any particular usage
+
+// WARNING: you need to change this
+const sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
+
+// statelessSessions uses cookies for session tracking
+//   these cookies have an expiry, in seconds
+//   we use an expiry of 30 days for this example
+const sessionMaxAge = 60 * 60 * 24 * 30;
+
+// withAuth is a function we can use to wrap our base configuration
 const { withAuth } = createAuth({
-  // This is the list that contains items people can sign in as
-  listKey: 'Person',
-  // The identity field is typically a username or email address
-  identityField: 'email',
-  // The secret field must be a password type field
+  // this is the list that contains our users
+  listKey: 'User',
+
+  // an identity field, typically a username or an email address
+  identityField: 'name',
+
+  // a secret field must be a password field type
   secretField: 'password',
 
-  // initFirstItem turns on the "First User" experience, which prompts you to create a new user
-  // when there are no items in the list yet
+  // initFirstItem enables the "First User" experience, this will add an interface form
+  //   adding a new User item if the database is empty
+  //
+  // WARNING: do not use initFirstItem in production
+  //   see https://keystonejs.com/docs/config/auth#init-first-item for more
   initFirstItem: {
-    // These fields are collected in the "Create First User" form
-    fields: ['name', 'email', 'password'],
+    // the following fields are used by the "Create First User" form
+    fields: ['name', 'password'],
   },
 });
 
 const redis = createClient();
 
-const session = storedSessions({
-  store: ({ maxAge }) => ({
-    async get(key) {
-      let result = await redis.get(key);
-      if (typeof result === 'string') {
-        return JSON.parse(result);
-      }
-    },
-    async set(key, value) {
-      await redis.setEx(key, maxAge, JSON.stringify(value));
-    },
-    async delete(key) {
-      await redis.del(key);
-    },
-  }),
-  // The session secret is used to encrypt cookie data (should be an environment variable)
-  secret: '-- EXAMPLE COOKIE SECRET; CHANGE ME --',
-});
+function redisSessionStrategy () {
+  // you can find out more at https://keystonejs.com/docs/apis/session#session-api
+  return storedSessions<Session>({
+    // an maxAge option controls how long session cookies are valid for before they expire
+    maxAge: sessionMaxAge,
+    // a session secret is used to encrypt cookie data
+    secret: sessionSecret,
 
-// We wrap our config using the withAuth function. This will inject all
-// the extra config required to add support for authentication in our system.
+    store: () => ({
+      async get(sessionId) {
+        const result = await redis.get(sessionId);
+        if (!result) return;
+
+        return JSON.parse(result) as Session;
+      },
+
+      async set(sessionId, data) {
+        // we use redis for our Session data, in JSON
+        await redis.setEx(sessionId, sessionMaxAge, JSON.stringify(data));
+      },
+
+      async delete(sessionId) {
+        await redis.del(sessionId);
+      }
+    })
+  })
+}
+
 export default withAuth(
-  config({
+  config<TypeInfo, Session>({
     db: {
       provider: 'sqlite',
       url: process.env.DATABASE_URL || 'file:./keystone-example.db',
@@ -60,7 +83,6 @@ export default withAuth(
       ...fixPrismaPath,
     },
     lists,
-    // We add our session configuration to the system here.
-    session,
+    session: redisSessionStrategy(),
   })
 );

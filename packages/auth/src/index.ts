@@ -13,6 +13,12 @@ import { getSchemaExtension } from './schema';
 import { signinTemplate } from './templates/signin';
 import { initTemplate } from './templates/init';
 
+export type AuthSession = {
+  listKey: string;
+  itemId: string;
+  data: unknown;
+};
+
 /**
  * createAuth function
  *
@@ -171,9 +177,9 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
    *
    * Automatically injects a session.data value with the authenticated item
    */
-  const withItemData = (
-    _sessionStrategy: SessionStrategy<Record<string, any>>
-  ): SessionStrategy<{ listKey: string; itemId: string; data: any }> => {
+  const withItemData = <Session extends AuthSession>(
+    _sessionStrategy: SessionStrategy<Session>
+  ): SessionStrategy<Session> => {
     const { get, ...sessionStrategy } = _sessionStrategy;
     return {
       ...sessionStrategy,

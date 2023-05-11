@@ -33,7 +33,7 @@ export function group<
 
 export function list<
   Fields extends BaseFields<ListTypeInfo>,
-  ListTypeInfo extends BaseListTypeInfo
->(config: ListConfig<ListTypeInfo, Fields>): ListConfig<ListTypeInfo, any> {
+  ListTypeInfo extends BaseListTypeInfo // TODO: remove in breaking change
+>(config: ListConfig<ListTypeInfo>): ListConfig<ListTypeInfo> {
   return { ...config };
 }

@@ -1,6 +1,6 @@
 import { config } from '@keystone-6/core';
 import { statelessSessions } from '@keystone-6/core/session';
-import { createAuth } from '@keystone-6/auth';
+import { createAuth, AuthSession } from '@keystone-6/auth';
 import { fixPrismaPath } from '../example-utils';
 import { lists } from './schema';
 
@@ -18,13 +18,13 @@ const sessionMaxAge = 60 * 60 * 24 * 30;
 
 // withAuth is a function we can use to wrap our base configuration
 const { withAuth } = createAuth({
-  // this is the list that contains items people can sign in as
+  // this is the list that contains our users
   listKey: 'User',
 
   // an identity field is typically a username or email address
   identityField: 'email',
 
-  // a secret field must be a password type field
+  // a secret field must be a password field type
   secretField: 'password',
 
   // initFirstItem enables the "First User" experience, this will add an interface form
@@ -43,15 +43,19 @@ const { withAuth } = createAuth({
     },
   },
 
-  // add isAdmin to the session data(required by isAccessAllowed)
+  // add isAdmin to the session data
   sessionData: 'isAdmin',
 });
 
 // you can find out more at https://keystonejs.com/docs/apis/session#session-api
-const session = statelessSessions({
+const session = statelessSessions<AuthSession & {
+  data: {
+    isAdmin: boolean
+  }
+}>({
   // an maxAge option controls how long session cookies are valid for before they expire
   maxAge: sessionMaxAge,
-  // an session secret is used to encrypt cookie data (should be an environment variable)
+  // a session secret is used to encrypt cookie data
   secret: sessionSecret,
 });
 
@@ -69,7 +73,7 @@ export default withAuth(
     ui: {
       // only admins can view the AdminUI
       isAccessAllowed: ({ session }) => {
-        return session?.data?.isAdmin;
+        return session?.data?.isAdmin ?? false;
       },
     },
   })

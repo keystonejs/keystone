@@ -1,11 +1,7 @@
 import * as cookie from 'cookie';
 import Iron from '@hapi/iron';
 import { sync as uid } from 'uid-safe';
-import { SessionStrategy, JSONValue, SessionStoreFunction } from '../types';
-
-function generateSessionId() {
-  return uid(24);
-}
+import type { SessionStrategy, SessionStoreFunction } from '../types';
 
 // should we also accept httpOnly?
 type StatelessSessionsOptions = {
@@ -65,7 +61,7 @@ type StatelessSessionsOptions = {
 
 const MAX_AGE = 60 * 60 * 8; // 8 hours
 
-export function statelessSessions<T>({
+export function statelessSessions<Session>({
   secret,
   maxAge = MAX_AGE,
   cookieName = 'keystonejs-session',
@@ -74,7 +70,7 @@ export function statelessSessions<T>({
   ironOptions = Iron.defaults,
   domain,
   sameSite = 'lax',
-}: StatelessSessionsOptions): SessionStrategy<T> {
+}: StatelessSessionsOptions): SessionStrategy<Session, any> {
   if (!secret) {
     throw new Error('You must specify a session secret to use sessions');
   }
@@ -131,33 +127,35 @@ export function statelessSessions<T>({
   };
 }
 
-export function storedSessions({
-  store: storeOption,
+/** @deprecated */
+export function storedSessions<Session>({
+  store: storeFn,
   maxAge = MAX_AGE,
   ...statelessSessionsOptions
-}: { store: SessionStoreFunction } & StatelessSessionsOptions): SessionStrategy<JSONValue> {
-  let { get, start, end } = statelessSessions({ ...statelessSessionsOptions, maxAge });
-  let store = storeOption({ maxAge });
+}: {
+  store: SessionStoreFunction<Session>;
+} & StatelessSessionsOptions): SessionStrategy<Session, any> {
+  const stateless = statelessSessions<string>({ ...statelessSessionsOptions, maxAge });
+  const store = storeFn({ maxAge });
+
   return {
     async get({ context }) {
-      const data = (await get({ context })) as { sessionId: string } | undefined;
-      const sessionId = data?.sessionId;
-      if (typeof sessionId === 'string') {
-        return store.get(sessionId);
-      }
+      const sessionId = await stateless.get({ context });
+      if (!sessionId) return;
+
+      return store.get(sessionId);
     },
-    async start({ data, context }) {
-      let sessionId = generateSessionId();
+    async start({ context, data }) {
+      const sessionId = uid(24);
       await store.set(sessionId, data);
-      return start?.({ data: { sessionId }, context }) || '';
+      return stateless.start({ context, data: sessionId }) || '';
     },
     async end({ context }) {
-      const data = (await get({ context })) as { sessionId: string } | undefined;
-      const sessionId = data?.sessionId;
-      if (typeof sessionId === 'string') {
-        await store.delete(sessionId);
-      }
-      await end?.({ context });
+      const sessionId = await stateless.get({ context });
+      if (!sessionId) return;
+
+      await store.delete(sessionId);
+      await stateless.end({ context });
     },
   };
 }

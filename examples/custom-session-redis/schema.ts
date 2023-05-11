@@ -1,40 +1,66 @@
 import { list } from '@keystone-6/core';
-import { allowAll } from '@keystone-6/core/access';
-import { checkbox, password, relationship, text, timestamp } from '@keystone-6/core/fields';
-import { select } from '@keystone-6/core/fields';
+import { unfiltered } from '@keystone-6/core/access';
+import { text, password } from '@keystone-6/core/fields';
 import type { Lists } from '.keystone/types';
 
-export const lists: Lists = {
-  Task: list({
-    access: allowAll,
-    fields: {
-      label: text({ validation: { isRequired: true } }),
-      priority: select({
-        type: 'enum',
-        options: [
-          { label: 'Low', value: 'low' },
-          { label: 'Medium', value: 'medium' },
-          { label: 'High', value: 'high' },
-        ],
-      }),
-      isComplete: checkbox(),
-      assignedTo: relationship({ ref: 'Person.tasks', many: false }),
-      finishBy: timestamp(),
+// WARNING: this example is for demonstration purposes only
+//   as with each of our examples, it has not been vetted
+//   or tested for any particular usage
+
+// needs to be compatible with withAuth
+export type Session = {
+  listKey: string;
+  itemId: string;
+  data: {
+    something: string;
+  }
+};
+
+function hasSession({ session }: { session: Session | undefined }) {
+  return Boolean(session);
+}
+
+function isSameUserFilter ({
+  session,
+}: {
+  session: Session | undefined;
+}) {
+  // you need to have a session
+  if (!session) return false;
+
+  // the authenticated user can only see themselves
+  return {
+    id: {
+      equals: session.itemId,
     },
-  }),
-  Person: list({
-    access: allowAll,
+  };
+}
+
+export const lists: Lists = {
+  User: list({
+    access: {
+      operation: hasSession,
+      filter: {
+        query: unfiltered,
+        update: isSameUserFilter,
+        delete: isSameUserFilter,
+      }
+    },
     fields: {
-      name: text({ validation: { isRequired: true } }),
-      // Added an email and password pair to be used with authentication
-      // The email address is going to be used as the identity field, so it's
-      // important that we set isRequired and isIndexed: 'unique'.
-      email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
-      // The password field stores a hash of the supplied password, and
-      // we want to ensure that all people have a password set, so we use
-      // the validation.isRequired flag.
-      password: password({ validation: { isRequired: true } }),
-      tasks: relationship({ ref: 'Task.assignedTo', many: true }),
+      // the user's name, used as the identity field for authentication
+      name: text({
+        isFilterable: false,
+        isOrderable: false,
+        isIndexed: 'unique',
+        validation: {
+          isRequired: true,
+        },
+      }),
+
+      // the user's password, used as the secret field for authentication
+      password: password({
+        // TODO: is access required?
+      }),
     },
   }),
 };

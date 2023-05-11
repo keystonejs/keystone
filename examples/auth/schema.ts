@@ -99,7 +99,8 @@ export const lists: Lists = {
       // the user's email address, used as the identity field for authentication
       //   should not be publicly visible
       //
-      //   we use isIndexed to enforce this email is unique
+      //   we use isIndexed to enforce emails are unique
+      //     that may not suitable for your application
       email: text({
         access: {
           // only the respective user, or an admin can read this field
