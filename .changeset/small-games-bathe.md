@@ -2,4 +2,4 @@
 '@keystone-6/core': patch
 ---
 
-set appdir to false in next config
+Change next `experimental.appDir: false` for now, until resolution found for internal React issues
