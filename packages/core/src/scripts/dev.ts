@@ -11,7 +11,7 @@ import { generateAdminUI } from '../admin-ui/system';
 import { devMigrations, pushPrismaSchemaToDatabase } from '../lib/migrations';
 import { createSystem } from '../lib/createSystem';
 import { getEsbuildConfig, loadBuiltConfig } from '../lib/config';
-import { defaults } from '../lib/config/defaults';
+import { healthCheckPath as defaultHealthCheckPath } from '../lib/defaults';
 import { createExpressServer } from '../lib/server/createExpressServer';
 import { createAdminUIMiddlewareWithNextApp } from '../lib/server/createAdminUIMiddleware';
 import { runTelemetry } from '../lib/telemetry';
@@ -274,8 +274,8 @@ export async function dev(
   if (config.server?.healthCheck && app) {
     const healthCheckPath =
       config.server.healthCheck === true
-        ? defaults.healthCheckPath
-        : config.server.healthCheck.path || defaults.healthCheckPath;
+        ? defaultHealthCheckPath
+        : config.server.healthCheck.path || defaultHealthCheckPath;
     app.use(healthCheckPath, (req, res, next) => {
       if (expressServer) return next();
       res.status(503).json({ status: 'fail', timestamp: Date.now() });

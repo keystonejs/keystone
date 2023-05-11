@@ -1,15 +1,15 @@
 import { Application } from 'express';
 import type { KeystoneConfig } from '../../types';
 
-import { defaults } from '../config/defaults';
+import { healthCheckPath as defaultHealthCheckPath } from '../defaults';
 
 type AddHealthCheckArgs = { config: KeystoneConfig; server: Application };
 
-export const addHealthCheck = async ({ config, server }: AddHealthCheckArgs) => {
+export async function addHealthCheck ({ config, server }: AddHealthCheckArgs) {
   if (!config.server?.healthCheck) return;
-  const healthCheck = config.server.healthCheck === true ? {} : config.server.healthCheck;
 
-  const path = healthCheck.path || defaults.healthCheckPath;
+  const healthCheck = config.server.healthCheck === true ? {} : config.server.healthCheck;
+  const path = healthCheck.path || defaultHealthCheckPath;
 
   server.use(path, (req, res) => {
     const data = (typeof healthCheck.data === 'function'
@@ -20,4 +20,4 @@ export const addHealthCheck = async ({ config, server }: AddHealthCheckArgs) => 
     };
     res.json(data);
   });
-};
+}

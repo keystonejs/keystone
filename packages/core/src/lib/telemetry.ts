@@ -5,7 +5,7 @@ import fetch from 'node-fetch';
 import chalk from 'chalk';
 import { Configuration, Telemetry, Project, Device, PackageName } from '../types/telemetry';
 import { DatabaseProvider } from '../types';
-import { defaults } from './config/defaults';
+import { telemetryEndpoint as defaultTelemetryEndpoint } from './defaults';
 import { InitialisedList } from './core/types-for-lists';
 
 const packageNames: PackageName[] = [
@@ -215,10 +215,10 @@ function inform() {
 }
 
 async function sendEvent(eventType: 'project' | 'device', eventData: Project | Device) {
-  const telemetryEndpoint = process.env.KEYSTONE_TELEMETRY_ENDPOINT || defaults.telemetryEndpoint;
-  const telemetryUrl = `${telemetryEndpoint}/v1/event/${eventType}`;
+  const endpoint = process.env.KEYSTONE_TELEMETRY_ENDPOINT || defaultTelemetryEndpoint;
+  const url = `${endpoint}/v1/event/${eventType}`;
 
-  await fetch(telemetryUrl, {
+  await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
