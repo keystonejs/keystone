@@ -36,7 +36,6 @@ export async function prisma(cwd: string, args: string[], frozen: boolean) {
       PRISMA_HIDE_UPDATE_MESSAGE: '1',
     },
   });
-  if (result.exitCode !== 0) {
-    throw new ExitError(result.exitCode);
-  }
+
+  if (result.exitCode !== 0) throw new ExitError(result.exitCode);
 }
