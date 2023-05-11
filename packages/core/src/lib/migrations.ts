@@ -52,9 +52,7 @@ export async function withMigrate<T>(schemaPath: string, cb: (migrate: Migrate) 
   } finally {
     const closePromise = new Promise<void>(resolve => {
       const child = (migrate.engine as any).child as import('child_process').ChildProcess;
-      child.once('exit', () => {
-        resolve();
-      });
+      child.once('exit', () => resolve());
     });
     migrate.stop();
     await closePromise;
@@ -165,9 +163,9 @@ function logUnexecutableSteps(unexecutableSteps: string[]) {
 }
 
 function logWarnings(warnings: string[]) {
-  console.log(chalk.bold(`\n⚠️  Warnings:\n`));
+  console.warn(chalk.bold(`\n⚠️  Warnings:\n`));
   for (const warning of warnings) {
-    console.log(`  • ${warning}`);
+    console.warn(`  • ${warning}`);
   }
 }
 
@@ -218,6 +216,7 @@ export async function devMigrations(
       const devDiagnostic = await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () =>
         migrate.devDiagnostic()
       );
+
       // when the action is reset, the database is somehow inconsistent with the migrations so we need to reset it
       // (not just some migrations need to be applied but there's some inconsistency)
       if (devDiagnostic.action.tag === 'reset') {
@@ -237,25 +236,28 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
           throw new ExitError(0);
         }
 
-        // Do the reset
+        // do the reset
         await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () => migrate.reset());
       }
     }
     const { appliedMigrationNames } = await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () =>
       migrate.applyMigrations()
     );
-    // Inform user about applied migrations now
+
+    // inform user about applied migrations now
     if (appliedMigrationNames.length) {
       console.info(`✨ The following migration(s) have been applied:`);
       for (const id of appliedMigrationNames) {
         console.info(`  - ${chalk.cyan.bold(id)}`);
       }
     }
+
     // evaluateDataLoss basically means "try to create a migration but don't write it"
     // so we can tell the user whether it can be executed and if there will be data loss
     const evaluateDataLossResult = await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () =>
       migrate.evaluateDataLoss()
     );
+
     // if there are no steps, there was no change to the prisma schema so we don't need to create a migration
     if (evaluateDataLossResult.migrationSteps) {
       console.log('✨ There has been a change to your Keystone schema that requires a migration');
@@ -305,9 +307,7 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
         await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () => migrate.applyMigrations());
         console.log('✅ The migration has been applied');
       } else {
-        console.error(
-          'Please edit the migration and try again'
-        );
+        console.error('Please edit the migration and try again');
         throw new ExitError(0);
       }
     } else {
