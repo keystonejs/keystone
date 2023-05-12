@@ -1,5 +1,5 @@
 {
-  "name": "@keystone-6/example-with-custom-session-validation",
+  "name": "@keystone-6/example-custom-session-invalidation",
   "version": "0.0.5",
   "private": true,
   "license": "MIT",
@@ -17,6 +17,5 @@
   "devDependencies": {
     "prisma": "^4.14.0",
     "typescript": "~5.0.0"
-  },
-  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/custom-session-validation"
+  }
 }
