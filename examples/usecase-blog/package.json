@@ -19,6 +19,5 @@
     "prisma": "^4.14.0",
     "tsx": "^3.9.0",
     "typescript": "~5.0.0"
-  },
-  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/usecase-blog"
+  }
 }
