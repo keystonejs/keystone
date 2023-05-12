@@ -44,5 +44,6 @@ model Role {
   canEditOtherPeople Boolean  @default(false)
   canManagePeople    Boolean  @default(false)
   canManageRoles     Boolean  @default(false)
+  canUseAdminUI      Boolean  @default(false)
   assignedTo         Person[] @relation("Person_role")
 }

@@ -1,5 +1,5 @@
 {
-  "name": "@keystone-6/example-roles",
+  "name": "@keystone-6/example-usecase-roles",
   "version": "0.1.1",
   "private": true,
   "license": "MIT",
@@ -17,6 +17,5 @@
   "devDependencies": {
     "prisma": "^4.14.0",
     "typescript": "~5.0.0"
-  },
-  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/usecase-roles"
+  }
 }

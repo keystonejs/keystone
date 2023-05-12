@@ -205,6 +205,7 @@ type Role {
   canEditOtherPeople: Boolean
   canManagePeople: Boolean
   canManageRoles: Boolean
+  canUseAdminUI: Boolean
   assignedTo(where: PersonWhereInput! = {}, orderBy: [PersonOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PersonWhereUniqueInput): [Person!]
   assignedToCount(where: PersonWhereInput! = {}): Int
 }
@@ -225,6 +226,7 @@ input RoleWhereInput {
   canEditOtherPeople: BooleanFilter
   canManagePeople: BooleanFilter
   canManageRoles: BooleanFilter
+  canUseAdminUI: BooleanFilter
   assignedTo: PersonManyRelationFilter
 }
 
@@ -243,6 +245,7 @@ input RoleOrderByInput {
   canEditOtherPeople: OrderDirection
   canManagePeople: OrderDirection
   canManageRoles: OrderDirection
+  canUseAdminUI: OrderDirection
 }
 
 input RoleUpdateInput {
@@ -253,6 +256,7 @@ input RoleUpdateInput {
   canEditOtherPeople: Boolean
   canManagePeople: Boolean
   canManageRoles: Boolean
+  canUseAdminUI: Boolean
   assignedTo: PersonRelateToManyForUpdateInput
 }
 
@@ -276,6 +280,7 @@ input RoleCreateInput {
   canEditOtherPeople: Boolean
   canManagePeople: Boolean
   canManageRoles: Boolean
+  canUseAdminUI: Boolean
   assignedTo: PersonRelateToManyForCreateInput
 }
 

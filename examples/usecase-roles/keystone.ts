@@ -3,8 +3,7 @@ import { statelessSessions } from '@keystone-6/core/session';
 import { createAuth } from '@keystone-6/auth';
 import { fixPrismaPath } from '../example-utils';
 import { lists } from './schema';
-
-import { isSignedIn } from './access';
+import type { Session } from './access';
 
 const sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
 const sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
@@ -33,13 +32,15 @@ const { withAuth } = createAuth({
           canEditOtherPeople: true,
           canManagePeople: true,
           canManageRoles: true,
+          canUseAdminUI: true
         },
       },
     },
   },
   /* This loads the related role for the current user, including all permissions */
   sessionData: `
-    name role {
+    name
+    role {
       id
       name
       canCreateTodos
@@ -48,6 +49,7 @@ const { withAuth } = createAuth({
       canEditOtherPeople
       canManagePeople
       canManageRoles
+      canUseAdminUI
     }`,
 });
 
@@ -62,12 +64,11 @@ export default withAuth(
     },
     lists,
     ui: {
-      // TODO: isSignedIn is the default, a better example would be limiting users
-      // isAccessAllowed: canViewAdminUI,
+      isAccessAllowed: ({ session }) => {
+        return session?.data.role?.canUseAdminUI ?? false;
 
-      /* Everyone who is signed in can access the Admin UI */
-      isAccessAllowed: isSignedIn,
+      },
     },
-    session: statelessSessions(sessionConfig),
+    session: statelessSessions<Session>(sessionConfig),
   })
 );

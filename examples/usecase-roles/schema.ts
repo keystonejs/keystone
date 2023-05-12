@@ -219,6 +219,9 @@ export const lists = {
       /* Manage Roles means:
          - create, edit, and delete roles */
       canManageRoles: checkbox({ defaultValue: false }),
+      /* Use AdminUI means:
+         - can access the Admin UI next app */
+      canUseAdminUI: checkbox({ defaultValue: false }),
       /* This list of People assigned to this role */
       assignedTo: relationship({
         ref: 'Person.role',
