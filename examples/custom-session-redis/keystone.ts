@@ -42,12 +42,12 @@ const { withAuth } = createAuth({
 
 const redis = createClient();
 
-function redisSessionStrategy () {
+function redisSessionStrategy() {
   // you can find out more at https://keystonejs.com/docs/apis/session#session-api
   return storedSessions<Session>({
-    // an maxAge option controls how long session cookies are valid for before they expire
+    // the maxAge option controls how long session cookies are valid for before they expire
     maxAge: sessionMaxAge,
-    // a session secret is used to encrypt cookie data
+    // the session secret is used to encrypt cookie data
     secret: sessionSecret,
 
     store: () => ({
@@ -65,13 +65,13 @@ function redisSessionStrategy () {
 
       async delete(sessionId) {
         await redis.del(sessionId);
-      }
-    })
-  })
+      },
+    }),
+  });
 }
 
 export default withAuth(
-  config<TypeInfo, Session>({
+  config<TypeInfo<Session>>({
     db: {
       provider: 'sqlite',
       url: process.env.DATABASE_URL || 'file:./keystone-example.db',

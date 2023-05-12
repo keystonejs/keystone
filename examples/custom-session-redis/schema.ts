@@ -13,18 +13,14 @@ export type Session = {
   itemId: string;
   data: {
     something: string;
-  }
+  };
 };
 
-function hasSession({ session }: { session: Session | undefined }) {
+function hasSession({ session }: { session?: Session }) {
   return Boolean(session);
 }
 
-function isSameUserFilter ({
-  session,
-}: {
-  session: Session | undefined;
-}) {
+function isSameUserFilter({ session }: { session?: Session }) {
   // you need to have a session
   if (!session) return false;
 
@@ -44,7 +40,7 @@ export const lists: Lists = {
         query: unfiltered,
         update: isSameUserFilter,
         delete: isSameUserFilter,
-      }
+      },
     },
     fields: {
       // the user's name, used as the identity field for authentication
