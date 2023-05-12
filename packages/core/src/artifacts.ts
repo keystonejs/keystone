@@ -9,6 +9,7 @@ import { printGeneratedTypes } from './lib/schema-type-printer';
 import { ExitError } from './scripts/utils';
 import { initialiseLists } from './lib/core/types-for-lists';
 import { printPrismaSchema } from './lib/core/prisma-schema-printer';
+import { initConfig } from './lib/config';
 
 export function getFormattedGraphQLSchema(schema: string) {
   return (
@@ -76,6 +77,11 @@ async function readFileButReturnNothingIfDoesNotExist(path: string) {
 // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
 export function getBuiltKeystoneConfigurationPath(cwd: string) {
   return path.join(cwd, '.keystone/config.js');
+}
+
+export function getBuiltKeystoneConfiguration(cwd: string) {
+  const configPath = getBuiltKeystoneConfigurationPath(cwd);
+  return initConfig(require(configPath).default);
 }
 
 function posixify(s: string) {

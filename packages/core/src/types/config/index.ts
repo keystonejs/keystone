@@ -1,8 +1,8 @@
 import type { Server } from 'http';
 import type { ListenOptions } from 'net';
 import type { ApolloServerOptions } from '@apollo/server';
-import { CorsOptions } from 'cors';
-import express from 'express';
+import type { CorsOptions } from 'cors';
+import type express from 'express';
 import type { GraphQLSchema } from 'graphql';
 import type { Options as BodyParserOptions } from 'body-parser';
 

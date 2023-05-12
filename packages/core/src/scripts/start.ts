@@ -1,13 +1,17 @@
 import type { ListenOptions } from 'net';
+import next from 'next';
 import * as fs from 'fs-extra';
-import { createSystem } from '../../lib/createSystem';
-import { createExpressServer } from '../../lib/server/createExpressServer';
-import { createAdminUIMiddleware } from '../../lib/server/createAdminUIMiddleware';
-import { getBuiltKeystoneConfigurationPath, getSystemPaths } from '../../artifacts';
-import { ExitError } from '../utils';
-import { loadBuiltConfig } from '../../lib/config/loadConfig';
-import { Flags } from '../cli';
-import { deployMigrations } from '../../lib/migrations';
+import { createSystem } from '../lib/createSystem';
+import { createExpressServer } from '../lib/server/createExpressServer';
+import { createAdminUIMiddlewareWithNextApp } from '../lib/server/createAdminUIMiddleware';
+import {
+  getBuiltKeystoneConfigurationPath,
+  getBuiltKeystoneConfiguration,
+  getSystemPaths,
+} from '../artifacts';
+import { deployMigrations } from '../lib/migrations';
+import { ExitError } from './utils';
+import type { Flags } from './cli';
 
 export const start = async (
   cwd: string,
@@ -20,11 +24,11 @@ export const start = async (
 
   // This is the compiled version of the configuration which was generated during the build step
   if (!fs.existsSync(builtConfigPath)) {
-    console.log('🚨 keystone build must be run before running keystone start');
+    console.error('🚨 keystone build must be run before running keystone start');
     throw new ExitError(1);
   }
 
-  const config = loadBuiltConfig(builtConfigPath);
+  const config = getBuiltKeystoneConfiguration(cwd);
   const paths = getSystemPaths(cwd, config);
   const { getKeystone, graphQLSchema } = createSystem(config);
   const prismaClient = require(paths.prisma);
@@ -47,7 +51,10 @@ export const start = async (
   console.log(`✅ GraphQL API ready`);
   if (!config.ui?.isDisabled || ui) {
     console.log('✨ Preparing Admin UI Next.js app');
-    expressServer.use(await createAdminUIMiddleware(config, keystone.context, false, paths.admin));
+    const nextApp = next({ dev: false, dir: paths.admin });
+    await nextApp.prepare();
+
+    expressServer.use(await createAdminUIMiddlewareWithNextApp(config, keystone.context, nextApp));
     console.log(`✅ Admin UI ready`);
   }
 

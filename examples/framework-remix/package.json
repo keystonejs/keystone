@@ -1,4 +1,5 @@
 {
+  "name": "@keystone-6/example-framework-remix",
   "private": true,
   "sideEffects": false,
   "scripts": {

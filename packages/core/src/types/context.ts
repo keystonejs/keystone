@@ -1,10 +1,10 @@
-import { IncomingMessage, ServerResponse } from 'http';
-import { Readable } from 'stream';
-import { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql';
-import { TypedDocumentNode } from '@graphql-typed-document-node/core';
-import { InitialisedList } from '../lib/core/types-for-lists';
-import { BaseListTypeInfo } from './type-info';
-import { BaseKeystoneTypeInfo, SessionStrategy } from '.';
+import type { IncomingMessage, ServerResponse } from 'http';
+import type { Readable } from 'stream';
+import type { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql';
+import type { TypedDocumentNode } from '@graphql-typed-document-node/core';
+import type { InitialisedList } from '../lib/core/types-for-lists';
+import type { BaseListTypeInfo } from './type-info';
+import type { BaseKeystoneTypeInfo, SessionStrategy } from '.';
 
 export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   req?: IncomingMessage;

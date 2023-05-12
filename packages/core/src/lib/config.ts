@@ -1,5 +1,7 @@
-import { KeystoneConfig, IdFieldConfig } from '../../types';
-import { idFieldType } from '../id-field';
+import type { KeystoneConfig, IdFieldConfig } from '../types';
+import { idFieldType } from './id-field';
+
+// TODO: move to system/initialisation
 
 function getIdField({ kind, type }: IdFieldConfig): Required<IdFieldConfig> {
   if (kind === 'cuid') return { kind: 'cuid', type: 'String' };
@@ -100,5 +102,8 @@ export function initConfig(config: KeystoneConfig) {
     );
   }
 
-  return { ...config, lists: applyIdFieldDefaults(config) };
+  return {
+    ...config,
+    lists: applyIdFieldDefaults(config),
+  };
 }

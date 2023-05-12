@@ -1,7 +1,5 @@
-import esbuild, { BuildOptions } from 'esbuild';
-import { getBuiltKeystoneConfigurationPath } from '../../artifacts';
-import { KeystoneConfig } from '../../types';
-import { initConfig } from './initConfig';
+// WARNING: be careful not to import `esbuild` within next
+import type { BuildOptions } from 'esbuild';
 
 export function getEsbuildConfig(cwd: string): BuildOptions {
   return {
@@ -34,15 +32,4 @@ export function getEsbuildConfig(cwd: string): BuildOptions {
       },
     ],
   };
-}
-
-export function loadBuiltConfig(path: string): KeystoneConfig {
-  return initConfig(require(path).default);
-}
-
-export async function loadConfigOnce(cwd: string): Promise<KeystoneConfig> {
-  await esbuild.build(getEsbuildConfig(cwd));
-  // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
-  const builtConfigPath = getBuiltKeystoneConfigurationPath(cwd);
-  return loadBuiltConfig(builtConfigPath);
 }

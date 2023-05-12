@@ -1,11 +1,11 @@
-import type { FieldGroupConfig } from '../lib/core/types-for-lists';
+import type { FieldGroupConfig } from './lib/core/types-for-lists';
 import type {
   BaseFields,
   BaseListTypeInfo,
   KeystoneConfig,
   BaseKeystoneTypeInfo,
   ListConfig,
-} from '../types';
+} from './types';
 
 export function config<TypeInfo extends BaseKeystoneTypeInfo>(config: KeystoneConfig<TypeInfo>) {
   return config;

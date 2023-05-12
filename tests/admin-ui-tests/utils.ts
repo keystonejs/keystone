@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import { promisify } from 'util';
 import fetch from 'node-fetch';
-import execa from 'execa';
+import execa, { ExecaChildProcess } from 'execa';
 import _treeKill from 'tree-kill';
 import * as playwright from 'playwright';
 import dotenv from 'dotenv';
@@ -25,13 +25,6 @@ const treeKill = promisify(_treeKill);
 // this'll take a while
 jest.setTimeout(10000000);
 
-export const promiseSignal = (): Promise<void> & { resolve: () => void } => {
-  let resolve;
-  let promise = new Promise<void>(_resolve => {
-    resolve = _resolve;
-  });
-  return Object.assign(promise, { resolve: resolve as any });
-};
 const projectRoot = path.resolve(__dirname, '..', '..');
 
 // Light wrapper around node-fetch for making graphql requests to the graphql api of the test instance.
@@ -103,18 +96,17 @@ export const adminUITests = (
 
     if (mode === 'prod') {
       test('build keystone', async () => {
-        let keystoneBuildProcess = execa('pnpm', ['build'], {
+        const ksProcess = execa('pnpm', ['build'], {
           cwd: projectDir,
           env: process.env,
         });
+
         if (process.env.VERBOSE) {
-          const logChunk = (chunk: any) => {
-            console.log(chunk.toString('utf8'));
-          };
-          keystoneBuildProcess.stdout!.on('data', logChunk);
-          keystoneBuildProcess.stderr!.on('data', logChunk);
+          ksProcess.stdout!.pipe(process.stdout);
+          ksProcess.stderr!.pipe(process.stdout);
         }
-        await keystoneBuildProcess;
+
+        await ksProcess;
       });
       test('start keystone in prod', async () => {
         await startKeystone('start');
@@ -130,35 +122,38 @@ export const adminUITests = (
   });
 };
 
+export async function waitForIO(ksProcess: ExecaChildProcess, content: string) {
+  return await new Promise(resolve => {
+    let output = '';
+    function listener(chunk: Buffer) {
+      output += chunk.toString('utf8');
+      if (process.env.VERBOSE) console.log(chunk.toString('utf8'));
+      if (!output.includes(content)) return;
+
+      ksProcess.stdout!.off('data', listener);
+      ksProcess.stderr!.off('data', listener);
+      resolve(output);
+    }
+
+    ksProcess.stdout!.on('data', listener);
+    ksProcess.stderr!.on('data', listener);
+  });
+}
+
 export async function generalStartKeystone(projectDir: string, command: 'start' | 'dev') {
   if (!fs.existsSync(projectDir)) {
     throw new Error(`No such file or directory ${projectDir}`);
   }
 
-  let keystoneProcess = execa('pnpm', ['keystone', command], {
+  const keystoneProcess = execa('pnpm', ['keystone', command], {
     cwd: projectDir,
     env: process.env,
   });
 
-  let adminUIReady = promiseSignal();
-  let listener = (chunk: any) => {
-    let stringified = chunk.toString('utf8');
-    if (process.env.VERBOSE) {
-      console.log(stringified);
-    }
-    if (stringified.includes('Admin UI ready')) {
-      adminUIReady.resolve();
-    }
-  };
-  keystoneProcess.stdout!.on('data', listener);
-  keystoneProcess.stderr!.on('data', listener);
-
-  await adminUIReady;
+  await waitForIO(keystoneProcess, 'Admin UI ready');
   return {
     process: keystoneProcess,
     exit: async () => {
-      keystoneProcess.stdout!.off('data', listener);
-      keystoneProcess.stderr!.off('data', listener);
       // childProcess.kill will only kill the direct child process
       // so we use tree-kill to kill the process and it's children
       await treeKill(keystoneProcess.pid!);

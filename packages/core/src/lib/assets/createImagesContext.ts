@@ -1,7 +1,7 @@
 import { v4 as uuid } from 'uuid';
 import imageSize from 'image-size';
-import { KeystoneConfig, ImagesContext } from '../../types';
-import { ImageAdapter } from './types';
+import type { KeystoneConfig, ImagesContext } from '../../types';
+import type { ImageAdapter } from './types';
 import { localImageAssetsAPI } from './local';
 import { s3ImageAssetsAPI } from './s3';
 import { streamToBuffer } from './utils';

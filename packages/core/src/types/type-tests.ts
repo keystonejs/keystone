@@ -1,5 +1,5 @@
-import { KeystoneContext } from './context';
-import { BaseListTypeInfo } from './type-info';
+import type { KeystoneContext } from './context';
+import type { BaseListTypeInfo } from './type-info';
 
 const someContext: KeystoneContext<{
   lists: {

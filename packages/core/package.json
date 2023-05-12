@@ -10,6 +10,10 @@
       "module": "./dist/keystone-6-core.esm.js",
       "default": "./dist/keystone-6-core.cjs.js"
     },
+    "./access": {
+      "module": "./access/dist/keystone-6-core-access.esm.js",
+      "default": "./access/dist/keystone-6-core-access.cjs.js"
+    },
     "./system": {
       "module": "./system/dist/keystone-6-core-system.esm.js",
       "default": "./system/dist/keystone-6-core-system.cjs.js"
@@ -29,10 +33,6 @@
     "./types": {
       "module": "./types/dist/keystone-6-core-types.esm.js",
       "default": "./types/dist/keystone-6-core-types.cjs.js"
-    },
-    "./access": {
-      "module": "./access/dist/keystone-6-core-access.esm.js",
-      "default": "./access/dist/keystone-6-core-access.cjs.js"
     },
     "./fields": {
       "module": "./fields/dist/keystone-6-core-fields.esm.js",
@@ -145,10 +145,6 @@
     "./___internal-do-not-use-will-break-in-patch/artifacts": {
       "module": "./___internal-do-not-use-will-break-in-patch/artifacts/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-artifacts.esm.js",
       "default": "./___internal-do-not-use-will-break-in-patch/artifacts/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-artifacts.cjs.js"
-    },
-    "./___internal-do-not-use-will-break-in-patch/load-config": {
-      "module": "./___internal-do-not-use-will-break-in-patch/load-config/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-load-config.esm.js",
-      "default": "./___internal-do-not-use-will-break-in-patch/load-config/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-load-config.cjs.js"
     },
     "./___internal-do-not-use-will-break-in-patch/admin-ui/next-config": {
       "module": "./___internal-do-not-use-will-break-in-patch/admin-ui/next-config/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-next-config.esm.js",
@@ -288,8 +284,8 @@
   "preconstruct": {
     "entrypoints": [
       "index.ts",
+      "access.ts",
       "system.ts",
-      "___internal-do-not-use-will-break-in-patch/load-config.ts",
       "___internal-do-not-use-will-break-in-patch/artifacts.ts",
       "___internal-do-not-use-will-break-in-patch/admin-ui/pages/*/index.tsx",
       "___internal-do-not-use-will-break-in-patch/admin-ui/{next-config.ts,id-field-view.tsx}",
@@ -308,8 +304,7 @@
       "fields/types/*/views/index.tsx",
       "fields/types/relationship/views/RelationshipSelect.tsx",
       "fields/types/{image,file}/utils.ts",
-      "types/index.ts",
-      "access/index.ts"
+      "types/index.ts"
     ],
     "exports": {
       "extra": {

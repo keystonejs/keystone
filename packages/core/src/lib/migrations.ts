@@ -52,9 +52,7 @@ export async function withMigrate<T>(schemaPath: string, cb: (migrate: Migrate) 
   } finally {
     const closePromise = new Promise<void>(resolve => {
       const child = (migrate.engine as any).child as import('child_process').ChildProcess;
-      child.once('exit', () => {
-        resolve();
-      });
+      child.once('exit', () => resolve());
     });
     migrate.stop();
     await closePromise;
@@ -68,8 +66,16 @@ export async function pushPrismaSchemaToDatabase(
   schemaPath: string,
   resetDb: boolean
 ) {
-  const before = Date.now();
-  await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
+  const created = await createDatabase(dbUrl, path.dirname(schemaPath));
+  if (created) {
+    const credentials = uriToCredentials(dbUrl);
+    console.log(
+      `✨ ${credentials.type} database "${credentials.database}" created at ${getDbLocation(
+        credentials
+      )}`
+    );
+  }
+
   const migration = await withMigrate(schemaPath, async migrate => {
     if (resetDb) {
       await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () => migrate.engine.reset());
@@ -101,14 +107,14 @@ export async function pushPrismaSchemaToDatabase(
       if (migration.warnings.length) {
         logWarnings(migration.warnings);
       }
-      console.log('\nTo apply this migration, we need to reset the database.');
+      console.log('\nTo apply this migration, we need to reset the database');
       if (
         !(await confirmPrompt(
-          `Do you want to continue? ${chalk.red('All data will be lost')}.`,
+          `Do you want to continue? ${chalk.red('All data will be lost')}`,
           false
         ))
       ) {
-        console.log('Reset cancelled');
+        console.error('Reset cancelled');
         throw new ExitError(0);
       }
       await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () => migrate.reset());
@@ -124,11 +130,11 @@ export async function pushPrismaSchemaToDatabase(
       logWarnings(migration.warnings);
       if (
         !(await confirmPrompt(
-          `Do you want to continue? ${chalk.red('Some data will be lost')}.`,
+          `Do you want to continue? ${chalk.red('Some data will be lost')}`,
           false
         ))
       ) {
-        console.log('Push cancelled.');
+        console.error('Push cancelled');
         throw new ExitError(0);
       }
       return runMigrateWithDbUrl(dbUrl, shadowDbUrl, () =>
@@ -143,11 +149,9 @@ export async function pushPrismaSchemaToDatabase(
   });
 
   if (migration.warnings.length === 0 && migration.executedSteps === 0) {
-    console.info(`✨ The database is already in sync with the Prisma schema.`);
+    console.info(`✨ The database is already in sync with the Prisma schema`);
   } else {
-    console.info(
-      `✨ Your database is now in sync with your schema. Done in ${formatms(Date.now() - before)}`
-    );
+    console.info(`✨ Your database is now in sync with your schema`);
   }
 }
 
@@ -159,24 +163,19 @@ function logUnexecutableSteps(unexecutableSteps: string[]) {
 }
 
 function logWarnings(warnings: string[]) {
-  console.log(chalk.bold(`\n⚠️  Warnings:\n`));
+  console.warn(chalk.bold(`\n⚠️  Warnings:\n`));
   for (const warning of warnings) {
-    console.log(`  • ${warning}`);
+    console.warn(`  • ${warning}`);
   }
 }
 
 export async function deployMigrations(schemaPath: string, dbUrl: string) {
   return withMigrate(schemaPath, async migrate => {
-    const before = Date.now();
     const migration = await runMigrateWithDbUrl(dbUrl, undefined, () => migrate.applyMigrations());
     if (migration.appliedMigrationNames.length === 0) {
-      console.info(`✨ The database is already in sync with your migrations.`);
+      console.info(`✨ The database is already in sync with your migrations`);
     } else {
-      console.info(
-        `✨ Your database is now in sync with your migrations. Done in ${formatms(
-          Date.now() - before
-        )}`
-      );
+      console.info(`✨ Your database is now in sync with your migrations`);
     }
   });
 }
@@ -188,12 +187,22 @@ export async function devMigrations(
   schemaPath: string,
   resetDb: boolean
 ) {
-  await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
+  const created = await createDatabase(dbUrl, path.dirname(schemaPath));
+  if (created) {
+    const credentials = uriToCredentials(dbUrl);
+    console.log(
+      `✨ ${credentials.type} database "${credentials.database}" created at ${getDbLocation(
+        credentials
+      )}`
+    );
+  }
+
   return withMigrate(schemaPath, async migrate => {
     if (!migrate.migrationsDirectoryPath) {
-      console.log('No migrations directory provided.');
+      console.error('No migrations directory path');
       throw new ExitError(1);
     }
+
     const { migrationsDirectoryPath } = migrate;
 
     if (resetDb) {
@@ -207,6 +216,7 @@ export async function devMigrations(
       const devDiagnostic = await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () =>
         migrate.devDiagnostic()
       );
+
       // when the action is reset, the database is somehow inconsistent with the migrations so we need to reset it
       // (not just some migrations need to be applied but there's some inconsistency)
       if (devDiagnostic.action.tag === 'reset') {
@@ -217,34 +227,37 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
           credentials
         )}.`);
         const confirmedReset = await confirmPrompt(
-          `Do you want to continue? ${chalk.red('All data will be lost')}.`
+          `Do you want to continue? ${chalk.red('All data will be lost')}`
         );
         console.info(); // empty line
 
         if (!confirmedReset) {
-          console.info('Reset cancelled.');
+          console.error('Reset cancelled');
           throw new ExitError(0);
         }
 
-        // Do the reset
+        // do the reset
         await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () => migrate.reset());
       }
     }
     const { appliedMigrationNames } = await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () =>
       migrate.applyMigrations()
     );
-    // Inform user about applied migrations now
+
+    // inform user about applied migrations now
     if (appliedMigrationNames.length) {
       console.info(`✨ The following migration(s) have been applied:`);
       for (const id of appliedMigrationNames) {
         console.info(`  - ${chalk.cyan.bold(id)}`);
       }
     }
+
     // evaluateDataLoss basically means "try to create a migration but don't write it"
     // so we can tell the user whether it can be executed and if there will be data loss
     const evaluateDataLossResult = await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () =>
       migrate.evaluateDataLoss()
     );
+
     // if there are no steps, there was no change to the prisma schema so we don't need to create a migration
     if (evaluateDataLossResult.migrationSteps) {
       console.log('✨ There has been a change to your Keystone schema that requires a migration');
@@ -264,8 +277,11 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
       }
 
       console.log(); // for an empty line
+      const migrationNameInput = await textPrompt('Name of migration');
 
-      const migrationName = await askForMigrationName();
+      // 200 characters is the limit from Prisma
+      //   see https://github.com/prisma/prisma/blob/c6995ebb6f23996d3b48dfdd1b841e0b5cf549b3/packages/migrate/src/utils/promptForMigrationName.ts#L12
+      const migrationName = slugify(migrationNameInput, { separator: '_' }).slice(0, 200);
 
       // note this only creates the migration, it does not apply it
       const { generatedMigrationName } = await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () =>
@@ -291,7 +307,7 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
         await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () => migrate.applyMigrations());
         console.log('✅ The migration has been applied');
       } else {
-        console.log('Please edit the migration and run keystone dev again to apply the migration');
+        console.error('Please edit the migration and try again');
         throw new ExitError(0);
       }
     } else {
@@ -304,40 +320,10 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
   });
 }
 
-async function askForMigrationName() {
-  const migrationName = await textPrompt('Name of migration');
-
-  // 200 characters is the limit from Prisma
-  //   see https://github.com/prisma/prisma/blob/c6995ebb6f23996d3b48dfdd1b841e0b5cf549b3/packages/migrate/src/utils/promptForMigrationName.ts#L12
-  return slugify(migrationName, { separator: '_' }).slice(0, 200);
-}
-
-async function ensureDatabaseExists(dbUrl: string, schemaDir: string) {
-  // createDatabase will return false when the database already exists
-  const created = await createDatabase(dbUrl, schemaDir);
-  if (created) {
-    const credentials = uriToCredentials(dbUrl);
-    console.log(
-      `✨ ${credentials.type} database "${credentials.database}" created at ${getDbLocation(
-        credentials
-      )}`
-    );
-  }
-  // TODO: handle createDatabase returning a failure (prisma's cli does not handle it though so not super worried)
-}
-
 function getDbLocation(credentials: DatabaseCredentials): string {
   if (credentials.type === 'sqlite') {
     return credentials.uri!;
   }
 
   return `${credentials.host}${credentials.port === undefined ? '' : `:${credentials.port}`}`;
-}
-
-function formatms(ms: number): string {
-  if (ms < 1000) {
-    return `${ms}ms`;
-  }
-
-  return (ms / 1000).toFixed(2) + 's';
 }

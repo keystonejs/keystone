@@ -29,6 +29,6 @@ For more details visit: https://keystonejs.com/telemetry
     return;
   }
 
-  console.log(command ? `Invalid option: ${command}` : '');
-  console.log(usageText);
+  console.error(command ? `Invalid option: ${command}` : '');
+  console.error(usageText);
 }

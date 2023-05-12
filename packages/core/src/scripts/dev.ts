@@ -2,47 +2,45 @@ import path from 'path';
 import type { ListenOptions } from 'net';
 import url from 'url';
 import { createServer } from 'http';
+import next from 'next';
 import express from 'express';
 import { GraphQLSchema, printSchema } from 'graphql';
 import fs from 'fs-extra';
-import chalk from 'chalk';
 import esbuild, { BuildResult } from 'esbuild';
-import { generateAdminUI } from '../../admin-ui/system';
-import { devMigrations, pushPrismaSchemaToDatabase } from '../../lib/migrations';
-import { createSystem } from '../../lib/createSystem';
-import { getEsbuildConfig, loadBuiltConfig } from '../../lib/config/loadConfig';
-import { defaults } from '../../lib/config/defaults';
-import { createExpressServer } from '../../lib/server/createExpressServer';
-import {
-  createAdminUIMiddlewareWithNextApp,
-  getNextApp,
-} from '../../lib/server/createAdminUIMiddleware';
-import { runTelemetry } from '../../lib/telemetry';
+import { generateAdminUI } from '../admin-ui/system';
+import { devMigrations, pushPrismaSchemaToDatabase } from '../lib/migrations';
+import { createSystem } from '../lib/createSystem';
+import { getEsbuildConfig } from '../lib/esbuild';
+import { healthCheckPath as defaultHealthCheckPath } from '../lib/defaults';
+import { createExpressServer } from '../lib/server/createExpressServer';
+import { createAdminUIMiddlewareWithNextApp } from '../lib/server/createAdminUIMiddleware';
+import { runTelemetry } from '../lib/telemetry';
 import {
   generatePrismaAndGraphQLSchemas,
   generateTypescriptTypesAndPrisma,
   generateTypescriptTypes,
   getFormattedGraphQLSchema,
-  getBuiltKeystoneConfigurationPath,
+  getBuiltKeystoneConfiguration,
   getSystemPaths,
-} from '../../artifacts';
-import { KeystoneConfig } from '../../types';
-import { initialiseLists } from '../../lib/core/types-for-lists';
-import { printPrismaSchema } from '../../lib/core/prisma-schema-printer';
-import { AdminMetaRootVal } from '../../admin-ui/system/createAdminMeta';
-import { pkgDir } from '../../pkg-dir';
-import { Flags } from './../cli';
+} from '../artifacts';
+import type { KeystoneConfig } from '../types';
+import { initialiseLists } from '../lib/core/types-for-lists';
+import { printPrismaSchema } from '../lib/core/prisma-schema-printer';
+import type { AdminMetaRootVal } from '../admin-ui/system/createAdminMeta';
+import { pkgDir } from '../pkg-dir';
+import { ExitError } from './utils';
+import type { Flags } from './cli';
 
 const devLoadingHTMLFilepath = path.join(pkgDir, 'static', 'dev-loading.html');
 
-const stripExtendHttpServer = (config: KeystoneConfig): KeystoneConfig => {
+function stripExtendHttpServer(config: KeystoneConfig): KeystoneConfig {
   const { server, ...rest } = config;
   if (server) {
     const { extendHttpServer, ...restServer } = server;
     return { ...rest, server: restServer };
   }
   return rest;
-};
+}
 
 function resolvablePromise<T>() {
   let _resolve!: (value: T) => void;
@@ -65,13 +63,7 @@ export async function dev(
   { dbPush, prisma, server, ui }: Pick<Flags, 'dbPush' | 'prisma' | 'server' | 'ui'>
 ) {
   console.log('✨ Starting Keystone');
-  const app = server ? express() : null;
-  const httpServer = app ? createServer(app) : null;
-
-  let expressServer: express.Express | null = null;
-  let hasAddedAdminUIMiddleware = false;
   let lastPromise = resolvablePromise<IteratorResult<BuildResult>>();
-  let prismaClient: any = null;
 
   const builds: AsyncIterable<BuildResult> = {
     [Symbol.asyncIterator]: () => ({ next: () => lastPromise }),
@@ -109,18 +101,28 @@ export async function dev(
     await esbuildContext.watch();
   }
 
-  async function stop(httpServer: any, exit = false) {
+  // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
+  const app = server ? express() : null;
+  const httpServer = app ? createServer(app) : null;
+  let expressServer: express.Express | null = null;
+  let hasAddedAdminUIMiddleware = false;
+  const configWithExtendHttp = getBuiltKeystoneConfiguration(cwd);
+  const config = stripExtendHttpServer(configWithExtendHttp);
+  const paths = getSystemPaths(cwd, config);
+  const isReady = () => !server || (expressServer !== null && hasAddedAdminUIMiddleware);
+
+  let prismaClient: any = null;
+  async function stop(aHttpServer: any, exit = false) {
     await esbuildContext.dispose();
 
     //   WARNING: this is only actually required for tests
     // stop httpServer
-    if (httpServer) {
+    if (aHttpServer) {
       await new Promise(async (resolve, reject) => {
-        httpServer.close(async (serverError: any) => {
-          if (serverError) {
-            console.error('There was an error while closing the server');
-            console.error(serverError);
-            return reject(serverError);
+        aHttpServer.close(async (err: any) => {
+          if (err) {
+            console.error('Error closing the server', err);
+            return reject(err);
           }
 
           resolve(null);
@@ -128,27 +130,17 @@ export async function dev(
       });
     }
 
-    //   WARNING: this is only actually required for tests
+    //   WARNING: this is only required for tests
     // stop Prisma
     try {
       await prismaClient?.disconnect?.();
-    } catch (disconnectionError) {
-      console.error('There was an error while disconnecting from the database');
-      console.error(disconnectionError);
-      throw disconnectionError;
+    } catch (err) {
+      console.error('Error disconnecting from the database', err);
+      throw err;
     }
 
-    if (exit) {
-      process.exit(1);
-    }
+    if (exit) throw new ExitError(1);
   }
-
-  // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
-  const builtConfigPath = getBuiltKeystoneConfigurationPath(cwd);
-  const configWithExtendHttp = loadBuiltConfig(builtConfigPath);
-  const config = stripExtendHttpServer(configWithExtendHttp);
-  const paths = getSystemPaths(cwd, config);
-  const isReady = () => !server || (expressServer !== null && hasAddedAdminUIMiddleware);
 
   const initKeystone = async () => {
     await fs.remove(paths.admin);
@@ -202,9 +194,13 @@ export async function dev(
 
       console.log('compiled successfully');
       try {
-        const resolved = require.resolve(paths.config);
-        delete require.cache[resolved];
-        const newConfigWithHttp = loadBuiltConfig(paths.config);
+        // wipe the require cache
+        {
+          const resolved = require.resolve(paths.config);
+          delete require.cache[resolved];
+        }
+
+        const newConfigWithHttp = getBuiltKeystoneConfiguration(cwd);
         const newConfig = stripExtendHttpServer(newConfigWithHttp);
         if (prisma) {
           const newPrismaSchema = printPrismaSchema(
@@ -216,20 +212,22 @@ export async function dev(
             newConfig.db.extendPrismaSchema
           );
           if (originalPrismaSchema !== newPrismaSchema) {
-            console.log('🔄 Your prisma schema has changed, please restart Keystone');
+            console.error('🔄 Your prisma schema has changed, please restart Keystone');
             return stop(null, true);
           }
           // we only need to test for the things which influence the prisma client creation
           // and aren't written into the prisma schema since we check whether the prisma schema has changed above
           if (
-            newConfig.db.enableLogging !== config.db.enableLogging ||
+            JSON.stringify(newConfig.db.enableLogging) !==
+              JSON.stringify(config.db.enableLogging) ||
             newConfig.db.url !== config.db.url ||
             newConfig.db.useMigrations !== config.db.useMigrations
           ) {
-            console.log('Your db config has changed, please restart Keystone');
+            console.error('Your database configuration has changed, please restart Keystone');
             return stop(null, true);
           }
         }
+
         const { graphQLSchema, getKeystone, adminMeta } = createSystem(newConfig);
         // we're not using generateCommittedArtifacts or any of the similar functions
         // because we will never need to write a new prisma schema here
@@ -267,8 +265,7 @@ export async function dev(
           }
         }
       } catch (err) {
-        console.log('🚨', chalk.red('There was an error loading your Keystone config'));
-        console.log(err);
+        console.error(`Error loading your Keystone config`, err);
       }
     }
   };
@@ -280,8 +277,8 @@ export async function dev(
   if (config.server?.healthCheck && app) {
     const healthCheckPath =
       config.server.healthCheck === true
-        ? defaults.healthCheckPath
-        : config.server.healthCheck.path || defaults.healthCheckPath;
+        ? defaultHealthCheckPath
+        : config.server.healthCheck.path || defaultHealthCheckPath;
     app.use(healthCheckPath, (req, res, next) => {
       if (expressServer) return next();
       res.status(503).json({ status: 'fail', timestamp: Date.now() });
@@ -379,7 +376,7 @@ async function setupInitialKeystone(
   const { dbPush, prisma, server } = options;
   const { graphQLSchema, adminMeta, getKeystone } = createSystem(config);
 
-  // Make local storage folders if used
+  // mkdir's for local storage
   for (const val of Object.values(config.storage || {})) {
     if (val.kind !== 'local') continue;
 
@@ -416,14 +413,13 @@ async function setupInitialKeystone(
         false
       );
     } else {
-      console.log('⚠️ Skipping database schema push');
+      console.warn('⚠️ Skipping database schema push');
     }
 
     await prismaClientGenerationPromise;
     const prismaClientModule = require(paths.prisma);
     const keystone = getKeystone(prismaClientModule);
 
-    // Connect to the Database
     console.log('✨ Connecting to the database');
     await keystone.connect(); // TODO: remove, replace with server.onStart
     if (!server) {
@@ -435,7 +431,7 @@ async function setupInitialKeystone(
         prismaClientModule,
       };
     }
-    // Set up the Express Server
+
     console.log('✨ Creating server');
     const { apolloServer, expressServer } = await createExpressServer(
       config,
@@ -475,7 +471,8 @@ async function initAdminUI(
   await generateAdminUI(config, graphQLSchema, adminMeta, paths.admin, false);
 
   console.log('✨ Preparing Admin UI app');
-  const nextApp = await getNextApp(true, paths.admin);
+  const nextApp = next({ dev: true, dir: paths.admin });
+  await nextApp.prepare();
 
   console.log(`✅ Admin UI ready`);
   return nextApp;

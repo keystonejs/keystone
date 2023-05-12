@@ -1,7 +1,7 @@
 import type { CacheHint } from '@apollo/cache-control-types';
 import type { MaybePromise } from '../utils';
-import { BaseListTypeInfo } from '../type-info';
-import { KeystoneContextFromListTypeInfo } from '..';
+import type { BaseListTypeInfo } from '../type-info';
+import type { KeystoneContextFromListTypeInfo } from '..';
 import type { ListHooks } from './hooks';
 import type { ListAccessControl } from './access-control';
 import type { BaseFields, FilterOrderArgs } from './fields';

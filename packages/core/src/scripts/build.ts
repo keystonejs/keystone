@@ -1,19 +1,25 @@
-import { buildAdminUI, generateAdminUI } from '../../admin-ui/system';
-import { createSystem } from '../../lib/createSystem';
+import esbuild from 'esbuild';
+import nextBuild from 'next/dist/build';
+import { generateAdminUI } from '../admin-ui/system';
+import { createSystem } from '../lib/createSystem';
 import {
+  getBuiltKeystoneConfiguration,
   getSystemPaths,
   generatePrismaAndGraphQLSchemas,
   generateTypescriptTypesAndPrisma,
   validatePrismaAndGraphQLSchemas,
-} from '../../artifacts';
-import { loadConfigOnce } from '../../lib/config/loadConfig';
-import { Flags } from '../cli';
+} from '../artifacts';
+import { getEsbuildConfig } from '../lib/esbuild';
+import type { Flags } from './cli';
 
 export async function build(
   cwd: string,
   { frozen, prisma, ui }: Pick<Flags, 'frozen' | 'prisma' | 'ui'>
 ) {
-  const config = await loadConfigOnce(cwd);
+  await esbuild.build(getEsbuildConfig(cwd));
+
+  // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
+  const config = getBuiltKeystoneConfiguration(cwd);
   const { graphQLSchema, adminMeta } = createSystem(config);
 
   const paths = getSystemPaths(cwd, config);
@@ -35,5 +41,5 @@ export async function build(
   await generateAdminUI(config, graphQLSchema, adminMeta, paths.admin, false);
 
   console.log('✨ Building Admin UI');
-  await buildAdminUI(paths.admin);
+  await nextBuild(paths.admin);
 }

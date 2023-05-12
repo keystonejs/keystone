@@ -1,5 +1,5 @@
 import type { JSONValue } from './utils';
-import { KeystoneContext } from '.';
+import type { KeystoneContext } from '.';
 
 export type SessionStrategy<
   StoredSessionData,
