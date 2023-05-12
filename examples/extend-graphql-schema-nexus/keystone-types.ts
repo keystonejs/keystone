@@ -288,20 +288,22 @@ export declare namespace Lists {
     };
   }
 }
-export type Context = import('@keystone-6/core/types').KeystoneContext<TypeInfo>;
+export type Context<Session = any> = import('@keystone-6/core/types').KeystoneContext<TypeInfo<Session>>;
+export type Config<Session = any> = import('@keystone-6/core/types').KeystoneConfig<TypeInfo<Session>>;
 
-export type TypeInfo = {
+export type TypeInfo<Session = any> = {
   lists: {
     readonly Post: Lists.Post.TypeInfo;
     readonly Author: Lists.Author.TypeInfo;
   };
   prisma: import('./node_modules/.myprisma/client').PrismaClient;
+  session: Session;
 };
 
 type __TypeInfo = TypeInfo;
 
-export type Lists = {
-  [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core').ListConfig<TypeInfo['lists'][Key], any>
+export type Lists <Session = any> = {
+  [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core').ListConfig<TypeInfo<Session>['lists'][Key], any>
 } & Record<string, import('@keystone-6/core').ListConfig<any, any>>;
 
 export {}
