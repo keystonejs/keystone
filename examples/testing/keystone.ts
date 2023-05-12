@@ -3,7 +3,7 @@ import { statelessSessions } from '@keystone-6/core/session';
 import { createAuth } from '@keystone-6/auth';
 import { fixPrismaPath } from './../example-utils';
 import { lists } from './schema';
-import { TypeInfo } from '.keystone/types';
+import type { TypeInfo } from '.keystone/types';
 
 // createAuth configures signin functionality based on the config below. Note this only implements
 // authentication, i.e signing in as an item using identity and secret fields in a list. Session

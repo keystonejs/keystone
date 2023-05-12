@@ -8,16 +8,16 @@ export type Session = {
   admin: boolean;
 };
 
-function hasSession({ session }: { session: Session | undefined }) {
+function hasSession({ session }: { session?: Session }) {
   return Boolean(session);
 }
 
-function isAdmin({ session }: { session: Session | undefined }) {
+function isAdmin({ session }: { session?: Session }) {
   if (!session) return false;
   return session.admin;
 }
 
-function isAdminOrOnlySameUser({ session }: { session: Session | undefined }) {
+function isAdminOrOnlySameUser({ session }: { session?: Session }) {
   if (!session) return false;
   if (session.admin) return {}; // unfiltered for admins
   return {
