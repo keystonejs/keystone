@@ -1,35 +1,30 @@
 import path from 'path';
 import fs from 'fs/promises';
+import { ExecaChildProcess } from 'execa';
 import { Browser, Page, chromium } from 'playwright';
 import { parse, print } from 'graphql';
-import { ExecaChildProcess } from 'execa';
 import fetch from 'node-fetch';
-import { generalStartKeystone, loadIndex, makeGqlRequest, promiseSignal } from './utils';
+import { generalStartKeystone, waitForIO, loadIndex, makeGqlRequest } from './utils';
 
 const gql = ([content]: TemplateStringsArray) => content;
-
 const testProjectPath = path.join(__dirname, '..', 'test-projects', 'live-reloading');
 
-async function replaceSchema(
-  schema: 'changed-prisma-schema' | 'initial' | 'runtime-error' | 'second' | 'syntax-error'
-) {
+async function replaceSchema(schema: string) {
   await fs.writeFile(
-    path.join(testProjectPath, 'schemas/index.ts'),
-    `export * from './${schema}';\n`
+    path.join(testProjectPath, 'schema.ts'),
+    await fs.readFile(path.join(testProjectPath, `schemas/${schema}`))
   );
 }
 
-const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
 let exit = async () => {};
-let process: ExecaChildProcess = undefined as any;
+let ksProcess: ExecaChildProcess = undefined as any;
 let page: Page = undefined as any;
 let browser: Browser = undefined as any;
 
 test('start keystone', async () => {
   // just in case a previous failing test run messed things up, let's reset it
-  await replaceSchema('initial');
-  ({ exit, process } = await generalStartKeystone(testProjectPath, 'dev'));
+  await replaceSchema('initial.ts');
+  ({ exit, process: ksProcess } = await generalStartKeystone(testProjectPath, 'dev'));
   browser = await chromium.launch();
   page = await browser.newPage();
 
@@ -53,7 +48,9 @@ test('Creating an item with the GraphQL API and navigating to the item page for 
   const element = await page.waitForSelector(
     'label:has-text("Initial Label For Text") >> .. >> input'
   );
+
   const value = await element.inputValue();
+
   expect(value).toBe('blah');
 });
 
@@ -64,7 +61,8 @@ test('api routes written with getAdditionalFiles containing [...rest] work', asy
 });
 
 test('changing the label of a field updates in the Admin UI', async () => {
-  await replaceSchema('second');
+  await replaceSchema('second.ts');
+  await waitForIO(ksProcess, 'compiled successfully');
 
   const element = await page.waitForSelector(
     'label:has-text("Very Important Text") >> .. >> input'
@@ -95,7 +93,7 @@ test('the generated schema includes schema updates', async () => {
           text: String
           virtual: String
         }
-        
+
         type Query {
           somethings(where: SomethingWhereInput! = {}, orderBy: [SomethingOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SomethingWhereUniqueInput): [Something!]
           something(where: SomethingWhereUniqueInput!): Something
@@ -107,17 +105,17 @@ test('the generated schema includes schema updates', async () => {
 });
 
 test("a syntax error is shown and doesn't crash the process", async () => {
-  await replaceSchema('syntax-error');
-  await expectContentInStdio(process, '✘ [ERROR] Expected ";" but found "const"');
+  await replaceSchema('syntax-error.js');
+  await waitForIO(ksProcess, '✘ [ERROR] Expected ";" but found "const"');
 });
 
 test("a runtime error is shown and doesn't crash the process", async () => {
-  await replaceSchema('runtime-error');
-  await expectContentInStdio(process, 'ReferenceError: doesNotExist is not defined');
+  await replaceSchema('runtime-error.ts');
+  await waitForIO(ksProcess, 'ReferenceError: doesNotExist is not defined');
 });
 
 test('errors can be recovered from', async () => {
-  await replaceSchema('initial');
+  await replaceSchema('initial.ts');
 
   const element = await page.waitForSelector(
     'label:has-text("Initial Label For Text") >> .. >> input'
@@ -127,31 +125,5 @@ test('errors can be recovered from', async () => {
 });
 
 afterAll(async () => {
-  await Promise.all([replaceSchema('initial'), exit(), browser.close()]);
+  await Promise.all([exit(), browser.close()]);
 });
-
-async function expectContentInStdio(process: ExecaChildProcess, content: string) {
-  let promise = promiseSignal();
-  const listener = (chunk: any) => {
-    const stringified: string = chunk.toString('utf8');
-    if (stringified.includes(content)) {
-      console.log('found content');
-      promise.resolve();
-    } else {
-      console.log('did not find content, found:', stringified);
-    }
-  };
-  process.stdout!.on('data', listener);
-  process.stderr!.on('data', listener);
-  try {
-    await Promise.race([
-      promise,
-      wait(10000).then(() => {
-        throw new Error(`timed out when waiting for ${content}`);
-      }),
-    ]);
-  } finally {
-    process.stdout!.off('data', listener);
-    process.stderr!.off('data', listener);
-  }
-}
