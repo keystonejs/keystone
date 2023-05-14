@@ -14,6 +14,52 @@ import { cli } from '@keystone-6/core/scripts/cli';
 
 // these tests spawn processes and it's all pretty slow
 jest.setTimeout(1000 * 20);
+let mockPromptResponseEntries: [string, string | boolean][] = [];
+
+jest.mock('prompts', () => {
+  return function (
+    args:
+      | { name: 'value'; type: 'text'; message: string }
+      | { name: 'value'; type: 'confirm'; message: string; initial: boolean }
+  ) {
+    const getPromptAnswer = (message: string) => {
+      message = message.replace(/[^ -~]+/g, '?');
+      const response = mockPromptResponseEntries.shift()!;
+      if (!response) {
+        throw new Error(
+          `The prompt question "${message}" was asked but there are no responses left`
+        );
+      }
+      const [expectedMessage, answer] = response;
+      if (expectedMessage !== message) {
+        throw new Error(
+          `The expected prompt question was "${expectedMessage}" but the actual question was "${message}"`
+        );
+      }
+      return answer;
+    };
+
+    if (args.type === 'confirm') {
+      const answer = getPromptAnswer(args.message);
+      if (typeof answer === 'string') {
+        throw new Error(
+          `The answer to "${args.message}" is a string but the question is a confirm prompt that should return a boolean`
+        );
+      }
+      console.log(`Prompt: ${args.message} ${answer}`);
+      return { value: answer };
+    } else {
+      const answer = getPromptAnswer(args.message);
+      if (typeof answer === 'boolean') {
+        throw new Error(
+          `The answer to "${args.message}" is a boolean but the question is a text prompt that should return a string`
+        );
+      }
+      console.log(`Prompt: ${args.message} ${answer}`);
+      return { value: answer };
+    }
+  };
+});
 
 export class ExitError extends Error {
   code: number;
@@ -44,62 +90,17 @@ export function recordConsole(promptResponses?: Record<string, string | boolean>
   let oldConsole = { ...console };
   const contents: string[] = [];
   const log = (...args: any[]) => {
-    contents.push(format(...args).replace(/[^ -~\n]+/g, '?'));
+    contents.push(format(...args).replace(/[^ -~]+/g, '?'));
   };
-
+  const debugOutput = () =>
+    `\nConsole output:\n
+${contents.join('\n')}\n\nPrompts left:\n${JSON.stringify(mockPromptResponseEntries)}`;
   Object.assign(console, { log, error: log, warn: log, info: log });
 
-  const debugOutput = () =>
-    `\nConsole output:\n${contents.join('\n')}\n\nPrompts left:\n${JSON.stringify(
-      promptResponseEntries
-    )}`;
-
-  const promptResponseEntries = Object.entries(promptResponses || {});
-  const getPromptAnswer = (message: string) => {
-    message = message.replace(/[^ -~]+/g, '?');
-    const response = promptResponseEntries.shift()!;
-    if (!response) {
-      throw new Error(
-        `The prompt question "${message}" was asked but there are no responses left${debugOutput()}`
-      );
-    }
-    const [expectedMessage, answer] = response;
-    if (expectedMessage !== message) {
-      throw new Error(
-        `The expected prompt question was "${expectedMessage}" but the actual question was "${message}"${debugOutput()}`
-      );
-    }
-    contents.push(`Prompt: ${message} ${answer}`);
-
-    return answer;
-  };
-
-  //mockPrompts({
-  //  confirm: async message => {
-  //    const answer = getPromptAnswer(message);
-  //    if (typeof answer === 'string') {
-  //      throw new Error(
-  //        `The answer to "${message}" is a string but the question is a confirm prompt that should return a boolean${debugOutput()}`
-  //      );
-  //    }
-  //
-  //    return answer;
-  //  },
-  //  text: async message => {
-  //    const answer = getPromptAnswer(message);
-  //    if (typeof answer === 'boolean') {
-  //      throw new Error(
-  //        `The answer to "${message}" is a boolean but the question is a text prompt that should return a string${debugOutput()}`
-  //      );
-  //    }
-  //
-  //    return answer;
-  //  },
-  //  shouldPrompt: promptResponses !== undefined,
-  //});
+  mockPromptResponseEntries = Object.entries(promptResponses || {});
 
   return () => {
-    if (promptResponseEntries.length) {
+    if (mockPromptResponseEntries.length) {
       throw new Error(
         `Some prompt responses were left when the recording was ended.${debugOutput()}`
       );
