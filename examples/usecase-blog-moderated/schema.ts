@@ -39,14 +39,15 @@ const adminOnly = forUsers({
   default: denyAll,
 });
 
-const moderatorsOnly = forUsers({
+const moderatorsOrAbove = forUsers({
   admin: allowAll,
   moderator: allowAll,
   default: denyAll,
 });
 
-const contributorsOnly = forUsers({
+const contributorsOrAbove = forUsers({
   admin: allowAll,
+  moderator: allowAll,
   contributor: allowAll,
   default: denyAll,
 });
@@ -74,21 +75,30 @@ function viewOnlyBy(f: ({ session }: { session?: Session }) => boolean, mode: 'e
   };
 }
 
-export const lists: Lists = {
+function readOnlyViewBy(f: ({ session }: { session?: Session }) => boolean) {
+  return viewOnlyBy(f, 'read');
+}
+
+function editOnlyViewBy(f: ({ session }: { session?: Session }) => boolean) {
+  return viewOnlyBy(f, 'edit');
+}
+
+export const lists: Lists<Session> = {
   Post: list({
     access: {
       operation: {
         query: allowAll, // WARNING: public
-        create: contributorsOnly,
-        update: forUsers({
+        create: forUsers({
           admin: allowAll,
-          moderator: allowAll,
           contributor: allowAll,
-          default: denyAll,
+          default: denyAll
         }),
+        update: contributorsOrAbove,
         delete: adminOnly,
       },
       filter: {
+        // the 'default' allowed query is non-hidden posts
+        //   but admins and moderators can see everything
         query: forUsers({
           admin: unfiltered,
           moderator: unfiltered,
@@ -97,10 +107,12 @@ export const lists: Lists = {
           }),
         }),
         update: forUsers({
+          // contributors can only update their own posts
           contributor: ({ session }) => ({
             createdBy: { id: { equals: session.contributor?.id } },
             hiddenBy: null,
           }),
+          // otherwise, no filter
           default: unfiltered,
         }),
       },
@@ -109,62 +121,56 @@ export const lists: Lists = {
       title: text(),
       content: text(),
       hidden: checkbox({
-        access: moderatorsOnly,
+        access: moderatorsOrAbove,
         ui: {
-          ...viewOnlyBy(moderatorsOnly, 'edit'),
+          ...editOnlyViewBy(moderatorsOrAbove),
         },
       }),
 
-      // read only
+      // read only fields
       createdBy: relationship({
         ref: 'Contributor.posts',
         access: readOnlyBy(allowAll),
         ui: {
-          ...viewOnlyBy(allowAll, 'read'),
+          ...readOnlyViewBy(allowAll),
         },
       }),
       createdAt: timestamp({
         access: readOnlyBy(allowAll),
-        defaultValue: { kind: 'now' },
         ui: {
-          ...viewOnlyBy(allowAll, 'read'),
+          ...readOnlyViewBy(allowAll),
         },
       }),
       updatedAt: timestamp({
         access: readOnlyBy(allowAll),
-        defaultValue: { kind: 'now' },
         ui: {
-          ...viewOnlyBy(allowAll, 'read'),
+          ...readOnlyViewBy(allowAll),
         },
       }),
       hiddenBy: relationship({
         ref: 'Moderator.hidden',
-        access: readOnlyBy(moderatorsOnly),
+        access: readOnlyBy(moderatorsOrAbove),
         ui: {
-          ...viewOnlyBy(moderatorsOnly, 'read'),
+          ...readOnlyViewBy(moderatorsOrAbove),
         },
       }),
       hiddenAt: timestamp({
-        access: readOnlyBy(moderatorsOnly),
+        access: readOnlyBy(moderatorsOrAbove),
         ui: {
-          ...viewOnlyBy(moderatorsOnly, 'read'),
-        },
-        hooks: {
-          resolveInput: ({ resolvedData, fieldKey }) => {
-            return resolvedData[fieldKey];
-          },
+          ...readOnlyViewBy(moderatorsOrAbove),
         },
       }),
     },
     hooks: {
       resolveInput: {
         create: ({ context, resolvedData }) => {
+          resolvedData.createdAt = new Date();
           if (context.session?.contributor) {
             return {
               ...resolvedData,
               createdBy: {
                 connect: {
-                  id: (context.session as Session)?.contributor?.id,
+                  id: context.session?.contributor?.id,
                 },
               },
             };
@@ -177,7 +183,7 @@ export const lists: Lists = {
             resolvedData.hiddenBy = resolvedData.hidden
               ? {
                   connect: {
-                    id: (context.session as Session)?.moderator?.id,
+                    id: context.session?.moderator?.id,
                   },
                   // TODO: should support : null
                 }
@@ -199,10 +205,11 @@ export const lists: Lists = {
       operation: {
         query: allowAll, // WARNING: public
         create: adminOnly,
-        update: contributorsOnly,
+        update: contributorsOrAbove,
         delete: adminOnly,
       },
       filter: {
+        // contributors can only update themselves
         update: forUsers({
           contributor: ({ session }) => ({ id: { equals: session.contributor?.id } }),
           default: unfiltered,
@@ -211,27 +218,37 @@ export const lists: Lists = {
     },
     fields: {
       bio: text(),
-      posts: relationship({ ref: 'Post.createdBy', many: true }),
+      posts: relationship({
+        ref: 'Post.createdBy',
+        access: readOnlyBy(allowAll), // WARNING: usually you want this to be the same as Posts.createdBy
+        many: true
+      }),
     },
   }),
 
   Moderator: list({
     access: {
       operation: {
-        query: moderatorsOnly,
+        query: moderatorsOrAbove,
         create: adminOnly,
-        update: moderatorsOnly,
+        update: moderatorsOrAbove,
         delete: adminOnly,
       },
       filter: {
+        // moderators can only update themselves
         update: forUsers({
           moderator: ({ session }) => ({ id: { equals: session.moderator?.id } }),
+          // otherwise, no filter
           default: unfiltered,
         }),
       },
     },
     fields: {
-      hidden: relationship({ ref: 'Post.hiddenBy', many: true }),
+      hidden: relationship({
+        ref: 'Post.hiddenBy',
+        access: readOnlyBy(allowAll), // WARNING: usually you want this to be the same as Posts.hiddenBy
+        many: true
+      }),
     },
   }),
 

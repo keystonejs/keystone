@@ -19,8 +19,8 @@ model Post {
   hidden      Boolean      @default(false)
   createdBy   Contributor? @relation("Post_createdBy", fields: [createdById], references: [id])
   createdById String?      @map("createdBy")
-  createdAt   DateTime?    @default(now())
-  updatedAt   DateTime?    @default(now())
+  createdAt   DateTime?
+  updatedAt   DateTime?
   hiddenBy    Moderator?   @relation("Post_hiddenBy", fields: [hiddenById], references: [id])
   hiddenById  String?      @map("hiddenBy")
   hiddenAt    DateTime?
