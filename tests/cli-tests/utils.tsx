@@ -23,7 +23,7 @@ jest.mock('prompts', () => {
       | { name: 'value'; type: 'confirm'; message: string; initial: boolean }
   ) {
     const getPromptAnswer = (message: string) => {
-      message = message.replace(/[^ -~]+/g, '?');
+      message = message.replace(/[^ -~\n]+/g, '?');
       const response = mockPromptResponseEntries.shift()!;
       if (!response) {
         throw new Error(
@@ -90,7 +90,7 @@ export function recordConsole(promptResponses?: Record<string, string | boolean>
   let oldConsole = { ...console };
   const contents: string[] = [];
   const log = (...args: any[]) => {
-    contents.push(format(...args).replace(/[^ -~]+/g, '?'));
+    contents.push(format(...args).replace(/[^ -~\n]+/g, '?'));
   };
   const debugOutput = () =>
     `\nConsole output:\n
