@@ -34,20 +34,8 @@ export const localStorageConfig: Record<string, StorageConfig> = {
 export const fixPrismaPath = {
   prismaClientPath: 'node_modules/.testprisma/client',
 };
-// we use preconstruct to build our packages, for our monorepo examples we need to use @preconstruct/next
-export const fixNextConfig = {
-  getAdditionalFiles: [
-    () => [
-      {
-        mode: 'copy' as const,
-        inputPath: Path.resolve('../../sandbox/test-next-config-fix.js'),
-        outputPath: 'next.config.js',
-      },
-    ],
-  ],
-};
 
-export const uiConfig: AdminUIConfig<BaseKeystoneTypeInfo> = {
+export const fixNextConfig: AdminUIConfig<BaseKeystoneTypeInfo> = {
   getAdditionalFiles: [
     () => [
       {

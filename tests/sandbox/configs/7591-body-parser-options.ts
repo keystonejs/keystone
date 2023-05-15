@@ -2,7 +2,7 @@ import http from 'http';
 import { list, config } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
 import { allowAll } from '@keystone-6/core/access';
-import { dbConfig, uiConfig } from '../utils';
+import { dbConfig } from '../utils';
 
 function makeQuery(size = 0) {
   const query = JSON.stringify({
@@ -57,7 +57,6 @@ export default config({
       req.end(json);
     },
   },
-  ui: uiConfig,
   graphql: {
     bodyParser: {
       limit: '10mb',

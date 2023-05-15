@@ -1,5 +1,5 @@
 import { config } from '@keystone-6/core';
-import { fixNextConfig, fixPrismaPath } from '../../sandbox/utils';
+import { fixPrismaPath } from '../../sandbox/utils';
 import { lists } from './schema';
 
 export default config({
@@ -9,10 +9,6 @@ export default config({
 
     // WARNING: this is only needed for examples, dont do this
     ...fixPrismaPath,
-  },
-  ui: {
-    // WARNING: this is only needed for examples, dont do this
-    ...fixNextConfig,
   },
   lists,
 });

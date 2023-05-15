@@ -1,7 +1,7 @@
 import { list, config } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { relationship, text } from '@keystone-6/core/fields';
-import { dbConfig, uiConfig } from '../utils';
+import { dbConfig } from '../utils';
 
 export const lists = {
   User: list({
@@ -38,4 +38,4 @@ export const lists = {
   }),
 };
 
-export default config({ db: dbConfig, ui: uiConfig, lists });
+export default config({ db: dbConfig, lists });
