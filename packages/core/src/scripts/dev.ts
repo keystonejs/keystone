@@ -90,6 +90,8 @@ export async function dev(
     // esbuild prints everything we want users to see
   }
 
+  esbuildContext.watch();
+
   // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
   const app = server ? express() : null;
   const httpServer = app ? createServer(app) : null;
