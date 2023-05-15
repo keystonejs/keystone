@@ -12,11 +12,53 @@ import {
   testdir,
 } from './utils';
 
-// watching with esbuild inside of jest goes _weird_
-// esbuild doesn't seem to let you wait for the cleanup
-//setSkipWatching();
-
 const dbUrl = 'file:./app.db';
+let mockPromptResponseEntries: [string, string | boolean][] = [];
+
+jest.mock('prompts', () => {
+  return function (
+    args:
+      | { name: 'value'; type: 'text'; message: string }
+      | { name: 'value'; type: 'confirm'; message: string; initial: boolean }
+  ) {
+    const getPromptAnswer = (message: string) => {
+      message = message.replace(/[^ -~\n]+/g, '?');
+      const response = mockPromptResponseEntries.shift()!;
+      if (!response) {
+        throw new Error(
+          `The prompt question "${message}" was asked but there are no responses left`
+        );
+      }
+      const [expectedMessage, answer] = response;
+      if (expectedMessage !== message) {
+        throw new Error(
+          `The expected prompt question was "${expectedMessage}" but the actual question was "${message}"`
+        );
+      }
+      return answer;
+    };
+
+    if (args.type === 'confirm') {
+      const answer = getPromptAnswer(args.message);
+      if (typeof answer === 'string') {
+        throw new Error(
+          `The answer to "${args.message}" is a string but the question is a confirm prompt that should return a boolean`
+        );
+      }
+      console.log(`Prompt: ${args.message} ${answer}`);
+      return { value: answer };
+    } else {
+      const answer = getPromptAnswer(args.message);
+      if (typeof answer === 'boolean') {
+        throw new Error(
+          `The answer to "${args.message}" is a boolean but the question is a text prompt that should return a string`
+        );
+      }
+      console.log(`Prompt: ${args.message} ${answer}`);
+      return { value: answer };
+    }
+  };
+});
 
 function getPrismaClient(cwd: string) {
   return new (require(path.join(cwd, 'node_modules/.testprisma/client')).PrismaClient)({
@@ -117,9 +159,8 @@ describe('useMigrations: false', () => {
       ...(await getDatabaseFiles(prevCwd)),
       'keystone.js': await fs.readFile(`${__dirname}/fixtures/no-fields.ts`, 'utf8'),
     });
-    const recording = recordConsole({
-      'Do you want to continue? Some data will be lost': true,
-    });
+    mockPromptResponseEntries = [['Do you want to continue? Some data will be lost', true]];
+    const recording = recordConsole();
     await runCommand(tmp, 'dev');
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
@@ -159,9 +200,11 @@ describe('useMigrations: false', () => {
       ...(await getDatabaseFiles(prevCwd)),
       'keystone.js': await fs.readFile(`${__dirname}/fixtures/no-fields.ts`, 'utf8'),
     });
-    const recording = recordConsole({
+
+    mockPromptResponseEntries = Object.entries({
       'Do you want to continue? Some data will be lost': false,
     });
+    const recording = recordConsole();
     await expect(runCommand(tmp, 'dev')).rejects.toEqual(new ExitError(0));
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
@@ -229,10 +272,11 @@ async function setupInitialProjectWithMigrations() {
     ...symlinkKeystoneDeps,
     'keystone.js': basicWithMigrations,
   });
-  const recording = recordConsole({
-    'Name of migration': 'init',
-    'Would you like to apply this migration?': true,
-  });
+  mockPromptResponseEntries = [
+    ['Name of migration', 'init'],
+    ['Would you like to apply this migration?', true],
+  ];
+  const recording = recordConsole();
   await runCommand(tmp, 'dev');
 
   expect(await introspectDb(tmp, dbUrl)).toEqual(`datasource db {
@@ -289,10 +333,11 @@ describe('useMigrations: true', () => {
         'utf8'
       ),
     });
-    const recording = recordConsole({
-      'Name of migration': 'add-is-complete',
-      'Would you like to apply this migration?': true,
-    });
+    mockPromptResponseEntries = [
+      ['Name of migration', 'add-is-complete'],
+      ['Would you like to apply this migration?', true],
+    ];
+    const recording = recordConsole();
     await runCommand(tmp, 'dev');
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
@@ -356,10 +401,11 @@ describe('useMigrations: true', () => {
         'utf8'
       ),
     });
-    const recording = recordConsole({
-      'Name of migration': 'remove all fields except id',
-      'Would you like to apply this migration?': true,
-    });
+    mockPromptResponseEntries = [
+      ['Name of migration', 'remove all fields except id'],
+      ['Would you like to apply this migration?', true],
+    ];
+    const recording = recordConsole();
     await runCommand(tmp, 'dev');
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
@@ -429,11 +475,12 @@ describe('useMigrations: true', () => {
       'app.db': await fs.readFile(`${prevCwd}/app.db`),
       'keystone.js': await fs.readFile(`${__dirname}/fixtures/one-field-with-migrations.ts`),
     });
-    const recording = recordConsole({
-      'Do you want to continue? All data will be lost': true,
-      'Name of migration': 'init2',
-      'Would you like to apply this migration?': true,
-    });
+    mockPromptResponseEntries = [
+      ['Do you want to continue? All data will be lost', true],
+      ['Name of migration', 'init2'],
+      ['Would you like to apply this migration?', true],
+    ];
+    const recording = recordConsole();
     await runCommand(tmp, 'dev');
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
@@ -503,9 +550,8 @@ describe('useMigrations: true', () => {
       'app.db': dbBuffer,
       'keystone.js': await fs.readFile(`${__dirname}/fixtures/no-fields-with-migrations.ts`),
     });
-    const recording = recordConsole({
-      'Do you want to continue? All data will be lost': false,
-    });
+    mockPromptResponseEntries = [['Do you want to continue? All data will be lost', false]];
+    const recording = recordConsole();
 
     await expect(runCommand(tmp, 'dev')).rejects.toEqual(new ExitError(0));
 
@@ -542,10 +588,11 @@ describe('useMigrations: true', () => {
       ...dbFiles,
       'keystone.js': await fs.readFile(`${__dirname}/fixtures/two-fields-with-migrations.ts`),
     });
-    const recording = recordConsole({
-      'Name of migration': 'add-is-complete',
-      'Would you like to apply this migration?': false,
-    });
+    mockPromptResponseEntries = [
+      ['Name of migration', 'add-is-complete'],
+      ['Would you like to apply this migration?', false],
+    ];
+    const recording = recordConsole();
     await expect(runCommand(tmp, 'dev')).rejects.toEqual(new ExitError(0));
 
     expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`

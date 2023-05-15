@@ -10,56 +10,9 @@ import { MigrateEngine } from '@prisma/migrate';
 import { uriToCredentials } from '@prisma/internals';
 import { KeystoneConfig } from '@keystone-6/core/types';
 import { cli } from '@keystone-6/core/scripts/cli';
-//import { mockPrompts } from '@keystone-6/core/src/lib/prompts';
 
 // these tests spawn processes and it's all pretty slow
 jest.setTimeout(1000 * 20);
-let mockPromptResponseEntries: [string, string | boolean][] = [];
-
-jest.mock('prompts', () => {
-  return function (
-    args:
-      | { name: 'value'; type: 'text'; message: string }
-      | { name: 'value'; type: 'confirm'; message: string; initial: boolean }
-  ) {
-    const getPromptAnswer = (message: string) => {
-      message = message.replace(/[^ -~\n]+/g, '?');
-      const response = mockPromptResponseEntries.shift()!;
-      if (!response) {
-        throw new Error(
-          `The prompt question "${message}" was asked but there are no responses left`
-        );
-      }
-      const [expectedMessage, answer] = response;
-      if (expectedMessage !== message) {
-        throw new Error(
-          `The expected prompt question was "${expectedMessage}" but the actual question was "${message}"`
-        );
-      }
-      return answer;
-    };
-
-    if (args.type === 'confirm') {
-      const answer = getPromptAnswer(args.message);
-      if (typeof answer === 'string') {
-        throw new Error(
-          `The answer to "${args.message}" is a string but the question is a confirm prompt that should return a boolean`
-        );
-      }
-      console.log(`Prompt: ${args.message} ${answer}`);
-      return { value: answer };
-    } else {
-      const answer = getPromptAnswer(args.message);
-      if (typeof answer === 'boolean') {
-        throw new Error(
-          `The answer to "${args.message}" is a boolean but the question is a text prompt that should return a string`
-        );
-      }
-      console.log(`Prompt: ${args.message} ${answer}`);
-      return { value: answer };
-    }
-  };
-});
 
 export class ExitError extends Error {
   code: number;
@@ -86,25 +39,16 @@ export const customPrismaKeystoneConfig = fs.readFileSync(
   'utf8'
 );
 
-export function recordConsole(promptResponses?: Record<string, string | boolean>) {
+export function recordConsole() {
   let oldConsole = { ...console };
   const contents: string[] = [];
   const log = (...args: any[]) => {
     contents.push(format(...args).replace(/[^ -~\n]+/g, '?'));
   };
-  const debugOutput = () =>
-    `\nConsole output:\n
-${contents.join('\n')}\n\nPrompts left:\n${JSON.stringify(mockPromptResponseEntries)}`;
+
   Object.assign(console, { log, error: log, warn: log, info: log });
 
-  mockPromptResponseEntries = Object.entries(promptResponses || {});
-
   return () => {
-    if (mockPromptResponseEntries.length) {
-      throw new Error(
-        `Some prompt responses were left when the recording was ended.${debugOutput()}`
-      );
-    }
     Object.assign(console, oldConsole);
     return contents.join('\n');
   };
@@ -146,7 +90,6 @@ async function getSymlinkType(targetPath: string): Promise<'dir' | 'file'> {
 
 export async function runCommand(cwd: string, args: string | string[]) {
   const argv = typeof args === 'string' ? [args] : args;
-  //chalk.level = 0; // disable ANSI colouring for this
   const proc = await cli(cwd, argv);
   if (typeof proc === 'function') {
     await proc();
