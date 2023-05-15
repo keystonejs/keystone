@@ -145,23 +145,8 @@ export async function validatePrismaAndGraphQLSchemas(
     graphql: 'Your GraphQL schema is not up to date',
     prisma: 'Your Prisma schema is not up to date',
   }[outOfDateSchemas];
-  console.log(message);
+  console.error(message);
 
-  const which = {
-    both: 'Prisma and GraphQL schemas',
-    prisma: 'Prisma schema',
-    graphql: 'GraphQL schema',
-  }[outOfDateSchemas];
-
-  if (shouldPrompt && (await confirmPrompt(`Replace the ${which}?`))) {
-    await Promise.all([
-      fs.writeFile(paths.schema.graphql, artifacts.graphql),
-      fs.writeFile(paths.schema.prisma, artifacts.prisma),
-    ]);
-    return;
-  }
-
-  console.log(`Use keystone dev to update the ${which}`);
   throw new ExitError(1);
 }
 
