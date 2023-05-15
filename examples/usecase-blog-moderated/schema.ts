@@ -91,7 +91,7 @@ export const lists: Lists<Session> = {
         create: forUsers({
           admin: allowAll,
           contributor: allowAll,
-          default: denyAll
+          default: denyAll,
         }),
         update: contributorsOrAbove,
         delete: adminOnly,
@@ -221,7 +221,7 @@ export const lists: Lists<Session> = {
       posts: relationship({
         ref: 'Post.createdBy',
         access: readOnlyBy(allowAll), // WARNING: usually you want this to be the same as Posts.createdBy
-        many: true
+        many: true,
       }),
     },
   }),
@@ -247,7 +247,7 @@ export const lists: Lists<Session> = {
       hidden: relationship({
         ref: 'Post.hiddenBy',
         access: readOnlyBy(allowAll), // WARNING: usually you want this to be the same as Posts.hiddenBy
-        many: true
+        many: true,
       }),
     },
   }),

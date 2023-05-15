@@ -188,10 +188,10 @@ function printListTypeInfo<L extends InitialisedList>(
 
   // prettier-ignore
   return [
-    `export type ${listKey} = import('@keystone-6/core').ListConfig<${listTypeInfoName}, any>;`,
+    `export type ${listKey}<Session = any> = import('@keystone-6/core').ListConfig<${listTypeInfoName}<Session>, any>;`,
     `namespace ${listKey} {`,
     `  export type Item = import('${prismaClientPath}').${listKey};`,
-    `  export type TypeInfo = {`,
+    `  export type TypeInfo<Session = any> = {`,
     `    key: '${listKey}';`,
     `    isSingleton: ${list.isSingleton};`,
     `    fields: ${Object.keys(list.fields).map(x => `'${x}'`).join(' | ')}`,
@@ -207,7 +207,7 @@ function printListTypeInfo<L extends InitialisedList>(
     `      create: ${list.graphql.isEnabled.create ? `Resolved${createInputName}` : 'never'};`,
     `      update: ${list.graphql.isEnabled.update ? `Resolved${updateInputName}` : 'never'};`,
     `    };`,
-    `    all: __TypeInfo;`,
+    `    all: __TypeInfo<Session>;`,
     `  };`,
     `}`,
   ]
@@ -286,9 +286,9 @@ export function printGeneratedTypes(
     `};`,
     ``,
     // we need to reference the `TypeInfo` above in another type that is also called `TypeInfo`
-    `type __TypeInfo = TypeInfo;`,
+    `type __TypeInfo<Session = any> = TypeInfo<Session>;`,
     ``,
-    `export type Lists <Session = any> = {`,
+    `export type Lists<Session = any> = {`,
     `  [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core').ListConfig<TypeInfo<Session>['lists'][Key], any>`,
     `} & Record<string, import('@keystone-6/core').ListConfig<any, any>>;`,
     ``,
