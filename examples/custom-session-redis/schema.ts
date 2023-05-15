@@ -1,5 +1,5 @@
 import { list } from '@keystone-6/core';
-import { denyAll, unfiltered } from '@keystone-6/core/access';
+import { unfiltered } from '@keystone-6/core/access';
 import { text, password } from '@keystone-6/core/fields';
 import type { Lists } from '.keystone/types';
 
