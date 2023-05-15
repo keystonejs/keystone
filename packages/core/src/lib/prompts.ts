@@ -27,5 +27,3 @@ export async function textPrompt(message: string): Promise<string> {
   }
   return value;
 }
-
-export const shouldPrompt = process.stdout.isTTY && !process.env.SKIP_PROMPTS;

@@ -4,7 +4,6 @@ import { printSchema, GraphQLSchema } from 'graphql';
 import * as fs from 'fs-extra';
 import { getGenerator, formatSchema } from '@prisma/internals';
 import type { KeystoneConfig } from './types';
-import { confirmPrompt, shouldPrompt } from './lib/prompts';
 import { printGeneratedTypes } from './lib/schema-type-printer';
 import { ExitError } from './scripts/utils';
 import { initialiseLists } from './lib/core/types-for-lists';
