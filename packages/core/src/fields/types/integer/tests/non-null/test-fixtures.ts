@@ -1,4 +1,4 @@
-import { integer } from '../..';
+import { integer } from '@keystone-6/core/fields';
 
 export const name = 'Integer with isNullable: false';
 export const typeFunction = (x: any) => integer({ ...x, db: { ...x?.db, isNullable: false } });

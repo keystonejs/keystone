@@ -1,4 +1,4 @@
-import { decimal } from '../..';
+import { decimal } from '@keystone-6/core/fields';
 
 export const name = 'Decimal with isNullable: false';
 export const typeFunction = (x: any) => decimal({ ...x, db: { ...x?.db, isNullable: false } });

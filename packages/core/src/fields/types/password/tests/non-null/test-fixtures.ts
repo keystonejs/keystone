@@ -1,4 +1,4 @@
-import { password } from '../..';
+import { password } from '@keystone-6/core/fields';
 
 export const name = 'Password with isNullable: false';
 export const typeFunction = (x: any) => password({ ...x, db: { ...x?.db, isNullable: false } });

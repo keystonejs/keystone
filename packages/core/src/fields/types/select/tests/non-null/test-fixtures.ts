@@ -1,4 +1,4 @@
-import { select } from '../..';
+import { select } from '@keystone-6/core/fields';
 import { fieldConfig } from '../test-fixtures';
 
 export {

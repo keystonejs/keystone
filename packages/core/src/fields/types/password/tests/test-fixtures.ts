@@ -1,4 +1,4 @@
-import { password } from '..';
+import { password } from '@keystone-6/core/fields';
 
 export const name = 'Password';
 export const typeFunction = password;

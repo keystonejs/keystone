@@ -1,5 +1,5 @@
 import { DatabaseProvider, KeystoneContext } from '../../../../types';
-import { timestamp } from '..';
+import { timestamp } from '@keystone-6/core/fields';
 
 export const name = 'Timestamp';
 export const typeFunction = timestamp;

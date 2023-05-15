@@ -4,7 +4,7 @@ import fs from 'fs-extra';
 // @ts-ignore
 import Upload from 'graphql-upload/Upload.js';
 import mime from 'mime';
-import { file } from '..';
+import { file } from '@keystone-6/core/fields';
 import { KeystoneConfig } from '../../../../types/config';
 
 export const prepareFile = (_filePath: string) => {

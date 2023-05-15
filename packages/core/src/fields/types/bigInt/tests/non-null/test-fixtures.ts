@@ -1,4 +1,4 @@
-import { bigInt } from '../..';
+import { bigInt } from '@keystone-6/core/fields';
 
 export const name = 'BigInt with isNullable: false';
 export const typeFunction = (x: any) => bigInt({ ...x, db: { ...x?.db, isNullable: false } });

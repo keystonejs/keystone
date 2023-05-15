@@ -1,4 +1,4 @@
-import { float } from '../..';
+import { float } from '@keystone-6/core/fields';
 
 export const name = 'Float with isNullable: false';
 export const typeFunction = (x: any) => float({ ...x, db: { ...x?.db, isNullable: false } });

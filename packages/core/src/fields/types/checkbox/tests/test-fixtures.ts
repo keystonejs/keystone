@@ -1,4 +1,4 @@
-import { checkbox } from '..';
+import { checkbox } from '@keystone-6/core/fields';
 
 export const name = 'Checkbox';
 export const typeFunction = checkbox;

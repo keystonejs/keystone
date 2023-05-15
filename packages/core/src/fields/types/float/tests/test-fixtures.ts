@@ -1,4 +1,4 @@
-import { float } from '..';
+import { float } from '@keystone-6/core/fields';
 
 export const name = 'Float';
 export const typeFunction = float;

@@ -1,5 +1,5 @@
 import { KeystoneContext } from '../../../../types';
-import { decimal } from '..';
+import { decimal } from '@keystone-6/core/fields';
 
 export const name = 'Decimal';
 export const typeFunction = decimal;

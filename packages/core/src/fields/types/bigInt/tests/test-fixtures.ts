@@ -1,5 +1,4 @@
-import { bigInt } from '..';
-import { text } from '../../text';
+import { bigInt } from '@keystone-6/core/fields';
 
 export const name = 'BigInt';
 export const typeFunction = bigInt;
@@ -11,7 +10,6 @@ export const supportsDbMap = true;
 export const fieldName = 'testField';
 
 export const getTestFields = () => ({
-  name: text(),
   testField: bigInt(),
 });
 

@@ -1,4 +1,4 @@
-import { multiselect } from '..';
+import { multiselect } from '@keystone-6/core/fields';
 
 type MatrixValue = typeof testMatrix[number];
 

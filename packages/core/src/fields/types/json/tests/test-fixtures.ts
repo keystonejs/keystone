@@ -1,4 +1,4 @@
-import { json } from '..';
+import { json } from '@keystone-6/core/fields';
 
 export const name = 'Json';
 export const typeFunction = json;

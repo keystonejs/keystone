@@ -1,4 +1,4 @@
-import { timestamp } from '../..';
+import { timestamp } from '@keystone-6/core/fields';
 
 export const name = 'Timestamp with isNullable: false';
 export const typeFunction = (x: any) => timestamp({ ...x, db: { ...x?.db, isNullable: false } });

@@ -1,4 +1,4 @@
-import { text } from '..';
+import { text } from '@keystone-6/core/fields';
 
 export const name = 'Text';
 export const typeFunction = text;
