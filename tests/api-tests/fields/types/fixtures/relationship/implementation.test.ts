@@ -1,9 +1,8 @@
 import { assertInputObjectType, printType, assertObjectType, parse } from 'graphql';
-import { createSystem, initConfig } from '../../../../system';
-import { config, list } from '../../../..';
-import { relationship } from '..';
-import { text } from '../../text';
-import { allowAll } from '../../../../access';
+import { createSystem, initConfig } from '@keystone-6/core/system';
+import { config, list } from '@keystone-6/core';
+import { text, relationship } from '@keystone-6/core/fields';
+import { allowAll } from '@keystone-6/core/access';
 
 const fieldKey = 'foo';
 

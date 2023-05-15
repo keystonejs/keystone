@@ -1,4 +1,4 @@
-import { document } from '..';
+import { document } from '@keystone-6/fields-document';
 
 export const name = 'Document';
 export const typeFunction = document;
