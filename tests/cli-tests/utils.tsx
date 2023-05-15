@@ -3,6 +3,7 @@ import path from 'path';
 import { format } from 'util';
 import * as fs from 'fs-extra';
 import fastGlob from 'fast-glob';
+import chalk from 'chalk';
 
 // @ts-ignore
 import fixturez from 'fixturez';
@@ -90,6 +91,7 @@ async function getSymlinkType(targetPath: string): Promise<'dir' | 'file'> {
 
 export async function runCommand(cwd: string, args: string | string[]) {
   const argv = typeof args === 'string' ? [args] : args;
+  chalk.level = 0; // disable ANSI colouring for this
   const proc = await cli(cwd, argv);
   if (typeof proc === 'function') {
     await proc();

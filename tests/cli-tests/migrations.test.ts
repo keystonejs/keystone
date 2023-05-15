@@ -201,9 +201,7 @@ describe('useMigrations: false', () => {
       'keystone.js': await fs.readFile(`${__dirname}/fixtures/no-fields.ts`, 'utf8'),
     });
 
-    mockPromptResponseEntries = Object.entries({
-      'Do you want to continue? Some data will be lost': false,
-    });
+    mockPromptResponseEntries = [['Do you want to continue? Some data will be lost', false]];
     const recording = recordConsole();
     await expect(runCommand(tmp, 'dev')).rejects.toEqual(new ExitError(0));
 
