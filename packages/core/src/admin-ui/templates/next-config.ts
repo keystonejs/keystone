@@ -9,6 +9,9 @@ export const nextConfigTemplate = (basePath?: string) =>
     experimental: {
       appDir: false,
     },
+    // We use transpilePackages for the custom admin-ui pages in the ./admin folder
+    // as they import ts files into nextjs
+    transpilePackages: ['../../admin'],
     ${basePath ? `basePath: '${basePath}',` : ''} 
   }
   
