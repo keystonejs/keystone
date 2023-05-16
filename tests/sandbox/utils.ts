@@ -1,11 +1,5 @@
-import * as Path from 'path';
 import { timestamp } from '@keystone-6/core/fields';
-import {
-  BaseKeystoneTypeInfo,
-  DatabaseConfig,
-  StorageConfig,
-  AdminUIConfig,
-} from '@keystone-6/core/types';
+import { BaseKeystoneTypeInfo, DatabaseConfig, StorageConfig } from '@keystone-6/core/types';
 
 export const localStorageConfig: Record<string, StorageConfig> = {
   images: {
@@ -33,18 +27,6 @@ export const localStorageConfig: Record<string, StorageConfig> = {
 //   transforms
 export const fixPrismaPath = {
   prismaClientPath: 'node_modules/.testprisma/client',
-};
-
-export const fixNextConfig: AdminUIConfig<BaseKeystoneTypeInfo> = {
-  getAdditionalFiles: [
-    () => [
-      {
-        mode: 'copy' as const,
-        inputPath: Path.resolve('./test-next-config-fix.js'),
-        outputPath: 'next.config.js',
-      },
-    ],
-  ],
 };
 
 export const dbConfig: DatabaseConfig<BaseKeystoneTypeInfo> = {

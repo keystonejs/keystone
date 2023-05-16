@@ -1,5 +1,5 @@
 import { config } from '@keystone-6/core';
-import { fixNextConfig, fixPrismaPath } from '../example-utils';
+import { fixPrismaPath } from '../example-utils';
 import { lists } from './schema';
 import { getTasks } from './routes/tasks';
 import { TypeInfo } from '.keystone/types';
@@ -11,10 +11,6 @@ export default config<TypeInfo>({
 
     // WARNING: this is only needed for our monorepo examples, dont do this
     ...fixPrismaPath,
-  },
-  ui: {
-    // WARNING: this is only needed for our monorepo examples, dont do this
-    ...fixNextConfig,
   },
   server: {
     /*

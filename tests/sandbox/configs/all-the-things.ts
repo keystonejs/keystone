@@ -22,7 +22,7 @@ import { componentBlocks } from '../component-blocks';
 import { schema as structureSchema } from '../structure';
 import { schema as structureNestedSchema } from '../structure-nested';
 import { schema as structureRelationshipsSchema } from '../structure-relationships';
-import { dbConfig, localStorageConfig, trackingFields, fixNextConfig } from '../utils';
+import { dbConfig, localStorageConfig, trackingFields } from '../utils';
 
 const description =
   'Some thing to describe to test the length of the text for width, blah blah blah blah blah blah blah blah blah';
@@ -222,10 +222,6 @@ export const lists = {
 
 export default config({
   db: dbConfig,
-  ui: {
-    // WARNING: this is only needed for our monorepo examples, dont do this
-    ...fixNextConfig,
-  },
   storage: localStorageConfig,
   lists,
 });
