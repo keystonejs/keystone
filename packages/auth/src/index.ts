@@ -172,14 +172,11 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     }
   };
 
-  /**
-   * withItemData
-   *
-   * Automatically injects a session.data value with the authenticated item
-   */
-  const withItemData = <Session extends AuthSession>(
+  // this strategy wraps the existing session strategy,
+  //   and injects the requested session.data before returning
+  function authSessionStrategy<Session extends AuthSession>(
     _sessionStrategy: SessionStrategy<Session>
-  ): SessionStrategy<Session> => {
+  ): SessionStrategy<Session> {
     const { get, ...sessionStrategy } = _sessionStrategy;
     return {
       ...sessionStrategy,
@@ -211,7 +208,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
         }
       },
     };
-  };
+  }
 
   async function hasInitFirstItemConditions(context: KeystoneContext) {
     // do nothing if they aren't using this feature
@@ -307,7 +304,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     return {
       ...keystoneConfig,
       ui,
-      session: withItemData(keystoneConfig.session),
+      session: authSessionStrategy(keystoneConfig.session),
       lists: {
         ...keystoneConfig.lists,
         [listKey]: { ...listConfig, fields: { ...listConfig.fields, ...fields } },

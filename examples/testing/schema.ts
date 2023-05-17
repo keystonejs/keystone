@@ -2,23 +2,35 @@ import { list } from '@keystone-6/core';
 import { checkbox, password, relationship, text, timestamp } from '@keystone-6/core/fields';
 import { select } from '@keystone-6/core/fields';
 import { allowAll } from '@keystone-6/core/access';
-import { Lists } from '.keystone/types';
+import type { Lists } from '.keystone/types';
 
-export const lists: Lists = {
-  Task: list({
-    // Add access control so that only the assigned user can update a task
-    // We will write a test to verify that this is working correctly.
-    access: {
-      item: {
-        update: async ({ session, item, context }) => {
-          const task = await context.query.Task.findOne({
-            where: { id: item.id.toString() },
-            query: 'assignedTo { id }',
-          });
-          return !!(session?.itemId && session.itemId === task.assignedTo?.id);
-        },
+// needs to be compatible with withAuth
+export type Session = {
+  listKey: string;
+  itemId: string;
+};
+
+function isAssignedUserFilter({ session }: { session?: Session }) {
+  // you need to have a session
+  if (!session) return false;
+
+  // the authenticated user can edit posts they are assigned to
+  return {
+    assignedTo: {
+      id: {
+        equals: session.itemId,
       },
+    },
+  };
+}
+
+export const lists: Lists<Session> = {
+  Task: list({
+    access: {
       operation: allowAll,
+      filter: {
+        update: isAssignedUserFilter,
+      },
     },
     fields: {
       label: text({ validation: { isRequired: true } }),
@@ -31,15 +43,14 @@ export const lists: Lists = {
         ],
       }),
       isComplete: checkbox(),
-      assignedTo: relationship({ ref: 'Person.tasks', many: false }),
+      assignedTo: relationship({ ref: 'User.tasks', many: false }),
       finishBy: timestamp(),
     },
   }),
-  Person: list({
+  User: list({
     access: allowAll,
     fields: {
-      name: text({ validation: { isRequired: true } }),
-      email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
+      name: text({ isIndexed: 'unique', validation: { isRequired: true } }),
       password: password({ validation: { isRequired: true } }),
       tasks: relationship({ ref: 'Task.assignedTo', many: true }),
     },
