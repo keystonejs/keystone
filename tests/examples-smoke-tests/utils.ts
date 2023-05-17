@@ -1,6 +1,6 @@
 import path from 'path';
 import { promisify } from 'util';
-import execa from 'execa';
+import execa, { ExecaChildProcess } from 'execa';
 import _treeKill from 'tree-kill';
 import * as playwright from 'playwright';
 
@@ -35,19 +35,10 @@ const treeKill = promisify(_treeKill);
 // this'll take a while
 jest.setTimeout(10000000);
 
-const promiseSignal = (): Promise<void> & { resolve: () => void } => {
-  let resolve;
-  const promise = new Promise<void>(_resolve => {
-    resolve = _resolve;
-  });
-  return Object.assign(promise, { resolve: resolve as any });
-};
-
-export const initFirstItemTest = (getPage: () => playwright.Page) => {
+export function initFirstItemTest(getPage: () => playwright.Page) {
   test('init first item', async () => {
     const page = getPage();
     await page.fill('label:has-text("Name") >> .. >> input', 'Admin');
-    await page.fill('label:has-text("Email") >> .. >> input', 'admin@keystonejs.com');
     await page.click('button:has-text("Set Password")');
     await page.fill('[placeholder="New Password"]', 'password');
     await page.fill('[placeholder="Confirm Password"]', 'password');
@@ -56,7 +47,26 @@ export const initFirstItemTest = (getPage: () => playwright.Page) => {
     await page.click('text=Continue');
     await page.waitForSelector('text=Signed in as Admin');
   });
-};
+}
+
+// TODO: merge with tests/admin-ui-tests/utils.ts copy
+export async function waitForIO(ksProcess: ExecaChildProcess, content: string) {
+  return await new Promise(resolve => {
+    let output = '';
+    function listener(chunk: Buffer) {
+      output += chunk.toString('utf8');
+      if (process.env.VERBOSE) console.log(chunk.toString('utf8'));
+      if (!output.includes(content)) return;
+
+      ksProcess.stdout!.off('data', listener);
+      ksProcess.stderr!.off('data', listener);
+      return resolve(output);
+    }
+
+    ksProcess.stdout!.on('data', listener);
+    ksProcess.stderr!.on('data', listener);
+  });
+}
 
 export const exampleProjectTests = (
   exampleName: string,
@@ -71,31 +81,15 @@ export const exampleProjectTests = (
     });
 
     async function startKeystone(command: 'start' | 'dev') {
-      const keystoneProcess = execa('pnpm', ['keystone', command], {
+      const ksProcess = execa('pnpm', ['keystone', command], {
         cwd: projectDir,
         env: process.env,
       });
-      const adminUIReady = promiseSignal();
-      const listener = (chunk: any) => {
-        const stringified = chunk.toString('utf8');
-        if (process.env.VERBOSE) {
-          console.log(stringified);
-        }
-        if (stringified.includes('Admin UI ready')) {
-          adminUIReady.resolve();
-        }
-      };
-      keystoneProcess.stdout!.on('data', listener);
-      keystoneProcess.stderr!.on('data', listener);
 
       cleanupKeystoneProcess = async () => {
-        keystoneProcess.stdout!.off('data', listener);
-        keystoneProcess.stderr!.off('data', listener);
-        // childProcess.kill will only kill the direct child process
-        // so we use tree-kill to kill the process and it's children
-        await treeKill(keystoneProcess.pid!);
+        await treeKill(ksProcess.pid!);
       };
-      await adminUIReady;
+      await waitForIO(ksProcess, 'Admin UI ready');
     }
 
     if (mode === 'dev') {

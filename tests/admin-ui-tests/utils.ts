@@ -132,7 +132,7 @@ export async function waitForIO(ksProcess: ExecaChildProcess, content: string) {
 
       ksProcess.stdout!.off('data', listener);
       ksProcess.stderr!.off('data', listener);
-      resolve(output);
+      return resolve(output);
     }
 
     ksProcess.stdout!.on('data', listener);
