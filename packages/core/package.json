@@ -146,10 +146,6 @@
       "module": "./___internal-do-not-use-will-break-in-patch/artifacts/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-artifacts.esm.js",
       "default": "./___internal-do-not-use-will-break-in-patch/artifacts/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-artifacts.cjs.js"
     },
-    "./___internal-do-not-use-will-break-in-patch/admin-ui/next-config": {
-      "module": "./___internal-do-not-use-will-break-in-patch/admin-ui/next-config/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-next-config.esm.js",
-      "default": "./___internal-do-not-use-will-break-in-patch/admin-ui/next-config/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-next-config.cjs.js"
-    },
     "./___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view": {
       "module": "./___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-id-field-view.esm.js",
       "default": "./___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-id-field-view.cjs.js"
@@ -212,7 +208,6 @@
     "@keystone-ui/toast": "^6.0.2",
     "@keystone-ui/tooltip": "^6.0.2",
     "@nodelib/fs.walk": "^1.2.8",
-    "@preconstruct/next": "^4.0.0",
     "@prisma/client": "4.14.0",
     "@prisma/internals": "4.14.0",
     "@prisma/migrate": "4.14.0",
@@ -288,7 +283,7 @@
       "system.ts",
       "___internal-do-not-use-will-break-in-patch/artifacts.ts",
       "___internal-do-not-use-will-break-in-patch/admin-ui/pages/*/index.tsx",
-      "___internal-do-not-use-will-break-in-patch/admin-ui/{next-config.ts,id-field-view.tsx}",
+      "___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view.tsx",
       "context.ts",
       "testing.ts",
       "session/index.ts",

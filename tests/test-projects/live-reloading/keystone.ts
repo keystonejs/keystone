@@ -1,5 +1,5 @@
 import { config } from '@keystone-6/core';
-import { fixPrismaPath } from './../../sandbox/utils';
+import { fixPrismaPath } from '../../sandbox/utils';
 import { lists, extendGraphqlSchema } from './schema';
 
 export default config({

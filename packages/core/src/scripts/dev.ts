@@ -51,13 +51,6 @@ function resolvablePromise<T>() {
   return promise;
 }
 
-let shouldWatch = true;
-
-// don't use this, its for tests only
-export function setSkipWatching() {
-  shouldWatch = false;
-}
-
 export async function dev(
   cwd: string,
   { dbPush, prisma, server, ui }: Pick<Flags, 'dbPush' | 'prisma' | 'server' | 'ui'>
@@ -97,9 +90,7 @@ export async function dev(
     // esbuild prints everything we want users to see
   }
 
-  if (shouldWatch) {
-    await esbuildContext.watch();
-  }
+  esbuildContext.watch();
 
   // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
   const app = server ? express() : null;

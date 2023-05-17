@@ -8,6 +8,7 @@ import { listTemplate } from './list';
 import { itemTemplate } from './item';
 import { noAccessTemplate } from './no-access';
 import { createItemTemplate } from './create-item';
+import { nextConfigTemplate } from './next-config';
 
 const pkgDir = Path.dirname(require.resolve('@keystone-6/core/package.json'));
 
@@ -19,8 +20,8 @@ export const writeAdminFiles = (
 ): AdminFileToWrite[] => {
   return [
     {
-      mode: 'copy',
-      inputPath: Path.join(pkgDir, 'static', 'next.config.js'),
+      mode: 'write',
+      src: nextConfigTemplate(config.ui?.basePath),
       outputPath: 'next.config.js',
     },
     {
