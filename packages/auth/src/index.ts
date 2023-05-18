@@ -14,11 +14,12 @@ import { signinTemplate } from './templates/signin';
 import { initTemplate } from './templates/init';
 
 export type AuthSession = {
-  listKey: string;
-  itemId: string;
-  data: unknown;
+  listKey: string; // TODO: use ListTypeInfo
+  itemId: string | number; // TODO: use ListTypeInfo
+  data: unknown; // TODO: use ListTypeInfo
 };
 
+// TODO: use TypeInfo and listKey for types
 /**
  * createAuth function
  *
@@ -195,7 +196,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
 
         try {
           const data = await sudoContext.query[listKey].findOne({
-            where: { id: session.itemId },
+            where: { id: session.itemId as any }, // TODO: fix this
             query: sessionData,
           });
           if (!data) return;
