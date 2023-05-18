@@ -1,28 +1,30 @@
-import type { JSONValue } from './utils';
-import type { KeystoneContext } from '.';
+import type { MaybePromise } from './utils';
+import type { BaseKeystoneTypeInfo, KeystoneContext } from '.';
 
 export type SessionStrategy<
-  StoredSessionData,
-  Context extends KeystoneContext = KeystoneContext
+  Session,
+  TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo
 > = {
-  get: (args: { context: Context }) => Promise<StoredSessionData | undefined>;
-
-  start: (args: { data: StoredSessionData; context: Context }) => Promise<unknown>;
-
-  end: (args: { context: Context }) => Promise<unknown>;
+  get: (args: { context: KeystoneContext<TypeInfo> }) => Promise<Session | undefined>;
+  start: (args: { context: KeystoneContext<TypeInfo>; data: Session }) => Promise<unknown>;
+  end: (args: { context: KeystoneContext<TypeInfo> }) => Promise<unknown>;
 };
 
-export type SessionStore = {
-  get(key: string): undefined | JSONValue | Promise<JSONValue | undefined>;
-  // 😞 using any here rather than void to be compatible with Map. note that `| Promise<void>` doesn't actually do anything type wise because it just turns into any, it's just to show intent here
-  set(key: string, value: JSONValue): any | Promise<void>;
-  // 😞 | boolean is for compatibility with Map
-  delete(key: string): void | boolean | Promise<void>;
+/** @deprecated */
+export type SessionStore<
+  Session = any // TODO: remove any in breaking change
+> = {
+  get(key: string): MaybePromise<Session | undefined>;
+  set(key: string, value: Session): void | Promise<void>;
+  delete(key: string): void | Promise<void>;
 };
 
-export type SessionStoreFunction = (args: {
+/** @deprecated */
+export type SessionStoreFunction<
+  Session = any // TODO: remove any in breaking change
+> = (args: {
   /**
    * The number of seconds that a cookie session be valid for
    */
   maxAge: number;
-}) => SessionStore;
+}) => SessionStore<Session>;

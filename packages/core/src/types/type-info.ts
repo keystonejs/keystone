@@ -1,5 +1,5 @@
-import { KeystoneContext } from './context';
-import { BaseItem } from './next-fields';
+import type { KeystoneContext } from './context';
+import type { BaseItem } from './next-fields';
 
 type GraphQLInput = Record<string, any>;
 
@@ -28,4 +28,8 @@ export type BaseListTypeInfo = {
 export type KeystoneContextFromListTypeInfo<ListTypeInfo extends BaseListTypeInfo> =
   KeystoneContext<ListTypeInfo['all']>;
 
-export type BaseKeystoneTypeInfo = { lists: Record<string, BaseListTypeInfo>; prisma: any };
+export type BaseKeystoneTypeInfo = {
+  lists: Record<string, BaseListTypeInfo>;
+  prisma: any;
+  session: any;
+};

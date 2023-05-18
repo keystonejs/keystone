@@ -6,7 +6,7 @@ type Task {
   label: String
   priority: TaskPriorityType
   isComplete: Boolean
-  assignedTo: Person
+  assignedTo: User
   finishBy: DateTime
 }
 
@@ -30,7 +30,7 @@ input TaskWhereInput {
   label: StringFilter
   priority: TaskPriorityTypeNullableFilter
   isComplete: BooleanFilter
-  assignedTo: PersonWhereInput
+  assignedTo: UserWhereInput
   finishBy: DateTimeNullableFilter
 }
 
@@ -113,13 +113,13 @@ input TaskUpdateInput {
   label: String
   priority: TaskPriorityType
   isComplete: Boolean
-  assignedTo: PersonRelateToOneForUpdateInput
+  assignedTo: UserRelateToOneForUpdateInput
   finishBy: DateTime
 }
 
-input PersonRelateToOneForUpdateInput {
-  create: PersonCreateInput
-  connect: PersonWhereUniqueInput
+input UserRelateToOneForUpdateInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
   disconnect: Boolean
 }
 
@@ -132,19 +132,18 @@ input TaskCreateInput {
   label: String
   priority: TaskPriorityType
   isComplete: Boolean
-  assignedTo: PersonRelateToOneForCreateInput
+  assignedTo: UserRelateToOneForCreateInput
   finishBy: DateTime
 }
 
-input PersonRelateToOneForCreateInput {
-  create: PersonCreateInput
-  connect: PersonWhereUniqueInput
+input UserRelateToOneForCreateInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
 }
 
-type Person {
+type User {
   id: ID!
   name: String
-  email: String
   password: PasswordState
   tasks(where: TaskWhereInput! = {}, orderBy: [TaskOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TaskWhereUniqueInput): [Task!]
   tasksCount(where: TaskWhereInput! = {}): Int
@@ -154,18 +153,17 @@ type PasswordState {
   isSet: Boolean!
 }
 
-input PersonWhereUniqueInput {
+input UserWhereUniqueInput {
   id: ID
-  email: String
+  name: String
 }
 
-input PersonWhereInput {
-  AND: [PersonWhereInput!]
-  OR: [PersonWhereInput!]
-  NOT: [PersonWhereInput!]
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  NOT: [UserWhereInput!]
   id: IDFilter
   name: StringFilter
-  email: StringFilter
   tasks: TaskManyRelationFilter
 }
 
@@ -175,15 +173,13 @@ input TaskManyRelationFilter {
   none: TaskWhereInput
 }
 
-input PersonOrderByInput {
+input UserOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  email: OrderDirection
 }
 
-input PersonUpdateInput {
+input UserUpdateInput {
   name: String
-  email: String
   password: String
   tasks: TaskRelateToManyForUpdateInput
 }
@@ -195,14 +191,13 @@ input TaskRelateToManyForUpdateInput {
   connect: [TaskWhereUniqueInput!]
 }
 
-input PersonUpdateArgs {
-  where: PersonWhereUniqueInput!
-  data: PersonUpdateInput!
+input UserUpdateArgs {
+  where: UserWhereUniqueInput!
+  data: UserUpdateInput!
 }
 
-input PersonCreateInput {
+input UserCreateInput {
   name: String
-  email: String
   password: String
   tasks: TaskRelateToManyForCreateInput
 }
@@ -224,31 +219,30 @@ type Mutation {
   updateTasks(data: [TaskUpdateArgs!]!): [Task]
   deleteTask(where: TaskWhereUniqueInput!): Task
   deleteTasks(where: [TaskWhereUniqueInput!]!): [Task]
-  createPerson(data: PersonCreateInput!): Person
-  createPeople(data: [PersonCreateInput!]!): [Person]
-  updatePerson(where: PersonWhereUniqueInput!, data: PersonUpdateInput!): Person
-  updatePeople(data: [PersonUpdateArgs!]!): [Person]
-  deletePerson(where: PersonWhereUniqueInput!): Person
-  deletePeople(where: [PersonWhereUniqueInput!]!): [Person]
+  createUser(data: UserCreateInput!): User
+  createUsers(data: [UserCreateInput!]!): [User]
+  updateUser(where: UserWhereUniqueInput!, data: UserUpdateInput!): User
+  updateUsers(data: [UserUpdateArgs!]!): [User]
+  deleteUser(where: UserWhereUniqueInput!): User
+  deleteUsers(where: [UserWhereUniqueInput!]!): [User]
   endSession: Boolean!
-  authenticatePersonWithPassword(email: String!, password: String!): PersonAuthenticationWithPasswordResult
-  createInitialPerson(data: CreateInitialPersonInput!): PersonAuthenticationWithPasswordSuccess!
+  authenticateUserWithPassword(name: String!, password: String!): UserAuthenticationWithPasswordResult
+  createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
 }
 
-union PersonAuthenticationWithPasswordResult = PersonAuthenticationWithPasswordSuccess | PersonAuthenticationWithPasswordFailure
+union UserAuthenticationWithPasswordResult = UserAuthenticationWithPasswordSuccess | UserAuthenticationWithPasswordFailure
 
-type PersonAuthenticationWithPasswordSuccess {
+type UserAuthenticationWithPasswordSuccess {
   sessionToken: String!
-  item: Person!
+  item: User!
 }
 
-type PersonAuthenticationWithPasswordFailure {
+type UserAuthenticationWithPasswordFailure {
   message: String!
 }
 
-input CreateInitialPersonInput {
+input CreateInitialUserInput {
   name: String
-  email: String
   password: String
 }
 
@@ -256,14 +250,14 @@ type Query {
   tasks(where: TaskWhereInput! = {}, orderBy: [TaskOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TaskWhereUniqueInput): [Task!]
   task(where: TaskWhereUniqueInput!): Task
   tasksCount(where: TaskWhereInput! = {}): Int
-  people(where: PersonWhereInput! = {}, orderBy: [PersonOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PersonWhereUniqueInput): [Person!]
-  person(where: PersonWhereUniqueInput!): Person
-  peopleCount(where: PersonWhereInput! = {}): Int
+  users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
+  user(where: UserWhereUniqueInput!): User
+  usersCount(where: UserWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
 
-union AuthenticatedItem = Person
+union AuthenticatedItem = User
 
 type KeystoneMeta {
   adminMeta: KeystoneAdminMeta!

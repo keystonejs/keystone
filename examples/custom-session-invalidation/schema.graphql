@@ -5,12 +5,14 @@ type User {
   id: ID!
   name: String
   password: PasswordState
-  isAdmin: Boolean
+  passwordChangedAt: DateTime
 }
 
 type PasswordState {
   isSet: Boolean!
 }
+
+scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
 
 input UserWhereUniqueInput {
   id: ID
@@ -21,7 +23,6 @@ input UserWhereInput {
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
   id: IDFilter
-  isAdmin: BooleanFilter
 }
 
 input IDFilter {
@@ -35,14 +36,9 @@ input IDFilter {
   not: IDFilter
 }
 
-input BooleanFilter {
-  equals: Boolean
-  not: BooleanFilter
-}
-
 input UserOrderByInput {
   id: OrderDirection
-  isAdmin: OrderDirection
+  passwordChangedAt: OrderDirection
 }
 
 enum OrderDirection {
@@ -53,7 +49,7 @@ enum OrderDirection {
 input UserUpdateInput {
   name: String
   password: String
-  isAdmin: Boolean
+  passwordChangedAt: DateTime
 }
 
 input UserUpdateArgs {
@@ -64,7 +60,7 @@ input UserUpdateArgs {
 input UserCreateInput {
   name: String
   password: String
-  isAdmin: Boolean
+  passwordChangedAt: DateTime
 }
 
 """

@@ -1,4 +1,25 @@
-import { ListAccessArgs } from './types';
+export type Session = {
+  itemId: string;
+  listKey: string;
+  data: {
+    name: string;
+    role: {
+      id: string;
+      name: string;
+      canCreateTodos: boolean;
+      canManageAllTodos: boolean;
+      canSeeOtherPeople: boolean;
+      canEditOtherPeople: boolean;
+      canManagePeople: boolean;
+      canManageRoles: boolean;
+      canUseAdminUI: boolean;
+    };
+  };
+};
+
+type ListAccessArgs = {
+  session?: Session;
+};
 
 /*
   The basic level of access to the system is being signed in as a valid user. This gives you access

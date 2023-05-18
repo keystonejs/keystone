@@ -13,6 +13,13 @@ import { getSchemaExtension } from './schema';
 import { signinTemplate } from './templates/signin';
 import { initTemplate } from './templates/init';
 
+export type AuthSession = {
+  listKey: string; // TODO: use ListTypeInfo
+  itemId: string | number; // TODO: use ListTypeInfo
+  data: unknown; // TODO: use ListTypeInfo
+};
+
+// TODO: use TypeInfo and listKey for types
 /**
  * createAuth function
  *
@@ -166,14 +173,11 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     }
   };
 
-  /**
-   * withItemData
-   *
-   * Automatically injects a session.data value with the authenticated item
-   */
-  const withItemData = (
-    _sessionStrategy: SessionStrategy<Record<string, any>>
-  ): SessionStrategy<{ listKey: string; itemId: string; data: any }> => {
+  // this strategy wraps the existing session strategy,
+  //   and injects the requested session.data before returning
+  function authSessionStrategy<Session extends AuthSession>(
+    _sessionStrategy: SessionStrategy<Session>
+  ): SessionStrategy<Session> {
     const { get, ...sessionStrategy } = _sessionStrategy;
     return {
       ...sessionStrategy,
@@ -192,7 +196,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
 
         try {
           const data = await sudoContext.query[listKey].findOne({
-            where: { id: session.itemId },
+            where: { id: session.itemId as any }, // TODO: fix this
             query: sessionData,
           });
           if (!data) return;
@@ -205,7 +209,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
         }
       },
     };
-  };
+  }
 
   async function hasInitFirstItemConditions(context: KeystoneContext) {
     // do nothing if they aren't using this feature
@@ -301,7 +305,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     return {
       ...keystoneConfig,
       ui,
-      session: withItemData(keystoneConfig.session),
+      session: authSessionStrategy(keystoneConfig.session),
       lists: {
         ...keystoneConfig.lists,
         [listKey]: { ...listConfig, fields: { ...listConfig.fields, ...fields } },

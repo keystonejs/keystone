@@ -96,31 +96,37 @@ export type ResolvedListHooks<ListTypeInfo extends BaseListTypeInfo> = {
   afterOperation?: AfterOperationHook<ListTypeInfo>;
 };
 
-export type FieldHooks<ListTypeInfo extends BaseListTypeInfo> = {
+export type FieldHooks<
+  ListTypeInfo extends BaseListTypeInfo,
+  FieldKey extends ListTypeInfo['fields'] = ListTypeInfo['fields']
+> = {
   /**
    * Used to **modify the input** for create and update operations after default values and access control have been applied
    */
-  resolveInput?: ResolveInputFieldHook<ListTypeInfo>;
+  resolveInput?: ResolveInputFieldHook<ListTypeInfo, FieldKey>;
   /**
    * Used to **validate the input** for create and update operations once all resolveInput hooks resolved
    */
-  validateInput?: ValidateInputFieldHook<ListTypeInfo>;
+  validateInput?: ValidateInputFieldHook<ListTypeInfo, FieldKey>;
   /**
    * Used to **validate** that a delete operation can happen after access control has occurred
    */
-  validateDelete?: ValidateDeleteFieldHook<ListTypeInfo>;
+  validateDelete?: ValidateDeleteFieldHook<ListTypeInfo, FieldKey>;
   /**
    * Used to **cause side effects** before a create, update, or delete operation once all validateInput hooks have resolved
    */
-  beforeOperation?: BeforeOperationFieldHook<ListTypeInfo>;
+  beforeOperation?: BeforeOperationFieldHook<ListTypeInfo, FieldKey>;
   /**
    * Used to **cause side effects** after a create, update, or delete operation operation has occurred
    */
-  afterOperation?: AfterOperationFieldHook<ListTypeInfo>;
+  afterOperation?: AfterOperationFieldHook<ListTypeInfo, FieldKey>;
 };
 
 // TODO: one day
-export type ResolvedFieldHooks<ListTypeInfo extends BaseListTypeInfo> = FieldHooks<ListTypeInfo>;
+export type ResolvedFieldHooks<ListTypeInfo extends BaseListTypeInfo> = FieldHooks<
+  ListTypeInfo,
+  ListTypeInfo['fields']
+>;
 
 type ArgsForCreateOrUpdateOperation<ListTypeInfo extends BaseListTypeInfo> =
   | {
@@ -154,7 +160,7 @@ type ArgsForCreateOrUpdateOperation<ListTypeInfo extends BaseListTypeInfo> =
 
 type ResolveInputFieldHook<
   ListTypeInfo extends BaseListTypeInfo,
-  FieldKey extends ListTypeInfo['fields'] = ListTypeInfo['fields']
+  FieldKey extends ListTypeInfo['fields']
 > = (
   args: ArgsForCreateOrUpdateOperation<ListTypeInfo> &
     CommonArgs<ListTypeInfo> & { fieldKey: FieldKey }
@@ -170,7 +176,7 @@ type ValidateInputHook<ListTypeInfo extends BaseListTypeInfo> = (
 
 type ValidateInputFieldHook<
   ListTypeInfo extends BaseListTypeInfo,
-  FieldKey extends ListTypeInfo['fields'] = ListTypeInfo['fields']
+  FieldKey extends ListTypeInfo['fields']
 > = (
   args: ArgsForCreateOrUpdateOperation<ListTypeInfo> & {
     addValidationError: (error: string) => void;
@@ -187,7 +193,7 @@ type ValidateDeleteHook<ListTypeInfo extends BaseListTypeInfo> = (
 
 type ValidateDeleteFieldHook<
   ListTypeInfo extends BaseListTypeInfo,
-  FieldKey extends ListTypeInfo['fields'] = ListTypeInfo['fields']
+  FieldKey extends ListTypeInfo['fields']
 > = (
   args: {
     operation: 'delete';
@@ -211,7 +217,7 @@ type BeforeOperationHook<ListTypeInfo extends BaseListTypeInfo> = (
 
 type BeforeOperationFieldHook<
   ListTypeInfo extends BaseListTypeInfo,
-  FieldKey extends ListTypeInfo['fields'] = ListTypeInfo['fields']
+  FieldKey extends ListTypeInfo['fields']
 > = (
   args: (
     | ArgsForCreateOrUpdateOperation<ListTypeInfo>
@@ -274,7 +280,7 @@ type AfterOperationHook<ListTypeInfo extends BaseListTypeInfo> = (
 
 type AfterOperationFieldHook<
   ListTypeInfo extends BaseListTypeInfo,
-  FieldKey extends ListTypeInfo['fields'] = ListTypeInfo['fields']
+  FieldKey extends ListTypeInfo['fields']
 > = (
   args: (
     | {

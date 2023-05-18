@@ -8,6 +8,7 @@ const someContext: KeystoneContext<{
     ListOrSingleton: BaseListTypeInfo;
   };
   prisma: any;
+  session: any;
 }> = undefined!;
 
 someContext.query.Singleton.findOne({});

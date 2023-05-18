@@ -17,17 +17,16 @@ model Task {
   label        String    @default("")
   priority     String?
   isComplete   Boolean   @default(false)
-  assignedTo   Person?   @relation("Task_assignedTo", fields: [assignedToId], references: [id])
+  assignedTo   User?     @relation("Task_assignedTo", fields: [assignedToId], references: [id])
   assignedToId String?   @map("assignedTo")
   finishBy     DateTime?
 
   @@index([assignedToId])
 }
 
-model Person {
+model User {
   id       String @id @default(cuid())
-  name     String @default("")
-  email    String @unique @default("")
+  name     String @unique @default("")
   password String
   tasks    Task[] @relation("Task_assignedTo")
 }

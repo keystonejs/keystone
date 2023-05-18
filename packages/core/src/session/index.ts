@@ -1,15 +1,7 @@
 import * as cookie from 'cookie';
 import Iron from '@hapi/iron';
-// uid-safe is what express-session uses so let's just use it
 import { sync as uid } from 'uid-safe';
-import { SessionStrategy, JSONValue, SessionStoreFunction } from '../types';
-
-function generateSessionId() {
-  return uid(24);
-}
-
-const TOKEN_NAME = 'keystonejs-session';
-const MAX_AGE = 60 * 60 * 8; // 8 hours
+import type { SessionStrategy, SessionStoreFunction } from '../types';
 
 // should we also accept httpOnly?
 type StatelessSessionsOptions = {
@@ -31,6 +23,12 @@ type StatelessSessionsOptions = {
    * @default 60 * 60 * 8 // 8 hours
    */
   maxAge?: number;
+  /**
+   * The name of the cookie used by `Set-Cookie`.
+   *
+   * @default keystonejs-session
+   */
+  cookieName?: string;
   /**
    * Specifies the boolean value for the [`Secure` `Set-Cookie` attribute](https://tools.ietf.org/html/rfc6265#section-5.2.5).
    *
@@ -61,15 +59,18 @@ type StatelessSessionsOptions = {
   sameSite?: true | false | 'lax' | 'strict' | 'none';
 };
 
-export function statelessSessions<T>({
+const MAX_AGE = 60 * 60 * 8; // 8 hours
+
+export function statelessSessions<Session>({
   secret,
   maxAge = MAX_AGE,
+  cookieName = 'keystonejs-session',
   path = '/',
   secure = process.env.NODE_ENV === 'production',
   ironOptions = Iron.defaults,
   domain,
   sameSite = 'lax',
-}: StatelessSessionsOptions): SessionStrategy<T> {
+}: StatelessSessionsOptions): SessionStrategy<Session, any> {
   if (!secret) {
     throw new Error('You must specify a session secret to use sessions');
   }
@@ -78,12 +79,11 @@ export function statelessSessions<T>({
   }
   return {
     async get({ context }) {
-      if (!context?.req) {
-        return;
-      }
+      if (!context?.req) return;
+
       const cookies = cookie.parse(context.req.headers.cookie || '');
       const bearer = context.req.headers.authorization?.replace('Bearer ', '');
-      const token = bearer || cookies[TOKEN_NAME];
+      const token = bearer || cookies[cookieName];
       if (!token) return;
       try {
         return await Iron.unseal(token, secret, ironOptions);
@@ -91,9 +91,10 @@ export function statelessSessions<T>({
     },
     async end({ context }) {
       if (!context?.res) return;
+
       context.res.setHeader(
         'Set-Cookie',
-        cookie.serialize(TOKEN_NAME, '', {
+        cookie.serialize(cookieName, '', {
           maxAge: 0,
           expires: new Date(),
           httpOnly: true,
@@ -106,11 +107,11 @@ export function statelessSessions<T>({
     },
     async start({ context, data }) {
       if (!context?.res) return;
-      const sealedData = await Iron.seal(data, secret, { ...ironOptions, ttl: maxAge * 1000 });
 
+      const sealedData = await Iron.seal(data, secret, { ...ironOptions, ttl: maxAge * 1000 });
       context.res.setHeader(
         'Set-Cookie',
-        cookie.serialize(TOKEN_NAME, sealedData, {
+        cookie.serialize(cookieName, sealedData, {
           maxAge,
           expires: new Date(Date.now() + maxAge * 1000),
           httpOnly: true,
@@ -126,33 +127,35 @@ export function statelessSessions<T>({
   };
 }
 
-export function storedSessions({
-  store: storeOption,
+/** @deprecated */
+export function storedSessions<Session>({
+  store: storeFn,
   maxAge = MAX_AGE,
   ...statelessSessionsOptions
-}: { store: SessionStoreFunction } & StatelessSessionsOptions): SessionStrategy<JSONValue> {
-  let { get, start, end } = statelessSessions({ ...statelessSessionsOptions, maxAge });
-  let store = storeOption({ maxAge });
+}: {
+  store: SessionStoreFunction<Session>;
+} & StatelessSessionsOptions): SessionStrategy<Session, any> {
+  const stateless = statelessSessions<string>({ ...statelessSessionsOptions, maxAge });
+  const store = storeFn({ maxAge });
+
   return {
     async get({ context }) {
-      const data = (await get({ context })) as { sessionId: string } | undefined;
-      const sessionId = data?.sessionId;
-      if (typeof sessionId === 'string') {
-        return store.get(sessionId);
-      }
+      const sessionId = await stateless.get({ context });
+      if (!sessionId) return;
+
+      return store.get(sessionId);
     },
-    async start({ data, context }) {
-      let sessionId = generateSessionId();
+    async start({ context, data }) {
+      const sessionId = uid(24);
       await store.set(sessionId, data);
-      return start?.({ data: { sessionId }, context }) || '';
+      return stateless.start({ context, data: sessionId }) || '';
     },
     async end({ context }) {
-      const data = (await get({ context })) as { sessionId: string } | undefined;
-      const sessionId = data?.sessionId;
-      if (typeof sessionId === 'string') {
-        await store.delete(sessionId);
-      }
-      await end?.({ context });
+      const sessionId = await stateless.get({ context });
+      if (!sessionId) return;
+
+      await store.delete(sessionId);
+      await stateless.end({ context });
     },
   };
 }

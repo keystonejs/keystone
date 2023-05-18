@@ -1,6 +1,6 @@
 import { list } from '@keystone-6/core';
-import { unfiltered } from '@keystone-6/core/access';
-import { text, password } from '@keystone-6/core/fields';
+import { denyAll, unfiltered } from '@keystone-6/core/access';
+import { text, password, timestamp } from '@keystone-6/core/fields';
 import type { Lists } from '.keystone/types';
 
 // WARNING: this example is for demonstration purposes only
@@ -12,8 +12,9 @@ export type Session = {
   listKey: string;
   itemId: string;
   data: {
-    something: string;
+    passwordChangedAt: string;
   };
+  startedAt: number;
 };
 
 function hasSession({ session }: { session?: Session }) {
@@ -60,6 +61,28 @@ export const lists: Lists = {
         },
         // TODO: is anything else required
       }),
+
+      // a passwordChangedAt field, invalidates a session if changed
+      passwordChangedAt: timestamp({
+        access: denyAll,
+        isFilterable: false,
+        ui: {
+          createView: { fieldMode: 'hidden' },
+          itemView: { fieldMode: 'hidden' },
+          listView: { fieldMode: 'hidden' },
+        },
+      }),
+    },
+    hooks: {
+      resolveInput: {
+        update: ({ resolvedData }) => {
+          if ('password' in resolvedData) {
+            resolvedData.passwordChangedAt = new Date();
+          }
+
+          return resolvedData;
+        },
+      },
     },
   }),
 };
