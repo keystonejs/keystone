@@ -3,7 +3,8 @@ import { statelessSessions } from '@keystone-6/core/session';
 import { createAuth } from '@keystone-6/auth';
 import { fixPrismaPath } from '../example-utils';
 import { lists } from './schema';
-import type { TypeInfo, Session } from './schema';
+import type { Session } from './schema';
+import type { TypeInfo } from '.keystone/types';
 
 // WARNING: this example is for TESTING purposes only
 //   as with each of our examples, it has not been vetted
@@ -13,7 +14,7 @@ import type { TypeInfo, Session } from './schema';
 const sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
 
 // withAuth is a function we can use to wrap our base configuration
-const { withAuth } = createAuth<TypeInfo<Session>>({
+const { withAuth } = createAuth({
   // this is the list that contains our users
   listKey: 'User',
 
@@ -35,7 +36,7 @@ const { withAuth } = createAuth<TypeInfo<Session>>({
 });
 
 export default withAuth(
-  config<TypeInfo>({
+  config<TypeInfo<Session>>({
     db: {
       provider: 'sqlite',
       url: process.env.DATABASE_URL || 'file:./keystone-example.db',
