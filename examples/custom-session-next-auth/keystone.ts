@@ -24,10 +24,7 @@ const nextAuthSession = {
       | Session
       | undefined;
   },
-  // we don't need these unless we want to support the functions
-  //   context.sessionStrategy.start
-  //   context.sessionStrategy.end
-  //
+  // we don't need these as next-auth handle start and end for us
   async start() {},
   async end() {},
 };
