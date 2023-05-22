@@ -15,7 +15,7 @@ Here's an example `db.config` to work with MySQL database.
 export default config({
   db: {
     provider: 'mysql',
-    url: 'mysql://dbuser:dbpass@localhost:5432/keystone',
+    url: 'mysql://dbuser:dbpass@localhost:3306/keystone',
     idField: { kind: 'uuid' },
   },
   ...

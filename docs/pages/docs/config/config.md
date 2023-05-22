@@ -94,7 +94,7 @@ export default config({
 export default config({
   db: {
     provider: 'mysql',
-    url: 'mysql://dbuser:dbpass@localhost:5432/keystone',
+    url: 'mysql://dbuser:dbpass@localhost:3306/keystone',
     onConnect: async context => { /* ... */ },
     // Optional advanced configuration
     enableLogging: true,

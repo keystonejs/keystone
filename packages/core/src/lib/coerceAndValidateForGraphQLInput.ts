@@ -1,10 +1,10 @@
-import {
+import type {
   GraphQLSchema,
   VariableDefinitionNode,
   GraphQLInputType,
   GraphQLError,
-  Kind,
 } from 'graphql';
+import { Kind } from 'graphql';
 import { getVariableValues } from 'graphql/execution/values';
 import { getTypeNodeForType } from './context/executeGraphQLFieldToRootVal';
 

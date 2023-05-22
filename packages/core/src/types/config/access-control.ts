@@ -1,11 +1,11 @@
 import type { MaybePromise } from '../utils';
-import type { KeystoneContextFromListTypeInfo } from '..';
-import { BaseListTypeInfo } from '../type-info';
+import type { KeystoneContext } from '../context';
+import type { BaseListTypeInfo } from '../type-info';
 
 export type BaseAccessArgs<ListTypeInfo extends BaseListTypeInfo> = {
-  session: any;
+  context: KeystoneContext<ListTypeInfo['all']>;
+  session?: ListTypeInfo['all']['session'];
   listKey: string;
-  context: KeystoneContextFromListTypeInfo<ListTypeInfo>;
 };
 
 export type AccessOperation = 'create' | 'query' | 'update' | 'delete';

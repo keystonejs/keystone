@@ -10,5 +10,6 @@ packages:
   - 'tests/examples-smoke-tests'
   - 'tests/test-projects/*'
   - 'tests/sandbox'
+  - 'tests/cli-tests'
   - 'prisma-utils'
   - '!**/node_modules/**'

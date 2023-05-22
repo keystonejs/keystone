@@ -17,18 +17,17 @@ model Todo {
   label        String  @default("")
   isComplete   Boolean @default(false)
   isPrivate    Boolean @default(false)
-  assignedTo   Person? @relation("Todo_assignedTo", fields: [assignedToId], references: [id])
+  assignedTo   User?   @relation("Todo_assignedTo", fields: [assignedToId], references: [id])
   assignedToId String? @map("assignedTo")
 
   @@index([assignedToId])
 }
 
-model Person {
+model User {
   id       String  @id @default(cuid())
-  name     String  @default("")
-  email    String  @unique @default("")
+  name     String  @unique @default("")
   password String
-  role     Role?   @relation("Person_role", fields: [roleId], references: [id])
+  role     Role?   @relation("User_role", fields: [roleId], references: [id])
   roleId   String? @map("role")
   tasks    Todo[]  @relation("Todo_assignedTo")
 
@@ -36,13 +35,14 @@ model Person {
 }
 
 model Role {
-  id                 String   @id @default(cuid())
-  name               String   @default("")
-  canCreateTodos     Boolean  @default(false)
-  canManageAllTodos  Boolean  @default(false)
-  canSeeOtherPeople  Boolean  @default(false)
-  canEditOtherPeople Boolean  @default(false)
-  canManagePeople    Boolean  @default(false)
-  canManageRoles     Boolean  @default(false)
-  assignedTo         Person[] @relation("Person_role")
+  id                 String  @id @default(cuid())
+  name               String  @default("")
+  canCreateTodos     Boolean @default(false)
+  canManageAllTodos  Boolean @default(false)
+  canSeeOtherPeople  Boolean @default(false)
+  canEditOtherPeople Boolean @default(false)
+  canManagePeople    Boolean @default(false)
+  canManageRoles     Boolean @default(false)
+  canUseAdminUI      Boolean @default(false)
+  assignedTo         User[]  @relation("User_role")
 }

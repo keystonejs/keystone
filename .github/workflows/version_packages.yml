@@ -13,7 +13,6 @@ jobs:
     steps:
       - uses: actions/checkout@main
         with:
-          fetch-depth: 0
           persist-credentials: false
 
       - uses: ./.github/actions/ci-setup

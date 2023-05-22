@@ -11,5 +11,4 @@ export default config({
     ...fixPrismaPath,
   },
   lists,
-  ui: {},
 });

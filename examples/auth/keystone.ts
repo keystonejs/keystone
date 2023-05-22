@@ -18,13 +18,13 @@ const sessionMaxAge = 60 * 60 * 24 * 30;
 
 // withAuth is a function we can use to wrap our base configuration
 const { withAuth } = createAuth({
-  // this is the list that contains items people can sign in as
+  // this is the list that contains our users
   listKey: 'User',
 
-  // an identity field is typically a username or email address
-  identityField: 'email',
+  // an identity field, typically a username or an email address
+  identityField: 'name',
 
-  // a secret field must be a password type field
+  // a secret field must be a password field type
   secretField: 'password',
 
   // initFirstItem enables the "First User" experience, this will add an interface form
@@ -34,7 +34,7 @@ const { withAuth } = createAuth({
   //   see https://keystonejs.com/docs/config/auth#init-first-item for more
   initFirstItem: {
     // the following fields are used by the "Create First User" form
-    fields: ['name', 'email', 'password'],
+    fields: ['name', 'password'],
 
     // the following fields are configured by default for this item
     itemData: {
@@ -43,16 +43,8 @@ const { withAuth } = createAuth({
     },
   },
 
-  // add isAdmin to the session data(required by isAccessAllowed)
+  // add isAdmin to the session data
   sessionData: 'isAdmin',
-});
-
-// you can find out more at https://keystonejs.com/docs/apis/session#session-api
-const session = statelessSessions({
-  // an maxAge option controls how long session cookies are valid for before they expire
-  maxAge: sessionMaxAge,
-  // an session secret is used to encrypt cookie data (should be an environment variable)
-  secret: sessionSecret,
 });
 
 export default withAuth(
@@ -65,12 +57,18 @@ export default withAuth(
       ...fixPrismaPath,
     },
     lists,
-    session,
     ui: {
       // only admins can view the AdminUI
       isAccessAllowed: ({ session }) => {
-        return session?.data?.isAdmin;
+        return session?.data?.isAdmin ?? false;
       },
     },
+    // you can find out more at https://keystonejs.com/docs/apis/session#session-api
+    session: statelessSessions({
+      // the maxAge option controls how long session cookies are valid for before they expire
+      maxAge: sessionMaxAge,
+      // the session secret is used to encrypt cookie data
+      secret: sessionSecret,
+    }),
   })
 );

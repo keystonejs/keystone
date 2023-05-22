@@ -1,14 +1,14 @@
 import type { Server } from 'http';
 import type { ListenOptions } from 'net';
 import type { ApolloServerOptions } from '@apollo/server';
-import { CorsOptions } from 'cors';
-import express from 'express';
+import type { CorsOptions } from 'cors';
+import type express from 'express';
 import type { GraphQLSchema } from 'graphql';
 import type { Options as BodyParserOptions } from 'body-parser';
 
 import type { AssetMode, BaseKeystoneTypeInfo, KeystoneContext, DatabaseProvider } from '..';
 
-import { SessionStrategy } from '../session';
+import type { SessionStrategy } from '../session';
 import type { MaybePromise } from '../utils';
 import type {
   ListSchemaConfig,
@@ -95,11 +95,11 @@ export type StorageConfig = (
 
 export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   db: DatabaseConfig<TypeInfo>;
-  graphql?: GraphQLConfig;
-  lists: ListSchemaConfig;
+  graphql?: GraphQLConfig<TypeInfo>;
+  lists: ListSchemaConfig<TypeInfo['lists'][string]>;
   ui?: AdminUIConfig<TypeInfo>;
   server?: ServerConfig<TypeInfo>;
-  session?: SessionStrategy<any>;
+  session?: SessionStrategy<TypeInfo['session'], TypeInfo>;
   types?: {
     path?: string;
   };
@@ -170,6 +170,9 @@ export type AdminUIConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   /** An array of page routes that bypass the isAccessAllowed function */
   publicPages?: readonly string[];
 
+  /** The Base Path for Keystones Admin UI */
+  basePath?: string;
+
   getAdditionalFiles?: readonly ((
     config: KeystoneConfig<TypeInfo>
   ) => MaybePromise<readonly AdminFileToWrite[]>)[];
@@ -222,7 +225,7 @@ export type ServerConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
 
 // config.graphql
 
-export type GraphQLConfig = {
+export type GraphQLConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   // The path of the GraphQL API endpoint. Default: '/api/graphql'.
   path?: string;
   // The CORS configuration to use on the GraphQL API endpoint.
@@ -240,7 +243,7 @@ export type GraphQLConfig = {
    *  Additional options to pass into the ApolloServer constructor.
    *  @see https://www.apollographql.com/docs/apollo-server/api/apollo-server/#constructor
    */
-  apolloConfig?: Partial<ApolloServerOptions<KeystoneContext>>;
+  apolloConfig?: Partial<ApolloServerOptions<KeystoneContext<TypeInfo>>>;
   /**
    * When an error is returned from the GraphQL API, Apollo can include a stacktrace
    * indicating where the error occurred. When Keystone is processing mutations, it

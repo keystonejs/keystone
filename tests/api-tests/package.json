@@ -14,8 +14,8 @@
     "@keystone-6/auth": "*",
     "@keystone-6/core": "*",
     "@keystone-6/fields-document": "*",
-    "@prisma/client": "^4.13.0",
-    "@prisma/internals": "^4.13.0",
+    "@prisma/client": "^4.14.0",
+    "@prisma/internals": "^4.14.0",
     "@types/express": "^4.17.14",
     "cookie-signature": "^1.1.0",
     "cuid": "^2.1.8",
@@ -25,7 +25,7 @@
     "graphql-upload": "^15.0.2",
     "mime": "^3.0.0",
     "node-fetch": "^2.6.7",
-    "prisma": "^4.13.0",
+    "prisma": "^4.14.0",
     "supertest": "^6.1.6",
     "testcheck": "^1.0.0-rc.2",
     "uuid": "^9.0.0"
@@ -37,7 +37,6 @@
     "@types/superagent": "^4.1.15",
     "@types/supertest": "^2.0.11",
     "@types/uuid": "^8.3.1",
-    "express": "^4.17.1",
-    "strip-ansi": "^6.0.1"
+    "express": "^4.17.1"
   }
 }

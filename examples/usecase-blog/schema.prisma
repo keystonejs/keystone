@@ -16,7 +16,6 @@ model Author {
   id        String    @id @default(cuid())
   name      String    @default("")
   email     String    @unique @default("")
-  password  String
   posts     Post[]    @relation("Post_author")
   createdAt DateTime? @default(now())
 }

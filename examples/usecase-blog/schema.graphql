@@ -5,14 +5,9 @@ type Author {
   id: ID!
   name: String
   email: String
-  password: PasswordState
   posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
   createdAt: DateTime
-}
-
-type PasswordState {
-  isSet: Boolean!
 }
 
 scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
@@ -104,7 +99,6 @@ enum OrderDirection {
 input AuthorUpdateInput {
   name: String
   email: String
-  password: String
   posts: PostRelateToManyForUpdateInput
   createdAt: DateTime
 }
@@ -124,7 +118,6 @@ input AuthorUpdateArgs {
 input AuthorCreateInput {
   name: String
   email: String
-  password: String
   posts: PostRelateToManyForCreateInput
   createdAt: DateTime
 }

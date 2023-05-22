@@ -1,5 +1,5 @@
 import { list } from '@keystone-6/core';
-import { allowAll } from '@keystone-6/core/access';
+import { allowAll, denyAll } from '@keystone-6/core/access';
 import { text, checkbox, password } from '@keystone-6/core/fields';
 import type { Lists } from '.keystone/types';
 
@@ -14,17 +14,11 @@ type Session = {
   };
 };
 
-function hasSession({ session }: { session: Session | undefined }) {
+function hasSession({ session }: { session?: Session }) {
   return Boolean(session);
 }
 
-function isAdminOrSameUser({
-  session,
-  item,
-}: {
-  session: Session | undefined;
-  item: Lists.User.Item;
-}) {
+function isAdminOrSameUser({ session, item }: { session?: Session; item: Lists.User.Item }) {
   // you need to have a session to do this
   if (!session) return false;
 
@@ -35,7 +29,7 @@ function isAdminOrSameUser({
   return session.itemId === item.id;
 }
 
-function isAdminOrSameUserFilter({ session }: { session: Session | undefined }) {
+function isAdminOrSameUserFilter({ session }: { session?: Session }) {
   // you need to have a session to do this
   if (!session) return false;
 
@@ -50,7 +44,7 @@ function isAdminOrSameUserFilter({ session }: { session: Session | undefined }) 
   };
 }
 
-function isAdmin({ session }: { session: Session | undefined }) {
+function isAdmin({ session }: { session?: Session }) {
   // you need to have a session to do this
   if (!session) return false;
 
@@ -79,7 +73,7 @@ export const lists: Lists = {
         update: isAdminOrSameUserFilter,
       },
       item: {
-        // this is redundant as ^filter.update should prevent unauthorised updates
+        // this is redundant as ^filter.update should stop unauthorised updates
         //   we include it anyway as a demonstration
         update: isAdminOrSameUser,
       },
@@ -89,18 +83,16 @@ export const lists: Lists = {
       hideDelete: args => !isAdmin(args),
       listView: {
         // the default columns that will be displayed in the list view
-        initialColumns: ['name', 'email', 'isAdmin'],
+        initialColumns: ['name', 'isAdmin'],
       },
     },
     fields: {
-      // the user's name, publicly visible
-      name: text({ validation: { isRequired: true } }),
-
-      // the user's email address, used as the identity field for authentication
+      // the user's name, used as the identity field for authentication
       //   should not be publicly visible
       //
-      //   we use isIndexed to enforce this email is unique
-      email: text({
+      //   we use isIndexed to enforce names are unique
+      //     that may not suitable for your application
+      name: text({
         access: {
           // only the respective user, or an admin can read this field
           read: isAdminOrSameUser,
@@ -120,8 +112,11 @@ export const lists: Lists = {
       //   should not be publicly visible
       password: password({
         access: {
-          read: isAdminOrSameUser, // TODO: is this required?
+          read: denyAll, // TODO: is this required?
           update: isAdminOrSameUser,
+        },
+        validation: {
+          isRequired: true,
         },
         ui: {
           itemView: {
@@ -129,8 +124,7 @@ export const lists: Lists = {
             fieldMode: args => (isAdminOrSameUser(args) ? 'edit' : 'hidden'),
           },
           listView: {
-            // TODO: ?
-            fieldMode: args => (isAdmin(args) ? 'read' : 'hidden'),
+            fieldMode: 'hidden', // TODO: is this required?
           },
         },
       }),

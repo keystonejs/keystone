@@ -1,25 +1,11 @@
 import url from 'url';
 import path from 'path';
 import express from 'express';
+import type next from 'next';
 import type { KeystoneConfig, KeystoneContext } from '../../types';
 import { pkgDir } from '../../pkg-dir';
 
 const adminErrorHTMLFilepath = path.join(pkgDir, 'static', 'admin-error.html');
-
-type NextApp = {
-  prepare(): Promise<void>;
-  getRequestHandler(): express.Application;
-  render(req: express.Request, res: express.Response, url: string): void;
-};
-
-export async function getNextApp(dev: boolean, projectAdminPath: string): Promise<NextApp> {
-  /** We do this to stop webpack from bundling next inside of next */
-  const _next = 'next';
-  const next = require(_next);
-  const app = next({ dev, dir: projectAdminPath }) as NextApp;
-  await app.prepare();
-  return app;
-}
 
 function defaultIsAccessAllowed({ session, sessionStrategy }: KeystoneContext) {
   if (!sessionStrategy) return true;
@@ -29,7 +15,7 @@ function defaultIsAccessAllowed({ session, sessionStrategy }: KeystoneContext) {
 export function createAdminUIMiddlewareWithNextApp(
   config: KeystoneConfig,
   commonContext: KeystoneContext,
-  nextApp: NextApp
+  nextApp: ReturnType<typeof next>
 ) {
   const handle = nextApp.getRequestHandler();
 
@@ -81,15 +67,4 @@ export function createAdminUIMiddlewareWithNextApp(
       });
     }
   };
-}
-
-export async function createAdminUIMiddleware(
-  config: KeystoneConfig,
-  context: KeystoneContext,
-  dev: boolean,
-  projectAdminPath: string
-  // TODO: return type required by pnpm
-): Promise<(req: express.Request, res: express.Response) => void> {
-  const nextApp = await getNextApp(dev, projectAdminPath);
-  return createAdminUIMiddlewareWithNextApp(config, context, nextApp);
 }

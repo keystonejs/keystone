@@ -66,7 +66,7 @@ function internalResolveFilter(
       return {
         AND: [
           {
-            NOT: [internalResolveFilter(objectEntriesButAssumeNoExtraProperties(val) as any, mode)],
+            NOT: [internalResolveFilter(objectEntriesButAssumeNoExtraProperties(val), mode)],
           },
           internalResolveFilter(entries, mode),
         ],
@@ -84,6 +84,6 @@ export function resolveString(
   val: (CommonFilter<string> & { mode?: 'default' | 'insensitive' | null }) | null
 ) {
   if (val === null) return null;
-  let { mode, ...rest } = val;
-  return internalResolveFilter(objectEntriesButAssumeNoExtraProperties(rest), mode as any);
+  const { mode, ...value } = val;
+  return internalResolveFilter(objectEntriesButAssumeNoExtraProperties(value), mode ?? undefined);
 }

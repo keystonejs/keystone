@@ -4,11 +4,11 @@ import { printSchema, GraphQLSchema } from 'graphql';
 import * as fs from 'fs-extra';
 import { getGenerator, formatSchema } from '@prisma/internals';
 import type { KeystoneConfig } from './types';
-import { confirmPrompt, shouldPrompt } from './lib/prompts';
 import { printGeneratedTypes } from './lib/schema-type-printer';
 import { ExitError } from './scripts/utils';
 import { initialiseLists } from './lib/core/types-for-lists';
 import { printPrismaSchema } from './lib/core/prisma-schema-printer';
+import { initConfig } from './lib/config';
 
 export function getFormattedGraphQLSchema(schema: string) {
   return (
@@ -78,6 +78,11 @@ export function getBuiltKeystoneConfigurationPath(cwd: string) {
   return path.join(cwd, '.keystone/config.js');
 }
 
+export function getBuiltKeystoneConfiguration(cwd: string) {
+  const configPath = getBuiltKeystoneConfigurationPath(cwd);
+  return initConfig(require(configPath).default);
+}
+
 function posixify(s: string) {
   return s.split(path.sep).join('/');
 }
@@ -139,23 +144,8 @@ export async function validatePrismaAndGraphQLSchemas(
     graphql: 'Your GraphQL schema is not up to date',
     prisma: 'Your Prisma schema is not up to date',
   }[outOfDateSchemas];
-  console.log(message);
+  console.error(message);
 
-  const which = {
-    both: 'Prisma and GraphQL schemas',
-    prisma: 'Prisma schema',
-    graphql: 'GraphQL schema',
-  }[outOfDateSchemas];
-
-  if (shouldPrompt && (await confirmPrompt(`Replace the ${which}?`))) {
-    await Promise.all([
-      fs.writeFile(paths.schema.graphql, artifacts.graphql),
-      fs.writeFile(paths.schema.prisma, artifacts.prisma),
-    ]);
-    return;
-  }
-
-  console.log(`Use keystone dev to update the ${which}`);
   throw new ExitError(1);
 }
 

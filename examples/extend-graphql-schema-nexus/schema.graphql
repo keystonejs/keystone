@@ -138,14 +138,12 @@ input AuthorRelateToOneForCreateInput {
 type Author {
   id: ID!
   name: String
-  email: String
   posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
 }
 
 input AuthorWhereUniqueInput {
   id: ID
-  email: String
 }
 
 input AuthorWhereInput {
@@ -154,7 +152,6 @@ input AuthorWhereInput {
   NOT: [AuthorWhereInput!]
   id: IDFilter
   name: StringFilter
-  email: StringFilter
   posts: PostManyRelationFilter
 }
 
@@ -167,12 +164,10 @@ input PostManyRelationFilter {
 input AuthorOrderByInput {
   id: OrderDirection
   name: OrderDirection
-  email: OrderDirection
 }
 
 input AuthorUpdateInput {
   name: String
-  email: String
   posts: PostRelateToManyForUpdateInput
 }
 
@@ -190,7 +185,6 @@ input AuthorUpdateArgs {
 
 input AuthorCreateInput {
   name: String
-  email: String
   posts: PostRelateToManyForCreateInput
 }
 

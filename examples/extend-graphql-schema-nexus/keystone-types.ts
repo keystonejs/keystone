@@ -133,7 +133,6 @@ export type AuthorRelateToOneForCreateInput = {
 
 export type AuthorWhereUniqueInput = {
   readonly id?: Scalars['ID'] | null;
-  readonly email?: Scalars['String'] | null;
 };
 
 export type AuthorWhereInput = {
@@ -142,7 +141,6 @@ export type AuthorWhereInput = {
   readonly NOT?: ReadonlyArray<AuthorWhereInput> | AuthorWhereInput | null;
   readonly id?: IDFilter | null;
   readonly name?: StringFilter | null;
-  readonly email?: StringFilter | null;
   readonly posts?: PostManyRelationFilter | null;
 };
 
@@ -155,12 +153,10 @@ export type PostManyRelationFilter = {
 export type AuthorOrderByInput = {
   readonly id?: OrderDirection | null;
   readonly name?: OrderDirection | null;
-  readonly email?: OrderDirection | null;
 };
 
 export type AuthorUpdateInput = {
   readonly name?: Scalars['String'] | null;
-  readonly email?: Scalars['String'] | null;
   readonly posts?: PostRelateToManyForUpdateInput | null;
 };
 
@@ -178,7 +174,6 @@ export type AuthorUpdateArgs = {
 
 export type AuthorCreateInput = {
   readonly name?: Scalars['String'] | null;
-  readonly email?: Scalars['String'] | null;
   readonly posts?: PostRelateToManyForCreateInput | null;
 };
 
@@ -238,22 +233,20 @@ type ResolvedPostUpdateInput = {
 type ResolvedAuthorCreateInput = {
   id?: undefined;
   name?: import('./node_modules/.myprisma/client').Prisma.AuthorCreateInput['name'];
-  email?: import('./node_modules/.myprisma/client').Prisma.AuthorCreateInput['email'];
   posts?: import('./node_modules/.myprisma/client').Prisma.AuthorCreateInput['posts'];
 };
 
 type ResolvedAuthorUpdateInput = {
   id?: undefined;
   name?: import('./node_modules/.myprisma/client').Prisma.AuthorUpdateInput['name'];
-  email?: import('./node_modules/.myprisma/client').Prisma.AuthorUpdateInput['email'];
   posts?: import('./node_modules/.myprisma/client').Prisma.AuthorUpdateInput['posts'];
 };
 
 export declare namespace Lists {
-  export type Post = import('@keystone-6/core').ListConfig<Lists.Post.TypeInfo, any>;
+  export type Post<Session = any> = import('@keystone-6/core').ListConfig<Lists.Post.TypeInfo<Session>, any>;
   namespace Post {
     export type Item = import('./node_modules/.myprisma/client').Post;
-    export type TypeInfo = {
+    export type TypeInfo<Session = any> = {
       key: 'Post';
       isSingleton: false;
       fields: 'id' | 'title' | 'status' | 'content' | 'publishDate' | 'author'
@@ -269,16 +262,16 @@ export declare namespace Lists {
         create: ResolvedPostCreateInput;
         update: ResolvedPostUpdateInput;
       };
-      all: __TypeInfo;
+      all: __TypeInfo<Session>;
     };
   }
-  export type Author = import('@keystone-6/core').ListConfig<Lists.Author.TypeInfo, any>;
+  export type Author<Session = any> = import('@keystone-6/core').ListConfig<Lists.Author.TypeInfo<Session>, any>;
   namespace Author {
     export type Item = import('./node_modules/.myprisma/client').Author;
-    export type TypeInfo = {
+    export type TypeInfo<Session = any> = {
       key: 'Author';
       isSingleton: false;
-      fields: 'id' | 'name' | 'email' | 'posts'
+      fields: 'id' | 'name' | 'posts'
       item: Item;
       inputs: {
         where: AuthorWhereInput;
@@ -291,24 +284,26 @@ export declare namespace Lists {
         create: ResolvedAuthorCreateInput;
         update: ResolvedAuthorUpdateInput;
       };
-      all: __TypeInfo;
+      all: __TypeInfo<Session>;
     };
   }
 }
-export type Context = import('@keystone-6/core/types').KeystoneContext<TypeInfo>;
+export type Context<Session = any> = import('@keystone-6/core/types').KeystoneContext<TypeInfo<Session>>;
+export type Config<Session = any> = import('@keystone-6/core/types').KeystoneConfig<TypeInfo<Session>>;
 
-export type TypeInfo = {
+export type TypeInfo<Session = any> = {
   lists: {
     readonly Post: Lists.Post.TypeInfo;
     readonly Author: Lists.Author.TypeInfo;
   };
   prisma: import('./node_modules/.myprisma/client').PrismaClient;
+  session: Session;
 };
 
-type __TypeInfo = TypeInfo;
+type __TypeInfo<Session = any> = TypeInfo<Session>;
 
-export type Lists = {
-  [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core').ListConfig<TypeInfo['lists'][Key], any>
+export type Lists<Session = any> = {
+  [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core').ListConfig<TypeInfo<Session>['lists'][Key], any>
 } & Record<string, import('@keystone-6/core').ListConfig<any, any>>;
 
 export {}

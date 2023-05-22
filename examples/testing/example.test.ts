@@ -14,15 +14,14 @@ beforeEach(async () => {
   await resetDatabase(dbUrl, prismaSchemaPath);
 });
 
-test('Create a Person using the Query API', async () => {
+test('Create a User using the Query API', async () => {
   // We can use the context argument provided by the test runner to access
   // the full context API.
-  const person = await context.query.Person.createOne({
-    data: { name: 'Alice', email: 'alice@example.com', password: 'super-secret' },
-    query: 'id name email password { isSet }',
+  const person = await context.query.User.createOne({
+    data: { name: 'Alice', password: 'dont-use-me' },
+    query: 'id name password { isSet }',
   });
   expect(person.name).toEqual('Alice');
-  expect(person.email).toEqual('alice@example.com');
   expect(person.password.isSet).toEqual(true);
 });
 
@@ -31,16 +30,16 @@ test('Check that trying to create user with no name (required field) fails', asy
   // error from an operation.
   const { data, errors } = (await context.graphql.raw({
     query: `mutation {
-          createPerson(data: { email: "alice@example.com", password: "super-secret" }) {
-            id name email password { isSet }
+          createUser(data: { password: "dont-use-me" }) {
+            id name password { isSet }
           }
         }`,
   })) as any;
-  expect(data!.createPerson).toBe(null);
+  expect(data!.createUser).toBe(null);
   expect(errors).toHaveLength(1);
-  expect(errors![0].path).toEqual(['createPerson']);
+  expect(errors![0].path).toEqual(['createUser']);
   expect(errors![0].message).toEqual(
-    'You provided invalid data for this operation.\n  - Person.name: Name must not be empty'
+    'You provided invalid data for this operation.\n  - User.name: Name must not be empty'
   );
 });
 
@@ -50,10 +49,10 @@ test('Check access control by running updateTask as a specific user via context.
   // are behaving as expected.
 
   // Create some users
-  const [alice, bob] = await context.query.Person.createMany({
+  const [alice, bob] = await context.query.User.createMany({
     data: [
-      { name: 'Alice', email: 'alice@example.com', password: 'super-secret' },
-      { name: 'Bob', email: 'bob@example.com', password: 'super-secret' },
+      { name: 'Alice', password: 'dont-use-me' },
+      { name: 'Bob', password: 'dont-use-me' },
     ],
     query: 'id name',
   });
@@ -96,7 +95,7 @@ test('Check access control by running updateTask as a specific user via context.
   {
     // Check that we can update the task when logged in as Alice
     const { data, errors } = (await context
-      .withSession({ itemId: alice.id, data: {} })
+      .withSession({ listKey: 'User', itemId: alice.id, data: {} })
       .graphql.raw({
         query: `mutation update($id: ID!) {
               updateTask(where: { id: $id }, data: { isComplete: true }) {
@@ -111,14 +110,16 @@ test('Check access control by running updateTask as a specific user via context.
 
   // Check that we can't update the task when logged in as Bob
   {
-    const { data, errors } = (await context.withSession({ itemId: bob.id, data: {} }).graphql.raw({
-      query: `mutation update($id: ID!) {
+    const { data, errors } = (await context
+      .withSession({ listKey: 'User', itemId: bob.id, data: {} })
+      .graphql.raw({
+        query: `mutation update($id: ID!) {
               updateTask(where: { id: $id }, data: { isComplete: true }) {
                 id
               }
             }`,
-      variables: { id: task.id },
-    })) as any;
+        variables: { id: task.id },
+      })) as any;
     expect(data!.updateTask).toBe(null);
     expect(errors).toHaveLength(1);
     expect(errors![0].path).toEqual(['updateTask']);

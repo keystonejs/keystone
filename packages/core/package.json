@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/core",
-  "version": "5.1.0",
+  "version": "5.2.0",
   "repository": "https://github.com/keystonejs/keystone/tree/main/packages/core",
   "license": "MIT",
   "main": "dist/keystone-6-core.cjs.js",
@@ -9,6 +9,10 @@
     ".": {
       "module": "./dist/keystone-6-core.esm.js",
       "default": "./dist/keystone-6-core.cjs.js"
+    },
+    "./access": {
+      "module": "./access/dist/keystone-6-core-access.esm.js",
+      "default": "./access/dist/keystone-6-core-access.cjs.js"
     },
     "./system": {
       "module": "./system/dist/keystone-6-core-system.esm.js",
@@ -29,10 +33,6 @@
     "./types": {
       "module": "./types/dist/keystone-6-core-types.esm.js",
       "default": "./types/dist/keystone-6-core-types.cjs.js"
-    },
-    "./access": {
-      "module": "./access/dist/keystone-6-core-access.esm.js",
-      "default": "./access/dist/keystone-6-core-access.cjs.js"
     },
     "./fields": {
       "module": "./fields/dist/keystone-6-core-fields.esm.js",
@@ -146,14 +146,6 @@
       "module": "./___internal-do-not-use-will-break-in-patch/artifacts/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-artifacts.esm.js",
       "default": "./___internal-do-not-use-will-break-in-patch/artifacts/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-artifacts.cjs.js"
     },
-    "./___internal-do-not-use-will-break-in-patch/load-config": {
-      "module": "./___internal-do-not-use-will-break-in-patch/load-config/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-load-config.esm.js",
-      "default": "./___internal-do-not-use-will-break-in-patch/load-config/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-load-config.cjs.js"
-    },
-    "./___internal-do-not-use-will-break-in-patch/admin-ui/next-config": {
-      "module": "./___internal-do-not-use-will-break-in-patch/admin-ui/next-config/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-next-config.esm.js",
-      "default": "./___internal-do-not-use-will-break-in-patch/admin-ui/next-config/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-next-config.cjs.js"
-    },
     "./___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view": {
       "module": "./___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-id-field-view.esm.js",
       "default": "./___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view/dist/keystone-6-core-___internal-do-not-use-will-break-in-patch-admin-ui-id-field-view.cjs.js"
@@ -204,7 +196,7 @@
     "@hapi/iron": "^7.0.0",
     "@keystone-ui/button": "^7.0.2",
     "@keystone-ui/core": "^5.0.2",
-    "@keystone-ui/fields": "^7.1.2",
+    "@keystone-ui/fields": "^7.2.0",
     "@keystone-ui/icons": "^6.0.2",
     "@keystone-ui/loading": "^6.0.2",
     "@keystone-ui/modals": "^6.0.3",
@@ -216,10 +208,9 @@
     "@keystone-ui/toast": "^6.0.2",
     "@keystone-ui/tooltip": "^6.0.2",
     "@nodelib/fs.walk": "^1.2.8",
-    "@preconstruct/next": "^4.0.0",
-    "@prisma/client": "4.13.0",
-    "@prisma/internals": "4.13.0",
-    "@prisma/migrate": "4.13.0",
+    "@prisma/client": "4.14.0",
+    "@prisma/internals": "4.14.0",
+    "@prisma/migrate": "4.14.0",
     "@sindresorhus/slugify": "^1.1.2",
     "@types/apollo-upload-client": "17.0.2",
     "@types/bcryptjs": "^2.4.2",
@@ -267,7 +258,7 @@
     "node-fetch": "^2.6.7",
     "p-limit": "^2.3.0",
     "pluralize": "^8.0.0",
-    "prisma": "4.13.0",
+    "prisma": "4.14.0",
     "prompts": "^2.4.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -277,24 +268,22 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@keystone-6/core": "5.1.0",
+    "@keystone-6/core": "5.2.0",
     "@types/bytes": "^3.1.1",
     "@types/mime": "^3.0.0",
     "@types/resolve": "^1.20.2",
     "fast-glob": "^3.2.7",
     "fixturez": "^1.1.0",
-    "mime": "^3.0.0",
-    "string-argv": "^0.3.1",
-    "strip-ansi": "^6.0.1"
+    "mime": "^3.0.0"
   },
   "preconstruct": {
     "entrypoints": [
       "index.ts",
+      "access.ts",
       "system.ts",
-      "___internal-do-not-use-will-break-in-patch/load-config.ts",
       "___internal-do-not-use-will-break-in-patch/artifacts.ts",
       "___internal-do-not-use-will-break-in-patch/admin-ui/pages/*/index.tsx",
-      "___internal-do-not-use-will-break-in-patch/admin-ui/{next-config.ts,id-field-view.tsx}",
+      "___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view.tsx",
       "context.ts",
       "testing.ts",
       "session/index.ts",
@@ -310,8 +299,7 @@
       "fields/types/*/views/index.tsx",
       "fields/types/relationship/views/RelationshipSelect.tsx",
       "fields/types/{image,file}/utils.ts",
-      "types/index.ts",
-      "access/index.ts"
+      "types/index.ts"
     ],
     "exports": {
       "extra": {

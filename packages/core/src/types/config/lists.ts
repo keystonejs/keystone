@@ -1,12 +1,16 @@
 import type { CacheHint } from '@apollo/cache-control-types';
 import type { MaybePromise } from '../utils';
-import { BaseListTypeInfo } from '../type-info';
-import { KeystoneContextFromListTypeInfo } from '..';
+import type { BaseListTypeInfo } from '../type-info';
+import type { KeystoneContext } from '../context';
 import type { ListHooks } from './hooks';
 import type { ListAccessControl } from './access-control';
 import type { BaseFields, FilterOrderArgs } from './fields';
 
-export type ListSchemaConfig = Record<string, ListConfig<any, BaseFields<BaseListTypeInfo>>>;
+// TODO: inline
+export type ListSchemaConfig<ListTypeInfo extends BaseListTypeInfo = BaseListTypeInfo> = Record<
+  string,
+  ListConfig<any, BaseFields<BaseListTypeInfo>>
+>;
 
 export type IdFieldConfig =
   | { kind: 'cuid' | 'uuid'; type?: 'String' }
@@ -21,10 +25,10 @@ export type IdFieldConfig =
 
 export type ListConfig<
   ListTypeInfo extends BaseListTypeInfo,
-  Fields extends BaseFields<ListTypeInfo>
+  Fields extends BaseFields<ListTypeInfo> = BaseFields<ListTypeInfo> // TODO: remove in breaking change
 > = {
   isSingleton?: boolean;
-  fields: Fields;
+  fields: BaseFields<ListTypeInfo>;
 
   /**
    * Controls what data users of the Admin UI and GraphQL can access and change
@@ -33,7 +37,7 @@ export type ListConfig<
   access: ListAccessControl<ListTypeInfo>;
 
   /** Config for how this list should act in the Admin UI */
-  ui?: ListAdminUIConfig<ListTypeInfo, Fields>;
+  ui?: ListAdminUIConfig<ListTypeInfo, BaseFields<ListTypeInfo>>;
 
   /**
    * Hooks to modify the behaviour of GraphQL operations at certain points
@@ -57,7 +61,7 @@ export type ListConfig<
 
 export type ListAdminUIConfig<
   ListTypeInfo extends BaseListTypeInfo,
-  Fields extends BaseFields<ListTypeInfo>
+  Fields extends BaseFields<ListTypeInfo> = BaseFields<ListTypeInfo> // TODO: remove in breaking change
 > = {
   /**
    * The field to use as a label in the Admin UI. If you want to base the label off more than a single field, use a virtual field and reference that field here.
@@ -181,15 +185,15 @@ export type MaybeSessionFunction<
 > =
   | T
   | ((args: {
-      session: any;
-      context: KeystoneContextFromListTypeInfo<ListTypeInfo>;
+      context: KeystoneContext<ListTypeInfo['all']>;
+      session?: ListTypeInfo['all']['session'];
     }) => MaybePromise<T>);
 
 export type MaybeItemFunction<T, ListTypeInfo extends BaseListTypeInfo> =
   | T
   | ((args: {
-      session: any;
-      context: KeystoneContextFromListTypeInfo<ListTypeInfo>;
+      context: KeystoneContext<ListTypeInfo['all']>;
+      session?: ListTypeInfo['all']['session'];
       item: ListTypeInfo['item'];
     }) => MaybePromise<T>);
 

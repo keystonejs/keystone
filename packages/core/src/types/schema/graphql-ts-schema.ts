@@ -99,7 +99,7 @@ type FieldFuncArgs<
   Args extends { [Key in keyof Args]: graphqlTsSchema.Arg<graphqlTsSchema.InputType> },
   Type extends OutputType,
   Key extends string,
-  Context extends KeystoneContext<any>
+  Context extends KeystoneContext
 > = {
   args?: Args;
   type: Type;
@@ -112,16 +112,14 @@ type FieldFunc = <
   Source,
   Type extends OutputType,
   Key extends string,
-  Context extends KeystoneContext,
+  Context extends KeystoneContext<any>,
   Args extends { [Key in keyof Args]: graphqlTsSchema.Arg<graphqlTsSchema.InputType> } = {}
 >(
   field: FieldFuncArgs<Source, Args, Type, Key, Context>
-) => graphqlTsSchema.Field<Source, Args, Type, Key, KeystoneContext>;
+) => graphqlTsSchema.Field<Source, Args, Type, Key, Context>;
 
 export const field = fieldd as FieldFunc;
 // TODO: remove when we use { graphql } from '.keystone'
-
-export type Context = KeystoneContext;
 
 export const JSON = graphqlTsSchema.graphql.scalar<JSONValue>(
   new GraphQLScalarType({
@@ -300,28 +298,41 @@ export const CalendarDay = graphqlTsSchema.graphql.scalar<string>(
   })
 );
 
-export type NullableType = graphqlTsSchema.NullableType<Context>;
-export type Type = graphqlTsSchema.Type<Context>;
-export type NullableOutputType = graphqlTsSchema.NullableOutputType<Context>;
-export type OutputType = graphqlTsSchema.OutputType<Context>;
+export type NullableType<Context extends KeystoneContext = KeystoneContext> =
+  graphqlTsSchema.NullableType<Context>;
+export type Type<Context extends KeystoneContext = KeystoneContext> = graphqlTsSchema.Type<Context>;
+export type NullableOutputType<Context extends KeystoneContext = KeystoneContext> =
+  graphqlTsSchema.NullableOutputType<Context>;
+export type OutputType<Context extends KeystoneContext = KeystoneContext> =
+  graphqlTsSchema.OutputType<Context>;
 export type Field<
   Source,
   Args extends Record<string, graphqlTsSchema.Arg<any>>,
-  TType extends OutputType,
-  Key extends string
+  TType extends OutputType<Context>,
+  Key extends string,
+  Context extends KeystoneContext = KeystoneContext
 > = graphqlTsSchema.Field<Source, Args, TType, Key, Context>;
 export type FieldResolver<
   Source,
   Args extends Record<string, graphqlTsSchema.Arg<any>>,
-  TType extends OutputType
+  TType extends OutputType<Context>,
+  Context extends KeystoneContext = KeystoneContext
 > = graphqlTsSchema.FieldResolver<Source, Args, TType, Context>;
-export type ObjectType<Source> = graphqlTsSchema.ObjectType<Source, Context>;
-export type UnionType<Source> = graphqlTsSchema.UnionType<Source, Context>;
+export type ObjectType<
+  Source,
+  Context extends KeystoneContext = KeystoneContext
+> = graphqlTsSchema.ObjectType<Source, Context>;
+export type UnionType<
+  Source,
+  Context extends KeystoneContext = KeystoneContext
+> = graphqlTsSchema.UnionType<Source, Context>;
 export type InterfaceType<
   Source,
-  Fields extends Record<string, graphqlTsSchema.InterfaceField<any, OutputType, Context>>
+  Fields extends Record<string, graphqlTsSchema.InterfaceField<any, OutputType<Context>, Context>>,
+  Context extends KeystoneContext = KeystoneContext
 > = graphqlTsSchema.InterfaceType<Source, Fields, Context>;
 export type InterfaceField<
   Args extends Record<string, graphqlTsSchema.Arg<any>>,
-  TType extends OutputType
+  TType extends OutputType<Context>,
+  Context extends KeystoneContext = KeystoneContext
 > = graphqlTsSchema.InterfaceField<Args, TType, Context>;

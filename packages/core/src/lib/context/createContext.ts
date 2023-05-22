@@ -52,8 +52,8 @@ export function createContext({
     sudo?: Boolean;
     req?: IncomingMessage;
     res?: ServerResponse;
-    session?: any;
-  } = {}): KeystoneContext => {
+    session?: unknown;
+  } = {}) => {
     const schema = sudo ? graphQLSchemaSudo : graphQLSchema;
     const rawGraphQL: KeystoneGraphQLAPI['raw'] = ({ query, variables }) => {
       const source = typeof query === 'string' ? query : print(query);
@@ -97,7 +97,7 @@ export function createContext({
       req,
       res,
       sessionStrategy: config.session,
-      session,
+      ...(session ? { session } : {}),
 
       withRequest,
       withSession: session => {

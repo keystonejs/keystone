@@ -27,7 +27,6 @@ export const lists: Lists = {
     access: allowAll,
     fields: {
       name: text({ validation: { isRequired: true } }),
-      email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
       posts: relationship({ ref: 'Post.author', many: true }),
     },
   }),

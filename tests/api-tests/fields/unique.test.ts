@@ -21,9 +21,10 @@ const expectedUniqueConstraintError =
         target: ['testField'],
       };
 
-const testModules = globby.sync(`packages/*/src/**/test-fixtures.{js,ts}`, {
+const testModules = globby.sync(`tests/api-tests/fields/types/fixtures/**/test-fixtures.{js,ts}`, {
   absolute: true,
 });
+
 testModules
   .map(require)
   .filter(mod => !mod.skipUniqueTest)

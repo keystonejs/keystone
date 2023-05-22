@@ -1,8 +1,8 @@
 import pLimit from 'p-limit';
-import { FieldData, KeystoneConfig } from '../types';
+import type { FieldData, KeystoneConfig } from '../types';
 
 import { createAdminMeta } from '../admin-ui/system/createAdminMeta';
-import { PrismaModule } from '../artifacts';
+import type { PrismaModule } from '../artifacts';
 import { allowAll } from '../access';
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { createContext } from './context/createContext';

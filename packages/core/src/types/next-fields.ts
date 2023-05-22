@@ -1,9 +1,9 @@
 import Decimal from 'decimal.js';
 import { graphql } from '..';
-import { BaseListTypeInfo } from './type-info';
-import { CommonFieldConfig } from './config';
-import { DatabaseProvider } from './core';
-import { JSONValue, KeystoneContext, MaybePromise, StorageConfig } from '.';
+import type { BaseListTypeInfo } from './type-info';
+import type { CommonFieldConfig } from './config';
+import type { DatabaseProvider } from './core';
+import type { JSONValue, KeystoneContext, MaybePromise, StorageConfig } from '.';
 
 export { Decimal };
 
@@ -477,7 +477,8 @@ export function fieldType<TDBField extends DBField, ListTypeInfo extends BaseLis
       UpdateArg,
       UniqueWhereArg,
       OrderByArg,
-      FilterArg
+      FilterArg,
+      ListTypeInfo
     >
   ): NextFieldType<
     TDBField,

@@ -7,7 +7,7 @@
   "license": "MIT",
   "repository": "https://github.com/keystonejs/keystone",
   "homepage": "https://github.com/keystonejs/keystone",
-  "packageManager": "pnpm@8.3.0",
+  "packageManager": "pnpm@8.5.1",
   "scripts": {
     "coverage": "jest --coverage",
     "format:file": "prettier --write",
@@ -34,8 +34,10 @@
     "@babel/preset-typescript": "^7.21.0",
     "@changesets/changelog-github": "^0.4.1",
     "@changesets/cli": "^2.18.0",
+    "@changesets/get-github-info": "^0.5.2",
+    "@changesets/get-release-plan": "^3.0.16",
     "@manypkg/cli": "^0.20.0",
-    "@preconstruct/cli": "2.5.0",
+    "@preconstruct/cli": "2.6.2",
     "@types/jest": "^29.0.0",
     "@types/node": "^18.11.14",
     "@types/node-fetch": "^2.5.12",
@@ -73,9 +75,7 @@
   "preconstruct": {
     "packages": [
       "packages/*",
-      "design-system/packages/*",
-      "prisma-utils",
-      "scripts/*"
+      "design-system/packages/*"
     ],
     "exports": true,
     "___experimentalFlags_WILL_CHANGE_IN_PATCH": {

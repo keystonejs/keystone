@@ -195,11 +195,9 @@ async function getResolvedData(
   nestedMutationState: NestedMutationState
 ) {
   const { context, operation } = hookArgs;
-
-  // Start with the original input
   let resolvedData = hookArgs.inputData;
 
-  // Apply non-relationship field type input resolvers
+  // apply non-relationship field type input resolvers
   const resolverErrors: { error: Error; tag: string }[] = [];
   resolvedData = Object.fromEntries(
     await Promise.all(
@@ -217,11 +215,10 @@ async function getResolvedData(
       })
     )
   );
-  if (resolverErrors.length) {
-    throw resolverError(resolverErrors);
-  }
 
-  // Apply relationship field type input resolvers
+  if (resolverErrors.length) throw resolverError(resolverErrors);
+
+  // apply relationship field type input resolvers
   const relationshipErrors: { error: Error; tag: string }[] = [];
   resolvedData = Object.fromEntries(
     await Promise.all(
@@ -234,32 +231,52 @@ async function getResolvedData(
             input = await inputResolver(
               input,
               context,
-              // This third argument only applies to relationship fields
+              // this third argument only applies to relationship fields
               (() => {
                 if (input === undefined) {
-                  // No-op: This is what we want
+                  // no-op: this is what we want
                   return () => undefined;
                 }
                 if (input === null) {
-                  // No-op: Should this be UserInputError?
+                  // no-op: should this be userinputerror?
                   return () => undefined;
                 }
                 const foreignList = list.lists[field.dbField.list];
-                let resolver;
-                if (field.dbField.mode === 'many') {
-                  if (operation === 'create') {
-                    resolver = resolveRelateToManyForCreateInput;
-                  } else {
-                    resolver = resolveRelateToManyForUpdateInput;
-                  }
-                } else {
-                  if (operation === 'create') {
-                    resolver = resolveRelateToOneForCreateInput;
-                  } else {
-                    resolver = resolveRelateToOneForUpdateInput;
-                  }
+                if (field.dbField.mode === 'many' && operation === 'create') {
+                  return resolveRelateToManyForCreateInput(
+                    nestedMutationState,
+                    context,
+                    foreignList,
+                    tag
+                  );
                 }
-                return resolver(nestedMutationState, context, foreignList, tag);
+
+                if (field.dbField.mode === 'many' && operation === 'update') {
+                  return resolveRelateToManyForUpdateInput(
+                    nestedMutationState,
+                    context,
+                    foreignList,
+                    tag
+                  );
+                }
+
+                if (field.dbField.mode === 'one' && operation === 'create') {
+                  return resolveRelateToOneForCreateInput(
+                    nestedMutationState,
+                    context,
+                    foreignList
+                  );
+                }
+
+                if (field.dbField.mode === 'one' && operation === 'update') {
+                  return resolveRelateToOneForUpdateInput(
+                    nestedMutationState,
+                    context,
+                    foreignList
+                  );
+                }
+
+                throw new Error('Unknown relationship field type input mode or operation');
               })()
             );
           } catch (error: any) {
@@ -274,48 +291,48 @@ async function getResolvedData(
       })
     )
   );
-  if (relationshipErrors.length) {
-    throw relationshipError(relationshipErrors);
-  }
 
-  // Resolve input hooks
-  const hookName = 'resolveInput';
-  // Field hooks
+  if (relationshipErrors.length) throw relationshipError(relationshipErrors);
+
+  // field hooks
   const fieldsErrors: { error: Error; tag: string }[] = [];
   resolvedData = Object.fromEntries(
     await Promise.all(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {
-        if (field.hooks.resolveInput === undefined) {
-          return [fieldKey, resolvedData[fieldKey]];
-        } else {
-          try {
-            return [
+        if (field.hooks.resolveInput === undefined) return [fieldKey, resolvedData[fieldKey]];
+
+        const resolver = field.hooks.resolveInput;
+        try {
+          return [
+            fieldKey,
+            await resolver({
+              ...hookArgs,
+              resolvedData,
               fieldKey,
-              await field.hooks.resolveInput({
-                ...hookArgs,
-                resolvedData,
-                fieldKey,
-              }),
-            ];
-          } catch (error: any) {
-            fieldsErrors.push({ error, tag: `${list.listKey}.${fieldKey}.hooks.${hookName}` });
-            return [fieldKey, undefined];
-          }
+            }),
+          ];
+        } catch (error: any) {
+          fieldsErrors.push({
+            error,
+            tag: `${list.listKey}.${fieldKey}.hooks.resolveInput`,
+          });
+          return [fieldKey, undefined];
         }
       })
     )
   );
-  if (fieldsErrors.length) {
-    throw extensionError(hookName, fieldsErrors);
-  }
 
-  // List hooks
-  if (list.hooks.resolveInput) {
-    try {
-      resolvedData = (await list.hooks.resolveInput({ ...hookArgs, resolvedData })) as any;
-    } catch (error: any) {
-      throw extensionError(hookName, [{ error, tag: `${list.listKey}.hooks.${hookName}` }]);
+  if (fieldsErrors.length) throw extensionError('resolveInput', fieldsErrors);
+
+  // list hooks
+  try {
+    if (operation === 'create') {
+      resolvedData = await list.hooks.resolveInput.create({ ...hookArgs, resolvedData });
+    } else if (operation === 'update') {
+      resolvedData = await list.hooks.resolveInput.update({ ...hookArgs, resolvedData });
     }
+  } catch (error: any) {
+    throw extensionError('resolveInput', [{ error, tag: `${list.listKey}.hooks.resolveInput` }]);
   }
 
   return resolvedData;

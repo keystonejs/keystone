@@ -1,5 +1,5 @@
-import { KeystoneContext } from './context';
-import { BaseListTypeInfo } from './type-info';
+import type { KeystoneContext } from './context';
+import type { BaseListTypeInfo } from './type-info';
 
 const someContext: KeystoneContext<{
   lists: {
@@ -8,6 +8,7 @@ const someContext: KeystoneContext<{
     ListOrSingleton: BaseListTypeInfo;
   };
   prisma: any;
+  session: any;
 }> = undefined!;
 
 someContext.query.Singleton.findOne({});

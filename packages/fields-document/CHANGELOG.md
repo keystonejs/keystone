@@ -1,5 +1,20 @@
 # @keystone-6/fields-document
 
+## 8.0.0
+
+### Major Changes
+
+- [#8493](https://github.com/keystonejs/keystone/pull/8493) [`2c404c392`](https://github.com/keystonejs/keystone/commit/2c404c392dfde57dee56be0bff683a8cb93d1e48) Thanks [@borisno2](https://github.com/borisno2)! - Changes `fields.array({ label: ...` to `fields.array({ itemLabel: ...`, and adds `fields.array({ label: string`, aligned with other document fields
+
+### Patch Changes
+
+- [#8457](https://github.com/keystonejs/keystone/pull/8457) [`e03cbe9ff`](https://github.com/keystonejs/keystone/commit/e03cbe9fffed72026bd555c31d3dde7d526b431c) Thanks [@borisno2](https://github.com/borisno2)! - Fixes the JSON output type values for the structure field
+
+* [#8403](https://github.com/keystonejs/keystone/pull/8403) [`07da6c157`](https://github.com/keystonejs/keystone/commit/07da6c157622ee89ae61dc4c445b26de46e91e3e) Thanks [@borisno2](https://github.com/borisno2)! - Adds `"use client"` to Document field files that allow it to be used in the Next App Dorectory
+
+* Updated dependencies [[`23c0e1daf`](https://github.com/keystonejs/keystone/commit/23c0e1daf909b098530f3c49b82e57ec95ff3769)]:
+  - @keystone-ui/fields@7.2.0
+
 ## 7.0.0
 
 ### Minor Changes

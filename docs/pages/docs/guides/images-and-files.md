@@ -226,13 +226,13 @@ import { text, image } from '@keystone-6/core/fields';
 export const lists = {
   Image: list({
     fields: {
-	  name: text({
-		  validation: {
-	    isRequired: true,
-		  },
-	  }),
-	  altText: text(),
-	  image: image({ storage: 'my_local_images' }),
+      name: text({
+        validation: {
+          isRequired: true,
+        },
+      }),
+      altText: text(),
+      image: image({ storage: 'my_local_images' }),
     }
   }),
   Page: list({

@@ -260,8 +260,8 @@ export async function getAccessControlledItemForDelete(
     context,
     operation: 'delete',
     list,
-    item,
     inputData: {},
+    item,
   });
 
   // no field level access control for delete

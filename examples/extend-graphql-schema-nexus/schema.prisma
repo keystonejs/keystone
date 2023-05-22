@@ -27,6 +27,5 @@ model Post {
 model Author {
   id    String @id @default(cuid())
   name  String @default("")
-  email String @unique @default("")
   posts Post[] @relation("Post_author")
 }
