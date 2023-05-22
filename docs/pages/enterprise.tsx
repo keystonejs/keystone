@@ -1,6 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx  */
 import { jsx } from '@emotion/react';
+import Link from 'next/link';
 import { useMediaQuery } from '../lib/media';
 import { Highlight } from '../components/primitives/Highlight';
 import { MWrapper } from '../components/content/MWrapper';
@@ -18,43 +19,46 @@ import { RugbyAuLogo } from '../components/icons/RugbyAuLogo';
 import { WestpacLogo } from '../components/icons/WestpacLogo';
 import { PrintBarLogo } from '../components/icons/PrintBarLogo';
 import { IntroHeading, IntroLead, IntroWrapper } from '../components/content/Intro';
+import { Stack } from '../components/primitives/Stack';
 
 const customers = [
   {
     icon: VocalLogo,
     title: 'Vocal',
-    copy: 'Large scale creator and content platform on web and mobile.',
+    copy: 'Large scale platform for content creators.',
+    learnMoreHref: 'https://www.thinkmill.com.au/work/vocal',
   },
   {
     icon: PJohnsonLogo,
     title: 'PJohnson Tailors',
-    copy: 'PJT’s custom order and production management system',
+    copy: 'Custom garment order & production management system.',
   },
   {
     icon: DFATLogo,
     title: `Dep't of Foreign Affairs & Trade`,
     accessibleTitle: 'Department of Foreign Affairs and Trade',
-    copy: 'Australian Free Trade Agreements website',
+    copy: 'Australia’s Free Trade Agreements website.',
   },
   {
     icon: EnliticLogo,
     title: 'Enlitic',
-    copy: 'Powering Enlitic’s Medical Annotation Platform and PACS.',
+    copy: 'Medical Annotation Platform & PACS.',
+    learnMoreHref: 'https://www.thinkmill.com.au/work/enlitic',
   },
   {
     icon: RugbyAuLogo,
     title: 'Rugby Australia',
-    copy: 'The home of the latest Rugby news, teams, fixtures & results',
+    copy: 'Headless CMS to power Rugby’s many websites.',
   },
   {
     icon: WestpacLogo,
     title: 'Westpac',
-    copy: 'Content management for Westpac’s GEL system',
+    copy: 'Content management for Westpac’s GEL Design System.',
   },
   {
     icon: PrintBarLogo,
     title: 'The Print Bar',
-    copy: 'Powering The Print Bar’s custom design and ordering platform.',
+    copy: 'Application backend for a custom design and ordering plaform.',
   },
 ];
 
@@ -87,7 +91,6 @@ export default function ForOrganisations() {
             display: 'flex',
             flexDirection: 'column',
             gap: '5rem',
-            alignItems: 'center',
             paddingTop: '5rem',
           })}
         >
@@ -104,19 +107,34 @@ export default function ForOrganisations() {
 
             <ul
               css={{
-                display: 'flex',
-                flexWrap: 'wrap',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(15.625rem, 1fr))',
                 gap: '2rem',
                 listStyle: 'none',
                 padding: 0,
                 margin: 0,
+                '@media (min-width: 54rem)': {
+                  gridTemplateColumns: 'repeat(3, 15.625rem)',
+                },
+                '@media (min-width: 85rem)': {
+                  gridTemplateColumns: 'repeat(4, 15.625rem)',
+                },
               }}
               role="list"
             >
-              {customers.map(({ icon, accessibleTitle, title, copy }) => (
+              {customers.map(({ icon, accessibleTitle, title, copy, learnMoreHref }) => (
                 <li key={title}>
                   <CustomerCard title={title} icon={icon} accessibleTitle={accessibleTitle}>
-                    {copy}
+                    {learnMoreHref ? (
+                      <Stack gap={0}>
+                        {copy}
+                        <div>
+                          <Link href={learnMoreHref}>Learn more</Link>.
+                        </div>
+                      </Stack>
+                    ) : (
+                      copy
+                    )}
                   </CustomerCard>
                 </li>
               ))}
