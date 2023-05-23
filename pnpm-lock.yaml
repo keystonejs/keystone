@@ -520,8 +520,8 @@ importers:
         specifier: ^6.0.1
         version: link:../design-system/packages/icons
       '@markdoc/markdoc':
-        specifier: ^0.2.0
-        version: 0.2.0(@types/react@18.0.25)(react@18.2.0)
+        specifier: ^0.3.0
+        version: 0.3.0(@types/react@18.0.25)(react@18.2.0)
       '@preconstruct/next':
         specifier: ^4.0.0
         version: 4.0.0
@@ -7994,8 +7994,8 @@ packages:
       read-yaml-file: 1.1.0
     dev: true
 
-  /@markdoc/markdoc@0.2.0(@types/react@18.0.25)(react@18.2.0):
-    resolution: {integrity: sha512-g5aqMY7uf3pmP50Ol7SyxT3iGD5cUwLEqMzCu5RTrOpllsrmamk1XAbsXY5rcPFPuc9m25peFOKEHfksrnPrXg==}
+  /@markdoc/markdoc@0.3.0(@types/react@18.0.25)(react@18.2.0):
+    resolution: {integrity: sha512-QWCF8krIIw52ulflfnoff0yG1eKl9CCGA3KAiOjHyYtHNzSEouFh8lO52nAaO3qV2Ctj1GTB8TTb2rTfvISQfA==}
     engines: {node: '>=14.7.0'}
     peerDependencies:
       '@types/react': '*'
