@@ -294,18 +294,23 @@ export function Header() {
     // yoo hooo
     loadSearch(searchAttempt);
     // search - keyboard shortcut
-    let keysPressed = {};
+    let keysPressed: { [key: KeyboardEvent['key']]: boolean } = {};
     document.body.addEventListener('keydown', event => {
-      // @ts-ignore
+      // If we're typing in an input, don't ever focus the search input
+      if (
+        document.activeElement &&
+        ['TEXTAREA', 'INPUT'].includes(document.activeElement.nodeName)
+      ) {
+        return;
+      }
+
       keysPressed[event.key] = true;
-      // @ts-ignore
       if (keysPressed['Meta'] && event.key == 'k') {
         event.preventDefault();
         document.getElementById('search-field')?.focus();
       }
     });
     document.body.addEventListener('keyup', event => {
-      // @ts-ignore
       delete keysPressed[event.key];
     });
   }, []);

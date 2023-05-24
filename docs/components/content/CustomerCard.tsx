@@ -30,7 +30,7 @@ export function CustomerCard({
         border: '1px solid var(--border-muted)',
         borderRadius: '1rem',
         boxShadow: '0px 20px 38px -7px var(--shadow)',
-        maxWidth: '15.625rem',
+        height: '100%',
       }}
       {...props}
     >
