@@ -1,5 +1,39 @@
 # @keystone-6/core
 
+## 5.3.0
+
+### Minor Changes
+
+- [#8545](https://github.com/keystonejs/keystone/pull/8545) [`b8453c63c`](https://github.com/keystonejs/keystone/commit/b8453c63c2856c0e1e4161da3da3446b2ffc0755) Thanks [@borisno2](https://github.com/borisno2)! - Adds `ui.basePath` for changing the AdminUI base path, using a dynamic `next.config.js`
+
+* [#8570](https://github.com/keystonejs/keystone/pull/8570) [`612431b39`](https://github.com/keystonejs/keystone/commit/612431b3991966ccabed20681e36acd09b944213) Thanks [@dcousens](https://github.com/dcousens)! - Adds `cookieName` as an option for `statelessSessions`
+
+- [#8545](https://github.com/keystonejs/keystone/pull/8545) [`b8453c63c`](https://github.com/keystonejs/keystone/commit/b8453c63c2856c0e1e4161da3da3446b2ffc0755) Thanks [@borisno2](https://github.com/borisno2)! - Removes prompt when using CLI `--frozen` flag and a schema is out of date, CLI now exits
+
+* [#8551](https://github.com/keystonejs/keystone/pull/8551) [`cfd873ef3`](https://github.com/keystonejs/keystone/commit/cfd873ef393b0aa429e08fb64c62bdf3e5ee1844) Thanks [@dcousens](https://github.com/dcousens)! - add `resolveInput.{create|update}` list hooks as shorthand operation circuitry
+
+- [#8570](https://github.com/keystonejs/keystone/pull/8570) [`612431b39`](https://github.com/keystonejs/keystone/commit/612431b3991966ccabed20681e36acd09b944213) Thanks [@dcousens](https://github.com/dcousens)! - Adds `Session` type parameter to generated `TypeInfo`, `Lists` and `Context` types, and propagates that type to access control and hooks
+
+* [#8552](https://github.com/keystonejs/keystone/pull/8552) [`ea227f04f`](https://github.com/keystonejs/keystone/commit/ea227f04faa60bb202fa50cab3903bdd03b43ddf) Thanks [@dcousens](https://github.com/dcousens)! - Adds new `unfiltered` shorthand function for an empty filter (exported from '@keystone-6/core/access')
+
+### Patch Changes
+
+- [#8569](https://github.com/keystonejs/keystone/pull/8569) [`f92aa4010`](https://github.com/keystonejs/keystone/commit/f92aa4010995d18ac15df83b70cbe9140bb72a7f) Thanks [@dcousens](https://github.com/dcousens)! - Fix `db.enableLogging` with an array resulting in `keystone dev` exiting
+
+* [#8551](https://github.com/keystonejs/keystone/pull/8551) [`cfd873ef3`](https://github.com/keystonejs/keystone/commit/cfd873ef393b0aa429e08fb64c62bdf3e5ee1844) Thanks [@dcousens](https://github.com/dcousens)! - Fixes `graphql.isNonNull.create: true` TypeScript types to be non-optional
+
+- [#8569](https://github.com/keystonejs/keystone/pull/8569) [`f92aa4010`](https://github.com/keystonejs/keystone/commit/f92aa4010995d18ac15df83b70cbe9140bb72a7f) Thanks [@dcousens](https://github.com/dcousens)! - Deprecates `@keystone-6/core/system` exports (`createSystem`, `createExpressServer`, `initConfig` and `createAdminUIMiddleware`), will be removed in next breaking change
+
+* [#8552](https://github.com/keystonejs/keystone/pull/8552) [`ea227f04f`](https://github.com/keystonejs/keystone/commit/ea227f04faa60bb202fa50cab3903bdd03b43ddf) Thanks [@dcousens](https://github.com/dcousens)! - Removes `SessionStrategy`'s type parameter of `StartSessionData`, removal is non-breaking as the parameter was unusable
+
+- [#8527](https://github.com/keystonejs/keystone/pull/8527) [`1d0e6cdea`](https://github.com/keystonejs/keystone/commit/1d0e6cdea6ecd3234ed24eb7c3b3794e0a9cfbca) Thanks [@acburdine](https://github.com/acburdine)! - Fixes type generation for lists with `omit.query: true`
+
+* [#8568](https://github.com/keystonejs/keystone/pull/8568) [`1a997d113`](https://github.com/keystonejs/keystone/commit/1a997d1135f4aa72ce611909c9c34714be6dbeb3) Thanks [@MohammadKurjieh](https://github.com/MohammadKurjieh)! - Change next `experimental.appDir: false` for now, until resolution found for internal React issues
+
+- [#8551](https://github.com/keystonejs/keystone/pull/8551) [`cfd873ef3`](https://github.com/keystonejs/keystone/commit/cfd873ef393b0aa429e08fb64c62bdf3e5ee1844) Thanks [@dcousens](https://github.com/dcousens)! - fix incompatible field key types when working with `resolvedData` (#8485)
+
+* [#8562](https://github.com/keystonejs/keystone/pull/8562) [`b8f7cf4b6`](https://github.com/keystonejs/keystone/commit/b8f7cf4b6f6ce77201167910545f4ad6aa857c35) Thanks [@renovate](https://github.com/apps/renovate)! - Update `@prisma/*` to `4.14.0`
+
 ## 5.2.0
 
 ### Minor Changes
