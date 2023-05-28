@@ -11,7 +11,7 @@ We are building a targeted programming interface for designing and iterating on 
 
 We value your ideas and contributions!
 If you're interested, [open a discussion](https://github.com/keystonejs/keystone/discussions/new/choose) or [open a pull request](https://github.com/keystonejs/keystone/pulls) and start the conversation!
-Contributity contributions are the driving force that makes our community ecosystem thrive.
+Community contributions are the driving force that makes our community ecosystem thrive.
 
 ## Versioning
 
