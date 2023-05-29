@@ -529,8 +529,8 @@ importers:
         specifier: ^1.1.2
         version: 1.1.2
       '@types/babel__core':
-        specifier: 7.20.0
-        version: 7.20.0
+        specifier: 7.20.1
+        version: 7.20.1
       '@types/facepaint':
         specifier: ^1.2.2
         version: 1.2.2
@@ -9153,8 +9153,8 @@ packages:
     resolution: {integrity: sha512-2TN6oiwtNjOezilFVl77zwdNPwQWaDBBCCWWxyo1ctiO3vAtd7H/aB/CBJdw9+kqq3+latD0SXoedIuHySSZWw==}
     dev: false
 
-  /@types/babel__core@7.20.0:
-    resolution: {integrity: sha512-+n8dL/9GWblDO0iU6eZAwEIJVr5DWigtle+Q6HLOrh/pdbXOhOtqzq8VPPE2zvNJzSKY4vH/z3iT3tn0A3ypiQ==}
+  /@types/babel__core@7.20.1:
+    resolution: {integrity: sha512-aACu/U/omhdk15O4Nfb+fHgH/z3QsfQzpnvRZhYhThms83ZnAOZz7zZAWO7mn2yyNQaA4xTO8GLK3uqFU4bYYw==}
     dependencies:
       '@babel/parser': 7.21.8
       '@babel/types': 7.21.5
@@ -10361,7 +10361,7 @@ packages:
       '@babel/plugin-transform-react-jsx': 7.21.5(@babel/core@7.21.0)
       '@babel/traverse': 7.21.5
       '@babel/types': 7.21.5
-      '@types/babel__core': 7.20.0
+      '@types/babel__core': 7.20.1
       '@types/yargs-parser': 21.0.0
       acorn: 8.8.2
       boxen: 6.2.1
@@ -10468,7 +10468,7 @@ packages:
       '@babel/core': 7.21.0
       '@jest/transform': 26.6.2
       '@jest/types': 26.6.2
-      '@types/babel__core': 7.20.0
+      '@types/babel__core': 7.20.1
       babel-plugin-istanbul: 6.1.1
       babel-preset-jest: 26.6.2(@babel/core@7.21.0)
       chalk: 4.1.2
@@ -10486,7 +10486,7 @@ packages:
     dependencies:
       '@babel/core': 7.21.0
       '@jest/transform': 29.5.0
-      '@types/babel__core': 7.20.0
+      '@types/babel__core': 7.20.1
       babel-plugin-istanbul: 6.1.1
       babel-preset-jest: 29.5.0(@babel/core@7.21.0)
       chalk: 4.1.2
@@ -10504,7 +10504,7 @@ packages:
     dependencies:
       '@babel/core': 7.21.0
       '@jest/transform': 29.5.0
-      '@types/babel__core': 7.20.0
+      '@types/babel__core': 7.20.1
       babel-plugin-istanbul: 6.1.1
       babel-preset-jest: 29.5.0(@babel/core@7.21.0)
       chalk: 4.1.2
@@ -10533,7 +10533,7 @@ packages:
     dependencies:
       '@babel/template': 7.20.7
       '@babel/types': 7.21.5
-      '@types/babel__core': 7.20.0
+      '@types/babel__core': 7.20.1
       '@types/babel__traverse': 7.18.5
     dev: true
 
@@ -10543,7 +10543,7 @@ packages:
     dependencies:
       '@babel/template': 7.20.7
       '@babel/types': 7.21.5
-      '@types/babel__core': 7.20.0
+      '@types/babel__core': 7.20.1
       '@types/babel__traverse': 7.18.5
     dev: true
 
