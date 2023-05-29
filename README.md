@@ -31,8 +31,9 @@
 ## Contents
 
 - [Usage & Documentation](#usage--documentation)
-- [Version Control](#version-control)
+- [Versioning](#versioning)
 - [Code of Conduct](#code-of-conduct)
+- [Security](#security)
 - [License](#license)
 
 ## Usage & Documentation
@@ -70,19 +71,13 @@ For a birds-eye view of what the Keystone project is working towards, check out 
 
 Share your thoughts and feature requests on Slack (preferred) or Twitter. [Bugfixes and issues always welcome](https://github.com/keystonejs/keystone/issues/new/choose).
 
-## Version control
+## Versioning
 
-We do our best to follow SemVer version control within Keystone. This means package versions have 3 numbers. A change in the first number indicates a breaking change, the second number indicates backward compatible feature and the third number indicates a bug fix.
-
-You can find **changelogs** either by browsing our repository, or by using our [interactive changelog explorer](https://changelogs.xyz/@keystonejs/keystone).
-
-A quick note on dependency management: Keystone is organised into a number of small packages within a monorepo. When packages in the same repository depend on each other, new versions might not be compatible with older versions. If two or more packages are updated, it can result in breaking changes, even though collectively they appear to be non-breaking.
-
-We do our best to catch this but recommend updating Keystone packages together to avoid any potential conflict. This is especially important to be aware of if you use automated dependency management tools like Greenkeeper.
+Keystone follows [semver](https://semver.org/).
 
 ## Code of Conduct
 
-KeystoneJS adheres to the [Contributor Covenant Code of Conduct](/CODE-OF-CONDUCT.md).
+Keystone adheres to the [Contributor Covenant Code of Conduct](/CODE-OF-CONDUCT.md).
 
 ## Security
 
