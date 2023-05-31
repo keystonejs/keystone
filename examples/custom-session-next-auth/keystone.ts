@@ -16,7 +16,7 @@ const nextAuthSession = {
     const { headers } = req ?? {};
     if (!headers?.cookie || !res) return;
 
-    // next-auth needs an different cookies structure
+    // next-auth needs a different cookies structure
     const cookies: Record<string, string> = {};
     for (const part of headers.cookie.split(';')) {
       const [key, value] = part.trim().split('=');
@@ -40,7 +40,7 @@ export default config<TypeInfo<Session>>({
     ...fixPrismaPath,
   },
   ui: {
-    // The following API routes are required for NextAuth.js
+    // the following api routes are required for nextauth.js
     publicPages: [
       '/api/auth/csrf',
       '/api/auth/signin',
@@ -49,11 +49,13 @@ export default config<TypeInfo<Session>>({
       '/api/auth/providers',
       '/api/auth/signout',
       '/api/auth/error',
-      // Each provider will need a separate callback and signin page listed here
+
+      // each provider will need a separate callback and signin page listed here
       '/api/auth/signin/github',
       '/api/auth/callback/github',
     ],
-    // Adding Page middleware ensures that users are redirected to the signin page if they are not signed in.
+
+    // adding page middleware ensures that users are redirected to the signin page if they are not signed in.
     pageMiddleware: async ({ wasAccessAllowed }) => {
       if (wasAccessAllowed) return;
       return {
