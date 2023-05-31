@@ -26,12 +26,19 @@ const customers = [
     icon: VocalLogo,
     title: 'Vocal',
     copy: 'Large scale platform for content creators.',
-    learnMoreHref: 'https://www.thinkmill.com.au/work/vocal',
+    learnMoreHref: 'https://www.thinkmill.com.au/work/vocal?utm_source=keystone-site',
   },
   {
-    icon: PJohnsonLogo,
-    title: 'PJohnson Tailors',
-    copy: 'Custom garment order & production management system.',
+    icon: RugbyAuLogo,
+    title: 'Rugby Australia',
+    copy: 'Headless CMS to power 3000 websites.',
+    learnMoreHref: 'https://www.thinkmill.com.au/work/rugby?utm_source=keystone-site',
+  },
+  {
+    icon: EnliticLogo,
+    title: 'Enlitic',
+    copy: 'Medical Annotation Platform & PACS.',
+    learnMoreHref: 'https://www.thinkmill.com.au/work/enlitic?utm_source=keystone-site',
   },
   {
     icon: DFATLogo,
@@ -40,15 +47,9 @@ const customers = [
     copy: 'Australia’s Free Trade Agreements website.',
   },
   {
-    icon: EnliticLogo,
-    title: 'Enlitic',
-    copy: 'Medical Annotation Platform & PACS.',
-    learnMoreHref: 'https://www.thinkmill.com.au/work/enlitic',
-  },
-  {
-    icon: RugbyAuLogo,
-    title: 'Rugby Australia',
-    copy: 'Headless CMS to power Rugby’s many websites.',
+    icon: PJohnsonLogo,
+    title: 'PJohnson Tailors',
+    copy: 'Custom garment order & production management system.',
   },
   {
     icon: WestpacLogo,
@@ -58,7 +59,7 @@ const customers = [
   {
     icon: PrintBarLogo,
     title: 'The Print Bar',
-    copy: 'Application backend for a custom design and ordering plaform.',
+    copy: 'Application backend for a custom design and ordering platform.',
   },
 ];
 
@@ -67,7 +68,7 @@ export default function ForOrganisations() {
 
   return (
     <Page
-      title={'KeystoneJS for Content Management'}
+      title={'KeystoneJS for Enterprise'}
       description={
         'Discover how Keystone’s Admin UI is a natural extension of how you work in code, and has the flexibility you need to enable content creatives.'
       }
@@ -80,9 +81,17 @@ export default function ForOrganisations() {
             Keystone support <Highlight look="grad6">from the people who built it</Highlight>{' '}
           </IntroHeading>
           <IntroLead>
-            Keystone is developed and maintained by Thinkmill, an Australian software design and
-            development consultancy. Thinkmill has been building and scaling Keystone apps since
-            2013 and can provide flexible, tailored, and hands-on support for your Keystone project.
+            Keystone is developed and maintained by{' '}
+            <a
+              href="https://thinkmill.com.au?utm_source=keystone-site"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Thinkmill
+            </a>{' '}
+            , an Australian software design and development consultancy. We’ve been building and
+            scaling Keystone apps since 2013 and can provide flexible, tailored, and hands-on
+            support for your Keystone project.
           </IntroLead>
         </IntroWrapper>
 
@@ -129,7 +138,10 @@ export default function ForOrganisations() {
                       <Stack gap={0}>
                         {copy}
                         <div>
-                          <Link href={learnMoreHref}>Learn more</Link>.
+                          <a href={learnMoreHref} target="_blank">
+                            Learn more
+                          </a>
+                          .
                         </div>
                       </Stack>
                     ) : (
@@ -158,7 +170,7 @@ export default function ForOrganisations() {
 
         <div
           css={{
-            maxWidth: '33.75rem',
+            maxWidth: '50rem',
             margin: '5rem auto 0',
           }}
         >
