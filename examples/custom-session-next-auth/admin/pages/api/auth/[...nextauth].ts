@@ -1,16 +1,21 @@
 import NextAuth from 'next-auth';
 import GithubProvider from 'next-auth/providers/github';
 
-// See https://next-auth.js.org/configuration/options for more details on what goes in here
+// WARNING: this example is for demonstration purposes only
+//   as with each of our examples, it has not been vetted
+//   or tested for any particular usage
+
+// WARNING: you need to change this
+const sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
+
+// see https://next-auth.js.org/configuration/options for more
 export const authOptions = {
-  secret: '--DEV--COOKIE--SECRET--CHANGE--ME--==',
-  // Configure one or more authentication providers
+  secret: sessionSecret,
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_ID!,
       clientSecret: process.env.GITHUB_SECRET!,
     }),
-    // ...add more providers here
   ],
 };
 
