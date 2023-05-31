@@ -4,7 +4,7 @@ This is for information on how use the keystone website. Please check out the [s
 
 ## Running the docs site in dev
 
-Run `pnpm docs` from the root of the repository
+Run `pnpm dev` from the `/docs` directory
 
 ## How is the website built?
 
