@@ -13,23 +13,25 @@ import type { Context, TypeInfo } from '.keystone/types';
 const nextAuthSession = {
   async get({ context }: { context: Context }): Promise<Session | undefined> {
     const { req, res } = context;
-    if (!req || !res || !req.headers.cookie) return;
-    // We need to construct the cookies object so next-auth gets to correct object
+    const { headers } = req ?? {};
+    if (!headers?.cookie || !res) return;
+
+    // next-auth needs an different cookies structure
     const cookies: Record<string, string> = {};
-    req.headers.cookie.split(';').forEach(cookie => {
-      const [key, value] = cookie.trim().split('=');
+    for (const part of headers.cookie.split(';')) {
+      const [key, value] = part.trim().split('=');
       cookies[key] = decodeURIComponent(value);
-    });
-    return (await getServerSession({ headers: req.headers, cookies } as any, res, authOptions)) as
-      | Session
-      | undefined;
+    }
+
+    return (await getServerSession({ headers, cookies } as any, res, authOptions)) ?? undefined;
   },
+
   // we don't need these as next-auth handle start and end for us
   async start() {},
   async end() {},
 };
 
-export default config<TypeInfo>({
+export default config<TypeInfo<Session>>({
   db: {
     provider: 'sqlite',
     url: process.env.DATABASE_URL || 'file:./keystone-example.db',

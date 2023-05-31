@@ -11,7 +11,7 @@ function hasSession({ session }: { session?: Session }) {
   return Boolean(session);
 }
 
-export const lists: Lists = {
+export const lists: Lists<Session> = {
   Post: list({
     // WARNING - for this example, anyone can that can login can create, query, update and delete anything
     //    -- anyone with an account on the auth provider you are using can login
