@@ -2,7 +2,7 @@ import path from 'path';
 import { createRequire } from 'module';
 import { printSchema, GraphQLSchema } from 'graphql';
 import * as fs from 'fs-extra';
-import { getGenerator, formatSchema } from '@prisma/internals';
+import { getGenerators, formatSchema } from '@prisma/internals';
 import type { KeystoneConfig } from './types';
 import { printGeneratedTypes } from './lib/schema-type-printer';
 import { ExitError } from './scripts/utils';
@@ -194,23 +194,28 @@ export async function generateTypescriptTypesAndPrisma(
 }
 
 async function generatePrismaClient(prismaSchemaPath: string, dataProxy: boolean) {
-  const generator = await getGenerator({
+  const generators = await getGenerators({
     schemaPath: prismaSchemaPath,
     dataProxy,
   });
-  try {
-    await generator.generate();
-  } finally {
-    const closePromise = new Promise<void>(resolve => {
-      const child = (generator as any).generatorProcess
-        .child as import('child_process').ChildProcess;
-      child.once('exit', () => {
-        resolve();
-      });
-    });
-    generator.stop();
-    await closePromise;
-  }
+
+  await Promise.all(
+    generators.map(async generator => {
+      try {
+        await generator.generate();
+      } finally {
+        const closePromise = new Promise<void>(resolve => {
+          const child = (generator as any).generatorProcess
+            .child as import('child_process').ChildProcess;
+          child.once('exit', () => {
+            resolve();
+          });
+        });
+        generator.stop();
+        await closePromise;
+      }
+    })
+  );
 }
 
 export type PrismaModule = {
