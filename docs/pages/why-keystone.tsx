@@ -62,7 +62,11 @@ export default function WhyKeystonePage() {
           <div>
             <Type as="p" look="body18" color="var(--muted)" margin="0 0 1rem 0">
               Keystone is a{' '}
-              <a href="https://thinkmill.com.au" target="_blank" rel="noopener noreferrer">
+              <a
+                href="https://thinkmill.com.au?utm_source=keystone-site"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Thinkmill
               </a>{' '}
               product. We’ve spent years shipping sophisticated solutions for large companies like
