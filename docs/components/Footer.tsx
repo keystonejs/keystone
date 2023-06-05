@@ -107,20 +107,12 @@ export function Footer() {
             </Type>
             <List>
               <li>
-                <a
-                  href="https://github.com/keystonejs/keystone"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href="https://github.com/keystonejs/keystone" target="_blank" rel="noreferrer">
                   Keystone on GitHub
                 </a>
               </li>
               <li>
-                <a
-                  href="https://community.keystonejs.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href="https://community.keystonejs.com/" target="_blank" rel="noreferrer">
                   Join our Slack
                 </a>
               </li>
@@ -128,7 +120,7 @@ export function Footer() {
                 <a
                   href="https://github.com/keystonejs/keystone/blob/main/CONTRIBUTING.md"
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noreferrer"
                 >
                   Contribution Guide
                 </a>
@@ -137,7 +129,7 @@ export function Footer() {
                 <a
                   href="https://github.com/keystonejs/keystone/blob/main/CODE-OF-CONDUCT.md"
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noreferrer"
                 >
                   Code of Conduct
                 </a>
@@ -227,7 +219,7 @@ export function Footer() {
             <a
               href="https://www.thinkmill.com.au?utm_source=keystone-site"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noreferrer"
             >
               Thinkmill
             </a>
@@ -283,7 +275,7 @@ export function DocsFooter() {
           <a
             href="https://www.thinkmill.com.au?utm_source=keystone-site"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             Thinkmill
           </a>

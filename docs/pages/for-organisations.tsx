@@ -226,7 +226,7 @@ export default function ForOrganisations() {
             <a
               href="https://www.thinkmill.com.au?utm_source=keystone-site"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noreferrer"
             >
               Thinkmill
             </a>

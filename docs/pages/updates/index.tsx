@@ -153,7 +153,7 @@ export default function WhatsNew() {
           What are we working on next?{' '}
           <span>
             See our{' '}
-            <Button as="a" href="/roadmap" rel="noopener noreferrer">
+            <Button as="a" href="/roadmap" rel="noreferrer">
               Roadmap <ArrowR />
             </Button>
           </span>
@@ -435,12 +435,12 @@ export default function WhatsNew() {
           <a
             href="https://github.com/keystonejs/keystone/tree/main/examples/extend-graphql-schema-nexus"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             This example
           </a>{' '}
           uses{' '}
-          <a href="https://nexusjs.org/" target="_blank" rel="noopener noreferrer">
+          <a href="https://nexusjs.org/" target="_blank" rel="noreferrer">
             Nexus
           </a>{' '}
           — a declarative, code-first and strongly typed GraphQL schema construction for TypeScript
@@ -477,7 +477,7 @@ export default function WhatsNew() {
           <a
             href="https://github.com/aaronpowell/keystone-6-azure-example"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             This example
           </a>{' '}
@@ -490,7 +490,7 @@ export default function WhatsNew() {
           <a
             href="https://github.com/keystonejs/keystone/tree/main/examples/rest-api"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             This example
           </a>{' '}
@@ -503,7 +503,7 @@ export default function WhatsNew() {
             <a
               href="https://www.youtube.com/watch?v=r1IJh-iHm1c"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noreferrer"
             >
               <img
                 width="100%"
@@ -514,7 +514,7 @@ export default function WhatsNew() {
             <a
               href="https://www.youtube.com/watch?v=r1IJh-iHm1c"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noreferrer"
             >
               <img
                 width="100%"
@@ -527,7 +527,7 @@ export default function WhatsNew() {
             <a
               href="https://www.youtube.com/watch?v=r1IJh-iHm1c"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noreferrer"
             >
               <img
                 width="100%"
@@ -538,7 +538,7 @@ export default function WhatsNew() {
             <a
               href="https://www.youtube.com/watch?v=r1IJh-iHm1c"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noreferrer"
             >
               <img
                 width="100%"
@@ -552,7 +552,7 @@ export default function WhatsNew() {
           <a
             href="https://www.youtube.com/watch?v=r1IJh-iHm1c"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             Watch it online here
           </a>
@@ -571,7 +571,7 @@ export default function WhatsNew() {
           <a
             href="https://github.com/keystonejs/keystone-6-heroku-example"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             Heroku
           </a>{' '}
@@ -579,7 +579,7 @@ export default function WhatsNew() {
           <a
             href="https://github.com/keystonejs/keystone-6-railway-example"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             Railway
           </a>
@@ -589,7 +589,7 @@ export default function WhatsNew() {
         <Box heading="Prisma Meetup Korea">
           Jed spoke at Prisma Meetup Korea, covering V6 general availability, user-facing
           management, UI authentication, access control, business logic integrations and more.{' '}
-          <a href="https://youtu.be/qKqSRTtOlmw?t=4101" target="_blank" rel="noopener noreferrer">
+          <a href="https://youtu.be/qKqSRTtOlmw?t=4101" target="_blank" rel="noreferrer">
             Watch it online here
           </a>
           .
@@ -713,7 +713,7 @@ export default function WhatsNew() {
           <a
             href="https://github.com/keystonejs/prisma-day-2021-workshop"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             Follow along in with the repo
           </a>{' '}
@@ -740,7 +740,7 @@ export default function WhatsNew() {
           <a
             href="https://github.com/keystonejs/keystone/tree/main/examples/custom-field-view"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             custom field view
           </a>{' '}
@@ -841,7 +841,7 @@ export default function WhatsNew() {
           <a
             href="https://github.com/keystonejs/keystone/tree/main/examples/json"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             example project
           </a>
@@ -867,7 +867,7 @@ export default function WhatsNew() {
           <a
             href="https://github.com/keystonejs/keystone/tree/main/examples"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             collection of example projects
           </a>{' '}
@@ -910,12 +910,7 @@ export default function WhatsNew() {
         >
           Need answers to Keystone questions? Get help in our
         </span>
-        <Button
-          as="a"
-          href="https://community.keystonejs.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <Button as="a" href="https://community.keystonejs.com/" target="_blank" rel="noreferrer">
           Community Slack <ArrowR />
         </Button>
       </Alert>

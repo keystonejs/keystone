@@ -67,7 +67,7 @@ export function CommunityCta(props: HTMLAttributes<HTMLElement>) {
           as="a"
           href="https://community.keystonejs.com"
           target="_blank"
-          rel="noopener noreferrer"
+          rel="noreferrer"
           css={{
             marginTop: '1rem',
           }}

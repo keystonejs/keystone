@@ -38,7 +38,7 @@ export function TweetBox({ user, img, grad, children, ...props }: TweetBoxProps)
       <a
         href={`https://twitter.com/${user}`}
         target="_blank"
-        rel="noopener noreferrer"
+        rel="noreferrer"
         css={{
           display: 'flex',
           alignItems: 'center',

@@ -48,7 +48,7 @@ export function GitHubButton({ repo, ...props }: GitHubButtonProps) {
         }}
         href={`https://github.com/${repo}`}
         target="_blank"
-        rel="noopener noreferrer"
+        rel="noreferrer"
       >
         <svg
           version="1.1"
@@ -82,7 +82,7 @@ export function GitHubButton({ repo, ...props }: GitHubButtonProps) {
         look="body12"
         href={`https://github.com/${repo}/stargazers`}
         target="_blank"
-        rel="noopener noreferrer"
+        rel="noreferrer"
         css={{
           display: 'inline-block',
           borderLeft: '1px solid var(--border)',

@@ -23,7 +23,7 @@ export function GitHubExamplesCTA() {
         size="small"
         href="https://github.com/keystonejs/keystone/tree/main/examples"
         target="_blank"
-        rel="noopener noreferrer"
+        rel="noreferrer"
       >
         Keystone GitHub repo <ArrowR />
       </Button>

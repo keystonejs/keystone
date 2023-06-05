@@ -89,7 +89,7 @@ export default function Docs() {
               backgroundImage: `linear-gradient(116.01deg, var(--grad1-2), var(--grad1-1))`,
             }}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             <Video />
             <Type
@@ -330,7 +330,7 @@ export default function Docs() {
         <a
           href="https://github.com/keystonejs/keystone/tree/main/examples"
           target="_blank"
-          rel="noopener noreferrer"
+          rel="noreferrer"
         >
           View on Github &rarr;
         </a>

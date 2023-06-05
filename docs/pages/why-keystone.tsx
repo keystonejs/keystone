@@ -65,7 +65,7 @@ export default function WhyKeystonePage() {
               <a
                 href="https://thinkmill.com.au?utm_source=keystone-site"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noreferrer"
               >
                 Thinkmill
               </a>{' '}
@@ -362,7 +362,7 @@ export default function WhyKeystonePage() {
                 <a
                   href="https://github.com/keystonejs/keystone/tree/main/examples/extend-graphql-schema"
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noreferrer"
                 >
                   Try the example →
                 </a>
@@ -550,7 +550,7 @@ export default function WhyKeystonePage() {
                 <a
                   href="https://github.com/keystonejs/keystone/tree/main/examples/usecase-todo"
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noreferrer"
                 >
                   Try the Task Manager example →
                 </a>
@@ -573,7 +573,7 @@ export default function WhyKeystonePage() {
                 <a
                   href="https://github.com/keystonejs/keystone/tree/main/examples/usecase-blog"
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noreferrer"
                 >
                   Try the Blog example →
                 </a>

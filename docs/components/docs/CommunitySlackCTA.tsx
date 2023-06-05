@@ -23,7 +23,7 @@ export function CommunitySlackCTA() {
         size="small"
         href="https://community.keystonejs.com/"
         target="_blank"
-        rel="noopener noreferrer"
+        rel="noreferrer"
       >
         Community Slack <ArrowR />
       </Button>

@@ -394,7 +394,7 @@ export default function ForDevelopers() {
                 as="a"
                 href="https://github.com/keystonejs/keystone/tree/main/examples/usecase-blog"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noreferrer"
                 look="soft"
               >
                 Blog <ArrowR />
@@ -405,7 +405,7 @@ export default function ForDevelopers() {
                 as="a"
                 href="https://github.com/keystonejs/keystone/tree/main/examples/usecase-todo"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noreferrer"
                 look="soft"
               >
                 Task Manager app <ArrowR />
@@ -416,7 +416,7 @@ export default function ForDevelopers() {
                 as="a"
                 href="https://github.com/keystonejs/keystone/tree/main/examples/default-values"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noreferrer"
                 look="soft"
               >
                 Default field values <ArrowR />
@@ -427,7 +427,7 @@ export default function ForDevelopers() {
                 as="a"
                 href="https://github.com/keystonejs/keystone/tree/main/examples/extend-graphql-schema-graphql-tools"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noreferrer"
                 look="soft"
               >
                 Extend GraphQL schema <ArrowR />
@@ -471,7 +471,7 @@ export default function ForDevelopers() {
               focused on building the UI <Emoji symbol="😍" alt="Love" />
             </TweetBox>
             <TweetBox user="divslingerx" img="/assets/divslingerx.jpg" grad="grad3">
-              <a href="https://twitter.com/keystonejs" target="_blank" rel="noopener noreferrer">
+              <a href="https://twitter.com/keystonejs" target="_blank" rel="noreferrer">
                 @KeystoneJS
               </a>{' '}
               is almost too good to be open source. I can’t stress enough how awesome the dev
@@ -488,7 +488,7 @@ export default function ForDevelopers() {
             </TweetBox>
             <TweetBox user="mxstbr" img="/assets/mxstbr.jpg" grad="grad3">
               The new{' '}
-              <a href="https://twitter.com/keystonejs" target="_blank" rel="noopener noreferrer">
+              <a href="https://twitter.com/keystonejs" target="_blank" rel="noreferrer">
                 @KeystoneJS
               </a>{' '}
               rich text editor has incredible inline React component support, including editing
@@ -500,11 +500,11 @@ export default function ForDevelopers() {
             </TweetBox>
             <TweetBox user="BenAPatton" img="/assets/benapatton.jpg" grad="grad3">
               My mind is being blown today! Combining{' '}
-              <a href="https://twitter.com/keystonejs" target="_blank" rel="noopener noreferrer">
+              <a href="https://twitter.com/keystonejs" target="_blank" rel="noreferrer">
                 @KeystoneJS
               </a>{' '}
               with{' '}
-              <a href="https://twitter.com/supabase_io" target="_blank" rel="noopener noreferrer">
+              <a href="https://twitter.com/supabase_io" target="_blank" rel="noreferrer">
                 @supabase_io
               </a>{' '}
               and the experience is just magical.
