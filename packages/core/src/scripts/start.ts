@@ -34,12 +34,13 @@ export const start = async (
   const prismaClient = require(paths.prisma);
   const keystone = getKeystone(prismaClient);
 
-  console.log('✨ Connecting to the database');
-  await keystone.connect();
   if (withMigrations) {
     console.log('✨ Applying database migrations');
     await deployMigrations(paths.schema.prisma, config.db.url);
   }
+
+  console.log('✨ Connecting to the database');
+  await keystone.connect();
 
   console.log('✨ Creating server');
   const { expressServer, httpServer } = await createExpressServer(
