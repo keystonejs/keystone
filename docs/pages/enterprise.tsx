@@ -138,7 +138,7 @@ export default function ForOrganisations() {
                       <Stack gap={0}>
                         {copy}
                         <div>
-                          <a href={learnMoreHref} target="_blank">
+                          <a href={learnMoreHref} target="_blank" rel="noreferrer">
                             Learn more
                           </a>
                           .
