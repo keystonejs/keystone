@@ -2150,8 +2150,8 @@ importers:
         specifier: ^0.2.3
         version: 0.2.3
       micromark-extension-gfm-autolink-literal:
-        specifier: 0.5.7
-        version: 0.5.7
+        specifier: 1.0.5
+        version: 1.0.5
       micromark-extension-gfm-strikethrough:
         specifier: 0.6.5
         version: 0.6.5
@@ -16844,14 +16844,6 @@ packages:
       micromark-util-symbol: 1.1.0
       micromark-util-types: 1.1.0
     dev: true
-
-  /micromark-extension-gfm-autolink-literal@0.5.7:
-    resolution: {integrity: sha512-ePiDGH0/lhcngCe8FtH4ARFoxKTUelMp4L7Gg2pujYD5CSMb9PbblnyL+AAMud/SNMyusbS2XDSiPIRcQoNFAw==}
-    dependencies:
-      micromark: 2.11.4
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
 
   /micromark-extension-gfm-autolink-literal@1.0.5:
     resolution: {integrity: sha512-z3wJSLrDf8kRDOh2qBtoTRD53vJ+CWIyo7uyZuxf/JAbNJjiHsOpG1y5wxk8drtv3ETAHutCu6N3thkOOgueWg==}
