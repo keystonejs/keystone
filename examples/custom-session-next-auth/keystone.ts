@@ -22,8 +22,14 @@ const nextAuthSession = {
       const [key, value] = part.trim().split('=');
       cookies[key] = decodeURIComponent(value);
     }
-
-    return (await getServerSession({ headers, cookies } as any, res, authOptions)) ?? undefined;
+    // get the next-auth session
+    const nextAuthSession = await getServerSession({ headers, cookies } as any, res, authOptions);
+    // get the keystone user using the subjectId
+    const keystoneAuthor = await context.db.Author.findOne({
+      where: { subjectId: nextAuthSession?.subjectId },
+    });
+    if (!keystoneAuthor) return;
+    return { ...nextAuthSession, itemId: keystoneAuthor.id };
   },
 
   // we don't need these as next-auth handle start and end for us

@@ -1,6 +1,5 @@
 import NextAuth from 'next-auth';
 import GithubProvider from 'next-auth/providers/github';
-
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
 //   or tested for any particular usage
@@ -12,8 +11,28 @@ const sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
 export const authOptions = {
   secret: sessionSecret,
   callbacks: {
-    async session({ session, token }) {
-      console.log('Next Auth Session Details', { session, token });
+    async signIn({ user, account, profile }: any) {
+      // We need to require the context here to avoid a circular dependency
+      const sudoContext = require('../../../../context').sudo();
+      // console.log('Next Auth Sign In Details', { user, account, profile });
+      // check if the user exists in keystone
+      const keystoneUser = await sudoContext.query.User.findOne({
+        where: { subjectId: profile.id },
+      });
+      // if not, create them
+      if (!keystoneUser) {
+        await sudoContext.query.User.createOne({
+          data: {
+            subjectId: profile.id,
+            name: profile.name,
+          },
+        });
+      }
+      // return true to allow the sign in to complete
+      return true;
+    },
+    async session({ session, token }: any) {
+      // console.log('Next Auth Session Details', { session, token });
       // add the users subjectId and email to the session object
       return { ...session, email: token.email, subjectId: token.sub };
     },

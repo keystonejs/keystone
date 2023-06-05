@@ -1,5 +1,6 @@
+import { denyAll, allOperations } from '@keystone-6/core/access';
 import { list } from '@keystone-6/core';
-import { text } from '@keystone-6/core/fields';
+import { text, relationship } from '@keystone-6/core/fields';
 import type { Session } from 'next-auth';
 import type { Lists } from '.keystone/types';
 
@@ -23,6 +24,20 @@ export const lists: Lists<Session> = {
       // the document field can be used for making rich editable content
       //   learn more at https://keystonejs.com/docs/guides/document-fields
       content: text(),
+      author: relationship({ ref: 'Author.posts', many: false }),
+    },
+  }),
+  Author: list({
+    access: {
+      operation: {
+        ...allOperations<Lists.Author.TypeInfo<Session>>(denyAll),
+        query: hasSession,
+      },
+    },
+    fields: {
+      subjectId: text({ isIndexed: 'unique' }),
+      name: text(),
+      posts: relationship({ ref: 'Post.author', many: true }),
     },
   }),
 };
