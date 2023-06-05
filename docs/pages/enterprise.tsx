@@ -1,7 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx  */
 import { jsx } from '@emotion/react';
-import Link from 'next/link';
 import { useMediaQuery } from '../lib/media';
 import { Highlight } from '../components/primitives/Highlight';
 import { MWrapper } from '../components/content/MWrapper';
