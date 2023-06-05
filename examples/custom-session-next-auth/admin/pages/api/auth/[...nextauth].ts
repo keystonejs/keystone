@@ -11,6 +11,13 @@ const sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
 // see https://next-auth.js.org/configuration/options for more
 export const authOptions = {
   secret: sessionSecret,
+  callbacks: {
+    async session({ session, token }) {
+      console.log('Next Auth Session Details', { session, token });
+      // add the users subjectId and email to the session object
+      return { ...session, email: token.email, subjectId: token.sub };
+    },
+  },
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_ID!,
