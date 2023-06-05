@@ -46,7 +46,7 @@ export default function Brand() {
           <a
             href="https://keystonejs.s3.amazonaws.com/framework-assets/211123-KeystoneJS-logos.zip"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
             download
             css={{
               display: 'block',
@@ -192,7 +192,7 @@ export default function Brand() {
             size="small"
             href="https://community.keystonejs.com/"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             Community Slack <ArrowR />
           </Button>

@@ -22,7 +22,7 @@ export function Socials(props: HTMLAttributes<HTMLElement>) {
       <a
         href="https://twitter.com/keystonejs"
         target="_blank"
-        rel="noopener noreferrer"
+        rel="noreferrer"
         css={{
           display: 'inline-flex',
           padding: 0,
@@ -41,7 +41,7 @@ export function Socials(props: HTMLAttributes<HTMLElement>) {
       <a
         href="https://community.keystonejs.com/"
         target="_blank"
-        rel="noopener noreferrer"
+        rel="noreferrer"
         css={{
           display: 'inline-flex',
           padding: 0,
@@ -71,7 +71,7 @@ export function Socials(props: HTMLAttributes<HTMLElement>) {
       {/* <a
         href="https://www.youtube.com/channel/UClWScN0YMgpN7swHVaEPKuQ"
         target="_blank"
-        rel="noopener noreferrer"
+        rel="noreferrer"
         css={{
           display: 'inline-flex',
           padding: 0,

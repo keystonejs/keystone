@@ -448,7 +448,7 @@ export function Header() {
         <a
           href="https://github.com/keystonejs/keystone"
           target="_blank"
-          rel="noopener noreferrer"
+          rel="noreferrer"
           css={mq({
             display: ['none', null, 'inline-flex'],
             padding: 0,

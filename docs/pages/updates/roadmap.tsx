@@ -307,15 +307,15 @@ export default function Roadmap() {
       </Type>
       <Type as="p" look="body18" margin="1rem 0">
         At{' '}
-        <a href="https://thinkmill.com.au" target="_blank" rel="noopener noreferrer">
+        <a href="https://thinkmill.com.au" target="_blank" rel="noreferrer">
           Thinkmill
         </a>
         , we have a longstanding commitment to open source that includes the likes of{' '}
-        <a href="https://react-select.com" target="_blank" rel="noopener noreferrer">
+        <a href="https://react-select.com" target="_blank" rel="noreferrer">
           react select
         </a>
         ,{' '}
-        <a href="https://github.com/JedWatson/classnames" target="_blank" rel="noopener noreferrer">
+        <a href="https://github.com/JedWatson/classnames" target="_blank" rel="noreferrer">
           classnames
         </a>
         , and of course Keystone <Emoji symbol="🙂" alt="Smile" />. Now that Keystone 6 is stable
@@ -467,19 +467,19 @@ export default function Roadmap() {
         </Type>
         <Type as="p" margin=".5rem 0 0">
           Join the Keystone conversation on{' '}
-          <a href="https://community.keystonejs.com" target="_blank" rel="noopener noreferrer">
+          <a href="https://community.keystonejs.com" target="_blank" rel="noreferrer">
             Slack
           </a>
           ,{' '}
           <a
             href="https://github.com/keystonejs/keystone/discussions"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             GitHub
           </a>
           , and{' '}
-          <a href="https://twitter.com/keystonejs" target="_blank" rel="noopener noreferrer">
+          <a href="https://twitter.com/keystonejs" target="_blank" rel="noreferrer">
             Twitter
           </a>
           .

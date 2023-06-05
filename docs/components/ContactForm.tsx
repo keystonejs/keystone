@@ -86,7 +86,7 @@ export function ContactForm({ autoFocus, stacked, children, ...props }: ContactF
           block={stacked}
           css={{
             justifyItems: stacked ? 'baseline' : undefined,
-            gap: '1rem',
+            gap: '1.75rem',
           }}
         >
           <Field

@@ -107,20 +107,12 @@ export function Footer() {
             </Type>
             <List>
               <li>
-                <a
-                  href="https://github.com/keystonejs/keystone"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href="https://github.com/keystonejs/keystone" target="_blank" rel="noreferrer">
                   Keystone on GitHub
                 </a>
               </li>
               <li>
-                <a
-                  href="https://community.keystonejs.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href="https://community.keystonejs.com/" target="_blank" rel="noreferrer">
                   Join our Slack
                 </a>
               </li>
@@ -128,7 +120,7 @@ export function Footer() {
                 <a
                   href="https://github.com/keystonejs/keystone/blob/main/CONTRIBUTING.md"
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noreferrer"
                 >
                   Contribution Guide
                 </a>
@@ -137,7 +129,7 @@ export function Footer() {
                 <a
                   href="https://github.com/keystonejs/keystone/blob/main/CODE-OF-CONDUCT.md"
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noreferrer"
                 >
                   Code of Conduct
                 </a>
@@ -224,7 +216,11 @@ export function Footer() {
           </Type> */}
           <Type look="body14" as="p" css={{ justifySelf: 'start' }}>
             Made in Australia <Emoji symbol="🇦🇺" alt="Australia" /> by{' '}
-            <a href="https://www.thinkmill.com.au" target="_blank" rel="noopener noreferrer">
+            <a
+              href="https://www.thinkmill.com.au?utm_source=keystone-site"
+              target="_blank"
+              rel="noreferrer"
+            >
               Thinkmill
             </a>
             . Contributed to around the world <Emoji symbol="🌏" alt="Globe" />
@@ -276,7 +272,11 @@ export function DocsFooter() {
       >
         <Type look="body14" as="p" css={{ justifySelf: 'start' }}>
           Made in Australia <Emoji symbol="🇦🇺" alt="Australia" /> by{' '}
-          <a href="https://www.thinkmill.com.au" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://www.thinkmill.com.au?utm_source=keystone-site"
+            target="_blank"
+            rel="noreferrer"
+          >
             Thinkmill
           </a>
           , with contributions from around the world <Emoji symbol="🌏" alt="Globe" />

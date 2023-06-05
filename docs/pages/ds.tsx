@@ -238,7 +238,7 @@ export default function DS() {
             fontFamily: `var(${name})`,
           }}
         >
-          {name} aAgGzZij
+          {name}
           <br />
           {stack}
         </span>

@@ -76,7 +76,7 @@ export default function DocumentFieldDemo() {
               heading="Example Project: Document Field"
               href="https://github.com/keystonejs/keystone/tree/main/examples/document-field"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noreferrer"
             >
               Illustrates how to configure <InlineCode>document</InlineCode> fields in your Keystone
               system and render their data in a frontend application. Builds on the Blog starter

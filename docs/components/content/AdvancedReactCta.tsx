@@ -107,7 +107,7 @@ export function AdvancedReactCta(props: HTMLAttributes<HTMLElement>) {
             size="small"
             href="https://advancedreact.com/friend/KEYSTONE"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             Course details <ArrowR />
           </Button>

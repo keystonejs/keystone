@@ -31,7 +31,7 @@ export function EditButton({
       look="text"
       size="xsmall"
       target="_blank"
-      rel="noopener noreferrer"
+      rel="noreferrer"
       css={{
         textTransform: 'uppercase',
       }}

@@ -28,7 +28,7 @@ export const Field = ({
       }}
     >
       {label && (
-        <Type look="body14" as="label" htmlFor={id}>
+        <Type look="body18" as="label" htmlFor={id}>
           {label}
         </Type>
       )}
@@ -72,6 +72,9 @@ export const Field = ({
             background: 'var(--border)',
             color: 'var(--code)',
             pointerEvents: 'none',
+          },
+          '::placeholder': {
+            color: 'var(--muted)',
           },
         }}
         aria-disabled={disabled ? true : undefined}
