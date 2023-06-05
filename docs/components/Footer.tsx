@@ -224,7 +224,11 @@ export function Footer() {
           </Type> */}
           <Type look="body14" as="p" css={{ justifySelf: 'start' }}>
             Made in Australia <Emoji symbol="🇦🇺" alt="Australia" /> by{' '}
-            <a href="https://www.thinkmill.com.au?utm_source=keystone-site" target="_blank" rel="noopener noreferrer">
+            <a
+              href="https://www.thinkmill.com.au?utm_source=keystone-site"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Thinkmill
             </a>
             . Contributed to around the world <Emoji symbol="🌏" alt="Globe" />
@@ -276,7 +280,11 @@ export function DocsFooter() {
       >
         <Type look="body14" as="p" css={{ justifySelf: 'start' }}>
           Made in Australia <Emoji symbol="🇦🇺" alt="Australia" /> by{' '}
-          <a href="https://www.thinkmill.com.au?utm_source=keystone-site" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://www.thinkmill.com.au?utm_source=keystone-site"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Thinkmill
           </a>
           , with contributions from around the world <Emoji symbol="🌏" alt="Globe" />
