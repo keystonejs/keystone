@@ -1324,6 +1324,55 @@ importers:
         specifier: ~5.0.0
         version: 5.0.2
 
+  examples/framework-nextjs-supabase-auth:
+    dependencies:
+      '@keystone-6/core':
+        specifier: ^5.0.0
+        version: link:../../packages/core
+      '@preconstruct/next':
+        specifier: ^4.0.0
+        version: 4.0.0
+      '@prisma/client':
+        specifier: ^4.15.0
+        version: 4.15.0(prisma@4.15.0)
+      '@supabase/auth-helpers-nextjs':
+        specifier: ^0.6.0
+        version: 0.6.0(@supabase/supabase-js@2.17.0)
+      '@supabase/supabase-js':
+        specifier: ^2.17.0
+        version: 2.17.0
+      dotenv:
+        specifier: ^16.0.3
+        version: 16.0.3
+      graphql:
+        specifier: ^16.6.0
+        version: 16.6.0
+      next:
+        specifier: ^13.3.0
+        version: 13.3.0(@babel/core@7.21.0)(react-dom@18.2.0)(react@18.2.0)
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      '@types/node':
+        specifier: ^18.11.14
+        version: 18.11.14
+      '@types/react':
+        specifier: ^18.0.9
+        version: 18.0.25
+      '@types/react-dom':
+        specifier: ^18.0.4
+        version: 18.0.8
+      prisma:
+        specifier: ^4.15.0
+        version: 4.15.0
+      typescript:
+        specifier: ~5.0.0
+        version: 5.0.2
+
   examples/framework-nextjs-two-servers:
     devDependencies:
       concurrently:
@@ -1491,55 +1540,6 @@ importers:
       tsx:
         specifier: ^3.9.0
         version: 3.9.0
-      typescript:
-        specifier: ~5.0.0
-        version: 5.0.2
-
-  examples/nextjs-keystone-supabase-auth:
-    dependencies:
-      '@keystone-6/core':
-        specifier: ^5.0.0
-        version: link:../../packages/core
-      '@preconstruct/next':
-        specifier: ^4.0.0
-        version: 4.0.0
-      '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
-      '@supabase/auth-helpers-nextjs':
-        specifier: ^0.6.0
-        version: 0.6.0(@supabase/supabase-js@2.17.0)
-      '@supabase/supabase-js':
-        specifier: ^2.17.0
-        version: 2.17.0
-      dotenv:
-        specifier: ^16.0.3
-        version: 16.0.3
-      graphql:
-        specifier: ^16.6.0
-        version: 16.6.0
-      next:
-        specifier: ^13.3.0
-        version: 13.3.0(@babel/core@7.21.0)(react-dom@18.2.0)(react@18.2.0)
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-    devDependencies:
-      '@types/node':
-        specifier: ^18.11.14
-        version: 18.11.14
-      '@types/react':
-        specifier: ^18.0.9
-        version: 18.0.25
-      '@types/react-dom':
-        specifier: ^18.0.4
-        version: 18.0.8
-      prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -8596,7 +8596,7 @@ packages:
       cacache: 15.3.0
       chalk: 4.1.2
       chokidar: 3.5.3
-      dotenv: 16.0.0
+      dotenv: 16.0.3
       esbuild: 0.16.3
       execa: 5.1.1
       exit-hook: 2.2.1
@@ -12451,6 +12451,7 @@ packages:
   /dotenv@16.0.0:
     resolution: {integrity: sha512-qD9WU0MPM4SWLPJy/r2Be+2WgQj8plChsyrCNQzW/0WjvcJQiKQJ9mH3ZgB3fxbUUxgc/11ZJ0Fi5KiimWGz2Q==}
     engines: {node: '>=12'}
+    dev: false
 
   /dotenv@16.0.3:
     resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}

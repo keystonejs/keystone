@@ -1,5 +1,5 @@
 {
-  "name": "@keystone-6/example-nextjs-keystone-supabase",
+  "name": "@keystone-6/example-framework-nextjs-supabase-auth",
   "scripts": {
     "build": "keystone build --no-ui && next build",
     "build:keystone": "keystone build",
@@ -28,5 +28,5 @@
     "prisma": "^4.15.0",
     "typescript": "~5.0.0"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/nextjs-keystone-supabase-auth"
+  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/framework-nextjs-supabase-auth"
 }
