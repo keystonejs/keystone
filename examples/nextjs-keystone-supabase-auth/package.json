@@ -12,7 +12,7 @@
   "dependencies": {
     "@keystone-6/core": "^5.0.0",
     "@preconstruct/next": "^4.0.0",
-    "@prisma/client": "^4.12.0",
+    "@prisma/client": "^4.15.0",
     "@supabase/auth-helpers-nextjs": "^0.6.0",
     "@supabase/supabase-js": "^2.17.0",
     "dotenv": "^16.0.3",
@@ -25,7 +25,7 @@
     "@types/node": "^18.11.14",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.4",
-    "prisma": "^4.12.0",
+    "prisma": "^4.15.0",
     "typescript": "~5.0.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/examples/nextjs-keystone-supabase-auth"
