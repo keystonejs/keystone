@@ -3,8 +3,8 @@ import { getKeystoneSessionContext } from '../keystone/context';
 
 export default async function Page() {
   const context = await getKeystoneSessionContext();
-  const users = await context.query.User.findMany({
-    query: 'id name email',
+  const posts = await context.query.Post.findMany({
+    query: 'id name content',
   });
 
   return (
@@ -16,15 +16,11 @@ export default async function Page() {
           <strong>Users fetched from the server (in app directory)</strong>
         </p>
         <ol>
-          {users.map(u => {
+          {posts.map(p => {
             return (
-              <li key={u.id}>
-                <span>{u.name} </span>
-                {u.email ? (
-                  <span>(email: {u.email})</span>
-                ) : (
-                  <span>(email: not authenticated)</span>
-                )}
+              <li key={p.id}>
+                <span>{p.name} </span>
+                <span>(content: {p.content})</span>
               </li>
             );
           })}

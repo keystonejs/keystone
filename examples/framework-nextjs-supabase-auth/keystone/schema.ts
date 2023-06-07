@@ -13,7 +13,7 @@ export const lists: Lists = {
     access: {
       operation: {
         // Only Supabase Users can create, update, and delete
-        ...allOperations(permissions.authenticatedUser),
+        ...allOperations<Lists.Post.TypeInfo>(permissions.authenticatedUser),
         // override the deny and allow only query
         query: allowAll,
       },
