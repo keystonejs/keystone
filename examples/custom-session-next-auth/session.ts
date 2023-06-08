@@ -8,12 +8,19 @@ import type { Context } from '.keystone/types';
 export type Session = {
   id: string;
 };
-const sudoContext: Context =
-  (globalThis as any).keystoneContext || getContext(config, PrismaModule).sudo();
+let _keystoneContext: Context = (globalThis as any)._keystoneContext;
 
-if (process.env.NODE_ENV !== 'production') (globalThis as any).sudoContext = sudoContext;
-
+function getKeystoneContext() {
+  if (!_keystoneContext) {
+    _keystoneContext = getContext(config, PrismaModule);
+    if (process.env.NODE_ENV !== 'production') {
+      (globalThis as any)._keystoneContext = _keystoneContext;
+    }
+  }
+  return _keystoneContext;
+}
 export async function onNextSignIn({ user, account, profile }: any) {
+  const sudoContext = getKeystoneContext().sudo();
   // console.log('Next Auth Sign In Details', { user, account, profile });
   // check if the user exists in keystone
   const keystoneUser = await sudoContext.query.Author.findOne({
