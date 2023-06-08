@@ -35,7 +35,8 @@ export function group<
 }
 
 export function list<
-  ListTypeInfo extends BaseListTypeInfo // TODO: remove in breaking change
+  __Fields extends BaseFields<ListTypeInfo>, // TODO: remove in breaking change
+  ListTypeInfo extends BaseListTypeInfo
 >(config: ListConfig<ListTypeInfo>): ListConfig<ListTypeInfo> {
   return { ...config };
 }
