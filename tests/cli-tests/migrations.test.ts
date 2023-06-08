@@ -760,10 +760,10 @@ describe('start --with-migrations', () => {
         .replace(/[^ -~\n]+/g, '?')
     ).toMatchInlineSnapshot(`
       "? Starting Keystone
-      ? Connecting to the database
       ? Applying database migrations
       Applying migration \`migration_name\`
       ? Your database is now in sync with your migrations
+      ? Connecting to the database
       ? Creating server
       ? GraphQL API ready
       ? Server listening on :3000 (http://localhost:3000/)
@@ -777,9 +777,9 @@ describe('start --with-migrations', () => {
 
     expect(output.replace(/[^ -~\n]+/g, '?')).toMatchInlineSnapshot(`
       "? Starting Keystone
-      ? Connecting to the database
       ? Applying database migrations
       ? The database is already in sync with your migrations
+      ? Connecting to the database
       ? Creating server
       ? GraphQL API ready
       ? Server listening on :3000 (http://localhost:3000/)
