@@ -1,4 +1,4 @@
-import { list } from '@keystone-6/core';
+import { list, group } from '@keystone-6/core';
 import { allowAll, denyAll } from '@keystone-6/core/access';
 import { checkbox, text, timestamp } from '@keystone-6/core/fields';
 import type { Lists } from '.keystone/types';
@@ -41,20 +41,59 @@ export const lists: Lists = {
       }),
       preventDelete: checkbox(),
 
-      createdBy: text({ ...readOnly }),
-      createdAt: timestamp({ ...readOnly }),
-      updatedBy: text({ ...readOnly }),
-      updatedAt: timestamp({ ...readOnly }),
+      ...group({
+        label: 'Authorship',
+        description: 'Fields that show who created and updated this Post',
+        fields: {
+          createdBy: text({ ...readOnly }),
+          createdAt: timestamp({
+            ...readOnly,
+
+            // TODO: explain
+            //  defaultValue: { kind: 'now' }
+
+            hooks: {
+              resolveInput: ({ context, operation, resolvedData, fieldKey }) => {
+                if (operation === 'create') return new Date();
+                return resolvedData[fieldKey];
+              },
+            },
+
+            // TODO: this would be nice
+            //              hooks: {
+            //                resolveInput: {
+            //                  create: () => new Date()
+            //                }
+            //              }
+          }),
+
+          updatedBy: text({ ...readOnly }),
+          updatedAt: timestamp({
+            ...readOnly,
+            // TODO: explain
+            //              db: {
+            //                updatedAt: true
+            //              },
+
+            // TODO: this would be nice
+            //              hooks: {
+            //                resolveInput: {
+            //                  update: () => new Date()
+            //                }
+            //              }
+          }),
+        },
+      }),
     },
     hooks: {
       resolveInput: {
         create: ({ context, resolvedData }) => {
-          resolvedData.createdAt = new Date();
+          //resolvedData.createdAt = new Date(); // see createdAt field hook
           resolvedData.createdBy = `${context.req?.socket.remoteAddress} (${context.req?.headers['user-agent']})`;
           return resolvedData;
         },
         update: ({ context, resolvedData }) => {
-          resolvedData.updatedAt = new Date();
+          //resolvedData.updatedAt = new Date(); // see updatedAt field hook
           resolvedData.updatedBy = `${context.req?.socket.remoteAddress} (${context.req?.headers['user-agent']})`;
           return resolvedData;
         },
