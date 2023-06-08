@@ -48,17 +48,15 @@ export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access' | 'graph
   };
 };
 
-export type FieldGroupConfig = {
-  fields: string[];
-  label: string;
-  description: string | null;
-};
-
 export type InitialisedList = {
   access: ResolvedListAccessControl;
 
   fields: Record<string, InitialisedField>;
-  groups: FieldGroupConfig[];
+  groups: {
+    fields: BaseListTypeInfo['fields'][];
+    label: string;
+    description: string | null;
+  }[];
 
   hooks: ResolvedListHooks<BaseListTypeInfo>;
 
@@ -223,7 +221,7 @@ function getListsWithInitialisedFields(
   for (const [listKey, list] of Object.entries(listsConfig)) {
     const intermediateList = intermediateLists[listKey];
     const resultFields: Record<string, InitialisedField> = {};
-    const groups: FieldGroupConfig[] = [];
+    const groups = [];
     const fieldKeys = Object.keys(list.fields);
 
     for (const [idx, [fieldKey, fieldFunc]] of Object.entries(list.fields).entries()) {
