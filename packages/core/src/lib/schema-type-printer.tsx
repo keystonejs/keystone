@@ -109,18 +109,18 @@ function printInterimType<L extends InitialisedList>(
           `  ${fieldKey}: {`,
           ...Object.entries(dbField.fields).map(([subFieldKey, subDbField]) => {
             // TODO: untrue if a db defaultValue is set
-            //              const required = operation === 'Create' && subDbField.mode === 'required' ? '' : '?';
-            const required = '?';
-            return `  ${subFieldKey}${required}: ${prismaType}['${fieldKey}_${subFieldKey}'];`;
+            //              const optional = operation === 'Create' && subDbField.mode === 'required' ? '' : '?';
+            const optional = '?';
+            return `  ${subFieldKey}${optional}: ${prismaType}['${fieldKey}_${subFieldKey}'];`;
           }),
           `  };`,
         ].join('\n');
       }
 
       // TODO: untrue if a db defaultValue is set
-      //        const required = operation === 'Create' && dbField.mode === 'required' ? '' : '?';
-      const required = '?';
-      return `  ${fieldKey}${required}: ${prismaType}['${fieldKey}'];`;
+      //        const optional = operation === 'Create' && dbField.mode === 'required' ? '' : '?';
+      const optional = '?';
+      return `  ${fieldKey}${optional}: ${prismaType}['${fieldKey}'];`;
     }),
     `};`,
   ].join('\n');
