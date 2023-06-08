@@ -1,4 +1,4 @@
-import {
+import type {
   AdminFileToWrite,
   BaseListTypeInfo,
   KeystoneConfig,
@@ -8,7 +8,7 @@ import {
 } from '@keystone-6/core/types';
 import { password, timestamp } from '@keystone-6/core/fields';
 
-import { AuthConfig, AuthGqlNames } from './types';
+import type { AuthConfig, AuthGqlNames } from './types';
 import { getSchemaExtension } from './schema';
 import { signinTemplate } from './templates/signin';
 import { initTemplate } from './templates/init';

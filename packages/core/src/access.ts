@@ -1,6 +1,5 @@
 import type { MaybePromise } from './types/utils';
 import type { BaseListTypeInfo } from './types';
-import type { AccessOperation, BaseAccessArgs } from './types/config/access-control';
 
 export function allowAll() {
   return true;
@@ -16,13 +15,11 @@ export function unfiltered<ListTypeInfo extends BaseListTypeInfo>(): MaybePromis
   return true;
 }
 
-export function allOperations<ListTypeInfo extends BaseListTypeInfo>(
-  func: (args: BaseAccessArgs<ListTypeInfo> & { operation: AccessOperation }) => boolean
-) {
+export function allOperations<F>(f: F) {
   return {
-    query: func,
-    create: func,
-    update: func,
-    delete: func,
+    query: f,
+    create: f,
+    update: f,
+    delete: f,
   };
 }
