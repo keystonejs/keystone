@@ -2,7 +2,7 @@ import { config } from '@keystone-6/core';
 import { fixPrismaPath } from '../example-utils';
 import { lists } from './schema';
 
-import { Session, nextAuthSession } from './session';
+import { Session, nextAuthSessionStrategy } from './session';
 import type { TypeInfo } from '.keystone/types';
 
 // WARNING: this example is for demonstration purposes only
@@ -44,5 +44,5 @@ export default config<TypeInfo<Session>>({
   },
   lists,
   // you can find out more at https://keystonejs.com/docs/apis/session#session-api
-  session: nextAuthSession,
+  session: nextAuthSessionStrategy,
 });
