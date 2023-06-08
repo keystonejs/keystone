@@ -2,7 +2,6 @@ import { getContext } from '@keystone-6/core/context';
 import { getServerSession } from 'next-auth/next';
 import type { CallbacksOptions } from 'next-auth';
 import GithubProvider from 'next-auth/providers/github';
-import config from './keystone';
 import type { Context } from '.keystone/types';
 
 // WARNING: this example is for demonstration purposes only
@@ -18,7 +17,10 @@ async function getKeystoneContext() {
   if (_keystoneContext) return _keystoneContext;
 
   // TODO: this could probably be better
-  _keystoneContext = getContext(config, await import('.myprisma/client'));
+  _keystoneContext = getContext(
+    (await import('./keystone')).default,
+    await import('.myprisma/client')
+  );
   if (process.env.NODE_ENV !== 'production') {
     (globalThis as any)._keystoneContext = _keystoneContext;
   }
@@ -33,19 +35,17 @@ export const nextAuthOptions = {
       // console.error('next-auth signIn', { user, account, profile });
       const sudoContext = (await getKeystoneContext()).sudo();
 
-      if (!profile) return;
-
       // check if the user exists in keystone
       const author = await sudoContext.query.Author.findOne({
-        where: { subjectId: profile.id },
+        where: { subjectId: user.id },
       });
 
       // if not, sign up
       if (!author) {
         await sudoContext.query.Author.createOne({
           data: {
-            subjectId: profile.id,
-            name: profile.name,
+            subjectId: user.id,
+            name: user.name,
           },
         });
       }
@@ -88,8 +88,10 @@ export const nextAuthSessionStrategy = {
       res,
       nextAuthOptions
     );
+    if (!nextAuthSession) return;
+    const sudoContext = context.sudo();
     // get the keystone user using the subjectId
-    const keystoneAuthor = await context.db.Author.findOne({
+    const keystoneAuthor = await sudoContext.db.Author.findOne({
       where: { subjectId: nextAuthSession?.subjectId },
     });
     if (!keystoneAuthor) return;
