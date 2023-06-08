@@ -30,7 +30,7 @@ export const lists: Lists<Session> = {
   Author: list({
     access: {
       operation: {
-        ...allOperations<Lists.Author.TypeInfo<Session>>(denyAll),
+        ...allOperations(denyAll),
         query: hasSession,
       },
     },
