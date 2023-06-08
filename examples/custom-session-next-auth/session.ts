@@ -2,8 +2,8 @@ import { getContext } from '@keystone-6/core/context';
 import { getServerSession } from 'next-auth/next';
 import GithubProvider from 'next-auth/providers/github';
 import config from './keystone';
-import * as PrismaModule from '.myprisma/client';
 import type { Context } from '.keystone/types';
+
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
 //   or tested for any particular usage
@@ -11,12 +11,25 @@ import type { Context } from '.keystone/types';
 // WARNING: you need to change this
 const sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
 
+let _keystoneContext: Context = (globalThis as any)._keystoneContext;
+
+async function getKeystoneContext() {
+  if (_keystoneContext) return _keystoneContext;
+
+  // TODO: this could probably be better
+  _keystoneContext = getContext(config, await import('.myprisma/client'));
+  if (process.env.NODE_ENV !== 'production') {
+    (globalThis as any)._keystoneContext = _keystoneContext;
+  }
+  return _keystoneContext;
+}
+
 // see https://next-auth.js.org/configuration/options for more
 export const nextAuthOptions = {
   secret: sessionSecret,
   callbacks: {
     async signIn({ user, account, profile }: any) {
-      const sudoContext = getKeystoneContext().sudo();
+      const sudoContext = (await getKeystoneContext()).sudo();
       // console.log('Next Auth Sign In Details', { user, account, profile });
       // check if the user exists in keystone
       const keystoneUser = await sudoContext.query.Author.findOne({
@@ -51,18 +64,6 @@ export const nextAuthOptions = {
 export type Session = {
   id: string;
 };
-
-let _keystoneContext: Context = (globalThis as any)._keystoneContext;
-
-function getKeystoneContext() {
-  if (!_keystoneContext) {
-    _keystoneContext = getContext(config, PrismaModule);
-    if (process.env.NODE_ENV !== 'production') {
-      (globalThis as any)._keystoneContext = _keystoneContext;
-    }
-  }
-  return _keystoneContext;
-}
 
 export const nextAuthSessionStrategy = {
   async get({ context }: { context: Context }): Promise<Session | undefined> {
