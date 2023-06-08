@@ -1,5 +1,6 @@
 import { getContext } from '@keystone-6/core/context';
 import { getServerSession } from 'next-auth/next';
+import type { CallbacksOptions } from 'next-auth';
 import GithubProvider from 'next-auth/providers/github';
 import config from './keystone';
 import type { Context } from '.keystone/types';
@@ -28,15 +29,19 @@ async function getKeystoneContext() {
 export const nextAuthOptions = {
   secret: sessionSecret,
   callbacks: {
-    async signIn({ user, account, profile }: any) {
+    async signIn({ user, account, profile }: Parameters<CallbacksOptions['signIn']>[0]) {
+      // console.error('next-auth signIn', { user, account, profile });
       const sudoContext = (await getKeystoneContext()).sudo();
-      // console.log('Next Auth Sign In Details', { user, account, profile });
+
+      if (!profile) return
+
       // check if the user exists in keystone
-      const keystoneUser = await sudoContext.query.Author.findOne({
+      const author = await sudoContext.query.Author.findOne({
         where: { subjectId: profile.id },
       });
-      // if not, create them
-      if (!keystoneUser) {
+
+      // if not, sign up
+      if (!author) {
         await sudoContext.query.Author.createOne({
           data: {
             subjectId: profile.id,
@@ -44,12 +49,11 @@ export const nextAuthOptions = {
           },
         });
       }
-      // return true to allow the sign in to complete
-      return true;
+
+      return true; // accept the signin
     },
-    async session({ token, session }: any) {
-      // console.log('Next Auth Session Details', { session, token });
-      // add the users subjectId and email to the session object
+    async session({ token, session }: Parameters<CallbacksOptions['session']>[0]) {
+      // console.error('next-auth session', { session, token });
       return { ...session, subjectId: token.sub };
     },
   },
@@ -59,7 +63,7 @@ export const nextAuthOptions = {
       clientSecret: process.env.GITHUB_SECRET!,
     }),
   ],
-};
+} ;
 
 export type Session = {
   id: string;
@@ -77,8 +81,8 @@ export const nextAuthSessionStrategy = {
       const [key, value] = part.trim().split('=');
       cookies[key] = decodeURIComponent(value);
     }
+
     // get the next-auth session
-    // TODO: get types for getServerSession.
     const nextAuthSession = await getServerSession(
       { headers, cookies } as any,
       res,
