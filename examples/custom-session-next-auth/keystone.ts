@@ -1,41 +1,13 @@
 import { config } from '@keystone-6/core';
-import { getServerSession } from 'next-auth/next';
-import type { Session } from 'next-auth';
 import { fixPrismaPath } from '../example-utils';
 import { lists } from './schema';
-import { authOptions } from './admin/pages/api/auth/[...nextauth]';
-import type { Context, TypeInfo } from '.keystone/types';
+
+import { Session, nextAuthSession } from './session';
+import type { TypeInfo } from '.keystone/types';
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
 //   or tested for any particular usage
-
-const nextAuthSession = {
-  async get({ context }: { context: Context }): Promise<Session | undefined> {
-    const { req, res } = context;
-    const { headers } = req ?? {};
-    if (!headers?.cookie || !res) return;
-
-    // next-auth needs a different cookies structure
-    const cookies: Record<string, string> = {};
-    for (const part of headers.cookie.split(';')) {
-      const [key, value] = part.trim().split('=');
-      cookies[key] = decodeURIComponent(value);
-    }
-    // get the next-auth session
-    const nextAuthSession = await getServerSession({ headers, cookies } as any, res, authOptions);
-    // get the keystone user using the subjectId
-    const keystoneAuthor = await context.db.Author.findOne({
-      where: { subjectId: nextAuthSession?.subjectId },
-    });
-    if (!keystoneAuthor) return;
-    return { ...nextAuthSession, itemId: keystoneAuthor.id };
-  },
-
-  // we don't need these as next-auth handle start and end for us
-  async start() {},
-  async end() {},
-};
 
 export default config<TypeInfo<Session>>({
   db: {

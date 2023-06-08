@@ -1,7 +1,7 @@
 import { denyAll, allOperations } from '@keystone-6/core/access';
 import { list } from '@keystone-6/core';
 import { text, relationship } from '@keystone-6/core/fields';
-import type { Session } from 'next-auth';
+import type { Session } from './session';
 import type { Lists } from '.keystone/types';
 
 // WARNING: this example is for demonstration purposes only
