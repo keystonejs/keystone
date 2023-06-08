@@ -2,4 +2,4 @@
 '@keystone-6/core': patch
 ---
 
-Fixes onConnect database usage with database migrations
+Fixes `db.onConnect` for `keystone start` to run _after_ migrations are completed 
