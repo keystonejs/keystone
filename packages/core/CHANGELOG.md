@@ -1,5 +1,17 @@
 # @keystone-6/core
 
+## 5.3.1
+
+### Patch Changes
+
+- [#8598](https://github.com/keystonejs/keystone/pull/8598) [`2bada802f`](https://github.com/keystonejs/keystone/commit/2bada802fdb2448698a644e954f8d0b192d58895) Thanks [@acburdine](https://github.com/acburdine)! - Fixes hanging process when multiple Prisma generators are defined
+
+* [#8617](https://github.com/keystonejs/keystone/pull/8617) [`9ad71cf93`](https://github.com/keystonejs/keystone/commit/9ad71cf935b7445b101e72c7a64a7be6ab9fe249) Thanks [@dcousens](https://github.com/dcousens)! - Fixes types for `allOperations`, regression from https://github.com/keystonejs/keystone/pull/8570
+
+- [#8617](https://github.com/keystonejs/keystone/pull/8617) [`9ad71cf93`](https://github.com/keystonejs/keystone/commit/9ad71cf935b7445b101e72c7a64a7be6ab9fe249) Thanks [@dcousens](https://github.com/dcousens)! - Fixes broken types for field groups, regression from https://github.com/keystonejs/keystone/pull/8570
+
+* [#8612](https://github.com/keystonejs/keystone/pull/8612) [`a9cc1285f`](https://github.com/keystonejs/keystone/commit/a9cc1285fd2ad67cacdb8b27fcea66f673294e8b) Thanks [@acburdine](https://github.com/acburdine)! - Fixes `db.onConnect`, with `keystone start --with-migrations`, to run _after_ migrations complete
+
 ## 5.3.0
 
 ### Minor Changes
