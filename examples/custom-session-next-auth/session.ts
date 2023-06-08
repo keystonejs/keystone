@@ -33,7 +33,7 @@ export const nextAuthOptions = {
       // console.error('next-auth signIn', { user, account, profile });
       const sudoContext = (await getKeystoneContext()).sudo();
 
-      if (!profile) return
+      if (!profile) return;
 
       // check if the user exists in keystone
       const author = await sudoContext.query.Author.findOne({
@@ -63,7 +63,7 @@ export const nextAuthOptions = {
       clientSecret: process.env.GITHUB_SECRET!,
     }),
   ],
-} ;
+};
 
 export type Session = {
   id: string;
