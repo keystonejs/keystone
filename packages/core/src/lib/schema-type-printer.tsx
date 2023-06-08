@@ -90,54 +90,6 @@ function printInputTypesFromSchema(schema: GraphQLSchema, scalars: Record<string
   return output.join('\n');
 }
 
-function printInterimFieldType({
-  prismaClientPath,
-  listKey,
-  fieldKey,
-  prismaKey,
-  operation,
-}: {
-  prismaClientPath: string;
-  listKey: string;
-  fieldKey: string;
-  prismaKey: string;
-  operation: string;
-}) {
-  return `  ${fieldKey}?: import('${prismaClientPath}').Prisma.${listKey}${operation}Input['${prismaKey}'];`;
-}
-
-function printInterimMultiFieldType({
-  prismaClientPath,
-  listKey,
-  fieldKey,
-  operation,
-  fields,
-}: {
-  prismaClientPath: string;
-  listKey: string;
-  fieldKey: string;
-  operation: string;
-  fields: { [key: string]: unknown };
-}) {
-  return [
-    `  ${fieldKey}: {`,
-    ...Object.keys(fields).map(subFieldKey => {
-      const prismaKey = `${fieldKey}_${subFieldKey}`;
-      return (
-        '  ' +
-        printInterimFieldType({
-          prismaClientPath,
-          listKey,
-          fieldKey: subFieldKey,
-          prismaKey,
-          operation,
-        })
-      );
-    }),
-    `  };`,
-  ].join('\n');
-}
-
 function printInterimType<L extends InitialisedList>(
   prismaClientPath: string,
   list: L,
@@ -145,27 +97,30 @@ function printInterimType<L extends InitialisedList>(
   typename: string,
   operation: 'Create' | 'Update'
 ) {
+  const prismaType = `import('${prismaClientPath}').Prisma.${listKey}${operation}Input`;
+
   return [
     `type Resolved${typename} = {`,
     ...Object.entries(list.fields).map(([fieldKey, { dbField }]) => {
       if (dbField.kind === 'none' || fieldKey === 'id') return `  ${fieldKey}?: undefined;`;
+
       if (dbField.kind === 'multi') {
-        return printInterimMultiFieldType({
-          prismaClientPath,
-          listKey,
-          fieldKey,
-          operation,
-          fields: dbField.fields,
-        });
+        return [
+          `  ${fieldKey}: {`,
+          ...Object.entries(dbField.fields).map(([subFieldKey, subDbField]) => {
+            // TODO: untrue if a db defaultValue is set
+//              const required = operation === 'Create' && subDbField.mode === 'required' ? '' : '?';
+            const required = '?';
+            return `  ${subFieldKey}${required}: ${prismaType}['${fieldKey}_${subFieldKey}'];`;
+          }),
+          `  };`,
+        ].join('\n');
       }
 
-      return printInterimFieldType({
-        prismaClientPath,
-        listKey,
-        fieldKey,
-        prismaKey: fieldKey,
-        operation,
-      });
+      // TODO: untrue if a db defaultValue is set
+//        const required = operation === 'Create' && dbField.mode === 'required' ? '' : '?';
+      const required = '?';
+      return `  ${fieldKey}${required}: ${prismaType}['${fieldKey}'];`;
     }),
     `};`,
   ].join('\n');
