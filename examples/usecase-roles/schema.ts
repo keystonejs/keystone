@@ -3,6 +3,12 @@ import { allOperations, denyAll } from '@keystone-6/core/access';
 import { checkbox, password, relationship, text } from '@keystone-6/core/fields';
 
 import { isSignedIn, permissions, rules } from './access';
+import type { Session } from './access';
+import type { Lists } from '.keystone/types';
+
+// WARNING: this example is for demonstration purposes only
+//   as with each of our examples, it has not been vetted
+//   or tested for any particular usage
 
 /*
   The set of permissions a role could have would change based on application requirements, so the
@@ -13,7 +19,7 @@ import { isSignedIn, permissions, rules } from './access';
   - All users can see and manage todo items assigned to themselves
 */
 
-export const lists = {
+export const lists: Lists<Session> = {
   Todo: list({
     /*
       SPEC
@@ -49,13 +55,9 @@ export const lists = {
       },
     },
     fields: {
-      /* The label of the todo item */
       label: text({ validation: { isRequired: true } }),
-      /* Whether the todo item is complete */
       isComplete: checkbox({ defaultValue: false }),
-      /* Private todo items are only visible to the user they are assigned to */
       isPrivate: checkbox({ defaultValue: false }),
-      /* The person the todo item is assigned to */
       assignedTo: relationship({
         ref: 'User.tasks',
         ui: {
@@ -136,13 +138,12 @@ export const lists = {
       // the user's password, used as the secret field for authentication
       //   should not be publicly visible
       password: password({
-        validation: { isRequired: true },
         access: {
           read: denyAll, // TODO: is this required?
           update: ({ session, item }) =>
             permissions.canManagePeople({ session }) || session.itemId === item.id,
         },
-        // TODO: is anything else required
+        validation: { isRequired: true },
       }),
       /* The role assigned to the user */
       role: relationship({
@@ -209,8 +210,8 @@ export const lists = {
       },
     },
     fields: {
-      /* The name of the role */
       name: text({ validation: { isRequired: true } }),
+
       /* Create Todos means:
          - create todos (can only assign them to others with canManageAllTodos) */
       canCreateTodos: checkbox({ defaultValue: false }),
@@ -234,7 +235,7 @@ export const lists = {
       /* Use AdminUI means:
          - can access the Admin UI next app */
       canUseAdminUI: checkbox({ defaultValue: false }),
-      /* This list of People assigned to this role */
+
       assignedTo: relationship({
         ref: 'User.role',
         many: true,

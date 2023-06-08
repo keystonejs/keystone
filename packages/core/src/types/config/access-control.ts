@@ -67,7 +67,7 @@ type ListAccessControlFunction<ListTypeInfo extends BaseListTypeInfo> = (
 ) => MaybePromise<boolean>;
 
 type ListAccessControlObject<ListTypeInfo extends BaseListTypeInfo> = {
-  // These functions should return `true` if access is allowed or `false` if access is denied.
+  // these functions should return `true` if access is allowed or `false` if access is denied.
   operation:
     | ListOperationAccessControl<AccessOperation, ListTypeInfo>
     | {
