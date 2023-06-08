@@ -50,37 +50,45 @@ export const lists: Lists = {
             ...readOnly,
 
             // TODO: explain
-            //  defaultValue: { kind: 'now' }
+            // defaultValue: { kind: 'now' }
 
             hooks: {
-              resolveInput: ({ context, operation, resolvedData, fieldKey }) => {
+              resolveInput: ({ context, operation, resolvedData }) => {
                 if (operation === 'create') return new Date();
-                return resolvedData[fieldKey];
+                return resolvedData.createdAt;
               },
             },
 
             // TODO: this would be nice
-            //              hooks: {
-            //                resolveInput: {
-            //                  create: () => new Date()
-            //                }
-            //              }
+            // hooks: {
+            //   resolveInput: {
+            //     create: () => new Date()
+            //   }
+            // }
           }),
 
           updatedBy: text({ ...readOnly }),
           updatedAt: timestamp({
             ...readOnly,
+
             // TODO: explain
-            //              db: {
-            //                updatedAt: true
-            //              },
+            // db: {
+            //   updatedAt: true
+            // },
+
+            hooks: {
+              resolveInput: ({ context, operation, resolvedData }) => {
+                if (operation === 'update') return new Date();
+                return resolvedData.updatedAt;
+              },
+            },
 
             // TODO: this would be nice
-            //              hooks: {
-            //                resolveInput: {
-            //                  update: () => new Date()
-            //                }
-            //              }
+            // hooks: {
+            //   resolveInput: {
+            //     update: () => new Date()
+            //   }
+            // }
           }),
         },
       }),
