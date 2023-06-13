@@ -57,16 +57,19 @@ export const nextAuthOptions = {
       return true; // accept the signin
     },
 
-    async session({ session, token }: {
-      session: DefaultSession, // required by next-auth, not by us
-      token: DefaultJWT
+    async session({
+      session,
+      token,
+    }: {
+      session: DefaultSession; // required by next-auth, not by us
+      token: DefaultJWT;
     }) {
       // console.error('next-auth session', { session, token });
       return {
         ...session,
         keystone: {
           authId: token.sub,
-        }
+        },
       };
     },
   },
