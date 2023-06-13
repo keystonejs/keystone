@@ -138,38 +138,26 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
    *
    * Validates the provided auth config; optional step when integrating auth
    */
-  function validateConfig<TypeInfo extends BaseKeystoneTypeInfo>(config: KeystoneConfig<TypeInfo>) {
-    const listConfig = config.lists[listKey];
-    if (listConfig === undefined) {
-      const msg = `A createAuth() invocation specifies the list "${listKey}" but no list with that key has been defined.`;
-      throw new Error(msg);
+  function throwIfInvalidConfig<TypeInfo extends BaseKeystoneTypeInfo>(config: KeystoneConfig<TypeInfo>) {
+    if (!(listKey in config.lists)) {
+      throw new Error(`withAuth cannot find the list "${listKey}"`)
     }
 
-    // TODO: Check for String-like typing for identityField? How?
-    // TODO: Validate that the identifyField is unique.
-    // TODO: If this field isn't required, what happens if I try to log in as `null`?
-    const identityFieldConfig = listConfig.fields[identityField];
-    if (identityFieldConfig === undefined) {
-      const i = JSON.stringify(identityField);
-      const msg = `A createAuth() invocation for the "${listKey}" list specifies ${i} as its identityField but no field with that key exists on the list.`;
-      throw new Error(msg);
+    // TODO: verify that the identity field is unique
+    // TODO: verify that the field is required
+    const list = config.lists[listKey];
+    if (!(identityField in list.fields)) {
+      throw new Error(`withAuth cannot find the identity field "${listKey}.${identityField}"`);
     }
 
-    // TODO: We could make the secret field optional to disable the standard id/secret auth and password resets (ie. magic links only)
-    const secretFieldConfig = listConfig.fields[secretField];
-    if (secretFieldConfig === undefined) {
-      const s = JSON.stringify(secretField);
-      const msg = `A createAuth() invocation for the "${listKey}" list specifies ${s} as its secretField but no field with that key exists on the list.`;
-      throw new Error(msg);
+    if (!(secretField in list.fields)) {
+      throw new Error(`withAuth cannot find the secret field "${listKey}.${secretField}"`);
     }
 
-    // TODO: Could also validate initFirstItem.itemData keys?
-    for (const field of initFirstItem?.fields || []) {
-      if (listConfig.fields[field] === undefined) {
-        const f = JSON.stringify(field);
-        const msg = `A createAuth() invocation for the "${listKey}" list specifies the field ${f} in initFirstItem.fields array but no field with that key exist on the list.`;
-        throw new Error(msg);
-      }
+    for (const fieldKey of initFirstItem?.fields || []) {
+      if (fieldKey in list.fields) continue;
+
+      throw new Error(`initFirstItem.fields has unknown field "${listKey}.${fieldKey}"`);
     }
   }
 
@@ -184,19 +172,13 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
       get: async ({ context }) => {
         const session = await get({ context });
         const sudoContext = context.sudo();
-        if (
-          !session ||
-          !session.listKey ||
-          session.listKey !== listKey ||
-          !session.itemId ||
-          !sudoContext.query[session.listKey]
-        ) {
-          return;
-        }
+        if (!session) return;
+        if (!session.itemId) return;
+        if (listKey !== session.listKey) return;
 
         try {
           const data = await sudoContext.query[listKey].findOne({
-            where: { id: session.itemId as any }, // TODO: fix this
+            where: { id: session.itemId },
             query: sessionData,
           });
           if (!data) return;
@@ -267,7 +249,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
   function withAuth<TypeInfo extends BaseKeystoneTypeInfo>(
     config: KeystoneConfig<TypeInfo>
   ): KeystoneConfig<TypeInfo> {
-    validateConfig(config);
+    throwIfInvalidConfig(config);
     let { ui } = config;
     if (!ui?.isDisabled) {
       const {
