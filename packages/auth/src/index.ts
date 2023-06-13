@@ -133,11 +133,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     sessionData,
   });
 
-  /**
-   * validateConfig
-   *
-   * Validates the provided auth config; optional step when integrating auth
-   */
   function throwIfInvalidConfig<TypeInfo extends BaseKeystoneTypeInfo>(config: KeystoneConfig<TypeInfo>) {
     if (!(listKey in config.lists)) {
       throw new Error(`withAuth cannot find the list "${listKey}"`)
