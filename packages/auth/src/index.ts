@@ -138,8 +138,8 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
    *
    * Validates the provided auth config; optional step when integrating auth
    */
-  const validateConfig = (keystoneConfig: KeystoneConfig) => {
-    const listConfig = keystoneConfig.lists[listKey];
+  function validateConfig<TypeInfo extends BaseKeystoneTypeInfo>(config: KeystoneConfig<TypeInfo>) {
+    const listConfig = config.lists[listKey];
     if (listConfig === undefined) {
       const msg = `A createAuth() invocation specifies the list "${listKey}" but no list with that key has been defined.`;
       throw new Error(msg);
@@ -171,7 +171,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
         throw new Error(msg);
       }
     }
-  };
+  }
 
   // this strategy wraps the existing session strategy,
   //   and injects the requested session.data before returning
@@ -211,7 +211,9 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     };
   }
 
-  async function hasInitFirstItemConditions(context: KeystoneContext) {
+  async function hasInitFirstItemConditions<TypeInfo extends BaseKeystoneTypeInfo>(
+    context: KeystoneContext<TypeInfo>
+  ) {
     // do nothing if they aren't using this feature
     if (!initFirstItem) return false;
 
@@ -222,11 +224,11 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     return count === 0;
   }
 
-  async function authMiddleware({
+  async function authMiddleware<TypeInfo extends BaseKeystoneTypeInfo>({
     context,
     wasAccessAllowed,
   }: {
-    context: KeystoneContext;
+    context: KeystoneContext<TypeInfo>;
     wasAccessAllowed: boolean;
   }): Promise<{ kind: 'redirect'; to: string } | void> {
     const { req } = context;
@@ -246,11 +248,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     if (wasAccessAllowed) return;
 
     // otherwise, redirect to signin
-    if (pathname === '/') return { kind: 'redirect', to: '/signin' };
-    return {
-      kind: 'redirect',
-      to: `/signin?from=${encodeURIComponent(req!.url!)}`,
-    };
+    return { kind: 'redirect', to: '/signin' };
   }
 
   function defaultIsAccessAllowed({ session, sessionStrategy }: KeystoneContext) {
@@ -266,12 +264,11 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
    *
    * Automatically extends your configuration with a prescriptive implementation.
    */
-  const withAuth = <TypeInfo extends BaseKeystoneTypeInfo>(
-    keystoneConfig: KeystoneConfig<TypeInfo>
-  ): KeystoneConfig<TypeInfo> => {
-    validateConfig(keystoneConfig);
-
-    let { ui } = keystoneConfig;
+  function withAuth<TypeInfo extends BaseKeystoneTypeInfo>(
+    config: KeystoneConfig<TypeInfo>
+  ): KeystoneConfig<TypeInfo> {
+    validateConfig(config);
+    let { ui } = config;
     if (!ui?.isDisabled) {
       const {
         getAdditionalFiles = [],
@@ -297,24 +294,30 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
       };
     }
 
-    if (!keystoneConfig.session) throw new TypeError('Missing .session configuration');
+    if (!config.session) throw new TypeError('Missing .session configuration');
 
-    const { extendGraphqlSchema = defaultExtendGraphqlSchema } = keystoneConfig;
-    const listConfig = keystoneConfig.lists[listKey];
+    const { extendGraphqlSchema = defaultExtendGraphqlSchema } = config;
+    const authListConfig = config.lists[listKey];
 
     return {
-      ...keystoneConfig,
+      ...config,
       ui,
-      session: authSessionStrategy(keystoneConfig.session),
+      session: authSessionStrategy(config.session),
       lists: {
-        ...keystoneConfig.lists,
-        [listKey]: { ...listConfig, fields: { ...listConfig.fields, ...fields } },
+        ...config.lists,
+        [listKey]: {
+          ...authListConfig,
+          fields: {
+            ...authListConfig.fields,
+            ...fields,
+          },
+        },
       },
       extendGraphqlSchema: schema => {
         return extendGraphqlSchema(authExtendGraphqlSchema(schema));
       },
     };
-  };
+  }
 
   return {
     withAuth,
