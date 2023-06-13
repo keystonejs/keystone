@@ -102,7 +102,7 @@ input AuthorRelateToOneForCreateInput {
 
 type Author {
   id: ID!
-  subjectId: String
+  authId: String
   name: String
   posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
@@ -110,7 +110,7 @@ type Author {
 
 input AuthorWhereUniqueInput {
   id: ID
-  subjectId: String
+  authId: String
 }
 
 input AuthorWhereInput {
@@ -118,7 +118,7 @@ input AuthorWhereInput {
   OR: [AuthorWhereInput!]
   NOT: [AuthorWhereInput!]
   id: IDFilter
-  subjectId: StringFilter
+  authId: StringFilter
   name: StringFilter
   posts: PostManyRelationFilter
 }
@@ -131,12 +131,12 @@ input PostManyRelationFilter {
 
 input AuthorOrderByInput {
   id: OrderDirection
-  subjectId: OrderDirection
+  authId: OrderDirection
   name: OrderDirection
 }
 
 input AuthorUpdateInput {
-  subjectId: String
+  authId: String
   name: String
   posts: PostRelateToManyForUpdateInput
 }
@@ -154,7 +154,7 @@ input AuthorUpdateArgs {
 }
 
 input AuthorCreateInput {
-  subjectId: String
+  authId: String
   name: String
   posts: PostRelateToManyForCreateInput
 }

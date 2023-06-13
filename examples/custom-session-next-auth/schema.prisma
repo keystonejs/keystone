@@ -23,8 +23,8 @@ model Post {
 }
 
 model Author {
-  id        String @id @default(cuid())
-  subjectId String @unique @default("")
-  name      String @default("")
-  posts     Post[] @relation("Post_author")
+  id     String @id @default(cuid())
+  authId String @unique @default("")
+  name   String @default("")
+  posts  Post[] @relation("Post_author")
 }

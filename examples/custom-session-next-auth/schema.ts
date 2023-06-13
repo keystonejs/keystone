@@ -35,7 +35,10 @@ export const lists: Lists<Session> = {
       },
     },
     fields: {
-      subjectId: text({ isIndexed: 'unique' }),
+      // this is the authentication identifier provided by our next-auth session
+      //   which we use to identify a user
+      authId: text({ isIndexed: 'unique' }),
+
       name: text(),
       posts: relationship({ ref: 'Post.author', many: true }),
     },

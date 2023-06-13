@@ -1,6 +1,7 @@
 import { getContext } from '@keystone-6/core/context';
 import { getServerSession } from 'next-auth/next';
-import type { CallbacksOptions } from 'next-auth';
+import type { DefaultJWT } from 'next-auth/jwt';
+import type { DefaultUser } from 'next-auth';
 import GithubProvider from 'next-auth/providers/github';
 import type { Context } from '.keystone/types';
 
@@ -34,20 +35,20 @@ async function getKeystoneContext() {
 export const nextAuthOptions = {
   secret: sessionSecret,
   callbacks: {
-    async signIn({ user, account, profile }: Parameters<CallbacksOptions['signIn']>[0]) {
+    async signIn({ user }: { user: DefaultUser }) {
       // console.error('next-auth signIn', { user, account, profile });
       const sudoContext = (await getKeystoneContext()).sudo();
 
       // check if the user exists in keystone
       const author = await sudoContext.query.Author.findOne({
-        where: { subjectId: user.id },
+        where: { authId: user.id },
       });
 
       // if not, sign up
       if (!author) {
         await sudoContext.query.Author.createOne({
           data: {
-            subjectId: user.id,
+            authId: user.id,
             name: user.name,
           },
         });
@@ -55,12 +56,21 @@ export const nextAuthOptions = {
 
       return true; // accept the signin
     },
-    async session({ token, session }: Parameters<CallbacksOptions['session']>[0]) {
+
+    async session({
+      token: {
+        sub: authId, // may be missing
+      },
+    }: {
+      token: DefaultJWT;
+    }) {
       // console.error('next-auth session', { session, token });
-      return { ...session, subjectId: token.sub };
+      if (!authId) return;
+      return { authId };
     },
   },
   providers: [
+    // allow anyone with a GitHub account to sign up as an author
     GithubProvider({
       clientId: process.env.GITHUB_ID!,
       clientSecret: process.env.GITHUB_SECRET!,
@@ -73,7 +83,7 @@ export type Session = {
 };
 
 export const nextAuthSessionStrategy = {
-  async get({ context }: { context: Context }): Promise<Session | undefined> {
+  async get({ context }: { context: Context }) {
     const { req, res } = context;
     const { headers } = req ?? {};
     if (!headers?.cookie || !res) return;
@@ -85,20 +95,19 @@ export const nextAuthSessionStrategy = {
       cookies[key] = decodeURIComponent(value);
     }
 
-    // get the next-auth session
     const nextAuthSession = await getServerSession(
       { headers, cookies } as any,
       res,
       nextAuthOptions
     );
     if (!nextAuthSession) return;
-    const sudoContext = context.sudo();
-    // get the keystone user using the subjectId
-    const keystoneAuthor = await sudoContext.db.Author.findOne({
-      where: { subjectId: nextAuthSession?.subjectId },
+
+    const author = await context.sudo().db.Author.findOne({
+      where: { authId: nextAuthSession.authId },
     });
-    if (!keystoneAuthor) return;
-    return { id: keystoneAuthor.id };
+    if (!author) return;
+
+    return { id: author.id };
   },
 
   // we don't need these as next-auth handle start and end for us
