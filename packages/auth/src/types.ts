@@ -65,5 +65,5 @@ export type AuthTokenRedemptionErrorCode = 'FAILURE' | 'TOKEN_EXPIRED' | 'TOKEN_
 
 export type SecretFieldImpl = {
   generateHash: (secret: string) => Promise<string>;
-  compare: (secret: string, hash: string) => Promise<string>;
+  compare: (secret: string, hash: string) => Promise<boolean>;
 };
