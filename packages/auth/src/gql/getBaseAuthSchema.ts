@@ -70,8 +70,8 @@ export function getBaseAuthSchema<I extends string, S extends string>({
 
           return context.db[listKey].findOne({
             where: {
-              id: session.itemId
-            }
+              id: session.itemId,
+            },
           });
         },
       }),

@@ -74,17 +74,21 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
   } as const;
 
   const authFields = {
-    ...(passwordResetLink ? {
-      [`passwordResetToken`]: password({ ...fieldConfig }),
-      [`passwordResetIssuedAt`]: timestamp({ ...fieldConfig }),
-      [`passwordResetRedeemedAt`]: timestamp({ ...fieldConfig }),
-    } : null),
+    ...(passwordResetLink
+      ? {
+          passwordResetToken: password({ ...fieldConfig }),
+          passwordResetIssuedAt: timestamp({ ...fieldConfig }),
+          passwordResetRedeemedAt: timestamp({ ...fieldConfig }),
+        }
+      : null),
 
-    ...(magicAuthLink ? {
-      [`magicAuthToken`]: password({ ...fieldConfig }),
-      [`magicAuthIssuedAt`]: timestamp({ ...fieldConfig }),
-      [`magicAuthRedeemedAt`]: timestamp({ ...fieldConfig }),
-    } : null),
+    ...(magicAuthLink
+      ? {
+          magicAuthToken: password({ ...fieldConfig }),
+          magicAuthIssuedAt: timestamp({ ...fieldConfig }),
+          magicAuthRedeemedAt: timestamp({ ...fieldConfig }),
+        }
+      : null),
   };
 
   /**
@@ -136,9 +140,11 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     sessionData,
   });
 
-  function throwIfInvalidConfig<TypeInfo extends BaseKeystoneTypeInfo>(config: KeystoneConfig<TypeInfo>) {
+  function throwIfInvalidConfig<TypeInfo extends BaseKeystoneTypeInfo>(
+    config: KeystoneConfig<TypeInfo>
+  ) {
     if (!(listKey in config.lists)) {
-      throw new Error(`withAuth cannot find the list "${listKey}"`)
+      throw new Error(`withAuth cannot find the list "${listKey}"`);
     }
 
     // TODO: verify that the identity field is unique
