@@ -174,7 +174,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
         const sudoContext = context.sudo();
         if (!session) return;
         if (!session.itemId) return;
-        if (listKey !== session.listKey) return;
+        if (session.listKey !== listKey) return;
 
         try {
           const data = await sudoContext.query[listKey].findOne({
@@ -185,7 +185,8 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
 
           return { ...session, itemId: session.itemId, listKey, data };
         } catch (e) {
-          // TODO: the assumption is this should only be from an invalid sessionData configuration
+          console.error(e);
+          // TODO: the assumption is this could only be from an invalid sessionData configuration
           //   it could be something else though, either way, result is a bad session
           return;
         }
