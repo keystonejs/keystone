@@ -1,7 +1,7 @@
 import { getContext } from '@keystone-6/core/context';
 import { getServerSession } from 'next-auth/next';
 import type { DefaultJWT } from 'next-auth/jwt';
-import type { DefaultUser } from 'next-auth';
+import type { DefaultSession, DefaultUser } from 'next-auth';
 import GithubProvider from 'next-auth/providers/github';
 import type { Context } from '.keystone/types';
 
@@ -57,16 +57,17 @@ export const nextAuthOptions = {
       return true; // accept the signin
     },
 
-    async session({
-      token: {
-        sub: authId, // may be missing
-      },
-    }: {
-      token: DefaultJWT;
+    async session({ session, token }: {
+      session: DefaultSession, // required by next-auth, not by us
+      token: DefaultJWT
     }) {
       // console.error('next-auth session', { session, token });
-      if (!authId) return;
-      return { authId };
+      return {
+        ...session,
+        keystone: {
+          authId: token.sub,
+        }
+      };
     },
   },
   providers: [
@@ -102,8 +103,11 @@ export const nextAuthSessionStrategy = {
     );
     if (!nextAuthSession) return;
 
+    const { authId } = nextAuthSession.keystone;
+    if (!authId) return;
+
     const author = await context.sudo().db.Author.findOne({
-      where: { authId: nextAuthSession.authId },
+      where: { authId },
     });
     if (!author) return;
 
