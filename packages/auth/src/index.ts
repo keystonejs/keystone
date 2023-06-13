@@ -72,16 +72,19 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
       listView: { fieldMode: 'hidden' },
     },
   } as const;
-  // These field names have to follow this format so that for e.g
-  // validateAuthToken() behaves correctly.
-  const tokenFields = (tokenType: 'passwordReset' | 'magicAuth') => ({
-    [`${tokenType}Token`]: password({ ...fieldConfig }),
-    [`${tokenType}IssuedAt`]: timestamp({ ...fieldConfig }),
-    [`${tokenType}RedeemedAt`]: timestamp({ ...fieldConfig }),
-  });
-  const fields = {
-    ...(passwordResetLink && tokenFields('passwordReset')),
-    ...(magicAuthLink && tokenFields('magicAuth')),
+
+  const authFields = {
+    ...(passwordResetLink ? {
+      [`passwordResetToken`]: password({ ...fieldConfig }),
+      [`passwordResetIssuedAt`]: timestamp({ ...fieldConfig }),
+      [`passwordResetRedeemedAt`]: timestamp({ ...fieldConfig }),
+    } : null),
+
+    ...(magicAuthLink ? {
+      [`magicAuthToken`]: password({ ...fieldConfig }),
+      [`magicAuthIssuedAt`]: timestamp({ ...fieldConfig }),
+      [`magicAuthRedeemedAt`]: timestamp({ ...fieldConfig }),
+    } : null),
   };
 
   /**
@@ -287,7 +290,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
           ...authListConfig,
           fields: {
             ...authListConfig.fields,
-            ...fields,
+            ...authFields,
           },
         },
       },
