@@ -53,6 +53,7 @@ export function getBaseAuthSchema<I extends string, S extends string>({
       return gqlNames.ItemAuthenticationWithPasswordFailure;
     },
   });
+
   const extension = {
     query: {
       authenticatedItem: graphql.field({
@@ -61,14 +62,17 @@ export function getBaseAuthSchema<I extends string, S extends string>({
           types: [base.object(listKey) as graphql.ObjectType<BaseItem>],
           resolveType: (root, context) => context.session?.listKey,
         }),
-        resolve(root, args, { session, db }) {
-          if (
-            (typeof session?.itemId === 'string' || typeof session?.itemId === 'number') &&
-            typeof session.listKey === 'string'
-          ) {
-            return db[session.listKey].findOne({ where: { id: session.itemId } });
-          }
-          return null;
+        resolve(root, args, context) {
+          const { session } = context;
+          if (!session) return null;
+          if (!session.itemId) return null;
+          if (session.listKey !== listKey) return null;
+
+          return context.db[listKey].findOne({
+            where: {
+              id: session.itemId,
+            },
+          });
         },
       }),
     },
@@ -106,10 +110,12 @@ export function getBaseAuthSchema<I extends string, S extends string>({
             },
             context,
           });
+
           // return Failure if sessionStrategy.start() returns null
           if (typeof sessionToken !== 'string' || sessionToken.length === 0) {
             return { code: 'FAILURE', message: 'Failed to start session.' };
           }
+
           return { sessionToken, item: result.item };
         },
       }),

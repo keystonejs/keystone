@@ -12,7 +12,7 @@ export type BaseListTypeInfo = {
     create: GraphQLInput;
     update: GraphQLInput;
     where: GraphQLInput;
-    uniqueWhere: { readonly id?: string | null } & GraphQLInput;
+    uniqueWhere: { readonly id?: string | number | null } & GraphQLInput;
     orderBy: Record<string, 'asc' | 'desc' | null>;
   };
   /**

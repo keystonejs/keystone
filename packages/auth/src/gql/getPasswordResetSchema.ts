@@ -1,5 +1,5 @@
 import { graphql } from '@keystone-6/core';
-import { AuthGqlNames, AuthTokenTypeConfig, SecretFieldImpl } from '../types';
+import type { AuthGqlNames, AuthTokenTypeConfig, SecretFieldImpl } from '../types';
 
 import { createAuthToken } from '../lib/createAuthToken';
 import { validateAuthToken } from '../lib/validateAuthToken';
