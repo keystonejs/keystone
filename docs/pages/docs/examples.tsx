@@ -189,7 +189,7 @@ export default function Docs() {
         <Well
           grad="grad1"
           heading="REST API endpoint"
-          href="https://github.com/keystonejs/keystone/tree/main/examples/rest-api"
+          href="https://github.com/keystonejs/keystone/tree/main/examples/extend-express-app"
         >
           Demonstrates how to create REST endpoints by extending Keystone's express app and using
           the Query API to execute queries against the schema.
