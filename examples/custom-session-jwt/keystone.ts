@@ -15,29 +15,39 @@ type OurJWT = {
   id: string;
 };
 
-async function jwtSign (claims: OurJWT) {
-	return new Promise((resolve, reject) => {
-		jwt.sign(claims, jwtSessionSecret, {
-			algorithm: 'HS256', // HMAC-SHA256
+async function jwtSign(claims: OurJWT) {
+  return new Promise((resolve, reject) => {
+    jwt.sign(
+      claims,
+      jwtSessionSecret,
+      {
+        algorithm: 'HS256', // HMAC-SHA256
 
-			// we use an expiry of 1 hour for this example
-			expiresIn: '1 hour'
-		}, (err, token) => {
-			if (err) return reject(err);
-			return resolve(token);
-		});
+        // we use an expiry of 1 hour for this example
+        expiresIn: '1 hour',
+      },
+      (err, token) => {
+        if (err) return reject(err);
+        return resolve(token);
+      }
+    );
   });
 }
 
-async function jwtVerify (token: string): Promise<OurJWT | null> {
-	return new Promise((resolve) => {
-		jwt.verify(token, jwtSessionSecret, {
-			algorithms: ['HS256']
-		}, (err, result) => {
-			if (err || typeof result !== 'object') return resolve(null);
-      if (typeof result.id !== 'string') return resolve(null);
-			return resolve(result as OurJWT);
-		});
+async function jwtVerify(token: string): Promise<OurJWT | null> {
+  return new Promise(resolve => {
+    jwt.verify(
+      token,
+      jwtSessionSecret,
+      {
+        algorithms: ['HS256'],
+      },
+      (err, result) => {
+        if (err || typeof result !== 'object') return resolve(null);
+        if (typeof result.id !== 'string') return resolve(null);
+        return resolve(result as OurJWT);
+      }
+    );
   });
 }
 
@@ -57,7 +67,7 @@ const jwtSessionStrategy = {
     if (!who) return;
     return {
       id,
-      admin: who.admin
+      admin: who.admin,
     };
   },
 
@@ -67,7 +77,7 @@ const jwtSessionStrategy = {
   //
   async start() {},
   async end() {},
-}
+};
 
 export default config<TypeInfo>({
   db: {
@@ -78,12 +88,15 @@ export default config<TypeInfo>({
     ...fixPrismaPath,
 
     onConnect: async () => {
-      console.error('Use any of the following tokens as your `user={token}` cookie for testing this session strategy', {
-        Alice: await jwtSign({ id: 'clh9v6pcn0000sbhm9u0j6in0' }), // admin
-        Bob: await jwtSign({ id: 'clh9v762w0002sbhmhhyc0340' }),
-        Eve: await jwtSign({ id: 'clh9v7ahs0004sbhmpx30w85n' })
-      });
-    }
+      console.error(
+        'Use any of the following tokens as your `user={token}` cookie for testing this session strategy',
+        {
+          Alice: await jwtSign({ id: 'clh9v6pcn0000sbhm9u0j6in0' }), // admin
+          Bob: await jwtSign({ id: 'clh9v762w0002sbhmhhyc0340' }),
+          Eve: await jwtSign({ id: 'clh9v7ahs0004sbhmpx30w85n' }),
+        }
+      );
+    },
   },
   lists,
   session: jwtSessionStrategy,
