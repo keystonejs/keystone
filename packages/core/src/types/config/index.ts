@@ -181,6 +181,7 @@ export type AdminUIConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   pageMiddleware?: (args: {
     context: KeystoneContext<TypeInfo>;
     wasAccessAllowed: boolean;
+    basePath: string;
   }) => MaybePromise<{ kind: 'redirect'; to: string } | void>;
 };
 

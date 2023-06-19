@@ -20,13 +20,20 @@ export function createAdminUIMiddlewareWithNextApp(
   const handle = nextApp.getRequestHandler();
 
   const {
-    ui: { isAccessAllowed = defaultIsAccessAllowed, pageMiddleware, publicPages = [] } = {},
+    ui: {
+      isAccessAllowed = defaultIsAccessAllowed,
+      pageMiddleware,
+      publicPages = [],
+      basePath = '',
+    } = {},
   } = config;
+
+  if (basePath.endsWith('/')) throw new TypeError('basePath must not end with a trailing slash');
 
   return async (req: express.Request, res: express.Response) => {
     const { pathname } = url.parse(req.url);
 
-    if (pathname?.startsWith('/_next') || pathname?.startsWith('/__next')) {
+    if (pathname?.startsWith(`${basePath}/_next`) || pathname?.startsWith(`${basePath}/__next`)) {
       return handle(req, res);
     }
 
@@ -38,6 +45,7 @@ export function createAdminUIMiddlewareWithNextApp(
       const shouldRedirect = await pageMiddleware?.({
         context,
         wasAccessAllowed,
+        basePath,
       });
 
       if (shouldRedirect) {
