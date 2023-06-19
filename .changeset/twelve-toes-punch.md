@@ -3,4 +3,4 @@
 '@keystone-6/auth': patch
 ---
 
-Adds `basePath` with a default of `'/'` to `pageMiddleware` args to help with redirecting when using `ui.basePath`
+Adds `basePath` with a default of `'/'` to `pageMiddleware` to support redirects when using `ui.basePath`
