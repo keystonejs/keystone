@@ -78,8 +78,7 @@ export default config<TypeInfo>({
     ...fixPrismaPath,
 
     onConnect: async () => {
-			// use the following tokens (when printed) as your `user={token}` cookie for testing this session strategy
-      console.error({
+      console.error('Use any of the following tokens as your `user={token}` cookie for testing this session strategy', {
         Alice: await jwtSign({ id: 'clh9v6pcn0000sbhm9u0j6in0' }), // admin
         Bob: await jwtSign({ id: 'clh9v762w0002sbhmhhyc0340' }),
         Eve: await jwtSign({ id: 'clh9v7ahs0004sbhmpx30w85n' })

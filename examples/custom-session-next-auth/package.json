@@ -1,6 +1,6 @@
 {
-  "name": "@keystone-6/custom-session-next-auth",
-  "version": "0.1.1",
+  "name": "@keystone-6/example-custom-session-next-auth",
+  "version": "0.0.1",
   "private": true,
   "license": "MIT",
   "scripts": {
