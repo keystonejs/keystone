@@ -88,6 +88,7 @@ export default config<TypeInfo>({
     ...fixPrismaPath,
 
     onConnect: async () => {
+      // WARNING: remove this
       console.error(
         'Use any of the following tokens as your `user={token}` cookie for testing this session strategy',
         {
