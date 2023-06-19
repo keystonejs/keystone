@@ -11,11 +11,11 @@ import type { Context, TypeInfo } from '.keystone/types';
 // WARNING: you need to change this
 const jwtSessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
 
-type OurJWT = {
+type OurJWTClaims = {
   id: string;
 };
 
-async function jwtSign(claims: OurJWT) {
+async function jwtSign(claims: OurJWTClaims) {
   return new Promise((resolve, reject) => {
     jwt.sign(
       claims,
@@ -34,7 +34,7 @@ async function jwtSign(claims: OurJWT) {
   });
 }
 
-async function jwtVerify(token: string): Promise<OurJWT | null> {
+async function jwtVerify(token: string): Promise<OurJWTClaims | null> {
   return new Promise(resolve => {
     jwt.verify(
       token,
@@ -45,7 +45,7 @@ async function jwtVerify(token: string): Promise<OurJWT | null> {
       (err, result) => {
         if (err || typeof result !== 'object') return resolve(null);
         if (typeof result.id !== 'string') return resolve(null);
-        return resolve(result as OurJWT);
+        return resolve(result as OurJWTClaims);
       }
     );
   });
