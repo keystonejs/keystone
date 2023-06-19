@@ -1978,8 +1978,8 @@ importers:
         specifier: ^2.1.2
         version: 2.1.2
       '@types/uuid':
-        specifier: ^8.3.1
-        version: 8.3.1
+        specifier: ^9.0.0
+        version: 9.0.0
       apollo-upload-client:
         specifier: ^17.0.0
         version: 17.0.0(@apollo/client@3.7.0)(graphql@16.6.0)
@@ -9708,6 +9708,10 @@ packages:
 
   /@types/uuid@8.3.1:
     resolution: {integrity: sha512-Y2mHTRAbqfFkpjldbkHGY8JIzRN6XqYRliG8/24FcHm2D2PwW24fl5xMRTVGdrb7iMrwCaIEbLWerGIkXuFWVg==}
+    dev: false
+
+  /@types/uuid@9.0.0:
+    resolution: {integrity: sha512-kr90f+ERiQtKWMz5rP32ltJ/BtULDI5RVO0uavn1HQUOwjx0R1h0rnDYNL0CepF1zL5bSY6FISAfd9tOdDhU5Q==}
     dev: false
 
   /@types/webidl-conversions@7.0.0:
