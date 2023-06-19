@@ -56,8 +56,8 @@ const jwtSessionStrategy = {
     if (!context.req) return;
 
     const { cookie = '' } = context.req.headers;
-    const [user, jwt] = cookie.split('=');
-    if (user !== 'user') return;
+    const [cookieName, jwt] = cookie.split('=');
+    if (cookieName !== 'user') return;
 
     const jwtResult = await jwtVerify(jwt);
     if (!jwtResult) return;
