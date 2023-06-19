@@ -118,13 +118,6 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
   };
 
   /**
-   * publicAuthPages
-   *
-   * Must be added to the ui.publicPages config
-   */
-  const authPublicPages = ['/signin'];
-
-  /**
    * extendGraphqlSchema
    *
    * Must be added to the extendGraphqlSchema config. Can be composed.
@@ -214,28 +207,30 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
   async function authMiddleware<TypeInfo extends BaseKeystoneTypeInfo>({
     context,
     wasAccessAllowed,
+    basePath,
   }: {
     context: KeystoneContext<TypeInfo>;
     wasAccessAllowed: boolean;
+    basePath: string;
   }): Promise<{ kind: 'redirect'; to: string } | void> {
     const { req } = context;
     const { pathname } = new URL(req!.url!, 'http://_');
 
     // redirect to init if initFirstItem conditions are met
-    if (pathname !== '/init' && (await hasInitFirstItemConditions(context))) {
-      return { kind: 'redirect', to: '/init' };
+    if (pathname !== `${basePath}/init` && (await hasInitFirstItemConditions(context))) {
+      return { kind: 'redirect', to: `${basePath}/init` };
     }
 
     // redirect to / if attempting to /init and initFirstItem conditions are not met
-    if (pathname === '/init' && !(await hasInitFirstItemConditions(context))) {
-      return { kind: 'redirect', to: '/' };
+    if (pathname === `${basePath}/init` && !(await hasInitFirstItemConditions(context))) {
+      return { kind: 'redirect', to: basePath };
     }
 
     // don't redirect if we have access
     if (wasAccessAllowed) return;
 
     // otherwise, redirect to signin
-    return { kind: 'redirect', to: '/signin' };
+    return { kind: 'redirect', to: `${basePath}/signin` };
   }
 
   function defaultIsAccessAllowed({ session, sessionStrategy }: KeystoneContext) {
@@ -263,6 +258,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
         pageMiddleware,
         publicPages = [],
       } = ui || {};
+      const authPublicPages = [`${ui?.basePath ?? ''}/signin`];
       ui = {
         ...ui,
         publicPages: [...publicPages, ...authPublicPages],
