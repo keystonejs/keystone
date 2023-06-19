@@ -22,9 +22,6 @@ async function jwtSign(claims: OurJWTClaims) {
       jwtSessionSecret,
       {
         algorithm: 'HS256', // HMAC-SHA256
-
-        // we use an expiry of 1 hour for this example
-        expiresIn: '1 hour',
       },
       (err, token) => {
         if (err) return reject(err);
@@ -41,6 +38,7 @@ async function jwtVerify(token: string): Promise<OurJWTClaims | null> {
       jwtSessionSecret,
       {
         algorithms: ['HS256'],
+        maxAge: '1h', // we use an expiry of 1 hour for this example
       },
       (err, result) => {
         if (err || typeof result !== 'object') return resolve(null);
