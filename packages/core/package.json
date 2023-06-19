@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/core",
-  "version": "5.3.1",
+  "version": "5.3.2",
   "repository": "https://github.com/keystonejs/keystone/tree/main/packages/core",
   "license": "MIT",
   "main": "dist/keystone-6-core.cjs.js",
@@ -268,7 +268,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@keystone-6/core": "5.3.1",
+    "@keystone-6/core": "5.3.2",
     "@types/bytes": "^3.1.1",
     "@types/mime": "^3.0.0",
     "@types/resolve": "^1.20.2",

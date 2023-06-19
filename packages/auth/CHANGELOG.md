@@ -1,5 +1,13 @@
 # @keystone-6/auth
 
+## 7.0.1
+
+### Patch Changes
+
+- [#8626](https://github.com/keystonejs/keystone/pull/8626) [`a30c7a163`](https://github.com/keystonejs/keystone/commit/a30c7a1630a670eb814e015254c7ae608500b2d8) Thanks [@dcousens](https://github.com/dcousens)! - Removes `?from` redirect from `/signin` page to prevent open redirection.
+
+* [#8641](https://github.com/keystonejs/keystone/pull/8641) [`19bb46034`](https://github.com/keystonejs/keystone/commit/19bb4603426fc30ebd859e47f4996a7254171d20) Thanks [@borisno2](https://github.com/borisno2)! - Adds `basePath` with a default of `'/'` to `pageMiddleware` to support redirects when using `ui.basePath`
+
 ## 7.0.0
 
 ### Major Changes
