@@ -1,5 +1,11 @@
 # @keystone-6/core
 
+## 5.3.2
+
+### Patch Changes
+
+- [#8641](https://github.com/keystonejs/keystone/pull/8641) [`19bb46034`](https://github.com/keystonejs/keystone/commit/19bb4603426fc30ebd859e47f4996a7254171d20) Thanks [@borisno2](https://github.com/borisno2)! - Adds `basePath` with a default of `'/'` to `pageMiddleware` to support redirects when using `ui.basePath`
+
 ## 5.3.1
 
 ### Patch Changes
