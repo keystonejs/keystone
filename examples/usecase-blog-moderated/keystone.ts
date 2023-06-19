@@ -14,8 +14,8 @@ const sillySessionStrategy = {
     //
     // in practice, you should use authentication for your sessions, such as OAuth or JWT
     const { cookie = '' } = context.req.headers;
-    const [user, id] = cookie.split('=');
-    if (user !== 'user') return;
+    const [cookieName, id] = cookie.split('=');
+    if (cookieName !== 'user') return;
 
     const who = await context.sudo().db.User.findOne({ where: { id } });
     if (!who) return;
@@ -31,12 +31,8 @@ const sillySessionStrategy = {
   //   context.sessionStrategy.start
   //   context.sessionStrategy.end
   //
-  async start(): Promise<Session | undefined> {
-    return;
-  },
-  async end(): Promise<Session | undefined> {
-    return;
-  },
+  async start() {},
+  async end() {},
 };
 
 export default config<TypeInfo>({

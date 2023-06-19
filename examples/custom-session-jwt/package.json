@@ -1,5 +1,5 @@
 {
-  "name": "@keystone-6/example-custom-session-next-auth",
+  "name": "@keystone-6/example-custom-session-jwt",
   "version": "0.0.1",
   "private": true,
   "license": "MIT",
@@ -10,12 +10,14 @@
     "postinstall": "keystone postinstall"
   },
   "dependencies": {
+    "@keystone-6/auth": "^7.0.0",
     "@keystone-6/core": "^5.0.0",
-    "@prisma/client": "^4.14.0",
-    "next-auth": "^4.22.1"
+    "@prisma/client": "^4.15.0",
+    "jsonwebtoken": "^9.0.0"
   },
   "devDependencies": {
-    "prisma": "^4.14.0",
+    "@types/jsonwebtoken": "^9.0.2",
+    "prisma": "^4.15.0",
     "typescript": "~5.0.0"
   }
 }

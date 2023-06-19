@@ -881,6 +881,31 @@ importers:
         specifier: ~5.0.0
         version: 5.0.2
 
+  examples/custom-session-jwt:
+    dependencies:
+      '@keystone-6/auth':
+        specifier: ^7.0.0
+        version: link:../../packages/auth
+      '@keystone-6/core':
+        specifier: ^5.0.0
+        version: link:../../packages/core
+      '@prisma/client':
+        specifier: ^4.15.0
+        version: 4.15.0(prisma@4.15.0)
+      jsonwebtoken:
+        specifier: ^9.0.0
+        version: 9.0.0
+    devDependencies:
+      '@types/jsonwebtoken':
+        specifier: ^9.0.2
+        version: 9.0.2
+      prisma:
+        specifier: ^4.15.0
+        version: 4.15.0
+      typescript:
+        specifier: ~5.0.0
+        version: 5.0.2
+
   examples/custom-session-next-auth:
     dependencies:
       '@keystone-6/core':
@@ -9452,6 +9477,12 @@ packages:
     resolution: {integrity: sha512-GSgiRCVeapDN+3pqA35IkQwasaCh/0YFH5dEF6S88iDvEn901DjOeH3/QPY+XYP1DFzDZPvIvfeEgk+7br5png==}
     dependencies:
       '@types/node': 18.11.14
+
+  /@types/jsonwebtoken@9.0.2:
+    resolution: {integrity: sha512-drE6uz7QBKq1fYqqoFKTDRdFCPHd5TCub75BM+D+cMx7NU9hUz7SESLfC2fSCXVFMO5Yj8sOWHuGqPgjc+fz0Q==}
+    dependencies:
+      '@types/node': 18.11.14
+    dev: true
 
   /@types/keyv@3.1.4:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
