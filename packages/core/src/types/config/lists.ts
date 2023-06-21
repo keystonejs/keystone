@@ -21,7 +21,8 @@ export type IdFieldConfig =
        * @default 'Int'
        */
       type?: 'Int' | 'BigInt';
-    };
+    }
+  | { kind: 'string'; type?: 'String' };
 
 export type ListConfig<
   ListTypeInfo extends BaseListTypeInfo,
