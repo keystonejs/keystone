@@ -4,8 +4,8 @@ This base project implements expands on the [Task Management](/examples/usecase-
 
 We use the standard `Task` and `People` lists but, in addition, both lists:
 
-* Specify `db: { idField: { kind: 'string' } }` to enable arbitrary string ids
-* Implement a `resolveInput` hook that generates `id` values in a custom format on create
+- Specify `db: { idField: { kind: 'string' } }` to enable arbitrary string ids
+- Implement a `resolveInput` hook that generates `id` values in a custom format on create
 
 In this case the id format is `${listKey}_${cuidv2()}` (eg. `TASK_knu49p0kr0m9p7q79goxgrnh` or `PERSON_bpr7cdktsykgf486cmvqmfq1`) but any string format could be used.
 If the `resolveInput` was exclude, the id fields would fall back to using standard `cuid` values – the Keystone default.

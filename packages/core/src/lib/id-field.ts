@@ -57,7 +57,7 @@ const idParsers = {
   },
   string(val: string | null) {
     if (typeof val === 'string') {
-      return val
+      return val;
     }
     throw userInputError('Only a string can be passed to id filters of kind: string');
   },
