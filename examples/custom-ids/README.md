@@ -7,7 +7,7 @@ We use the standard `Task` and `People` lists but, in addition, both lists:
 - Specify `db: { idField: { kind: 'string' } }` to enable arbitrary string ids
 - Implement a `resolveInput` hook that generates `id` values in a custom format on create
 
-In this case the id format is `${listKey}_${cuidv2()}` (eg. `TASK_knu49p0kr0m9p7q79goxgrnh` or `PERSON_bpr7cdktsykgf486cmvqmfq1`) but any string format could be used.
+In this case the id format is `${listKey}_${cuid2()}` (eg. `TASK_knu49p0kr0m9p7q79goxgrnh` or `PERSON_bpr7cdktsykgf486cmvqmfq1`) but any string format could be used.
 If the `resolveInput` was exclude, the id fields would fall back to using standard `cuid` values – the Keystone default.
 
 ## Instructions
@@ -40,4 +40,4 @@ When you’ve got the hang of this base project, try a [feature project](../) to
 
 ## Try it out in CodeSandbox 🧪
 
-You can play with this example online in a web browser using the free [codesandbox.io](https://codesandbox.io/) service. To launch this example, open the URL <https://githubbox.com/keystonejs/keystone/tree/main/examples/usecase-todo>. You can also fork this sandbox to make your own changes.
+You can play with this example online in a web browser using the free [codesandbox.io](https://codesandbox.io/) service. To launch this example, open the URL <https://githubbox.com/keystonejs/keystone/tree/main/examples/custom-ids>. You can also fork this sandbox to make your own changes.
