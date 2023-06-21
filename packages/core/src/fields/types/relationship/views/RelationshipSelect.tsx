@@ -40,6 +40,9 @@ const idValidators = {
   autoincrement(value: string) {
     return /^\d+$/.test(value);
   },
+  string(value: string) {
+    return true;
+  },
 };
 
 function useDebouncedValue<T>(value: T, limitMs: number): T {
