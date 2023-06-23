@@ -818,7 +818,7 @@ importers:
         specifier: ~5.0.0
         version: 5.0.2
 
-  examples/custom-ids:
+  examples/custom-id:
     dependencies:
       '@keystone-6/core':
         specifier: ^5.0.0
