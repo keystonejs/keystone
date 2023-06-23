@@ -3,10 +3,13 @@ import { allowAll } from '@keystone-6/core/access';
 import { checkbox, relationship, text, timestamp } from '@keystone-6/core/fields';
 import { select } from '@keystone-6/core/fields';
 import { createId } from '@paralleldrive/cuid2';
+import type { Lists } from '.keystone/types';
 
-const genInternalId = (listKey: string): string => `${listKey.toUpperCase()}_${createId()}`;
+function makeCustomIdentifier(listKey: string) {
+  return `${listKey.toUpperCase()}_${createId()}`;
+}
 
-export const lists = {
+export const lists: Lists = {
   Task: list({
     access: allowAll,
     db: {
@@ -29,7 +32,7 @@ export const lists = {
     hooks: {
       resolveInput: async ({ listKey, operation, resolvedData }) => {
         if (operation !== 'create') return resolvedData;
-        return { ...resolvedData, id: genInternalId(listKey) };
+        return { ...resolvedData, id: makeCustomIdentifier(listKey) };
       },
     },
   }),
@@ -45,7 +48,7 @@ export const lists = {
     hooks: {
       resolveInput: async ({ listKey, operation, resolvedData }) => {
         if (operation !== 'create') return resolvedData;
-        return { ...resolvedData, id: genInternalId(listKey) };
+        return { ...resolvedData, id: makeCustomIdentifier(listKey) };
       },
     },
   }),
