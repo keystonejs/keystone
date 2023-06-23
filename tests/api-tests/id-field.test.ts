@@ -11,15 +11,18 @@ export function assertNever(arg: never) {
 }
 
 describe.each([
-  'autoincrement',
-  'cuid',
-  'uuid',
-  ...(dbProvider === 'sqlite' ? [] : (['bigint'] as const)),
-] as const)('%s', kind => {
+  { kind: 'autoincrement', type: 'Int', error: 'int' } as const,
+  ...(dbProvider === 'sqlite' ? [] : [
+    { kind: 'autoincrement', type: 'BigInt', error: 'bigint' } as const,
+  ]),
+  { kind: 'cuid', error: 'cuid' } as const,
+  { kind: 'uuid', error: 'uuid' } as const,
+  { kind: 'string', error: 'string' }  as const
+] as const)('%s', idField => {
   const runner = setupTestRunner({
     config: apiTestConfig({
       db: {
-        idField: kind === 'bigint' ? { kind: 'autoincrement', type: 'BigInt' } : { kind },
+        idField
       },
       lists: {
         User: list({ access: allowAll, fields: { name: text() } }),
@@ -33,30 +36,32 @@ describe.each([
         query: `{ user(where: { id: "adskjnfasdfkjekfj"}) { id } }`,
       });
       expect(data).toEqual({ user: null });
-      const s = kind === 'autoincrement' ? 'an integer' : `a ${kind}`;
       expectBadUserInput(errors, [
-        { path: ['user'], message: `Only ${s} can be passed to id filters` },
+        { path: ['user'], message: `Only a ${idField.error} can be passed to id filters` },
       ]);
     })
   );
-  test(
-    'Filtering an item with an invalid id throws an error',
-    runner(async ({ context }) => {
-      const { data, errors } = await context.graphql.raw({
-        query: `{ users(where: { id: { equals: "adskjnfasdfkjekfj" } }) { id } }`,
-      });
-      expect(data).toEqual({ users: null });
-      const s = kind === 'autoincrement' ? 'an integer' : `a ${kind}`;
-      expectBadUserInput(errors, [
-        { path: ['users'], message: `Only ${s} can be passed to id filters` },
-      ]);
-    })
-  );
+
+  if (idField.kind !== 'string') {
+    test(
+      'Filtering an item with an invalid id throws an error',
+      runner(async ({ context }) => {
+        const { data, errors } = await context.graphql.raw({
+          query: `{ users(where: { id: { equals: "adskjnfasdfkjekfj" } }) { id } }`,
+        });
+        expect(data).toEqual({ users: null });
+        expectBadUserInput(errors, [
+          { path: ['users'], message: `Only a ${idField.error} can be passed to id filters` },
+        ]);
+      })
+    );
+  }
+
   test(
     'Fetching an item uniquely with a null id throws an error',
     runner(async ({ context }) => {
       const { data, errors } = await context.graphql.raw({
-        query: `{ user(where: { id: null}) { id } }`,
+        query: `{ user(where: { id: null }) { id } }`,
       });
       expect(data).toEqual({ user: null });
       expectBadUserInput(errors, [
@@ -67,6 +72,7 @@ describe.each([
       ]);
     })
   );
+
   test(
     'Filtering an item with a null id throws an error',
     runner(async ({ context }) => {
@@ -84,9 +90,8 @@ describe.each([
         query: `{ users(where: { id: { equals: null } }) { id } }`,
       });
       expect(data).toEqual({ users: null });
-      const s = kind === 'autoincrement' ? 'an integer' : `a ${kind}`;
       expectBadUserInput(errors, [
-        { path: ['users'], message: `Only ${s} can be passed to id filters` },
+        { path: ['users'], message: `Only a ${idField.error} can be passed to id filters` },
       ]);
     })
   );
@@ -134,8 +139,14 @@ describe.each([
     runner(async ({ context }) => {
       const { id } = await context.query.User.createOne({ data: { name: 'something' } });
       const dbItem = await context.db.User.findOne({ where: { id } });
-      switch (kind) {
+      switch (idField.kind) {
         case 'autoincrement': {
+          if (idField.type === 'BigInt') {
+            expect(id).toEqual('1');
+            expect(dbItem?.id).toBe(1n);
+            return;
+          }
+
           expect(id).toBe('1');
           expect(dbItem?.id).toBe(1);
           return;
@@ -150,13 +161,13 @@ describe.each([
           expect(dbItem?.id).toBe(id);
           return;
         }
-        case 'bigint': {
-          expect(id).toEqual('1');
-          expect(dbItem?.id).toBe(1n);
+        case 'string': {
+          expect(isCuid(id)).toBe(true);
+          expect(dbItem?.id).toBe(id);
           return;
         }
         default: {
-          assertNever(kind);
+          assertNever(idField);
         }
       }
     })
