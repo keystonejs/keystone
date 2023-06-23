@@ -818,6 +818,28 @@ importers:
         specifier: ~5.0.0
         version: 5.0.2
 
+  examples/custom-ids:
+    dependencies:
+      '@keystone-6/core':
+        specifier: ^5.0.0
+        version: link:../../packages/core
+      '@paralleldrive/cuid2':
+        specifier: ^2.2.1
+        version: 2.2.1
+      '@prisma/client':
+        specifier: ^4.15.0
+        version: 4.15.0(prisma@4.15.0)
+    devDependencies:
+      prisma:
+        specifier: ^4.15.0
+        version: 4.15.0
+      tsx:
+        specifier: ^3.9.0
+        version: 3.9.0
+      typescript:
+        specifier: ~5.0.0
+        version: 5.0.2
+
   examples/custom-output-paths:
     dependencies:
       '@keystone-6/core':
@@ -8187,6 +8209,11 @@ packages:
     requiresBuild: true
     optional: true
 
+  /@noble/hashes@1.3.1:
+    resolution: {integrity: sha512-EbqwksQwz9xDRGfDST86whPBgM65E0OH/pCgqW0GBVzO22bNE+NuIbeTb714+IfSjU3aRk47EUvXIb5bTsenKA==}
+    engines: {node: '>= 16'}
+    dev: false
+
   /@nodelib/fs.scandir@2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
     engines: {node: '>= 8'}
@@ -8234,6 +8261,12 @@ packages:
 
   /@panva/hkdf@1.1.1:
     resolution: {integrity: sha512-dhPeilub1NuIG0X5Kvhh9lH4iW3ZsHlnzwgwbOlgwQ2wG1IqFzsgHqmKPk3WzsdWAeaxKJxgM0+W433RmN45GA==}
+    dev: false
+
+  /@paralleldrive/cuid2@2.2.1:
+    resolution: {integrity: sha512-GJhHYlMhyT2gWemDL7BGMWfTNhspJKkikLKh9wAy3z4GTTINvTYALkUd+eGQK7aLeVkVzPuSA0VCT3H5eEWbbw==}
+    dependencies:
+      '@noble/hashes': 1.3.1
     dev: false
 
   /@peculiar/asn1-schema@2.3.6:

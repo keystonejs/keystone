@@ -10,6 +10,7 @@ function getIdField({ kind, type }: IdFieldConfig): Required<IdFieldConfig> {
     if (type === 'BigInt') return { kind: 'autoincrement', type: 'BigInt' };
     return { kind: 'autoincrement', type: 'Int' };
   }
+  if (kind === 'string') return { kind: 'string', type: 'String' };
 
   // the default idFieldType
   return { kind: 'cuid', type: 'String' };

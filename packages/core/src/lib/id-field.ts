@@ -55,6 +55,12 @@ const idParsers = {
     }
     throw userInputError('Only a uuid can be passed to id filters');
   },
+  string(val: string | null) {
+    if (typeof val === 'string') {
+      return val;
+    }
+    throw userInputError('Only a string can be passed to id filters of kind: string');
+  },
 };
 
 const nonCircularFields = {
@@ -126,7 +132,8 @@ export const idFieldType =
       mode: 'required',
       scalar: config.type,
       nativeType: meta.provider === 'postgresql' && config.kind === 'uuid' ? 'Uuid' : undefined,
-      default: isSingleton ? undefined : { kind: config.kind },
+      // String id fields still generate cuids as their default value
+      default: isSingleton ? undefined : { kind: config.kind === 'string' ? 'cuid' : config.kind },
     })({
       ...config,
       // The ID field is always filterable and orderable.
