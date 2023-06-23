@@ -17,7 +17,7 @@ export async function main() {
       console.log(`👩 Found ${person.name}`);
       continue;
     }
-    
+
     console.log(`👩 Adding person: ${person.name}`);
     await context.query.Person.createOne({
       data: person,

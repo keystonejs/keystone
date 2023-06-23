@@ -33,7 +33,7 @@ export const lists: Lists = {
       resolveInput: {
         create: async ({ listKey, operation, resolvedData }) => {
           return { ...resolvedData, id: makeCustomIdentifier(listKey) };
-        }
+        },
       },
     },
   }),
@@ -50,7 +50,7 @@ export const lists: Lists = {
       resolveInput: {
         create: async ({ listKey, operation, resolvedData }) => {
           return { ...resolvedData, id: makeCustomIdentifier(listKey) };
-        }
+        },
       },
     },
   }),
