@@ -8,16 +8,17 @@ export async function main() {
 
   console.log(`🌱 Inserting seed data`);
   for (const person of persons) {
-    console.log(`👩 Adding person: ${person.name}`);
     if (
       await context.query.Person.findOne({
         where: { name: person.name },
         query: 'id',
       })
     ) {
+      console.log(`👩 Found ${person.name}`);
       continue;
     }
-
+    
+    console.log(`👩 Adding person: ${person.name}`);
     await context.query.Person.createOne({
       data: person,
       query: 'id',
