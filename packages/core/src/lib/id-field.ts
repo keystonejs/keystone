@@ -114,7 +114,7 @@ export function idFieldType(
 
   function parse(value: IDType) {
     const result = parseIdFn(value);
-    if (result === undefined) throw userInputError(`Expected ${idType} for ID filter`);
+    if (result === undefined) throw userInputError(`Only a ${idType.toLowerCase()} can be passed to id filters`);
     return result;
   }
 
