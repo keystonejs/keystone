@@ -133,7 +133,7 @@ export type KeystoneAdminUISortDirection =
   | 'DESC';
 
 type ResolvedPostCreateInput = {
-  id?: undefined;
+  id?: import('./node_modules/.myprisma/client').Prisma.PostCreateInput['id'];
   title?: import('./node_modules/.myprisma/client').Prisma.PostCreateInput['title'];
   content?: import('./node_modules/.myprisma/client').Prisma.PostCreateInput['content'];
   publishDate?: import('./node_modules/.myprisma/client').Prisma.PostCreateInput['publishDate'];

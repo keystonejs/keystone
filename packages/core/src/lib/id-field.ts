@@ -118,6 +118,7 @@ export function idFieldType(
     return result;
   }
 
+  // string types use cuids as their default value
   const defaultValue = isSingleton ? undefined : { kind: kind === 'string' ? 'cuid' : kind };
 
   return meta => {
@@ -127,13 +128,14 @@ export function idFieldType(
       scalar: type,
       nativeType: meta.provider === 'postgresql' && kind === 'uuid' ? 'Uuid' : undefined,
 
-      // string types use cuids as their default value
       default: defaultValue,
     })({
       ...config,
-      // The ID field is always filterable and orderable.
-      isFilterable: true,
-      isOrderable: true,
+
+      // the ID field is always filterable and orderable.
+      isFilterable: true, // TODO: should it be?
+      isOrderable: true, // TODO: should it be?
+
       input: {
         where: {
           arg: filterArg,
