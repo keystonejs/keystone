@@ -43,9 +43,6 @@ export async function resolveUniqueWhereInput(
   if (list.isSingleton && (key !== 'id' || val !== '1')) {
     throw userInputError(`The id field of a unique where input should be '1' for a singleton list`);
   }
-  if (val === null) {
-    throw userInputError(`The unique value provided in a unique where input must not be null`);
-  }
   const resolver = list.fields[key].input!.uniqueWhere!.resolve;
   return { [key]: resolver ? await resolver(val, context) : val };
 }

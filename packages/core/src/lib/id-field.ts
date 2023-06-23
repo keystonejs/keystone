@@ -75,6 +75,7 @@ function resolveVal(
   if (input === null) {
     throw userInputError('id filter cannot be null');
   }
+
   const obj: any = {};
   for (const key of ['equals', 'gt', 'gte', 'lt', 'lte'] as const) {
     const val = input[key];
@@ -83,6 +84,7 @@ function resolveVal(
       obj[key] = parsed;
     }
   }
+
   for (const key of ['in', 'notIn'] as const) {
     const val = input[key];
     if (val !== undefined) {
@@ -114,7 +116,9 @@ export function idFieldType(
 
   function parse(value: IDType) {
     const result = parseIdFn(value);
-    if (result === undefined) throw userInputError(`Only a ${idType.toLowerCase()} can be passed to id filters`);
+    if (result === undefined) {
+      throw userInputError(`Only a ${idType.toLowerCase()} can be passed to id filters`);
+    }
     return result;
   }
 
