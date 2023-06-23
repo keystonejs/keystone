@@ -102,7 +102,10 @@ function printInterimType<L extends InitialisedList>(
   return [
     `type Resolved${typename} = {`,
     ...Object.entries(list.fields).map(([fieldKey, { dbField }]) => {
-      if (dbField.kind === 'none' || fieldKey === 'id') return `  ${fieldKey}?: undefined;`;
+      if (dbField.kind === 'none') return `  ${fieldKey}?: undefined;`;
+
+      // soft-block `id` updates for relationship safety
+      if (operation === 'Update' && fieldKey === 'id') return `  id?: undefined;`;
 
       if (dbField.kind === 'multi') {
         return [
