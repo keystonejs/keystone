@@ -30,9 +30,10 @@ export const lists: Lists = {
       finishBy: timestamp(),
     },
     hooks: {
-      resolveInput: async ({ listKey, operation, resolvedData }) => {
-        if (operation !== 'create') return resolvedData;
-        return { ...resolvedData, id: makeCustomIdentifier(listKey) };
+      resolveInput: {
+        create: async ({ listKey, operation, resolvedData }) => {
+          return { ...resolvedData, id: makeCustomIdentifier(listKey) };
+        }
       },
     },
   }),
@@ -46,9 +47,10 @@ export const lists: Lists = {
       tasks: relationship({ ref: 'Task.assignedTo', many: true }),
     },
     hooks: {
-      resolveInput: async ({ listKey, operation, resolvedData }) => {
-        if (operation !== 'create') return resolvedData;
-        return { ...resolvedData, id: makeCustomIdentifier(listKey) };
+      resolveInput: {
+        create: async ({ listKey, operation, resolvedData }) => {
+          return { ...resolvedData, id: makeCustomIdentifier(listKey) };
+        }
       },
     },
   }),
