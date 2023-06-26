@@ -61,7 +61,7 @@
     "@types/rss": "^0.0.30",
     "next-sitemap": "^4.0.0",
     "start-server-and-test": "^2.0.0",
-    "typescript": "~5.0.0"
+    "typescript": "~5.1.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/docs"
 }
