@@ -44,6 +44,7 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>(
   config: PairFieldConfig<ListTypeInfo> = {}
 ): FieldTypeFunc<ListTypeInfo> {
   function resolveInput(value: PairInput | null | undefined) {
+    if (value === undefined) return undefined;
     const { left = null, right = null } = value ?? {};
     return { left, right };
   }
