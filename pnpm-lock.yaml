@@ -39,8 +39,8 @@ importers:
         specifier: ^0.21.0
         version: 0.21.0
       '@preconstruct/cli':
-        specifier: 2.8.0
-        version: 2.8.0
+        specifier: 2.8.1
+        version: 2.8.1
       '@types/jest':
         specifier: ^29.0.0
         version: 29.0.0
@@ -8115,6 +8115,7 @@ packages:
 
   /@jridgewell/source-map@0.3.4:
     resolution: {integrity: sha512-KE/SxsDqNs3rrWwFHcRh15ZLVFrI0YoZtgAdIyIq9k5hUNmiWRXXThPomIxHuL20sLdgzbDFyvkUMna14bvtrw==}
+    deprecated: the version has a bug with typescript type resolution
     dev: true
 
   /@jridgewell/sourcemap-codec@1.4.14:
@@ -8402,8 +8403,8 @@ packages:
     resolution: {integrity: sha512-IXf3XA7+XyN7CP9gGh/XB0UxVMlvARGEgGXLubFICsUMGz6Q+DU+i4gGlpOxTjKvXjkJDJC8YdqdKkDj9qZHEQ==}
     dev: false
 
-  /@preconstruct/cli@2.8.0:
-    resolution: {integrity: sha512-pntg4lcNlnuUw8wG66BtCObhoJOIU4815+kg2G9exm9K6HDvEmi2VrdvbmxzGO8Yp/6NFF4VMCU5wKJzWtlCtw==}
+  /@preconstruct/cli@2.8.1:
+    resolution: {integrity: sha512-PX5w+au06iY/QaT+9RLmRlIfavRCRoMTC/krwtNrgPEnubR9e6P+QlywrKmwiEvkzbR9AEzGnRZL8uNRDDMzrQ==}
     hasBin: true
     dependencies:
       '@babel/code-frame': 7.22.5

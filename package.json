@@ -37,7 +37,7 @@
     "@changesets/get-github-info": "^0.5.2",
     "@changesets/get-release-plan": "^3.0.16",
     "@manypkg/cli": "^0.21.0",
-    "@preconstruct/cli": "2.8.0",
+    "@preconstruct/cli": "2.8.1",
     "@types/jest": "^29.0.0",
     "@types/node": "^18.11.14",
     "@types/node-fetch": "^2.5.12",
