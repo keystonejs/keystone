@@ -95,6 +95,7 @@ type Thing_document_Document {
 
 input ThingWhereUniqueInput {
   id: ID
+  bigInt: BigInt
 }
 
 type ThingStructureNestedLeaf implements ThingStructureNested {
@@ -555,10 +556,12 @@ type Settings {
   id: ID!
   websiteName: String
   copyrightText: String
+  something: BigInt
 }
 
 input SettingsWhereUniqueInput {
   id: ID
+  something: BigInt
 }
 
 input SettingsWhereInput {
@@ -568,17 +571,20 @@ input SettingsWhereInput {
   id: IDFilter
   websiteName: StringFilter
   copyrightText: StringFilter
+  something: BigIntNullableFilter
 }
 
 input SettingsOrderByInput {
   id: OrderDirection
   websiteName: OrderDirection
   copyrightText: OrderDirection
+  something: OrderDirection
 }
 
 input SettingsUpdateInput {
   websiteName: String
   copyrightText: String
+  something: BigInt
 }
 
 input SettingsUpdateArgs {
@@ -589,6 +595,7 @@ input SettingsUpdateArgs {
 input SettingsCreateInput {
   websiteName: String
   copyrightText: String
+  something: BigInt
 }
 
 """

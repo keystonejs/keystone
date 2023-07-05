@@ -18,11 +18,12 @@ import { checkFilterOrderAccess } from '../filter-order-access';
 // we want to put the value we get back from the field's unique where resolver into an equals
 // rather than directly passing the value as the filter (even though Prisma supports that), we use equals
 // because we want to disallow fields from providing an arbitrary filter
-export function mapUniqueWhereToWhere(uniqueWhere: UniquePrismaFilter): PrismaFilter {
-  // inputResolvers.uniqueWhere validates that there is only one key
-  const key = Object.keys(uniqueWhere)[0];
-  const val = uniqueWhere[key];
-  return { [key]: { equals: val } };
+export function mapUniqueWhereToWhere(uniqueWhere: UniquePrismaFilter) {
+  const where: PrismaFilter = {}
+  for (const key in uniqueWhere) {
+    where[key] = { equals: uniqueWhere[key] }
+  }
+  return where
 }
 
 function traverseQuery(
@@ -93,15 +94,19 @@ export async function findOne(
     return null;
   }
 
-  // Validate and resolve the input filter
+  // findOne requires at least one filter
+  if (Object.keys(args.where).length === 0) return null;
+
+  // validate and resolve the input filter
   const uniqueWhere = await resolveUniqueWhereInput(args.where, list, context);
   const resolvedWhere = mapUniqueWhereToWhere(uniqueWhere);
 
-  // Check filter access
-  const fieldKey = Object.keys(args.where)[0];
-  await checkFilterOrderAccess([{ fieldKey, list }], context, 'filter');
+  // check filter access
+  for (const fieldKey in resolvedWhere) {
+    await checkFilterOrderAccess([{ fieldKey, list }], context, 'filter');
+  }
 
-  // Apply access control
+  // apply access control
   const filter = await accessControlledFilter(list, context, resolvedWhere, accessFilters);
 
   return runWithPrisma(context, list, model => model.findFirst({ where: filter }));

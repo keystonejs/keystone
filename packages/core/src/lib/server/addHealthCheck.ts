@@ -5,6 +5,7 @@ import { healthCheckPath as defaultHealthCheckPath } from '../defaults';
 
 type AddHealthCheckArgs = { config: KeystoneConfig; server: Application };
 
+// deprecated
 export async function addHealthCheck({ config, server }: AddHealthCheckArgs) {
   if (!config.server?.healthCheck) return;
 

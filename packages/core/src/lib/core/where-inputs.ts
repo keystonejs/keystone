@@ -32,19 +32,22 @@ export async function resolveUniqueWhereInput(
   list: InitialisedList,
   context: KeystoneContext
 ): Promise<UniquePrismaFilter> {
-  const inputKeys = Object.keys(input);
-  if (inputKeys.length !== 1) {
-    throw userInputError(
-      `Exactly one key must be passed in a unique where input but ${inputKeys.length} keys were passed`
-    );
+  const where: UniquePrismaFilter = {}
+  for (const key in input) {
+    const value = input[key];
+
+    // null cannot filter uniquely, so it's effectively unused
+    if (value === null) continue;
+
+    const resolver = list.fields[key].input!.uniqueWhere!.resolve;
+    if (resolver !== undefined) {
+      where[key] = await resolver(value, context);
+    } else {
+      where[key] = value;
+    }
   }
-  const key = inputKeys[0];
-  const val = input[key];
-  if (list.isSingleton && (key !== 'id' || val !== '1')) {
-    throw userInputError(`The id field of a unique where input should be '1' for a singleton list`);
-  }
-  const resolver = list.fields[key].input!.uniqueWhere!.resolve;
-  return { [key]: resolver ? await resolver(val, context) : val };
+
+  return where;
 }
 
 export async function resolveWhereInput(
@@ -53,9 +56,6 @@ export async function resolveWhereInput(
   context: KeystoneContext,
   isAtRootWhere = true
 ): Promise<PrismaFilter> {
-  if (isAtRootWhere && list.isSingleton && inputFilter?.id?.equals !== '1') {
-    throw userInputError(`The id field of a where input should be '1' for a singleton list`);
-  }
   return {
     AND: await Promise.all(
       Object.entries(inputFilter).map(async ([fieldKey, value]) => {

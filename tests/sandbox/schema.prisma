@@ -37,7 +37,7 @@ model Thing {
   multiselect                       String    @default("[]")
   json                              String?
   integer                           Int?
-  bigInt                            BigInt?
+  bigInt                            BigInt?   @unique
   float                             Float?
   image_filesize                    Int?
   image_extension                   String?
@@ -82,7 +82,8 @@ model User {
 }
 
 model Settings {
-  id            Int    @id
-  websiteName   String @default("")
-  copyrightText String @default("")
+  id            Int     @id
+  websiteName   String  @default("")
+  copyrightText String  @default("")
+  something     BigInt? @unique
 }
