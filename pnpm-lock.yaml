@@ -636,12 +636,12 @@ importers:
         specifier: ^5.0.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -652,15 +652,15 @@ importers:
         specifier: ^5.0.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
       dotenv:
         specifier: ^16.0.0
         version: 16.0.0
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -674,12 +674,12 @@ importers:
         specifier: ^5.0.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -693,8 +693,8 @@ importers:
         specifier: ^5.0.1
         version: link:../../design-system/packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
       next:
         specifier: ^13.3.0
         version: 13.3.0(@babel/core@7.21.0)(react-dom@18.2.0)(react@18.2.0)
@@ -706,8 +706,8 @@ importers:
         version: 18.2.0(react@18.2.0)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -718,15 +718,15 @@ importers:
         specifier: ^5.0.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
       react:
         specifier: ^18.2.0
         version: 18.2.0
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -740,8 +740,8 @@ importers:
         specifier: ^5.0.1
         version: link:../../design-system/packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
       next:
         specifier: ^13.3.0
         version: 13.3.0(@babel/core@7.21.0)(react-dom@18.2.0)(react@18.2.0)
@@ -753,8 +753,8 @@ importers:
         version: 18.2.0(react@18.2.0)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -768,12 +768,12 @@ importers:
         specifier: ^7.1.1
         version: link:../../design-system/packages/fields
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -799,8 +799,8 @@ importers:
         specifier: ^6.0.1
         version: link:../../design-system/packages/icons
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
       next:
         specifier: ^13.3.0
         version: 13.3.0(@babel/core@7.21.0)(react-dom@18.2.0)(react@18.2.0)
@@ -812,8 +812,8 @@ importers:
         version: 18.2.0(react@18.2.0)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -827,12 +827,12 @@ importers:
         specifier: ^2.2.1
         version: 2.2.1
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       tsx:
         specifier: ^3.9.0
         version: 3.9.0
@@ -846,8 +846,8 @@ importers:
         specifier: ^5.0.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
       next:
         specifier: ^13.3.0
         version: 13.3.0(@babel/core@7.21.0)(react-dom@18.2.0)(react@18.2.0)
@@ -859,8 +859,8 @@ importers:
         version: 18.2.0(react@18.2.0)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -874,12 +874,12 @@ importers:
         specifier: ^5.0.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -893,12 +893,12 @@ importers:
         specifier: ^5.0.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -912,8 +912,8 @@ importers:
         specifier: ^5.0.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
       jsonwebtoken:
         specifier: ^9.0.0
         version: 9.0.0
@@ -922,8 +922,8 @@ importers:
         specifier: ^9.0.2
         version: 9.0.2
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -956,15 +956,15 @@ importers:
         specifier: ^5.0.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
       '@redis/client':
         specifier: ^1.3.0
         version: 1.3.0
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -975,12 +975,12 @@ importers:
         specifier: ^5.0.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -1000,8 +1000,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
       next:
         specifier: ^13.3.0
         version: 13.3.0(@babel/core@7.21.0)(react-dom@18.2.0)(react@18.2.0)
@@ -1013,8 +1013,8 @@ importers:
         version: 18.2.0(react@18.2.0)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -1052,8 +1052,8 @@ importers:
         specifier: ^6.0.1
         version: link:../../../design-system/packages/tooltip
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1062,8 +1062,8 @@ importers:
         version: 5.0.2
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
 
   examples/document-field-customisation/nextjs-frontend:
     dependencies:
@@ -1105,8 +1105,8 @@ importers:
         specifier: ^5.0.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
       '@types/express':
         specifier: ^4.17.14
         version: 4.17.14
@@ -1115,8 +1115,8 @@ importers:
         version: 4.17.1
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       tsx:
         specifier: ^3.9.0
         version: 3.9.0
@@ -1133,15 +1133,15 @@ importers:
         specifier: ^5.0.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
       graphql:
         specifier: ^16.6.0
         version: 16.6.0
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -1152,12 +1152,12 @@ importers:
         specifier: ^5.0.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -1171,8 +1171,8 @@ importers:
         specifier: ^5.0.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
       graphql:
         specifier: ^16.6.0
         version: 16.6.0
@@ -1181,8 +1181,8 @@ importers:
         version: 1.3.0(graphql@16.6.0)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
 
   examples/extend-graphql-subscriptions:
     dependencies:
@@ -1208,8 +1208,8 @@ importers:
         specifier: ^7.1.1
         version: link:../../design-system/packages/fields
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
       graphql:
         specifier: ^16.6.0
         version: 16.6.0
@@ -1230,8 +1230,8 @@ importers:
         specifier: ^8.5.3
         version: 8.5.3
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -1245,12 +1245,12 @@ importers:
         specifier: ^8.0.0
         version: link:../../packages/fields-document
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -1261,12 +1261,12 @@ importers:
         specifier: ^5.0.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -1277,8 +1277,8 @@ importers:
         specifier: ^5.0.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
       astro:
         specifier: ^2.2.1
         version: 2.2.1(@types/node@18.11.14)
@@ -1293,8 +1293,8 @@ importers:
         specifier: ^18.0.4
         version: 18.0.8
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -1317,8 +1317,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
       graphql:
         specifier: ^16.6.0
         version: 16.6.0
@@ -1348,8 +1348,8 @@ importers:
         specifier: ^18.0.4
         version: 18.0.8
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -1369,8 +1369,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
       graphql:
         specifier: ^16.6.0
         version: 16.6.0
@@ -1400,8 +1400,8 @@ importers:
         specifier: ^18.0.4
         version: 18.0.8
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -1424,12 +1424,12 @@ importers:
         specifier: ^8.0.0
         version: link:../../../packages/fields-document
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -1474,8 +1474,8 @@ importers:
         specifier: ^5.1.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
       '@remix-run/node':
         specifier: ^1.15.0
         version: 1.15.0
@@ -1505,8 +1505,8 @@ importers:
         specifier: ^18.0.8
         version: 18.0.8
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -1517,8 +1517,8 @@ importers:
         specifier: ^5.0.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
       '@ts-gql/compiler':
         specifier: ^0.15.3
         version: 0.15.3(graphql@16.6.0)
@@ -1536,8 +1536,8 @@ importers:
         version: 16.6.0
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -1548,12 +1548,12 @@ importers:
         specifier: ^5.0.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -1564,12 +1564,12 @@ importers:
         specifier: ^5.0.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       tsx:
         specifier: ^3.9.0
         version: 3.9.0
@@ -1583,12 +1583,12 @@ importers:
         specifier: ^5.0.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -1599,12 +1599,12 @@ importers:
         specifier: ^5.0.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       tsx:
         specifier: ^3.9.0
         version: 3.9.0
@@ -1618,12 +1618,12 @@ importers:
         specifier: ^5.0.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       tsx:
         specifier: ^3.9.0
         version: 3.9.0
@@ -1649,8 +1649,8 @@ importers:
         specifier: ^5.0.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
     devDependencies:
       '@types/node':
         specifier: ^18.11.14
@@ -1662,8 +1662,8 @@ importers:
         specifier: ^29.0.0
         version: 29.0.0(@types/node@18.11.14)
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -1677,12 +1677,12 @@ importers:
         specifier: ^8.0.0
         version: link:../../packages/fields-document
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       tsx:
         specifier: ^3.9.0
         version: 3.9.0
@@ -1699,12 +1699,12 @@ importers:
         specifier: ^5.0.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -1718,12 +1718,12 @@ importers:
         specifier: ^5.0.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -1734,12 +1734,12 @@ importers:
         specifier: ^5.0.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       tsx:
         specifier: ^3.9.0
         version: 3.9.0
@@ -1753,12 +1753,12 @@ importers:
         specifier: ^5.0.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       tsx:
         specifier: ^3.9.0
         version: 3.9.0
@@ -1772,12 +1772,12 @@ importers:
         specifier: ^5.0.0
         version: link:../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -2284,11 +2284,11 @@ importers:
   prisma-utils:
     dependencies:
       '@prisma/generator-helper':
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       '@prisma/internals':
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       fs-extra:
         specifier: ^11.0.0
         version: 11.0.0
@@ -2392,11 +2392,11 @@ importers:
         specifier: ^2.2.1
         version: 2.2.1
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
       '@prisma/internals':
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       '@types/express':
         specifier: ^4.17.14
         version: 4.17.14
@@ -2425,8 +2425,8 @@ importers:
         specifier: ^2.6.7
         version: 2.6.7
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       supertest:
         specifier: ^6.1.6
         version: 6.1.6
@@ -2474,11 +2474,11 @@ importers:
         specifier: '*'
         version: link:../../packages/fields-document
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
       '@prisma/internals':
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       chalk:
         specifier: ^4.1.2
         version: 4.1.2
@@ -2501,8 +2501,8 @@ importers:
         specifier: ^2.6.7
         version: 2.6.7
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
 
   tests/examples-smoke-tests:
     dependencies:
@@ -2555,15 +2555,15 @@ importers:
         specifier: ^6.0.1
         version: link:../../design-system/packages/tooltip
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
       react:
         specifier: ^18.2.0
         version: 18.2.0
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -2574,12 +2574,12 @@ importers:
         specifier: ^5.0.0
         version: link:../../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -2590,12 +2590,12 @@ importers:
         specifier: ^5.0.0
         version: link:../../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -2606,12 +2606,12 @@ importers:
         specifier: ^5.0.0
         version: link:../../../packages/core
       '@prisma/client':
-        specifier: ^4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
     devDependencies:
       prisma:
-        specifier: ^4.15.0
-        version: 4.15.0
+        specifier: ^4.16.2
+        version: 4.16.2
       typescript:
         specifier: ~5.0.0
         version: 5.0.2
@@ -2632,7 +2632,6 @@ packages:
   /@antfu/ni@0.21.4:
     resolution: {integrity: sha512-O0Uv9LbLDSoEg26fnMDdDRiPwFJnQSoD4WnrflDwKCJm8Cx/0mV4cGxwBLXan5mGIrpK4Dd7vizf4rQm0QCEAA==}
     hasBin: true
-    dev: false
 
   /@apollo/cache-control-types@1.0.2(graphql@16.6.0):
     resolution: {integrity: sha512-Por80co1eUm4ATsvjCOoS/tIR8PHxqVjsA6z76I6Vw0rFn4cgyVElQcmQDIZiYsy41k8e5xkrMRECkM2WR8pNw==}
@@ -9411,6 +9410,7 @@ packages:
     dependencies:
       '@prisma/engines-version': 4.15.0-28.8fbc245156db7124f997f4cecdd8d1219e360944
       prisma: 4.15.0
+    dev: false
 
   /@prisma/client@4.16.2(prisma@4.16.2):
     resolution: {integrity: sha512-qCoEyxv1ZrQ4bKy39GnylE8Zq31IRmm8bNhNbZx7bF2cU5aiCCnSa93J2imF88MBjn7J9eUQneNxUQVJdl/rPQ==}
@@ -9424,16 +9424,6 @@ packages:
     dependencies:
       '@prisma/engines-version': 4.16.1-1.4bc8b6e1b66cb932731fb1bdbbc550d1e010de81
       prisma: 4.16.2
-    dev: false
-
-  /@prisma/debug@4.15.0:
-    resolution: {integrity: sha512-dkbPz+gOVlWDBAaOEseSpAUz9NppT38UlwdryPyrwct6OClLirNC7wH+TpAQk5OZp9x59hNnfDz+T7XvL1v0/Q==}
-    dependencies:
-      '@types/debug': 4.1.8
-      debug: 4.3.4
-      strip-ansi: 6.0.1
-    transitivePeerDependencies:
-      - supports-color
 
   /@prisma/debug@4.16.2:
     resolution: {integrity: sha512-7L7WbG0qNNZYgLpsVB8rCHCXEyHFyIycRlRDNwkVfjQmACC2OW6AWCYCbfdjQhkF/t7+S3njj8wAWAocSs+Brw==}
@@ -9443,14 +9433,13 @@ packages:
       strip-ansi: 6.0.1
     transitivePeerDependencies:
       - supports-color
-    dev: false
 
   /@prisma/engines-version@4.15.0-28.8fbc245156db7124f997f4cecdd8d1219e360944:
     resolution: {integrity: sha512-sVOig4tjGxxlYaFcXgE71f/rtFhzyYrfyfNFUsxCIEJyVKU9rdOWIlIwQ2NQ7PntvGnn+x0XuFo4OC1jvPJKzg==}
+    dev: false
 
   /@prisma/engines-version@4.16.1-1.4bc8b6e1b66cb932731fb1bdbbc550d1e010de81:
     resolution: {integrity: sha512-q617EUWfRIDTriWADZ4YiWRZXCa/WuhNgLTVd+HqWLffjMSPzyM5uOWoauX91wvQClSKZU4pzI4JJLQ9Kl62Qg==}
-    dev: false
 
   /@prisma/engines@4.15.0:
     resolution: {integrity: sha512-FTaOCGs0LL0OW68juZlGxFtYviZa4xdQj/rQEdat2txw0s3Vu/saAPKjNVXfIgUsGXmQ72HPgNr6935/P8FNAA==}
@@ -9459,31 +9448,6 @@ packages:
   /@prisma/engines@4.16.2:
     resolution: {integrity: sha512-vx1nxVvN4QeT/cepQce68deh/Turxy5Mr+4L4zClFuK1GlxN3+ivxfuv+ej/gvidWn1cE1uAhW7ALLNlYbRUAw==}
     requiresBuild: true
-    dev: false
-
-  /@prisma/fetch-engine@4.15.0:
-    resolution: {integrity: sha512-J5HVpRpLxsw9iDLcwwwxL09DXhERnutMiSwyfgHwCQhTHcETc5++XGZlHZtG4toykO3tploCDynXhJc6Fe/u2A==}
-    dependencies:
-      '@prisma/debug': 4.15.0
-      '@prisma/get-platform': 4.15.0
-      execa: 5.1.1
-      find-cache-dir: 3.3.2
-      fs-extra: 11.1.1
-      hasha: 5.2.2
-      http-proxy-agent: 5.0.0
-      https-proxy-agent: 5.0.1
-      kleur: 4.1.5
-      node-fetch: 2.6.11
-      p-filter: 2.1.0
-      p-map: 4.0.0
-      p-retry: 4.6.2
-      progress: 2.0.3
-      rimraf: 3.0.2
-      temp-dir: 2.0.0
-      tempy: 1.0.1
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
 
   /@prisma/fetch-engine@4.16.2:
     resolution: {integrity: sha512-lnCnHcOaNn0kw8qTJbVcNhyfIf5Lus2GFXbj3qpkdKEIB9xLgqkkuTP+35q1xFaqwQ0vy4HFpdRUpFP7njE15g==}
@@ -9508,17 +9472,6 @@ packages:
     transitivePeerDependencies:
       - encoding
       - supports-color
-    dev: false
-
-  /@prisma/generator-helper@4.15.0:
-    resolution: {integrity: sha512-JVHNgXr0LrcqXqmFrs+BzxfyRL6cFD5GLTMVWfCLU7kqSJdWuZxfoZW995tg6mOXnBgPTf6Ocv3RY4RLQq8k4g==}
-    dependencies:
-      '@prisma/debug': 4.15.0
-      '@types/cross-spawn': 6.0.2
-      cross-spawn: 7.0.3
-      kleur: 4.1.5
-    transitivePeerDependencies:
-      - supports-color
 
   /@prisma/generator-helper@4.16.2:
     resolution: {integrity: sha512-bMOH7y73Ui7gpQrioFeavMQA+Tf8ksaVf8Nhs9rQNzuSg8SSV6E9baczob0L5KGZTSgYoqnrRxuo03kVJYrnIg==}
@@ -9527,23 +9480,6 @@ packages:
       '@types/cross-spawn': 6.0.2
       cross-spawn: 7.0.3
       kleur: 4.1.5
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
-  /@prisma/get-platform@4.15.0:
-    resolution: {integrity: sha512-A7EdfysFDTL6HQmyZ6CLyNGRDz/60shqiJuhQ952cS0irGhi4PhTCy5MbjCvUaXjRBR6cjPp9EDaZ47TZlw5hg==}
-    dependencies:
-      '@prisma/debug': 4.15.0
-      escape-string-regexp: 4.0.0
-      execa: 5.1.1
-      fs-jetpack: 5.1.0
-      kleur: 4.1.5
-      replace-string: 3.1.0
-      strip-ansi: 6.0.1
-      tempy: 1.0.1
-      terminal-link: 2.1.1
-      ts-pattern: 4.3.0
     transitivePeerDependencies:
       - supports-color
 
@@ -9561,57 +9497,6 @@ packages:
       terminal-link: 2.1.1
       ts-pattern: 4.3.0
     transitivePeerDependencies:
-      - supports-color
-    dev: false
-
-  /@prisma/internals@4.15.0:
-    resolution: {integrity: sha512-bmgn1GX74RfjBRVMV4oJknZJOHmXcO9lh0VbwWKXp1zXvjumQCGeBOmLdzkp4SnvIrpkpXQf9JGbmOTKpVsvRw==}
-    dependencies:
-      '@opentelemetry/api': 1.4.1
-      '@prisma/debug': 4.15.0
-      '@prisma/engines': 4.15.0
-      '@prisma/fetch-engine': 4.15.0
-      '@prisma/generator-helper': 4.15.0
-      '@prisma/get-platform': 4.15.0
-      '@prisma/ni': 4.15.0
-      '@prisma/prisma-fmt-wasm': 4.15.0-28.8fbc245156db7124f997f4cecdd8d1219e360944
-      archiver: 5.3.1
-      arg: 5.0.2
-      checkpoint-client: 1.1.23
-      cli-truncate: 2.1.0
-      dotenv: 16.0.3
-      escape-string-regexp: 4.0.0
-      execa: 5.1.1
-      find-up: 5.0.0
-      fp-ts: 2.16.0
-      fs-extra: 11.1.1
-      fs-jetpack: 5.1.0
-      global-dirs: 3.0.1
-      globby: 11.1.0
-      indent-string: 4.0.0
-      is-windows: 1.0.2
-      is-wsl: 2.2.0
-      kleur: 4.1.5
-      new-github-issue-url: 0.2.1
-      node-fetch: 2.6.11
-      npm-packlist: 5.1.3
-      open: 7.4.2
-      p-map: 4.0.0
-      prompts: 2.4.2
-      read-pkg-up: 7.0.1
-      replace-string: 3.1.0
-      resolve: 1.22.2
-      string-width: 4.2.3
-      strip-ansi: 6.0.1
-      strip-indent: 3.0.0
-      temp-dir: 2.0.0
-      temp-write: 4.0.0
-      tempy: 1.0.1
-      terminal-link: 2.1.1
-      tmp: 0.2.1
-      ts-pattern: 4.3.0
-    transitivePeerDependencies:
-      - encoding
       - supports-color
 
   /@prisma/internals@4.16.2:
@@ -9663,7 +9548,6 @@ packages:
     transitivePeerDependencies:
       - encoding
       - supports-color
-    dev: false
 
   /@prisma/migrate@4.16.2(@prisma/generator-helper@4.16.2)(@prisma/internals@4.16.2):
     resolution: {integrity: sha512-Icnmg+qTE7K3SU37s3ik39fheEsRyrO2tBX+iI+SpoJ57ZVPFfkpl0oCda4CdLMPnskxKrD51u4Z2gQVsDC2wQ==}
@@ -9700,15 +9584,8 @@ packages:
       - supports-color
     dev: false
 
-  /@prisma/ni@4.15.0:
-    resolution: {integrity: sha512-kuVzvCbndl2GGoCFufQ5jzSPUaKMF6rp6OmSpFF8z9gflJlPLahtWqIcyKJ8sPaFrkhTlXXsyEX37mY98H1FZg==}
-
-  /@prisma/prisma-fmt-wasm@4.15.0-28.8fbc245156db7124f997f4cecdd8d1219e360944:
-    resolution: {integrity: sha512-1vuW5Cp6DnZpSmmM3dRsJ7do3LncJVkBAV9wwqGSLANDUNWDPfJwC7enN/YY3rnwkEVXMxzkTEbtYGA55blDLw==}
-
   /@prisma/prisma-fmt-wasm@4.16.1-1.4bc8b6e1b66cb932731fb1bdbbc550d1e010de81:
     resolution: {integrity: sha512-g090+dEH7wrdCw359+8J9+TGH84qK28V/dxwINjhhNCtju9lej99z9w/AVsJP9UhhcCPS4psYz4iu8d53uxVpA==}
-    dev: false
 
   /@protobufjs/aspromise@1.1.2:
     resolution: {integrity: sha512-j+gKExEuLmKwvz3OgROXtrJ2UG2x8Ch2YZUxahh+s1F2HZ+wAceUNLkvy6zKCPVRkU++ZWQrdxsUeQXmcg4uoQ==}
@@ -11743,7 +11620,6 @@ packages:
       debug: 4.3.4
     transitivePeerDependencies:
       - supports-color
-    dev: false
 
   /aggregate-error@3.1.0:
     resolution: {integrity: sha512-4I7Td01quW/RpocfNayFdFVk1qSuoh0E7JrbRJ16nH01HhKFQ88INq9Sd+nd72zqRySlr9BmDA8xlEJ6vJMrYA==}
@@ -13005,19 +12881,6 @@ packages:
     engines: {node: '>= 0.8.0'}
     dev: true
 
-  /checkpoint-client@1.1.23:
-    resolution: {integrity: sha512-NrGvMiH1fUcZwrYc0Z+YTn7q9ysV0kPgVyDKZ5jrfIerFJuSllvyGsY7bHeQSEiljaIaUP1Q/xutZ8q1s7PGzg==}
-    dependencies:
-      ci-info: 3.3.0
-      env-paths: 2.2.1
-      fast-write-atomic: 0.2.1
-      make-dir: 3.1.0
-      ms: 2.1.3
-      node-fetch: 2.6.7
-      uuid: 8.3.2
-    transitivePeerDependencies:
-      - encoding
-
   /checkpoint-client@1.1.24:
     resolution: {integrity: sha512-nIOlLhDS7MKs4tUzS3LCm+sE1NgTCVnVrXlD0RRxaoEkkLu8LIWSUNiNWai6a+LK5unLzTyZeTCYX1Smqy0YoA==}
     dependencies:
@@ -13030,7 +12893,6 @@ packages:
       uuid: 9.0.0
     transitivePeerDependencies:
       - encoding
-    dev: false
 
   /chokidar@3.5.3:
     resolution: {integrity: sha512-Dr3sfKRP6oTcjf2JmUmFJfeVMvXBdegxB0iVQ5eb2V10uFJUCAS8OByZdVAyVb8xXNz3GjjTgj9kLWsZTqE6kw==}
@@ -13061,9 +12923,6 @@ packages:
   /ci-info@3.2.0:
     resolution: {integrity: sha512-dVqRX7fLUm8J6FgHJ418XuIgDLZDkYcDFTeL6TA2gt5WlIZUQrrH6EZrNClwT/H0FateUsZkGIOPRrLbP+PR9A==}
     dev: false
-
-  /ci-info@3.3.0:
-    resolution: {integrity: sha512-riT/3vI5YpVH6/qomlDnJow6TBee2PBKSEpx3O32EGPYbWGIRsIlGRms3Sm74wYE1JMo8RnO04Hb12+v1J5ICw==}
 
   /ci-info@3.8.0:
     resolution: {integrity: sha512-eXTggHWSooYhq49F2opQhuHWgzucfF2YgODK4e1566GQs5BIfP30B0oenwBJHfWxAs2fyPB1s7Mg949zLf61Yw==}
@@ -16474,7 +16333,6 @@ packages:
       debug: 4.3.4
     transitivePeerDependencies:
       - supports-color
-    dev: false
 
   /http2-wrapper@1.0.3:
     resolution: {integrity: sha512-V+23sDMr12Wnz7iTcDeJr3O6AIxlnvT/bmaAAAP/Xda35C90p9599p0F1eHR/N1KILWSoWVAiOMFjBBXaXSMxg==}
@@ -16501,7 +16359,6 @@ packages:
       debug: 4.3.4
     transitivePeerDependencies:
       - supports-color
-    dev: false
 
   /human-id@1.0.2:
     resolution: {integrity: sha512-UNopramDEhHJD+VR+ehk8rOslwSfByxPIZyJRfV739NDhN5LF1fa1MqnzKm2lGTQRjNrjK19Q5fhkgIfjlVUKw==}
@@ -20706,7 +20563,6 @@ packages:
     requiresBuild: true
     dependencies:
       '@prisma/engines': 4.16.2
-    dev: false
 
   /prismjs@1.29.0:
     resolution: {integrity: sha512-Kx/1w86q/epKcmte75LNrEoT+lX8pBpavuAbvJWRXar7Hz8jrtF+e3vY751p0R8H9HdArwaCTNDDzHg/ScJK1Q==}
@@ -23554,6 +23410,7 @@ packages:
   /uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
     hasBin: true
+    dev: false
 
   /uuid@9.0.0:
     resolution: {integrity: sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==}
