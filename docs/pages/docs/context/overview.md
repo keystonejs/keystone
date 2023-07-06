@@ -16,7 +16,7 @@ import type { Context } from '.keystone/types';
 context = {
   // HTTP request object
   req,
-res,
+  res,
 
   // Query API
   query,
