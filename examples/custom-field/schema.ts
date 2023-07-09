@@ -53,17 +53,17 @@ export const lists: Lists = {
       }),
       pair: pair({
         ui: {
-          description: 'One string, two database string fields',
+          description: 'One string, two database string fields (e.g "foo bar")',
         },
       }),
       pairNested: pairNested({
         ui: {
-          description: 'Two strings, two database string fields',
+          description: 'Two strings, two database string fields (e.g "foo", "bar")',
         },
       }),
       pairJson: pairJson({
         ui: {
-          description: 'Two strings, one database JSON field',
+          description: 'Two strings, one database JSON field (e.g "foo", "bar")',
         },
       }),
     },
