@@ -65,7 +65,6 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>(
     return { equals: json };
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   return meta =>
     fieldType({
       kind: 'scalar',
@@ -78,21 +77,18 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>(
       input: {
         where: {
           arg: graphql.arg({ type: PairFilter }),
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           resolve(value, context) {
             return resolveWhere(value);
           },
         },
         create: {
           arg: graphql.arg({ type: PairInput }),
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           resolve(value, context) {
             return resolveInput(value);
           },
         },
         update: {
           arg: graphql.arg({ type: PairInput }),
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           resolve(value, context) {
             return resolveInput(value);
           },
@@ -100,7 +96,6 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>(
       },
       output: graphql.field({
         type: PairOutput,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         resolve({ value, item }, args, context, info) {
           return resolveOutput(value);
         },
