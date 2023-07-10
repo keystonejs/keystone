@@ -19,10 +19,8 @@ const runner = setupTestRunner({
   }),
 });
 
-const initialiseData = async ({ context }: { context: KeystoneContext }) => {
-  return await context.graphql.raw({
-    query: `mutation { createSingular(data: {}) { id, field } }`,
-  });
+async function initialise({ context }: { context: KeystoneContext }) {
+  await context.db.Singular.createOne({ data: {} })
 };
 
 describe('queries "work" on singletons', () => {
@@ -30,7 +28,7 @@ describe('queries "work" on singletons', () => {
     test(
       'read one works with defaulted query',
       runner(async ({ context }) => {
-        await initialiseData({ context });
+        await initialise({ context });
 
         const { errors, data } = await context.graphql.raw({
           query: `query { singular { id } }`,
@@ -43,7 +41,7 @@ describe('queries "work" on singletons', () => {
     test(
       'read many works with defaulted query',
       runner(async ({ context }) => {
-        await initialiseData({ context });
+        await initialise({ context });
 
         const { errors, data } = await context.graphql.raw({
           query: `query { singulars { id } }`,
@@ -54,20 +52,21 @@ describe('queries "work" on singletons', () => {
       })
     );
     test(
-      'cannot query item with an ID other than 1',
+      'can query other identifiers (non-default)',
       runner(async ({ context }) => {
-        await initialiseData({ context });
-        const { errors } = await context.graphql.raw({
+        await initialise({ context });
+        await context.prisma.singular.create({ data: { id: 2 } })
+
+        const { errors, data } = await context.graphql.raw({
           query: `query {
             singular(where: { id: 2 }) {
-            id
-          }
-        }`,
+              id
+            }
+          }`,
         });
 
-        expect(errors?.[0].message).toEqual(
-          "Input error: The id field of a unique where input should be '1' for a singleton list"
-        );
+        expect(errors).toEqual(undefined);
+        expect(data).toEqual({ singular: { id: '2' } });
       })
     );
   });
@@ -85,21 +84,30 @@ describe('queries "work" on singletons', () => {
   test(
     'update',
     runner(async ({ context }) => {
-      const { data: initialData } = await initialiseData({ context });
-      expect(initialData).toEqual({ createSingular: { field: '', id: '1' } });
+      await initialise({ context });
 
-      const { errors, data } = await context.graphql.raw({
-        query: `mutation { updateSingular(data: { field: "something here" }) { id, field } }`,
-      });
+      {
+        const { errors, data } = await context.graphql.raw({
+          query: `query { singular { id, field } }`,
+        });
+        expect(errors).toEqual(undefined);
+        expect(data).toEqual({ singular: { id: '1', field: '' } });
+      }
 
-      expect(errors).toEqual(undefined);
-      expect(data).toEqual({ updateSingular: { field: 'something here', id: '1' } });
+      {
+        const { errors, data } = await context.graphql.raw({
+          query: `mutation { updateSingular(data: { field: "something here" }) { id, field } }`,
+        });
+
+        expect(errors).toEqual(undefined);
+        expect(data).toEqual({ updateSingular: { id: '1', field: 'something here' } });
+      }
     })
   );
   test(
     'delete',
     runner(async ({ context }) => {
-      await initialiseData({ context });
+      await initialise({ context });
 
       const { data, errors } = await context.graphql.raw({
         query: `mutation { deleteSingular { id, field } }`,
@@ -119,7 +127,7 @@ describe('queries "work" on singletons', () => {
   test(
     'fails to create when existing item',
     runner(async ({ context }) => {
-      await initialiseData({ context });
+      await initialise({ context });
 
       const { errors } = await context.graphql.raw({
         query: `mutation { createSingular(data: { field: "Something here" }) { id } }`,
@@ -160,7 +168,7 @@ describe('queries "work" on singletons', () => {
   test(
     'update many',
     runner(async ({ context }) => {
-      await initialiseData({ context });
+      await initialise({ context });
 
       const { data, errors } = await context.graphql.raw({
         query: `mutation { updateSingulars(data: [{ data: { field: "Something here" } }]) { id, field } }`,
@@ -173,7 +181,7 @@ describe('queries "work" on singletons', () => {
   test(
     'delete many',
     runner(async ({ context }) => {
-      await initialiseData({ context });
+      await initialise({ context });
 
       const data = await context.graphql.run({
         query: `mutation { deleteSingulars(where: { id: 1 }) { id, field } }`,
