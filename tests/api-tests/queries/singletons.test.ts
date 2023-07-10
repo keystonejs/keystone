@@ -20,8 +20,8 @@ const runner = setupTestRunner({
 });
 
 async function initialise({ context }: { context: KeystoneContext }) {
-  await context.db.Singular.createOne({ data: {} })
-};
+  await context.db.Singular.createOne({ data: {} });
+}
 
 describe('queries "work" on singletons', () => {
   describe('read', () => {
@@ -55,7 +55,7 @@ describe('queries "work" on singletons', () => {
       'can query other identifiers (non-default)',
       runner(async ({ context }) => {
         await initialise({ context });
-        await context.prisma.singular.create({ data: { id: 2 } })
+        await context.prisma.singular.create({ data: { id: 2 } });
 
         const { errors, data } = await context.graphql.raw({
           query: `query {

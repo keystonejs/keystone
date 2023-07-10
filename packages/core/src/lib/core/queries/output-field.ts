@@ -175,20 +175,16 @@ export function outputTypeField(
     async resolve(rootVal: BaseItem, args, context, info) {
       const id = (rootVal as any).id as IdType;
 
-      // Check access
       let canAccess;
       try {
-        canAccess =
-          typeof access === 'function'
-            ? await access({
-                context,
-                fieldKey,
-                item: rootVal,
-                listKey,
-                operation: 'read',
-                session: context.session,
-              })
-            : access;
+        canAccess = await access({
+          context,
+          fieldKey,
+          item: rootVal,
+          listKey,
+          operation: 'read',
+          session: context.session,
+        });
       } catch (error: any) {
         throw extensionError('Access control', [
           { error, tag: `${listKey}.${fieldKey}.access.read` },

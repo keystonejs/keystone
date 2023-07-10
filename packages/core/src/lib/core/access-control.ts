@@ -40,10 +40,9 @@ export function cannotForItemFields(
 export async function getOperationAccess(
   list: InitialisedList,
   context: KeystoneContext,
-  operation: 'delete' | 'create' | 'update' | 'query'
+  operation: 'query' | 'create' | 'update' | 'delete'
 ) {
   const args = { operation, session: context.session, listKey: list.listKey, context };
-  // Check the mutation access
   const access = list.access.operation[operation];
   let result;
   try {
@@ -55,13 +54,9 @@ export async function getOperationAccess(
     ]);
   }
 
-  const resultType = typeof result;
-
-  // It's important that we don't cast objects to truthy values, as there's a strong chance that the user
-  // has accidentally tried to return a filter.
-  if (resultType !== 'boolean') {
+  if (typeof result !== 'boolean') {
     throw accessReturnError([
-      { tag: `${args.listKey}.access.operation.${args.operation}`, returned: resultType },
+      { tag: `${args.listKey}.access.operation.${args.operation}`, returned: typeof result },
     ]);
   }
 

@@ -128,9 +128,7 @@ export async function findMany(
   const resolvedWhere = await resolveWhereInput(where, list, context);
 
   // check filter access (TODO: why isn't this using resolvedWhere)
-  for (const { fieldKey, list: fieldList } of traverse(list, where)) {
-    await checkFilterOrderAccess([{ fieldKey, list: fieldList }], context, 'filter');
-  }
+  await checkFilterOrderAccess([...traverse(list, where)], context, 'filter');
 
   const filter = await accessControlledFilter(list, context, resolvedWhere, accessFilters);
 
@@ -228,9 +226,7 @@ export async function count(
   const resolvedWhere = await resolveWhereInput(where, list, context);
 
   // check filter access (TODO: why isn't this using resolvedWhere)
-  for (const { fieldKey, list: fieldList } of traverse(list, where)) {
-    await checkFilterOrderAccess([{ fieldKey, list: fieldList }], context, 'filter');
-  }
+  await checkFilterOrderAccess([...traverse(list, where)], context, 'filter');
 
   const filter = await accessControlledFilter(list, context, resolvedWhere, accessFilters);
 
