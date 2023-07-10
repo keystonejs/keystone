@@ -3,7 +3,8 @@ import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { isCuid } from 'cuid';
-import { validate } from 'uuid';
+import { isCuid as isCuid2 } from '@paralleldrive/cuid2';
+import { validate as isUuid } from 'uuid';
 import { apiTestConfig, dbProvider, expectBadUserInput } from './utils';
 
 export function assertNever(arg: never) {
@@ -19,7 +20,7 @@ const fixtures = [
       expect(id).toBe(1);
       expect(idStr).toEqual('1');
     },
-    reject: [null, '', 'abc', 'abc123', 'asdfqwerty'],
+    reject: ['', 'abc', 'abc123', 'asdfqwerty'],
   } as const,
   ...(dbProvider === 'sqlite'
     ? []
@@ -32,30 +33,42 @@ const fixtures = [
             expect(id).toBe(1n);
             expect(idStr).toEqual('1');
           },
-          reject: [null, '', 'abc', 'abc123', 'asdfqwerty'],
+          reject: ['', 'abc', 'abc123', 'asdfqwerty'],
         } as const,
       ] as const)),
 
   {
     kind: 'cuid',
     type: undefined,
-    error: 'Only a cuid can be passed to id filters',
+    error: 'Only a string can be passed to id filters',
     expect: (id: any, idStr: string) => {
       expect(isCuid(id)).toBe(true);
       expect(idStr).toBe(id);
     },
-    reject: [null, 0, 1, 123, '', 'abc', 'abc123', 'asdfqwerty'],
+    reject: [], // ID type always cast to a string, so we can't reject anything that GraphQL wouldn't reject anyway
+  } as const,
+
+  {
+    kind: 'cuid2',
+    type: undefined,
+    error: 'Only a string can be passed to id filters',
+    expect: (id: any, idStr: string) => {
+      expect(id.length).toBe(24);
+      expect(isCuid2(id)).toBe(true);
+      expect(idStr).toBe(id);
+    },
+    reject: [], // ID type always cast to a string, so we can't reject anything that GraphQL wouldn't reject anyway
   } as const,
 
   {
     kind: 'uuid',
     type: undefined,
-    error: 'Only a uuid can be passed to id filters',
+    error: 'Only a string can be passed to id filters',
     expect: (id: any, idStr: string) => {
-      expect(validate(id)).toBe(true);
+      expect(isUuid(id)).toBe(true);
       expect(idStr).toBe(id);
     },
-    reject: [null, 0, 1, 123, '', 'abc', 'abc123', 'asdfqwerty'],
+    reject: [], // ID type always cast to a string, so we can't reject anything that GraphQL wouldn't reject anyway
   } as const,
 
   {
@@ -63,11 +76,10 @@ const fixtures = [
     type: undefined,
     error: 'Only a string can be passed to id filters',
     expect: (id: any, idStr: string) => {
-      expect(isCuid(id)).toBe(true);
+      expect(isCuid2(id)).toBe(true);
       expect(idStr).toBe(id);
     },
-    reject: [null],
-    //      reject: [null, 0, 1, 123], // TODO
+    reject: [], // ID type always cast to a string, so we can't reject anything that GraphQL wouldn't reject anyway
   } as const,
 ];
 
@@ -108,6 +120,14 @@ for (const fixture of fixtures) {
     );
 
     test(
+      `Querying returns null for a findOne with a null filter`,
+      runner(async ({ context }) => {
+        const item = await context.query.User.findOne({ where: { id: null } });
+        expect(item).toBe(null);
+      })
+    );
+
+    test(
       `Querying succeeds for a findMany`,
       runner(async ({ context }) => {
         const { id } = await context.query.User.createOne({ data: { name: 'something' } });
@@ -118,28 +138,28 @@ for (const fixture of fixtures) {
       })
     );
 
-    for (const reject of fixture.reject) {
-      const json = JSON.stringify(reject);
-
+    for (const value of fixture.reject) {
       test(
-        `Throws an error when filtering (uniquely) with ${json}`,
+        `Throws an error when filtering (uniquely) with ${value}`,
         runner(async ({ context }) => {
           const { data, errors } = await context.graphql.raw({
-            query: `{ user(where: { id: ${json} }) { id } }`,
+            query: `query ($id: ID) { user(where: { id: $id }) { id } }`,
+            variables: { id: value }
           });
-          expect(data).toEqual({ user: null });
           expectBadUserInput(errors, [{ path: ['user'], message: error }]);
+          expect(data).toEqual({ user: null });
         })
       );
 
       test(
-        `Throws an error when filtering with ${json}`,
+        `Throws an error when filtering with ${value}`,
         runner(async ({ context }) => {
           const { data, errors } = await context.graphql.raw({
-            query: `{ users(where: { id: { equals: ${json} } }) { id } }`,
+            query: `query ($id: ID) { users(where: { id: { equals: $id } }) { id } }`,
+            variables: { id: value }
           });
-          expect(data).toEqual({ users: null });
           expectBadUserInput(errors, [{ path: ['users'], message: error }]);
+          expect(data).toEqual({ users: null });
         })
       );
     }
@@ -170,6 +190,7 @@ for (const fixture of fixtures) {
   });
 }
 
+// TODO: remove, this should be on the user
 describe('case insensitive id filters', () => {
   {
     const runner = setupTestRunner({
@@ -191,34 +212,6 @@ describe('case insensitive id filters', () => {
         });
         // it returns lower-cased
         expect(fromFound).toBe(id);
-      })
-    );
-  }
-
-  {
-    const runner = setupTestRunner({
-      config: apiTestConfig({
-        db: { idField: { kind: 'cuid' } },
-        lists: {
-          User: list({ access: allowAll, fields: { name: text() } }),
-        },
-      }),
-    });
-    test(
-      'searching for uppercased cuid does not work',
-      runner(async ({ context }) => {
-        const { id } = (await context.query.User.createOne({
-          data: { name: 'something' },
-        })) as { id: string };
-
-        const { data, errors } = await context.graphql.raw({
-          query: `query q($id: ID!){ user(where: { id: $id }) { id } }`,
-          variables: { id: id.toUpperCase() },
-        });
-        expect(data).toEqual({ user: null });
-        expectBadUserInput(errors, [
-          { path: ['user'], message: `Only a cuid can be passed to id filters` },
-        ]);
       })
     );
   }

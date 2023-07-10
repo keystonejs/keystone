@@ -36,7 +36,7 @@ async function createSingle(
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  //  Item access control. Will throw an accessDeniedError if not allowed.
+  // throw an accessDeniedError if not allowed
   await applyAccessControlForCreate(list, context, rawData);
 
   const { afterOperation, data } = await resolveInputForCreateOrUpdate(

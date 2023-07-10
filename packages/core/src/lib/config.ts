@@ -2,21 +2,20 @@ import type { KeystoneConfig, IdFieldConfig } from '../types';
 import { idFieldType } from './id-field';
 
 // TODO: move to system/initialisation
-
 function getIdField({ kind, type }: IdFieldConfig): Required<IdFieldConfig> {
   if (kind === 'cuid') return { kind: 'cuid', type: 'String' };
+  if (kind === 'cuid2') return { kind: 'cuid2', type: 'String' };
   if (kind === 'uuid') return { kind: 'uuid', type: 'String' };
+  if (kind === 'string') return { kind: 'string', type: 'String' };
   if (kind === 'autoincrement') {
     if (type === 'BigInt') return { kind: 'autoincrement', type: 'BigInt' };
     return { kind: 'autoincrement', type: 'Int' };
   }
-  if (kind === 'string') return { kind: 'string', type: 'String' };
 
-  // the default idFieldType
-  return { kind: 'cuid', type: 'String' };
+  throw new Error(`Unknown id type ${kind}`)
 }
 
-/* Validate lists config and default the id field */
+// validate lists config and default the id field
 function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['lists'] {
   const defaultIdField = getIdField(config.db.idField ?? { kind: 'cuid' });
   if (
@@ -90,11 +89,6 @@ function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['lists'] {
 
   return listsWithIds;
 }
-
-/*
-  This function executes the validation and other initialisation logic that
-  needs to be run on Keystone Config before it can be used.
-*/
 
 export function initConfig(config: KeystoneConfig) {
   if (!['postgresql', 'sqlite', 'mysql'].includes(config.db.provider)) {

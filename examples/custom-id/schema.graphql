@@ -200,6 +200,50 @@ input TaskRelateToManyForCreateInput {
   connect: [TaskWhereUniqueInput!]
 }
 
+type Order {
+  id: ID!
+  description: String
+  assignedTo: Person
+  orderedAt: DateTime
+}
+
+input OrderWhereUniqueInput {
+  id: ID
+}
+
+input OrderWhereInput {
+  AND: [OrderWhereInput!]
+  OR: [OrderWhereInput!]
+  NOT: [OrderWhereInput!]
+  id: IDFilter
+  description: StringFilter
+  assignedTo: PersonWhereInput
+  orderedAt: DateTimeNullableFilter
+}
+
+input OrderOrderByInput {
+  id: OrderDirection
+  description: OrderDirection
+  orderedAt: OrderDirection
+}
+
+input OrderUpdateInput {
+  description: String
+  assignedTo: PersonRelateToOneForUpdateInput
+  orderedAt: DateTime
+}
+
+input OrderUpdateArgs {
+  where: OrderWhereUniqueInput!
+  data: OrderUpdateInput!
+}
+
+input OrderCreateInput {
+  description: String
+  assignedTo: PersonRelateToOneForCreateInput
+  orderedAt: DateTime
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -218,6 +262,12 @@ type Mutation {
   updatePeople(data: [PersonUpdateArgs!]!): [Person]
   deletePerson(where: PersonWhereUniqueInput!): Person
   deletePeople(where: [PersonWhereUniqueInput!]!): [Person]
+  createOrder(data: OrderCreateInput!): Order
+  createOrders(data: [OrderCreateInput!]!): [Order]
+  updateOrder(where: OrderWhereUniqueInput!, data: OrderUpdateInput!): Order
+  updateOrders(data: [OrderUpdateArgs!]!): [Order]
+  deleteOrder(where: OrderWhereUniqueInput!): Order
+  deleteOrders(where: [OrderWhereUniqueInput!]!): [Order]
 }
 
 type Query {
@@ -227,6 +277,9 @@ type Query {
   people(where: PersonWhereInput! = {}, orderBy: [PersonOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PersonWhereUniqueInput): [Person!]
   person(where: PersonWhereUniqueInput!): Person
   peopleCount(where: PersonWhereInput! = {}): Int
+  orders(where: OrderWhereInput! = {}, orderBy: [OrderOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OrderWhereUniqueInput): [Order!]
+  order(where: OrderWhereUniqueInput!): Order
+  ordersCount(where: OrderWhereInput! = {}): Int
   keystone: KeystoneMeta!
 }
 

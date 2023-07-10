@@ -83,6 +83,7 @@ type AutoIncrementDefault = { kind: 'autoincrement' };
 type NowDefault = { kind: 'now' };
 type UuidDefault = { kind: 'uuid' };
 type CuidDefault = { kind: 'cuid' };
+type Cuid2Default = { kind: 'cuid2' };
 export type ScalarDBFieldDefault<
   Scalar extends keyof ScalarPrismaTypes = keyof ScalarPrismaTypes,
   Mode extends 'required' | 'many' | 'optional' = 'required' | 'many' | 'optional'
@@ -90,7 +91,7 @@ export type ScalarDBFieldDefault<
   ? never
   :
       | {
-          String: StringLiteralDefault | UuidDefault | CuidDefault;
+          String: StringLiteralDefault | UuidDefault | CuidDefault | Cuid2Default;
           Boolean: BooleanLiteralDefault;
           Json: StringLiteralDefault;
           Float: NumberLiteralDefault;

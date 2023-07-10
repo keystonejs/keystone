@@ -21,12 +21,12 @@ function printNativeType(nativeType: string | undefined, datasourceName: string)
   return nativeType === undefined ? '' : ` @${datasourceName}.${nativeType}`;
 }
 
-function printScalarDefaultValue(defaultValue: ScalarDBFieldDefault): string {
+function printScalarDefaultValue(defaultValue: ScalarDBFieldDefault) {
   if (defaultValue.kind === 'literal') {
     if (typeof defaultValue.value === 'string') {
-      return JSON.stringify(defaultValue.value);
+      return ` @default(${JSON.stringify(defaultValue.value)})`;
     }
-    return defaultValue.value.toString();
+    return ` @default(${defaultValue.value.toString()})`;
   }
   if (
     defaultValue.kind === 'now' ||
@@ -34,12 +34,12 @@ function printScalarDefaultValue(defaultValue: ScalarDBFieldDefault): string {
     defaultValue.kind === 'cuid' ||
     defaultValue.kind === 'uuid'
   ) {
-    return `${defaultValue.kind}()`;
+    return ` @default(${defaultValue.kind}())`;
   }
   if (defaultValue.kind === 'dbgenerated') {
-    return `dbgenerated(${JSON.stringify(defaultValue.value)})`;
+    return ` @default(dbgenerated(${JSON.stringify(defaultValue.value)}))`;
   }
-  assertNever(defaultValue);
+  return '';
 }
 
 function assertNever(arg: never): never {
@@ -55,9 +55,8 @@ function printField(
   if (field.kind === 'scalar') {
     const nativeType = printNativeType(field.nativeType, datasourceName);
     const index = printIndex(fieldPath, field.index);
-    const defaultValue = field.default
-      ? ` @default(${printScalarDefaultValue(field.default)})`
-      : '';
+
+    const defaultValue = field.default ? printScalarDefaultValue(field.default) : '';
     const map = field.map ? ` @map(${JSON.stringify(field.map)})` : '';
     const updatedAt = field.updatedAt ? ' @updatedAt' : '';
     return `${fieldPath} ${field.scalar}${

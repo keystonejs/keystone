@@ -1,5 +1,6 @@
 import { validate } from 'uuid';
 import { isCuid as _isCuid } from 'cuid';
+import { createId as createCuid2, isCuid as _isCuid2 } from '@paralleldrive/cuid2';
 import {
   BaseListTypeInfo,
   fieldType,
@@ -25,21 +26,15 @@ function isBigInt(x: IDType) {
   } catch {}
 }
 
-function isCuid(x: IDType) {
-  if (typeof x !== 'string') return;
-  if (!_isCuid(x)) return;
-  return x;
-}
-
-function isUuid(x: IDType) {
-  if (typeof x !== 'string') return;
-  if (!validate(x)) return;
-  return x.toLowerCase();
-}
-
 function isString(x: IDType) {
   if (typeof x !== 'string') return;
   return x;
+}
+
+// TODO: remove, this should be on the user
+function isUuid(x: IDType) {
+  if (typeof x !== 'string') return;
+  return x.toLowerCase();
 }
 
 const nonCircularFields = {
@@ -68,10 +63,11 @@ const IDFilter: IDFilterType = graphql.inputObject({
 
 const filterArg = graphql.arg({ type: IDFilter });
 
-function resolveVal(
+function resolveInput(
   input: Exclude<graphql.InferValueFromArg<typeof filterArg>, undefined>,
   parseId: (x: IDType) => unknown
 ): any {
+  // TODO: not this
   if (input === null) {
     throw userInputError('id filter cannot be null');
   }
@@ -95,7 +91,7 @@ function resolveVal(
     }
   }
   if (input.not !== undefined) {
-    obj.not = resolveVal(input.not, parseId);
+    obj.not = resolveInput(input.not, parseId);
   }
   return obj;
 }
@@ -105,25 +101,23 @@ export function idFieldType(
   isSingleton: boolean
 ): FieldTypeFunc<BaseListTypeInfo> {
   const { kind, type } = config;
-  const idType = type === 'String' ? kind : type;
-  const parseIdFn = {
+  const parseTypeFn = {
     Int: isInt,
     BigInt: isBigInt,
-    cuid: isCuid,
-    uuid: isUuid,
-    string: isString,
-  }[idType];
+    String: isString,
+    UUID: isUuid // TODO: remove
+  }[kind === 'uuid' ? 'UUID' : type];
 
   function parse(value: IDType) {
-    const result = parseIdFn(value);
+    const result = parseTypeFn(value);
     if (result === undefined) {
-      throw userInputError(`Only a ${idType.toLowerCase()} can be passed to id filters`);
+      throw userInputError(`Only a ${type.toLowerCase()} can be passed to id filters`);
     }
     return result;
   }
 
   // string types use cuids as their default value
-  const defaultValue = isSingleton ? undefined : { kind: kind === 'string' ? 'cuid' : kind };
+  const defaultValue = isSingleton ? undefined : { kind: kind === 'string' ? 'cuid2' : kind };
 
   return meta => {
     return fieldType({
@@ -136,7 +130,16 @@ export function idFieldType(
     })({
       ...config,
 
-      // the ID field is always filterable and orderable.
+      ...(defaultValue?.kind === 'cuid2' ? {
+        hooks: {
+          resolveInput({ operation }) {
+            if (operation !== 'create') return undefined;
+            return createCuid2();
+          }
+        },
+      } : {}),
+
+      // the ID field is always filterable and orderable
       isFilterable: true, // TODO: should it be?
       isOrderable: true, // TODO: should it be?
 
@@ -144,7 +147,7 @@ export function idFieldType(
         where: {
           arg: filterArg,
           resolve(val) {
-            return resolveVal(val, parse);
+            return resolveInput(val, parse);
           },
         },
         uniqueWhere: { arg: graphql.arg({ type: graphql.ID }), resolve: parse },
