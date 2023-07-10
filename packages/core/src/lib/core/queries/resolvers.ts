@@ -226,16 +226,18 @@ export async function count(
     return 0;
   }
 
-  let resolvedWhere = await resolveWhereInput(where, list, context);
+  const resolvedWhere = await resolveWhereInput(where, list, context);
 
-  // Check filter access
-  await checkFilterAccess(list, context, where);
+  // check filter access (TODO: why isn't this using resolvedWhere)
+  for (const { fieldKey, list: fieldList } of traverse(list, where)) {
+    await checkFilterOrderAccess([{ fieldKey, list: fieldList }], context, 'filter');
+  }
 
-  resolvedWhere = await accessControlledFilter(list, context, resolvedWhere, accessFilters);
+  const filter = await accessControlledFilter(list, context, resolvedWhere, accessFilters);
 
   const count = await runWithPrisma(context, list, model =>
     model.count({
-      where: extraFilter === undefined ? resolvedWhere : { AND: [resolvedWhere, extraFilter] },
+      where: extraFilter === undefined ? filter : { AND: [filter, extraFilter] },
     })
   );
   if (list.cacheHint) {
