@@ -28,26 +28,23 @@ export type UniquePrismaFilter = Record<string, any> & {
 };
 
 export async function resolveUniqueWhereInput(
-  input: UniqueInputFilter,
+  inputFilter: UniqueInputFilter,
   list: InitialisedList,
   context: KeystoneContext
 ): Promise<UniquePrismaFilter> {
-  const inputKeys = Object.keys(input);
-  if (inputKeys.length !== 1) {
-    throw userInputError(
-      `Exactly one key must be passed in a unique where input but ${inputKeys.length} keys were passed`
-    );
+  const where: UniquePrismaFilter = {};
+  for (const key in inputFilter) {
+    const value = inputFilter[key];
+
+    const resolver = list.fields[key].input!.uniqueWhere!.resolve;
+    if (resolver !== undefined) {
+      where[key] = await resolver(value, context);
+    } else {
+      where[key] = value;
+    }
   }
-  const key = inputKeys[0];
-  const val = input[key];
-  if (list.isSingleton && (key !== 'id' || val !== '1')) {
-    throw userInputError(`The id field of a unique where input should be '1' for a singleton list`);
-  }
-  if (val === null) {
-    throw userInputError(`The unique value provided in a unique where input must not be null`);
-  }
-  const resolver = list.fields[key].input!.uniqueWhere!.resolve;
-  return { [key]: resolver ? await resolver(val, context) : val };
+
+  return where;
 }
 
 export async function resolveWhereInput(
@@ -56,35 +53,36 @@ export async function resolveWhereInput(
   context: KeystoneContext,
   isAtRootWhere = true
 ): Promise<PrismaFilter> {
-  if (isAtRootWhere && list.isSingleton && inputFilter?.id?.equals !== '1') {
-    throw userInputError(`The id field of a where input should be '1' for a singleton list`);
-  }
   return {
     AND: await Promise.all(
-      Object.entries(inputFilter).map(async ([fieldKey, value]) => {
-        if (fieldKey === 'OR' || fieldKey === 'AND' || fieldKey === 'NOT') {
+      Object.entries(inputFilter).map(async ([key, value]) => {
+        if (key === 'OR' || key === 'AND' || key === 'NOT') {
           return {
-            [fieldKey]: await Promise.all(
+            [key]: await Promise.all(
               value.map((value: any) => resolveWhereInput(value, list, context, false))
             ),
           };
         }
-        const field = list.fields[fieldKey];
-        // we know if there are filters in the input object with the key of a field, the field must have defined a where input so this non null assertion is okay
-        const where = field.input!.where!;
-        const dbField = field.dbField;
-        const ret = where.resolve
-          ? await where.resolve(
+
+        // we know if there are filters in the input object with the key of a field,
+        //   the field must have defined a where input so this non null assertion is okay
+        const field = list.fields[key];
+        const { dbField } = field;
+
+        const resolve = field.input!.where!.resolve;
+        const ret = resolve
+          ? await resolve(
               value,
               context,
               (() => {
-                if (field.dbField.kind !== 'relation') {
+                if (dbField.kind !== 'relation') {
                   return undefined as any;
                 }
-                const foreignList = field.dbField.list;
-                const whereResolver = (val: any) =>
-                  resolveWhereInput(val, list.lists[foreignList], context);
-                if (field.dbField.mode === 'many') {
+                const foreignList = dbField.list;
+                const whereResolver = (filter: InputFilter) =>
+                  resolveWhereInput(filter, list.lists[foreignList], context);
+
+                if (dbField.mode === 'many') {
                   return async () => {
                     if (value === null) {
                       throw userInputError('A many relation filter cannot be set to null');
@@ -97,30 +95,29 @@ export async function resolveWhereInput(
                               `The key "${key}" in a many relation filter cannot be set to null`
                             );
                           }
-                          return [key, await whereResolver(val)];
+                          return [key, await whereResolver(val as any)];
                         })
                       )
                     );
                   };
                 }
-                return (val: any) => {
-                  if (val === null) {
-                    return null;
-                  }
-                  return whereResolver(val);
+
+                return (value: any) => {
+                  if (value === null) return null;
+                  return whereResolver(value);
                 };
               })()
             )
           : value;
         if (ret === null) {
-          if (field.dbField.kind === 'multi') {
+          if (dbField.kind === 'multi') {
             // Note: no built-in field types support multi valued database fields *and* filtering.
             // This code path is only relevent to custom fields which fit that criteria.
             throw new Error('multi db fields cannot return null from where input resolvers');
           }
-          return { [fieldKey]: null };
+          return { [key]: null };
         }
-        return handleOperators(fieldKey, dbField, ret);
+        return handleOperators(key, dbField, ret);
       })
     ),
   };

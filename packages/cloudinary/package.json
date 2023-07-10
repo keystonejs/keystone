@@ -21,6 +21,7 @@
     "@keystone-ui/core": "^5.0.2",
     "@keystone-ui/fields": "^7.1.2",
     "@keystone-ui/pill": "^7.0.2",
+    "@paralleldrive/cuid2": "^2.2.1",
     "@types/react": "^18.0.9",
     "cloudinary": "^1.27.1",
     "cuid": "^2.1.8",

@@ -213,6 +213,43 @@ describe('searching by unique fields', () => {
   );
 
   test(
+    'findOne works on multiple unique fields',
+    runner(async ({ context }) => {
+      const item = await context.query.User.createOne({ data: { email: 'test@example.com' } });
+      const { data, errors } = await context.graphql.raw({
+        query: `{ user(where: { id: "${item.id}" email: "test@example.com" }) { id email } }`,
+      });
+      expect(errors).toBe(undefined);
+      expect(data).toEqual({ user: { id: item.id, email: 'test@example.com' } });
+    })
+  );
+
+  // WARNING: this is database specific behaviour
+  test(
+    'findOne returns the first item for null if a value exists',
+    runner(async ({ context }) => {
+      const item = await context.query.User.createOne({ data: { email: null } });
+      const { data, errors } = await context.graphql.raw({
+        query: '{ user(where: { email: null }) { id email } }',
+      });
+      expect(errors).toBe(undefined);
+      expect(data).toEqual({ user: { id: item.id, email: null } });
+    })
+  );
+
+  test(
+    'findOne returns the unique item when filtering with multiple values',
+    runner(async ({ context }) => {
+      const item = await context.query.User.createOne({ data: { email: null } });
+      const { data, errors } = await context.graphql.raw({
+        query: `{ user(where: { id: "${item.id}" email: null }) { id email } }`,
+      });
+      expect(errors).toBe(undefined);
+      expect(data).toEqual({ user: { id: item.id, email: null } });
+    })
+  );
+
+  test(
     'findOne returns null if missing',
     runner(async ({ context }) => {
       await context.query.User.createOne({ data: { email: 'test@example.com' } });
@@ -225,54 +262,24 @@ describe('searching by unique fields', () => {
   );
 
   test(
-    'findOne throws error with zero where values',
+    'findOne returns null for zero where values',
     runner(async ({ context }) => {
       const { data, errors } = await context.graphql.raw({
         query: '{ user(where: {}) { id email } }',
       });
-      // Returns null and throws an error
+      expect(errors).toBe(undefined);
       expect(data).toEqual({ user: null });
-      expectBadUserInput(errors, [
-        {
-          message: 'Exactly one key must be passed in a unique where input but 0 keys were passed',
-          path: ['user'],
-        },
-      ]);
     })
   );
 
   test(
-    'findOne throws error with more than one where values',
-    runner(async ({ context }) => {
-      const item = await context.query.User.createOne({ data: { email: 'test@example.com' } });
-      const { data, errors } = await context.graphql.raw({
-        query: `{ user(where: { id: "${item.id}" email: "test@example.com" }) { id email } }`,
-      });
-      // Returns null and throws an error
-      expect(data).toEqual({ user: null });
-      expectBadUserInput(errors, [
-        {
-          message: 'Exactly one key must be passed in a unique where input but 2 keys were passed',
-          path: ['user'],
-        },
-      ]);
-    })
-  );
-
-  test(
-    'findOne throws error with null where values',
+    'findOne returns null for null where values',
     runner(async ({ context }) => {
       const { data, errors } = await context.graphql.raw({
         query: '{ user(where: { email: null }) { id email } }',
       });
-      // Returns null and throws an error
+      expect(errors).toBe(undefined);
       expect(data).toEqual({ user: null });
-      expectBadUserInput(errors, [
-        {
-          message: 'The unique value provided in a unique where input must not be null',
-          path: ['user'],
-        },
-      ]);
     })
   );
 });
@@ -380,8 +387,7 @@ describe('isFilterable', () => {
       expectFilterDenied(errors, [
         {
           path: ['secondaryLists'],
-          message:
-            'You do not have access to perform \'filter\' operations on the fields ["SecondaryList.filterFunctionFalse","User.filterFunctionFalse"].',
+          message: `You do not have access to perform 'filter' operations on the fields [\"SecondaryList.filterFunctionFalse\",\"SecondaryList.filterFunctionFalse\",\"User.filterFunctionFalse\"].`,
         },
       ]);
     })

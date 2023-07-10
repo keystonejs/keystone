@@ -818,7 +818,7 @@ importers:
         specifier: ~5.0.0
         version: 5.0.2
 
-  examples/custom-ids:
+  examples/custom-id:
     dependencies:
       '@keystone-6/core':
         specifier: ^5.0.0
@@ -1836,6 +1836,9 @@ importers:
       '@keystone-ui/pill':
         specifier: ^7.0.2
         version: link:../../design-system/packages/pill
+      '@paralleldrive/cuid2':
+        specifier: ^2.2.1
+        version: 2.2.1
       '@types/react':
         specifier: ^18.0.9
         version: 18.0.25
@@ -1951,6 +1954,9 @@ importers:
       '@nodelib/fs.walk':
         specifier: ^1.2.8
         version: 1.2.8
+      '@paralleldrive/cuid2':
+        specifier: ^2.2.1
+        version: 2.2.1
       '@prisma/client':
         specifier: 4.15.0
         version: 4.15.0(prisma@4.15.0)
@@ -2032,9 +2038,6 @@ importers:
       cors:
         specifier: ^2.8.5
         version: 2.8.5
-      cuid:
-        specifier: ^2.1.8
-        version: 2.1.8
       dataloader:
         specifier: ^2.1.0
         version: 2.1.0
@@ -2385,6 +2388,9 @@ importers:
       '@keystone-6/fields-document':
         specifier: '*'
         version: link:../../packages/fields-document
+      '@paralleldrive/cuid2':
+        specifier: ^2.2.1
+        version: 2.2.1
       '@prisma/client':
         specifier: ^4.15.0
         version: 4.15.0(prisma@4.15.0)
@@ -9231,7 +9237,6 @@ packages:
   /@noble/hashes@1.3.1:
     resolution: {integrity: sha512-EbqwksQwz9xDRGfDST86whPBgM65E0OH/pCgqW0GBVzO22bNE+NuIbeTb714+IfSjU3aRk47EUvXIb5bTsenKA==}
     engines: {node: '>= 16'}
-    dev: false
 
   /@nodelib/fs.scandir@2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -9286,7 +9291,6 @@ packages:
     resolution: {integrity: sha512-GJhHYlMhyT2gWemDL7BGMWfTNhspJKkikLKh9wAy3z4GTTINvTYALkUd+eGQK7aLeVkVzPuSA0VCT3H5eEWbbw==}
     dependencies:
       '@noble/hashes': 1.3.1
-    dev: false
 
   /@peculiar/asn1-schema@2.3.6:
     resolution: {integrity: sha512-izNRxPoaeJeg/AyH8hER6s+H7p4itk+03QCa4sbxI3lNdseQYCuxzgsuNK8bTXChtLTjpJz6NmXKA73qLa3rCA==}

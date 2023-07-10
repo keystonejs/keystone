@@ -3,214 +3,215 @@ import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { isCuid } from 'cuid';
-import { validate } from 'uuid';
+import { isCuid as isCuid2, createId as createCuid2 } from '@paralleldrive/cuid2';
+import { validate as isUuid } from 'uuid';
 import { apiTestConfig, dbProvider, expectBadUserInput } from './utils';
 
 export function assertNever(arg: never) {
   throw new Error('expected to never be called but received: ' + JSON.stringify(arg));
 }
 
-describe.each([
-  'autoincrement',
-  'cuid',
-  'uuid',
-  ...(dbProvider === 'sqlite' ? [] : (['bigint'] as const)),
-] as const)('%s', kind => {
+const fixtures = [
+  {
+    kind: 'autoincrement',
+    type: 'Int',
+    error: 'Only a int can be passed to id filters',
+    expect: (id: any, idStr: string) => {
+      expect(id).toBe(1);
+      expect(idStr).toEqual('1');
+    },
+    reject: [null, '', 'abc', 'abc123', 'asdfqwerty'],
+  } as const,
+  ...(dbProvider === 'sqlite'
+    ? []
+    : ([
+        {
+          kind: 'autoincrement',
+          type: 'BigInt',
+          error: 'Only a bigint can be passed to id filters',
+          expect: (id: any, idStr: string) => {
+            expect(id).toBe(1n);
+            expect(idStr).toEqual('1');
+          },
+          reject: [null, '', 'abc', 'abc123', 'asdfqwerty'],
+        } as const,
+      ] as const)),
+
+  {
+    kind: 'cuid',
+    type: undefined,
+    error: 'Only a string can be passed to id filters',
+    expect: (id: any, idStr: string) => {
+      expect(typeof id).toBe('string');
+      expect(isCuid(id)).toBe(true);
+      expect(idStr).toBe(id);
+    },
+    reject: [null],
+  } as const,
+
+  {
+    kind: 'cuid2',
+    type: undefined,
+    error: 'Only a string can be passed to id filters',
+    expect: (id: any, idStr: string) => {
+      expect(typeof id).toBe('string');
+      expect(id.length).toBe(24);
+      expect(isCuid2(id)).toBe(true);
+      expect(idStr).toBe(id);
+    },
+    reject: [null],
+  } as const,
+
+  {
+    kind: 'uuid',
+    type: undefined,
+    error: 'Only a string can be passed to id filters',
+    expect: (id: any, idStr: string) => {
+      expect(typeof id).toBe('string');
+      expect(isUuid(id)).toBe(true);
+      expect(idStr).toBe(id);
+    },
+    reject: [null],
+  } as const,
+
+  {
+    kind: 'string',
+    type: undefined,
+    error: 'Only a string can be passed to id filters',
+    expect: (id: any, idStr: string) => {
+      expect(typeof id).toBe('string');
+      expect(isCuid2(id)).toBe(true);
+      expect(idStr).toBe(id);
+    },
+    reject: [null],
+    hooks: {
+      resolveInput: {
+        create: ({ resolvedData }: any) => {
+          return {
+            ...resolvedData,
+            id: createCuid2(),
+          };
+        },
+      },
+    },
+  } as const,
+];
+
+for (const fixture of fixtures) {
+  const { expect: expectFn, error, hooks = {}, ...idField } = fixture;
   const runner = setupTestRunner({
     config: apiTestConfig({
       db: {
-        idField: kind === 'bigint' ? { kind: 'autoincrement', type: 'BigInt' } : { kind },
+        idField,
       },
       lists: {
-        User: list({ access: allowAll, fields: { name: text() } }),
+        User: list({
+          access: allowAll,
+          fields: {
+            name: text(),
+          },
+          hooks,
+        }),
       },
     }),
   });
-  test(
-    'Fetching an item uniquely with an invalid id throws an error',
-    runner(async ({ context }) => {
-      const { data, errors } = await context.graphql.raw({
-        query: `{ user(where: { id: "adskjnfasdfkjekfj"}) { id } }`,
-      });
-      expect(data).toEqual({ user: null });
-      const s = kind === 'autoincrement' ? 'an integer' : `a ${kind}`;
-      expectBadUserInput(errors, [
-        { path: ['user'], message: `Only ${s} can be passed to id filters` },
-      ]);
-    })
-  );
-  test(
-    'Filtering an item with an invalid id throws an error',
-    runner(async ({ context }) => {
-      const { data, errors } = await context.graphql.raw({
-        query: `{ users(where: { id: { equals: "adskjnfasdfkjekfj" } }) { id } }`,
-      });
-      expect(data).toEqual({ users: null });
-      const s = kind === 'autoincrement' ? 'an integer' : `a ${kind}`;
-      expectBadUserInput(errors, [
-        { path: ['users'], message: `Only ${s} can be passed to id filters` },
-      ]);
-    })
-  );
-  test(
-    'Fetching an item uniquely with a null id throws an error',
-    runner(async ({ context }) => {
-      const { data, errors } = await context.graphql.raw({
-        query: `{ user(where: { id: null}) { id } }`,
-      });
-      expect(data).toEqual({ user: null });
-      expectBadUserInput(errors, [
-        {
-          path: ['user'],
-          message: `The unique value provided in a unique where input must not be null`,
+
+  const { kind, type } = idField;
+  const name = `${kind}:${type ?? ''}`;
+
+  describe(name, () => {
+    test(
+      `Create defaults to the expected identifier type`,
+      runner(async ({ context }) => {
+        const { id } = await context.query.User.createOne({ data: { name: 'something' } });
+        const dbItem = await context.db.User.findOne({ where: { id } });
+
+        expect(dbItem).not.toBe(null);
+        if (!dbItem) return;
+        expectFn(dbItem.id, id);
+      })
+    );
+
+    test(
+      `Querying succeeds for a findOne`,
+      runner(async ({ context }) => {
+        const { id } = await context.query.User.createOne({ data: { name: 'something' } });
+        await context.query.User.createOne({ data: { name: 'another' } });
+        const item = await context.query.User.findOne({ where: { id } });
+        expect(item.id).toBe(id);
+      })
+    );
+
+    test(
+      `Querying succeeds for a findMany`,
+      runner(async ({ context }) => {
+        const { id } = await context.query.User.createOne({ data: { name: 'something' } });
+        await context.query.User.createOne({ data: { name: 'another' } });
+        const items = await context.query.User.findMany({ where: { id: { equals: id } } });
+        expect(items).toHaveLength(1);
+        expect(items[0].id).toBe(id);
+      })
+    );
+
+    test(
+      `Querying returns [] for a findMany with a null notIn filter`,
+      runner(async ({ context }) => {
+        const items = await context.query.User.findMany({ where: { id: { notIn: null } } });
+        expect(items).toStrictEqual([]);
+      })
+    );
+
+    for (const id of fixture.reject) {
+      test(
+        `Throws an error when filtering (uniquely) with ${JSON.stringify(id)}`,
+        runner(async ({ context }) => {
+          const { data, errors } = await context.graphql.raw({
+            query: `query ($id: ID) { user(where: { id: $id }) { id } }`,
+            variables: { id },
+          });
+          expectBadUserInput(errors, [{ path: ['user'], message: error }]);
+          expect(data).toEqual({ user: null });
+        })
+      );
+
+      test(
+        `Throws an error when filtering with ${JSON.stringify(id)}`,
+        runner(async ({ context }) => {
+          const { data, errors } = await context.graphql.raw({
+            query: `query ($id: ID) { users(where: { id: { equals: $id } }) { id } }`,
+            variables: { id },
+          });
+          expectBadUserInput(errors, [{ path: ['users'], message: error }]);
+          expect(data).toEqual({ users: null });
+        })
+      );
+    }
+  });
+}
+
+// TODO: remove, this should be on the user
+describe('case insensitive id filters', () => {
+  {
+    const runner = setupTestRunner({
+      config: apiTestConfig({
+        db: { idField: { kind: 'uuid' } },
+        lists: {
+          User: list({ access: allowAll, fields: { name: text() } }),
         },
-      ]);
-    })
-  );
-  test(
-    'Filtering an item with a null id throws an error',
-    runner(async ({ context }) => {
-      const { data, errors } = await context.graphql.raw({
-        query: `{ users(where: { id: null }) { id } }`,
-      });
-      expect(data).toEqual({ users: null });
-      expectBadUserInput(errors, [{ path: ['users'], message: `id filter cannot be null` }]);
-    })
-  );
-  test(
-    'Filtering an item with { equals: null } throws an error',
-    runner(async ({ context }) => {
-      const { data, errors } = await context.graphql.raw({
-        query: `{ users(where: { id: { equals: null } }) { id } }`,
-      });
-      expect(data).toEqual({ users: null });
-      const s = kind === 'autoincrement' ? 'an integer' : `a ${kind}`;
-      expectBadUserInput(errors, [
-        { path: ['users'], message: `Only ${s} can be passed to id filters` },
-      ]);
-    })
-  );
-  test(
-    'Filtering an item with a in: null throws an error',
-    runner(async ({ context }) => {
-      const { data, errors } = await context.graphql.raw({
-        query: `{ users(where: { id: { in: null } }) { id } }`,
-      });
-      expect(data).toEqual({ users: null });
-      expectBadUserInput(errors, [{ path: ['users'], message: `in id filter cannot be null` }]);
-    })
-  );
-  test(
-    'Filtering an item with a notIn: null throws an error',
-    runner(async ({ context }) => {
-      const { data, errors } = await context.graphql.raw({
-        query: `{ users(where: { id: { notIn: null } }) { id } }`,
-      });
-      expect(data).toEqual({ users: null });
-      expectBadUserInput(errors, [{ path: ['users'], message: `notIn id filter cannot be null` }]);
-    })
-  );
-  test(
-    'Querying with findOne',
-    runner(async ({ context }) => {
-      const { id } = await context.query.User.createOne({ data: { name: 'something' } });
-      await context.query.User.createOne({ data: { name: 'another' } });
-      const item = await context.query.User.findOne({ where: { id } });
-      expect(item.id).toBe(id);
-    })
-  );
-  test(
-    'Querying with findMany',
-    runner(async ({ context }) => {
-      const { id } = await context.query.User.createOne({ data: { name: 'something' } });
-      await context.query.User.createOne({ data: { name: 'another' } });
-      const items = await context.query.User.findMany({ where: { id: { equals: id } } });
-      expect(items).toHaveLength(1);
-      expect(items[0].id).toBe(id);
-    })
-  );
-  test(
-    'Creating an item',
-    runner(async ({ context }) => {
-      const { id } = await context.query.User.createOne({ data: { name: 'something' } });
-      const dbItem = await context.db.User.findOne({ where: { id } });
-      switch (kind) {
-        case 'autoincrement': {
-          expect(id).toBe('1');
-          expect(dbItem?.id).toBe(1);
-          return;
-        }
-        case 'cuid': {
-          expect(isCuid(id)).toBe(true);
-          expect(dbItem?.id).toBe(id);
-          return;
-        }
-        case 'uuid': {
-          expect(validate(id)).toBe(true);
-          expect(dbItem?.id).toBe(id);
-          return;
-        }
-        case 'bigint': {
-          expect(id).toEqual('1');
-          expect(dbItem?.id).toBe(1n);
-          return;
-        }
-        default: {
-          assertNever(kind);
-        }
-      }
-    })
-  );
+      }),
+    });
+    test(
+      'searching for uppercased uuid works',
+      runner(async ({ context }) => {
+        const { id } = (await context.query.User.createOne({
+          data: { name: 'something' },
+        })) as { id: string };
+        const { id: fromFound } = await context.query.User.findOne({
+          where: { id: id.toUpperCase() },
+        });
+        // it returns lower-cased
+        expect(fromFound).toBe(id);
+      })
+    );
+  }
 });
-
-{
-  const runner = setupTestRunner({
-    config: apiTestConfig({
-      db: { idField: { kind: 'uuid' } },
-      lists: {
-        User: list({ access: allowAll, fields: { name: text() } }),
-      },
-    }),
-  });
-  test(
-    'searching for uppercased uuid works',
-    runner(async ({ context }) => {
-      const { id } = (await context.query.User.createOne({
-        data: { name: 'something' },
-      })) as { id: string };
-      const { id: fromFound } = await context.query.User.findOne({
-        where: { id: id.toUpperCase() },
-      });
-      // it returns lower-cased
-      expect(fromFound).toBe(id);
-    })
-  );
-}
-
-{
-  const runner = setupTestRunner({
-    config: apiTestConfig({
-      db: { idField: { kind: 'cuid' } },
-      lists: {
-        User: list({ access: allowAll, fields: { name: text() } }),
-      },
-    }),
-  });
-  test(
-    'searching for uppercased cuid does not work',
-    runner(async ({ context }) => {
-      const { id } = (await context.query.User.createOne({
-        data: { name: 'something' },
-      })) as { id: string };
-
-      const { data, errors } = await context.graphql.raw({
-        query: `query q($id: ID!){ user(where: { id: $id }) { id } }`,
-        variables: { id: id.toUpperCase() },
-      });
-      expect(data).toEqual({ user: null });
-      expectBadUserInput(errors, [
-        { path: ['user'], message: `Only a cuid can be passed to id filters` },
-      ]);
-    })
-  );
-}

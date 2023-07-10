@@ -1,5 +1,4 @@
-import { validate } from 'uuid';
-import { isCuid } from 'cuid';
+import { createId as createCuid2 } from '@paralleldrive/cuid2';
 import {
   BaseListTypeInfo,
   fieldType,
@@ -10,58 +9,33 @@ import {
 import { graphql } from '..';
 import { userInputError } from './core/graphql-errors';
 
-const idParsers = {
-  autoincrement(val: string | null) {
-    if (val === null) {
-      throw userInputError('Only an integer can be passed to id filters');
-    }
-    const parsed = parseInt(val);
-    if (Number.isInteger(parsed)) {
-      return parsed;
-    }
-    throw userInputError('Only an integer can be passed to id filters');
-  },
-  autoincrementBigInt(val: string | null) {
-    if (val === null) {
-      throw userInputError('Only a bigint can be passed to id filters');
-    }
-    try {
-      return BigInt(val);
-    } catch (err) {
-      throw userInputError('Only a bigint can be passed to id filters');
-    }
-  },
-  singleton(val: string | null) {
-    if (val === null) {
-      throw userInputError('Only an integer can be passed to id filters');
-    }
-    const parsed = parseInt(val);
-    if (Number.isInteger(parsed)) {
-      return parsed;
-    }
-    throw userInputError('Only an integer can be passed to id filters');
-  },
-  cuid(val: string | null) {
-    // isCuid is just "it's a string and it starts with c"
-    // https://github.com/ericelliott/cuid/blob/215b27bdb78d3400d4225a4eeecb3b71891a5f6f/index.js#L69-L73
-    if (typeof val === 'string' && isCuid(val)) {
-      return val;
-    }
-    throw userInputError('Only a cuid can be passed to id filters');
-  },
-  uuid(val: string | null) {
-    if (typeof val === 'string' && validate(val)) {
-      return val.toLowerCase();
-    }
-    throw userInputError('Only a uuid can be passed to id filters');
-  },
-  string(val: string | null) {
-    if (typeof val === 'string') {
-      return val;
-    }
-    throw userInputError('Only a string can be passed to id filters of kind: string');
-  },
-};
+type IDType = string | number | null;
+
+function isInt(x: IDType) {
+  if (x === null) return;
+  if (x === '') return;
+  const nom = typeof x === 'string' ? Number(x) : x;
+  if (Number.isInteger(nom)) return nom;
+}
+
+function isBigInt(x: IDType) {
+  if (x === null) return;
+  if (x === '') return;
+  try {
+    return BigInt(x);
+  } catch {}
+}
+
+function isString(x: IDType) {
+  if (typeof x !== 'string') return;
+  return x;
+}
+
+// TODO: remove, this should be on the user
+function isUuid(x: IDType) {
+  if (typeof x !== 'string') return;
+  return x.toLowerCase();
+}
 
 const nonCircularFields = {
   equals: graphql.arg({ type: graphql.ID }),
@@ -89,64 +63,89 @@ const IDFilter: IDFilterType = graphql.inputObject({
 
 const filterArg = graphql.arg({ type: IDFilter });
 
-function resolveVal(
+function resolveInput(
   input: Exclude<graphql.InferValueFromArg<typeof filterArg>, undefined>,
-  parseId: (id: string | null) => unknown
-): any {
-  if (input === null) {
-    throw userInputError('id filter cannot be null');
-  }
-  const obj: any = {};
+  parseId: (x: IDType) => unknown
+) {
+  const where: any = {};
+  if (input === null) return where;
+
   for (const key of ['equals', 'gt', 'gte', 'lt', 'lte'] as const) {
-    const val = input[key];
-    if (val !== undefined) {
-      const parsed = parseId(val);
-      obj[key] = parsed;
-    }
+    const value = input[key];
+    if (value === undefined) continue;
+    where[key] = parseId(value);
   }
+
   for (const key of ['in', 'notIn'] as const) {
-    const val = input[key];
-    if (val !== undefined) {
-      if (val === null) {
-        throw userInputError(`${key} id filter cannot be null`);
-      }
-      obj[key] = val.map(x => parseId(x));
-    }
+    const value = input[key];
+    if (!Array.isArray(value)) continue;
+
+    where[key] = value.map(x => parseId(x));
   }
+
   if (input.not !== undefined) {
-    obj.not = resolveVal(input.not, parseId);
+    where.not = resolveInput(input.not, parseId);
   }
-  return obj;
+
+  return where;
 }
 
-export const idFieldType =
-  (config: Required<IdFieldConfig>, isSingleton: boolean): FieldTypeFunc<BaseListTypeInfo> =>
-  meta => {
-    const parseVal =
-      config.kind === 'autoincrement' && config.type === 'BigInt'
-        ? idParsers.autoincrementBigInt
-        : idParsers[isSingleton ? 'singleton' : config.kind];
+export function idFieldType(
+  config: Required<IdFieldConfig>,
+  isSingleton: boolean
+): FieldTypeFunc<BaseListTypeInfo> {
+  const { kind, type } = config;
+  const parseTypeFn = {
+    Int: isInt,
+    BigInt: isBigInt,
+    String: isString,
+    UUID: isUuid, // TODO: remove
+  }[kind === 'uuid' ? 'UUID' : type];
 
+  function parse(value: IDType) {
+    const result = parseTypeFn(value);
+    if (result === undefined) {
+      throw userInputError(`Only a ${type.toLowerCase()} can be passed to id filters`);
+    }
+    return result;
+  }
+
+  const defaultValue = isSingleton || kind === 'string' ? undefined : { kind };
+
+  return meta => {
     return fieldType({
       kind: 'scalar',
       mode: 'required',
-      scalar: config.type,
-      nativeType: meta.provider === 'postgresql' && config.kind === 'uuid' ? 'Uuid' : undefined,
-      // String id fields still generate cuids as their default value
-      default: isSingleton ? undefined : { kind: config.kind === 'string' ? 'cuid' : config.kind },
+      scalar: type,
+      nativeType: meta.provider === 'postgresql' && kind === 'uuid' ? 'Uuid' : undefined,
+
+      default: defaultValue,
     })({
       ...config,
-      // The ID field is always filterable and orderable.
-      isFilterable: true,
-      isOrderable: true,
+
+      ...(defaultValue?.kind === 'cuid2'
+        ? {
+            hooks: {
+              resolveInput({ operation }) {
+                if (operation !== 'create') return undefined;
+                return createCuid2();
+              },
+            },
+          }
+        : {}),
+
+      // the ID field is always filterable and orderable
+      isFilterable: true, // TODO: should it be?
+      isOrderable: true, // TODO: should it be?
+
       input: {
         where: {
           arg: filterArg,
           resolve(val) {
-            return resolveVal(val, parseVal);
+            return resolveInput(val, parse);
           },
         },
-        uniqueWhere: { arg: graphql.arg({ type: graphql.ID }), resolve: parseVal },
+        uniqueWhere: { arg: graphql.arg({ type: graphql.ID }), resolve: parse },
         orderBy: { arg: graphql.arg({ type: orderDirectionEnum }) },
       },
       output: graphql.field({
@@ -156,7 +155,7 @@ export const idFieldType =
         },
       }),
       views: '@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view',
-      getAdminMeta: () => ({ kind: config.kind }),
+      getAdminMeta: () => ({ kind }),
       ui: {
         createView: {
           fieldMode: 'hidden',
@@ -167,3 +166,4 @@ export const idFieldType =
       },
     });
   };
+}

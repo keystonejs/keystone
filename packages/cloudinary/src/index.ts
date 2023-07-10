@@ -5,7 +5,7 @@ import {
   jsonFieldTypePolyfilledForSQLite,
 } from '@keystone-6/core/types';
 import { graphql } from '@keystone-6/core';
-import cuid from 'cuid';
+import { createId as cuid2 } from '@paralleldrive/cuid2';
 import cloudinary from 'cloudinary';
 import { CloudinaryAdapter } from './cloudinary';
 
@@ -140,7 +140,7 @@ export const cloudinaryImage =
       const { id, filename, _meta } = await adapter.save({
         stream,
         filename: originalFilename,
-        id: cuid(),
+        id: cuid2(),
       });
 
       return { id, filename, originalFilename, mimetype, encoding, _meta };

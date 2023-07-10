@@ -13,7 +13,7 @@ generator client {
 }
 
 model Task {
-  id           String    @id @default(cuid())
+  id           Int       @id @default(autoincrement())
   label        String    @default("")
   priority     String?
   isComplete   Boolean   @default(false)
@@ -25,7 +25,18 @@ model Task {
 }
 
 model Person {
-  id    String @id @default(cuid())
-  name  String @unique @default("")
-  tasks Task[] @relation("Task_assignedTo")
+  id                    String  @id
+  name                  String  @unique @default("")
+  tasks                 Task[]  @relation("Task_assignedTo")
+  from_Order_assignedTo Order[] @relation("Order_assignedTo")
+}
+
+model Order {
+  id           String    @id
+  description  String    @default("")
+  assignedTo   Person?   @relation("Order_assignedTo", fields: [assignedToId], references: [id])
+  assignedToId String?   @map("assignedTo")
+  orderedAt    DateTime?
+
+  @@index([assignedToId])
 }

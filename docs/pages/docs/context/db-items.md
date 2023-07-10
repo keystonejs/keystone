@@ -26,8 +26,7 @@ For each list in your system the following API is available at `context.db.<list
 }
 ```
 
-The arguments to these functions closely correspond to their equivalent [GraphQL APIs](../graphql/overview).
-Unless otherwise specified, the arguments to all functions are required.
+The arguments to these functions approximate their equivalent [GraphQL APIs](../graphql/overview).
 
 ### findOne
 
@@ -39,8 +38,6 @@ const user = await context.db.User.findOne({
 
 ### findMany
 
-All arguments are optional.
-
 ```typescript
 const users = await context.db.User.findMany({
   where: { name: { startsWith: 'A' } },
@@ -51,8 +48,6 @@ const users = await context.db.User.findMany({
 ```
 
 ### count
-
-All arguments are optional.
 
 ```typescript
 const count = await context.db.User.count({

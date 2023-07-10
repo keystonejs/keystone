@@ -13,6 +13,10 @@ for (const isNullable of [true, false]) {
     filterTests(timestamp({ db: { isNullable } }), match => {
       orderableFilterTests(match, values, isNullable);
     });
-    uniqueEqualityFilterTest(timestamp({ db: { isNullable }, isIndexed: 'unique' }), values);
+    uniqueEqualityFilterTest(
+      timestamp({ db: { isNullable }, isIndexed: 'unique' }),
+      values,
+      isNullable
+    );
   });
 }

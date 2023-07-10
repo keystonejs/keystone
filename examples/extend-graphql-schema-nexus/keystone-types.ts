@@ -213,7 +213,7 @@ export type KeystoneAdminUISortDirection =
   | 'DESC';
 
 type ResolvedPostCreateInput = {
-  id?: undefined;
+  id?: import('./node_modules/.myprisma/client').Prisma.PostCreateInput['id'];
   title?: import('./node_modules/.myprisma/client').Prisma.PostCreateInput['title'];
   status?: import('./node_modules/.myprisma/client').Prisma.PostCreateInput['status'];
   content?: import('./node_modules/.myprisma/client').Prisma.PostCreateInput['content'];
@@ -231,7 +231,7 @@ type ResolvedPostUpdateInput = {
 };
 
 type ResolvedAuthorCreateInput = {
-  id?: undefined;
+  id?: import('./node_modules/.myprisma/client').Prisma.AuthorCreateInput['id'];
   name?: import('./node_modules/.myprisma/client').Prisma.AuthorCreateInput['name'];
   posts?: import('./node_modules/.myprisma/client').Prisma.AuthorCreateInput['posts'];
 };

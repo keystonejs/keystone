@@ -11,7 +11,11 @@ if (dbProvider === 'sqlite') {
       filterTests(decimal({ db: { isNullable } }), match => {
         orderableFilterTests(match, values, isNullable);
       });
-      uniqueEqualityFilterTest(decimal({ db: { isNullable }, isIndexed: 'unique' }), values);
+      uniqueEqualityFilterTest(
+        decimal({ db: { isNullable }, isIndexed: 'unique' }),
+        values,
+        isNullable
+      );
     });
   }
 }

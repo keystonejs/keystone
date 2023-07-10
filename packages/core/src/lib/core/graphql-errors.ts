@@ -74,9 +74,6 @@ export const accessReturnError = (things: { tag: string; returned: string }[]) =
   });
 };
 
-// FIXME: In an upcoming PR we will use these args to construct a better
-// error message, so leaving the, here for now. - TL
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const limitsExceededError = (args: { type: string; limit: number; list: string }) =>
   new GraphQLError('Your request exceeded server limits', {
     extensions: {

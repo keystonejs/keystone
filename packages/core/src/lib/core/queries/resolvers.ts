@@ -18,49 +18,38 @@ import { checkFilterOrderAccess } from '../filter-order-access';
 // we want to put the value we get back from the field's unique where resolver into an equals
 // rather than directly passing the value as the filter (even though Prisma supports that), we use equals
 // because we want to disallow fields from providing an arbitrary filter
-export function mapUniqueWhereToWhere(uniqueWhere: UniquePrismaFilter): PrismaFilter {
-  // inputResolvers.uniqueWhere validates that there is only one key
-  const key = Object.keys(uniqueWhere)[0];
-  const val = uniqueWhere[key];
-  return { [key]: { equals: val } };
+export function mapUniqueWhereToWhere(uniqueWhere: UniquePrismaFilter) {
+  const where: PrismaFilter = {};
+  for (const key in uniqueWhere) {
+    where[key] = { equals: uniqueWhere[key] };
+  }
+  return where;
 }
 
-function traverseQuery(
+function* traverse(
   list: InitialisedList,
-  context: KeystoneContext,
-  inputFilter: InputFilter,
-  filterFields: Record<string, { fieldKey: string; list: InitialisedList }>
-) {
-  // Recursively traverse a where filter to find all the fields which are being
-  // filtered on.
-  Object.entries(inputFilter).forEach(([fieldKey, value]) => {
+  inputFilter: InputFilter
+): Generator<{ fieldKey: string; list: InitialisedList }, void, unknown> {
+  for (const fieldKey in inputFilter) {
+    const value = inputFilter[fieldKey];
     if (fieldKey === 'OR' || fieldKey === 'AND' || fieldKey === 'NOT') {
-      value.forEach((value: any) => {
-        traverseQuery(list, context, value, filterFields);
-      });
+      for (const condition of value) {
+        yield* traverse(list, condition);
+      }
     } else if (fieldKey === 'some' || fieldKey === 'none' || fieldKey === 'every') {
-      traverseQuery(list, context, value, filterFields);
+      yield* traverse(list, value);
     } else {
-      filterFields[`${list.listKey}.${fieldKey}`] = { fieldKey, list };
-      // If it's a relationship, check the nested filters.
+      yield { fieldKey, list };
+
+      // if it's a relationship, check the nested filters.
       const field = list.fields[fieldKey];
       if (field.dbField.kind === 'relation' && value !== null) {
-        const foreignList = field.dbField.list;
-        traverseQuery(list.lists[foreignList], context, value, filterFields);
+        const foreignList = list.lists[field.dbField.list];
+
+        yield* traverse(foreignList, value);
       }
     }
-  });
-}
-
-export async function checkFilterAccess(
-  list: InitialisedList,
-  context: KeystoneContext,
-  inputFilter: InputFilter
-) {
-  if (!inputFilter) return;
-  const filterFields: Record<string, { fieldKey: string; list: InitialisedList }> = {};
-  traverseQuery(list, context, inputFilter, filterFields);
-  await checkFilterOrderAccess(Object.values(filterFields), context, 'filter');
+  }
 }
 
 export async function accessControlledFilter(
@@ -82,7 +71,7 @@ export async function findOne(
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  // Check operation permission to pass into single operation
+  // check operation permission to pass into single operation
   const operationAccess = await getOperationAccess(list, context, 'query');
   if (!operationAccess) {
     return null;
@@ -93,15 +82,19 @@ export async function findOne(
     return null;
   }
 
-  // Validate and resolve the input filter
+  // validate and resolve the input filter
   const uniqueWhere = await resolveUniqueWhereInput(args.where, list, context);
   const resolvedWhere = mapUniqueWhereToWhere(uniqueWhere);
 
-  // Check filter access
-  const fieldKey = Object.keys(args.where)[0];
-  await checkFilterOrderAccess([{ fieldKey, list }], context, 'filter');
+  // findOne requires at least one filter
+  if (Object.keys(resolvedWhere).length === 0) return null;
 
-  // Apply access control
+  // check filter access
+  for (const fieldKey in resolvedWhere) {
+    await checkFilterOrderAccess([{ fieldKey, list }], context, 'filter');
+  }
+
+  // apply access control
   const filter = await accessControlledFilter(list, context, resolvedWhere, accessFilters);
 
   return runWithPrisma(context, list, model => model.findFirst({ where: filter }));
@@ -119,9 +112,9 @@ export async function findMany(
     throw limitsExceededError({ list: list.listKey, type: 'maxTake', limit: maxTake });
   }
 
+  // TODO: rewrite, this actually checks access
   const orderBy = await resolveOrderBy(rawOrderBy, list, context);
 
-  // Check operation permission, throw access denied if not allowed
   const operationAccess = await getOperationAccess(list, context, 'query');
   if (!operationAccess) {
     return [];
@@ -132,16 +125,16 @@ export async function findMany(
     return [];
   }
 
-  let resolvedWhere = await resolveWhereInput(where, list, context);
+  const resolvedWhere = await resolveWhereInput(where, list, context);
 
-  // Check filter access
-  await checkFilterAccess(list, context, where);
+  // check filter access (TODO: why isn't this using resolvedWhere)
+  await checkFilterOrderAccess([...traverse(list, where)], context, 'filter');
 
-  resolvedWhere = await accessControlledFilter(list, context, resolvedWhere, accessFilters);
+  const filter = await accessControlledFilter(list, context, resolvedWhere, accessFilters);
 
   const results = await runWithPrisma(context, list, model =>
     model.findMany({
-      where: extraFilter === undefined ? resolvedWhere : { AND: [resolvedWhere, extraFilter] },
+      where: extraFilter === undefined ? filter : { AND: [filter, extraFilter] },
       orderBy,
       take: take ?? undefined,
       skip,
@@ -220,7 +213,6 @@ export async function count(
   info: GraphQLResolveInfo,
   extraFilter?: PrismaFilter
 ) {
-  // Check operation permission, return zero if not allowed
   const operationAccess = await getOperationAccess(list, context, 'query');
   if (!operationAccess) {
     return 0;
@@ -231,16 +223,16 @@ export async function count(
     return 0;
   }
 
-  let resolvedWhere = await resolveWhereInput(where, list, context);
+  const resolvedWhere = await resolveWhereInput(where, list, context);
 
-  // Check filter access
-  await checkFilterAccess(list, context, where);
+  // check filter access (TODO: why isn't this using resolvedWhere)
+  await checkFilterOrderAccess([...traverse(list, where)], context, 'filter');
 
-  resolvedWhere = await accessControlledFilter(list, context, resolvedWhere, accessFilters);
+  const filter = await accessControlledFilter(list, context, resolvedWhere, accessFilters);
 
   const count = await runWithPrisma(context, list, model =>
     model.count({
-      where: extraFilter === undefined ? resolvedWhere : { AND: [resolvedWhere, extraFilter] },
+      where: extraFilter === undefined ? filter : { AND: [filter, extraFilter] },
     })
   );
   if (list.cacheHint) {

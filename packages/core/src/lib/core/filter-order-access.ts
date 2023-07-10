@@ -14,12 +14,9 @@ export async function checkFilterOrderAccess(
   for (const { fieldKey, list } of things) {
     const field = list.fields[fieldKey];
     const rule = field.graphql.isEnabled[operation];
-    // Check isOrderable
-    if (!rule) {
-      // If the field is explicitly false, it will excluded from the GraphQL API.
-      throw new Error('Assert failed');
-    } else if (typeof rule === 'function') {
-      // Apply dynamic rules
+    if (!rule) throw new Error('Assert failed');
+
+    if (typeof rule === 'function') {
       let result;
       try {
         result = await rule({ context, session: context.session, listKey: list.listKey, fieldKey });

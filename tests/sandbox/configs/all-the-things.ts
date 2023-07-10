@@ -152,7 +152,7 @@ export const lists = {
       }),
       json: json({ ui: { description } }),
       integer: integer({ ui: { description } }),
-      bigInt: bigInt({ ui: { description } }),
+      bigInt: bigInt({ isIndexed: 'unique', ui: { description } }),
       float: float({ ui: { description } }),
       image: image({ ui: { description }, storage: 'images' }),
       file: file({ ui: { description }, storage: 'files' }),
@@ -213,6 +213,7 @@ export const lists = {
     fields: {
       websiteName: text(),
       copyrightText: text(),
+      something: bigInt({ isIndexed: 'unique', ui: { description } }),
     },
     graphql: {
       plural: 'ManySettings',
