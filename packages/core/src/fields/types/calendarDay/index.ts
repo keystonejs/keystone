@@ -44,19 +44,18 @@ export const calendarDay =
     }
 
     const resolvedIsNullable = getResolvedIsNullable(validation, config.db);
-
     assertReadIsNonNullAllowed(meta, config, resolvedIsNullable);
 
     const mode = resolvedIsNullable === false ? 'required' : 'optional';
     const fieldLabel = config.label ?? humanize(meta.fieldKey);
     const usesNativeDateType = meta.provider === 'postgresql' || meta.provider === 'mysql';
 
-    const resolveInput = (value: null | undefined | string) => {
+    function resolveInput(value: string | null | undefined) {
       if (meta.provider === 'sqlite' || value == null) {
         return value;
       }
       return dateStringToDateObjectInUTC(value);
-    };
+    }
 
     const commonResolveFilter = mode === 'optional' ? filters.resolveCommon : <T>(x: T) => x;
 
@@ -139,7 +138,9 @@ export const calendarDay =
     });
   };
 
-const dateStringToDateObjectInUTC = (value: string) => new Date(`${value}T00:00Z`);
+function dateStringToDateObjectInUTC(value: string) {
+  return new Date(`${value}T00:00Z`);
+}
 
 type CalendarDayFilterType = graphql.InputObjectType<{
   equals: graphql.Arg<typeof graphql.CalendarDay>;
