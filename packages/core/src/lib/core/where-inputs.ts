@@ -36,9 +36,6 @@ export async function resolveUniqueWhereInput(
   for (const key in inputFilter) {
     const value = inputFilter[key];
 
-    // null cannot filter uniquely, so it's effectively unused
-    if (value === null) continue;
-
     const resolver = list.fields[key].input!.uniqueWhere!.resolve;
     if (resolver !== undefined) {
       where[key] = await resolver(value, context);

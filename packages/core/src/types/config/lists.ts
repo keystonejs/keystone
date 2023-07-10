@@ -13,7 +13,7 @@ export type ListSchemaConfig<ListTypeInfo extends BaseListTypeInfo = BaseListTyp
 >;
 
 export type IdFieldConfig =
-  | { kind: 'cuid2' | 'cuid' | 'uuid'; type?: 'String' }
+  | { kind: 'cuid2' | 'cuid' | 'uuid' | 'string'; type?: 'String' }
   | {
       kind: 'autoincrement';
       /**
@@ -21,8 +21,7 @@ export type IdFieldConfig =
        * @default 'Int'
        */
       type?: 'Int' | 'BigInt';
-    }
-  | { kind: 'string'; type?: 'String' };
+    };
 
 export type ListConfig<
   ListTypeInfo extends BaseListTypeInfo,

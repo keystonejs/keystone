@@ -20,7 +20,7 @@ const fixtures = [
       expect(id).toBe(1);
       expect(idStr).toEqual('1');
     },
-    reject: ['', 'abc', 'abc123', 'asdfqwerty'],
+    reject: [null, '', 'abc', 'abc123', 'asdfqwerty'],
   } as const,
   ...(dbProvider === 'sqlite'
     ? []
@@ -33,7 +33,7 @@ const fixtures = [
             expect(id).toBe(1n);
             expect(idStr).toEqual('1');
           },
-          reject: ['', 'abc', 'abc123', 'asdfqwerty'],
+          reject: [null, '', 'abc', 'abc123', 'asdfqwerty'],
         } as const,
       ] as const)),
 
@@ -46,7 +46,7 @@ const fixtures = [
       expect(isCuid(id)).toBe(true);
       expect(idStr).toBe(id);
     },
-    reject: [], // ID type always cast to a string, so we can't reject anything that GraphQL wouldn't reject anyway
+    reject: [null],
   } as const,
 
   {
@@ -59,7 +59,7 @@ const fixtures = [
       expect(isCuid2(id)).toBe(true);
       expect(idStr).toBe(id);
     },
-    reject: [], // ID type always cast to a string, so we can't reject anything that GraphQL wouldn't reject anyway
+    reject: [null],
   } as const,
 
   {
@@ -71,7 +71,7 @@ const fixtures = [
       expect(isUuid(id)).toBe(true);
       expect(idStr).toBe(id);
     },
-    reject: [], // ID type always cast to a string, so we can't reject anything that GraphQL wouldn't reject anyway
+    reject: [null],
   } as const,
 
   {
@@ -83,45 +83,40 @@ const fixtures = [
       expect(isCuid2(id)).toBe(true);
       expect(idStr).toBe(id);
     },
-    reject: [], // ID type always cast to a string, so we can't reject anything that GraphQL wouldn't reject anyway
+    reject: [null],
     hooks: {
       resolveInput: {
         create: ({ resolvedData }: any) => {
           return {
             ...resolvedData,
-            id: createCuid2()
-          }
-        }
-      }
-    }
+            id: createCuid2(),
+          };
+        },
+      },
+    },
   } as const,
 ];
 
 for (const fixture of fixtures) {
-  const {
-    kind,
-    type,
-    expect: expectFn,
-    error ,
-    hooks = {}
-  } = fixture;
+  const { expect: expectFn, error, hooks = {}, ...idField } = fixture;
   const runner = setupTestRunner({
     config: apiTestConfig({
       db: {
-        idField: { kind, type }
+        idField,
       },
       lists: {
         User: list({
           access: allowAll,
           fields: {
-            name: text()
+            name: text(),
           },
-          hooks
+          hooks,
         }),
       },
     }),
   });
 
+  const { kind, type } = idField;
   const name = `${kind}:${type ?? ''}`;
 
   describe(name, () => {
@@ -148,14 +143,6 @@ for (const fixture of fixtures) {
     );
 
     test(
-      `Querying returns null for a findOne with a null filter`,
-      runner(async ({ context }) => {
-        const item = await context.query.User.findOne({ where: { id: null } });
-        expect(item).toBe(null);
-      })
-    );
-
-    test(
       `Querying succeeds for a findMany`,
       runner(async ({ context }) => {
         const { id } = await context.query.User.createOne({ data: { name: 'something' } });
@@ -163,14 +150,6 @@ for (const fixture of fixtures) {
         const items = await context.query.User.findMany({ where: { id: { equals: id } } });
         expect(items).toHaveLength(1);
         expect(items[0].id).toBe(id);
-      })
-    );
-
-    test(
-      `Querying returns [] for a findMany with a null filter`,
-      runner(async ({ context }) => {
-        const items = await context.query.User.findMany({ where: { id: { equals: null } } });
-        expect(items).toStrictEqual([]);
       })
     );
 

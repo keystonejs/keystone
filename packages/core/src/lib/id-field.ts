@@ -71,8 +71,6 @@ function resolveInput(
   for (const key of ['equals', 'gt', 'gte', 'lt', 'lte'] as const) {
     const value = input[key];
     if (value === undefined) continue;
-    if (value === null) continue;
-
     where[key] = parseId(value);
   }
 
@@ -110,7 +108,7 @@ export function idFieldType(
     return result;
   }
 
-  const defaultValue = (isSingleton || kind === 'string') ? undefined : { kind };
+  const defaultValue = isSingleton || kind === 'string' ? undefined : { kind };
 
   return meta => {
     return fieldType({
