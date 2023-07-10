@@ -2,4 +2,4 @@
 '@keystone-6/core': minor
 ---
 
-Removes null errors for unique filter values, allowing unique filters with more than 1 unique value
+Add support for unique filters to filter by more than 1 unique value
