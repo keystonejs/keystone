@@ -240,6 +240,7 @@ export const expectPrismaError = (
       extensions: {
         code: 'KS_PRISMA_ERROR',
         prisma: {
+          name: 'PrismaClientKnownRequestError',
           clientVersion: require('@keystone-6/core/package.json').dependencies['prisma'],
           code,
           meta: { target },
