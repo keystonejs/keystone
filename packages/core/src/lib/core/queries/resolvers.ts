@@ -112,9 +112,9 @@ export async function findMany(
     throw limitsExceededError({ list: list.listKey, type: 'maxTake', limit: maxTake });
   }
 
+  // TODO: rewrite, this actually checks access
   const orderBy = await resolveOrderBy(rawOrderBy, list, context);
 
-  // Check operation permission, throw access denied if not allowed
   const operationAccess = await getOperationAccess(list, context, 'query');
   if (!operationAccess) {
     return [];
@@ -215,7 +215,6 @@ export async function count(
   info: GraphQLResolveInfo,
   extraFilter?: PrismaFilter
 ) {
-  // Check operation permission, return zero if not allowed
   const operationAccess = await getOperationAccess(list, context, 'query');
   if (!operationAccess) {
     return 0;
