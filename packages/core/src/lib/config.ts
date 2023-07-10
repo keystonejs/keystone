@@ -12,7 +12,7 @@ function getIdField({ kind, type }: IdFieldConfig): Required<IdFieldConfig> {
     return { kind: 'autoincrement', type: 'Int' };
   }
 
-  throw new Error(`Unknown id type ${kind}`)
+  throw new Error(`Unknown id type ${kind}`);
 }
 
 // validate lists config and default the id field

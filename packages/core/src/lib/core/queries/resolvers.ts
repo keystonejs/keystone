@@ -19,27 +19,25 @@ import { checkFilterOrderAccess } from '../filter-order-access';
 // rather than directly passing the value as the filter (even though Prisma supports that), we use equals
 // because we want to disallow fields from providing an arbitrary filter
 export function mapUniqueWhereToWhere(uniqueWhere: UniquePrismaFilter) {
-  const where: PrismaFilter = {}
+  const where: PrismaFilter = {};
   for (const key in uniqueWhere) {
-    where[key] = { equals: uniqueWhere[key] }
+    where[key] = { equals: uniqueWhere[key] };
   }
-  return where
+  return where;
 }
 
 function* traverse(
   list: InitialisedList,
   inputFilter: InputFilter
-): Generator<{ fieldKey: string, list: InitialisedList }, void, unknown> {
+): Generator<{ fieldKey: string; list: InitialisedList }, void, unknown> {
   for (const fieldKey in inputFilter) {
     const value = inputFilter[fieldKey];
     if (fieldKey === 'OR' || fieldKey === 'AND' || fieldKey === 'NOT') {
       for (const condition of value) {
         yield* traverse(list, condition);
       }
-
     } else if (fieldKey === 'some' || fieldKey === 'none' || fieldKey === 'every') {
       yield* traverse(list, value);
-
     } else {
       yield { fieldKey, list };
 

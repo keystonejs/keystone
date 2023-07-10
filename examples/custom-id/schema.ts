@@ -38,7 +38,7 @@ export const lists: Lists = {
     fields: {
       name: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
       tasks: relationship({ ref: 'Task.assignedTo', many: true }),
-    }
+    },
   }),
   Order: list({
     access: allowAll,

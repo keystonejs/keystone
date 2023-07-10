@@ -100,7 +100,7 @@ export function idFieldType(
     Int: isInt,
     BigInt: isBigInt,
     String: isString,
-    UUID: isUuid // TODO: remove
+    UUID: isUuid, // TODO: remove
   }[kind === 'uuid' ? 'UUID' : type];
 
   function parse(value: IDType) {
@@ -125,14 +125,16 @@ export function idFieldType(
     })({
       ...config,
 
-      ...(defaultValue?.kind === 'cuid2' ? {
-        hooks: {
-          resolveInput({ operation }) {
-            if (operation !== 'create') return undefined;
-            return createCuid2();
+      ...(defaultValue?.kind === 'cuid2'
+        ? {
+            hooks: {
+              resolveInput({ operation }) {
+                if (operation !== 'create') return undefined;
+                return createCuid2();
+              },
+            },
           }
-        },
-      } : {}),
+        : {}),
 
       // the ID field is always filterable and orderable
       isFilterable: true, // TODO: should it be?

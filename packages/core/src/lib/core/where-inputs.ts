@@ -32,7 +32,7 @@ export async function resolveUniqueWhereInput(
   list: InitialisedList,
   context: KeystoneContext
 ): Promise<UniquePrismaFilter> {
-  const where: UniquePrismaFilter = {}
+  const where: UniquePrismaFilter = {};
   for (const key in input) {
     const value = input[key];
 

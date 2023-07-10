@@ -144,7 +144,7 @@ for (const fixture of fixtures) {
         runner(async ({ context }) => {
           const { data, errors } = await context.graphql.raw({
             query: `query ($id: ID) { user(where: { id: $id }) { id } }`,
-            variables: { id: value }
+            variables: { id: value },
           });
           expectBadUserInput(errors, [{ path: ['user'], message: error }]);
           expect(data).toEqual({ user: null });
@@ -156,7 +156,7 @@ for (const fixture of fixtures) {
         runner(async ({ context }) => {
           const { data, errors } = await context.graphql.raw({
             query: `query ($id: ID) { users(where: { id: { equals: $id } }) { id } }`,
-            variables: { id: value }
+            variables: { id: value },
           });
           expectBadUserInput(errors, [{ path: ['users'], message: error }]);
           expect(data).toEqual({ users: null });
