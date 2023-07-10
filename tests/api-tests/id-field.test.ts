@@ -161,13 +161,13 @@ for (const fixture of fixtures) {
       })
     );
 
-    for (const value of fixture.reject) {
+    for (const id of fixture.reject) {
       test(
-        `Throws an error when filtering (uniquely) with ${value}`,
+        `Throws an error when filtering (uniquely) with ${JSON.stringify(id)}`,
         runner(async ({ context }) => {
           const { data, errors } = await context.graphql.raw({
             query: `query ($id: ID) { user(where: { id: $id }) { id } }`,
-            variables: { id: value },
+            variables: { id },
           });
           expectBadUserInput(errors, [{ path: ['user'], message: error }]);
           expect(data).toEqual({ user: null });
@@ -175,11 +175,11 @@ for (const fixture of fixtures) {
       );
 
       test(
-        `Throws an error when filtering with ${value}`,
+        `Throws an error when filtering with ${JSON.stringify(id)}`,
         runner(async ({ context }) => {
           const { data, errors } = await context.graphql.raw({
             query: `query ($id: ID) { users(where: { id: { equals: $id } }) { id } }`,
-            variables: { id: value },
+            variables: { id },
           });
           expectBadUserInput(errors, [{ path: ['users'], message: error }]);
           expect(data).toEqual({ users: null });

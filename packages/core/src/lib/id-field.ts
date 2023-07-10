@@ -13,12 +13,14 @@ type IDType = string | number | null;
 
 function isInt(x: IDType) {
   if (x === null) return;
-  const parsed = typeof x === 'string' ? parseInt(x) : x;
-  if (Number.isInteger(parsed)) return parsed;
+  if (x === '') return;
+  const nom = typeof x === 'string' ? Number(x) : x;
+  if (Number.isInteger(nom)) return nom;
 }
 
 function isBigInt(x: IDType) {
   if (x === null) return;
+  if (x === '') return;
   try {
     return BigInt(x);
   } catch {}
