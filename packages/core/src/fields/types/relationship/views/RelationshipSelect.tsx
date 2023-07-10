@@ -32,30 +32,16 @@ function useIntersectionObserver(cb: IntersectionObserverCallback, ref: RefObjec
   }, [ref]);
 }
 
-const idValidators = {
-  uuid: validateUUID,
-  cuid(value: string) {
-    return value.startsWith('c');
-  },
-  autoincrement(value: string) {
-    return /^\d+$/.test(value);
-  },
-  string(value: string) {
-    return true;
-  },
-};
-
-function useDebouncedValue<T>(value: T, limitMs: number): T {
+function useDebouncedValue<T>(value: T, limitMs: number) {
   const [debouncedValue, setDebouncedValue] = useState(() => value);
 
   useEffect(() => {
-    let id = setTimeout(() => {
+    const timeout = setTimeout(() => {
       setDebouncedValue(() => value);
     }, limitMs);
-    return () => {
-      clearTimeout(id);
-    };
+    return () => clearTimeout(timeout);
   }, [value, limitMs]);
+
   return debouncedValue;
 }
 
@@ -63,12 +49,9 @@ export function useFilter(search: string, list: ListMeta, searchFields: string[]
   return useMemo(() => {
     if (!search.length) return { OR: [] };
 
-    const idFieldKind: IdFieldConfig['kind'] = (list.fields.id.controller as any).idFieldKind;
     const trimmedSearch = search.trim();
-    const isValidId = idValidators[idFieldKind](trimmedSearch);
-
     const conditions: Record<string, any>[] = [];
-    if (isValidId) {
+    if (trimmedSearch.length > 0) {
       conditions.push({ id: { equals: trimmedSearch } });
     }
 
@@ -87,7 +70,6 @@ export function useFilter(search: string, list: ListMeta, searchFields: string[]
 }
 
 const idFieldAlias = '____id____';
-
 const labelFieldAlias = '____label____';
 
 const LoadingIndicatorContext = createContext<{
