@@ -72,7 +72,12 @@ export const lists: Lists = {
       //   but it isn't very meaningful in context
       resolveInput: {
         create: async ({ resolvedData, operation, inputData, item }) => {
-          console.log('Post.hooks.resolveInput.create', { resolvedData, operation, inputData, item });
+          console.log('Post.hooks.resolveInput.create', {
+            resolvedData,
+            operation,
+            inputData,
+            item,
+          });
           return {
             ...resolvedData,
             pair: {

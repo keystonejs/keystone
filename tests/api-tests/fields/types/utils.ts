@@ -16,7 +16,7 @@ function filterTestRunner(field: FieldTypeFunc<BaseListTypeInfo>) {
           access: allowAll,
           fields: {
             index: integer(),
-            testField: field
+            testField: field,
           },
         }),
       },

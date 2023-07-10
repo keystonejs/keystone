@@ -7,6 +7,10 @@ for (const isNullable of [true, false]) {
     filterTests(calendarDay({ db: { isNullable } }), match => {
       orderableFilterTests(match, values, isNullable);
     });
-    uniqueEqualityFilterTest(calendarDay({ db: { isNullable }, isIndexed: 'unique' }), values, isNullable);
+    uniqueEqualityFilterTest(
+      calendarDay({ db: { isNullable }, isIndexed: 'unique' }),
+      values,
+      isNullable
+    );
   });
 }
