@@ -26,42 +26,32 @@ export function mapUniqueWhereToWhere(uniqueWhere: UniquePrismaFilter) {
   return where
 }
 
-function traverseQuery(
+function* traverse(
   list: InitialisedList,
-  context: KeystoneContext,
-  inputFilter: InputFilter,
-  filterFields: Record<string, { fieldKey: string; list: InitialisedList }>
-) {
-  // Recursively traverse a where filter to find all the fields which are being
-  // filtered on.
-  Object.entries(inputFilter).forEach(([fieldKey, value]) => {
+  inputFilter: InputFilter
+): Generator<{ fieldKey: string, list: InitialisedList }, void, unknown> {
+  for (const fieldKey in inputFilter) {
+    const value = inputFilter[fieldKey];
     if (fieldKey === 'OR' || fieldKey === 'AND' || fieldKey === 'NOT') {
-      value.forEach((value: any) => {
-        traverseQuery(list, context, value, filterFields);
-      });
+      for (const condition of value) {
+        yield* traverse(list, condition);
+      }
+
     } else if (fieldKey === 'some' || fieldKey === 'none' || fieldKey === 'every') {
-      traverseQuery(list, context, value, filterFields);
+      yield* traverse(list, value);
+
     } else {
-      filterFields[`${list.listKey}.${fieldKey}`] = { fieldKey, list };
-      // If it's a relationship, check the nested filters.
+      yield { fieldKey, list };
+
+      // if it's a relationship, check the nested filters.
       const field = list.fields[fieldKey];
       if (field.dbField.kind === 'relation' && value !== null) {
-        const foreignList = field.dbField.list;
-        traverseQuery(list.lists[foreignList], context, value, filterFields);
+        const foreignList = list.lists[field.dbField.list];
+
+        yield* traverse(foreignList, value);
       }
     }
-  });
-}
-
-export async function checkFilterAccess(
-  list: InitialisedList,
-  context: KeystoneContext,
-  inputFilter: InputFilter
-) {
-  if (!inputFilter) return;
-  const filterFields: Record<string, { fieldKey: string; list: InitialisedList }> = {};
-  traverseQuery(list, context, inputFilter, filterFields);
-  await checkFilterOrderAccess(Object.values(filterFields), context, 'filter');
+  }
 }
 
 export async function accessControlledFilter(
@@ -83,7 +73,7 @@ export async function findOne(
   list: InitialisedList,
   context: KeystoneContext
 ) {
-  // Check operation permission to pass into single operation
+  // check operation permission to pass into single operation
   const operationAccess = await getOperationAccess(list, context, 'query');
   if (!operationAccess) {
     return null;
@@ -94,12 +84,12 @@ export async function findOne(
     return null;
   }
 
-  // findOne requires at least one filter
-  if (Object.keys(args.where).length === 0) return null;
-
   // validate and resolve the input filter
   const uniqueWhere = await resolveUniqueWhereInput(args.where, list, context);
   const resolvedWhere = mapUniqueWhereToWhere(uniqueWhere);
+
+  // findOne requires at least one filter
+  if (Object.keys(resolvedWhere).length === 0) return null;
 
   // check filter access
   for (const fieldKey in resolvedWhere) {
@@ -137,16 +127,18 @@ export async function findMany(
     return [];
   }
 
-  let resolvedWhere = await resolveWhereInput(where, list, context);
+  const resolvedWhere = await resolveWhereInput(where, list, context);
 
-  // Check filter access
-  await checkFilterAccess(list, context, where);
+  // check filter access (TODO: why isn't this using resolvedWhere)
+  for (const { fieldKey, list: fieldList } of traverse(list, where)) {
+    await checkFilterOrderAccess([{ fieldKey, list: fieldList }], context, 'filter');
+  }
 
-  resolvedWhere = await accessControlledFilter(list, context, resolvedWhere, accessFilters);
+  const filter = await accessControlledFilter(list, context, resolvedWhere, accessFilters);
 
   const results = await runWithPrisma(context, list, model =>
     model.findMany({
-      where: extraFilter === undefined ? resolvedWhere : { AND: [resolvedWhere, extraFilter] },
+      where: extraFilter === undefined ? filter : { AND: [filter, extraFilter] },
       orderBy,
       take: take ?? undefined,
       skip,

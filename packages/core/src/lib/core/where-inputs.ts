@@ -66,6 +66,7 @@ export async function resolveWhereInput(
             ),
           };
         }
+
         const field = list.fields[fieldKey];
         // we know if there are filters in the input object with the key of a field, the field must have defined a where input so this non null assertion is okay
         const where = field.input!.where!;
