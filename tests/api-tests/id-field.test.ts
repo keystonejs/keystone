@@ -138,6 +138,22 @@ for (const fixture of fixtures) {
       })
     );
 
+    test(
+      `Querying returns [] for a findMany with a null filter`,
+      runner(async ({ context }) => {
+        const items = await context.query.User.findMany({ where: { id: { equals: null } } });
+        expect(items).toStrictEqual([]);
+      })
+    );
+
+    test(
+      `Querying returns [] for a findMany with a null notIn filter`,
+      runner(async ({ context }) => {
+        const items = await context.query.User.findMany({ where: { id: { notIn: null } } });
+        expect(items).toStrictEqual([]);
+      })
+    );
+
     for (const value of fixture.reject) {
       test(
         `Throws an error when filtering (uniquely) with ${value}`,
@@ -163,30 +179,6 @@ for (const fixture of fixtures) {
         })
       );
     }
-
-    test(
-      `Throws an error when filter with { in: null }`,
-      runner(async ({ context }) => {
-        const { data, errors } = await context.graphql.raw({
-          query: `{ users(where: { id: { in: null } }) { id } }`,
-        });
-        expect(data).toEqual({ users: null });
-        expectBadUserInput(errors, [{ path: ['users'], message: `in id filter cannot be null` }]);
-      })
-    );
-
-    test(
-      `Throws an error when filter with { notIn: null }`,
-      runner(async ({ context }) => {
-        const { data, errors } = await context.graphql.raw({
-          query: `{ users(where: { id: { notIn: null } }) { id } }`,
-        });
-        expect(data).toEqual({ users: null });
-        expectBadUserInput(errors, [
-          { path: ['users'], message: `notIn id filter cannot be null` },
-        ]);
-      })
-    );
   });
 }
 

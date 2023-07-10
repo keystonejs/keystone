@@ -28,13 +28,13 @@ export type UniquePrismaFilter = Record<string, any> & {
 };
 
 export async function resolveUniqueWhereInput(
-  input: UniqueInputFilter,
+  inputFilter: UniqueInputFilter,
   list: InitialisedList,
   context: KeystoneContext
 ): Promise<UniquePrismaFilter> {
   const where: UniquePrismaFilter = {};
-  for (const key in input) {
-    const value = input[key];
+  for (const key in inputFilter) {
+    const value = inputFilter[key];
 
     // null cannot filter uniquely, so it's effectively unused
     if (value === null) continue;
@@ -58,31 +58,34 @@ export async function resolveWhereInput(
 ): Promise<PrismaFilter> {
   return {
     AND: await Promise.all(
-      Object.entries(inputFilter).map(async ([fieldKey, value]) => {
-        if (fieldKey === 'OR' || fieldKey === 'AND' || fieldKey === 'NOT') {
+      Object.entries(inputFilter).map(async ([key, value]) => {
+        if (key === 'OR' || key === 'AND' || key === 'NOT') {
           return {
-            [fieldKey]: await Promise.all(
+            [key]: await Promise.all(
               value.map((value: any) => resolveWhereInput(value, list, context, false))
             ),
           };
         }
 
-        const field = list.fields[fieldKey];
-        // we know if there are filters in the input object with the key of a field, the field must have defined a where input so this non null assertion is okay
-        const where = field.input!.where!;
-        const dbField = field.dbField;
-        const ret = where.resolve
-          ? await where.resolve(
+        // we know if there are filters in the input object with the key of a field,
+        //   the field must have defined a where input so this non null assertion is okay
+        const field = list.fields[key];
+        const { dbField } = field;
+
+        const resolve = field.input!.where!.resolve;
+        const ret = resolve
+          ? await resolve(
               value,
               context,
               (() => {
-                if (field.dbField.kind !== 'relation') {
+                if (dbField.kind !== 'relation') {
                   return undefined as any;
                 }
-                const foreignList = field.dbField.list;
-                const whereResolver = (val: any) =>
-                  resolveWhereInput(val, list.lists[foreignList], context);
-                if (field.dbField.mode === 'many') {
+                const foreignList = dbField.list;
+                const whereResolver = (filter: InputFilter) =>
+                  resolveWhereInput(filter, list.lists[foreignList], context);
+
+                if (dbField.mode === 'many') {
                   return async () => {
                     if (value === null) {
                       throw userInputError('A many relation filter cannot be set to null');
@@ -95,30 +98,29 @@ export async function resolveWhereInput(
                               `The key "${key}" in a many relation filter cannot be set to null`
                             );
                           }
-                          return [key, await whereResolver(val)];
+                          return [key, await whereResolver(val as any)];
                         })
                       )
                     );
                   };
                 }
-                return (val: any) => {
-                  if (val === null) {
-                    return null;
-                  }
-                  return whereResolver(val);
+
+                return (value: any) => {
+                  if (value === null) return null;
+                  return whereResolver(value);
                 };
               })()
             )
           : value;
         if (ret === null) {
-          if (field.dbField.kind === 'multi') {
+          if (dbField.kind === 'multi') {
             // Note: no built-in field types support multi valued database fields *and* filtering.
             // This code path is only relevent to custom fields which fit that criteria.
             throw new Error('multi db fields cannot return null from where input resolvers');
           }
-          return { [fieldKey]: null };
+          return { [key]: null };
         }
-        return handleOperators(fieldKey, dbField, ret);
+        return handleOperators(key, dbField, ret);
       })
     ),
   };

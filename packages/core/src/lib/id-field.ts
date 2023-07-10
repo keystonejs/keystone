@@ -71,6 +71,7 @@ function resolveInput(
   for (const key of ['equals', 'gt', 'gte', 'lt', 'lte'] as const) {
     const value = input[key];
     if (value === undefined) continue;
+    if (value === null) continue;
 
     where[key] = parseId(value);
   }
