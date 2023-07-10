@@ -6,8 +6,7 @@ import { RefObject, useEffect, useMemo, useState, createContext, useContext, use
 
 import { jsx } from '@keystone-ui/core';
 import { MultiSelect, Select, selectComponents } from '@keystone-ui/fields';
-import { validate as validateUUID } from 'uuid';
-import { IdFieldConfig, ListMeta } from '../../../../types';
+import type { ListMeta } from '../../../../types';
 import {
   ApolloClient,
   gql,

@@ -104,8 +104,18 @@ function printInterimType<L extends InitialisedList>(
     ...Object.entries(list.fields).map(([fieldKey, { dbField }]) => {
       if (dbField.kind === 'none') return `  ${fieldKey}?: undefined;`;
 
-      // soft-block `id` updates for relationship safety
-      if (operation === 'Update' && fieldKey === 'id') return `  id?: undefined;`;
+      // TODO: this could be elsewhere, maybe id-field.ts
+      if (fieldKey === 'id') {
+        // autoincrement doesn't support passing an identifier
+        if ('default' in dbField) {
+          if (dbField.default?.kind === 'autoincrement') {
+            return `  id?: undefined;`;
+          }
+        }
+
+        // soft-block `id` updates for relationship safety
+        if (operation === 'Update') return `  id?: undefined;`;
+      }
 
       if (dbField.kind === 'multi') {
         return [
