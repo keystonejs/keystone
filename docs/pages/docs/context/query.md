@@ -22,10 +22,9 @@ For each list in your system the following API is available at `context.query.<l
 
 The arguments to these functions closely correspond to their equivalent GraphQL APIs, making it easy to switch between the programmatic API and the GraphQL API.
 
-The `query` argument, which defaults to `'id'` for all the functions, is a string which indicates which fields should be returned by the operation.
-Unless otherwise specified, the other arguments to all functions are required.
+The `query` argument (which defaults to `'id'`), is a string which indicates which fields should be returned by the operation.
 
-The functions in the API all work by directly executing queries and mutations against your GraphQL API.
+The functions in the API work by directly executing queries and mutations against your GraphQL API.
 
 ### findOne
 
@@ -38,8 +37,6 @@ const user = await context.query.User.findOne({
 
 ### findMany
 
-All arguments are optional.
-
 ```typescript
 const users = await context.query.User.findMany({
   where: { name: { startsWith: 'A' } },
@@ -51,8 +48,6 @@ const users = await context.query.User.findMany({
 ```
 
 ### count
-
-All arguments are optional.
 
 ```typescript
 const count = await context.query.User.count({

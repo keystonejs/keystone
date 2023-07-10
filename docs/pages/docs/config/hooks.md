@@ -23,7 +23,10 @@ export default config({
   lists: {
     SomeListName: list({
       hooks: {
-        resolveInput: async args => { /* ... */ },
+        resolveInput: {
+          create: async args => { /* ... */ },
+          update: async args => { /* ... */ },
+        },
         validateInput: async args => { /* ... */ },
         validateDelete: async args => { /* ... */ },
         beforeOperation: async args => { /* ... */ },
