@@ -224,6 +224,31 @@ describe('searching by unique fields', () => {
     })
   );
 
+  // WARNING: this is database specific behaviour
+  test(
+    'findOne returns the first item for null if a value exists',
+    runner(async ({ context }) => {
+      const item = await context.query.User.createOne({ data: { email: null } });
+      const { data, errors } = await context.graphql.raw({
+        query: '{ user(where: { email: null }) { id email } }',
+      });
+      expect(errors).toBe(undefined);
+      expect(data).toEqual({ user: { id: item.id, email: null } });
+    })
+  );
+
+  test(
+    'findOne returns the unique item when filtering with multiple values',
+    runner(async ({ context }) => {
+      const item = await context.query.User.createOne({ data: { email: null } });
+      const { data, errors } = await context.graphql.raw({
+        query: `{ user(where: { id: "${item.id}" email: null }) { id email } }`,
+      });
+      expect(errors).toBe(undefined);
+      expect(data).toEqual({ user: { id: item.id, email: null } });
+    })
+  );
+
   test(
     'findOne returns null if missing',
     runner(async ({ context }) => {
