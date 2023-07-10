@@ -68,19 +68,19 @@ export const lists: Lists = {
       }),
     },
     hooks: {
-      // TODO: this is  an example of how hooks interact with custom multiple-column fields,
+      // TODO: this is an example of how hooks can be used multiple-column fields,
       //   but it isn't very meaningful in context
-      resolveInput: async ({ resolvedData, operation, inputData, item }) => {
-        console.log('Post.hooks.resolveInput', { resolvedData, operation, inputData, item });
-        return {
-          ...resolvedData,
-
-          // add some defaults
-          pair: {
-            left: resolvedData.pair?.left,
-            right: resolvedData.pair?.right,
-          },
-        };
+      resolveInput: {
+        create: async ({ resolvedData, operation, inputData, item }) => {
+          console.log('Post.hooks.resolveInput.create', { resolvedData, operation, inputData, item });
+          return {
+            ...resolvedData,
+            pair: {
+              left: resolvedData.pair?.left ?? null,
+              right: resolvedData.pair?.right ?? null,
+            },
+          };
+        },
       },
 
       validateInput: async ({ resolvedData, operation, inputData, item, addValidationError }) => {
