@@ -66,34 +66,29 @@ const filterArg = graphql.arg({ type: IDFilter });
 function resolveInput(
   input: Exclude<graphql.InferValueFromArg<typeof filterArg>, undefined>,
   parseId: (x: IDType) => unknown
-): any {
-  // TODO: not this
-  if (input === null) {
-    throw userInputError('id filter cannot be null');
-  }
+) {
+  const where: any = {};
+  if (input === null) return where;
 
-  const obj: any = {};
   for (const key of ['equals', 'gt', 'gte', 'lt', 'lte'] as const) {
-    const val = input[key];
-    if (val !== undefined) {
-      const parsed = parseId(val);
-      obj[key] = parsed;
-    }
+    const value = input[key];
+    if (value === undefined) continue;
+
+    where[key] = parseId(value);
   }
 
   for (const key of ['in', 'notIn'] as const) {
-    const val = input[key];
-    if (val !== undefined) {
-      if (val === null) {
-        throw userInputError(`${key} id filter cannot be null`);
-      }
-      obj[key] = val.map(x => parseId(x));
-    }
+    const value = input[key];
+    if (!Array.isArray(value)) continue;
+
+    where[key] = value.map(x => parseId(x));
   }
+
   if (input.not !== undefined) {
-    obj.not = resolveInput(input.not, parseId);
+    where.not = resolveInput(input.not, parseId);
   }
-  return obj;
+
+  return where;
 }
 
 export function idFieldType(
