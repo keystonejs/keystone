@@ -8,14 +8,16 @@ import { FieldTypeFunc, BaseListTypeInfo } from '@keystone-6/core/types';
 import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig } from '../../utils';
 
-const listKey = 'Test';
-const filterTestRunner = (field: FieldTypeFunc<BaseListTypeInfo>) =>
-  setupTestRunner({
+function filterTestRunner(field: FieldTypeFunc<BaseListTypeInfo>) {
+  return setupTestRunner({
     config: apiTestConfig({
       lists: {
-        [listKey]: list({
+        Test: list({
           access: allowAll,
-          fields: { index: integer(), testField: field },
+          fields: {
+            index: integer(),
+            testField: field
+          },
         }),
       },
       storage: {
@@ -40,6 +42,7 @@ const filterTestRunner = (field: FieldTypeFunc<BaseListTypeInfo>) =>
       },
     }),
   });
+}
 
 // this isn't for any proper checking, invalid things will throw at runtime anyway
 // it's just a bit of autocomplete convenience
@@ -134,7 +137,8 @@ export function equalityFilterTests(
 
 export function uniqueEqualityFilterTest(
   field: FieldTypeFunc<BaseListTypeInfo>,
-  values: readonly unknown[]
+  values: readonly unknown[],
+  isNullable: boolean
 ) {
   test(
     'unique filter',
@@ -144,9 +148,9 @@ export function uniqueEqualityFilterTest(
       }
 
       await Promise.all(
-        values.map(async (val, idx) => {
-          const { index } = await context.query[listKey].findOne({
-            where: { testField: val },
+        values.map(async (testField, idx) => {
+          const { index } = await context.query.Test.findOne({
+            where: { testField },
             query: 'index',
           });
           expect(index).toEqual(idx);
@@ -154,14 +158,16 @@ export function uniqueEqualityFilterTest(
       );
     })
   );
-  test(
-    'unique filter with null returns null',
-    filterTestRunner(field)(async ({ context }) => {
-      const result = await context.query[listKey].findOne({
-        where: { testField: null },
-        query: 'index',
-      });
-      expect(result).toEqual(null);
-    })
-  );
+  if (isNullable) {
+    test(
+      'unique filter with null returns null',
+      filterTestRunner(field)(async ({ context }) => {
+        const result = await context.query.Test.findOne({
+          where: { testField: null },
+          query: 'index',
+        });
+        expect(result).toEqual(null);
+      })
+    );
+  }
 }

@@ -52,6 +52,6 @@ for (const isNullable of [true, false]) {
         }
       }
     });
-    uniqueEqualityFilterTest(text({ db: { isNullable }, isIndexed: 'unique' }), basicValues);
+    uniqueEqualityFilterTest(text({ db: { isNullable }, isIndexed: 'unique' }), basicValues, isNullable);
   });
 }
