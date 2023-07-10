@@ -110,8 +110,7 @@ export function idFieldType(
     return result;
   }
 
-  // string types use cuids as their default value
-  const defaultValue = isSingleton ? undefined : { kind: kind === 'string' ? 'cuid2' : kind };
+  const defaultValue = (isSingleton || kind === 'string') ? undefined : { kind };
 
   return meta => {
     return fieldType({

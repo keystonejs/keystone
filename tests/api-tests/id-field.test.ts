@@ -3,7 +3,7 @@ import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { isCuid } from 'cuid';
-import { isCuid as isCuid2 } from '@paralleldrive/cuid2';
+import { isCuid as isCuid2, createId as createCuid2 } from '@paralleldrive/cuid2';
 import { validate as isUuid } from 'uuid';
 import { apiTestConfig, dbProvider, expectBadUserInput } from './utils';
 
@@ -42,6 +42,7 @@ const fixtures = [
     type: undefined,
     error: 'Only a string can be passed to id filters',
     expect: (id: any, idStr: string) => {
+      expect(typeof id).toBe('string');
       expect(isCuid(id)).toBe(true);
       expect(idStr).toBe(id);
     },
@@ -53,6 +54,7 @@ const fixtures = [
     type: undefined,
     error: 'Only a string can be passed to id filters',
     expect: (id: any, idStr: string) => {
+      expect(typeof id).toBe('string');
       expect(id.length).toBe(24);
       expect(isCuid2(id)).toBe(true);
       expect(idStr).toBe(id);
@@ -65,6 +67,7 @@ const fixtures = [
     type: undefined,
     error: 'Only a string can be passed to id filters',
     expect: (id: any, idStr: string) => {
+      expect(typeof id).toBe('string');
       expect(isUuid(id)).toBe(true);
       expect(idStr).toBe(id);
     },
@@ -76,24 +79,49 @@ const fixtures = [
     type: undefined,
     error: 'Only a string can be passed to id filters',
     expect: (id: any, idStr: string) => {
+      expect(typeof id).toBe('string');
       expect(isCuid2(id)).toBe(true);
       expect(idStr).toBe(id);
     },
     reject: [], // ID type always cast to a string, so we can't reject anything that GraphQL wouldn't reject anyway
+    hooks: {
+      resolveInput: {
+        create: ({ resolvedData }: any) => {
+          return {
+            ...resolvedData,
+            id: createCuid2()
+          }
+        }
+      }
+    }
   } as const,
 ];
 
 for (const fixture of fixtures) {
+  const {
+    kind,
+    type,
+    expect: expectFn,
+    error ,
+    hooks = {}
+  } = fixture;
   const runner = setupTestRunner({
     config: apiTestConfig({
-      db: { idField: fixture },
+      db: {
+        idField: { kind, type }
+      },
       lists: {
-        User: list({ access: allowAll, fields: { name: text() } }),
+        User: list({
+          access: allowAll,
+          fields: {
+            name: text()
+          },
+          hooks
+        }),
       },
     }),
   });
 
-  const { kind, type, expect: expectFn, error } = fixture;
   const name = `${kind}:${type ?? ''}`;
 
   describe(name, () => {

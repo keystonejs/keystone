@@ -179,12 +179,6 @@ function assertDbFieldIsValidForIdField(
       `id fields must not specify indexes themselves but the id field for the ${listKey} list specifies an index`
     );
   }
-  // this will likely be loosened in the future
-  if (field.default === undefined && !isSingleton) {
-    throw new Error(
-      `id fields must specify a Prisma/database level default value but the id field for the ${listKey} list does not`
-    );
-  }
 }
 
 export function printPrismaSchema(
