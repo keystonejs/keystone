@@ -1,72 +1,15 @@
 ---
 title: "Testing"
-description: "Learn how to use the `@keystone-6/testing` package and Jest to write tests that check the behaviour of your GraphQL API."
+description: "Learn how to write tests that check the behaviour of Keystone application."
 ---
 
 When building a web application it's important to be able to test the behaviour of your system to ensure it does what you expect.
 In this guide we'll show you how to use `@keystone-6/core/testing` and [Jest](https://jestjs.io/) to write tests to check the behaviour of your GraphQL API.
 
-## Running tests
+## What tests might look like
 
-In order to run tests using `@keystone-6/core/testing`, we recommend adding the following script to your `package.json` file.
-
-```json
-"scripts": {
-  "test": "jest"
-}
-```
-
-This will let you run your tests with the command
-
-```shell
-yarn test
-```
-
-{% else /%}
-
-{% hint kind="warn" %}
-It is important to use [`--runInBand`](https://jestjs.io/docs/cli#--runinband) when running your tests. This tells Jest not to run your tests in parallel.
-Each test shares the same database, so it's important that multiple tests aren't trying to manipulate the data at the same time.
-{% /hint %}
-
-## Test runner
-
-The first step to writing a test for your Keystone system is to setup a test runner with `setupTestRunner`.
-You can then use this runner to wrap your test functions.
-
-```typescript
-import { setupTestRunner } from '@keystone-6/core/testing';
-import config from './keystone';
-
-const runner = setupTestRunner({ config });
-
-test(
-  'Keystone test',
-  runner(() => {
-    // Write your test here
-  })
-);
-```
-
-The test runner does a number of things for you here.
-It starts by creating a connection to the database and dropping all the data.
-This ensures that all tests are run in a known state.
-
-The test runner then sets up a partial Keystone system for you, including an Apollo server to handle GraphQL requests.
-The system does not include an Admin UI, and does not open a network port to listen for requests.
-
-Finally, the runner sets up three APIs for you to use in your test. The first is a `KeystoneContext` object, which lets you use any of the functions in the [context API](../context/overview).
-The second is a `graphQLRequest` function, which lets you run GraphQL requests over HTTP using the [`supertest`](https://github.com/visionmedia/supertest) library.
-The third is an [`express.Express`](https://expressjs.com/) value named `app` which lets you access any of the endpoints of the Express server using `supertest`.
-
-{% hint kind="error" %}
-The test runner will drop all data in your database on each run. Make sure you do not run your tests against a system with live data.
-{% /hint %}
-
-## Writing tests
-
-In general you will want to run tests which check the behaviour of any custom code that you write as part of your Keystone system.
-This includes things like access control, hooks, virtual fields, and GraphQL API extensions.
+Typically you will use tests to verify the behaviour of your code.
+You might typically test things like your access control, hooks, virtual fields et cetera.
 
 ```typescript
 import { getContext } from '@keystone-6/core/context';
@@ -168,102 +111,6 @@ expect(errors![0].path).toEqual(['updateTask']);
 expect(errors![0].message).toEqual(
   `Access denied: You cannot perform the 'update' operation on the item '{"id":"${task.id}"}'. It may not exist.`
 );
-```
-
-{% else /%}
-
-### graphQLRequest API
-
-While the `context` API will cover most use cases, if you need to test specific HTTP related behaviour, you can use the `graphQLRequest` API.
-This API lets you control details such as the HTTP headers sent with your request, and returns the full HTTP response, including return codes.
-The function `graphQLRequest` accepts an object `{ query, variables, operationName }` and returns a `supertest` test object.
-
-```
-runner(async ({ graphQLRequest }) => {
-  const response = await graphQLRequest({
-    query: `mutation {
-      createPerson(data: { name: "Alice", email: "alice@example.com", password: "super-secret" }) {
-        id name email password { isSet }
-      }
-    }`,
-  })
-    .set('X-Example-Header', 'header-value')
-    .expect(200);
-
-  const person = response.body.data.createPerson;
-  expect(person.name).toEqual('Alice');
-  expect(person.email).toEqual('alice@example.com');
-  expect(person.password.isSet).toEqual(true);
-})
-```
-
-See the [`supertest`](https://github.com/visionmedia/supertest) docs for full details on the methods available with `graphQLRequest`.
-
-### Express `app`
-
-There are some situations where you might want to directly interact with specific endpoints of the Express server.
-The underlying Express application is exposed as `app`, and you can use `supertest` to interact with it.
-For example, if you wanted to check the `/_healthcheck` endpoint, you could do the following:
-
-```
-runner(async ({ app }) => {
-  const { text } = await supertest(app)
-    .get('/_healthcheck')
-    .set('Accept', 'application/json')
-    .expect('Content-Type', /json/)
-    .expect(200);
-  expect(JSON.parse(text)).toMatchObject({ status: 'pass' });
-})
-```
-
-## Test environment
-
-The test runner function resets the database to a clean state for every test.
-This ensures that changes to the state of the data in one test won't interfere with any other tests.
-
-Resetting the database for every test can become expensive if you need to do a large amount of data-seeding for every test.
-In these cases you will want to run multiple tests which share database state, without resetting it between each test.
-This can be achieved with `setupTestEnv`.
-
-The function `setupTestEnv` will initialise your system, drop all the data from the database, and then return an object which allows you to control how your tests are run.
-The returned value contains `connect` and `disconnect` functions, which you will generally call in the `beforeAll` and `afterAll` blocks of your test group.
-It also returns `testArgs`, which contains the same arguments provided to tests by the test runner function.
-
-The context API can be used after calling `connect()` in the `beforeAll()` block to initialise the database into a state which will then be used by all the tests in the test block.
-
-{% hint kind="error" %}
-Be careful of sharing database state across tests. Avoid relying on changes of state from one test in subsequent tests.
-{% /hint %}
-
-```
-import { setupTestEnv, TestEnv } from '@keystone-6/core/testing';
-import { KeystoneContext } from '@keystone-6/core/types';
-
-describe('Example tests using test environment', () => {
-  let testEnv: TestEnv;
-  let context: KeystoneContext;
-
-  beforeAll(async () => {
-    testEnv = await setupTestEnv({ config });
-    context = testEnv.testArgs.context;
-
-    await testEnv.connect();
-
-    // Initialise database state here
-  });
-
-  afterAll(async () => {
-    await testEnv.disconnect();
-  });
-
-  test('Test 1', async () => {
-    ...
-  });
-
-  test('Test 2', async () => {
-    ...
-  });
-});
 ```
 
 ## Related resources
