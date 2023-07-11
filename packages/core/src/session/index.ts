@@ -2,6 +2,7 @@ import * as cookie from 'cookie';
 import Iron from '@hapi/iron';
 import { sync as uid } from 'uid-safe';
 import type { SessionStrategy, SessionStoreFunction } from '../types';
+import { randomBytes } from 'crypto';
 
 // should we also accept httpOnly?
 type StatelessSessionsOptions = {
@@ -62,7 +63,7 @@ type StatelessSessionsOptions = {
 const MAX_AGE = 60 * 60 * 8; // 8 hours
 
 export function statelessSessions<Session>({
-  secret,
+  secret = randomBytes(32).toString('base64url'),
   maxAge = MAX_AGE,
   cookieName = 'keystonejs-session',
   path = '/',
@@ -71,9 +72,6 @@ export function statelessSessions<Session>({
   domain,
   sameSite = 'lax',
 }: StatelessSessionsOptions): SessionStrategy<Session, any> {
-  if (!secret) {
-    throw new Error('You must specify a session secret to use sessions');
-  }
   if (secret.length < 32) {
     throw new Error('The session secret must be at least 32 characters long');
   }
