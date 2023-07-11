@@ -1,4 +1,4 @@
-# Build
+# build
 FROM node:lts-alpine as build
 COPY . /app
 WORKDIR /app
@@ -8,7 +8,7 @@ RUN corepack enable
 RUN pnpm install
 RUN pnpm build
 
-# Serve
+# serve
 FROM node:lts-alpine
 
 WORKDIR /app
