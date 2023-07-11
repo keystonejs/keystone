@@ -9,7 +9,7 @@ type StatelessSessionsOptions = {
   /**
    * Secret used by https://github.com/hapijs/iron for encapsulating data. Must be at least 32 characters long
    */
-  secret: string;
+  secret?: string;
   /**
    * Iron seal options for customizing the key derivation algorithm used to generate encryption and integrity verification keys as well as the algorithms and salt sizes used.
    * See https://hapi.dev/module/iron/api/?v=6.0.0#options for available options.
