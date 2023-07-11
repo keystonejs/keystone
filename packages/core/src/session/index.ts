@@ -1,3 +1,4 @@
+import { randomBytes } from 'crypto';
 import * as cookie from 'cookie';
 import Iron from '@hapi/iron';
 import { sync as uid } from 'uid-safe';
@@ -8,7 +9,7 @@ type StatelessSessionsOptions = {
   /**
    * Secret used by https://github.com/hapijs/iron for encapsulating data. Must be at least 32 characters long
    */
-  secret: string;
+  secret?: string;
   /**
    * Iron seal options for customizing the key derivation algorithm used to generate encryption and integrity verification keys as well as the algorithms and salt sizes used.
    * See https://hapi.dev/module/iron/api/?v=6.0.0#options for available options.
@@ -59,21 +60,16 @@ type StatelessSessionsOptions = {
   sameSite?: true | false | 'lax' | 'strict' | 'none';
 };
 
-const MAX_AGE = 60 * 60 * 8; // 8 hours
-
 export function statelessSessions<Session>({
-  secret,
-  maxAge = MAX_AGE,
+  secret = randomBytes(32).toString('base64url'),
+  maxAge = 60 * 60 * 8, // 8 hours,
   cookieName = 'keystonejs-session',
   path = '/',
   secure = process.env.NODE_ENV === 'production',
   ironOptions = Iron.defaults,
   domain,
   sameSite = 'lax',
-}: StatelessSessionsOptions): SessionStrategy<Session, any> {
-  if (!secret) {
-    throw new Error('You must specify a session secret to use sessions');
-  }
+}: StatelessSessionsOptions = {}): SessionStrategy<Session, any> {
   if (secret.length < 32) {
     throw new Error('The session secret must be at least 32 characters long');
   }
@@ -130,7 +126,7 @@ export function statelessSessions<Session>({
 /** @deprecated */
 export function storedSessions<Session>({
   store: storeFn,
-  maxAge = MAX_AGE,
+  maxAge = 60 * 60 * 8, // 8 hours
   ...statelessSessionsOptions
 }: {
   store: SessionStoreFunction<Session>;
