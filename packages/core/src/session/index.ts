@@ -1,8 +1,8 @@
+import { randomBytes } from 'crypto';
 import * as cookie from 'cookie';
 import Iron from '@hapi/iron';
 import { sync as uid } from 'uid-safe';
 import type { SessionStrategy, SessionStoreFunction } from '../types';
-import { randomBytes } from 'crypto';
 
 // should we also accept httpOnly?
 type StatelessSessionsOptions = {
