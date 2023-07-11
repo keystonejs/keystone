@@ -1,18 +1,18 @@
 # Build
-FROM node:16-alpine as build
+FROM node:lts-alpine as build
 COPY . /app
 WORKDIR /app
 
 ENV NODE_ENV production
-ENV SESSION_SECRET 'temporary SESSION_SECRET for build'
-RUN yarn install
-RUN yarn build
+RUN corepack enable
+RUN pnpm install
+RUN pnpm build
 
 # Serve
-FROM node:16-alpine
+FROM node:lts-alpine
 
 WORKDIR /app
 COPY --from=build /app .
 
 ENV NODE_ENV production
-CMD ["yarn", "keystone", "start"]
+CMD ["pnpm", "start"]
