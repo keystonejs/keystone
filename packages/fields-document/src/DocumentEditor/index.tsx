@@ -289,7 +289,7 @@ export function DocumentEditorProvider({
       // this fixes issues with Slate crashing when a fast refresh occcurs
       key={identity}
       editor={editor}
-      value={value}
+      initialValue={value}
       onChange={value => {
         onChange(value);
         // this fixes a strange issue in Safari where the selection stays inside of the editor

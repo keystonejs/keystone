@@ -2256,8 +2256,8 @@ importers:
         specifier: ^0.66.0
         version: 0.66.0(slate@0.81.1)
       slate-react:
-        specifier: ^0.81.0
-        version: 0.81.0(react-dom@18.2.0)(react@18.2.0)(slate@0.81.1)
+        specifier: ^0.97.1
+        version: 0.97.1(react-dom@18.2.0)(react@18.2.0)(slate@0.81.1)
     devDependencies:
       '@keystone-6/core':
         specifier: '*'
@@ -8984,6 +8984,10 @@ packages:
 
   /@js-joda/core@5.5.3:
     resolution: {integrity: sha512-7dqNYwG8gCt4hfg5PKgM7xLEcgSBcx/UgC92OMnhMmvAnq11QzDFPrxUkNR/u5kn17WWLZ8beZ4A3Qrz4pZcmQ==}
+    dev: false
+
+  /@juggle/resize-observer@3.4.0:
+    resolution: {integrity: sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==}
     dev: false
 
   /@ljharb/has-package-exports-patterns@0.0.2:
@@ -21894,13 +21898,14 @@ packages:
       slate: 0.81.1
     dev: true
 
-  /slate-react@0.81.0(react-dom@18.2.0)(react@18.2.0)(slate@0.81.1):
-    resolution: {integrity: sha512-bwryad4EvOmc7EFKb8aGg9DWNDh3KvToaggGieIgGTTbHJYHc9ADFC3A87Ittlpd5XUVopR0MpChQ3g3ODyvqw==}
+  /slate-react@0.97.1(react-dom@18.2.0)(react@18.2.0)(slate@0.81.1):
+    resolution: {integrity: sha512-+1LMIVusBwduzBOsoX0u6ah7qgpOIlVOdbVpUrowSc5uZTXViBvAQnvSD6edOjtRUI62IFtPSvDAoHRm+E55+g==}
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
       slate: '>=0.65.3'
     dependencies:
+      '@juggle/resize-observer': 3.4.0
       '@types/is-hotkey': 0.1.7
       '@types/lodash': 4.14.195
       direction: 1.0.4
