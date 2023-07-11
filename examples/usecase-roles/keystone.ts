@@ -8,14 +8,6 @@ import { lists } from './schema';
 //   as with each of our examples, it has not been vetted
 //   or tested for any particular usage
 
-// WARNING: you need to change this
-const sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
-
-// statelessSessions uses cookies for session tracking
-//   these cookies have an expiry, in seconds
-//   we use an expiry of 30 days for this example
-const sessionMaxAge = 60 * 60 * 24 * 30;
-
 // withAuth is a function we can use to wrap our base configuration
 const { withAuth } = createAuth({
   // this is the list that contains our users
@@ -88,11 +80,6 @@ export default withAuth(
       },
     },
     // you can find out more at https://keystonejs.com/docs/apis/session#session-api
-    session: statelessSessions({
-      // the maxAge option controls how long session cookies are valid for before they expire
-      maxAge: sessionMaxAge,
-      // the session secret is used to encrypt cookie data
-      secret: sessionSecret,
-    }),
+    session: statelessSessions(),
   })
 );

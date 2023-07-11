@@ -10,9 +10,6 @@ import type { TypeInfo } from '.keystone/types';
 //   as with each of our examples, it has not been vetted
 //   or tested for any particular usage
 
-// WARNING: you need to change this
-const sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
-
 // withAuth is a function we can use to wrap our base configuration
 const { withAuth } = createAuth({
   // this is the list that contains our users
@@ -46,9 +43,6 @@ export default withAuth(
     },
     lists,
     // you can find out more at https://keystonejs.com/docs/apis/session#session-api
-    session: statelessSessions({
-      // the session secret is used to encrypt cookie data
-      secret: sessionSecret,
-    }),
+    session: statelessSessions(),
   })
 );

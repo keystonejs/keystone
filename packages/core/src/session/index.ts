@@ -60,18 +60,16 @@ type StatelessSessionsOptions = {
   sameSite?: true | false | 'lax' | 'strict' | 'none';
 };
 
-const MAX_AGE = 60 * 60 * 8; // 8 hours
-
 export function statelessSessions<Session>({
   secret = randomBytes(32).toString('base64url'),
-  maxAge = MAX_AGE,
+  maxAge = 60 * 60 * 8, // 8 hours,
   cookieName = 'keystonejs-session',
   path = '/',
   secure = process.env.NODE_ENV === 'production',
   ironOptions = Iron.defaults,
   domain,
   sameSite = 'lax',
-}: StatelessSessionsOptions): SessionStrategy<Session, any> {
+}: StatelessSessionsOptions = {}): SessionStrategy<Session, any> {
   if (secret.length < 32) {
     throw new Error('The session secret must be at least 32 characters long');
   }
@@ -128,7 +126,7 @@ export function statelessSessions<Session>({
 /** @deprecated */
 export function storedSessions<Session>({
   store: storeFn,
-  maxAge = MAX_AGE,
+  maxAge = 60 * 60 * 8, // 8 hours
   ...statelessSessionsOptions
 }: {
   store: SessionStoreFunction<Session>;
