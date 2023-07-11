@@ -566,8 +566,8 @@ importers:
         specifier: ^2.26.0
         version: 2.26.0
       dedent:
-        specifier: ^0.7.0
-        version: 0.7.0
+        specifier: ^1.0.0
+        version: 1.0.0
       emery:
         specifier: ^1.4.1
         version: 1.4.1
@@ -12157,7 +12157,7 @@ packages:
     resolution: {integrity: sha512-Cg7TFGpIr01vOQNODXOOaGz2NpCU5gl8x1qJFbb6hbZxR7XrcE2vtbAsTAbJ7/xwJtUuJEw8K8Zr/AE0LHlesg==}
     engines: {node: '>=10', npm: '>=6'}
     dependencies:
-      '@babel/runtime': 7.16.3
+      '@babel/runtime': 7.22.6
       cosmiconfig: 7.1.0
       resolve: 1.22.2
     dev: false
@@ -13624,6 +13624,13 @@ packages:
 
   /dedent@0.7.0:
     resolution: {integrity: sha512-Q6fKUPqnAHAyhiUgFU7BUzLiv0kd8saH9al7tnu5Q/okj6dnupxyTgFIBjVzJATdfIAm9NAsvXNzjaKa+bxVyA==}
+    dev: true
+
+  /dedent@1.0.0:
+    resolution: {integrity: sha512-Hl6C/SsX4m8Tmn+bskSe3ZoNiNylxjtwhCRAVX9+JBHnOqRglOdeAzgl5lKZXK9xfRtaF5kpLO1ItFvwGlr9rA==}
+    dependencies:
+      babel-plugin-macros: 3.1.0
+    dev: false
 
   /deep-equal@2.2.1:
     resolution: {integrity: sha512-lKdkdV6EOGoVn65XaOsPdH4rMxTZOnmFyuIkMjM1i5HHCbfjC97dawgTAy0deYNfuqUqW+Q5VrVaQYtUpSd6yQ==}
@@ -20986,7 +20993,7 @@ packages:
       react: '>=16.6.0'
       react-dom: '>=16.6.0'
     dependencies:
-      '@babel/runtime': 7.16.3
+      '@babel/runtime': 7.22.6
       dom-helpers: 5.2.1
       loose-envify: 1.4.0
       prop-types: 15.8.1
