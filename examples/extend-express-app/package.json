@@ -12,12 +12,12 @@
   },
   "dependencies": {
     "@keystone-6/core": "^5.0.0",
-    "@prisma/client": "^4.16.2",
+    "@prisma/client": "^5.0.0",
     "@types/express": "^4.17.14",
     "express": "^4.17.1"
   },
   "devDependencies": {
-    "prisma": "^4.16.2",
+    "prisma": "^5.0.0",
     "tsx": "^3.9.0",
     "typescript": "~5.0.0"
   },
