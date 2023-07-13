@@ -92,11 +92,15 @@ function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['lists'] {
 
 export function initConfig(config: KeystoneConfig) {
   if (!['postgresql', 'sqlite', 'mysql'].includes(config.db.provider)) {
-    throw new Error(
+    throw new TypeError(
       'Invalid db configuration. Please specify db.provider as either "sqlite", "postgresql" or "mysql"'
     );
   }
 
+  // WARNING: Typescript should prevent this, but empty string is useful for Prisma errors
+  config.db.url ??= 'postgres://';
+
+  // TODO: use zod or something if want to follow this path
   return {
     ...config,
     lists: applyIdFieldDefaults(config),
