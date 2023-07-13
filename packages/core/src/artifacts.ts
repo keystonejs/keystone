@@ -187,6 +187,7 @@ export async function generateTypescriptTypesAndPrisma(
   if (dataProxy === true) {
     console.log('✨ Generating Prisma Client (data proxy)');
   }
+
   await Promise.all([
     generatePrismaClient(paths.schema.prisma, dataProxy),
     generateTypescriptTypes(cwd, config, graphQLSchema),

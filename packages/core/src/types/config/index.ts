@@ -140,22 +140,22 @@ type PrismaLogDefinition = {
 };
 
 export type DatabaseConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
+  provider: DatabaseProvider;
   url: string;
+
   shadowDatabaseUrl?: string;
   onConnect?: (args: KeystoneContext<TypeInfo>) => Promise<void>;
-  /** @deprecated */
-  useMigrations?: boolean;
   enableLogging?: boolean | PrismaLogLevel | Array<PrismaLogLevel | PrismaLogDefinition>;
   idField?: IdFieldConfig;
-  provider: DatabaseProvider;
+  prismaClientPath?: string;
+  extendPrismaSchema?: (schema: string) => string;
 
+  /** @deprecated */
+  useMigrations?: boolean;
   /** @deprecated use extendPrismaSchema */
   prismaPreviewFeatures?: readonly string[]; // https://www.prisma.io/docs/concepts/components/preview-features
   /** @deprecated use extendPrismaSchema */
   additionalPrismaDatasourceProperties?: { [key: string]: string };
-
-  prismaClientPath?: string;
-  extendPrismaSchema?: (schema: string) => string;
 };
 
 // config.ui
