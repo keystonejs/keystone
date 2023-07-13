@@ -30,7 +30,10 @@ export const toggleList = (editor: Editor, format: 'ordered-list' | 'unordered-l
       Transforms.wrapNodes(
         editor,
         { type: format, children: [] },
-        { match: x => x.type !== 'list-item-content' && Editor.isBlock(editor, x) }
+        {
+          match: x =>
+            x.type !== 'list-item-content' && Element.isElement(x) && Editor.isBlock(editor, x),
+        }
       );
     }
   });
@@ -121,6 +124,7 @@ export function withList(editor: Editor): Editor {
           node.type === 'list-item' &&
           childNode.type !== 'list-item-content' &&
           index === 0 &&
+          Element.isElement(childNode) &&
           Editor.isBlock(editor, childNode)
         ) {
           if (path[path.length - 1] !== 0) {
@@ -182,7 +186,7 @@ export const ListButton = forwardRef<
 
 export function nestList(editor: Editor) {
   const block = Editor.above(editor, {
-    match: n => Editor.isBlock(editor, n),
+    match: n => Element.isElement(n) && Editor.isBlock(editor, n),
   });
 
   if (!block || block[0].type !== 'list-item-content') {
@@ -223,7 +227,7 @@ export function nestList(editor: Editor) {
 
 export function unnestList(editor: Editor) {
   const block = Editor.above(editor, {
-    match: n => Editor.isBlock(editor, n),
+    match: n => Element.isElement(n) && Editor.isBlock(editor, n),
   });
 
   if (block && block[0].type === 'list-item-content') {

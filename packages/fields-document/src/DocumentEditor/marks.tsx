@@ -1,4 +1,4 @@
-import { Editor, Transforms, Range, Text, Point, Node, Path } from 'slate';
+import { Element, Editor, Transforms, Range, Text, Point, Node, Path } from 'slate';
 import { DocumentFeatures } from '../views';
 import { ComponentBlock } from './component-blocks/api';
 import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state';
@@ -48,7 +48,9 @@ export function withMarks(
     insertBreak();
     const marksAfterInsertBreak = Editor.marks(editor);
     if (!marksAfterInsertBreak || !editor.selection) return;
-    const parentBlock = Editor.above(editor, { match: node => Editor.isBlock(editor, node) });
+    const parentBlock = Editor.above(editor, {
+      match: node => Element.isElement(node) && Editor.isBlock(editor, node),
+    });
     if (!parentBlock) return;
     const point = EditorAfterButIgnoringingPointsWithNoContent(editor, editor.selection.anchor);
     const marksAfterInsertBreakArr = Object.keys(
@@ -193,6 +195,8 @@ export function withMarks(
 function getStartOfBlock(editor: Editor) {
   return Editor.start(
     editor,
-    Editor.above(editor, { match: node => Editor.isBlock(editor, node) })![1]
+    Editor.above(editor, {
+      match: node => Element.isElement(node) && Editor.isBlock(editor, node),
+    })![1]
   );
 }

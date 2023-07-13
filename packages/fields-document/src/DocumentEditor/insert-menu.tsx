@@ -3,7 +3,7 @@
 import { jsx, Portal } from '@keystone-ui/core';
 import { useControlledPopover } from '@keystone-ui/popover';
 import { Fragment, ReactNode, useContext, useEffect, useRef, useState } from 'react';
-import { Transforms, Text, Editor, Path, Point, Node } from 'slate';
+import { Element, Transforms, Text, Editor, Path, Point, Node } from 'slate';
 import { ReactEditor } from 'slate-react';
 import { matchSorter } from 'match-sorter';
 import scrollIntoView from 'scroll-into-view-if-needed';
@@ -346,7 +346,9 @@ export function withInsertMenu(editor: Editor): Editor {
     if (editor.selection && text === '/') {
       const startOfBlock = Editor.start(
         editor,
-        Editor.above(editor, { match: node => Editor.isBlock(editor, node) })![1]
+        Editor.above(editor, {
+          match: node => Element.isElement(node) && Editor.isBlock(editor, node),
+        })![1]
       );
       const before = Editor.before(editor, editor.selection.anchor, { unit: 'character' });
       if (

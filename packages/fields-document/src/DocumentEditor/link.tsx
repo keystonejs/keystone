@@ -2,7 +2,7 @@
 /** @jsx jsx */
 
 import { ReactEditor, RenderElementProps, useFocused, useSelected } from 'slate-react';
-import { Editor, Node, Range, Transforms, Text } from 'slate';
+import { Element, Editor, Node, Range, Transforms, Text } from 'slate';
 import { forwardRef, memo, useEffect, useMemo, useState } from 'react';
 
 import { jsx, useTheme } from '@keystone-ui/core';
@@ -245,7 +245,9 @@ export function withLink(
       if (text !== ')' || !editor.selection) return;
       const startOfBlock = Editor.start(
         editor,
-        Editor.above(editor, { match: node => Editor.isBlock(editor, node) })![1]
+        Editor.above(editor, {
+          match: node => Element.isElement(node) && Editor.isBlock(editor, node),
+        })![1]
       );
 
       const startOfBlockToEndOfShortcutString = Editor.string(editor, {

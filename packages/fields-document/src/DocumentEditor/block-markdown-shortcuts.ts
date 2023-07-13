@@ -1,4 +1,4 @@
-import { Editor, Transforms, Range } from 'slate';
+import { Element, Editor, Transforms, Range } from 'slate';
 import { DocumentFeatures } from '../views';
 import { ComponentBlock } from './component-blocks/api';
 import { insertDivider } from './divider';
@@ -53,7 +53,7 @@ export function withBlockMarkdownShortcuts(
       Transforms.wrapNodes(
         editor,
         { type: 'ordered-list', children: [] },
-        { match: n => Editor.isBlock(editor, n) }
+        { match: n => Element.isElement(n) && Editor.isBlock(editor, n) }
       );
     },
     features => features.formatting.listTypes.ordered
@@ -65,7 +65,7 @@ export function withBlockMarkdownShortcuts(
       Transforms.wrapNodes(
         editor,
         { type: 'unordered-list', children: [] },
-        { match: n => Editor.isBlock(editor, n) }
+        { match: n => Element.isElement(n) && Editor.isBlock(editor, n) }
       );
     },
     features => features.formatting.listTypes.unordered
@@ -76,7 +76,7 @@ export function withBlockMarkdownShortcuts(
       Transforms.wrapNodes(
         editor,
         { type: 'unordered-list', children: [] },
-        { match: n => Editor.isBlock(editor, n) }
+        { match: n => Element.isElement(n) && Editor.isBlock(editor, n) }
       );
     },
     features => features.formatting.listTypes.unordered
@@ -135,7 +135,7 @@ export function withBlockMarkdownShortcuts(
     if (shortcutsForTrigger && editor.selection && Range.isCollapsed(editor.selection)) {
       const { anchor } = editor.selection;
       const block = Editor.above(editor, {
-        match: node => Editor.isBlock(editor, node),
+        match: node => Element.isElement(node) && Editor.isBlock(editor, node),
       });
       if (!block || (block[0].type !== 'paragraph' && block[0].type !== 'heading')) return;
 
