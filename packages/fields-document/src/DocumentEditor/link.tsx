@@ -269,7 +269,7 @@ export function withLink(
       // by doing this, the insertText(')') above will happen in a different undo than the link replacement
       // so that means that when someone does an undo after this
       // it will undo to the state of "[content](link)" rather than "[content](link" (note the missing closing bracket)
-      editor.history.undos.push([]);
+      editor.writeHistory('undos', { operations: [], selectionBefore: null });
       const startOfShortcut =
         match.index === 0
           ? startOfBlock

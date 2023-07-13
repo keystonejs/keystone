@@ -2253,8 +2253,8 @@ importers:
         specifier: ^0.94.1
         version: 0.94.1
       slate-history:
-        specifier: ^0.66.0
-        version: 0.66.0(slate@0.94.1)
+        specifier: ^0.93.0
+        version: 0.93.0(slate@0.94.1)
       slate-react:
         specifier: ^0.97.1
         version: 0.97.1(react-dom@18.2.0)(react@18.2.0)(slate@0.94.1)
@@ -21880,8 +21880,8 @@ packages:
     resolution: {integrity: sha512-3dOsAHXXUkQTpOYcoAxLIorMTp4gIQr5IW3iVb7A7lFIp0VHhnynm9izx6TssdrIcVIESAlVjtnO2K8bg+Coew==}
     engines: {node: '>=12'}
 
-  /slate-history@0.66.0(slate@0.94.1):
-    resolution: {integrity: sha512-6MWpxGQZiMvSINlCbMW43E2YBSVMCMCIwQfBzGssjWw4kb0qfvj0pIdblWNRQZD0hR6WHP+dHHgGSeVdMWzfng==}
+  /slate-history@0.93.0(slate@0.94.1):
+    resolution: {integrity: sha512-Gr1GMGPipRuxIz41jD2/rbvzPj8eyar56TVMyJBvBeIpQSSjNISssvGNDYfJlSWM8eaRqf6DAcxMKzsLCYeX6g==}
     peerDependencies:
       slate: '>=0.65.3'
     dependencies:

@@ -28,7 +28,7 @@ export function withShortcuts(editor: Editor): Editor {
             const range = { anchor: selectionPoint, focus: pointBefore };
             const str = Editor.string(editor, range);
             if (str.slice(0, shortcut.length) === shortcut) {
-              editor.history.undos.push([]);
+              editor.writeHistory('undos', { operations: [], selectionBefore: null });
               Transforms.select(editor, range);
               editor.insertText(shortcuts[shortcut] + ' ');
             }

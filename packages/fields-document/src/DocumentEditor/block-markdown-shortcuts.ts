@@ -160,7 +160,7 @@ export function withBlockMarkdownShortcuts(
         return;
       }
       // so that this starts a new undo group
-      editor.history.undos.push([]);
+      editor.writeHistory('undos', { operations: [], selectionBefore: null });
       Transforms.select(editor, range);
       Transforms.delete(editor);
       shortcut.insert();

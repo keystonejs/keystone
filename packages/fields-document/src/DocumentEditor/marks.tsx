@@ -13,7 +13,7 @@ export const allMarkdownShortcuts = {
 
 function applyMark(editor: Editor, mark: string, shortcutText: string, startOfStartPoint: Point) {
   // so that this starts a new undo group
-  editor.history.undos.push([]);
+  editor.writeHistory('undos', { operations: [], selectionBefore: null });
   const startPointRef = Editor.pointRef(editor, startOfStartPoint);
 
   Transforms.delete(editor, {
