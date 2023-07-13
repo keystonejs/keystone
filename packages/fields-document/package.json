@@ -78,9 +78,9 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "scroll-into-view-if-needed": "^3.0.0",
-    "slate": "^0.81.1",
-    "slate-history": "^0.66.0",
-    "slate-react": "^0.81.0"
+    "slate": "^0.94.1",
+    "slate-history": "^0.93.0",
+    "slate-react": "^0.97.1"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/packages/fields-document",
   "devDependencies": {
@@ -90,6 +90,6 @@
     "array.prototype.flat": "^1.2.5",
     "jest-diff": "^29.0.0",
     "pretty-format": "^29.0.0",
-    "slate-hyperscript": "^0.67.0"
+    "slate-hyperscript": "^0.81.3"
   }
 }

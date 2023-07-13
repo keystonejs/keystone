@@ -1,4 +1,4 @@
-import { Range, Editor, Transforms, Path } from 'slate';
+import { Element, Range, Editor, Transforms, Path } from 'slate';
 
 export const shortcuts: Record<string, string> = {
   '...': '…',
@@ -15,7 +15,9 @@ export function withShortcuts(editor: Editor): Editor {
     insertText(text);
     if (text === ' ' && editor.selection && Range.isCollapsed(editor.selection)) {
       const selectionPoint = editor.selection.anchor;
-      const ancestorBlock = Editor.above(editor, { match: node => Editor.isBlock(editor, node) });
+      const ancestorBlock = Editor.above(editor, {
+        match: node => Element.isElement(node) && Editor.isBlock(editor, node),
+      });
       if (ancestorBlock) {
         Object.keys(shortcuts).forEach(shortcut => {
           const pointBefore = Editor.before(editor, selectionPoint, {
@@ -26,7 +28,7 @@ export function withShortcuts(editor: Editor): Editor {
             const range = { anchor: selectionPoint, focus: pointBefore };
             const str = Editor.string(editor, range);
             if (str.slice(0, shortcut.length) === shortcut) {
-              editor.history.undos.push([]);
+              editor.writeHistory('undos', { operations: [], selectionBefore: null });
               Transforms.select(editor, range);
               editor.insertText(shortcuts[shortcut] + ' ');
             }

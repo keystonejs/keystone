@@ -1,5 +1,5 @@
 import React, { ReactNode, useContext } from 'react';
-import { Editor, Range, Text } from 'slate';
+import { Element, Editor, Range, Text } from 'slate';
 import { useSlate } from 'slate-react';
 import { DocumentFeatures } from '../views';
 import { ComponentBlockContext } from './component-blocks';
@@ -118,7 +118,7 @@ export const createToolbarState = (
     };
 
   let [maybeCodeBlockEntry] = Editor.nodes(editor, {
-    match: node => node.type !== 'code' && Editor.isBlock(editor, node),
+    match: node => node.type !== 'code' && Element.isElement(node) && Editor.isBlock(editor, node),
   });
   const editorMarks = Editor.marks(editor) || {};
   const marks = Object.fromEntries(

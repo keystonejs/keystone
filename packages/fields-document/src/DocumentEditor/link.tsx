@@ -2,7 +2,7 @@
 /** @jsx jsx */
 
 import { ReactEditor, RenderElementProps, useFocused, useSelected } from 'slate-react';
-import { Editor, Node, Range, Transforms, Text } from 'slate';
+import { Element, Editor, Node, Range, Transforms, Text } from 'slate';
 import { forwardRef, memo, useEffect, useMemo, useState } from 'react';
 
 import { jsx, useTheme } from '@keystone-ui/core';
@@ -245,7 +245,9 @@ export function withLink(
       if (text !== ')' || !editor.selection) return;
       const startOfBlock = Editor.start(
         editor,
-        Editor.above(editor, { match: node => Editor.isBlock(editor, node) })![1]
+        Editor.above(editor, {
+          match: node => Element.isElement(node) && Editor.isBlock(editor, node),
+        })![1]
       );
 
       const startOfBlockToEndOfShortcutString = Editor.string(editor, {
@@ -267,7 +269,7 @@ export function withLink(
       // by doing this, the insertText(')') above will happen in a different undo than the link replacement
       // so that means that when someone does an undo after this
       // it will undo to the state of "[content](link)" rather than "[content](link" (note the missing closing bracket)
-      editor.history.undos.push([]);
+      editor.writeHistory('undos', { operations: [], selectionBefore: null });
       const startOfShortcut =
         match.index === 0
           ? startOfBlock

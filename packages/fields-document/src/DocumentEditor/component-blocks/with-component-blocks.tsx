@@ -29,7 +29,8 @@ import { getKeysForArrayValue, getNewArrayElementKey, setKeysForArrayValue } fro
 function getAncestorComponentBlock(editor: Editor) {
   if (editor.selection) {
     const ancestorEntry = Editor.above(editor, {
-      match: node => Editor.isBlock(editor, node) && node.type !== 'paragraph',
+      match: node =>
+        Element.isElement(node) && Editor.isBlock(editor, node) && node.type !== 'paragraph',
     });
     if (
       ancestorEntry &&

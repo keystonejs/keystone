@@ -289,7 +289,7 @@ export function DocumentEditorProvider({
       // this fixes issues with Slate crashing when a fast refresh occcurs
       key={identity}
       editor={editor}
-      value={value}
+      initialValue={value}
       onChange={value => {
         onChange(value);
         // this fixes a strange issue in Safari where the selection stays inside of the editor
@@ -553,12 +553,12 @@ function withBlocksSchema(editor: Editor): Editor {
       if (
         info.kind === 'blocks' &&
         node.children.length !== 0 &&
-        node.children.every(child => !Editor.isBlock(editor, child))
+        node.children.every(child => !(Element.isElement(child) && Editor.isBlock(editor, child)))
       ) {
         Transforms.wrapNodes(
           editor,
           { type: info.blockToWrapInlinesIn, children: [] },
-          { at: path, match: node => !Editor.isBlock(editor, node) }
+          { at: path, match: node => !(Element.isElement(node) && Editor.isBlock(editor, node)) }
         );
         return;
       }
@@ -566,13 +566,20 @@ function withBlocksSchema(editor: Editor): Editor {
       for (const [index, childNode] of node.children.entries()) {
         const childPath = [...path, index];
         if (info.kind === 'inlines') {
-          if (!Text.isText(childNode) && !Editor.isInline(editor, childNode)) {
+          if (
+            !Text.isText(childNode) &&
+            !Editor.isInline(editor, childNode) &&
+            // these checks are implicit in Editor.isBlock
+            // but that isn't encoded in types so these will make TS happy
+            childNode.type !== 'link' &&
+            childNode.type !== 'relationship'
+          ) {
             handleNodeInInvalidPosition(editor, [childNode, childPath], path);
             return;
           }
         } else {
           if (
-            !Editor.isBlock(editor, childNode) ||
+            !(Element.isElement(childNode) && Editor.isBlock(editor, childNode)) ||
             // these checks are implicit in Editor.isBlock
             // but that isn't encoded in types so these will make TS happy
             childNode.type === 'link' ||
@@ -585,7 +592,11 @@ function withBlocksSchema(editor: Editor): Editor {
             );
             return;
           }
-          if (!info.allowedChildren.has(childNode.type)) {
+          if (
+            Element.isElement(childNode) &&
+            Editor.isBlock(editor, childNode) &&
+            !info.allowedChildren.has(childNode.type)
+          ) {
             handleNodeInInvalidPosition(editor, [childNode, childPath], path);
             return;
           }

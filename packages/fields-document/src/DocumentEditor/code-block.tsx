@@ -13,7 +13,7 @@ export function withCodeBlock(editor: Editor): Editor {
 
   editor.insertBreak = () => {
     const [node, path] = Editor.above(editor, {
-      match: n => Editor.isBlock(editor, n),
+      match: n => Element.isElement(n) && Editor.isBlock(editor, n),
     }) || [editor, []];
     if (node.type === 'code' && Text.isText(node.children[0])) {
       const text = node.children[0].text;

@@ -162,7 +162,7 @@ function EditorComp({
 }) {
   const [val, setVal] = useState(editor.children);
   return (
-    <Slate editor={editor} value={val} onChange={setVal}>
+    <Slate editor={editor} initialValue={val} onChange={setVal}>
       <ToolbarStateProvider
         componentBlocks={componentBlocks}
         editorDocumentFeatures={documentFeatures}
