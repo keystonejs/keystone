@@ -11,7 +11,6 @@ import { generateAdminUI } from '../admin-ui/system';
 import { devMigrations, pushPrismaSchemaToDatabase } from '../lib/migrations';
 import { createSystem } from '../lib/createSystem';
 import { getEsbuildConfig } from '../lib/esbuild';
-import { healthCheckPath as defaultHealthCheckPath } from '../lib/defaults';
 import { createExpressServer } from '../lib/server/createExpressServer';
 import { createAdminUIMiddlewareWithNextApp } from '../lib/server/createAdminUIMiddleware';
 import { runTelemetry } from '../lib/telemetry';
@@ -260,21 +259,6 @@ export async function dev(
       }
     }
   };
-
-  // You shouldn't really be doing a healthcheck on the dev server, but we
-  // respond on the endpoint with the correct error code just in case. This
-  // doesn't send the configured data shape, because config doesn't allow
-  // for the "not ready" case but that's probably OK.
-  if (config.server?.healthCheck && app) {
-    const healthCheckPath =
-      config.server.healthCheck === true
-        ? defaultHealthCheckPath
-        : config.server.healthCheck.path || defaultHealthCheckPath;
-    app.use(healthCheckPath, (req, res, next) => {
-      if (expressServer) return next();
-      res.status(503).json({ status: 'fail', timestamp: Date.now() });
-    });
-  }
 
   // Serve the dev status page for the Admin UI
   let initKeystonePromiseResolve: () => void | undefined;
