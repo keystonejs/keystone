@@ -15,19 +15,7 @@ function getIdField({ kind, type }: IdFieldConfig): Required<IdFieldConfig> {
   throw new Error(`Unknown id type ${kind}`);
 }
 
-// validate lists config and default the id field
 function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['lists'] {
-  const defaultIdField = getIdField(config.db.idField ?? { kind: 'cuid' });
-  if (
-    defaultIdField.kind === 'autoincrement' &&
-    defaultIdField.type === 'BigInt' &&
-    config.db.provider === 'sqlite'
-  ) {
-    throw new Error(
-      'BigInt autoincrements are not supported on SQLite but they are configured as the global id field type at db.idField'
-    );
-  }
-
   // some error checking
   for (const [listKey, list] of Object.entries(config.lists)) {
     if (list.fields.id) {
@@ -35,16 +23,6 @@ function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['lists'] {
         `A field with the \`id\` path is defined in the fields object on the ${JSON.stringify(
           listKey
         )} list. This is not allowed, use the idField option instead.`
-      );
-    }
-
-    if (
-      list.db?.idField?.kind === 'autoincrement' &&
-      list.db.idField.type === 'BigInt' &&
-      config.db.provider === 'sqlite'
-    ) {
-      throw new Error(
-        `BigInt autoincrements are not supported on SQLite but they are configured at db.idField on the ${listKey} list`
       );
     }
 
@@ -78,10 +56,11 @@ function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['lists'] {
       continue;
     }
 
+    const idField = getIdField(list.db?.idField ?? config.db.idField ?? { kind: 'cuid' });
     listsWithIds[listKey] = {
       ...list,
       fields: {
-        id: idFieldType(getIdField(list.db?.idField ?? defaultIdField), false),
+        id: idFieldType(idField, false),
         ...list.fields,
       },
     };

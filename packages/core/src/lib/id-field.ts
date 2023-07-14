@@ -113,6 +113,10 @@ export function idFieldType(
   const defaultValue = isSingleton || kind === 'string' ? undefined : { kind };
 
   return meta => {
+    if (kind === 'autoincrement' && type === 'BigInt' && meta.provider === 'sqlite') {
+      throw new Error(`{ kind: ${kind}, type: ${type} } is not supported by SQLite`);
+    }
+
     return fieldType({
       kind: 'scalar',
       mode: 'required',
