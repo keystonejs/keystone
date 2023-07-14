@@ -116,7 +116,6 @@
       <p id="message">This page will reload when the server is ready</p>
     </div>
     <script>
-      const INTERVAL = 250;
       const statusEl = document.querySelector('#status');
       const messageEl = document.querySelector('#message');
       const loadingEl = document.querySelector('.loading-spinner');
@@ -127,28 +126,20 @@
         loadingEl.remove();
         throw err;
       }
+
       function onReady() {
         statusEl.innerHTML = 'Keystone is ready!';
         messageEl.innerHTML = 'Reloading the page...';
         location.reload(true);
       }
 
-      function checkStatus() {
-        fetch('/__keystone_dev_status', { headers: { Accept: 'application/json' } })
-          .then(result => result.json())
-          .then(status => {
-            if (status.ready) {
-              onReady();
-            } else {
-              setTimeout(checkStatus, INTERVAL);
-            }
-          })
-          .catch(error => {
-            onError();
-          });
+      async function checkStatus() {
+        const res = await fetch('/__keystone/dev/status');
+        if (res.status === 200) return onReady();
+        setTimeout(checkStatus, 400);
       }
 
-      const interval = setTimeout(checkStatus, 250);
+      checkStatus();
     </script>
   </body>
 </html>
