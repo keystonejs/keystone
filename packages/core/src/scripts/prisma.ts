@@ -19,7 +19,6 @@ export async function prisma(cwd: string, args: string[], frozen: boolean) {
   // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
   const config = getBuiltKeystoneConfiguration(cwd);
   const { graphQLSchema } = createSystem(config);
-  await validatePrismaAndGraphQLSchemas(cwd, config, graphQLSchema);
   await generateTypescriptTypesAndPrisma(cwd, config, graphQLSchema);
 
   const result = await execa('node', [require.resolve('prisma'), ...args], {
