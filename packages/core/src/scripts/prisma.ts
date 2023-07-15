@@ -4,7 +4,7 @@ import { createSystem } from '../lib/createSystem';
 import {
   getBuiltKeystoneConfiguration,
   generateTypescriptTypesAndPrisma,
-  validatePrismaAndGraphQLSchemas,
+  generatePrismaAndGraphQLSchemas,
 } from '../artifacts';
 import { getEsbuildConfig } from '../lib/esbuild';
 import { ExitError } from './utils';
@@ -19,6 +19,8 @@ export async function prisma(cwd: string, args: string[], frozen: boolean) {
   // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
   const config = getBuiltKeystoneConfiguration(cwd);
   const { graphQLSchema } = createSystem(config);
+  console.log('✨ Generating GraphQL and Prisma schemas');
+  await generatePrismaAndGraphQLSchemas(cwd, config, graphQLSchema);
   await generateTypescriptTypesAndPrisma(cwd, config, graphQLSchema);
 
   const result = await execa('node', [require.resolve('prisma'), ...args], {
