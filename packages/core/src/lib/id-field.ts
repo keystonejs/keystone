@@ -28,12 +28,14 @@ function isBigInt(x: IDType) {
 
 function isString(x: IDType) {
   if (typeof x !== 'string') return;
+  if (x === '') return;
   return x;
 }
 
 // TODO: remove, this should be on the user
 function isUuid(x: IDType) {
   if (typeof x !== 'string') return;
+  if (x === '') return;
   return x.toLowerCase();
 }
 
