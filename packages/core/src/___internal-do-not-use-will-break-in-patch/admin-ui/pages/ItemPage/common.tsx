@@ -78,8 +78,12 @@ export function ColumnLayout(props: HTMLAttributes<HTMLDivElement>) {
         css={{
           alignItems: 'start',
           display: 'grid',
-          gap: spacing.xlarge,
-          gridTemplateColumns: `2fr 1fr`,
+          gap: spacing.none,
+          gridTemplateColumns: `100vw`,
+          '@media (min-width: 576px)': {
+            gridTemplateColumns: `2fr 1fr`,
+            gap: spacing.xlarge,
+          },
         }}
         {...props}
       />
