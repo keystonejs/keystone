@@ -58,6 +58,7 @@ export const ToolbarGroup = forwardRefWithAs<'div', ToolbarGroupProps>(
             justifyContent: 'start',
             alignItems: directionToAlignment[direction],
             height: '100%',
+            overflowX: 'auto',
           }}
           {...props}
         >
