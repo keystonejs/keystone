@@ -26,7 +26,7 @@ export async function prisma(cwd: string, args: string[], frozen: boolean) {
   } else {
     await generatePrismaAndGraphQLSchemas(cwd, config, graphQLSchema); // TODO: rename to generateSchemas (or similar)
     console.log('✨ Generated GraphQL and Prisma schemas');
-    await generateTypescriptTypesAndPrisma(cwd, config, graphQLSchema); // TODO: generate PrismaClientAndTypes (or similar)
+    await generateTypescriptTypesAndPrisma(cwd, config, graphQLSchema); // TODO: rename to generatePrismaClientAndTypes (or similar)
   }
 
   const result = await execa('node', [require.resolve('prisma'), ...args], {
