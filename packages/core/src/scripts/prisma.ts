@@ -19,9 +19,15 @@ export async function prisma(cwd: string, args: string[], frozen: boolean) {
   // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
   const config = getBuiltKeystoneConfiguration(cwd);
   const { graphQLSchema } = createSystem(config);
-  console.log('✨ Generating GraphQL and Prisma schemas');
-  await generatePrismaAndGraphQLSchemas(cwd, config, graphQLSchema);
-  await generateTypescriptTypesAndPrisma(cwd, config, graphQLSchema);
+
+  if (frozen) {
+    await validatePrismaAndGraphQLSchemas(cwd, config, graphQLSchema);
+    console.log('✨ GraphQL and Prisma schemas are up to date');
+  } else {
+    await generatePrismaAndGraphQLSchemas(cwd, config, graphQLSchema); // TODO: rename to generateSchemas (or similar)
+    console.log('✨ Generated GraphQL and Prisma schemas');
+    await generateTypescriptTypesAndPrisma(cwd, config, graphQLSchema); // TODO: generate PrismaClientAndTypes (or similar)
+  }
 
   const result = await execa('node', [require.resolve('prisma'), ...args], {
     cwd,
