@@ -5,6 +5,7 @@ import {
   getBuiltKeystoneConfiguration,
   generateTypescriptTypesAndPrisma,
   generatePrismaAndGraphQLSchemas,
+  validatePrismaAndGraphQLSchemas
 } from '../artifacts';
 import { getEsbuildConfig } from '../lib/esbuild';
 import { ExitError } from './utils';
