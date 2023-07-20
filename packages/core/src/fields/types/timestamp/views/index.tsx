@@ -148,9 +148,12 @@ export const Field = ({
         {((value.kind === 'create' &&
           typeof field.fieldMeta.defaultValue !== 'string' &&
           field.fieldMeta.defaultValue?.kind === 'now') ||
-          field.fieldMeta.updatedAt) && (
-          <Text>When this item is saved, this field will be set to the current date and time</Text>
-        )}
+          field.fieldMeta.updatedAt) &&
+          !field.fieldMeta.hideNowInfo && (
+            <Text>
+              When this item is saved, this field will be set to the current date and time
+            </Text>
+          )}
       </Stack>
     </FieldContainer>
   );
@@ -232,6 +235,7 @@ export type TimestampFieldMeta = {
   defaultValue: string | { kind: 'now' } | null;
   updatedAt: boolean;
   isRequired: boolean;
+  hideNowInfo: boolean;
 };
 export const controller = (
   config: FieldControllerConfig<TimestampFieldMeta>
