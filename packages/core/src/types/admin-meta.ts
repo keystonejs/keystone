@@ -25,6 +25,7 @@ export type CreateViewFieldModes =
   | { state: 'error'; error: Error | readonly [GraphQLError, ...GraphQLError[]] };
 
 export type AdminConfig = {
+  disablePreventNavigation?: boolean;
   components?: {
     Logo?: (props: {}) => ReactElement;
     Navigation?: (props: NavigationProps) => ReactElement;
