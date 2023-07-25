@@ -49,6 +49,16 @@ export const lists: Lists = {
           omit: true,
         },
       }),
+
+      reason: text({
+        // this field is omitted at the field level, for update operations
+        //   the public GraphQL schema will have a Naughty type, but it will not have an update type
+        graphql: {
+          omit: {
+            update: true // cannot update, only create
+          },
+        },
+      }),
     },
   }),
 };

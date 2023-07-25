@@ -181,8 +181,8 @@ export function createAdminMeta(
     for (const [fieldKey, field] of Object.entries(list.fields)) {
       // If the field is a relationship field and is related to an omitted list, skip.
       if (field.dbField.kind === 'relation' && omittedLists.includes(field.dbField.list)) continue;
-      // Disabling this entirely for now until we properly decide what the Admin UI
-      // should do when `omit.read` is set to `true`.
+
+      // TODO: you could technically update, but not read
       if (field.graphql.isEnabled.read === false) continue;
 
       assertValidView(
@@ -194,6 +194,7 @@ export function createAdminMeta(
       const isNonNull = (['read', 'create', 'update'] as const).filter(
         operation => field.graphql.isNonNull[operation]
       );
+
       const fieldMeta = {
         key: fieldKey,
         label: field.label ?? humanize(fieldKey),
@@ -217,11 +218,7 @@ export function createAdminMeta(
           ),
         },
         itemView: {
-          fieldMode: field.graphql.isEnabled.update
-            ? field.ui?.itemView?.fieldMode ??
-              listConfig.ui?.itemView?.defaultFieldMode ??
-              ('edit' as const)
-            : 'read',
+          fieldMode: field.ui?.itemView.fieldMode,
           fieldPosition: field.ui?.itemView?.fieldPosition || 'form',
         },
         listView: {

@@ -40,6 +40,7 @@ model Naughty {
   id       String  @id @default(cuid())
   person   Person? @relation("Naughty_person", fields: [personId], references: [id])
   personId String? @map("person")
+  reason   String  @default("")
 
   @@index([personId])
 }

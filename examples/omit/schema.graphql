@@ -103,6 +103,7 @@ input PriorityOrderByInput {
 
 type Naughty {
   id: ID!
+  reason: String
 }
 
 input NaughtyWhereUniqueInput {
@@ -114,10 +115,16 @@ input NaughtyWhereInput {
   OR: [NaughtyWhereInput!]
   NOT: [NaughtyWhereInput!]
   id: IDFilter
+  reason: StringFilter
 }
 
 input NaughtyOrderByInput {
   id: OrderDirection
+  reason: OrderDirection
+}
+
+input NaughtyCreateInput {
+  reason: String
 }
 
 """
@@ -134,6 +141,8 @@ type Mutation {
   deletePeople(where: [PersonWhereUniqueInput!]!): [Person]
   deletePriority(where: PriorityWhereUniqueInput!): Priority
   deletePriorities(where: [PriorityWhereUniqueInput!]!): [Priority]
+  createNaughty(data: NaughtyCreateInput!): Naughty
+  createNaughties(data: [NaughtyCreateInput!]!): [Naughty]
   deleteNaughty(where: NaughtyWhereUniqueInput!): Naughty
   deleteNaughties(where: [NaughtyWhereUniqueInput!]!): [Naughty]
 }
