@@ -62,7 +62,7 @@ function getSudoGraphQLSchema(config: KeystoneConfig) {
   const lists = initialiseLists(transformedConfig);
   const adminMeta = createAdminMeta(transformedConfig, lists);
   return createGraphQLSchema(transformedConfig, lists, adminMeta, true);
-  // TODO: adminMeta not required
+  // TODO: adminMeta not useful for sudo, remove in breaking change
   // return createGraphQLSchema(transformedConfig, lists, null, true);
 }
 
@@ -98,12 +98,12 @@ export function createSystem(config: KeystoneConfig) {
       });
 
       return {
-        // TODO: remove, replace with server.onStart
+        // TODO: remove, replace with server.onStart, remove in breaking change
         async connect() {
           await prismaClient.$connect();
           await config.db.onConnect?.(context);
         },
-        // TODO: remove, only used by tests
+        // TODO: remove, only used by tests, remove in breaking change
         async disconnect() {
           await prismaClient.$disconnect();
         },
