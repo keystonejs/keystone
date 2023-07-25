@@ -332,7 +332,7 @@ function DeleteButton({
 
 export const getItemPage = (props: ItemPageProps) => () => <ItemPage {...props} />;
 
-function ItemPage ({ listKey }: ItemPageProps) {
+function ItemPage({ listKey }: ItemPageProps) {
   const list = useList(listKey);
   const id = useRouter().query.id as string;
 
@@ -417,7 +417,7 @@ function ItemPage ({ listKey }: ItemPageProps) {
     return itemViewFieldPositionsByField;
   }, [dataGetter.data?.keystone?.adminMeta?.list?.fields]);
 
-  const pageLoading = loading || (id === undefined);
+  const pageLoading = loading || id === undefined;
   const metaQueryErrors = dataGetter.get('keystone').errors;
   const pageTitle: string = list.isSingleton
     ? list.label

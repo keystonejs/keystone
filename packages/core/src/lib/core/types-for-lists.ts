@@ -290,26 +290,25 @@ function getListsWithInitialisedFields(
           ...f.ui,
           createView: {
             ...f.ui?.createView,
-            fieldMode:
-              _isEnabled.create
-                ? (f.ui?.createView?.fieldMode ?? f.ui?.createView?.defaultFieldMode)
-                : 'hidden'
+            fieldMode: _isEnabled.create
+              ? f.ui?.createView?.fieldMode ?? f.ui?.createView?.defaultFieldMode
+              : 'hidden',
           },
 
           itemView: {
             ...f.ui?.itemView,
-            fieldMode:
-              _isEnabled.update
-                ? (f.ui?.itemView?.fieldMode ?? f.ui?.itemView?.defaultFieldMode)
-                : (_isEnabled.read ? 'read' : 'hidden') // fallback to read only if not omitted
+            fieldMode: _isEnabled.update
+              ? f.ui?.itemView?.fieldMode ?? f.ui?.itemView?.defaultFieldMode
+              : _isEnabled.read
+              ? 'read'
+              : 'hidden', // fallback to read only if not omitted
           },
 
           listView: {
             ...f.ui?.listView,
-            fieldMode:
-              _isEnabled.read
-                ? (f.ui?.listView?.fieldMode ?? f.ui?.listView?.defaultFieldMode)
-                : 'hidden'
+            fieldMode: _isEnabled.read
+              ? f.ui?.listView?.fieldMode ?? f.ui?.listView?.defaultFieldMode
+              : 'hidden',
           },
         },
       };

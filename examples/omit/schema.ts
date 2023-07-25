@@ -55,7 +55,7 @@ export const lists: Lists = {
         //   the public GraphQL schema will have a Naughty type, but it will not have an update type
         graphql: {
           omit: {
-            update: true // cannot update, only create
+            update: true, // cannot update, only create
           },
         },
       }),
