@@ -332,22 +332,21 @@ function DeleteButton({
 
 export const getItemPage = (props: ItemPageProps) => () => <ItemPage {...props} />;
 
-const ItemPage = ({ listKey }: ItemPageProps) => {
+function ItemPage ({ listKey }: ItemPageProps) {
   const list = useList(listKey);
   const id = useRouter().query.id as string;
 
   const { query, selectedFields } = useMemo(() => {
     const selectedFields = Object.entries(list.fields)
-      .filter(
-        ([fieldKey, field]) =>
-          field.itemView.fieldMode !== 'hidden' ||
-          // the id field is hidden but we still need to fetch it
-          fieldKey === 'id'
-      )
+      .filter(([fieldKey, field]) => {
+        if (fieldKey === 'id') return true;
+        return field.itemView.fieldMode !== 'hidden';
+      })
       .map(([fieldKey]) => {
         return list.fields[fieldKey].controller.graphqlSelection;
       })
       .join('\n');
+
     return {
       selectedFields,
       query: gql`
@@ -374,12 +373,12 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
       `,
     };
   }, [list]);
-  let { data, error, loading } = useQuery(query, {
+
+  const { data, error, loading } = useQuery(query, {
     variables: { id, listKey },
     errorPolicy: 'all',
     skip: id === undefined,
   });
-  loading ||= id === undefined;
 
   const dataGetter = makeDataGetter<
     DeepNullable<{
@@ -418,10 +417,11 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
     return itemViewFieldPositionsByField;
   }, [dataGetter.data?.keystone?.adminMeta?.list?.fields]);
 
+  const pageLoading = loading || (id === undefined);
   const metaQueryErrors = dataGetter.get('keystone').errors;
   const pageTitle: string = list.isSingleton
     ? list.label
-    : loading
+    : pageLoading
     ? undefined
     : (data && data.item && (data.item[list.labelField] || data.item.id)) || id;
 
@@ -432,14 +432,14 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
         <ItemPageHeader
           list={list}
           label={
-            loading
+            pageLoading
               ? 'Loading...'
               : (data && data.item && (data.item[list.labelField] || data.item.id)) || id
           }
         />
       }
     >
-      {loading ? (
+      {pageLoading ? (
         <Center css={{ height: `calc(100vh - ${HEADER_HEIGHT}px)` }}>
           <LoadingDots label="Loading item data" size="large" tone="passive" />
         </Center>
@@ -490,7 +490,7 @@ const ItemPage = ({ listKey }: ItemPageProps) => {
       )}
     </PageContainer>
   );
-};
+}
 
 // Styled Components
 // ------------------------------
