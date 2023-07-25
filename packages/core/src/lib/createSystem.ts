@@ -62,6 +62,8 @@ function getSudoGraphQLSchema(config: KeystoneConfig) {
   const lists = initialiseLists(transformedConfig);
   const adminMeta = createAdminMeta(transformedConfig, lists);
   return createGraphQLSchema(transformedConfig, lists, adminMeta, true);
+  // TODO: adminMeta not required
+  // return createGraphQLSchema(transformedConfig, lists, null, true);
 }
 
 export function createSystem(config: KeystoneConfig) {
