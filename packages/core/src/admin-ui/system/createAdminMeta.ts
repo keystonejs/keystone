@@ -209,22 +209,14 @@ export function createAdminMeta(
         listKey: listKey,
         search: list.ui.searchableFields.get(fieldKey) ?? null,
         createView: {
-          fieldMode: normalizeMaybeSessionFunction(
-            field.graphql.isEnabled.create
-              ? field.ui?.createView?.fieldMode ??
-                  listConfig.ui?.createView?.defaultFieldMode ??
-                  'edit'
-              : 'hidden'
-          ),
+          fieldMode: normalizeMaybeSessionFunction(field.ui?.createView.fieldMode),
         },
         itemView: {
           fieldMode: field.ui?.itemView.fieldMode,
           fieldPosition: field.ui?.itemView?.fieldPosition || 'form',
         },
         listView: {
-          fieldMode: normalizeMaybeSessionFunction(
-            field.ui?.listView?.fieldMode ?? listConfig.ui?.listView?.defaultFieldMode ?? 'read'
-          ),
+          fieldMode: normalizeMaybeSessionFunction(field.ui?.listView?.fieldMode),
         },
         isFilterable: normalizeIsOrderFilter(
           field.input?.where ? field.graphql.isEnabled.filter : false,
