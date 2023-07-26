@@ -125,6 +125,7 @@ input NaughtyOrderByInput {
 
 input NaughtyCreateInput {
   reason: String
+  hiddenReason: String
 }
 
 """
