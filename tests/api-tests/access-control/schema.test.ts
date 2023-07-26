@@ -1,15 +1,8 @@
 import { createSystem, initConfig } from '@keystone-6/core/system';
-import { getGqlNames } from '@keystone-6/core/types';
-import { ExecutionResult } from 'graphql';
 import { relationship, text } from '@keystone-6/core/fields';
 import { list, ListSchemaConfig } from '@keystone-6/core';
-import { statelessSessions } from '@keystone-6/core/session';
 import { allowAll } from '@keystone-6/core/access';
 import { apiTestConfig } from '../utils';
-
-const COOKIE_SECRET = 'qwertyuiopasdfghjlkzxcvbmnm1234567890';
-
-const yesNo = (x: boolean | undefined) => (x === true ? 'Y' : x === false ? 'N' : 'U');
 
 type ListConfig = {
   isFilterable?: false;
@@ -36,31 +29,62 @@ type FieldConfig = {
       };
 };
 
-const getListPrefix = ({ isFilterable, isOrderable, omit }: ListConfig) => {
-  const s = `${yesNo(isFilterable)}F${yesNo(isOrderable)}O`;
-  if (omit === undefined) {
-    return `${s}Undefined`;
-  } else if (omit === true) {
-    return `${s}True`;
-  } else {
-    // prettier-ignore
-    return `${s}${yesNo(omit.create)}C${yesNo(omit.query)}Q${yesNo(omit.update)}U${yesNo(omit.delete)}D`;
-  }
-};
-const getFieldPrefix = ({ isFilterable, isOrderable, omit }: FieldConfig) => {
-  const s = `${yesNo(isFilterable)}Filter${yesNo(isOrderable)}Order`;
-  if (omit === undefined) {
-    return `${s}Undefined`;
-  } else if (omit === true) {
-    return `${s}True`;
-  } else {
-    // prettier-ignore
-    return `${s}${yesNo(omit.read)}Read${yesNo(omit.create)}Create${yesNo(omit.update)}Update`;
-  }
-};
+function yesNo(x: boolean | undefined) {
+  if (x === true) return 'True';
+  if (x === false) return 'False';
+  return 'Undefined';
+}
 
-const getListName = (config: ListConfig) => `${getListPrefix(config)}List`;
-const getFieldName = (config: FieldConfig) => getFieldPrefix(config);
+function getListPrefix({ isFilterable, isOrderable, omit }: ListConfig) {
+  const keys: any = {
+    Filterable: yesNo(isFilterable),
+    Orderable: yesNo(isOrderable),
+  };
+
+  if (omit === undefined) {
+    keys.Omit = 'Undefined';
+  } else if (omit === true) {
+    keys.Omit = 'True';
+  } else {
+    keys.OmitQuery = yesNo(omit.query);
+    keys.OmitCreate = yesNo(omit.create);
+    keys.OmitUpdate = yesNo(omit.update);
+    keys.OmitDelete = yesNo(omit.delete);
+  }
+
+  return Object.entries(keys)
+    .map(([k, v]) => `${k}${v}`)
+    .join('');
+}
+
+function getFieldPrefix({ isFilterable, isOrderable, omit }: FieldConfig) {
+  const keys: any = {
+    Filterable: yesNo(isFilterable),
+    Orderable: yesNo(isOrderable),
+  };
+
+  if (omit === undefined) {
+    keys.Omit = 'Undefined';
+  } else if (omit === true) {
+    keys.Omit = 'True';
+  } else {
+    keys.OmitRead = yesNo(omit.read);
+    keys.OmitCreate = yesNo(omit.create);
+    keys.OmitUpdate = yesNo(omit.update);
+  }
+
+  return Object.entries(keys)
+    .map(([k, v]) => `${k}${v}`)
+    .join('');
+}
+
+function getListName(config: ListConfig) {
+  return `List${getListPrefix(config)}`;
+}
+
+function getFieldName(config: FieldConfig) {
+  return `Field${getFieldPrefix(config)}`;
+}
 
 const listConfigVariables: ListConfig[] = [];
 for (const isFilterable of [undefined, false as const]) {
@@ -126,18 +150,18 @@ const createRelatedFields = (config: ListConfig) => ({
 
 const lists: ListSchemaConfig = {};
 
-listConfigVariables.forEach(config => {
-  lists[getListName(config)] = list({
+for (const listConfig of listConfigVariables) {
+  lists[getListName(listConfig)] = list({
     access: allowAll,
     fields: Object.assign(
       { name: text() },
       ...fieldMatrix.map(variation => createFieldStatic(variation))
     ),
-    defaultIsFilterable: config.isFilterable,
-    defaultIsOrderable: config.isOrderable,
-    graphql: { omit: config.omit },
+    defaultIsFilterable: listConfig.isFilterable,
+    defaultIsOrderable: listConfig.isOrderable,
+    graphql: { omit: listConfig.omit },
   });
-});
+}
 
 lists.RelatedToAll = list({
   access: allowAll,
@@ -146,13 +170,10 @@ lists.RelatedToAll = list({
 
 const config = apiTestConfig({
   lists,
-  session: statelessSessions({ secret: COOKIE_SECRET }),
   ui: {
     isAccessAllowed: () => true,
   },
 });
-
-export { getListName, listConfigVariables, fieldMatrix, getFieldName, config };
 
 const introspectionQuery = `{
   __schema {
@@ -176,440 +197,61 @@ const introspectionQuery = `{
       }
     }
   }
+  keystone {
+    adminMeta {
+      lists {
+        key
+        fields {
+          path
+          createView { fieldMode }
+          itemView(id: "mock") { fieldMode }
+          listView { fieldMode }
+          isFilterable
+          isOrderable
+        }
+      }
+    }
+  }
 }`;
 
 class FakePrismaClient {
   $on() {}
   async findMany() {
-    return [{ id: 'blah' }];
+    return [{ id: 'mock' }];
   }
 }
 
-const { getKeystone } = createSystem(initConfig(config));
+describe('Schema', () => {
+  const { getKeystone } = createSystem(initConfig(config));
+  const { context } = getKeystone({ PrismaClient: FakePrismaClient, Prisma: {} as any });
 
-const { context } = getKeystone({ PrismaClient: FakePrismaClient, Prisma: {} as any });
-
-describe(`Public schema`, () => {
-  let queries: string[],
-    mutations: string[],
-    types: string[],
-    typesByName: Record<string, any>,
-    fieldTypes: Record<
-      string,
-      { name: string; fields: Record<string, any>; inputFields: Record<string, any> }
-    >;
-  let __schema: {
-    types: { name: string; fields: { name: string }[]; inputFields: { name: string }[] }[];
-    queryType: { fields: { name: string }[] };
-    mutationType: { fields: { name: string }[] };
-  };
-  beforeAll(async () => {
+  test('Public', async () => {
     const data = (await context.graphql.run({ query: introspectionQuery })) as Record<string, any>;
-    __schema = data.__schema;
-    queries = __schema.queryType.fields.map(({ name }) => name);
-    mutations = __schema.mutationType.fields.map(({ name }) => name);
-    types = __schema.types.map(({ name }) => name);
-    typesByName = Object.fromEntries(__schema.types.map(t => [t.name, t]));
-    fieldTypes = Object.fromEntries(
-      __schema.types.map(type => [
-        type.name,
-        {
-          name: type.name,
-          fields: Object.fromEntries((type.fields || []).map(x => [x.name, x])),
-          inputFields: Object.fromEntries((type.inputFields || []).map(x => [x.name, x])),
-        },
-      ])
-    );
-  });
 
-  describe('config', () => {
-    listConfigVariables.forEach(config => {
-      test(JSON.stringify(config), async () => {
-        const listKey = getListName(config);
-        const gqlNames = getGqlNames({ listKey, pluralGraphQLName: `${listKey}s` });
-        // The type is used in all the queries and mutations as a return type.
-        if (config.omit === true) {
-          expect(types).not.toContain(gqlNames.outputTypeName);
-        } else {
-          expect(types).toContain(gqlNames.outputTypeName);
-        }
-        // The whereUnique input type is used in queries and mutations, and
-        // also in the relateTo input types.
-        if (config.omit === true) {
-          expect(types).not.toContain(gqlNames.whereUniqueInputName);
-        } else {
-          expect(types).toContain(gqlNames.whereUniqueInputName);
-        }
-
-        // The relateTo types do not exist if the list has been completely disabled
-        if (config.omit === true) {
-          expect(types).not.toContain(gqlNames.relateToManyForCreateInputName);
-          expect(types).not.toContain(gqlNames.relateToOneForCreateInputName);
-          expect(types).not.toContain(gqlNames.relateToManyForUpdateInputName);
-          expect(types).not.toContain(gqlNames.relateToOneForUpdateInputName);
-        } else {
-          expect(types).toContain(gqlNames.relateToManyForCreateInputName);
-          expect(types).toContain(gqlNames.relateToOneForCreateInputName);
-          expect(types).toContain(gqlNames.relateToManyForUpdateInputName);
-          expect(types).toContain(gqlNames.relateToOneForUpdateInputName);
-
-          const createFromMany = typesByName[
-            gqlNames.relateToManyForCreateInputName
-          ].inputFields.map(({ name }: { name: string }) => name);
-          const createFromOne = typesByName[gqlNames.relateToOneForCreateInputName].inputFields.map(
-            ({ name }: { name: string }) => name
-          );
-          const updateFromMany = typesByName[
-            gqlNames.relateToManyForUpdateInputName
-          ].inputFields.map(({ name }: { name: string }) => name);
-          const updateFromOne = typesByName[gqlNames.relateToOneForUpdateInputName].inputFields.map(
-            ({ name }: { name: string }) => name
-          );
-
-          expect(createFromMany).not.toContain('unusedPlaceholder');
-
-          if (config.omit === undefined || !config.omit.create) {
-            expect(createFromMany).toContain('create');
-            expect(createFromOne).toContain('create');
-            expect(updateFromMany).toContain('create');
-            expect(updateFromOne).toContain('create');
-          } else {
-            expect(createFromMany).not.toContain('create');
-            expect(createFromOne).not.toContain('create');
-            expect(updateFromMany).not.toContain('create');
-            expect(updateFromOne).not.toContain('create');
-          }
-          // The connect/disconnect/set operations are always supported.
-          expect(createFromMany).toContain('connect');
-          expect(createFromOne).toContain('connect');
-          expect(updateFromMany).toContain('connect');
-          expect(updateFromOne).toContain('connect');
-          expect(updateFromMany).toContain('disconnect');
-          expect(updateFromOne).toContain('disconnect');
-          expect(updateFromMany).toContain('set');
-        }
-
-        expect(types).toContain(gqlNames.whereInputName);
-
-        // Queries are only accessible when reading
-        if (config.omit !== true && (config.omit === undefined || !config.omit.query)) {
-          expect(queries).toContain(gqlNames.itemQueryName);
-          expect(queries).toContain(gqlNames.listQueryName);
-          expect(queries).toContain(gqlNames.listQueryCountName);
-        } else {
-          expect(queries).not.toContain(gqlNames.itemQueryName);
-          expect(queries).not.toContain(gqlNames.listQueryName);
-          expect(queries).not.toContain(gqlNames.listQueryCountName);
-        }
-
-        if (config.omit !== true && (config.omit === undefined || !config.omit.create)) {
-          expect(mutations).toContain(gqlNames.createMutationName);
-        } else {
-          expect(mutations).not.toContain(gqlNames.createMutationName);
-        }
-
-        if (config.omit !== true && (config.omit === undefined || !config.omit.update)) {
-          expect(mutations).toContain(gqlNames.updateMutationName);
-        } else {
-          expect(mutations).not.toContain(gqlNames.updateMutationName);
-        }
-
-        if (config.omit !== true && (config.omit === undefined || !config.omit.delete)) {
-          expect(mutations).toContain(gqlNames.deleteMutationName);
-        } else {
-          expect(mutations).not.toContain(gqlNames.deleteMutationName);
-        }
-      });
-    });
-
-    fieldMatrix.forEach(config => {
-      for (const isFilterable of [undefined, false as const]) {
-        for (const isOrderable of [undefined, false as const]) {
-          const listName = getListName({ isFilterable, isOrderable });
-          test(`schema - ${JSON.stringify(config)} on ${listName}`, () => {
-            const name = getFieldName(config);
-
-            expect(fieldTypes[listName].fields).not.toBe(null);
-            const fields = fieldTypes[listName].fields;
-            if (config.omit !== true && (config.omit === undefined || !config.omit.read)) {
-              expect(fields[name]).not.toBe(undefined);
-            } else {
-              expect(fields[name]).toBe(undefined);
-            }
-
-            // Filters require both `read` and `filter` to be true for
-            expect(fieldTypes[`${listName}WhereInput`].inputFields).not.toBe(undefined);
-            if (
-              config.omit !== true && // Not excluded
-              (config.omit === undefined || !config.omit.read) && // Can read
-              isFilterable !== false &&
-              config.isFilterable !== false // Can filter
-            ) {
-              expect(fieldTypes[`${listName}WhereInput`].inputFields[name]).not.toBe(undefined);
-            } else {
-              expect(fieldTypes[`${listName}WhereInput`].inputFields[name]).toBe(undefined);
-            }
-
-            // Orderby require both `read` and `orderBy` to be true for
-            expect(fieldTypes[`${listName}OrderByInput`].inputFields).not.toBe(undefined);
-            if (
-              config.omit !== true && // Not excluded
-              (config.omit === undefined || !config.omit.read) && // Can read
-              isOrderable !== false &&
-              config.isOrderable !== false // Can orderBy
-            ) {
-              expect(fieldTypes[`${listName}OrderByInput`].inputFields[name]).not.toBe(undefined);
-            } else {
-              expect(fieldTypes[`${listName}OrderByInput`].inputFields[name]).toBe(undefined);
-            }
-
-            // Create inputs
-            expect(fieldTypes[`${listName}CreateInput`].inputFields).not.toBe(undefined);
-
-            if (
-              config.omit !== true && // Not excluded
-              (config.omit === undefined || !config.omit.create) // Can create
-            ) {
-              expect(fieldTypes[`${listName}CreateInput`].inputFields[name]).not.toBe(undefined);
-            } else {
-              expect(fieldTypes[`${listName}CreateInput`].inputFields[name]).toBe(undefined);
-            }
-
-            // Update inputs
-            expect(fieldTypes[`${listName}UpdateInput`].inputFields).not.toBe(undefined);
-            if (
-              config.omit !== true && // Not excluded
-              (config.omit === undefined || !config.omit.update) // Can update
-            ) {
-              expect(fieldTypes[`${listName}UpdateInput`].inputFields[name]).not.toBe(undefined);
-            } else {
-              expect(fieldTypes[`${listName}UpdateInput`].inputFields[name]).toBe(undefined);
-            }
-          });
-          test(`adminMeta - isFilterable and isOrderable ${JSON.stringify(
-            config
-          )} on ${listName}`, async () => {
-            const query = `
-              query q($listName: String!) {
-                keystone {
-                  adminMeta {
-                    list(key: $listName) {
-                      fields {
-                        path
-                        isFilterable
-                        isOrderable
-                      }
-                    }
-                  }
-                }
-              }`;
-            const variables = { listName };
-            const { data, errors } = (await context.graphql.raw({
-              query,
-              variables,
-            })) as ExecutionResult<any>;
-            expect(errors).toBe(undefined);
-
-            const field = data!.keystone.adminMeta.list.fields.filter(
-              (f: any) => f.path === getFieldName(config)
-            )[0];
-            if (config.omit === true || config.omit?.read) {
-              // FIXME: This code path will go away once the Admin UI supports `omit: ['read']` properly.
-              expect(field).toBe(undefined);
-            } else {
-              // Filters require both `read` and `filter` to be true for
-              if (
-                // @ts-ignore
-                config.omit !== true && // Not excluded
-                (config.omit === undefined || !config.omit.read) && // Can read
-                isFilterable !== false &&
-                config.isFilterable !== false // Can filter
-              ) {
-                expect(field.isFilterable).toEqual(true);
-              } else {
-                expect(field.isFilterable).toEqual(false);
-              }
-
-              // Orderby require both `read` and `orderBy` to be true for
-              if (
-                // @ts-ignore
-                config.omit !== true && // Not excluded
-                (config.omit === undefined || !config.omit.read) && // Can read
-                isOrderable !== false &&
-                config.isOrderable !== false // Can orderBy
-              ) {
-                expect(field.isOrderable).toEqual(true);
-              } else {
-                expect(field.isOrderable).toEqual(false);
-              }
-            }
-          });
-
-          test(`adminMeta - not build mode ${JSON.stringify(config)} on ${listName}`, async () => {
-            const query = `
-              query q($listName: String!) {
-                keystone {
-                  adminMeta {
-                    list(key: $listName) {
-                      key
-                      fields {
-                        path
-                        createView { fieldMode }
-                        listView { fieldMode }
-                        itemView(id: "blah") { fieldMode }
-                      }
-                    }
-                  }
-                }
-              }`;
-            const variables = { listName };
-
-            const { data, errors } = (await context
-              .withSession({})
-              .graphql.raw({ query, variables })) as ExecutionResult<any>;
-            expect(errors).toBe(undefined);
-
-            const field = data!.keystone.adminMeta.list.fields.filter(
-              (f: any) => f.path === getFieldName(config)
-            )[0];
-
-            if (config.omit === true || config.omit?.read) {
-              // FIXME: This code path will go away once the Admin UI supports `omit: ['read']` properly.
-              expect(field).toBe(undefined);
-            } else {
-              // createView - edit/hidden (hidden if omit.create)
-              // @ts-ignore
-              if (config.omit === true || config.omit?.create) {
-                expect(field.createView.fieldMode).toEqual('hidden');
-              } else {
-                expect(field.createView.fieldMode).toEqual('edit');
-              }
-
-              // listView - read/hidden (hidden if omit.read)
-              // @ts-ignore
-              if (config.omit === true || config.omit?.read) {
-                expect(field.listView.fieldMode).toEqual('hidden');
-              } else {
-                expect(field.listView.fieldMode).toEqual('read');
-              }
-
-              // itemView - edit/read/hidden (read if omit.update, hidden if omit.read)
-              // @ts-ignore
-              if (config.omit === true || config.omit?.read) {
-                expect(field.itemView.fieldMode).toEqual('hidden');
-              } else if (config.omit?.update) {
-                expect(field.itemView.fieldMode).toEqual('read');
-              } else {
-                expect(field.itemView.fieldMode).toEqual('edit');
-              }
-            }
-          });
-        }
+    expect(JSON.stringify(data, null, 2)).toMatchSnapshot();
+    for (const listKey in lists) {
+      if (listKey.endsWith('OmitTrue')) {
+        expect(data.keystone.adminMeta.lists.some((x: any) => x.key === listKey)).toBe(false);
+      } else {
+        expect(data.keystone.adminMeta.lists.some((x: any) => x.key === listKey)).not.toBe(
+          undefined
+        );
       }
-    });
-  });
-});
-
-describe(`Sudo schema`, () => {
-  let queries: string[],
-    mutations: string[],
-    types: string[],
-    typesByName: Record<string, any>,
-    fieldTypes: Record<
-      string,
-      { name: string; fields: Record<string, any>; inputFields: Record<string, any> }
-    >;
-  let __schema: {
-    types: { name: string; fields: { name: string }[]; inputFields: { name: string }[] }[];
-    queryType: { fields: { name: string }[] };
-    mutationType: { fields: { name: string }[] };
-  };
-  beforeAll(async () => {
-    const data = (await context.sudo().graphql.run({ query: introspectionQuery })) as any;
-    __schema = data.__schema;
-    queries = __schema.queryType.fields.map(({ name }) => name);
-    mutations = __schema.mutationType.fields.map(({ name }) => name);
-    types = __schema.types.map(({ name }) => name);
-    typesByName = Object.fromEntries(__schema.types.map(t => [t.name, t]));
-    fieldTypes = Object.fromEntries(
-      __schema.types.map(type => [
-        type.name,
-        {
-          name: type.name,
-          fields: Object.fromEntries((type.fields || []).map(x => [x.name, x])),
-          inputFields: Object.fromEntries((type.inputFields || []).map(x => [x.name, x])),
-        },
-      ])
-    );
+    }
   });
 
-  describe('config', () => {
-    listConfigVariables.forEach(config => {
-      test(JSON.stringify(config), async () => {
-        const listKey = getListName(config);
-        const gqlNames = getGqlNames({ listKey, pluralGraphQLName: `${listKey}s` });
-        expect(types).toContain(gqlNames.outputTypeName);
-        expect(types).toContain(gqlNames.whereUniqueInputName);
-        expect(types).toContain(gqlNames.relateToManyForCreateInputName);
-        expect(types).toContain(gqlNames.relateToOneForCreateInputName);
-        expect(types).toContain(gqlNames.relateToManyForUpdateInputName);
-        expect(types).toContain(gqlNames.relateToOneForUpdateInputName);
-        const createFromMany = typesByName[gqlNames.relateToManyForCreateInputName].inputFields.map(
-          ({ name }: { name: string }) => name
-        );
-        const createFromOne = typesByName[gqlNames.relateToOneForCreateInputName].inputFields.map(
-          ({ name }: { name: string }) => name
-        );
-        const updateFromMany = typesByName[gqlNames.relateToManyForUpdateInputName].inputFields.map(
-          ({ name }: { name: string }) => name
-        );
-        const updateFromOne = typesByName[gqlNames.relateToOneForUpdateInputName].inputFields.map(
-          ({ name }: { name: string }) => name
-        );
-        expect(createFromMany).not.toContain('unusedPlaceholder');
-        expect(createFromMany).toContain('create');
-        expect(createFromOne).toContain('create');
-        expect(updateFromMany).toContain('create');
-        expect(updateFromOne).toContain('create');
-        expect(createFromMany).toContain('connect');
-        expect(createFromOne).toContain('connect');
-        expect(updateFromMany).toContain('connect');
-        expect(updateFromOne).toContain('connect');
-        expect(updateFromMany).toContain('disconnect');
-        expect(updateFromOne).toContain('disconnect');
-        expect(updateFromMany).toContain('set');
-        expect(types).toContain(gqlNames.whereInputName);
-        expect(queries).toContain(gqlNames.itemQueryName);
-        expect(queries).toContain(gqlNames.listQueryName);
-        expect(queries).toContain(gqlNames.listQueryCountName);
-        expect(mutations).toContain(gqlNames.createMutationName);
-        expect(mutations).toContain(gqlNames.updateMutationName);
-        expect(mutations).toContain(gqlNames.deleteMutationName);
-      });
-    });
+  test('Sudo', async () => {
+    const data = (await context.graphql.run({ query: introspectionQuery })) as Record<string, any>;
 
-    fieldMatrix.forEach(config => {
-      for (const isFilterable of [undefined, false as const]) {
-        for (const isOrderable of [undefined, false as const]) {
-          const listName = getListName({ isFilterable, isOrderable });
-          test(`${JSON.stringify(config)} on ${listName}`, () => {
-            const name = getFieldName(config);
-
-            expect(fieldTypes[listName].fields).not.toBe(null);
-            const fields = fieldTypes[listName].fields;
-
-            expect(fields[name]).not.toBe(undefined);
-            expect(fieldTypes[`${listName}WhereInput`].inputFields).not.toBe(undefined);
-            expect(fieldTypes[`${listName}WhereInput`].inputFields[name]).not.toBe(undefined);
-            expect(fieldTypes[`${listName}OrderByInput`].inputFields).not.toBe(undefined);
-            expect(fieldTypes[`${listName}OrderByInput`].inputFields[name]).not.toBe(undefined);
-            expect(fieldTypes[`${listName}CreateInput`].inputFields).not.toBe(undefined);
-            expect(fieldTypes[`${listName}CreateInput`].inputFields[name]).not.toBe(undefined);
-            expect(fieldTypes[`${listName}UpdateInput`].inputFields).not.toBe(undefined);
-            expect(fieldTypes[`${listName}UpdateInput`].inputFields[name]).not.toBe(undefined);
-          });
-        }
+    expect(JSON.stringify(data, null, 2)).toMatchSnapshot();
+    for (const listKey in lists) {
+      if (listKey.endsWith('OmitTrue')) {
+        expect(data.keystone.adminMeta.lists.some((x: any) => x.key === listKey)).toBe(false);
+      } else {
+        expect(data.keystone.adminMeta.lists.some((x: any) => x.key === listKey)).not.toBe(
+          undefined
+        );
       }
-    });
+    }
   });
 });
