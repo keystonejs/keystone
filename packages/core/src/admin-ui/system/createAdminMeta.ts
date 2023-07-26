@@ -176,14 +176,10 @@ export function createAdminMeta(
   for (const [listKey, list] of Object.entries(initialisedLists)) {
     if (omittedLists.includes(listKey)) continue;
 
-    const listConfig = lists[listKey];
-
     for (const [fieldKey, field] of Object.entries(list.fields)) {
       // If the field is a relationship field and is related to an omitted list, skip.
       if (field.dbField.kind === 'relation' && omittedLists.includes(field.dbField.list)) continue;
-
-      // TODO: you could technically update, but not read
-      if (field.graphql.isEnabled.read === false) continue;
+      if (Object.values(field.graphql.isEnabled).every(x => x === false)) continue;
 
       assertValidView(
         field.views,
@@ -228,7 +224,7 @@ export function createAdminMeta(
         ),
         isNonNull,
 
-        // DEPRECATED
+        // TODO: deprecated, remove in breaking change
         path: fieldKey,
       };
 

@@ -1,21 +1,22 @@
-import { CacheHint } from '@apollo/cache-control-types';
+import type { CacheHint } from '@apollo/cache-control-types';
 import { GraphQLString, isInputObjectType } from 'graphql';
 import { getGqlNames, QueryMode } from '../../types';
 import type {
   BaseItem,
-  GraphQLTypesForList,
-  NextFieldType,
   BaseListTypeInfo,
-  ListGraphQLTypes,
-  KeystoneConfig,
-  FindManyArgs,
-  ListHooks,
   CacheHintArgs,
+  FindManyArgs,
+  GraphQLTypesForList,
+  KeystoneConfig,
+  ListGraphQLTypes,
+  ListHooks,
   MaybePromise,
+  NextFieldType,
 } from '../../types';
 import { graphql } from '../..';
-import { FieldHooks, ResolvedListHooks, ResolvedFieldHooks } from '../../types/config/hooks';
-import { FilterOrderArgs } from '../../types/config/fields';
+import type { FieldHooks, ResolvedListHooks, ResolvedFieldHooks } from '../../types/config/hooks';
+import type { FilterOrderArgs } from '../../types/config/fields';
+import type { MaybeItemFunction, MaybeSessionFunction } from '../../types/config/lists';
 import {
   ResolvedFieldAccessControl,
   ResolvedListAccessControl,
@@ -28,8 +29,8 @@ import { outputTypeField } from './queries/output-field';
 import { assertFieldsValid } from './field-assertions';
 
 export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access' | 'graphql'> & {
-  dbField: ResolvedDBField;
   access: ResolvedFieldAccessControl;
+  dbField: ResolvedDBField;
   hooks: ResolvedFieldHooks<BaseListTypeInfo>;
   graphql: {
     isEnabled: {
@@ -45,6 +46,17 @@ export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access' | 'graph
       update: boolean;
     };
     cacheHint: CacheHint | undefined;
+  };
+  ui: {
+    createView: {
+      fieldMode: MaybeSessionFunction<'edit' | 'hidden', any>;
+    };
+    itemView: {
+      fieldMode: MaybeItemFunction<'read' | 'edit' | 'hidden', any>;
+    };
+    listView: {
+      fieldMode: MaybeSessionFunction<'read' | 'hidden', any>;
+    };
   };
 };
 
@@ -271,6 +283,12 @@ function getListsWithInitialisedFields(
         orderBy: read && (f.isOrderable ?? intermediateList.graphql.isEnabled.orderBy),
       };
 
+      const fieldModes = {
+        create: f.ui?.createView?.fieldMode ?? list.ui?.createView?.defaultFieldMode ?? 'edit',
+        item: f.ui?.itemView?.fieldMode ?? list.ui?.itemView?.defaultFieldMode ?? 'edit',
+        list: f.ui?.listView?.fieldMode ?? list.ui?.listView?.defaultFieldMode ?? 'read',
+      };
+
       resultFields[fieldKey] = {
         ...f,
         dbField: f.dbField as ResolvedDBField,
@@ -290,25 +308,21 @@ function getListsWithInitialisedFields(
           ...f.ui,
           createView: {
             ...f.ui?.createView,
-            fieldMode: _isEnabled.create
-              ? f.ui?.createView?.fieldMode ?? f.ui?.createView?.defaultFieldMode ?? 'edit'
-              : 'hidden',
+            fieldMode: _isEnabled.create ? fieldModes.create : 'hidden',
           },
 
           itemView: {
             ...f.ui?.itemView,
             fieldMode: _isEnabled.update
-              ? f.ui?.itemView?.fieldMode ?? f.ui?.itemView?.defaultFieldMode ?? 'edit'
-              : _isEnabled.read
+              ? fieldModes.item
+              : _isEnabled.read && fieldModes.item !== 'hidden'
               ? 'read'
-              : 'hidden', // fallback to read only if not omitted
+              : 'hidden',
           },
 
           listView: {
             ...f.ui?.listView,
-            fieldMode: _isEnabled.read
-              ? f.ui?.listView?.fieldMode ?? f.ui?.listView?.defaultFieldMode ?? 'read'
-              : 'hidden',
+            fieldMode: _isEnabled.read ? fieldModes.list : 'hidden',
           },
         },
       };
