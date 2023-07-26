@@ -54,7 +54,7 @@ function getListPrefix({ isFilterable, isOrderable, omit }: ListConfig) {
 
   return Object.entries(keys)
     .map(([k, v]) => `${k}${v}`)
-    .join('');
+    .join('_');
 }
 
 function getFieldPrefix({ isFilterable, isOrderable, omit }: FieldConfig) {
@@ -75,15 +75,15 @@ function getFieldPrefix({ isFilterable, isOrderable, omit }: FieldConfig) {
 
   return Object.entries(keys)
     .map(([k, v]) => `${k}${v}`)
-    .join('');
+    .join('_');
 }
 
 function getListName(config: ListConfig) {
-  return `List${getListPrefix(config)}`;
+  return `List_${getListPrefix(config)}`;
 }
 
 function getFieldName(config: FieldConfig) {
-  return `Field${getFieldPrefix(config)}`;
+  return `Field_${getFieldPrefix(config)}`;
 }
 
 const listConfigVariables: ListConfig[] = [];
@@ -143,11 +143,6 @@ const createFieldStatic = (config: FieldConfig) => ({
   }),
 });
 
-const createRelatedFields = (config: ListConfig) => ({
-  [`${getListPrefix(config)}one`]: relationship({ ref: getListName(config), many: false }),
-  [`${getListPrefix(config)}many`]: relationship({ ref: getListName(config), many: true }),
-});
-
 const lists: ListSchemaConfig = {};
 
 for (const listConfig of listConfigVariables) {
@@ -165,7 +160,19 @@ for (const listConfig of listConfigVariables) {
 
 lists.RelatedToAll = list({
   access: allowAll,
-  fields: Object.assign({}, ...listConfigVariables.map(config => createRelatedFields(config))),
+  fields: Object.assign(
+    {},
+    ...listConfigVariables.map(listConfig => ({
+      [`${getListPrefix(listConfig)}one`]: relationship({
+        ref: getListName(listConfig),
+        many: false,
+      }),
+      [`${getListPrefix(listConfig)}many`]: relationship({
+        ref: getListName(listConfig),
+        many: true,
+      }),
+    }))
+  ),
 });
 
 const config = apiTestConfig({
