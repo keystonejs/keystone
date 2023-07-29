@@ -12,7 +12,7 @@ The website is a Next.js app. It is statically rendered for deployment. Document
 
 ## Adding code highlighting
 
-This website uses Prism, with slight modifications to code blocks for code highlighting and collapse blocks.
+This website uses [Prism](https://github.com/PrismJS/prism), with slight modifications to code blocks for code highlighting and collapse blocks.
 
 To add line highlights, you can use curly braces `{}` containing numbers or ranges separated by commas after the language.
 
