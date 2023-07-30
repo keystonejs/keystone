@@ -178,18 +178,22 @@ function FieldGroup(props: { label: string; description: string | null; children
             </Text>
           </Stack>
         </summary>
-        <Stack across gap="medium">
-          <div css={{ width: buttonSize }} />
-          {divider}
-          <div>
+        <div css={{ display: 'flex' }}>
+          <div css={{ display: 'flex' }}>
+            <Stack across gap="medium">
+              <div css={{ width: buttonSize }} />
+              {divider}
+            </Stack>
+          </div>
+          <Stack marginLeft="medium" css={{ width: '100%' }}>
             {props.description !== null && (
               <FieldDescription id={descriptionId}>{props.description}</FieldDescription>
             )}
-            <Stack marginTop="xlarge" gap="xlarge">
+            <Stack marginTop="large" gap="xlarge">
               {props.children}
             </Stack>
-          </div>
-        </Stack>
+          </Stack>
+        </div>
       </details>
     </div>
   );
