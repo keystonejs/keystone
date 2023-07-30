@@ -2,7 +2,7 @@ import { text, relationship } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { allowAll } from '@keystone-6/core/access';
-import { apiTestConfig, ContextFromRunner } from '../utils';
+import { testConfig, ContextFromRunner } from '../utils';
 
 type IdType = any;
 
@@ -92,7 +92,7 @@ const createInitialData = async (context: ContextFromRunner<typeof runner>) => {
 };
 
 const runner = setupTestRunner({
-  config: apiTestConfig({
+  config: testConfig({
     lists: {
       Employee: list({
         access: allowAll,

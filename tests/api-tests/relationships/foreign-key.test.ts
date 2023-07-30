@@ -1,11 +1,11 @@
 import { list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { relationship } from '@keystone-6/core/fields';
-import { apiTestConfig, dbProvider, getPrismaSchema } from '../utils';
+import { testConfig, dbProvider, getPrismaSchema } from '../utils';
 
 test('when not specifying foreignKey in a one to one relationship, the side is picked based on the list key + field key ordering', async () => {
   const prismaSchema = await getPrismaSchema(
-    apiTestConfig({
+    testConfig({
       lists: {
         A: list({
           access: allowAll,
@@ -51,7 +51,7 @@ model B {
 
 test('when specifying foreignKey: true in a one to one relationship, that side has the foreign key', async () => {
   const prismaSchema = await getPrismaSchema(
-    apiTestConfig({
+    testConfig({
       lists: {
         A: list({
           access: allowAll,
@@ -97,7 +97,7 @@ model B {
 
 test('when specifying foreignKey: { map } in a one to one relationship, that side has the foreign key with the map', async () => {
   const prismaSchema = await getPrismaSchema(
-    apiTestConfig({
+    testConfig({
       lists: {
         A: list({
           access: allowAll,
@@ -144,7 +144,7 @@ model B {
 test('when specifying foreignKey: true on both sides of a one to one relationship, an error is thrown', async () => {
   await expect(
     getPrismaSchema(
-      apiTestConfig({
+      testConfig({
         lists: {
           A: list({
             access: allowAll,
@@ -170,7 +170,7 @@ test('when specifying foreignKey: true on both sides of a one to one relationshi
 test('when specifying foreignKey: { map } on both sides of a one to one relationship, an error is thrown', async () => {
   await expect(
     getPrismaSchema(
-      apiTestConfig({
+      testConfig({
         lists: {
           A: list({
             access: allowAll,
@@ -196,7 +196,7 @@ test('when specifying foreignKey: { map } on both sides of a one to one relation
 test('foreignKey: true in a many to one relationship is the same as not specifying foreignKey: true', async () => {
   const getPrismaSchemaForForeignKeyVal = (foreignKey: boolean) =>
     getPrismaSchema(
-      apiTestConfig({
+      testConfig({
         lists: {
           A: list({
             access: allowAll,
@@ -221,7 +221,7 @@ test('foreignKey: true in a many to one relationship is the same as not specifyi
 
 test('foreignKey: { map } in a many to one relationship sets the @map attribute on the foreign key', async () => {
   const prismaSchema = await getPrismaSchema(
-    apiTestConfig({
+    testConfig({
       lists: {
         A: list({
           access: allowAll,

@@ -3,10 +3,10 @@ import { list } from '@keystone-6/core';
 import { KeystoneContext } from '@keystone-6/core/types';
 import { allowAll } from '@keystone-6/core/access';
 import { setupTestRunner } from '../test-runner';
-import { apiTestConfig, dbProvider } from '../utils';
+import { testConfig, dbProvider } from '../utils';
 
 const runner = setupTestRunner({
-  config: apiTestConfig({
+  config: testConfig({
     lists: {
       Singular: list({
         isSingleton: true,

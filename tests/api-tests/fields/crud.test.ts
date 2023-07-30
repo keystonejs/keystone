@@ -5,7 +5,7 @@ import { KeystoneContext } from '@keystone-6/core/types';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { allowAll } from '@keystone-6/core/access';
 import { humanize } from '../../../packages/core/src/lib/utils';
-import { apiTestConfig, expectSingleResolverError, expectValidationError } from '../utils';
+import { testConfig, expectSingleResolverError, expectValidationError } from '../utils';
 
 const testModules = globby.sync(`tests/api-tests/fields/types/fixtures/**/test-fixtures.{js,ts}`, {
   absolute: true,
@@ -21,7 +21,7 @@ testModules
     (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
       const listKey = 'Test';
       const runner = setupTestRunner({
-        config: apiTestConfig({
+        config: testConfig({
           lists: {
             [listKey]: list({
               access: allowAll,

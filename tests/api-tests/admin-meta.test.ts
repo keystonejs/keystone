@@ -3,10 +3,10 @@ import { allowAll } from '@keystone-6/core/access';
 import { integer, text } from '@keystone-6/core/fields';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { staticAdminMetaQuery } from '../../packages/core/src/admin-ui/admin-meta-graphql';
-import { apiTestConfig, dbProvider } from './utils';
+import { testConfig, dbProvider } from './utils';
 
 const runner = setupTestRunner({
-  config: apiTestConfig({
+  config: testConfig({
     ui: {
       isAccessAllowed: () => false,
     },
@@ -163,7 +163,7 @@ test(
   'ui.{label,plural,singular,path} are returned in the admin meta',
 
   setupTestRunner({
-    config: apiTestConfig({
+    config: testConfig({
       lists: {
         Test: list({
           access: allowAll,

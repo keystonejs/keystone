@@ -2,11 +2,11 @@ import { list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
-import { apiTestConfig, dbProvider, dbName } from './utils';
+import { testConfig, dbProvider, dbName } from './utils';
 
 const runner = (enableLogging: boolean) =>
   setupTestRunner({
-    config: apiTestConfig({
+    config: testConfig({
       db: { enableLogging },
       lists: {
         // prettier-ignore

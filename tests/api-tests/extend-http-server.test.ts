@@ -4,12 +4,12 @@ import { text } from '@keystone-6/core/fields';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import supertest from 'supertest';
 import { allowAll } from '@keystone-6/core/access';
-import { apiTestConfig } from './utils';
+import { testConfig } from './utils';
 import { withServer } from './with-server';
 
 const runner = withServer(
   setupTestRunner({
-    config: apiTestConfig({
+    config: testConfig({
       lists: {
         // prettier-ignore
         User: list({

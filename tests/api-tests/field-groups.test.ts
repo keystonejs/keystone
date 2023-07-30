@@ -2,12 +2,12 @@ import { group, list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { getContext } from '@keystone-6/core/context';
 import { integer, text } from '@keystone-6/core/fields';
-import { apiTestConfig } from './utils';
+import { testConfig } from './utils';
 
 test('errors with nested field groups', () => {
   expect(() =>
     getContext(
-      apiTestConfig({
+      testConfig({
         lists: {
           User: list({
             access: allowAll,
@@ -36,7 +36,7 @@ test('errors with nested field groups', () => {
 test('errors if you write a group manually differently to the group function', () => {
   expect(() =>
     getContext(
-      apiTestConfig({
+      testConfig({
         lists: {
           User: list({
             access: allowAll,

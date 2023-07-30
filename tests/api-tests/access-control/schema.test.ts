@@ -2,7 +2,7 @@ import { createSystem, initConfig } from '@keystone-6/core/system';
 import { relationship, text } from '@keystone-6/core/fields';
 import { list, ListSchemaConfig } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
-import { apiTestConfig } from '../utils';
+import { testConfig } from '../utils';
 
 type ListConfig = {
   isFilterable?: false;
@@ -175,7 +175,7 @@ lists.RelatedToAll = list({
   ),
 });
 
-const config = apiTestConfig({
+const config = testConfig({
   lists,
   ui: {
     isAccessAllowed: () => true,

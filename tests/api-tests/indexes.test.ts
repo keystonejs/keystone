@@ -4,10 +4,10 @@ import { getCommittedArtifacts } from '@keystone-6/core/___internal-do-not-use-w
 import { select, text } from '@keystone-6/core/fields';
 import { createSystem, initConfig } from '@keystone-6/core/system';
 import { setupTestEnv } from '@keystone-6/api-tests/test-runner';
-import { apiTestConfig, dbProvider } from './utils';
+import { testConfig, dbProvider } from './utils';
 
 test('isIndexed: true and db.map on a text field generates a valid Prisma schema', async () => {
-  const config = apiTestConfig({
+  const config = testConfig({
     lists: {
       Test: list({
         access: allowAll,
@@ -48,7 +48,7 @@ model Test {
 if (dbProvider === 'postgresql') {
   // scalar and enum fields are printed slightly differently so that's why we're also testing an enum select field
   test('isIndexed: true and db.map on an enum select field generates a valid Prisma schema', async () => {
-    const config = apiTestConfig({
+    const config = testConfig({
       lists: {
         Test: list({
           access: allowAll,

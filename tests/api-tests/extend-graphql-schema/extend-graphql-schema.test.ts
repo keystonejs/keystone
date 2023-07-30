@@ -2,7 +2,7 @@ import { list, graphql } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
-import { apiTestConfig, expectInternalServerError } from '../utils';
+import { testConfig, expectInternalServerError } from '../utils';
 import { withServer } from '../with-server';
 
 const falseFn: (...args: any) => boolean = () => false;
@@ -48,7 +48,7 @@ const extendGraphqlSchema = graphql.extend(() => {
 });
 
 const runner = setupTestRunner({
-  config: apiTestConfig({
+  config: testConfig({
     lists: {
       User: list({
         access: allowAll,

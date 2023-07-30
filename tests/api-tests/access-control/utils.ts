@@ -3,7 +3,7 @@ import { list, ListSchemaConfig } from '@keystone-6/core';
 import { statelessSessions } from '@keystone-6/core/session';
 import { createAuth } from '@keystone-6/auth';
 import { allowAll } from '@keystone-6/core/access';
-import { apiTestConfig } from '../utils';
+import { testConfig } from '../utils';
 
 const FAKE_ID = 'cdsfasfafafadfasdf';
 const FAKE_ID_2 = 'csdfbstrsbaf';
@@ -178,7 +178,7 @@ const auth = createAuth({
 });
 
 const config = auth.withAuth(
-  apiTestConfig({
+  testConfig({
     lists,
     session: statelessSessions({ secret: COOKIE_SECRET }),
   })

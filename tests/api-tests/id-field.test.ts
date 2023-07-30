@@ -5,7 +5,7 @@ import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { isCuid } from 'cuid';
 import { isCuid as isCuid2, createId as createCuid2 } from '@paralleldrive/cuid2';
 import { validate as isUuid } from 'uuid';
-import { apiTestConfig, dbProvider, expectBadUserInput } from './utils';
+import { testConfig, dbProvider, expectBadUserInput } from './utils';
 
 export function assertNever(arg: never) {
   throw new Error('expected to never be called but received: ' + JSON.stringify(arg));
@@ -100,7 +100,7 @@ const fixtures = [
 for (const fixture of fixtures) {
   const { expect: expectFn, error, hooks = {}, ...idField } = fixture;
   const runner = setupTestRunner({
-    config: apiTestConfig({
+    config: testConfig({
       db: {
         idField,
       },
@@ -193,7 +193,7 @@ for (const fixture of fixtures) {
 describe('case insensitive id filters', () => {
   {
     const runner = setupTestRunner({
-      config: apiTestConfig({
+      config: testConfig({
         db: { idField: { kind: 'uuid' } },
         lists: {
           User: list({ access: allowAll, fields: { name: text() } }),

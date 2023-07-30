@@ -3,11 +3,11 @@ import { text, relationship, integer } from '@keystone-6/core/fields';
 import { list, graphql } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { allowAll } from '@keystone-6/core/access';
-import { apiTestConfig, ContextFromRunner } from '../utils';
+import { testConfig, ContextFromRunner } from '../utils';
 import { withServer } from '../with-server';
 
 const runner = setupTestRunner({
-  config: apiTestConfig({
+  config: testConfig({
     lists: {
       Post: list({
         access: allowAll,

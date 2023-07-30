@@ -11,7 +11,7 @@ import { list } from '@keystone-6/core';
 import { KeystoneConfig, StorageConfig } from '@keystone-6/core/types';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { allowAll } from '@keystone-6/core/access';
-import { apiTestConfig, expectSingleResolverError } from '../utils';
+import { testConfig, expectSingleResolverError } from '../utils';
 
 const fieldPath = path.resolve(__dirname, '../../..', 'packages/core/src/fields/types');
 
@@ -53,7 +53,7 @@ const getRunner = ({
   fields: KeystoneConfig['lists'][string]['fields'];
 }) =>
   setupTestRunner({
-    config: apiTestConfig({
+    config: testConfig({
       db: {},
       storage,
       lists: {

@@ -2,7 +2,7 @@ import { list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { getContext } from '@keystone-6/core/context';
 import { integer, relationship, text } from '@keystone-6/core/fields';
-import { apiTestConfig } from '../utils';
+import { testConfig } from '../utils';
 
 const Thing = list({
   access: allowAll,
@@ -16,7 +16,7 @@ const Thing = list({
 test("labelField that doesn't exist is rejected with displayMode: select", () => {
   expect(() =>
     getContext(
-      apiTestConfig({
+      testConfig({
         lists: {
           A: list({
             access: allowAll,
@@ -42,7 +42,7 @@ test("labelField that doesn't exist is rejected with displayMode: select", () =>
 test("labelField that doesn't exist is rejected with displayMode: cards", () => {
   expect(() =>
     getContext(
-      apiTestConfig({
+      testConfig({
         lists: {
           A: list({
             access: allowAll,
@@ -70,7 +70,7 @@ test("labelField that doesn't exist is rejected with displayMode: cards", () => 
 test("searchFields that don't exist are rejected with displayMode: select", () => {
   expect(() =>
     getContext(
-      apiTestConfig({
+      testConfig({
         lists: {
           A: list({
             access: allowAll,
@@ -96,7 +96,7 @@ test("searchFields that don't exist are rejected with displayMode: select", () =
 test("searchFields that don't exist are rejected with displayMode: cards", () => {
   expect(() =>
     getContext(
-      apiTestConfig({
+      testConfig({
         lists: {
           A: list({
             access: allowAll,
@@ -124,7 +124,7 @@ test("searchFields that don't exist are rejected with displayMode: cards", () =>
 test("searchFields that aren't searchable are rejected with displayMode: select", () => {
   expect(() =>
     getContext(
-      apiTestConfig({
+      testConfig({
         lists: {
           A: list({
             access: allowAll,
@@ -150,7 +150,7 @@ test("searchFields that aren't searchable are rejected with displayMode: select"
 test("searchFields that aren't searchable are rejected with displayMode: cards", () => {
   expect(() =>
     getContext(
-      apiTestConfig({
+      testConfig({
         lists: {
           A: list({
             access: allowAll,

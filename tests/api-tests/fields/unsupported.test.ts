@@ -6,7 +6,7 @@ import { list } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
 import { setupTestEnv } from '@keystone-6/api-tests/test-runner';
 import { allowAll } from '@keystone-6/core/access';
-import { apiTestConfig } from '../utils';
+import { testConfig } from '../utils';
 
 const testModules = globby.sync(`tests/api-tests/fields/types/fixtures/**/test-fixtures.{js,ts}`, {
   absolute: true,
@@ -48,7 +48,7 @@ if (unsupportedModules.length > 0) {
           await expect(
             async () =>
               await setupTestEnv({
-                config: apiTestConfig({
+                config: testConfig({
                   lists: {
                     [listKey]: list({
                       access: allowAll,
