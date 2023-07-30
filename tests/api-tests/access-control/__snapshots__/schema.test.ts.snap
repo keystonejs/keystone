@@ -73,18 +73,15 @@ exports[`Schema Public 1`] = `
           {
             "name": "Field_FilterableFalse_OrderableFalse_OmitReadFalse_OmitCreateTrue_OmitUpdateTrue"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "ID",
-        "fields": null,
-        "inputFields": null
+        "fields": null
       },
       {
         "name": "String",
-        "fields": null,
-        "inputFields": null
+        "fields": null
       },
       {
         "name": "List_FilterableUndefined_OrderableUndefined_OmitUndefinedWhereUniqueInput",
@@ -298,8 +295,7 @@ exports[`Schema Public 1`] = `
       },
       {
         "name": "OrderDirection",
-        "fields": null,
-        "inputFields": null
+        "fields": null
       },
       {
         "name": "List_FilterableUndefined_OrderableUndefined_OmitUndefinedUpdateInput",
@@ -520,8 +516,7 @@ exports[`Schema Public 1`] = `
           {
             "name": "Field_FilterableFalse_OrderableFalse_OmitReadFalse_OmitCreateTrue_OmitUpdateTrue"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "List_FilterableUndefined_OrderableUndefined_OmitQueryUndefined_OmitCreateUndefined_OmitUpdateUndefined_OmitDeleteUndefinedWhereUniqueInput",
@@ -844,8 +839,7 @@ exports[`Schema Public 1`] = `
           {
             "name": "Field_FilterableFalse_OrderableFalse_OmitReadFalse_OmitCreateTrue_OmitUpdateTrue"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "List_FilterableUndefined_OrderableFalse_OmitUndefinedWhereUniqueInput",
@@ -1135,8 +1129,7 @@ exports[`Schema Public 1`] = `
           {
             "name": "Field_FilterableFalse_OrderableFalse_OmitReadFalse_OmitCreateTrue_OmitUpdateTrue"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "List_FilterableUndefined_OrderableFalse_OmitQueryUndefined_OmitCreateUndefined_OmitUpdateUndefined_OmitDeleteUndefinedWhereUniqueInput",
@@ -1426,8 +1419,7 @@ exports[`Schema Public 1`] = `
           {
             "name": "Field_FilterableFalse_OrderableFalse_OmitReadFalse_OmitCreateTrue_OmitUpdateTrue"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "List_FilterableFalse_OrderableUndefined_OmitUndefinedWhereUniqueInput",
@@ -1717,8 +1709,7 @@ exports[`Schema Public 1`] = `
           {
             "name": "Field_FilterableFalse_OrderableFalse_OmitReadFalse_OmitCreateTrue_OmitUpdateTrue"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "List_FilterableFalse_OrderableUndefined_OmitQueryUndefined_OmitCreateUndefined_OmitUpdateUndefined_OmitDeleteUndefinedWhereUniqueInput",
@@ -2008,8 +1999,7 @@ exports[`Schema Public 1`] = `
           {
             "name": "Field_FilterableFalse_OrderableFalse_OmitReadFalse_OmitCreateTrue_OmitUpdateTrue"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "List_FilterableFalse_OrderableFalse_OmitUndefinedWhereUniqueInput",
@@ -2266,8 +2256,7 @@ exports[`Schema Public 1`] = `
           {
             "name": "Field_FilterableFalse_OrderableFalse_OmitReadFalse_OmitCreateTrue_OmitUpdateTrue"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "List_FilterableFalse_OrderableFalse_OmitQueryUndefined_OmitCreateUndefined_OmitUpdateUndefined_OmitDeleteUndefinedWhereUniqueInput",
@@ -2533,13 +2522,11 @@ exports[`Schema Public 1`] = `
           {
             "name": "FilterableFalse_OrderableFalse_OmitQueryUndefined_OmitCreateUndefined_OmitUpdateUndefined_OmitDeleteUndefinedmanyCount"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "Int",
-        "fields": null,
-        "inputFields": null
+        "fields": null
       },
       {
         "name": "RelatedToAllWhereUniqueInput",
@@ -2972,8 +2959,7 @@ exports[`Schema Public 1`] = `
       },
       {
         "name": "Boolean",
-        "fields": null,
-        "inputFields": null
+        "fields": null
       },
       {
         "name": "List_FilterableUndefined_OrderableUndefined_OmitUndefinedRelateToManyForUpdateInput",
@@ -3484,8 +3470,7 @@ exports[`Schema Public 1`] = `
       },
       {
         "name": "JSON",
-        "fields": null,
-        "inputFields": null
+        "fields": null
       },
       {
         "name": "Mutation",
@@ -3652,8 +3637,7 @@ exports[`Schema Public 1`] = `
           {
             "name": "deleteRelatedToAlls"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "Query",
@@ -3742,8 +3726,7 @@ exports[`Schema Public 1`] = `
           {
             "name": "keystone"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "KeystoneMeta",
@@ -3751,8 +3734,7 @@ exports[`Schema Public 1`] = `
           {
             "name": "adminMeta"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "KeystoneAdminMeta",
@@ -3763,8 +3745,7 @@ exports[`Schema Public 1`] = `
           {
             "name": "list"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "KeystoneAdminUIListMeta",
@@ -3823,8 +3804,7 @@ exports[`Schema Public 1`] = `
           {
             "name": "isSingleton"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "KeystoneAdminUIFieldMeta",
@@ -3868,13 +3848,11 @@ exports[`Schema Public 1`] = `
           {
             "name": "search"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "KeystoneAdminUIFieldMetaIsNonNull",
-        "fields": null,
-        "inputFields": null
+        "fields": null
       },
       {
         "name": "KeystoneAdminUIFieldMetaCreateView",
@@ -3882,13 +3860,11 @@ exports[`Schema Public 1`] = `
           {
             "name": "fieldMode"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "KeystoneAdminUIFieldMetaCreateViewFieldMode",
-        "fields": null,
-        "inputFields": null
+        "fields": null
       },
       {
         "name": "KeystoneAdminUIFieldMetaListView",
@@ -3896,13 +3872,11 @@ exports[`Schema Public 1`] = `
           {
             "name": "fieldMode"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "KeystoneAdminUIFieldMetaListViewFieldMode",
-        "fields": null,
-        "inputFields": null
+        "fields": null
       },
       {
         "name": "KeystoneAdminUIFieldMetaItemView",
@@ -3913,23 +3887,15 @@ exports[`Schema Public 1`] = `
           {
             "name": "fieldPosition"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "KeystoneAdminUIFieldMetaItemViewFieldMode",
-        "fields": null,
-        "inputFields": null
+        "fields": null
       },
       {
         "name": "KeystoneAdminUIFieldMetaItemViewFieldPosition",
-        "fields": null,
-        "inputFields": null
-      },
-      {
-        "name": "QueryMode",
-        "fields": null,
-        "inputFields": null
+        "fields": null
       },
       {
         "name": "KeystoneAdminUIFieldGroupMeta",
@@ -3943,8 +3909,7 @@ exports[`Schema Public 1`] = `
           {
             "name": "fields"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "KeystoneAdminUISort",
@@ -3955,13 +3920,11 @@ exports[`Schema Public 1`] = `
           {
             "name": "direction"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "KeystoneAdminUISortDirection",
-        "fields": null,
-        "inputFields": null
+        "fields": null
       },
       {
         "name": "__Schema",
@@ -3984,8 +3947,7 @@ exports[`Schema Public 1`] = `
           {
             "name": "directives"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "__Type",
@@ -4020,13 +3982,11 @@ exports[`Schema Public 1`] = `
           {
             "name": "ofType"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "__TypeKind",
-        "fields": null,
-        "inputFields": null
+        "fields": null
       },
       {
         "name": "__Field",
@@ -4049,8 +4009,7 @@ exports[`Schema Public 1`] = `
           {
             "name": "deprecationReason"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "__InputValue",
@@ -4073,8 +4032,7 @@ exports[`Schema Public 1`] = `
           {
             "name": "deprecationReason"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "__EnumValue",
@@ -4091,8 +4049,7 @@ exports[`Schema Public 1`] = `
           {
             "name": "deprecationReason"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "__Directive",
@@ -4112,13 +4069,11 @@ exports[`Schema Public 1`] = `
           {
             "name": "args"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "__DirectiveLocation",
-        "fields": null,
-        "inputFields": null
+        "fields": null
       }
     ],
     "queryType": {
@@ -8549,18 +8504,15 @@ exports[`Schema Sudo 1`] = `
           {
             "name": "Field_FilterableFalse_OrderableFalse_OmitReadFalse_OmitCreateTrue_OmitUpdateTrue"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "ID",
-        "fields": null,
-        "inputFields": null
+        "fields": null
       },
       {
         "name": "String",
-        "fields": null,
-        "inputFields": null
+        "fields": null
       },
       {
         "name": "List_FilterableUndefined_OrderableUndefined_OmitUndefinedWhereUniqueInput",
@@ -8774,8 +8726,7 @@ exports[`Schema Sudo 1`] = `
       },
       {
         "name": "OrderDirection",
-        "fields": null,
-        "inputFields": null
+        "fields": null
       },
       {
         "name": "List_FilterableUndefined_OrderableUndefined_OmitUndefinedUpdateInput",
@@ -8996,8 +8947,7 @@ exports[`Schema Sudo 1`] = `
           {
             "name": "Field_FilterableFalse_OrderableFalse_OmitReadFalse_OmitCreateTrue_OmitUpdateTrue"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "List_FilterableUndefined_OrderableUndefined_OmitQueryUndefined_OmitCreateUndefined_OmitUpdateUndefined_OmitDeleteUndefinedWhereUniqueInput",
@@ -9320,8 +9270,7 @@ exports[`Schema Sudo 1`] = `
           {
             "name": "Field_FilterableFalse_OrderableFalse_OmitReadFalse_OmitCreateTrue_OmitUpdateTrue"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "List_FilterableUndefined_OrderableFalse_OmitUndefinedWhereUniqueInput",
@@ -9611,8 +9560,7 @@ exports[`Schema Sudo 1`] = `
           {
             "name": "Field_FilterableFalse_OrderableFalse_OmitReadFalse_OmitCreateTrue_OmitUpdateTrue"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "List_FilterableUndefined_OrderableFalse_OmitQueryUndefined_OmitCreateUndefined_OmitUpdateUndefined_OmitDeleteUndefinedWhereUniqueInput",
@@ -9902,8 +9850,7 @@ exports[`Schema Sudo 1`] = `
           {
             "name": "Field_FilterableFalse_OrderableFalse_OmitReadFalse_OmitCreateTrue_OmitUpdateTrue"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "List_FilterableFalse_OrderableUndefined_OmitUndefinedWhereUniqueInput",
@@ -10193,8 +10140,7 @@ exports[`Schema Sudo 1`] = `
           {
             "name": "Field_FilterableFalse_OrderableFalse_OmitReadFalse_OmitCreateTrue_OmitUpdateTrue"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "List_FilterableFalse_OrderableUndefined_OmitQueryUndefined_OmitCreateUndefined_OmitUpdateUndefined_OmitDeleteUndefinedWhereUniqueInput",
@@ -10484,8 +10430,7 @@ exports[`Schema Sudo 1`] = `
           {
             "name": "Field_FilterableFalse_OrderableFalse_OmitReadFalse_OmitCreateTrue_OmitUpdateTrue"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "List_FilterableFalse_OrderableFalse_OmitUndefinedWhereUniqueInput",
@@ -10742,8 +10687,7 @@ exports[`Schema Sudo 1`] = `
           {
             "name": "Field_FilterableFalse_OrderableFalse_OmitReadFalse_OmitCreateTrue_OmitUpdateTrue"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "List_FilterableFalse_OrderableFalse_OmitQueryUndefined_OmitCreateUndefined_OmitUpdateUndefined_OmitDeleteUndefinedWhereUniqueInput",
@@ -11009,13 +10953,11 @@ exports[`Schema Sudo 1`] = `
           {
             "name": "FilterableFalse_OrderableFalse_OmitQueryUndefined_OmitCreateUndefined_OmitUpdateUndefined_OmitDeleteUndefinedmanyCount"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "Int",
-        "fields": null,
-        "inputFields": null
+        "fields": null
       },
       {
         "name": "RelatedToAllWhereUniqueInput",
@@ -11448,8 +11390,7 @@ exports[`Schema Sudo 1`] = `
       },
       {
         "name": "Boolean",
-        "fields": null,
-        "inputFields": null
+        "fields": null
       },
       {
         "name": "List_FilterableUndefined_OrderableUndefined_OmitUndefinedRelateToManyForUpdateInput",
@@ -11960,8 +11901,7 @@ exports[`Schema Sudo 1`] = `
       },
       {
         "name": "JSON",
-        "fields": null,
-        "inputFields": null
+        "fields": null
       },
       {
         "name": "Mutation",
@@ -12128,8 +12068,7 @@ exports[`Schema Sudo 1`] = `
           {
             "name": "deleteRelatedToAlls"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "Query",
@@ -12218,8 +12157,7 @@ exports[`Schema Sudo 1`] = `
           {
             "name": "keystone"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "KeystoneMeta",
@@ -12227,8 +12165,7 @@ exports[`Schema Sudo 1`] = `
           {
             "name": "adminMeta"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "KeystoneAdminMeta",
@@ -12239,8 +12176,7 @@ exports[`Schema Sudo 1`] = `
           {
             "name": "list"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "KeystoneAdminUIListMeta",
@@ -12299,8 +12235,7 @@ exports[`Schema Sudo 1`] = `
           {
             "name": "isSingleton"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "KeystoneAdminUIFieldMeta",
@@ -12344,13 +12279,11 @@ exports[`Schema Sudo 1`] = `
           {
             "name": "search"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "KeystoneAdminUIFieldMetaIsNonNull",
-        "fields": null,
-        "inputFields": null
+        "fields": null
       },
       {
         "name": "KeystoneAdminUIFieldMetaCreateView",
@@ -12358,13 +12291,11 @@ exports[`Schema Sudo 1`] = `
           {
             "name": "fieldMode"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "KeystoneAdminUIFieldMetaCreateViewFieldMode",
-        "fields": null,
-        "inputFields": null
+        "fields": null
       },
       {
         "name": "KeystoneAdminUIFieldMetaListView",
@@ -12372,13 +12303,11 @@ exports[`Schema Sudo 1`] = `
           {
             "name": "fieldMode"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "KeystoneAdminUIFieldMetaListViewFieldMode",
-        "fields": null,
-        "inputFields": null
+        "fields": null
       },
       {
         "name": "KeystoneAdminUIFieldMetaItemView",
@@ -12389,23 +12318,15 @@ exports[`Schema Sudo 1`] = `
           {
             "name": "fieldPosition"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "KeystoneAdminUIFieldMetaItemViewFieldMode",
-        "fields": null,
-        "inputFields": null
+        "fields": null
       },
       {
         "name": "KeystoneAdminUIFieldMetaItemViewFieldPosition",
-        "fields": null,
-        "inputFields": null
-      },
-      {
-        "name": "QueryMode",
-        "fields": null,
-        "inputFields": null
+        "fields": null
       },
       {
         "name": "KeystoneAdminUIFieldGroupMeta",
@@ -12419,8 +12340,7 @@ exports[`Schema Sudo 1`] = `
           {
             "name": "fields"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "KeystoneAdminUISort",
@@ -12431,13 +12351,11 @@ exports[`Schema Sudo 1`] = `
           {
             "name": "direction"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "KeystoneAdminUISortDirection",
-        "fields": null,
-        "inputFields": null
+        "fields": null
       },
       {
         "name": "__Schema",
@@ -12460,8 +12378,7 @@ exports[`Schema Sudo 1`] = `
           {
             "name": "directives"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "__Type",
@@ -12496,13 +12413,11 @@ exports[`Schema Sudo 1`] = `
           {
             "name": "ofType"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "__TypeKind",
-        "fields": null,
-        "inputFields": null
+        "fields": null
       },
       {
         "name": "__Field",
@@ -12525,8 +12440,7 @@ exports[`Schema Sudo 1`] = `
           {
             "name": "deprecationReason"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "__InputValue",
@@ -12549,8 +12463,7 @@ exports[`Schema Sudo 1`] = `
           {
             "name": "deprecationReason"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "__EnumValue",
@@ -12567,8 +12480,7 @@ exports[`Schema Sudo 1`] = `
           {
             "name": "deprecationReason"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "__Directive",
@@ -12588,13 +12500,11 @@ exports[`Schema Sudo 1`] = `
           {
             "name": "args"
           }
-        ],
-        "inputFields": null
+        ]
       },
       {
         "name": "__DirectiveLocation",
-        "fields": null,
-        "inputFields": null
+        "fields": null
       }
     ],
     "queryType": {

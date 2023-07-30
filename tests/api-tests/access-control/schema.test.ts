@@ -228,14 +228,23 @@ class FakePrismaClient {
   }
 }
 
-describe('Schema', () => {
+function dropPostgresThings(data: any) {
+  data.__schema.types = data.__schema.types.filter((x: any) => x.name !== 'QueryMode')
+  for (const x of data.__schema.types) {
+    x.inputFields = x.inputFields?.filter((x: any) => x.name !== 'mode')
+  }
+}
+
+describe(`Schema`, () => {
   const { getKeystone } = createSystem(initConfig(config));
   const { context } = getKeystone({ PrismaClient: FakePrismaClient, Prisma: {} as any });
 
   test('Public', async () => {
     const data = (await context.graphql.run({ query: introspectionQuery })) as Record<string, any>;
+    dropPostgresThings(data);
 
     expect(JSON.stringify(data, null, 2)).toMatchSnapshot();
+
     for (const listKey in lists) {
       if (listKey.endsWith('OmitTrue')) {
         expect(data.keystone.adminMeta.lists.some((x: any) => x.key === listKey)).toBe(false);
@@ -249,6 +258,7 @@ describe('Schema', () => {
 
   test('Sudo', async () => {
     const data = (await context.graphql.run({ query: introspectionQuery })) as Record<string, any>;
+    dropPostgresThings(data);
 
     expect(JSON.stringify(data, null, 2)).toMatchSnapshot();
     for (const listKey in lists) {
