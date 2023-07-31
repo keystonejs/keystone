@@ -1836,18 +1836,12 @@ importers:
       '@keystone-ui/pill':
         specifier: ^7.0.2
         version: link:../../design-system/packages/pill
-      '@paralleldrive/cuid2':
-        specifier: ^2.2.1
-        version: 2.2.1
       '@types/react':
         specifier: ^18.0.9
         version: 18.0.25
       cloudinary:
         specifier: ^1.27.1
         version: 1.27.1
-      cuid:
-        specifier: ^2.1.8
-        version: 2.1.8
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -13505,6 +13499,7 @@ packages:
   /cuid@2.1.8:
     resolution: {integrity: sha512-xiEMER6E7TlTPnDxrM4eRiC6TRgjNX9xzEZ5U/Se2YJKr7Mq4pJn/2XEHjl3STcSh96GmkHPcBXLES8M29wyyg==}
     deprecated: Cuid and other k-sortable and non-cryptographic ids (Ulid, ObjectId, KSUID, all UUIDs) are all insecure. Use @paralleldrive/cuid2 instead.
+    dev: true
 
   /data-uri-to-buffer@3.0.1:
     resolution: {integrity: sha512-WboRycPNsVw3B3TL559F7kuBUM4d8CgMEvk6xEJlOp7OBPjt6G7z8WMWlD2rOFZLk6OYfFIUGsCOWzcQH9K2og==}
