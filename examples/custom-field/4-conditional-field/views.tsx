@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { FieldContainer, FieldDescription, FieldLabel, TextInput } from '@keystone-ui/fields';
 import { CellLink, CellContainer } from '@keystone-6/core/admin-ui/components';
-import type { JSONValue } from '@keystone-6/core/types';
 
 import {
   CardValueComponent,
@@ -18,12 +17,12 @@ export function Field({
   onChange,
   autoFocus,
 }: FieldProps<typeof controller>) {
-  const discriminant = itemValue?.[field.dependency.field]?.value ?? Infinity;
+  const discriminant = (itemValue as any)?.[field.dependency.field]?.value ?? Infinity;
   const hidden = discriminant > field.dependency.minimumValue;
 
   useEffect(() => {
-    if (hidden) onChange('');
-  }, [hidden]);
+    if (hidden) onChange?.('');
+  }, [onChange, hidden]);
 
   if (hidden) return null;
 
@@ -72,7 +71,7 @@ export const controller = (
 ): FieldController<string | null, string> & {
   dependency: {
     field: string;
-    mininumValue: number;
+    minimumValue: number;
   };
 } => {
   return {
