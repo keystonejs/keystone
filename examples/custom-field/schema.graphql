@@ -5,6 +5,7 @@ type Post {
   id: ID!
   content: String
   rating: Int
+  feedback: String
   pair: String
   pairNested: PairNestedOutput
   pairJson: PairJsonOutput
@@ -71,6 +72,7 @@ input PostOrderByInput {
   id: OrderDirection
   content: OrderDirection
   rating: OrderDirection
+  feedback: OrderDirection
 }
 
 enum OrderDirection {
@@ -81,6 +83,7 @@ enum OrderDirection {
 input PostUpdateInput {
   content: String
   rating: Int
+  feedback: String
   pair: String
   pairNested: PairNestedInput
   pairJson: PairJsonInput
@@ -94,6 +97,7 @@ input PostUpdateArgs {
 input PostCreateInput {
   content: String
   rating: Int
+  feedback: String
   pair: String
   pairNested: PairNestedInput
   pairJson: PairJsonInput

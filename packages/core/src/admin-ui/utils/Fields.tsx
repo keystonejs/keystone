@@ -10,6 +10,7 @@ import { Value } from '.';
 type RenderFieldProps = {
   field: FieldMeta;
   value: unknown;
+  itemValue: unknown;
   onChange?(value: (value: Value) => Value): void;
   autoFocus?: boolean;
   forceValidation?: boolean;
@@ -18,6 +19,7 @@ type RenderFieldProps = {
 const RenderField = memo(function RenderField({
   field,
   value,
+  itemValue,
   autoFocus,
   forceValidation,
   onChange,
@@ -32,6 +34,7 @@ const RenderField = memo(function RenderField({
         };
       }, [onChange, field.controller.path])}
       value={value}
+      itemValue={itemValue}
       autoFocus={autoFocus}
       forceValidation={forceValidation}
     />
@@ -83,6 +86,7 @@ export function Fields({
           key={fieldKey}
           field={field}
           value={val.value}
+          itemValue={value}
           forceValidation={forceValidation && invalidFields.has(fieldKey)}
           onChange={fieldMode === 'edit' ? onChange : undefined}
           autoFocus={index === 0}

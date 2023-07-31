@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FieldContainer, FieldDescription, FieldLabel, TextInput } from '@keystone-ui/fields';
 import { CellLink, CellContainer } from '@keystone-6/core/admin-ui/components';
 
@@ -10,9 +10,23 @@ import {
   FieldProps,
 } from '@keystone-6/core/types';
 
-export function Field({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) {
-  const disabled = onChange === undefined;
+export function Field({
+  field,
+  value,
+  itemValue,
+  onChange,
+  autoFocus,
+}: FieldProps<typeof controller>) {
+  const discriminant = (itemValue as any)?.[field.dependency.field]?.value ?? Infinity;
+  const hidden = discriminant > field.dependency.minimumValue;
 
+  useEffect(() => {
+    if (hidden) onChange?.('');
+  }, [onChange, hidden]);
+
+  if (hidden) return null;
+
+  const disabled = onChange === undefined;
   return (
     <FieldContainer as="fieldset">
       <FieldLabel>{field.label}</FieldLabel>
@@ -48,12 +62,23 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
 };
 
 export const controller = (
-  config: FieldControllerConfig<{}>
-): FieldController<string | null, string> => {
+  config: FieldControllerConfig<{
+    dependency: {
+      field: string;
+      minimumValue: number;
+    };
+  }>
+): FieldController<string | null, string> & {
+  dependency: {
+    field: string;
+    minimumValue: number;
+  };
+} => {
   return {
     path: config.path,
     label: config.label,
     description: config.description,
+    dependency: config.fieldMeta?.dependency,
     graphqlSelection: config.path,
     defaultValue: null,
     deserialize: data => {

@@ -75,8 +75,9 @@ function LinkToRelatedItems({
 
 export const Field = ({
   field,
-  autoFocus,
   value,
+  itemValue,
+  autoFocus,
   onChange,
   forceValidation,
 }: FieldProps<typeof controller>) => {
@@ -95,6 +96,7 @@ export const Field = ({
           field={field}
           id={value.id}
           value={value}
+          itemValue={itemValue}
           onChange={onChange}
           foreignList={foreignList}
           localList={localList}

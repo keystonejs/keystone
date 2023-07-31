@@ -9,12 +9,17 @@ import { graphql } from '@keystone-6/core';
 
 type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<ListTypeInfo> & {
   isIndexed?: boolean | 'unique';
+  dependency: {
+    field: string;
+    minimumValue: number;
+  };
 };
 
-export function text<ListTypeInfo extends BaseListTypeInfo>({
+export function feedback<ListTypeInfo extends BaseListTypeInfo>({
   isIndexed,
+  dependency,
   ...config
-}: TextFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
+}: TextFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
   return meta =>
     fieldType({
       kind: 'scalar',
@@ -41,9 +46,11 @@ export function text<ListTypeInfo extends BaseListTypeInfo>({
           return value;
         },
       }),
-      views: './1-text-field/views',
+      views: './4-conditional-field/views',
       getAdminMeta() {
-        return {};
+        return {
+          dependency,
+        };
       },
     });
 }
