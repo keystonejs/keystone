@@ -1,5 +1,5 @@
 import { assertInputObjectType } from 'graphql';
-import {
+import type {
   BaseListTypeInfo,
   CreateListItemAccessControl,
   FieldAccessControl,
@@ -17,7 +17,7 @@ import {
 import { coerceAndValidateForGraphQLInput } from '../coerceAndValidateForGraphQLInput';
 import { allowAll } from '../../access';
 import { accessReturnError, extensionError } from './graphql-errors';
-import { InitialisedList } from './types-for-lists';
+import type { InitialisedList } from './initialise-lists';
 import { InputFilter } from './where-inputs';
 
 export function cannotForItem(operation: string, list: InitialisedList) {

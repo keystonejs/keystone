@@ -2,12 +2,12 @@ import Path from 'path';
 import { promisify } from 'util';
 import fs from 'fs-extra';
 import resolve from 'resolve';
-import { GraphQLSchema } from 'graphql';
+import type { GraphQLSchema } from 'graphql';
 import { Entry, walk as _walk } from '@nodelib/fs.walk';
 import type { KeystoneConfig, AdminFileToWrite } from '../../types';
 import { writeAdminFiles } from '../templates';
 import { serializePathForImport } from '../utils/serializePathForImport';
-import { AdminMetaRootVal } from './createAdminMeta';
+import type { AdminMetaRootVal } from './createAdminMeta';
 
 const walk = promisify(_walk);
 

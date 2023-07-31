@@ -1,8 +1,8 @@
-import { GraphQLResolveInfo } from 'graphql';
-import { ScalarType, EnumType, EnumValue } from '@graphql-ts/schema';
-import { QueryMode, KeystoneContext, BaseItem, MaybePromise } from '../../types';
+import type { GraphQLResolveInfo } from 'graphql';
+import type { ScalarType, EnumType, EnumValue } from '@graphql-ts/schema';
+import type { QueryMode, KeystoneContext, BaseItem, MaybePromise } from '../../types';
 import { graphql as graphqlBoundToKeystoneContext } from '../..';
-import {
+import type {
   FieldMetaRootVal,
   ListMetaRootVal,
   AdminMetaRootVal,

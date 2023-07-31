@@ -1,5 +1,5 @@
 import path from 'path';
-import { InitialisedList } from '../src/lib/core/types-for-lists';
+import type { InitialisedList } from '../src/lib/core/initialise-lists';
 import { runTelemetry, disableTelemetry } from '../src/lib/telemetry';
 
 const mockProjectRoot = path.resolve(__dirname, '..', '..', '..');

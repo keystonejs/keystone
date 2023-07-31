@@ -1,5 +1,5 @@
 import { graphql } from '../../..';
-import { InitialisedList } from '../types-for-lists';
+import type { InitialisedList } from '../initialise-lists';
 import * as createAndUpdate from './create-update';
 import * as deletes from './delete';
 

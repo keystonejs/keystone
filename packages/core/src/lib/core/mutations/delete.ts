@@ -1,8 +1,8 @@
-import { KeystoneContext } from '../../../types';
+import type { KeystoneContext } from '../../../types';
 import { cannotForItem, getOperationAccess, getAccessFilters } from '../access-control';
 import { checkFilterOrderAccess } from '../filter-order-access';
 import { accessDeniedError } from '../graphql-errors';
-import { InitialisedList } from '../types-for-lists';
+import type { InitialisedList } from '../initialise-lists';
 import { getWriteLimit, runWithPrisma } from '../utils';
 import { InputFilter, resolveUniqueWhereInput, UniqueInputFilter } from '../where-inputs';
 import { getAccessControlledItemForDelete } from './access-control';

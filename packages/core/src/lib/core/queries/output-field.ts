@@ -1,7 +1,7 @@
 import { CacheHint, maybeCacheControlFromInfo } from '@apollo/cache-control-types';
 import { GraphQLResolveInfo } from 'graphql';
 import DataLoader from 'dataloader';
-import {
+import type {
   NextFieldType,
   IndividualFieldAccessControl,
   BaseListTypeInfo,
@@ -13,8 +13,8 @@ import {
 } from '../../../types';
 import { graphql } from '../../..';
 import { getOperationAccess, getAccessFilters } from '../access-control';
-import { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relationships';
-import { InitialisedList } from '../types-for-lists';
+import type { ResolvedDBField, ResolvedRelationDBField } from '../resolve-relationships';
+import type { InitialisedList } from '../initialise-lists';
 import { IdType, getDBFieldKeyForFieldOnMultiField, runWithPrisma } from '../utils';
 import { accessReturnError, extensionError } from '../graphql-errors';
 import { accessControlledFilter } from './resolvers';

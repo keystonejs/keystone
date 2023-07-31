@@ -1,5 +1,5 @@
-import { GraphQLError } from 'graphql';
-import { JSONValue } from '../../types';
+import type { GraphQLError } from 'graphql';
+import type { JSONValue } from '../../types';
 
 type Path = (string | number)[];
 

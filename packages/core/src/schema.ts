@@ -31,7 +31,7 @@ export function group<
       description: config.description ?? null,
     },
     ...config.fields,
-  } as any; // TODO: FIXME, see types-for-lists.ts:getListsWithInitialisedFields
+  } as any; // TODO: FIXME, see initialise-lists.ts:getListsWithInitialisedFields
 }
 
 export function list<

@@ -3,8 +3,8 @@ import { GraphQLNamedType, GraphQLSchema } from 'graphql';
 import type { KeystoneConfig } from '../types';
 import { KeystoneMeta } from '../admin-ui/system/adminMetaSchema';
 import { graphql } from '../types/schema';
-import { AdminMetaRootVal } from '../admin-ui/system/createAdminMeta';
-import { InitialisedList } from './core/types-for-lists';
+import type { AdminMetaRootVal } from '../admin-ui/system/createAdminMeta';
+import type { InitialisedList } from './core/initialise-lists';
 
 import { getMutationsForList } from './core/mutations';
 import { getQueriesForList } from './core/queries';

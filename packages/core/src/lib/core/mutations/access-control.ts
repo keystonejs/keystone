@@ -1,7 +1,7 @@
-import { BaseItem, KeystoneContext } from '../../../types';
+import type { BaseItem, KeystoneContext } from '../../../types';
 import { accessDeniedError, accessReturnError, extensionError } from '../graphql-errors';
 import { mapUniqueWhereToWhere } from '../queries/resolvers';
-import { InitialisedList } from '../types-for-lists';
+import type { InitialisedList } from '../initialise-lists';
 import { runWithPrisma } from '../utils';
 import { cannotForItem, cannotForItemFields } from '../access-control';
 import {

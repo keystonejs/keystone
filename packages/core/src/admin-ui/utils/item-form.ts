@@ -1,9 +1,9 @@
-import { GraphQLError } from 'graphql';
+import type { GraphQLError } from 'graphql';
 import { useMemo } from 'react';
 import isDeepEqual from 'fast-deep-equal';
-import { FieldMeta } from '../../types';
+import type { FieldMeta } from '../../types';
 import { ItemData, deserializeValue, serializeValueToObjByFieldKey } from './serialization';
-import { DataGetter } from './dataGetter';
+import type { DataGetter } from './dataGetter';
 
 export type Value = Record<
   string,

@@ -9,7 +9,7 @@ import {
   GraphQLInputObjectType,
   introspectionTypes,
 } from 'graphql';
-import { InitialisedList } from './core/types-for-lists';
+import type { InitialisedList } from './core/initialise-lists';
 
 const introspectionTypesSet = new Set(introspectionTypes);
 

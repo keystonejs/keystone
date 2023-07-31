@@ -1,6 +1,6 @@
 import type { GraphQLError } from 'graphql';
 import type { ReactElement } from 'react';
-import type { InitialisedList } from '../lib/core/types-for-lists';
+import type { InitialisedList } from '../lib/core/initialise-lists';
 import type { JSONValue } from './utils';
 
 export type NavigationProps = {

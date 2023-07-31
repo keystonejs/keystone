@@ -1,6 +1,6 @@
 import { graphql } from '../..';
 import { allowAll } from '../../access';
-import { InitialisedField } from './types-for-lists';
+import type { InitialisedField } from './initialise-lists';
 
 export type ListForValidation = { listKey: string; fields: Record<string, InitialisedField> };
 

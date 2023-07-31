@@ -1,5 +1,5 @@
 import { extensionError, validationFailureError } from '../graphql-errors';
-import { InitialisedList } from '../types-for-lists';
+import type { InitialisedList } from '../initialise-lists';
 
 type DistributiveOmit<T, K extends keyof T> = T extends any ? Omit<T, K> : never;
 

@@ -1,5 +1,5 @@
 import type { KeystoneDbAPI } from '@keystone-6/core/types';
-import { SecretFieldImpl } from '../types';
+import type { SecretFieldImpl } from '../types';
 
 export async function validateSecret(
   secretFieldImpl: SecretFieldImpl,

@@ -3,9 +3,9 @@ import { ComponentProps, useState, useMemo, useRef, useEffect, useCallback } fro
 import isDeepEqual from 'fast-deep-equal';
 import { useMutation, gql, ApolloError } from '../apollo';
 import { useKeystone } from '..';
-import { ListMeta } from '../../types';
+import type { ListMeta } from '../../types';
 import { usePreventNavigation } from './usePreventNavigation';
-import { Fields, Value } from '.';
+import type { Fields, Value } from '.';
 
 type ValueWithoutServerSideErrors = { [key: string]: { kind: 'value'; value: any } };
 
