@@ -6,9 +6,10 @@ import { healthCheckPath as defaultHealthCheckPath } from '../defaults';
 /** @deprecated */
 export async function addHealthCheck({
   config,
-  server
+  server,
 }: {
-  config: KeystoneConfig; server: Application
+  config: KeystoneConfig;
+  server: Application;
 }) {
   if (!config.server?.healthCheck) return;
 

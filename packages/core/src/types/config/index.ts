@@ -197,10 +197,12 @@ export type ServerConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   maxFileSize?: number;
 
   /** @deprecated */
-  healthCheck?: true | {
-    path?: string;
-    data?: Record<string, any> | (() => Record<string, any>);
-  };
+  healthCheck?:
+    | true
+    | {
+        path?: string;
+        data?: Record<string, any> | (() => Record<string, any>);
+      };
 
   /** extend the Express application used by Keystone */
   extendExpressApp?: (
