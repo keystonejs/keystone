@@ -3,8 +3,13 @@ import next from 'next';
 import type { KeystoneConfig, KeystoneContext } from '../types';
 import { createAdminUIMiddlewareWithNextApp } from './lib/server/createAdminUIMiddleware';
 
+/** @deprecated */
 export { createSystem } from './lib/createSystem';
+
+/** @deprecated */
 export { createExpressServer } from './lib/server/createExpressServer';
+
+/** @deprecated */
 export { initConfig } from './lib/config';
 
 /** @deprecated */

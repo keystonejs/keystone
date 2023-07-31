@@ -11,7 +11,6 @@ import { generateAdminUI } from '../admin-ui/system';
 import { devMigrations, pushPrismaSchemaToDatabase } from '../lib/migrations';
 import { createSystem } from '../lib/createSystem';
 import { getEsbuildConfig } from '../lib/esbuild';
-import { healthCheckPath as defaultHealthCheckPath } from '../lib/defaults';
 import { createExpressServer } from '../lib/server/createExpressServer';
 import { createAdminUIMiddlewareWithNextApp } from '../lib/server/createAdminUIMiddleware';
 import { runTelemetry } from '../lib/telemetry';
@@ -261,21 +260,6 @@ export async function dev(
     }
   };
 
-  // You shouldn't really be doing a healthcheck on the dev server, but we
-  // respond on the endpoint with the correct error code just in case. This
-  // doesn't send the configured data shape, because config doesn't allow
-  // for the "not ready" case but that's probably OK.
-  if (config.server?.healthCheck && app) {
-    const healthCheckPath =
-      config.server.healthCheck === true
-        ? defaultHealthCheckPath
-        : config.server.healthCheck.path || defaultHealthCheckPath;
-    app.use(healthCheckPath, (req, res, next) => {
-      if (expressServer) return next();
-      res.status(503).json({ status: 'fail', timestamp: Date.now() });
-    });
-  }
-
   // Serve the dev status page for the Admin UI
   let initKeystonePromiseResolve: () => void | undefined;
   let initKeystonePromiseReject: (err: any) => void | undefined;
@@ -285,22 +269,20 @@ export async function dev(
   });
 
   if (app && httpServer) {
-    app.use('/__keystone_dev_status', (req, res) => {
-      res.json({ ready: isReady() ? true : false });
+    app.use('/__keystone/dev/status', (req, res) => {
+      res.status(isReady() ? 200 : 501).end();
     });
 
-    // Pass the request the express server, or serve the loading page
     app.use((req, res, next) => {
-      // If both the express server and Admin UI Middleware are ready, we're go!
       if (expressServer && hasAddedAdminUIMiddleware) {
         return expressServer(req, res, next);
       }
-      // Otherwise, we may be able to serve the GraphQL API
+
       const { pathname } = url.parse(req.url);
       if (expressServer && pathname === (config.graphql?.path || '/api/graphql')) {
         return expressServer(req, res, next);
       }
-      // Serve the loading page
+
       res.sendFile(devLoadingHTMLFilepath);
     });
 

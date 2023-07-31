@@ -34,42 +34,6 @@ Dive into our [Custom Admin UI Logo guide](https://keystonejs.com/docs/guides/cu
 
 ![Animated logo screenshot](https://user-images.githubusercontent.com/737821/127438961-40bc6ddd-e34a-497d-ac6a-c135e88324d1.gif)
 
-## Health Check 💙
-
-We've added an optional `/_healthcheck` endpoint to Keystone's express server. You can use this endpoint to ensure your Keystone instance is up and running using website monitoring solutions.
-
-Enable it by setting `config.server.healthCheck: true`, by default it will respond with `{ status: 'pass', timestamp: Date.now() }`.
-
-You can also specify a custom path and JSON data:
-
-```js
-config({
-  server: {
-    healthCheck: {
-      path: '/my-health-check',
-      data: { status: 'healthy' },
-    },
-  },
-});
-```
-
-Or use a function for the `data` config to return real-time information:
-
-```js
-config({
-  server: {
-    healthCheck: {
-      path: '/my-health-check',
-      data: () => ({
-        status: 'healthy',
-        timestamp: Date.now(),
-        uptime: process.uptime(),
-      }),
-    },
-  },
-});
-```
-
 You can view the [verbose release notes](https://github.com/keystonejs/keystone/releases/tag/2021-07-29) on GitHub.
 
 If you like using Keystone, we'd appreciate a shout out in [Twitter](https://twitter.com/KeystoneJS) and a star in [GitHub](https://github.com/keystonejs/keystone).

@@ -190,24 +190,27 @@ export type AdminFileToWrite =
   | { mode: 'copy'; inputPath: string; outputPath: string };
 
 // config.server
-
-type HealthCheckConfig = {
-  path?: string;
-  data?: Record<string, any> | (() => Record<string, any>);
-};
-
 export type ServerConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   /** Configuration options for the cors middleware. Set to `true` to use core Keystone defaults */
   cors?: CorsOptions | true;
   /** Maximum upload file size allowed (in bytes) */
   maxFileSize?: number;
-  /** Health check configuration. Set to `true` to add a basic `/_healthcheck` route, or specify the path and data explicitly */
-  healthCheck?: HealthCheckConfig | true;
-  /** Hook to extend the Express App that Keystone creates */
+
+  /** @deprecated */
+  healthCheck?:
+    | true
+    | {
+        path?: string;
+        data?: Record<string, any> | (() => Record<string, any>);
+      };
+
+  /** extend the Express application used by Keystone */
   extendExpressApp?: (
     app: express.Express,
     context: KeystoneContext<TypeInfo>
   ) => void | Promise<void>;
+
+  /** extend the node:http server used by Keystone */
   extendHttpServer?: (
     server: Server,
     context: KeystoneContext<TypeInfo>,

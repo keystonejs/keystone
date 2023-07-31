@@ -208,7 +208,6 @@ Options:
 - `port` (default: `3000` ): The port your Express server will listen on.
 - `options` (default: `undefined`): The [`http.createServer`](https://nodejs.org/api/http.html#httpcreateserveroptions-requestlistener) options used by Node.
 - `maxFileSize` (default: `200 * 1024 * 1024`): The maximum file size allowed for uploads. If left undefined, defaults to `200 MiB`
-- `healthCheck` (default: `undefined`): Allows you to configure a health check endpoint on your server.
 - `extendExpressApp` (default: `undefined`): Allows you to extend the express app that Keystone creates.
 - `extendHttpServer` (default: `undefined`): Allows you to extend the node `http` server that runs Keystone.
 
@@ -218,46 +217,11 @@ export default config({
     cors: { origin: ['http://localhost:7777'], credentials: true },
     port: 3000,
     maxFileSize: 200 * 1024 * 1024,
-    healthCheck: true,
     extendExpressApp: (app, commonContext) => { /* ... */ },
     extendHttpServer: (httpServer, commonContext, graphQLSchema) => { /* ... */ },
   },
   /* ... */
 });
-```
-
-### healthCheck
-
-If set to `true`, a `/_healthcheck` endpoint will be added to your server which will respond with `{ status: 'pass', timestamp: Date.now() }`.
-
-You can configure the health check with a custom path and JSON data:
-
-```typescript
-config({
-  server: {
-    healthCheck: {
-      path: '/my-health-check',
-      data: { status: 'healthy' },
-    },
-  },
-})
-```
-
-Or use a function for the `data` config to return real-time information:
-
-```typescript
-config({
-  server: {
-    healthCheck: {
-      path: '/my-health-check',
-      data: () => ({
-        status: 'healthy',
-        timestamp: Date.now(),
-        uptime: process.uptime(),
-      }),
-    },
-  },
-})
 ```
 
 ### extendExpressApp
