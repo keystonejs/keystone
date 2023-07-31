@@ -24,7 +24,7 @@ import {
   getSystemPaths,
 } from '../artifacts';
 import type { KeystoneConfig } from '../types';
-import initialiseLists from '../lib/core/initialise-lists';
+import { initialiseLists } from '../lib/core/initialise-lists';
 import { printPrismaSchema } from '../lib/core/prisma-schema-printer';
 import type { AdminMetaRootVal } from '../admin-ui/system/createAdminMeta';
 import { pkgDir } from '../pkg-dir';
