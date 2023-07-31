@@ -97,7 +97,7 @@ function collectTypes(
 export function createGraphQLSchema(
   config: KeystoneConfig,
   lists: Record<string, InitialisedList>,
-  adminMeta: AdminMetaRootVal,
+  adminMeta: AdminMetaRootVal | null,
   sudo: boolean
 ) {
   const graphQLSchema = getGraphQLSchema(
@@ -116,12 +116,14 @@ export function createGraphQLSchema(
             }),
           }
         : {},
-      query: {
-        keystone: graphql.field({
-          type: graphql.nonNull(KeystoneMeta),
-          resolve: () => ({ adminMeta }),
-        }),
-      },
+      query: adminMeta
+        ? {
+            keystone: graphql.field({
+              type: graphql.nonNull(KeystoneMeta),
+              resolve: () => ({ adminMeta }),
+            }),
+          }
+        : {},
     },
     sudo
   );

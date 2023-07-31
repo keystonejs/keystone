@@ -6,7 +6,7 @@ import { list } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
 import { setupTestEnv, setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { allowAll } from '@keystone-6/core/access';
-import { apiTestConfig, expectPrismaError, dbProvider } from '../utils';
+import { testConfig, expectPrismaError, dbProvider } from '../utils';
 
 const expectedUniqueConstraintError =
   dbProvider === 'mysql'
@@ -56,7 +56,7 @@ testModules
           }
         });
         const runner = setupTestRunner({
-          config: apiTestConfig({
+          config: testConfig({
             lists: {
               Test: list({
                 access: allowAll,
@@ -175,7 +175,7 @@ testModules
           let erroredOut = false;
           try {
             await setupTestEnv({
-              config: apiTestConfig({
+              config: testConfig({
                 lists: {
                   Test: list({
                     access: allowAll,

@@ -2,13 +2,13 @@ import { text, integer, relationship } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { allowAll } from '@keystone-6/core/access';
-import { apiTestConfig, expectGraphQLValidationError, expectLimitsExceededError } from '../utils';
+import { testConfig, expectGraphQLValidationError, expectLimitsExceededError } from '../utils';
 import { withServer } from '../with-server';
 import { depthLimit, definitionLimit, fieldLimit } from './validation';
 
 const runner = withServer(
   setupTestRunner({
-    config: apiTestConfig({
+    config: testConfig({
       lists: {
         Post: list({
           access: allowAll,

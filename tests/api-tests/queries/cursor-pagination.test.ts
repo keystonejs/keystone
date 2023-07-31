@@ -3,9 +3,9 @@ import { setupTestEnv, TestEnv } from '@keystone-6/api-tests/test-runner';
 import { text, relationship, integer } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
-import { TypeInfoFromConfig, apiTestConfig } from '../utils';
+import { TypeInfoFromConfig, testConfig } from '../utils';
 
-const config = apiTestConfig({
+const config = testConfig({
   lists: {
     Post: list({
       access: allowAll,

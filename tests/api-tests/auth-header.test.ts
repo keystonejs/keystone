@@ -5,7 +5,7 @@ import { createAuth } from '@keystone-6/auth';
 import type { KeystoneContext } from '@keystone-6/core/types';
 import { setupTestRunner, setupTestEnv } from '@keystone-6/api-tests/test-runner';
 import { allowAll } from '@keystone-6/core/access';
-import { apiTestConfig, expectAccessDenied, seed } from './utils';
+import { testConfig, expectAccessDenied, seed } from './utils';
 import { GraphQLRequest, withServer } from './with-server';
 
 const initialData = {
@@ -30,7 +30,7 @@ function setup(options?: any) {
   return withServer(
     setupTestRunner({
       config: auth.withAuth(
-        apiTestConfig({
+        testConfig({
           lists: {
             Post: list({
               access: allowAll,
@@ -108,7 +108,7 @@ describe('Auth testing', () => {
     await expect(
       setupTestEnv({
         config: auth.withAuth(
-          apiTestConfig({
+          testConfig({
             lists: {
               User: list({
                 access: allowAll,

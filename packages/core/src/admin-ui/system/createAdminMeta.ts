@@ -176,14 +176,10 @@ export function createAdminMeta(
   for (const [listKey, list] of Object.entries(initialisedLists)) {
     if (omittedLists.includes(listKey)) continue;
 
-    const listConfig = lists[listKey];
-
     for (const [fieldKey, field] of Object.entries(list.fields)) {
       // If the field is a relationship field and is related to an omitted list, skip.
       if (field.dbField.kind === 'relation' && omittedLists.includes(field.dbField.list)) continue;
-      // Disabling this entirely for now until we properly decide what the Admin UI
-      // should do when `omit.read` is set to `true`.
-      if (field.graphql.isEnabled.read === false) continue;
+      if (Object.values(field.graphql.isEnabled).every(x => x === false)) continue;
 
       assertValidView(
         field.views,
@@ -194,6 +190,7 @@ export function createAdminMeta(
       const isNonNull = (['read', 'create', 'update'] as const).filter(
         operation => field.graphql.isNonNull[operation]
       );
+
       const fieldMeta = {
         key: fieldKey,
         label: field.label ?? humanize(fieldKey),
@@ -208,26 +205,14 @@ export function createAdminMeta(
         listKey: listKey,
         search: list.ui.searchableFields.get(fieldKey) ?? null,
         createView: {
-          fieldMode: normalizeMaybeSessionFunction(
-            field.graphql.isEnabled.create
-              ? field.ui?.createView?.fieldMode ??
-                  listConfig.ui?.createView?.defaultFieldMode ??
-                  'edit'
-              : 'hidden'
-          ),
+          fieldMode: normalizeMaybeSessionFunction(field.ui?.createView.fieldMode),
         },
         itemView: {
-          fieldMode: field.graphql.isEnabled.update
-            ? field.ui?.itemView?.fieldMode ??
-              listConfig.ui?.itemView?.defaultFieldMode ??
-              ('edit' as const)
-            : 'read',
+          fieldMode: field.ui?.itemView.fieldMode,
           fieldPosition: field.ui?.itemView?.fieldPosition || 'form',
         },
         listView: {
-          fieldMode: normalizeMaybeSessionFunction(
-            field.ui?.listView?.fieldMode ?? listConfig.ui?.listView?.defaultFieldMode ?? 'read'
-          ),
+          fieldMode: normalizeMaybeSessionFunction(field.ui?.listView?.fieldMode),
         },
         isFilterable: normalizeIsOrderFilter(
           field.input?.where ? field.graphql.isEnabled.filter : false,
@@ -239,7 +224,7 @@ export function createAdminMeta(
         ),
         isNonNull,
 
-        // DEPRECATED
+        // TODO: deprecated, remove in breaking change
         path: fieldKey,
       };
 

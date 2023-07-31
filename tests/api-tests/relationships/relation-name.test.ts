@@ -1,11 +1,11 @@
 import { list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { relationship } from '@keystone-6/core/fields';
-import { getPrismaSchema, apiTestConfig, dbProvider } from '../utils';
+import { getPrismaSchema, testConfig, dbProvider } from '../utils';
 
 test('when not specifying relationName in a many to many relationship, the name is picked based on the lexicographic list key + field key ordering', async () => {
   const prismaSchema = await getPrismaSchema(
-    apiTestConfig({
+    testConfig({
       lists: {
         A: list({
           access: allowAll,
@@ -50,7 +50,7 @@ model B {
 
 test("the ordering of the lists doesn't affect the relation name", async () => {
   const prismaSchema = await getPrismaSchema(
-    apiTestConfig({
+    testConfig({
       lists: {
         A: list({
           access: allowAll,
@@ -95,7 +95,7 @@ model B {
 
 test('when specifying relationName in a many to many relationship, the relation name is set to that', async () => {
   const prismaSchema = await getPrismaSchema(
-    apiTestConfig({
+    testConfig({
       lists: {
         A: list({
           access: allowAll,
@@ -141,7 +141,7 @@ model B {
 test('when specifying relationName on both sides of a many to many relationship, an error is thrown', async () => {
   await expect(
     getPrismaSchema(
-      apiTestConfig({
+      testConfig({
         lists: {
           A: list({
             access: allowAll,
@@ -167,7 +167,7 @@ test('when specifying relationName on both sides of a many to many relationship,
 test('when specifying relationName on the many side of a one to many relationship, an error is thrown', async () => {
   await expect(
     getPrismaSchema(
-      apiTestConfig({
+      testConfig({
         lists: {
           A: list({
             access: allowAll,

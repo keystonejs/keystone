@@ -2,11 +2,11 @@ import { list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
 import globby from 'globby';
-import { apiTestConfig, dbProvider, getPrismaSchema } from './utils';
+import { testConfig, dbProvider, getPrismaSchema } from './utils';
 
 test('db.map at the list level adds @@map with the value to the Prisma schema', async () => {
   const prismaSchema = await getPrismaSchema(
-    apiTestConfig({
+    testConfig({
       lists: {
         SomeList: list({
           access: allowAll,
@@ -56,7 +56,7 @@ testModules
   .map(mod => {
     test(`db.map for the field ${mod.name} adds @map with the value to the Prisma schema`, async () => {
       const prismaSchema = await getPrismaSchema(
-        apiTestConfig({
+        testConfig({
           lists: {
             SomeList: list({
               access: allowAll,
@@ -81,7 +81,7 @@ testModules
 // this makes sure we generate it in the right place
 test(`db.map for the field text field adds @map with the value to the Prisma schema`, async () => {
   const prismaSchema = await getPrismaSchema(
-    apiTestConfig({
+    testConfig({
       lists: {
         SomeList: list({
           access: allowAll,

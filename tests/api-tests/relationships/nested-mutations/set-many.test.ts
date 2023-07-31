@@ -4,7 +4,7 @@ import { list } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { allOperations, allowAll } from '@keystone-6/core/access';
 import {
-  apiTestConfig,
+  testConfig,
   expectGraphQLValidationError,
   expectSingleRelationshipError,
 } from '../../utils';
@@ -13,7 +13,7 @@ import { withServer } from '../../with-server';
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
 const runner = setupTestRunner({
-  config: apiTestConfig({
+  config: testConfig({
     lists: {
       Note: list({
         access: allowAll,

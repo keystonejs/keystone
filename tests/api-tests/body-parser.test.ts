@@ -5,7 +5,7 @@ import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import type { Options as BodyParserOptions } from 'body-parser';
 import supertest from 'supertest';
 import { allowAll } from '@keystone-6/core/access';
-import { apiTestConfig } from './utils';
+import { testConfig } from './utils';
 import { withServer } from './with-server';
 
 function makeQuery(size = 0) {
@@ -38,7 +38,7 @@ async function tryRequest(app: express.Express, size: number) {
 function setup(options?: BodyParserOptions) {
   return withServer(
     setupTestRunner({
-      config: apiTestConfig({
+      config: testConfig({
         lists: {
           Thing: list({
             access: allowAll,

@@ -7,7 +7,7 @@ import { text } from '@keystone-6/core/fields';
 import { setupTestEnv } from '@keystone-6/api-tests/test-runner';
 import { assertInputObjectType, assertObjectType, GraphQLNonNull } from 'graphql';
 import { allowAll } from '@keystone-6/core/access';
-import { apiTestConfig } from '../utils';
+import { testConfig } from '../utils';
 
 type TextFieldConfig = Parameters<typeof text>[0];
 
@@ -47,7 +47,7 @@ testModules
 
         const getSchema = async (fieldConfig: TextFieldConfig) => {
           const { testArgs } = await setupTestEnv({
-            config: apiTestConfig({
+            config: testConfig({
               lists: {
                 Test: list({
                   access: allowAll,

@@ -76,20 +76,20 @@ export const { dbUrl, dbName } = ((): { dbUrl: string; dbName: string } => {
   };
 })();
 
-export type APITestConfig = Omit<KeystoneConfig, 'db'> & {
-  db?: Omit<KeystoneConfig['db'], 'provider' | 'url'>;
-};
-
-// This function injects the db configuration that we use for testing in CI.
-// This functionality is a keystone repo specific way of doing things
-export const apiTestConfig = (config: APITestConfig): KeystoneConfig => ({
-  ...config,
-  db: {
-    ...config.db,
-    provider: dbProvider,
-    url: dbUrl,
-  },
-});
+export function testConfig(
+  config: Omit<KeystoneConfig, 'db'> & {
+    db?: Omit<KeystoneConfig['db'], 'provider' | 'url'>;
+  }
+): KeystoneConfig {
+  return {
+    ...config,
+    db: {
+      provider: dbProvider,
+      url: dbUrl,
+      ...config.db,
+    },
+  };
+}
 
 export type TypeInfoFromConfig<Config extends KeystoneConfig<any>> = Config extends KeystoneConfig<
   infer TypeInfo

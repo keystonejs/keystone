@@ -1,10 +1,10 @@
 import { text } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
-import { apiTestConfig, expectAccessReturnError } from '../utils';
+import { testConfig, expectAccessReturnError } from '../utils';
 
 const runner = setupTestRunner({
-  config: apiTestConfig({
+  config: testConfig({
     lists: {
       BadAccess: list({
         fields: { name: text() },
