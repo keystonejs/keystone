@@ -1,7 +1,6 @@
-import { randomBytes } from 'crypto';
+import { randomBytes } from 'node:crypto';
 import * as cookie from 'cookie';
 import Iron from '@hapi/iron';
-import { sync as uid } from 'uid-safe';
 import type { SessionStrategy, SessionStoreFunction } from '../types';
 
 // should we also accept httpOnly?
@@ -142,7 +141,7 @@ export function storedSessions<Session>({
       return store.get(sessionId);
     },
     async start({ context, data }) {
-      const sessionId = uid(24);
+      const sessionId = randomBytes(24).toString('base64url');
       await store.set(sessionId, data);
       return stateless.start({ context, data: sessionId }) || '';
     },

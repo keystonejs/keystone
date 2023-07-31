@@ -224,7 +224,6 @@
     "@types/pluralize": "^0.0.30",
     "@types/prompts": "^2.0.14",
     "@types/react": "^18.0.9",
-    "@types/uid-safe": "^2.1.2",
     "@types/uuid": "^9.0.0",
     "apollo-upload-client": "^17.0.0",
     "bcryptjs": "^2.4.3",
@@ -264,7 +263,6 @@
     "react-dom": "^18.2.0",
     "resolve": "^1.20.0",
     "ts-toolbelt": "^9.6.0",
-    "uid-safe": "^2.1.5",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
