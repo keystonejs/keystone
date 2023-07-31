@@ -16,6 +16,7 @@ model Post {
   id               String  @id @default(cuid())
   content          String?
   rating           Int?
+  feedback         String?
   pair_left        String?
   pair_right       String?
   pairNested_left  String?

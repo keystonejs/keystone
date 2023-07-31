@@ -130,6 +130,7 @@ export type AdminMeta = {
 export type FieldProps<FieldControllerFn extends (...args: any) => FieldController<any, any>> = {
   field: ReturnType<FieldControllerFn>;
   value: ReturnType<ReturnType<FieldControllerFn>['deserialize']>;
+  itemValue: unknown;
   onChange?(value: ReturnType<ReturnType<FieldControllerFn>['deserialize']>): void;
   autoFocus?: boolean;
   /**
