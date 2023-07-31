@@ -76,18 +76,19 @@ export const { dbUrl, dbName } = ((): { dbUrl: string; dbName: string } => {
   };
 })();
 
-
-export function testConfig(config: Omit<KeystoneConfig, 'db'> & {
-  db?: Omit<KeystoneConfig['db'], 'provider' | 'url'>;
-}): KeystoneConfig {
+export function testConfig(
+  config: Omit<KeystoneConfig, 'db'> & {
+    db?: Omit<KeystoneConfig['db'], 'provider' | 'url'>;
+  }
+): KeystoneConfig {
   return {
     ...config,
     db: {
       provider: dbProvider,
       url: dbUrl,
-      ...config.db
-    }
-  }
+      ...config.db,
+    },
+  };
 }
 
 export type TypeInfoFromConfig<Config extends KeystoneConfig<any>> = Config extends KeystoneConfig<

@@ -229,9 +229,9 @@ class FakePrismaClient {
 }
 
 function dropPostgresThings(data: any) {
-  data.__schema.types = data.__schema.types.filter((x: any) => x.name !== 'QueryMode')
+  data.__schema.types = data.__schema.types.filter((x: any) => x.name !== 'QueryMode');
   for (const x of data.__schema.types) {
-    x.inputFields = x.inputFields?.filter((x: any) => x.name !== 'mode')
+    x.inputFields = x.inputFields?.filter((x: any) => x.name !== 'mode');
   }
 }
 
