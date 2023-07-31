@@ -2,8 +2,6 @@ import { list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
-import { isCuid } from 'cuid';
-import { isCuid as isCuid2, createId as createCuid2 } from '@paralleldrive/cuid2';
 import { validate as isUuid } from 'uuid';
 import { testConfig, dbProvider, expectBadUserInput } from './utils';
 
@@ -43,7 +41,7 @@ const fixtures = [
     error: 'Only a string can be passed to id filters',
     expect: (id: any, idStr: string) => {
       expect(typeof id).toBe('string');
-      expect(isCuid(id)).toBe(true);
+      expect(id[0] === 'c').toBe(true);
       expect(idStr).toBe(id);
     },
     reject: [null],
@@ -56,7 +54,6 @@ const fixtures = [
     expect: (id: any, idStr: string) => {
       expect(typeof id).toBe('string');
       expect(id.length).toBe(24);
-      expect(isCuid2(id)).toBe(true);
       expect(idStr).toBe(id);
     },
     reject: [null],
@@ -80,7 +77,8 @@ const fixtures = [
     error: 'Only a string can be passed to id filters',
     expect: (id: any, idStr: string) => {
       expect(typeof id).toBe('string');
-      expect(isCuid2(id)).toBe(true);
+      expect(id.length).toBe(20);
+      expect(Buffer.from(id, 'hex').length).toBe(10);
       expect(idStr).toBe(id);
     },
     reject: [null],
@@ -89,7 +87,7 @@ const fixtures = [
         create: ({ resolvedData }: any) => {
           return {
             ...resolvedData,
-            id: createCuid2(),
+            id: randomBytes(10).toString('hex'),
           };
         },
       },
