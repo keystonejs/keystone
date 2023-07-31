@@ -208,7 +208,6 @@
     "@keystone-ui/toast": "^6.0.2",
     "@keystone-ui/tooltip": "^6.0.2",
     "@nodelib/fs.walk": "^2.0.0",
-    "@paralleldrive/cuid2": "^2.2.1",
     "@prisma/client": "4.16.2",
     "@prisma/internals": "4.16.2",
     "@prisma/migrate": "4.16.2",

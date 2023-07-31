@@ -1,19 +1,5 @@
-import type { KeystoneConfig, IdFieldConfig } from '../types';
+import type { KeystoneConfig } from '../types';
 import { idFieldType } from './id-field';
-
-// TODO: move to system/initialisation
-function getIdField({ kind, type }: IdFieldConfig): Required<IdFieldConfig> {
-  if (kind === 'cuid') return { kind: 'cuid', type: 'String' };
-  if (kind === 'cuid2') return { kind: 'cuid2', type: 'String' };
-  if (kind === 'uuid') return { kind: 'uuid', type: 'String' };
-  if (kind === 'string') return { kind: 'string', type: 'String' };
-  if (kind === 'autoincrement') {
-    if (type === 'BigInt') return { kind: 'autoincrement', type: 'BigInt' };
-    return { kind: 'autoincrement', type: 'Int' };
-  }
-
-  throw new Error(`Unknown id type ${kind}`);
-}
 
 function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['lists'] {
   // some error checking
@@ -33,7 +19,7 @@ function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['lists'] {
     }
   }
 
-  // inject the ID fields
+  // inject ID fields
   const listsWithIds: KeystoneConfig['lists'] = {};
 
   for (const [listKey, list] of Object.entries(config.lists)) {
@@ -56,11 +42,10 @@ function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['lists'] {
       continue;
     }
 
-    const idField = getIdField(list.db?.idField ?? config.db.idField ?? { kind: 'cuid' });
     listsWithIds[listKey] = {
       ...list,
       fields: {
-        id: idFieldType(idField, false),
+        id: idFieldType(list.db?.idField ?? config.db.idField ?? { kind: 'cuid' }, false),
         ...list.fields,
       },
     };

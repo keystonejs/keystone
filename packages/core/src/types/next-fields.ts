@@ -73,17 +73,11 @@ type ScalarPrismaTypes = {
   Decimal: Decimal;
 };
 
-type NumberLiteralDefault = { kind: 'literal'; value: number };
-type BigIntLiteralDefault = { kind: 'literal'; value: bigint };
-type BooleanLiteralDefault = { kind: 'literal'; value: boolean };
-type StringLiteralDefault = { kind: 'literal'; value: string };
-// https://github.com/prisma/prisma-engines/blob/98490f4bb05f4a47cd715617154a06c2c0d05756/libs/datamodel/connectors/dml/src/default_value.rs#L183-L194
-type DBGeneratedDefault = { kind: 'dbgenerated'; value: string };
-type AutoIncrementDefault = { kind: 'autoincrement' };
-type NowDefault = { kind: 'now' };
-type UuidDefault = { kind: 'uuid' };
-type CuidDefault = { kind: 'cuid' };
-type Cuid2Default = { kind: 'cuid2' };
+type Literal<T> = {
+  kind: 'literal';
+  value: T;
+};
+
 export type ScalarDBFieldDefault<
   Scalar extends keyof ScalarPrismaTypes = keyof ScalarPrismaTypes,
   Mode extends 'required' | 'many' | 'optional' = 'required' | 'many' | 'optional'
@@ -91,16 +85,19 @@ export type ScalarDBFieldDefault<
   ? never
   :
       | {
-          String: StringLiteralDefault | UuidDefault | CuidDefault | Cuid2Default;
-          Boolean: BooleanLiteralDefault;
-          Json: StringLiteralDefault;
-          Float: NumberLiteralDefault;
-          Int: AutoIncrementDefault | NumberLiteralDefault;
-          BigInt: AutoIncrementDefault | BigIntLiteralDefault;
-          DateTime: NowDefault | StringLiteralDefault;
-          Decimal: StringLiteralDefault;
+          String:
+            | Literal<string>
+            | { kind: 'cuid' | 'uuid' }
+            | { kind: 'random'; bytes: number; encoding: 'hex' | 'base64url' };
+          Boolean: Literal<boolean>;
+          Json: Literal<string>;
+          Float: Literal<number>;
+          Int: Literal<number> | { kind: 'autoincrement' };
+          BigInt: Literal<bigint> | { kind: 'autoincrement' };
+          DateTime: Literal<string> | { kind: 'now' };
+          Decimal: Literal<string>;
         }[Scalar]
-      | DBGeneratedDefault;
+      | { kind: 'dbgenerated'; value: string };
 
 export type ScalarDBField<
   Scalar extends keyof ScalarPrismaTypes,
@@ -109,16 +106,36 @@ export type ScalarDBField<
   kind: 'scalar';
   scalar: Scalar;
   mode: Mode;
-  /**
-   * The native database type that the field should use. See https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#model-field-scalar-types for what the possible native types should be
-   * The native type should not include @datasourcename. so to specify the uuid type, the correct value for nativeType would be `Uuid`
-   */
-  nativeType?: string;
   default?: ScalarDBFieldDefault<Scalar, Mode>;
-  index?: 'unique' | 'index';
-  map?: string;
   extendPrismaSchema?: (field: string) => string;
-  updatedAt?: Scalar extends 'DateTime' ? boolean : undefined;
+  index?: 'unique' | 'index';
+
+  map?: string;
+  nativeType?: string;
+  updatedAt?: Scalar extends 'DateTime' ? boolean : never;
+};
+
+export type RelationDBField<Mode extends 'many' | 'one'> = {
+  kind: 'relation';
+  mode: Mode;
+  extendPrismaSchema?: (field: string) => string;
+
+  list: string;
+  field?: string;
+  foreignKey?: { one: true | { map: string }; many: undefined }[Mode];
+  relationName?: { one: undefined; many: string }[Mode];
+};
+
+export type EnumDBField<Value extends string, Mode extends 'required' | 'many' | 'optional'> = {
+  kind: 'enum';
+  name: string;
+  mode: Mode;
+  default?: { kind: 'literal'; value: Value };
+  extendPrismaSchema?: (field: string) => string;
+  index?: 'unique' | 'index';
+
+  map?: string;
+  values: readonly Value[];
 };
 
 export const orderDirectionEnum = graphql.enum({
@@ -131,29 +148,9 @@ export const QueryMode = graphql.enum({
   values: graphql.enumValues(['default', 'insensitive']),
 });
 
-export type RelationDBField<Mode extends 'many' | 'one'> = {
-  kind: 'relation';
-  list: string;
-  field?: string;
-  mode: Mode;
-  foreignKey?: { one: true | { map: string }; many: undefined }[Mode];
-  relationName?: { one: undefined; many: string }[Mode];
-  extendPrismaSchema?: (field: string) => string;
-};
-
-export type EnumDBField<Value extends string, Mode extends 'required' | 'many' | 'optional'> = {
-  kind: 'enum';
-  name: string;
-  values: readonly Value[];
-  mode: Mode;
-  default?: { kind: 'literal'; value: Value };
-  index?: 'unique' | 'index';
-  extendPrismaSchema?: (field: string) => string;
-  map?: string;
-};
-
 export type NoDBField = { kind: 'none' };
 
+// TODO: merge
 export type ScalarishDBField =
   | ScalarDBField<keyof ScalarPrismaTypes, 'required' | 'many' | 'optional'>
   | EnumDBField<string, 'required' | 'many' | 'optional'>;

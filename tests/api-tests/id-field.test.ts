@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto';
 import { list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
@@ -48,12 +49,13 @@ const fixtures = [
   } as const,
 
   {
-    kind: 'cuid2',
+    kind: 'random',
     type: undefined,
     error: 'Only a string can be passed to id filters',
     expect: (id: any, idStr: string) => {
       expect(typeof id).toBe('string');
-      expect(id.length).toBe(24);
+      expect(id.length).toBe(43);
+      expect(Buffer.from(id, 'base64url').length).toBe(32);
       expect(idStr).toBe(id);
     },
     reject: [null],

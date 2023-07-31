@@ -33,7 +33,7 @@ export const lists: Lists = {
   Person: list({
     access: allowAll,
     db: {
-      idField: { kind: 'cuid2' },
+      idField: { kind: 'random' },
     },
     fields: {
       name: text({ validation: { isRequired: true }, isIndexed: 'unique' }),

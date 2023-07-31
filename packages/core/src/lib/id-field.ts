@@ -1,5 +1,5 @@
-import { createId as createCuid2 } from '@paralleldrive/cuid2';
 import {
+  DatabaseProvider,
   BaseListTypeInfo,
   fieldType,
   FieldTypeFunc,
@@ -32,7 +32,7 @@ function isString(x: IDType) {
   return x;
 }
 
-// TODO: remove, this should be on the user
+// TODO: this should be on the user, remove in breaking change
 function isUuid(x: IDType) {
   if (typeof x !== 'string') return;
   if (x === '') return;
@@ -92,16 +92,64 @@ function resolveInput(
   return where;
 }
 
+const NATIVE_TYPES: {
+  [k in DatabaseProvider]?: {
+    [ku in IdFieldConfig['kind']]?: string;
+  };
+} = {
+  postgresql: {
+    uuid: 'Uuid' as const,
+  },
+};
+
+function unpack(i: IdFieldConfig) {
+  if (i.kind === 'random') {
+    const { kind, bytes, encoding } = i;
+    if (typeof bytes === 'number') {
+      if (bytes !== bytes >>> 0) {
+        throw new TypeError(`Expected positive integer for random bytes, not ${bytes}`);
+      }
+    }
+
+    return {
+      kind,
+      type: 'String',
+      // our defaults are 32 bytes, as base64url
+      //   256 / Math.log2(64) ~ 43 characters
+      //
+      // for case-insensitive databases that is
+      //   225 bits ~ Math.log2((26 + 10 + 2) ** 43)
+      default_: {
+        kind,
+        bytes: bytes ?? 32,
+        encoding: encoding ?? 'base64url',
+      },
+    } as const;
+  }
+  const { kind } = i;
+  if (kind === 'cuid') return { kind: 'cuid', type: 'String', default_: { kind } } as const;
+  if (kind === 'uuid') return { kind: 'uuid', type: 'String', default_: { kind } } as const;
+  if (kind === 'string') return { kind: 'string', type: 'String', default_: undefined } as const;
+  if (kind === 'autoincrement') {
+    if (i.type === 'BigInt') {
+      return { kind: 'autoincrement', type: 'BigInt', default_: { kind } } as const;
+    }
+    return { kind: 'autoincrement', type: 'Int', default_: { kind } } as const;
+  }
+
+  throw new Error(`Unknown id type ${kind}`);
+}
+
 export function idFieldType(
-  config: Required<IdFieldConfig>,
+  config: IdFieldConfig,
   isSingleton: boolean
 ): FieldTypeFunc<BaseListTypeInfo> {
-  const { kind, type } = config;
+  const { kind, type, default_ } = unpack(config);
   const parseTypeFn = {
     Int: isInt,
     BigInt: isBigInt,
     String: isString,
-    UUID: isUuid, // TODO: remove
+    UUID: isUuid, // TODO: remove in breaking change
   }[kind === 'uuid' ? 'UUID' : type];
 
   function parse(value: IDType) {
@@ -112,8 +160,6 @@ export function idFieldType(
     return result;
   }
 
-  const defaultValue = isSingleton || kind === 'string' ? undefined : { kind };
-
   return meta => {
     if (kind === 'autoincrement' && type === 'BigInt' && meta.provider === 'sqlite') {
       throw new Error(`{ kind: ${kind}, type: ${type} } is not supported by SQLite`);
@@ -123,22 +169,10 @@ export function idFieldType(
       kind: 'scalar',
       mode: 'required',
       scalar: type,
-      nativeType: meta.provider === 'postgresql' && kind === 'uuid' ? 'Uuid' : undefined,
-
-      default: defaultValue,
+      nativeType: NATIVE_TYPES[meta.provider]?.[kind],
+      default: isSingleton ? undefined : default_,
     })({
       ...config,
-
-      ...(defaultValue?.kind === 'cuid2'
-        ? {
-            hooks: {
-              resolveInput({ operation }) {
-                if (operation !== 'create') return undefined;
-                return createCuid2();
-              },
-            },
-          }
-        : {}),
 
       // the ID field is always filterable and orderable
       isFilterable: true, // TODO: should it be?
