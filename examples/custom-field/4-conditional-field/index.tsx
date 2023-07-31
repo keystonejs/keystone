@@ -6,7 +6,6 @@ import {
   orderDirectionEnum,
 } from '@keystone-6/core/types';
 import { graphql } from '@keystone-6/core';
-import type { JSONValue } from '@keystone-6/core/types';
 
 type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<ListTypeInfo> & {
   isIndexed?: boolean | 'unique';
