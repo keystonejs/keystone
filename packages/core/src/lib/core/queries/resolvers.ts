@@ -1,6 +1,6 @@
 import { maybeCacheControlFromInfo } from '@apollo/cache-control-types';
-import { GraphQLResolveInfo } from 'graphql';
-import { FindManyArgsValue, BaseItem, KeystoneContext, OrderDirection } from '../../../types';
+import type { GraphQLResolveInfo } from 'graphql';
+import type { FindManyArgsValue, BaseItem, KeystoneContext, OrderDirection } from '../../../types';
 import { getOperationAccess, getAccessFilters } from '../access-control';
 import {
   PrismaFilter,
@@ -11,7 +11,7 @@ import {
   InputFilter,
 } from '../where-inputs';
 import { limitsExceededError, userInputError } from '../graphql-errors';
-import { InitialisedList } from '../types-for-lists';
+import type { InitialisedList } from '../initialise-lists';
 import { getDBFieldKeyForFieldOnMultiField, runWithPrisma } from '../utils';
 import { checkFilterOrderAccess } from '../filter-order-access';
 

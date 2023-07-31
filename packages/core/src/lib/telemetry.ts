@@ -6,7 +6,7 @@ import chalk from 'chalk';
 import { Configuration, Telemetry, Project, Device, PackageName } from '../types/telemetry';
 import { DatabaseProvider } from '../types';
 import { telemetryEndpoint as defaultTelemetryEndpoint } from './defaults';
-import { InitialisedList } from './core/types-for-lists';
+import type { InitialisedList } from './core/initialise-lists';
 
 const packageNames: PackageName[] = [
   '@keystone-6/core',

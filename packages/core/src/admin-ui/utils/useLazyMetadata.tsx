@@ -1,4 +1,4 @@
-import { GraphQLError } from 'graphql';
+import type { GraphQLError } from 'graphql';
 import { useMemo } from 'react';
 import type { AuthenticatedItem, VisibleLists, CreateViewFieldModes } from '../../types';
 import { DocumentNode, useQuery, QueryResult, ServerError, ServerParseError } from '../apollo';

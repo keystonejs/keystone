@@ -10,7 +10,12 @@ import {
   validate,
 } from 'graphql';
 import { graphql } from '@keystone-6/core';
-import { AuthGqlNames, AuthTokenTypeConfig, InitFirstItemConfig, SecretFieldImpl } from './types';
+import type {
+  AuthGqlNames,
+  AuthTokenTypeConfig,
+  InitFirstItemConfig,
+  SecretFieldImpl,
+} from './types';
 import { getBaseAuthSchema } from './gql/getBaseAuthSchema';
 import { getInitFirstItemSchema } from './gql/getInitFirstItemSchema';
 import { getPasswordResetSchema } from './gql/getPasswordResetSchema';

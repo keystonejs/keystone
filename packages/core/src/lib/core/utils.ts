@@ -1,12 +1,12 @@
 import { Limit } from 'p-limit';
 import pluralize from 'pluralize';
 import { PrismaModule } from '../../artifacts';
-import { BaseItem, KeystoneConfig, KeystoneContext } from '../../types';
+import type { BaseItem, KeystoneConfig, KeystoneContext } from '../../types';
 import { getGqlNames } from '../../types/utils';
 import { humanize } from '../utils';
 import { prismaError } from './graphql-errors';
-import { InitialisedList } from './types-for-lists';
-import { PrismaFilter, UniquePrismaFilter } from './where-inputs';
+import type { InitialisedList } from './initialise-lists';
+import type { PrismaFilter, UniquePrismaFilter } from './where-inputs';
 
 declare const prisma: unique symbol;
 

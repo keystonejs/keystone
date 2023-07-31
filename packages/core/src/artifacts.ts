@@ -6,7 +6,7 @@ import { getGenerators, formatSchema } from '@prisma/internals';
 import type { KeystoneConfig } from './types';
 import { printGeneratedTypes } from './lib/schema-type-printer';
 import { ExitError } from './scripts/utils';
-import { initialiseLists } from './lib/core/types-for-lists';
+import { initialiseLists } from './lib/core/initialise-lists';
 import { printPrismaSchema } from './lib/core/prisma-schema-printer';
 import { initConfig } from './lib/config';
 
@@ -187,7 +187,6 @@ export async function generateTypescriptTypesAndPrisma(
   if (dataProxy === true) {
     console.log('✨ Generating Prisma Client (data proxy)');
   }
-
   await Promise.all([
     generatePrismaClient(paths.schema.prisma, dataProxy),
     generateTypescriptTypes(cwd, config, graphQLSchema),

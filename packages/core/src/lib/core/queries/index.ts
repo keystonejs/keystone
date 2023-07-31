@@ -1,5 +1,5 @@
 import { graphql } from '../../..';
-import { InitialisedList } from '../types-for-lists';
+import type { InitialisedList } from '../initialise-lists';
 import * as queries from './resolvers';
 
 export function getQueriesForList(list: InitialisedList) {

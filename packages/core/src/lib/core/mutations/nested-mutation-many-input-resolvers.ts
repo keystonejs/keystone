@@ -1,10 +1,10 @@
-import { KeystoneContext, GraphQLTypesForList } from '../../../types';
+import type { KeystoneContext, GraphQLTypesForList } from '../../../types';
 import { graphql } from '../../..';
-import { UniqueInputFilter } from '../where-inputs';
-import { InitialisedList } from '../types-for-lists';
+import type { UniqueInputFilter } from '../where-inputs';
+import type { InitialisedList } from '../initialise-lists';
 import { isRejected, isFulfilled } from '../utils';
 import { userInputError } from '../graphql-errors';
-import { NestedMutationState } from './create-update';
+import type { NestedMutationState } from './create-update';
 import { checkUniqueItemExists } from './access-control';
 
 type _CreateValueType = Exclude<

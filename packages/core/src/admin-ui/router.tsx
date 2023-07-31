@@ -13,7 +13,7 @@ export { Router, useRouter, withRouter } from 'next/router';
 export type { NextRouter } from 'next/router';
 
 import NextLink, { LinkProps as NextLinkProps } from 'next/link';
-import { AnchorHTMLAttributes } from 'react';
+import type { AnchorHTMLAttributes } from 'react';
 
 export type LinkProps = NextLinkProps & AnchorHTMLAttributes<HTMLAnchorElement>;
 

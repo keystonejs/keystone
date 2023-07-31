@@ -1,6 +1,6 @@
-import { DBField, KeystoneContext } from '../../types';
+import type { DBField, KeystoneContext } from '../../types';
 import { userInputError } from './graphql-errors';
-import { InitialisedList } from './types-for-lists';
+import type { InitialisedList } from './initialise-lists';
 import { getDBFieldKeyForFieldOnMultiField } from './utils';
 
 export type InputFilter = Record<string, any> & {

@@ -8,7 +8,7 @@ import { pair as pairNested } from './3-pair-field-nested';
 import { pair as pairJson } from './3-pair-field-json';
 import { feedback } from './4-conditional-field';
 
-import { Lists } from '.keystone/types';
+import type { Lists } from '.keystone/types';
 
 export const lists: Lists = {
   Post: list({

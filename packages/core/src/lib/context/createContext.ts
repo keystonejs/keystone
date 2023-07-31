@@ -1,9 +1,9 @@
 import type { IncomingMessage, ServerResponse } from 'http';
 import { ExecutionResult, graphql, GraphQLSchema, print } from 'graphql';
-import { KeystoneContext, KeystoneGraphQLAPI, KeystoneConfig } from '../../types';
+import type { KeystoneContext, KeystoneGraphQLAPI, KeystoneConfig } from '../../types';
 
-import { PrismaClient } from '../core/utils';
-import { InitialisedList } from '../core/types-for-lists';
+import type { PrismaClient } from '../core/utils';
+import type { InitialisedList } from '../core/initialise-lists';
 import { createImagesContext } from '../assets/createImagesContext';
 import { createFilesContext } from '../assets/createFilesContext';
 import { getDbFactory, getQueryFactory } from './api';

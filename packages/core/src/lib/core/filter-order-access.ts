@@ -1,6 +1,6 @@
-import { KeystoneContext } from '../../types';
+import type { KeystoneContext } from '../../types';
 import { accessReturnError, extensionError, filterAccessError } from './graphql-errors';
-import { InitialisedList } from './types-for-lists';
+import type { InitialisedList } from './initialise-lists';
 
 export async function checkFilterOrderAccess(
   things: { fieldKey: string; list: InitialisedList }[],

@@ -1,6 +1,6 @@
-import { GraphQLError } from 'graphql';
-import { JSONValue, FieldMeta } from '../../types';
-import { DataGetter } from './dataGetter';
+import type { GraphQLError } from 'graphql';
+import type { JSONValue, FieldMeta } from '../../types';
+import type { DataGetter } from './dataGetter';
 import { getRootGraphQLFieldsFromFieldController } from './getRootGraphQLFieldsFromFieldController';
 
 export type ItemData = { id: string; [key: string]: any };

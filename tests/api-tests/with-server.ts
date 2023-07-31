@@ -1,9 +1,9 @@
-import { Server } from 'http';
+import type { Server } from 'http';
 import express from 'express';
-import { TestArgs } from '@keystone-6/api-tests/test-runner';
+import type { TestArgs } from '@keystone-6/api-tests/test-runner';
 import { createExpressServer } from '@keystone-6/core/system';
 import supertest, { Test } from 'supertest';
-import { BaseKeystoneTypeInfo } from '@keystone-6/core/types';
+import type { BaseKeystoneTypeInfo } from '@keystone-6/core/types';
 
 export type GraphQLRequest = (arg: {
   query: string;

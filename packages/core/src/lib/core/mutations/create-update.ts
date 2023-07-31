@@ -1,6 +1,6 @@
-import { KeystoneContext, BaseItem } from '../../../types';
-import { ResolvedDBField } from '../resolve-relationships';
-import { InitialisedList } from '../types-for-lists';
+import type { KeystoneContext, BaseItem } from '../../../types';
+import type { ResolvedDBField } from '../resolve-relationships';
+import type { InitialisedList } from '../initialise-lists';
 import {
   promiseAllRejectWithAllErrors,
   getDBFieldKeyForFieldOnMultiField,

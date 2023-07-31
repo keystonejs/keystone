@@ -2,7 +2,7 @@ import type { IncomingMessage, ServerResponse } from 'http';
 import type { Readable } from 'stream';
 import type { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql';
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core';
-import type { InitialisedList } from '../lib/core/types-for-lists';
+import type { InitialisedList } from '../lib/core/initialise-lists';
 import type { SessionStrategy } from './session';
 import type { BaseListTypeInfo, BaseKeystoneTypeInfo } from './type-info';
 

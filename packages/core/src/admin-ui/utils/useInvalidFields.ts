@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { FieldMeta } from '../../types';
-import { Value } from './item-form';
+import type { FieldMeta } from '../../types';
+import type { Value } from './item-form';
 
 export function useInvalidFields(
   fields: Record<string, FieldMeta>,

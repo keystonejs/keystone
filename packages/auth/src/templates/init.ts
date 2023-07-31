@@ -1,5 +1,5 @@
-import { BaseListTypeInfo } from '@keystone-6/core/types';
-import { AuthConfig } from '../types';
+import type { BaseListTypeInfo } from '@keystone-6/core/types';
+import type { AuthConfig } from '../types';
 
 type InitTemplateArgs = {
   listKey: string;

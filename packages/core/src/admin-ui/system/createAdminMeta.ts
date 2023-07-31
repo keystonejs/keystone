@@ -1,5 +1,5 @@
 import path from 'path';
-import {
+import type {
   KeystoneConfig,
   MaybePromise,
   MaybeSessionFunction,
@@ -9,8 +9,8 @@ import {
   MaybeItemFunction,
 } from '../../types';
 import { humanize } from '../../lib/utils';
-import { InitialisedList } from '../../lib/core/types-for-lists';
-import { FilterOrderArgs } from '../../types/config/fields';
+import type { InitialisedList } from '../../lib/core/initialise-lists';
+import type { FilterOrderArgs } from '../../types/config/fields';
 
 type ContextFunction<Return> = (context: KeystoneContext) => MaybePromise<Return>;
 

@@ -12,7 +12,7 @@ import {
   Kind,
 } from 'graphql';
 import { staticAdminMetaQuery, StaticAdminMetaQuery } from '../admin-meta-graphql';
-import { AdminMetaRootVal } from '../system/createAdminMeta';
+import type { AdminMetaRootVal } from '../system/createAdminMeta';
 
 type AppTemplateOptions = { configFileExists: boolean };
 
