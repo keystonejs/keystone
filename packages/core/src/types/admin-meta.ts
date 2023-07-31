@@ -61,7 +61,6 @@ export type FieldController<FormState, FilterValue extends JSONValue = never> = 
   serialize: (formState: FormState) => any;
   validate?: (formState: FormState) => boolean;
   filter?: {
-    // wrote a little codemod for this https://astexplorer.net/#/gist/c45e0f093513dded95114bb77da50b09/b3d01e21c1b425f90ca3cc5bd453d85b11500540
     types: Record<string, FilterTypeDeclaration<FilterValue>>;
     graphql(type: { type: string; value: FilterValue }): Record<string, any>;
     Label(type: FilterTypeToFormat<FilterValue>): string | ReactElement | null;

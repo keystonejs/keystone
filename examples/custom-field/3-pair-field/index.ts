@@ -6,8 +6,7 @@ import {
 } from '@keystone-6/core/types';
 import { graphql } from '@keystone-6/core';
 
-export type PairFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo>;
+type PairFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<ListTypeInfo>;
 
 type PairInput = string;
 type PairOutput = string;

@@ -33,7 +33,7 @@ export function Field({ field, value, onChange, autoFocus }: FieldProps<typeof c
 }
 
 export const Cell: CellComponent = ({ item, field, linkTo }) => {
-  let value = item[field.path] + '';
+  const value = item[field.path] + '';
   return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>;
 };
 Cell.supportsLinkTo = true;

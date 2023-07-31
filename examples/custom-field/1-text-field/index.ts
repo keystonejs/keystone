@@ -7,10 +7,9 @@ import {
 } from '@keystone-6/core/types';
 import { graphql } from '@keystone-6/core';
 
-export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
-  CommonFieldConfig<ListTypeInfo> & {
-    isIndexed?: boolean | 'unique';
-  };
+type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<ListTypeInfo> & {
+  isIndexed?: boolean | 'unique';
+};
 
 export function text<ListTypeInfo extends BaseListTypeInfo>({
   isIndexed,
