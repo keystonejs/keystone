@@ -69,9 +69,11 @@ export function statelessSessions<Session>({
   domain,
   sameSite = 'lax',
 }: StatelessSessionsOptions = {}): SessionStrategy<Session, any> {
+  // atleast 192-bit in base64
   if (secret.length < 32) {
     throw new Error('The session secret must be at least 32 characters long');
   }
+
   return {
     async get({ context }) {
       if (!context?.req) return;
@@ -141,7 +143,7 @@ export function storedSessions<Session>({
       return store.get(sessionId);
     },
     async start({ context, data }) {
-      const sessionId = randomBytes(24).toString('base64url');
+      const sessionId = randomBytes(24).toString('base64url'); // 192-bit
       await store.set(sessionId, data);
       return stateless.start({ context, data: sessionId }) || '';
     },
