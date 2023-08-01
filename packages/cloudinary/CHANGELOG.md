@@ -1,5 +1,11 @@
 # @keystone-6/cloudinary
 
+## 7.0.1
+
+### Patch Changes
+
+- [#8730](https://github.com/keystonejs/keystone/pull/8730) [`4cb05d9a8`](https://github.com/keystonejs/keystone/commit/4cb05d9a85b6e4b99ad8035ffcea36aa845f1943) Thanks [@dcousens](https://github.com/dcousens)! - Change cloudinary identifiers to use random base64url identifiers, not cuid
+
 ## 7.0.0
 
 ### Patch Changes

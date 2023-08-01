@@ -1,5 +1,47 @@
 # @keystone-6/core
 
+## 5.4.0
+
+### Minor Changes
+
+- [#8648](https://github.com/keystonejs/keystone/pull/8648) [`d848e7d07`](https://github.com/keystonejs/keystone/commit/d848e7d07e01a6805db978c665d438ff3fc9dd78) Thanks [@dcousens](https://github.com/dcousens)! - Adds arbitrary string identifier support as `db: { idField: { kind: 'string' }`
+
+* [#8619](https://github.com/keystonejs/keystone/pull/8619) [`6a8f1dd47`](https://github.com/keystonejs/keystone/commit/6a8f1dd47abf4dabca121d4441ec6884541d80d1) Thanks [@jim-lake](https://github.com/jim-lake)! - Adds `itemValue` prop for custom field view components to allow value-driven field conditions
+
+- [#8726](https://github.com/keystonejs/keystone/pull/8726) [`404d0d767`](https://github.com/keystonejs/keystone/commit/404d0d7671decffa071597368455021f094b5148) Thanks [@dcousens](https://github.com/dcousens)! - Adds new random identifier type as `db: { idField: { kind: 'random', bytes?: number, encoding?: 'hex' | 'base64url' } }`, with a default of 32 bytes, encoded as `base64url`
+
+* [#8648](https://github.com/keystonejs/keystone/pull/8648) [`d848e7d07`](https://github.com/keystonejs/keystone/commit/d848e7d07e01a6805db978c665d438ff3fc9dd78) Thanks [@dcousens](https://github.com/dcousens)! - Adds new unique filters for querying by more than 1 unique value
+
+- [#8730](https://github.com/keystonejs/keystone/pull/8730) [`4cb05d9a8`](https://github.com/keystonejs/keystone/commit/4cb05d9a85b6e4b99ad8035ffcea36aa845f1943) Thanks [@dcousens](https://github.com/dcousens)! - Changes session secret to a secure random default when not provided
+
+* [#8730](https://github.com/keystonejs/keystone/pull/8730) [`4cb05d9a8`](https://github.com/keystonejs/keystone/commit/4cb05d9a85b6e4b99ad8035ffcea36aa845f1943) Thanks [@dcousens](https://github.com/dcousens)! - Allow falling back to default AWS credential provider
+
+- [#8648](https://github.com/keystonejs/keystone/pull/8648) [`d848e7d07`](https://github.com/keystonejs/keystone/commit/d848e7d07e01a6805db978c665d438ff3fc9dd78) Thanks [@dcousens](https://github.com/dcousens)! - Changes `id` field behaviours to not reject invalid identifiers when used in GraphQL resolvers, allowing developers to swap `idField` types without breaking
+
+* [#8648](https://github.com/keystonejs/keystone/pull/8648) [`d848e7d07`](https://github.com/keystonejs/keystone/commit/d848e7d07e01a6805db978c665d438ff3fc9dd78) Thanks [@dcousens](https://github.com/dcousens)! - Adds `findOne` and `findMany` support for Singleton lists for identifiers other than the default, not recommended in typical usage
+
+- [#8702](https://github.com/keystonejs/keystone/pull/8702) [`d539d60cf`](https://github.com/keystonejs/keystone/commit/d539d60cf426c4948cedde3b30fca817fb812513) Thanks [@lahirurane-rau](https://github.com/lahirurane-rau)! - Adds responsive AdminUI menu for smaller device widths
+
+* [#8730](https://github.com/keystonejs/keystone/pull/8730) [`4cb05d9a8`](https://github.com/keystonejs/keystone/commit/4cb05d9a85b6e4b99ad8035ffcea36aa845f1943) Thanks [@dcousens](https://github.com/dcousens)! - Upgrade Prisma version to `4.16.2`
+
+### Patch Changes
+
+- [#8730](https://github.com/keystonejs/keystone/pull/8730) [`4cb05d9a8`](https://github.com/keystonejs/keystone/commit/4cb05d9a85b6e4b99ad8035ffcea36aa845f1943) Thanks [@dcousens](https://github.com/dcousens)! - Use `base64url` from `node:crypto` for random identifiers, drop `safe-uid` dependency
+
+* [#8730](https://github.com/keystonejs/keystone/pull/8730) [`4cb05d9a8`](https://github.com/keystonejs/keystone/commit/4cb05d9a85b6e4b99ad8035ffcea36aa845f1943) Thanks [@dcousens](https://github.com/dcousens)! - Deprecates `config.server.healthCheck`, use `extendExpressApp`
+
+- [#8730](https://github.com/keystonejs/keystone/pull/8730) [`4cb05d9a8`](https://github.com/keystonejs/keystone/commit/4cb05d9a85b6e4b99ad8035ffcea36aa845f1943) Thanks [@dcousens](https://github.com/dcousens)! - Deprecates `@keystone-6/core/system`, including `createSystem`, `createExpressServer` and `initConfig`
+
+* [#8730](https://github.com/keystonejs/keystone/pull/8730) [`4cb05d9a8`](https://github.com/keystonejs/keystone/commit/4cb05d9a85b6e4b99ad8035ffcea36aa845f1943) Thanks [@dcousens](https://github.com/dcousens)! - Fixes misleading error when `db.url` is `undefined`
+
+- [#8730](https://github.com/keystonejs/keystone/pull/8730) [`4cb05d9a8`](https://github.com/keystonejs/keystone/commit/4cb05d9a85b6e4b99ad8035ffcea36aa845f1943) Thanks [@dcousens](https://github.com/dcousens)! - Fixes GraphQL errors revealing the exact identifier format required when an unknown identifier is provided
+
+* [#8715](https://github.com/keystonejs/keystone/pull/8715) [`246d8eda6`](https://github.com/keystonejs/keystone/commit/246d8eda6b8c79a142cdb518a71dfe248c49a809) Thanks [@dcousens](https://github.com/dcousens)! - Fix field omission in `createView` in AdminUI when `graphql.omit.read: true`
+
+- [#8715](https://github.com/keystonejs/keystone/pull/8715) [`246d8eda6`](https://github.com/keystonejs/keystone/commit/246d8eda6b8c79a142cdb518a71dfe248c49a809) Thanks [@dcousens](https://github.com/dcousens)! - Fix field omission in `itemView` in AdminUI when `graphql.omit.update: true` and `ui.fieldMode: 'hidden'`
+
+* [#8718](https://github.com/keystonejs/keystone/pull/8718) [`9d92e0021`](https://github.com/keystonejs/keystone/commit/9d92e0021fd27445f3e15aa02b4b82c82baeedd9) Thanks [@wysher](https://github.com/wysher)! - Fix the field width of grouped fields in the AdminUI
+
 ## 5.3.2
 
 ### Patch Changes
