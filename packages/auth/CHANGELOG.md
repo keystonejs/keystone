@@ -1,5 +1,11 @@
 # @keystone-6/auth
 
+## 7.0.2
+
+### Patch Changes
+
+- [#8730](https://github.com/keystonejs/keystone/pull/8730) [`4cb05d9a8`](https://github.com/keystonejs/keystone/commit/4cb05d9a85b6e4b99ad8035ffcea36aa845f1943) Thanks [@dcousens](https://github.com/dcousens)! - Use `base64url` from `node:crypto` for random identifiers, drop `safe-uid` dependency
+
 ## 7.0.1
 
 ### Patch Changes
