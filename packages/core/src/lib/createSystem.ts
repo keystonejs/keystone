@@ -70,6 +70,8 @@ function getSudoGraphQLSchema(config: KeystoneConfig) {
 function injectNewDefaults(prismaClient: any, lists: Record<string, InitialisedList>) {
   for (const listKey in lists) {
     const list = lists[listKey];
+
+    // TODO: other fields might use 'random' too
     const { dbField } = list.fields.id;
 
     if ('default' in dbField && dbField.default?.kind === 'random') {
@@ -82,7 +84,7 @@ function injectNewDefaults(prismaClient: any, lists: Record<string, InitialisedL
                 ...args,
                 data: {
                   ...args.data,
-                  id: randomBytes(bytes).toString(encoding),
+                  id: args.data.id ?? randomBytes(bytes).toString(encoding),
                 },
               });
             },

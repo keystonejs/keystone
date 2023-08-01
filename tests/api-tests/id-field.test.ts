@@ -19,6 +19,7 @@ const fixtures = [
       expect(id).toBe(1);
       expect(idStr).toEqual('1');
     },
+    accept: [], // doesn't accept anything
     reject: [null, '', 'abc', 'abc123', 'asdfqwerty'],
   } as const,
   ...(dbProvider === 'sqlite'
@@ -32,6 +33,7 @@ const fixtures = [
             expect(id).toBe(1n);
             expect(idStr).toEqual('1');
           },
+          accept: [], // doesn't accept anything
           reject: [null, '', 'abc', 'abc123', 'asdfqwerty'],
         } as const,
       ] as const)),
@@ -45,6 +47,7 @@ const fixtures = [
       expect(id[0] === 'c').toBe(true);
       expect(idStr).toBe(id);
     },
+    accept: ['c111111111111111111111111'],
     reject: [null],
   } as const,
 
@@ -58,6 +61,7 @@ const fixtures = [
       expect(Buffer.from(id, 'base64url').length).toBe(32);
       expect(idStr).toBe(id);
     },
+    accept: ['AQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQE'],
     reject: [null],
   } as const,
 
@@ -70,6 +74,7 @@ const fixtures = [
       expect(isUuid(id)).toBe(true);
       expect(idStr).toBe(id);
     },
+    accept: ['11111111-1111-1111-b111-111111111111'],
     reject: [null],
   } as const,
 
@@ -83,6 +88,7 @@ const fixtures = [
       expect(Buffer.from(id, 'hex').length).toBe(10);
       expect(idStr).toBe(id);
     },
+    accept: ['aaaaaaaaaaaaaaaaaaaa'],
     reject: [null],
     hooks: {
       resolveInput: {
@@ -132,8 +138,23 @@ for (const fixture of fixtures) {
       })
     );
 
+    for (const id of fixture.accept) {
+      test(
+        `Create can accept ${id}`,
+        runner(async ({ context }) => {
+          await context.prisma.user.create({ data: { id, name: 'nobody' } });
+          const dbItem = await context.db.User.findOne({ where: { id } });
+
+          expect(dbItem).not.toBe(null);
+          if (!dbItem) return;
+          expect(dbItem.id).toBe(id);
+          expectFn(dbItem.id, id);
+        })
+      );
+    }
+
     test(
-      `Querying succeeds for a findOne`,
+      `findOne works`,
       runner(async ({ context }) => {
         const { id } = await context.query.User.createOne({ data: { name: 'something' } });
         await context.query.User.createOne({ data: { name: 'another' } });
@@ -143,7 +164,7 @@ for (const fixture of fixtures) {
     );
 
     test(
-      `Querying succeeds for a findMany`,
+      `findMany works`,
       runner(async ({ context }) => {
         const { id } = await context.query.User.createOne({ data: { name: 'something' } });
         await context.query.User.createOne({ data: { name: 'another' } });
@@ -154,7 +175,7 @@ for (const fixture of fixtures) {
     );
 
     test(
-      `Querying returns [] for a findMany with a null notIn filter`,
+      `findMany returns [] for a null notIn filter`,
       runner(async ({ context }) => {
         const items = await context.query.User.findMany({ where: { id: { notIn: null } } });
         expect(items).toStrictEqual([]);
