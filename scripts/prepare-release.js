@@ -254,7 +254,7 @@ async function generateGitHubReleaseText(previousTag) {
   }
 
   writeFileSync('./.changeset/contributors.json', JSON.stringify(contributors.sort(), null, 2));
-  writeFileSync(`./CHANGELOG-${date}.md`, output.join('\n'));
+  writeFileSync(`./RELEASE-${date}.md`, output.join('\n'));
   console.error('files written');
 }
 
