@@ -37,21 +37,19 @@ function gitCommitsSince(tag) {
     .filter(x => x);
 }
 
-function firstGitCommitOf(path) {
+function gitCommitsFor(path) {
   const { stdout } = spawnSync('git', [
-    'rev-list',
-    '--date-order',
-    '--reverse',
+    'log',
+    '--pretty=format:%H',
+    '--follow',
     'HEAD',
     '--',
     path,
   ]);
   return stdout
     .toString('utf-8')
-    .split(' ', 1)
-    .pop()
-    .replace(/[^A-Za-z0-9]/g, '')
-    .slice(0, 40);
+    .split('\n')
+    .map(x => x.replace(/[^A-Za-z0-9]/g, '').slice(0, 40));
 }
 
 function gitCommitDescription(commit) {
@@ -70,8 +68,9 @@ async function fetchData(tag) {
 
   // tag changesets with their commits
   for (const changeset of changesets) {
-    const commit = firstGitCommitOf(`.changeset/${changeset.id}.md`);
-    console.error(`changeset ${changeset.id} has first commit ${commit}`);
+    const commits = gitCommitsFor(`.changeset/${changeset.id}.md`);
+    const commit = commits.slice(-1).pop();
+    console.error(`changeset ${changeset.id} has ${commits.length} commits, the first commit is ${commit}`);
 
     if (!revs.includes(commit)) throw new Error(`Unexpected commit ${changeset.commit}`);
     changeset.commit = commit;
