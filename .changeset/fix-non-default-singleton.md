@@ -2,4 +2,4 @@
 '@keystone-6/core': minor
 ---
 
-Adds support for querying Singletons by non-default identifiers
+Adds `findOne` and `findMany` support for Singleton lists for identifiers other than the default, not recommended in typical usage

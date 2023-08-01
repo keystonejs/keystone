@@ -2,4 +2,4 @@
 '@keystone-6/core': minor
 ---
 
-Allows developers to upgrade `idField` types by not rejecting invalid identifiers in resolvers
+Changes `id` field behaviours to not reject invalid identifiers when used in GraphQL resolvers, allowing developers to swap `idField` types without breaking
