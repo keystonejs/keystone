@@ -1948,9 +1948,6 @@ importers:
       '@nodelib/fs.walk':
         specifier: ^2.0.0
         version: 2.0.0
-      '@paralleldrive/cuid2':
-        specifier: ^2.2.1
-        version: 2.2.1
       '@prisma/client':
         specifier: 4.16.2
         version: 4.16.2(prisma@4.16.2)
@@ -2376,9 +2373,6 @@ importers:
       '@keystone-6/fields-document':
         specifier: '*'
         version: link:../../packages/fields-document
-      '@paralleldrive/cuid2':
-        specifier: ^2.2.1
-        version: 2.2.1
       '@prisma/client':
         specifier: ^4.16.2
         version: 4.16.2(prisma@4.16.2)
@@ -2391,9 +2385,6 @@ importers:
       cookie-signature:
         specifier: ^1.1.0
         version: 1.1.0
-      cuid:
-        specifier: ^2.1.8
-        version: 2.1.8
       fs-extra:
         specifier: ^11.0.0
         version: 11.0.0
@@ -9209,6 +9200,7 @@ packages:
   /@noble/hashes@1.3.1:
     resolution: {integrity: sha512-EbqwksQwz9xDRGfDST86whPBgM65E0OH/pCgqW0GBVzO22bNE+NuIbeTb714+IfSjU3aRk47EUvXIb5bTsenKA==}
     engines: {node: '>= 16'}
+    dev: false
 
   /@nodelib/fs.scandir@2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -9284,6 +9276,7 @@ packages:
     resolution: {integrity: sha512-GJhHYlMhyT2gWemDL7BGMWfTNhspJKkikLKh9wAy3z4GTTINvTYALkUd+eGQK7aLeVkVzPuSA0VCT3H5eEWbbw==}
     dependencies:
       '@noble/hashes': 1.3.1
+    dev: false
 
   /@peculiar/asn1-schema@2.3.6:
     resolution: {integrity: sha512-izNRxPoaeJeg/AyH8hER6s+H7p4itk+03QCa4sbxI3lNdseQYCuxzgsuNK8bTXChtLTjpJz6NmXKA73qLa3rCA==}
@@ -13506,11 +13499,6 @@ packages:
       csv-parse: 4.16.3
       csv-stringify: 5.6.5
       stream-transform: 2.1.3
-    dev: true
-
-  /cuid@2.1.8:
-    resolution: {integrity: sha512-xiEMER6E7TlTPnDxrM4eRiC6TRgjNX9xzEZ5U/Se2YJKr7Mq4pJn/2XEHjl3STcSh96GmkHPcBXLES8M29wyyg==}
-    deprecated: Cuid and other k-sortable and non-cryptographic ids (Ulid, ObjectId, KSUID, all UUIDs) are all insecure. Use @paralleldrive/cuid2 instead.
     dev: true
 
   /data-uri-to-buffer@3.0.1:

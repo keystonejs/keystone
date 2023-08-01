@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto';
 import pLimit from 'p-limit';
 import type { FieldData, KeystoneConfig } from '../types';
 
@@ -6,7 +7,7 @@ import type { PrismaModule } from '../artifacts';
 import { allowAll } from '../access';
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { createContext } from './context/createContext';
-import { initialiseLists } from './core/initialise-lists';
+import { initialiseLists, InitialisedList } from './core/initialise-lists';
 import { setPrismaNamespace, setWriteLimit } from './core/utils';
 
 function getSudoGraphQLSchema(config: KeystoneConfig) {
@@ -66,6 +67,36 @@ function getSudoGraphQLSchema(config: KeystoneConfig) {
   // return createGraphQLSchema(transformedConfig, lists, null, true);
 }
 
+function injectNewDefaults(prismaClient: any, lists: Record<string, InitialisedList>) {
+  for (const listKey in lists) {
+    const list = lists[listKey];
+
+    // TODO: other fields might use 'random' too
+    const { dbField } = list.fields.id;
+
+    if ('default' in dbField && dbField.default?.kind === 'random') {
+      const { bytes, encoding } = dbField.default;
+      prismaClient = prismaClient.$extends({
+        query: {
+          [list.prisma.listKey]: {
+            async create({ model, args, query }: any) {
+              return query({
+                ...args,
+                data: {
+                  ...args.data,
+                  id: args.data.id ?? randomBytes(bytes).toString(encoding),
+                },
+              });
+            },
+          },
+        },
+      });
+    }
+  }
+
+  return prismaClient;
+}
+
 export function createSystem(config: KeystoneConfig) {
   const lists = initialiseLists(config);
   const adminMeta = createAdminMeta(config, lists);
@@ -76,16 +107,17 @@ export function createSystem(config: KeystoneConfig) {
     graphQLSchema,
     adminMeta,
     getKeystone: (prismaModule: PrismaModule) => {
-      const prismaClient = new prismaModule.PrismaClient({
+      const prePrismaClient = new prismaModule.PrismaClient({
+        datasources: { [config.db.provider]: { url: config.db.url } },
         log:
           config.db.enableLogging === true
             ? ['query']
             : config.db.enableLogging === false
             ? undefined
             : config.db.enableLogging,
-        datasources: { [config.db.provider]: { url: config.db.url } },
       });
 
+      const prismaClient = injectNewDefaults(prePrismaClient, lists);
       setWriteLimit(prismaClient, pLimit(config.db.provider === 'sqlite' ? 1 : Infinity));
       setPrismaNamespace(prismaClient, prismaModule.Prisma);
 
@@ -98,12 +130,12 @@ export function createSystem(config: KeystoneConfig) {
       });
 
       return {
-        // TODO: remove, replace with server.onStart, remove in breaking change
+        // TODO: replace with server.onStart, remove in breaking change
         async connect() {
           await prismaClient.$connect();
           await config.db.onConnect?.(context);
         },
-        // TODO: remove, only used by tests, remove in breaking change
+        // TODO: only used by tests, remove in breaking change
         async disconnect() {
           await prismaClient.$disconnect();
         },

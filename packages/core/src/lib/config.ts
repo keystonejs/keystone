@@ -1,33 +1,7 @@
-import type { KeystoneConfig, IdFieldConfig } from '../types';
+import type { KeystoneConfig } from '../types';
 import { idFieldType } from './id-field';
 
-// TODO: move to system/initialisation
-function getIdField({ kind, type }: IdFieldConfig): Required<IdFieldConfig> {
-  if (kind === 'cuid') return { kind: 'cuid', type: 'String' };
-  if (kind === 'cuid2') return { kind: 'cuid2', type: 'String' };
-  if (kind === 'uuid') return { kind: 'uuid', type: 'String' };
-  if (kind === 'string') return { kind: 'string', type: 'String' };
-  if (kind === 'autoincrement') {
-    if (type === 'BigInt') return { kind: 'autoincrement', type: 'BigInt' };
-    return { kind: 'autoincrement', type: 'Int' };
-  }
-
-  throw new Error(`Unknown id type ${kind}`);
-}
-
-// validate lists config and default the id field
 function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['lists'] {
-  const defaultIdField = getIdField(config.db.idField ?? { kind: 'cuid' });
-  if (
-    defaultIdField.kind === 'autoincrement' &&
-    defaultIdField.type === 'BigInt' &&
-    config.db.provider === 'sqlite'
-  ) {
-    throw new Error(
-      'BigInt autoincrements are not supported on SQLite but they are configured as the global id field type at db.idField'
-    );
-  }
-
   // some error checking
   for (const [listKey, list] of Object.entries(config.lists)) {
     if (list.fields.id) {
@@ -38,16 +12,6 @@ function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['lists'] {
       );
     }
 
-    if (
-      list.db?.idField?.kind === 'autoincrement' &&
-      list.db.idField.type === 'BigInt' &&
-      config.db.provider === 'sqlite'
-    ) {
-      throw new Error(
-        `BigInt autoincrements are not supported on SQLite but they are configured at db.idField on the ${listKey} list`
-      );
-    }
-
     if (list.isSingleton && list.db?.idField) {
       throw new Error(
         `A singleton list cannot specify an idField, but it is configured at db.idField on the ${listKey} list`
@@ -55,7 +19,7 @@ function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['lists'] {
     }
   }
 
-  // inject the ID fields
+  // inject ID fields
   const listsWithIds: KeystoneConfig['lists'] = {};
 
   for (const [listKey, list] of Object.entries(config.lists)) {
@@ -81,7 +45,7 @@ function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['lists'] {
     listsWithIds[listKey] = {
       ...list,
       fields: {
-        id: idFieldType(getIdField(list.db?.idField ?? defaultIdField), false),
+        id: idFieldType(list.db?.idField ?? config.db.idField ?? { kind: 'cuid' }, false),
         ...list.fields,
       },
     };

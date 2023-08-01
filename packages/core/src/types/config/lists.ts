@@ -12,17 +12,6 @@ export type ListSchemaConfig<ListTypeInfo extends BaseListTypeInfo = BaseListTyp
   ListConfig<any, BaseFields<BaseListTypeInfo>>
 >;
 
-export type IdFieldConfig =
-  | { kind: 'cuid2' | 'cuid' | 'uuid' | 'string'; type?: 'String' }
-  | {
-      kind: 'autoincrement';
-      /**
-       * Configures the database type of the id field. Only `Int` is supported on SQLite.
-       * @default 'Int'
-       */
-      type?: 'Int' | 'BigInt';
-    };
-
 export type ListConfig<
   ListTypeInfo extends BaseListTypeInfo,
   __Fields extends BaseFields<ListTypeInfo> = BaseFields<ListTypeInfo> // TODO: remove in breaking change
@@ -235,6 +224,17 @@ export type ListGraphQLConfig = {
 };
 
 export type CacheHintArgs = { results: any; operationName?: string; meta: boolean };
+
+// TODO: duplicate, merge with next-fields?
+export type IdFieldConfig =
+  | {
+      kind: 'random';
+      type?: 'String';
+      bytes?: number;
+      encoding?: 'hex' | 'base64url';
+    }
+  | { kind: 'cuid' | 'uuid' | 'string'; type?: 'String' }
+  | { kind: 'autoincrement'; type?: 'Int' | 'BigInt' };
 
 export type ListDBConfig = {
   /**

@@ -1,9 +1,8 @@
+import { randomBytes } from 'node:crypto';
 import { list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
-import { isCuid } from 'cuid';
-import { isCuid as isCuid2, createId as createCuid2 } from '@paralleldrive/cuid2';
 import { validate as isUuid } from 'uuid';
 import { testConfig, dbProvider, expectBadUserInput } from './utils';
 
@@ -20,6 +19,7 @@ const fixtures = [
       expect(id).toBe(1);
       expect(idStr).toEqual('1');
     },
+    accept: [], // doesn't accept anything
     reject: [null, '', 'abc', 'abc123', 'asdfqwerty'],
   } as const,
   ...(dbProvider === 'sqlite'
@@ -33,6 +33,7 @@ const fixtures = [
             expect(id).toBe(1n);
             expect(idStr).toEqual('1');
           },
+          accept: [], // doesn't accept anything
           reject: [null, '', 'abc', 'abc123', 'asdfqwerty'],
         } as const,
       ] as const)),
@@ -43,22 +44,24 @@ const fixtures = [
     error: 'Only a string can be passed to id filters',
     expect: (id: any, idStr: string) => {
       expect(typeof id).toBe('string');
-      expect(isCuid(id)).toBe(true);
+      expect(id[0] === 'c').toBe(true);
       expect(idStr).toBe(id);
     },
+    accept: ['c111111111111111111111111'],
     reject: [null],
   } as const,
 
   {
-    kind: 'cuid2',
+    kind: 'random',
     type: undefined,
     error: 'Only a string can be passed to id filters',
     expect: (id: any, idStr: string) => {
       expect(typeof id).toBe('string');
-      expect(id.length).toBe(24);
-      expect(isCuid2(id)).toBe(true);
+      expect(id.length).toBe(43);
+      expect(Buffer.from(id, 'base64url').length).toBe(32);
       expect(idStr).toBe(id);
     },
+    accept: ['AQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQE'],
     reject: [null],
   } as const,
 
@@ -71,6 +74,7 @@ const fixtures = [
       expect(isUuid(id)).toBe(true);
       expect(idStr).toBe(id);
     },
+    accept: ['11111111-1111-1111-b111-111111111111'],
     reject: [null],
   } as const,
 
@@ -80,16 +84,18 @@ const fixtures = [
     error: 'Only a string can be passed to id filters',
     expect: (id: any, idStr: string) => {
       expect(typeof id).toBe('string');
-      expect(isCuid2(id)).toBe(true);
+      expect(id.length).toBe(20);
+      expect(Buffer.from(id, 'hex').length).toBe(10);
       expect(idStr).toBe(id);
     },
+    accept: ['aaaaaaaaaaaaaaaaaaaa'],
     reject: [null],
     hooks: {
       resolveInput: {
         create: ({ resolvedData }: any) => {
           return {
             ...resolvedData,
-            id: createCuid2(),
+            id: randomBytes(10).toString('hex'),
           };
         },
       },
@@ -132,8 +138,23 @@ for (const fixture of fixtures) {
       })
     );
 
+    for (const id of fixture.accept) {
+      test(
+        `Create can accept ${id}`,
+        runner(async ({ context }) => {
+          await context.prisma.user.create({ data: { id, name: 'nobody' } });
+          const dbItem = await context.db.User.findOne({ where: { id } });
+
+          expect(dbItem).not.toBe(null);
+          if (!dbItem) return;
+          expect(dbItem.id).toBe(id);
+          expectFn(dbItem.id, id);
+        })
+      );
+    }
+
     test(
-      `Querying succeeds for a findOne`,
+      `findOne works`,
       runner(async ({ context }) => {
         const { id } = await context.query.User.createOne({ data: { name: 'something' } });
         await context.query.User.createOne({ data: { name: 'another' } });
@@ -143,7 +164,7 @@ for (const fixture of fixtures) {
     );
 
     test(
-      `Querying succeeds for a findMany`,
+      `findMany works`,
       runner(async ({ context }) => {
         const { id } = await context.query.User.createOne({ data: { name: 'something' } });
         await context.query.User.createOne({ data: { name: 'another' } });
@@ -154,7 +175,7 @@ for (const fixture of fixtures) {
     );
 
     test(
-      `Querying returns [] for a findMany with a null notIn filter`,
+      `findMany returns [] for a null notIn filter`,
       runner(async ({ context }) => {
         const items = await context.query.User.findMany({ where: { id: { notIn: null } } });
         expect(items).toStrictEqual([]);

@@ -18,8 +18,8 @@ export const lists: Lists = {
         ],
         hooks: {
           resolveInput({ resolvedData, inputData }) {
-            if (inputData.priority === undefined) {
-              //  default to high if "urgent" is in the label
+            if (inputData.priority === null) {
+              // default to high if "urgent" is in the label
               if (inputData.label && inputData.label.toLowerCase().includes('urgent')) {
                 return 'high';
               } else {
@@ -30,33 +30,36 @@ export const lists: Lists = {
           },
         },
       }),
-      // Static default: When a task is first created, it is incomplete
+
+      // static default: when a task is first created, it is incomplete
       isComplete: checkbox({ defaultValue: false }),
+
       assignedTo: relationship({
         ref: 'Person.tasks',
         many: false,
         hooks: {
-          // Dynamic default: Find an anonymous user and assign the task to them
+          // dynamic default: if unassigned, find an anonymous user and assign the task to them
           async resolveInput({ context, operation, resolvedData }) {
-            if (operation === 'create' && !resolvedData.assignedTo) {
-              const anonymous = await context.db.Person.findMany({
+            if (resolvedData.assignedTo === null) {
+              const [user] = await context.db.Person.findMany({
                 where: { name: { equals: 'Anonymous' } },
               });
-              if (anonymous.length > 0) {
-                return { connect: { id: anonymous[0].id } };
+
+              if (user) {
+                return { connect: { id: user.id } };
               }
             }
-            // If we don't have an anonymous user we return the value
-            // that was passed in(which might be nothing) so as not to apply any default
+
             return resolvedData.assignedTo;
           },
         },
       }),
-      // Dynamic default: We set the due date to be 7 days in the future
+
+      // dynamic default: we set the due date to be 7 days in the future
       finishBy: timestamp({
         hooks: {
           resolveInput({ resolvedData, inputData, operation }) {
-            if (inputData.finishBy == null && operation === 'create') {
+            if (inputData.finishBy == null) {
               const date = new Date();
               date.setUTCDate(new Date().getUTCDate() + 7);
               return date;
@@ -65,7 +68,8 @@ export const lists: Lists = {
           },
         },
       }),
-      // Static default: When a task is first created, it has been viewed zero times
+
+      // static default: when a task is first created, it has been viewed zero times
       viewCount: bigInt({
         defaultValue: 0n,
       }),
