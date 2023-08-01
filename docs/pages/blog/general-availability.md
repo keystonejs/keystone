@@ -51,7 +51,6 @@ Here's a few of the other cool things we shipped in Keystone this year:
 - New CLI and dev experience
 - [Server-side live reloading](https://github.com/keystonejs/keystone/releases/tag/2021-11-02)
 - [JSON field](/docs/fields/json)
-- [Health check server endpoints](/docs/config/config#health-check)
 - [17 example projects](/docs/examples) to explore Keystone's many features and get you up and running on the web
 
 This release completes a body of work that make **Keystone 6 our best developer experience yet**. If you've been waiting to tryout Keystone 6 **there's never been a better time**. Just `yarn create keystone-app` or read our [getting started guide](/docs/getting-started) to take your first steps.
