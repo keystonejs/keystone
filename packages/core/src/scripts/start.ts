@@ -50,7 +50,7 @@ export const start = async (
   );
 
   console.log(`✅ GraphQL API ready`);
-  if (!config.ui?.isDisabled || ui) {
+  if (!config.ui?.isDisabled && ui) {
     console.log('✨ Preparing Admin UI Next.js app');
     const nextApp = next({ dev: false, dir: paths.admin });
     await nextApp.prepare();
