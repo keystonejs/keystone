@@ -5,6 +5,8 @@ description: "A reference of Keystone's cloudinaryImage field type, configuratio
 
 Upload images to your Cloudinary account via Keystone's Admin UI.
 
+Note: when fetching images saved in Cloudinary you can pass [transform params](https://github.com/keystonejs/keystone/blob/03ae5bcc28daccccf37d689a599565214f33be3b/packages/cloudinary/src/cloudinary.ts#L6-L36).
+
 - `cloudinary`: Configuration for the connected Cloudinary account.
   - `cloudName` - TODO
   - `apiKey` - TODO
