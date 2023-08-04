@@ -11,7 +11,8 @@ In the [first lesson](/docs/walkthroughs/lesson-1) we got our Keystone blog proj
 
 ```js
 // keystone.ts
-import { list, config } from '@keystone-6/core';
+import { config, list } from '@keystone-6/core';
+import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
 
 export default config({
@@ -21,6 +22,7 @@ export default config({
   },
   lists: {
     User: list({
+      access: allowAll,
       fields: {
         name: text({ validation: { isRequired: true } }),
         email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
@@ -36,12 +38,14 @@ We’re now going to create a post list type, and connect it to users with relat
 
 Before we define fields for a `post` type, let's pull lists out into its own object so it's easier to reason about going forward:
 
-```js{4-11,18}
-import { list, config } from '@keystone-6/core';
+```js{5-13,20}
+import { config, list } from '@keystone-6/core';
+import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
 
 const lists = {
   User: list({
+    access: allowAll,
     fields: {
       name: text({ validation: { isRequired: true } }),
       email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
@@ -66,18 +70,21 @@ export default config({
 
 To create a post type we add a second `Post` key to the lists object. Let’s add another `text` field for the post’s `title` to begin with:
 
-```js{11-15}[1-3,18-24]
-import { list, config } from '@keystone-6/core';
+```js{13-18}[1-4,21-27]
+import { config, list } from '@keystone-6/core';
+import { allowAll } from '@keystone-6/core/access';
 import { text } from '@keystone-6/core/fields';
 
 const lists = {
   User: list({
+    access: allowAll,
     fields: {
       name: text({ validation: { isRequired: true } }),
       email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
     },
   }),
   Post: list({
+    access: allowAll,
     fields: {
       title: text(),
     },
@@ -110,12 +117,14 @@ Now that we have two lists, let's make a relationship between them. When decidin
 
 Let’s say that a post can be associated with only one user, but a user can have many posts. To create this relationship, we will add a [relationship](/docs/guides/relationships) field to each list that defines their connection to one another:
 
-```js{2,9,15}[19-30]
-import { list, config } from '@keystone-6/core';
+```js{3,11,18}[22-29]
+import { config, list } from '@keystone-6/core';
+import { allowAll } from '@keystone-6/core/access';
 import { text, relationship } from '@keystone-6/core/fields';
 
 const lists = {
   User: list({
+    access: allowAll,
     fields: {
       name: text({ validation: { isRequired: true } }),
       email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
@@ -123,6 +132,7 @@ const lists = {
     },
   }),
   Post: list({
+    access: allowAll,
     fields: {
       title: text(),
       author: relationship({ ref: 'User.posts' }),
@@ -156,13 +166,15 @@ In our current schema, the `author` field provides a `select` input to connect a
 
 In Keystone it's possible to change that display to suit your needs. This is achieved with a field's `ui` option. Each field comes with different `ui` options that you can explore. for the `author` field we’ll make a few changes to improve the editing experience for Admin UI users:
 
-```js{18-24}[2-12,28-35]
+```js{21-27}[2-14,31-38]
 //keystone.ts
-import { list, config } from '@keystone-6/core';
+import { config, list } from '@keystone-6/core';
+import { allowAll } from '@keystone-6/core/access';
 import { text, relationship } from '@keystone-6/core/fields';
 
 const lists = {
   User: list({
+    access: allowAll,
     fields: {
       name: text({ validation: { isRequired: true } }),
       email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
@@ -170,6 +182,7 @@ const lists = {
     },
   }),
   Post: list({
+    access: allowAll,
     fields: {
       title: text(),
       author: relationship({
@@ -210,11 +223,13 @@ Our app has a new `post` list with a title and a link to `users` via the `author
 
 ```ts
 // keystone.ts
-import { list, config } from '@keystone-6/core';
+import { config, list } from '@keystone-6/core';
+import { allowAll } from '@keystone-6/core/access';
 import { text, relationship } from '@keystone-6/core/fields';
 
 const lists = {
   User: list({
+    access: allowAll,
     fields: {
       name: text({ validation: { isRequired: true } }),
       email: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
@@ -222,6 +237,7 @@ const lists = {
     },
   }),
   Post: list({
+    access: allowAll,
     fields: {
       title: text(),
       author: relationship({
