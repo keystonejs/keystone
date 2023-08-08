@@ -1,5 +1,19 @@
 # @keystone-6/core
 
+## 5.5.0
+
+### Minor Changes
+
+- [#8738](https://github.com/keystonejs/keystone/pull/8738) [`ef9214cc5`](https://github.com/keystonejs/keystone/commit/ef9214cc527cea741fef5f77fc332cc233a1dd66) Thanks [@TweededBadger](https://github.com/TweededBadger)! - Add `sourcemap: true` to esbuild configuration to help with error debugging
+
+### Patch Changes
+
+- [#8733](https://github.com/keystonejs/keystone/pull/8733) [`03ae5bcc2`](https://github.com/keystonejs/keystone/commit/03ae5bcc28daccccf37d689a599565214f33be3b) Thanks [@molomby](https://github.com/molomby)! - Fixes `ui.isDisabled` condition for `keystone start`
+
+* [#8743](https://github.com/keystonejs/keystone/pull/8743) [`aef0bf345`](https://github.com/keystonejs/keystone/commit/aef0bf3453816f5b9e5acc62ef9881877bed62a5) Thanks [@dcousens](https://github.com/dcousens)! - Fixes `session` type as `any` when using `.keystone/types` `Lists` as your root type
+
+- [#8741](https://github.com/keystonejs/keystone/pull/8741) [`1f666ea58`](https://github.com/keystonejs/keystone/commit/1f666ea58a7739ec917f9cab4ad3c52613cd2954) Thanks [@acburdine](https://github.com/acburdine)! - Fixes broken context type narrowing for virtual field resolvers
+
 ## 5.4.0
 
 ### Minor Changes
