@@ -61,10 +61,7 @@ function getSudoGraphQLSchema(config: KeystoneConfig) {
   };
 
   const lists = initialiseLists(transformedConfig);
-  const adminMeta = createAdminMeta(transformedConfig, lists);
-  return createGraphQLSchema(transformedConfig, lists, adminMeta, true);
-  // TODO: adminMeta not useful for sudo, remove in breaking change
-  // return createGraphQLSchema(transformedConfig, lists, null, true);
+  return createGraphQLSchema(transformedConfig, lists, null, true);
 }
 
 function injectNewDefaults(prismaClient: any, lists: Record<string, InitialisedList>) {
