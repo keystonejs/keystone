@@ -257,7 +257,7 @@ export function printGeneratedTypes(
     `type __TypeInfo<Session = any> = TypeInfo<Session>;`,
     ``,
     `export type Lists<Session = any> = {`,
-    `  [Key in keyof TypeInfo['lists']]: import('@keystone-6/core').ListConfig<TypeInfo<Session>['lists'][Key]>`,
+    `  [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core').ListConfig<TypeInfo<Session>['lists'][Key]>`,
     `} & Record<string, import('@keystone-6/core').ListConfig<any>>;`,
     ``,
     `export {}`,
