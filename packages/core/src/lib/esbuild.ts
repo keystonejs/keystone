@@ -6,6 +6,7 @@ export function getEsbuildConfig(cwd: string): BuildOptions {
     entryPoints: ['./keystone'],
     absWorkingDir: cwd,
     bundle: true,
+    sourcemap: true,
     // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
     outfile: '.keystone/config.js',
     format: 'cjs',
