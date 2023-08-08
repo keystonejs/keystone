@@ -25,7 +25,7 @@ function isAdminOrOnlySameUser({ session }: { session?: Session }) {
   };
 }
 
-export const lists: Lists = {
+export const lists: Lists<Session> = {
   Post: list({
     access: {
       operation: {

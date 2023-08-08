@@ -14,7 +14,7 @@ export type ListSchemaConfig<ListTypeInfo extends BaseListTypeInfo = BaseListTyp
 
 export type ListConfig<
   ListTypeInfo extends BaseListTypeInfo,
-  __Fields extends BaseFields<ListTypeInfo> = BaseFields<ListTypeInfo> // TODO: remove in breaking change
+  __Unused extends any = any // TODO: remove in breaking change
 > = {
   isSingleton?: boolean;
   fields: BaseFields<ListTypeInfo>;
@@ -50,7 +50,7 @@ export type ListConfig<
 
 export type ListAdminUIConfig<
   ListTypeInfo extends BaseListTypeInfo,
-  __Fields extends BaseFields<ListTypeInfo> = BaseFields<ListTypeInfo> // TODO: remove in breaking change
+  __Unused extends any = any // TODO: remove in breaking change
 > = {
   /**
    * The field to use as a label in the Admin UI. If you want to base the label off more than a single field, use a virtual field and reference that field here.
