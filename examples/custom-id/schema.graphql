@@ -4,16 +4,8 @@
 type Task {
   id: ID!
   label: String
-  priority: TaskPriorityType
-  isComplete: Boolean
   assignedTo: Person
   finishBy: DateTime
-}
-
-enum TaskPriorityType {
-  low
-  medium
-  high
 }
 
 scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
@@ -28,8 +20,6 @@ input TaskWhereInput {
   NOT: [TaskWhereInput!]
   id: IDFilter
   label: StringFilter
-  priority: TaskPriorityTypeNullableFilter
-  isComplete: BooleanFilter
   assignedTo: PersonWhereInput
   finishBy: DateTimeNullableFilter
 }
@@ -73,18 +63,6 @@ input NestedStringFilter {
   not: NestedStringFilter
 }
 
-input TaskPriorityTypeNullableFilter {
-  equals: TaskPriorityType
-  in: [TaskPriorityType!]
-  notIn: [TaskPriorityType!]
-  not: TaskPriorityTypeNullableFilter
-}
-
-input BooleanFilter {
-  equals: Boolean
-  not: BooleanFilter
-}
-
 input DateTimeNullableFilter {
   equals: DateTime
   in: [DateTime!]
@@ -99,8 +77,6 @@ input DateTimeNullableFilter {
 input TaskOrderByInput {
   id: OrderDirection
   label: OrderDirection
-  priority: OrderDirection
-  isComplete: OrderDirection
   finishBy: OrderDirection
 }
 
@@ -111,8 +87,6 @@ enum OrderDirection {
 
 input TaskUpdateInput {
   label: String
-  priority: TaskPriorityType
-  isComplete: Boolean
   assignedTo: PersonRelateToOneForUpdateInput
   finishBy: DateTime
 }
@@ -130,8 +104,6 @@ input TaskUpdateArgs {
 
 input TaskCreateInput {
   label: String
-  priority: TaskPriorityType
-  isComplete: Boolean
   assignedTo: PersonRelateToOneForCreateInput
   finishBy: DateTime
 }
