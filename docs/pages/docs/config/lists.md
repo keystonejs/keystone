@@ -287,7 +287,7 @@ Defines the names, types, and configuration of Keystone fields. See all the fiel
 {% well
 heading="Config API Reference"
 href="/docs/config/overview" %}
-The API to configure all the parts parts of your Keystone system.
+The API to configure all the parts of your Keystone system.
 {% /well %}
 {% well
 heading="Example Project: Blog"
