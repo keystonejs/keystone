@@ -81,7 +81,7 @@ export function getBaseAuthSchema<I extends string, S extends string>({
     mutation: {
       endSession: graphql.field({
         type: graphql.nonNull(graphql.Boolean),
-        async resolve(rootVal, args, context) {
+        async resolve(root, args, context) {
           if (sessionStrategy) {
             await sessionStrategy.end({ context });
           }
@@ -94,10 +94,15 @@ export function getBaseAuthSchema<I extends string, S extends string>({
           [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
           [secretField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
         },
-        async resolve(root, { [identityField]: identity, [secretField]: secret }, context) {
+        async resolve(root, args, context) {
           if (!context.res) {
             throw new Error('No session implementation available on context');
           }
+
+          const {
+            [identityField]: identity,
+            [secretField]: secret
+          } = args;
 
           const dbItemAPI = context.sudo().db[listKey];
           const result = await validateSecret(

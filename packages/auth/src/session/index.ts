@@ -5,7 +5,6 @@ import type { SessionStrategy, SessionStoreFunction } from '../types';
 
 // should we also accept httpOnly?
 type StatelessSessionsOptions = {
-  data?: string;
   /**
    * Secret used by https://github.com/hapijs/iron for encapsulating data. Must be at least 32 characters long
    */
@@ -69,14 +68,12 @@ export function statelessSessions<Session>({
   ironOptions = Iron.defaults,
   domain,
   sameSite = 'lax',
-  data = 'id',
 }: StatelessSessionsOptions): SessionStrategy<Session, any> {
   if (secret.length < 32) {
     throw new Error('The session secret must be at least 32 characters long');
   }
 
   return {
-    data,
     async get({ context }) {
       if (!context?.req) return;
 
@@ -130,16 +127,14 @@ export function statelessSessions<Session>({
 export function storedSessions<Session>({
   store: storeFn,
   maxAge = 60 * 60 * 8, // 8 hours
-  data = 'id',
   ...statelessSessionsOptions
 }: StatelessSessionsOptions & {
-  store: SessionStoreFunction;
-}): SessionStrategy<Session, any> {
+  store: SessionStoreFunction<Session>;
+}): SessionStrategy<Session> {
   const stateless = statelessSessions<string>({ ...statelessSessionsOptions, maxAge });
   const store = storeFn({ maxAge });
 
   return {
-    data,
     async get({ context }) {
       const sessionId = await stateless.get({ context });
       if (!sessionId) return;
