@@ -70,7 +70,7 @@ export const lists: Lists<Session> = {
         },
         hooks: {
           resolveInput({ operation, resolvedData, context }) {
-            if (operation === 'create' && !resolvedData.assignedTo) {
+            if (operation === 'create' && !resolvedData.assignedTo && context.session) {
               // Always default new todo items to the current user; this is important because users
               // without canManageAllTodos don't see this field when creating new items
               return { connect: { id: context.session.itemId } };
@@ -112,11 +112,13 @@ export const lists: Lists<Session> = {
       },
       itemView: {
         defaultFieldMode: ({ session, item }) => {
-          // People with canEditOtherPeople can always edit people
-          if (session.data.role?.canEditOtherPeople) return 'edit';
-          // People can also always edit themselves
-          else if (session.itemId === item.id) return 'edit';
-          // Otherwise, default all fields to read mode
+          // canEditOtherPeople can edit other people
+          if (session?.data.role?.canEditOtherPeople) return 'edit';
+
+          // edit themselves
+          if (session?.itemId === item.id) return 'edit';
+
+          // else, default all fields to read mode
           return 'read';
         },
       },
@@ -141,7 +143,7 @@ export const lists: Lists<Session> = {
         access: {
           read: denyAll, // TODO: is this required?
           update: ({ session, item }) =>
-            permissions.canManagePeople({ session }) || session.itemId === item.id,
+            permissions.canManagePeople({ session }) || session?.itemId === item.id,
         },
         validation: { isRequired: true },
       }),
@@ -163,11 +165,12 @@ export const lists: Lists<Session> = {
         ref: 'Todo.assignedTo',
         many: true,
         access: {
-          // Only people with canManageAllTodos can set this field when creating other users
+          // only people with canManageAllTodos can set this field when creating other users
           create: permissions.canManageAllTodos,
-          // You can only update this field with canManageAllTodos, or for yourself
+
+          // you can only update this field with canManageAllTodos, or for yourself
           update: ({ session, item }) =>
-            permissions.canManageAllTodos({ session }) || session.itemId === item.id,
+            permissions.canManageAllTodos({ session }) || session?.itemId === item.id,
         },
         ui: {
           createView: {
