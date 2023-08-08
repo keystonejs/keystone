@@ -1,64 +1,28 @@
 import { list, graphql } from '@keystone-6/core';
-import { select, relationship, text, timestamp, virtual } from '@keystone-6/core/fields';
+import { text, checkbox, virtual } from '@keystone-6/core/fields';
 import { allowAll } from '@keystone-6/core/access';
-import { Lists, Context } from '.keystone/types';
+import type { Lists } from '.keystone/types';
 
 export const lists: Lists = {
   Post: list({
-    access: allowAll,
+    access: allowAll, // WARNING: public
     fields: {
       title: text({ validation: { isRequired: true } }),
-      status: select({
-        type: 'enum',
-        options: [
-          { label: 'Draft', value: 'draft' },
-          { label: 'Published', value: 'published' },
-        ],
-      }),
-      // A virtual field returning a value derived from the item data.
-      isPublished: virtual({
+      content: text({ validation: { isRequired: true } }),
+      listed: checkbox({}),
+
+      // primitive GraphQL type
+      isActive: virtual({
         field: graphql.field({
           type: graphql.Boolean,
           resolve(item) {
-            return item.status === 'published';
+            return item.title.length > 3 && item.content.length > 10 && item.listed === true;
           },
         }),
-
-        hooks: {
-          resolveInput: async ({ resolvedData, operation, inputData, item, fieldKey }) => {
-            console.log('Post.isPublished.hooks.resolveInput', {
-              resolvedData,
-              operation,
-              inputData,
-              item,
-              fieldKey,
-            });
-            return resolvedData[fieldKey];
-          },
-
-          validateInput: async ({
-            resolvedData,
-            inputData,
-            item,
-            addValidationError,
-            fieldKey,
-          }) => {
-            console.log('Post.isPublished.hooks.validateInput', {
-              resolvedData,
-              inputData,
-              item,
-              fieldKey,
-            });
-          },
-        },
       }),
-      content: text({ ui: { displayMode: 'textarea' } }),
-      // A virtual field returning a custom GraphQL object type.
+
+      // object GraphQL type
       counts: virtual({
-        ui: {
-          itemView: { fieldMode: 'hidden' },
-          listView: { fieldMode: 'hidden' },
-        },
         field: graphql.field({
           type: graphql.object<{
             words: number;
@@ -73,7 +37,7 @@ export const lists: Lists = {
             },
           }),
           resolve(item) {
-            const content = item.content || '';
+            const content = item.content ?? '';
             return {
               words: content.split(' ').length,
               sentences: content.split('.').length,
@@ -81,72 +45,64 @@ export const lists: Lists = {
             };
           },
         }),
+        ui: {
+          itemView: { fieldMode: 'hidden' },
+          listView: { fieldMode: 'hidden' },
+        },
       }),
-      // A virtual field which accepts GraphQL arguments.
+
+      // accepts GraphQL arguments
       excerpt: virtual({
         field: graphql.field({
           type: graphql.String,
           args: {
-            length: graphql.arg({ type: graphql.nonNull(graphql.Int), defaultValue: 200 }),
+            length: graphql.arg({ type: graphql.nonNull(graphql.Int), defaultValue: 50 }),
           },
           resolve(item, { length }) {
-            if (!item.content) {
-              return null;
-            }
-            const content = item.content;
-            if (content.length <= length) {
-              return content;
-            } else {
-              return content.slice(0, length - 3) + '...';
-            }
+            const { content = '' } = item;
+            if (content.length <= length) return content;
+            return content.slice(0, length) + '...';
           },
         }),
         ui: { query: '(length: 10)' },
       }),
-      publishDate: timestamp(),
-      author: relationship({ ref: 'Author.posts', many: false }),
-      // A virtual field which uses `item` and `context` to query data.
-      authorName: virtual({
+
+      // using a context
+      related: virtual({
         field: graphql.field({
-          type: graphql.String,
-          async resolve(item, args, _context) {
-            const context = _context as Context;
-            const { author } = await context.query.Post.findOne({
-              where: { id: item.id.toString() },
-              query: 'author { name }',
+          type: graphql.list(
+            graphql.object<{
+              id: string;
+              title: string;
+            }>()({
+              name: 'RelatedPosts',
+              fields: {
+                id: graphql.field({ type: graphql.String }),
+                title: graphql.field({ type: graphql.String }),
+              },
+            })
+          ),
+
+          async resolve(item, _, context) {
+            // TODO: this could probably be better
+            const posts = await context.db.Post.findMany({
+              where: {
+                id: {
+                  not: {
+                    equals: item.id,
+                  },
+                },
+              },
+              take: 10,
             });
-            return author && author.name;
+
+            return posts.map(post => ({
+              id: post.id,
+              title: post.title,
+            }));
           },
         }),
-      }),
-    },
-  }),
-  Author: list({
-    access: allowAll,
-    fields: {
-      name: text({ validation: { isRequired: true } }),
-      email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
-      posts: relationship({ ref: 'Post.author', many: true }),
-      // A virtual field which returns a type derived from a Keystone list.
-      latestPost: virtual({
-        field: lists =>
-          graphql.field({
-            type: lists.Post.types.output,
-            async resolve(item, args, _context) {
-              const context = _context as Context;
-              const { posts } = await context.query.Author.findOne({
-                where: { id: item.id.toString() },
-                query: `posts(
-                    orderBy: { publishDate: desc }
-                    take: 1
-                  ) { id }`,
-              });
-              if (posts.length > 0) {
-                return context.db.Post.findOne({ where: { id: posts[0].id } });
-              }
-            },
-          }),
-        ui: { query: '{ title publishDate }' },
+        ui: { query: '{ id, title }' },
       }),
     },
   }),

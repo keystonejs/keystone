@@ -5,25 +5,24 @@ import {
   CommonFieldConfig,
   FieldTypeFunc,
   fieldType,
+  KeystoneContext,
   ListGraphQLTypes,
   getGqlNames,
 } from '../../../types';
 import { graphql } from '../../..';
 
-type VirtualFieldGraphQLField<Item extends BaseItem> = graphql.Field<
-  Item,
-  any,
-  graphql.OutputType,
-  string
->;
+type VirtualFieldGraphQLField<
+  Item extends BaseItem,
+  Context extends KeystoneContext
+> = graphql.Field<Item, any, graphql.OutputType, string, Context>;
 
 export type VirtualFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
     field:
-      | VirtualFieldGraphQLField<ListTypeInfo['item']>
+      | VirtualFieldGraphQLField<ListTypeInfo['item'], KeystoneContext<ListTypeInfo['all']>>
       | ((
           lists: Record<string, ListGraphQLTypes>
-        ) => VirtualFieldGraphQLField<ListTypeInfo['item']>);
+        ) => VirtualFieldGraphQLField<ListTypeInfo['item'], KeystoneContext<ListTypeInfo['all']>>);
     unreferencedConcreteInterfaceImplementations?: readonly graphql.ObjectType<any>[];
     ui?: {
       /**
