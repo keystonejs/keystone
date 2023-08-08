@@ -10,8 +10,8 @@ exampleProjectTests('virtual-field', browserType => {
     await loadIndex(page);
   });
   test('Load list', async () => {
-    await Promise.all([page.waitForNavigation(), page.click('h3:has-text("Authors")')]);
-    await page.waitForSelector('a:has-text("Create Author")');
+    await Promise.all([page.waitForNavigation(), page.click('h3:has-text("Posts")')]);
+    await page.waitForSelector('a:has-text("Create Post")');
   });
   afterAll(async () => {
     await browser.close();
