@@ -19,7 +19,11 @@ export default config({
   db: { /* ... */ },
   ui: { /* ... */ },
   server: { /* ... */ },
+{% if $nextRelease %}
+  getSession: { /* ... */ },
+{% else /%}  
   session: { /* ... */ },
+{% /if %}
   graphql: { /* ... */ },
   extendGraphqlSchema: { /* ... */ },
   storage: { /* ... */ },
@@ -298,6 +302,28 @@ export default config({
 
 _Note_: when using `keystone dev`, `extendHttpServer` is only called once on startup - you will need to restart your process for any updates
 
+{% if $nextRelease %}
+## getSession
+
+The `getSession` config option allows you to configure how Keystone retieves a `session` based on a given `context`. `getSession` will generally check the original request `req` on the `context` to validate and return a `session` that is then added to the `context` for that request.
+
+```typescript
+export default config({
+  getSession: async ({ context }) => {
+    if (!context.req) return
+    return await getValidSession(context);
+  }
+  },
+  /* ... */
+});
+```
+
+Whatever you return here will what is available in `context.session`, returning `undefined` here will make the `session` undefined, making the request essentially `unauthenticated` depending on your access-control.  
+
+If using `getSession` with `@keystone-6/auth`, `getSession` is called *after* the authentication package has validated the session and added it to `context` that is passed in. 
+
+See the [Session Docs](./session) for more details on how to configure session management using `@keystone-6/auth` in Keystone.
+{% else /%}
 ## session
 
 The `session` config option allows you to configure session management of your Keystone system.
@@ -315,7 +341,7 @@ export default config({
 ```
 
 See the [Session API](./session) for more details on how to configure session management in Keystone.
-
+{% /if %}
 ## graphql
 
 The `graphql` config option allows you to configure certain aspects of your GraphQL API.

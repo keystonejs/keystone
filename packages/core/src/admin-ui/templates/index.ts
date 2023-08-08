@@ -29,7 +29,7 @@ export const writeAdminFiles = (
       inputPath: Path.join(pkgDir, 'static', 'favicon.ico'),
       outputPath: 'public/favicon.ico',
     },
-    { mode: 'write', src: noAccessTemplate(config.session), outputPath: 'pages/no-access.js' },
+    { mode: 'write', src: noAccessTemplate(config.getSession), outputPath: 'pages/no-access.js' },
     {
       mode: 'write',
       src: appTemplate(

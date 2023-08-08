@@ -99,7 +99,7 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
   lists: ListSchemaConfig<TypeInfo['lists'][string]>;
   ui?: AdminUIConfig<TypeInfo>;
   server?: ServerConfig<TypeInfo>;
-  session?: SessionStrategy<TypeInfo['session'], TypeInfo>;
+  getSession?: (args: { context: KeystoneContext<TypeInfo> }) => Promise<TypeInfo['session'] | undefined>;
   types?: {
     path?: string;
   };

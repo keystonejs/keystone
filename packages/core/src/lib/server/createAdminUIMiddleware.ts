@@ -7,8 +7,8 @@ import { pkgDir } from '../../pkg-dir';
 
 const adminErrorHTMLFilepath = path.join(pkgDir, 'static', 'admin-error.html');
 
-function defaultIsAccessAllowed({ session, sessionStrategy }: KeystoneContext) {
-  if (!sessionStrategy) return true;
+function defaultIsAccessAllowed({ session, getSession }: KeystoneContext) {
+  if (!getSession) return true;
   return session !== undefined;
 }
 

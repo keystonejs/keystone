@@ -3,12 +3,11 @@ import type {
   BaseListTypeInfo,
   KeystoneConfig,
   KeystoneContext,
-  SessionStrategy,
   BaseKeystoneTypeInfo,
 } from '@keystone-6/core/types';
 import { password, timestamp } from '@keystone-6/core/fields';
 
-import type { AuthConfig, AuthGqlNames } from './types';
+import type { AuthConfig, AuthGqlNames, SessionStrategy } from './types';
 import { getSchemaExtension } from './schema';
 import { signinTemplate } from './templates/signin';
 import { initTemplate } from './templates/init';
@@ -32,7 +31,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
   identityField,
   magicAuthLink,
   passwordResetLink,
-  sessionData = 'id',
+  sessionStrategy,
 }: AuthConfig<ListTypeInfo>) {
   const gqlNames: AuthGqlNames = {
     // Core
@@ -130,7 +129,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     initFirstItem,
     passwordResetLink,
     magicAuthLink,
-    sessionData,
+    sessionStrategy,
   });
 
   function throwIfInvalidConfig<TypeInfo extends BaseKeystoneTypeInfo>(
@@ -154,40 +153,46 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     for (const fieldKey of initFirstItem?.fields || []) {
       if (fieldKey in list.fields) continue;
 
-      throw new Error(`initFirstItem.fields has unknown field "${listKey}.${fieldKey}"`);
-    }
-  }
+  /**
+   * withItemData
+   *
+   * Automatically injects a session.data value with the authenticated item
+   */
+  const withItemData = (
+    sessionStrategy: SessionStrategy<Record<string, any>>,
+    getSession: KeystoneConfig['getSession']
+  ): ((args: { context: KeystoneContext }) => Promise<unknown | undefined>) => {
+    const { get } = sessionStrategy;
+    return async ({ context }) => {
+      const session = await get({ context });
+      const sudoContext = context.sudo();
+      if (
+        !session ||
+        !session.listKey ||
+        session.listKey !== listKey ||
+        !session.itemId ||
+        !sudoContext.query[session.listKey]
+      ) {
+        return;
+      }
 
-  // this strategy wraps the existing session strategy,
-  //   and injects the requested session.data before returning
-  function authSessionStrategy<Session extends AuthSession>(
-    _sessionStrategy: SessionStrategy<Session>
-  ): SessionStrategy<Session> {
-    const { get, ...sessionStrategy } = _sessionStrategy;
-    return {
-      ...sessionStrategy,
-      get: async ({ context }) => {
-        const session = await get({ context });
-        const sudoContext = context.sudo();
-        if (!session) return;
-        if (!session.itemId) return;
-        if (session.listKey !== listKey) return;
-
-        try {
-          const data = await sudoContext.query[listKey].findOne({
-            where: { id: session.itemId },
-            query: sessionData,
-          });
-          if (!data) return;
-
+      try {
+        const data = await sudoContext.query[listKey].findOne({
+          where: { id: session.itemId },
+          query: sessionStrategy.data,
+        });
+        if (!data) return;
+        if (getSession) {
+          return getSession({ context: { ...context, session: { ...session, data } } });
+        } else {
           return { ...session, itemId: session.itemId, listKey, data };
-        } catch (e) {
+        }
+      } catch (e) {
           console.error(e);
           // TODO: the assumption is this could only be from an invalid sessionData configuration
           //   it could be something else though, either way, result is a bad session
-          return;
-        }
-      },
+        return;
+      }
     };
   }
 
@@ -233,7 +238,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     return { kind: 'redirect', to: `${basePath}/signin` };
   }
 
-  function defaultIsAccessAllowed({ session, sessionStrategy }: KeystoneContext) {
+  function defaultIsAccessAllowed({ session }: KeystoneContext) {
     return session !== undefined;
   }
 
@@ -277,7 +282,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
       };
     }
 
-    if (!config.session) throw new TypeError('Missing .session configuration');
+    const getSession = withItemData(sessionStrategy, config.getSession);
 
     const { extendGraphqlSchema = defaultExtendGraphqlSchema } = config;
     const authListConfig = config.lists[listKey];
@@ -285,7 +290,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     return {
       ...config,
       ui,
-      session: authSessionStrategy(config.session),
+      getSession,
       lists: {
         ...config.lists,
         [listKey]: {

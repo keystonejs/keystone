@@ -80,8 +80,9 @@ export function createContext({
         req: newReq,
         res: newRes,
       });
+
       return newContext.withSession(
-        config.session ? await config.session.get({ context: newContext }) : undefined
+        config.session ? await config.getSession({ context: newContext }) : undefined
       );
     }
 
@@ -96,8 +97,9 @@ export function createContext({
 
       req,
       res,
-      sessionStrategy: config.session,
+
       ...(session ? { session } : {}),
+      getSession: config.getSession,
 
       withRequest,
       withSession: session => {
