@@ -12,7 +12,7 @@ export function config<TypeInfo extends BaseKeystoneTypeInfo>(config: KeystoneCo
 
 let i = 0;
 export function group<
-  __Fields extends BaseFields<ListTypeInfo>, // TODO: remove in breaking change
+  __Unused extends any, // TODO: remove in breaking change
   ListTypeInfo extends BaseListTypeInfo
 >(config: {
   label: string;
@@ -35,7 +35,7 @@ export function group<
 }
 
 export function list<
-  __Fields extends BaseFields<ListTypeInfo>, // TODO: remove in breaking change
+  __Unused extends any, // TODO: remove in breaking change
   ListTypeInfo extends BaseListTypeInfo
 >(config: ListConfig<ListTypeInfo>): ListConfig<ListTypeInfo> {
   return { ...config };

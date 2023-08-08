@@ -147,7 +147,7 @@ type ResolvedPostUpdateInput = {
 };
 
 export declare namespace Lists {
-  export type Post<Session = any> = import('@keystone-6/core').ListConfig<Lists.Post.TypeInfo<Session>, any>;
+  export type Post<Session = any> = import('@keystone-6/core').ListConfig<Lists.Post.TypeInfo<Session>>;
   namespace Post {
     export type Item = import('./node_modules/.myprisma/client').Post;
     export type TypeInfo<Session = any> = {
@@ -175,7 +175,7 @@ export type Config<Session = any> = import('@keystone-6/core/types').KeystoneCon
 
 export type TypeInfo<Session = any> = {
   lists: {
-    readonly Post: Lists.Post.TypeInfo;
+    readonly Post: Lists.Post.TypeInfo<Session>;
   };
   prisma: import('./node_modules/.myprisma/client').PrismaClient;
   session: Session;
@@ -184,7 +184,7 @@ export type TypeInfo<Session = any> = {
 type __TypeInfo<Session = any> = TypeInfo<Session>;
 
 export type Lists<Session = any> = {
-  [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core').ListConfig<TypeInfo<Session>['lists'][Key], any>
-} & Record<string, import('@keystone-6/core').ListConfig<any, any>>;
+  [Key in keyof TypeInfo['lists']]: import('@keystone-6/core').ListConfig<TypeInfo<Session>['lists'][Key]>
+} & Record<string, import('@keystone-6/core').ListConfig<any>>;
 
 export {}

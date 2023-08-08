@@ -1,4 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`postinstall writes the correct node_modules files 1`] = `
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ node_modules/.keystone/types.ts ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 /* eslint-disable */
@@ -127,7 +128,7 @@ type ResolvedTodoUpdateInput = {
 };
 
 export declare namespace Lists {
-  export type Todo<Session = any> = import('@keystone-6/core').ListConfig<Lists.Todo.TypeInfo<Session>, any>;
+  export type Todo<Session = any> = import('@keystone-6/core').ListConfig<Lists.Todo.TypeInfo<Session>>;
   namespace Todo {
     export type Item = import('@prisma/client').Todo;
     export type TypeInfo<Session = any> = {
@@ -155,7 +156,7 @@ export type Config<Session = any> = import('@keystone-6/core/types').KeystoneCon
 
 export type TypeInfo<Session = any> = {
   lists: {
-    readonly Todo: Lists.Todo.TypeInfo;
+    readonly Todo: Lists.Todo.TypeInfo<Session>;
   };
   prisma: import('@prisma/client').PrismaClient;
   session: Session;
@@ -164,8 +165,8 @@ export type TypeInfo<Session = any> = {
 type __TypeInfo<Session = any> = TypeInfo<Session>;
 
 export type Lists<Session = any> = {
-  [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core').ListConfig<TypeInfo<Session>['lists'][Key], any>
-} & Record<string, import('@keystone-6/core').ListConfig<any, any>>;
+  [Key in keyof TypeInfo['lists']]?: import('@keystone-6/core').ListConfig<TypeInfo<Session>['lists'][Key]>
+} & Record<string, import('@keystone-6/core').ListConfig<any>>;
 
 export {}
 
