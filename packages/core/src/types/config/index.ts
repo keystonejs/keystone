@@ -272,11 +272,11 @@ export type GraphQLConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTy
    *   debug: true,
    *   apolloConfig: {
    *     formatError: err => {
-   *       console.error(err);
-   *       delete err.extensions?.errors;
-   *       delete err.extensions?.exception?.errors;
-   *       delete err.extensions?.exception?.stacktrace;
-   *       return err;
+   *       console.error(err)
+   *       delete err.extensions?.errors
+   *       delete err.extensions?.exception?.errors
+   *       delete err.extensions?.exception?.stacktrace
+   *       return err
    *     },
    *   },
    * }
@@ -292,9 +292,6 @@ export type GraphQLConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTy
    */
   schemaPath?: string
 }
-
-/** @deprecated */
-export type ExtendGraphqlSchema = (schema: GraphQLSchema) => GraphQLSchema
 
 export type FilesConfig = {
   upload: AssetMode
