@@ -19,7 +19,7 @@
     "@keystone-6/document-renderer": "^1.0.0",
     "@keystone-6/fields-document": "^8.0.0",
     "@preconstruct/next": "^4.0.0",
-    "@prisma/client": "^4.16.2",
+    "@prisma/client": "^5.0.0",
     "graphql": "^16.6.0",
     "graphql-request": "^5.0.0",
     "graphql-yoga": "^3.1.0",
@@ -31,7 +31,7 @@
     "@types/node": "^18.11.14",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.4",
-    "prisma": "^4.16.2",
+    "prisma": "^5.0.0",
     "typescript": "~5.0.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/examples/framework-nextjs-app-directory"

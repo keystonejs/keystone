@@ -16,13 +16,13 @@
     "@babel/preset-typescript": "^7.21.0",
     "@keystone-6/auth": "^7.0.0",
     "@keystone-6/core": "^5.0.0",
-    "@prisma/client": "^4.16.2"
+    "@prisma/client": "^5.0.0"
   },
   "devDependencies": {
     "@types/node": "^18.11.14",
     "babel-jest": "^29.0.1",
     "jest": "^29.0.0",
-    "prisma": "^4.16.2",
+    "prisma": "^5.0.0",
     "typescript": "~5.0.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/examples/testing"
