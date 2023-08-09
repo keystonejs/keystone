@@ -10,11 +10,10 @@ import {
   getDMMF,
   parseEnvValue,
 } from '@prisma/internals'
-import { getPrismaClient, objectEnumValues } from '@prisma/client/runtime/library'
 import {
-  externalToInternalDmmf
-// @ts-expect-error
-} from '@prisma/client/generator-build'
+  getPrismaClient,
+  objectEnumValues,
+} from '@prisma/client/runtime/library'
 
 import {
   createExpressServer,
@@ -37,25 +36,29 @@ import { dbProvider, type FloatingConfig } from './utils'
   process.env.PRISMA_QUERY_ENGINE_LIBRARY = path.join(prismaEnginesDir, queryEngineFilename)
 }
 
-// conceptually similar to https://github.com/prisma/prisma/blob/main/packages/client/src/utils/getTestClient.ts
-async function getTestPrismaModuleInner (prismaSchemaPath: string, datamodel: string) {
-  const config = await getConfig({ datamodel, ignoreEnvVarErrors: true })
-  const document = await getDMMF({ datamodel, previewFeatures: [] })
+async function getTestPrismaModuleInner (prismaSchemaPath: string, schema: string) {
+  const config = await getConfig({ datamodel: schema, ignoreEnvVarErrors: true })
+  const { datamodel } = await getDMMF({ datamodel: schema, previewFeatures: [] })
+  const models = Object.values(datamodel.models).reduce<Record<string, typeof datamodel.models[number]>>((a, x) => (a[x.name] = x, a), {})
+  const enums = Object.values(datamodel.enums).reduce<Record<string, typeof datamodel.enums[number]>>((a, x) => (a[x.name] = x, a), {})
+  const types = Object.values(datamodel.types).reduce<Record<string, typeof datamodel.types[number]>>((a, x) => (a[x.name] = x, a), {})
+
   return {
     PrismaClient: getPrismaClient({
-      document: externalToInternalDmmf(document),
-      generator: config.generators.find(g => parseEnvValue(g.provider) === 'prisma-client-js'),
-      dirname: path.dirname(prismaSchemaPath),
-      relativePath: '',
+      inlineDatasources: {}, // uh
+      inlineSchemaHash: '', // uh
+      relativeEnvPaths: {}, // uh
+      relativePath: '', // uh
 
-      clientVersion: '0.0.0',
-      engineVersion: '0000000000000000000000000000000000000000',
-      relativeEnvPaths: {},
-
-      datasourceNames: config.datasources.map(d => d.name),
       activeProvider: config.datasources[0].activeProvider,
-      dataProxy: false,
-    }) as any,
+      clientVersion: '0.0.0',
+      datasourceNames: config.datasources.map(d => d.name),
+      dirname: path.dirname(prismaSchemaPath),
+      engineVersion: '0000000000000000000000000000000000000000',
+      generator: config.generators.find(g => parseEnvValue(g.provider) === 'prisma-client-js'),
+      inlineSchema: schema,
+      runtimeDataModel: { models, enums, types }
+    }),
     Prisma: {
       DbNull: objectEnumValues.instances.DbNull,
       JsonNull: objectEnumValues.instances.JsonNull,

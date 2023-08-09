@@ -20,10 +20,13 @@ Commands
           studio   Browse your data with Prisma Studio
         validate   Validate your Prisma schema
           format   Format your Prisma schema
+         version   Displays Prisma version info
+           debug   Displays Prisma debug info
 
 Flags
 
      --preview-feature   Run Preview Prisma commands
+     --help, -h          Show additional information about a command
 
 Examples
 
@@ -50,6 +53,12 @@ Examples
 
   Format your Prisma schema
   $ prisma format
+
+  Display Prisma version info
+  $ prisma version
+
+  Display Prisma debug info
+  $ prisma debug
 "
 `;
 

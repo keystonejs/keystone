@@ -7,7 +7,7 @@ import * as fse from 'fs-extra'
 import fastGlob from 'fast-glob'
 import chalk from 'chalk'
 
-import { MigrateEngine } from '@prisma/migrate'
+import { SchemaEngine } from '@prisma/migrate'
 import { uriToCredentials } from '@prisma/internals'
 import { cli } from '@keystone-6/core/scripts/cli'
 
@@ -93,7 +93,7 @@ afterAll(async () => {
   dirsToRemove = []
 })
 
-export async function testdir (dir: Fixture): Promise<string> {
+export async function testdir (dir: Fixture) {
   const temp = await fsp.mkdtemp(__dirname)
   dirsToRemove.push(temp)
   await Promise.all(
@@ -160,7 +160,7 @@ export async function getFiles (
 }
 
 export async function introspectDb (cwd: string, url: string) {
-  const engine = new MigrateEngine({ projectDir: cwd })
+  const engine = new SchemaEngine({ projectDir: cwd })
   try {
     const { datamodel } = await engine.introspect({
       schema: `datasource db {
