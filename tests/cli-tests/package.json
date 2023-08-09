@@ -13,8 +13,8 @@
     "@keystone-6/auth": "*",
     "@keystone-6/core": "*",
     "@keystone-6/fields-document": "*",
-    "@prisma/client": "^4.16.2",
-    "@prisma/internals": "^4.16.2",
+    "@prisma/client": "^5.0.0",
+    "@prisma/internals": "^5.0.0",
     "chalk": "^4.1.2",
     "execa": "^5.1.1",
     "fast-glob": "^3.2.12",
@@ -22,7 +22,7 @@
     "fs-extra": "^11.0.0",
     "mime": "^3.0.0",
     "node-fetch": "^2.6.7",
-    "prisma": "^4.16.2"
+    "prisma": "^5.0.0"
   },
   "dependencies": {
     "@types/fs-extra": "^11.0.0",

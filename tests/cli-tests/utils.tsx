@@ -7,7 +7,7 @@ import chalk from 'chalk';
 
 // @ts-ignore
 import fixturez from 'fixturez';
-import { MigrateEngine } from '@prisma/migrate';
+import { SchemaEngine } from '@prisma/migrate';
 import { uriToCredentials } from '@prisma/internals';
 import { KeystoneConfig } from '@keystone-6/core/types';
 import { cli } from '@keystone-6/core/scripts/cli';
@@ -189,7 +189,7 @@ export async function getFiles(
 }
 
 export async function introspectDb(cwd: string, url: string) {
-  const engine = new MigrateEngine({ projectDir: cwd });
+  const engine = new SchemaEngine({ projectDir: cwd });
   try {
     const { datamodel } = await engine.introspect({
       schema: `datasource db {
