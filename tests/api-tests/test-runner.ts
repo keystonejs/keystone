@@ -43,7 +43,7 @@ async function getTestPrismaModuleInner (prismaSchemaPath: string, datamodel: st
   const document = await getDMMF({ datamodel, previewFeatures: [] })
   return {
     PrismaClient: getPrismaClient({
-      document: externalToInternalDmmf(document),
+      runtimeDataModel: externalToInternalDmmf(document),
       generator: config.generators.find(g => parseEnvValue(g.provider) === 'prisma-client-js'),
       dirname: path.dirname(prismaSchemaPath),
       relativePath: '',

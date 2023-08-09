@@ -156,11 +156,7 @@ export function createSystem (config: KeystoneConfig) {
     adminMeta,
     getKeystone: (PM: any) => {
       const prePrismaClient = new PM.PrismaClient({
-        datasources: {
-          [config.db.provider]: {
-            url: formatUrl(config.db.provider, config.db.url)
-          }
-        },
+        datasourceUrl: formatUrl(config.db.provider, config.db.url),
         log:
           config.db.enableLogging === true
             ? ['query']

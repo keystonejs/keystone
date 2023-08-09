@@ -4,23 +4,24 @@
   "private": true,
   "license": "MIT",
   "scripts": {
+    "ts-gql:build": "ts-gql build",
+    "ts-gql:watch": "ts-gql watch",
     "dev": "keystone dev",
     "start": "keystone start",
     "build": "keystone build",
-    "build:ts-gql": "ts-gql build",
     "postinstall": "keystone postinstall && ts-gql build"
   },
   "dependencies": {
-    "@keystone-6/core": "^5.7.0",
-    "@prisma/client": "^4.16.2",
-    "graphql": "^16.8.1"
-  },
-  "devDependencies": {
+    "@keystone-6/core": "^5.0.0",
+    "@prisma/client": "^5.0.0",
     "@ts-gql/compiler": "^0.15.3",
     "@ts-gql/eslint-plugin": "^0.9.0",
-    "@ts-gql/tag": "^0.7.3",
+    "@ts-gql/tag": "^0.7.0",
     "eslint": "^8.0.0",
-    "prisma": "^4.16.2",
+    "graphql": "^16.6.0"
+  },
+  "devDependencies": {
+    "prisma": "^5.0.0",
     "typescript": "~5.0.0"
   },
   "ts-gql": {
@@ -34,5 +35,6 @@
     "rules": {
       "@ts-gql/ts-gql": "error"
     }
-  }
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/graphql-ts-gql"
 }

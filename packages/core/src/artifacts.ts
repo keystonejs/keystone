@@ -196,7 +196,7 @@ export async function generateTypescriptTypesAndPrisma (
 async function generatePrismaClient (prismaSchemaPath: string, dataProxy: boolean) {
   const generators = await getGenerators({
     schemaPath: prismaSchemaPath,
-    dataProxy,
+//      dataProxy,
   })
 
   await Promise.all(
