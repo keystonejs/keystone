@@ -2,4 +2,4 @@
 '@keystone-6/core': major
 ---
 
-Removes `ExtendGraphqlSchema` type alias, `(schema: import("graphql").GraphQLSchema) => import("graphql").GraphQLSchema` can be used instead
+Removes `ExtendGraphqlSchema` type alias, use `(schema: GraphQLSchema) => GraphQLSchema` instead (with `import type { GraphQLSchema } from "graphql"`).
