@@ -110,7 +110,7 @@ These mutations will set the value of `session` to include the values `{ listKey
 {% well
 heading="Config API Reference"
 href="/docs/config/config" %}
-The API to configure all the parts parts of your Keystone system.
+The API to configure all the parts of your Keystone system.
 {% /well %}
 {% well
 heading="Example Project: Authentication"

@@ -466,6 +466,6 @@ The API to configure your options used with the `list()` function.
 {% well
 heading="Config API Reference"
 href="/docs/config/config" %}
-The API to configure all the parts parts of your Keystone system.
+The API to configure all the parts of your Keystone system.
 {% /well %}
 {% /related-content %}
