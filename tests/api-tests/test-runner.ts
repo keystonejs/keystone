@@ -164,6 +164,7 @@ export async function setupTestEnv <TypeInfo extends BaseKeystoneTypeInfo> ({
       connect,
       context,
       config,
+<<<<<<< HEAD
       http,
       gql,
       gqlSuper,
