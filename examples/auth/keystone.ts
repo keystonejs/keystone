@@ -1,5 +1,5 @@
 import { config } from '@keystone-6/core';
-import { statelessSessions } from '@keystone-6/core/session';
+import { statelessSessions } from '@keystone-6/auth/session';
 import { createAuth } from '@keystone-6/auth';
 import { fixPrismaPath } from '../example-utils';
 import { lists } from './schema';
@@ -42,9 +42,15 @@ const { withAuth } = createAuth({
       isAdmin: true,
     },
   },
-
-  // add isAdmin to the session data
-  sessionData: 'isAdmin',
+  // you can find out more at https://keystonejs.com/docs/apis/session#session-api
+  sessionStrategy: statelessSessions({
+    // the maxAge option controls how long session cookies are valid for before they expire
+    maxAge: sessionMaxAge,
+    // the session secret is used to encrypt cookie data
+    secret: sessionSecret,
+    // add isAdmin to the session data
+    data: 'isAdmin',
+  }),
 });
 
 export default withAuth(
@@ -63,12 +69,5 @@ export default withAuth(
         return session?.data?.isAdmin ?? false;
       },
     },
-    // you can find out more at https://keystonejs.com/docs/apis/session#session-api
-    session: statelessSessions({
-      // the maxAge option controls how long session cookies are valid for before they expire
-      maxAge: sessionMaxAge,
-      // the session secret is used to encrypt cookie data
-      secret: sessionSecret,
-    }),
   })
 );

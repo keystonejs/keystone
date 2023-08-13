@@ -86,38 +86,28 @@ export type Session = {
   id: string;
 };
 
-export const nextAuthSessionStrategy = {
-  async get({ context }: { context: Context }) {
-    const { req, res } = context;
-    const { headers } = req ?? {};
-    if (!headers?.cookie || !res) return;
+export const nextAuthSessionStrategy = async ({ context }: { context: Context }) => {
+  const { req, res } = context;
+  const { headers } = req ?? {};
+  if (!headers?.cookie || !res) return;
 
-    // next-auth needs a different cookies structure
-    const cookies: Record<string, string> = {};
-    for (const part of headers.cookie.split(';')) {
-      const [key, value] = part.trim().split('=');
-      cookies[key] = decodeURIComponent(value);
-    }
+  // next-auth needs a different cookies structure
+  const cookies: Record<string, string> = {};
+  for (const part of headers.cookie.split(';')) {
+    const [key, value] = part.trim().split('=');
+    cookies[key] = decodeURIComponent(value);
+  }
 
-    const nextAuthSession = await getServerSession(
-      { headers, cookies } as any,
-      res,
-      nextAuthOptions
-    );
-    if (!nextAuthSession) return;
+  const nextAuthSession = await getServerSession({ headers, cookies } as any, res, nextAuthOptions);
+  if (!nextAuthSession) return;
 
-    const { authId } = nextAuthSession.keystone;
-    if (!authId) return;
+  const { authId } = nextAuthSession.keystone;
+  if (!authId) return;
 
-    const author = await context.sudo().db.Author.findOne({
-      where: { authId },
-    });
-    if (!author) return;
+  const author = await context.sudo().db.Author.findOne({
+    where: { authId },
+  });
+  if (!author) return;
 
-    return { id: author.id };
-  },
-
-  // we don't need these as next-auth handle start and end for us
-  async start() {},
-  async end() {},
+  return { id: author.id };
 };

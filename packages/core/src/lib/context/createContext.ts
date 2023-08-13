@@ -82,7 +82,7 @@ export function createContext({
       });
 
       return newContext.withSession(
-        config.session ? await config.getSession({ context: newContext }) : undefined
+        config.getSession ? await config.getSession({ context: newContext }) : undefined
       );
     }
 

@@ -32,7 +32,7 @@ In general, you will use `SessionStrategy` objects from the `@keystone-6/auth/se
 
 ```typescript
 import { config } from '@keystone-6/core';
-import { statelessSessions } from '@keystone-6/core/session';
+import { statelessSessions } from '@keystone-6/auth/session';
 
 export default config({
   session: statelessSessions({
@@ -76,7 +76,7 @@ import { config } from '@keystone-6/core';
 {% if $nextRelease %}
 import { statelessSessions, storedSessions } from '@keystone-6/auth/session';
 {% else /%}
-import { statelessSessions, storedSessions } from '@keystone-6/core/session';
+import { statelessSessions, storedSessions } from '@keystone-6/auth/session';
 {% /if %}
 
 export default config({
@@ -154,7 +154,7 @@ Interface:
 If you configure your Keystone session with session management then the [`KeystoneContext`](../context/overview) type will include the following session related properties.
 
 - `session`: An object representing the session data. The value will depend on the value passed into `context.sessionStrategy.start()`.
-- `sessionStrategy`: an object that, when using `statelessSessions` or `storedSessions` from `@keystone-6/core/session` includes the following functions:
+- `sessionStrategy`: an object that, when using `statelessSessions` or `storedSessions` from `@keystone-6/auth/session` includes the following functions:
   - `get({context})`: a function that returns a `session` object based on `context` - this needs to be a `context` with a valid `req` (using `context.withRequest`). This function is called by Keystone to get the value of `context.session`
   - `start({context, data})`: a function that, given a valid `context.res` starts a new session containing what is passed into `data`.
   - `end({context})`: a function that, given a valid `context.res` ends a session.

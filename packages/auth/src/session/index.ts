@@ -133,7 +133,7 @@ export function storedSessions<Session>({
   data = 'id',
   ...statelessSessionsOptions
 }: StatelessSessionsOptions & {
-  store: SessionStoreFunction<Session>;
+  store: SessionStoreFunction;
 }): SessionStrategy<Session, any> {
   const stateless = statelessSessions<string>({ ...statelessSessionsOptions, maxAge });
   const store = storeFn({ maxAge });

@@ -152,7 +152,8 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
 
     for (const fieldKey of initFirstItem?.fields || []) {
       if (fieldKey in list.fields) continue;
-
+    }
+  }
   /**
    * withItemData
    *
@@ -188,13 +189,13 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
           return { ...session, itemId: session.itemId, listKey, data };
         }
       } catch (e) {
-          console.error(e);
-          // TODO: the assumption is this could only be from an invalid sessionData configuration
-          //   it could be something else though, either way, result is a bad session
+        console.error(e);
+        // TODO: the assumption is this could only be from an invalid sessionData configuration
+        //   it could be something else though, either way, result is a bad session
         return;
       }
     };
-  }
+  };
 
   async function hasInitFirstItemConditions<TypeInfo extends BaseKeystoneTypeInfo>(
     context: KeystoneContext<TypeInfo>

@@ -18,9 +18,6 @@ import type {
   SessionStrategy,
 } from './types';
 import { getBaseAuthSchema } from './gql/getBaseAuthSchema';
-import { getInitFirstItemSchema } from './gql/getInitFirstItemSchema';
-import { getPasswordResetSchema } from './gql/getPasswordResetSchema';
-import { getMagicAuthLinkSchema } from './gql/getMagicAuthLinkSchema';
 
 function assertSecretFieldImpl(
   impl: any,
@@ -118,7 +115,5 @@ export const getSchemaExtension = ({
       );
     }
 
-    return [
-      baseSchema.extension,
-    ].filter((x): x is Exclude<typeof x, undefined> => x !== undefined);
+    return [baseSchema.extension].filter((x): x is Exclude<typeof x, undefined> => x !== undefined);
   });

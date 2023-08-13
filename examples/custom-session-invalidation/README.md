@@ -73,7 +73,7 @@ const { withAuth } = createAuth({
 We can then change the default `statelessSessions` by passing in a new `start` and `get` functions. In the `start` function, we add the `startTime` to the session and start the session using keystone's `start` session function. we can then customize the `get` function to check this `startTime` on the session and compare it to the `passwordChangedAt` time stored in the `Person` table.
 
 ```typescript
-import { statelessSessions } from '@keystone-6/core/session';
+import { statelessSessions } from '@keystone-6/auth/session';
 const maxSessionAge = 60 * 60 * 8; // 8 hours, in seconds
 
 const withTimeData = (

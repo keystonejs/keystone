@@ -328,11 +328,11 @@ See the [Session Docs](./session) for more details on how to configure session m
 
 The `session` config option allows you to configure session management of your Keystone system.
 
-In general you will use `SessionStrategy` objects from the `@keystone-6/core/session` package, rather than writing this yourself.
+In general you will use `SessionStrategy` objects from the `@keystone-6/auth/session` package, rather than writing this yourself.
 
 
 ```typescript
-import { statelessSessions } from '@keystone-6/core/session';
+import { statelessSessions } from '@keystone-6/auth/session';
 
 export default config({
   session: statelessSessions({ /* ... */ }),

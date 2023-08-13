@@ -1,15 +1,43 @@
 import { config } from '@keystone-6/core';
-import { statelessSessions } from '@keystone-6/core/session';
+import { statelessSessions } from '@keystone-6/auth/session';
 import { createAuth } from '@keystone-6/auth';
 import { fixPrismaPath } from '../example-utils';
 import { lists, Session } from './schema';
-import type { Config, Context, TypeInfo } from '.keystone/types';
+import type { Context, TypeInfo } from '.keystone/types';
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
 //   or tested for any particular usage
 
-// withAuth is a function we can use to wrap our base configuration
+function withSessionInvalidation() {
+  const sessionStrategy = statelessSessions<Session>({});
+  return {
+    ...sessionStrategy,
+    async get({ context }: { context: Context }): Promise<Session | undefined> {
+      const session = await sessionStrategy.get({ context });
+      if (!session) return;
+
+      // has the password changed since the session started?
+      if (new Date(session.data.passwordChangedAt) > new Date(session.startedAt)) {
+        // invalidate the session if password changed
+        await sessionStrategy.end({ context });
+        return;
+      }
+
+      return session;
+    },
+    async start({ context, data }: { context: Context; data: Session }) {
+      return await sessionStrategy.start({
+        context,
+        data: {
+          ...data,
+          startedAt: Date.now(),
+        },
+      });
+    },
+  };
+}
+
 const { withAuth } = createAuth({
   // this is the list that contains our users
   listKey: 'User',
@@ -29,56 +57,19 @@ const { withAuth } = createAuth({
     // the following fields are used by the "Create First User" form
     fields: ['name', 'password'],
   },
-
-  sessionData: 'passwordChangedAt',
+  sessionStrategy: withSessionInvalidation(),
 });
 
-function withSessionInvalidation(config: Config<Session>) {
-  const existingSessionStrategy = config.session!;
+export default withAuth(
+  config<TypeInfo>({
+    db: {
+      provider: 'sqlite',
+      url: process.env.DATABASE_URL || 'file:./keystone-example.db',
 
-  return {
-    ...config,
-    session: {
-      ...config.session,
-      async get({ context }: { context: Context }): Promise<Session | undefined> {
-        const session = await existingSessionStrategy.get({ context });
-        if (!session) return;
-
-        // has the password changed since the session started?
-        if (new Date(session.data.passwordChangedAt) > new Date(session.startedAt)) {
-          // invalidate the session if password changed
-          await existingSessionStrategy.end({ context });
-          return;
-        }
-
-        return session;
-      },
-      async start({ context, data }: { context: Context; data: Session }) {
-        return await existingSessionStrategy.start({
-          context,
-          data: {
-            ...data,
-            startedAt: Date.now(),
-          },
-        });
-      },
+      // WARNING: this is only needed for our monorepo examples, dont do this
+      ...fixPrismaPath,
     },
-  };
-}
-
-export default withSessionInvalidation(
-  withAuth(
-    config<TypeInfo>({
-      db: {
-        provider: 'sqlite',
-        url: process.env.DATABASE_URL || 'file:./keystone-example.db',
-
-        // WARNING: this is only needed for our monorepo examples, dont do this
-        ...fixPrismaPath,
-      },
-      lists,
-      // you can find out more at https://keystonejs.com/docs/apis/session#session-api
-      session: statelessSessions<Session>(),
-    })
-  )
+    lists,
+    // you can find out more at https://keystonejs.com/docs/apis/session#session-api
+  })
 );

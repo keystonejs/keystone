@@ -354,7 +354,7 @@
 
 - [#7888](https://github.com/keystonejs/keystone/pull/7888) [`ed3d97874`](https://github.com/keystonejs/keystone/commit/ed3d97874e93470cccac67ac2e43dbd268e7e929) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Changes default Apollo Server configuration to use `cache: "bounded"` and `persistedQueries: false`
 
-- [#7912](https://github.com/keystonejs/keystone/pull/7912) [`c3a3789c6`](https://github.com/keystonejs/keystone/commit/c3a3789c6e4a1761a24cd02904b7549a62113363) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removes `createSessionContext` export from `@keystone-6/core/session`
+- [#7912](https://github.com/keystonejs/keystone/pull/7912) [`c3a3789c6`](https://github.com/keystonejs/keystone/commit/c3a3789c6e4a1761a24cd02904b7549a62113363) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removes `createSessionContext` export from `@keystone-6/auth/session`
 
 - [#7972](https://github.com/keystonejs/keystone/pull/7972) [`81f33eed3`](https://github.com/keystonejs/keystone/commit/81f33eed3570057be9bc8df1f29de12886dfceea) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removes `@keystone-6/core/artifacts` from our exports
 

@@ -142,7 +142,7 @@ Having added an authentication method, we need to add a 'session', so that authe
 ```ts{3,12-500}[4-11]
 // auth.ts
 import { createAuth } from '@keystone-6/auth';
-import { statelessSessions } from '@keystone-6/core/session';
+import { statelessSessions } from '@keystone-6/auth/session';
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -227,7 +227,7 @@ feature in the `auth` package:
 ```ts{10-12}
 // auth.ts
 import { createAuth } from '@keystone-6/auth';
-import { statelessSessions } from '@keystone-6/core/session';
+import { statelessSessions } from '@keystone-6/auth/session';
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -259,7 +259,7 @@ Now, if you open Admin UI, you can check out the sign in flow. If you have no us
 ```ts
 // auth.ts
 import { createAuth } from '@keystone-6/auth';
-import { statelessSessions } from '@keystone-6/core/session';
+import { statelessSessions } from '@keystone-6/auth/session';
 
 const { withAuth } = createAuth({
   listKey: 'User',
