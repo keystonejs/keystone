@@ -156,6 +156,8 @@ function injectNewDefaults (prismaClient: unknown, lists: Record<string, Initial
         try {
           return await query(args)
         } catch (e: any) {
+          console.error(e)
+
           if ((e as any).code === undefined) {
             return new GraphQLError(`Prisma error`, {
               extensions: {
