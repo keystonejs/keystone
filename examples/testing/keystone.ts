@@ -31,7 +31,7 @@ const { withAuth } = createAuth({
     fields: ['name', 'password'],
   },
   // you can find out more at https://keystonejs.com/docs/apis/session#session-api
-  sessionStrategy: statelessSessions(),
+  sessionStrategy: statelessSessions({}),
 });
 
 export default withAuth(
