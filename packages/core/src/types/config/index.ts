@@ -155,9 +155,7 @@ export type DatabaseConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   /** @deprecated */
   useMigrations?: boolean
   /** @deprecated use extendPrismaSchema */
-  prismaPreviewFeatures?: readonly string[] // https://www.prisma.io/docs/concepts/components/preview-features
-  /** @deprecated use extendPrismaSchema */
-  additionalPrismaDatasourceProperties?: { [key: string]: string }
+  prismaPreviewFeatures?: readonly string[]; // https://www.prisma.io/docs/concepts/components/preview-features
 }
 
 // config.ui
