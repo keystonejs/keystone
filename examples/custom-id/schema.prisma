@@ -15,8 +15,6 @@ generator client {
 model Task {
   id           Int       @id @default(autoincrement())
   label        String    @default("")
-  priority     String?
-  isComplete   Boolean   @default(false)
   assignedTo   Person?   @relation("Task_assignedTo", fields: [assignedToId], references: [id])
   assignedToId String?   @map("assignedTo")
   finishBy     DateTime?
