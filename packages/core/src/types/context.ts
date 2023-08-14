@@ -13,7 +13,6 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
   query: KeystoneListsAPI<TypeInfo['lists']>;
   graphql: KeystoneGraphQLAPI;
   sudo: () => KeystoneContext<TypeInfo>;
-  exitSudo: () => KeystoneContext<TypeInfo>;
   withSession: (session?: TypeInfo['session']) => KeystoneContext<TypeInfo>;
   withRequest: (req: IncomingMessage, res?: ServerResponse) => Promise<KeystoneContext<TypeInfo>>;
   prisma: TypeInfo['prisma'];

@@ -36,21 +36,6 @@ const runner = setupTestRunner({
 });
 
 test(
-  'non-sudo context does not bypass isAccessAllowed for admin meta',
-  runner(async ({ context }) => {
-    const res = await context.exitSudo().graphql.raw({ query: staticAdminMetaQuery });
-    expect(res).toMatchInlineSnapshot(`
-      {
-        "data": null,
-        "errors": [
-          [GraphQLError: Access denied],
-        ],
-      }
-    `);
-  })
-);
-
-test(
   'sudo context bypasses isAccessAllowed for admin meta',
   runner(async ({ context }) => {
     const data = await context.sudo().graphql.run({ query: staticAdminMetaQuery });
