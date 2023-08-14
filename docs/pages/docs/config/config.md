@@ -226,8 +226,8 @@ export default config<TypeInfo>({
     cors: { origin: ['http://localhost:7777'], credentials: true },
     port: 3000,
     maxFileSize: 200 * 1024 * 1024,
-    extendExpressApp: (app, commonContext) => { /* ... */ },
-    extendHttpServer: (httpServer, commonContext, graphQLSchema) => { /* ... */ },
+    extendExpressApp: async (app, commonContext) => { /* ... */ },
+    extendHttpServer: async (httpServer, commonContext, graphQLSchema) => { /* ... */ },
   },
   /* ... */
 });

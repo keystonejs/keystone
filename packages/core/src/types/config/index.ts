@@ -210,14 +210,14 @@ export type ServerConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   extendExpressApp?: (
     app: express.Express,
     context: KeystoneContext<TypeInfo>
-  ) => void | Promise<void>
+  ) => MaybePromise<void>
 
   /** extend the node:http server used by Keystone */
   extendHttpServer?: (
     server: Server,
     context: KeystoneContext<TypeInfo>,
     graphqlSchema: GraphQLSchema
-  ) => void
+  ) => MaybePromise<void>
 } & (
   | {
       /** Port number to start the server on. Defaults to process.env.PORT || 3000 */
