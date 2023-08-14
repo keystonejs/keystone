@@ -184,7 +184,6 @@ export function printPrismaSchema (
   const {
     prismaClientPath,
     provider,
-    prismaPreviewFeatures,
     extendPrismaSchema: extendPrismaCompleteSchema
   } = config.db
 
@@ -201,9 +200,6 @@ export function printPrismaSchema (
     `generator client {`,
     `  provider = "prisma-client-js"`,
     ...(prismaClientPath === '@prisma/client' ? [] : [`  output = "${prismaClientPath}"`]),
-    ...(prismaPreviewFeatures?.length
-      ? [`  previewFeatures = ["${prismaPreviewFeatures.join('","')}"]`]
-      : []),
     '}',
   ]
 
