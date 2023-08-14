@@ -98,15 +98,6 @@ type PrismaLogDefinition = {
 }
 
 export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
-<<<<<<< HEAD
-=======
-  db: DatabaseConfig<TypeInfo>;
-  graphql?: GraphQLConfig<TypeInfo>;
-  lists: Record<string, ListConfig<TypeInfo['lists'][string]>>;
-  ui?: AdminUIConfig<TypeInfo>;
-  server?: ServerConfig<TypeInfo>;
-  session?: SessionStrategy<TypeInfo['session'], TypeInfo>;
->>>>>>> ba733c1ac (removes deprecated types and ListSchemaConfig (breaking))
   types?: {
     path: string
   }
