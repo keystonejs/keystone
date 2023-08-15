@@ -1,5 +1,11 @@
 # @keystone-6/fields-document
 
+## 8.0.1
+
+### Patch Changes
+
+- [`5e4860104`](https://github.com/keystonejs/keystone/commit/5e48601042566b321fd47c2bf2bb55929ca16cdd) Thanks [@mmachatschek](https://github.com/mmachatschek)! - Updates slate to ^0.94.1, slate-history to ^0.93.0 and slate-react to ^0.97.1
+
 ## 8.0.0
 
 ### Major Changes
