@@ -8,9 +8,10 @@ import type {
   JSONValue,
   MaybeItemFunction,
 } from '../../types';
-import { humanize } from '../../lib/utils';
-import type { InitialisedList } from '../../lib/core/initialise-lists';
-import type { FilterOrderArgs } from '../../types/config/fields';
+import type { FilterOrderArgs } from '../types/config/fields';
+
+import { humanize } from './utils';
+import type { InitialisedList } from './core/initialise-lists';
 
 type ContextFunction<Return> = (context: KeystoneContext) => MaybePromise<Return>;
 
