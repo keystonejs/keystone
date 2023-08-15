@@ -7,7 +7,7 @@ import { Entry, walk as _walk } from '@nodelib/fs.walk';
 import type { KeystoneConfig, AdminFileToWrite } from '../../types';
 import { writeAdminFiles } from '../templates';
 import { serializePathForImport } from '../utils/serializePathForImport';
-import type { AdminMetaRootVal } from './createAdminMeta';
+import type { AdminMetaRootVal } from '../../lib/create-admin-meta';
 
 const walk = promisify(_walk);
 

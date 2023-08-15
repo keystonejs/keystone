@@ -1,6 +1,6 @@
 import { BaseListTypeInfo, FieldTypeFunc, CommonFieldConfig, fieldType } from '../../../types';
 import { graphql } from '../../..';
-import { getAdminMetaForRelationshipField } from '../../../admin-ui/system/createAdminMeta';
+import { getAdminMetaForRelationshipField } from '../../../lib/create-admin-meta';
 
 // This is the default display mode for Relationships
 type SelectDisplayConfig = {

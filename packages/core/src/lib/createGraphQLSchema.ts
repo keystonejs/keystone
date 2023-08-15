@@ -1,9 +1,9 @@
 import { GraphQLNamedType, GraphQLSchema } from 'graphql';
 
-import type { KeystoneConfig } from '../types';
-import { KeystoneMeta } from '../admin-ui/system/adminMetaSchema';
 import { graphql } from '../types/schema';
-import type { AdminMetaRootVal } from '../admin-ui/system/createAdminMeta';
+import type { KeystoneConfig } from '../types';
+import { KeystoneMeta } from './admin-meta-resolver';
+import type { AdminMetaRootVal } from './create-admin-meta';
 import type { InitialisedList } from './core/initialise-lists';
 
 import { getMutationsForList } from './core/mutations';

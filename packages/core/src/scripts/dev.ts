@@ -25,7 +25,7 @@ import {
 import type { KeystoneConfig } from '../types';
 import { initialiseLists } from '../lib/core/initialise-lists';
 import { printPrismaSchema } from '../lib/core/prisma-schema-printer';
-import type { AdminMetaRootVal } from '../admin-ui/system/createAdminMeta';
+import type { AdminMetaRootVal } from '../lib/create-admin-meta';
 import { pkgDir } from '../pkg-dir';
 import { ExitError } from './utils';
 import type { Flags } from './cli';
