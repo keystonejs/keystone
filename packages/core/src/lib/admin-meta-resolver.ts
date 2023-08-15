@@ -1,7 +1,8 @@
 import type { GraphQLResolveInfo } from 'graphql';
 import type { ScalarType, EnumType, EnumValue } from '@graphql-ts/schema';
-import { QueryMode, KeystoneContext, BaseItem, MaybePromise } from '../../types';
-import { graphql as graphqlBoundToKeystoneContext } from '../..';
+import type { KeystoneContext, BaseItem, MaybePromise } from '../types';
+import { QueryMode } from '../types';
+import { graphql as graphqlBoundToKeystoneContext } from '../types/schema';
 import type {
   FieldMetaRootVal,
   ListMetaRootVal,
