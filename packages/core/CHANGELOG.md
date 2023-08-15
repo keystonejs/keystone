@@ -1,5 +1,13 @@
 # @keystone-6/core
 
+## 5.5.1
+
+### Patch Changes
+
+- [#8771](https://github.com/keystonejs/keystone/pull/8771) [`650e27e6e`](https://github.com/keystonejs/keystone/commit/650e27e6e9b42abfb94c340c8470faf61f0ff284) Thanks [@dcousens](https://github.com/dcousens)! - Fixes `ui.isAccessAllowed` when `undefined`, to prevent access to the `adminMeta` GraphQL query, akin to the behaviour for the default AdminUI `pageMiddleware`
+
+* [`8c43bd37b`](https://github.com/keystonejs/keystone/commit/8c43bd37baacaee6180b763cfde391a665c5d322) Thanks [@lahirurane-rau](https://github.com/lahirurane-rau)! - Fixes AdminUI overflow bug (#8754) introduced in #8702
+
 ## 5.5.0
 
 ### Minor Changes
