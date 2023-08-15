@@ -2,7 +2,7 @@
 /** @jsx jsx */
 
 import { jsx, useTheme } from '@keystone-ui/core';
-import { Dispatch, Fragment, HTMLAttributes, ReactNode, SetStateAction, useState } from 'react';
+import { Fragment, HTMLAttributes, ReactNode, useState } from 'react';
 import { MenuIcon, XCircleIcon } from '@keystone-ui/icons';
 
 import { Navigation } from './Navigation';
@@ -46,7 +46,6 @@ const Sidebar = ({
   ...props
 }: HTMLAttributes<HTMLElement> & {
   isSidebarOpen: boolean;
-  setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
   // const { colors } = useTheme();
 
@@ -54,7 +53,7 @@ const Sidebar = ({
     <div
       css={{
         gridColumn: '1/2',
-        gridRow: '1/4',
+        gridRow: '2/4',
         display: isSidebarOpen ? 'block' : 'none',
         height: '100vh',
         '@media (min-width: 576px)': {
@@ -63,21 +62,10 @@ const Sidebar = ({
           display: 'block',
           height: '100%',
         },
+        overflowY: 'auto',
+        WebkitOverflowScrolling: 'touch',
       }}
     >
-      <div
-        onClick={() => {
-          props.setIsSidebarOpen(!isSidebarOpen);
-        }}
-        css={{
-          float: 'right',
-          padding: '10px',
-          display: 'block',
-          '@media (min-width: 576px)': { display: 'none' },
-        }}
-      >
-        <XCircleIcon />
-      </div>
       <aside
         css={{
           // borderRight: `1px solid ${colors.border}`,
@@ -133,7 +121,7 @@ export const PageContainer = ({ children, header, title }: PageContainerProps) =
           }}
           css={{ display: 'block', '@media (min-width: 576px)': { display: 'none' } }}
         >
-          <MenuIcon />
+          {isSidebarOpen ? <XCircleIcon /> : <MenuIcon />}
         </div>
       </div>
       <header
@@ -146,13 +134,14 @@ export const PageContainer = ({ children, header, title }: PageContainerProps) =
           minWidth: 0, // fix flex text truncation
           paddingLeft: spacing.xlarge,
           paddingRight: spacing.xlarge,
+          visibility: isSidebarOpen ? 'hidden' : 'visible',
         }}
       >
         <title>{title ? `Keystone - ${title}` : 'Keystone'}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         {header}
       </header>
-      <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen}>
+      <Sidebar isSidebarOpen={isSidebarOpen}>
         <Navigation />
       </Sidebar>
       <Content>{children}</Content>

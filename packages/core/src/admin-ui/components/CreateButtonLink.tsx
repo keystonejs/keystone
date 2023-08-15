@@ -2,10 +2,10 @@
 /** @jsx jsx */
 import { Button } from '@keystone-ui/button';
 import { jsx } from '@keystone-ui/core';
-import { ListMeta } from '../../types';
+import type { ListMeta } from '../../types';
 import { Link } from '../router';
 
-export const CreateButtonLink = (props: { list: ListMeta }) => {
+export function CreateButtonLink (props: { list: ListMeta }) {
   return (
     <Button
       css={{
@@ -23,4 +23,4 @@ export const CreateButtonLink = (props: { list: ListMeta }) => {
       Create {props.list.singular}
     </Button>
   );
-};
+}
