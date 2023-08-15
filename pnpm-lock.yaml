@@ -2042,8 +2042,8 @@ importers:
         specifier: ^0.19.0
         version: 0.19.0
       execa:
-        specifier: ^5.1.1
-        version: 5.1.1
+        specifier: ^7.0.0
+        version: 7.2.0
       express:
         specifier: ^4.17.1
         version: 4.17.1
