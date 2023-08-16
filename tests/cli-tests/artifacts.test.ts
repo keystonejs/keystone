@@ -8,6 +8,7 @@ import {
   customPrismaKeystoneConfig,
   symlinkKeystoneDeps,
   testdir,
+  customGraphqlPathKeystoneConfig,
 } from './utils';
 
 describe.each(['postinstall', ['build', '--frozen'], ['prisma', 'migrate', 'status']])(
@@ -79,5 +80,17 @@ describe('postinstall', () => {
     await runCommand(tmp, 'postinstall');
     expect(await getFiles(tmp, ['node_modules/.keystone/**/*'])).toMatchSnapshot();
     expect(recording()).toMatchInlineSnapshot(`"? GraphQL and Prisma schemas are up to date"`);
+  });
+  test('customising graphQL schema through schemaPath works', async () => {
+    const tmp = await testdir({
+      ...symlinkKeystoneDeps,
+      'keystone.js': customGraphqlPathKeystoneConfig,
+    });
+    const recording = recordConsole();
+    await runCommand(tmp, ['postinstall', '--fix']);
+    const schemas = ['schema.prisma', 'different_schema.graphql'];
+    const files = await getFiles(tmp, schemas);
+    expect(files).toEqual(await getFiles(`${__dirname}/fixtures/custom-graphql-path`, schemas));
+    expect(recording()).toMatchInlineSnapshot(`"? Generated GraphQL and Prisma schemas"`);
   });
 });

@@ -282,6 +282,12 @@ export type GraphQLConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTy
    * @default process.env.NODE_ENV !== 'production'
    */
   debug?: boolean;
+
+  /**
+   * The path to GraphQL schema
+   * @default 'schema.graphql'
+   */
+  schemaPath?: string;
 };
 
 // config.extendGraphqlSchema
