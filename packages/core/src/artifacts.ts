@@ -100,7 +100,7 @@ export function getSystemPaths(cwd: string, config: KeystoneConfig) {
     ? `./${posixify(path.relative(path.dirname(builtTypesPath), prismaClientPath))}`
     : '@prisma/client';
 
-  const graphqlSchemaPath = config.graphql?.schemaPath
+  const builtGraphqlPath = config.graphql?.schemaPath
     ? path.join(cwd, config.graphql.schemaPath)
     : path.join(cwd, 'schema.graphql');
 
@@ -114,7 +114,7 @@ export function getSystemPaths(cwd: string, config: KeystoneConfig) {
     schema: {
       types: builtTypesPath,
       prisma: path.join(cwd, 'schema.prisma'),
-      graphql: graphqlSchemaPath,
+      graphql: builtGraphqlPath,
     },
   };
 }
