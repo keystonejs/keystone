@@ -2,7 +2,7 @@
 **/.next
 **/__generated__
 **/dist
-**/schema.graphql
+**/*.graphql
 *.vscode
 .changeset/**/*
 .keystone/tests
