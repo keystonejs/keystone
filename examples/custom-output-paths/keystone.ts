@@ -12,6 +12,10 @@ export default config({
   },
   lists,
 
+  graphql: {
+    schemaPath: 'my-graphql.graphql',
+  },
+
   // when working in a monorepo environment you may want to output the types elsewhere
   //   you can use .types.path to configure where that is
   types: {

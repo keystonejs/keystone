@@ -356,6 +356,7 @@ Options:
   - `false` - Add `ApolloServerPluginLandingPageDisabled` to the Apollo Server plugins
   - `'apollo'` - Do not add any plugins to the Apollo config, this will use [Apollo Sandbox](https://www.apollographql.com/docs/apollo-server/testing/build-run-queries/#apollo-sandbox)
 - `apolloConfig` (default: `undefined`): Allows you to pass [extra options](https://www.apollographql.com/docs/apollo-server/api/apollo-server/#constructor) into the `ApolloServer` constructor.
+- `schemaPath` (default: `schema.graphql`): The path of the generated GraphQL API schema.
 
 ```typescript
 export default config({

@@ -40,6 +40,11 @@ export const customPrismaKeystoneConfig = fs.readFileSync(
   'utf8'
 );
 
+export const customGraphqlPathKeystoneConfig = fs.readFileSync(
+  `${__dirname}/fixtures/custom-graphql-path/keystone.ts`,
+  'utf8'
+);
+
 export function recordConsole() {
   let oldConsole = { ...console };
   const contents: string[] = [];
