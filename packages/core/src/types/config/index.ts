@@ -148,6 +148,8 @@ export type DatabaseConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   enableLogging?: boolean | PrismaLogLevel | Array<PrismaLogLevel | PrismaLogDefinition>;
   idField?: IdFieldConfig;
   prismaClientPath?: string;
+  prismaSchemaPath?: string;
+
   extendPrismaSchema?: (schema: string) => string;
 
   /** @deprecated */
