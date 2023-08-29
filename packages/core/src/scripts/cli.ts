@@ -85,7 +85,8 @@ export async function cli(cwd: string, argv: string[]) {
   }
 
   if (command === 'build') {
-    return build(cwd, defaultFlags(flags, { frozen: false, prisma: true, ui: true }));
+    return build(cwd, defaultFlags(flags, { frozen: false, prisma: true, ui: true }))
+      .then(() => process.exit(0))
   }
 
   if (command === 'start') {
