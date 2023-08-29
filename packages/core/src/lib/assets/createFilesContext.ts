@@ -1,34 +1,22 @@
 import crypto from 'crypto';
-import filenamify from 'filenamify';
 
-import slugify from '@sindresorhus/slugify';
 import type { KeystoneConfig, FilesContext } from '../../types';
 import { localFileAssetsAPI } from './local';
 import { s3FileAssetsAPI } from './s3';
 import type { FileAdapter } from './types';
 
-const defaultTransformName = (filename: string) => {
+const defaultTransformName = (path: string) => {
   // Appends a UUID to the filename so that people can't brute-force guess stored filenames
   //
   // This regex lazily matches for any characters that aren't a new line
   // it then optionally matches the last instance of a "." symbol
   // followed by any alphanumerical character before the end of the string
-  const [, name, ext] = filename.match(/^([^:\n].*?)(\.[A-Za-z0-9]{0,10})?$/) as RegExpMatchArray;
+  const [, name, ext] = path.match(/^([^:\n].*?)(\.[A-Za-z0-9]{0,10})?$/) as RegExpMatchArray;
 
-  const id = crypto
-    .randomBytes(24)
-    .toString('base64')
-    .replace(/[^a-zA-Z0-9]/g, '')
-    .slice(12);
+  const id = crypto.randomBytes(12).toString('base64url').slice(0, 12);
 
-  // console.log(id, id.length, id.slice(12).length);
-  const urlSafeName = filenamify(slugify(name), {
-    maxLength: 100 - id.length - (ext ? ext.length : 0),
-    replacement: '-',
-  });
-  if (ext) {
-    return `${urlSafeName}-${id}${ext}`;
-  }
+  const urlSafeName = name.replace(/[^A-Za-z0-9]/g, '-');
+  if (ext) return `${urlSafeName}-${id}${ext}`;
   return `${urlSafeName}-${id}`;
 };
 
