@@ -25,9 +25,6 @@ export type TimestampFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
       map?: string;
       extendPrismaSchema?: (field: string) => string;
     };
-    ui?: {
-      hideNowInfo?: boolean;
-    }
   };
 
 export const timestamp =
@@ -78,7 +75,6 @@ export const timestamp =
       updatedAt: config.db?.updatedAt,
       map: config.db?.map,
       extendPrismaSchema: config.db?.extendPrismaSchema,
-      hideNowInfo: config.ui?.hideNowInfo,
     })({
       ...config,
       hooks: {
@@ -132,7 +128,6 @@ export const timestamp =
           defaultValue: defaultValue ?? null,
           isRequired: validation?.isRequired ?? false,
           updatedAt: config.db?.updatedAt ?? false,
-          hideNowInfo: config.ui?.hideNowInfo ?? false,
         };
       },
     });

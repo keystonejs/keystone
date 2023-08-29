@@ -17,9 +17,6 @@ Options:
 - `db.updatedAt` (default: `false`) If `true` then this field will add the `@updatedAt` attribute to this field in the Prisma schema.
   This will update this field to the current time whenever an item is created/updated with the GraphQL API or any other usage of the Prisma Client if this field is not explicitly set in the request.
   Note this happens at the Prisma Client level, not at the database so if you update an item in your database directly, fields with `db.updatedAt: true` will not automatically update.
-- `ui.hideNowInfo` (default: `false`) If `true` field will do not show additional info message: `When this item is saved, this field will be set to the current date and time`
-  - `ui` (default: `{ displayMode: 'input' }`): Configures the display mode of the field in the Admin UI.
-  Can be one of `['input', 'textarea']`.
 - `isIndexed` (default: `false`)
   - If `true` then this field will be indexed by the database.
   - If `'unique'` then all values of this field must be unique.
@@ -31,7 +28,6 @@ Options:
   you can set this to true and the create field will be non-nullable and have a default value at the GraphQL level.
   This is only allowed when you have no create access control because otherwise, the item will always fail access control
   if a user doesn't have access to create the particular field regardless of whether or not they specify the field in the create.
-- 
 
 ```typescript
 import { config, list } from '@keystone-6/core';
