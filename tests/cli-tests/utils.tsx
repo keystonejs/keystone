@@ -35,16 +35,6 @@ export const schemas = {
   'schema.prisma': fs.readFileSync(`${__dirname}/fixtures/basic-project/schema.prisma`, 'utf8'),
 };
 
-export const customPrismaKeystoneConfig = fs.readFileSync(
-  `${__dirname}/fixtures/custom-prisma-project/keystone.ts`,
-  'utf8'
-);
-
-export const customGraphqlPathKeystoneConfig = fs.readFileSync(
-  `${__dirname}/fixtures/custom-graphql-path/keystone.ts`,
-  'utf8'
-);
-
 export function recordConsole() {
   let oldConsole = { ...console };
   const contents: string[] = [];

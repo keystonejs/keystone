@@ -5,10 +5,8 @@ import {
   recordConsole,
   runCommand,
   schemas,
-  customPrismaKeystoneConfig,
   symlinkKeystoneDeps,
   testdir,
-  customGraphqlPathKeystoneConfig,
 } from './utils';
 
 describe.each(['postinstall', ['build', '--frozen'], ['prisma', 'migrate', 'status']])(
