@@ -16,6 +16,11 @@ export type PasswordFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     workFactor?: number;
     validation?: {
       isRequired?: boolean;
+
+      // TODO: remove in breaking change
+      /**
+      * @deprecated do this yourself, in a validateInput hook
+      */
       rejectCommon?: boolean;
       match?: { regex: RegExp; explanation?: string };
       length?: {
@@ -145,6 +150,7 @@ export const password =
             if (validation.match && !validation.match.regex.test(val)) {
               args.addValidationError(validation.match.explanation);
             }
+            // TODO: remove in breaking change
             if (validation.rejectCommon && dumbPasswords.check(val)) {
               args.addValidationError(`${fieldLabel} is too common and is not allowed`);
             }
