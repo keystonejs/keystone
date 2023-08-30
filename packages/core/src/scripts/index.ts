@@ -6,6 +6,7 @@ async function main() {
 
   await cli(process.cwd(), argv);
 
+  // WARNING: see https://github.com/keystonejs/keystone/pull/8788
   if (argv[0] === 'build') {
     process.exit(0);
   }
