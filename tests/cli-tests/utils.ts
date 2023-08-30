@@ -9,7 +9,7 @@ import chalk from 'chalk';
 import fixturez from 'fixturez';
 import { MigrateEngine } from '@prisma/migrate';
 import { uriToCredentials } from '@prisma/internals';
-import { KeystoneConfig } from '@keystone-6/core/types';
+import type { KeystoneConfig } from '@keystone-6/core/types';
 import { cli } from '@keystone-6/core/scripts/cli';
 
 // these tests spawn processes and it's all pretty slow
