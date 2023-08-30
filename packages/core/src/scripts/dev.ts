@@ -1,7 +1,8 @@
-import path from 'path';
-import type { ListenOptions } from 'net';
-import url from 'url';
-import { createServer } from 'http';
+import path from 'node:path';
+import type { ListenOptions } from 'node:net';
+import url from 'node:url';
+import { createServer } from 'node:http';
+import fsp from 'node:fs/promises';
 import next from 'next';
 import express from 'express';
 import { GraphQLSchema, printSchema } from 'graphql';
@@ -133,7 +134,7 @@ export async function dev(
   }
 
   const initKeystone = async () => {
-    await fs.remove(paths.admin);
+    await fs.rm(paths.admin, { recursive: true, force: true });
     const {
       adminMeta,
       graphQLSchema,
@@ -353,7 +354,7 @@ async function setupInitialKeystone(
   for (const val of Object.values(config.storage || {})) {
     if (val.kind !== 'local') continue;
 
-    fs.mkdirSync(val.storagePath, { recursive: true });
+    await fsp.mkdir(val.storagePath, { recursive: true });
     console.warn(`WARNING: 'mkdir -p ${val.storagePath}' won't happen in production`);
   }
 

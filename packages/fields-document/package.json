@@ -64,7 +64,6 @@
     "@keystone-ui/tooltip": "^6.0.2",
     "@types/react": "^18.0.9",
     "apply-ref": "^1.0.0",
-    "fp-ts": "^2.11.5",
     "graphql": "^16.6.0",
     "io-ts": "^2.2.16",
     "io-ts-excess": "^1.0.1",

@@ -2,7 +2,6 @@ import path from 'path';
 import { createDatabase, uriToCredentials, DatabaseCredentials } from '@prisma/internals';
 import { Migrate } from '@prisma/migrate';
 import chalk from 'chalk';
-import slugify from '@sindresorhus/slugify';
 import { ExitError } from '../scripts/utils';
 import { confirmPrompt, textPrompt } from './prompts';
 
@@ -281,7 +280,7 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
 
       // 200 characters is the limit from Prisma
       //   see https://github.com/prisma/prisma/blob/c6995ebb6f23996d3b48dfdd1b841e0b5cf549b3/packages/migrate/src/utils/promptForMigrationName.ts#L12
-      const migrationName = slugify(migrationNameInput, { separator: '_' }).slice(0, 200);
+      const migrationName = migrationNameInput.replace(/[^A-Za-z0-9_]/g, '_').slice(0, 200);
 
       // note this only creates the migration, it does not apply it
       const { generatedMigrationName } = await runMigrateWithDbUrl(dbUrl, shadowDbUrl, () =>

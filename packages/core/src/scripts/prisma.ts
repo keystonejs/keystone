@@ -1,5 +1,5 @@
+import { execFile } from 'node:child_process';
 import esbuild from 'esbuild';
-import execa from 'execa';
 import { createSystem } from '../lib/createSystem';
 import {
   getBuiltKeystoneConfiguration,
@@ -22,16 +22,25 @@ export async function prisma(cwd: string, args: string[], frozen: boolean) {
   await validatePrismaAndGraphQLSchemas(cwd, config, graphQLSchema);
   await generateTypescriptTypesAndPrisma(cwd, config, graphQLSchema);
 
-  const result = await execa('node', [require.resolve('prisma'), ...args], {
-    cwd,
-    stdio: 'inherit',
-    reject: false,
-    env: {
-      ...process.env,
-      DATABASE_URL: config.db.url,
-      PRISMA_HIDE_UPDATE_MESSAGE: '1',
-    },
-  });
+  return new Promise<void>((resolve, reject) => {
+    const p = execFile(
+      'node',
+      [require.resolve('prisma'), ...args],
+      {
+        cwd,
+        env: {
+          ...process.env,
+          DATABASE_URL: config.db.url,
+          PRISMA_HIDE_UPDATE_MESSAGE: '1',
+        },
+      },
+      err => {
+        if (err) return reject(new ExitError(err?.code ?? -1));
+        resolve();
+      }
+    );
 
-  if (result.exitCode !== 0) throw new ExitError(result.exitCode);
+    p.stdout?.pipe(process.stdout);
+    p.stderr?.pipe(process.stderr);
+  });
 }
