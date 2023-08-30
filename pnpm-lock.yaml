@@ -2192,9 +2192,6 @@ importers:
       apply-ref:
         specifier: ^1.0.0
         version: 1.0.0
-      fp-ts:
-        specifier: ^2.11.5
-        version: 2.11.5
       graphql:
         specifier: ^16.6.0
         version: 16.6.0
