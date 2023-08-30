@@ -1,5 +1,4 @@
-import { promisify } from 'node:util';
-import { execFile as _exec } from 'node:child_process';
+import { execFile } from 'node:child_process';
 import esbuild from 'esbuild';
 import { createSystem } from '../lib/createSystem';
 import {
@@ -9,8 +8,6 @@ import {
 } from '../artifacts';
 import { getEsbuildConfig } from '../lib/esbuild';
 import { ExitError } from './utils';
-
-const exec = promisify(_exec);
 
 export async function prisma(cwd: string, args: string[], frozen: boolean) {
   if (frozen) {
@@ -25,16 +22,25 @@ export async function prisma(cwd: string, args: string[], frozen: boolean) {
   await validatePrismaAndGraphQLSchemas(cwd, config, graphQLSchema);
   await generateTypescriptTypesAndPrisma(cwd, config, graphQLSchema);
 
-  try {
-    await exec('node', [require.resolve('prisma'), ...args], {
-      cwd,
-      env: {
-        ...process.env,
-        DATABASE_URL: config.db.url,
-        PRISMA_HIDE_UPDATE_MESSAGE: '1',
+  return new Promise<void>((resolve, reject) => {
+    const p = execFile(
+      'node',
+      [require.resolve('prisma'), ...args],
+      {
+        cwd,
+        env: {
+          ...process.env,
+          DATABASE_URL: config.db.url,
+          PRISMA_HIDE_UPDATE_MESSAGE: '1',
+        },
       },
-    });
-  } catch (e: any) {
-    throw new ExitError(e.status ?? -1);
-  }
+      err => {
+        if (err) return reject(new ExitError(err?.code ?? -1));
+        resolve();
+      }
+    );
+
+    p.stdout?.pipe(process.stdout);
+    p.stderr?.pipe(process.stderr);
+  });
 }
