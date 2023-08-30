@@ -1,8 +1,9 @@
 // most of these utilities come from https://github.com/preconstruct/preconstruct/blob/07a24f73f17980c121382bb00ae1c05355294fe4/packages/cli/test-utils/index.ts
 import path from 'node:path';
 import { format } from 'node:util';
+import fs from 'node:fs';
 import fsp from 'node:fs/promises';
-import * as fs from 'fs-extra';
+import * as fse from 'fs-extra';
 import fastGlob from 'fast-glob';
 import chalk from 'chalk';
 
@@ -75,13 +76,6 @@ type Fixture = {
     | { kind: 'config'; config: KeystoneConfig };
 };
 
-// basically replicating https://github.com/nodejs/node/blob/72f9c53c0f5cc03000f9a4eb1cf31f43e1d30b89/lib/fs.js#L1163-L1174
-// for some reason the builtin auto-detection doesn't work, the code probably doesn't land go into that logic or something
-async function getSymlinkType(targetPath: string): Promise<'dir' | 'file'> {
-  const stat = await fs.stat(targetPath);
-  return stat.isDirectory() ? 'dir' : 'file';
-}
-
 export async function runCommand(cwd: string, args: string | string[]) {
   const argv = typeof args === 'string' ? [args] : args;
   chalk.level = 0; // disable ANSI colouring for this
@@ -95,8 +89,8 @@ let dirsToRemove: string[] = [];
 
 afterAll(async () => {
   await Promise.all(
-    dirsToRemove.map(filepath => {
-      return fs.remove(filepath);
+    dirsToRemove.map(path => {
+      return fsp.rm(path, { recursive: true, force: true });
     })
   );
   dirsToRemove = [];
@@ -110,10 +104,11 @@ export async function testdir(dir: Fixture): Promise<string> {
       const output = dir[filename];
       const fullPath = path.join(temp, filename);
       if (typeof output === 'string' || Buffer.isBuffer(output)) {
-        await fs.outputFile(fullPath, output);
+        await fse.outputFile(fullPath, output);
+
       } else if (output.kind === 'config') {
-        // note this is sync so that it doesn't conflict with any other `kind: 'config'`
-        fs.outputFileSync(
+        // WARNING: this is *Sync to prevent conflicts
+        fse.outputFileSync(
           fullPath,
           `Object.defineProperty(exports, '__esModule', { value: true });exports.default = globalThis.keystoneConfig;`
         );
@@ -122,12 +117,12 @@ export async function testdir(dir: Fixture): Promise<string> {
         require(fullPath);
         // @ts-ignore
         delete globalThis.keystoneConfig;
+
       } else {
-        const dir = path.dirname(fullPath);
-        await fs.ensureDir(dir);
+        await fsp.mkdir(path.dirname(fullPath), { recursive: true });
         const targetPath = path.resolve(temp, output.path);
-        const symlinkType = await getSymlinkType(targetPath);
-        await fs.symlink(targetPath, fullPath, symlinkType);
+        const symlinkType = (await fsp.stat(targetPath)).isDirectory() ? 'dir' : 'file';
+        await fsp.symlink(targetPath, fullPath, symlinkType);
       }
     })
   );
@@ -170,11 +165,11 @@ export async function getFiles(
     files.map(async filename => {
       const filepath = path.join(dir, filename);
       filesObj[filename] = await (encoding === null
-        ? fs.readFile(filepath)
-        : fs.readFile(filepath, encoding));
+        ? fsp.readFile(filepath)
+        : fsp.readFile(filepath, encoding));
     })
   );
-  let newObj: Record<string, string | Buffer> = { [dirPrintingSymbol]: true };
+  const newObj: Record<string, string | Buffer> = { [dirPrintingSymbol]: true };
   files.sort().forEach(filename => {
     newObj[filename] = filesObj[filename];
   });
