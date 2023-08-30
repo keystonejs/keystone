@@ -4,7 +4,7 @@ import { ExitError } from './utils';
 async function main() {
   const argv = process.argv.slice(2);
 
-  await cli(process.cwd(), argv)
+  await cli(process.cwd(), argv);
 
   if (argv[0] === 'build') {
     process.exit(0);

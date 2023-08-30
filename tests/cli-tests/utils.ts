@@ -105,7 +105,6 @@ export async function testdir(dir: Fixture): Promise<string> {
       const fullPath = path.join(temp, filename);
       if (typeof output === 'string' || Buffer.isBuffer(output)) {
         await fse.outputFile(fullPath, output);
-
       } else if (output.kind === 'config') {
         // WARNING: this is *Sync to prevent conflicts
         fse.outputFileSync(
@@ -117,7 +116,6 @@ export async function testdir(dir: Fixture): Promise<string> {
         require(fullPath);
         // @ts-ignore
         delete globalThis.keystoneConfig;
-
       } else {
         await fsp.mkdir(path.dirname(fullPath), { recursive: true });
         const targetPath = path.resolve(temp, output.path);
@@ -163,17 +161,14 @@ export async function getFiles(
   };
   await Promise.all(
     files.map(async filename => {
-      const filepath = path.join(dir, filename);
-      filesObj[filename] = await (encoding === null
-        ? fsp.readFile(filepath)
-        : fsp.readFile(filepath, encoding));
+      filesObj[filename] = await fsp.readFile(path.join(dir, filename), encoding);
     })
   );
-  const newObj: Record<string, string | Buffer> = { [dirPrintingSymbol]: true };
+  const result: Record<string, string | Buffer> = { [dirPrintingSymbol]: true };
   files.sort().forEach(filename => {
-    newObj[filename] = filesObj[filename];
+    result[filename] = filesObj[filename];
   });
-  return newObj;
+  return result;
 }
 
 export async function introspectDb(cwd: string, url: string) {
