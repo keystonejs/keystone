@@ -1,5 +1,6 @@
+import { promisify } from 'node:util';
+import { execFile as _exec } from 'node:child_process';
 import esbuild from 'esbuild';
-import execa from 'execa';
 import { createSystem } from '../lib/createSystem';
 import {
   getBuiltKeystoneConfiguration,
@@ -8,6 +9,8 @@ import {
 } from '../artifacts';
 import { getEsbuildConfig } from '../lib/esbuild';
 import { ExitError } from './utils';
+
+const exec = promisify(_exec);
 
 export async function prisma(cwd: string, args: string[], frozen: boolean) {
   if (frozen) {
@@ -22,16 +25,16 @@ export async function prisma(cwd: string, args: string[], frozen: boolean) {
   await validatePrismaAndGraphQLSchemas(cwd, config, graphQLSchema);
   await generateTypescriptTypesAndPrisma(cwd, config, graphQLSchema);
 
-  const result = await execa('node', [require.resolve('prisma'), ...args], {
-    cwd,
-    stdio: 'inherit',
-    reject: false,
-    env: {
-      ...process.env,
-      DATABASE_URL: config.db.url,
-      PRISMA_HIDE_UPDATE_MESSAGE: '1',
-    },
-  });
-
-  if (result.exitCode !== 0) throw new ExitError(result.exitCode);
+  try {
+    await exec('node', [require.resolve('prisma'), ...args], {
+      cwd,
+      env: {
+        ...process.env,
+        DATABASE_URL: config.db.url,
+        PRISMA_HIDE_UPDATE_MESSAGE: '1',
+      },
+    });
+  } catch (e: any) {
+    throw new ExitError(e.status ?? -1);
+  }
 }
