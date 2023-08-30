@@ -1,12 +1,12 @@
 // most of these utilities come from https://github.com/preconstruct/preconstruct/blob/07a24f73f17980c121382bb00ae1c05355294fe4/packages/cli/test-utils/index.ts
-import path from 'path';
-import { format } from 'util';
+import path from 'node:path';
+import { format } from 'node:util';
+import fsp from 'node:fs/promises';
 import * as fs from 'fs-extra';
 import fastGlob from 'fast-glob';
 import chalk from 'chalk';
 
 // @ts-ignore
-import fixturez from 'fixturez';
 import { MigrateEngine } from '@prisma/migrate';
 import { uriToCredentials } from '@prisma/internals';
 import type { KeystoneConfig } from '@keystone-6/core/types';
@@ -49,8 +49,6 @@ export function recordConsole() {
     return contents.join('\n');
   };
 }
-
-let f = fixturez(__dirname);
 
 export const symlinkKeystoneDeps = Object.fromEntries(
   [
@@ -105,7 +103,7 @@ afterAll(async () => {
 });
 
 export async function testdir(dir: Fixture): Promise<string> {
-  const temp = f.temp();
+  const temp = await fsp.mkdtemp(__dirname);
   dirsToRemove.push(temp);
   await Promise.all(
     Object.keys(dir).map(async filename => {
