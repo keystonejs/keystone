@@ -55,7 +55,7 @@ function isAdmin({ session }: { session?: Session }) {
   return false;
 }
 
-export const lists: Lists = {
+export const lists: Lists<Session> = {
   User: list({
     access: {
       operation: {
