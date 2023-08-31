@@ -10,9 +10,23 @@ import type { Lists } from '.keystone/types';
 export type Session = {
   id: string;
   admin: boolean;
-  contributor: null | { id: string };
   moderator: null | { id: string };
+  contributor: null | { id: string };
 };
+
+type Has<T, K extends keyof T> = {
+  [key in keyof T]: key extends K ? Exclude<T[key], null | undefined> : T[key];
+};
+
+function isAdmin<T extends Session>(session?: T): session is T & { admin: true } {
+  return session?.admin === true;
+}
+function isModerator<T extends Session>(session?: T): session is Has<T, 'moderator'> {
+  return session?.moderator !== null;
+}
+function isContributor<T extends Session>(session?: T): session is Has<T, 'contributor'> {
+  return session?.contributor !== null;
+}
 
 function forUsers<T>({
   admin,
@@ -20,16 +34,16 @@ function forUsers<T>({
   contributor,
   default: _default,
 }: {
-  admin?: ({ session }: { session: Session }) => T;
-  moderator?: ({ session }: { session: Session }) => T;
-  contributor?: ({ session }: { session: Session }) => T;
+  admin?: ({ session }: { session: Session & { admin: true } }) => T;
+  moderator?: ({ session }: { session: Has<Session, 'moderator'> }) => T;
+  contributor?: ({ session }: { session: Has<Session, 'contributor'> }) => T;
   default: () => T;
 }) {
   return ({ session }: { session?: Session }): T => {
     if (!session) return _default();
-    if (admin && session.admin) return admin({ session });
-    if (moderator && session.moderator) return moderator({ session });
-    if (contributor && session.contributor) return contributor({ session });
+    if (admin && isAdmin(session)) return admin({ session });
+    if (moderator && isModerator(session)) return moderator({ session });
+    if (contributor && isContributor(session)) return contributor({ session });
     return _default();
   };
 }
@@ -109,7 +123,7 @@ export const lists: Lists<Session> = {
         update: forUsers({
           // contributors can only update their own posts
           contributor: ({ session }) => ({
-            createdBy: { id: { equals: session.contributor?.id } },
+            createdBy: { id: { equals: session.contributor.id } },
             hiddenBy: null,
           }),
           // otherwise, no filter
@@ -163,27 +177,27 @@ export const lists: Lists<Session> = {
     },
     hooks: {
       resolveInput: {
-        create: ({ context, resolvedData }) => {
+        create: ({ context: { session }, resolvedData }) => {
           resolvedData.createdAt = new Date();
-          if (context.session?.contributor) {
+          if (isContributor(session)) {
             return {
               ...resolvedData,
               createdBy: {
                 connect: {
-                  id: context.session?.contributor?.id,
+                  id: session.contributor.id,
                 },
               },
             };
           }
           return resolvedData;
         },
-        update: ({ context, resolvedData }) => {
+        update: ({ context: { session }, resolvedData }) => {
           resolvedData.updatedAt = new Date();
-          if ('hidden' in resolvedData && context.session?.moderator) {
+          if ('hidden' in resolvedData && isModerator(session)) {
             resolvedData.hiddenBy = resolvedData.hidden
               ? {
                   connect: {
-                    id: context.session?.moderator?.id,
+                    id: session.moderator.id,
                   },
                   // TODO: should support : null
                 }
@@ -211,7 +225,7 @@ export const lists: Lists<Session> = {
       filter: {
         // contributors can only update themselves
         update: forUsers({
-          contributor: ({ session }) => ({ id: { equals: session.contributor?.id } }),
+          contributor: ({ session }) => ({ id: { equals: session.contributor.id } }),
           default: unfiltered,
         }),
       },
@@ -237,7 +251,7 @@ export const lists: Lists<Session> = {
       filter: {
         // moderators can only update themselves
         update: forUsers({
-          moderator: ({ session }) => ({ id: { equals: session.moderator?.id } }),
+          moderator: ({ session }) => ({ id: { equals: session.moderator.id } }),
           // otherwise, no filter
           default: unfiltered,
         }),
