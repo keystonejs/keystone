@@ -6,7 +6,7 @@ type CommonArgs<ListTypeInfo extends BaseListTypeInfo> = {
   /**
    * The key of the list that the operation is occurring on
    */
-  listKey: string;
+  listKey: ListTypeInfo['key'];
 };
 
 type ResolveInputListHook<
