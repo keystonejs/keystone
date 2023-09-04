@@ -159,32 +159,10 @@ function getIsEnabled(listsConfig: KeystoneConfig['lists']) {
   return isEnabled;
 }
 
+function defaultOperationHook() {}
 function defaultListHooksResolveInput({ resolvedData }: { resolvedData: any }) {
   return resolvedData;
 }
-
-function parseListHooksResolveInput(f: ListHooks<BaseListTypeInfo>['resolveInput']) {
-  if (typeof f === 'function') {
-    return {
-      create: f,
-      update: f,
-    };
-  }
-
-  const { create, update } = f ?? {};
-  return {
-    create: create ?? defaultListHooksResolveInput,
-    update: update ?? defaultListHooksResolveInput,
-  };
-}
-
-function parseListHooks(hooks: ListHooks<BaseListTypeInfo>): ResolvedListHooks<BaseListTypeInfo> {
-  return {
-    ...hooks,
-    resolveInput: parseListHooksResolveInput(hooks.resolveInput),
-  };
-}
-
 function defaultFieldHooksResolveInput({
   resolvedData,
   fieldKey,
@@ -195,29 +173,37 @@ function defaultFieldHooksResolveInput({
   return resolvedData[fieldKey];
 }
 
-function parseFieldHooksResolveInput(f: FieldHooks<BaseListTypeInfo>['resolveInput']) {
-  return f ?? defaultFieldHooksResolveInput;
-  // TODO: one day
-  //    if (typeof f === 'function') {
-  //      return {
-  //        create: f,
-  //        update: f,
-  //      };
-  //    }
-  //
-  //    const { create, update } = f ?? {};
-  //    return {
-  //      create: create ?? defaultFieldHooksResolveInput,
-  //      update: update ?? defaultFieldHooksResolveInput,
-  //    };
+function parseListHooksResolveInput(f: ListHooks<BaseListTypeInfo>['resolveInput']) {
+  if (typeof f === 'function') {
+    return {
+      create: f,
+      update: f,
+    };
+  }
+
+  const { create = defaultListHooksResolveInput, update = defaultListHooksResolveInput } = f ?? {};
+  return { create, update };
+}
+
+function parseListHooks(hooks: ListHooks<BaseListTypeInfo>): ResolvedListHooks<BaseListTypeInfo> {
+  return {
+    resolveInput: parseListHooksResolveInput(hooks.resolveInput),
+    validateInput: hooks.validateInput ?? defaultOperationHook,
+    validateDelete: hooks.validateDelete ?? defaultOperationHook,
+    beforeOperation: hooks.beforeOperation ?? defaultOperationHook,
+    afterOperation: hooks.afterOperation ?? defaultOperationHook,
+  };
 }
 
 function parseFieldHooks(
   hooks: FieldHooks<BaseListTypeInfo>
 ): ResolvedFieldHooks<BaseListTypeInfo> {
   return {
-    ...hooks,
-    resolveInput: parseFieldHooksResolveInput(hooks.resolveInput),
+    resolveInput: hooks.resolveInput ?? defaultFieldHooksResolveInput,
+    validateInput: hooks.validateInput ?? defaultOperationHook,
+    validateDelete: hooks.validateDelete ?? defaultOperationHook,
+    beforeOperation: hooks.beforeOperation ?? defaultOperationHook,
+    afterOperation: hooks.afterOperation ?? defaultOperationHook,
   };
 }
 
@@ -780,8 +766,9 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
         hasAnEnabledUpdateField = true;
       }
     }
-    // You can't have a graphQL type with no fields, so
-    // if they're all disabled, we have to disable the whole operation.
+
+    // you can't have empty GraphQL types
+    //   if empty, omit the type completely
     if (!hasAnEnabledCreateField) {
       list.graphql.isEnabled.create = false;
     }
@@ -790,12 +777,12 @@ export function initialiseLists(config: KeystoneConfig): Record<string, Initiali
     }
   }
 
-  // Error checking
+  // error checking
   for (const [listKey, { fields }] of Object.entries(intermediateLists)) {
     assertFieldsValid({ listKey, fields });
   }
 
-  // Fixup the GraphQL refs
+  // fixup the GraphQL refs
   for (const [listKey, intermediateList] of Object.entries(intermediateLists)) {
     listsRef[listKey] = {
       ...intermediateList,
