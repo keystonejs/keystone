@@ -380,7 +380,7 @@ async function resolveInputForCreateOrUpdate(
         // `hookArgs` based on the `operation` which will make `hookArgs.item`
         // be the right type for `originalItem` for the operation
         hookArgs.operation === 'create'
-          ? { ...hookArgs, item: updatedItem, originalItem: hookArgs.item }
+          ? { ...hookArgs, item: updatedItem, originalItem: undefined }
           : { ...hookArgs, item: updatedItem, originalItem: hookArgs.item }
       );
     },
