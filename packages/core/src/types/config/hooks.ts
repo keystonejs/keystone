@@ -172,7 +172,7 @@ type ValidateInputHook<ListTypeInfo extends BaseListTypeInfo> = (
   args: ArgsForCreateOrUpdateOperation<ListTypeInfo> & {
     addValidationError: (error: string) => void;
   } & CommonArgs<ListTypeInfo>
-) => Promise<void> | void;
+) => MaybePromise<void>;
 
 type ValidateInputFieldHook<
   ListTypeInfo extends BaseListTypeInfo,
@@ -181,7 +181,7 @@ type ValidateInputFieldHook<
   args: ArgsForCreateOrUpdateOperation<ListTypeInfo> & {
     addValidationError: (error: string) => void;
   } & CommonArgs<ListTypeInfo> & { fieldKey: FieldKey }
-) => Promise<void> | void;
+) => MaybePromise<void>;
 
 type ValidateDeleteHook<ListTypeInfo extends BaseListTypeInfo> = (
   args: {
@@ -189,7 +189,7 @@ type ValidateDeleteHook<ListTypeInfo extends BaseListTypeInfo> = (
     item: ListTypeInfo['item'];
     addValidationError: (error: string) => void;
   } & CommonArgs<ListTypeInfo>
-) => Promise<void> | void;
+) => MaybePromise<void>;
 
 type ValidateDeleteFieldHook<
   ListTypeInfo extends BaseListTypeInfo,
@@ -200,7 +200,7 @@ type ValidateDeleteFieldHook<
     item: ListTypeInfo['item'];
     addValidationError: (error: string) => void;
   } & CommonArgs<ListTypeInfo> & { fieldKey: FieldKey }
-) => Promise<void> | void;
+) => MaybePromise<void>;
 
 type BeforeOperationHook<ListTypeInfo extends BaseListTypeInfo> = (
   args: (
@@ -213,7 +213,7 @@ type BeforeOperationHook<ListTypeInfo extends BaseListTypeInfo> = (
       }
   ) &
     CommonArgs<ListTypeInfo>
-) => Promise<void> | void;
+) => MaybePromise<void>;
 
 type BeforeOperationFieldHook<
   ListTypeInfo extends BaseListTypeInfo,
@@ -229,7 +229,7 @@ type BeforeOperationFieldHook<
       }
   ) &
     CommonArgs<ListTypeInfo> & { fieldKey: FieldKey }
-) => Promise<void> | void;
+) => MaybePromise<void>;
 
 type AfterOperationHook<ListTypeInfo extends BaseListTypeInfo> = (
   args: (
@@ -276,7 +276,7 @@ type AfterOperationHook<ListTypeInfo extends BaseListTypeInfo> = (
       }
   ) &
     CommonArgs<ListTypeInfo>
-) => Promise<void> | void;
+) => MaybePromise<void>;
 
 type AfterOperationFieldHook<
   ListTypeInfo extends BaseListTypeInfo,
@@ -326,4 +326,4 @@ type AfterOperationFieldHook<
       }
   ) &
     CommonArgs<ListTypeInfo> & { fieldKey: FieldKey }
-) => Promise<void> | void;
+) => MaybePromise<void>;
