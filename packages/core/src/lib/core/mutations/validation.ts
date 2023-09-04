@@ -22,7 +22,7 @@ export async function validateUpdateCreate({
       const addValidationError = (msg: string) =>
         messages.push(`${list.listKey}.${fieldKey}: ${msg}`);
       try {
-        await field.hooks.validateInput?.({ ...hookArgs, addValidationError, fieldKey });
+        await field.hooks.validateInput({ ...hookArgs, addValidationError, fieldKey });
       } catch (error: any) {
         fieldsErrors.push({ error, tag: `${list.listKey}.${fieldKey}.hooks.validateInput` });
       }
@@ -36,7 +36,7 @@ export async function validateUpdateCreate({
   // List validation hooks
   const addValidationError = (msg: string) => messages.push(`${list.listKey}: ${msg}`);
   try {
-    await list.hooks.validateInput?.({ ...hookArgs, addValidationError });
+    await list.hooks.validateInput({ ...hookArgs, addValidationError });
   } catch (error: any) {
     throw extensionError('validateInput', [{ error, tag: `${list.listKey}.hooks.validateInput` }]);
   }
@@ -62,7 +62,7 @@ export async function validateDelete({
       const addValidationError = (msg: string) =>
         messages.push(`${list.listKey}.${fieldKey}: ${msg}`);
       try {
-        await field.hooks.validateDelete?.({ ...hookArgs, addValidationError, fieldKey });
+        await field.hooks.validateDelete({ ...hookArgs, addValidationError, fieldKey });
       } catch (error: any) {
         fieldsErrors.push({ error, tag: `${list.listKey}.${fieldKey}.hooks.validateDelete` });
       }
@@ -74,7 +74,7 @@ export async function validateDelete({
   // List validation
   const addValidationError = (msg: string) => messages.push(`${list.listKey}: ${msg}`);
   try {
-    await list.hooks.validateDelete?.({ ...hookArgs, addValidationError });
+    await list.hooks.validateDelete({ ...hookArgs, addValidationError });
   } catch (error: any) {
     throw extensionError('validateDelete', [
       { error, tag: `${list.listKey}.hooks.validateDelete` },

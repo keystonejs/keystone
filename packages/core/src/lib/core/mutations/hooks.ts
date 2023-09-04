@@ -7,22 +7,22 @@ export async function runSideEffectOnlyHook<
 >(list: InitialisedList, hookName: HookName, args: Args) {
   let shouldRunFieldLevelHook: (fieldKey: string) => boolean;
   if (args.operation === 'delete') {
-    // Always run field hooks for delete operations
+    // always run field hooks for delete operations
     shouldRunFieldLevelHook = () => true;
   } else {
-    // Only run field hooks on if the field was specified in the
-    // original input for create and update operations.
+    // only run field hooks on if the field was specified in the
+    //   original input for create and update operations.
     const inputDataKeys = new Set(Object.keys(args.inputData));
     shouldRunFieldLevelHook = fieldKey => inputDataKeys.has(fieldKey);
   }
 
-  // Field hooks
+  // field hooks
   const fieldsErrors: { error: Error; tag: string }[] = [];
   await Promise.all(
     Object.entries(list.fields).map(async ([fieldKey, field]) => {
       if (shouldRunFieldLevelHook(fieldKey)) {
         try {
-          await field.hooks[hookName]?.({ fieldKey, ...args } as any); // TODO: FIXME any
+          await field.hooks[hookName]({ fieldKey, ...args } as any); // TODO: FIXME any
         } catch (error: any) {
           fieldsErrors.push({ error, tag: `${list.listKey}.${fieldKey}.hooks.${hookName}` });
         }
@@ -34,9 +34,9 @@ export async function runSideEffectOnlyHook<
     throw extensionError(hookName, fieldsErrors);
   }
 
-  // List hooks
+  // list hooks
   try {
-    await list.hooks[hookName]?.(args as any); // TODO: FIXME any
+    await list.hooks[hookName](args as any); // TODO: FIXME any
   } catch (error: any) {
     throw extensionError(hookName, [{ error, tag: `${list.listKey}.hooks.${hookName}` }]);
   }
