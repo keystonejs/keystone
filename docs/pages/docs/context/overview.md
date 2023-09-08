@@ -105,7 +105,7 @@ The following functions will create a new `Context` object with this behaviour m
 
 `withRequest(req, res)`: A function which returns a new `Context` object with the `.session` determined by your `sessionStrategy.get` function.
 
-`withSession(newSession)`: A function which returns a new `Context` object with the `.session` object replaced with the `newSession` argument.
+`withSession(newSession)`: A function which returns a new `Context` object with the `.session` object replaced by the `newSession` argument.
 
 ### Database access
 
