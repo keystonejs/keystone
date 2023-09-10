@@ -11,10 +11,7 @@ export function config<TypeInfo extends BaseKeystoneTypeInfo>(config: KeystoneCo
 }
 
 let i = 0;
-export function group<
-  __Unused extends any, // TODO: remove in breaking change
-  ListTypeInfo extends BaseListTypeInfo
->(config: {
+export function group<ListTypeInfo extends BaseListTypeInfo>(config: {
   label: string;
   description?: string;
   fields: BaseFields<ListTypeInfo>;
@@ -34,9 +31,8 @@ export function group<
   } as any; // TODO: FIXME, see initialise-lists.ts:getListsWithInitialisedFields
 }
 
-export function list<
-  __Unused extends any, // TODO: remove in breaking change
-  ListTypeInfo extends BaseListTypeInfo
->(config: ListConfig<ListTypeInfo>): ListConfig<ListTypeInfo> {
+export function list<ListTypeInfo extends BaseListTypeInfo>(
+  config: ListConfig<ListTypeInfo>
+): ListConfig<ListTypeInfo> {
   return { ...config };
 }

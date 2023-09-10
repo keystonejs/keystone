@@ -160,6 +160,7 @@ function printListTypeInfo<L extends InitialisedList>(
     `namespace ${listKey} {`,
     `  export type Item = import('${prismaClientPath}').${listKey};`,
     `  export type TypeInfo<Session = any> = {`,
+    `    SchemaTypeInfo: __TypeInfo<Session>;`,
     `    key: '${listKey}';`,
     `    isSingleton: ${list.isSingleton};`,
     `    fields: ${Object.keys(list.fields).map(x => `'${x}'`).join(' | ')}`,
@@ -175,7 +176,6 @@ function printListTypeInfo<L extends InitialisedList>(
     `      create: ${list.graphql.isEnabled.create ? `Resolved${createInputName}` : 'never'};`,
     `      update: ${list.graphql.isEnabled.update ? `Resolved${updateInputName}` : 'never'};`,
     `    };`,
-    `    all: __TypeInfo<Session>;`,
     `  };`,
     `}`,
   ]

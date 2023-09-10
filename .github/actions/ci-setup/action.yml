@@ -8,7 +8,7 @@ runs:
     - uses: actions/setup-node@main
       with:
         # preferably lts/*, but we hit API limits when querying that
-        node-version: 18
+        node-version: 20
         registry-url: 'https://registry.npmjs.org'
         cache: pnpm
 

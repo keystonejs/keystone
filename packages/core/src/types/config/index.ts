@@ -10,13 +10,7 @@ import type { AssetMode, BaseKeystoneTypeInfo, KeystoneContext, DatabaseProvider
 
 import type { SessionStrategy } from '../session';
 import type { MaybePromise } from '../utils';
-import type {
-  ListSchemaConfig,
-  ListConfig,
-  MaybeSessionFunction,
-  MaybeItemFunction,
-  IdFieldConfig,
-} from './lists';
+import type { ListConfig, MaybeSessionFunction, MaybeItemFunction, IdFieldConfig } from './lists';
 import type { BaseFields } from './fields';
 import type { ListAccessControl, FieldAccessControl } from './access-control';
 import type { ListHooks } from './hooks';
@@ -96,8 +90,9 @@ export type StorageConfig = (
 export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   db: DatabaseConfig<TypeInfo>;
   graphql?: GraphQLConfig<TypeInfo>;
-  lists: ListSchemaConfig<TypeInfo['lists'][string]>;
+  lists: Record<string, ListConfig<TypeInfo['lists'][string]>>;
   ui?: AdminUIConfig<TypeInfo>;
+
   server?: ServerConfig<TypeInfo>;
   session?: SessionStrategy<TypeInfo['session'], TypeInfo>;
   types?: {
@@ -105,7 +100,7 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
   };
 
   // TODO: why isn't this within .graphql?
-  extendGraphqlSchema?: ExtendGraphqlSchema;
+  extendGraphqlSchema?: (schema: GraphQLSchema) => GraphQLSchema;
   /** An object containing configuration about keystone's various external storages.
    *
    * Each entry should be of either `kind: 'local'` or `kind: 's3'`, and follow the configuration of each.
@@ -127,7 +122,7 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
 
 // config.lists
 
-export type { ListSchemaConfig, ListConfig, BaseFields, MaybeSessionFunction, MaybeItemFunction };
+export type { ListConfig, BaseFields, MaybeSessionFunction, MaybeItemFunction };
 
 // config.db
 
@@ -291,10 +286,6 @@ export type GraphQLConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTy
    */
   schemaPath?: string;
 };
-
-// config.extendGraphqlSchema
-
-export type ExtendGraphqlSchema = (schema: GraphQLSchema) => GraphQLSchema;
 
 export type FilesConfig = {
   upload: AssetMode;

@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@keystone-6/core": "^5.1.0",
-    "@prisma/client": "^4.16.2",
+    "@prisma/client": "^5.0.0",
     "@remix-run/node": "^1.15.0",
     "@remix-run/react": "^1.15.0",
     "@remix-run/serve": "^1.15.0",
@@ -22,7 +22,7 @@
     "@remix-run/dev": "^1.15.0",
     "@types/react": "^18.0.25",
     "@types/react-dom": "^18.0.8",
-    "prisma": "^4.16.2",
+    "prisma": "^5.0.0",
     "typescript": "~5.0.0"
   }
 }

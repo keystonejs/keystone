@@ -151,6 +151,7 @@ export declare namespace Lists {
   namespace Post {
     export type Item = import('./node_modules/.myprisma/client').Post;
     export type TypeInfo<Session = any> = {
+      SchemaTypeInfo: __TypeInfo<Session>;
       key: 'Post';
       isSingleton: false;
       fields: 'id' | 'title' | 'content' | 'publishDate'
@@ -166,7 +167,6 @@ export declare namespace Lists {
         create: ResolvedPostCreateInput;
         update: ResolvedPostUpdateInput;
       };
-      all: __TypeInfo<Session>;
     };
   }
 }

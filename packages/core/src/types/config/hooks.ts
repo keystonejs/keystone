@@ -1,12 +1,9 @@
-import type { KeystoneContextFromListTypeInfo, MaybePromise } from '..';
+import type { KeystoneContext, MaybePromise } from '..';
 import type { BaseListTypeInfo } from '../type-info';
 
 type CommonArgs<ListTypeInfo extends BaseListTypeInfo> = {
-  context: KeystoneContextFromListTypeInfo<ListTypeInfo>;
-  /**
-   * The key of the list that the operation is occurring on
-   */
-  listKey: string;
+  context: KeystoneContext<ListTypeInfo['SchemaTypeInfo']>;
+  listKey: ListTypeInfo['key'];
 };
 
 type ResolveInputListHook<

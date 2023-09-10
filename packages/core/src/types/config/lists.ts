@@ -6,16 +6,7 @@ import type { ListHooks } from './hooks';
 import type { ListAccessControl } from './access-control';
 import type { BaseFields, FilterOrderArgs } from './fields';
 
-// TODO: inline
-export type ListSchemaConfig<ListTypeInfo extends BaseListTypeInfo = BaseListTypeInfo> = Record<
-  string,
-  ListConfig<any, BaseFields<BaseListTypeInfo>>
->;
-
-export type ListConfig<
-  ListTypeInfo extends BaseListTypeInfo,
-  __Unused extends any = any // TODO: remove in breaking change
-> = {
+export type ListConfig<ListTypeInfo extends BaseListTypeInfo> = {
   isSingleton?: boolean;
   fields: BaseFields<ListTypeInfo>;
 
@@ -25,8 +16,9 @@ export type ListConfig<
    */
   access: ListAccessControl<ListTypeInfo>;
 
-  /** Config for how this list should act in the Admin UI */
-  ui?: ListAdminUIConfig<ListTypeInfo>;
+  db?: ListDBConfig;
+
+  graphql?: ListGraphQLConfig;
 
   /**
    * Hooks to modify the behaviour of GraphQL operations at certain points
@@ -34,9 +26,8 @@ export type ListConfig<
    */
   hooks?: ListHooks<ListTypeInfo>;
 
-  graphql?: ListGraphQLConfig;
-
-  db?: ListDBConfig;
+  /** Config for how this list should act in the Admin UI */
+  ui?: ListAdminUIConfig<ListTypeInfo>;
 
   /**
    * Defaults the Admin UI and GraphQL descriptions
@@ -48,10 +39,7 @@ export type ListConfig<
   defaultIsOrderable?: false | ((args: FilterOrderArgs<ListTypeInfo>) => MaybePromise<boolean>); // The default value to use for graphql.isEnabled.orderBy on all fields for this list
 };
 
-export type ListAdminUIConfig<
-  ListTypeInfo extends BaseListTypeInfo,
-  __Unused extends any = any // TODO: remove in breaking change
-> = {
+export type ListAdminUIConfig<ListTypeInfo extends BaseListTypeInfo> = {
   /**
    * The field to use as a label in the Admin UI. If you want to base the label off more than a single field, use a virtual field and reference that field here.
    * @default 'label', if it exists, falling back to 'name', then 'title', and finally 'id', which is guaranteed to exist.

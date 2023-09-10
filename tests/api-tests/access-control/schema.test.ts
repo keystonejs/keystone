@@ -1,6 +1,7 @@
 import { createSystem, initConfig } from '@keystone-6/core/system';
 import { relationship, text } from '@keystone-6/core/fields';
-import { list, ListSchemaConfig } from '@keystone-6/core';
+import { list } from '@keystone-6/core';
+import type { KeystoneConfig } from '@keystone-6/core/types';
 import { allowAll } from '@keystone-6/core/access';
 import { testConfig } from '../utils';
 
@@ -143,7 +144,7 @@ const createFieldStatic = (config: FieldConfig) => ({
   }),
 });
 
-const lists: ListSchemaConfig = {};
+const lists: KeystoneConfig['lists'] = {};
 
 for (const listConfig of listConfigVariables) {
   lists[getListName(listConfig)] = list({

@@ -247,6 +247,7 @@ export declare namespace Lists {
   namespace Post {
     export type Item = import('./node_modules/.myprisma/client').Post;
     export type TypeInfo<Session = any> = {
+      SchemaTypeInfo: __TypeInfo<Session>;
       key: 'Post';
       isSingleton: false;
       fields: 'id' | 'title' | 'status' | 'content' | 'publishDate' | 'author'
@@ -262,13 +263,13 @@ export declare namespace Lists {
         create: ResolvedPostCreateInput;
         update: ResolvedPostUpdateInput;
       };
-      all: __TypeInfo<Session>;
     };
   }
   export type Author<Session = any> = import('@keystone-6/core').ListConfig<Lists.Author.TypeInfo<Session>>;
   namespace Author {
     export type Item = import('./node_modules/.myprisma/client').Author;
     export type TypeInfo<Session = any> = {
+      SchemaTypeInfo: __TypeInfo<Session>;
       key: 'Author';
       isSingleton: false;
       fields: 'id' | 'name' | 'posts'
@@ -284,7 +285,6 @@ export declare namespace Lists {
         create: ResolvedAuthorCreateInput;
         update: ResolvedAuthorUpdateInput;
       };
-      all: __TypeInfo<Session>;
     };
   }
 }
