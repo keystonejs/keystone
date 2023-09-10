@@ -48,7 +48,7 @@ function printTypeReferenceWithoutNullable (
   const name = type.name
   if (type instanceof GraphQLScalarType) {
     if (scalars[name] === undefined) return 'any'
-    return `Scalars['${stringify(name)}']`
+    return `Scalars['${stringify(name)}']` // TODO: inline?
   }
 
   return name
@@ -192,7 +192,7 @@ export function printGeneratedTypes (
     '/* eslint-disable */',
     '',
     printInputTypesFromSchema(graphQLSchema, {
-      ID: 'string',
+      ID: 'string | number', // TODO: whyyy
       Boolean: 'boolean',
       String: 'string',
       Int: 'number',

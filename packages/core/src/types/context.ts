@@ -5,6 +5,7 @@ import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import type { InitialisedList } from '../lib/core/initialise-lists'
 import type { SessionStrategy } from './session'
 import type { BaseListTypeInfo, BaseKeystoneTypeInfo } from './type-info'
+import type { MaybePromise } from '../../types'
 
 export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   req?: IncomingMessage
@@ -16,6 +17,8 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
   withSession: (session?: TypeInfo['session']) => KeystoneContext<TypeInfo>
   withRequest: (req: IncomingMessage, res?: ServerResponse) => Promise<KeystoneContext<TypeInfo>>
   prisma: TypeInfo['prisma']
+  transaction: <T>(f: (context: KeystoneContext<TypeInfo>) => MaybePromise<T>) => Promise<T>
+
   files: FilesContext
   images: ImagesContext
   sessionStrategy?: SessionStrategy<TypeInfo['session'], TypeInfo>

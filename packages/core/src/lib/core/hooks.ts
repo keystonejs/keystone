@@ -52,6 +52,55 @@ export async function validate ({
   }
 }
 
+// tldlr, talk with john
+//
+//    global transactions flag
+//
+//
+//    operation: {
+//      create: async ({ resolvedData }) => {
+//         const txc = context.transaction()
+//         await txc.prisma.Post.create(resolvedData)
+//         await txc.prisma.Author.update({ posts: posts + 1 })
+//         await txc.commit()
+//         // or via a function closure, no need to manually commit, or something
+//      }
+//    }
+//
+//    or
+//
+//    // deferred to END of thing, and maybe thats a `beforeMutation` and `afterMutation` ... ?
+//    context.defer(() => {
+//
+//    })
+//
+//
+//
+//
+//
+//
+//
+
+async function runBeforeOperations (list: InitialisedList) {
+  // field hooks
+  const fieldsErrors: { error: Error, tag: string }[] = []
+
+
+  await Promise.all(
+    Object.entries(list.fields).map(async ([fieldKey, field]) => {
+      try {
+        await field.hooks[hookName][operation]({ fieldKey, ...args } as any) // TODO: FIXME any
+      } catch (error: any) {
+        fieldsErrors.push({ error, tag: `${list.listKey}.${fieldKey}.hooks.${hookName}` })
+      }
+    })
+  )
+
+  if (fieldsErrors.length) {
+    throw extensionError(hookName, fieldsErrors)
+  }
+}
+
 export async function runSideEffectOnlyHook<
   HookName extends 'beforeOperation' | 'afterOperation',
   Args extends Parameters<

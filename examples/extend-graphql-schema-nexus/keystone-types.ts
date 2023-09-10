@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 type Scalars = {
-  readonly ID: string
+  readonly ID: string | number
   readonly Boolean: boolean
   readonly String: string
   readonly Int: number
