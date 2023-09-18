@@ -3,7 +3,7 @@
 
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
-import {
+import type {
   CardValueComponent,
   CellComponent,
   FieldController,
