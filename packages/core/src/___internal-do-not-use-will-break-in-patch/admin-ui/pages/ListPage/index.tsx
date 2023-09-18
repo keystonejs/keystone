@@ -262,13 +262,10 @@ const ListPage = ({ listKey }: ListPageProps) => {
   return (
     <PageContainer header={<ListPageHeader listKey={listKey} />} title={list.label}>
       {error?.graphQLErrors.length || error?.networkError ? (
-        <GraphQLErrorNotice
-          errors={error?.graphQLErrors}
-          networkError={error?.networkError}
-        />
+        <GraphQLErrorNotice errors={error?.graphQLErrors} networkError={error?.networkError} />
       ) : null}
       {metaQuery.error ? 'Error...' : null}
-      {(data && metaQuery.data) ? (
+      {data && metaQuery.data ? (
         <Fragment>
           {list.description !== null && (
             <p css={{ marginTop: '24px', maxWidth: '704px' }}>{list.description}</p>

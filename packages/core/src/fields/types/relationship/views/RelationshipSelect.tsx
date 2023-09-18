@@ -44,16 +44,16 @@ function useDebouncedValue<T>(value: T, limitMs: number) {
   return debouncedValue;
 }
 
-function isInt (x: string) {
-  return Number.isInteger(Number(x))
+function isInt(x: string) {
+  return Number.isInteger(Number(x));
 }
 
-function isBigInt (x: string) {
+function isBigInt(x: string) {
   try {
-    BigInt(x)
-    return true
+    BigInt(x);
+    return true;
   } catch {
-    return true
+    return true;
   }
 }
 
@@ -63,11 +63,16 @@ export function useFilter(search: string, list: ListMeta, searchFields: string[]
     if (!trimmedSearch.length) return { OR: [] };
 
     const conditions: Record<string, any>[] = [];
-    const { type: idFieldType } = list.fields.id.fieldMeta as any ?? {};
-    if (idFieldType === 'Int' && isInt(trimmedSearch)) conditions.push({ id: { equals: Number(trimmedSearch) } });
-    if (idFieldType === 'BigInt' && isBigInt(trimmedSearch)) conditions.push({ id: { equals: trimmedSearch } });
-    if (idFieldType === 'String') conditions.push({ id: { equals: trimmedSearch } });
-    if (idFieldType === 'UUID') conditions.push({ id: { equals: trimmedSearch } }); // TODO: remove in breaking change?
+    const { type: idFieldType } = (list.fields.id.fieldMeta as any) ?? {};
+    if (idFieldType === 'String') {
+      conditions.push({ id: { equals: trimmedSearch } });
+    } else if (idFieldType === 'Int' && isInt(trimmedSearch)) {
+      conditions.push({ id: { equals: Number(trimmedSearch) } });
+    } else if (idFieldType === 'BigInt' && isBigInt(trimmedSearch)) {
+      conditions.push({ id: { equals: trimmedSearch } });
+    } else if (idFieldType === 'UUID') {
+      conditions.push({ id: { equals: trimmedSearch } }); // TODO: remove in breaking change?
+    }
 
     if ((list.fields.id.fieldMeta as any)?.type === 'String') {
       conditions.push({ id: { equals: trimmedSearch } });
