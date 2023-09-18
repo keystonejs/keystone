@@ -13,8 +13,8 @@ export type BaseFields<ListTypeInfo extends BaseListTypeInfo> = {
 export type FilterOrderArgs<ListTypeInfo extends BaseListTypeInfo> = {
   context: KeystoneContext<ListTypeInfo['all']>;
   session?: ListTypeInfo['all']['session'];
-  listKey: string;
-  fieldKey: string;
+  listKey: ListTypeInfo['key'];
+  fieldKey: ListTypeInfo['fields'];
 };
 
 export type CommonFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
