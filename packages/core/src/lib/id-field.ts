@@ -195,7 +195,7 @@ export function idFieldType(
         },
       }),
       views: '@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view',
-      getAdminMeta: () => ({ kind }),
+      getAdminMeta: () => ({ kind, type: type_ }),
       ui: {
         createView: {
           fieldMode: 'hidden',
