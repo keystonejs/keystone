@@ -1,18 +1,16 @@
-/* eslint-disable import/no-extraneous-dependencies */
-const path = require('path')
+const path = require('node:path')
+const fs = require('node:fs/promises')
 
-const fs = require('fs-extra')
+/* eslint-disable import/no-extraneous-dependencies */
 const svgr = require('@svgr/core').default
 const { icons } = require('feather-icons')
 const toPascalCase = require('to-pascal-case')
 const globby = require('globby')
 
-const chalk = require('chalk')
-
 async function writeIcons () {
   let iconOutDir = path.join(__dirname, 'src', 'icons')
 
-  await fs.ensureDir(iconOutDir)
+  await fs.mkdir(iconOutDir, { recursive: true })
   let names = []
   await Promise.all(
     Object.keys(icons).map(async key => {
@@ -45,11 +43,10 @@ async function writeIcons () {
                     )
               },
               ${t.stringLiteral(name)}
-            );
+            )
             `
           },
           plugins: [
-            // '@svgr/plugin-svgo',
             '@svgr/plugin-jsx',
           ],
         },
@@ -72,11 +69,11 @@ async function writeIndex (icons) {
     encoding: 'utf8',
   })
 
-  console.info(chalk.green('✅ Index file written successfully'))
+  console.info('✅ Index file written successfully')
 }
 
 async function writePkg (pkgPath, content) {
-  await fs.ensureFile(pkgPath)
+  await fs.mkdir(path.dirname(pkgPath), { recursive: true })
   await fs.writeFile(pkgPath, JSON.stringify(content, null, 2) + '\n', {
     encoding: 'utf8',
   })
@@ -94,7 +91,7 @@ async function createEntrypointPkgJsons (icons) {
     })
   )
 
-  console.info(chalk.green('✅ all package.json entrypoint files written successfully'))
+  console.info('✅ all package.json entrypoint files written successfully')
 }
 
 async function clean () {
@@ -110,9 +107,9 @@ async function clean () {
 }
 
 (async () => {
-  console.info(chalk.blue('🧹 Cleaning existing exports'))
+  console.info('🧹 Cleaning existing exports')
   await clean()
-  console.info(chalk.blue('🚧 Building icon exports'))
+  console.info('🚧 Building icon exports')
 
   let icons = await writeIcons()
   await Promise.all([writeIndex(icons), createEntrypointPkgJsons(icons)])
