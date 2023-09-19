@@ -67,29 +67,31 @@ export class CloudinaryAdapter {
     apiSecret: string;
     folder?: string;
   }) {
-    if (!cloudName || !apiKey || !apiSecret) {
-      throw new Error('CloudinaryAdapter requires cloudName, apiKey, and apiSecret');
-    }
     this.cloudName = cloudName;
     this.apiKey = apiKey;
     this.apiSecret = apiSecret;
     this.folder = folder || undefined;
   }
 
+  ready() {
+    return this.cloudName.length > 0 && this.apiKey.length > 0 && this.apiSecret.length > 0;
+  }
+
   /**
    * Params: { stream, filename, id }
    */
   save({ stream, filename, id }: { stream: fs.ReadStream; filename: string; id: string }) {
-    // Push to cloudinary
+    if (!this.ready()) throw new Error('Cloudinary adapter is not ready');
+
+    // push to cloudinary
     return uploadStream(stream, {
       public_id: id,
       folder: this.folder,
-      // Auth
       api_key: this.apiKey,
       api_secret: this.apiSecret,
       cloud_name: this.cloudName,
     }).then(result => ({
-      // Return the relevant data for the File api
+      // return the relevant data for the file api
       id,
       filename,
       _meta: result,
@@ -103,6 +105,8 @@ export class CloudinaryAdapter {
    *                For available options refer to the [Cloudinary destroy API](https://cloudinary.com/documentation/image_upload_api_reference#destroy_method).
    */
   delete(file?: File, options = {}) {
+    if (!this.ready()) throw new Error('Cloudinary adapter is not ready');
+
     const destroyOptions = {
       // Auth
       api_key: this.apiKey,
@@ -132,18 +136,16 @@ export class CloudinaryAdapter {
   }
 
   publicUrlTransformed(file: File, options: CloudinaryImageFormat = {}) {
-    if (!file._meta) {
-      return null;
-    }
+    if (!file._meta) return null;
 
     const { prettyName, ...transformation } = options;
+
     // No formatting options provided, return the publicUrl field
-    if (!Object.keys(transformation).length) {
-      return this.publicUrl(file);
-    }
+    if (!Object.keys(transformation).length) return this.publicUrl(file);
+
     const { public_id, format } = file._meta;
 
-    // Docs: https://github.com/cloudinary/cloudinary_npm/blob/439586eac73cee7f2803cf19f885e98f237183b3/src/utils.coffee#L472 (LOL)
+    // ref https://github.com/cloudinary/cloudinary_npm/blob/439586eac73cee7f2803cf19f885e98f237183b3/src/utils.coffee#L472
     // @ts-ignore
     return cloudinary.url(public_id, {
       type: 'upload',

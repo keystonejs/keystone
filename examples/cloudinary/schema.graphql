@@ -5,30 +5,55 @@ type Post {
   id: ID!
   title: String
   content: String
-  banner: ImageFieldOutput
-  attachment: FileFieldOutput
+  banner: CloudinaryImage_File
 }
 
-type ImageFieldOutput {
-  id: ID!
-  filesize: Int!
-  width: Int!
-  height: Int!
-  extension: ImageExtension!
-  url: String!
+type CloudinaryImage_File {
+  id: ID
+  filename: String
+  originalFilename: String
+  mimetype: String
+  encoding: String
+  publicUrl: String
+  publicUrlTransformed(transformation: CloudinaryImageFormat): String
 }
 
-enum ImageExtension {
-  jpg
-  png
-  webp
-  gif
-}
-
-type FileFieldOutput {
-  filename: String!
-  filesize: Int!
-  url: String!
+"""
+Mirrors the formatting options [Cloudinary provides](https://cloudinary.com/documentation/image_transformation_reference).
+All options are strings as they ultimately end up in a URL.
+"""
+input CloudinaryImageFormat {
+  """ Rewrites the filename to be this pretty string. Do not include `/` or `.`
+  """
+  prettyName: String
+  width: String
+  height: String
+  crop: String
+  aspect_ratio: String
+  gravity: String
+  zoom: String
+  x: String
+  y: String
+  format: String
+  fetch_format: String
+  quality: String
+  radius: String
+  angle: String
+  effect: String
+  opacity: String
+  border: String
+  background: String
+  overlay: String
+  underlay: String
+  default_image: String
+  delay: String
+  color: String
+  color_space: String
+  dpr: String
+  page: String
+  density: String
+  flags: String
+  transformation: String
 }
 
 input PostWhereUniqueInput {
@@ -97,20 +122,11 @@ enum OrderDirection {
 input PostUpdateInput {
   title: String
   content: String
-  banner: ImageFieldInput
-  attachment: FileFieldInput
-}
-
-input ImageFieldInput {
-  upload: Upload!
+  banner: Upload
 }
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
-
-input FileFieldInput {
-  upload: Upload!
-}
 
 input PostUpdateArgs {
   where: PostWhereUniqueInput!
@@ -120,8 +136,7 @@ input PostUpdateArgs {
 input PostCreateInput {
   title: String
   content: String
-  banner: ImageFieldInput
-  attachment: FileFieldInput
+  banner: Upload
 }
 
 """

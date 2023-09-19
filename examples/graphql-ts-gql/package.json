@@ -35,6 +35,5 @@
     "rules": {
       "@ts-gql/ts-gql": "error"
     }
-  },
-  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/graphql-ts-gql"
+  }
 }

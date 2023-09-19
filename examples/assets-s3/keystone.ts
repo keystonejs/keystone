@@ -1,9 +1,7 @@
+import 'dotenv/config';
 import { config } from '@keystone-6/core';
-import dotenv from 'dotenv';
 import { fixPrismaPath } from '../example-utils';
 import { lists } from './schema';
-
-dotenv.config();
 
 const {
   S3_BUCKET_NAME: bucketName = 'keystone-test',

@@ -2,7 +2,6 @@
   "name": "@keystone-6/example-extend-graphql-subscriptions",
   "version": "0.0.7",
   "private": true,
-  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/extend-graphql-subscriptions",
   "license": "MIT",
   "scripts": {
     "dev": "keystone dev",

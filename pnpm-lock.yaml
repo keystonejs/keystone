@@ -684,6 +684,28 @@ importers:
         specifier: ~5.0.0
         version: 5.0.2
 
+  examples/cloudinary:
+    dependencies:
+      '@keystone-6/cloudinary':
+        specifier: workspace:^
+        version: link:../../packages/cloudinary
+      '@keystone-6/core':
+        specifier: ^5.0.0
+        version: link:../../packages/core
+      '@prisma/client':
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
+      dotenv:
+        specifier: ^16.0.0
+        version: 16.3.1
+    devDependencies:
+      prisma:
+        specifier: ^4.16.2
+        version: 4.16.2
+      typescript:
+        specifier: ~5.0.0
+        version: 5.0.2
+
   examples/custom-admin-ui-logo:
     dependencies:
       '@keystone-6/core':
@@ -11966,7 +11988,7 @@ packages:
       strip-ansi: 7.1.0
       supports-esm: 1.0.0
       tsconfig-resolver: 3.0.1
-      typescript: 5.0.2
+      typescript: 5.2.2
       unist-util-visit: 4.1.2
       vfile: 5.3.7
       vite: 4.4.9(@types/node@18.11.14)
@@ -13917,7 +13939,6 @@ packages:
   /dotenv@16.3.1:
     resolution: {integrity: sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==}
     engines: {node: '>=12'}
-    dev: true
 
   /dotenv@8.6.0:
     resolution: {integrity: sha512-IrPdXQsk2BbzvCBGBOTmmSH5SodmqZNt4ERAZDmW4CT+tL8VtvinqywuANaFu4bOMWki16nqf0e4oC0QIaDr/g==}
@@ -23062,7 +23083,6 @@ packages:
     resolution: {integrity: sha512-mI4WrpHsbCIcwT9cF4FZvr80QUeKvsUsUvKDoR+X/7XHQH98xYD8YHZg7ANtz2GtZt/CBq2QJ0thkGJMHfqc1w==}
     engines: {node: '>=14.17'}
     hasBin: true
-    dev: true
 
   /ua-parser-js@1.0.35:
     resolution: {integrity: sha512-fKnGuqmTBnIE+/KXSzCn4db8RTigUzw1AN0DmdU6hJovUTbYJKyqj+8Mt1c4VfRDnOVJnENmfYkIPZ946UrSAA==}

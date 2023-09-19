@@ -2,7 +2,6 @@
   "name": "@keystone-6/example-framework-astro",
   "version": "0.0.1",
   "private": true,
-  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/framework-astro",
   "license": "MIT",
   "scripts": {
     "astro": "astro",
