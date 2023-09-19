@@ -13,27 +13,14 @@ generator client {
 }
 
 model Post {
-  id                  String    @id @default(cuid())
-  title               String    @default("")
-  status              String?
-  content             String    @default("")
-  publishDate         DateTime?
-  author              Author?   @relation("Post_author", fields: [authorId], references: [id])
-  authorId            String?   @map("author")
-  hero_filesize       Int?
-  hero_extension      String?
-  hero_width          Int?
-  hero_height         Int?
-  hero_id             String?
+  id                  String  @id @default(cuid())
+  title               String  @default("")
+  content             String  @default("")
+  banner_filesize     Int?
+  banner_extension    String?
+  banner_width        Int?
+  banner_height       Int?
+  banner_id           String?
   attachment_filesize Int?
   attachment_filename String?
-
-  @@index([authorId])
-}
-
-model Author {
-  id    String @id @default(cuid())
-  name  String @default("")
-  email String @unique @default("")
-  posts Post[] @relation("Post_author")
 }
