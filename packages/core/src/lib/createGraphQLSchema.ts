@@ -97,25 +97,13 @@ function collectTypes(
 export function createGraphQLSchema(
   config: KeystoneConfig,
   lists: Record<string, InitialisedList>,
-  adminMeta: AdminMetaRootVal | null,
+  adminMeta: AdminMetaRootVal,
   sudo: boolean
 ) {
   const graphQLSchema = getGraphQLSchema(
     lists,
     {
-      mutation: config.session
-        ? {
-            endSession: graphql.field({
-              type: graphql.nonNull(graphql.Boolean),
-              async resolve(rootVal, args, context) {
-                if (context.sessionStrategy) {
-                  await context.sessionStrategy.end({ context });
-                }
-                return true;
-              },
-            }),
-          }
-        : {},
+      mutation: {},
       query: adminMeta
         ? {
             keystone: graphql.field({

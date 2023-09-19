@@ -248,7 +248,8 @@ describe('useMigrations: false', () => {
     }
 
     expect(recording()).toMatchInlineSnapshot(`
-      "? Starting Keystone
+      "? Generated GraphQL and Prisma schemas
+      ? Starting Keystone
       ? Server listening on :3000 (http://localhost:3000/)
       ? GraphQL API available at /api/graphql
       ? Generating GraphQL and Prisma schemas

@@ -619,7 +619,7 @@ test(
           code: 'KS_PRISMA_ERROR',
           debug: {
             message: expect.stringMatching(
-              /Unknown arg `blah` in data\.badResolveInput\.blah for type PostCreateNestedOneWithoutFrom_BadResolveInput_badResolveInputInput\./
+              /Unknown argument `blah`. Available options are listed in green./
             ),
           },
         },

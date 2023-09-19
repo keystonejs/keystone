@@ -1,6 +1,6 @@
 import type { BaseItem } from '@keystone-6/core/types';
 import { graphql } from '@keystone-6/core';
-import { AuthGqlNames, SecretFieldImpl } from '../types';
+import { AuthGqlNames, SecretFieldImpl, SessionStrategy } from '../types';
 
 import { validateSecret } from '../lib/validateSecret';
 
@@ -11,6 +11,7 @@ export function getBaseAuthSchema<I extends string, S extends string>({
   gqlNames,
   secretFieldImpl,
   base,
+  sessionStrategy,
 }: {
   listKey: string;
   identityField: I;
@@ -18,6 +19,7 @@ export function getBaseAuthSchema<I extends string, S extends string>({
   gqlNames: AuthGqlNames;
   secretFieldImpl: SecretFieldImpl;
   base: graphql.BaseSchemaMeta;
+  sessionStrategy: SessionStrategy<any>;
 
   // TODO: return type required by pnpm :(
 }): {
@@ -46,8 +48,8 @@ export function getBaseAuthSchema<I extends string, S extends string>({
   const AuthenticationResult = graphql.union({
     name: gqlNames.ItemAuthenticationWithPasswordResult,
     types: [ItemAuthenticationWithPasswordSuccess, ItemAuthenticationWithPasswordFailure],
-    resolveType(val) {
-      if ('sessionToken' in val) {
+    resolveType(value) {
+      if ('sessionToken' in value) {
         return gqlNames.ItemAuthenticationWithPasswordSuccess;
       }
       return gqlNames.ItemAuthenticationWithPasswordFailure;
@@ -77,16 +79,30 @@ export function getBaseAuthSchema<I extends string, S extends string>({
       }),
     },
     mutation: {
+      endSession: graphql.field({
+        type: graphql.nonNull(graphql.Boolean),
+        async resolve(root, args, context) {
+          if (sessionStrategy) {
+            await sessionStrategy.end({ context });
+          }
+          return true;
+        },
+      }),
       [gqlNames.authenticateItemWithPassword]: graphql.field({
         type: AuthenticationResult,
         args: {
           [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
           [secretField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
         },
-        async resolve(root, { [identityField]: identity, [secretField]: secret }, context) {
-          if (!context.sessionStrategy) {
+        async resolve(root, args, context) {
+          if (!context.res) {
             throw new Error('No session implementation available on context');
           }
+
+          const {
+            [identityField]: identity,
+            [secretField]: secret
+          } = args;
 
           const dbItemAPI = context.sudo().db[listKey];
           const result = await validateSecret(
@@ -103,7 +119,8 @@ export function getBaseAuthSchema<I extends string, S extends string>({
           }
 
           // Update system state
-          const sessionToken = await context.sessionStrategy.start({
+
+          const sessionToken = await sessionStrategy.start({
             data: {
               listKey,
               itemId: result.item.id,

@@ -35,6 +35,43 @@ export type AuthTokenTypeConfig = {
   tokensValidForMins?: number;
 };
 
+export type JSONValue =
+  | string
+  | number
+  | boolean
+  | null
+  | readonly JSONValue[]
+  | { [key: string]: JSONValue };
+
+export type SessionStrategy<StoredSessionData, StartSessionData = never> = {
+  data: string;
+  // creates token from data, sets the cookie with token via res, returns token
+  start: (args: {
+    data: StoredSessionData | StartSessionData;
+    context: KeystoneContext;
+  }) => Promise<unknown>;
+  // resets the cookie via res
+  end: (args: { context: KeystoneContext }) => Promise<unknown>;
+  // -- this one is invoked at the start of every request
+  // reads the token, gets the data, returns it
+  get: (args: { context: KeystoneContext }) => Promise<StoredSessionData | undefined>;
+};
+
+export type SessionStore = {
+  get(key: string): undefined | JSONValue | Promise<JSONValue | undefined>;
+  // 😞 using any here rather than void to be compatible with Map. note that `| Promise<void>` doesn't actually do anything type wise because it just turns into any, it's just to show intent here
+  set(key: string, value: JSONValue): any | Promise<void>;
+  // 😞 | boolean is for compatibility with Map
+  delete(key: string): void | boolean | Promise<void>;
+};
+
+export type SessionStoreFunction = (args: {
+  /**
+   * The number of seconds that a cookie session be valid for
+   */
+  maxAge: number;
+}) => SessionStore;
+
 export type AuthConfig<ListTypeInfo extends BaseListTypeInfo> = {
   /** The key of the list to authenticate users with */
   listKey: ListTypeInfo['key'];
@@ -49,7 +86,7 @@ export type AuthConfig<ListTypeInfo extends BaseListTypeInfo> = {
   /** "Magic link" functionality */
   magicAuthLink?: AuthTokenTypeConfig;
   /** Session data population */
-  sessionData?: string;
+  sessionStrategy: SessionStrategy<any>;
 };
 
 export type InitFirstItemConfig<ListTypeInfo extends BaseListTypeInfo> = {

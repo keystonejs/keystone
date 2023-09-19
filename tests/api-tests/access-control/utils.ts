@@ -1,6 +1,6 @@
 import { text, password } from '@keystone-6/core/fields';
 import { list, ListSchemaConfig } from '@keystone-6/core';
-import { statelessSessions } from '@keystone-6/core/session';
+import { statelessSessions } from '@keystone-6/auth/session';
 import { createAuth } from '@keystone-6/auth';
 import { allowAll } from '@keystone-6/core/access';
 import { testConfig } from '../utils';
@@ -174,13 +174,12 @@ const auth = createAuth({
   listKey: 'User',
   identityField: 'email',
   secretField: 'password',
-  sessionData: 'id',
+  sessionStrategy: statelessSessions({ secret: COOKIE_SECRET }),
 });
 
 const config = auth.withAuth(
   testConfig({
     lists,
-    session: statelessSessions({ secret: COOKIE_SECRET }),
   })
 );
 

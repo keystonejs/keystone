@@ -18,7 +18,7 @@
     "@keystone-ui/button": "^7.0.1",
     "@keystone-ui/core": "^5.0.1",
     "@keystone-ui/fields": "^7.1.1",
-    "@prisma/client": "^4.16.2",
+    "@prisma/client": "^5.0.0",
     "graphql": "^16.6.0",
     "graphql-subscriptions": "^2.0.0",
     "graphql-ws": "^5.9.1",
@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@types/ws": "^8.5.3",
-    "prisma": "^4.16.2",
+    "prisma": "^5.0.0",
     "typescript": "~5.0.0"
   }
 }

@@ -1,6 +1,6 @@
 import { text, password } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
-import { statelessSessions } from '@keystone-6/core/session';
+import { statelessSessions } from '@keystone-6/auth/session';
 import { createAuth } from '@keystone-6/auth';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { allowAll } from '@keystone-6/core/access';
@@ -23,7 +23,6 @@ const auth = createAuth({
   listKey: 'User',
   identityField: 'email',
   secretField: 'password',
-  sessionData: 'id name',
   initFirstItem: { fields: ['email', 'password'], itemData: { name: 'First User' } },
   magicAuthLink: {
     sendToken: async ({ identity, token }) => {
@@ -43,6 +42,7 @@ const auth = createAuth({
     },
     tokensValidForMins: 60,
   },
+  sessionStrategy: statelessSessions({ secret: COOKIE_SECRET, data: 'id name' }),
 });
 
 const runner = withServer(
@@ -59,7 +59,6 @@ const runner = withServer(
             },
           }),
         },
-        session: statelessSessions({ secret: COOKIE_SECRET }),
       })
     ),
   })

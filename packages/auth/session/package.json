@@ -1,0 +1,4 @@
+{
+  "main": "dist/keystone-6-auth-session.cjs.js",
+  "module": "dist/keystone-6-auth-session.esm.js"
+}

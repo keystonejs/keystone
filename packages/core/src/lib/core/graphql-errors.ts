@@ -6,7 +6,9 @@ export const userInputError = (msg: string) =>
 export const accessDeniedError = (msg: string) =>
   new GraphQLError(`Access denied: ${msg}`, { extensions: { code: 'KS_ACCESS_DENIED' } });
 
-export const prismaError = (err: Error) => {
+export function prismaError(err: Error) {
+  console.error(err);
+
   if ((err as any).code === undefined) {
     return new GraphQLError(`Prisma error`, {
       extensions: {
@@ -23,7 +25,7 @@ export const prismaError = (err: Error) => {
       prisma: { ...err },
     },
   });
-};
+}
 
 export const validationFailureError = (messages: string[]) => {
   const s = messages.map(m => `  - ${m}`).join('\n');

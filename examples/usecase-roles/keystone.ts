@@ -1,5 +1,5 @@
 import { config } from '@keystone-6/core';
-import { statelessSessions } from '@keystone-6/core/session';
+import { statelessSessions } from '@keystone-6/auth/session';
 import { createAuth } from '@keystone-6/auth';
 import { fixPrismaPath } from '../example-utils';
 import { lists } from './schema';
@@ -49,19 +49,22 @@ const { withAuth } = createAuth({
     },
   },
 
-  sessionData: `
-    name
-    role {
-      id
+  // you can find out more at https://keystonejs.com/docs/apis/session#session-api
+  sessionStrategy: statelessSessions({
+    data: `
       name
-      canCreateTodos
-      canManageAllTodos
-      canSeeOtherPeople
-      canEditOtherPeople
-      canManagePeople
-      canManageRoles
-      canUseAdminUI
-    }`,
+      role {
+        id
+        name
+        canCreateTodos
+        canManageAllTodos
+        canSeeOtherPeople
+        canEditOtherPeople
+        canManagePeople
+        canManageRoles
+        canUseAdminUI
+      }`,
+  }),
 });
 
 export default withAuth(
@@ -79,7 +82,5 @@ export default withAuth(
         return session?.data.role?.canUseAdminUI ?? false;
       },
     },
-    // you can find out more at https://keystonejs.com/docs/apis/session#session-api
-    session: statelessSessions(),
   })
 );

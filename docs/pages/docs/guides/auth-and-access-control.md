@@ -84,7 +84,7 @@ Your entire Keystone config should now look like this:
 ```ts
 import { config, list } from '@keystone-6/core';
 import { checkbox, password, text } from '@keystone-6/core/fields';
-import { statelessSessions } from '@keystone-6/core/session';
+import { statelessSessions } from '@keystone-6/auth/session';
 import { createAuth } from '@keystone-6/auth';
 
 const db = {

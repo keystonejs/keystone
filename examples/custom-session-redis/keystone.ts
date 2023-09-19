@@ -1,5 +1,5 @@
 import { config } from '@keystone-6/core';
-import { storedSessions } from '@keystone-6/core/session';
+import { storedSessions } from '@keystone-6/auth/session';
 import { createAuth } from '@keystone-6/auth';
 import { createClient } from '@redis/client';
 import { fixPrismaPath } from '../example-utils';
@@ -30,6 +30,8 @@ const { withAuth } = createAuth({
     // the following fields are used by the "Create First User" form
     fields: ['name', 'password'],
   },
+
+  sessionStrategy: redisSessionStrategy(),
 });
 
 const redis = createClient();
@@ -70,6 +72,5 @@ export default withAuth(
       ...fixPrismaPath,
     },
     lists,
-    session: redisSessionStrategy(),
   })
 );

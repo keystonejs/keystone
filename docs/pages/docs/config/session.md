@@ -3,13 +3,36 @@ title: "Session"
 description: "Reference docs for the session property of Keystone’s system configuration object."
 ---
 
+{% if $nextRelease %}
+The `getSession` config option allows you to configure how Keystone retrieves a ` session`` based on a given  `context`. `getSession`will generally check the original request`req`on the`context`to validate and return a`session`that is then added to the`context` for that request.
+
+```typescript
+export default config({
+  getSession: async ({ context }) => {
+    if (!context.req) return
+    return await getValidSession(context);
+  }
+  },
+  /* ... */
+});
+```
+
+Whatever you return here is what is available in `context.session`, returning `undefined` here will make the `session` undefined, making the request essentially `unauthenticated` depending on your access-control.
+
+## SessionStrategy in Auth
+
+The `sessionStrategy` property of the [auth configuration](./auth) object allows you to configure session management of your Keystone system when using `@keystone-6/auth`. It has a TypeScript type of `SessionStrategy<any>`.
+In general, you will use `SessionStrategy` objects from the `@keystone-6/auth/session` package, rather than writing this yourself.
+
+{% else /%}
 The `session` property of the [system configuration](./config) object allows you to configure session management of your Keystone system.
 It has a TypeScript type of `SessionStrategy<any>`.
-In general you will use `SessionStrategy` objects from the `@keystone-6/core/session` package, rather than writing this yourself.
+In general, you will use `SessionStrategy` objects from the `@keystone-6/auth/session` package, rather than writing this yourself.
+{% /if %}
 
 ```typescript
 import { config } from '@keystone-6/core';
-import { statelessSessions } from '@keystone-6/core/session';
+import { statelessSessions } from '@keystone-6/auth/session';
 
 export default config({
   session: statelessSessions({
@@ -20,10 +43,23 @@ export default config({
     path: '/',
     domain: 'localhost',
     sameSite: 'lax',
+{% if $nextRelease %}
+    data: 'id name email'
+{% /if %}
   }),
   /* ... */
 });
 ```
+
+{% if $nextRelease %}
+
+## Overriding session using `getSession`
+
+You can use this auth `sessionStrategy` in combination with `getSession` to customise your session configuration. `getSession` is called after the Auth package validates the session, this is passed through to `getSession` as `context.session`.
+
+See the [Custom Session Example](https://github.com/keystonejs/keystone/tree/main/examples/custom-session-validation) which demonstrates invalidating a session after a password change.
+
+{% /if %}
 
 ## Stateless vs stored sessions
 
@@ -37,7 +73,11 @@ Both `statelessSessions()` and `storedSessions()` accept a common set of argumen
 
 ```typescript
 import { config } from '@keystone-6/core';
-import { statelessSessions, storedSessions } from '@keystone-6/core/session';
+{% if $nextRelease %}
+import { statelessSessions, storedSessions } from '@keystone-6/auth/session';
+{% else /%}
+import { statelessSessions, storedSessions } from '@keystone-6/auth/session';
+{% /if %}
 
 export default config({
   // Stateless
@@ -51,6 +91,10 @@ export default config({
 
 Options
 
+{% if $nextRelease %}
+
+- `data` (default: `'id'`): Graphql Query to populate the default `context.session.data` object.
+  {% /if %}
 - `secret` (required): The secret used by `@hapi/iron` for encrypting the cookie data. Must be at least 32 characters long.
 - `ironOptions`: Additional options to be passed to `Iron.seal()` and `Iron.unseal()` when encrypting and decrypting the cookies.
   See the [`@hapi/iron` docs](https://hapi.dev/module/iron/api/?v=6.0.0#options) for details.
@@ -66,6 +110,20 @@ Options
   **Note**: Only one domain is allowed. If a domain is specified then subdomains are always included.
 - `sameSite` (default: `'lax'`): Controls whether the cookie is sent with cross-origin requests. Can be one of `true`, `false`, `'strict'`, `'lax'` or `'none'`. See [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#attributes) for more details on the `sameSite` cookie attribute.
   **Note**: The `secure` attribute must also be set when `sameSite` is set to `none`!
+
+{% if $nextRelease %}
+
+### Session `data`
+
+This option adds support for setting a custom `session.data` value based on the authenticated user.
+
+The authentication mutations will set the values `{ listKey, itemId }` on the `context.session` object.
+You will often need to know more than just the `itemId` of the authenticated user, such as when performing [access-control](../guides/auth-and-access-control) or using [hooks](../guides/hooks).
+Configuring `data` will add an `session.data` based on the `itemId`, populated by the fields given in `sessionData.query`.
+
+The value is a GraphQL query string which indicates which fields should be populated on the `session.data` object
+
+{% /if %}
 
 ### Session stores
 
@@ -96,7 +154,7 @@ Interface:
 If you configure your Keystone session with session management then the [`KeystoneContext`](../context/overview) type will include the following session related properties.
 
 - `session`: An object representing the session data. The value will depend on the value passed into `context.sessionStrategy.start()`.
-- `sessionStrategy`: an object that, when using `statelessSessions` or `storedSessions` from `@keystone-6/core/session` includes the following functions:
+- `sessionStrategy`: an object that, when using `statelessSessions` or `storedSessions` from `@keystone-6/auth/session` includes the following functions:
   - `get({context})`: a function that returns a `session` object based on `context` - this needs to be a `context` with a valid `req` (using `context.withRequest`). This function is called by Keystone to get the value of `context.session`
   - `start({context, data})`: a function that, given a valid `context.res` starts a new session containing what is passed into `data`.
   - `end({context})`: a function that, given a valid `context.res` ends a session.

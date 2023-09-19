@@ -44,5 +44,5 @@ export default config<TypeInfo<Session>>({
   },
   lists,
   // you can find out more at https://keystonejs.com/docs/apis/session#session-api
-  session: nextAuthSessionStrategy,
+  getSession: nextAuthSessionStrategy,
 });

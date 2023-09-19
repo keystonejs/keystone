@@ -68,8 +68,7 @@ export function statelessSessions<Session>({
   ironOptions = Iron.defaults,
   domain,
   sameSite = 'lax',
-}: StatelessSessionsOptions = {}): SessionStrategy<Session, any> {
-  // atleast 192-bit in base64
+}: StatelessSessionsOptions): SessionStrategy<Session, any> {
   if (secret.length < 32) {
     throw new Error('The session secret must be at least 32 characters long');
   }
@@ -129,9 +128,9 @@ export function storedSessions<Session>({
   store: storeFn,
   maxAge = 60 * 60 * 8, // 8 hours
   ...statelessSessionsOptions
-}: {
+}: StatelessSessionsOptions & {
   store: SessionStoreFunction<Session>;
-} & StatelessSessionsOptions): SessionStrategy<Session, any> {
+}): SessionStrategy<Session> {
   const stateless = statelessSessions<string>({ ...statelessSessionsOptions, maxAge });
   const store = storeFn({ maxAge });
 

@@ -18,9 +18,15 @@ const { withAuth } = createAuth({
   listKey: 'User',
   identityField: 'email',
   secretField: 'password',
+{% if $nextRelease %}
+  sessionStrategy: {/*.. Session Config ...*/}
+{% /if %}
 
   // Additional options
+{% if $nextRelease %}
+{% else /%}
   sessionData: 'id name email',
+{% /if %}
   initFirstItem: {
     fields: ['email', 'password'],
     itemData: { isAdmin: true },
@@ -46,7 +52,10 @@ export default withAuth(
           isAdmin: checkbox(),
         },
       }),
+{% if $nextRelease %}
+{% else /%}
       session: { /* ... */ },
+{% /if %}
     },
   })
 );
@@ -54,8 +63,10 @@ export default withAuth(
 
 The function `createAuth` returns a function `withAuth` which should be used to wrap your `config()`.
 This wrapper function will modify the config object to inject extra fields, extra GraphQL queries and mutations, and custom Admin UI functionality into the system.
+{% if $nextRelease %}
+{% else /%}
 The `createAuth` function must be used in conjunction with a [session](./session) configuration.
-
+{% /if %}
 ## Required options
 
 The core functionality of the authentication system provides a GraphQL mutation to authenticate a user and then start a session, and a sign in page in the Admin UI.
@@ -145,6 +156,11 @@ This page uses the `authenticateUserWithPassword` mutation to let users sign in 
 The following options add extra functionality to your Keystone authentication system.
 By default they are disabled.
 
+{% if $nextRelease %}
+
+Some info on Session
+
+{% else / %}
 ### sessionData
 
 This option adds support for setting a custom `session.data` value based on the authenticated user.
@@ -165,6 +181,7 @@ const { withAuth } = createAuth({
   sessionData: 'id name isAdmin',
 });
 ```
+{% /if %}
 
 ### initFirstItem
 

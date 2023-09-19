@@ -182,7 +182,6 @@ type Mutation {
   updateAuthors(data: [AuthorUpdateArgs!]!): [Author]
   deleteAuthor(where: AuthorWhereUniqueInput!): Author
   deleteAuthors(where: [AuthorWhereUniqueInput!]!): [Author]
-  endSession: Boolean!
 }
 
 type Query {

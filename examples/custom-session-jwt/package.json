@@ -12,12 +12,12 @@
   "dependencies": {
     "@keystone-6/auth": "^7.0.0",
     "@keystone-6/core": "^5.0.0",
-    "@prisma/client": "^4.16.2",
+    "@prisma/client": "^5.0.0",
     "jsonwebtoken": "^9.0.0"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.2",
-    "prisma": "^4.16.2",
+    "prisma": "^5.0.0",
     "typescript": "~5.0.0"
   }
 }

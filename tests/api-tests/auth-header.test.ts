@@ -1,6 +1,6 @@
 import { text, timestamp, password } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
-import { statelessSessions } from '@keystone-6/core/session';
+import { statelessSessions } from '@keystone-6/auth/session';
 import { createAuth } from '@keystone-6/auth';
 import type { KeystoneContext } from '@keystone-6/core/types';
 import { setupTestRunner, setupTestEnv } from '@keystone-6/api-tests/test-runner';
@@ -23,7 +23,7 @@ function setup(options?: any) {
     listKey: 'User',
     identityField: 'email',
     secretField: 'password',
-    sessionData: 'id',
+    sessionStrategy: statelessSessions({ secret: COOKIE_SECRET }),
     ...options,
   });
 
@@ -48,7 +48,6 @@ function setup(options?: any) {
               },
             }),
           },
-          session: statelessSessions({ secret: COOKIE_SECRET }),
         })
       ),
     })
@@ -103,7 +102,7 @@ describe('Auth testing', () => {
       listKey: 'User',
       identityField: 'email',
       secretField: 'password',
-      sessionData: 'id',
+      sessionStrategy: statelessSessions({ secret: COOKIE_SECRET }),
     });
     await expect(
       setupTestEnv({
@@ -119,8 +118,6 @@ describe('Auth testing', () => {
                 },
               }),
             },
-
-            session: statelessSessions({ secret: COOKIE_SECRET }),
           })
         ),
       })
