@@ -70,6 +70,7 @@ test(
                   description: null,
                   fieldMeta: {
                     kind: 'cuid',
+                    type: 'String',
                   },
                   isNonNull: [],
                   itemView: {
