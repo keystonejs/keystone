@@ -1,5 +1,11 @@
 # @keystone-6/fields-document
 
+## 8.0.2
+
+### Patch Changes
+
+- [#8790](https://github.com/keystonejs/keystone/pull/8790) [`b830b7c6d`](https://github.com/keystonejs/keystone/commit/b830b7c6deebcffabcf6cd84919a7326a66e9bc9) Thanks [@dcousens](https://github.com/dcousens)! - Reduce number of package dependencies
+
 ## 8.0.1
 
 ### Patch Changes
