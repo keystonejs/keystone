@@ -24,6 +24,7 @@ import { CellLink } from '../../../../admin-ui/components';
 import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/PageContainer';
 import { Pagination, PaginationLabel } from '../../../../admin-ui/components/Pagination';
 import { useList } from '../../../../admin-ui/context';
+import { GraphQLErrorNotice } from '../../../../admin-ui/components/GraphQLErrorNotice';
 import { Link, useRouter } from '../../../../admin-ui/router';
 import { useFilter } from '../../../../fields/types/relationship/views/RelationshipSelect';
 import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLink';
@@ -146,7 +147,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
 
   const metaQuery = useQuery(listMetaGraphqlQuery, { variables: { listKey } });
 
-  let { listViewFieldModesByField, filterableFields, orderableFields } = useMemo(() => {
+  const { listViewFieldModesByField, filterableFields, orderableFields } = useMemo(() => {
     const listViewFieldModesByField: Record<string, 'read' | 'hidden'> = {};
     const orderableFields = new Set<string>();
     const filterableFields = new Set<string>();
@@ -183,26 +184,28 @@ const ListPage = ({ listKey }: ListPageProps) => {
     }
   };
 
-  let selectedFields = useSelectedFields(list, listViewFieldModesByField);
+  const selectedFields = useSelectedFields(list, listViewFieldModesByField);
 
-  let {
+  const {
     data: newData,
     error: newError,
     refetch,
   } = useQuery(
     useMemo(() => {
-      let selectedGqlFields = [...selectedFields]
+      const selectedGqlFields = [...selectedFields]
         .map(fieldPath => {
           return list.fields[fieldPath].controller.graphqlSelection;
         })
         .join('\n');
+
+      // TODO: FIXME: this is bad
       return gql`
       query ($where: ${list.gqlNames.whereInputName}, $take: Int!, $skip: Int!, $orderBy: [${
         list.gqlNames.listOrderName
       }!]) {
         items: ${
           list.gqlNames.listQueryName
-        }(where: $where,take: $take, skip: $skip, orderBy: $orderBy) {
+        }(where: $where, take: $take, skip: $skip, orderBy: $orderBy) {
           ${
             // TODO: maybe namespace all the fields instead of doing this
             selectedFields.has('id') ? '' : 'id'
@@ -226,14 +229,12 @@ const ListPage = ({ listKey }: ListPageProps) => {
     }
   );
 
-  let [dataState, setDataState] = useState({ data: newData, error: newError });
-
+  const [dataState, setDataState] = useState({ data: newData, error: newError });
   if (newData && dataState.data !== newData) {
     setDataState({ data: newData, error: newError });
   }
 
   const { data, error } = dataState;
-
   const dataGetter = makeDataGetter<
     DeepNullable<{ count: number; items: { id: string; [key: string]: any }[] }>
   >(data, error?.graphQLErrors);
@@ -260,10 +261,11 @@ const ListPage = ({ listKey }: ListPageProps) => {
 
   return (
     <PageContainer header={<ListPageHeader listKey={listKey} />} title={list.label}>
-      {metaQuery.error ? (
-        // TODO: Show errors nicely and with information
-        'Error...'
-      ) : data && metaQuery.data ? (
+      {error?.graphQLErrors.length || error?.networkError ? (
+        <GraphQLErrorNotice errors={error?.graphQLErrors} networkError={error?.networkError} />
+      ) : null}
+      {metaQuery.error ? 'Error...' : null}
+      {data && metaQuery.data ? (
         <Fragment>
           {list.description !== null && (
             <p css={{ marginTop: '24px', maxWidth: '704px' }}>{list.description}</p>

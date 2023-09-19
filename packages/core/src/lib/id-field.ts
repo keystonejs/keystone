@@ -144,31 +144,31 @@ export function idFieldType(
   config: IdFieldConfig,
   isSingleton: boolean
 ): FieldTypeFunc<BaseListTypeInfo> {
-  const { kind, type, default_ } = unpack(config);
+  const { kind, type: type_, default_ } = unpack(config);
   const parseTypeFn = {
     Int: isInt,
     BigInt: isBigInt,
     String: isString,
     UUID: isUuid, // TODO: remove in breaking change
-  }[kind === 'uuid' ? 'UUID' : type];
+  }[kind === 'uuid' ? 'UUID' : type_];
 
   function parse(value: IDType) {
     const result = parseTypeFn(value);
     if (result === undefined) {
-      throw userInputError(`Only a ${type.toLowerCase()} can be passed to id filters`);
+      throw userInputError(`Only a ${type_.toLowerCase()} can be passed to id filters`);
     }
     return result;
   }
 
   return meta => {
-    if (kind === 'autoincrement' && type === 'BigInt' && meta.provider === 'sqlite') {
-      throw new Error(`{ kind: ${kind}, type: ${type} } is not supported by SQLite`);
+    if (meta.provider === 'sqlite' && kind === 'autoincrement' && type_ === 'BigInt') {
+      throw new Error(`{ kind: ${kind}, type: ${type_} } is not supported by SQLite`);
     }
 
     return fieldType({
       kind: 'scalar',
       mode: 'required',
-      scalar: type,
+      scalar: type_,
       nativeType: NATIVE_TYPES[meta.provider]?.[kind],
       default: isSingleton ? undefined : default_,
     })({
@@ -195,7 +195,7 @@ export function idFieldType(
         },
       }),
       views: '@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view',
-      getAdminMeta: () => ({ kind }),
+      getAdminMeta: () => ({ kind, type: type_ }),
       ui: {
         createView: {
           fieldMode: 'hidden',

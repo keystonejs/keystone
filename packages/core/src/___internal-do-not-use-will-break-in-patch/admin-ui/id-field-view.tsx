@@ -3,7 +3,7 @@
 
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
-import {
+import type {
   CardValueComponent,
   CellComponent,
   FieldController,
@@ -31,13 +31,12 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
 
 export const controller = (
   config: FieldControllerConfig<IdFieldConfig>
-): FieldController<void, string> & { idFieldKind: IdFieldConfig['kind'] } => {
+): FieldController<void, string> => {
   return {
     path: config.path,
     label: config.label,
     description: config.description,
     graphqlSelection: config.path,
-    idFieldKind: config.fieldMeta.kind,
     defaultValue: undefined,
     deserialize: () => {},
     serialize: () => ({}),

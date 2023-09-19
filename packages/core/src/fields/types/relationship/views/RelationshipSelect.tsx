@@ -44,13 +44,37 @@ function useDebouncedValue<T>(value: T, limitMs: number) {
   return debouncedValue;
 }
 
+function isInt(x: string) {
+  return Number.isInteger(Number(x));
+}
+
+function isBigInt(x: string) {
+  try {
+    BigInt(x);
+    return true;
+  } catch {
+    return true;
+  }
+}
+
 export function useFilter(search: string, list: ListMeta, searchFields: string[]) {
   return useMemo(() => {
-    if (!search.length) return { OR: [] };
-
     const trimmedSearch = search.trim();
+    if (!trimmedSearch.length) return { OR: [] };
+
     const conditions: Record<string, any>[] = [];
-    if (trimmedSearch.length > 0) {
+    const { type: idFieldType } = (list.fields.id.fieldMeta as any) ?? {};
+    if (idFieldType === 'String') {
+      conditions.push({ id: { equals: trimmedSearch } });
+    } else if (idFieldType === 'Int' && isInt(trimmedSearch)) {
+      conditions.push({ id: { equals: Number(trimmedSearch) } });
+    } else if (idFieldType === 'BigInt' && isBigInt(trimmedSearch)) {
+      conditions.push({ id: { equals: trimmedSearch } });
+    } else if (idFieldType === 'UUID') {
+      conditions.push({ id: { equals: trimmedSearch } }); // TODO: remove in breaking change?
+    }
+
+    if ((list.fields.id.fieldMeta as any)?.type === 'String') {
       conditions.push({ id: { equals: trimmedSearch } });
     }
 
