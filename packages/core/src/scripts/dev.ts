@@ -1,13 +1,12 @@
+import fsp from 'node:fs/promises'
 import path from 'node:path'
 import type { ListenOptions } from 'node:net'
 import url from 'node:url'
 import { createServer } from 'node:http'
-import fsp from 'node:fs/promises'
 import next from 'next'
 import express from 'express'
-import { type GraphQLSchema, printSchema } from 'graphql'
-import fs from 'fs-extra'
-import esbuild, { type BuildResult } from 'esbuild'
+import { GraphQLSchema, printSchema } from 'graphql'
+import esbuild, { BuildResult } from 'esbuild'
 import { generateAdminUI } from '../admin-ui/system'
 import { devMigrations, pushPrismaSchemaToDatabase } from '../lib/migrations'
 import { createSystem } from '../lib/createSystem'
@@ -75,7 +74,7 @@ export async function dev (
       ...(esbuildConfig.plugins ?? []),
       {
         name: 'esbuildWatchPlugin',
-        setup (build: any) {
+        setup(build: any) {
           // TODO: no any
           build.onEnd(addBuildResult)
         },
@@ -134,7 +133,7 @@ export async function dev (
   }
 
   const initKeystone = async () => {
-    await fs.rm(paths.admin, { recursive: true, force: true })
+    await fsp.rm(paths.admin, { recursive: true, force: true })
     const {
       adminMeta,
       graphQLSchema,
@@ -226,7 +225,7 @@ export async function dev (
         // which means you get a "there's probably a memory leak" warning from node
         const newPrintedGraphQLSchema = printSchema(graphQLSchema)
         if (newPrintedGraphQLSchema !== lastPrintedGraphQLSchema) {
-          await fs.writeFile(
+          await fsp.writeFile(
             paths.schema.graphql,
             getFormattedGraphQLSchema(newPrintedGraphQLSchema)
           )

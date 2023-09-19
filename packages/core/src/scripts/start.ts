@@ -1,6 +1,6 @@
-import type { ListenOptions } from 'net'
+import fs from 'node:fs/promises'
+import type { ListenOptions } from 'node:net'
 import next from 'next'
-import * as fs from 'fs-extra'
 import { createSystem } from '../lib/createSystem'
 import { createExpressServer } from '../lib/server/createExpressServer'
 import { createAdminUIMiddlewareWithNextApp } from '../lib/server/createAdminUIMiddleware'
@@ -13,17 +13,17 @@ import { deployMigrations } from '../lib/migrations'
 import { ExitError } from './utils'
 import type { Flags } from './cli'
 
-export const start = async (
+export async function start (
   cwd: string,
   { ui, withMigrations }: Pick<Flags, 'ui' | 'withMigrations'>
-) => {
+) {
   console.log('✨ Starting Keystone')
 
   // TODO: this cannot be changed for now, circular dependency with getSystemPaths, getEsbuildConfig
   const builtConfigPath = getBuiltKeystoneConfigurationPath(cwd)
 
-  // This is the compiled version of the configuration which was generated during the build step
-  if (!fs.existsSync(builtConfigPath)) {
+  // this is the compiled version of the configuration which was generated during the build step
+  if (!(await fs.stat(builtConfigPath).catch(() => null))) {
     console.error('🚨 keystone build must be run before running keystone start')
     throw new ExitError(1)
   }
@@ -68,12 +68,12 @@ export const start = async (
     Object.assign(httpOptions, config.server.options)
   }
 
-  // preference env.PORT if supplied
+  // prefer env.PORT
   if ('PORT' in process.env) {
     httpOptions.port = parseInt(process.env.PORT || '')
   }
 
-  // preference env.HOST if supplied
+  // prefer env.HOST
   if ('HOST' in process.env) {
     httpOptions.host = process.env.HOST || ''
   }
