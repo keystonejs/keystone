@@ -11,5 +11,5 @@ export const lists = {
       banner: image({ storage: 'my_images' }),
       attachment: file({ storage: 'my_files' }),
     },
-  })
+  }),
 };
