@@ -20,6 +20,5 @@
   "devDependencies": {
     "prisma": "^4.16.2",
     "typescript": "~5.0.0"
-  },
-  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/custom-admin-ui-logo"
+  }
 }

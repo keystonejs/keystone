@@ -3,7 +3,6 @@
   "description": "An example nextjs frontend",
   "version": "0.1.0",
   "private": true,
-  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/framework-nextjs-two-servers/nextjs-frontend",
   "scripts": {
     "dev": "next dev --port 8000",
     "build": "next build",

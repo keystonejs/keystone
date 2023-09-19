@@ -20,6 +20,5 @@
     "prisma": "^4.16.2",
     "tsx": "^3.9.0",
     "typescript": "~5.0.0"
-  },
-  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/extend-express-app"
+  }
 }

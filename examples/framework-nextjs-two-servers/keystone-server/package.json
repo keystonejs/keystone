@@ -3,7 +3,6 @@
   "description": "An example of a Keystone backend API server",
   "version": "0.0.5",
   "private": true,
-  "repository": "https://github.com/keystonejs/keystone/tree/main/examples/framework-nextjs-two-servers/keystone-server",
   "scripts": {
     "dev": "keystone dev --seed-database",
     "start": "keystone start --seed-database",
