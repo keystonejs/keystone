@@ -2064,7 +2064,7 @@ importers:
         version: 9.0.0
     devDependencies:
       '@keystone-6/core':
-        specifier: 5.5.1
+        specifier: 5.6.0
         version: 'link:'
       '@types/apollo-upload-client':
         specifier: 17.0.2

@@ -1,5 +1,21 @@
 # @keystone-6/core
 
+## 5.6.0
+
+### Minor Changes
+
+- [#8773](https://github.com/keystonejs/keystone/pull/8773) [`32f7a6ad4`](https://github.com/keystonejs/keystone/commit/32f7a6ad4a5a51a58988e7be495c96b06771b9b7) Thanks [@marekryb](https://github.com/marekryb)! - Adds `config.graphql.schemaPath`
+
+* [#8777](https://github.com/keystonejs/keystone/pull/8777) [`e3438dcad`](https://github.com/keystonejs/keystone/commit/e3438dcad7a97fb976c1d012b0b53919d0514747) Thanks [@dcousens](https://github.com/dcousens)! - Adds `config.db.prismaSchemaPath`
+
+- [#8706](https://github.com/keystonejs/keystone/pull/8706) [`fa0f6bebb`](https://github.com/keystonejs/keystone/commit/fa0f6bebb14884b8c2b6c95f51e8757a08a7c4d4) Thanks [@wysher](https://github.com/wysher)! - Removes default descrption for `timestamp` field when using `db.updatedAt`, use `ui.description` instead
+
+### Patch Changes
+
+- [#8790](https://github.com/keystonejs/keystone/pull/8790) [`b830b7c6d`](https://github.com/keystonejs/keystone/commit/b830b7c6deebcffabcf6cd84919a7326a66e9bc9) Thanks [@dcousens](https://github.com/dcousens)! - Reduce number of package dependencies
+
+* [#8788](https://github.com/keystonejs/keystone/pull/8788) [`7b2bb087c`](https://github.com/keystonejs/keystone/commit/7b2bb087c475255322893b01dc1be08174bcca80) Thanks [@borisno2](https://github.com/borisno2)! - Fixes `keystone build` hanging with next version >13.4.12
+
 ## 5.5.1
 
 ### Patch Changes
