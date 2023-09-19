@@ -67,9 +67,6 @@ export class CloudinaryAdapter {
     apiSecret: string;
     folder?: string;
   }) {
-    if (!cloudName || !apiKey || !apiSecret) {
-      throw new Error('CloudinaryAdapter requires cloudName, apiKey, and apiSecret');
-    }
     this.cloudName = cloudName;
     this.apiKey = apiKey;
     this.apiSecret = apiSecret;

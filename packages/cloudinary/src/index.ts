@@ -115,6 +115,7 @@ export const cloudinaryImage =
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type cloudinaryImage");
     }
+
     const adapter = new CloudinaryAdapter(cloudinary);
     const inputArg = graphql.arg({ type: graphql.Upload });
     const resolveInput = async (
