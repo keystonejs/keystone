@@ -1,11 +1,9 @@
-import fs from 'fs';
-import mime from 'mime';
+import { createReadStream } from 'node:fs';
+import { resolve, basename } from 'node:path';
 // @ts-ignore
 import Upload from 'graphql-upload/Upload.js';
 import cloudinary from 'cloudinary';
 import { cloudinaryImage } from './index';
-
-const path = require('path');
 
 cloudinary.v2.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'cloudinary_cloud_name',
@@ -13,18 +11,17 @@ cloudinary.v2.config({
   api_secret: process.env.CLOUDINARY_SECRET || 'cloudinary_secret',
 });
 
-const prepareFile = (_filePath: string) => {
-  const filePath = path.resolve(`packages/cloudinary/src/test-files/${_filePath}`);
+function prepareFile(path_: string) {
+  const path = resolve(`packages/cloudinary/src/test-files/${path_}`);
   const upload = new Upload();
   upload.resolve({
-    createReadStream: () => fs.createReadStream(filePath),
-    filename: path.basename(filePath),
-    // @ts-ignore
-    mimetype: mime.getType(filePath),
+    createReadStream: () => createReadStream(path),
+    filename: basename(path),
+    mimetype: 'image/jpeg',
     encoding: 'utf-8',
   });
   return upload;
-};
+}
 
 // Configurations
 export const name = 'CloudinaryImage';
