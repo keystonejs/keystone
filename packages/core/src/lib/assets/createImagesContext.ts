@@ -1,4 +1,5 @@
 import { randomBytes } from 'node:crypto'
+import { fileTypeFromBuffer } from 'file-type'
 import imageSize from 'image-size'
 
 import {
@@ -15,10 +16,8 @@ function defaultTransformName (path: string) {
 }
 
 async function getImageMetadataFromBuffer (buffer: Buffer) {
-  const fileType = await (await import('file-type')).fileTypeFromBuffer(buffer)
-  if (!fileType) {
-    throw new Error('File type not found')
-  }
+  const fileType = await fileTypeFromBuffer(buffer)
+  if (!fileType) throw new Error('File type not found')
 
   const { ext: extension } = fileType
   if (extension !== 'jpg' && extension !== 'png' && extension !== 'webp' && extension !== 'gif') {
