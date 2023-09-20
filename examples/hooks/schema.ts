@@ -39,11 +39,30 @@ export const lists: Lists = {
       // we use isNonNull for these fields to enforce that they are always provided, and validated against a content filter
       title: text({
         validation: { isRequired: true },
-        graphql: { isNonNull: { create: true, update: true } },
+        graphql: {
+          isNonNull: {
+            create: true,
+            update: true
+          }
+        },
+
       }),
       content: text({
         validation: { isRequired: true },
-        graphql: { isNonNull: { create: true, update: true } },
+        graphql: {
+          isNonNull: {
+            create: true,
+            update: true
+          }
+        },
+      }),
+      feedback: text({
+        validation: { isRequired: true },
+        graphql: {
+          omit: {
+            create: true
+          }
+        },
       }),
       preventDelete: checkbox(),
 
@@ -112,8 +131,13 @@ export const lists: Lists = {
           return resolvedData;
         },
       },
-      validateInput: ({ context, inputData, addValidationError }) => {
+      validateInput: ({ context, operation, inputData, addValidationError }) => {
         const { title, content } = inputData;
+
+        if (operation === 'update') {
+          const { feedback } = inputData;
+          if (/profanity/i.test(feedback)) return addValidationError('Unacceptable feedback');
+        }
 
         // an example of a content filter, the prevents the title or content containing the word "Profanity"
         if (/profanity/i.test(title)) return addValidationError('Unacceptable title');
