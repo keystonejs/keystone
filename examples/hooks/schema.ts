@@ -134,9 +134,9 @@ export const lists: Lists = {
       validateInput: ({ context, operation, inputData, addValidationError }) => {
         const { title, content } = inputData;
 
-        if (operation === 'update') {
+        if (operation === 'update' && 'feedback' in inputData) {
           const { feedback } = inputData;
-          if (/profanity/i.test(feedback)) return addValidationError('Unacceptable feedback');
+          if (/profanity/i.test(feedback ?? '')) return addValidationError('Unacceptable feedback');
         }
 
         // an example of a content filter, the prevents the title or content containing the word "Profanity"
