@@ -16,6 +16,7 @@ model Post {
   id            String    @id @default(cuid())
   title         String    @default("")
   content       String    @default("")
+  feedback      String    @default("")
   preventDelete Boolean   @default(false)
   createdBy     String    @default("")
   createdAt     DateTime?

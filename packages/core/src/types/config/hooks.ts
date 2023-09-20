@@ -184,11 +184,11 @@ type ValidateHook<
       /**
        * The GraphQL input **before** default values are applied
        */
-      inputData: ListTypeInfo['inputs']['create'];
+      inputData: ListTypeInfo['inputs']['update'];
       /**
        * The GraphQL input **after** being resolved by the field type's input resolver
        */
-      resolvedData: ListTypeInfo['prisma']['create'];
+      resolvedData: ListTypeInfo['prisma']['update'];
       addValidationError: (error: string) => void;
     };
     delete: {
@@ -227,11 +227,11 @@ type ValidateFieldHook<
       /**
        * The GraphQL input **before** default values are applied
        */
-      inputData: ListTypeInfo['inputs']['create'];
+      inputData: ListTypeInfo['inputs']['update'];
       /**
        * The GraphQL input **after** being resolved by the field type's input resolver
        */
-      resolvedData: ListTypeInfo['prisma']['create'];
+      resolvedData: ListTypeInfo['prisma']['update'];
       addValidationError: (error: string) => void;
     };
     delete: {
