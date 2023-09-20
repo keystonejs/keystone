@@ -13,6 +13,12 @@ const readOnly = {
     create: denyAll,
     update: denyAll,
   },
+  graphql: {
+    omit: {
+      create: true,
+      update: true
+    }
+  },
   ui: {
     createView: {
       fieldMode: (args: unknown) => 'hidden' as const,

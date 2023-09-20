@@ -107,10 +107,6 @@ input PostUpdateInput {
   title: String!
   content: String!
   preventDelete: Boolean
-  createdBy: String
-  createdAt: DateTime
-  updatedBy: String
-  updatedAt: DateTime
 }
 
 input PostUpdateArgs {
@@ -122,10 +118,6 @@ input PostCreateInput {
   title: String! = ""
   content: String! = ""
   preventDelete: Boolean
-  createdBy: String
-  createdAt: DateTime
-  updatedBy: String
-  updatedAt: DateTime
 }
 
 """
