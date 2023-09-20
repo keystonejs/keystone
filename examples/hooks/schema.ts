@@ -16,8 +16,8 @@ const readOnly = {
   graphql: {
     omit: {
       create: true,
-      update: true
-    }
+      update: true,
+    },
   },
   ui: {
     createView: {
@@ -42,26 +42,25 @@ export const lists: Lists = {
         graphql: {
           isNonNull: {
             create: true,
-            update: true
-          }
+            update: true,
+          },
         },
-
       }),
       content: text({
         validation: { isRequired: true },
         graphql: {
           isNonNull: {
             create: true,
-            update: true
-          }
+            update: true,
+          },
         },
       }),
       feedback: text({
         validation: { isRequired: true },
         graphql: {
           omit: {
-            create: true
-          }
+            create: true,
+          },
         },
       }),
       preventDelete: checkbox(),
