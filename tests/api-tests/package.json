@@ -20,7 +20,7 @@
     "cookie-signature": "^1.1.0",
     "fs-extra": "^11.0.0",
     "globby": "^11.0.4",
-    "graphql": "^16.6.0",
+    "graphql": "^16.8.1",
     "graphql-upload": "^15.0.2",
     "mime": "^3.0.0",
     "node-fetch": "^2.6.7",
