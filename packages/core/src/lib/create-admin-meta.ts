@@ -194,11 +194,11 @@ export function createAdminMeta(
 
       const fieldMeta = {
         key: fieldKey,
-        label: field.label ?? humanize(fieldKey),
-        description: field.ui?.description ?? null,
+        label: field.ui.label ?? humanize(fieldKey),
+        description: field.ui.description ?? null,
         viewsIndex: getViewId(field.views),
         customViewsIndex:
-          field.ui?.views === undefined
+          field.ui.views === null
             ? null
             : (assertValidView(field.views, `lists.${listKey}.fields.${fieldKey}.ui.views`),
               getViewId(field.ui.views)),
@@ -206,14 +206,14 @@ export function createAdminMeta(
         listKey: listKey,
         search: list.ui.searchableFields.get(fieldKey) ?? null,
         createView: {
-          fieldMode: normalizeMaybeSessionFunction(field.ui?.createView.fieldMode),
+          fieldMode: normalizeMaybeSessionFunction(field.ui.createView.fieldMode),
         },
         itemView: {
-          fieldMode: field.ui?.itemView.fieldMode,
-          fieldPosition: field.ui?.itemView?.fieldPosition || 'form',
+          fieldMode: field.ui.itemView.fieldMode,
+          fieldPosition: field.ui.itemView.fieldPosition,
         },
         listView: {
-          fieldMode: normalizeMaybeSessionFunction(field.ui?.listView?.fieldMode),
+          fieldMode: normalizeMaybeSessionFunction(field.ui.listView.fieldMode),
         },
         isFilterable: normalizeIsOrderFilter(
           field.input?.where ? field.graphql.isEnabled.filter : false,

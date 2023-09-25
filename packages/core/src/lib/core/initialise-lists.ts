@@ -28,7 +28,7 @@ import { ResolvedDBField, resolveRelationships } from './resolve-relationships';
 import { outputTypeField } from './queries/output-field';
 import { assertFieldsValid } from './field-assertions';
 
-export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access' | 'graphql'> & {
+export type InitialisedField = {
   access: ResolvedFieldAccessControl;
   dbField: ResolvedDBField;
   hooks: ResolvedFieldHooks<BaseListTypeInfo>;
@@ -48,17 +48,30 @@ export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access' | 'graph
     cacheHint: CacheHint | undefined;
   };
   ui: {
+    label: string | null;
+    description: string | null;
+    views: string | null;
     createView: {
       fieldMode: MaybeSessionFunction<'edit' | 'hidden', any>;
     };
     itemView: {
       fieldMode: MaybeItemFunction<'read' | 'edit' | 'hidden', any>;
+      fieldPosition: MaybeItemFunction<'form' | 'sidebar', any>;
     };
     listView: {
       fieldMode: MaybeSessionFunction<'read' | 'hidden', any>;
     };
   };
-};
+} & Pick<
+  NextFieldType,
+  | 'input'
+  | 'output'
+  | 'getAdminMeta'
+  | 'views'
+  | '__ksTelemetryFieldTypeName'
+  | 'extraOutputFields'
+  | 'unreferencedConcreteInterfaceImplementations'
+>;
 
 export type InitialisedList = {
   access: ResolvedListAccessControl;
@@ -163,15 +176,6 @@ function defaultOperationHook() {}
 function defaultListHooksResolveInput({ resolvedData }: { resolvedData: any }) {
   return resolvedData;
 }
-function defaultFieldHooksResolveInput({
-  resolvedData,
-  fieldKey,
-}: {
-  resolvedData: any;
-  fieldKey: string;
-}) {
-  return resolvedData[fieldKey];
-}
 
 function parseListHooksResolveInput(f: ListHooks<BaseListTypeInfo>['resolveInput']) {
   if (typeof f === 'function') {
@@ -185,13 +189,57 @@ function parseListHooksResolveInput(f: ListHooks<BaseListTypeInfo>['resolveInput
   return { create, update };
 }
 
+function parseListHooksBeforeOperation(f: ListHooks<BaseListTypeInfo>['beforeOperation']) {
+  if (typeof f === 'function') {
+    return {
+      create: f,
+      update: f,
+      delete: f,
+    };
+  }
+
+  const {
+    create = defaultOperationHook,
+    update = defaultOperationHook,
+    delete: _delete = defaultOperationHook,
+  } = f ?? {};
+  return { create, update, delete: _delete };
+}
+
+function parseListHooksAfterOperation(f: ListHooks<BaseListTypeInfo>['afterOperation']) {
+  if (typeof f === 'function') {
+    return {
+      create: f,
+      update: f,
+      delete: f,
+    };
+  }
+
+  const {
+    create = defaultOperationHook,
+    update = defaultOperationHook,
+    delete: _delete = defaultOperationHook,
+  } = f ?? {};
+  return { create, update, delete: _delete };
+}
+
+function defaultFieldHooksResolveInput({
+  resolvedData,
+  fieldKey,
+}: {
+  resolvedData: any;
+  fieldKey: string;
+}) {
+  return resolvedData[fieldKey];
+}
+
 function parseListHooks(hooks: ListHooks<BaseListTypeInfo>): ResolvedListHooks<BaseListTypeInfo> {
   return {
     resolveInput: parseListHooksResolveInput(hooks.resolveInput),
     validateInput: hooks.validateInput ?? defaultOperationHook,
     validateDelete: hooks.validateDelete ?? defaultOperationHook,
-    beforeOperation: hooks.beforeOperation ?? defaultOperationHook,
-    afterOperation: hooks.afterOperation ?? defaultOperationHook,
+    beforeOperation: parseListHooksBeforeOperation(hooks.beforeOperation),
+    afterOperation: parseListHooksAfterOperation(hooks.afterOperation),
   };
 }
 
@@ -199,11 +247,22 @@ function parseFieldHooks(
   hooks: FieldHooks<BaseListTypeInfo>
 ): ResolvedFieldHooks<BaseListTypeInfo> {
   return {
-    resolveInput: hooks.resolveInput ?? defaultFieldHooksResolveInput,
+    resolveInput: {
+      create: hooks.resolveInput ?? defaultFieldHooksResolveInput,
+      update: hooks.resolveInput ?? defaultFieldHooksResolveInput,
+    },
     validateInput: hooks.validateInput ?? defaultOperationHook,
     validateDelete: hooks.validateDelete ?? defaultOperationHook,
-    beforeOperation: hooks.beforeOperation ?? defaultOperationHook,
-    afterOperation: hooks.afterOperation ?? defaultOperationHook,
+    beforeOperation: {
+      create: hooks.beforeOperation ?? defaultOperationHook,
+      update: hooks.beforeOperation ?? defaultOperationHook,
+      delete: hooks.beforeOperation ?? defaultOperationHook,
+    },
+    afterOperation: {
+      create: hooks.afterOperation ?? defaultOperationHook,
+      update: hooks.afterOperation ?? defaultOperationHook,
+      delete: hooks.afterOperation ?? defaultOperationHook,
+    },
   };
 }
 
@@ -276,7 +335,6 @@ function getListsWithInitialisedFields(
       };
 
       resultFields[fieldKey] = {
-        ...f,
         dbField: f.dbField as ResolvedDBField,
         access: parseFieldAccessControl(f.access),
         hooks: parseFieldHooks(f.hooks ?? {}),
@@ -289,16 +347,16 @@ function getListsWithInitialisedFields(
             update: f.graphql?.isNonNull?.update ?? false,
           },
         },
-        input: { ...f.input }, // copy
         ui: {
-          ...f.ui,
+          label: f.label ?? null,
+          description: f.ui?.description ?? null,
+          views: f.ui?.views ?? null,
           createView: {
-            ...f.ui?.createView,
             fieldMode: _isEnabled.create ? fieldModes.create : 'hidden',
           },
 
           itemView: {
-            ...f.ui?.itemView,
+            fieldPosition: f.ui?.itemView?.fieldPosition ?? 'form',
             fieldMode: _isEnabled.update
               ? fieldModes.item
               : _isEnabled.read && fieldModes.item !== 'hidden'
@@ -307,10 +365,19 @@ function getListsWithInitialisedFields(
           },
 
           listView: {
-            ...f.ui?.listView,
             fieldMode: _isEnabled.read ? fieldModes.list : 'hidden',
           },
         },
+
+        // copy
+        __ksTelemetryFieldTypeName: f.__ksTelemetryFieldTypeName,
+        extraOutputFields: f.extraOutputFields,
+        getAdminMeta: f.getAdminMeta,
+        input: { ...f.input },
+        output: { ...f.output },
+        unreferencedConcreteInterfaceImplementations:
+          f.unreferencedConcreteInterfaceImplementations,
+        views: f.views,
       };
     }
 

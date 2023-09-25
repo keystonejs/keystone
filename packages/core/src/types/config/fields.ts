@@ -20,7 +20,7 @@ export type FilterOrderArgs<ListTypeInfo extends BaseListTypeInfo> = {
 export type CommonFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
   access?: FieldAccessControl<ListTypeInfo>;
   hooks?: FieldHooks<ListTypeInfo, ListTypeInfo['fields']>;
-  label?: string;
+  label?: string; // TODO: move to ui?
   ui?: {
     description?: string;
     views?: string;
