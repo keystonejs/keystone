@@ -48,7 +48,7 @@ export type InitialisedField = {
     cacheHint: CacheHint | undefined;
   };
   ui: {
-    label: string; // TODO: move to ui
+    label: string;
     description: string;
     views: string;
     createView: {
