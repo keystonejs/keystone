@@ -3,10 +3,14 @@ import type { InitialisedList } from '../initialise-lists';
 
 export async function runSideEffectOnlyHook<
   HookName extends 'beforeOperation' | 'afterOperation',
-  Args extends Parameters<NonNullable<InitialisedList['hooks'][HookName]>>[0]
+  Args extends Parameters<
+    NonNullable<InitialisedList['hooks'][HookName]['create' | 'update' | 'delete']>
+  >[0]
 >(list: InitialisedList, hookName: HookName, args: Args) {
+  const { operation } = args;
+
   let shouldRunFieldLevelHook: (fieldKey: string) => boolean;
-  if (args.operation === 'delete') {
+  if (operation === 'delete') {
     // always run field hooks for delete operations
     shouldRunFieldLevelHook = () => true;
   } else {
