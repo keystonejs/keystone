@@ -2,7 +2,7 @@ import { text } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { allowAll } from '@keystone-6/core/access';
-import { testConfig, expectExtensionError } from '../utils';
+import { testConfig } from '../utils';
 
 const runner = setupTestRunner({
   config: testConfig({
@@ -59,21 +59,7 @@ describe('List Hooks: #resolveInput()', () => {
       });
       // Returns null and throws an error
       expect(data).toEqual({ createUser: null });
-      const message = `List error triggered`;
-      expectExtensionError('dev', false, undefined, errors, `resolveInput`, [
-        {
-          path: ['createUser'],
-          messages: [`User.hooks.resolveInput: ${message}`],
-          debug: [
-            {
-              message,
-              stacktrace: expect.stringMatching(
-                new RegExp(`Error: ${message}\n[^\n]*resolveInput .${__filename}`)
-              ),
-            },
-          ],
-        },
-      ]);
+      expect(errors).toMatchSnapshot();
     })
   );
 
@@ -87,21 +73,7 @@ describe('List Hooks: #resolveInput()', () => {
       });
       // Returns null and throws an error
       expect(data).toEqual({ createUser: null });
-      const message = `Field error triggered`;
-      expectExtensionError('dev', false, undefined, errors, `resolveInput`, [
-        {
-          path: ['createUser'],
-          messages: [`User.name.hooks.resolveInput: ${message}`],
-          debug: [
-            {
-              message,
-              stacktrace: expect.stringMatching(
-                new RegExp(`Error: ${message}\n[^\n]*resolveInput .${__filename}`)
-              ),
-            },
-          ],
-        },
-      ]);
+      expect(errors).toMatchSnapshot();
     })
   );
 });

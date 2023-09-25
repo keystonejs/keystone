@@ -1,25 +1,12 @@
-import fs from 'fs';
-import path from 'path';
-import os from 'os';
+import fs from 'node:fs';
+import path from 'node:path';
+import os from 'node:os';
 import globby from 'globby';
 import { list } from '@keystone-6/core';
 import { text } from '@keystone-6/core/fields';
 import { setupTestEnv, setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { allowAll } from '@keystone-6/core/access';
-import { testConfig, expectPrismaError, dbProvider } from '../utils';
-
-const expectedUniqueConstraintError =
-  dbProvider === 'mysql'
-    ? {
-        message: 'Prisma error: Unique constraint failed on the constraint: `Test_testField_key`',
-        code: 'P2002',
-        target: 'Test_testField_key',
-      }
-    : {
-        message: 'Prisma error: Unique constraint failed on the fields: (`testField`)',
-        code: 'P2002',
-        target: ['testField'],
-      };
+import { testConfig } from '../utils';
 
 const testModules = globby.sync(`tests/api-tests/fields/types/fixtures/**/test-fixtures.{js,ts}`, {
   absolute: true,
@@ -107,12 +94,7 @@ testModules
               variables: { data: { testField: mod.exampleValue(matrixValue) } },
             });
             expect(data).toEqual({ createTest: null });
-            expectPrismaError(errors, [
-              {
-                path: ['createTest'],
-                ...expectedUniqueConstraintError,
-              },
-            ]);
+            expect(errors).toMatchSnapshot();
           })
         );
 
@@ -133,12 +115,7 @@ testModules
             });
 
             expect(data).toEqual({ foo: { id: expect.any(String) }, bar: null });
-            expectPrismaError(errors, [
-              {
-                path: ['bar'],
-                ...expectedUniqueConstraintError,
-              },
-            ]);
+            expect(errors).toMatchSnapshot();
           })
         );
 

@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`graphql.maxTake enforces the default 1`] = `
+[
+  {
+    "extensions": {
+      "code": "KS_LIMITS_EXCEEDED",
+    },
+    "locations": [
+      {
+        "column": 13,
+        "line": 3,
+      },
+    ],
+    "message": "Your request exceeded server limits",
+    "path": [
+      "posts",
+    ],
+  },
+]
+`;
