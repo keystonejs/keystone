@@ -18,15 +18,18 @@ You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://
 
 ## Features
 
-Keystone provides a testing library in [`@keystone-6/core/testing`](https://keystonejs.com/guides/testing) which helps you write tests using [Jest](https://jestjs.io/).
-This example project uses this library to add tests to the [`withAuth()`](../with-auth) example project. The tests can be found in [example.test.ts](./example.test.ts)
+This example project uses this library to add tests to the [`withAuth()`](../with-auth) example project. The tests can be found in [example-test.ts](./example-test.ts). This example uses the built in `getContext` API to run tests against a Keystone Context
+
+## Recommendations when Testing Keystone
+
+When testing Keystone it is good to focus on Access Control, Hooks, Virtual Fields, Custom GraphQL extensions. Ideally these can be broken out into unit tests that test the individual function and its output - most of the time without even needing to use the Keystone Context. For higher level, end-to-end/integration tests, where you want to test a particular use case or user flow, you can then use `getContext`. It is highly recommended that you do not switch database providers for your tests as each provider can have slightly different functionality.
 
 ### Running tests
 
 The project's `package.json` includes a script:
 
 ```
-    "test": "jest"
+    "test": "node --loader tsx example-test.ts"
 ```
 
 We can run the tests by running the command
@@ -38,16 +41,17 @@ pnpm test
 which should give output ending with:
 
 ```
- PASS  ./example.test.ts
-  ✓ Create a Person using the Query API (183 ms)
-  ✓ Check that trying to create user with no name (required field) fails (116 ms)
-  ✓ Check access control by running updateTask as a specific user via context.withSession() (198 ms)
-
-Test Suites: 1 passed, 1 total
-Tests:       3 passed, 3 total
-Snapshots:   0 total
-Time:        2.316 s, estimated 5 s
-Ran all test suites.
+✔ Create a User using the Query API (139.404167ms)
+✔ Check that trying to create user with no name (required field) fails (96.580875ms)
+✔ Check access control by running updateTask as a specific user via context.withSession() (193.86275ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 0.072292
 ```
 
 ## Try it out in CodeSandbox 🧪
