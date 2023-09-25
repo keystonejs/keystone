@@ -1,7 +1,8 @@
 import { platform } from 'node:os'
+import https from 'node:https'
+
 import ci from 'ci-info'
 import Conf from 'conf'
-import fetch from 'node-fetch'
 import chalk from 'chalk'
 import {
   type Configuration,
@@ -11,7 +12,7 @@ import {
   type Telemetry,
 } from '../types/telemetry'
 import { type DatabaseProvider } from '../types'
-import type { InitialisedList } from './core/initialise-lists'
+import { type InitialisedList } from './core/initialise-lists'
 
 const defaultTelemetryEndpoint = 'https://telemetry.keystonejs.com'
 
@@ -223,16 +224,14 @@ function inform () {
 
 async function sendEvent (eventType: 'project' | 'device', eventData: Project | Device) {
   const endpoint = process.env.KEYSTONE_TELEMETRY_ENDPOINT || defaultTelemetryEndpoint
-  const url = `${endpoint}/v1/event/${eventType}`
-
-  await fetch(url, {
+  const req = https.request(`${endpoint}/v1/event/${eventType}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(eventData),
   })
 
+  req.end(JSON.stringify(eventData))
   log(`sent ${eventType} report`)
 }
 
