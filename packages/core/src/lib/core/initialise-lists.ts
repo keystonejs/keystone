@@ -176,15 +176,6 @@ function defaultOperationHook() {}
 function defaultListHooksResolveInput({ resolvedData }: { resolvedData: any }) {
   return resolvedData;
 }
-function defaultFieldHooksResolveInput({
-  resolvedData,
-  fieldKey,
-}: {
-  resolvedData: any;
-  fieldKey: string;
-}) {
-  return resolvedData[fieldKey];
-}
 
 function parseListHooksResolveInput(f: ListHooks<BaseListTypeInfo>['resolveInput']) {
   if (typeof f === 'function') {
@@ -198,13 +189,57 @@ function parseListHooksResolveInput(f: ListHooks<BaseListTypeInfo>['resolveInput
   return { create, update };
 }
 
+function parseListHooksBeforeOperation(f: ListHooks<BaseListTypeInfo>['beforeOperation']) {
+  if (typeof f === 'function') {
+    return {
+      create: f,
+      update: f,
+      delete: f,
+    };
+  }
+
+  const {
+    create = defaultOperationHook,
+    update = defaultOperationHook,
+    delete: _delete = defaultOperationHook,
+  } = f ?? {};
+  return { create, update, delete: _delete };
+}
+
+function parseListHooksAfterOperation(f: ListHooks<BaseListTypeInfo>['afterOperation']) {
+  if (typeof f === 'function') {
+    return {
+      create: f,
+      update: f,
+      delete: f,
+    };
+  }
+
+  const {
+    create = defaultOperationHook,
+    update = defaultOperationHook,
+    delete: _delete = defaultOperationHook,
+  } = f ?? {};
+  return { create, update, delete: _delete };
+}
+
+function defaultFieldHooksResolveInput({
+  resolvedData,
+  fieldKey,
+}: {
+  resolvedData: any;
+  fieldKey: string;
+}) {
+  return resolvedData[fieldKey];
+}
+
 function parseListHooks(hooks: ListHooks<BaseListTypeInfo>): ResolvedListHooks<BaseListTypeInfo> {
   return {
     resolveInput: parseListHooksResolveInput(hooks.resolveInput),
     validateInput: hooks.validateInput ?? defaultOperationHook,
     validateDelete: hooks.validateDelete ?? defaultOperationHook,
-    beforeOperation: hooks.beforeOperation ?? defaultOperationHook,
-    afterOperation: hooks.afterOperation ?? defaultOperationHook,
+    beforeOperation: parseListHooksBeforeOperation(hooks.beforeOperation),
+    afterOperation: parseListHooksAfterOperation(hooks.afterOperation),
   };
 }
 

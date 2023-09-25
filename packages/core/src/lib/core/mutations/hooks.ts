@@ -36,7 +36,7 @@ export async function runSideEffectOnlyHook<
 
   // list hooks
   try {
-    await list.hooks[hookName](args as any); // TODO: FIXME any
+    await list.hooks[hookName][operation](args as any); // TODO: FIXME any
   } catch (error: any) {
     throw extensionError(hookName, [{ error, tag: `${list.listKey}.hooks.${hookName}` }]);
   }

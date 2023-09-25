@@ -65,11 +65,23 @@ export type ListHooks<ListTypeInfo extends BaseListTypeInfo> = {
   /**
    * Used to **cause side effects** before a create, update, or delete operation once all validateInput hooks have resolved
    */
-  beforeOperation?: BeforeOperationListHook<ListTypeInfo, 'create' | 'update' | 'delete'>;
+  beforeOperation?:
+    | BeforeOperationListHook<ListTypeInfo, 'create' | 'update' | 'delete'>
+    | {
+        create?: BeforeOperationListHook<ListTypeInfo, 'create'>;
+        update?: BeforeOperationListHook<ListTypeInfo, 'update'>;
+        delete?: BeforeOperationListHook<ListTypeInfo, 'delete'>;
+      };
   /**
    * Used to **cause side effects** after a create, update, or delete operation operation has occurred
    */
-  afterOperation?: AfterOperationListHook<ListTypeInfo, 'create' | 'update' | 'delete'>;
+  afterOperation?:
+    | AfterOperationListHook<ListTypeInfo, 'create' | 'update' | 'delete'>
+    | {
+        create?: AfterOperationListHook<ListTypeInfo, 'create'>;
+        update?: AfterOperationListHook<ListTypeInfo, 'update'>;
+        delete?: AfterOperationListHook<ListTypeInfo, 'delete'>;
+      };
 };
 
 export type ResolvedListHooks<ListTypeInfo extends BaseListTypeInfo> = {
@@ -79,8 +91,16 @@ export type ResolvedListHooks<ListTypeInfo extends BaseListTypeInfo> = {
   };
   validateInput: ValidateHook<ListTypeInfo, 'create' | 'update'>;
   validateDelete: ValidateHook<ListTypeInfo, 'delete'>;
-  beforeOperation: BeforeOperationListHook<ListTypeInfo, 'create' | 'update' | 'delete'>;
-  afterOperation: AfterOperationListHook<ListTypeInfo, 'create' | 'update' | 'delete'>;
+  beforeOperation: {
+    create: BeforeOperationListHook<ListTypeInfo, 'create'>;
+    update: BeforeOperationListHook<ListTypeInfo, 'update'>;
+    delete: BeforeOperationListHook<ListTypeInfo, 'delete'>;
+  };
+  afterOperation: {
+    create: AfterOperationListHook<ListTypeInfo, 'create'>;
+    update: AfterOperationListHook<ListTypeInfo, 'update'>;
+    delete: AfterOperationListHook<ListTypeInfo, 'delete'>;
+  };
 };
 
 export type FieldHooks<

@@ -148,11 +148,23 @@ export const lists: Lists = {
         // an example of a content filter, the prevents the title or content containing the word "Profanity"
         if (preventDelete) return addValidationError('Cannot delete Post, preventDelete is true');
       },
-      beforeOperation: ({ resolvedData, operation }) => {
-        console.log(`Post ${operation}`, resolvedData);
+
+      beforeOperation: ({ item, resolvedData, operation }) => {
+        console.log(`Post beforeOperation.${operation}`, resolvedData);
       },
-      afterOperation: ({ resolvedData, operation }) => {
-        console.log(`Post ${operation}`, resolvedData);
+
+      afterOperation: {
+        create: ({ inputData, item }) => {
+          console.log(`Post afterOperation.create`, inputData, '->', item);
+        },
+
+        update: ({ originalItem, item }) => {
+          console.log(`Post afterOperation.update`, originalItem, '->', item);
+        },
+
+        delete: ({ originalItem }) => {
+          console.log(`Post afterOperation.delete`, originalItem, '-> deleted');
+        },
       },
     },
   }),
