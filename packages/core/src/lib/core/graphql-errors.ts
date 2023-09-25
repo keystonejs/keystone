@@ -34,7 +34,7 @@ export const validationFailureError = (messages: string[]) => {
 
 export const extensionError = (extension: string, things: { error: Error; tag: string }[]) => {
   const s = things.map(t => `  - ${t.tag}: ${t.error.message}`).join('\n');
-  return new GraphQLError(`An error occured while running "${extension}".\n${s}`, {
+  return new GraphQLError(`An error occurred while running "${extension}".\n${s}`, {
     extensions: {
       code: 'KS_EXTENSION_ERROR',
       debug: things.map(t => ({ stacktrace: t.error.stack, message: t.error.message })),
@@ -44,7 +44,7 @@ export const extensionError = (extension: string, things: { error: Error; tag: s
 
 export const resolverError = (things: { error: Error; tag: string }[]) => {
   const s = things.map(t => `  - ${t.tag}: ${t.error.message}`).join('\n');
-  return new GraphQLError(`An error occured while resolving input fields.\n${s}`, {
+  return new GraphQLError(`An error occurred while resolving input fields.\n${s}`, {
     extensions: {
       code: 'KS_RESOLVER_ERROR',
       debug: things.map(t => ({ stacktrace: t.error.stack, message: t.error.message })),
@@ -57,7 +57,7 @@ export const relationshipError = (things: { error: Error; tag: string }[]) => {
     .map(t => `  - ${t.tag}: ${t.error.message}`)
     .sort()
     .join('\n');
-  return new GraphQLError(`An error occured while resolving relationship fields.\n${s}`, {
+  return new GraphQLError(`An error occurred while resolving relationship fields.\n${s}`, {
     extensions: {
       code: 'KS_RELATIONSHIP_ERROR',
       debug: things.map(t => ({ stacktrace: t.error.stack, message: t.error.message })),

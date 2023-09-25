@@ -219,7 +219,7 @@ export const expectResolverError = (
   const unpackedErrors = unpackErrors(errors);
   expect(unpackedErrors).toEqual(
     args.map(({ path, messages, debug }) => {
-      const message = `An error occured while resolving input fields.\n${j(messages)}`;
+      const message = `An error occurred while resolving input fields.\n${j(messages)}`;
       return { extensions: { code: 'KS_RESOLVER_ERROR', debug }, path, message };
     })
   );
@@ -246,7 +246,7 @@ export const expectRelationshipError = (
   const unpackedErrors = unpackErrors(errors);
   expect(unpackedErrors).toEqual(
     args.map(({ path, messages, debug }) => {
-      const message = `An error occured while resolving relationship fields.\n${j(messages)}`;
+      const message = `An error occurred while resolving relationship fields.\n${j(messages)}`;
       return { extensions: { code: 'KS_RELATIONSHIP_ERROR', debug }, path, message };
     })
   );
