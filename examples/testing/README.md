@@ -18,7 +18,11 @@ You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://
 
 ## Features
 
-This example project uses this library to add tests to the [`withAuth()`](../with-auth) example project. The tests can be found in [example-test.ts](./example-test.ts)
+This example project uses this library to add tests to the [`withAuth()`](../with-auth) example project. The tests can be found in [example-test.ts](./example-test.ts). This example uses the built in `getContext` API to run tests against a Keystone Context
+
+## Recommendations when Testing Keystone
+
+When testing Keystone it is good to focus on Access Control, Hooks, Virtual Fields, Custom GraphQL extensions. Ideally these can be broken out into unit tests that test the individual function and its output - most of the time without even needing to use the Keystone Context. For higher level, end-to-end/integration tests, where you want to test a particular use case or user flow, you can then use `getContext`. It is highly recommended that you do not switch database providers for your tests as each provider can have slightly different functionality.
 
 ### Running tests
 
