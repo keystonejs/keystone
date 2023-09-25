@@ -30,7 +30,7 @@
     "@sindresorhus/slugify": "^1.1.2",
     "@types/babel__core": "7.20.2",
     "@types/facepaint": "^1.2.2",
-    "@types/gtag.js": "^0.0.13",
+    "@types/gtag.js": "^0.0.14",
     "@types/js-yaml": "^4.0.5",
     "@types/markdown-it": "^13.0.0",
     "@types/react": "^18.0.9",
