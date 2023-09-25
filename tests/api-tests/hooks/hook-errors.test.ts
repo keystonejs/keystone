@@ -115,14 +115,14 @@ const runner = (debug: boolean | undefined) =>
     })
   );
 
-function stripStackTrace (errors: any[] = []) {
+function stripStackTrace(errors: any[] = []) {
   for (const error of errors) {
     for (const e of error?.extensions?.debug ?? []) {
-      delete e.stacktrace
+      delete e.stacktrace;
     }
-    delete error?.extensions.stacktrace
+    delete error?.extensions.stacktrace;
   }
-  return errors
+  return errors;
 }
 
 [true, false].map(useHttp => {

@@ -70,9 +70,9 @@ describe('graphql.maxTake', () => {
   test(
     'enforces the default',
     runner(async ({ graphQLRequest }) => {
-      const { body: {
-        errors
-      } } = await graphQLRequest({
+      const {
+        body: { errors },
+      } = await graphQLRequest({
         query: `
           query {
             posts(take: 5) {
