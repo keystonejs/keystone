@@ -2,7 +2,7 @@ import { text, integer, relationship } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { allowAll } from '@keystone-6/core/access';
-import { testConfig, expectGraphQLValidationError, expectLimitsExceededError } from '../utils';
+import { testConfig, expectGraphQLValidationError } from '../utils';
 import { withServer } from '../with-server';
 import { depthLimit, definitionLimit, fieldLimit } from './validation';
 
@@ -70,7 +70,9 @@ describe('graphql.maxTake', () => {
   test(
     'enforces the default',
     runner(async ({ graphQLRequest }) => {
-      const { body } = await graphQLRequest({
+      const {
+        body: { errors },
+      } = await graphQLRequest({
         query: `
           query {
             posts(take: 5) {
@@ -80,7 +82,7 @@ describe('graphql.maxTake', () => {
         `,
       });
 
-      expectLimitsExceededError(body.errors, [{ path: ['posts'] }]);
+      expect(errors).toMatchSnapshot();
     })
   );
 });

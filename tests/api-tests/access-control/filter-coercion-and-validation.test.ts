@@ -2,7 +2,7 @@ import { text } from '@keystone-6/core/fields';
 import { list } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { allowAll } from '@keystone-6/core/access';
-import { testConfig, expectExtensionError } from '../utils';
+import { testConfig } from '../utils';
 
 const runner = setupTestRunner({
   config: testConfig({
@@ -46,22 +46,7 @@ describe('Access control - Filter', () => {
 
       // Returns null and throws an error
       expect(data).toEqual({ badAccesses: null });
-      const message =
-        'Variable "$where" got invalid value "blah" at "where.name"; Expected type "StringFilter" to be an object.';
-      expectExtensionError('dev', false, false, errors, 'Access control', [
-        {
-          path: ['badAccesses'],
-          messages: [`BadAccess.access.filter.query: ${message}`],
-          debug: [
-            {
-              message,
-              stacktrace: expect.stringMatching(
-                new RegExp(`GraphQLError: ${message.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`)
-              ),
-            },
-          ],
-        },
-      ]);
+      expect(errors).toMatchSnapshot();
     })
   );
   test(

@@ -3,7 +3,7 @@ import { list } from '@keystone-6/core';
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { KeystoneContext } from '@keystone-6/core/types';
 import { allowAll } from '@keystone-6/core/access';
-import { testConfig, expectExtensionError, unpackErrors } from '../utils';
+import { testConfig } from '../utils';
 import { GraphQLRequest, withServer } from '../with-server';
 
 const runner = (debug: boolean | undefined) =>
@@ -115,6 +115,16 @@ const runner = (debug: boolean | undefined) =>
     })
   );
 
+function stripStackTrace(errors: any[] = []) {
+  for (const error of errors) {
+    for (const e of error?.extensions?.debug ?? []) {
+      delete e.stacktrace;
+    }
+    delete error?.extensions.stacktrace;
+  }
+  return errors;
+}
+
 [true, false].map(useHttp => {
   const runQuery = async (
     context: KeystoneContext,
@@ -157,21 +167,7 @@ const runner = (debug: boolean | undefined) =>
 
                 // Returns null and throws an error
                 expect(data).toEqual({ createUser: null });
-                const message = `Simulated error: ${phase}Operation`;
-                expectExtensionError(mode, useHttp, debug, errors, `${phase}Operation`, [
-                  {
-                    path: ['createUser'],
-                    messages: [`User.hooks.${phase}Operation: Simulated error: ${phase}Operation`],
-                    debug: [
-                      {
-                        message,
-                        stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message}\n[^\n]*${phase}Operation .${__filename}`)
-                        ),
-                      },
-                    ],
-                  },
-                ]);
+                expect(stripStackTrace(errors)).toMatchSnapshot();
 
                 // Only the original user should exist for 'before', both exist for 'after'
                 const _users = await context.query.User.findMany({ query: 'id name' });
@@ -199,21 +195,7 @@ const runner = (debug: boolean | undefined) =>
 
                 // Returns null and throws an error
                 expect(data).toEqual({ updateUser: null });
-                const message = `Simulated error: ${phase}Operation`;
-                expectExtensionError(mode, useHttp, debug, errors, `${phase}Operation`, [
-                  {
-                    path: ['updateUser'],
-                    messages: [`User.hooks.${phase}Operation: ${message}`],
-                    debug: [
-                      {
-                        message,
-                        stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message}\n[^\n]*${phase}Operation .${__filename}`)
-                        ),
-                      },
-                    ],
-                  },
-                ]);
+                expect(stripStackTrace(errors)).toMatchSnapshot();
 
                 // User should have its original name for 'before', and the new name for 'after'.
                 const _users = await context.query.User.findMany({ query: 'id name' });
@@ -241,21 +223,7 @@ const runner = (debug: boolean | undefined) =>
 
                 // Returns null and throws an error
                 expect(data).toEqual({ deleteUser: null });
-                const message = `Simulated error: ${phase}Operation`;
-                expectExtensionError(mode, useHttp, debug, errors, `${phase}Operation`, [
-                  {
-                    path: ['deleteUser'],
-                    messages: [`User.hooks.${phase}Operation: ${message}`],
-                    debug: [
-                      {
-                        message,
-                        stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message}\n[^\n]*${phase}Operation .${__filename}`)
-                        ),
-                      },
-                    ],
-                  },
-                ]);
+                expect(stripStackTrace(errors)).toMatchSnapshot();
 
                 // Bad users should still be in the database for 'before', deleted for 'after'.
                 const _users = await context.query.User.findMany({ query: 'id name' });
@@ -292,34 +260,7 @@ const runner = (debug: boolean | undefined) =>
                     { id: expect.any(String), name: 'good 3' },
                   ],
                 });
-                // The invalid creates should have errors which point to the nulls in their path
-                const message = `Simulated error: ${phase}Operation`;
-                expectExtensionError(mode, useHttp, debug, errors, `${phase}Operation`, [
-                  {
-                    path: ['createUsers', 1],
-                    messages: [`User.hooks.${phase}Operation: ${message}`],
-                    debug: [
-                      {
-                        message,
-                        stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message}\n[^\n]*${phase}Operation .${__filename}`)
-                        ),
-                      },
-                    ],
-                  },
-                  {
-                    path: ['createUsers', 3],
-                    messages: [`User.hooks.${phase}Operation: ${message}`],
-                    debug: [
-                      {
-                        message,
-                        stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message}\n[^\n]*${phase}Operation .${__filename}`)
-                        ),
-                      },
-                    ],
-                  },
-                ]);
+                expect(stripStackTrace(errors)).toMatchSnapshot();
 
                 // Three users should exist in the database for 'before,' five for 'after'.
                 const users = await context.query.User.findMany({
@@ -371,34 +312,7 @@ const runner = (debug: boolean | undefined) =>
                     null,
                   ],
                 });
-                // The invalid updates should have errors which point to the nulls in their path
-                const message = `Simulated error: ${phase}Operation`;
-                expectExtensionError(mode, useHttp, debug, errors, `${phase}Operation`, [
-                  {
-                    path: ['updateUsers', 1],
-                    messages: [`User.hooks.${phase}Operation: ${message}`],
-                    debug: [
-                      {
-                        message,
-                        stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message}\n[^\n]*${phase}Operation .${__filename}`)
-                        ),
-                      },
-                    ],
-                  },
-                  {
-                    path: ['updateUsers', 3],
-                    messages: [`User.hooks.${phase}Operation: ${message}`],
-                    debug: [
-                      {
-                        message,
-                        stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message}\n[^\n]*${phase}Operation .${__filename}`)
-                        ),
-                      },
-                    ],
-                  },
-                ]);
+                expect(stripStackTrace(errors)).toMatchSnapshot();
 
                 // All users should still exist in the database, un-changed for `before`, changed for `after`.
                 const _users = await context.query.User.findMany({
@@ -445,34 +359,7 @@ const runner = (debug: boolean | undefined) =>
                     null,
                   ],
                 });
-                // The invalid deletes should have errors which point to the nulls in their path
-                const message = `Simulated error: ${phase}Operation`;
-                expectExtensionError(mode, useHttp, debug, errors, `${phase}Operation`, [
-                  {
-                    path: ['deleteUsers', 1],
-                    messages: [`User.hooks.${phase}Operation: ${message}`],
-                    debug: [
-                      {
-                        message,
-                        stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message}\n[^\n]*${phase}Operation .${__filename}`)
-                        ),
-                      },
-                    ],
-                  },
-                  {
-                    path: ['deleteUsers', 3],
-                    messages: [`User.hooks.${phase}Operation: ${message}`],
-                    debug: [
-                      {
-                        message,
-                        stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message}\n[^\n]*${phase}Operation .${__filename}`)
-                        ),
-                      },
-                    ],
-                  },
-                ]);
+                expect(stripStackTrace(errors)).toMatchSnapshot();
 
                 // Three users should still exist in the database for `before`, only 1 for `after`.
                 const _users = await context.query.User.findMany({
@@ -505,32 +392,8 @@ const runner = (debug: boolean | undefined) =>
                     data: { title: `trigger ${phase}`, content: `trigger ${phase}` },
                   },
                 });
-                const message1 = `Simulated error: title: ${phase}Operation`;
-                const message2 = `Simulated error: content: ${phase}Operation`;
-                expectExtensionError(mode, useHttp, debug, errors, `${phase}Operation`, [
-                  {
-                    path: ['updatePost'],
-                    messages: [
-                      `Post.title.hooks.${phase}Operation: ${message1}`,
-                      `Post.content.hooks.${phase}Operation: ${message2}`,
-                    ],
-                    debug: [
-                      {
-                        message: message1,
-                        stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message1}\n[^\n]*${phase}Operation .${__filename}`)
-                        ),
-                      },
-                      {
-                        message: message2,
-                        stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message2}\n[^\n]*${phase}Operation .${__filename}`)
-                        ),
-                      },
-                    ],
-                  },
-                ]);
                 expect(data).toEqual({ updatePost: null });
+                expect(stripStackTrace(errors)).toMatchSnapshot();
 
                 // Post should have its original data for 'before', and the new data for 'after'.
                 const _post = await context.query.Post.findOne({
@@ -555,32 +418,8 @@ const runner = (debug: boolean | undefined) =>
                   query: `mutation ($id: ID!) { deletePost(where: { id: $id }) { id } }`,
                   variables: { id: post.id },
                 });
-                const message1 = `Simulated error: title: ${phase}Operation`;
-                const message2 = `Simulated error: content: ${phase}Operation`;
-                expectExtensionError(mode, useHttp, debug, errors, `${phase}Operation`, [
-                  {
-                    path: ['deletePost'],
-                    messages: [
-                      `Post.title.hooks.${phase}Operation: ${message1}`,
-                      `Post.content.hooks.${phase}Operation: ${message2}`,
-                    ],
-                    debug: [
-                      {
-                        message: message1,
-                        stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message1}\n[^\n]*${phase}Operation .${__filename}`)
-                        ),
-                      },
-                      {
-                        message: message2,
-                        stacktrace: expect.stringMatching(
-                          new RegExp(`Error: ${message2}\n[^\n]*${phase}Operation .${__filename}`)
-                        ),
-                      },
-                    ],
-                  },
-                ]);
                 expect(data).toEqual({ deletePost: null });
+                expect(stripStackTrace(errors)).toMatchSnapshot();
 
                 // Post should have its original data for 'before', and not exist for 'after'.
                 const result = await runQuery(context, graphQLRequest, {
@@ -612,20 +451,6 @@ test(
       query: `mutation { createBadResolveInput(data: {}) { id } }`,
     });
     expect(data).toEqual({ createBadResolveInput: null });
-    const unpackedErrors = unpackErrors(errors);
-    expect(unpackedErrors).toEqual([
-      {
-        extensions: {
-          code: 'KS_PRISMA_ERROR',
-          debug: {
-            message: expect.stringMatching(
-              /Unknown arg `blah` in data\.badResolveInput\.blah for type PostCreateNestedOneWithoutFrom_BadResolveInput_badResolveInputInput\./
-            ),
-          },
-        },
-        path: ['createBadResolveInput'],
-        message: 'Prisma error',
-      },
-    ]);
+    expect(errors).toMatchSnapshot();
   })
 );

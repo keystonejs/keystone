@@ -20,7 +20,7 @@
     "@keystone-6/fields-document": "^8.0.0",
     "@preconstruct/next": "^4.0.0",
     "@prisma/client": "^4.16.2",
-    "graphql": "^16.6.0",
+    "graphql": "^16.8.1",
     "graphql-request": "^5.0.0",
     "graphql-yoga": "^3.1.0",
     "next": "^13.3.0",

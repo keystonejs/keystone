@@ -131,25 +131,6 @@ export const expectInternalServerError = (
   );
 };
 
-export function expectLimitsExceededError(
-  errors: readonly any[] | undefined,
-  args: { path: string[] }[]
-) {
-  expect(
-    errors?.map(({ path, extensions, message }) => ({
-      path,
-      extensions,
-      message,
-    }))
-  ).toEqual(
-    args.map(({ path }) => ({
-      path,
-      extensions: { code: 'KS_LIMITS_EXCEEDED' },
-      message: 'Your request exceeded server limits',
-    }))
-  );
-}
-
 export const expectGraphQLValidationError = (
   errors: readonly any[] | undefined,
   args: { message: string }[]
@@ -188,66 +169,6 @@ export const expectValidationError = (
       extensions: { code: 'KS_VALIDATION_FAILURE' },
       path,
       message: `You provided invalid data for this operation.\n${j(messages)}`,
-    }))
-  );
-};
-
-export const expectExtensionError = (
-  mode: 'dev' | 'production',
-  httpQuery: boolean,
-  _debug: boolean | undefined,
-  errors: readonly any[] | undefined,
-  extensionName: string,
-  args: { path: (string | number)[]; messages: string[]; debug: any[] }[]
-) => {
-  const unpackedErrors = unpackErrors(errors);
-  expect(unpackedErrors).toEqual(
-    args.map(({ path, messages, debug }) => {
-      const message = `An error occured while running "${extensionName}".\n${j(messages)}`;
-      const stacktrace = message.split('\n');
-      stacktrace[0] = `GraphQLError: ${stacktrace[0]}`;
-
-      // We expect to see debug details if:
-      //   - httpQuery is false
-      //   - graphql.debug is true or
-      //   - graphql.debug is undefined and mode !== production or
-      const expectDebug =
-        _debug === true || (_debug === undefined && mode !== 'production') || !httpQuery;
-      // We expect to see the Apollo exception under the same conditions, but only if
-      // httpQuery is also true.
-      const expectException = httpQuery && expectDebug;
-
-      return {
-        extensions: {
-          code: 'KS_EXTENSION_ERROR',
-          ...(expectException ? { stacktrace: expect.arrayContaining(stacktrace) } : {}),
-          ...(expectDebug ? { debug } : {}),
-        },
-        path,
-        message,
-      };
-    })
-  );
-};
-
-export const expectPrismaError = (
-  errors: readonly any[] | undefined,
-  args: { path: (string | number)[]; message: string; code: string; target: string[] | string }[]
-) => {
-  const unpackedErrors = unpackErrors(errors);
-  expect(unpackedErrors).toEqual(
-    args.map(({ path, message, code, target }) => ({
-      extensions: {
-        code: 'KS_PRISMA_ERROR',
-        prisma: {
-          name: 'PrismaClientKnownRequestError',
-          clientVersion: require('@keystone-6/core/package.json').dependencies['prisma'],
-          code,
-          meta: { target },
-        },
-      },
-      path,
-      message,
     }))
   );
 };

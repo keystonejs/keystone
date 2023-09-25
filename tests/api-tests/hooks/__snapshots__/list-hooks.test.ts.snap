@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`List Hooks: #resolveInput() Field error 1`] = `
+[
+  [GraphQLError: An error occured while running "resolveInput".
+  - User.name.hooks.resolveInput: Field error triggered],
+]
+`;
+
+exports[`List Hooks: #resolveInput() List error 1`] = `
+[
+  [GraphQLError: An error occured while running "resolveInput".
+  - User.hooks.resolveInput: List error triggered],
+]
+`;
