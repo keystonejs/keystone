@@ -48,9 +48,9 @@ export type InitialisedField = {
     cacheHint: CacheHint | undefined;
   };
   ui: {
-    label: string;
-    description: string;
-    views: string;
+    label: string | null;
+    description: string | null;
+    views: string | null;
     createView: {
       fieldMode: MaybeSessionFunction<'edit' | 'hidden', any>;
     };
@@ -348,9 +348,9 @@ function getListsWithInitialisedFields(
           },
         },
         ui: {
-          label: f.label ?? '',
-          description: f.ui?.description ?? '',
-          views: f.ui?.views ?? '',
+          label: f.label ?? null,
+          description: f.ui?.description ?? null,
+          views: f.ui?.views ?? null,
           createView: {
             fieldMode: _isEnabled.create ? fieldModes.create : 'hidden',
           },
