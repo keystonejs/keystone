@@ -194,8 +194,8 @@ export function createAdminMeta(
 
       const fieldMeta = {
         key: fieldKey,
-        label: field.label ?? humanize(fieldKey),
-        description: field.ui?.description ?? null,
+        label: field.ui.label ?? humanize(fieldKey),
+        description: field.ui.description ?? null,
         viewsIndex: getViewId(field.views),
         customViewsIndex:
           field.ui?.views === undefined

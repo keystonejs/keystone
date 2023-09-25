@@ -28,7 +28,7 @@ import { ResolvedDBField, resolveRelationships } from './resolve-relationships';
 import { outputTypeField } from './queries/output-field';
 import { assertFieldsValid } from './field-assertions';
 
-export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access' | 'graphql'> & {
+export type InitialisedField = {
   access: ResolvedFieldAccessControl;
   dbField: ResolvedDBField;
   hooks: ResolvedFieldHooks<BaseListTypeInfo>;
@@ -48,17 +48,30 @@ export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access' | 'graph
     cacheHint: CacheHint | undefined;
   };
   ui: {
+    label: string; // TODO: move to ui
+    description: string;
+    views: string;
     createView: {
       fieldMode: MaybeSessionFunction<'edit' | 'hidden', any>;
     };
     itemView: {
       fieldMode: MaybeItemFunction<'read' | 'edit' | 'hidden', any>;
+      fieldPosition: MaybeItemFunction<'form' | 'sidebar', any>;
     };
     listView: {
       fieldMode: MaybeSessionFunction<'read' | 'hidden', any>;
     };
   };
-};
+} & Pick<
+  NextFieldType,
+  | 'input'
+  | 'output'
+  | 'getAdminMeta'
+  | 'views'
+  | '__ksTelemetryFieldTypeName'
+  | 'extraOutputFields'
+  | 'unreferencedConcreteInterfaceImplementations'
+>;
 
 export type InitialisedList = {
   access: ResolvedListAccessControl;
@@ -276,7 +289,6 @@ function getListsWithInitialisedFields(
       };
 
       resultFields[fieldKey] = {
-        ...f,
         dbField: f.dbField as ResolvedDBField,
         access: parseFieldAccessControl(f.access),
         hooks: parseFieldHooks(f.hooks ?? {}),
@@ -289,16 +301,17 @@ function getListsWithInitialisedFields(
             update: f.graphql?.isNonNull?.update ?? false,
           },
         },
-        input: { ...f.input }, // copy
         ui: {
-          ...f.ui,
+          label: f.label ?? '',
+          description: f.ui?.description ?? '',
+          views: f.ui?.views ?? '',
           createView: {
-            ...f.ui?.createView,
+            ...f.ui?.createView, // copy
             fieldMode: _isEnabled.create ? fieldModes.create : 'hidden',
           },
 
           itemView: {
-            ...f.ui?.itemView,
+            fieldPosition: f.ui?.itemView?.fieldPosition ?? 'form',
             fieldMode: _isEnabled.update
               ? fieldModes.item
               : _isEnabled.read && fieldModes.item !== 'hidden'
@@ -307,10 +320,20 @@ function getListsWithInitialisedFields(
           },
 
           listView: {
-            ...f.ui?.listView,
+            ...f.ui?.listView, // copy
             fieldMode: _isEnabled.read ? fieldModes.list : 'hidden',
           },
         },
+
+        // copy
+        __ksTelemetryFieldTypeName: f.__ksTelemetryFieldTypeName,
+        extraOutputFields: f.extraOutputFields,
+        getAdminMeta: f.getAdminMeta,
+        input: { ...f.input },
+        output: { ...f.output },
+        unreferencedConcreteInterfaceImplementations:
+          f.unreferencedConcreteInterfaceImplementations,
+        views: f.views,
       };
     }
 
