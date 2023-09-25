@@ -302,11 +302,17 @@ async function getResolvedData(
         try {
           return [
             fieldKey,
-            await field.hooks.resolveInput({
-              ...hookArgs,
-              resolvedData,
-              fieldKey,
-            }),
+            operation === 'create'
+              ? await field.hooks.resolveInput.create({
+                  ...hookArgs,
+                  resolvedData,
+                  fieldKey,
+                })
+              : await field.hooks.resolveInput.update({
+                  ...hookArgs,
+                  resolvedData,
+                  fieldKey,
+                }),
           ];
         } catch (error: any) {
           fieldsErrors.push({

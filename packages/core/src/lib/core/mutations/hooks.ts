@@ -22,7 +22,7 @@ export async function runSideEffectOnlyHook<
     Object.entries(list.fields).map(async ([fieldKey, field]) => {
       if (shouldRunFieldLevelHook(fieldKey)) {
         try {
-          await field.hooks[hookName]({ fieldKey, ...args } as any); // TODO: FIXME any
+          await field.hooks[hookName][operation]({ fieldKey, ...args } as any); // TODO: FIXME any
         } catch (error: any) {
           fieldsErrors.push({ error, tag: `${list.listKey}.${fieldKey}.hooks.${hookName}` });
         }
