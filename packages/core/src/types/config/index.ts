@@ -19,7 +19,7 @@ import type {
 } from './lists';
 import type { BaseFields } from './fields';
 import type { ListAccessControl, FieldAccessControl } from './access-control';
-import type { ListHooks } from './hooks';
+import type { ListHooks, FieldHooks } from './hooks';
 
 type FileOrImage =
   // is given full file name, returns file name that will be used at
@@ -331,7 +331,7 @@ export type ImagesConfig = {
 
 // Exports from sibling packages
 
-export type { ListHooks, ListAccessControl, FieldAccessControl };
+export type { ListHooks, ListAccessControl, FieldHooks, FieldAccessControl };
 
 export type {
   FieldCreateItemAccessArgs,
