@@ -2,7 +2,7 @@
 
 exports[`NODE_ENV=dev, debug=false useHttp=false Field Hooks: afterChange() delete 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - Post.title.hooks.afterOperation: Simulated error: title: afterOperation
   - Post.content.hooks.afterOperation: Simulated error: content: afterOperation],
 ]
@@ -10,7 +10,7 @@ exports[`NODE_ENV=dev, debug=false useHttp=false Field Hooks: afterChange() dele
 
 exports[`NODE_ENV=dev, debug=false useHttp=false Field Hooks: afterChange() update 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - Post.title.hooks.afterOperation: Simulated error: title: afterOperation
   - Post.content.hooks.afterOperation: Simulated error: content: afterOperation],
 ]
@@ -18,7 +18,7 @@ exports[`NODE_ENV=dev, debug=false useHttp=false Field Hooks: afterChange() upda
 
 exports[`NODE_ENV=dev, debug=false useHttp=false Field Hooks: beforeChange() delete 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - Post.title.hooks.beforeOperation: Simulated error: title: beforeOperation
   - Post.content.hooks.beforeOperation: Simulated error: content: beforeOperation],
 ]
@@ -26,7 +26,7 @@ exports[`NODE_ENV=dev, debug=false useHttp=false Field Hooks: beforeChange() del
 
 exports[`NODE_ENV=dev, debug=false useHttp=false Field Hooks: beforeChange() update 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - Post.title.hooks.beforeOperation: Simulated error: title: beforeOperation
   - Post.content.hooks.beforeOperation: Simulated error: content: beforeOperation],
 ]
@@ -34,96 +34,96 @@ exports[`NODE_ENV=dev, debug=false useHttp=false Field Hooks: beforeChange() upd
 
 exports[`NODE_ENV=dev, debug=false useHttp=false List Hooks: afterOperation createMany 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=false useHttp=false List Hooks: afterOperation createOne 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=false useHttp=false List Hooks: afterOperation deleteMany 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=false useHttp=false List Hooks: afterOperation deleteOne 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=false useHttp=false List Hooks: afterOperation updateMany 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=false useHttp=false List Hooks: afterOperation updateOne 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=false useHttp=false List Hooks: beforeOperation createMany 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=false useHttp=false List Hooks: beforeOperation createOne 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=false useHttp=false List Hooks: beforeOperation deleteMany 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=false useHttp=false List Hooks: beforeOperation deleteOne 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=false useHttp=false List Hooks: beforeOperation updateMany 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=false useHttp=false List Hooks: beforeOperation updateOne 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
@@ -140,7 +140,7 @@ exports[`NODE_ENV=dev, debug=false useHttp=true Field Hooks: afterChange() delet
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - Post.title.hooks.afterOperation: Simulated error: title: afterOperation
   - Post.content.hooks.afterOperation: Simulated error: content: afterOperation",
     "path": [
@@ -162,7 +162,7 @@ exports[`NODE_ENV=dev, debug=false useHttp=true Field Hooks: afterChange() updat
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - Post.title.hooks.afterOperation: Simulated error: title: afterOperation
   - Post.content.hooks.afterOperation: Simulated error: content: afterOperation",
     "path": [
@@ -184,7 +184,7 @@ exports[`NODE_ENV=dev, debug=false useHttp=true Field Hooks: beforeChange() dele
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - Post.title.hooks.beforeOperation: Simulated error: title: beforeOperation
   - Post.content.hooks.beforeOperation: Simulated error: content: beforeOperation",
     "path": [
@@ -206,7 +206,7 @@ exports[`NODE_ENV=dev, debug=false useHttp=true Field Hooks: beforeChange() upda
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - Post.title.hooks.beforeOperation: Simulated error: title: beforeOperation
   - Post.content.hooks.beforeOperation: Simulated error: content: beforeOperation",
     "path": [
@@ -228,7 +228,7 @@ exports[`NODE_ENV=dev, debug=false useHttp=true List Hooks: afterOperation creat
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "createUsers",
@@ -245,7 +245,7 @@ exports[`NODE_ENV=dev, debug=false useHttp=true List Hooks: afterOperation creat
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "createUsers",
@@ -267,7 +267,7 @@ exports[`NODE_ENV=dev, debug=false useHttp=true List Hooks: afterOperation creat
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "createUser",
@@ -288,7 +288,7 @@ exports[`NODE_ENV=dev, debug=false useHttp=true List Hooks: afterOperation delet
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "deleteUsers",
@@ -305,7 +305,7 @@ exports[`NODE_ENV=dev, debug=false useHttp=true List Hooks: afterOperation delet
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "deleteUsers",
@@ -327,7 +327,7 @@ exports[`NODE_ENV=dev, debug=false useHttp=true List Hooks: afterOperation delet
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "deleteUser",
@@ -348,7 +348,7 @@ exports[`NODE_ENV=dev, debug=false useHttp=true List Hooks: afterOperation updat
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "updateUsers",
@@ -365,7 +365,7 @@ exports[`NODE_ENV=dev, debug=false useHttp=true List Hooks: afterOperation updat
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "updateUsers",
@@ -387,7 +387,7 @@ exports[`NODE_ENV=dev, debug=false useHttp=true List Hooks: afterOperation updat
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "updateUser",
@@ -408,7 +408,7 @@ exports[`NODE_ENV=dev, debug=false useHttp=true List Hooks: beforeOperation crea
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "createUsers",
@@ -425,7 +425,7 @@ exports[`NODE_ENV=dev, debug=false useHttp=true List Hooks: beforeOperation crea
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "createUsers",
@@ -447,7 +447,7 @@ exports[`NODE_ENV=dev, debug=false useHttp=true List Hooks: beforeOperation crea
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "createUser",
@@ -468,7 +468,7 @@ exports[`NODE_ENV=dev, debug=false useHttp=true List Hooks: beforeOperation dele
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "deleteUsers",
@@ -485,7 +485,7 @@ exports[`NODE_ENV=dev, debug=false useHttp=true List Hooks: beforeOperation dele
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "deleteUsers",
@@ -507,7 +507,7 @@ exports[`NODE_ENV=dev, debug=false useHttp=true List Hooks: beforeOperation dele
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "deleteUser",
@@ -528,7 +528,7 @@ exports[`NODE_ENV=dev, debug=false useHttp=true List Hooks: beforeOperation upda
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "updateUsers",
@@ -545,7 +545,7 @@ exports[`NODE_ENV=dev, debug=false useHttp=true List Hooks: beforeOperation upda
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "updateUsers",
@@ -567,7 +567,7 @@ exports[`NODE_ENV=dev, debug=false useHttp=true List Hooks: beforeOperation upda
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "updateUser",
@@ -578,7 +578,7 @@ exports[`NODE_ENV=dev, debug=false useHttp=true List Hooks: beforeOperation upda
 
 exports[`NODE_ENV=dev, debug=true useHttp=false Field Hooks: afterChange() delete 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - Post.title.hooks.afterOperation: Simulated error: title: afterOperation
   - Post.content.hooks.afterOperation: Simulated error: content: afterOperation],
 ]
@@ -586,7 +586,7 @@ exports[`NODE_ENV=dev, debug=true useHttp=false Field Hooks: afterChange() delet
 
 exports[`NODE_ENV=dev, debug=true useHttp=false Field Hooks: afterChange() update 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - Post.title.hooks.afterOperation: Simulated error: title: afterOperation
   - Post.content.hooks.afterOperation: Simulated error: content: afterOperation],
 ]
@@ -594,7 +594,7 @@ exports[`NODE_ENV=dev, debug=true useHttp=false Field Hooks: afterChange() updat
 
 exports[`NODE_ENV=dev, debug=true useHttp=false Field Hooks: beforeChange() delete 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - Post.title.hooks.beforeOperation: Simulated error: title: beforeOperation
   - Post.content.hooks.beforeOperation: Simulated error: content: beforeOperation],
 ]
@@ -602,7 +602,7 @@ exports[`NODE_ENV=dev, debug=true useHttp=false Field Hooks: beforeChange() dele
 
 exports[`NODE_ENV=dev, debug=true useHttp=false Field Hooks: beforeChange() update 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - Post.title.hooks.beforeOperation: Simulated error: title: beforeOperation
   - Post.content.hooks.beforeOperation: Simulated error: content: beforeOperation],
 ]
@@ -610,96 +610,96 @@ exports[`NODE_ENV=dev, debug=true useHttp=false Field Hooks: beforeChange() upda
 
 exports[`NODE_ENV=dev, debug=true useHttp=false List Hooks: afterOperation createMany 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=true useHttp=false List Hooks: afterOperation createOne 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=true useHttp=false List Hooks: afterOperation deleteMany 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=true useHttp=false List Hooks: afterOperation deleteOne 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=true useHttp=false List Hooks: afterOperation updateMany 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=true useHttp=false List Hooks: afterOperation updateOne 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=true useHttp=false List Hooks: beforeOperation createMany 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=true useHttp=false List Hooks: beforeOperation createOne 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=true useHttp=false List Hooks: beforeOperation deleteMany 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=true useHttp=false List Hooks: beforeOperation deleteOne 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=true useHttp=false List Hooks: beforeOperation updateMany 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=true useHttp=false List Hooks: beforeOperation updateOne 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
@@ -724,7 +724,7 @@ exports[`NODE_ENV=dev, debug=true useHttp=true Field Hooks: afterChange() delete
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - Post.title.hooks.afterOperation: Simulated error: title: afterOperation
   - Post.content.hooks.afterOperation: Simulated error: content: afterOperation",
     "path": [
@@ -754,7 +754,7 @@ exports[`NODE_ENV=dev, debug=true useHttp=true Field Hooks: afterChange() update
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - Post.title.hooks.afterOperation: Simulated error: title: afterOperation
   - Post.content.hooks.afterOperation: Simulated error: content: afterOperation",
     "path": [
@@ -784,7 +784,7 @@ exports[`NODE_ENV=dev, debug=true useHttp=true Field Hooks: beforeChange() delet
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - Post.title.hooks.beforeOperation: Simulated error: title: beforeOperation
   - Post.content.hooks.beforeOperation: Simulated error: content: beforeOperation",
     "path": [
@@ -814,7 +814,7 @@ exports[`NODE_ENV=dev, debug=true useHttp=true Field Hooks: beforeChange() updat
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - Post.title.hooks.beforeOperation: Simulated error: title: beforeOperation
   - Post.content.hooks.beforeOperation: Simulated error: content: beforeOperation",
     "path": [
@@ -841,7 +841,7 @@ exports[`NODE_ENV=dev, debug=true useHttp=true List Hooks: afterOperation create
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "createUsers",
@@ -863,7 +863,7 @@ exports[`NODE_ENV=dev, debug=true useHttp=true List Hooks: afterOperation create
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "createUsers",
@@ -890,7 +890,7 @@ exports[`NODE_ENV=dev, debug=true useHttp=true List Hooks: afterOperation create
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "createUser",
@@ -916,7 +916,7 @@ exports[`NODE_ENV=dev, debug=true useHttp=true List Hooks: afterOperation delete
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "deleteUsers",
@@ -938,7 +938,7 @@ exports[`NODE_ENV=dev, debug=true useHttp=true List Hooks: afterOperation delete
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "deleteUsers",
@@ -965,7 +965,7 @@ exports[`NODE_ENV=dev, debug=true useHttp=true List Hooks: afterOperation delete
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "deleteUser",
@@ -991,7 +991,7 @@ exports[`NODE_ENV=dev, debug=true useHttp=true List Hooks: afterOperation update
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "updateUsers",
@@ -1013,7 +1013,7 @@ exports[`NODE_ENV=dev, debug=true useHttp=true List Hooks: afterOperation update
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "updateUsers",
@@ -1040,7 +1040,7 @@ exports[`NODE_ENV=dev, debug=true useHttp=true List Hooks: afterOperation update
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "updateUser",
@@ -1066,7 +1066,7 @@ exports[`NODE_ENV=dev, debug=true useHttp=true List Hooks: beforeOperation creat
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "createUsers",
@@ -1088,7 +1088,7 @@ exports[`NODE_ENV=dev, debug=true useHttp=true List Hooks: beforeOperation creat
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "createUsers",
@@ -1115,7 +1115,7 @@ exports[`NODE_ENV=dev, debug=true useHttp=true List Hooks: beforeOperation creat
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "createUser",
@@ -1141,7 +1141,7 @@ exports[`NODE_ENV=dev, debug=true useHttp=true List Hooks: beforeOperation delet
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "deleteUsers",
@@ -1163,7 +1163,7 @@ exports[`NODE_ENV=dev, debug=true useHttp=true List Hooks: beforeOperation delet
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "deleteUsers",
@@ -1190,7 +1190,7 @@ exports[`NODE_ENV=dev, debug=true useHttp=true List Hooks: beforeOperation delet
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "deleteUser",
@@ -1216,7 +1216,7 @@ exports[`NODE_ENV=dev, debug=true useHttp=true List Hooks: beforeOperation updat
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "updateUsers",
@@ -1238,7 +1238,7 @@ exports[`NODE_ENV=dev, debug=true useHttp=true List Hooks: beforeOperation updat
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "updateUsers",
@@ -1265,7 +1265,7 @@ exports[`NODE_ENV=dev, debug=true useHttp=true List Hooks: beforeOperation updat
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "updateUser",
@@ -1276,7 +1276,7 @@ exports[`NODE_ENV=dev, debug=true useHttp=true List Hooks: beforeOperation updat
 
 exports[`NODE_ENV=dev, debug=undefined useHttp=false Field Hooks: afterChange() delete 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - Post.title.hooks.afterOperation: Simulated error: title: afterOperation
   - Post.content.hooks.afterOperation: Simulated error: content: afterOperation],
 ]
@@ -1284,7 +1284,7 @@ exports[`NODE_ENV=dev, debug=undefined useHttp=false Field Hooks: afterChange() 
 
 exports[`NODE_ENV=dev, debug=undefined useHttp=false Field Hooks: afterChange() update 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - Post.title.hooks.afterOperation: Simulated error: title: afterOperation
   - Post.content.hooks.afterOperation: Simulated error: content: afterOperation],
 ]
@@ -1292,7 +1292,7 @@ exports[`NODE_ENV=dev, debug=undefined useHttp=false Field Hooks: afterChange() 
 
 exports[`NODE_ENV=dev, debug=undefined useHttp=false Field Hooks: beforeChange() delete 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - Post.title.hooks.beforeOperation: Simulated error: title: beforeOperation
   - Post.content.hooks.beforeOperation: Simulated error: content: beforeOperation],
 ]
@@ -1300,7 +1300,7 @@ exports[`NODE_ENV=dev, debug=undefined useHttp=false Field Hooks: beforeChange()
 
 exports[`NODE_ENV=dev, debug=undefined useHttp=false Field Hooks: beforeChange() update 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - Post.title.hooks.beforeOperation: Simulated error: title: beforeOperation
   - Post.content.hooks.beforeOperation: Simulated error: content: beforeOperation],
 ]
@@ -1308,96 +1308,96 @@ exports[`NODE_ENV=dev, debug=undefined useHttp=false Field Hooks: beforeChange()
 
 exports[`NODE_ENV=dev, debug=undefined useHttp=false List Hooks: afterOperation createMany 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=undefined useHttp=false List Hooks: afterOperation createOne 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=undefined useHttp=false List Hooks: afterOperation deleteMany 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=undefined useHttp=false List Hooks: afterOperation deleteOne 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=undefined useHttp=false List Hooks: afterOperation updateMany 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=undefined useHttp=false List Hooks: afterOperation updateOne 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=undefined useHttp=false List Hooks: beforeOperation createMany 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=undefined useHttp=false List Hooks: beforeOperation createOne 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=undefined useHttp=false List Hooks: beforeOperation deleteMany 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=undefined useHttp=false List Hooks: beforeOperation deleteOne 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=undefined useHttp=false List Hooks: beforeOperation updateMany 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=dev, debug=undefined useHttp=false List Hooks: beforeOperation updateOne 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
@@ -1422,7 +1422,7 @@ exports[`NODE_ENV=dev, debug=undefined useHttp=true Field Hooks: afterChange() d
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - Post.title.hooks.afterOperation: Simulated error: title: afterOperation
   - Post.content.hooks.afterOperation: Simulated error: content: afterOperation",
     "path": [
@@ -1452,7 +1452,7 @@ exports[`NODE_ENV=dev, debug=undefined useHttp=true Field Hooks: afterChange() u
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - Post.title.hooks.afterOperation: Simulated error: title: afterOperation
   - Post.content.hooks.afterOperation: Simulated error: content: afterOperation",
     "path": [
@@ -1482,7 +1482,7 @@ exports[`NODE_ENV=dev, debug=undefined useHttp=true Field Hooks: beforeChange() 
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - Post.title.hooks.beforeOperation: Simulated error: title: beforeOperation
   - Post.content.hooks.beforeOperation: Simulated error: content: beforeOperation",
     "path": [
@@ -1512,7 +1512,7 @@ exports[`NODE_ENV=dev, debug=undefined useHttp=true Field Hooks: beforeChange() 
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - Post.title.hooks.beforeOperation: Simulated error: title: beforeOperation
   - Post.content.hooks.beforeOperation: Simulated error: content: beforeOperation",
     "path": [
@@ -1539,7 +1539,7 @@ exports[`NODE_ENV=dev, debug=undefined useHttp=true List Hooks: afterOperation c
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "createUsers",
@@ -1561,7 +1561,7 @@ exports[`NODE_ENV=dev, debug=undefined useHttp=true List Hooks: afterOperation c
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "createUsers",
@@ -1588,7 +1588,7 @@ exports[`NODE_ENV=dev, debug=undefined useHttp=true List Hooks: afterOperation c
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "createUser",
@@ -1614,7 +1614,7 @@ exports[`NODE_ENV=dev, debug=undefined useHttp=true List Hooks: afterOperation d
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "deleteUsers",
@@ -1636,7 +1636,7 @@ exports[`NODE_ENV=dev, debug=undefined useHttp=true List Hooks: afterOperation d
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "deleteUsers",
@@ -1663,7 +1663,7 @@ exports[`NODE_ENV=dev, debug=undefined useHttp=true List Hooks: afterOperation d
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "deleteUser",
@@ -1689,7 +1689,7 @@ exports[`NODE_ENV=dev, debug=undefined useHttp=true List Hooks: afterOperation u
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "updateUsers",
@@ -1711,7 +1711,7 @@ exports[`NODE_ENV=dev, debug=undefined useHttp=true List Hooks: afterOperation u
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "updateUsers",
@@ -1738,7 +1738,7 @@ exports[`NODE_ENV=dev, debug=undefined useHttp=true List Hooks: afterOperation u
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "updateUser",
@@ -1764,7 +1764,7 @@ exports[`NODE_ENV=dev, debug=undefined useHttp=true List Hooks: beforeOperation 
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "createUsers",
@@ -1786,7 +1786,7 @@ exports[`NODE_ENV=dev, debug=undefined useHttp=true List Hooks: beforeOperation 
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "createUsers",
@@ -1813,7 +1813,7 @@ exports[`NODE_ENV=dev, debug=undefined useHttp=true List Hooks: beforeOperation 
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "createUser",
@@ -1839,7 +1839,7 @@ exports[`NODE_ENV=dev, debug=undefined useHttp=true List Hooks: beforeOperation 
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "deleteUsers",
@@ -1861,7 +1861,7 @@ exports[`NODE_ENV=dev, debug=undefined useHttp=true List Hooks: beforeOperation 
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "deleteUsers",
@@ -1888,7 +1888,7 @@ exports[`NODE_ENV=dev, debug=undefined useHttp=true List Hooks: beforeOperation 
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "deleteUser",
@@ -1914,7 +1914,7 @@ exports[`NODE_ENV=dev, debug=undefined useHttp=true List Hooks: beforeOperation 
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "updateUsers",
@@ -1936,7 +1936,7 @@ exports[`NODE_ENV=dev, debug=undefined useHttp=true List Hooks: beforeOperation 
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "updateUsers",
@@ -1963,7 +1963,7 @@ exports[`NODE_ENV=dev, debug=undefined useHttp=true List Hooks: beforeOperation 
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "updateUser",
@@ -1974,7 +1974,7 @@ exports[`NODE_ENV=dev, debug=undefined useHttp=true List Hooks: beforeOperation 
 
 exports[`NODE_ENV=production, debug=false useHttp=false Field Hooks: afterChange() delete 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - Post.title.hooks.afterOperation: Simulated error: title: afterOperation
   - Post.content.hooks.afterOperation: Simulated error: content: afterOperation],
 ]
@@ -1982,7 +1982,7 @@ exports[`NODE_ENV=production, debug=false useHttp=false Field Hooks: afterChange
 
 exports[`NODE_ENV=production, debug=false useHttp=false Field Hooks: afterChange() update 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - Post.title.hooks.afterOperation: Simulated error: title: afterOperation
   - Post.content.hooks.afterOperation: Simulated error: content: afterOperation],
 ]
@@ -1990,7 +1990,7 @@ exports[`NODE_ENV=production, debug=false useHttp=false Field Hooks: afterChange
 
 exports[`NODE_ENV=production, debug=false useHttp=false Field Hooks: beforeChange() delete 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - Post.title.hooks.beforeOperation: Simulated error: title: beforeOperation
   - Post.content.hooks.beforeOperation: Simulated error: content: beforeOperation],
 ]
@@ -1998,7 +1998,7 @@ exports[`NODE_ENV=production, debug=false useHttp=false Field Hooks: beforeChang
 
 exports[`NODE_ENV=production, debug=false useHttp=false Field Hooks: beforeChange() update 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - Post.title.hooks.beforeOperation: Simulated error: title: beforeOperation
   - Post.content.hooks.beforeOperation: Simulated error: content: beforeOperation],
 ]
@@ -2006,96 +2006,96 @@ exports[`NODE_ENV=production, debug=false useHttp=false Field Hooks: beforeChang
 
 exports[`NODE_ENV=production, debug=false useHttp=false List Hooks: afterOperation createMany 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=false useHttp=false List Hooks: afterOperation createOne 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=false useHttp=false List Hooks: afterOperation deleteMany 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=false useHttp=false List Hooks: afterOperation deleteOne 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=false useHttp=false List Hooks: afterOperation updateMany 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=false useHttp=false List Hooks: afterOperation updateOne 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=false useHttp=false List Hooks: beforeOperation createMany 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=false useHttp=false List Hooks: beforeOperation createOne 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=false useHttp=false List Hooks: beforeOperation deleteMany 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=false useHttp=false List Hooks: beforeOperation deleteOne 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=false useHttp=false List Hooks: beforeOperation updateMany 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=false useHttp=false List Hooks: beforeOperation updateOne 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
@@ -2112,7 +2112,7 @@ exports[`NODE_ENV=production, debug=false useHttp=true Field Hooks: afterChange(
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - Post.title.hooks.afterOperation: Simulated error: title: afterOperation
   - Post.content.hooks.afterOperation: Simulated error: content: afterOperation",
     "path": [
@@ -2134,7 +2134,7 @@ exports[`NODE_ENV=production, debug=false useHttp=true Field Hooks: afterChange(
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - Post.title.hooks.afterOperation: Simulated error: title: afterOperation
   - Post.content.hooks.afterOperation: Simulated error: content: afterOperation",
     "path": [
@@ -2156,7 +2156,7 @@ exports[`NODE_ENV=production, debug=false useHttp=true Field Hooks: beforeChange
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - Post.title.hooks.beforeOperation: Simulated error: title: beforeOperation
   - Post.content.hooks.beforeOperation: Simulated error: content: beforeOperation",
     "path": [
@@ -2178,7 +2178,7 @@ exports[`NODE_ENV=production, debug=false useHttp=true Field Hooks: beforeChange
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - Post.title.hooks.beforeOperation: Simulated error: title: beforeOperation
   - Post.content.hooks.beforeOperation: Simulated error: content: beforeOperation",
     "path": [
@@ -2200,7 +2200,7 @@ exports[`NODE_ENV=production, debug=false useHttp=true List Hooks: afterOperatio
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "createUsers",
@@ -2217,7 +2217,7 @@ exports[`NODE_ENV=production, debug=false useHttp=true List Hooks: afterOperatio
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "createUsers",
@@ -2239,7 +2239,7 @@ exports[`NODE_ENV=production, debug=false useHttp=true List Hooks: afterOperatio
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "createUser",
@@ -2260,7 +2260,7 @@ exports[`NODE_ENV=production, debug=false useHttp=true List Hooks: afterOperatio
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "deleteUsers",
@@ -2277,7 +2277,7 @@ exports[`NODE_ENV=production, debug=false useHttp=true List Hooks: afterOperatio
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "deleteUsers",
@@ -2299,7 +2299,7 @@ exports[`NODE_ENV=production, debug=false useHttp=true List Hooks: afterOperatio
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "deleteUser",
@@ -2320,7 +2320,7 @@ exports[`NODE_ENV=production, debug=false useHttp=true List Hooks: afterOperatio
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "updateUsers",
@@ -2337,7 +2337,7 @@ exports[`NODE_ENV=production, debug=false useHttp=true List Hooks: afterOperatio
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "updateUsers",
@@ -2359,7 +2359,7 @@ exports[`NODE_ENV=production, debug=false useHttp=true List Hooks: afterOperatio
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "updateUser",
@@ -2380,7 +2380,7 @@ exports[`NODE_ENV=production, debug=false useHttp=true List Hooks: beforeOperati
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "createUsers",
@@ -2397,7 +2397,7 @@ exports[`NODE_ENV=production, debug=false useHttp=true List Hooks: beforeOperati
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "createUsers",
@@ -2419,7 +2419,7 @@ exports[`NODE_ENV=production, debug=false useHttp=true List Hooks: beforeOperati
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "createUser",
@@ -2440,7 +2440,7 @@ exports[`NODE_ENV=production, debug=false useHttp=true List Hooks: beforeOperati
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "deleteUsers",
@@ -2457,7 +2457,7 @@ exports[`NODE_ENV=production, debug=false useHttp=true List Hooks: beforeOperati
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "deleteUsers",
@@ -2479,7 +2479,7 @@ exports[`NODE_ENV=production, debug=false useHttp=true List Hooks: beforeOperati
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "deleteUser",
@@ -2500,7 +2500,7 @@ exports[`NODE_ENV=production, debug=false useHttp=true List Hooks: beforeOperati
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "updateUsers",
@@ -2517,7 +2517,7 @@ exports[`NODE_ENV=production, debug=false useHttp=true List Hooks: beforeOperati
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "updateUsers",
@@ -2539,7 +2539,7 @@ exports[`NODE_ENV=production, debug=false useHttp=true List Hooks: beforeOperati
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "updateUser",
@@ -2550,7 +2550,7 @@ exports[`NODE_ENV=production, debug=false useHttp=true List Hooks: beforeOperati
 
 exports[`NODE_ENV=production, debug=true useHttp=false Field Hooks: afterChange() delete 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - Post.title.hooks.afterOperation: Simulated error: title: afterOperation
   - Post.content.hooks.afterOperation: Simulated error: content: afterOperation],
 ]
@@ -2558,7 +2558,7 @@ exports[`NODE_ENV=production, debug=true useHttp=false Field Hooks: afterChange(
 
 exports[`NODE_ENV=production, debug=true useHttp=false Field Hooks: afterChange() update 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - Post.title.hooks.afterOperation: Simulated error: title: afterOperation
   - Post.content.hooks.afterOperation: Simulated error: content: afterOperation],
 ]
@@ -2566,7 +2566,7 @@ exports[`NODE_ENV=production, debug=true useHttp=false Field Hooks: afterChange(
 
 exports[`NODE_ENV=production, debug=true useHttp=false Field Hooks: beforeChange() delete 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - Post.title.hooks.beforeOperation: Simulated error: title: beforeOperation
   - Post.content.hooks.beforeOperation: Simulated error: content: beforeOperation],
 ]
@@ -2574,7 +2574,7 @@ exports[`NODE_ENV=production, debug=true useHttp=false Field Hooks: beforeChange
 
 exports[`NODE_ENV=production, debug=true useHttp=false Field Hooks: beforeChange() update 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - Post.title.hooks.beforeOperation: Simulated error: title: beforeOperation
   - Post.content.hooks.beforeOperation: Simulated error: content: beforeOperation],
 ]
@@ -2582,96 +2582,96 @@ exports[`NODE_ENV=production, debug=true useHttp=false Field Hooks: beforeChange
 
 exports[`NODE_ENV=production, debug=true useHttp=false List Hooks: afterOperation createMany 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=true useHttp=false List Hooks: afterOperation createOne 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=true useHttp=false List Hooks: afterOperation deleteMany 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=true useHttp=false List Hooks: afterOperation deleteOne 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=true useHttp=false List Hooks: afterOperation updateMany 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=true useHttp=false List Hooks: afterOperation updateOne 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=true useHttp=false List Hooks: beforeOperation createMany 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=true useHttp=false List Hooks: beforeOperation createOne 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=true useHttp=false List Hooks: beforeOperation deleteMany 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=true useHttp=false List Hooks: beforeOperation deleteOne 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=true useHttp=false List Hooks: beforeOperation updateMany 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=true useHttp=false List Hooks: beforeOperation updateOne 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
@@ -2696,7 +2696,7 @@ exports[`NODE_ENV=production, debug=true useHttp=true Field Hooks: afterChange()
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - Post.title.hooks.afterOperation: Simulated error: title: afterOperation
   - Post.content.hooks.afterOperation: Simulated error: content: afterOperation",
     "path": [
@@ -2726,7 +2726,7 @@ exports[`NODE_ENV=production, debug=true useHttp=true Field Hooks: afterChange()
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - Post.title.hooks.afterOperation: Simulated error: title: afterOperation
   - Post.content.hooks.afterOperation: Simulated error: content: afterOperation",
     "path": [
@@ -2756,7 +2756,7 @@ exports[`NODE_ENV=production, debug=true useHttp=true Field Hooks: beforeChange(
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - Post.title.hooks.beforeOperation: Simulated error: title: beforeOperation
   - Post.content.hooks.beforeOperation: Simulated error: content: beforeOperation",
     "path": [
@@ -2786,7 +2786,7 @@ exports[`NODE_ENV=production, debug=true useHttp=true Field Hooks: beforeChange(
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - Post.title.hooks.beforeOperation: Simulated error: title: beforeOperation
   - Post.content.hooks.beforeOperation: Simulated error: content: beforeOperation",
     "path": [
@@ -2813,7 +2813,7 @@ exports[`NODE_ENV=production, debug=true useHttp=true List Hooks: afterOperation
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "createUsers",
@@ -2835,7 +2835,7 @@ exports[`NODE_ENV=production, debug=true useHttp=true List Hooks: afterOperation
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "createUsers",
@@ -2862,7 +2862,7 @@ exports[`NODE_ENV=production, debug=true useHttp=true List Hooks: afterOperation
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "createUser",
@@ -2888,7 +2888,7 @@ exports[`NODE_ENV=production, debug=true useHttp=true List Hooks: afterOperation
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "deleteUsers",
@@ -2910,7 +2910,7 @@ exports[`NODE_ENV=production, debug=true useHttp=true List Hooks: afterOperation
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "deleteUsers",
@@ -2937,7 +2937,7 @@ exports[`NODE_ENV=production, debug=true useHttp=true List Hooks: afterOperation
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "deleteUser",
@@ -2963,7 +2963,7 @@ exports[`NODE_ENV=production, debug=true useHttp=true List Hooks: afterOperation
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "updateUsers",
@@ -2985,7 +2985,7 @@ exports[`NODE_ENV=production, debug=true useHttp=true List Hooks: afterOperation
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "updateUsers",
@@ -3012,7 +3012,7 @@ exports[`NODE_ENV=production, debug=true useHttp=true List Hooks: afterOperation
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "updateUser",
@@ -3038,7 +3038,7 @@ exports[`NODE_ENV=production, debug=true useHttp=true List Hooks: beforeOperatio
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "createUsers",
@@ -3060,7 +3060,7 @@ exports[`NODE_ENV=production, debug=true useHttp=true List Hooks: beforeOperatio
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "createUsers",
@@ -3087,7 +3087,7 @@ exports[`NODE_ENV=production, debug=true useHttp=true List Hooks: beforeOperatio
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "createUser",
@@ -3113,7 +3113,7 @@ exports[`NODE_ENV=production, debug=true useHttp=true List Hooks: beforeOperatio
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "deleteUsers",
@@ -3135,7 +3135,7 @@ exports[`NODE_ENV=production, debug=true useHttp=true List Hooks: beforeOperatio
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "deleteUsers",
@@ -3162,7 +3162,7 @@ exports[`NODE_ENV=production, debug=true useHttp=true List Hooks: beforeOperatio
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "deleteUser",
@@ -3188,7 +3188,7 @@ exports[`NODE_ENV=production, debug=true useHttp=true List Hooks: beforeOperatio
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "updateUsers",
@@ -3210,7 +3210,7 @@ exports[`NODE_ENV=production, debug=true useHttp=true List Hooks: beforeOperatio
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "updateUsers",
@@ -3237,7 +3237,7 @@ exports[`NODE_ENV=production, debug=true useHttp=true List Hooks: beforeOperatio
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "updateUser",
@@ -3248,7 +3248,7 @@ exports[`NODE_ENV=production, debug=true useHttp=true List Hooks: beforeOperatio
 
 exports[`NODE_ENV=production, debug=undefined useHttp=false Field Hooks: afterChange() delete 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - Post.title.hooks.afterOperation: Simulated error: title: afterOperation
   - Post.content.hooks.afterOperation: Simulated error: content: afterOperation],
 ]
@@ -3256,7 +3256,7 @@ exports[`NODE_ENV=production, debug=undefined useHttp=false Field Hooks: afterCh
 
 exports[`NODE_ENV=production, debug=undefined useHttp=false Field Hooks: afterChange() update 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - Post.title.hooks.afterOperation: Simulated error: title: afterOperation
   - Post.content.hooks.afterOperation: Simulated error: content: afterOperation],
 ]
@@ -3264,7 +3264,7 @@ exports[`NODE_ENV=production, debug=undefined useHttp=false Field Hooks: afterCh
 
 exports[`NODE_ENV=production, debug=undefined useHttp=false Field Hooks: beforeChange() delete 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - Post.title.hooks.beforeOperation: Simulated error: title: beforeOperation
   - Post.content.hooks.beforeOperation: Simulated error: content: beforeOperation],
 ]
@@ -3272,7 +3272,7 @@ exports[`NODE_ENV=production, debug=undefined useHttp=false Field Hooks: beforeC
 
 exports[`NODE_ENV=production, debug=undefined useHttp=false Field Hooks: beforeChange() update 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - Post.title.hooks.beforeOperation: Simulated error: title: beforeOperation
   - Post.content.hooks.beforeOperation: Simulated error: content: beforeOperation],
 ]
@@ -3280,96 +3280,96 @@ exports[`NODE_ENV=production, debug=undefined useHttp=false Field Hooks: beforeC
 
 exports[`NODE_ENV=production, debug=undefined useHttp=false List Hooks: afterOperation createMany 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=undefined useHttp=false List Hooks: afterOperation createOne 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=undefined useHttp=false List Hooks: afterOperation deleteMany 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=undefined useHttp=false List Hooks: afterOperation deleteOne 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=undefined useHttp=false List Hooks: afterOperation updateMany 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=undefined useHttp=false List Hooks: afterOperation updateOne 1`] = `
 [
-  [GraphQLError: An error occured while running "afterOperation".
+  [GraphQLError: An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=undefined useHttp=false List Hooks: beforeOperation createMany 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=undefined useHttp=false List Hooks: beforeOperation createOne 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=undefined useHttp=false List Hooks: beforeOperation deleteMany 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=undefined useHttp=false List Hooks: beforeOperation deleteOne 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=undefined useHttp=false List Hooks: beforeOperation updateMany 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
 
 exports[`NODE_ENV=production, debug=undefined useHttp=false List Hooks: beforeOperation updateOne 1`] = `
 [
-  [GraphQLError: An error occured while running "beforeOperation".
+  [GraphQLError: An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation],
 ]
 `;
@@ -3386,7 +3386,7 @@ exports[`NODE_ENV=production, debug=undefined useHttp=true Field Hooks: afterCha
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - Post.title.hooks.afterOperation: Simulated error: title: afterOperation
   - Post.content.hooks.afterOperation: Simulated error: content: afterOperation",
     "path": [
@@ -3408,7 +3408,7 @@ exports[`NODE_ENV=production, debug=undefined useHttp=true Field Hooks: afterCha
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - Post.title.hooks.afterOperation: Simulated error: title: afterOperation
   - Post.content.hooks.afterOperation: Simulated error: content: afterOperation",
     "path": [
@@ -3430,7 +3430,7 @@ exports[`NODE_ENV=production, debug=undefined useHttp=true Field Hooks: beforeCh
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - Post.title.hooks.beforeOperation: Simulated error: title: beforeOperation
   - Post.content.hooks.beforeOperation: Simulated error: content: beforeOperation",
     "path": [
@@ -3452,7 +3452,7 @@ exports[`NODE_ENV=production, debug=undefined useHttp=true Field Hooks: beforeCh
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - Post.title.hooks.beforeOperation: Simulated error: title: beforeOperation
   - Post.content.hooks.beforeOperation: Simulated error: content: beforeOperation",
     "path": [
@@ -3474,7 +3474,7 @@ exports[`NODE_ENV=production, debug=undefined useHttp=true List Hooks: afterOper
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "createUsers",
@@ -3491,7 +3491,7 @@ exports[`NODE_ENV=production, debug=undefined useHttp=true List Hooks: afterOper
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "createUsers",
@@ -3513,7 +3513,7 @@ exports[`NODE_ENV=production, debug=undefined useHttp=true List Hooks: afterOper
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "createUser",
@@ -3534,7 +3534,7 @@ exports[`NODE_ENV=production, debug=undefined useHttp=true List Hooks: afterOper
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "deleteUsers",
@@ -3551,7 +3551,7 @@ exports[`NODE_ENV=production, debug=undefined useHttp=true List Hooks: afterOper
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "deleteUsers",
@@ -3573,7 +3573,7 @@ exports[`NODE_ENV=production, debug=undefined useHttp=true List Hooks: afterOper
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "deleteUser",
@@ -3594,7 +3594,7 @@ exports[`NODE_ENV=production, debug=undefined useHttp=true List Hooks: afterOper
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "updateUsers",
@@ -3611,7 +3611,7 @@ exports[`NODE_ENV=production, debug=undefined useHttp=true List Hooks: afterOper
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "updateUsers",
@@ -3633,7 +3633,7 @@ exports[`NODE_ENV=production, debug=undefined useHttp=true List Hooks: afterOper
         "line": 1,
       },
     ],
-    "message": "An error occured while running "afterOperation".
+    "message": "An error occurred while running "afterOperation".
   - User.hooks.afterOperation: Simulated error: afterOperation",
     "path": [
       "updateUser",
@@ -3654,7 +3654,7 @@ exports[`NODE_ENV=production, debug=undefined useHttp=true List Hooks: beforeOpe
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "createUsers",
@@ -3671,7 +3671,7 @@ exports[`NODE_ENV=production, debug=undefined useHttp=true List Hooks: beforeOpe
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "createUsers",
@@ -3693,7 +3693,7 @@ exports[`NODE_ENV=production, debug=undefined useHttp=true List Hooks: beforeOpe
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "createUser",
@@ -3714,7 +3714,7 @@ exports[`NODE_ENV=production, debug=undefined useHttp=true List Hooks: beforeOpe
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "deleteUsers",
@@ -3731,7 +3731,7 @@ exports[`NODE_ENV=production, debug=undefined useHttp=true List Hooks: beforeOpe
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "deleteUsers",
@@ -3753,7 +3753,7 @@ exports[`NODE_ENV=production, debug=undefined useHttp=true List Hooks: beforeOpe
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "deleteUser",
@@ -3774,7 +3774,7 @@ exports[`NODE_ENV=production, debug=undefined useHttp=true List Hooks: beforeOpe
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "updateUsers",
@@ -3791,7 +3791,7 @@ exports[`NODE_ENV=production, debug=undefined useHttp=true List Hooks: beforeOpe
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "updateUsers",
@@ -3813,7 +3813,7 @@ exports[`NODE_ENV=production, debug=undefined useHttp=true List Hooks: beforeOpe
         "line": 1,
       },
     ],
-    "message": "An error occured while running "beforeOperation".
+    "message": "An error occurred while running "beforeOperation".
   - User.hooks.beforeOperation: Simulated error: beforeOperation",
     "path": [
       "updateUser",

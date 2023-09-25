@@ -449,9 +449,9 @@ The following error codes can be returned from the Keystone GraphQL API.
 - `KS_LIMITS_EXCEEDED`: The user has exceeded some query limits. E.g, a `take` input [that is too high](../config/lists#graphql).
 - `KS_EXTENSION_ERROR`: An error was thrown while excuting a system extension function, such as a hook or an access control function.
 - `KS_ACCESS_RETURN_ERROR`: An invalid value was returned from an access control function.
-- `KS_RESOLVER_ERROR`: An error occured while resolving the input for a field.
-- `KS_RELATIONSHIP_ERROR`: An error occured while resolving the input relationship field.
-- `KS_PRISMA_ERROR`: An error occured while running a Prisma client operation.
+- `KS_RESOLVER_ERROR`: An error occurred while resolving the input for a field.
+- `KS_RELATIONSHIP_ERROR`: An error occurred while resolving the input relationship field.
+- `KS_PRISMA_ERROR`: An error occurred while running a Prisma client operation.
 
 > A note on `KS_ACCESS_DENIED`: Returning a "not found" error from a mutation like `updateUser({ where: { secretKey: 'abc' } })` but an "access denied" error from `updateUser({ where: { secretKey: 'def' } })` would reveal the existence of a user with the secret key "def". To prevent leaking private information in this way, Keystone will always say "access denied" when you try to perform a mutation on an item that can't be operated on, whether that is because there is no matching record in the database, or there was but the user performing the operation doesn't have access to it.
 
