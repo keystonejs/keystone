@@ -2060,8 +2060,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0
       inflection:
-        specifier: ^1.13.1
-        version: 1.13.1
+        specifier: ^3.0.0
+        version: 3.0.0
       intersection-observer:
         specifier: ^0.12.0
         version: 0.12.0
@@ -16488,9 +16488,9 @@ packages:
     resolution: {integrity: sha512-IClj+Xz94+d7irH5qRyfJonOdfTzuDaifE6ZPWfx0N0+/ATZCbuTPq2prFl526urkQd90WyUKIh1DfBQ2hMz9A==}
     dev: true
 
-  /inflection@1.13.1:
-    resolution: {integrity: sha512-dldYtl2WlN0QDkIDtg8+xFwOS2Tbmp12t1cHa5/YClU6ZQjTFm7B66UcVbh9NQB+HvT5BAd2t5+yKsBkw5pcqA==}
-    engines: {'0': node >= 0.4.0}
+  /inflection@3.0.0:
+    resolution: {integrity: sha512-1zEJU1l19SgJlmwqsEyFTbScw/tkMHFenUo//Y0i+XEP83gDFdMvPizAD/WGcE+l1ku12PcTVHQhO6g5E0UCMw==}
+    engines: {node: '>=18.0.0'}
     dev: false
 
   /inflight@1.0.6:
