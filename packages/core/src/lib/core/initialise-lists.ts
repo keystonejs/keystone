@@ -352,7 +352,6 @@ function getListsWithInitialisedFields(
           description: f.ui?.description ?? '',
           views: f.ui?.views ?? '',
           createView: {
-            ...f.ui?.createView, // copy
             fieldMode: _isEnabled.create ? fieldModes.create : 'hidden',
           },
 
@@ -366,7 +365,6 @@ function getListsWithInitialisedFields(
           },
 
           listView: {
-            ...f.ui?.listView, // copy
             fieldMode: _isEnabled.read ? fieldModes.list : 'hidden',
           },
         },
