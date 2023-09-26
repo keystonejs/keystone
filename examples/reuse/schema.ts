@@ -53,17 +53,41 @@ type CompatibleLists = FindListsWithField<'completed'>
 
 function trackingByHooks <
   ListTypeInfo extends CompatibleLists,
-//    FieldKey extends 'createdBy' | 'updatedBy' // TODO
-> (): FieldHooks<ListTypeInfo> {
+//    FieldKey extends 'createdBy' | 'updatedBy' // TODO: refined types for the return types
+> (immutable: boolean = false): FieldHooks<ListTypeInfo> {
   return {
     async resolveInput ({ context, operation, resolvedData, item, fieldKey }) {
       if (operation === 'update') {
-        if (isTrue(item.completed)) return undefined
+        if (immutable) return undefined
+
+        // show we have refined types for compatible item.* fields
+        if (isTrue(item.completed) && resolvedData.completed !== false) return undefined
       }
 
       // TODO: refined types for the return types
-      //   TODO: CommonFieldConfig shouldn't always be generalised across the entire List
+      //   FIXME: CommonFieldConfig need not always be generalised
       return `${context.req?.socket.remoteAddress} (${context.req?.headers['user-agent']})` as any;
+    }
+  }
+}
+
+function trackingAtHooks <
+  ListTypeInfo extends CompatibleLists,
+//    FieldKey extends 'createdAt' | 'updatedAt' // TODO: refined types for the return types
+> (immutable: boolean = false): FieldHooks<ListTypeInfo> {
+  return {
+    // TODO: switch to operation routing when supported for fields
+    async resolveInput ({ context, operation, resolvedData, item, fieldKey }) {
+      if (operation === 'update') {
+        if (immutable) return undefined
+
+        // show we have refined types for compatible item.* fields
+        if (isTrue(item.completed) && resolvedData.completed !== false) return undefined
+      }
+
+      // TODO: refined types for the return types
+      //   FIXME: CommonFieldConfig need not always be generalised
+      return new Date() as any
     }
   }
 }
@@ -73,11 +97,14 @@ function trackingFields <ListTypeInfo extends CompatibleLists> () {
     createdBy: text<ListTypeInfo>({
       ...readOnly,
       hooks: {
-        ...trackingByHooks<ListTypeInfo>(),
+        ...trackingByHooks<ListTypeInfo>(true),
       }
     }),
     createdAt: timestamp<ListTypeInfo>({
       ...readOnly,
+      hooks: {
+        ...trackingAtHooks<ListTypeInfo>(true),
+      }
     }),
     updatedBy: text<ListTypeInfo>({
       ...readOnly,
@@ -87,6 +114,9 @@ function trackingFields <ListTypeInfo extends CompatibleLists> () {
     }),
     updatedAt: timestamp<ListTypeInfo>({
       ...readOnly,
+      hooks: {
+        ...trackingAtHooks<ListTypeInfo>(),
+      }
     }),
   }
 }
