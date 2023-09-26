@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import Highlight, { Prism } from 'prism-react-renderer';
+import { Highlight, Prism } from 'prism-react-renderer';
 import { jsx } from '@emotion/react';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 
@@ -103,7 +103,7 @@ export function Code({ children, className }: { children: string; className?: st
   }, [collapseRanges]);
 
   return (
-    <Highlight Prism={Prism} code={children.trim()} language={language as any} theme={theme}>
+    <Highlight prism={Prism} code={children.trim()} language={language} theme={theme}>
       {({ className, style, tokens: tokens, getLineProps, getTokenProps }) => {
         return (
           <div
