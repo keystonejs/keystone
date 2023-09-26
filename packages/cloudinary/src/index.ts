@@ -1,10 +1,6 @@
 import { randomBytes } from 'node:crypto';
-import type {
-  CommonFieldConfig,
-  BaseListTypeInfo,
-  FieldTypeFunc,
-  jsonFieldTypePolyfilledForSQLite,
-} from '@keystone-6/core/types';
+import type { CommonFieldConfig, BaseListTypeInfo, FieldTypeFunc } from '@keystone-6/core/types';
+import { jsonFieldTypePolyfilledForSQLite } from '@keystone-6/core/types';
 import { graphql } from '@keystone-6/core';
 import cloudinary from 'cloudinary';
 
