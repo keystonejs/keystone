@@ -1,8 +1,19 @@
 import { config } from '@keystone-6/core';
+import type { Request, Response } from 'express';
+
 import { fixPrismaPath } from '../example-utils';
 import { lists } from './schema';
 import { getTasks } from './routes/tasks';
-import { TypeInfo } from '.keystone/types';
+import { TypeInfo, Context } from '.keystone/types';
+
+function withContext<F extends (req: Request, res: Response, context: Context) => void>(
+  commonContext: Context,
+  f: F
+) {
+  return async (req: Request, res: Response) => {
+    return f(req, res, await commonContext.withRequest(req, res));
+  };
+}
 
 export default config<TypeInfo>({
   db: {
@@ -23,18 +34,8 @@ export default config<TypeInfo>({
         Keystone schema and return the results as JSON
     */
     extendExpressApp: (app, commonContext) => {
-      app.use('/rest', async (req, res, next) => {
-        /*
-          WARNING: normally if you're adding custom properties to an
-          express request type, you might extend the global Express namespace...
-          ... we're not doing that here because we're in a Typescript monorepo
-          so we're casting the request instead :)
-        */
-        (req as any).context = await commonContext.withRequest(req, res);
-        next();
-      });
-
-      app.get('/rest/tasks', getTasks);
+      app.get('/rest/tasks', withContext(commonContext, getTasks));
+      // app.put('/rest/tasks', withContext(commonContext, putTask));
     },
   },
   lists,
