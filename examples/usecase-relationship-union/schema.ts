@@ -43,14 +43,16 @@ export const lists: Lists = {
           type: graphql.String,
           resolve: async (item, _, context) => {
             const { postId, linkId } = item;
-            if (postId)
+            if (postId) {
               return (
                 (await context.db.Post.findOne({ where: { id: postId } }))?.title ?? '[missing]'
               );
-            if (linkId)
+            }
+            if (linkId) {
               return (
                 (await context.db.Link.findOne({ where: { id: linkId } }))?.title ?? '[missing]'
               );
+            }
             return '?';
           },
         }),
