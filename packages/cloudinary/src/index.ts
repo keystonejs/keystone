@@ -1,13 +1,8 @@
 import { randomBytes } from 'node:crypto';
-import {
-  CommonFieldConfig,
-  BaseListTypeInfo,
-  FieldTypeFunc,
-  jsonFieldTypePolyfilledForSQLite,
-} from '@keystone-6/core/types';
+import type { CommonFieldConfig, BaseListTypeInfo, FieldTypeFunc } from '@keystone-6/core/types';
+import { jsonFieldTypePolyfilledForSQLite } from '@keystone-6/core/types';
 import { graphql } from '@keystone-6/core';
 import cloudinary from 'cloudinary';
-import { CloudinaryAdapter } from './cloudinary';
 
 type StoredFile = {
   id: string;
@@ -106,21 +101,20 @@ export const outputType: graphql.ObjectType<CloudinaryImage_File> =
     },
   });
 
-export const cloudinaryImage =
-  <ListTypeInfo extends BaseListTypeInfo>({
-    cloudinary,
-    ...config
-  }: CloudinaryImageFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> =>
-  meta => {
+// TODO: no delete support
+export function cloudinaryImage<ListTypeInfo extends BaseListTypeInfo>({
+  cloudinary: cloudinaryConfig,
+  ...config
+}: CloudinaryImageFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
+  return meta => {
     if ((config as any).isIndexed === 'unique') {
       throw Error("isIndexed: 'unique' is not a supported option for field type cloudinaryImage");
     }
 
-    const adapter = new CloudinaryAdapter(cloudinary);
     const inputArg = graphql.arg({ type: graphql.Upload });
-    const resolveInput = async (
+    async function resolveInput(
       uploadData: graphql.InferValueFromArg<typeof inputArg>
-    ): Promise<StoredFile | undefined | null | 'DbNull'> => {
+    ): Promise<StoredFile | undefined | null | 'DbNull'> {
       if (uploadData === null) {
         return meta.provider === 'postgresql' || meta.provider === 'mysql' ? 'DbNull' : null;
       }
@@ -131,21 +125,42 @@ export const cloudinaryImage =
       const { createReadStream, filename: originalFilename, mimetype, encoding } = await uploadData;
       const stream = createReadStream();
 
+      // TODO: FIXME: stream can be null
       if (!stream) {
-        // TODO: FIXME: Handle when stream is null. Can happen when:
-        // Updating some other part of the item, but not the file (gets null
-        // because no File DOM element is uploaded)
         return undefined;
       }
 
-      const { id, filename, _meta } = await adapter.save({
-        stream,
-        filename: originalFilename,
-        id: randomBytes(20).toString('base64url'),
+      const id = randomBytes(20).toString('base64url');
+      const _meta = await new Promise<cloudinary.UploadApiResponse>((resolve, reject) => {
+        const cloudinaryStream = cloudinary.v2.uploader.upload_stream(
+          {
+            public_id: id,
+            folder: cloudinaryConfig.folder,
+            api_key: cloudinaryConfig.apiKey,
+            api_secret: cloudinaryConfig.apiSecret,
+            cloud_name: cloudinaryConfig.cloudName,
+          },
+          (error, result) => {
+            if (error || !result) {
+              return reject(error);
+            }
+            resolve(result);
+          }
+        );
+
+        stream.pipe(cloudinaryStream);
       });
 
-      return { id, filename, originalFilename, mimetype, encoding, _meta };
-    };
+      return {
+        id,
+        filename: originalFilename,
+        originalFilename,
+        mimetype,
+        encoding,
+        _meta,
+      };
+    }
+
     return jsonFieldTypePolyfilledForSQLite(
       meta.provider,
       {
@@ -163,14 +178,36 @@ export const cloudinaryImage =
             }
             const val = value as any;
             return {
-              publicUrl: adapter.publicUrl(val),
+              publicUrl: val?._meta?.secure_url ?? null,
               publicUrlTransformed: ({
                 transformation,
               }: {
                 transformation: graphql.InferValueFromArg<
                   graphql.Arg<typeof CloudinaryImageFormat>
                 >;
-              }) => adapter.publicUrlTransformed(val, transformation ?? {}),
+              }) => {
+                if (!val._meta) return null;
+
+                const { prettyName, ...rest } = transformation ?? {};
+
+                // no formatting options provided, return the publicUrl field
+                if (!Object.keys(rest).length) {
+                  return val?._meta?.secure_url ?? null;
+                }
+
+                const { public_id, format } = val._meta;
+
+                // ref https://github.com/cloudinary/cloudinary_npm/blob/439586eac73cee7f2803cf19f885e98f237183b3/src/utils.coffee#L472
+                // @ts-ignore
+                return cloudinary.url(public_id, {
+                  type: 'upload',
+                  format,
+                  secure: true,
+                  url_suffix: prettyName,
+                  transformation,
+                  cloud_name: cloudinaryConfig.cloudName,
+                });
+              },
               ...val,
             };
           },
@@ -182,3 +219,4 @@ export const cloudinaryImage =
       }
     );
   };
+}
