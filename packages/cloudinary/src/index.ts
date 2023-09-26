@@ -106,7 +106,7 @@ export const outputType: graphql.ObjectType<CloudinaryImage_File> =
   });
 
 // TODO: no delete support
-export function cloudinaryImage <ListTypeInfo extends BaseListTypeInfo>({
+export function cloudinaryImage<ListTypeInfo extends BaseListTypeInfo>({
   cloudinary: cloudinaryConfig,
   ...config
 }: CloudinaryImageFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
@@ -116,7 +116,7 @@ export function cloudinaryImage <ListTypeInfo extends BaseListTypeInfo>({
     }
 
     const inputArg = graphql.arg({ type: graphql.Upload });
-    async function resolveInput (
+    async function resolveInput(
       uploadData: graphql.InferValueFromArg<typeof inputArg>
     ): Promise<StoredFile | undefined | null | 'DbNull'> {
       if (uploadData === null) {
@@ -136,18 +136,21 @@ export function cloudinaryImage <ListTypeInfo extends BaseListTypeInfo>({
 
       const id = randomBytes(20).toString('base64url');
       const _meta = await new Promise<cloudinary.UploadApiResponse>((resolve, reject) => {
-        const cloudinaryStream = cloudinary.v2.uploader.upload_stream({
-          public_id: id,
-          folder: cloudinaryConfig.folder,
-          api_key: cloudinaryConfig.apiKey,
-          api_secret: cloudinaryConfig.apiSecret,
-          cloud_name: cloudinaryConfig.cloudName
-        }, (error, result) => {
-          if (error || !result) {
-            return reject(error);
+        const cloudinaryStream = cloudinary.v2.uploader.upload_stream(
+          {
+            public_id: id,
+            folder: cloudinaryConfig.folder,
+            api_key: cloudinaryConfig.apiKey,
+            api_secret: cloudinaryConfig.apiSecret,
+            cloud_name: cloudinaryConfig.cloudName,
+          },
+          (error, result) => {
+            if (error || !result) {
+              return reject(error);
+            }
+            resolve(result);
           }
-          resolve(result);
-        });
+        );
 
         stream.pipe(cloudinaryStream);
       });
@@ -158,7 +161,7 @@ export function cloudinaryImage <ListTypeInfo extends BaseListTypeInfo>({
         originalFilename,
         mimetype,
         encoding,
-        _meta
+        _meta,
       };
     }
 
