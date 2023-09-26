@@ -21,13 +21,13 @@ const readOnly = {
   },
   ui: {
     createView: {
-      fieldMode: (args: unknown) => 'hidden' as const,
+      fieldMode: () => 'hidden' as const,
     },
     itemView: {
-      fieldMode: (args: unknown) => 'read' as const,
+      fieldMode: () => 'read' as const,
     },
     listView: {
-      fieldMode: (args: unknown) => 'read' as const,
+      fieldMode: () => 'read' as const,
     },
   },
 };

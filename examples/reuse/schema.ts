@@ -19,13 +19,14 @@ const readOnly = {
   },
   ui: {
     createView: {
-      fieldMode: (args: unknown) => 'hidden' as const,
+      fieldMode: () => 'hidden' as const,
     },
     itemView: {
-      fieldMode: (args: unknown) => 'read' as const,
+      fieldMode: () => 'read' as const,
+      fieldPosition: () => 'sidebar' as const,
     },
     listView: {
-      fieldMode: (args: unknown) => 'read' as const,
+      fieldMode: () => 'read' as const,
     },
   },
 };
@@ -94,7 +95,7 @@ export const lists: Lists = {
   Invoice: list({
     access: allowAll,
     fields: {
-      title: text({ validation: { isRequired: true } }),
+      title: text(),
       completed: checkbox(),
       ...trackingFields()
     },
@@ -103,7 +104,7 @@ export const lists: Lists = {
   Order: list({
     access: allowAll,
     fields: {
-      title: text({ validation: { isRequired: true } }),
+      title: text(),
       completed: checkbox(),
       ...trackingFields()
     },
@@ -112,7 +113,7 @@ export const lists: Lists = {
   User: list({
     access: allowAll,
     fields: {
-      name: text({ validation: { isRequired: true } })
+      name: text()
     },
   }),
 };
