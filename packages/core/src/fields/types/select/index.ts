@@ -1,4 +1,4 @@
-import inflection from 'inflection';
+import { classify } from 'inflection';
 import { humanize } from '../../../lib/utils';
 import {
   BaseListTypeInfo,
@@ -176,7 +176,7 @@ export const select =
     });
 
     if (config.type === 'enum') {
-      const enumName = `${meta.listKey}${inflection.classify(meta.fieldKey)}Type`;
+      const enumName = `${meta.listKey}${classify(meta.fieldKey)}Type`;
       const graphQLType = graphql.enum({
         name: enumName,
         values: graphql.enumValues(options.map(x => x.value)),
