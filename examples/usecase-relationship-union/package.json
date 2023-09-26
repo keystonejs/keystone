@@ -1,0 +1,20 @@
+{
+  "name": "@keystone-6/example-usecase-relationship-union",
+  "version": "0.0.1",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "keystone dev",
+    "start": "keystone start",
+    "build": "keystone build",
+    "postinstall": "keystone postinstall"
+  },
+  "dependencies": {
+    "@keystone-6/core": "^5.0.0",
+    "@prisma/client": "^4.16.2"
+  },
+  "devDependencies": {
+    "prisma": "^4.16.2",
+    "typescript": "~5.0.0"
+  }
+}
