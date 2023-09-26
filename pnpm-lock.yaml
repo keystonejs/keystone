@@ -596,8 +596,8 @@ importers:
         specifier: ^2.5.0
         version: 2.5.0
       prism-react-renderer:
-        specifier: ^1.2.1
-        version: 1.2.1(react@18.2.0)
+        specifier: ^2.0.0
+        version: 2.1.0(react@18.2.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -11106,6 +11106,10 @@ packages:
     resolution: {integrity: sha512-MQh69PPwFlYAL2qz/Mw5Zc34VTdt7pTck0Xbb6pbPSzdt5oaLB87iyJJxEMS5Dco/s7lXHunEezAvQurZZdrsQ==}
     dev: true
 
+  /@types/prismjs@1.26.1:
+    resolution: {integrity: sha512-Q7jDsRbzcNHIQje15CS/piKhu6lMLb9jwjxSfEIi4KcFKXW23GoJMkwQiJ8VObyfx+VmUaDcJxXaWN+cTCjVog==}
+    dev: false
+
   /@types/prompts@2.0.14:
     resolution: {integrity: sha512-HZBd99fKxRWpYCErtm2/yxUZv6/PBI9J7N4TNFffl5JbrYMHBwF25DjQGTW3b3jmXq+9P6/8fCIb2ee57BFfYA==}
     dependencies:
@@ -13109,6 +13113,11 @@ packages:
       core-js: 3.6.5
       lodash: 4.17.21
       q: 1.5.1
+    dev: false
+
+  /clsx@1.2.1:
+    resolution: {integrity: sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==}
+    engines: {node: '>=6'}
     dev: false
 
   /cluster-key-slot@1.1.0:
@@ -20593,11 +20602,13 @@ packages:
       parse-ms: 2.1.0
     dev: true
 
-  /prism-react-renderer@1.2.1(react@18.2.0):
-    resolution: {integrity: sha512-w23ch4f75V1Tnz8DajsYKvY5lF7H1+WvzvLUcF0paFxkTHSp42RS0H5CttdN2Q8RR3DRGZ9v5xD/h3n8C8kGmg==}
+  /prism-react-renderer@2.1.0(react@18.2.0):
+    resolution: {integrity: sha512-I5cvXHjA1PVGbGm1MsWCpvBCRrYyxEri0MC7/JbfIfYfcXAxHyO5PaUjs3A8H5GW6kJcLhTHxxMaOZZpRZD2iQ==}
     peerDependencies:
-      react: '>=0.14.9'
+      react: '>=16.0.0'
     dependencies:
+      '@types/prismjs': 1.26.1
+      clsx: 1.2.1
       react: 18.2.0
     dev: false
 
