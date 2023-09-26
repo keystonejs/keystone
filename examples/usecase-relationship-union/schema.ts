@@ -1,12 +1,12 @@
-import { list, graphql } from '@keystone-6/core';
+import { list, group, graphql } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { text, relationship, virtual } from '@keystone-6/core/fields';
 import { Lists } from '.keystone/types';
 
-function ifUnsetHideUI (field: string, mode = 'edit' as const) {
+function ifUnsetHideUI (field: string) {
   return {
     itemView: {
-      fieldMode: ({ item }: any) => item[field] ? mode : 'hidden',
+      fieldMode: ({ item }: any) => item[field] ? 'edit' : 'read',
     },
     listView: {
       fieldMode: () => 'hidden' as const,
@@ -51,19 +51,24 @@ export const lists: Lists = {
       }),
       description: text(),
 
-      post: relationship({
-        ref: 'Post',
-        ui: {
-          ...ifUnsetHideUI('postId')
-        }
-      }),
+      ...group({
+        label: 'Media Type',
+        fields: {
+          post: relationship({
+            ref: 'Post',
+            ui: {
+              ...ifUnsetHideUI('postId')
+            }
+          }),
 
-      link: relationship({
-        ref: 'Link',
-        ui: {
-          ...ifUnsetHideUI('linkId')
+          link: relationship({
+            ref: 'Link',
+            ui: {
+              ...ifUnsetHideUI('linkId')
+            }
+          }),
         }
-      }),
+      })
     },
 
     hooks: {
@@ -73,6 +78,9 @@ export const lists: Lists = {
           const values = [post, link].filter(x => x?.connect ?? x?.create)
           if (values.length === 0) {
             return addValidationError('A relationship is required')
+          }
+          if (values.length > 1) {
+            return addValidationError('Only one relationship at a time')
           }
         }
 
@@ -84,7 +92,7 @@ export const lists: Lists = {
 
           const values = [post, link].filter(x => x?.connect ?? x?.create)
           if (values.length > 1) {
-            addValidationError('Only one relationship at a time')
+            return addValidationError('Only one relationship at a time')
           }
 
           // TODO: prevent item from changing types with implicit disconnect
