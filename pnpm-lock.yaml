@@ -1731,6 +1731,22 @@ importers:
         specifier: ~5.0.0
         version: 5.0.2
 
+  examples/usecase-relationship-union:
+    dependencies:
+      '@keystone-6/core':
+        specifier: ^5.0.0
+        version: link:../../packages/core
+      '@prisma/client':
+        specifier: ^4.16.2
+        version: 4.16.2(prisma@4.16.2)
+    devDependencies:
+      prisma:
+        specifier: ^4.16.2
+        version: 4.16.2
+      typescript:
+        specifier: ~5.0.0
+        version: 5.0.2
+
   examples/usecase-roles:
     dependencies:
       '@keystone-6/auth':
