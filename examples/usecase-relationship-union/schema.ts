@@ -3,15 +3,15 @@ import { allowAll } from '@keystone-6/core/access';
 import { text, relationship, virtual } from '@keystone-6/core/fields';
 import { Lists } from '.keystone/types';
 
-function ifUnsetHideUI (field: string) {
+function ifUnsetHideUI(field: string) {
   return {
     itemView: {
-      fieldMode: ({ item }: any) => item[field] ? 'edit' : 'read',
+      fieldMode: ({ item }: any) => (item[field] ? 'edit' : 'read'),
     },
     listView: {
       fieldMode: () => 'hidden' as const,
     },
-  }
+  };
 }
 
 export const lists: Lists = {
@@ -35,7 +35,7 @@ export const lists: Lists = {
   Media: list({
     access: allowAll,
     graphql: {
-      plural: 'Medias'
+      plural: 'Medias',
     },
     fields: {
       label: virtual({
@@ -43,8 +43,14 @@ export const lists: Lists = {
           type: graphql.String,
           resolve: async (item, _, context) => {
             const { postId, linkId } = item;
-            if (postId) return (await context.db.Post.findOne({ where: { id: postId } }))?.title ?? '[missing]';
-            if (linkId) return (await context.db.Link.findOne({ where: { id: linkId } }))?.title ?? '[missing]';
+            if (postId)
+              return (
+                (await context.db.Post.findOne({ where: { id: postId } }))?.title ?? '[missing]'
+              );
+            if (linkId)
+              return (
+                (await context.db.Link.findOne({ where: { id: linkId } }))?.title ?? '[missing]'
+              );
             return '?';
           },
         }),
@@ -57,42 +63,42 @@ export const lists: Lists = {
           post: relationship({
             ref: 'Post',
             ui: {
-              ...ifUnsetHideUI('postId')
-            }
+              ...ifUnsetHideUI('postId'),
+            },
           }),
 
           link: relationship({
             ref: 'Link',
             ui: {
-              ...ifUnsetHideUI('linkId')
-            }
+              ...ifUnsetHideUI('linkId'),
+            },
           }),
-        }
-      })
+        },
+      }),
     },
 
     hooks: {
       validateInput: async ({ operation, inputData, addValidationError }) => {
         if (operation === 'create') {
           const { post, link } = inputData;
-          const values = [post, link].filter(x => x?.connect ?? x?.create)
+          const values = [post, link].filter(x => x?.connect ?? x?.create);
           if (values.length === 0) {
-            return addValidationError('A relationship is required')
+            return addValidationError('A relationship is required');
           }
           if (values.length > 1) {
-            return addValidationError('Only one relationship at a time')
+            return addValidationError('Only one relationship at a time');
           }
         }
 
         if (operation === 'update') {
           const { post, link } = inputData;
           if ([post, link].some(x => x?.disconnect)) {
-            return addValidationError('Cannot change relationship type')
+            return addValidationError('Cannot change relationship type');
           }
 
-          const values = [post, link].filter(x => x?.connect ?? x?.create)
+          const values = [post, link].filter(x => x?.connect ?? x?.create);
           if (values.length > 1) {
-            return addValidationError('Only one relationship at a time')
+            return addValidationError('Only one relationship at a time');
           }
 
           // TODO: prevent item from changing types with implicit disconnect
@@ -102,21 +108,21 @@ export const lists: Lists = {
         update: async ({ context, operation, resolvedData }) => {
           const { post, link, ...rest } = resolvedData;
           for (const [key, value] of Object.entries({ post, link })) {
-            if (!value) continue
-            if (value.disconnect) continue // TODO: null should disconnect
+            if (!value) continue;
+            if (value.disconnect) continue; // TODO: null should disconnect
 
             // disconnect everything else
             return {
               ...rest,
               post: { disconnect: true },
               link: { disconnect: true },
-              [key]: value
-            }
+              [key]: value,
+            };
           }
 
-          return rest
-        }
-      }
-    }
+          return rest;
+        },
+      },
+    },
   }),
 };
