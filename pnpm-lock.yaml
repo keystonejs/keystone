@@ -2126,9 +2126,6 @@ importers:
       '@types/fs-extra':
         specifier: ^11.0.0
         version: 11.0.1
-      '@types/inflection':
-        specifier: ^1.13.0
-        version: 1.13.0
       '@types/pluralize':
         specifier: ^0.0.31
         version: 0.0.31
@@ -10919,10 +10916,6 @@ packages:
 
   /@types/http-errors@2.0.1:
     resolution: {integrity: sha512-/K3ds8TRAfBvi5vfjuz8y6+GiAYBZ0x4tXv1Av6CWBWn0IlADc+ZX9pMq7oU0fNQPnBwIZl3rmeLp6SBApbxSQ==}
-
-  /@types/inflection@1.13.0:
-    resolution: {integrity: sha512-kZSETqAVS74XC/K3mPX/tbMEi/Zy1KP0Wc59dB1i5P72AHz4eSW+UIpzWxmQnDxipoKSX5eRgUXy+wUr+bY73g==}
-    dev: true
 
   /@types/invariant@2.2.35:
     resolution: {integrity: sha512-DxX1V9P8zdJPYQat1gHyY0xj3efl8gnMVjiM9iCY6y27lj+PoQWkgjt8jDqmovPqULkKVpKRg8J36iQiA+EtEg==}
