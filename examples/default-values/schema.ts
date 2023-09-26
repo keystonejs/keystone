@@ -78,7 +78,7 @@ export const lists: Lists = {
   Person: list({
     access: allowAll,
     fields: {
-      name: text({ validation: { isRequired: true } }),
+      name: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
       tasks: relationship({ ref: 'Task.assignedTo', many: true }),
     },
   }),

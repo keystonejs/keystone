@@ -1,7 +1,8 @@
 ## Feature Example - Default Values
 
-This project demonstrates how to use default values for fields.
-It builds on the [Task Manager](../task-manager) starter project.
+This example demonstrates how to use default values for fields.
+
+This example builds on the [TODO](../usecase-todo) starter project.
 
 ## Instructions
 
@@ -11,10 +12,9 @@ To run this project, clone the Keystone repository locally, run `pnpm` at the ro
 pnpm dev
 ```
 
-This will start the Admin UI at [localhost:3000](http://localhost:3000).
-You can use the Admin UI to create items in your database.
+This will start Keystone’s Admin UI at [localhost:3000](http://localhost:3000), where you can add items to an empty database.
 
-You can also access a GraphQL Playground at [localhost:3000/api/graphql](http://localhost:3000/api/graphql), which allows you to directly run GraphQL queries and mutations.
+When `NODE_ENV` is not equal to `production`, by default you can play with the GraphQL Playground at [localhost:3000/api/graphql](http://localhost:3000/api/graphql).
 
 ## Features
 

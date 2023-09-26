@@ -168,6 +168,7 @@ type Person {
 
 input PersonWhereUniqueInput {
   id: ID
+  name: String
 }
 
 input PersonWhereInput {
