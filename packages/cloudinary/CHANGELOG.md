@@ -1,5 +1,11 @@
 # @keystone-6/cloudinary
 
+## 7.0.2
+
+### Patch Changes
+
+- [#8836](https://github.com/keystonejs/keystone/pull/8836) [`a216bc2d2`](https://github.com/keystonejs/keystone/commit/a216bc2d211dbb056e7226377323a41b9699c86d) Thanks [@dcousens](https://github.com/dcousens)! - Remove runtime errors from the Cloudinary field, fall back to the `cloudinary` package for Cloudinary errors
+
 ## 7.0.1
 
 ### Patch Changes
