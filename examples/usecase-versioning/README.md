@@ -2,8 +2,6 @@
 
 This project demonstrates a Posts list where a particular field is always required to be sent in a GraphQL request; this can useful for optimistic locking and versioning.
 
-Use it as a starting place for learning how to use Keystone.
-
 ## Instructions
 
 To run this project, clone the Keystone repository locally, run `pnpm` at the root of this repository, then navigate to this directory and run:
@@ -30,9 +28,3 @@ This example includes sample data. To add it to your database:
 ## Try it out in CodeSandbox 🧪
 
 You can play with this example online in a web browser using the free [codesandbox.io](https://codesandbox.io/) service. To launch this example, open the URL <https://githubbox.com/keystonejs/keystone/tree/main/examples/usecase-versioning>. You can also fork this sandbox to make your own changes.
-
-## Next steps
-
-Experiment with the code in this example to see how Keystone works, familiarise yourself with the Admin UI, and learn about the GraphQL Playground.
-
-When you’ve got the hang of this base project, try a [feature project](../) to learn Keystone’s advanced features and take your knowledge to the next level.
