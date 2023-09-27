@@ -1,6 +1,6 @@
 {
   "name": "@keystone-6/core",
-  "version": "5.6.0",
+  "version": "5.7.0",
   "repository": "https://github.com/keystonejs/keystone/tree/main/packages/core",
   "license": "MIT",
   "main": "dist/keystone-6-core.cjs.js",
@@ -248,7 +248,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@keystone-6/core": "5.6.0",
+    "@keystone-6/core": "5.7.0",
     "@types/apollo-upload-client": "17.0.3",
     "@types/bcryptjs": "^2.4.2",
     "@types/body-parser": "^1.19.2",

@@ -1,8 +1,24 @@
 # @keystone-6/core
 
+## 5.7.0
+
+### Minor Changes
+
+- [#8837](https://github.com/keystonejs/keystone/pull/8837) [`650fae574`](https://github.com/keystonejs/keystone/commit/650fae574951f91454eb1169ff2b1f9ff51e918c) Thanks [@dcousens](https://github.com/dcousens)! - Add type `FieldHooks` to `@keystone-6/core/types` exports
+
+* [#8826](https://github.com/keystonejs/keystone/pull/8826) [`dc26bdfed`](https://github.com/keystonejs/keystone/commit/dc26bdfedb783a0d73174e579e46d9f00410e8ef) Thanks [@dcousens](https://github.com/dcousens)! - Add `beforeOperation.[create|update|delete]` and `afterOperation.[create|update|delete]` operation routing for list hooks
+
+### Patch Changes
+
+- [#8819](https://github.com/keystonejs/keystone/pull/8819) [`52337e3aa`](https://github.com/keystonejs/keystone/commit/52337e3aa6a57c23c2f0756199a90058a6e5a2ac) Thanks [@acburdine](https://github.com/acburdine)! - Fix `hooks.validateInput` argument types for update operations
+
+* [#8824](https://github.com/keystonejs/keystone/pull/8824) [`712ebb427`](https://github.com/keystonejs/keystone/commit/712ebb42700cd418bb2642858493f57cf7825a40) Thanks [@ScottAgirs](https://github.com/ScottAgirs)! - Remove deprecated `experimental.appDir` flag from generated next.config
+
 ## 5.6.0
 
 ### Minor Changes
+
+- [#8810](https://github.com/keystonejs/keystone/pull/8810) [`27a893380`](https://github.com/keystonejs/keystone/commit/27a8933807804ddad17ce51e5aa418e958e48ce3) Thanks [@dcousens](https://github.com/dcousens)! - Adds error messages for GraphQL errors on the List view in the AdminUI
 
 - [#8773](https://github.com/keystonejs/keystone/pull/8773) [`32f7a6ad4`](https://github.com/keystonejs/keystone/commit/32f7a6ad4a5a51a58988e7be495c96b06771b9b7) Thanks [@marekryb](https://github.com/marekryb)! - Adds `config.graphql.schemaPath`
 
@@ -11,6 +27,8 @@
 - [#8706](https://github.com/keystonejs/keystone/pull/8706) [`fa0f6bebb`](https://github.com/keystonejs/keystone/commit/fa0f6bebb14884b8c2b6c95f51e8757a08a7c4d4) Thanks [@wysher](https://github.com/wysher)! - Removes default descrption for `timestamp` field when using `db.updatedAt`, use `ui.description` instead
 
 ### Patch Changes
+
+- [#8810](https://github.com/keystonejs/keystone/pull/8810) [`27a893380`](https://github.com/keystonejs/keystone/commit/27a8933807804ddad17ce51e5aa418e958e48ce3) Thanks [@dcousens](https://github.com/dcousens)! - Fix `Input error: only a int can be passed to id filters` for AdminUI
 
 - [#8790](https://github.com/keystonejs/keystone/pull/8790) [`b830b7c6d`](https://github.com/keystonejs/keystone/commit/b830b7c6deebcffabcf6cd84919a7326a66e9bc9) Thanks [@dcousens](https://github.com/dcousens)! - Reduce number of package dependencies
 

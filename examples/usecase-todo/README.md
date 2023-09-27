@@ -1,4 +1,4 @@
-## Base Project - Task Manager
+## Base Project - Task Management Application
 
 This base project implements a simple **Task Management** app, with `Tasks` and `People` who can be assigned to tasks.
 
@@ -25,12 +25,6 @@ This example includes sample data. To add it to your database:
 1. Ensure you’ve initialised your project with `pnpm dev` at least once.
 2. Run `pnpm seed-data`. This will populate your database with sample content.
 3. Run `pnpm dev` again to startup Admin UI with sample data in place.
-
-## Next steps
-
-Experiment with the code in this example to see how Keystone works, familiarise yourself with the Admin UI, and learn about the GraphQL Playground.
-
-When you’ve got the hang of this base project, try a [feature project](../) to learn Keystone’s advanced features and take your knowledge to the next level.
 
 ## Try it out in CodeSandbox 🧪
 
