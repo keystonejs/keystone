@@ -1,12 +1,13 @@
 import { assertInputObjectType, printType, assertObjectType, parse } from 'graphql';
 import { createSystem, initConfig } from '@keystone-6/core/system';
+import type { ListSchemaConfig } from '@keystone-6/core/types';
 import { config, list } from '@keystone-6/core';
 import { text, relationship } from '@keystone-6/core/fields';
 import { allowAll } from '@keystone-6/core/access';
 
 const fieldKey = 'foo';
 
-const getSchema = (field: any) => {
+function getSchema (field: { ref: string, many?: boolean }) {
   return createSystem(
     initConfig(
       config({
@@ -16,42 +17,42 @@ const getSchema = (field: any) => {
           Test: list({
             access: allowAll,
             fields: {
-              [fieldKey]: field,
+              [fieldKey]: relationship(field),
             },
           }),
         },
       })
     )
   ).graphQLSchema;
-};
+}
 
 describe('Type Generation', () => {
   test('inputs for relationship fields in create args', () => {
-    const relMany = getSchema(relationship({ many: true, ref: 'Zip' }));
+    const relMany = getSchema(({ many: true, ref: 'Zip' }));
     expect(
       assertInputObjectType(relMany.getType('TestCreateInput')).getFields().foo.type.toString()
     ).toEqual('ZipRelateToManyForCreateInput');
 
-    const relSingle = getSchema(relationship({ many: false, ref: 'Zip' }));
+    const relSingle = getSchema(({ many: false, ref: 'Zip' }));
     expect(
       assertInputObjectType(relSingle.getType('TestCreateInput')).getFields().foo.type.toString()
     ).toEqual('ZipRelateToOneForCreateInput');
   });
 
   test('inputs for relationship fields in update args', () => {
-    const relMany = getSchema(relationship({ many: true, ref: 'Zip' }));
+    const relMany = getSchema(({ many: true, ref: 'Zip' }));
     expect(
       assertInputObjectType(relMany.getType('TestUpdateInput')).getFields().foo.type.toString()
     ).toEqual('ZipRelateToManyForUpdateInput');
 
-    const relSingle = getSchema(relationship({ many: false, ref: 'Zip' }));
+    const relSingle = getSchema(({ many: false, ref: 'Zip' }));
     expect(
       assertInputObjectType(relSingle.getType('TestUpdateInput')).getFields().foo.type.toString()
     ).toEqual('ZipRelateToOneForUpdateInput');
   });
 
   test('to-one for create relationship nested mutation input', () => {
-    const schema = getSchema(relationship({ many: false, ref: 'Zip' }));
+    const schema = getSchema(({ many: false, ref: 'Zip' }));
 
     expect(printType(schema.getType('ZipRelateToOneForCreateInput')!)).toMatchInlineSnapshot(`
 "input ZipRelateToOneForCreateInput {
@@ -62,7 +63,7 @@ describe('Type Generation', () => {
   });
 
   test('to-one for update relationship nested mutation input', () => {
-    const schema = getSchema(relationship({ many: false, ref: 'Zip' }));
+    const schema = getSchema(({ many: false, ref: 'Zip' }));
 
     expect(printType(schema.getType('ZipRelateToOneForUpdateInput')!)).toMatchInlineSnapshot(`
 "input ZipRelateToOneForUpdateInput {
@@ -74,7 +75,7 @@ describe('Type Generation', () => {
   });
 
   test('to-many for create relationship nested mutation input', () => {
-    const schema = getSchema(relationship({ many: true, ref: 'Zip' }));
+    const schema = getSchema(({ many: true, ref: 'Zip' }));
 
     expect(printType(schema.getType('ZipRelateToManyForCreateInput')!)).toMatchInlineSnapshot(`
 "input ZipRelateToManyForCreateInput {
@@ -85,7 +86,7 @@ describe('Type Generation', () => {
   });
 
   test('to-many for update relationship nested mutation input', () => {
-    const schema = getSchema(relationship({ many: true, ref: 'Zip' }));
+    const schema = getSchema(({ many: true, ref: 'Zip' }));
 
     expect(printType(schema.getType('ZipRelateToManyForUpdateInput')!)).toMatchInlineSnapshot(`
 "input ZipRelateToManyForUpdateInput {
@@ -98,7 +99,7 @@ describe('Type Generation', () => {
   });
 
   test('to-one relationships cannot be filtered at the field level', () => {
-    const schema = getSchema(relationship({ many: false, ref: 'Zip' }));
+    const schema = getSchema(({ many: false, ref: 'Zip' }));
 
     expect(
       (
@@ -119,7 +120,7 @@ describe('Type Generation', () => {
   });
 
   test('to-many relationships can be filtered at the field level', () => {
-    const schema = getSchema(relationship({ many: true, ref: 'Zip' }));
+    const schema = getSchema(({ many: true, ref: 'Zip' }));
 
     expect(printType(schema.getType('Test')!)).toMatchInlineSnapshot(`
 "type Test {
@@ -131,20 +132,109 @@ describe('Type Generation', () => {
   });
 });
 
-describe('Referenced list errors', () => {
-  test('throws when list not found', async () => {
-    expect(() => getSchema(relationship({ ref: 'DoesNotExist' }))).toThrow(
-      "Unable to resolve list 'DoesNotExist' for field Test.foo"
-    );
-  });
+describe('Reference errors', () => {
+  function tryf (lists: ListSchemaConfig) {
+    return createSystem(
+      initConfig(
+        config({
+          db: { url: 'file:./thing.db', provider: 'sqlite' },
+          lists,
+        })
+      )
+    ).graphQLSchema;
+  };
 
-  test('does not throw when no two way relationship specified', async () => {
-    getSchema(relationship({ many: true, ref: 'Zip' }));
-  });
+  const fixtures = {
+    'list not found': {
+      lists: {
+        Foo: list({
+          access: allowAll,
+          fields: {
+            bar: relationship({ ref: 'Abc.def' })
+          }
+        }),
+      },
+      error: `Foo.bar points to Abc.def, but Abc.def doesn't exist`,
+    },
+    'field not found': {
+      lists: {
+        Foo: list({
+          access: allowAll,
+          fields: {
+            bar: relationship({ ref: 'Abc.def' })
+          }
+        }),
+        Abc: list({
+          access: allowAll,
+          fields: {}
+        }),
+      },
+      error: `Foo.bar points to Abc.def, but Abc.def doesn't exist`,
+    },
+    '2-way not 2-way': {
+      lists: {
+        Foo: list({
+          access: allowAll,
+          fields: {
+            bar: relationship({ ref: 'Abc.def' })
+          }
+        }),
+        Abc: list({
+          access: allowAll,
+          fields: {
+            def: relationship({ ref: 'Foo.bazzz' })
+          }
+        }),
+      },
+      error: `Abc.def points to Foo.bazzz, but Foo.bar expects a two-way relationship`,
+    },
+    'field wrong type': {
+      lists: {
+        Foo: list({
+          access: allowAll,
+          fields: {
+            bar: relationship({ ref: 'Abc.def' })
+          }
+        }),
+        Abc: list({
+          access: allowAll,
+          fields: {
+            def: text()
+          }
+        }),
+      },
+      error: `Foo.bar points to Abc.def, but Abc.def is not a relationship field`,
+    },
+    '1-way relationships': {
+      lists: {
+        Foo: list({
+          access: allowAll,
+          fields: {
+            bar: relationship({ ref: 'Abc' })
+          }
+        }),
+        Abc: list({
+          access: allowAll,
+          fields: {}
+        }),
+      },
+      error: null
+    },
+  }
 
-  test('throws when field on list not found', async () => {
-    expect(() => getSchema(relationship({ many: true, ref: 'Zip.bar' }))).toThrow(
-      'The relationship field at Test.foo points to Zip.bar but no field at Zip.bar exists'
-    );
-  });
+  for (const [description, { lists, error }] of Object.entries(fixtures)) {
+    if (error) {
+      test(`throws for ${description}`, () => {
+        expect(() => {
+          tryf(lists)
+        }).toThrow(error);
+      });
+    } else {
+      test(`does not throw for ${description}`, () => {
+        expect(() => {
+          tryf(lists)
+        }).not.toThrow();
+      });
+    }
+  }
 });
