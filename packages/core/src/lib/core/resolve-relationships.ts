@@ -138,10 +138,10 @@ export function resolveRelationships(
           );
         }
 
-        const actualRef = `${foreignField.list}.${foreignField.field}`;
+        const actualRef = foreignField.field ? `${foreignField.list}.${foreignField.field}` : foreignField.list;
         if (actualRef !== localRef) {
           throw new Error(
-            `${foreignRef} points to ${actualRef}, but ${localRef} expects a two-way relationship`
+            `${localRef} points to ${foreignRef}, ${foreignRef} points to ${actualRef}, expected ${foreignRef} to point to ${localRef}`
           );
         }
 

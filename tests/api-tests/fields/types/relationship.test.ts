@@ -171,7 +171,24 @@ describe('Reference errors', () => {
       },
       error: `Foo.bar points to Abc.def, but Abc.def doesn't exist`,
     },
-    '2-way not 2-way': {
+    '1-way / 2-way conflict': {
+      lists: {
+        Foo: list({
+          access: allowAll,
+          fields: {
+            bar: relationship({ ref: 'Abc.def' }),
+          },
+        }),
+        Abc: list({
+          access: allowAll,
+          fields: {
+            def: relationship({ ref: 'Foo' }),
+          },
+        }),
+      },
+      error: `Foo.bar points to Abc.def, Abc.def points to Foo, expected Abc.def to point to Foo.bar`,
+    },
+    '3-way / 2-way conflict': {
       lists: {
         Foo: list({
           access: allowAll,
@@ -186,7 +203,7 @@ describe('Reference errors', () => {
           },
         }),
       },
-      error: `Abc.def points to Foo.bazzz, but Foo.bar expects a two-way relationship`,
+      error: `Foo.bar points to Abc.def, Abc.def points to Foo.bazzz, expected Abc.def to point to Foo.bar`,
     },
     'field wrong type': {
       lists: {
