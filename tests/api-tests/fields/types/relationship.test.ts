@@ -7,7 +7,7 @@ import { allowAll } from '@keystone-6/core/access';
 
 const fieldKey = 'foo';
 
-function getSchema (field: { ref: string, many?: boolean }) {
+function getSchema(field: { ref: string; many?: boolean }) {
   return createSystem(
     initConfig(
       config({
@@ -28,31 +28,31 @@ function getSchema (field: { ref: string, many?: boolean }) {
 
 describe('Type Generation', () => {
   test('inputs for relationship fields in create args', () => {
-    const relMany = getSchema(({ many: true, ref: 'Zip' }));
+    const relMany = getSchema({ many: true, ref: 'Zip' });
     expect(
       assertInputObjectType(relMany.getType('TestCreateInput')).getFields().foo.type.toString()
     ).toEqual('ZipRelateToManyForCreateInput');
 
-    const relSingle = getSchema(({ many: false, ref: 'Zip' }));
+    const relSingle = getSchema({ many: false, ref: 'Zip' });
     expect(
       assertInputObjectType(relSingle.getType('TestCreateInput')).getFields().foo.type.toString()
     ).toEqual('ZipRelateToOneForCreateInput');
   });
 
   test('inputs for relationship fields in update args', () => {
-    const relMany = getSchema(({ many: true, ref: 'Zip' }));
+    const relMany = getSchema({ many: true, ref: 'Zip' });
     expect(
       assertInputObjectType(relMany.getType('TestUpdateInput')).getFields().foo.type.toString()
     ).toEqual('ZipRelateToManyForUpdateInput');
 
-    const relSingle = getSchema(({ many: false, ref: 'Zip' }));
+    const relSingle = getSchema({ many: false, ref: 'Zip' });
     expect(
       assertInputObjectType(relSingle.getType('TestUpdateInput')).getFields().foo.type.toString()
     ).toEqual('ZipRelateToOneForUpdateInput');
   });
 
   test('to-one for create relationship nested mutation input', () => {
-    const schema = getSchema(({ many: false, ref: 'Zip' }));
+    const schema = getSchema({ many: false, ref: 'Zip' });
 
     expect(printType(schema.getType('ZipRelateToOneForCreateInput')!)).toMatchInlineSnapshot(`
 "input ZipRelateToOneForCreateInput {
@@ -63,7 +63,7 @@ describe('Type Generation', () => {
   });
 
   test('to-one for update relationship nested mutation input', () => {
-    const schema = getSchema(({ many: false, ref: 'Zip' }));
+    const schema = getSchema({ many: false, ref: 'Zip' });
 
     expect(printType(schema.getType('ZipRelateToOneForUpdateInput')!)).toMatchInlineSnapshot(`
 "input ZipRelateToOneForUpdateInput {
@@ -75,7 +75,7 @@ describe('Type Generation', () => {
   });
 
   test('to-many for create relationship nested mutation input', () => {
-    const schema = getSchema(({ many: true, ref: 'Zip' }));
+    const schema = getSchema({ many: true, ref: 'Zip' });
 
     expect(printType(schema.getType('ZipRelateToManyForCreateInput')!)).toMatchInlineSnapshot(`
 "input ZipRelateToManyForCreateInput {
@@ -86,7 +86,7 @@ describe('Type Generation', () => {
   });
 
   test('to-many for update relationship nested mutation input', () => {
-    const schema = getSchema(({ many: true, ref: 'Zip' }));
+    const schema = getSchema({ many: true, ref: 'Zip' });
 
     expect(printType(schema.getType('ZipRelateToManyForUpdateInput')!)).toMatchInlineSnapshot(`
 "input ZipRelateToManyForUpdateInput {
@@ -99,7 +99,7 @@ describe('Type Generation', () => {
   });
 
   test('to-one relationships cannot be filtered at the field level', () => {
-    const schema = getSchema(({ many: false, ref: 'Zip' }));
+    const schema = getSchema({ many: false, ref: 'Zip' });
 
     expect(
       (
@@ -120,7 +120,7 @@ describe('Type Generation', () => {
   });
 
   test('to-many relationships can be filtered at the field level', () => {
-    const schema = getSchema(({ many: true, ref: 'Zip' }));
+    const schema = getSchema({ many: true, ref: 'Zip' });
 
     expect(printType(schema.getType('Test')!)).toMatchInlineSnapshot(`
 "type Test {
@@ -133,7 +133,7 @@ describe('Type Generation', () => {
 });
 
 describe('Reference errors', () => {
-  function tryf (lists: ListSchemaConfig) {
+  function tryf(lists: ListSchemaConfig) {
     return createSystem(
       initConfig(
         config({
@@ -142,7 +142,7 @@ describe('Reference errors', () => {
         })
       )
     ).graphQLSchema;
-  };
+  }
 
   const fixtures = {
     'list not found': {
@@ -150,8 +150,8 @@ describe('Reference errors', () => {
         Foo: list({
           access: allowAll,
           fields: {
-            bar: relationship({ ref: 'Abc.def' })
-          }
+            bar: relationship({ ref: 'Abc.def' }),
+          },
         }),
       },
       error: `Foo.bar points to Abc.def, but Abc.def doesn't exist`,
@@ -161,12 +161,12 @@ describe('Reference errors', () => {
         Foo: list({
           access: allowAll,
           fields: {
-            bar: relationship({ ref: 'Abc.def' })
-          }
+            bar: relationship({ ref: 'Abc.def' }),
+          },
         }),
         Abc: list({
           access: allowAll,
-          fields: {}
+          fields: {},
         }),
       },
       error: `Foo.bar points to Abc.def, but Abc.def doesn't exist`,
@@ -176,14 +176,14 @@ describe('Reference errors', () => {
         Foo: list({
           access: allowAll,
           fields: {
-            bar: relationship({ ref: 'Abc.def' })
-          }
+            bar: relationship({ ref: 'Abc.def' }),
+          },
         }),
         Abc: list({
           access: allowAll,
           fields: {
-            def: relationship({ ref: 'Foo.bazzz' })
-          }
+            def: relationship({ ref: 'Foo.bazzz' }),
+          },
         }),
       },
       error: `Abc.def points to Foo.bazzz, but Foo.bar expects a two-way relationship`,
@@ -193,14 +193,14 @@ describe('Reference errors', () => {
         Foo: list({
           access: allowAll,
           fields: {
-            bar: relationship({ ref: 'Abc.def' })
-          }
+            bar: relationship({ ref: 'Abc.def' }),
+          },
         }),
         Abc: list({
           access: allowAll,
           fields: {
-            def: text()
-          }
+            def: text(),
+          },
         }),
       },
       error: `Foo.bar points to Abc.def, but Abc.def is not a relationship field`,
@@ -210,29 +210,29 @@ describe('Reference errors', () => {
         Foo: list({
           access: allowAll,
           fields: {
-            bar: relationship({ ref: 'Abc' })
-          }
+            bar: relationship({ ref: 'Abc' }),
+          },
         }),
         Abc: list({
           access: allowAll,
-          fields: {}
+          fields: {},
         }),
       },
-      error: null
+      error: null,
     },
-  }
+  };
 
   for (const [description, { lists, error }] of Object.entries(fixtures)) {
     if (error) {
       test(`throws for ${description}`, () => {
         expect(() => {
-          tryf(lists)
+          tryf(lists);
         }).toThrow(error);
       });
     } else {
       test(`does not throw for ${description}`, () => {
         expect(() => {
-          tryf(lists)
+          tryf(lists);
         }).not.toThrow();
       });
     }

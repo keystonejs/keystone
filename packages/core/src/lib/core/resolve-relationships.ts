@@ -129,9 +129,7 @@ export function resolveRelationships(
         alreadyResolvedTwoSidedRelationships.add(foreignRef);
         const foreignField = foreignUnresolvedList.fields[field.field]?.dbField;
         if (!foreignField) {
-          throw new Error(
-            `${localRef} points to ${foreignRef}, but ${foreignRef} doesn't exist`
-          );
+          throw new Error(`${localRef} points to ${foreignRef}, but ${foreignRef} doesn't exist`);
         }
 
         if (foreignField.kind !== 'relation') {
@@ -140,7 +138,7 @@ export function resolveRelationships(
           );
         }
 
-        const actualRef = `${foreignField.list}.${foreignField.field}`
+        const actualRef = `${foreignField.list}.${foreignField.field}`;
         if (actualRef !== localRef) {
           throw new Error(
             `${foreignRef} points to ${actualRef}, but ${localRef} expects a two-way relationship`
