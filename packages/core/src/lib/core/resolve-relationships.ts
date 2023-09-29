@@ -138,7 +138,9 @@ export function resolveRelationships(
           );
         }
 
-        const actualRef = foreignField.field ? `${foreignField.list}.${foreignField.field}` : foreignField.list;
+        const actualRef = foreignField.field
+          ? `${foreignField.list}.${foreignField.field}`
+          : foreignField.list;
         if (actualRef !== localRef) {
           throw new Error(
             `${localRef} points to ${foreignRef}, ${foreignRef} points to ${actualRef}, expected ${foreignRef} to point to ${localRef}`
