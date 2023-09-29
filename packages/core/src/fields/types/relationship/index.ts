@@ -92,9 +92,7 @@ export const relationship =
     const [foreignListKey, foreignFieldKey] = ref.split('.');
     const foreignList = lists[foreignListKey];
     if (!foreignList) {
-      throw new Error(
-        `Unable to resolve list '${foreignListKey}' for field ${listKey}.${fieldKey}`
-      );
+      throw new Error(`${listKey}.${fieldKey} points to ${ref}, but ${ref} doesn't exist`);
     }
     const foreignListTypes = foreignList.types;
 

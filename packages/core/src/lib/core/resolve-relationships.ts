@@ -129,32 +129,21 @@ export function resolveRelationships(
         alreadyResolvedTwoSidedRelationships.add(foreignRef);
         const foreignField = foreignUnresolvedList.fields[field.field]?.dbField;
         if (!foreignField) {
-          throw new Error(
-            `The relationship field at ${localRef} points to ${foreignRef} but no field at ${foreignRef} exists`
-          );
+          throw new Error(`${localRef} points to ${foreignRef}, but ${foreignRef} doesn't exist`);
         }
 
         if (foreignField.kind !== 'relation') {
           throw new Error(
-            `The relationship field at ${localRef} points to ${foreignRef} but ${foreignRef} is not a relationship field`
+            `${localRef} points to ${foreignRef}, but ${foreignRef} is not a relationship field`
           );
         }
 
-        if (foreignField.list !== listKey) {
+        const actualRef = foreignField.field
+          ? `${foreignField.list}.${foreignField.field}`
+          : foreignField.list;
+        if (actualRef !== localRef) {
           throw new Error(
-            `The relationship field at ${localRef} points to ${foreignRef} but ${foreignRef} points to the list ${foreignField.list} rather than ${listKey}`
-          );
-        }
-
-        if (foreignField.field === undefined) {
-          throw new Error(
-            `The relationship field at ${localRef} points to ${foreignRef}, ${localRef} points to ${listKey} correctly but does not point to the ${fieldPath} field when it should`
-          );
-        }
-
-        if (foreignField.field !== fieldPath) {
-          throw new Error(
-            `The relationship field at ${localRef} points to ${foreignRef}, ${localRef} points to ${listKey} correctly but points to the ${foreignField.field} field instead of ${fieldPath}`
+            `${localRef} points to ${foreignRef}, ${foreignRef} points to ${actualRef}, expected ${foreignRef} to point to ${localRef}`
           );
         }
 
