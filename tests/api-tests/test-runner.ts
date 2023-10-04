@@ -81,7 +81,7 @@ async function getTestPrismaModule(schema: string): Promise<PrismaModule> {
     relativeEnvPaths: {},
     datasourceNames: config.datasources.map(d => d.name),
     activeProvider,
-    dataProxy: false,
+    noEngine: false,
   };
   const prismaModule: PrismaModule = {
     PrismaClient: getPrismaClient(options) as any,

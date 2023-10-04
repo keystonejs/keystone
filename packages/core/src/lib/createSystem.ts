@@ -108,6 +108,8 @@ export function createSystem(config: KeystoneConfig) {
     adminMeta,
     getKeystone: (prismaModule: PrismaModule) => {
       const prePrismaClient = new prismaModule.PrismaClient({
+        adapter:
+          typeof config.db.prismaAdapter === 'function' ? config.db.prismaAdapter() : undefined,
         datasources: { [config.db.provider]: { url: config.db.url } },
         log:
           config.db.enableLogging === true

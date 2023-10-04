@@ -193,7 +193,7 @@ export async function generateTypescriptTypesAndPrisma(
   const paths = getSystemPaths(cwd, config);
   const dataProxy = config.db.url.startsWith('prisma:');
   if (dataProxy === true) {
-    console.log('✨ Generating Prisma Client (data proxy)');
+    console.log('✨ Generating Prisma Client (without engine)');
   }
   await Promise.all([
     generatePrismaClient(paths.schema.prisma, dataProxy),
@@ -201,10 +201,10 @@ export async function generateTypescriptTypesAndPrisma(
   ]);
 }
 
-async function generatePrismaClient(prismaSchemaPath: string, dataProxy: boolean) {
+async function generatePrismaClient(prismaSchemaPath: string, noEngine: boolean) {
   const generators = await getGenerators({
+    noEngine,
     schemaPath: prismaSchemaPath,
-    dataProxy,
   });
 
   await Promise.all(

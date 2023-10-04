@@ -1,18 +1,21 @@
 {
-  "name": "@keystone-6/example-extend-prisma-schema",
-  "version": "0.0.10",
+  "name": "@keystone-6/example-custom-prisma-driver-adapter",
+  "version": "0.0.0",
   "private": true,
   "license": "MIT",
   "scripts": {
     "dev": "keystone dev",
     "start": "keystone start",
     "build": "keystone build",
-    "postinstall": "keystone postinstall"
+    "postinstall": "keystone postinstall --fix"
   },
   "dependencies": {
     "@keystone-6/core": "^5.2.0",
     "@keystone-6/fields-document": "^8.0.0",
-    "@prisma/client": "^5.4.0"
+    "@neondatabase/serverless": "^0.6.0",
+    "@prisma/adapter-neon": "^5.4.0",
+    "@prisma/client": "^5.4.0",
+    "undici": "^5.25.0"
   },
   "devDependencies": {
     "prisma": "^5.4.0",

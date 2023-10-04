@@ -152,6 +152,8 @@ export type DatabaseConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
 
   extendPrismaSchema?: (schema: string) => string;
 
+  prismaAdapter?: () => any;
+
   /** @deprecated */
   useMigrations?: boolean;
   /** @deprecated use extendPrismaSchema */
