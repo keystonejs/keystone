@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto';
 import pLimit from 'p-limit';
-import type { FieldData, KeystoneConfig } from '../types';
+import type { FieldData, KeystoneConfig, } from '../types';
 
 import type { PrismaModule } from '../artifacts';
 import { allowAll } from '../access';
@@ -107,9 +107,7 @@ export function createSystem(config: KeystoneConfig) {
     graphQLSchema,
     adminMeta,
     getKeystone: (prismaModule: PrismaModule) => {
-      const prePrismaClient = new prismaModule.PrismaClient({
-        adapter:
-          typeof config.db.prismaAdapter === 'function' ? config.db.prismaAdapter() : undefined,
+      const clientConfig: Parameters<NonNullable<KeystoneConfig['db']['prismaClient']>>[0] = {
         datasources: { [config.db.provider]: { url: config.db.url } },
         log:
           config.db.enableLogging === true
@@ -117,7 +115,11 @@ export function createSystem(config: KeystoneConfig) {
             : config.db.enableLogging === false
             ? undefined
             : config.db.enableLogging,
-      });
+      };
+
+      const prePrismaClient = config.db.prismaClient
+        ? config.db.prismaClient(clientConfig)
+        : new prismaModule.PrismaClient(clientConfig);
 
       const prismaClient = injectNewDefaults(prePrismaClient, lists);
       setWriteLimit(prismaClient, pLimit(config.db.provider === 'sqlite' ? 1 : Infinity));

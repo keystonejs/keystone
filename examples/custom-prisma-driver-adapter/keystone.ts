@@ -4,17 +4,22 @@ import { PrismaNeon } from '@prisma/adapter-neon';
 import { WebSocket } from 'undici';
 import { fixPrismaPath } from '../example-utils';
 import { lists } from './schema';
+import { PrismaClient } from '.myprisma/client';
 
 export default config({
   db: {
     provider: 'sqlite',
     url: process.env.DATABASE_URL || 'file:./keystone-example.db',
 
-    prismaAdapter: () => {
+    prismaClient: config => {
       neonConfig.webSocketConstructor = WebSocket;
 
       const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-      return new PrismaNeon(pool);
+      const adapter = new PrismaNeon(pool);
+      return new PrismaClient({
+        ...config,
+        adapter,
+      });
     },
 
     extendPrismaSchema: (schema: any) => {
