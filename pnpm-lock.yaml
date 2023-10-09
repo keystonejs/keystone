@@ -539,8 +539,8 @@ importers:
         specifier: ^1.2.2
         version: 1.2.2
       '@types/gtag.js':
-        specifier: ^0.0.14
-        version: 0.0.14
+        specifier: ^0.0.16
+        version: 0.0.16
       '@types/js-yaml':
         specifier: ^4.0.5
         version: 4.0.5
@@ -10901,8 +10901,8 @@ packages:
     dependencies:
       '@types/node': 18.17.11
 
-  /@types/gtag.js@0.0.14:
-    resolution: {integrity: sha512-NcR9rf3B93ie5T086NIpXGTtoIJeOeQ14+IBIBwfNBztb175e/0gONc60ywUU4+f9dwctgz9L3I4h5Gs/hl31g==}
+  /@types/gtag.js@0.0.16:
+    resolution: {integrity: sha512-TefTCQWiQYc1F7zF7KKLOd5E645me+9CjfPwJLNxWxaTK3ITKmCxtHRVH7EhSo1dl+sVGmu2h2htCOZrjWQRrQ==}
     dev: false
 
   /@types/hast@2.3.5:
