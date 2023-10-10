@@ -66,15 +66,17 @@ test('Check access control by running updateTask as a specific user via context.
   assert.equal(task.priority, 'high');
   assert.equal(task.isComplete, false);
   assert.equal(task.assignedTo.name, 'Alice');
-  await assert.rejects(async () => {
-    await context
-      .db.Task.updateOne({
+  await assert.rejects(
+    async () => {
+      await context.db.Task.updateOne({
         where: { id: task.id },
-        data: { isComplete: true }
+        data: { isComplete: true },
       });
-  }, {
-    message: `Access denied: You cannot update that Task - it may not exist`
-  });
+    },
+    {
+      message: `Access denied: You cannot update that Task - it may not exist`,
+    }
+  );
 
   // test that we can update the task (with a session)
   {
@@ -82,20 +84,21 @@ test('Check access control by running updateTask as a specific user via context.
       .withSession({ listKey: 'User', itemId: alice.id, data: {} })
       .db.Task.updateOne({
         where: { id: task.id },
-        data: { isComplete: true }
+        data: { isComplete: true },
       });
     assert.equal(result.id, task.id);
   }
 
   // test that we can't update the task (with an invalid session (Bob))
-  await assert.rejects(async () => {
-    await context
-      .withSession({ listKey: 'User', itemId: bob.id, data: {} })
-      .db.Task.updateOne({
+  await assert.rejects(
+    async () => {
+      await context.withSession({ listKey: 'User', itemId: bob.id, data: {} }).db.Task.updateOne({
         where: { id: task.id },
-        data: { isComplete: true }
+        data: { isComplete: true },
       });
-  }, {
-    message: `Access denied: You cannot update that Task - it may not exist`
-  });
+    },
+    {
+      message: `Access denied: You cannot update that Task - it may not exist`,
+    }
+  );
 });
