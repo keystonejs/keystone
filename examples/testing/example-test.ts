@@ -88,18 +88,13 @@ test('Check access control by running updateTask as a specific user via context.
 
   // test that we can update the task (with a session)
   {
-    const { data, errors } = (await context
+    const result = (await context
       .withSession({ listKey: 'User', itemId: alice.id, data: {} })
-      .graphql.raw({
-        query: `mutation update($id: ID!) {
-              updateTask(where: { id: $id }, data: { isComplete: true }) {
-                id
-              }
-            }`,
-        variables: { id: task.id },
-      })) as any;
-    assert.equal(data!.updateTask.id, task.id);
-    assert.equal(errors, undefined);
+      .db.Task.updateOne({
+        where: { id: task.id },
+        data: { isComplete: true }
+      });
+    assert.equal(result.id, task.id);
   }
 
   // test that we can't update the task (with an invalid session (Bob))
