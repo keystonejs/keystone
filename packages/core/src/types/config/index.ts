@@ -139,18 +139,32 @@ type PrismaLogDefinition = {
   emit: 'stdout' | 'event';
 };
 
+type PrismaDatasource = {
+  url?: string;
+};
+
+type PrismaDatasources = {
+  sqlite?: PrismaDatasource;
+};
+
+type PrismaClientConfig = {
+  datasources?: PrismaDatasources;
+  log?: (PrismaLogLevel | PrismaLogDefinition)[];
+};
+
 export type DatabaseConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   provider: DatabaseProvider;
   url: string;
 
   shadowDatabaseUrl?: string;
   onConnect?: (args: KeystoneContext<TypeInfo>) => Promise<void>;
-  enableLogging?: boolean | PrismaLogLevel | Array<PrismaLogLevel | PrismaLogDefinition>;
+  enableLogging?: boolean | Array<PrismaLogLevel | PrismaLogDefinition>;
   idField?: IdFieldConfig;
   prismaClientPath?: string;
   prismaSchemaPath?: string;
 
   extendPrismaSchema?: (schema: string) => string;
+  prismaClient?: (config: PrismaClientConfig) => any;
 
   /** @deprecated */
   useMigrations?: boolean;
