@@ -24,19 +24,18 @@ test('Create a User using context.query', async () => {
 });
 
 test('Check that trying to create user with no name (required field) fails', async () => {
-  // the context.graphql.raw API can be useful when you expect errors
-  const { data, errors } = (await context.graphql.raw({
-    query: `mutation {
-          createUser(data: { password: "dont-use-me" }) {
-            id name password { isSet }
-          }
-        }`,
-  })) as any;
-  assert.equal(data!.createUser, null);
-  assert.equal(errors![0].path[0], 'createUser');
-  assert.equal(
-    errors![0].message,
-    'You provided invalid data for this operation.\n  - User.name: Name must not be empty'
+  await assert.rejects(
+    async () => {
+      await context.db.User.createOne({
+        data: {
+          password: 'not-a-password',
+        },
+      });
+    },
+    {
+      message:
+        'You provided invalid data for this operation.\n  - User.name: Name must not be empty',
+    }
   );
 });
 
