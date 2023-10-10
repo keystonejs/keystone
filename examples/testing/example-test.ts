@@ -66,29 +66,19 @@ test('Check access control by running updateTask as a specific user via context.
   assert.equal(task.priority, 'high');
   assert.equal(task.isComplete, false);
   assert.equal(task.assignedTo.name, 'Alice');
-
-  // test that we can't update the task (without a session)
-  {
-    const { data, errors } = (await context.graphql.raw({
-      query: `mutation update($id: ID!) {
-            updateTask(where: { id: $id }, data: { isComplete: true }) {
-              id
-            }
-          }`,
-      variables: { id: task.id },
-    })) as any;
-    assert.equal(data!.updateTask, null);
-    assert.equal(errors.length, 1);
-    assert.equal(errors![0].path[0], 'updateTask');
-    assert.equal(
-      errors![0].message,
-      'Access denied: You cannot update that Task - it may not exist'
-    );
-  }
+  await assert.rejects(async () => {
+    await context
+      .db.Task.updateOne({
+        where: { id: task.id },
+        data: { isComplete: true }
+      });
+  }, {
+    message: `Access denied: You cannot update that Task - it may not exist`
+  });
 
   // test that we can update the task (with a session)
   {
-    const result = (await context
+    const result = await context
       .withSession({ listKey: 'User', itemId: alice.id, data: {} })
       .db.Task.updateOne({
         where: { id: task.id },
@@ -98,23 +88,14 @@ test('Check access control by running updateTask as a specific user via context.
   }
 
   // test that we can't update the task (with an invalid session (Bob))
-  {
-    const { data, errors } = (await context
+  await assert.rejects(async () => {
+    await context
       .withSession({ listKey: 'User', itemId: bob.id, data: {} })
-      .graphql.raw({
-        query: `mutation update($id: ID!) {
-              updateTask(where: { id: $id }, data: { isComplete: true }) {
-                id
-              }
-            }`,
-        variables: { id: task.id },
-      })) as any;
-    assert.equal(data!.updateTask, null);
-    assert.equal(errors!.length, 1);
-    assert.equal(errors![0].path[0], 'updateTask');
-    assert.equal(
-      errors![0].message,
-      `Access denied: You cannot update that Task - it may not exist`
-    );
-  }
+      .db.Task.updateOne({
+        where: { id: task.id },
+        data: { isComplete: true }
+      });
+  }, {
+    message: `Access denied: You cannot update that Task - it may not exist`
+  });
 });
