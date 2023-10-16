@@ -73,7 +73,7 @@ const documentFeaturesProp = fields.object({
 
 type DocumentFeaturesFormValue = Parameters<
   InferRenderersForComponentBlocks<
-    Record<'documentFeatures', ComponentBlock<typeof documentFeaturesProp['fields']>>
+    Record<'documentFeatures', ComponentBlock<(typeof documentFeaturesProp)['fields']>>
   >['documentFeatures']
 >[0];
 
@@ -171,7 +171,7 @@ function objToShorthand<
   Obj extends Record<string, undefined | true | readonly any[] | Record<string, any>>
 >(obj: Obj): Obj | true | undefined {
   const values = Object.values(obj);
-  let state: typeof values[number] = values[0]!;
+  let state: (typeof values)[number] = values[0]!;
   for (const val of values) {
     if (val !== state || (val !== undefined && val !== true)) {
       return obj;

@@ -1,6 +1,6 @@
 import { select } from '@keystone-6/core/fields';
 
-type MatrixValue = typeof testMatrix[number];
+type MatrixValue = (typeof testMatrix)[number];
 
 export const name = 'Select';
 export const typeFunction = select;

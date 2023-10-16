@@ -10,7 +10,7 @@ export const widthMap = {
   full: '100%',
 };
 
-export type SizeKey = typeof segmentedControlSizeValues[number];
+export type SizeKey = (typeof segmentedControlSizeValues)[number];
 export type WidthKey = 'small' | 'medium' | 'large' | 'full';
 
 export type ControlTokensProps = {

@@ -128,7 +128,7 @@ export function createGetPreviewProps<Schema extends ComponentSchema, ChildField
     [Kind in ComponentSchema['kind']]: (
       schema: Extract<ComponentSchema, { kind: Kind }>,
       value: ValueForComponentSchema<Extract<ComponentSchema, { kind: Kind }>>,
-      memoized: ReturnType<typeof memoizedInfoForSchema[Kind]>,
+      memoized: ReturnType<(typeof memoizedInfoForSchema)[Kind]>,
       path: readonly string[],
       getInnerProp: <Field extends ComponentSchema>(
         schema: Field,
@@ -363,7 +363,7 @@ export function createGetPreviewProps<Schema extends ComponentSchema, ChildField
     props: GenericPreviewProps<Schema, ChildFieldElement>;
     value: unknown;
     schema: Schema;
-    cached: ReturnType<typeof memoizedInfoForSchema[Schema['kind']]>;
+    cached: ReturnType<(typeof memoizedInfoForSchema)[Schema['kind']]>;
     inner: Map<string, MemoState<ComponentSchema>>;
   };
 

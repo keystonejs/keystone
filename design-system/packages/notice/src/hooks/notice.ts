@@ -9,7 +9,7 @@ export const noticeToneValues = [
   'help',
 ] as const;
 
-export type ToneKey = typeof noticeToneValues[number];
+export type ToneKey = (typeof noticeToneValues)[number];
 
 type NoticeTokensProps = {
   tone: ToneKey;
