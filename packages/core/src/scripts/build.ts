@@ -41,5 +41,15 @@ export async function build(
   await generateAdminUI(config, graphQLSchema, adminMeta, paths.admin, false);
 
   console.log('✨ Building Admin UI');
-  await nextBuild(paths.admin);
+  await nextBuild(
+    paths.admin,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    'default'
+  );
 }
