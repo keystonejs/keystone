@@ -81,7 +81,7 @@ const runner = setupTestRunner({
 
 const initialiseData = async ({ context }: { context: ContextFromRunner<typeof runner> }) => {
   // Use shuffled data to ensure that ordering is actually happening.
-  for (const listKey of Object.keys(context.query) as Array<keyof typeof context['query']>) {
+  for (const listKey of Object.keys(context.query) as Array<keyof (typeof context)['query']>) {
     if (listKey === 'User' || listKey === 'SecondaryList') continue;
     await context.query[listKey].createMany({
       data: [

@@ -14,9 +14,9 @@ export const buttonToneValues = [
 ] as const;
 export const buttonWeightValues = ['bold', 'light', 'none', 'link'] as const;
 
-export type SizeKey = typeof buttonSizeValues[number];
-export type ToneKey = typeof buttonToneValues[number];
-export type WeightKey = typeof buttonWeightValues[number];
+export type SizeKey = (typeof buttonSizeValues)[number];
+export type ToneKey = (typeof buttonToneValues)[number];
+export type WeightKey = (typeof buttonWeightValues)[number];
 
 export type ButtonPropDefaults = {
   size: SizeKey;

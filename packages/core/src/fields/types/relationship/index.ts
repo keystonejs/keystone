@@ -135,7 +135,7 @@ export const relationship =
 
         const hideCreate = config.ui?.hideCreate ?? false;
         const refLabelField: typeof foreignFieldKey = foreignListMeta.labelField;
-        const refSearchFields: typeof foreignFieldKey[] = foreignListMeta.fields
+        const refSearchFields: (typeof foreignFieldKey)[] = foreignListMeta.fields
           .filter(x => x.search)
           .map(x => x.key);
 
