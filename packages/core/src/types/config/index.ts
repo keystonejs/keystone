@@ -147,7 +147,7 @@ type PrismaDatasources = {
   sqlite?: PrismaDatasource;
 };
 
-type PrismaClientConfig = {
+export type PrismaClientConfig = {
   datasources?: PrismaDatasources;
   log?: (PrismaLogLevel | PrismaLogDefinition)[];
 };
@@ -164,7 +164,10 @@ export type DatabaseConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   prismaSchemaPath?: string;
 
   extendPrismaSchema?: (schema: string) => string;
-  prismaClient?: (config: PrismaClientConfig) => any;
+  prismaClientModule?: () => {
+    PrismaClient: any;
+    Prisma: any;
+  };
 
   /** @deprecated */
   useMigrations?: boolean;

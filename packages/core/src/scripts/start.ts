@@ -31,8 +31,7 @@ export const start = async (
   const config = getBuiltKeystoneConfiguration(cwd);
   const paths = getSystemPaths(cwd, config);
   const { getKeystone, graphQLSchema } = createSystem(config);
-  const prismaClient = require(paths.prisma);
-  const keystone = getKeystone(prismaClient);
+  const keystone = getKeystone();
 
   if (withMigrations) {
     console.log('✨ Applying database migrations');

@@ -167,7 +167,7 @@ export async function dev(
     const initialisedLists = initialiseLists(config);
     const originalPrismaSchema = printPrismaSchema(
       initialisedLists,
-      config.db.prismaClientPath,
+      paths.prisma,
       config.db.provider,
       config.db.prismaPreviewFeatures,
       config.db.additionalPrismaDatasourceProperties,
@@ -196,7 +196,7 @@ export async function dev(
         if (prisma) {
           const newPrismaSchema = printPrismaSchema(
             initialiseLists(newConfig),
-            config.db.prismaClientPath,
+            paths.prisma,
             newConfig.db.provider,
             newConfig.db.prismaPreviewFeatures,
             newConfig.db.additionalPrismaDatasourceProperties,
@@ -237,12 +237,7 @@ export async function dev(
         await generateAdminUI(newConfig, graphQLSchema, adminMeta, paths.admin, true);
         if (prismaClientModule) {
           if (server && lastApolloServer) {
-            const keystone = getKeystone({
-              PrismaClient: function fakePrismaClientClass() {
-                return prismaClient;
-              } as unknown as new (args: unknown) => any,
-              Prisma: prismaClientModule.Prisma,
-            });
+            const keystone = getKeystone();
             const servers = await createExpressServer(newConfig, graphQLSchema, keystone.context);
             if (nextApp) {
               servers.expressServer.use(
@@ -392,7 +387,7 @@ async function setupInitialKeystone(
 
     await prismaClientGenerationPromise;
     const prismaClientModule = require(paths.prisma);
-    const keystone = getKeystone(prismaClientModule);
+    const keystone = getKeystone();
 
     console.log('✨ Connecting to the database');
     await keystone.connect(); // TODO: remove, replace with server.onStart

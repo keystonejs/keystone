@@ -1,14 +1,15 @@
 import { randomBytes } from 'node:crypto';
+import process from 'node:process';
 import pLimit from 'p-limit';
-import type { FieldData, KeystoneConfig, } from '../types';
+import type { FieldData, KeystoneConfig, PrismaClientConfig } from '../types';
 
-import type { PrismaModule } from '../artifacts';
 import { allowAll } from '../access';
 import { createAdminMeta } from './create-admin-meta';
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { createContext } from './context/createContext';
 import { initialiseLists, InitialisedList } from './core/initialise-lists';
 import { setPrismaNamespace, setWriteLimit } from './core/utils';
+import { getSystemPaths } from '../artifacts';
 
 function getSudoGraphQLSchema(config: KeystoneConfig) {
   // This function creates a GraphQLSchema based on a modified version of the provided config.
@@ -106,8 +107,8 @@ export function createSystem(config: KeystoneConfig) {
   return {
     graphQLSchema,
     adminMeta,
-    getKeystone: (prismaModule: PrismaModule) => {
-      const clientConfig: Parameters<NonNullable<KeystoneConfig['db']['prismaClient']>>[0] = {
+    getKeystone: () => {
+      const prismaClientConfig: PrismaClientConfig = {
         datasources: { [config.db.provider]: { url: config.db.url } },
         log:
           config.db.enableLogging === true
@@ -117,13 +118,20 @@ export function createSystem(config: KeystoneConfig) {
             : config.db.enableLogging,
       };
 
-      const prePrismaClient = config.db.prismaClient
-        ? config.db.prismaClient(clientConfig)
-        : new prismaModule.PrismaClient(clientConfig);
+      const paths = getSystemPaths(process.cwd(), config);
 
-      const prismaClient = injectNewDefaults(prePrismaClient, lists);
+      const prismaClientModule = config.db?.prismaClientModule
+        ? config.db.prismaClientModule()
+        : require(paths.prisma);
+
+      const prismaClient = injectNewDefaults(
+        config.db?.prismaClientModule
+          ? prismaClientModule.PrismaClient
+          : new prismaClientModule.PrismaClient(prismaClientConfig),
+        lists
+      );
       setWriteLimit(prismaClient, pLimit(config.db.provider === 'sqlite' ? 1 : Infinity));
-      setPrismaNamespace(prismaClient, prismaModule.Prisma);
+      setPrismaNamespace(prismaClient, prismaClientModule.Prisma);
 
       const context = createContext({
         graphQLSchema,
