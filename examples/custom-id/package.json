@@ -11,7 +11,7 @@
     "seed-data": "tsx seed-data.tsx"
   },
   "dependencies": {
-    "@keystone-6/core": "^5.0.0",
+    "@keystone-6/core": "^5.7.0",
     "@paralleldrive/cuid2": "^2.2.1",
     "@prisma/client": "^4.16.2"
   },

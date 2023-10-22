@@ -10,9 +10,9 @@
   "devDependencies": {
     "@apollo/cache-control-types": "^1.0.2",
     "@hapi/iron": "^7.0.0",
-    "@keystone-6/auth": "*",
-    "@keystone-6/core": "*",
-    "@keystone-6/fields-document": "*",
+    "@keystone-6/auth": "workspace:*",
+    "@keystone-6/core": "workspace:*",
+    "@keystone-6/fields-document": "workspace:*",
     "@prisma/client": "^4.16.2",
     "@prisma/internals": "^4.16.2",
     "chalk": "^4.1.2",

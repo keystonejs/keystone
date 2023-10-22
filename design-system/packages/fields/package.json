@@ -16,9 +16,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
-    "@keystone-ui/core": "^5.0.2",
-    "@keystone-ui/icons": "^6.0.2",
-    "@keystone-ui/popover": "^6.0.2",
+    "@keystone-ui/core": "workspace:^",
+    "@keystone-ui/icons": "workspace:^",
+    "@keystone-ui/popover": "workspace:^",
     "date-fns": "^2.26.0",
     "react": "^18.2.0",
     "react-day-picker": "^8.0.4",
