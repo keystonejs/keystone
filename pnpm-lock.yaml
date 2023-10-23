@@ -533,8 +533,8 @@ importers:
         specifier: ^1.1.2
         version: 1.1.2
       '@types/babel__core':
-        specifier: 7.20.2
-        version: 7.20.2
+        specifier: 7.20.3
+        version: 7.20.3
       '@types/facepaint':
         specifier: ^1.2.2
         version: 1.2.4
@@ -8621,8 +8621,8 @@ packages:
     resolution: {integrity: sha512-tE88HnYMl5iJAB1V9nJCrE1udmwGCoNvx2ayTa8nwkE3UMMRRljANO+sX8D321hIrqf1DlvhAPAo5G6DWaMQNg==}
     dev: false
 
-  /@types/babel__core@7.20.2:
-    resolution: {integrity: sha512-pNpr1T1xLUc2l3xJKuPtsEky3ybxN3m4fJkknfIpTCTfIZCDW57oAg+EfCgIIp2rvCe0Wn++/FfodDS4YXxBwA==}
+  /@types/babel__core@7.20.3:
+    resolution: {integrity: sha512-54fjTSeSHwfan8AyHWrKbfBWiEUrNTZsUwPTDSNaaP1QDQIZbeNUg3a59E9D+375MzUw/x1vx2/0F5LBz+AeYA==}
     dependencies:
       '@babel/parser': 7.23.0
       '@babel/types': 7.23.0
@@ -9895,7 +9895,7 @@ packages:
       '@babel/plugin-transform-react-jsx': 7.22.15(@babel/core@7.23.2)
       '@babel/traverse': 7.23.2
       '@babel/types': 7.23.0
-      '@types/babel__core': 7.20.2
+      '@types/babel__core': 7.20.3
       '@types/dom-view-transitions': 1.0.3
       '@types/yargs-parser': 21.0.2
       acorn: 8.10.0
@@ -10013,7 +10013,7 @@ packages:
       '@babel/core': 7.23.2
       '@jest/transform': 26.6.2
       '@jest/types': 26.6.2
-      '@types/babel__core': 7.20.2
+      '@types/babel__core': 7.20.3
       babel-plugin-istanbul: 6.1.1
       babel-preset-jest: 26.6.2(@babel/core@7.23.2)
       chalk: 4.1.2
@@ -10031,7 +10031,7 @@ packages:
     dependencies:
       '@babel/core': 7.23.2
       '@jest/transform': 29.7.0
-      '@types/babel__core': 7.20.2
+      '@types/babel__core': 7.20.3
       babel-plugin-istanbul: 6.1.1
       babel-preset-jest: 29.6.3(@babel/core@7.23.2)
       chalk: 4.1.2
@@ -10060,7 +10060,7 @@ packages:
     dependencies:
       '@babel/template': 7.22.15
       '@babel/types': 7.23.0
-      '@types/babel__core': 7.20.2
+      '@types/babel__core': 7.20.3
       '@types/babel__traverse': 7.20.3
     dev: true
 
@@ -10070,7 +10070,7 @@ packages:
     dependencies:
       '@babel/template': 7.22.15
       '@babel/types': 7.23.0
-      '@types/babel__core': 7.20.2
+      '@types/babel__core': 7.20.3
       '@types/babel__traverse': 7.20.3
     dev: true
 
