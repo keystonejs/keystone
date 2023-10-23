@@ -618,8 +618,8 @@ importers:
         specifier: ^4.0.6
         version: 4.0.8
       '@types/rss':
-        specifier: ^0.0.30
-        version: 0.0.30
+        specifier: ^0.0.31
+        version: 0.0.31
       next-sitemap:
         specifier: ^4.0.0
         version: 4.2.3(next@13.5.6)
@@ -9036,8 +9036,8 @@ packages:
     resolution: {integrity: sha512-l1YzFLj8Y6OhLdt7HKXlz56DoEmksB7qR8KVk+MpFsS4duwnoszLgDlLxJB0vgSqtg/rAS5gmYg5Bjw2sMJ8Ew==}
     dev: false
 
-  /@types/rss@0.0.30:
-    resolution: {integrity: sha512-RnWs98qajbcAZqie6EWYraJ2N+1Q1Wy9KN7HcVPJ//sYJGVjLjvkChZdeQPwf88xAcNUCcLXt6Zz3kiid7s/yw==}
+  /@types/rss@0.0.31:
+    resolution: {integrity: sha512-iW6iqXCU1+t61uMkwIQQ4/TOq4QelIo9SfRJ717niStG5Z09B0pWhHkKujo2a0jsjHlga3yhGiemukLPYdl6iQ==}
     dev: true
 
   /@types/scheduler@0.16.5:
