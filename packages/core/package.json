@@ -249,7 +249,7 @@
   },
   "devDependencies": {
     "@keystone-6/core": "5.7.0",
-    "@types/apollo-upload-client": "17.0.3",
+    "@types/apollo-upload-client": "17.0.4",
     "@types/bcryptjs": "^2.4.2",
     "@types/body-parser": "^1.19.2",
     "@types/bytes": "^3.1.1",
