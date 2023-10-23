@@ -102,13 +102,13 @@ importers:
         specifier: ^7.16.3
         version: 7.23.2
       '@keystone-ui/core':
-        specifier: ^5.0.2
+        specifier: workspace:^
         version: link:../core
       '@keystone-ui/icons':
-        specifier: ^6.0.2
+        specifier: workspace:^
         version: link:../icons
       '@keystone-ui/loading':
-        specifier: ^6.0.2
+        specifier: workspace:^
         version: link:../loading
       react:
         specifier: ^18.2.0
@@ -149,13 +149,13 @@ importers:
         specifier: ^7.16.3
         version: 7.23.2
       '@keystone-ui/core':
-        specifier: ^5.0.2
+        specifier: workspace:^
         version: link:../core
       '@keystone-ui/icons':
-        specifier: ^6.0.2
+        specifier: workspace:^
         version: link:../icons
       '@keystone-ui/popover':
-        specifier: ^6.0.2
+        specifier: workspace:^
         version: link:../popover
       date-fns:
         specifier: ^2.26.0
@@ -186,7 +186,7 @@ importers:
         specifier: ^7.16.3
         version: 7.23.2
       '@keystone-ui/core':
-        specifier: ^5.0.2
+        specifier: workspace:^
         version: link:../core
     devDependencies:
       '@svgr/core':
@@ -229,7 +229,7 @@ importers:
         specifier: ^7.16.3
         version: 7.23.2
       '@keystone-ui/core':
-        specifier: ^5.0.2
+        specifier: workspace:^
         version: link:../core
       react:
         specifier: ^18.2.0
@@ -245,10 +245,10 @@ importers:
         specifier: ^7.16.3
         version: 7.23.2
       '@keystone-ui/button':
-        specifier: ^7.0.2
+        specifier: workspace:^
         version: link:../button
       '@keystone-ui/core':
-        specifier: ^5.0.2
+        specifier: workspace:^
         version: link:../core
       react:
         specifier: ^18.2.0
@@ -279,13 +279,13 @@ importers:
         specifier: ^7.16.3
         version: 7.23.2
       '@keystone-ui/button':
-        specifier: ^7.0.2
+        specifier: workspace:^
         version: link:../button
       '@keystone-ui/core':
-        specifier: ^5.0.2
+        specifier: workspace:^
         version: link:../core
       '@keystone-ui/icons':
-        specifier: ^6.0.2
+        specifier: workspace:^
         version: link:../icons
       react:
         specifier: ^18.2.0
@@ -301,13 +301,13 @@ importers:
         specifier: ^7.16.3
         version: 7.23.2
       '@keystone-ui/core':
-        specifier: ^5.0.2
+        specifier: workspace:^
         version: link:../core
       '@keystone-ui/fields':
-        specifier: ^7.1.2
+        specifier: workspace:^
         version: link:../fields
       '@keystone-ui/icons':
-        specifier: ^6.0.2
+        specifier: workspace:^
         version: link:../icons
       react-select:
         specifier: ^5.2.1
@@ -326,10 +326,10 @@ importers:
         specifier: ^7.16.3
         version: 7.23.2
       '@keystone-ui/core':
-        specifier: ^5.0.2
+        specifier: workspace:^
         version: link:../core
       '@keystone-ui/icons':
-        specifier: ^6.0.2
+        specifier: workspace:^
         version: link:../icons
     devDependencies:
       react:
@@ -342,7 +342,7 @@ importers:
         specifier: ^7.16.3
         version: 7.23.2
       '@keystone-ui/core':
-        specifier: ^5.0.2
+        specifier: workspace:^
         version: link:../core
       '@popperjs/core':
         specifier: ^2.10.2
@@ -367,7 +367,7 @@ importers:
         specifier: ^7.16.3
         version: 7.23.2
       '@keystone-ui/core':
-        specifier: ^5.0.2
+        specifier: workspace:^
         version: link:../core
     devDependencies:
       '@types/react':
@@ -383,10 +383,10 @@ importers:
         specifier: ^7.16.3
         version: 7.23.2
       '@keystone-ui/core':
-        specifier: ^5.0.2
+        specifier: workspace:^
         version: link:../core
       '@keystone-ui/icons':
-        specifier: ^6.0.2
+        specifier: workspace:^
         version: link:../icons
     devDependencies:
       '@types/react':
@@ -402,10 +402,10 @@ importers:
         specifier: ^7.16.3
         version: 7.23.2
       '@keystone-ui/core':
-        specifier: ^5.0.2
+        specifier: workspace:^
         version: link:../core
       '@keystone-ui/popover':
-        specifier: ^6.0.2
+        specifier: workspace:^
         version: link:../popover
       apply-ref:
         specifier: ^1.0.0
@@ -424,40 +424,40 @@ importers:
         specifier: ^7.16.3
         version: 7.23.2
       '@keystone-ui/button':
-        specifier: ^7.0.1
+        specifier: workspace:^
         version: link:../packages/button
       '@keystone-ui/core':
-        specifier: ^5.0.1
+        specifier: workspace:^
         version: link:../packages/core
       '@keystone-ui/fields':
-        specifier: ^7.1.1
+        specifier: workspace:^
         version: link:../packages/fields
       '@keystone-ui/loading':
-        specifier: ^6.0.1
+        specifier: workspace:^
         version: link:../packages/loading
       '@keystone-ui/modals':
-        specifier: ^6.0.3
+        specifier: workspace:^
         version: link:../packages/modals
       '@keystone-ui/notice':
-        specifier: ^6.0.1
+        specifier: workspace:^
         version: link:../packages/notice
       '@keystone-ui/options':
-        specifier: ^6.0.1
+        specifier: workspace:^
         version: link:../packages/options
       '@keystone-ui/pill':
-        specifier: ^7.0.1
+        specifier: workspace:^
         version: link:../packages/pill
       '@keystone-ui/popover':
-        specifier: ^6.0.1
+        specifier: workspace:^
         version: link:../packages/popover
       '@keystone-ui/segmented-control':
-        specifier: ^7.0.1
+        specifier: workspace:^
         version: link:../packages/segmented-control
       '@keystone-ui/toast':
-        specifier: ^6.0.1
+        specifier: workspace:^
         version: link:../packages/toast
       '@keystone-ui/tooltip':
-        specifier: ^6.0.1
+        specifier: workspace:^
         version: link:../packages/tooltip
       '@preconstruct/next':
         specifier: ^4.0.0
@@ -515,13 +515,13 @@ importers:
         specifier: ^0.3.0
         version: 0.3.1
       '@keystone-6/fields-document':
-        specifier: ^8.0.0
+        specifier: workspace:^
         version: link:../packages/fields-document
       '@keystone-ui/core':
-        specifier: ^5.0.1
+        specifier: workspace:^
         version: link:../design-system/packages/core
       '@keystone-ui/icons':
-        specifier: ^6.0.1
+        specifier: workspace:^
         version: link:../design-system/packages/icons
       '@markdoc/markdoc':
         specifier: ^0.3.0
@@ -633,7 +633,7 @@ importers:
   examples/assets-local:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -649,7 +649,7 @@ importers:
   examples/assets-s3:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -671,7 +671,7 @@ importers:
         specifier: ^7.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -687,7 +687,7 @@ importers:
   examples/cloudinary:
     dependencies:
       '@keystone-6/cloudinary':
-        specifier: workspace:^
+        specifier: ^7.0.0
         version: link:../../packages/cloudinary
       '@keystone-6/core':
         specifier: ^5.7.0
@@ -709,7 +709,7 @@ importers:
   examples/custom-admin-ui-logo:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@keystone-ui/core':
         specifier: ^5.0.1
@@ -737,7 +737,7 @@ importers:
   examples/custom-admin-ui-navigation:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -756,7 +756,7 @@ importers:
   examples/custom-admin-ui-pages:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@keystone-ui/core':
         specifier: ^5.0.1
@@ -784,7 +784,7 @@ importers:
   examples/custom-field:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@keystone-ui/fields':
         specifier: ^7.1.1
@@ -806,7 +806,7 @@ importers:
         specifier: ^11.7.1
         version: 11.11.2
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@keystone-ui/button':
         specifier: ^7.0.1
@@ -843,7 +843,7 @@ importers:
   examples/custom-id:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@paralleldrive/cuid2':
         specifier: ^2.2.1
@@ -865,7 +865,7 @@ importers:
   examples/custom-output-paths:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -893,7 +893,7 @@ importers:
         specifier: ^7.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -912,7 +912,7 @@ importers:
         specifier: ^7.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -931,7 +931,7 @@ importers:
         specifier: ^7.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -953,7 +953,7 @@ importers:
   examples/custom-session-next-auth:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.14.0
@@ -975,7 +975,7 @@ importers:
         specifier: ^7.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -994,7 +994,7 @@ importers:
   examples/default-values:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -1010,10 +1010,10 @@ importers:
   examples/document-field:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.2.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@keystone-6/document-renderer':
-        specifier: ^1.1.1
+        specifier: ^1.1.0
         version: link:../../packages/document-renderer
       '@keystone-6/fields-document':
         specifier: ^8.0.0
@@ -1053,7 +1053,7 @@ importers:
         specifier: ^7.0.0
         version: link:../../../packages/auth
       '@keystone-6/core':
-        specifier: ^5.2.0
+        specifier: ^5.7.0
         version: link:../../../packages/core
       '@keystone-6/fields-document':
         specifier: ^8.0.0
@@ -1124,7 +1124,7 @@ importers:
   examples/extend-express-app:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -1152,7 +1152,7 @@ importers:
         specifier: ^9.0.0
         version: 9.0.19(graphql@16.8.1)
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -1171,7 +1171,7 @@ importers:
   examples/extend-graphql-schema-graphql-ts:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -1190,7 +1190,7 @@ importers:
         specifier: ^9.0.0
         version: 9.0.19(graphql@16.8.1)
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -1218,7 +1218,7 @@ importers:
         specifier: ^9.0.0
         version: 9.0.19(graphql@16.8.1)
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@keystone-ui/button':
         specifier: ^7.0.1
@@ -1261,7 +1261,7 @@ importers:
   examples/extend-prisma-schema:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.2.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@keystone-6/fields-document':
         specifier: ^8.0.0
@@ -1280,7 +1280,7 @@ importers:
   examples/field-groups:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -1296,7 +1296,7 @@ importers:
   examples/framework-astro:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -1327,10 +1327,10 @@ importers:
         specifier: ^7.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^5.2.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@keystone-6/document-renderer':
-        specifier: ^1.0.0
+        specifier: ^1.1.0
         version: link:../../packages/document-renderer
       '@keystone-6/fields-document':
         specifier: ^8.0.0
@@ -1382,7 +1382,7 @@ importers:
         specifier: ^7.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^5.2.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@keystone-6/fields-document':
         specifier: ^8.0.0
@@ -1440,7 +1440,7 @@ importers:
         specifier: ^7.0.0
         version: link:../../../packages/auth
       '@keystone-6/core':
-        specifier: ^5.2.0
+        specifier: ^5.7.0
         version: link:../../../packages/core
       '@keystone-6/fields-document':
         specifier: ^8.0.0
@@ -1493,7 +1493,7 @@ importers:
   examples/framework-remix:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.1.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -1536,7 +1536,7 @@ importers:
   examples/graphql-ts-gql:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -1567,7 +1567,7 @@ importers:
   examples/hooks:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -1583,7 +1583,7 @@ importers:
   examples/limits:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -1602,7 +1602,7 @@ importers:
   examples/omit:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -1618,7 +1618,7 @@ importers:
   examples/reuse:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -1634,7 +1634,7 @@ importers:
   examples/script:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -1653,7 +1653,7 @@ importers:
   examples/singleton:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -1675,7 +1675,7 @@ importers:
         specifier: ^7.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -1697,7 +1697,7 @@ importers:
   examples/usecase-blog:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.2.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@keystone-6/fields-document':
         specifier: ^8.0.0
@@ -1722,7 +1722,7 @@ importers:
         specifier: ^7.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -1738,7 +1738,7 @@ importers:
   examples/usecase-relationship-union:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -1757,7 +1757,7 @@ importers:
         specifier: ^7.0.0
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -1773,7 +1773,7 @@ importers:
   examples/usecase-todo:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -1792,7 +1792,7 @@ importers:
   examples/usecase-versioning:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -1811,7 +1811,7 @@ importers:
   examples/virtual-field:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: ^5.7.0
         version: link:../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -1830,19 +1830,19 @@ importers:
         specifier: ^7.16.3
         version: 7.23.2
       '@keystone-ui/button':
-        specifier: ^7.0.2
+        specifier: workspace:^
         version: link:../../design-system/packages/button
       '@keystone-ui/core':
-        specifier: ^5.0.2
+        specifier: workspace:^
         version: link:../../design-system/packages/core
       '@keystone-ui/fields':
-        specifier: ^7.1.2
+        specifier: workspace:^
         version: link:../../design-system/packages/fields
       '@keystone-ui/loading':
-        specifier: ^6.0.2
+        specifier: workspace:^
         version: link:../../design-system/packages/loading
       '@keystone-ui/notice':
-        specifier: ^6.0.2
+        specifier: workspace:^
         version: link:../../design-system/packages/notice
       cross-fetch:
         specifier: ^4.0.0
@@ -1867,16 +1867,16 @@ importers:
         specifier: ^7.16.3
         version: 7.23.2
       '@keystone-ui/button':
-        specifier: ^7.0.2
+        specifier: workspace:^
         version: link:../../design-system/packages/button
       '@keystone-ui/core':
-        specifier: ^5.0.2
+        specifier: workspace:^
         version: link:../../design-system/packages/core
       '@keystone-ui/fields':
-        specifier: ^7.1.2
+        specifier: workspace:^
         version: link:../../design-system/packages/fields
       '@keystone-ui/pill':
-        specifier: ^7.0.2
+        specifier: workspace:^
         version: link:../../design-system/packages/pill
       '@types/react':
         specifier: ^18.0.9
@@ -1943,43 +1943,43 @@ importers:
         specifier: ^7.0.0
         version: 7.0.1
       '@keystone-ui/button':
-        specifier: ^7.0.2
+        specifier: workspace:^
         version: link:../../design-system/packages/button
       '@keystone-ui/core':
-        specifier: ^5.0.2
+        specifier: workspace:^
         version: link:../../design-system/packages/core
       '@keystone-ui/fields':
-        specifier: ^7.2.0
+        specifier: workspace:^
         version: link:../../design-system/packages/fields
       '@keystone-ui/icons':
-        specifier: ^6.0.2
+        specifier: workspace:^
         version: link:../../design-system/packages/icons
       '@keystone-ui/loading':
-        specifier: ^6.0.2
+        specifier: workspace:^
         version: link:../../design-system/packages/loading
       '@keystone-ui/modals':
-        specifier: ^6.0.3
+        specifier: workspace:^
         version: link:../../design-system/packages/modals
       '@keystone-ui/notice':
-        specifier: ^6.0.2
+        specifier: workspace:^
         version: link:../../design-system/packages/notice
       '@keystone-ui/options':
-        specifier: ^6.0.2
+        specifier: workspace:^
         version: link:../../design-system/packages/options
       '@keystone-ui/pill':
-        specifier: ^7.0.2
+        specifier: workspace:^
         version: link:../../design-system/packages/pill
       '@keystone-ui/popover':
-        specifier: ^6.0.2
+        specifier: workspace:^
         version: link:../../design-system/packages/popover
       '@keystone-ui/segmented-control':
-        specifier: ^7.0.3
+        specifier: workspace:^
         version: link:../../design-system/packages/segmented-control
       '@keystone-ui/toast':
-        specifier: ^6.0.2
+        specifier: workspace:^
         version: link:../../design-system/packages/toast
       '@keystone-ui/tooltip':
-        specifier: ^6.0.2
+        specifier: workspace:^
         version: link:../../design-system/packages/tooltip
       '@nodelib/fs.walk':
         specifier: ^2.0.0
@@ -2100,7 +2100,7 @@ importers:
         version: 9.0.1
     devDependencies:
       '@keystone-6/core':
-        specifier: 5.7.0
+        specifier: workspace:*
         version: 'link:'
       '@types/apollo-upload-client':
         specifier: 17.0.4
@@ -2169,28 +2169,28 @@ importers:
         specifier: ^0.3.0
         version: 0.3.1
       '@keystone-6/document-renderer':
-        specifier: ^1.1.2
+        specifier: workspace:^
         version: link:../document-renderer
       '@keystone-ui/button':
-        specifier: ^7.0.2
+        specifier: workspace:^
         version: link:../../design-system/packages/button
       '@keystone-ui/core':
-        specifier: ^5.0.2
+        specifier: workspace:^
         version: link:../../design-system/packages/core
       '@keystone-ui/fields':
-        specifier: ^7.2.0
+        specifier: workspace:^
         version: link:../../design-system/packages/fields
       '@keystone-ui/icons':
-        specifier: ^6.0.2
+        specifier: workspace:^
         version: link:../../design-system/packages/icons
       '@keystone-ui/modals':
-        specifier: ^6.0.3
+        specifier: workspace:^
         version: link:../../design-system/packages/modals
       '@keystone-ui/popover':
-        specifier: ^6.0.2
+        specifier: workspace:^
         version: link:../../design-system/packages/popover
       '@keystone-ui/tooltip':
-        specifier: ^6.0.2
+        specifier: workspace:^
         version: link:../../design-system/packages/tooltip
       '@types/react':
         specifier: ^18.0.9
@@ -2310,10 +2310,10 @@ importers:
         version: 1.2.2
     devDependencies:
       '@keystone-6/auth':
-        specifier: '*'
+        specifier: workspace:*
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: '*'
+        specifier: workspace:*
         version: link:../../packages/core
       execa:
         specifier: ^5.1.1
@@ -2362,16 +2362,16 @@ importers:
         specifier: ^7.0.0
         version: 7.0.1
       '@keystone-6/api-tests':
-        specifier: '*'
+        specifier: workspace:*
         version: 'link:'
       '@keystone-6/auth':
-        specifier: '*'
+        specifier: workspace:*
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: '*'
+        specifier: workspace:*
         version: link:../../packages/core
       '@keystone-6/fields-document':
-        specifier: '*'
+        specifier: workspace:*
         version: link:../../packages/fields-document
       '@prisma/client':
         specifier: ^4.16.2
@@ -2419,7 +2419,7 @@ importers:
   tests/benchmarks:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: workspace:*
         version: link:../../packages/core
       cookie-signature:
         specifier: ^1.1.0
@@ -2444,13 +2444,13 @@ importers:
         specifier: ^7.0.0
         version: 7.0.1
       '@keystone-6/auth':
-        specifier: '*'
+        specifier: workspace:*
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: '*'
+        specifier: workspace:*
         version: link:../../packages/core
       '@keystone-6/fields-document':
-        specifier: '*'
+        specifier: workspace:*
         version: link:../../packages/fields-document
       '@prisma/client':
         specifier: ^4.16.2
@@ -2507,28 +2507,28 @@ importers:
   tests/sandbox:
     dependencies:
       '@keystone-6/auth':
-        specifier: ^7.0.0
+        specifier: workspace:*
         version: link:../../packages/auth
       '@keystone-6/core':
-        specifier: ^5.2.0
+        specifier: workspace:*
         version: link:../../packages/core
       '@keystone-6/fields-document':
-        specifier: ^8.0.0
+        specifier: workspace:*
         version: link:../../packages/fields-document
       '@keystone-ui/button':
-        specifier: ^7.0.1
+        specifier: workspace:*
         version: link:../../design-system/packages/button
       '@keystone-ui/core':
-        specifier: ^5.0.1
+        specifier: workspace:*
         version: link:../../design-system/packages/core
       '@keystone-ui/fields':
-        specifier: ^7.2.0
+        specifier: workspace:*
         version: link:../../design-system/packages/fields
       '@keystone-ui/icons':
-        specifier: ^6.0.1
+        specifier: workspace:*
         version: link:../../design-system/packages/icons
       '@keystone-ui/tooltip':
-        specifier: ^6.0.1
+        specifier: workspace:*
         version: link:../../design-system/packages/tooltip
       '@prisma/client':
         specifier: ^4.16.2
@@ -2547,7 +2547,7 @@ importers:
   tests/test-projects/basic:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: workspace:*
         version: link:../../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -2563,7 +2563,7 @@ importers:
   tests/test-projects/crud-notifications:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: workspace:*
         version: link:../../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -2579,7 +2579,7 @@ importers:
   tests/test-projects/live-reloading:
     dependencies:
       '@keystone-6/core':
-        specifier: ^5.0.0
+        specifier: workspace:*
         version: link:../../../packages/core
       '@prisma/client':
         specifier: ^4.16.2
@@ -2607,7 +2607,6 @@ packages:
 
   /@antfu/ni@0.21.4:
     resolution: {integrity: sha512-O0Uv9LbLDSoEg26fnMDdDRiPwFJnQSoD4WnrflDwKCJm8Cx/0mV4cGxwBLXan5mGIrpK4Dd7vizf4rQm0QCEAA==}
-    hasBin: true
 
   /@apollo/cache-control-types@1.0.3(graphql@16.8.1):
     resolution: {integrity: sha512-F17/vCp7QVwom9eG7ToauIKdAxpSoadsJnqIfyryLFSkLSOEqu+eC5Z3N8OXcUVStuOMcNHlyraRsA6rRICu4g==}
@@ -2689,7 +2688,6 @@ packages:
 
   /@apollo/protobufjs@1.2.7:
     resolution: {integrity: sha512-Lahx5zntHPZia35myYDBRuF58tlwPskwHc5CWBZC/4bMKB6siTBWwtMrkqXcsNwQiFSzSx5hKdRPUmemrEp3Gg==}
-    hasBin: true
     requiresBuild: true
     dependencies:
       '@protobufjs/aspromise': 1.1.2
@@ -2898,7 +2896,6 @@ packages:
 
   /@astrojs/language-server@1.0.8:
     resolution: {integrity: sha512-gssRxLGb8XnvKpqSzrDW5jdzdFnXD7eBXVkPCkkt2hv7Qzb+SAzv6hVgMok3jDCxpR1aeB+XNd9Qszj2h29iog==}
-    hasBin: true
     dependencies:
       '@astrojs/compiler': 1.8.2
       '@jridgewell/trace-mapping': 0.3.20
@@ -3149,6 +3146,7 @@ packages:
   /@aws-sdk/client-sso@3.433.0:
     resolution: {integrity: sha512-L7ksMP7UnYH+w52ly+m+s5vk8662VtyqJ+UduFEMPqKUHTFEm7w+CCw4Xfk3hl5GlVvqPvYWqBqv8eLKSHpCEQ==}
     engines: {node: '>=14.0.0'}
+    requiresBuild: true
     dependencies:
       '@aws-crypto/sha256-browser': 3.0.0
       '@aws-crypto/sha256-js': 3.0.0
@@ -3559,6 +3557,7 @@ packages:
   /@aws-sdk/token-providers@3.433.0:
     resolution: {integrity: sha512-Q6aYVaQKB+CkBLHQQlN8MHVpOzZv9snRfVz7SxIpdbHkRuGEHiLliCY3fg6Sonvu3AKEPERPuHcaC75tnNpOBw==}
     engines: {node: '>=14.0.0'}
+    requiresBuild: true
     dependencies:
       '@aws-crypto/sha256-browser': 3.0.0
       '@aws-crypto/sha256-js': 3.0.0
@@ -4087,7 +4086,6 @@ packages:
   /@babel/parser@7.23.0:
     resolution: {integrity: sha512-vvPKKdMemU85V9WE/l5wZEmImpCtLqbnTvqDS2U1fJ96KrxoW7KrXhNsNCblQlg8Ck4b85yxdTyelsMUgFUXiw==}
     engines: {node: '>=6.0.0'}
-    hasBin: true
     dependencies:
       '@babel/types': 7.23.0
 
@@ -4116,7 +4114,6 @@ packages:
   /@babel/plugin-proposal-class-properties@7.18.6(@babel/core@7.23.2):
     resolution: {integrity: sha512-cumfXOF0+nzZrrN8Rf0t7M+tF6sZc7vhQwYQck9q1/5w2OExlD+b4v4RpMJFaV1Z7WcDRgO6FqvxqxGlwo+RHQ==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-class-properties instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
@@ -4128,7 +4125,6 @@ packages:
   /@babel/plugin-proposal-object-rest-spread@7.20.7(@babel/core@7.23.2):
     resolution: {integrity: sha512-d2S98yCiLxDVmBmE8UjGcfPvNEUbA1U5q5WxaWFUGRzJSVAZqm5W6MbPct0jxnegUZ0niLeNX+IOzEs7wYg9Dg==}
     engines: {node: '>=6.9.0'}
-    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-object-rest-spread instead.
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
@@ -5179,7 +5175,6 @@ packages:
 
   /@changesets/cli@2.26.2:
     resolution: {integrity: sha512-dnWrJTmRR8bCHikJHl9b9HW3gXACCehz4OasrXpMp7sx97ECuBGGNjJhjPhdZNCvMy9mn4BWdplI323IbqsRig==}
-    hasBin: true
     dependencies:
       '@babel/runtime': 7.23.2
       '@changesets/apply-release-plan': 6.1.4
@@ -5338,7 +5333,6 @@ packages:
   /@cnakazawa/watch@1.0.4:
     resolution: {integrity: sha512-v9kIhKwjeZThiWrLmj0y17CWoyddASLj9O2yvbZkbvw/N3rWOYy9zkV66ursAoVr0mV15bL8g0c4QZUE6cdDoQ==}
     engines: {node: '>=0.1.95'}
-    hasBin: true
     dependencies:
       exec-sh: 0.3.6
       minimist: 1.2.8
@@ -6975,7 +6969,6 @@ packages:
   /@manypkg/cli@0.21.0:
     resolution: {integrity: sha512-q/JF25il2EXtyPpc5U/Pp7TMgJot/WmFkyh7M9FiutQkliHp58UqUxIPeUObLu9EtoAp/uP21t+TMDsq1DMbeg==}
     engines: {node: '>=14.18.0'}
-    hasBin: true
     dependencies:
       '@manypkg/get-packages': 2.2.0
       chalk: 2.4.2
@@ -7185,7 +7178,6 @@ packages:
   /@npmcli/move-file@1.1.2:
     resolution: {integrity: sha512-1SUf/Cg2GzGDyaf15aR9St9TWlb+XvbZXWpDx8YKs7MLzMH/BCeopv+y9vzrzgkfykCGuWOlSu3mZhj2+FQcrg==}
     engines: {node: '>=10'}
-    deprecated: This functionality has been moved to @npmcli/fs
     dependencies:
       mkdirp: 1.0.4
       rimraf: 3.0.2
@@ -7256,7 +7248,6 @@ packages:
 
   /@preconstruct/cli@2.8.1:
     resolution: {integrity: sha512-PX5w+au06iY/QaT+9RLmRlIfavRCRoMTC/krwtNrgPEnubR9e6P+QlywrKmwiEvkzbR9AEzGnRZL8uNRDDMzrQ==}
-    hasBin: true
     dependencies:
       '@babel/code-frame': 7.22.13
       '@babel/core': 7.23.2
@@ -7658,7 +7649,6 @@ packages:
   /@remix-run/serve@1.19.3:
     resolution: {integrity: sha512-RUVEy7EBYvHO1hIuyVQJyIYZeFfXecC+Uaw6GvZscLywIGnhcAj+5dpeK6HVayNuV4kKLvBp0F4ZGHbwW1oWaA==}
     engines: {node: '>=14.0.0'}
-    hasBin: true
     dependencies:
       '@remix-run/express': 1.19.3(express@4.18.2)
       '@remix-run/node': 1.19.3
@@ -7806,7 +7796,6 @@ packages:
   /@shuding/opentype.js@1.4.0-beta.0:
     resolution: {integrity: sha512-3NgmNyH3l/Hv6EvsWJbsvpcpUba6R8IREQ83nH83cyakCw7uM1arZKNfHwv1Wz6jgqrF/j4x5ELvR6PnK9nTcA==}
     engines: {node: '>= 8.0.0'}
-    hasBin: true
     dependencies:
       fflate: 0.7.4
       string.prototype.codepointat: 0.2.1
@@ -9541,7 +9530,6 @@ packages:
   /acorn@8.10.0:
     resolution: {integrity: sha512-F0SAmZ8iUtS//m8DmCTA0jlh6TDKkHQyK6xc6V4KDTyZKA9dnvX9/3sRTVQrWm79glUAZbnmmNcdYwUIHWVybw==}
     engines: {node: '>=0.4.0'}
-    hasBin: true
 
   /agent-base@6.0.2:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
@@ -9877,7 +9865,6 @@ packages:
 
   /astring@1.8.6:
     resolution: {integrity: sha512-ISvCdHdlTDlH5IpxQJIex7BWBywFWgjJSVdwst+/iQCoEYnyOaQ95+X1JGshuBjGp6nxKUy1jMgE3zPqN7fQdg==}
-    hasBin: true
     dev: true
 
   /astro@2.10.15(@types/node@18.18.6):
@@ -9985,7 +9972,6 @@ packages:
   /atob@2.1.2:
     resolution: {integrity: sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==}
     engines: {node: '>= 4.5.0'}
-    hasBin: true
     dev: true
 
   /atomically@1.7.0:
@@ -10422,7 +10408,6 @@ packages:
   /browserslist@4.22.1:
     resolution: {integrity: sha512-FEVc202+2iuClEhZhrWy6ZiAcRLvNMyYcxZ8raemul1DYVOVdFsbqckWLdsixQZCpJlwe77Z3UTalE7jsjnKfQ==}
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
-    hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001551
       electron-to-chromium: 1.4.563
@@ -11036,7 +11021,6 @@ packages:
   /concurrently@7.6.0:
     resolution: {integrity: sha512-BKtRgvcJGeZ4XttiDiNcFiRlxoAeZOseqUvyYRUp/Vtd+9p1ULmeoSqGsDA+2ivdeDFpqrJvGvmI+StKfKl5hw==}
     engines: {node: ^12.20.0 || ^14.13.0 || >=16.0.0}
-    hasBin: true
     dependencies:
       chalk: 4.1.2
       date-fns: 2.30.0
@@ -11175,7 +11159,6 @@ packages:
   /crc-32@1.2.2:
     resolution: {integrity: sha512-ROmzCKrTnOwybPcJApAA6WBWij23HVfGVNKqqrZpuyZOHqK2CwHSvpGuyt/UNNvaIjEd8X5IFGp4Mh+Ie1IHJQ==}
     engines: {node: '>=0.8'}
-    hasBin: true
 
   /crc32-stream@4.0.3:
     resolution: {integrity: sha512-NT7w2JVU7DFroFdYkeq8cywxrgjPHWkdX1wjpRQXPX5Asews3tA+Ght6lddQO5Mkumffp3X7GEqku3epj2toIw==}
@@ -11187,7 +11170,6 @@ packages:
   /create-jest@29.7.0(@types/node@18.18.6):
     resolution: {integrity: sha512-Adz2bdH0Vq3F53KEMJOoftQFutWCukm6J24wbPWRO4k1kMY7gS7ds/uoJkNuV8wDCtWWnuwGcJwpWcih+zEW1Q==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
-    hasBin: true
     dependencies:
       '@jest/types': 29.6.3
       chalk: 4.1.2
@@ -11305,7 +11287,6 @@ packages:
   /cssesc@3.0.0:
     resolution: {integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==}
     engines: {node: '>=4'}
-    hasBin: true
     dev: true
 
   /csso@5.0.5:
@@ -11691,7 +11672,6 @@ packages:
 
   /direction@1.0.4:
     resolution: {integrity: sha512-GYqKi1aH7PJXxdhTeZBFrg8vUBeKXi+cNprXsC1kpJcbcVnV9wBsrOu1cQEdG0WeQwlfHiy3XvnKfIrJ2R0NzQ==}
-    hasBin: true
     dev: false
 
   /dlv@1.1.3:
@@ -12043,7 +12023,6 @@ packages:
   /esbuild@0.17.19:
     resolution: {integrity: sha512-XQ0jAPFkK/u3LcVRcvVHQcTIqD6E2H1fvZMA5dQPSOWb3suUbWbfbRf94pjc0bNzRYLfIrDRQXr7X+LHIm5oHw==}
     engines: {node: '>=12'}
-    hasBin: true
     requiresBuild: true
     optionalDependencies:
       '@esbuild/android-arm': 0.17.19
@@ -12073,7 +12052,6 @@ packages:
   /esbuild@0.17.6:
     resolution: {integrity: sha512-TKFRp9TxrJDdRWfSsSERKEovm6v30iHnrjlcGhLBOtReE28Yp1VSBRfO3GTaOFMoxsNerx4TjrhzSuma9ha83Q==}
     engines: {node: '>=12'}
-    hasBin: true
     requiresBuild: true
     optionalDependencies:
       '@esbuild/android-arm': 0.17.6
@@ -12103,7 +12081,6 @@ packages:
   /esbuild@0.18.20:
     resolution: {integrity: sha512-ceqxoedUrcayh7Y7ZX6NdbbDzGROiyVBgC4PriJThBKSVPWnnFHZAkfI1lJT8QFkOwH4qOS2SJkS4wvpGl8BpA==}
     engines: {node: '>=12'}
-    hasBin: true
     requiresBuild: true
     optionalDependencies:
       '@esbuild/android-arm': 0.18.20
@@ -12132,7 +12109,6 @@ packages:
   /esbuild@0.19.5:
     resolution: {integrity: sha512-bUxalY7b1g8vNhQKdB24QDmHeY4V4tw/s6Ak5z+jJX9laP5MoQseTOMemAr0gxssjNcH0MCViG8ONI2kksvfFQ==}
     engines: {node: '>=12'}
-    hasBin: true
     requiresBuild: true
     optionalDependencies:
       '@esbuild/android-arm': 0.19.5
@@ -12185,7 +12161,6 @@ packages:
   /escodegen@2.1.0:
     resolution: {integrity: sha512-2NlIDTwUWJN0mRPQOdtQBzbUHvdGY2P1VXSyU83Q3xKxM7WHX2Ql8dKq782Q9TgQUNOLEzEYu9bzLNj1q88I5w==}
     engines: {node: '>=6.0'}
-    hasBin: true
     dependencies:
       esprima: 4.0.1
       estraverse: 5.3.0
@@ -12342,7 +12317,6 @@ packages:
   /eslint@8.52.0:
     resolution: {integrity: sha512-zh/JHnaixqHZsolRB/w9/02akBk9EPrOs9JwcTP2ek7yL5bVvXuRariiaAjjoJ5DvuwQ1WAE/HsMz+w17YgBCg==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
-    hasBin: true
     dependencies:
       '@eslint-community/eslint-utils': 4.4.0(eslint@8.52.0)
       '@eslint-community/regexpp': 4.9.1
@@ -12396,7 +12370,6 @@ packages:
   /esprima@4.0.1:
     resolution: {integrity: sha512-eGuFFw7Upda+g4p+QHvnW0RyTX/SVeJBDM/gCtMARO0cLuT2HcEKnTPvhjV6aGeqrCB/sbNop0Kszm0jsaWU4A==}
     engines: {node: '>=4'}
-    hasBin: true
 
   /esquery@1.5.0:
     resolution: {integrity: sha512-YQLXUplAwJgCydQ78IMJywZCceoqk1oH01OERdSAJc/7U2AylwjhSCLDEtqwg811idIS/9fIU5GjG73IgjKMVg==}
@@ -12764,7 +12737,6 @@ packages:
 
   /fast-xml-parser@4.2.5:
     resolution: {integrity: sha512-B9/wizE4WngqQftFPmdaMYlXoJlJOYxGQOanC77fq9k8+Z0v5dDSVh+3glErdIROP//s/jgb7ZuxKfB8nVyo0g==}
-    hasBin: true
     dependencies:
       strnum: 1.0.5
     dev: false
@@ -13482,7 +13454,6 @@ packages:
 
   /gunzip-maybe@1.4.2:
     resolution: {integrity: sha512-4haO1M4mLO91PW57BMsDFf75UmwoRX0GkdD+Faw+Lr+r/OZrOCS0pIBwOL1xCKQqnQzbNFGgK2V2CpBUPeFNTw==}
-    hasBin: true
     dependencies:
       browserify-zlib: 0.1.4
       is-deflate: 1.0.0
@@ -13729,7 +13700,6 @@ packages:
 
   /html-tokenize@2.0.1:
     resolution: {integrity: sha512-QY6S+hZ0f5m1WT8WffYN+Hg+xm/w5I8XeUcAq/ZYP5wVC8xbKi4Whhru3FtrAebD5EhBW8rmFzkDI6eCAuFe2w==}
-    hasBin: true
     dependencies:
       buffer-from: 0.1.2
       inherits: 2.0.4
@@ -13871,7 +13841,6 @@ packages:
   /image-size@1.0.2:
     resolution: {integrity: sha512-xfOoWjceHntRb3qFCrh5ZFORYH8XCdYpASltMhZ/Q0KZiOwjdE/Yl2QCiWdwD+lygV5bMCvauzgu5PxBX/Yerg==}
     engines: {node: '>=14.0.0'}
-    hasBin: true
     dependencies:
       queue: 6.0.2
     dev: false
@@ -13899,7 +13868,6 @@ packages:
   /import-local@3.1.0:
     resolution: {integrity: sha512-ASB07uLtnDs1o6EHjKpX34BKYDSqnFerfTOJL2HvMqF70LnxpjkzDB8J44oT9pu4AMPkQwf8jl6szgvNd2tRIg==}
     engines: {node: '>=8'}
-    hasBin: true
     dependencies:
       pkg-dir: 4.2.0
       resolve-cwd: 3.0.0
@@ -14115,7 +14083,6 @@ packages:
   /is-ci-cli@2.2.0:
     resolution: {integrity: sha512-Xg97ZGDzU0a9gPTAli+TNegMk+PI3x0KLRYCfBa2LAboF1YyuA03Gwdc9vpu3VRNU+lFFNkvXnIQuJ0PgB120Q==}
     engines: {node: '>=8'}
-    hasBin: true
     dependencies:
       cross-spawn: 7.0.3
       is-ci: 2.0.0
@@ -14123,13 +14090,11 @@ packages:
 
   /is-ci@2.0.0:
     resolution: {integrity: sha512-YfJT7rkpQB0updsdHLGWrvhBJfcfzNNawYDNIyQXJz0IViGf75O8EBPKSdvw2rF+LGCsX4FZ8tcr3b19LcZq4w==}
-    hasBin: true
     dependencies:
       ci-info: 2.0.0
 
   /is-ci@3.0.1:
     resolution: {integrity: sha512-ZYvCgrefwqoQ6yTyYUbQu64HsITZ3NfKX1lzaEYdkTDcfKzzCI/wthRRYKkdjHKFVgNiXKAKm65Zo1pk2as/QQ==}
-    hasBin: true
     dependencies:
       ci-info: 3.9.0
     dev: true
@@ -14192,12 +14157,10 @@ packages:
   /is-docker@2.2.1:
     resolution: {integrity: sha512-F+i2BKsFrH66iaUFc0woD8sLy8getkwTwtOBjvs56Cx4CgJDeKQeqfz8wAYiSb8JOprWhHH5p77PbmYCvvUuXQ==}
     engines: {node: '>=8'}
-    hasBin: true
 
   /is-docker@3.0.0:
     resolution: {integrity: sha512-eljcgEDlEns/7AXFosB5K/2nCM4P7FQPkGc/DWLy5rmFEWvZayGrik1d9/QIY5nJ4f9YsVvBkA6kJpHn9rISdQ==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
-    hasBin: true
     dev: false
 
   /is-dotfile@1.0.3:
@@ -14283,7 +14246,6 @@ packages:
   /is-inside-container@1.0.0:
     resolution: {integrity: sha512-KIYLCCJghfHZxqjYBE7rEy0OBuTd5xCHS7tHVgvCLkx7StIoaxwNW3hCALgEUjFfeRk+MG/Qxmp/vtETEF3tRA==}
     engines: {node: '>=14.16'}
-    hasBin: true
     dependencies:
       is-docker: 3.0.0
     dev: false
@@ -15128,14 +15090,12 @@ packages:
 
   /js-yaml@3.14.1:
     resolution: {integrity: sha512-okMH7OXXJ7YrN9Ok3/SXrnu4iX9yOk+25nqX4imS2npuvTYDmo/QEZoqwZkYaIDk3jVvBOTOIEgEhaLOynBS9g==}
-    hasBin: true
     dependencies:
       argparse: 1.0.10
       esprima: 4.0.1
 
   /js-yaml@4.1.0:
     resolution: {integrity: sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==}
-    hasBin: true
     dependencies:
       argparse: 2.0.1
 
@@ -15186,18 +15146,15 @@ packages:
 
   /jsesc@0.5.0:
     resolution: {integrity: sha512-uZz5UnB7u4T9LvwmFqXii7pZSouaRPorGs5who1Ip7VO0wxanFvBL7GkM6dTHlgX+jhBApRetaWpnDabOeTcnA==}
-    hasBin: true
     dev: true
 
   /jsesc@2.5.2:
     resolution: {integrity: sha512-OYu7XEzjkCQ3C5Ps3QIZsQfNpqoJyZZA99wd9aWd05NCtC5pWOkShK2mkL6HXQR6/Cy2lbNdPlZBpuQHXE63gA==}
     engines: {node: '>=4'}
-    hasBin: true
 
   /jsesc@3.0.2:
     resolution: {integrity: sha512-xKqzzWXDttJuOcawBt4KnKHHIf5oQ/Cxax+0PWFG+DFDgHNAdi+TXECADI+RYiFUMmx8792xsMbbgXj4CwnP4g==}
     engines: {node: '>=6'}
-    hasBin: true
     dev: true
 
   /json-buffer@3.0.0:
@@ -15226,7 +15183,6 @@ packages:
 
   /json5@1.0.2:
     resolution: {integrity: sha512-g1MWMLBiz8FKi1e4w0UyVL3w+iJceWAFBAaBnnGKOpNa5f8TLktkbre1+s6oICydWAm+HRUGTmI+//xv2hvXYA==}
-    hasBin: true
     dependencies:
       minimist: 1.2.8
     dev: true
@@ -15234,7 +15190,6 @@ packages:
   /json5@2.2.3:
     resolution: {integrity: sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==}
     engines: {node: '>=6'}
-    hasBin: true
 
   /jsonc-parser@2.3.1:
     resolution: {integrity: sha512-H8jvkz1O50L3dMZCsLqiuB2tA7muqbSg1AtGEkN0leAqGjsUzDJir3Zwr02BhqdcITPg3ei3mZ+HjMocAknhhg==}
@@ -15563,7 +15518,6 @@ packages:
 
   /loose-envify@1.4.0:
     resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}
-    hasBin: true
     dependencies:
       js-tokens: 4.0.0
 
@@ -15612,7 +15566,6 @@ packages:
 
   /lz-string@1.5.0:
     resolution: {integrity: sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ==}
-    hasBin: true
     dev: true
 
   /magic-string@0.25.9:
@@ -15687,7 +15640,6 @@ packages:
 
   /markdown-it@13.0.2:
     resolution: {integrity: sha512-FtwnEuuK+2yVU7goGn/MJ0WBZMM9ZPgU9spqlFs7/A/pDIUNSOQZhUgOqYCficIuR2QaFnrt8LHqBWsbTAoI5w==}
-    hasBin: true
     dependencies:
       argparse: 2.0.1
       entities: 3.0.1
@@ -16450,18 +16402,15 @@ packages:
   /mime@1.6.0:
     resolution: {integrity: sha512-x0Vn8spI+wuJ1O6S7gnbaQg8Pxh4NNHb7KSINmEWKiPE4RKOplvijn+NkmYmmRgP68mc70j2EbeTFRsrswaQeg==}
     engines: {node: '>=4'}
-    hasBin: true
 
   /mime@2.6.0:
     resolution: {integrity: sha512-USPkMeET31rOMiarsBNIHZKLGgvKc/LrjofAnBlOttf5ajRvqiRA8QsenbcooctK6d6Ts6aqZXBA+XbkKthiQg==}
     engines: {node: '>=4.0.0'}
-    hasBin: true
     dev: true
 
   /mime@3.0.0:
     resolution: {integrity: sha512-jSCU7/VB1loIWBZe14aEYHU/+1UMEHoaO7qxCOVJOw9GgH72VAWppxNcjU+x9a2k3GSIBXNKxXQFqRvvZ7vr3A==}
     engines: {node: '>=10.0.0'}
-    hasBin: true
 
   /mimic-fn@2.1.0:
     resolution: {integrity: sha512-OqbOk5oEQeAZ8WXWydlu9HJjz9WVdEIvamMCcXmuqUYjTknH/sqsWvhQ3vgwKFRR1HpjvNBKQ37nbJgYzGqGcg==}
@@ -16581,7 +16530,6 @@ packages:
   /mkdirp@1.0.4:
     resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
     engines: {node: '>=10'}
-    hasBin: true
     dev: true
 
   /mlly@1.4.2:
@@ -16676,7 +16624,6 @@ packages:
   /mssql@9.1.1:
     resolution: {integrity: sha512-m0yTx9xzUtTvJpWJHqknUXUDPRnJXZYOOFNygnNIXn1PBkLsC/rkXQdquObd+M0ZPlBhGC00Jg28zG0wCl7VWg==}
     engines: {node: '>=10'}
-    hasBin: true
     dependencies:
       '@tediousjs/connection-string': 0.4.4
       commander: 9.5.0
@@ -16702,7 +16649,6 @@ packages:
   /nanoid@3.3.6:
     resolution: {integrity: sha512-BGcqMMJuToF7i1rt+2PWSNVnWIkGCU78jBG3RxO/bZlnZPK2Cmi2QaffxGO/2RvWi9sL+FAiRiXMgsyxQ1DIDA==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
-    hasBin: true
 
   /nanomatch@1.2.13:
     resolution: {integrity: sha512-fpoe2T0RbHwBTBUOftAfBPaDEi06ufaUai0mE6Yn1kacc3SnTErfb/h+X94VXzI64rKFHYImXSvdwGGCmwOqCA==}
@@ -16958,7 +16904,6 @@ packages:
   /npm-packlist@2.2.2:
     resolution: {integrity: sha512-Jt01acDvJRhJGthnUJVF/w6gumWOZxO7IkpY/lsX9//zqQgnF7OJaxgQXcerd4uQOLu7W5bkb4mChL9mdfm+Zg==}
     engines: {node: '>=10'}
-    hasBin: true
     dependencies:
       glob: 7.2.3
       ignore-walk: 3.0.4
@@ -16969,7 +16914,6 @@ packages:
   /npm-packlist@5.1.3:
     resolution: {integrity: sha512-263/0NGrn32YFYi4J533qzrQ/krmmrWwhKkzwTuM4f/07ug51odoaNjUexxO4vxlzURHcmYMH1QjvHjsNDKLVg==}
     engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
-    hasBin: true
     dependencies:
       glob: 8.1.0
       ignore-walk: 5.0.1
@@ -17424,7 +17368,6 @@ packages:
   /parse-github-url@1.0.2:
     resolution: {integrity: sha512-kgBf6avCbO3Cn6+RnzRGLkUsv4ZVqv/VfAYkRsyBcgkshNvVBkRn1FEZcW0Jb+npXQWm2vHPnnOqFteZxRRGNw==}
     engines: {node: '>=0.10.0'}
-    hasBin: true
     dev: true
 
   /parse-glob@3.0.4:
@@ -17642,7 +17585,6 @@ packages:
   /pidtree@0.6.0:
     resolution: {integrity: sha512-eG2dWTVw5bzqGRztnHExczNxt5VGsE6OwTeCG3fdUf9KBsZzO3R5OIIIzWR+iZA0NtZ+RDVdaoE2dK1cn6jH4g==}
     engines: {node: '>=0.10'}
-    hasBin: true
     dev: true
 
   /pify@4.0.1:
@@ -17678,12 +17620,10 @@ packages:
   /playwright-core@1.39.0:
     resolution: {integrity: sha512-+k4pdZgs1qiM+OUkSjx96YiKsXsmb59evFoqv8SKO067qBA+Z2s/dCzJij/ZhdQcs2zlTAgRKfeiiLm8PQ2qvw==}
     engines: {node: '>=16'}
-    hasBin: true
 
   /playwright@1.39.0:
     resolution: {integrity: sha512-naE5QT11uC/Oiq0BwZ50gDmy8c8WLPRTEWuSSFVG2egBka/1qMoSqYQcROMT9zLwJ86oPofcTH2jBY/5wWOgIw==}
     engines: {node: '>=16'}
-    hasBin: true
     dependencies:
       playwright-core: 1.39.0
     optionalDependencies:
@@ -17867,7 +17807,6 @@ packages:
   /prettier@2.8.8:
     resolution: {integrity: sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==}
     engines: {node: '>=10.13.0'}
-    hasBin: true
 
   /pretty-format@27.5.1:
     resolution: {integrity: sha512-Qb1gy5OrP5+zDf2Bvnzdl3jsTf1qXVMazbvCoKhtKqVs4/YK4ozX4gKQJJVyNe+cajNPn0KoC0MC3FUmaHWEmQ==}
@@ -17911,7 +17850,6 @@ packages:
   /prisma@4.16.2:
     resolution: {integrity: sha512-SYCsBvDf0/7XSJyf2cHTLjLeTLVXYfqp7pG5eEVafFLeT0u/hLFz/9W196nDRGUOo1JfPatAEb+uEnTQImQC1g==}
     engines: {node: '>=14.17'}
-    hasBin: true
     requiresBuild: true
     dependencies:
       '@prisma/engines': 4.16.2
@@ -17995,7 +17933,6 @@ packages:
   /ps-tree@1.2.0:
     resolution: {integrity: sha512-0VnamPPYHl4uaU/nSFeZZpR21QAWRz+sRv4iW9+v/GS/J5U5iZB5BNN6J0RMoOvdx2gWM2+ZFMIm58q24e4UYA==}
     engines: {node: '>= 0.10'}
-    hasBin: true
     dependencies:
       event-stream: 3.3.4
     dev: true
@@ -18118,7 +18055,6 @@ packages:
 
   /rc@1.2.8:
     resolution: {integrity: sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw==}
-    hasBin: true
     dependencies:
       deep-extend: 0.6.0
       ini: 1.3.8
@@ -18499,7 +18435,6 @@ packages:
 
   /regjsparser@0.9.1:
     resolution: {integrity: sha512-dQUtn90WanSNl+7mQKcXAgZxvUe7Z0SqXlgzv0za4LwiUhyzBC58yQO3liFoUgu8GiJVInAhJjkj1N0EtQ5nkQ==}
-    hasBin: true
     dependencies:
       jsesc: 0.5.0
     dev: true
@@ -18680,7 +18615,6 @@ packages:
 
   /resolve-url@0.2.1:
     resolution: {integrity: sha512-ZuF55hVUQaaczgOIwqWzkEcEidmlD/xl44x1UZnhOXcYuFN2S6+rcxpG+C1N3So0wvNI3DmJICUFfu2SxhBmvg==}
-    deprecated: https://github.com/lydell/resolve-url#deprecated
     dev: true
 
   /resolve.exports@2.0.2:
@@ -18690,7 +18624,6 @@ packages:
 
   /resolve@1.22.2:
     resolution: {integrity: sha512-Sb+mjNHOULsBv818T40qSPeRiuWLyaGMa5ewydRLFimneixmVy2zdivRl+AF6jaYPC8ERxGDmFSiqui6SfPd+g==}
-    hasBin: true
     dependencies:
       is-core-module: 2.13.1
       path-parse: 1.0.7
@@ -18698,7 +18631,6 @@ packages:
 
   /resolve@1.22.8:
     resolution: {integrity: sha512-oKWePCxqpd6FlLvGV1VU0x7bkPmmCNolxzjMf4NczoDnQcIWrAF+cPtZn5i6n+RfD2d9i0tzpKnG6Yk168yIyw==}
-    hasBin: true
     dependencies:
       is-core-module: 2.13.1
       path-parse: 1.0.7
@@ -18706,7 +18638,6 @@ packages:
 
   /resolve@2.0.0-next.5:
     resolution: {integrity: sha512-U7WjGVG9sH8tvjW5SmGbQuui75FiyjAX72HX15DwBBwF9dNiQZRQAg9nnPhYy+TUnE0+VcrttuvNI8oSxZcocA==}
-    hasBin: true
     dependencies:
       is-core-module: 2.13.1
       path-parse: 1.0.7
@@ -18798,14 +18729,12 @@ packages:
 
   /rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
-    hasBin: true
     dependencies:
       glob: 7.2.3
 
   /rollup@2.79.1:
     resolution: {integrity: sha512-uKxbd0IhMZOhjAiD5oAFp7BqvkA4Dv47qpOCtaNvng4HBwdbWtdOh8f5nZNuk2rp51PMGk3bzfWu5oayNEuYnw==}
     engines: {node: '>=10.0.0'}
-    hasBin: true
     optionalDependencies:
       fsevents: 2.3.3
     dev: true
@@ -18813,7 +18742,6 @@ packages:
   /rollup@3.29.4:
     resolution: {integrity: sha512-oWzmBZwvYrU0iJHtDmhsm662rC15FRXmcjCk1xD771dFDx5jJ02ufAQQTn0etB2emNk4J9EZg/yWKpsn9BWGRw==}
     engines: {node: '>=14.18.0', npm: '>=8.0.0'}
-    hasBin: true
     optionalDependencies:
       fsevents: 2.3.3
 
@@ -18896,8 +18824,6 @@ packages:
   /sane@4.1.0:
     resolution: {integrity: sha512-hhbzAgTIX8O7SHfp2c8/kREfEn4qO/9q8C9beyY6+tvZ87EpoZ3i1RIEvp27YBswnNbY9mWd6paKVmKbAgLfZA==}
     engines: {node: 6.* || 8.* || >= 10.*}
-    deprecated: some dependency vulnerabilities fixed, support for node < 10 dropped, and newer ECMAScript syntax/features added
-    hasBin: true
     dependencies:
       '@cnakazawa/watch': 1.0.4
       anymatch: 2.0.0
@@ -18984,16 +18910,13 @@ packages:
 
   /semver@5.7.2:
     resolution: {integrity: sha512-cBznnQ9KjJqU67B52RMC65CMarK2600WFnbkcaiwWq3xy/5haFJlshgnpjovMVJ+Hff49d8GEn0b87C5pDQ10g==}
-    hasBin: true
 
   /semver@6.3.1:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
-    hasBin: true
 
   /semver@7.5.4:
     resolution: {integrity: sha512-1bCSESV6Pv+i21Hvpxp3Dx+pSD8lIPt8uVjRrxAUt/nbswYc+tK6Y2btiULjd4+fnq15PX+nqQDC7Oft7WkwcA==}
     engines: {node: '>=10'}
-    hasBin: true
     dependencies:
       lru-cache: 6.0.0
 
@@ -19082,7 +19005,6 @@ packages:
 
   /sha.js@2.4.11:
     resolution: {integrity: sha512-QMEp5B7cftE7APOjk5Y6xgrbWu+WkLVQwk8JNjZ8nKRciZaByEW6MubieAiToS7+dwvrjGhH8jRXz3MVd0AYqQ==}
-    hasBin: true
     dependencies:
       inherits: 2.0.4
       safe-buffer: 5.2.1
@@ -19222,7 +19144,6 @@ packages:
   /smartwrap@2.0.2:
     resolution: {integrity: sha512-vCsKNQxb7PnCNd2wY1WClWifAc2lwqsG8OaswpJkVJsvMGcnEntdTCDajZCkk93Ay1U3t/9puJmb525Rg5MZBA==}
     engines: {node: '>=6'}
-    hasBin: true
     dependencies:
       array.prototype.flat: 1.3.2
       breakword: 1.0.6
@@ -19294,7 +19215,6 @@ packages:
 
   /sort-package-json@1.57.0:
     resolution: {integrity: sha512-FYsjYn2dHTRb41wqnv+uEqCUvBpK3jZcTp9rbz2qDTmel7Pmdtf+i2rLaaPMRZeSVM60V3Se31GyWFpmKs4Q5Q==}
-    hasBin: true
     dependencies:
       detect-indent: 6.1.0
       detect-newline: 3.1.0
@@ -19310,7 +19230,6 @@ packages:
 
   /source-map-resolve@0.5.3:
     resolution: {integrity: sha512-Htz+RnsXWk5+P2slx5Jh3Q66vhQj1Cllm0zvnaY98+NFx+Dv2CF/f5O/t8x+KaNdrdIAsruNzoh/KpialbqAnw==}
-    deprecated: See https://github.com/lydell/source-map-resolve#deprecated
     dependencies:
       atob: 2.1.2
       decode-uri-component: 0.2.2
@@ -19334,7 +19253,6 @@ packages:
 
   /source-map-url@0.4.1:
     resolution: {integrity: sha512-cPiFOTLUKvJFIg4SKVScy4ilPPW6rFgMgfuZJPNoDuMs3nC1HbMUycBoJw77xFIp6z1UJQJOfx6C9GMH80DiTw==}
-    deprecated: See https://github.com/lydell/source-map-url#deprecated
     dev: true
 
   /source-map@0.5.7:
@@ -19351,7 +19269,6 @@ packages:
 
   /sourcemap-codec@1.4.8:
     resolution: {integrity: sha512-9NykojV5Uih4lgo5So5dtw+f0JgJX30KCNI8gwhz2J9A15wD0Ml6tjHKwf6fTSa6fAdVBdZeNOs9eJ71qCk8vA==}
-    deprecated: Please use @jridgewell/sourcemap-codec instead
     dev: true
 
   /space-separated-tokens@2.0.2:
@@ -19442,7 +19359,6 @@ packages:
   /start-server-and-test@2.0.1:
     resolution: {integrity: sha512-8PFo4DLLLCDMuS51/BEEtE1m9CAXw1LNVtZSS1PzkYQh6Qf9JUwM4huYeSoUumaaoAyuwYBwCa9OsrcpMqcOdQ==}
     engines: {node: '>=16'}
-    hasBin: true
     dependencies:
       arg: 5.0.2
       bluebird: 3.7.2
@@ -19775,7 +19691,6 @@ packages:
   /svgo@3.0.2:
     resolution: {integrity: sha512-Z706C1U2pb1+JGP48fbazf3KxHrWOsLme6Rv7imFBn5EnuanDW1GPaA/P1/dvObE670JDePC3mnj0k0B7P0jjQ==}
     engines: {node: '>=14.0.0'}
-    hasBin: true
     dependencies:
       '@trysound/sax': 0.2.0
       commander: 7.2.0
@@ -19910,7 +19825,6 @@ packages:
   /terser@5.22.0:
     resolution: {integrity: sha512-hHZVLgRA2z4NWcN6aS5rQDc+7Dcy58HOf2zbYwmFcQ+ua3h6eEFf5lIDKTzbWwlazPyOZsFQO8V80/IjVNExEw==}
     engines: {node: '>=10'}
-    hasBin: true
     dependencies:
       '@jridgewell/source-map': 0.3.5
       acorn: 8.10.0
@@ -20086,12 +20000,10 @@ packages:
 
   /tree-kill@1.2.2:
     resolution: {integrity: sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==}
-    hasBin: true
 
   /treekill@1.0.0:
     resolution: {integrity: sha512-yRk5h+uZ6oFKQWf88pzuOSujKvpU8wqo9nuxCMUvWU55sC6A9J0EzjmEwpTjHydhBhBDDZKgA6992aIEWTxDkw==}
     engines: {node: '>= 0.10.0'}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
     dev: true
 
   /trim-lines@3.0.1:
@@ -20193,7 +20105,6 @@ packages:
   /tty-table@4.2.2:
     resolution: {integrity: sha512-2gvCArMZLxgvpZ2NvQKdnYWIFLe7I/z5JClMuhrDXunmKgSZcQKcZRjN9XjAFiToMz2pUo1dEIXyrm0AwgV5Tw==}
     engines: {node: '>=8.0.0'}
-    hasBin: true
     dependencies:
       chalk: 4.1.2
       csv: 5.5.3
@@ -20299,12 +20210,10 @@ packages:
   /typescript@5.0.4:
     resolution: {integrity: sha512-cW9T5W9xY37cc+jfEnaUvX91foxtHkza3Nw3wkoF4sSlKn0MONdkdEndig/qPBWXNkmplh3NzayQzCiHM4/hqw==}
     engines: {node: '>=12.20'}
-    hasBin: true
 
   /typescript@5.2.2:
     resolution: {integrity: sha512-mI4WrpHsbCIcwT9cF4FZvr80QUeKvsUsUvKDoR+X/7XHQH98xYD8YHZg7ANtz2GtZt/CBq2QJ0thkGJMHfqc1w==}
     engines: {node: '>=14.17'}
-    hasBin: true
     dev: true
 
   /ua-parser-js@1.0.36:
@@ -20551,7 +20460,6 @@ packages:
 
   /urix@0.1.0:
     resolution: {integrity: sha512-Am1ousAhSLBeB9cG/7k7r2R0zj50uDRlZHPGbazid5s9rlF1F/QKYObEKSIunSjIOkJZqwRRLpvewjEkM7pSqg==}
-    deprecated: Please see https://github.com/lydell/urix#deprecated
     dev: true
 
   /url-parse-lax@3.0.0:
@@ -20639,26 +20547,20 @@ packages:
 
   /uuid@3.4.0:
     resolution: {integrity: sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==}
-    deprecated: Please upgrade  to version 7 or higher.  Older versions may use Math.random() in certain circumstances, which is known to be problematic.  See https://v8.dev/blog/math-random for details.
-    hasBin: true
 
   /uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
-    hasBin: true
     dev: false
 
   /uuid@9.0.0:
     resolution: {integrity: sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==}
-    hasBin: true
 
   /uuid@9.0.1:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
-    hasBin: true
 
   /uvu@0.5.6:
     resolution: {integrity: sha512-+g8ENReyr8YsOc6fv/NVJs2vFdHBnBNdfE49rshrTzDWOlUx4Gq7KOS2GD8eqhy2j+Ejq29+SbKH8yjkAqXqoA==}
     engines: {node: '>=8'}
-    hasBin: true
     dependencies:
       dequal: 2.0.3
       diff: 5.1.0
@@ -20723,7 +20625,6 @@ packages:
   /vite-node@0.28.5(@types/node@18.18.6):
     resolution: {integrity: sha512-LmXb9saMGlrMZbXTvOveJKwMTBTNUH66c8rJnQ0ZPNX+myPEol64+szRzXtV5ORb0Hb/91yq+/D3oERoyAt6LA==}
     engines: {node: '>=v14.16.0'}
-    hasBin: true
     dependencies:
       cac: 6.7.14
       debug: 4.3.4
@@ -20846,7 +20747,6 @@ packages:
 
   /vscode-languageserver@8.1.0:
     resolution: {integrity: sha512-eUt8f1z2N2IEUDBsKaNapkz7jl5QpskN2Y0G01T/ItMxBxw1fJwvtySGB9QMecatne8jFIWJGWI61dWjyTLQsw==}
-    hasBin: true
     dependencies:
       vscode-languageserver-protocol: 3.17.3
     dev: false
@@ -20877,7 +20777,6 @@ packages:
   /wait-on@7.0.1(debug@4.3.4):
     resolution: {integrity: sha512-9AnJE9qTjRQOlTZIldAaf/da2eW0eSRSgcqq85mXQja/DW3MriHxkpODDSUEg+Gri/rKEcXUZHe+cevvYItaog==}
     engines: {node: '>=12.0.0'}
-    hasBin: true
     dependencies:
       axios: 0.27.2(debug@4.3.4)
       joi: 17.11.0
@@ -21039,7 +20938,6 @@ packages:
 
   /which@1.3.1:
     resolution: {integrity: sha512-HxJdYWq1MTIQbJ3nw0cqssHoTNU267KlrDuGZ1WYlxDStUtKUhOaJmh112/TZmHxxUfuJqPXSOm7tDyas0OSIQ==}
-    hasBin: true
     dependencies:
       isexe: 2.0.0
     dev: true
@@ -21047,7 +20945,6 @@ packages:
   /which@2.0.2:
     resolution: {integrity: sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==}
     engines: {node: '>= 8'}
-    hasBin: true
     dependencies:
       isexe: 2.0.0
 

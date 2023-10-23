@@ -8,8 +8,8 @@
   "repository": "https://github.com/keystonejs/keystone/tree/main/tests/admin-ui-tests",
   "homepage": "https://github.com/keystonejs/keystone",
   "devDependencies": {
-    "@keystone-6/auth": "*",
-    "@keystone-6/core": "*",
+    "@keystone-6/auth": "workspace:*",
+    "@keystone-6/core": "workspace:*",
     "execa": "^5.1.1",
     "express": "^4.17.1",
     "graphql": "^16.8.1",

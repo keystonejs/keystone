@@ -21,8 +21,8 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
-    "@keystone-ui/core": "^5.0.2",
-    "@keystone-ui/popover": "^6.0.2",
+    "@keystone-ui/core": "workspace:^",
+    "@keystone-ui/popover": "workspace:^",
     "apply-ref": "^1.0.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/main/design-system/packages/tooltip"
