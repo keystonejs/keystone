@@ -61,7 +61,7 @@ const count = await context.db.User.count({
 const user = await context.db.User.createOne({
   data: {
     name: 'Alice',
-    posts: { create: [{ title: 'My first post' }] },
+    posts: { create: { title: 'My first post' } },
   },
 });
 ```
