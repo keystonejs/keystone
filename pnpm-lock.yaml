@@ -2103,8 +2103,8 @@ importers:
         specifier: workspace:*
         version: 'link:'
       '@types/apollo-upload-client':
-        specifier: 17.0.4
-        version: 17.0.4(react-dom@18.2.0)(react@18.2.0)
+        specifier: 17.0.5
+        version: 17.0.5(react-dom@18.2.0)(react@18.2.0)
       '@types/bcryptjs':
         specifier: ^2.4.2
         version: 2.4.5
@@ -8593,8 +8593,8 @@ packages:
       '@types/estree': 1.0.3
     dev: true
 
-  /@types/apollo-upload-client@17.0.4(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-lUoGuvesg4W4mgEk8SRiuh0tDC4mXv92Jj2ogaMEjTR2Wt6eBYCUoy1pDXVapqXv4uZGh+oKlqrtadXySKO+jQ==}
+  /@types/apollo-upload-client@17.0.5(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-rPKHaE4QNd06LNtBgz6hfntVO+pOQMS2yTcynrzBPg9+a/nbtJ2gus5KgzRp2rqfzmnKEc/sRGjLen/9Ot0Z2A==}
     dependencies:
       '@apollo/client': 3.8.6(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
       '@types/extract-files': 8.1.2
