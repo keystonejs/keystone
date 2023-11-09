@@ -24,6 +24,19 @@ function getDoesAdminConfigExist() {
   }
 }
 
+function getDoesAdminAppExist() {
+  try {
+    const appPath = Path.join(process.cwd(), 'admin', 'app');
+    resolve.sync(appPath, { extensions: ['.ts', '.tsx', '.js'], preserveSymlinks: false });
+    return true;
+  } catch (err: any) {
+    if (err.code === 'MODULE_NOT_FOUND') {
+      return false;
+    }
+    throw err;
+  }
+}
+
 export async function writeAdminFile(file: AdminFileToWrite, projectAdminPath: string) {
   const outputFilename = Path.join(projectAdminPath, file.outputPath);
   if (file.mode === 'copy') {
@@ -87,7 +100,8 @@ export const generateAdminUI = async (
 
   // Write out the built-in admin UI files. Don't overwrite any user-defined pages.
   const configFileExists = getDoesAdminConfigExist();
-  let adminFiles = writeAdminFiles(config, graphQLSchema, adminMeta, configFileExists);
+  const appFileExists = getDoesAdminAppExist();
+  let adminFiles = writeAdminFiles(config, graphQLSchema, adminMeta, configFileExists, appFileExists);
 
   // Add files to pages/ which point to any files which exist in admin/pages
   const adminConfigDir = Path.join(process.cwd(), 'admin');

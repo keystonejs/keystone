@@ -16,7 +16,8 @@ export const writeAdminFiles = (
   config: KeystoneConfig,
   graphQLSchema: GraphQLSchema,
   adminMeta: AdminMetaRootVal,
-  configFileExists: boolean
+  configFileExists: boolean,
+  appFileExists: boolean
 ): AdminFileToWrite[] => {
   return [
     {
@@ -35,7 +36,7 @@ export const writeAdminFiles = (
       src: appTemplate(
         adminMeta,
         graphQLSchema,
-        { configFileExists },
+        { configFileExists, appFileExists },
         config.graphql?.path || '/api/graphql'
       ),
       outputPath: 'pages/_app.js',
