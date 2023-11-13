@@ -48,7 +48,7 @@
     "esbuild": "^0.19.0",
     "esbuild-jest": "^0.5.0",
     "eslint": "^8.0.0",
-    "eslint-plugin-import": "2.25.3",
+    "eslint-plugin-import": "2.29.0",
     "eslint-plugin-jest": "^26.0.0",
     "eslint-plugin-react": "^7.27.0",
     "eslint-plugin-react-hooks": "^4.3.0",
