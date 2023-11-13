@@ -13,7 +13,7 @@ import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
 import { allowAll } from '@keystone-6/core/access';
 import { testConfig, expectSingleResolverError } from '../utils';
 
-const fieldPath = path.resolve(__dirname, '../../..', 'packages/core/src/fields/types');
+const fieldPath = path.resolve(__dirname, './', 'types/fixtures');
 
 export const prepareFile = (_filePath: string, kind: 'image' | 'file') => {
   const filePath = path.resolve(fieldPath, kind, 'test-files', _filePath);

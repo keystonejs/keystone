@@ -1,12 +1,20 @@
-import { v4 as uuid } from 'uuid';
+import { randomBytes } from 'crypto';
+
+// TODO: import { fileTypeFromBuffer } from 'file-type';
 import imageSize from 'image-size';
+
 import type { KeystoneConfig, ImagesContext } from '../../types';
 import type { ImageAdapter } from './types';
 import { localImageAssetsAPI } from './local';
 import { s3ImageAssetsAPI } from './s3';
 import { streamToBuffer } from './utils';
 
+function defaultTransformName(path: string) {
+  return randomBytes(12).toString('base64url').slice(0, 12);
+}
+
 async function getImageMetadataFromBuffer(buffer: Buffer) {
+  // TODO: const fileType = await fileTypeFromBuffer(buffer);
   const fileType = await (await import('file-type')).fileTypeFromBuffer(buffer);
   if (!fileType) {
     throw new Error('File type not found');
@@ -50,7 +58,7 @@ export function createImagesContext(config: KeystoneConfig): ImagesContext {
       },
       getDataFromStream: async (stream, originalFilename) => {
         const storageConfig = config.storage![storageString];
-        const { transformName = () => uuid() } = storageConfig;
+        const { transformName = defaultTransformName } = storageConfig;
 
         const buffer = await streamToBuffer(stream);
         const { extension, ...rest } = await getImageMetadataFromBuffer(buffer);

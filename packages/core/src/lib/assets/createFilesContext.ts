@@ -1,24 +1,23 @@
-import crypto from 'crypto';
+import { randomBytes } from 'crypto';
 
 import type { KeystoneConfig, FilesContext } from '../../types';
 import { localFileAssetsAPI } from './local';
 import { s3FileAssetsAPI } from './s3';
 import type { FileAdapter } from './types';
 
-const defaultTransformName = (path: string) => {
-  // Appends a UUID to the filename so that people can't brute-force guess stored filenames
-  //
-  // This regex lazily matches for any characters that aren't a new line
+// appends a random identifier to the filename so that people can't brute-force guess stored filenames
+function defaultTransformName(path: string) {
+  // this regex lazily matches for any characters that aren't a new line
   // it then optionally matches the last instance of a "." symbol
   // followed by any alphanumerical character before the end of the string
   const [, name, ext] = path.match(/^([^:\n].*?)(\.[A-Za-z0-9]{0,10})?$/) as RegExpMatchArray;
 
-  const id = crypto.randomBytes(12).toString('base64url').slice(0, 12);
+  const id = randomBytes(12).toString('base64url').slice(0, 12);
 
   const urlSafeName = name.replace(/[^A-Za-z0-9]/g, '-');
   if (ext) return `${urlSafeName}-${id}${ext}`;
   return `${urlSafeName}-${id}`;
-};
+}
 
 export function createFilesContext(config: KeystoneConfig): FilesContext {
   const adaptersMap = new Map<string, FileAdapter>();
