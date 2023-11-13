@@ -235,7 +235,7 @@
     "image-size": "^1.0.0",
     "inflection": "^3.0.0",
     "intersection-observer": "^0.12.0",
-    "meow": "^9.0.0",
+    "meow": "^12.0.0",
     "next": "^13.3.0",
     "node-fetch": "^2.6.7",
     "p-limit": "^2.3.0",
