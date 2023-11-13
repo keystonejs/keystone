@@ -54,7 +54,7 @@
     "react-dom": "^18.2.0",
     "react-focus-lock": "^2.7.1",
     "rss": "^1.2.2",
-    "tsx": "^3.9.0"
+    "tsx": "^4.0.0"
   },
   "devDependencies": {
     "@types/lodash.debounce": "^4.0.6",

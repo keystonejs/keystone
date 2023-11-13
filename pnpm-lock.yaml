@@ -611,8 +611,8 @@ importers:
         specifier: ^1.2.2
         version: 1.2.2
       tsx:
-        specifier: ^3.9.0
-        version: 3.14.0
+        specifier: ^4.0.0
+        version: 4.1.1
     devDependencies:
       '@types/lodash.debounce':
         specifier: ^4.0.6
@@ -2281,8 +2281,8 @@ importers:
         specifier: ^2.5.0
         version: 2.8.8
       tsx:
-        specifier: ^3.9.0
-        version: 3.14.0
+        specifier: ^4.0.0
+        version: 4.1.1
     devDependencies:
       '@types/fs-extra':
         specifier: ^11.0.1
@@ -20225,6 +20225,19 @@ packages:
       source-map-support: 0.5.21
     optionalDependencies:
       fsevents: 2.3.3
+    dev: true
+
+  /tsx@4.1.1:
+    resolution: {integrity: sha512-zyPn5BFMB0TB5kMLbYPNx4x/oL/oSlaecdKCv6WeJ0TeSEfx8RTJWjuB5TZ2dSewktgfBsBO/HNA9mrMWqLXMA==}
+    engines: {node: '>=18.0.0'}
+    hasBin: true
+    dependencies:
+      esbuild: 0.18.20
+      get-tsconfig: 4.7.2
+      source-map-support: 0.5.21
+    optionalDependencies:
+      fsevents: 2.3.3
+    dev: false
 
   /tty-table@4.2.3:
     resolution: {integrity: sha512-Fs15mu0vGzCrj8fmJNP7Ynxt5J7praPXqFN0leZeZBXJwkMxv9cb2D454k1ltrtUSJbZ4yH4e0CynsHLxmUfFA==}
