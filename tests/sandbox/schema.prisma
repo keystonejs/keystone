@@ -18,6 +18,7 @@ model Thing {
   timestamp                         DateTime?
   structure                         String    @default("{\"integer\":0,\"array\":[]}")
   structureNested                   String    @default("[]")
+  structureNested2                  String    @default("[]")
   structureRelationships            String    @default("[]")
   checkbox                          Boolean   @default(false)
   password                          String?
