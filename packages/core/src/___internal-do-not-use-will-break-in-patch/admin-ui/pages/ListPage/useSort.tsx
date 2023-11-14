@@ -17,13 +17,13 @@ export function useSort(list: ListMeta, orderableFields: Set<string>) {
       return {
         field,
         direction: 'DESC'
-      }
+      };
     }
 
     if (!orderableFields.has(sortByFromUrl)) return null;
     return {
       field: sortByFromUrl,
       direction: 'ASC'
-    }
+    };
   }, [sortByFromUrl, list, orderableFields]);
 }
