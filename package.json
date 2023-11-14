@@ -10,16 +10,13 @@
   "packageManager": "pnpm@8.10.4",
   "scripts": {
     "coverage": "jest --coverage",
-    "ci:version-packages": "pnpm changeset version && cd docs && pnpm remove-conditionals",
-    "lint:types": "tsc",
     "test": "jest",
+    "test:filters": "cd prisma-utils && pnpm verify",
+    "test:types": "tsc",
     "test:debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand",
     "test:admin-ui": "jest tests/admin-ui-tests",
     "build": "preconstruct build",
-    "prepare": "preconstruct dev",
-    "update-schemas": "pnpm --filter @keystone-6/example-* --filter @keystone-6/test-project* exec keystone build --no-ui",
-    "generate-filters": "cd prisma-utils && pnpm generate",
-    "lint:filters": "cd prisma-utils && pnpm verify"
+    "prepare": "preconstruct dev"
   },
   "devDependencies": {
     "@babel/core": "^7.21.0",
