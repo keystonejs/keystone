@@ -198,7 +198,7 @@ export function cloudinaryImage<ListTypeInfo extends BaseListTypeInfo> ({
                 const { public_id, format } = val._meta
 
                 // ref https://github.com/cloudinary/cloudinary_npm/blob/439586eac73cee7f2803cf19f885e98f237183b3/src/utils.coffee#L472
-                // @ts-ignore
+                // @ts-expect-error
                 return cloudinary.url(public_id, {
                   type: 'upload',
                   format,

@@ -295,7 +295,7 @@ export const RelationshipSelect = ({
               ? {
                   value: state.value.id,
                   label: state.value.label,
-                  // @ts-ignore
+                  // @ts-expect-error
                   data: state.value.data,
                 }
               : null

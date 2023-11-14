@@ -7,7 +7,7 @@ import * as fse from 'fs-extra'
 import fastGlob from 'fast-glob'
 import chalk from 'chalk'
 
-// @ts-ignore
+// @ts-expect-error
 import { MigrateEngine } from '@prisma/migrate'
 import { uriToCredentials } from '@prisma/internals'
 import type { KeystoneConfig } from '@keystone-6/core/types'
@@ -111,10 +111,10 @@ export async function testdir (dir: Fixture): Promise<string> {
           fullPath,
           `Object.defineProperty(exports, '__esModule', { value: true });exports.default = globalThis.keystoneConfig;`
         )
-        // @ts-ignore
+        // @ts-expect-error
         globalThis.keystoneConfig = output.config
         require(fullPath)
-        // @ts-ignore
+        // @ts-expect-error
         delete globalThis.keystoneConfig
       } else {
         await fsp.mkdir(path.dirname(fullPath), { recursive: true })

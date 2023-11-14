@@ -3,7 +3,7 @@ import { createHash } from 'crypto'
 import os from 'os'
 import fs from 'fs-extra'
 import fetch from 'node-fetch'
-// @ts-ignore
+// @ts-expect-error
 import Upload from 'graphql-upload/Upload.js'
 import mime from 'mime'
 import { file, text } from '@keystone-6/core/fields'
@@ -21,7 +21,7 @@ export const prepareFile = (_filePath: string, kind: 'image' | 'file') => {
   upload.resolve({
     createReadStream: () => fs.createReadStream(filePath),
     filename: path.basename(filePath),
-    // @ts-ignore
+    // @ts-expect-error
     mimetype: mime.getType(filePath),
     encoding: 'utf-8',
   })

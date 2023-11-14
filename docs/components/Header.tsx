@@ -259,14 +259,14 @@ export function Header () {
     document.body.style.overflow = 'auto'
     // search - init field
     let searchAttempt = 0
-    // @ts-ignore
+    // @ts-expect-error
     document.getElementById('search-field').disabled = true
     const loadSearch = (searchAttempt: number) => {
-      // @ts-ignore
+      // @ts-expect-error
       if (window.docsearch && searchAttempt < 10) {
-        // @ts-ignore
+        // @ts-expect-error
         document.getElementById('search-field').disabled = false
-        // @ts-ignore
+        // @ts-expect-error
         window.docsearch({
           appId: 'N3ZF861Q5G',
           apiKey: 'f52fa93b9068fe8824beab5727ae84a1',
@@ -278,14 +278,14 @@ export function Header () {
           transformData: (results: any) => {
             if (window.location.hostname == 'keystonejs.com') return results
             return results.map((result: object) => {
-              // @ts-ignore
+              // @ts-expect-error
               result.url = result.url.replace('https://keystonejs.com', window.location.origin)
               return result
             })
           },
         })
       } else if (searchAttempt >= 10) {
-        // @ts-ignore
+        // @ts-expect-error
         document.getElementById('search-field-container').style.visibility = 'hidden'
       } else {
         setTimeout(() => loadSearch(searchAttempt++), 500)

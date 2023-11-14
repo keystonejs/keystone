@@ -32,6 +32,6 @@ export const forwardRefWithAs = <DefaultElementType extends ElementType, BasePro
     ref: React.Ref<any>
   ) => Exclude<ReactNode, undefined>
 ): CompWithAsProp<BaseProps, DefaultElementType> => {
-  // @ts-ignore
+  // @ts-expect-error
   return forwardRef(render)
 }

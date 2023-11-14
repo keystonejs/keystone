@@ -73,7 +73,7 @@ export const SigninPage = ({
     if (!submitted) return
 
     // TODO: this is horrible, we need to resolve this mess
-    // @ts-ignore
+    // @ts-expect-error
     if (rawKeystone.adminMeta?.error?.message === 'Access denied') {
       router.push('/no-access')
       return

@@ -143,11 +143,11 @@ function stripStackTrace (errors: any[] = []) {
     (['dev', 'production'] as const).map(mode =>
       describe(`NODE_ENV=${mode}, debug=${debug} useHttp=${useHttp}`, () => {
         beforeAll(() => {
-          // @ts-ignore
+          // @ts-expect-error
           process.env.NODE_ENV = mode
         })
         afterAll(() => {
-          // @ts-ignore
+          // @ts-expect-error
           process.env.NODE_ENV = 'test'
         });
 

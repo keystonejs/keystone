@@ -46,7 +46,7 @@ export async function getOperationAccess (
   const access = list.access.operation[operation]
   let result
   try {
-    // @ts-ignore
+    // @ts-expect-error
     result = await access(args)
   } catch (error: any) {
     throw extensionError('Access control', [

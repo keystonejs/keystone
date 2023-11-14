@@ -1,7 +1,7 @@
 import path from 'path'
 import os from 'os'
 import fs from 'fs-extra'
-// @ts-ignore
+// @ts-expect-error
 import Upload from 'graphql-upload/Upload.js'
 import mime from 'mime'
 import { type KeystoneConfig } from '@keystone-6/core/types'
@@ -13,7 +13,7 @@ export const prepareFile = (_filePath: string) => {
   upload.resolve({
     createReadStream: () => fs.createReadStream(filePath),
     filename: path.basename(filePath),
-    // @ts-ignore
+    // @ts-expect-error
     mimetype: mime.getType(filePath),
     encoding: 'utf-8',
   })

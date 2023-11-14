@@ -25,9 +25,9 @@ const runner = setupTestRunner({
           orderTrue: integer({ isOrderable: true }),
           orderFunctionFalse: integer({ isOrderable: () => false }),
           orderFunctionTrue: integer({ isOrderable: () => true }),
-          // @ts-ignore
+          // @ts-expect-error
           orderFunctionOtherFalsey: integer({ isOrderable: () => null }),
-          // @ts-ignore
+          // @ts-expect-error
           orderFunctionOtherTruthy: integer({ isOrderable: () => ({}) }),
           orderFunctionFalseToo: integer({ isOrderable: () => false }),
         },
@@ -44,7 +44,7 @@ const runner = setupTestRunner({
       DefaultOrderTrue: list({
         access: allowAll,
         fields: { a: integer(), b: integer({ isOrderable: true }) },
-        // @ts-ignore
+        // @ts-expect-error
         defaultIsOrderable: true,
       }),
       DefaultOrderFunctionFalse: list({
@@ -60,13 +60,13 @@ const runner = setupTestRunner({
       DefaultOrderFunctionFalsey: list({
         access: allowAll,
         fields: { a: integer(), b: integer({ isOrderable: true }) },
-        // @ts-ignore
+        // @ts-expect-error
         defaultIsOrderable: () => null,
       }),
       DefaultOrderFunctionTruthy: list({
         access: allowAll,
         fields: { a: integer(), b: integer({ isOrderable: true }) },
-        // @ts-ignore
+        // @ts-expect-error
         defaultIsOrderable: () => ({}),
       }),
     },

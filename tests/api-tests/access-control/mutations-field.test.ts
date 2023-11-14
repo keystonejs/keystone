@@ -33,11 +33,11 @@ const runner = setupTestRunner({
           }),
           badAccess: text({
             access: {
-              // @ts-ignore Intentionally return a string for testing purposes
+              // @ts-expect-error Intentionally return a string for testing purposes
               read: () => 'non boolean value',
-              // @ts-ignore Intentionally return a string for testing purposes
+              // @ts-expect-error Intentionally return a string for testing purposes
               create: () => 'non boolean value',
-              // @ts-ignore Intentionally return a string for testing purposes
+              // @ts-expect-error Intentionally return a string for testing purposes
               update: () => 'non boolean value',
             },
           }),

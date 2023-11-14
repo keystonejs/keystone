@@ -22,7 +22,7 @@ const runner = setupTestRunner({
         fields: {
           name: text(),
           // FIXME: We don't actully enforce isRequired.
-          // @ts-ignore
+          // @ts-expect-error
           company: relationship({ ref: 'Company.location', isRequired: true }),
         },
       }),

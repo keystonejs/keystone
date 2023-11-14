@@ -10,7 +10,7 @@ import {
   printConfigWarnings,
 } from '@prisma/internals'
 import { getPrismaClient, objectEnumValues } from '@prisma/client/runtime/library'
-// @ts-ignore
+// @ts-expect-error
 import { externalToInternalDmmf } from '@prisma/client/generator-build'
 import { initConfig, createSystem } from '@keystone-6/core/system'
 import type { BaseKeystoneTypeInfo, KeystoneConfig, KeystoneContext } from '@keystone-6/core/types'

@@ -7,7 +7,7 @@ import type { GraphQLFormattedError, GraphQLSchema } from 'graphql'
 import { ApolloServer, type ApolloServerOptions } from '@apollo/server'
 import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled'
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default'
-// @ts-ignore
+// @ts-expect-error
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js'
 import type { KeystoneConfig, KeystoneContext, GraphQLConfig } from '../../types'
 import { addHealthCheck } from './addHealthCheck'

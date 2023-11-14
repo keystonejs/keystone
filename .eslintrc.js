@@ -7,12 +7,6 @@ module.exports = {
     files: ['*.js', '*.jsx', '*.ts', '*.tsx'],
   }],
   rules: {
-    '@typescript-eslint/member-delimiter-style': [
-      'error',
-      {
-        multiline: { delimiter: 'none' },
-        singleline: { delimiter: 'comma', requireLast: false }
-      }
-    ],
+    '@typescript-eslint/prefer-ts-expect-error': 'error',
   }
 }

@@ -10,19 +10,19 @@ const runner = setupTestRunner({
         fields: { name: text() },
         access: {
           operation: {
-            // @ts-ignore Intentionally return a filter for testing purposes
+            // @ts-expect-error Intentionally return a filter for testing purposes
             query: () => {
               return { name: { not: { equals: 'bad' } } }
             },
-            // @ts-ignore Intentionally return a filter for testing purposes
+            // @ts-expect-error Intentionally return a filter for testing purposes
             create: () => {
               return { name: { not: { equals: 'bad' } } }
             },
-            // @ts-ignore Intentionally return a filter for testing purposes
+            // @ts-expect-error Intentionally return a filter for testing purposes
             update: () => {
               return { name: { not: { equals: 'bad' } } }
             },
-            // @ts-ignore Intentionally return a filter for testing purposes
+            // @ts-expect-error Intentionally return a filter for testing purposes
             delete: async () => {
               return { name: { not: { startsWtih: 'no delete' } } }
             },

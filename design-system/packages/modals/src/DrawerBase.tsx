@@ -72,7 +72,7 @@ export const DrawerBase = ({
   if (onSubmit) {
     Tag = 'form'
     let oldOnSubmit = onSubmit
-    // @ts-ignore
+    // @ts-expect-error
     onSubmit = (event: any) => {
       if (!event.defaultPrevented) {
         event.preventDefault()

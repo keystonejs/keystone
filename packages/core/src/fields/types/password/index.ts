@@ -1,5 +1,5 @@
 import bcryptjs from 'bcryptjs'
-// @ts-ignore
+// @ts-expect-error
 import dumbPasswords from 'dumb-passwords'
 import { userInputError } from '../../../lib/core/graphql-errors'
 import { humanize } from '../../../lib/utils'

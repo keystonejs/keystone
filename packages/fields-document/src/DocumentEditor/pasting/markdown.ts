@@ -1,9 +1,9 @@
 import mdASTUtilFromMarkdown from 'mdast-util-from-markdown'
-// @ts-ignore
+// @ts-expect-error
 import autoLinkLiteralFromMarkdownExtension from 'mdast-util-gfm-autolink-literal/from-markdown'
-// @ts-ignore
+// @ts-expect-error
 import autoLinkLiteralMarkdownSyntax from 'micromark-extension-gfm-autolink-literal'
-// @ts-ignore
+// @ts-expect-error
 import gfmStrikethroughFromMarkdownExtension from 'mdast-util-gfm-strikethrough/from-markdown'
 import gfmStrikethroughMarkdownSyntax from 'micromark-extension-gfm-strikethrough'
 import { type Block } from '..'

@@ -77,7 +77,7 @@ export const forwardRefWithAs = <DefaultElementType extends ElementType, BasePro
     ref: React.Ref<any>
   ) => Exclude<ReactNode, undefined>
 ): CompWithAsProp<BaseProps, DefaultElementType> => {
-  // @ts-ignore
+  // @ts-expect-error
   return forwardRef(render)
 }
 
@@ -105,7 +105,7 @@ export const mapResponsiveProp = <
   if (Array.isArray(value)) {
     return value.map(k => (k == null ? null : valueMap[k]))
   }
-  // @ts-ignore
+  // @ts-expect-error
   return valueMap[value]
 }
 

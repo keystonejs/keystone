@@ -1,6 +1,6 @@
 import type { ReadStream } from 'fs'
 import * as graphqlTsSchema from '@graphql-ts/schema'
-// @ts-ignore
+// @ts-expect-error
 import GraphQLUpload from 'graphql-upload/GraphQLUpload.js'
 import { GraphQLError, GraphQLScalarType } from 'graphql'
 import { Decimal as DecimalValue } from 'decimal.js'

@@ -10,7 +10,7 @@ import { EyeIcon } from '@keystone-ui/icons/icons/EyeIcon'
 import { EyeOffIcon } from '@keystone-ui/icons/icons/EyeOffIcon'
 import { XIcon } from '@keystone-ui/icons/icons/XIcon'
 import { SegmentedControl } from '@keystone-ui/segmented-control'
-// @ts-ignore
+// @ts-expect-error
 import dumbPasswords from 'dumb-passwords'
 import {
   type CardValueComponent,

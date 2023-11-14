@@ -75,15 +75,15 @@ jest.mock('ci-info', () => {
 const lists: Record<string, InitialisedList> = {
   Thing: {
     fields: {
-      // @ts-ignore
+      // @ts-expect-error
       id: {
         __ksTelemetryFieldTypeName: 'id',
       },
-      // @ts-ignore
+      // @ts-expect-error
       name: {
         __ksTelemetryFieldTypeName: 'id',
       },
-      // @ts-ignore
+      // @ts-expect-error
       thing: {
         __ksTelemetryFieldTypeName: 'id',
       },
@@ -91,11 +91,11 @@ const lists: Record<string, InitialisedList> = {
   },
   Stuff: {
     fields: {
-      // @ts-ignore
+      // @ts-expect-error
       id: {
         __ksTelemetryFieldTypeName: 'id',
       },
-      // @ts-ignore
+      // @ts-expect-error
       name: {
         __ksTelemetryFieldTypeName: 'id',
       },
@@ -229,12 +229,12 @@ describe('Telemetry tests', () => {
       const envBefore = process.env[key]
 
       beforeEach(() => {
-        // @ts-ignore
+        // @ts-expect-error
         process.env[key] = value
       })
 
       afterEach(() => {
-        // @ts-ignore
+        // @ts-expect-error
         process.env[key] = envBefore
       })
 

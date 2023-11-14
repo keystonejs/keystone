@@ -17,14 +17,14 @@ export const definitionLimit =
     const doc = validationContext.getDocument()
     if (doc.definitions.length > maxDefinitions) {
       validationContext.reportError(
-        // @ts-ignore
+        // @ts-expect-error
         new Error(`Request contains ${doc.definitions.length} definitions (max: ${maxDefinitions})`)
       )
     }
     return validationContext as ASTVisitor
   }
 
-// @ts-ignore
+// @ts-expect-error
 const nodeName = (node: ASTNode) => (node.name && node.name.value) || 'query'
 
 // Map fragments referenced in a definition through a function
@@ -38,7 +38,7 @@ const mapFragments = (
   return def.fragments
     .map(fragment => {
       if (!defTable[fragment.name]) {
-        // @ts-ignore
+        // @ts-expect-error
         validationContext.reportError(new Error(`Undefined fragment "${fragment.name}"`))
         return null
       }
@@ -125,7 +125,7 @@ export const fieldLimit =
 
     if (requestNumFields > maxFields) {
       validationContext.reportError(
-        // @ts-ignore
+        // @ts-expect-error
         new Error(`Request contains ${requestNumFields} fields (max: ${maxFields})`)
       )
     }
@@ -204,7 +204,7 @@ export const depthLimit =
       const totalDepth = getTotalDepth(def)
       if (totalDepth > maxDepth) {
         validationContext.reportError(
-          // @ts-ignore
+          // @ts-expect-error
           new Error(`Operation has depth ${totalDepth} (max: ${maxDepth})`)
         )
       }
