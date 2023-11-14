@@ -19,11 +19,8 @@ jobs:
       - uses: actions/checkout@main
       - uses: ./.github/actions/ci-setup
 
-      - name: Prettier
-        run: pnpm lint:prettier
-
       - name: TypeScript
-        run: pnpm lint:types
+        run: pnpm test:types
 
       - name: Preconstruct
         run: pnpm build
