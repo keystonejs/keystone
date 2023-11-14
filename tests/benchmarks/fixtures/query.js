@@ -1,8 +1,8 @@
-const { text, relationship } = require('@keystone-6/core/fields');
-const { list } = require('@keystone-6/core');
-const { setupTestRunner } = require('@keystone-6/core/testing');
-const { apiTestConfig } = require('../../utils.ts');
-const { FixtureGroup, timeQuery, populate, range } = require('../lib/utils');
+const { text, relationship } = require('@keystone-6/core/fields')
+const { list } = require('@keystone-6/core')
+const { setupTestRunner } = require('@keystone-6/core/testing')
+const { apiTestConfig } = require('../../utils.ts')
+const { FixtureGroup, timeQuery, populate, range } = require('../lib/utils')
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -20,144 +20,144 @@ const runner = setupTestRunner({
       }),
     },
   }),
-});
+})
 
-const group = new FixtureGroup(runner);
+const group = new FixtureGroup(runner)
 
 group.add({
   fn: async ({ context, provider }) => {
     const { id: userId } = await context.query.User.createOne({
       data: { name: 'test', posts: { create: [] } },
-    });
-    const query = `query getPost($userId: ID!) { User(where: { id: $userId }) { id } }`;
-    const { time, success } = await timeQuery({ context, query, variables: { userId } });
-    console.log({ provider, time, success, name: 'Cold read with relationship, N=1' });
+    })
+    const query = `query getPost($userId: ID!) { User(where: { id: $userId }) { id } }`
+    const { time, success } = await timeQuery({ context, query, variables: { userId } })
+    console.log({ provider, time, success, name: 'Cold read with relationship, N=1' })
   },
-});
+})
 
 group.add({
   fn: async ({ context, provider }) => {
     const { id: userId } = await context.query.User.createOne({
       data: { name: 'test', posts: { create: [] } },
-    });
-    const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id } }`;
+    })
+    const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id } }`
     const { time, success } = await timeQuery({
       context,
       query,
       variables: { userId },
       repeat: 1000,
-    });
-    console.log({ provider, time, success, name: 'Warm read with relationship, N=1' });
+    })
+    console.log({ provider, time, success, name: 'Warm read with relationship, N=1' })
   },
-});
+})
 
 range(14).forEach(i => {
-  const N = 1;
-  const M = 2 ** i;
+  const N = 1
+  const M = 2 ** i
   group.add({
     fn: async ({ context, provider }) => {
-      const posts = { create: populate(M, i => ({ title: `post${i}` })) };
+      const posts = { create: populate(M, i => ({ title: `post${i}` })) }
       const users = await context.query.User.createMany({
         data: populate(N, i => ({ name: `test${i}`, posts })),
-      });
-      const userId = users[0].id;
-      const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id } }`;
+      })
+      const userId = users[0].id
+      const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id } }`
       const { time, success } = await timeQuery({
         context,
         query,
         variables: { userId },
         repeat: 1000,
-      });
+      })
       console.log({
         provider,
         time,
         success,
         name: `Read single, ignore relationship, users=${N} posts=${M}`,
-      });
+      })
     },
-  });
-});
+  })
+})
 
-const k = 14;
+const k = 14
 range(k).forEach(i => {
-  const N = 2 ** i;
-  const M = 2 ** (k - 1 - i);
+  const N = 2 ** i
+  const M = 2 ** (k - 1 - i)
   group.add({
     fn: async ({ context, provider }) => {
-      const posts = { create: populate(M, i => ({ title: `post${i}` })) };
+      const posts = { create: populate(M, i => ({ title: `post${i}` })) }
       const users = await context.query.User.createMany({
         data: populate(N, i => ({ name: `test${i}`, posts })),
-      });
-      const userId = users[0].id;
-      const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id } }`;
+      })
+      const userId = users[0].id
+      const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id } }`
       const { time, success } = await timeQuery({
         context,
         query,
         variables: { userId },
         repeat: 1000,
-      });
+      })
       console.log({
         provider,
         time,
         success,
         name: `Read single, ignore relationship, users=${N} posts=${M}`,
-      });
+      })
     },
-  });
-});
+  })
+})
 
 range(14).forEach(i => {
-  const N = 1;
-  const M = 2 ** i;
+  const N = 1
+  const M = 2 ** i
   group.add({
     fn: async ({ context, provider }) => {
-      const posts = { create: populate(M, i => ({ title: `post${i}` })) };
+      const posts = { create: populate(M, i => ({ title: `post${i}` })) }
       const users = await context.query.User.createMany({
         data: populate(N, i => ({ name: `test${i}`, posts })),
-      });
-      const userId = users[0].id;
-      const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id posts { id } } }`;
+      })
+      const userId = users[0].id
+      const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id posts { id } } }`
       const { time, success } = await timeQuery({
         context,
         query,
         variables: { userId },
         repeat: 100,
-      });
+      })
       console.log({
         provider,
         time,
         success,
         name: `Read single, read relationship, users=${N} posts=${M}`,
-      });
+      })
     },
-  });
-});
+  })
+})
 
 range(k).forEach(i => {
-  const N = 2 ** i;
-  const M = 2 ** (k - 1 - i);
+  const N = 2 ** i
+  const M = 2 ** (k - 1 - i)
   group.add({
     fn: async ({ context, provider }) => {
-      const posts = { create: populate(M, i => ({ title: `post${i}` })) };
+      const posts = { create: populate(M, i => ({ title: `post${i}` })) }
       const users = await context.query.User.createMany({
         data: populate(N, i => ({ name: `test${i}`, posts })),
-      });
-      const userId = users[0].id;
-      const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id posts { id } } }`;
+      })
+      const userId = users[0].id
+      const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id posts { id } } }`
       const { time, success } = await timeQuery({
         context,
         query,
         variables: { userId },
         repeat: 100,
-      });
+      })
       console.log({
         provider,
         time,
         success,
         name: `Read single, read relationship, users=${N} posts=${M}`,
-      });
+      })
     },
-  });
-});
+  })
+})
 
-module.exports = [group];
+module.exports = [group]

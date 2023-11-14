@@ -1,14 +1,14 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { useMemo, useRef, RefObject } from 'react';
-import bytes from 'bytes';
+import { useMemo, useRef, RefObject } from 'react'
+import bytes from 'bytes'
 
-import { jsx, Stack, Text } from '@keystone-ui/core';
-import { FieldContainer, FieldDescription, FieldLabel } from '@keystone-ui/fields';
+import { jsx, Stack, Text } from '@keystone-ui/core'
+import { FieldContainer, FieldDescription, FieldLabel } from '@keystone-ui/fields'
 
-import { Button } from '@keystone-ui/button';
-import { FieldProps } from '../../../../types';
-import { FileValue } from './index';
+import { Button } from '@keystone-ui/button'
+import { FieldProps } from '../../../../types'
+import { FileValue } from './index'
 
 export function Field({
   autoFocus,
@@ -16,27 +16,27 @@ export function Field({
   value,
   onChange,
 }: FieldProps<typeof import('.').controller>) {
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null)
 
-  const errorMessage = createErrorMessage(value);
+  const errorMessage = createErrorMessage(value)
 
   const onUploadChange = ({
     currentTarget: { validity, files },
   }: React.SyntheticEvent<HTMLInputElement>) => {
-    const file = files?.[0];
-    if (!file) return; // bail if the user cancels from the file browser
+    const file = files?.[0]
+    if (!file) return // bail if the user cancels from the file browser
     onChange?.({
       kind: 'upload',
       data: { file, validity },
       previous: value,
-    });
-  };
+    })
+  }
 
   // Generate a random input key when the value changes, to ensure the file input is unmounted and
   // remounted (this is the only way to reset its value and ensure onChange will fire again if
   // the user selects the same file again)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const inputKey = useMemo(() => Math.random(), [value]);
+  const inputKey = useMemo(() => Math.random(), [value])
 
   return (
     <FieldContainer as="fieldset">
@@ -56,7 +56,7 @@ export function Field({
         aria-describedby={field.description === null ? undefined : `${field.path}-description`}
       />
     </FieldContainer>
-  );
+  )
 }
 
 function FileView({
@@ -96,7 +96,7 @@ function FileView({
             <Button
               size="small"
               onClick={() => {
-                inputRef.current?.click();
+                inputRef.current?.click()
               }}
             >
               Change
@@ -106,7 +106,7 @@ function FileView({
                 size="small"
                 tone="negative"
                 onClick={() => {
-                  onChange({ kind: 'remove', previous: value });
+                  onChange({ kind: 'remove', previous: value })
                 }}
               >
                 Remove
@@ -117,7 +117,7 @@ function FileView({
                 size="small"
                 tone="negative"
                 onClick={() => {
-                  onChange(value.previous);
+                  onChange(value.previous)
                 }}
               >
                 Cancel
@@ -145,7 +145,7 @@ function FileView({
           size="small"
           disabled={onChange === undefined}
           onClick={() => {
-            inputRef.current?.click();
+            inputRef.current?.click()
           }}
         >
           Upload File
@@ -156,7 +156,7 @@ function FileView({
             tone="negative"
             onClick={() => {
               if (value.previous !== undefined) {
-                onChange?.(value?.previous);
+                onChange?.(value?.previous)
               }
             }}
           >
@@ -165,17 +165,17 @@ function FileView({
         )}
       </Stack>
     </Stack>
-  );
+  )
 }
 
 function createErrorMessage(value: FileValue) {
   if (value.kind === 'upload') {
-    return validateFile(value.data);
+    return validateFile(value.data)
   }
 }
 
 export function validateFile({ validity }: { validity: ValidityState }): string | undefined {
   if (!validity.valid) {
-    return 'Something went wrong, please reload and try again.';
+    return 'Something went wrong, please reload and try again.'
   }
 }

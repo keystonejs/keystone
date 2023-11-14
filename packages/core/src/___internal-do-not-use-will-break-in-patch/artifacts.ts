@@ -3,5 +3,5 @@ export {
   generateTypescriptTypesAndPrisma,
   generatePrismaAndGraphQLSchemas,
   getCommittedArtifacts,
-} from '../artifacts';
-export type { PrismaModule } from '../artifacts';
+} from '../artifacts'
+export type { PrismaModule } from '../artifacts'

@@ -1,10 +1,10 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import React, { Fragment } from 'react';
-import { jsx, makeEditor } from '../tests/utils';
-import { component, fields } from '../../component-blocks';
-import { createGetPreviewProps } from './preview-props';
+import React, { Fragment } from 'react'
+import { jsx, makeEditor } from '../tests/utils'
+import { component, fields } from '../../component-blocks'
+import { createGetPreviewProps } from './preview-props'
 
 const table = component({
   preview: props =>
@@ -16,9 +16,9 @@ const table = component({
           Fragment,
           { key: x.key },
           x.elements.map(x => {
-            return React.createElement(Fragment, { key: x.key }, x.fields.content.element);
+            return React.createElement(Fragment, { key: x.key }, x.fields.content.element)
           })
-        );
+        )
       })
     ),
   label: '',
@@ -32,7 +32,7 @@ const table = component({
       )
     ),
   },
-});
+})
 
 test('child field in nested array', () => {
   const editor = makeEditor(
@@ -56,7 +56,7 @@ test('child field in nested array', () => {
         table,
       },
     }
-  );
+  )
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -93,8 +93,8 @@ test('child field in nested array', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('multiple in child field in nested array', () => {
   const editor = makeEditor(
@@ -136,7 +136,7 @@ test('multiple in child field in nested array', () => {
         table,
       },
     }
-  );
+  )
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -229,8 +229,8 @@ test('multiple in child field in nested array', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('add to multiple in child field in nested array', () => {
   const editor = makeEditor(
@@ -272,17 +272,17 @@ test('add to multiple in child field in nested array', () => {
         table,
       },
     }
-  );
+  )
   const previewProps = createGetPreviewProps(
     { kind: 'object', fields: table.schema },
     () => {},
     () => undefined
-  )((editor.children[0] as any).props);
+  )((editor.children[0] as any).props)
 
   previewProps.fields.children.elements[0].onChange([
     ...previewProps.fields.children.elements[0].elements.map(x => ({ key: x.key })),
     { key: undefined },
-  ]);
+  ])
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -375,5 +375,5 @@ test('add to multiple in child field in nested array', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})

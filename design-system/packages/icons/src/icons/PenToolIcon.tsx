@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const PenToolIcon = createIcon(
   <React.Fragment>
     <path d="M12 19l7-7 3 3-7 7-3-3z" />
@@ -8,4 +8,4 @@ export const PenToolIcon = createIcon(
     <circle cx={11} cy={11} r={2} />
   </React.Fragment>,
   'PenToolIcon'
-);
+)

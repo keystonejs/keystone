@@ -1,7 +1,7 @@
-import { graphql, list } from '@keystone-6/core';
-import { allowAll } from '@keystone-6/core/access';
-import { select, relationship, text, timestamp } from '@keystone-6/core/fields';
-import { Context, Lists } from '.keystone/types';
+import { graphql, list } from '@keystone-6/core'
+import { allowAll } from '@keystone-6/core/access'
+import { select, relationship, text, timestamp } from '@keystone-6/core/fields'
+import { Context, Lists } from '.keystone/types'
 
 export const lists: Lists = {
   Post: list({
@@ -29,7 +29,7 @@ export const lists: Lists = {
       posts: relationship({ ref: 'Post.author', many: true }),
     },
   }),
-};
+}
 
 export const extendGraphqlSchema = graphql.extend(base => {
   const Statistics = graphql.object<{ authorId: string }>()({
@@ -40,7 +40,7 @@ export const extendGraphqlSchema = graphql.extend(base => {
         resolve({ authorId }, args, context: Context) {
           return context.query.Post.count({
             where: { author: { id: { equals: authorId } }, status: { equals: 'draft' } },
-          });
+          })
         },
       }),
       published: graphql.field({
@@ -48,7 +48,7 @@ export const extendGraphqlSchema = graphql.extend(base => {
         resolve({ authorId }, args, context: Context) {
           return context.query.Post.count({
             where: { author: { id: { equals: authorId } }, status: { equals: 'published' } },
-          });
+          })
         },
       }),
       latest: graphql.field({
@@ -58,12 +58,12 @@ export const extendGraphqlSchema = graphql.extend(base => {
             take: 1,
             orderBy: { publishDate: 'desc' },
             where: { author: { id: { equals: authorId } } },
-          });
-          return post;
+          })
+          return post
         },
       }),
     },
-  });
+  })
 
   return {
     mutation: {
@@ -80,7 +80,7 @@ export const extendGraphqlSchema = graphql.extend(base => {
           return context.db.Post.updateOne({
             where: { id },
             data: { status: 'published', publishDate: new Date().toISOString() },
-          });
+          })
         },
       }),
 
@@ -94,7 +94,7 @@ export const extendGraphqlSchema = graphql.extend(base => {
                 return context.db.Post.updateOne({
                   where: { id },
                   data: { status: 'banned' },
-                });
+                })
               },
             }),
           }
@@ -108,7 +108,7 @@ export const extendGraphqlSchema = graphql.extend(base => {
           seconds: graphql.arg({ type: graphql.nonNull(graphql.Int), defaultValue: 600 }),
         },
         resolve(source, { id, seconds }, context: Context) {
-          const cutoff = new Date(Date.now() - seconds * 1000);
+          const cutoff = new Date(Date.now() - seconds * 1000)
 
           // Note we use `context.db.Post` here as we have a return type
           // of [Post], and this API provides results in the correct format.
@@ -116,16 +116,16 @@ export const extendGraphqlSchema = graphql.extend(base => {
           // when accessing the fields in your GraphQL client.
           return context.db.Post.findMany({
             where: { author: { id: { equals: id } }, publishDate: { gt: cutoff } },
-          });
+          })
         },
       }),
       stats: graphql.field({
         type: Statistics,
         args: { id: graphql.arg({ type: graphql.nonNull(graphql.ID) }) },
         resolve(source, { id }) {
-          return { authorId: id };
+          return { authorId: id }
         },
       }),
     },
-  };
-});
+  }
+})

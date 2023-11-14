@@ -1,11 +1,11 @@
-import React, { Fragment } from 'react';
-import type { GetStaticPathsResult, GetStaticPropsContext } from 'next';
-import Link from 'next/link';
-import type { DocumentRendererProps } from '@keystone-6/document-renderer';
-import { CustomRenderer } from '../../components/CustomRenderer/CustomRenderer';
-import { fetchGraphQL, gql } from '../../graphql';
+import React, { Fragment } from 'react'
+import type { GetStaticPathsResult, GetStaticPropsContext } from 'next'
+import Link from 'next/link'
+import type { DocumentRendererProps } from '@keystone-6/document-renderer'
+import { CustomRenderer } from '../../components/CustomRenderer/CustomRenderer'
+import { fetchGraphQL, gql } from '../../graphql'
 
-export type DocumentProp = DocumentRendererProps['document'];
+export type DocumentProp = DocumentRendererProps['document']
 
 type Post = {
   id: string;
@@ -18,7 +18,7 @@ type Post = {
   content: {
     document: DocumentProp;
   };
-};
+}
 
 export default function BlogPage({ post, error }: { post: Post | undefined; error?: Error }) {
   if (error) {
@@ -27,11 +27,11 @@ export default function BlogPage({ post, error }: { post: Post | undefined; erro
         <h1>Something went wrong</h1>
         <pre>{error.message}</pre>
       </Fragment>
-    );
+    )
   }
 
   if (!post) {
-    return <div>Post not found</div>;
+    return <div>Post not found</div>
   }
 
   return (
@@ -56,7 +56,7 @@ export default function BlogPage({ post, error }: { post: Post | undefined; erro
         <CustomRenderer document={post.content.document} />
       </article>
     </main>
-  );
+  )
 }
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
@@ -67,27 +67,27 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
           slug
         }
       }
-    `);
+    `)
 
-    const posts: { slug: string }[] = data?.posts || [];
+    const posts: { slug: string }[] = data?.posts || []
     const paths = posts.map(({ slug }) => ({
       params: { slug },
-    }));
+    }))
 
     return {
       paths,
       fallback: false,
-    };
+    }
   } catch (e) {
     return {
       paths: [],
       fallback: false,
-    };
+    }
   }
 }
 
 export async function getStaticProps({ params = {} }: GetStaticPropsContext) {
-  const slug = params.slug;
+  const slug = params.slug
   try {
     const data = await fetchGraphQL(
       gql`
@@ -109,16 +109,16 @@ export async function getStaticProps({ params = {} }: GetStaticPropsContext) {
       {
         slug,
       }
-    );
+    )
 
-    const post = data?.post;
-    return { props: { post } };
+    const post = data?.post
+    return { props: { post } }
   } catch (e) {
     return {
       props: {
         post: undefined,
         error: { name: (e as Error).name, message: (e as Error).message },
       },
-    };
+    }
   }
 }

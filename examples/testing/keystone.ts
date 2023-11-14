@@ -1,10 +1,10 @@
-import { config } from '@keystone-6/core';
-import { statelessSessions } from '@keystone-6/core/session';
-import { createAuth } from '@keystone-6/auth';
-import { fixPrismaPath } from '../example-utils';
-import { lists } from './schema';
-import type { Session } from './schema';
-import type { TypeInfo } from '.keystone/types';
+import { config } from '@keystone-6/core'
+import { statelessSessions } from '@keystone-6/core/session'
+import { createAuth } from '@keystone-6/auth'
+import { fixPrismaPath } from '../example-utils'
+import { lists } from './schema'
+import type { Session } from './schema'
+import type { TypeInfo } from '.keystone/types'
 
 // WARNING: this example is for TESTING purposes only
 //   as with each of our examples, it has not been vetted
@@ -30,7 +30,7 @@ const { withAuth } = createAuth({
     // the following fields are used by the "Create First User" form
     fields: ['name', 'password'],
   },
-});
+})
 
 export default withAuth(
   config<TypeInfo<Session>>({
@@ -45,4 +45,4 @@ export default withAuth(
     // you can find out more at https://keystonejs.com/docs/apis/session#session-api
     session: statelessSessions(),
   })
-);
+)

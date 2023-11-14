@@ -1,10 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { ReactNode, ReactElement } from 'react';
-import { jsx, useTheme } from '@keystone-ui/core';
+import { ReactNode, ReactElement } from 'react'
+import { jsx, useTheme } from '@keystone-ui/core'
 
-import type { SizeType } from '../types';
+import type { SizeType } from '../types'
 
 /**
  * TODO
@@ -17,7 +17,7 @@ type ControlLabelProps = {
   control: ReactElement;
   children?: ReactNode;
   size?: SizeType;
-};
+}
 
 export const ControlLabel = ({
   children,
@@ -25,9 +25,9 @@ export const ControlLabel = ({
   control,
   size: sizeKey = 'medium',
 }: ControlLabelProps) => {
-  const { controlSizes, spacing, typography } = useTheme();
+  const { controlSizes, spacing, typography } = useTheme()
 
-  const size = controlSizes[sizeKey];
+  const size = controlSizes[sizeKey]
 
   return (
     <label className={className} css={{ alignItems: 'flex-start', display: 'inline-flex' }}>
@@ -45,5 +45,5 @@ export const ControlLabel = ({
         </div>
       )}
     </label>
-  );
-};
+  )
+}

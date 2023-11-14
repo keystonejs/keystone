@@ -5,10 +5,10 @@ import {
   ReactNode,
   Ref,
   forwardRef,
-} from 'react';
+} from 'react'
 
 type ElementTagNameMap = HTMLElementTagNameMap &
-  Pick<SVGElementTagNameMap, Exclude<keyof SVGElementTagNameMap, keyof HTMLElementTagNameMap>>;
+  Pick<SVGElementTagNameMap, Exclude<keyof SVGElementTagNameMap, keyof HTMLElementTagNameMap>>
 
 type AsProp<Comp extends ElementType> = {
   as?: Comp;
@@ -19,12 +19,12 @@ type AsProp<Comp extends ElementType> = {
       ? InstanceType<Comp>
       : undefined
   >;
-} & Omit<ComponentPropsWithoutRef<Comp>, 'as'>;
+} & Omit<ComponentPropsWithoutRef<Comp>, 'as'>
 
 type CompWithAsProp<Props, DefaultElementType extends ElementType> = {
   displayName?: string;
   <Comp extends ElementType = DefaultElementType>(props: AsProp<Comp> & Props): ReactElement;
-};
+}
 
 export const forwardRefWithAs = <DefaultElementType extends ElementType, BaseProps>(
   render: (
@@ -33,5 +33,5 @@ export const forwardRefWithAs = <DefaultElementType extends ElementType, BasePro
   ) => Exclude<ReactNode, undefined>
 ): CompWithAsProp<BaseProps, DefaultElementType> => {
   // @ts-ignore
-  return forwardRef(render);
-};
+  return forwardRef(render)
+}

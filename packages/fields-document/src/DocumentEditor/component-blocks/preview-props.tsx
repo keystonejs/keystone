@@ -9,29 +9,29 @@ import {
   ObjectField,
   RelationshipField,
   GenericPreviewProps,
-} from './api';
-import { updateValue } from './initial-values';
+} from './api'
+import { updateValue } from './initial-values'
 
-const arrayValuesToElementKeys = new WeakMap<readonly unknown[], readonly string[]>();
+const arrayValuesToElementKeys = new WeakMap<readonly unknown[], readonly string[]>()
 
-let counter = 0;
+let counter = 0
 
 export function getKeysForArrayValue(value: readonly unknown[]) {
   if (!arrayValuesToElementKeys.has(value)) {
     arrayValuesToElementKeys.set(
       value,
       Array.from({ length: value.length }, getNewArrayElementKey)
-    );
+    )
   }
-  return arrayValuesToElementKeys.get(value)!;
+  return arrayValuesToElementKeys.get(value)!
 }
 
 export function setKeysForArrayValue(value: readonly unknown[], elementIds: readonly string[]) {
-  arrayValuesToElementKeys.set(value, elementIds);
+  arrayValuesToElementKeys.set(value, elementIds)
 }
 
 export function getNewArrayElementKey() {
-  return (counter++).toString();
+  return (counter++).toString()
 }
 
 function castToMemoizedInfoForSchema<
@@ -46,20 +46,20 @@ function castToMemoizedInfoForSchema<
     ) => unknown;
   }
 >(val: T): T {
-  return val;
+  return val
 }
 
 type GeneralMap<K, V> = {
   has(key: K): boolean;
   get(key: K): V | undefined;
   set(key: K, value: V): void;
-};
+}
 
 function getOrInsert<K, V>(map: GeneralMap<K, V>, key: K, val: (key: K) => V): V {
   if (!map.has(key)) {
-    map.set(key, val(key));
+    map.set(key, val(key))
   }
-  return map.get(key)!;
+  return map.get(key)!
 }
 
 export function createGetPreviewProps<Schema extends ComponentSchema, ChildFieldElement>(
@@ -71,7 +71,7 @@ export function createGetPreviewProps<Schema extends ComponentSchema, ChildField
 ): (value: ValueForComponentSchema<Schema>) => GenericPreviewProps<Schema, ChildFieldElement> {
   const memoizedInfoForSchema = castToMemoizedInfoForSchema({
     form(schema, onChange) {
-      return (newVal: unknown) => onChange(() => newVal);
+      return (newVal: unknown) => onChange(() => newVal)
     },
     array(schema, onChange) {
       return {
@@ -88,9 +88,9 @@ export function createGetPreviewProps<Schema extends ComponentSchema, ChildField
           }
         >(),
         onChange(updater: readonly { key: string | undefined; value?: unknown }[]) {
-          onChange(value => updateValue(schema, value, updater));
+          onChange(value => updateValue(schema, value, updater))
         },
-      };
+      }
     },
     child() {},
     conditional(schema, onChange) {
@@ -99,30 +99,30 @@ export function createGetPreviewProps<Schema extends ComponentSchema, ChildField
           onChange(val => updateValue(schema, val, { discriminant, value })),
         onChangeForValue: (cb: (prevVal: unknown) => unknown) =>
           onChange(val => ({ discriminant: val.discriminant, value: cb(val.value) })),
-      };
+      }
     },
     object(schema, onChange) {
       return {
         onChange: (updater: Record<string, unknown>) => {
-          onChange(value => updateValue(schema, value, updater));
+          onChange(value => updateValue(schema, value, updater))
         },
         innerOnChanges: Object.fromEntries(
           Object.keys(schema.fields).map(key => {
             return [
               key,
               (newVal: (prevVal: unknown) => unknown) => {
-                onChange(val => ({ ...val, [key]: newVal(val[key]) }));
+                onChange(val => ({ ...val, [key]: newVal(val[key]) }))
               },
-            ];
+            ]
           })
         ),
-      };
+      }
     },
     relationship(schema, onChange) {
       return (newVal: HydratedRelationshipData | readonly HydratedRelationshipData[] | null) =>
-        onChange(() => newVal);
+        onChange(() => newVal)
     },
-  });
+  })
 
   const previewPropsFactories: {
     [Kind in ComponentSchema['kind']]: (
@@ -146,13 +146,13 @@ export function createGetPreviewProps<Schema extends ComponentSchema, ChildField
         onChange,
         options: schema.options,
         schema: schema,
-      };
+      }
     },
     child(schema, value, onChange, path) {
-      return { element: getChildFieldElement(path), schema: schema };
+      return { element: getChildFieldElement(path), schema: schema }
     },
     object(schema, value, memoized, path, getInnerProp) {
-      const fields: Record<string, GenericPreviewProps<ComponentSchema, ChildFieldElement>> = {};
+      const fields: Record<string, GenericPreviewProps<ComponentSchema, ChildFieldElement>> = {}
 
       for (const key of Object.keys(schema.fields)) {
         fields[key] = getInnerProp(
@@ -160,7 +160,7 @@ export function createGetPreviewProps<Schema extends ComponentSchema, ChildField
           value[key],
           memoized.innerOnChanges[key],
           key
-        );
+        )
       }
 
       const previewProps: GenericPreviewProps<
@@ -170,31 +170,31 @@ export function createGetPreviewProps<Schema extends ComponentSchema, ChildField
         fields,
         onChange: memoized.onChange,
         schema: schema,
-      };
-      return previewProps;
+      }
+      return previewProps
     },
     array(schema, value, memoized, path, getInnerProp) {
-      const arrayValue = value as readonly unknown[];
-      const keys = getKeysForArrayValue(arrayValue);
+      const arrayValue = value as readonly unknown[]
+      const keys = getKeysForArrayValue(arrayValue)
 
-      const unusedKeys = new Set(getKeysForArrayValue(value));
+      const unusedKeys = new Set(getKeysForArrayValue(value))
 
       const props: GenericPreviewProps<ArrayField<ComponentSchema>, ChildFieldElement> = {
         elements: arrayValue.map((val, i) => {
-          const key = keys[i];
-          unusedKeys.delete(key);
+          const key = keys[i]
+          unusedKeys.delete(key)
           const element = getOrInsert(memoized.inner, key, () => {
             const onChange = (val: (val: unknown) => unknown) => {
               memoized.rawOnChange(prev => {
-                const keys = getKeysForArrayValue(prev as readonly unknown[]);
-                const index = keys.indexOf(key);
-                const newValue = [...(prev as readonly unknown[])];
-                newValue[index] = val(newValue[index]);
-                setKeysForArrayValue(newValue, keys);
-                return newValue;
-              });
-            };
-            const element = getInnerProp(schema.element, val, onChange, key);
+                const keys = getKeysForArrayValue(prev as readonly unknown[])
+                const index = keys.indexOf(key)
+                const newValue = [...(prev as readonly unknown[])]
+                newValue[index] = val(newValue[index])
+                setKeysForArrayValue(newValue, keys)
+                return newValue
+              })
+            }
+            const element = getInnerProp(schema.element, val, onChange, key)
             return {
               element,
               elementWithKey: {
@@ -202,33 +202,33 @@ export function createGetPreviewProps<Schema extends ComponentSchema, ChildField
                 key,
               },
               onChange,
-            };
-          });
-          const currentInnerProp = getInnerProp(schema.element, val, element.onChange, key);
+            }
+          })
+          const currentInnerProp = getInnerProp(schema.element, val, element.onChange, key)
           if (element.element !== currentInnerProp) {
-            element.element = currentInnerProp;
+            element.element = currentInnerProp
             element.elementWithKey = {
               ...currentInnerProp,
               key,
-            };
+            }
           }
-          return element.elementWithKey;
+          return element.elementWithKey
         }),
         schema: schema,
         onChange: memoized.onChange,
-      };
-      for (const key of unusedKeys) {
-        memoized.inner.delete(key);
       }
-      return props;
+      for (const key of unusedKeys) {
+        memoized.inner.delete(key)
+      }
+      return props
     },
     relationship(schema, value, onChange) {
       const props: GenericPreviewProps<RelationshipField<boolean>, ChildFieldElement> = {
         value: value,
         onChange,
         schema: schema,
-      };
-      return props;
+      }
+      return props
     },
     conditional(schema, value, memoized, path, getInnerProp) {
       const props: GenericPreviewProps<
@@ -245,10 +245,10 @@ export function createGetPreviewProps<Schema extends ComponentSchema, ChildField
           'value'
         ),
         schema: schema,
-      };
-      return props;
+      }
+      return props
     },
-  };
+  }
 
   function getPreviewPropsForProp<Schema extends ComponentSchema>(
     schema: Schema,
@@ -270,7 +270,7 @@ export function createGetPreviewProps<Schema extends ComponentSchema, ChildField
       memoedThing as any,
       path,
       getInnerProp
-    ) as any;
+    ) as any
   }
 
   function getInitialMemoState<Schema extends ComponentSchema>(
@@ -281,7 +281,7 @@ export function createGetPreviewProps<Schema extends ComponentSchema, ChildField
     ) => void,
     path: readonly string[]
   ): MemoState<Schema> {
-    const innerState = new Map<string, MemoState<ComponentSchema>>();
+    const innerState = new Map<string, MemoState<ComponentSchema>>()
     const memoizedInfo = (
       memoizedInfoForSchema[schema.kind] as (
         schema: ComponentSchema,
@@ -289,7 +289,7 @@ export function createGetPreviewProps<Schema extends ComponentSchema, ChildField
           cb: (val: ValueForComponentSchema<Schema>) => ValueForComponentSchema<Schema>
         ) => void
       ) => any
-    )(schema, onChange);
+    )(schema, onChange)
     const state: MemoState<ComponentSchema> = {
       value,
       inner: innerState,
@@ -299,15 +299,15 @@ export function createGetPreviewProps<Schema extends ComponentSchema, ChildField
         memoizedInfo,
         path,
         (schema, value, onChange, key) => {
-          const state = getInitialMemoState(schema, value, onChange, path.concat(key));
-          innerState.set(key, state);
-          return state.props;
+          const state = getInitialMemoState(schema, value, onChange, path.concat(key))
+          innerState.set(key, state)
+          return state.props
         }
       ),
       schema: schema,
       cached: memoizedInfo,
-    };
-    return state as MemoState<Schema>;
+    }
+    return state as MemoState<Schema>
   }
   function getUpToDateProps<Schema extends ComponentSchema>(
     schema: Schema,
@@ -319,30 +319,30 @@ export function createGetPreviewProps<Schema extends ComponentSchema, ChildField
     path: readonly string[]
   ): GenericPreviewProps<Schema, ChildFieldElement> {
     if (memoState.schema !== schema) {
-      Object.assign(memoState, getInitialMemoState(schema, value, onChange, path));
-      return memoState.props;
+      Object.assign(memoState, getInitialMemoState(schema, value, onChange, path))
+      return memoState.props
     }
     if (memoState.value === value) {
-      return memoState.props;
+      return memoState.props
     }
-    memoState.value = value;
-    const unusedKeys = new Set(memoState.inner.keys());
+    memoState.value = value
+    const unusedKeys = new Set(memoState.inner.keys())
     memoState.props = getPreviewPropsForProp(
       schema,
       value,
       memoState.cached as any,
       path,
       (schema, value, onChange, innerMemoStateKey) => {
-        unusedKeys.delete(innerMemoStateKey);
+        unusedKeys.delete(innerMemoStateKey)
         if (!memoState.inner.has(innerMemoStateKey)) {
           const innerState = getInitialMemoState(
             schema,
             value,
             onChange,
             path.concat(innerMemoStateKey)
-          );
-          memoState.inner.set(innerMemoStateKey, innerState);
-          return innerState.props;
+          )
+          memoState.inner.set(innerMemoStateKey, innerState)
+          return innerState.props
         }
         return getUpToDateProps<typeof schema>(
           schema,
@@ -350,13 +350,13 @@ export function createGetPreviewProps<Schema extends ComponentSchema, ChildField
           onChange,
           memoState.inner.get(innerMemoStateKey) as MemoState<typeof schema>,
           path.concat(innerMemoStateKey)
-        );
+        )
       }
-    );
+    )
     for (const key of unusedKeys) {
-      memoState.inner.delete(key);
+      memoState.inner.delete(key)
     }
-    return memoState.props;
+    return memoState.props
   }
 
   type MemoState<Schema extends ComponentSchema> = {
@@ -365,17 +365,17 @@ export function createGetPreviewProps<Schema extends ComponentSchema, ChildField
     schema: Schema;
     cached: ReturnType<(typeof memoizedInfoForSchema)[Schema['kind']]>;
     inner: Map<string, MemoState<ComponentSchema>>;
-  };
+  }
 
-  let memoState: MemoState<Schema>;
+  let memoState: MemoState<Schema>
 
   return (
     value: ValueForComponentSchema<Schema>
   ): GenericPreviewProps<Schema, ChildFieldElement> => {
     if (memoState === undefined) {
-      memoState = getInitialMemoState(rootSchema, value, rootOnChange, []);
-      return memoState.props;
+      memoState = getInitialMemoState(rootSchema, value, rootOnChange, [])
+      return memoState.props
     }
-    return getUpToDateProps(rootSchema, value, rootOnChange, memoState, []);
-  };
+    return getUpToDateProps(rootSchema, value, rootOnChange, memoState, [])
+  }
 }

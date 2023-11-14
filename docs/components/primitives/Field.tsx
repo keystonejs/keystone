@@ -1,9 +1,9 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
-import { InputHTMLAttributes } from 'react';
-import { Stack } from './Stack';
-import { Type } from './Type';
+import { jsx } from '@emotion/react'
+import { InputHTMLAttributes } from 'react'
+import { Stack } from './Stack'
+import { Type } from './Type'
 
 export const Field = ({
   label,
@@ -17,9 +17,9 @@ export const Field = ({
   id?: string;
   size?: 'medium' | 'large';
 }) => {
-  const isTextarea = type === 'comments';
-  const TextInput = isTextarea ? 'textarea' : 'input';
-  const isMedium = size === 'medium';
+  const isTextarea = type === 'comments'
+  const TextInput = isTextarea ? 'textarea' : 'input'
+  const isMedium = size === 'medium'
 
   return (
     <Stack
@@ -82,7 +82,7 @@ export const Field = ({
         {...props}
       />
     </Stack>
-  );
-};
+  )
+}
 
-Field.displayName = 'Field';
+Field.displayName = 'Field'

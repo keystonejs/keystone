@@ -1,6 +1,6 @@
-import { config } from '@keystone-6/core';
-import { fixPrismaPath } from '../example-utils';
-import { lists } from './schema';
+import { config } from '@keystone-6/core'
+import { fixPrismaPath } from '../example-utils'
+import { lists } from './schema'
 
 export default config({
   db: {
@@ -11,11 +11,11 @@ export default config({
       return schema.replace(
         /(generator [^}]+)}/g,
         ['$1binaryTargets = ["native", "linux-musl"]', '}'].join('\n')
-      );
+      )
     },
 
     // WARNING: this is only needed for our monorepo examples, dont do this
     ...fixPrismaPath,
   },
   lists,
-});
+})

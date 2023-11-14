@@ -1,15 +1,15 @@
-import { humanize } from '../../../lib/utils';
+import { humanize } from '../../../lib/utils'
 import {
   BaseListTypeInfo,
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
   orderDirectionEnum,
-} from '../../../types';
-import { graphql } from '../../..';
-import { assertReadIsNonNullAllowed, getResolvedIsNullable } from '../../non-null-graphql';
-import { filters } from '../../filters';
-import { TimestampFieldMeta } from './views';
+} from '../../../types'
+import { graphql } from '../../..'
+import { assertReadIsNonNullAllowed, getResolvedIsNullable } from '../../non-null-graphql'
+import { filters } from '../../filters'
+import { TimestampFieldMeta } from './views'
 
 export type TimestampFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -25,7 +25,7 @@ export type TimestampFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
       map?: string;
       extendPrismaSchema?: (field: string) => string;
     };
-  };
+  }
 
 export const timestamp =
   <ListTypeInfo extends BaseListTypeInfo>({
@@ -37,26 +37,26 @@ export const timestamp =
   meta => {
     if (typeof defaultValue === 'string') {
       try {
-        graphql.DateTime.graphQLType.parseValue(defaultValue);
+        graphql.DateTime.graphQLType.parseValue(defaultValue)
       } catch (err) {
         throw new Error(
           `The timestamp field at ${meta.listKey}.${
             meta.fieldKey
           } specifies defaultValue: ${defaultValue} but values must be provided as a full ISO8601 date-time string such as ${new Date().toISOString()}`
-        );
+        )
       }
     }
     const parsedDefaultValue =
       typeof defaultValue === 'string'
         ? (graphql.DateTime.graphQLType.parseValue(defaultValue) as Date)
-        : defaultValue;
+        : defaultValue
 
-    const resolvedIsNullable = getResolvedIsNullable(validation, config.db);
+    const resolvedIsNullable = getResolvedIsNullable(validation, config.db)
 
-    assertReadIsNonNullAllowed(meta, config, resolvedIsNullable);
+    assertReadIsNonNullAllowed(meta, config, resolvedIsNullable)
 
-    const mode = resolvedIsNullable === false ? 'required' : 'optional';
-    const fieldLabel = config.label ?? humanize(meta.fieldKey);
+    const mode = resolvedIsNullable === false ? 'required' : 'optional'
+    const fieldLabel = config.label ?? humanize(meta.fieldKey)
 
     return fieldType({
       kind: 'scalar',
@@ -80,12 +80,12 @@ export const timestamp =
       hooks: {
         ...config.hooks,
         async validateInput(args) {
-          const value = args.resolvedData[meta.fieldKey];
+          const value = args.resolvedData[meta.fieldKey]
           if ((validation?.isRequired || resolvedIsNullable === false) && value === null) {
-            args.addValidationError(`${fieldLabel} is required`);
+            args.addValidationError(`${fieldLabel} is required`)
           }
 
-          await config.hooks?.validateInput?.(args);
+          await config.hooks?.validateInput?.(args)
         },
       },
       input: {
@@ -104,15 +104,15 @@ export const timestamp =
           resolve(val) {
             if (val === undefined) {
               if (parsedDefaultValue === undefined && config.db?.updatedAt) {
-                return undefined;
+                return undefined
               }
               if (parsedDefaultValue instanceof Date || parsedDefaultValue === undefined) {
-                val = parsedDefaultValue ?? null;
+                val = parsedDefaultValue ?? null
               } else {
-                val = new Date();
+                val = new Date()
               }
             }
-            return val;
+            return val
           },
         },
         update: { arg: graphql.arg({ type: graphql.DateTime }) },
@@ -128,7 +128,7 @@ export const timestamp =
           defaultValue: defaultValue ?? null,
           isRequired: validation?.isRequired ?? false,
           updatedAt: config.db?.updatedAt ?? false,
-        };
+        }
       },
-    });
-  };
+    })
+  }

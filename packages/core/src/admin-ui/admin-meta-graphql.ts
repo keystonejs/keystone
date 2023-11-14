@@ -1,5 +1,5 @@
-import type { JSONValue } from '../types';
-import { gql } from './apollo';
+import type { JSONValue } from '../types'
+import { gql } from './apollo'
 
 export const staticAdminMetaQuery = gql`
   query StaticAdminMeta {
@@ -52,7 +52,7 @@ export const staticAdminMetaQuery = gql`
       }
     }
   }
-`;
+`
 
 export type StaticAdminMetaQuery = {
   keystone: {
@@ -111,12 +111,12 @@ export type StaticAdminMetaQuery = {
       }>;
     };
   };
-};
+}
 
-type QueryMode = 'default' | 'insensitive';
+type QueryMode = 'default' | 'insensitive'
 
-type KeystoneAdminUIFieldMetaItemViewFieldMode = 'edit' | 'read' | 'hidden';
+type KeystoneAdminUIFieldMetaItemViewFieldMode = 'edit' | 'read' | 'hidden'
 
-type KeystoneAdminUIFieldMetaItemViewFieldPosition = 'form' | 'sidebar';
+type KeystoneAdminUIFieldMetaItemViewFieldPosition = 'form' | 'sidebar'
 
-type KeystoneAdminUISortDirection = 'ASC' | 'DESC';
+type KeystoneAdminUISortDirection = 'ASC' | 'DESC'

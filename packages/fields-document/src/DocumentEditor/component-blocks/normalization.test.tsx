@@ -1,10 +1,10 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { Transforms } from 'slate';
-import { component, fields } from '../../component-blocks';
-import { jsx, makeEditor } from '../tests/utils';
-import { insertComponentBlock } from '.';
+import { Transforms } from 'slate'
+import { component, fields } from '../../component-blocks'
+import { jsx, makeEditor } from '../tests/utils'
+import { insertComponentBlock } from '.'
 
 const componentBlocks = {
   basic: component({
@@ -30,7 +30,7 @@ const componentBlocks = {
       last: fields.child({ kind: 'block', placeholder: '' }),
     },
   }),
-};
+}
 
 test('component-inline-prop and component-block-prop outside of component-block are unwrapped', () => {
   let editor = makeEditor(
@@ -53,7 +53,7 @@ test('component-inline-prop and component-block-prop outside of component-block 
       </paragraph>
     </editor>,
     { normalization: 'normalize' }
-  );
+  )
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -69,8 +69,8 @@ test('component-inline-prop and component-block-prop outside of component-block 
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('non component block prop in component-block', () => {
   let editor = makeEditor(
@@ -88,7 +88,7 @@ test('non component block prop in component-block', () => {
       </paragraph>
     </editor>,
     { normalization: 'normalize', componentBlocks }
-  );
+  )
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -110,8 +110,8 @@ test('non component block prop in component-block', () => {
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('content inside of void child prop', () => {
   let editor = makeEditor(
@@ -134,7 +134,7 @@ test('content inside of void child prop', () => {
       </paragraph>
     </editor>,
     { normalization: 'normalize', componentBlocks }
-  );
+  )
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -156,8 +156,8 @@ test('content inside of void child prop', () => {
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('prop path for old fake void prop is removed', () => {
   let editor = makeEditor(
@@ -182,7 +182,7 @@ test('prop path for old fake void prop is removed', () => {
       </paragraph>
     </editor>,
     { normalization: 'normalize', componentBlocks }
-  );
+  )
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -204,8 +204,8 @@ test('prop path for old fake void prop is removed', () => {
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('inserting a void component block', () => {
   let editor = makeEditor(
@@ -217,8 +217,8 @@ test('inserting a void component block', () => {
       </paragraph>
     </editor>,
     { componentBlocks }
-  );
-  insertComponentBlock(editor, componentBlocks, 'basic');
+  )
+  insertComponentBlock(editor, componentBlocks, 'basic')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -239,8 +239,8 @@ test('inserting a void component block', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('extra component props are removed', () => {
   let editor = makeEditor(
@@ -276,7 +276,7 @@ test('extra component props are removed', () => {
       </paragraph>
     </editor>,
     { componentBlocks, normalization: 'normalize' }
-  );
+  )
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
@@ -319,8 +319,8 @@ test('extra component props are removed', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('missing component props are added', () => {
   let editor = makeEditor(
@@ -339,7 +339,7 @@ test('missing component props are added', () => {
       </paragraph>
     </editor>,
     { componentBlocks, normalization: 'normalize' }
-  );
+  )
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -379,8 +379,8 @@ test('missing component props are added', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('prop with wrong type for a given prop path', () => {
   let editor = makeEditor(
@@ -401,7 +401,7 @@ test('prop with wrong type for a given prop path', () => {
       </paragraph>
     </editor>,
     { componentBlocks, normalization: 'normalize' }
-  );
+  )
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -444,8 +444,8 @@ test('prop with wrong type for a given prop path', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('props in wrong order', () => {
   let editor = makeEditor(
@@ -473,7 +473,7 @@ test('props in wrong order', () => {
       </paragraph>
     </editor>,
     { componentBlocks, normalization: 'normalize' }
-  );
+  )
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -522,8 +522,8 @@ test('props in wrong order', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('toggling to heading when in an inline prop', () => {
   const editor = makeEditor(
@@ -558,8 +558,8 @@ test('toggling to heading when in an inline prop', () => {
         }),
       },
     }
-  );
-  Transforms.setNodes(editor, { type: 'heading', level: 1 });
+  )
+  Transforms.setNodes(editor, { type: 'heading', level: 1 })
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -599,8 +599,8 @@ test('toggling to heading when in an inline prop', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('child field in array field insertBreak', () => {
   const editor = makeEditor(
@@ -633,8 +633,8 @@ test('child field in array field insertBreak', () => {
         }),
       },
     }
-  );
-  editor.insertBreak();
+  )
+  editor.insertBreak()
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -685,8 +685,8 @@ test('child field in array field insertBreak', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('child field in array field deleteBackward at end', () => {
   const editor = makeEditor(
@@ -730,8 +730,8 @@ test('child field in array field deleteBackward at end', () => {
         }),
       },
     }
-  );
-  editor.deleteBackward('character');
+  )
+  editor.deleteBackward('character')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -766,8 +766,8 @@ test('child field in array field deleteBackward at end', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('child field in array field deleteBackward in middle', () => {
   const editor = makeEditor(
@@ -816,8 +816,8 @@ test('child field in array field deleteBackward in middle', () => {
         }),
       },
     }
-  );
-  editor.deleteBackward('character');
+  )
+  editor.deleteBackward('character')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -870,8 +870,8 @@ test('child field in array field deleteBackward in middle', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('normalization adds missing fields on object fields', () => {
   const editor = makeEditor(
@@ -895,7 +895,7 @@ test('normalization adds missing fields on object fields', () => {
         }),
       },
     }
-  );
+  )
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -915,8 +915,8 @@ test('normalization adds missing fields on object fields', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('normalization adds missing fields for conditional fields', () => {
   const editor = makeEditor(
@@ -961,7 +961,7 @@ test('normalization adds missing fields for conditional fields', () => {
         }),
       },
     }
-  );
+  )
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -986,5 +986,5 @@ test('normalization adds missing fields for conditional fields', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})

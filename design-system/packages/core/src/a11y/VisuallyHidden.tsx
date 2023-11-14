@@ -1,5 +1,5 @@
-import React, { ReactNode } from 'react';
-import { forwardRefWithAs } from '../utils';
+import React, { ReactNode } from 'react'
+import { forwardRefWithAs } from '../utils'
 
 // Only display content to screen readers
 // ------------------------------
@@ -7,13 +7,13 @@ import { forwardRefWithAs } from '../utils';
 
 type Props = {
   children?: ReactNode;
-};
+}
 
 export const VisuallyHidden = forwardRefWithAs<'span', Props>(
   ({ as: Tag = 'span', ...props }, ref) => {
-    return <Tag ref={ref} style={visuallyHiddenStyles} {...props} />;
+    return <Tag ref={ref} style={visuallyHiddenStyles} {...props} />
   }
-);
+)
 
 export const visuallyHiddenStyles = {
   border: 0,
@@ -24,4 +24,4 @@ export const visuallyHiddenStyles = {
   position: 'absolute',
   whiteSpace: 'nowrap',
   width: 1,
-} as const;
+} as const

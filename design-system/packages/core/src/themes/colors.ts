@@ -224,4 +224,4 @@ export const palette = {
   // blueGray700: '#334155',
   // blueGray800: '#1e293b',
   // blueGray900: '#0f172a',
-} as const;
+} as const

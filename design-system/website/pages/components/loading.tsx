@@ -1,12 +1,12 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Fragment } from 'react';
-import { jsx, Box, Stack } from '@keystone-ui/core';
-import { LoadingDots, loadingToneValues } from '@keystone-ui/loading';
+import { Fragment } from 'react'
+import { jsx, Box, Stack } from '@keystone-ui/core'
+import { LoadingDots, loadingToneValues } from '@keystone-ui/loading'
 
-import { Page } from '../../components/Page';
-import { toLabel } from '../../utils';
+import { Page } from '../../components/Page'
+import { toLabel } from '../../utils'
 
 export default function LoadingPage() {
   return (
@@ -46,5 +46,5 @@ export default function LoadingPage() {
         <LoadingDots label={`Loading current color`} size="medium" />
       </Box>
     </Page>
-  );
+  )
 }

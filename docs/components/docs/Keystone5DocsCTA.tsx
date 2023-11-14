@@ -1,8 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
-import { Alert } from '../primitives/Alert';
+import { Alert } from '../primitives/Alert'
 
 export function Keystone5DocsCTA() {
   return (
@@ -19,5 +19,5 @@ export function Keystone5DocsCTA() {
         </a>
       </span>
     </Alert>
-  );
+  )
 }

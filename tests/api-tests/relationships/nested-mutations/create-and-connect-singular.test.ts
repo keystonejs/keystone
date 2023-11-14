@@ -1,8 +1,8 @@
-import { text, relationship } from '@keystone-6/core/fields';
-import { list } from '@keystone-6/core';
-import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
-import { allowAll } from '@keystone-6/core/access';
-import { testConfig, expectSingleRelationshipError } from '../../utils';
+import { text, relationship } from '@keystone-6/core/fields'
+import { list } from '@keystone-6/core'
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
+import { allowAll } from '@keystone-6/core/access'
+import { testConfig, expectSingleRelationshipError } from '../../utils'
 
 const runner = setupTestRunner({
   config: testConfig({
@@ -22,7 +22,7 @@ const runner = setupTestRunner({
       }),
     },
   }),
-});
+})
 
 describe('errors on incomplete data', () => {
   test(
@@ -36,14 +36,14 @@ describe('errors on incomplete data', () => {
                   id
                 }
               }`,
-      });
+      })
 
-      expect(data).toEqual({ createEvent: null });
+      expect(data).toEqual({ createEvent: null })
       const message =
-        'Input error: You must provide "connect" or "create" in to-one relationship inputs for "create" operations.';
-      expectSingleRelationshipError(errors, 'createEvent', 'Event.group', message);
+        'Input error: You must provide "connect" or "create" in to-one relationship inputs for "create" operations.'
+      expectSingleRelationshipError(errors, 'createEvent', 'Event.group', message)
     })
-  );
+  )
 
   test(
     'when both id and create data passed',
@@ -59,12 +59,12 @@ describe('errors on incomplete data', () => {
                   id
                 }
               }`,
-      });
+      })
 
-      expect(data).toEqual({ createEvent: null });
+      expect(data).toEqual({ createEvent: null })
       const message =
-        'Input error: You must provide "connect" or "create" in to-one relationship inputs for "create" operations.';
-      expectSingleRelationshipError(errors, 'createEvent', 'Event.group', message);
+        'Input error: You must provide "connect" or "create" in to-one relationship inputs for "create" operations.'
+      expectSingleRelationshipError(errors, 'createEvent', 'Event.group', message)
     })
-  );
-});
+  )
+})

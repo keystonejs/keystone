@@ -1,25 +1,25 @@
-import type { Server } from 'http';
-import type { ListenOptions } from 'net';
-import type { ApolloServerOptions } from '@apollo/server';
-import type { CorsOptions } from 'cors';
-import type express from 'express';
-import type { GraphQLSchema } from 'graphql';
-import type { Options as BodyParserOptions } from 'body-parser';
+import type { Server } from 'http'
+import type { ListenOptions } from 'net'
+import type { ApolloServerOptions } from '@apollo/server'
+import type { CorsOptions } from 'cors'
+import type express from 'express'
+import type { GraphQLSchema } from 'graphql'
+import type { Options as BodyParserOptions } from 'body-parser'
 
-import type { AssetMode, BaseKeystoneTypeInfo, KeystoneContext, DatabaseProvider } from '..';
+import type { AssetMode, BaseKeystoneTypeInfo, KeystoneContext, DatabaseProvider } from '..'
 
-import type { SessionStrategy } from '../session';
-import type { MaybePromise } from '../utils';
+import type { SessionStrategy } from '../session'
+import type { MaybePromise } from '../utils'
 import type {
   ListSchemaConfig,
   ListConfig,
   MaybeSessionFunction,
   MaybeItemFunction,
   IdFieldConfig,
-} from './lists';
-import type { BaseFields } from './fields';
-import type { ListAccessControl, FieldAccessControl } from './access-control';
-import type { ListHooks, FieldHooks } from './hooks';
+} from './lists'
+import type { BaseFields } from './fields'
+import type { ListAccessControl, FieldAccessControl } from './access-control'
+import type { ListHooks, FieldHooks } from './hooks'
 
 type FileOrImage =
   // is given full file name, returns file name that will be used at
@@ -29,7 +29,7 @@ type FileOrImage =
       type: 'image';
       // is given full file name, returns file name that will be used at
       transformName?: (filename: string, extension: string) => MaybePromise<string>;
-    };
+    }
 
 export type StorageConfig = (
   | {
@@ -91,7 +91,7 @@ export type StorageConfig = (
         | 'bucket-owner-full-control';
     }
 ) &
-  FileOrImage;
+  FileOrImage
 
 export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   db: DatabaseConfig<TypeInfo>;
@@ -123,21 +123,21 @@ export type KeystoneConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneT
      */
     contextInitialisedLists?: boolean;
   };
-};
+}
 
 // config.lists
 
-export type { ListSchemaConfig, ListConfig, BaseFields, MaybeSessionFunction, MaybeItemFunction };
+export type { ListSchemaConfig, ListConfig, BaseFields, MaybeSessionFunction, MaybeItemFunction }
 
 // config.db
 
 // Copy of the Prisma's LogLevel types from `src/runtime/getLogLevel.ts`,
 // because they are not exported by Prisma.
-type PrismaLogLevel = 'info' | 'query' | 'warn' | 'error';
+type PrismaLogLevel = 'info' | 'query' | 'warn' | 'error'
 type PrismaLogDefinition = {
   level: PrismaLogLevel;
   emit: 'stdout' | 'event';
-};
+}
 
 export type DatabaseConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   provider: DatabaseProvider;
@@ -158,7 +158,7 @@ export type DatabaseConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
   prismaPreviewFeatures?: readonly string[]; // https://www.prisma.io/docs/concepts/components/preview-features
   /** @deprecated use extendPrismaSchema */
   additionalPrismaDatasourceProperties?: { [key: string]: string };
-};
+}
 
 // config.ui
 
@@ -185,11 +185,11 @@ export type AdminUIConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
     wasAccessAllowed: boolean;
     basePath: string;
   }) => MaybePromise<{ kind: 'redirect'; to: string } | void>;
-};
+}
 
 export type AdminFileToWrite =
   | { mode: 'write'; src: string; outputPath: string }
-  | { mode: 'copy'; inputPath: string; outputPath: string };
+  | { mode: 'copy'; inputPath: string; outputPath: string }
 
 // config.server
 export type ServerConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
@@ -227,7 +227,7 @@ export type ServerConfig<TypeInfo extends BaseKeystoneTypeInfo> = {
       /** node http.Server options */
       options?: ListenOptions;
     }
-);
+)
 
 // config.graphql
 
@@ -290,11 +290,11 @@ export type GraphQLConfig<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTy
    * @default 'schema.graphql'
    */
   schemaPath?: string;
-};
+}
 
 // config.extendGraphqlSchema
 
-export type ExtendGraphqlSchema = (schema: GraphQLSchema) => GraphQLSchema;
+export type ExtendGraphqlSchema = (schema: GraphQLSchema) => GraphQLSchema
 
 export type FilesConfig = {
   upload: AssetMode;
@@ -311,7 +311,7 @@ export type FilesConfig = {
      */
     baseUrl?: string;
   };
-};
+}
 
 export type ImagesConfig = {
   upload: AssetMode;
@@ -327,11 +327,11 @@ export type ImagesConfig = {
      */
     baseUrl?: string;
   };
-};
+}
 
 // Exports from sibling packages
 
-export type { ListHooks, ListAccessControl, FieldHooks, FieldAccessControl };
+export type { ListHooks, ListAccessControl, FieldHooks, FieldAccessControl }
 
 export type {
   FieldCreateItemAccessArgs,
@@ -343,6 +343,6 @@ export type {
   DeleteListItemAccessControl,
   ListOperationAccessControl,
   ListFilterAccessControl,
-} from './access-control';
-export type { CommonFieldConfig } from './fields';
-export type { CacheHintArgs, IdFieldConfig } from './lists';
+} from './access-control'
+export type { CommonFieldConfig } from './fields'
+export type { CacheHintArgs, IdFieldConfig } from './lists'

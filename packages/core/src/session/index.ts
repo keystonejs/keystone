@@ -1,7 +1,7 @@
-import { randomBytes } from 'node:crypto';
-import * as cookie from 'cookie';
-import Iron from '@hapi/iron';
-import type { SessionStrategy, SessionStoreFunction } from '../types';
+import { randomBytes } from 'node:crypto'
+import * as cookie from 'cookie'
+import Iron from '@hapi/iron'
+import type { SessionStrategy, SessionStoreFunction } from '../types'
 
 // should we also accept httpOnly?
 type StatelessSessionsOptions = {
@@ -57,7 +57,7 @@ type StatelessSessionsOptions = {
    * @default 'lax'
    */
   sameSite?: true | false | 'lax' | 'strict' | 'none';
-};
+}
 
 export function statelessSessions<Session>({
   secret = randomBytes(32).toString('base64url'),
@@ -71,23 +71,23 @@ export function statelessSessions<Session>({
 }: StatelessSessionsOptions = {}): SessionStrategy<Session, any> {
   // atleast 192-bit in base64
   if (secret.length < 32) {
-    throw new Error('The session secret must be at least 32 characters long');
+    throw new Error('The session secret must be at least 32 characters long')
   }
 
   return {
     async get({ context }) {
-      if (!context?.req) return;
+      if (!context?.req) return
 
-      const cookies = cookie.parse(context.req.headers.cookie || '');
-      const bearer = context.req.headers.authorization?.replace('Bearer ', '');
-      const token = bearer || cookies[cookieName];
-      if (!token) return;
+      const cookies = cookie.parse(context.req.headers.cookie || '')
+      const bearer = context.req.headers.authorization?.replace('Bearer ', '')
+      const token = bearer || cookies[cookieName]
+      if (!token) return
       try {
-        return await Iron.unseal(token, secret, ironOptions);
+        return await Iron.unseal(token, secret, ironOptions)
       } catch (err) {}
     },
     async end({ context }) {
-      if (!context?.res) return;
+      if (!context?.res) return
 
       context.res.setHeader(
         'Set-Cookie',
@@ -100,12 +100,12 @@ export function statelessSessions<Session>({
           sameSite,
           domain,
         })
-      );
+      )
     },
     async start({ context, data }) {
-      if (!context?.res) return;
+      if (!context?.res) return
 
-      const sealedData = await Iron.seal(data, secret, { ...ironOptions, ttl: maxAge * 1000 });
+      const sealedData = await Iron.seal(data, secret, { ...ironOptions, ttl: maxAge * 1000 })
       context.res.setHeader(
         'Set-Cookie',
         cookie.serialize(cookieName, sealedData, {
@@ -117,11 +117,11 @@ export function statelessSessions<Session>({
           sameSite,
           domain,
         })
-      );
+      )
 
-      return sealedData;
+      return sealedData
     },
-  };
+  }
 }
 
 /** @deprecated */
@@ -132,27 +132,27 @@ export function storedSessions<Session>({
 }: {
   store: SessionStoreFunction<Session>;
 } & StatelessSessionsOptions): SessionStrategy<Session, any> {
-  const stateless = statelessSessions<string>({ ...statelessSessionsOptions, maxAge });
-  const store = storeFn({ maxAge });
+  const stateless = statelessSessions<string>({ ...statelessSessionsOptions, maxAge })
+  const store = storeFn({ maxAge })
 
   return {
     async get({ context }) {
-      const sessionId = await stateless.get({ context });
-      if (!sessionId) return;
+      const sessionId = await stateless.get({ context })
+      if (!sessionId) return
 
-      return store.get(sessionId);
+      return store.get(sessionId)
     },
     async start({ context, data }) {
-      const sessionId = randomBytes(24).toString('base64url'); // 192-bit
-      await store.set(sessionId, data);
-      return stateless.start({ context, data: sessionId }) || '';
+      const sessionId = randomBytes(24).toString('base64url') // 192-bit
+      await store.set(sessionId, data)
+      return stateless.start({ context, data: sessionId }) || ''
     },
     async end({ context }) {
-      const sessionId = await stateless.get({ context });
-      if (!sessionId) return;
+      const sessionId = await stateless.get({ context })
+      if (!sessionId) return
 
-      await store.delete(sessionId);
-      await stateless.end({ context });
+      await store.delete(sessionId)
+      await stateless.end({ context })
     },
-  };
+  }
 }

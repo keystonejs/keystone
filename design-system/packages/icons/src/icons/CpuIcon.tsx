@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const CpuIcon = createIcon(
   <React.Fragment>
     <rect x={4} y={4} width={16} height={16} rx={2} ry={2} />
@@ -14,4 +14,4 @@ export const CpuIcon = createIcon(
     <line x1={1} y1={14} x2={4} y2={14} />
   </React.Fragment>,
   'CpuIcon'
-);
+)

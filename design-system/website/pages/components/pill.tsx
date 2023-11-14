@@ -1,12 +1,12 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Stack, jsx } from '@keystone-ui/core';
-import { Pill } from '@keystone-ui/pill';
+import { Stack, jsx } from '@keystone-ui/core'
+import { Pill } from '@keystone-ui/pill'
 
-import { Page } from '../../components/Page';
+import { Page } from '../../components/Page'
 
-const toneValues = ['active', 'passive', 'positive', 'warning', 'negative', 'help'] as const;
+const toneValues = ['active', 'passive', 'positive', 'warning', 'negative', 'help'] as const
 
 export default function PillPage() {
   return (
@@ -45,5 +45,5 @@ export default function PillPage() {
         </Stack>
       </Stack>
     </Page>
-  );
+  )
 }

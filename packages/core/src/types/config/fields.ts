@@ -1,21 +1,21 @@
-import type { CacheHint } from '@apollo/cache-control-types';
-import type { FieldTypeFunc } from '../next-fields';
-import type { BaseListTypeInfo } from '../type-info';
-import type { KeystoneContext, MaybePromise } from '..';
-import type { MaybeItemFunction, MaybeSessionFunction } from './lists';
-import type { FieldHooks } from './hooks';
-import type { FieldAccessControl } from './access-control';
+import type { CacheHint } from '@apollo/cache-control-types'
+import type { FieldTypeFunc } from '../next-fields'
+import type { BaseListTypeInfo } from '../type-info'
+import type { KeystoneContext, MaybePromise } from '..'
+import type { MaybeItemFunction, MaybeSessionFunction } from './lists'
+import type { FieldHooks } from './hooks'
+import type { FieldAccessControl } from './access-control'
 
 export type BaseFields<ListTypeInfo extends BaseListTypeInfo> = {
   [key: string]: FieldTypeFunc<ListTypeInfo>;
-};
+}
 
 export type FilterOrderArgs<ListTypeInfo extends BaseListTypeInfo> = {
   context: KeystoneContext<ListTypeInfo['all']>;
   session?: ListTypeInfo['all']['session'];
   listKey: ListTypeInfo['key'];
   fieldKey: ListTypeInfo['fields'];
-};
+}
 
 export type CommonFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
   access?: FieldAccessControl<ListTypeInfo>;
@@ -55,4 +55,4 @@ export type CommonFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
   };
   isFilterable?: boolean | ((args: FilterOrderArgs<ListTypeInfo>) => MaybePromise<boolean>);
   isOrderable?: boolean | ((args: FilterOrderArgs<ListTypeInfo>) => MaybePromise<boolean>);
-};
+}

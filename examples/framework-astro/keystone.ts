@@ -5,8 +5,8 @@
 // Keystone imports the default export of this file, expecting a Keystone configuration object
 //   you can find out more at https://keystonejs.com/docs/apis/config
 
-import { config } from '@keystone-6/core';
-import { lists } from './src/keystone/schema';
+import { config } from '@keystone-6/core'
+import { lists } from './src/keystone/schema'
 
 export default config({
   db: {
@@ -25,4 +25,4 @@ export default config({
     port: 4000,
   },
   lists,
-});
+})

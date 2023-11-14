@@ -1,6 +1,6 @@
-import { useTheme } from '@keystone-ui/core';
+import { useTheme } from '@keystone-ui/core'
 
-import type { ShapeType, SizeType, WidthType } from '../types';
+import type { ShapeType, SizeType, WidthType } from '../types'
 
 // TODO: Move to theme.
 export const widthMap = {
@@ -8,7 +8,7 @@ export const widthMap = {
   medium: 256,
   large: 512,
   full: '100%',
-};
+}
 
 export type InputTokensProps = {
   /* Fixes the height at a specific value. Uses vertical centering instead of padding */
@@ -19,14 +19,14 @@ export type InputTokensProps = {
   size?: SizeType;
   /* Sets the width of the input (distinct from size) */
   width?: WidthType;
-};
+}
 
 type InputStateTokens = {
   background?: string;
   borderColor?: string;
   foreground?: string;
   shadow?: string;
-};
+}
 export type InputTokens = {
   borderRadius?: number | string;
   borderWidth?: number | string;
@@ -44,7 +44,7 @@ export type InputTokens = {
   focus: InputStateTokens;
   invalid: InputStateTokens;
   disabled: InputStateTokens;
-} & InputStateTokens;
+} & InputStateTokens
 
 export const useInputTokens = ({
   size: sizeKey = 'medium',
@@ -52,10 +52,10 @@ export const useInputTokens = ({
   isMultiline = false,
   shape = 'square',
 }: InputTokensProps): InputTokens => {
-  const { animation, controlSizes, fields, radii, spacing, typography } = useTheme();
+  const { animation, controlSizes, fields, radii, spacing, typography } = useTheme()
 
   // const width = widthMap[widthKey];
-  const size = controlSizes[sizeKey];
+  const size = controlSizes[sizeKey]
 
   return {
     background: fields.inputBackground,
@@ -100,13 +100,13 @@ export const useInputTokens = ({
       shadow: fields.disabled.shadow,
       foreground: fields.disabled.inputForeground,
     },
-  } as const;
-};
+  } as const
+}
 
 export type InputStylesProps = {
   invalid: boolean;
   tokens: InputTokens;
-};
+}
 
 export function useInputStyles({ invalid, tokens }: InputStylesProps) {
   const styles = {
@@ -153,7 +153,7 @@ export function useInputStyles({ invalid, tokens }: InputStylesProps) {
     '&::placeholder': {
       color: tokens.placeholder,
     },
-  } as const;
+  } as const
 
-  return styles;
+  return styles
 }

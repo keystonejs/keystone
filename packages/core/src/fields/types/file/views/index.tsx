@@ -1,22 +1,22 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
+import { jsx } from '@keystone-ui/core'
+import { FieldContainer, FieldLabel } from '@keystone-ui/fields'
 import {
   CardValueComponent,
   CellComponent,
   FieldController,
   FieldControllerConfig,
-} from '../../../../types';
+} from '../../../../types'
 
-import { validateFile } from './Field';
+import { validateFile } from './Field'
 
-export { Field } from './Field';
+export { Field } from './Field'
 
 export const Cell: CellComponent = ({ item, field }) => {
-  const data = item[field.path];
-  if (!data) return null;
+  const data = item[field.path]
+  if (!data) return null
   return (
     <div
       css={{
@@ -29,24 +29,24 @@ export const Cell: CellComponent = ({ item, field }) => {
     >
       {data.filename}
     </div>
-  );
-};
+  )
+}
 
 export const CardValue: CardValueComponent = ({ item, field }) => {
-  const data = item[field.path];
+  const data = item[field.path]
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
       {data && data.filename}
     </FieldContainer>
-  );
-};
+  )
+}
 
 type FileData = {
   src: string;
   filesize: number;
   filename: string;
-};
+}
 
 export type FileValue =
   | { kind: 'empty' }
@@ -62,9 +62,9 @@ export type FileValue =
       };
       previous: FileValue;
     }
-  | { kind: 'remove'; previous?: Exclude<FileValue, { kind: 'remove' }> };
+  | { kind: 'remove'; previous?: Exclude<FileValue, { kind: 'remove' }> }
 
-type FileController = FieldController<FileValue>;
+type FileController = FieldController<FileValue>
 
 export const controller = (config: FieldControllerConfig): FileController => {
   return {
@@ -78,8 +78,8 @@ export const controller = (config: FieldControllerConfig): FileController => {
       }`,
     defaultValue: { kind: 'empty' },
     deserialize(item) {
-      const value = item[config.path];
-      if (!value) return { kind: 'empty' };
+      const value = item[config.path]
+      if (!value) return { kind: 'empty' }
       return {
         kind: 'from-server',
         data: {
@@ -89,19 +89,19 @@ export const controller = (config: FieldControllerConfig): FileController => {
           filesize: value.filesize,
           storage: value.storage,
         },
-      };
+      }
     },
     validate(value): boolean {
-      return value.kind !== 'upload' || validateFile(value.data) === undefined;
+      return value.kind !== 'upload' || validateFile(value.data) === undefined
     },
     serialize(value) {
       if (value.kind === 'upload') {
-        return { [config.path]: { upload: value.data.file } };
+        return { [config.path]: { upload: value.data.file } }
       }
       if (value.kind === 'remove') {
-        return { [config.path]: null };
+        return { [config.path]: null }
       }
-      return {};
+      return {}
     },
-  };
-};
+  }
+}

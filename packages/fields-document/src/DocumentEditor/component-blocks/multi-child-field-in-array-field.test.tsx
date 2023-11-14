@@ -1,10 +1,10 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import React from 'react';
-import { Transforms } from 'slate';
-import { jsx, makeEditor } from '../tests/utils';
-import { component, fields } from '../../component-blocks';
+import React from 'react'
+import { Transforms } from 'slate'
+import { jsx, makeEditor } from '../tests/utils'
+import { component, fields } from '../../component-blocks'
 
 const qAndA = component({
   preview: props =>
@@ -17,7 +17,7 @@ const qAndA = component({
           { key: x.key },
           React.createElement('h1', null, x.fields.question.element),
           React.createElement('p', null, x.fields.answer.element)
-        );
+        )
       })
     ),
   label: '',
@@ -29,7 +29,7 @@ const qAndA = component({
       })
     ),
   },
-});
+})
 
 // ideally this would probably work like array fields with a single child field in the array
 // getting that behaviour right would be difficult though, so this test exists assert
@@ -77,8 +77,8 @@ test('deleting all child fields in an array field element when there are multipl
       </paragraph>
     </editor>,
     { componentBlocks: { qAndA } }
-  );
-  Transforms.delete(editor);
+  )
+  Transforms.delete(editor)
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -181,8 +181,8 @@ test('deleting all child fields in an array field element when there are multipl
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 // again, in the future, this might not be the behaviour we want but we want to explicitly state what the behaviour is currently
 test('when the wrong children exist, the children are normalized based on the props', () => {
@@ -207,7 +207,7 @@ test('when the wrong children exist, the children are normalized based on the pr
       </paragraph>
     </editor>,
     { componentBlocks: { qAndA }, skipRenderingDOM: true, normalization: 'normalize' }
-  );
+  )
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -302,5 +302,5 @@ test('when the wrong children exist, the children are normalized based on the pr
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})

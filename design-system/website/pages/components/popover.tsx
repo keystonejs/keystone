@@ -1,10 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Button } from '@keystone-ui/button';
-import { Box, jsx } from '@keystone-ui/core';
-import { Popover } from '@keystone-ui/popover';
-import { Page } from '../../components/Page';
+import { Button } from '@keystone-ui/button'
+import { Box, jsx } from '@keystone-ui/core'
+import { Popover } from '@keystone-ui/popover'
+import { Page } from '../../components/Page'
 
 export default function PopoverPage() {
   return (
@@ -25,5 +25,5 @@ export default function PopoverPage() {
         </Box>
       </Popover>
     </Page>
-  );
+  )
 }

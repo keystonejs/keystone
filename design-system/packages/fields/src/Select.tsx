@@ -1,23 +1,23 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx, useTheme } from '@keystone-ui/core';
-import ReactSelect, { Options, mergeStyles, Props } from 'react-select';
-import { useInputTokens } from './hooks/inputs';
-import { WidthType } from './types';
+import { jsx, useTheme } from '@keystone-ui/core'
+import ReactSelect, { Options, mergeStyles, Props } from 'react-select'
+import { useInputTokens } from './hooks/inputs'
+import { WidthType } from './types'
 
-type Option = { label: string; value: string; isDisabled?: boolean };
+type Option = { label: string; value: string; isDisabled?: boolean }
 
 type BaseSelectProps = Omit<
   Props<Option, boolean>,
   'value' | 'onChange' | 'isMulti' | 'isOptionDisabled'
-> & { width?: WidthType };
+> & { width?: WidthType }
 
-export { components as selectComponents } from 'react-select';
+export { components as selectComponents } from 'react-select'
 
 type ControlState = {
   isDisabled?: boolean;
   isFocused: boolean;
-};
+}
 
 const useStyles = ({
   tokens,
@@ -26,14 +26,14 @@ const useStyles = ({
   tokens: ReturnType<typeof useInputTokens>;
   multi?: boolean;
 }) => {
-  const { palette } = useTheme();
+  const { palette } = useTheme()
   const indicatorStyles = (provided: any, state: ControlState) => ({
     ...provided,
     color: state.isFocused ? palette.neutral600 : palette.neutral500,
     ':hover': {
       color: state.isFocused ? palette.neutral800 : palette.neutral700,
     },
-  });
+  })
   return {
     control: (provided: any, state: ControlState) => {
       const base = {
@@ -45,7 +45,7 @@ const useStyles = ({
         fontSize: tokens.fontSize,
         boxShadow: tokens.shadow,
         transition: tokens.transition,
-      };
+      }
       const variant = state.isDisabled
         ? {
             backgroundColor: tokens.disabled.background || tokens.background,
@@ -67,8 +67,8 @@ const useStyles = ({
               boxShadow: tokens.hover.shadow,
               color: tokens.hover.foreground,
             },
-          };
-      return { ...provided, ...base, ...variant };
+          }
+      return { ...provided, ...base, ...variant }
     },
     clearIndicator: indicatorStyles,
     dropdownIndicator: indicatorStyles,
@@ -102,10 +102,10 @@ const useStyles = ({
       ...provided,
       padding: multi ? `0 4px` : `0 6px`,
     }),
-  };
-};
+  }
+}
 
-const portalTarget = typeof document !== 'undefined' ? document.body : undefined;
+const portalTarget = typeof document !== 'undefined' ? document.body : undefined
 
 export function Select({
   id,
@@ -120,9 +120,9 @@ export function Select({
   portalMenu?: true;
   onChange(value: Option | null): void;
 }) {
-  const tokens = useInputTokens({ width: widthKey });
-  const defaultStyles = useStyles({ tokens });
-  const composedStyles = styles ? mergeStyles(defaultStyles, styles) : defaultStyles;
+  const tokens = useInputTokens({ width: widthKey })
+  const defaultStyles = useStyles({ tokens })
+  const composedStyles = styles ? mergeStyles(defaultStyles, styles) : defaultStyles
 
   return (
     <ReactSelect
@@ -132,16 +132,16 @@ export function Select({
       styles={composedStyles}
       onChange={value => {
         if (!value) {
-          onChange(null);
+          onChange(null)
         } else {
-          onChange(value as any);
+          onChange(value as any)
         }
       }}
       {...props}
       isMulti={false}
       menuPortalTarget={portalMenu && portalTarget}
     />
-  );
+  )
 }
 
 export function MultiSelect({
@@ -157,9 +157,9 @@ export function MultiSelect({
   portalMenu?: true;
   onChange(value: Options<Option>): void;
 }) {
-  const tokens = useInputTokens({ width: widthKey });
-  const defaultStyles = useStyles({ tokens, multi: true });
-  const composedStyles = styles ? mergeStyles(defaultStyles, styles) : defaultStyles;
+  const tokens = useInputTokens({ width: widthKey })
+  const defaultStyles = useStyles({ tokens, multi: true })
+  const composedStyles = styles ? mergeStyles(defaultStyles, styles) : defaultStyles
 
   return (
     <ReactSelect
@@ -169,16 +169,16 @@ export function MultiSelect({
       value={value}
       onChange={value => {
         if (!value) {
-          onChange([]);
+          onChange([])
         } else if (Array.isArray(value)) {
-          onChange(value as Option[]);
+          onChange(value as Option[])
         } else {
-          onChange([value as any]);
+          onChange([value as any])
         }
       }}
       {...props}
       isMulti
       menuPortalTarget={portalMenu && portalTarget}
     />
-  );
+  )
 }

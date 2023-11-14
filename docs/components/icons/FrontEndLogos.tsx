@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
-import { SVGAttributes } from 'react';
+import { jsx } from '@emotion/react'
+import { SVGAttributes } from 'react'
 
 export function FrontEndLogos(props: SVGAttributes<SVGElement>) {
   return (
@@ -83,5 +83,5 @@ export function FrontEndLogos(props: SVGAttributes<SVGElement>) {
         </clipPath>
       </defs>
     </svg>
-  );
+  )
 }

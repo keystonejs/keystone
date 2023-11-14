@@ -1,8 +1,8 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { nestList, toggleList } from './lists';
-import { jsx, makeEditor } from './tests/utils';
+import { nestList, toggleList } from './lists'
+import { jsx, makeEditor } from './tests/utils'
 
 test('ordered list shortcut', () => {
   let editor = makeEditor(
@@ -14,9 +14,9 @@ test('ordered list shortcut', () => {
         </text>
       </paragraph>
     </editor>
-  );
+  )
 
-  editor.insertText(' ');
+  editor.insertText(' ')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <ordered-list>
@@ -32,8 +32,8 @@ test('ordered list shortcut', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('unordered list shortcut - ', () => {
   let editor = makeEditor(
@@ -45,9 +45,9 @@ test('unordered list shortcut - ', () => {
         </text>
       </paragraph>
     </editor>
-  );
+  )
 
-  editor.insertText(' ');
+  editor.insertText(' ')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <unordered-list>
@@ -63,8 +63,8 @@ test('unordered list shortcut - ', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('unordered list shortcut * ', () => {
   let editor = makeEditor(
@@ -76,9 +76,9 @@ test('unordered list shortcut * ', () => {
         </text>
       </paragraph>
     </editor>
-  );
+  )
 
-  editor.insertText(' ');
+  editor.insertText(' ')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <unordered-list>
@@ -94,8 +94,8 @@ test('unordered list shortcut * ', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('direct sibling lists of the same type are merged', () => {
   let editor = makeEditor(
@@ -128,7 +128,7 @@ test('direct sibling lists of the same type are merged', () => {
       </paragraph>
     </editor>,
     { normalization: 'normalize' }
-  );
+  )
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -163,8 +163,8 @@ test('direct sibling lists of the same type are merged', () => {
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('inserting a break on end of list in empty list item exits list', () => {
   let editor = makeEditor(
@@ -187,9 +187,9 @@ test('inserting a break on end of list in empty list item exits list', () => {
         <text />
       </paragraph>
     </editor>
-  );
+  )
 
-  editor.insertBreak();
+  editor.insertBreak()
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -211,8 +211,8 @@ test('inserting a break on end of list in empty list item exits list', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('inserting a break in empty list item in the middle of a list splits and exits', () => {
   let editor = makeEditor(
@@ -240,9 +240,9 @@ test('inserting a break in empty list item in the middle of a list splits and ex
         <text />
       </paragraph>
     </editor>
-  );
+  )
 
-  editor.insertBreak();
+  editor.insertBreak()
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -273,8 +273,8 @@ test('inserting a break in empty list item in the middle of a list splits and ex
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('toggle list on empty line', () => {
   let editor = makeEditor(
@@ -288,9 +288,9 @@ test('toggle list on empty line', () => {
         <text />
       </paragraph>
     </editor>
-  );
+  )
 
-  toggleList(editor, 'ordered-list');
+  toggleList(editor, 'ordered-list')
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -307,8 +307,8 @@ test('toggle list on empty line', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('toggle list on line with text', () => {
   let editor = makeEditor(
@@ -323,9 +323,9 @@ test('toggle list on line with text', () => {
         <text />
       </paragraph>
     </editor>
-  );
+  )
 
-  toggleList(editor, 'ordered-list');
+  toggleList(editor, 'ordered-list')
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -343,8 +343,8 @@ test('toggle list on line with text', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('toggle list on line with text with marks', () => {
   let editor = makeEditor(
@@ -360,9 +360,9 @@ test('toggle list on line with text with marks', () => {
         <text />
       </paragraph>
     </editor>
-  );
+  )
 
-  toggleList(editor, 'ordered-list');
+  toggleList(editor, 'ordered-list')
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -388,8 +388,8 @@ test('toggle list on line with text with marks', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('toggle list on list with text with marks', () => {
   let editor = makeEditor(
@@ -410,9 +410,9 @@ test('toggle list on list with text with marks', () => {
         <text />
       </paragraph>
     </editor>
-  );
+  )
 
-  toggleList(editor, 'ordered-list');
+  toggleList(editor, 'ordered-list')
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -434,8 +434,8 @@ test('toggle list on list with text with marks', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('toggle ordered-list inside of ordered-list', () => {
   let editor = makeEditor(
@@ -454,9 +454,9 @@ test('toggle ordered-list inside of ordered-list', () => {
         <text />
       </paragraph>
     </editor>
-  );
+  )
 
-  toggleList(editor, 'ordered-list');
+  toggleList(editor, 'ordered-list')
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -470,8 +470,8 @@ test('toggle ordered-list inside of ordered-list', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('toggle ordered-list inside of multi-item ordered-list', () => {
   let editor = makeEditor(
@@ -500,9 +500,9 @@ test('toggle ordered-list inside of multi-item ordered-list', () => {
         <text />
       </paragraph>
     </editor>
-  );
+  )
 
-  toggleList(editor, 'ordered-list');
+  toggleList(editor, 'ordered-list')
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -534,8 +534,8 @@ test('toggle ordered-list inside of multi-item ordered-list', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('toggle unordered-list inside of single item in multi-item ordered-list', () => {
   let editor = makeEditor(
@@ -564,9 +564,9 @@ test('toggle unordered-list inside of single item in multi-item ordered-list', (
         <text />
       </paragraph>
     </editor>
-  );
+  )
 
-  toggleList(editor, 'unordered-list');
+  toggleList(editor, 'unordered-list')
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -602,8 +602,8 @@ test('toggle unordered-list inside of single item in multi-item ordered-list', (
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('toggle unordered-list for all items in multi-item ordered-list', () => {
   let editor = makeEditor(
@@ -635,9 +635,9 @@ test('toggle unordered-list for all items in multi-item ordered-list', () => {
         <text />
       </paragraph>
     </editor>
-  );
+  )
 
-  toggleList(editor, 'unordered-list');
+  toggleList(editor, 'unordered-list')
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -670,8 +670,8 @@ test('toggle unordered-list for all items in multi-item ordered-list', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('backspace at start of list only unwraps the first item', () => {
   let editor = makeEditor(
@@ -700,9 +700,9 @@ test('backspace at start of list only unwraps the first item', () => {
         <text />
       </paragraph>
     </editor>
-  );
+  )
 
-  editor.deleteBackward('character');
+  editor.deleteBackward('character')
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -732,8 +732,8 @@ test('backspace at start of list only unwraps the first item', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('nested list as direct child of list is moved to last list-item', () => {
   let editor = makeEditor(
@@ -757,7 +757,7 @@ test('nested list as direct child of list is moved to last list-item', () => {
       </paragraph>
     </editor>,
     { normalization: 'normalize' }
-  );
+  )
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -783,8 +783,8 @@ test('nested list as direct child of list is moved to last list-item', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('nest list', () => {
   let editor = makeEditor(
@@ -808,16 +808,16 @@ test('nest list', () => {
         <text />
       </paragraph>
     </editor>
-  );
+  )
 
-  nestList(editor);
+  nestList(editor)
   // all these extra nest calls should do nothing
-  nestList(editor);
-  nestList(editor);
-  nestList(editor);
-  nestList(editor);
-  nestList(editor);
-  nestList(editor);
+  nestList(editor)
+  nestList(editor)
+  nestList(editor)
+  nestList(editor)
+  nestList(editor)
+  nestList(editor)
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -844,8 +844,8 @@ test('nest list', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('nest list when previous thing is nested', () => {
   let editor = makeEditor(
@@ -876,9 +876,9 @@ test('nest list when previous thing is nested', () => {
         <text />
       </paragraph>
     </editor>
-  );
+  )
 
-  nestList(editor);
+  nestList(editor)
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -912,8 +912,8 @@ test('nest list when previous thing is nested', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('inserting a break on end of list non-empty list item adds a new list item', () => {
   let editor = makeEditor(
@@ -932,9 +932,9 @@ test('inserting a break on end of list non-empty list item adds a new list item'
         <text />
       </paragraph>
     </editor>
-  );
+  )
 
-  editor.insertBreak();
+  editor.insertBreak()
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -958,8 +958,8 @@ test('inserting a break on end of list non-empty list item adds a new list item'
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('changing the type of a nested list', () => {
   let editor = makeEditor(
@@ -985,8 +985,8 @@ test('changing the type of a nested list', () => {
         <text />
       </paragraph>
     </editor>
-  );
-  toggleList(editor, 'ordered-list');
+  )
+  toggleList(editor, 'ordered-list')
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -1013,8 +1013,8 @@ test('changing the type of a nested list', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('changing the type of a nested list to something which it is nested inside', () => {
   let editor = makeEditor(
@@ -1047,8 +1047,8 @@ test('changing the type of a nested list to something which it is nested inside'
         <text />
       </paragraph>
     </editor>
-  );
-  toggleList(editor, 'ordered-list');
+  )
+  toggleList(editor, 'ordered-list')
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -1084,8 +1084,8 @@ test('changing the type of a nested list to something which it is nested inside'
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('nesting a list item in an ordered list into an unordered list makes the item unordered', () => {
   let editor = makeEditor(
@@ -1116,8 +1116,8 @@ test('nesting a list item in an ordered list into an unordered list makes the it
         <text />
       </paragraph>
     </editor>
-  );
-  nestList(editor);
+  )
+  nestList(editor)
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -1151,8 +1151,8 @@ test('nesting a list item in an ordered list into an unordered list makes the it
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 // TODO: fix this(the snapshot shows the correct output)
 // eslint-disable-next-line jest/no-disabled-tests
@@ -1180,8 +1180,8 @@ test.skip('toggling unordered-list in a nested unordered-list moves the list ite
         <text />
       </paragraph>
     </editor>
-  );
-  toggleList(editor, 'unordered-list');
+  )
+  toggleList(editor, 'unordered-list')
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -1206,8 +1206,8 @@ test.skip('toggling unordered-list in a nested unordered-list moves the list ite
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 // TODO: fix this
 // eslint-disable-next-line jest/no-disabled-tests
@@ -1248,8 +1248,8 @@ test.skip('nesting multiple items at the same time works', () => {
         <text />
       </paragraph>
     </editor>
-  );
-  nestList(editor);
+  )
+  nestList(editor)
 
-  expect(editor).toMatchInlineSnapshot(``);
-});
+  expect(editor).toMatchInlineSnapshot(``)
+})

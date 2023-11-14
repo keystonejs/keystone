@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const AnchorIcon = createIcon(
   <React.Fragment>
     <circle cx={12} cy={5} r={3} />
@@ -7,4 +7,4 @@ export const AnchorIcon = createIcon(
     <path d="M5 12H2a10 10 0 0 0 20 0h-3" />
   </React.Fragment>,
   'AnchorIcon'
-);
+)

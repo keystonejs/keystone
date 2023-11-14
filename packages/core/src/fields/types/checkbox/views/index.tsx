@@ -1,26 +1,26 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx, useTheme } from '@keystone-ui/core';
-import { Checkbox, FieldContainer, FieldLabel, FieldDescription } from '@keystone-ui/fields';
+import { jsx, useTheme } from '@keystone-ui/core'
+import { Checkbox, FieldContainer, FieldLabel, FieldDescription } from '@keystone-ui/fields'
 import {
   CardValueComponent,
   CellComponent,
   FieldController,
   FieldControllerConfig,
   FieldProps,
-} from '../../../../types';
-import { CellContainer } from '../../../../admin-ui/components';
+} from '../../../../types'
+import { CellContainer } from '../../../../admin-ui/components'
 
 export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => {
-  const { fields, typography, spacing } = useTheme();
+  const { fields, typography, spacing } = useTheme()
   return (
     <FieldContainer>
       <Checkbox
         autoFocus={autoFocus}
         disabled={onChange === undefined}
         onChange={event => {
-          onChange?.(event.target.checked);
+          onChange?.(event.target.checked)
         }}
         checked={value}
         aria-describedby={field.description === null ? undefined : `${field.path}-description`}
@@ -39,19 +39,19 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
         <FieldDescription id={`${field.path}-description`}>{field.description}</FieldDescription>
       </Checkbox>
     </FieldContainer>
-  );
-};
+  )
+}
 
 export const Cell: CellComponent = ({ item, field }) => {
-  const value = !!item[field.path];
+  const value = !!item[field.path]
   return (
     <CellContainer>
       <Checkbox disabled checked={value} size="small">
         <span css={{}}>{value ? 'True' : 'False'}</span>
       </Checkbox>
     </CellContainer>
-  );
-};
+  )
+}
 
 export const CardValue: CardValueComponent = ({ item, field }) => {
   return (
@@ -59,10 +59,10 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
       <FieldLabel>{field.label}</FieldLabel>
       {item[field.path] + ''}
     </FieldContainer>
-  );
-};
+  )
+}
 
-type CheckboxController = FieldController<boolean, boolean>;
+type CheckboxController = FieldController<boolean, boolean>
 
 export const controller = (
   config: FieldControllerConfig<{ defaultValue: boolean }>
@@ -74,23 +74,23 @@ export const controller = (
     graphqlSelection: config.path,
     defaultValue: config.fieldMeta.defaultValue,
     deserialize(item) {
-      const value = item[config.path];
-      return typeof value === 'boolean' ? value : false;
+      const value = item[config.path]
+      return typeof value === 'boolean' ? value : false
     },
     serialize(value) {
       return {
         [config.path]: value,
-      };
+      }
     },
     filter: {
       Filter() {
-        return null;
+        return null
       },
       graphql({ type }) {
-        return { [config.path]: { equals: type === 'is' } };
+        return { [config.path]: { equals: type === 'is' } }
       },
       Label({ label }) {
-        return label.toLowerCase();
+        return label.toLowerCase()
       },
       types: {
         is: {
@@ -103,5 +103,5 @@ export const controller = (
         },
       },
     },
-  };
-};
+  }
+}

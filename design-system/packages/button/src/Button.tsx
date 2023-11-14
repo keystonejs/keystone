@@ -1,12 +1,12 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { ReactNode, useContext } from 'react';
-import { forwardRefWithAs, jsx } from '@keystone-ui/core';
-import { LoadingDots } from '@keystone-ui/loading';
+import { ReactNode, useContext } from 'react'
+import { forwardRefWithAs, jsx } from '@keystone-ui/core'
+import { LoadingDots } from '@keystone-ui/loading'
 
-import { ButtonContext } from './context';
-import type { WeightKey, ToneKey, SizeKey } from './hooks/button';
+import { ButtonContext } from './context'
+import type { WeightKey, ToneKey, SizeKey } from './hooks/button'
 
 type ButtonProps = {
   /** The Button label content. */
@@ -23,29 +23,29 @@ type ButtonProps = {
   tone?: ToneKey;
   /** The weight of the Button. */
   weight?: WeightKey;
-};
+}
 
 const loadingContainerStyles = {
   left: '50%',
   position: 'absolute',
   transform: 'translateX(-50%)',
-} as const;
+} as const
 
 export const Button = forwardRefWithAs<'button', ButtonProps>(
   (
     { as: Tag = 'button', children, isDisabled, isLoading, size, tone, weight, ...otherProps },
     ref
   ) => {
-    const { useButtonStyles, useButtonTokens, defaults } = useContext(ButtonContext);
+    const { useButtonStyles, useButtonTokens, defaults } = useContext(ButtonContext)
     const tokens = useButtonTokens({
       size: size || defaults.size,
       tone: tone || defaults.tone,
       weight: weight || defaults.weight,
-    });
+    })
     const styles = useButtonStyles({
       isDisabled,
       tokens,
-    });
+    })
 
     return (
       <Tag type={Tag === 'button' ? 'button' : undefined} css={styles} ref={ref} {...otherProps}>
@@ -56,6 +56,6 @@ export const Button = forwardRefWithAs<'button', ButtonProps>(
           </span>
         )}
       </Tag>
-    );
+    )
   }
-);
+)

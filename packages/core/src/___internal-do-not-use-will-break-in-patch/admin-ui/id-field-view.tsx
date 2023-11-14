@@ -1,24 +1,24 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
+import { jsx } from '@keystone-ui/core'
+import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields'
 import type {
   CardValueComponent,
   CellComponent,
   FieldController,
   FieldControllerConfig,
   IdFieldConfig,
-} from '../../types';
-import { CellLink, CellContainer } from '../../admin-ui/components';
+} from '../../types'
+import { CellLink, CellContainer } from '../../admin-ui/components'
 
-export const Field = () => null;
+export const Field = () => null
 
 export const Cell: CellComponent = ({ item, field, linkTo }) => {
-  let value = item[field.path] + '';
-  return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>;
-};
-Cell.supportsLinkTo = true;
+  let value = item[field.path] + ''
+  return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>
+}
+Cell.supportsLinkTo = true
 
 export const CardValue: CardValueComponent = ({ item, field }) => {
   return (
@@ -26,8 +26,8 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
       <FieldLabel>{field.label}</FieldLabel>
       {item[field.path]}
     </FieldContainer>
-  );
-};
+  )
+}
 
 export const controller = (
   config: FieldControllerConfig<IdFieldConfig>
@@ -45,20 +45,20 @@ export const controller = (
         return (
           <TextInput
             onChange={event => {
-              props.onChange(event.target.value);
+              props.onChange(event.target.value)
             }}
             value={props.value}
             autoFocus={props.autoFocus}
           />
-        );
+        )
       },
 
       graphql: ({ type, value }) => {
         if (type === 'not') {
-          return { [config.path]: { not: { equals: value } } };
+          return { [config.path]: { not: { equals: value } } }
         }
-        const valueWithoutWhitespace = value.replace(/\s/g, '');
-        const key = type === 'is' ? 'equals' : type === 'not_in' ? 'notIn' : type;
+        const valueWithoutWhitespace = value.replace(/\s/g, '')
+        const key = type === 'is' ? 'equals' : type === 'not_in' ? 'notIn' : type
 
         return {
           [config.path]: {
@@ -66,14 +66,14 @@ export const controller = (
               ? valueWithoutWhitespace.split(',')
               : valueWithoutWhitespace,
           },
-        };
+        }
       },
       Label({ label, value, type }) {
-        let renderedValue = value.replace(/\s/g, '');
+        let renderedValue = value.replace(/\s/g, '')
         if (['in', 'not_in'].includes(type)) {
-          renderedValue = value.split(',').join(', ');
+          renderedValue = value.split(',').join(', ')
         }
-        return `${label.toLowerCase()}: ${renderedValue}`;
+        return `${label.toLowerCase()}: ${renderedValue}`
       },
       types: {
         is: { label: 'Is exactly', initialValue: '' },
@@ -86,5 +86,5 @@ export const controller = (
         not_in: { label: 'Is not one of', initialValue: '' },
       },
     },
-  };
-};
+  }
+}

@@ -1,7 +1,7 @@
-import { list, graphql } from '@keystone-6/core';
-import { text, checkbox, virtual } from '@keystone-6/core/fields';
-import { allowAll } from '@keystone-6/core/access';
-import type { Lists } from '.keystone/types';
+import { list, graphql } from '@keystone-6/core'
+import { text, checkbox, virtual } from '@keystone-6/core/fields'
+import { allowAll } from '@keystone-6/core/access'
+import type { Lists } from '.keystone/types'
 
 export const lists: Lists = {
   Post: list({
@@ -16,7 +16,7 @@ export const lists: Lists = {
         field: graphql.field({
           type: graphql.Boolean,
           resolve(item) {
-            return item.title.length > 3 && item.content.length > 10 && item.listed === true;
+            return item.title.length > 3 && item.content.length > 10 && item.listed === true
           },
         }),
       }),
@@ -37,12 +37,12 @@ export const lists: Lists = {
             },
           }),
           resolve(item) {
-            const content = item.content ?? '';
+            const content = item.content ?? ''
             return {
               words: content.split(' ').length,
               sentences: content.split('.').length,
               paragraphs: content.split('\n\n').length,
-            };
+            }
           },
         }),
         ui: {
@@ -59,9 +59,9 @@ export const lists: Lists = {
             length: graphql.arg({ type: graphql.nonNull(graphql.Int), defaultValue: 50 }),
           },
           resolve(item, { length }) {
-            const { content = '' } = item;
-            if (content.length <= length) return content;
-            return content.slice(0, length) + '...';
+            const { content = '' } = item
+            if (content.length <= length) return content
+            return content.slice(0, length) + '...'
           },
         }),
         ui: { query: '(length: 10)' },
@@ -94,16 +94,16 @@ export const lists: Lists = {
                 },
               },
               take: 10,
-            });
+            })
 
             return posts.map(post => ({
               id: post.id,
               title: post.title,
-            }));
+            }))
           },
         }),
         ui: { query: '{ id, title }' },
       }),
     },
   }),
-};
+}

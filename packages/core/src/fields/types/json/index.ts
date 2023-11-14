@@ -4,14 +4,14 @@ import {
   FieldTypeFunc,
   CommonFieldConfig,
   jsonFieldTypePolyfilledForSQLite,
-} from '../../../types';
-import { graphql } from '../../..';
+} from '../../../types'
+import { graphql } from '../../..'
 
 export type JsonFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
     defaultValue?: JSONValue;
     db?: { map?: string; extendPrismaSchema?: (field: string) => string };
-  };
+  }
 
 export const json =
   <ListTypeInfo extends BaseListTypeInfo>({
@@ -20,7 +20,7 @@ export const json =
   }: JsonFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> =>
   meta => {
     if ((config as any).isIndexed === 'unique') {
-      throw Error("isIndexed: 'unique' is not a supported option for field type json");
+      throw Error("isIndexed: 'unique' is not a supported option for field type json")
     }
 
     return jsonFieldTypePolyfilledForSQLite(
@@ -32,7 +32,7 @@ export const json =
           create: {
             arg: graphql.arg({ type: graphql.JSON }),
             resolve(val) {
-              return val === undefined ? defaultValue : val;
+              return val === undefined ? defaultValue : val
             },
           },
           update: { arg: graphql.arg({ type: graphql.JSON }) },
@@ -49,5 +49,5 @@ export const json =
         map: config.db?.map,
         extendPrismaSchema: config.db?.extendPrismaSchema,
       }
-    );
-  };
+    )
+  }

@@ -1,7 +1,7 @@
-import { list } from '@keystone-6/core';
-import { unfiltered } from '@keystone-6/core/access';
-import { text, password } from '@keystone-6/core/fields';
-import type { Lists } from '.keystone/types';
+import { list } from '@keystone-6/core'
+import { unfiltered } from '@keystone-6/core/access'
+import { text, password } from '@keystone-6/core/fields'
+import type { Lists } from '.keystone/types'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
@@ -14,22 +14,22 @@ export type Session = {
   data: {
     something: string;
   };
-};
+}
 
 function hasSession({ session }: { session?: Session }) {
-  return Boolean(session);
+  return Boolean(session)
 }
 
 function isSameUserFilter({ session }: { session?: Session }) {
   // you need to have a session
-  if (!session) return false;
+  if (!session) return false
 
   // the authenticated user can only see themselves
   return {
     id: {
       equals: session.itemId,
     },
-  };
+  }
 }
 
 export const lists: Lists = {
@@ -62,4 +62,4 @@ export const lists: Lists = {
       }),
     },
   }),
-};
+}

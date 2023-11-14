@@ -1,4 +1,4 @@
-import { AuthGqlNames } from '../types';
+import { AuthGqlNames } from '../types'
 
 export const signinTemplate = ({
   gqlNames,
@@ -19,6 +19,6 @@ export default getSigninPage(${JSON.stringify({
     successTypename: gqlNames.ItemAuthenticationWithPasswordSuccess,
     failureTypename: gqlNames.ItemAuthenticationWithPasswordFailure,
   })});
-`;
+`
   // -- TEMPLATE END
-};
+}

@@ -1,16 +1,16 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import type { HTMLAttributes } from 'react';
-import { jsx } from '@emotion/react';
+import type { HTMLAttributes } from 'react'
+import { jsx } from '@emotion/react'
 
-import { Type } from '../primitives/Type';
-import { IconProps } from '../icons/util';
+import { Type } from '../primitives/Type'
+import { IconProps } from '../icons/util'
 
 type CustomerCardProps = {
   icon: (props: IconProps) => JSX.Element;
   title: string;
   accessibleTitle?: string;
-} & HTMLAttributes<HTMLElement>;
+} & HTMLAttributes<HTMLElement>
 
 export function CustomerCard({
   icon: Icon,
@@ -42,5 +42,5 @@ export function CustomerCard({
         {children}
       </Type>
     </div>
-  );
+  )
 }

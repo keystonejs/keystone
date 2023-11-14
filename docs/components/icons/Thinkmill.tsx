@@ -1,8 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
-import { Gradients, IconProps } from './util';
+import { Gradients, IconProps } from './util'
 
 export function Thinkmill({ grad, ...props }: IconProps) {
   return (
@@ -33,5 +33,5 @@ export function Thinkmill({ grad, ...props }: IconProps) {
         </clipPath>
       </defs>
     </svg>
-  );
+  )
 }

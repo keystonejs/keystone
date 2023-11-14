@@ -1,8 +1,8 @@
-import { config } from '@keystone-6/core';
-import { statelessSessions } from '@keystone-6/core/session';
-import { createAuth } from '@keystone-6/auth';
-import { fixPrismaPath } from '../example-utils';
-import { lists } from './schema';
+import { config } from '@keystone-6/core'
+import { statelessSessions } from '@keystone-6/core/session'
+import { createAuth } from '@keystone-6/auth'
+import { fixPrismaPath } from '../example-utils'
+import { lists } from './schema'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
@@ -62,7 +62,7 @@ const { withAuth } = createAuth({
       canManageRoles
       canUseAdminUI
     }`,
-});
+})
 
 export default withAuth(
   config({
@@ -76,10 +76,10 @@ export default withAuth(
     lists,
     ui: {
       isAccessAllowed: ({ session }) => {
-        return session?.data.role?.canUseAdminUI ?? false;
+        return session?.data.role?.canUseAdminUI ?? false
       },
     },
     // you can find out more at https://keystonejs.com/docs/apis/session#session-api
     session: statelessSessions(),
   })
-);
+)

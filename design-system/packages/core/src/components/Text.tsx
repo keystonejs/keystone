@@ -1,13 +1,13 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx } from '../emotion';
+import { jsx } from '../emotion'
 
-import { Theme } from '../types';
-import { forwardRefWithAs } from '../utils';
-import { useMediaQuery } from '../hooks/useMediaQuery';
-import { useTheme } from '../theme';
-import { Box, BoxProps } from './Box';
+import { Theme } from '../types'
+import { forwardRefWithAs } from '../utils'
+import { useMediaQuery } from '../hooks/useMediaQuery'
+import { useTheme } from '../theme'
+import { Box, BoxProps } from './Box'
 
 type TextProps = {
   /** The leading of the text. */
@@ -20,16 +20,16 @@ type TextProps = {
   color?: keyof Theme['palette'];
   /** The font-weight of the text. */
   weight?: keyof Theme['typography']['fontWeight'];
-} & BoxProps;
+} & BoxProps
 
 export const Text = forwardRefWithAs<'div', TextProps>(
   (
     { color, leading = 'base', size = 'medium', tracking = 'base', weight = 'regular', ...props },
     ref
   ) => {
-    const { palette, typography } = useTheme();
+    const { palette, typography } = useTheme()
 
-    const { mq } = useMediaQuery();
+    const { mq } = useMediaQuery()
 
     const styles = mq({
       color: color ? palette[color] : undefined,
@@ -37,8 +37,8 @@ export const Text = forwardRefWithAs<'div', TextProps>(
       fontWeight: typography.fontWeight[weight],
       letterSpacing: typography.tracking[tracking],
       lineHeight: typography.leading[leading],
-    });
+    })
 
-    return <Box css={styles} ref={ref} {...props} />;
+    return <Box css={styles} ref={ref} {...props} />
   }
-);
+)

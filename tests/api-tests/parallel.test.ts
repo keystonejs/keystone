@@ -1,8 +1,8 @@
-import { text } from '@keystone-6/core/fields';
-import { list } from '@keystone-6/core';
-import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
-import { allowAll } from '@keystone-6/core/access';
-import { testConfig } from './utils';
+import { text } from '@keystone-6/core/fields'
+import { list } from '@keystone-6/core'
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
+import { allowAll } from '@keystone-6/core/access'
+import { testConfig } from './utils'
 
 const runner = setupTestRunner({
   config: testConfig({
@@ -15,30 +15,30 @@ const runner = setupTestRunner({
       }),
     },
   }),
-});
+})
 
 // creating a large number of items can take a while
-jest.setTimeout(1000 * 20);
+jest.setTimeout(1000 * 20)
 
 test(
   'creating a lot of items with createOne in parallel',
   runner(async ({ context }) => {
     const data = Array.from({ length: 500 }).map((_, i) => {
-      return { title: `Post ${i}` };
-    });
+      return { title: `Post ${i}` }
+    })
     const posts = await Promise.all(
       data.map(data => context.query.Post.createOne({ data, query: 'title' }))
-    );
-    expect(posts).toEqual(data);
+    )
+    expect(posts).toEqual(data)
   })
-);
+)
 test(
   'updating a lot of items with updateOne in parallel',
   runner(async ({ context }) => {
     const data = Array.from({ length: 500 }).map((_, i) => {
-      return { title: `Post ${i}` };
-    });
-    const initialPosts = await context.query.Post.createMany({ data, query: 'id' });
+      return { title: `Post ${i}` }
+    })
+    const initialPosts = await context.query.Post.createMany({ data, query: 'id' })
     const posts = await Promise.all(
       initialPosts.map((where, i) =>
         context.query.Post.updateOne({
@@ -47,18 +47,18 @@ test(
           query: 'title',
         })
       )
-    );
-    expect(posts).toEqual(initialPosts.map((_, i) => ({ title: `Post ${i} updated` })));
+    )
+    expect(posts).toEqual(initialPosts.map((_, i) => ({ title: `Post ${i} updated` })))
   })
-);
+)
 
 test(
   'deleting a lot of items with deleteOne in parallel',
   runner(async ({ context }) => {
     const data = Array.from({ length: 500 }).map((_, i) => {
-      return { title: `Post ${i}` };
-    });
-    const initialPosts = await context.query.Post.createMany({ data, query: 'id' });
+      return { title: `Post ${i}` }
+    })
+    const initialPosts = await context.query.Post.createMany({ data, query: 'id' })
     const posts = await Promise.all(
       initialPosts.map(where =>
         context.query.Post.deleteOne({
@@ -66,7 +66,7 @@ test(
           query: 'title',
         })
       )
-    );
-    expect(posts).toEqual(data);
+    )
+    expect(posts).toEqual(data)
   })
-);
+)

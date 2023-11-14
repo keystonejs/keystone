@@ -1,18 +1,18 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { ReactNode, useMemo } from 'react';
-import { jsx, makeId, useId, Stack, MarginProps, Box } from '@keystone-ui/core';
-import { AlertOctagonIcon } from '@keystone-ui/icons/icons/AlertOctagonIcon';
-import { AlertCircleIcon } from '@keystone-ui/icons/icons/AlertCircleIcon';
-import { AlertTriangleIcon } from '@keystone-ui/icons/icons/AlertTriangleIcon';
-import { CheckCircleIcon } from '@keystone-ui/icons/icons/CheckCircleIcon';
-import { InfoIcon } from '@keystone-ui/icons/icons/InfoIcon';
-import { HelpCircleIcon } from '@keystone-ui/icons/icons/HelpCircleIcon';
+import { ReactNode, useMemo } from 'react'
+import { jsx, makeId, useId, Stack, MarginProps, Box } from '@keystone-ui/core'
+import { AlertOctagonIcon } from '@keystone-ui/icons/icons/AlertOctagonIcon'
+import { AlertCircleIcon } from '@keystone-ui/icons/icons/AlertCircleIcon'
+import { AlertTriangleIcon } from '@keystone-ui/icons/icons/AlertTriangleIcon'
+import { CheckCircleIcon } from '@keystone-ui/icons/icons/CheckCircleIcon'
+import { InfoIcon } from '@keystone-ui/icons/icons/InfoIcon'
+import { HelpCircleIcon } from '@keystone-ui/icons/icons/HelpCircleIcon'
 
-import { Button, ButtonProvider } from '@keystone-ui/button';
-import { useNoticeStyles, useNoticeTokens, ToneKey } from './hooks/notice';
-import { useButtonTokens } from './hooks/button';
+import { Button, ButtonProvider } from '@keystone-ui/button'
+import { useNoticeStyles, useNoticeTokens, ToneKey } from './hooks/notice'
+import { useButtonTokens } from './hooks/button'
 
 const symbols: { [key in ToneKey]: ReactNode } = {
   active: <InfoIcon />,
@@ -21,12 +21,12 @@ const symbols: { [key in ToneKey]: ReactNode } = {
   warning: <AlertTriangleIcon />,
   negative: <AlertOctagonIcon />,
   help: <HelpCircleIcon />,
-};
+}
 
 type Action = {
   onPress: () => void;
   label: string;
-};
+}
 type NoticeProps = {
   actions?: {
     primary: Action;
@@ -36,7 +36,7 @@ type NoticeProps = {
   tone?: ToneKey;
   title?: string;
   className?: string;
-} & MarginProps;
+} & MarginProps
 
 export const Notice = ({
   actions,
@@ -45,18 +45,18 @@ export const Notice = ({
   title,
   ...otherProps
 }: NoticeProps) => {
-  const id = useId();
-  const titleId = makeId('notice-title', id);
-  const contentId = makeId('notice-content', id);
-  const tokens = useNoticeTokens({ tone });
+  const id = useId()
+  const titleId = makeId('notice-title', id)
+  const contentId = makeId('notice-content', id)
+  const tokens = useNoticeTokens({ tone })
   const styles = useNoticeStyles({
     tokens,
-  });
+  })
 
   const buttonContext = useMemo(
     () => ({ hooks: { useButtonTokens }, defaults: { tone, size: 'small' } } as const),
     [tone]
-  );
+  )
 
   return (
     <ButtonProvider {...buttonContext}>
@@ -99,5 +99,5 @@ export const Notice = ({
         </div>
       </Box>
     </ButtonProvider>
-  );
-};
+  )
+}

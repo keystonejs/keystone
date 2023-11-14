@@ -21,7 +21,7 @@ import {
   useRef,
   useState,
   InputHTMLAttributes,
-} from 'react';
+} from 'react'
 
 import {
   Box,
@@ -31,11 +31,11 @@ import {
   useId,
   useTheme,
   VisuallyHidden,
-} from '@keystone-ui/core';
+} from '@keystone-ui/core'
 
-import { SizeKey, WidthKey, useControlTokens } from './hooks/segmentedControl';
+import { SizeKey, WidthKey, useControlTokens } from './hooks/segmentedControl'
 
-type Index = number;
+type Index = number
 
 // SegmentedControl
 // ------------------------------
@@ -59,7 +59,7 @@ type SegmentedControlProps = {
   size?: SizeKey;
   /** The width of the controls. */
   width?: WidthKey;
-} & BoxProps;
+} & BoxProps
 
 export const SegmentedControl = ({
   animate = false,
@@ -73,27 +73,27 @@ export const SegmentedControl = ({
   selectedIndex,
   ...props
 }: SegmentedControlProps) => {
-  const rootRef = useRef<HTMLDivElement>(null);
-  const [selectedRect, setSelectedRect] = useState({});
+  const rootRef = useRef<HTMLDivElement>(null)
+  const [selectedRect, setSelectedRect] = useState({})
 
   // Because we use radio buttons for the segments, they should share a unique `name`
-  const name = String(useId());
+  const name = String(useId())
 
   // Animate the selected segment indicator
   useEffect(() => {
     if (animate && rootRef.current instanceof HTMLElement) {
-      let nodes = Array.from(rootRef.current.children);
-      let selected = selectedIndex !== undefined && nodes[selectedIndex];
-      let rootRect;
-      let nodeRect = { height: 0, width: 0, left: 0, top: 0 };
-      let offsetLeft;
-      let offsetTop;
+      let nodes = Array.from(rootRef.current.children)
+      let selected = selectedIndex !== undefined && nodes[selectedIndex]
+      let rootRect
+      let nodeRect = { height: 0, width: 0, left: 0, top: 0 }
+      let offsetLeft
+      let offsetTop
 
       if (selected) {
-        rootRect = rootRef.current.getBoundingClientRect();
-        nodeRect = selected.getBoundingClientRect();
-        offsetLeft = nodeRect.left - rootRect.left;
-        offsetTop = nodeRect.top - rootRect.top;
+        rootRect = rootRef.current.getBoundingClientRect()
+        nodeRect = selected.getBoundingClientRect()
+        offsetLeft = nodeRect.left - rootRect.left
+        offsetTop = nodeRect.top - rootRect.top
       }
 
       setSelectedRect({
@@ -102,13 +102,13 @@ export const SegmentedControl = ({
         left: 0,
         top: 0,
         transform: `translateX(${offsetLeft}px) translateY(${offsetTop}px)`,
-      });
+      })
     }
-  }, [animate, selectedIndex]);
+  }, [animate, selectedIndex])
 
-  const nothingIsSelected = selectedIndex === undefined;
+  const nothingIsSelected = selectedIndex === undefined
   // do we want to mark the radio item as disabled?
-  const actuallyDisabled = isDisabled || (isReadOnly && !nothingIsSelected);
+  const actuallyDisabled = isDisabled || (isReadOnly && !nothingIsSelected)
 
   return (
     <Box css={{ outline: 0, boxSizing: 'border-box' }} {...props}>
@@ -120,7 +120,7 @@ export const SegmentedControl = ({
         width={width}
       >
         {segments.map((label, idx) => {
-          const isSelected = selectedIndex === idx;
+          const isSelected = selectedIndex === idx
 
           return (
             <Item
@@ -132,14 +132,14 @@ export const SegmentedControl = ({
               key={label}
               name={name}
               onChange={event => {
-                onChange(idx, event);
+                onChange(idx, event)
               }}
               size={size}
               value={idx}
             >
               {label}
             </Item>
-          );
+          )
         })}
         <VisuallyHidden as="label">
           None Selected
@@ -157,8 +157,8 @@ export const SegmentedControl = ({
         ) : null}
       </Root>
     </Box>
-  );
-};
+  )
+}
 
 // Styled Components
 // ------------------------------
@@ -167,11 +167,11 @@ type RootProps = {
   fill: boolean;
   size: SizeKey;
   width: WidthKey;
-} & HTMLAttributes<HTMLDivElement>;
+} & HTMLAttributes<HTMLDivElement>
 
 const Root = forwardRef<HTMLDivElement, RootProps>(({ fill, size, width, ...props }, ref) => {
-  const { colors } = useTheme();
-  const tokens = useControlTokens({ size, width });
+  const { colors } = useTheme()
+  const tokens = useControlTokens({ size, width })
 
   return (
     <div
@@ -194,8 +194,8 @@ const Root = forwardRef<HTMLDivElement, RootProps>(({ fill, size, width, ...prop
       }}
       {...props}
     />
-  );
-});
+  )
+})
 
 type BaseInputProps = {
   children: ReactNode;
@@ -207,9 +207,9 @@ type BaseInputProps = {
   name: string;
   size: SizeKey;
   value: Index;
-};
+}
 
-type ItemProps = BaseInputProps & Omit<InputHTMLAttributes<HTMLInputElement>, keyof BaseInputProps>;
+type ItemProps = BaseInputProps & Omit<InputHTMLAttributes<HTMLInputElement>, keyof BaseInputProps>
 
 const Item = (props: ItemProps) => {
   const {
@@ -223,14 +223,14 @@ const Item = (props: ItemProps) => {
     disabled,
     readOnly,
     ...attrs
-  } = props;
-  const { colors, fields, typography } = useTheme();
-  const sizeStyles = useItemSize();
-  const selectedStyles = useSelectedStyles();
-  const inputRef = useRef(null);
+  } = props
+  const { colors, fields, typography } = useTheme()
+  const sizeStyles = useItemSize()
+  const selectedStyles = useSelectedStyles()
+  const inputRef = useRef(null)
 
   // do we want to mark the radio item as disabled?
-  const isDisabled = disabled || (readOnly && !isSelected);
+  const isDisabled = disabled || (readOnly && !isSelected)
 
   return (
     <label
@@ -280,13 +280,13 @@ const Item = (props: ItemProps) => {
       />
       {children}
     </label>
-  );
-};
+  )
+}
 
-type IndicatorProps = { size: SizeKey } & HTMLAttributes<HTMLDivElement>;
+type IndicatorProps = { size: SizeKey } & HTMLAttributes<HTMLDivElement>
 const SelectedIndicator = ({ size, ...props }: IndicatorProps) => {
-  const sizeStyles = useItemSize();
-  const selectedStyles = useSelectedStyles();
+  const sizeStyles = useItemSize()
+  const selectedStyles = useSelectedStyles()
 
   return (
     <div
@@ -302,14 +302,14 @@ const SelectedIndicator = ({ size, ...props }: IndicatorProps) => {
       }}
       {...props}
     />
-  );
-};
+  )
+}
 
 // Utils
 // ------------------------------
 
 const useItemSize = () => {
-  const { spacing, typography, radii } = useTheme();
+  const { spacing, typography, radii } = useTheme()
   return {
     small: {
       borderRadius: radii.xsmall,
@@ -335,12 +335,12 @@ const useItemSize = () => {
       paddingBottom: spacing.medium,
       paddingTop: spacing.medium,
     },
-  };
-};
+  }
+}
 const useSelectedStyles = () => {
-  const { colors } = useTheme();
+  const { colors } = useTheme()
   return {
     background: colors.background,
     boxShadow: '0px 1px 4px rgba(45, 55, 72, 0.07);', // used to be shadow.s100
-  };
-};
+  }
+}

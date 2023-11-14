@@ -1,8 +1,8 @@
-import React from 'react';
+import React from 'react'
 
-import { ListNavItems, NavigationContainer, NavItem } from '@keystone-6/core/admin-ui/components';
+import { ListNavItems, NavigationContainer, NavItem } from '@keystone-6/core/admin-ui/components'
 
-import type { NavigationProps } from '@keystone-6/core/admin-ui/components';
+import type { NavigationProps } from '@keystone-6/core/admin-ui/components'
 
 export function CustomNavigation({ lists, authenticatedItem }: NavigationProps) {
   return (
@@ -11,5 +11,5 @@ export function CustomNavigation({ lists, authenticatedItem }: NavigationProps) 
       <ListNavItems lists={lists} />
       <NavItem href="/subscriptions">Subscriptions Page</NavItem>
     </NavigationContainer>
-  );
+  )
 }

@@ -1,20 +1,20 @@
 /** @jsxRuntime classic */
 /** @jsx jsx  */
-import { useRef, Fragment, ReactNode } from 'react';
-import { useRouter } from 'next/router';
-import { jsx } from '@emotion/react';
-import Head from 'next/head';
+import { useRef, Fragment, ReactNode } from 'react'
+import { useRouter } from 'next/router'
+import { jsx } from '@emotion/react'
+import Head from 'next/head'
 
-import { useMediaQuery } from '../lib/media';
-import { TableOfContents } from './docs/TableOfContents';
-import { Wrapper } from './primitives/Wrapper';
-import { EditButton } from './primitives/EditButton';
-import { Breadcrumbs } from './Breadcrumbs';
-import { Sidebar } from './docs/Sidebar';
-import { Stack } from './primitives/Stack';
-import { Header } from './Header';
-import { Footer, DocsFooter } from './Footer';
-import { HeadingType } from './Markdoc';
+import { useMediaQuery } from '../lib/media'
+import { TableOfContents } from './docs/TableOfContents'
+import { Wrapper } from './primitives/Wrapper'
+import { EditButton } from './primitives/EditButton'
+import { Breadcrumbs } from './Breadcrumbs'
+import { Sidebar } from './docs/Sidebar'
+import { Stack } from './primitives/Stack'
+import { Header } from './Header'
+import { Footer, DocsFooter } from './Footer'
+import { HeadingType } from './Markdoc'
 
 function OpenGraph({
   title,
@@ -25,9 +25,9 @@ function OpenGraph({
   description: string;
   ogImage?: string;
 }) {
-  const siteUrl = process.env.siteUrl;
+  const siteUrl = process.env.siteUrl
   if (!ogImage) {
-    ogImage = `${siteUrl}/og-image-landscape.png`;
+    ogImage = `${siteUrl}/og-image-landscape.png`
   }
   return (
     <Head>
@@ -43,10 +43,10 @@ function OpenGraph({
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={`${ogImage}`} />
     </Head>
-  );
+  )
 }
 
-const pagesWithUpdatesSidebar = ['/updates'];
+const pagesWithUpdatesSidebar = ['/updates']
 export function DocsPage({
   children,
   headings = [],
@@ -68,12 +68,12 @@ export function DocsPage({
   isIndexPage?: boolean;
   editPath?: string;
 }) {
-  const contentRef = useRef<HTMLDivElement | null>(null);
-  const mq = useMediaQuery();
-  const { pathname } = useRouter();
-  const isUpdatesPage = pagesWithUpdatesSidebar.some(p => pathname.startsWith(p));
+  const contentRef = useRef<HTMLDivElement | null>(null)
+  const mq = useMediaQuery()
+  const { pathname } = useRouter()
+  const isUpdatesPage = pagesWithUpdatesSidebar.some(p => pathname.startsWith(p))
 
-  const metaTitle = title ? `${title} - Keystone 6 Documentation` : `Keystone 6 Documentation`;
+  const metaTitle = title ? `${title} - Keystone 6 Documentation` : `Keystone 6 Documentation`
 
   return (
     <Fragment>
@@ -141,7 +141,7 @@ export function DocsPage({
         </Wrapper>
       </div>
     </Fragment>
-  );
+  )
 }
 
 export function BlogPage({
@@ -163,11 +163,11 @@ export function BlogPage({
   isIndexPage?: boolean;
   editPath?: string;
 }) {
-  const contentRef = useRef<HTMLDivElement | null>(null);
-  const mq = useMediaQuery();
-  const { pathname } = useRouter();
+  const contentRef = useRef<HTMLDivElement | null>(null)
+  const mq = useMediaQuery()
+  const { pathname } = useRouter()
 
-  const metaTitle = title ? `${title} | Keystone Blog` : `Keystone Blog`;
+  const metaTitle = title ? `${title} | Keystone Blog` : `Keystone Blog`
 
   return (
     <Fragment>
@@ -235,7 +235,7 @@ export function BlogPage({
         </Wrapper>
       </div>
     </Fragment>
-  );
+  )
 }
 
 export function Page({
@@ -249,7 +249,7 @@ export function Page({
   description: string;
   ogImage?: string;
 }) {
-  const metaTitle = title ? `${title} - Keystone 6` : `Keystone 6`;
+  const metaTitle = title ? `${title} - Keystone 6` : `Keystone 6`
   return (
     <Fragment>
       <OpenGraph title={metaTitle} description={description} ogImage={ogImage} />
@@ -267,5 +267,5 @@ export function Page({
       </div>
       <Footer />
     </Fragment>
-  );
+  )
 }

@@ -1,12 +1,12 @@
-import { createHyperscript } from 'slate-hyperscript';
-import { editorSchema } from '../../index';
+import { createHyperscript } from 'slate-hyperscript'
+import { editorSchema } from '../../index'
 
-const blockTypes: Record<string, { type: string }> = {};
+const blockTypes: Record<string, { type: string }> = {}
 Object.keys(editorSchema).forEach(key => {
   if (key !== 'editor') {
-    blockTypes[key] = { type: key };
+    blockTypes[key] = { type: key }
   }
-});
+})
 
 export const __jsx = createHyperscript({
   elements: {
@@ -15,4 +15,4 @@ export const __jsx = createHyperscript({
     link: { type: 'link' },
   },
   creators: {},
-});
+})

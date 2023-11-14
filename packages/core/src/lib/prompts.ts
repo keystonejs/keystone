@@ -1,4 +1,4 @@
-import prompts from 'prompts';
+import prompts from 'prompts'
 
 // prompts is badly typed so we have some more specific typed APIs
 // prompts also returns an undefined value on SIGINT which we really just want to exit on
@@ -9,11 +9,11 @@ export async function confirmPrompt(message: string, initial: boolean = true): P
     type: 'confirm',
     message,
     initial,
-  });
+  })
   if (value === undefined) {
-    process.exit(1);
+    process.exit(1)
   }
-  return value;
+  return value
 }
 
 export async function textPrompt(message: string): Promise<string> {
@@ -21,9 +21,9 @@ export async function textPrompt(message: string): Promise<string> {
     name: 'value',
     type: 'text',
     message,
-  });
+  })
   if (value === undefined) {
-    process.exit(1);
+    process.exit(1)
   }
-  return value;
+  return value
 }

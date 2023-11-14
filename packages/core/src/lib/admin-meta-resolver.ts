@@ -1,21 +1,21 @@
-import type { GraphQLResolveInfo } from 'graphql';
-import type { ScalarType, EnumType, EnumValue } from '@graphql-ts/schema';
-import type { KeystoneContext, BaseItem, MaybePromise } from '../types';
-import { QueryMode } from '../types';
-import { graphql as graphqlBoundToKeystoneContext } from '../types/schema';
+import type { GraphQLResolveInfo } from 'graphql'
+import type { ScalarType, EnumType, EnumValue } from '@graphql-ts/schema'
+import type { KeystoneContext, BaseItem, MaybePromise } from '../types'
+import { QueryMode } from '../types'
+import { graphql as graphqlBoundToKeystoneContext } from '../types/schema'
 import type {
   FieldMetaRootVal,
   ListMetaRootVal,
   AdminMetaRootVal,
   FieldGroupMeta,
-} from './create-admin-meta';
+} from './create-admin-meta'
 
-type Context = KeystoneContext | { isAdminUIBuildProcess: true };
+type Context = KeystoneContext | { isAdminUIBuildProcess: true }
 
 const graphql = {
   ...graphqlBoundToKeystoneContext,
   ...graphqlBoundToKeystoneContext.bindGraphQLSchemaAPIToContext<Context>(),
-};
+}
 
 const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
   name: 'KeystoneAdminUIFieldMeta',
@@ -93,31 +93,31 @@ const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
             }),
             resolve({ fieldMode, itemId, listKey }, args, context, info) {
               if (itemId !== null) {
-                assertInRuntimeContext(context, info);
+                assertInRuntimeContext(context, info)
               }
 
               if (typeof fieldMode === 'string') {
-                return fieldMode;
+                return fieldMode
               }
 
               if (itemId === null) {
-                return null;
+                return null
               }
 
               // we need to re-assert this because typescript doesn't understand the relation between
               // rootVal.itemId !== null and the context being a runtime context
-              assertInRuntimeContext(context, info);
+              assertInRuntimeContext(context, info)
 
               return fetchItemForItemViewFieldMode(context)(listKey, itemId).then(item => {
                 if (item === null) {
-                  return 'hidden' as const;
+                  return 'hidden' as const
                 }
                 return fieldMode({
                   session: context.session,
                   context,
                   item,
-                });
-              });
+                })
+              })
             },
           }),
           fieldPosition: graphql.field({
@@ -127,25 +127,25 @@ const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
             }),
             resolve({ fieldPosition, itemId, listKey }, args, context, info) {
               if (itemId !== null) {
-                assertInRuntimeContext(context, info);
+                assertInRuntimeContext(context, info)
               }
               if (typeof fieldPosition === 'string') {
-                return fieldPosition;
+                return fieldPosition
               }
               if (itemId === null) {
-                return null;
+                return null
               }
-              assertInRuntimeContext(context, info);
+              assertInRuntimeContext(context, info)
               return fetchItemForItemViewFieldMode(context)(listKey, itemId).then(item => {
                 if (item === null) {
-                  return 'form' as const;
+                  return 'form' as const
                 }
                 return fieldPosition({
                   session: context.session,
                   context,
                   item,
-                });
-              });
+                })
+              })
             },
           }),
         },
@@ -155,7 +155,7 @@ const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
       type: QueryMode,
     }),
   },
-});
+})
 
 const KeystoneAdminUIFieldGroupMeta = graphql.object<FieldGroupMeta>()({
   name: 'KeystoneAdminUIFieldGroupMeta',
@@ -166,7 +166,7 @@ const KeystoneAdminUIFieldGroupMeta = graphql.object<FieldGroupMeta>()({
       type: graphql.nonNull(graphql.list(graphql.nonNull(KeystoneAdminUIFieldMeta))),
     }),
   },
-});
+})
 
 const KeystoneAdminUISort = graphql.object<NonNullable<ListMetaRootVal['initialSort']>>()({
   name: 'KeystoneAdminUISort',
@@ -181,7 +181,7 @@ const KeystoneAdminUISort = graphql.object<NonNullable<ListMetaRootVal['initialS
       ),
     }),
   },
-});
+})
 
 const KeystoneAdminUIListMeta = graphql.object<ListMetaRootVal>()({
   name: 'KeystoneAdminUIListMeta',
@@ -211,7 +211,7 @@ const KeystoneAdminUIListMeta = graphql.object<ListMetaRootVal>()({
     ...contextFunctionField('isHidden', graphql.Boolean),
     isSingleton: graphql.field({ type: graphql.nonNull(graphql.Boolean) }),
   },
-});
+})
 
 const adminMeta = graphql.object<AdminMetaRootVal>()({
   name: 'KeystoneAdminMeta',
@@ -223,15 +223,15 @@ const adminMeta = graphql.object<AdminMetaRootVal>()({
       type: KeystoneAdminUIListMeta,
       args: { key: graphql.arg({ type: graphql.nonNull(graphql.String) }) },
       resolve(rootVal, { key }) {
-        return rootVal.listsByKey[key];
+        return rootVal.listsByKey[key]
       },
     }),
   },
-});
+})
 
 function defaultIsAccessAllowed({ session, sessionStrategy }: KeystoneContext) {
-  if (!sessionStrategy) return true;
-  return session !== undefined;
+  if (!sessionStrategy) return true
+  return session !== undefined
 }
 
 export const KeystoneMeta = graphql.object<{ adminMeta: AdminMetaRootVal }>()({
@@ -241,50 +241,50 @@ export const KeystoneMeta = graphql.object<{ adminMeta: AdminMetaRootVal }>()({
       type: graphql.nonNull(adminMeta),
       resolve({ adminMeta }, args, context) {
         if ('isAdminUIBuildProcess' in context) {
-          return adminMeta;
+          return adminMeta
         }
 
-        const isAccessAllowed = adminMeta?.isAccessAllowed ?? defaultIsAccessAllowed;
+        const isAccessAllowed = adminMeta?.isAccessAllowed ?? defaultIsAccessAllowed
         return Promise.resolve(isAccessAllowed(context)).then(isAllowed => {
-          if (isAllowed) return adminMeta;
+          if (isAllowed) return adminMeta
 
           // TODO: ughhhhhh, we really need to talk about errors.
           // mostly unrelated to above: error or return null here(+ make field nullable)?s
-          throw new Error('Access denied');
-        });
+          throw new Error('Access denied')
+        })
       },
     }),
   },
-});
+})
 
 const fetchItemForItemViewFieldMode = extendContext(context => {
-  type ListKey = string;
-  type ItemId = string;
-  const lists = new Map<ListKey, Map<ItemId, Promise<BaseItem | null>>>();
+  type ListKey = string
+  type ItemId = string
+  const lists = new Map<ListKey, Map<ItemId, Promise<BaseItem | null>>>()
   return (listKey: ListKey, id: ItemId) => {
     if (!lists.has(listKey)) {
-      lists.set(listKey, new Map());
+      lists.set(listKey, new Map())
     }
-    const items = lists.get(listKey)!;
+    const items = lists.get(listKey)!
     if (items.has(id)) {
-      return items.get(id)!;
+      return items.get(id)!
     }
-    const promise = context.db[listKey].findOne({ where: { id } });
-    items.set(id, promise);
-    return promise;
-  };
-});
+    const promise = context.db[listKey].findOne({ where: { id } })
+    items.set(id, promise)
+    return promise
+  }
+})
 
 function extendContext<T>(cb: (context: KeystoneContext) => T) {
-  const cache = new WeakMap<KeystoneContext, T>();
+  const cache = new WeakMap<KeystoneContext, T>()
   return (context: KeystoneContext) => {
     if (cache.has(context)) {
-      return cache.get(context)!;
+      return cache.get(context)!
     }
-    const result = cb(context);
-    cache.set(context, result);
-    return result;
-  };
+    const result = cb(context)
+    cache.set(context, result)
+    return result
+  }
 }
 
 function assertInRuntimeContext(
@@ -294,28 +294,28 @@ function assertInRuntimeContext(
   if ('isAdminUIBuildProcess' in context) {
     throw new Error(
       `${info.parentType}.${info.fieldName} cannot be resolved during the build process`
-    );
+    )
   }
 }
 
 // TypeScript doesn't infer a mapped type when using a computed property that's a type parameter
 function objectFromKeyVal<Key extends string, Val>(key: Key, val: Val): { [_ in Key]: Val } {
-  return { [key]: val } as { [_ in Key]: Val };
+  return { [key]: val } as { [_ in Key]: Val }
 }
 
 function contextFunctionField<Key extends string, Type extends string | boolean>(
   key: Key,
   type: ScalarType<Type> | EnumType<Record<string, EnumValue<Type>>>
 ) {
-  type Source = { [_ in Key]: (context: KeystoneContext) => MaybePromise<Type> };
+  type Source = { [_ in Key]: (context: KeystoneContext) => MaybePromise<Type> }
   return objectFromKeyVal(
     key,
     graphql.field({
       type: graphql.nonNull(type),
       resolve(source: Source, args, context, info) {
-        assertInRuntimeContext(context, info);
-        return source[key](context);
+        assertInRuntimeContext(context, info)
+        return source[key](context)
       },
     })
-  );
+  )
 }

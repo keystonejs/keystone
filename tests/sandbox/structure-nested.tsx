@@ -2,7 +2,7 @@ import {
   ArrayField,
   ComponentSchemaForGraphQL,
   fields,
-} from '@keystone-6/fields-document/component-blocks';
+} from '@keystone-6/fields-document/component-blocks'
 
 export const schema: ArrayField<ComponentSchemaForGraphQL> = fields.array(
   fields.conditional(
@@ -22,7 +22,7 @@ export const schema: ArrayField<ComponentSchemaForGraphQL> = fields.array(
       group: fields.object({
         label: fields.text({ label: 'Label' }),
         get children() {
-          return schema;
+          return schema
         },
       }),
     }
@@ -37,4 +37,4 @@ export const schema: ArrayField<ComponentSchemaForGraphQL> = fields.array(
           : ''
       }`,
   }
-);
+)

@@ -1,14 +1,14 @@
-import 'dotenv/config';
-import { config } from '@keystone-6/core';
-import { fixPrismaPath } from '../example-utils';
-import { lists } from './schema';
+import 'dotenv/config'
+import { config } from '@keystone-6/core'
+import { fixPrismaPath } from '../example-utils'
+import { lists } from './schema'
 
 const {
   S3_BUCKET_NAME: bucketName = 'keystone-test',
   S3_REGION: region = 'ap-southeast-2',
   S3_ACCESS_KEY_ID: accessKeyId = 'keystone',
   S3_SECRET_ACCESS_KEY: secretAccessKey = 'keystone',
-} = process.env;
+} = process.env
 
 export default config({
   db: {
@@ -39,4 +39,4 @@ export default config({
       signed: { expiry: 5000 },
     },
   },
-});
+})

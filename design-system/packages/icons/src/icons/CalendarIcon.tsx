@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const CalendarIcon = createIcon(
   <React.Fragment>
     <rect x={3} y={4} width={18} height={18} rx={2} ry={2} />
@@ -8,4 +8,4 @@ export const CalendarIcon = createIcon(
     <line x1={3} y1={10} x2={21} y2={10} />
   </React.Fragment>,
   'CalendarIcon'
-);
+)

@@ -1,5 +1,5 @@
-import { config } from '@keystone-6/core';
-import { lists } from './schema';
+import { config } from '@keystone-6/core'
+import { lists } from './schema'
 
 export default config({
   db: {
@@ -22,4 +22,4 @@ export default config({
   types: {
     path: 'my-types.ts',
   },
-});
+})

@@ -14,15 +14,15 @@
  * - Should this be stateful like a checkbox? check react-aria
  */
 
-import { ButtonHTMLAttributes, forwardRef, ReactNode } from 'react';
-import { jsx, useTheme, VisuallyHidden } from '@keystone-ui/core';
+import { ButtonHTMLAttributes, forwardRef, ReactNode } from 'react'
+import { jsx, useTheme, VisuallyHidden } from '@keystone-ui/core'
 
-import { ControlLabel } from './components/ControlLabel';
+import { ControlLabel } from './components/ControlLabel'
 
 type SwitchProps = {
   /** The switch label content. */
   children: ReactNode;
-} & SwitchControlProps;
+} & SwitchControlProps
 
 export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
   ({ children, className, ...props }, ref) => {
@@ -30,11 +30,11 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
       <ControlLabel className={className} control={<SwitchControl ref={ref} {...props} />}>
         {children}
       </ControlLabel>
-    );
+    )
   }
-);
+)
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>
 
 type SwitchControlProps = {
   /** Optionally pass in "On" and "Off" label text for screen readers */
@@ -43,31 +43,31 @@ type SwitchControlProps = {
   checked?: boolean;
   /** Handle change events. */
   onChange?: (checked: boolean) => void;
-} & Omit<ButtonProps, 'onChange'>;
+} & Omit<ButtonProps, 'onChange'>
 
 export const SwitchControl = forwardRef<HTMLButtonElement, SwitchControlProps>(
   ({ a11yLabels = { on: 'On', off: 'Off' }, checked = false, onChange, ...props }, ref) => {
     let onClick = () => {
       if (onChange) {
-        onChange(!checked);
+        onChange(!checked)
       }
-    };
+    }
 
     return (
       <Button aria-checked={checked} role="switch" onClick={onClick} ref={ref} {...props}>
         <VisuallyHidden>{checked ? a11yLabels.on : a11yLabels.off}</VisuallyHidden>
       </Button>
-    );
+    )
   }
-);
+)
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
-  const { animation, fields, sizing } = useTheme();
+  const { animation, fields, sizing } = useTheme()
 
-  let gutter = 3;
-  let trackHeight = sizing.xsmall + gutter;
-  let trackWidth = trackHeight * 2 - 2 * gutter;
-  let handleSize = trackHeight - gutter * 2;
+  let gutter = 3
+  let trackHeight = sizing.xsmall + gutter
+  let trackWidth = trackHeight * 2 - 2 * gutter
+  let handleSize = trackHeight - gutter * 2
 
   return (
     <button
@@ -110,5 +110,5 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
       }}
       {...props}
     />
-  );
-});
+  )
+})

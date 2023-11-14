@@ -1,8 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Box, jsx } from '@keystone-ui/core';
-import { component, fields, NotEditable } from '@keystone-6/fields-document/component-blocks';
+import { Box, jsx } from '@keystone-ui/core'
+import { component, fields, NotEditable } from '@keystone-6/fields-document/component-blocks'
 
 export const carousel = component({
   label: 'Carousel',
@@ -55,11 +55,11 @@ export const carousel = component({
                   {item.fields.title.value}
                 </h1>
               </Box>
-            );
+            )
           })}
         </div>
       </NotEditable>
-    );
+    )
   },
   schema: {
     items: fields.array(
@@ -72,4 +72,4 @@ export const carousel = component({
       })
     ),
   },
-});
+})

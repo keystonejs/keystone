@@ -1,8 +1,8 @@
-import { GetStaticPathsResult, GetStaticPropsContext } from 'next';
-import Link from 'next/link';
-import React from 'react';
-import { DocumentRenderer } from '@keystone-6/document-renderer';
-import { fetchGraphQL, gql } from '../../utils';
+import { GetStaticPathsResult, GetStaticPropsContext } from 'next'
+import Link from 'next/link'
+import React from 'react'
+import { DocumentRenderer } from '@keystone-6/document-renderer'
+import { fetchGraphQL, gql } from '../../utils'
 
 export default function Post({ author }: { author: any }) {
   return (
@@ -19,7 +19,7 @@ export default function Post({ author }: { author: any }) {
         </li>
       ))}
     </article>
-  );
+  )
 }
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
@@ -29,11 +29,11 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
         id
       }
     }
-  `);
+  `)
   return {
     paths: data.authors.map((post: any) => ({ params: { id: post.id } })),
     fallback: 'blocking',
-  };
+  }
 }
 
 export async function getStaticProps({ params }: GetStaticPropsContext) {
@@ -54,6 +54,6 @@ export async function getStaticProps({ params }: GetStaticPropsContext) {
       }
     `,
     { id: params!.id }
-  );
-  return { props: { author: data.author }, revalidate: 60 };
+  )
+  return { props: { author: data.author }, revalidate: 60 }
 }

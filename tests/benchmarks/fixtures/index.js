@@ -2,6 +2,6 @@ const groups = [...require('./create'), ...require('./create-related'), ...requi
 
 (async () => {
   for (let i = 0; i < groups.length; i++) {
-    await groups[i].runFixtures();
+    await groups[i].runFixtures()
   }
-})();
+})()

@@ -1,35 +1,35 @@
-import type { GraphQLError } from 'graphql';
-import type { ReactElement } from 'react';
-import type { InitialisedList } from '../lib/core/initialise-lists';
-import type { JSONValue } from './utils';
+import type { GraphQLError } from 'graphql'
+import type { ReactElement } from 'react'
+import type { InitialisedList } from '../lib/core/initialise-lists'
+import type { JSONValue } from './utils'
 
 export type NavigationProps = {
   authenticatedItem: AuthenticatedItem;
   lists: ListMeta[];
-};
+}
 
 export type AuthenticatedItem =
   | { state: 'unauthenticated' }
   | { state: 'authenticated'; label: string; id: string; listKey: string }
   | { state: 'loading' }
-  | { state: 'error'; error: Error | readonly [GraphQLError, ...GraphQLError[]] };
+  | { state: 'error'; error: Error | readonly [GraphQLError, ...GraphQLError[]] }
 
 export type VisibleLists =
   | { state: 'loaded'; lists: ReadonlySet<string> }
   | { state: 'loading' }
-  | { state: 'error'; error: Error | readonly [GraphQLError, ...GraphQLError[]] };
+  | { state: 'error'; error: Error | readonly [GraphQLError, ...GraphQLError[]] }
 
 export type CreateViewFieldModes =
   | { state: 'loaded'; lists: Record<string, Record<string, 'edit' | 'hidden'>> }
   | { state: 'loading' }
-  | { state: 'error'; error: Error | readonly [GraphQLError, ...GraphQLError[]] };
+  | { state: 'error'; error: Error | readonly [GraphQLError, ...GraphQLError[]] }
 
 export type AdminConfig = {
   components?: {
     Logo?: (props: {}) => ReactElement;
     Navigation?: (props: NavigationProps) => ReactElement;
   };
-};
+}
 
 export type FieldControllerConfig<FieldMeta extends JSONValue | undefined = undefined> = {
   listKey: string;
@@ -38,18 +38,18 @@ export type FieldControllerConfig<FieldMeta extends JSONValue | undefined = unde
   description: string | null;
   customViews: Record<string, any>;
   fieldMeta: FieldMeta;
-};
+}
 
 type FilterTypeDeclaration<Value extends JSONValue> = {
   readonly label: string;
   readonly initialValue: Value;
-};
+}
 
 export type FilterTypeToFormat<Value extends JSONValue> = {
   readonly type: string;
   readonly label: string;
   readonly value: Value;
-};
+}
 
 export type FieldController<FormState, FilterValue extends JSONValue = never> = {
   path: string;
@@ -71,7 +71,7 @@ export type FieldController<FormState, FilterValue extends JSONValue = never> = 
       autoFocus?: boolean;
     }): ReactElement | null;
   };
-};
+}
 
 export type FieldMeta = {
   path: string;
@@ -93,13 +93,13 @@ export type FieldMeta = {
     fieldMode: 'edit' | 'read' | 'hidden' | null;
     fieldPosition: 'form' | 'sidebar' | null;
   };
-};
+}
 
 export type FieldGroupMeta = {
   label: string;
   description: string | null;
   fields: FieldMeta[];
-};
+}
 
 export type ListMeta = {
   key: string;
@@ -121,11 +121,11 @@ export type ListMeta = {
   initialColumns: string[];
   initialSort: null | { direction: 'ASC' | 'DESC'; field: string };
   isSingleton: boolean;
-};
+}
 
 export type AdminMeta = {
   lists: { [list: string]: ListMeta };
-};
+}
 
 export type FieldProps<FieldControllerFn extends (...args: any) => FieldController<any, any>> = {
   field: ReturnType<FieldControllerFn>;
@@ -138,7 +138,7 @@ export type FieldProps<FieldControllerFn extends (...args: any) => FieldControll
    * the validate function on the field controller has returned false
    */
   forceValidation?: boolean;
-};
+}
 
 export type FieldViews = Record<
   string,
@@ -149,7 +149,7 @@ export type FieldViews = Record<
     controller: (args: FieldControllerConfig<any>) => FieldController<unknown, JSONValue>;
     allowedExportsOnCustomViews?: string[];
   }
->;
+>
 
 export type CellComponent<
   FieldControllerFn extends (...args: any) => FieldController<any, any> = () => FieldController<
@@ -164,11 +164,11 @@ export type CellComponent<
   }): ReactElement | null;
 
   supportsLinkTo?: boolean;
-};
+}
 
 export type CardValueComponent<
   FieldControllerFn extends (...args: any) => FieldController<any, any> = () => FieldController<
     any,
     any
   >
-> = (props: { item: Record<string, any>; field: ReturnType<FieldControllerFn> }) => ReactElement;
+> = (props: { item: Record<string, any>; field: ReturnType<FieldControllerFn> }) => ReactElement

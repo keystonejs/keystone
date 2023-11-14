@@ -1,8 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
-import { Gradients, IconProps } from './util';
+import { Gradients, IconProps } from './util'
 
 export function Watch({ grad, ...props }: IconProps) {
   return (
@@ -23,5 +23,5 @@ export function Watch({ grad, ...props }: IconProps) {
         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
       />
     </svg>
-  );
+  )
 }

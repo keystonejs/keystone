@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const CrosshairIcon = createIcon(
   <React.Fragment>
     <circle cx={12} cy={12} r={10} />
@@ -9,4 +9,4 @@ export const CrosshairIcon = createIcon(
     <line x1={12} y1={22} x2={12} y2={18} />
   </React.Fragment>,
   'CrosshairIcon'
-);
+)

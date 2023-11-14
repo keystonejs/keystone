@@ -1,20 +1,20 @@
-import React, { ReactNode, useContext } from 'react';
-import { Element, Editor, Range, Text } from 'slate';
-import { useSlate } from 'slate-react';
-import { DocumentFeatures } from '../views';
-import { ComponentBlockContext } from './component-blocks';
-import { ComponentBlock } from './component-blocks/api';
+import React, { ReactNode, useContext } from 'react'
+import { Element, Editor, Range, Text } from 'slate'
+import { useSlate } from 'slate-react'
+import { DocumentFeatures } from '../views'
+import { ComponentBlockContext } from './component-blocks'
+import { ComponentBlock } from './component-blocks/api'
 import {
   DocumentFeaturesForChildField,
   getSchemaAtPropPath,
   getDocumentFeaturesForChildField,
-} from './component-blocks/utils';
-import { LayoutOptionsProvider } from './layouts';
-import { isListNode } from './lists';
-import { DocumentFieldRelationshipsProvider, Relationships } from './relationship';
-import { allMarks, isElementActive, Mark, nodeTypeMatcher } from './utils';
+} from './component-blocks/utils'
+import { LayoutOptionsProvider } from './layouts'
+import { isListNode } from './lists'
+import { DocumentFieldRelationshipsProvider, Relationships } from './relationship'
+import { allMarks, isElementActive, Mark, nodeTypeMatcher } from './utils'
 
-type BasicToolbarItem = { isSelected: boolean; isDisabled: boolean };
+type BasicToolbarItem = { isSelected: boolean; isDisabled: boolean }
 
 // component blocks are not in the ToolbarState because they're inserted in the closest available place and the selected state is not shown in the toolbar
 
@@ -48,16 +48,16 @@ export type ToolbarState = {
   relationships: { isDisabled: boolean };
   editor: Editor;
   editorDocumentFeatures: DocumentFeatures;
-};
+}
 
-const ToolbarStateContext = React.createContext<null | ToolbarState>(null);
+const ToolbarStateContext = React.createContext<null | ToolbarState>(null)
 
 export function useToolbarState() {
-  const toolbarState = useContext(ToolbarStateContext);
+  const toolbarState = useContext(ToolbarStateContext)
   if (!toolbarState) {
-    throw new Error('ToolbarStateProvider must be used to use useToolbarState');
+    throw new Error('ToolbarStateProvider must be used to use useToolbarState')
   }
-  return toolbarState;
+  return toolbarState
 }
 
 export function getAncestorComponentChildFieldDocumentFeatures(
@@ -67,22 +67,22 @@ export function getAncestorComponentChildFieldDocumentFeatures(
 ): DocumentFeaturesForChildField | undefined {
   const ancestorComponentProp = Editor.above(editor, {
     match: nodeTypeMatcher('component-block-prop', 'component-inline-prop'),
-  });
+  })
 
   if (ancestorComponentProp) {
-    const propPath = ancestorComponentProp[0].propPath;
-    const ancestorComponent = Editor.parent(editor, ancestorComponentProp[1]);
+    const propPath = ancestorComponentProp[0].propPath
+    const ancestorComponent = Editor.parent(editor, ancestorComponentProp[1])
     if (ancestorComponent[0].type === 'component-block') {
-      const component = ancestorComponent[0].component;
-      const componentBlock = componentBlocks[component];
+      const component = ancestorComponent[0].component
+      const componentBlock = componentBlocks[component]
       if (componentBlock && propPath) {
         const childField = getSchemaAtPropPath(
           propPath,
           ancestorComponent[0].props,
           componentBlock.schema
-        );
+        )
         if (childField?.kind === 'child') {
-          return getDocumentFeaturesForChildField(editorDocumentFeatures, childField.options);
+          return getDocumentFeaturesForChildField(editorDocumentFeatures, childField.options)
         }
       }
     }
@@ -115,12 +115,12 @@ export const createToolbarState = (
         relationships: true,
       },
       softBreaks: true,
-    };
+    }
 
   let [maybeCodeBlockEntry] = Editor.nodes(editor, {
     match: node => node.type !== 'code' && Element.isElement(node) && Editor.isBlock(editor, node),
-  });
-  const editorMarks = Editor.marks(editor) || {};
+  })
+  const editorMarks = Editor.marks(editor) || {}
   const marks = Object.fromEntries(
     allMarks.map(mark => [
       mark,
@@ -132,7 +132,7 @@ export const createToolbarState = (
         isSelected: !!editorMarks[mark],
       },
     ])
-  ) as ToolbarState['marks'];
+  ) as ToolbarState['marks']
 
   // Editor.marks is "what are the marks that would be applied if text was inserted now"
   // that's not really the UX we want, if we have some a document like this
@@ -157,10 +157,10 @@ export const createToolbarState = (
     for (const node of Editor.nodes(editor, { match: Text.isText })) {
       for (const key of Object.keys(node[0])) {
         if (key === 'insertMenu' || key === 'text') {
-          continue;
+          continue
         }
         if (key in marks) {
-          marks[key as Mark].isSelected = true;
+          marks[key as Mark].isSelected = true
         }
       }
     }
@@ -168,15 +168,15 @@ export const createToolbarState = (
 
   let [headingEntry] = Editor.nodes(editor, {
     match: nodeTypeMatcher('heading'),
-  });
+  })
 
   let [listEntry] = Editor.nodes(editor, {
     match: isListNode,
-  });
+  })
 
   let [alignableEntry] = Editor.nodes(editor, {
     match: nodeTypeMatcher('paragraph', 'heading'),
-  });
+  })
 
   // (we're gonna use markdown here because the equivelant slate structure is quite large and doesn't add value here)
   // let's imagine a document that looks like this:
@@ -186,7 +186,7 @@ export const createToolbarState = (
   // you want to see only ordered list selected, because
   // - you want to know what list you're actually in, you don't really care about the outer list
   // - when you want to change the list to a unordered list, the unordered list button should be inactive to show you can change to it
-  const listTypeAbove = getListTypeAbove(editor);
+  const listTypeAbove = getListTypeAbove(editor)
 
   return {
     marks,
@@ -264,22 +264,22 @@ export const createToolbarState = (
       ),
     },
     editorDocumentFeatures,
-  };
-};
+  }
+}
 
 function hasBlockThatClearsOnClearFormatting(editor: Editor) {
   const [node] = Editor.nodes(editor, {
     match: node => node.type === 'heading' || node.type === 'code' || node.type === 'blockquote',
-  });
-  return !!node;
+  })
+  return !!node
 }
 
 export function getListTypeAbove(editor: Editor): 'none' | 'ordered-list' | 'unordered-list' {
-  const listAbove = Editor.above(editor, { match: isListNode });
+  const listAbove = Editor.above(editor, { match: isListNode })
   if (!listAbove) {
-    return 'none';
+    return 'none'
   }
-  return listAbove[0].type;
+  return listAbove[0].type
 }
 
 export const ToolbarStateProvider = ({
@@ -293,7 +293,7 @@ export const ToolbarStateProvider = ({
   editorDocumentFeatures: DocumentFeatures;
   relationships: Relationships;
 }) => {
-  const editor = useSlate();
+  const editor = useSlate()
 
   return (
     <DocumentFieldRelationshipsProvider value={relationships}>
@@ -307,5 +307,5 @@ export const ToolbarStateProvider = ({
         </ComponentBlockContext.Provider>
       </LayoutOptionsProvider>
     </DocumentFieldRelationshipsProvider>
-  );
-};
+  )
+}

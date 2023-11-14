@@ -1,8 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
-import { IconProps } from './util';
+import { IconProps } from './util'
 
 export function VocalLogo(props: IconProps) {
   return (
@@ -29,5 +29,5 @@ export function VocalLogo(props: IconProps) {
         clipRule="evenodd"
       />
     </svg>
-  );
+  )
 }

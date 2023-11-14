@@ -1,9 +1,9 @@
-import { isDeepStrictEqual } from 'util';
-import { list } from '@keystone-6/core';
-import { allowAll } from '@keystone-6/core/access';
-import { relationship, text } from '@keystone-6/core/fields';
-import { setupTestRunner } from '../test-runner';
-import { testConfig, dbProvider, dbName } from '../utils';
+import { isDeepStrictEqual } from 'util'
+import { list } from '@keystone-6/core'
+import { allowAll } from '@keystone-6/core/access'
+import { relationship, text } from '@keystone-6/core/fields'
+import { setupTestRunner } from '../test-runner'
+import { testConfig, dbProvider, dbName } from '../utils'
 
 const runner = setupTestRunner({
   config: testConfig({
@@ -31,13 +31,13 @@ const runner = setupTestRunner({
       }),
     },
   }),
-});
+})
 
 test(
   'to-one relationship query batching',
   runner(async ({ context }) => {
-    let prevConsoleLog = console.log;
-    console.log = () => {};
+    let prevConsoleLog = console.log
+    console.log = () => {}
     try {
       await context.query.User.createMany({
         data: Array.from({ length: 10 }, (_, i) => ({
@@ -46,15 +46,15 @@ test(
             create: [{ title: `Post from User ${i}` }, { title: `Secret post from User ${i}` }],
           },
         })),
-      });
+      })
     } finally {
-      console.log = prevConsoleLog;
+      console.log = prevConsoleLog
     }
 
-    let logs: unknown[][] = [];
+    let logs: unknown[][] = []
     console.log = (...args) => {
-      logs.push(args.map(x => (typeof x === 'string' ? x.replace(/[^ -~]/g, ' ') : x)));
-    };
+      logs.push(args.map(x => (typeof x === 'string' ? x.replace(/[^ -~]/g, ' ') : x)))
+    }
 
     try {
       expect(
@@ -67,7 +67,7 @@ test(
           title: `Post from User ${i}`,
           author: { name: `User ${i}` },
         }))
-      );
+      )
 
       // the logs from the createMany are sometimes (it only seems to happen on postgres on ci)
       // logged after the createMany resolves
@@ -75,14 +75,14 @@ test(
       // ideally would be findLastIndex but that's not in node 16
       const commitIndex = logs.findLastIndex(val =>
         isDeepStrictEqual(val, ['prisma:query', 'COMMIT'])
-      );
+      )
       if (commitIndex !== -1) {
-        logs = logs.slice(commitIndex + 1);
+        logs = logs.slice(commitIndex + 1)
       }
       expect(logs).toEqual([
         [expect.stringContaining('prisma:query'), expect.stringContaining('SELECT')],
         [expect.stringContaining('prisma:query'), expect.stringContaining('SELECT')],
-      ]);
+      ])
       const expectedSql = {
         sqlite: [
           'SELECT `main`.`Post`.`id`, `main`.`Post`.`title`, `main`.`Post`.`author` FROM `main`.`Post` WHERE `main`.`Post`.`title` NOT LIKE ? ORDER BY `main`.`Post`.`title` ASC LIMIT ? OFFSET ?',
@@ -96,14 +96,14 @@ test(
           `SELECT \`${dbName}\`.\`Post\`.\`id\`, \`${dbName}\`.\`Post\`.\`title\`, \`${dbName}\`.\`Post\`.\`author\` FROM \`${dbName}\`.\`Post\` WHERE \`${dbName}\`.\`Post\`.\`title\` NOT LIKE ? ORDER BY \`${dbName}\`.\`Post\`.\`title\` ASC`,
           `SELECT \`${dbName}\`.\`User\`.\`id\`, \`${dbName}\`.\`User\`.\`name\` FROM \`${dbName}\`.\`User\` WHERE (\`${dbName}\`.\`User\`.\`id\` IN (?,?,?,?,?,?,?,?,?,?) AND \`${dbName}\`.\`User\`.\`name\` LIKE ?)`,
         ],
-      }[dbProvider];
-      const sql = logs.map(([, query]) => query);
-      expect(sql).toEqual(expectedSql);
+      }[dbProvider]
+      const sql = logs.map(([, query]) => query)
+      expect(sql).toEqual(expectedSql)
     } finally {
-      console.log = prevConsoleLog;
+      console.log = prevConsoleLog
     }
   })
-);
+)
 
 // TODO: remove this when it's added to TS's lib files
 declare global {

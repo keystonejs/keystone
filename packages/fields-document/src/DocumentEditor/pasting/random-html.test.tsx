@@ -1,6 +1,6 @@
 /** @jest-environment jsdom */
 
-import { htmlToEditor } from './test-utils';
+import { htmlToEditor } from './test-utils'
 
 test('whitespace between blocks is removed', () => {
   expect(htmlToEditor('<p>blah</p>\n<span>   \n </span>    <p>other</p>')).toMatchInlineSnapshot(`
@@ -17,8 +17,8 @@ test('whitespace between blocks is removed', () => {
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('inline elements containing only whitespace are preserved', () => {
   expect(
@@ -40,8 +40,8 @@ test('inline elements containing only whitespace are preserved', () => {
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('a link around blocks turn into links around text', () => {
   expect(
@@ -91,8 +91,8 @@ test('a link around blocks turn into links around text', () => {
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('marks around blocks turn into marks around text', () => {
   expect(
@@ -158,8 +158,8 @@ test('marks around blocks turn into marks around text', () => {
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('list items', () => {
   expect(
@@ -194,8 +194,8 @@ test('list items', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('link, block and text as siblings', () => {
   expect(htmlToEditor('<a href="https://keystonejs.com">Something</a><h1>a</h1>other'))
@@ -227,5 +227,5 @@ test('link, block and text as siblings', () => {
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})

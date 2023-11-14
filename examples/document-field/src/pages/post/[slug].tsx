@@ -1,8 +1,8 @@
-import { GetStaticPathsResult, GetStaticPropsContext } from 'next';
-import Link from 'next/link';
-import React from 'react';
-import { DocumentRenderer, DocumentRendererProps } from '@keystone-6/document-renderer';
-import { fetchGraphQL, gql } from '../../utils';
+import { GetStaticPathsResult, GetStaticPropsContext } from 'next'
+import Link from 'next/link'
+import React from 'react'
+import { DocumentRenderer, DocumentRendererProps } from '@keystone-6/document-renderer'
+import { fetchGraphQL, gql } from '../../utils'
 
 // By default the DocumentRenderer will render unstyled html elements.
 // We're customising how headings are rendered here but you can customise
@@ -11,8 +11,8 @@ const renderers: DocumentRendererProps['renderers'] = {
   // Render heading blocks
   block: {
     heading({ level, children, textAlign }) {
-      const Comp = `h${level}` as const;
-      return <Comp style={{ textAlign, textTransform: 'uppercase' }}>{children}</Comp>;
+      const Comp = `h${level}` as const
+      return <Comp style={{ textAlign, textTransform: 'uppercase' }}>{children}</Comp>
     },
   },
   // Render inline relationships
@@ -26,18 +26,18 @@ const renderers: DocumentRendererProps['renderers'] = {
           // data can be null if the content writer inserted a mention but didn't select an author to mention.
           // data.data can be undefined if the logged in user does not have permission to read the linked item
           // or if the linked item no longer exists.
-          return <span>[unknown author]</span>;
+          return <span>[unknown author]</span>
         } else {
           // If the data exists then we render the mention as a link to the author's bio.
           // We have access to `id` an `name` fields here because we named them in the
           // `selection` config argument.
-          return <Link href={`/author/${data.data.id}`}>{data.data.name}</Link>;
+          return <Link href={`/author/${data.data.id}`}>{data.data.name}</Link>
         }
       }
-      return null;
+      return null
     },
   },
-};
+}
 
 export default function Post({ post }: { post: any }) {
   return (
@@ -57,7 +57,7 @@ export default function Post({ post }: { post: any }) {
         <DocumentRenderer document={post.content.document} renderers={renderers} />
       )}
     </article>
-  );
+  )
 }
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
@@ -67,11 +67,11 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
         slug
       }
     }
-  `);
+  `)
   return {
     paths: data.posts.map((post: any) => ({ params: { slug: post.slug } })),
     fallback: 'blocking',
-  };
+  }
 }
 
 export async function getStaticProps({ params }: GetStaticPropsContext) {
@@ -94,6 +94,6 @@ export async function getStaticProps({ params }: GetStaticPropsContext) {
       }
     `,
     { slug: params!.slug }
-  );
-  return { props: { post: data.post }, revalidate: 60 };
+  )
+  return { props: { post: data.post }, revalidate: 60 }
 }

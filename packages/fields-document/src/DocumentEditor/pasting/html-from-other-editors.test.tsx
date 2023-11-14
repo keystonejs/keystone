@@ -1,6 +1,6 @@
 /** @jest-environment jsdom */
 
-import { htmlToEditor } from './test-utils';
+import { htmlToEditor } from './test-utils'
 
 // TODO: Word and Pages maybe? (i believe the data is massive mess though so not super eager for it rn)
 
@@ -222,8 +222,8 @@ test('confluence', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 // note that notion just doesn't serialize underline
 test('notion', () => {
@@ -411,8 +411,8 @@ there is a break before this</p>
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 // the input for this has been slightly modified to remove a class that looked like author-a-bunch-of-characters
 // i wasn't sure if they identified my account or something so i removed them
@@ -573,8 +573,8 @@ test('dropbox paper', () => {
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('google docs', () => {
   expect(
@@ -777,5 +777,5 @@ test('google docs', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})

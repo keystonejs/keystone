@@ -1,11 +1,11 @@
-import { list } from '@keystone-6/core';
-import type { GraphQLSchema } from 'graphql';
-import { mergeSchemas } from '@graphql-tools/schema';
-import { select, relationship, text, timestamp } from '@keystone-6/core/fields';
-import { allowAll } from '@keystone-6/core/access';
-import { pubSub } from './websocket';
+import { list } from '@keystone-6/core'
+import type { GraphQLSchema } from 'graphql'
+import { mergeSchemas } from '@graphql-tools/schema'
+import { select, relationship, text, timestamp } from '@keystone-6/core/fields'
+import { allowAll } from '@keystone-6/core/access'
+import { pubSub } from './websocket'
 
-import type { Lists } from '.keystone/types';
+import type { Lists } from '.keystone/types'
 
 export const lists: Lists = {
   Post: list({
@@ -17,11 +17,11 @@ export const lists: Lists = {
         //    if you want access control, you need to use a different architecture
         //
         //   tl;dr Keystone access filters are not respected in this scenario
-        console.log('POST_UPDATED', { id: item?.id });
+        console.log('POST_UPDATED', { id: item?.id })
 
         pubSub.publish('POST_UPDATED', {
           postUpdated: item,
-        });
+        })
       },
     },
     fields: {
@@ -47,7 +47,7 @@ export const lists: Lists = {
       posts: relationship({ ref: 'Post.author', many: true }),
     },
   }),
-};
+}
 
 export const extendGraphqlSchema = (schema: GraphQLSchema) =>
   mergeSchemas({
@@ -77,9 +77,9 @@ export const extendGraphqlSchema = (schema: GraphQLSchema) =>
           const post = context.db.Post.updateOne({
             where: { id },
             data: { status: 'published', publishDate: new Date().toISOString() },
-          });
+          })
 
-          console.log('POST_PUBLISHED', { id });
+          console.log('POST_PUBLISHED', { id })
 
           // WARNING: passing this item directly to pubSub bypasses any contextual access control
           //    if you want access control, you need to use a different architecture
@@ -87,9 +87,9 @@ export const extendGraphqlSchema = (schema: GraphQLSchema) =>
           //   tl;dr Keystone access filters are not respected in this scenario
           pubSub.publish('POST_PUBLISHED', {
             postPublished: post,
-          });
+          })
 
-          return post;
+          return post
         },
       },
 
@@ -109,4 +109,4 @@ export const extendGraphqlSchema = (schema: GraphQLSchema) =>
         },
       },
     },
-  });
+  })

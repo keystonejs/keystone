@@ -1,11 +1,11 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
-import { HTMLAttributes } from 'react';
+import { jsx } from '@emotion/react'
+import { HTMLAttributes } from 'react'
 
 type PillProps = {
   grad?: 'grad1' | 'grad2' | 'grad3' | 'grad4' | 'grad5' | 'grad6';
-} & HTMLAttributes<HTMLElement>;
+} & HTMLAttributes<HTMLElement>
 
 export function Pill({ grad = 'grad1', ...props }: PillProps) {
   return (
@@ -34,5 +34,5 @@ export function Pill({ grad = 'grad1', ...props }: PillProps) {
       }}
       {...props}
     />
-  );
+  )
 }

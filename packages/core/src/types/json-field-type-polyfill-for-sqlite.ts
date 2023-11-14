@@ -1,4 +1,4 @@
-import { graphql } from './schema';
+import { graphql } from './schema'
 import {
   BaseItem,
   CreateFieldInputArg,
@@ -9,12 +9,12 @@ import {
   ScalarDBField,
   UpdateFieldInputArg,
   fieldType,
-} from '.';
+} from '.'
 
 function mapOutputFieldToSQLite(
   field: graphql.Field<{ value: JSONValue; item: BaseItem }, {}, any, 'value'>
 ) {
-  const innerResolver = field.resolve || (({ value }) => value);
+  const innerResolver = field.resolve || (({ value }) => value)
   return graphql.fields<{
     value: string | null;
     item: BaseItem;
@@ -27,23 +27,23 @@ function mapOutputFieldToSQLite(
       extensions: field.extensions as any,
       resolve(rootVal, ...extra) {
         if (rootVal.value === null) {
-          return innerResolver(rootVal, ...extra);
+          return innerResolver(rootVal, ...extra)
         }
-        let value: JSONValue = null;
+        let value: JSONValue = null
         try {
-          value = JSON.parse(rootVal.value);
+          value = JSON.parse(rootVal.value)
         } catch (err) {}
-        return innerResolver({ item: rootVal.item, value }, ...extra);
+        return innerResolver({ item: rootVal.item, value }, ...extra)
       },
     }),
-  }).value;
+  }).value
 }
 
 function mapUpdateInputArgToSQLite<Arg extends graphql.Arg<graphql.InputType, any>>(
   arg: UpdateFieldInputArg<ScalarDBField<'Json', 'optional'>, Arg> | undefined
 ): UpdateFieldInputArg<ScalarDBField<'String', 'optional'>, Arg> | undefined {
   if (arg === undefined) {
-    return undefined;
+    return undefined
   }
   return {
     arg: arg.arg,
@@ -55,20 +55,20 @@ function mapUpdateInputArgToSQLite<Arg extends graphql.Arg<graphql.InputType, an
       const resolvedInput =
         arg.resolve === undefined
           ? input
-          : await arg.resolve(input, context, relationshipInputResolver);
+          : await arg.resolve(input, context, relationshipInputResolver)
       if (resolvedInput === undefined || resolvedInput === null) {
-        return resolvedInput;
+        return resolvedInput
       }
-      return JSON.stringify(resolvedInput);
+      return JSON.stringify(resolvedInput)
     },
-  } as any;
+  } as any
 }
 
 function mapCreateInputArgToSQLite<Arg extends graphql.Arg<graphql.InputType, any>>(
   arg: CreateFieldInputArg<ScalarDBField<'Json', 'optional'>, Arg> | undefined
 ): CreateFieldInputArg<ScalarDBField<'String', 'optional'>, Arg> | undefined {
   if (arg === undefined) {
-    return undefined;
+    return undefined
   }
   return {
     arg: arg.arg,
@@ -80,13 +80,13 @@ function mapCreateInputArgToSQLite<Arg extends graphql.Arg<graphql.InputType, an
       const resolvedInput =
         arg.resolve === undefined
           ? input
-          : await arg.resolve(input, context, relationshipInputResolver);
+          : await arg.resolve(input, context, relationshipInputResolver)
       if (resolvedInput === undefined || resolvedInput === null) {
-        return resolvedInput;
+        return resolvedInput
       }
-      return JSON.stringify(resolvedInput);
+      return JSON.stringify(resolvedInput)
     },
-  } as any;
+  } as any
 }
 
 export function jsonFieldTypePolyfilledForSQLite<
@@ -134,7 +134,7 @@ export function jsonFieldTypePolyfilledForSQLite<
           mapOutputFieldToSQLite(field),
         ])
       ),
-    });
+    })
   }
   return fieldType({
     kind: 'scalar',
@@ -143,5 +143,5 @@ export function jsonFieldTypePolyfilledForSQLite<
     default: dbFieldConfig?.default,
     map: dbFieldConfig?.map,
     extendPrismaSchema: dbFieldConfig?.extendPrismaSchema,
-  })(config);
+  })(config)
 }

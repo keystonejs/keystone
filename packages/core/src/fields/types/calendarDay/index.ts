@@ -1,15 +1,15 @@
-import { humanize } from '../../../lib/utils';
+import { humanize } from '../../../lib/utils'
 import {
   BaseListTypeInfo,
   fieldType,
   FieldTypeFunc,
   CommonFieldConfig,
   orderDirectionEnum,
-} from '../../../types';
-import { graphql } from '../../..';
-import { assertReadIsNonNullAllowed, getResolvedIsNullable } from '../../non-null-graphql';
-import { filters } from '../../filters';
-import { CalendarDayFieldMeta } from './views';
+} from '../../../types'
+import { graphql } from '../../..'
+import { assertReadIsNonNullAllowed, getResolvedIsNullable } from '../../non-null-graphql'
+import { filters } from '../../filters'
+import { CalendarDayFieldMeta } from './views'
 
 export type CalendarDayFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -23,7 +23,7 @@ export type CalendarDayFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
       extendPrismaSchema?: (field: string) => string;
       map?: string;
     };
-  };
+  }
 
 export const calendarDay =
   <ListTypeInfo extends BaseListTypeInfo>({
@@ -35,29 +35,29 @@ export const calendarDay =
   meta => {
     if (typeof defaultValue === 'string') {
       try {
-        graphql.CalendarDay.graphQLType.parseValue(defaultValue);
+        graphql.CalendarDay.graphQLType.parseValue(defaultValue)
       } catch (err) {
         throw new Error(
           `The calendarDay field at ${meta.listKey}.${meta.fieldKey} specifies defaultValue: ${defaultValue} but values must be provided as a full-date ISO8601 string such as 1970-01-01`
-        );
+        )
       }
     }
 
-    const resolvedIsNullable = getResolvedIsNullable(validation, config.db);
-    assertReadIsNonNullAllowed(meta, config, resolvedIsNullable);
+    const resolvedIsNullable = getResolvedIsNullable(validation, config.db)
+    assertReadIsNonNullAllowed(meta, config, resolvedIsNullable)
 
-    const mode = resolvedIsNullable === false ? 'required' : 'optional';
-    const fieldLabel = config.label ?? humanize(meta.fieldKey);
-    const usesNativeDateType = meta.provider === 'postgresql' || meta.provider === 'mysql';
+    const mode = resolvedIsNullable === false ? 'required' : 'optional'
+    const fieldLabel = config.label ?? humanize(meta.fieldKey)
+    const usesNativeDateType = meta.provider === 'postgresql' || meta.provider === 'mysql'
 
     function resolveInput(value: string | null | undefined) {
       if (meta.provider === 'sqlite' || value == null) {
-        return value;
+        return value
       }
-      return dateStringToDateObjectInUTC(value);
+      return dateStringToDateObjectInUTC(value)
     }
 
-    const commonResolveFilter = mode === 'optional' ? filters.resolveCommon : <T>(x: T) => x;
+    const commonResolveFilter = mode === 'optional' ? filters.resolveCommon : <T>(x: T) => x
 
     return fieldType({
       kind: 'scalar',
@@ -79,12 +79,12 @@ export const calendarDay =
       hooks: {
         ...config.hooks,
         async validateInput(args) {
-          const value = args.resolvedData[meta.fieldKey];
+          const value = args.resolvedData[meta.fieldKey]
           if ((validation?.isRequired || resolvedIsNullable === false) && value === null) {
-            args.addValidationError(`${fieldLabel} is required`);
+            args.addValidationError(`${fieldLabel} is required`)
           }
 
-          await config.hooks?.validateInput?.(args);
+          await config.hooks?.validateInput?.(args)
         },
       },
       input: {
@@ -110,9 +110,9 @@ export const calendarDay =
           }),
           resolve(val: string | null | undefined) {
             if (val === undefined) {
-              val = defaultValue ?? null;
+              val = defaultValue ?? null
             }
-            return resolveInput(val);
+            return resolveInput(val)
           },
         },
         update: { arg: graphql.arg({ type: graphql.CalendarDay }), resolve: resolveInput },
@@ -122,9 +122,9 @@ export const calendarDay =
         type: graphql.CalendarDay,
         resolve({ value }) {
           if (value instanceof Date) {
-            return value.toISOString().slice(0, 10);
+            return value.toISOString().slice(0, 10)
           }
-          return value;
+          return value
         },
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/calendarDay',
@@ -133,13 +133,13 @@ export const calendarDay =
         return {
           defaultValue: defaultValue ?? null,
           isRequired: validation?.isRequired ?? false,
-        };
+        }
       },
-    });
-  };
+    })
+  }
 
 function dateStringToDateObjectInUTC(value: string) {
-  return new Date(`${value}T00:00Z`);
+  return new Date(`${value}T00:00Z`)
 }
 
 type CalendarDayFilterType = graphql.InputObjectType<{
@@ -151,28 +151,28 @@ type CalendarDayFilterType = graphql.InputObjectType<{
   gt: graphql.Arg<typeof graphql.CalendarDay>;
   gte: graphql.Arg<typeof graphql.CalendarDay>;
   not: graphql.Arg<CalendarDayFilterType>;
-}>;
+}>
 
 function transformFilterDateStringsToDateObjects(
   filter: graphql.InferValueFromInputType<CalendarDayFilterType>
 ): Parameters<typeof filters.resolveCommon>[0] {
   if (filter === null) {
-    return filter;
+    return filter
   }
   return Object.fromEntries(
     Object.entries(filter).map(([key, value]) => {
       if (value == null) {
-        return [key, value];
+        return [key, value]
       }
       if (Array.isArray(value)) {
-        return [key, value.map(dateStringToDateObjectInUTC)];
+        return [key, value.map(dateStringToDateObjectInUTC)]
       }
       if (typeof value === 'object') {
-        return [key, transformFilterDateStringsToDateObjects(value)];
+        return [key, transformFilterDateStringsToDateObjects(value)]
       }
-      return [key, dateStringToDateObjectInUTC(value)];
+      return [key, dateStringToDateObjectInUTC(value)]
     })
-  );
+  )
 }
 
 const filterFields = (nestedType: CalendarDayFilterType) => ({
@@ -184,14 +184,14 @@ const filterFields = (nestedType: CalendarDayFilterType) => ({
   gt: graphql.arg({ type: graphql.CalendarDay }),
   gte: graphql.arg({ type: graphql.CalendarDay }),
   not: graphql.arg({ type: nestedType }),
-});
+})
 
 const CalendarDayNullableFilter: CalendarDayFilterType = graphql.inputObject({
   name: 'CalendarDayNullableFilter',
   fields: () => filterFields(CalendarDayNullableFilter),
-});
+})
 
 const CalendarDayFilter: CalendarDayFilterType = graphql.inputObject({
   name: 'CalendarDayFilter',
   fields: () => filterFields(CalendarDayFilter),
-});
+})

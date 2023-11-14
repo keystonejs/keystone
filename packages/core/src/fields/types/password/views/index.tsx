@@ -1,59 +1,59 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Fragment, useState } from 'react';
+import { Fragment, useState } from 'react'
 
-import { Button } from '@keystone-ui/button';
-import { Stack, Text, VisuallyHidden, jsx, useTheme } from '@keystone-ui/core';
-import { FieldContainer, FieldDescription, FieldLabel, TextInput } from '@keystone-ui/fields';
-import { EyeIcon } from '@keystone-ui/icons/icons/EyeIcon';
-import { EyeOffIcon } from '@keystone-ui/icons/icons/EyeOffIcon';
-import { XIcon } from '@keystone-ui/icons/icons/XIcon';
-import { SegmentedControl } from '@keystone-ui/segmented-control';
+import { Button } from '@keystone-ui/button'
+import { Stack, Text, VisuallyHidden, jsx, useTheme } from '@keystone-ui/core'
+import { FieldContainer, FieldDescription, FieldLabel, TextInput } from '@keystone-ui/fields'
+import { EyeIcon } from '@keystone-ui/icons/icons/EyeIcon'
+import { EyeOffIcon } from '@keystone-ui/icons/icons/EyeOffIcon'
+import { XIcon } from '@keystone-ui/icons/icons/XIcon'
+import { SegmentedControl } from '@keystone-ui/segmented-control'
 // @ts-ignore
-import dumbPasswords from 'dumb-passwords';
+import dumbPasswords from 'dumb-passwords'
 import {
   CardValueComponent,
   CellComponent,
   FieldController,
   FieldControllerConfig,
   FieldProps,
-} from '../../../../types';
-import { CellContainer } from '../../../../admin-ui/components';
+} from '../../../../types'
+import { CellContainer } from '../../../../admin-ui/components'
 
 function validate(value: Value, validation: Validation, fieldLabel: string): string | undefined {
   if (value.kind === 'initial' && (value.isSet === null || value.isSet === true)) {
-    return undefined;
+    return undefined
   }
   if (value.kind === 'initial' && validation?.isRequired) {
-    return `${fieldLabel} is required`;
+    return `${fieldLabel} is required`
   }
   if (value.kind === 'editing' && value.confirm !== value.value) {
-    return `The passwords do not match`;
+    return `The passwords do not match`
   }
   if (value.kind === 'editing') {
-    const val = value.value;
+    const val = value.value
     if (val.length < validation.length.min) {
       if (validation.length.min === 1) {
-        return `${fieldLabel} must not be empty`;
+        return `${fieldLabel} must not be empty`
       }
-      return `${fieldLabel} must be at least ${validation.length.min} characters long`;
+      return `${fieldLabel} must be at least ${validation.length.min} characters long`
     }
     if (validation.length.max !== null && val.length > validation.length.max) {
-      return `${fieldLabel} must be no longer than ${validation.length.max} characters`;
+      return `${fieldLabel} must be no longer than ${validation.length.max} characters`
     }
     if (validation.match && !validation.match.regex.test(val)) {
-      return validation.match.explanation;
+      return validation.match.explanation
     }
     if (validation.rejectCommon && dumbPasswords.check(val)) {
-      return `${fieldLabel} is too common and is not allowed`;
+      return `${fieldLabel} is too common and is not allowed`
     }
   }
-  return undefined;
+  return undefined
 }
 
 function isSetText(isSet: null | undefined | boolean) {
-  return isSet == null ? 'Access Denied' : isSet ? 'Is set' : 'Is not set';
+  return isSet == null ? 'Access Denied' : isSet ? 'Is set' : 'Is not set'
 }
 
 export const Field = ({
@@ -63,19 +63,19 @@ export const Field = ({
   forceValidation,
   autoFocus,
 }: FieldProps<typeof controller>) => {
-  const [showInputValue, setShowInputValue] = useState(false);
-  const [touchedFirstInput, setTouchedFirstInput] = useState(false);
-  const [touchedSecondInput, setTouchedSecondInput] = useState(false);
-  const shouldShowValidation = forceValidation || (touchedFirstInput && touchedSecondInput);
+  const [showInputValue, setShowInputValue] = useState(false)
+  const [touchedFirstInput, setTouchedFirstInput] = useState(false)
+  const [touchedSecondInput, setTouchedSecondInput] = useState(false)
+  const shouldShowValidation = forceValidation || (touchedFirstInput && touchedSecondInput)
   const validationMessage = shouldShowValidation
     ? validate(value, field.validation, field.label)
-    : undefined;
+    : undefined
   const validation = validationMessage && (
     <Text color="red600" size="small">
       {validationMessage}
     </Text>
-  );
-  const inputType = showInputValue ? 'text' : 'password';
+  )
+  const inputType = showInputValue ? 'text' : 'password'
   return (
     <FieldContainer as="fieldset">
       <FieldLabel as="legend">{field.label}</FieldLabel>
@@ -92,7 +92,7 @@ export const Field = ({
                 confirm: '',
                 value: '',
                 isSet: value.isSet,
-              });
+              })
             }}
           >
             {value.isSet ? 'Change Password' : 'Set Password'}
@@ -116,10 +116,10 @@ export const Field = ({
                 onChange({
                   ...value,
                   value: event.target.value,
-                });
+                })
               }}
               onBlur={() => {
-                setTouchedFirstInput(true);
+                setTouchedFirstInput(true)
               }}
             />
             <Spacer />
@@ -136,16 +136,16 @@ export const Field = ({
                 onChange({
                   ...value,
                   confirm: event.target.value,
-                });
+                })
               }}
               onBlur={() => {
-                setTouchedSecondInput(true);
+                setTouchedSecondInput(true)
               }}
             />
             <Spacer />
             <Button
               onClick={() => {
-                setShowInputValue(!showInputValue);
+                setShowInputValue(!showInputValue)
               }}
             >
               <VisuallyHidden>{showInputValue ? 'Hide Text' : 'Show Text'}</VisuallyHidden>
@@ -157,7 +157,7 @@ export const Field = ({
                 onChange({
                   kind: 'initial',
                   isSet: value.isSet,
-                });
+                })
               }}
             >
               <VisuallyHidden>Cancel</VisuallyHidden>
@@ -168,12 +168,12 @@ export const Field = ({
         </Stack>
       )}
     </FieldContainer>
-  );
-};
+  )
+}
 
 export const Cell: CellComponent = ({ item, field }) => {
-  return <CellContainer>{isSetText(item[field.path]?.isSet)}</CellContainer>;
-};
+  return <CellContainer>{isSetText(item[field.path]?.isSet)}</CellContainer>
+}
 
 export const CardValue: CardValueComponent = ({ item, field }) => {
   return (
@@ -181,8 +181,8 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
       <FieldLabel>{field.label}</FieldLabel>
       {isSetText(item[field.path]?.isSet)}
     </FieldContainer>
-  );
-};
+  )
+}
 
 type Validation = {
   isRequired: boolean;
@@ -195,7 +195,7 @@ type Validation = {
     min: number;
     max: number | null;
   };
-};
+}
 
 export type PasswordFieldMeta = {
   isNullable: boolean;
@@ -211,7 +211,7 @@ export type PasswordFieldMeta = {
       max: number | null;
     };
   };
-};
+}
 
 type Value =
   | {
@@ -223,9 +223,9 @@ type Value =
       isSet: boolean | null;
       value: string;
       confirm: string;
-    };
+    }
 
-type PasswordController = FieldController<Value, boolean> & { validation: Validation };
+type PasswordController = FieldController<Value, boolean> & { validation: Validation }
 
 export const controller = (
   config: FieldControllerConfig<PasswordFieldMeta>
@@ -242,7 +242,7 @@ export const controller = (
             ),
             explanation: config.fieldMeta.validation.match.explanation,
           },
-  };
+  }
   return {
     path: config.path,
     label: config.label,
@@ -256,8 +256,8 @@ export const controller = (
     validate: state => validate(state, validation, config.label) === undefined,
     deserialize: data => ({ kind: 'initial', isSet: data[config.path]?.isSet ?? null }),
     serialize: value => {
-      if (value.kind === 'initial') return {};
-      return { [config.path]: value.value };
+      if (value.kind === 'initial') return {}
+      return { [config.path]: value.value }
     },
     filter:
       config.fieldMeta.isNullable === false
@@ -268,17 +268,17 @@ export const controller = (
                 <SegmentedControl
                   selectedIndex={Number(props.value)}
                   onChange={value => {
-                    props.onChange(!!value);
+                    props.onChange(!!value)
                   }}
                   segments={['Is Not Set', 'Is Set']}
                 />
-              );
+              )
             },
             graphql: ({ value }) => {
-              return { [config.path]: { isSet: value } };
+              return { [config.path]: { isSet: value } }
             },
             Label({ value }) {
-              return value ? 'is set' : 'is not set';
+              return value ? 'is set' : 'is not set'
             },
             types: {
               is_set: {
@@ -287,10 +287,10 @@ export const controller = (
               },
             },
           },
-  };
-};
+  }
+}
 
 const Spacer = () => {
-  const { spacing } = useTheme();
-  return <div css={{ width: spacing.small, flexShrink: 0 }} />;
-};
+  const { spacing } = useTheme()
+  return <div css={{ width: spacing.small, flexShrink: 0 }} />
+}

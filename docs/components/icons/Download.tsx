@@ -1,8 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
-import { Gradients, IconProps } from './util';
+import { Gradients, IconProps } from './util'
 
 export function Download({ grad, ...props }: IconProps) {
   return (
@@ -23,5 +23,5 @@ export function Download({ grad, ...props }: IconProps) {
         d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
       />
     </svg>
-  );
+  )
 }

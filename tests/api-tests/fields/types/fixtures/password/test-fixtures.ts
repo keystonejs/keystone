@@ -1,21 +1,21 @@
-import { password } from '@keystone-6/core/fields';
+import { password } from '@keystone-6/core/fields'
 
-export const name = 'Password';
-export const typeFunction = password;
-export const exampleValue = () => 'password';
-export const exampleValue2 = () => 'password2';
-export const supportsUnique = false;
-export const supportsNullInput = true;
-export const supportsDbMap = true;
-export const fieldName = 'password';
-export const subfieldName = 'isSet';
-export const skipCreateTest = true;
-export const skipUpdateTest = true;
+export const name = 'Password'
+export const typeFunction = password
+export const exampleValue = () => 'password'
+export const exampleValue2 = () => 'password2'
+export const supportsUnique = false
+export const supportsNullInput = true
+export const supportsDbMap = true
+export const fieldName = 'password'
+export const subfieldName = 'isSet'
+export const skipCreateTest = true
+export const skipUpdateTest = true
 
 export const getTestFields = () => ({
   password: password({ validation: { length: { min: 4 } } }),
   passwordRejectCommon: password({ validation: { rejectCommon: true } }),
-});
+})
 
 export const initItems = () => {
   return [
@@ -26,8 +26,8 @@ export const initItems = () => {
     { name: 'person5', password: 'pass3' },
     { name: 'person6', password: null },
     { name: 'person7' },
-  ];
-};
+  ]
+}
 
 export const storedValues = () => [
   { name: 'person1', password: { isSet: true } },
@@ -37,7 +37,7 @@ export const storedValues = () => [
   { name: 'person5', password: { isSet: true } },
   { name: 'person6', password: { isSet: false } },
   { name: 'person7', password: { isSet: false } },
-];
+]
 
 export const crudTests = (keystoneTestWrapper: any) => {
   test(
@@ -50,9 +50,9 @@ export const crudTests = (keystoneTestWrapper: any) => {
       ).rejects.toMatchInlineSnapshot(`
               [GraphQLError: You provided invalid data for this operation.
                 - Test.password: Password must be at least 4 characters long]
-            `);
+            `)
     })
-  );
+  )
   test(
     'setting a common password fails',
     keystoneTestWrapper(async ({ context }: { context: any }) => {
@@ -63,12 +63,12 @@ export const crudTests = (keystoneTestWrapper: any) => {
       ).rejects.toMatchInlineSnapshot(`
               [GraphQLError: You provided invalid data for this operation.
                 - Test.passwordRejectCommon: Password Reject Common is too common and is not allowed]
-            `);
+            `)
       const data = await context.query.Test.createOne({
         data: { passwordRejectCommon: 'sdfinwedvhweqfoiuwdfnvjiewrijnf' },
         query: `passwordRejectCommon {isSet}`,
-      });
-      expect(data.passwordRejectCommon.isSet).toBe(true);
+      })
+      expect(data.passwordRejectCommon.isSet).toBe(true)
     })
-  );
-};
+  )
+}

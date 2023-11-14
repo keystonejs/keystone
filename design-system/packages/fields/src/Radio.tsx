@@ -1,18 +1,18 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Fragment, InputHTMLAttributes, ReactNode, forwardRef } from 'react';
-import { jsx, VisuallyHidden } from '@keystone-ui/core';
+import { Fragment, InputHTMLAttributes, ReactNode, forwardRef } from 'react'
+import { jsx, VisuallyHidden } from '@keystone-ui/core'
 
-import { ControlLabel } from './components/ControlLabel';
-import { DotIcon } from './components/Icons';
-import { useIndicatorStyles, useIndicatorTokens } from './hooks/indicators';
-import type { SizeType } from './types';
+import { ControlLabel } from './components/ControlLabel'
+import { DotIcon } from './components/Icons'
+import { useIndicatorStyles, useIndicatorTokens } from './hooks/indicators'
+import type { SizeType } from './types'
 
 type RadioProps = {
   /** The radio label content. */
   children: ReactNode;
-} & RadioControlProps;
+} & RadioControlProps
 
 export const Radio = forwardRef<HTMLInputElement, RadioProps>(
   ({ children, className, size, ...props }, ref) => {
@@ -24,9 +24,9 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(
       >
         {children}
       </ControlLabel>
-    );
+    )
   }
-);
+)
 
 type RadioControlProps = {
   /** When true, the radio will be checked. */
@@ -37,7 +37,7 @@ type RadioControlProps = {
   size?: SizeType;
   /** The value of the Radio. */
   value?: string;
-} & Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>;
+} & Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>
 
 export const RadioControl = forwardRef<HTMLInputElement, RadioControlProps>(
   ({ size, ...props }, ref) => (
@@ -48,10 +48,10 @@ export const RadioControl = forwardRef<HTMLInputElement, RadioControlProps>(
       </Indicator>
     </Fragment>
   )
-);
+)
 
 const Indicator = ({ size, ...props }: { size?: SizeType; children?: ReactNode }) => {
-  const tokens = useIndicatorTokens({ type: 'radio', size: size || 'medium' });
-  const styles = useIndicatorStyles({ tokens });
-  return <div css={styles} {...props} />;
-};
+  const tokens = useIndicatorTokens({ type: 'radio', size: size || 'medium' })
+  const styles = useIndicatorStyles({ tokens })
+  return <div css={styles} {...props} />
+}

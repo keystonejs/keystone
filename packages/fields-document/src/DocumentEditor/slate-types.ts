@@ -7,28 +7,28 @@
 // ideally Slate would use generics instead of module augmentation so this
 // wouldn't be a problem but for now, it is so
 // DO NOT IMPORT THIS FILE
-import { BaseEditor, BaseElement, BaseRange } from 'slate';
-import { HistoryEditor } from 'slate-history';
-import { ReactEditor } from 'slate-react';
-import { RelationshipData } from './component-blocks/api';
-import { ReadonlyPropPath } from './component-blocks/utils';
-import { Mark } from './utils';
+import { BaseEditor, BaseElement, BaseRange } from 'slate'
+import { HistoryEditor } from 'slate-history'
+import { ReactEditor } from 'slate-react'
+import { RelationshipData } from './component-blocks/api'
+import { ReadonlyPropPath } from './component-blocks/utils'
+import { Mark } from './utils'
 
 type Link = {
   type: 'link';
   href: string;
-};
+}
 
 type Relationship = {
   type: 'relationship';
   relationship: string;
   data: RelationshipData | null;
-};
+}
 
 type Layout = {
   type: 'layout';
   layout: number[];
-};
+}
 
 type OnlyChildrenElements = {
   type:
@@ -40,29 +40,29 @@ type OnlyChildrenElements = {
     | 'list-item-content'
     | 'ordered-list'
     | 'unordered-list';
-};
+}
 
 type Heading = {
   type: 'heading';
   level: 1 | 2 | 3 | 4 | 5 | 6;
   textAlign?: 'center' | 'end' | undefined;
-};
+}
 
 type Paragraph = {
   type: 'paragraph';
   textAlign?: 'center' | 'end' | undefined;
-};
+}
 
 type ComponentBlock = {
   type: 'component-block';
   component: string;
   props: Record<string, any>;
-};
+}
 
 type ComponentProp = {
   type: 'component-inline-prop' | 'component-block-prop';
   propPath?: ReadonlyPropPath | undefined;
-};
+}
 
 type Element = (
   | Layout
@@ -74,7 +74,7 @@ type Element = (
   | Link
   | Relationship
 ) &
-  BaseElement;
+  BaseElement
 declare module 'slate' {
   interface CustomTypes {
     Element: Element;

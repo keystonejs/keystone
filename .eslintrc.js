@@ -7,5 +7,7 @@ module.exports = {
     files: ['*.js', '*.jsx', '*.ts', '*.tsx'],
   }],
   rules: {
+    semi: ['error', 'never'],
+    '@typescript-eslint/semi': ['error', 'never'],
   }
 }

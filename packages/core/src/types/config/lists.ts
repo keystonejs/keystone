@@ -1,16 +1,16 @@
-import type { CacheHint } from '@apollo/cache-control-types';
-import type { MaybePromise } from '../utils';
-import type { BaseListTypeInfo } from '../type-info';
-import type { KeystoneContext } from '../context';
-import type { ListHooks } from './hooks';
-import type { ListAccessControl } from './access-control';
-import type { BaseFields, FilterOrderArgs } from './fields';
+import type { CacheHint } from '@apollo/cache-control-types'
+import type { MaybePromise } from '../utils'
+import type { BaseListTypeInfo } from '../type-info'
+import type { KeystoneContext } from '../context'
+import type { ListHooks } from './hooks'
+import type { ListAccessControl } from './access-control'
+import type { BaseFields, FilterOrderArgs } from './fields'
 
 // TODO: inline
 export type ListSchemaConfig<ListTypeInfo extends BaseListTypeInfo = BaseListTypeInfo> = Record<
   string,
   ListConfig<any, BaseFields<BaseListTypeInfo>>
->;
+>
 
 export type ListConfig<
   ListTypeInfo extends BaseListTypeInfo,
@@ -46,7 +46,7 @@ export type ListConfig<
   // Defaults to apply to all fields.
   defaultIsFilterable?: false | ((args: FilterOrderArgs<ListTypeInfo>) => MaybePromise<boolean>); // The default value to use for graphql.isEnabled.filter on all fields for this list
   defaultIsOrderable?: false | ((args: FilterOrderArgs<ListTypeInfo>) => MaybePromise<boolean>); // The default value to use for graphql.isEnabled.orderBy on all fields for this list
-};
+}
 
 export type ListAdminUIConfig<
   ListTypeInfo extends BaseListTypeInfo,
@@ -166,7 +166,7 @@ export type ListAdminUIConfig<
    * @default label.split(' ').join('-').toLowerCase()
    */
   path?: string;
-};
+}
 
 export type MaybeSessionFunction<
   T extends string | boolean,
@@ -176,7 +176,7 @@ export type MaybeSessionFunction<
   | ((args: {
       context: KeystoneContext<ListTypeInfo['all']>;
       session?: ListTypeInfo['all']['session'];
-    }) => MaybePromise<T>);
+    }) => MaybePromise<T>)
 
 export type MaybeItemFunction<T, ListTypeInfo extends BaseListTypeInfo> =
   | T
@@ -184,7 +184,7 @@ export type MaybeItemFunction<T, ListTypeInfo extends BaseListTypeInfo> =
       context: KeystoneContext<ListTypeInfo['all']>;
       session?: ListTypeInfo['all']['session'];
       item: ListTypeInfo['item'];
-    }) => MaybePromise<T>);
+    }) => MaybePromise<T>)
 
 export type ListGraphQLConfig = {
   /**
@@ -221,9 +221,9 @@ export type ListGraphQLConfig = {
         update?: boolean;
         delete?: boolean;
       };
-};
+}
 
-export type CacheHintArgs = { results: any; operationName?: string; meta: boolean };
+export type CacheHintArgs = { results: any; operationName?: string; meta: boolean }
 
 // TODO: duplicate, merge with next-fields?
 export type IdFieldConfig =
@@ -234,7 +234,7 @@ export type IdFieldConfig =
       encoding?: 'hex' | 'base64url';
     }
   | { kind: 'cuid' | 'uuid' | 'string'; type?: 'String' }
-  | { kind: 'autoincrement'; type?: 'Int' | 'BigInt' };
+  | { kind: 'autoincrement'; type?: 'Int' | 'BigInt' }
 
 export type ListDBConfig = {
   /**
@@ -253,4 +253,4 @@ export type ListDBConfig = {
    * Prisma Model definition.
    */
   extendPrismaSchema?: (schema: string) => string;
-};
+}

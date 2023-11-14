@@ -1,20 +1,20 @@
-import { useTheme } from '@keystone-ui/core';
+import { useTheme } from '@keystone-ui/core'
 
-import type { SizeType } from '../types';
+import type { SizeType } from '../types'
 
 export type IndicatorTokensProps = {
   /** The size of the indicator */
   size: SizeType;
   /** Controls whether the indicator looks like a checkbox or radio button */
   type: 'checkbox' | 'radio';
-};
+}
 
 type IndicatorStateTokens = {
   background?: string;
   borderColor?: string;
   shadow?: string;
   foreground?: string;
-};
+}
 
 export type IndicatorTokens = {
   borderRadius?: string | number;
@@ -25,15 +25,15 @@ export type IndicatorTokens = {
   focus: IndicatorStateTokens;
   selected: IndicatorStateTokens;
   disabled: IndicatorStateTokens;
-} & IndicatorStateTokens;
+} & IndicatorStateTokens
 
 export const useIndicatorTokens = ({
   size: sizeKey,
   type,
 }: IndicatorTokensProps): IndicatorTokens => {
-  const { controlSizes, fields } = useTheme();
+  const { controlSizes, fields } = useTheme()
 
-  const size = controlSizes[sizeKey];
+  const size = controlSizes[sizeKey]
 
   return {
     background: fields.controlBackground,
@@ -68,10 +68,10 @@ export const useIndicatorTokens = ({
       shadow: fields.disabled.shadow,
       foreground: fields.disabled.controlForeground,
     },
-  };
-};
+  }
+}
 
-export type IndicatorStylesProps = { tokens: IndicatorTokens };
+export type IndicatorStylesProps = { tokens: IndicatorTokens }
 
 export const useIndicatorStyles = ({ tokens }: IndicatorStylesProps) => {
   return {
@@ -119,5 +119,5 @@ export const useIndicatorStyles = ({ tokens }: IndicatorStylesProps) => {
     'input:checked:disabled + &': {
       color: tokens.disabled.foreground,
     },
-  } as const;
-};
+  } as const
+}

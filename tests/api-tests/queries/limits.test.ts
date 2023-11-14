@@ -1,10 +1,10 @@
-import { text, integer, relationship } from '@keystone-6/core/fields';
-import { list } from '@keystone-6/core';
-import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
-import { allowAll } from '@keystone-6/core/access';
-import { testConfig, expectGraphQLValidationError } from '../utils';
-import { withServer } from '../with-server';
-import { depthLimit, definitionLimit, fieldLimit } from './validation';
+import { text, integer, relationship } from '@keystone-6/core/fields'
+import { list } from '@keystone-6/core'
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
+import { allowAll } from '@keystone-6/core/access'
+import { testConfig, expectGraphQLValidationError } from '../utils'
+import { withServer } from '../with-server'
+import { depthLimit, definitionLimit, fieldLimit } from './validation'
 
 const runner = withServer(
   setupTestRunner({
@@ -36,7 +36,7 @@ const runner = withServer(
       },
     }),
   })
-);
+)
 
 describe('graphql.maxTake', () => {
   test(
@@ -51,7 +51,7 @@ describe('graphql.maxTake', () => {
             title: 'World',
           },
         ],
-      });
+      })
 
       const { body } = await graphQLRequest({
         query: `
@@ -61,11 +61,11 @@ describe('graphql.maxTake', () => {
             }
           }
         `,
-      });
+      })
 
-      expect(body.data.posts.length).toEqual(2);
+      expect(body.data.posts.length).toEqual(2)
     })
-  );
+  )
 
   test(
     'enforces the default',
@@ -80,12 +80,12 @@ describe('graphql.maxTake', () => {
             }
           }
         `,
-      });
+      })
 
-      expect(errors).toMatchSnapshot();
+      expect(errors).toMatchSnapshot()
     })
-  );
-});
+  )
+})
 
 // FIXME: we need upstream support in the graphql package to make KS validation rules work for internal requests
 // (Low priority, but makes the API less surprising if rules work everywhere by default.)
@@ -108,11 +108,11 @@ describe('maximum depth limit', () => {
             }
           }
         `,
-      }).expect(400);
+      }).expect(400)
 
-      expectGraphQLValidationError(body.errors, [{ message: 'Operation has depth 5 (max: 3)' }]);
+      expectGraphQLValidationError(body.errors, [{ message: 'Operation has depth 5 (max: 3)' }])
     })
-  );
+  )
 
   test(
     'nested mutation',
@@ -131,11 +131,11 @@ describe('maximum depth limit', () => {
             }
           }
         `,
-      }).expect(400);
+      }).expect(400)
 
-      expectGraphQLValidationError(body.errors, [{ message: 'Operation has depth 5 (max: 3)' }]);
+      expectGraphQLValidationError(body.errors, [{ message: 'Operation has depth 5 (max: 3)' }])
     })
-  );
+  )
 
   test(
     'nested query (1 fragment)',
@@ -155,11 +155,11 @@ describe('maximum depth limit', () => {
           }
         }
         `,
-      }).expect(400);
+      }).expect(400)
 
-      expectGraphQLValidationError(body.errors, [{ message: 'Operation has depth 4 (max: 3)' }]);
+      expectGraphQLValidationError(body.errors, [{ message: 'Operation has depth 4 (max: 3)' }])
     })
-  );
+  )
 
   test(
     'nested query (3 fragments)',
@@ -182,11 +182,11 @@ describe('maximum depth limit', () => {
           }
         }
         `,
-      }).expect(400);
+      }).expect(400)
 
-      expectGraphQLValidationError(body.errors, [{ message: 'Operation has depth 4 (max: 3)' }]);
+      expectGraphQLValidationError(body.errors, [{ message: 'Operation has depth 4 (max: 3)' }])
     })
-  );
+  )
 
   // disallowed by GraphQL, but needs to be handled
   test(
@@ -210,7 +210,7 @@ describe('maximum depth limit', () => {
               }
             }
             `,
-      }).expect(400);
+      }).expect(400)
 
       expectGraphQLValidationError(body.errors, [
         { message: 'Operation has depth Infinity (max: 3)' },
@@ -218,9 +218,9 @@ describe('maximum depth limit', () => {
         { message: 'Operation has depth Infinity (max: 3)' },
         { message: 'Request contains Infinity fields (max: 8)' },
         { message: 'Cannot spread fragment "f1" within itself via "f2".' },
-      ]);
+      ])
     })
-  );
+  )
 
   // disallowed by GraphQL, but needs to be handled
   test(
@@ -234,16 +234,16 @@ describe('maximum depth limit', () => {
               }
             }
             `,
-      }).expect(400);
+      }).expect(400)
 
       expectGraphQLValidationError(body.errors, [
         { message: 'Undefined fragment "nosuchfragment"' },
         { message: 'Undefined fragment "nosuchfragment"' },
         { message: 'Unknown fragment "nosuchfragment".' },
-      ]);
+      ])
     })
-  );
-});
+  )
+})
 
 describe('maximum definitions limit', () => {
   test(
@@ -273,13 +273,13 @@ describe('maximum definitions limit', () => {
               }
             }
           `,
-      }).expect(400);
+      }).expect(400)
 
       expectGraphQLValidationError(body.errors, [
         { message: 'Request contains 4 definitions (max: 3)' },
-      ]);
+      ])
     })
-  );
+  )
 
   test(
     'too many fragments',
@@ -304,13 +304,13 @@ describe('maximum definitions limit', () => {
               }
             }
           `,
-      }).expect(400);
+      }).expect(400)
 
       expectGraphQLValidationError(body.errors, [
         { message: 'Request contains 4 definitions (max: 3)' },
-      ]);
+      ])
     })
-  );
+  )
 
   test(
     'too many mutations',
@@ -339,15 +339,15 @@ describe('maximum definitions limit', () => {
               }
             }
           `,
-      }).expect(400);
+      }).expect(400)
 
       // This isn't the only error, but that's okay
       expectGraphQLValidationError(body.errors, [
         { message: 'Request contains 4 definitions (max: 3)' },
-      ]);
+      ])
     })
-  );
-});
+  )
+})
 
 describe('maximum fields limit', () => {
   test(
@@ -372,13 +372,13 @@ describe('maximum fields limit', () => {
               }
             }
           `,
-      }).expect(400);
+      }).expect(400)
 
       expectGraphQLValidationError(body.errors, [
         { message: 'Request contains 10 fields (max: 8)' },
-      ]);
+      ])
     })
-  );
+  )
 
   test(
     'many operations',
@@ -408,13 +408,13 @@ describe('maximum fields limit', () => {
               }
             }
           `,
-      }).expect(400);
+      }).expect(400)
 
       expectGraphQLValidationError(body.errors, [
         { message: 'Request contains 10 fields (max: 8)' },
-      ]);
+      ])
     })
-  );
+  )
 
   test(
     'fragments',
@@ -441,13 +441,13 @@ describe('maximum fields limit', () => {
               }
             }
           `,
-      }).expect(400);
+      }).expect(400)
 
       expectGraphQLValidationError(body.errors, [
         { message: 'Request contains 11 fields (max: 8)' },
-      ]);
+      ])
     })
-  );
+  )
 
   test(
     'unused fragment',
@@ -478,14 +478,14 @@ describe('maximum fields limit', () => {
               }
             }
           `,
-      }).expect(400);
+      }).expect(400)
 
       expectGraphQLValidationError(body.errors, [
         { message: 'Request contains 13 fields (max: 8)' },
         { message: 'Fragment "unused" is never used.' },
-      ]);
+      ])
     })
-  );
+  )
 
   test(
     'billion laughs',
@@ -533,12 +533,12 @@ describe('maximum fields limit', () => {
               author { id }
             }
           `,
-      }).expect(400);
+      }).expect(400)
 
       expectGraphQLValidationError(body.errors, [
         { message: 'Operation has depth 4 (max: 3)' },
         { message: 'Request contains 105 fields (max: 8)' },
-      ]);
+      ])
     })
-  );
-});
+  )
+})

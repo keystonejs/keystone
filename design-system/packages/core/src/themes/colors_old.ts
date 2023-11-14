@@ -347,4 +347,4 @@ export const palette = {
   orange700: '#aa4709',
   orange800: '#7a3305',
   orange900: '#4b1d00',
-};
+}

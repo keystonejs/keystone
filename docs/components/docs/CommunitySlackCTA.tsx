@@ -1,10 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
-import { Alert } from '../primitives/Alert';
-import { Button } from '../primitives/Button';
-import { ArrowR } from '../icons/ArrowR';
+import { Alert } from '../primitives/Alert'
+import { Button } from '../primitives/Button'
+import { ArrowR } from '../icons/ArrowR'
 
 export function CommunitySlackCTA() {
   return (
@@ -28,5 +28,5 @@ export function CommunitySlackCTA() {
         Community Slack <ArrowR />
       </Button>
     </Alert>
-  );
+  )
 }

@@ -1,7 +1,7 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx, makeEditor } from './tests/utils';
+import { jsx, makeEditor } from './tests/utils'
 
 test('sibling links with identical hrefs are merged', () => {
   const editor = makeEditor(
@@ -19,7 +19,7 @@ test('sibling links with identical hrefs are merged', () => {
       </paragraph>
     </editor>,
     { normalization: 'normalize' }
-  );
+  )
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
@@ -35,8 +35,8 @@ test('sibling links with identical hrefs are merged', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('sibling links with different hrefs are not merged', () => {
   makeEditor(
@@ -55,8 +55,8 @@ test('sibling links with different hrefs are not merged', () => {
     </editor>,
     // this is the default(and that should never change), but just to be explicit:
     { normalization: 'disallow-non-normalized' }
-  );
-});
+  )
+})
 
 test('nested links are unwrapped and the outer link is used', () => {
   const editor = makeEditor(
@@ -74,7 +74,7 @@ test('nested links are unwrapped and the outer link is used', () => {
       </paragraph>
     </editor>,
     { normalization: 'normalize' }
-  );
+  )
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
@@ -90,8 +90,8 @@ test('nested links are unwrapped and the outer link is used', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('the children of the second link node are moved to the first link node in the right order', () => {
   const editor = makeEditor(
@@ -111,7 +111,7 @@ test('the children of the second link node are moved to the first link node in t
       </paragraph>
     </editor>,
     { normalization: 'normalize' }
-  );
+  )
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
@@ -135,5 +135,5 @@ test('the children of the second link node are moved to the first link node in t
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})

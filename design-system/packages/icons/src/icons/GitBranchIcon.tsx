@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const GitBranchIcon = createIcon(
   <React.Fragment>
     <line x1={6} y1={3} x2={6} y2={15} />
@@ -8,4 +8,4 @@ export const GitBranchIcon = createIcon(
     <path d="M18 9a9 9 0 0 1-9 9" />
   </React.Fragment>,
   'GitBranchIcon'
-);
+)

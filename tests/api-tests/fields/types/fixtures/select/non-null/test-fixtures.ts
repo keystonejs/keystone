@@ -1,5 +1,5 @@
-import { select } from '@keystone-6/core/fields';
-import { fieldConfig } from '../test-fixtures';
+import { select } from '@keystone-6/core/fields'
+import { fieldConfig } from '../test-fixtures'
 
 export {
   exampleValue,
@@ -7,20 +7,20 @@ export {
   supportsUnique,
   fieldConfig,
   fieldName,
-} from '../test-fixtures';
+} from '../test-fixtures'
 
-type MatrixValue = (typeof testMatrix)[number];
+type MatrixValue = (typeof testMatrix)[number]
 
-export const name = 'Select with isNullable: false';
+export const name = 'Select with isNullable: false'
 export const typeFunction = (config: any) =>
-  select({ ...config, db: { ...config?.db, isNullable: false } });
-export const supportsDbMap = true;
+  select({ ...config, db: { ...config?.db, isNullable: false } })
+export const supportsDbMap = true
 
-export const testMatrix = ['enum', 'string', 'integer'] as const;
+export const testMatrix = ['enum', 'string', 'integer'] as const
 
 export const getTestFields = (matrixValue: MatrixValue) => ({
   company: typeFunction(fieldConfig(matrixValue)),
-});
+})
 
 export const initItems = (matrixValue: MatrixValue) => {
   if (matrixValue === 'enum') {
@@ -32,7 +32,7 @@ export const initItems = (matrixValue: MatrixValue) => {
       { name: 'e', company: 'react' },
       { name: 'f', company: 'react' },
       { name: 'g', company: 'react' },
-    ];
+    ]
   } else if (matrixValue === 'string') {
     return [
       { name: 'a', company: 'a string' },
@@ -42,7 +42,7 @@ export const initItems = (matrixValue: MatrixValue) => {
       { name: 'e', company: 'something else' },
       { name: 'f', company: 'something else' },
       { name: 'g', company: 'something else' },
-    ];
+    ]
   } else if (matrixValue === 'integer') {
     return [
       { name: 'a', company: 1 },
@@ -52,10 +52,10 @@ export const initItems = (matrixValue: MatrixValue) => {
       { name: 'e', company: 5 },
       { name: 'f', company: 5 },
       { name: 'g', company: 5 },
-    ];
+    ]
   }
-  return [];
-};
+  return []
+}
 
 export const storedValues = (matrixValue: MatrixValue) => {
   if (matrixValue === 'enum') {
@@ -67,7 +67,7 @@ export const storedValues = (matrixValue: MatrixValue) => {
       { name: 'e', company: 'react' },
       { name: 'f', company: 'react' },
       { name: 'g', company: 'react' },
-    ];
+    ]
   } else if (matrixValue === 'string') {
     return [
       { name: 'a', company: 'a string' },
@@ -77,7 +77,7 @@ export const storedValues = (matrixValue: MatrixValue) => {
       { name: 'e', company: 'something else' },
       { name: 'f', company: 'something else' },
       { name: 'g', company: 'something else' },
-    ];
+    ]
   } else if (matrixValue === 'integer') {
     return [
       { name: 'a', company: 1 },
@@ -87,6 +87,6 @@ export const storedValues = (matrixValue: MatrixValue) => {
       { name: 'e', company: 5 },
       { name: 'f', company: 5 },
       { name: 'g', company: 5 },
-    ];
+    ]
   }
-};
+}

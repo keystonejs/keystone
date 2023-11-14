@@ -1,16 +1,16 @@
-import { timestamp } from '@keystone-6/core/fields';
-import { DatabaseProvider, KeystoneContext } from '@keystone-6/core/types';
+import { timestamp } from '@keystone-6/core/fields'
+import { DatabaseProvider, KeystoneContext } from '@keystone-6/core/types'
 
-export const name = 'Timestamp';
-export const typeFunction = timestamp;
-export const exampleValue = () => '1990-12-31T12:34:56.789Z';
-export const exampleValue2 = () => '2000-01-20T00:08:00.000Z';
-export const supportsNullInput = true;
-export const supportsUnique = true;
-export const supportsDbMap = true;
-export const fieldName = 'lastOnline';
+export const name = 'Timestamp'
+export const typeFunction = timestamp
+export const exampleValue = () => '1990-12-31T12:34:56.789Z'
+export const exampleValue2 = () => '2000-01-20T00:08:00.000Z'
+export const supportsNullInput = true
+export const supportsUnique = true
+export const supportsDbMap = true
+export const fieldName = 'lastOnline'
 
-export const getTestFields = () => ({ lastOnline: timestamp() });
+export const getTestFields = () => ({ lastOnline: timestamp() })
 
 export const initItems = () => {
   return [
@@ -21,8 +21,8 @@ export const initItems = () => {
     { name: 'person5', lastOnline: '2020-06-10T10:20:30.456Z' },
     { name: 'person6', lastOnline: null },
     { name: 'person7' },
-  ];
-};
+  ]
+}
 
 export const storedValues = () => [
   { name: 'person1', lastOnline: '1979-04-12T00:08:00.000Z' },
@@ -32,7 +32,7 @@ export const storedValues = () => [
   { name: 'person5', lastOnline: '2020-06-10T10:20:30.456Z' },
   { name: 'person6', lastOnline: null },
   { name: 'person7', lastOnline: null },
-];
+]
 
 export const filterTests = (withKeystone: (args: any) => any) => {
   const match = async (
@@ -43,7 +43,7 @@ export const filterTests = (withKeystone: (args: any) => any) => {
   ) =>
     expect(await context.query.Test.findMany({ where, orderBy, query: 'name lastOnline' })).toEqual(
       expected
-    );
+    )
 
   test(
     'Ordering: orderBy: { lastOnline: asc }',
@@ -74,7 +74,7 @@ export const filterTests = (withKeystone: (args: any) => any) => {
           { lastOnline: 'asc' }
         )
     )
-  );
+  )
 
   test(
     'Ordering: orderBy: { lastOnline: desc }',
@@ -105,5 +105,5 @@ export const filterTests = (withKeystone: (args: any) => any) => {
           { lastOnline: 'desc' }
         )
     )
-  );
-};
+  )
+}

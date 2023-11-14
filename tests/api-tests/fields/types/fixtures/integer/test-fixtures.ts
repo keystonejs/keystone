@@ -1,15 +1,15 @@
-import { integer } from '@keystone-6/core/fields';
+import { integer } from '@keystone-6/core/fields'
 
-export const name = 'Integer';
-export const typeFunction = integer;
-export const exampleValue = () => 37;
-export const exampleValue2 = () => 38;
-export const supportsNullInput = true;
-export const supportsUnique = true;
-export const supportsDbMap = true;
-export const fieldName = 'testField';
+export const name = 'Integer'
+export const typeFunction = integer
+export const exampleValue = () => 37
+export const exampleValue2 = () => 38
+export const supportsNullInput = true
+export const supportsUnique = true
+export const supportsDbMap = true
+export const fieldName = 'testField'
 
-export const getTestFields = () => ({ testField: integer() });
+export const getTestFields = () => ({ testField: integer() })
 
 export const initItems = () => {
   return [
@@ -20,8 +20,8 @@ export const initItems = () => {
     { name: 'person5', testField: 37 },
     { name: 'person6', testField: null },
     { name: 'person7' },
-  ];
-};
+  ]
+}
 
 export const storedValues = () => [
   { name: 'person1', testField: 0 },
@@ -31,4 +31,4 @@ export const storedValues = () => [
   { name: 'person5', testField: 37 },
   { name: 'person6', testField: null },
   { name: 'person7', testField: null },
-];
+]

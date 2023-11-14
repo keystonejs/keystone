@@ -1,21 +1,21 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
+import { jsx } from '@keystone-ui/core'
+import { FieldContainer, FieldLabel } from '@keystone-ui/fields'
 import {
   CardValueComponent,
   CellComponent,
   FieldController,
   FieldControllerConfig,
-} from '../../../../types';
-import { validateImage, ImageWrapper } from './Field';
+} from '../../../../types'
+import { validateImage, ImageWrapper } from './Field'
 
-export { Field } from './Field';
+export { Field } from './Field'
 
 export const Cell: CellComponent = ({ item, field }) => {
-  const data = item[field.path];
-  if (!data) return null;
+  const data = item[field.path]
+  if (!data) return null
   return (
     <div
       css={{
@@ -28,11 +28,11 @@ export const Cell: CellComponent = ({ item, field }) => {
     >
       <img alt={data.filename} css={{ maxHeight: '100%', maxWidth: '100%' }} src={data.url} />
     </div>
-  );
-};
+  )
+}
 
 export const CardValue: CardValueComponent = ({ item, field }) => {
-  const data = item[field.path];
+  const data = item[field.path]
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
@@ -42,8 +42,8 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
         </ImageWrapper>
       )}
     </FieldContainer>
-  );
-};
+  )
+}
 
 type ImageData = {
   src: string;
@@ -52,7 +52,7 @@ type ImageData = {
   filesize: number;
   extension: string;
   id: string;
-};
+}
 
 export type ImageValue =
   | { kind: 'empty' }
@@ -68,9 +68,9 @@ export type ImageValue =
       };
       previous: ImageValue;
     }
-  | { kind: 'remove'; previous?: Exclude<ImageValue, { kind: 'remove' }> };
+  | { kind: 'remove'; previous?: Exclude<ImageValue, { kind: 'remove' }> }
 
-type ImageController = FieldController<ImageValue>;
+type ImageController = FieldController<ImageValue>
 
 export const controller = (config: FieldControllerConfig): ImageController => {
   return {
@@ -87,8 +87,8 @@ export const controller = (config: FieldControllerConfig): ImageController => {
       }`,
     defaultValue: { kind: 'empty' },
     deserialize(item) {
-      const value = item[config.path];
-      if (!value) return { kind: 'empty' };
+      const value = item[config.path]
+      if (!value) return { kind: 'empty' }
       return {
         kind: 'from-server',
         data: {
@@ -100,20 +100,20 @@ export const controller = (config: FieldControllerConfig): ImageController => {
           height: value.height,
           filesize: value.filesize,
         },
-      };
+      }
     },
     validate(value): boolean {
-      return value.kind !== 'upload' || validateImage(value.data) === undefined;
+      return value.kind !== 'upload' || validateImage(value.data) === undefined
     },
     serialize(value) {
       if (value.kind === 'upload') {
-        return { [config.path]: { upload: value.data.file } };
+        return { [config.path]: { upload: value.data.file } }
       }
 
       if (value.kind === 'remove') {
-        return { [config.path]: null };
+        return { [config.path]: null }
       }
-      return {};
+      return {}
     },
-  };
-};
+  }
+}

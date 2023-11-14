@@ -1,10 +1,10 @@
-import { list } from '@keystone-6/core';
-import { allowAll } from '@keystone-6/core/access';
-import { text } from '@keystone-6/core/fields';
-import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
-import supertest from 'supertest';
-import { testConfig } from './utils';
-import { withServer } from './with-server';
+import { list } from '@keystone-6/core'
+import { allowAll } from '@keystone-6/core/access'
+import { text } from '@keystone-6/core/fields'
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
+import supertest from 'supertest'
+import { testConfig } from './utils'
+import { withServer } from './with-server'
 
 const makeRunner = (healthCheck: any) =>
   withServer(
@@ -21,14 +21,14 @@ const makeRunner = (healthCheck: any) =>
         server: { healthCheck },
       }),
     })
-  );
+  )
 
 test(
   'No health check',
   makeRunner(undefined)(async ({ app }) => {
-    await supertest(app).get('/_healthcheck').set('Accept', 'application/json').expect(404);
+    await supertest(app).get('/_healthcheck').set('Accept', 'application/json').expect(404)
   })
-);
+)
 
 test(
   'Default health check',
@@ -37,13 +37,13 @@ test(
       .get('/_healthcheck')
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
-      .expect(200);
+      .expect(200)
     expect(JSON.parse(text)).toEqual({
       status: 'pass',
       timestamp: expect.any(Number),
-    });
+    })
   })
-);
+)
 
 test(
   'Custom path',
@@ -52,13 +52,13 @@ test(
       .get('/custom')
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
-      .expect(200);
+      .expect(200)
     expect(JSON.parse(text)).toEqual({
       status: 'pass',
       timestamp: expect.any(Number),
-    });
+    })
   })
-);
+)
 
 test(
   'Custom data: object',
@@ -67,10 +67,10 @@ test(
       .get('/_healthcheck')
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
-      .expect(200);
-    expect(JSON.parse(text)).toEqual({ foo: 'bar' });
+      .expect(200)
+    expect(JSON.parse(text)).toEqual({ foo: 'bar' })
   })
-);
+)
 
 test(
   'Custom data: function',
@@ -79,7 +79,7 @@ test(
       .get('/_healthcheck')
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
-      .expect(200);
-    expect(JSON.parse(text)).toEqual({ foo: 'bar' });
+      .expect(200)
+    expect(JSON.parse(text)).toEqual({ foo: 'bar' })
   })
-);
+)

@@ -1,8 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
-import { Gradients, IconProps } from './util';
+import { Gradients, IconProps } from './util'
 
 export function Close({ grad, ...props }: IconProps) {
   return (
@@ -18,5 +18,5 @@ export function Close({ grad, ...props }: IconProps) {
       <Gradients name="Close" />
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
     </svg>
-  );
+  )
 }

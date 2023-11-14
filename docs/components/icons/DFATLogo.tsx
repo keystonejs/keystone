@@ -1,8 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
-import { IconProps } from './util';
+import { IconProps } from './util'
 
 export function DFATLogo(props: IconProps) {
   return (
@@ -53,5 +53,5 @@ export function DFATLogo(props: IconProps) {
         clipRule="evenodd"
       />
     </svg>
-  );
+  )
 }

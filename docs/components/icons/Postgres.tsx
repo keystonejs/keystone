@@ -1,8 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
-import { Gradients, IconProps } from './util';
+import { Gradients, IconProps } from './util'
 
 export function Postgres({ grad, ...props }: IconProps) {
   return (
@@ -72,5 +72,5 @@ export function Postgres({ grad, ...props }: IconProps) {
         strokeLinejoin="round"
       />
     </svg>
-  );
+  )
 }

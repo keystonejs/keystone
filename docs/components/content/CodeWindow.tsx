@@ -1,15 +1,15 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import type { HTMLAttributes } from 'react';
-import { jsx } from '@emotion/react';
+import type { HTMLAttributes } from 'react'
+import { jsx } from '@emotion/react'
 
-import { useMediaQuery } from '../../lib/media';
+import { useMediaQuery } from '../../lib/media'
 
 const codeFontStyle = {
   fontSize: 13,
   lineHeight: 1.6,
   fontFamily: 'var(--font-mono)',
-};
+}
 
 function MenuBtn(props: HTMLAttributes<HTMLElement>) {
   return (
@@ -24,7 +24,7 @@ function MenuBtn(props: HTMLAttributes<HTMLElement>) {
       }}
       {...props}
     />
-  );
+  )
 }
 
 export function WindowWrapper(props: HTMLAttributes<HTMLElement>) {
@@ -37,7 +37,7 @@ export function WindowWrapper(props: HTMLAttributes<HTMLElement>) {
       }}
       {...props}
     />
-  );
+  )
 }
 
 export function WindowL(props: HTMLAttributes<HTMLElement>) {
@@ -50,7 +50,7 @@ export function WindowL(props: HTMLAttributes<HTMLElement>) {
       }}
       {...props}
     />
-  );
+  )
 }
 
 export function WindowR(props: HTMLAttributes<HTMLElement>) {
@@ -65,15 +65,15 @@ export function WindowR(props: HTMLAttributes<HTMLElement>) {
       }}
       {...props}
     />
-  );
+  )
 }
 
 type CodeWindowProps = {
   lines: number;
-} & HTMLAttributes<HTMLElement>;
+} & HTMLAttributes<HTMLElement>
 
 export function CodeWindow({ lines = 1, children, ...props }: CodeWindowProps) {
-  const mq = useMediaQuery();
+  const mq = useMediaQuery()
 
   return (
     <div
@@ -140,5 +140,5 @@ export function CodeWindow({ lines = 1, children, ...props }: CodeWindowProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }

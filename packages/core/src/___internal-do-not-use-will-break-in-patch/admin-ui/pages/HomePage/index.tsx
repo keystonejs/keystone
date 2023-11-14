@@ -1,17 +1,17 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { useMemo } from 'react';
+import { useMemo } from 'react'
 
-import { Center, Inline, Heading, VisuallyHidden, jsx, useTheme } from '@keystone-ui/core';
-import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon';
-import { LoadingDots } from '@keystone-ui/loading';
+import { Center, Inline, Heading, VisuallyHidden, jsx, useTheme } from '@keystone-ui/core'
+import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon'
+import { LoadingDots } from '@keystone-ui/loading'
 
-import { makeDataGetter } from '../../../../admin-ui/utils';
-import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/PageContainer';
-import { gql, useQuery } from '../../../../admin-ui/apollo';
-import { useKeystone, useList } from '../../../../admin-ui/context';
-import { Link, LinkProps } from '../../../../admin-ui/router';
+import { makeDataGetter } from '../../../../admin-ui/utils'
+import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/PageContainer'
+import { gql, useQuery } from '../../../../admin-ui/apollo'
+import { useKeystone, useList } from '../../../../admin-ui/context'
+import { Link, LinkProps } from '../../../../admin-ui/router'
 
 type ListCardProps = {
   listKey: string;
@@ -21,11 +21,11 @@ type ListCardProps = {
     | { type: 'no-access' }
     | { type: 'error'; message: string }
     | { type: 'loading' };
-};
+}
 
 const ListCard = ({ listKey, count, hideCreate }: ListCardProps) => {
-  const { colors, palette, radii, spacing } = useTheme();
-  const list = useList(listKey);
+  const { colors, palette, radii, spacing } = useTheme()
+  const list = useList(listKey)
   return (
     <div css={{ position: 'relative' }}>
       <Link
@@ -69,11 +69,11 @@ const ListCard = ({ listKey, count, hideCreate }: ListCardProps) => {
         </CreateButton>
       )}
     </div>
-  );
-};
+  )
+}
 
 const CreateButton = (props: LinkProps) => {
-  const theme = useTheme();
+  const theme = useTheme()
   return (
     <Link
       css={{
@@ -99,14 +99,14 @@ const CreateButton = (props: LinkProps) => {
       }}
       {...props}
     />
-  );
-};
+  )
+}
 
 export const HomePage = () => {
   const {
     adminMeta: { lists },
     visibleLists,
-  } = useKeystone();
+  } = useKeystone()
   const query = useMemo(
     () => gql`
     query {
@@ -124,10 +124,10 @@ export const HomePage = () => {
         .join('\n')}
     }`,
     [lists]
-  );
-  let { data, error } = useQuery(query, { errorPolicy: 'all' });
+  )
+  let { data, error } = useQuery(query, { errorPolicy: 'all' })
 
-  const dataGetter = makeDataGetter(data, error?.graphQLErrors);
+  const dataGetter = makeDataGetter(data, error?.graphQLErrors)
 
   return (
     <PageContainer header={<Heading type="h3">Dashboard</Heading>}>
@@ -153,13 +153,13 @@ export const HomePage = () => {
                     ? visibleLists.error.message
                     : visibleLists.error[0].message}
                 </span>
-              );
+              )
             }
             return Object.keys(lists).map(key => {
               if (!visibleLists.lists.has(key)) {
-                return null;
+                return null
               }
-              const result = dataGetter.get(key);
+              const result = dataGetter.get(key)
               return (
                 <ListCard
                   count={
@@ -176,11 +176,11 @@ export const HomePage = () => {
                   key={key}
                   listKey={key}
                 />
-              );
-            });
+              )
+            })
           })()}
         </Inline>
       )}
     </PageContainer>
-  );
-};
+  )
+}

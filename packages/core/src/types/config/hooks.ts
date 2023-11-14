@@ -1,5 +1,5 @@
-import type { KeystoneContextFromListTypeInfo, MaybePromise } from '..';
-import type { BaseListTypeInfo } from '../type-info';
+import type { KeystoneContextFromListTypeInfo, MaybePromise } from '..'
+import type { BaseListTypeInfo } from '../type-info'
 
 type CommonArgs<ListTypeInfo extends BaseListTypeInfo> = {
   context: KeystoneContextFromListTypeInfo<ListTypeInfo>;
@@ -7,7 +7,7 @@ type CommonArgs<ListTypeInfo extends BaseListTypeInfo> = {
    * The key of the list that the operation is occurring on
    */
   listKey: ListTypeInfo['key'];
-};
+}
 
 type ResolveInputListHook<
   ListTypeInfo extends BaseListTypeInfo,
@@ -40,7 +40,7 @@ type ResolveInputListHook<
     };
   }[Operation] &
     CommonArgs<ListTypeInfo>
-) => MaybePromise<ListTypeInfo['prisma'][Operation]>;
+) => MaybePromise<ListTypeInfo['prisma'][Operation]>
 
 export type ListHooks<ListTypeInfo extends BaseListTypeInfo> = {
   /**
@@ -82,7 +82,7 @@ export type ListHooks<ListTypeInfo extends BaseListTypeInfo> = {
         update?: AfterOperationListHook<ListTypeInfo, 'update'>;
         delete?: AfterOperationListHook<ListTypeInfo, 'delete'>;
       };
-};
+}
 
 export type ResolvedListHooks<ListTypeInfo extends BaseListTypeInfo> = {
   resolveInput: {
@@ -101,7 +101,7 @@ export type ResolvedListHooks<ListTypeInfo extends BaseListTypeInfo> = {
     update: AfterOperationListHook<ListTypeInfo, 'update'>;
     delete: AfterOperationListHook<ListTypeInfo, 'delete'>;
   };
-};
+}
 
 export type FieldHooks<
   ListTypeInfo extends BaseListTypeInfo,
@@ -131,7 +131,7 @@ export type FieldHooks<
    * Used to **cause side effects** after a create, update, or delete operation operation has occurred
    */
   afterOperation?: AfterOperationFieldHook<ListTypeInfo, 'create' | 'update' | 'delete', FieldKey>;
-};
+}
 
 export type ResolvedFieldHooks<
   ListTypeInfo extends BaseListTypeInfo,
@@ -153,7 +153,7 @@ export type ResolvedFieldHooks<
     update: AfterOperationFieldHook<ListTypeInfo, 'update', FieldKey>;
     delete: AfterOperationFieldHook<ListTypeInfo, 'delete', FieldKey>;
   };
-};
+}
 
 type ResolveInputFieldHook<
   ListTypeInfo extends BaseListTypeInfo,
@@ -189,7 +189,7 @@ type ResolveInputFieldHook<
     CommonArgs<ListTypeInfo> & { fieldKey: FieldKey }
 ) => MaybePromise<
   ListTypeInfo['prisma']['create' | 'update'][FieldKey] | undefined // undefined represents 'don't do anything'
->;
+>
 
 type ValidateHook<
   ListTypeInfo extends BaseListTypeInfo,
@@ -231,7 +231,7 @@ type ValidateHook<
     };
   }[Operation] &
     CommonArgs<ListTypeInfo>
-) => MaybePromise<void>;
+) => MaybePromise<void>
 
 type ValidateFieldHook<
   ListTypeInfo extends BaseListTypeInfo,
@@ -274,7 +274,7 @@ type ValidateFieldHook<
     };
   }[Operation] &
     CommonArgs<ListTypeInfo> & { fieldKey: FieldKey }
-) => MaybePromise<void>;
+) => MaybePromise<void>
 
 type BeforeOperationListHook<
   ListTypeInfo extends BaseListTypeInfo,
@@ -319,7 +319,7 @@ type BeforeOperationListHook<
     };
   }[Operation] &
     CommonArgs<ListTypeInfo>
-) => MaybePromise<void>;
+) => MaybePromise<void>
 
 type BeforeOperationFieldHook<
   ListTypeInfo extends BaseListTypeInfo,
@@ -365,7 +365,7 @@ type BeforeOperationFieldHook<
     };
   }[Operation] &
     CommonArgs<ListTypeInfo> & { fieldKey: FieldKey }
-) => MaybePromise<void>;
+) => MaybePromise<void>
 
 type AfterOperationListHook<
   ListTypeInfo extends BaseListTypeInfo,
@@ -413,7 +413,7 @@ type AfterOperationListHook<
     };
   }[Operation] &
     CommonArgs<ListTypeInfo>
-) => MaybePromise<void>;
+) => MaybePromise<void>
 
 type AfterOperationFieldHook<
   ListTypeInfo extends BaseListTypeInfo,
@@ -462,4 +462,4 @@ type AfterOperationFieldHook<
     };
   }[Operation] &
     CommonArgs<ListTypeInfo> & { fieldKey: FieldKey }
-) => MaybePromise<void>;
+) => MaybePromise<void>

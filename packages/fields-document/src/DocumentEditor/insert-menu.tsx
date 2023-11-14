@@ -1,27 +1,27 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx, Portal } from '@keystone-ui/core';
-import { useControlledPopover } from '@keystone-ui/popover';
-import { Fragment, ReactNode, useContext, useEffect, useRef, useState } from 'react';
-import { Element, Transforms, Text, Editor, Path, Point, Node } from 'slate';
-import { ReactEditor } from 'slate-react';
-import { matchSorter } from 'match-sorter';
-import scrollIntoView from 'scroll-into-view-if-needed';
-import { ComponentBlockContext, insertComponentBlock } from './component-blocks';
-import { ComponentBlock } from './component-blocks/api';
-import { InlineDialog, ToolbarButton } from './primitives';
-import { Relationships, useDocumentFieldRelationships } from './relationship';
-import { ToolbarState, useToolbarState } from './toolbar-state';
-import { insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading } from './utils';
-import { insertLayout } from './layouts';
+import { jsx, Portal } from '@keystone-ui/core'
+import { useControlledPopover } from '@keystone-ui/popover'
+import { Fragment, ReactNode, useContext, useEffect, useRef, useState } from 'react'
+import { Element, Transforms, Text, Editor, Path, Point, Node } from 'slate'
+import { ReactEditor } from 'slate-react'
+import { matchSorter } from 'match-sorter'
+import scrollIntoView from 'scroll-into-view-if-needed'
+import { ComponentBlockContext, insertComponentBlock } from './component-blocks'
+import { ComponentBlock } from './component-blocks/api'
+import { InlineDialog, ToolbarButton } from './primitives'
+import { Relationships, useDocumentFieldRelationships } from './relationship'
+import { ToolbarState, useToolbarState } from './toolbar-state'
+import { insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading } from './utils'
+import { insertLayout } from './layouts'
 
-let noop = () => {};
+let noop = () => {}
 
 type Option = {
   label: string;
   keywords?: string[];
   insert: (editor: Editor) => void;
-};
+}
 
 function getOptions(
   toolbarState: ToolbarState,
@@ -37,13 +37,13 @@ function getOptions(
           relationship,
           data: null,
           children: [{ text: '' }],
-        });
+        })
       },
     })),
     ...Object.keys(componentBlocks).map(key => ({
       label: componentBlocks[key].label,
       insert: (editor: Editor) => {
-        insertComponentBlock(editor, componentBlocks, key);
+        insertComponentBlock(editor, componentBlocks, key)
       },
     })),
     ...toolbarState.textStyles.allowedHeadingLevels
@@ -55,7 +55,7 @@ function getOptions(
             type: 'heading',
             level,
             children: [{ text: '' }],
-          });
+          })
         },
       })),
     !toolbarState.blockquote.isDisabled &&
@@ -65,7 +65,7 @@ function getOptions(
           insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
             type: 'blockquote',
             children: [{ text: '' }],
-          });
+          })
         },
       },
     !toolbarState.code.isDisabled &&
@@ -75,7 +75,7 @@ function getOptions(
           insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
             type: 'code',
             children: [{ text: '' }],
-          });
+          })
         },
       },
     !toolbarState.dividers.isDisabled &&
@@ -85,13 +85,13 @@ function getOptions(
           insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
             type: 'divider',
             children: [{ text: '' }],
-          });
+          })
         },
       },
     !!toolbarState.editorDocumentFeatures.layouts.length && {
       label: 'Layout',
       insert(editor) {
-        insertLayout(editor, toolbarState.editorDocumentFeatures.layouts[0]);
+        insertLayout(editor, toolbarState.editorDocumentFeatures.layouts[0])
       },
     },
     !toolbarState.lists.ordered.isDisabled &&
@@ -102,7 +102,7 @@ function getOptions(
           insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
             type: 'ordered-list',
             children: [{ text: '' }],
-          });
+          })
         },
       },
     !toolbarState.lists.unordered.isDisabled &&
@@ -113,118 +113,118 @@ function getOptions(
           insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
             type: 'unordered-list',
             children: [{ text: '' }],
-          });
+          })
         },
       },
-  ];
-  return options.filter((x): x is Exclude<typeof x, boolean> => typeof x !== 'boolean');
+  ]
+  return options.filter((x): x is Exclude<typeof x, boolean> => typeof x !== 'boolean')
 }
 
 function insertOption(editor: Editor, text: Text, option: Option) {
-  const path = ReactEditor.findPath(editor, text);
+  const path = ReactEditor.findPath(editor, text)
   Transforms.delete(editor, {
     at: {
       focus: Editor.start(editor, path),
       anchor: Editor.end(editor, path),
     },
-  });
-  option.insert(editor);
+  })
+  option.insert(editor)
 }
 
 // TODO: the changing width of the menu when searching isn't great
 export function InsertMenu({ children, text }: { children: ReactNode; text: Text }) {
-  const toolbarState = useToolbarState();
+  const toolbarState = useToolbarState()
   const {
     editor,
     relationships: { isDisabled: relationshipsDisabled },
-  } = toolbarState;
+  } = toolbarState
   const { dialog, trigger } = useControlledPopover(
     { isOpen: true, onClose: noop },
     { placement: 'bottom-start' }
-  );
-  const componentBlocks = useContext(ComponentBlockContext);
-  const relationships = useDocumentFieldRelationships();
+  )
+  const componentBlocks = useContext(ComponentBlockContext)
+  const relationships = useDocumentFieldRelationships()
   const options = matchSorter(
     getOptions(toolbarState, componentBlocks, relationshipsDisabled ? {} : relationships),
     text.text.slice(1),
     {
       keys: ['label', 'keywords'],
     }
-  );
+  )
 
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(0)
   if (options.length && selectedIndex >= options.length) {
-    setSelectedIndex(0);
+    setSelectedIndex(0)
   }
 
-  const stateRef = useRef({ selectedIndex, options, text });
+  const stateRef = useRef({ selectedIndex, options, text })
 
   useEffect(() => {
-    stateRef.current = { selectedIndex, options, text };
-  });
+    stateRef.current = { selectedIndex, options, text }
+  })
 
-  const dialogRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const element = dialogRef.current?.children?.[selectedIndex];
+    const element = dialogRef.current?.children?.[selectedIndex]
     if (dialogRef.current && element) {
       scrollIntoView(element, {
         scrollMode: 'if-needed',
         boundary: dialogRef.current,
         block: 'nearest',
-      });
+      })
     }
-  }, [selectedIndex]);
+  }, [selectedIndex])
 
   useEffect(() => {
-    const domNode = ReactEditor.toDOMNode(editor, editor);
+    const domNode = ReactEditor.toDOMNode(editor, editor)
     let listener = (event: KeyboardEvent) => {
-      if (event.defaultPrevented) return;
+      if (event.defaultPrevented) return
       switch (event.key) {
         case 'ArrowDown': {
           if (stateRef.current.options.length) {
-            event.preventDefault();
+            event.preventDefault()
             setSelectedIndex(
               stateRef.current.selectedIndex === stateRef.current.options.length - 1
                 ? 0
                 : stateRef.current.selectedIndex + 1
-            );
+            )
           }
-          return;
+          return
         }
         case 'ArrowUp': {
           if (stateRef.current.options.length) {
-            event.preventDefault();
+            event.preventDefault()
             setSelectedIndex(
               stateRef.current.selectedIndex === 0
                 ? stateRef.current.options.length - 1
                 : stateRef.current.selectedIndex - 1
-            );
+            )
           }
-          return;
+          return
         }
         case 'Enter': {
-          const option = stateRef.current.options[stateRef.current.selectedIndex];
+          const option = stateRef.current.options[stateRef.current.selectedIndex]
           if (option) {
-            insertOption(editor, stateRef.current.text, option);
-            event.preventDefault();
+            insertOption(editor, stateRef.current.text, option)
+            event.preventDefault()
           }
-          return;
+          return
         }
         case 'Escape': {
-          const path = ReactEditor.findPath(editor, stateRef.current.text);
-          Transforms.unsetNodes(editor, 'insertMenu', { at: path });
-          event.preventDefault();
-          return;
+          const path = ReactEditor.findPath(editor, stateRef.current.text)
+          Transforms.unsetNodes(editor, 'insertMenu', { at: path })
+          event.preventDefault()
+          return
         }
       }
-    };
-    domNode.addEventListener('keydown', listener);
+    }
+    domNode.addEventListener('keydown', listener)
     return () => {
-      domNode.removeEventListener('keydown', listener);
-    };
-  }, [editor]);
-  const DIALOG_HEIGHT = 300;
+      domNode.removeEventListener('keydown', listener)
+    }
+  }, [editor])
+  const DIALOG_HEIGHT = 300
   return (
     <Fragment>
       <span {...trigger.props} css={{ color: 'blue' }} ref={trigger.ref}>
@@ -248,11 +248,11 @@ export function InsertMenu({ children, text }: { children: ReactNode; text: Text
                 key={option.label}
                 isPressed={index === selectedIndex}
                 onMouseEnter={() => {
-                  setSelectedIndex(index);
+                  setSelectedIndex(index)
                 }}
                 onMouseDown={event => {
-                  event.preventDefault();
-                  insertOption(editor, text, option);
+                  event.preventDefault()
+                  insertOption(editor, text, option)
                 }}
               >
                 {option.label}
@@ -262,33 +262,33 @@ export function InsertMenu({ children, text }: { children: ReactNode; text: Text
         </InlineDialog>
       </Portal>
     </Fragment>
-  );
+  )
 }
 
-const nodeListsWithoutInsertMenu = new WeakSet<Node[]>();
+const nodeListsWithoutInsertMenu = new WeakSet<Node[]>()
 
-const nodesWithoutInsertMenu = new WeakSet<Node>();
+const nodesWithoutInsertMenu = new WeakSet<Node>()
 
 function findPathWithInsertMenu(node: Node, path: Path): Path | undefined {
   if (Text.isText(node)) {
-    return node.insertMenu ? path : undefined;
+    return node.insertMenu ? path : undefined
   }
   if (nodeListsWithoutInsertMenu.has(node.children)) {
-    return;
+    return
   }
   for (const [index, child] of node.children.entries()) {
-    if (nodesWithoutInsertMenu.has(child)) continue;
-    let maybePath = findPathWithInsertMenu(child, [...path, index]);
+    if (nodesWithoutInsertMenu.has(child)) continue
+    let maybePath = findPathWithInsertMenu(child, [...path, index])
     if (maybePath) {
-      return maybePath;
+      return maybePath
     }
-    nodesWithoutInsertMenu.add(child);
+    nodesWithoutInsertMenu.add(child)
   }
-  nodeListsWithoutInsertMenu.add(node.children);
+  nodeListsWithoutInsertMenu.add(node.children)
 }
 
 function removeInsertMenuMarkWhenOutsideOfSelection(editor: Editor) {
-  const path = findPathWithInsertMenu(editor, []);
+  const path = findPathWithInsertMenu(editor, [])
   if (
     path &&
     !Editor.marks(editor)?.insertMenu &&
@@ -296,21 +296,21 @@ function removeInsertMenuMarkWhenOutsideOfSelection(editor: Editor) {
       !Path.equals(editor.selection.anchor.path, path) ||
       !Path.equals(editor.selection.focus.path, path))
   ) {
-    Transforms.unsetNodes(editor, 'insertMenu', { at: path });
-    return true;
+    Transforms.unsetNodes(editor, 'insertMenu', { at: path })
+    return true
   }
-  return false;
+  return false
 }
 
 export function withInsertMenu(editor: Editor): Editor {
-  const { normalizeNode, apply, insertText } = editor;
+  const { normalizeNode, apply, insertText } = editor
   editor.normalizeNode = ([node, path]) => {
     if (Text.isText(node) && node.insertMenu) {
       if (node.text[0] !== '/') {
-        Transforms.unsetNodes(editor, 'insertMenu', { at: path });
-        return;
+        Transforms.unsetNodes(editor, 'insertMenu', { at: path })
+        return
       }
-      const whitespaceMatch = /\s/.exec(node.text);
+      const whitespaceMatch = /\s/.exec(node.text)
       if (whitespaceMatch) {
         Transforms.unsetNodes(editor, 'insertMenu', {
           at: {
@@ -319,38 +319,38 @@ export function withInsertMenu(editor: Editor): Editor {
           },
           match: Text.isText,
           split: true,
-        });
-        return;
+        })
+        return
       }
     }
     if (Editor.isEditor(editor) && removeInsertMenuMarkWhenOutsideOfSelection(editor)) {
-      return;
+      return
     }
-    normalizeNode([node, path]);
-  };
+    normalizeNode([node, path])
+  }
 
   editor.apply = op => {
-    apply(op);
+    apply(op)
     // we're calling this here AND in normalizeNode
     // because normalizeNode won't be called on selection changes
     // but apply will
     // we're still calling this from normalizeNode though because we want it to happen
     // when normalization happens
     if (op.type === 'set_selection') {
-      removeInsertMenuMarkWhenOutsideOfSelection(editor);
+      removeInsertMenuMarkWhenOutsideOfSelection(editor)
     }
-  };
+  }
 
   editor.insertText = text => {
-    insertText(text);
+    insertText(text)
     if (editor.selection && text === '/') {
       const startOfBlock = Editor.start(
         editor,
         Editor.above(editor, {
           match: node => Element.isElement(node) && Editor.isBlock(editor, node),
         })![1]
-      );
-      const before = Editor.before(editor, editor.selection.anchor, { unit: 'character' });
+      )
+      const before = Editor.before(editor, editor.selection.anchor, { unit: 'character' })
       if (
         before &&
         (Point.equals(startOfBlock, before) ||
@@ -365,9 +365,9 @@ export function withInsertMenu(editor: Editor): Editor {
             match: Text.isText,
             split: true,
           }
-        );
+        )
       }
     }
-  };
-  return editor;
+  }
+  return editor
 }

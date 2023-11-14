@@ -1,13 +1,13 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
-import { HTMLAttributes, ReactNode } from 'react';
+import { jsx } from '@emotion/react'
+import { HTMLAttributes, ReactNode } from 'react'
 
-import { Wrapper } from './primitives/Wrapper';
+import { Wrapper } from './primitives/Wrapper'
 
 type AnnounceProps = {
   children: ReactNode;
-} & HTMLAttributes<HTMLElement>;
+} & HTMLAttributes<HTMLElement>
 
 export function Announce({ children, ...props }: AnnounceProps) {
   return (
@@ -32,5 +32,5 @@ export function Announce({ children, ...props }: AnnounceProps) {
     >
       <Wrapper>{children}</Wrapper>
     </div>
-  );
+  )
 }

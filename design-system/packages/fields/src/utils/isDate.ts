@@ -1,8 +1,8 @@
 export const isDate = (value: string): boolean => {
   try {
-    new Date(value).toISOString();
+    new Date(value).toISOString()
   } catch (e) {
-    return false;
+    return false
   }
-  return true;
-};
+  return true
+}

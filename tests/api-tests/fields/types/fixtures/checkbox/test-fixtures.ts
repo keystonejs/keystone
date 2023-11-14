@@ -1,17 +1,17 @@
-import { checkbox } from '@keystone-6/core/fields';
+import { checkbox } from '@keystone-6/core/fields'
 
-export const name = 'Checkbox';
-export const typeFunction = checkbox;
-export const exampleValue = () => true;
-export const exampleValue2 = () => false;
-export const neverNull = true;
-export const supportsUnique = false;
-export const fieldName = 'enabled';
-export const skipRequiredTest = true;
-export const supportsGraphQLIsNonNull = true;
-export const supportsDbMap = true;
+export const name = 'Checkbox'
+export const typeFunction = checkbox
+export const exampleValue = () => true
+export const exampleValue2 = () => false
+export const neverNull = true
+export const supportsUnique = false
+export const fieldName = 'enabled'
+export const skipRequiredTest = true
+export const supportsGraphQLIsNonNull = true
+export const supportsDbMap = true
 
-export const getTestFields = () => ({ enabled: checkbox() });
+export const getTestFields = () => ({ enabled: checkbox() })
 
 export const initItems = () => {
   return [
@@ -22,8 +22,8 @@ export const initItems = () => {
     { name: 'person5', enabled: false },
     { name: 'person6', enabled: false },
     { name: 'person7', enabled: false },
-  ];
-};
+  ]
+}
 
 export const storedValues = () => [
   { name: 'person1', enabled: false },
@@ -33,4 +33,4 @@ export const storedValues = () => [
   { name: 'person5', enabled: false },
   { name: 'person6', enabled: false },
   { name: 'person7', enabled: false },
-];
+]

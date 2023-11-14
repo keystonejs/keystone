@@ -1,10 +1,10 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import React from 'react';
-import { Transforms } from 'slate';
-import { jsx, makeEditor } from '../tests/utils';
-import { component, fields } from '../../component-blocks';
+import React from 'react'
+import { Transforms } from 'slate'
+import { jsx, makeEditor } from '../tests/utils'
+import { component, fields } from '../../component-blocks'
 
 const list = component({
   preview: props =>
@@ -29,7 +29,7 @@ const list = component({
             },
             'Remove'
           )
-        );
+        )
       }),
       React.createElement(
         'button',
@@ -53,7 +53,7 @@ const list = component({
       })
     ),
   },
-});
+})
 
 test('child field in nested array', () => {
   makeEditor(
@@ -73,8 +73,8 @@ test('child field in nested array', () => {
       </paragraph>
     </editor>,
     { componentBlocks: { list } }
-  );
-});
+  )
+})
 
 test('inserting a break at the end of a child field creates a new item with fresh values', () => {
   const editor = makeEditor(
@@ -97,8 +97,8 @@ test('inserting a break at the end of a child field creates a new item with fres
       </paragraph>
     </editor>,
     { componentBlocks: { list } }
-  );
-  editor.insertBreak();
+  )
+  editor.insertBreak()
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -149,8 +149,8 @@ test('inserting a break at the end of a child field creates a new item with fres
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('inserting a break splits the text and uses the values from the first entry', () => {
   const editor = makeEditor(
@@ -174,8 +174,8 @@ test('inserting a break splits the text and uses the values from the first entry
       </paragraph>
     </editor>,
     { componentBlocks: { list } }
-  );
-  editor.insertBreak();
+  )
+  editor.insertBreak()
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -227,8 +227,8 @@ test('inserting a break splits the text and uses the values from the first entry
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('inserting a break in an empty child removes the element and inserts a paragraph', () => {
   const editor = makeEditor(
@@ -256,8 +256,8 @@ test('inserting a break in an empty child removes the element and inserts a para
       </paragraph>
     </editor>,
     { componentBlocks: { list } }
-  );
-  editor.insertBreak();
+  )
+  editor.insertBreak()
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -296,8 +296,8 @@ test('inserting a break in an empty child removes the element and inserts a para
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('deleting a range of nodes removes them', () => {
   const editor = makeEditor(
@@ -343,8 +343,8 @@ test('deleting a range of nodes removes them', () => {
       </paragraph>
     </editor>,
     { componentBlocks: { list } }
-  );
-  Transforms.delete(editor);
+  )
+  Transforms.delete(editor)
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -412,8 +412,8 @@ test('deleting a range of nodes removes them', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('inserting an item from empty works', () => {
   const editor = makeEditor(
@@ -434,7 +434,7 @@ test('inserting an item from empty works', () => {
     </editor>,
     { componentBlocks: { list } }
   );
-  (editor.container!.querySelector('button[data-insert]') as HTMLButtonElement).click();
+  (editor.container!.querySelector('button[data-insert]') as HTMLButtonElement).click()
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -466,8 +466,8 @@ test('inserting an item from empty works', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('removing an item using the preview props works', () => {
   const editor = makeEditor(
@@ -488,7 +488,7 @@ test('removing an item using the preview props works', () => {
     </editor>,
     { componentBlocks: { list } }
   );
-  (editor.container!.querySelector('button[data-remove]') as HTMLButtonElement).click();
+  (editor.container!.querySelector('button[data-remove]') as HTMLButtonElement).click()
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -507,5 +507,5 @@ test('removing an item using the preview props works', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})

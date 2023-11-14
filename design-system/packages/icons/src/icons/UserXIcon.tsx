@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const UserXIcon = createIcon(
   <React.Fragment>
     <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -8,4 +8,4 @@ export const UserXIcon = createIcon(
     <line x1={23} y1={8} x2={18} y2={13} />
   </React.Fragment>,
   'UserXIcon'
-);
+)

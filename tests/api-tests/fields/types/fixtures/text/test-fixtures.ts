@@ -1,16 +1,16 @@
-import { text } from '@keystone-6/core/fields';
+import { text } from '@keystone-6/core/fields'
 
-export const name = 'Text';
-export const typeFunction = text;
-export const exampleValue = () => 'foo';
-export const exampleValue2 = () => 'bar';
-export const supportsNullInput = false;
-export const supportsUnique = true;
-export const supportsGraphQLIsNonNull = true;
-export const supportsDbMap = true;
-export const fieldName = 'testField';
+export const name = 'Text'
+export const typeFunction = text
+export const exampleValue = () => 'foo'
+export const exampleValue2 = () => 'bar'
+export const supportsNullInput = false
+export const supportsUnique = true
+export const supportsGraphQLIsNonNull = true
+export const supportsDbMap = true
+export const fieldName = 'testField'
 
-export const getTestFields = () => ({ testField: text() });
+export const getTestFields = () => ({ testField: text() })
 
 export const initItems = () => {
   return [
@@ -21,8 +21,8 @@ export const initItems = () => {
     { name: 'e', testField: 'foobar' },
     { name: 'f' },
     { name: 'g' },
-  ];
-};
+  ]
+}
 
 export const storedValues = () => [
   { name: 'a', testField: '' },
@@ -32,4 +32,4 @@ export const storedValues = () => [
   { name: 'e', testField: 'foobar' },
   { name: 'f', testField: '' },
   { name: 'g', testField: '' },
-];
+]

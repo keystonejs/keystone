@@ -1,20 +1,20 @@
-import { config } from '@keystone-6/core';
-import { statelessSessions } from '@keystone-6/core/session';
-import { createAuth } from '@keystone-6/auth';
-import { fixPrismaPath } from '../example-utils';
-import { lists } from './schema';
+import { config } from '@keystone-6/core'
+import { statelessSessions } from '@keystone-6/core/session'
+import { createAuth } from '@keystone-6/auth'
+import { fixPrismaPath } from '../example-utils'
+import { lists } from './schema'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
 //   or tested for any particular usage
 
 // WARNING: you need to change this
-const sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
+const sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --'
 
 // statelessSessions uses cookies for session tracking
 //   these cookies have an expiry, in seconds
 //   we use an expiry of 30 days for this example
-const sessionMaxAge = 60 * 60 * 24 * 30;
+const sessionMaxAge = 60 * 60 * 24 * 30
 
 // withAuth is a function we can use to wrap our base configuration
 const { withAuth } = createAuth({
@@ -45,7 +45,7 @@ const { withAuth } = createAuth({
 
   // add isAdmin to the session data
   sessionData: 'isAdmin',
-});
+})
 
 export default withAuth(
   config({
@@ -60,7 +60,7 @@ export default withAuth(
     ui: {
       // only admins can view the AdminUI
       isAccessAllowed: ({ session }) => {
-        return session?.data?.isAdmin ?? false;
+        return session?.data?.isAdmin ?? false
       },
     },
     // you can find out more at https://keystonejs.com/docs/apis/session#session-api
@@ -71,4 +71,4 @@ export default withAuth(
       secret: sessionSecret,
     }),
   })
-);
+)

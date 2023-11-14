@@ -1,16 +1,16 @@
-import { text } from '@keystone-6/core/fields';
+import { text } from '@keystone-6/core/fields'
 
-export const name = 'Text with isNullable: true';
+export const name = 'Text with isNullable: true'
 export const typeFunction = (config: any) =>
-  text({ ...config, db: { ...config?.db, isNullable: true } });
-export const exampleValue = () => 'foo';
-export const exampleValue2 = () => 'bar';
-export const supportsNullInput = true;
-export const supportsUnique = true;
-export const supportsDbMap = true;
-export const fieldName = 'testField';
+  text({ ...config, db: { ...config?.db, isNullable: true } })
+export const exampleValue = () => 'foo'
+export const exampleValue2 = () => 'bar'
+export const supportsNullInput = true
+export const supportsUnique = true
+export const supportsDbMap = true
+export const fieldName = 'testField'
 
-export const getTestFields = () => ({ testField: text({ db: { isNullable: true } }) });
+export const getTestFields = () => ({ testField: text({ db: { isNullable: true } }) })
 
 export const initItems = () => {
   return [
@@ -21,8 +21,8 @@ export const initItems = () => {
     { name: 'e', testField: 'foobar' },
     { name: 'f', testField: null },
     { name: 'g' },
-  ];
-};
+  ]
+}
 
 export const storedValues = () => [
   { name: 'a', testField: '' },
@@ -32,4 +32,4 @@ export const storedValues = () => [
   { name: 'e', testField: 'foobar' },
   { name: 'f', testField: null },
   { name: 'g', testField: null },
-];
+]

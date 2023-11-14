@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const GitPullRequestIcon = createIcon(
   <React.Fragment>
     <circle cx={18} cy={18} r={3} />
@@ -8,4 +8,4 @@ export const GitPullRequestIcon = createIcon(
     <line x1={6} y1={9} x2={6} y2={21} />
   </React.Fragment>,
   'GitPullRequestIcon'
-);
+)

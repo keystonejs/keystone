@@ -1,10 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { useEffect } from 'react';
-import { jsx, Stack, useTheme } from '@keystone-ui/core';
-import { Select } from '@keystone-ui/fields';
-import { ChevronRightIcon, ChevronLeftIcon } from '@keystone-ui/icons';
-import { Link, useRouter } from '../router';
+import { useEffect } from 'react'
+import { jsx, Stack, useTheme } from '@keystone-ui/core'
+import { Select } from '@keystone-ui/fields'
+import { ChevronRightIcon, ChevronLeftIcon } from '@keystone-ui/icons'
+import { Link, useRouter } from '../router'
 
 interface PaginationProps {
   pageSize: number;
@@ -14,35 +14,35 @@ interface PaginationProps {
 }
 
 const getPaginationStats = ({ list, pageSize, currentPage, total }: PaginationProps) => {
-  let stats = '';
+  let stats = ''
   if (total > pageSize) {
-    const start = pageSize * (currentPage - 1) + 1;
-    const end = Math.min(start + pageSize - 1, total);
-    stats = `${start} - ${end} of ${total} ${list.plural}`;
+    const start = pageSize * (currentPage - 1) + 1
+    const end = Math.min(start + pageSize - 1, total)
+    stats = `${start} - ${end} of ${total} ${list.plural}`
   } else {
     if (total > 1 && list.plural) {
-      stats = `${total} ${list.plural}`;
+      stats = `${total} ${list.plural}`
     } else if (total === 1 && list.singular) {
-      stats = `${total} ${list.singular}`;
+      stats = `${total} ${list.singular}`
     }
   }
-  return { stats };
-};
+  return { stats }
+}
 
 export function Pagination({ currentPage, total, pageSize, list }: PaginationProps) {
-  const { query, pathname, push } = useRouter();
-  const { stats } = getPaginationStats({ list, currentPage, total, pageSize });
-  const { opacity } = useTheme();
+  const { query, pathname, push } = useRouter()
+  const { stats } = getPaginationStats({ list, currentPage, total, pageSize })
+  const { opacity } = useTheme()
 
-  const nextPage = currentPage + 1;
-  const prevPage = currentPage - 1;
-  const minPage = 1;
+  const nextPage = currentPage + 1
+  const prevPage = currentPage - 1
+  const minPage = 1
 
-  const nxtQuery = { ...query, page: nextPage };
-  const prevQuery = { ...query, page: prevPage };
+  const nxtQuery = { ...query, page: nextPage }
+  const prevQuery = { ...query, page: prevPage }
 
-  const limit = Math.ceil(total / pageSize);
-  const pages = [];
+  const limit = Math.ceil(total / pageSize)
+  const pages = []
 
   useEffect(() => {
     // Check if the current page is larger than
@@ -55,12 +55,12 @@ export function Pagination({ currentPage, total, pageSize, list }: PaginationPro
           ...query,
           page: Math.ceil(total / pageSize),
         },
-      });
+      })
     }
-  }, [total, pageSize, currentPage, pathname, query, push]);
+  }, [total, pageSize, currentPage, pathname, query, push])
 
   // Don't render the pagiantion component if the pageSize is greater than the total number of items in the list.
-  if (total <= pageSize) return null;
+  if (total <= pageSize) return null
 
   const onChange = (selectedOption: { value: string; label: string }) => {
     push({
@@ -69,14 +69,14 @@ export function Pagination({ currentPage, total, pageSize, list }: PaginationPro
         ...query,
         page: selectedOption.value,
       },
-    });
-  };
+    })
+  }
 
   for (let page = minPage; page <= limit; page++) {
     pages.push({
       label: String(page),
       value: String(page),
-    });
+    })
   }
 
   return (
@@ -146,7 +146,7 @@ export function Pagination({ currentPage, total, pageSize, list }: PaginationPro
         </Link>
       </Stack>
     </Stack>
-  );
+  )
 }
 
 export function PaginationLabel({
@@ -167,15 +167,15 @@ export function PaginationLabel({
     currentPage,
     total,
     pageSize,
-  });
+  })
 
   if (!total) {
-    return <span>No {plural}</span>;
+    return <span>No {plural}</span>
   }
 
   return (
     <span>
       Showing <strong>{stats}</strong>
     </span>
-  );
+  )
 }

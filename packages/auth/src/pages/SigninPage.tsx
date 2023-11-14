@@ -1,18 +1,18 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { useState, Fragment, FormEvent, useRef, useEffect } from 'react';
+import { useState, Fragment, FormEvent, useRef, useEffect } from 'react'
 
-import { jsx, H1, Stack, VisuallyHidden } from '@keystone-ui/core';
-import { Button } from '@keystone-ui/button';
-import { TextInput } from '@keystone-ui/fields';
-import { Notice } from '@keystone-ui/notice';
+import { jsx, H1, Stack, VisuallyHidden } from '@keystone-ui/core'
+import { Button } from '@keystone-ui/button'
+import { TextInput } from '@keystone-ui/fields'
+import { Notice } from '@keystone-ui/notice'
 
-import { useMutation, gql } from '@keystone-6/core/admin-ui/apollo';
-import { useRawKeystone, useReinitContext } from '@keystone-6/core/admin-ui/context';
-import { useRouter } from '@keystone-6/core/admin-ui/router';
-import { SigninContainer } from '../components/SigninContainer';
-import { useRedirect } from '../lib/useFromRedirect';
+import { useMutation, gql } from '@keystone-6/core/admin-ui/apollo'
+import { useRawKeystone, useReinitContext } from '@keystone-6/core/admin-ui/context'
+import { useRouter } from '@keystone-6/core/admin-ui/router'
+import { SigninContainer } from '../components/SigninContainer'
+import { useRedirect } from '../lib/useFromRedirect'
 
 type SigninPageProps = {
   identityField: string;
@@ -20,9 +20,9 @@ type SigninPageProps = {
   mutationName: string;
   successTypename: string;
   failureTypename: string;
-};
+}
 
-export const getSigninPage = (props: SigninPageProps) => () => <SigninPage {...props} />;
+export const getSigninPage = (props: SigninPageProps) => () => <SigninPage {...props} />
 
 export const SigninPage = ({
   identityField,
@@ -44,48 +44,48 @@ export const SigninPage = ({
         }
       }
     }
-  `;
+  `
 
-  const [mode, setMode] = useState<'signin' | 'forgot password'>('signin');
-  const [state, setState] = useState({ identity: '', secret: '' });
-  const [submitted, setSubmitted] = useState(false);
+  const [mode, setMode] = useState<'signin' | 'forgot password'>('signin')
+  const [state, setState] = useState({ identity: '', secret: '' })
+  const [submitted, setSubmitted] = useState(false)
 
-  const identityFieldRef = useRef<HTMLInputElement>(null);
+  const identityFieldRef = useRef<HTMLInputElement>(null)
   useEffect(() => {
-    identityFieldRef.current?.focus();
-  }, [mode]);
+    identityFieldRef.current?.focus()
+  }, [mode])
 
-  const [mutate, { error, loading, data }] = useMutation(mutation);
-  const reinitContext = useReinitContext();
-  const router = useRouter();
-  const rawKeystone = useRawKeystone();
-  const redirect = useRedirect();
+  const [mutate, { error, loading, data }] = useMutation(mutation)
+  const reinitContext = useReinitContext()
+  const router = useRouter()
+  const rawKeystone = useRawKeystone()
+  const redirect = useRedirect()
 
   // if we are signed in, redirect immediately
   useEffect(() => {
-    if (submitted) return;
+    if (submitted) return
     if (rawKeystone.authenticatedItem.state === 'authenticated') {
-      router.push(redirect);
+      router.push(redirect)
     }
-  }, [rawKeystone.authenticatedItem, router, redirect, submitted]);
+  }, [rawKeystone.authenticatedItem, router, redirect, submitted])
 
   useEffect(() => {
-    if (!submitted) return;
+    if (!submitted) return
 
     // TODO: this is horrible, we need to resolve this mess
     // @ts-ignore
     if (rawKeystone.adminMeta?.error?.message === 'Access denied') {
-      router.push('/no-access');
-      return;
+      router.push('/no-access')
+      return
     }
 
-    router.push(redirect);
-  }, [rawKeystone.adminMeta, router, redirect, submitted]);
+    router.push(redirect)
+  }, [rawKeystone.adminMeta, router, redirect, submitted])
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+    event.preventDefault()
 
-    if (mode !== 'signin') return;
+    if (mode !== 'signin') return
 
     try {
       const { data } = await mutate({
@@ -93,16 +93,16 @@ export const SigninPage = ({
           identity: state.identity,
           secret: state.secret,
         },
-      });
-      if (data.authenticate?.__typename !== successTypename) return;
+      })
+      if (data.authenticate?.__typename !== successTypename) return
     } catch (e) {
-      console.error(e);
-      return;
+      console.error(e)
+      return
     }
 
-    await reinitContext();
-    setSubmitted(true);
-  };
+    await reinitContext()
+    setSubmitted(true)
+  }
 
   return (
     <SigninContainer title="Keystone - Sign in">
@@ -178,5 +178,5 @@ export const SigninPage = ({
         )}
       </Stack>
     </SigninContainer>
-  );
-};
+  )
+}

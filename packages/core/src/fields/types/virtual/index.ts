@@ -1,4 +1,4 @@
-import { getNamedType, isLeafType } from 'graphql';
+import { getNamedType, isLeafType } from 'graphql'
 import {
   BaseListTypeInfo,
   BaseItem,
@@ -8,13 +8,13 @@ import {
   KeystoneContext,
   ListGraphQLTypes,
   getGqlNames,
-} from '../../../types';
-import { graphql } from '../../..';
+} from '../../../types'
+import { graphql } from '../../..'
 
 type VirtualFieldGraphQLField<
   Item extends BaseItem,
   Context extends KeystoneContext
-> = graphql.Field<Item, any, graphql.OutputType, string, Context>;
+> = graphql.Field<Item, any, graphql.OutputType, string, Context>
 
 export type VirtualFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
@@ -40,7 +40,7 @@ export type VirtualFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
        */
       query?: string;
     };
-  };
+  }
 
 export const virtual =
   <ListTypeInfo extends BaseListTypeInfo>({
@@ -48,13 +48,13 @@ export const virtual =
     ...config
   }: VirtualFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> =>
   meta => {
-    const usableField = typeof field === 'function' ? field(meta.lists) : field;
-    const namedType = getNamedType(usableField.type.graphQLType);
+    const usableField = typeof field === 'function' ? field(meta.lists) : field
+    const namedType = getNamedType(usableField.type.graphQLType)
     const hasRequiredArgs =
       usableField.args &&
       Object.values(
         usableField.args as Record<string, graphql.Arg<graphql.InputType, boolean>>
-      ).some(x => x.type.kind === 'non-null' && x.defaultValue === undefined);
+      ).some(x => x.type.kind === 'non-null' && x.defaultValue === undefined)
     if (
       (!isLeafType(namedType) || hasRequiredArgs) &&
       !config.ui?.query &&
@@ -71,7 +71,7 @@ export const virtual =
           `    ${meta.fieldKey}\${ui.query}\n` +
           `  }\n` +
           `}`
-      );
+      )
     }
     return fieldType({
       kind: 'none',
@@ -80,11 +80,11 @@ export const virtual =
       output: graphql.field({
         ...(usableField as any),
         resolve({ item }, ...args) {
-          return usableField.resolve!(item as any, ...args);
+          return usableField.resolve!(item as any, ...args)
         },
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/virtual',
       views: '@keystone-6/core/fields/types/virtual/views',
       getAdminMeta: () => ({ query: config.ui?.query || '' }),
-    });
-  };
+    })
+  }

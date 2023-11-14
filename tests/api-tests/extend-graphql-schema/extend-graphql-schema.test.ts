@@ -1,11 +1,11 @@
-import { list, graphql } from '@keystone-6/core';
-import { allowAll } from '@keystone-6/core/access';
-import { text } from '@keystone-6/core/fields';
-import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
-import { testConfig, expectInternalServerError } from '../utils';
-import { withServer } from '../with-server';
+import { list, graphql } from '@keystone-6/core'
+import { allowAll } from '@keystone-6/core/access'
+import { text } from '@keystone-6/core/fields'
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
+import { testConfig, expectInternalServerError } from '../utils'
+import { withServer } from '../with-server'
 
-const falseFn: (...args: any) => boolean = () => false;
+const falseFn: (...args: any) => boolean = () => false
 
 const withAccessCheck = <T, Args extends unknown[]>(
   access: boolean | ((...args: Args) => boolean),
@@ -14,14 +14,14 @@ const withAccessCheck = <T, Args extends unknown[]>(
   return (...args: Args) => {
     if (typeof access === 'function') {
       if (!access(...args)) {
-        throw new Error('Access denied');
+        throw new Error('Access denied')
       }
     } else if (!access) {
-      throw new Error('Access denied');
+      throw new Error('Access denied')
     }
-    return resolver(...args);
-  };
-};
+    return resolver(...args)
+  }
+}
 
 const extendGraphqlSchema = graphql.extend(() => {
   return {
@@ -44,8 +44,8 @@ const extendGraphqlSchema = graphql.extend(() => {
         resolve: withAccessCheck(falseFn, (_, { x }: { x: number }) => 4 * x),
       }),
     },
-  };
-});
+  }
+})
 
 const runner = setupTestRunner({
   config: testConfig({
@@ -57,7 +57,7 @@ const runner = setupTestRunner({
     },
     extendGraphqlSchema,
   }),
-});
+})
 
 describe('extendGraphqlSchema', () => {
   it(
@@ -69,10 +69,10 @@ describe('extendGraphqlSchema', () => {
                 double(x: 10)
               }
             `,
-      });
-      expect(data).toEqual({ double: 20 });
+      })
+      expect(data).toEqual({ double: 20 })
     })
-  );
+  )
   it(
     'Denies access acording to access control',
     withServer(runner)(async ({ graphQLRequest }) => {
@@ -82,11 +82,11 @@ describe('extendGraphqlSchema', () => {
             quads(x: 10)
           }
         `,
-      });
-      expect(body.data).toEqual({ quads: null });
-      expectInternalServerError(body.errors, [{ path: ['quads'], message: 'Access denied' }]);
+      })
+      expect(body.data).toEqual({ quads: null })
+      expectInternalServerError(body.errors, [{ path: ['quads'], message: 'Access denied' }])
     })
-  );
+  )
   it(
     'Executes custom mutations correctly',
     runner(async ({ context }) => {
@@ -96,11 +96,11 @@ describe('extendGraphqlSchema', () => {
                 triple(x: 10)
               }
             `,
-      });
+      })
 
-      expect(data).toEqual({ triple: 30 });
+      expect(data).toEqual({ triple: 30 })
     })
-  );
+  )
   it(
     'Default keystone resolvers remain unchanged',
     runner(async ({ context }) => {
@@ -112,9 +112,9 @@ describe('extendGraphqlSchema', () => {
                 }
               }
             `,
-      });
+      })
 
-      expect(data).toEqual({ createUser: { name: 'Real User' } });
+      expect(data).toEqual({ createUser: { name: 'Real User' } })
     })
-  );
-});
+  )
+})

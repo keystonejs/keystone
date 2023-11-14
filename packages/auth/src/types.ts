@@ -1,4 +1,4 @@
-import type { BaseListTypeInfo, KeystoneContext } from '@keystone-6/core/types';
+import type { BaseListTypeInfo, KeystoneContext } from '@keystone-6/core/types'
 
 export type AuthGqlNames = {
   CreateInitialInput: string;
@@ -19,21 +19,21 @@ export type AuthGqlNames = {
   RedeemItemMagicAuthTokenResult: string;
   RedeemItemMagicAuthTokenSuccess: string;
   RedeemItemMagicAuthTokenFailure: string;
-};
+}
 
 export type SendTokenFn = (args: {
   itemId: string | number | bigint;
   identity: string;
   token: string;
   context: KeystoneContext;
-}) => Promise<void> | void;
+}) => Promise<void> | void
 
 export type AuthTokenTypeConfig = {
   /** Called when a user should be sent the magic signin token they requested */
   sendToken: SendTokenFn;
   /** How long do tokens stay valid for from time of issue, in minutes **/
   tokensValidForMins?: number;
-};
+}
 
 export type AuthConfig<ListTypeInfo extends BaseListTypeInfo> = {
   /** The key of the list to authenticate users with */
@@ -50,7 +50,7 @@ export type AuthConfig<ListTypeInfo extends BaseListTypeInfo> = {
   magicAuthLink?: AuthTokenTypeConfig;
   /** Session data population */
   sessionData?: string;
-};
+}
 
 export type InitFirstItemConfig<ListTypeInfo extends BaseListTypeInfo> = {
   /** Array of fields to collect, e.g ['name', 'email', 'password'] */
@@ -59,11 +59,11 @@ export type InitFirstItemConfig<ListTypeInfo extends BaseListTypeInfo> = {
   skipKeystoneWelcome?: boolean;
   /** Extra input to add for the create mutation */
   itemData?: Partial<ListTypeInfo['inputs']['create']>;
-};
+}
 
-export type AuthTokenRedemptionErrorCode = 'FAILURE' | 'TOKEN_EXPIRED' | 'TOKEN_REDEEMED';
+export type AuthTokenRedemptionErrorCode = 'FAILURE' | 'TOKEN_EXPIRED' | 'TOKEN_REDEEMED'
 
 export type SecretFieldImpl = {
   generateHash: (secret: string) => Promise<string>;
   compare: (secret: string, hash: string) => Promise<boolean>;
-};
+}

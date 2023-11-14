@@ -1,15 +1,15 @@
-import Decimal from 'decimal.js';
-import { graphql } from '..';
-import type { BaseListTypeInfo } from './type-info';
-import type { CommonFieldConfig } from './config';
-import type { DatabaseProvider } from './core';
-import type { JSONValue, KeystoneContext, MaybePromise, StorageConfig } from '.';
+import Decimal from 'decimal.js'
+import { graphql } from '..'
+import type { BaseListTypeInfo } from './type-info'
+import type { CommonFieldConfig } from './config'
+import type { DatabaseProvider } from './core'
+import type { JSONValue, KeystoneContext, MaybePromise, StorageConfig } from '.'
 
-export { Decimal };
+export { Decimal }
 
-export type BaseItem = { id: { toString(): string }; [key: string]: unknown };
+export type BaseItem = { id: { toString(): string }; [key: string]: unknown }
 
-export type ListGraphQLTypes = { types: GraphQLTypesForList };
+export type ListGraphQLTypes = { types: GraphQLTypesForList }
 
 export type FieldData = {
   lists: Record<string, ListGraphQLTypes>;
@@ -17,7 +17,7 @@ export type FieldData = {
   getStorage: (storage: string) => StorageConfig | undefined;
   listKey: string;
   fieldKey: string;
-};
+}
 
 export type FieldTypeFunc<ListTypeInfo extends BaseListTypeInfo> = (
   data: FieldData
@@ -29,7 +29,7 @@ export type FieldTypeFunc<ListTypeInfo extends BaseListTypeInfo> = (
   graphql.Arg<graphql.NullableInputType, false>,
   graphql.Arg<graphql.NullableInputType, false>,
   ListTypeInfo
->;
+>
 
 export type NextFieldType<
   TDBField extends DBField = DBField,
@@ -60,7 +60,7 @@ export type NextFieldType<
   OrderByArg,
   FilterArg,
   ListTypeInfo
->;
+>
 
 type ScalarPrismaTypes = {
   String: string;
@@ -71,12 +71,12 @@ type ScalarPrismaTypes = {
   BigInt: bigint;
   Json: JSONValue;
   Decimal: Decimal;
-};
+}
 
 type Literal<T> = {
   kind: 'literal';
   value: T;
-};
+}
 
 export type ScalarDBFieldDefault<
   Scalar extends keyof ScalarPrismaTypes = keyof ScalarPrismaTypes,
@@ -97,7 +97,7 @@ export type ScalarDBFieldDefault<
           DateTime: Literal<string> | { kind: 'now' };
           Decimal: Literal<string>;
         }[Scalar]
-      | { kind: 'dbgenerated'; value: string };
+      | { kind: 'dbgenerated'; value: string }
 
 export type ScalarDBField<
   Scalar extends keyof ScalarPrismaTypes,
@@ -113,7 +113,7 @@ export type ScalarDBField<
   map?: string;
   nativeType?: string;
   updatedAt?: Scalar extends 'DateTime' ? boolean : never;
-};
+}
 
 export type RelationDBField<Mode extends 'many' | 'one'> = {
   kind: 'relation';
@@ -124,7 +124,7 @@ export type RelationDBField<Mode extends 'many' | 'one'> = {
   field?: string;
   foreignKey?: { one: true | { map: string }; many: undefined }[Mode];
   relationName?: { one: undefined; many: string }[Mode];
-};
+}
 
 export type EnumDBField<Value extends string, Mode extends 'required' | 'many' | 'optional'> = {
   kind: 'enum';
@@ -136,34 +136,34 @@ export type EnumDBField<Value extends string, Mode extends 'required' | 'many' |
 
   map?: string;
   values: readonly Value[];
-};
+}
 
 export const orderDirectionEnum = graphql.enum({
   name: 'OrderDirection',
   values: graphql.enumValues(['asc', 'desc']),
-});
+})
 
 export const QueryMode = graphql.enum({
   name: 'QueryMode',
   values: graphql.enumValues(['default', 'insensitive']),
-});
+})
 
-export type NoDBField = { kind: 'none' };
+export type NoDBField = { kind: 'none' }
 
 // TODO: merge
 export type ScalarishDBField =
   | ScalarDBField<keyof ScalarPrismaTypes, 'required' | 'many' | 'optional'>
-  | EnumDBField<string, 'required' | 'many' | 'optional'>;
+  | EnumDBField<string, 'required' | 'many' | 'optional'>
 
-export type RealDBField = ScalarishDBField | RelationDBField<'many' | 'one'>;
+export type RealDBField = ScalarishDBField | RelationDBField<'many' | 'one'>
 
 export type MultiDBField<Fields extends Record<string, ScalarishDBField>> = {
   kind: 'multi';
   fields: Fields;
   extendPrismaSchema?: (field: string) => string;
-};
+}
 
-export type DBField = RealDBField | NoDBField | MultiDBField<Record<string, ScalarishDBField>>;
+export type DBField = RealDBField | NoDBField | MultiDBField<Record<string, ScalarishDBField>>
 
 // TODO: this isn't right for create
 // for create though, db level defaults need to be taken into account for when to not allow undefined
@@ -189,7 +189,7 @@ type DBFieldToInputValue<TDBField extends DBField> = TDBField extends ScalarDBFi
   : TDBField extends MultiDBField<infer Fields>
   ? // note: this is very intentionally not optional and DBFieldToInputValue will add | undefined to force people to explicitly show what they are not setting
     { [Key in keyof Fields]: DBFieldToInputValue<Fields[Key]> }
-  : never;
+  : never
 
 type DBFieldUniqueWhere<TDBField extends DBField> = TDBField extends ScalarDBField<
   infer Scalar,
@@ -201,7 +201,7 @@ type DBFieldUniqueWhere<TDBField extends DBField> = TDBField extends ScalarDBFie
         Int: number;
       }[Scalar]
     : any
-  : any;
+  : any
 
 type DBFieldToOutputValue<TDBField extends DBField> = TDBField extends ScalarDBField<
   infer Scalar,
@@ -230,7 +230,7 @@ type DBFieldToOutputValue<TDBField extends DBField> = TDBField extends ScalarDBF
   ? undefined
   : TDBField extends MultiDBField<infer Fields>
   ? { [Key in keyof Fields]: DBFieldToOutputValue<Fields[Key]> }
-  : never;
+  : never
 
 export type OrderByFieldInputArg<Val, TArg extends graphql.Arg<graphql.NullableInputType>> = {
   arg: TArg;
@@ -239,16 +239,16 @@ export type OrderByFieldInputArg<Val, TArg extends graphql.Arg<graphql.NullableI
     value: Exclude<graphql.InferValueFromArg<TArg>, null | undefined>,
     context: KeystoneContext
   ) => MaybePromise<Val>
->;
+>
 
 type FieldInputResolver<Input, Output, RelationshipInputResolver> = (
   value: Input,
   context: KeystoneContext,
   relationshipInputResolver: RelationshipInputResolver
-) => MaybePromise<Output>;
+) => MaybePromise<Output>
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-type DBFieldFiltersInner<TDBField extends DBField> = Record<string, any>;
+type DBFieldFiltersInner<TDBField extends DBField> = Record<string, any>
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 type DBFieldFilters<TDBField extends DBField> =
   | ({
@@ -256,7 +256,7 @@ type DBFieldFilters<TDBField extends DBField> =
       OR?: DBFieldFiltersInner<TDBField>;
       NOT?: DBFieldFiltersInner<TDBField>;
     } & DBFieldFiltersInner<TDBField>)
-  | null;
+  | null
 
 export type WhereFieldInputArg<
   TDBField extends DBField,
@@ -278,7 +278,7 @@ export type WhereFieldInputArg<
     //     ) => Promise<any>
     //   : undefined
   >
->;
+>
 
 export type UpdateFieldInputArg<
   TDBField extends DBField,
@@ -297,7 +297,7 @@ export type UpdateFieldInputArg<
     //     ) => Promise<any>
     //   : undefined
   >
->;
+>
 
 type CreateFieldInputResolver<Input, TDBField extends DBField> = FieldInputResolver<
   Input,
@@ -309,7 +309,7 @@ type CreateFieldInputResolver<Input, TDBField extends DBField> = FieldInputResol
   //       input: graphql.InferValueFromArg<graphql.Arg<TypesForList['relateTo'][Mode]['create']>>
   //     ) => Promise<any>
   //   : undefined
->;
+>
 
 export type CreateFieldInputArg<
   TDBField extends DBField,
@@ -326,14 +326,14 @@ export type CreateFieldInputArg<
       }
   : {
       resolve: CreateFieldInputResolver<undefined, TDBField>;
-    });
+    })
 
-type UnwrapMaybePromise<T> = T extends Promise<infer Resolved> ? Resolved : T;
+type UnwrapMaybePromise<T> = T extends Promise<infer Resolved> ? Resolved : T
 
 type ResolveFunc<Func extends (firstArg: any, ...args: any[]) => any> =
   Parameters<Func>[0] extends UnwrapMaybePromise<ReturnType<Func>>
     ? { resolve?: Func }
-    : { resolve: Func };
+    : { resolve: Func }
 
 export type UniqueWhereFieldInputArg<Val, TArg extends graphql.Arg<graphql.InputType>> = {
   arg: TArg;
@@ -342,22 +342,22 @@ export type UniqueWhereFieldInputArg<Val, TArg extends graphql.Arg<graphql.Input
     value: Exclude<graphql.InferValueFromArg<TArg>, undefined | null>,
     context: KeystoneContext
   ) => MaybePromise<Val>
->;
+>
 
 type FieldTypeOutputField<TDBField extends DBField> = graphql.Field<
   { value: DBFieldToOutputValue<TDBField>; item: BaseItem },
   any,
   graphql.OutputType,
   'value'
->;
+>
 
-export type OrderDirection = 'asc' | 'desc';
+export type OrderDirection = 'asc' | 'desc'
 
 type DBFieldToOrderByValue<TDBField extends DBField> = TDBField extends ScalarishDBField
   ? OrderDirection | undefined
   : TDBField extends MultiDBField<infer Fields>
   ? { [Key in keyof Fields]: DBFieldToOrderByValue<Fields[Key]> }
-  : undefined;
+  : undefined
 
 export type FieldTypeWithoutDBField<
   TDBField extends DBField = DBField,
@@ -392,9 +392,9 @@ export type FieldTypeWithoutDBField<
   getAdminMeta?: () => JSONValue;
   unreferencedConcreteInterfaceImplementations?: readonly graphql.ObjectType<any>[];
   __ksTelemetryFieldTypeName?: string;
-} & CommonFieldConfig<ListTypeInfo>;
+} & CommonFieldConfig<ListTypeInfo>
 
-type AnyInputObj = graphql.InputObjectType<Record<string, graphql.Arg<graphql.InputType>>>;
+type AnyInputObj = graphql.InputObjectType<Record<string, graphql.Arg<graphql.InputType>>>
 
 export type GraphQLTypesForList = {
   update: AnyInputObj;
@@ -443,7 +443,7 @@ export type GraphQLTypesForList = {
       }>;
     };
   };
-};
+}
 
 export type FindManyArgs = {
   where: graphql.Arg<graphql.NonNullType<GraphQLTypesForList['where']>, true>;
@@ -454,9 +454,9 @@ export type FindManyArgs = {
   take: graphql.Arg<typeof graphql.Int>;
   skip: graphql.Arg<graphql.NonNullType<typeof graphql.Int>, true>;
   cursor: graphql.Arg<GraphQLTypesForList['uniqueWhere']>;
-};
+}
 
-export type FindManyArgsValue = graphql.InferValueFromArgs<FindManyArgs>;
+export type FindManyArgsValue = graphql.InferValueFromArgs<FindManyArgs>
 
 // fieldType(dbField)(fieldInfo) => { ...fieldInfo, dbField };
 export function fieldType<TDBField extends DBField, ListTypeInfo extends BaseListTypeInfo>(
@@ -487,6 +487,6 @@ export function fieldType<TDBField extends DBField, ListTypeInfo extends BaseLis
     FilterArg,
     ListTypeInfo
   > {
-    return { ...graphQLInfo, dbField };
-  };
+    return { ...graphQLInfo, dbField }
+  }
 }

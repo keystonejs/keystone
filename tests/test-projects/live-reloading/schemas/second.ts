@@ -1,6 +1,6 @@
-import { graphql, list } from '@keystone-6/core';
-import { allowAll } from '@keystone-6/core/access';
-import { text, virtual } from '@keystone-6/core/fields';
+import { graphql, list } from '@keystone-6/core'
+import { allowAll } from '@keystone-6/core/access'
+import { text, virtual } from '@keystone-6/core/fields'
 
 export const lists = {
   Something: list({
@@ -11,13 +11,13 @@ export const lists = {
         field: graphql.field({
           type: graphql.String,
           resolve(item) {
-            return (item as { text: string }).text;
+            return (item as { text: string }).text
           },
         }),
       }),
     },
   }),
-};
+}
 
 export const extendGraphqlSchema = graphql.extend(() => {
   return {
@@ -27,5 +27,5 @@ export const extendGraphqlSchema = graphql.extend(() => {
         resolve: () => 1,
       }),
     },
-  };
-});
+  }
+})

@@ -1,8 +1,8 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { Editor } from 'slate';
-import { jsx, makeEditor } from './tests/utils';
+import { Editor } from 'slate'
+import { jsx, makeEditor } from './tests/utils'
 
 test('inserting a code block with a shortcut works', () => {
   let editor = makeEditor(
@@ -14,10 +14,10 @@ test('inserting a code block with a shortcut works', () => {
         </text>
       </paragraph>
     </editor>
-  );
+  )
 
-  editor.insertText('`');
-  editor.insertText('some content');
+  editor.insertText('`')
+  editor.insertText('some content')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <code>
@@ -30,8 +30,8 @@ test('inserting a code block with a shortcut works', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('insertBreak inserts a soft break', () => {
   let editor = makeEditor(
@@ -46,11 +46,11 @@ test('insertBreak inserts a soft break', () => {
         <text />
       </paragraph>
     </editor>
-  );
+  )
 
-  editor.insertBreak();
+  editor.insertBreak()
 
-  editor.insertText('some text');
+  editor.insertText('some text')
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -66,8 +66,8 @@ test('insertBreak inserts a soft break', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('non-text is removed from code blocks', () => {
   let editor = makeEditor(
@@ -94,17 +94,17 @@ test('non-text is removed from code blocks', () => {
       </paragraph>
     </editor>,
     { normalization: 'skip' }
-  );
+  )
 
-  const { isVoid, isInline } = editor;
+  const { isVoid, isInline } = editor
   editor.isVoid = element => {
-    return (element as any).type === 'inline-void' || isVoid(element);
-  };
+    return (element as any).type === 'inline-void' || isVoid(element)
+  }
   editor.isInline = element => {
-    return (element as any).type === 'inline-void' || isInline(element);
-  };
+    return (element as any).type === 'inline-void' || isInline(element)
+  }
 
-  Editor.normalize(editor, { force: true });
+  Editor.normalize(editor, { force: true })
 
   expect(editor).toMatchInlineSnapshot(`
     <editor
@@ -132,8 +132,8 @@ test('non-text is removed from code blocks', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('insertBreak when at end with \n as last character exits code block', () => {
   let editor = makeEditor(
@@ -148,9 +148,9 @@ test('insertBreak when at end with \n as last character exits code block', () =>
         <text />
       </paragraph>
     </editor>
-  );
+  )
 
-  editor.insertBreak();
+  editor.insertBreak()
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -169,8 +169,8 @@ test('insertBreak when at end with \n as last character exits code block', () =>
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('insertBreak in the middle of the text when there is a break at the end of the text', () => {
   let editor = makeEditor(
@@ -186,12 +186,12 @@ test('insertBreak in the middle of the text when there is a break at the end of 
         <text />
       </paragraph>
     </editor>
-  );
+  )
 
-  editor.insertBreak();
+  editor.insertBreak()
   expect((editor as any).children[0].children[0].text).toMatchInlineSnapshot(`
     "some text
     more text
     "
-  `);
-});
+  `)
+})

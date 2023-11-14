@@ -1,8 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
-import { IconProps } from './util';
+import { IconProps } from './util'
 
 export function RugbyAuLogo(props: IconProps) {
   return (
@@ -37,5 +37,5 @@ export function RugbyAuLogo(props: IconProps) {
         </clipPath>
       </defs>
     </svg>
-  );
+  )
 }

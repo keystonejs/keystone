@@ -1,21 +1,21 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
+import { jsx } from '@keystone-ui/core'
 import {
   CardValueComponent,
   CellComponent,
   FieldController,
   FieldControllerConfig,
-} from '@keystone-6/core/types';
-import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
-import { validateImage } from './Field';
+} from '@keystone-6/core/types'
+import { FieldContainer, FieldLabel } from '@keystone-ui/fields'
+import { validateImage } from './Field'
 
-export { Field } from './Field';
+export { Field } from './Field'
 
 export const Cell: CellComponent = ({ item, field }) => {
-  const data = item[field.path];
-  if (!data) return null;
+  const data = item[field.path]
+  if (!data) return null
   return (
     <div
       css={{
@@ -32,24 +32,24 @@ export const Cell: CellComponent = ({ item, field }) => {
         src={data.publicUrlTransformed}
       />
     </div>
-  );
-};
+  )
+}
 
 export const CardValue: CardValueComponent = ({ item, field }) => {
-  const data = item[field.path];
+  const data = item[field.path]
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
       {data && <img alt={data.filename} src={data.publicUrlTransformed} />}
     </FieldContainer>
-  );
-};
+  )
+}
 
 type ImageData = {
   id: string;
   filename: string;
   publicUrlTransformed: string;
-};
+}
 
 type CloudinaryImageValue =
   | { kind: 'empty' }
@@ -65,9 +65,9 @@ type CloudinaryImageValue =
       };
       previous: CloudinaryImageValue;
     }
-  | { kind: 'remove'; previous: Exclude<CloudinaryImageValue, { kind: 'remove' }> };
+  | { kind: 'remove'; previous: Exclude<CloudinaryImageValue, { kind: 'remove' }> }
 
-type CloudinaryImageController = FieldController<CloudinaryImageValue>;
+type CloudinaryImageController = FieldController<CloudinaryImageValue>
 
 export const controller = (config: FieldControllerConfig): CloudinaryImageController => {
   return {
@@ -81,24 +81,24 @@ export const controller = (config: FieldControllerConfig): CloudinaryImageContro
       }`,
     defaultValue: { kind: 'empty' },
     deserialize(item) {
-      const value = item[config.path];
-      if (!value) return { kind: 'empty' };
+      const value = item[config.path]
+      if (!value) return { kind: 'empty' }
       return {
         kind: 'from-server',
         data: value,
-      };
+      }
     },
     validate(value) {
-      return value.kind !== 'upload' || validateImage(value.data) === undefined;
+      return value.kind !== 'upload' || validateImage(value.data) === undefined
     },
     serialize(value) {
       if (value.kind === 'upload') {
-        return { [config.path]: value.data.file };
+        return { [config.path]: value.data.file }
       }
       if (value.kind === 'remove') {
-        return { [config.path]: null };
+        return { [config.path]: null }
       }
-      return {};
+      return {}
     },
-  };
-};
+  }
+}

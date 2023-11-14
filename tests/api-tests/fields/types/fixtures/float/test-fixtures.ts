@@ -1,15 +1,15 @@
-import { float } from '@keystone-6/core/fields';
+import { float } from '@keystone-6/core/fields'
 
-export const name = 'Float';
-export const typeFunction = float;
-export const exampleValue = () => 6.28;
-export const exampleValue2 = () => 6.283;
-export const supportsNullInput = true;
-export const supportsUnique = true;
-export const fieldName = 'testField';
-export const supportsDbMap = true;
+export const name = 'Float'
+export const typeFunction = float
+export const exampleValue = () => 6.28
+export const exampleValue2 = () => 6.283
+export const supportsNullInput = true
+export const supportsUnique = true
+export const fieldName = 'testField'
+export const supportsDbMap = true
 
-export const getTestFields = () => ({ testField: float() });
+export const getTestFields = () => ({ testField: float() })
 
 export const initItems = () => {
   return [
@@ -20,8 +20,8 @@ export const initItems = () => {
     { name: 'post5', testField: 3 },
     { name: 'post6', testField: null },
     { name: 'post7' },
-  ];
-};
+  ]
+}
 
 export const storedValues = () => [
   { name: 'post1', testField: -21.5 },
@@ -31,4 +31,4 @@ export const storedValues = () => [
   { name: 'post5', testField: 3 },
   { name: 'post6', testField: null },
   { name: 'post7', testField: null },
-];
+]

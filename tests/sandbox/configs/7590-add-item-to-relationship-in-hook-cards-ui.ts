@@ -1,7 +1,7 @@
-import { list, config } from '@keystone-6/core';
-import { allowAll } from '@keystone-6/core/access';
-import { relationship, text } from '@keystone-6/core/fields';
-import { dbConfig } from '../utils';
+import { list, config } from '@keystone-6/core'
+import { allowAll } from '@keystone-6/core/access'
+import { relationship, text } from '@keystone-6/core/fields'
+import { dbConfig } from '../utils'
 
 export const lists = {
   User: list({
@@ -23,7 +23,7 @@ export const lists = {
               create: {
                 value: Math.floor(Math.random() * 100000).toString(),
               },
-            };
+            }
           },
         },
       }),
@@ -36,6 +36,6 @@ export const lists = {
       value: text({ validation: { isRequired: true } }),
     },
   }),
-};
+}
 
-export default config({ db: dbConfig, lists });
+export default config({ db: dbConfig, lists })

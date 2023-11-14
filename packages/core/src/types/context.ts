@@ -1,10 +1,10 @@
-import type { IncomingMessage, ServerResponse } from 'http';
-import type { Readable } from 'stream';
-import type { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql';
-import type { TypedDocumentNode } from '@graphql-typed-document-node/core';
-import type { InitialisedList } from '../lib/core/initialise-lists';
-import type { SessionStrategy } from './session';
-import type { BaseListTypeInfo, BaseKeystoneTypeInfo } from './type-info';
+import type { IncomingMessage, ServerResponse } from 'http'
+import type { Readable } from 'stream'
+import type { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql'
+import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
+import type { InitialisedList } from '../lib/core/initialise-lists'
+import type { SessionStrategy } from './session'
+import type { BaseListTypeInfo, BaseKeystoneTypeInfo } from './type-info'
 
 export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo> = {
   req?: IncomingMessage;
@@ -29,7 +29,7 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
   };
   sessionStrategy?: SessionStrategy<TypeInfo['session'], TypeInfo>;
   session?: TypeInfo['session'];
-};
+}
 
 // List item API
 
@@ -39,7 +39,7 @@ export type KeystoneContext<TypeInfo extends BaseKeystoneTypeInfo = BaseKeystone
 type UniqueWhereInput<ListTypeInfo extends BaseListTypeInfo> =
   false extends ListTypeInfo['isSingleton']
     ? { readonly where: ListTypeInfo['inputs']['uniqueWhere'] }
-    : { readonly where?: ListTypeInfo['inputs']['uniqueWhere'] };
+    : { readonly where?: ListTypeInfo['inputs']['uniqueWhere'] }
 
 export type KeystoneListsAPI<KeystoneListsTypeInfo extends Record<string, BaseListTypeInfo>> = {
   [Key in keyof KeystoneListsTypeInfo]: {
@@ -89,14 +89,14 @@ export type KeystoneListsAPI<KeystoneListsTypeInfo extends Record<string, BaseLi
       } & ResolveFields
     ): Promise<Record<string, any>[]>;
   };
-};
+}
 
 type ResolveFields = {
   /**
    * @default 'id'
    */
   readonly query?: string;
-};
+}
 
 export type KeystoneDbAPI<KeystoneListsTypeInfo extends Record<string, BaseListTypeInfo>> = {
   [Key in keyof KeystoneListsTypeInfo]: {
@@ -138,7 +138,7 @@ export type KeystoneDbAPI<KeystoneListsTypeInfo extends Record<string, BaseListT
       readonly where: readonly KeystoneListsTypeInfo[Key]['inputs']['uniqueWhere'][];
     }): Promise<KeystoneListsTypeInfo[Key]['item'][]>;
   };
-};
+}
 
 // GraphQL API
 
@@ -150,49 +150,49 @@ export type KeystoneGraphQLAPI = {
   raw: <TData, TVariables extends Record<string, any>>(
     args: GraphQLExecutionArguments<TData, TVariables>
   ) => Promise<ExecutionResult<TData>>;
-};
+}
 
 type GraphQLExecutionArguments<TData, TVariables> = {
   query: string | DocumentNode | TypedDocumentNode<TData, TVariables>;
   variables?: TVariables;
-};
+}
 
 // Files API
 
-export type AssetMode = 'local' | 's3';
+export type AssetMode = 'local' | 's3'
 
 export type FileMetadata = {
   filename: string;
   filesize: number;
-};
+}
 
 export type FileData = {
   filename: string;
-} & FileMetadata;
+} & FileMetadata
 
 export type FilesContext = (storage: string) => {
   getUrl: (filename: string) => Promise<string>;
   getDataFromStream: (stream: Readable, filename: string) => Promise<FileData>;
   deleteAtSource: (filename: string) => Promise<void>;
-};
+}
 
 // Images API
 
-export type ImageExtension = 'jpg' | 'png' | 'webp' | 'gif';
+export type ImageExtension = 'jpg' | 'png' | 'webp' | 'gif'
 
 export type ImageMetadata = {
   extension: ImageExtension;
   filesize: number;
   width: number;
   height: number;
-};
+}
 
 export type ImageData = {
   id: string;
-} & ImageMetadata;
+} & ImageMetadata
 
 export type ImagesContext = (storage: string) => {
   getUrl: (id: string, extension: ImageExtension) => Promise<string>;
   getDataFromStream: (stream: Readable, filename: string) => Promise<ImageData>;
   deleteAtSource: (id: string, extension: ImageExtension) => Promise<void>;
-};
+}

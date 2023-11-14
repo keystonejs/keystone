@@ -5,24 +5,24 @@ import {
   BaseListTypeInfo,
   KeystoneContext,
   FileMetadata,
-} from '../../../types';
-import { graphql } from '../../..';
+} from '../../../types'
+import { graphql } from '../../..'
 
 export type FileFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
   storage: string;
   db?: {
     extendPrismaSchema?: (field: string) => string;
   };
-} & CommonFieldConfig<ListTypeInfo>;
+} & CommonFieldConfig<ListTypeInfo>
 
 const FileFieldInput = graphql.inputObject({
   name: 'FileFieldInput',
   fields: {
     upload: graphql.arg({ type: graphql.nonNull(graphql.Upload) }),
   },
-});
+})
 
-const inputArg = graphql.arg({ type: FileFieldInput });
+const inputArg = graphql.arg({ type: FileFieldInput })
 
 const FileFieldOutput = graphql.object<FileMetadata & { storage: string }>()({
   name: 'FileFieldOutput',
@@ -32,11 +32,11 @@ const FileFieldOutput = graphql.object<FileMetadata & { storage: string }>()({
     url: graphql.field({
       type: graphql.nonNull(graphql.String),
       resolve(data, args, context) {
-        return context.files(data.storage).getUrl(data.filename);
+        return context.files(data.storage).getUrl(data.filename)
       },
     }),
   },
-});
+})
 
 async function inputResolver(
   storage: string,
@@ -44,10 +44,10 @@ async function inputResolver(
   context: KeystoneContext
 ) {
   if (data === null || data === undefined) {
-    return { filename: data, filesize: data };
+    return { filename: data, filesize: data }
   }
-  const upload = await data.upload;
-  return context.files(storage).getDataFromStream(upload.createReadStream(), upload.filename);
+  const upload = await data.upload
+  return context.files(storage).getDataFromStream(upload.createReadStream(), upload.filename)
 }
 
 export const file =
@@ -55,16 +55,16 @@ export const file =
     config: FileFieldConfig<ListTypeInfo>
   ): FieldTypeFunc<ListTypeInfo> =>
   meta => {
-    const storage = meta.getStorage(config.storage);
+    const storage = meta.getStorage(config.storage)
 
     if (!storage) {
       throw new Error(
         `${meta.listKey}.${meta.fieldKey} has storage set to ${config.storage}, but no storage configuration was found for that key`
-      );
+      )
     }
 
     if ('isIndexed' in config) {
-      throw Error("isIndexed: 'unique' is not a supported option for field type file");
+      throw Error("isIndexed: 'unique' is not a supported option for field type file")
     }
 
     return fieldType({
@@ -81,10 +81,10 @@ export const file =
         : {
             ...config.hooks,
             async beforeOperation(args) {
-              await config.hooks?.beforeOperation?.(args);
+              await config.hooks?.beforeOperation?.(args)
               if (args.operation === 'update' || args.operation === 'delete') {
-                const filenameKey = `${meta.fieldKey}_filename`;
-                const filename = args.item[filenameKey];
+                const filenameKey = `${meta.fieldKey}_filename`
+                const filename = args.item[filenameKey]
 
                 // This will occur on an update where a file already existed but has been
                 // changed, or on a delete, where there is no longer an item
@@ -94,7 +94,7 @@ export const file =
                     args.resolvedData[meta.fieldKey].filename === null) &&
                   typeof filename === 'string'
                 ) {
-                  await args.context.files(config.storage).deleteAtSource(filename);
+                  await args.context.files(config.storage).deleteAtSource(filename)
                 }
               }
             },
@@ -113,12 +113,12 @@ export const file =
         type: FileFieldOutput,
         resolve({ value: { filesize, filename } }) {
           if (filesize === null || filename === null) {
-            return null;
+            return null
           }
-          return { filename, filesize, storage: config.storage };
+          return { filename, filesize, storage: config.storage }
         },
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/file',
       views: '@keystone-6/core/fields/types/file/views',
-    });
-  };
+    })
+  }

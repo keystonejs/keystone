@@ -1,5 +1,5 @@
-import { list, graphql, config, group } from '@keystone-6/core';
-import { allowAll } from '@keystone-6/core/access';
+import { list, graphql, config, group } from '@keystone-6/core'
+import { allowAll } from '@keystone-6/core/access'
 import {
   checkbox,
   password,
@@ -16,16 +16,16 @@ import {
   bigInt,
   calendarDay,
   multiselect,
-} from '@keystone-6/core/fields';
-import { document, structure } from '@keystone-6/fields-document';
-import { componentBlocks } from '../component-blocks';
-import { schema as structureSchema } from '../structure';
-import { schema as structureNestedSchema } from '../structure-nested';
-import { schema as structureRelationshipsSchema } from '../structure-relationships';
-import { dbConfig, localStorageConfig, trackingFields } from '../utils';
+} from '@keystone-6/core/fields'
+import { document, structure } from '@keystone-6/fields-document'
+import { componentBlocks } from '../component-blocks'
+import { schema as structureSchema } from '../structure'
+import { schema as structureNestedSchema } from '../structure-nested'
+import { schema as structureRelationshipsSchema } from '../structure-relationships'
+import { dbConfig, localStorageConfig, trackingFields } from '../utils'
 
 const description =
-  'Some thing to describe to test the length of the text for width, blah blah blah blah blah blah blah blah blah';
+  'Some thing to describe to test the length of the text for width, blah blah blah blah blah blah blah blah blah'
 
 export const lists = {
   Thing: list({
@@ -93,7 +93,7 @@ export const lists = {
         field: graphql.field({
           type: graphql.Float,
           resolve() {
-            return Math.random() * 1000;
+            return Math.random() * 1000
           },
         }),
       }),
@@ -219,10 +219,10 @@ export const lists = {
       plural: 'ManySettings',
     },
   }),
-};
+}
 
 export default config({
   db: dbConfig,
   storage: localStorageConfig,
   lists,
-});
+})

@@ -1,8 +1,8 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { component, fields } from '../../component-blocks';
-import { jsx, makeEditor } from '../tests/utils';
+import { component, fields } from '../../component-blocks'
+import { jsx, makeEditor } from '../tests/utils'
 
 const componentBlocks = {
   basic: component({
@@ -41,7 +41,7 @@ const componentBlocks = {
       }),
     },
   }),
-};
+}
 
 test('delete backward at start', () => {
   let editor = makeEditor(
@@ -67,8 +67,8 @@ test('delete backward at start', () => {
       </paragraph>
     </editor>,
     { componentBlocks }
-  );
-  editor.deleteBackward('character');
+  )
+  editor.deleteBackward('character')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
@@ -86,8 +86,8 @@ test('delete backward at start', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('insert break in last (inline) child prop', () => {
   let editor = makeEditor(
@@ -113,8 +113,8 @@ test('insert break in last (inline) child prop', () => {
       </paragraph>
     </editor>,
     { componentBlocks }
-  );
-  editor.insertBreak();
+  )
+  editor.insertBreak()
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -162,8 +162,8 @@ test('insert break in last (inline) child prop', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('insert break in first (block) child prop in empty paragraph', () => {
   let editor = makeEditor(
@@ -191,8 +191,8 @@ test('insert break in first (block) child prop in empty paragraph', () => {
       </paragraph>
     </editor>,
     { componentBlocks }
-  );
-  editor.insertBreak();
+  )
+  editor.insertBreak()
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -235,8 +235,8 @@ test('insert break in first (block) child prop in empty paragraph', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('insert break in last (block) child prop in empty paragraph', () => {
   let editor = makeEditor(
@@ -264,8 +264,8 @@ test('insert break in last (block) child prop in empty paragraph', () => {
       </paragraph>
     </editor>,
     { componentBlocks }
-  );
-  editor.insertBreak();
+  )
+  editor.insertBreak()
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -312,8 +312,8 @@ test('insert break in last (block) child prop in empty paragraph', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('insert break in first (inline) child prop', () => {
   let editor = makeEditor(
@@ -339,8 +339,8 @@ test('insert break in first (inline) child prop', () => {
       </paragraph>
     </editor>,
     { componentBlocks }
-  );
-  editor.insertBreak();
+  )
+  editor.insertBreak()
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -388,5 +388,5 @@ test('insert break in first (inline) child prop', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})

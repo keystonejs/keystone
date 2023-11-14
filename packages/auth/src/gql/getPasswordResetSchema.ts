@@ -1,16 +1,16 @@
-import { graphql } from '@keystone-6/core';
-import type { AuthGqlNames, AuthTokenTypeConfig, SecretFieldImpl } from '../types';
+import { graphql } from '@keystone-6/core'
+import type { AuthGqlNames, AuthTokenTypeConfig, SecretFieldImpl } from '../types'
 
-import { createAuthToken } from '../lib/createAuthToken';
-import { validateAuthToken } from '../lib/validateAuthToken';
-import { getAuthTokenErrorMessage } from '../lib/getErrorMessage';
+import { createAuthToken } from '../lib/createAuthToken'
+import { validateAuthToken } from '../lib/validateAuthToken'
+import { getAuthTokenErrorMessage } from '../lib/getErrorMessage'
 
-const errorCodes = ['FAILURE', 'TOKEN_EXPIRED', 'TOKEN_REDEEMED'] as const;
+const errorCodes = ['FAILURE', 'TOKEN_EXPIRED', 'TOKEN_REDEEMED'] as const
 
 const PasswordResetRedemptionErrorCode = graphql.enum({
   name: 'PasswordResetRedemptionErrorCode',
   values: graphql.enumValues(errorCodes),
-});
+})
 
 export function getPasswordResetSchema<I extends string, S extends string>({
   listKey,
@@ -35,26 +35,26 @@ export function getPasswordResetSchema<I extends string, S extends string>({
         code: graphql.field({ type: graphql.nonNull(PasswordResetRedemptionErrorCode) }),
         message: graphql.field({ type: graphql.nonNull(graphql.String) }),
       },
-    });
+    })
   const ValidateItemPasswordResetTokenResult = getResult(
     gqlNames.ValidateItemPasswordResetTokenResult
-  );
-  const RedeemItemPasswordResetTokenResult = getResult(gqlNames.RedeemItemPasswordResetTokenResult);
+  )
+  const RedeemItemPasswordResetTokenResult = getResult(gqlNames.RedeemItemPasswordResetTokenResult)
   return {
     mutation: {
       [gqlNames.sendItemPasswordResetLink]: graphql.field({
         type: graphql.nonNull(graphql.Boolean),
         args: { [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }) },
         async resolve(rootVal, { [identityField]: identity }, context) {
-          const dbItemAPI = context.sudo().db[listKey];
-          const tokenType = 'passwordReset';
+          const dbItemAPI = context.sudo().db[listKey]
+          const tokenType = 'passwordReset'
 
-          const result = await createAuthToken(identityField, identity, dbItemAPI);
+          const result = await createAuthToken(identityField, identity, dbItemAPI)
 
           // Update system state
           if (result.success) {
             // Save the token and related info back to the item
-            const { token, itemId } = result;
+            const { token, itemId } = result
             await dbItemAPI.updateOne({
               where: { id: `${itemId}` },
               data: {
@@ -62,11 +62,11 @@ export function getPasswordResetSchema<I extends string, S extends string>({
                 [`${tokenType}IssuedAt`]: new Date().toISOString(),
                 [`${tokenType}RedeemedAt`]: null,
               },
-            });
+            })
 
-            await passwordResetLink.sendToken({ itemId, identity, token, context });
+            await passwordResetLink.sendToken({ itemId, identity, token, context })
           }
-          return true;
+          return true
         },
       }),
       [gqlNames.redeemItemPasswordResetToken]: graphql.field({
@@ -81,8 +81,8 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           { [identityField]: identity, token, [secretField]: secret },
           context
         ) {
-          const dbItemAPI = context.sudo().db[listKey];
-          const tokenType = 'passwordReset';
+          const dbItemAPI = context.sudo().db[listKey]
+          const tokenType = 'passwordReset'
           const result = await validateAuthToken(
             listKey,
             passwordResetTokenSecretFieldImpl,
@@ -92,19 +92,19 @@ export function getPasswordResetSchema<I extends string, S extends string>({
             passwordResetLink.tokensValidForMins,
             token,
             dbItemAPI
-          );
+          )
 
           if (!result.success) {
-            return { code: result.code, message: getAuthTokenErrorMessage({ code: result.code }) };
+            return { code: result.code, message: getAuthTokenErrorMessage({ code: result.code }) }
           }
 
           // Update system state
-          const itemId = result.item.id;
+          const itemId = result.item.id
           // Save the token and related info back to the item
           await dbItemAPI.updateOne({
             where: { id: itemId },
             data: { [`${tokenType}RedeemedAt`]: new Date().toISOString() },
-          });
+          })
 
           // Save the provided secret. Do this as a separate step as password validation
           // may fail, in which case we still want to mark the token as redeemed
@@ -112,9 +112,9 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           await dbItemAPI.updateOne({
             where: { id: itemId },
             data: { [secretField]: secret },
-          });
+          })
 
-          return null;
+          return null
         },
       }),
     },
@@ -126,8 +126,8 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           token: graphql.arg({ type: graphql.nonNull(graphql.String) }),
         },
         async resolve(rootVal, { [identityField]: identity, token }, context) {
-          const dbItemAPI = context.sudo().db[listKey];
-          const tokenType = 'passwordReset';
+          const dbItemAPI = context.sudo().db[listKey]
+          const tokenType = 'passwordReset'
           const result = await validateAuthToken(
             listKey,
             passwordResetTokenSecretFieldImpl,
@@ -137,14 +137,14 @@ export function getPasswordResetSchema<I extends string, S extends string>({
             passwordResetLink.tokensValidForMins,
             token,
             dbItemAPI
-          );
+          )
 
           if (!result.success) {
-            return { code: result.code, message: getAuthTokenErrorMessage({ code: result.code }) };
+            return { code: result.code, message: getAuthTokenErrorMessage({ code: result.code }) }
           }
-          return null;
+          return null
         },
       }),
     },
-  };
+  }
 }

@@ -9,37 +9,37 @@ import {
   useRef,
   ReactNode,
   RefObject,
-} from 'react';
-import { useRouter } from 'next/router';
-import { jsx } from '@emotion/react';
-import Link from 'next/link';
-import debounce from 'lodash.debounce';
+} from 'react'
+import { useRouter } from 'next/router'
+import { jsx } from '@emotion/react'
+import Link from 'next/link'
+import debounce from 'lodash.debounce'
 
-import { BREAK_POINTS } from '../lib/media';
-import { useMediaQuery } from '../lib/media';
-import { SearchField } from './primitives/SearchField';
-import { Highlight } from './primitives/Highlight';
-import { Wrapper } from './primitives/Wrapper';
-import { Hamburger } from './icons/Hamburger';
-import { Button } from './primitives/Button';
-import { NavItem } from './docs/Navigation';
-import { ThemeToggle } from './ThemeToggle';
-import { Keystone } from './icons/Keystone';
-import { MobileMenu } from './MobileMenu';
-import { GitHub } from './icons/GitHub';
-import { ArrowR } from './icons/ArrowR';
+import { BREAK_POINTS } from '../lib/media'
+import { useMediaQuery } from '../lib/media'
+import { SearchField } from './primitives/SearchField'
+import { Highlight } from './primitives/Highlight'
+import { Wrapper } from './primitives/Wrapper'
+import { Hamburger } from './icons/Hamburger'
+import { Button } from './primitives/Button'
+import { NavItem } from './docs/Navigation'
+import { ThemeToggle } from './ThemeToggle'
+import { Keystone } from './icons/Keystone'
+import { MobileMenu } from './MobileMenu'
+import { GitHub } from './icons/GitHub'
+import { ArrowR } from './icons/ArrowR'
 // TODO: Add in search for mobile via this button
 // import { Search } from './icons/Search';
 
-type HeaderContextType = { mobileNavIsOpen: boolean; desktopOpenState: number };
+type HeaderContextType = { mobileNavIsOpen: boolean; desktopOpenState: number }
 const HeaderContext = createContext<HeaderContextType>({
   mobileNavIsOpen: false,
   desktopOpenState: -1,
-});
-export const useHeaderContext = () => useContext(HeaderContext);
+})
+export const useHeaderContext = () => useContext(HeaderContext)
 
 function Logo() {
-  const mq = useMediaQuery();
+  const mq = useMediaQuery()
 
   return (
     <div
@@ -71,22 +71,22 @@ function Logo() {
         <Highlight>Keystone 6</Highlight>
       </Link>
     </div>
-  );
+  )
 }
 
 function useCurrentSection() {
-  const { pathname } = useRouter();
-  const check = (candidate: string) => pathname.startsWith(candidate);
-  if (['/updates', '/releases'].some(check)) return '/updates';
-  if (['/why-keystone', '/for-'].some(check)) return '/why-keystone';
-  if (['/docs'].some(check)) return '/docs';
-  if (['/blog'].some(check)) return '/blog';
+  const { pathname } = useRouter()
+  const check = (candidate: string) => pathname.startsWith(candidate)
+  if (['/updates', '/releases'].some(check)) return '/updates'
+  if (['/why-keystone', '/for-'].some(check)) return '/why-keystone'
+  if (['/docs'].some(check)) return '/docs'
+  if (['/blog'].some(check)) return '/blog'
 }
 
 function LinkItem({ children, href }: { children: ReactNode; href: string }) {
-  const mq = useMediaQuery();
-  const currentSection = useCurrentSection();
-  const isActive = href === currentSection;
+  const mq = useMediaQuery()
+  const currentSection = useCurrentSection()
+  const isActive = href === currentSection
 
   return (
     <span css={mq({ display: ['none', 'inline'], fontWeight: 600 })}>
@@ -101,7 +101,7 @@ function LinkItem({ children, href }: { children: ReactNode; href: string }) {
         {children}
       </NavItem>
     </span>
-  );
+  )
 }
 
 function useClickOutside(ref: RefObject<HTMLElement>, cb: () => void) {
@@ -111,14 +111,14 @@ function useClickOutside(ref: RefObject<HTMLElement>, cb: () => void) {
      */
     function handleClickOutside(event: MouseEvent) {
       if (ref.current && !ref.current.contains(event.target as Node)) {
-        cb();
+        cb()
       }
     }
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside)
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [ref, cb]);
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [ref, cb])
 }
 
 function FlatMenu({
@@ -128,21 +128,21 @@ function FlatMenu({
   label: string;
   items: Array<{ label: string; href: string }>;
 }) {
-  const mq = useMediaQuery();
-  const menuRef = useRef(null);
-  const [showContent, setShowContent] = useState(false);
+  const mq = useMediaQuery()
+  const menuRef = useRef(null)
+  const [showContent, setShowContent] = useState(false)
 
   const onClickHandler = useCallback(() => {
-    setShowContent(b => !b);
-  }, [setShowContent]);
+    setShowContent(b => !b)
+  }, [setShowContent])
 
   const closeMenu = useCallback(() => {
     if (showContent === true) {
-      setShowContent(false);
+      setShowContent(false)
     }
-  }, [showContent, setShowContent]);
+  }, [showContent, setShowContent])
 
-  useClickOutside(menuRef, closeMenu);
+  useClickOutside(menuRef, closeMenu)
 
   return (
     <div
@@ -215,57 +215,57 @@ function FlatMenu({
                 </NavItem>
               </span>
             </span>
-          );
+          )
         })}
       </div>
     </div>
-  );
+  )
 }
 export function Header() {
-  const mq = useMediaQuery();
-  const router = useRouter();
+  const mq = useMediaQuery()
+  const router = useRouter()
 
-  const menuRef = useRef<HTMLDivElement>(null);
-  const headerRef = useRef<HTMLElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null)
+  const headerRef = useRef<HTMLElement>(null)
 
-  const [mobileNavIsOpen, setMobileNavIsOpen] = useState(false);
-  const [desktopOpenState, setDesktopOpenState] = useState(-1);
+  const [mobileNavIsOpen, setMobileNavIsOpen] = useState(false)
+  const [desktopOpenState, setDesktopOpenState] = useState(-1)
 
   useEffect(() => {
     const listener = () => {
-      setMobileNavIsOpen(false);
-      setDesktopOpenState(-1);
+      setMobileNavIsOpen(false)
+      setDesktopOpenState(-1)
       const width = Math.max(
         document.body.scrollWidth,
         document.documentElement.scrollWidth,
         document.body.offsetWidth,
         document.documentElement.offsetWidth,
         document.documentElement.clientWidth
-      );
+      )
       if (width > BREAK_POINTS.sm) {
-        setDesktopOpenState(-1);
+        setDesktopOpenState(-1)
       } else {
-        setDesktopOpenState(-1);
+        setDesktopOpenState(-1)
       }
-    };
-    window.addEventListener('resize', debounce(listener, 130));
+    }
+    window.addEventListener('resize', debounce(listener, 130))
 
     return () => {
-      window.removeEventListener('resize', debounce(listener, 130));
-    };
-  }, [setDesktopOpenState]);
+      window.removeEventListener('resize', debounce(listener, 130))
+    }
+  }, [setDesktopOpenState])
 
   useEffect(() => {
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = 'auto'
     // search - init field
-    let searchAttempt = 0;
+    let searchAttempt = 0
     // @ts-ignore
-    document.getElementById('search-field').disabled = true;
+    document.getElementById('search-field').disabled = true
     const loadSearch = (searchAttempt: number) => {
       // @ts-ignore
       if (window.docsearch && searchAttempt < 10) {
         // @ts-ignore
-        document.getElementById('search-field').disabled = false;
+        document.getElementById('search-field').disabled = false
         // @ts-ignore
         window.docsearch({
           appId: 'N3ZF861Q5G',
@@ -276,63 +276,63 @@ export function Header() {
             facetFilters: ['tags:stable'],
           },
           transformData: (results: any) => {
-            if (window.location.hostname == 'keystonejs.com') return results;
+            if (window.location.hostname == 'keystonejs.com') return results
             return results.map((result: object) => {
               // @ts-ignore
-              result.url = result.url.replace('https://keystonejs.com', window.location.origin);
-              return result;
-            });
+              result.url = result.url.replace('https://keystonejs.com', window.location.origin)
+              return result
+            })
           },
-        });
+        })
       } else if (searchAttempt >= 10) {
         // @ts-ignore
-        document.getElementById('search-field-container').style.visibility = 'hidden';
+        document.getElementById('search-field-container').style.visibility = 'hidden'
       } else {
-        setTimeout(() => loadSearch(searchAttempt++), 500);
+        setTimeout(() => loadSearch(searchAttempt++), 500)
       }
-    };
+    }
     // yoo hooo
-    loadSearch(searchAttempt);
+    loadSearch(searchAttempt)
     // search - keyboard shortcut
-    let keysPressed: { [key: KeyboardEvent['key']]: boolean } = {};
+    let keysPressed: { [key: KeyboardEvent['key']]: boolean } = {}
     document.body.addEventListener('keydown', event => {
       // If we're typing in an input, don't ever focus the search input
       if (
         document.activeElement &&
         ['TEXTAREA', 'INPUT'].includes(document.activeElement.nodeName)
       ) {
-        return;
+        return
       }
 
-      keysPressed[event.key] = true;
+      keysPressed[event.key] = true
       if (keysPressed['Meta'] && event.key == 'k') {
-        event.preventDefault();
-        document.getElementById('search-field')?.focus();
+        event.preventDefault()
+        document.getElementById('search-field')?.focus()
       }
-    });
+    })
     document.body.addEventListener('keyup', event => {
-      delete keysPressed[event.key];
-    });
-  }, []);
+      delete keysPressed[event.key]
+    })
+  }, [])
 
   const handleOpen = useCallback(() => {
-    setMobileNavIsOpen(true);
-    document.body.style.overflow = 'hidden';
-    document.getElementById('mobile-menu-close-btn')?.focus();
-  }, []);
+    setMobileNavIsOpen(true)
+    document.body.style.overflow = 'hidden'
+    document.getElementById('mobile-menu-close-btn')?.focus()
+  }, [])
 
   const handleClose = useCallback(() => {
-    setMobileNavIsOpen(false);
-    document.body.style.overflow = 'auto';
-    document.getElementById('skip-link-navigation-btn')?.focus();
-  }, []);
+    setMobileNavIsOpen(false)
+    document.body.style.overflow = 'auto'
+    document.getElementById('skip-link-navigation-btn')?.focus()
+  }, [])
 
   useEffect(() => {
-    router.events.on('routeChangeComplete', handleClose);
+    router.events.on('routeChangeComplete', handleClose)
     return () => {
-      router.events.off('routeChangeComplete', handleClose);
-    };
-  }, [router.events, handleClose]);
+      router.events.off('routeChangeComplete', handleClose)
+    }
+  }, [router.events, handleClose])
 
   return (
     <header ref={headerRef}>
@@ -491,5 +491,5 @@ export function Header() {
         </HeaderContext.Provider>
       </Wrapper>
     </header>
-  );
+  )
 }

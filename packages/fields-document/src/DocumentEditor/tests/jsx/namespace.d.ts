@@ -1,14 +1,14 @@
-import { Node } from 'slate';
-import { ReadonlyPropPath } from '../../component-blocks/utils';
-import { Mark } from '../../utils';
+import { Node } from 'slate'
+import { ReadonlyPropPath } from '../../component-blocks/utils'
+import { Mark } from '../../utils'
 
-export const __jsx: any;
+export const __jsx: any
 
-type Children = Node | string | (Node | string)[];
+type Children = Node | string | (Node | string)[]
 
-type OnlyChildren = { children: Children };
+type OnlyChildren = { children: Children }
 
-type ComponentProp = { children: Children; propPath?: ReadonlyPropPath };
+type ComponentProp = { children: Children; propPath?: ReadonlyPropPath }
 declare namespace __jsx {
   namespace JSX {
     interface IntrinsicElements {
@@ -57,7 +57,7 @@ declare namespace __jsx {
         children: Children;
       };
     }
-    type Element = Node;
+    type Element = Node
     interface ElementAttributesProperty {
       props: {};
     }

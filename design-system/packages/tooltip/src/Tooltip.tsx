@@ -13,12 +13,12 @@ import {
   useCallback,
   useMemo,
   ReactNode,
-} from 'react';
-import { applyRefs } from 'apply-ref';
-import { jsx, useId, useTheme, Portal } from '@keystone-ui/core';
-import { usePopover } from '@keystone-ui/popover';
+} from 'react'
+import { applyRefs } from 'apply-ref'
+import { jsx, useId, useTheme, Portal } from '@keystone-ui/core'
+import { usePopover } from '@keystone-ui/popover'
 
-type Weights = 'bold' | 'subtle';
+type Weights = 'bold' | 'subtle'
 
 type RenderProps = {
   onMouseEnter: () => void;
@@ -27,7 +27,7 @@ type RenderProps = {
   onBlur: () => void;
   'aria-describedby': string | undefined;
   ref: Ref<any>;
-};
+}
 
 type Props = {
   /** The target element. */
@@ -40,7 +40,7 @@ type Props = {
   placement?: 'top' | 'right' | 'bottom' | 'left';
   /** The visual weight of the tooltip. */
   weight?: Weights;
-};
+}
 
 export const Tooltip = ({
   children,
@@ -49,8 +49,8 @@ export const Tooltip = ({
   placement = 'top',
   weight = 'bold',
 }: Props) => {
-  const { spacing } = useTheme();
-  const isBold = weight === 'bold';
+  const { spacing } = useTheme()
+  const isBold = weight === 'bold'
 
   const { isOpen, setOpen, trigger, dialog, arrow } = usePopover({
     placement,
@@ -62,23 +62,23 @@ export const Tooltip = ({
         },
       },
     ],
-  });
+  })
 
-  const tooltipId = useId();
-  const showTooltip = useCallback(() => setOpen(true), [setOpen]);
-  const hideTooltip = useCallback(() => setOpen(false), [setOpen]);
-  const internalRef = useRef<HTMLElement>(null);
+  const tooltipId = useId()
+  const showTooltip = useCallback(() => setOpen(true), [setOpen])
+  const hideTooltip = useCallback(() => setOpen(false), [setOpen])
+  const internalRef = useRef<HTMLElement>(null)
 
   // avoid overriding the consumer's `onClick` handler
   useEffect(() => {
-    const triggerEl = internalRef.current;
+    const triggerEl = internalRef.current
 
     if (hideOnClick && triggerEl) {
-      triggerEl.addEventListener('click', hideTooltip);
+      triggerEl.addEventListener('click', hideTooltip)
 
-      return () => triggerEl.removeEventListener('click', hideTooltip);
+      return () => triggerEl.removeEventListener('click', hideTooltip)
     }
-  }, [isOpen, hideOnClick, hideTooltip]);
+  }, [isOpen, hideOnClick, hideTooltip])
 
   return (
     <Fragment>
@@ -105,8 +105,8 @@ export const Tooltip = ({
         {content}
       </TooltipElement>
     </Fragment>
-  );
-};
+  )
+}
 
 // Styled Component
 // ------------------------------
@@ -127,14 +127,14 @@ type ElementProps = {
       style: CSSProperties;
     };
   };
-};
+}
 
 export const TooltipElement = memo(
   forwardRef<HTMLDivElement, ElementProps>(
     ({ isVisible, children, arrow, weight, ...props }, consumerRef) => {
-      const isBold = weight === 'bold';
-      const { elevation, radii, colors, spacing, typography } = useTheme();
-      const arrowStyles = useArrowStyles();
+      const isBold = weight === 'bold'
+      const { elevation, radii, colors, spacing, typography } = useTheme()
+      const arrowStyles = useArrowStyles()
 
       return (
         <Portal>
@@ -166,13 +166,13 @@ export const TooltipElement = memo(
             )}
           </div>
         </Portal>
-      );
+      )
     }
   )
-);
+)
 
 const useArrowStyles = () => {
-  const { colors } = useTheme();
+  const { colors } = useTheme()
   return {
     '.tooltipArrow': {
       position: 'absolute',
@@ -219,5 +219,5 @@ const useArrowStyles = () => {
         left: '50%',
       },
     },
-  } as const;
-};
+  } as const
+}

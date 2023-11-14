@@ -1,7 +1,7 @@
-import { list } from '@keystone-6/core';
-import { allowAll } from '@keystone-6/core/access';
-import { checkbox, relationship, text, timestamp } from '@keystone-6/core/fields';
-import { select } from '@keystone-6/core/fields';
+import { list } from '@keystone-6/core'
+import { allowAll } from '@keystone-6/core/access'
+import { checkbox, relationship, text, timestamp } from '@keystone-6/core/fields'
+import { select } from '@keystone-6/core/fields'
 
 export const lists = {
   Task: list({
@@ -9,8 +9,8 @@ export const lists = {
       operation: allowAll,
       item: {
         delete: async ({ item }) => {
-          const matchString = (item.label as string).replace(/([\d])+/g, '').trim();
-          return !['do not delete', 'do not destroy', 'do not kill'].includes(matchString);
+          const matchString = (item.label as string).replace(/([\d])+/g, '').trim()
+          return !['do not delete', 'do not destroy', 'do not kill'].includes(matchString)
         },
       },
     },
@@ -36,4 +36,4 @@ export const lists = {
       tasks: relationship({ ref: 'Task.assignedTo', many: true }),
     },
   }),
-};
+}

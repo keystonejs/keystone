@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const ScissorsIcon = createIcon(
   <React.Fragment>
     <circle cx={6} cy={6} r={3} />
@@ -9,4 +9,4 @@ export const ScissorsIcon = createIcon(
     <line x1={8.12} y1={8.12} x2={12} y2={12} />
   </React.Fragment>,
   'ScissorsIcon'
-);
+)

@@ -1,14 +1,14 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Button } from '@keystone-ui/button';
-import { jsx, Box, Heading, useTheme, makeId, useId } from '@keystone-ui/core';
-import { DialogBase } from './DialogBase';
+import { Button } from '@keystone-ui/button'
+import { jsx, Box, Heading, useTheme, makeId, useId } from '@keystone-ui/core'
+import { DialogBase } from './DialogBase'
 
 type Action = {
   action: () => void;
   label: string;
-};
+}
 
 type AlertDialogProps = {
   actions: {
@@ -20,7 +20,7 @@ type AlertDialogProps = {
   children: React.ReactNode;
   title: string;
   tone?: 'negative' | 'active';
-};
+}
 
 export const AlertDialog = ({
   actions,
@@ -30,18 +30,18 @@ export const AlertDialog = ({
   id,
   tone = 'active',
 }: AlertDialogProps) => {
-  const { cancel, confirm } = actions;
-  const theme = useTheme();
-  const instanceId = useId(id);
-  const headingId = makeId('heading', instanceId);
+  const { cancel, confirm } = actions
+  const theme = useTheme()
+  const instanceId = useId(id)
+  const headingId = makeId('heading', instanceId)
 
   const onClose = () => {
     if (actions.cancel) {
-      actions.cancel.action();
+      actions.cancel.action()
     } else {
-      actions.confirm.action();
+      actions.confirm.action()
     }
-  };
+  }
 
   return (
     <DialogBase isOpen={isOpen} onClose={onClose} width={440} aria-labelledby={headingId}>
@@ -76,5 +76,5 @@ export const AlertDialog = ({
         </div>
       </div>
     </DialogBase>
-  );
-};
+  )
+}

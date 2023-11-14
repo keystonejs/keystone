@@ -1,7 +1,7 @@
-import { graphql } from '@keystone-6/core';
-import { FieldData } from '@keystone-6/core/types';
-import { ComponentSchemaForGraphQL } from './DocumentEditor/component-blocks/api';
-import { assertNever } from './DocumentEditor/component-blocks/utils';
+import { graphql } from '@keystone-6/core'
+import { FieldData } from '@keystone-6/core/types'
+import { ComponentSchemaForGraphQL } from './DocumentEditor/component-blocks/api'
+import { assertNever } from './DocumentEditor/component-blocks/utils'
 
 function wrapGraphQLFieldInResolver<InputSource, OutputSource>(
   inputField: graphql.Field<
@@ -24,13 +24,13 @@ function wrapGraphQLFieldInResolver<InputSource, OutputSource>(
     description: inputField.description,
     extensions: inputField.extensions as any,
     resolve(value, args, context, info) {
-      const val = getVal(value);
+      const val = getVal(value)
       if (!inputField.resolve) {
-        return val;
+        return val
       }
-      return inputField.resolve({ value: val }, args, context, info);
+      return inputField.resolve({ value: val }, args, context, info)
     },
-  });
+  })
 }
 
 type OutputField = graphql.Field<
@@ -38,7 +38,7 @@ type OutputField = graphql.Field<
   Record<string, graphql.Arg<graphql.InputType, boolean>>,
   graphql.OutputType,
   string
->;
+>
 
 export function getOutputGraphQLField(
   name: string,
@@ -48,10 +48,10 @@ export function getOutputGraphQLField(
   meta: FieldData
 ) {
   if (!cache.has(schema)) {
-    const res = getOutputGraphQLFieldInner(name, schema, interfaceImplementations, cache, meta);
-    cache.set(schema, res);
+    const res = getOutputGraphQLFieldInner(name, schema, interfaceImplementations, cache, meta)
+    cache.set(schema, res)
   }
-  return cache.get(schema)!;
+  return cache.get(schema)!
 }
 
 function getOutputGraphQLFieldInner(
@@ -62,7 +62,7 @@ function getOutputGraphQLFieldInner(
   meta: FieldData
 ): OutputField {
   if (schema.kind === 'form') {
-    return wrapGraphQLFieldInResolver(schema.graphql.output, x => x.value);
+    return wrapGraphQLFieldInResolver(schema.graphql.output, x => x.value)
   }
   if (schema.kind === 'object') {
     return graphql.field({
@@ -78,16 +78,16 @@ function getOutputGraphQLFieldInner(
                   interfaceImplementations,
                   cache,
                   meta
-                );
-                return [key, wrapGraphQLFieldInResolver(field, source => (source as any)[key])];
+                )
+                return [key, wrapGraphQLFieldInResolver(field, source => (source as any)[key])]
               }
             )
           ),
       }),
       resolve({ value }) {
-        return value;
+        return value
       },
-    });
+    })
   }
   if (schema.kind === 'array') {
     const innerField = getOutputGraphQLField(
@@ -96,8 +96,8 @@ function getOutputGraphQLFieldInner(
       interfaceImplementations,
       cache,
       meta
-    );
-    const resolve = innerField.resolve;
+    )
+    const resolve = innerField.resolve
 
     return graphql.field({
       type: graphql.list(innerField.type),
@@ -107,14 +107,14 @@ function getOutputGraphQLFieldInner(
       extensions: innerField.extensions,
       resolve({ value }, args, context, info) {
         if (!resolve) {
-          return value as unknown[];
+          return value as unknown[]
         }
-        return (value as unknown[]).map(val => resolve({ value: val }, args, context, info));
+        return (value as unknown[]).map(val => resolve({ value: val }, args, context, info))
       },
-    });
+    })
   }
   if (schema.kind === 'conditional') {
-    let discriminantField: OutputField;
+    let discriminantField: OutputField
 
     const getDiscriminantField = () => {
       if (!discriminantField) {
@@ -124,26 +124,26 @@ function getOutputGraphQLFieldInner(
           interfaceImplementations,
           cache,
           meta
-        );
+        )
       }
-      return discriminantField;
-    };
-    type SourceType = { discriminant: string | boolean; value: unknown };
+      return discriminantField
+    }
+    type SourceType = { discriminant: string | boolean; value: unknown }
 
     const interfaceType = graphql.interface<SourceType>()({
       name,
       resolveType: value => {
-        const stringifiedDiscriminant = value.discriminant.toString();
-        return name + stringifiedDiscriminant[0].toUpperCase() + stringifiedDiscriminant.slice(1);
+        const stringifiedDiscriminant = value.discriminant.toString()
+        return name + stringifiedDiscriminant[0].toUpperCase() + stringifiedDiscriminant.slice(1)
       },
       fields: () => ({
         discriminant: getDiscriminantField(),
       }),
-    });
+    })
 
     interfaceImplementations.push(
       ...Object.entries(schema.values).map(([key, val]): graphql.ObjectType<SourceType> => {
-        const innerName = name + key[0].toUpperCase() + key.slice(1);
+        const innerName = name + key[0].toUpperCase() + key.slice(1)
         return graphql.object<SourceType>()({
           name: innerName,
           interfaces: [interfaceType],
@@ -157,20 +157,20 @@ function getOutputGraphQLFieldInner(
               meta
             ),
           }),
-        });
+        })
       })
-    );
+    )
 
     return graphql.field({
       type: interfaceType,
       resolve({ value }) {
-        return value as SourceType;
+        return value as SourceType
       },
-    });
+    })
   }
 
   if (schema.kind === 'relationship') {
-    const listOutputType = meta.lists[schema.listKey].types.output;
+    const listOutputType = meta.lists[schema.listKey].types.output
     return graphql.field({
       type: schema.many ? graphql.list(listOutputType) : listOutputType,
       resolve({ value }, args, context) {
@@ -179,19 +179,19 @@ function getOutputGraphQLFieldInner(
             where: {
               id: { in: (value as { id: string }[]).map(x => x.id) },
             },
-          });
+          })
         }
         if ((value as any)?.id == null) {
-          return null;
+          return null
         }
         return context.db[schema.listKey].findOne({
           where: {
             id: (value as { id: string }).id,
           },
-        });
+        })
       },
-    });
+    })
   }
 
-  assertNever(schema);
+  assertNever(schema)
 }

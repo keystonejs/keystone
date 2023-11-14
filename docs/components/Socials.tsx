@@ -1,11 +1,11 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
-import { HTMLAttributes } from 'react';
+import { jsx } from '@emotion/react'
+import { HTMLAttributes } from 'react'
 
-import { Twitter } from './icons/Twitter';
+import { Twitter } from './icons/Twitter'
 // import { YouTube } from './icons/YouTube';
-import { Slack } from './icons/Slack';
+import { Slack } from './icons/Slack'
 
 export function Socials(props: HTMLAttributes<HTMLElement>) {
   return (
@@ -87,5 +87,5 @@ export function Socials(props: HTMLAttributes<HTMLElement>) {
         <YouTube css={{ height: '2em' }} />
       </a> */}
     </div>
-  );
+  )
 }

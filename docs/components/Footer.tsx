@@ -1,17 +1,17 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
-import Link from 'next/link';
-import { HTMLAttributes } from 'react';
+import { jsx } from '@emotion/react'
+import Link from 'next/link'
+import { HTMLAttributes } from 'react'
 
-import { useMediaQuery } from '../lib/media';
-import { GitHubButton } from './primitives/GitHubButton';
-import { SubscribeForm } from './SubscribeForm';
-import { Wrapper } from './primitives/Wrapper';
-import { Keystone } from './icons/Keystone';
-import { Emoji } from './primitives/Emoji';
-import { Type } from './primitives/Type';
-import { Socials } from './Socials';
+import { useMediaQuery } from '../lib/media'
+import { GitHubButton } from './primitives/GitHubButton'
+import { SubscribeForm } from './SubscribeForm'
+import { Wrapper } from './primitives/Wrapper'
+import { Keystone } from './icons/Keystone'
+import { Emoji } from './primitives/Emoji'
+import { Type } from './primitives/Type'
+import { Socials } from './Socials'
 
 function List(props: HTMLAttributes<HTMLElement>) {
   return (
@@ -30,11 +30,11 @@ function List(props: HTMLAttributes<HTMLElement>) {
       }}
       {...props}
     />
-  );
+  )
 }
 
 export function Footer() {
-  const mq = useMediaQuery();
+  const mq = useMediaQuery()
 
   return (
     <footer
@@ -237,11 +237,11 @@ export function Footer() {
         </div>
       </Wrapper>
     </footer>
-  );
+  )
 }
 
 export function DocsFooter() {
-  const mq = useMediaQuery();
+  const mq = useMediaQuery()
 
   return (
     <footer
@@ -292,5 +292,5 @@ export function DocsFooter() {
         <GitHubButton repo="keystonejs/keystone" />
       </div>
     </footer>
-  );
+  )
 }

@@ -1,7 +1,7 @@
-import { list } from '@keystone-6/core';
-import { allowAll, denyAll } from '@keystone-6/core/access';
-import { text, checkbox, password } from '@keystone-6/core/fields';
-import type { Lists } from '.keystone/types';
+import { list } from '@keystone-6/core'
+import { allowAll, denyAll } from '@keystone-6/core/access'
+import { text, checkbox, password } from '@keystone-6/core/fields'
+import type { Lists } from '.keystone/types'
 
 // WARNING: this example is for demonstration purposes only
 //   as with each of our examples, it has not been vetted
@@ -12,47 +12,47 @@ type Session = {
   data: {
     isAdmin: boolean;
   };
-};
+}
 
 function hasSession({ session }: { session?: Session }) {
-  return Boolean(session);
+  return Boolean(session)
 }
 
 function isAdminOrSameUser({ session, item }: { session?: Session; item: Lists.User.Item }) {
   // you need to have a session to do this
-  if (!session) return false;
+  if (!session) return false
 
   // admins can do anything
-  if (session.data.isAdmin) return true;
+  if (session.data.isAdmin) return true
 
   // the authenticated user needs to be equal to the user we are updating
-  return session.itemId === item.id;
+  return session.itemId === item.id
 }
 
 function isAdminOrSameUserFilter({ session }: { session?: Session }) {
   // you need to have a session to do this
-  if (!session) return false;
+  if (!session) return false
 
   // admins can see everything
-  if (session.data?.isAdmin) return {};
+  if (session.data?.isAdmin) return {}
 
   // the authenticated user can only see themselves
   return {
     id: {
       equals: session.itemId,
     },
-  };
+  }
 }
 
 function isAdmin({ session }: { session?: Session }) {
   // you need to have a session to do this
-  if (!session) return false;
+  if (!session) return false
 
   // admins can do anything
-  if (session.data.isAdmin) return true;
+  if (session.data.isAdmin) return true
 
   // otherwise, no
-  return false;
+  return false
 }
 
 export const lists: Lists<Session> = {
@@ -153,4 +153,4 @@ export const lists: Lists<Session> = {
       }),
     },
   }),
-};
+}

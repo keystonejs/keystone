@@ -1,7 +1,7 @@
-import { config } from '@keystone-6/core';
-import { fixPrismaPath } from '../example-utils';
-import { lists } from './schema';
-import type { TypeInfo } from '.keystone/types';
+import { config } from '@keystone-6/core'
+import { fixPrismaPath } from '../example-utils'
+import { lists } from './schema'
+import type { TypeInfo } from '.keystone/types'
 
 export default config<TypeInfo>({
   db: {
@@ -12,4 +12,4 @@ export default config<TypeInfo>({
     ...fixPrismaPath,
   },
   lists,
-});
+})

@@ -1,25 +1,25 @@
-import { document } from '@keystone-6/fields-document';
+import { document } from '@keystone-6/fields-document'
 
-export const name = 'Document';
-export const typeFunction = document;
-export const exampleValue = () => [{ type: 'paragraph', children: [{ text: '' }] }];
+export const name = 'Document'
+export const typeFunction = document
+export const exampleValue = () => [{ type: 'paragraph', children: [{ text: '' }] }]
 export const exampleValue2 = () => [
   { type: 'heading', children: [{ text: 'heading' }], level: 1 },
   { type: 'paragraph', children: [{ text: '' }] },
-];
+]
 export const updateReturnedValue = [
   { type: 'paragraph', children: [{ text: 'heading' }] },
   { type: 'paragraph', children: [{ text: '' }] },
-];
+]
 
-export const neverNull = true;
-export const supportsUnique = false;
-export const skipRequiredTest = true;
-export const supportsDbMap = true;
-export const fieldName = 'content';
-export const subfieldName = 'document';
+export const neverNull = true
+export const supportsUnique = false
+export const skipRequiredTest = true
+export const supportsDbMap = true
+export const fieldName = 'content'
+export const subfieldName = 'document'
 
-export const getTestFields = () => ({ content: document() });
+export const getTestFields = () => ({ content: document() })
 
 export const initItems = () => {
   return [
@@ -45,8 +45,8 @@ export const initItems = () => {
     { name: 'e', content: [{ type: 'paragraph', children: [{ text: '' }] }] },
     { name: 'f' },
     { name: 'g' },
-  ];
-};
+  ]
+}
 
 export const storedValues = () => [
   { name: 'a', content: { document: [{ type: 'paragraph', children: [{ text: '' }] }] } },
@@ -75,4 +75,4 @@ export const storedValues = () => [
   { name: 'e', content: { document: [{ type: 'paragraph', children: [{ text: '' }] }] } },
   { name: 'f', content: { document: [{ type: 'paragraph', children: [{ text: '' }] }] } },
   { name: 'g', content: { document: [{ type: 'paragraph', children: [{ text: '' }] }] } },
-];
+]

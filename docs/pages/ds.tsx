@@ -1,26 +1,26 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { Fragment, useState } from 'react';
-import { jsx } from '@emotion/react';
+import { Fragment, useState } from 'react'
+import { jsx } from '@emotion/react'
 
-import { CodeWindow, WindowWrapper, WindowL, WindowR } from '../components/content/CodeWindow';
-import { GitHubButton } from '../components/primitives/GitHubButton';
-import { COLORS, TYPESCALE, TYPE, SPACE } from '../lib/TOKENS';
-import { Highlight } from '../components/primitives/Highlight';
-import { styleMap, Type } from '../components/primitives/Type';
-import { InlineCode } from '../components/primitives/Code';
-import { Status } from '../components/primitives/Status';
-import { Button } from '../components/primitives/Button';
-import { Alert } from '../components/primitives/Alert';
-import { Badge } from '../components/primitives/Badge';
-import { Emoji } from '../components/primitives/Emoji';
-import { Stack } from '../components/primitives/Stack';
-import { Field } from '../components/primitives/Field';
-import { Well } from '../components/primitives/Well';
-import * as allIcons from '../components/icons';
-import { Page } from '../components/Page';
+import { CodeWindow, WindowWrapper, WindowL, WindowR } from '../components/content/CodeWindow'
+import { GitHubButton } from '../components/primitives/GitHubButton'
+import { COLORS, TYPESCALE, TYPE, SPACE } from '../lib/TOKENS'
+import { Highlight } from '../components/primitives/Highlight'
+import { styleMap, Type } from '../components/primitives/Type'
+import { InlineCode } from '../components/primitives/Code'
+import { Status } from '../components/primitives/Status'
+import { Button } from '../components/primitives/Button'
+import { Alert } from '../components/primitives/Alert'
+import { Badge } from '../components/primitives/Badge'
+import { Emoji } from '../components/primitives/Emoji'
+import { Stack } from '../components/primitives/Stack'
+import { Field } from '../components/primitives/Field'
+import { Well } from '../components/primitives/Well'
+import * as allIcons from '../components/icons'
+import { Page } from '../components/Page'
 
-const EXCEPT_ICONS = ['FrontEndLogos', 'ClientLogos'];
+const EXCEPT_ICONS = ['FrontEndLogos', 'ClientLogos']
 
 function Divider() {
   return (
@@ -40,7 +40,7 @@ function Divider() {
         backgroundColor: 'var(--border)',
       }}
     />
-  );
+  )
 }
 
 function Box() {
@@ -53,14 +53,14 @@ function Box() {
         borderRadius: '3px',
       }}
     />
-  );
+  )
 }
 
 type SwatchProps = {
   name?: string;
   color?: string;
   gradient?: { grad1: string; grad2: string };
-};
+}
 
 function Swatch({ name, color, gradient }: SwatchProps) {
   return (
@@ -88,12 +88,12 @@ function Swatch({ name, color, gradient }: SwatchProps) {
         <InlineCode>{name}</InlineCode>
       </span>
     </div>
-  );
+  )
 }
 
 export default function DS() {
-  const [icon, setIcon] = useState<allIcons.IconGradient | null>(null);
-  let firstGrad: string;
+  const [icon, setIcon] = useState<allIcons.IconGradient | null>(null)
+  let firstGrad: string
 
   return (
     <Page
@@ -168,9 +168,9 @@ export default function DS() {
                   name={name.split('-')[2]}
                   gradient={{ grad1: firstGrad, grad2: color }}
                 />
-              );
+              )
             } else {
-              firstGrad = color;
+              firstGrad = color
             }
           })}
       </div>
@@ -202,9 +202,9 @@ export default function DS() {
                   name={name.split('-')[2]}
                   gradient={{ grad1: firstGrad, grad2: color }}
                 />
-              );
+              )
             } else {
-              firstGrad = color;
+              firstGrad = color
             }
           })}
       </div>
@@ -635,5 +635,5 @@ Some code...`}
         Highlighting a <Highlight look="grad5">part of</Highlight> some text
       </Type>
     </Page>
-  );
+  )
 }

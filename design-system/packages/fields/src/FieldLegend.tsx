@@ -1,13 +1,13 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { jsx, useTheme } from '@keystone-ui/core';
-import type { HTMLAttributes } from 'react';
+import { jsx, useTheme } from '@keystone-ui/core'
+import type { HTMLAttributes } from 'react'
 
-type FieldLegendProps = HTMLAttributes<HTMLLegendElement>;
+type FieldLegendProps = HTMLAttributes<HTMLLegendElement>
 
 export const FieldLegend = (props: FieldLegendProps) => {
-  const { typography, fields, spacing } = useTheme();
+  const { typography, fields, spacing } = useTheme()
   return (
     <legend
       css={{
@@ -21,5 +21,5 @@ export const FieldLegend = (props: FieldLegendProps) => {
       }}
       {...props}
     />
-  );
-};
+  )
+}

@@ -1,8 +1,8 @@
-const { text, relationship } = require('@keystone-6/core/fields');
-const { list } = require('@keystone-6/core');
-const { setupTestRunner } = require('@keystone-6/core/testing');
-const { apiTestConfig } = require('../../utils.ts');
-const { FixtureGroup, timeQuery, populate, range } = require('../lib/utils');
+const { text, relationship } = require('@keystone-6/core/fields')
+const { list } = require('@keystone-6/core')
+const { setupTestRunner } = require('@keystone-6/core/testing')
+const { apiTestConfig } = require('../../utils.ts')
+const { FixtureGroup, timeQuery, populate, range } = require('../lib/utils')
 
 const runner = setupTestRunner({
   config: apiTestConfig({
@@ -20,75 +20,75 @@ const runner = setupTestRunner({
       }),
     },
   }),
-});
+})
 
-const group = new FixtureGroup(runner);
-
-group.add({
-  fn: async ({ context, provider }) => {
-    const query = `
-    mutation {
-      createUser(data: { name: "test", posts: { create: [] } }) { id }
-    }`;
-    const { time, success } = await timeQuery({ context, query });
-    console.log({ provider, time, success, name: 'Cold create with relationship, N=1' });
-  },
-});
+const group = new FixtureGroup(runner)
 
 group.add({
   fn: async ({ context, provider }) => {
     const query = `
     mutation {
       createUser(data: { name: "test", posts: { create: [] } }) { id }
-    }`;
-    const { time, success } = await timeQuery({ context, query });
-    console.log({ provider, time, success, name: 'Warm create with relationship, N=1' });
+    }`
+    const { time, success } = await timeQuery({ context, query })
+    console.log({ provider, time, success, name: 'Cold create with relationship, N=1' })
   },
-});
+})
+
+group.add({
+  fn: async ({ context, provider }) => {
+    const query = `
+    mutation {
+      createUser(data: { name: "test", posts: { create: [] } }) { id }
+    }`
+    const { time, success } = await timeQuery({ context, query })
+    console.log({ provider, time, success, name: 'Warm create with relationship, N=1' })
+  },
+})
 
 range(14).forEach(i => {
-  const N = 1;
-  const M = 2 ** i;
+  const N = 1
+  const M = 2 ** i
   group.add({
     fn: async ({ context, provider }) => {
       const query = `
       mutation createMany($users: [UserCreateInput!]!){
         createUsers(data: $users) { id }
-      }`;
-      const posts = { create: populate(M, i => ({ title: `post${i}` })) };
-      const variables = { users: populate(N, i => ({ name: `test${i}`, posts })) };
-      const { time, success } = await timeQuery({ context, query, variables });
+      }`
+      const posts = { create: populate(M, i => ({ title: `post${i}` })) }
+      const variables = { users: populate(N, i => ({ name: `test${i}`, posts })) }
+      const { time, success } = await timeQuery({ context, query, variables })
       console.log({
         provider,
         time,
         success,
         name: `Create-many with relationship, users=${N} posts=${M}`,
-      });
+      })
     },
-  });
-});
+  })
+})
 
-const k = 14;
+const k = 14
 range(k).forEach(i => {
-  const N = 2 ** i;
-  const M = 2 ** (k - 1 - i);
+  const N = 2 ** i
+  const M = 2 ** (k - 1 - i)
   group.add({
     fn: async ({ context, provider }) => {
       const query = `
       mutation createMany($users: [UserCreateInput!]!){
         createUsers(data: $users) { id }
-      }`;
-      const posts = { create: populate(M, i => ({ title: `post${i}` })) };
-      const variables = { users: populate(N, i => ({ name: `test${i}`, posts })) };
-      const { time, success } = await timeQuery({ context, query, variables });
+      }`
+      const posts = { create: populate(M, i => ({ title: `post${i}` })) }
+      const variables = { users: populate(N, i => ({ name: `test${i}`, posts })) }
+      const { time, success } = await timeQuery({ context, query, variables })
       console.log({
         provider,
         time,
         success,
         name: `Create-many with relationship, users=${N} posts=${M}`,
-      });
+      })
     },
-  });
-});
+  })
+})
 
-module.exports = [group];
+module.exports = [group]

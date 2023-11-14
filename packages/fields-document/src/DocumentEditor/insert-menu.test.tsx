@@ -1,8 +1,8 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { Transforms } from 'slate';
-import { jsx, makeEditor } from './tests/utils';
+import { Transforms } from 'slate'
+import { jsx, makeEditor } from './tests/utils'
 
 test('insertMenu mark is removed when cursor is outside with a forced normalize', () => {
   let editor = makeEditor(
@@ -17,7 +17,7 @@ test('insertMenu mark is removed when cursor is outside with a forced normalize'
       </paragraph>
     </editor>,
     { normalization: 'normalize' }
-  );
+  )
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -32,8 +32,8 @@ test('insertMenu mark is removed when cursor is outside with a forced normalize'
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('insertMenu mark is not removed when cursor is in the text', () => {
   let editor = makeEditor(
@@ -45,7 +45,7 @@ test('insertMenu mark is not removed when cursor is in the text', () => {
         </text>
       </paragraph>
     </editor>
-  );
+  )
 
   expect(editor).toMatchInlineSnapshot(`
     <editor
@@ -64,8 +64,8 @@ test('insertMenu mark is not removed when cursor is in the text', () => {
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('insertMenu mark is normalized away when / is not the first character', () => {
   let editor = makeEditor(
@@ -78,7 +78,7 @@ test('insertMenu mark is normalized away when / is not the first character', () 
       </paragraph>
     </editor>,
     { normalization: 'normalize' }
-  );
+  )
 
   expect(editor).toMatchInlineSnapshot(`
     <editor
@@ -95,8 +95,8 @@ test('insertMenu mark is normalized away when / is not the first character', () 
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('insertMenu mark is normalized away when / is not the first character and then a character is inserted, the mark is removed from Editor.marks', () => {
   let editor = makeEditor(
@@ -109,9 +109,9 @@ test('insertMenu mark is normalized away when / is not the first character and t
       </paragraph>
     </editor>,
     { normalization: 'normalize' }
-  );
+  )
 
-  editor.insertText('a');
+  editor.insertText('a')
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -122,8 +122,8 @@ test('insertMenu mark is normalized away when / is not the first character and t
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('insertMenu mark is removed when text is inserted else where in the document', () => {
   let editor = makeEditor(
@@ -134,9 +134,9 @@ test('insertMenu mark is removed when text is inserted else where in the documen
       <cursor />
     </editor>,
     { normalization: 'skip' }
-  );
+  )
 
-  editor.insertText('a');
+  editor.insertText('a')
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -152,8 +152,8 @@ test('insertMenu mark is removed when text is inserted else where in the documen
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('insertMenu mark is removed when whitespace is inserted', () => {
   let editor = makeEditor(
@@ -166,9 +166,9 @@ test('insertMenu mark is removed when whitespace is inserted', () => {
       </paragraph>
     </editor>,
     { normalization: 'skip' }
-  );
+  )
 
-  editor.insertText(' ');
+  editor.insertText(' ')
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -179,8 +179,8 @@ test('insertMenu mark is removed when whitespace is inserted', () => {
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('insertMenu mark is removed when the cursor is moved outside of the text node', () => {
   let editor = makeEditor(
@@ -196,9 +196,9 @@ test('insertMenu mark is removed when the cursor is moved outside of the text no
       </paragraph>
     </editor>,
     { normalization: 'skip' }
-  );
+  )
 
-  Transforms.move(editor, { unit: 'character' });
+  Transforms.move(editor, { unit: 'character' })
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
@@ -212,8 +212,8 @@ test('insertMenu mark is removed when the cursor is moved outside of the text no
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('insertMenu mark is added when inserting / at the start of a block', () => {
   let editor = makeEditor(
@@ -224,9 +224,9 @@ test('insertMenu mark is added when inserting / at the start of a block', () => 
         </text>
       </paragraph>
     </editor>
-  );
+  )
 
-  editor.insertText('/');
+  editor.insertText('/')
   expect(editor).toMatchInlineSnapshot(`
     <editor
       marks={
@@ -244,8 +244,8 @@ test('insertMenu mark is added when inserting / at the start of a block', () => 
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('insertMenu mark is added when inserting / after whitespace', () => {
   let editor = makeEditor(
@@ -256,9 +256,9 @@ test('insertMenu mark is added when inserting / after whitespace', () => {
         </text>
       </paragraph>
     </editor>
-  );
+  )
 
-  editor.insertText('/');
+  editor.insertText('/')
   expect(editor).toMatchInlineSnapshot(`
     <editor
       marks={
@@ -279,8 +279,8 @@ test('insertMenu mark is added when inserting / after whitespace', () => {
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('insertMenu mark is added when inserting / after whitespace when there is content after the cursor', () => {
   let editor = makeEditor(
@@ -291,9 +291,9 @@ test('insertMenu mark is added when inserting / after whitespace when there is c
         </text>
       </paragraph>
     </editor>
-  );
+  )
 
-  editor.insertText('/');
+  editor.insertText('/')
   expect(editor).toMatchInlineSnapshot(`
     <editor
       marks={
@@ -317,9 +317,9 @@ test('insertMenu mark is added when inserting / after whitespace when there is c
         </text>
       </paragraph>
     </editor>
-  `);
+  `)
   // note the cursor should really be in the text with insertMenu but it all works right in the browser so ¯\_(ツ)_/¯
-});
+})
 
 test('insertMenu mark is added when inserting / after whitespace when there is content after the cursor in a different text node', () => {
   let editor = makeEditor(
@@ -331,9 +331,9 @@ test('insertMenu mark is added when inserting / after whitespace when there is c
         <text bold> more</text>
       </paragraph>
     </editor>
-  );
+  )
 
-  editor.insertText('/');
+  editor.insertText('/')
   expect(editor).toMatchInlineSnapshot(`
     <editor
       marks={
@@ -359,8 +359,8 @@ test('insertMenu mark is added when inserting / after whitespace when there is c
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('insertMenu thing typing', () => {
   let editor = makeEditor(
@@ -376,8 +376,8 @@ test('insertMenu thing typing', () => {
     </editor>
   );
   [...'/thing'].forEach(char => {
-    editor.insertText(char);
-  });
+    editor.insertText(char)
+  })
   expect(editor).toMatchInlineSnapshot(`
     <editor
       marks={
@@ -401,9 +401,9 @@ test('insertMenu thing typing', () => {
         <text />
       </paragraph>
     </editor>
-  `);
+  `)
 
-  editor.insertBreak();
+  editor.insertBreak()
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
@@ -421,5 +421,5 @@ test('insertMenu thing typing', () => {
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})

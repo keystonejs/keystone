@@ -1,4 +1,4 @@
-import type { DatabaseProvider } from './core';
+import type { DatabaseProvider } from './core'
 
 export type Telemetry = {
   informedAt: string | null;
@@ -10,17 +10,17 @@ export type Telemetry = {
       lastSentDate: string;
     };
   }>;
-};
+}
 
 export type Configuration = {
   telemetry?: undefined | false | Telemetry;
-};
+}
 
 export type Device = {
   previous: string | null; // new Date().toISOString().slice(0, 10)
   os: string; // `linux` | `darwin` | `windows` | ... // os.platform()
   node: string; // `14` | ... | `18` // process.version.split('.').shift().slice(1)
-};
+}
 
 export type PackageName =
   | '@keystone-6/core'
@@ -28,7 +28,7 @@ export type PackageName =
   | '@keystone-6/fields-document'
   | '@keystone-6/cloudinary'
   | '@keystone-6/session-store-redis'
-  | '@opensaas/keystone-nextjs-auth';
+  | '@opensaas/keystone-nextjs-auth'
 
 export type Project = {
   previous: string | null; // new Date().toISOString().slice(0, 10)
@@ -46,4 +46,4 @@ export type Project = {
   fields: {
     [key: string]: number;
   };
-};
+}

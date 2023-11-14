@@ -1,21 +1,21 @@
-import type { Server } from 'http';
-import express from 'express';
-import type { TestArgs } from '@keystone-6/api-tests/test-runner';
-import { createExpressServer } from '@keystone-6/core/system';
-import supertest, { Test } from 'supertest';
-import type { BaseKeystoneTypeInfo } from '@keystone-6/core/types';
+import type { Server } from 'http'
+import express from 'express'
+import type { TestArgs } from '@keystone-6/api-tests/test-runner'
+import { createExpressServer } from '@keystone-6/core/system'
+import supertest, { Test } from 'supertest'
+import type { BaseKeystoneTypeInfo } from '@keystone-6/core/types'
 
 export type GraphQLRequest = (arg: {
   query: string;
   variables?: Record<string, any>;
   operationName?: string;
-}) => Test;
+}) => Test
 
 type TestArgsWithServer<TypeInfo extends BaseKeystoneTypeInfo> = TestArgs<TypeInfo> & {
   graphQLRequest: GraphQLRequest;
   app: express.Express;
   server: Server;
-};
+}
 
 async function getTestArgsWithServer<TypeInfo extends BaseKeystoneTypeInfo>(
   testArgs: TestArgs<TypeInfo>
@@ -27,13 +27,13 @@ async function getTestArgsWithServer<TypeInfo extends BaseKeystoneTypeInfo>(
     expressServer: app,
     apolloServer,
     httpServer: server,
-  } = await createExpressServer(testArgs.config, testArgs.context.graphql.schema, testArgs.context);
+  } = await createExpressServer(testArgs.config, testArgs.context.graphql.schema, testArgs.context)
 
   const graphQLRequest: GraphQLRequest = ({ query, variables = undefined, operationName }) =>
     supertest(app)
       .post(testArgs.config.graphql?.path || '/api/graphql')
       .send({ query, variables, operationName })
-      .set('Accept', 'application/json');
+      .set('Accept', 'application/json')
 
   return {
     disconnect: () => apolloServer.stop(),
@@ -43,7 +43,7 @@ async function getTestArgsWithServer<TypeInfo extends BaseKeystoneTypeInfo>(
       graphQLRequest,
       server,
     },
-  };
+  }
 }
 
 export function withServer<TypeInfo extends BaseKeystoneTypeInfo>(
@@ -51,12 +51,12 @@ export function withServer<TypeInfo extends BaseKeystoneTypeInfo>(
 ) {
   return (testFn: (testArgs: TestArgsWithServer<TypeInfo>) => Promise<void>) => () => {
     return runner(async baseTestArgs => {
-      const { disconnect, args } = await getTestArgsWithServer(baseTestArgs);
+      const { disconnect, args } = await getTestArgsWithServer(baseTestArgs)
       try {
-        await testFn(args);
+        await testFn(args)
       } finally {
-        await disconnect();
+        await disconnect()
       }
-    })();
-  };
+    })()
+  }
 }

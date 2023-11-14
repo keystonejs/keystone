@@ -4,8 +4,8 @@ import {
   FieldTypeFunc,
   CommonFieldConfig,
   orderDirectionEnum,
-} from '@keystone-6/core/types';
-import { graphql } from '@keystone-6/core';
+} from '@keystone-6/core/types'
+import { graphql } from '@keystone-6/core'
 
 // this field is based on the integer field
 // but with validation to ensure the value is within an expected range
@@ -15,7 +15,7 @@ import { graphql } from '@keystone-6/core';
 type StarsFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<ListTypeInfo> & {
   isIndexed?: boolean | 'unique';
   maxStars?: number;
-};
+}
 
 export const stars =
   <ListTypeInfo extends BaseListTypeInfo>({
@@ -38,11 +38,11 @@ export const stars =
         // We use the `validateInput` hook to ensure that the user doesn't set an out of range value.
         // This hook is the key difference on the backend between the stars field type and the integer field type.
         async validateInput(args) {
-          const val = args.resolvedData[meta.fieldKey];
+          const val = args.resolvedData[meta.fieldKey]
           if (!(val == null || (val >= 0 && val <= maxStars))) {
-            args.addValidationError(`The value must be within the range of 0-${maxStars}`);
+            args.addValidationError(`The value must be within the range of 0-${maxStars}`)
           }
-          await config.hooks?.validateInput?.(args);
+          await config.hooks?.validateInput?.(args)
         },
       },
       // all of these inputs are optional if they don't make sense for a particular field type
@@ -56,17 +56,17 @@ export const stars =
           resolve(val, context) {
             // if it's null, then the value will be set to null in the database
             if (val === null) {
-              return null;
+              return null
             }
             // if it's undefined(which means that it was omitted in the request)
             // returning undefined will mean "don't change the existing value"
             // note that this means that this function is called on every update to an item
             // including when the field is not updated
             if (val === undefined) {
-              return undefined;
+              return undefined
             }
             // if it's not null or undefined, it must be a number
-            return val;
+            return val
           },
         },
         update: { arg: graphql.arg({ type: graphql.Int }) },
@@ -79,11 +79,11 @@ export const stars =
         // it is shown here to show what you could do
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         resolve({ value, item }, args, context, info) {
-          return value;
+          return value
         },
       }),
       views: './2-stars-field/views',
       getAdminMeta() {
-        return { maxStars };
+        return { maxStars }
       },
-    });
+    })

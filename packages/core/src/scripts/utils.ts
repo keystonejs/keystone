@@ -1,7 +1,7 @@
 export class ExitError extends Error {
-  code: number;
+  code: number
   constructor(code: number) {
-    super(`The process should exit with ${code}`);
-    this.code = code;
+    super(`The process should exit with ${code}`)
+    this.code = code
   }
 }

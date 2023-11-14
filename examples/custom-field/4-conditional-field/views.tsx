@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
-import { FieldContainer, FieldDescription, FieldLabel, TextInput } from '@keystone-ui/fields';
-import { CellLink, CellContainer } from '@keystone-6/core/admin-ui/components';
+import React, { useEffect } from 'react'
+import { FieldContainer, FieldDescription, FieldLabel, TextInput } from '@keystone-ui/fields'
+import { CellLink, CellContainer } from '@keystone-6/core/admin-ui/components'
 
 import {
   CardValueComponent,
@@ -8,7 +8,7 @@ import {
   FieldController,
   FieldControllerConfig,
   FieldProps,
-} from '@keystone-6/core/types';
+} from '@keystone-6/core/types'
 
 export function Field({
   field,
@@ -17,16 +17,16 @@ export function Field({
   onChange,
   autoFocus,
 }: FieldProps<typeof controller>) {
-  const discriminant = (itemValue as any)?.[field.dependency.field]?.value ?? Infinity;
-  const hidden = discriminant > field.dependency.minimumValue;
+  const discriminant = (itemValue as any)?.[field.dependency.field]?.value ?? Infinity
+  const hidden = discriminant > field.dependency.minimumValue
 
   useEffect(() => {
-    if (hidden) onChange?.('');
-  }, [onChange, hidden]);
+    if (hidden) onChange?.('')
+  }, [onChange, hidden])
 
-  if (hidden) return null;
+  if (hidden) return null
 
-  const disabled = onChange === undefined;
+  const disabled = onChange === undefined
   return (
     <FieldContainer as="fieldset">
       <FieldLabel>{field.label}</FieldLabel>
@@ -35,7 +35,7 @@ export function Field({
         <TextInput
           type="text"
           onChange={event => {
-            onChange?.(event.target.value);
+            onChange?.(event.target.value)
           }}
           disabled={disabled}
           value={value || ''}
@@ -43,14 +43,14 @@ export function Field({
         />
       </div>
     </FieldContainer>
-  );
+  )
 }
 
 export const Cell: CellComponent = ({ item, field, linkTo }) => {
-  const value = item[field.path] + '';
-  return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>;
-};
-Cell.supportsLinkTo = true;
+  const value = item[field.path] + ''
+  return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>
+}
+Cell.supportsLinkTo = true
 
 export const CardValue: CardValueComponent = ({ item, field }) => {
   return (
@@ -58,8 +58,8 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
       <FieldLabel>{field.label}</FieldLabel>
       {item[field.path]}
     </FieldContainer>
-  );
-};
+  )
+}
 
 export const controller = (
   config: FieldControllerConfig<{
@@ -82,9 +82,9 @@ export const controller = (
     graphqlSelection: config.path,
     defaultValue: null,
     deserialize: data => {
-      const value = data[config.path];
-      return typeof value === 'string' ? value : null;
+      const value = data[config.path]
+      return typeof value === 'string' ? value : null
     },
     serialize: value => ({ [config.path]: value }),
-  };
-};
+  }
+}

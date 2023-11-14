@@ -1,5 +1,5 @@
-import { list, config } from '@keystone-6/core';
-import { allowAll } from '@keystone-6/core/access';
+import { list, config } from '@keystone-6/core'
+import { allowAll } from '@keystone-6/core/access'
 
 export default config({
   db: {
@@ -14,4 +14,4 @@ export default config({
       fields: {},
     }),
   },
-});
+})

@@ -7,11 +7,11 @@
  * - Support icons in the input (search, etc)
  */
 
-import { InputHTMLAttributes, forwardRef } from 'react';
-import { jsx } from '@keystone-ui/core';
+import { InputHTMLAttributes, forwardRef } from 'react'
+import { jsx } from '@keystone-ui/core'
 
-import { useInputStyles, useInputTokens } from './hooks/inputs';
-import type { ShapeType, SizeType, WidthType } from './types';
+import { useInputStyles, useInputTokens } from './hooks/inputs'
+import type { ShapeType, SizeType, WidthType } from './types'
 
 const validTypes = {
   email: 'email',
@@ -21,9 +21,9 @@ const validTypes = {
   tel: 'tel',
   text: 'text',
   url: 'url',
-};
+}
 
-type InputProps = InputHTMLAttributes<HTMLInputElement>;
+type InputProps = InputHTMLAttributes<HTMLInputElement>
 
 export type TextInputProps = {
   invalid?: boolean;
@@ -33,7 +33,7 @@ export type TextInputProps = {
   type?: keyof typeof validTypes;
   onChange?: NonNullable<InputProps['onChange']>;
   value?: NonNullable<InputProps['value']>;
-} & Omit<InputProps, 'onChange' | 'type' | 'size' | 'value'>;
+} & Omit<InputProps, 'onChange' | 'type' | 'size' | 'value'>
 
 export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
   (
@@ -47,9 +47,9 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
     },
     ref
   ) => {
-    const tokens = useInputTokens({ size, width, shape });
-    const styles = useInputStyles({ invalid, tokens });
+    const tokens = useInputTokens({ size, width, shape })
+    const styles = useInputStyles({ invalid, tokens })
 
-    return <input ref={ref} type={type} css={styles} {...props} />;
+    return <input ref={ref} type={type} css={styles} {...props} />
   }
-);
+)

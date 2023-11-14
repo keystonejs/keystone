@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const GridIcon = createIcon(
   <React.Fragment>
     <rect x={3} y={3} width={7} height={7} />
@@ -8,4 +8,4 @@ export const GridIcon = createIcon(
     <rect x={3} y={14} width={7} height={7} />
   </React.Fragment>,
   'GridIcon'
-);
+)

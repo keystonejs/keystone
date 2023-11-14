@@ -1,9 +1,9 @@
-import { Text, Transforms, Element, NodeEntry, Editor, Node } from 'slate';
-import { DocumentFeatures } from '../views';
-import { Relationships } from './relationship';
+import { Text, Transforms, Element, NodeEntry, Editor, Node } from 'slate'
+import { DocumentFeatures } from '../views'
+import { Relationships } from './relationship'
 
 export function areArraysEqual(a: readonly unknown[], b: readonly unknown[]) {
-  return a.length === b.length && a.every((x, i) => x === b[i]);
+  return a.length === b.length && a.every((x, i) => x === b[i])
 }
 
 export function normalizeTextBasedOnInlineMarksAndSoftBreaks(
@@ -14,34 +14,34 @@ export function normalizeTextBasedOnInlineMarksAndSoftBreaks(
 ): boolean {
   const marksToRemove = Object.keys(node).filter(
     x => x !== 'text' && x !== 'insertMenu' && (inlineMarks as any)[x] !== true
-  );
+  )
   if (marksToRemove.length) {
-    Transforms.unsetNodes(editor, marksToRemove, { at: path });
-    return true;
+    Transforms.unsetNodes(editor, marksToRemove, { at: path })
+    return true
   }
   if (!softBreaks) {
-    const hasSoftBreaks = node.text.includes('\n');
+    const hasSoftBreaks = node.text.includes('\n')
     if (hasSoftBreaks) {
-      const [parentNode] = Editor.parent(editor, path);
+      const [parentNode] = Editor.parent(editor, path)
       if (parentNode.type !== 'code') {
         for (const position of Editor.positions(editor, { at: path })) {
-          const character = (Node.get(editor, position.path) as Text).text[position.offset];
+          const character = (Node.get(editor, position.path) as Text).text[position.offset]
           if (character === '\n') {
-            Transforms.delete(editor, { at: position });
-            return true;
+            Transforms.delete(editor, { at: position })
+            return true
           }
         }
       }
     }
   }
 
-  return false;
+  return false
 }
 
 export type DocumentFeaturesForNormalization = Omit<DocumentFeatures, 'formatting'> & {
   formatting: Omit<DocumentFeatures['formatting'], 'inlineMarks' | 'softBreaks'>;
   relationships: boolean;
-};
+}
 
 export function normalizeInlineBasedOnLinksAndRelationships(
   [node, path]: NodeEntry<Element>,
@@ -51,29 +51,29 @@ export function normalizeInlineBasedOnLinksAndRelationships(
   relationships: Relationships
 ) {
   if (node.type === 'link' && !links) {
-    Transforms.insertText(editor, ` (${node.href})`, { at: Editor.end(editor, path) });
-    Transforms.unwrapNodes(editor, { at: path });
-    return true;
+    Transforms.insertText(editor, ` (${node.href})`, { at: Editor.end(editor, path) })
+    Transforms.unwrapNodes(editor, { at: path })
+    return true
   }
   if (
     node.type === 'relationship' &&
     (!relationshipsEnabled || relationships[node.relationship] === undefined)
   ) {
-    const data: any = node.data;
+    const data: any = node.data
     if (data) {
-      const relationship = relationships[node.relationship];
+      const relationship = relationships[node.relationship]
       Transforms.insertText(
         editor,
         `${data.label || data.id || ''} (${relationship?.label || node.relationship}:${
           data.id || ''
         })`,
         { at: Editor.before(editor, path) }
-      );
+      )
     }
-    Transforms.removeNodes(editor, { at: path });
-    return true;
+    Transforms.removeNodes(editor, { at: path })
+    return true
   }
-  return false;
+  return false
 }
 
 export function normalizeElementBasedOnDocumentFeatures(
@@ -98,8 +98,8 @@ export function normalizeElementBasedOnDocumentFeatures(
     (node.type === 'layout' &&
       (layouts.length === 0 || !layouts.some(layout => areArraysEqual(layout, node.layout))))
   ) {
-    Transforms.unwrapNodes(editor, { at: path });
-    return true;
+    Transforms.unwrapNodes(editor, { at: path })
+    return true
   }
   if (
     (node.type === 'paragraph' || node.type === 'heading') &&
@@ -107,12 +107,12 @@ export function normalizeElementBasedOnDocumentFeatures(
       (!formatting.alignment.end && node.textAlign === 'end') ||
       ('textAlign' in node && node.textAlign !== 'center' && node.textAlign !== 'end'))
   ) {
-    Transforms.unsetNodes(editor, 'textAlign', { at: path });
-    return true;
+    Transforms.unsetNodes(editor, 'textAlign', { at: path })
+    return true
   }
   if (node.type === 'divider' && !dividers) {
-    Transforms.removeNodes(editor, { at: path });
-    return true;
+    Transforms.removeNodes(editor, { at: path })
+    return true
   }
 
   return normalizeInlineBasedOnLinksAndRelationships(
@@ -121,7 +121,7 @@ export function normalizeElementBasedOnDocumentFeatures(
     links,
     relationshipsEnabled,
     relationships
-  );
+  )
 }
 
 export function withDocumentFeaturesNormalization(
@@ -129,8 +129,8 @@ export function withDocumentFeaturesNormalization(
   relationships: Relationships,
   editor: Editor
 ): Editor {
-  const { normalizeNode } = editor;
-  const documentFeaturesForNormalization = { ...documentFeatures, relationships: true };
+  const { normalizeNode } = editor
+  const documentFeaturesForNormalization = { ...documentFeatures, relationships: true }
   editor.normalizeNode = ([node, path]) => {
     if (Text.isText(node)) {
       normalizeTextBasedOnInlineMarksAndSoftBreaks(
@@ -138,16 +138,16 @@ export function withDocumentFeaturesNormalization(
         editor,
         documentFeatures.formatting.inlineMarks,
         documentFeatures.formatting.softBreaks
-      );
+      )
     } else if (Element.isElement(node)) {
       normalizeElementBasedOnDocumentFeatures(
         [node, path],
         editor,
         documentFeaturesForNormalization,
         relationships
-      );
+      )
     }
-    normalizeNode([node, path]);
-  };
-  return editor;
+    normalizeNode([node, path])
+  }
+  return editor
 }

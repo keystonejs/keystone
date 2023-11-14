@@ -1,9 +1,9 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
-import { Wrapper } from '../primitives/Wrapper';
-import { Emoji } from '../primitives/Emoji';
+import { Wrapper } from '../primitives/Wrapper'
+import { Emoji } from '../primitives/Emoji'
 
 export function DocsFooter() {
   return (
@@ -20,5 +20,5 @@ export function DocsFooter() {
         <Emoji symbol="❤️" alt="Love" /> by the awesome Keystone community.
       </Wrapper>
     </footer>
-  );
+  )
 }

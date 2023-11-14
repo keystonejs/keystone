@@ -1,9 +1,9 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import React from 'react';
-import { component, fields } from './component-blocks/api';
-import { defaultDocumentFeatures, jsx, makeEditor } from './tests/utils';
+import React from 'react'
+import { component, fields } from './component-blocks/api'
+import { defaultDocumentFeatures, jsx, makeEditor } from './tests/utils'
 
 test('basic link shortcut', () => {
   let editor = makeEditor(
@@ -15,8 +15,8 @@ test('basic link shortcut', () => {
         </text>
       </paragraph>
     </editor>
-  );
-  editor.insertText(')');
+  )
+  editor.insertText(')')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
@@ -34,8 +34,8 @@ test('basic link shortcut', () => {
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('link shortcut with content before it and whitespace directly before it works', () => {
   let editor = makeEditor(
@@ -47,8 +47,8 @@ test('link shortcut with content before it and whitespace directly before it wor
         </text>
       </paragraph>
     </editor>
-  );
-  editor.insertText(')');
+  )
+  editor.insertText(')')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
@@ -68,8 +68,8 @@ test('link shortcut with content before it and whitespace directly before it wor
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test("link shortcut with content before it without whitespace directly before doesn't activate the shortcut", () => {
   let editor = makeEditor(
@@ -81,8 +81,8 @@ test("link shortcut with content before it without whitespace directly before do
         </text>
       </paragraph>
     </editor>
-  );
-  editor.insertText(')');
+  )
+  editor.insertText(')')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
@@ -92,8 +92,8 @@ test("link shortcut with content before it without whitespace directly before do
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('shortcut with whitespace in the middle of the content works', () => {
   let editor = makeEditor(
@@ -105,8 +105,8 @@ test('shortcut with whitespace in the middle of the content works', () => {
         </text>
       </paragraph>
     </editor>
-  );
-  editor.insertText(')');
+  )
+  editor.insertText(')')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
@@ -124,8 +124,8 @@ test('shortcut with whitespace in the middle of the content works', () => {
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('link shortcut then typing inserts text outside of the link', () => {
   let editor = makeEditor(
@@ -137,9 +137,9 @@ test('link shortcut then typing inserts text outside of the link', () => {
         </text>
       </paragraph>
     </editor>
-  );
+  )
   editor.insertText(')');
-  [...'content'].forEach(char => editor.insertText(char));
+  [...'content'].forEach(char => editor.insertText(char))
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
@@ -158,8 +158,8 @@ test('link shortcut then typing inserts text outside of the link', () => {
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('link shortcut with bold in some of the content works', () => {
   let editor = makeEditor(
@@ -173,8 +173,8 @@ test('link shortcut with bold in some of the content works', () => {
         </text>
       </paragraph>
     </editor>
-  );
-  editor.insertText(')');
+  )
+  editor.insertText(')')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
@@ -200,8 +200,8 @@ test('link shortcut with bold in some of the content works', () => {
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test("link shortcut doesn't do anything when links are disabled globally in the editor", () => {
   let editor = makeEditor(
@@ -216,8 +216,8 @@ test("link shortcut doesn't do anything when links are disabled globally in the 
       </paragraph>
     </editor>,
     { documentFeatures: { ...defaultDocumentFeatures, links: false } }
-  );
-  editor.insertText(')');
+  )
+  editor.insertText(')')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
@@ -235,8 +235,8 @@ test("link shortcut doesn't do anything when links are disabled globally in the 
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test("link shortcut doesn't do anything when inside of a component block with links disabled", () => {
   let editor = makeEditor(
@@ -262,8 +262,8 @@ test("link shortcut doesn't do anything when inside of a component block with li
         }),
       },
     }
-  );
-  editor.insertText(')');
+  )
+  editor.insertText(')')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -291,8 +291,8 @@ test("link shortcut doesn't do anything when inside of a component block with li
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 test('link shortcut works when inside of a component block with links option inherited', () => {
   let editor = makeEditor(
     <editor>
@@ -317,8 +317,8 @@ test('link shortcut works when inside of a component block with links option inh
         }),
       },
     }
-  );
-  editor.insertText(')');
+  )
+  editor.insertText(')')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <component-block
@@ -354,8 +354,8 @@ test('link shortcut works when inside of a component block with links option inh
         <text />
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test('an undo only reverts to the whole shortcut text', () => {
   let editor = makeEditor(
@@ -367,8 +367,8 @@ test('an undo only reverts to the whole shortcut text', () => {
         </text>
       </paragraph>
     </editor>
-  );
-  editor.insertText(')');
+  )
+  editor.insertText(')')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
@@ -386,8 +386,8 @@ test('an undo only reverts to the whole shortcut text', () => {
         </text>
       </paragraph>
     </editor>
-  `);
-  editor.undo();
+  `)
+  editor.undo()
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
@@ -397,8 +397,8 @@ test('an undo only reverts to the whole shortcut text', () => {
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})
 
 test("text after the markdown shortcut isn't included in the link text", () => {
   let editor = makeEditor(
@@ -410,8 +410,8 @@ test("text after the markdown shortcut isn't included in the link text", () => {
         </text>
       </paragraph>
     </editor>
-  );
-  editor.insertText(')');
+  )
+  editor.insertText(')')
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
@@ -431,5 +431,5 @@ test("text after the markdown shortcut isn't included in the link text", () => {
         </text>
       </paragraph>
     </editor>
-  `);
-});
+  `)
+})

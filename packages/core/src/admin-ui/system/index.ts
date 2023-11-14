@@ -1,1 +1,1 @@
-export { generateAdminUI } from './generateAdminUI';
+export { generateAdminUI } from './generateAdminUI'

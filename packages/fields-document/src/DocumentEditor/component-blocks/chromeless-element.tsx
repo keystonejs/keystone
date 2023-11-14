@@ -1,13 +1,13 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx, useTheme } from '@keystone-ui/core';
-import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
-import { useControlledPopover } from '@keystone-ui/popover';
-import { Tooltip } from '@keystone-ui/tooltip';
-import { ReactNode } from 'react';
-import { RenderElementProps } from 'slate-react';
-import { InlineDialog, ToolbarButton } from '../primitives';
-import { ComponentBlock, PreviewPropsForToolbar, ObjectField, ComponentSchema } from './api';
+import { jsx, useTheme } from '@keystone-ui/core'
+import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon'
+import { useControlledPopover } from '@keystone-ui/popover'
+import { Tooltip } from '@keystone-ui/tooltip'
+import { ReactNode } from 'react'
+import { RenderElementProps } from 'slate-react'
+import { InlineDialog, ToolbarButton } from '../primitives'
+import { ComponentBlock, PreviewPropsForToolbar, ObjectField, ComponentSchema } from './api'
 
 export function ChromelessComponentBlockElement(props: {
   renderedBlock: ReactNode;
@@ -20,9 +20,9 @@ export function ChromelessComponentBlockElement(props: {
   const { trigger, dialog } = useControlledPopover(
     { isOpen: props.isOpen, onClose: () => {} },
     { modifiers: [{ name: 'offset', options: { offset: [0, 8] } }] }
-  );
-  const { spacing } = useTheme();
-  const ChromelessToolbar = props.componentBlock.toolbar ?? DefaultToolbarWithoutChrome;
+  )
+  const { spacing } = useTheme()
+  const ChromelessToolbar = props.componentBlock.toolbar ?? DefaultToolbarWithoutChrome
   return (
     <div
       {...props.attributes}
@@ -40,7 +40,7 @@ export function ChromelessComponentBlockElement(props: {
         )}
       </div>
     </div>
-  );
+  )
 }
 
 function DefaultToolbarWithoutChrome({
@@ -55,8 +55,8 @@ function DefaultToolbarWithoutChrome({
         <ToolbarButton
           variant="destructive"
           onMouseDown={event => {
-            event.preventDefault();
-            onRemove();
+            event.preventDefault()
+            onRemove()
           }}
           {...attrs}
         >
@@ -64,5 +64,5 @@ function DefaultToolbarWithoutChrome({
         </ToolbarButton>
       )}
     </Tooltip>
-  );
+  )
 }

@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const MicIcon = createIcon(
   <React.Fragment>
     <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
@@ -8,4 +8,4 @@ export const MicIcon = createIcon(
     <line x1={8} y1={23} x2={16} y2={23} />
   </React.Fragment>,
   'MicIcon'
-);
+)

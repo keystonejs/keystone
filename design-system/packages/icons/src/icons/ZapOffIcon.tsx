@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const ZapOffIcon = createIcon(
   <React.Fragment>
     <polyline points="12.41 6.75 13 2 10.57 4.92" />
@@ -8,4 +8,4 @@ export const ZapOffIcon = createIcon(
     <line x1={1} y1={1} x2={23} y2={23} />
   </React.Fragment>,
   'ZapOffIcon'
-);
+)

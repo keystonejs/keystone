@@ -1,7 +1,7 @@
-import { list } from '@keystone-6/core';
-import { text, relationship } from '@keystone-6/core/fields';
-import { allowAll } from '@keystone-6/core/access';
-import { Lists } from '.keystone/types';
+import { list } from '@keystone-6/core'
+import { text, relationship } from '@keystone-6/core/fields'
+import { allowAll } from '@keystone-6/core/access'
+import { Lists } from '.keystone/types'
 
 export const lists: Lists = {
   Author: list({
@@ -13,7 +13,7 @@ export const lists: Lists = {
     db: {
       extendPrismaSchema: schema => {
         // add a bad example of a multi-column unique constraint
-        return schema.replace(/(model [^}]+)}/g, '$1@@unique([firstName, lastName])\n}');
+        return schema.replace(/(model [^}]+)}/g, '$1@@unique([firstName, lastName])\n}')
       },
     },
   }),
@@ -31,7 +31,7 @@ export const lists: Lists = {
             //   WARNING: this won't be easy to use, but this is nice if you know what you're doing
             return field
               .replace(/tags Tag\?/g, 'tags Tag')
-              .replace(/tagsId String\?/g, 'tagsId String');
+              .replace(/tagsId String\?/g, 'tagsId String')
           },
         },
       }),
@@ -47,4 +47,4 @@ export const lists: Lists = {
       }),
     },
   }),
-};
+}

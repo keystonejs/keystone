@@ -5,38 +5,38 @@ import {
   FieldTypeFunc,
   IdFieldConfig,
   orderDirectionEnum,
-} from '../types';
-import { graphql } from '..';
-import { userInputError } from './core/graphql-errors';
+} from '../types'
+import { graphql } from '..'
+import { userInputError } from './core/graphql-errors'
 
-type IDType = string | number | null;
+type IDType = string | number | null
 
 function isInt(x: IDType) {
-  if (x === null) return;
-  if (x === '') return;
-  const nom = typeof x === 'string' ? Number(x) : x;
-  if (Number.isInteger(nom)) return nom;
+  if (x === null) return
+  if (x === '') return
+  const nom = typeof x === 'string' ? Number(x) : x
+  if (Number.isInteger(nom)) return nom
 }
 
 function isBigInt(x: IDType) {
-  if (x === null) return;
-  if (x === '') return;
+  if (x === null) return
+  if (x === '') return
   try {
-    return BigInt(x);
+    return BigInt(x)
   } catch {}
 }
 
 function isString(x: IDType) {
-  if (typeof x !== 'string') return;
-  if (x === '') return;
-  return x;
+  if (typeof x !== 'string') return
+  if (x === '') return
+  return x
 }
 
 // TODO: this should be on the user, remove in breaking change
 function isUuid(x: IDType) {
-  if (typeof x !== 'string') return;
-  if (x === '') return;
-  return x.toLowerCase();
+  if (typeof x !== 'string') return
+  if (x === '') return
+  return x.toLowerCase()
 }
 
 const nonCircularFields = {
@@ -47,13 +47,13 @@ const nonCircularFields = {
   lte: graphql.arg({ type: graphql.ID }),
   gt: graphql.arg({ type: graphql.ID }),
   gte: graphql.arg({ type: graphql.ID }),
-};
+}
 
 type IDFilterType = graphql.InputObjectType<
   typeof nonCircularFields & {
     not: graphql.Arg<typeof IDFilter>;
   }
->;
+>
 
 const IDFilter: IDFilterType = graphql.inputObject({
   name: 'IDFilter',
@@ -61,35 +61,35 @@ const IDFilter: IDFilterType = graphql.inputObject({
     ...nonCircularFields,
     not: graphql.arg({ type: IDFilter }),
   }),
-});
+})
 
-const filterArg = graphql.arg({ type: IDFilter });
+const filterArg = graphql.arg({ type: IDFilter })
 
 function resolveInput(
   input: Exclude<graphql.InferValueFromArg<typeof filterArg>, undefined>,
   parseId: (x: IDType) => unknown
 ) {
-  const where: any = {};
-  if (input === null) return where;
+  const where: any = {}
+  if (input === null) return where
 
   for (const key of ['equals', 'gt', 'gte', 'lt', 'lte'] as const) {
-    const value = input[key];
-    if (value === undefined) continue;
-    where[key] = parseId(value);
+    const value = input[key]
+    if (value === undefined) continue
+    where[key] = parseId(value)
   }
 
   for (const key of ['in', 'notIn'] as const) {
-    const value = input[key];
-    if (!Array.isArray(value)) continue;
+    const value = input[key]
+    if (!Array.isArray(value)) continue
 
-    where[key] = value.map(x => parseId(x));
+    where[key] = value.map(x => parseId(x))
   }
 
   if (input.not !== undefined) {
-    where.not = resolveInput(input.not, parseId);
+    where.not = resolveInput(input.not, parseId)
   }
 
-  return where;
+  return where
 }
 
 const NATIVE_TYPES: {
@@ -100,14 +100,14 @@ const NATIVE_TYPES: {
   postgresql: {
     uuid: 'Uuid' as const,
   },
-};
+}
 
 function unpack(i: IdFieldConfig) {
   if (i.kind === 'random') {
-    const { kind, bytes, encoding } = i;
+    const { kind, bytes, encoding } = i
     if (typeof bytes === 'number') {
       if (bytes !== bytes >>> 0) {
-        throw new TypeError(`Expected positive integer for random bytes, not ${bytes}`);
+        throw new TypeError(`Expected positive integer for random bytes, not ${bytes}`)
       }
     }
 
@@ -124,45 +124,45 @@ function unpack(i: IdFieldConfig) {
         bytes: bytes ?? 32,
         encoding: encoding ?? 'base64url',
       },
-    } as const;
+    } as const
   }
-  const { kind } = i;
-  if (kind === 'cuid') return { kind: 'cuid', type: 'String', default_: { kind } } as const;
-  if (kind === 'uuid') return { kind: 'uuid', type: 'String', default_: { kind } } as const;
-  if (kind === 'string') return { kind: 'string', type: 'String', default_: undefined } as const;
+  const { kind } = i
+  if (kind === 'cuid') return { kind: 'cuid', type: 'String', default_: { kind } } as const
+  if (kind === 'uuid') return { kind: 'uuid', type: 'String', default_: { kind } } as const
+  if (kind === 'string') return { kind: 'string', type: 'String', default_: undefined } as const
   if (kind === 'autoincrement') {
     if (i.type === 'BigInt') {
-      return { kind: 'autoincrement', type: 'BigInt', default_: { kind } } as const;
+      return { kind: 'autoincrement', type: 'BigInt', default_: { kind } } as const
     }
-    return { kind: 'autoincrement', type: 'Int', default_: { kind } } as const;
+    return { kind: 'autoincrement', type: 'Int', default_: { kind } } as const
   }
 
-  throw new Error(`Unknown id type ${kind}`);
+  throw new Error(`Unknown id type ${kind}`)
 }
 
 export function idFieldType(
   config: IdFieldConfig,
   isSingleton: boolean
 ): FieldTypeFunc<BaseListTypeInfo> {
-  const { kind, type: type_, default_ } = unpack(config);
+  const { kind, type: type_, default_ } = unpack(config)
   const parseTypeFn = {
     Int: isInt,
     BigInt: isBigInt,
     String: isString,
     UUID: isUuid, // TODO: remove in breaking change
-  }[kind === 'uuid' ? 'UUID' : type_];
+  }[kind === 'uuid' ? 'UUID' : type_]
 
   function parse(value: IDType) {
-    const result = parseTypeFn(value);
+    const result = parseTypeFn(value)
     if (result === undefined) {
-      throw userInputError(`Only a ${type_.toLowerCase()} can be passed to id filters`);
+      throw userInputError(`Only a ${type_.toLowerCase()} can be passed to id filters`)
     }
-    return result;
+    return result
   }
 
   return meta => {
     if (meta.provider === 'sqlite' && kind === 'autoincrement' && type_ === 'BigInt') {
-      throw new Error(`{ kind: ${kind}, type: ${type_} } is not supported by SQLite`);
+      throw new Error(`{ kind: ${kind}, type: ${type_} } is not supported by SQLite`)
     }
 
     return fieldType({
@@ -182,7 +182,7 @@ export function idFieldType(
         where: {
           arg: filterArg,
           resolve(val) {
-            return resolveInput(val, parse);
+            return resolveInput(val, parse)
           },
         },
         uniqueWhere: { arg: graphql.arg({ type: graphql.ID }), resolve: parse },
@@ -191,7 +191,7 @@ export function idFieldType(
       output: graphql.field({
         type: graphql.nonNull(graphql.ID),
         resolve({ value }) {
-          return value.toString();
+          return value.toString()
         },
       }),
       views: '@keystone-6/core/___internal-do-not-use-will-break-in-patch/admin-ui/id-field-view',
@@ -204,6 +204,6 @@ export function idFieldType(
           fieldMode: 'hidden',
         },
       },
-    });
-  };
+    })
+  }
 }

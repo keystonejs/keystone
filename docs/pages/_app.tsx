@@ -1,14 +1,14 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx, Global, css, CacheProvider } from '@emotion/react';
-import type { AppProps } from 'next/app';
-import { cache } from '@emotion/css';
+import { jsx, Global, css, CacheProvider } from '@emotion/react'
+import type { AppProps } from 'next/app'
+import { cache } from '@emotion/css'
 
-import Head from 'next/head';
-import { proseStyles } from '../lib/prose-lite';
-import { Theme } from '../components/Theme';
-import { NavContextProvider } from '../components/docs/Navigation';
-import { SkipLinks } from '../components/SkipLinks';
+import Head from 'next/head'
+import { proseStyles } from '../lib/prose-lite'
+import { Theme } from '../components/Theme'
+import { NavContextProvider } from '../components/docs/Navigation'
+import { SkipLinks } from '../components/SkipLinks'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -104,5 +104,5 @@ export default function App({ Component, pageProps }: AppProps) {
         <Component {...pageProps} />
       </NavContextProvider>
     </CacheProvider>
-  );
+  )
 }

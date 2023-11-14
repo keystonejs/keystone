@@ -1,6 +1,6 @@
-import { config } from '@keystone-6/core';
-import { fixPrismaPath } from '../example-utils';
-import { lists, extendGraphqlSchema } from './schema';
+import { config } from '@keystone-6/core'
+import { fixPrismaPath } from '../example-utils'
+import { lists, extendGraphqlSchema } from './schema'
 
 export default config({
   db: {
@@ -12,4 +12,4 @@ export default config({
   },
   lists,
   extendGraphqlSchema,
-});
+})

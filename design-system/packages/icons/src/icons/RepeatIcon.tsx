@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { createIcon } from '../Icon';
+import * as React from 'react'
+import { createIcon } from '../Icon'
 export const RepeatIcon = createIcon(
   <React.Fragment>
     <polyline points="17 1 21 5 17 9" />
@@ -8,4 +8,4 @@ export const RepeatIcon = createIcon(
     <path d="M21 13v2a4 4 0 0 1-4 4H3" />
   </React.Fragment>,
   'RepeatIcon'
-);
+)

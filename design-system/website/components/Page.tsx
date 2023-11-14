@@ -1,19 +1,19 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import type { HTMLAttributes, ReactNode } from 'react';
-import { jsx, useTheme } from '@keystone-ui/core';
+import type { HTMLAttributes, ReactNode } from 'react'
+import { jsx, useTheme } from '@keystone-ui/core'
 
-import { Navigation } from './Navigation';
+import { Navigation } from './Navigation'
 
-const SIDEBAR_WIDTH = 320;
+const SIDEBAR_WIDTH = 320
 
 const PageWrapper = (props: HTMLAttributes<HTMLElement>) => (
   <div css={{ display: 'flex' }} {...props} />
-);
+)
 
 const Sidebar = (props: HTMLAttributes<HTMLElement>) => {
-  const { palette, spacing } = useTheme();
+  const { palette, spacing } = useTheme()
 
   return (
     <aside
@@ -34,11 +34,11 @@ const Sidebar = (props: HTMLAttributes<HTMLElement>) => {
       }}
       {...props}
     />
-  );
-};
+  )
+}
 
 const Content = (props: HTMLAttributes<HTMLElement>) => {
-  const { colors, spacing } = useTheme();
+  const { colors, spacing } = useTheme()
 
   return (
     <div
@@ -54,8 +54,8 @@ const Content = (props: HTMLAttributes<HTMLElement>) => {
       }}
       {...props}
     />
-  );
-};
+  )
+}
 
 export const Page = ({ children }: { children: ReactNode }) => {
   return (
@@ -65,5 +65,5 @@ export const Page = ({ children }: { children: ReactNode }) => {
       </Sidebar>
       <Content>{children}</Content>
     </PageWrapper>
-  );
-};
+  )
+}

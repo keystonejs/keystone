@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { makeEditor, jsx } from '../tests/utils';
-import { MyDataTransfer } from './data-transfer';
+import { makeEditor, jsx } from '../tests/utils'
+import { MyDataTransfer } from './data-transfer'
 
 export function htmlToEditor(html: string) {
   let editor = makeEditor(
@@ -12,9 +12,9 @@ export function htmlToEditor(html: string) {
         </text>
       </paragraph>
     </editor>
-  );
-  const data = new MyDataTransfer();
-  data.setData('text/html', html);
-  editor.insertData(data);
-  return editor;
+  )
+  const data = new MyDataTransfer()
+  data.setData('text/html', html)
+  editor.insertData(data)
+  return editor
 }

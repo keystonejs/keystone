@@ -1,12 +1,12 @@
-import { Stack } from '@keystone-ui/core';
-import { Notice } from '@keystone-ui/notice';
-import { GraphQLError } from 'graphql';
-import React from 'react';
+import { Stack } from '@keystone-ui/core'
+import { Notice } from '@keystone-ui/notice'
+import { GraphQLError } from 'graphql'
+import React from 'react'
 
 type GraphQLErrorNoticeProps = {
   networkError: Error | null | undefined;
   errors: readonly GraphQLError[] | undefined;
-};
+}
 
 export function GraphQLErrorNotice({ errors, networkError }: GraphQLErrorNoticeProps) {
   if (networkError) {
@@ -14,7 +14,7 @@ export function GraphQLErrorNotice({ errors, networkError }: GraphQLErrorNoticeP
       <Notice tone="negative" marginBottom="large">
         {networkError.message}
       </Notice>
-    );
+    )
   }
   if (errors?.length) {
     return (
@@ -25,7 +25,7 @@ export function GraphQLErrorNotice({ errors, networkError }: GraphQLErrorNoticeP
           </Notice>
         ))}
       </Stack>
-    );
+    )
   }
-  return null;
+  return null
 }

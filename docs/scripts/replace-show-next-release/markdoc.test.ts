@@ -1,4 +1,4 @@
-import { removeNextReleaseConditions } from './markdoc';
+import { removeNextReleaseConditions } from './markdoc'
 
 test('removes if', () => {
   const content = `## Heading 1
@@ -8,7 +8,7 @@ some content
 ## Some heading
 
 {% /if %}
-  `;
+  `
   expect(removeNextReleaseConditions(content)).toMatchInlineSnapshot(`
     {
       "contents": "## Heading 1
@@ -18,8 +18,8 @@ some content
       ",
       "errors": [],
     }
-  `);
-});
+  `)
+})
 
 test('removes if with else', () => {
   const content = `## Heading 1
@@ -33,7 +33,7 @@ some content
 Content in else
 
 {% /if %}
-  `;
+  `
   expect(removeNextReleaseConditions(content)).toMatchInlineSnapshot(`
     {
       "contents": "## Heading 1
@@ -43,8 +43,8 @@ Content in else
       ",
       "errors": [],
     }
-  `);
-});
+  `)
+})
 
 test('errors if nextRelease variables is still used', () => {
   const content = `## Heading 1
@@ -61,7 +61,7 @@ some content
 Content in else
 
 {% /if %}
-  `;
+  `
   expect(removeNextReleaseConditions(content)).toMatchInlineSnapshot(`
     {
       "contents": "## Heading 1
@@ -98,5 +98,5 @@ Content in else
         },
       ],
     }
-  `);
-});
+  `)
+})

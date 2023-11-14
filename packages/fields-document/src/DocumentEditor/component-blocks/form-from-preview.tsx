@@ -1,14 +1,14 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { useKeystone } from '@keystone-6/core/admin-ui/context';
-import { RelationshipSelect } from '@keystone-6/core/fields/types/relationship/views/RelationshipSelect';
-import { Button } from '@keystone-ui/button';
-import { jsx, Stack } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
-import { PlusCircleIcon } from '@keystone-ui/icons/icons/PlusCircleIcon';
-import { AlertDialog } from '@keystone-ui/modals';
-import { memo, useCallback, useMemo, useState, MemoExoticComponent, ReactElement } from 'react';
-import { DragHandle, OrderableItem, OrderableList, RemoveButton } from '../primitives/orderable';
+import { useKeystone } from '@keystone-6/core/admin-ui/context'
+import { RelationshipSelect } from '@keystone-6/core/fields/types/relationship/views/RelationshipSelect'
+import { Button } from '@keystone-ui/button'
+import { jsx, Stack } from '@keystone-ui/core'
+import { FieldContainer, FieldLabel } from '@keystone-ui/fields'
+import { PlusCircleIcon } from '@keystone-ui/icons/icons/PlusCircleIcon'
+import { AlertDialog } from '@keystone-ui/modals'
+import { memo, useCallback, useMemo, useState, MemoExoticComponent, ReactElement } from 'react'
+import { DragHandle, OrderableItem, OrderableList, RemoveButton } from '../primitives/orderable'
 import {
   ArrayField,
   ComponentSchema,
@@ -18,10 +18,10 @@ import {
   ObjectField,
   RelationshipData,
   RelationshipField,
-} from './api';
-import { previewPropsToValue, setValueToPreviewProps } from './get-value';
-import { createGetPreviewProps } from './preview-props';
-import { assertNever, clientSideValidateProp } from './utils';
+} from './api'
+import { previewPropsToValue, setValueToPreviewProps } from './get-value'
+import { createGetPreviewProps } from './preview-props'
+import { assertNever, clientSideValidateProp } from './utils'
 
 type DefaultFieldProps<Key> = GenericPreviewProps<
   Extract<ComponentSchema, { kind: Key }>,
@@ -29,7 +29,7 @@ type DefaultFieldProps<Key> = GenericPreviewProps<
 > & {
   autoFocus?: boolean;
   forceValidation?: boolean;
-};
+}
 
 function ArrayFieldPreview(props: DefaultFieldProps<'array'>) {
   return (
@@ -43,13 +43,13 @@ function ArrayFieldPreview(props: DefaultFieldProps<'array'>) {
               label={props.schema.itemLabel?.(val) ?? 'Item'}
               {...val}
             />
-          );
+          )
         })}
       </OrderableList>
       <Button
         autoFocus={props.autoFocus}
         onClick={() => {
-          props.onChange([...props.elements.map(x => ({ key: x.key })), { key: undefined }]);
+          props.onChange([...props.elements.map(x => ({ key: x.key })), { key: undefined }])
         }}
         tone="active"
       >
@@ -58,7 +58,7 @@ function ArrayFieldPreview(props: DefaultFieldProps<'array'>) {
         </Stack>
       </Button>
     </Stack>
-  );
+  )
 }
 
 function RelationshipFieldPreview({
@@ -67,9 +67,9 @@ function RelationshipFieldPreview({
   onChange,
   value,
 }: DefaultFieldProps<'relationship'>) {
-  const keystone = useKeystone();
-  const list = keystone.adminMeta.lists[schema.listKey];
-  const searchFields = Object.keys(list.fields).filter(key => list.fields[key].search);
+  const keystone = useKeystone()
+  const list = keystone.adminMeta.lists[schema.listKey]
+  const searchFields = Object.keys(list.fields).filter(key => list.fields[key].search)
 
   return (
     <FieldContainer>
@@ -107,7 +107,7 @@ function RelationshipFieldPreview({
         }
       />
     </FieldContainer>
-  );
+  )
 }
 
 function FormFieldPreview({
@@ -124,11 +124,11 @@ function FormFieldPreview({
       onChange={onChange}
       forceValidation={!!forceValidation}
     />
-  );
+  )
 }
 
 function ObjectFieldPreview({ schema, autoFocus, fields }: DefaultFieldProps<'object'>) {
-  const firstFocusable = autoFocus ? findFocusableObjectFieldKey(schema) : undefined;
+  const firstFocusable = autoFocus ? findFocusableObjectFieldKey(schema) : undefined
   return (
     <Stack gap="xlarge">
       {Object.entries(fields).map(
@@ -142,7 +142,7 @@ function ObjectFieldPreview({ schema, autoFocus, fields }: DefaultFieldProps<'ob
           )
       )}
     </Stack>
-  );
+  )
 }
 
 function ConditionalFieldPreview({
@@ -152,7 +152,7 @@ function ConditionalFieldPreview({
   onChange,
   value,
 }: DefaultFieldProps<'conditional'>) {
-  const schemaDiscriminant = schema.discriminant as FormField<string | boolean, unknown>;
+  const schemaDiscriminant = schema.discriminant as FormField<string | boolean, unknown>
   return (
     <Stack gap="xlarge">
       {useMemo(
@@ -168,7 +168,7 @@ function ConditionalFieldPreview({
       )}
       {isNonChildFieldPreviewProps(value) && <FormValueContentFromPreviewProps {...value} />}
     </Stack>
-  );
+  )
 }
 
 export type NonChildFieldComponentSchema =
@@ -176,12 +176,12 @@ export type NonChildFieldComponentSchema =
   | ObjectField
   | ConditionalField<FormField<any, any>, { [key: string]: ComponentSchema }>
   | RelationshipField<boolean>
-  | ArrayField<ComponentSchema>;
+  | ArrayField<ComponentSchema>
 
 function isNonChildFieldPreviewProps(
   props: GenericPreviewProps<ComponentSchema, unknown>
 ): props is GenericPreviewProps<NonChildFieldComponentSchema, unknown> {
-  return props.schema.kind !== 'child';
+  return props.schema.kind !== 'child'
 }
 
 const fieldRenderers = {
@@ -191,7 +191,7 @@ const fieldRenderers = {
   form: FormFieldPreview,
   object: ObjectFieldPreview,
   conditional: ConditionalFieldPreview,
-};
+}
 
 export const FormValueContentFromPreviewProps: MemoExoticComponent<
   (
@@ -201,9 +201,9 @@ export const FormValueContentFromPreviewProps: MemoExoticComponent<
     }
   ) => ReactElement
 > = memo(function FormValueContentFromPreview(props) {
-  const Comp = fieldRenderers[props.schema.kind];
-  return <Comp {...(props as any)} />;
-});
+  const Comp = fieldRenderers[props.schema.kind]
+  return <Comp {...(props as any)} />
+})
 
 const OrderableItemInForm = memo(function OrderableItemInForm(
   props: GenericPreviewProps<ComponentSchema, unknown> & {
@@ -213,18 +213,18 @@ const OrderableItemInForm = memo(function OrderableItemInForm(
 ) {
   const [modalState, setModalState] = useState<
     { state: 'open'; value: unknown; forceValidation: boolean } | { state: 'closed' }
-  >({ state: 'closed' });
+  >({ state: 'closed' })
   const onModalChange = useCallback(
     (cb: (value: unknown) => unknown) => {
       setModalState(state => {
         if (state.state === 'open') {
-          return { state: 'open', forceValidation: state.forceValidation, value: cb(state.value) };
+          return { state: 'open', forceValidation: state.forceValidation, value: cb(state.value) }
         }
-        return state;
-      });
+        return state
+      })
     },
     [setModalState]
-  );
+  )
   return (
     <OrderableItem elementKey={props.elementKey}>
       <Stack gap="medium">
@@ -239,7 +239,7 @@ const OrderableItemInForm = memo(function OrderableItemInForm(
                 state: 'open',
                 value: previewPropsToValue(props),
                 forceValidation: false,
-              });
+              })
             }}
             css={{ flexGrow: 1, justifyContent: 'start' }}
           >
@@ -255,19 +255,19 @@ const OrderableItemInForm = memo(function OrderableItemInForm(
             actions={{
               confirm: {
                 action: () => {
-                  if (modalState.state !== 'open') return;
+                  if (modalState.state !== 'open') return
                   if (!clientSideValidateProp(props.schema, modalState.value)) {
-                    setModalState(state => ({ ...state, forceValidation: true }));
-                    return;
+                    setModalState(state => ({ ...state, forceValidation: true }))
+                    return
                   }
-                  setValueToPreviewProps(modalState.value, props);
-                  setModalState({ state: 'closed' });
+                  setValueToPreviewProps(modalState.value, props)
+                  setModalState({ state: 'closed' })
                 },
                 label: 'Done',
               },
               cancel: {
                 action: () => {
-                  setModalState({ state: 'closed' });
+                  setModalState({ state: 'closed' })
                 },
                 label: 'Cancel',
               },
@@ -285,8 +285,8 @@ const OrderableItemInForm = memo(function OrderableItemInForm(
         )}
       </Stack>
     </OrderableItem>
-  );
-});
+  )
+})
 
 function ArrayFieldItemModalContent(props: {
   schema: NonChildFieldComponentSchema;
@@ -296,18 +296,18 @@ function ArrayFieldItemModalContent(props: {
   const previewProps = useMemo(
     () => createGetPreviewProps(props.schema, props.onChange, () => undefined),
     [props.schema, props.onChange]
-  )(props.value);
-  return <FormValueContentFromPreviewProps {...previewProps} />;
+  )(props.value)
+  return <FormValueContentFromPreviewProps {...previewProps} />
 }
 
 function findFocusableObjectFieldKey(schema: ObjectField): string | undefined {
   for (const [key, innerProp] of Object.entries(schema.fields)) {
-    const childFocusable = canFieldBeFocused(innerProp);
+    const childFocusable = canFieldBeFocused(innerProp)
     if (childFocusable) {
-      return key;
+      return key
     }
   }
-  return undefined;
+  return undefined
 }
 
 export function canFieldBeFocused(schema: ComponentSchema): boolean {
@@ -317,18 +317,18 @@ export function canFieldBeFocused(schema: ComponentSchema): boolean {
     schema.kind === 'form' ||
     schema.kind === 'relationship'
   ) {
-    return true;
+    return true
   }
   if (schema.kind === 'child') {
-    return false;
+    return false
   }
   if (schema.kind === 'object') {
     for (const innerProp of Object.values(schema.fields)) {
       if (canFieldBeFocused(innerProp)) {
-        return true;
+        return true
       }
     }
-    return false;
+    return false
   }
-  assertNever(schema);
+  assertNever(schema)
 }

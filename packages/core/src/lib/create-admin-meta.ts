@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'path'
 import type {
   KeystoneConfig,
   MaybePromise,
@@ -7,13 +7,13 @@ import type {
   KeystoneContext,
   JSONValue,
   MaybeItemFunction,
-} from '../../types';
-import type { FilterOrderArgs } from '../types/config/fields';
+} from '../../types'
+import type { FilterOrderArgs } from '../types/config/fields'
 
-import { humanize } from './utils';
-import type { InitialisedList } from './core/initialise-lists';
+import { humanize } from './utils'
+import type { InitialisedList } from './core/initialise-lists'
 
-type ContextFunction<Return> = (context: KeystoneContext) => MaybePromise<Return>;
+type ContextFunction<Return> = (context: KeystoneContext) => MaybePromise<Return>
 
 export type FieldMetaRootVal = {
   key: string;
@@ -39,13 +39,13 @@ export type FieldMetaRootVal = {
     fieldPosition: MaybeItemFunction<'form' | 'sidebar', BaseListTypeInfo>;
   };
   listView: { fieldMode: ContextFunction<'read' | 'hidden'> };
-};
+}
 
 export type FieldGroupMeta = {
   label: string;
   description: string | null;
   fields: Array<FieldMetaRootVal>;
-};
+}
 
 export type ListMetaRootVal = {
   key: string;
@@ -72,40 +72,40 @@ export type ListMetaRootVal = {
   isHidden: ContextFunction<boolean>;
   hideCreate: ContextFunction<boolean>;
   hideDelete: ContextFunction<boolean>;
-};
+}
 
 export type AdminMetaRootVal = {
   lists: ListMetaRootVal[];
   listsByKey: Record<string, ListMetaRootVal>;
   views: string[];
   isAccessAllowed: undefined | ((context: KeystoneContext) => MaybePromise<boolean>);
-};
+}
 
 export function createAdminMeta(
   config: KeystoneConfig,
   initialisedLists: Record<string, InitialisedList>
 ) {
-  const { lists } = config;
+  const { lists } = config
   const adminMetaRoot: AdminMetaRootVal = {
     listsByKey: {},
     lists: [],
     views: [],
     isAccessAllowed: config.ui?.isAccessAllowed,
-  };
+  }
 
-  const omittedLists: string[] = [];
+  const omittedLists: string[] = []
 
   for (const [listKey, list] of Object.entries(initialisedLists)) {
-    const listConfig = lists[listKey];
+    const listConfig = lists[listKey]
     if (list.graphql.isEnabled.query === false) {
-      omittedLists.push(listKey);
-      continue;
+      omittedLists.push(listKey)
+      continue
     }
 
-    let initialColumns: string[];
+    let initialColumns: string[]
     if (listConfig.ui?.listView?.initialColumns) {
       // If they've asked for a particular thing, give them that thing
-      initialColumns = listConfig.ui.listView.initialColumns as string[];
+      initialColumns = listConfig.ui.listView.initialColumns as string[]
     } else {
       // Otherwise, we'll start with the labelField on the left and then add
       // 2 more fields to the right of that. We don't include the 'id' field
@@ -116,13 +116,13 @@ export function createAdminMeta(
           .filter(fieldKey => list.fields[fieldKey].graphql.isEnabled.read)
           .filter(fieldKey => fieldKey !== list.ui.labelField)
           .filter(fieldKey => fieldKey !== 'id'),
-      ].slice(0, 3);
+      ].slice(0, 3)
     }
 
     const maximumPageSize = Math.min(
       listConfig.ui?.listView?.pageSize ?? 50,
       (list.graphql.types.findManyArgs.take.defaultValue ?? Infinity) as number
-    );
+    )
 
     adminMetaRoot.listsByKey[listKey] = {
       key: listKey,
@@ -156,41 +156,41 @@ export function createAdminMeta(
         list.graphql.isEnabled.delete ? listConfig.ui?.hideDelete ?? false : false
       ),
       isHidden: normalizeMaybeSessionFunction(listConfig.ui?.isHidden ?? false),
-    };
+    }
 
-    adminMetaRoot.lists.push(adminMetaRoot.listsByKey[listKey]);
+    adminMetaRoot.lists.push(adminMetaRoot.listsByKey[listKey])
   }
 
-  let uniqueViewCount = -1;
-  const stringViewsToIndex: Record<string, number> = {};
+  let uniqueViewCount = -1
+  const stringViewsToIndex: Record<string, number> = {}
   function getViewId(view: string) {
     if (stringViewsToIndex[view] !== undefined) {
-      return stringViewsToIndex[view];
+      return stringViewsToIndex[view]
     }
-    uniqueViewCount++;
-    stringViewsToIndex[view] = uniqueViewCount;
-    adminMetaRoot.views.push(view);
-    return uniqueViewCount;
+    uniqueViewCount++
+    stringViewsToIndex[view] = uniqueViewCount
+    adminMetaRoot.views.push(view)
+    return uniqueViewCount
   }
 
   // populate .fields array
   for (const [listKey, list] of Object.entries(initialisedLists)) {
-    if (omittedLists.includes(listKey)) continue;
+    if (omittedLists.includes(listKey)) continue
 
     for (const [fieldKey, field] of Object.entries(list.fields)) {
       // If the field is a relationship field and is related to an omitted list, skip.
-      if (field.dbField.kind === 'relation' && omittedLists.includes(field.dbField.list)) continue;
-      if (Object.values(field.graphql.isEnabled).every(x => x === false)) continue;
+      if (field.dbField.kind === 'relation' && omittedLists.includes(field.dbField.list)) continue
+      if (Object.values(field.graphql.isEnabled).every(x => x === false)) continue
 
       assertValidView(
         field.views,
         `The \`views\` on the implementation of the field type at lists.${listKey}.fields.${fieldKey}`
-      );
+      )
 
-      const baseOrderFilterArgs = { fieldKey, listKey: list.listKey };
+      const baseOrderFilterArgs = { fieldKey, listKey: list.listKey }
       const isNonNull = (['read', 'create', 'update'] as const).filter(
         operation => field.graphql.isNonNull[operation]
-      );
+      )
 
       const fieldMeta = {
         key: fieldKey,
@@ -227,10 +227,10 @@ export function createAdminMeta(
 
         // TODO: deprecated, remove in breaking change
         path: fieldKey,
-      };
+      }
 
-      adminMetaRoot.listsByKey[listKey].fields.push(fieldMeta);
-      adminMetaRoot.listsByKey[listKey].fieldsByKey[fieldKey] = fieldMeta;
+      adminMetaRoot.listsByKey[listKey].fields.push(fieldMeta)
+      adminMetaRoot.listsByKey[listKey].fieldsByKey[fieldKey] = fieldMeta
     }
     for (const group of list.groups) {
       adminMetaRoot.listsByKey[listKey].groups.push({
@@ -239,53 +239,53 @@ export function createAdminMeta(
         fields: group.fields.map(
           fieldKey => adminMetaRoot.listsByKey[listKey].fieldsByKey[fieldKey]
         ),
-      });
+      })
     }
   }
 
   // we do this seperately to the above so that fields can check other fields to validate their config or etc.
   // (ofc they won't necessarily be able to see other field's fieldMeta)
   for (const [key, list] of Object.entries(initialisedLists)) {
-    if (list.graphql.isEnabled.query === false) continue;
+    if (list.graphql.isEnabled.query === false) continue
     for (const fieldMetaRootVal of adminMetaRoot.listsByKey[key].fields) {
-      const dbField = list.fields[fieldMetaRootVal.path].dbField;
+      const dbField = list.fields[fieldMetaRootVal.path].dbField
       // If the field is a relationship field and is related to an omitted list, skip.
       if (dbField.kind === 'relation' && omittedLists.includes(dbField.list)) {
-        continue;
+        continue
       }
-      currentAdminMeta = adminMetaRoot;
+      currentAdminMeta = adminMetaRoot
       try {
-        fieldMetaRootVal.fieldMeta = list.fields[fieldMetaRootVal.path].getAdminMeta?.() ?? null;
+        fieldMetaRootVal.fieldMeta = list.fields[fieldMetaRootVal.path].getAdminMeta?.() ?? null
       } finally {
-        currentAdminMeta = undefined;
+        currentAdminMeta = undefined
       }
     }
   }
 
-  return adminMetaRoot;
+  return adminMetaRoot
 }
 
-let currentAdminMeta: undefined | AdminMetaRootVal;
+let currentAdminMeta: undefined | AdminMetaRootVal
 
 export function getAdminMetaForRelationshipField() {
   if (currentAdminMeta === undefined) {
-    throw new Error('unexpected call to getAdminMetaInRelationshipField');
+    throw new Error('unexpected call to getAdminMetaInRelationshipField')
   }
 
-  return currentAdminMeta;
+  return currentAdminMeta
 }
 
 function assertValidView(view: string, location: string) {
   if (view.includes('\\')) {
     throw new Error(
       `${location} contains a backslash, which is invalid. You need to use a module path that is resolved from where 'keystone start' is run (see https://github.com/keystonejs/keystone/pull/7805)`
-    );
+    )
   }
 
   if (path.isAbsolute(view)) {
     throw new Error(
       `${location} is an absolute path, which is invalid. You need to use a module path that is resolved from where 'keystone start' is run (see https://github.com/keystonejs/keystone/pull/7805)`
-    );
+    )
   }
 }
 
@@ -293,19 +293,19 @@ function normalizeMaybeSessionFunction<Return extends string | boolean>(
   input: MaybeSessionFunction<Return, BaseListTypeInfo>
 ): ContextFunction<Return> {
   if (typeof input !== 'function') {
-    return () => input;
+    return () => input
   }
-  return context => input({ context, session: context.session });
+  return context => input({ context, session: context.session })
 }
 
-type BaseOrderFilterArgs = { listKey: string; fieldKey: string };
+type BaseOrderFilterArgs = { listKey: string; fieldKey: string }
 
 function normalizeIsOrderFilter(
   input: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>),
   baseOrderFilterArgs: BaseOrderFilterArgs
 ): ContextFunction<boolean> {
   if (typeof input !== 'function') {
-    return () => input;
+    return () => input
   }
-  return context => input({ context, session: context.session, ...baseOrderFilterArgs });
+  return context => input({ context, session: context.session, ...baseOrderFilterArgs })
 }

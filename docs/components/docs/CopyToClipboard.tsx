@@ -1,8 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react';
+import { jsx } from '@emotion/react'
 
-import { Link } from '../icons/Link';
+import { Link } from '../icons/Link'
 
 export function HeadingIdLink({ value }: { value: string }) {
   return (
@@ -33,5 +33,5 @@ export function HeadingIdLink({ value }: { value: string }) {
     >
       <Link css={{ height: '1rem' }} />
     </a>
-  );
+  )
 }

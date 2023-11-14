@@ -1,8 +1,8 @@
-import { text } from '@keystone-6/core/fields';
-import { list } from '@keystone-6/core';
-import { setupTestRunner } from '@keystone-6/api-tests/test-runner';
-import { allowAll } from '@keystone-6/core/access';
-import { testConfig } from '../utils';
+import { text } from '@keystone-6/core/fields'
+import { list } from '@keystone-6/core'
+import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
+import { allowAll } from '@keystone-6/core/access'
+import { testConfig } from '../utils'
 
 const runner = setupTestRunner({
   config: testConfig({
@@ -14,7 +14,7 @@ const runner = setupTestRunner({
             query: () => {
               return {
                 name: 'blah',
-              };
+              }
             },
           },
         },
@@ -25,7 +25,7 @@ const runner = setupTestRunner({
           operation: allowAll,
           filter: {
             query: () => {
-              return { NOT: { name: { equals: 'blah' } } };
+              return { NOT: { name: { equals: 'blah' } } }
             },
           },
         },
@@ -33,7 +33,7 @@ const runner = setupTestRunner({
       }),
     },
   }),
-});
+})
 
 describe('Access control - Filter', () => {
   test(
@@ -42,20 +42,20 @@ describe('Access control - Filter', () => {
       // Valid name
       const { data, errors } = await context.graphql.raw({
         query: `query { badAccesses { id } }`,
-      });
+      })
 
       // Returns null and throws an error
-      expect(data).toEqual({ badAccesses: null });
-      expect(errors).toMatchSnapshot();
+      expect(data).toEqual({ badAccesses: null })
+      expect(errors).toMatchSnapshot()
     })
-  );
+  )
   test(
     'findMany - Coercion',
     runner(async ({ context }) => {
-      await context.query.Coercion.createMany({ data: [{ name: 'something' }, { name: 'blah' }] });
+      await context.query.Coercion.createMany({ data: [{ name: 'something' }, { name: 'blah' }] })
       expect(await context.query.Coercion.findMany({ query: 'name' })).toEqual([
         { name: 'something' },
-      ]);
+      ])
     })
-  );
-});
+  )
+})
