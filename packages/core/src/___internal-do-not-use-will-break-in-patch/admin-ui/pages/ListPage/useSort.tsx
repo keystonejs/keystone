@@ -4,22 +4,26 @@ import { useRouter } from '../../../../admin-ui/router';
 
 export function useSort(list: ListMeta, orderableFields: Set<string>) {
   const { query } = useRouter();
-  let sortByFromUrl = typeof query.sortBy === 'string' ? query.sortBy : '';
+  let sortByFromUrl = typeof query.sortBy === 'string' ? query.sortBy : null;
 
   return useMemo(() => {
-    if (sortByFromUrl === '') {
-      if (!list.initialSort || !orderableFields.has(list.initialSort.field)) {
-        return null;
+    if (sortByFromUrl === '') return null;
+    if (sortByFromUrl === null) return list.initialSort;
+
+    if (sortByFromUrl.startsWith('-')) {
+      const field = sortByFromUrl.slice(1);
+      if (!orderableFields.has(field)) return null;
+
+      return {
+        field,
+        direction: 'DESC'
       }
-      return list.initialSort;
     }
-    let direction: 'ASC' | 'DESC' = 'ASC';
-    let sortByField = sortByFromUrl;
-    if (sortByFromUrl.charAt(0) === '-') {
-      sortByField = sortByFromUrl.slice(1);
-      direction = 'DESC';
+
+    if (!orderableFields.has(sortByFromUrl)) return null;
+    return {
+      field: sortByFromUrl,
+      direction: 'ASC'
     }
-    if (!orderableFields.has(sortByField)) return null;
-    return { field: sortByField, direction };
   }, [sortByFromUrl, list, orderableFields]);
 }

@@ -96,7 +96,17 @@ function SortSelectionPopoverContent({
           const fieldPath: string = (newVal as any).value;
           if (fieldPath === noFieldOption.value) {
             const { sortBy, ...restOfQuery } = router.query;
-            router.push({ query: restOfQuery });
+
+            if (list.initialSort) {
+              router.push({
+                query: {
+                  ...router.query,
+                  sortBy: ''
+                }
+              });
+            } else {
+              router.push({ query: restOfQuery });
+            }
           } else {
             router.push({
               query: {
