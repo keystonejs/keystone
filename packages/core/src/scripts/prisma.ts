@@ -1,4 +1,4 @@
-import { execFile } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import esbuild from 'esbuild';
 import { createSystem } from '../lib/createSystem';
 import {
@@ -23,25 +23,19 @@ export async function prisma(cwd: string, args: string[], frozen: boolean) {
   await generateTypescriptTypesAndPrisma(cwd, config, graphQLSchema);
 
   return new Promise<void>((resolve, reject) => {
-    const p = execFile(
-      'node',
-      [require.resolve('prisma'), ...args],
-      {
-        cwd,
-        env: {
-          ...process.env,
-          DATABASE_URL: config.db.url,
-          PRISMA_HIDE_UPDATE_MESSAGE: '1',
-        },
+    const p = spawn('node', [require.resolve('prisma'), ...args], {
+      cwd,
+      env: {
+        ...process.env,
+        DATABASE_URL: config.db.url,
+        PRISMA_HIDE_UPDATE_MESSAGE: '1',
       },
-      err => {
-        if (typeof err?.code === 'number') return reject(new ExitError(err.code));
-        if (err) return reject(err.code);
-        resolve();
-      }
-    );
-
-    p.stdout?.pipe(process.stdout);
-    p.stderr?.pipe(process.stderr);
+      stdio: 'inherit',
+    });
+    p.on('error', err => reject(err));
+    p.on('exit', code => {
+      if (code) return reject(new ExitError(code));
+      resolve();
+    });
   });
 }
