@@ -14,7 +14,6 @@ const yesNo = (truthy: boolean | undefined) => (truthy ? 'Yes' : 'No');
 type BooleanAccess = { create: boolean; query: boolean; update: boolean; delete?: boolean };
 
 const getPrefix = (access: BooleanAccess) => {
-  // prettier-ignore
   let prefix = `${yesNo(access.create)}Create${yesNo(access.query)}Query${yesNo(access.update)}Update`;
   if (Object.prototype.hasOwnProperty.call(access, 'delete')) {
     prefix = `${prefix}${yesNo(access.delete)}Delete`;

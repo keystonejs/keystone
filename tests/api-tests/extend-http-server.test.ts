@@ -11,7 +11,6 @@ const runner = withServer(
   setupTestRunner({
     config: testConfig({
       lists: {
-        // prettier-ignore
         User: list({
           access: allowAll,
           fields: {

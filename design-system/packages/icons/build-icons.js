@@ -51,7 +51,6 @@ async function writeIcons() {
           plugins: [
             // '@svgr/plugin-svgo',
             '@svgr/plugin-jsx',
-            '@svgr/plugin-prettier',
           ],
         },
         { componentName: name }

@@ -11,7 +11,6 @@ const makeRunner = (healthCheck: any) =>
     setupTestRunner({
       config: testConfig({
         lists: {
-          // prettier-ignore
           User: list({
             access: allowAll,
             fields: {

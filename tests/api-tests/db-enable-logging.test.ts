@@ -9,7 +9,6 @@ const runner = (enableLogging: boolean) =>
     config: testConfig({
       db: { enableLogging },
       lists: {
-        // prettier-ignore
         User: list({
           access: allowAll,
           fields: {

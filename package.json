@@ -10,12 +10,8 @@
   "packageManager": "pnpm@8.10.4",
   "scripts": {
     "coverage": "jest --coverage",
-    "format:file": "prettier --write",
-    "format": "prettier --write \"**/*.{js,json,ts,tsx,md,mdx}\"",
     "ci:version-packages": "pnpm changeset version && cd docs && pnpm remove-conditionals",
-    "lint:prettier": "prettier --check \"**/*.{js,json,ts,tsx,md,mdx}\"",
     "lint:types": "tsc",
-    "lint": "pnpm lint:prettier && pnpm lint:types && pnpm lint:filters",
     "test": "jest",
     "test:debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand",
     "test:admin-ui": "jest tests/admin-ui-tests",
@@ -46,23 +42,7 @@
     "esbuild-jest": "^0.5.0",
     "jest": "^29.0.0",
     "jest-environment-jsdom": "^29.0.0",
-    "prettier": "^2.5.0",
     "typescript": "~5.2.0"
-  },
-  "prettier": {
-    "proseWrap": "preserve",
-    "singleQuote": true,
-    "trailingComma": "es5",
-    "printWidth": 100,
-    "arrowParens": "avoid",
-    "overrides": [
-      {
-        "files": "docs/**",
-        "options": {
-          "embeddedLanguageFormatting": "off"
-        }
-      }
-    ]
   },
   "preconstruct": {
     "packages": [

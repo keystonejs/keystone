@@ -144,7 +144,6 @@ function printListTypeInfo<L extends InitialisedList>(
   listKey: string,
   list: L
 ) {
-  // prettier-ignore
   const {
     whereInputName,
     whereUniqueInputName,
@@ -154,7 +153,6 @@ function printListTypeInfo<L extends InitialisedList>(
   } = list.graphql.names;
   const listTypeInfoName = `Lists.${listKey}.TypeInfo`;
 
-  // prettier-ignore
   return [
     `export type ${listKey}<Session = any> = import('@keystone-6/core').ListConfig<${listTypeInfoName}<Session>>;`,
     `namespace ${listKey} {`,
