@@ -1,10 +1,10 @@
 import {
-  GraphQLSchema,
+  type GraphQLSchema,
   GraphQLScalarType,
   GraphQLEnumType,
-  GraphQLType,
+  type GraphQLType,
   GraphQLNonNull,
-  GraphQLNamedType,
+  type GraphQLNamedType,
   GraphQLList,
   GraphQLInputObjectType,
   introspectionTypes,

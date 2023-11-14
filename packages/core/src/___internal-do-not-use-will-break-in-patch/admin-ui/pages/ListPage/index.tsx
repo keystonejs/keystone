@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Fragment, HTMLAttributes, ReactNode, useEffect, useMemo, useState } from 'react'
+import { Fragment, type HTMLAttributes, type ReactNode, useEffect, useMemo, useState } from 'react'
 
 import { Button } from '@keystone-ui/button'
 import { Box, Center, Heading, jsx, Stack, useTheme, VisuallyHidden } from '@keystone-ui/core'
@@ -12,14 +12,14 @@ import { AlertDialog } from '@keystone-ui/modals'
 import { useToasts } from '@keystone-ui/toast'
 
 import { SearchIcon } from '@keystone-ui/icons/icons/SearchIcon'
-import { ListMeta } from '../../../../types'
+import { type ListMeta } from '../../../../types'
 import {
   getRootGraphQLFieldsFromFieldController,
-  DataGetter,
-  DeepNullable,
+  type DataGetter,
+  type DeepNullable,
   makeDataGetter,
 } from '../../../../admin-ui/utils'
-import { gql, TypedDocumentNode, useMutation, useQuery } from '../../../../admin-ui/apollo'
+import { gql, type TypedDocumentNode, useMutation, useQuery } from '../../../../admin-ui/apollo'
 import { CellLink } from '../../../../admin-ui/components'
 import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/PageContainer'
 import { Pagination, PaginationLabel } from '../../../../admin-ui/components/Pagination'

@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { ButtonHTMLAttributes, forwardRef } from 'react'
+import { type ButtonHTMLAttributes, forwardRef } from 'react'
 import { jsx, useTheme, VisuallyHidden } from '@keystone-ui/core'
 import { XIcon } from '@keystone-ui/icons/icons/XIcon'
 import { CalendarIcon } from '@keystone-ui/icons/icons/CalendarIcon'

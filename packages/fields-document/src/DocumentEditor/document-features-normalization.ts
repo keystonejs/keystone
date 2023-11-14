@@ -1,6 +1,6 @@
-import { Text, Transforms, Element, NodeEntry, Editor, Node } from 'slate'
-import { DocumentFeatures } from '../views'
-import { Relationships } from './relationship'
+import { Text, Transforms, Element, type NodeEntry, Editor, Node } from 'slate'
+import { type DocumentFeatures } from '../views'
+import { type Relationships } from './relationship'
 
 export function areArraysEqual(a: readonly unknown[], b: readonly unknown[]) {
   return a.length === b.length && a.every((x, i) => x === b[i])

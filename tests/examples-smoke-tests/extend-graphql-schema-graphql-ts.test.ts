@@ -1,4 +1,4 @@
-import { Browser, Page } from 'playwright'
+import { type Browser, type Page } from 'playwright'
 import { exampleProjectTests, loadIndex } from './utils'
 
 exampleProjectTests('extend-graphql-schema-graphql-ts', browserType => {

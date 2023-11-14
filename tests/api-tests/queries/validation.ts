@@ -1,4 +1,4 @@
-import { visit, Kind, ValidationContext, ASTNode, ASTVisitor } from 'graphql'
+import { visit, Kind, type ValidationContext, type ASTNode, type ASTVisitor } from 'graphql'
 
 type Fragment = { name: string; atDepth: number }
 

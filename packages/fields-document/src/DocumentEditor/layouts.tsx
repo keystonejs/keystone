@@ -3,7 +3,7 @@
 
 import { createContext, useContext, useMemo } from 'react'
 import { Editor, Element, Node, Transforms, Range, Point } from 'slate'
-import { ReactEditor, RenderElementProps, useFocused, useSelected } from 'slate-react'
+import { ReactEditor, type RenderElementProps, useFocused, useSelected } from 'slate-react'
 
 import { jsx, useTheme } from '@keystone-ui/core'
 import { Tooltip } from '@keystone-ui/tooltip'
@@ -11,7 +11,7 @@ import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon'
 
 import { ColumnsIcon } from '@keystone-ui/icons/icons/ColumnsIcon'
 import { useControlledPopover } from '@keystone-ui/popover'
-import { DocumentFeatures } from '../views'
+import { type DocumentFeatures } from '../views'
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives'
 import { paragraphElement } from './paragraphs'
 import {

@@ -1,4 +1,4 @@
-import { AuthGqlNames } from '../types'
+import { type AuthGqlNames } from '../types'
 
 export const signinTemplate = ({
   gqlNames,

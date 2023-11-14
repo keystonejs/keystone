@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx } from '@emotion/react'
-import { HTMLAttributes, ElementType } from 'react'
+import { type HTMLAttributes, type ElementType } from 'react'
 
 const styleMap = {
   grad1: {

@@ -1,10 +1,10 @@
 import {
   fieldType,
-  FieldTypeFunc,
-  CommonFieldConfig,
-  BaseListTypeInfo,
-  KeystoneContext,
-  FileMetadata,
+  type FieldTypeFunc,
+  type CommonFieldConfig,
+  type BaseListTypeInfo,
+  type KeystoneContext,
+  type FileMetadata,
 } from '../../../types'
 import { graphql } from '../../..'
 

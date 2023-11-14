@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, keyframes } from '@emotion/react'
-import { HTMLAttributes } from 'react'
+import { type HTMLAttributes } from 'react'
 
 const loading = keyframes({
   '0%, 80%, 100%': {

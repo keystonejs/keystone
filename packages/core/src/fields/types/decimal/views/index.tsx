@@ -6,11 +6,11 @@ import { FieldContainer, FieldDescription, FieldLabel, TextInput } from '@keysto
 import { Decimal } from 'decimal.js'
 import { useState } from 'react'
 import {
-  CardValueComponent,
-  CellComponent,
-  FieldController,
-  FieldControllerConfig,
-  FieldProps,
+  type CardValueComponent,
+  type CellComponent,
+  type FieldController,
+  type FieldControllerConfig,
+  type FieldProps,
 } from '../../../../types'
 import { CellLink, CellContainer } from '../../../../admin-ui/components'
 import { useFormattedInput } from '../../integer/views/utils'

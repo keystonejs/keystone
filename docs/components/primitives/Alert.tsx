@@ -2,7 +2,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react'
 import classnames from 'classnames'
-import { HTMLAttributes } from 'react'
+import { type HTMLAttributes } from 'react'
 
 type AlertProps = {
   look?: 'neutral' | 'tip' | 'warn' | 'error';

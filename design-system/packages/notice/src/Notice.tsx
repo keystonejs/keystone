@@ -1,8 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { ReactNode, useMemo } from 'react'
-import { jsx, makeId, useId, Stack, MarginProps, Box } from '@keystone-ui/core'
+import { type ReactNode, useMemo } from 'react'
+import { jsx, makeId, useId, Stack, type MarginProps, Box } from '@keystone-ui/core'
 import { AlertOctagonIcon } from '@keystone-ui/icons/icons/AlertOctagonIcon'
 import { AlertCircleIcon } from '@keystone-ui/icons/icons/AlertCircleIcon'
 import { AlertTriangleIcon } from '@keystone-ui/icons/icons/AlertTriangleIcon'
@@ -11,7 +11,7 @@ import { InfoIcon } from '@keystone-ui/icons/icons/InfoIcon'
 import { HelpCircleIcon } from '@keystone-ui/icons/icons/HelpCircleIcon'
 
 import { Button, ButtonProvider } from '@keystone-ui/button'
-import { useNoticeStyles, useNoticeTokens, ToneKey } from './hooks/notice'
+import { useNoticeStyles, useNoticeTokens, type ToneKey } from './hooks/notice'
 import { useButtonTokens } from './hooks/button'
 
 const symbols: { [key in ToneKey]: ReactNode } = {

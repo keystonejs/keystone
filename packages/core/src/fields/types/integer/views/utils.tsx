@@ -1,4 +1,4 @@
-import { ChangeEvent, FocusEvent, useState } from 'react'
+import { type ChangeEvent, type FocusEvent, useState } from 'react'
 
 type ParsedValueBase = undefined | symbol | boolean | object | number | null | bigint
 

@@ -2,7 +2,7 @@
 /** @jsx jsx */
 
 import { jsx, useTheme } from '@keystone-ui/core'
-import { Fragment, HTMLAttributes, ReactNode, useState } from 'react'
+import { Fragment, type HTMLAttributes, type ReactNode, useState } from 'react'
 import { MenuIcon, XCircleIcon } from '@keystone-ui/icons'
 
 import { Navigation } from './Navigation'

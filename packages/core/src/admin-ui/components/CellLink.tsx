@@ -3,7 +3,7 @@
 
 import { jsx, useTheme } from '@keystone-ui/core'
 
-import { Link, LinkProps } from '../router'
+import { Link, type LinkProps } from '../router'
 
 /**
  * This is the component you should use when linking a Cell to an item (i.e when the Cell supports

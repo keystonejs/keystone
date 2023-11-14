@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx } from '@emotion/react'
-import { HTMLAttributes } from 'react'
+import { type HTMLAttributes } from 'react'
 
 import { Twitter } from './icons/Twitter'
 // import { YouTube } from './icons/YouTube';

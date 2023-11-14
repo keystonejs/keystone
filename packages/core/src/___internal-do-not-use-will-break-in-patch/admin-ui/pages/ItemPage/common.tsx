@@ -3,10 +3,10 @@
 
 import { Heading, jsx, useTheme } from '@keystone-ui/core'
 import { ChevronRightIcon } from '@keystone-ui/icons/icons/ChevronRightIcon'
-import { Fragment, HTMLAttributes, ReactNode } from 'react'
+import { Fragment, type HTMLAttributes, type ReactNode } from 'react'
 import { Container } from '../../../../admin-ui/components/Container'
 import { Link } from '../../../../admin-ui/router'
-import { ListMeta } from '../../../../types'
+import { type ListMeta } from '../../../../types'
 
 export function ItemPageHeader(props: { list: ListMeta; label: string }) {
   const { palette, spacing } = useTheme()

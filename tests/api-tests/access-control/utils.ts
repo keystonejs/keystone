@@ -1,5 +1,5 @@
 import { text, password } from '@keystone-6/core/fields'
-import { list, ListSchemaConfig } from '@keystone-6/core'
+import { list, type ListSchemaConfig } from '@keystone-6/core'
 import { statelessSessions } from '@keystone-6/core/session'
 import { createAuth } from '@keystone-6/auth'
 import { allowAll } from '@keystone-6/core/access'

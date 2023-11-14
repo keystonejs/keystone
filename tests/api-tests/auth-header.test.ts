@@ -6,7 +6,7 @@ import type { KeystoneContext } from '@keystone-6/core/types'
 import { setupTestRunner, setupTestEnv } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import { testConfig, expectAccessDenied, seed } from './utils'
-import { GraphQLRequest, withServer } from './with-server'
+import { type GraphQLRequest, withServer } from './with-server'
 
 const initialData = {
   User: [

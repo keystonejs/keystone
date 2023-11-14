@@ -7,8 +7,8 @@ import {
   useEffect,
   useState,
   useRef,
-  ReactNode,
-  RefObject,
+  type ReactNode,
+  type RefObject,
 } from 'react'
 import { useRouter } from 'next/router'
 import { jsx } from '@emotion/react'

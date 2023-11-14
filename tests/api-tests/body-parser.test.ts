@@ -1,6 +1,6 @@
 import { text } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
-import express from 'express'
+import type express from 'express'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import type { Options as BodyParserOptions } from 'body-parser'
 import supertest from 'supertest'

@@ -3,7 +3,7 @@
 import { jsx } from '@emotion/react'
 import Link from 'next/link'
 // import { useRouter } from 'next/router';
-import { Fragment, useEffect, ReactNode, MouseEvent } from 'react'
+import { Fragment, useEffect, type ReactNode, type MouseEvent } from 'react'
 import FocusLock from 'react-focus-lock'
 
 import { useHeaderContext } from './Header'

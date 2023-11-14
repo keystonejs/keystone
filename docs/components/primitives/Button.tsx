@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { ReactNode } from 'react'
-import { CSSObject, jsx } from '@emotion/react'
+import { type ReactNode } from 'react'
+import { type CSSObject, jsx } from '@emotion/react'
 import Link from 'next/link'
 
 import { forwardRefWithAs } from '../../lib/forwardRefWithAs'

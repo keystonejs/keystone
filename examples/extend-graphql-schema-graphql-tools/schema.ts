@@ -3,7 +3,7 @@ import type { GraphQLSchema } from 'graphql'
 import { mergeSchemas } from '@graphql-tools/schema'
 import { allowAll } from '@keystone-6/core/access'
 import { select, relationship, text, timestamp } from '@keystone-6/core/fields'
-import { Lists, Context } from '.keystone/types'
+import { type Lists, type Context } from '.keystone/types'
 
 export const lists: Lists = {
   Post: list({

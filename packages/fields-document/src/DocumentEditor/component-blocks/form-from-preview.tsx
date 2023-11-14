@@ -7,17 +7,17 @@ import { jsx, Stack } from '@keystone-ui/core'
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields'
 import { PlusCircleIcon } from '@keystone-ui/icons/icons/PlusCircleIcon'
 import { AlertDialog } from '@keystone-ui/modals'
-import { memo, useCallback, useMemo, useState, MemoExoticComponent, ReactElement } from 'react'
+import { memo, useCallback, useMemo, useState, type MemoExoticComponent, type ReactElement } from 'react'
 import { DragHandle, OrderableItem, OrderableList, RemoveButton } from '../primitives/orderable'
 import {
-  ArrayField,
-  ComponentSchema,
-  ConditionalField,
-  FormField,
-  GenericPreviewProps,
-  ObjectField,
-  RelationshipData,
-  RelationshipField,
+  type ArrayField,
+  type ComponentSchema,
+  type ConditionalField,
+  type FormField,
+  type GenericPreviewProps,
+  type ObjectField,
+  type RelationshipData,
+  type RelationshipField,
 } from './api'
 import { previewPropsToValue, setValueToPreviewProps } from './get-value'
 import { createGetPreviewProps } from './preview-props'

@@ -1,9 +1,9 @@
 import {
-  DatabaseProvider,
-  BaseListTypeInfo,
+  type DatabaseProvider,
+  type BaseListTypeInfo,
   fieldType,
-  FieldTypeFunc,
-  IdFieldConfig,
+  type FieldTypeFunc,
+  type IdFieldConfig,
   orderDirectionEnum,
 } from '../types'
 import { graphql } from '..'

@@ -1,10 +1,10 @@
 import { humanize } from '../../../lib/utils'
 import {
-  BaseListTypeInfo,
-  CommonFieldConfig,
+  type BaseListTypeInfo,
+  type CommonFieldConfig,
   fieldType,
   orderDirectionEnum,
-  FieldTypeFunc,
+  type FieldTypeFunc,
 } from '../../../types'
 import { graphql } from '../../..'
 import { assertReadIsNonNullAllowed } from '../../non-null-graphql'

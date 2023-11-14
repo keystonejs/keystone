@@ -1,7 +1,7 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { Editor } from 'slate'
+import { type Editor } from 'slate'
 import { makeEditor, jsx } from '../tests/utils'
 import { MyDataTransfer } from './data-transfer'
 

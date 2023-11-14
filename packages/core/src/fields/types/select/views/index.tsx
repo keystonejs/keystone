@@ -14,11 +14,11 @@ import { SegmentedControl } from '@keystone-ui/segmented-control'
 import { Button } from '@keystone-ui/button'
 import { Text } from '@keystone-ui/core'
 import {
-  CardValueComponent,
-  CellComponent,
-  FieldController,
-  FieldControllerConfig,
-  FieldProps,
+  type CardValueComponent,
+  type CellComponent,
+  type FieldController,
+  type FieldControllerConfig,
+  type FieldProps,
 } from '../../../../types'
 import { CellContainer, CellLink } from '../../../../admin-ui/components'
 

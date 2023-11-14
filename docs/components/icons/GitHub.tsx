@@ -2,7 +2,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react'
 
-import { Gradients, IconProps } from './util'
+import { Gradients, type IconProps } from './util'
 
 export function GitHub({ grad, ...props }: IconProps) {
   return (

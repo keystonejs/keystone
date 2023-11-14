@@ -1,4 +1,4 @@
-import React, { ReactNode, createContext, useContext, useMemo } from 'react'
+import React, { type ReactNode, createContext, useContext, useMemo } from 'react'
 import { Center } from '@keystone-ui/core'
 import { ToastProvider } from '@keystone-ui/toast'
 import { LoadingDots } from '@keystone-ui/loading'
@@ -6,12 +6,12 @@ import { DrawerProvider } from '@keystone-ui/modals'
 import { createUploadLink } from 'apollo-upload-client'
 import type { AdminConfig, AdminMeta, FieldViews } from '../types'
 import { useAdminMeta } from './utils/useAdminMeta'
-import { ApolloProvider, ApolloClient, InMemoryCache, ApolloError, DocumentNode } from './apollo'
+import { ApolloProvider, ApolloClient, InMemoryCache, type ApolloError, type DocumentNode } from './apollo'
 import {
-  AuthenticatedItem,
-  VisibleLists,
+  type AuthenticatedItem,
+  type VisibleLists,
   useLazyMetadata,
-  CreateViewFieldModes,
+  type CreateViewFieldModes,
 } from './utils/useLazyMetadata'
 
 type KeystoneContextType = {

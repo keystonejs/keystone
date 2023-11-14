@@ -3,11 +3,11 @@ import { FieldContainer, FieldDescription, FieldLabel } from '@keystone-ui/field
 import { CellLink, CellContainer } from '@keystone-6/core/admin-ui/components'
 
 import {
-  CardValueComponent,
-  CellComponent,
-  FieldController,
-  FieldControllerConfig,
-  FieldProps,
+  type CardValueComponent,
+  type CellComponent,
+  type FieldController,
+  type FieldControllerConfig,
+  type FieldProps,
 } from '@keystone-6/core/types'
 import { StarsInput } from './stars-input'
 

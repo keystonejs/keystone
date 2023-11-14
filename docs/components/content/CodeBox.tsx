@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { HTMLAttributes, useEffect, useState } from 'react'
+import { type HTMLAttributes, useEffect, useState } from 'react'
 import { jsx } from '@emotion/react'
 import copy from 'clipboard-copy'
 

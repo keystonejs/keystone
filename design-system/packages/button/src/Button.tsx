@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { ReactNode, useContext } from 'react'
+import { type ReactNode, useContext } from 'react'
 import { forwardRefWithAs, jsx } from '@keystone-ui/core'
 import { LoadingDots } from '@keystone-ui/loading'
 

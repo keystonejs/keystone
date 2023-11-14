@@ -2,7 +2,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react'
 import Link from 'next/link'
-import { HTMLAttributes } from 'react'
+import { type HTMLAttributes } from 'react'
 
 import { useMediaQuery } from '../lib/media'
 import { GitHubButton } from './primitives/GitHubButton'

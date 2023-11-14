@@ -3,15 +3,15 @@ import {
   executeSync,
   GraphQLNonNull,
   GraphQLScalarType,
-  GraphQLSchema,
+  type GraphQLSchema,
   GraphQLUnionType,
   parse,
-  FragmentDefinitionNode,
-  SelectionNode,
-  ExecutionResult,
+  type FragmentDefinitionNode,
+  type SelectionNode,
+  type ExecutionResult,
   Kind,
 } from 'graphql'
-import { staticAdminMetaQuery, StaticAdminMetaQuery } from '../admin-meta-graphql'
+import { staticAdminMetaQuery, type StaticAdminMetaQuery } from '../admin-meta-graphql'
 import type { AdminMetaRootVal } from '../../lib/create-admin-meta'
 
 type AppTemplateOptions = { configFileExists: boolean }

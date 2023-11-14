@@ -5,11 +5,11 @@ import { jsx } from '@keystone-ui/core'
 import { FieldContainer, FieldDescription, FieldLabel, TextInput } from '@keystone-ui/fields'
 import { useState } from 'react'
 import {
-  CardValueComponent,
-  CellComponent,
-  FieldController,
-  FieldControllerConfig,
-  FieldProps,
+  type CardValueComponent,
+  type CellComponent,
+  type FieldController,
+  type FieldControllerConfig,
+  type FieldProps,
 } from '../../../../types'
 import { CellLink, CellContainer } from '../../../../admin-ui/components'
 import { useFormattedInput } from '../../integer/views/utils'

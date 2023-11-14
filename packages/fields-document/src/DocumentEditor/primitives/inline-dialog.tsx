@@ -2,7 +2,7 @@
 /** @jsx jsx */
 
 import { jsx, Portal, useTheme } from '@keystone-ui/core'
-import { HTMLAttributes, forwardRef } from 'react'
+import { type HTMLAttributes, forwardRef } from 'react'
 
 type Props = {
   /** Without using a 3rd-party position lib, like popper, you can place the

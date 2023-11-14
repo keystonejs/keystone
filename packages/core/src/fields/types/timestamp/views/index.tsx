@@ -11,11 +11,11 @@ import {
   FieldDescription,
 } from '@keystone-ui/fields'
 import {
-  CardValueComponent,
-  CellComponent,
-  FieldController,
-  FieldControllerConfig,
-  FieldProps,
+  type CardValueComponent,
+  type CellComponent,
+  type FieldController,
+  type FieldControllerConfig,
+  type FieldProps,
 } from '../../../../types'
 import { CellContainer, CellLink } from '../../../../admin-ui/components'
 import { useFormattedInput } from '../../integer/views/utils'
@@ -23,7 +23,7 @@ import {
   constructTimestamp,
   deconstructTimestamp,
   formatOutput,
-  Value,
+  type Value,
   parseTime,
   formatTime,
 } from './utils'

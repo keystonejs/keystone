@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { ReactEditor, RenderElementProps, useFocused, useSelected } from 'slate-react'
+import { ReactEditor, type RenderElementProps, useFocused, useSelected } from 'slate-react'
 import { Element, Editor, Node, Range, Transforms, Text } from 'slate'
 import { forwardRef, memo, useEffect, useMemo, useState } from 'react'
 
@@ -12,7 +12,7 @@ import { LinkIcon } from '@keystone-ui/icons/icons/LinkIcon'
 import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon'
 import { ExternalLinkIcon } from '@keystone-ui/icons/icons/ExternalLinkIcon'
 
-import { DocumentFeatures } from '../views'
+import { type DocumentFeatures } from '../views'
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives'
 import {
   EditorAfterButIgnoringingPointsWithNoContent,
@@ -23,7 +23,7 @@ import {
 } from './utils'
 import { getAncestorComponentChildFieldDocumentFeatures, useToolbarState } from './toolbar-state'
 import { useEventCallback } from './utils'
-import { ComponentBlock } from './component-blocks/api'
+import { type ComponentBlock } from './component-blocks/api'
 import { isValidURL } from './isValidURL'
 import { isInlineContainer } from '.'
 

@@ -1,14 +1,14 @@
 import {
-  ArrayField,
-  ComponentSchema,
-  ConditionalField,
-  ValueForComponentSchema,
-  FormField,
-  FormFieldValue,
-  HydratedRelationshipData,
-  ObjectField,
-  RelationshipField,
-  GenericPreviewProps,
+  type ArrayField,
+  type ComponentSchema,
+  type ConditionalField,
+  type ValueForComponentSchema,
+  type FormField,
+  type FormFieldValue,
+  type HydratedRelationshipData,
+  type ObjectField,
+  type RelationshipField,
+  type GenericPreviewProps,
 } from './api'
 import { updateValue } from './initial-values'
 

@@ -1,4 +1,4 @@
-import { BaseListTypeInfo, FieldTypeFunc, CommonFieldConfig, fieldType } from '../../../types'
+import { type BaseListTypeInfo, type FieldTypeFunc, type CommonFieldConfig, fieldType } from '../../../types'
 import { graphql } from '../../..'
 import { getAdminMetaForRelationshipField } from '../../../lib/create-admin-meta'
 

@@ -1,4 +1,4 @@
-import { AuthTokenRedemptionErrorCode } from '../types'
+import { type AuthTokenRedemptionErrorCode } from '../types'
 
 export function getAuthTokenErrorMessage({ code }: { code: AuthTokenRedemptionErrorCode }): string {
   switch (code) {

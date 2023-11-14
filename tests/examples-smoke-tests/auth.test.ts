@@ -1,5 +1,5 @@
 import fetch from 'node-fetch'
-import { Browser, Page } from 'playwright'
+import { type Browser, type Page } from 'playwright'
 import { exampleProjectTests, initFirstItemTest, loadIndex } from './utils'
 
 exampleProjectTests('../examples/auth', browserType => {

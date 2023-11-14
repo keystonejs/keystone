@@ -2,7 +2,7 @@
 /** @jsx jsx */
 
 import 'intersection-observer'
-import { RefObject, useEffect, useMemo, useState, createContext, useContext, useRef } from 'react'
+import { type RefObject, useEffect, useMemo, useState, createContext, useContext, useRef } from 'react'
 
 import { jsx } from '@keystone-ui/core'
 import { MultiSelect, Select, selectComponents } from '@keystone-ui/fields'
@@ -11,7 +11,7 @@ import {
   ApolloClient,
   gql,
   InMemoryCache,
-  TypedDocumentNode,
+  type TypedDocumentNode,
   useApolloClient,
   useQuery,
 } from '../../../../admin-ui/apollo'

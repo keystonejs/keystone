@@ -1,6 +1,6 @@
 import { graphql } from '@keystone-6/core'
-import { FieldData } from '@keystone-6/core/types'
-import { ComponentSchemaForGraphQL } from './DocumentEditor/component-blocks/api'
+import { type FieldData } from '@keystone-6/core/types'
+import { type ComponentSchemaForGraphQL } from './DocumentEditor/component-blocks/api'
 import { assertNever } from './DocumentEditor/component-blocks/utils'
 
 function wrapGraphQLFieldInResolver<InputSource, OutputSource>(

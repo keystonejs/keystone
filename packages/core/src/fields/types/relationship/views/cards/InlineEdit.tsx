@@ -5,15 +5,15 @@ import { Button } from '@keystone-ui/button'
 import { jsx, Stack } from '@keystone-ui/core'
 import { useToasts } from '@keystone-ui/toast'
 import { useCallback, useState } from 'react'
-import { ListMeta } from '../../../../../types'
+import { type ListMeta } from '../../../../../types'
 import {
   deserializeValue,
-  ItemData,
+  type ItemData,
   useInvalidFields,
   Fields,
   useChangedFieldsAndDataForUpdate,
   makeDataGetter,
-  DataGetter,
+  type DataGetter,
 } from '../../../../../admin-ui/utils'
 import { gql, useMutation } from '../../../../../admin-ui/apollo'
 import { GraphQLErrorNotice } from '../../../../../admin-ui/components'

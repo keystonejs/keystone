@@ -1,5 +1,5 @@
 import type { KeystoneContext, GraphQLTypesForList } from '../../../types'
-import { graphql } from '../../..'
+import { type graphql } from '../../..'
 import type { UniqueInputFilter } from '../where-inputs'
 import type { InitialisedList } from '../initialise-lists'
 import { isRejected, isFulfilled } from '../utils'

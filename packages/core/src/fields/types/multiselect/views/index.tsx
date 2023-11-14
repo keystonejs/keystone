@@ -4,11 +4,11 @@ import { Fragment } from 'react'
 import { jsx } from '@keystone-ui/core'
 import { FieldContainer, FieldDescription, FieldLabel, MultiSelect } from '@keystone-ui/fields'
 import {
-  CardValueComponent,
-  CellComponent,
-  FieldController,
-  FieldControllerConfig,
-  FieldProps,
+  type CardValueComponent,
+  type CellComponent,
+  type FieldController,
+  type FieldControllerConfig,
+  type FieldProps,
 } from '../../../../types'
 import { CellContainer, CellLink } from '../../../../admin-ui/components'
 

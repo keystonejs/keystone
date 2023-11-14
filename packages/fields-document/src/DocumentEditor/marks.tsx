@@ -1,8 +1,8 @@
-import { Element, Editor, Transforms, Range, Text, Point, Node, Path } from 'slate'
-import { DocumentFeatures } from '../views'
-import { ComponentBlock } from './component-blocks/api'
+import { Element, Editor, Transforms, Range, Text, type Point, Node, Path } from 'slate'
+import { type DocumentFeatures } from '../views'
+import { type ComponentBlock } from './component-blocks/api'
 import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state'
-import { EditorAfterButIgnoringingPointsWithNoContent, Mark } from './utils'
+import { EditorAfterButIgnoringingPointsWithNoContent, type Mark } from './utils'
 
 export const allMarkdownShortcuts = {
   bold: ['**', '__'],

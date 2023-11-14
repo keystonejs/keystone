@@ -1,5 +1,5 @@
 import Markdoc from '@markdoc/markdoc'
-import { getIdForHeading, baseMarkdocConfig, Pages } from '../markdoc/config'
+import { getIdForHeading, baseMarkdocConfig, type Pages } from '../markdoc/config'
 import { printValidationError } from '../markdoc'
 import { loadAllMarkdoc } from '../markdoc/load-all'
 

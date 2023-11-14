@@ -4,7 +4,7 @@ import { list } from '@keystone-6/core'
 import { setupTestEnv, setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { component, fields } from '@keystone-6/fields-document/component-blocks'
 import { allowAll } from '@keystone-6/core/access'
-import { testConfig, ContextFromRunner, expectInternalServerError } from '../../utils'
+import { testConfig, type ContextFromRunner, expectInternalServerError } from '../../utils'
 import { withServer } from '../../with-server'
 
 const runner = setupTestRunner({

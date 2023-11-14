@@ -12,7 +12,7 @@ import {
   formatDateType,
   dateFormatPlaceholder,
 } from '../utils/dateFormatters'
-import { DateType } from '../types'
+import { type DateType } from '../types'
 import { Calendar } from './Calendar'
 import { InputButton } from './components/InputButton'
 

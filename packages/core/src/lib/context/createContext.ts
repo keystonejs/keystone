@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'http'
-import { ExecutionResult, graphql, GraphQLSchema, print } from 'graphql'
+import { type ExecutionResult, graphql, type GraphQLSchema, print } from 'graphql'
 import type { KeystoneContext, KeystoneGraphQLAPI, KeystoneConfig } from '../../types'
 
 import type { PrismaClient } from '../core/utils'

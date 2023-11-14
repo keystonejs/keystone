@@ -2,7 +2,7 @@
 /** @jsx jsx */
 
 import { jsx, Stack } from '@keystone-ui/core'
-import { Button, buttonToneValues, ToneKey, buttonWeightValues } from '@keystone-ui/button'
+import { Button, buttonToneValues, type ToneKey, buttonWeightValues } from '@keystone-ui/button'
 
 import { Page } from '../../components/Page'
 import { toLabel } from '../../utils'

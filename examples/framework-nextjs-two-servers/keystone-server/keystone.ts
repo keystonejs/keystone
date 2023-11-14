@@ -3,7 +3,7 @@ import type { KeystoneConfig } from '@keystone-6/core/types'
 import { fixPrismaPath } from '../../example-utils'
 import { seedDatabase } from './src/seed'
 import { lists } from './src/schema'
-import { Context, TypeInfo } from '.keystone/types'
+import { type Context, type TypeInfo } from '.keystone/types'
 
 const db: KeystoneConfig<TypeInfo>['db'] = {
   provider: 'sqlite',

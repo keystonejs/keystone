@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react'
 
-import { ToastProps } from './types'
+import { type ToastProps } from './types'
 
 function notInContext() {
   throw new Error('This component must be used inside a <ToastProvider> component.')

@@ -5,9 +5,9 @@ import copyToClipboard from 'clipboard-copy'
 import { useRouter } from 'next/router'
 import {
   Fragment,
-  HTMLAttributes,
+  type HTMLAttributes,
   memo,
-  ReactElement,
+  type ReactElement,
   useCallback,
   useEffect,
   useMemo,
@@ -26,11 +26,11 @@ import { Tooltip } from '@keystone-ui/tooltip'
 import { FieldLabel, TextInput } from '@keystone-ui/fields'
 import type { ListMeta, FieldMeta } from '../../../../types'
 import {
-  DataGetter,
-  DeepNullable,
+  type DataGetter,
+  type DeepNullable,
   makeDataGetter,
   deserializeValue,
-  ItemData,
+  type ItemData,
   useInvalidFields,
   Fields,
   useChangedFieldsAndDataForUpdate,

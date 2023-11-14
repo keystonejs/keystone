@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React, { type ReactNode } from 'react'
 import styles from './Callout.module.css'
 
 type CalloutProps = {

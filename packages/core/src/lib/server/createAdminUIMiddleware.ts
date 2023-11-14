@@ -1,6 +1,6 @@
 import url from 'url'
 import path from 'path'
-import express from 'express'
+import type express from 'express'
 import type next from 'next'
 import type { KeystoneConfig, KeystoneContext } from '../../types'
 import { pkgDir } from '../../pkg-dir'

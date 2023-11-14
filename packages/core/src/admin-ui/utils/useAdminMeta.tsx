@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import hashString from '@emotion/hash'
-import { AdminMeta, FieldViews, getGqlNames } from '../../types'
+import { type AdminMeta, type FieldViews, getGqlNames } from '../../types'
 import { useLazyQuery } from '../apollo'
-import { StaticAdminMetaQuery, staticAdminMetaQuery } from '../admin-meta-graphql'
+import { type StaticAdminMetaQuery, staticAdminMetaQuery } from '../admin-meta-graphql'
 
 const expectedExports = new Set(['Cell', 'Field', 'controller', 'CardValue'])
 

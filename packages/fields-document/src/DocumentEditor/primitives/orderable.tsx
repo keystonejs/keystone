@@ -18,7 +18,7 @@ import {
   useSortable,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
-import { createContext, ReactNode, useContext } from 'react'
+import { createContext, type ReactNode, useContext } from 'react'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import { Button } from '@keystone-ui/button'
 import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon'

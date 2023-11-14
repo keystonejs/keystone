@@ -4,7 +4,7 @@ import type { HTMLAttributes } from 'react'
 import { jsx } from '@emotion/react'
 
 import { Type } from '../primitives/Type'
-import { IconProps } from '../icons/util'
+import { type IconProps } from '../icons/util'
 
 type CustomerCardProps = {
   icon: (props: IconProps) => JSX.Element;

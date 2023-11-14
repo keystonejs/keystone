@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx } from '@emotion/react'
-import { useState, useEffect, HTMLAttributes } from 'react'
+import { useState, useEffect, type HTMLAttributes } from 'react'
 
 import { Loading } from './Loading'
 import { Type } from './Type'

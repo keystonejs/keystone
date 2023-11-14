@@ -1,14 +1,14 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Fragment, KeyboardEvent, MutableRefObject, ReactNode, useCallback, useRef } from 'react'
+import { Fragment, type KeyboardEvent, type MutableRefObject, type ReactNode, useCallback, useRef } from 'react'
 import FocusLock from 'react-focus-lock'
 import { RemoveScroll } from 'react-remove-scroll'
 import { makeId, useId, useTheme, Portal, jsx } from '@keystone-ui/core'
 import { Blanket } from './Blanket'
 
 import { useDrawerManager } from './drawer-context'
-import { TransitionState } from './types'
+import { type TransitionState } from './types'
 import { DrawerControllerContextProvider } from './DrawerController'
 
 export const DRAWER_WIDTHS = {

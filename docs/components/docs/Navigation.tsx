@@ -1,8 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import {
-  AnchorHTMLAttributes,
-  ReactNode,
+  type AnchorHTMLAttributes,
+  type ReactNode,
   useState,
   createContext,
   useContext,

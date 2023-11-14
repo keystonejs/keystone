@@ -4,11 +4,11 @@
 import { jsx, useTheme } from '@keystone-ui/core'
 import { Checkbox, FieldContainer, FieldLabel, FieldDescription } from '@keystone-ui/fields'
 import {
-  CardValueComponent,
-  CellComponent,
-  FieldController,
-  FieldControllerConfig,
-  FieldProps,
+  type CardValueComponent,
+  type CellComponent,
+  type FieldController,
+  type FieldControllerConfig,
+  type FieldProps,
 } from '../../../../types'
 import { CellContainer } from '../../../../admin-ui/components'
 

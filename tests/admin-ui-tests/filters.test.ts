@@ -1,5 +1,5 @@
 import retry from 'async-retry'
-import { Browser, Page, BrowserContext } from 'playwright'
+import { type Browser, type Page, type BrowserContext } from 'playwright'
 import { adminUITests, deleteAllData, generateDataArray, loadIndex, makeGqlRequest } from './utils'
 
 adminUITests('./tests/test-projects/basic', browserType => {

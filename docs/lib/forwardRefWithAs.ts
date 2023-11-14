@@ -1,9 +1,9 @@
 import {
-  ComponentPropsWithoutRef,
-  ElementType,
-  ReactElement,
-  ReactNode,
-  Ref,
+  type ComponentPropsWithoutRef,
+  type ElementType,
+  type ReactElement,
+  type ReactNode,
+  type Ref,
   forwardRef,
 } from 'react'
 

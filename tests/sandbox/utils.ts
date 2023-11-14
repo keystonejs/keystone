@@ -1,5 +1,5 @@
 import { timestamp } from '@keystone-6/core/fields'
-import { BaseKeystoneTypeInfo, DatabaseConfig, StorageConfig } from '@keystone-6/core/types'
+import { type BaseKeystoneTypeInfo, type DatabaseConfig, type StorageConfig } from '@keystone-6/core/types'
 
 export const localStorageConfig: Record<string, StorageConfig> = {
   images: {

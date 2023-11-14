@@ -1,6 +1,6 @@
 import facepaint from 'facepaint'
 
-import { Theme } from '../types'
+import { type Theme } from '../types'
 import { useTheme } from '../theme'
 
 type BreakPoints = Theme['breakpoints']

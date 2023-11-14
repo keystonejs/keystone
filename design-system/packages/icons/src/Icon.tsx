@@ -1,8 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { SVGAttributes, forwardRef, ReactNode } from 'react'
-import { ResponsiveProp, jsx, mapResponsiveProp } from '@keystone-ui/core'
+import { type SVGAttributes, forwardRef, type ReactNode } from 'react'
+import { type ResponsiveProp, jsx, mapResponsiveProp } from '@keystone-ui/core'
 
 export type IconProps = SVGAttributes<SVGSVGElement> & {
   /** The color for the SVG fill property. */

@@ -1,6 +1,6 @@
 import { formatISO } from 'date-fns'
-import { FieldControllerConfig } from '../../../../../types'
-import { controller, TimestampFieldMeta } from '../index'
+import { type FieldControllerConfig } from '../../../../../types'
+import { controller, type TimestampFieldMeta } from '../index'
 const STUBCONFIG: FieldControllerConfig<TimestampFieldMeta> = {
   listKey: 'timestamp',
   path: './timestamp',

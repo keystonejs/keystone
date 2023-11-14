@@ -1,4 +1,4 @@
-import { GetStaticPathsResult, GetStaticPropsContext } from 'next'
+import { type GetStaticPathsResult, type GetStaticPropsContext } from 'next'
 import Link from 'next/link'
 import React from 'react'
 import { DocumentRenderer } from '@keystone-6/document-renderer'

@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { ReactNode, ReactElement } from 'react'
+import { type ReactNode, type ReactElement } from 'react'
 import { jsx, useTheme } from '@keystone-ui/core'
 
 import type { SizeType } from '../types'

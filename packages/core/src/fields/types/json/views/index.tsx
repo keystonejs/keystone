@@ -4,12 +4,12 @@
 import { jsx, Stack, Text } from '@keystone-ui/core'
 import { FieldContainer, FieldDescription, FieldLabel, TextArea } from '@keystone-ui/fields'
 import {
-  CardValueComponent,
-  CellComponent,
-  FieldController,
-  FieldControllerConfig,
-  FieldProps,
-  JSONValue,
+  type CardValueComponent,
+  type CellComponent,
+  type FieldController,
+  type FieldControllerConfig,
+  type FieldProps,
+  type JSONValue,
 } from '../../../../types'
 import { CellContainer, CellLink } from '../../../../admin-ui/components'
 

@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { component, ComponentBlock, fields } from './DocumentEditor/component-blocks/api'
-import { Relationships } from './DocumentEditor/relationship'
+import { component, type ComponentBlock, fields } from './DocumentEditor/component-blocks/api'
+import { type Relationships } from './DocumentEditor/relationship'
 import { defaultDocumentFeatures, makeEditor, jsx } from './DocumentEditor/tests/utils'
 import { PropValidationError, validateAndNormalizeDocument } from './validation'
 

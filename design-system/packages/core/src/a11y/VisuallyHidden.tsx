@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React, { type ReactNode } from 'react'
 import { forwardRefWithAs } from '../utils'
 
 // Only display content to screen readers

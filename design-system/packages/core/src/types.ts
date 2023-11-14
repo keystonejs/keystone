@@ -1,4 +1,4 @@
-import { theme } from './themes/default'
+import { type theme } from './themes/default'
 
 // Theme Types
 

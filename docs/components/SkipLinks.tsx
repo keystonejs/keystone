@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx } from '@emotion/react'
-import { AnchorHTMLAttributes, Fragment, useCallback } from 'react'
+import { type AnchorHTMLAttributes, Fragment, useCallback } from 'react'
 
 import { useMediaQuery } from '../lib/media'
 

@@ -1,18 +1,18 @@
-import React, { ReactNode, useContext } from 'react'
+import React, { type ReactNode, useContext } from 'react'
 import { Element, Editor, Range, Text } from 'slate'
 import { useSlate } from 'slate-react'
-import { DocumentFeatures } from '../views'
+import { type DocumentFeatures } from '../views'
 import { ComponentBlockContext } from './component-blocks'
-import { ComponentBlock } from './component-blocks/api'
+import { type ComponentBlock } from './component-blocks/api'
 import {
-  DocumentFeaturesForChildField,
+  type DocumentFeaturesForChildField,
   getSchemaAtPropPath,
   getDocumentFeaturesForChildField,
 } from './component-blocks/utils'
 import { LayoutOptionsProvider } from './layouts'
 import { isListNode } from './lists'
-import { DocumentFieldRelationshipsProvider, Relationships } from './relationship'
-import { allMarks, isElementActive, Mark, nodeTypeMatcher } from './utils'
+import { DocumentFieldRelationshipsProvider, type Relationships } from './relationship'
+import { allMarks, isElementActive, type Mark, nodeTypeMatcher } from './utils'
 
 type BasicToolbarItem = { isSelected: boolean; isDisabled: boolean }
 

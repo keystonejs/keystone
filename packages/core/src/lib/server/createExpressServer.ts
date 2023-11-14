@@ -1,10 +1,10 @@
-import { createServer, Server } from 'http'
-import cors, { CorsOptions } from 'cors'
+import { createServer, type Server } from 'http'
+import cors, { type CorsOptions } from 'cors'
 import { json } from 'body-parser'
 import { expressMiddleware } from '@apollo/server/express4'
 import express from 'express'
 import type { GraphQLFormattedError, GraphQLSchema } from 'graphql'
-import { ApolloServer, ApolloServerOptions } from '@apollo/server'
+import { ApolloServer, type ApolloServerOptions } from '@apollo/server'
 import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled'
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default'
 // @ts-ignore

@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Component, ReactNode } from 'react'
+import { Component, type ReactNode } from 'react'
 import { Button } from '@keystone-ui/button'
 import { jsx, Box, Center, Stack, useTheme } from '@keystone-ui/core'
 import { AlertTriangleIcon } from '@keystone-ui/icons/icons/AlertTriangleIcon'

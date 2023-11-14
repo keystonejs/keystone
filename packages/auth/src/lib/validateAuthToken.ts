@@ -1,5 +1,5 @@
 import type { KeystoneDbAPI } from '@keystone-6/core/types'
-import { AuthTokenRedemptionErrorCode, SecretFieldImpl } from '../types'
+import { type AuthTokenRedemptionErrorCode, type SecretFieldImpl } from '../types'
 import { validateSecret } from './validateSecret'
 
 // The tokensValidForMins config is from userland so could be anything; make it sane

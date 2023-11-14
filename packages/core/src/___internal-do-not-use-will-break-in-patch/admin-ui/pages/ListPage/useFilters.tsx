@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { JSONValue, ListMeta } from '../../../../types'
+import { type JSONValue, type ListMeta } from '../../../../types'
 import { useRouter } from '../../../../admin-ui/router'
 
 export type Filter = { field: string; type: string; value: JSONValue }

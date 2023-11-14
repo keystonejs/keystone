@@ -1,29 +1,29 @@
-import { Editor, Element, Transforms, Range, NodeEntry, Path, Node, Text } from 'slate'
+import { Editor, Element, Transforms, Range, type NodeEntry, Path, Node, Text } from 'slate'
 
 import weakMemoize from '@emotion/weak-memoize'
-import { ChildField, ComponentBlock, ComponentSchema } from '../../component-blocks'
+import { type ChildField, type ComponentBlock, type ComponentSchema } from '../../component-blocks'
 import { assert, moveChildren } from '../utils'
-import { DocumentFeatures } from '../../views'
+import { type DocumentFeatures } from '../../views'
 import {
   areArraysEqual,
   normalizeElementBasedOnDocumentFeatures,
   normalizeInlineBasedOnLinksAndRelationships,
   normalizeTextBasedOnInlineMarksAndSoftBreaks,
 } from '../document-features-normalization'
-import { Relationships } from '../relationship'
+import { type Relationships } from '../relationship'
 import {
   assertNever,
-  DocumentFeaturesForChildField,
+  type DocumentFeaturesForChildField,
   findChildPropPaths,
   getAncestorSchemas,
   getDocumentFeaturesForChildField,
   getValueAtPropPath,
-  ReadonlyPropPath,
+  type ReadonlyPropPath,
   replaceValueAtPropPath,
   traverseProps,
 } from './utils'
 import { getInitialPropsValue } from './initial-values'
-import { ArrayField } from './api'
+import { type ArrayField } from './api'
 import { getKeysForArrayValue, getNewArrayElementKey, setKeysForArrayValue } from './preview-props'
 
 function getAncestorComponentBlock(editor: Editor) {

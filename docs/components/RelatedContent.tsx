@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx } from '@emotion/react'
-import { ReactNode } from 'react'
+import { type ReactNode } from 'react'
 
 import { useMediaQuery } from '../lib/media'
 

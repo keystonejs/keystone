@@ -1,11 +1,11 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import React, { ReactNode, useContext, useEffect, useMemo, useState } from 'react'
-import { DocumentFeatures } from '@keystone-6/fields-document/views'
+import React, { type ReactNode, useContext, useEffect, useMemo, useState } from 'react'
+import { type DocumentFeatures } from '@keystone-6/fields-document/views'
 import {
-  ComponentBlock,
+  type ComponentBlock,
   fields,
-  InferRenderersForComponentBlocks,
+  type InferRenderersForComponentBlocks,
 } from '@keystone-6/fields-document/component-blocks'
 import { Global, jsx } from '@emotion/react'
 import { getInitialPropsValue } from '../../../packages/fields-document/src/DocumentEditor/component-blocks/initial-values'

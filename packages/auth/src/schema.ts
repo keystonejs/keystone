@@ -2,7 +2,7 @@ import { getGqlNames } from '@keystone-6/core/types'
 
 import {
   assertObjectType,
-  GraphQLSchema,
+  type GraphQLSchema,
   assertInputObjectType,
   GraphQLString,
   GraphQLID,

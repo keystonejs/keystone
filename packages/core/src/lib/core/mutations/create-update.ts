@@ -4,12 +4,12 @@ import type { InitialisedList } from '../initialise-lists'
 import {
   promiseAllRejectWithAllErrors,
   getDBFieldKeyForFieldOnMultiField,
-  IdType,
+  type IdType,
   runWithPrisma,
   getWriteLimit,
   getPrismaNamespace,
 } from '../utils'
-import { InputFilter, resolveUniqueWhereInput, UniqueInputFilter } from '../where-inputs'
+import { type InputFilter, resolveUniqueWhereInput, type UniqueInputFilter } from '../where-inputs'
 import {
   accessDeniedError,
   extensionError,

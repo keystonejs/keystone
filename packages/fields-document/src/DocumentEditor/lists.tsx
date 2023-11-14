@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { ReactNode, forwardRef, useMemo } from 'react'
+import { type ReactNode, forwardRef, useMemo } from 'react'
 import { Editor, Element, Node, Path, Transforms, Range } from 'slate'
 import { jsx } from '@keystone-ui/core'
 

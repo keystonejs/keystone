@@ -1,10 +1,10 @@
 import { graphql } from '@keystone-6/core'
-import { BaseItem, FieldData, GraphQLTypesForList, KeystoneContext } from '@keystone-6/core/types'
-import { GraphQLResolveInfo } from 'graphql'
+import { type BaseItem, type FieldData, type GraphQLTypesForList, type KeystoneContext } from '@keystone-6/core/types'
+import { type GraphQLResolveInfo } from 'graphql'
 
-import { ComponentSchemaForGraphQL } from './DocumentEditor/component-blocks/api'
+import { type ComponentSchemaForGraphQL } from './DocumentEditor/component-blocks/api'
 import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values'
-import { assertNever, ReadonlyPropPath } from './DocumentEditor/component-blocks/utils'
+import { assertNever, type ReadonlyPropPath } from './DocumentEditor/component-blocks/utils'
 
 export function getGraphQLInputType(
   name: string,

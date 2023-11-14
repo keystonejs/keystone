@@ -1,9 +1,9 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { Fragment, useState, useEffect, HTMLAttributes } from 'react'
+import { Fragment, useState, useEffect, type HTMLAttributes } from 'react'
 import { jsx } from '@emotion/react'
 
-import { COLORS } from '../lib/TOKENS'
+import { type COLORS } from '../lib/TOKENS'
 import { LightMode } from './icons/LightMode'
 import { DarkMode } from './icons/DarkMode'
 

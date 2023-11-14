@@ -16,7 +16,7 @@ import { initConfig, createSystem } from '@keystone-6/core/system'
 import type { BaseKeystoneTypeInfo, KeystoneConfig, KeystoneContext } from '@keystone-6/core/types'
 import {
   getCommittedArtifacts,
-  PrismaModule,
+  type PrismaModule,
 } from '@keystone-6/core/___internal-do-not-use-will-break-in-patch/artifacts'
 import prismaClientPackageJson from '@prisma/client/package.json'
 import { runMigrateWithDbUrl, withMigrate } from '../../packages/core/src/lib/migrations'

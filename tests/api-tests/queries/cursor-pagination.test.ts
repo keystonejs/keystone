@@ -1,9 +1,9 @@
-import { KeystoneContext } from '@keystone-6/core/types'
-import { setupTestEnv, TestEnv } from '@keystone-6/api-tests/test-runner'
+import { type KeystoneContext } from '@keystone-6/core/types'
+import { setupTestEnv, type TestEnv } from '@keystone-6/api-tests/test-runner'
 import { text, relationship, integer } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
-import { TypeInfoFromConfig, testConfig } from '../utils'
+import { type TypeInfoFromConfig, testConfig } from '../utils'
 
 const config = testConfig({
   lists: {

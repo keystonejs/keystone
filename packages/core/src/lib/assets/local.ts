@@ -2,8 +2,8 @@ import path from 'path'
 import { pipeline } from 'stream'
 import fs from 'fs-extra'
 
-import { StorageConfig } from '../../types'
-import { FileAdapter, ImageAdapter } from './types'
+import { type StorageConfig } from '../../types'
+import { type FileAdapter, type ImageAdapter } from './types'
 
 export function localImageAssetsAPI(
   storageConfig: StorageConfig & { kind: 'local' }

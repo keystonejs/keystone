@@ -1,6 +1,6 @@
 import { createSystem, initConfig } from '@keystone-6/core/system'
 import { relationship, text } from '@keystone-6/core/fields'
-import { list, ListSchemaConfig } from '@keystone-6/core'
+import { list, type ListSchemaConfig } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { testConfig } from '../utils'
 

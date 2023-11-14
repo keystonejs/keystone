@@ -4,7 +4,7 @@
 import { jsx } from '../emotion'
 
 import { forwardRefWithAs } from '../utils'
-import { Box, BoxProps } from './Box'
+import { Box, type BoxProps } from './Box'
 
 type CenterProps = {
   fillView?: boolean;

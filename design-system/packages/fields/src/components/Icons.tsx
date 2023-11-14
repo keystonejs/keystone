@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { ReactNode } from 'react'
+import { type ReactNode } from 'react'
 import { jsx } from '@keystone-ui/core'
 
 type SvgProps = { children: ReactNode; size: string | number; stroke?: string; fill?: string }

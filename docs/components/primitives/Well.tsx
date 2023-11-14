@@ -2,7 +2,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react'
 import Link from 'next/link'
-import { AnchorHTMLAttributes, ReactNode } from 'react'
+import { type AnchorHTMLAttributes, type ReactNode } from 'react'
 
 import { Type } from './Type'
 import { Badge } from './Badge'

@@ -1,9 +1,9 @@
 // Float in GQL: A signed double-precision floating-point value.
 import { humanize } from '../../../lib/utils'
 import {
-  BaseListTypeInfo,
-  FieldTypeFunc,
-  CommonFieldConfig,
+  type BaseListTypeInfo,
+  type FieldTypeFunc,
+  type CommonFieldConfig,
   fieldType,
   orderDirectionEnum,
 } from '../../../types'

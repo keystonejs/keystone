@@ -5,15 +5,15 @@ import { jsx } from '@keystone-ui/core'
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields'
 
 import {
-  CardValueComponent,
-  CellComponent,
-  FieldController,
-  FieldControllerConfig,
-  FieldProps,
+  type CardValueComponent,
+  type CellComponent,
+  type FieldController,
+  type FieldControllerConfig,
+  type FieldProps,
 } from '@keystone-6/core/types'
 import { useEffect, useMemo, useRef } from 'react'
 import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values'
-import { ComponentSchemaForGraphQL } from './DocumentEditor/component-blocks/api'
+import { type ComponentSchemaForGraphQL } from './DocumentEditor/component-blocks/api'
 import { assertNever, clientSideValidateProp } from './DocumentEditor/component-blocks/utils'
 import { FormValueContentFromPreviewProps } from './DocumentEditor/component-blocks/form-from-preview'
 import { createGetPreviewProps } from './DocumentEditor/component-blocks/preview-props'

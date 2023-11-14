@@ -1,6 +1,6 @@
 import {
-  ArrayField,
-  ComponentSchemaForGraphQL,
+  type ArrayField,
+  type ComponentSchemaForGraphQL,
   fields,
 } from '@keystone-6/fields-document/component-blocks'
 

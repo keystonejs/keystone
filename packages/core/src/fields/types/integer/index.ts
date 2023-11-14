@@ -1,9 +1,9 @@
 import { humanize } from '../../../lib/utils'
 import {
-  BaseListTypeInfo,
+  type BaseListTypeInfo,
   fieldType,
-  FieldTypeFunc,
-  CommonFieldConfig,
+  type FieldTypeFunc,
+  type CommonFieldConfig,
   orderDirectionEnum,
 } from '../../../types'
 import { graphql } from '../../..'

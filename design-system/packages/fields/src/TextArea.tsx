@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { InputHTMLAttributes, forwardRef } from 'react'
+import { type InputHTMLAttributes, forwardRef } from 'react'
 import { jsx } from '@keystone-ui/core'
 
 import { useInputStyles, useInputTokens } from './hooks/inputs'

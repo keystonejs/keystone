@@ -1,8 +1,8 @@
 import {
-  BaseListTypeInfo,
-  JSONValue,
-  FieldTypeFunc,
-  CommonFieldConfig,
+  type BaseListTypeInfo,
+  type JSONValue,
+  type FieldTypeFunc,
+  type CommonFieldConfig,
   jsonFieldTypePolyfilledForSQLite,
 } from '../../../types'
 import { graphql } from '../../..'

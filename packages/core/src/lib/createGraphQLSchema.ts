@@ -1,4 +1,4 @@
-import { GraphQLNamedType, GraphQLSchema } from 'graphql'
+import { type GraphQLNamedType, GraphQLSchema } from 'graphql'
 
 import { graphql } from '../types/schema'
 import type { KeystoneConfig } from '../types'

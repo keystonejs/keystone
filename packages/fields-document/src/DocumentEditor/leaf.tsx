@@ -2,8 +2,8 @@
 /** @jsx jsx */
 
 import { jsx, useTheme } from '@keystone-ui/core'
-import { ReactNode, useState } from 'react'
-import { RenderLeafProps } from 'slate-react'
+import { type ReactNode, useState } from 'react'
+import { type RenderLeafProps } from 'slate-react'
 import { InsertMenu } from './insert-menu'
 
 function Placeholder({ placeholder, children }: { placeholder: string; children: ReactNode }) {

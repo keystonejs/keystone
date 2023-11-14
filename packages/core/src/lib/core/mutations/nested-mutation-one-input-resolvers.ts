@@ -1,5 +1,5 @@
 import type { KeystoneContext, GraphQLTypesForList } from '../../../types'
-import { graphql } from '../../..'
+import { type graphql } from '../../..'
 import type { InitialisedList } from '../initialise-lists'
 import { userInputError } from '../graphql-errors'
 import type { NestedMutationState } from './create-update'

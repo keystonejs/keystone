@@ -2,13 +2,13 @@
 /** @jsx jsx */
 
 import bytes from 'bytes'
-import { Fragment, ReactNode, RefObject, useEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, type ReactNode, type RefObject, useEffect, useMemo, useRef, useState } from 'react'
 import { jsx, Stack, Text } from '@keystone-ui/core'
 import { FieldContainer, FieldDescription, FieldLabel } from '@keystone-ui/fields'
 import { Button } from '@keystone-ui/button'
-import { FieldProps } from '../../../../types'
+import { type FieldProps } from '../../../../types'
 import { SUPPORTED_IMAGE_EXTENSIONS } from '../utils'
-import { ImageValue } from './index'
+import { type ImageValue } from './index'
 
 function useObjectURL(fileData: File | undefined) {
   let [objectURL, setObjectURL] = useState<string | undefined>(undefined)

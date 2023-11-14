@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { Fragment, useState, ReactNode, SyntheticEvent, HTMLAttributes } from 'react'
+import { Fragment, useState, type ReactNode, type SyntheticEvent, type HTMLAttributes } from 'react'
 import { jsx } from '@emotion/react'
 
 import { useMediaQuery } from '../lib/media'

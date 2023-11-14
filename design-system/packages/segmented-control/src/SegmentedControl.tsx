@@ -13,27 +13,27 @@
  */
 
 import {
-  ChangeEventHandler,
-  HTMLAttributes,
-  ReactNode,
+  type ChangeEventHandler,
+  type HTMLAttributes,
+  type ReactNode,
   forwardRef,
   useEffect,
   useRef,
   useState,
-  InputHTMLAttributes,
+  type InputHTMLAttributes,
 } from 'react'
 
 import {
   Box,
-  BoxProps,
+  type BoxProps,
   jsx,
-  ManagedChangeHandler,
+  type ManagedChangeHandler,
   useId,
   useTheme,
   VisuallyHidden,
 } from '@keystone-ui/core'
 
-import { SizeKey, WidthKey, useControlTokens } from './hooks/segmentedControl'
+import { type SizeKey, type WidthKey, useControlTokens } from './hooks/segmentedControl'
 
 type Index = number
 

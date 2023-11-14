@@ -1,6 +1,6 @@
-import { setupTestEnv, TestEnv } from '@keystone-6/api-tests/test-runner'
-import { ExecutionResult } from 'graphql'
-import { expectAccessDenied, ContextFromConfig, TypeInfoFromConfig } from '../utils'
+import { setupTestEnv, type TestEnv } from '@keystone-6/api-tests/test-runner'
+import { type ExecutionResult } from 'graphql'
+import { expectAccessDenied, type ContextFromConfig, type TypeInfoFromConfig } from '../utils'
 import { nameFn, fieldMatrix, getFieldName, getItemListName, config } from './utils'
 
 type IdType = any

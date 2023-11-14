@@ -13,11 +13,11 @@ import { SegmentedControl } from '@keystone-ui/segmented-control'
 // @ts-ignore
 import dumbPasswords from 'dumb-passwords'
 import {
-  CardValueComponent,
-  CellComponent,
-  FieldController,
-  FieldControllerConfig,
-  FieldProps,
+  type CardValueComponent,
+  type CellComponent,
+  type FieldController,
+  type FieldControllerConfig,
+  type FieldProps,
 } from '../../../../types'
 import { CellContainer } from '../../../../admin-ui/components'
 

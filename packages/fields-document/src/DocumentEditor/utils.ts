@@ -3,17 +3,17 @@ import React, { useCallback, useEffect, useRef, useState, useContext } from 'rea
 import {
   Editor,
   Node,
-  NodeEntry,
+  type NodeEntry,
   Path,
   Transforms,
   Element,
-  PathRef,
+  type PathRef,
   Text,
-  Location,
-  Point,
+  type Location,
+  type Point,
 } from 'slate'
 import { ReactEditor } from 'slate-react'
-import { ElementFromValidation } from '../structure-validation'
+import { type ElementFromValidation } from '../structure-validation'
 
 export { useSlateStatic as useStaticEditor } from 'slate-react'
 

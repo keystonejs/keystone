@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { ListMeta } from '../../../../types'
+import { type ListMeta } from '../../../../types'
 import { useRouter } from '../../../../admin-ui/router'
 
 export function useSelectedFields(

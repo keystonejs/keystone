@@ -1,4 +1,4 @@
-import { Browser, Page } from 'playwright'
+import { type Browser, type Page } from 'playwright'
 import { adminUITests } from './utils'
 
 adminUITests('./tests/test-projects/basic', browserType => {

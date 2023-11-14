@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { Context } from '.keystone/types'
+import { type Context } from '.keystone/types'
 
 const seedUsers = async (context: Context) => {
   const { db } = context.sudo()

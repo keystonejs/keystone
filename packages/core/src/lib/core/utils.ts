@@ -1,6 +1,6 @@
-import { Limit } from 'p-limit'
+import { type Limit } from 'p-limit'
 import pluralize from 'pluralize'
-import { PrismaModule } from '../../artifacts'
+import { type PrismaModule } from '../../artifacts'
 import type { BaseItem, KeystoneConfig, KeystoneContext } from '../../types'
 import { getGqlNames } from '../../types/utils'
 import { humanize } from '../utils'

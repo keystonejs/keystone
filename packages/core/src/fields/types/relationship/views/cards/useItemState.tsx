@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState } from 'react'
-import { FieldMeta, ListMeta } from '../../../../../types'
-import { DataGetter, makeDataGetter } from '../../../../../admin-ui/utils'
+import { type FieldMeta, type ListMeta } from '../../../../../types'
+import { type DataGetter, makeDataGetter } from '../../../../../admin-ui/utils'
 import { gql, useQuery } from '../../../../../admin-ui/apollo'
-import { controller } from '../index'
+import { type controller } from '../index'
 
 type ItemsState =
   | {

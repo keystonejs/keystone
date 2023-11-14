@@ -2,7 +2,7 @@ import { list, graphql } from '@keystone-6/core'
 import { select, relationship, text, timestamp, virtual } from '@keystone-6/core/fields'
 import { allowAll } from '@keystone-6/core/access'
 import { gql } from '@ts-gql/tag/no-transform'
-import { Lists, Context } from '.keystone/types'
+import { type Lists, type Context } from '.keystone/types'
 
 export const lists: Lists = {
   Post: list({

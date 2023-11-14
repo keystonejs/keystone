@@ -1,8 +1,8 @@
 import {
-  ComponentSchema,
-  GenericPreviewProps,
-  InitialOrUpdateValueFromComponentPropField,
-  ValueForComponentSchema,
+  type ComponentSchema,
+  type GenericPreviewProps,
+  type InitialOrUpdateValueFromComponentPropField,
+  type ValueForComponentSchema,
 } from './api'
 import { getKeysForArrayValue, setKeysForArrayValue } from './preview-props'
 import { assertNever } from './utils'

@@ -1,6 +1,6 @@
 import { graphql } from '@keystone-6/core'
 import type { BaseItem } from '@keystone-6/core/types'
-import { assertInputObjectType, GraphQLInputObjectType, GraphQLSchema } from 'graphql'
+import { assertInputObjectType, GraphQLInputObjectType, type GraphQLSchema } from 'graphql'
 
 import type { AuthGqlNames, InitFirstItemConfig } from '../types'
 

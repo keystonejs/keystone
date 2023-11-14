@@ -1,12 +1,12 @@
-import React, { ReactNode, createContext, useContext, useMemo } from 'react'
+import React, { type ReactNode, createContext, useContext, useMemo } from 'react'
 
 import {
   buttonPropDefaults,
   useButtonStyles,
   useButtonTokens,
-  SizeKey,
-  ToneKey,
-  WeightKey,
+  type SizeKey,
+  type ToneKey,
+  type WeightKey,
 } from './hooks/button'
 
 export const ButtonContext = createContext<{

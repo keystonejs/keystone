@@ -1,11 +1,11 @@
 import {
-  Config,
+  type Config,
   nodes,
   Tag,
-  ValidationError,
-  Node,
+  type ValidationError,
+  type Node,
   functions,
-  ConfigFunction,
+  type ConfigFunction,
 } from '@markdoc/markdoc'
 import slugify from '@sindresorhus/slugify'
 

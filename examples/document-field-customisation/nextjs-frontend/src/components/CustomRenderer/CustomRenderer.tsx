@@ -1,4 +1,4 @@
-import React, { ComponentProps } from 'react'
+import React, { type ComponentProps } from 'react'
 import { DocumentRenderer } from '@keystone-6/document-renderer'
 import { Hero } from '../Hero/Hero'
 import { Callout } from '../Callout/Callout'

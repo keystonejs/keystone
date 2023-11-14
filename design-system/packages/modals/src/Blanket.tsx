@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { HTMLAttributes, forwardRef } from 'react'
+import { type HTMLAttributes, forwardRef } from 'react'
 import { jsx, keyframes } from '@keystone-ui/core'
 
 const fadeInAnim = keyframes({

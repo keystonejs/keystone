@@ -1,6 +1,6 @@
 import path from 'path'
 import { createRequire } from 'module'
-import { printSchema, GraphQLSchema } from 'graphql'
+import { printSchema, type GraphQLSchema } from 'graphql'
 import * as fs from 'fs-extra'
 import { getGenerators, formatSchema } from '@prisma/internals'
 import type { KeystoneConfig } from './types'

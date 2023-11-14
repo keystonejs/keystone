@@ -1,5 +1,5 @@
 import fs from 'fs/promises'
-import { ValidateError } from '@markdoc/markdoc'
+import { type ValidateError } from '@markdoc/markdoc'
 import { loadAllMarkdoc } from '../../markdoc/load-all'
 import { printValidationError } from '../../markdoc'
 import { removeNextReleaseConditions } from './markdoc'

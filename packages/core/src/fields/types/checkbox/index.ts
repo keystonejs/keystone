@@ -1,9 +1,9 @@
 import { userInputError } from '../../../lib/core/graphql-errors'
 import {
-  BaseListTypeInfo,
-  CommonFieldConfig,
+  type BaseListTypeInfo,
+  type CommonFieldConfig,
   fieldType,
-  FieldTypeFunc,
+  type FieldTypeFunc,
   orderDirectionEnum,
 } from '../../../types'
 import { graphql } from '../../..'

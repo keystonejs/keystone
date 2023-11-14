@@ -1,14 +1,14 @@
 import path from 'path'
 import React from 'react'
 import {
-  GetStaticPathsResult,
-  GetStaticPropsContext,
-  GetStaticPropsResult,
-  InferGetStaticPropsType,
+  type GetStaticPathsResult,
+  type GetStaticPropsContext,
+  type GetStaticPropsResult,
+  type InferGetStaticPropsType,
 } from 'next'
 import { useRouter } from 'next/router'
 import { globby } from 'globby'
-import { DocsContent, readDocsContent } from '../../markdoc'
+import { type DocsContent, readDocsContent } from '../../markdoc'
 import { extractHeadings, Markdoc } from '../../components/Markdoc'
 import { DocsPage } from '../../components/Page'
 import { Heading } from '../../components/docs/Heading'

@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx  */
-import { ComponentProps, Fragment, ReactNode } from 'react'
+import { type ComponentProps, Fragment, type ReactNode } from 'react'
 import { jsx } from '@emotion/react'
 import Link from 'next/link'
 

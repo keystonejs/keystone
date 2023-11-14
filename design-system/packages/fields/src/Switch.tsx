@@ -14,7 +14,7 @@
  * - Should this be stateful like a checkbox? check react-aria
  */
 
-import { ButtonHTMLAttributes, forwardRef, ReactNode } from 'react'
+import { type ButtonHTMLAttributes, forwardRef, type ReactNode } from 'react'
 import { jsx, useTheme, VisuallyHidden } from '@keystone-ui/core'
 
 import { ControlLabel } from './components/ControlLabel'

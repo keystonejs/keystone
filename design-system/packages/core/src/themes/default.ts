@@ -1,4 +1,4 @@
-import { CSSObject } from '@emotion/react'
+import { type CSSObject } from '@emotion/react'
 import { identityType } from '../utils'
 import { palette as basePalette } from './colors'
 

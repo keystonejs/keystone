@@ -1,13 +1,13 @@
 // very loosely based on https://github.com/ianstormtaylor/slate/blob/d22c76ae1313fe82111317417912a2670e73f5c9/site/examples/paste-html.tsx
 import { Node } from 'slate'
-import { Block, isBlock } from '..'
-import { Mark } from '../utils'
+import { type Block, isBlock } from '..'
+import { type Mark } from '../utils'
 import {
   addMarksToChildren,
   getInlineNodes,
   forceDisableMarkForChildren,
   setLinkForChildren,
-  InlineFromExternalPaste,
+  type InlineFromExternalPaste,
 } from './utils'
 
 function getAlignmentFromElement(element: globalThis.Element): 'center' | 'end' | undefined {

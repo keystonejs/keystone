@@ -1,13 +1,13 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Children, ReactNode } from 'react'
+import { Children, type ReactNode } from 'react'
 import { jsx } from '../emotion'
 
 import { forwardRefWithAs, getChildTag } from '../utils'
-import { Theme } from '../types'
+import { type Theme } from '../types'
 import { useTheme } from '../theme'
-import { Box, BoxProps } from './Box'
+import { Box, type BoxProps } from './Box'
 
 const alignment = {
   center: 'center',

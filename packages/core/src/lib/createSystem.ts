@@ -7,7 +7,7 @@ import { allowAll } from '../access'
 import { createAdminMeta } from './create-admin-meta'
 import { createGraphQLSchema } from './createGraphQLSchema'
 import { createContext } from './context/createContext'
-import { initialiseLists, InitialisedList } from './core/initialise-lists'
+import { initialiseLists, type InitialisedList } from './core/initialise-lists'
 import { setPrismaNamespace, setWriteLimit } from './core/utils'
 
 function getSudoGraphQLSchema(config: KeystoneConfig) {

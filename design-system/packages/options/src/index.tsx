@@ -5,9 +5,9 @@ import { useIndicatorTokens } from '@keystone-ui/fields'
 import { CheckIcon } from '@keystone-ui/icons/icons/CheckIcon'
 import { useMemo } from 'react'
 import ReactSelect, {
-  StylesConfig,
+  type StylesConfig,
   components as reactSelectComponents,
-  Props,
+  type Props,
 } from 'react-select'
 
 export const CheckMark = ({

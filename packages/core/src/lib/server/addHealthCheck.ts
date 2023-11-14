@@ -1,4 +1,4 @@
-import { Application } from 'express'
+import { type Application } from 'express'
 import type { KeystoneConfig } from '../../types'
 
 import { healthCheckPath as defaultHealthCheckPath } from '../defaults'

@@ -4,8 +4,8 @@
 import { jsx } from '../emotion'
 
 import { useTheme } from '../theme'
-import { ResponsiveProp, Theme } from '../types'
-import { Box, MarginProps } from './Box'
+import { type ResponsiveProp, type Theme } from '../types'
+import { Box, type MarginProps } from './Box'
 
 type ColorType = ResponsiveProp<keyof Theme['palette']>
 

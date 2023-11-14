@@ -1,17 +1,17 @@
 import {
-  DocumentNode,
+  type DocumentNode,
   execute,
-  FragmentDefinitionNode,
+  type FragmentDefinitionNode,
   GraphQLList,
   GraphQLNonNull,
-  GraphQLOutputType,
-  GraphQLSchema,
+  type GraphQLOutputType,
+  type GraphQLSchema,
   Kind,
-  OperationTypeNode,
+  type OperationTypeNode,
   parse,
   validate,
 } from 'graphql'
-import { KeystoneContext } from '../../types'
+import { type KeystoneContext } from '../../types'
 import { getVariablesForGraphQLField } from './executeGraphQLFieldToRootVal'
 
 function getRootTypeName(type: GraphQLOutputType): string {

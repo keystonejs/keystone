@@ -1,6 +1,6 @@
-import { GraphQLSchema } from 'graphql'
+import { type GraphQLSchema } from 'graphql'
 import type { InitialisedList } from '../core/initialise-lists'
-import { KeystoneContext } from '../../types'
+import { type KeystoneContext } from '../../types'
 import { executeGraphQLFieldToRootVal } from './executeGraphQLFieldToRootVal'
 import { executeGraphQLFieldWithSelection } from './executeGraphQLFieldWithSelection'
 

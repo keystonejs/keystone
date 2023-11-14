@@ -3,7 +3,7 @@
 import path from 'path'
 import fs from 'fs/promises'
 import { globby } from 'globby'
-import { InferGetStaticPropsType, GetStaticPropsResult } from 'next'
+import { type InferGetStaticPropsType, type GetStaticPropsResult } from 'next'
 import Link from 'next/link'
 import parse from 'date-fns/parse'
 import format from 'date-fns/format'
@@ -14,7 +14,7 @@ import { Page } from '../../components/Page'
 import { Type } from '../../components/primitives/Type'
 import { Highlight } from '../../components/primitives/Highlight'
 import { useMediaQuery } from '../../lib/media'
-import { BlogFrontmatter, extractBlogFrontmatter } from '../../markdoc'
+import { type BlogFrontmatter, extractBlogFrontmatter } from '../../markdoc'
 import { siteBaseUrl } from '../../lib/og-util'
 
 const today = new Date()

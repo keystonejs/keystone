@@ -3,7 +3,7 @@
 
 import { jsx } from '@keystone-ui/core'
 import { Options, CheckMark } from '@keystone-ui/options'
-import { ComponentProps, useState } from 'react'
+import { type ComponentProps, useState } from 'react'
 
 import { Page } from '../../components/Page'
 

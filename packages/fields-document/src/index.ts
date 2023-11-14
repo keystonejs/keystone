@@ -1,16 +1,16 @@
 import { GraphQLError } from 'graphql'
 import {
-  BaseListTypeInfo,
-  CommonFieldConfig,
-  FieldData,
-  FieldTypeFunc,
+  type BaseListTypeInfo,
+  type CommonFieldConfig,
+  type FieldData,
+  type FieldTypeFunc,
   jsonFieldTypePolyfilledForSQLite,
-  JSONValue,
+  type JSONValue,
 } from '@keystone-6/core/types'
 import { graphql } from '@keystone-6/core'
-import { Relationships } from './DocumentEditor/relationship'
-import { ComponentBlock } from './component-blocks'
-import { DocumentFeatures } from './views'
+import { type Relationships } from './DocumentEditor/relationship'
+import { type ComponentBlock } from './component-blocks'
+import { type DocumentFeatures } from './views'
 import { validateAndNormalizeDocument } from './validation'
 import { addRelationshipData } from './relationship-data'
 import { assertValidComponentSchema } from './DocumentEditor/component-blocks/field-assertions'

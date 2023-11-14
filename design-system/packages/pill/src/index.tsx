@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, useTheme } from '@keystone-ui/core'
-import { ButtonHTMLAttributes, HTMLAttributes, forwardRef, ReactNode } from 'react'
+import { type ButtonHTMLAttributes, type HTMLAttributes, forwardRef, type ReactNode } from 'react'
 
 import { XIcon } from '@keystone-ui/icons/icons/XIcon'
 

@@ -1,15 +1,15 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Children, Fragment, ReactNode, isValidElement } from 'react'
+import { Children, Fragment, type ReactNode, isValidElement } from 'react'
 
 import { jsx } from '../emotion'
 import { useMediaQuery } from '../hooks/useMediaQuery'
 import { useTheme } from '../theme'
-import { Theme } from '../types'
+import { type Theme } from '../types'
 import { forwardRefWithAs, mapResponsiveProp, getChildTag } from '../utils'
 
-import { Box, BoxProps } from './Box'
+import { Box, type BoxProps } from './Box'
 import { Divider } from './Divider'
 
 const alignment = {

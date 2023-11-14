@@ -18,7 +18,7 @@ import { coerceAndValidateForGraphQLInput } from '../coerceAndValidateForGraphQL
 import { allowAll } from '../../access'
 import { accessReturnError, extensionError } from './graphql-errors'
 import type { InitialisedList } from './initialise-lists'
-import { InputFilter } from './where-inputs'
+import { type InputFilter } from './where-inputs'
 
 export function cannotForItem(operation: string, list: InitialisedList) {
   return (

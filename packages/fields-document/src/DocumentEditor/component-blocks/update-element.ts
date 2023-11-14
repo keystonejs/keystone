@@ -1,10 +1,10 @@
-import { Editor, Element, Path, Transforms, Node, PathRef } from 'slate'
+import { Editor, type Element, type Path, Transforms, Node, type PathRef } from 'slate'
 import { areArraysEqual } from '../document-features-normalization'
 import { assert } from '../utils'
-import { ChildField, ComponentBlock, ComponentSchema } from './api'
+import { type ChildField, type ComponentBlock, type ComponentSchema } from './api'
 import { getInitialPropsValue } from './initial-values'
 import { getKeysForArrayValue } from './preview-props'
-import { ReadonlyPropPath } from './utils'
+import { type ReadonlyPropPath } from './utils'
 
 export function updateComponentBlockElementProps(
   editor: Editor,

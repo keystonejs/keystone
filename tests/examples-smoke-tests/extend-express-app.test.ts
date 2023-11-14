@@ -1,4 +1,4 @@
-import { Browser, Page } from 'playwright'
+import { type Browser, type Page } from 'playwright'
 import fetch from 'node-fetch'
 import { exampleProjectTests, loadIndex } from './utils'
 

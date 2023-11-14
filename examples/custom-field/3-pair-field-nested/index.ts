@@ -1,8 +1,8 @@
 import {
-  BaseListTypeInfo,
+  type BaseListTypeInfo,
   fieldType,
-  FieldTypeFunc,
-  CommonFieldConfig,
+  type FieldTypeFunc,
+  type CommonFieldConfig,
 } from '@keystone-6/core/types'
 import { graphql } from '@keystone-6/core'
 

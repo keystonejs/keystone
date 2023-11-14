@@ -1,8 +1,8 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { Transforms, Editor } from 'slate'
-import React, { ReactElement } from 'react'
+import { Transforms, type Editor } from 'slate'
+import React, { type ReactElement } from 'react'
 import { jsx, makeEditor } from '../tests/utils'
 import { component, fields } from '../../component-blocks'
 import { createGetPreviewProps } from './preview-props'

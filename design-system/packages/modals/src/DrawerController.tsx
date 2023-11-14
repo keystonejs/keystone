@@ -1,7 +1,7 @@
-import React, { ReactNode, useContext } from 'react'
+import React, { type ReactNode, useContext } from 'react'
 import { Transition } from 'react-transition-group'
 
-import { TransitionState } from './types'
+import { type TransitionState } from './types'
 
 type DrawerControllerProps = {
   isOpen: boolean;

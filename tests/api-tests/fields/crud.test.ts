@@ -1,7 +1,7 @@
 import globby from 'globby'
 import { list } from '@keystone-6/core'
 import { text } from '@keystone-6/core/fields'
-import { KeystoneContext } from '@keystone-6/core/types'
+import { type KeystoneContext } from '@keystone-6/core/types'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import { humanize } from '../../../packages/core/src/lib/utils'

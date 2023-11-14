@@ -2,9 +2,9 @@
 /** @jsx jsx */
 
 import { jsx } from '@keystone-ui/core'
-import { RenderElementProps } from 'slate-react'
+import { type RenderElementProps } from 'slate-react'
 
-import { Editor, Transforms, Range, Point, Path, Node, Element, Text } from 'slate'
+import { Editor, Transforms, Range, Point, Path, Node, type Element, Text } from 'slate'
 
 const headingStylesMap = {
   h1: { fontSize: '2.2rem' },

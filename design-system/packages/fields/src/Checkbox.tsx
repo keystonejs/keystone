@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { Fragment, InputHTMLAttributes, ReactNode, forwardRef } from 'react'
+import { Fragment, type InputHTMLAttributes, type ReactNode, forwardRef } from 'react'
 import { jsx, VisuallyHidden } from '@keystone-ui/core'
 
 import { ControlLabel } from './components/ControlLabel'

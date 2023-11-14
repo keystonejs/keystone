@@ -1,6 +1,6 @@
 import type { CacheHint } from '@apollo/cache-control-types'
 import { GraphQLString, isInputObjectType } from 'graphql'
-import { getGqlNames, QueryMode } from '../../types'
+import { type getGqlNames, QueryMode } from '../../types'
 import type {
   BaseItem,
   BaseListTypeInfo,
@@ -18,13 +18,13 @@ import type { FieldHooks, ResolvedListHooks, ResolvedFieldHooks } from '../../ty
 import type { FilterOrderArgs } from '../../types/config/fields'
 import type { MaybeItemFunction, MaybeSessionFunction } from '../../types/config/lists'
 import {
-  ResolvedFieldAccessControl,
-  ResolvedListAccessControl,
+  type ResolvedFieldAccessControl,
+  type ResolvedListAccessControl,
   parseListAccessControl,
   parseFieldAccessControl,
 } from './access-control'
 import { areArraysEqual, getNamesFromList } from './utils'
-import { ResolvedDBField, resolveRelationships } from './resolve-relationships'
+import { type ResolvedDBField, resolveRelationships } from './resolve-relationships'
 import { outputTypeField } from './queries/output-field'
 import { assertFieldsValid } from './field-assertions'
 

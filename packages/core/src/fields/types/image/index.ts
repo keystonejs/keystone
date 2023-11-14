@@ -1,11 +1,11 @@
 import {
-  BaseListTypeInfo,
+  type BaseListTypeInfo,
   fieldType,
-  FieldTypeFunc,
-  CommonFieldConfig,
-  ImageData,
-  ImageExtension,
-  KeystoneContext,
+  type FieldTypeFunc,
+  type CommonFieldConfig,
+  type ImageData,
+  type ImageExtension,
+  type KeystoneContext,
 } from '../../../types'
 import { graphql } from '../../..'
 import { SUPPORTED_IMAGE_EXTENSIONS } from './utils'

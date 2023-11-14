@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx  */
-import { useRef, Fragment, ReactNode } from 'react'
+import { useRef, Fragment, type ReactNode } from 'react'
 import { useRouter } from 'next/router'
 import { jsx } from '@emotion/react'
 import Head from 'next/head'
@@ -14,7 +14,7 @@ import { Sidebar } from './docs/Sidebar'
 import { Stack } from './primitives/Stack'
 import { Header } from './Header'
 import { Footer, DocsFooter } from './Footer'
-import { HeadingType } from './Markdoc'
+import { type HeadingType } from './Markdoc'
 
 function OpenGraph({
   title,

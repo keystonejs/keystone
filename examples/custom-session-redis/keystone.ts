@@ -3,7 +3,7 @@ import { storedSessions } from '@keystone-6/core/session'
 import { createAuth } from '@keystone-6/auth'
 import { createClient } from '@redis/client'
 import { fixPrismaPath } from '../example-utils'
-import { lists, Session } from './schema'
+import { lists, type Session } from './schema'
 import type { TypeInfo } from '.keystone/types'
 
 // WARNING: this example is for demonstration purposes only

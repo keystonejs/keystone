@@ -1,10 +1,10 @@
 import { relationship, text } from '@keystone-6/core/fields'
 import { list } from '@keystone-6/core'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
-import { KeystoneContext } from '@keystone-6/core/types'
+import { type KeystoneContext } from '@keystone-6/core/types'
 import { allowAll } from '@keystone-6/core/access'
 import { testConfig } from '../utils'
-import { GraphQLRequest, withServer } from '../with-server'
+import { type GraphQLRequest, withServer } from '../with-server'
 
 const runner = (debug: boolean | undefined) =>
   withServer(

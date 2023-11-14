@@ -2,7 +2,7 @@
 /** @jsx jsx */
 
 import { jsx, useTheme } from '@keystone-ui/core'
-import { KeyboardEvent, ReactNode, useContext, useState } from 'react'
+import { type KeyboardEvent, type ReactNode, useContext, useState } from 'react'
 import isHotkey from 'is-hotkey'
 import { useCallback, useMemo } from 'react'
 import {
@@ -11,22 +11,22 @@ import {
   Range,
   Transforms,
   createEditor,
-  NodeEntry,
+  type NodeEntry,
   Element,
   Text,
-  Descendant,
+  type Descendant,
   Path,
 } from 'slate'
 import { Editable, ReactEditor, Slate, useSlate, withReact } from 'slate-react'
 import { withHistory } from 'slate-history'
 
-import { EditableProps } from 'slate-react/dist/components/editable'
-import { ComponentBlock } from '../component-blocks'
-import { DocumentFeatures } from '../views'
+import { type EditableProps } from 'slate-react/dist/components/editable'
+import { type ComponentBlock } from '../component-blocks'
+import { type DocumentFeatures } from '../views'
 import { withParagraphs } from './paragraphs'
 import { withLink, wrapLink } from './link'
 import { withLayouts } from './layouts'
-import { clearFormatting, Mark } from './utils'
+import { clearFormatting, type Mark } from './utils'
 import { Toolbar } from './Toolbar'
 import { renderElement } from './render-element'
 import { withHeading } from './heading'
@@ -34,7 +34,7 @@ import { nestList, unnestList, withList } from './lists'
 import { ComponentBlockContext, withComponentBlocks } from './component-blocks'
 import { getPlaceholderTextForPropPath } from './component-blocks/utils'
 import { withBlockquote } from './blockquote'
-import { Relationships, withRelationship } from './relationship'
+import { type Relationships, withRelationship } from './relationship'
 import { withDivider } from './divider'
 import { withCodeBlock } from './code-block'
 import { withMarks } from './marks'

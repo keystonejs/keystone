@@ -1,6 +1,6 @@
 import type { BaseItem } from '@keystone-6/core/types'
 import { graphql } from '@keystone-6/core'
-import { AuthGqlNames, SecretFieldImpl } from '../types'
+import { type AuthGqlNames, type SecretFieldImpl } from '../types'
 
 import { validateSecret } from '../lib/validateSecret'
 

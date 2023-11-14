@@ -1,8 +1,8 @@
 import type { GraphQLError } from 'graphql'
 import { useMemo } from 'react'
 import type { AuthenticatedItem, VisibleLists, CreateViewFieldModes } from '../../types'
-import { DocumentNode, useQuery, QueryResult, ServerError, ServerParseError } from '../apollo'
-import { DeepNullable, makeDataGetter } from './dataGetter'
+import { type DocumentNode, useQuery, type QueryResult, type ServerError, type ServerParseError } from '../apollo'
+import { type DeepNullable, makeDataGetter } from './dataGetter'
 
 export type { AuthenticatedItem, VisibleLists, CreateViewFieldModes }
 

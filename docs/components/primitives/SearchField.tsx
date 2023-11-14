@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, Global, css } from '@emotion/react'
-import { Fragment, HTMLAttributes } from 'react'
+import { Fragment, type HTMLAttributes } from 'react'
 
 import { algoliaStyles } from '../../lib/algoliaStyles'
 import { SearchKeys } from '../icons/SearchKeys'

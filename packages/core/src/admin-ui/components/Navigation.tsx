@@ -1,14 +1,14 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { AllHTMLAttributes, ReactNode, Fragment } from 'react'
+import { type AllHTMLAttributes, type ReactNode, Fragment } from 'react'
 import { useRouter } from 'next/router'
 import { Stack, jsx, useTheme, Text } from '@keystone-ui/core'
 import { Button } from '@keystone-ui/button'
 import { Popover } from '@keystone-ui/popover'
 import { MoreHorizontalIcon } from '@keystone-ui/icons/icons/MoreHorizontalIcon'
 import { ChevronRightIcon } from '@keystone-ui/icons/icons/ChevronRightIcon'
-import { NavigationProps, ListMeta, AuthenticatedItem } from '../../types'
+import { type NavigationProps, type ListMeta, type AuthenticatedItem } from '../../types'
 
 import { useKeystone } from '../context'
 import { Link } from '../router'

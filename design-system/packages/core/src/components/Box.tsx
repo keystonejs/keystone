@@ -6,7 +6,7 @@ import { jsx } from '../emotion'
 import { useTheme } from '../theme'
 import { useMediaQuery } from '../hooks/useMediaQuery'
 import { forwardRefWithAs, mapResponsiveProp } from '../utils'
-import { ResponsiveProp, Theme } from '../types'
+import { type ResponsiveProp, type Theme } from '../types'
 
 // Types
 // -----

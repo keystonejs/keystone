@@ -2,11 +2,11 @@
 /** @jsx jsx */
 import { jsx } from '@keystone-ui/core'
 import React, { useContext } from 'react'
-import { useMemo, ReactElement } from 'react'
-import { Element } from 'slate'
-import { ComponentBlock } from './api'
+import { useMemo, type ReactElement } from 'react'
+import { type Element } from 'slate'
+import { type ComponentBlock } from './api'
 import { createGetPreviewProps, getKeysForArrayValue } from './preview-props'
-import { ReadonlyPropPath } from './utils'
+import { type ReadonlyPropPath } from './utils'
 
 export const ChildrenByPathContext = React.createContext<Record<string, ReactElement>>({})
 

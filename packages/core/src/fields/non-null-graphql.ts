@@ -1,4 +1,4 @@
-import { BaseListTypeInfo, CommonFieldConfig, FieldData } from '../types'
+import { type BaseListTypeInfo, type CommonFieldConfig, type FieldData } from '../types'
 
 export function getResolvedIsNullable(
   validation: undefined | { isRequired?: boolean },

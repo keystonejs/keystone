@@ -1,13 +1,13 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { MutableRefObject, ReactNode } from 'react'
+import { type MutableRefObject, type ReactNode } from 'react'
 import { Button } from '@keystone-ui/button'
 import { jsx, makeId, useId, useTheme, Heading, Stack, Divider } from '@keystone-ui/core'
 
-import { DrawerBase, WidthType } from './DrawerBase'
+import { DrawerBase, type WidthType } from './DrawerBase'
 import { useDrawerControllerContext } from './DrawerController'
-import { ActionsType } from './types'
+import { type ActionsType } from './types'
 
 type DrawerProps = {
   actions: ActionsType;

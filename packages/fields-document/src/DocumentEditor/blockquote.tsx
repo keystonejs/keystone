@@ -1,9 +1,9 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { ComponentProps, Fragment, useMemo } from 'react'
+import { type ComponentProps, Fragment, useMemo } from 'react'
 import { Editor, Node, Path, Range, Transforms } from 'slate'
-import { RenderElementProps } from 'slate-react'
+import { type RenderElementProps } from 'slate-react'
 
 import { jsx, useTheme } from '@keystone-ui/core'
 import { Tooltip } from '@keystone-ui/tooltip'

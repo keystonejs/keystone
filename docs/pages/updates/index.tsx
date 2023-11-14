@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx  */
-import { HTMLAttributes, ReactNode } from 'react'
+import { type HTMLAttributes, type ReactNode } from 'react'
 import { jsx } from '@emotion/react'
 import Link from 'next/link'
 

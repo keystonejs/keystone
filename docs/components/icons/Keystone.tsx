@@ -2,7 +2,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/react'
 
-import { Gradients, IconProps } from './util'
+import { Gradients, type IconProps } from './util'
 
 export function Keystone({ grad, ...props }: IconProps) {
   return (

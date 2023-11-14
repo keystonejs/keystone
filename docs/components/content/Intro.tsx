@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { HTMLAttributes } from 'react'
+import { type HTMLAttributes } from 'react'
 import { jsx } from '@emotion/react'
 
 import { Type } from '../primitives/Type'

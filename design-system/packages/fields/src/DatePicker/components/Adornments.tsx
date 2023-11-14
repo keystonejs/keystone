@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { ElementType, ReactNode, createContext, useContext } from 'react'
+import { type ElementType, type ReactNode, createContext, useContext } from 'react'
 import { jsx, forwardRefWithAs, useTheme } from '@keystone-ui/core'
 
 // todo - these also exist at ../../types

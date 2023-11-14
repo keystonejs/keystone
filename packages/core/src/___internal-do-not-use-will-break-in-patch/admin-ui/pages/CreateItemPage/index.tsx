@@ -9,7 +9,7 @@ import { Fields } from '../../../../admin-ui/utils'
 import { PageContainer } from '../../../../admin-ui/components/PageContainer'
 import { useKeystone, useList } from '../../../../admin-ui'
 import { GraphQLErrorNotice } from '../../../../admin-ui/components'
-import { ListMeta } from '../../../../types'
+import { type ListMeta } from '../../../../types'
 import { useCreateItem } from '../../../../admin-ui/utils/useCreateItem'
 import { BaseToolbar, ColumnLayout, ItemPageHeader } from '../ItemPage/common'
 

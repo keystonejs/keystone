@@ -1,10 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { ReactNode } from 'react'
+import { type ReactNode } from 'react'
 import {
   Box,
-  BoxProps,
+  type BoxProps,
   Stack,
   Text,
   jsx,
@@ -18,14 +18,14 @@ import { Button } from '@keystone-ui/button'
 import { Tooltip } from '@keystone-ui/tooltip'
 import { LoadingDots } from '@keystone-ui/loading'
 import { useEffect, useRef, useState } from 'react'
-import { FieldProps, ListMeta } from '../../../../../types'
+import { type FieldProps, type ListMeta } from '../../../../../types'
 import {
   getRootGraphQLFieldsFromFieldController,
   makeDataGetter,
 } from '../../../../../admin-ui/utils'
 import { Link } from '../../../../../admin-ui/router'
 import { gql, useApolloClient } from '../../../../../admin-ui/apollo'
-import { controller } from '../index'
+import { type controller } from '../index'
 import { RelationshipSelect } from '../RelationshipSelect'
 import { useItemState } from './useItemState'
 import { InlineEdit } from './InlineEdit'

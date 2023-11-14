@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { ComponentProps, ReactNode, useState } from 'react'
+import { type ComponentProps, type ReactNode, useState } from 'react'
 import { jsx, Stack, useTheme } from '@keystone-ui/core'
 import {
   Checkbox,
@@ -11,7 +11,7 @@ import {
   Switch,
   Select,
   DatePicker,
-  DateType,
+  type DateType,
 } from '@keystone-ui/fields'
 import { SegmentedControl } from '@keystone-ui/segmented-control'
 

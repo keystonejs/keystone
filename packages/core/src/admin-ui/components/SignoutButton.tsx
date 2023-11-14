@@ -3,7 +3,7 @@
 
 import { jsx } from '@keystone-ui/core'
 import { Button } from '@keystone-ui/button'
-import { ReactNode, useEffect } from 'react'
+import { type ReactNode, useEffect } from 'react'
 
 import { useMutation, gql } from '../apollo'
 

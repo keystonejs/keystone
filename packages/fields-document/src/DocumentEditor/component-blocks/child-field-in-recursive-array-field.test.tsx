@@ -1,10 +1,10 @@
 /** @jest-environment jsdom */
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import React, { ReactElement } from 'react'
+import React, { type ReactElement } from 'react'
 import { jsx, makeEditor } from '../tests/utils'
 import { component, fields } from '../../component-blocks'
-import { ArrayField, ChildField, ObjectField, PreviewProps } from './api'
+import { type ArrayField, type ChildField, type ObjectField, type PreviewProps } from './api'
 
 type ListItems = ArrayField<
   ObjectField<{

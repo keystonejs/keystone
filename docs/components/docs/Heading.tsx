@@ -2,7 +2,7 @@
 /** @jsx jsx */
 import slugify from '@sindresorhus/slugify'
 import { jsx } from '@emotion/react'
-import { ReactNode } from 'react'
+import { type ReactNode } from 'react'
 
 import { HeadingIdLink } from './CopyToClipboard'
 

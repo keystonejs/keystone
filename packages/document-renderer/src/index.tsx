@@ -1,4 +1,4 @@
-import React, { Fragment, ReactElement, ReactNode } from 'react'
+import React, { Fragment, type ReactElement, type ReactNode } from 'react'
 
 type Node = Element | Text
 

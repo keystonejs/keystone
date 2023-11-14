@@ -1,6 +1,6 @@
 import { Stack } from '@keystone-ui/core'
 import { Notice } from '@keystone-ui/notice'
-import { GraphQLError } from 'graphql'
+import { type GraphQLError } from 'graphql'
 import React from 'react'
 
 type GraphQLErrorNoticeProps = {

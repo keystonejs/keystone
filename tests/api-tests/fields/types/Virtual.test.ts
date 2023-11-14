@@ -1,5 +1,5 @@
 import { integer, relationship, text, virtual } from '@keystone-6/core/fields'
-import { BaseFields, list, graphql } from '@keystone-6/core'
+import { type BaseFields, list, graphql } from '@keystone-6/core'
 import { setupTestEnv, setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import { testConfig } from '../../utils'

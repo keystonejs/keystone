@@ -3,17 +3,17 @@
 import path from 'path'
 import { jsx } from '@emotion/react'
 import {
-  GetStaticPathsResult,
-  GetStaticPropsContext,
-  GetStaticPropsResult,
-  InferGetStaticPropsType,
+  type GetStaticPathsResult,
+  type GetStaticPropsContext,
+  type GetStaticPropsResult,
+  type InferGetStaticPropsType,
 } from 'next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import parse from 'date-fns/parse'
 import format from 'date-fns/format'
 import { globby } from 'globby'
-import { BlogContent, readBlogContent } from '../../markdoc'
+import { type BlogContent, readBlogContent } from '../../markdoc'
 import { extractHeadings, Markdoc } from '../../components/Markdoc'
 import { BlogPage } from '../../components/Page'
 import { Heading } from '../../components/docs/Heading'

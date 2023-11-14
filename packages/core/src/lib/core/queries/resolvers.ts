@@ -3,12 +3,12 @@ import type { GraphQLResolveInfo } from 'graphql'
 import type { FindManyArgsValue, BaseItem, KeystoneContext, OrderDirection } from '../../../types'
 import { getOperationAccess, getAccessFilters } from '../access-control'
 import {
-  PrismaFilter,
-  UniquePrismaFilter,
+  type PrismaFilter,
+  type UniquePrismaFilter,
   resolveUniqueWhereInput,
   resolveWhereInput,
-  UniqueInputFilter,
-  InputFilter,
+  type UniqueInputFilter,
+  type InputFilter,
 } from '../where-inputs'
 import { limitsExceededError, userInputError } from '../graphql-errors'
 import type { InitialisedList } from '../initialise-lists'

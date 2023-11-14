@@ -10,13 +10,13 @@ import {
   useEffect,
   useRef,
 } from 'react'
-import { ReactEditor, RenderElementProps, useFocused, useSelected } from 'slate-react'
+import { ReactEditor, type RenderElementProps, useFocused, useSelected } from 'slate-react'
 import { Editor, Transforms } from 'slate'
 
 import { jsx, useTheme } from '@keystone-ui/core'
 
 import { ToolbarButton } from '../primitives'
-import { ComponentBlock } from '../../component-blocks'
+import { type ComponentBlock } from '../../component-blocks'
 import {
   insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading,
   useElementWithSetNodes,

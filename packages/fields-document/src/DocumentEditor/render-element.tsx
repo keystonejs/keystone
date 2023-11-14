@@ -2,7 +2,7 @@
 /** @jsx jsx */
 
 import { jsx, useTheme } from '@keystone-ui/core'
-import { RenderElementProps, useSelected } from 'slate-react'
+import { type RenderElementProps, useSelected } from 'slate-react'
 
 import { LayoutArea, LayoutContainer } from './layouts'
 import { ComponentBlocksElement, ComponentInlineProp } from './component-blocks'

@@ -1,6 +1,6 @@
 import path from 'path'
 import { promisify } from 'util'
-import execa, { ExecaChildProcess } from 'execa'
+import execa, { type ExecaChildProcess } from 'execa'
 import _treeKill from 'tree-kill'
 import * as playwright from 'playwright'
 

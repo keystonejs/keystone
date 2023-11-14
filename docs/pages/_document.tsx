@@ -1,4 +1,4 @@
-import Document, { Html, Head, Main, NextScript, DocumentContext } from 'next/document'
+import Document, { Html, Head, Main, NextScript, type DocumentContext } from 'next/document'
 import React from 'react'
 import createEmotionServer from '@emotion/server/create-instance'
 import { cache } from '@emotion/css'

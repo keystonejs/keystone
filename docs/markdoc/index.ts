@@ -2,7 +2,7 @@
 import type {} from '@markdoc/markdoc/global'
 import fs from 'fs/promises'
 import isMatch from 'date-fns/isMatch'
-import Markdoc, { Config, Tag, ValidateError } from '@markdoc/markdoc'
+import Markdoc, { type Config, type Tag, type ValidateError } from '@markdoc/markdoc'
 import { isNonEmptyArray } from 'emery/guards'
 import { assert } from 'emery/assertions'
 import { load } from 'js-yaml'

@@ -8,12 +8,12 @@ import { jsx, Stack, useTheme } from '@keystone-ui/core'
 import { FieldContainer, FieldDescription, FieldLabel, FieldLegend } from '@keystone-ui/fields'
 import { DrawerController } from '@keystone-ui/modals'
 import {
-  CardValueComponent,
-  CellComponent,
-  FieldController,
-  FieldControllerConfig,
-  FieldProps,
-  ListMeta,
+  type CardValueComponent,
+  type CellComponent,
+  type FieldController,
+  type FieldControllerConfig,
+  type FieldProps,
+  type ListMeta,
 } from '../../../../types'
 import { Link } from '../../../../admin-ui/router'
 import { useKeystone, useList } from '../../../../admin-ui/context'

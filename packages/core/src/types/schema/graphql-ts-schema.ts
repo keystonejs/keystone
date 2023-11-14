@@ -5,8 +5,8 @@ import GraphQLUpload from 'graphql-upload/GraphQLUpload.js'
 import { GraphQLError, GraphQLScalarType } from 'graphql'
 import { Decimal as DecimalValue } from 'decimal.js'
 import type { GraphQLFieldExtensions, GraphQLResolveInfo } from 'graphql'
-import { KeystoneContext } from '../context'
-import { JSONValue } from '../utils'
+import { type KeystoneContext } from '../context'
+import { type JSONValue } from '../utils'
 export {
   Boolean,
   Float,

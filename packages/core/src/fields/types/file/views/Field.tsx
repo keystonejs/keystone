@@ -1,14 +1,14 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { useMemo, useRef, RefObject } from 'react'
+import { useMemo, useRef, type RefObject } from 'react'
 import bytes from 'bytes'
 
 import { jsx, Stack, Text } from '@keystone-ui/core'
 import { FieldContainer, FieldDescription, FieldLabel } from '@keystone-ui/fields'
 
 import { Button } from '@keystone-ui/button'
-import { FieldProps } from '../../../../types'
-import { FileValue } from './index'
+import { type FieldProps } from '../../../../types'
+import { type FileValue } from './index'
 
 export function Field({
   autoFocus,

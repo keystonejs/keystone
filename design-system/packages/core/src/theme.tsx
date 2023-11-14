@@ -1,4 +1,4 @@
-import React, { ReactNode, createContext, useContext } from 'react'
+import React, { type ReactNode, createContext, useContext } from 'react'
 
 import type { Theme } from './types'
 import { theme } from './themes/default'

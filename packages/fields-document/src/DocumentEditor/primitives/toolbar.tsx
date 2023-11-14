@@ -1,8 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { ButtonHTMLAttributes, HTMLAttributes, createContext, useContext, ReactNode } from 'react'
-import { Box, MarginProps, forwardRefWithAs, jsx, useTheme } from '@keystone-ui/core'
+import { type ButtonHTMLAttributes, type HTMLAttributes, createContext, useContext, type ReactNode } from 'react'
+import { Box, type MarginProps, forwardRefWithAs, jsx, useTheme } from '@keystone-ui/core'
 
 // Spacers and Separators
 // ------------------------------

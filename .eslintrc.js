@@ -7,7 +7,10 @@ module.exports = {
     files: ['*.js', '*.jsx', '*.ts', '*.tsx'],
   }],
   rules: {
-    semi: ['error', 'never'],
-    '@typescript-eslint/semi': ['error', 'never'],
+    '@typescript-eslint/consistent-type-imports': ['error', {
+      disallowTypeAnnotations: true,
+      fixStyle: 'inline-type-imports',
+      prefer: 'type-imports',
+    }],
   }
 }

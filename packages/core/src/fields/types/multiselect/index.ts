@@ -1,10 +1,10 @@
 import { classify } from 'inflection'
 import { humanize } from '../../../lib/utils'
 import {
-  BaseListTypeInfo,
-  FieldTypeFunc,
-  CommonFieldConfig,
-  FieldData,
+  type BaseListTypeInfo,
+  type FieldTypeFunc,
+  type CommonFieldConfig,
+  type FieldData,
   jsonFieldTypePolyfilledForSQLite,
 } from '../../../types'
 import { graphql } from '../../..'

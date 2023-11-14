@@ -1,15 +1,15 @@
-import { KeystoneContext } from '@keystone-6/core/types'
-import { Descendant } from 'slate'
-import { GraphQLSchema, executeSync, parse, ExecutionResult } from 'graphql'
+import { type KeystoneContext } from '@keystone-6/core/types'
+import { type Descendant } from 'slate'
+import { type GraphQLSchema, executeSync, parse, type ExecutionResult } from 'graphql'
 import weakMemoize from '@emotion/weak-memoize'
 import {
-  ComponentBlock,
-  ComponentSchema,
-  RelationshipData,
-  RelationshipField,
+  type ComponentBlock,
+  type ComponentSchema,
+  type RelationshipData,
+  type RelationshipField,
 } from './DocumentEditor/component-blocks/api'
 import { assertNever } from './DocumentEditor/component-blocks/utils'
-import { Relationships } from './DocumentEditor/relationship'
+import { type Relationships } from './DocumentEditor/relationship'
 
 const labelFieldAlias = '____document_field_relationship_item_label'
 const idFieldAlias = '____document_field_relationship_item_id'

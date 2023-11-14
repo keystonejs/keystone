@@ -5,11 +5,11 @@ import type { InitialisedList } from '../initialise-lists'
 import { runWithPrisma } from '../utils'
 import { cannotForItem, cannotForItemFields } from '../access-control'
 import {
-  InputFilter,
+  type InputFilter,
   resolveUniqueWhereInput,
   resolveWhereInput,
-  UniqueInputFilter,
-  UniquePrismaFilter,
+  type UniqueInputFilter,
+  type UniquePrismaFilter,
 } from '../where-inputs'
 
 async function getFilteredItem(

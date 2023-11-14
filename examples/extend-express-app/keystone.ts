@@ -4,7 +4,7 @@ import type { Request, Response } from 'express'
 import { fixPrismaPath } from '../example-utils'
 import { lists } from './schema'
 import { getTasks } from './routes/tasks'
-import { TypeInfo, Context } from '.keystone/types'
+import { type TypeInfo, type Context } from '.keystone/types'
 
 function withContext<F extends (req: Request, res: Response, context: Context) => void>(
   commonContext: Context,

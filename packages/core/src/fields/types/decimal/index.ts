@@ -1,12 +1,12 @@
 import { humanize } from '../../../lib/utils'
 import {
   fieldType,
-  FieldTypeFunc,
-  BaseListTypeInfo,
-  CommonFieldConfig,
+  type FieldTypeFunc,
+  type BaseListTypeInfo,
+  type CommonFieldConfig,
   orderDirectionEnum,
   Decimal,
-  FieldData,
+  type FieldData,
 } from '../../../types'
 import { graphql } from '../../..'
 import { assertReadIsNonNullAllowed, getResolvedIsNullable } from '../../non-null-graphql'

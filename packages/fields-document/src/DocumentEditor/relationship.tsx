@@ -2,8 +2,8 @@
 /** @jsx jsx */
 
 import { createContext, Fragment, useContext } from 'react'
-import { ReactEditor, RenderElementProps } from 'slate-react'
-import { Transforms, Editor } from 'slate'
+import { ReactEditor, type RenderElementProps } from 'slate-react'
+import { Transforms, type Editor } from 'slate'
 
 import { jsx } from '@keystone-ui/core'
 import { useKeystone } from '@keystone-6/core/admin-ui/context'

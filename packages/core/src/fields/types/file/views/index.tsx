@@ -4,10 +4,10 @@
 import { jsx } from '@keystone-ui/core'
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields'
 import {
-  CardValueComponent,
-  CellComponent,
-  FieldController,
-  FieldControllerConfig,
+  type CardValueComponent,
+  type CellComponent,
+  type FieldController,
+  type FieldControllerConfig,
 } from '../../../../types'
 
 import { validateFile } from './Field'

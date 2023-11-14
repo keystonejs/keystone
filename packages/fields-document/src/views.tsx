@@ -3,21 +3,21 @@
 
 import { jsx } from '@keystone-ui/core'
 import { FieldContainer, FieldDescription, FieldLabel } from '@keystone-ui/fields'
-import { Descendant, Editor, Node, Text } from 'slate'
+import { type Descendant, Editor, Node, Text } from 'slate'
 import { DocumentRenderer } from '@keystone-6/document-renderer'
 
 import {
-  CardValueComponent,
-  CellComponent,
-  FieldController,
-  FieldControllerConfig,
-  FieldProps,
+  type CardValueComponent,
+  type CellComponent,
+  type FieldController,
+  type FieldControllerConfig,
+  type FieldProps,
 } from '@keystone-6/core/types'
 import weakMemoize from '@emotion/weak-memoize'
 import { CellContainer, CellLink } from '@keystone-6/core/admin-ui/components'
 import { createDocumentEditor, DocumentEditor } from './DocumentEditor'
-import { ComponentBlock } from './component-blocks'
-import { Relationships } from './DocumentEditor/relationship'
+import { type ComponentBlock } from './component-blocks'
+import { type Relationships } from './DocumentEditor/relationship'
 import { clientSideValidateProp } from './DocumentEditor/component-blocks/utils'
 import { ForceValidationProvider } from './DocumentEditor/utils'
 import { isValidURL } from './DocumentEditor/isValidURL'

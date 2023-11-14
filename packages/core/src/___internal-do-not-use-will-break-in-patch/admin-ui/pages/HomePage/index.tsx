@@ -11,7 +11,7 @@ import { makeDataGetter } from '../../../../admin-ui/utils'
 import { PageContainer, HEADER_HEIGHT } from '../../../../admin-ui/components/PageContainer'
 import { gql, useQuery } from '../../../../admin-ui/apollo'
 import { useKeystone, useList } from '../../../../admin-ui/context'
-import { Link, LinkProps } from '../../../../admin-ui/router'
+import { Link, type LinkProps } from '../../../../admin-ui/router'
 
 type ListCardProps = {
   listKey: string;

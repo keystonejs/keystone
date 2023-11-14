@@ -5,7 +5,7 @@ import { createAuth } from '@keystone-6/auth'
 import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { allowAll } from '@keystone-6/core/access'
 import { testConfig, expectInternalServerError, expectValidationError, seed } from './utils'
-import { GraphQLRequest, withServer } from './with-server'
+import { type GraphQLRequest, withServer } from './with-server'
 
 const initialData = {
   User: [

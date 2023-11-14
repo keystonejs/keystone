@@ -1,6 +1,6 @@
 import { config } from '@keystone-6/core'
 import { fixPrismaPath } from '../example-utils'
-import { lists, Session } from './schema'
+import { lists, type Session } from './schema'
 import type { Context, TypeInfo } from '.keystone/types'
 
 const sillySessionStrategy = {

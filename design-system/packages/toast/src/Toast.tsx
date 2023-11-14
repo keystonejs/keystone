@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { HTMLAttributes, ReactNode, forwardRef, useEffect, useMemo, useState } from 'react'
+import { type HTMLAttributes, type ReactNode, forwardRef, useEffect, useMemo, useState } from 'react'
 import { jsx, keyframes, Portal, useTheme } from '@keystone-ui/core'
 import { AlertOctagonIcon } from '@keystone-ui/icons/icons/AlertOctagonIcon'
 import { AlertTriangleIcon } from '@keystone-ui/icons/icons/AlertTriangleIcon'
@@ -10,7 +10,7 @@ import { InfoIcon } from '@keystone-ui/icons/icons/InfoIcon'
 import { XIcon } from '@keystone-ui/icons/icons/XIcon'
 
 import { ToastContext } from './context'
-import { ToastProps, ToastPropsExact } from './types'
+import { type ToastProps, type ToastPropsExact } from './types'
 
 // Provider
 // ------------------------------

@@ -1,4 +1,4 @@
-import { ArrayField, ConditionalField, fields, FormField, ObjectField } from './api'
+import { type ArrayField, type ConditionalField, fields, type FormField, type ObjectField } from './api'
 import { assertValidComponentSchema } from './field-assertions'
 
 type EasilyCircularObject = ObjectField<{

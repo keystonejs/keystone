@@ -1,4 +1,4 @@
-import { Element, Descendant, Editor, Transforms, Range } from 'slate'
+import { Element, type Descendant, Editor, Transforms, Range } from 'slate'
 import { isValidURL } from '../isValidURL'
 import { insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading } from '../utils'
 import { deserializeHTML } from './html'

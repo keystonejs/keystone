@@ -6,12 +6,12 @@ import autoLinkLiteralMarkdownSyntax from 'micromark-extension-gfm-autolink-lite
 // @ts-ignore
 import gfmStrikethroughFromMarkdownExtension from 'mdast-util-gfm-strikethrough/from-markdown'
 import gfmStrikethroughMarkdownSyntax from 'micromark-extension-gfm-strikethrough'
-import { Block } from '..'
+import { type Block } from '..'
 import {
   getInlineNodes,
   addMarkToChildren,
   setLinkForChildren,
-  InlineFromExternalPaste,
+  type InlineFromExternalPaste,
 } from './utils'
 
 const markdownConfig = {

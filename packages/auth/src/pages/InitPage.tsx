@@ -7,7 +7,7 @@ import fetch from 'cross-fetch'
 import { jsx, H1, Stack, Inline, VisuallyHidden } from '@keystone-ui/core'
 import { Button } from '@keystone-ui/button'
 import { Checkbox, TextInput } from '@keystone-ui/fields'
-import { FieldMeta } from '@keystone-6/core/types'
+import { type FieldMeta } from '@keystone-6/core/types'
 import isDeepEqual from 'fast-deep-equal'
 
 import { gql, useMutation } from '@keystone-6/core/admin-ui/apollo'

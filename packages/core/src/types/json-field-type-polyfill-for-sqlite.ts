@@ -1,13 +1,13 @@
 import { graphql } from './schema'
 import {
-  BaseItem,
-  CreateFieldInputArg,
-  DatabaseProvider,
-  FieldTypeWithoutDBField,
-  JSONValue,
-  KeystoneContext,
-  ScalarDBField,
-  UpdateFieldInputArg,
+  type BaseItem,
+  type CreateFieldInputArg,
+  type DatabaseProvider,
+  type FieldTypeWithoutDBField,
+  type JSONValue,
+  type KeystoneContext,
+  type ScalarDBField,
+  type UpdateFieldInputArg,
   fieldType,
 } from '.'
 

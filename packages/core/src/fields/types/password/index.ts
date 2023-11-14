@@ -3,10 +3,10 @@ import bcryptjs from 'bcryptjs'
 import dumbPasswords from 'dumb-passwords'
 import { userInputError } from '../../../lib/core/graphql-errors'
 import { humanize } from '../../../lib/utils'
-import { BaseListTypeInfo, fieldType, FieldTypeFunc, CommonFieldConfig } from '../../../types'
+import { type BaseListTypeInfo, fieldType, type FieldTypeFunc, type CommonFieldConfig } from '../../../types'
 import { graphql } from '../../..'
 import { getResolvedIsNullable } from '../../non-null-graphql'
-import { PasswordFieldMeta } from './views'
+import { type PasswordFieldMeta } from './views'
 
 export type PasswordFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {

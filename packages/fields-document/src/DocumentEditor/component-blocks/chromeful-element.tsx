@@ -3,23 +3,23 @@
 import { jsx, useTheme } from '@keystone-ui/core'
 import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon'
 import { Tooltip } from '@keystone-ui/tooltip'
-import { ReactNode, useMemo, useState, useCallback, Fragment } from 'react'
-import { RenderElementProps, useSelected } from 'slate-react'
+import { type ReactNode, useMemo, useState, useCallback, Fragment } from 'react'
+import { type RenderElementProps, useSelected } from 'slate-react'
 import { Stack } from '@keystone-ui/core'
 import { Button as KeystoneUIButton } from '@keystone-ui/button'
 import { ToolbarGroup, ToolbarButton, ToolbarSeparator } from '../primitives'
 import {
-  PreviewPropsForToolbar,
-  ObjectField,
-  ComponentSchema,
-  ComponentBlock,
+  type PreviewPropsForToolbar,
+  type ObjectField,
+  type ComponentSchema,
+  type ComponentBlock,
   NotEditable,
 } from './api'
 import { clientSideValidateProp } from './utils'
-import { GenericPreviewProps } from './api'
+import { type GenericPreviewProps } from './api'
 import {
   FormValueContentFromPreviewProps,
-  NonChildFieldComponentSchema,
+  type NonChildFieldComponentSchema,
 } from './form-from-preview'
 
 export function ChromefulComponentBlockElement(props: {

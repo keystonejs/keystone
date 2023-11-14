@@ -2,7 +2,7 @@
 /** @jsx jsx */
 import { Highlight, Prism } from 'prism-react-renderer'
 import { jsx } from '@emotion/react'
-import { ReactNode, useEffect, useMemo, useState } from 'react'
+import { type ReactNode, useEffect, useMemo, useState } from 'react'
 
 import theme from '../../lib/prism-theme'
 

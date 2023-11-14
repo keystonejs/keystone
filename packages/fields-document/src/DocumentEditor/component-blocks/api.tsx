@@ -10,7 +10,7 @@ import {
   Checkbox,
   MultiSelect,
 } from '@keystone-ui/fields'
-import { HTMLAttributes, ReactElement, ReactNode, useState } from 'react'
+import { type HTMLAttributes, type ReactElement, type ReactNode, useState } from 'react'
 import { isValidURL } from '../isValidURL'
 
 export type FormFieldValue =

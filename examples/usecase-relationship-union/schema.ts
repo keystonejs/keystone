@@ -1,7 +1,7 @@
 import { list, group, graphql } from '@keystone-6/core'
 import { allowAll } from '@keystone-6/core/access'
 import { text, relationship, virtual } from '@keystone-6/core/fields'
-import { Lists } from '.keystone/types'
+import { type Lists } from '.keystone/types'
 
 function ifUnsetHideUI(field: string) {
   return {

@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React, { type ReactNode } from 'react'
 import styles from './Quote.module.css'
 
 type QuoteProps = {

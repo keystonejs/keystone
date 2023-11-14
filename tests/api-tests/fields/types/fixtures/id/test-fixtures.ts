@@ -1,4 +1,4 @@
-import { KeystoneContext } from '@keystone-6/core/types'
+import { type KeystoneContext } from '@keystone-6/core/types'
 
 export const name = 'ID'
 

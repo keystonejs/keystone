@@ -1,4 +1,4 @@
-import React, { ComponentProps, Fragment, useMemo } from 'react'
+import React, { type ComponentProps, Fragment, useMemo } from 'react'
 import { Editor } from 'slate'
 
 import { MinusIcon } from '@keystone-ui/icons/icons/MinusIcon'

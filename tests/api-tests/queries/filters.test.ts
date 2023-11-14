@@ -8,7 +8,7 @@ import {
   expectBadUserInput,
   expectGraphQLValidationError,
   expectFilterDenied,
-  ContextFromRunner,
+  type ContextFromRunner,
 } from '../utils'
 import { withServer } from '../with-server'
 

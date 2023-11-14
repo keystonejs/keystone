@@ -1,17 +1,17 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 
-import { FormEvent, useState } from 'react'
+import { type FormEvent, useState } from 'react'
 import { jsx, Stack } from '@keystone-ui/core'
 import isDeepEqual from 'fast-deep-equal'
 import { useToasts } from '@keystone-ui/toast'
 import { Button } from '@keystone-ui/button'
-import { ListMeta } from '../../../../../types'
+import { type ListMeta } from '../../../../../types'
 import {
-  ItemData,
+  type ItemData,
   makeDataGetter,
-  DataGetter,
-  Value,
+  type DataGetter,
+  type Value,
   useInvalidFields,
   serializeValueToObjByFieldKey,
   Fields,

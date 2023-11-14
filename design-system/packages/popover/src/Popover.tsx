@@ -3,19 +3,19 @@
 
 import {
   Fragment,
-  ReactElement,
-  ReactNode,
-  Ref,
+  type ReactElement,
+  type ReactNode,
+  type Ref,
   forwardRef,
   useEffect,
   useState,
   useRef,
   useCallback,
-  CSSProperties,
+  type CSSProperties,
   useMemo,
 } from 'react'
 import * as focusTrapModule from 'focus-trap'
-import { Options, Placement } from '@popperjs/core'
+import { type Options, type Placement } from '@popperjs/core'
 import { usePopper } from 'react-popper'
 import { jsx, Portal, useTheme } from '@keystone-ui/core'
 

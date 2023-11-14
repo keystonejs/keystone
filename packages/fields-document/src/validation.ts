@@ -1,16 +1,16 @@
 'use client'
 import { Text, Editor } from 'slate'
 import { createDocumentEditor } from './DocumentEditor'
-import { ComponentBlock, ComponentSchema } from './DocumentEditor/component-blocks/api'
-import { assertNever, ReadonlyPropPath } from './DocumentEditor/component-blocks/utils'
-import { Relationships } from './DocumentEditor/relationship'
+import { type ComponentBlock, type ComponentSchema } from './DocumentEditor/component-blocks/api'
+import { assertNever, type ReadonlyPropPath } from './DocumentEditor/component-blocks/utils'
+import { type Relationships } from './DocumentEditor/relationship'
 import {
-  ElementFromValidation,
+  type ElementFromValidation,
   isRelationshipData,
-  TextWithMarks,
+  type TextWithMarks,
   validateDocumentStructure,
 } from './structure-validation'
-import { DocumentFeatures } from './views'
+import { type DocumentFeatures } from './views'
 
 export class PropValidationError extends Error {
   path: ReadonlyPropPath

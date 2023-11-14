@@ -2,7 +2,7 @@ import { config } from '@keystone-6/core'
 import { fixPrismaPath } from '../example-utils'
 import { lists } from './schema'
 
-import { Session, nextAuthSessionStrategy } from './session'
+import { type Session, nextAuthSessionStrategy } from './session'
 import type { TypeInfo } from '.keystone/types'
 
 // WARNING: this example is for demonstration purposes only
