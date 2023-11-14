@@ -2,8 +2,8 @@ import React, { type ReactNode } from 'react'
 import styles from './Callout.module.css'
 
 type CalloutProps = {
-  intent: 'info' | 'warning' | 'error' | 'success';
-  content: ReactNode;
+  intent: 'info' | 'warning' | 'error' | 'success'
+  content: ReactNode
 }
 
 export function Callout ({ intent, content }: CalloutProps) {

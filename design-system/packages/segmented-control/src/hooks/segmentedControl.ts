@@ -14,14 +14,14 @@ export type SizeKey = (typeof segmentedControlSizeValues)[number]
 export type WidthKey = 'small' | 'medium' | 'large' | 'full'
 
 export type ControlTokensProps = {
-  size: SizeKey;
-  width: WidthKey;
+  size: SizeKey
+  width: WidthKey
 }
 export type ControlTokens = {
-  borderRadius: number | string;
-  paddingX: number | string;
-  paddingY: number | string;
-  width: number | string;
+  borderRadius: number | string
+  paddingX: number | string
+  paddingY: number | string
+  width: number | string
 }
 
 export const useControlTokens = ({

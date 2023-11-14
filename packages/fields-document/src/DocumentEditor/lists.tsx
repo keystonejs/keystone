@@ -156,8 +156,8 @@ export function withList (editor: Editor): Editor {
 export const ListButton = forwardRef<
   HTMLButtonElement,
   {
-    type: 'ordered-list' | 'unordered-list';
-    children: ReactNode;
+    type: 'ordered-list' | 'unordered-list'
+    children: ReactNode
   }
 >(function ListButton (props, ref) {
   const {

@@ -10,16 +10,16 @@ export type DeepNullable<T> =
       : { [Key in keyof T]: DeepNullable<T[Key]> })
 
 export type DataGetter<Value> = {
-  readonly data: Value;
-  readonly errors?: readonly [GraphQLError, ...GraphQLError[]];
-  readonly path: (string | number)[];
+  readonly data: Value
+  readonly errors?: readonly [GraphQLError, ...GraphQLError[]]
+  readonly path: (string | number)[]
   get<
     Key extends NonNullable<Value> extends Array<any>
       ? number
       : Exclude<keyof NonNullable<Value>, symbol>
   >(
     field: Key
-  ): DataGetter<(Key extends keyof NonNullable<Value> ? NonNullable<Value>[Key] : never) | null>;
+  ): DataGetter<(Key extends keyof NonNullable<Value> ? NonNullable<Value>[Key] : never) | null>
 }
 
 function dataGetterWithNoErrors (data: any, path: Path): DataGetter<any> {

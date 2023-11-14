@@ -15,11 +15,11 @@ export function createContext ({
   graphQLSchemaSudo,
   prismaClient,
 }: {
-  config: KeystoneConfig;
-  lists: Record<string, InitialisedList>;
-  graphQLSchema: GraphQLSchema;
-  graphQLSchemaSudo: GraphQLSchema;
-  prismaClient: PrismaClient;
+  config: KeystoneConfig
+  lists: Record<string, InitialisedList>
+  graphQLSchema: GraphQLSchema
+  graphQLSchemaSudo: GraphQLSchema
+  prismaClient: PrismaClient
 }) {
   const dbFactories: Record<string, ReturnType<typeof getDbFactory>> = {}
   for (const [listKey, list] of Object.entries(lists)) {
@@ -49,10 +49,10 @@ export function createContext ({
     req,
     res,
   }: {
-    sudo?: Boolean;
-    req?: IncomingMessage;
-    res?: ServerResponse;
-    session?: unknown;
+    sudo?: Boolean
+    req?: IncomingMessage
+    res?: ServerResponse
+    session?: unknown
   } = {}) => {
     const schema = sudo ? graphQLSchemaSudo : graphQLSchema
     const rawGraphQL: KeystoneGraphQLAPI['raw'] = ({ query, variables }) => {

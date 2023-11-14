@@ -9,7 +9,7 @@ test(
     const user = (await context.query.User.createOne({
       data: { name: 'test', yesRead: 'yes', noRead: 'no' },
       query: 'id name yesRead noRead',
-    })) as { id: string; name: string; yesRead: string; noRead: string }
+    })) as { id: string, name: string, yesRead: string, noRead: string }
 
     const query = `query { authenticatedItem { ... on User { id yesRead noRead } } }`
     const _context = context.withSession({

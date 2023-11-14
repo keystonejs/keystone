@@ -35,8 +35,8 @@ const fadeInBottom = keyframes`
  */
 
 type EmojiProps = {
-  symbol: ReactNode;
-  alt: string;
+  symbol: ReactNode
+  alt: string
 } & HTMLAttributes<HTMLElement>
 
 export function Emoji ({ symbol, alt, ...props }: EmojiProps) {

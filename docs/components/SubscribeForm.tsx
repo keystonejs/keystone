@@ -16,9 +16,9 @@ const validEmail = (email: string) =>
 const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup'
 
 type SubscriptFormProps = {
-  autoFocus?: boolean;
-  children: ReactNode;
-  stacked?: boolean;
+  autoFocus?: boolean
+  children: ReactNode
+  stacked?: boolean
 } & HTMLAttributes<HTMLFormElement>
 
 export function SubscribeForm ({ autoFocus, stacked, children, ...props }: SubscriptFormProps) {

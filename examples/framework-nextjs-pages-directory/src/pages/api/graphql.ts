@@ -15,8 +15,8 @@ export const config = {
 
 // Use Keystone API to create GraphQL handler
 export default createYoga<{
-  req: NextApiRequest;
-  res: NextApiResponse;
+  req: NextApiRequest
+  res: NextApiResponse
 }>({
   graphqlEndpoint: '/api/graphql',
   schema: keystoneContext.graphql.schema,

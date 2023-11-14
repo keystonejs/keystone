@@ -56,61 +56,61 @@ export const staticAdminMetaQuery = gql`
 
 export type StaticAdminMetaQuery = {
   keystone: {
-    __typename: 'KeystoneMeta';
+    __typename: 'KeystoneMeta'
     adminMeta: {
-      __typename: 'KeystoneAdminMeta';
+      __typename: 'KeystoneAdminMeta'
       lists: Array<{
-        __typename: 'KeystoneAdminUIListMeta';
-        key: string;
-        path: string;
-        description: string | null;
+        __typename: 'KeystoneAdminUIListMeta'
+        key: string
+        path: string
+        description: string | null
 
-        label: string;
-        labelField: string;
-        singular: string;
-        plural: string;
+        label: string
+        labelField: string
+        singular: string
+        plural: string
 
         fields: Array<{
-          __typename: 'KeystoneAdminUIFieldMeta';
-          path: string;
-          label: string;
-          description: string | null;
-          fieldMeta: JSONValue | null;
-          viewsIndex: number;
-          customViewsIndex: number | null;
-          search: QueryMode | null;
-          isNonNull: ('read' | 'create' | 'update')[];
+          __typename: 'KeystoneAdminUIFieldMeta'
+          path: string
+          label: string
+          description: string | null
+          fieldMeta: JSONValue | null
+          viewsIndex: number
+          customViewsIndex: number | null
+          search: QueryMode | null
+          isNonNull: ('read' | 'create' | 'update')[]
           itemView: {
-            __typename: 'KeystoneAdminUIFieldMetaItemView';
-            fieldPosition: KeystoneAdminUIFieldMetaItemViewFieldPosition | null;
-            fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode | null;
-          } | null;
-        }>;
+            __typename: 'KeystoneAdminUIFieldMetaItemView'
+            fieldPosition: KeystoneAdminUIFieldMetaItemViewFieldPosition | null
+            fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode | null
+          } | null
+        }>
         groups: Array<{
-          __typename: 'KeystoneAdminUIFieldGroupMeta';
-          label: string;
-          description: string | null;
+          __typename: 'KeystoneAdminUIFieldGroupMeta'
+          label: string
+          description: string | null
           fields: Array<{
-            __typename: 'KeystoneAdminUIFieldMeta';
-            path: string;
-          }>;
-        }>;
+            __typename: 'KeystoneAdminUIFieldMeta'
+            path: string
+          }>
+        }>
 
-        pageSize: number;
-        initialColumns: Array<string>;
+        pageSize: number
+        initialColumns: Array<string>
         initialSort: {
-          __typename: 'KeystoneAdminUISort';
-          field: string;
-          direction: KeystoneAdminUISortDirection;
-        } | null;
-        isSingleton: boolean;
+          __typename: 'KeystoneAdminUISort'
+          field: string
+          direction: KeystoneAdminUISortDirection
+        } | null
+        isSingleton: boolean
 
         // TODO: probably remove this
-        itemQueryName: string;
-        listQueryName: string;
-      }>;
-    };
-  };
+        itemQueryName: string
+        listQueryName: string
+      }>
+    }
+  }
 }
 
 type QueryMode = 'default' | 'insensitive'

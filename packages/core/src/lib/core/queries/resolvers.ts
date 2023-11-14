@@ -29,7 +29,7 @@ export function mapUniqueWhereToWhere (uniqueWhere: UniquePrismaFilter) {
 function* traverse (
   list: InitialisedList,
   inputFilter: InputFilter
-): Generator<{ fieldKey: string; list: InitialisedList }, void, unknown> {
+): Generator<{ fieldKey: string, list: InitialisedList }, void, unknown> {
   for (const fieldKey in inputFilter) {
     const value = inputFilter[fieldKey]
     if (fieldKey === 'OR' || fieldKey === 'AND' || fieldKey === 'NOT') {

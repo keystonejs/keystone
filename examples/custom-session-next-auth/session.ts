@@ -61,8 +61,8 @@ export const nextAuthOptions = {
       session,
       token,
     }: {
-      session: DefaultSession; // required by next-auth, not by us
-      token: DefaultJWT;
+      session: DefaultSession // required by next-auth, not by us
+      token: DefaultJWT
     }) {
       // console.error('next-auth session', { session, token });
       return {
@@ -83,7 +83,7 @@ export const nextAuthOptions = {
 }
 
 export type Session = {
-  id: string;
+  id: string
 }
 
 export const nextAuthSessionStrategy = {

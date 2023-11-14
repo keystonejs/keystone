@@ -43,26 +43,26 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
 }
 
 type FileData = {
-  src: string;
-  filesize: number;
-  filename: string;
+  src: string
+  filesize: number
+  filename: string
 }
 
 export type FileValue =
   | { kind: 'empty' }
   | {
-      kind: 'from-server';
-      data: FileData;
+      kind: 'from-server'
+      data: FileData
     }
   | {
-      kind: 'upload';
+      kind: 'upload'
       data: {
-        file: File;
-        validity: ValidityState;
-      };
-      previous: FileValue;
+        file: File
+        validity: ValidityState
+      }
+      previous: FileValue
     }
-  | { kind: 'remove'; previous?: Exclude<FileValue, { kind: 'remove' }> }
+  | { kind: 'remove', previous?: Exclude<FileValue, { kind: 'remove' }> }
 
 type FileController = FieldController<FileValue>
 

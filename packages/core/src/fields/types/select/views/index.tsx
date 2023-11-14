@@ -148,20 +148,20 @@ export const CardValue: CardValueComponent<typeof controller> = ({ item, field }
 }
 
 export type AdminSelectFieldMeta = {
-  options: readonly { label: string; value: string | number }[];
-  type: 'string' | 'integer' | 'enum';
-  displayMode: 'select' | 'segmented-control' | 'radio';
-  isRequired: boolean;
-  defaultValue: string | number | null;
+  options: readonly { label: string, value: string | number }[]
+  type: 'string' | 'integer' | 'enum'
+  displayMode: 'select' | 'segmented-control' | 'radio'
+  isRequired: boolean
+  defaultValue: string | number | null
 }
 
 type Config = FieldControllerConfig<AdminSelectFieldMeta>
 
-type Option = { label: string; value: string }
+type Option = { label: string, value: string }
 
 type Value =
-  | { value: Option | null; kind: 'create' }
-  | { value: Option | null; initial: Option | null; kind: 'update' }
+  | { value: Option | null, kind: 'create' }
+  | { value: Option | null, initial: Option | null, kind: 'update' }
 
 function validate (value: Value, isRequired: boolean) {
   if (isRequired) {
@@ -178,10 +178,10 @@ function validate (value: Value, isRequired: boolean) {
 export const controller = (
   config: Config
 ): FieldController<Value, Option[]> & {
-  options: Option[];
-  type: 'string' | 'integer' | 'enum';
-  displayMode: 'select' | 'segmented-control' | 'radio';
-  isRequired: boolean;
+  options: Option[]
+  type: 'string' | 'integer' | 'enum'
+  displayMode: 'select' | 'segmented-control' | 'radio'
+  isRequired: boolean
 } => {
   const optionsWithStringValues = config.fieldMeta.options.map(x => ({
     label: x.label,

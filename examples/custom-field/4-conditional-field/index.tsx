@@ -8,11 +8,11 @@ import {
 import { graphql } from '@keystone-6/core'
 
 type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<ListTypeInfo> & {
-  isIndexed?: boolean | 'unique';
+  isIndexed?: boolean | 'unique'
   dependency: {
-    field: string;
-    minimumValue: number;
-  };
+    field: string
+    minimumValue: number
+  }
 }
 
 export function feedback<ListTypeInfo extends BaseListTypeInfo> ({

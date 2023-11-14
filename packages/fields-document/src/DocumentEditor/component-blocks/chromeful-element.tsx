@@ -23,13 +23,13 @@ import {
 } from './form-from-preview'
 
 export function ChromefulComponentBlockElement (props: {
-  children: ReactNode;
-  renderedBlock: ReactNode;
-  componentBlock: ComponentBlock & { chromeless?: false };
-  previewProps: PreviewPropsForToolbar<ObjectField<Record<string, ComponentSchema>>>;
-  elementProps: Record<string, unknown>;
-  onRemove: () => void;
-  attributes: RenderElementProps['attributes'];
+  children: ReactNode
+  renderedBlock: ReactNode
+  componentBlock: ComponentBlock & { chromeless?: false }
+  previewProps: PreviewPropsForToolbar<ObjectField<Record<string, ComponentSchema>>>
+  elementProps: Record<string, unknown>
+  onRemove: () => void
+  attributes: RenderElementProps['attributes']
 }) {
   const selected = useSelected()
   const { colors, fields, spacing, typography } = useTheme()
@@ -116,10 +116,10 @@ function DefaultToolbarWithChrome ({
   onRemove,
   isValid,
 }: {
-  onShowEditMode(): void;
-  onRemove(): void;
-  props: any;
-  isValid: boolean;
+  onShowEditMode(): void
+  onRemove(): void
+  props: any
+  isValid: boolean
 }) {
   const theme = useTheme()
   return (
@@ -169,9 +169,9 @@ function FormValue ({
   props,
   isValid,
 }: {
-  props: GenericPreviewProps<NonChildFieldComponentSchema, unknown>;
-  onClose(): void;
-  isValid: boolean;
+  props: GenericPreviewProps<NonChildFieldComponentSchema, unknown>
+  onClose(): void
+  isValid: boolean
 }) {
   const [forceValidation, setForceValidation] = useState(false)
 

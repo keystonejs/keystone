@@ -3,9 +3,9 @@ import styles from './Carousel.module.css'
 
 type CarouselProps = {
   items: {
-    title: string;
-    imageSrc: string;
-  }[];
+    title: string
+    imageSrc: string
+  }[]
 }
 
 export function Carousel ({ items = [] }: CarouselProps) {

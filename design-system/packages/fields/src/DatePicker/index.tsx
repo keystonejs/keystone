@@ -19,10 +19,10 @@ import { InputButton } from './components/InputButton'
 export type DateInputValue = string | undefined
 
 export type DatePickerProps = {
-  onUpdate: (value: DateType) => void;
-  onClear: () => void;
-  onBlur?: () => void;
-  value: DateType;
+  onUpdate: (value: DateType) => void
+  onClear: () => void
+  onBlur?: () => void
+  value: DateType
 }
 
 export function useEventCallback<Func extends (...args: any) => any>(callback: Func): Func {

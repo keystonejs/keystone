@@ -8,12 +8,12 @@ import { type FieldGroupMeta, type FieldMeta } from '../../types'
 import { type Value } from '.'
 
 type RenderFieldProps = {
-  field: FieldMeta;
-  value: unknown;
-  itemValue: unknown;
-  onChange?(value: (value: Value) => Value): void;
-  autoFocus?: boolean;
-  forceValidation?: boolean;
+  field: FieldMeta
+  value: unknown
+  itemValue: unknown
+  onChange?(value: (value: Value) => Value): void
+  autoFocus?: boolean
+  forceValidation?: boolean
 }
 
 const RenderField = memo(function RenderField ({
@@ -42,15 +42,15 @@ const RenderField = memo(function RenderField ({
 })
 
 type FieldsProps = {
-  fields: Record<string, FieldMeta>;
-  groups?: FieldGroupMeta[];
-  value: Value;
-  fieldModes?: Record<string, 'hidden' | 'edit' | 'read'> | null;
-  fieldPositions?: Record<string, 'form' | 'sidebar'> | null;
-  forceValidation: boolean;
-  position?: 'form' | 'sidebar';
-  invalidFields: ReadonlySet<string>;
-  onChange(value: (value: Value) => Value): void;
+  fields: Record<string, FieldMeta>
+  groups?: FieldGroupMeta[]
+  value: Value
+  fieldModes?: Record<string, 'hidden' | 'edit' | 'read'> | null
+  fieldPositions?: Record<string, 'form' | 'sidebar'> | null
+  forceValidation: boolean
+  position?: 'form' | 'sidebar'
+  invalidFields: ReadonlySet<string>
+  onChange(value: (value: Value) => Value): void
 }
 
 export function Fields ({
@@ -95,7 +95,7 @@ export function Fields ({
     })
   )
   const rendered: ReactNode[] = []
-  const fieldGroups = new Map<string, { rendered: boolean; group: FieldGroupMeta }>()
+  const fieldGroups = new Map<string, { rendered: boolean, group: FieldGroupMeta }>()
   for (const group of groups) {
     const state = { group, rendered: false }
     for (const field of group.fields) {
@@ -135,7 +135,7 @@ export function Fields ({
   )
 }
 
-function FieldGroup (props: { label: string; description: string | null; children: ReactNode }) {
+function FieldGroup (props: { label: string, description: string | null, children: ReactNode }) {
   const descriptionId = useId()
   const labelId = useId()
   const theme = useTheme()

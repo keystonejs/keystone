@@ -62,8 +62,8 @@ export const allowedExportsOnCustomViews = ['schema']
 
 export const controller = (
   config: FieldControllerConfig
-): FieldController<{ kind: 'create' | 'update'; value: unknown }> & {
-  schema: ComponentSchemaForGraphQL;
+): FieldController<{ kind: 'create' | 'update', value: unknown }> & {
+  schema: ComponentSchemaForGraphQL
 } => {
   if (!config.customViews.schema) {
     throw new Error(

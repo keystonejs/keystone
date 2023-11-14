@@ -11,15 +11,15 @@ import { Box, type BoxProps } from './Box'
 
 type TextProps = {
   /** The leading of the text. */
-  leading?: keyof Theme['typography']['leading'];
+  leading?: keyof Theme['typography']['leading']
   /** The size of the text. */
-  size?: 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge';
+  size?: 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge'
   /** The tracking of the text. */
-  tracking?: keyof Theme['typography']['tracking'];
+  tracking?: keyof Theme['typography']['tracking']
   /** The color of the text. */
-  color?: keyof Theme['palette'];
+  color?: keyof Theme['palette']
   /** The font-weight of the text. */
-  weight?: keyof Theme['typography']['fontWeight'];
+  weight?: keyof Theme['typography']['fontWeight']
 } & BoxProps
 
 export const Text = forwardRefWithAs<'div', TextProps>(

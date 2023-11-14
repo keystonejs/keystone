@@ -7,14 +7,12 @@ module.exports = {
     files: ['*.js', '*.jsx', '*.ts', '*.tsx'],
   }],
   rules: {
-    'block-spacing': ['error', 'always'],
-    'brace-style': ['error', '1tbs', { allowSingleLine: true }],
-    'comma-spacing': ['error', { before: false, after: true }],
-    'func-call-spacing': ['error', 'never'],
-    'semi-spacing': ['error', { before: false, after: true }],
-    'space-before-blocks': ['error', 'always'],
-    'space-before-function-paren': ['error', 'always'],
-    'space-before-function-paren': ['error', 'always'],
-    'space-in-parens': ['error', 'never'],
+    '@typescript-eslint/member-delimiter-style': [
+      'error',
+      {
+        multiline: { delimiter: 'none' },
+        singleline: { delimiter: 'comma', requireLast: false }
+      }
+    ],
   }
 }

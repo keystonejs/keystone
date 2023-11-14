@@ -36,13 +36,13 @@ class MarkdocValidationFailure extends Error {
 }
 
 export type DocsContent = {
-  content: Tag;
-  title: string;
-  description: string;
+  content: Tag
+  title: string
+  description: string
 }
 
 export type BlogContent = BlogFrontmatter & {
-  content: Tag;
+  content: Tag
 }
 
 export async function readBlogContent (filepath: string): Promise<BlogContent> {
@@ -81,8 +81,8 @@ export function transformContent (errorReportingFilepath: string, content: strin
 const frontMatterPattern = /^---[\s]+([\s\S]*?)[\s]+---/
 
 export function extractDocsFrontmatter (content: string): {
-  title: string;
-  description: string;
+  title: string
+  description: string
 } {
   const match = frontMatterPattern.exec(content)
   if (!match) {
@@ -115,12 +115,12 @@ export function extractDocsFrontmatter (content: string): {
 }
 
 export type BlogFrontmatter = {
-  title: string;
-  description: string;
-  publishDate: string;
-  authorName: string;
-  authorHandle?: string;
-  metaImageUrl?: string;
+  title: string
+  description: string
+  publishDate: string
+  authorName: string
+  authorHandle?: string
+  metaImageUrl?: string
 }
 
 export function extractBlogFrontmatter (content: string): BlogFrontmatter {

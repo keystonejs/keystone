@@ -29,39 +29,39 @@ import { outputTypeField } from './queries/output-field'
 import { assertFieldsValid } from './field-assertions'
 
 export type InitialisedField = {
-  access: ResolvedFieldAccessControl;
-  dbField: ResolvedDBField;
-  hooks: ResolvedFieldHooks<BaseListTypeInfo>;
+  access: ResolvedFieldAccessControl
+  dbField: ResolvedDBField
+  hooks: ResolvedFieldHooks<BaseListTypeInfo>
   graphql: {
     isEnabled: {
-      read: boolean;
-      create: boolean;
-      update: boolean;
-      filter: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>);
-      orderBy: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>);
-    };
+      read: boolean
+      create: boolean
+      update: boolean
+      filter: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>)
+      orderBy: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>)
+    }
     isNonNull: {
-      read: boolean;
-      create: boolean;
-      update: boolean;
-    };
-    cacheHint: CacheHint | undefined;
-  };
+      read: boolean
+      create: boolean
+      update: boolean
+    }
+    cacheHint: CacheHint | undefined
+  }
   ui: {
-    label: string | null;
-    description: string | null;
-    views: string | null;
+    label: string | null
+    description: string | null
+    views: string | null
     createView: {
-      fieldMode: MaybeSessionFunction<'edit' | 'hidden', any>;
-    };
+      fieldMode: MaybeSessionFunction<'edit' | 'hidden', any>
+    }
     itemView: {
-      fieldMode: MaybeItemFunction<'read' | 'edit' | 'hidden', any>;
-      fieldPosition: MaybeItemFunction<'form' | 'sidebar', any>;
-    };
+      fieldMode: MaybeItemFunction<'read' | 'edit' | 'hidden', any>
+      fieldPosition: MaybeItemFunction<'form' | 'sidebar', any>
+    }
     listView: {
-      fieldMode: MaybeSessionFunction<'read' | 'hidden', any>;
-    };
-  };
+      fieldMode: MaybeSessionFunction<'read' | 'hidden', any>
+    }
+  }
 } & Pick<
   NextFieldType,
   | 'input'
@@ -74,55 +74,55 @@ export type InitialisedField = {
 >
 
 export type InitialisedList = {
-  access: ResolvedListAccessControl;
+  access: ResolvedListAccessControl
 
-  fields: Record<string, InitialisedField>;
+  fields: Record<string, InitialisedField>
   groups: {
-    fields: BaseListTypeInfo['fields'][];
-    label: string;
-    description: string | null;
-  }[];
+    fields: BaseListTypeInfo['fields'][]
+    label: string
+    description: string | null
+  }[]
 
-  hooks: ResolvedListHooks<BaseListTypeInfo>;
+  hooks: ResolvedListHooks<BaseListTypeInfo>
 
   /** This will include the opposites to one-sided relationships */
-  resolvedDbFields: Record<string, ResolvedDBField>;
-  lists: Record<string, InitialisedList>;
+  resolvedDbFields: Record<string, ResolvedDBField>
+  lists: Record<string, InitialisedList>
 
-  cacheHint: ((args: CacheHintArgs) => CacheHint) | undefined;
-  listKey: string;
+  cacheHint: ((args: CacheHintArgs) => CacheHint) | undefined
+  listKey: string
 
   graphql: {
-    types: GraphQLTypesForList;
-    names: ReturnType<typeof getGqlNames>;
-    namePlural: string; // TODO: remove
-    isEnabled: IsEnabled;
-  };
+    types: GraphQLTypesForList
+    names: ReturnType<typeof getGqlNames>
+    namePlural: string // TODO: remove
+    isEnabled: IsEnabled
+  }
 
   prisma: {
-    listKey: string;
-    mapping: string | undefined;
-    extendPrismaSchema: ((schema: string) => string) | undefined;
-  };
+    listKey: string
+    mapping: string | undefined
+    extendPrismaSchema: ((schema: string) => string) | undefined
+  }
 
   ui: {
-    labels: { label: string; singular: string; plural: string; path: string };
-    labelField: string;
-    searchFields: Set<string>;
-    searchableFields: Map<string, 'default' | 'insensitive' | null>;
-  };
+    labels: { label: string, singular: string, plural: string, path: string }
+    labelField: string
+    searchFields: Set<string>
+    searchableFields: Map<string, 'default' | 'insensitive' | null>
+  }
 
-  isSingleton: boolean;
+  isSingleton: boolean
 }
 
 type IsEnabled = {
-  type: boolean;
-  query: boolean;
-  create: boolean;
-  update: boolean;
-  delete: boolean;
-  filter: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>);
-  orderBy: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>);
+  type: boolean
+  query: boolean
+  create: boolean
+  update: boolean
+  delete: boolean
+  filter: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>)
+  orderBy: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>)
 }
 
 function throwIfNotAFilter (x: unknown, listKey: string, fieldKey: string) {
@@ -227,8 +227,8 @@ function defaultFieldHooksResolveInput ({
   resolvedData,
   fieldKey,
 }: {
-  resolvedData: any;
-  fieldKey: string;
+  resolvedData: any
+  fieldKey: string
 }) {
   return resolvedData[fieldKey]
 }

@@ -6,22 +6,22 @@ import supertest, { type Test } from 'supertest'
 import type { BaseKeystoneTypeInfo } from '@keystone-6/core/types'
 
 export type GraphQLRequest = (arg: {
-  query: string;
-  variables?: Record<string, any>;
-  operationName?: string;
+  query: string
+  variables?: Record<string, any>
+  operationName?: string
 }) => Test
 
 type TestArgsWithServer<TypeInfo extends BaseKeystoneTypeInfo> = TestArgs<TypeInfo> & {
-  graphQLRequest: GraphQLRequest;
-  app: express.Express;
-  server: Server;
+  graphQLRequest: GraphQLRequest
+  app: express.Express
+  server: Server
 }
 
 async function getTestArgsWithServer<TypeInfo extends BaseKeystoneTypeInfo> (
   testArgs: TestArgs<TypeInfo>
 ): Promise<{
-  disconnect: () => Promise<void>;
-  args: TestArgsWithServer<TypeInfo>;
+  disconnect: () => Promise<void>
+  args: TestArgsWithServer<TypeInfo>
 }> {
   const {
     expressServer: app,

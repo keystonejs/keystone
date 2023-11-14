@@ -29,24 +29,24 @@ function LinkToRelatedItems ({
   list,
   refFieldKey,
 }: {
-  itemId: string | null;
-  value: FieldProps<typeof controller>['value'] & { kind: 'many' | 'one' };
-  list: ListMeta;
-  refFieldKey?: string;
+  itemId: string | null
+  value: FieldProps<typeof controller>['value'] & { kind: 'many' | 'one' }
+  list: ListMeta
+  refFieldKey?: string
 }) {
   function constructQuery ({
     refFieldKey,
     itemId,
     value,
   }: {
-    refFieldKey?: string;
-    itemId: string | null;
-    value: FieldProps<typeof controller>['value'] & { kind: 'many' | 'one' };
+    refFieldKey?: string
+    itemId: string | null
+    value: FieldProps<typeof controller>['value'] & { kind: 'many' | 'one' }
   }) {
     if (!!refFieldKey && itemId) {
       return `!${refFieldKey}_matches="${itemId}"`
     }
-    return `!id_in="${(value?.value as { id: string; label: string }[])
+    return `!id_in="${(value?.value as { id: string, label: string }[])
       .slice(0, 100)
       .map(({ id }: { id: string }) => id)
       .join(',')}"`
@@ -308,78 +308,78 @@ export const CardValue: CardValueComponent<typeof controller> = ({ field, item }
 }
 
 type SingleRelationshipValue = {
-  kind: 'one';
-  id: null | string;
-  initialValue: { label: string; id: string } | null;
-  value: { label: string; id: string } | null;
+  kind: 'one'
+  id: null | string
+  initialValue: { label: string, id: string } | null
+  value: { label: string, id: string } | null
 }
 type ManyRelationshipValue = {
-  kind: 'many';
-  id: null | string;
-  initialValue: { label: string; id: string }[];
-  value: { label: string; id: string }[];
+  kind: 'many'
+  id: null | string
+  initialValue: { label: string, id: string }[]
+  value: { label: string, id: string }[]
 }
 type CardsRelationshipValue = {
-  kind: 'cards-view';
-  id: null | string;
-  itemsBeingEdited: ReadonlySet<string>;
-  itemBeingCreated: boolean;
-  initialIds: ReadonlySet<string>;
-  currentIds: ReadonlySet<string>;
-  displayOptions: CardsDisplayModeOptions;
+  kind: 'cards-view'
+  id: null | string
+  itemsBeingEdited: ReadonlySet<string>
+  itemBeingCreated: boolean
+  initialIds: ReadonlySet<string>
+  currentIds: ReadonlySet<string>
+  displayOptions: CardsDisplayModeOptions
 }
 type CountRelationshipValue = {
-  kind: 'count';
-  id: null | string;
-  count: number;
+  kind: 'count'
+  id: null | string
+  count: number
 }
 type CardsDisplayModeOptions = {
-  cardFields: readonly string[];
-  linkToItem: boolean;
-  removeMode: 'disconnect' | 'none';
-  inlineCreate: { fields: readonly string[] } | null;
-  inlineEdit: { fields: readonly string[] } | null;
-  inlineConnect: boolean;
+  cardFields: readonly string[]
+  linkToItem: boolean
+  removeMode: 'disconnect' | 'none'
+  inlineCreate: { fields: readonly string[] } | null
+  inlineEdit: { fields: readonly string[] } | null
+  inlineConnect: boolean
 }
 
 type RelationshipController = FieldController<
   ManyRelationshipValue | SingleRelationshipValue | CardsRelationshipValue | CountRelationshipValue,
   string
 > & {
-  display: 'count' | 'cards-or-select';
-  listKey: string;
-  refListKey: string;
-  refFieldKey?: string;
-  refLabelField: string;
-  refSearchFields: string[];
-  hideCreate: boolean;
-  many: boolean;
+  display: 'count' | 'cards-or-select'
+  listKey: string
+  refListKey: string
+  refFieldKey?: string
+  refLabelField: string
+  refSearchFields: string[]
+  hideCreate: boolean
+  many: boolean
 }
 
 export const controller = (
   config: FieldControllerConfig<
     {
-      refFieldKey?: string;
-      refListKey: string;
-      many: boolean;
-      hideCreate: boolean;
-      refLabelField: string;
-      refSearchFields: string[];
+      refFieldKey?: string
+      refListKey: string
+      many: boolean
+      hideCreate: boolean
+      refLabelField: string
+      refSearchFields: string[]
     } & (
       | {
-          displayMode: 'select';
+          displayMode: 'select'
         }
       | {
-          displayMode: 'cards';
-          cardFields: readonly string[];
-          linkToItem: boolean;
-          removeMode: 'disconnect' | 'none';
-          inlineCreate: { fields: readonly string[] } | null;
-          inlineEdit: { fields: readonly string[] } | null;
-          inlineConnect: boolean;
+          displayMode: 'cards'
+          cardFields: readonly string[]
+          linkToItem: boolean
+          removeMode: 'disconnect' | 'none'
+          inlineCreate: { fields: readonly string[] } | null
+          inlineEdit: { fields: readonly string[] } | null
+          inlineConnect: boolean
         }
       | {
-          displayMode: 'count';
+          displayMode: 'count'
         }
     )
   >
@@ -498,9 +498,9 @@ export const controller = (
           list: foreignList,
         })
         const state: {
-          kind: 'many';
-          value: { label: string; id: string }[];
-          onChange: (newItems: { label: string; id: string }[]) => void;
+          kind: 'many'
+          value: { label: string, id: string }[]
+          onChange: (newItems: { label: string, id: string }[]) => void
         } = {
           kind: 'many',
           value: filterValues,
@@ -638,7 +638,7 @@ export const controller = (
   }
 }
 
-function useRelationshipFilterValues ({ value, list }: { value: string; list: ListMeta }) {
+function useRelationshipFilterValues ({ value, list }: { value: string, list: ListMeta }) {
   const foreignIds = getForeignIds(value)
   const where = { id: { in: foreignIds } }
 

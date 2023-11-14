@@ -4,11 +4,11 @@ import config from './keystone'
 import * as PrismaModule from '.myprisma/client'
 
 type PostProps = {
-  title: string;
-  status: 'draft' | 'published';
-  publishDate: string;
-  author: string;
-  content: string;
+  title: string
+  status: 'draft' | 'published'
+  publishDate: string
+  author: string
+  content: string
 }
 
 async function main () {

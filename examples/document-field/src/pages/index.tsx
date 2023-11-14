@@ -2,7 +2,7 @@ import Link from 'next/link'
 import React from 'react'
 import { fetchGraphQL, gql } from '../utils'
 
-type Author = { id: string; name: string; posts: { id: string; slug: string; title: string }[] }
+type Author = { id: string, name: string, posts: { id: string, slug: string, title: string }[] }
 
 export default function Index ({ authors }: { authors: Author[] }) {
   <h1>Keystone Blog Project - Home</h1>

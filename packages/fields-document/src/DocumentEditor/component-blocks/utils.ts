@@ -5,7 +5,7 @@ import { assert, type Mark } from '../utils'
 import { type ChildField } from './api'
 import { getKeysForArrayValue, setKeysForArrayValue } from './preview-props'
 
-type PathToChildFieldWithOption = { path: ReadonlyPropPath; options: ChildField['options'] }
+type PathToChildFieldWithOption = { path: ReadonlyPropPath, options: ChildField['options'] }
 
 export function findChildPropPathsForProp (
   value: any,
@@ -44,7 +44,7 @@ export function findChildPropPathsForProp (
 export function findChildPropPaths (
   value: Record<string, any>,
   props: Record<string, ComponentSchema>
-): { path: ReadonlyPropPath | undefined; options: ChildField['options'] }[] {
+): { path: ReadonlyPropPath | undefined, options: ChildField['options'] }[] {
   const propPaths = findChildPropPathsForProp(value, { kind: 'object', fields: props }, [])
   if (!propPaths.length) {
     return [
@@ -63,19 +63,19 @@ export function assertNever (arg: never): never {
 
 export type DocumentFeaturesForChildField =
   | {
-      kind: 'inline';
-      inlineMarks: 'inherit' | DocumentFeatures['formatting']['inlineMarks'];
+      kind: 'inline'
+      inlineMarks: 'inherit' | DocumentFeatures['formatting']['inlineMarks']
       documentFeatures: {
-        links: boolean;
-        relationships: boolean;
-      };
-      softBreaks: boolean;
+        links: boolean
+        relationships: boolean
+      }
+      softBreaks: boolean
     }
   | {
-      kind: 'block';
-      inlineMarks: 'inherit' | DocumentFeatures['formatting']['inlineMarks'];
-      softBreaks: boolean;
-      documentFeatures: DocumentFeaturesForNormalization;
+      kind: 'block'
+      inlineMarks: 'inherit' | DocumentFeatures['formatting']['inlineMarks']
+      softBreaks: boolean
+      documentFeatures: DocumentFeaturesForNormalization
     }
 
 export function getDocumentFeaturesForChildField (
@@ -332,7 +332,7 @@ export function replaceValueAtPropPath (
   }
 
   if (schema.kind === 'conditional') {
-    const conditionalValue = value as { discriminant: string | boolean; value: unknown }
+    const conditionalValue = value as { discriminant: string | boolean, value: unknown }
     // replaceValueAtPropPath should not be used to only update the discriminant of a conditional field
     // if you want to update the discriminant of a conditional field, replace the value of the whole conditional field
     assert(key === 'value')

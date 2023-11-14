@@ -115,12 +115,12 @@ testModules
 
           const withHelpers = (
             wrappedFn: (args: {
-              context: KeystoneContext;
-              listKey: string;
-              items: readonly Record<string, any>[];
+              context: KeystoneContext
+              listKey: string
+              items: readonly Record<string, any>[]
             }) => void | Promise<void>
           ) => {
-            return async ({ context, listKey }: { context: KeystoneContext; listKey: string }) => {
+            return async ({ context, listKey }: { context: KeystoneContext, listKey: string }) => {
               const items = await context.query[listKey].findMany({
                 orderBy: { name: 'asc' },
                 query,

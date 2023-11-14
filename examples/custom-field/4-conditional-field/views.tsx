@@ -64,15 +64,15 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
 export const controller = (
   config: FieldControllerConfig<{
     dependency: {
-      field: string;
-      minimumValue: number;
-    };
+      field: string
+      minimumValue: number
+    }
   }>
 ): FieldController<string | null, string> & {
   dependency: {
-    field: string;
-    minimumValue: number;
-  };
+    field: string
+    minimumValue: number
+  }
 } => {
   return {
     path: config.path,

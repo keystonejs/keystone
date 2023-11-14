@@ -56,23 +56,23 @@ export const CardValue: CardValueComponent<typeof controller> = ({ item, field }
 }
 
 export type AdminMultiSelectFieldMeta = {
-  options: readonly { label: string; value: string | number }[];
-  type: 'string' | 'integer' | 'enum';
-  defaultValue: string[] | number[];
+  options: readonly { label: string, value: string | number }[]
+  type: 'string' | 'integer' | 'enum'
+  defaultValue: string[] | number[]
 }
 
 type Config = FieldControllerConfig<AdminMultiSelectFieldMeta>
 
-type Option = { label: string; value: string }
+type Option = { label: string, value: string }
 
 type Value = readonly Option[]
 
 export const controller = (
   config: Config
 ): FieldController<Value, Option[]> & {
-  options: Option[];
-  type: 'string' | 'integer' | 'enum';
-  valuesToOptionsWithStringValues: Record<string, Option>;
+  options: Option[]
+  type: 'string' | 'integer' | 'enum'
+  valuesToOptionsWithStringValues: Record<string, Option>
 } => {
   const optionsWithStringValues = config.fieldMeta.options.map(x => ({
     label: x.label,

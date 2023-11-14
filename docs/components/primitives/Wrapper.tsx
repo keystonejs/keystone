@@ -6,7 +6,7 @@ import type { ElementType, HTMLAttributes } from 'react'
 import { useMediaQuery } from '../../lib/media'
 
 type WrapperProps = {
-  as?: ElementType;
+  as?: ElementType
 } & HTMLAttributes<HTMLElement>
 
 export function Wrapper ({ as: Tag = 'div', ...props }: WrapperProps) {

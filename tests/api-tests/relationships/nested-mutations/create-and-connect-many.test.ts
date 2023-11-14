@@ -70,7 +70,7 @@ describe('no access control', () => {
       const createNote = await context.query.Note.createOne({ data: { content: noteContent } })
 
       // Create an item that does the linking
-      type T = { id: IdType; notes: { id: IdType; content: string }[] }
+      type T = { id: IdType, notes: { id: IdType, content: string }[] }
       const user = (await context.query.User.createOne({
         data: {
           username: 'A thing',
@@ -110,7 +110,7 @@ describe('no access control', () => {
       const createUser = await context.query.User.createOne({ data: { username: 'A thing' } })
 
       // Update the item and link the relationship field
-      type T = { id: IdType; notes: { id: IdType; content: string }[] }
+      type T = { id: IdType, notes: { id: IdType, content: string }[] }
       const user = (await context.query.User.updateOne({
         where: { id: createUser.id },
         data: {

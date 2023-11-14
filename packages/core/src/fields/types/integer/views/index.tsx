@@ -23,13 +23,13 @@ function IntegerInput ({
   validationMessage,
   placeholder,
 }: {
-  id: string;
-  autoFocus?: boolean;
-  value: number | string | null;
-  onChange: (value: number | string | null) => void;
-  forceValidation?: boolean;
-  validationMessage?: string;
-  placeholder?: string;
+  id: string
+  autoFocus?: boolean
+  value: number | string | null
+  onChange: (value: number | string | null) => void
+  forceValidation?: boolean
+  validationMessage?: string
+  placeholder?: string
 }) {
   const [hasBlurred, setHasBlurred] = useState(false)
   const props = useFormattedInput<number | null>(
@@ -167,23 +167,23 @@ function validate (
 }
 
 type Validation = {
-  isRequired: boolean;
-  min: number;
-  max: number;
+  isRequired: boolean
+  min: number
+  max: number
 }
 
 type Value =
-  | { kind: 'update'; initial: number | null; value: string | number | null }
-  | { kind: 'create'; value: string | number | null }
+  | { kind: 'update', initial: number | null, value: string | number | null }
+  | { kind: 'create', value: string | number | null }
 
 export const controller = (
   config: FieldControllerConfig<{
-    validation: Validation;
-    defaultValue: number | null | 'autoincrement';
+    validation: Validation
+    defaultValue: number | null | 'autoincrement'
   }>
 ): FieldController<Value, string> & {
-  validation: Validation;
-  hasAutoIncrementDefault: boolean;
+  validation: Validation
+  hasAutoIncrementDefault: boolean
 } => {
   return {
     path: config.path,

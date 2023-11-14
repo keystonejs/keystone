@@ -43,7 +43,7 @@ if (workerId === undefined) {
 
 export const SQLITE_DATABASE_FILENAME = `test.db`
 
-export const { dbUrl, dbName } = ((): { dbUrl: string; dbName: string } => {
+export const { dbUrl, dbName } = ((): { dbUrl: string, dbName: string } => {
   if (dbProvider === 'sqlite') {
     return { dbUrl: `file:./${SQLITE_DATABASE_FILENAME}`, dbName: SQLITE_DATABASE_FILENAME }
   }
@@ -78,7 +78,7 @@ export const { dbUrl, dbName } = ((): { dbUrl: string; dbName: string } => {
 
 export function testConfig (
   config: Omit<KeystoneConfig, 'db'> & {
-    db?: Omit<KeystoneConfig['db'], 'provider' | 'url'>;
+    db?: Omit<KeystoneConfig['db'], 'provider' | 'url'>
   }
 ): KeystoneConfig {
   return {
@@ -117,7 +117,7 @@ function j (messages: string[]) {
 
 export const expectInternalServerError = (
   errors: readonly any[] | undefined,
-  args: { path: any[]; message: string }[]
+  args: { path: any[], message: string }[]
 ) => {
   const unpackedErrors = unpackErrors(errors)
   expect(unpackedErrors).toEqual(
@@ -143,7 +143,7 @@ export const expectGraphQLValidationError = (
 
 export const expectAccessDenied = (
   errors: readonly any[] | undefined,
-  args: { path: (string | number)[]; msg: string }[]
+  args: { path: (string | number)[], msg: string }[]
 ) => {
   const unpackedErrors = (errors || []).map(({ locations, ...unpacked }) => ({
     ...unpacked,
@@ -159,7 +159,7 @@ export const expectAccessDenied = (
 
 export const expectValidationError = (
   errors: readonly any[] | undefined,
-  args: { path: (string | number)[]; messages: string[] }[]
+  args: { path: (string | number)[], messages: string[] }[]
 ) => {
   const unpackedErrors = (errors || []).map(({ locations, ...unpacked }) => ({
     ...unpacked,
@@ -175,7 +175,7 @@ export const expectValidationError = (
 
 export const expectBadUserInput = (
   errors: readonly any[] | undefined,
-  args: { path: any[]; message: string }[]
+  args: { path: any[], message: string }[]
 ) => {
   const unpackedErrors = unpackErrors(errors)
   expect(unpackedErrors).toEqual(
@@ -189,7 +189,7 @@ export const expectBadUserInput = (
 
 export const expectAccessReturnError = (
   errors: readonly any[] | undefined,
-  args: { path: any[]; errors: { tag: string; returned: string }[] }[]
+  args: { path: any[], errors: { tag: string, returned: string }[] }[]
 ) => {
   const unpackedErrors = unpackErrors(errors)
   expect(unpackedErrors).toEqual(
@@ -204,7 +204,7 @@ export const expectAccessReturnError = (
 
 export const expectFilterDenied = (
   errors: readonly any[] | undefined,
-  args: { path: any[]; message: string }[]
+  args: { path: any[], message: string }[]
 ) => {
   const unpackedErrors = unpackErrors(errors)
   expect(unpackedErrors).toEqual(
@@ -214,7 +214,7 @@ export const expectFilterDenied = (
 
 export const expectResolverError = (
   errors: readonly any[] | undefined,
-  args: { path: (string | number)[]; messages: string[]; debug: any[] }[]
+  args: { path: (string | number)[], messages: string[], debug: any[] }[]
 ) => {
   const unpackedErrors = unpackErrors(errors)
   expect(unpackedErrors).toEqual(
@@ -241,7 +241,7 @@ export const expectSingleResolverError = (
 
 export const expectRelationshipError = (
   errors: readonly any[] | undefined,
-  args: { path: (string | number)[]; messages: string[]; debug: any[] }[]
+  args: { path: (string | number)[], messages: string[], debug: any[] }[]
 ) => {
   const unpackedErrors = unpackErrors(errors)
   expect(unpackedErrors).toEqual(

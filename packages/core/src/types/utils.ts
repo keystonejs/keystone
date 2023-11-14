@@ -12,8 +12,8 @@ export function getGqlNames ({
   listKey,
   pluralGraphQLName,
 }: {
-  listKey: string;
-  pluralGraphQLName: string;
+  listKey: string
+  pluralGraphQLName: string
 }) {
   const lowerPluralName = pluralGraphQLName.slice(0, 1).toLowerCase() + pluralGraphQLName.slice(1)
   const lowerSingularName = listKey.slice(0, 1).toLowerCase() + listKey.slice(1)

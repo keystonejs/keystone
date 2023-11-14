@@ -4,8 +4,8 @@ import { checkbox, text } from '@keystone-6/core/fields'
 import type { Lists } from '.keystone/types'
 
 export type Session = {
-  id: string;
-  admin: boolean;
+  id: string
+  admin: boolean
 }
 
 function hasSession ({ session }: { session?: Session }) {

@@ -9,8 +9,8 @@ import { type controller } from '@keystone-6/core/fields/types/json/views'
 import { Fragment, useState } from 'react'
 
 interface RelatedLink {
-  label: string;
-  href: string;
+  label: string
+  href: string
 }
 
 const styles = {

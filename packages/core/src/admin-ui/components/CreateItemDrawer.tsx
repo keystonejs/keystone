@@ -16,9 +16,9 @@ export function CreateItemDrawer ({
   onClose,
   onCreate,
 }: {
-  listKey: string;
-  onClose: () => void;
-  onCreate: (item: { id: string; label: string }) => void;
+  listKey: string
+  onClose: () => void
+  onCreate: (item: { id: string, label: string }) => void
 }) {
   const { createViewFieldModes } = useKeystone()
   const list = useList(listKey)

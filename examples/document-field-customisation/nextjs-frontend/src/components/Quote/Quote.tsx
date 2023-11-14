@@ -2,8 +2,8 @@ import React, { type ReactNode } from 'react'
 import styles from './Quote.module.css'
 
 type QuoteProps = {
-  attribution: ReactNode;
-  content: ReactNode;
+  attribution: ReactNode
+  content: ReactNode
 }
 
 export function Quote ({ attribution, content }: QuoteProps) {

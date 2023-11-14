@@ -3,7 +3,7 @@ import { accessReturnError, extensionError, filterAccessError } from './graphql-
 import type { InitialisedList } from './initialise-lists'
 
 export async function checkFilterOrderAccess (
-  things: { fieldKey: string; list: InitialisedList }[],
+  things: { fieldKey: string, list: InitialisedList }[],
   context: KeystoneContext,
   operation: 'filter' | 'orderBy'
 ) {

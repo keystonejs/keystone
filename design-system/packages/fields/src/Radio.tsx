@@ -11,7 +11,7 @@ import type { SizeType } from './types'
 
 type RadioProps = {
   /** The radio label content. */
-  children: ReactNode;
+  children: ReactNode
 } & RadioControlProps
 
 export const Radio = forwardRef<HTMLInputElement, RadioProps>(
@@ -30,13 +30,13 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(
 
 type RadioControlProps = {
   /** When true, the radio will be checked. */
-  checked?: boolean;
+  checked?: boolean
   /** When true, the radio will be disabled. */
-  disabled?: boolean;
+  disabled?: boolean
   /** The size of the Radio */
-  size?: SizeType;
+  size?: SizeType
   /** The value of the Radio. */
-  value?: string;
+  value?: string
 } & Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>
 
 export const RadioControl = forwardRef<HTMLInputElement, RadioControlProps>(
@@ -50,7 +50,7 @@ export const RadioControl = forwardRef<HTMLInputElement, RadioControlProps>(
   )
 )
 
-const Indicator = ({ size, ...props }: { size?: SizeType; children?: ReactNode }) => {
+const Indicator = ({ size, ...props }: { size?: SizeType, children?: ReactNode }) => {
   const tokens = useIndicatorTokens({ type: 'radio', size: size || 'medium' })
   const styles = useIndicatorStyles({ tokens })
   return <div css={styles} {...props} />

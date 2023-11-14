@@ -10,12 +10,12 @@ export async function validateUpdateCreate ({
   list,
   hookArgs,
 }: {
-  list: InitialisedList;
-  hookArgs: DistributiveOmit<UpdateCreateHookArgs, 'addValidationError'>;
+  list: InitialisedList
+  hookArgs: DistributiveOmit<UpdateCreateHookArgs, 'addValidationError'>
 }) {
   const messages: string[] = []
 
-  const fieldsErrors: { error: Error; tag: string }[] = []
+  const fieldsErrors: { error: Error, tag: string }[] = []
   // Field validation hooks
   await Promise.all(
     Object.entries(list.fields).map(async ([fieldKey, field]) => {
@@ -51,11 +51,11 @@ export async function validateDelete ({
   list,
   hookArgs,
 }: {
-  list: InitialisedList;
-  hookArgs: Omit<DeleteHookArgs, 'addValidationError'>;
+  list: InitialisedList
+  hookArgs: Omit<DeleteHookArgs, 'addValidationError'>
 }) {
   const messages: string[] = []
-  const fieldsErrors: { error: Error; tag: string }[] = []
+  const fieldsErrors: { error: Error, tag: string }[] = []
   // Field validation
   await Promise.all(
     Object.entries(list.fields).map(async ([fieldKey, field]) => {

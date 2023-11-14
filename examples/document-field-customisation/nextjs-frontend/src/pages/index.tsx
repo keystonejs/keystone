@@ -3,13 +3,13 @@ import Link from 'next/link'
 import { fetchGraphQL, gql } from '../graphql'
 
 type Post = {
-  id: string;
-  title: string;
-  slug: string;
-  publishDate: string | null;
+  id: string
+  title: string
+  slug: string
+  publishDate: string | null
   author: {
-    name: string;
-  } | null;
+    name: string
+  } | null
 }
 
 function PublishDate ({ publishDate }: { publishDate: Post['publishDate'] }) {
@@ -37,7 +37,7 @@ function AuthorInfo ({ author }: { author: Post['author'] }) {
   )
 }
 
-export default function Home ({ posts, error }: { posts: Post[]; error?: Error }) {
+export default function Home ({ posts, error }: { posts: Post[], error?: Error }) {
   if (error) {
     return (
       <Fragment>

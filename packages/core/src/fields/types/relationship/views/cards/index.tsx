@@ -32,8 +32,8 @@ import { InlineEdit } from './InlineEdit'
 import { InlineCreate } from './InlineCreate'
 
 type CardContainerProps = {
-  children: ReactNode;
-  mode: 'view' | 'create' | 'edit';
+  children: ReactNode
+  mode: 'view' | 'create' | 'edit'
 } & BoxProps
 const CardContainer = forwardRefWithAs(({ mode = 'view', ...props }: CardContainerProps, ref) => {
   const { tones } = useTheme()
@@ -73,10 +73,10 @@ export function Cards ({
   onChange,
   forceValidation,
 }: {
-  foreignList: ListMeta;
-  localList: ListMeta;
-  id: string | null;
-  value: { kind: 'cards-view' };
+  foreignList: ListMeta
+  localList: ListMeta
+  id: string | null
+  value: { kind: 'cards-view' }
 } & FieldProps<typeof controller>) {
   const { displayOptions } = value
   let selectedFields = [
@@ -352,7 +352,7 @@ export function Cards ({
                   }
                 },
                 value: (() => {
-                  let options: { label: string; id: string }[] = []
+                  let options: { label: string, id: string }[] = []
                   Object.keys(items).forEach(id => {
                     if (value.currentIds.has(id)) {
                       options.push({ id, label: id })

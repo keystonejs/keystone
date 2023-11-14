@@ -21,9 +21,9 @@ function OpenGraph ({
   description,
   ogImage,
 }: {
-  title: string;
-  description: string;
-  ogImage?: string;
+  title: string
+  description: string
+  ogImage?: string
 }) {
   const siteUrl = process.env.siteUrl
   if (!ogImage) {
@@ -58,15 +58,15 @@ export function DocsPage ({
   isIndexPage,
   editPath,
 }: {
-  children: ReactNode;
-  headings?: HeadingType[];
-  noProse?: boolean;
-  noRightNav?: boolean;
-  title: string;
-  description: string;
-  ogImage?: string;
-  isIndexPage?: boolean;
-  editPath?: string;
+  children: ReactNode
+  headings?: HeadingType[]
+  noProse?: boolean
+  noRightNav?: boolean
+  title: string
+  description: string
+  ogImage?: string
+  isIndexPage?: boolean
+  editPath?: string
 }) {
   const contentRef = useRef<HTMLDivElement | null>(null)
   const mq = useMediaQuery()
@@ -154,14 +154,14 @@ export function BlogPage ({
   isIndexPage,
   editPath,
 }: {
-  children: ReactNode;
-  headings?: HeadingType[];
-  noRightNav?: boolean;
-  title: string;
-  description: string;
-  ogImage?: string;
-  isIndexPage?: boolean;
-  editPath?: string;
+  children: ReactNode
+  headings?: HeadingType[]
+  noRightNav?: boolean
+  title: string
+  description: string
+  ogImage?: string
+  isIndexPage?: boolean
+  editPath?: string
 }) {
   const contentRef = useRef<HTMLDivElement | null>(null)
   const mq = useMediaQuery()
@@ -244,10 +244,10 @@ export function Page ({
   description,
   ogImage,
 }: {
-  children: ReactNode;
-  title: string;
-  description: string;
-  ogImage?: string;
+  children: ReactNode
+  title: string
+  description: string
+  ogImage?: string
 }) {
   const metaTitle = title ? `${title} - Keystone 6` : `Keystone 6`
   return (

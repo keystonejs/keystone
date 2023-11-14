@@ -38,7 +38,7 @@ type IdType = any
 
 describe(`List access`, () => {
   let testEnv: TestEnv<TypeInfoFromConfig<typeof config>>, context: KeystoneContext
-  let items: Record<string, { id: IdType; name: string }[]>
+  let items: Record<string, { id: IdType, name: string }[]>
   beforeAll(async () => {
     testEnv = await setupTestEnv({ config })
     context = testEnv.testArgs.context
@@ -61,7 +61,7 @@ describe(`List access`, () => {
       items[listKey] = (await context.sudo().query[listKey].createMany({
         data: _items,
         query: 'id, name',
-      })) as { id: IdType; name: string }[]
+      })) as { id: IdType, name: string }[]
     }
   })
   afterAll(async () => {

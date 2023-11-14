@@ -61,7 +61,7 @@ declare global {
     interface Matchers<R, T> {
       toEqualEditor(
         expected: [T] extends [Editor] ? Editor : 'toEqualEditor only accepts an Editor'
-      ): CustomMatcherResult;
+      ): CustomMatcherResult
     }
   }
 }
@@ -155,10 +155,10 @@ function EditorComp ({
   documentFeatures,
   relationships,
 }: {
-  editor: Editor;
-  componentBlocks: Record<string, ComponentBlock>;
-  documentFeatures: DocumentFeatures;
-  relationships: Relationships;
+  editor: Editor
+  componentBlocks: Record<string, ComponentBlock>
+  documentFeatures: DocumentFeatures
+  relationships: Relationships
 }) {
   const [val, setVal] = useState(editor.children)
   return (
@@ -187,19 +187,19 @@ export const makeEditor = (
     relationships = {},
     skipRenderingDOM,
   }: {
-    documentFeatures?: DocumentFeatures;
-    componentBlocks?: Record<string, ComponentBlock>;
-    normalization?: 'disallow-non-normalized' | 'normalize' | 'skip';
-    relationships?: Relationships;
-    isShiftPressedRef?: MutableRefObject<boolean>;
-    skipRenderingDOM?: boolean;
+    documentFeatures?: DocumentFeatures
+    componentBlocks?: Record<string, ComponentBlock>
+    normalization?: 'disallow-non-normalized' | 'normalize' | 'skip'
+    relationships?: Relationships
+    isShiftPressedRef?: MutableRefObject<boolean>
+    skipRenderingDOM?: boolean
   } = {}
 ): Editor & { container?: HTMLElement } => {
   if (!Editor.isEditor(node)) {
     throw new Error('Unexpected non-editor passed to makeEditor')
   }
   let editor = createDocumentEditor(documentFeatures, componentBlocks, relationships) as Editor & {
-    container?: HTMLElement;
+    container?: HTMLElement
   };
   // for validation
   (editor as any).__config = {
@@ -345,7 +345,7 @@ function nodeToReactElement (
     })
   }
   let { type, ...restNode } = node
-  const computedData: { '@@isVoid'?: true; '@@isInline'?: true } = {}
+  const computedData: { '@@isVoid'?: true, '@@isInline'?: true } = {}
   if (editor.isVoid(node)) {
     computedData['@@isVoid'] = true
   }

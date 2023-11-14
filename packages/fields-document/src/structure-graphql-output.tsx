@@ -128,7 +128,7 @@ function getOutputGraphQLFieldInner (
       }
       return discriminantField
     }
-    type SourceType = { discriminant: string | boolean; value: unknown }
+    type SourceType = { discriminant: string | boolean, value: unknown }
 
     const interfaceType = graphql.interface<SourceType>()({
       name,

@@ -13,16 +13,16 @@ import { type CalendarDayFieldMeta } from './views'
 
 export type CalendarDayFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
-    isIndexed?: boolean | 'unique';
+    isIndexed?: boolean | 'unique'
     validation?: {
-      isRequired?: boolean;
-    };
-    defaultValue?: string;
+      isRequired?: boolean
+    }
+    defaultValue?: string
     db?: {
-      isNullable?: boolean;
-      extendPrismaSchema?: (field: string) => string;
-      map?: string;
-    };
+      isNullable?: boolean
+      extendPrismaSchema?: (field: string) => string
+      map?: string
+    }
   }
 
 export const calendarDay =
@@ -143,14 +143,14 @@ function dateStringToDateObjectInUTC (value: string) {
 }
 
 type CalendarDayFilterType = graphql.InputObjectType<{
-  equals: graphql.Arg<typeof graphql.CalendarDay>;
-  in: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.CalendarDay>>>;
-  notIn: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.CalendarDay>>>;
-  lt: graphql.Arg<typeof graphql.CalendarDay>;
-  lte: graphql.Arg<typeof graphql.CalendarDay>;
-  gt: graphql.Arg<typeof graphql.CalendarDay>;
-  gte: graphql.Arg<typeof graphql.CalendarDay>;
-  not: graphql.Arg<CalendarDayFilterType>;
+  equals: graphql.Arg<typeof graphql.CalendarDay>
+  in: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.CalendarDay>>>
+  notIn: graphql.Arg<graphql.ListType<graphql.NonNullType<typeof graphql.CalendarDay>>>
+  lt: graphql.Arg<typeof graphql.CalendarDay>
+  lte: graphql.Arg<typeof graphql.CalendarDay>
+  gt: graphql.Arg<typeof graphql.CalendarDay>
+  gte: graphql.Arg<typeof graphql.CalendarDay>
+  not: graphql.Arg<CalendarDayFilterType>
 }>
 
 function transformFilterDateStringsToDateObjects (

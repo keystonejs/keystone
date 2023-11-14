@@ -147,11 +147,11 @@ export const styleMap = {
 } as const
 
 type TypeProps = {
-  look?: keyof typeof styleMap;
-  fontSize?: string | Array<string | null>;
-  margin?: string | Array<string | null>;
-  padding?: string | Array<string | null>;
-  color?: string | Array<string | null>;
+  look?: keyof typeof styleMap
+  fontSize?: string | Array<string | null>
+  margin?: string | Array<string | null>
+  padding?: string | Array<string | null>
+  color?: string | Array<string | null>
 }
 
 export const Type = forwardRefWithAs<'span', TypeProps>(

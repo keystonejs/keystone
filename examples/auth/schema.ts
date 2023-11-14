@@ -8,17 +8,17 @@ import type { Lists } from '.keystone/types'
 //   or tested for any particular usage
 
 type Session = {
-  itemId: string;
+  itemId: string
   data: {
-    isAdmin: boolean;
-  };
+    isAdmin: boolean
+  }
 }
 
 function hasSession ({ session }: { session?: Session }) {
   return Boolean(session)
 }
 
-function isAdminOrSameUser ({ session, item }: { session?: Session; item: Lists.User.Item }) {
+function isAdminOrSameUser ({ session, item }: { session?: Session, item: Lists.User.Item }) {
   // you need to have a session to do this
   if (!session) return false
 

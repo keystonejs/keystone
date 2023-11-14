@@ -3,12 +3,12 @@ import type { JSONValue, FieldMeta } from '../../types'
 import type { DataGetter } from './dataGetter'
 import { getRootGraphQLFieldsFromFieldController } from './getRootGraphQLFieldsFromFieldController'
 
-export type ItemData = { id: string; [key: string]: any }
+export type ItemData = { id: string, [key: string]: any }
 
 export type DeserializedValue = Record<
   string,
-  | { kind: 'error'; errors: readonly [GraphQLError, ...GraphQLError[]] }
-  | { kind: 'value'; value: any }
+  | { kind: 'error', errors: readonly [GraphQLError, ...GraphQLError[]] }
+  | { kind: 'value', value: any }
 >
 
 export function deserializeValue (

@@ -79,10 +79,10 @@ const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
         fieldPosition: itemView.fieldPosition,
       }),
       type: graphql.object<{
-        listKey: string;
-        fieldMode: FieldMetaRootVal['itemView']['fieldMode'];
-        fieldPosition: FieldMetaRootVal['itemView']['fieldPosition'];
-        itemId: string | null;
+        listKey: string
+        fieldMode: FieldMetaRootVal['itemView']['fieldMode']
+        fieldPosition: FieldMetaRootVal['itemView']['fieldPosition']
+        itemId: string | null
       }>()({
         name: 'KeystoneAdminUIFieldMetaItemView',
         fields: {

@@ -27,12 +27,12 @@ export function InlineEdit ({
   onCancel,
   onSave,
 }: {
-  fields: readonly string[];
-  list: ListMeta;
-  selectedFields: string;
-  itemGetter: DataGetter<ItemData>;
-  onCancel: () => void;
-  onSave: (newItemGetter: DataGetter<ItemData>) => void;
+  fields: readonly string[]
+  list: ListMeta
+  selectedFields: string
+  itemGetter: DataGetter<ItemData>
+  onCancel: () => void
+  onSave: (newItemGetter: DataGetter<ItemData>) => void
 }) {
   const fieldsObj = useFieldsObj(list, fields)
 

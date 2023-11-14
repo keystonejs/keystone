@@ -18,8 +18,8 @@ let mockPromptResponseEntries: [string, string | boolean][] = []
 jest.mock('prompts', () => {
   return function (
     args:
-      | { name: 'value'; type: 'text'; message: string }
-      | { name: 'value'; type: 'confirm'; message: string; initial: boolean }
+      | { name: 'value', type: 'text', message: string }
+      | { name: 'value', type: 'confirm', message: string, initial: boolean }
   ) {
     const getPromptAnswer = (message: string) => {
       message = message.replace(/[^ -~\n]+/g, '?')
@@ -73,8 +73,8 @@ async function getGeneratedMigration (
 ) {
   const prismaClient = getPrismaClient(cwd)
   const migrations: {
-    migration_name: string;
-    finished_at: string;
+    migration_name: string
+    finished_at: string
   }[] =
     await prismaClient.$queryRaw`SELECT migration_name,finished_at FROM _prisma_migrations ORDER BY finished_at DESC`
   await prismaClient.$disconnect()

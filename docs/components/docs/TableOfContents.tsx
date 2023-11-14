@@ -19,17 +19,17 @@ const observerOptions = {
 }
 
 interface Heading {
-  id: string;
-  label: string;
-  depth: number;
+  id: string
+  label: string
+  depth: number
 }
 
 export function TableOfContents ({
   container,
   headings,
 }: {
-  container: React.RefObject<HTMLElement | null>;
-  headings: Heading[];
+  container: React.RefObject<HTMLElement | null>
+  headings: Heading[]
 }) {
   let [visibleIds, setVisibleIds] = useState<Array<string | null>>([])
   let [lastVisibleId, setLastVisbleId] = useState<string | null>(null)

@@ -96,8 +96,8 @@ const idFieldAlias = '____id____'
 const labelFieldAlias = '____label____'
 
 const LoadingIndicatorContext = createContext<{
-  count: number;
-  ref:(element: HTMLElement | null) => void;
+  count: number
+  ref:(element: HTMLElement | null) => void
 }>({
   count: 0,
   ref: () => {},
@@ -116,27 +116,27 @@ export const RelationshipSelect = ({
   state,
   extraSelection = '',
 }: {
-  autoFocus?: boolean;
-  controlShouldRenderValue: boolean;
-  isDisabled: boolean;
-  isLoading?: boolean;
-  labelField: string;
-  searchFields: string[];
-  list: ListMeta;
-  placeholder?: string;
-  portalMenu?: true | undefined;
+  autoFocus?: boolean
+  controlShouldRenderValue: boolean
+  isDisabled: boolean
+  isLoading?: boolean
+  labelField: string
+  searchFields: string[]
+  list: ListMeta
+  placeholder?: string
+  portalMenu?: true | undefined
   state:
     | {
-        kind: 'many';
-        value: { label: string; id: string; data?: Record<string, any> }[];
-        onChange(value: { label: string; id: string; data: Record<string, any> }[]): void;
+        kind: 'many'
+        value: { label: string, id: string, data?: Record<string, any> }[]
+        onChange(value: { label: string, id: string, data: Record<string, any> }[]): void
       }
     | {
-        kind: 'one';
-        value: { label: string; id: string; data?: Record<string, any> } | null;
-        onChange(value: { label: string; id: string; data: Record<string, any> } | null): void;
-      };
-  extraSelection?: string;
+        kind: 'one'
+        value: { label: string, id: string, data?: Record<string, any> } | null
+        onChange(value: { label: string, id: string, data: Record<string, any> } | null): void
+      }
+  extraSelection?: string
 }) => {
   const [search, setSearch] = useState('')
   // note it's important that this is in state rather than a ref
@@ -146,8 +146,8 @@ export const RelationshipSelect = ({
   const [loadingIndicatorElement, setLoadingIndicatorElement] = useState<null | HTMLElement>(null)
 
   const QUERY: TypedDocumentNode<
-    { items: { [idFieldAlias]: string; [labelFieldAlias]: string | null }[]; count: number },
-    { where: Record<string, any>; take: number; skip: number }
+    { items: { [idFieldAlias]: string, [labelFieldAlias]: string | null }[], count: number },
+    { where: Record<string, any>, take: number, skip: number }
   > = gql`
     query RelationshipSelect($where: ${list.gqlNames.whereInputName}!, $take: Int!, $skip: Int!) {
       items: ${list.gqlNames.listQueryName}(where: $where, take: $take, skip: $skip) {
@@ -220,10 +220,10 @@ export const RelationshipSelect = ({
   // we want to avoid fetching more again and `loading` from Apollo
   // doesn't seem to become true when fetching more
   const [lastFetchMore, setLastFetchMore] = useState<{
-    where: Record<string, any>;
-    extraSelection: string;
-    list: ListMeta;
-    skip: number;
+    where: Record<string, any>
+    extraSelection: string
+    list: ListMeta
+    skip: number
   } | null>(null)
 
   useIntersectionObserver(
@@ -240,8 +240,8 @@ export const RelationshipSelect = ({
           lastFetchMore?.skip !== skip)
       ) {
         const QUERY: TypedDocumentNode<
-          { items: { [idFieldAlias]: string; [labelFieldAlias]: string | null }[] },
-          { where: Record<string, any>; take: number; skip: number }
+          { items: { [idFieldAlias]: string, [labelFieldAlias]: string | null }[] },
+          { where: Record<string, any>, take: number, skip: number }
         > = gql`
               query RelationshipSelectMore($where: ${list.gqlNames.whereInputName}!, $take: Int!, $skip: Int!) {
                 items: ${list.gqlNames.listQueryName}(where: $where, take: $take, skip: $skip) {

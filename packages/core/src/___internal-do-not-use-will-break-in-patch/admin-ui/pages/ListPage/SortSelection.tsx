@@ -15,8 +15,8 @@ export function SortSelection ({
   list,
   orderableFields,
 }: {
-  list: ListMeta;
-  orderableFields: Set<string>;
+  list: ListMeta
+  orderableFields: Set<string>
 }) {
   const sort = useSort(list, orderableFields)
   const { isOpen, setOpen, trigger, dialog, arrow } = usePopover({
@@ -74,9 +74,9 @@ function SortSelectionPopoverContent ({
   list,
   orderableFields,
 }: {
-  onClose: () => void;
-  list: ListMeta;
-  orderableFields: Set<string>;
+  onClose: () => void
+  list: ListMeta
+  orderableFields: Set<string>
 }) {
   const sort = useSort(list, orderableFields)
   const router = useRouter()

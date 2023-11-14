@@ -9,7 +9,7 @@ import { type ChildField } from './api'
 
 const cases: Record<
   string,
-  { schema: ChildField; children: Node | Node[]; expectedNormalized?: Node }
+  { schema: ChildField, children: Node | Node[], expectedNormalized?: Node }
 > = {
   'mark where it should not exist in inline': {
     schema: fields.child({ kind: 'inline', placeholder: '' }),

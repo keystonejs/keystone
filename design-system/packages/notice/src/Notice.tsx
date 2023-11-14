@@ -24,18 +24,18 @@ const symbols: { [key in ToneKey]: ReactNode } = {
 }
 
 type Action = {
-  onPress: () => void;
-  label: string;
+  onPress: () => void
+  label: string
 }
 type NoticeProps = {
   actions?: {
-    primary: Action;
-    secondary?: Action;
-  };
-  children: ReactNode;
-  tone?: ToneKey;
-  title?: string;
-  className?: string;
+    primary: Action
+    secondary?: Action
+  }
+  children: ReactNode
+  tone?: ToneKey
+  title?: string
+  className?: string
 } & MarginProps
 
 export const Notice = ({

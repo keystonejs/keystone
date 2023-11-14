@@ -16,11 +16,11 @@ export function withBlockMarkdownShortcuts (
     Record<
       string,
       {
-        insert: () => void;
-        type: 'paragraph' | 'heading-or-paragraph';
+        insert: () => void
+        type: 'paragraph' | 'heading-or-paragraph'
         shouldBeEnabledInComponentBlock: (
           locationDocumentFeatures: DocumentFeaturesForNormalization
-        ) => boolean;
+        ) => boolean
       }
     >
   > = Object.create(null)

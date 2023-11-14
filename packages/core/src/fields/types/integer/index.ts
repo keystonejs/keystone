@@ -12,18 +12,18 @@ import { filters } from '../../filters'
 
 export type IntegerFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
-    isIndexed?: boolean | 'unique';
-    defaultValue?: number | { kind: 'autoincrement' };
+    isIndexed?: boolean | 'unique'
+    defaultValue?: number | { kind: 'autoincrement' }
     validation?: {
-      isRequired?: boolean;
-      min?: number;
-      max?: number;
-    };
+      isRequired?: boolean
+      min?: number
+      max?: number
+    }
     db?: {
-      isNullable?: boolean;
-      map?: string;
-      extendPrismaSchema?: (field: string) => string;
-    };
+      isNullable?: boolean
+      map?: string
+      extendPrismaSchema?: (field: string) => string
+    }
   }
 
 // These are the max and min values available to a 32 bit signed integer

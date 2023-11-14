@@ -7,8 +7,8 @@ function notInContext () {
 }
 
 type ContextType = {
-  addToast: (props: ToastProps) => void;
-  removeToast: (id: string) => void;
+  addToast: (props: ToastProps) => void
+  removeToast: (id: string) => void
 }
 
 export const ToastContext = createContext<ContextType>({

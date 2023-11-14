@@ -113,7 +113,7 @@ export async function createMany (
 }
 
 async function updateSingle (
-  updateInput: { where: UniqueInputFilter; data: Record<string, any> },
+  updateInput: { where: UniqueInputFilter, data: Record<string, any> },
   list: InitialisedList,
   context: KeystoneContext,
   accessFilters: boolean | InputFilter
@@ -154,7 +154,7 @@ async function updateSingle (
 }
 
 export async function updateOne (
-  updateInput: { where: UniqueInputFilter; data: Record<string, any> },
+  updateInput: { where: UniqueInputFilter, data: Record<string, any> },
   list: InitialisedList,
   context: KeystoneContext
 ) {
@@ -168,7 +168,7 @@ export async function updateOne (
 }
 
 export async function updateMany (
-  { data }: { data: { where: UniqueInputFilter; data: Record<string, any> }[] },
+  { data }: { data: { where: UniqueInputFilter, data: Record<string, any> }[] },
   list: InitialisedList,
   context: KeystoneContext
 ) {
@@ -188,17 +188,17 @@ export async function updateMany (
 async function getResolvedData (
   list: InitialisedList,
   hookArgs: {
-    context: KeystoneContext;
-    listKey: string;
-    inputData: Record<string, any>;
-  } & ({ operation: 'create'; item: undefined } | { operation: 'update'; item: BaseItem }),
+    context: KeystoneContext
+    listKey: string
+    inputData: Record<string, any>
+  } & ({ operation: 'create', item: undefined } | { operation: 'update', item: BaseItem }),
   nestedMutationState: NestedMutationState
 ) {
   const { context, operation } = hookArgs
   let resolvedData = hookArgs.inputData
 
   // apply non-relationship field type input resolvers
-  const resolverErrors: { error: Error; tag: string }[] = []
+  const resolverErrors: { error: Error, tag: string }[] = []
   resolvedData = Object.fromEntries(
     await Promise.all(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {
@@ -219,7 +219,7 @@ async function getResolvedData (
   if (resolverErrors.length) throw resolverError(resolverErrors)
 
   // apply relationship field type input resolvers
-  const relationshipErrors: { error: Error; tag: string }[] = []
+  const relationshipErrors: { error: Error, tag: string }[] = []
   resolvedData = Object.fromEntries(
     await Promise.all(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {
@@ -295,7 +295,7 @@ async function getResolvedData (
   if (relationshipErrors.length) throw relationshipError(relationshipErrors)
 
   // field hooks
-  const fieldsErrors: { error: Error; tag: string }[] = []
+  const fieldsErrors: { error: Error, tag: string }[] = []
   resolvedData = Object.fromEntries(
     await Promise.all(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {

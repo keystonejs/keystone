@@ -12,27 +12,27 @@ export const noticeToneValues = [
 export type ToneKey = (typeof noticeToneValues)[number]
 
 type NoticeTokensProps = {
-  tone: ToneKey;
+  tone: ToneKey
 }
 
 export type NoticeTokens = {
-  background?: string;
-  borderColor?: string;
-  borderRadius?: number;
-  borderWidth?: number;
-  fontSize?: number | string;
-  fontWeight?: number;
-  foreground?: string;
-  gap: number;
-  iconColor: string;
-  paddingX?: number;
-  paddingY?: number;
-  shadow?: string;
+  background?: string
+  borderColor?: string
+  borderRadius?: number
+  borderWidth?: number
+  fontSize?: number | string
+  fontWeight?: number
+  foreground?: string
+  gap: number
+  iconColor: string
+  paddingX?: number
+  paddingY?: number
+  shadow?: string
   title: {
-    foreground: string;
-    fontSize?: number | string;
-    fontWeight?: number;
-  };
+    foreground: string
+    fontSize?: number | string
+    fontWeight?: number
+  }
 }
 
 export function useNoticeTokens ({ tone: toneKey }: NoticeTokensProps): NoticeTokens {
@@ -62,7 +62,7 @@ export function useNoticeTokens ({ tone: toneKey }: NoticeTokensProps): NoticeTo
 }
 
 type NoticeStylesProps = {
-  tokens: NoticeTokens;
+  tokens: NoticeTokens
 }
 
 export function useNoticeStyles ({ tokens }: NoticeStylesProps) {

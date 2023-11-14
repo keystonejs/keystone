@@ -14,13 +14,13 @@ import { useKeystone, useList } from '../../../../admin-ui/context'
 import { Link, type LinkProps } from '../../../../admin-ui/router'
 
 type ListCardProps = {
-  listKey: string;
-  hideCreate: boolean;
+  listKey: string
+  hideCreate: boolean
   count:
-    | { type: 'success'; count: number }
+    | { type: 'success', count: number }
     | { type: 'no-access' }
-    | { type: 'error'; message: string }
-    | { type: 'loading' };
+    | { type: 'error', message: string }
+    | { type: 'loading' }
 }
 
 const ListCard = ({ listKey, count, hideCreate }: ListCardProps) => {

@@ -4,8 +4,8 @@ import { Transition } from 'react-transition-group'
 import { type TransitionState } from './types'
 
 type DrawerControllerProps = {
-  isOpen: boolean;
-  children: ReactNode;
+  isOpen: boolean
+  children: ReactNode
 }
 
 const DrawerControllerContext = React.createContext<null | TransitionState>(null)

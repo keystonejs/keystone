@@ -46,26 +46,26 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
 }
 
 type ImageData = {
-  id: string;
-  filename: string;
-  publicUrlTransformed: string;
+  id: string
+  filename: string
+  publicUrlTransformed: string
 }
 
 type CloudinaryImageValue =
   | { kind: 'empty' }
   | {
-      kind: 'from-server';
-      data: ImageData;
+      kind: 'from-server'
+      data: ImageData
     }
   | {
-      kind: 'upload';
+      kind: 'upload'
       data: {
-        file: File;
-        validity: ValidityState;
-      };
-      previous: CloudinaryImageValue;
+        file: File
+        validity: ValidityState
+      }
+      previous: CloudinaryImageValue
     }
-  | { kind: 'remove'; previous: Exclude<CloudinaryImageValue, { kind: 'remove' }> }
+  | { kind: 'remove', previous: Exclude<CloudinaryImageValue, { kind: 'remove' }> }
 
 type CloudinaryImageController = FieldController<CloudinaryImageValue>
 

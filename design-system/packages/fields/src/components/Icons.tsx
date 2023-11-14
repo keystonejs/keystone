@@ -4,7 +4,7 @@
 import { type ReactNode } from 'react'
 import { jsx } from '@keystone-ui/core'
 
-type SvgProps = { children: ReactNode; size: string | number; stroke?: string; fill?: string }
+type SvgProps = { children: ReactNode, size: string | number, stroke?: string, fill?: string }
 const Svg = ({ children, size, stroke = 'none', fill = 'none' }: SvgProps) => (
   <svg
     aria-hidden="true"

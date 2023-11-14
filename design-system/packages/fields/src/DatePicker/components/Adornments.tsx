@@ -16,7 +16,7 @@ export type ShapeType = 'square' | 'round'
  * consolidate in one place.
  */
 
-const AdornmentContext = createContext<{ shape: ShapeType; size: SizeType }>({
+const AdornmentContext = createContext<{ shape: ShapeType, size: SizeType }>({
   shape: 'square',
   size: 'medium',
 })
@@ -26,9 +26,9 @@ const useAdornmentContext = () => useContext(AdornmentContext)
 // ------------------------------
 
 export type AdornmentWrapperProps = {
-  children: ReactNode;
-  shape: ShapeType;
-  size: SizeType;
+  children: ReactNode
+  shape: ShapeType
+  size: SizeType
 }
 
 export const AdornmentWrapper = ({ children, shape, size }: AdornmentWrapperProps) => {
@@ -57,8 +57,8 @@ const alignmentPaddingMap = {
 }
 
 type AdornmentProps = {
-  align: 'left' | 'right';
-  as?: ElementType;
+  align: 'left' | 'right'
+  as?: ElementType
 }
 export const Adornment = forwardRefWithAs<'div', AdornmentProps>(
   ({ align, as: Tag = 'div', ...props }, ref) => {

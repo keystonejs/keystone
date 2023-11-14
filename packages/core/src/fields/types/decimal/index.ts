@@ -15,19 +15,19 @@ import { filters } from '../../filters'
 export type DecimalFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
     validation?: {
-      min?: string;
-      max?: string;
-      isRequired?: boolean;
-    };
-    precision?: number;
-    scale?: number;
-    defaultValue?: string;
-    isIndexed?: boolean | 'unique';
+      min?: string
+      max?: string
+      isRequired?: boolean
+    }
+    precision?: number
+    scale?: number
+    defaultValue?: string
+    isIndexed?: boolean | 'unique'
     db?: {
-      isNullable?: boolean;
-      map?: string;
-      extendPrismaSchema?: (field: string) => string;
-    };
+      isNullable?: boolean
+      map?: string
+      extendPrismaSchema?: (field: string) => string
+    }
   }
 
 function parseDecimalValueOption (meta: FieldData, value: string, name: string) {

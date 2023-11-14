@@ -18,10 +18,10 @@ import { assertValidComponentSchema } from './DocumentEditor/component-blocks/fi
 type RelationshipsConfig = Record<
   string,
   {
-    listKey: string;
+    listKey: string
     /** GraphQL fields to select when querying the field */
-    selection?: string;
-    label: string;
+    selection?: string
+    label: string
   }
 >
 
@@ -29,46 +29,46 @@ type FormattingConfig = {
   inlineMarks?:
     | true
     | {
-        bold?: true;
-        italic?: true;
-        underline?: true;
-        strikethrough?: true;
-        code?: true;
-        superscript?: true;
-        subscript?: true;
-        keyboard?: true;
-      };
+        bold?: true
+        italic?: true
+        underline?: true
+        strikethrough?: true
+        code?: true
+        superscript?: true
+        subscript?: true
+        keyboard?: true
+      }
   listTypes?:
     | true
     | {
-        ordered?: true;
-        unordered?: true;
-      };
+        ordered?: true
+        unordered?: true
+      }
   alignment?:
     | true
     | {
-        center?: true;
-        end?: true;
-      };
-  headingLevels?: true | readonly (1 | 2 | 3 | 4 | 5 | 6)[];
+        center?: true
+        end?: true
+      }
+  headingLevels?: true | readonly (1 | 2 | 3 | 4 | 5 | 6)[]
   blockTypes?:
     | true
     | {
-        blockquote?: true;
-        code?: true;
-      };
-  softBreaks?: true;
+        blockquote?: true
+        code?: true
+      }
+  softBreaks?: true
 }
 
 export type DocumentFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
-    relationships?: RelationshipsConfig;
-    componentBlocks?: Record<string, ComponentBlock>;
-    formatting?: true | FormattingConfig;
-    links?: true;
-    dividers?: true;
-    layouts?: readonly (readonly [number, ...number[]])[];
-    db?: { map?: string; extendPrismaSchema?: (field: string) => string };
+    relationships?: RelationshipsConfig
+    componentBlocks?: Record<string, ComponentBlock>
+    formatting?: true | FormattingConfig
+    links?: true
+    dividers?: true
+    layouts?: readonly (readonly [number, ...number[]])[]
+    db?: { map?: string, extendPrismaSchema?: (field: string) => string }
   }
 
 export const document =

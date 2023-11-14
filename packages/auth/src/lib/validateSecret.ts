@@ -8,7 +8,7 @@ export async function validateSecret (
   secretField: string,
   secret: string,
   dbItemAPI: KeystoneDbAPI<any>[string]
-): Promise<{ success: false } | { success: true; item: { id: any; [prop: string]: any } }> {
+): Promise<{ success: false } | { success: true, item: { id: any, [prop: string]: any } }> {
   const item = await dbItemAPI.findOne({ where: { [identityField]: identity } })
   if (!item || !item[secretField]) {
     // See "Identity Protection" in the README as to why this is a thing

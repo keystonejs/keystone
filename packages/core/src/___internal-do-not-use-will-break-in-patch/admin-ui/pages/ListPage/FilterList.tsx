@@ -9,7 +9,7 @@ import { type FieldMeta, type ListMeta } from '../../../../types'
 import { useRouter } from '../../../../admin-ui/router'
 import { type Filter } from './useFilters'
 
-export function FilterList ({ filters, list }: { filters: Filter[]; list: ListMeta }) {
+export function FilterList ({ filters, list }: { filters: Filter[], list: ListMeta }) {
   return (
     <Inline gap="small">
       {filters.map(filter => {
@@ -20,7 +20,7 @@ export function FilterList ({ filters, list }: { filters: Filter[]; list: ListMe
   )
 }
 
-function FilterPill ({ filter, field }: { filter: Filter; field: FieldMeta }) {
+function FilterPill ({ filter, field }: { filter: Filter, field: FieldMeta }) {
   const router = useRouter()
   const { isOpen, setOpen, trigger, dialog, arrow } = usePopover({
     placement: 'bottom',
@@ -29,9 +29,9 @@ function FilterPill ({ filter, field }: { filter: Filter; field: FieldMeta }) {
   // doing this because returning a string from Label will be VERY common
   // but https://github.com/microsoft/TypeScript/issues/21699 isn't resolved yet
   const Label = field.controller.filter!.Label as (props: {
-    label: string;
-    type: string;
-    value: any;
+    label: string
+    type: string
+    value: any
   }) => JSX.Element
   return (
     <Fragment>
@@ -82,9 +82,9 @@ function EditDialog ({
   field,
   onClose,
 }: {
-  filter: Filter;
-  field: FieldMeta;
-  onClose: () => void;
+  filter: Filter
+  field: FieldMeta
+  onClose: () => void
 }) {
   const Filter = field.controller.filter!.Filter
   const router = useRouter()

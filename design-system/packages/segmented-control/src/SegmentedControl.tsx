@@ -42,23 +42,23 @@ type Index = number
 
 type SegmentedControlProps = {
   /** Whether the selected control indicator should animate its movement. */
-  animate?: boolean;
+  animate?: boolean
   /** Whether the controls should take up the full width of their container. */
-  fill?: boolean;
+  fill?: boolean
   /** Function to be called when one of the segments is selected. */
-  onChange: ManagedChangeHandler<Index>;
+  onChange: ManagedChangeHandler<Index>
   /** Provide labels for each segment. */
-  segments: string[];
+  segments: string[]
   /** To Disable */
-  isDisabled?: boolean;
+  isDisabled?: boolean
   /** Marks the component as read only */
-  isReadOnly?: boolean;
+  isReadOnly?: boolean
   /** The the selected index of the segmented control. */
-  selectedIndex: Index | undefined;
+  selectedIndex: Index | undefined
   /** The size of the controls. */
-  size?: SizeKey;
+  size?: SizeKey
   /** The width of the controls. */
-  width?: WidthKey;
+  width?: WidthKey
 } & BoxProps
 
 export const SegmentedControl = ({
@@ -164,9 +164,9 @@ export const SegmentedControl = ({
 // ------------------------------
 
 type RootProps = {
-  fill: boolean;
-  size: SizeKey;
-  width: WidthKey;
+  fill: boolean
+  size: SizeKey
+  width: WidthKey
 } & HTMLAttributes<HTMLDivElement>
 
 const Root = forwardRef<HTMLDivElement, RootProps>(({ fill, size, width, ...props }, ref) => {
@@ -198,15 +198,15 @@ const Root = forwardRef<HTMLDivElement, RootProps>(({ fill, size, width, ...prop
 })
 
 type BaseInputProps = {
-  children: ReactNode;
-  fill: boolean;
-  isAnimated: boolean;
-  isSelected: boolean;
-  readOnly: boolean;
-  onChange: ChangeEventHandler<HTMLInputElement>;
-  name: string;
-  size: SizeKey;
-  value: Index;
+  children: ReactNode
+  fill: boolean
+  isAnimated: boolean
+  isSelected: boolean
+  readOnly: boolean
+  onChange: ChangeEventHandler<HTMLInputElement>
+  name: string
+  size: SizeKey
+  value: Index
 }
 
 type ItemProps = BaseInputProps & Omit<InputHTMLAttributes<HTMLInputElement>, keyof BaseInputProps>

@@ -21,7 +21,7 @@ export async function runSideEffectOnlyHook<
   }
 
   // field hooks
-  const fieldsErrors: { error: Error; tag: string }[] = []
+  const fieldsErrors: { error: Error, tag: string }[] = []
   await Promise.all(
     Object.entries(list.fields).map(async ([fieldKey, field]) => {
       if (shouldRunFieldLevelHook(fieldKey)) {

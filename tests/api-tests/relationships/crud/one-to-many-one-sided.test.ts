@@ -76,7 +76,7 @@ const createComplexData = async (context: ContextFromRunner<typeof runner>) => {
   expect(_company.location.name).toEqual('B')
   expect(_location.name).toEqual('C')
 
-  type T3 = { id: IdType; name: string }[]
+  type T3 = { id: IdType, name: string }[]
   const locations = (await context.query.Location.findMany({ query: 'id name' })) as T3
   return { companies: [...companies, _company], locations }
 }
@@ -87,7 +87,7 @@ const getCompanyAndLocation = async (
   locationId: IdType
 ) => {
   type T = {
-    data: { Company: { id: IdType; location: { id: IdType } }; Location: { id: IdType } };
+    data: { Company: { id: IdType, location: { id: IdType } }, Location: { id: IdType } }
   }
   const { data } = (await context.graphql.raw({
     query: `

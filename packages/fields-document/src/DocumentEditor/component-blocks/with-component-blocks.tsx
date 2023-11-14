@@ -449,7 +449,7 @@ export function withComponentBlocks (
 
         const stringifiedInlinePropPaths: Record<
           string,
-          { options: ChildField['options']; index: number } | undefined
+          { options: ChildField['options'], index: number } | undefined
         > = {}
         findChildPropPaths(node.props, blockComponents[node.component]!.schema).forEach(
           (x, index) => {
@@ -520,7 +520,7 @@ function addMissingFields (value: unknown, schema: ComponentSchema): unknown {
     return value
   }
   if (schema.kind === 'conditional') {
-    const conditionalValue = value as { discriminant: string | boolean; value: unknown }
+    const conditionalValue = value as { discriminant: string | boolean, value: unknown }
     const updatedInnerValue = addMissingFields(
       conditionalValue.value,
       schema.values[conditionalValue.discriminant.toString()]

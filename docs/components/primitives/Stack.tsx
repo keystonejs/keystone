@@ -11,9 +11,9 @@ Object.keys(SPACE).forEach((name, i) => {
 })
 
 type StackProps = {
-  block?: boolean;
-  gap?: number;
-  orientation?: 'vertical' | 'horizontal';
+  block?: boolean
+  gap?: number
+  orientation?: 'vertical' | 'horizontal'
 } & HTMLAttributes<HTMLElement>
 
 export function Stack ({ gap = 4, orientation = 'vertical', block, ...props }: StackProps) {

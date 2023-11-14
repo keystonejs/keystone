@@ -75,7 +75,7 @@ type FieldFuncResolve<
             SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args,
             Type,
             Context
-          >;
+          >
         }
       : {
           resolve: graphqlTsSchema.FieldResolver<
@@ -83,7 +83,7 @@ type FieldFuncResolve<
             SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args,
             Type,
             Context
-          >;
+          >
         }
     : {
         resolve: graphqlTsSchema.FieldResolver<
@@ -91,7 +91,7 @@ type FieldFuncResolve<
           SomeTypeThatIsntARecordOfArgs extends Args ? {} : Args,
           Type,
           Context
-        >;
+        >
       }
 
 type FieldFuncArgs<
@@ -101,11 +101,11 @@ type FieldFuncArgs<
   Key extends string,
   Context extends KeystoneContext
 > = {
-  args?: Args;
-  type: Type;
-  deprecationReason?: string;
-  description?: string;
-  extensions?: Readonly<GraphQLFieldExtensions<Source, unknown>>;
+  args?: Args
+  type: Type
+  deprecationReason?: string
+  description?: string
+  extensions?: Readonly<GraphQLFieldExtensions<Source, unknown>>
 } & FieldFuncResolve<Source, Args, Type, Key, Context>
 
 type FieldFunc = <
@@ -132,10 +132,10 @@ export const JSON = graphqlTsSchema.graphql.scalar<JSONValue>(
 )
 
 type FileUpload = {
-  filename: string;
-  mimetype: string;
-  encoding: string;
-  createReadStream(): ReadStream;
+  filename: string
+  mimetype: string
+  encoding: string
+  createReadStream(): ReadStream
 }
 
 export const Upload = graphqlTsSchema.graphql.scalar<Promise<FileUpload>>(GraphQLUpload)

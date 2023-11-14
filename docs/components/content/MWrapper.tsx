@@ -6,7 +6,7 @@ import { jsx } from '@emotion/react'
 import { useMediaQuery } from '../../lib/media'
 
 type MWrapperProps = {
-  as?: ElementType;
+  as?: ElementType
 } & HTMLAttributes<HTMLElement>
 
 export function MWrapper ({ as: Tag = 'div', ...props }: MWrapperProps) {

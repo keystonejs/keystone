@@ -12,7 +12,7 @@ type HeadingType = (typeof HeadingTypes)[number]
 
 type HeadingProps = {
   /** The type of heading. */
-  type?: HeadingType;
+  type?: HeadingType
 } & BoxProps
 
 export const Heading = forwardRefWithAs<'h1', HeadingProps>(

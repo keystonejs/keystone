@@ -10,11 +10,11 @@ import { Badge } from './Badge'
 export type WellGradient = 'grad1' | 'grad2' | 'grad3' | 'grad4'
 
 type WellProps = {
-  grad?: WellGradient;
-  heading?: ReactNode;
-  badge?: string;
-  href: string;
-  children: ReactNode;
+  grad?: WellGradient
+  heading?: ReactNode
+  badge?: string
+  href: string
+  children: ReactNode
 } & AnchorHTMLAttributes<HTMLAnchorElement>
 
 export function Well ({ grad = 'grad1', heading, badge, href, children, ...props }: WellProps) {

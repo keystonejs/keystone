@@ -13,7 +13,7 @@ import { CodeBox } from './CodeBox'
 import { Section } from './Section'
 
 type EndCtaProps = {
-  grad?: 'grad1' | 'grad2' | 'grad3' | 'grad4' | 'grad5';
+  grad?: 'grad1' | 'grad2' | 'grad3' | 'grad4' | 'grad5'
 } & HTMLAttributes<HTMLElement>
 
 export function EndCta ({ grad = 'grad1', ...props }: EndCtaProps) {

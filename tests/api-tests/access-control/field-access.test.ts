@@ -12,7 +12,7 @@ describe(`Field access`, () => {
 
   let testEnv: TestEnv<TypeInfoFromConfig<typeof config>>
   let context: ContextFromConfig<typeof config>
-  let items: Record<string, { id: IdType; name: string }[]>
+  let items: Record<string, { id: IdType, name: string }[]>
 
   beforeAll(async () => {
     testEnv = await setupTestEnv({ config })
@@ -27,7 +27,7 @@ describe(`Field access`, () => {
       items[listKey] = (await context.sudo().query[listKey].createMany({
         data: _items,
         query: 'id, name',
-      })) as { id: IdType; name: string }[]
+      })) as { id: IdType, name: string }[]
     }
   })
 

@@ -69,7 +69,7 @@ export function WindowR (props: HTMLAttributes<HTMLElement>) {
 }
 
 type CodeWindowProps = {
-  lines: number;
+  lines: number
 } & HTMLAttributes<HTMLElement>
 
 export function CodeWindow ({ lines = 1, children, ...props }: CodeWindowProps) {

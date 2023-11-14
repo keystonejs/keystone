@@ -14,8 +14,8 @@ import {
 import { CellContainer, CellLink } from '../../../../admin-ui/components'
 
 export type Value =
-  | { kind: 'create'; value: string | null }
-  | { kind: 'update'; value: string | null; initial: string | null }
+  | { kind: 'create', value: string | null }
+  | { kind: 'update', value: string | null, initial: string | null }
 
 export const Field = ({
   field,
@@ -118,8 +118,8 @@ function formatOutput (isoDateString: string | null) {
 }
 
 export type CalendarDayFieldMeta = {
-  defaultValue: string | null;
-  isRequired: boolean;
+  defaultValue: string | null
+  isRequired: boolean
 }
 
 export const controller = (

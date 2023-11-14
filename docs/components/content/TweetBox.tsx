@@ -7,9 +7,9 @@ import { Type } from '../primitives/Type'
 import { Quote } from '../icons/Quote'
 
 type TweetBoxProps = {
-  user: string;
-  img: string;
-  grad: 'grad1' | 'grad2' | 'grad3' | 'grad4' | 'grad5';
+  user: string
+  img: string
+  grad: 'grad1' | 'grad2' | 'grad3' | 'grad4' | 'grad5'
 } & HTMLAttributes<HTMLElement>
 
 export function TweetBox ({ user, img, grad, children, ...props }: TweetBoxProps) {

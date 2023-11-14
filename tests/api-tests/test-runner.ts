@@ -23,14 +23,14 @@ import { runMigrateWithDbUrl, withMigrate } from '../../packages/core/src/lib/mi
 import { dbProvider, dbUrl, SQLITE_DATABASE_FILENAME } from './utils'
 
 export type TestArgs<TypeInfo extends BaseKeystoneTypeInfo> = {
-  context: KeystoneContext<TypeInfo>;
-  config: KeystoneConfig<TypeInfo>;
+  context: KeystoneContext<TypeInfo>
+  config: KeystoneConfig<TypeInfo>
 }
 
 export type TestEnv<TypeInfo extends BaseKeystoneTypeInfo> = {
-  connect: () => Promise<void>;
-  disconnect: () => Promise<void>;
-  testArgs: TestArgs<TypeInfo>;
+  connect: () => Promise<void>
+  disconnect: () => Promise<void>
+  testArgs: TestArgs<TypeInfo>
 }
 
 // you could call this a memory leak but it ends up being fine
@@ -136,7 +136,7 @@ let lastWrittenSchema = ''
 export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo> ({
   config: _config,
 }: {
-  config: KeystoneConfig<TypeInfo>;
+  config: KeystoneConfig<TypeInfo>
 }): Promise<TestEnv<TypeInfo>> {
   // Force the UI to always be disabled.
   const config = initConfig({
@@ -169,7 +169,7 @@ export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo> ({
 export function setupTestRunner<TypeInfo extends BaseKeystoneTypeInfo> ({
   config,
 }: {
-  config: KeystoneConfig<TypeInfo>;
+  config: KeystoneConfig<TypeInfo>
 }) {
   return (testFn: (testArgs: TestArgs<TypeInfo>) => Promise<void>) => async () => {
     // Reset the database to be empty for every test.

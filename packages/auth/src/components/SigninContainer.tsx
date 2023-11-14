@@ -7,8 +7,8 @@ import { jsx, Box, Center, useTheme } from '@keystone-ui/core'
 import { Head } from '@keystone-6/core/admin-ui/router'
 
 type SigninContainerProps = {
-  children: ReactNode;
-  title?: string;
+  children: ReactNode
+  title?: string
 }
 
 export const SigninContainer = ({ children, title }: SigninContainerProps) => {

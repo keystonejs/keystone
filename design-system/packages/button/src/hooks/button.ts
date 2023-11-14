@@ -19,9 +19,9 @@ export type ToneKey = (typeof buttonToneValues)[number]
 export type WeightKey = (typeof buttonWeightValues)[number]
 
 export type ButtonPropDefaults = {
-  size: SizeKey;
-  tone: ToneKey;
-  weight: WeightKey;
+  size: SizeKey
+  tone: ToneKey
+  weight: WeightKey
 }
 export const buttonPropDefaults = {
   size: 'medium',
@@ -30,29 +30,29 @@ export const buttonPropDefaults = {
 } as const
 
 type ButtonTokensProps = {
-  size: SizeKey;
-  tone: ToneKey;
-  weight: WeightKey;
+  size: SizeKey
+  tone: ToneKey
+  weight: WeightKey
 }
 type ButtonStateTokens = {
-  background?: string;
-  borderColor?: string;
-  foreground?: string;
-  shadow?: string;
-  textDecoration?: string;
+  background?: string
+  borderColor?: string
+  foreground?: string
+  shadow?: string
+  textDecoration?: string
 }
 export type ButtonTokens = {
-  borderRadius?: number;
-  borderWidth?: number;
-  disabledOpacity: number;
-  fontSize?: number | string;
-  fontWeight?: number;
-  height?: number;
-  paddingX?: number;
-  transition?: string;
-  focus: ButtonStateTokens;
-  hover: ButtonStateTokens;
-  pressed: ButtonStateTokens;
+  borderRadius?: number
+  borderWidth?: number
+  disabledOpacity: number
+  fontSize?: number | string
+  fontWeight?: number
+  height?: number
+  paddingX?: number
+  transition?: string
+  focus: ButtonStateTokens
+  hover: ButtonStateTokens
+  pressed: ButtonStateTokens
 } & ButtonStateTokens
 
 type Weight = ButtonStateTokens & Pick<ButtonTokens, 'focus' | 'hover' | 'pressed'>
@@ -150,9 +150,9 @@ export function useButtonTokens ({
 }
 
 type ButtonStylesProps = {
-  isDisabled?: boolean;
-  isBlock?: boolean;
-  tokens: ButtonTokens;
+  isDisabled?: boolean
+  isBlock?: boolean
+  tokens: ButtonTokens
 }
 
 export function useButtonStyles ({ isDisabled, isBlock, tokens }: ButtonStylesProps) {

@@ -17,7 +17,7 @@ import { useRouter } from '../../../../admin-ui/router'
 
 type State =
   | { kind: 'selecting-field' }
-  | { kind: 'filter-value'; fieldPath: string; filterType: string; filterValue: JSONValue }
+  | { kind: 'filter-value', fieldPath: string, filterType: string, filterValue: JSONValue }
 
 const fieldSelectComponents: ComponentProps<typeof Options>['components'] = {
   Option: ({ children, ...props }) => {
@@ -45,8 +45,8 @@ export function FilterAdd ({
   listKey,
   filterableFields,
 }: {
-  listKey: string;
-  filterableFields: Set<string>;
+  listKey: string
+  filterableFields: Set<string>
 }) {
   const { isOpen, setOpen, trigger, dialog, arrow } = usePopover({
     placement: 'bottom',
@@ -87,9 +87,9 @@ function FilterAddPopoverContent ({
   listKey,
   filterableFields,
 }: {
-  onClose: () => void;
-  listKey: string;
-  filterableFields: Set<string>;
+  onClose: () => void
+  listKey: string
+  filterableFields: Set<string>
 }) {
   const list = useList(listKey)
   const router = useRouter()

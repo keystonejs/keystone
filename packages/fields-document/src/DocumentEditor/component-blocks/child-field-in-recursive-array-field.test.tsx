@@ -8,8 +8,8 @@ import { type ArrayField, type ChildField, type ObjectField, type PreviewProps }
 
 type ListItems = ArrayField<
   ObjectField<{
-    content: ChildField;
-    children: ListItems;
+    content: ChildField
+    children: ListItems
   }>
 >
 

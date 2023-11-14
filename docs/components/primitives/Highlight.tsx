@@ -31,8 +31,8 @@ const styleMap = {
 }
 
 type HighlightProps = {
-  as?: ElementType;
-  look?: keyof typeof styleMap;
+  as?: ElementType
+  look?: keyof typeof styleMap
 } & HTMLAttributes<HTMLElement>
 
 export function Highlight ({ look = 'grad1', as: Tag = 'span', ...props }: HighlightProps) {

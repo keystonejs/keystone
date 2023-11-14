@@ -6,9 +6,9 @@ import type { Lists } from '.keystone/types'
 
 // needs to be compatible with withAuth
 export type Session = {
-  listKey: string;
-  itemId: string;
-  data: {};
+  listKey: string
+  itemId: string
+  data: {}
 }
 
 function isAssignedUserFilter ({ session }: { session?: Session }) {

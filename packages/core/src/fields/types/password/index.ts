@@ -13,23 +13,23 @@ export type PasswordFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     /**
      * @default 10
      */
-    workFactor?: number;
+    workFactor?: number
     validation?: {
-      isRequired?: boolean;
-      rejectCommon?: boolean;
-      match?: { regex: RegExp; explanation?: string };
+      isRequired?: boolean
+      rejectCommon?: boolean
+      match?: { regex: RegExp, explanation?: string }
       length?: {
         /** @default 8 */
-        min?: number;
-        max?: number;
-      };
-    };
+        min?: number
+        max?: number
+      }
+    }
     db?: {
-      isNullable?: boolean;
-      map?: string;
-      extendPrismaSchema?: (field: string) => string;
-    };
-    bcrypt?: Pick<typeof import('bcryptjs'), 'compare' | 'hash'>;
+      isNullable?: boolean
+      map?: string
+      extendPrismaSchema?: (field: string) => string
+    }
+    bcrypt?: Pick<typeof import('bcryptjs'), 'compare' | 'hash'>
   }
 
 const PasswordState = graphql.object<{ isSet: boolean }>()({

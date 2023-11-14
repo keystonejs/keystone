@@ -12,38 +12,38 @@ export const widthMap = {
 
 export type InputTokensProps = {
   /* Fixes the height at a specific value. Uses vertical centering instead of padding */
-  isMultiline?: boolean;
+  isMultiline?: boolean
   /* Changes the shape by controlling the border radius token */
-  shape?: ShapeType;
+  shape?: ShapeType
   /* Sets the size of the input */
-  size?: SizeType;
+  size?: SizeType
   /* Sets the width of the input (distinct from size) */
-  width?: WidthType;
+  width?: WidthType
 }
 
 type InputStateTokens = {
-  background?: string;
-  borderColor?: string;
-  foreground?: string;
-  shadow?: string;
+  background?: string
+  borderColor?: string
+  foreground?: string
+  shadow?: string
 }
 export type InputTokens = {
-  borderRadius?: number | string;
-  borderWidth?: number | string;
-  fontSize?: number | string;
-  lineHeight?: number | string;
+  borderRadius?: number | string
+  borderWidth?: number | string
+  fontSize?: number | string
+  lineHeight?: number | string
   // width: number | string;
-  height?: number | string;
-  paddingX: number | string;
-  paddingY: number | string;
-  placeholder?: string;
-  resize?: string;
-  transition?: string;
+  height?: number | string
+  paddingX: number | string
+  paddingY: number | string
+  placeholder?: string
+  resize?: string
+  transition?: string
 
-  hover: InputStateTokens;
-  focus: InputStateTokens;
-  invalid: InputStateTokens;
-  disabled: InputStateTokens;
+  hover: InputStateTokens
+  focus: InputStateTokens
+  invalid: InputStateTokens
+  disabled: InputStateTokens
 } & InputStateTokens
 
 export const useInputTokens = ({
@@ -104,8 +104,8 @@ export const useInputTokens = ({
 }
 
 export type InputStylesProps = {
-  invalid: boolean;
-  tokens: InputTokens;
+  invalid: boolean
+  tokens: InputTokens
 }
 
 export function useInputStyles ({ invalid, tokens }: InputStylesProps) {

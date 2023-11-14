@@ -3,8 +3,8 @@
 import { jsx } from '@emotion/react'
 
 type YouTubeEmbedProps = {
-  url: string;
-  label: string;
+  url: string
+  label: string
 }
 
 export function YouTubeEmbed ({ url, label }: YouTubeEmbedProps) {

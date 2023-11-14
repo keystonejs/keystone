@@ -4,8 +4,8 @@
 import { jsx, useTheme } from '@keystone-ui/core'
 
 type FieldDescriptionProps = {
-  id: string;
-  children: string | null;
+  id: string
+  children: string | null
 }
 
 export const FieldDescription = (props: FieldDescriptionProps) => {

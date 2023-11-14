@@ -59,7 +59,7 @@ async function login (
   graphQLRequest: GraphQLRequest,
   email: string,
   password: string
-): Promise<{ sessionToken: string; item: { id: any } }> {
+): Promise<{ sessionToken: string, item: { id: any } }> {
   const { body } = await graphQLRequest({
     query: `
       mutation($email: String!, $password: String!) {

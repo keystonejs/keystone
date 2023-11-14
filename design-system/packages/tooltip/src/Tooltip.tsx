@@ -21,25 +21,25 @@ import { usePopover } from '@keystone-ui/popover'
 type Weights = 'bold' | 'subtle'
 
 type RenderProps = {
-  onMouseEnter: () => void;
-  onMouseLeave: () => void;
-  onFocus: () => void;
-  onBlur: () => void;
-  'aria-describedby': string | undefined;
-  ref: Ref<any>;
+  onMouseEnter: () => void
+  onMouseLeave: () => void
+  onFocus: () => void
+  onBlur: () => void
+  'aria-describedby': string | undefined
+  ref: Ref<any>
 }
 
 type Props = {
   /** The target element. */
-  children: (props: RenderProps) => ReactElement;
+  children: (props: RenderProps) => ReactElement
   /** The content of the tooltip. */
-  content: ReactNode;
+  content: ReactNode
   /** Turn off, to maintain the tooltip when the user clicks the trigger element. */
-  hideOnClick?: boolean;
+  hideOnClick?: boolean
   /** Where, in relation to the target, to place the tooltip. */
-  placement?: 'top' | 'right' | 'bottom' | 'left';
+  placement?: 'top' | 'right' | 'bottom' | 'left'
   /** The visual weight of the tooltip. */
-  weight?: Weights;
+  weight?: Weights
 }
 
 export const Tooltip = ({
@@ -113,20 +113,20 @@ export const Tooltip = ({
 
 type ElementProps = {
   /** The content of the tooltip. */
-  children: ReactNode;
+  children: ReactNode
   /** ID used to describe the invoking element. */
-  id?: string;
+  id?: string
   /** When true, the tooltip will be visible. */
-  isVisible: boolean;
+  isVisible: boolean
   /** The visual weight of the tooltip. */
-  weight: Weights;
+  weight: Weights
   /** Popper's arrow config. */
   arrow?: {
-    ref: (element: HTMLDivElement) => void;
+    ref: (element: HTMLDivElement) => void
     props: {
-      style: CSSProperties;
-    };
-  };
+      style: CSSProperties
+    }
+  }
 }
 
 export const TooltipElement = memo(

@@ -125,7 +125,7 @@ export function updateValue (schema: ComponentSchema, currentValue: any, updater
     }
     case 'array': {
       const currentArrVal = currentValue as unknown[]
-      const newVal = updater as { key: string | undefined; value: unknown }[]
+      const newVal = updater as { key: string | undefined, value: unknown }[]
       const uniqueKeys = new Set()
       for (const x of newVal) {
         if (x.key !== undefined) {

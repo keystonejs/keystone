@@ -25,9 +25,9 @@ export const lists: Lists = {
       counts: virtual({
         field: graphql.field({
           type: graphql.object<{
-            words: number;
-            sentences: number;
-            paragraphs: number;
+            words: number
+            sentences: number
+            paragraphs: number
           }>()({
             name: 'PostCounts',
             fields: {
@@ -72,8 +72,8 @@ export const lists: Lists = {
         field: graphql.field({
           type: graphql.list(
             graphql.object<{
-              id: string;
-              title: string;
+              id: string
+              title: string
             }>()({
               name: 'RelatedPosts',
               fields: {

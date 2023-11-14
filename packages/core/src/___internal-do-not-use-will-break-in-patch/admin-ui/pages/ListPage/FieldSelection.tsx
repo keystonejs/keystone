@@ -41,8 +41,8 @@ export function FieldSelection ({
   list,
   fieldModesByFieldPath,
 }: {
-  list: ListMeta;
-  fieldModesByFieldPath: Record<string, 'hidden' | 'read'>;
+  list: ListMeta
+  fieldModesByFieldPath: Record<string, 'hidden' | 'read'>
 }) {
   const router = useRouter()
   const selectedFields = useSelectedFields(list, fieldModesByFieldPath)
@@ -55,7 +55,7 @@ export function FieldSelection ({
       router.push({ query: { ...router.query, fields: selectedFields.join(',') } })
     }
   }
-  const fields: { value: string; label: string; isDisabled: boolean }[] = []
+  const fields: { value: string, label: string, isDisabled: boolean }[] = []
   Object.keys(fieldModesByFieldPath).forEach(fieldPath => {
     if (fieldModesByFieldPath[fieldPath] === 'read') {
       fields.push({

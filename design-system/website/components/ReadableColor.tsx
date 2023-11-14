@@ -12,8 +12,8 @@ export const ReadableColor = ({
   background,
   children,
 }: {
-  background: string;
-  children: ReactNode;
+  background: string
+  children: ReactNode
 }) => {
   const color = tinycolor.isReadable(BLACK, background) ? BLACK : WHITE
   return <span css={{ color }}>{children}</span>

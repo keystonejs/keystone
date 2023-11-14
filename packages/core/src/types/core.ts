@@ -11,6 +11,6 @@ export type GraphQLResolver<Context extends KeystoneContext> = (
 ) => any
 
 export type GraphQLSchemaExtension<Context extends KeystoneContext> = {
-  typeDefs: string;
-  resolvers: Record<string, Record<string, GraphQLResolver<Context>>>;
+  typeDefs: string
+  resolvers: Record<string, Record<string, GraphQLResolver<Context>>>
 }

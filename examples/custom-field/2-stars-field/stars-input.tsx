@@ -1,10 +1,10 @@
 import React from 'react'
 
 type StarsInputProps = {
-  value: number | null;
-  onChange?: (value: number | null) => void;
-  maxStars: number;
-  autoFocus?: boolean;
+  value: number | null
+  onChange?: (value: number | null) => void
+  maxStars: number
+  autoFocus?: boolean
 }
 
 export function StarsInput (props: StarsInputProps) {

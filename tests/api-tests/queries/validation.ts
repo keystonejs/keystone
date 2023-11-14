@@ -1,14 +1,14 @@
 import { visit, Kind, type ValidationContext, type ASTNode, type ASTVisitor } from 'graphql'
 
-type Fragment = { name: string; atDepth: number }
+type Fragment = { name: string, atDepth: number }
 
 type Definition = {
-  node: ASTNode;
-  fragments: Fragment[];
-  fieldDepth: number;
-  numFields: number;
-  totalDepth?: number | null;
-  totalNumFields?: number | null;
+  node: ASTNode
+  fragments: Fragment[]
+  fieldDepth: number
+  numFields: number
+  totalDepth?: number | null
+  totalNumFields?: number | null
 }
 
 export const definitionLimit =

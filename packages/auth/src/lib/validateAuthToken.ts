@@ -19,8 +19,8 @@ export async function validateAuthToken (
   token: string,
   dbItemAPI: KeystoneDbAPI<any>[string]
 ): Promise<
-  | { success: false; code: AuthTokenRedemptionErrorCode }
-  | { success: true; item: { id: any; [prop: string]: any } }
+  | { success: false, code: AuthTokenRedemptionErrorCode }
+  | { success: true, item: { id: any, [prop: string]: any } }
 > {
   const result = await validateSecret(
     secretFieldImpl,

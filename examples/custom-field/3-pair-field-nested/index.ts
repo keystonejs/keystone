@@ -9,8 +9,8 @@ import { graphql } from '@keystone-6/core'
 type PairFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<ListTypeInfo>
 
 type PairInput = {
-  left: string | null | undefined;
-  right: string | null | undefined;
+  left: string | null | undefined
+  right: string | null | undefined
 }
 type PairOutput = PairInput
 

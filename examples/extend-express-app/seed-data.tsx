@@ -4,14 +4,14 @@ import config from './keystone'
 import * as PrismaModule from '.myprisma/client'
 
 type PersonProps = {
-  name: string;
+  name: string
 }
 
 type TaskProps = {
-  label: string;
-  isComplete: boolean;
-  finishBy: string;
-  assignedTo: string;
+  label: string
+  isComplete: boolean
+  finishBy: string
+  assignedTo: string
 }
 
 export async function main () {

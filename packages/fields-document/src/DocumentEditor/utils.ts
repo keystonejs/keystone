@@ -166,7 +166,7 @@ export function EditorAfterButIgnoringingPointsWithNoContent (
   {
     distance = 1,
   }: {
-    distance?: number;
+    distance?: number
   } = {}
 ): Point | undefined {
   const anchor = Editor.point(editor, at, { edge: 'end' })

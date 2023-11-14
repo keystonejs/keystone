@@ -10,19 +10,19 @@ import type { WeightKey, ToneKey, SizeKey } from './hooks/button'
 
 type ButtonProps = {
   /** The Button label content. */
-  children: ReactNode;
+  children: ReactNode
   /** Whether the Button should display as a block */
-  isBlock?: boolean;
+  isBlock?: boolean
   /** Whether the Button should be disabled */
-  isDisabled?: boolean;
+  isDisabled?: boolean
   /** Whether the Button should be in a loading state */
-  isLoading?: boolean;
+  isLoading?: boolean
   /** The size of the Button. */
-  size?: SizeKey;
+  size?: SizeKey
   /** The tone of the Button. */
-  tone?: ToneKey;
+  tone?: ToneKey
   /** The weight of the Button. */
-  weight?: WeightKey;
+  weight?: WeightKey
 }
 
 const loadingContainerStyles = {

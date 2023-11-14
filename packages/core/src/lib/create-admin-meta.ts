@@ -16,69 +16,69 @@ import type { InitialisedList } from './core/initialise-lists'
 type ContextFunction<Return> = (context: KeystoneContext) => MaybePromise<Return>
 
 export type FieldMetaRootVal = {
-  key: string;
+  key: string
   /**
    * @deprecated use .key, not .path
    */
-  path: string;
-  label: string;
-  description: string | null;
-  fieldMeta: JSONValue | null;
-  viewsIndex: number;
-  customViewsIndex: number | null;
-  listKey: string;
-  search: 'default' | 'insensitive' | null;
-  isOrderable: ContextFunction<boolean>;
-  isFilterable: ContextFunction<boolean>;
-  isNonNull: ('read' | 'create' | 'update')[];
-  createView: { fieldMode: ContextFunction<'edit' | 'hidden'> };
+  path: string
+  label: string
+  description: string | null
+  fieldMeta: JSONValue | null
+  viewsIndex: number
+  customViewsIndex: number | null
+  listKey: string
+  search: 'default' | 'insensitive' | null
+  isOrderable: ContextFunction<boolean>
+  isFilterable: ContextFunction<boolean>
+  isNonNull: ('read' | 'create' | 'update')[]
+  createView: { fieldMode: ContextFunction<'edit' | 'hidden'> }
   // itemView is intentionally special because static values are special cased
   // and fetched when fetching the static admin ui
   itemView: {
-    fieldMode: MaybeItemFunction<'edit' | 'read' | 'hidden', BaseListTypeInfo>;
-    fieldPosition: MaybeItemFunction<'form' | 'sidebar', BaseListTypeInfo>;
-  };
-  listView: { fieldMode: ContextFunction<'read' | 'hidden'> };
+    fieldMode: MaybeItemFunction<'edit' | 'read' | 'hidden', BaseListTypeInfo>
+    fieldPosition: MaybeItemFunction<'form' | 'sidebar', BaseListTypeInfo>
+  }
+  listView: { fieldMode: ContextFunction<'read' | 'hidden'> }
 }
 
 export type FieldGroupMeta = {
-  label: string;
-  description: string | null;
-  fields: Array<FieldMetaRootVal>;
+  label: string
+  description: string | null
+  fields: Array<FieldMetaRootVal>
 }
 
 export type ListMetaRootVal = {
-  key: string;
-  path: string;
-  description: string | null;
+  key: string
+  path: string
+  description: string | null
 
-  label: string;
-  labelField: string;
-  singular: string;
-  plural: string;
+  label: string
+  labelField: string
+  singular: string
+  plural: string
 
-  fields: FieldMetaRootVal[];
-  fieldsByKey: Record<string, FieldMetaRootVal>;
-  groups: Array<FieldGroupMeta>;
+  fields: FieldMetaRootVal[]
+  fieldsByKey: Record<string, FieldMetaRootVal>
+  groups: Array<FieldGroupMeta>
 
-  pageSize: number;
-  initialColumns: string[];
-  initialSort: { field: string; direction: 'ASC' | 'DESC' } | null;
-  isSingleton: boolean;
+  pageSize: number
+  initialColumns: string[]
+  initialSort: { field: string, direction: 'ASC' | 'DESC' } | null
+  isSingleton: boolean
 
   // TODO: probably remove this
-  itemQueryName: string;
-  listQueryName: string;
-  isHidden: ContextFunction<boolean>;
-  hideCreate: ContextFunction<boolean>;
-  hideDelete: ContextFunction<boolean>;
+  itemQueryName: string
+  listQueryName: string
+  isHidden: ContextFunction<boolean>
+  hideCreate: ContextFunction<boolean>
+  hideDelete: ContextFunction<boolean>
 }
 
 export type AdminMetaRootVal = {
-  lists: ListMetaRootVal[];
-  listsByKey: Record<string, ListMetaRootVal>;
-  views: string[];
-  isAccessAllowed: undefined | ((context: KeystoneContext) => MaybePromise<boolean>);
+  lists: ListMetaRootVal[]
+  listsByKey: Record<string, ListMetaRootVal>
+  views: string[]
+  isAccessAllowed: undefined | ((context: KeystoneContext) => MaybePromise<boolean>)
 }
 
 export function createAdminMeta (
@@ -142,7 +142,7 @@ export function createAdminMeta (
       initialColumns,
       initialSort:
         (listConfig.ui?.listView?.initialSort as
-          | { field: string; direction: 'ASC' | 'DESC' }
+          | { field: string, direction: 'ASC' | 'DESC' }
           | undefined) ?? null,
       isSingleton: list.isSingleton,
 
@@ -298,7 +298,7 @@ function normalizeMaybeSessionFunction<Return extends string | boolean> (
   return context => input({ context, session: context.session })
 }
 
-type BaseOrderFilterArgs = { listKey: string; fieldKey: string }
+type BaseOrderFilterArgs = { listKey: string, fieldKey: string }
 
 function normalizeIsOrderFilter (
   input: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>),

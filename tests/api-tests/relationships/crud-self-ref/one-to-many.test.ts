@@ -40,9 +40,9 @@ const createUserAndFriend = async (context: ContextFromRunner<typeof runner>) =>
 const getUserAndFriend = async (context: KeystoneContext, userId: IdType, friendId: IdType) => {
   type T = {
     data: {
-      User: { id: IdType; friends: { id: IdType }[] };
-      Friend: { id: IdType; friendOf: { id: IdType } };
-    };
+      User: { id: IdType, friends: { id: IdType }[] }
+      Friend: { id: IdType, friendOf: { id: IdType } }
+    }
   }
   const { data } = (await context.graphql.raw({
     query: `
@@ -209,7 +209,7 @@ describe(`One-to-many relationships`, () => {
         const _user = (await context.query.User.createOne({
           data: { friends: { connect: [{ id: user.id }] } },
           query: 'id friends { id  }',
-        })) as { id: IdType; friends: { id: IdType }[] }
+        })) as { id: IdType, friends: { id: IdType }[] }
 
         expect(_user.friends.map(({ id }) => id.toString())).toEqual([user.id])
 
@@ -261,8 +261,8 @@ describe(`One-to-many relationships`, () => {
         const _users = (await context.query.User.findMany({
           query: 'id friends { id friendOf { id } }',
         })) as {
-          id: IdType;
-          friends: { id: IdType; friendOf: { id: IdType } }[];
+          id: IdType
+          friends: { id: IdType, friendOf: { id: IdType } }[]
         }[]
 
         // The nested company should not have a location
@@ -301,8 +301,8 @@ describe(`One-to-many relationships`, () => {
         const users = (await context.query.User.findMany({
           query: 'id friends { id friendOf { id } }',
         })) as {
-          id: IdType;
-          friends: { id: IdType; friendOf: { id: IdType } }[];
+          id: IdType
+          friends: { id: IdType, friendOf: { id: IdType } }[]
         }[]
         expect(users.filter(({ id }) => id === User.id)[0].friends[0].friendOf.id).toEqual(User.id)
         users

@@ -1,24 +1,24 @@
 export type Session = {
-  itemId: string;
-  listKey: string;
+  itemId: string
+  listKey: string
   data: {
-    name: string;
+    name: string
     role: {
-      id: string;
-      name: string;
-      canCreateTodos: boolean;
-      canManageAllTodos: boolean;
-      canSeeOtherPeople: boolean;
-      canEditOtherPeople: boolean;
-      canManagePeople: boolean;
-      canManageRoles: boolean;
-      canUseAdminUI: boolean;
-    };
-  };
+      id: string
+      name: string
+      canCreateTodos: boolean
+      canManageAllTodos: boolean
+      canSeeOtherPeople: boolean
+      canEditOtherPeople: boolean
+      canManagePeople: boolean
+      canManageRoles: boolean
+      canUseAdminUI: boolean
+    }
+  }
 }
 
 type AccessArgs = {
-  session?: Session;
+  session?: Session
 }
 
 // this function checks only that a session actually exists, nothing else

@@ -129,7 +129,7 @@ function stripStackTrace (errors: any[] = []) {
   const runQuery = async (
     context: KeystoneContext,
     graphQLRequest: GraphQLRequest,
-    query: { query: string; variables?: Record<string, any> }
+    query: { query: string, variables?: Record<string, any> }
   ) => {
     if (useHttp) {
       const { body } = await graphQLRequest(query)

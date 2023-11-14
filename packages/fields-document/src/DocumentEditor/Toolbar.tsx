@@ -49,8 +49,8 @@ export function Toolbar ({
   documentFeatures,
   viewState,
 }: {
-  documentFeatures: DocumentFeatures;
-  viewState?: { expanded: boolean; toggle: () => void };
+  documentFeatures: DocumentFeatures
+  viewState?: { expanded: boolean, toggle: () => void }
 }) {
   const relationship = useContext(DocumentFieldRelationshipsContext)
   const blockComponent = useContext(ComponentBlockContext)
@@ -141,7 +141,7 @@ export function Toolbar ({
 
 /* UI Components */
 
-const MarkButton = forwardRef<any, { children: ReactNode; type: Mark }>(function MarkButton (
+const MarkButton = forwardRef<any, { children: ReactNode, type: Mark }>(function MarkButton (
   props,
   ref
 ) {
@@ -211,9 +211,9 @@ function HeadingButton ({
   onToggleShowMenu,
   showMenu,
 }: {
-  trigger: ReturnType<typeof useControlledPopover>['trigger'];
-  showMenu: boolean;
-  onToggleShowMenu: () => void;
+  trigger: ReturnType<typeof useControlledPopover>['trigger']
+  showMenu: boolean
+  onToggleShowMenu: () => void
 }) {
   const { textStyles } = useToolbarState()
   let buttonLabel =
@@ -243,7 +243,7 @@ function HeadingButton ({
 const HeadingMenu = ({
   headingLevels,
 }: {
-  headingLevels: DocumentFeatures['formatting']['headingLevels'];
+  headingLevels: DocumentFeatures['formatting']['headingLevels']
 }) => {
   const [showMenu, setShowMenu] = useState(false)
   const { dialog, trigger } = useControlledPopover(
@@ -297,8 +297,8 @@ function HeadingDialog ({
   headingLevels,
   onCloseMenu,
 }: {
-  headingLevels: DocumentFeatures['formatting']['headingLevels'];
-  onCloseMenu: () => void;
+  headingLevels: DocumentFeatures['formatting']['headingLevels']
+  onCloseMenu: () => void
 }) {
   const { editor, textStyles } = useToolbarState()
   return (
@@ -482,9 +482,9 @@ function MoreFormattingDialog ({
   marks,
   onCloseMenu,
 }: {
-  dialog: ReturnType<typeof useControlledPopover>['dialog'];
-  marks: DocumentFeatures['formatting']['inlineMarks'];
-  onCloseMenu: () => void;
+  dialog: ReturnType<typeof useControlledPopover>['dialog']
+  marks: DocumentFeatures['formatting']['inlineMarks']
+  onCloseMenu: () => void
 }) {
   // not doing optimisations in here because this will only render when it's open
   // which will be rare and you won't be typing while it's open
@@ -530,7 +530,7 @@ function MoreFormattingDialog ({
   )
 }
 
-function ContentInButtonWithShortcut ({ content, shortcut }: { content: string; shortcut: string }) {
+function ContentInButtonWithShortcut ({ content, shortcut }: { content: string, shortcut: string }) {
   const theme = useTheme()
   return (
     <span
@@ -567,10 +567,10 @@ function MoreFormattingButton ({
   trigger,
   attrs,
 }: {
-  onToggle: () => void;
-  isOpen: boolean;
-  trigger: ReturnType<typeof useControlledPopover>['trigger'];
-  attrs: { ref: any };
+  onToggle: () => void
+  isOpen: boolean
+  trigger: ReturnType<typeof useControlledPopover>['trigger']
+  attrs: { ref: any }
 }) {
   const { marks } = useToolbarState()
   const isActive =

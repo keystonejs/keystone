@@ -13,9 +13,9 @@ export const Field = ({
   size = 'medium',
   ...props
 }: Omit<InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement>, 'size'> & {
-  label?: string;
-  id?: string;
-  size?: 'medium' | 'large';
+  label?: string
+  id?: string
+  size?: 'medium' | 'large'
 }) => {
   const isTextarea = type === 'comments'
   const TextInput = isTextarea ? 'textarea' : 'input'

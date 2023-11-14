@@ -21,17 +21,17 @@ export function getMagicAuthLinkSchema<I extends string> ({
   magicAuthTokenSecretFieldImpl,
   base,
 }: {
-  listKey: string;
-  identityField: I;
-  gqlNames: AuthGqlNames;
-  magicAuthLink: AuthTokenTypeConfig;
-  magicAuthTokenSecretFieldImpl: SecretFieldImpl;
-  base: graphql.BaseSchemaMeta;
+  listKey: string
+  identityField: I
+  gqlNames: AuthGqlNames
+  magicAuthLink: AuthTokenTypeConfig
+  magicAuthTokenSecretFieldImpl: SecretFieldImpl
+  base: graphql.BaseSchemaMeta
   // TODO: type required by pnpm :(
 }): graphql.Extension {
   const RedeemItemMagicAuthTokenFailure = graphql.object<{
-    code:(typeof errorCodes)[number];
-    message: string;
+    code:(typeof errorCodes)[number]
+    message: string
   }>()({
     name: gqlNames.RedeemItemMagicAuthTokenFailure,
     fields: {
@@ -39,7 +39,7 @@ export function getMagicAuthLinkSchema<I extends string> ({
       message: graphql.field({ type: graphql.nonNull(graphql.String) }),
     },
   })
-  const RedeemItemMagicAuthTokenSuccess = graphql.object<{ token: string; item: BaseItem }>()({
+  const RedeemItemMagicAuthTokenSuccess = graphql.object<{ token: string, item: BaseItem }>()({
     name: gqlNames.RedeemItemMagicAuthTokenSuccess,
     fields: {
       token: graphql.field({ type: graphql.nonNull(graphql.String) }),

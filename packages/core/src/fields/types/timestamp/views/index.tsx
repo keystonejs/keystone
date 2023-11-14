@@ -42,7 +42,7 @@ export const Field = ({
     ? validate(value, field.fieldMeta, field.label)
     : undefined
 
-  const timeInputProps = useFormattedInput<{ kind: 'parsed'; value: string | null }>(
+  const timeInputProps = useFormattedInput<{ kind: 'parsed', value: string | null }>(
     {
       format ({ value }) {
         if (value === null) {
@@ -156,8 +156,8 @@ function validate (
   label: string
 ):
   | {
-      time?: string;
-      date?: string;
+      time?: string
+      date?: string
     }
   | undefined {
   const val = value.value
@@ -223,9 +223,9 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
 }
 
 export type TimestampFieldMeta = {
-  defaultValue: string | { kind: 'now' } | null;
-  updatedAt: boolean;
-  isRequired: boolean;
+  defaultValue: string | { kind: 'now' } | null
+  updatedAt: boolean
+  isRequired: boolean
 }
 export const controller = (
   config: FieldControllerConfig<TimestampFieldMeta>

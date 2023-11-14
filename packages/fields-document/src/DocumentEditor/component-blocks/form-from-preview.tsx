@@ -27,8 +27,8 @@ type DefaultFieldProps<Key> = GenericPreviewProps<
   Extract<ComponentSchema, { kind: Key }>,
   unknown
 > & {
-  autoFocus?: boolean;
-  forceValidation?: boolean;
+  autoFocus?: boolean
+  forceValidation?: boolean
 }
 
 function ArrayFieldPreview (props: DefaultFieldProps<'array'>) {
@@ -196,8 +196,8 @@ const fieldRenderers = {
 export const FormValueContentFromPreviewProps: MemoExoticComponent<
   (
     props: GenericPreviewProps<NonChildFieldComponentSchema, unknown> & {
-      autoFocus?: boolean;
-      forceValidation?: boolean;
+      autoFocus?: boolean
+      forceValidation?: boolean
     }
   ) => ReactElement
 > = memo(function FormValueContentFromPreview (props) {
@@ -207,12 +207,12 @@ export const FormValueContentFromPreviewProps: MemoExoticComponent<
 
 const OrderableItemInForm = memo(function OrderableItemInForm (
   props: GenericPreviewProps<ComponentSchema, unknown> & {
-    elementKey: string;
-    label: string;
+    elementKey: string
+    label: string
   }
 ) {
   const [modalState, setModalState] = useState<
-    { state: 'open'; value: unknown; forceValidation: boolean } | { state: 'closed' }
+    { state: 'open', value: unknown, forceValidation: boolean } | { state: 'closed' }
   >({ state: 'closed' })
   const onModalChange = useCallback(
     (cb: (value: unknown) => unknown) => {
@@ -289,9 +289,9 @@ const OrderableItemInForm = memo(function OrderableItemInForm (
 })
 
 function ArrayFieldItemModalContent (props: {
-  schema: NonChildFieldComponentSchema;
-  value: unknown;
-  onChange: (cb: (value: unknown) => unknown) => void;
+  schema: NonChildFieldComponentSchema
+  value: unknown
+  onChange: (cb: (value: unknown) => unknown) => void
 }) {
   const previewProps = useMemo(
     () => createGetPreviewProps(props.schema, props.onChange, () => undefined),

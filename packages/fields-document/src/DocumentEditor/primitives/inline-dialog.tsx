@@ -8,7 +8,7 @@ type Props = {
   /** Without using a 3rd-party position lib, like popper, you can place the
    * dialog within a relatively positioned element to center it. This can be
    * beneficial for simple scenarios and performance. */
-  isRelative?: boolean;
+  isRelative?: boolean
 } & HTMLAttributes<HTMLDivElement>
 
 export const InlineDialog = forwardRef<HTMLDivElement, Props>(({ isRelative, ...props }, ref) => {

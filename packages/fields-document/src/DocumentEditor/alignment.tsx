@@ -17,7 +17,7 @@ import { useToolbarState } from './toolbar-state'
 export const TextAlignMenu = ({
   alignment,
 }: {
-  alignment: DocumentFeatures['formatting']['alignment'];
+  alignment: DocumentFeatures['formatting']['alignment']
 }) => {
   const [showMenu, setShowMenu] = useState(false)
   const { dialog, trigger } = useControlledPopover(
@@ -75,8 +75,8 @@ function TextAlignDialog ({
   alignment,
   onClose,
 }: {
-  alignment: DocumentFeatures['formatting']['alignment'];
-  onClose: () => void;
+  alignment: DocumentFeatures['formatting']['alignment']
+  onClose: () => void
 }) {
   const {
     alignment: { selected },
@@ -128,10 +128,10 @@ const alignmentIcons = {
 }
 
 function TextAlignButton (props: {
-  onToggle: () => void;
-  trigger: ReturnType<typeof useControlledPopover>['trigger'];
-  showMenu: boolean;
-  attrs: Parameters<ComponentProps<typeof Tooltip>['children']>[0];
+  onToggle: () => void
+  trigger: ReturnType<typeof useControlledPopover>['trigger']
+  showMenu: boolean
+  attrs: Parameters<ComponentProps<typeof Tooltip>['children']>[0]
 }) {
   const {
     alignment: { isDisabled, selected },

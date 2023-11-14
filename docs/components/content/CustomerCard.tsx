@@ -7,9 +7,9 @@ import { Type } from '../primitives/Type'
 import { type IconProps } from '../icons/util'
 
 type CustomerCardProps = {
-  icon: (props: IconProps) => JSX.Element;
-  title: string;
-  accessibleTitle?: string;
+  icon: (props: IconProps) => JSX.Element
+  title: string
+  accessibleTitle?: string
 } & HTMLAttributes<HTMLElement>
 
 export function CustomerCard ({

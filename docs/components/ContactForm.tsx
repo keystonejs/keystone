@@ -17,9 +17,9 @@ const validEmail = (email: string) =>
 const enquiryUrl = 'https://endpoints.thinkmill.com.au/enquiry'
 
 type ContactFormProps = {
-  autoFocus?: boolean;
-  children: ReactNode;
-  stacked?: boolean;
+  autoFocus?: boolean
+  children: ReactNode
+  stacked?: boolean
 } & HTMLAttributes<HTMLFormElement>
 
 export function ContactForm ({ autoFocus, stacked, children, ...props }: ContactFormProps) {

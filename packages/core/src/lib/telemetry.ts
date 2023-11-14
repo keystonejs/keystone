@@ -21,11 +21,11 @@ type TelemetryVersion1 =
   | undefined
   | false
   | {
-      device: { lastSentDate?: string; informedAt: string };
+      device: { lastSentDate?: string, informedAt: string }
       projects: {
-        default: { lastSentDate?: string; informedAt: string };
-        [projectPath: string]: { lastSentDate?: string; informedAt: string };
-      };
+        default: { lastSentDate?: string, informedAt: string }
+        [projectPath: string]: { lastSentDate?: string, informedAt: string }
+      }
     }
 
 function log (message: unknown) {

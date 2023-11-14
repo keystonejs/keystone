@@ -1,20 +1,20 @@
 import { type DBField, type MultiDBField, type NoDBField, type RelationDBField, type ScalarishDBField } from '../../types'
 
 type BaseResolvedRelationDBField = {
-  kind: 'relation';
-  list: string;
-  field: string;
-  relationName: string;
-  extendPrismaSchema?: (field: string) => string;
+  kind: 'relation'
+  list: string
+  field: string
+  relationName: string
+  extendPrismaSchema?: (field: string) => string
 }
 
 export type ResolvedRelationDBField =
   | (BaseResolvedRelationDBField & {
-      mode: 'many';
+      mode: 'many'
     })
   | (BaseResolvedRelationDBField & {
-      mode: 'one';
-      foreignIdField: { kind: 'none' } | { kind: 'owned' | 'owned-unique'; map: string };
+      mode: 'one'
+      foreignIdField: { kind: 'none' } | { kind: 'owned' | 'owned-unique', map: string }
     })
 
 export type ListsWithResolvedRelations = Record<string, FieldsWithResolvedRelations>
@@ -30,13 +30,13 @@ export type ResolvedDBField =
 type FieldsWithResolvedRelations = Record<string, ResolvedDBField>
 
 type Rel = {
-  listKey: string;
-  fieldPath: string;
-  field: RelationDBField<'many' | 'one'>;
+  listKey: string
+  fieldPath: string
+  field: RelationDBField<'many' | 'one'>
 }
 
 type RelWithoutForeignKeyAndName = Omit<Rel, 'field'> & {
-  field: Omit<RelationDBField<'many' | 'one'>, 'foreignKey' | 'relationName'>;
+  field: Omit<RelationDBField<'many' | 'one'>, 'foreignKey' | 'relationName'>
 }
 
 function sortRelationships (left: Rel, right: Rel): readonly [Rel, RelWithoutForeignKeyAndName] {
@@ -96,7 +96,7 @@ function sortRelationships (left: Rel, right: Rel): readonly [Rel, RelWithoutFor
 //   (note that this means that there are "fields" in the returned ListsWithResolvedRelations
 //   which are not actually proper Keystone fields, they are just a db field and nothing else)
 export function resolveRelationships (
-  lists: Record<string, { fields: Record<string, { dbField: DBField }>; isSingleton: boolean }>
+  lists: Record<string, { fields: Record<string, { dbField: DBField }>, isSingleton: boolean }>
 ): ListsWithResolvedRelations {
   const alreadyResolvedTwoSidedRelationships = new Set<string>()
   const resolvedLists: Record<string, Record<string, ResolvedDBField>> = Object.fromEntries(

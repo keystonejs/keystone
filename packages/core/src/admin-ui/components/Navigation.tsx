@@ -15,9 +15,9 @@ import { Link } from '../router'
 import { SignoutButton } from './SignoutButton'
 
 type NavItemProps = {
-  href: string;
-  children: ReactNode;
-  isSelected?: boolean;
+  href: string
+  children: ReactNode
+  isSelected?: boolean
 }
 
 export const NavItem = ({ href, children, isSelected: _isSelected }: NavItemProps) => {
@@ -138,7 +138,7 @@ const PopoverLink = ({ children, ...props }: AllHTMLAttributes<HTMLAnchorElement
 }
 
 export type NavigationContainerProps = Partial<Pick<NavigationProps, 'authenticatedItem'>> & {
-  children: ReactNode;
+  children: ReactNode
 }
 
 export const NavigationContainer = ({ authenticatedItem, children }: NavigationContainerProps) => {

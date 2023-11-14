@@ -7,12 +7,12 @@ import { jsx, Box, Center, Stack, useTheme } from '@keystone-ui/core'
 import { AlertTriangleIcon } from '@keystone-ui/icons/icons/AlertTriangleIcon'
 
 type ErrorBoundaryProps = {
-  children: ReactNode;
+  children: ReactNode
 }
 type ErrorBoundaryState = {
-  error?: any;
-  hasError: boolean;
-  isReloading: boolean;
+  error?: any
+  hasError: boolean
+  isReloading: boolean
 }
 
 export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
@@ -43,7 +43,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 }
 
 type ErrorContainerProps = {
-  children: ReactNode;
+  children: ReactNode
 }
 
 export const ErrorContainer = ({ children }: ErrorContainerProps) => {

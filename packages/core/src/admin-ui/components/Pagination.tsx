@@ -7,10 +7,10 @@ import { ChevronRightIcon, ChevronLeftIcon } from '@keystone-ui/icons'
 import { Link, useRouter } from '../router'
 
 interface PaginationProps {
-  pageSize: number;
-  total: number;
-  currentPage: number;
-  list: Record<string, any>;
+  pageSize: number
+  total: number
+  currentPage: number
+  list: Record<string, any>
 }
 
 const getPaginationStats = ({ list, pageSize, currentPage, total }: PaginationProps) => {
@@ -62,7 +62,7 @@ export function Pagination ({ currentPage, total, pageSize, list }: PaginationPr
   // Don't render the pagiantion component if the pageSize is greater than the total number of items in the list.
   if (total <= pageSize) return null
 
-  const onChange = (selectedOption: { value: string; label: string }) => {
+  const onChange = (selectedOption: { value: string, label: string }) => {
     push({
       pathname,
       query: {
@@ -156,11 +156,11 @@ export function PaginationLabel ({
   singular,
   total,
 }: {
-  currentPage: number;
-  pageSize: number;
-  plural: string;
-  singular: string;
-  total: number;
+  currentPage: number
+  pageSize: number
+  plural: string
+  singular: string
+  total: number
 }) {
   const { stats } = getPaginationStats({
     list: { plural, singular },

@@ -14,7 +14,7 @@ import { Keystone } from './icons/Keystone'
 import { Close } from './icons/Close'
 
 type MobileMenuProps = {
-  handleClose: (e?: MouseEvent) => void;
+  handleClose: (e?: MouseEvent) => void
 }
 
 export function MobileMenu ({ handleClose }: MobileMenuProps) {
@@ -76,8 +76,8 @@ export function MobileMenu ({ handleClose }: MobileMenuProps) {
 }
 
 type NavContainerProps = {
-  children: ReactNode;
-  mobileNavIsOpen: boolean;
+  children: ReactNode
+  mobileNavIsOpen: boolean
 }
 
 function NavContainer ({ mobileNavIsOpen, children }: NavContainerProps) {
@@ -108,8 +108,8 @@ function NavContainer ({ mobileNavIsOpen, children }: NavContainerProps) {
 }
 
 type NavHeaderProps = {
-  handleClose: (e?: MouseEvent) => void;
-  mobileNavIsOpen: boolean;
+  handleClose: (e?: MouseEvent) => void
+  mobileNavIsOpen: boolean
 }
 
 function NavHeader ({ handleClose, mobileNavIsOpen }: NavHeaderProps) {

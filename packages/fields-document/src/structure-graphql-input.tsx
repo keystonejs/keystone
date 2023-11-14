@@ -276,8 +276,8 @@ type _UpdateValueManyType = Exclude<
 >
 
 export class RelationshipErrors extends Error {
-  errors: { error: Error; tag: string }[]
-  constructor (errors: { error: Error; tag: string }[]) {
+  errors: { error: Error, tag: string }[]
+  constructor (errors: { error: Error, tag: string }[]) {
     super('Multiple relationship errors')
     this.errors = errors
   }

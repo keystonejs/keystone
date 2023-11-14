@@ -19,67 +19,67 @@ type TextAlignment = ResponsiveProp<TextAlign>
 type ColorType = ResponsiveProp<keyof Theme['palette']>
 export type ColorProps = {
   /** background-color */
-  background?: ColorType;
+  background?: ColorType
   /** color */
-  foreground?: ColorType;
+  foreground?: ColorType
 }
 
 type RadiiType = ResponsiveProp<keyof Theme['radii']>
 export type RadiiProps = {
   /** border-radius */
-  rounding?: RadiiType;
+  rounding?: RadiiType
   /** border-bottom-left-radius and border-bottom-right-radius */
-  roundingBottom?: RadiiType;
+  roundingBottom?: RadiiType
   /** border-bottom-left-radius and border-top-left-radius */
-  roundingLeft?: RadiiType;
+  roundingLeft?: RadiiType
   /** border-bottom-right-radius and border-top-right-radius */
-  roundingRight?: RadiiType;
+  roundingRight?: RadiiType
   /** border-bottom-left-radius and border-bottom-right-radius */
-  roundingTop?: RadiiType;
+  roundingTop?: RadiiType
 }
 
 type SpacingType = ResponsiveProp<keyof Theme['spacing']>
 export type MarginProps = {
   /** margin */
-  margin?: SpacingType;
+  margin?: SpacingType
   /** margin-top */
-  marginTop?: SpacingType;
+  marginTop?: SpacingType
   /** margin-right */
-  marginRight?: SpacingType;
+  marginRight?: SpacingType
   /** margin-bottom */
-  marginBottom?: SpacingType;
+  marginBottom?: SpacingType
   /** margin-left */
-  marginLeft?: SpacingType;
+  marginLeft?: SpacingType
   /** margin-top and margin-bottom */
-  marginY?: SpacingType;
+  marginY?: SpacingType
   /** margin-left and margin-right */
-  marginX?: SpacingType;
+  marginX?: SpacingType
 }
 
 export type PaddingProps = {
   /** padding */
-  padding?: SpacingType;
+  padding?: SpacingType
   /** padding-top */
-  paddingTop?: SpacingType;
+  paddingTop?: SpacingType
   /** padding-right */
-  paddingRight?: SpacingType;
+  paddingRight?: SpacingType
   /** padding-bottom */
-  paddingBottom?: SpacingType;
+  paddingBottom?: SpacingType
   /** padding-left */
-  paddingLeft?: SpacingType;
+  paddingLeft?: SpacingType
   /** padding-top and padding-bottom */
-  paddingY?: SpacingType;
+  paddingY?: SpacingType
   /** padding-left and padding-right */
-  paddingX?: SpacingType;
+  paddingX?: SpacingType
 }
 
 type BaseBoxProps = {
   /** text-align */
-  textAlign?: TextAlignment;
+  textAlign?: TextAlignment
   /** height */
-  height?: ResponsiveProp<DimensionType>;
+  height?: ResponsiveProp<DimensionType>
   /** width */
-  width?: ResponsiveProp<DimensionType>;
+  width?: ResponsiveProp<DimensionType>
 }
 
 export type BoxProps = ColorProps & RadiiProps & MarginProps & PaddingProps & BaseBoxProps

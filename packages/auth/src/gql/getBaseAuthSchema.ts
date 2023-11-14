@@ -12,24 +12,24 @@ export function getBaseAuthSchema<I extends string, S extends string> ({
   secretFieldImpl,
   base,
 }: {
-  listKey: string;
-  identityField: I;
-  secretField: S;
-  gqlNames: AuthGqlNames;
-  secretFieldImpl: SecretFieldImpl;
-  base: graphql.BaseSchemaMeta;
+  listKey: string
+  identityField: I
+  secretField: S
+  gqlNames: AuthGqlNames
+  secretFieldImpl: SecretFieldImpl
+  base: graphql.BaseSchemaMeta
 
   // TODO: return type required by pnpm :(
 }): {
-  extension: graphql.Extension;
+  extension: graphql.Extension
   ItemAuthenticationWithPasswordSuccess: graphql.ObjectType<{
-    sessionToken: string;
-    item: BaseItem;
-  }>;
+    sessionToken: string
+    item: BaseItem
+  }>
 } {
   const ItemAuthenticationWithPasswordSuccess = graphql.object<{
-    sessionToken: string;
-    item: BaseItem;
+    sessionToken: string
+    item: BaseItem
   }>()({
     name: gqlNames.ItemAuthenticationWithPasswordSuccess,
     fields: {

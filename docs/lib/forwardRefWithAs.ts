@@ -11,19 +11,19 @@ type ElementTagNameMap = HTMLElementTagNameMap &
   Pick<SVGElementTagNameMap, Exclude<keyof SVGElementTagNameMap, keyof HTMLElementTagNameMap>>
 
 type AsProp<Comp extends ElementType> = {
-  as?: Comp;
+  as?: Comp
   ref?: Ref<
     Comp extends keyof ElementTagNameMap
       ? ElementTagNameMap[Comp]
       : Comp extends new (...args: any) => any
       ? InstanceType<Comp>
       : undefined
-  >;
+  >
 } & Omit<ComponentPropsWithoutRef<Comp>, 'as'>
 
 type CompWithAsProp<Props, DefaultElementType extends ElementType> = {
-  displayName?: string;
-  <Comp extends ElementType = DefaultElementType>(props: AsProp<Comp> & Props): ReactElement;
+  displayName?: string
+  <Comp extends ElementType = DefaultElementType>(props: AsProp<Comp> & Props): ReactElement
 }
 
 export const forwardRefWithAs = <DefaultElementType extends ElementType, BaseProps>(

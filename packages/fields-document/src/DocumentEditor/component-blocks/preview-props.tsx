@@ -50,9 +50,9 @@ function castToMemoizedInfoForSchema<
 }
 
 type GeneralMap<K, V> = {
-  has(key: K): boolean;
-  get(key: K): V | undefined;
-  set(key: K, value: V): void;
+  has(key: K): boolean
+  get(key: K): V | undefined
+  set(key: K, value: V): void
 }
 
 function getOrInsert<K, V> (map: GeneralMap<K, V>, key: K, val: (key: K) => V): V {
@@ -79,15 +79,15 @@ export function createGetPreviewProps<Schema extends ComponentSchema, ChildField
         inner: new Map<
           string,
           {
-            onChange:(cb: (val: unknown) => unknown) => void;
+            onChange:(cb: (val: unknown) => unknown) => void
             elementWithKey: { key: string } & GenericPreviewProps<
               ComponentSchema,
               ChildFieldElement
-            >;
-            element: GenericPreviewProps<ComponentSchema, ChildFieldElement>;
+            >
+            element: GenericPreviewProps<ComponentSchema, ChildFieldElement>
           }
         >(),
-        onChange (updater: readonly { key: string | undefined; value?: unknown }[]) {
+        onChange (updater: readonly { key: string | undefined, value?: unknown }[]) {
           onChange(value => updateValue(schema, value, updater))
         },
       }
@@ -360,11 +360,11 @@ export function createGetPreviewProps<Schema extends ComponentSchema, ChildField
   }
 
   type MemoState<Schema extends ComponentSchema> = {
-    props: GenericPreviewProps<Schema, ChildFieldElement>;
-    value: unknown;
-    schema: Schema;
-    cached: ReturnType<(typeof memoizedInfoForSchema)[Schema['kind']]>;
-    inner: Map<string, MemoState<ComponentSchema>>;
+    props: GenericPreviewProps<Schema, ChildFieldElement>
+    value: unknown
+    schema: Schema
+    cached: ReturnType<(typeof memoizedInfoForSchema)[Schema['kind']]>
+    inner: Map<string, MemoState<ComponentSchema>>
   }
 
   let memoState: MemoState<Schema>

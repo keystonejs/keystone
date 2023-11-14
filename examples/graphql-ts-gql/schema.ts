@@ -34,9 +34,9 @@ export const lists: Lists = {
         },
         field: graphql.field({
           type: graphql.object<{
-            words: number;
-            sentences: number;
-            paragraphs: number;
+            words: number
+            sentences: number
+            paragraphs: number
           }>()({
             name: 'PostCounts',
             fields: {

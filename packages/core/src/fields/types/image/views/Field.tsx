@@ -101,11 +101,11 @@ function ImgView ({
   field,
   inputRef,
 }: {
-  errorMessage?: string;
-  value: ImageValue;
-  onChange?: (value: ImageValue) => void;
-  field: ReturnType<typeof import('.').controller>;
-  inputRef: RefObject<HTMLInputElement>;
+  errorMessage?: string
+  value: ImageValue
+  onChange?: (value: ImageValue) => void
+  field: ReturnType<typeof import('.').controller>
+  inputRef: RefObject<HTMLInputElement>
 }) {
   const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 })
   const imagePathFromUpload = useObjectURL(
@@ -262,8 +262,8 @@ export function validateImage ({
   file,
   validity,
 }: {
-  file: File;
-  validity: ValidityState;
+  file: File
+  validity: ValidityState
 }): string | undefined {
   if (!validity.valid) {
     return 'Something went wrong, please reload and try again.'
@@ -295,9 +295,9 @@ export const ImageMeta = ({
   height = 0,
   size,
 }: {
-  width?: number;
-  height?: number;
-  size: number;
+  width?: number
+  height?: number
+  size: number
 }) => {
   return (
     <Stack padding="xxsmall" gap="xxsmall">
@@ -307,7 +307,7 @@ export const ImageMeta = ({
   )
 }
 
-export const ImageWrapper = ({ children, url }: { children: ReactNode; url?: string }) => {
+export const ImageWrapper = ({ children, url }: { children: ReactNode, url?: string }) => {
   if (url) {
     return (
       <a

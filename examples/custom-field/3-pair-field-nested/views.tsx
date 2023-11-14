@@ -73,8 +73,8 @@ export const controller = (
   config: FieldControllerConfig<{}>
 ): FieldController<
   {
-    left: string | null;
-    right: string | null;
+    left: string | null
+    right: string | null
   } | null,
   string
 > => {

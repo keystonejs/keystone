@@ -73,11 +73,11 @@ export const ToolbarGroup = forwardRefWithAs<'div', ToolbarGroupProps>(
 // ------------------------------
 
 type ToolbarButtonProps = {
-  as?: string;
-  isDisabled?: boolean;
-  isPressed?: boolean;
-  isSelected?: boolean;
-  variant?: 'default' | 'action' | 'destructive';
+  as?: string
+  isDisabled?: boolean
+  isPressed?: boolean
+  isSelected?: boolean
+  variant?: 'default' | 'action' | 'destructive'
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'disabled'>
 export const ToolbarButton = forwardRefWithAs<'button', ToolbarButtonProps>(function ToolbarButton (
   { as: Tag = 'button', isDisabled, isPressed, isSelected, variant = 'default', ...props },

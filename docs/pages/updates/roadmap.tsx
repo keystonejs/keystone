@@ -91,8 +91,8 @@ function TimelineWeAreHere () {
 }
 
 type TimelineContentProps = {
-  title: ReactNode;
-  children: ReactNode;
+  title: ReactNode
+  children: ReactNode
 } & Pick<ComponentProps<typeof Highlight>, 'look'>
 function TimelineContent ({ title, look, children }: TimelineContentProps) {
   return (
@@ -108,7 +108,7 @@ function TimelineContent ({ title, look, children }: TimelineContentProps) {
 }
 
 type RoadmapListProps = {
-  children: ReactNode;
+  children: ReactNode
 }
 
 function RoadmapList ({ children }: RoadmapListProps) {
@@ -157,9 +157,9 @@ const roadmapItemSection = {
 }
 
 type RoadmapItemProps = {
-  title: ReactNode;
-  section?: keyof typeof roadmapItemSection;
-  children: ReactNode;
+  title: ReactNode
+  section?: keyof typeof roadmapItemSection
+  children: ReactNode
 }
 function RoadmapItem ({ title, section, children }: RoadmapItemProps) {
   const Section = section ? roadmapItemSection[section] : null

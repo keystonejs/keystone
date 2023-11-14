@@ -26,9 +26,9 @@ import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon'
 const RemoveContext = createContext<null |((index: number) => void)>(null)
 
 export function OrderableList (props: {
-  onChange: (elements: readonly { key: string }[]) => void;
-  elements: readonly { key: string }[];
-  children: ReactNode;
+  onChange: (elements: readonly { key: string }[]) => void
+  elements: readonly { key: string }[]
+  children: ReactNode
 }) {
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 3 } }),
@@ -95,7 +95,7 @@ const DragHandleListenersContext = createContext<Pick<
   'listeners' | 'isDragging' | 'attributes' | 'index'
 > | null>(null)
 
-export function OrderableItem (props: { elementKey: string; children: ReactNode }) {
+export function OrderableItem (props: { elementKey: string, children: ReactNode }) {
   const { attributes, isDragging, listeners, setNodeRef, transform, transition, index } =
     useSortable({
       id: props.elementKey,

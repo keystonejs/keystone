@@ -2,8 +2,8 @@ import React from 'react'
 import styles from './YouTubeVideo.module.css'
 
 type YouTubeVideoProps = {
-  url: string;
-  altText: string;
+  url: string
+  altText: string
 }
 
 export function YouTubeVideo ({ url, altText = 'Embedded YouTube video' }: YouTubeVideoProps) {

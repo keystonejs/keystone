@@ -6,7 +6,7 @@ export async function createAuthToken (
   identity: string,
   dbItemAPI: KeystoneDbAPI<any>[string]
 ): Promise<
-  { success: false } | { success: true; itemId: string | number | bigint; token: string }
+  { success: false } | { success: true, itemId: string | number | bigint, token: string }
 > {
   // FIXME : identity lookups may leak information due to timing attacks
   const item = await dbItemAPI.findOne({ where: { [identityField]: identity } })

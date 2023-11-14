@@ -26,13 +26,13 @@ const validTypes = {
 type InputProps = InputHTMLAttributes<HTMLInputElement>
 
 export type TextInputProps = {
-  invalid?: boolean;
-  shape?: ShapeType;
-  size?: SizeType;
-  width?: WidthType;
-  type?: keyof typeof validTypes;
-  onChange?: NonNullable<InputProps['onChange']>;
-  value?: NonNullable<InputProps['value']>;
+  invalid?: boolean
+  shape?: ShapeType
+  size?: SizeType
+  width?: WidthType
+  type?: keyof typeof validTypes
+  onChange?: NonNullable<InputProps['onChange']>
+  value?: NonNullable<InputProps['value']>
 } & Omit<InputProps, 'onChange' | 'type' | 'size' | 'value'>
 
 export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(

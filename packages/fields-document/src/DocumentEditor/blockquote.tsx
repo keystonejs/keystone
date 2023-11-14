@@ -100,7 +100,7 @@ export const BlockquoteElement = ({ attributes, children }: RenderElementProps) 
 const BlockquoteButton = ({
   attrs,
 }: {
-  attrs: Parameters<ComponentProps<typeof Tooltip>['children']>[0];
+  attrs: Parameters<ComponentProps<typeof Tooltip>['children']>[0]
 }) => {
   const {
     editor,

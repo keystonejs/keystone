@@ -5,9 +5,9 @@ import { useTheme } from '@keystone-ui/core'
 import type { ButtonTokens, WeightKey, ToneKey, SizeKey } from '@keystone-ui/button'
 
 type ButtonTokensProps = {
-  size: SizeKey;
-  tone: ToneKey;
-  weight: WeightKey;
+  size: SizeKey
+  tone: ToneKey
+  weight: WeightKey
 }
 
 type Weight = Omit<

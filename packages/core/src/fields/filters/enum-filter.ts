@@ -5,38 +5,38 @@ import { graphql } from '../../types/schema'
 
 export type EnumNullableFilter<Enum extends graphql.EnumType<any>> = graphql.InputObjectType<{
   // can be null
-  equals: graphql.Arg<Enum>;
+  equals: graphql.Arg<Enum>
   // can be null
-  in: graphql.Arg<graphql.ListType<graphql.NonNullType<Enum>>>;
+  in: graphql.Arg<graphql.ListType<graphql.NonNullType<Enum>>>
   // can be null
-  notIn: graphql.Arg<graphql.ListType<graphql.NonNullType<Enum>>>;
+  notIn: graphql.Arg<graphql.ListType<graphql.NonNullType<Enum>>>
   // can be null
-  not: graphql.Arg<EnumNullableFilter<Enum>>;
+  not: graphql.Arg<EnumNullableFilter<Enum>>
 }>
 
 export type EnumFilter<Enum extends graphql.EnumType<any>> = graphql.InputObjectType<{
-  equals: graphql.Arg<Enum>;
-  in: graphql.Arg<graphql.ListType<graphql.NonNullType<Enum>>>;
-  notIn: graphql.Arg<graphql.ListType<graphql.NonNullType<Enum>>>;
-  not: graphql.Arg<EnumFilter<Enum>>;
+  equals: graphql.Arg<Enum>
+  in: graphql.Arg<graphql.ListType<graphql.NonNullType<Enum>>>
+  notIn: graphql.Arg<graphql.ListType<graphql.NonNullType<Enum>>>
+  not: graphql.Arg<EnumFilter<Enum>>
 }>
 
 type EnumNullableListFilterType<Enum extends graphql.EnumType<any>> = graphql.InputObjectType<{
   // can be null
-  equals: graphql.Arg<graphql.ListType<graphql.NonNullType<Enum>>>;
+  equals: graphql.Arg<graphql.ListType<graphql.NonNullType<Enum>>>
   // can be null
-  has: graphql.Arg<Enum>;
-  hasEvery: graphql.Arg<graphql.ListType<graphql.NonNullType<Enum>>>;
-  hasSome: graphql.Arg<graphql.ListType<graphql.NonNullType<Enum>>>;
-  isEmpty: graphql.Arg<Enum>;
+  has: graphql.Arg<Enum>
+  hasEvery: graphql.Arg<graphql.ListType<graphql.NonNullType<Enum>>>
+  hasSome: graphql.Arg<graphql.ListType<graphql.NonNullType<Enum>>>
+  isEmpty: graphql.Arg<Enum>
 }>
 
 export function enumFilters<Enum extends graphql.EnumType<any>> (
   enumType: Enum
 ): {
-  optional: EnumNullableFilter<Enum>;
-  required: EnumFilter<Enum>;
-  many: EnumNullableListFilterType<Enum>;
+  optional: EnumNullableFilter<Enum>
+  required: EnumFilter<Enum>
+  many: EnumNullableListFilterType<Enum>
 } {
   const optional: EnumNullableFilter<Enum> = graphql.inputObject({
     name: `${enumType.graphQLType.name}NullableFilter`,

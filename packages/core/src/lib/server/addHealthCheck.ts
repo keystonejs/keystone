@@ -8,8 +8,8 @@ export async function addHealthCheck ({
   config,
   server,
 }: {
-  config: KeystoneConfig;
-  server: Application;
+  config: KeystoneConfig
+  server: Application
 }) {
   if (!config.server?.healthCheck) return
 

@@ -157,8 +157,8 @@ export function validateImage ({
   file,
   validity,
 }: {
-  file: File;
-  validity: ValidityState;
+  file: File
+  validity: ValidityState
 }): string | undefined {
   if (!validity.valid) {
     return 'Something went wrong, please reload and try again.'
@@ -173,7 +173,7 @@ export function validateImage ({
 // Styled Components
 // ==============================
 
-const Image = (props: { src: string; alt: string }) => {
+const Image = (props: { src: string, alt: string }) => {
   const theme = useTheme()
   return (
     <div

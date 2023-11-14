@@ -7,11 +7,11 @@ import { ErrorBoundary } from '../../../../admin-ui/components'
 import { KeystoneProvider } from '../../../../admin-ui/context'
 
 type AppConfig = {
-  adminConfig: AdminConfig;
-  adminMetaHash: string;
-  fieldViews: FieldViews;
-  lazyMetadataQuery: DocumentNode;
-  apiPath: string;
+  adminConfig: AdminConfig
+  adminMetaHash: string
+  fieldViews: FieldViews
+  lazyMetadataQuery: DocumentNode
+  apiPath: string
 }
 
 export const getApp =

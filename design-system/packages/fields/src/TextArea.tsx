@@ -9,11 +9,11 @@ import type { SizeType, WidthType } from './types'
 type InputProps = InputHTMLAttributes<HTMLTextAreaElement>
 
 export type TextAreaProps = {
-  invalid?: boolean;
-  size?: SizeType;
-  width?: WidthType;
-  onChange?: NonNullable<InputProps['onChange']>;
-  value?: NonNullable<InputProps['value']>;
+  invalid?: boolean
+  size?: SizeType
+  width?: WidthType
+  onChange?: NonNullable<InputProps['onChange']>
+  value?: NonNullable<InputProps['value']>
 } & Omit<InputProps, 'onChange' | 'size' | 'value'>
 
 export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(

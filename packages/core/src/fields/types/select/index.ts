@@ -19,35 +19,35 @@ export type SelectFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
            * When a value is provided as just a string, it will be formatted in the same way
            * as field labels are to create the label.
            */
-          options: readonly ({ label: string; value: string } | string)[];
+          options: readonly ({ label: string, value: string } | string)[]
           /**
            * If `enum` is provided on SQLite, it will use an enum in GraphQL but a string in the database.
            */
-          type?: 'string' | 'enum';
-          defaultValue?: string;
+          type?: 'string' | 'enum'
+          defaultValue?: string
         }
       | {
-          options: readonly { label: string; value: number }[];
-          type: 'integer';
-          defaultValue?: number;
+          options: readonly { label: string, value: number }[]
+          type: 'integer'
+          defaultValue?: number
         }
     ) & {
       ui?: {
-        displayMode?: 'select' | 'segmented-control' | 'radio';
-      };
+        displayMode?: 'select' | 'segmented-control' | 'radio'
+      }
 
       validation?: {
         /**
          * @default false
          */
-        isRequired?: boolean;
-      };
-      isIndexed?: boolean | 'unique';
+        isRequired?: boolean
+      }
+      isIndexed?: boolean | 'unique'
       db?: {
-        isNullable?: boolean;
-        map?: string;
-        extendPrismaSchema?: (field: string) => string;
-      };
+        isNullable?: boolean
+        map?: string
+        extendPrismaSchema?: (field: string) => string
+      }
     }
 
 // These are the max and min values available to a 32 bit signed integer
@@ -68,11 +68,11 @@ export const select =
     assertReadIsNonNullAllowed(meta, config, resolvedIsNullable)
 
     const commonConfig = (
-      options: readonly { value: string | number; label: string }[]
+      options: readonly { value: string | number, label: string }[]
     ): CommonFieldConfig<ListTypeInfo> & {
-      __ksTelemetryFieldTypeName: string;
-      views: string;
-      getAdminMeta: () => import('./views').AdminSelectFieldMeta;
+      __ksTelemetryFieldTypeName: string
+      views: string
+      getAdminMeta: () => import('./views').AdminSelectFieldMeta
     } => {
       const values = new Set(options.map(x => x.value))
       if (values.size !== options.length) {

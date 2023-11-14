@@ -94,35 +94,35 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
 }
 
 export type DecimalFieldMeta = {
-  precision: number;
-  scale: number;
-  defaultValue: string | null;
+  precision: number
+  scale: number
+  defaultValue: string | null
   validation: {
-    isRequired: boolean;
-    max: string | null;
-    min: string | null;
-  };
+    isRequired: boolean
+    max: string | null
+    min: string | null
+  }
 }
 
 type Config = FieldControllerConfig<DecimalFieldMeta>
 
 type Validation = {
-  isRequired: boolean;
-  max: Decimal | null;
-  min: Decimal | null;
+  isRequired: boolean
+  max: Decimal | null
+  min: Decimal | null
 }
 
 type InnerValue = string | Decimal | null
 
 type Value =
   | {
-      kind: 'create';
-      value: InnerValue;
+      kind: 'create'
+      value: InnerValue
     }
   | {
-      kind: 'update';
-      initial: InnerValue;
-      value: InnerValue;
+      kind: 'update'
+      initial: InnerValue
+      value: InnerValue
     }
 
 function validate (value: Value, validation: Validation, label: string): string | undefined {
@@ -160,7 +160,7 @@ function validate (value: Value, validation: Validation, label: string): string 
 
 export const controller = (
   config: Config
-): FieldController<Value, string> & { scale: number; validation: Validation } => {
+): FieldController<Value, string> & { scale: number, validation: Validation } => {
   const _validation = config.fieldMeta.validation
   const validation: Validation = {
     isRequired: _validation.isRequired,

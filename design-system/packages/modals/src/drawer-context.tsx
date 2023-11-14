@@ -1,9 +1,9 @@
 import React, { type ReactNode, useCallback, useEffect, useState } from 'react'
 
 export type ModalState = {
-  drawerStack: string[];
-  pushToDrawerStack: (drawerKey: string) => void;
-  popFromDrawerStack: () => void;
+  drawerStack: string[]
+  pushToDrawerStack: (drawerKey: string) => void
+  popFromDrawerStack: () => void
 }
 
 const ModalContext = React.createContext<ModalState | null>(null)

@@ -10,12 +10,12 @@ import { InlineDialog, ToolbarButton } from '../primitives'
 import { type ComponentBlock, type PreviewPropsForToolbar, type ObjectField, type ComponentSchema } from './api'
 
 export function ChromelessComponentBlockElement (props: {
-  renderedBlock: ReactNode;
-  componentBlock: ComponentBlock & { chromeless: true };
-  previewProps: PreviewPropsForToolbar<ObjectField<Record<string, ComponentSchema>>>;
-  isOpen: boolean;
-  onRemove: () => void;
-  attributes: RenderElementProps['attributes'];
+  renderedBlock: ReactNode
+  componentBlock: ComponentBlock & { chromeless: true }
+  previewProps: PreviewPropsForToolbar<ObjectField<Record<string, ComponentSchema>>>
+  isOpen: boolean
+  onRemove: () => void
+  attributes: RenderElementProps['attributes']
 }) {
   const { trigger, dialog } = useControlledPopover(
     { isOpen: props.isOpen, onClose: () => {} },
@@ -46,8 +46,8 @@ export function ChromelessComponentBlockElement (props: {
 function DefaultToolbarWithoutChrome ({
   onRemove,
 }: {
-  onRemove(): void;
-  props: Record<string, any>;
+  onRemove(): void
+  props: Record<string, any>
 }) {
   return (
     <Tooltip content="Remove" weight="subtle">

@@ -37,7 +37,7 @@ describe('Reconnect', () => {
       })
 
       // Create some users that does the linking
-      type T = { id: IdType; notes: { id: IdType; title: string }[] }
+      type T = { id: IdType, notes: { id: IdType, title: string }[] }
       const alice = (await context.query.User.createOne({
         data: { username: 'Alice', notes: { connect: [{ id: noteA.id }, { id: noteB.id }] } },
         query: 'id notes(orderBy: { title: asc }) { id title }',
@@ -56,7 +56,7 @@ describe('Reconnect', () => {
 
       // Set Bob as the author of note B
       await (async () => {
-        type T = { id: IdType; notes: { id: IdType; title: string }[] }
+        type T = { id: IdType, notes: { id: IdType, title: string }[] }
         const user = (await context.query.User.updateOne({
           where: { id: bob.id },
           data: { notes: { connect: [{ id: noteB.id }] } },
@@ -78,7 +78,7 @@ describe('Reconnect', () => {
 
       // Alice should no longer see `B` in her notes
       await (async () => {
-        type T = { id: IdType; notes: { id: IdType; title: string }[] }
+        type T = { id: IdType, notes: { id: IdType, title: string }[] }
         const user = (await context.query.User.findOne({
           where: { id: alice.id },
           query: 'id notes(orderBy: { title: asc }) { id title }',

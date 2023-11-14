@@ -21,7 +21,7 @@ import { ControlLabel } from './components/ControlLabel'
 
 type SwitchProps = {
   /** The switch label content. */
-  children: ReactNode;
+  children: ReactNode
 } & SwitchControlProps
 
 export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
@@ -38,11 +38,11 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>
 
 type SwitchControlProps = {
   /** Optionally pass in "On" and "Off" label text for screen readers */
-  a11yLabels?: { on: string; off: string };
+  a11yLabels?: { on: string, off: string }
   /** The current checked state. */
-  checked?: boolean;
+  checked?: boolean
   /** Handle change events. */
-  onChange?: (checked: boolean) => void;
+  onChange?: (checked: boolean) => void
 } & Omit<ButtonProps, 'onChange'>
 
 export const SwitchControl = forwardRef<HTMLButtonElement, SwitchControlProps>(

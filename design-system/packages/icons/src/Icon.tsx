@@ -6,9 +6,9 @@ import { type ResponsiveProp, jsx, mapResponsiveProp } from '@keystone-ui/core'
 
 export type IconProps = SVGAttributes<SVGSVGElement> & {
   /** The color for the SVG fill property. */
-  color?: string;
+  color?: string
   /** The size key for the icon. */
-  size?: ResponsiveProp<keyof typeof sizeMap> | number;
+  size?: ResponsiveProp<keyof typeof sizeMap> | number
 }
 
 // TODO: Move to theme?

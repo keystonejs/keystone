@@ -45,7 +45,7 @@ import { CreateButtonLink } from '../../../../admin-ui/components/CreateButtonLi
 import { BaseToolbar, ColumnLayout, ItemPageHeader } from './common'
 
 type ItemPageProps = {
-  listKey: string;
+  listKey: string
 }
 
 function useEventCallback<Func extends (...args: any) => any>(callback: Func): Func {
@@ -71,13 +71,13 @@ function ItemForm ({
   showDelete,
   item,
 }: {
-  listKey: string;
-  itemGetter: DataGetter<ItemData>;
-  selectedFields: string;
-  fieldModes: Record<string, ItemViewFieldModes>;
-  fieldPositions: Record<string, 'form' | 'sidebar'>;
-  showDelete: boolean;
-  item: ItemData;
+  listKey: string
+  itemGetter: DataGetter<ItemData>
+  selectedFields: string
+  fieldModes: Record<string, ItemViewFieldModes>
+  fieldPositions: Record<string, 'form' | 'sidebar'>
+  showDelete: boolean
+  item: ItemData
 }) {
   const list = useList(listKey)
   const { spacing, typography } = useTheme()
@@ -263,9 +263,9 @@ function DeleteButton ({
   itemId,
   list,
 }: {
-  itemLabel: string;
-  itemId: string;
-  list: ListMeta;
+  itemLabel: string
+  itemId: string
+  list: ListMeta
 }) {
   const toasts = useToasts()
   const [deleteItem, { loading }] = useMutation(
@@ -382,20 +382,20 @@ function ItemPage ({ listKey }: ItemPageProps) {
 
   const dataGetter = makeDataGetter<
     DeepNullable<{
-      item: ItemData;
+      item: ItemData
       keystone: {
         adminMeta: {
           list: {
             fields: {
-              path: string;
+              path: string
               itemView: {
-                fieldMode: ItemViewFieldModes;
-                fieldPosition: ItemViewFieldPositions;
-              };
-            }[];
-          };
-        };
-      };
+                fieldMode: ItemViewFieldModes
+                fieldPosition: ItemViewFieldPositions
+              }
+            }[]
+          }
+        }
+      }
     }>
   >(data, error?.graphQLErrors)
 
@@ -502,11 +502,11 @@ const Toolbar = memo(function Toolbar ({
   onReset,
   deleteButton,
 }: {
-  hasChangedFields: boolean;
-  loading: boolean;
-  onSave: () => void;
-  onReset: () => void;
-  deleteButton?: ReactElement;
+  hasChangedFields: boolean
+  loading: boolean
+  onSave: () => void
+  onReset: () => void
+  deleteButton?: ReactElement
 }) {
   return (
     <BaseToolbar>

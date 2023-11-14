@@ -11,7 +11,7 @@ const COOKIE_SECRET = 'qwertyuiopasdfghjlkzxcvbmnm1234567890'
 
 const yesNo = (truthy: boolean | undefined) => (truthy ? 'Yes' : 'No')
 
-type BooleanAccess = { create: boolean; query: boolean; update: boolean; delete?: boolean }
+type BooleanAccess = { create: boolean, query: boolean, update: boolean, delete?: boolean }
 
 const getPrefix = (access: BooleanAccess) => {
   let prefix = `${yesNo(access.create)}Create${yesNo(access.query)}Query${yesNo(access.update)}Update`

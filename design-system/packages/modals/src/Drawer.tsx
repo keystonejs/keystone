@@ -10,12 +10,12 @@ import { useDrawerControllerContext } from './DrawerController'
 import { type ActionsType } from './types'
 
 type DrawerProps = {
-  actions: ActionsType;
-  children: ReactNode;
-  id?: string;
-  initialFocusRef?: MutableRefObject<any>;
-  title: string;
-  width?: WidthType;
+  actions: ActionsType
+  children: ReactNode
+  id?: string
+  initialFocusRef?: MutableRefObject<any>
+  title: string
+  width?: WidthType
 }
 
 export const Drawer = ({

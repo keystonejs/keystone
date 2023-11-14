@@ -106,7 +106,7 @@ describe('relationship filtering', () => {
           ],
         },
         query: 'id posts { id content }',
-      })) as { id: IdType; posts: { id: IdType; content: string }[] }[]
+      })) as { id: IdType, posts: { id: IdType, content: string }[] }[]
       expect(users).toHaveLength(1)
       expect(users[0].id).toEqual(user.id)
       expect(users[0].posts).toHaveLength(3)
@@ -138,7 +138,7 @@ describe('relationship filtering', () => {
           ],
         },
         query: 'id posts { id content }',
-      })) as { id: IdType; posts: { id: IdType; content: string }[] }[]
+      })) as { id: IdType, posts: { id: IdType, content: string }[] }[]
       expect(users).toHaveLength(1)
       expect(users[0].id).toEqual(user.id)
       expect(users[0].posts).toHaveLength(3)
@@ -202,9 +202,9 @@ describe('relationship filtering', () => {
       // adsCompany users whose every post is spam
       // NB: this includes users who have no posts at all
       type T = {
-        id: IdType;
-        company: { id: IdType; name: string };
-        posts: { content: string }[];
+        id: IdType
+        company: { id: IdType, name: string }
+        posts: { content: string }[]
       }[]
       const users = (await context.query.User.findMany({
         where: {

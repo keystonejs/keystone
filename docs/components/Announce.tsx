@@ -6,7 +6,7 @@ import { type HTMLAttributes, type ReactNode } from 'react'
 import { Wrapper } from './primitives/Wrapper'
 
 type AnnounceProps = {
-  children: ReactNode;
+  children: ReactNode
 } & HTMLAttributes<HTMLElement>
 
 export function Announce ({ children, ...props }: AnnounceProps) {

@@ -22,8 +22,8 @@ export type VirtualFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
       | VirtualFieldGraphQLField<ListTypeInfo['item'], KeystoneContext<ListTypeInfo['all']>>
       | ((
           lists: Record<string, ListGraphQLTypes>
-        ) => VirtualFieldGraphQLField<ListTypeInfo['item'], KeystoneContext<ListTypeInfo['all']>>);
-    unreferencedConcreteInterfaceImplementations?: readonly graphql.ObjectType<any>[];
+        ) => VirtualFieldGraphQLField<ListTypeInfo['item'], KeystoneContext<ListTypeInfo['all']>>)
+    unreferencedConcreteInterfaceImplementations?: readonly graphql.ObjectType<any>[]
     ui?: {
       /**
        * Defines what the Admin UI should fetch from this field, it's interpolated into a query like this:
@@ -38,8 +38,8 @@ export type VirtualFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
        * This is only needed when you your field returns a GraphQL type other than a scalar(String and etc.)
        * or an enum or you need to provide arguments to the field.
        */
-      query?: string;
-    };
+      query?: string
+    }
   }
 
 export const virtual =

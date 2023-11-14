@@ -7,7 +7,7 @@ import { forwardRefWithAs } from '../utils'
 import { Box, type BoxProps } from './Box'
 
 type CenterProps = {
-  fillView?: boolean;
+  fillView?: boolean
 } & BoxProps
 
 export const Center = forwardRefWithAs<'div', CenterProps>(

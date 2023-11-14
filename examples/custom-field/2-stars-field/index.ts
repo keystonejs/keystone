@@ -13,8 +13,8 @@ import { graphql } from '@keystone-6/core'
 // https://github.com/keystonejs/keystone/tree/main/packages/core/src/fields/types/integer
 
 type StarsFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<ListTypeInfo> & {
-  isIndexed?: boolean | 'unique';
-  maxStars?: number;
+  isIndexed?: boolean | 'unique'
+  maxStars?: number
 }
 
 export const stars =

@@ -11,7 +11,7 @@ import { ComingSoon } from './docs/ComingSoon'
 
 const renderers: Record<string, ElementType> = {
   code: InlineCode,
-  CodeBlock (props: { content: string; language: string }) {
+  CodeBlock (props: { content: string, language: string }) {
     return (
       <pre>
         <Code className={`language-${props.language}`}>{props.content}</Code>
@@ -23,7 +23,7 @@ const renderers: Record<string, ElementType> = {
   Well,
   YouTubeEmbed,
   RelatedContent,
-  Heading (props: { children: ReactNode; level: 1 | 2 | 3 | 4 | 5 | 6; id: string }) {
+  Heading (props: { children: ReactNode, level: 1 | 2 | 3 | 4 | 5 | 6, id: string }) {
     return <Heading {...props} />
   },
 }
@@ -85,9 +85,9 @@ export function Markdoc (props: { content: RenderableTreeNodes }) {
 }
 
 export type HeadingType = {
-  id: string;
-  depth: number;
-  label: string;
+  id: string
+  depth: number
+  label: string
 }
 
 export function extractHeadings (content: Tag): HeadingType[] {

@@ -107,7 +107,7 @@ const initData = async ({ context }: { context: ContextFromRunner<typeof runner>
     },
   ]
   const dave = await context.query.Author.createOne({ data: { name: 'Dave', bio } })
-  type T = { id: string; label?: string; data?: Record<string, any> | null }
+  type T = { id: string, label?: string, data?: Record<string, any> | null }
   const content = [
     {
       type: 'paragraph',

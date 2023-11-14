@@ -15,11 +15,11 @@ import { SigninContainer } from '../components/SigninContainer'
 import { useRedirect } from '../lib/useFromRedirect'
 
 type SigninPageProps = {
-  identityField: string;
-  secretField: string;
-  mutationName: string;
-  successTypename: string;
-  failureTypename: string;
+  identityField: string
+  secretField: string
+  mutationName: string
+  successTypename: string
+  failureTypename: string
 }
 
 export const getSigninPage = (props: SigninPageProps) => () => <SigninPage {...props} />

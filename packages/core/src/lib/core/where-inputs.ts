@@ -4,27 +4,27 @@ import type { InitialisedList } from './initialise-lists'
 import { getDBFieldKeyForFieldOnMultiField } from './utils'
 
 export type InputFilter = Record<string, any> & {
-  _____?: 'input filter';
-  AND?: InputFilter[];
-  OR?: InputFilter[];
-  NOT?: InputFilter[];
+  _____?: 'input filter'
+  AND?: InputFilter[]
+  OR?: InputFilter[]
+  NOT?: InputFilter[]
 }
 export type PrismaFilter = Record<string, any> & {
-  _____?: 'prisma filter';
-  AND?: PrismaFilter[] | PrismaFilter;
-  OR?: PrismaFilter[] | PrismaFilter;
-  NOT?: PrismaFilter[] | PrismaFilter;
+  _____?: 'prisma filter'
+  AND?: PrismaFilter[] | PrismaFilter
+  OR?: PrismaFilter[] | PrismaFilter
+  NOT?: PrismaFilter[] | PrismaFilter
   // just so that if you pass an array to something expecting a PrismaFilter, you get an error
-  length?: undefined;
+  length?: undefined
   // so that if you pass a promise, you get an error
-  then?: undefined;
+  then?: undefined
 }
 
 export type UniqueInputFilter = Record<string, any> & { _____?: 'unique input filter' }
 export type UniquePrismaFilter = Record<string, any> & {
-  _____?: 'unique prisma filter';
+  _____?: 'unique prisma filter'
   // so that if you pass a promise, you get an error
-  then?: undefined;
+  then?: undefined
 }
 
 export async function resolveUniqueWhereInput (

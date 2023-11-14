@@ -13,13 +13,13 @@ type Mark =
   | 'keyboard'
 
 type Element = {
-  children: Node[];
-  [key: string]: unknown;
+  children: Node[]
+  [key: string]: unknown
 }
 
 type Text = {
-  text: string;
-  [key: string]: unknown;
+  text: string
+  [key: string]: unknown
 }
 
 type Component<Props> = (props: Props) => ReactElement | null
@@ -30,26 +30,26 @@ type MarkRenderers = { [Key in Mark]: OnlyChildrenComponent }
 
 interface Renderers {
   inline: {
-    link: Component<{ children: ReactNode; href: string }> | 'a';
+    link: Component<{ children: ReactNode, href: string }> | 'a'
     relationship: Component<{
-      relationship: string;
-      data: { id: string; label: string | undefined; data: Record<string, any> | undefined } | null;
-    }>;
-  } & MarkRenderers;
+      relationship: string
+      data: { id: string, label: string | undefined, data: Record<string, any> | undefined } | null
+    }>
+  } & MarkRenderers
   block: {
-    block: OnlyChildrenComponent;
-    paragraph: Component<{ children: ReactNode; textAlign: 'center' | 'end' | undefined }>;
-    blockquote: OnlyChildrenComponent;
-    code: Component<{ children: string }> | keyof JSX.IntrinsicElements;
-    layout: Component<{ layout: [number, ...number[]]; children: ReactElement[] }>;
-    divider: Component<{}> | keyof JSX.IntrinsicElements;
+    block: OnlyChildrenComponent
+    paragraph: Component<{ children: ReactNode, textAlign: 'center' | 'end' | undefined }>
+    blockquote: OnlyChildrenComponent
+    code: Component<{ children: string }> | keyof JSX.IntrinsicElements
+    layout: Component<{ layout: [number, ...number[]], children: ReactElement[] }>
+    divider: Component<{}> | keyof JSX.IntrinsicElements
     heading: Component<{
-      level: 1 | 2 | 3 | 4 | 5 | 6;
-      children: ReactNode;
-      textAlign: 'center' | 'end' | undefined;
-    }>;
-    list: Component<{ type: 'ordered' | 'unordered'; children: ReactElement[] }>;
-  };
+      level: 1 | 2 | 3 | 4 | 5 | 6
+      children: ReactNode
+      textAlign: 'center' | 'end' | undefined
+    }>
+    list: Component<{ type: 'ordered' | 'unordered', children: ReactElement[] }>
+  }
 }
 
 export const defaultRenderers: Renderers = {
@@ -111,10 +111,10 @@ function DocumentNode ({
   componentBlocks,
   renderers,
 }: {
-  node: Element | Text;
-  renderers: Renderers;
+  node: Element | Text
+  renderers: Renderers
   // TODO: allow inferring from the component blocks
-  componentBlocks: Record<string, Component<any>>;
+  componentBlocks: Record<string, Component<any>>
 }): ReactElement {
   if (typeof _node.text === 'string') {
     let child = <Fragment>{_node.text}</Fragment>;
@@ -223,9 +223,9 @@ function createComponentBlockProps (node: Element, children: ReactElement[]) {
 export type DocumentRendererProps<
   ComponentBlocks extends Record<string, Component<any>> = Record<string, Component<any>>
 > = {
-  document: Element[];
-  renderers?: { inline?: Partial<Renderers['inline']>; block?: Partial<Renderers['block']> };
-  componentBlocks?: ComponentBlocks;
+  document: Element[]
+  renderers?: { inline?: Partial<Renderers['inline']>, block?: Partial<Renderers['block']> }
+  componentBlocks?: ComponentBlocks
 }
 
 export function DocumentRenderer<ComponentBlocks extends Record<string, Component<any>>> (

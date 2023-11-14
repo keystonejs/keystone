@@ -39,8 +39,8 @@ export function normalizeTextBasedOnInlineMarksAndSoftBreaks (
 }
 
 export type DocumentFeaturesForNormalization = Omit<DocumentFeatures, 'formatting'> & {
-  formatting: Omit<DocumentFeatures['formatting'], 'inlineMarks' | 'softBreaks'>;
-  relationships: boolean;
+  formatting: Omit<DocumentFeatures['formatting'], 'inlineMarks' | 'softBreaks'>
+  relationships: boolean
 }
 
 export function normalizeInlineBasedOnLinksAndRelationships (

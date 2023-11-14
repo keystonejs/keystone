@@ -39,7 +39,7 @@ const getTeacher = async (context: ContextFromRunner<typeof runner>, teacherId: 
   })
 
 const getStudent = async (context: ContextFromRunner<typeof runner>, studentId: IdType) => {
-  type T = { data: { student: { id: IdType; teachers: { id: IdType }[] } } }
+  type T = { data: { student: { id: IdType, teachers: { id: IdType }[] } } }
   const { data } = (await context.graphql.raw({
     query: `
       query getStudent($studentId: ID!){

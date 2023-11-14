@@ -6,12 +6,12 @@ import { type controller } from '../index'
 
 type ItemsState =
   | {
-      kind: 'loading';
+      kind: 'loading'
     }
-  | { kind: 'error'; message: string }
+  | { kind: 'error', message: string }
   | { kind: 'loaded' }
 
-type Items = Record<string, DataGetter<{ id: string; [key: string]: any }>>
+type Items = Record<string, DataGetter<{ id: string, [key: string]: any }>>
 
 export function useItemState ({
   selectedFields,
@@ -19,10 +19,10 @@ export function useItemState ({
   id,
   field,
 }: {
-  selectedFields: string;
-  localList: ListMeta;
-  field: ReturnType<typeof controller>;
-  id: string | null;
+  selectedFields: string
+  localList: ListMeta
+  field: ReturnType<typeof controller>
+  id: string | null
 }) {
   const { data, error, loading } = useQuery(
     gql`query($id: ID!) {
@@ -39,7 +39,7 @@ export function useItemState ({
     const dataGetter = makeDataGetter(data, error?.graphQLErrors)
     const relationshipGetter = dataGetter.get('item').get('relationship')
     const isMany = Array.isArray(relationshipGetter.data)
-    const itemsArrFromData: DataGetter<{ id: string; [key: string]: any }>[] = (
+    const itemsArrFromData: DataGetter<{ id: string, [key: string]: any }>[] = (
       isMany
         ? relationshipGetter.data.map((_: any, i: number) => relationshipGetter.get(i))
         : [relationshipGetter]
@@ -47,22 +47,22 @@ export function useItemState ({
     return { relationshipGetter, itemsArrFromData }
   }, [data, error])
   let [{ items, itemsArrFromData: itemsArrFromDataState }, setItemsState] = useState<{
-    itemsArrFromData: DataGetter<any>[];
+    itemsArrFromData: DataGetter<any>[]
     items: Record<
       string,
       {
-        current: DataGetter<{ id: string; [key: string]: any }>;
-        fromInitialQuery: DataGetter<{ id: string; [key: string]: any }> | undefined;
+        current: DataGetter<{ id: string, [key: string]: any }>
+        fromInitialQuery: DataGetter<{ id: string, [key: string]: any }> | undefined
       }
-    >;
+    >
   }>({ itemsArrFromData: [], items: {} })
 
   if (itemsArrFromDataState !== itemsArrFromData) {
     let newItems: Record<
       string,
       {
-        current: DataGetter<{ id: string; [key: string]: any }>;
-        fromInitialQuery: DataGetter<{ id: string; [key: string]: any }> | undefined;
+        current: DataGetter<{ id: string, [key: string]: any }>
+        fromInitialQuery: DataGetter<{ id: string, [key: string]: any }> | undefined
       }
     > = {}
 

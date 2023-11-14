@@ -72,8 +72,8 @@ type Fixture = {
   [key: string]:
     | string
     | Buffer
-    | { kind: 'symlink'; path: string }
-    | { kind: 'config'; config: KeystoneConfig };
+    | { kind: 'symlink', path: string }
+    | { kind: 'config', config: KeystoneConfig }
 }
 
 export async function runCommand (cwd: string, args: string | string[]) {

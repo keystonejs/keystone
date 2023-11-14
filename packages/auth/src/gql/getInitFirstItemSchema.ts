@@ -12,15 +12,15 @@ export function getInitFirstItemSchema ({
   graphQLSchema,
   ItemAuthenticationWithPasswordSuccess,
 }: {
-  listKey: string;
-  fields: InitFirstItemConfig<any>['fields'];
-  itemData: InitFirstItemConfig<any>['itemData'];
-  gqlNames: AuthGqlNames;
-  graphQLSchema: GraphQLSchema;
+  listKey: string
+  fields: InitFirstItemConfig<any>['fields']
+  itemData: InitFirstItemConfig<any>['itemData']
+  gqlNames: AuthGqlNames
+  graphQLSchema: GraphQLSchema
   ItemAuthenticationWithPasswordSuccess: graphql.ObjectType<{
-    item: BaseItem;
-    sessionToken: string;
-  }>;
+    item: BaseItem
+    sessionToken: string
+  }>
   // TODO: return type required by pnpm :(
 }): graphql.Extension {
   const createInputConfig = assertInputObjectType(

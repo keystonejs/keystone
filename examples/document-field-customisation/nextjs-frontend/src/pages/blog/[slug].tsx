@@ -8,19 +8,19 @@ import { fetchGraphQL, gql } from '../../graphql'
 export type DocumentProp = DocumentRendererProps['document']
 
 type Post = {
-  id: string;
-  title: string;
-  slug: string;
-  publishDate: string | null;
+  id: string
+  title: string
+  slug: string
+  publishDate: string | null
   author: {
-    name: string;
-  } | null;
+    name: string
+  } | null
   content: {
-    document: DocumentProp;
-  };
+    document: DocumentProp
+  }
 }
 
-export default function BlogPage ({ post, error }: { post: Post | undefined; error?: Error }) {
+export default function BlogPage ({ post, error }: { post: Post | undefined, error?: Error }) {
   if (error) {
     return (
       <Fragment>

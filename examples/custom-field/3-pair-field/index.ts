@@ -33,7 +33,7 @@ export function pair<ListTypeInfo extends BaseListTypeInfo> (
     }
   }
 
-  function resolveOutput (value: { left: string | null; right: string | null }) {
+  function resolveOutput (value: { left: string | null, right: string | null }) {
     const { left, right } = value
     if (left === null || right === null) return null
     return `${left} ${right}`

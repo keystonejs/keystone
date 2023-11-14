@@ -24,7 +24,7 @@ const Brand = () => {
   )
 }
 
-type SectionProps = { label: string; children: ReactNode }
+type SectionProps = { label: string, children: ReactNode }
 const Section = ({ label, children }: SectionProps) => {
   return (
     <Fragment>
@@ -34,7 +34,7 @@ const Section = ({ label, children }: SectionProps) => {
   )
 }
 
-type NavItemProps = { href: string; children: ReactNode }
+type NavItemProps = { href: string, children: ReactNode }
 const NavItem = ({ href, children }: NavItemProps) => {
   const { palette, radii, spacing } = useTheme()
   const router = useRouter()

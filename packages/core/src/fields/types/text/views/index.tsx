@@ -131,9 +131,9 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
 type Config = FieldControllerConfig<import('..').TextFieldMeta>
 
 type Validation = {
-  isRequired: boolean;
-  match: { regex: RegExp; explanation: string | null } | null;
-  length: { min: number | null; max: number | null };
+  isRequired: boolean
+  match: { regex: RegExp, explanation: string | null } | null
+  length: { min: number | null, max: number | null }
 }
 
 function validate (value: TextValue, validation: Validation, fieldLabel: string): string[] {
@@ -178,11 +178,11 @@ function validate (value: TextValue, validation: Validation, fieldLabel: string)
   }
   return messages
 }
-type InnerTextValue = { kind: 'null'; prev: string } | { kind: 'value'; value: string }
+type InnerTextValue = { kind: 'null', prev: string } | { kind: 'value', value: string }
 
 type TextValue =
-  | { kind: 'create'; inner: InnerTextValue }
-  | { kind: 'update'; inner: InnerTextValue; initial: InnerTextValue }
+  | { kind: 'create', inner: InnerTextValue }
+  | { kind: 'update', inner: InnerTextValue, initial: InnerTextValue }
 
 function deserializeTextValue (value: string | null): InnerTextValue {
   if (value === null) {
@@ -194,9 +194,9 @@ function deserializeTextValue (value: string | null): InnerTextValue {
 export const controller = (
   config: Config
 ): FieldController<TextValue, string> & {
-  displayMode: 'input' | 'textarea';
-  validation: Validation;
-  isNullable: boolean;
+  displayMode: 'input' | 'textarea'
+  validation: Validation
+  isNullable: boolean
 } => {
   const validation: Validation = {
     isRequired: config.fieldMeta.validation.isRequired,

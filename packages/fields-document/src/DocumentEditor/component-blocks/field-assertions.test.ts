@@ -2,7 +2,7 @@ import { type ArrayField, type ConditionalField, fields, type FormField, type Ob
 import { assertValidComponentSchema } from './field-assertions'
 
 type EasilyCircularObject = ObjectField<{
-  x: EasilyCircularObject;
+  x: EasilyCircularObject
 }>
 const easilyCircularObject: EasilyCircularObject = fields.object({
   get x () {
@@ -61,7 +61,7 @@ test('does not allow a circular object within a value for a non-default discrimi
 test("does allow a circular conditional as long as it's not the default", () => {
   type Field = ConditionalField<
     typeof discriminant,
-    { true: Field; false: FormField<null, undefined> }
+    { true: Field, false: FormField<null, undefined> }
   >
   const conditional: Field = fields.conditional(discriminant, {
     get true () {
@@ -75,7 +75,7 @@ test("does allow a circular conditional as long as it's not the default", () => 
 test("does not allow a circular conditional if it's the default", () => {
   type Field = ConditionalField<
     typeof discriminant,
-    { false: Field; true: FormField<null, undefined> }
+    { false: Field, true: FormField<null, undefined> }
   >
   const conditional: Field = fields.conditional(discriminant, {
     get false () {
@@ -93,7 +93,7 @@ test("does not allow a circular conditional if it's the default", () => {
 test("allows circularity if it's stopped by an array field", () => {
   type Field = ArrayField<
     ObjectField<{
-      blah: Field;
+      blah: Field
     }>
   >
   const blah: Field = fields.array(
@@ -109,7 +109,7 @@ test("allows circularity if it's stopped by an array field", () => {
 test('does not allow a field that returns a different field from a getter each time', () => {
   type Field = ArrayField<
     ObjectField<{
-      blah: Field;
+      blah: Field
     }>
   >
   const blah: () => Field = () =>
@@ -132,7 +132,7 @@ test('does not allow a field that returns a different field from a getter each t
 test('exceeds the call stack size for an infinitely recursive field where all fields are different', () => {
   type Field = ArrayField<
     ObjectField<{
-      blah: Field;
+      blah: Field
     }>
   >
   const blah: () => Field = () => {

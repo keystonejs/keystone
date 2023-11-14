@@ -109,9 +109,9 @@ export async function getAccessFilters (
 }
 
 export type ResolvedFieldAccessControl = {
-  create: IndividualFieldAccessControl<FieldCreateItemAccessArgs<BaseListTypeInfo>>;
-  read: IndividualFieldAccessControl<FieldReadItemAccessArgs<BaseListTypeInfo>>;
-  update: IndividualFieldAccessControl<FieldUpdateItemAccessArgs<BaseListTypeInfo>>;
+  create: IndividualFieldAccessControl<FieldCreateItemAccessArgs<BaseListTypeInfo>>
+  read: IndividualFieldAccessControl<FieldReadItemAccessArgs<BaseListTypeInfo>>
+  update: IndividualFieldAccessControl<FieldUpdateItemAccessArgs<BaseListTypeInfo>>
 }
 
 export function parseFieldAccessControl (
@@ -130,23 +130,23 @@ export function parseFieldAccessControl (
 
 export type ResolvedListAccessControl = {
   operation: {
-    query: ListOperationAccessControl<'query', BaseListTypeInfo>;
-    create: ListOperationAccessControl<'create', BaseListTypeInfo>;
-    update: ListOperationAccessControl<'update', BaseListTypeInfo>;
-    delete: ListOperationAccessControl<'delete', BaseListTypeInfo>;
-  };
+    query: ListOperationAccessControl<'query', BaseListTypeInfo>
+    create: ListOperationAccessControl<'create', BaseListTypeInfo>
+    update: ListOperationAccessControl<'update', BaseListTypeInfo>
+    delete: ListOperationAccessControl<'delete', BaseListTypeInfo>
+  }
   filter: {
-    query: ListFilterAccessControl<'query', BaseListTypeInfo>;
+    query: ListFilterAccessControl<'query', BaseListTypeInfo>
     // create: not supported
-    update: ListFilterAccessControl<'update', BaseListTypeInfo>;
-    delete: ListFilterAccessControl<'delete', BaseListTypeInfo>;
-  };
+    update: ListFilterAccessControl<'update', BaseListTypeInfo>
+    delete: ListFilterAccessControl<'delete', BaseListTypeInfo>
+  }
   item: {
     // query: not supported
-    create: CreateListItemAccessControl<BaseListTypeInfo>;
-    update: UpdateListItemAccessControl<BaseListTypeInfo>;
-    delete: DeleteListItemAccessControl<BaseListTypeInfo>;
-  };
+    create: CreateListItemAccessControl<BaseListTypeInfo>
+    update: UpdateListItemAccessControl<BaseListTypeInfo>
+    delete: DeleteListItemAccessControl<BaseListTypeInfo>
+  }
 }
 
 export function parseListAccessControl (

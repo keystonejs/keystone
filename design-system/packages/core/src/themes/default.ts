@@ -154,11 +154,11 @@ const opacity = {
  */
 
 type HeadingStyle = {
-  color: string;
-  family: string;
-  size: string;
-  transform: Extract<CSSObject['textTransform'], string>;
-  weight: number;
+  color: string
+  family: string
+  size: string
+  transform: Extract<CSSObject['textTransform'], string>
+  weight: number
 }
 
 const headingStyles: { [key: string]: HeadingStyle } = {
@@ -207,16 +207,16 @@ const headingStyles: { [key: string]: HeadingStyle } = {
 }
 
 type ControlSize = {
-  borderRadius: number;
-  borderWidth: number;
-  gutter: number;
-  paddingX: number;
-  paddingY: number;
-  height: number;
-  gap: number;
-  fontSize: number | string;
-  indicatorBoxSize: number | string;
-  indicatorFontSize: number | string;
+  borderRadius: number
+  borderWidth: number
+  gutter: number
+  paddingX: number
+  paddingY: number
+  height: number
+  gap: number
+  fontSize: number | string
+  indicatorBoxSize: number | string
+  indicatorFontSize: number | string
 }
 
 const controlSizes: { [key: string]: ControlSize } = {
@@ -293,12 +293,12 @@ Tones have 2 foregrounds that should work on these backgrounds:
 
 type ToneColor = [string, string, string]
 type Tone = {
-  focusRing: string;
-  border: ToneColor;
-  fill: ToneColor;
-  tint: ToneColor;
-  foreground: ToneColor;
-  fillForeground: ToneColor;
+  focusRing: string
+  border: ToneColor
+  fill: ToneColor
+  tint: ToneColor
+  foreground: ToneColor
+  fillForeground: ToneColor
 }
 
 const tones = identityType<{ [key: string]: Tone }>()({
@@ -353,11 +353,11 @@ const tones = identityType<{ [key: string]: Tone }>()({
 })
 
 type SelectableColor = {
-  border: string;
-  fill: string;
-  fillForeground: string;
-  foreground: string;
-  tint: string;
+  border: string
+  fill: string
+  fillForeground: string
+  foreground: string
+  tint: string
 }
 
 const selectableColors = identityType<{ [key: string]: SelectableColor }>()({
@@ -406,38 +406,38 @@ const selectableColors = identityType<{ [key: string]: SelectableColor }>()({
 })
 
 type SharedFieldStateTokens = {
-  labelColor?: string;
-  legendColor?: string;
-  shadow?: string;
+  labelColor?: string
+  legendColor?: string
+  shadow?: string
 }
 
 type ControlFieldStateTokens = {
-  controlBackground?: string;
-  controlBorderColor?: string;
-  controlBorderRadius?: number | string;
-  controlForeground?: string;
+  controlBackground?: string
+  controlBorderColor?: string
+  controlBorderRadius?: number | string
+  controlForeground?: string
 }
 
 type InputFieldStateTokens = {
-  inputBackground?: string;
-  inputBorderColor?: string;
-  inputBorderRadius?: number | string;
-  inputForeground?: string;
-  iconColor?: string;
+  inputBackground?: string
+  inputBorderColor?: string
+  inputBorderRadius?: number | string
+  inputForeground?: string
+  iconColor?: string
 }
 
 type FieldStateTokens = SharedFieldStateTokens & ControlFieldStateTokens & InputFieldStateTokens
 
 type FieldTokens = FieldStateTokens & {
-  controlBorderWidth?: number | string;
-  inputBorderWidth?: number | string;
-  inputPlaceholder?: string;
-  switchForeground?: string;
-  disabled: FieldStateTokens;
-  focus: FieldStateTokens;
-  hover: FieldStateTokens;
-  invalid: FieldStateTokens;
-  selected: SharedFieldStateTokens & ControlFieldStateTokens;
+  controlBorderWidth?: number | string
+  inputBorderWidth?: number | string
+  inputPlaceholder?: string
+  switchForeground?: string
+  disabled: FieldStateTokens
+  focus: FieldStateTokens
+  hover: FieldStateTokens
+  invalid: FieldStateTokens
+  selected: SharedFieldStateTokens & ControlFieldStateTokens
 }
 
 const fields: FieldTokens = {

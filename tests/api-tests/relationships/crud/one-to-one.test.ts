@@ -78,9 +78,9 @@ const getCompanyAndLocation = async (
 ) => {
   type T = {
     data: {
-      Company: { id: IdType; location: { id: IdType } };
-      Location: { id: IdType; company: { id: IdType } };
-    };
+      Company: { id: IdType, location: { id: IdType } }
+      Location: { id: IdType, company: { id: IdType } }
+    }
   }
   const { data } = (await context.graphql.raw({
     query: `

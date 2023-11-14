@@ -9,10 +9,10 @@ import {
 import { graphql } from '../../..'
 
 export type FileFieldConfig<ListTypeInfo extends BaseListTypeInfo> = {
-  storage: string;
+  storage: string
   db?: {
-    extendPrismaSchema?: (field: string) => string;
-  };
+    extendPrismaSchema?: (field: string) => string
+  }
 } & CommonFieldConfig<ListTypeInfo>
 
 const FileFieldInput = graphql.inputObject({

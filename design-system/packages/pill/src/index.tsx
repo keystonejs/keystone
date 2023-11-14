@@ -9,8 +9,8 @@ type Tone = 'active' | 'passive' | 'positive' | 'warning' | 'negative' | 'help'
 type Weight = 'bold' | 'light'
 
 type PillButtonProps = {
-  tone: Tone;
-  weight: Weight;
+  tone: Tone
+  weight: Weight
 } & ButtonHTMLAttributes<HTMLButtonElement>
 
 const PillButton = forwardRef<HTMLButtonElement, PillButtonProps>(
@@ -114,12 +114,12 @@ const PillButton = forwardRef<HTMLButtonElement, PillButtonProps>(
 )
 
 type PillProps = {
-  children: ReactNode;
-  onClick?: () => void;
-  onRemove?: () => void;
-  tone?: Tone;
-  containerProps?: HTMLAttributes<HTMLDivElement>;
-  weight?: Weight;
+  children: ReactNode
+  onClick?: () => void
+  onRemove?: () => void
+  tone?: Tone
+  containerProps?: HTMLAttributes<HTMLDivElement>
+  weight?: Weight
 } & HTMLAttributes<HTMLButtonElement>
 
 export const Pill = forwardRef<HTMLButtonElement, PillProps>(

@@ -9,12 +9,12 @@ import type { Lists } from '.keystone/types'
 
 // needs to be compatible with withAuth
 export type Session = {
-  listKey: string;
-  itemId: string;
+  listKey: string
+  itemId: string
   data: {
-    passwordChangedAt: string;
-  };
-  startedAt: number;
+    passwordChangedAt: string
+  }
+  startedAt: number
 }
 
 function hasSession ({ session }: { session?: Session }) {

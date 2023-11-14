@@ -55,14 +55,14 @@ type ElementTagNameMap = HTMLElementTagNameMap &
   Pick<SVGElementTagNameMap, Exclude<keyof SVGElementTagNameMap, keyof HTMLElementTagNameMap>>
 
 type AsProp<Comp extends ElementType, Props> = {
-  as?: Comp;
+  as?: Comp
   ref?: Ref<
     Comp extends keyof ElementTagNameMap
       ? ElementTagNameMap[Comp]
       : Comp extends new (...args: any) => any
       ? InstanceType<Comp>
       : undefined
-  >;
+  >
 } & Omit<ComponentPropsWithoutRef<Comp>, 'as' | keyof Props>
 
 type CompWithAsProp<Props, DefaultElementType extends ElementType> = <
@@ -144,7 +144,7 @@ export const useId = (idFromProps?: string | null) => {
 export const useSafeLayoutEffect = typeof window === 'undefined' ? () => {} : useLayoutEffect
 
 type Props = {
-  children: ReactElement;
+  children: ReactElement
 }
 
 export const Portal = ({ children }: Props): React.ReactPortal | null => {

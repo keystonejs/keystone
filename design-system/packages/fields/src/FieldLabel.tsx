@@ -5,7 +5,7 @@ import { forwardRefWithAs, jsx, useTheme } from '@keystone-ui/core'
 import type { ReactNode } from 'react'
 
 type FieldLabelProps = {
-  children: ReactNode;
+  children: ReactNode
 }
 
 export const FieldLabel = forwardRefWithAs<'label', FieldLabelProps>(

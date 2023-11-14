@@ -52,7 +52,7 @@ const BasicDatePicker = () => {
 
 export default function FieldsPage () {
   const { spacing } = useTheme()
-  const [selectVal, setSelectVal] = useState<{ label: string; value: string } | null>(null)
+  const [selectVal, setSelectVal] = useState<{ label: string, value: string } | null>(null)
   const [segmentedControlVal, setSegmentedControlVal] = useState<number | undefined>(undefined)
   return (
     <Page>

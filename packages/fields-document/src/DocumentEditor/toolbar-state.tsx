@@ -14,7 +14,7 @@ import { isListNode } from './lists'
 import { DocumentFieldRelationshipsProvider, type Relationships } from './relationship'
 import { allMarks, isElementActive, type Mark, nodeTypeMatcher } from './utils'
 
-type BasicToolbarItem = { isSelected: boolean; isDisabled: boolean }
+type BasicToolbarItem = { isSelected: boolean, isDisabled: boolean }
 
 // component blocks are not in the ToolbarState because they're inserted in the closest available place and the selected state is not shown in the toolbar
 
@@ -23,31 +23,31 @@ type BasicToolbarItem = { isSelected: boolean; isDisabled: boolean }
 // (because things are hidden if they're not enabled in the editor document features)
 export type ToolbarState = {
   textStyles: {
-    selected: 'normal' | 1 | 2 | 3 | 4 | 5 | 6;
-    allowedHeadingLevels: (1 | 2 | 3 | 4 | 5 | 6)[];
-  };
+    selected: 'normal' | 1 | 2 | 3 | 4 | 5 | 6
+    allowedHeadingLevels: (1 | 2 | 3 | 4 | 5 | 6)[]
+  }
   marks: {
     [key in Mark]: BasicToolbarItem;
-  };
+  }
   clearFormatting: {
-    isDisabled: boolean;
-  };
+    isDisabled: boolean
+  }
   alignment: {
-    selected: 'start' | 'center' | 'end';
-    isDisabled: boolean;
-  };
-  lists: { ordered: BasicToolbarItem; unordered: BasicToolbarItem };
-  links: BasicToolbarItem;
-  blockquote: BasicToolbarItem;
+    selected: 'start' | 'center' | 'end'
+    isDisabled: boolean
+  }
+  lists: { ordered: BasicToolbarItem, unordered: BasicToolbarItem }
+  links: BasicToolbarItem
+  blockquote: BasicToolbarItem
   // note that layouts can't be disabled because they are inserted
   // so they will be inserted to the closest valid location
   // unlike the other things here which wrap elements
-  layouts: { isSelected: boolean };
-  dividers: { isDisabled: boolean };
-  code: BasicToolbarItem;
-  relationships: { isDisabled: boolean };
-  editor: Editor;
-  editorDocumentFeatures: DocumentFeatures;
+  layouts: { isSelected: boolean }
+  dividers: { isDisabled: boolean }
+  code: BasicToolbarItem
+  relationships: { isDisabled: boolean }
+  editor: Editor
+  editorDocumentFeatures: DocumentFeatures
 }
 
 const ToolbarStateContext = React.createContext<null | ToolbarState>(null)
@@ -288,10 +288,10 @@ export const ToolbarStateProvider = ({
   editorDocumentFeatures,
   relationships,
 }: {
-  children: ReactNode;
-  componentBlocks: Record<string, ComponentBlock>;
-  editorDocumentFeatures: DocumentFeatures;
-  relationships: Relationships;
+  children: ReactNode
+  componentBlocks: Record<string, ComponentBlock>
+  editorDocumentFeatures: DocumentFeatures
+  relationships: Relationships
 }) => {
   const editor = useSlate()
 

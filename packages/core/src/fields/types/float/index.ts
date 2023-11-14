@@ -13,18 +13,18 @@ import { filters } from '../../filters'
 
 export type FloatFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
-    defaultValue?: number;
-    isIndexed?: boolean | 'unique';
+    defaultValue?: number
+    isIndexed?: boolean | 'unique'
     validation?: {
-      min?: number;
-      max?: number;
-      isRequired?: boolean;
-    };
+      min?: number
+      max?: number
+      isRequired?: boolean
+    }
     db?: {
-      isNullable?: boolean;
-      map?: string;
-      extendPrismaSchema?: (field: string) => string;
-    };
+      isNullable?: boolean
+      map?: string
+      extendPrismaSchema?: (field: string) => string
+    }
   }
 
 export const float =

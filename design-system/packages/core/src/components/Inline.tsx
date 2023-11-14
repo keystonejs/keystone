@@ -18,11 +18,11 @@ const alignment = {
 
 type InlineProps = {
   /** The value of the "align-items" property. */
-  align?: keyof typeof alignment;
+  align?: keyof typeof alignment
   /** Each item in the container. */
-  children: ReactNode;
+  children: ReactNode
   /** The size of the gap between each item. */
-  gap?: keyof Theme['spacing'];
+  gap?: keyof Theme['spacing']
 } & BoxProps
 
 export const Inline = forwardRefWithAs<'div', InlineProps>(

@@ -9,8 +9,8 @@ import { graphql } from '../../..'
 
 export type JsonFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
-    defaultValue?: JSONValue;
-    db?: { map?: string; extendPrismaSchema?: (field: string) => string };
+    defaultValue?: JSONValue
+    db?: { map?: string, extendPrismaSchema?: (field: string) => string }
   }
 
 export const json =

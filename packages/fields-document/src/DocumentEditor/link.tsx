@@ -321,7 +321,7 @@ export function withLink (
       }
     }
     if (isInlineContainer(node)) {
-      let lastMergableLink: { index: number; node: Node & { type: 'link' } } | null = null
+      let lastMergableLink: { index: number, node: Node & { type: 'link' } } | null = null
       for (const [idx, child] of node.children.entries()) {
         if (child.type === 'link' && child.href === lastMergableLink?.node.href) {
           const firstLinkPath = [...path, lastMergableLink.index]

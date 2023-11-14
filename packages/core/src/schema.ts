@@ -15,9 +15,9 @@ export function group<
   __Unused extends any, // TODO: remove in breaking change
   ListTypeInfo extends BaseListTypeInfo
 > (config: {
-  label: string;
-  description?: string;
-  fields: BaseFields<ListTypeInfo>;
+  label: string
+  description?: string
+  fields: BaseFields<ListTypeInfo>
 }): BaseFields<ListTypeInfo> {
   const keys = Object.keys(config.fields)
   if (keys.some(key => key.startsWith('__group'))) {

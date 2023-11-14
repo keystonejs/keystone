@@ -15,10 +15,10 @@ const orientationMap = {
 }
 
 type DividerProps = {
-  children?: never;
-  color?: ColorType;
-  orientation?: keyof typeof orientationMap;
-  className?: string;
+  children?: never
+  color?: ColorType
+  orientation?: keyof typeof orientationMap
+  className?: string
 } & MarginProps
 
 export const Divider = ({ orientation = 'vertical', color, ...props }: DividerProps) => {

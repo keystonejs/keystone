@@ -229,9 +229,9 @@ function documentFeaturesFormToValue (formValue: DocumentFeaturesFormValue): Doc
 }
 
 const DocumentFeaturesContext = React.createContext<{
-  documentFeatures: DocumentFeatures;
-  formValue: DocumentFeaturesFormValue;
-  setFormValue:(value: DocumentFeaturesFormValue) => void;
+  documentFeatures: DocumentFeatures
+  formValue: DocumentFeaturesFormValue
+  setFormValue:(value: DocumentFeaturesFormValue) => void
 }>({} as any)
 
 export function DocumentFeaturesProvider ({ children }: { children: ReactNode }) {

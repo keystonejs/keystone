@@ -49,8 +49,8 @@ const getRunner = ({
   storage,
   fields,
 }: {
-  storage: Record<string, StorageConfig>;
-  fields: KeystoneConfig['lists'][string]['fields'];
+  storage: Record<string, StorageConfig>
+  fields: KeystoneConfig['lists'][string]['fields']
 }) =>
   setupTestRunner({
     config: testConfig({
@@ -70,7 +70,7 @@ const getRunner = ({
 
 const getFileHash = async (
   filename: string,
-  config: { matrixValue: 's3' } | { matrixValue: 'local'; folder: string }
+  config: { matrixValue: 's3' } | { matrixValue: 'local', folder: string }
 ) => {
   let contentFromURL
 
@@ -85,7 +85,7 @@ const getFileHash = async (
 
 const checkFile = async (
   filename: string,
-  config: { matrixValue: 's3' } | { matrixValue: 'local'; folder: string }
+  config: { matrixValue: 's3' } | { matrixValue: 'local', folder: string }
 ) => {
   if (config.matrixValue === 's3') {
     return await fetch(filename).then(x => x.status === 200)

@@ -21,11 +21,11 @@ export type ToneKey = (typeof loadingToneValues)[number]
 
 type Props = {
   /** The aria-label for screen readers. */
-  label: string;
+  label: string
   /** The color of the loading indicator. */
-  tone?: ToneKey;
+  tone?: ToneKey
   /** The size of the loading indicator. */
-  size?: SizeKey;
+  size?: SizeKey
 }
 
 // TODO: Should this be a box, to support margin etc?

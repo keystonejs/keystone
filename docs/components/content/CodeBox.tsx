@@ -8,7 +8,7 @@ import { CheckIcon } from '@keystone-ui/icons/icons/CheckIcon'
 import { Copy } from '../icons/Copy'
 
 type CodeBoxProps = {
-  code: string;
+  code: string
 } & HTMLAttributes<HTMLElement>
 
 export function CodeBox ({ code, ...props }: CodeBoxProps) {

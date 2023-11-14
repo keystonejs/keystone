@@ -27,11 +27,11 @@ type AnchorElementType = HTMLAnchorElement | HTMLButtonElement | HTMLDivElement 
 // Generic Hook
 
 type PopoverOptions = {
-  handleClose: 'both' | 'mouse' | 'keyboard' | 'none';
+  handleClose: 'both' | 'mouse' | 'keyboard' | 'none'
 }
 
 export const useControlledPopover = (
-  { isOpen, onClose }: { isOpen: boolean; onClose: () => void },
+  { isOpen, onClose }: { isOpen: boolean, onClose: () => void },
   popperOptions: Partial<Options> = {},
   popoverOptions: PopoverOptions = { handleClose: 'both' }
 ) => {
@@ -129,19 +129,19 @@ export const usePopover = (
 // ------------------------------
 
 export type TriggerRendererOptions = {
-  isOpen: boolean;
+  isOpen: boolean
   triggerProps: {
-    onClick: () => void;
-    ref: Ref<any>;
-  };
+    onClick: () => void
+    ref: Ref<any>
+  }
 }
 type Props = {
   /** The content of the dialog. */
-  children: ReactNode;
+  children: ReactNode
   /** Where, in relation to the trigger, to place the dialog. */
-  placement?: Placement;
+  placement?: Placement
   /** The trigger element, which the dialog is bound to. */
-  triggerRenderer: (options: TriggerRendererOptions) => ReactElement;
+  triggerRenderer: (options: TriggerRendererOptions) => ReactElement
 }
 
 export const Popover = ({ placement = 'bottom', triggerRenderer, ...props }: Props) => {
@@ -183,15 +183,15 @@ export const Popover = ({ placement = 'bottom', triggerRenderer, ...props }: Pro
 
 type DialogProps = {
   /** The content of the dialog. */
-  children: ReactNode;
+  children: ReactNode
   /** When true, the popover will be visible. */
-  isVisible: boolean;
+  isVisible: boolean
   arrow: {
-    ref: (element: HTMLDivElement) => void;
+    ref: (element: HTMLDivElement) => void
     props: {
-      style: CSSProperties;
-    };
-  };
+      style: CSSProperties
+    }
+  }
 }
 
 export const PopoverDialog = forwardRef<HTMLDivElement, DialogProps>(
@@ -254,9 +254,9 @@ export const PopoverDialog = forwardRef<HTMLDivElement, DialogProps>(
 // the event listener will return a native event, not a synthetic event
 type MouseHandler = (event: MouseEvent) => void
 type UseClickOutsideProps = {
-  handler: MouseHandler;
-  elements: (HTMLElement | undefined | null)[];
-  listenWhen: boolean;
+  handler: MouseHandler
+  elements: (HTMLElement | undefined | null)[]
+  listenWhen: boolean
 }
 
 const useClickOutside = ({ handler, elements, listenWhen }: UseClickOutsideProps) => {
@@ -281,11 +281,11 @@ const useClickOutside = ({ handler, elements, listenWhen }: UseClickOutsideProps
 
 type KeyboardHandler = (event: KeyboardEvent) => void
 type UseKeyPressProps = {
-  targetKey: string;
-  targetElement?: HTMLElement | null;
-  downHandler?: KeyboardHandler;
-  upHandler?: KeyboardHandler;
-  listenWhen: boolean;
+  targetKey: string
+  targetElement?: HTMLElement | null
+  downHandler?: KeyboardHandler
+  upHandler?: KeyboardHandler
+  listenWhen: boolean
 }
 
 const useKeyPress = ({

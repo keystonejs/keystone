@@ -5,9 +5,9 @@ export const signinTemplate = ({
   identityField,
   secretField,
 }: {
-  gqlNames: AuthGqlNames;
-  identityField: string;
-  secretField: string;
+  gqlNames: AuthGqlNames
+  identityField: string
+  secretField: string
 }) => {
   // -- TEMPLATE START
   return `import { getSigninPage } from '@keystone-6/auth/pages/SigninPage'

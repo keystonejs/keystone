@@ -6,7 +6,7 @@ import { forwardRefWithAs } from '../utils'
 // See: https://a11yproject.com/posts/how-to-hide-content/
 
 type Props = {
-  children?: ReactNode;
+  children?: ReactNode
 }
 
 export const VisuallyHidden = forwardRefWithAs<'span', Props>(

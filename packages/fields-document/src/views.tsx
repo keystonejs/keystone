@@ -79,45 +79,45 @@ export const allowedExportsOnCustomViews = ['componentBlocks']
 export type DocumentFeatures = {
   formatting: {
     inlineMarks: {
-      bold: boolean;
-      italic: boolean;
-      underline: boolean;
-      strikethrough: boolean;
-      code: boolean;
-      superscript: boolean;
-      subscript: boolean;
-      keyboard: boolean;
-    };
+      bold: boolean
+      italic: boolean
+      underline: boolean
+      strikethrough: boolean
+      code: boolean
+      superscript: boolean
+      subscript: boolean
+      keyboard: boolean
+    }
     listTypes: {
-      ordered: boolean;
-      unordered: boolean;
-    };
+      ordered: boolean
+      unordered: boolean
+    }
     alignment: {
-      center: boolean;
-      end: boolean;
-    };
-    headingLevels: (1 | 2 | 3 | 4 | 5 | 6)[];
+      center: boolean
+      end: boolean
+    }
+    headingLevels: (1 | 2 | 3 | 4 | 5 | 6)[]
     blockTypes: {
-      blockquote: boolean;
-      code: boolean;
-    };
-    softBreaks: boolean;
-  };
-  links: boolean;
-  dividers: boolean;
-  layouts: [number, ...number[]][];
+      blockquote: boolean
+      code: boolean
+    }
+    softBreaks: boolean
+  }
+  links: boolean
+  dividers: boolean
+  layouts: [number, ...number[]][]
 }
 
 export const controller = (
   config: FieldControllerConfig<{
-    relationships: Relationships;
-    documentFeatures: DocumentFeatures;
-    componentBlocksPassedOnServer: string[];
+    relationships: Relationships
+    documentFeatures: DocumentFeatures
+    componentBlocksPassedOnServer: string[]
   }>
 ): FieldController<Descendant[]> & {
-  componentBlocks: Record<string, ComponentBlock>;
-  relationships: Relationships;
-  documentFeatures: DocumentFeatures;
+  componentBlocks: Record<string, ComponentBlock>
+  relationships: Relationships
+  documentFeatures: DocumentFeatures
 } => {
   const memoizedIsComponentBlockValid = weakMemoize((componentBlock: ComponentBlock) =>
     weakMemoize((props: any) =>

@@ -8,10 +8,10 @@ import type { Lists } from '.keystone/types'
 //   or tested for any particular usage
 
 export type Session = {
-  id: string;
-  admin: boolean;
-  moderator: null | { id: string };
-  contributor: null | { id: string };
+  id: string
+  admin: boolean
+  moderator: null | { id: string }
+  contributor: null | { id: string }
 }
 
 type Has<T, K extends keyof T> = {
@@ -34,10 +34,10 @@ function forUsers<T> ({
   contributor,
   default: _default,
 }: {
-  admin?: ({ session }: { session: Session & { admin: true } }) => T;
-  moderator?: ({ session }: { session: Has<Session, 'moderator'> }) => T;
-  contributor?: ({ session }: { session: Has<Session, 'contributor'> }) => T;
-  default: () => T;
+  admin?: ({ session }: { session: Session & { admin: true } }) => T
+  moderator?: ({ session }: { session: Has<Session, 'moderator'> }) => T
+  contributor?: ({ session }: { session: Has<Session, 'contributor'> }) => T
+  default: () => T
 }) {
   return ({ session }: { session?: Session }): T => {
     if (!session) return _default()

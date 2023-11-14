@@ -31,7 +31,7 @@ import { ArrowR } from './icons/ArrowR'
 // TODO: Add in search for mobile via this button
 // import { Search } from './icons/Search';
 
-type HeaderContextType = { mobileNavIsOpen: boolean; desktopOpenState: number }
+type HeaderContextType = { mobileNavIsOpen: boolean, desktopOpenState: number }
 const HeaderContext = createContext<HeaderContextType>({
   mobileNavIsOpen: false,
   desktopOpenState: -1,
@@ -83,7 +83,7 @@ function useCurrentSection () {
   if (['/blog'].some(check)) return '/blog'
 }
 
-function LinkItem ({ children, href }: { children: ReactNode; href: string }) {
+function LinkItem ({ children, href }: { children: ReactNode, href: string }) {
   const mq = useMediaQuery()
   const currentSection = useCurrentSection()
   const isActive = href === currentSection
@@ -125,8 +125,8 @@ function FlatMenu ({
   label,
   items = [],
 }: {
-  label: string;
-  items: Array<{ label: string; href: string }>;
+  label: string
+  items: Array<{ label: string, href: string }>
 }) {
   const mq = useMediaQuery()
   const menuRef = useRef(null)

@@ -2,7 +2,7 @@ import { graphql } from '../..'
 import { allowAll } from '../../access'
 import type { InitialisedField } from './initialise-lists'
 
-export type ListForValidation = { listKey: string; fields: Record<string, InitialisedField> }
+export type ListForValidation = { listKey: string, fields: Record<string, InitialisedField> }
 
 export function assertFieldsValid (list: ListForValidation) {
   assertNoConflictingExtraOutputFields(list)

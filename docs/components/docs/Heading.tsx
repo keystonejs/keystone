@@ -49,12 +49,12 @@ const headingStyles = {
 }
 
 type BaseHeadingProps = {
-  className?: string;
-  children: ReactNode;
-} & ({ id: string } | { id?: undefined; children: string })
+  className?: string
+  children: ReactNode
+} & ({ id: string } | { id?: undefined, children: string })
 
 type HeadingProps = BaseHeadingProps & {
-  level: 1 | 2 | 3 | 4 | 5 | 6;
+  level: 1 | 2 | 3 | 4 | 5 | 6
 }
 
 export function Heading ({ level, id, children, ...props }: HeadingProps) {

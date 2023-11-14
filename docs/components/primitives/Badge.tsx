@@ -23,7 +23,7 @@ const styleMap = {
 }
 
 type BadgeProps = {
-  look?: keyof typeof styleMap;
+  look?: keyof typeof styleMap
 } & HTMLAttributes<HTMLElement>
 
 export function Badge ({ look = 'warning', ...props }: BadgeProps) {

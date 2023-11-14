@@ -15,14 +15,14 @@ import { CellLink, CellContainer } from '../../../../admin-ui/components'
 import { useFormattedInput } from '../../integer/views/utils'
 
 type Validation = {
-  isRequired: boolean;
-  min: bigint;
-  max: bigint;
+  isRequired: boolean
+  min: bigint
+  max: bigint
 }
 
 type Value =
-  | { kind: 'create'; value: string | bigint | null }
-  | { kind: 'update'; value: string | bigint | null; initial: unknown | null }
+  | { kind: 'create', value: string | bigint | null }
+  | { kind: 'update', value: string | bigint | null, initial: unknown | null }
 
 function BigIntInput ({
   value,
@@ -33,13 +33,13 @@ function BigIntInput ({
   validationMessage,
   placeholder,
 }: {
-  id: string;
-  autoFocus?: boolean;
-  value: bigint | string | null;
-  onChange: (value: bigint | string | null) => void;
-  forceValidation?: boolean;
-  validationMessage?: string;
-  placeholder?: string;
+  id: string
+  autoFocus?: boolean
+  value: bigint | string | null
+  onChange: (value: bigint | string | null) => void
+  forceValidation?: boolean
+  validationMessage?: string
+  placeholder?: string
 }) {
   const [hasBlurred, setHasBlurred] = useState(false)
   const props = useFormattedInput<bigint | null>(
@@ -181,15 +181,15 @@ function validate (
 export const controller = (
   config: FieldControllerConfig<{
     validation: {
-      isRequired: boolean;
-      min: string;
-      max: string;
-    };
-    defaultValue: string | null | { kind: 'autoincrement' };
+      isRequired: boolean
+      min: string
+      max: string
+    }
+    defaultValue: string | null | { kind: 'autoincrement' }
   }>
 ): FieldController<Value, string> & {
-  validation: Validation;
-  hasAutoIncrementDefault: boolean;
+  validation: Validation
+  hasAutoIncrementDefault: boolean
 } => {
   const hasAutoIncrementDefault =
     typeof config.fieldMeta.defaultValue === 'object' &&

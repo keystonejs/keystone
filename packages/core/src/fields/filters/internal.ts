@@ -10,17 +10,17 @@ const objectEntriesButAssumeNoExtraProperties: <T>(obj: T) => EntriesAssumingNoE
   Object.entries as any
 
 type CommonFilter<T> = {
-  equals?: T | null;
-  in?: readonly T[] | null;
-  notIn?: readonly T[] | null;
-  lt?: T | null;
-  lte?: T | null;
-  gt?: T | null;
-  gte?: T | null;
-  contains?: T | null;
-  startsWith?: T | null;
-  endsWith?: T | null;
-  not?: CommonFilter<T> | null;
+  equals?: T | null
+  in?: readonly T[] | null
+  notIn?: readonly T[] | null
+  lt?: T | null
+  lte?: T | null
+  gt?: T | null
+  gte?: T | null
+  contains?: T | null
+  startsWith?: T | null
+  endsWith?: T | null
+  not?: CommonFilter<T> | null
 }
 
 function internalResolveFilter (

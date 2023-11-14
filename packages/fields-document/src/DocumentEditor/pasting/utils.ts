@@ -75,7 +75,7 @@ export function forceDisableMarkForChildren<T> (mark: Mark, cb: () => T): T {
  * non-void inlines are probably always bad but that would imply changing the document
  * structure which would be such unnecessary breakage)
  */
-type StrictLink = { type: 'link'; href: string; children: Text[] }
+type StrictLink = { type: 'link', href: string, children: Text[] }
 // inline relationships are not here because we never create them from handling a paste from html or markdown
 export type InlineFromExternalPaste = Text | StrictLink
 

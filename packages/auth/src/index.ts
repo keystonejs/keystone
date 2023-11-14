@@ -14,9 +14,9 @@ import { signinTemplate } from './templates/signin'
 import { initTemplate } from './templates/init'
 
 export type AuthSession = {
-  listKey: string; // TODO: use ListTypeInfo
-  itemId: string | number; // TODO: use ListTypeInfo
-  data: unknown; // TODO: use ListTypeInfo
+  listKey: string // TODO: use ListTypeInfo
+  itemId: string | number // TODO: use ListTypeInfo
+  data: unknown // TODO: use ListTypeInfo
 }
 
 // TODO: use TypeInfo and listKey for types
@@ -209,10 +209,10 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo> ({
     wasAccessAllowed,
     basePath,
   }: {
-    context: KeystoneContext<TypeInfo>;
-    wasAccessAllowed: boolean;
-    basePath: string;
-  }): Promise<{ kind: 'redirect'; to: string } | void> {
+    context: KeystoneContext<TypeInfo>
+    wasAccessAllowed: boolean
+    basePath: string
+  }): Promise<{ kind: 'redirect', to: string } | void> {
     const { req } = context
     const { pathname } = new URL(req!.url!, 'http://_')
 

@@ -342,9 +342,9 @@ async function setupInitialKeystone (
   cwd: string,
   config: KeystoneConfig,
   options: {
-    dbPush: boolean;
-    prisma: boolean;
-    server: boolean;
+    dbPush: boolean
+    prisma: boolean
+    server: boolean
   }
 ) {
   const { dbPush, prisma, server } = options

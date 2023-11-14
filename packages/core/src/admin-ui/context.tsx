@@ -15,27 +15,27 @@ import {
 } from './utils/useLazyMetadata'
 
 type KeystoneContextType = {
-  adminConfig: AdminConfig;
+  adminConfig: AdminConfig
   adminMeta:
-    | { state: 'loaded'; value: AdminMeta }
-    | { state: 'error'; error: ApolloError; refetch: () => Promise<void> };
-  fieldViews: FieldViews;
-  authenticatedItem: AuthenticatedItem;
-  visibleLists: VisibleLists;
-  createViewFieldModes: CreateViewFieldModes;
-  reinitContext: () => Promise<void>;
-  apiPath: string;
+    | { state: 'loaded', value: AdminMeta }
+    | { state: 'error', error: ApolloError, refetch: () => Promise<void> }
+  fieldViews: FieldViews
+  authenticatedItem: AuthenticatedItem
+  visibleLists: VisibleLists
+  createViewFieldModes: CreateViewFieldModes
+  reinitContext: () => Promise<void>
+  apiPath: string
 }
 
 const KeystoneContext = createContext<KeystoneContextType | undefined>(undefined)
 
 type KeystoneProviderProps = {
-  children: ReactNode;
-  adminConfig: AdminConfig;
-  adminMetaHash: string;
-  fieldViews: FieldViews;
-  lazyMetadataQuery: DocumentNode;
-  apiPath: string;
+  children: ReactNode
+  adminConfig: AdminConfig
+  adminMetaHash: string
+  fieldViews: FieldViews
+  lazyMetadataQuery: DocumentNode
+  apiPath: string
 }
 
 function InternalKeystoneProvider ({
@@ -104,12 +104,12 @@ export const KeystoneProvider = (props: KeystoneProviderProps) => {
 }
 
 export const useKeystone = (): {
-  adminConfig: AdminConfig;
-  adminMeta: AdminMeta;
-  authenticatedItem: AuthenticatedItem;
-  visibleLists: VisibleLists;
-  createViewFieldModes: CreateViewFieldModes;
-  apiPath: string;
+  adminConfig: AdminConfig
+  adminMeta: AdminMeta
+  authenticatedItem: AuthenticatedItem
+  visibleLists: VisibleLists
+  createViewFieldModes: CreateViewFieldModes
+  apiPath: string
 } => {
   const value = useContext(KeystoneContext)
   if (!value) {

@@ -8,10 +8,10 @@ import { jsx, keyframes, Portal, useTheme } from '@keystone-ui/core'
 import { Blanket } from './Blanket'
 
 type DialogBaseProps = {
-  children: ReactNode;
-  isOpen: boolean;
-  onClose: () => void;
-  width: number;
+  children: ReactNode
+  isOpen: boolean
+  onClose: () => void
+  width: number
 }
 
 const slideInAnim = keyframes({

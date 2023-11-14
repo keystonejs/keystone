@@ -163,9 +163,9 @@ export default function Docs (props: InferGetStaticPropsType<typeof getStaticPro
 export async function getStaticProps (): Promise<
   GetStaticPropsResult<{
     posts: {
-      slug: string;
-      frontmatter: BlogFrontmatter;
-    }[];
+      slug: string
+      frontmatter: BlogFrontmatter
+    }[]
   }>
 > {
   const files = await globby('*.md', {

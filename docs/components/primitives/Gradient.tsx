@@ -27,8 +27,8 @@ const styleMap = {
 }
 
 type GradientProps = {
-  as?: ElementType;
-  look?: keyof typeof styleMap;
+  as?: ElementType
+  look?: keyof typeof styleMap
 } & HTMLAttributes<HTMLElement>
 
 export function Gradient ({ look = 'grad1', as: Tag = 'span', ...props }: GradientProps) {

@@ -11,7 +11,7 @@ import type { SizeType } from './types'
 
 type CheckboxProps = {
   /** The checkbox label content. */
-  children: ReactNode;
+  children: ReactNode
 } & CheckboxControlProps
 
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
@@ -30,13 +30,13 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
 
 type CheckboxControlProps = {
   /** When true, the checkbox will be checked. */
-  checked?: boolean;
+  checked?: boolean
   /** When true, the checkbox will be disabled. */
-  disabled?: boolean;
+  disabled?: boolean
   /** The size of the Checkbox */
-  size?: SizeType;
+  size?: SizeType
   /** The value of the Checkbox. */
-  value?: string;
+  value?: string
 } & Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>
 
 export const CheckboxControl = forwardRef<HTMLInputElement, CheckboxControlProps>(
@@ -55,9 +55,9 @@ const Indicator = ({
   size,
   ...props
 }: {
-  size?: SizeType;
-  children?: ReactNode;
-  className?: string;
+  size?: SizeType
+  children?: ReactNode
+  className?: string
 }) => {
   const tokens = useIndicatorTokens({ type: 'checkbox', size: size || 'medium' })
   const styles = useIndicatorStyles({ tokens })

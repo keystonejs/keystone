@@ -25,10 +25,10 @@ export function ComponentBlockRender ({
   onChange,
   children,
 }: {
-  element: Element & { type: 'component-block' };
-  onChange: (cb: (props: Record<string, unknown>) => Record<string, unknown>) => void;
-  componentBlock: ComponentBlock;
-  children: any;
+  element: Element & { type: 'component-block' }
+  onChange: (cb: (props: Record<string, unknown>) => Record<string, unknown>) => void
+  componentBlock: ComponentBlock
+  children: any
 }) {
   const getPreviewProps = useMemo(() => {
     return createGetPreviewProps(

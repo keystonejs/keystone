@@ -9,7 +9,7 @@ export const config = {
 
 const bgImgUrl = `url(${siteBaseUrl}/assets/blog/blog-cover-bg.png)`
 
-export const HeroImage = ({ title, type }: { title: string; type?: string }) => {
+export const HeroImage = ({ title, type }: { title: string, type?: string }) => {
   const clippedTitle = title.length > 100 ? title.substring(0, 100) + '...' : title
   let titleFontSize = 96
   if (clippedTitle.length > 35) {

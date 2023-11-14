@@ -112,7 +112,7 @@ const slideInFrames = keyframes({
 })
 
 type ToastElementProps = {
-  onDismiss: () => void;
+  onDismiss: () => void
 } & Omit<ToastPropsExact, 'id'>
 
 export const ToastElement = forwardRef<HTMLDivElement, ToastElementProps>((props, ref) => {

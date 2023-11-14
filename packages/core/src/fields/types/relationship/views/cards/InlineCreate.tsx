@@ -27,11 +27,11 @@ export function InlineCreate ({
   fields: fieldPaths,
   selectedFields,
 }: {
-  list: ListMeta;
-  selectedFields: string;
-  fields: readonly string[];
-  onCancel: () => void;
-  onCreate: (itemGetter: DataGetter<ItemData>) => void;
+  list: ListMeta
+  selectedFields: string
+  fields: readonly string[]
+  onCancel: () => void
+  onCreate: (itemGetter: DataGetter<ItemData>) => void
 }) {
   const toasts = useToasts()
   const fields = useFieldsObj(list, fieldPaths)

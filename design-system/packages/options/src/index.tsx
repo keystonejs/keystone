@@ -15,9 +15,9 @@ export const CheckMark = ({
   isFocused,
   isSelected,
 }: {
-  isDisabled?: boolean;
-  isFocused?: boolean;
-  isSelected?: boolean;
+  isDisabled?: boolean
+  isFocused?: boolean
+  isSelected?: boolean
 }) => {
   const tokens = useIndicatorTokens({
     size: 'medium',
@@ -131,7 +131,7 @@ const defaultComponents = {
   IndicatorSeparator: null,
 }
 
-type OptionsProps = Props<{ label: string; value: string; isDisabled?: boolean }, boolean>
+type OptionsProps = Props<{ label: string, value: string, isDisabled?: boolean }, boolean>
 
 export const Options = ({ components: propComponents, ...props }: OptionsProps) => {
   const components = useMemo(
@@ -143,7 +143,7 @@ export const Options = ({ components: propComponents, ...props }: OptionsProps) 
   )
   const theme = useTheme()
 
-  const optionRendererStyles: StylesConfig<{ label: string; value: string; isDisabled?: boolean }> =
+  const optionRendererStyles: StylesConfig<{ label: string, value: string, isDisabled?: boolean }> =
     useMemo(
       () => ({
         control: (provided: any) => ({

@@ -51,7 +51,7 @@ const nonCircularFields = {
 
 type IDFilterType = graphql.InputObjectType<
   typeof nonCircularFields & {
-    not: graphql.Arg<typeof IDFilter>;
+    not: graphql.Arg<typeof IDFilter>
   }
 >
 

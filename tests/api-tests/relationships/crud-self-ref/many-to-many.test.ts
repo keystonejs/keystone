@@ -40,9 +40,9 @@ const createUserAndFriend = async (context: ContextFromRunner<typeof runner>) =>
 const getUserAndFriend = async (context: KeystoneContext, userId: IdType, friendId: IdType) => {
   type T = {
     data: {
-      User: { id: IdType; friends: { id: IdType }[] };
-      Friend: { id: IdType; friendOf: { id: IdType }[] };
-    };
+      User: { id: IdType, friends: { id: IdType }[] }
+      Friend: { id: IdType, friendOf: { id: IdType }[] }
+    }
   }
   const result = (await context.graphql.raw({
     query: `
@@ -231,7 +231,7 @@ describe(`Many-to-many relationships`, () => {
 
         const _users = (await context.query.User.findMany({
           query: ' id friends { id friendOf { id } }',
-        })) as { id: IdType; friends: any[] }[]
+        })) as { id: IdType, friends: any[] }[]
         // Both companies should have a location, and the location should have two companies
         const linkedUsers = _users.filter(({ id }) => id === user.id || id === User.id)
         linkedUsers.forEach(({ friends }) => {
@@ -267,7 +267,7 @@ describe(`Many-to-many relationships`, () => {
         // Both companies should have a location, and the location should have two companies
         const users = (await context.query.User.findMany({
           query: 'id friends { id friendOf { id } }',
-        })) as { id: IdType; friends: any[] }[]
+        })) as { id: IdType, friends: any[] }[]
         users.forEach(({ id, friends }) => {
           if (id === Friend.id) {
             expect(friends.map(({ id }: { id: IdType }) => id)).toEqual([])

@@ -6,30 +6,30 @@ import { getAdminMetaForRelationshipField } from '../../../lib/create-admin-meta
 type SelectDisplayConfig = {
   ui?: {
     // Sets the relationship to display as a Select field
-    displayMode?: 'select';
+    displayMode?: 'select'
     /**
      * The path of the field to use from the related list for item labels in the select.
      * Defaults to the labelField configured on the related list.
      */
-    labelField?: string;
-    searchFields?: string[];
-  };
+    labelField?: string
+    searchFields?: string[]
+  }
 }
 
 type CardsDisplayConfig = {
   ui?: {
     // Sets the relationship to display as a list of Cards
-    displayMode: 'cards';
+    displayMode: 'cards'
     /* The set of fields to render in the default Card component **/
-    cardFields: readonly string[];
+    cardFields: readonly string[]
     /** Causes the default Card component to render as a link to navigate to the related item */
-    linkToItem?: boolean;
+    linkToItem?: boolean
     /** Determines whether removing a related item in the UI will delete or unlink it */
-    removeMode?: 'disconnect' | 'none'; // | 'delete';
+    removeMode?: 'disconnect' | 'none' // | 'delete';
     /** Configures inline create mode for cards (alternative to opening the create modal) */
-    inlineCreate?: { fields: readonly string[] };
+    inlineCreate?: { fields: readonly string[] }
     /** Configures inline edit mode for cards */
-    inlineEdit?: { fields: readonly string[] };
+    inlineEdit?: { fields: readonly string[] }
     /** Configures whether a select to add existing items should be shown or not */
     inlineConnect?:
       | boolean
@@ -38,47 +38,47 @@ type CardsDisplayConfig = {
            * The path of the field to use from the related list for item labels in the inline connect
            * Defaults to the labelField configured on the related list.
            */
-          labelField: string;
-          searchFields?: string[];
-        };
-  };
+          labelField: string
+          searchFields?: string[]
+        }
+  }
 }
 
 type CountDisplayConfig = {
-  many: true;
+  many: true
   ui?: {
     // Sets the relationship to display as a count
-    displayMode: 'count';
-  };
+    displayMode: 'count'
+  }
 }
 
 type OneDbConfig = {
-  many?: false;
+  many?: false
   db?: {
-    extendPrismaSchema?: (field: string) => string;
+    extendPrismaSchema?: (field: string) => string
     foreignKey?:
       | true
       | {
-          map: string;
-        };
-  };
+          map: string
+        }
+  }
 }
 
 type ManyDbConfig = {
-  many: true;
+  many: true
   db?: {
-    relationName?: string;
-    extendPrismaSchema?: (field: string) => string;
-  };
+    relationName?: string
+    extendPrismaSchema?: (field: string) => string
+  }
 }
 
 export type RelationshipFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
-    many?: boolean;
-    ref: string;
+    many?: boolean
+    ref: string
     ui?: {
-      hideCreate?: boolean;
-    };
+      hideCreate?: boolean
+    }
   } & (OneDbConfig | ManyDbConfig) &
     (SelectDisplayConfig | CardsDisplayConfig | CountDisplayConfig)
 

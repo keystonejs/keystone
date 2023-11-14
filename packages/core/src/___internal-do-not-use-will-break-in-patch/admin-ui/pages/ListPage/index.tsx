@@ -39,10 +39,10 @@ import { useSort } from './useSort'
 type ListPageProps = { listKey: string }
 
 type FetchedFieldMeta = {
-  path: string;
-  isOrderable: boolean;
-  isFilterable: boolean;
-  listView: { fieldMode: 'read' | 'hidden' };
+  path: string
+  isOrderable: boolean
+  isFilterable: boolean
+  listView: { fieldMode: 'read' | 'hidden' }
 }
 
 let listMetaGraphqlQuery: TypedDocumentNode<
@@ -50,12 +50,12 @@ let listMetaGraphqlQuery: TypedDocumentNode<
     keystone: {
       adminMeta: {
         list: {
-          hideCreate: boolean;
-          hideDelete: boolean;
-          fields: FetchedFieldMeta[];
-        } | null;
-      };
-    };
+          hideCreate: boolean
+          hideDelete: boolean
+          fields: FetchedFieldMeta[]
+        } | null
+      }
+    }
   },
   { listKey: string }
 > = gql`
@@ -236,7 +236,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
 
   const { data, error } = dataState
   const dataGetter = makeDataGetter<
-    DeepNullable<{ count: number; items: { id: string; [key: string]: any }[] }>
+    DeepNullable<{ count: number, items: { id: string, [key: string]: any }[] }>
   >(data, error?.graphQLErrors)
 
   const [selectedItemsState, setSelectedItems] = useState(() => ({
@@ -431,9 +431,9 @@ function DeleteManyButton ({
   list,
   refetch,
 }: {
-  selectedItems: ReadonlySet<string>;
-  list: ListMeta;
-  refetch: () => void;
+  selectedItems: ReadonlySet<string>
+  list: ListMeta
+  refetch: () => void
 }) {
   const [deleteItems, deleteItemsState] = useMutation(
     useMemo(
@@ -486,9 +486,9 @@ function DeleteManyButton ({
               ].reduce(
                 (
                   acc: {
-                    successfulItems: number;
-                    unsuccessfulItems: number;
-                    successMessage: string;
+                    successfulItems: number
+                    unsuccessfulItems: number
+                    successMessage: string
                   },
                   curr: any
                 ) => {
@@ -504,9 +504,9 @@ function DeleteManyButton ({
                   return acc
                 },
                 { successfulItems: 0, unsuccessfulItems: 0, successMessage: '' } as {
-                  successfulItems: number;
-                  unsuccessfulItems: number;
-                  successMessage: string;
+                  successfulItems: number
+                  unsuccessfulItems: number
+                  successMessage: string
                 }
               )
 
@@ -570,16 +570,16 @@ function ListTable ({
   onSelectedItemsChange,
   orderableFields,
 }: {
-  selectedFields: ReturnType<typeof useSelectedFields>;
-  listKey: string;
-  itemsGetter: DataGetter<DeepNullable<{ id: string; [key: string]: any }[]>>;
-  count: number;
-  sort: { field: string; direction: 'ASC' | 'DESC' } | null;
-  currentPage: number;
-  pageSize: number;
-  selectedItems: ReadonlySet<string>;
-  onSelectedItemsChange(selectedItems: ReadonlySet<string>): void;
-  orderableFields: Set<string>;
+  selectedFields: ReturnType<typeof useSelectedFields>
+  listKey: string
+  itemsGetter: DataGetter<DeepNullable<{ id: string, [key: string]: any }[]>>
+  count: number
+  sort: { field: string, direction: 'ASC' | 'DESC' } | null
+  currentPage: number
+  pageSize: number
+  selectedItems: ReadonlySet<string>
+  onSelectedItemsChange(selectedItems: ReadonlySet<string>): void
+  orderableFields: Set<string>
 }) {
   const list = useList(listKey)
   const { query } = useRouter()

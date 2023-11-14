@@ -2,7 +2,7 @@ import React from 'react'
 import styles from './Tweet.module.css'
 
 type TweetProps = {
-  url: string;
+  url: string
 }
 
 export function Tweet ({ url }: TweetProps) {

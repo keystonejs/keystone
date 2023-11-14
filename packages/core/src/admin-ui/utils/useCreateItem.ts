@@ -7,14 +7,14 @@ import type { ListMeta } from '../../types'
 import { usePreventNavigation } from './usePreventNavigation'
 import type { Fields, Value } from '.'
 
-type ValueWithoutServerSideErrors = { [key: string]: { kind: 'value'; value: any } }
+type ValueWithoutServerSideErrors = { [key: string]: { kind: 'value', value: any } }
 
 type CreateItemHookResult = {
-  state: 'editing' | 'loading' | 'created';
-  shouldPreventNavigation: boolean;
-  error?: ApolloError;
-  props: ComponentProps<typeof Fields>;
-  create: () => Promise<{ id: string; label: string | null } | undefined>;
+  state: 'editing' | 'loading' | 'created'
+  shouldPreventNavigation: boolean
+  error?: ApolloError
+  props: ComponentProps<typeof Fields>
+  create: () => Promise<{ id: string, label: string | null } | undefined>
 }
 
 export function useCreateItem (list: ListMeta): CreateItemHookResult {
@@ -92,13 +92,13 @@ export function useCreateItem (list: ListMeta): CreateItemHookResult {
         setValue(oldValues => getNewValue(oldValues) as ValueWithoutServerSideErrors)
       }, []),
     },
-    async create (): Promise<{ id: string; label: string | null } | undefined> {
+    async create (): Promise<{ id: string, label: string | null } | undefined> {
       const newForceValidation = invalidFields.size !== 0
       setForceValidation(newForceValidation)
 
       if (newForceValidation) return undefined
 
-      let outputData: { item: { id: string; label: string | null } }
+      let outputData: { item: { id: string, label: string | null } }
       try {
         outputData = await createItem({
           variables: {

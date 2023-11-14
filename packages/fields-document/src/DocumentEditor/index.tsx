@@ -180,12 +180,12 @@ export function DocumentEditor ({
   initialExpanded = false,
   ...props
 }: {
-  onChange: undefined | ((value: Descendant[]) => void);
-  value: Descendant[];
-  componentBlocks: Record<string, ComponentBlock>;
-  relationships: Relationships;
-  documentFeatures: DocumentFeatures;
-  initialExpanded?: boolean;
+  onChange: undefined | ((value: Descendant[]) => void)
+  value: Descendant[]
+  componentBlocks: Record<string, ComponentBlock>
+  relationships: Relationships
+  documentFeatures: DocumentFeatures
+  initialExpanded?: boolean
 } & Omit<EditableProps, 'value' | 'onChange'>) {
   const { radii, colors, spacing, fields } = useTheme()
   const [expanded, setExpanded] = useState(initialExpanded)
@@ -274,13 +274,13 @@ export function DocumentEditorProvider ({
   documentFeatures,
   relationships,
 }: {
-  children: ReactNode;
-  value: Descendant[];
-  onChange: (value: Descendant[]) => void;
-  editor: Editor;
-  componentBlocks: Record<string, ComponentBlock>;
-  relationships: Relationships;
-  documentFeatures: DocumentFeatures;
+  children: ReactNode
+  value: Descendant[]
+  onChange: (value: Descendant[]) => void
+  editor: Editor
+  componentBlocks: Record<string, ComponentBlock>
+  relationships: Relationships
+  documentFeatures: DocumentFeatures
 }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const identity = useMemo(() => Math.random().toString(36), [editor])
@@ -416,16 +416,16 @@ while (listDepth--) {
 export type Block = Exclude<Element, { type: 'relationship' | 'link' }>
 
 type BlockContainerSchema = {
-  kind: 'blocks';
-  allowedChildren: ReadonlySet<Element['type']>;
-  blockToWrapInlinesIn: TypesWhichHaveNoExtraRequiredProps;
-  invalidPositionHandleMode: 'unwrap' | 'move';
+  kind: 'blocks'
+  allowedChildren: ReadonlySet<Element['type']>
+  blockToWrapInlinesIn: TypesWhichHaveNoExtraRequiredProps
+  invalidPositionHandleMode: 'unwrap' | 'move'
 }
 
-type InlineContainerSchema = { kind: 'inlines'; invalidPositionHandleMode: 'unwrap' | 'move' }
+type InlineContainerSchema = { kind: 'inlines', invalidPositionHandleMode: 'unwrap' | 'move' }
 
 type TypesWhichHaveNoExtraRequiredProps = {
-  [Type in Block['type']]: { type: Type; children: Descendant[] } extends Block & { type: Type }
+  [Type in Block['type']]: { type: Type, children: Descendant[] } extends Block & { type: Type }
     ? Type
     : never;
 }[Block['type']]
@@ -444,8 +444,8 @@ const paragraphLike = [...blockquoteChildren, 'blockquote'] as const
 const insideOfLayouts = [...paragraphLike, 'component-block'] as const
 
 function blockContainer (args: {
-  allowedChildren: readonly [TypesWhichHaveNoExtraRequiredProps, ...Block['type'][]];
-  invalidPositionHandleMode: 'unwrap' | 'move';
+  allowedChildren: readonly [TypesWhichHaveNoExtraRequiredProps, ...Block['type'][]]
+  invalidPositionHandleMode: 'unwrap' | 'move'
 }): BlockContainerSchema {
   return {
     kind: 'blocks',
@@ -456,7 +456,7 @@ function blockContainer (args: {
 }
 
 function inlineContainer (args: {
-  invalidPositionHandleMode: 'unwrap' | 'move';
+  invalidPositionHandleMode: 'unwrap' | 'move'
 }): InlineContainerSchema {
   return {
     kind: 'inlines',
@@ -518,7 +518,7 @@ export const editorSchema = satisfies<
 })
 
 type InlineContainingType = {
-  [Key in keyof EditorSchema]: { inlines: Key; blocks: never }[EditorSchema[Key]['kind']];
+  [Key in keyof EditorSchema]: { inlines: Key, blocks: never }[EditorSchema[Key]['kind']];
 }[keyof EditorSchema]
 
 const inlineContainerTypes = new Set(

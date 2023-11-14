@@ -14,7 +14,7 @@ export function coerceAndValidateForGraphQLInput (
   schema: GraphQLSchema,
   type: GraphQLInputType,
   value: any
-): { kind: 'valid'; value: any } | { kind: 'error'; error: GraphQLError } {
+): { kind: 'valid', value: any } | { kind: 'error', error: GraphQLError } {
   const variableDefintions: VariableDefinitionNode[] = [
     {
       kind: Kind.VARIABLE_DEFINITION,

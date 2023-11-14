@@ -57,9 +57,9 @@ function Box () {
 }
 
 type SwatchProps = {
-  name?: string;
-  color?: string;
-  gradient?: { grad1: string; grad2: string };
+  name?: string
+  color?: string
+  gradient?: { grad1: string, grad2: string }
 }
 
 function Swatch ({ name, color, gradient }: SwatchProps) {

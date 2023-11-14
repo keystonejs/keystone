@@ -12,12 +12,12 @@ import {
 } from '.'
 
 function mapOutputFieldToSQLite (
-  field: graphql.Field<{ value: JSONValue; item: BaseItem }, {}, any, 'value'>
+  field: graphql.Field<{ value: JSONValue, item: BaseItem }, {}, any, 'value'>
 ) {
   const innerResolver = field.resolve || (({ value }) => value)
   return graphql.fields<{
-    value: string | null;
-    item: BaseItem;
+    value: string | null
+    item: BaseItem
   }>()({
     value: graphql.field({
       type: field.type,
@@ -102,15 +102,15 @@ export function jsonFieldTypePolyfilledForSQLite<
     graphql.Arg<graphql.NullableInputType, false>
   > & {
     input?: {
-      uniqueWhere?: undefined;
-      orderBy?: undefined;
-    };
+      uniqueWhere?: undefined
+      orderBy?: undefined
+    }
   },
   dbFieldConfig?: {
-    map?: string;
-    mode?: 'required' | 'optional';
-    default?: ScalarDBField<'Json', 'optional'>['default'];
-    extendPrismaSchema?: (field: string) => string;
+    map?: string
+    mode?: 'required' | 'optional'
+    default?: ScalarDBField<'Json', 'optional'>['default']
+    extendPrismaSchema?: (field: string) => string
   }
 ) {
   if (provider === 'sqlite') {

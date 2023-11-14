@@ -19,8 +19,8 @@ import { addRelationshipDataToComponentProps, fetchRelationshipData } from './re
 
 export type StructureFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
-    db?: { map?: string };
-    schema: ComponentSchemaForGraphQL;
+    db?: { map?: string }
+    schema: ComponentSchemaForGraphQL
   }
 
 export const structure =

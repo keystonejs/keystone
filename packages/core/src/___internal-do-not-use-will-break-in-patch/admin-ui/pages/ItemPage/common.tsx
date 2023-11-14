@@ -8,7 +8,7 @@ import { Container } from '../../../../admin-ui/components/Container'
 import { Link } from '../../../../admin-ui/router'
 import { type ListMeta } from '../../../../types'
 
-export function ItemPageHeader (props: { list: ListMeta; label: string }) {
+export function ItemPageHeader (props: { list: ListMeta, label: string }) {
   const { palette, spacing } = useTheme()
 
   return (

@@ -6,20 +6,20 @@ import { jsx, Box, Heading, useTheme, makeId, useId } from '@keystone-ui/core'
 import { DialogBase } from './DialogBase'
 
 type Action = {
-  action: () => void;
-  label: string;
+  action: () => void
+  label: string
 }
 
 type AlertDialogProps = {
   actions: {
-    cancel?: Action;
-    confirm: Action & { loading?: boolean };
-  };
-  id?: string;
-  isOpen: boolean;
-  children: React.ReactNode;
-  title: string;
-  tone?: 'negative' | 'active';
+    cancel?: Action
+    confirm: Action & { loading?: boolean }
+  }
+  id?: string
+  isOpen: boolean
+  children: React.ReactNode
+  title: string
+  tone?: 'negative' | 'active'
 }
 
 export const AlertDialog = ({

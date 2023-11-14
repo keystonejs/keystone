@@ -13,10 +13,10 @@ import type { SizeType } from '../types'
  */
 
 type ControlLabelProps = {
-  className?: string;
-  control: ReactElement;
-  children?: ReactNode;
-  size?: SizeType;
+  className?: string
+  control: ReactElement
+  children?: ReactNode
+  size?: SizeType
 }
 
 export const ControlLabel = ({

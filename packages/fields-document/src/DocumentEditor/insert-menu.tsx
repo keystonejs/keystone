@@ -18,9 +18,9 @@ import { insertLayout } from './layouts'
 let noop = () => {}
 
 type Option = {
-  label: string;
-  keywords?: string[];
-  insert: (editor: Editor) => void;
+  label: string
+  keywords?: string[]
+  insert: (editor: Editor) => void
 }
 
 function getOptions (
@@ -132,7 +132,7 @@ function insertOption (editor: Editor, text: Text, option: Option) {
 }
 
 // TODO: the changing width of the menu when searching isn't great
-export function InsertMenu ({ children, text }: { children: ReactNode; text: Text }) {
+export function InsertMenu ({ children, text }: { children: ReactNode, text: Text }) {
   const toolbarState = useToolbarState()
   const {
     editor,

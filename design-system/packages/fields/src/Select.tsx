@@ -5,7 +5,7 @@ import ReactSelect, { type Options, mergeStyles, type Props } from 'react-select
 import { useInputTokens } from './hooks/inputs'
 import { type WidthType } from './types'
 
-type Option = { label: string; value: string; isDisabled?: boolean }
+type Option = { label: string, value: string, isDisabled?: boolean }
 
 type BaseSelectProps = Omit<
   Props<Option, boolean>,
@@ -15,16 +15,16 @@ type BaseSelectProps = Omit<
 export { components as selectComponents } from 'react-select'
 
 type ControlState = {
-  isDisabled?: boolean;
-  isFocused: boolean;
+  isDisabled?: boolean
+  isFocused: boolean
 }
 
 const useStyles = ({
   tokens,
   multi = false,
 }: {
-  tokens: ReturnType<typeof useInputTokens>;
-  multi?: boolean;
+  tokens: ReturnType<typeof useInputTokens>
+  multi?: boolean
 }) => {
   const { palette } = useTheme()
   const indicatorStyles = (provided: any, state: ControlState) => ({
@@ -116,9 +116,9 @@ export function Select ({
   styles,
   ...props
 }: BaseSelectProps & {
-  value: Option | null;
-  portalMenu?: true;
-  onChange(value: Option | null): void;
+  value: Option | null
+  portalMenu?: true
+  onChange(value: Option | null): void
 }) {
   const tokens = useInputTokens({ width: widthKey })
   const defaultStyles = useStyles({ tokens })
@@ -153,9 +153,9 @@ export function MultiSelect ({
   styles,
   ...props
 }: BaseSelectProps & {
-  value: Options<Option>;
-  portalMenu?: true;
-  onChange(value: Options<Option>): void;
+  value: Options<Option>
+  portalMenu?: true
+  onChange(value: Options<Option>): void
 }) {
   const tokens = useInputTokens({ width: widthKey })
   const defaultStyles = useStyles({ tokens, multi: true })

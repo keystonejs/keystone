@@ -9,9 +9,9 @@ import { Navigation } from './Navigation'
 import { Logo } from './Logo'
 
 type PageContainerProps = {
-  children: ReactNode;
-  header: ReactNode;
-  title?: string;
+  children: ReactNode
+  header: ReactNode
+  title?: string
 }
 
 export const HEADER_HEIGHT = 80
@@ -45,7 +45,7 @@ const Sidebar = ({
   isSidebarOpen,
   ...props
 }: HTMLAttributes<HTMLElement> & {
-  isSidebarOpen: boolean;
+  isSidebarOpen: boolean
 }) => {
   // const { colors } = useTheme();
 

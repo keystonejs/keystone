@@ -55,14 +55,14 @@ export const getSchemaExtension = ({
   magicAuthLink,
   sessionData,
 }: {
-  identityField: string;
-  listKey: string;
-  secretField: string;
-  gqlNames: AuthGqlNames;
-  initFirstItem?: InitFirstItemConfig<any>;
-  passwordResetLink?: AuthTokenTypeConfig;
-  magicAuthLink?: AuthTokenTypeConfig;
-  sessionData: string;
+  identityField: string
+  listKey: string
+  secretField: string
+  gqlNames: AuthGqlNames
+  initFirstItem?: InitFirstItemConfig<any>
+  passwordResetLink?: AuthTokenTypeConfig
+  magicAuthLink?: AuthTokenTypeConfig
+  sessionData: string
 }) =>
   graphql.extend(base => {
     const uniqueWhereInputType = assertInputObjectType(

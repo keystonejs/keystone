@@ -18,9 +18,9 @@ import { Badge } from '../primitives/Badge'
 import { ArrowR } from '../icons/ArrowR'
 
 type NavContext = {
-  isSectionCollapsed: (title: string) => boolean;
-  collapseSection: (title: string) => void;
-  expandSection: (title: string) => void;
+  isSectionCollapsed: (title: string) => boolean
+  collapseSection: (title: string) => void
+  expandSection: (title: string) => void
 }
 
 const NavContext = createContext<NavContext | undefined>(undefined)
@@ -62,8 +62,8 @@ const useNavContext = () => {
 }
 
 type NavSectionProps = {
-  title: string;
-  children: ReactNode;
+  title: string
+  children: ReactNode
 }
 
 function NavSection ({ title, children }: NavSectionProps) {
@@ -116,10 +116,10 @@ function NavSection ({ title, children }: NavSectionProps) {
 }
 
 type NavItemProps = {
-  href: string;
-  isActive?: boolean;
-  isPlaceholder?: boolean;
-  alwaysVisible?: boolean;
+  href: string
+  isActive?: boolean
+  isPlaceholder?: boolean
+  alwaysVisible?: boolean
 } & AnchorHTMLAttributes<HTMLAnchorElement>
 
 export function NavItem ({
@@ -157,8 +157,8 @@ export function NavItem ({
 }
 
 type PrimaryNavItemProps = {
-  href: string;
-  children: ReactNode;
+  href: string
+  children: ReactNode
 } & AnchorHTMLAttributes<HTMLAnchorElement>
 
 export function PrimaryNavItem ({ href, children }: PrimaryNavItemProps) {

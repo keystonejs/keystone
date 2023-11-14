@@ -12,23 +12,23 @@ import { filters } from '../../filters'
 
 export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
-    isIndexed?: true | 'unique';
+    isIndexed?: true | 'unique'
     ui?: {
-      displayMode?: 'input' | 'textarea';
-    };
+      displayMode?: 'input' | 'textarea'
+    }
     validation?: {
       /**
        * Makes the field disallow null values and require a string at least 1 character long
        */
-      isRequired?: boolean;
-      match?: { regex: RegExp; explanation?: string };
-      length?: { min?: number; max?: number };
-    };
-    defaultValue?: string;
+      isRequired?: boolean
+      match?: { regex: RegExp, explanation?: string }
+      length?: { min?: number, max?: number }
+    }
+    defaultValue?: string
     db?: {
-      isNullable?: boolean;
-      map?: string;
-      extendPrismaSchema?: (field: string) => string;
+      isNullable?: boolean
+      map?: string
+      extendPrismaSchema?: (field: string) => string
       /**
        * The underlying database type.
        * Only some of the types are supported on PostgreSQL and MySQL.
@@ -49,8 +49,8 @@ export type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
         | 'Citext'
         | 'TinyText' // MySQL
         | 'MediumText'
-        | 'LargeText';
-    };
+        | 'LargeText'
+    }
   }
 
 export const text =
@@ -201,13 +201,13 @@ export const text =
   }
 
 export type TextFieldMeta = {
-  displayMode: 'input' | 'textarea';
-  shouldUseModeInsensitive: boolean;
-  isNullable: boolean;
+  displayMode: 'input' | 'textarea'
+  shouldUseModeInsensitive: boolean
+  isNullable: boolean
   validation: {
-    isRequired: boolean;
-    match: { regex: { source: string; flags: string }; explanation: string | null } | null;
-    length: { min: number | null; max: number | null };
-  };
-  defaultValue: string | null;
+    isRequired: boolean
+    match: { regex: { source: string, flags: string }, explanation: string | null } | null
+    length: { min: number | null, max: number | null }
+  }
+  defaultValue: string | null
 }

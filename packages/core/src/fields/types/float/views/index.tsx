@@ -15,14 +15,14 @@ import { CellLink, CellContainer } from '../../../../admin-ui/components'
 import { useFormattedInput } from '../../integer/views/utils'
 
 type Validation = {
-  min?: number;
-  max?: number;
-  isRequired?: boolean;
+  min?: number
+  max?: number
+  isRequired?: boolean
 }
 
 type Value =
-  | { kind: 'update'; initial: number | null; value: string | number | null }
-  | { kind: 'create'; value: string | number | null }
+  | { kind: 'update', initial: number | null, value: string | number | null }
+  | { kind: 'create', value: string | number | null }
 
 function validate (value: Value, validation: Validation, label: string) {
   const val = value.value
@@ -74,13 +74,13 @@ function FloatInput ({
   validationMessage,
   placeholder,
 }: {
-  id: string;
-  autoFocus?: boolean;
-  value: number | string | null;
-  onChange: (value: number | string | null) => void;
-  forceValidation?: boolean;
-  validationMessage?: string;
-  placeholder?: string;
+  id: string
+  autoFocus?: boolean
+  value: number | string | null
+  onChange: (value: number | string | null) => void
+  forceValidation?: boolean
+  validationMessage?: string
+  placeholder?: string
 }) {
   const [hasBlurred, setHasBlurred] = useState(false)
   const props = useFormattedInput<number | null>(
@@ -172,9 +172,9 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
 }
 
 export const controller = (
-  config: FieldControllerConfig<{ validation: Validation; defaultValue: number | null }>
+  config: FieldControllerConfig<{ validation: Validation, defaultValue: number | null }>
 ): FieldController<Value, string> & {
-  validation: Validation;
+  validation: Validation
 } => {
   return {
     path: config.path,

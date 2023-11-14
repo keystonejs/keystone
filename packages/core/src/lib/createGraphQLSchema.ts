@@ -12,8 +12,8 @@ import { getQueriesForList } from './core/queries'
 function getGraphQLSchema (
   lists: Record<string, InitialisedList>,
   extraFields: {
-    mutation: Record<string, graphql.Field<unknown, any, graphql.OutputType, string>>;
-    query: Record<string, graphql.Field<unknown, any, graphql.OutputType, string>>;
+    mutation: Record<string, graphql.Field<unknown, any, graphql.OutputType, string>>
+    query: Record<string, graphql.Field<unknown, any, graphql.OutputType, string>>
   },
   sudo: boolean
 ) {

@@ -16,10 +16,10 @@ import { useToolbarState } from './toolbar-state'
 export type Relationships = Record<
   string,
   {
-    listKey: string;
+    listKey: string
     /** GraphQL fields to select when querying the field */
-    selection: string | null;
-    label: string;
+    selection: string | null
+    label: string
   }
 >
 

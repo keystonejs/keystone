@@ -16,45 +16,45 @@ export type PrismaPromise<T> = Promise<T> & { [prisma]: true }
 
 type PrismaModel = {
   count: (arg: {
-    where?: PrismaFilter;
-    take?: number;
-    skip?: number;
+    where?: PrismaFilter
+    take?: number
+    skip?: number
     // this is technically wrong because relation orderBy but we're not doing that yet so it's fine
-    orderBy?: readonly Record<string, 'asc' | 'desc'>[];
-  }) => PrismaPromise<number>;
+    orderBy?: readonly Record<string, 'asc' | 'desc'>[]
+  }) => PrismaPromise<number>
   findMany: (arg: {
-    where?: PrismaFilter;
-    take?: number;
-    skip?: number;
-    cursor?: UniquePrismaFilter;
+    where?: PrismaFilter
+    take?: number
+    skip?: number
+    cursor?: UniquePrismaFilter
     // this is technically wrong because relation orderBy but we're not doing that yet so it's fine
-    orderBy?: readonly Record<string, 'asc' | 'desc'>[];
-    include?: Record<string, boolean>;
-    select?: Record<string, any>;
-  }) => PrismaPromise<BaseItem[]>;
-  delete: (arg: { where: UniquePrismaFilter }) => PrismaPromise<BaseItem>;
-  deleteMany: (arg: { where: PrismaFilter }) => PrismaPromise<BaseItem>;
+    orderBy?: readonly Record<string, 'asc' | 'desc'>[]
+    include?: Record<string, boolean>
+    select?: Record<string, any>
+  }) => PrismaPromise<BaseItem[]>
+  delete: (arg: { where: UniquePrismaFilter }) => PrismaPromise<BaseItem>
+  deleteMany: (arg: { where: PrismaFilter }) => PrismaPromise<BaseItem>
   findUnique: (args: {
-    where: UniquePrismaFilter;
-    include?: Record<string, any>;
-    select?: Record<string, any>;
-  }) => PrismaPromise<BaseItem | null>;
+    where: UniquePrismaFilter
+    include?: Record<string, any>
+    select?: Record<string, any>
+  }) => PrismaPromise<BaseItem | null>
   findFirst: (args: {
-    where: PrismaFilter;
-    include?: Record<string, any>;
-    select?: Record<string, any>;
-  }) => PrismaPromise<BaseItem | null>;
+    where: PrismaFilter
+    include?: Record<string, any>
+    select?: Record<string, any>
+  }) => PrismaPromise<BaseItem | null>
   create: (args: {
-    data: Record<string, any>;
-    include?: Record<string, any>;
-    select?: Record<string, any>;
-  }) => PrismaPromise<BaseItem>;
+    data: Record<string, any>
+    include?: Record<string, any>
+    select?: Record<string, any>
+  }) => PrismaPromise<BaseItem>
   update: (args: {
-    where: UniquePrismaFilter;
-    data: Record<string, any>;
-    include?: Record<string, any>;
-    select?: Record<string, any>;
-  }) => PrismaPromise<BaseItem>;
+    where: UniquePrismaFilter
+    data: Record<string, any>
+    include?: Record<string, any>
+    select?: Record<string, any>
+  }) => PrismaPromise<BaseItem>
 }
 
 export type UnwrapPromise<TPromise extends Promise<any>> = TPromise extends Promise<infer T>
@@ -71,9 +71,9 @@ export type UnwrapPromises<T extends Promise<any>[]> = {
 // and we should generate a KeystoneContext type in node_modules/.keystone/types which passes in the user's PrismaClient type
 // so that users get right PrismaClient types specifically for their project
 export type PrismaClient = {
-  $disconnect(): Promise<void>;
-  $connect(): Promise<void>;
-  $transaction<T extends PrismaPromise<any>[]>(promises: [...T]): UnwrapPromises<T>;
+  $disconnect(): Promise<void>
+  $connect(): Promise<void>
+  $transaction<T extends PrismaPromise<any>[]>(promises: [...T]): UnwrapPromises<T>
 } & Record<string, PrismaModel>
 
 // Run prisma operations as part of a resolver
@@ -95,7 +95,7 @@ export async function runWithPrisma<T> (
 // i don't want to deal with that right now though
 declare const idTypeSymbol: unique symbol
 
-export type IdType = { ___keystoneIdType: typeof idTypeSymbol; toString(): string }
+export type IdType = { ___keystoneIdType: typeof idTypeSymbol, toString(): string }
 
 // these aren't here out of thinking this is better syntax(i do not think it is),
 // it's just because TS won't infer the arg is X bit

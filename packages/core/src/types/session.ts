@@ -5,18 +5,18 @@ export type SessionStrategy<
   Session,
   TypeInfo extends BaseKeystoneTypeInfo = BaseKeystoneTypeInfo
 > = {
-  get: (args: { context: KeystoneContext<TypeInfo> }) => Promise<Session | undefined>;
-  start: (args: { context: KeystoneContext<TypeInfo>; data: Session }) => Promise<unknown>;
-  end: (args: { context: KeystoneContext<TypeInfo> }) => Promise<unknown>;
+  get: (args: { context: KeystoneContext<TypeInfo> }) => Promise<Session | undefined>
+  start: (args: { context: KeystoneContext<TypeInfo>, data: Session }) => Promise<unknown>
+  end: (args: { context: KeystoneContext<TypeInfo> }) => Promise<unknown>
 }
 
 /** @deprecated */
 export type SessionStore<
   Session = any // TODO: remove any in breaking change
 > = {
-  get(key: string): MaybePromise<Session | undefined>;
-  set(key: string, value: Session): void | Promise<void>;
-  delete(key: string): void | Promise<void>;
+  get(key: string): MaybePromise<Session | undefined>
+  set(key: string, value: Session): void | Promise<void>
+  delete(key: string): void | Promise<void>
 }
 
 /** @deprecated */
@@ -26,5 +26,5 @@ export type SessionStoreFunction<
   /**
    * The number of seconds that a cookie session be valid for
    */
-  maxAge: number;
+  maxAge: number
 }) => SessionStore<Session>

@@ -97,7 +97,7 @@ export async function fetchRelationshipData (
       selection || ''
     }}}`,
     variables: { ids },
-  })) as { items: { [idFieldAlias]: string | number; [labelFieldAlias]: string }[] }
+  })) as { items: { [idFieldAlias]: string | number, [labelFieldAlias]: string }[] }
 
   return Array.isArray(val.items)
     ? val.items.map(({ [labelFieldAlias]: label, [idFieldAlias]: id, ...data }) => {
@@ -221,7 +221,7 @@ export const getLabelFieldsForLists = weakMemoize(function getLabelFieldsForList
     document,
     contextValue: { isAdminUIBuildProcess: true },
   }) as ExecutionResult<{
-    keystone: { adminMeta: { lists: { key: string; labelField: string }[] } };
+    keystone: { adminMeta: { lists: { key: string, labelField: string }[] } }
   }>
   if (errors?.length) {
     throw errors[0]

@@ -185,44 +185,44 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
 }
 
 type Validation = {
-  isRequired: boolean;
-  rejectCommon: boolean;
+  isRequired: boolean
+  rejectCommon: boolean
   match: {
-    regex: RegExp;
-    explanation: string;
-  } | null;
+    regex: RegExp
+    explanation: string
+  } | null
   length: {
-    min: number;
-    max: number | null;
-  };
+    min: number
+    max: number | null
+  }
 }
 
 export type PasswordFieldMeta = {
-  isNullable: boolean;
+  isNullable: boolean
   validation: {
-    isRequired: boolean;
-    rejectCommon: boolean;
+    isRequired: boolean
+    rejectCommon: boolean
     match: {
-      regex: { source: string; flags: string };
-      explanation: string;
-    } | null;
+      regex: { source: string, flags: string }
+      explanation: string
+    } | null
     length: {
-      min: number;
-      max: number | null;
-    };
-  };
+      min: number
+      max: number | null
+    }
+  }
 }
 
 type Value =
   | {
-      kind: 'initial';
-      isSet: boolean | null;
+      kind: 'initial'
+      isSet: boolean | null
     }
   | {
-      kind: 'editing';
-      isSet: boolean | null;
-      value: string;
-      confirm: string;
+      kind: 'editing'
+      isSet: boolean | null
+      value: string
+      confirm: string
     }
 
 type PasswordController = FieldController<Value, boolean> & { validation: Validation }

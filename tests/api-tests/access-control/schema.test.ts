@@ -5,28 +5,28 @@ import { allowAll } from '@keystone-6/core/access'
 import { testConfig } from '../utils'
 
 type ListConfig = {
-  isFilterable?: false;
-  isOrderable?: false;
+  isFilterable?: false
+  isOrderable?: false
   omit?:
     | true
     | {
-        query?: boolean;
-        create?: boolean;
-        update?: boolean;
-        delete?: boolean;
-      };
+        query?: boolean
+        create?: boolean
+        update?: boolean
+        delete?: boolean
+      }
 }
 
 type FieldConfig = {
-  isFilterable?: false;
-  isOrderable?: false;
+  isFilterable?: false
+  isOrderable?: false
   omit?:
     | true
     | {
-        read: boolean;
-        create: boolean;
-        update: boolean;
-      };
+        read: boolean
+        create: boolean
+        update: boolean
+      }
 }
 
 function yesNo (x: boolean | undefined) {

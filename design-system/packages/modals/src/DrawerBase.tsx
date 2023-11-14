@@ -19,12 +19,12 @@ export type WidthType = keyof typeof DRAWER_WIDTHS
 const easing = 'cubic-bezier(0.2, 0, 0, 1)'
 
 export type DrawerBaseProps = {
-  children: ReactNode;
-  initialFocusRef?: MutableRefObject<any>;
-  onClose: () => void;
-  transitionState: TransitionState;
-  onSubmit?: () => void;
-  width?: WidthType;
+  children: ReactNode
+  initialFocusRef?: MutableRefObject<any>
+  onClose: () => void
+  transitionState: TransitionState
+  onSubmit?: () => void
+  width?: WidthType
 }
 
 const blanketTransition = {

@@ -61,11 +61,11 @@ async function enforceListLevelAccessControl ({
   item,
   inputData,
 }: {
-  context: KeystoneContext;
-  operation: 'create' | 'update' | 'delete';
-  list: InitialisedList;
-  item: BaseItem | undefined;
-  inputData: Record<string, unknown>;
+  context: KeystoneContext
+  operation: 'create' | 'update' | 'delete'
+  list: InitialisedList
+  item: BaseItem | undefined
+  inputData: Record<string, unknown>
 }) {
   let accepted: unknown // should be boolean, but dont trust, it might accidentally be a filter
   try {
@@ -127,15 +127,15 @@ async function enforceFieldLevelAccessControl ({
   item,
   inputData,
 }: {
-  context: KeystoneContext;
-  operation: 'create' | 'update';
-  list: InitialisedList;
-  item: BaseItem | undefined;
-  inputData: Record<string, unknown>;
+  context: KeystoneContext
+  operation: 'create' | 'update'
+  list: InitialisedList
+  item: BaseItem | undefined
+  inputData: Record<string, unknown>
 }) {
-  const nonBooleans: { tag: string; returned: string }[] = []
+  const nonBooleans: { tag: string, returned: string }[] = []
   const fieldsDenied: string[] = []
-  const accessErrors: { error: Error; tag: string }[] = []
+  const accessErrors: { error: Error, tag: string }[] = []
 
   await Promise.allSettled(
     Object.keys(inputData).map(async fieldKey => {

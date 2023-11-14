@@ -7,13 +7,13 @@ import { start } from './start'
 import { telemetry } from './telemetry'
 
 export type Flags = {
-  dbPush: boolean;
-  fix: boolean; // TODO: remove, deprecated
-  frozen: boolean;
-  prisma: boolean;
-  server: boolean;
-  ui: boolean;
-  withMigrations: boolean;
+  dbPush: boolean
+  fix: boolean // TODO: remove, deprecated
+  frozen: boolean
+  prisma: boolean
+  server: boolean
+  ui: boolean
+  withMigrations: boolean
 }
 
 function defaultFlags (flags: Partial<Flags>, defaults: Partial<Flags>) {

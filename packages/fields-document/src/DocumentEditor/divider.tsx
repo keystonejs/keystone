@@ -21,7 +21,7 @@ export function insertDivider (editor: Editor) {
 const DividerButton = ({
   attrs,
 }: {
-  attrs: Parameters<ComponentProps<typeof Tooltip>['children']>[0];
+  attrs: Parameters<ComponentProps<typeof Tooltip>['children']>[0]
 }) => {
   const {
     editor,

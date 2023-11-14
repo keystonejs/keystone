@@ -6,7 +6,7 @@ import { type ReactNode, useEffect, useMemo, useState } from 'react'
 
 import theme from '../../lib/prism-theme'
 
-type Range = { start: number; end: number }
+type Range = { start: number, end: number }
 type CollapseRange = Range & { isCollapsed: boolean }
 
 const getRanges = (lines: string): Range[] => {
@@ -39,7 +39,7 @@ const getRanges = (lines: string): Range[] => {
 
 const parseClassName = (
   className?: string
-): { highlightRanges: Range[]; collapseRanges: CollapseRange[]; language: string } => {
+): { highlightRanges: Range[], collapseRanges: CollapseRange[], language: string } => {
   let trimmedLanguage = (className || '').replace(/language-/, '')
   let language, highlights, collapses
 
@@ -79,7 +79,7 @@ const findRange = <TRange extends Range | CollapseRange>(
   num: number
 ): TRange | undefined => ranges.find(({ start, end }) => start <= num && end >= num)
 
-export function CodeBlock (props: { children: string; className?: string }) {
+export function CodeBlock (props: { children: string, className?: string }) {
   /*
     In MDX 2, we no longer get different components for rendering `inlineCode` and code blocks.
     This function returns us to our old behaviour, though a bit inelegantly
@@ -90,7 +90,7 @@ export function CodeBlock (props: { children: string; className?: string }) {
   return <InlineCode {...props} />
 }
 
-export function Code ({ children, className }: { children: string; className?: string }) {
+export function Code ({ children, className }: { children: string, className?: string }) {
   let { language, highlightRanges, collapseRanges } = useMemo(
     () => parseClassName(className),
     [className]

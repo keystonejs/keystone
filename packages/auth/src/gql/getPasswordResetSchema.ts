@@ -20,16 +20,16 @@ export function getPasswordResetSchema<I extends string, S extends string> ({
   passwordResetLink,
   passwordResetTokenSecretFieldImpl,
 }: {
-  listKey: string;
-  identityField: I;
-  secretField: S;
-  gqlNames: AuthGqlNames;
-  passwordResetLink: AuthTokenTypeConfig;
-  passwordResetTokenSecretFieldImpl: SecretFieldImpl;
+  listKey: string
+  identityField: I
+  secretField: S
+  gqlNames: AuthGqlNames
+  passwordResetLink: AuthTokenTypeConfig
+  passwordResetTokenSecretFieldImpl: SecretFieldImpl
   // TODO: return type required by pnpm :(
 }): graphql.Extension {
   const getResult = (name: string) =>
-    graphql.object<{ code:(typeof errorCodes)[number]; message: string }>()({
+    graphql.object<{ code:(typeof errorCodes)[number], message: string }>()({
       name,
       fields: {
         code: graphql.field({ type: graphql.nonNull(PasswordResetRedemptionErrorCode) }),

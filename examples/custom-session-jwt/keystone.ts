@@ -12,7 +12,7 @@ import type { Context, TypeInfo } from '.keystone/types'
 const jwtSessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --'
 
 type OurJWTClaims = {
-  id: string;
+  id: string
 }
 
 async function jwtSign (claims: OurJWTClaims) {

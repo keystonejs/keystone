@@ -22,13 +22,13 @@ const text: t.Type<TextWithMarks> = excess(
     insertMenu: markValue,
   })
 )
-export type TextWithMarks = { type?: never; text: string } & {
+export type TextWithMarks = { type?: never, text: string } & {
   [Key in Mark | 'insertMenu']: true | undefined;
 }
 
 type Inline = TextWithMarks | Link | Relationship
 
-type Link = { type: 'link'; href: string; children: Children }
+type Link = { type: 'link', href: string, children: Children }
 
 class URLType extends t.Type<string> {
   readonly _tag: 'URLType' = 'URLType'
@@ -55,10 +55,10 @@ const link: t.Type<Link> = t.recursion('Link', () =>
 )
 
 type Relationship = {
-  type: 'relationship';
-  relationship: string;
-  data: RelationshipData | null;
-  children: Children;
+  type: 'relationship'
+  relationship: string
+  data: RelationshipData | null
+  children: Children
 }
 
 const relationship: t.Type<Relationship> = t.recursion('Relationship', () =>
@@ -87,9 +87,9 @@ const layoutArea: t.Type<Layout> = t.recursion('Layout', () =>
 )
 
 type Layout = {
-  type: 'layout';
-  layout: number[];
-  children: Children;
+  type: 'layout'
+  layout: number[]
+  children: Children
 }
 
 const onlyChildrenElements: t.Type<OnlyChildrenElements> = t.recursion('OnlyChildrenElements', () =>
@@ -119,8 +119,8 @@ type OnlyChildrenElements = {
     | 'list-item'
     | 'list-item-content'
     | 'ordered-list'
-    | 'unordered-list';
-  children: Children;
+    | 'unordered-list'
+  children: Children
 }
 
 const textAlign = t.union([t.undefined, t.literal('center'), t.literal('end')])
@@ -144,16 +144,16 @@ const heading: t.Type<Heading> = t.recursion('Heading', () =>
 )
 
 type Heading = {
-  type: 'heading';
-  level: 1 | 2 | 3 | 4 | 5 | 6;
-  textAlign: 'center' | 'end' | undefined;
-  children: Children;
+  type: 'heading'
+  level: 1 | 2 | 3 | 4 | 5 | 6
+  textAlign: 'center' | 'end' | undefined
+  children: Children
 }
 
 type Paragraph = {
-  type: 'paragraph';
-  textAlign: 'center' | 'end' | undefined;
-  children: Children;
+  type: 'paragraph'
+  textAlign: 'center' | 'end' | undefined
+  children: Children
 }
 
 const paragraph: t.Type<Paragraph> = t.recursion('Paragraph', () =>
@@ -175,10 +175,10 @@ const relationshipData: t.Type<RelationshipData> = excess(
 )
 
 type ComponentBlock = {
-  type: 'component-block';
-  component: string;
-  props: Record<string, any>;
-  children: Children;
+  type: 'component-block'
+  component: string
+  props: Record<string, any>
+  children: Children
 }
 
 const componentBlock: t.Type<ComponentBlock> = t.recursion('ComponentBlock', () =>
@@ -193,9 +193,9 @@ const componentBlock: t.Type<ComponentBlock> = t.recursion('ComponentBlock', () 
 )
 
 type ComponentProp = {
-  type: 'component-inline-prop' | 'component-block-prop';
-  propPath: (string | number)[] | undefined;
-  children: Children;
+  type: 'component-inline-prop' | 'component-block-prop'
+  propPath: (string | number)[] | undefined
+  children: Children
 }
 
 const componentProp: t.Type<ComponentProp> = t.recursion('ComponentProp', () =>

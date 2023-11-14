@@ -15,9 +15,9 @@ import { Emoji } from '../../components/primitives/Emoji'
 import { useMediaQuery } from '../../lib/media'
 
 type TimelineProps = {
-  date: string;
-  isLatest?: boolean;
-  isFirst?: boolean;
+  date: string
+  isLatest?: boolean
+  isFirst?: boolean
 } & HTMLAttributes<HTMLElement>
 
 function Timeline ({ date, isLatest, isFirst, ...props }: TimelineProps) {
@@ -87,9 +87,9 @@ function Timeline ({ date, isLatest, isFirst, ...props }: TimelineProps) {
 }
 
 type BoxProps = {
-  link?: string;
-  heading?: ReactNode;
-  children: ReactNode;
+  link?: string
+  heading?: ReactNode
+  children: ReactNode
 } & HTMLAttributes<HTMLElement>
 
 function Box ({ link, heading, children, ...props }: BoxProps) {

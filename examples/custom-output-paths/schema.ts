@@ -27,7 +27,7 @@ export const lists: Lists = {
           //
 
           // TODO: FIXME, babel and pnpm issues
-        })) as readonly { title: string; content: string }[]
+        })) as readonly { title: string, content: string }[]
         // })) satisfies readonly { title: string; content: string }[];
 
         console.log(posts)

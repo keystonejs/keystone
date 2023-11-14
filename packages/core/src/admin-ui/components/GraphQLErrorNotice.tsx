@@ -4,8 +4,8 @@ import { type GraphQLError } from 'graphql'
 import React from 'react'
 
 type GraphQLErrorNoticeProps = {
-  networkError: Error | null | undefined;
-  errors: readonly GraphQLError[] | undefined;
+  networkError: Error | null | undefined
+  errors: readonly GraphQLError[] | undefined
 }
 
 export function GraphQLErrorNotice ({ errors, networkError }: GraphQLErrorNoticeProps) {

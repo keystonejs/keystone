@@ -12,11 +12,11 @@ import { filters } from '../../filters'
 
 export type CheckboxFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
-    defaultValue?: boolean;
+    defaultValue?: boolean
     db?: {
-      map?: string;
-      extendPrismaSchema?: (field: string) => string;
-    };
+      map?: string
+      extendPrismaSchema?: (field: string) => string
+    }
   }
 
 export const checkbox =

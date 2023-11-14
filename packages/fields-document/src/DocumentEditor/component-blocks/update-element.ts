@@ -135,9 +135,9 @@ export function updateComponentBlockElementProps (
 }
 
 type ChildPropPathWithPrevious = {
-  prevPath: ReadonlyPropPath | undefined;
-  path: ReadonlyPropPath;
-  options: ChildField['options'];
+  prevPath: ReadonlyPropPath | undefined
+  path: ReadonlyPropPath
+  options: ChildField['options']
 }
 
 function findChildPropPathsWithPrevious (

@@ -19,7 +19,7 @@ export function Section (props: HTMLAttributes<HTMLElement>) {
 }
 
 type SideBySideSectionProps = {
-  reverse?: boolean;
+  reverse?: boolean
 } & HTMLAttributes<HTMLElement>
 
 export function SideBySideSection ({ reverse, children, ...props }: SideBySideSectionProps) {

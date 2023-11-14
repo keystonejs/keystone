@@ -47,19 +47,19 @@ function filterTestRunner (field: FieldTypeFunc<BaseListTypeInfo>) {
 // this isn't for any proper checking, invalid things will throw at runtime anyway
 // it's just a bit of autocomplete convenience
 type VagueFieldFilter = {
-  equals?: unknown;
-  in?: unknown[];
-  notIn?: unknown[];
-  lt?: unknown;
-  lte?: unknown;
-  gt?: unknown;
-  gte?: unknown;
-  contains?: string;
-  startsWith?: string;
-  endsWith?: string;
-  mode?: 'default' | 'insensitive';
-  isSet?: boolean;
-  not?: VagueFieldFilter;
+  equals?: unknown
+  in?: unknown[]
+  notIn?: unknown[]
+  lt?: unknown
+  lte?: unknown
+  gt?: unknown
+  gte?: unknown
+  contains?: string
+  startsWith?: string
+  endsWith?: string
+  mode?: 'default' | 'insensitive'
+  isSet?: boolean
+  not?: VagueFieldFilter
 }
 
 type Match = (

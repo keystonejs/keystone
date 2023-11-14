@@ -10,9 +10,9 @@ export function EditButton ({
   isIndexPage,
   editPath,
 }: {
-  pathName: string;
-  isIndexPage?: boolean;
-  editPath?: string;
+  pathName: string
+  isIndexPage?: boolean
+  editPath?: string
 }) {
   let fileUrl = `https://github.com/keystonejs/keystone/edit/main/docs/pages`
 

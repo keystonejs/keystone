@@ -7,7 +7,7 @@ import { Loading } from './Loading'
 import { Type } from './Type'
 
 type GitHubButtonProps = {
-  repo: string;
+  repo: string
 } & HTMLAttributes<HTMLElement>
 
 export function GitHubButton ({ repo, ...props }: GitHubButtonProps) {

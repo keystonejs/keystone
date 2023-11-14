@@ -5,23 +5,23 @@ import { graphql } from '@keystone-6/core'
 import cloudinary from 'cloudinary'
 
 type StoredFile = {
-  id: string;
-  filename: string;
-  originalFilename: string;
-  mimetype: any;
-  encoding: any;
-  _meta: cloudinary.UploadApiResponse;
+  id: string
+  filename: string
+  originalFilename: string
+  mimetype: any
+  encoding: any
+  _meta: cloudinary.UploadApiResponse
 }
 
 type CloudinaryImageFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
     cloudinary: {
-      cloudName: string;
-      apiKey: string;
-      apiSecret: string;
-      folder?: string;
-    };
-    db?: { map?: string };
+      cloudName: string
+      apiKey: string
+      apiSecret: string
+      folder?: string
+    }
+    db?: { map?: string }
   }
 
 const CloudinaryImageFormat = graphql.inputObject({
@@ -66,15 +66,15 @@ const CloudinaryImageFormat = graphql.inputObject({
 })
 
 type CloudinaryImage_File = {
-  id: string | null;
-  filename: string | null;
-  originalFilename: string | null;
-  mimetype: string | null;
-  encoding: string | null;
-  publicUrl: string | null;
+  id: string | null
+  filename: string | null
+  originalFilename: string | null
+  mimetype: string | null
+  encoding: string | null
+  publicUrl: string | null
   publicUrlTransformed: (args: {
-    transformation: graphql.InferValueFromArg<graphql.Arg<typeof CloudinaryImageFormat>>;
-  }) => string | null;
+    transformation: graphql.InferValueFromArg<graphql.Arg<typeof CloudinaryImageFormat>>
+  }) => string | null
 }
 
 // TODO: lvalue type required by pnpm :(
@@ -184,7 +184,7 @@ export function cloudinaryImage<ListTypeInfo extends BaseListTypeInfo> ({
               }: {
                 transformation: graphql.InferValueFromArg<
                   graphql.Arg<typeof CloudinaryImageFormat>
-                >;
+                >
               }) => {
                 if (!val._meta) return null
 

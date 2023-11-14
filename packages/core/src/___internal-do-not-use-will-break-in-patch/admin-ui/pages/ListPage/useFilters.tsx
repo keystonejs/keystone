@@ -2,12 +2,12 @@ import { useMemo } from 'react'
 import { type JSONValue, type ListMeta } from '../../../../types'
 import { useRouter } from '../../../../admin-ui/router'
 
-export type Filter = { field: string; type: string; value: JSONValue }
+export type Filter = { field: string, type: string, value: JSONValue }
 
 export function useFilters (list: ListMeta, filterableFields: Set<string>) {
   const { query } = useRouter()
   const possibleFilters = useMemo(() => {
-    const possibleFilters: Record<string, { type: string; field: string }> = {}
+    const possibleFilters: Record<string, { type: string, field: string }> = {}
     Object.entries(list.fields).forEach(([fieldPath, field]) => {
       if (field.controller.filter && filterableFields.has(fieldPath)) {
         Object.keys(field.controller.filter.types).forEach(type => {

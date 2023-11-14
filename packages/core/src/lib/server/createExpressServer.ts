@@ -48,9 +48,9 @@ export const createExpressServer = async (
   graphQLSchema: GraphQLSchema,
   context: KeystoneContext
 ): Promise<{
-  expressServer: express.Express;
-  apolloServer: ApolloServer<KeystoneContext>;
-  httpServer: Server;
+  expressServer: express.Express
+  apolloServer: ApolloServer<KeystoneContext>
+  httpServer: Server
 }> => {
   const expressServer = express()
   const httpServer = createServer(expressServer)

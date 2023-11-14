@@ -104,14 +104,14 @@ const sizeMap = {
 }
 
 type ButtonProps = {
-  children?: ReactNode;
-  disabled?: boolean;
-  href?: string;
-  loading?: boolean;
-  look?: keyof typeof styleMap;
-  shadow?: boolean;
-  size?: keyof typeof sizeMap;
-  styleOverrides?: CSSObject;
+  children?: ReactNode
+  disabled?: boolean
+  href?: string
+  loading?: boolean
+  look?: keyof typeof styleMap
+  shadow?: boolean
+  size?: keyof typeof sizeMap
+  styleOverrides?: CSSObject
 }
 
 export const Button = forwardRefWithAs<'button', ButtonProps>(

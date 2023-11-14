@@ -3,12 +3,12 @@ import type { BaseListTypeInfo } from './type-info'
 
 const someContext: KeystoneContext<{
   lists: {
-    Singleton: BaseListTypeInfo & { isSingleton: true };
-    List: BaseListTypeInfo & { isSingleton: false };
-    ListOrSingleton: BaseListTypeInfo;
-  };
-  prisma: any;
-  session: any;
+    Singleton: BaseListTypeInfo & { isSingleton: true }
+    List: BaseListTypeInfo & { isSingleton: false }
+    ListOrSingleton: BaseListTypeInfo
+  }
+  prisma: any
+  session: any
 }> = undefined!
 
 someContext.query.Singleton.findOne({})

@@ -2,15 +2,15 @@ import React from 'react'
 import styles from './Hero.module.css'
 
 type HeroProps = {
-  imageSrc: string;
+  imageSrc: string
   caption:
     | {
-        discriminant: false;
+        discriminant: false
       }
     | {
-        discriminant: true;
-        value: React.ReactNode;
-      };
+        discriminant: true
+        value: React.ReactNode
+      }
 }
 
 export function Hero ({ imageSrc, caption }: HeroProps) {

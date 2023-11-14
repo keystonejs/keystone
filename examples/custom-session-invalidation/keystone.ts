@@ -53,7 +53,7 @@ function withSessionInvalidation (config: Config<Session>) {
 
         return session
       },
-      async start ({ context, data }: { context: Context; data: Session }) {
+      async start ({ context, data }: { context: Context, data: Session }) {
         return await existingSessionStrategy.start({
           context,
           data: {

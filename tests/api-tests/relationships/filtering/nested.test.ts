@@ -39,7 +39,7 @@ describe('relationship filtering', () => {
 
       const users = (await context.query.User.findMany({
         query: `id posts (where: { content: { contains: "hi" } }){ id content }`,
-      })) as { id: IdType; posts: { id: IdType; content: string }[] }[]
+      })) as { id: IdType, posts: { id: IdType, content: string }[] }[]
       expect(users).toHaveLength(2)
       users[0].posts = users[0].posts.map(({ id }) => id).sort()
       users[1].posts = users[1].posts.map(({ id }) => id).sort()

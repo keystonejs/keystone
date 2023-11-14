@@ -9,11 +9,11 @@ import { useTheme } from '../theme'
 
 type CoreProps = {
   /** The app content. */
-  children: ReactNode;
+  children: ReactNode
   /** Include styles to normalize element styles among browsers. */
-  includeNormalize?: boolean;
+  includeNormalize?: boolean
   /** Optimize text rendering with CSS. */
-  optimizeLegibility?: boolean;
+  optimizeLegibility?: boolean
 }
 
 export const Core = ({

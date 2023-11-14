@@ -111,7 +111,7 @@ function printField (
 }
 
 function collectEnums (lists: Record<string, InitialisedList>) {
-  const enums: Record<string, { values: readonly string[]; firstDefinedByRef: string }> = {}
+  const enums: Record<string, { values: readonly string[], firstDefinedByRef: string }> = {}
   for (const [listKey, { resolvedDbFields }] of Object.entries(lists)) {
     for (const [fieldPath, field] of Object.entries(resolvedDbFields)) {
       const fields =

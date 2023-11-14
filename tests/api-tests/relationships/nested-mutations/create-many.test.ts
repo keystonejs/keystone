@@ -118,7 +118,7 @@ describe('no access control', () => {
       })
 
       // Create an item that does the nested create
-      type T = { id: IdType; notes: { id: IdType; content: string }[] }
+      type T = { id: IdType, notes: { id: IdType, content: string }[] }
 
       const user1 = (await context.query.User.createOne({
         data: {
@@ -173,7 +173,7 @@ describe('no access control', () => {
         notes: [{ id: expect.any(String), content: noteContent }],
       })
 
-      type T = { id: IdType; notes: { id: IdType; content: string }[] }
+      type T = { id: IdType, notes: { id: IdType, content: string }[] }
       const _user = (await context.query.User.updateOne({
         where: { id: createUser.id },
         data: {

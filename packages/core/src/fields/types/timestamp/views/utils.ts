@@ -31,8 +31,8 @@ export function constructTimestamp ({
   dateValue,
   timeValue,
 }: {
-  dateValue: string;
-  timeValue: string;
+  dateValue: string
+  timeValue: string
 }) {
   return new Date(`${dateValue}T${timeValue}`).toISOString()
 }
@@ -51,17 +51,17 @@ export function formatOutput (value: string | null) {
 }
 
 export type InnerValue = {
-  dateValue: string | null;
-  timeValue: string | { kind: 'parsed'; value: string | null };
+  dateValue: string | null
+  timeValue: string | { kind: 'parsed', value: string | null }
 }
 
 export type Value =
   | {
-      kind: 'create';
-      value: InnerValue;
+      kind: 'create'
+      value: InnerValue
     }
   | {
-      kind: 'update';
-      value: InnerValue;
-      initial: string | null;
+      kind: 'update'
+      value: InnerValue
+      initial: string | null
     }

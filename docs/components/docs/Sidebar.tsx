@@ -6,7 +6,7 @@ import { useMediaQuery } from '../../lib/media'
 import { DocsNavigation, UpdatesNavigation } from './Navigation'
 
 type SidebarProps = {
-  isUpdatesPage?: boolean;
+  isUpdatesPage?: boolean
 }
 
 export function Sidebar ({ isUpdatesPage }: SidebarProps) {

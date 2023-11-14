@@ -7,10 +7,10 @@ import { type DeepNullable, makeDataGetter } from './dataGetter'
 export type { AuthenticatedItem, VisibleLists, CreateViewFieldModes }
 
 export function useLazyMetadata (query: DocumentNode): {
-  authenticatedItem: AuthenticatedItem;
-  refetch: () => Promise<void>;
-  visibleLists: VisibleLists;
-  createViewFieldModes: CreateViewFieldModes;
+  authenticatedItem: AuthenticatedItem
+  refetch: () => Promise<void>
+  visibleLists: VisibleLists
+  createViewFieldModes: CreateViewFieldModes
 } {
   const result = useQuery(query, { errorPolicy: 'all', fetchPolicy: 'network-only' })
   return useMemo(() => {
@@ -22,20 +22,20 @@ export function useLazyMetadata (query: DocumentNode): {
       DeepNullable<{
         authenticatedItem:
           | {
-              __typename: string;
-              id: string;
-              [key: string]: any;
+              __typename: string
+              id: string
+              [key: string]: any
             }
-          | { __typename: string };
+          | { __typename: string }
         keystone: {
           adminMeta: {
             lists: {
-              key: string;
-              isHidden: boolean;
-              fields: { path: string; createView: { fieldMode: 'edit' | 'hidden' } }[];
-            }[];
-          };
-        };
+              key: string
+              isHidden: boolean
+              fields: { path: string, createView: { fieldMode: 'edit' | 'hidden' } }[]
+            }[]
+          }
+        }
       }>
     >(result.data, result.error?.graphQLErrors)
     const authenticatedItemGetter = dataGetter.get('authenticatedItem')

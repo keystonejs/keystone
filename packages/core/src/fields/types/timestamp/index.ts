@@ -13,18 +13,18 @@ import { type TimestampFieldMeta } from './views'
 
 export type TimestampFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
   CommonFieldConfig<ListTypeInfo> & {
-    isIndexed?: boolean | 'unique';
+    isIndexed?: boolean | 'unique'
     validation?: {
-      isRequired?: boolean;
-    };
-    defaultValue?: string | { kind: 'now' };
+      isRequired?: boolean
+    }
+    defaultValue?: string | { kind: 'now' }
     db?: {
       // this is @updatedAt in Prisma
-      updatedAt?: boolean;
-      isNullable?: boolean;
-      map?: string;
-      extendPrismaSchema?: (field: string) => string;
-    };
+      updatedAt?: boolean
+      isNullable?: boolean
+      map?: string
+      extendPrismaSchema?: (field: string) => string
+    }
   }
 
 export const timestamp =

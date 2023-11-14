@@ -3,8 +3,8 @@ import { type ChangeEvent, type FocusEvent, useState } from 'react'
 type ParsedValueBase = undefined | symbol | boolean | object | number | null | bigint
 
 type Config<ParsedValue extends ParsedValueBase> = {
-  parse: (value: string) => ParsedValue | string;
-  format: (value: ParsedValue) => string;
+  parse: (value: string) => ParsedValue | string
+  format: (value: ParsedValue) => string
 }
 
 export function useFormattedInput<ParsedValue extends ParsedValueBase> (
@@ -15,10 +15,10 @@ export function useFormattedInput<ParsedValue extends ParsedValueBase> (
     onBlur,
     onFocus,
   }: {
-    value: string | ParsedValue;
-    onChange: (value: string | ParsedValue) => void;
-    onFocus?: (event: FocusEvent<HTMLInputElement>) => void;
-    onBlur?: (event: FocusEvent<HTMLInputElement>) => void;
+    value: string | ParsedValue
+    onChange: (value: string | ParsedValue) => void
+    onFocus?: (event: FocusEvent<HTMLInputElement>) => void
+    onBlur?: (event: FocusEvent<HTMLInputElement>) => void
   }
 ) {
   // typeof value === 'string' implies the unparsed form

@@ -9,9 +9,9 @@ import { useInputTokens, useInputStyles } from '../..'
 import { Adornment, AdornmentWrapper } from './Adornments'
 
 type ButtonProps = {
-  invalid?: boolean;
-  isSelected?: boolean;
-  onClear?: () => void;
+  invalid?: boolean
+  isSelected?: boolean
+  onClear?: () => void
 } & ButtonHTMLAttributes<HTMLButtonElement>
 
 export const InputButton = forwardRef<HTMLButtonElement, ButtonProps>(
