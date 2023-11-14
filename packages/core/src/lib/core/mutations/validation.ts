@@ -6,7 +6,7 @@ type DistributiveOmit<T, K extends keyof T> = T extends any ? Omit<T, K> : never
 type UpdateCreateHookArgs = Parameters<
   Exclude<InitialisedList['hooks']['validateInput'], undefined>
 >[0]
-export async function validateUpdateCreate({
+export async function validateUpdateCreate ({
   list,
   hookArgs,
 }: {
@@ -47,7 +47,7 @@ export async function validateUpdateCreate({
 }
 
 type DeleteHookArgs = Parameters<Exclude<InitialisedList['hooks']['validateDelete'], undefined>>[0]
-export async function validateDelete({
+export async function validateDelete ({
   list,
   hookArgs,
 }: {

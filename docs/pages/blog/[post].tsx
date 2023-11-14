@@ -20,7 +20,7 @@ import { Heading } from '../../components/docs/Heading'
 import { Type } from '../../components/primitives/Type'
 import { getOgAbsoluteUrl } from '../../lib/og-util'
 
-export default function Page(props: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function Page (props: InferGetStaticPropsType<typeof getStaticProps>) {
   const router = useRouter()
   const headings = [
     { id: 'title', depth: 1, label: props.title },
@@ -81,7 +81,7 @@ export default function Page(props: InferGetStaticPropsType<typeof getStaticProp
   )
 }
 
-export async function getStaticPaths(): Promise<GetStaticPathsResult> {
+export async function getStaticPaths (): Promise<GetStaticPathsResult> {
   const files = await globby('**/*.md', {
     cwd: path.join(process.cwd(), 'pages/blog'),
   })
@@ -91,7 +91,7 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   }
 }
 
-export async function getStaticProps(
+export async function getStaticProps (
   args: GetStaticPropsContext<{ post: string }>
 ): Promise<GetStaticPropsResult<BlogContent>> {
   return { props: await readBlogContent(`pages/blog/${args.params!.post}.md`) }

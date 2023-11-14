@@ -26,6 +26,6 @@ const paint = weakMemo(breakpoints =>
   facepaint(Object.entries(breakpoints).map(([, width]) => `@media (min-width: ${width}px)`))
 )
 
-export function useMediaQuery() {
+export function useMediaQuery () {
   return paint(BREAK_POINTS)
 }

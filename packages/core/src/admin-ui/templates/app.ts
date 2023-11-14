@@ -67,7 +67,7 @@ export default getApp({
   // -- TEMPLATE END
 }
 
-function getLazyMetadataQuery(
+function getLazyMetadataQuery (
   graphqlSchema: GraphQLSchema,
   adminMeta: StaticAdminMetaQuery['keystone']['adminMeta']
 ) {

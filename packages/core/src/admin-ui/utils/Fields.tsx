@@ -16,7 +16,7 @@ type RenderFieldProps = {
   forceValidation?: boolean;
 }
 
-const RenderField = memo(function RenderField({
+const RenderField = memo(function RenderField ({
   field,
   value,
   itemValue,
@@ -53,7 +53,7 @@ type FieldsProps = {
   onChange(value: (value: Value) => Value): void;
 }
 
-export function Fields({
+export function Fields ({
   fields,
   value,
   fieldModes = null,
@@ -135,7 +135,7 @@ export function Fields({
   )
 }
 
-function FieldGroup(props: { label: string; description: string | null; children: ReactNode }) {
+function FieldGroup (props: { label: string; description: string | null; children: ReactNode }) {
   const descriptionId = useId()
   const labelId = useId()
   const theme = useTheme()

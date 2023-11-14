@@ -10,7 +10,7 @@ import { baseMarkdocConfig } from './config'
 import { showNextReleaseWithoutReplacement } from './show-next-release'
 import { isTag } from './isTag'
 
-export function printValidationError(error: ValidateError) {
+export function printValidationError (error: ValidateError) {
   const location = error.error.location || error.location
   // the filepath is intentionally duplicated here so that there is one thing you can copy to refer to the error position
   return `${location?.file ?? '(unknown file)'}:${
@@ -23,7 +23,7 @@ export function printValidationError(error: ValidateError) {
 }
 
 class MarkdocValidationFailure extends Error {
-  constructor(errors: [ValidateError, ...ValidateError[]], errorReportingFilepath: string) {
+  constructor (errors: [ValidateError, ...ValidateError[]], errorReportingFilepath: string) {
     super()
     this.name = 'MarkdocValidationFailure'
     // you see the stacktrace and a bunch of other stuff from Next when seeing the errors here
@@ -45,13 +45,13 @@ export type BlogContent = BlogFrontmatter & {
   content: Tag;
 }
 
-export async function readBlogContent(filepath: string): Promise<BlogContent> {
+export async function readBlogContent (filepath: string): Promise<BlogContent> {
   let content = await fs.readFile(filepath, 'utf8')
   const frontmatter = extractBlogFrontmatter(content)
   return { content: transformContent(`docs/${filepath}`, content), ...frontmatter }
 }
 
-export async function readDocsContent(filepath: string): Promise<DocsContent> {
+export async function readDocsContent (filepath: string): Promise<DocsContent> {
   let content = await fs.readFile(filepath, 'utf8')
   const frontmatter = extractDocsFrontmatter(content)
   return { content: transformContent(`docs/${filepath}`, content), ...frontmatter }
@@ -64,7 +64,7 @@ const markdocConfig: Config = {
   },
 }
 
-export function transformContent(errorReportingFilepath: string, content: string): Tag {
+export function transformContent (errorReportingFilepath: string, content: string): Tag {
   const node = Markdoc.parse(content, errorReportingFilepath)
   const errors = Markdoc.validate(node, markdocConfig)
   if (isNonEmptyArray(errors)) {
@@ -80,7 +80,7 @@ export function transformContent(errorReportingFilepath: string, content: string
 
 const frontMatterPattern = /^---[\s]+([\s\S]*?)[\s]+---/
 
-export function extractDocsFrontmatter(content: string): {
+export function extractDocsFrontmatter (content: string): {
   title: string;
   description: string;
 } {
@@ -123,7 +123,7 @@ export type BlogFrontmatter = {
   metaImageUrl?: string;
 }
 
-export function extractBlogFrontmatter(content: string): BlogFrontmatter {
+export function extractBlogFrontmatter (content: string): BlogFrontmatter {
   const match = frontMatterPattern.exec(content)
   if (!match) {
     throw new Error(

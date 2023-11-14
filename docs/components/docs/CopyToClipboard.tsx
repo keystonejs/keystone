@@ -4,7 +4,7 @@ import { jsx } from '@emotion/react'
 
 import { Link } from '../icons/Link'
 
-export function HeadingIdLink({ value }: { value: string }) {
+export function HeadingIdLink ({ value }: { value: string }) {
   return (
     <a
       href={`#${value}`}

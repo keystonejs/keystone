@@ -58,7 +58,7 @@ if (!queryEngineFilename) {
 
 process.env.PRISMA_QUERY_ENGINE_LIBRARY = path.join(prismaEnginesDir, queryEngineFilename)
 
-async function getTestPrismaModule(schema: string): Promise<PrismaModule> {
+async function getTestPrismaModule (schema: string): Promise<PrismaModule> {
   if (generatedPrismaModules.has(schema)) {
     return generatedPrismaModules.get(schema)!
   }
@@ -100,7 +100,7 @@ afterAll(async () => {
 
 let hasCreatedDatabase = false
 
-async function pushSchemaToDatabase(schema: string) {
+async function pushSchemaToDatabase (schema: string) {
   if (dbProvider === 'sqlite') {
     // touch the file (or truncate it), easiest way to start from scratch
     await fs.writeFile(path.join(prismaSchemaDirectory, SQLITE_DATABASE_FILENAME), '')
@@ -133,7 +133,7 @@ async function pushSchemaToDatabase(schema: string) {
 
 let lastWrittenSchema = ''
 
-export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo>({
+export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo> ({
   config: _config,
 }: {
   config: KeystoneConfig<TypeInfo>;
@@ -166,7 +166,7 @@ export async function setupTestEnv<TypeInfo extends BaseKeystoneTypeInfo>({
   }
 }
 
-export function setupTestRunner<TypeInfo extends BaseKeystoneTypeInfo>({
+export function setupTestRunner<TypeInfo extends BaseKeystoneTypeInfo> ({
   config,
 }: {
   config: KeystoneConfig<TypeInfo>;

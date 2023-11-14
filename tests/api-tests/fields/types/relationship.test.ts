@@ -7,7 +7,7 @@ import { allowAll } from '@keystone-6/core/access'
 
 const fieldKey = 'foo'
 
-function getSchema(field: { ref: string; many?: boolean }) {
+function getSchema (field: { ref: string; many?: boolean }) {
   return createSystem(
     initConfig(
       config({
@@ -133,7 +133,7 @@ describe('Type Generation', () => {
 })
 
 describe('Reference errors', () => {
-  function tryf(lists: ListSchemaConfig) {
+  function tryf (lists: ListSchemaConfig) {
     return createSystem(
       initConfig(
         config({

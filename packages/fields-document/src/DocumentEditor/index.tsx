@@ -57,7 +57,7 @@ const HOTKEYS: Record<string, Mark> = {
   'mod+u': 'underline',
 }
 
-function isMarkActive(editor: Editor, mark: Mark) {
+function isMarkActive (editor: Editor, mark: Mark) {
   const marks = Editor.marks(editor)
   if (marks?.[mark]) {
     return true
@@ -116,7 +116,7 @@ const getKeyDownHandler = (editor: Editor) => (event: KeyboardEvent) => {
   }
 }
 
-export function createDocumentEditor(
+export function createDocumentEditor (
   documentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>,
   relationships: Relationships
@@ -171,7 +171,7 @@ export function createDocumentEditor(
   )
 }
 
-export function DocumentEditor({
+export function DocumentEditor ({
   onChange,
   value,
   componentBlocks,
@@ -265,7 +265,7 @@ export function DocumentEditor({
   )
 }
 
-export function DocumentEditorProvider({
+export function DocumentEditorProvider ({
   children,
   editor,
   onChange,
@@ -315,7 +315,7 @@ export function DocumentEditorProvider({
   )
 }
 
-export function DocumentEditorEditable(props: EditableProps) {
+export function DocumentEditorEditable (props: EditableProps) {
   const editor = useSlate()
   const componentBlocks = useContext(ComponentBlockContext)
 
@@ -371,7 +371,7 @@ export function DocumentEditorEditable(props: EditableProps) {
   )
 }
 
-function Debugger() {
+function Debugger () {
   const editor = useSlate()
   return (
     <pre>
@@ -443,7 +443,7 @@ const paragraphLike = [...blockquoteChildren, 'blockquote'] as const
 
 const insideOfLayouts = [...paragraphLike, 'component-block'] as const
 
-function blockContainer(args: {
+function blockContainer (args: {
   allowedChildren: readonly [TypesWhichHaveNoExtraRequiredProps, ...Block['type'][]];
   invalidPositionHandleMode: 'unwrap' | 'move';
 }): BlockContainerSchema {
@@ -455,7 +455,7 @@ function blockContainer(args: {
   }
 }
 
-function inlineContainer(args: {
+function inlineContainer (args: {
   invalidPositionHandleMode: 'unwrap' | 'move';
 }): InlineContainerSchema {
   return {
@@ -465,8 +465,8 @@ function inlineContainer(args: {
 }
 
 // a user land version of https://github.com/microsoft/TypeScript/issues/47920
-function satisfies<Base>() {
-  return function <Specific extends Base>(value: Specific) {
+function satisfies<Base> () {
+  return function <Specific extends Base> (value: Specific) {
     return value
   }
 }
@@ -527,7 +527,7 @@ const inlineContainerTypes = new Set(
     .map(([type]) => type)
 )
 
-export function isInlineContainer(node: Node): node is Block & { type: InlineContainingType } {
+export function isInlineContainer (node: Node): node is Block & { type: InlineContainingType } {
   return node.type !== undefined && inlineContainerTypes.has(node.type)
 }
 
@@ -535,11 +535,11 @@ const blockTypes: Set<string | undefined> = new Set(
   Object.keys(editorSchema).filter(x => x !== 'editor')
 )
 
-export function isBlock(node: Descendant): node is Block {
+export function isBlock (node: Descendant): node is Block {
   return blockTypes.has(node.type)
 }
 
-function withBlocksSchema(editor: Editor): Editor {
+function withBlocksSchema (editor: Editor): Editor {
   const { normalizeNode } = editor
   editor.normalizeNode = ([node, path]) => {
     if (!Text.isText(node) && node.type !== 'link' && node.type !== 'relationship') {
@@ -608,7 +608,7 @@ function withBlocksSchema(editor: Editor): Editor {
   return editor
 }
 
-function handleNodeInInvalidPosition(
+function handleNodeInInvalidPosition (
   editor: Editor,
   [node, path]: NodeEntry<Block>,
   parentPath: Path

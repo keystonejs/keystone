@@ -13,7 +13,7 @@ type HeroProps = {
       };
 }
 
-export function Hero({ imageSrc, caption }: HeroProps) {
+export function Hero ({ imageSrc, caption }: HeroProps) {
   return (
     <div className={styles.hero}>
       <div className={styles.backgroundImage} style={{ backgroundImage: `url(${imageSrc})` }} />

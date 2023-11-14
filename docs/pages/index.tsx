@@ -41,7 +41,7 @@ import contentEditorMockui from '../public/assets/content-editor-mockui.png'
 import docEditorHome from '../public/assets/doc-editor-home.png'
 import deployTargets from '../public/assets/deploy-targets.png'
 
-export default function IndexPage() {
+export default function IndexPage () {
   const mq = useMediaQuery()
   return (
     <Page

@@ -65,7 +65,7 @@ const runner = withServer(
   })
 )
 
-async function authenticateWithPassword(
+async function authenticateWithPassword (
   graphQLRequest: GraphQLRequest,
   email: string,
   password: string

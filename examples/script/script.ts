@@ -7,7 +7,7 @@ import * as PrismaModule from '.myprisma/client'
 //   do this instead
 // import * as PrismaModule from '@prisma/client';
 
-async function main() {
+async function main () {
   const context = getContext(config, PrismaModule)
 
   console.log('(script.ts)', 'connect')

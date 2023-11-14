@@ -1,6 +1,6 @@
 import { hexToTriplet } from './hexToRgb'
 
-export function getContrastText(color: string) {
+export function getContrastText (color: string) {
   const [r, g, b] = hexToTriplet(color)
 
   // calculate contrast against grayscale

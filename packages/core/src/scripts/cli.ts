@@ -16,7 +16,7 @@ export type Flags = {
   withMigrations: boolean;
 }
 
-function defaultFlags(flags: Partial<Flags>, defaults: Partial<Flags>) {
+function defaultFlags (flags: Partial<Flags>, defaults: Partial<Flags>) {
   flags = { ...defaults, ...flags }
 
   for (const [key, value] of Object.entries(flags)) {
@@ -39,7 +39,7 @@ function defaultFlags(flags: Partial<Flags>, defaults: Partial<Flags>) {
   return flags as Flags
 }
 
-export async function cli(cwd: string, argv: string[]) {
+export async function cli (cwd: string, argv: string[]) {
   const { input, help, flags } = meow(
     `
     Usage

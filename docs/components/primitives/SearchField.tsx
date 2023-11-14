@@ -10,7 +10,7 @@ import { Field } from './Field'
 
 type SearchFieldProps = HTMLAttributes<HTMLElement>
 
-export function SearchField(props: SearchFieldProps) {
+export function SearchField (props: SearchFieldProps) {
   return (
     <Fragment>
       <Global

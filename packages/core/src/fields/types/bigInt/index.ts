@@ -103,7 +103,7 @@ export const bigInt =
       ...config,
       hooks: {
         ...config.hooks,
-        async validateInput(args) {
+        async validateInput (args) {
           const value = args.resolvedData[meta.fieldKey]
 
           if (
@@ -142,7 +142,7 @@ export const bigInt =
             type: graphql.BigInt,
             defaultValue: typeof defaultValue === 'bigint' ? defaultValue : undefined,
           }),
-          resolve(value) {
+          resolve (value) {
             if (value === undefined && typeof defaultValue === 'bigint') {
               return defaultValue
             }
@@ -157,7 +157,7 @@ export const bigInt =
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/bigInt',
       views: '@keystone-6/core/fields/types/bigInt/views',
-      getAdminMeta() {
+      getAdminMeta () {
         return {
           validation: {
             min: validation.min.toString(),

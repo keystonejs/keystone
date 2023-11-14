@@ -31,7 +31,7 @@ import { applyAccessControlForCreate, getAccessControlledItemForUpdate } from '.
 import { runSideEffectOnlyHook } from './hooks'
 import { validateUpdateCreate } from './validation'
 
-async function createSingle(
+async function createSingle (
   { data: rawData }: { data: Record<string, any> },
   list: InitialisedList,
   context: KeystoneContext
@@ -60,10 +60,10 @@ async function createSingle(
 export class NestedMutationState {
   #afterOperations: (() => void | Promise<void>)[] = []
   #context: KeystoneContext
-  constructor(context: KeystoneContext) {
+  constructor (context: KeystoneContext) {
     this.#context = context
   }
-  async create(data: Record<string, any>, list: InitialisedList) {
+  async create (data: Record<string, any>, list: InitialisedList) {
     const context = this.#context
 
     const operationAccess = await getOperationAccess(list, context, 'create')
@@ -75,12 +75,12 @@ export class NestedMutationState {
     return { id: item.id as IdType }
   }
 
-  async afterOperation() {
+  async afterOperation () {
     await promiseAllRejectWithAllErrors(this.#afterOperations.map(async x => x()))
   }
 }
 
-export async function createOne(
+export async function createOne (
   createInput: { data: Record<string, any> },
   list: InitialisedList,
   context: KeystoneContext
@@ -95,7 +95,7 @@ export async function createOne(
   return item
 }
 
-export async function createMany(
+export async function createMany (
   createInputs: { data: Record<string, any>[] },
   list: InitialisedList,
   context: KeystoneContext
@@ -112,7 +112,7 @@ export async function createMany(
   })
 }
 
-async function updateSingle(
+async function updateSingle (
   updateInput: { where: UniqueInputFilter; data: Record<string, any> },
   list: InitialisedList,
   context: KeystoneContext,
@@ -153,7 +153,7 @@ async function updateSingle(
   return updatedItem
 }
 
-export async function updateOne(
+export async function updateOne (
   updateInput: { where: UniqueInputFilter; data: Record<string, any> },
   list: InitialisedList,
   context: KeystoneContext
@@ -167,7 +167,7 @@ export async function updateOne(
   return updateSingle(updateInput, list, context, accessFilters)
 }
 
-export async function updateMany(
+export async function updateMany (
   { data }: { data: { where: UniqueInputFilter; data: Record<string, any> }[] },
   list: InitialisedList,
   context: KeystoneContext
@@ -185,7 +185,7 @@ export async function updateMany(
   })
 }
 
-async function getResolvedData(
+async function getResolvedData (
   list: InitialisedList,
   hookArgs: {
     context: KeystoneContext;
@@ -341,7 +341,7 @@ async function getResolvedData(
   return resolvedData
 }
 
-async function resolveInputForCreateOrUpdate(
+async function resolveInputForCreateOrUpdate (
   list: InitialisedList,
   context: KeystoneContext,
   inputData: Record<string, any>,
@@ -390,7 +390,7 @@ async function resolveInputForCreateOrUpdate(
   }
 }
 
-function transformInnerDBField(
+function transformInnerDBField (
   dbField: Exclude<ResolvedDBField, { kind: 'multi' }>,
   context: KeystoneContext,
   value: unknown
@@ -402,7 +402,7 @@ function transformInnerDBField(
   return value
 }
 
-function transformForPrismaClient(
+function transformForPrismaClient (
   fields: Record<string, { dbField: ResolvedDBField }>,
   data: Record<string, any>,
   context: KeystoneContext

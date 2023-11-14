@@ -69,7 +69,7 @@ export const lists: Lists<Session> = {
           },
         },
         hooks: {
-          resolveInput({ operation, resolvedData, context }) {
+          resolveInput ({ operation, resolvedData, context }) {
             if (operation === 'create' && !resolvedData.assignedTo && context.session) {
               // Always default new todo items to the current user; this is important because users
               // without canManageAllTodos don't see this field when creating new items

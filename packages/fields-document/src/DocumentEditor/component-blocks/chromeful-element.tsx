@@ -22,7 +22,7 @@ import {
   type NonChildFieldComponentSchema,
 } from './form-from-preview'
 
-export function ChromefulComponentBlockElement(props: {
+export function ChromefulComponentBlockElement (props: {
   children: ReactNode;
   renderedBlock: ReactNode;
   componentBlock: ComponentBlock & { chromeless?: false };
@@ -111,7 +111,7 @@ export function ChromefulComponentBlockElement(props: {
   )
 }
 
-function DefaultToolbarWithChrome({
+function DefaultToolbarWithChrome ({
   onShowEditMode,
   onRemove,
   isValid,
@@ -164,7 +164,7 @@ function DefaultToolbarWithChrome({
   )
 }
 
-function FormValue({
+function FormValue ({
   onClose,
   props,
   isValid,

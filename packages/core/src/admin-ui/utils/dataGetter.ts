@@ -22,17 +22,17 @@ export type DataGetter<Value> = {
   ): DataGetter<(Key extends keyof NonNullable<Value> ? NonNullable<Value>[Key] : never) | null>;
 }
 
-function dataGetterWithNoErrors(data: any, path: Path): DataGetter<any> {
+function dataGetterWithNoErrors (data: any, path: Path): DataGetter<any> {
   return {
     data,
     path,
-    get(field) {
+    get (field) {
       return dataGetterWithNoErrors(data?.[field] ?? null, path.concat(field))
     },
   }
 }
 
-function dataGetterWithErrors(
+function dataGetterWithErrors (
   data: any,
   errors: readonly [GraphQLError, ...GraphQLError[]],
   path: Path
@@ -41,7 +41,7 @@ function dataGetterWithErrors(
     data,
     errors,
     path,
-    get(field) {
+    get (field) {
       const newPath = path.concat(field)
       const newItem = data?.[field] ?? null
       const errorsForField = errors.filter(error => {
@@ -59,7 +59,7 @@ function dataGetterWithErrors(
   }
 }
 
-export function makeDataGetter<Data extends JSONValue>(
+export function makeDataGetter<Data extends JSONValue> (
   data: Data,
   errors: readonly GraphQLError[] | undefined
 ): DataGetter<Data> {

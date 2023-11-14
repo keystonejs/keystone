@@ -10,7 +10,7 @@ import { createContext } from './context/createContext'
 import { initialiseLists, type InitialisedList } from './core/initialise-lists'
 import { setPrismaNamespace, setWriteLimit } from './core/utils'
 
-function getSudoGraphQLSchema(config: KeystoneConfig) {
+function getSudoGraphQLSchema (config: KeystoneConfig) {
   // This function creates a GraphQLSchema based on a modified version of the provided config.
   // The modifications are:
   //  * All list level access control is disabled
@@ -67,7 +67,7 @@ function getSudoGraphQLSchema(config: KeystoneConfig) {
   // return createGraphQLSchema(transformedConfig, lists, null, true);
 }
 
-function injectNewDefaults(prismaClient: any, lists: Record<string, InitialisedList>) {
+function injectNewDefaults (prismaClient: any, lists: Record<string, InitialisedList>) {
   for (const listKey in lists) {
     const list = lists[listKey]
 
@@ -79,7 +79,7 @@ function injectNewDefaults(prismaClient: any, lists: Record<string, InitialisedL
       prismaClient = prismaClient.$extends({
         query: {
           [list.prisma.listKey]: {
-            async create({ model, args, query }: any) {
+            async create ({ model, args, query }: any) {
               return query({
                 ...args,
                 data: {
@@ -97,7 +97,7 @@ function injectNewDefaults(prismaClient: any, lists: Record<string, InitialisedL
   return prismaClient
 }
 
-export function createSystem(config: KeystoneConfig) {
+export function createSystem (config: KeystoneConfig) {
   const lists = initialiseLists(config)
   const adminMeta = createAdminMeta(config, lists)
   const graphQLSchema = createGraphQLSchema(config, lists, adminMeta, false)
@@ -131,12 +131,12 @@ export function createSystem(config: KeystoneConfig) {
 
       return {
         // TODO: replace with server.onStart, remove in breaking change
-        async connect() {
+        async connect () {
           await prismaClient.$connect()
           await config.db.onConnect?.(context)
         },
         // TODO: only used by tests, remove in breaking change
-        async disconnect() {
+        async disconnect () {
           await prismaClient.$disconnect()
         },
         context,

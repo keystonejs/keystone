@@ -102,7 +102,7 @@ const runner = (debug: boolean | undefined) =>
               badResolveInput: relationship({
                 ref: 'Post',
                 hooks: {
-                  resolveInput() {
+                  resolveInput () {
                     return { blah: true }
                   },
                 },
@@ -115,7 +115,7 @@ const runner = (debug: boolean | undefined) =>
     })
   )
 
-function stripStackTrace(errors: any[] = []) {
+function stripStackTrace (errors: any[] = []) {
   for (const error of errors) {
     for (const e of error?.extensions?.debug ?? []) {
       delete e.stacktrace

@@ -55,7 +55,7 @@ const Palette = ({ name }: { name: string }) => {
   )
 }
 
-export default function ThemePage() {
+export default function ThemePage () {
   return (
     <Page>
       <h1>Theme</h1>

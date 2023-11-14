@@ -11,7 +11,7 @@ export const allMarkdownShortcuts = {
   code: ['`'],
 }
 
-function applyMark(editor: Editor, mark: string, shortcutText: string, startOfStartPoint: Point) {
+function applyMark (editor: Editor, mark: string, shortcutText: string, startOfStartPoint: Point) {
   // so that this starts a new undo group
   editor.writeHistory('undos', { operations: [], selectionBefore: null })
   const startPointRef = Editor.pointRef(editor, startOfStartPoint)
@@ -37,7 +37,7 @@ function applyMark(editor: Editor, mark: string, shortcutText: string, startOfSt
   editor.removeMark(mark)
 }
 
-export function withMarks(
+export function withMarks (
   editorDocumentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>,
   editor: Editor
@@ -192,7 +192,7 @@ export function withMarks(
   return editor
 }
 
-function getStartOfBlock(editor: Editor) {
+function getStartOfBlock (editor: Editor) {
   return Editor.start(
     editor,
     Editor.above(editor, {

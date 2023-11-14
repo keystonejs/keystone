@@ -23,7 +23,7 @@ type CommonFilter<T> = {
   not?: CommonFilter<T> | null;
 }
 
-function internalResolveFilter(
+function internalResolveFilter (
   entries: EntriesAssumingNoExtraProps<CommonFilter<any>>,
   mode: 'default' | 'insensitive' | undefined
 ): object {
@@ -75,12 +75,12 @@ function internalResolveFilter(
   }
 }
 
-export function resolveCommon(val: CommonFilter<any> | null) {
+export function resolveCommon (val: CommonFilter<any> | null) {
   if (val === null) return null
   return internalResolveFilter(objectEntriesButAssumeNoExtraProperties(val), undefined)
 }
 
-export function resolveString(
+export function resolveString (
   val: (CommonFilter<string> & { mode?: 'default' | 'insensitive' | null }) | null
 ) {
   if (val === null) return null

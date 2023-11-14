@@ -34,23 +34,23 @@ const { withAuth } = createAuth({
 
 const redis = createClient()
 
-function redisSessionStrategy() {
+function redisSessionStrategy () {
   // you can find out more at https://keystonejs.com/docs/apis/session#session-api
   return storedSessions<Session>({
     store: ({ maxAge }) => ({
-      async get(sessionId) {
+      async get (sessionId) {
         const result = await redis.get(sessionId)
         if (!result) return
 
         return JSON.parse(result) as Session
       },
 
-      async set(sessionId, data) {
+      async set (sessionId, data) {
         // we use redis for our Session data, in JSON
         await redis.setEx(sessionId, maxAge, JSON.stringify(data))
       },
 
-      async delete(sessionId) {
+      async delete (sessionId) {
         await redis.del(sessionId)
       },
     }),
@@ -62,7 +62,7 @@ export default withAuth(
     db: {
       provider: 'sqlite',
       url: process.env.DATABASE_URL || 'file:./keystone-example.db',
-      async onConnect() {
+      async onConnect () {
         await redis.connect()
       },
 

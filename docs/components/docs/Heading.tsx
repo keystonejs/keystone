@@ -10,7 +10,7 @@ import { HeadingIdLink } from './CopyToClipboard'
  * !THIS IS OLD. PLEASE USE THE Type COMPONENT INSTEAD!
  */
 
-function getAnchor(text: string | string[]) {
+function getAnchor (text: string | string[]) {
   if (typeof text === 'string') {
     return slugify(text)
   } else if (Array.isArray(text)) {
@@ -57,7 +57,7 @@ type HeadingProps = BaseHeadingProps & {
   level: 1 | 2 | 3 | 4 | 5 | 6;
 }
 
-export function Heading({ level, id, children, ...props }: HeadingProps) {
+export function Heading ({ level, id, children, ...props }: HeadingProps) {
   const hasHeadingIdLink = level > 1 && level < 5
   const computedId = id === undefined ? getAnchor(children) : id
   const Tag = `h${level}` as const
@@ -91,26 +91,26 @@ export function Heading({ level, id, children, ...props }: HeadingProps) {
   )
 }
 
-export function H1(props: BaseHeadingProps) {
+export function H1 (props: BaseHeadingProps) {
   return <Heading level={1} {...props} />
 }
 
-export function H2(props: BaseHeadingProps) {
+export function H2 (props: BaseHeadingProps) {
   return <Heading level={2} {...props} />
 }
 
-export function H3(props: BaseHeadingProps) {
+export function H3 (props: BaseHeadingProps) {
   return <Heading level={3} {...props} />
 }
 
-export function H4(props: BaseHeadingProps) {
+export function H4 (props: BaseHeadingProps) {
   return <Heading level={4} {...props} />
 }
 
-export function H5(props: BaseHeadingProps) {
+export function H5 (props: BaseHeadingProps) {
   return <Heading level={5} {...props} />
 }
 
-export function H6(props: BaseHeadingProps) {
+export function H6 (props: BaseHeadingProps) {
   return <Heading level={6} {...props} />
 }

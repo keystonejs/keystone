@@ -9,7 +9,7 @@ const modifiers = {
   many: '[]',
 }
 
-function printIndex(fieldPath: string, index: undefined | 'index' | 'unique') {
+function printIndex (fieldPath: string, index: undefined | 'index' | 'unique') {
   return {
     none: '',
     unique: '@unique',
@@ -17,11 +17,11 @@ function printIndex(fieldPath: string, index: undefined | 'index' | 'unique') {
   }[index || ('none' as const)]
 }
 
-function printNativeType(nativeType: string | undefined, datasourceName: string) {
+function printNativeType (nativeType: string | undefined, datasourceName: string) {
   return nativeType === undefined ? '' : ` @${datasourceName}.${nativeType}`
 }
 
-function printScalarDefaultValue(defaultValue: ScalarDBFieldDefault) {
+function printScalarDefaultValue (defaultValue: ScalarDBFieldDefault) {
   if (defaultValue.kind === 'literal') {
     if (typeof defaultValue.value === 'string') {
       return ` @default(${JSON.stringify(defaultValue.value)})`
@@ -42,11 +42,11 @@ function printScalarDefaultValue(defaultValue: ScalarDBFieldDefault) {
   return ''
 }
 
-function assertNever(arg: never): never {
+function assertNever (arg: never): never {
   throw new Error(`expected to never be called but was called with ${arg}`)
 }
 
-function printField(
+function printField (
   fieldPath: string,
   field: Exclude<ResolvedDBField, { kind: 'none' }>,
   datasourceName: string,
@@ -110,7 +110,7 @@ function printField(
   return assertNever(field)
 }
 
-function collectEnums(lists: Record<string, InitialisedList>) {
+function collectEnums (lists: Record<string, InitialisedList>) {
   const enums: Record<string, { values: readonly string[]; firstDefinedByRef: string }> = {}
   for (const [listKey, { resolvedDbFields }] of Object.entries(lists)) {
     for (const [fieldPath, field] of Object.entries(resolvedDbFields)) {
@@ -151,7 +151,7 @@ function collectEnums(lists: Record<string, InitialisedList>) {
     .join('\n')
 }
 
-function assertDbFieldIsValidForIdField(
+function assertDbFieldIsValidForIdField (
   listKey: string,
   isSingleton: boolean,
   field: ResolvedDBField
@@ -181,7 +181,7 @@ function assertDbFieldIsValidForIdField(
   }
 }
 
-export function printPrismaSchema(
+export function printPrismaSchema (
   lists: Record<string, InitialisedList>,
   prismaClientPath: string | undefined,
   provider: DatabaseProvider,

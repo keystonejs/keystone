@@ -20,7 +20,7 @@ export const lists: Lists = {
       isPublished: virtual({
         field: graphql.field({
           type: graphql.Boolean,
-          resolve(item: any) {
+          resolve (item: any) {
             return item.status === 'published'
           },
         }),
@@ -45,7 +45,7 @@ export const lists: Lists = {
               paragraphs: graphql.field({ type: graphql.Int }),
             },
           }),
-          resolve(item) {
+          resolve (item) {
             const content = item.content || ''
             return {
               words: content.split(' ').length,
@@ -62,7 +62,7 @@ export const lists: Lists = {
           args: {
             length: graphql.arg({ type: graphql.nonNull(graphql.Int), defaultValue: 200 }),
           },
-          resolve(item, { length }) {
+          resolve (item, { length }) {
             if (!item.content) {
               return null
             }
@@ -82,7 +82,7 @@ export const lists: Lists = {
       authorName: virtual({
         field: graphql.field({
           type: graphql.String,
-          async resolve(item, args, _context) {
+          async resolve (item, args, _context) {
             const context = _context as Context
             const POST_AUTHOR_QUERY = gql`
               query POST_AUTHOR_QUERY($id: ID!) {
@@ -117,7 +117,7 @@ export const lists: Lists = {
         field: lists =>
           graphql.field({
             type: lists.Post.types.output,
-            async resolve(item, args, _context) {
+            async resolve (item, args, _context) {
               const context = _context as Context
               const LATEST_POST_QUERY = gql`
                 query LATEST_POST_QUERY($id: ID!) {

@@ -20,7 +20,7 @@ type _UpdateValueType = Exclude<
   null | undefined
 >
 
-async function handleCreateAndUpdate(
+async function handleCreateAndUpdate (
   value: _CreateValueType,
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
@@ -34,7 +34,7 @@ async function handleCreateAndUpdate(
   }
 }
 
-export function resolveRelateToOneForCreateInput(
+export function resolveRelateToOneForCreateInput (
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
   foreignList: InitialisedList
@@ -50,7 +50,7 @@ export function resolveRelateToOneForCreateInput(
   }
 }
 
-export function resolveRelateToOneForUpdateInput(
+export function resolveRelateToOneForUpdateInput (
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
   foreignList: InitialisedList

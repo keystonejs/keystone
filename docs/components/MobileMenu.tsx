@@ -17,7 +17,7 @@ type MobileMenuProps = {
   handleClose: (e?: MouseEvent) => void;
 }
 
-export function MobileMenu({ handleClose }: MobileMenuProps) {
+export function MobileMenu ({ handleClose }: MobileMenuProps) {
   const { mobileNavIsOpen } = useHeaderContext()
 
   useEffect(() => {
@@ -80,7 +80,7 @@ type NavContainerProps = {
   mobileNavIsOpen: boolean;
 }
 
-function NavContainer({ mobileNavIsOpen, children }: NavContainerProps) {
+function NavContainer ({ mobileNavIsOpen, children }: NavContainerProps) {
   return (
     <nav
       id={mobileNavIsOpen ? 'skip-link-navigation' : ''}
@@ -112,7 +112,7 @@ type NavHeaderProps = {
   mobileNavIsOpen: boolean;
 }
 
-function NavHeader({ handleClose, mobileNavIsOpen }: NavHeaderProps) {
+function NavHeader ({ handleClose, mobileNavIsOpen }: NavHeaderProps) {
   return (
     <div
       css={{
@@ -162,7 +162,7 @@ function NavHeader({ handleClose, mobileNavIsOpen }: NavHeaderProps) {
   )
 }
 
-function Overlay({ handleClose, mobileNavIsOpen }: NavHeaderProps) {
+function Overlay ({ handleClose, mobileNavIsOpen }: NavHeaderProps) {
   return (
     <div
       onClick={handleClose}

@@ -1,7 +1,7 @@
 import fs from 'fs/promises'
 import { globby } from 'globby'
 
-export async function loadAllMarkdoc() {
+export async function loadAllMarkdoc () {
   const paths = await globby(['pages/docs/**/*.md', 'pages/blog/**/*.md'])
   return await Promise.all(
     paths.map(async file => {

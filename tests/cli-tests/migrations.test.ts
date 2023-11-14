@@ -60,13 +60,13 @@ jest.mock('prompts', () => {
   }
 })
 
-function getPrismaClient(cwd: string) {
+function getPrismaClient (cwd: string) {
   return new (require(path.join(cwd, 'node_modules/.testprisma/client')).PrismaClient)({
     datasources: { sqlite: { url: dbUrl } },
   })
 }
 
-async function getGeneratedMigration(
+async function getGeneratedMigration (
   cwd: string,
   expectedNumberOfMigrations: number,
   expectedName: string
@@ -87,7 +87,7 @@ async function getGeneratedMigration(
   return { migration, migrationFilepath, migrationName }
 }
 
-function cleanOutputForApplyingMigration(output: string, generatedMigrationName: string) {
+function cleanOutputForApplyingMigration (output: string, generatedMigrationName: string) {
   // sometimes "? The migration has been applied" is printed in a different order which messes up the snapshots
   // so we just assert the text exists somewhere and remove it from what we snapshot
   expect(output).toContain('? The migration has been applied\n')
@@ -98,7 +98,7 @@ function cleanOutputForApplyingMigration(output: string, generatedMigrationName:
 
 const basicKeystoneConfig = fs.readFileSync(`${__dirname}/fixtures/basic-with-no-ui.ts`, 'utf8')
 
-async function setupInitialProjectWithoutMigrations() {
+async function setupInitialProjectWithoutMigrations () {
   const tmp = await testdir({
     ...symlinkKeystoneDeps,
     'keystone.js': basicKeystoneConfig,
@@ -266,7 +266,7 @@ const basicWithMigrations = fs.readFileSync(
   'utf8'
 )
 
-async function setupInitialProjectWithMigrations() {
+async function setupInitialProjectWithMigrations () {
   const tmp = await testdir({
     ...symlinkKeystoneDeps,
     'keystone.js': basicWithMigrations,
@@ -314,7 +314,7 @@ Applying migration \`migration_name\`
   return { migrationName, prevCwd: tmp }
 }
 
-async function getDatabaseFiles(cwd: string) {
+async function getDatabaseFiles (cwd: string) {
   return getFiles(cwd, ['app.db', 'migrations/**/*'], null)
 }
 
@@ -703,7 +703,7 @@ describe('useMigrations: true', () => {
 })
 
 describe('start --with-migrations', () => {
-  async function startAndStopServer(tmp: string) {
+  async function startAndStopServer (tmp: string) {
     const startResult = execa('node', [cliBinPath, 'start', '--no-ui', '--with-migrations'], {
       reject: false,
       all: true,

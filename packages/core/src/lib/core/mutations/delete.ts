@@ -9,7 +9,7 @@ import { getAccessControlledItemForDelete } from './access-control'
 import { runSideEffectOnlyHook } from './hooks'
 import { validateDelete } from './validation'
 
-async function deleteSingle(
+async function deleteSingle (
   uniqueInput: UniqueInputFilter,
   list: InitialisedList,
   context: KeystoneContext,
@@ -55,7 +55,7 @@ async function deleteSingle(
   return newItem
 }
 
-export async function deleteMany(
+export async function deleteMany (
   uniqueInputs: UniqueInputFilter[],
   list: InitialisedList,
   context: KeystoneContext
@@ -73,7 +73,7 @@ export async function deleteMany(
   })
 }
 
-export async function deleteOne(
+export async function deleteOne (
   uniqueInput: UniqueInputFilter,
   list: InitialisedList,
   context: KeystoneContext

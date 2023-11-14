@@ -11,7 +11,7 @@ const codeFontStyle = {
   fontFamily: 'var(--font-mono)',
 }
 
-function MenuBtn(props: HTMLAttributes<HTMLElement>) {
+function MenuBtn (props: HTMLAttributes<HTMLElement>) {
   return (
     <span
       css={{
@@ -27,7 +27,7 @@ function MenuBtn(props: HTMLAttributes<HTMLElement>) {
   )
 }
 
-export function WindowWrapper(props: HTMLAttributes<HTMLElement>) {
+export function WindowWrapper (props: HTMLAttributes<HTMLElement>) {
   return (
     <div
       css={{
@@ -40,7 +40,7 @@ export function WindowWrapper(props: HTMLAttributes<HTMLElement>) {
   )
 }
 
-export function WindowL(props: HTMLAttributes<HTMLElement>) {
+export function WindowL (props: HTMLAttributes<HTMLElement>) {
   return (
     <pre
       css={{
@@ -53,7 +53,7 @@ export function WindowL(props: HTMLAttributes<HTMLElement>) {
   )
 }
 
-export function WindowR(props: HTMLAttributes<HTMLElement>) {
+export function WindowR (props: HTMLAttributes<HTMLElement>) {
   return (
     <pre
       css={{
@@ -72,7 +72,7 @@ type CodeWindowProps = {
   lines: number;
 } & HTMLAttributes<HTMLElement>
 
-export function CodeWindow({ lines = 1, children, ...props }: CodeWindowProps) {
+export function CodeWindow ({ lines = 1, children, ...props }: CodeWindowProps) {
   const mq = useMediaQuery()
 
   return (

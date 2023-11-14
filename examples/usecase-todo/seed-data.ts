@@ -14,7 +14,7 @@ type TaskProps = {
   assignedTo: string;
 }
 
-export async function main() {
+export async function main () {
   const context = getContext(config, PrismaModule)
 
   console.log(`🌱 Inserting seed data`)

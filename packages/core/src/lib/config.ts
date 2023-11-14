@@ -1,7 +1,7 @@
 import type { KeystoneConfig } from '../types'
 import { idFieldType } from './id-field'
 
-function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['lists'] {
+function applyIdFieldDefaults (config: KeystoneConfig): KeystoneConfig['lists'] {
   // some error checking
   for (const [listKey, list] of Object.entries(config.lists)) {
     if (list.fields.id) {
@@ -54,7 +54,7 @@ function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['lists'] {
   return listsWithIds
 }
 
-export function initConfig(config: KeystoneConfig) {
+export function initConfig (config: KeystoneConfig) {
   if (!['postgresql', 'sqlite', 'mysql'].includes(config.db.provider)) {
     throw new TypeError(
       'Invalid db configuration. Please specify db.provider as either "sqlite", "postgresql" or "mysql"'

@@ -11,7 +11,7 @@ type TextFieldConfig<ListTypeInfo extends BaseListTypeInfo> = CommonFieldConfig<
   isIndexed?: boolean | 'unique';
 }
 
-export function text<ListTypeInfo extends BaseListTypeInfo>({
+export function text<ListTypeInfo extends BaseListTypeInfo> ({
   isIndexed,
   ...config
 }: TextFieldConfig<ListTypeInfo> = {}): FieldTypeFunc<ListTypeInfo> {
@@ -27,7 +27,7 @@ export function text<ListTypeInfo extends BaseListTypeInfo>({
         create: {
           arg: graphql.arg({ type: graphql.String }),
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          resolve(value, context) {
+          resolve (value, context) {
             return value
           },
         },
@@ -37,12 +37,12 @@ export function text<ListTypeInfo extends BaseListTypeInfo>({
       output: graphql.field({
         type: graphql.String,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        resolve({ value, item }, args, context, info) {
+        resolve ({ value, item }, args, context, info) {
           return value
         },
       }),
       views: './1-text-field/views',
-      getAdminMeta() {
+      getAdminMeta () {
         return {}
       },
     })

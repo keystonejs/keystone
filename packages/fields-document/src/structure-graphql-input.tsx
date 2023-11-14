@@ -6,7 +6,7 @@ import { type ComponentSchemaForGraphQL } from './DocumentEditor/component-block
 import { getInitialPropsValue } from './DocumentEditor/component-blocks/initial-values'
 import { assertNever, type ReadonlyPropPath } from './DocumentEditor/component-blocks/utils'
 
-export function getGraphQLInputType(
+export function getGraphQLInputType (
   name: string,
   schema: ComponentSchemaForGraphQL,
   operation: 'create' | 'update',
@@ -20,7 +20,7 @@ export function getGraphQLInputType(
   return cache.get(schema)!
 }
 
-function getGraphQLInputTypeInner(
+function getGraphQLInputTypeInner (
   name: string,
   schema: ComponentSchemaForGraphQL,
   operation: 'create' | 'update',
@@ -89,7 +89,7 @@ function getGraphQLInputTypeInner(
   assertNever(schema)
 }
 
-export async function getValueForUpdate(
+export async function getValueForUpdate (
   schema: ComponentSchemaForGraphQL,
   value: any,
   prevValue: any,
@@ -178,7 +178,7 @@ export async function getValueForUpdate(
   assertNever(schema)
 }
 
-export async function getValueForCreate(
+export async function getValueForCreate (
   schema: ComponentSchemaForGraphQL,
   value: any,
   context: KeystoneContext,
@@ -277,13 +277,13 @@ type _UpdateValueManyType = Exclude<
 
 export class RelationshipErrors extends Error {
   errors: { error: Error; tag: string }[]
-  constructor(errors: { error: Error; tag: string }[]) {
+  constructor (errors: { error: Error; tag: string }[]) {
     super('Multiple relationship errors')
     this.errors = errors
   }
 }
 
-function getResolvedUniqueWheres(
+function getResolvedUniqueWheres (
   uniqueInputs: Record<string, any>[],
   context: KeystoneContext,
   foreignListKey: string,
@@ -296,12 +296,12 @@ function getResolvedUniqueWheres(
 
 // these aren't here out of thinking this is better syntax(i do not think it is),
 // it's just because TS won't infer the arg is X bit
-export const isFulfilled = <T,>(arg: PromiseSettledResult<T>): arg is PromiseFulfilledResult<T> =>
+export const isFulfilled = <T, >(arg: PromiseSettledResult<T>): arg is PromiseFulfilledResult<T> =>
   arg.status === 'fulfilled'
 export const isRejected = (arg: PromiseSettledResult<any>): arg is PromiseRejectedResult =>
   arg.status === 'rejected'
 
-export async function resolveRelateToManyForCreateInput(
+export async function resolveRelateToManyForCreateInput (
   value: _CreateValueManyType,
   context: KeystoneContext,
   foreignListKey: string,
@@ -336,7 +336,7 @@ export async function resolveRelateToManyForCreateInput(
   return [...connectResult, ...createResult].filter(isFulfilled).map(x => x.value)
 }
 
-export async function resolveRelateToManyForUpdateInput(
+export async function resolveRelateToManyForUpdateInput (
   value: _UpdateValueManyType,
   context: KeystoneContext,
   foreignListKey: string,
@@ -430,7 +430,7 @@ const missingItem = (operation: string, uniqueWhere: Record<string, any>) => {
   )
 }
 
-export async function checkUniqueItemExists(
+export async function checkUniqueItemExists (
   uniqueInput: Record<string, unknown>,
   listKey: string,
   context: KeystoneContext,
@@ -445,7 +445,7 @@ export async function checkUniqueItemExists(
   return { id: item.id.toString() }
 }
 
-async function handleCreateAndUpdate(
+async function handleCreateAndUpdate (
   value: _CreateValueType,
   context: KeystoneContext,
   foreignListKey: string
@@ -457,7 +457,7 @@ async function handleCreateAndUpdate(
   }
 }
 
-async function resolveCreateMutation(value: any, context: KeystoneContext, foreignListKey: string) {
+async function resolveCreateMutation (value: any, context: KeystoneContext, foreignListKey: string) {
   const mutationType = context.graphql.schema.getMutationType()!
   const { id } = (await mutationType.getFields()[
     context.gqlNames(foreignListKey).createMutationName
@@ -473,7 +473,7 @@ async function resolveCreateMutation(value: any, context: KeystoneContext, forei
   return { id: id.toString() }
 }
 
-export function resolveRelateToOneForCreateInput(
+export function resolveRelateToOneForCreateInput (
   value: _CreateValueType,
   context: KeystoneContext,
   foreignListKey: string
@@ -487,7 +487,7 @@ export function resolveRelateToOneForCreateInput(
   return handleCreateAndUpdate(value, context, foreignListKey)
 }
 
-export function resolveRelateToOneForUpdateInput(
+export function resolveRelateToOneForUpdateInput (
   value: _UpdateValueType,
   context: KeystoneContext,
   foreignListKey: string

@@ -4,7 +4,7 @@ import { type AuthGqlNames, type SecretFieldImpl } from '../types'
 
 import { validateSecret } from '../lib/validateSecret'
 
-export function getBaseAuthSchema<I extends string, S extends string>({
+export function getBaseAuthSchema<I extends string, S extends string> ({
   listKey,
   identityField,
   secretField,
@@ -46,7 +46,7 @@ export function getBaseAuthSchema<I extends string, S extends string>({
   const AuthenticationResult = graphql.union({
     name: gqlNames.ItemAuthenticationWithPasswordResult,
     types: [ItemAuthenticationWithPasswordSuccess, ItemAuthenticationWithPasswordFailure],
-    resolveType(val) {
+    resolveType (val) {
       if ('sessionToken' in val) {
         return gqlNames.ItemAuthenticationWithPasswordSuccess
       }
@@ -62,7 +62,7 @@ export function getBaseAuthSchema<I extends string, S extends string>({
           types: [base.object(listKey) as graphql.ObjectType<BaseItem>],
           resolveType: (root, context) => context.session?.listKey,
         }),
-        resolve(root, args, context) {
+        resolve (root, args, context) {
           const { session } = context
           if (!session) return null
           if (!session.itemId) return null
@@ -83,7 +83,7 @@ export function getBaseAuthSchema<I extends string, S extends string>({
           [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
           [secretField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
         },
-        async resolve(root, { [identityField]: identity, [secretField]: secret }, context) {
+        async resolve (root, { [identityField]: identity, [secretField]: secret }, context) {
           if (!context.sessionStrategy) {
             throw new Error('No session implementation available on context')
           }

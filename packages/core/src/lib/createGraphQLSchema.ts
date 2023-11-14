@@ -9,7 +9,7 @@ import type { InitialisedList } from './core/initialise-lists'
 import { getMutationsForList } from './core/mutations'
 import { getQueriesForList } from './core/queries'
 
-function getGraphQLSchema(
+function getGraphQLSchema (
   lists: Record<string, InitialisedList>,
   extraFields: {
     mutation: Record<string, graphql.Field<unknown, any, graphql.OutputType, string>>;
@@ -52,7 +52,7 @@ function getGraphQLSchema(
   })
 }
 
-function collectTypes(
+function collectTypes (
   lists: Record<string, InitialisedList>,
   updateManyByList: Record<string, graphql.InputObjectType<any>>
 ) {
@@ -94,7 +94,7 @@ function collectTypes(
   return collectedTypes
 }
 
-export function createGraphQLSchema(
+export function createGraphQLSchema (
   config: KeystoneConfig,
   lists: Record<string, InitialisedList>,
   adminMeta: AdminMetaRootVal | null,
@@ -107,7 +107,7 @@ export function createGraphQLSchema(
         ? {
             endSession: graphql.field({
               type: graphql.nonNull(graphql.Boolean),
-              async resolve(rootVal, args, context) {
+              async resolve (rootVal, args, context) {
                 if (context.sessionStrategy) {
                   await context.sessionStrategy.end({ context })
                 }

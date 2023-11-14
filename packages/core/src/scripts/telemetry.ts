@@ -6,7 +6,7 @@ import {
   resetTelemetry,
 } from '../lib/telemetry'
 
-export async function telemetry(cwd: string, command?: string) {
+export async function telemetry (cwd: string, command?: string) {
   const usageText = `
     Usage
       $ keystone telemetry [command]

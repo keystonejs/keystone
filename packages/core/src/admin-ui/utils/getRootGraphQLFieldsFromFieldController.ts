@@ -2,7 +2,7 @@ import weakMemoize from '@emotion/weak-memoize'
 import { type FragmentDefinitionNode, parse, type SelectionSetNode } from 'graphql'
 import type { FieldController } from '../../types'
 
-function extractRootFields(selectedFields: Set<string>, selectionSet: SelectionSetNode) {
+function extractRootFields (selectedFields: Set<string>, selectionSet: SelectionSetNode) {
   selectionSet.selections.forEach(selection => {
     if (selection.kind === 'Field') {
       selectedFields.add(selection.alias ? selection.alias.value : selection.name.value)

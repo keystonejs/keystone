@@ -7,7 +7,7 @@ import _treeKill from 'tree-kill'
 import * as playwright from 'playwright'
 import dotenv from 'dotenv'
 
-export async function loadIndex(page: playwright.Page) {
+export async function loadIndex (page: playwright.Page) {
   await page.goto('http://localhost:3000')
   try {
     // sometimes Next will fail to load the page the first time
@@ -48,11 +48,11 @@ export const makeGqlRequest = async (query: string, variables?: Record<string, a
 }
 
 // Simple utility to create an Array of records given a map function and a range.
-export function generateDataArray(map: (key: number) => any, range: number) {
+export function generateDataArray (map: (key: number) => any, range: number) {
   return Array.from(Array(range).keys()).map(map)
 }
 
-export async function deleteAllData(projectDir: string) {
+export async function deleteAllData (projectDir: string) {
   const resolvedProjectDir = path.resolve(projectRoot, projectDir)
 
   const { PrismaClient } = require(path.join(
@@ -84,7 +84,7 @@ export const adminUITests = (
       await cleanupKeystoneProcess()
     })
 
-    async function startKeystone(command: 'start' | 'dev') {
+    async function startKeystone (command: 'start' | 'dev') {
       cleanupKeystoneProcess = (await generalStartKeystone(projectDir, command)).exit
     }
 
@@ -122,10 +122,10 @@ export const adminUITests = (
   })
 }
 
-export async function waitForIO(ksProcess: ExecaChildProcess, content: string) {
+export async function waitForIO (ksProcess: ExecaChildProcess, content: string) {
   return await new Promise(resolve => {
     let output = ''
-    function listener(chunk: Buffer) {
+    function listener (chunk: Buffer) {
       output += chunk.toString('utf8')
       if (process.env.VERBOSE) console.log(chunk.toString('utf8'))
       if (!output.includes(content)) return
@@ -140,7 +140,7 @@ export async function waitForIO(ksProcess: ExecaChildProcess, content: string) {
   })
 }
 
-export async function generalStartKeystone(projectDir: string, command: 'start' | 'dev') {
+export async function generalStartKeystone (projectDir: string, command: 'start' | 'dev') {
   if (!fs.existsSync(projectDir)) {
     throw new Error(`No such file or directory ${projectDir}`)
   }

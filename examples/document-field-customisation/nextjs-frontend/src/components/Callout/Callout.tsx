@@ -6,7 +6,7 @@ type CalloutProps = {
   content: ReactNode;
 }
 
-export function Callout({ intent, content }: CalloutProps) {
+export function Callout ({ intent, content }: CalloutProps) {
   let backgroundColor = 'transparent'
   let textColor = 'current'
   let borderColor = 'current'

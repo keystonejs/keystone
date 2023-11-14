@@ -10,7 +10,7 @@ import { type FieldProps } from '../../../../types'
 import { SUPPORTED_IMAGE_EXTENSIONS } from '../utils'
 import { type ImageValue } from './index'
 
-function useObjectURL(fileData: File | undefined) {
+function useObjectURL (fileData: File | undefined) {
   let [objectURL, setObjectURL] = useState<string | undefined>(undefined)
   useEffect(() => {
     if (fileData) {
@@ -24,7 +24,7 @@ function useObjectURL(fileData: File | undefined) {
   return objectURL
 }
 
-export function Field({
+export function Field ({
   autoFocus,
   field,
   value,
@@ -94,7 +94,7 @@ export function Field({
   )
 }
 
-function ImgView({
+function ImgView ({
   errorMessage,
   value,
   onChange,
@@ -252,13 +252,13 @@ function ImgView({
   )
 }
 
-function createErrorMessage(value: ImageValue) {
+function createErrorMessage (value: ImageValue) {
   if (value.kind === 'upload') {
     return validateImage(value.data)
   }
 }
 
-export function validateImage({
+export function validateImage ({
   file,
   validity,
 }: {

@@ -132,7 +132,7 @@ const Color = ({ color }: { color: ColorType }) => {
   )
 }
 
-export default function ThemePage() {
+export default function ThemePage () {
   const { colors, tones, selectableColors } = useTheme()
   return (
     <Page>

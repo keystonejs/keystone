@@ -12,7 +12,7 @@ const PasswordResetRedemptionErrorCode = graphql.enum({
   values: graphql.enumValues(errorCodes),
 })
 
-export function getPasswordResetSchema<I extends string, S extends string>({
+export function getPasswordResetSchema<I extends string, S extends string> ({
   listKey,
   identityField,
   secretField,
@@ -29,7 +29,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
   // TODO: return type required by pnpm :(
 }): graphql.Extension {
   const getResult = (name: string) =>
-    graphql.object<{ code: (typeof errorCodes)[number]; message: string }>()({
+    graphql.object<{ code:(typeof errorCodes)[number]; message: string }>()({
       name,
       fields: {
         code: graphql.field({ type: graphql.nonNull(PasswordResetRedemptionErrorCode) }),
@@ -45,7 +45,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
       [gqlNames.sendItemPasswordResetLink]: graphql.field({
         type: graphql.nonNull(graphql.Boolean),
         args: { [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }) },
-        async resolve(rootVal, { [identityField]: identity }, context) {
+        async resolve (rootVal, { [identityField]: identity }, context) {
           const dbItemAPI = context.sudo().db[listKey]
           const tokenType = 'passwordReset'
 
@@ -76,7 +76,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           token: graphql.arg({ type: graphql.nonNull(graphql.String) }),
           [secretField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
         },
-        async resolve(
+        async resolve (
           rootVal,
           { [identityField]: identity, token, [secretField]: secret },
           context
@@ -125,7 +125,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
           token: graphql.arg({ type: graphql.nonNull(graphql.String) }),
         },
-        async resolve(rootVal, { [identityField]: identity, token }, context) {
+        async resolve (rootVal, { [identityField]: identity, token }, context) {
           const dbItemAPI = context.sudo().db[listKey]
           const tokenType = 'passwordReset'
           const result = await validateAuthToken(

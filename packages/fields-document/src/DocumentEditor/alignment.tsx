@@ -71,7 +71,7 @@ export const TextAlignMenu = ({
   )
 }
 
-function TextAlignDialog({
+function TextAlignDialog ({
   alignment,
   onClose,
 }: {
@@ -127,7 +127,7 @@ const alignmentIcons = {
   end: <AlignRightIcon size="small" />,
 }
 
-function TextAlignButton(props: {
+function TextAlignButton (props: {
   onToggle: () => void;
   trigger: ReturnType<typeof useControlledPopover>['trigger'];
   showMenu: boolean;

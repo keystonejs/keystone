@@ -31,7 +31,7 @@ type DefaultFieldProps<Key> = GenericPreviewProps<
   forceValidation?: boolean;
 }
 
-function ArrayFieldPreview(props: DefaultFieldProps<'array'>) {
+function ArrayFieldPreview (props: DefaultFieldProps<'array'>) {
   return (
     <Stack gap="medium">
       {props.schema.label && <FieldLabel>{props.schema.label}</FieldLabel>}
@@ -61,7 +61,7 @@ function ArrayFieldPreview(props: DefaultFieldProps<'array'>) {
   )
 }
 
-function RelationshipFieldPreview({
+function RelationshipFieldPreview ({
   schema,
   autoFocus,
   onChange,
@@ -110,7 +110,7 @@ function RelationshipFieldPreview({
   )
 }
 
-function FormFieldPreview({
+function FormFieldPreview ({
   schema,
   autoFocus,
   forceValidation,
@@ -127,7 +127,7 @@ function FormFieldPreview({
   )
 }
 
-function ObjectFieldPreview({ schema, autoFocus, fields }: DefaultFieldProps<'object'>) {
+function ObjectFieldPreview ({ schema, autoFocus, fields }: DefaultFieldProps<'object'>) {
   const firstFocusable = autoFocus ? findFocusableObjectFieldKey(schema) : undefined
   return (
     <Stack gap="xlarge">
@@ -145,7 +145,7 @@ function ObjectFieldPreview({ schema, autoFocus, fields }: DefaultFieldProps<'ob
   )
 }
 
-function ConditionalFieldPreview({
+function ConditionalFieldPreview ({
   schema,
   autoFocus,
   discriminant,
@@ -178,7 +178,7 @@ export type NonChildFieldComponentSchema =
   | RelationshipField<boolean>
   | ArrayField<ComponentSchema>
 
-function isNonChildFieldPreviewProps(
+function isNonChildFieldPreviewProps (
   props: GenericPreviewProps<ComponentSchema, unknown>
 ): props is GenericPreviewProps<NonChildFieldComponentSchema, unknown> {
   return props.schema.kind !== 'child'
@@ -200,12 +200,12 @@ export const FormValueContentFromPreviewProps: MemoExoticComponent<
       forceValidation?: boolean;
     }
   ) => ReactElement
-> = memo(function FormValueContentFromPreview(props) {
+> = memo(function FormValueContentFromPreview (props) {
   const Comp = fieldRenderers[props.schema.kind]
   return <Comp {...(props as any)} />
 })
 
-const OrderableItemInForm = memo(function OrderableItemInForm(
+const OrderableItemInForm = memo(function OrderableItemInForm (
   props: GenericPreviewProps<ComponentSchema, unknown> & {
     elementKey: string;
     label: string;
@@ -288,7 +288,7 @@ const OrderableItemInForm = memo(function OrderableItemInForm(
   )
 })
 
-function ArrayFieldItemModalContent(props: {
+function ArrayFieldItemModalContent (props: {
   schema: NonChildFieldComponentSchema;
   value: unknown;
   onChange: (cb: (value: unknown) => unknown) => void;
@@ -300,7 +300,7 @@ function ArrayFieldItemModalContent(props: {
   return <FormValueContentFromPreviewProps {...previewProps} />
 }
 
-function findFocusableObjectFieldKey(schema: ObjectField): string | undefined {
+function findFocusableObjectFieldKey (schema: ObjectField): string | undefined {
   for (const [key, innerProp] of Object.entries(schema.fields)) {
     const childFocusable = canFieldBeFocused(innerProp)
     if (childFocusable) {
@@ -310,7 +310,7 @@ function findFocusableObjectFieldKey(schema: ObjectField): string | undefined {
   return undefined
 }
 
-export function canFieldBeFocused(schema: ComponentSchema): boolean {
+export function canFieldBeFocused (schema: ComponentSchema): boolean {
   if (
     schema.kind === 'array' ||
     schema.kind === 'conditional' ||

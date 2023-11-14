@@ -11,7 +11,7 @@ type CodeBoxProps = {
   code: string;
 } & HTMLAttributes<HTMLElement>
 
-export function CodeBox({ code, ...props }: CodeBoxProps) {
+export function CodeBox ({ code, ...props }: CodeBoxProps) {
   const [didJustCopy, setDidJustCopy] = useState(false)
   useEffect(() => {
     if (didJustCopy) {

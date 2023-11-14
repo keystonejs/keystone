@@ -9,7 +9,7 @@ import { Pill } from '@keystone-ui/pill'
 import { Button } from '@keystone-ui/button'
 import { type FieldProps } from '@keystone-6/core/types'
 
-function useObjectURL(fileData: File | undefined) {
+function useObjectURL (fileData: File | undefined) {
   let [objectURL, setObjectURL] = useState<string | undefined>(undefined)
   useEffect(() => {
     if (fileData) {
@@ -23,7 +23,7 @@ function useObjectURL(fileData: File | undefined) {
   return objectURL
 }
 
-export function Field({
+export function Field ({
   autoFocus,
   field,
   value,
@@ -153,7 +153,7 @@ export function Field({
   )
 }
 
-export function validateImage({
+export function validateImage ({
   file,
   validity,
 }: {

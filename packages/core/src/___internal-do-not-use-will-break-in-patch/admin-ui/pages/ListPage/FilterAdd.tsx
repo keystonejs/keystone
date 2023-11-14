@@ -41,7 +41,7 @@ const fieldSelectComponents: ComponentProps<typeof Options>['components'] = {
     )
   },
 }
-export function FilterAdd({
+export function FilterAdd ({
   listKey,
   filterableFields,
 }: {
@@ -82,7 +82,7 @@ export function FilterAdd({
   )
 }
 
-function FilterAddPopoverContent({
+function FilterAddPopoverContent ({
   onClose,
   listKey,
   filterableFields,

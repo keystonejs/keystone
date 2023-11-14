@@ -5,7 +5,7 @@ import { jsx } from '@keystone-ui/core'
 
 import { Page } from '../components/Page'
 
-export default function IndexPage() {
+export default function IndexPage () {
   return (
     <Page>
       <h1>Welcome</h1>

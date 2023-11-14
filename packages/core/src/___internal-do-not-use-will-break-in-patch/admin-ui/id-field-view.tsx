@@ -41,7 +41,7 @@ export const controller = (
     deserialize: () => {},
     serialize: () => ({}),
     filter: {
-      Filter(props) {
+      Filter (props) {
         return (
           <TextInput
             onChange={event => {
@@ -68,7 +68,7 @@ export const controller = (
           },
         }
       },
-      Label({ label, value, type }) {
+      Label ({ label, value, type }) {
         let renderedValue = value.replace(/\s/g, '')
         if (['in', 'not_in'].includes(type)) {
           renderedValue = value.split(',').join(', ')

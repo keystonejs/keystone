@@ -9,7 +9,7 @@ type AnnounceProps = {
   children: ReactNode;
 } & HTMLAttributes<HTMLElement>
 
-export function Announce({ children, ...props }: AnnounceProps) {
+export function Announce ({ children, ...props }: AnnounceProps) {
   return (
     <div
       css={{

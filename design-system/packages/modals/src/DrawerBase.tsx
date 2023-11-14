@@ -133,7 +133,7 @@ export const DrawerBase = ({
 // Utils
 // ------------------------------
 
-function getDialogTransition(depth: number) {
+function getDialogTransition (depth: number) {
   let scaleInc = 0.05
   let transformValue = `scale(${1 - scaleInc * depth}) translateX(-${depth * 40}px)`
 

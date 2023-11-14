@@ -25,7 +25,7 @@ const GRAPHQL_SCALARS = {
   BigInt: 'graphql.BigInt',
 } as const
 
-function getSchemaForProvider(provider: Provider) {
+function getSchemaForProvider (provider: Provider) {
   return `
 datasource ${provider} {
   url = env("DATABASE_URL")
@@ -57,7 +57,7 @@ ${
 `
 }
 
-function generateTSType(scalar: Scalar, filter: DMMF.InputType, nesting: boolean = false) {
+function generateTSType (scalar: Scalar, filter: DMMF.InputType, nesting: boolean = false) {
   const gqlType = GRAPHQL_SCALARS[scalar]
 
   // we use Boolean, Prisma uses Bool, oh well
@@ -87,7 +87,7 @@ function generateTSType(scalar: Scalar, filter: DMMF.InputType, nesting: boolean
   ].join('\n')
 }
 
-function generateGQLType(scalar: Scalar, filter: DMMF.InputType, nesting: boolean = false) {
+function generateGQLType (scalar: Scalar, filter: DMMF.InputType, nesting: boolean = false) {
   const gqlType = GRAPHQL_SCALARS[scalar]
 
   // we use Boolean, Prisma uses Bool, oh well
@@ -122,7 +122,7 @@ function generateGQLType(scalar: Scalar, filter: DMMF.InputType, nesting: boolea
   ].join('\n')
 }
 
-async function generate(provider: Provider) {
+async function generate (provider: Provider) {
   const schema = getSchemaForProvider(provider)
   const prismaFilterTypes = (await getDMMF({ datamodel: schema })).schema.inputObjectTypes.prisma
 
@@ -185,7 +185,7 @@ async function generate(provider: Provider) {
   ].join('\n\n')
 }
 
-async function main() {
+async function main () {
   if (process.argv.includes('--verify')) {
     for (const provider of PROVIDERS) {
       console.log(`verifying ${provider} prisma filter types`)

@@ -184,7 +184,7 @@ export type ComponentSchemaForGraphQL =
   | ArrayFieldInComponentSchemaForGraphQL
 
 export const fields = {
-  text({
+  text ({
     label,
     defaultValue = '',
   }: {
@@ -193,7 +193,7 @@ export const fields = {
   }): FormFieldWithGraphQLField<string, undefined> {
     return {
       kind: 'form',
-      Input({ value, onChange, autoFocus }) {
+      Input ({ value, onChange, autoFocus }) {
         return (
           <FieldContainer>
             <FieldLabel>{label}</FieldLabel>
@@ -209,7 +209,7 @@ export const fields = {
       },
       options: undefined,
       defaultValue,
-      validate(value) {
+      validate (value) {
         return typeof value === 'string'
       },
       graphql: {
@@ -218,7 +218,7 @@ export const fields = {
       },
     }
   },
-  integer({
+  integer ({
     label,
     defaultValue = 0,
   }: {
@@ -230,7 +230,7 @@ export const fields = {
     }
     return {
       kind: 'form',
-      Input({ value, onChange, autoFocus, forceValidation }) {
+      Input ({ value, onChange, autoFocus, forceValidation }) {
         const [blurred, setBlurred] = useState(false)
         const [inputValue, setInputValue] = useState(String(value))
         const showValidation = forceValidation || (blurred && !validate(value))
@@ -265,7 +265,7 @@ export const fields = {
       },
     }
   },
-  url({
+  url ({
     label,
     defaultValue = '',
   }: {
@@ -277,7 +277,7 @@ export const fields = {
     }
     return {
       kind: 'form',
-      Input({ value, onChange, autoFocus, forceValidation }) {
+      Input ({ value, onChange, autoFocus, forceValidation }) {
         const [blurred, setBlurred] = useState(false)
         const showValidation = forceValidation || (blurred && !validate(value))
         return (
@@ -304,7 +304,7 @@ export const fields = {
       },
     }
   },
-  select<Option extends { label: string; value: string }>({
+  select<Option extends { label: string; value: string }> ({
     label,
     options,
     defaultValue,
@@ -321,7 +321,7 @@ export const fields = {
     }
     return {
       kind: 'form',
-      Input({ value, onChange, autoFocus }) {
+      Input ({ value, onChange, autoFocus }) {
         return (
           <FieldContainer>
             <FieldLabel>{label}</FieldLabel>
@@ -340,7 +340,7 @@ export const fields = {
       },
       options,
       defaultValue,
-      validate(value) {
+      validate (value) {
         return typeof value === 'string' && optionValuesSet.has(value)
       },
       graphql: {
@@ -348,14 +348,14 @@ export const fields = {
         output: graphql.field({
           type: graphql.String,
           // TODO: investigate why this resolve is required here
-          resolve({ value }) {
+          resolve ({ value }) {
             return value
           },
         }),
       },
     }
   },
-  multiselect<Option extends { label: string; value: string }>({
+  multiselect<Option extends { label: string; value: string }> ({
     label,
     options,
     defaultValue,
@@ -367,7 +367,7 @@ export const fields = {
     const valuesToOption = new Map(options.map(x => [x.value, x]))
     return {
       kind: 'form',
-      Input({ value, onChange, autoFocus }) {
+      Input ({ value, onChange, autoFocus }) {
         return (
           <FieldContainer>
             <FieldLabel>{label}</FieldLabel>
@@ -384,7 +384,7 @@ export const fields = {
       },
       options,
       defaultValue,
-      validate(value) {
+      validate (value) {
         return (
           Array.isArray(value) &&
           value.every(value => typeof value === 'string' && valuesToOption.has(value))
@@ -395,14 +395,14 @@ export const fields = {
         output: graphql.field({
           type: graphql.list(graphql.nonNull(graphql.String)),
           // TODO: investigate why this resolve is required here
-          resolve({ value }) {
+          resolve ({ value }) {
             return value
           },
         }),
       },
     }
   },
-  checkbox({
+  checkbox ({
     label,
     defaultValue = false,
   }: {
@@ -411,7 +411,7 @@ export const fields = {
   }): FormFieldWithGraphQLField<boolean, undefined> {
     return {
       kind: 'form',
-      Input({ value, onChange, autoFocus }) {
+      Input ({ value, onChange, autoFocus }) {
         return (
           <FieldContainer>
             <Checkbox
@@ -428,7 +428,7 @@ export const fields = {
       },
       options: undefined,
       defaultValue,
-      validate(value) {
+      validate (value) {
         return typeof value === 'boolean'
       },
       graphql: {
@@ -437,20 +437,20 @@ export const fields = {
       },
     }
   },
-  empty(): FormField<null, undefined> {
+  empty (): FormField<null, undefined> {
     return {
       kind: 'form',
-      Input() {
+      Input () {
         return null
       },
       options: undefined,
       defaultValue: null,
-      validate(value) {
+      validate (value) {
         return value === null || value === undefined
       },
     }
   },
-  child(
+  child (
     options:
       | {
           kind: 'block';
@@ -507,7 +507,7 @@ export const fields = {
             },
     }
   },
-  object<Fields extends Record<string, ComponentSchema>>(fields: Fields): ObjectField<Fields> {
+  object<Fields extends Record<string, ComponentSchema>> (fields: Fields): ObjectField<Fields> {
     return { kind: 'object', fields }
   },
   conditional<
@@ -515,7 +515,7 @@ export const fields = {
     ConditionalValues extends {
       [Key in `${DiscriminantField['defaultValue']}`]: ComponentSchema;
     }
-  >(
+  > (
     discriminant: DiscriminantField,
     values: ConditionalValues
   ): ConditionalField<DiscriminantField, ConditionalValues> {
@@ -533,7 +533,7 @@ export const fields = {
       values: values,
     }
   },
-  relationship<Many extends boolean | undefined = false>({
+  relationship<Many extends boolean | undefined = false> ({
     listKey,
     selection,
     label,
@@ -553,7 +553,7 @@ export const fields = {
       many: (many ? true : false) as any,
     }
   },
-  array<ElementField extends ComponentSchema>(
+  array<ElementField extends ComponentSchema> (
     element: ElementField,
     opts?: {
       itemLabel?: (props: GenericPreviewProps<ElementField, unknown>) => string;
@@ -731,7 +731,7 @@ export function component<
   Schema extends {
     [Key in any]: ComponentSchema;
   }
->(
+> (
   options: {
     /** The preview component shown in the editor */
     preview: (props: PreviewProps<ObjectField<Schema>>) => ReactElement | null;

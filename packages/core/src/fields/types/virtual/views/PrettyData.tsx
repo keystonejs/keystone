@@ -9,7 +9,7 @@ const stringify = (data: any) => {
   const dataWithoutTypename = JSON.parse(JSON.stringify(data), omitTypename)
   return JSON.stringify(dataWithoutTypename, null, 2)
 }
-export function PrettyData({ data }: { data: any }) {
+export function PrettyData ({ data }: { data: any }) {
   if (data === undefined || data === null) return null
 
   let prettyData: ReactNode = ''

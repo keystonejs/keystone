@@ -89,7 +89,7 @@ const componentBlocks = {
 
 type DocumentFieldConfig = Parameters<typeof import('@keystone-6/fields-document').document>[0]
 
-function documentFeaturesCodeExample(config: DocumentFieldConfig | DocumentFeatures) {
+function documentFeaturesCodeExample (config: DocumentFieldConfig | DocumentFeatures) {
   return `import { config, list } from '@keystone-6/core';
 import { document } from '@keystone-6/fields-document';
 
@@ -133,7 +133,7 @@ export default config({
 `
 }
 
-function documentFeaturesToShorthand(documentFeatures: DocumentFeatures): DocumentFieldConfig {
+function documentFeaturesToShorthand (documentFeatures: DocumentFeatures): DocumentFieldConfig {
   return {
     formatting: objToShorthand({
       alignment: objToShorthand({
@@ -169,7 +169,7 @@ function documentFeaturesToShorthand(documentFeatures: DocumentFeatures): Docume
 
 function objToShorthand<
   Obj extends Record<string, undefined | true | readonly any[] | Record<string, any>>
->(obj: Obj): Obj | true | undefined {
+> (obj: Obj): Obj | true | undefined {
   const values = Object.values(obj)
   let state: (typeof values)[number] = values[0]!
   for (const val of values) {
@@ -180,7 +180,7 @@ function objToShorthand<
   return state as any
 }
 
-function boolToTrueOrUndefined(bool: boolean): true | undefined {
+function boolToTrueOrUndefined (bool: boolean): true | undefined {
   return bool ? true : undefined
 }
 
@@ -188,7 +188,7 @@ const fromEntriesButTypedWell: <Key extends string | number | symbol, Val>(
   iterable: Iterable<readonly [Key, Val]>
 ) => Record<Key, Val> = Object.fromEntries
 
-function documentFeaturesFormToValue(formValue: DocumentFeaturesFormValue): DocumentFeatures {
+function documentFeaturesFormToValue (formValue: DocumentFeaturesFormValue): DocumentFeatures {
   return {
     formatting: {
       alignment: {
@@ -231,10 +231,10 @@ function documentFeaturesFormToValue(formValue: DocumentFeaturesFormValue): Docu
 const DocumentFeaturesContext = React.createContext<{
   documentFeatures: DocumentFeatures;
   formValue: DocumentFeaturesFormValue;
-  setFormValue: (value: DocumentFeaturesFormValue) => void;
+  setFormValue:(value: DocumentFeaturesFormValue) => void;
 }>({} as any)
 
-export function DocumentFeaturesProvider({ children }: { children: ReactNode }) {
+export function DocumentFeaturesProvider ({ children }: { children: ReactNode }) {
   const [formValue, setFormValue] = useState<DocumentFeaturesFormValue>(() =>
     getInitialPropsValue(documentFeaturesProp)
   )
@@ -254,7 +254,7 @@ export function DocumentFeaturesProvider({ children }: { children: ReactNode }) 
   )
 }
 
-export function DocumentFeaturesFormAndCode() {
+export function DocumentFeaturesFormAndCode () {
   const { formValue, setFormValue } = useContext(DocumentFeaturesContext)
   return (
     <div>

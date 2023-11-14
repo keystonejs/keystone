@@ -14,7 +14,7 @@ import {
 import { CellLink, CellContainer } from '../../../../admin-ui/components'
 import { useFormattedInput } from './utils'
 
-function IntegerInput({
+function IntegerInput ({
   value,
   onChange,
   id,
@@ -128,7 +128,7 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
   )
 }
 
-function validate(
+function validate (
   value: Value,
   validation: Validation,
   label: string,
@@ -207,7 +207,7 @@ export const controller = (
         config.fieldMeta.defaultValue === 'autoincrement'
       ) === undefined,
     filter: {
-      Filter({ autoFocus, type, onChange, value }) {
+      Filter ({ autoFocus, type, onChange, value }) {
         return (
           <TextInput
             type="text"
@@ -237,7 +237,7 @@ export const controller = (
         const key = type === 'is' ? 'equals' : type === 'not_in' ? 'notIn' : type
         return { [config.path]: { [key]: parsed } }
       },
-      Label({ label, value, type }) {
+      Label ({ label, value, type }) {
         let renderedValue = value
         if (['in', 'not_in'].includes(type)) {
           renderedValue = value

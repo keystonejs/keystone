@@ -35,7 +35,7 @@ export const HeadingElement = ({
   )
 }
 
-export function withHeading(editor: Editor): Editor {
+export function withHeading (editor: Editor): Editor {
   const { insertBreak } = editor
   editor.insertBreak = () => {
     insertBreak()

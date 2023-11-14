@@ -25,13 +25,13 @@ export type Relationships = Record<
 
 export const DocumentFieldRelationshipsContext = createContext<Relationships>({})
 
-export function useDocumentFieldRelationships() {
+export function useDocumentFieldRelationships () {
   return useContext(DocumentFieldRelationshipsContext)
 }
 
 export const DocumentFieldRelationshipsProvider = DocumentFieldRelationshipsContext.Provider
 
-export function withRelationship(editor: Editor): Editor {
+export function withRelationship (editor: Editor): Editor {
   const { isVoid, isInline } = editor
   editor.isVoid = element => {
     return element.type === 'relationship' || isVoid(element)
@@ -42,7 +42,7 @@ export function withRelationship(editor: Editor): Editor {
   return editor
 }
 
-export function RelationshipButton({ onClose }: { onClose: () => void }) {
+export function RelationshipButton ({ onClose }: { onClose: () => void }) {
   const {
     editor,
     relationships: { isDisabled },
@@ -74,7 +74,7 @@ export function RelationshipButton({ onClose }: { onClose: () => void }) {
   )
 }
 
-export function RelationshipElement({
+export function RelationshipElement ({
   attributes,
   children,
   element,
@@ -119,7 +119,7 @@ export function RelationshipElement({
                 element.data === null
                   ? null
                   : { id: element.data.id, label: element.data.label || element.data.id },
-              onChange(value) {
+              onChange (value) {
                 const at = ReactEditor.findPath(editor, element)
                 if (value === null) {
                   Transforms.removeNodes(editor, { at })

@@ -20,7 +20,7 @@ type TimelineProps = {
   isFirst?: boolean;
 } & HTMLAttributes<HTMLElement>
 
-function Timeline({ date, isLatest, isFirst, ...props }: TimelineProps) {
+function Timeline ({ date, isLatest, isFirst, ...props }: TimelineProps) {
   return (
     <div
       css={{
@@ -92,7 +92,7 @@ type BoxProps = {
   children: ReactNode;
 } & HTMLAttributes<HTMLElement>
 
-function Box({ link, heading, children, ...props }: BoxProps) {
+function Box ({ link, heading, children, ...props }: BoxProps) {
   return (
     <Type
       as="div"
@@ -122,7 +122,7 @@ function Box({ link, heading, children, ...props }: BoxProps) {
   )
 }
 
-export default function WhatsNew() {
+export default function WhatsNew () {
   const mq = useMediaQuery()
 
   return (

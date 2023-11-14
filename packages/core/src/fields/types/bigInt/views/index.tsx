@@ -24,7 +24,7 @@ type Value =
   | { kind: 'create'; value: string | bigint | null }
   | { kind: 'update'; value: string | bigint | null; initial: unknown | null }
 
-function BigIntInput({
+function BigIntInput ({
   value,
   onChange,
   id,
@@ -140,7 +140,7 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
   )
 }
 
-function validate(
+function validate (
   state: Value,
   validation: Validation,
   label: string,
@@ -227,7 +227,7 @@ export const controller = (
     validate: value =>
       validate(value, validation, config.label, hasAutoIncrementDefault) === undefined,
     filter: {
-      Filter({ autoFocus, type, onChange, value }) {
+      Filter ({ autoFocus, type, onChange, value }) {
         return (
           <TextInput
             onChange={event => {
@@ -255,7 +255,7 @@ export const controller = (
         const key = type === 'is' ? 'equals' : type === 'not_in' ? 'notIn' : type
         return { [config.path]: { [key]: parsed } }
       },
-      Label({ label, value, type }) {
+      Label ({ label, value, type }) {
         let renderedValue = value
         if (['in', 'not_in'].includes(type)) {
           renderedValue = value

@@ -85,7 +85,7 @@ export const select =
         ui,
         hooks: {
           ...config.hooks,
-          async validateInput(args) {
+          async validateInput (args) {
             const value = args.resolvedData[meta.fieldKey]
             if (value != null && !values.has(value)) {
               args.addValidationError(`${value} is not a possible value for ${fieldLabel}`)

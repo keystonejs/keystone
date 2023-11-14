@@ -11,7 +11,7 @@ export type Session = {
   data: {};
 }
 
-function isAssignedUserFilter({ session }: { session?: Session }) {
+function isAssignedUserFilter ({ session }: { session?: Session }) {
   // you need to have a session
   if (!session) return false
 

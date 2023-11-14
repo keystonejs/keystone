@@ -221,7 +221,7 @@ const cases: Record<
   },
 }
 
-function makeEditorWithChildField(
+function makeEditorWithChildField (
   childField: ChildField,
   children: Children,
   normalization: 'disallow-non-normalized' | 'normalize' | 'skip' = 'disallow-non-normalized'

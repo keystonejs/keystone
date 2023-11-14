@@ -34,7 +34,7 @@ const readOnly = {
 // we use this function to show that completed is a boolean type
 //   which would be missing if the types were unrefined
 //   a common problem when re-using code
-function isTrue(b: boolean) {
+function isTrue (b: boolean) {
   return b === true
 }
 
@@ -52,9 +52,9 @@ type CompatibleLists = FindListsWithField<'completed'>
 function trackingByHooks<
   ListTypeInfo extends CompatibleLists
   //    FieldKey extends 'createdBy' | 'updatedBy' // TODO: refined types for the return types
->(immutable: boolean = false): FieldHooks<ListTypeInfo> {
+> (immutable: boolean = false): FieldHooks<ListTypeInfo> {
   return {
-    async resolveInput({ context, operation, resolvedData, item, fieldKey }) {
+    async resolveInput ({ context, operation, resolvedData, item, fieldKey }) {
       if (operation === 'update') {
         if (immutable) return undefined
 
@@ -72,10 +72,10 @@ function trackingByHooks<
 function trackingAtHooks<
   ListTypeInfo extends CompatibleLists
   //    FieldKey extends 'createdAt' | 'updatedAt' // TODO: refined types for the return types
->(immutable: boolean = false): FieldHooks<ListTypeInfo> {
+> (immutable: boolean = false): FieldHooks<ListTypeInfo> {
   return {
     // TODO: switch to operation routing when supported for fields
-    async resolveInput({ context, operation, resolvedData, item, fieldKey }) {
+    async resolveInput ({ context, operation, resolvedData, item, fieldKey }) {
       if (operation === 'update') {
         if (immutable) return undefined
 
@@ -90,7 +90,7 @@ function trackingAtHooks<
   }
 }
 
-function trackingFields<ListTypeInfo extends CompatibleLists>() {
+function trackingFields<ListTypeInfo extends CompatibleLists> () {
   return {
     createdBy: text<ListTypeInfo>({
       ...readOnly,

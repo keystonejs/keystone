@@ -17,7 +17,7 @@ type TestArgsWithServer<TypeInfo extends BaseKeystoneTypeInfo> = TestArgs<TypeIn
   server: Server;
 }
 
-async function getTestArgsWithServer<TypeInfo extends BaseKeystoneTypeInfo>(
+async function getTestArgsWithServer<TypeInfo extends BaseKeystoneTypeInfo> (
   testArgs: TestArgs<TypeInfo>
 ): Promise<{
   disconnect: () => Promise<void>;
@@ -46,7 +46,7 @@ async function getTestArgsWithServer<TypeInfo extends BaseKeystoneTypeInfo>(
   }
 }
 
-export function withServer<TypeInfo extends BaseKeystoneTypeInfo>(
+export function withServer<TypeInfo extends BaseKeystoneTypeInfo> (
   runner: (testFn: (testArgs: TestArgs<TypeInfo>) => Promise<void>) => () => Promise<void>
 ) {
   return (testFn: (testArgs: TestArgsWithServer<TypeInfo>) => Promise<void>) => () => {

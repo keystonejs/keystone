@@ -147,7 +147,7 @@ export const Upload = graphqlTsSchema.graphql.scalar<Promise<FileUpload>>(GraphQ
 export const Decimal = graphqlTsSchema.graphql.scalar<DecimalValue & { scaleToPrint?: number }>(
   new GraphQLScalarType({
     name: 'Decimal',
-    serialize(value) {
+    serialize (value) {
       if (!DecimalValue.isDecimal(value)) {
         throw new GraphQLError(`unexpected value provided to Decimal scalar: ${value}`)
       }
@@ -157,7 +157,7 @@ export const Decimal = graphqlTsSchema.graphql.scalar<DecimalValue & { scaleToPr
       }
       return value.toString()
     },
-    parseLiteral(value) {
+    parseLiteral (value) {
       if (value.kind !== 'StringValue') {
         throw new GraphQLError('Decimal only accepts values as strings')
       }
@@ -167,7 +167,7 @@ export const Decimal = graphqlTsSchema.graphql.scalar<DecimalValue & { scaleToPr
       }
       return decimal
     },
-    parseValue(value) {
+    parseValue (value) {
       if (DecimalValue.isDecimal(value)) {
         if (!value.isFinite()) {
           throw new GraphQLError('Decimal values must be finite')
@@ -189,19 +189,19 @@ export const Decimal = graphqlTsSchema.graphql.scalar<DecimalValue & { scaleToPr
 export const BigInt = graphqlTsSchema.graphql.scalar<bigint>(
   new GraphQLScalarType({
     name: 'BigInt',
-    serialize(value) {
+    serialize (value) {
       if (typeof value !== 'bigint') {
         throw new GraphQLError(`unexpected value provided to BigInt scalar: ${value}`)
       }
       return value.toString()
     },
-    parseLiteral(value) {
+    parseLiteral (value) {
       if (value.kind !== 'StringValue') {
         throw new GraphQLError('BigInt only accepts values as strings')
       }
       return globalThis.BigInt(value.value)
     },
-    parseValue(value) {
+    parseValue (value) {
       if (typeof value === 'bigint') {
         return value
       }
@@ -218,7 +218,7 @@ export const BigInt = graphqlTsSchema.graphql.scalar<bigint>(
 const RFC_3339_REGEX =
   /^(\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9]|60))(\.\d{1,})?(([Z])|([+|-]([01][0-9]|2[0-3]):[0-5][0-9]))$/
 
-function parseDate(input: string): Date {
+function parseDate (input: string): Date {
   if (!RFC_3339_REGEX.test(input)) {
     throw new GraphQLError(
       'DateTime scalars must be in the form of a full ISO 8601 date-time string'
@@ -237,19 +237,19 @@ export const DateTime = graphqlTsSchema.graphql.scalar<Date>(
   new GraphQLScalarType({
     name: 'DateTime',
     specifiedByURL: 'https://datatracker.ietf.org/doc/html/rfc3339#section-5.6',
-    serialize(value: unknown) {
+    serialize (value: unknown) {
       if (!(value instanceof Date) || isNaN(value.valueOf())) {
         throw new GraphQLError(`unexpected value provided to DateTime scalar: ${value}`)
       }
       return value.toISOString()
     },
-    parseLiteral(value) {
+    parseLiteral (value) {
       if (value.kind !== 'StringValue') {
         throw new GraphQLError('DateTime only accepts values as strings')
       }
       return parseDate(value.value)
     },
-    parseValue(value: unknown) {
+    parseValue (value: unknown) {
       if (value instanceof Date) {
         return value
       }
@@ -263,7 +263,7 @@ export const DateTime = graphqlTsSchema.graphql.scalar<Date>(
 
 const RFC_3339_FULL_DATE_REGEX = /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/
 
-function validateCalendarDay(input: string) {
+function validateCalendarDay (input: string) {
   if (!RFC_3339_FULL_DATE_REGEX.test(input)) {
     throw new GraphQLError(
       'CalendarDay scalars must be in the form of a full-date ISO 8601 string'
@@ -275,20 +275,20 @@ export const CalendarDay = graphqlTsSchema.graphql.scalar<string>(
   new GraphQLScalarType({
     name: 'CalendarDay',
     specifiedByURL: 'https://datatracker.ietf.org/doc/html/rfc3339#section-5.6',
-    serialize(value: unknown) {
+    serialize (value: unknown) {
       if (typeof value !== 'string') {
         throw new GraphQLError(`unexpected value provided to CalendarDay scalar: ${value}`)
       }
       return value
     },
-    parseLiteral(value) {
+    parseLiteral (value) {
       if (value.kind !== 'StringValue') {
         throw new GraphQLError('CalendarDay only accepts values as strings')
       }
       validateCalendarDay(value.value)
       return value.value
     },
-    parseValue(value: unknown) {
+    parseValue (value: unknown) {
       if (typeof value !== 'string') {
         throw new GraphQLError('CalendarDay only accepts values as strings')
       }

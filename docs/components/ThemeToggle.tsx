@@ -7,7 +7,7 @@ import { type COLORS } from '../lib/TOKENS'
 import { LightMode } from './icons/LightMode'
 import { DarkMode } from './icons/DarkMode'
 
-function ModeIcon({ theme }: { theme: 'light' | 'dark' }) {
+function ModeIcon ({ theme }: { theme: 'light' | 'dark' }) {
   if (theme === 'dark') {
     return <LightMode css={{ height: 'var(--space-xlarge)' }} />
   }
@@ -15,7 +15,7 @@ function ModeIcon({ theme }: { theme: 'light' | 'dark' }) {
   return <DarkMode css={{ height: 'var(--space-xlarge)' }} />
 }
 
-export function ThemeToggle(props: HTMLAttributes<HTMLButtonElement>) {
+export function ThemeToggle (props: HTMLAttributes<HTMLButtonElement>) {
   /*
     We don't want to render the toggle during server rendering
     because Next will always server render the light mode toggle and hydrate the light mode toggle

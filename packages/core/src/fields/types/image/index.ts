@@ -42,14 +42,14 @@ const ImageFieldOutput = graphql.object<ImageData & { storage: string }>()({
     extension: graphql.field({ type: graphql.nonNull(ImageExtensionEnum) }),
     url: graphql.field({
       type: graphql.nonNull(graphql.String),
-      resolve(data, args, context) {
+      resolve (data, args, context) {
         return context.images(data.storage).getUrl(data.id, data.extension)
       },
     }),
   },
 })
 
-async function inputResolver(
+async function inputResolver (
   storage: string,
   data: graphql.InferValueFromArg<typeof inputArg>,
   context: KeystoneContext
@@ -63,7 +63,7 @@ async function inputResolver(
 
 const extensionsSet = new Set(SUPPORTED_IMAGE_EXTENSIONS)
 
-function isValidImageExtension(extension: string): extension is ImageExtension {
+function isValidImageExtension (extension: string): extension is ImageExtension {
   return extensionsSet.has(extension)
 }
 
@@ -100,7 +100,7 @@ export const image =
         ? config.hooks
         : {
             ...config.hooks,
-            async beforeOperation(args) {
+            async beforeOperation (args) {
               await config.hooks?.beforeOperation?.(args)
               if (args.operation === 'update' || args.operation === 'delete') {
                 const idKey = `${meta.fieldKey}_id`
@@ -135,7 +135,7 @@ export const image =
       },
       output: graphql.field({
         type: ImageFieldOutput,
-        resolve({ value: { extension, filesize, height, id, width } }) {
+        resolve ({ value: { extension, filesize, height, id, width } }) {
           if (
             extension === null ||
             !isValidImageExtension(extension) ||

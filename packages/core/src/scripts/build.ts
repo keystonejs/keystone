@@ -12,7 +12,7 @@ import {
 import { getEsbuildConfig } from '../lib/esbuild'
 import type { Flags } from './cli'
 
-export async function build(
+export async function build (
   cwd: string,
   { frozen, prisma, ui }: Pick<Flags, 'frozen' | 'prisma' | 'ui'>
 ) {

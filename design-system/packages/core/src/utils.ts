@@ -28,8 +28,8 @@ export const getChildTag = (parentTag?: ElementType<any>) => {
 /*
   @johannes' one weird trick for fixing TypeScript autocomplete
 */
-export function identityType<T>() {
-  function inner<U extends T>(u: U): U {
+export function identityType<T> () {
+  function inner<U extends T> (u: U): U {
     return u
   }
   return inner
@@ -84,7 +84,7 @@ export const forwardRefWithAs = <DefaultElementType extends ElementType, BasePro
 /*
   A helper for making valid IDs from a set of inputs
 */
-export function makeId(...args: (string | number | null | undefined)[]) {
+export function makeId (...args: (string | number | null | undefined)[]) {
   return args.filter(val => val != null).join('--')
 }
 

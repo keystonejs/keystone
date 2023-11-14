@@ -10,7 +10,7 @@ const adminMetaLocalStorageKey = 'keystone.adminMeta'
 
 let _mustRenderServerResult = true
 
-function useMustRenderServerResult() {
+function useMustRenderServerResult () {
   let [, forceUpdate] = useState(0)
   useEffect(() => {
     _mustRenderServerResult = false
@@ -24,7 +24,7 @@ function useMustRenderServerResult() {
   return _mustRenderServerResult
 }
 
-export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
+export function useAdminMeta (adminMetaHash: string, fieldViews: FieldViews) {
   const adminMetaFromLocalStorage = useMemo(() => {
     if (typeof window === 'undefined') {
       return

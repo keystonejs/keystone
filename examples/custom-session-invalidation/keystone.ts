@@ -33,14 +33,14 @@ const { withAuth } = createAuth({
   sessionData: 'passwordChangedAt',
 })
 
-function withSessionInvalidation(config: Config<Session>) {
+function withSessionInvalidation (config: Config<Session>) {
   const existingSessionStrategy = config.session!
 
   return {
     ...config,
     session: {
       ...config.session,
-      async get({ context }: { context: Context }): Promise<Session | undefined> {
+      async get ({ context }: { context: Context }): Promise<Session | undefined> {
         const session = await existingSessionStrategy.get({ context })
         if (!session) return
 
@@ -53,7 +53,7 @@ function withSessionInvalidation(config: Config<Session>) {
 
         return session
       },
-      async start({ context, data }: { context: Context; data: Session }) {
+      async start ({ context, data }: { context: Context; data: Session }) {
         return await existingSessionStrategy.start({
           context,
           data: {

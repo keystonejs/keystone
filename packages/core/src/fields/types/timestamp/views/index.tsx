@@ -44,13 +44,13 @@ export const Field = ({
 
   const timeInputProps = useFormattedInput<{ kind: 'parsed'; value: string | null }>(
     {
-      format({ value }) {
+      format ({ value }) {
         if (value === null) {
           return ''
         }
         return formatTime(value)
       },
-      parse(value) {
+      parse (value) {
         value = value.trim()
         if (value === '') {
           return { kind: 'parsed', value: null }
@@ -64,13 +64,13 @@ export const Field = ({
     },
     {
       value: value.value.timeValue,
-      onChange(timeValue) {
+      onChange (timeValue) {
         onChange?.({
           ...value,
           value: { ...value.value, timeValue },
         })
       },
-      onBlur() {
+      onBlur () {
         setTouchedSecondInput(true)
       },
     }
@@ -150,7 +150,7 @@ export const Field = ({
   )
 }
 
-function validate(
+function validate (
   value: Value,
   fieldMeta: TimestampFieldMeta,
   label: string

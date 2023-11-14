@@ -459,7 +459,7 @@ export type FindManyArgs = {
 export type FindManyArgsValue = graphql.InferValueFromArgs<FindManyArgs>
 
 // fieldType(dbField)(fieldInfo) => { ...fieldInfo, dbField };
-export function fieldType<TDBField extends DBField, ListTypeInfo extends BaseListTypeInfo>(
+export function fieldType<TDBField extends DBField, ListTypeInfo extends BaseListTypeInfo> (
   dbField: TDBField
 ) {
   return function fieldTypeWrapper<
@@ -468,7 +468,7 @@ export function fieldType<TDBField extends DBField, ListTypeInfo extends BaseLis
     UniqueWhereArg extends graphql.Arg<graphql.NullableInputType, false>,
     OrderByArg extends graphql.Arg<graphql.NullableInputType, false>,
     FilterArg extends graphql.Arg<graphql.NullableInputType, false>
-  >(
+  > (
     graphQLInfo: FieldTypeWithoutDBField<
       TDBField,
       CreateArg,

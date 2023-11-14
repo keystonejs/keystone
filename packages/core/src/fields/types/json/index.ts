@@ -31,7 +31,7 @@ export const json =
         input: {
           create: {
             arg: graphql.arg({ type: graphql.JSON }),
-            resolve(val) {
+            resolve (val) {
               return val === undefined ? defaultValue : val
             },
           },

@@ -6,7 +6,7 @@ import { localImageAssetsAPI } from './local'
 import { s3ImageAssetsAPI } from './s3'
 import { streamToBuffer } from './utils'
 
-async function getImageMetadataFromBuffer(buffer: Buffer) {
+async function getImageMetadataFromBuffer (buffer: Buffer) {
   const fileType = await (await import('file-type')).fileTypeFromBuffer(buffer)
   if (!fileType) {
     throw new Error('File type not found')
@@ -25,7 +25,7 @@ async function getImageMetadataFromBuffer(buffer: Buffer) {
   return { width, height, filesize: buffer.length, extension }
 }
 
-export function createImagesContext(config: KeystoneConfig): ImagesContext {
+export function createImagesContext (config: KeystoneConfig): ImagesContext {
   const imageAssetsAPIs = new Map<string, ImageAdapter>()
   for (const [storageKey, storageConfig] of Object.entries(config.storage || {})) {
     if (storageConfig.type === 'image') {

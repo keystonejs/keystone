@@ -9,7 +9,7 @@ import { useRouter } from 'next/router'
 import { type ListMeta } from '../../../../types'
 import { useSelectedFields } from './useSelectedFields'
 
-function isArrayEqual(arrA: string[], arrB: string[]) {
+function isArrayEqual (arrA: string[], arrB: string[]) {
   if (arrA.length !== arrB.length) return false
   for (let i = 0; i < arrA.length; i++) {
     if (arrA[i] !== arrB[i]) {
@@ -37,7 +37,7 @@ export const fieldSelectionOptionsComponents: Parameters<typeof Options>[0]['com
   Option,
 }
 
-export function FieldSelection({
+export function FieldSelection ({
   list,
   fieldModesByFieldPath,
 }: {

@@ -8,7 +8,7 @@ import { Page } from '../../components/Page'
 
 const toneValues = ['active', 'passive', 'positive', 'warning', 'negative', 'help'] as const
 
-export default function PillPage() {
+export default function PillPage () {
   return (
     <Page>
       <h1>Pill</h1>

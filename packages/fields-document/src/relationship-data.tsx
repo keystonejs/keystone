@@ -14,7 +14,7 @@ import { type Relationships } from './DocumentEditor/relationship'
 const labelFieldAlias = '____document_field_relationship_item_label'
 const idFieldAlias = '____document_field_relationship_item_id'
 
-export function addRelationshipData(
+export function addRelationshipData (
   nodes: Descendant[],
   context: KeystoneContext,
   relationships: Relationships,
@@ -77,7 +77,7 @@ export function addRelationshipData(
   )
 }
 
-export async function fetchRelationshipData(
+export async function fetchRelationshipData (
   context: KeystoneContext,
   listKey: string,
   many: boolean,
@@ -106,7 +106,7 @@ export async function fetchRelationshipData(
     : []
 }
 
-async function fetchDataForOne(
+async function fetchDataForOne (
   context: KeystoneContext,
   listKey: string,
   selection: string,
@@ -149,7 +149,7 @@ async function fetchDataForOne(
   }
 }
 
-export async function addRelationshipDataToComponentProps(
+export async function addRelationshipDataToComponentProps (
   schema: ComponentSchema,
   val: any,
   fetchData: (relationship: RelationshipField<boolean>, data: any) => Promise<any>
@@ -213,7 +213,7 @@ const document = parse(`
   }
 `)
 
-export const getLabelFieldsForLists = weakMemoize(function getLabelFieldsForLists(
+export const getLabelFieldsForLists = weakMemoize(function getLabelFieldsForLists (
   schema: GraphQLSchema
 ): Record<string, string> {
   const { data, errors } = executeSync({

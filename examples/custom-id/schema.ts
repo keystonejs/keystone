@@ -4,7 +4,7 @@ import { relationship, text, timestamp } from '@keystone-6/core/fields'
 import { createId } from '@paralleldrive/cuid2'
 import type { Lists } from '.keystone/types'
 
-function makeCustomIdentifier(listKey: string) {
+function makeCustomIdentifier (listKey: string) {
   return `${listKey.toUpperCase()}_${createId()}`
 }
 

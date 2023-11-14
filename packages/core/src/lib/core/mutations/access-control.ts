@@ -12,7 +12,7 @@ import {
   type UniquePrismaFilter,
 } from '../where-inputs'
 
-async function getFilteredItem(
+async function getFilteredItem (
   list: InitialisedList,
   context: KeystoneContext,
   uniqueWhere: UniquePrismaFilter,
@@ -36,7 +36,7 @@ async function getFilteredItem(
   throw accessDeniedError(cannotForItem(operation, list))
 }
 
-export async function checkUniqueItemExists(
+export async function checkUniqueItemExists (
   uniqueInput: UniqueInputFilter,
   foreignList: InitialisedList,
   context: KeystoneContext,
@@ -54,7 +54,7 @@ export async function checkUniqueItemExists(
   throw accessDeniedError(cannotForItem(operation, foreignList))
 }
 
-async function enforceListLevelAccessControl({
+async function enforceListLevelAccessControl ({
   context,
   operation,
   list,
@@ -120,7 +120,7 @@ async function enforceListLevelAccessControl({
   throw accessDeniedError(cannotForItem(operation, list))
 }
 
-async function enforceFieldLevelAccessControl({
+async function enforceFieldLevelAccessControl ({
   context,
   operation,
   list,
@@ -196,7 +196,7 @@ async function enforceFieldLevelAccessControl({
   }
 }
 
-export async function applyAccessControlForCreate(
+export async function applyAccessControlForCreate (
   list: InitialisedList,
   context: KeystoneContext,
   inputData: Record<string, unknown>
@@ -218,7 +218,7 @@ export async function applyAccessControlForCreate(
   })
 }
 
-export async function getAccessControlledItemForUpdate(
+export async function getAccessControlledItemForUpdate (
   list: InitialisedList,
   context: KeystoneContext,
   uniqueWhere: UniquePrismaFilter,
@@ -247,7 +247,7 @@ export async function getAccessControlledItemForUpdate(
   return item
 }
 
-export async function getAccessControlledItemForDelete(
+export async function getAccessControlledItemForDelete (
   list: InitialisedList,
   context: KeystoneContext,
   uniqueWhere: UniquePrismaFilter,

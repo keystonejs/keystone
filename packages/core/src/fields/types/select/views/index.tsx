@@ -163,7 +163,7 @@ type Value =
   | { value: Option | null; kind: 'create' }
   | { value: Option | null; initial: Option | null; kind: 'update' }
 
-function validate(value: Value, isRequired: boolean) {
+function validate (value: Value, isRequired: boolean) {
   if (isRequired) {
     // if you got null initially on the update screen, we want to allow saving
     // since the user probably doesn't have read access control
@@ -223,7 +223,7 @@ export const controller = (
     serialize: value => ({ [config.path]: t(value.value?.value ?? null) }),
     validate: value => validate(value, config.fieldMeta.isRequired),
     filter: {
-      Filter(props) {
+      Filter (props) {
         return (
           <MultiSelect
             onChange={props.onChange}
@@ -236,7 +236,7 @@ export const controller = (
       graphql: ({ type, value: options }) => ({
         [config.path]: { [type === 'not_matches' ? 'notIn' : 'in']: options.map(x => t(x.value)) },
       }),
-      Label({ type, value }) {
+      Label ({ type, value }) {
         if (!value.length) {
           return type === 'not_matches' ? `is set` : `has no value`
         }

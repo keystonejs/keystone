@@ -102,7 +102,7 @@ export const password =
       )
     }
 
-    function inputResolver(val: string | null | undefined) {
+    function inputResolver (val: string | null | undefined) {
       if (val == null) {
         return val
       }
@@ -119,7 +119,7 @@ export const password =
       ...config,
       hooks: {
         ...config.hooks,
-        async validateInput(args) {
+        async validateInput (args) {
           const val = args.inputData[meta.fieldKey]
           if (
             args.resolvedData[meta.fieldKey] === null &&
@@ -159,7 +159,7 @@ export const password =
             ? undefined
             : {
                 arg: graphql.arg({ type: PasswordFilter }),
-                resolve(val) {
+                resolve (val) {
                   if (val === null) {
                     throw userInputError('Password filters cannot be set to null')
                   }
@@ -173,7 +173,7 @@ export const password =
               },
         create: {
           arg: graphql.arg({ type: graphql.String }),
-          resolve(val) {
+          resolve (val) {
             if (val === undefined) {
               return null
             }
@@ -204,7 +204,7 @@ export const password =
       }),
       output: graphql.field({
         type: PasswordState,
-        resolve(val) {
+        resolve (val) {
           return { isSet: val.value !== null && bcryptHashRegex.test(val.value) }
         },
         extensions: {

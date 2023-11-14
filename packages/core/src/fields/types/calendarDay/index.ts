@@ -50,7 +50,7 @@ export const calendarDay =
     const fieldLabel = config.label ?? humanize(meta.fieldKey)
     const usesNativeDateType = meta.provider === 'postgresql' || meta.provider === 'mysql'
 
-    function resolveInput(value: string | null | undefined) {
+    function resolveInput (value: string | null | undefined) {
       if (meta.provider === 'sqlite' || value == null) {
         return value
       }
@@ -78,7 +78,7 @@ export const calendarDay =
       ...config,
       hooks: {
         ...config.hooks,
-        async validateInput(args) {
+        async validateInput (args) {
           const value = args.resolvedData[meta.fieldKey]
           if ((validation?.isRequired || resolvedIsNullable === false) && value === null) {
             args.addValidationError(`${fieldLabel} is required`)
@@ -108,7 +108,7 @@ export const calendarDay =
             type: graphql.CalendarDay,
             defaultValue,
           }),
-          resolve(val: string | null | undefined) {
+          resolve (val: string | null | undefined) {
             if (val === undefined) {
               val = defaultValue ?? null
             }
@@ -120,7 +120,7 @@ export const calendarDay =
       },
       output: graphql.field({
         type: graphql.CalendarDay,
-        resolve({ value }) {
+        resolve ({ value }) {
           if (value instanceof Date) {
             return value.toISOString().slice(0, 10)
           }
@@ -129,7 +129,7 @@ export const calendarDay =
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/calendarDay',
       views: '@keystone-6/core/fields/types/calendarDay/views',
-      getAdminMeta(): CalendarDayFieldMeta {
+      getAdminMeta (): CalendarDayFieldMeta {
         return {
           defaultValue: defaultValue ?? null,
           isRequired: validation?.isRequired ?? false,
@@ -138,7 +138,7 @@ export const calendarDay =
     })
   }
 
-function dateStringToDateObjectInUTC(value: string) {
+function dateStringToDateObjectInUTC (value: string) {
   return new Date(`${value}T00:00Z`)
 }
 
@@ -153,7 +153,7 @@ type CalendarDayFilterType = graphql.InputObjectType<{
   not: graphql.Arg<CalendarDayFilterType>;
 }>
 
-function transformFilterDateStringsToDateObjects(
+function transformFilterDateStringsToDateObjects (
   filter: graphql.InferValueFromInputType<CalendarDayFilterType>
 ): Parameters<typeof filters.resolveCommon>[0] {
   if (filter === null) {

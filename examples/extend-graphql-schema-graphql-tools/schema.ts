@@ -32,7 +32,7 @@ export const lists: Lists = {
   }),
 }
 
-export function extendGraphqlSchema(baseSchema: GraphQLSchema) {
+export function extendGraphqlSchema (baseSchema: GraphQLSchema) {
   return mergeSchemas({
     schemas: [baseSchema],
     typeDefs: `

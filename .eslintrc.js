@@ -7,10 +7,14 @@ module.exports = {
     files: ['*.js', '*.jsx', '*.ts', '*.tsx'],
   }],
   rules: {
-    '@typescript-eslint/consistent-type-imports': ['error', {
-      disallowTypeAnnotations: true,
-      fixStyle: 'inline-type-imports',
-      prefer: 'type-imports',
-    }],
+    'block-spacing': ['error', 'always'],
+    'brace-style': ['error', '1tbs', { allowSingleLine: true }],
+    'comma-spacing': ['error', { before: false, after: true }],
+    'func-call-spacing': ['error', 'never'],
+    'semi-spacing': ['error', { before: false, after: true }],
+    'space-before-blocks': ['error', 'always'],
+    'space-before-function-paren': ['error', 'always'],
+    'space-before-function-paren': ['error', 'always'],
+    'space-in-parens': ['error', 'never'],
   }
 }

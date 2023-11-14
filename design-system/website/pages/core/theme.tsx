@@ -5,7 +5,7 @@ import { jsx } from '@keystone-ui/core'
 
 import { Page } from '../../components/Page'
 
-export default function ThemePage() {
+export default function ThemePage () {
   return (
     <Page>
       <h1>Theme</h1>

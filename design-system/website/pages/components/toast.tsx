@@ -7,7 +7,7 @@ import { useToasts } from '@keystone-ui/toast'
 
 import { Page } from '../../components/Page'
 
-export default function OptionsPage() {
+export default function OptionsPage () {
   const { addToast } = useToasts()
   return (
     <Page>
@@ -40,6 +40,6 @@ export default function OptionsPage() {
   )
 }
 
-function titleCase(str: string) {
+function titleCase (str: string) {
   return str.slice(0, 1).toUpperCase() + str.slice(1)
 }

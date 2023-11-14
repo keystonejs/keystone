@@ -11,7 +11,7 @@ import type { AdminMetaRootVal } from '../../lib/create-admin-meta'
 
 const walk = promisify(_walk)
 
-function getDoesAdminConfigExist() {
+function getDoesAdminConfigExist () {
   try {
     const configPath = Path.join(process.cwd(), 'admin', 'config')
     resolve.sync(configPath, { extensions: ['.ts', '.tsx', '.js'], preserveSymlinks: false })
@@ -24,7 +24,7 @@ function getDoesAdminConfigExist() {
   }
 }
 
-export async function writeAdminFile(file: AdminFileToWrite, projectAdminPath: string) {
+export async function writeAdminFile (file: AdminFileToWrite, projectAdminPath: string) {
   const outputFilename = Path.join(projectAdminPath, file.outputPath)
   if (file.mode === 'copy') {
     if (!Path.isAbsolute(file.inputPath)) {

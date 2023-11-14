@@ -5,17 +5,17 @@ import fs from 'fs-extra'
 import { type StorageConfig } from '../../types'
 import { type FileAdapter, type ImageAdapter } from './types'
 
-export function localImageAssetsAPI(
+export function localImageAssetsAPI (
   storageConfig: StorageConfig & { kind: 'local' }
 ): ImageAdapter {
   return {
-    async url(id, extension) {
+    async url (id, extension) {
       return storageConfig.generateUrl(`/${id}.${extension}`)
     },
-    async upload(buffer, id, extension) {
+    async upload (buffer, id, extension) {
       await fs.writeFile(path.join(storageConfig.storagePath, `${id}.${extension}`), buffer)
     },
-    async delete(id, extension) {
+    async delete (id, extension) {
       try {
         await fs.unlink(path.join(storageConfig.storagePath, `${id}.${extension}`))
       } catch (e) {
@@ -29,12 +29,12 @@ export function localImageAssetsAPI(
   }
 }
 
-export function localFileAssetsAPI(storageConfig: StorageConfig & { kind: 'local' }): FileAdapter {
+export function localFileAssetsAPI (storageConfig: StorageConfig & { kind: 'local' }): FileAdapter {
   return {
-    async url(filename) {
+    async url (filename) {
       return storageConfig.generateUrl(`/${filename}`)
     },
-    async upload(stream, filename) {
+    async upload (stream, filename) {
       const writeStream = fs.createWriteStream(path.join(storageConfig.storagePath, filename))
       const pipeStreams: Promise<void> = new Promise((resolve, reject) => {
         pipeline(stream, writeStream, err => {
@@ -55,7 +55,7 @@ export function localFileAssetsAPI(storageConfig: StorageConfig & { kind: 'local
         throw e
       }
     },
-    async delete(filename) {
+    async delete (filename) {
       try {
         await fs.unlink(path.join(storageConfig.storagePath, filename))
       } catch (e) {

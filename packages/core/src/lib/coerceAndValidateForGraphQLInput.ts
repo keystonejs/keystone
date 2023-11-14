@@ -10,7 +10,7 @@ import { getTypeNodeForType } from './context/executeGraphQLFieldToRootVal'
 
 const argName = 'where'
 
-export function coerceAndValidateForGraphQLInput(
+export function coerceAndValidateForGraphQLInput (
   schema: GraphQLSchema,
   type: GraphQLInputType,
   value: any

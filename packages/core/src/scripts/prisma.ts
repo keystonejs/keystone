@@ -9,7 +9,7 @@ import {
 import { getEsbuildConfig } from '../lib/esbuild'
 import { ExitError } from './utils'
 
-export async function prisma(cwd: string, args: string[], frozen: boolean) {
+export async function prisma (cwd: string, args: string[], frozen: boolean) {
   if (frozen) {
     args = args.filter(arg => arg !== '--frozen')
   } else {

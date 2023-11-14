@@ -6,7 +6,7 @@ import { type SVGAttributes } from 'react'
 export type IconGradient = 'grad1' | 'grad2' | 'grad3' | 'grad4' | 'grad5' | 'grad6' | 'logo'
 export type IconProps = { grad?: IconGradient | null } & SVGAttributes<SVGElement>
 
-export function Gradients({ name }: { name: string }) {
+export function Gradients ({ name }: { name: string }) {
   return (
     <defs>
       <linearGradient id={`${name}-grad1`} x1="0%" x2="50%" y1="0%" y2="71.9%">

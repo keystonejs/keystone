@@ -8,7 +8,7 @@ import { LoadingDots, loadingToneValues } from '@keystone-ui/loading'
 import { Page } from '../../components/Page'
 import { toLabel } from '../../utils'
 
-export default function LoadingPage() {
+export default function LoadingPage () {
   return (
     <Page>
       <h1>Notice</h1>

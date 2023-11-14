@@ -45,7 +45,7 @@ export const callout = component({
       relationships: 'inherit',
     }),
   },
-  preview: function Callout(props) {
+  preview: function Callout (props) {
     const { palette, radii, spacing } = useTheme()
     const intentMap = {
       info: {
@@ -98,7 +98,7 @@ export const callout = component({
       </div>
     )
   },
-  toolbar: function CalloutToolbar({ props, onRemove }) {
+  toolbar: function CalloutToolbar ({ props, onRemove }) {
     return (
       <ToolbarGroup>
         {props.fields.intent.options.map(opt => {

@@ -11,7 +11,7 @@ export type Value = Record<
   | { kind: 'value'; value: any }
 >
 
-export function useChangedFieldsAndDataForUpdate(
+export function useChangedFieldsAndDataForUpdate (
   fields: Record<string, FieldMeta>,
   itemGetter: DataGetter<ItemData>,
   value: Value

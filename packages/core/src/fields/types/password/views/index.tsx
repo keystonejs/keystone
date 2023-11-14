@@ -21,7 +21,7 @@ import {
 } from '../../../../types'
 import { CellContainer } from '../../../../admin-ui/components'
 
-function validate(value: Value, validation: Validation, fieldLabel: string): string | undefined {
+function validate (value: Value, validation: Validation, fieldLabel: string): string | undefined {
   if (value.kind === 'initial' && (value.isSet === null || value.isSet === true)) {
     return undefined
   }
@@ -52,7 +52,7 @@ function validate(value: Value, validation: Validation, fieldLabel: string): str
   return undefined
 }
 
-function isSetText(isSet: null | undefined | boolean) {
+function isSetText (isSet: null | undefined | boolean) {
   return isSet == null ? 'Access Denied' : isSet ? 'Is set' : 'Is not set'
 }
 
@@ -263,7 +263,7 @@ export const controller = (
       config.fieldMeta.isNullable === false
         ? undefined
         : {
-            Filter(props) {
+            Filter (props) {
               return (
                 <SegmentedControl
                   selectedIndex={Number(props.value)}
@@ -277,7 +277,7 @@ export const controller = (
             graphql: ({ value }) => {
               return { [config.path]: { isSet: value } }
             },
-            Label({ value }) {
+            Label ({ value }) {
               return value ? 'is set' : 'is not set'
             },
             types: {

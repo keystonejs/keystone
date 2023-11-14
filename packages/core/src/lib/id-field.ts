@@ -11,14 +11,14 @@ import { userInputError } from './core/graphql-errors'
 
 type IDType = string | number | null
 
-function isInt(x: IDType) {
+function isInt (x: IDType) {
   if (x === null) return
   if (x === '') return
   const nom = typeof x === 'string' ? Number(x) : x
   if (Number.isInteger(nom)) return nom
 }
 
-function isBigInt(x: IDType) {
+function isBigInt (x: IDType) {
   if (x === null) return
   if (x === '') return
   try {
@@ -26,14 +26,14 @@ function isBigInt(x: IDType) {
   } catch {}
 }
 
-function isString(x: IDType) {
+function isString (x: IDType) {
   if (typeof x !== 'string') return
   if (x === '') return
   return x
 }
 
 // TODO: this should be on the user, remove in breaking change
-function isUuid(x: IDType) {
+function isUuid (x: IDType) {
   if (typeof x !== 'string') return
   if (x === '') return
   return x.toLowerCase()
@@ -65,7 +65,7 @@ const IDFilter: IDFilterType = graphql.inputObject({
 
 const filterArg = graphql.arg({ type: IDFilter })
 
-function resolveInput(
+function resolveInput (
   input: Exclude<graphql.InferValueFromArg<typeof filterArg>, undefined>,
   parseId: (x: IDType) => unknown
 ) {
@@ -102,7 +102,7 @@ const NATIVE_TYPES: {
   },
 }
 
-function unpack(i: IdFieldConfig) {
+function unpack (i: IdFieldConfig) {
   if (i.kind === 'random') {
     const { kind, bytes, encoding } = i
     if (typeof bytes === 'number') {
@@ -140,7 +140,7 @@ function unpack(i: IdFieldConfig) {
   throw new Error(`Unknown id type ${kind}`)
 }
 
-export function idFieldType(
+export function idFieldType (
   config: IdFieldConfig,
   isSingleton: boolean
 ): FieldTypeFunc<BaseListTypeInfo> {
@@ -152,7 +152,7 @@ export function idFieldType(
     UUID: isUuid, // TODO: remove in breaking change
   }[kind === 'uuid' ? 'UUID' : type_]
 
-  function parse(value: IDType) {
+  function parse (value: IDType) {
     const result = parseTypeFn(value)
     if (result === undefined) {
       throw userInputError(`Only a ${type_.toLowerCase()} can be passed to id filters`)
@@ -181,7 +181,7 @@ export function idFieldType(
       input: {
         where: {
           arg: filterArg,
-          resolve(val) {
+          resolve (val) {
             return resolveInput(val, parse)
           },
         },
@@ -190,7 +190,7 @@ export function idFieldType(
       },
       output: graphql.field({
         type: graphql.nonNull(graphql.ID),
-        resolve({ value }) {
+        resolve ({ value }) {
           return value.toString()
         },
       }),

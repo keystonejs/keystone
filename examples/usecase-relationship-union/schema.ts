@@ -3,7 +3,7 @@ import { allowAll } from '@keystone-6/core/access'
 import { text, relationship, virtual } from '@keystone-6/core/fields'
 import { type Lists } from '.keystone/types'
 
-function ifUnsetHideUI(field: string) {
+function ifUnsetHideUI (field: string) {
   return {
     itemView: {
       fieldMode: ({ item }: any) => (item[field] ? 'edit' : 'read'),

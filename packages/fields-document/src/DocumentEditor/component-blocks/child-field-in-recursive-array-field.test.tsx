@@ -16,13 +16,13 @@ type ListItems = ArrayField<
 const children: ListItems = fields.array(
   fields.object({
     content: fields.child({ kind: 'inline', placeholder: '' }),
-    get children() {
+    get children () {
       return children
     },
   })
 )
 
-function List(props: PreviewProps<ListItems>): ReactElement {
+function List (props: PreviewProps<ListItems>): ReactElement {
   return React.createElement(
     'ul',
     null,

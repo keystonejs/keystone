@@ -5,7 +5,7 @@ import { jsx } from '@emotion/react'
 
 import { Type } from '../primitives/Type'
 
-export function IntroWrapper(props: HTMLAttributes<HTMLElement>) {
+export function IntroWrapper (props: HTMLAttributes<HTMLElement>) {
   return (
     <div
       css={{
@@ -18,7 +18,7 @@ export function IntroWrapper(props: HTMLAttributes<HTMLElement>) {
   )
 }
 
-export function IntroHeading(props: HTMLAttributes<HTMLElement>) {
+export function IntroHeading (props: HTMLAttributes<HTMLElement>) {
   return (
     <Type
       as="h1"
@@ -33,7 +33,7 @@ export function IntroHeading(props: HTMLAttributes<HTMLElement>) {
   )
 }
 
-export function IntroLead(props: HTMLAttributes<HTMLElement>) {
+export function IntroLead (props: HTMLAttributes<HTMLElement>) {
   return (
     <Type
       as="p"

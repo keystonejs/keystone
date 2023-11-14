@@ -64,7 +64,7 @@ const CardContainer = forwardRefWithAs(({ mode = 'view', ...props }: CardContain
   )
 })
 
-export function Cards({
+export function Cards ({
   localList,
   field,
   foreignList,
@@ -302,7 +302,7 @@ export function Cards({
               portalMenu
               state={{
                 kind: 'many',
-                async onChange(options) {
+                async onChange (options) {
                   // TODO: maybe use the extraSelection prop on RelationshipSelect here
                   const itemsToFetchAndConnect: string[] = []
                   options.forEach(item => {

@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { type ListMeta } from '../../../../types'
 import { useRouter } from '../../../../admin-ui/router'
 
-export function useSelectedFields(
+export function useSelectedFields (
   list: ListMeta,
   fieldModesByFieldPath: Record<string, 'hidden' | 'read'>
 ): ReadonlySet<string> {

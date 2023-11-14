@@ -6,7 +6,7 @@ import { cache } from '@emotion/css'
 const { extractCriticalToChunks } = createEmotionServer(cache)
 
 class MyDocument extends Document {
-  static async getInitialProps(ctx: DocumentContext) {
+  static async getInitialProps (ctx: DocumentContext) {
     const initialProps = await Document.getInitialProps(ctx)
     const data = extractCriticalToChunks(initialProps.html)
 
@@ -27,7 +27,7 @@ class MyDocument extends Document {
     }
   }
 
-  render() {
+  render () {
     return (
       <Html data-theme="light">
         <Head>

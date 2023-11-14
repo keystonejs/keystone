@@ -3,7 +3,7 @@ import { persons, tasks } from '../example-data'
 import config from './keystone'
 import * as PrismaModule from '.myprisma/client'
 
-export async function main() {
+export async function main () {
   const context = getContext(config, PrismaModule)
 
   console.log(`🌱 Inserting seed data`)

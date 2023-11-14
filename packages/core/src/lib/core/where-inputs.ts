@@ -27,7 +27,7 @@ export type UniquePrismaFilter = Record<string, any> & {
   then?: undefined;
 }
 
-export async function resolveUniqueWhereInput(
+export async function resolveUniqueWhereInput (
   inputFilter: UniqueInputFilter,
   list: InitialisedList,
   context: KeystoneContext
@@ -47,7 +47,7 @@ export async function resolveUniqueWhereInput(
   return where
 }
 
-export async function resolveWhereInput(
+export async function resolveWhereInput (
   inputFilter: InputFilter,
   list: InitialisedList,
   context: KeystoneContext,
@@ -123,7 +123,7 @@ export async function resolveWhereInput(
   }
 }
 
-function handleOperators(fieldKey: string, dbField: DBField, { AND, OR, NOT, ...rest }: any) {
+function handleOperators (fieldKey: string, dbField: DBField, { AND, OR, NOT, ...rest }: any) {
   return {
     AND: AND?.map((value: any) => handleOperators(fieldKey, dbField, value)),
     OR: OR?.map((value: any) => handleOperators(fieldKey, dbField, value)),
@@ -132,7 +132,7 @@ function handleOperators(fieldKey: string, dbField: DBField, { AND, OR, NOT, ...
   }
 }
 
-function nestWithAppropiateField(fieldKey: string, dbField: DBField, value: any) {
+function nestWithAppropiateField (fieldKey: string, dbField: DBField, value: any) {
   if (dbField.kind === 'multi') {
     return Object.fromEntries(
       Object.entries(value).map(([key, val]) => [

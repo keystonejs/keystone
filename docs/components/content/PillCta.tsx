@@ -8,7 +8,7 @@ type PillCtaProps = {
   grad?: 'grad1' | 'grad2' | 'grad3' | 'grad4' | 'grad5' | 'grad6';
 } & HTMLAttributes<HTMLElement>
 
-export function PillCta({ grad = 'grad1', children, ...props }: PillCtaProps) {
+export function PillCta ({ grad = 'grad1', children, ...props }: PillCtaProps) {
   const mq = useMediaQuery()
 
   return (

@@ -404,7 +404,7 @@ test('relationship many change', () => {
   expect(getPreviewProps(editor).fields.object.fields.many.value).toEqual(val)
 })
 
-function assert(condition: boolean): asserts condition {
+function assert (condition: boolean): asserts condition {
   if (!condition) {
     throw new Error('condition is false')
   }

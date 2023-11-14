@@ -34,11 +34,11 @@ export { withComponentBlocks } from './with-component-blocks'
 
 export const ComponentBlockContext = createContext<Record<string, ComponentBlock>>({})
 
-export function ComponentInlineProp(props: RenderElementProps) {
+export function ComponentInlineProp (props: RenderElementProps) {
   return <span {...props.attributes}>{props.children}</span>
 }
 
-export function insertComponentBlock(
+export function insertComponentBlock (
   editor: Editor,
   componentBlocks: Record<string, ComponentBlock>,
   componentBlock: string

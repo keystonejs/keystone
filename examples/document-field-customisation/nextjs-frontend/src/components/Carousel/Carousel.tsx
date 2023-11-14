@@ -8,7 +8,7 @@ type CarouselProps = {
   }[];
 }
 
-export function Carousel({ items = [] }: CarouselProps) {
+export function Carousel ({ items = [] }: CarouselProps) {
   return (
     <div className={styles.carousel}>
       {items.map(item => {

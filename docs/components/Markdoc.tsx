@@ -11,7 +11,7 @@ import { ComingSoon } from './docs/ComingSoon'
 
 const renderers: Record<string, ElementType> = {
   code: InlineCode,
-  CodeBlock(props: { content: string; language: string }) {
+  CodeBlock (props: { content: string; language: string }) {
     return (
       <pre>
         <Code className={`language-${props.language}`}>{props.content}</Code>
@@ -23,7 +23,7 @@ const renderers: Record<string, ElementType> = {
   Well,
   YouTubeEmbed,
   RelatedContent,
-  Heading(props: { children: ReactNode; level: 1 | 2 | 3 | 4 | 5 | 6; id: string }) {
+  Heading (props: { children: ReactNode; level: 1 | 2 | 3 | 4 | 5 | 6; id: string }) {
     return <Heading {...props} />
   },
 }
@@ -32,8 +32,8 @@ const renderers: Record<string, ElementType> = {
 // - it's so trivial to write
 // - the markdoc implementation was doing weird things with the components(you couldn't override built in tags)
 // - to avoid bundling all of markdoc on the front-end
-export function Markdoc(props: { content: RenderableTreeNodes }) {
-  function deepRender(value: any): any {
+export function Markdoc (props: { content: RenderableTreeNodes }) {
+  function deepRender (value: any): any {
     if (value == null || typeof value !== 'object') return value
 
     if (Array.isArray(value)) return value.map(item => deepRender(item))
@@ -47,7 +47,7 @@ export function Markdoc(props: { content: RenderableTreeNodes }) {
     return output
   }
 
-  function render(node: RenderableTreeNodes): ReactNode {
+  function render (node: RenderableTreeNodes): ReactNode {
     if (Array.isArray(node)) {
       return React.createElement(React.Fragment, null, ...node.map(render))
     }
@@ -90,7 +90,7 @@ export type HeadingType = {
   label: string;
 }
 
-export function extractHeadings(content: Tag): HeadingType[] {
+export function extractHeadings (content: Tag): HeadingType[] {
   const headings: HeadingType[] = []
   for (const child of content.children) {
     if (isTag(child) && child.name === 'Heading') {
@@ -104,7 +104,7 @@ export function extractHeadings(content: Tag): HeadingType[] {
   return headings
 }
 
-function stringifyDocContent(node: RenderableTreeNode): string {
+function stringifyDocContent (node: RenderableTreeNode): string {
   if (typeof node === 'string') {
     return node
   }

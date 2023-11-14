@@ -7,7 +7,7 @@ import { Highlight } from '../components/primitives/Highlight'
 import { Type } from '../components/primitives/Type'
 import { Page } from '../components/Page'
 
-function ConstructionIllustration() {
+function ConstructionIllustration () {
   return (
     <div
       css={{
@@ -34,7 +34,7 @@ function ConstructionIllustration() {
 //   see https://github.com/keystonejs/keystone/pull/6411#issuecomment-906085389
 const v5PathList = ['/tutorials', '/guides', '/keystonejs', '/api', '/discussions']
 
-export default function NotFoundPage() {
+export default function NotFoundPage () {
   const { asPath } = useRouter()
   const tryV5Link = v5PathList.some(x => asPath.startsWith(x))
   return (

@@ -91,7 +91,7 @@ const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
               name: 'KeystoneAdminUIFieldMetaItemViewFieldMode',
               values: graphql.enumValues(['edit', 'read', 'hidden']),
             }),
-            resolve({ fieldMode, itemId, listKey }, args, context, info) {
+            resolve ({ fieldMode, itemId, listKey }, args, context, info) {
               if (itemId !== null) {
                 assertInRuntimeContext(context, info)
               }
@@ -125,7 +125,7 @@ const KeystoneAdminUIFieldMeta = graphql.object<FieldMetaRootVal>()({
               name: 'KeystoneAdminUIFieldMetaItemViewFieldPosition',
               values: graphql.enumValues(['form', 'sidebar']),
             }),
-            resolve({ fieldPosition, itemId, listKey }, args, context, info) {
+            resolve ({ fieldPosition, itemId, listKey }, args, context, info) {
               if (itemId !== null) {
                 assertInRuntimeContext(context, info)
               }
@@ -222,14 +222,14 @@ const adminMeta = graphql.object<AdminMetaRootVal>()({
     list: graphql.field({
       type: KeystoneAdminUIListMeta,
       args: { key: graphql.arg({ type: graphql.nonNull(graphql.String) }) },
-      resolve(rootVal, { key }) {
+      resolve (rootVal, { key }) {
         return rootVal.listsByKey[key]
       },
     }),
   },
 })
 
-function defaultIsAccessAllowed({ session, sessionStrategy }: KeystoneContext) {
+function defaultIsAccessAllowed ({ session, sessionStrategy }: KeystoneContext) {
   if (!sessionStrategy) return true
   return session !== undefined
 }
@@ -239,7 +239,7 @@ export const KeystoneMeta = graphql.object<{ adminMeta: AdminMetaRootVal }>()({
   fields: {
     adminMeta: graphql.field({
       type: graphql.nonNull(adminMeta),
-      resolve({ adminMeta }, args, context) {
+      resolve ({ adminMeta }, args, context) {
         if ('isAdminUIBuildProcess' in context) {
           return adminMeta
         }
@@ -275,7 +275,7 @@ const fetchItemForItemViewFieldMode = extendContext(context => {
   }
 })
 
-function extendContext<T>(cb: (context: KeystoneContext) => T) {
+function extendContext<T> (cb: (context: KeystoneContext) => T) {
   const cache = new WeakMap<KeystoneContext, T>()
   return (context: KeystoneContext) => {
     if (cache.has(context)) {
@@ -287,7 +287,7 @@ function extendContext<T>(cb: (context: KeystoneContext) => T) {
   }
 }
 
-function assertInRuntimeContext(
+function assertInRuntimeContext (
   context: KeystoneContext | { isAdminUIBuildProcess: true },
   info: GraphQLResolveInfo
 ): asserts context is KeystoneContext {
@@ -299,11 +299,11 @@ function assertInRuntimeContext(
 }
 
 // TypeScript doesn't infer a mapped type when using a computed property that's a type parameter
-function objectFromKeyVal<Key extends string, Val>(key: Key, val: Val): { [_ in Key]: Val } {
+function objectFromKeyVal<Key extends string, Val> (key: Key, val: Val): { [_ in Key]: Val } {
   return { [key]: val } as { [_ in Key]: Val }
 }
 
-function contextFunctionField<Key extends string, Type extends string | boolean>(
+function contextFunctionField<Key extends string, Type extends string | boolean> (
   key: Key,
   type: ScalarType<Type> | EnumType<Record<string, EnumValue<Type>>>
 ) {
@@ -312,7 +312,7 @@ function contextFunctionField<Key extends string, Type extends string | boolean>
     key,
     graphql.field({
       type: graphql.nonNull(type),
-      resolve(source: Source, args, context, info) {
+      resolve (source: Source, args, context, info) {
         assertInRuntimeContext(context, info)
         return source[key](context)
       },

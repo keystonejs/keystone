@@ -85,12 +85,12 @@ const subClient = new ApolloClient({
   cache: new InMemoryCache(),
 })
 
-export default function CustomPage() {
+export default function CustomPage () {
   const [timeRows, setTimeRows] = useState([] as string[])
   const [updatedPostRows, setUpdatedPostRows] = useState([] as string[])
   const [publishedPostRows, setPublishedPostRows] = useState([] as string[])
 
-  function appendTime(row: string) {
+  function appendTime (row: string) {
     setTimeRows([...timeRows, row])
   }
 

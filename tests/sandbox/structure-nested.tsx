@@ -21,7 +21,7 @@ export const schema: ArrayField<ComponentSchemaForGraphQL> = fields.array(
       }),
       group: fields.object({
         label: fields.text({ label: 'Label' }),
-        get children() {
+        get children () {
           return schema
         },
       }),

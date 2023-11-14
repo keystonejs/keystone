@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { type ListMeta } from '../../../../types'
 import { useRouter } from '../../../../admin-ui/router'
 
-export function useSort(list: ListMeta, orderableFields: Set<string>) {
+export function useSort (list: ListMeta, orderableFields: Set<string>) {
   const { query } = useRouter()
   let sortByFromUrl = typeof query.sortBy === 'string' ? query.sortBy : null
 

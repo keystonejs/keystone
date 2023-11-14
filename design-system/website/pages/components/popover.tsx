@@ -6,7 +6,7 @@ import { Box, jsx } from '@keystone-ui/core'
 import { Popover } from '@keystone-ui/popover'
 import { Page } from '../../components/Page'
 
-export default function PopoverPage() {
+export default function PopoverPage () {
   return (
     <Page>
       <p>

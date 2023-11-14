@@ -1,6 +1,6 @@
 import { type AuthTokenRedemptionErrorCode } from '../types'
 
-export function getAuthTokenErrorMessage({ code }: { code: AuthTokenRedemptionErrorCode }): string {
+export function getAuthTokenErrorMessage ({ code }: { code: AuthTokenRedemptionErrorCode }): string {
   switch (code) {
     case 'FAILURE':
       return 'Auth token redemption failed.'

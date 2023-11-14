@@ -11,7 +11,7 @@ import { useRouter } from '../../../../admin-ui/router'
 import { fieldSelectionOptionsComponents } from './FieldSelection'
 import { useSort } from './useSort'
 
-export function SortSelection({
+export function SortSelection ({
   list,
   orderableFields,
 }: {
@@ -69,7 +69,7 @@ const noFieldOption = {
   value: '___________NO_FIELD___________',
 }
 
-function SortSelectionPopoverContent({
+function SortSelectionPopoverContent ({
   onClose,
   list,
   orderableFields,

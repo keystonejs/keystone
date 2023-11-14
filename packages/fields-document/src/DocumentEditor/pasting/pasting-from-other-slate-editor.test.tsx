@@ -6,7 +6,7 @@ import { render } from '@testing-library/react'
 import { makeEditor } from '../tests/utils'
 import { MyDataTransfer } from './data-transfer'
 
-function OtherEditor({ editor }: { editor: Editor }) {
+function OtherEditor ({ editor }: { editor: Editor }) {
   // note that the entire point here is to have a different document structure to Keystone's
   const [val, setVal] = useState(
     () =>

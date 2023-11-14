@@ -80,7 +80,7 @@ export const controller = (config: FieldControllerConfig): CloudinaryImageContro
         publicUrlTransformed(transformation: { width: "120" crop: "limit" })
       }`,
     defaultValue: { kind: 'empty' },
-    deserialize(item) {
+    deserialize (item) {
       const value = item[config.path]
       if (!value) return { kind: 'empty' }
       return {
@@ -88,10 +88,10 @@ export const controller = (config: FieldControllerConfig): CloudinaryImageContro
         data: value,
       }
     },
-    validate(value) {
+    validate (value) {
       return value.kind !== 'upload' || validateImage(value.data) === undefined
     },
-    serialize(value) {
+    serialize (value) {
       if (value.kind === 'upload') {
         return { [config.path]: value.data.file }
       }

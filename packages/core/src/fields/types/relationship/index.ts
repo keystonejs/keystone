@@ -252,19 +252,19 @@ export const relationship =
         input: {
           where: {
             arg: graphql.arg({ type: foreignListTypes.relateTo.many.where }),
-            resolve(value, context, resolve) {
+            resolve (value, context, resolve) {
               return resolve(value)
             },
           },
           create: foreignListTypes.relateTo.many.create && {
             arg: graphql.arg({ type: foreignListTypes.relateTo.many.create }),
-            async resolve(value, context, resolve) {
+            async resolve (value, context, resolve) {
               return resolve(value)
             },
           },
           update: foreignListTypes.relateTo.many.update && {
             arg: graphql.arg({ type: foreignListTypes.relateTo.many.update }),
-            async resolve(value, context, resolve) {
+            async resolve (value, context, resolve) {
               return resolve(value)
             },
           },
@@ -272,7 +272,7 @@ export const relationship =
         output: graphql.field({
           args: foreignListTypes.findManyArgs,
           type: graphql.list(graphql.nonNull(foreignListTypes.output)),
-          resolve({ value }, args) {
+          resolve ({ value }, args) {
             return value.findMany(args)
           },
         }),
@@ -285,7 +285,7 @@ export const relationship =
                 defaultValue: {},
               }),
             },
-            resolve({ value }, args) {
+            resolve ({ value }, args) {
               return value.count({
                 where: args.where,
               })
@@ -307,27 +307,27 @@ export const relationship =
       input: {
         where: {
           arg: graphql.arg({ type: foreignListTypes.where }),
-          resolve(value, context, resolve) {
+          resolve (value, context, resolve) {
             return resolve(value)
           },
         },
         create: foreignListTypes.relateTo.one.create && {
           arg: graphql.arg({ type: foreignListTypes.relateTo.one.create }),
-          async resolve(value, context, resolve) {
+          async resolve (value, context, resolve) {
             return resolve(value)
           },
         },
 
         update: foreignListTypes.relateTo.one.update && {
           arg: graphql.arg({ type: foreignListTypes.relateTo.one.update }),
-          async resolve(value, context, resolve) {
+          async resolve (value, context, resolve) {
             return resolve(value)
           },
         },
       },
       output: graphql.field({
         type: foreignListTypes.output,
-        resolve({ value }) {
+        resolve ({ value }) {
           return value()
         },
       }),

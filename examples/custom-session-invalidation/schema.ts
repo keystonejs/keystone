@@ -17,11 +17,11 @@ export type Session = {
   startedAt: number;
 }
 
-function hasSession({ session }: { session?: Session }) {
+function hasSession ({ session }: { session?: Session }) {
   return Boolean(session)
 }
 
-function isSameUserFilter({ session }: { session?: Session }) {
+function isSameUserFilter ({ session }: { session?: Session }) {
   // you need to have a session
   if (!session) return false
 

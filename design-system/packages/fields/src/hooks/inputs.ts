@@ -108,7 +108,7 @@ export type InputStylesProps = {
   tokens: InputTokens;
 }
 
-export function useInputStyles({ invalid, tokens }: InputStylesProps) {
+export function useInputStyles ({ invalid, tokens }: InputStylesProps) {
   const styles = {
     appearance: 'none',
     backgroundColor: invalid ? tokens.invalid.background : tokens.background,

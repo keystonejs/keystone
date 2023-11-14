@@ -31,7 +31,7 @@ type GradientProps = {
   look?: keyof typeof styleMap;
 } & HTMLAttributes<HTMLElement>
 
-export function Gradient({ look = 'grad1', as: Tag = 'span', ...props }: GradientProps) {
+export function Gradient ({ look = 'grad1', as: Tag = 'span', ...props }: GradientProps) {
   return (
     <Tag
       css={{

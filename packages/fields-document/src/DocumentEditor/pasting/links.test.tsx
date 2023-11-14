@@ -5,7 +5,7 @@ import { type Editor } from 'slate'
 import { makeEditor, jsx } from '../tests/utils'
 import { MyDataTransfer } from './data-transfer'
 
-function pasteText(editor: Editor, text: string) {
+function pasteText (editor: Editor, text: string) {
   const data = new MyDataTransfer()
   data.setData('text/plain', text)
   editor.insertData(data)

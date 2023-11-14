@@ -136,7 +136,7 @@ type Validation = {
   length: { min: number | null; max: number | null };
 }
 
-function validate(value: TextValue, validation: Validation, fieldLabel: string): string[] {
+function validate (value: TextValue, validation: Validation, fieldLabel: string): string[] {
   // if the value is the same as the initial for an update, we don't want to block saving
   // since we're not gonna send it anyway if it's the same
   // and going "fix this thing that is unrelated to the thing you're doing" is bad
@@ -184,7 +184,7 @@ type TextValue =
   | { kind: 'create'; inner: InnerTextValue }
   | { kind: 'update'; inner: InnerTextValue; initial: InnerTextValue }
 
-function deserializeTextValue(value: string | null): InnerTextValue {
+function deserializeTextValue (value: string | null): InnerTextValue {
   if (value === null) {
     return { kind: 'null', prev: '' }
   }
@@ -227,7 +227,7 @@ export const controller = (
     validation,
     validate: val => validate(val, validation, config.label).length === 0,
     filter: {
-      Filter(props) {
+      Filter (props) {
         return (
           <TextInput
             onChange={event => {
@@ -256,7 +256,7 @@ export const controller = (
           },
         }
       },
-      Label({ label, value }) {
+      Label ({ label, value }) {
         return `${label.toLowerCase()}: "${value}"`
       },
       types: {

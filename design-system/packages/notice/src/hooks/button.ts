@@ -22,7 +22,7 @@ type Weight = Omit<
   | 'transition'
 >
 
-export function useButtonTokens({
+export function useButtonTokens ({
   tone: toneKey,
   size: sizeKey,
   weight: weightKey,

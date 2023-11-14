@@ -9,7 +9,7 @@ const globby = require('globby')
 
 const chalk = require('chalk')
 
-async function writeIcons() {
+async function writeIcons () {
   let iconOutDir = path.join(__dirname, 'src', 'icons')
 
   await fs.ensureDir(iconOutDir)
@@ -62,7 +62,7 @@ async function writeIcons() {
   return names
 }
 
-async function writeIndex(icons) {
+async function writeIndex (icons) {
   const index =
     `export type { IconProps } from './Icon';\n\n` +
     icons.map(icon => `export { ${icon} } from './icons/${icon}';`).join('\n') +
@@ -75,14 +75,14 @@ async function writeIndex(icons) {
   console.info(chalk.green('✅ Index file written successfully'))
 }
 
-async function writePkg(pkgPath, content) {
+async function writePkg (pkgPath, content) {
   await fs.ensureFile(pkgPath)
   await fs.writeFile(pkgPath, JSON.stringify(content, null, 2) + '\n', {
     encoding: 'utf8',
   })
 }
 
-async function createEntrypointPkgJsons(icons) {
+async function createEntrypointPkgJsons (icons) {
   await Promise.all(
     icons.map(async icon => {
       const pkgPath = path.join(process.cwd(), 'icons', icon, 'package.json')
@@ -97,7 +97,7 @@ async function createEntrypointPkgJsons(icons) {
   console.info(chalk.green('✅ all package.json entrypoint files written successfully'))
 }
 
-async function clean() {
+async function clean () {
   let pathnames = await globby(['icons/*', 'src/icons/*'], {
     expandDirectories: false,
     onlyFiles: false,

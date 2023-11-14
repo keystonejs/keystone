@@ -16,7 +16,7 @@ const props: ComponentProps<typeof CheckMark>[] = [
   { isSelected: true },
 ]
 
-export default function OptionsPage() {
+export default function OptionsPage () {
   let [value, setValue] = useState<undefined | { label: string; value: string }>()
   return (
     <Page>

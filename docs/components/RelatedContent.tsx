@@ -5,7 +5,7 @@ import { type ReactNode } from 'react'
 
 import { useMediaQuery } from '../lib/media'
 
-export function RelatedContent({ children }: { children: ReactNode }) {
+export function RelatedContent ({ children }: { children: ReactNode }) {
   const mq = useMediaQuery()
 
   return (

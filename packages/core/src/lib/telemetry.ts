@@ -28,13 +28,13 @@ type TelemetryVersion1 =
       };
     }
 
-function log(message: unknown) {
+function log (message: unknown) {
   if (process.env.KEYSTONE_TELEMETRY_DEBUG === '1') {
     console.log(`${message}`)
   }
 }
 
-function getTelemetryConfig() {
+function getTelemetryConfig () {
   const userConfig = new Conf<Configuration>({
     projectName: 'keystonejs',
     projectSuffix: '',
@@ -79,7 +79,7 @@ function getTelemetryConfig() {
   }
 }
 
-function getDefaultedTelemetryConfig() {
+function getDefaultedTelemetryConfig () {
   const { telemetry, userConfig } = getTelemetryConfig()
 
   if (telemetry === undefined) {
@@ -100,7 +100,7 @@ function getDefaultedTelemetryConfig() {
 
 const todaysDate = new Date().toISOString().slice(0, 10)
 
-function collectFieldCount(lists: Record<string, InitialisedList>) {
+function collectFieldCount (lists: Record<string, InitialisedList>) {
   const fields: Project['fields'] = { unknown: 0 }
 
   for (const list of Object.values(lists)) {
@@ -121,7 +121,7 @@ function collectFieldCount(lists: Record<string, InitialisedList>) {
   return fields
 }
 
-function collectPackageVersions() {
+function collectPackageVersions () {
   const versions: Project['versions'] = {
     '@keystone-6/core': '0.0.0', // effectively unknown
   }
@@ -138,7 +138,7 @@ function collectPackageVersions() {
   return versions
 }
 
-function printAbout() {
+function printAbout () {
   console.log(
     `${chalk.yellow('Keystone collects anonymous data when you run')} ${chalk.green(
       '"keystone dev"'
@@ -150,7 +150,7 @@ function printAbout() {
   )
 }
 
-export function printTelemetryStatus() {
+export function printTelemetryStatus () {
   const { telemetry } = getTelemetryConfig()
 
   if (telemetry === undefined) {
@@ -187,7 +187,7 @@ export function printTelemetryStatus() {
   }
 }
 
-function inform() {
+function inform () {
   const { telemetry, userConfig } = getDefaultedTelemetryConfig()
 
   // no telemetry? somehow our earlier checks missed an opt out, do nothing
@@ -214,7 +214,7 @@ function inform() {
   userConfig.set('telemetry', telemetry)
 }
 
-async function sendEvent(eventType: 'project' | 'device', eventData: Project | Device) {
+async function sendEvent (eventType: 'project' | 'device', eventData: Project | Device) {
   const endpoint = process.env.KEYSTONE_TELEMETRY_ENDPOINT || defaultTelemetryEndpoint
   const url = `${endpoint}/v1/event/${eventType}`
 
@@ -229,7 +229,7 @@ async function sendEvent(eventType: 'project' | 'device', eventData: Project | D
   log(`sent ${eventType} report`)
 }
 
-async function sendProjectTelemetryEvent(
+async function sendProjectTelemetryEvent (
   cwd: string,
   lists: Record<string, InitialisedList>,
   dbProviderName: DatabaseProvider
@@ -259,7 +259,7 @@ async function sendProjectTelemetryEvent(
   userConfig.set('telemetry', telemetry)
 }
 
-async function sendDeviceTelemetryEvent() {
+async function sendDeviceTelemetryEvent () {
   const { telemetry, userConfig } = getDefaultedTelemetryConfig()
 
   // no telemetry? somehow our earlier checks missed an opt out, do nothing
@@ -282,7 +282,7 @@ async function sendDeviceTelemetryEvent() {
   userConfig.set('telemetry', telemetry)
 }
 
-export async function runTelemetry(
+export async function runTelemetry (
   cwd: string,
   lists: Record<string, InitialisedList>,
   dbProviderName: DatabaseProvider
@@ -311,7 +311,7 @@ export async function runTelemetry(
   }
 }
 
-export function enableTelemetry() {
+export function enableTelemetry () {
   const { telemetry, userConfig } = getTelemetryConfig()
   if (telemetry === false) {
     userConfig.delete('telemetry')
@@ -319,13 +319,13 @@ export function enableTelemetry() {
   printTelemetryStatus()
 }
 
-export function disableTelemetry() {
+export function disableTelemetry () {
   const { userConfig } = getTelemetryConfig()
   userConfig.set('telemetry', false)
   printTelemetryStatus()
 }
 
-export function resetTelemetry() {
+export function resetTelemetry () {
   const { userConfig } = getTelemetryConfig()
   userConfig.delete('telemetry')
   printTelemetryStatus()

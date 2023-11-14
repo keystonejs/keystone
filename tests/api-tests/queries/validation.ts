@@ -70,7 +70,7 @@ export const fieldLimit =
     }
     let curDef = newDef('doc', doc)
     visit(doc, {
-      enter(node) {
+      enter (node) {
         switch (node.kind) {
           case Kind.FRAGMENT_DEFINITION:
           case Kind.OPERATION_DEFINITION:
@@ -150,7 +150,7 @@ export const depthLimit =
     let curDef = newDef('doc', doc)
     let visitorDepth = 0
     visit(doc, {
-      enter(node) {
+      enter (node) {
         switch (node.kind) {
           case Kind.FRAGMENT_DEFINITION:
           case Kind.OPERATION_DEFINITION:
@@ -171,7 +171,7 @@ export const depthLimit =
             break
         }
       },
-      leave(node) {
+      leave (node) {
         if (node.kind === Kind.FIELD) {
           visitorDepth--
         }

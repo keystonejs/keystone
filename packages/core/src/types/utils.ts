@@ -8,7 +8,7 @@ export type JSONValue =
 
 export type MaybePromise<T> = T | Promise<T>
 
-export function getGqlNames({
+export function getGqlNames ({
   listKey,
   pluralGraphQLName,
 }: {

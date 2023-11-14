@@ -20,7 +20,7 @@ import { gql, useMutation } from '../../../../../admin-ui/apollo'
 import { GraphQLErrorNotice } from '../../../../../admin-ui/components'
 import { useFieldsObj } from './useItemState'
 
-export function InlineCreate({
+export function InlineCreate ({
   list,
   onCancel,
   onCreate,

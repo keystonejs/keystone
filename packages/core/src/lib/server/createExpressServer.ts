@@ -81,7 +81,7 @@ export const createExpressServer = async (
       expressServer.use(
         val.serverRoute.path,
         express.static(val.storagePath, {
-          setHeaders(res) {
+          setHeaders (res) {
             if (val.type === 'file') {
               res.setHeader('Content-Type', 'application/octet-stream')
             }

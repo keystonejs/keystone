@@ -7,13 +7,13 @@ import { DocumentRenderer, type DocumentRendererProps } from '@keystone-6/docume
 const renderers: DocumentRendererProps['renderers'] = {
   // Render heading blocks
   block: {
-    heading({ level, children, textAlign }) {
+    heading ({ level, children, textAlign }) {
       const Comp = `h${level}` as const
       return <Comp style={{ textAlign, textTransform: 'uppercase' }}>{children}</Comp>
     },
   },
 }
 
-export function DocumentRender({ document }: { document: any }) {
+export function DocumentRender ({ document }: { document: any }) {
   return <DocumentRenderer document={document} renderers={renderers} />
 }

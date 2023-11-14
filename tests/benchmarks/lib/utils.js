@@ -26,16 +26,16 @@ const range = N =>
 const populate = (N, f) => range(N).map(i => f(i))
 
 class FixtureGroup {
-  constructor(runner) {
+  constructor (runner) {
     this.runner = runner
     this.fixtures = []
   }
 
-  add({ fn, skip = false, only = false }) {
+  add ({ fn, skip = false, only = false }) {
     this.fixtures.push({ fn, skip, only })
   }
 
-  async runFixtures() {
+  async runFixtures () {
     let fixturesToRun
     const onlys = this.fixtures.filter(fixture => fixture.only)
     if (onlys.length) {

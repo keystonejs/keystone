@@ -196,7 +196,7 @@ export const controller = (
     serialize: value => ({
       [config.path]: value,
     }),
-    validate(value) {
+    validate (value) {
       return value.every(node => validateNode(node))
     },
   }

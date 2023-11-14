@@ -13,7 +13,7 @@ type ItemsState =
 
 type Items = Record<string, DataGetter<{ id: string; [key: string]: any }>>
 
-export function useItemState({
+export function useItemState ({
   selectedFields,
   localList,
   id,
@@ -135,7 +135,7 @@ export function useItemState({
   }
 }
 
-export function useFieldsObj(list: ListMeta, fields: readonly string[] | undefined) {
+export function useFieldsObj (list: ListMeta, fields: readonly string[] | undefined) {
   return useMemo(() => {
     const editFields: Record<string, FieldMeta> = {}
     fields?.forEach(fieldPath => {

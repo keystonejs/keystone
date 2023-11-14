@@ -2,7 +2,7 @@ import { getContext } from '@keystone-6/core/context'
 import config from './keystone'
 import * as PrismaModule from '.myprisma/client'
 
-async function main() {
+async function main () {
   const context = getContext(config, PrismaModule)
 
   console.log('seeding data')

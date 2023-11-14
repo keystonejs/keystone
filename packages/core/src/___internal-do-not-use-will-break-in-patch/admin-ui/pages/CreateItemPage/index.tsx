@@ -13,7 +13,7 @@ import { type ListMeta } from '../../../../types'
 import { useCreateItem } from '../../../../admin-ui/utils/useCreateItem'
 import { BaseToolbar, ColumnLayout, ItemPageHeader } from '../ItemPage/common'
 
-function CreatePageForm(props: { list: ListMeta }) {
+function CreatePageForm (props: { list: ListMeta }) {
   const createItem = useCreateItem(props.list)
   const router = useRouter()
   return (
@@ -50,7 +50,7 @@ type CreateItemPageProps = { listKey: string }
 export const getCreateItemPage = (props: CreateItemPageProps) => () =>
   <CreateItemPage {...props} />
 
-function CreateItemPage(props: CreateItemPageProps) {
+function CreateItemPage (props: CreateItemPageProps) {
   const list = useList(props.listKey)
   const { createViewFieldModes } = useKeystone()
 

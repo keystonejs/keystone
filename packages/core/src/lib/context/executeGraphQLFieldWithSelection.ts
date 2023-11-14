@@ -14,7 +14,7 @@ import {
 import { type KeystoneContext } from '../../types'
 import { getVariablesForGraphQLField } from './executeGraphQLFieldToRootVal'
 
-function getRootTypeName(type: GraphQLOutputType): string {
+function getRootTypeName (type: GraphQLOutputType): string {
   if (type instanceof GraphQLNonNull) {
     return getRootTypeName(type.ofType)
   }
@@ -24,7 +24,7 @@ function getRootTypeName(type: GraphQLOutputType): string {
   return type.name
 }
 
-export function executeGraphQLFieldWithSelection(
+export function executeGraphQLFieldWithSelection (
   schema: GraphQLSchema,
   operation: 'query' | 'mutation',
   fieldName: string

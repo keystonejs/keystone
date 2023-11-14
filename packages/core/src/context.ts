@@ -2,7 +2,7 @@ import type { BaseKeystoneTypeInfo, KeystoneConfig, KeystoneContext } from './ty
 import { initConfig } from './lib/config'
 import { createSystem } from './lib/createSystem'
 
-export function getContext<TypeInfo extends BaseKeystoneTypeInfo>(
+export function getContext<TypeInfo extends BaseKeystoneTypeInfo> (
   config: KeystoneConfig<TypeInfo>,
   PrismaModule: unknown
 ): KeystoneContext<TypeInfo> {

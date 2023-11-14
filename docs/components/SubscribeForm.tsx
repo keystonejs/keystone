@@ -21,7 +21,7 @@ type SubscriptFormProps = {
   stacked?: boolean;
 } & HTMLAttributes<HTMLFormElement>
 
-export function SubscribeForm({ autoFocus, stacked, children, ...props }: SubscriptFormProps) {
+export function SubscribeForm ({ autoFocus, stacked, children, ...props }: SubscriptFormProps) {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)

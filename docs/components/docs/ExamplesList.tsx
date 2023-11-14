@@ -6,7 +6,7 @@ import { Well } from '../primitives/Well'
 import { useMediaQuery } from '../../lib/media'
 import { InlineCode } from '../../components/primitives/Code'
 
-export function Examples() {
+export function Examples () {
   const mq = useMediaQuery()
   return (
     <div

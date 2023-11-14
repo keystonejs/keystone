@@ -20,7 +20,7 @@ type Post = {
   };
 }
 
-export default function BlogPage({ post, error }: { post: Post | undefined; error?: Error }) {
+export default function BlogPage ({ post, error }: { post: Post | undefined; error?: Error }) {
   if (error) {
     return (
       <Fragment>
@@ -59,7 +59,7 @@ export default function BlogPage({ post, error }: { post: Post | undefined; erro
   )
 }
 
-export async function getStaticPaths(): Promise<GetStaticPathsResult> {
+export async function getStaticPaths (): Promise<GetStaticPathsResult> {
   try {
     const data = await fetchGraphQL(gql`
       query posts {
@@ -86,7 +86,7 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   }
 }
 
-export async function getStaticProps({ params = {} }: GetStaticPropsContext) {
+export async function getStaticProps ({ params = {} }: GetStaticPropsContext) {
   const slug = params.slug
   try {
     const data = await fetchGraphQL(

@@ -11,7 +11,7 @@ import { Fields } from '../utils/Fields'
 import { useCreateItem } from '../utils/useCreateItem'
 import { GraphQLErrorNotice } from './GraphQLErrorNotice'
 
-export function CreateItemDrawer({
+export function CreateItemDrawer ({
   listKey,
   onClose,
   onCreate,

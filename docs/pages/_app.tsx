@@ -10,7 +10,7 @@ import { Theme } from '../components/Theme'
 import { NavContextProvider } from '../components/docs/Navigation'
 import { SkipLinks } from '../components/SkipLinks'
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App ({ Component, pageProps }: AppProps) {
   return (
     <CacheProvider value={cache}>
       <Global

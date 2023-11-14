@@ -42,7 +42,7 @@ jest.mock(
 
 let mockTelemetryConfig: any = undefined
 jest.mock('conf', () => {
-  return function Conf() {
+  return function Conf () {
     return {
       get: () => mockTelemetryConfig,
       set: (_name: string, newState: any) => {
@@ -126,7 +126,7 @@ describe('Telemetry tests', () => {
     },
   }
 
-  function expectDidSend(lastSentDate: string | null) {
+  function expectDidSend (lastSentDate: string | null) {
     expect(mockFetch).toHaveBeenCalledWith(`https://telemetry.keystonejs.com/v1/event/project`, {
       method: 'POST',
       headers: {

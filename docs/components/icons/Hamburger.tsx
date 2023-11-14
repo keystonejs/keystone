@@ -4,7 +4,7 @@ import { jsx } from '@emotion/react'
 
 import { Gradients, type IconProps } from './util'
 
-export function Hamburger({ grad, ...props }: IconProps) {
+export function Hamburger ({ grad, ...props }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

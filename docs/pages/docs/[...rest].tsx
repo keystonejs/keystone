@@ -13,7 +13,7 @@ import { extractHeadings, Markdoc } from '../../components/Markdoc'
 import { DocsPage } from '../../components/Page'
 import { Heading } from '../../components/docs/Heading'
 
-export default function DocPage(props: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function DocPage (props: InferGetStaticPropsType<typeof getStaticProps>) {
   const router = useRouter()
   const headings = [
     { id: 'title', depth: 1, label: props.title },
@@ -36,7 +36,7 @@ export default function DocPage(props: InferGetStaticPropsType<typeof getStaticP
   )
 }
 
-export async function getStaticPaths(): Promise<GetStaticPathsResult> {
+export async function getStaticPaths (): Promise<GetStaticPathsResult> {
   const files = await globby('**/*.md', {
     cwd: path.join(process.cwd(), 'pages/docs'),
   })
@@ -46,7 +46,7 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   }
 }
 
-export async function getStaticProps(
+export async function getStaticProps (
   args: GetStaticPropsContext<{ rest: string[] }>
 ): Promise<GetStaticPropsResult<DocsContent>> {
   return { props: await readDocsContent(`pages/docs/${args.params!.rest.join('/')}.md`) }

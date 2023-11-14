@@ -11,7 +11,7 @@ export type DeserializedValue = Record<
   | { kind: 'value'; value: any }
 >
 
-export function deserializeValue(
+export function deserializeValue (
   fields: Record<string, FieldMeta>,
   itemGetter: DataGetter<ItemData>
 ) {
@@ -38,7 +38,7 @@ export function deserializeValue(
   return value
 }
 
-export function serializeValueToObjByFieldKey(
+export function serializeValueToObjByFieldKey (
   fields: Record<string, FieldMeta>,
   value: DeserializedValue
 ) {

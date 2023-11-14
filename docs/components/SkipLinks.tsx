@@ -5,7 +5,7 @@ import { type AnchorHTMLAttributes, Fragment, useCallback } from 'react'
 
 import { useMediaQuery } from '../lib/media'
 
-function SkipLink(props: AnchorHTMLAttributes<HTMLAnchorElement>) {
+function SkipLink (props: AnchorHTMLAttributes<HTMLAnchorElement>) {
   return (
     <a
       css={{
@@ -28,7 +28,7 @@ function SkipLink(props: AnchorHTMLAttributes<HTMLAnchorElement>) {
   )
 }
 
-export function SkipLinks() {
+export function SkipLinks () {
   const mq = useMediaQuery()
 
   const skip = useCallback(

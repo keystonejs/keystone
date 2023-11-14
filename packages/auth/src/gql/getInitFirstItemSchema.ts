@@ -4,7 +4,7 @@ import { assertInputObjectType, GraphQLInputObjectType, type GraphQLSchema } fro
 
 import type { AuthGqlNames, InitFirstItemConfig } from '../types'
 
-export function getInitFirstItemSchema({
+export function getInitFirstItemSchema ({
   listKey,
   fields,
   itemData,
@@ -42,7 +42,7 @@ export function getInitFirstItemSchema({
       [gqlNames.createInitialItem]: graphql.field({
         type: graphql.nonNull(ItemAuthenticationWithPasswordSuccess),
         args: { data: graphql.arg({ type: graphql.nonNull(initialCreateInput) }) },
-        async resolve(rootVal, { data }, context) {
+        async resolve (rootVal, { data }, context) {
           if (!context.sessionStrategy) {
             throw new Error('No session implementation available on context')
           }

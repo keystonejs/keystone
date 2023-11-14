@@ -122,7 +122,7 @@ export const document =
         input: {
           create: {
             arg: graphql.arg({ type: graphql.JSON }),
-            resolve(val) {
+            resolve (val) {
               if (val === undefined) {
                 val = [{ type: 'paragraph', children: [{ text: '' }] }]
               }
@@ -143,7 +143,7 @@ export const document =
                   }),
                 },
                 type: graphql.nonNull(graphql.JSON),
-                resolve({ document }, { hydrateRelationships }, context) {
+                resolve ({ document }, { hydrateRelationships }, context) {
                   return hydrateRelationships
                     ? addRelationshipData(document as any, context, relationships, componentBlocks)
                     : (document as any)
@@ -151,7 +151,7 @@ export const document =
               }),
             },
           }),
-          resolve({ value }) {
+          resolve ({ value }) {
             if (value === null) {
               return null
             }
@@ -159,7 +159,7 @@ export const document =
           },
         }),
         views: '@keystone-6/fields-document/views',
-        getAdminMeta(): Parameters<typeof import('./views').controller>[0]['fieldMeta'] {
+        getAdminMeta (): Parameters<typeof import('./views').controller>[0]['fieldMeta'] {
           return {
             relationships,
             documentFeatures,
@@ -179,7 +179,7 @@ export const document =
     )
   }
 
-function normaliseRelationships(
+function normaliseRelationships (
   configRelationships: DocumentFieldConfig<BaseListTypeInfo>['relationships'],
   meta: FieldData
 ) {
@@ -198,7 +198,7 @@ function normaliseRelationships(
   return relationships
 }
 
-function normaliseDocumentFeatures(
+function normaliseDocumentFeatures (
   config: Pick<
     DocumentFieldConfig<BaseListTypeInfo>,
     'formatting' | 'dividers' | 'layouts' | 'links'

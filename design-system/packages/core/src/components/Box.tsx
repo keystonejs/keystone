@@ -170,14 +170,14 @@ export const useBoxStyles = ({
 // Utils
 // ------------------------------
 
-function useColors({ background, foreground }: ColorProps, { palette }: Theme) {
+function useColors ({ background, foreground }: ColorProps, { palette }: Theme) {
   return {
     backgroundColor: background && mapResponsiveProp(background, palette),
     color: foreground && mapResponsiveProp(foreground, palette),
   }
 }
 
-function useRadii(
+function useRadii (
   { rounding, roundingTop, roundingRight, roundingBottom, roundingLeft }: RadiiProps,
   { radii }: Theme
 ) {
@@ -196,7 +196,7 @@ function useRadii(
   }
 }
 
-function usePadding(
+function usePadding (
   {
     padding,
     paddingTop,
@@ -221,7 +221,7 @@ function usePadding(
   }
 }
 
-function useMargin(
+function useMargin (
   { margin, marginTop, marginRight, marginBottom, marginLeft, marginY, marginX }: MarginProps,
   { spacing }: Theme
 ) {

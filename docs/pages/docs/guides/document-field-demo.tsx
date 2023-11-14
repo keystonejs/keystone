@@ -9,7 +9,7 @@ import { Well } from '../../../components/primitives/Well'
 import { RelatedContent } from '../../../components/RelatedContent'
 import { InlineCode } from '../../../components/primitives/Code'
 
-export default function DocumentFieldDemo() {
+export default function DocumentFieldDemo () {
   const title = 'Document Fields Demo'
   return (
     <DocsPage

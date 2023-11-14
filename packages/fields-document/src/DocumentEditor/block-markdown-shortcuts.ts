@@ -5,7 +5,7 @@ import { insertDivider } from './divider'
 import { type DocumentFeaturesForNormalization } from './document-features-normalization'
 import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state'
 
-export function withBlockMarkdownShortcuts(
+export function withBlockMarkdownShortcuts (
   documentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>,
   editor: Editor

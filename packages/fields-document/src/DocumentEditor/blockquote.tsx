@@ -27,7 +27,7 @@ export const insertBlockquote = (editor: Editor) => {
   }
 }
 
-function getDirectBlockquoteParentFromSelection(editor: Editor) {
+function getDirectBlockquoteParentFromSelection (editor: Editor) {
   if (!editor.selection) return { isInside: false } as const
   const [, parentPath] = Editor.parent(editor, editor.selection)
   if (!parentPath.length) {
@@ -40,7 +40,7 @@ function getDirectBlockquoteParentFromSelection(editor: Editor) {
     : ({ isInside: false } as const)
 }
 
-export function withBlockquote(editor: Editor): Editor {
+export function withBlockquote (editor: Editor): Editor {
   const { insertBreak, deleteBackward } = editor
   editor.deleteBackward = unit => {
     if (editor.selection) {

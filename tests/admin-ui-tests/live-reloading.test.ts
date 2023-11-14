@@ -9,7 +9,7 @@ import { generalStartKeystone, waitForIO, loadIndex, makeGqlRequest } from './ut
 const gql = ([content]: TemplateStringsArray) => content
 const testProjectPath = path.join(__dirname, '..', 'test-projects', 'live-reloading')
 
-async function replaceSchema(schema: string) {
+async function replaceSchema (schema: string) {
   await fs.writeFile(
     path.join(testProjectPath, 'schema.ts'),
     await fs.readFile(path.join(testProjectPath, `schemas/${schema}`))

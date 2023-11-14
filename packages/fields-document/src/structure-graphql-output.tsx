@@ -3,7 +3,7 @@ import { type FieldData } from '@keystone-6/core/types'
 import { type ComponentSchemaForGraphQL } from './DocumentEditor/component-blocks/api'
 import { assertNever } from './DocumentEditor/component-blocks/utils'
 
-function wrapGraphQLFieldInResolver<InputSource, OutputSource>(
+function wrapGraphQLFieldInResolver<InputSource, OutputSource> (
   inputField: graphql.Field<
     { value: InputSource },
     Record<string, graphql.Arg<graphql.InputType, boolean>>,
@@ -23,7 +23,7 @@ function wrapGraphQLFieldInResolver<InputSource, OutputSource>(
     deprecationReason: inputField.deprecationReason,
     description: inputField.description,
     extensions: inputField.extensions as any,
-    resolve(value, args, context, info) {
+    resolve (value, args, context, info) {
       const val = getVal(value)
       if (!inputField.resolve) {
         return val
@@ -40,7 +40,7 @@ type OutputField = graphql.Field<
   string
 >
 
-export function getOutputGraphQLField(
+export function getOutputGraphQLField (
   name: string,
   schema: ComponentSchemaForGraphQL,
   interfaceImplementations: graphql.ObjectType<unknown>[],
@@ -54,7 +54,7 @@ export function getOutputGraphQLField(
   return cache.get(schema)!
 }
 
-function getOutputGraphQLFieldInner(
+function getOutputGraphQLFieldInner (
   name: string,
   schema: ComponentSchemaForGraphQL,
   interfaceImplementations: graphql.ObjectType<unknown>[],
@@ -84,7 +84,7 @@ function getOutputGraphQLFieldInner(
             )
           ),
       }),
-      resolve({ value }) {
+      resolve ({ value }) {
         return value
       },
     })
@@ -105,7 +105,7 @@ function getOutputGraphQLFieldInner(
       deprecationReason: innerField.deprecationReason,
       description: innerField.description,
       extensions: innerField.extensions,
-      resolve({ value }, args, context, info) {
+      resolve ({ value }, args, context, info) {
         if (!resolve) {
           return value as unknown[]
         }
@@ -163,7 +163,7 @@ function getOutputGraphQLFieldInner(
 
     return graphql.field({
       type: interfaceType,
-      resolve({ value }) {
+      resolve ({ value }) {
         return value as SourceType
       },
     })
@@ -173,7 +173,7 @@ function getOutputGraphQLFieldInner(
     const listOutputType = meta.lists[schema.listKey].types.output
     return graphql.field({
       type: schema.many ? graphql.list(listOutputType) : listOutputType,
-      resolve({ value }, args, context) {
+      resolve ({ value }, args, context) {
         if (Array.isArray(value)) {
           return context.db[schema.listKey].findMany({
             where: {

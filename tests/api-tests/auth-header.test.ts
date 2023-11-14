@@ -18,7 +18,7 @@ const initialData = {
 const COOKIE_SECRET = 'qwertyuiopasdfghjlkzxcvbmnm1234567890'
 const defaultAccess = ({ context }: { context: KeystoneContext }) => !!context.session
 
-function setup(options?: any) {
+function setup (options?: any) {
   const auth = createAuth({
     listKey: 'User',
     identityField: 'email',
@@ -55,7 +55,7 @@ function setup(options?: any) {
   )
 }
 
-async function login(
+async function login (
   graphQLRequest: GraphQLRequest,
   email: string,
   password: string

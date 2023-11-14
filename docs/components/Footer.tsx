@@ -13,7 +13,7 @@ import { Emoji } from './primitives/Emoji'
 import { Type } from './primitives/Type'
 import { Socials } from './Socials'
 
-function List(props: HTMLAttributes<HTMLElement>) {
+function List (props: HTMLAttributes<HTMLElement>) {
   return (
     <ul
       css={{
@@ -33,7 +33,7 @@ function List(props: HTMLAttributes<HTMLElement>) {
   )
 }
 
-export function Footer() {
+export function Footer () {
   const mq = useMediaQuery()
 
   return (
@@ -240,7 +240,7 @@ export function Footer() {
   )
 }
 
-export function DocsFooter() {
+export function DocsFooter () {
   const mq = useMediaQuery()
 
   return (

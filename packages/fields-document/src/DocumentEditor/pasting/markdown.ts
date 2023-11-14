@@ -19,7 +19,7 @@ const markdownConfig = {
   extensions: [autoLinkLiteralMarkdownSyntax, gfmStrikethroughMarkdownSyntax()],
 }
 
-export function deserializeMarkdown(markdown: string) {
+export function deserializeMarkdown (markdown: string) {
   const root = mdASTUtilFromMarkdown(markdown, markdownConfig)
   let nodes = root.children
   if (nodes.length === 1 && nodes[0].type === 'paragraph') {
@@ -30,7 +30,7 @@ export function deserializeMarkdown(markdown: string) {
 
 type MDNode = ReturnType<typeof mdASTUtilFromMarkdown>['children'][number]
 
-function deserializeChildren(nodes: MDNode[], input: string) {
+function deserializeChildren (nodes: MDNode[], input: string) {
   const outputNodes: (InlineFromExternalPaste | Block)[] = []
   for (const node of nodes) {
     const result = deserializeMarkdownNode(node, input)
@@ -44,7 +44,7 @@ function deserializeChildren(nodes: MDNode[], input: string) {
   return outputNodes
 }
 
-function deserializeMarkdownNode(node: MDNode, input: string): (InlineFromExternalPaste | Block)[] {
+function deserializeMarkdownNode (node: MDNode, input: string): (InlineFromExternalPaste | Block)[] {
   switch (node.type) {
     case 'blockquote': {
       return [{ type: 'blockquote', children: deserializeChildren(node.children, input) }]

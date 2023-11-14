@@ -13,11 +13,11 @@ import type { InitialisedList } from './core/initialise-lists'
 
 const introspectionTypesSet = new Set(introspectionTypes)
 
-function stringify(x: string) {
+function stringify (x: string) {
   return JSON.stringify(x).slice(1, -1)
 }
 
-function printEnumTypeDefinition(type: GraphQLEnumType) {
+function printEnumTypeDefinition (type: GraphQLEnumType) {
   return [
     `export type ${type.name} =`,
     type
@@ -27,14 +27,14 @@ function printEnumTypeDefinition(type: GraphQLEnumType) {
   ].join('\n')
 }
 
-function printTypeReference(type: GraphQLType, scalars: Record<string, string>): string {
+function printTypeReference (type: GraphQLType, scalars: Record<string, string>): string {
   if (type instanceof GraphQLNonNull) {
     return printTypeReferenceWithoutNullable(type.ofType, scalars)
   }
   return `${printTypeReferenceWithoutNullable(type, scalars)} | null`
 }
 
-function printTypeReferenceWithoutNullable(
+function printTypeReferenceWithoutNullable (
   type: GraphQLNamedType | GraphQLList<GraphQLType>,
   scalars: Record<string, string>
 ): string {
@@ -54,7 +54,7 @@ function printTypeReferenceWithoutNullable(
   return name
 }
 
-function printInputObjectTypeDefinition(
+function printInputObjectTypeDefinition (
   type: GraphQLInputObjectType,
   scalars: Record<string, string>
 ) {
@@ -68,7 +68,7 @@ function printInputObjectTypeDefinition(
   ].join('\n')
 }
 
-function printInputTypesFromSchema(schema: GraphQLSchema, scalars: Record<string, string>) {
+function printInputTypesFromSchema (schema: GraphQLSchema, scalars: Record<string, string>) {
   const output = [
     'type Scalars = {',
     ...Object.keys(scalars).map(scalar => `  readonly ${scalar}: ${scalars[scalar]};`),
@@ -90,7 +90,7 @@ function printInputTypesFromSchema(schema: GraphQLSchema, scalars: Record<string
   return output.join('\n')
 }
 
-function printInterimType<L extends InitialisedList>(
+function printInterimType<L extends InitialisedList> (
   prismaClientPath: string,
   list: L,
   listKey: string,
@@ -139,7 +139,7 @@ function printInterimType<L extends InitialisedList>(
   ].join('\n')
 }
 
-function printListTypeInfo<L extends InitialisedList>(
+function printListTypeInfo<L extends InitialisedList> (
   prismaClientPath: string,
   listKey: string,
   list: L
@@ -181,7 +181,7 @@ function printListTypeInfo<L extends InitialisedList>(
     .join('\n')
 }
 
-export function printGeneratedTypes(
+export function printGeneratedTypes (
   prismaClientPath: string,
   graphQLSchema: GraphQLSchema,
   lists: Record<string, InitialisedList>

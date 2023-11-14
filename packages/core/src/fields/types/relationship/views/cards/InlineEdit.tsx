@@ -19,7 +19,7 @@ import { gql, useMutation } from '../../../../../admin-ui/apollo'
 import { GraphQLErrorNotice } from '../../../../../admin-ui/components'
 import { useFieldsObj } from './useItemState'
 
-export function InlineEdit({
+export function InlineEdit ({
   fields,
   list,
   selectedFields,

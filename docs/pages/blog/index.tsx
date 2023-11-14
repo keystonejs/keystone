@@ -18,7 +18,7 @@ import { type BlogFrontmatter, extractBlogFrontmatter } from '../../markdoc'
 import { siteBaseUrl } from '../../lib/og-util'
 
 const today = new Date()
-export default function Docs(props: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function Docs (props: InferGetStaticPropsType<typeof getStaticProps>) {
   const mq = useMediaQuery()
 
   // reverse chronologically sorted
@@ -160,7 +160,7 @@ export default function Docs(props: InferGetStaticPropsType<typeof getStaticProp
   )
 }
 
-export async function getStaticProps(): Promise<
+export async function getStaticProps (): Promise<
   GetStaticPropsResult<{
     posts: {
       slug: string;

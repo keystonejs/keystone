@@ -7,7 +7,7 @@ type Config<ParsedValue extends ParsedValueBase> = {
   format: (value: ParsedValue) => string;
 }
 
-export function useFormattedInput<ParsedValue extends ParsedValueBase>(
+export function useFormattedInput<ParsedValue extends ParsedValueBase> (
   config: Config<ParsedValue>,
   {
     value,
@@ -54,17 +54,17 @@ export function useFormattedInput<ParsedValue extends ParsedValueBase>(
 
   return {
     value: internalValueState,
-    onChange(event: ChangeEvent<HTMLInputElement>) {
+    onChange (event: ChangeEvent<HTMLInputElement>) {
       const value = event.target.value
       const parsed = config.parse(value)
       onChange(parsed)
       setInternalValueState(value)
     },
-    onFocus(event: FocusEvent<HTMLInputElement>) {
+    onFocus (event: FocusEvent<HTMLInputElement>) {
       onFocus?.(event)
       setIsFocused(true)
     },
-    onBlur(event: FocusEvent<HTMLInputElement>) {
+    onBlur (event: FocusEvent<HTMLInputElement>) {
       onBlur?.(event)
       setIsFocused(false)
       // this isn't strictly necessary since we already do this in render

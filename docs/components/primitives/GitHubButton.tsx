@@ -10,7 +10,7 @@ type GitHubButtonProps = {
   repo: string;
 } & HTMLAttributes<HTMLElement>
 
-export function GitHubButton({ repo, ...props }: GitHubButtonProps) {
+export function GitHubButton ({ repo, ...props }: GitHubButtonProps) {
   const [count, setCount] = useState(0)
   repo = repo.replace('https://github.com/', '')
 

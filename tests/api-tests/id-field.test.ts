@@ -6,7 +6,7 @@ import { setupTestRunner } from '@keystone-6/api-tests/test-runner'
 import { validate as isUuid } from 'uuid'
 import { testConfig, dbProvider, expectBadUserInput } from './utils'
 
-export function assertNever(arg: never) {
+export function assertNever (arg: never) {
   throw new Error('expected to never be called but received: ' + JSON.stringify(arg))
 }
 

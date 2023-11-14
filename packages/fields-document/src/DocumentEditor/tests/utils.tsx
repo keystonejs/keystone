@@ -49,7 +49,7 @@ console.error = (...stuff: any[]) => {
   process.exit(1)
 }
 
-function formatEditor(editor: Node) {
+function formatEditor (editor: Node) {
   return prettyFormat(editor, {
     plugins: [plugins.ReactElement, editorSerializer as Plugin],
   })
@@ -67,7 +67,7 @@ declare global {
 }
 
 expect.extend({
-  toEqualEditor(received: Editor, expected: Editor) {
+  toEqualEditor (received: Editor, expected: Editor) {
     const options = {
       comment: 'Slate Editor equality',
       isNot: this.isNot,
@@ -149,7 +149,7 @@ export const defaultDocumentFeatures: DocumentFeatures = {
   layouts: [[1], [1, 1], [1, 1, 1], [1, 2, 1]],
 }
 
-function EditorComp({
+function EditorComp ({
   editor,
   componentBlocks,
   documentFeatures,
@@ -271,7 +271,7 @@ export const makeEditor = (
 
 // we're converting the slate tree to react elements because Jest
 // knows how to pretty-print react elements in snapshots
-function nodeToReactElement(
+function nodeToReactElement (
   editor: Editor,
   node: Node,
   selection: Range | null,
@@ -359,10 +359,10 @@ function nodeToReactElement(
 }
 
 const editorSerializer: Parameters<typeof expect.addSnapshotSerializer>[0] = {
-  test(val) {
+  test (val) {
     return Editor.isEditor(val)
   },
-  serialize(val, config, indentation, depth, refs, printer) {
+  serialize (val, config, indentation, depth, refs, printer) {
     return printer(
       nodeToReactElement(val, val, val.selection, []),
       config,

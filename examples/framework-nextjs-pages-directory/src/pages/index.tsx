@@ -76,7 +76,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   }
 }
 
-function ServerRenderedContent({
+function ServerRenderedContent ({
   users,
 }: {
   users: { id: string; name: string; about: string | null }[];
@@ -105,7 +105,7 @@ function ServerRenderedContent({
   )
 }
 
-function ClientRenderedContent() {
+function ClientRenderedContent () {
   const [users, setUsers] = useState<Array<{ id: string; name: string; about: string | null }>>([])
 
   // Fetch users from REST api route

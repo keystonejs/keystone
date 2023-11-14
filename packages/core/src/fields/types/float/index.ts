@@ -92,7 +92,7 @@ export const float =
       ...config,
       hooks: {
         ...config.hooks,
-        async validateInput(args) {
+        async validateInput (args) {
           const value = args.resolvedData[meta.fieldKey]
 
           if ((validation?.isRequired || isNullable === false) && value === null) {
@@ -128,7 +128,7 @@ export const float =
             type: graphql.Float,
             defaultValue: typeof defaultValue === 'number' ? defaultValue : undefined,
           }),
-          resolve(value) {
+          resolve (value) {
             if (value === undefined) {
               return defaultValue ?? null
             }
@@ -143,7 +143,7 @@ export const float =
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/float',
       views: '@keystone-6/core/fields/types/float/views',
-      getAdminMeta() {
+      getAdminMeta () {
         return {
           validation: {
             min: validation?.min || null,

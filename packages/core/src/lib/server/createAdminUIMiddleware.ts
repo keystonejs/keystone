@@ -7,12 +7,12 @@ import { pkgDir } from '../../pkg-dir'
 
 const adminErrorHTMLFilepath = path.join(pkgDir, 'static', 'admin-error.html')
 
-function defaultIsAccessAllowed({ session, sessionStrategy }: KeystoneContext) {
+function defaultIsAccessAllowed ({ session, sessionStrategy }: KeystoneContext) {
   if (!sessionStrategy) return true
   return session !== undefined
 }
 
-export function createAdminUIMiddlewareWithNextApp(
+export function createAdminUIMiddlewareWithNextApp (
   config: KeystoneConfig,
   commonContext: KeystoneContext,
   nextApp: ReturnType<typeof next>

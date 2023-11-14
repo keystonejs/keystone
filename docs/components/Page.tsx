@@ -16,7 +16,7 @@ import { Header } from './Header'
 import { Footer, DocsFooter } from './Footer'
 import { type HeadingType } from './Markdoc'
 
-function OpenGraph({
+function OpenGraph ({
   title,
   description,
   ogImage,
@@ -47,7 +47,7 @@ function OpenGraph({
 }
 
 const pagesWithUpdatesSidebar = ['/updates']
-export function DocsPage({
+export function DocsPage ({
   children,
   headings = [],
   noProse,
@@ -144,7 +144,7 @@ export function DocsPage({
   )
 }
 
-export function BlogPage({
+export function BlogPage ({
   children,
   headings = [],
   noRightNav,
@@ -238,7 +238,7 @@ export function BlogPage({
   )
 }
 
-export function Page({
+export function Page ({
   children,
   title,
   description,

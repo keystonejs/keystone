@@ -9,7 +9,7 @@ import * as deletes from './delete'
 // That doesn't matter when they all resolve successfully because the order they resolve successfully in
 // doesn't affect anything, If some reject though, the order that they reject in will be the order in the errors array
 // and some of our tests rely on the order of the graphql errors array. They shouldn't, but they do.
-function promisesButSettledWhenAllSettledAndInOrder<T extends Promise<unknown>[]>(promises: T): T {
+function promisesButSettledWhenAllSettledAndInOrder<T extends Promise<unknown>[]> (promises: T): T {
   const resultsPromise = Promise.allSettled(promises)
   return promises.map(async (_, i) => {
     const result: PromiseSettledResult<Awaited<T>> = (await resultsPromise)[i] as any
@@ -19,7 +19,7 @@ function promisesButSettledWhenAllSettledAndInOrder<T extends Promise<unknown>[]
   }) as T
 }
 
-export function getMutationsForList(list: InitialisedList) {
+export function getMutationsForList (list: InitialisedList) {
   const defaultUniqueWhereInput = list.isSingleton ? { id: '1' } : undefined
 
   const createOne = graphql.field({
@@ -27,7 +27,7 @@ export function getMutationsForList(list: InitialisedList) {
     args: {
       data: graphql.arg({ type: graphql.nonNull(list.graphql.types.create) }),
     },
-    resolve(_rootVal, { data }, context) {
+    resolve (_rootVal, { data }, context) {
       return createAndUpdate.createOne({ data }, list, context)
     },
   })
@@ -39,7 +39,7 @@ export function getMutationsForList(list: InitialisedList) {
         type: graphql.nonNull(graphql.list(graphql.nonNull(list.graphql.types.create))),
       }),
     },
-    async resolve(_rootVal, args, context) {
+    async resolve (_rootVal, args, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
         await createAndUpdate.createMany(args, list, context)
       )
@@ -55,7 +55,7 @@ export function getMutationsForList(list: InitialisedList) {
       }),
       data: graphql.arg({ type: graphql.nonNull(list.graphql.types.update) }),
     },
-    resolve(_rootVal, args, context) {
+    resolve (_rootVal, args, context) {
       return createAndUpdate.updateOne(args, list, context)
     },
   })
@@ -75,7 +75,7 @@ export function getMutationsForList(list: InitialisedList) {
     args: {
       data: graphql.arg({ type: graphql.nonNull(graphql.list(graphql.nonNull(updateManyInput))) }),
     },
-    async resolve(_rootVal, args, context) {
+    async resolve (_rootVal, args, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
         await createAndUpdate.updateMany(args, list, context)
       )
@@ -90,7 +90,7 @@ export function getMutationsForList(list: InitialisedList) {
         defaultValue: defaultUniqueWhereInput,
       }),
     },
-    resolve(rootVal, { where }, context) {
+    resolve (rootVal, { where }, context) {
       return deletes.deleteOne(where, list, context)
     },
   })
@@ -102,7 +102,7 @@ export function getMutationsForList(list: InitialisedList) {
         type: graphql.nonNull(graphql.list(graphql.nonNull(list.graphql.types.uniqueWhere))),
       }),
     },
-    async resolve(rootVal, { where }, context) {
+    async resolve (rootVal, { where }, context) {
       return promisesButSettledWhenAllSettledAndInOrder(
         await deletes.deleteMany(where, list, context)
       )

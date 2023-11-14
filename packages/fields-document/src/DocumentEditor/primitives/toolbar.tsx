@@ -79,7 +79,7 @@ type ToolbarButtonProps = {
   isSelected?: boolean;
   variant?: 'default' | 'action' | 'destructive';
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'disabled'>
-export const ToolbarButton = forwardRefWithAs<'button', ToolbarButtonProps>(function ToolbarButton(
+export const ToolbarButton = forwardRefWithAs<'button', ToolbarButtonProps>(function ToolbarButton (
   { as: Tag = 'button', isDisabled, isPressed, isSelected, variant = 'default', ...props },
   ref
 ) {
@@ -159,7 +159,7 @@ export const ToolbarButton = forwardRefWithAs<'button', ToolbarButtonProps>(func
   )
 })
 
-export function KeyboardInTooltip({ children }: { children: ReactNode }) {
+export function KeyboardInTooltip ({ children }: { children: ReactNode }) {
   const theme = useTheme()
   return (
     <kbd

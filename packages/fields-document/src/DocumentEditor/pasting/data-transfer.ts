@@ -4,34 +4,34 @@ export class MyDataTransfer implements DataTransfer {
   #data = new Map<string, string>()
   dropEffect = 'none' as const
   effectAllowed = 'none' as const
-  setData(format: string, data: string) {
+  setData (format: string, data: string) {
     this.#data.set(getNormalizedFormat(format), data)
   }
-  clearData(format?: string) {
+  clearData (format?: string) {
     if (format === undefined) {
       this.#data.clear()
     } else {
       this.#data.delete(getNormalizedFormat(format))
     }
   }
-  getData(format: string) {
+  getData (format: string) {
     return this.#data.get(getNormalizedFormat(format)) || ''
   }
-  get types() {
+  get types () {
     return Object.freeze([...this.#data.keys()])
   }
-  setDragImage(): never {
+  setDragImage (): never {
     throw new Error('DataTransfer#setDragImage is currently unimplemented')
   }
-  get files(): never {
+  get files (): never {
     throw new Error('DataTransfer#files is currently unimplemented')
   }
-  get items(): never {
+  get items (): never {
     throw new Error('DataTransfer#items is currently unimplemented')
   }
 }
 
-function getNormalizedFormat(format: string) {
+function getNormalizedFormat (format: string) {
   const lowercased = format.toLowerCase()
   if (lowercased === 'text') {
     return 'text/plain'

@@ -29,7 +29,7 @@ const cves = [
   //    },
 ]
 
-function gitCommitsSince(tag) {
+function gitCommitsSince (tag) {
   const { stdout } = spawnSync('git', ['rev-list', `^${tag}`, 'HEAD'])
   return stdout
     .toString('utf-8')
@@ -37,7 +37,7 @@ function gitCommitsSince(tag) {
     .filter(x => x)
 }
 
-function gitCommitsFor(path) {
+function gitCommitsFor (path) {
   const { stdout } = spawnSync('git', [
     'log',
     '--pretty=format:%H',
@@ -52,12 +52,12 @@ function gitCommitsFor(path) {
     .map(x => x.replace(/[^A-Za-z0-9]/g, '').slice(0, 40))
 }
 
-function gitCommitDescription(commit) {
+function gitCommitDescription (commit) {
   const { stdout } = spawnSync('git', ['log', '--oneline', commit])
   return stdout.toString('utf-8').split('\n', 1).pop().slice(10)
 }
 
-async function fetchData(tag) {
+async function fetchData (tag) {
   const { changesets, releases } = await getReleasePlan('.')
 
   // find the commits since the tag
@@ -147,31 +147,31 @@ async function fetchData(tag) {
   return { packages, changes, contributors }
 }
 
-function formatPackagesChanged(packages) {
+function formatPackagesChanged (packages) {
   return `The following packages have been updated
 %%%
 ${packages.join('\n')}
 %%%`.replace(/%/g, '`')
 }
 
-function formatChange({ packages, summary, pull, user }) {
+function formatChange ({ packages, summary, pull, user }) {
   return `- \`[${packages.join(', ')}]\` ${summary} (#${pull}) @${user}`
 }
 
-function formatCVE({ id, href, upstream, description }) {
+function formatCVE ({ id, href, upstream, description }) {
   description = description.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim()
   return `- [\`${id}\`](${href}) - ${description}`
 }
 
-function formatLink(pull) {
+function formatLink (pull) {
   return `[#${pull}](https://github.com/keystonejs/keystone/pull/${pull})`
 }
 
-function sortByCommit(a, b) {
+function sortByCommit (a, b) {
   return a.commit.localeCompare(b.commit)
 }
 
-function groupPullsByUser(list) {
+function groupPullsByUser (list) {
   const result = {}
   for (const item of list) {
     if (!item.pull) continue
@@ -183,7 +183,7 @@ function groupPullsByUser(list) {
     .sort((a, b) => a.user.localeCompare(b.user))
 }
 
-async function generateGitHubReleaseText(previousTag) {
+async function generateGitHubReleaseText (previousTag) {
   if (!previousTag) throw new Error('Missing tag')
 
   const date = new Date().toISOString().slice(0, 10).replace(/\-/g, '_')

@@ -22,7 +22,7 @@ type ContactFormProps = {
   stacked?: boolean;
 } & HTMLAttributes<HTMLFormElement>
 
-export function ContactForm({ autoFocus, stacked, children, ...props }: ContactFormProps) {
+export function ContactForm ({ autoFocus, stacked, children, ...props }: ContactFormProps) {
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
   const [message, setMessage] = useState('')

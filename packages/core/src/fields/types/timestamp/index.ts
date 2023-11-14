@@ -79,7 +79,7 @@ export const timestamp =
       ...config,
       hooks: {
         ...config.hooks,
-        async validateInput(args) {
+        async validateInput (args) {
           const value = args.resolvedData[meta.fieldKey]
           if ((validation?.isRequired || resolvedIsNullable === false) && value === null) {
             args.addValidationError(`${fieldLabel} is required`)
@@ -101,7 +101,7 @@ export const timestamp =
             // TODO: add support for defaultValue of { kind: 'now' } in the GraphQL API
             defaultValue: parsedDefaultValue instanceof Date ? parsedDefaultValue : undefined,
           }),
-          resolve(val) {
+          resolve (val) {
             if (val === undefined) {
               if (parsedDefaultValue === undefined && config.db?.updatedAt) {
                 return undefined
@@ -123,7 +123,7 @@ export const timestamp =
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/timestamp',
       views: '@keystone-6/core/fields/types/timestamp/views',
-      getAdminMeta(): TimestampFieldMeta {
+      getAdminMeta (): TimestampFieldMeta {
         return {
           defaultValue: defaultValue ?? null,
           isRequired: validation?.isRequired ?? false,

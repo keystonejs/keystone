@@ -37,7 +37,7 @@ export const stars =
         ...config.hooks,
         // We use the `validateInput` hook to ensure that the user doesn't set an out of range value.
         // This hook is the key difference on the backend between the stars field type and the integer field type.
-        async validateInput(args) {
+        async validateInput (args) {
           const val = args.resolvedData[meta.fieldKey]
           if (!(val == null || (val >= 0 && val <= maxStars))) {
             args.addValidationError(`The value must be within the range of 0-${maxStars}`)
@@ -53,7 +53,7 @@ export const stars =
           // but field types can specify resolvers for inputs like they can for their output GraphQL field
           // this function can be omitted, it is here purely to show how you could change it
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          resolve(val, context) {
+          resolve (val, context) {
             // if it's null, then the value will be set to null in the database
             if (val === null) {
               return null
@@ -78,12 +78,12 @@ export const stars =
         // like the input resolvers, providing the resolver is unnecessary if you're just returning the value
         // it is shown here to show what you could do
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        resolve({ value, item }, args, context, info) {
+        resolve ({ value, item }, args, context, info) {
           return value
         },
       }),
       views: './2-stars-field/views',
-      getAdminMeta() {
+      getAdminMeta () {
         return { maxStars }
       },
     })

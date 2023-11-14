@@ -5,7 +5,7 @@ type EasilyCircularObject = ObjectField<{
   x: EasilyCircularObject;
 }>
 const easilyCircularObject: EasilyCircularObject = fields.object({
-  get x() {
+  get x () {
     return easilyCircularObject
   },
 })
@@ -64,7 +64,7 @@ test("does allow a circular conditional as long as it's not the default", () => 
     { true: Field; false: FormField<null, undefined> }
   >
   const conditional: Field = fields.conditional(discriminant, {
-    get true() {
+    get true () {
       return conditional
     },
     false: fields.empty(),
@@ -78,7 +78,7 @@ test("does not allow a circular conditional if it's the default", () => {
     { false: Field; true: FormField<null, undefined> }
   >
   const conditional: Field = fields.conditional(discriminant, {
-    get false() {
+    get false () {
       return conditional
     },
     true: fields.empty(),
@@ -98,7 +98,7 @@ test("allows circularity if it's stopped by an array field", () => {
   >
   const blah: Field = fields.array(
     fields.object({
-      get blah() {
+      get blah () {
         return blah
       },
     })
@@ -115,7 +115,7 @@ test('does not allow a field that returns a different field from a getter each t
   const blah: () => Field = () =>
     fields.array(
       fields.object({
-        get blah() {
+        get blah () {
           return blah()
         },
       })
@@ -139,7 +139,7 @@ test('exceeds the call stack size for an infinitely recursive field where all fi
     let a: Field
     return fields.array(
       fields.object({
-        get blah() {
+        get blah () {
           if (!a) {
             a = blah()
           }

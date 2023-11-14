@@ -3,7 +3,7 @@
 import { jsx } from '@emotion/react'
 import { type SVGAttributes } from 'react'
 
-export function FrontEndLogos(props: SVGAttributes<SVGElement>) {
+export function FrontEndLogos (props: SVGAttributes<SVGElement>) {
   return (
     <svg viewBox="0 0 576 41" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <g clipPath="url(#clip0)">

@@ -45,7 +45,7 @@ import { TextAlignMenu } from './alignment'
 import { dividerButton } from './divider'
 import { useToolbarState } from './toolbar-state'
 
-export function Toolbar({
+export function Toolbar ({
   documentFeatures,
   viewState,
 }: {
@@ -141,7 +141,7 @@ export function Toolbar({
 
 /* UI Components */
 
-const MarkButton = forwardRef<any, { children: ReactNode; type: Mark }>(function MarkButton(
+const MarkButton = forwardRef<any, { children: ReactNode; type: Mark }>(function MarkButton (
   props,
   ref
 ) {
@@ -206,7 +206,7 @@ const ToolbarContainer = ({ children }: { children: ReactNode }) => {
 
 const downIcon = <ChevronDownIcon size="small" />
 
-function HeadingButton({
+function HeadingButton ({
   trigger,
   onToggleShowMenu,
   showMenu,
@@ -293,7 +293,7 @@ const HeadingMenu = ({
   )
 }
 
-function HeadingDialog({
+function HeadingDialog ({
   headingLevels,
   onCloseMenu,
 }: {
@@ -333,7 +333,7 @@ function HeadingDialog({
   )
 }
 
-function InsertBlockMenu() {
+function InsertBlockMenu () {
   const [showMenu, setShowMenu] = useState(false)
   const { dialog, trigger } = useControlledPopover(
     {
@@ -396,7 +396,7 @@ function InsertBlockMenu() {
   )
 }
 
-function InlineMarks({ marks }: { marks: DocumentFeatures['formatting']['inlineMarks'] }) {
+function InlineMarks ({ marks }: { marks: DocumentFeatures['formatting']['inlineMarks'] }) {
   const [showMenu, setShowMenu] = useState(false)
   const { dialog, trigger } = useControlledPopover(
     {
@@ -477,7 +477,7 @@ function InlineMarks({ marks }: { marks: DocumentFeatures['formatting']['inlineM
   )
 }
 
-function MoreFormattingDialog({
+function MoreFormattingDialog ({
   dialog,
   marks,
   onCloseMenu,
@@ -530,7 +530,7 @@ function MoreFormattingDialog({
   )
 }
 
-function ContentInButtonWithShortcut({ content, shortcut }: { content: string; shortcut: string }) {
+function ContentInButtonWithShortcut ({ content, shortcut }: { content: string; shortcut: string }) {
   const theme = useTheme()
   return (
     <span
@@ -561,7 +561,7 @@ function ContentInButtonWithShortcut({ content, shortcut }: { content: string; s
   )
 }
 
-function MoreFormattingButton({
+function MoreFormattingButton ({
   onToggle,
   isOpen,
   trigger,

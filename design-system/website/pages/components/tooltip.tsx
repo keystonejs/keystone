@@ -6,7 +6,7 @@ import { Button } from '@keystone-ui/button'
 import { Tooltip } from '@keystone-ui/tooltip'
 import { Page } from '../../components/Page'
 
-export default function PopoverPage() {
+export default function PopoverPage () {
   return (
     <Page>
       <p>

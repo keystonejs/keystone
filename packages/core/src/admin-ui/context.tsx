@@ -38,7 +38,7 @@ type KeystoneProviderProps = {
   apiPath: string;
 }
 
-function InternalKeystoneProvider({
+function InternalKeystoneProvider ({
   adminConfig,
   fieldViews,
   adminMetaHash,

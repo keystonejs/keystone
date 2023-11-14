@@ -73,23 +73,23 @@ export const controller = (
     description: config.description,
     graphqlSelection: config.path,
     defaultValue: config.fieldMeta.defaultValue,
-    deserialize(item) {
+    deserialize (item) {
       const value = item[config.path]
       return typeof value === 'boolean' ? value : false
     },
-    serialize(value) {
+    serialize (value) {
       return {
         [config.path]: value,
       }
     },
     filter: {
-      Filter() {
+      Filter () {
         return null
       },
-      graphql({ type }) {
+      graphql ({ type }) {
         return { [config.path]: { equals: type === 'is' } }
       },
-      Label({ label }) {
+      Label ({ label }) {
         return label.toLowerCase()
       },
       types: {

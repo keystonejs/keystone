@@ -13,7 +13,7 @@ export { createExpressServer } from './lib/server/createExpressServer'
 export { initConfig } from './lib/config'
 
 /** @deprecated */
-export async function createAdminUIMiddleware(
+export async function createAdminUIMiddleware (
   config: KeystoneConfig,
   context: KeystoneContext,
   dev: boolean,

@@ -81,7 +81,7 @@ export type AdminMetaRootVal = {
   isAccessAllowed: undefined | ((context: KeystoneContext) => MaybePromise<boolean>);
 }
 
-export function createAdminMeta(
+export function createAdminMeta (
   config: KeystoneConfig,
   initialisedLists: Record<string, InitialisedList>
 ) {
@@ -163,7 +163,7 @@ export function createAdminMeta(
 
   let uniqueViewCount = -1
   const stringViewsToIndex: Record<string, number> = {}
-  function getViewId(view: string) {
+  function getViewId (view: string) {
     if (stringViewsToIndex[view] !== undefined) {
       return stringViewsToIndex[view]
     }
@@ -267,7 +267,7 @@ export function createAdminMeta(
 
 let currentAdminMeta: undefined | AdminMetaRootVal
 
-export function getAdminMetaForRelationshipField() {
+export function getAdminMetaForRelationshipField () {
   if (currentAdminMeta === undefined) {
     throw new Error('unexpected call to getAdminMetaInRelationshipField')
   }
@@ -275,7 +275,7 @@ export function getAdminMetaForRelationshipField() {
   return currentAdminMeta
 }
 
-function assertValidView(view: string, location: string) {
+function assertValidView (view: string, location: string) {
   if (view.includes('\\')) {
     throw new Error(
       `${location} contains a backslash, which is invalid. You need to use a module path that is resolved from where 'keystone start' is run (see https://github.com/keystonejs/keystone/pull/7805)`
@@ -289,7 +289,7 @@ function assertValidView(view: string, location: string) {
   }
 }
 
-function normalizeMaybeSessionFunction<Return extends string | boolean>(
+function normalizeMaybeSessionFunction<Return extends string | boolean> (
   input: MaybeSessionFunction<Return, BaseListTypeInfo>
 ): ContextFunction<Return> {
   if (typeof input !== 'function') {
@@ -300,7 +300,7 @@ function normalizeMaybeSessionFunction<Return extends string | boolean>(
 
 type BaseOrderFilterArgs = { listKey: string; fieldKey: string }
 
-function normalizeIsOrderFilter(
+function normalizeIsOrderFilter (
   input: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>),
   baseOrderFilterArgs: BaseOrderFilterArgs
 ): ContextFunction<boolean> {

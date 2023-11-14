@@ -6,7 +6,7 @@ import { component, fields, NotEditable } from '@keystone-6/fields-document/comp
 
 export const carousel = component({
   label: 'Carousel',
-  preview: function Preview(props) {
+  preview: function Preview (props) {
     return (
       <NotEditable>
         <div

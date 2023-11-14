@@ -24,7 +24,7 @@ type Value =
   | { kind: 'update'; initial: number | null; value: string | number | null }
   | { kind: 'create'; value: string | number | null }
 
-function validate(value: Value, validation: Validation, label: string) {
+function validate (value: Value, validation: Validation, label: string) {
   const val = value.value
 
   // if we recieve null initially on the item view and the current value is null,
@@ -65,7 +65,7 @@ function validate(value: Value, validation: Validation, label: string) {
   return undefined
 }
 
-function FloatInput({
+function FloatInput ({
   value,
   onChange,
   id,
@@ -194,7 +194,7 @@ export const controller = (
     serialize: value => ({ [config.path]: value.value }),
     validate: value => validate(value, config.fieldMeta.validation, config.label) === undefined,
     filter: {
-      Filter({ autoFocus, type, onChange, value }) {
+      Filter ({ autoFocus, type, onChange, value }) {
         return (
           <TextInput
             onChange={event => {
@@ -222,7 +222,7 @@ export const controller = (
         const key = type === 'is' ? 'equals' : type === 'not_in' ? 'notIn' : type
         return { [config.path]: { [key]: parsed } }
       },
-      Label({ label, value, type }) {
+      Label ({ label, value, type }) {
         let renderedValue = value
         if (['in', 'not_in'].includes(type)) {
           renderedValue = value

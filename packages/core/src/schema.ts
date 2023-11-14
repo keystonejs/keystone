@@ -6,7 +6,7 @@ import type {
   ListConfig,
 } from './types'
 
-export function config<TypeInfo extends BaseKeystoneTypeInfo>(config: KeystoneConfig<TypeInfo>) {
+export function config<TypeInfo extends BaseKeystoneTypeInfo> (config: KeystoneConfig<TypeInfo>) {
   return config
 }
 
@@ -14,7 +14,7 @@ let i = 0
 export function group<
   __Unused extends any, // TODO: remove in breaking change
   ListTypeInfo extends BaseListTypeInfo
->(config: {
+> (config: {
   label: string;
   description?: string;
   fields: BaseFields<ListTypeInfo>;
@@ -37,6 +37,6 @@ export function group<
 export function list<
   __Unused extends any, // TODO: remove in breaking change
   ListTypeInfo extends BaseListTypeInfo
->(config: ListConfig<ListTypeInfo>): ListConfig<ListTypeInfo> {
+> (config: ListConfig<ListTypeInfo>): ListConfig<ListTypeInfo> {
   return { ...config }
 }

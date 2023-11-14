@@ -26,7 +26,7 @@ import { useRedirect } from '../lib/useFromRedirect'
 
 const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup'
 
-function Welcome({ value, onContinue }: { value: any; onContinue: () => void }) {
+function Welcome ({ value, onContinue }: { value: any; onContinue: () => void }) {
   const [subscribe, setSubscribe] = useState(false)
   const [email, setEmail] = useState<string>(guessEmailFromValue(value))
   const [error, setError] = useState<string | null>(null)
@@ -150,7 +150,7 @@ type InitPageProps = {
   enableWelcome: boolean;
 }
 
-function InitPage({ fieldPaths, listKey, enableWelcome }: InitPageProps) {
+function InitPage ({ fieldPaths, listKey, enableWelcome }: InitPageProps) {
   const { adminMeta } = useKeystone()
   const fields = useMemo(() => {
     const fields: Record<string, FieldMeta> = {}

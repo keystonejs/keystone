@@ -13,7 +13,7 @@ import { ArrowR } from '../icons/ArrowR'
 import { Tick } from '../icons/Tick'
 import { Section } from './Section'
 
-export function CommunityCta(props: HTMLAttributes<HTMLElement>) {
+export function CommunityCta (props: HTMLAttributes<HTMLElement>) {
   const mq = useMediaQuery()
 
   return (

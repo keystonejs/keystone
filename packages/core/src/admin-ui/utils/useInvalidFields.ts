@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import type { FieldMeta } from '../../types'
 import type { Value } from './item-form'
 
-export function useInvalidFields(
+export function useInvalidFields (
   fields: Record<string, FieldMeta>,
   value: Value
 ): ReadonlySet<string> {

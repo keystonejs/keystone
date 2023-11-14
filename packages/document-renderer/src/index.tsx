@@ -106,7 +106,7 @@ export const defaultRenderers: Renderers = {
   },
 }
 
-function DocumentNode({
+function DocumentNode ({
   node: _node,
   componentBlocks,
   renderers,
@@ -200,7 +200,7 @@ function DocumentNode({
   return <Fragment>{children}</Fragment>
 }
 
-function set(obj: Record<string, any>, propPath: (string | number)[], value: any) {
+function set (obj: Record<string, any>, propPath: (string | number)[], value: any) {
   if (propPath.length === 1) {
     obj[propPath[0]] = value
   } else {
@@ -209,7 +209,7 @@ function set(obj: Record<string, any>, propPath: (string | number)[], value: any
   }
 }
 
-function createComponentBlockProps(node: Element, children: ReactElement[]) {
+function createComponentBlockProps (node: Element, children: ReactElement[]) {
   const formProps = JSON.parse(JSON.stringify(node.props))
   node.children.forEach((child, i) => {
     if (child.propPath) {
@@ -228,7 +228,7 @@ export type DocumentRendererProps<
   componentBlocks?: ComponentBlocks;
 }
 
-export function DocumentRenderer<ComponentBlocks extends Record<string, Component<any>>>(
+export function DocumentRenderer<ComponentBlocks extends Record<string, Component<any>>> (
   props: DocumentRendererProps<ComponentBlocks>
 ) {
   const renderers = {

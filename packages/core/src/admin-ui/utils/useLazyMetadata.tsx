@@ -6,7 +6,7 @@ import { type DeepNullable, makeDataGetter } from './dataGetter'
 
 export type { AuthenticatedItem, VisibleLists, CreateViewFieldModes }
 
-export function useLazyMetadata(query: DocumentNode): {
+export function useLazyMetadata (query: DocumentNode): {
   authenticatedItem: AuthenticatedItem;
   refetch: () => Promise<void>;
   visibleLists: VisibleLists;
@@ -59,7 +59,7 @@ export function useLazyMetadata(query: DocumentNode): {
   }, [result])
 }
 
-function getCreateViewFieldModes(
+function getCreateViewFieldModes (
   { data }: QueryResult,
   error?: Error | ServerParseError | ServerError | readonly [GraphQLError, ...GraphQLError[]]
 ): CreateViewFieldModes {
@@ -80,7 +80,7 @@ function getCreateViewFieldModes(
   return { state: 'loading' }
 }
 
-function getVisibleLists(
+function getVisibleLists (
   { data }: QueryResult,
   error?: Error | ServerParseError | ServerError | readonly [GraphQLError, ...GraphQLError[]]
 ): VisibleLists {
@@ -100,7 +100,7 @@ function getVisibleLists(
   return { state: 'loading' }
 }
 
-function getAuthenticatedItem(
+function getAuthenticatedItem (
   { data }: QueryResult,
   error?: Error | ServerParseError | ServerError | readonly [GraphQLError, ...GraphQLError[]]
 ): AuthenticatedItem {

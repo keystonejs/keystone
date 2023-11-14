@@ -17,7 +17,7 @@ type CreateItemHookResult = {
   create: () => Promise<{ id: string; label: string | null } | undefined>;
 }
 
-export function useCreateItem(list: ListMeta): CreateItemHookResult {
+export function useCreateItem (list: ListMeta): CreateItemHookResult {
   const toasts = useToasts()
   const { createViewFieldModes } = useKeystone()
 
@@ -92,7 +92,7 @@ export function useCreateItem(list: ListMeta): CreateItemHookResult {
         setValue(oldValues => getNewValue(oldValues) as ValueWithoutServerSideErrors)
       }, []),
     },
-    async create(): Promise<{ id: string; label: string | null } | undefined> {
+    async create (): Promise<{ id: string; label: string | null } | undefined> {
       const newForceValidation = invalidFields.size !== 0
       setForceValidation(newForceValidation)
 
@@ -104,7 +104,7 @@ export function useCreateItem(list: ListMeta): CreateItemHookResult {
           variables: {
             data,
           },
-          update(cache, { data }) {
+          update (cache, { data }) {
             if (typeof data?.item?.id === 'string') {
               cache.evict({
                 id: 'ROOT_QUERY',

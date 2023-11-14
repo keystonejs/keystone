@@ -8,7 +8,7 @@ import { Container } from '../../../../admin-ui/components/Container'
 import { Link } from '../../../../admin-ui/router'
 import { type ListMeta } from '../../../../types'
 
-export function ItemPageHeader(props: { list: ListMeta; label: string }) {
+export function ItemPageHeader (props: { list: ListMeta; label: string }) {
   const { palette, spacing } = useTheme()
 
   return (
@@ -67,7 +67,7 @@ export function ItemPageHeader(props: { list: ListMeta; label: string }) {
   )
 }
 
-export function ColumnLayout(props: HTMLAttributes<HTMLDivElement>) {
+export function ColumnLayout (props: HTMLAttributes<HTMLDivElement>) {
   const { spacing } = useTheme()
 
   return (
@@ -91,7 +91,7 @@ export function ColumnLayout(props: HTMLAttributes<HTMLDivElement>) {
   )
 }
 
-export function BaseToolbar(props: { children: ReactNode }) {
+export function BaseToolbar (props: { children: ReactNode }) {
   const { colors, spacing } = useTheme()
 
   return (

@@ -12,7 +12,7 @@ type Post = {
   } | null;
 }
 
-function PublishDate({ publishDate }: { publishDate: Post['publishDate'] }) {
+function PublishDate ({ publishDate }: { publishDate: Post['publishDate'] }) {
   const formattedDate = publishDate ? new Date(publishDate).toLocaleDateString() : null
 
   if (!formattedDate) {
@@ -25,7 +25,7 @@ function PublishDate({ publishDate }: { publishDate: Post['publishDate'] }) {
   )
 }
 
-function AuthorInfo({ author }: { author: Post['author'] }) {
+function AuthorInfo ({ author }: { author: Post['author'] }) {
   if (!author?.name) {
     return null
   }
@@ -37,7 +37,7 @@ function AuthorInfo({ author }: { author: Post['author'] }) {
   )
 }
 
-export default function Home({ posts, error }: { posts: Post[]; error?: Error }) {
+export default function Home ({ posts, error }: { posts: Post[]; error?: Error }) {
   if (error) {
     return (
       <Fragment>
@@ -65,7 +65,7 @@ export default function Home({ posts, error }: { posts: Post[]; error?: Error })
   )
 }
 
-export async function getStaticProps() {
+export async function getStaticProps () {
   try {
     const data = await fetchGraphQL(gql`
       query posts {

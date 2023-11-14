@@ -1,6 +1,6 @@
 import { type BaseListTypeInfo, type CommonFieldConfig, type FieldData } from '../types'
 
-export function getResolvedIsNullable(
+export function getResolvedIsNullable (
   validation: undefined | { isRequired?: boolean },
   db: undefined | { isNullable?: boolean }
 ): boolean {
@@ -13,7 +13,7 @@ export function getResolvedIsNullable(
   return true
 }
 
-export function assertReadIsNonNullAllowed<ListTypeInfo extends BaseListTypeInfo>(
+export function assertReadIsNonNullAllowed<ListTypeInfo extends BaseListTypeInfo> (
   meta: FieldData,
   config: CommonFieldConfig<ListTypeInfo>,
   resolvedIsNullable: boolean

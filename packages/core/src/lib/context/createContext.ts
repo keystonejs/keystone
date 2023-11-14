@@ -8,7 +8,7 @@ import { createImagesContext } from '../assets/createImagesContext'
 import { createFilesContext } from '../assets/createFilesContext'
 import { getDbFactory, getQueryFactory } from './api'
 
-export function createContext({
+export function createContext ({
   config,
   lists,
   graphQLSchema,
@@ -73,7 +73,7 @@ export function createContext({
       return result.data as any
     }
 
-    async function withRequest(newReq: IncomingMessage, newRes?: ServerResponse) {
+    async function withRequest (newReq: IncomingMessage, newRes?: ServerResponse) {
       const newContext = construct({
         session,
         sudo,

@@ -92,7 +92,7 @@ export const controller = (
   }
 }
 
-function serializeValue(
+function serializeValue (
   schema: ComponentSchemaForGraphQL,
   value: any,
   kind: 'update' | 'create'

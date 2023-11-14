@@ -57,7 +57,7 @@ export type ButtonTokens = {
 
 type Weight = ButtonStateTokens & Pick<ButtonTokens, 'focus' | 'hover' | 'pressed'>
 
-export function useButtonTokens({
+export function useButtonTokens ({
   tone: toneKey,
   size: sizeKey,
   weight: weightKey,
@@ -155,7 +155,7 @@ type ButtonStylesProps = {
   tokens: ButtonTokens;
 }
 
-export function useButtonStyles({ isDisabled, isBlock, tokens }: ButtonStylesProps) {
+export function useButtonStyles ({ isDisabled, isBlock, tokens }: ButtonStylesProps) {
   const baseStyles = {
     alignItems: 'center',
     borderStyle: 'solid',

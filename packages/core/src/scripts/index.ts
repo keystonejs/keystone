@@ -1,7 +1,7 @@
 import { cli } from './cli'
 import { ExitError } from './utils'
 
-async function main() {
+async function main () {
   const argv = process.argv.slice(2)
 
   await cli(process.cwd(), argv)

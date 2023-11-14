@@ -114,7 +114,7 @@ const interExtraBold = fetch(
 ).then(res => res.arrayBuffer())
 
 // vercel API route that generates the OG image
-export default async function handler(req: NextRequest) {
+export default async function handler (req: NextRequest) {
   const interSemiBoldData = await interSemiBold
   const interExtraBoldData = await interExtraBold
 

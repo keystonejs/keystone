@@ -37,7 +37,7 @@ export const extendGraphqlSchema = graphql.extend(base => {
     fields: {
       draft: graphql.field({
         type: graphql.Int,
-        resolve({ authorId }, args, context: Context) {
+        resolve ({ authorId }, args, context: Context) {
           return context.query.Post.count({
             where: { author: { id: { equals: authorId } }, status: { equals: 'draft' } },
           })
@@ -45,7 +45,7 @@ export const extendGraphqlSchema = graphql.extend(base => {
       }),
       published: graphql.field({
         type: graphql.Int,
-        resolve({ authorId }, args, context: Context) {
+        resolve ({ authorId }, args, context: Context) {
           return context.query.Post.count({
             where: { author: { id: { equals: authorId } }, status: { equals: 'published' } },
           })
@@ -53,7 +53,7 @@ export const extendGraphqlSchema = graphql.extend(base => {
       }),
       latest: graphql.field({
         type: base.object('Post'),
-        async resolve({ authorId }, args, context: Context) {
+        async resolve ({ authorId }, args, context: Context) {
           const [post] = await context.db.Post.findMany({
             take: 1,
             orderBy: { publishDate: 'desc' },
@@ -72,7 +72,7 @@ export const extendGraphqlSchema = graphql.extend(base => {
         // with the name provided or throw if it doesn't exist
         type: base.object('Post'),
         args: { id: graphql.arg({ type: graphql.nonNull(graphql.ID) }) },
-        resolve(source, { id }, context: Context) {
+        resolve (source, { id }, context: Context) {
           // Note we use `context.db.Post` here as we have a return type
           // of Post, and this API provides results in the correct format.
           // If you accidentally use `context.query.Post` here you can expect problems
@@ -90,7 +90,7 @@ export const extendGraphqlSchema = graphql.extend(base => {
             banPost: graphql.field({
               type: base.object('Post'),
               args: { id: graphql.arg({ type: graphql.nonNull(graphql.ID) }) },
-              resolve(source, { id }, context: Context) {
+              resolve (source, { id }, context: Context) {
                 return context.db.Post.updateOne({
                   where: { id },
                   data: { status: 'banned' },
@@ -107,7 +107,7 @@ export const extendGraphqlSchema = graphql.extend(base => {
           id: graphql.arg({ type: graphql.nonNull(graphql.ID) }),
           seconds: graphql.arg({ type: graphql.nonNull(graphql.Int), defaultValue: 600 }),
         },
-        resolve(source, { id, seconds }, context: Context) {
+        resolve (source, { id, seconds }, context: Context) {
           const cutoff = new Date(Date.now() - seconds * 1000)
 
           // Note we use `context.db.Post` here as we have a return type
@@ -122,7 +122,7 @@ export const extendGraphqlSchema = graphql.extend(base => {
       stats: graphql.field({
         type: Statistics,
         args: { id: graphql.arg({ type: graphql.nonNull(graphql.ID) }) },
-        resolve(source, { id }) {
+        resolve (source, { id }) {
           return { authorId: id }
         },
       }),

@@ -6,7 +6,7 @@ import { Alert } from '../primitives/Alert'
 import { Button } from '../primitives/Button'
 import { ArrowR } from '../icons/ArrowR'
 
-export function GitHubExamplesCTA() {
+export function GitHubExamplesCTA () {
   return (
     <Alert css={{ margin: '2rem 0' }}>
       <span

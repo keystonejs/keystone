@@ -4,7 +4,7 @@ import { devWarning } from '../utils'
 
 export type ManagedChangeHandler<V = string, E = ChangeEvent> = (value: V, event: E) => void
 
-export function useManagedState<V, E = ChangeEvent>(
+export function useManagedState<V, E = ChangeEvent> (
   controlledValue: V | undefined,
   defaultValue: V,
   onChange: ManagedChangeHandler<V, E> | undefined

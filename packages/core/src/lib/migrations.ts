@@ -16,7 +16,7 @@ import { confirmPrompt, textPrompt } from './prompts'
 // We also want to silence messages from Prisma about available updates, since the developer is
 // not in control of their Prisma version.
 // https://www.prisma.io/docs/reference/api-reference/environment-variables-reference#prisma_hide_update_message
-export function runMigrateWithDbUrl<T>(
+export function runMigrateWithDbUrl<T> (
   dbUrl: string,
   shadowDbUrl: string | undefined,
   cb: () => T
@@ -36,7 +36,7 @@ export function runMigrateWithDbUrl<T>(
   }
 }
 
-function setOrRemoveEnvVariable(name: string, value: string | undefined) {
+function setOrRemoveEnvVariable (name: string, value: string | undefined) {
   if (value === undefined) {
     delete process.env[name]
   } else {
@@ -44,7 +44,7 @@ function setOrRemoveEnvVariable(name: string, value: string | undefined) {
   }
 }
 
-export async function withMigrate<T>(schemaPath: string, cb: (migrate: Migrate) => Promise<T>) {
+export async function withMigrate<T> (schemaPath: string, cb: (migrate: Migrate) => Promise<T>) {
   const migrate = new Migrate(schemaPath)
   try {
     return await cb(migrate)
@@ -58,7 +58,7 @@ export async function withMigrate<T>(schemaPath: string, cb: (migrate: Migrate) 
   }
 }
 
-export async function pushPrismaSchemaToDatabase(
+export async function pushPrismaSchemaToDatabase (
   dbUrl: string,
   shadowDbUrl: string | undefined,
   schema: string,
@@ -154,21 +154,21 @@ export async function pushPrismaSchemaToDatabase(
   }
 }
 
-function logUnexecutableSteps(unexecutableSteps: string[]) {
+function logUnexecutableSteps (unexecutableSteps: string[]) {
   console.log(`${chalk.bold.red('\n⚠️ We found changes that cannot be executed:\n')}`)
   for (const item of unexecutableSteps) {
     console.log(`  • ${item}`)
   }
 }
 
-function logWarnings(warnings: string[]) {
+function logWarnings (warnings: string[]) {
   console.warn(chalk.bold(`\n⚠️  Warnings:\n`))
   for (const warning of warnings) {
     console.warn(`  • ${warning}`)
   }
 }
 
-export async function deployMigrations(schemaPath: string, dbUrl: string) {
+export async function deployMigrations (schemaPath: string, dbUrl: string) {
   return withMigrate(schemaPath, async migrate => {
     const migration = await runMigrateWithDbUrl(dbUrl, undefined, () => migrate.applyMigrations())
     if (migration.appliedMigrationNames.length === 0) {
@@ -179,7 +179,7 @@ export async function deployMigrations(schemaPath: string, dbUrl: string) {
   })
 }
 
-export async function devMigrations(
+export async function devMigrations (
   dbUrl: string,
   shadowDbUrl: string | undefined,
   prismaSchema: string,
@@ -319,7 +319,7 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
   })
 }
 
-function getDbLocation(credentials: DatabaseCredentials): string {
+function getDbLocation (credentials: DatabaseCredentials): string {
   if (credentials.type === 'sqlite') {
     return credentials.uri!
   }

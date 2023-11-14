@@ -9,7 +9,7 @@ export const shortcuts: Record<string, string> = {
   '--': '–',
 }
 
-export function withShortcuts(editor: Editor): Editor {
+export function withShortcuts (editor: Editor): Editor {
   const { insertText } = editor
   editor.insertText = text => {
     insertText(text)

@@ -10,7 +10,7 @@ export const lists = {
       virtual: virtual({
         field: graphql.field({
           type: graphql.String,
-          resolve(item) {
+          resolve (item) {
             return (item as { text: string }).text
           },
         }),

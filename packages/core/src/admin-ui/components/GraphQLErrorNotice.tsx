@@ -8,7 +8,7 @@ type GraphQLErrorNoticeProps = {
   errors: readonly GraphQLError[] | undefined;
 }
 
-export function GraphQLErrorNotice({ errors, networkError }: GraphQLErrorNoticeProps) {
+export function GraphQLErrorNotice ({ errors, networkError }: GraphQLErrorNoticeProps) {
   if (networkError) {
     return (
       <Notice tone="negative" marginBottom="large">

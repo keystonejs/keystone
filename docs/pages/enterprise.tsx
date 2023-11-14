@@ -62,7 +62,7 @@ const customers = [
   },
 ]
 
-export default function ForOrganisations() {
+export default function ForOrganisations () {
   const mq = useMediaQuery()
 
   return (

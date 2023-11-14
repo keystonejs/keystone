@@ -25,7 +25,7 @@ export type AuthSession = {
  *
  * Generates config for Keystone to implement standard auth features.
  */
-export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
+export function createAuth<ListTypeInfo extends BaseListTypeInfo> ({
   listKey,
   secretField,
   initFirstItem,
@@ -133,7 +133,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     sessionData,
   })
 
-  function throwIfInvalidConfig<TypeInfo extends BaseKeystoneTypeInfo>(
+  function throwIfInvalidConfig<TypeInfo extends BaseKeystoneTypeInfo> (
     config: KeystoneConfig<TypeInfo>
   ) {
     if (!(listKey in config.lists)) {
@@ -160,7 +160,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
 
   // this strategy wraps the existing session strategy,
   //   and injects the requested session.data before returning
-  function authSessionStrategy<Session extends AuthSession>(
+  function authSessionStrategy<Session extends AuthSession> (
     _sessionStrategy: SessionStrategy<Session>
   ): SessionStrategy<Session> {
     const { get, ...sessionStrategy } = _sessionStrategy
@@ -191,7 +191,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     }
   }
 
-  async function hasInitFirstItemConditions<TypeInfo extends BaseKeystoneTypeInfo>(
+  async function hasInitFirstItemConditions<TypeInfo extends BaseKeystoneTypeInfo> (
     context: KeystoneContext<TypeInfo>
   ) {
     // do nothing if they aren't using this feature
@@ -204,7 +204,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     return count === 0
   }
 
-  async function authMiddleware<TypeInfo extends BaseKeystoneTypeInfo>({
+  async function authMiddleware<TypeInfo extends BaseKeystoneTypeInfo> ({
     context,
     wasAccessAllowed,
     basePath,
@@ -233,11 +233,11 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
     return { kind: 'redirect', to: `${basePath}/signin` }
   }
 
-  function defaultIsAccessAllowed({ session, sessionStrategy }: KeystoneContext) {
+  function defaultIsAccessAllowed ({ session, sessionStrategy }: KeystoneContext) {
     return session !== undefined
   }
 
-  function defaultExtendGraphqlSchema<T>(schema: T) {
+  function defaultExtendGraphqlSchema<T> (schema: T) {
     return schema
   }
 
@@ -246,7 +246,7 @@ export function createAuth<ListTypeInfo extends BaseListTypeInfo>({
    *
    * Automatically extends your configuration with a prescriptive implementation.
    */
-  function withAuth<TypeInfo extends BaseKeystoneTypeInfo>(
+  function withAuth<TypeInfo extends BaseKeystoneTypeInfo> (
     config: KeystoneConfig<TypeInfo>
   ): KeystoneConfig<TypeInfo> {
     throwIfInvalidConfig(config)

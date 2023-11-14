@@ -9,7 +9,7 @@ import { Well } from '../../components/primitives/Well'
 import { useMediaQuery } from '../../lib/media'
 import { InlineCode } from '../../components/primitives/Code'
 
-export default function Docs() {
+export default function Docs () {
   const mq = useMediaQuery()
 
   return (

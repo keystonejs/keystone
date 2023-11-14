@@ -86,7 +86,7 @@ export const controller = (config: FieldControllerConfig): ImageController => {
         filesize
       }`,
     defaultValue: { kind: 'empty' },
-    deserialize(item) {
+    deserialize (item) {
       const value = item[config.path]
       if (!value) return { kind: 'empty' }
       return {
@@ -102,10 +102,10 @@ export const controller = (config: FieldControllerConfig): ImageController => {
         },
       }
     },
-    validate(value): boolean {
+    validate (value): boolean {
       return value.kind !== 'upload' || validateImage(value.data) === undefined
     },
-    serialize(value) {
+    serialize (value) {
       if (value.kind === 'upload') {
         return { [config.path]: { upload: value.data.file } }
       }

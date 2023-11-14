@@ -23,7 +23,7 @@ import { CellContainer, CreateItemDrawer } from '../../../../admin-ui/components
 import { Cards } from './cards'
 import { RelationshipSelect } from './RelationshipSelect'
 
-function LinkToRelatedItems({
+function LinkToRelatedItems ({
   itemId,
   value,
   list,
@@ -34,7 +34,7 @@ function LinkToRelatedItems({
   list: ListMeta;
   refFieldKey?: string;
 }) {
-  function constructQuery({
+  function constructQuery ({
     refFieldKey,
     itemId,
     value,
@@ -142,7 +142,7 @@ export const Field = ({
                 ? {
                     kind: 'many',
                     value: value.value,
-                    onChange(newItems) {
+                    onChange (newItems) {
                       onChange?.({
                         ...value,
                         value: newItems,
@@ -152,7 +152,7 @@ export const Field = ({
                 : {
                     kind: 'one',
                     value: value.value,
-                    onChange(newVal) {
+                    onChange (newVal) {
                       if (value.kind === 'one') {
                         onChange?.({
                           ...value,
@@ -504,7 +504,7 @@ export const controller = (
         } = {
           kind: 'many',
           value: filterValues,
-          onChange(newItems) {
+          onChange (newItems) {
             onChange(newItems.map(item => item.id).join(','))
           },
         }
@@ -541,7 +541,7 @@ export const controller = (
           },
         }
       },
-      Label({ value }) {
+      Label ({ value }) {
         const foreignList = useList(config.fieldMeta.refListKey)
         const { filterValues } = useRelationshipFilterValues({
           value,
@@ -565,7 +565,7 @@ export const controller = (
         },
       },
     },
-    validate(value) {
+    validate (value) {
       return (
         value.kind !== 'cards-view' ||
         (value.itemsBeingEdited.size === 0 && !value.itemBeingCreated)
@@ -638,7 +638,7 @@ export const controller = (
   }
 }
 
-function useRelationshipFilterValues({ value, list }: { value: string; list: ListMeta }) {
+function useRelationshipFilterValues ({ value, list }: { value: string; list: ListMeta }) {
   const foreignIds = getForeignIds(value)
   const where = { id: { in: foreignIds } }
 
@@ -669,7 +669,7 @@ function useRelationshipFilterValues({ value, list }: { value: string; list: Lis
   }
 }
 
-function getForeignIds(value: string) {
+function getForeignIds (value: string) {
   if (typeof value === 'string' && value.length > 0) {
     return value.split(',')
   }

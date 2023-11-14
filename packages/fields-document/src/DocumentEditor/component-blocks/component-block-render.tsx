@@ -10,7 +10,7 @@ import { type ReadonlyPropPath } from './utils'
 
 export const ChildrenByPathContext = React.createContext<Record<string, ReactElement>>({})
 
-export function ChildFieldEditable({ path }: { path: readonly string[] }) {
+export function ChildFieldEditable ({ path }: { path: readonly string[] }) {
   const childrenByPath = useContext(ChildrenByPathContext)
   const child = childrenByPath[JSON.stringify(path)]
   if (child === undefined) {
@@ -19,7 +19,7 @@ export function ChildFieldEditable({ path }: { path: readonly string[] }) {
   return child
 }
 
-export function ComponentBlockRender({
+export function ComponentBlockRender ({
   componentBlock,
   element,
   onChange,
@@ -76,7 +76,7 @@ export function ComponentBlockRender({
 // (this is primarily to not mess up things like cursors in inputs)
 // this means that sometimes the child elements will be inconsistent with the values
 // so to deal with this, we return a prop path this is "wrong" but won't break anything
-function propPathWithIndiciesToKeys(propPath: ReadonlyPropPath, val: any): readonly string[] {
+function propPathWithIndiciesToKeys (propPath: ReadonlyPropPath, val: any): readonly string[] {
   return propPath.map(key => {
     if (typeof key === 'string') {
       val = val?.[key]

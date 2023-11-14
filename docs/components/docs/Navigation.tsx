@@ -66,7 +66,7 @@ type NavSectionProps = {
   children: ReactNode;
 }
 
-function NavSection({ title, children }: NavSectionProps) {
+function NavSection ({ title, children }: NavSectionProps) {
   const { isSectionCollapsed, collapseSection, expandSection } = useNavContext()
   const isCollapsed = isSectionCollapsed(title)
   return (
@@ -122,7 +122,7 @@ type NavItemProps = {
   alwaysVisible?: boolean;
 } & AnchorHTMLAttributes<HTMLAnchorElement>
 
-export function NavItem({
+export function NavItem ({
   href,
   isActive: _isActive,
   isPlaceholder,
@@ -161,7 +161,7 @@ type PrimaryNavItemProps = {
   children: ReactNode;
 } & AnchorHTMLAttributes<HTMLAnchorElement>
 
-export function PrimaryNavItem({ href, children }: PrimaryNavItemProps) {
+export function PrimaryNavItem ({ href, children }: PrimaryNavItemProps) {
   const { asPath } = useRouter()
   const isActive = asPath === href
   const ctx = useHeaderContext()
@@ -189,7 +189,7 @@ export function PrimaryNavItem({ href, children }: PrimaryNavItemProps) {
   )
 }
 
-export function DocsNavigation() {
+export function DocsNavigation () {
   return (
     // <NavContextProvider>
     <nav
@@ -296,7 +296,7 @@ export function DocsNavigation() {
   )
 }
 
-export function UpdatesNavigation() {
+export function UpdatesNavigation () {
   return (
     <NavContextProvider>
       <nav

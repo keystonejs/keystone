@@ -10,7 +10,7 @@ import { Button } from '@keystone-ui/button'
 import { type FieldProps } from '../../../../types'
 import { type FileValue } from './index'
 
-export function Field({
+export function Field ({
   autoFocus,
   field,
   value,
@@ -59,7 +59,7 @@ export function Field({
   )
 }
 
-function FileView({
+function FileView ({
   errorMessage,
   value,
   onChange,
@@ -168,13 +168,13 @@ function FileView({
   )
 }
 
-function createErrorMessage(value: FileValue) {
+function createErrorMessage (value: FileValue) {
   if (value.kind === 'upload') {
     return validateFile(value.data)
   }
 }
 
-export function validateFile({ validity }: { validity: ValidityState }): string | undefined {
+export function validateFile ({ validity }: { validity: ValidityState }): string | undefined {
   if (!validity.valid) {
     return 'Something went wrong, please reload and try again.'
   }

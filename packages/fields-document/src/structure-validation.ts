@@ -32,7 +32,7 @@ type Link = { type: 'link'; href: string; children: Children }
 
 class URLType extends t.Type<string> {
   readonly _tag: 'URLType' = 'URLType'
-  constructor() {
+  constructor () {
     super(
       'string',
       (u): u is string => typeof u === 'string' && isValidURL(u),
@@ -220,11 +220,11 @@ const children: t.Type<Children> = t.recursion('Children', () => t.array(t.union
 
 export const editorCodec = t.array(block)
 
-export function isRelationshipData(val: unknown): val is RelationshipData {
+export function isRelationshipData (val: unknown): val is RelationshipData {
   return relationshipData.validate(val, [])._tag === 'Right'
 }
 
-export function validateDocumentStructure(val: unknown): asserts val is ElementFromValidation[] {
+export function validateDocumentStructure (val: unknown): asserts val is ElementFromValidation[] {
   const result = editorCodec.validate(val, [])
   if (result._tag === 'Left') {
     throw new Error('Invalid document structure')

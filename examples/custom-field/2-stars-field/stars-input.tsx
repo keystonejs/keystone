@@ -7,7 +7,7 @@ type StarsInputProps = {
   autoFocus?: boolean;
 }
 
-export function StarsInput(props: StarsInputProps) {
+export function StarsInput (props: StarsInputProps) {
   return (
     <div>
       <div>

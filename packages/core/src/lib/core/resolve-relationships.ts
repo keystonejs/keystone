@@ -39,7 +39,7 @@ type RelWithoutForeignKeyAndName = Omit<Rel, 'field'> & {
   field: Omit<RelationDBField<'many' | 'one'>, 'foreignKey' | 'relationName'>;
 }
 
-function sortRelationships(left: Rel, right: Rel): readonly [Rel, RelWithoutForeignKeyAndName] {
+function sortRelationships (left: Rel, right: Rel): readonly [Rel, RelWithoutForeignKeyAndName] {
   if (left.field.mode === 'one' && right.field.mode === 'one') {
     if (left.field.foreignKey !== undefined && right.field.foreignKey !== undefined) {
       throw new Error(
@@ -95,7 +95,7 @@ function sortRelationships(left: Rel, right: Rel): readonly [Rel, RelWithoutFore
 //   you only have to reason about two-sided relationships
 //   (note that this means that there are "fields" in the returned ListsWithResolvedRelations
 //   which are not actually proper Keystone fields, they are just a db field and nothing else)
-export function resolveRelationships(
+export function resolveRelationships (
   lists: Record<string, { fields: Record<string, { dbField: DBField }>; isSingleton: boolean }>
 ): ListsWithResolvedRelations {
   const alreadyResolvedTwoSidedRelationships = new Set<string>()

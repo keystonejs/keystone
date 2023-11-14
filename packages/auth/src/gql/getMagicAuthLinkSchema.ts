@@ -13,7 +13,7 @@ const MagicLinkRedemptionErrorCode = graphql.enum({
   values: graphql.enumValues(errorCodes),
 })
 
-export function getMagicAuthLinkSchema<I extends string>({
+export function getMagicAuthLinkSchema<I extends string> ({
   listKey,
   identityField,
   gqlNames,
@@ -30,7 +30,7 @@ export function getMagicAuthLinkSchema<I extends string>({
   // TODO: type required by pnpm :(
 }): graphql.Extension {
   const RedeemItemMagicAuthTokenFailure = graphql.object<{
-    code: (typeof errorCodes)[number];
+    code:(typeof errorCodes)[number];
     message: string;
   }>()({
     name: gqlNames.RedeemItemMagicAuthTokenFailure,
@@ -49,7 +49,7 @@ export function getMagicAuthLinkSchema<I extends string>({
   const RedeemItemMagicAuthTokenResult = graphql.union({
     name: gqlNames.RedeemItemMagicAuthTokenResult,
     types: [RedeemItemMagicAuthTokenSuccess, RedeemItemMagicAuthTokenFailure],
-    resolveType(val) {
+    resolveType (val) {
       return 'token' in val
         ? gqlNames.RedeemItemMagicAuthTokenSuccess
         : gqlNames.RedeemItemMagicAuthTokenFailure
@@ -60,7 +60,7 @@ export function getMagicAuthLinkSchema<I extends string>({
       [gqlNames.sendItemMagicAuthLink]: graphql.field({
         type: graphql.nonNull(graphql.Boolean),
         args: { [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }) },
-        async resolve(rootVal, { [identityField]: identity }, context) {
+        async resolve (rootVal, { [identityField]: identity }, context) {
           const dbItemAPI = context.sudo().db[listKey]
           const tokenType = 'magicAuth'
 
@@ -90,7 +90,7 @@ export function getMagicAuthLinkSchema<I extends string>({
           [identityField]: graphql.arg({ type: graphql.nonNull(graphql.String) }),
           token: graphql.arg({ type: graphql.nonNull(graphql.String) }),
         },
-        async resolve(rootVal, { [identityField]: identity, token }, context) {
+        async resolve (rootVal, { [identityField]: identity, token }, context) {
           if (!context.sessionStrategy) {
             throw new Error('No session implementation available on context')
           }

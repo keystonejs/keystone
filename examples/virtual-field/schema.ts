@@ -15,7 +15,7 @@ export const lists: Lists = {
       isActive: virtual({
         field: graphql.field({
           type: graphql.Boolean,
-          resolve(item) {
+          resolve (item) {
             return item.title.length > 3 && item.content.length > 10 && item.listed === true
           },
         }),
@@ -36,7 +36,7 @@ export const lists: Lists = {
               paragraphs: graphql.field({ type: graphql.Int }),
             },
           }),
-          resolve(item) {
+          resolve (item) {
             const content = item.content ?? ''
             return {
               words: content.split(' ').length,
@@ -58,7 +58,7 @@ export const lists: Lists = {
           args: {
             length: graphql.arg({ type: graphql.nonNull(graphql.Int), defaultValue: 50 }),
           },
-          resolve(item, { length }) {
+          resolve (item, { length }) {
             const { content = '' } = item
             if (content.length <= length) return content
             return content.slice(0, length) + '...'
@@ -83,7 +83,7 @@ export const lists: Lists = {
             })
           ),
 
-          async resolve(item, _, context) {
+          async resolve (item, _, context) {
             // TODO: this could probably be better
             const posts = await context.db.Post.findMany({
               where: {

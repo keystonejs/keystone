@@ -1,7 +1,7 @@
 import { randomBytes } from 'crypto'
 import type { KeystoneDbAPI } from '@keystone-6/core/types'
 
-export async function createAuthToken(
+export async function createAuthToken (
   identityField: string,
   identity: string,
   dbItemAPI: KeystoneDbAPI<any>[string]

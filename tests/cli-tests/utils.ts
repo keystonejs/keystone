@@ -18,7 +18,7 @@ jest.setTimeout(1000 * 20)
 
 export class ExitError extends Error {
   code: number
-  constructor(code: number) {
+  constructor (code: number) {
     super(`The process should exit with ${code}`)
     this.code = code
   }
@@ -36,7 +36,7 @@ export const schemas = {
   'schema.prisma': fs.readFileSync(`${__dirname}/fixtures/basic-project/schema.prisma`, 'utf8'),
 }
 
-export function recordConsole() {
+export function recordConsole () {
   let oldConsole = { ...console }
   const contents: string[] = []
   const log = (...args: any[]) => {
@@ -76,7 +76,7 @@ type Fixture = {
     | { kind: 'config'; config: KeystoneConfig };
 }
 
-export async function runCommand(cwd: string, args: string | string[]) {
+export async function runCommand (cwd: string, args: string | string[]) {
   const argv = typeof args === 'string' ? [args] : args
   chalk.level = 0 // disable ANSI colouring for this
   const proc = await cli(cwd, argv)
@@ -96,7 +96,7 @@ afterAll(async () => {
   dirsToRemove = []
 })
 
-export async function testdir(dir: Fixture): Promise<string> {
+export async function testdir (dir: Fixture): Promise<string> {
   const temp = await fsp.mkdtemp(__dirname)
   dirsToRemove.push(temp)
   await Promise.all(
@@ -128,7 +128,7 @@ export async function testdir(dir: Fixture): Promise<string> {
 }
 
 expect.addSnapshotSerializer({
-  print(_val) {
+  print (_val) {
     const val = _val as Record<string, string>
     const contentsByFilename: Record<string, string[]> = {}
     Object.entries(val).forEach(([filename, contents]) => {
@@ -143,14 +143,14 @@ expect.addSnapshotSerializer({
       })
       .join('\n')
   },
-  test(val) {
+  test (val) {
     return val && val[dirPrintingSymbol]
   },
 })
 
 const dirPrintingSymbol = Symbol('dir printing symbol')
 
-export async function getFiles(
+export async function getFiles (
   dir: string,
   glob: string[] = ['**', '!node_modules/**'],
   encoding: 'utf8' | null = 'utf8'
@@ -171,7 +171,7 @@ export async function getFiles(
   return result
 }
 
-export async function introspectDb(cwd: string, url: string) {
+export async function introspectDb (cwd: string, url: string) {
   const engine = new MigrateEngine({ projectDir: cwd })
   try {
     const { datamodel } = await engine.introspect({

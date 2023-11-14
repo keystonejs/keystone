@@ -8,7 +8,7 @@ import { allowAll } from '@keystone-6/core/access'
 import { testConfig } from './utils'
 import { withServer } from './with-server'
 
-function makeQuery(size = 0) {
+function makeQuery (size = 0) {
   const query = JSON.stringify({
     variables: {
       data: {
@@ -25,7 +25,7 @@ function makeQuery(size = 0) {
   return `{ ${' '.repeat(padding)} ${query} }`
 }
 
-async function tryRequest(app: express.Express, size: number) {
+async function tryRequest (app: express.Express, size: number) {
   const res = await supertest(app)
     .post('/api/graphql')
     .send(makeQuery(size))
@@ -35,7 +35,7 @@ async function tryRequest(app: express.Express, size: number) {
   return res
 }
 
-function setup(options?: BodyParserOptions) {
+function setup (options?: BodyParserOptions) {
   return withServer(
     setupTestRunner({
       config: testConfig({

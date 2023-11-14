@@ -8,7 +8,7 @@ import { Type } from './primitives/Type'
 
 type Path = { title: string; href: string }
 
-export function Breadcrumbs() {
+export function Breadcrumbs () {
   const router = useRouter()
 
   // remove anchor and split path

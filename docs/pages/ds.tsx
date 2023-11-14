@@ -22,7 +22,7 @@ import { Page } from '../components/Page'
 
 const EXCEPT_ICONS = ['FrontEndLogos', 'ClientLogos']
 
-function Divider() {
+function Divider () {
   return (
     <hr
       css={{
@@ -43,7 +43,7 @@ function Divider() {
   )
 }
 
-function Box() {
+function Box () {
   return (
     <div
       css={{
@@ -62,7 +62,7 @@ type SwatchProps = {
   gradient?: { grad1: string; grad2: string };
 }
 
-function Swatch({ name, color, gradient }: SwatchProps) {
+function Swatch ({ name, color, gradient }: SwatchProps) {
   return (
     <div css={{ textAlign: 'center' }}>
       <div
@@ -91,7 +91,7 @@ function Swatch({ name, color, gradient }: SwatchProps) {
   )
 }
 
-export default function DS() {
+export default function DS () {
   const [icon, setIcon] = useState<allIcons.IconGradient | null>(null)
   let firstGrad: string
 

@@ -7,7 +7,7 @@ type YouTubeEmbedProps = {
   label: string;
 }
 
-export function YouTubeEmbed({ url, label }: YouTubeEmbedProps) {
+export function YouTubeEmbed ({ url, label }: YouTubeEmbedProps) {
   return (
     <div
       style={{

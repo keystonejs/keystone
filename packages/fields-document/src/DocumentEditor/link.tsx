@@ -175,7 +175,7 @@ export const LinkElement = ({
 const separator = <ToolbarSeparator />
 const externalLinkIcon = <ExternalLinkIcon size="small" />
 
-const UnlinkButton = memo(function UnlinkButton({ onUnlink }: { onUnlink: () => void }) {
+const UnlinkButton = memo(function UnlinkButton ({ onUnlink }: { onUnlink: () => void }) {
   return (
     <Tooltip content="Unlink" weight="subtle">
       {attrs => (
@@ -196,7 +196,7 @@ const UnlinkButton = memo(function UnlinkButton({ onUnlink }: { onUnlink: () => 
 
 let linkIcon = <LinkIcon size="small" />
 
-const LinkButton = forwardRef<HTMLButtonElement, {}>(function LinkButton(props, ref) {
+const LinkButton = forwardRef<HTMLButtonElement, {}>(function LinkButton (props, ref) {
   const {
     editor,
     links: { isDisabled, isSelected },
@@ -228,7 +228,7 @@ export const linkButton = (
 
 const markdownLinkPattern = /(^|\s)\[(.+?)\]\((\S+)\)$/
 
-export function withLink(
+export function withLink (
   editorDocumentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>,
   editor: Editor

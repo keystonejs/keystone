@@ -35,7 +35,7 @@ export type NoticeTokens = {
   };
 }
 
-export function useNoticeTokens({ tone: toneKey }: NoticeTokensProps): NoticeTokens {
+export function useNoticeTokens ({ tone: toneKey }: NoticeTokensProps): NoticeTokens {
   const { colors, radii, tones, typography, spacing } = useTheme()
   const tone = tones[toneKey]
 
@@ -65,7 +65,7 @@ type NoticeStylesProps = {
   tokens: NoticeTokens;
 }
 
-export function useNoticeStyles({ tokens }: NoticeStylesProps) {
+export function useNoticeStyles ({ tokens }: NoticeStylesProps) {
   const actions = {
     marginTop: tokens.gap,
   }

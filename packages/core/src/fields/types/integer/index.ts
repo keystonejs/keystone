@@ -117,7 +117,7 @@ export const integer =
       ...config,
       hooks: {
         ...config.hooks,
-        async validateInput(args) {
+        async validateInput (args) {
           const value = args.resolvedData[meta.fieldKey]
 
           if (
@@ -156,7 +156,7 @@ export const integer =
             type: graphql.Int,
             defaultValue: typeof defaultValue === 'number' ? defaultValue : undefined,
           }),
-          resolve(value) {
+          resolve (value) {
             if (value === undefined && typeof defaultValue === 'number') {
               return defaultValue
             }
@@ -171,7 +171,7 @@ export const integer =
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/integer',
       views: '@keystone-6/core/fields/types/integer/views',
-      getAdminMeta() {
+      getAdminMeta () {
         return {
           validation: {
             min: validation?.min ?? MIN_INT,

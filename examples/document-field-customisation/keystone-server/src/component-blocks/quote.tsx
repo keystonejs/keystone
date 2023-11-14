@@ -15,7 +15,7 @@ export const quote = component({
     }),
     attribution: fields.child({ kind: 'inline', placeholder: 'Attribution...' }),
   },
-  preview: function Quote(props) {
+  preview: function Quote (props) {
     return (
       <div
         css={{

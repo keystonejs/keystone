@@ -21,7 +21,7 @@ import { getInitFirstItemSchema } from './gql/getInitFirstItemSchema'
 import { getPasswordResetSchema } from './gql/getPasswordResetSchema'
 import { getMagicAuthLinkSchema } from './gql/getMagicAuthLinkSchema'
 
-function assertSecretFieldImpl(
+function assertSecretFieldImpl (
   impl: any,
   listKey: string,
   secretField: string
@@ -38,7 +38,7 @@ function assertSecretFieldImpl(
   }
 }
 
-export function getSecretFieldImpl(schema: GraphQLSchema, listKey: string, fieldKey: string) {
+export function getSecretFieldImpl (schema: GraphQLSchema, listKey: string, fieldKey: string) {
   const gqlOutputType = assertObjectType(schema.getType(listKey))
   const secretFieldImpl = gqlOutputType.getFields()?.[fieldKey].extensions?.keystoneSecretField
   assertSecretFieldImpl(secretFieldImpl, listKey, fieldKey)

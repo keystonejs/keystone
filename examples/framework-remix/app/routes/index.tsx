@@ -17,7 +17,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   })
 }
 
-export default function UsersIndexRoute() {
+export default function UsersIndexRoute () {
   const data = useLoaderData<typeof loader>()
 
   return (

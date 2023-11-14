@@ -8,7 +8,7 @@ import { Well } from '../../../components/primitives/Well'
 import { useMediaQuery } from '../../../lib/media'
 import { InlineCode } from '../../../components/primitives/Code'
 
-export function QuickStart() {
+export function QuickStart () {
   const mq = useMediaQuery()
   return (
     <div>
@@ -27,7 +27,7 @@ export function QuickStart() {
   )
 }
 
-export function Foundations() {
+export function Foundations () {
   const mq = useMediaQuery()
   return (
     <div>
@@ -69,7 +69,7 @@ export function Foundations() {
   )
 }
 
-export default function Docs() {
+export default function Docs () {
   return (
     <DocsPage
       noRightNav

@@ -4,7 +4,7 @@ import { text } from '@keystone-6/core/fields'
 import { allowAll } from '@keystone-6/core/access'
 import { dbConfig } from '../utils'
 
-function makeQuery(size = 0) {
+function makeQuery (size = 0) {
   const query = JSON.stringify({
     variables: {
       data: {

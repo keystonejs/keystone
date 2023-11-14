@@ -21,7 +21,7 @@ export const hero = component({
       }),
     }),
   },
-  preview: function Hero(props) {
+  preview: function Hero (props) {
     return (
       <div>
         <NotEditable>

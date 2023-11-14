@@ -9,7 +9,7 @@ type SidebarProps = {
   isUpdatesPage?: boolean;
 }
 
-export function Sidebar({ isUpdatesPage }: SidebarProps) {
+export function Sidebar ({ isUpdatesPage }: SidebarProps) {
   const mq = useMediaQuery()
   const Navigation = isUpdatesPage ? UpdatesNavigation : DocsNavigation
 

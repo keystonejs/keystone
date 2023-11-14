@@ -14,11 +14,11 @@ type Session = {
   };
 }
 
-function hasSession({ session }: { session?: Session }) {
+function hasSession ({ session }: { session?: Session }) {
   return Boolean(session)
 }
 
-function isAdminOrSameUser({ session, item }: { session?: Session; item: Lists.User.Item }) {
+function isAdminOrSameUser ({ session, item }: { session?: Session; item: Lists.User.Item }) {
   // you need to have a session to do this
   if (!session) return false
 
@@ -29,7 +29,7 @@ function isAdminOrSameUser({ session, item }: { session?: Session; item: Lists.U
   return session.itemId === item.id
 }
 
-function isAdminOrSameUserFilter({ session }: { session?: Session }) {
+function isAdminOrSameUserFilter ({ session }: { session?: Session }) {
   // you need to have a session to do this
   if (!session) return false
 
@@ -44,7 +44,7 @@ function isAdminOrSameUserFilter({ session }: { session?: Session }) {
   }
 }
 
-function isAdmin({ session }: { session?: Session }) {
+function isAdmin ({ session }: { session?: Session }) {
   // you need to have a session to do this
   if (!session) return false
 

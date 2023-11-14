@@ -79,7 +79,7 @@ export const virtual =
       ...config,
       output: graphql.field({
         ...(usableField as any),
-        resolve({ item }, ...args) {
+        resolve ({ item }, ...args) {
           return usableField.resolve!(item as any, ...args)
         },
       }),

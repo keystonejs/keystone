@@ -4,7 +4,7 @@ import { jsx } from '@emotion/react'
 
 import { type IconProps } from './util'
 
-export function PJohnsonLogo(props: IconProps) {
+export function PJohnsonLogo (props: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

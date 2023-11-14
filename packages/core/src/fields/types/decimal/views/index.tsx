@@ -25,14 +25,14 @@ export const Field = ({
   const [hasBlurred, setHasBlurred] = useState(false)
   const inputProps = useFormattedInput<Decimal | null>(
     {
-      format(decimal) {
+      format (decimal) {
         if (decimal === null) {
           return ''
         }
 
         return decimal.toFixed(field.scale)
       },
-      parse(value) {
+      parse (value) {
         value = value.trim()
         if (value === '') {
           return null
@@ -47,11 +47,11 @@ export const Field = ({
       },
     },
     {
-      onChange(val) {
+      onChange (val) {
         onChange?.({ ...value, value: val })
       },
       value: value.value,
-      onBlur() {
+      onBlur () {
         setHasBlurred(true)
       },
     }
@@ -125,7 +125,7 @@ type Value =
       value: InnerValue;
     }
 
-function validate(value: Value, validation: Validation, label: string): string | undefined {
+function validate (value: Value, validation: Validation, label: string): string | undefined {
   const val = value.value
   if (typeof val === 'string') {
     return `${label} must be a number`
@@ -197,7 +197,7 @@ export const controller = (
     }),
     validate: val => validate(val, validation, config.label) === undefined,
     filter: {
-      Filter({ autoFocus, type, onChange, value }) {
+      Filter ({ autoFocus, type, onChange, value }) {
         return (
           <TextInput
             onChange={event => {
@@ -226,7 +226,7 @@ export const controller = (
         const key = type === 'is' ? 'equals' : type === 'not_in' ? 'notIn' : type
         return { [config.path]: { [key]: parsed } }
       },
-      Label({ label, value, type }) {
+      Label ({ label, value, type }) {
         let renderedValue = value
         if (['in', 'not_in'].includes(type)) {
           renderedValue = value

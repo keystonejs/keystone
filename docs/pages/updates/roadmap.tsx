@@ -13,7 +13,7 @@ import { Type } from '../../components/primitives/Type'
 import { DocsPage } from '../../components/Page'
 import { useMediaQuery } from '../../lib/media'
 
-function TimelineItem({ children }: { children: ReactNode }) {
+function TimelineItem ({ children }: { children: ReactNode }) {
   return (
     <div
       css={{
@@ -25,7 +25,7 @@ function TimelineItem({ children }: { children: ReactNode }) {
   )
 }
 
-function TimelineMarker({ look }: Pick<ComponentProps<typeof Gradient>, 'look'>) {
+function TimelineMarker ({ look }: Pick<ComponentProps<typeof Gradient>, 'look'>) {
   return (
     <div
       css={{
@@ -56,7 +56,7 @@ function TimelineMarker({ look }: Pick<ComponentProps<typeof Gradient>, 'look'>)
   )
 }
 
-function TimelineWeAreHere() {
+function TimelineWeAreHere () {
   const arrowSize = '0.4rem'
   const mq = useMediaQuery()
   return (
@@ -94,7 +94,7 @@ type TimelineContentProps = {
   title: ReactNode;
   children: ReactNode;
 } & Pick<ComponentProps<typeof Highlight>, 'look'>
-function TimelineContent({ title, look, children }: TimelineContentProps) {
+function TimelineContent ({ title, look, children }: TimelineContentProps) {
   return (
     <div css={{ height: '100%' }}>
       <Type as="h3" look="heading20bold" margin="1rem 0">
@@ -111,7 +111,7 @@ type RoadmapListProps = {
   children: ReactNode;
 }
 
-function RoadmapList({ children }: RoadmapListProps) {
+function RoadmapList ({ children }: RoadmapListProps) {
   const mq = useMediaQuery()
   return (
     <ul
@@ -161,7 +161,7 @@ type RoadmapItemProps = {
   section?: keyof typeof roadmapItemSection;
   children: ReactNode;
 }
-function RoadmapItem({ title, section, children }: RoadmapItemProps) {
+function RoadmapItem ({ title, section, children }: RoadmapItemProps) {
   const Section = section ? roadmapItemSection[section] : null
   return (
     <li>
@@ -176,7 +176,7 @@ function RoadmapItem({ title, section, children }: RoadmapItemProps) {
   )
 }
 
-function Divider() {
+function Divider () {
   return (
     <hr
       css={{
@@ -189,7 +189,7 @@ function Divider() {
   )
 }
 
-export default function Roadmap() {
+export default function Roadmap () {
   const mq = useMediaQuery()
 
   return (

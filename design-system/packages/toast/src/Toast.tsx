@@ -69,7 +69,7 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
 
 let idCount = -1
 let genId = () => ++idCount
-function populateDefaults(props: ToastProps): ToastPropsExact {
+function populateDefaults (props: ToastProps): ToastPropsExact {
   return {
     title: props.title,
     message: props.message,

@@ -5,7 +5,7 @@ import { jsx } from '@emotion/react'
 import { Wrapper } from '../primitives/Wrapper'
 import { Emoji } from '../primitives/Emoji'
 
-export function DocsFooter() {
+export function DocsFooter () {
   return (
     <footer
       css={{

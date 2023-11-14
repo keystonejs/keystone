@@ -6,7 +6,7 @@ type QuoteProps = {
   content: ReactNode;
 }
 
-export function Quote({ attribution, content }: QuoteProps) {
+export function Quote ({ attribution, content }: QuoteProps) {
   return (
     <div className={styles.quote}>
       <div style={{ fontStyle: 'italic', color: '#4A5568' }}>{content}</div>

@@ -4,7 +4,7 @@ import { baseMarkdocConfig } from '../../markdoc/config'
 const pattern =
   /{%\s+if\s+\$nextRelease\s+%}\s*([^]+?)\s*(?:{%\s+else\s+\/%}[^]*?)?{%\s+\/if\s+%}/g
 
-export function removeNextReleaseConditions(contents: string) {
+export function removeNextReleaseConditions (contents: string) {
   // ideally this would be a transform
   // but Markdoc's formatter is experimental and as of the time of writing this
   // doesn't seem to break some of our content

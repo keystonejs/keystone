@@ -20,7 +20,7 @@ const defaultTransformName = (path: string) => {
   return `${urlSafeName}-${id}`
 }
 
-export function createFilesContext(config: KeystoneConfig): FilesContext {
+export function createFilesContext (config: KeystoneConfig): FilesContext {
   const adaptersMap = new Map<string, FileAdapter>()
 
   for (const [storageKey, storageConfig] of Object.entries(config.storage || {})) {

@@ -19,7 +19,7 @@ const runner = setupTestRunner({
   }),
 })
 
-async function initialise({ context }: { context: KeystoneContext }) {
+async function initialise ({ context }: { context: KeystoneContext }) {
   await context.db.Singular.createOne({ data: {} })
 }
 

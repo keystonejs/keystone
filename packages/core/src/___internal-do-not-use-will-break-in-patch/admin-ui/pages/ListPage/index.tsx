@@ -81,7 +81,7 @@ let listMetaGraphqlQuery: TypedDocumentNode<
 
 const storeableQueries = ['sortBy', 'fields']
 
-function useQueryParamsFromLocalStorage(listKey: string) {
+function useQueryParamsFromLocalStorage (listKey: string) {
   const router = useRouter()
   const localStorageKey = `keystone.list.${listKey}.list.page.info`
 
@@ -426,7 +426,7 @@ const SortDirectionArrow = ({ direction }: { direction: 'ASC' | 'DESC' }) => {
   )
 }
 
-function DeleteManyButton({
+function DeleteManyButton ({
   selectedItems,
   list,
   refetch,
@@ -558,7 +558,7 @@ function DeleteManyButton({
   )
 }
 
-function ListTable({
+function ListTable ({
   selectedFields,
   listKey,
   itemsGetter,

@@ -9,7 +9,7 @@ import { type RenderElementProps } from 'slate-react'
 import { InlineDialog, ToolbarButton } from '../primitives'
 import { type ComponentBlock, type PreviewPropsForToolbar, type ObjectField, type ComponentSchema } from './api'
 
-export function ChromelessComponentBlockElement(props: {
+export function ChromelessComponentBlockElement (props: {
   renderedBlock: ReactNode;
   componentBlock: ComponentBlock & { chromeless: true };
   previewProps: PreviewPropsForToolbar<ObjectField<Record<string, ComponentSchema>>>;
@@ -43,7 +43,7 @@ export function ChromelessComponentBlockElement(props: {
   )
 }
 
-function DefaultToolbarWithoutChrome({
+function DefaultToolbarWithoutChrome ({
   onRemove,
 }: {
   onRemove(): void;

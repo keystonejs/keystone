@@ -29,13 +29,13 @@ type FieldConfig = {
       };
 }
 
-function yesNo(x: boolean | undefined) {
+function yesNo (x: boolean | undefined) {
   if (x === true) return 'True'
   if (x === false) return 'False'
   return 'Undefined'
 }
 
-function getListPrefix({ isFilterable, isOrderable, omit }: ListConfig) {
+function getListPrefix ({ isFilterable, isOrderable, omit }: ListConfig) {
   const keys: any = {
     Filterable: yesNo(isFilterable),
     Orderable: yesNo(isOrderable),
@@ -57,7 +57,7 @@ function getListPrefix({ isFilterable, isOrderable, omit }: ListConfig) {
     .join('_')
 }
 
-function getFieldPrefix({ isFilterable, isOrderable, omit }: FieldConfig) {
+function getFieldPrefix ({ isFilterable, isOrderable, omit }: FieldConfig) {
   const keys: any = {
     Filterable: yesNo(isFilterable),
     Orderable: yesNo(isOrderable),
@@ -78,11 +78,11 @@ function getFieldPrefix({ isFilterable, isOrderable, omit }: FieldConfig) {
     .join('_')
 }
 
-function getListName(config: ListConfig) {
+function getListName (config: ListConfig) {
   return `List_${getListPrefix(config)}`
 }
 
-function getFieldName(config: FieldConfig) {
+function getFieldName (config: FieldConfig) {
   return `Field_${getFieldPrefix(config)}`
 }
 
@@ -222,13 +222,13 @@ const introspectionQuery = `{
 }`
 
 class FakePrismaClient {
-  $on() {}
-  async findMany() {
+  $on () {}
+  async findMany () {
     return [{ id: 'mock' }]
   }
 }
 
-function dropPostgresThings(data: any) {
+function dropPostgresThings (data: any) {
   data.__schema.types = data.__schema.types.filter((x: any) => x.name !== 'QueryMode')
   for (const x of data.__schema.types) {
     x.inputFields = x.inputFields?.filter((x: any) => x.name !== 'mode')

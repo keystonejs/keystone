@@ -7,7 +7,7 @@ import { Notice, noticeToneValues } from '@keystone-ui/notice'
 import { Page } from '../../components/Page'
 import { toLabel, aAn } from '../../utils'
 
-export default function ButtonPage() {
+export default function ButtonPage () {
   const actions = {
     primary: { label: 'Primary Action', onPress: () => undefined },
     secondary: { label: 'Secondary Action', onPress: () => undefined },

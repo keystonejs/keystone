@@ -31,7 +31,7 @@ type EnumNullableListFilterType<Enum extends graphql.EnumType<any>> = graphql.In
   isEmpty: graphql.Arg<Enum>;
 }>
 
-export function enumFilters<Enum extends graphql.EnumType<any>>(
+export function enumFilters<Enum extends graphql.EnumType<any>> (
   enumType: Enum
 ): {
   optional: EnumNullableFilter<Enum>;

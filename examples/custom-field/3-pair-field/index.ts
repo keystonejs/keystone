@@ -21,10 +21,10 @@ const PairFilter = graphql.inputObject({
   },
 })
 
-export function pair<ListTypeInfo extends BaseListTypeInfo>(
+export function pair<ListTypeInfo extends BaseListTypeInfo> (
   config: PairFieldConfig<ListTypeInfo> = {}
 ): FieldTypeFunc<ListTypeInfo> {
-  function resolveInput(value: PairInput | null | undefined) {
+  function resolveInput (value: PairInput | null | undefined) {
     if (!value) return { left: value, right: value }
     const [left = '', right = ''] = value.split(' ', 2)
     return {
@@ -33,13 +33,13 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>(
     }
   }
 
-  function resolveOutput(value: { left: string | null; right: string | null }) {
+  function resolveOutput (value: { left: string | null; right: string | null }) {
     const { left, right } = value
     if (left === null || right === null) return null
     return `${left} ${right}`
   }
 
-  function resolveWhere(value: null | { equals: string | null | undefined }) {
+  function resolveWhere (value: null | { equals: string | null | undefined }) {
     if (value === null) {
       throw new Error('PairFilter cannot be null')
     }
@@ -73,31 +73,31 @@ export function pair<ListTypeInfo extends BaseListTypeInfo>(
       input: {
         where: {
           arg: graphql.arg({ type: PairFilter }),
-          resolve(value, context) {
+          resolve (value, context) {
             return resolveWhere(value)
           },
         },
         create: {
           arg: graphql.arg({ type: PairInput }),
-          resolve(value, context) {
+          resolve (value, context) {
             return resolveInput(value)
           },
         },
         update: {
           arg: graphql.arg({ type: PairInput }),
-          resolve(value, context) {
+          resolve (value, context) {
             return resolveInput(value)
           },
         },
       },
       output: graphql.field({
         type: PairOutput,
-        resolve({ value, item }, args, context, info) {
+        resolve ({ value, item }, args, context, info) {
           return resolveOutput(value)
         },
       }),
       views: './3-pair-field/views',
-      getAdminMeta() {
+      getAdminMeta () {
         return {}
       },
     })

@@ -50,7 +50,7 @@ export const structure =
         ...config,
         hooks: {
           ...config.hooks,
-          async resolveInput(args) {
+          async resolveInput (args) {
             let val = args.resolvedData[meta.fieldKey]
             if (args.operation === 'update') {
               let prevVal = args.item[meta.fieldKey]
@@ -77,7 +77,7 @@ export const structure =
             arg: graphql.arg({
               type: getGraphQLInputType(name, schema, 'create', new Map(), meta),
             }),
-            async resolve(val, context) {
+            async resolve (val, context) {
               return await getValueForCreate(schema, val, context, [])
             },
           },
@@ -106,7 +106,7 @@ export const structure =
                     defaultValue: false,
                   }),
                 },
-                resolve({ value }, args, context) {
+                resolve ({ value }, args, context) {
                   if (args.hydrateRelationships) {
                     return addRelationshipDataToComponentProps(schema, value, (schema, value) =>
                       fetchRelationshipData(
@@ -123,7 +123,7 @@ export const structure =
               }),
             },
           }),
-          resolve(source) {
+          resolve (source) {
             return source
           },
         }),

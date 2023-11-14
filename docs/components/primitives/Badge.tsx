@@ -26,7 +26,7 @@ type BadgeProps = {
   look?: keyof typeof styleMap;
 } & HTMLAttributes<HTMLElement>
 
-export function Badge({ look = 'warning', ...props }: BadgeProps) {
+export function Badge ({ look = 'warning', ...props }: BadgeProps) {
   return (
     <span
       css={{

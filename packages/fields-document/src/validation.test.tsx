@@ -71,10 +71,10 @@ const validate = (val: unknown) => {
 }
 
 expect.addSnapshotSerializer({
-  test(val) {
+  test (val) {
     return val instanceof PropValidationError
   },
-  serialize(val) {
+  serialize (val) {
     return `PropValidationError ${JSON.stringify(val.message)} ${JSON.stringify(val.path)}`
   },
 })

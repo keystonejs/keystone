@@ -23,13 +23,13 @@ type _UpdateValueType = Exclude<
 
 export class RelationshipErrors extends Error {
   errors: { error: Error; tag: string }[]
-  constructor(errors: { error: Error; tag: string }[]) {
+  constructor (errors: { error: Error; tag: string }[]) {
     super('Multiple relationship errors')
     this.errors = errors
   }
 }
 
-function getResolvedUniqueWheres(
+function getResolvedUniqueWheres (
   uniqueInputs: UniqueInputFilter[],
   context: KeystoneContext,
   foreignList: InitialisedList,
@@ -40,7 +40,7 @@ function getResolvedUniqueWheres(
   )
 }
 
-export function resolveRelateToManyForCreateInput(
+export function resolveRelateToManyForCreateInput (
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
   foreignList: InitialisedList,
@@ -80,7 +80,7 @@ export function resolveRelateToManyForCreateInput(
   }
 }
 
-export function resolveRelateToManyForUpdateInput(
+export function resolveRelateToManyForUpdateInput (
   nestedMutationState: NestedMutationState,
   context: KeystoneContext,
   foreignList: InitialisedList,

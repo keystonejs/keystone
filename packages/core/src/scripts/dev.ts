@@ -33,7 +33,7 @@ import type { Flags } from './cli'
 
 const devLoadingHTMLFilepath = path.join(pkgDir, 'static', 'dev-loading.html')
 
-function stripExtendHttpServer(config: KeystoneConfig): KeystoneConfig {
+function stripExtendHttpServer (config: KeystoneConfig): KeystoneConfig {
   const { server, ...rest } = config
   if (server) {
     const { extendHttpServer, ...restServer } = server
@@ -42,7 +42,7 @@ function stripExtendHttpServer(config: KeystoneConfig): KeystoneConfig {
   return rest
 }
 
-function resolvablePromise<T>() {
+function resolvablePromise<T> () {
   let _resolve!: (value: T) => void
   const promise: any = new Promise<T>(resolve => {
     _resolve = resolve
@@ -51,7 +51,7 @@ function resolvablePromise<T>() {
   return promise
 }
 
-export async function dev(
+export async function dev (
   cwd: string,
   { dbPush, prisma, server, ui }: Pick<Flags, 'dbPush' | 'prisma' | 'server' | 'ui'>
 ) {
@@ -62,7 +62,7 @@ export async function dev(
     [Symbol.asyncIterator]: () => ({ next: () => lastPromise }),
   }
 
-  function addBuildResult(build: BuildResult) {
+  function addBuildResult (build: BuildResult) {
     const prev = lastPromise
     lastPromise = resolvablePromise()
     prev.resolve({ value: build, done: false })
@@ -75,7 +75,7 @@ export async function dev(
       ...(esbuildConfig.plugins ?? []),
       {
         name: 'esbuildWatchPlugin',
-        setup(build: any) {
+        setup (build: any) {
           // TODO: no any
           build.onEnd(addBuildResult)
         },
@@ -103,7 +103,7 @@ export async function dev(
   const isReady = () => !server || (expressServer !== null && hasAddedAdminUIMiddleware)
 
   let prismaClient: any = null
-  async function stop(aHttpServer: any, exit = false) {
+  async function stop (aHttpServer: any, exit = false) {
     await esbuildContext.dispose()
 
     //   WARNING: this is only actually required for tests
@@ -238,7 +238,7 @@ export async function dev(
         if (prismaClientModule) {
           if (server && lastApolloServer) {
             const keystone = getKeystone({
-              PrismaClient: function fakePrismaClientClass() {
+              PrismaClient: function fakePrismaClientClass () {
                 return prismaClient
               } as unknown as new (args: unknown) => any,
               Prisma: prismaClientModule.Prisma,
@@ -338,7 +338,7 @@ export async function dev(
   }
 }
 
-async function setupInitialKeystone(
+async function setupInitialKeystone (
   cwd: string,
   config: KeystoneConfig,
   options: {
@@ -430,7 +430,7 @@ async function setupInitialKeystone(
   }
 }
 
-async function initAdminUI(
+async function initAdminUI (
   cwd: string,
   config: KeystoneConfig,
   graphQLSchema: GraphQLSchema,

@@ -6,7 +6,7 @@ export async function runSideEffectOnlyHook<
   Args extends Parameters<
     NonNullable<InitialisedList['hooks'][HookName]['create' | 'update' | 'delete']>
   >[0]
->(list: InitialisedList, hookName: HookName, args: Args) {
+> (list: InitialisedList, hookName: HookName, args: Args) {
   const { operation } = args
 
   let shouldRunFieldLevelHook: (fieldKey: string) => boolean

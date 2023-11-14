@@ -144,7 +144,7 @@ export const componentBlocks = {
     },
   }),
   table: component({
-    preview: function MyTable(props) {
+    preview: function MyTable (props) {
       useEffect(() => {
         let maxColumns = 1
         const rows = props.fields.rows
@@ -239,7 +239,7 @@ export const componentBlocks = {
     },
   }),
   checkboxList: component({
-    preview: function CheckboxList(props) {
+    preview: function CheckboxList (props) {
       useEffect(() => {
         if (!props.fields.children.elements.length) {
           props.fields.children.onChange([{ key: undefined }])
@@ -413,7 +413,7 @@ export const componentBlocks = {
     },
   }),
   notice: component({
-    preview: function Notice(props) {
+    preview: function Notice (props) {
       const { palette, radii, spacing } = useTheme()
       const intentMap = {
         info: {
@@ -488,7 +488,7 @@ export const componentBlocks = {
         relationships: 'inherit',
       }),
     },
-    toolbar({ props, onRemove }) {
+    toolbar ({ props, onRemove }) {
       return (
         <ToolbarGroup>
           {props.fields.intent.options.map(opt => {

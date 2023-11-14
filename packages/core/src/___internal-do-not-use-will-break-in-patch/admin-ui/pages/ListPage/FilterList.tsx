@@ -9,7 +9,7 @@ import { type FieldMeta, type ListMeta } from '../../../../types'
 import { useRouter } from '../../../../admin-ui/router'
 import { type Filter } from './useFilters'
 
-export function FilterList({ filters, list }: { filters: Filter[]; list: ListMeta }) {
+export function FilterList ({ filters, list }: { filters: Filter[]; list: ListMeta }) {
   return (
     <Inline gap="small">
       {filters.map(filter => {
@@ -20,7 +20,7 @@ export function FilterList({ filters, list }: { filters: Filter[]; list: ListMet
   )
 }
 
-function FilterPill({ filter, field }: { filter: Filter; field: FieldMeta }) {
+function FilterPill ({ filter, field }: { filter: Filter; field: FieldMeta }) {
   const router = useRouter()
   const { isOpen, setOpen, trigger, dialog, arrow } = usePopover({
     placement: 'bottom',
@@ -77,7 +77,7 @@ function FilterPill({ filter, field }: { filter: Filter; field: FieldMeta }) {
   )
 }
 
-function EditDialog({
+function EditDialog ({
   filter,
   field,
   onClose,

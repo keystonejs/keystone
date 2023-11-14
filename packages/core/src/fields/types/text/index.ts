@@ -117,7 +117,7 @@ export const text =
       ...config,
       hooks: {
         ...config.hooks,
-        async validateInput(args) {
+        async validateInput (args) {
           const val = args.resolvedData[meta.fieldKey]
           if (val === null && (validation?.isRequired || isNullable === false)) {
             args.addValidationError(`${fieldLabel} is required`)
@@ -161,7 +161,7 @@ export const text =
             type: graphql.String,
             defaultValue: typeof defaultValue === 'string' ? defaultValue : undefined,
           }),
-          resolve(val) {
+          resolve (val) {
             if (val === undefined) {
               return defaultValue ?? null
             }
@@ -176,7 +176,7 @@ export const text =
       }),
       __ksTelemetryFieldTypeName: '@keystone-6/text',
       views: '@keystone-6/core/fields/types/text/views',
-      getAdminMeta(): TextFieldMeta {
+      getAdminMeta (): TextFieldMeta {
         return {
           displayMode: config.ui?.displayMode ?? 'input',
           shouldUseModeInsensitive: meta.provider === 'postgresql',

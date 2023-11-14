@@ -20,14 +20,14 @@ import { accessReturnError, extensionError } from './graphql-errors'
 import type { InitialisedList } from './initialise-lists'
 import { type InputFilter } from './where-inputs'
 
-export function cannotForItem(operation: string, list: InitialisedList) {
+export function cannotForItem (operation: string, list: InitialisedList) {
   return (
     `You cannot ${operation} that ${list.listKey}` +
     (operation === 'create' ? '' : ' - it may not exist')
   )
 }
 
-export function cannotForItemFields(
+export function cannotForItemFields (
   operation: string,
   list: InitialisedList,
   fieldsDenied: string[]
@@ -37,7 +37,7 @@ export function cannotForItemFields(
   } - you cannot ${operation} the fields ${JSON.stringify(fieldsDenied)}`
 }
 
-export async function getOperationAccess(
+export async function getOperationAccess (
   list: InitialisedList,
   context: KeystoneContext,
   operation: 'query' | 'create' | 'update' | 'delete'
@@ -63,7 +63,7 @@ export async function getOperationAccess(
   return result
 }
 
-export async function getAccessFilters(
+export async function getAccessFilters (
   list: InitialisedList,
   context: KeystoneContext,
   operation: keyof typeof list.access.filter
@@ -114,7 +114,7 @@ export type ResolvedFieldAccessControl = {
   update: IndividualFieldAccessControl<FieldUpdateItemAccessArgs<BaseListTypeInfo>>;
 }
 
-export function parseFieldAccessControl(
+export function parseFieldAccessControl (
   access: FieldAccessControl<BaseListTypeInfo> | undefined
 ): ResolvedFieldAccessControl {
   if (typeof access === 'function') {
@@ -149,7 +149,7 @@ export type ResolvedListAccessControl = {
   };
 }
 
-export function parseListAccessControl(
+export function parseListAccessControl (
   access: ListAccessControl<BaseListTypeInfo>
 ): ResolvedListAccessControl {
   if (typeof access === 'function') {

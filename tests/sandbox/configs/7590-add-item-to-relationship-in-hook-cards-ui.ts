@@ -17,7 +17,7 @@ export const lists = {
         },
         hooks: {
           // every time you save, add a random number
-          async resolveInput(args) {
+          async resolveInput (args) {
             return {
               ...args.resolvedData[args.fieldKey],
               create: {

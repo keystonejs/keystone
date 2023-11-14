@@ -6,7 +6,7 @@ import { jsx, Box, useTheme, Center } from '@keystone-ui/core'
 import { Page } from '../../components/Page'
 import { Code } from '../../components/Code'
 
-export default function CenterPage() {
+export default function CenterPage () {
   const { palette } = useTheme()
   return (
     <Page>

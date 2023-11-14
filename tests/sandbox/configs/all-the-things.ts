@@ -92,7 +92,7 @@ export const lists = {
         ui: { description },
         field: graphql.field({
           type: graphql.Float,
-          resolve() {
+          resolve () {
             return Math.random() * 1000
           },
         }),

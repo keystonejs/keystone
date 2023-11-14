@@ -107,7 +107,7 @@ const useStyles = ({
 
 const portalTarget = typeof document !== 'undefined' ? document.body : undefined
 
-export function Select({
+export function Select ({
   id,
   onChange,
   value,
@@ -144,7 +144,7 @@ export function Select({
   )
 }
 
-export function MultiSelect({
+export function MultiSelect ({
   id,
   onChange,
   value,

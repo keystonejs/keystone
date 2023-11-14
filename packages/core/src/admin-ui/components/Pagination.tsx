@@ -29,7 +29,7 @@ const getPaginationStats = ({ list, pageSize, currentPage, total }: PaginationPr
   return { stats }
 }
 
-export function Pagination({ currentPage, total, pageSize, list }: PaginationProps) {
+export function Pagination ({ currentPage, total, pageSize, list }: PaginationProps) {
   const { query, pathname, push } = useRouter()
   const { stats } = getPaginationStats({ list, currentPage, total, pageSize })
   const { opacity } = useTheme()
@@ -149,7 +149,7 @@ export function Pagination({ currentPage, total, pageSize, list }: PaginationPro
   )
 }
 
-export function PaginationLabel({
+export function PaginationLabel ({
   currentPage,
   pageSize,
   plural,

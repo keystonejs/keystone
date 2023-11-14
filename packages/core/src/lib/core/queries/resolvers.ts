@@ -18,7 +18,7 @@ import { checkFilterOrderAccess } from '../filter-order-access'
 // we want to put the value we get back from the field's unique where resolver into an equals
 // rather than directly passing the value as the filter (even though Prisma supports that), we use equals
 // because we want to disallow fields from providing an arbitrary filter
-export function mapUniqueWhereToWhere(uniqueWhere: UniquePrismaFilter) {
+export function mapUniqueWhereToWhere (uniqueWhere: UniquePrismaFilter) {
   const where: PrismaFilter = {}
   for (const key in uniqueWhere) {
     where[key] = { equals: uniqueWhere[key] }
@@ -26,7 +26,7 @@ export function mapUniqueWhereToWhere(uniqueWhere: UniquePrismaFilter) {
   return where
 }
 
-function* traverse(
+function* traverse (
   list: InitialisedList,
   inputFilter: InputFilter
 ): Generator<{ fieldKey: string; list: InitialisedList }, void, unknown> {
@@ -52,7 +52,7 @@ function* traverse(
   }
 }
 
-export async function accessControlledFilter(
+export async function accessControlledFilter (
   list: InitialisedList,
   context: KeystoneContext,
   resolvedWhere: PrismaFilter,
@@ -66,7 +66,7 @@ export async function accessControlledFilter(
   return resolvedWhere
 }
 
-export async function findOne(
+export async function findOne (
   args: { where: UniqueInputFilter },
   list: InitialisedList,
   context: KeystoneContext
@@ -100,7 +100,7 @@ export async function findOne(
   return runWithPrisma(context, list, model => model.findFirst({ where: filter }))
 }
 
-export async function findMany(
+export async function findMany (
   { where, take, skip, orderBy: rawOrderBy, cursor }: FindManyArgsValue,
   list: InitialisedList,
   context: KeystoneContext,
@@ -150,7 +150,7 @@ export async function findMany(
   return results
 }
 
-async function resolveOrderBy(
+async function resolveOrderBy (
   orderBy: readonly Record<string, any>[],
   list: InitialisedList,
   context: KeystoneContext
@@ -206,7 +206,7 @@ async function resolveOrderBy(
   )
 }
 
-export async function count(
+export async function count (
   { where }: { where: Record<string, any> },
   list: InitialisedList,
   context: KeystoneContext,

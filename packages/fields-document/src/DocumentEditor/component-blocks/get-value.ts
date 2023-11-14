@@ -12,13 +12,13 @@ const previewPropsToValueConverter: {
     props: GenericPreviewProps<Extract<ComponentSchema, { kind: Kind }>, unknown>
   ) => ValueForComponentSchema<Extract<ComponentSchema, { kind: Kind }>>;
 } = {
-  child() {
+  child () {
     return null
   },
-  form(props) {
+  form (props) {
     return props.value
   },
-  array(props) {
+  array (props) {
     const values = props.elements.map(x => previewPropsToValue(x))
     setKeysForArrayValue(
       values,
@@ -26,23 +26,23 @@ const previewPropsToValueConverter: {
     )
     return values
   },
-  conditional(props) {
+  conditional (props) {
     return {
       discriminant: props.discriminant,
       value: previewPropsToValue(props.value),
     }
   },
-  object(props) {
+  object (props) {
     return Object.fromEntries(
       Object.entries(props.fields).map(([key, val]) => [key, previewPropsToValue(val)])
     )
   },
-  relationship(props) {
+  relationship (props) {
     return props.value
   },
 }
 
-export function previewPropsToValue<Schema extends ComponentSchema>(
+export function previewPropsToValue<Schema extends ComponentSchema> (
   props: GenericPreviewProps<ComponentSchema, unknown>
 ): ValueForComponentSchema<Schema> {
   return (previewPropsToValueConverter[props.schema.kind] as any)(props)
@@ -54,26 +54,26 @@ const valueToUpdaters: {
     schema: Extract<ComponentSchema, { kind: Kind }>
   ) => InitialOrUpdateValueFromComponentPropField<Extract<ComponentSchema, { kind: Kind }>>;
 } = {
-  child() {
+  child () {
     return undefined
   },
-  form(value) {
+  form (value) {
     return value
   },
-  array(value, schema) {
+  array (value, schema) {
     const keys = getKeysForArrayValue(value)
     return value.map((x, i) => ({
       key: keys[i],
       value: valueToUpdater(x, schema.element),
     }))
   },
-  conditional(value, schema) {
+  conditional (value, schema) {
     return {
       discriminant: value.discriminant,
       value: valueToUpdater(value.value, schema.values[value.discriminant.toString()]),
     }
   },
-  object(value, schema) {
+  object (value, schema) {
     return Object.fromEntries(
       Object.entries(schema.fields).map(([key, schema]) => [
         key,
@@ -81,19 +81,19 @@ const valueToUpdaters: {
       ])
     )
   },
-  relationship(value) {
+  relationship (value) {
     return value
   },
 }
 
-function valueToUpdater<Schema extends ComponentSchema>(
+function valueToUpdater<Schema extends ComponentSchema> (
   value: ValueForComponentSchema<Schema>,
   schema: ComponentSchema
 ): InitialOrUpdateValueFromComponentPropField<Schema> {
   return (valueToUpdaters[schema.kind] as any)(value, schema)
 }
 
-export function setValueToPreviewProps<Schema extends ComponentSchema>(
+export function setValueToPreviewProps<Schema extends ComponentSchema> (
   value: ValueForComponentSchema<Schema>,
   props: GenericPreviewProps<ComponentSchema, unknown>
 ) {
@@ -119,7 +119,7 @@ export function setValueToPreviewProps<Schema extends ComponentSchema>(
 }
 
 // this exists because for props.schema.kind === 'form', ts doesn't narrow props, only props.schema
-function isKind<Kind extends ComponentSchema['kind']>(
+function isKind<Kind extends ComponentSchema['kind']> (
   props: GenericPreviewProps<ComponentSchema, unknown>,
   kind: Kind
 ): props is GenericPreviewProps<Extract<ComponentSchema, { kind: Kind }>, unknown> {

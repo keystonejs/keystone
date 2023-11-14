@@ -17,7 +17,7 @@ export const lists: Lists = {
           { label: 'High', value: 'high' },
         ],
         hooks: {
-          resolveInput({ resolvedData, inputData }) {
+          resolveInput ({ resolvedData, inputData }) {
             if (inputData.priority === null) {
               // default to high if "urgent" is in the label
               if (inputData.label && inputData.label.toLowerCase().includes('urgent')) {
@@ -39,7 +39,7 @@ export const lists: Lists = {
         many: false,
         hooks: {
           // dynamic default: if unassigned, find an anonymous user and assign the task to them
-          async resolveInput({ context, operation, resolvedData }) {
+          async resolveInput ({ context, operation, resolvedData }) {
             if (resolvedData.assignedTo === null) {
               const [user] = await context.db.Person.findMany({
                 where: { name: { equals: 'Anonymous' } },
@@ -58,7 +58,7 @@ export const lists: Lists = {
       // dynamic default: we set the due date to be 7 days in the future
       finishBy: timestamp({
         hooks: {
-          resolveInput({ resolvedData, inputData, operation }) {
+          resolveInput ({ resolvedData, inputData, operation }) {
             if (inputData.finishBy == null) {
               const date = new Date()
               date.setUTCDate(new Date().getUTCDate() + 7)

@@ -91,7 +91,7 @@ export const multiselect =
         __ksTelemetryFieldTypeName: '@keystone-6/multiselect',
         hooks: {
           ...config.hooks,
-          async validateInput(args) {
+          async validateInput (args) {
             const selectedValues: readonly (string | number)[] | undefined =
               args.inputData[meta.fieldKey]
             if (selectedValues !== undefined) {
@@ -124,7 +124,7 @@ export const multiselect =
         },
         output: graphql.field({
           type: output(transformedConfig.graphqlType),
-          resolve({ value }) {
+          resolve ({ value }) {
             return value as any
           },
         }),
@@ -138,7 +138,7 @@ export const multiselect =
     )
   }
 
-function configToOptionsAndGraphQLType(
+function configToOptionsAndGraphQLType (
   config: MultiselectFieldConfig<BaseListTypeInfo>,
   meta: FieldData
 ) {

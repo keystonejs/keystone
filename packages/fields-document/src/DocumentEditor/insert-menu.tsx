@@ -23,7 +23,7 @@ type Option = {
   insert: (editor: Editor) => void;
 }
 
-function getOptions(
+function getOptions (
   toolbarState: ToolbarState,
   componentBlocks: Record<string, ComponentBlock>,
   relationships: Relationships
@@ -50,7 +50,7 @@ function getOptions(
       .filter(a => toolbarState.editorDocumentFeatures.formatting.headingLevels.includes(a))
       .map(level => ({
         label: `Heading ${level}`,
-        insert(editor: Editor) {
+        insert (editor: Editor) {
           insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
             type: 'heading',
             level,
@@ -61,7 +61,7 @@ function getOptions(
     !toolbarState.blockquote.isDisabled &&
       toolbarState.editorDocumentFeatures.formatting.blockTypes.blockquote && {
         label: 'Blockquote',
-        insert(editor) {
+        insert (editor) {
           insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
             type: 'blockquote',
             children: [{ text: '' }],
@@ -71,7 +71,7 @@ function getOptions(
     !toolbarState.code.isDisabled &&
       toolbarState.editorDocumentFeatures.formatting.blockTypes.code && {
         label: 'Code block',
-        insert(editor) {
+        insert (editor) {
           insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
             type: 'code',
             children: [{ text: '' }],
@@ -81,7 +81,7 @@ function getOptions(
     !toolbarState.dividers.isDisabled &&
       toolbarState.editorDocumentFeatures.dividers && {
         label: 'Divider',
-        insert(editor) {
+        insert (editor) {
           insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
             type: 'divider',
             children: [{ text: '' }],
@@ -90,7 +90,7 @@ function getOptions(
       },
     !!toolbarState.editorDocumentFeatures.layouts.length && {
       label: 'Layout',
-      insert(editor) {
+      insert (editor) {
         insertLayout(editor, toolbarState.editorDocumentFeatures.layouts[0])
       },
     },
@@ -98,7 +98,7 @@ function getOptions(
       toolbarState.editorDocumentFeatures.formatting.listTypes.ordered && {
         label: 'Numbered List',
         keywords: ['ordered list'],
-        insert(editor) {
+        insert (editor) {
           insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
             type: 'ordered-list',
             children: [{ text: '' }],
@@ -109,7 +109,7 @@ function getOptions(
       toolbarState.editorDocumentFeatures.formatting.listTypes.unordered && {
         label: 'Bullet List',
         keywords: ['unordered list'],
-        insert(editor) {
+        insert (editor) {
           insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
             type: 'unordered-list',
             children: [{ text: '' }],
@@ -120,7 +120,7 @@ function getOptions(
   return options.filter((x): x is Exclude<typeof x, boolean> => typeof x !== 'boolean')
 }
 
-function insertOption(editor: Editor, text: Text, option: Option) {
+function insertOption (editor: Editor, text: Text, option: Option) {
   const path = ReactEditor.findPath(editor, text)
   Transforms.delete(editor, {
     at: {
@@ -132,7 +132,7 @@ function insertOption(editor: Editor, text: Text, option: Option) {
 }
 
 // TODO: the changing width of the menu when searching isn't great
-export function InsertMenu({ children, text }: { children: ReactNode; text: Text }) {
+export function InsertMenu ({ children, text }: { children: ReactNode; text: Text }) {
   const toolbarState = useToolbarState()
   const {
     editor,
@@ -269,7 +269,7 @@ const nodeListsWithoutInsertMenu = new WeakSet<Node[]>()
 
 const nodesWithoutInsertMenu = new WeakSet<Node>()
 
-function findPathWithInsertMenu(node: Node, path: Path): Path | undefined {
+function findPathWithInsertMenu (node: Node, path: Path): Path | undefined {
   if (Text.isText(node)) {
     return node.insertMenu ? path : undefined
   }
@@ -287,7 +287,7 @@ function findPathWithInsertMenu(node: Node, path: Path): Path | undefined {
   nodeListsWithoutInsertMenu.add(node.children)
 }
 
-function removeInsertMenuMarkWhenOutsideOfSelection(editor: Editor) {
+function removeInsertMenuMarkWhenOutsideOfSelection (editor: Editor) {
   const path = findPathWithInsertMenu(editor, [])
   if (
     path &&
@@ -302,7 +302,7 @@ function removeInsertMenuMarkWhenOutsideOfSelection(editor: Editor) {
   return false
 }
 
-export function withInsertMenu(editor: Editor): Editor {
+export function withInsertMenu (editor: Editor): Editor {
   const { normalizeNode, apply, insertText } = editor
   editor.normalizeNode = ([node, path]) => {
     if (Text.isText(node) && node.insertMenu) {

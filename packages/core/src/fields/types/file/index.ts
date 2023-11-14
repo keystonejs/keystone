@@ -31,14 +31,14 @@ const FileFieldOutput = graphql.object<FileMetadata & { storage: string }>()({
     filesize: graphql.field({ type: graphql.nonNull(graphql.Int) }),
     url: graphql.field({
       type: graphql.nonNull(graphql.String),
-      resolve(data, args, context) {
+      resolve (data, args, context) {
         return context.files(data.storage).getUrl(data.filename)
       },
     }),
   },
 })
 
-async function inputResolver(
+async function inputResolver (
   storage: string,
   data: graphql.InferValueFromArg<typeof inputArg>,
   context: KeystoneContext
@@ -80,7 +80,7 @@ export const file =
         ? config.hooks
         : {
             ...config.hooks,
-            async beforeOperation(args) {
+            async beforeOperation (args) {
               await config.hooks?.beforeOperation?.(args)
               if (args.operation === 'update' || args.operation === 'delete') {
                 const filenameKey = `${meta.fieldKey}_filename`
@@ -111,7 +111,7 @@ export const file =
       },
       output: graphql.field({
         type: FileFieldOutput,
-        resolve({ value: { filesize, filename } }) {
+        resolve ({ value: { filesize, filename } }) {
           if (filesize === null || filename === null) {
             return null
           }

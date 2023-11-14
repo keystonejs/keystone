@@ -10,7 +10,7 @@ import { insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading } from './u
 
 const minusIcon = <MinusIcon size="small" />
 
-export function insertDivider(editor: Editor) {
+export function insertDivider (editor: Editor) {
   insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
     type: 'divider',
     children: [{ text: '' }],
@@ -57,7 +57,7 @@ export const dividerButton = (
   </Tooltip>
 )
 
-export function withDivider(editor: Editor): Editor {
+export function withDivider (editor: Editor): Editor {
   const { isVoid } = editor
   editor.isVoid = node => {
     return node.type === 'divider' || isVoid(node)

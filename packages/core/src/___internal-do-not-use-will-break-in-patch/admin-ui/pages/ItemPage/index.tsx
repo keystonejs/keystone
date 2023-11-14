@@ -62,7 +62,7 @@ function useEventCallback<Func extends (...args: any) => any>(callback: Func): F
 type ItemViewFieldModes = NonNullable<FieldMeta['itemView']['fieldMode']>
 type ItemViewFieldPositions = NonNullable<FieldMeta['itemView']['fieldPosition']>
 
-function ItemForm({
+function ItemForm ({
   listKey,
   itemGetter,
   selectedFields,
@@ -258,7 +258,7 @@ function ItemForm({
   )
 }
 
-function DeleteButton({
+function DeleteButton ({
   itemLabel,
   itemId,
   list,
@@ -332,7 +332,7 @@ function DeleteButton({
 
 export const getItemPage = (props: ItemPageProps) => () => <ItemPage {...props} />
 
-function ItemPage({ listKey }: ItemPageProps) {
+function ItemPage ({ listKey }: ItemPageProps) {
   const list = useList(listKey)
   const id = useRouter().query.id as string
 
@@ -495,7 +495,7 @@ function ItemPage({ listKey }: ItemPageProps) {
 // Styled Components
 // ------------------------------
 
-const Toolbar = memo(function Toolbar({
+const Toolbar = memo(function Toolbar ({
   hasChangedFields,
   loading,
   onSave,
@@ -533,7 +533,7 @@ const Toolbar = memo(function Toolbar({
   )
 })
 
-function ResetChangesButton(props: { onReset: () => void }) {
+function ResetChangesButton (props: { onReset: () => void }) {
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false)
 
   return (

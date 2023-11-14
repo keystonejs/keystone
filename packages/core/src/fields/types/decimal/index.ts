@@ -30,7 +30,7 @@ export type DecimalFieldConfig<ListTypeInfo extends BaseListTypeInfo> =
     };
   }
 
-function parseDecimalValueOption(meta: FieldData, value: string, name: string) {
+function parseDecimalValueOption (meta: FieldData, value: string, name: string) {
   let decimal: Decimal
   try {
     decimal = new Decimal(value)
@@ -123,7 +123,7 @@ export const decimal =
       ...config,
       hooks: {
         ...config.hooks,
-        async validateInput(args) {
+        async validateInput (args) {
           const val: Decimal | null | undefined = args.resolvedData[meta.fieldKey]
 
           if (val === null && (validation?.isRequired || isNullable === false)) {
@@ -154,7 +154,7 @@ export const decimal =
             type: graphql.Decimal,
             defaultValue: parsedDefaultValue,
           }),
-          resolve(val) {
+          resolve (val) {
             if (val === undefined) {
               return parsedDefaultValue ?? null
             }
@@ -168,7 +168,7 @@ export const decimal =
       },
       output: graphql.field({
         type: graphql.Decimal,
-        resolve({ value }) {
+        resolve ({ value }) {
           if (value === null) {
             return null
           }

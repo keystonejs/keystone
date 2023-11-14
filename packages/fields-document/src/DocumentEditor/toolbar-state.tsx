@@ -52,7 +52,7 @@ export type ToolbarState = {
 
 const ToolbarStateContext = React.createContext<null | ToolbarState>(null)
 
-export function useToolbarState() {
+export function useToolbarState () {
   const toolbarState = useContext(ToolbarStateContext)
   if (!toolbarState) {
     throw new Error('ToolbarStateProvider must be used to use useToolbarState')
@@ -60,7 +60,7 @@ export function useToolbarState() {
   return toolbarState
 }
 
-export function getAncestorComponentChildFieldDocumentFeatures(
+export function getAncestorComponentChildFieldDocumentFeatures (
   editor: Editor,
   editorDocumentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>
@@ -267,14 +267,14 @@ export const createToolbarState = (
   }
 }
 
-function hasBlockThatClearsOnClearFormatting(editor: Editor) {
+function hasBlockThatClearsOnClearFormatting (editor: Editor) {
   const [node] = Editor.nodes(editor, {
     match: node => node.type === 'heading' || node.type === 'code' || node.type === 'blockquote',
   })
   return !!node
 }
 
-export function getListTypeAbove(editor: Editor): 'none' | 'ordered-list' | 'unordered-list' {
+export function getListTypeAbove (editor: Editor): 'none' | 'ordered-list' | 'unordered-list' {
   const listAbove = Editor.above(editor, { match: isListNode })
   if (!listAbove) {
     return 'none'

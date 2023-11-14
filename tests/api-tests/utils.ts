@@ -76,7 +76,7 @@ export const { dbUrl, dbName } = ((): { dbUrl: string; dbName: string } => {
   }
 })()
 
-export function testConfig(
+export function testConfig (
   config: Omit<KeystoneConfig, 'db'> & {
     db?: Omit<KeystoneConfig['db'], 'provider' | 'url'>;
   }
@@ -111,7 +111,7 @@ export type ListKeyFromRunner<Runner extends ReturnType<typeof setupTestRunner>>
 export const unpackErrors = (errors: readonly any[] | undefined) =>
   (errors || []).map(({ locations, ...unpacked }) => unpacked)
 
-function j(messages: string[]) {
+function j (messages: string[]) {
   return messages.map(m => `  - ${m}`).join('\n')
 }
 
@@ -266,7 +266,7 @@ export const expectSingleRelationshipError = (
     },
   ])
 
-export async function seed<T extends Record<keyof T, Record<string, unknown>[]>>(
+export async function seed<T extends Record<keyof T, Record<string, unknown>[]>> (
   context: KeystoneContext,
   initialData: T
 ) {

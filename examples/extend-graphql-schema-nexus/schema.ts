@@ -32,10 +32,10 @@ export const lists: Lists = {
   }),
 }
 
-export function extendGraphqlSchema(baseSchema: GraphQLSchema) {
+export function extendGraphqlSchema (baseSchema: GraphQLSchema) {
   const NexusPostQuery = nexus.extendType({
     type: 'Query',
-    definition(t) {
+    definition (t) {
       t.field('nexusPosts', {
         type: nexus.nonNull(nexus.list('Post')),
         args: {
@@ -43,7 +43,7 @@ export function extendGraphqlSchema(baseSchema: GraphQLSchema) {
           seconds: nexus.nonNull(nexus.intArg({ default: 600 })),
         },
 
-        async resolve(root, { id, seconds }, context) {
+        async resolve (root, { id, seconds }, context) {
           const cutoff = new Date(Date.now() - seconds * 1000)
 
           // Note we use `context.db.Post` here as we have a return type
@@ -60,7 +60,7 @@ export function extendGraphqlSchema(baseSchema: GraphQLSchema) {
 
   const NexusThing = nexus.objectType({
     name: 'NexusThing',
-    definition(t) {
+    definition (t) {
       t.int('id')
       t.string('title')
     },
@@ -68,10 +68,10 @@ export function extendGraphqlSchema(baseSchema: GraphQLSchema) {
 
   const NexusThingQuery = nexus.extendType({
     type: 'Query',
-    definition(t) {
+    definition (t) {
       t.nonNull.list.field('things', {
         type: NexusThing,
-        resolve() {
+        resolve () {
           return [
             { id: 1, title: 'Keystone' },
             { id: 2, title: 'Prisma' },

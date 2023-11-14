@@ -94,7 +94,7 @@ export const outputType: graphql.ObjectType<CloudinaryImage_File> =
           transformation: graphql.arg({ type: CloudinaryImageFormat }),
         },
         type: graphql.String,
-        resolve(rootVal, args) {
+        resolve (rootVal, args) {
           return rootVal.publicUrlTransformed(args)
         },
       }),
@@ -102,7 +102,7 @@ export const outputType: graphql.ObjectType<CloudinaryImage_File> =
   })
 
 // TODO: no delete support
-export function cloudinaryImage<ListTypeInfo extends BaseListTypeInfo>({
+export function cloudinaryImage<ListTypeInfo extends BaseListTypeInfo> ({
   cloudinary: cloudinaryConfig,
   ...config
 }: CloudinaryImageFieldConfig<ListTypeInfo>): FieldTypeFunc<ListTypeInfo> {
@@ -112,7 +112,7 @@ export function cloudinaryImage<ListTypeInfo extends BaseListTypeInfo>({
     }
 
     const inputArg = graphql.arg({ type: graphql.Upload })
-    async function resolveInput(
+    async function resolveInput (
       uploadData: graphql.InferValueFromArg<typeof inputArg>
     ): Promise<StoredFile | undefined | null | 'DbNull'> {
       if (uploadData === null) {
@@ -172,7 +172,7 @@ export function cloudinaryImage<ListTypeInfo extends BaseListTypeInfo>({
         },
         output: graphql.field({
           type: outputType,
-          resolve({ value }) {
+          resolve ({ value }) {
             if (value === null) {
               return null
             }

@@ -33,7 +33,7 @@ import { Page } from '../components/Page'
 import editorStorytelling from '../public/assets/editor-storytelling.png'
 import richTextEditor from '../public/assets/rich-text-editor.png'
 
-export default function ForDevelopers() {
+export default function ForDevelopers () {
   const mq = useMediaQuery()
 
   return (

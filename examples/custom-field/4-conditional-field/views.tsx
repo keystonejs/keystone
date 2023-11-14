@@ -10,7 +10,7 @@ import {
   type FieldProps,
 } from '@keystone-6/core/types'
 
-export function Field({
+export function Field ({
   field,
   value,
   itemValue,

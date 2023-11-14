@@ -17,14 +17,14 @@ type ErrorBoundaryState = {
 
 export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   state: ErrorBoundaryState = { hasError: false, isReloading: false }
-  static getDerivedStateFromError(error: any) {
+  static getDerivedStateFromError (error: any) {
     return { error, hasError: true }
   }
   reloadPage = () => {
     this.setState({ isReloading: true })
     window.location.reload()
   }
-  render() {
+  render () {
     if (this.state.hasError) {
       return (
         <ErrorContainer>

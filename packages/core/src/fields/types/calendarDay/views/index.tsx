@@ -66,7 +66,7 @@ export const Field = ({
   )
 }
 
-function validate(
+function validate (
   value: Value,
   fieldMeta: CalendarDayFieldMeta,
   label: string
@@ -104,7 +104,7 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
   )
 }
 
-function formatOutput(isoDateString: string | null) {
+function formatOutput (isoDateString: string | null) {
   if (!isoDateString) {
     return null
   }

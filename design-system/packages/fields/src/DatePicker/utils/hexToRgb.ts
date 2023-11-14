@@ -1,4 +1,4 @@
-function parseHex(hex: string) {
+function parseHex (hex: string) {
   let result = hex
 
   // remove hash symbol
@@ -15,7 +15,7 @@ function parseHex(hex: string) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function hexToTriplet(dirtyHex: string, alpha?: number) {
+export function hexToTriplet (dirtyHex: string, alpha?: number) {
   const cleanHex = parseHex(dirtyHex)
 
   const r = parseInt(cleanHex.slice(0, 2), 16)
@@ -27,7 +27,7 @@ export function hexToTriplet(dirtyHex: string, alpha?: number) {
 
 // values taken from contrast algorithms from w3
 // https://www.w3.org/TR/AERT/#color-contrast
-export function hexToRgb(dirtyHex: string, alpha?: number) {
+export function hexToRgb (dirtyHex: string, alpha?: number) {
   const [r, g, b] = hexToTriplet(dirtyHex)
   const value = `${r}, ${g}, ${b}`
 

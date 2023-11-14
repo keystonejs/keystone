@@ -26,7 +26,7 @@ const Variants = ({ tone }: { tone: ToneKey }) => {
   )
 }
 
-export default function ButtonPage() {
+export default function ButtonPage () {
   return (
     <Page>
       <h1>Button</h1>

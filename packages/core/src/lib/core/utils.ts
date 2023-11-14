@@ -77,7 +77,7 @@ export type PrismaClient = {
 } & Record<string, PrismaModel>
 
 // Run prisma operations as part of a resolver
-export async function runWithPrisma<T>(
+export async function runWithPrisma<T> (
   context: KeystoneContext,
   { prisma: { listKey } }: InitialisedList,
   fn: (model: PrismaModel) => Promise<T>
@@ -106,7 +106,7 @@ export const isRejected = (arg: PromiseSettledResult<any>): arg is PromiseReject
 
 type Awaited<T> = T extends PromiseLike<infer U> ? U : T
 
-export async function promiseAllRejectWithAllErrors<T extends unknown[]>(
+export async function promiseAllRejectWithAllErrors<T extends unknown[]> (
   promises: readonly [...T]
 ): Promise<{ [P in keyof T]: Awaited<T[P]> }> {
   const results = await Promise.allSettled(promises)
@@ -122,7 +122,7 @@ export async function promiseAllRejectWithAllErrors<T extends unknown[]>(
   return results.map((x: any) => x.value) as any
 }
 
-export function getNamesFromList(
+export function getNamesFromList (
   listKey: string,
   { graphql, ui, isSingleton }: KeystoneConfig['lists'][string]
 ) {
@@ -163,7 +163,7 @@ export function getNamesFromList(
 const labelToPath = (str: string) => str.split(' ').join('-').toLowerCase()
 const labelToClass = (str: string) => str.replace(/\s+/g, '')
 
-export function getDBFieldKeyForFieldOnMultiField(fieldKey: string, subField: string) {
+export function getDBFieldKeyForFieldOnMultiField (fieldKey: string, subField: string) {
   return `${fieldKey}_${subField}`
 }
 
@@ -173,13 +173,13 @@ export function getDBFieldKeyForFieldOnMultiField(fieldKey: string, subField: st
 // because even across requests, we want to apply the limit on SQLite
 const writeLimits = new WeakMap<object, Limit>()
 
-export function setWriteLimit(prismaClient: object, limit: Limit) {
+export function setWriteLimit (prismaClient: object, limit: Limit) {
   writeLimits.set(prismaClient, limit)
 }
 
 // this accepts the context instead of the prisma client because the prisma client on context is `any`
 // so by accepting the context, it'll be less likely the wrong thing will be passed.
-export function getWriteLimit(context: KeystoneContext) {
+export function getWriteLimit (context: KeystoneContext) {
   const limit = writeLimits.get(context.prisma)
   if (limit === undefined) {
     throw new Error('unexpected write limit not set for prisma client')
@@ -189,13 +189,13 @@ export function getWriteLimit(context: KeystoneContext) {
 
 const prismaNamespaces = new WeakMap<object, PrismaModule['Prisma']>()
 
-export function setPrismaNamespace(prismaClient: object, prismaNamespace: PrismaModule['Prisma']) {
+export function setPrismaNamespace (prismaClient: object, prismaNamespace: PrismaModule['Prisma']) {
   prismaNamespaces.set(prismaClient, prismaNamespace)
 }
 
 // this accepts the context instead of the prisma client because the prisma client on context is `any`
 // so by accepting the context, it'll be less likely the wrong thing will be passed.
-export function getPrismaNamespace(context: KeystoneContext) {
+export function getPrismaNamespace (context: KeystoneContext) {
   const limit = prismaNamespaces.get(context.prisma)
   if (limit === undefined) {
     throw new Error('unexpected prisma namespace not set for prisma client')
@@ -203,6 +203,6 @@ export function getPrismaNamespace(context: KeystoneContext) {
   return limit
 }
 
-export function areArraysEqual(a: readonly unknown[], b: readonly unknown[]) {
+export function areArraysEqual (a: readonly unknown[], b: readonly unknown[]) {
   return a.length === b.length && a.every((x, i) => x === b[i])
 }

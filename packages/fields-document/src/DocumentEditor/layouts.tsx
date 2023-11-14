@@ -143,7 +143,7 @@ export const insertLayout = (editor: Editor, layout: [number, ...number[]]) => {
 }
 
 // Plugin
-export function withLayouts(editor: Editor): Editor {
+export function withLayouts (editor: Editor): Editor {
   const { normalizeNode, deleteBackward } = editor
   editor.deleteBackward = unit => {
     if (
@@ -225,7 +225,7 @@ export function withLayouts(editor: Editor): Editor {
 // Utils
 // ------------------------------
 
-function makeLayoutIcon(ratios: number[]) {
+function makeLayoutIcon (ratios: number[]) {
   const size = 16
 
   const element = (

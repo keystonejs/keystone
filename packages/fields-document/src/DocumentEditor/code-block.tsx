@@ -8,7 +8,7 @@ import { CodeIcon } from '@keystone-ui/icons/icons/CodeIcon'
 import { ToolbarButton, KeyboardInTooltip } from './primitives'
 import { useToolbarState } from './toolbar-state'
 
-export function withCodeBlock(editor: Editor): Editor {
+export function withCodeBlock (editor: Editor): Editor {
   const { insertBreak, normalizeNode } = editor
 
   editor.insertBreak = () => {
@@ -60,7 +60,7 @@ export function withCodeBlock(editor: Editor): Editor {
   return editor
 }
 
-function CodeButton({ attrs }: { attrs: {} }) {
+function CodeButton ({ attrs }: { attrs: {} }) {
   const {
     editor,
     code: { isDisabled, isSelected },

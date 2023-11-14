@@ -1,6 +1,6 @@
 export const gql = ([content]: TemplateStringsArray) => content
 
-export async function fetchGraphQL(query: string, variables?: Record<string, any>) {
+export async function fetchGraphQL (query: string, variables?: Record<string, any>) {
   return fetch('http://localhost:3000/api/graphql', {
     method: 'POST',
     body: JSON.stringify({ query, variables }),

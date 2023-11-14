@@ -16,7 +16,7 @@ import {
   useQuery,
 } from '../../../../admin-ui/apollo'
 
-function useIntersectionObserver(cb: IntersectionObserverCallback, ref: RefObject<any>) {
+function useIntersectionObserver (cb: IntersectionObserverCallback, ref: RefObject<any>) {
   const cbRef = useRef(cb)
   useEffect(() => {
     cbRef.current = cb
@@ -31,7 +31,7 @@ function useIntersectionObserver(cb: IntersectionObserverCallback, ref: RefObjec
   }, [ref])
 }
 
-function useDebouncedValue<T>(value: T, limitMs: number) {
+function useDebouncedValue<T> (value: T, limitMs: number) {
   const [debouncedValue, setDebouncedValue] = useState(() => value)
 
   useEffect(() => {
@@ -44,11 +44,11 @@ function useDebouncedValue<T>(value: T, limitMs: number) {
   return debouncedValue
 }
 
-function isInt(x: string) {
+function isInt (x: string) {
   return Number.isInteger(Number(x))
 }
 
-function isBigInt(x: string) {
+function isBigInt (x: string) {
   try {
     BigInt(x)
     return true
@@ -57,7 +57,7 @@ function isBigInt(x: string) {
   }
 }
 
-export function useFilter(search: string, list: ListMeta, searchFields: string[]) {
+export function useFilter (search: string, list: ListMeta, searchFields: string[]) {
   return useMemo(() => {
     const trimmedSearch = search.trim()
     if (!trimmedSearch.length) return { OR: [] }
@@ -97,7 +97,7 @@ const labelFieldAlias = '____label____'
 
 const LoadingIndicatorContext = createContext<{
   count: number;
-  ref: (element: HTMLElement | null) => void;
+  ref:(element: HTMLElement | null) => void;
 }>({
   count: 0,
   ref: () => {},

@@ -3,13 +3,13 @@ import { type AuthTokenRedemptionErrorCode, type SecretFieldImpl } from '../type
 import { validateSecret } from './validateSecret'
 
 // The tokensValidForMins config is from userland so could be anything; make it sane
-function sanitiseValidForMinsConfig(input: any): number {
+function sanitiseValidForMinsConfig (input: any): number {
   const parsed = Number.parseFloat(input)
   // > 10 seconds, < 24 hrs, default 10 mins
   return parsed ? Math.max(1 / 6, Math.min(parsed, 60 * 24)) : 10
 }
 
-export async function validateAuthToken(
+export async function validateAuthToken (
   listKey: string,
   secretFieldImpl: SecretFieldImpl,
   tokenType: 'passwordReset' | 'magicAuth',

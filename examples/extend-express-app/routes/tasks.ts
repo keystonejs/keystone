@@ -11,7 +11,7 @@ import type { Context } from '.keystone/types'
   We're also demonstrating how you can query related data through the schema.
 */
 
-export async function getTasks(req: Request, res: Response, context: Context) {
+export async function getTasks (req: Request, res: Response, context: Context) {
   // Let's map the `complete` query param to a where filter
   let isComplete
   if (req.query.complete === 'true') {

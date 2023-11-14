@@ -125,7 +125,7 @@ type IsEnabled = {
   orderBy: boolean | ((args: FilterOrderArgs<BaseListTypeInfo>) => MaybePromise<boolean>);
 }
 
-function throwIfNotAFilter(x: unknown, listKey: string, fieldKey: string) {
+function throwIfNotAFilter (x: unknown, listKey: string, fieldKey: string) {
   if (['boolean', 'undefined', 'function'].includes(typeof x)) return
 
   throw new Error(
@@ -133,7 +133,7 @@ function throwIfNotAFilter(x: unknown, listKey: string, fieldKey: string) {
   )
 }
 
-function getIsEnabled(listsConfig: KeystoneConfig['lists']) {
+function getIsEnabled (listsConfig: KeystoneConfig['lists']) {
   const isEnabled: Record<string, IsEnabled> = {}
 
   for (const [listKey, listConfig] of Object.entries(listsConfig)) {
@@ -172,12 +172,12 @@ function getIsEnabled(listsConfig: KeystoneConfig['lists']) {
   return isEnabled
 }
 
-function defaultOperationHook() {}
-function defaultListHooksResolveInput({ resolvedData }: { resolvedData: any }) {
+function defaultOperationHook () {}
+function defaultListHooksResolveInput ({ resolvedData }: { resolvedData: any }) {
   return resolvedData
 }
 
-function parseListHooksResolveInput(f: ListHooks<BaseListTypeInfo>['resolveInput']) {
+function parseListHooksResolveInput (f: ListHooks<BaseListTypeInfo>['resolveInput']) {
   if (typeof f === 'function') {
     return {
       create: f,
@@ -189,7 +189,7 @@ function parseListHooksResolveInput(f: ListHooks<BaseListTypeInfo>['resolveInput
   return { create, update }
 }
 
-function parseListHooksBeforeOperation(f: ListHooks<BaseListTypeInfo>['beforeOperation']) {
+function parseListHooksBeforeOperation (f: ListHooks<BaseListTypeInfo>['beforeOperation']) {
   if (typeof f === 'function') {
     return {
       create: f,
@@ -206,7 +206,7 @@ function parseListHooksBeforeOperation(f: ListHooks<BaseListTypeInfo>['beforeOpe
   return { create, update, delete: _delete }
 }
 
-function parseListHooksAfterOperation(f: ListHooks<BaseListTypeInfo>['afterOperation']) {
+function parseListHooksAfterOperation (f: ListHooks<BaseListTypeInfo>['afterOperation']) {
   if (typeof f === 'function') {
     return {
       create: f,
@@ -223,7 +223,7 @@ function parseListHooksAfterOperation(f: ListHooks<BaseListTypeInfo>['afterOpera
   return { create, update, delete: _delete }
 }
 
-function defaultFieldHooksResolveInput({
+function defaultFieldHooksResolveInput ({
   resolvedData,
   fieldKey,
 }: {
@@ -233,7 +233,7 @@ function defaultFieldHooksResolveInput({
   return resolvedData[fieldKey]
 }
 
-function parseListHooks(hooks: ListHooks<BaseListTypeInfo>): ResolvedListHooks<BaseListTypeInfo> {
+function parseListHooks (hooks: ListHooks<BaseListTypeInfo>): ResolvedListHooks<BaseListTypeInfo> {
   return {
     resolveInput: parseListHooksResolveInput(hooks.resolveInput),
     validateInput: hooks.validateInput ?? defaultOperationHook,
@@ -243,7 +243,7 @@ function parseListHooks(hooks: ListHooks<BaseListTypeInfo>): ResolvedListHooks<B
   }
 }
 
-function parseFieldHooks(
+function parseFieldHooks (
   hooks: FieldHooks<BaseListTypeInfo>
 ): ResolvedFieldHooks<BaseListTypeInfo> {
   return {
@@ -268,7 +268,7 @@ function parseFieldHooks(
 
 type PartiallyInitialisedList = Omit<InitialisedList, 'lists' | 'resolvedDbFields'>
 
-function getListsWithInitialisedFields(
+function getListsWithInitialisedFields (
   { storage: configStorage, lists: listsConfig, db: { provider } }: KeystoneConfig,
   listGraphqlTypes: Record<string, ListGraphQLTypes>,
   intermediateLists: Record<string, { graphql: { isEnabled: IsEnabled } }>
@@ -440,7 +440,7 @@ function getListsWithInitialisedFields(
   return result
 }
 
-function introspectGraphQLTypes(lists: Record<string, InitialisedList>) {
+function introspectGraphQLTypes (lists: Record<string, InitialisedList>) {
   for (const [listKey, list] of Object.entries(lists)) {
     const {
       ui: { searchFields, searchableFields },
@@ -472,14 +472,14 @@ function introspectGraphQLTypes(lists: Record<string, InitialisedList>) {
   }
 }
 
-function stripDefaultValue(thing: graphql.Arg<graphql.InputType, boolean>) {
+function stripDefaultValue (thing: graphql.Arg<graphql.InputType, boolean>) {
   return graphql.arg({
     ...thing,
     defaultValue: undefined,
   })
 }
 
-function graphqlArgForInputField(field: InitialisedField, operation: 'create' | 'update') {
+function graphqlArgForInputField (field: InitialisedField, operation: 'create' | 'update') {
   const input = field.input?.[operation]
   if (!input?.arg || !field.graphql.isEnabled[operation]) return
   if (!field.graphql.isNonNull[operation]) return stripDefaultValue(input.arg)
@@ -491,7 +491,7 @@ function graphqlArgForInputField(field: InitialisedField, operation: 'create' | 
   })
 }
 
-function graphqlForOutputField(field: InitialisedField) {
+function graphqlForOutputField (field: InitialisedField) {
   const output = field.output
   if (!output || !field.graphql.isEnabled.read) return output
   if (!field.graphql.isNonNull.read) return output
@@ -503,7 +503,7 @@ function graphqlForOutputField(field: InitialisedField) {
   })
 }
 
-function getListGraphqlTypes(
+function getListGraphqlTypes (
   listsConfig: KeystoneConfig['lists'],
   lists: Record<string, InitialisedList>,
   intermediateLists: Record<string, { graphql: { isEnabled: IsEnabled } }>
@@ -769,7 +769,7 @@ function getListGraphqlTypes(
  * 5. Handle relationships - ensure correct linking between two sides of all relationships (including one-sided relationships)
  * 6.
  */
-export function initialiseLists(config: KeystoneConfig): Record<string, InitialisedList> {
+export function initialiseLists (config: KeystoneConfig): Record<string, InitialisedList> {
   const listsConfig = config.lists
 
   let intermediateLists

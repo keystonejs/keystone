@@ -4,7 +4,7 @@ import type { KeystoneConfig } from '../../types'
 import { healthCheckPath as defaultHealthCheckPath } from '../defaults'
 
 /** @deprecated */
-export async function addHealthCheck({
+export async function addHealthCheck ({
   config,
   server,
 }: {

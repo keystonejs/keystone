@@ -8,7 +8,7 @@ import { Well } from '../../../components/primitives/Well'
 import { DocsPage } from '../../../components/Page'
 import { useMediaQuery } from '../../../lib/media'
 
-export default function Docs() {
+export default function Docs () {
   const mq = useMediaQuery()
 
   return (

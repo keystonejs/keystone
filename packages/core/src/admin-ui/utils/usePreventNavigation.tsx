@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useRouter } from '../router'
 
-export function usePreventNavigation(shouldPreventNavigationRef: { current: boolean }) {
+export function usePreventNavigation (shouldPreventNavigationRef: { current: boolean }) {
   const router = useRouter()
 
   useEffect(() => {
