@@ -1,4 +1,5 @@
 .keystone/
+.next/
 dist/
 node_modules/
 *.db
