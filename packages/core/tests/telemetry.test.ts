@@ -229,12 +229,10 @@ describe('Telemetry tests', () => {
       const envBefore = process.env[key]
 
       beforeEach(() => {
-        // @ts-expect-error
         process.env[key] = value
       })
 
       afterEach(() => {
-        // @ts-expect-error
         process.env[key] = envBefore
       })
 

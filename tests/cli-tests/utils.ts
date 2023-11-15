@@ -7,7 +7,6 @@ import * as fse from 'fs-extra'
 import fastGlob from 'fast-glob'
 import chalk from 'chalk'
 
-// @ts-expect-error
 import { MigrateEngine } from '@prisma/migrate'
 import { uriToCredentials } from '@prisma/internals'
 import type { KeystoneConfig } from '@keystone-6/core/types'

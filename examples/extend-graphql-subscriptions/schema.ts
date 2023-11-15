@@ -96,15 +96,12 @@ export const extendGraphqlSchema = (schema: GraphQLSchema) =>
       // add the subscription resolvers
       Subscription: {
         time: {
-          // @ts-expect-error
           subscribe: () => pubSub.asyncIterator(['TIME']),
         },
         postPublished: {
-          // @ts-expect-error
           subscribe: () => pubSub.asyncIterator(['POST_PUBLISHED']),
         },
         postUpdated: {
-          // @ts-expect-error
           subscribe: () => pubSub.asyncIterator(['POST_UPDATED']),
         },
       },

@@ -21,7 +21,6 @@ export const prepareFile = (_filePath: string, kind: 'image' | 'file') => {
   upload.resolve({
     createReadStream: () => fs.createReadStream(filePath),
     filename: path.basename(filePath),
-    // @ts-expect-error
     mimetype: mime.getType(filePath),
     encoding: 'utf-8',
   })
