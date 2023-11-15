@@ -16,14 +16,14 @@ export function useSort(list: ListMeta, orderableFields: Set<string>) {
 
       return {
         field,
-        direction: 'DESC'
+        direction: 'DESC' as const
       }
     }
 
     if (!orderableFields.has(sortByFromUrl)) return null
     return {
       field: sortByFromUrl,
-      direction: 'ASC'
+      direction: 'ASC' as const
     }
   }, [sortByFromUrl, list, orderableFields])
 }
